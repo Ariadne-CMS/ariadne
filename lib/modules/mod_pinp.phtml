@@ -9,6 +9,7 @@ define("T_MULTIPART_STRING_START",	248);
 define("T_MULTIPART_STRING_END",	247);
 define("T_PINP_START",		246);
 define("T_PINP_END",		245);
+define("T_ERROR",			244);
 
 define("YY_STATE_HTML",			1);
 define("YY_STATE_PINP",			2);
@@ -39,6 +40,8 @@ class scanner {
 		$cclass['-'] = 1;
 		$cclass['`'] = 1;
 		$cclass['<'] = 1;
+		$cclass['%'] = 1;
+		$cclass['?'] = 1;
 		$cclass[chr(0)] = 1;
 		$this->YYCLASSES["START_TRANSITION"] = $cclass;
 	}
@@ -63,32 +66,37 @@ class scanner {
 				switch ($yych) {
 					case '<':
 						$yych = $YYBUFFER[++$YYCURSOR];
-						while ($yych == ' ') {
-							$yych = $YYBUFFER[++$YYCURSOR];
-						} 
-						$tag_element = "";
-						while ($yych != ' ' && $yych != "\0" && $yych != '>') {
-							$tag_element .= $yych;
-							$yych = $YYBUFFER[++$YYCURSOR];
-						}
-						while ($yych != "\0" && $yych!='>') {
-							$yych = $YYBUFFER[++$YYCURSOR];
-						}
-						/* eat '>' sign */
-						if ($yych == '>') {
-							++$YYCURSOR;
-						}
-						if ($tag_element == "pinp") {
-							$YYSTATE = YY_STATE_PINP;
-							return T_PINP_START;
-						} else
-						if (strtolower($tag_element) == "script") {
-							$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
-							$result = "<?php echo \"".AddCSlashes($result, ARESCAPE)."\"; ?>";
-							return T_UNPARSED;
+						if ($yych == '?' || $yych == '%') {
+							$result = "php tags found at line: ".$this->YYLINE;
+							return T_ERROR;
 						} else {
-							$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
-							return T_UNPARSED;
+							while ($yych == ' ') {
+								$yych = $YYBUFFER[++$YYCURSOR];
+							} 
+							$tag_element = "";
+							while ($yych != ' ' && ord($yych)!==0 && $yych != '>') {
+								$tag_element .= $yych;
+								$yych = $YYBUFFER[++$YYCURSOR];
+							}
+							while (ord($yych)!==0 && $yych!='>') {
+								$yych = $YYBUFFER[++$YYCURSOR];
+							}
+							/* eat '>' sign */
+							if ($yych == '>') {
+								++$YYCURSOR;
+							}
+							if ($tag_element == "pinp") {
+								$YYSTATE = YY_STATE_PINP;
+								return T_PINP_START;
+							} else
+							if (strtolower($tag_element) == "script") {
+								$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
+								$result = "<?php echo \"".str_replace('$', '\\$', AddCSlashes($result, ARESCAPE))."\"; ?>";
+								return T_UNPARSED;
+							} else {
+								$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
+								return T_UNPARSED;
+							}
 						}
 					break;					
 					case "\0":
@@ -96,8 +104,8 @@ class scanner {
 						return T_EOF;
 					break;
 					default:
-						$yych = $YYBUFFER[++$YYCURSOR];
-						while ($yych != '<' && $yych != "\0") {
+					//	$yych = $YYBUFFER[++$YYCURSOR];
+						while ($yych != '<' && ord($yych)!==0) {
 							$yych = $YYBUFFER[++$YYCURSOR];
 						}
 						$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
@@ -121,21 +129,20 @@ class scanner {
 							return T_ERROR;
 						}
 					break;
-/*
+
 					case '%':
 					case '?':
 						$firstchar = $yych;
 						$yych = $YYBUFFER[++$YYCURSOR];
 						if ($yych == '>') {
-							$result = "";
-							$YYSTATE = $YY_STATE_HTML;
-							return T_PINP_END;
+							$result = "php tags found at line: ".$this->YYLINE;
+							return T_ERROR;
 						} else {
 							$result = "$firstchar$yych";
 							return T_UNPARSED;
 						}
 					break;
-*/
+
 					case '<':
 						$yych = $YYBUFFER[++$YYCURSOR];
 						switch ($yych) {
@@ -145,11 +152,11 @@ class scanner {
 									$yych = $YYBUFFER[++$YYCURSOR];
 								} 
 								$tag_element = "";
-								while ($yych != ' ' && $yych != "\0" && $yych != '>') {
+								while ($yych != ' ' && ord($yych)!==0 && $yych != '>') {
 									$tag_element .= $yych;
 									$yych = $YYBUFFER[++$YYCURSOR];
 								}
-								while ($yych != "\0" && $yych!='>') {
+								while (ord($yych)!==0 && $yych!='>') {
 									$yych = $YYBUFFER[++$YYCURSOR];
 								}
 								if ($yych=='>') {
@@ -175,7 +182,7 @@ class scanner {
 						switch ($yych) {
 							case '/':
 								$yych = $YYBUFFER[++$YYCURSOR];
-								while ($yych != "\n" && $yych != "\0") {
+								while ($yych != "\n" && ord($yych)!==0) {
 									$yych = $YYBUFFER[++$YYCURSOR];
 								}
 								/* character already eaten */
@@ -185,7 +192,7 @@ class scanner {
 								$result="";
 								$start_line = $this->YYLINE;
 								$yych = $YYBUFFER[++$YYCURSOR];
-								while ($yych != "\0") {
+								while (ord($yych)!==0) {
 									if ($yych == "\n") {
 										$this->YYLINE++;
 										$result.="\n";
@@ -199,7 +206,7 @@ class scanner {
 									}
 								}
 								$result = "unterminated comment, started at $start_line";
-								return T_SCANNER_ERROR;
+								return T_ERROR;
 							break;
 						}
 					break;
@@ -266,13 +273,13 @@ class scanner {
 					break;
 					case '`':
 						$result = "backtick encounterd at line ".$this->YYLINE;
-						return T_SCANNER_ERROR;
+						return T_ERROR;
 					break;
 					case '"':
 						$start_line = $this->YYLINE;
 						$multi_string = Array();
 						$yych = $YYBUFFER[$YYCURSOR_START=++$YYCURSOR];
-						while ($yych != '"' && $yych != "\0") {
+						while (ord($yych)!==0 && $yych != '"') {
 							if ($yych == '\\') {
 								++$YYCURSOR;
 							} else
@@ -308,7 +315,7 @@ class scanner {
 							}
 							$yych = $YYBUFFER[++$YYCURSOR];
 						}
-						if ($yych != "\0") {
+						if (ord($yych) != 0) {
 							$YYCURSOR++;
 							$string=substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR - $YYCURSOR_START - 1);
 
@@ -317,13 +324,13 @@ class scanner {
 							return T_STRING;
 						} else {
 							$result = "unterminated quote, started at $start_line:$start_col";
-							return T_SCANNER_ERROR;
+							return T_ERROR;
 						}
 					break;
 					case "'":
 						$start_line = $this->YYLINE;
 						$yych = $YYBUFFER[++$YYCURSOR];
-						while ($yych != "'" && $yych != "\0") {
+						while ($yych != "'" && ord($yych)!==0) {
 							if ($yych == '\\') {
 								++$YYCURSOR;
 							} else
@@ -333,13 +340,13 @@ class scanner {
 							}
 							$yych = $YYBUFFER[++$YYCURSOR];
 						}
-						if ($yych != "\0") {
+						if (ord($yych)!==0) {
 							$YYCURSOR++;
 							$result=substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR - $YYCURSOR_START);
 							return T_UNPARSED;
 						} else {
 							$result = "unterminated quote, started at $start_line:$start_col";
-							return T_SCANNER_ERROR;
+							return T_ERROR;
 						}
 					break;
 					case "-":
@@ -513,8 +520,8 @@ class pinp {
 						$this->new_template.=$this->token_value;
 					}
 				break;
-				case T_SCANNER_ERROR:
-					$this->error = $this->token_value;
+				case T_ERROR:
+					$this->error = "error: ".$this->token_value;
 					break 2;
 				break;
 			}
