@@ -1,22 +1,186 @@
 <?php
-if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		$template="browse.nav.list.show.phtml";
+		$up="browse.nav.list.show.up.phtml";
+		if (!$arLanguage) {
+			$arLanguage=$nls;
+			if (is_array($arCallArgs)) {
+				$arCallArgs["arLanguage"]=$nls;
+			} else {
+				$arCallArgs.="&arLanguage=$nls";
+			}
+		}
+?>
+<html>
+<head>
+<style>
 
-	$template="manage.show.html";
-	$up="manage.show.up.html";
-	$this->call("manage.info.html"); ?>
-	<table>
-	<tr valign="top">
-		<td width="80" valign="top">
-			<?php
-				$this->call($up);
-			?>
-		</td><td>
-			<?php
-				$this->ls($this->path, $template, "view=".$view);
-			?>
-		</td>
-	</tr>
-	</table>
+BODY {
+	background-color : #F6EEE6;
+	margin: 0px;
+}
+
+TH,TD,LI,P,BODY {
+	font-size : 13px;
+	font-family : verdana,helvetica, arial, sans-serif;
+}
+
+H4 {
+	font-weight : bold;
+	font-size : 10pt;
+	font-family : verdana,helvetica, arial, sans-serif;
+	margin-bottom : 0px;
+}
+
+H3 {
+	font-weight : bold;
+	font-size : 11pt;
+	font-family : verdana,helvetica, arial, sans-serif;
+}
+
+H2 {
+	font-weight : bold;
+	font-size : 13pt;
+	font-family : arial,helvetica, sans-serif;
+	margin-top : 0px;
+	margin-bottom : 0px;
+}
+
+H1 {
+	font-weight : bold;
+	font-size : 18pt;
+	font-family : arial,helvetica,sans-serif;
+	margin-bottom : 2px;
+	margin-top : 15px;
+}
+
+.object {
+	width: 150px;
+	overflow: hidden;
+	<?php
+		$browser=$this->call("browsercheck.phtml");
+		if (($browser["version"]!=4)) {
+	?>
+			float: left;
+	<?php
+		}
+	?>
+	padding-right: 8px;
+}
+
+.manage_info {
+	margin-top:5px;
+	margin-bottom:0px;
+	font-weight:normal;
+	font-size:20pt;
+}
+
+A	{
+	text-decoration: none;
+}
+A:link {
+	text-decoration: none;
+	color: #003FEB;
+}
+A:visited {
+	text-decoration: none;
+	color: #464399; 
+}
+A:hover {
+	text-decoration: none;
+	color: #FF8400; 
+}
+A.selected {
+	border: inset 1px;
+}
+A.unselected {
+	border: outset 1px;
+}
+.data {
+	width: 100%;
+	background-color: #F6EEE6;
+	padding: 0px 4px 0px 4px;
+}
+#details {
+	float: right;
+	border: dotted 1px black;
+	width: 200px;
+	padding: 5px;
+	margin-bottom: 5px;
+	background-color: white;
+}
+#summary {
+	height: 104px;
+	overflow: auto;
+	margin-bottom: 6px;
+}
+#sidebar {
+	width: 205px;
+	float: right;
+	text-align: left;
+	height: 100%;
+	margin: 5px;
+}
+#infobox {
+	border: dotted 1px black;
+	width: 200px;
+	padding: 5px;
+	float: right;
+	margin-bottom: 5px;
+	background-color: white;
+}
+#children {
+	overflow: auto;
+	border: inset 2px;
+	height: 100%;
+	background-color: white;
+	padding: 4px;
+}
+#object {
+	padding-left: 50px;	
+}
+#icon {
+	position: absolute;
+}
+#top {
+	height: 180px;
+}
+</style>
+<title>Ariadne - <?php echo $nlsdata->name; ?></title>
+</head>
+<body>
+	<table width="100%" height="95%">
+	<tr><td valign="top" width="100%">
+	<div id="top">
+		<?php $this->call("manage.top.html", $arCallArgs); ?>
+	</div>
+	</td><td rowspan="2" valign="top">
+	<div id="sidebar">
+		<?php $this->call("manage.info.html", $arCallArgs); ?>
+		<br clear="all">
+		<?php 
+			$this->call("manage.details.html", $arCallArgs); 
+		?>
+	</div>
+	</td></tr><tr><td valign="top" height="60%">
+	<div>
+		<script>
+		    if (document.all) {
+				window.innerHeight=document.body.clientHeight;
+				window.innerWidth=document.body.clientWidth;
+			}
+			height=window.innerHeight-232;
+			document.write('<div id="children" style="height: '+height+'px;">');
+		</script>
+				<?php
+					$this->call($up, $arCallArgs);
+					$this->ls($this->path, $template, $arCallArgs);
+				?>
+		</div>
+	</div>
+	</td></tr></table>
+</body>
+</html>
 
 <?php
 	}

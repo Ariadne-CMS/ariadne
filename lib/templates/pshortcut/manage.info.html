@@ -1,9 +1,3 @@
 <?php
-	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-?>
-
-	<h2 class=manage_info><img width="40" height="40" src="<?php echo $AR->dir->images."icons/".$this->type; ?>_open.gif">&nbsp;&nbsp;&nbsp;<?php echo $nlsdata->name; ?></h2>
-	<span>&nbsp;<?php echo $data->value; ?> </span>
-<?php
-	}
+  $this->call("pobject::manage.info.html",$arCallArgs);
 ?>

@@ -1,13 +1,7 @@
 <?php
 	if ($this->CheckConfig() && ($this->parent!="..")) {
-
-		if ($view) {
-			$template="view.phtml";
-		} else {
-			$template="manage.html";
-		}
 ?>
-<a href="<?php echo $this->store->root.$this->parent.$template; ?>" onClick="if (top.tree) { top.Viewit('<?php echo $this->parent; ?>'); return false; }"><img src="<?php echo $AR->dir->images."icons/pdir.gif"; ?>" border="0" width="20" height="20" alt="<?php echo $ARnls["up"]; ?>"><b>..</b></a>
+<a href="<?php echo $this->store->root.$this->parent; ?>manage.html" onClick="if (top.tree) { top.View('<?php echo $this->parent; ?>'); return false; }"><img src="<?php echo $AR->dir->images."icons/pdir.gif"; ?>" border="0" width="20" height="20" alt="<?php echo $ARnls["up"]; ?>"> <b>..</b></a><br>
 <?php
 	}
 ?>

@@ -1,0 +1,12 @@
+<?php
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+?>
+	<div id="details">
+		<div style="padding: 5px;">
+			<img src="<?php echo $this->make_url(); ?>view.thumb.html"><br>
+			<?php echo $this->data->picture; ?><br>
+		</div>
+	</div>
+<?php
+	}
+?>

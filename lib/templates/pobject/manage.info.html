@@ -1,9 +1,33 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		global $PHP_SELF, $QUERY_STRING;
 ?>
-
-	<h2 class=manage_info><img width="40" height="40" src="<?php echo $AR->dir->images."icons/".$this->type; ?>_open.gif">&nbsp;&nbsp;&nbsp;<?php echo $nlsdata->name; ?></h2>
-	<span>&nbsp;<?php echo $data->value; ?> </span>
+	<div id="infobox">
+		<table width="100%">
+			<tr><td valign="top"><?php echo $ARnls["user"]; ?>:</td><td valign="top" class="data"><?php echo $this->data->owner_name; ?></td></tr>
+			<tr><td valign="top"><?php echo $ARnls["date"]; ?>:</td><td valign="top" class="data"><?php echo strftime("%d-%m-%y",$this->data->ctime); ?></td></tr>
+			<tr><td valign="top"><?php echo $ARnls["modified"]; ?>:</td><td valign="top" class="data"><?php echo strftime("%d-%m-%y",$this->data->mtime); ?></td></tr>
+			<tr><td valign="top"><?php echo $ARnls["size"]; ?>:</td><td valign="top" class="data"><?php echo $this->size; ?></td></tr>
+			<tr><td valign="top"><?php echo $ARnls["priority"]; ?>:</td><td valign="top" class="data"><?php echo $this->priority; ?></span></td></tr>
+			<?php
+				if (is_array($data->nls->list)) {
+			?>
+			<tr><td valign="top"><?php echo $ARnls["language"]; ?>:</td><td valign="middle" class="data"><?php 
+					reset($data->nls->list);
+					while (list($key, $nls)=each($data->nls->list)) {
+						if ($arLanguage==$key) {
+							$class="selected";
+						} else {
+							$class="unselected";
+						}
+						echo "<a class='$class' href='$PHP_SELF?$QUERY_STRING&arLanguage=$key' onClick=\"top.Set('arLanguage','$key'); return true;\"><img src=\"".$AR->dir->images."nls/small/".$key.".gif\" border=\"0\" alt=\"$nls\"></a> ";
+					}
+				?></td></tr>
+			<?php
+				}
+			?>
+		</table>
+	</div>
 <?php
 	}
 ?>

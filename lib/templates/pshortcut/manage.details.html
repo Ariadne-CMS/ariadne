@@ -1,0 +1,12 @@
+<?php
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+?>
+	<div id="details">
+		<div style="padding: 5px;">
+			<?php echo $ARnls["path"]; ?>: <span class="data"><?php echo $data->path; ?></span> 
+		</div>
+	</div>
+<?php
+		$this->get($data->path, "manage.details.html");
+	}
+?>
