@@ -197,7 +197,7 @@
 	<!-- TAB 4 -->
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/left5.gif" alt="" name="l4" width="5" height="20" border="0"></td>
 	<td align="center" valign="top"><a onClick="tofront(4); top.cacheTemplate='classic.config.phtml';" href="classic.config.phtml"<?php
-		if (!$AR->user->grants[$this->path]["config"]) {
+		if (!$AR->user->grants[$this->path]["edit"]) {
 			echo "><font color=\"#666666\""; 
 		}
 	?>><?php echo $ARnls["config"]; ?></a><BR><img

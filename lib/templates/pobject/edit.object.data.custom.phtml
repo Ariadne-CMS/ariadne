@@ -91,17 +91,19 @@
 		if (message=updateCustom(document.wgWizForm.showcustomdata)) {
 			alert(message);
 			return false;
-		} else {
+		}  else {
 			savestring='';
 			for (nls in CustomData) {
-				data=CustomData[nls];
-				for (name in data) {
-					savestring+='&customdata['+escape(nls)+']['+escape(name)+']='+escape(data[name]);
+				arData=CustomData[nls];
+				for (arName in arData) {
+					savestring+='&customdata['+escape(nls)+']['+escape(arName)+']='+escape(arData[arName]);
 				}
+
 			}
 			document.wgWizForm.customdata.value=savestring;
 			return true;
 		}
+
 	}
 
 	function show() {

@@ -27,7 +27,7 @@
 </head>
 <body bgcolor="white" onUnLoad="releaseLock()">
 <?php $this->call("lock.form.phtml"); ?>
-<form method="post">
+<form method="post" onSubmit="if (document.wgWizForm.wgWizSubmitHandler) { document.wgWizForm.wgWizSubmitHandler(); }">
 <input type="hidden" name="arNewType" value="<?php echo $arNewType; ?>">
 <input type="hidden" name="arNewFilename" value="<?php echo $arNewFilename; ?>">
 <input type="hidden" name="arReturnPage" value="<?php echo $arReturnPage; ?>">
@@ -144,9 +144,43 @@
 	</td>
 </tr>
 </table>
-
+<p>
+<script>
+	<!-- set wgWizForm to the current form -->
+	document.wgWizForm = document.forms[0];
+</script>
 <table width="100%" cellspacing="0" border="0">
-<tr bgcolor="#404074">
+<?php
+	$configcache=$ARConfig->cache[$this->parent];
+	if ($configcache->custom) {
+		reset($configcache->custom);
+		while (list($key, $definition)=each($configcache->custom)) {
+			if (($definition["type"]==$this->type) ||
+				($definition["inherit"] && ($this->implements($definition["type"])))) {
+				$customdata=true;
+				break;
+			}
+		}
+	}
+
+	if ($customdata) {
+?><tr>
+	<td colspan="2" bgcolor="#404074">
+		<font face="helvetica, sans-serif" color="white">
+		<?php 
+			echo $ARnls["customdata"];
+		?></font>
+	</td>
+</tr><tr>
+	<td colspan="2">
+		<?php
+				$this->call("edit.object.data.custom.phtml", Array("arLanguage" => $selectednls));
+		?>
+	</td>
+</tr>
+<?php
+	}
+?><tr bgcolor="#404074">
 	<td>
 		<?php if ($arNewType) { ?>
 			<input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="history.back()">

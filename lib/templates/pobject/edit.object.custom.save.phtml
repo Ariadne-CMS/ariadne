@@ -5,11 +5,15 @@
 
 	$this->call("system.save.custom.phtml", $arCallArgs);
 	if (!$this->error) {
+		if ($arReturnPage) {
+			ldHeader("Location: ".$this->store->root.$arReturnPage);
+		} else {
 		?>
 			<script>
 				window.close();
 			</script>
 		<?php
+		}
 	} else {
 		echo "<font color='red'>$this->error</font>";
 	}

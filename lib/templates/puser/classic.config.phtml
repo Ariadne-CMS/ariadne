@@ -20,7 +20,7 @@
 <title><?php printf($ARnls["configure"],$nlsdata->name); ?></title>
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
 </head>
-<body bgcolor="white">
+<body bgcolor="white" onLoad="custom_init()">
 <table border="0" width="100%" cellspacing="4" vspace="10" hspace="10">
 <tr>
 	<td bgcolor="#404074" colspan="2">
@@ -131,6 +131,19 @@
 	</td>
 	<td valign="top">
 		<?php $this->call("classic.config.cache.form.phtml"); ?>
+	</td>
+</tr><tr>
+	<td bgcolor="#404074">
+		&nbsp;<font face="helvetica,sans-serif" color="white"><b><?php echo $ARnls["customdata"]; ?></b></font>
+	</td>
+</tr><tr>
+	<td valign="top" bgcolor="#EEEEEE">
+		<?php 
+			$this->call("edit.object.custom.form.phtml", 
+							Array(
+							"arReturnPage" => $this->path."classic.config.phtml"
+							)); 
+		?>
 	</td>
 </tr>
 </table>
