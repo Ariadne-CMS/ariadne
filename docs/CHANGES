@@ -2,6 +2,7 @@ Ariadne 2.1
 Changes in ariadne since version 2.0
 
 New features:
+	- Ariadne's internal characterencoding is now set to UTF-8.
 	- Added a new 'WinXP' interface, by Chris van de Steeg
 	- Added a new, rewritten PINP compiler, which should be much more secure
 	- Added profiles for users (pprofile)
@@ -13,6 +14,11 @@ New features:
 	    saved and restored after a succesful re-authentication.
 	- Added zlib output compression support to the www loader
 	- Added support for PEAR's TAR to the axstore
+	- Added support for integrating a virusscanner into Ariadne by Florian Overkamp.
+	- Added experimental SOAP support
+	- Added character conversion functionality to the import and export
+	  utilities.
+	- Added line numbers in the template editor.
 
 Bugs fixed:
 	- Many bugfixes in the MSSQL store by Pascal Hofstee
@@ -23,6 +29,11 @@ Bugs fixed:
 	- Changed AddSlashes to AddCSlashes so we do not depend on PHP's
 	  default escaping mechanism (it clashed with the MSSQL settings)
 	- It's now possible to run PHP with 'register_globals' set to off.
+	- Logged in users can know change their passwords without being forced
+	  to relogon.
+	- Fixed copying and renaming of user objects.
+	- Fixed numerous special character bugs.
+	- Fixed importing templates: template are now compiled instead of copied.
 	- Fixed a security bug.
 	- and numerous other bugs.
 
