@@ -175,6 +175,7 @@
 	$ARnls["groups"]						=	"Grupe";
 	$ARnls["height"]						=	"Visina";
 	$ARnls["help"]							=	"Pomoć";
+	$ARnls["highlight"]						=	"Highlight";
 	$ARnls["home"]							=	"Početna strana";
 	$ARnls["hours"]							=	"Sati";
 	$ARnls["id"]							=	"ID";
@@ -206,6 +207,7 @@
 	$ARnls["middle"]						=	"Sredina";
 	$ARnls["minutes"]						=	"Minuta";
 	$ARnls["mobile"]						=	"Mobilni telefon";
+	$ARnls["mode"]							=	"Mode";
 	$ARnls["modified"]						=	"Izmijenjen";
 	$ARnls["mon"]							=	"Pon";
 	$ARnls["month"]							=	"Mjesec";

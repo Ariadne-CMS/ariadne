@@ -183,6 +183,7 @@
 	$ARnls["groups"]						=	"Grupper";
 	$ARnls["height"]						=	"H&ouml;jd";
 	$ARnls["help"]							=	"Hj&auml;lp";
+	$ARnls["highlight"]						=	"Highlight";
 	$ARnls["home"]							=	"Hem";
 	$ARnls["hours"]							=	"Timmar";
 	$ARnls["id"]							=	"ID";
@@ -214,6 +215,7 @@
 	$ARnls["middle"]						=	"Mitten";
 	$ARnls["minutes"]						=	"Minuter";
 	$ARnls["mobile"]						=	"Mobil";
+	$ARnls["mode"]							=	"Mode";
 	$ARnls["modified"]						=	"Modifierad";
 	$ARnls["mon"]							=	"M&aring;n";
 	$ARnls["month"]							=	"M&aring;nad";
