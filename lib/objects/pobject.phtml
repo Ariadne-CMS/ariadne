@@ -438,6 +438,7 @@ class pobject {
 				$this->call("system.get.config.phtml");
 			}
 			$config=$ARConfig->cache[$this->path];
+			$ARConfig->nls=$config->nls;
 			// if a default language is entered in a parent and no language is
 			// explicitly selected in the url, use that default. 
 			// The root starts with the system default (ariadne.phtml config file)
