@@ -69,6 +69,7 @@
 			$DB["stream"] = $stream;
 			debug("Debugging ON ".$debugison,$level,$stream);
 		}
+		return true;
 	}
 
 	function debugoff() {
@@ -94,6 +95,7 @@
 			}
 			$DB["level"]=$DB["off"];
 		}
+		return true;
 	}
 
 
