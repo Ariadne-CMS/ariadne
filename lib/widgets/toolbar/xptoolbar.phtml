@@ -251,7 +251,13 @@ div.toolbar{
 			<td><img id="helpLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
 			<td>
 					<a 
-						id="help" href="javascript:arshow('help','<?php echo $this->make_url('/system/ariadne/help/reference/'); ?>')" 
+						id="help" href="javascript:arshow('help','
+							<?php 
+								$oldnls = $this->nls;
+								$this->setnls('en');
+								echo $this->make_url('/system/ariadne/help/reference/');
+								$this->setnls($oldnls);
+							?>')" 
 						onMouseOver="makeHot(this);" 
 						onMouseOut="makeNot(this);"
 						title="<?php echo $ARnls["xp_help"]; ?>"
@@ -264,7 +270,13 @@ div.toolbar{
 			<td><img id="tutorLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
 			<td>
 					<a 
-						id="tutor" href="javascript:arshow('help','<?php echo $this->make_url('/system/ariadne/help/tutorials/'); ?>')" 
+						id="tutor" href="javascript:arshow('help','
+							<?php 
+								$oldnls = $this->nls;
+								$this->setnls('en');
+								echo $this->make_url('/system/ariadne/help/tutorials/');
+								$this->setnls($oldnls);
+							?>')" 
 						onMouseOver="makeHot(this);" 
 						onMouseOut="makeNot(this);"
 						title="<?php echo $ARnls["xp_tutorials"]; ?>"
