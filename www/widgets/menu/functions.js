@@ -6,7 +6,7 @@
 	windowprops['object_new']=windowprops['common']+',height=360,width=450';
 	windowprops['edit_find']=windowprops['common']+',height=400,width=600';
 	windowprops['edit_preferences']=windowprops['common']+',height=400,width=500';
-	windowprops['edit_object_data']=windowprops['common']+',height=300,width=450';
+	windowprops['edit_object_data']=windowprops['common']+',height=400,width=550';
 	windowprops['edit_object_cache']=windowprops['common']+',height=250,width=320';
 	windowprops['edit_object_layout']=windowprops['common']+',height=400,width=700';
 	windowprops['edit_object_custom']=windowprops['common']+',height=260,width=400';
