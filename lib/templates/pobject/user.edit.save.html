@@ -41,7 +41,7 @@
 					addFormElement('changes['+fields[i].path+']'+fields[i].name, top.window.opener.getValue(fields[i].fieldId));
 				}
 			}
-			top.window.opener.arChangeRegistry=new Array();
+			top.window.opener.clearDirty();
 		} else {
 			if (!top.window.opener.isDirty()) {
 				alert('No changes found, page is not saved.');
