@@ -187,6 +187,23 @@ class pinp_DB {
 		global $AR;
 		return $AR->DB_list[$this->key]->disconnect();
 	}
+
+	function _errorMessage($dbcode) {
+		return DB::errorMessage($dbcode);
+	}
+
+	function _isError($value) {
+		return DB::isError($value);
+	}
+
+	function _isWarning($value) {
+		return DB::isWarning($value);
+	}
+
+	function _isManip($query) {
+		return DB::isManip($query);
+	}
+
 }
 
 class pinp_DB_result {
