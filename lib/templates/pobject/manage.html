@@ -163,7 +163,8 @@ A.unselected {
 	</script>
 	</div>
 	<script>
-		if (container=document.getElementById('container')) {
+		if (!window.container) {
+			container=document.getElementById('container');
 			topdiv=document.getElementById('topdiv');
 			width=topdiv.offsetWidth-10;
 			height=container.offsetHeight-30;
