@@ -2,7 +2,6 @@
 	if ( ( $this->arIsNewObject && $this->CheckLogin("add") ) ||
 			 ( !$this->arIsNewObject && $this->CheckLogin("edit") ) ) {
 
-		$arCallArgs[$nls]["name"]=$this->getdata("file");
 
 		$tempfile = $this->getdata("file_temp", "none");
 		$tempfile = $this->store->files."temp/$tempfile";
@@ -15,6 +14,50 @@
 				$page .= fgets($fp, 4096);
 			}
 			fclose($fp);
+			if (eregi('<title>(.*)</title>', $page, $regs)) {
+				$arCallArgs[$nls]["name"]=$regs[1];
+			} else {
+				$arCallArgs[$nls]["name"]=$this->getdata("file");
+			}
+
+
+			/* rewrite relative img src's to abs. Ariadne paths */
+			$scanpage = $page;
+			$reg = '/(<[^<]*img.*src.*=.*["]([^"]*)["][^>]*>)(.*)$/isU';
+			while (preg_match($reg, $scanpage, $matches)) {
+				if ($matches[2]) {
+					$imgtag = $matches[1];
+					$imgpath = $matches[2];
+					if ($imgpath && !eregi('^[[:space:]]*(http://|/)', $imgpath)) {
+						$newimgpath = $this->store->make_path($this->parent, $imgpath);
+						$newimgpath = substr($newimgpath, 0, -1);	
+						$newimgtag = str_replace($imgpath, "{arRoot}$newimgpath", $imgtag);
+						$page = str_replace($imgtag, $newimgtag, $page);
+					}
+				}
+				$scanpage = $matches[3];
+			}
+
+			$arCheckCharSet=$nls;
+			if (!$AR->nls->charsets[$arCheckCharSet]) {
+				$arCheckCharSet="default";
+			}
+			require_once($this->store->code."modules/mod_unicode.php");
+			if ($AR->nls->charsets[$arCheckCharSet] == "ISO-8859-1") {
+				$page=unicode::utf8toiso8859($page);
+				// now change special characters to their html entity
+				// $page=htmlentities($page);
+				// now change '<', '>', '"', '~' and '&' back.
+				$page=str_replace("&lt;","<",$page);
+				$page=str_replace("&gt;",">",$page);
+				$page=str_replace("&quot;","\"",$page);
+				$page=str_replace("&tilde;","~",$page);
+				// do this last, think about it :)
+				$page=str_replace("&amp;","&",$page);
+			} else {
+				$page=unicode::utf8convert($page);
+			}
+
 			$arCallArgs[$nls]["page"] = $page;
 			$this->call("system.save.data.phtml", $arCallArgs);
 		}
