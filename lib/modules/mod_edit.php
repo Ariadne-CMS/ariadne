@@ -77,7 +77,14 @@
 				echo "<a href='".$this->make_url($path)."' $extra>";				
 			}
 		}
-		
+
+		function _showEditableLink($path, $extra='') {
+			if (pinp_edit::_getEditMode()) {
+				echo "<a onDblClick=\"top.location='".$this->make_url($path).pinp_edit::_getEditTemplate()."'\" $extra>";
+			} else {
+				echo "<a href='".$this->make_url($path)."' $extra>";				
+			}
+		}
 	}
 
 ?>
