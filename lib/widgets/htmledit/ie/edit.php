@@ -1,6 +1,8 @@
 <!--TOOLBAR_START--><!--TOOLBAR_EXEMPT--><!--TOOLBAR_END-->
 <!-- Copyright 2000 Microsoft Corporation. All rights reserved. -->
 <!-- Author: Steve Isaac, Microsoft Corporation -->
+<!-- Changes by Auke van Slooten, Muze V.O.F. to implement source view and add images from Ariadne. -->
+<!-- Changes by Matt Finn, NetDesign Inc which make it work with non-english internet explorers (ParagraphStyles) -->
 <!--This demo shows how to host the DHTML Editing component on a Web page. -->
 <html>
 <head>
