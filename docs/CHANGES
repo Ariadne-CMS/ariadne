@@ -45,6 +45,8 @@ New Features:
 	- Added export.wddx 
 	- ldRegisterFile() was added to the allowed functions list to enable
 	  multiple file upload from a PINP context.
+	- pldapconnection honours nested groups (i.e. groups which are
+	  members of other groups)
 
 Bugs Fixed:
 	- Fixed a bug in the filestore::read() function. In some cases the store 
