@@ -21,26 +21,22 @@
 		$subpath=substr($this->path, strlen($source));
 		if ($this->path==$source) { 
 			// first object to be copied
-			if (substr($target, -1)!="/") { 
+			if (!$this->exists($target)) { 
 				// if $target doesn't end on '/', copy this to $target
-				$newpath=$target."/";
+				$newpath=$target;
 			} else {
 				// if $target does end on '/', copy this under $target (with the same filename)
 				$newpath=$target.substr($this->path,strlen($this->parent));
+
+				// now announce our rewritten target to recurse.phtml
+				?><script>top.newtarget="<?php echo rawurlencode($newpath); ?>";</script><?php
 			}
 			$exacttarget=$newpath;
-		} else if (substr($target, -1)!="/") {
-			// not the first object, it's a subobject
-			// and $target doesn't end on '/', so the new path is target+subpath
-			$newpath=$target."/".$subpath;
-			$exacttarget=$target."/";
 		} else {
 			// not the first object
-			// target ends on '/'
-			// so the new path is target + source filename + subpath
-			$sourcefilename=substr($source,strrpos('/',substr($source,0,-1))+1);
-			$newpath=$target.$sourcefilename.$subpath;
-			$exacttarget=$target."/".substr($this->path, strlen($source), strpos("/",$subpath));
+			// so the new path is target + subpath
+			$newpath=$target.$subpath;
+			$exacttarget=$newpath;
 		}
 ?>
 <html>
