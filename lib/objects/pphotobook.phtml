@@ -1,0 +1,17 @@
+<?php
+
+debug("pphotobook: Load","object");
+include_once($this->code."objects/pdir.phtml");
+
+class pphotobook extends pdir { // definitie class
+
+	function get_photos($max=0,$start=0) {
+		$crit["object"]["implements"]["="]="'pphoto'";
+		$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
+		if (!$start) $start=0;
+		$result=$this->store->find($this->path,$crit,$max,$start);
+		return $this->store->call("Get.phtml","",$result);
+	}
+
+} // end class pphotobook
+?>
