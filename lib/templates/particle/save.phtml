@@ -39,7 +39,6 @@
    
         $newnlsdata->summary=$nlsformdata["summary"];
         $properties["text"][]["value"]="'".AddSlashes(substr($nlsformdata["summary"],0,255))."'";
-        $newnlsdata->page=urldecode($nlsformdata["page"]);
         $newdata->$key=$newnlsdata;
         $newdata->nls->list[$key]=$value;
       }
