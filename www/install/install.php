@@ -213,6 +213,12 @@
 		$store->add_type("pldapconnection", "pconnector");
 		$store->add_type("pldapconnection", "pldapconnection");
 
+		// install pbookmark type
+		
+		$store->add_type("pbookmark", "pobject");
+		$store->add_type("pbookmark", "pbookmark");
+		
+
 		echo "== importing ariadne.ax file\n\n";
 
 		$ARCurrent->options["verbose"]=true;
