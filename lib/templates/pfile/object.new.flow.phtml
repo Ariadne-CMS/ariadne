@@ -69,6 +69,7 @@
 	if (!$arNewFilename) {
 		if (($file=$this->getdata("file","none")) && ereg("[^\/\\]*\$",$file, $matches)) {
 			$arNewFilename=eregi_replace("[^a-z0-9\./_-]","_",$matches[0]);
+			$HTTP_POST_VARS['arNewFilename'] = $arNewFilename;
 		} else {
 			$arNewFilename="{5:id}";
 		}
