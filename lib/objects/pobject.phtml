@@ -265,11 +265,11 @@ class pobject extends object { // pobject class definition
 							$this->data->ctime=time();
 							$this->data->mtime=$this->data->ctime;
 							$this->data->muser=$AR->user->data->login;
-							if( !$this->data->owner ) {
-								if( !$this->data->owner_name) { 
-									$this->data->owner_name=$AR->user->data->name;
+							if( !$this->data->config->owner ) {
+								if( !$this->data->config->owner_name) { 
+									$this->data->config->owner_name=$AR->user->data->name;
 								}
-								$this->data->owner=$AR->user->data->login;
+								$this->data->config->owner=$AR->user->data->login;
 							}
 							$custom = $this->getdata("custom", "none");
 							@parse_str($custom);
@@ -290,7 +290,7 @@ class pobject extends object { // pobject class definition
 							$properties["time"][0]["ctime"]=$this->data->ctime;
 							$properties["time"][0]["mtime"]=$this->data->mtime;
 							$properties["time"][0]["muser"]="'".AddSlashes($this->data->muser)."'";
-							$properties["owner"][0]["value"]="'".AddSlashes($this->data->owner)."'";
+							$properties["owner"][0]["value"]="'".AddSlashes($this->data->config->owner)."'";
 							$i=0;
 							if (is_array($this->data->custom)) {
 								while (list($nls, $cdata)=each($this->data->custom)) {

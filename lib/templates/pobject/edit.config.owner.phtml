@@ -41,7 +41,7 @@
 		<?php 
 			echo $ARnls["change_owner"].":&nbsp;";
 			$wgBrowseName="owner";
-			$query = "object.implements='puser' and login.value='".AddSlashes($this->data->owner)."'";
+			$query = "object.implements='puser' and login.value='".AddSlashes($this->data->config->owner)."'";
 			$wgBrowsePath = current($this->find('/system/users/', $query, 'system.get.path.phtml'));
 			if (!$wgBrowsePath) {
 				$wgBrowsePath = '/system/users/';

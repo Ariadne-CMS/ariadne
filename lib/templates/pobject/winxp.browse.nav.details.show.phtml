@@ -7,7 +7,7 @@
 		echo intval($this->size)."&nbsp;B&nbsp;";
 	}
 ?></td>
-<td align="right"><?php echo $this->data->owner; ?>&nbsp;</td>
+<td align="right"><?php echo $this->data->config->owner; ?>&nbsp;</td>
 <td><?php
 	$date=getdate($this->lastchanged);
 	$now=getdate(time());

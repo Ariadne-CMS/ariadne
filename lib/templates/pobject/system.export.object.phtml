@@ -5,9 +5,13 @@
 		/* 
 			versions below and equal to 1.2 do not have their config
 			saved in the data->config object
+
+			versions below and equal to 1.4 do not have their owner
+			saved in the data->config object
 		*/
 		if ($ARCurrent->AXAction == "import" 
-				&& ($ARCurrent->AXHeader["version"] <= 1.2)) {
+				&& ($ARCurrent->AXHeader["version"] <= 1.4)) {
+
 			if (!$data->config) {
 				$data->config = new object;
 			}
@@ -43,6 +47,13 @@
 				$data->config->customconfig = $data->customconfig;
 				unset($data->customconfig);
 			}
+			if ($data->owner) {
+				$data->config->owner = $data->owner;
+				$data->config->owner_name = $data->owner_name;
+				unset($data->owner);
+				unset($data->owner_name);
+			}
+
 		}
 		if ($ARCurrent->options["without_grants"]) {
 			unset($this->data->config->grants);

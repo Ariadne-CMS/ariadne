@@ -5,8 +5,8 @@
 		$this->error = sprintf($ARnls["err:notfindusergroup"], $owner);
 	} else {
 		$this->data = current($this->get($this->path, "system.get.data.phtml"));
-		$this->data->owner = $user->data->login;
-		$this->data->owner_name = $user->data->name;
+		$this->data->config->owner = $user->data->login;
+		$this->data->config->owner_name = $user->data->name;
 		$this->save();
 	}
   }

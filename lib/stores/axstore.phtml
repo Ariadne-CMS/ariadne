@@ -6,7 +6,7 @@ define("AX_DUMMY", 1);
 define("AX_WITHOUT_DATA", 2);
 define("AX_WITHOUT_TEMPLATES", 4);
 define("AX_WITHOUT_FILES", 8);
-define("AX_VERSION", 1.4);
+define("AX_VERSION", 2);
 
 class axstore {
 
@@ -502,7 +502,7 @@ class axstore {
 			}
 			$path=ereg_replace("\{[0-9]:id\}",strval($subid),$path);
 		}
-
+/*
 		if (is_array($properties)) {
 			$edq = AddSlashes('"');
 			$esq = AddSlashes("'");
@@ -516,7 +516,7 @@ class axstore {
 			}
 
 		}
-
+*/
 		if ($id=$this->exists($path)) { //update
 			$this->_load_object_data($this->objects[$id]);
 			$object=&$this->objects[$id];
@@ -582,7 +582,16 @@ class axstore {
 			while (list($property, $property_set)=each($properties)) {
 				unset($object->properties[$property]);
 				if (is_array($property_set)) {
-					$object->properties[$property]=$property_set;
+					foreach ($property_set as $prop_index => $record) {
+						foreach ($record as $field => $value) {
+							if ($value[0] === "'") {
+								$value = substr($value, 1, -1);
+								$value = StripSlashes($value);
+								$value = "'$value'";
+							}
+							$object->properties[$property][$prop_index][$field]=$value;
+						}
+					}
 				}
 			}
 		}
@@ -590,11 +599,42 @@ class axstore {
 
 	function load_properties($object) {
 		if ($object) {
-			$result=$this->objects[$object]->properties;
+			$properties = $this->objects[$object]->properties;
+			foreach ($properties as $name => $values) {
+				if ($value=$this->load_property($name, $values)) {
+					$result[$name]=$value;
+				}
+			}
 		}
 		return $result;
 	}
 
+	function load_property($object, $property, $values="") {
+		debug("load_property($object, $property, [values])","all");
+
+		if ($object) {
+			$currProp=0;
+			foreach ($property as $prop_key => $prop) {
+				reset($prop);
+				while (is_array($prop) && (list($name,$val)=each($prop)) ) {
+					if (($name!="object")&&(!is_int($name))) {
+						if (is_string($val)) {
+							if ($this->header["version"] < 1.5) {
+								$result[$currProp][$name] = $val;
+							} else {
+								$result[$currProp][$name]="'".AddSlashes(substr($val, 1, -1))."'";
+							}
+						} else {
+							$result[$currProp][$name]=$val;
+						}
+					}
+				}
+				$currProp++;
+			}
+		}
+		debug("load_property: end","all");
+		return $result;
+	}
 
 
 	function make_path($curr_dir, $path) {
