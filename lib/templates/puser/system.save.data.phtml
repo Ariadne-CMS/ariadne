@@ -122,6 +122,13 @@
 									"path" => $this->path));
 					}
 				}
+
+				if ($ARCurrent->session->get("ARLogin") == $this->data->login
+					&& $pass1) {
+					$ARCurrent->session->put("ARLogin", "");
+					ldSetCredentials($this->data->login, $pass1);
+				}
+
 			}
 		}
 	}
