@@ -105,7 +105,7 @@ function setSelection(dir) {
 function setFormat(command, value) {
 	var sel=KeepState.GetSelection();
 	var type=sel.type;
-	var target = (type == "None" ? tbContentElement.document : sel)
+	var target = (type == "None" ? tbContentElement.contentWindow.document : sel)
 	target.execCommand(command, false, value);
 	KeepState.RestoreSelection();
 	return true;
@@ -135,21 +135,21 @@ function StateObject() {
 function state_getSelection() {
 	var sel=this.selection;
 	if (!sel) {
-		sel=tbContentElement.document.selection.createRange();
-		sel.type=tbContentElement.document.selection.type;
+		sel=tbContentElement.contentWindow.document.selection.createRange();
+		sel.type=tbContentElement.contentWindow.document.selection.type;
 	}
 	return sel;
 }
 
 function state_saveSelection() {
-	this.selection=tbContentElement.document.selection.createRange();
+	this.selection=tbContentElement.contentWindow.document.selection.createRange();
 	if (!this.selection || (this.selection.parentElement && this.selection.parentElement() && 
-				 !(this.selection.parentElement() == tbContentElement.document.body || tbContentElement.document.body.contains(this.selection.parentElement() ) ) ) ) {
-		this.selection=tbContentElement.document.body.createTextRange();
+				 !(this.selection.parentElement() == tbContentElement.contentWindow.document.body || tbContentElement.contentWindow.document.body.contains(this.selection.parentElement() ) ) ) ) {
+		this.selection=tbContentElement.contentWindow.document.body.createTextRange();
 		this.selection.collapse(false);
 		this.selection.type="None";
 	} else {
-		this.selection.type=tbContentElement.document.selection.type;
+		this.selection.type=tbContentElement.contentWindow.document.selection.type;
 	}
 
 }
@@ -225,19 +225,19 @@ function window_onload() {
 		// init the cssStyle select box
 		init_cssStyle();
 
-		tbContentElement.document.body.onBlur=KeepState.SaveSelection;
-		tbContentElement.document.body.onkeyup=tbContentElement_DisplayChanged;
-		tbContentElement.document.body.onmouseup=tbContentElement_DisplayChanged;
-		tbContentElement.document.body.DocumentComplete=tbContentElement_DocumentComplete;
-		tbContentElement.document.body.onkeypress=tbContentElement_Compose_press;
-		tbContentElement.document.body.onkeydown=tbContentElement_Compose_down;
-		
+		tbContentElement.contentWindow.document.body.onBlur=KeepState.SaveSelection;
+		tbContentElement.contentWindow.document.body.onkeyup=tbContentElement_DisplayChanged;
+		tbContentElement.contentWindow.document.body.onmouseup=tbContentElement_DisplayChanged;
+		tbContentElement.contentWindow.document.body.DocumentComplete=tbContentElement_DocumentComplete;
+		tbContentElement.contentWindow.document.body.onkeypress=tbContentElement_Compose_press;
+		tbContentElement.contentWindow.document.body.onkeydown=tbContentElement_Compose_down;
 
 		if (tbContentElement.onLoadHandler) {
 			tbContentElement.onLoadHandler();
 		}
 
 		document.getElementById("StandardToolbar").style.visibility = "visible";
+		document.getElementById("StyleToolbar").style.visibility = "visible";
 		document.getElementById("FormatToolbar").style.visibility = "visible";
 	} else {
 		// non microsoft browser, so try to at least show the content
@@ -251,19 +251,19 @@ function window_onload() {
 }
 
 function tbContentElement_Compose_press() {
-	myevent=tbContentElement.event;
+	myevent=tbContentElement.contentWindow.event;
 	if (!wgCompose_keypress(myevent)) {
-		tbContentElement.event.cancelBubble=true; 
-		tbContentElement.event.returnValue=false; 
+		tbContentElement.contentWindow.event.cancelBubble=true; 
+		tbContentElement.contentWindow.event.returnValue=false; 
 	}
 	return true;
 }
 
 function tbContentElement_Compose_down() {
-	myevent=tbContentElement.event;
+	myevent=tbContentElement.contentWindow.event;
 	if (!wgCompose_keydown(myevent)) {
-		tbContentElement.event.cancelBubble=true; 
-		tbContentElement.event.returnValue=false; 
+		tbContentElement.contentWindow.event.cancelBubble=true; 
+		tbContentElement.contentWindow.event.returnValue=false; 
 	}
 	return true;
 }
@@ -287,7 +287,7 @@ function tbContentElement_ShowContextMenu() {
 	for (i=0; i<ContextMenu.length; i++) {
 		menuStrings[i] = ContextMenu[i].string;
 		if (menuStrings[i] != MENU_SEPARATOR) {
-			state = tbContentElement.document.queryCommandState(ContextMenu[i].cmdId);
+			state = tbContentElement.contentWindow.document.queryCommandState(ContextMenu[i].cmdId);
 		} else {
 			state = DECMDF_ENABLED;
 		}
@@ -320,9 +320,9 @@ function tbContentElement_DisplayChanged() {
 	for ( var i=0; i<QueryStatusToolbarButtons.length; i++) {
 		if (buttons_disabled[CommandCrossReference[QueryStatusToolbarButtons[i].command]]) {
 			TBSetState(QueryStatusToolbarButtons[i].element, "gray"); 
-		} else if(!tbContentElement.document.queryCommandState(QueryStatusToolbarButtons[i].command)) {
-			if (!tbContentElement.document.queryCommandSupported(QueryStatusToolbarButtons[i].command) ||
-					!tbContentElement.document.queryCommandEnabled(QueryStatusToolbarButtons[i].command)) {
+		} else if(!tbContentElement.contentWindow.document.queryCommandState(QueryStatusToolbarButtons[i].command)) {
+			if (!tbContentElement.contentWindow.document.queryCommandSupported(QueryStatusToolbarButtons[i].command) ||
+					!tbContentElement.contentWindow.document.queryCommandEnabled(QueryStatusToolbarButtons[i].command)) {
 			TBSetState(QueryStatusToolbarButtons[i].element, "gray"); 
 			} else {
 				TBSetState(QueryStatusToolbarButtons[i].element, "unchecked"); 
@@ -423,7 +423,7 @@ function DECMD_IMAGE_onclick() {
 	window.el=false;
 	window.elIMG=false;
 	window.rg=false;
-	el=tbContentElement.document.selection;
+	el=tbContentElement.contentWindow.document.selection;
 	window.el=el;
 	if (el.type=="Control") {
 		elIMG=el.createRange().item(0);
@@ -535,7 +535,7 @@ function cssStyle_onChange(command)
 		nicely done FCK editor: http://www.fredck.com/FCKeditor/
 	*/	
 
-	var oSelection = tbContentElement.document.selection ;
+	var oSelection = tbContentElement.contentWindow.document.selection ;
 	var oTextRange = oSelection.createRange() ;
 
 	var sTag = new String(command.value);
@@ -636,7 +636,7 @@ function DECMD_HYPERLINK_onclick() {
 	var arr,args,oSel, oParent, sType;
 	var oATag=false;
 
-	oSel = tbContentElement.document.selection;
+	oSel = tbContentElement.contentWindow.document.selection;
 	oRange = oSel.createRange();
 	sType=oSel.type;
 		if (sType=="Control") {
@@ -707,7 +707,7 @@ function DECMD_HYPERLINK_onclick() {
 }
 
 function HYPERLINK_getAnchors() {
-	var aATags = tbContentElement.document.getElementsByTagName('A');
+	var aATags = tbContentElement.contentWindow.document.getElementsByTagName('A');
 	var result = new Array();
 	var i=0;
 	var ii=0;
@@ -762,15 +762,25 @@ function tbContentElement_DocumentComplete() {
 
 
 function loadStyleSheet() {
+	tbContentElement=document.getElementById('tbContentElement');
 	if (navigator.appName.indexOf("Microsoft")!=-1) {
-		var e = tbContentElement.document.createElement( '<link href="' + tbContentEditOptions['css']['stylesheet'] + '" rel="stylesheet" type="text/css">' );
-		tbContentElement.document.body.appendChild( e );
+		var e = tbContentElement.contentWindow.document.createElement( '<link href="' + tbContentEditOptions['css']['stylesheet'] + '" rel="stylesheet" type="text/css">' );
+		tbContentElement.contentWindow.document.body.appendChild( e );
+/*
+		KeepState=new StateObject();
+		tbContentElement.contentWindow.document.body.onBlur=KeepState.SaveSelection;
+		tbContentElement.contentWindow.document.body.onkeyup=tbContentElement_DisplayChanged;
+		tbContentElement.contentWindow.document.body.onmouseup=tbContentElement_DisplayChanged;
+		tbContentElement.contentWindow.document.body.DocumentComplete=tbContentElement_DocumentComplete;
+		tbContentElement.contentWindow.document.body.onkeypress=tbContentElement_Compose_press;
+		tbContentElement.contentWindow.document.body.onkeydown=tbContentElement_Compose_down;
+*/
 	}
 }
 
 function getContents(data_id) {
 	var data="";
-	if (data=tbContentElement.document.getElementById(data_id)) {
+	if (data=tbContentElement.contentWindow.document.getElementById(data_id)) {
 		// it seems that the editor logic in MSIE insists on adding
 		// full paths to hyperlinks, even if you just enter #something.
 		// so removing it again here.
@@ -785,7 +795,7 @@ function getContents(data_id) {
 
 function getTextContents(data_id) {
 	var data="";
-	if (data=tbContentElement.document.getElementById(data_id)) {
+	if (data=tbContentElement.contentWindow.document.getElementById(data_id)) {
 		return data.innerText;
 	} else {
 		return '';
@@ -795,7 +805,7 @@ function getTextContents(data_id) {
 function getValue(data_name) {
 	var data="";
 	var value='';
-	if (data=tbContentElement.document.getElementById(data_name)) {
+	if (data=tbContentElement.contentWindow.document.getElementById(data_name)) {
 		switch (data.type) {
 			case 'checkbox' :
 				if (data.checked) {
@@ -803,7 +813,7 @@ function getValue(data_name) {
 				}
 				break;
 			case 'radio' :
-				var radio=tbContentElement.document.all[data_name];
+				var radio=tbContentElement.contentWindow.document.all[data_name];
 				if (radio) { 
 					for (var i=0; i<radio.length; i++) {
 						if (radio[i].checked) {
@@ -894,7 +904,7 @@ return tbContentElement_ContextMenuAction(itemIndex)
 
 </div>
 
-<div class="tbToolbar" unselectable='on' ID="FormatToolbar" style="visibility: hidden">
+<div class="tbToolbar" unselectable='on' ID="StyleToolbar" style="visibility: hidden">
 	<select ID="ParagraphStyle" class="tbGeneral" style="width:90" TITLE="Paragraph Format" LANGUAGE="javascript" onchange="return ParagraphStyle_onchange()">
 		<option value="">Block Style</option>
 		<option value="P">Normal (P)</option>
@@ -911,7 +921,8 @@ return tbContentElement_ContextMenuAction(itemIndex)
 	<select ID="cssStyle" class="tbGeneral" style="width:90" TITLE="Style" LANGUAGE="javascript" onchange="return cssStyle_onChange(this)">
 	</select>
 
-	<div class="tbSeparator" unselectable='on'></div>
+</div>
+<div class="tbToolbar" unselectable='on' ID="FormatToolbar" style="visibility: hidden">
 
 	<div class="tbButton" unselectable='on' ID="DECMD_BOLD" TITLE="Bold" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_BOLD_onclick();">
 		<img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/bold.gif" WIDTH="23" HEIGHT="22">
