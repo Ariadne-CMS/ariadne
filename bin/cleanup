@@ -1,13 +1,28 @@
 #!/usr/local/bin/php -q
 <?php
   require("../lib/configs/ariadne.phtml");
+  require("../lib/configs/store.phtml");
   require("../lib/configs/sessions.phtml");
   require("../lib/stores/mysqlstore.phtml");
   
+  echo "Clearing old sessions...";
   $sessionstore=new mysqlstore(".",$session_config);
   $criteria["object"]["lastchanged"]["<"]=strftime("%Y%m%d%H%M%S",time()-$session_config["timeout"]);
   $criteria["object"]["implements"]["="]="'psession'";
   $sessionstore->call("expired.phtml","",$sessionstore->find("/",$criteria));
   echo $sessionstore->count." expired sessions removed.\n";
   $sessionstore->close();
+  echo "done.\n";
+
+  // clean up store temp directories
+  if ($AR->OS=="UNIX") {
+    echo "Clearing temporary files...";
+    $tempdir=$store_config["files"]."temp/";
+    if (file_exists($tempdir)) {
+      system("rm `find $tempdir -ctime 1 -mindepth 1`"); 
+    }
+    echo "done.\n";
+  } else {
+    // FIXME: so... how do you do this under windows?
+  }
 ?>
