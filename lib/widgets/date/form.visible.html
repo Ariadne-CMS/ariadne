@@ -21,13 +21,13 @@
 ?>
 <input type="text" name="<?php echo $wgDateName; ?>formatted" value="<?php 
   echo strftime($wgDateFormat, $wgDate); 
-?>" size="<?php echo $wgDateSize; ?>"<?php
+?>" size="<?php echo $wgDateSize; ?>" class="editable"<?php
   if ($wgDateTitle) {
     echo " onFocus=\"this.blur();\">\n<input type=\"button\" name=\"wgDateButton\" value=\"$wgDateTitle\"".
-         " onClick=\"document.dform=this.form; SelectDate(this.form.".
-         $wgDateName.", $wgDate, '$wgDateName', '$wgDateTitle', '$wgDateFormat');\">";
+         " onClick=\"document.dform=this.form; SelectDate(this.form['".
+         $wgDateName."'], $wgDate, '$wgDateName', '$wgDateTitle', '$wgDateFormat');\">";
   } else {
-    echo " onFocus=\"this.blur(); document.dform=this.form; SelectDate(this.form.".
-      $wgDateName.", $wgDate, '$wgDateName', 'Select Date', '$wgDateFormat');\">";
+    echo " onFocus=\"this.blur(); document.dform=this.form; SelectDate(this.form['".
+      $wgDateName."'], $wgDate, '$wgDateName', 'Select Date', '$wgDateFormat');\">";
   }
 ?>

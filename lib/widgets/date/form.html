@@ -25,10 +25,10 @@
 ?>" size="<?php echo $wgDateSize; ?>"<?php
   if ($wgDateTitle) {
     echo " onFocus=\"this.blur();\">\n<input type=\"button\" name=\"wgDateButton\" value=\"$wgDateTitle\"".
-         " onClick=\"document.dform=this.form; SelectDate(this.form.".
-         $wgDateName.", $wgDate, '$wgDateName', '$wgDateTitle', '$wgDateFormat');\">";
+         " onClick=\"document.dform=this.form; SelectDate(this.form['".
+         $wgDateName."'], $wgDate, '$wgDateName', '$wgDateTitle', '$wgDateFormat');\">";
   } else {
-    echo " onClick=\"this.blur(); document.dform=this.form; SelectDate(this.form.".
-      $wgDateName.", $wgDate, '$wgDateName', 'Select Date', '$wgDateFormat');\">";
+    echo " onClick=\"this.blur(); document.dform=this.form; SelectDate(this.form['".
+      $wgDateName."'], $wgDate, '$wgDateName', 'Select Date', '$wgDateFormat');\">";
   }
 ?>
