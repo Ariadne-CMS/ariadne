@@ -1,4 +1,4 @@
-#!/usr/bin/php4 -q
+#!/usr/bin/php -q
 <?php
 	$ariadne="../lib";
 	require($ariadne."/configs/ariadne.phtml");
