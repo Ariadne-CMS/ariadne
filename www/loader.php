@@ -261,6 +261,7 @@
 			}
 			
 			// finally call the requested object
+			$unset($store->total);
 			$store->call($function, $args, $store->get($path));
 			if (!$store->total) {
 				ldObjectNotFound($path, $function);
