@@ -1511,6 +1511,7 @@ class pobject extends object { // pobject class definition
 	global $ARCurrent;
 
 		$ARCurrent->session->kill();
+		unset($ARCurrent->session);
 	}
 
 	function _sessionid() {
@@ -1601,6 +1602,14 @@ class pobject extends object { // pobject class definition
 
 	function _convertToUTF8($data, $charset = "CP1252") {
 		return $this->convertToUTF8($data,$charset);
+	}
+
+	function _getuser() {
+		global $AR;
+		$user=$AR->user;
+		unset($user->grants);
+		unset($user->groups);
+		return $user;
 	}
 
 } // end of pobject class definition
