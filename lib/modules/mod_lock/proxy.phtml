@@ -54,8 +54,8 @@ class proxylock extends stublock {
 		This function unlocks an object/path
 	**********************************************************************/
 		global $AR;
-		debug("proxylock: unlock($identity,$path,$type,$time)","store");
-		$result= &$AR->stores[$this->key]->mod_lock->lock($identity, $path);
+		debug("proxylock: unlock($identity,$path)","store");
+		$result= &$AR->stores[$this->key]->mod_lock->unlock($identity, $path);
 		$this->error = $AR->stores[$this->key]->mod_lock->error;
 		debug("proxylock: unlock end","all");
 		return $result;
