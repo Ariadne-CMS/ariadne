@@ -151,7 +151,7 @@ $ARnls["prev"]=			"Vorige";
 $ARnls["priority"]=		"Prioriteit";
 $ARnls["publisheddata"]=	"[Gepubliceerd door <b>%s</b> op <b>%s</b>]";
 $ARnls["q:applychanges"]=	"Wilt U deze wijzigingen toepassen op <em>alle</em> instanties van dit herhalende item of alleen op de <em>huidige</em> instantie?";
-$ARnls["q:cannotlockretry"]="'%s' is afgeschermd door een andere gebruiker, opnieuw proberen?";
+$ARnls["q:cannotlockretry"]="'%s' is afgeschermd door %s tot %s, opnieuw proberen?";
 $ARnls["q:cookiesenabled"]=	"Heeft U 'cookies' ondersteuning in u browser?";
 $ARnls["q:deleteall"]=		"Wilt U <em>alle</em> instanties van dit herhalende item verwijderen of alleen de <em>huidige</em> instantie?";
 $ARnls["q:fileoverwrite"]=	"'%s' bestaat al, wilt U dit overschrijven?";
@@ -255,4 +255,8 @@ $ARnls["article"]=		"Artikel";
 $ARnls["link"]=			"Link";
 $ARnls["target"]=		"Doel";
 $ARnls["copy"]=			"Kopieer";
+$ARnls["locks"]=		"Afschermingen";
+$ARnls["expires"]=		"Verloopt";
+$ARnls["openlocks"]=	"Afschermingen voor %s:";
+$ARnls["unlock"]=		"Hef op";
 ?>
