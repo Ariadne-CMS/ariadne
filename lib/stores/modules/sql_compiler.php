@@ -152,6 +152,7 @@
 	}
 
 	function parse_orderby(&$query) {
+		$field=$this->parse_term($query, "ident");
 		$reg_sort_type='^[[:space:]]*(ASC|DESC)';
 		if (eregi($reg_sort_type, $query, $regs)) {
 			$sort_type=$regs[1];
@@ -159,7 +160,6 @@
 		} else {
 			$sort_type="ASC";	// default
 		}
-		$field=$this->parse_term($query, "ident");
 		while ($field) {
 			$node["id"]="orderbyfield";
 			if ($sort_type) {
@@ -171,6 +171,7 @@
 			}
 			if (eregi('^[[:space:]]*[,]', $query, $regs)) {
 				$query=substr($query, strlen($regs[0]));
+				$field=$this->parse_term($query, 1);
 				$reg_sort_type='[[:space:]](ASC|DESC)';
 				if (eregi($reg_sort_type, $query, $regs)) {
 					$sort_type=$regs[1];
@@ -178,7 +179,6 @@
 				} else {
 					$sort_type="ASC";	// default
 				}
-				$field=$this->parse_term($query, 1);
 			} else {
 				unset($field);
 			}
