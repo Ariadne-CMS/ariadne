@@ -25,16 +25,13 @@
 			reset($AR->nls->list);
 			while (list($key, $value)=each($AR->nls->list)) {
 				
-				if ($this->getdata("name",$key)) { 
+				if ($name=$this->getdata("name",$key)) { 
 					if (!$this->data->$key) {
 						$newnlsdata=new object;
 					} else {
 						$newnlsdata=$this->data->$key;
 					}
-					if (!$this->getdata("name",$key)) {
-						$this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
-					}
-					$newnlsdata->name=$this->getdata("name",$key);
+					$newnlsdata->name=$name;
 					$properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
 					$properties["text"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
 					$this->data->$key=$newnlsdata;
