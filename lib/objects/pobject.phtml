@@ -460,7 +460,7 @@ class pobject extends object {
 		$continue=true;
 		if (!$AR->user) {
 			if ($ARCurrent->session && $ARCurrent->session->get("ARSessionTimedout", 1)) {
-				debug("pobject: CheckLogin: session expired","object");
+				debug("pobject: CheckLogin: session disabled","object");
 
 				$arLoginMessage=$ARnls["accessdenied"];
 				ldAccessDenied($this->path, $arLoginMessage);
@@ -672,15 +672,11 @@ class pobject extends object {
 	// defined for $path/$function. Else it takes care of output to the
 	// browser.
 	// All these templates must exist under a fixed directory, $AR->dir->templates
-	global $nocache, $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls, $HTTP_POST_VARS, $HTTP_GET_VARS;
+	global $nocache, $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls, $HTTP_POST_VARS, $HTTP_GET_VARS, $ARConfigChecked;
 	
 		debug("pobject::CheckConfig($arCallFunction, $arCallArgs)","object");
 		$MAX_LOOP_COUNT=10;
 
-		if (!isset($ARBeenHere)) {
-			/* this is the first time 'CheckConfig' has been called */
-			$firstCheckConfigCall = true;
-		}
 
 		if ($ARBeenHere[$this->path][$arCallFunction]<$MAX_LOOP_COUNT) { // protect against infinite loops
 			$ARBeenHere[$this->path][$arCallFunction]+=1;
@@ -729,6 +725,7 @@ class pobject extends object {
 				$this->customnlsdata=$this->data->custom[$nls];
 			}
 			if (	(	$config->cache && ( $config->cache>0 )		) &&
+					( 	!$ARConfigChecked							) && 
 					( 	!$nocache 									) && 
 					(	$AR->OS=="UNIX" || 
 						( 	(count($HTTP_POST_VARS)==0) && 
@@ -745,9 +742,6 @@ class pobject extends object {
 					ob_start();
 				}
 			} else {
-				if ($firstCheckConfigCall) {
-					$nocache = true;
-				}
 				debug("CheckConfig: caching disabled","all");
 				debug("             config->cache: ".$config->cache."; nocache: ".$nocache."; user: ".$AR->user->data->login."; os: ".$AR->OS,"all");
 			}
@@ -836,6 +830,15 @@ class pobject extends object {
 			$this->store->close();
 			exit();
 		}
+
+		/*
+			Set ARConfigChecked to true to indicate that we have been here
+			earlier.
+		*/
+		if (!isset($ARConfigChecked)) {
+			$ARConfigChecked = true;
+		}
+
 		debug("pobject: CheckConfig: end","all");
 		return true;
 	}
