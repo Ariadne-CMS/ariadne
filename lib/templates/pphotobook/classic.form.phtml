@@ -50,7 +50,7 @@
     <?php
       $wgNLSpretext="<font face=\"helvetica, sans-serif\" size=\"+1\" color=\"white\"><b>".
         $ARnls["editphotobook"].":</b></font><br>";
-      include($this->store->code."widgets/nls/form.phtml");
+      include($this->store->get_config("code")."widgets/nls/form.phtml");
     ?>
   </td>
 </tr>
@@ -70,8 +70,8 @@
 		$wgBrowsePath=$this->parent;
 	}
 	$wgBrowseName="picture";
-	include($this->store->code."widgets/browse/js.html");
-	include($this->store->code."widgets/browse/form.html");
+	include($this->store->get_config("code")."widgets/browse/js.html");
+	include($this->store->get_config("code")."widgets/browse/form.html");
     ?>
   </td>
 </tr><tr>
@@ -93,8 +93,8 @@
       $wgHTMLEditName="page";
       $wgHTMLEditLanguage=$selectednls;
       $wgHTMLEditContent=$this->ParsePage($this->getdata("page",$selectednls), true, true);
-      include($this->store->code."widgets/htmledit/js.html"); 
-      include($this->store->code."widgets/htmledit/form.html"); 
+      include($this->store->get_config("code")."widgets/htmledit/js.html"); 
+      include($this->store->get_config("code")."widgets/htmledit/form.html"); 
     } else {
       echo "available when object is created";
     }
@@ -168,8 +168,8 @@
     $wgRecurseConfirm=$ARnls["q:removephotobook"];
     $wgRecurseAction="delete";
     $wgRecurseTitle=$ARnls["delete"];
-    include($this->store->code."widgets/recurse/form.js");
-    include($this->store->code."widgets/recurse/form.html");
+    include($this->store->get_config("code")."widgets/recurse/form.js");
+    include($this->store->get_config("code")."widgets/recurse/form.html");
 ?>
     <?php } ?>
   </td>

@@ -20,7 +20,7 @@
 		}
 		$custom="edit.object.data.custom.phtml";
 
-		include($this->store->code."widgets/wizard/code.php");
+		include($this->store->get_config("code")."widgets/wizard/code.php");
 
 		$start="edit.object.data.form.phtml";
 		$finish="edit.object.data.save.phtml";
@@ -51,6 +51,6 @@
 		$result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
 		$wgWizTitle=$ARnls["edit"]." ".$result[0];		
 		$wgWizHeader=$wgWizTitle.'<img src="'.$AR->dir->images.'icons/'.$this->type.'_open.gif" alt="" hspace="4" align="absmiddle">';
-		include($this->store->code."widgets/wizard/new.html");
+		include($this->store->get_config("code")."widgets/wizard/new.html");
 	}
 ?>

@@ -1,5 +1,5 @@
 <?php
-  	include_once($this->store->code."nls/winxp.".$this->reqnls);
+  	include_once($this->store->get_config("code")."nls/winxp.".$this->reqnls);
 	
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		if (!$arLanguage) {

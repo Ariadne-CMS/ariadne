@@ -25,8 +25,8 @@
 					$wgBrowsePath=($this->getdata("mappeduser", "none") ? $this->getdata("mappeduser", "none") : "/system/users/");
 					$wgBrowseName="mappeduser";
 					$wgBrowseFilter="pshadowuser";
-					include($this->store->code."widgets/browse/js.html");
-					include($this->store->code."widgets/browse/form.html");
+					include($this->store->get_config("code")."widgets/browse/js.html");
+					include($this->store->get_config("code")."widgets/browse/form.html");
 				?>
 				</td>
 			</tr>

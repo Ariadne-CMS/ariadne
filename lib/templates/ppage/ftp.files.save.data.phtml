@@ -47,7 +47,7 @@
 			if (!$AR->nls->charsets[$arCheckCharSet]) {
 				$arCheckCharSet="default";
 			}
-			require_once($this->store->code."modules/mod_unicode.php");
+			require_once($this->store->get_config("code")."modules/mod_unicode.php");
 			if ($AR->nls->charsets[$arCheckCharSet] == "ISO-8859-1") {
 				$page=unicode::utf8toiso8859($page);
 				// now change special characters to their html entity

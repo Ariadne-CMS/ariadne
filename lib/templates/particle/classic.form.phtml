@@ -109,8 +109,8 @@
 		<?php
 			$wgDateName="startdate";
 			$wgDate=$data->startdate;
-			include($this->store->code."widgets/date/js.html");
-			include($this->store->code."widgets/date/form.html");
+			include($this->store->get_config("code")."widgets/date/js.html");
+			include($this->store->get_config("code")."widgets/date/form.html");
 		?>
 		</font>
 	</td><td align="left">
@@ -121,7 +121,7 @@
 		<?php
 			$wgDateName="enddate";
 			$wgDate=$data->enddate;
-			include($this->store->code."widgets/date/form.html");
+			include($this->store->get_config("code")."widgets/date/form.html");
 		?>
 		</font>
 	</td>
@@ -137,7 +137,7 @@
 <table border="0"	width="100%" cellspacing="0">
 <tr>
 	<td bgcolor="#404074" colspan="2">
-		<?php include($this->store->code."widgets/nls/form.phtml"); ?>
+		<?php include($this->store->get_config("code")."widgets/nls/form.phtml"); ?>
 	</td>
 </tr>
 <tr valign="top">
@@ -180,8 +180,8 @@
 				$wgHTMLEditName="page";
 				$wgHTMLEditLanguage=$nls;
 				$wgHTMLEditContent=$this->ParsePage($this->getdata("page",$nls), true, true);
-				include($this->store->code."widgets/htmledit/js.html");
-				include($this->store->code."widgets/htmledit/form.html");
+				include($this->store->get_config("code")."widgets/htmledit/js.html");
+				include($this->store->get_config("code")."widgets/htmledit/form.html");
 			} else {
 				echo "available when object is created";
 			}
@@ -236,8 +236,8 @@
 				$wgRecurseConfirm=$ARnls["q:removearticle"];
 				$wgRecurseAction="delete";
 				$wgRecurseTitle=$ARnls["delete"];
-				include($this->store->code."widgets/recurse/form.js");
-				include($this->store->code."widgets/recurse/form.html");
+				include($this->store->get_config("code")."widgets/recurse/form.js");
+				include($this->store->get_config("code")."widgets/recurse/form.html");
 			?>
 		<?php } ?>
 	</td>

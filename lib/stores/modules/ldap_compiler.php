@@ -1,5 +1,5 @@
 <?php
-  include_once($store->code."stores/modules/sql_compiler.php");
+  include_once($store->get_config("code")."stores/modules/sql_compiler.php");
 
   class ldap_compiler extends sql_compiler {
 	function ldap_compiler(&$store, $mappings) {

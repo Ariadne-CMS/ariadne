@@ -1,5 +1,5 @@
 <?php
-	include($this->store->code."widgets/menu/menuarray.phtml");
+	include($this->store->get_config("code")."widgets/menu/menuarray.phtml");
 
 	$bgcolor="buttonface";
 	$browser=$this->call("pobject::browsercheck.phtml");

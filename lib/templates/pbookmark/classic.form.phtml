@@ -77,7 +77,7 @@
 </tr><tr>
 	<td colspan="2" bgcolor="#404074">
 		<?php 
-			include($this->store->code."widgets/nls/form.phtml");
+			include($this->store->get_config("code")."widgets/nls/form.phtml");
 		?>
 	</td>
 </tr><tr>
@@ -142,8 +142,8 @@
 				$wgRecurseConfirm=$ARnls["q:removeobject"];
 				$wgRecurseAction="delete";
 				$wgRecurseTitle=$ARnls["delete"];
-				include($this->store->code."widgets/recurse/form.js");
-				include($this->store->code."widgets/recurse/form.html");
+				include($this->store->get_config("code")."widgets/recurse/form.js");
+				include($this->store->get_config("code")."widgets/recurse/form.html");
 			?>
 		<?php } ?>
 	</td>

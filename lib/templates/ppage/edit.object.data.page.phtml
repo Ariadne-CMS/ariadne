@@ -2,7 +2,7 @@
   global $HTTP_USER_AGENT;
   if (eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
        $regs[1] && (intval($regs[1])>=4)) { //ie4+
-    include($this->store->code."widgets/htmledit/ie/edit.php");
+    include($this->store->get_config("code")."widgets/htmledit/ie/edit.php");
   } else {
     if ($file) {
       $file.="/";

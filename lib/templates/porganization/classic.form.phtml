@@ -23,7 +23,7 @@
 <?php 
 		if ($this->call("lock.init.phtml")) {
 
-		include($this->store->code."widgets/multiple/js.html"); 
+		include($this->store->get_config("code")."widgets/multiple/js.html"); 
 ?>
 </head>
 <body bgcolor="white" onUnLoad="releaseLock()">
@@ -39,7 +39,7 @@
 		<?php
 			$wgNLSpretext="<font face=\"helvetica, sans-serif\" size=\"+1\" color=\"white\"><b>".
 				$ARnls["editorganization"].":</b></font><br>";
-			include($this->store->code."widgets/nls/form.phtml");
+			include($this->store->get_config("code")."widgets/nls/form.phtml");
 		?>
 	</td>
 </tr>
@@ -130,7 +130,7 @@
 		if (!is_array($wgMultipleArray) && ($wgMultipleArray)) {
 			$wgMultipleArray=explode(",",$emails);
 		}
-		include($this->store->code."widgets/multiple/form.html");
+		include($this->store->get_config("code")."widgets/multiple/form.html");
 	?>
 	</td>
 </tr><tr>
@@ -193,8 +193,8 @@
 				$wgRecurseConfirm=$ARnls["q:removeorganization"];
 				$wgRecurseAction="delete";
 				$wgRecurseTitle=$ARnls["delete"];
-				include($this->store->code."widgets/recurse/form.js");
-				include($this->store->code."widgets/recurse/form.html");
+				include($this->store->get_config("code")."widgets/recurse/form.js");
+				include($this->store->get_config("code")."widgets/recurse/form.html");
 			?>
 		<?php } ?>
 	</td>

@@ -33,7 +33,7 @@
 				(intval($regs[1])>=4) && 
 				($AR->user->data->editor!="text")
 			) { //ie4+ && wysiwyg set as default editor
-			include($this->store->code."widgets/htmledit/ie/edit.php");
+			include($this->store->get_config("code")."widgets/htmledit/ie/edit.php");
 		} else {
 			if ($file) {
 				$file.="/";
@@ -67,7 +67,7 @@
 // -->
 </script>
 <?php
-    include($this->store->code."widgets/wizard/classic.css");
+    include($this->store->get_config("code")."widgets/wizard/classic.css");
 ?>
 <style>
   TEXTAREA {

@@ -4,7 +4,7 @@ if( $this->CheckLogin("config") ) {
 
   Header("Content-Type: text/xml");
 
-  require_once($this->store->code."modules/mod_export_wddx.php");
+  require_once($this->store->get_config("code")."modules/mod_export_wddx.php");
  
 
 ?>

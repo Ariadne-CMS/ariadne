@@ -39,8 +39,8 @@
 		}
 		$wgDateName="startdate";
 		$wgDate=$startdate;
-		include($this->store->code."widgets/date/js.html");
-		include($this->store->code."widgets/date/form.html");
+		include($this->store->get_config("code")."widgets/date/js.html");
+		include($this->store->get_config("code")."widgets/date/form.html");
 	?>
 	</td>
 	<td align="left"><b><?php echo $ARnls["end"]; ?>:</b>
@@ -50,7 +50,7 @@
 		}
 		$wgDateName="enddate";
 		$wgDate=$enddate;
-		include($this->store->code."widgets/date/form.html");
+		include($this->store->get_config("code")."widgets/date/form.html");
 	?>
 	</td>
 	<td align="left">

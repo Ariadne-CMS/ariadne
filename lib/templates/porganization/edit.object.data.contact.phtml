@@ -44,8 +44,8 @@
 					}
 					$wgMultipleName="emails";
 					$wgMultipleRows=4;
-					include($this->store->code."widgets/multiple/js.html");
-					include($this->store->code."widgets/multiple/form.html");
+					include($this->store->get_config("code")."widgets/multiple/js.html");
+					include($this->store->get_config("code")."widgets/multiple/form.html");
 				?>
 				</td>
 			</tr><tr>

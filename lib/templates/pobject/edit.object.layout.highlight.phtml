@@ -21,7 +21,7 @@
 <head>
 <title><?php printf($ARnls["edittemplate"],$function); ?></title>
 <?php
-	include($this->store->code."widgets/wizard/classic.css");
+	include($this->store->get_config("code")."widgets/wizard/classic.css");
 
 	if (!($file=$template)) {
 		if ($data->pinp[$type][$function][$language]) {

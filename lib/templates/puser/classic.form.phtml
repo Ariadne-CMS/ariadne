@@ -147,8 +147,8 @@
 				$wgRecurseConfirm=$ARnls["q:removeuser"];
 				$wgRecurseAction="delete";
 				$wgRecurseTitle=$ARnls["delete"];
-				include($this->store->code."widgets/recurse/form.js");
-				include($this->store->code."widgets/recurse/form.html");
+				include($this->store->get_config("code")."widgets/recurse/form.js");
+				include($this->store->get_config("code")."widgets/recurse/form.html");
 			?>
 		<?php } ?>
 	</td>

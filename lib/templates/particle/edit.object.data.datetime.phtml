@@ -92,8 +92,8 @@
 							$wgDate=mktime(0,0,0,$temp["mon"],$temp["mday"],$temp["year"]);
 						}
 						$startdate=$wgDate;
-						include($this->store->code."widgets/date/js.html");
-						include($this->store->code."widgets/date/form.html");
+						include($this->store->get_config("code")."widgets/date/js.html");
+						include($this->store->get_config("code")."widgets/date/form.html");
 
 					?>
 				</td><td>
@@ -117,8 +117,8 @@
 					<?php
 						$wgDateName="enddate";
 						$wgDate=$enddate;
-						include($this->store->code."widgets/date/js.html");
-						include($this->store->code."widgets/date/form.html");
+						include($this->store->get_config("code")."widgets/date/js.html");
+						include($this->store->get_config("code")."widgets/date/form.html");
 					?>
 				</td><td>
 					<?php input_time("endtime",$this->getdata("endtime","none")); ?>

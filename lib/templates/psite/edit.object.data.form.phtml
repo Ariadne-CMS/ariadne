@@ -62,8 +62,8 @@
           $wgHTMLEditName="page";
           $wgHTMLEditLanguage=$arLanguage;
           $wgHTMLEditContent=$this->ParsePage($this->getdata("page",$arLanguage), true);
-          include($this->store->code."widgets/htmledit/js.html"); 
-          include($this->store->code."widgets/htmledit/form.html"); 
+          include($this->store->get_config("code")."widgets/htmledit/js.html"); 
+          include($this->store->get_config("code")."widgets/htmledit/form.html"); 
           echo "</td>";
         }
       ?>

@@ -77,8 +77,8 @@
 				$wgBrowsePath="/system/groups/";
 				$wgBrowseName="path";
 				$wgBrowseSize=18;
-				include($this->store->code."widgets/browse/js.html");
-				include($this->store->code."widgets/browse/form.html");
+				include($this->store->get_config("code")."widgets/browse/js.html");
+				include($this->store->get_config("code")."widgets/browse/form.html");
 			?>
 		</td><td valign="middle" >
 			<?php echo $ARnls["grants"]; ?>&nbsp;:

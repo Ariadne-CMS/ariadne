@@ -36,7 +36,7 @@
 		<?php
 			$wgNLSpretext="<font face=\"helvetica, sans-serif\" color=\"white\"><b>".
 				$title.":</b></font><br>";
-			include($this->store->code."widgets/nls/form.phtml"); 
+			include($this->store->get_config("code")."widgets/nls/form.phtml"); 
 		?>
 	</td>
 </tr><tr>
@@ -69,8 +69,8 @@
 				$wgHTMLEditLanguage="none";
 				$wgHTMLEditContent=$this->ParseFile($this->GetFile());
 				$wgHTMLEditType="full";
-				include($this->store->code."widgets/htmledit/js.html");
-				include($this->store->code."widgets/htmledit/form.html"); 
+				include($this->store->get_config("code")."widgets/htmledit/js.html");
+				include($this->store->get_config("code")."widgets/htmledit/form.html"); 
 			}
 		?>
 	</td>
@@ -124,8 +124,8 @@
 				$wgRecurseConfirm=$ARnls["q:removefile"];
 				$wgRecurseAction="delete";
 				$wgRecurseTitle=$ARnls["delete"];
-				include($this->store->code."widgets/recurse/form.js");
-				include($this->store->code."widgets/recurse/form.html");
+				include($this->store->get_config("code")."widgets/recurse/form.js");
+				include($this->store->get_config("code")."widgets/recurse/form.html");
 			?>
 		<?php } ?>
 	</td>

@@ -44,8 +44,8 @@ class proxystore {
 	 **********************************************************************************/
 		debug("proxystore($key)","store");
 		$this->key = &$key;
-		$this->code = &$config['code'];
 		$this->root = &$AR->stores[$key]->root;
+		$this->rootoptions=&$AR->stores[$key]->rootoptions;
 		debug("proxystore: end","all");
 	}
 
@@ -61,6 +61,18 @@ class proxystore {
 		$AR->stores[$id] = &$store;
 		new proxystore($id,$config);
 		return new proxystore($id,$config);
+	}
+
+	function get_config($field) {
+	global $AR;
+		debug("proxy::get_config($field)", "store");
+		switch ($field) {
+			default:
+				$result = $AR->stores[$this->key]->$field;
+			break;
+		}
+		debug("proxy::get_config: end", "all");
+		return $result;
 	}
 
 	function call($template, $args, $objects) {
@@ -100,6 +112,25 @@ class proxystore {
 		debug("proxynewobject: end","all");
 		return $result;
 	}
+
+	function is_supported($feature) {
+		global $AR;
+		debug("proxy::is_supported($feature)", "all");
+		$result= &$AR->stores[$this->key]->is_supported($feature);
+		$this->error = $AR->stores[$this->key]->error;
+		debug("proxy::is_supported: $result: end","all");
+		return $result;
+	}
+
+	function format_for_fti($text) {
+		global $AR;
+		debug("proxy::format_for_fti([text])", "all");
+		$result= &$AR->stores[$this->key]->format_for_fti($text);
+		$this->error = $AR->stores[$this->key]->error;
+		debug("proxy::format_for_fti: end","all");
+		return $result;
+	}
+
 
 	function get($path) {
 	/**********************************************************************************
@@ -450,10 +481,8 @@ class proxystore {
 
 	function get_filestore($name) {
 		global $AR;
-		if (!$this->filestores[$name]) {
-			$this->filestores[$name] = &$AR->stores[$this->key]->get_filestore($name);
-		}
-		return ($this->filestores[$name]);
+			$filestore = &$AR->stores[$this->key]->get_filestore($name);
+		return $filestore;
 	}
 
 

@@ -80,7 +80,7 @@
 <div id="kill-scrollbars" style="position: relative;">
 <?php
 
-	include($this->store->code."widgets/menu/menu.phtml");
+	include($this->store->get_config("code")."widgets/menu/menu.phtml");
 	$this->call("manage.html", $arCallArgs);
 ?>
 </div>

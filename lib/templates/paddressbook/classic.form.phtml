@@ -39,7 +39,7 @@
 		<?php
 			$wgNLSpretext="<font face=\"helvetica, sans-serif\" size=\"+1\" color=\"white\"><b>".
 				$title.":</b></font><br>";
-			include($this->store->code."widgets/nls/form.phtml");
+			include($this->store->get_config("code")."widgets/nls/form.phtml");
 		?>
 	</td>
 </tr>
@@ -112,8 +112,8 @@
 				$wgRecurseConfirm=$ARnls["q:removeaddressbook"];
 				$wgRecurseAction="delete";
 				$wgRecurseTitle=$ARnls["delete"];
-				include($this->store->code."widgets/recurse/form.js");
-				include($this->store->code."widgets/recurse/form.html");
+				include($this->store->get_config("code")."widgets/recurse/form.js");
+				include($this->store->get_config("code")."widgets/recurse/form.html");
 			?>
 
 		<?php } ?>

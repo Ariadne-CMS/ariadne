@@ -21,7 +21,7 @@
 <head>
 <title><?php printf($ARnls["edittemplate"],$this->path.$function); ?></title>
 <?php
-	include($this->store->code."widgets/wizard/classic.css");
+	include($this->store->get_config("code")."widgets/wizard/classic.css");
 ?>
 <style>
   .full {

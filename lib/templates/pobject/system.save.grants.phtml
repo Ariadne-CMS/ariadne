@@ -15,7 +15,7 @@
 
 	******************************************************************/
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
-		include_once($this->store->code."modules/mod_grant.php");
+		include_once($this->store->get_config("code")."modules/mod_grant.php");
 
 		// some variable fetching stuff
 		$path=$this->getdata("path", "none");

@@ -25,7 +25,7 @@
 		 (meaning, from the root of the current store).
 
 	******************************************************************/
-	require_once($this->store->code."modules/mod_unicode.php");
+	require_once($this->store->get_config("code")."modules/mod_unicode.php");
 	$name=unicode::utf8convert(trim($nlsdata->name));
 	if ($AR->user && !$this->CheckSilent("read")) {
 		$arResult["pre"]="<font color='#CCCCCC'>$flag";

@@ -39,7 +39,7 @@
 		<?php
 			$wgNLSpretext="<font face=\"helvetica, sans-serif\" color=\"white\" size=\"+1\"><b>".
 				$ARnls["editshortcut"].":</b></font><br>";
-			include($this->store->code."widgets/nls/form.phtml");
+			include($this->store->get_config("code")."widgets/nls/form.phtml");
 		?>
 	</td>
 </tr><tr>
@@ -63,8 +63,8 @@
 				$wgBrowsePath=$data->path;
 			}
 			$wgBrowseName="path"; 
-			include($this->store->code."widgets/browse/js.html");
-			include($this->store->code."widgets/browse/form.html");
+			include($this->store->get_config("code")."widgets/browse/js.html");
+			include($this->store->get_config("code")."widgets/browse/form.html");
 		?>
 	</td>
 </tr>
@@ -116,8 +116,8 @@
 				$wgRecurseConfirm=$ARnls["q:removeshortcut"];
 				$wgRecurseAction="delete";
 				$wgRecurseTitle=$ARnls["delete"];
-				include($this->store->code."widgets/recurse/form.js");
-				include($this->store->code."widgets/recurse/form.html");
+				include($this->store->get_config("code")."widgets/recurse/form.js");
+				include($this->store->get_config("code")."widgets/recurse/form.html");
 			?>
 		<?php } ?>
 	</td>

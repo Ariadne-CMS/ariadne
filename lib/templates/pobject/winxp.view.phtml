@@ -14,7 +14,7 @@
  ******************************************************************/
 
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-  		include_once($this->store->code."nls/winxp.".$this->reqnls);
+  		include_once($this->store->get_config("code")."nls/winxp.".$this->reqnls);
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
@@ -49,7 +49,7 @@
 <div id="kill-scrollbars" style="position: relative;">
 <?php
 
-	include($this->store->code."widgets/toolbar/xptoolbar.phtml");
+	include($this->store->get_config("code")."widgets/toolbar/xptoolbar.phtml");
 	$this->call("winxp.manage.html", $arCallArgs);
 ?>
 </div>

@@ -22,7 +22,7 @@
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
 <?php 
 		if ($this->call("lock.init.phtml")) {
-		include($this->store->code."widgets/multiple/js.html"); 
+		include($this->store->get_config("code")."widgets/multiple/js.html"); 
 ?>
 </head>
 <body bgcolor="white" onUnLoad="releaseLock()">
@@ -38,7 +38,7 @@
 		<?php
 			$wgNLSpretext="<font face=\"helvetica, sans-serif\" size=\"+1\" color=\"white\"><b>".
 				$ARnls["editcontact"].":</b></font><br>";
-			include($this->store->code."widgets/nls/form.phtml");
+			include($this->store->get_config("code")."widgets/nls/form.phtml");
 		?>
 	</td>
 </tr>
@@ -137,7 +137,7 @@
 				$wgMultipleArray=explode(",",$wgMultipleArray);
 			}
 			$wgMultipleName="emails";
-			include($this->store->code."widgets/multiple/form.html");
+			include($this->store->get_config("code")."widgets/multiple/form.html");
 		?>
 	</td>
 </tr>
@@ -198,8 +198,8 @@
 				$wgRecurseConfirm=$ARnls["q:removeperson"];
 				$wgRecurseAction="delete";
 				$wgRecurseTitle=$ARnls["delete"];
-				include($this->store->code."widgets/recurse/form.js");
-				include($this->store->code."widgets/recurse/form.html");
+				include($this->store->get_config("code")."widgets/recurse/form.js");
+				include($this->store->get_config("code")."widgets/recurse/form.html");
 			?>
 		<?php } ?>
 	</td>

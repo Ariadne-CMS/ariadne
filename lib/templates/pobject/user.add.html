@@ -7,7 +7,7 @@
         } else {
 			$wgHTMLEditTemplate="user.add.page.html";
 			$wgHTMLEditSaveTemplate="user.add.save.html";
-			include($this->store->code."widgets/htmledit/toolbar.php");
+			include($this->store->get_config("code")."widgets/htmledit/toolbar.php");
 		}
 	}
 ?>

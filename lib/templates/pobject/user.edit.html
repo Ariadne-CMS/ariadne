@@ -10,6 +10,6 @@
 		if (!$wgHTMLEditSaveTemplate) {
 			$wgHTMLEditSaveTemplate='user.edit.save.html';
 		}
-		include($this->store->code."widgets/htmledit/toolbar.php");
+		include($this->store->get_config("code")."widgets/htmledit/toolbar.php");
 	}
 ?>

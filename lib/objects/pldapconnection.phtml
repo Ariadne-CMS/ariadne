@@ -25,7 +25,7 @@ class pldapconnection extends pconnector { // psearch class definition
 
 	function pldapconnection() {
 	global $store;
-		include_once($store->code."stores/modules/ldap_compiler.php");
+		include_once($store->get_config("code")."stores/modules/ldap_compiler.php");
 		$this->lastquery=false;
 		$this->ldapdata=array();
 		$this->mappings=false;

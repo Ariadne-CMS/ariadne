@@ -16,7 +16,7 @@
 			global $mod_edit_data;
 			if ($mod_edit_data['editmode']) {
 				$id=++$mod_edit_data['id'];
-				echo "<span class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."'>";
+				echo "<span onMouseDown='startedit(this, true)' class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."'>";
 				echo $var;
 				echo "</span>";
 				$mod_edit_data['formdata'][$this->path][$name][]=$id;

@@ -8,7 +8,7 @@
 	******************************************************************/
 
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
-		include($this->store->code."widgets/wizard/code.php");
+		include($this->store->get_config("code")."widgets/wizard/code.php");
 
 		$wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
 		$wgWizFlow[0]["save"]='edit.object.nls.save.phtml';
@@ -18,6 +18,6 @@
 		$wgWizTitle=$ARnls["language"];		
         $wgWizHeader=$wgWizTitle.'<img src="'.$AR->dir->images.'wizard/sections/nls.gif" alt="" hspace="4" align="absmiddle">';
 		$wgWizTabsTemplate=false;
-		include($this->store->code."widgets/wizard/new.html");
+		include($this->store->get_config("code")."widgets/wizard/new.html");
 	}
 ?>

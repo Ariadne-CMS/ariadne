@@ -1,5 +1,5 @@
 <?php
-	require_once($this->store->code."modules/mod_unicode.php");
+	require_once($this->store->get_config("code")."modules/mod_unicode.php");
 	$name=unicode::utf8convert(trim($nlsdata->name));
 	$path=$this->store->make_path($this->parent, $data->path);
 	if ($AR->user && !$this->CheckSilent("read")) {

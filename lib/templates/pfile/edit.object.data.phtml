@@ -20,7 +20,7 @@
 		}
 		$custom="edit.object.data.custom.phtml";
 
-		include($this->store->code."widgets/wizard/code.php");
+		include($this->store->get_config("code")."widgets/wizard/code.php");
 
 		$summary="edit.object.data.form.phtml";
 		$language="edit.object.language.phtml";
@@ -50,7 +50,6 @@
 
 		global $HTTP_POST_VARS;		
 		$arControl=wgWizGetAction($this->getdata("wgWizControl","none"));
-
 		$this->call("system.save.tempfile.phtml");
 		if ($this->error) {
 			$this->call("show.error.phtml");
@@ -78,6 +77,6 @@
 		$name=current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml"));
 		$wgWizTitle=$ARnls["edit"]." ".$name;		
 		$wgWizHeader=$wgWizTitle.'<img src="'.$AR->dir->images.'icons/'.$this->type.'_open.gif" alt="" hspace="4" align="absmiddle">';
-		include($this->store->code."widgets/wizard/new.html");
+		include($this->store->get_config("code")."widgets/wizard/new.html");
 	}
 ?>

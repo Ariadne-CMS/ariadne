@@ -141,7 +141,7 @@
 			<?php
 		} else {
 			// confirm set, so first delete newpath
-			include($this->store->code."widgets/recurse/general.js");
+			include($this->store->get_config("code")."widgets/recurse/general.js");
 			?>
 				<script>
 					function nextnode() {

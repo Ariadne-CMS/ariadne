@@ -237,6 +237,9 @@ class htmlcleaner
 												if (eregi($value_rule, $attrib_val)) {
 													if ($value === false) {
 														unset($part->attributes[$attrib_key]);
+														if (!count($part->attributes)) {
+															unset($part); break 3;
+														}
 													} else {
 														$part->attributes[$attrib_key] = $value;
 													}
@@ -245,6 +248,9 @@ class htmlcleaner
 										} else
 										if ($value_rules === false) {
 											unset($part->attributes[$attrib_key]);
+											if (!count($part->attributes)) {
+												unset($part);
+											}
 										} else {
 											$part->attributes[$attrib_key] = $value_rules;
 										}

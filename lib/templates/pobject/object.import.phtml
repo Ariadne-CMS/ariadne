@@ -13,8 +13,8 @@
 	******************************************************************/
 
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
-		include($this->store->code."widgets/wizard/code.php");
-		include($this->store->code."nls/menu.".$nls);
+		include($this->store->get_config("code")."widgets/wizard/code.php");
+		include($this->store->get_config("code")."nls/menu.".$nls);
 
 		$start="object.import.form.phtml";
 		$finish="object.import.ax.phtml";
@@ -33,6 +33,6 @@
 			$wgWizCancelButton=$ARnls['ok'];
 			$wgWizSaveButton=false;
 		}
-		include($this->store->code."widgets/wizard/new.html");
+		include($this->store->get_config("code")."widgets/wizard/new.html");
 	}
 ?>

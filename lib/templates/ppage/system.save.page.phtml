@@ -15,12 +15,12 @@
 			}
 			if ($arEditorSettings) {
 				if ($arEditorSettings["htmlcleaner"]["enabled"]) {
-					include_once($this->store->code."modules/mod_htmlcleaner.php");
+					include_once($this->store->get_config("code")."modules/mod_htmlcleaner.php");
 					$config = $arEditorSettings["htmlcleaner"];
 					$page = htmlcleaner::cleanup($page, $config);
 				}
 				if ($arEditorSettings["htmltidy"]["enabled"]) {
-					include_once($this->store->code."modules/mod_tidy.php");
+					include_once($this->store->get_config("code")."modules/mod_tidy.php");
 					$config=$arEditorSettings["htmltidy"];
 					$config["temp"]=$this->store->files."temp/";
 					$config["path"]=$AR->Tidy->path;

@@ -138,8 +138,8 @@
 		<?php 
 			$wgDateName="date";
 			$wgDate=$date;
-			include($this->store->code."widgets/date/js.html");
-			include($this->store->code."widgets/date/form.html");
+			include($this->store->get_config("code")."widgets/date/js.html");
+			include($this->store->get_config("code")."widgets/date/form.html");
 		?>
 		</td></tr>
 		</table>
@@ -201,7 +201,7 @@
 		<?php
 			$wgNLSpretext="<font face=\"helvetica, sans-serif\" color=\"white\"><b>".
 				$ARnls["item"]."</b></font><br>";
-			include($this->store->code."widgets/nls/form.phtml");
+			include($this->store->get_config("code")."widgets/nls/form.phtml");
 		?></td>
 </tr><tr>
 	<td colspan="2">
@@ -374,7 +374,7 @@
 						<td><?php
 							$wgDate=$repeatend;
 							$wgDateName="repeatend";
-							include($this->store->code."widgets/date/form.html");
+							include($this->store->get_config("code")."widgets/date/form.html");
 						?></td>
 						<?php
 					}

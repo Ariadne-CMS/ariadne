@@ -1,8 +1,8 @@
 <?php
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
 
-		require($this->store->code."/configs/axstore.phtml");
-		include($this->store->code."/stores/axstore.phtml");
+		require($this->store->get_config("code")."/configs/axstore.phtml");
+		include($this->store->get_config("code")."/stores/axstore.phtml");
 
 		$ARCurrent->options["verbose"]=true;
 		if ($without_grants=$this->getdata("without_grants","none")) {

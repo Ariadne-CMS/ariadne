@@ -21,7 +21,7 @@
 
 		$settings=$this->call("editor.ini");
 
-		include($this->store->code."nls/ieedit.".$this->reqnls);
+		include($this->store->get_config("code")."nls/ieedit.".$this->reqnls);
 
 ?>
 <HTML>

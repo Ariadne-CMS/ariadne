@@ -26,7 +26,7 @@
 		$function=str_replace("..",".",$function);
 		$language=str_replace("..",".",$language);
 
-		include_once($this->store->code."modules/mod_pinp.phtml");
+		include_once($this->store->get_config("code")."modules/mod_pinp.phtml");
 		if (!$function) {
 			$this->error=$ARnls["err:notemplatename"];
 		} else if (ereg("\.phtml$",$function)) {

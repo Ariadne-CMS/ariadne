@@ -7,7 +7,7 @@
 	include_once($store_config['code']."modules/mod_soap.phtml");
 	include_once($store_config['code']."includes/loader.soap.php");
 
-//debugon("pinp");
+debugon("pinp");
 
 	function fix_quotes(&$value) {
 		if (is_array($value)) {
@@ -107,9 +107,17 @@
 		}
 
 		$soapserver = new soap_server;
+		debug($HTTP_RAW_POST_DATA);
 		$arguments  = $soapserver->get_request($HTTP_RAW_POST_DATA);
 		$function   = "soap.".strtolower($soapserver->methodname).".phtml";
 
+
+		ob_start();
+			echo "Arguments: \n";
+			print_r($arguments);
+			debug(ob_get_contents());
+		ob_end_clean();
+				
 		if ($arguments["arUnpackArrayNames"]) {
 			debug("loader starting unpackarraynames\n\n");
 			unpack_array_names($arguments, $arguments);
@@ -145,7 +153,7 @@
 			$soapserver->send_returnvalue($SOAP_Fault);
 		}
 		$store->close();
-
+debugoff();
 	}
 
 	// save session data

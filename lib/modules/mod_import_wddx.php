@@ -402,7 +402,7 @@ class import_wddx {
 	}
 
 	function parse($in,$store) {
-		require_once($store->code."modules/mod_pinp.phtml");
+		require_once($store->get_config("code")."modules/mod_pinp.phtml");
 		$this->input = $in;
 		$this->store = $store;
 		while ($data = fgets($this->input, 65535)) {

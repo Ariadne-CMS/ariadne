@@ -15,7 +15,7 @@
 		if (!$arNewType) {
 			error($ARnls["err:nonewtype"]);
 		} else if ($this->CheckLogin("add", $arNewType) && $this->CheckConfig()) {
-			include_once($this->store->code."widgets/wizard/code.php");
+			include_once($this->store->get_config("code")."widgets/wizard/code.php");
 
 			debug("soap.createobject.phtml: arNewFilename='$arNewFilename'");
 			$arNewFilename=$this->getdata("arNewFilename","none");

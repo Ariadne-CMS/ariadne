@@ -58,8 +58,8 @@ BODY 	{
 <tr>
   <td>Picture&nbsp;Source:</td>
   <td><?php
-    include($this->store->code."widgets/browse/js.html");
-    include($this->store->code."widgets/browse/form.html");
+    include($this->store->get_config("code")."widgets/browse/js.html");
+    include($this->store->get_config("code")."widgets/browse/form.html");
   ?></td>
   <td><input type="submit" name="ok" value="OK" class="button"></td>
 </tr><tr>

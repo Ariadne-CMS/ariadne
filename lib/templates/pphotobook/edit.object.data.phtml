@@ -18,7 +18,7 @@
 				}
 			}
 		}
-		include($this->store->code."widgets/wizard/code.php");
+		include($this->store->get_config("code")."widgets/wizard/code.php");
 
 		$wgWizFlow=Array(
 			Array(
@@ -60,6 +60,6 @@
 		$name=current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml"));
 		$wgWizTitle=$ARnls["edit"]." ".$name;		
 		$wgWizHeader=$wgWizTitle.'<img src="'.$AR->dir->images.'icons/'.$this->type.'_open.gif" alt="" hspace="4" align="absmiddle">';
-		include($this->store->code."widgets/wizard/new.html");
+		include($this->store->get_config("code")."widgets/wizard/new.html");
 	}
 ?>

@@ -22,26 +22,35 @@ class URL {
 		/* find and replace the current page */
 		$find[] = "%\\Q".$this->make_url($this->path, "\\E{0}(".$nls_match.")\\Q")."\\E%"; $repl[] = "{arCurrentPage\\1}";
 		$find[] = "%".preg_replace("%^https?://%", "https?\\Q://", $AR->host).$AR->dir->www."loader.php\\E(?:/-".$ARCurrent->session->id."-)?".$nls_match."\\Q".$this->path."\\E%"; $repl[] = "{arCurrentPage\\1}";
+
+		// change the site links
+		$site = $this->currentsite();
+		if ($site && $site !== '/') {
+			$find[] = "%\\Q".$this->make_url($site, "\\E{0}(".$nls_match.")?\\Q")."\\E?%"; 
+echo "frip: $site<br>\n";
+			$repl[] = "{arSite\\1}";
+		}
+
 		// change hardcoded links and images to use a placeholder for the root
 		if ($this->store->root) {
 			$root = $this->store->root;
 			if (substr($root, -3) == "/$nls") {
 				$root = substr($root, 0, -3);
 			}
-			$find[] = "%(http[s]?://)?\\Q".$AR->host.$root."\\E".$nls_match."%"; $repl[] = "{arBase\\1}";
-			$find[] = "%(http[s]?://)?\\Q".$root."\\E".$nls_match."%"; $repl[] = "{arBase\\1}";
-		}
-		// change the site links
-		$site = $this->currentsite();
-		if ($site && $site !== '/') {
-			$find[] = "%\\Q".$this->make_url($site, "\\E{0}(".$nls_match.")?\\Q")."\\E?%"; $repl[] = "{arBase\\1}".$site;
+			$find[] = "%(http[s]?://)?\\Q".$AR->host.$root."\\E".$nls_match."%"; 
+			$repl[] = "{arBase\\1}";
+			$find[] = "%(http[s]?://)?\\Q".$root."\\E".$nls_match."%"; 
+			$repl[] = "{arBase\\1}";
 		}
 		// change hand pasted sources, which may or may not include session id's
-		$find[] = "%(https?://)?\\Q".$AR->host.$AR->dir->www."loader.php\\E(/-".$ARCurrent->session->id."-)?".$nls_match."%"; $repl[] = "{arBase\\1}";
+		$find[] = "%(https?://)?\\Q".$AR->host.$AR->dir->www."loader.php\\E(/-".$ARCurrent->session->id."-)?".$nls_match."%"; 
+		$repl[] = "{arBase\\1}";
 		if ($ARCurrent->session && $ARCurrent->session->id) {
 			// check for other session id's:
-			$find[] = "%/-".$ARCurrent->session->id."-%"; $repl[] = "{arSession}";
+			$find[] = "%/-".$ARCurrent->session->id."-%"; 
+			$repl[] = "{arSession}";
 		}
+
 		return preg_replace($find, $repl, $page);
 	}
 	
@@ -59,6 +68,7 @@ class URL {
 			$root = substr($root, 0, -3);
 		}
 		if ($site && $site !== '/') {
+			$find[] = "%\\{(?:arSite)(?:/([^}]+))?\\}\\Q\\E%e"; $repl[] = "\$this->make_url('$site', '\\1')";
 			$find[] = "%\\{(?:arRoot|arBase)(?:/([^}]+))?\\}\\Q".$site."\\E%e"; $repl[] = "\$this->make_url('$site', '\\1')";
 		}
 		$find[] = "%\\{arBase(/(?:[^}]+))?\\}%"; $repl[] = $AR->host.$root."\\1";

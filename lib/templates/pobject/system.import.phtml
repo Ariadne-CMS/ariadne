@@ -6,7 +6,7 @@
 			(!$this->arIsNewObject && $this->CheckLogin("edit"))) && 
 			$this->CheckConfig()) {
 
-		include_once($this->store->code."modules/mod_unicode.php");
+		include_once($this->store->get_config("code")."modules/mod_unicode.php");
 
 
 		if (!function_exists("convData2UTF8")) {

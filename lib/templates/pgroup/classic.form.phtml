@@ -66,8 +66,8 @@
 				<?php
 					$wgBrowsePath="/system/users/";
 					$wgBrowseName="path";
-					include($this->store->code."widgets/browse/js.html");
-					include($this->store->code."widgets/browse/form.html");
+					include($this->store->get_config("code")."widgets/browse/js.html");
+					include($this->store->get_config("code")."widgets/browse/form.html");
 				?>
 				<input type="hidden" name="action" value="add">
 				<input type="submit" name="arSubmit" value="<?php echo $ARnls["add"]; ?>">
@@ -125,8 +125,8 @@
 				$wgRecurseConfirm=$ARnls["q:removegroup"];
 				$wgRecurseAction="delete";
 				$wgRecurseTitle=$ARnls["delete"];
-				include($this->store->code."widgets/recurse/form.js");
-				include($this->store->code."widgets/recurse/form.html");
+				include($this->store->get_config("code")."widgets/recurse/form.js");
+				include($this->store->get_config("code")."widgets/recurse/form.html");
 			?>
 		<?php } ?>
 	</td>

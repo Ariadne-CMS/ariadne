@@ -14,7 +14,7 @@
 
 	******************************************************************/
 
-	require_once($this->store->code."modules/mod_unicode.php");
+	require_once($this->store->get_config("code")."modules/mod_unicode.php");
 
 	if (!$arLanguage) {
 		$arLanguage=$nls;

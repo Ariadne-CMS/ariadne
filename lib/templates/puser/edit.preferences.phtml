@@ -8,7 +8,7 @@
   ******************************************************************/
 
   if ($this->CheckLogin("edit") && $this->CheckConfig()) {
-    include($this->store->code."widgets/wizard/code.php");
+    include($this->store->get_config("code")."widgets/wizard/code.php");
 
     $start="edit.preferences.language.phtml";
     $interface="edit.preferences.interface.phtml";
@@ -45,6 +45,6 @@
     }
     $wgWizTitle=$ARnls["preferences"];    
     $wgWizHeader=$ARnls["preferences"];    
-    include($this->store->code."widgets/wizard/new.html");
+    include($this->store->get_config("code")."widgets/wizard/new.html");
   }
 ?>

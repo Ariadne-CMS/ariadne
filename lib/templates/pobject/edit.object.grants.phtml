@@ -380,8 +380,8 @@
 			$wgBrowsePath="/system/groups/";
 			$wgBrowseName="path";
 			$wgBrowseFilter="puser";
-			include($this->store->code."widgets/browse/js.html");
-			include($this->store->code."widgets/browse/form.html");
+			include($this->store->get_config("code")."widgets/browse/js.html");
+			include($this->store->get_config("code")."widgets/browse/form.html");
 		?>
 		</div>
 		<table cellspacing="0" cellpadding="0">

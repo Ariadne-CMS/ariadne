@@ -336,7 +336,11 @@ function tbContentElement_DisplayChanged() {
 
 
 function SAVE_onclick(newurl) {
-	savewindow=window.open(wgSaveTmpl+'?arReturnPage='+escape(newurl), 'savewindow', 'directories=no,height=100,width=300,location=no,status=no,toolbar=no,resizable=no');
+	if (tbContentFrame.do_save) {
+		tbContentFrame.do_save();
+	} else {
+		savewindow=window.open(wgSaveTmpl+'?arReturnPage='+escape(newurl), 'savewindow', 'directories=no,height=100,width=300,location=no,status=no,toolbar=no,resizable=no');
+	}
 	top.wgTBIsDirty=false;
 }
 
@@ -974,7 +978,7 @@ return tbContentElement_ContextMenuAction(itemIndex)
 	</div>
 </div>
 
-<IFRAME ID="tbContentElement" CLASS="tbContentElement" onLoad="loadStyleSheet()" unselectable='on' oldstyle="border: 0px; background-color: white; height: 100%; width: 100%; overflow: scroll;" <?php
+<IFRAME name="tbContentFrame" ID="tbContentElement" CLASS="tbContentElement" onLoad="loadStyleSheet()" unselectable='on' oldstyle="border: 0px; background-color: white; height: 100%; width: 100%; overflow: scroll;" <?php
 	if (!$wgHTMLEditTemplate) {
 		$wgHTMLEditTemplate="user.edit.page.html";
 	}

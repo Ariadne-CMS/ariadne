@@ -4,8 +4,8 @@
 <pre style="background-color: white; border: 2px inset buttonhighlight; font-size: 12px; margin: 4px; padding: 2px;"><?php
 			$file = ldRegisterFile("source", $this->error);
 			if ($file && !$this->error) { 
-				require($this->store->code."/configs/axstore.phtml");
-				include($this->store->code."/stores/axstore.phtml");
+				require($this->store->get_config("code")."/configs/axstore.phtml");
+				include($this->store->get_config("code")."/stores/axstore.phtml");
 
 				$ARCurrent->options["verbose"]=true;
 				if ($without_grants=$this->getdata("without_grants","none")) {

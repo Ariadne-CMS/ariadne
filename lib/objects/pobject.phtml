@@ -150,7 +150,7 @@ class pobject extends object { // pobject class definition
 			debug("class: $arType","object");
 			// search for the template, stop at the root class ('object')
 			// (this should not happen, as pobject must have a 'default.phtml')
-			$arCallTemplate=$this->store->code."templates/".$arType."/".$arCallFunction;
+			$arCallTemplate=$this->store->get_config("code")."templates/".$arType."/".$arCallFunction;
 			if (file_exists($arCallTemplate)) {
 				// template found
 				debug("pobject::call template($arCallTemplate)", "all");
@@ -158,17 +158,17 @@ class pobject extends object { // pobject class definition
 				include($arCallTemplate);
 				debug("pobject::call end template", "all");
 				break;
-			} else if (file_exists($this->store->code."templates/".$arType."/default.phtml")) {
+			} else if (file_exists($this->store->get_config("code")."templates/".$arType."/default.phtml")) {
 				// template not found, but we did find a 'default.phtml'
 				debug("pobject::call $arType/default.phtml", "all");
-				include($this->store->code."templates/".$arType."/default.phtml");
+				include($this->store->get_config("code")."templates/".$arType."/default.phtml");
 				break;
 			} else {
 				// no template found, no default.phtml found, try superclass.
 				if (!class_exists($arType)) {
 					// the given class was not yet loaded, so do that now
 					$this->store->newobject('','',$arType,'');
-					// include_once($this->store->code."objects/".$arType.".phtml");
+					// include_once($this->store->get_config("code")."objects/".$arType.".phtml");
 					
 				}
 				$arTemp=new $arType();
@@ -1412,7 +1412,7 @@ class pobject extends object { // pobject class definition
 
 	function convertToUTF8($data, $charset = "CP1252") {
 
-		include_once($this->store->code."modules/mod_unicode.php");
+		include_once($this->store->get_config("code")."modules/mod_unicode.php");
 
 		if (is_array($data)) {
 			reset($data);
@@ -1558,7 +1558,7 @@ class pobject extends object { // pobject class definition
 		if ($arWidgetType=="www") {
 			$coderoot=$AR->dir->www;
 		} else {
-			$coderoot=$this->store->code;
+			$coderoot=$this->store->get_config("code");
 		}
 		if (file_exists($coderoot."widgets/$arWidgetName")) {
 			if (file_exists($coderoot."widgets/$arWidgetName/$arWidgetTemplate")) {
@@ -1597,9 +1597,9 @@ class pobject extends object { // pobject class definition
 		$nls=eregi_replace('[^a-z]*','',$nls);
 		$section=eregi_replace('[^a-z\._-]*','',$section);
 		if (!$section) {
-			include($this->store->code."nls/".$nls);
+			include($this->store->get_config("code")."nls/".$nls);
 		} else {
-			include($this->store->code."nls/".$section.".".$nls);
+			include($this->store->get_config("code")."nls/".$section.".".$nls);
 		}
 		$this->ARnls = $ARnls;
 	}
@@ -1772,7 +1772,7 @@ class pobject extends object { // pobject class definition
 	function _load($class) {
 		// only allow access to modules in the modules directory.
 		$class=eregi_replace('[^a-z0-9\._]','',$class);
-		include_once($this->store->code."modules/".$class);
+		include_once($this->store->get_config("code")."modules/".$class);
 	}
 
 	function _import($class) {
@@ -1820,7 +1820,7 @@ class pobject extends object { // pobject class definition
 	/*	this is a private function used by the _preg_replace wrapper */
 
 	function preg_replace_compile($pattern, $replacement) {
-		include_once($this->store->code."modules/mod_pinp.phtml");
+		include_once($this->store->get_config("code")."modules/mod_pinp.phtml");
 		ereg("^\s*(.)", $pattern, $regs);
 		$delim = $regs[1];
 		if (eregi($k="${delim}[^$delim]*e[^$delim]*".'$', $pattern)) {

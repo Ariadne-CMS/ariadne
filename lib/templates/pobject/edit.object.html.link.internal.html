@@ -3,7 +3,7 @@
 	if ($this->CheckLogin('read') && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		$settings=$this->call("editor.ini");
 
-		include($this->store->code."nls/ieedit.".$this->reqnls);
+		include($this->store->get_config("code")."nls/ieedit.".$this->reqnls);
 
 ?>
 <html>
@@ -150,8 +150,8 @@ BODY 	{
 		<td colspan="3"><nobr><?php
 			$wgBrowseName="ar_path";
 			$wgBrowsePath=$src;
-			include($this->store->code."widgets/browse/js.html");
-			include($this->store->code."widgets/browse/form.html");
+			include($this->store->get_config("code")."widgets/browse/js.html");
+			include($this->store->get_config("code")."widgets/browse/form.html");
 		?></nobr>
 		</td>
 	</tr><tr>

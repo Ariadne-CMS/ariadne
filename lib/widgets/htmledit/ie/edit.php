@@ -1,7 +1,7 @@
 <?php
 	ldHeader("Content-Type: text/html; charset=UTF-8");
 
-	include($this->store->code."nls/ieedit.".$this->reqnls);
+	include($this->store->get_config("code")."nls/ieedit.".$this->reqnls);
 
 ?><!--TOOLBAR_START--><!--TOOLBAR_EXEMPT--><!--TOOLBAR_END-->
 <!-- Copyright 2000 Microsoft Corporation. All rights reserved. -->

@@ -502,6 +502,7 @@ class axstore {
 			foreach ($properties as $property => $property_records) {
 				foreach ($property_records as $record_id => $record) {
 					foreach ($record as $column => $column_data) {
+						$column_data = substr($column_data, 1, -1);
 						$properties[$property][$record_id][$column] = str_replace($edq, '"', str_replace($esq, "'", $column_data));
 					}
 				}

@@ -57,8 +57,8 @@
             }
             $wgBrowseName="picture";
             $wgBrowseView="icons";
-            include($this->store->code."widgets/browse/js.html");
-            include($this->store->code."widgets/browse/formbutton.html");
+            include($this->store->get_config("code")."widgets/browse/js.html");
+            include($this->store->get_config("code")."widgets/browse/formbutton.html");
           ?>
         </td><td>
           <?php
@@ -66,8 +66,8 @@
               $wgHTMLEditName="page";
               $wgHTMLEditLanguage=$arLanguage;
               $wgHTMLEditContent=$this->ParsePage($this->getdata("page",$arLanguage), true, true);
-              include($this->store->code."widgets/htmledit/js.html"); 
-              include($this->store->code."widgets/htmledit/form.html"); 
+              include($this->store->get_config("code")."widgets/htmledit/js.html"); 
+              include($this->store->get_config("code")."widgets/htmledit/form.html"); 
             }
           ?>
         </td>

@@ -172,8 +172,6 @@
 		if ($store) { // loader.php uses this function before the store is initialized.
 			$store->root=$root;
 			$store->rootoptions=$rootoptions;
-			$store->proxystore->root=$root;
-			$store->proxystore->rootoptions=$rootoptions;
 		}	
 	}
 

@@ -69,8 +69,8 @@
 					$wgBrowsePath=$this->parent;
 				}
 				$wgBrowseName="path";
-				include($this->store->code."widgets/browse/js.html");
-				include($this->store->code."widgets/browse/form.html"); 
+				include($this->store->get_config("code")."widgets/browse/js.html");
+				include($this->store->get_config("code")."widgets/browse/form.html"); 
 			?>
 		</td>
 	</tr>

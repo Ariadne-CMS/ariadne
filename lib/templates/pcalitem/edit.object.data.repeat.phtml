@@ -140,8 +140,8 @@
 					<?php
 						$wgDate=$repeatend;
 						$wgDateName="day_repeatend";
-						include($this->store->code."widgets/date/js.selectdate.html");
-						include($this->store->code."widgets/date/form.html");
+						include($this->store->get_config("code")."widgets/date/js.selectdate.html");
+						include($this->store->get_config("code")."widgets/date/form.html");
 					?>
 				</td>
 			</tr>
@@ -183,7 +183,7 @@
 					<?php
 						$wgDate=$repeatend;
 						$wgDateName="week_repeatend";
-						include($this->store->code."widgets/date/form.html");
+						include($this->store->get_config("code")."widgets/date/form.html");
 					?>
 				</td>
 			</tr>
@@ -219,7 +219,7 @@
 					<?php
 						$wgDate=$repeatend;
 						$wgDateName="month_repeatend";
-						include($this->store->code."widgets/date/form.html");
+						include($this->store->get_config("code")."widgets/date/form.html");
 					?>
 				</td>
 			</tr>
@@ -243,7 +243,7 @@
 					<?php
 						$wgDate=$repeatend;
 						$wgDateName="year_repeatend";
-						include($this->store->code."widgets/date/form.html");
+						include($this->store->get_config("code")."widgets/date/form.html");
 					?>
 				</td>
 			</tr>
