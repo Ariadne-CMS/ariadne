@@ -17,10 +17,10 @@
   /* either "WIN32" or "UNIX".                                              */
   /**************************************************************************/
 
-  // $AR->OS="WIN32";       /* Windows 95/98/ME/NT/2000                     */
-  $AR->OS="UNIX";           /* All unix/linux variants                      */
+  // $AR->OS                = "WIN32";         // Windows 95/98/ME/NT/2000
+  $AR->OS                   = "UNIX";          // All unix/linux variants
 
-  $AR->dir=new object;      // do not change
+  $AR->dir=new object;                         // do not change
   
   /**************************************************************************/
   /* Path information                                                       */
@@ -34,13 +34,13 @@
   /*   $AR->dir->docroot='/var/www/';                                       */
   /**************************************************************************/
  
-  $AR->dir->docroot=$HTTP_SERVER_VARS["DOCUMENT_ROOT"];
+  $AR->dir->docroot         = $HTTP_SERVER_VARS["DOCUMENT_ROOT"];
 
   /**************************************************************************/
   /* Fill in the path from the document root to the ariadne www pages       */
   /**************************************************************************/
 
-  $AR->dir->www="/ariadne/";
+  $AR->dir->www             = "/ariadne/";
 
   /**************************************************************************/
   /* If you installed ariadne in your own homedirectory, e.g. under ~user/, */
@@ -50,19 +50,19 @@
   /* Otherwise, don't change the default.                                   */
   /**************************************************************************/
 
-  $AR->dir->root=$AR->dir->docroot.$AR->dir->www;
+  $AR->dir->root            = $AR->dir->docroot.$AR->dir->www;
 
   /**************************************************************************/
   /* Only change this if you have made your own loader                      */
   /**************************************************************************/
 
-  $AR->root=$AR->dir->www."loader.php";
+  $AR->root                 = $AR->dir->www."loader.php";
 
   /**************************************************************************/
   /* Only change this if you have moved the images directory                */
   /**************************************************************************/
 
-  $AR->dir->images=$AR->dir->www."images/";
+  $AR->dir->images          = $AR->dir->www."images/";
 
   /**************************************************************************/
   /* If you want you can change the default server name below. You should   */
@@ -71,7 +71,8 @@
   /* If you do change it, leave out the entire block of code.               */
   /**************************************************************************/
 
-  $AR->host="http://".$HTTP_SERVER_VARS["HTTP_HOST"];
+  $AR->host                 = "http://".$HTTP_SERVER_VARS["HTTP_HOST"];
+
   if ($HTTP_SERVER_VARS["SERVER_PORT"]!=80) {
     $AR->host.=":".$HTTP_SERVER_VARS["SERVER_PORT"];
   }
@@ -84,15 +85,15 @@
   /* list below. Do not use html entities like &eacute;                     */                                                           */
   /**************************************************************************/
 
-  $AR->nls=new object;      // do not change
+  $AR->nls=new object;                         // do not change
 
-  $AR->nls->list["nl"]="Nederlands";
-  $AR->nls->list["en"]="English";
-  $AR->nls->list["es"]="Español";
+  $AR->nls->list["nl"]      = "Nederlands";
+  $AR->nls->list["en"]      = "English";
+  $AR->nls->list["es"]      = "Español";
 
   /* default language *******************************************************/
 
-  $AR->nls->default="en";
+  $AR->nls->default         = "en";
 
   /**************************************************************************/
   /* you shouldn't need to change anything below this line                  */
@@ -100,31 +101,34 @@
 
   /* configuration object for ariadne's import/export module ****************/
 
-  $AR->ax=new object;       // do not change
+  $AR->ax=new object;                          // do not change
 
   /* command to untar the (%s) file *****************************************/
 
-  $AR->ax->cmd_untar="tar -zxf %s";
+  $AR->ax->cmd_untar        = "tar -zxf %s";
 
   /* command to tar the (second %s) file and create tar file (first %s) *****/
 
-  $AR->ax->cmd_tar="tar -zc %s -f %s";
+  $AR->ax->cmd_tar          = "tar -zc %s -f %s";
 
   /* command to remove directory (%s) ***************************************/
 
-  if( $AR->OS=="WIN32" ) $AR->ax->cmd_rmdir="rmdir /S /Q %s";
-  else $AR->ax->cmd_rmdir="rm -rf %s";  
+  if ($AR->OS=="WIN32") {
+    $AR->ax->cmd_rmdir      = "rmdir /S /Q %s";
+  } else {
+    $AR->ax->cmd_rmdir      = "rm -rf %s";  
+  }
 
-  $ARConfig=new object;     // do not change
+  $ARConfig=new object;                        // do not change
 
   /* make default nls available for the root ********************************/
 
-  $ARConfig->cache[".."]=new object;        // do not change
-  $ARConfig->cache[".."]->nls=$AR->nls;     // do not change
-  $ARConfig->cache[".."]->root["path"]="/"; /* must always start with a '/' */
+  $ARConfig->cache[".."]=new object;           // do not change
+  $ARConfig->cache[".."]->nls=$AR->nls;        // do not change
+  $ARConfig->cache[".."]->root["path"]="/";    /* must always start with a '/' */
   $ARConfig->cache[".."]->root["value"]=$AR->root;  // do not change
 
-  $ARCurrent=new object;    // do not change
+  $ARCurrent=new object;                       // do not change
  
   /* To crypt or not to crypt ***********************************************/
 
