@@ -19,7 +19,9 @@ class axstore {
 	*****************/
 
 	function axstore($path, $config) {
-		$this->database=$config["database"];
+		$config["database"]=str_replace("\\", "/", $config["database"]);
+		$this->database=ereg_replace('^([a-zA-Z]:)', '', $config["database"]);
+
 		$this->writeable=$config["writeable"];
 		$this->temp=$config["temp"];
 		$this->files=$config["temp"];
