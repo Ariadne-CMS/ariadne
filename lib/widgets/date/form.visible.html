@@ -19,15 +19,15 @@
     $wgDateSize=10;
   }
 ?>
-<input type="text" name="<?php echo $wgDateName; ?>formatted" value="<?php 
+<input type="text" name="<?php echo $wgDateName; ?>formatted" id="<?php echo $wgDateName;?>formatted" value="<?php 
   echo strftime($wgDateFormat, $wgDate); 
 ?>" size="<?php echo $wgDateSize; ?>" class="editable"<?php
   if ($wgDateTitle) {
     echo " onFocus=\"this.blur();\">\n<input type=\"button\" name=\"wgDateButton\" value=\"$wgDateTitle\"".
-         " onClick=\"document.dform=this.form; SelectDate(this.form['".
-         $wgDateName."'], $wgDate, '$wgDateName', '$wgDateTitle', '$wgDateFormat');\">";
+         " onClick=\"SelectDate(this.form['".
+         $wgDateName."'], $wgDate, '$wgDateName', '$wgDateTitle', '$wgDateFormat', this.form);\">";
   } else {
-    echo " onFocus=\"this.blur(); document.dform=this.form; SelectDate(this.form['".
-      $wgDateName."'], $wgDate, '$wgDateName', 'Select Date', '$wgDateFormat');\">";
+    echo " onFocus=\"this.blur(); SelectDate(this.form['".
+      $wgDateName."'], $wgDate, '$wgDateName', 'Select Date', '$wgDateFormat', this.form);\">";
   }
 ?>
