@@ -1,5 +1,5 @@
 <?php
-  include($this->code."stores/modules/sql_compiler.php");
+  include_once($this->code."stores/modules/sql_compiler.php");
 
   class mysql_compiler extends sql_compiler {
 	function mysql_compiler($tbl_prefix="") {
@@ -50,7 +50,7 @@
 			case 'string':
 			case 'float':
 			case 'int':
-				$result=" ".$node["value"]." ";
+				$result=$node["value"];
 			break;
 			case 'and':
 				$cr = $this->custom_ref;

@@ -1726,5 +1726,17 @@ class pobject extends object { // pobject class definition
 		return $this->_load($class);
 	}
 
+	function html_to_text($text) {
+		$trans = array_flip(get_html_translation_table(HTML_ENTITIES));
+		//strip nonbreaking space, strip script and style blocks, strip html tags, convert html entites, strip extra white space
+		$search_clean = array("%&nbsp;%i", "%<(script|style)[^>]*>.*?<\/(script|style)[^>]*>%si", "%<[\/]*[^<>]*>%Usi", "%(\&[a-zA-Z0-9\#]+;)%es", "%\s+%");
+		$replace_clean = array(" ", " ", " ", "strtr('\\1',\$trans)", " ");
+		return preg_replace($search_clean, $replace_clean, $text);
+	}
+
+	function _html_to_text($text) {
+		return html_to_text($text);
+	}
+
 } // end of pobject class definition
 ?>

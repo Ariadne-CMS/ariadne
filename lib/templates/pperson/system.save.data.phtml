@@ -64,6 +64,7 @@
 			$this->data->mobile=$this->getdata("mobile","none");
 
 			$emails = $this->getdata("emails", "none");
+			$rawemails=$emails;
 			if (!is_array($emails)) {
 				$emails=explode(",",$emails);
 				if ($emails[0]) {
@@ -72,10 +73,24 @@
 					unset($this->data->emails);
 				}
 			}
+
 			$properties["address"][0]["street"]="'".AddSlashes($this->data->address)."'";
 			$properties["address"][0]["zipcode"]="'".AddSlashes($this->data->zipcode)."'";
 			$properties["address"][0]["city"]="'".AddSlashes($this->data->city)."'";
 			$properties["address"][0]["country"]="'".AddSlashes($this->data->country)."'";
+			if ($this->store->is_supported("fulltext")) {
+				$properties["fulltext"][0]["value"]="'".AddSlashes($this->store->format_for_fti(
+						$this->data->name." ".
+						$this->data->address." ".
+						$this->data->zipcode." ".
+						$this->data->city." ".
+						$this->data->country." ".
+						$this->data->state." ".
+						$this->data->telephone." ".
+						$this->data->mobile." ".
+						$rawemails
+						))."'";
+			}
 			if (!$this->error) {
 				$this->save($properties);
 				$this->ClearCache();

@@ -143,6 +143,14 @@ class postgresqlstore {
 		return ($result);
 	}
 
+	function is_supported($feature) {
+	/**********************************************************************************
+		This function takes as argument a feature description and returns
+		true if this feature is supported and false otherwise
+	**********************************************************************************/
+		return false;
+	}
+
 	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) {
 		debug("newobject($path, $parent, $type, [data], $id, $lastchanged, $vtype, $size, $priority)","all");
 		include_once($this->code."objects/".$type.".phtml");

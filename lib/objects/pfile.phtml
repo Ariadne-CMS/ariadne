@@ -113,6 +113,31 @@ class pfile extends pobject { // pfile class definition
 	function _DownloadFile() {
 		return $this->DownloadFile();
 	}
+
+	function GetPlainText() {  
+		global $AR;
+		$result="";
+		$files=$this->store->get_filestore("files");
+		$file=$files->make_path($this->id, "file");
+		$mimetype=$this->data->mimetype=$this->getdata("mimetype","none");
+		if (eregi("^text/", $mimetype)) {
+			$result=$this->GetFile();
+			if ($mimetype=="text/html") {
+				$result=$this->html_to_text($result);
+			}
+		} elseif (eregi("^application/(.*)$", $mimetype, $regs)) {
+		  $textualizer=$AR->Textualizers[$regs[1]];
+			if ($textualizer) {
+				exec(ereg_replace('FILE', $file, $textualizer), $result, $ret);
+				$result = $ret ? "" : implode("\n", $result);
+			}
+		}
+		return $result;
+	}
+	
+	function _GetPlainText() {
+		return GetPlainText();
+	}
   
 } // end of pfile class definition
 ?>

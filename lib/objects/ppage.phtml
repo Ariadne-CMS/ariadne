@@ -45,12 +45,22 @@ class ppage extends pobject { // ppage class definition
     } else {
       $session='';
     } 
-    if (!$full) {
-      return str_replace("{arSession}", $session, 
-			str_replace("{arRoot}",$AR->host.$this->store->root, 
-			str_replace("{arCurrentPage}", $this->make_url(),
-        		eregi_replace('^.*<BODY[^>]*>','',
-        		eregi_replace('</BODY.*$','',$page)))));
+	$site = $this->currentsite();
+	if (!$full) {
+		if ($site && $site !== '/') {
+	      return str_replace("{arSession}", $session, 
+				str_replace("{arRoot}",$AR->host.$this->store->root, 
+				str_replace("{arRoot}$site", $this->make_url($site),
+				str_replace("{arCurrentPage}", $this->make_url(),
+        			eregi_replace('^.*<BODY[^>]*>','',
+        			eregi_replace('</BODY.*$','',$page))))));
+		} else {
+	      return str_replace("{arSession}", $session, 
+				str_replace("{arRoot}",$AR->host.$this->store->root, 
+				str_replace("{arCurrentPage}", $this->make_url(),
+        			eregi_replace('^.*<BODY[^>]*>','',
+        			eregi_replace('</BODY.*$','',$page)))));
+		}
     } else {
       return str_replace("{arSession}", $session, str_replace("{arRoot}",$AR->host.$this->store->root, $page));
     }

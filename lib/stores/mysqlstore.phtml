@@ -132,6 +132,14 @@ class mysqlstore {
 		return $result;
 	}
 
+	function is_supported($feature) {
+	/**********************************************************************************
+		This function takes as argument a feature description and returns
+		true if this feature is supported and false otherwise
+	**********************************************************************************/
+		return false;
+	}
+
 	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) {
 		debug("newobject($path, $parent, $type, [data], $id, $lastchanged, $vtype, $size, $priority)","all");
 		include_once($this->code."objects/".$type.".phtml");
@@ -965,6 +973,24 @@ class mysqlstore {
 		}
 		debug("make_path: end ($result)","all");		
 		return $result;
+	}
+
+	function format_for_fti($text) {
+	/**********************************************************************
+ 
+		This function prepares the passed string to be interpreted properly
+	by the store's full text indexing system.
+		For MySQL, all characters over 126 and the select allowed characters
+	are escaped with the underscore character; whitespace characters are
+	collapsed into a single space.
+
+	**********************************************************************/
+
+		debug("format_for_fti($text)","all");
+		$allowedchars="_'-";
+		$search = array("%[\\x80-\\xFF$allowedchars]%es", "%\\s+%s");
+		$replace = array("'_'.dechex(ord('\\0'))", " ");
+		return preg_replace($search, $replace, $text);
 	}
 
 	function save_properties($properties, $id) {

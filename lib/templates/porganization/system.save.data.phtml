@@ -19,6 +19,26 @@
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
 			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
 		} else {
+			$this->data->address=$this->getdata("address","none");
+			$this->data->zipcode=$this->getdata("zipcode","none");
+			$this->data->city=$this->getdata("city","none");
+			$this->data->country=$this->getdata("country","none");
+			$this->data->telephone=$this->getdata("telephone","none");
+			$this->data->fax=$this->getdata("fax","none");
+			$this->data->pobox=$this->getdata("pobox","none");
+			$this->data->url=$this->getdata("url","none");
+
+			$emails = $this->getdata("emails", "none");
+			$rawemails = $emails;
+			if (!is_array($emails)) {
+				$emails=explode(",",$emails);
+				if ($emails[0]) {
+					$this->data->emails=$emails;
+				} else {
+					unset($this->data->emails);
+				}
+			}
+
 			if (!$this->data->nls) {
 				$this->data->nls=new object;
 			}
@@ -46,6 +66,23 @@
 					$properties["text"][$count]["value"]="'".AddSlashes($newnlsdata->summary)."'";
 					$properties["text"][$count]["nls"]="'$key'";
 					$count++;
+					if ($this->store->is_supported("fulltext")) {
+						$properties["fulltext"][$count]["value"]="'".AddSlashes($this->store->format_for_fti(
+								$newnlsdata->name." ".
+								$newnlsdata->summary." ".
+								$newnlsdata->title." ".
+								$this->data->address." ".
+								$this->data->zipcode." ".
+								$this->data->city." ".
+								$this->data->country." ".
+								$this->data->telephone." ".
+								$this->data->fax." ".
+								$this->data->pobox." ".
+								$this->data->url." ".
+								$rawemails
+								))."'";
+						$properties["fulltext"][$count]["nls"]="'$key'";
+					}
 					$this->data->$key=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
 				} else { // clear language values for $key->name if set, keep the rest, just in case.
@@ -53,24 +90,6 @@
 						unset($this->data->$key->name);
 						unset($this->data->nls->list[$key]);
 					}
-				}
-			}
-			$this->data->address=$this->getdata("address","none");
-			$this->data->zipcode=$this->getdata("zipcode","none");
-			$this->data->city=$this->getdata("city","none");
-			$this->data->country=$this->getdata("country","none");
-			$this->data->telephone=$this->getdata("telephone","none");
-			$this->data->fax=$this->getdata("fax","none");
-			$this->data->pobox=$this->getdata("pobox","none");
-			$this->data->url=$this->getdata("url","none");
-
-			$emails = $this->getdata("emails", "none");
-			if (!is_array($emails)) {
-				$emails=explode(",",$emails);
-				if ($emails[0]) {
-					$this->data->emails=$emails;
-				} else {
-					unset($this->data->emails);
 				}
 			}
 

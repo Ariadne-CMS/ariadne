@@ -81,6 +81,14 @@
 					if ($page=$this->getdata("page",$key)) {
 						$newnlsdata->page=$page;
 					}
+					if ($this->store->is_supported("fulltext")) {
+						$properties["fulltext"][$count]["value"]="'".AddSlashes($this->store->format_for_fti(
+								$newnlsdata->name." ".
+								$this->html_to_text($newnlsdata->summary)." ".
+								$this->html_to_text($newnlsdata->page)
+								))."'";
+						$properties["fulltext"][$count]["nls"]="'$key'";
+					}
 					$this->data->$key=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
 				} else { // clear language values for $key->name if set, keep the rest, just in case.

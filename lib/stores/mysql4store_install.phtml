@@ -1,8 +1,8 @@
 <?php
 
-include_once($ariadne."/stores/mysqlstore.phtml");
+include_once($ariadne."/stores/mysql4store.phtml");
 
-class mysqlstore_install extends mysqlstore {
+class mysql4store_install extends mysql4store {
 
 	function initialize() {
 		echo "initializing mysql store.\n";
@@ -22,7 +22,7 @@ CREATE TABLE ".$this->tbl_prefix."nodes (
 		$queries[1]["msg"]="creating objects table.";
 		$queries[1]["query_string"]="
 CREATE TABLE ".$this->tbl_prefix."objects (
-	id int(11) DEFAULT '0' NOT NULL auto_increment,
+	id int(11)  NOT NULL auto_increment,
 	type varchar(16) DEFAULT '' NOT NULL,
 	object mediumtext,
 	vtype varchar(16) DEFAULT '' NOT NULL,
