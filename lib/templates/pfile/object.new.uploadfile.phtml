@@ -7,11 +7,28 @@
 		<td valign="top">
 			<input type="file" name="file">
 		</td>
+	</tr><tr>
+		<td align="center">
+			<div ID="busy"  STYLE="position: absolute; top: 100px; left: 100px; width: 200px; height: 50px; background: buttonface; border:2px outset; padding: 10px; margin-top: 20px; text-align: left; visibility:hidden;">
+				<img src="<?PHP echo $AR->dir->images; ?>tree/wait.gif" align="left">Uploading...
+			</div>
+		</td>
 	</tr>
 	</table>
 	<script>
 		function forminit() { 
 			document.wgWizForm.file.focus();
 		}
+		function busy() {
+			if (document.all) {
+				var busy=document.all['busy'];
+			} else if (document.getElementById) {
+				var busy=document.getElementById('busy');
+			}
+			if (busy) {				
+				busy.style.visibility='visible';
+			}
+		}
 		window.onload=forminit;
+		document.wgWizForm.onsubmit=busy;
 	</script>
