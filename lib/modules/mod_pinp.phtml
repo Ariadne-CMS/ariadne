@@ -273,6 +273,21 @@ class scanner {
 						$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
 						return T_IDENT;
 					break;
+					case ':':
+						$yych = $YYBUFFER[++$YYCURSOR];
+						switch ($yych) {
+							case ':':
+								$yych = $YYBUFFER[++$YYCURSOR];
+								$result = "::";
+								return T_CLASS_OPERATOR;
+							break;
+							default:
+								$result = ":";
+								return T_UNPARSED;
+							break;
+						}
+						
+					break;
 					case '`':
 						$result = "backtick encounterd at line ".$this->YYLINE;
 						return T_ERROR;
@@ -552,6 +567,15 @@ class pinp {
 							$this->new_template.=$this->function_prefix.$ident."(";
 						} else {
 							$this->new_template.=$ident."(";
+						}
+					} else
+					if ($this->token == T_CLASS_OPERATOR) {
+						$this->next_token();
+						if ($this->token == T_IDENT) {
+							$this->new_template.="pinp_$ident::_".$this->token_value;
+						} else {
+							$this->error = "expecting an identifier following the class operator";
+							break 2;
 						}
 					} else {
 						$ident_clean = strtolower(trim($ident));
