@@ -353,6 +353,7 @@
     	document.wgWizForm.submit();  	
     }
   }
+
   
 </script>
 </head>
@@ -406,6 +407,16 @@
     ?>
 		<img src="<?php echo $AR->dir->images; ?>dot.gif" id="wgWizSectionSpan" alt="">
 		</div>
+		<script>
+			// scoll to selected section icon
+			var sElm;
+			if (document.getElementById) {
+				sElm = document.getElementById('link_<?php echo $wgWizNextStep; ?>');
+				if (sElm.scrollIntoView) {
+					sElm.scrollIntoView(true);
+				}
+			}
+		</script>
 	</td>
 <?php
 	}
