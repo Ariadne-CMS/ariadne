@@ -33,5 +33,12 @@ class paddressbook extends pdir { // definitie class
 		return $ARCurrent->addresses;
 	}
 
+	function _get_addresses($crit,$sortby="") {
+		$this->get_addresses($crit,$sortby);
+	}
+
+	function _call_address($address,$template="",$args="") {
+		return $address->call($template,$args);
+	}
 } // end class paddressbook
 ?>
