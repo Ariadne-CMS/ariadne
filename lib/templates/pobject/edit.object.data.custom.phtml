@@ -35,10 +35,10 @@
 	function init() {
 		dest=document.wgWizForm.fieldname.options;
 		<?php
-			$customdata=$this->getdata("customdata","none");
-			@parse_str($customdata);
-			if (is_array($customdata)) {
-				while (list($cdnls, $cdvalues)=each($customdata)) {
+			$custom=$this->getdata("custom","none");
+			@parse_str($custom);
+			if (is_array($custom)) {
+				while (list($cdnls, $cdvalues)=each($custom)) {
 					echo "	CustomData['".AddSlashes($cdnls)."']=new Array();\n";
 					while (list($cdname, $cdvalue)=each($cdvalues)) {
 						echo "	CustomData['".AddSlashes($cdnls)."']['".Addslashes($cdname)."']='".AddSlashes($cdvalue)."';\n";
@@ -47,35 +47,35 @@
 			}
 			$configcache=$ARConfig->cache[$this->path];
 			if (is_array($configcache->custom)) {
-				while (list($name, $custom)=each($configcache->custom)) {
-					if (($custom["type"]==$this->type) || 
-							($custom["inherit"] && 
-								($this->implements($custom["type"]))
+				while (list($name, $customvalue)=each($configcache->custom)) {
+					if (($customvalue["type"]==$this->type) || 
+							($customvalue["inherit"] && 
+								($this->implements($customvalue["type"]))
 							)
 						) {
-						if ($custom["nls"]=="true") {
-							$showdata=$customdata[$selectednls][$name];
+						if ($customvalue["nls"]=="true") {
+							$showdata=$custom[$selectednls][$name];
 						} else {
-							$showdata=$customdata['none'][$name];
+							$showdata=$custom['none'][$name];
 						}
 						echo "		dest[dest.length]=new Option('".AddSlashes($name)."','".AddSlashes($name)."');\n";
 						echo "		CustomList[CustomList.length]=new custom_node(\n";
-						echo "			'".AddSlashes($custom["type"])."',";
-						if ($custom["inherit"] && ($custom["inherit"]!="false")) {
+						echo "			'".AddSlashes($customvalue["type"])."',";
+						if ($customvalue["inherit"] && ($customvalue["inherit"]!="false")) {
 							echo 1;
 						} else {
 							echo 0;
 						}
 						echo ",\n";
-						echo "			'".AddSlashes($name)."','".AddSlashes($custom["size"])."',\n";
-						echo "			'".AddSlashes($custom["grant"])."',";
-						if ($custom["nls"] && ($custom["nls"]!="false")) {
+						echo "			'".AddSlashes($name)."','".AddSlashes($customvalue["size"])."',\n";
+						echo "			'".AddSlashes($customvalue["grant"])."',";
+						if ($customvalue["nls"] && ($customvalue["nls"]!="false")) {
 							echo 1;
 						} else {
 							echo 0;
 						}
 						echo ",\n";
-						echo "			'".AddSlashes($custom["check"])."');\n";
+						echo "			'".AddSlashes($customvalue["check"])."');\n";
 					}
 				}
 			}
@@ -96,11 +96,11 @@
 			for (nls in CustomData) {
 				arData=CustomData[nls];
 				for (arName in arData) {
-					savestring+='&customdata['+escape(nls)+']['+escape(arName)+']='+escape(arData[arName]);
+					savestring+='&custom['+escape(nls)+']['+escape(arName)+']='+escape(arData[arName]);
 				}
 
 			}
-			document.wgWizForm.customdata.value=savestring;
+			document.wgWizForm.custom.value=savestring;
 			return true;
 		}
 
@@ -178,7 +178,7 @@
 	width: 280px;
 }
 </style>
-<input type="hidden" name="customdata">
+<input type="hidden" name="custom">
 <table border="0" width="90%">
 <tr>
 	<td>

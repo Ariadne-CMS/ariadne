@@ -13,7 +13,7 @@
 		while (list($key, $definition)=each($configcache->custom)) {
 			if (($definition["type"]==$this->type) ||
 				($definition["inherit"] && ($this->implements($definition["type"])))) {
-				$customdata=true;
+				$hascustomdata=true;
 				break;
 			}
 		}
@@ -34,7 +34,7 @@
 	$arFlow[$i]["template"]=$step1;
 	$arFlow[$i]["prev"]=$i-1;
 
-	if ($customdata) {
+	if ($hascustomdata) {
 		$arFlow[$i]["next"]=$i+1;
 		$arFlow[$i]["save"]=$i+2;
 		$i++;

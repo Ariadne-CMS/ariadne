@@ -68,19 +68,19 @@
 	<td><br></td>
 </tr>
 <?php 
-	$configcache=$ARConfig->cache[$this->parent];
+	$configcache=$ARConfig->cache[$this->path];
 	if ($configcache->custom) {
 		reset($configcache->custom);
 		while (list($key, $definition)=each($configcache->custom)) {
 			if (($definition["type"]==$this->type) ||
 				($definition["inherit"] && ($this->implements($definition["type"])))) {
-				$customdata=true;
+				$hascustomdata=true;
 				break;
 			}
 		}
 	}
 
-	if ($customdata) {
+	if ($hascustomdata) {
 ?>
 <tr>
 	<td colspan="2" bgcolor="#404074">

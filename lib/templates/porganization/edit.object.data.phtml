@@ -16,7 +16,7 @@
 			while (list($key, $definition)=each($configcache->custom)) {
 				if (($definition["type"]==$this->type) ||
 					($definition["inherit"] && ($this->implements($definition["type"])))) {
-					$customdata=true;
+					$hascustomdata=true;
 					$customoffset=1;
 					break;
 				}
@@ -54,7 +54,7 @@
 		$wgWizFlow[$i]["title"]=$ARnls["contactinformation"];
 		$wgWizFlow[$i]["template"]=$contact;
 		$wgWizFlow[$i]["prev"]=$i-1;
-		if ($customdata) {
+		if ($hascustomdata) {
 			$wgWizFlow[$i]["next"]=$i+1;
 			$wgWizFlow[$i]["save"]=$i+2+$saveoffset;
 			$i++;
@@ -68,7 +68,7 @@
 			$i++;
 			$wgWizFlow[$i]["title"]=$ARnls["language"];
 			$wgWizFlow[$i]["template"]=$language;
-			if ($customdata) {
+			if ($hascustomdata) {
 				$wgWizFlow[$i]["next"]=$i-4;
 			} else {
 				$wgWizFlow[$i]["next"]=$i-3;

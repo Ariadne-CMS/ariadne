@@ -78,11 +78,11 @@ class pobject extends object {
 			$nlsdata=&$this->data;
 			$data=&$this->data;
 		} 
-		if ($this->data->customdata['none']) {
-			$customdata=&$this->data->customdata['none'];
+		if ($this->data->custom['none']) {
+			$customdata=&$this->data->custom['none'];
 		}
-		if ($this->data->customdata[$nls]) {
-			$customnlsdata=&$this->data->customdata[$nls];
+		if ($this->data->custom[$nls]) {
+			$customnlsdata=&$this->data->custom[$nls];
 		}
 		debug("pobject: call: nls set to $nls","all"); 
 		
@@ -188,16 +188,19 @@ class pobject extends object {
 							$this->data->muser=$AR->user->data->login;
 							$this->data->owner_name=$AR->user->data->name;
 							$this->data->owner=$AR->user->data->login;
-							$customdata=$this->getdata("customdata","none");
-							@parse_str($customdata);
-							$this->data->customdata=$customdata;
+							$custom=$this->getdata("custom","none");
+							@parse_str($custom);
+							// the above works because either $custom comes from the form entry, and parse_str returns an 
+							// array with the name $custom, or $custom comes from the object and is an array and as such 
+							// parse_str fails miserably thus keeping the array $custom intact.
+							$this->data->custom=$custom;
 							$properties["time"][0]["ctime"]=$this->data->ctime;
 							$properties["time"][0]["mtime"]=$this->data->mtime;
 							$properties["time"][0]["muser"]="'".AddSlashes($this->data->muser)."'";
 							$properties["owner"][0]["value"]="'".AddSlashes($this->data->owner)."'";
 							$i=0;
-							if (is_array($this->data->customdata)) {
-								while (list($nls, $cdata)=each($this->data->customdata)) {
+							if (is_array($this->data->custom)) {
+								while (list($nls, $cdata)=each($this->data->custom)) {
 									while (list($name, $value)=each($cdata)) {
 										// one index, this order (name, value, nls) ?
 										if ($configcache->custom[$name]['property']) {
@@ -233,12 +236,13 @@ class pobject extends object {
 					$properties["time"][0]["ctime"]=$this->data->ctime;
 					$properties["time"][0]["mtime"]=$this->data->mtime;
 					$properties["time"][0]["muser"]="'".AddSlashes($AR->user->data->login)."'";
-					$customdata=$this->getdata("customdata","none");
-					@parse_str($customdata);
-					$this->data->customdata=$customdata;
+					$custom=$this->getdata("custom","none");
+					@parse_str($custom);
+					// see comments above
+					$this->data->custom=$custom;
 					$i=0;
-					if (is_array($this->data->customdata)) {
-						while (list($nls, $cdata)=each($this->data->customdata)) {
+					if (is_array($this->data->custom)) {
+						while (list($nls, $cdata)=each($this->data->custom)) {
 							while (list($name, $value)=each($cdata)) {
 								if ($configcache->custom[$name]['property']) {
 									// one index, this order (name, value, nls) ?
@@ -615,11 +619,11 @@ class pobject extends object {
 					$this->nlsdata=$this->data->$reqnls;
 				}
 			} 
-			if ($this->data->customdata['none']) {
-				$this->customdata=&$this->data->customdata['none'];
+			if ($this->data->custom['none']) {
+				$this->customdata=&$this->data->custom['none'];
 			}
-			if ($this->data->customdata[$nls]) {
-				$this->customnlsdata=&$this->data->customdata[$nls];
+			if ($this->data->custom[$nls]) {
+				$this->customnlsdata=&$this->data->custom[$nls];
 			}
 			$ARCurrent->nolangcheck=1;
 			if (	(	$config->cache && ( $config->cache>0 )		) &&
