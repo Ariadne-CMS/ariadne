@@ -229,4 +229,10 @@ $ARnls["preferences"]=	"Instellingen";
 $ARnls["changeeffectivenextlogin"]="Veranderingen worden doorgevoerd wanneer U zich opnieuw aanmeld.";
 $ARnls["netherlands"]=	"Nederland";
 $ARnls["aboutariadne"]=	"Over Ariadne";
+$ARnls["lookin"]=		"Zoek in";
+$ARnls["objectsoftype"]="Objecten van type";
+$ARnls["open"]=			"Open";
+$ARnls["allobjects"]=	"Alle Objecten";
+$ARnls["modified"]=		"Gewijzigd";
+$ARnls["size"]=			"Grootte";
 ?>
