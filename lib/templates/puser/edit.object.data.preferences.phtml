@@ -18,10 +18,9 @@
 				</td><td>
 					<select name="language" style="width: 100px;">
 					<?php
-						if (!$this->getdata("arNewType", "none")) {
-							$language=$data->language;
-						} else {
-							$language=$AR->nls->default;
+						$language=$this->getdata("language","none");
+						if (!$language) {
+							$language=$nls;
 						}
 						reset($AR->nls->list);
 						while (list($key, $value)=each($AR->nls->list)) {
@@ -40,8 +39,9 @@
 					<?php echo $ARnls["interface"]; ?>
 				</td><td>
 					<select name="interface" style="width: 100px;">
-							<option value="new" <?php if ($data->interface=="new") { echo "selected"; } ?>><?php echo $ARnls["new"]; ?></option>
-							<option value="classic" <?php if ($data->interface=="classic") { echo "selected"; } ?>><?php echo $ARnls["classic"]; ?></option>
+							<?php $interface=$this->getdata("interface","none"); ?>
+							<option value="new" <?php if ($interface=="new") { echo "selected"; } ?>><?php echo $ARnls["new"]; ?></option>
+							<option value="classic" <?php if ($interface=="classic") { echo "selected"; } ?>><?php echo $ARnls["classic"]; ?></option>
 					</select>
 				<td>
 			</tr>
@@ -50,8 +50,9 @@
 					<?php echo $ARnls["editor"]; ?>
 				</td><td>
 					<select name="editor" style="width: 100px;">
+							<?php $editor=$this->getdata("editor","none"); ?>
 							<option value="wysiwyg"><?php echo $ARnls["wysiwyg"]; ?></option>
-							<option value="text" <?php if ($data->editor=="text") { echo "selected"; } ?>><?php echo $ARnls["text"]; ?></option>
+							<option value="text" <?php if ($editor=="text") { echo "selected"; } ?>><?php echo $ARnls["text"]; ?></option>
 					</select>
 				<td>
 			</tr>
