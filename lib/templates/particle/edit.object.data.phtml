@@ -22,9 +22,6 @@
 		}
 		if (count($ARConfig->nls->list)>1) { // more than one language available
 			$languages=true;
-			$saveoffset=1;
-		} else {
-			$saveoffset=0;
 		}
 		$custom="edit.object.data.custom.phtml";
 
@@ -39,74 +36,48 @@
 		$cancel="edit.object.cancel.phtml";
 
 		$wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
-		$wgWizFlow[0]["template"] = $cancel;
+		$wgWizFlow[0]["cancel"] = $cancel;
+		$wgWizFlow[0]["save"] = $finish;
 
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["scenario"];
+		$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/scenario.png";
 		$wgWizFlow[$i]["template"]=$scenario;
-		$wgWizFlow[$i]["next"]=$i+1;
-		$wgWizFlow[$i]["save"]=$i+3+$customoffset+$saveoffset;
-		$wgWizFlow[$i]["cancel"]=0;
+
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["date"]."&nbsp;/&nbsp;".$ARnls["time"];
+		$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/schedule.png";
 		$wgWizFlow[$i]["template"]=$datetime;
-		$wgWizFlow[$i]["next"]=$i+1; 
-		$wgWizFlow[$i]["prev"]=$i-1; 
-		$wgWizFlow[$i]["save"]=$i+2+$customoffset+$saveoffset;
-		$wgWizFlow[$i]["cancel"]=0;
+
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["summary"];
+		$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/data.png";
 		$wgWizFlow[$i]["template"]=$summary;
-		$wgWizFlow[$i]["prev"]=$i-1;
-		$wgWizFlow[$i]["cancel"]=0;
+
 		if ($hascustomdata) {
-			$wgWizFlow[$i]["next"]=$i+1;
-			$wgWizFlow[$i]["save"]=$i+2+$saveoffset;
 			$i++;
 			$wgWizFlow[$i]["title"]=$ARnls["customdata"];
+			$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/customdata.png";
 			$wgWizFlow[$i]["template"]=$custom;
-			$wgWizFlow[$i]["prev"]=$i-1;
-			$wgWizFlow[$i]["cancel"]=0;
 		}
+
 		if ($languages) { // more than one language available
-			$wgWizFlow[$i]["next"]=$i+1;
-			$wgWizFlow[$i]["save"]=$i+2;
 			$i++;
 			$wgWizFlow[$i]["title"]=$ARnls["language"];
+			$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/languages.png";
 			$wgWizFlow[$i]["template"]=$language;
-			$wgWizFlow[$i]["next"]=$i-1-$customoffset;
-			$wgWizFlow[$i]["prev"]=$i-1;
-			$wgWizFlow[$i]["save"]=$i+1;
-			$wgWizFlow[$i]["cancel"]=0;
-		} else {
-			$wgWizFlow[$i]["save"]=$i+1;
 		}
-		$i++;
-		$wgWizFlow[$i]["title"]=$ARnls["save"];
-		$wgWizFlow[$i]["template"]=$finish;
-		$wgWizFlow[$i]["back"]=$i-1;
-		$wgWizFlow[$i]["cancel"]=0;
-		
+
 		$arLanguage=$this->getdata("arLanguage","none");
-		if ($wgWizFlow[0]["current"]=="language") { // =edit.object.language.phtml
-			$arControl=$this->getdata("wgWizControl","none");
-			if (wgWizGetAction($arControl)=="prev") { // if previous selected, ignore the language select list.
-				$arLanguage=$this->getdata("arPrevLanguage","none");
-				$ARCurrent->arLanguage=$arLanguage;
-			}
-		}
-		global $HTTP_POST_VARS;
 		if (!$arLanguage) { // language select hasn't been done yet, so start with default language
 			$arLanguage=$ARConfig->nls->default;
 			$ARCurrent->arLanguage=$arLanguage;
 		}
-		// now fool the wizard keepvars function to use the new language
-		$HTTP_POST_VARS["arLanguage"]=$arLanguage;
 
 		$wgWizControl=$this->getdata("wgWizControl","none");
 		$wgWizCurrent=$this->getdata("wgWizCurrent","none");
 		$result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
 		$wgWizTitle=$ARnls["edit"]." ".$result[0];		
-		include($this->store->code."widgets/wizard/classic.html");
+		include($this->store->code."widgets/wizard/new.html");
 	}
 ?>

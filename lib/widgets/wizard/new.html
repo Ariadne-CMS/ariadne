@@ -1,0 +1,359 @@
+<?php
+  /******************************************************************
+   classic.html					   Muze Ariadne v2.1
+   ------------------------------------------------------------------
+
+   Classic windows look wizard widget. 
+
+   + wgWizFlow : array
+     wgWizFlow[0]["arCallArgs"]
+     wgWizFlow[i]["title"]=string
+     wgWizFlow[i]["template"]=string
+     $wgWizFlow or $ARCurrent->wgWizFlow
+   - wgWizNextStep : int, default 1
+   - wgWizButtons : hash, default "next" = true
+     wgWizButtons["next"] : bool
+       - "prev" : bool
+       - "save" : bool
+       - "back" : bool
+   - wgWizTitle : string, default "Wizard"
+   - wgWizCallObject : object, default $this
+   - wgWizCaption : string, default "", displayed below wgWizFlow
+
+   No result.
+
+  ******************************************************************/
+  if (!isset($HTTP_GET_VARS)) {
+    global $HTTP_GET_VARS;
+  }
+  if (!isset($HTTP_POST_VARS)) {
+    global $HTTP_POST_VARS;
+  }
+  if (!isset($HTTP_SERVER_VARS)) {
+    global $HTTP_SERVER_VARS;
+  }
+  if (!$wgWizCallObject) {
+    if ($wgWizNewType) {
+      if (!$wgWizNewfilename) {
+        $wgWizNewFilename="{5:id}";
+      }
+      if (!$wgWizNewData) {
+        $wgWizNewData=new object; 
+      }
+      $wgWizNewPath=$this->make_path($wgWizNewFilename);
+      $wgWizCallObject=$this->store->newobject($wgWizNewPath, $this->path, $wgWizNewType, $wgWizNewData);
+      $wgWizCallObject->arIsNewObject=true;
+    } else {
+      $wgWizCallObject=$this;
+    }
+  }
+  if (!$wgWizTitle) {
+    $wgWizTitle="Wizard"; //FIXME: nls value?
+  }  
+  if (!$wgWizFlow || !is_array($wgWizFlow)) {
+    $wgWizFlow=$ARCurrent->wgWizFlow;
+    if (!$wgWizFlow || !is_array($wgWizFlow)) {
+      error("wgWizFlow undefined or corrupt");
+    }
+  }
+  if (!$wgWizControl) {
+    $wgWizControl=$this->getdata("wgWizControl","none");
+  }
+  if (!$wgWizCurrent) {
+    $wgWizCurrent=$this->getdata("wgWizCurrent","none");
+  }
+  if (!$wgWizNextStep && !($wgWizNextStep=$ARCurrent->wgWizNextStep)) {
+    $wgWizNextStep=1;
+  }
+  if ($wgWizControl==$ARnls["save"]) {
+    $wgWizTemplate=$wgWizFlow[0]['save'];
+  } else if ($wgWizControl==$ARnls["cancel"]) {
+    $wgWizTemplate=$wgWizFlow[0]['cancel'];
+  } else {
+    $wgWizTemplate=$wgWizFlow[$wgWizNextStep]["template"];
+  }
+  if (!$wgWizButtons) {
+    $wgWizButtons=$wgWizFlow[$wgWizNextStep];
+  }
+?>
+<html>
+<head>
+<title><?php echo $wgWizTitle; ?></title>
+<style>
+  body, html, form {
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    background-color: buttonface;
+  }
+  #wgWizTable {
+  	height: 100%;
+  	width: 100%;
+  	overflow: hidden;
+  }
+  #wgWizSectionList #wgWizSections {
+    height: 100%;
+    overflow: auto;
+  }
+  #wgWizSectionList > #wgWizSections {
+    height: auto;
+    position: fixed;
+    top: 53px;
+    left: 8px;
+    bottom: 35px;
+    border-top: 2px solid threedshadow;
+    border-left: 2px solid threedshadow;
+    border-right: 2px solid threedhighlight;
+    border-bottom: 2px solid threedhighlight;
+  }
+
+  #wgWizSectionData {
+    height: 100%;
+    overflow: auto;
+  }
+  #wgWizSectionDataSpan {
+  	width: 320px;
+  	height: 1px;
+  }
+  TD > #wgWizSectionData {
+    height: auto;
+    position: fixed;
+    left: 120px;
+    top: 58px;
+    right: 0px;
+    bottom: 30px;
+  }
+  #wgWizSectionList > #wgWizSections {
+    width: 104px;
+  }
+  #wgWizSectionList {
+    width: 100px;
+    background-color: white;
+    border: 2px inset threedhighlight
+  }
+  #wgWizSectionList A .wgWizImage {
+  	height: 48px;
+  	width: 48px;
+	display: block;
+    dmargin-left: -5px;
+  }
+  body, form, td, input, select {
+    font: menu;
+  }
+  #wgWizSectionSpan {
+  	width: 80px;
+    height: 1px;
+  }
+  #wgWizSectionList A {
+  	text-decoration: none;
+    display: block;
+    text-align: center;
+    padding: 2px;
+    margin: 4px;
+    font: menu;
+    color: black;
+    border: 1px solid white;
+  }
+  #wgWizSectionList A:hover {
+    border: 1px solid #4A6799;
+    background-color: #D0DCF7;	
+  }
+  #wgWizSectionList A.current {
+    border: 1px solid #4A6799;
+    background-color: #A5BAE5;	
+  }
+  #wgWizSectionList A .wgWizImage {
+  	height: 48px;
+  	width: 48px;
+	display: block;
+  }
+  #wgWizSectionList A > .wgWizImage {
+    margin-left: 22px;
+  }
+  #wgWizControls TD {
+  	height: 35px;
+    padding: 5px;
+  }
+  .wgWizControl {
+  	width: 100px;
+	margin-left: 10px;
+  }
+  .section_form {
+    height: 100%;
+    width: 100%;
+    display: none;
+  }
+  .section_form fieldset {
+    height: 100%;
+  }
+  .inputline, .inputbox {
+    width: 100%;
+  }
+  .inputbox {
+    height: 12em;
+  }
+  table {
+    width: 100%;
+  }
+  fieldset {
+    padding: 5px;
+  }
+  #wgWizHeader {
+    height: 53px;
+    background-image: url('<?php echo $AR->dir->images; ?>wizard/header_banner.jpeg');
+    background-repeat: no-repeat;
+    background-color: #496799;
+    background-position: bottom left;
+    border-bottom: 8px solid threedface;
+  }
+  #wgWizFooter {
+	height: 8px;
+  }
+  #wgWizLeftBorder {
+	width: 8px;
+  }
+  #wgWizSectionData {
+    margin-top: -8px;
+    padding-top: 0px;
+    border-top: 0px;
+  }
+</style>
+<script>
+  var currentSection;
+
+  function selectSection(section_id) {
+    document.wgWizForm.wgWizNextStep.value=section_id;
+    document.wgWizForm.submit();
+  }
+  
+</script>
+</head>
+<body>
+<script src="<?php echo $AR->dir->www; ?>widgets/window/savesize.js"></script>
+<form method="post" name="wgWizForm" 
+  action="<?php echo $HTTP_SERVER_VARS["REQUEST_URI"]; ?>"
+  onSubmit="return checksubmit();"
+  ENCTYPE="multipart/form-data">
+<?php
+  if (!$arStoreVars) {
+    $arStoreVars=$this->getdata("arStoreVars","none");
+  }
+  $ARCurrent->override=true; // POST vars always get included in the hidden arStoreVars list
+  wgWizKeepVars($HTTP_POST_VARS);
+  $ARCurrent->override=false;
+  wgWizKeepVars($arStoreVars, "arStoreVars");
+  wgWizKeepVars($HTTP_GET_VARS);
+?>
+<input type="hidden" name="arLanguage" value="<?php echo $arLanguage; ?>">
+<table id="wgWizTable" cellpadding="0" cellspacing="0" border="0">
+<tr>
+	<td colspan="4" id="wgWizHeader" height="48">&nbsp;</td>
+</tr>
+<tr>
+	<td id="wgWizLeftBorder"></td>
+	<td id="wgWizSectionList" align="center" valign="top">
+		<div id="wgWizSections">
+<?php
+      $style="";
+      for ($i=1; $i<sizeof($wgWizFlow); $i++) {
+        if ($wgWizFlow[$i]['image']) {
+          $item='<img align="center" src="'.$AR->dir->images.'dot.gif" class="WgWizImage" id="image_'.$i.'" alt="'.$wgWizFlow[$i]['title'].'" border="0">'.$wgWizFlow[$i]["title"];
+          $style.='#image_'.$i.' { filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src="'.$wgWizFlow[$i]['image'].'",sizingMethod="scale"); }'."\n";
+          $style.='A > #image_'.$i.' { background-image: url("'.$wgWizFlow[$i]['image'].'"); }'."\n";
+          $head="<a href=\"javascript:selectSection('$i');\" id=\"link_$i\"";
+          $tail="</a>\n";
+          if ($i==$wgWizNextStep) {
+            $item=$head.' class="current">'.$item.$tail; 
+          } else {
+            $item=$head.' class="step">'.$item.$tail;
+          }
+          echo $item;
+        }
+      }
+      echo "<style>\n".$style."</style>";
+    ?>
+		<img src="<?php echo $AR->dir->images; ?>dot.gif" id="wgWizSectionSpan" alt="">
+		</div>
+	</td><td colspan="2">
+<div id="wgWizSectionData">
+
+    <?php
+      $checks=$wgWizCallObject->call($wgWizTemplate, $wgWizCallArgs);
+      if (!$checks) { // object templates (pinp) cannot return values, use ARCurrent instead
+        $checks=$ARCurrent->wgWizChecks;
+      }
+    ?>
+
+	<img src="<?php echo $AR->dir->images; ?>dot.gif" id="wgWizSectionDataSpan" alt="">
+</div>
+	</td>
+</tr><tr id="wgWizControls">
+	<td colspan="4" align="right" valign="bottom">
+		<input type="submit" name="wgWizControl" class="wgWizControl" onClick="document.action='save';" value="<?php echo $ARnls["save"]; ?>">
+		<input type="submit" name="wgWizControl" class="wgWizControl" onClick="document.action='cancel';" value="<?php echo $ARnls["cancel"]; ?>">
+	</td>
+</tr>
+</table>
+
+      <script>
+      function checksubmit() {
+        result=true; 
+        switch(document.action) {
+          <?php
+            if ($checks && is_array($checks)) {
+              while (list($action, $namelist)=each($checks)) {
+                echo " case '$action' :\n";
+                if ($namelist && is_array($namelist)) {
+                  while (list($name, $checklist)=each($namelist)) {
+                    echo " check=new String(document.wgWizForm['$name'].value);\n";
+                    echo " if (!check.match('".$checklist["ereg"]."')) {\n";
+                    if ($checklist["error"]) {
+                      echo "   alert('".ereg_replace("'","\\'",$checklist["error"])."');\n";
+                      echo "   return false;\n";
+                    } else if ($checklist["confirm"]) {
+                      echo "   return confirm('".ereg_replace("'","\\'",$checklist["confirm"])."');\n";
+                    } 
+                    echo " } ";
+                  }
+                  echo " break;\n";
+                } else {
+                  $wgWizButtons[$action]=false;
+                }
+              }
+            }
+          ?>
+          default: 
+            break;
+        }
+		if (result && document.wgWizForm.wgWizSubmitHandler) {
+			result=document.wgWizForm.wgWizSubmitHandler();
+		}
+        return result;
+      }
+    </script>
+
+<input type="hidden" name="wgWizNextStep" value="0">
+</form>
+<?php
+  if ($wgWizAlert) {
+?>
+<script>
+  function wgWizAlert() {
+    alert('<?php echo AddCSlashes($wgWizAlert, ARESCAPE); ?>');
+    if (window.oldonload) {
+      window.oldonload();
+    }
+  }
+  if (window.onload) {
+    window.oldonload=window.onload;
+  }
+  window.onload=wgWizAlert;
+</script>
+<?php
+  }
+?>
+</body>
+</html>

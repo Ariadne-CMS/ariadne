@@ -24,7 +24,6 @@
 	}
 	if (count($ARConfig->nls->list)>1) { // more than one language available
 		$languages=true;
-		$saveoffset+=1;
 	}
 	$custom="edit.object.data.custom.phtml";
 
@@ -37,80 +36,50 @@
 	$cancel="object.new.cancel.phtml";
  
 	$arFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
-	$arFlow[0]["template"]=$cancel;
+	$arFlow[0]["cancel"]=$cancel;
+	$arFlow[0]["finish"]=$cancel;
  
 	$i++;
 	$arFlow[$i]["title"]=$ARnls["filename"];
+	$arFlow[$i]["image"]=$AR->dir->images."wizard/info.png";
 	$arFlow[$i]["template"]=$start;
-	$arFlow[$i]["next"]=$i+1; 
-	$arFlow[$i]["cancel"]=0;
-	$i++;
-	$arFlow[$i]["title"]=$ARnls["name"];
-	$arFlow[$i]["template"]=$name;
-	$arFlow[$i]["prev"]=$i-1;
-	$arFlow[$i]["next"]=$i+1; 
-	$arFlow[$i]["save"]=$i+3+$saveoffset;
-	$arFlow[$i]["cancel"]=0;
-	$i++;
-	$arFlow[$i]["title"]=$ARnls["address"];
-	$arFlow[$i]["template"]=$address;
-	$arFlow[$i]["prev"]=$i-1;
-	$arFlow[$i]["next"]=$i+1; 
-	$arFlow[$i]["save"]=$i+2+$saveoffset;
-	$arFlow[$i]["cancel"]=0;
-	$i++;
-	$arFlow[$i]["title"]=$ARnls["contactinformation"];
-	$arFlow[$i]["template"]=$contact;
-	$arFlow[$i]["prev"]=$i-1;
-	$arFlow[$i]["cancel"]=0;
-	if ($hascustomdata) {
-		$arFlow[$i]["next"]=$i+1;
-		$arFlow[$i]["save"]=$i+1+$saveoffset-1;
-		$i++;
-		$arFlow[$i]["title"]=$ARnls["customdata"];
-		$arFlow[$i]["template"]=$custom;
-		$arFlow[$i]["prev"]=$i-1;
-		$arFlow[$i]["cancel"]=0;
-	}
-	if ($languages) { // more than one language available
-		$arFlow[$i]["next"]=$i+1;
-		$arFlow[$i]["save"]=$i+2;
-		$i++;
-		$language_num=$i;
-		$arFlow[$i]["title"]=$ARnls["language"];
-		$arFlow[$i]["template"]=$language;
-		if ($hascustomdata) {
-			$arFlow[$i]["next"]=$i-4;
-		} else {
-			$arFlow[$i]["next"]=$i-3;
-		}
-		$arFlow[$i]["prev"]=$i-1;
-		$arFlow[$i]["save"]=$i+1;
-		$arFlow[$i]["cancel"]=0;
-	} else {
-		$arFlow[$i]["save"]=$i+1;
-	}
 
 	$i++;
-	$arFlow[$i]["title"]=$ARnls["save"];
-	$arFlow[$i]["template"]=$finish;
-	$arFlow[$i]["back"]=$i-1;
-	$arFlow[$i]["cancel"]=0;
-	
+	$arFlow[$i]["title"]=$ARnls["name"];
+	$arFlow[$i]["image"]=$AR->dir->images."wizard/data.png";
+	$arFlow[$i]["template"]=$name;
+
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["address"];
+	$arFlow[$i]["image"]=$AR->dir->images."wizard/address.png";
+	$arFlow[$i]["template"]=$address;
+
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["contactinformation"];
+	$arFlow[$i]["image"]=$AR->dir->images."wizard/contact.png";
+	$arFlow[$i]["template"]=$contact;
+
+	if ($hascustomdata) {
+		$i++;
+		$arFlow[$i]["title"]=$ARnls["customdata"];
+		$arFlow[$i]["image"]=$AR->dir->images."wizard/customdata.png";
+		$arFlow[$i]["template"]=$custom;
+	}
+
+	if ($languages) { // more than one language available
+		$i++;
+		$arFlow[$i]["title"]=$ARnls["language"];
+		$arFlow[$i]["image"]=$AR->dir->images."wizard/languages.png";
+		$arFlow[$i]["template"]=$language;
+	}
+
 	$arLanguage=$this->getdata("arLanguage","none");
-	$arControl=wgWizGetAction($this->getdata("wgWizControl","none"));
-	if ($arFlow[0]["current"]==$language_num) { // =edit.object.language.phtml
-		if ($arControl=="prev") { // if previous selected, ignore the language select list.
-			$arLanguage=$this->getdata("arPrevLanguage","none");
-			$ARCurrent->arLanguage=$arLanguage;
-		}
-	}
-	if (($arFlow[0]["current"]==2) && ($arControl=="next")) {
-		$HTTP_POST_VARS[$arLanguage]["name"]=$this->getdata("lastname");
-	}
 	if (!$arLanguage) { // language select hasn't been done yet, so start with default language
 		$arLanguage=$ARConfig->nls->default;
 		$ARCurrent->arLanguage=$arLanguage;
+	}
+	if (($arFlow[0]["current"]==2) && ($arControl=="next")) {
+		$HTTP_POST_VARS[$arLanguage]["name"]=$this->getdata("lastname");
 	}
 	$arNewFilename=$this->getdata("arNewFilename","none");
 	if (!$arNewFilename) {

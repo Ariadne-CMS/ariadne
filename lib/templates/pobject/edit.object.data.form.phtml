@@ -14,7 +14,7 @@
 	******************************************************************/
 	if ($this->CheckSilent("read") && $this->CheckConfig()) {
 ?>
-<table border="0" width="90%">
+<table border="0" width="100%">
 <tr>
 	<td>
 		<?php 
@@ -38,7 +38,7 @@
 			</tr><tr>
 				<td colspan="2">
 					<input type="text" name="<?php echo $selectednls."[name]"; ?>" 
-						value="<?php $this->showdata("name", $selectednls); ?>">
+						value="<?php $this->showdata("name", $selectednls); ?>" class="inputline">
 				</td>
 			</tr><tr>
 				<td colspan="2">
@@ -47,7 +47,7 @@
 			</tr><tr>
 				<td colspan="2">
 					<input type="text" name="value" maxlength="50" 
-						value="<?php $this->showdata("value","none"); ?>">
+						value="<?php $this->showdata("value","none"); ?>" class="inputline">
 				</td>
 			</tr>
 			</table>

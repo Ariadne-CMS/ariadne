@@ -46,6 +46,7 @@ class puser extends pdir { // puser class definition
 
 	function GetGrants($path, &$result) {
 		debug("puser: GetGrants($path, result)","object");
+		debug("$path; ".$this->path."; ".serialize($this->data->usergrants[$path]));
 		if ($this->data->usergrants[$path]) {
 			reset($this->data->usergrants[$path]);
 			while (list($grant, $value)=each($this->data->usergrants[$path])) {
@@ -92,7 +93,7 @@ class puser extends pdir { // puser class definition
 							unset($result[$grant]);
 						}
 					} else if (!($modifiers & $mask)) {
-							unset($result[$grant]);
+						unset($result[$grant]);
 					}
 				}
 			}

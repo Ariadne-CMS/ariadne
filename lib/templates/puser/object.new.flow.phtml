@@ -22,9 +22,6 @@
 	}
 	if (count($ARConfig->nls->list)>1) { // more than one language available
 		$languages=true;
-		$saveoffset=1;
-	} else {
-		$saveoffset=0;
 	}
 	$custom="edit.object.data.custom.phtml";
 
@@ -36,55 +33,41 @@
 	$cancel="object.new.cancel.phtml";
  
 	$arFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
-	$arFlow[0]["template"]=$cancel;
- 
+	$arFlow[0]["cancel"]=$cancel;
+	$arFlow[0]["save"]=$finish;
+
 	$i++;
 	$arFlow[$i]["title"]=$ARnls["login"];
+	$arFlow[$i]["image"]=$AR->dir->images."wizard/info.png";
 	$arFlow[$i]["template"]=$start;
-	$arFlow[$i]["next"]=$i+1; 
-	$arFlow[$i]["cancel"]=0;
+
 	$i++;
 	$arFlow[$i]["title"]=$ARnls["data"];
+	$arFlow[$i]["image"]=$AR->dir->images."wizard/data.png";
 	$arFlow[$i]["template"]=$user;
-	$arFlow[$i]["prev"]=$i-1;
-	$arFlow[$i]["next"]=$i+1; 
-	$arFlow[$i]["save"]=$i+3+$customoffset;
-	$arFlow[$i]["cancel"]=0;
+
 	$i++;
 	$arFlow[$i]["title"]=$ARnls["preferences"];
+	$arFlow[$i]["image"]=$AR->dir->images."wizard/data.png";
 	$arFlow[$i]["template"]=$preferences;
-	$arFlow[$i]["prev"]=$i-1;
-	$arFlow[$i]["cancel"]=0;
+
 	if ($this->CheckSilent("config")) {
-		$arFlow[$i]["next"]=$i+1;
-		$arFlow[$i]["save"]=$i+2+$customoffset;
 		$i++;
 		$arFlow[$i]["title"]=$ARnls["groups"];
+		$arFlow[$i]["image"]=$AR->dir->images."wizard/data.png";
 		$arFlow[$i]["template"]=$groups;
-		$arFlow[$i]["prev"]=$i-1;
-		$arFlow[$i]["save"]=$i+1+$customoffset;
-		$arFlow[$i]["cancel"]=0;
-	} else {
-		$arFlow[$i]["save"]=$i+1+$customoffset;		
 	}
+
 	if ($hascustomdata) {
-		$arFlow[$i]["next"]=$i+1;
-		$arFlow[$i]["save"]=$i+2;
 		$i++;
 		$arFlow[$i]["title"]=$ARnls["customdata"];
+		$arFlow[$i]["image"]=$AR->dir->images."wizard/customdata.png";
 		$arFlow[$i]["template"]=$custom;
-		$arFlow[$i]["prev"]=$i-1;
-		$arFlow[$i]["cancel"]=0;
 	}
-	$i++;
-	$arFlow[$i]["title"]=$ARnls["save"];
-	$arFlow[$i]["template"]=$finish;
-	$arFlow[$i]["back"]=$i-1;
-	$arFlow[$i]["cancel"]=0;
 	
 	$wgWizCurrent=$this->getdata("wgWizCurrent","none");
 	$wgWizControl=$this->getdata("wgWizControl","none");
-	if (($wgWizCurrent==1) && (wgWizGetAction($wgWizControl)=="next")) {
+	if ($wgWizCurrent==1) {
 		$arNewFilename=$this->getdata("arNewFilename","none");
 		if (!$arNewFilename) {
 			$arFlow[0]["error"]=$ARnls["err:mustenterlogin"];
@@ -97,9 +80,8 @@
 				$ARCurrent->wgWizNextStep=1;
 			}
 		}	
-	} else
-	if ( $wgWizCurrent == 2 && wgWizGetAction($wgWizControl) == "next" ) {
-	global $HTTP_POST_VARS;
+	} else if ( $wgWizCurrent == 2 ) {
+		global $HTTP_POST_VARS;
 
 		$profile = $this->getdata("profile", "none");
 		if ($profile && $this->getdata("arProfileLoaded", "none") != $profile) {

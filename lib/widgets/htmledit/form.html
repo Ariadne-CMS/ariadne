@@ -29,6 +29,9 @@
   } else {
     $wgHTMLEditContentName=$wgHTMLEditName;
   }
+  if (!$wgHTMLEditClass) {
+    $wgHTMLEditClass="wgHTMLEditButton";
+  }
   if ($this->arIsNewObject) {
     $wgHTMLEditSave2Form="true";
   } else {
@@ -36,7 +39,7 @@
   }
     echo "<input type=\"hidden\" name=\"$wgHTMLEditContentName\" value=\"".htmlspecialchars($wgHTMLEditContent)."\">\n";
     echo "<input type=\"button\" name=\"$wgHTMLEditName".
-       "_button\" value=\"Open Editor\"".
+       "_button\" value=\"Open Editor\" class=\"$wgHTMLEditClass\"".
        " onClick=\"HTMLEdit('$wgHTMLEditRoot','$wgHTMLEditPath','$wgHTMLEditFile','$wgHTMLEditName','$wgHTMLEditLanguage','$wgHTMLEditType','".
        str_replace("'","\\'",HTMLSpecialChars($wgHTMLEditTitle))."', this.form['$wgHTMLEditContentName'], ".$wgHTMLEditSave2Form.");\">"; 
 /*

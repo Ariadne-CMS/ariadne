@@ -284,9 +284,9 @@ function loadBlockFormat() {
       // IE5 and IE55 has trouble with the document node
       var cs = tbContentElement.DOM.childNodes;
       var l = cs.length;
-      for (var i = 0; i < l; i++)
+      for (var i = 0; i < l; i++) {
         _appendNodeXHTML(cs[i], sb);
- 
+      } 
       return sb.toString();
     }
     loadpage(tbContentRoot, tbContentPath, tbContentFile, tbContentName, tbContentLanguage, tbContentType, tbContentValue, tbContentSave2Form, tbContentTarget, false);

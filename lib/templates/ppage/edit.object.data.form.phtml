@@ -4,7 +4,7 @@
 	******************************************************************/
 	if ($this->CheckSilent("read")) {
 ?>
-<table border="0" width="90%">
+<table border="0" width="100%">
 <tr>
 	<td>
 		<?php 
@@ -28,7 +28,7 @@
 			</tr><tr>
 				<td colspan="2">
 					<input type="text" name="<?php echo $selectednls."[name]"; ?>"
-						value="<?php $this->showdata("name", $selectednls); ?>">
+						value="<?php $this->showdata("name", $selectednls); ?>" class="inputline">
 				</td>
 			</tr><tr>
 				<td>
@@ -38,7 +38,7 @@
 				</td>
 			</tr><tr>
 				<td colspan="2">
-					<textarea name="<?php echo $selectednls."[summary]"; ?>" cols="30" rows="4" wrap="soft"><?php 
+					<textarea name="<?php echo $selectednls."[summary]"; ?>" cols="30" rows="4" wrap="soft" class="inputbox"><?php 
 							echo ereg_replace("&","&amp;",$this->getdata("summary", $selectednls)); 
 					?></textarea>
 				</td>
