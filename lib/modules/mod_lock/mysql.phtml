@@ -23,6 +23,7 @@ class mysqllock {
 		$this->host=$host;
 		$this->user=$user;
 		$this->password=$password;
+        $this->database=$database;
 		$this->connectid=mysql_pconnect($host,$user,$password);
 		mysql_select_db("$database",$this->connectid);
 	}
@@ -31,7 +32,7 @@ class mysqllock {
 	function get_locks($identity) {
 		$query_string="select path,release, type, identity from locks where 
 		release >=".time()." and identity='".AddSlashes($identity)."'";
-		$query=@mysql_query($query_string,$this->connectid);
+		$query=@mysql_db_query($this->database, $query_string,$this->connectid);
 		while ($temp=@mysql_fetch_array($query)) {
 			$result["locks"][$temp["path"]]=$temp;
 
@@ -51,7 +52,7 @@ class mysqllock {
  		}
 		// lock table first
 		$query_string="lock tables locks write";
-		@mysql_query($query_string,$this->connectid);
+		@mysql_db_query($this->database, $query_string,$this->connectid);
 
 		// check if there is no parentlock :)
 		$query_string="
@@ -73,7 +74,7 @@ class mysqllock {
 		// see if this lock is still alive
 		$query_string.="AND release>=".time();
 
-		$query=@mysql_query($query_string,$this->connectid);
+		$query=@mysql_db_query($this->database, $query_string,$this->connectid);
 		while ($temp=@mysql_fetch_array($query)) {
 			$result["locks"][$temp["path"]]=$temp;
 
@@ -99,11 +100,11 @@ class mysqllock {
 				identity='".AddSlashes($identity)."'";
 			}
 
-			mysql_query($query_string,$this->connectid);
+			mysql_db_query($this->database, $query_string,$this->connectid);
 		}
 
 		$query_string="unlock tables";
-		mysql_query($query_string,$this->connectid);
+		mysql_db_query($this->database,$query_string,$this->connectid);
 
 		return $result;
 	}
@@ -112,7 +113,7 @@ class mysqllock {
 
 		$query_string="delete from locks where identity='".AddSlashes($identity)."'";
 		if ($path) $query_string.=" and path='".AddSlashes($path)."'";
-		mysql_query($query_string);
+		mysql_db_query($this->database, $query_string, $this->connectid);
 
 	}
 
@@ -133,7 +134,7 @@ CREATE TABLE locks (
   key (identity),
   key (path)
 )";
-		mysql_query($query_string, $this->connectid);
+		mysql_db_query($this->database, $query_string, $this->connectid);
 	}
 }
 ?>
