@@ -76,6 +76,10 @@ class pfile extends pobject { // pfile class definition
 				ldHeader("Content-Type: text/html; charset=UTF-8");
 				echo $this->ParseFile($this->GetFile());
 			} else {
+				// set pragma: cache; bug workaround for internet explorer and https
+				if (ldGetServerVar('HTTPS')) {
+					ldHeader('Pragma: cache');
+				}
 				$files->show($this->id, "file");
 			}
 		}
@@ -89,7 +93,12 @@ class pfile extends pobject { // pfile class definition
 		}
 		$filename=substr($this->path, strlen($this->parent), -1);
 		ldHeader('Cache-Control: no-cache, must-revalidate');
-		ldHeader('Pragma: no-cache');
+        // set pragma: cache; bug workaround for internet explorer and https
+		if (ldGetServerVar('HTTPS')) {
+			ldHeader('Pragma: cache');
+		} else {
+			ldHeader('Pragma: no-cache');
+		}
 		if (!ldHeader("Content-type: application/x-ariadne-download\nContent-Disposition: inline; filename=\"".$filename."\"\nContent-length:".(string)$size)) {
 			error( sprintf( $ARnls["err:headerssentnottext"], $this->path ) );
 			// FROP error("headers already sent and this is not a text file (".$this->path.")");
