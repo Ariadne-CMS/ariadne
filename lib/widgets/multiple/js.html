@@ -11,11 +11,11 @@
 	?>
 	<script language="javascript">
 	<!--
-		function collect_items(src,dest) {
+		function collect_items(src,dest, delim) {
 			dest.value="";
 				for (i=0; i<src.options.length; i++) {
 					if (dest.value)
-						dest.value+=","+src.options[i].value;
+						dest.value+=delim+src.options[i].value;
 					else
 						dest.value=src.options[i].value;
 				}
