@@ -1123,7 +1123,7 @@ class pobject extends object { // pobject class definition
 		return "UTF-8";
 	}
 
-	function HTTPRequest($method, $url, $postdata = "" ) { 
+	function HTTPRequest($method, $url, $postdata = "", $port=80 ) { 
 		$maxtries = 5;
 		$tries = 0;
 		$redirecting = true;
@@ -1147,7 +1147,7 @@ class pobject extends object { // pobject class definition
 			if (!$matches[1]) {
 				$url="http://".$url;
 			}
-			$connection = fsockopen( $host, 80, $errno, $errstr, 120); 
+			$connection = fsockopen( $host, $port, $errno, $errstr, 120); 
 			if( $connection ) { 
 				if( strtoupper($method) == "GET" ) { 
 					if ($data) {
@@ -1156,8 +1156,11 @@ class pobject extends object { // pobject class definition
 					fputs( $connection, "GET $url HTTP/1.0\n"); 
 				} else if( strtoupper($method) == "POST" ) { 
 					fputs( $connection, "POST $url HTTP/1.0\n"); 
-				} 
+				} else {
+					fputs( $connection, "$method $url HTTP/1.0\n");
+				}
 
+				fputs( $connection, "Host: $host\n");
 				fputs( $connection, "Accept: */*\n"); 
 				fputs( $connection, "Accept: image/gif\n"); 
 				fputs( $connection, "Accept: image/x-xbitmap\n"); 
@@ -1173,6 +1176,7 @@ class pobject extends object { // pobject class definition
 				fputs( $connection, "\n" , 1); 
 				$output = ""; 
 
+				$headerContents = '';
 				$headerStart = 0; 
 				$headerEnd = 0; 
 				$redirecting = false; 
@@ -1187,12 +1191,14 @@ class pobject extends object { // pobject class definition
 					} else if ( ereg("^HTTP", $currentLine) ) { 
 						//came to the start of the header 
 						$headerStart = 1; 
+						$headerContents = $currentLine;
 					} else if ( $headerStart && preg_match('/^[\n\r\t ]*$/', $currentLine) ) { 
 						//came to the end of the header 
 						$headerEnd = 1; 
 					} else { 
 						//this is the header, if you want it... 
 						if (preg_match("/Location: (.+?)\n/is",$currentLine,$matches) ) { 
+							$headerContents .= $currentLine;
 							//redirects are sometimes relative 
 							$newurl = $matches[1]; 
 							if (!preg_match("/http:\/\//i", $newurl, $matches) ) { 
@@ -1205,7 +1211,9 @@ class pobject extends object { // pobject class definition
 							//this is a quick fix. 
 							$url = preg_replace("/\r/s","",$url); 
 							$redirecting = true; 
-						} 
+						} else {
+							$headerContents.=$currentLine;
+						}
 					} 
 				} 
 			} else {
@@ -1214,6 +1222,9 @@ class pobject extends object { // pobject class definition
 				$url = "";
 			}
 			@fclose($connection); 
+		}
+		if (($method!="GET") && ($method!="POST")) {
+			$contents=$headerContents."\n".$contents;
 		}
 		return $contents; 
 	} 
