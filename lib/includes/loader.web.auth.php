@@ -285,7 +285,7 @@
 		$result=false;
 		$session_key = $ARCurrent->session->get('ARSessionKey', true);
 		$cookie=ldGetCredentials();
-		if ($login==$cookie[$ARCurrent->session->id]['login']
+		if ($session_key && $login==$cookie[$ARCurrent->session->id]['login']
 			&& ($saved=$cookie[$ARCurrent->session->id]['check'])) {
 			$check="{".ARCrypt($login.$session_key)."}";
 			if ($check==$saved && !$ARCurrent->session->get('ARSessionTimedout', 1)) {
