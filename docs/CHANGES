@@ -3,6 +3,7 @@ Ariadne 2.5.0 ( Development branch )
 Changes in Ariadne since version Ariadne 2.4
 
 New Features:
+	- Stefan Schreinert updated some entries in the german translations.
 	- Andres Marcos Bianciotto updated the Spanish translations.
 	- Added support for changing the flow of the standard Ariadne wizards.
 	- updated the wddx export module, it uses fwrite instead of echo, which made
