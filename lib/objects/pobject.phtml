@@ -604,12 +604,21 @@ class pobject extends object {
 			}
 			$nls=&$this->nls;
 			$reqnls=&$this->reqnls;
+			if (!$ARCurrent->arContentTypeSent) {
+				if ($AR->nls->charsets[$nls]) {
+					ldHeader("Content-Type: text/html; charset=".$AR->nls->charsets[$nls]);
+				} else {
+					ldHeader("Content-Type: text/html; charset=".$AR->nls->charsets["default"]);
+				}
+				$ARCurrent->arContentTypeSent = true;
+			}
 			// if this object isn't available in the requested language, show
 			// a language select dialog with all available languages for this object.
 			if (isset($this->data->nls)) {
 				if (!isset($this->data->nls->list[$reqnls]) || !$config->nls->list[$reqnls]) {
 					if (!$ARCurrent->nolangcheck ) {
-						include($this->store->code."widgets/nls/languageselect.phtml");
+						$ARCurrent->nolangcheck=1;
+						$this->call("user.languageselect.html", Array("arOriginalFunction" => $arCallFunction));
 						return false;
 					} else {
 						$this->nlsdata=$this->data->$nls;
@@ -618,13 +627,13 @@ class pobject extends object {
 					$this->nlsdata=$this->data->$reqnls;
 				}
 			} 
+			$ARCurrent->nolangcheck=1;
 			if ($this->data->custom['none']) {
 				$this->customdata=$this->data->custom['none'];
 			}
 			if ($this->data->custom[$nls]) {
 				$this->customnlsdata=$this->data->custom[$nls];
 			}
-			$ARCurrent->nolangcheck=1;
 			if (	(	$config->cache && ( $config->cache>0 )		) &&
 					( 	!$nocache 									) && 
 					( 	$AR->user->data->login=="public" 			) &&
@@ -641,14 +650,6 @@ class pobject extends object {
 				debug("             config->cache: ".$config->cache."; nocache: ".$nocache."; user: ".$AR->user->data->login."; os: ".$AR->OS,"all");
 			}
 			$nocache=true; // make sure no other parts are cached either;
-			if (!$ARCurrent->arContentTypeSent) {
-				if ($AR->nls->charsets[$nls]) {
-					ldHeader("Content-Type: text/html; charset=".$AR->nls->charsets[$nls]);
-				} else {
-					ldHeader("Content-Type: text/html; charset=".$AR->nls->charsets["default"]);
-				}
-				$ARCurrent->arContentTypeSent = true;
-			}
 
 			if ($this->data->pinp[$this->type][$arCallFunction][$this->nls]) {
 				$config->templates[$this->type][$arCallFunction][$this->nls]=$this->data->pinp[$this->type][$arCallFunction][$this->nls];
@@ -701,7 +702,18 @@ class pobject extends object {
 						$continue=false;
 					}
 					if ($continue) {
+						if ($ARCurrent->ARShowTemplateBorders) {
+							// echo "<fieldset style=\"float: left;\">";
+							// echo "<legend style=\"color: black; background-color: white;\">$arCallTemplate</legend>";
+							echo "<div style=\"float: left; border: 0px; padding: 0px; margin: 0px;\" title=\"(".$this->type.")".$this->path.":$arCallTemplate\"".
+									" onMouseOver=\"this.style.border='1px dotted black';\" onMouseOut=\"this.style.border='0px';\">";
+						}
 						$arTemplates->import($arTemplateId, $arCallTemplate, "",$this);
+						if ($ARCurrent->ARShowTemplateBorders) {
+							// echo "</fieldset>";
+							echo "</div>";
+						}
+						
 					}
 					array_pop($ARCurrent->arCallStack);
 					return false;
@@ -1176,6 +1188,14 @@ class pobject extends object {
 
 	function _getcharset() {
 		return $this->getcharset();
+	}
+
+	function _count_find($query) {
+		return $this->store->count($this->store->find($this->path, $query));
+	}
+
+	function _count_ls() {
+		return $this->store->count($this->store->ls($this->path));
 	}
 } // end class pobject
 ?>
