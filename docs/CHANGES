@@ -20,6 +20,7 @@ New Features:
 	  by Lukasz Keler. 
 
 Bugs Fixes:
+	- particle will now fill the endtime and enddate with the starttime / startdate if not set.
 	- Fixed pphoto to work around the bug that causes ImageMagick to break on a . in the ariadne
 	  path. Thanks to Stefan Schreinert for reporting this.
 	- the parentsection() function now works, instead of not :)
