@@ -70,6 +70,8 @@
   /* make default nls available for the root ********************************/
   $ARConfig->cache[".."]=new object;
   $ARConfig->cache[".."]->nls=$AR->nls;
+  $ARConfig->cache[".."]->root["path"]="/"; /* must always start with a '/' */
+  $ARConfig->cache[".."]->root["value"]=$AR->root;
 
   $ARCurrent=new object;
  
