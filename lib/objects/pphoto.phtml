@@ -141,10 +141,19 @@ class pphoto extends pfile { // definitie class
 				$targetid = current($this->find("/",$query, "system.get.id.phtml"));
 				if( $targetid ) {
 					$tmpsrc = tempnam($this->store->files."temp/", "photo");
+					if(  substr( strtolower($tmpsrc), -4, 4 ) == ".tmp" ) {
+						@unlink($tmpsrc);
+						$tmpsrc = substr($tmpsrc, 0, -4 );
+					}
 					$ARConfig->photoTempFiles[$this->id][] = $tmpsrc;
 					$ARConfig->photoTempFilesID[$this->id][] = $targetid;
 
 					$tmpmysrc = tempnam($this->store->files."temp/", "photo");
+					if(  substr( strtolower($tmpmysrc), -4, 4 ) == ".tmp" ) {
+						@unlink($tmpmysrc);
+						$tmpmysrc = substr($tmpmysrc, 0, -4 );
+					}
+
 					$ARConfig->photoTempFiles[$this->id][] = $tmpmysrc;
 					$ARConfig->photoTempFilesID[$this->id][] = $this->id;
 
@@ -247,7 +256,12 @@ class pphoto extends pfile { // definitie class
 		$result=false;
 		$failed=false;
 		if (!$this->error) {
-			$tmpsrc = tempnam($this->store->files."temp/", "photo");
+			$tmpsrc = tempnam($this->store->files."temp", "photo");
+                        if(  substr( strtolower($tmpsrc), -4, 4 ) == ".tmp" ) {
+                          @unlink($tmpsrc);
+                          $tmpsrc = substr($tmpsrc, 0, -4 );
+                        }
+
 			$f_store=$this->store->get_filestore("files");
 			$f_store->copy_from_store($tmpsrc, $this->id, "file");
 
