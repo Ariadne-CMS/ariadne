@@ -26,6 +26,7 @@
 ?>
 </head>
 <body bgcolor="white" onUnLoad="releaseLock()">
+<?php $this->call("lock.form.phtml"); ?>
 <form method="post">
 <input type="hidden" name="arNewType" value="<?php echo $arNewType; ?>">
 <input type="hidden" name="arNewFilename" value="<?php echo $arNewFilename; ?>">
