@@ -1,9 +1,11 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		?><option value="<?php echo $this->path; ?>"<?php
+		$filename=substr($this->path, strlen($this->parent), -1);
+		?><option value="<?php echo $filename; ?>"<?php
 			if( $selected ) {
 				while( list($key,$value) = each($selected) ) {
-					if ($value==$this->path) { echo " selected"; }
+					// echo " f=\"$value\"";
+					if ($value==$filename) { echo " selected"; }
 				}
 			}
 		?>><?php echo $nlsdata->name; ?></option>
