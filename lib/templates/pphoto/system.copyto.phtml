@@ -1,0 +1,14 @@
+<?php
+	/******************************************************************
+
+	******************************************************************/
+	// change links in $nlsdata->page
+	if ($search && $replace) {
+		while (list($nls, $language)=each($AR->nls->list)) {
+			if ($this->data->$nls && $this->data->$nls->page) {
+				$this->data->$nls->page=str_replace($search, $replace, $this->data->$nls->page);
+			}
+		}
+	}
+	include($this->store->code."templates/pobject/system.copyto.phtml");
+?>
