@@ -1,0 +1,27 @@
+<?php
+
+if( $this->CheckLogin("config") ) {
+
+  Header("Content-Type: text/xml");
+
+  require_once($this->store->code."modules/mod_export_wddx.php");
+ 
+
+?>
+<?php echo "<";?>?xml version="1.0" encoding="UTF-8"?>
+<wddxPacket version="1.0">
+<header>
+<comment>Ariadne Export File</comment>
+</header>
+<data>
+<struct type="hash">
+<?php
+  $query="";
+  $this->find(".", $query, "export.wddx.object.phtml", "", 0);
+?>
+</struct>
+</data>
+</wddxPacket>
+<?php
+}
+?>
