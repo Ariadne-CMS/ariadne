@@ -1,9 +1,3 @@
 <?php
-	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		if ($this->implements('ppage')) {
-			$this->call("show.page.html", $arCallArgs);
-		} else {
-			$this->call("browse.nav.list.phtml", $arCallArgs);
-		}
-	}
+	$this->call("manage.show.page.html", $arCallArgs);
 ?>
