@@ -82,7 +82,7 @@
   /* ==========                                                             */
   /* This contains the list of available languages. In Ariadne you can set  */
   /* the list of available languages per object/directory, selected from    */
-  /* list below. Do not use html entities like &eacute;                     */                                                           */
+  /* list below. Do not use html entities like &eacute;                     */
   /**************************************************************************/
 
   $AR->nls=new object;                         // do not change
