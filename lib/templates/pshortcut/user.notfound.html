@@ -1,0 +1,19 @@
+<?php
+	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
+		if ($this->data->path) {
+			if (!$ARConfig->cache[$this->data->path]) {
+				$this->get($this->data->path, "system.get.config.phtml");
+			}
+			$configcache = $ARConfig->cache[$this->data->path];
+			$configcache->templates_path = $this->path;
+			$ARConfig->cache[$this->data->path] = $configcache;
+
+			$subpath = substr($arRequestedPath, strlen($this->path));
+			$arResult = $this->get($this->data->path.$subpath, $arRequestedTemplate, $arCallArgs);
+
+			unset($ARConfig->cache[$this->data->path]->templates_path);
+		} else {
+			$this->call("pobject::user.notfound.html", $arCallArgs);
+		}
+	}
+?>

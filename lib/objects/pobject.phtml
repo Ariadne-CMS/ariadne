@@ -839,7 +839,6 @@ class pobject extends object { // pobject class definition
 				earlier.
 			*/
 			$ARConfigChecked = true;
-
 			if (strpos($arCallFunction,"::")!==false) {
 				// template of a specific class defined via call("class::template");
 				list($arCallType, $arCallFunction)=explode("::",$arCallFunction);
@@ -867,7 +866,11 @@ class pobject extends object { // pobject class definition
 					}
 				}
 				$lastcheckedpath=$checkpath;
-				$checkpath=$this->store->make_path($checkpath, "..");
+				if ($ARConfig->cache[$checkpath]->templates_path) {
+					$checkpath = $ARConfig->cache[$checkpath]->templates_path;
+				} else {
+					$checkpath=$this->store->make_path($checkpath, "..");
+				}
 				$curr_templates=$ARConfig->cache[$checkpath]->templates;
 			}
 
