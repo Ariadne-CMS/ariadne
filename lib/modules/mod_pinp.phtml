@@ -470,10 +470,10 @@ class pinp {
 		while ($this->token != T_EOF) {
 			switch ($this->token) {
 				case T_PINP_START:
-					$this->new_template.=$this->token_value."<?php";
+					$this->new_template.=$this->token_value."<?php ";
 				break;
 				case T_PINP_END:
-					$this->new_template.="?>";
+					$this->new_template.=" ?>";
 				break;
 				case T_VARIABLE:
 					$this->new_template.=$this->var_prefix.$this->token_value;
