@@ -784,8 +784,7 @@ function DECMD_IMAGE_onclick() {
   } else {
     elIMG=false;
     window.rg=el.createRange();
-    src = photobook;
-    args['src'] = src;
+    args['src'] = "<?php echo $this->path; ?>";
     args['hspace'] = "";
     args['vspace'] = "";
     args['align'] = ""; 
@@ -793,7 +792,7 @@ function DECMD_IMAGE_onclick() {
     args['border'] = "";
   }
   args['editOptions'] = tbContentEditOptions;
-  arr = showModalDialog( '<?php echo $this->store->root; ?>' + photobook + 
+  arr = showModalDialog( '<?php echo $this->store->root.$this->path; ?>' + 
 	"edit.object.html.image.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:600px; dialogHeight:400px; status: no; resizable: yes;");
   if (arr != null){
 	IMAGE_set(arr);
