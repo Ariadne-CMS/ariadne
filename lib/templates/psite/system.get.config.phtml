@@ -24,8 +24,9 @@
 
 	if ($sitenls=$this->data->url_list["host"][$host]) {
 		$configcache->nls->default = $sitenls;
-	} else
-	if (!$url=$nlsdata->url) {
+		$url = $this->data->url_list["nls"][$sitenls];
+	}
+	if (!$url) {
 		$url=$data->url;
 	}
 	if ($url) {
@@ -33,6 +34,7 @@
 		$configcache->root["value"]=$url;
 		$configcache->root["list"]=$this->data->url_list;
 	}
+
 
 	$configcache->site=$this->path;
 	$configcache->section=$this->path;
