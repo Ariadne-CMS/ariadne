@@ -1,0 +1,104 @@
+#!/usr/bin/php -q
+<?php
+	$ariadne="../lib";
+	require($ariadne."/configs/ariadne.phtml");
+	require($ariadne."/configs/store.phtml");
+	require($ariadne."/configs/axstore.phtml");
+	require($ariadne."/includes/loader.web.php");
+	require($ariadne."/stores/mysqlstore.phtml");
+	include($ariadne."/stores/axstore.phtml");
+	global $options;
+
+	$arg_c=0;
+	$arg_v[$arg_c++]=$argv[0];
+
+	next($argv); // do not parse the filename
+	while (list(,$cmd)=each($argv)) {
+		if (strpos($cmd, "--") === 0) {
+			if (strpos(substr($cmd, 2),"-")===false) {
+				$option_switch=substr($cmd, 2);
+			} else {
+
+				$option_switch=substr($cmd, 2, strpos(substr($cmd, 2),"-"));
+
+				if (strpos($cmd, "=")!==false) {
+					$option_value=substr($cmd, strpos($cmd, "=")+1);
+					$option=substr($cmd, strlen($option_switch)+3, strpos($cmd, "=") - (strlen($option_switch)+3));
+				} else {
+					$option=substr($cmd, strlen($option_switch)+3);
+				}
+			}
+
+			switch ($option_switch) {
+				case 'with':
+					$options[$option]=($option_value) ? $option_value : true;
+				break;
+				case 'without':
+					$options["without_$option"]=true;
+				break;
+
+				case 'recurse':
+					$options["recurse"]=true;
+				break;
+
+				case 'tar_nofail':
+					$ax_config["tar_nofail"]=true;
+				break;
+
+				case 'tar_fail':
+					$ax_config["tar_nofail"]=false;
+				break;
+
+				default:
+					echo "unknow option-switch ($option_switch)\n";
+			}
+		} else {
+			$arg_v[$arg_c++]=$cmd;
+		}
+	}
+
+	function do_ax_list(&$store, $list_path, $recurse) {
+		$data=$store->call("system.get.phtml", "", $store->ls($list_path));
+		echo "$list_path contains ".@count($data)." object(s)\n";
+		while (is_array($data) && (list($key, $object)=each($data))) {
+			echo "	".$object->type;
+			if ($object->type=="pdir" && $recurse) {
+				$recurse_list[]=$object->path;
+			}
+			echo "	".substr($object->path, strlen($list_path));
+			echo "\n";
+		}
+		echo "\n";
+		@reset($recurse_list);
+		while (is_array($recurse_list) && (list(,$path)=each($recurse_list))) {
+			do_ax_list($store, $path, $recurse);
+		}
+	}
+
+	set_time_limit(0);
+
+	if ($arg_c>=2) {
+		$ARLogin="admin";
+		$AR->user=new object;
+		$AR->user->data=new object;
+		$AR->user->data->login="admin";
+
+		$ax_config["database"]=$arg_v[1];
+		$list_path=$arg_v[2];
+		
+		$store=new axstore(".", $ax_config);
+		if (!$store->error) {
+			$list_path=$store->make_path("/", $list_path);
+			do_ax_list($store, $list_path, $options["recurse"]);
+			$store->close();
+		} else {
+			$error="ax error: ".$store->error;
+		}
+
+		if ($error) {
+			echo $error."\n";
+		}
+	} else {
+		echo "USAGE: axlist [--recurse] axfile [path]\n";
+	}
+?>
