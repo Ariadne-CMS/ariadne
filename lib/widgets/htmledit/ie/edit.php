@@ -564,7 +564,6 @@ function AR_FORMAT_HTML(code) {
 
 function VIEW_HTML_onclick() {
   if (ViewHTML.TBSTATE=="checked") {
-
     TBSetState(ViewHTML, "unchecked");
     if (tbContentEditOptions["xhtml"]) {
 	  var sContents=tbContentElement.getXHTML();
@@ -572,7 +571,6 @@ function VIEW_HTML_onclick() {
       var sContents=tbContentElement.DocumentHTML;
     }
     sContents=AR_FORMAT_HTML(sContents);
-
     tbContentElement.DocumentHTML=sContents;
     ToolbarFormatState=FormatToolbar.TBSTATE;
     TBSetState(FormatToolbar, "hidden");
@@ -586,6 +584,7 @@ function VIEW_HTML_onclick() {
     TBRebuildMenu(ViewHTML.parentElement, true);
     tbDetailsSetting=tbContentElement.ShowDetails;
     tbContentElement.ShowDetails = false;
+
   } else if (ViewHTML.TBSTATE=="unchecked") {
     var sContents=tbContentElement.DOM.body.innerText;
     if (sContents.match(/<FRAME/i)) {
@@ -615,6 +614,7 @@ function VIEW_HTML_onclick() {
       tbContentElement.DocumentHTML=sContents
       tbContentElement.BaseURL=tbContentRoot+tbContentPath;
     }
+
   }
   tbContentElement.focus();
 }
@@ -1160,7 +1160,9 @@ function FontSize_onchange() {
 }
 
 function loadStyleSheet() {
-  tbContentElement.DOM.createStyleSheet(tbContentEditOptions["css"]["stylesheet"], 0);
+  if (tbContentElement.DOM.styleSheets.length==0) {
+    tbContentElement.DOM.createStyleSheet(tbContentEditOptions["css"]["stylesheet"], 0);
+  }
 }
 
 function init_cssStyle() {
@@ -1250,14 +1252,10 @@ function tbContentElement_DocumentComplete() {
       URL_VALUE = tbContentElement.CurrentDocumentPath;
     }
   }
-  if (tbContentEditOptions["stylesheet"]) {
-    if (tbContentElement.DOM.styleSheets.length==0) {
-      tbContentElement.DOM.createStyleSheet(tbContentEditOptions["css"]["stylesheet"],0);
-    }    
-  }
   init_cssStyle();
-  loadStyleSheet();
-
+  if (ViewHTML.TBSTATE=="checked") {
+    loadStyleSheet();
+  }
   initialDocComplete = true;
   docComplete = true;
 }
