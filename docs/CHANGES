@@ -17,6 +17,8 @@ New features:
 	  Thanks to Florian Overkamp.
 	- Added XML RPC support via mod_xmlrpc. It uses the Pear
 	  XML RPC library.
+	- The default Ariadne installation now contains a more or
+	  less complete list of countries for paddressbook.
 
 Bugs fixed:
 	- Fixed a warning when make_filesize() is called without
