@@ -109,7 +109,7 @@
 			if (!$file_data) {
 				$error = "could not base64_decode file '$field'";
 			} else {
-				$file_temp = tempnam($store->files."temp", "upload");
+				$file_temp = tempnam($store->get_config("files")."temp", "upload");
 				$fp = fopen($file_temp, "wb+");
 				if (!$fp) {
 					$error = "could not write file '$field'";
@@ -121,7 +121,7 @@
 					$file_type = get_mime_type($file_temp);
 
 					$result[$field] = $field;
-					$result[$field."_temp"] = substr($file_temp, strlen($store->files."temp/"));
+					$result[$field."_temp"] = substr($file_temp, strlen($store->get_config("files")."temp/"));
 					$result[$field."_size"] = filesize($file_temp);
 					$result[$field."_type"] = $file_type;
 					debug(" http_post_vars (".serialize($result).")");
@@ -206,7 +206,7 @@
 
 		debug("ldMkDir($dir)","object");
 		$dir=strtok($dir, "/");
-		$curr=$store->files;
+		$curr=$store->get_config("files");
 		while ($dir) {
 			$curr.=$dir."/";
 			debug("ldMkDir: $curr","all");

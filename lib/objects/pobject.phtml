@@ -970,7 +970,7 @@ class pobject extends object { // pobject class definition
 			
 			if ($arCallTemplate && $arTemplateId) {
 				debug("CheckConfig: arCallTemplate=$arCallTemplate, arTemplateId=$arTemplateId","object");
-				// $arCallTemplate=$this->store->files."templates".$arCallTemplate;
+				// $arCallTemplate=$this->store->get_config("files")."templates".$arCallTemplate;
 				// check if template exists, if it doesn't exist, then continue the original template that called CheckConfig
 				$arTemplates=$this->store->get_filestore("templates");
 				if ($arTemplates->exists($arTemplateId, $arCallTemplate)) { 
@@ -1067,8 +1067,8 @@ class pobject extends object { // pobject class definition
 		while (list($key, $type)=each($cache_types)) {
 			reset($nlslist);
 			while (list($nls,$language)=each($nlslist)) {
-				$fpath=$this->store->files."cache/$type/$nls".$path;
-				$hpath=$this->store->files."cacheheaders/$type/$nls".$path;
+				$fpath=$this->store->get_config("files")."cache/$type/$nls".$path;
+				$hpath=$this->store->get_config("files")."cacheheaders/$type/$nls".$path;
 				if ($dir=@dir($fpath)) {
 					while ($entry=@$dir->read()) {
 						if ($entry!="." && $entry!="..") {
@@ -1180,10 +1180,10 @@ class pobject extends object { // pobject class definition
 				$session="/-".$ARCurrent->session->id."-";
 			}
 			//$path=substr($file, 0, strrpos($file, "/"));
-			//if (!file_exists($this->store->files."privatecache".$path)) {
+			//if (!file_exists($this->store->get_config("files")."privatecache".$path)) {
 			//	ldMkDir("privatecache".$path);
 			//}
-			//$fp=fopen($this->store->files."privatecache".$file, "w");
+			//$fp=fopen($this->store->get_config("files")."privatecache".$file, "w");
 			//fwrite($fp, $image);
 			//fclose($fp);
 			$pcache=$this->store->get_filestore("privatecache");

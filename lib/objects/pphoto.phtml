@@ -70,7 +70,7 @@ class pphoto extends pfile { // pphoto class definition
 
 	function getExif( $sections = false, $arrays = true, $thumbnail = false) {
 		if (function_exists('exif_read_data')) {
-			$tmpsrc = tempnam($this->store->files."temp/", "photo");
+			$tmpsrc = tempnam($this->store->get_config("files")."temp/", "photo");
 			$f_store=$this->store->get_filestore("files");
 			$f_store->copy_from_store($tmpsrc, $this->id, "file");
 			$result=@exif_read_data($tmpsrc,$sections,$arrays,$thumbnail);
@@ -264,7 +264,7 @@ class pphoto extends pfile { // pphoto class definition
 			
 				$targetid = $targetobj->id;
 				if( $targetid ) {
-					$tmpsrc = tempnam($this->store->files."temp/", "photo");
+					$tmpsrc = tempnam($this->store->get_config("files")."temp/", "photo");
 					if(  substr( strtolower($tmpsrc), -4, 4 ) == ".tmp" ) {
 						@unlink($tmpsrc);
 						$tmpsrc = substr($tmpsrc, 0, -4 );
@@ -273,7 +273,7 @@ class pphoto extends pfile { // pphoto class definition
 					$ARConfig->photoTempFiles[$this->id][] = $tmpsrc;
 					$ARConfig->photoTempFilesID[$this->id][] = $this->id;
 
-					$tmpmysrc = tempnam($this->store->files."temp/", "photo");
+					$tmpmysrc = tempnam($this->store->get_config("files")."temp/", "photo");
 					if(  substr( strtolower($tmpmysrc), -4, 4 ) == ".tmp" ) {
 						@unlink($tmpmysrc);
 						$tmpmysrc = substr($tmpmysrc, 0, -4 );
@@ -325,7 +325,7 @@ class pphoto extends pfile { // pphoto class definition
 			if($fontid=$this->exists($font)) {
 				$chkfontgrants = current($this->get($font, "system.get.phtml"));
 				if($chkfontgrants->CheckLogin("read")) {
-					$tmpfont=$this->store->files."temp/".$fontid.".ttf";
+					$tmpfont=$this->store->get_config("files")."temp/".$fontid.".ttf";
 					$font_store->copy_from_store($tmpfont, $fontid, "file");
 					$ARConfig->photoStack[$this->id][]= " -font ".$tmpfont;
 					$this->arClearList[]=$fontid.".ttf";
@@ -388,7 +388,7 @@ class pphoto extends pfile { // pphoto class definition
 		$result=false;
 		$failed=false;
 		if (!$this->error) {
-			$tmpsrc = tempnam($this->store->files."temp", "photo");
+			$tmpsrc = tempnam($this->store->get_config("files")."temp", "photo");
                         if(  substr( strtolower($tmpsrc), -4, 4 ) == ".tmp" ) {
                           @unlink($tmpsrc);
                           $tmpsrc = substr($tmpsrc, 0, -4 );
@@ -406,7 +406,7 @@ class pphoto extends pfile { // pphoto class definition
 
 			$f_store->close();
 
-			if (chdir($this->store->files.'temp/')) {
+			if (chdir($this->store->get_config("files").'temp/')) {
 				if (is_array($ARConfig->photoCommandStack[$this->id])) {
 					$image="";
 					reset($ARConfig->photoCommandStack[$this->id]);
@@ -435,8 +435,8 @@ class pphoto extends pfile { // pphoto class definition
 					// FROP $this->error="Could not run ImageMagick scale program (mogrify)<br>\n(".$exec_string.")";
 				}
 			} else {
-				$this->error=sprintf($ARnls["err:changetempdirfailed"],$this->store->files);
-				// FROP $this->error="Could not changedir to ".$this->store->files."temp/ ";
+				$this->error=sprintf($ARnls["err:changetempdirfailed"],$this->store->get_config("files"));
+				// FROP $this->error="Could not changedir to ".$this->store->get_config("files")."temp/ ";
 			}
 		}
 		if( is_array($ARConfig->photoTempFiles[$this->id])) {
@@ -467,7 +467,7 @@ class pphoto extends pfile { // pphoto class definition
 	}
 
 	function getimageinfo($extrainfo=false) {
-		$tmpsrc = tempnam($this->store->files."temp/", "photo");
+		$tmpsrc = tempnam($this->store->get_config("files")."temp/", "photo");
 		$f_store=$this->store->get_filestore("files");
 		$f_store->copy_from_store($tmpsrc, $this->id, "file");
 		if ($extrainfo!==false) {

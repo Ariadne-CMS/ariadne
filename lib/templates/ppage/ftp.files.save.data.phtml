@@ -8,7 +8,7 @@
 				$nls=$ARConfig->nls->default;
 
 		$tempfile = $this->getdata("file_temp", "none");
-		$tempfile = $this->store->files."temp/$tempfile";
+		$tempfile = $this->store->get_config("files")."temp/$tempfile";
 		debug("opening page ($tempfile)");
 		$fp = @fopen($tempfile, "r");
 		if (!$fp) {

@@ -57,7 +57,7 @@
 						if ($arEditorSettings["htmltidy"]["enabled"]) {
 							include_once($this->store->get_config("code")."modules/mod_tidy.php");
 							$config=$arEditorSettings["htmltidy"];
-							$config["temp"]=$this->store->files."temp/";
+							$config["temp"]=$this->store->get_config("files")."temp/";
 							$config["path"]=$AR->Tidy->path;
 							$tidy=new tidy($config);
 							$result=$tidy->clean($newnlsdata->summary);

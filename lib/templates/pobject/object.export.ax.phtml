@@ -20,7 +20,7 @@
 
         set_time_limit(0);
 
-		$ax_config["database"]=tempnam($this->store->files."temp/","ax");
+		$ax_config["database"]=tempnam($this->store->get_config("files")."temp/","ax");
 		@unlink($ax_config["database"]);
 		$srcpath=$this->path;
 		$ax_config["writeable"]=true;

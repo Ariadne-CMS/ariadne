@@ -23,7 +23,7 @@
 				if ($force=$this->getdata("force","none")) {
 					$ARCurrent->options["force"]=true;		
 				}
-				$source = $this->store->files."temp/".$file["source_temp"];
+				$source = $this->store->get_config("files")."temp/".$file["source_temp"];
 				$ax_config["writeable"]=false;
 				$ax_config["database"]=$source;
 				set_time_limit(0);

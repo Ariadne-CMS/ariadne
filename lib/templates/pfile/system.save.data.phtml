@@ -89,7 +89,7 @@
 			if (!$this->error) {
 				if ($tempfile) {
 					$tempfile=ereg_replace("[\\\/]","",$tempfile); // make sure nobody gets /etc/passwd			
-					$tempfile=$this->store->files."temp/".$tempfile;
+					$tempfile=$this->store->get_config("files")."temp/".$tempfile;
 
 					if (file_exists($tempfile)) {	
 						$files=$this->store->get_filestore("files");

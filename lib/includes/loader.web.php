@@ -82,11 +82,11 @@
 				$error = sprintf($ARnls["err:fileuploadvirus"], $inftp);
 			} else {
 				// new file uploaded -> save it before PHP deletes it
-				$file_artemp=tempnam($store->files."temp","upload");
+				$file_artemp=tempnam($store->get_config("files")."temp","upload");
 				if (move_uploaded_file($file_temp, $file_artemp)) {
 					// now make the new values available to wgWizKeepVars()
 					$result[$field]=$file;
-					$result[$field."_temp"]=substr($file_artemp,strlen($store->files."temp"));
+					$result[$field."_temp"]=substr($file_artemp,strlen($store->get_config("files")."temp"));
 					$result[$field."_size"]=(int)$HTTP_POST_FILES[$field]['size'];
 					$type = get_mime_type($file_artemp);
 					if (!$type) {
@@ -219,17 +219,17 @@
 		if (!ereg("\.\.",$file)) {
 			if ($image) {
 				$path=substr($file, 1, strrpos($file, "/")-1);
-				if (!file_exists($store->files."cache/".$path)) {
+				if (!file_exists($store->get_config("files")."cache/".$path)) {
 					ldMkDir("cache/".$path);
 					ldMkDir("cacheheaders/".$path);
 				}
-				$fp=fopen($store->files."cache".$file, "wb");
+				$fp=fopen($store->get_config("files")."cache".$file, "wb");
 				fwrite($fp, $image);
 				fclose($fp);
-				$fp=fopen($store->files."cacheheaders".$file, "wb");
+				$fp=fopen($store->get_config("files")."cacheheaders".$file, "wb");
 				fwrite($fp, $headers);
 				fclose($fp);
-				if (!touch($store->files."cache".$file, $time)) {
+				if (!touch($store->get_config("files")."cache".$file, $time)) {
 					debug("ldSetCache: ERROR: couldn't touch image","object");
 				}
 			}
@@ -241,7 +241,7 @@
 
 		debug("ldMkDir($dir)","object");
 		$dir=strtok($dir, "/");
-		$curr=$store->files;
+		$curr=$store->get_config("files");
 		while ($dir) {
 			$curr.=$dir."/";
 			debug("ldMkDir: $curr","all");
