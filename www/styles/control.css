@@ -10,4 +10,4 @@ BODY 	{
 	padding: 2px 2px 2px 2px;
 	border: 2px groove;
 }
-@import "background.css";
+@import: url(/~auke/ariadne/styles/background.css);
