@@ -9,9 +9,9 @@
 	echo "Clearing old sessions...";
 	$inst_store = $store_config["dbms"]."store";
 	$sessionstore=new $inst_store($root,$store_config);
-	$criteria["object"]["lastchanged"]["<"]=strftime("%Y%m%d%H%M%S",time()-$session_config["timeout"]);
+	$criteria["object"]["lastchanged"]["<"]=strftime("%Y%m%d%H%M%S",time()-($session_config["timeout"]*4));
 	$criteria["object"]["implements"]["="]="'psession'";
-	$sessionstore->call("system.expire.phtml","",$sessionstore->find("/",$criteria));
+	$sessionstore->call("system.expire.phtml","",$sessionstore->find("/",$criteria, 0));
 	echo $sessionstore->count." expired sessions removed.\n";
 	$sessionstore->close();
 	echo "done.\n";
