@@ -37,12 +37,14 @@
 	require_once("../../ariadne.inc");
 	require_once($ariadne."/configs/ariadne.phtml");
 	require_once($ariadne."/configs/store.phtml");
-	include_once($store_config['code']."stores/".$store_config["dbms"]."store.phtml");
+	require_once($ariadne."/configs/axstore.phtml");
+	include_once($store_config['code']."stores/".$store_config["dbms"]."store_install.phtml");
+	include_once($ax_config['code']."stores/".$ax_config["dbms"]."store.phtml");
 	include_once($store_config['code']."modules/mod_session.phtml");
 	include_once($store_config['code']."includes/loader.web.php");
 
 		// instantiate the store
-	$inst_store = $store_config["dbms"]."store";
+	$inst_store = $store_config["dbms"]."store_install";
 	$store=new $inst_store($root,$store_config);
 	$store->rootoptions = $rootoptions;
 
@@ -70,7 +72,7 @@
 			if($store_config["dbms"] == "postgresql") {
 				$newversion = "2.4rc2.1";
 			} else {
-				$newversion = "2.4";
+				$newversion = "2.4rc2.2";
 			}
 			array_push($todo, Array(
 								"description" => "Moving configuration into data->config.",
@@ -82,9 +84,17 @@
 				array_push($todo, Array(
 							"description" => "updating the postgresql store.",
 							"operation" => "2.4rc2/upgrade.postgresql.lowercase.php",
-							"newversion" => "2.4"
+							"newversion" => "2.4rc2.2"
 							));
 			}
+
+		case "2.4rc2.2":
+				array_push($todo, Array(
+							"description" => "updating the Ariadne types install.",
+							"operation" => "2.4rc2/upgrade.types.php",
+							"newversion" => "2.4"
+							));
+
 	}
 
 
