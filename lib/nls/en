@@ -357,5 +357,6 @@
 	$ARnls["grants_global"]					=	"All objects";
 	$ARnls["grants_children"]				=	"Children only";
 	$ARnls["grants_local"]					=	"Current object only";
+	$ARNls["grants_modifiers"]				=	"Modifiers";
 	$ARnls["explain"]						=	"Explain";
 ?>
