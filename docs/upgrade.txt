@@ -1,5 +1,19 @@
 Upgrade                                                            Muze Ariadne 
 ===============================================================================
+If you want to upgrade Ariadne 2.2.x to Ariadne 2.4(.x) then take care of the
+following:
+
+Ariadne 2.4 has moved all it's configuration data from $data to $data->config.
+This means that all templates, grants, language settings, etc will not be
+found by Ariadne 2.4 when using your old Ariadne database. To fix this,
+we have made an upgrade script which will take care that your database 
+(from Ariadne 2.2.x) will get upgraded to an Ariadne 2.4 compatible one.
+
+This upgrade script talked about above, can be accessed via your browser
+at the following address:
+
+	http://<yourhost>/ariadne/install/upgrade/upgrade.php
+
 
 If you want to upgrade Ariadne 2.0 to Ariadne 2.1 take care of the following:
 
