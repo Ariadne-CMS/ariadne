@@ -19,6 +19,8 @@ class pphoto extends pfile { // definitie class
 	function convert($format="jpg") {
 		global $ARConfig;
 
+		$this->set_context("mogrify");
+
 		$result=false;
 		if (eregi('[^a-z0-9+]',$format)) {
 			$this->error=sprintf($ARnls["err:convillegalformat"],$format);
@@ -34,6 +36,8 @@ class pphoto extends pfile { // definitie class
 	function scale($x, $y, $fillcolor=false) {
 		global $ARConfig;
 
+		$this->set_context("mogrify");
+
 		$x=(int)$x;
 		$y=(int)$y;
 		$ARConfig->photoStack[$this->id][]=" -geometry ".$x."x".$y;
@@ -41,8 +45,111 @@ class pphoto extends pfile { // definitie class
 		return true;
 	}
 
+
+	function setComposeStyle($name, $method, $width, $height, $xoffset, $yoffset, $percentage, $resize) {
+		$this->arComposeStyles[$name]["method"]=$method;
+		$this->arComposeStyles[$name]["width"]=$width;
+		$this->arComposeStyles[$name]["height"]=$height;
+		$this->arComposeStyles[$name]["xoffset"]=$xoffset;
+		$this->arComposeStyles[$name]["yoffset"]=$yoffset;
+		$this->arComposeStyles[$name]["percentage"]=$percentage;
+		$this->arComposeStyles[$name]["resize"]=$resize;
+	} 
+
+	function compose( $target, $style="default", $blend = 0) {
+		global $ARConfig;
+
+		$this->set_context("composite");
+
+		$compose = "";
+
+		$method = "over";
+
+		if( ($style!="") && ($def=$this->arComposeStyles[$style])) {
+			$method = $def["method"];
+			$width = $def["width"];
+			$height = $def["height"];
+			$xoffset = $def["xoffset"];
+			$yoffset = $def["yoffset"];
+			$percentage = $def["percentage"];
+			$resize = $def["resize"];
+		}
+
+		$geo = false;
+
+		if( isset( $width, $height ) ) {
+			$width=(int)abs($width);
+			$height=(int)abs($height);
+			$compose .= " -geometry \"".$width."x".$height;
+			$geo = true;
+
+		}
+		if( isset( $xoffset, $yoffset ) ) {
+			if( !$geo ) {
+				$compose .= " -geometry \"";
+				$geo = true;
+			}
+			$xoffset=(int)$xoffset;
+			$yoffset=(int)$yoffset;
+			if( $xoffset < 0 ) {
+				$compose .= $xoffset;
+			} else {
+				$compose .= "+".$xoffset;
+			}
+			if( $yoffset < 0 ) {
+				$compose .= $yoffset;
+			} else {
+				$compose .= "+".$yoffset;
+			}
+		}
+
+		if( $percentage ) {
+			$compose .= "%";
+		}
+		if( $resize == ">" || $resize == "<" ) {
+			$compose .= $resize;
+		}
+		
+		if( $geo ) {
+			$compose .= "\"";
+		}
+
+		if (eregi('[^a-z0-9+]',$method)) {
+			$this->error=sprintf($ARnls["err:composeillegalmethod"],$method);
+		} else {
+			$targettype = @current($this->get($target, "system.get.type.phtml"));
+			if( $targettype == "pphoto" ) {
+				$compose .= " -compose ".$method;
+				if( $blend ) {
+					$compose .= " -blend ".$blend;
+				}
+				$query = "object.path = '".$target."' and object.type='pphoto'";
+			
+				$targetid = @current($this->find("/",$query, "system.get.id.phtml"));
+				if( $targetid ) {
+					$tmpsrc = tempnam($this->store->files."temp/", "photo");
+					$ARConfig->photoTempFiles[$this->id][] = $tmpsrc;
+					$ARConfig->photoTempFilesID[$this->id][] = $targetid;
+
+					$tmpmysrc = tempnam($this->store->files."temp/", "photo");
+					$ARConfig->photoTempFiles[$this->id][] = $tmpmysrc;
+					$ARConfig->photoTempFilesID[$this->id][] = $this->id;
+
+					$ARConfig->photoStack[$this->id][] = $compose." ".$tmpmysrc." ".$tmpsrc;
+					$this->set_context("build");
+				}
+			}
+		}
+
+
+		return true;
+	}
+
+
 	function annotate($text, $x, $y, $style="default") {
 		global $ARConfig;
+
+		$this->set_context("mogrify");
 
 		$x=(int)$x;
 		$y=(int)$y;
@@ -74,25 +181,72 @@ class pphoto extends pfile { // definitie class
 		return true;
 	}
 
+
+	function set_context($context) {
+		global $AR, $ARConfig;
+		$unknown = false;
+
+		if( !$ARConfig->photoContext[$this->id] ) {
+			$ARConfig->photoContext[$this->id] = $context;
+		}		
+
+		if( $ARConfig->photoContext[$this->id] != $context ) {
+			if( $ARConfig->photoContext[$this->id] == "mogrify" ) {
+				$contextexecutable = $AR->IM->mogrify;
+			} elseif( $ARConfig->photoContext[$this->id] == "composite" ) {
+				$contextexecutable = $AR->IM->composite;
+			} else {
+				$unknown = true; // This should NOT happen
+			}
+			if( !$unknown && is_array($ARConfig->photoStack[$this->id])) {
+				$image="";
+				reset($ARConfig->photoStack[$this->id]);
+				while (list($key, $value)=each($ARConfig->photoStack[$this->id])) {
+					$image.=$value;
+				}
+				$ARConfig->photoCommandStack[$this->id][] = $contextexecutable.$image;
+				unset($ARConfig->photoStack[$this->id]);
+				if( $context == "build" ) {
+					unset($ARConfig->photoContext[$this->id]);
+				} else {
+					$ARConfig->photoContext[$this->id] = $context;
+				}
+			}
+		}
+		return;
+	}
+
+
 	function build() {
 		global $AR, $ARConfig;
 
+		$this->set_context("build");
+ 
 		$result=false;
 		$failed=false;
 		if (!$this->error) {
-			$tmpsrc=$this->store->files."temp/".$this->id;
+			$tmpsrc = tempnam($this->store->files."temp/", "photo");
 			$f_store=$this->store->get_filestore("files");
 			$f_store->copy_from_store($tmpsrc, $this->id, "file");
+
+			if( is_array($ARConfig->photoTempFiles[$this->id]) && is_array($ARConfig->photoTempFilesID[$this->id])) {
+				reset($ARConfig->photoTempFiles[$this->id]);
+				while( list($key, $tempfile)  = each($ARConfig->photoTempFiles[$this->id])) {
+					$f_store->copy_from_store($tempfile, $ARConfig->photoTempFilesID[$this->id][$key], "file");
+				}
+			}
+
 			$f_store->close();
+
 			if (chdir($this->store->files.'temp/')) {
-				if (is_array($ARConfig->photoStack[$this->id])) {
+				if (is_array($ARConfig->photoCommandStack[$this->id])) {
 					$image="";
-					reset($ARConfig->photoStack[$this->id]);
-					while (list($key, $value)=each($ARConfig->photoStack[$this->id])) {
-						$image.=$value;
+					reset($ARConfig->photoCommandStack[$this->id]);
+					while (list($key, $exec_string)=each($ARConfig->photoCommandStack[$this->id])) {
+						$exec_string .= " ".$tmpsrc;
+						system($exec_string,$failed);
+						// echo( $exec_string."<br>");
 					}
-					$exec_string=$AR->IM->mogrify.$image." $this->id";
-					system($exec_string,$failed);		
 				}
 				if (!$failed) {
 					ob_start();
@@ -115,6 +269,15 @@ class pphoto extends pfile { // definitie class
 				// FROP $this->error="Could not changedir to ".$this->store->files."temp/ ";
 			}
 		}
+		if( is_array($ARConfig->photoTempFiles[$this->id])) {
+			reset($ARConfig->photoTempFiles[$this->id]);
+			while( list($key, $tempfile)  = each($ARConfig->photoTempFiles[$this->id])) {
+				@unlink($tempfile);
+			}
+		}
+		unset( $ARConfig->photoTempFiles[$this->id] );
+		unset( $ARConfig->photoTempFilesID[$this->id] );
+		unset( $ARConfig->photoCommandStack[$this->id] );
 		if ($this->error) {
 			echo $this->error;
 		}
@@ -152,6 +315,15 @@ class pphoto extends pfile { // definitie class
 	function _annotate($text, $x, $y, $style="default") {
 		return $this->annotate($text, $x, $y, $style);
 	}
+
+        function _setComposeStyle($name, $method, $width, $height, $xoffset, $yoffset, $percentage, $resize) {
+        	return $this->setComposeStyle($name, $method, $width, $height, $xoffset, $yoffset, $percentage, $resize);
+	}
+
+	function _compose( $target, $style="default", $blend = 0 ) {
+		return $this->compose( $target, $style, $blend );
+	}
+ 
 	
 	function _build() {
 		return $this->build();
