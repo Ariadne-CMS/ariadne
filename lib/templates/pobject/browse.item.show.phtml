@@ -1,0 +1,12 @@
+<?php
+  if ($this->CheckLogin("read") && $this->CheckConfig()) {
+?>
+<SPAN class=item>
+   <A HREF="<?php echo $this->store->root.$this->path; ?>"><IMG SRC=<?php 
+     echo $AR->dir->images.$this->type; ?>.gif border=0 HSPACE=0 VSPACE=0
+     ALT="<?php echo $nlsdata->name; ?>"><br>
+   <?php echo $nlsdata->name; ?></A>
+</SPAN>
+<?php
+  }
+?>

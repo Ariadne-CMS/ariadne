@@ -1,3 +1,6 @@
+<?php
+  if ($this->CheckLogin("read") && $this->CheckConfig()) {
+?>
 <script language="javascript">
 <!--
 	// announce ourselfs
@@ -13,3 +16,6 @@
 	?>
 </table>
 </body>
+<?php
+  }
+?>
