@@ -41,6 +41,15 @@ div.toolbar{
 	background: #D8D2BD;
 }
 </style>
+<script language="JavaScript1.2"
+	src="<?php echo $AR->dir->www; ?>widgets/menu/config.php?arDirWWW=<?php echo rawurlencode($AR->dir->www); ?>"
+	type='text/javascript'>
+</script>
+<script language="JavaScript1.2" 
+	src="<?php echo $AR->dir->www; ?>widgets/menu/HM_Script<?php echo $browser_string; ?>.js" 
+	type="text/javascript">
+</script>
+
 <script language="JavaScript">
 	function setXpView(type) {
 		top.Set('viewmode',type);
