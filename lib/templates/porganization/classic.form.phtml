@@ -13,17 +13,20 @@
 	******************************************************************/
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 ?>
+<html>
 <head>
-	<?php
-		$this->call("lock.init.phtml");
-
-		include($this->store->code."widgets/multiple/js.html");
-	?>
+<title><?php 
+	$title=$ARnls["edit"]." ".@current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml")); 
+	echo $title;
+?></title>
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
+<?php 
+	$this->call("lock.init.phtml");
+	include($this->store->code."widgets/multiple/js.html"); 
+?>
 </head>
-
-<body bgcolor="white">
+<body bgcolor="white" onUnLoad="releaseLock()">
 <form method="post">
-<!-- hidden form variables needed by new.phtml/save.phtml -->
 <input type="hidden" name="arNewType" value="<?php echo $arNewType; ?>">
 <input type="hidden" name="arNewFilename" value="<?php echo $arNewFilename; ?>">
 <input type="hidden" name="arReturnPage" value="<?php echo $arReturnPage; ?>">
@@ -166,6 +169,7 @@
 </table>
 </form>
 </body>
+</html>
 <?php
 	}
 ?>
