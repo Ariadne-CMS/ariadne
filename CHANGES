@@ -2,7 +2,10 @@ Ariadne 2.0b9
 
 Changes in ariadne since version 2.0b8
 
-lib/modules/mod_ax.phtml
+- Add pinp functions:
+	_get_addresses and _call_address
+
+- lib/modules/mod_ax.phtml
 	- system() commands are now checked by exitcode
 	instead of the result of the command (output).
 
