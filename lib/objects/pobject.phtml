@@ -215,6 +215,7 @@ class pobject extends object {
 								}
 							}
 							$this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority);
+							unset($this->arIsNewObject);
 							$this->id=$this->exists($this->path);
 							$result=$this->path;
 						} else {
