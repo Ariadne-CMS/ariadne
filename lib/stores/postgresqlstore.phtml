@@ -42,7 +42,7 @@ class postgresqlstore {
 	 This is the constructor routine for the store object. It takes some configuration 
 	 information as arguments and sets up the database connection.
 
-	 $path is the root path of the running script under the document root of				
+	 $path is the root path of the running script under the document root of
 		the webserver.
 	 $config contains some database configuration values: "host", "user",
 		"password", "database" and the location of the class files for all the used
@@ -51,7 +51,7 @@ class postgresqlstore {
 	 **********************************************************************************/
 
 		debug("postgresqlstore($path, [array])", "store");
-		if (! function_exists("pg_connect")) {
+		if (! function_exists("pg_pconnect")) {
 			dl("pgsql.so");
 		}
 		$this->error = "";
@@ -66,6 +66,7 @@ class postgresqlstore {
 		$this->code = $config["code"];
 		$this->files = $config["files"];
 		$this->tbl_prefix = $config["prefix"];
+		$this->transaction = false;
 
 		/* Instantiate module postgresql_compiler */
 		include_once($this->code."stores/modules/postgresql_compiler.php");
@@ -434,6 +435,7 @@ class postgresqlstore {
 				$filestore->close();
 			}
 		}
+		$this->stop_transaction(false);
 		return (@pg_close($this->connect_id));
 	}
 
@@ -493,9 +495,7 @@ class postgresqlstore {
 		$objects_tbl = $this->tbl_prefix."objects";
 		$types_tbl = $this->tbl_prefix."types";
 
-		$query_string = "BEGIN WORK";
-		$this->store_run_query( $query_string);
-
+		$this->start_transaction();
 		if ($id = $this->exists($path)) { //update
 			debug("save: updating","all");
 			if ($vtype) { // only change/save vtype if it is explicitly set
@@ -588,8 +588,6 @@ class postgresqlstore {
 					$result=0;
 				}
 			} else {
-				$query_string = "ROLLBACK WORK;";
-				$this->store_run_query( $query_string);
 				error("PANIC: could not obtain write lock on nodes table!");
 				$this->close();
 				exit;
@@ -597,11 +595,9 @@ class postgresqlstore {
 		}
 		debug("save: result=(".$result.")","store");
 		if($result === 0) {
-			$query_string = "ROLLBACK WORK;";
-			$this->store_run_query( $query_string);
+			$this->stop_transaction(false);
 		} else {
-			$query_string = "COMMIT WORK;";
-			$this->store_run_query( $query_string);
+			$this->stop_transaction(true);
 		}
 
 		debug("save: end","all");
@@ -632,8 +628,7 @@ class postgresqlstore {
 		$object = $this->exists($path);
 		if ($object) {
 			$result=false;
-			$query_string = "BEGIN WORK";
-			$this->store_run_query( $query_string);
+			$this->start_transaction();
 			$query_string = "delete from $nodes_tbl where object=$object";
 			$exec = $this->store_run_query( $query_string);
 			if ($exec) {
@@ -654,11 +649,9 @@ class postgresqlstore {
 			$result=1;
 		}
 		if($result === false) {
-			$query_string = "ROLLBACK WORK;";
-			$this->store_run_query( $query_string);
+			$this->stop_transaction(false);
 		} else {
-			$query_string = "COMMIT WORK;";
-			$this->store_run_query( $query_string);
+			$this->stop_transaction(true);
 		}
 		debug("purge: end","all");
 		return ($result);
@@ -754,9 +747,7 @@ class postgresqlstore {
 		$types_tbl = $this->tbl_prefix."types";
 		$result = false;
 
-		$query_string = "BEGIN WORK";
-		$this->store_run_query( $query_string);
-
+		$this->start_transaction();
 		if ($this->exists($destination)) {
 			$this->error="$destination already exists, cannot overwrite.";
 			debug("link: ERROR: ".$this->error,"store");
@@ -775,8 +766,6 @@ class postgresqlstore {
 					$edestination = AddSlashes($destination);
 					debug("link: new destination: $destination ($subid)","all");
 				} else {
-					$query_string = "ROLLBACK WORK;";
-					$this->store_run_query( $query_string);
 					error("PANIC: could not obtain write lock on nodes table!");
 					$this->close();
 					exit;
@@ -803,20 +792,18 @@ class postgresqlstore {
 		}
 		debug("link: result=(".$result.")","store");
 		if($result === false){
-			$query_string = "ROLLBACK WORK;";
-			$this->store_run_query( $query_string);
+			$this->stop_transaction(false);
 		} else {
-			$query_string = "COMMIT WORK;";
-			$this->store_run_query( $query_string);
+			$this->stop_transaction(true);
 		}
 		return ($result);
 	}
 
 	function store_run_query($query) {
 		debug("store_run_query: $query","store");
-		$result = pg_exec($this->connect_id,$query);
+		$result = @pg_exec($this->connect_id,$query);
 		$err = pg_errormessage($this->connect_id);
-		if ($err) {				
+		if ($err) {
 			$this->error = "ERROR: PostgreSQL: $err";
 			debug("store_run_query: ".$this->error,"store");
 			debug("store_run_query: query=$query","store");
@@ -844,8 +831,7 @@ class postgresqlstore {
 		$types_tbl = $this->tbl_prefix."types";
 		$result = false;
 
-		$query_string = "BEGIN WORK";
-		$this->store_run_query( $query_string);
+		$this->start_transaction();
 
 		if ($this->exists($destination)) {
 			$this->error = "$destination already exists, cannot overwrite.";
@@ -865,8 +851,6 @@ class postgresqlstore {
 					$edestination = AddSlashes($destination);
 					debug("move: new destination: $destination ($subid)","all");
 				} else {
-					$query_string = "ROLLBACK WORK;";
-					$this->store_run_query( $query_string);
 					error("PANIC: could not obtain write lock on nodes table!");
 					$this->close();
 					exit;
@@ -891,11 +875,9 @@ class postgresqlstore {
 			}
 		}
 		if($result === false){
-			$query_string = "ROLLBACK WORK;";
-			$this->store_run_query( $query_string);
+			$this->stop_transaction(false);
 		} else {
-			$query_string = "COMMIT WORK;";
-			$this->store_run_query($query_string);
+			$this->stop_transaction(true);
 		}
 		if ($result) {
 			return $destination;
@@ -1184,7 +1166,27 @@ class postgresqlstore {
 		return ($this->filestores[$name]);
 	}
 
+	function start_transaction(){
+		$query_string = "BEGIN WORK";
+		if($this->store_run_query( $query_string)){
+			$this->transaction = true;
+		}
+		return $this->transaction;
+	}
 
+	function stop_transaction($how){
+		if($this->transaction){
+			if($how){
+				$query_string = "COMMIT WORK;";
+			} else {
+				$query_string = "ROLLBACK WORK;";
+			}
+			if($this->store_run_query( $query_string)){
+				$this->transaction = false;
+			}
+		}
+		return !$this->transaction;
+	}
 
 } // end class store
 

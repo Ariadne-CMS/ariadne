@@ -59,6 +59,10 @@ Bugs Fixed:
 	- Removed the table tags from the allowed tags in the _loose editor.ini definition.
 	- Fixed a bug with CheckConfig which started looping when a pshortcut pointed to a parent
 	- Fixed a bug with konqueror with the explore.html, it should work now in IE, Mozilla and konqueror
+	- Fixed a postgresql store bug, pconnect gives nasty bugs when a pageload is
+	  aborted , because the transaction isn't rolled back then, but the next
+	  connection will be seen as a continuation of the current connection.
+	  Bug found by reading commends on www.php.net
 
 Changes in Ariadne since version 2.2
 
