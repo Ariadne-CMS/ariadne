@@ -1,0 +1,16 @@
+<?php
+	/******************************************************************
+	
+	******************************************************************/
+
+	$this->call("system.save.nls.phtml");
+	if (!$this->error) {
+		?>
+			<script>
+				window.close();
+			</script>
+		<?php
+	} else {
+		echo "<font color='red'>$this->error</font>";
+	}
+?>

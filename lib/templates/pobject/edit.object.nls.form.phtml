@@ -1,0 +1,103 @@
+<?php
+	/******************************************************************
+
+	 no result.
+
+	******************************************************************/
+	if ($this->CheckLogin("config")) {
+?>
+<table border="0" width="90%">
+<tr>
+	<td>
+		<fieldset id="cache">
+		<legend><?php echo $ARnls["language"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+			<table border="0" align="center">
+			<tr>
+				<td>
+					<input type="radio" name="inherit" value="1" <?php
+						if (!$this->data->nlsconfig->list) { // set for this object
+							echo "checked";		
+						} 
+					?>><?php echo $ARnls["inherit"]; ?>
+				</td><td>
+					<input type="radio" name="inherit" value="0" <?php
+						if ($this->data->nlsconfig->list) { // set for this object
+							echo "checked";
+						} 
+					?>><?php echo $ARnls["use"]; ?> :</font>
+				</td>
+			</tr><tr>
+				<td align="center" valign="top">
+					<?php echo $ARnls["available"]; ?><br>
+					<div align="left">
+					<fieldset style="width: 150px; border: inset 2px; height: 68px; margin: 1px; padding: 1px;">
+					<div style="margin: 1px; margin-left: 3px;">
+					<?php
+						$config=$ARConfig->cache[$this->path];
+						reset($config->nls->list);
+						while (list($key, $value)=each($config->nls->list)) {
+							echo $value."<br>";
+						}
+					?>
+					</div>
+					</fieldset>
+					</div>
+				</td>
+				<td align="center" valign="top">
+					<?php echo $ARnls["available"]; ?><br>
+					<select multiple name="available[]" style="width: 150px;">
+					<?php
+					if ($data->nlsconfig->list) { // acquired from parents
+						$selected=$data->nlsconfig->list;
+					}
+					reset($AR->nls->list);
+					while (list($key, $value)=each($AR->nls->list)) {
+						$value=htmlentities($value);
+						if ($selected[$key]) {
+							echo "<option value=\"$key\" selected>$value</option>\n";
+						} else {
+							echo "<option value=\"$key\">$value</option>\n";
+						}
+					}				
+				?> 
+				</select>
+			</td>
+		</tr><tr>
+				<td align="center" valign="top">
+					<?php echo $ARnls["default"]; ?><br>
+					<div align="left">
+					<fieldset style="width: 150px; border: inset 2px;">
+						<div style="margin: 1px; margin-left: 3px;">
+						<?php echo $config->nls->list[$config->nls->default]; ?>
+						</div>
+					</fieldset>
+					</div>
+				</td>
+				<td align="center" valign="top">
+				<?php echo $ARnls["default"]; ?><br>
+				<select name="default" style="width:150px;">
+				<?php
+					unset($selected);
+					reset($AR->nls->list);
+					if ($data->nlsconfig->default) {
+						$selected=$data->nlsconfig->default;
+					}
+					while (list($key, $value)=each($AR->nls->list)) {
+						if ($selected==$key) {
+							echo "<option value=\"$key\" selected>$value</option>\n";
+						} else {
+							echo "<option value=\"$key\">$value</option>\n";
+						}
+					}				
+				?>
+				</select>
+				</td>
+			</tr>
+			</table>
+		</fieldset>
+	</td>
+</tr>
+</table>
+<?php
+	}
+?>
