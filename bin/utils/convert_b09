@@ -69,13 +69,13 @@
 						$templates_store=$store->get_filestore("templates");
 
 						while (is_array($axdata->nodes) && (list($key, $id)=each($axdata->nodes))) {
-							if (!$objects[$id]) {
 								echo "processing $key\n";
+							if (!$objects[$id]) {
 								if (!is_array($objects) && $key != "/") {
 									echo "fist adding dummy root node\n";
 									$store->save("/", "pdir", new object, "", "", 0, AX_DUMMY);
 								}
-								$objects[$id]=true; // object seen
+								$objects[$id]=$key; // object seen
 								$object=$axdata->objects[$id];
 								$store->save($key, $object["type"], $object["data"], $object["properties"], $object["vtype"]);
 								if ($newobject=@current(@$store->call("system.get.phtml", "",
@@ -120,6 +120,8 @@
 								} else {
 									echo "error: could not get saved object ($key)\n";
 								}
+							} else {
+								$store->link($objects[$id], $key);
 							}
 						}
 						$files_store->close();
