@@ -129,6 +129,8 @@
   }
 
   id2path = new Array();
+  id2path['pgroup'] = new Array();
+  id2path['puser'] = new Array();
 <?php
 	foreach ($data->grants as $type => $grantslist) {
 		while (list($id, $grants)=each($grantslist)) {
@@ -140,7 +142,7 @@
 					$path  = current($this->find('/system/users/', 'login.value="'.$id.'"', 'system.get.path.phtml'));
 				break;
 			}
-			echo "  id2path['$id'] = '$path'; \n";
+			echo "  id2path['$type']['$id'] = '$path'; \n";
 			echo "  grants['$type']['$id'] = new Array();\n";
 			if ($grants && is_array($grants)) {
 				ksort($grants);
