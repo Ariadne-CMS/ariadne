@@ -9,7 +9,7 @@
 	$DB["off"]=0;
 	$DB["level"]=$DB["off"];
 
-	$DB["file"]="/home/gijs/ftp.debug";
+	$DB["file"]=$ftp_config["debugfile"];
 
 	function debug($text, $level="pinp", $indent="") {
 		global $DB, $DB_INDENT;

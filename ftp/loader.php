@@ -1,6 +1,13 @@
 <?php
+	if ($argc > 0) {
+		$config=$argv[0];
+	} else {
+		$config="default";
+	}
+
 	include("../www/ariadne.inc");
 	require($ariadne."/configs/ariadne.phtml");
+    require($ariadne."/configs/ftp/$config.phtml");
 	require($ariadne."/includes/loader.ftp.php");
 	require($ariadne."/configs/store.phtml");
 	require($ariadne."/configs/sessions.phtml");
@@ -544,6 +551,7 @@
 						}
 					break;
 
+					case 'RMD':
 					case 'RMDIR':
 					case 'DELE':
 						$target = $args;
@@ -599,10 +607,8 @@
 									ftp_TranslateTemplate($target, $template);
 									$fileinfo["name"]=eregi_replace('[^.a-z0-9_-]', '_', $template);
 									debug("ftp: writing template to  ($target$template)");
-									//debugon("all");
 									$FTP->store->call("ftp.templates.save.phtml", Array("file" => $fileinfo),
 										$FTP->store->get($target));
-									debugon();
 								} else {
 									$file=substr($target, strlen($path), -1);
 									$fileinfo["name"]=eregi_replace('[^.a-z0-9_-]', '_', $file);
@@ -864,7 +870,7 @@
 
 
 	sleep(1);
-	debugon("pinp");
+	//debugon("pinp");
 
 	// set PHP error handling
 	error_reporting(1);
@@ -877,8 +883,8 @@
 	$store=new $inst_store(".", $store_config);
 
 	// fill in your own server ip number:
-	$FTP->server_ip = "217.114.97.244";
-	$FTP->host = "muze.nl";
+	$FTP->server_ip = $ftp_config["server_ip"];
+	$FTP->host = $ftp_config["site"];
 	$FTP->store = &$store;
 	// default listMode ( files, objects or templates )
 	$FTP->listMode = "files";
@@ -903,11 +909,11 @@
 				$site=current($result);
 				$FTP->site=substr($site->path, 0, -1);
 				$FTP->cwd="/";
-				ftp_Tell(220, "Test php-ftp loader");
+				ftp_Tell(220, $ftp_config["greeting"]);
 			} else {
 				$FTP->site="";
 				$FTP->cwd="/";
-				ftp_Tell(220, "Test php-ftp loader");
+				ftp_Tell(220, $ftp_config["greeting"]);
 			}
 
 			ftp_CheckLogin();
@@ -920,5 +926,4 @@
 	} else {
 		$FTP->error="Could not open stdin";
 	}
-	debugoff();
 ?>
