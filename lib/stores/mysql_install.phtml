@@ -51,11 +51,6 @@ CREATE TABLE types (
 	KEY type (type),
 	KEY implements (implements)
 )";
-		$queries[5]["msg"]="creating root dir.";
-		$queries[5]["query_string"]="INSERT INTO nodes (path, parent, object) VALUES ('/','..',1)";
-
-		$queries[6]["msg"]="";
-		$queries[6]["query_string"]="INSERT INTO objects (id, type, object, vtype) VALUES (0,'pdir','O:6:\"object\":2:{s:2:\"en\";O:6:\"object\":1:{s:4:\"name\";s:7:\"Ariadne\";}s:3:\"nls\";O:6:\"object\":1:{s:7:\"default\";s:2:\"en\";}}','pdir')";
 
 		while ((list($key, $query)=each($queries)) && (!$error)) {
 			if ($query["msg"]) {
@@ -71,10 +66,6 @@ CREATE TABLE types (
 
 
 		if (!$error) {
-			echo "creating default types.\n";
-			$this->add_type("pobject","pobject");
-			$this->add_type("pdir","pobject");
-			$this->add_type("pdir","pdir");
 			$return=true;
 			// initialize locking tables
 			$this->mod_lock->init();
