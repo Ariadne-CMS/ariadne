@@ -589,7 +589,7 @@
 
 		if (($flags & MIME_EXT) && ( (($flags & MIME_DATA) && !$result) || !($flags & MIME_DATA) ) ) {
 			if (eregi('.*[.]([^.]*)', $filename, $regs)) {
-				$result = $mimetypes_data[$regs[1]];
+				$result = $mimetypes_data[strtolower($regs[1])];
 			}
 		}
 		return $result;
