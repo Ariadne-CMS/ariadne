@@ -960,6 +960,73 @@ class pobject extends object { // pobject class definition
 		return $config;
 	}
 
+	function getPinpTemplate($arCallFunction, $path=".") {
+	global $ARCurrent, $ARConfig;
+		$result = Array();
+		if (strpos($arCallFunction,"::")!==false) {
+			// template of a specific class defined via call("class::template");
+			list($arCallType, $arCallFunction)=explode("::",$arCallFunction);
+		} else {
+			$arCallType=$this->type;
+		}
+		debug("CheckConfig: searching for template ($arCallType::$arCallFunction)", "all");
+		$path = $this->make_path($path);
+
+		/* first check current templates */
+		if ($this->path == $path) {
+			$curr_templates=$this->data->config->pinp;
+		} else {
+			if (!$ARConfig->cache[$path]) {
+				$this->get($path, "system.get.config.phtml");
+			}
+			$curr_templates=$ARConfig->cache[$path]->templates;
+		}
+
+		$checkpath=$path;
+		$lastcheckedpath="";
+		$arCallClassTemplate = $ARCurrent->arCallClassTemplate;
+		while (!$arCallClassTemplate && !$arCallTemplate && $checkpath!=$lastcheckedpath) {
+			debug("CheckConfig: loop (".$arCallClassTemplate.")(".$arCallTemplate.")(".$checkpath.")!=(".$lastcheckedpath.")","all");
+			$arType=$arCallType;
+			while ($arType && !$arCallTemplate) {
+				if ($arTemplateId=$curr_templates[$arType][$arCallFunction][$this->reqnls]) {
+					$arCallTemplate=$arType.".".$arCallFunction.".".$this->reqnls;
+				} else if ($arTemplateId=$curr_templates[$arType][$arCallFunction]['any']) {
+					$arCallTemplate=$arType.".".$arCallFunction.".any";
+				} else {
+					if (!class_exists($arType)) {
+						$arTemp=$this->store->newobject('.', '.', $arType, new object);
+					} else {
+						$arTemp=new $arType();
+					}
+					$arType=get_parent_class($arTemp);
+				}
+			}
+			if ($ARConfig->cache[$checkpath]->library) {
+				reset($ARConfig->cache[$checkpath]->library);
+				while (!$arTemplateId && (list($library, $path)=each($ARConfig->cache[$checkpath]->library))) {
+					$template = $this->getPinpTemplate($arCallFunction, $path);
+					if ($template["arTemplateId"]) {
+						extract($template);
+						$arLibrary = $library;
+						debug("CheckConfig: found $arCallFunction in library $arLibrary", "all");
+					}
+				}
+			}
+			$lastcheckedpath=$checkpath;
+			debug("CheckConfig: checkpath = (".$checkpath.")","all");
+			$checkpath=$this->store->make_path($checkpath, "..");
+			debug("CheckConfig: after make_path  (".$checkpath.")","all");
+			$curr_templates=$ARConfig->cache[$checkpath]->templates;
+		}
+		debug("CheckConfig: while loop ended","all");
+
+		$result["arTemplateId"] = $arTemplateId;
+		$result["arCallTemplate"] = $arCallTemplate;
+		$result["arLibrary"] = $arLibrary;
+		return $result;
+	}
+
 	function CheckConfig($arCallFunction="", $arCallArgs="") {
 	// returns true when cache isn't up to date and no other template is
 	// defined for $path/$function. Else it takes care of output to the
@@ -1052,63 +1119,29 @@ class pobject extends object { // pobject class definition
 				earlier.
 			*/
 			$ARConfigChecked = true;
-			if (strpos($arCallFunction,"::")!==false) {
-				// template of a specific class defined via call("class::template");
-				list($arCallType, $arCallFunction)=explode("::",$arCallFunction);
-			} else {
-				$arCallType=$this->type;
-			}
-			debug("CheckConfig: searching for template ($arCallType::$arCallFunction)", "all");
 
-			if ($arCallFunction) {
-				/* first check current templates */
-				$curr_templates=$this->data->config->pinp;
-
-				$checkpath=$this->path;
-				$lastcheckedpath="";
-				$arCallClassTemplate = $ARCurrent->arCallClassTemplate;
-				$templatebeenhere = array();
-				while (!$arCallClassTemplate && !$arCallTemplate && $checkpath!=$lastcheckedpath) {
-					debug("CheckConfig: loop (".$arCallClassTemplate.")(".$arCallTemplate.")(".$checkpath.")!=(".$lastcheckedpath.")","all");
-					$arType=$arCallType;
-					while ($arType && !$arCallTemplate) {
-						if ($arTemplateId=$curr_templates[$arType][$arCallFunction][$this->reqnls]) {
-							$arCallTemplate=$arType.".".$arCallFunction.".".$this->reqnls;
-						} else if ($arTemplateId=$curr_templates[$arType][$arCallFunction]['any']) {
-							$arCallTemplate=$arType.".".$arCallFunction.".any";
-						} else {
-							if (!class_exists($arType)) {
-								$arTemp=$this->store->newobject('.', '.', $arType, new object);
-							} else {
-								$arTemp=new $arType();
-							}
-							$arType=get_parent_class($arTemp);
-						}
-					}
-					$lastcheckedpath=$checkpath;
-					debug("CheckConfig: checkpath = (".$checkpath.")","all");
-					if ($ARConfig->cache[$checkpath]->templates_path && 
-							($templatebeenhere[$ARConfig->cache[$checkpath]->templates_path] != 1)
-						) {
-						$checkpath = $ARConfig->cache[$checkpath]->templates_path;
-						debug("CheckConfig: from cache = (".$checkpath.")","all");
-					} else {
-						$checkpath=$this->store->make_path($checkpath, "..");
-						debug("CheckConfig: after make_path  (".$checkpath.")","all");
-					}
-					$curr_templates=$ARConfig->cache[$checkpath]->templates;
-					$templatebeenhere[$lastcheckedpath] = 1;
+			if (($libpos=strpos($arCallFunction,":"))!==false && $libpos!==strpos($arCallFunction, "::")) {
+				// template of a specific library defined via call("library:template");
+				$arLibrary = substr($arCallFunction, 0, $libpos);
+				$arCallFunction = substr($arCallFunction, $libpos+1);
+				debug("CheckConfig: search for lib: '$arLibrary'; '$arCallFunction'", "all");
+				if ($config->library[$arLibrary]) {
+					//echo $config->library[$library];
+					$template = $this->getPinpTemplate($arCallFunction, $config->library[$arLibrary]);
+					//if (!$template["arLibrary"]) {
+						$template["arLibrary"] = $arLibrary;
+					//}
 				}
-				debug("CheckConfig: while loop ended","all");
+			} else {
+				$template = $this->getPinpTemplate($arCallFunction);
 			}
-			
-			if ($arCallTemplate && $arTemplateId) {
-				debug("CheckConfig: arCallTemplate=$arCallTemplate, arTemplateId=$arTemplateId","object");
+			if ($template["arCallTemplate"] && $template["arTemplateId"]) {
+				debug("CheckConfig: arCallTemplate=".$template["arCallTemplate"].", arTemplateId=".$template["arTemplateId"],"object");
 				// $arCallTemplate=$this->store->get_config("files")."templates".$arCallTemplate;
 				// check if template exists, if it doesn't exist, then continue the original template that called CheckConfig
 				$arTemplates=$this->store->get_filestore("templates");
-				if ($arTemplates->exists($arTemplateId, $arCallTemplate)) { 
-					debug("CheckConfig: $arCallTemplate exists","object");
+				if ($arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"])) { 
+					debug("CheckConfig: ".$template["arCallTemplate"]." exists","object");
 					// check if the requested language exists, if not do not display anything, 
 					// unless otherwise indicated by $ARCurrent->allnls
 					// This triggers only for pinp templates called by other templates,
@@ -1116,6 +1149,7 @@ class pobject extends object { // pobject class definition
 					// choice dialogue instead.
 					if (!is_string($arCallArgs)) {
 						$arCallArgs['arCallFunction'] = $arCallFunction;
+						$arCallArgs['arLibrary'] = $template["arLibrary"];
 					}
 					$ARCurrent->arCallStack[]=$arCallArgs;
 					// start running a pinp template
@@ -1145,11 +1179,11 @@ class pobject extends object { // pobject class definition
 					if ($continue) {
 						if ($ARCurrent->ARShowTemplateBorders) {
 							// echo "<fieldset style=\"float: left;\">";
-							// echo "<legend style=\"color: black; background-color: white;\">$arCallTemplate</legend>";
-							echo "<div style=\"float: left; border: 0px; padding: 0px; margin: 0px;\" title=\"(".$this->type.")".$this->path.":$arCallTemplate\"".
+							// echo "<legend style=\"color: black; background-color: white;\">".$template["arCallTemplate"]."</legend>";
+							echo "<div style=\"float: left; border: 0px; padding: 0px; margin: 0px;\" title=\"(".$this->type.")".$this->path.":".$template["arCallTemplate"]."\"".
 									" onMouseOver=\"this.style.border='1px dotted black';\" onMouseOut=\"this.style.border='0px';\">";
 						}
-						$arTemplates->import($arTemplateId, $arCallTemplate, "", $this);
+						$arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
 						if ($ARCurrent->ARShowTemplateBorders) {
 							// echo "</fieldset>";
 							echo "</div>";
@@ -1161,7 +1195,7 @@ class pobject extends object { // pobject class definition
 //					echo $this->path.$arCallFunction."<<pinp\n"; // frop
 					return false;
 				} else {
-					debug("pobject: CheckConfig: no such file: $arCallTemplate","all");
+					debug("pobject: CheckConfig: no such file: ".$template["arCallTemplate"]."","all");
 				}
 			} else {
 				debug("CheckConfig: no arCallTemplate","object");
@@ -1656,6 +1690,8 @@ class pobject extends object { // pobject class definition
 			$result=$$var;
 		} else if (isset($ARCurrent->$var)) {
 			$result=$ARCurrent->$var;
+		} else if (isset($ARConfig->pinpcache[$this->path][$var])) {
+			$result=$ARConfig->pinpcache[$this->path][$var];
 		} else if (isset($HTTP_POST_VARS[$var])) {
 			$result=$HTTP_POST_VARS[$var];
 		} else if (isset($HTTP_GET_VARS[$var])) {

@@ -29,10 +29,9 @@
 	 No return value.	
 
 	******************************************************************/
-
 	debug($this->type."/system.get.config.phtml ".$this->path,"class");
 	$context = $this->getContext(ARCALLINGCONTEXT);
-	if ($context["scope"] != "pinp") {
+	if (!$ARConfig->cache[$this->path] && $context["scope"] != "pinp") {
 		// first check whether parent config info is in cache
 		if (!$ARConfig->cache[$this->parent] && $this->parent!="..") {
 			$this->get($this->parent, "system.get.config.phtml");
@@ -78,5 +77,13 @@
 			$configcache->custom=array_merge($configcache->custom, $data->config->customconfig);
 		}
 		$ARConfig->cache[$this->path]=$configcache;
+
+		/* load pinp configuration data via config.ini */
+		$ARConfig->pinpcache[$this->path] = $this->call("config.ini", Array("config" => $ARConfig->pinpcache[$this->parent]));
+
+		/* now load the library configuration data into our normal cache */
+		if ($ARConfig->pinpcache[$this->path]["library"]) {
+			$ARConfig->cache[$this->path]->library = $ARConfig->pinpcache[$this->path]["library"];
+		}
 	}
 ?>
