@@ -11,10 +11,7 @@
 
         set_time_limit(0);
 
-		$tempfile=tempnam($this->store->files."temp","ax");
-		$tempfile=str_replace("\\", "/", $tempfile);
-		$tempfile=ereg_replace('^([a-zA-Z]:)', '', $tempfile);
-		$ax_config["database"]=$tempfile;
+		$ax_config["database"]=tempnam($this->store->files."temp/","ax");
 		@unlink($ax_config["database"]);
 		$srcpath=$this->path;
 		$ax_config["writeable"]=true;
