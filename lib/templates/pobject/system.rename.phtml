@@ -20,6 +20,9 @@
 					$this->error="You cannot move an object below itself.";
 				}
 			}
+			if (!eregi("^[a-z0-9_\{\}\.\:/-]+$",$target)) { 
+				$this->error="Illegal characters in filename: $target";
+			}
 			if (!$this->error) {
 				// FIXME: check add permission in $target
 				$this->store->move($this->path, $target);			
