@@ -32,11 +32,11 @@
 			extract($arCallArgs);
 		}
 		
-		switch($next) {
-			case $ARnls["apply"] :
+		switch(true) {
+			case isset($next_apply) :
 				$arReturnPage="edit.object.layout.form.phtml?type=".RawUrlEncode($newtype).
 					"&function=".RawUrlEncode($newfunction)."&language=".RawUrlEncode($newlanguage);
-			case $ARnls["save"] :
+			case isset($next_save) :
 				$this->call("system.save.layout.phtml", Array( 
 					"type"		=> $newtype,
 					"function"	=> $newfunction,
@@ -44,7 +44,7 @@
 					"default"	=> $default,
 					"template"	=> $template));
 				break;
-			case $ARnls["delete"] :
+			case isset($next_delete):
 				$this->call("system.delete.layout.phtml",$arCallArgs);
 				break;
 		}
