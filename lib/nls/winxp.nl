@@ -31,7 +31,7 @@
 	$ARnls["xp_small"]						= "Lijst";
 	$ARnls["xp_large"]						= "Iconen";
 	$ARnls["xp_details"]					= 	"Details";
-	$ARnls["xp_iconview"]					= 	"Select an icon-view";
+	$ARnls["xp_iconview"]					= "Weergave";
 	$ARnls["xp_import"]						= "Importeer";
 	$ARnls["xp_export"]						= "Exporteer";
 	$ARnls["xp_preferences"]				= "Instellingen";

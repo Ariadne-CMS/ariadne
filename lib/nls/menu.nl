@@ -10,7 +10,7 @@
 	$ARnls["m_edit"]						=	"Bewerk";
 	$ARnls["m_explorerbar"]					=	"Navigatie&nbsp;Menu";
 	$ARnls["m_export"]						=	"Exporteer";
-	$ARnls["m_find"]						=	"Find";
+	$ARnls["m_find"]						= "Zoek";
 	$ARnls["m_fonts"]						=	"Fonts";
 	$ARnls["m_grants"]						=	"Rechten";
 	$ARnls["m_help"]						=	"Help";
@@ -30,8 +30,8 @@
 	$ARnls["m_shortcut"]					=	"Snelkoppeling";
 	$ARnls["m_small"]						=	"Kleine&nbsp;Iconen";
 	$ARnls["m_templates"]					=	"Templates";
-	$ARnls["m_tutorials"]					=	"Tutorials";
-	$ARnls["m_types"]						=	"Types";
+	$ARnls["m_tutorials"]					=	"Handleidingen";
+	$ARnls["m_types"]						=	"Typen";
 	$ARnls["m_view"]						=	"Beeld";
 	$ARnls["m_web"]							=	"Webpagina";
 	$ARnls["m_page"]						=	"Pagina";

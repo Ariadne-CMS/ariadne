@@ -21,7 +21,7 @@
 	$ARnls["axnorootnode"]						=	"ax bestand heeft geen root node, er wordt er een aangemaakt\n";
 	$ARnls["back"]							=	"Terug";
 	$ARnls["browse"]						=	"Blader";
-	$ARnls["caching"]						=	"Caching";
+	$ARnls["caching"]						=	"Cachen";
 	$ARnls["calenderentry"]					=	"Kalender notitie";
 	$ARnls["cancel"]						=	"Annuleer";
 	$ARnls["changeeffectivenextlogin"]		=	"Veranderingen worden doorgevoerd wanneer U zich opnieuw aanmeld.";
@@ -37,7 +37,7 @@
 	$ARnls["configuration"]					=	"Configuratie";
 	$ARnls["configure"]						=	"Configureer %s";
 	$ARnls["confirm:nonameentered"]			=	"U heeft geen naam ingevuld voor taal '%s'.\\nWilt U toch doorgaan?";
-	$ARnls["contactinformation"]			=	"Contact Info";
+	$ARnls["contactinformation"]			=	"Contact Informatie";
 	$ARnls["contextsearch"]					=	"Context";
 	$ARnls["copy"]							=	"Kopieer";
 	$ARnls["copying"]						=	"Bezig met kopieren van";
@@ -99,6 +99,7 @@
 	$ARnls["err:filenameinvalidnoparent"]				=	"%s is ongeldig: %s bestaat niet.";
 	$ARnls["err:fileupload"]				=	"Er ging iets mis tijdens het oversturen van het bestand. Probeert U het nog eens.\nAls het probleem blijft, neem dan contact op met uw systeem beheerder.";
 	$ARnls["err:fileuploadphtml"]			=	"U kunt geen bestanden met de extensie .phtml oversturen.";
+	$ARnls["err:fileuploadvirus"]			=	"Volgens onze virusscanner bevat uw bestand %s! Controleer uw bestand en probeer het opnieuw. Als het probleem blijft bestaan, raadpleeg dan uw systeembeheerder.";
 	$ARnls["err:ftpnorenameself"]					=	"kan een template niet hernoemen naar zichzelf";
 	$ARnls["err:ftpnotemplate"]					=	"template niet gevonden";
 	$ARnls["err:ftpnotemplatebadperm"]				=	"kan template niet vinden (foute permissies?)";
@@ -235,7 +236,7 @@
 	$ARnls["password"]						=	"Wachtwoord";
 	$ARnls["passwordincorrect"]				=	"Incorrect wachtwoord";
 	$ARnls["path"]							=	"Pad";
-	$ARnls["photo"]							=	"Photo";
+	$ARnls["photo"]							=	"Foto";
 	$ARnls["pobox"]							=	"Postbus";
 	$ARnls["preferences"]					=	"Instellingen";
 	$ARnls["prev"]							=	"Vorige";
@@ -297,14 +298,14 @@
 	$ARnls["thu"]							=	"Don";
 	$ARnls["thumbcolor"]					=	"Kleur";
 	$ARnls["thumbheight"]					=	"Hoogte";
-	$ARnls["thumbnail"]						=	"Thumbnail";
+	$ARnls["thumbnail"]						=	"Miniatuur";
 	$ARnls["thumbwidth"]					=	"Breedte";
 	$ARnls["time"]							=	"Tijd";
 	$ARnls["title"]							=	"Titel";
 	$ARnls["todo"]							=	"Te doen";
 	$ARnls["tue"]							=	"Din";
 	$ARnls["type"]							=	"Type";
-	$ARnls["types"]							=	"Types";
+	$ARnls["types"]							=	"Typen";
 	$ARnls["typetree"]						=	"Typeboom";
 	$ARnls["unlock"]						=	"Hef op";
 	$ARnls["up"]							=	"Omhoog";
