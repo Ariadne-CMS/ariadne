@@ -31,6 +31,7 @@ Bugs Fixed:
 	- Fixed recursive calling of user.login.html
 	- Fixed a changed root problem (which was only triggerd with some clients
       like ncftp).
+	- Fixed a bug in the offset/limit generation in the postgresql store
 
 Changes in Ariadne since version 2.2
 
