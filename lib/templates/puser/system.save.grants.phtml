@@ -45,15 +45,22 @@
 				}
 			}
 			if ($delete) {
-				unset($this->data->grants[$type][$id][$grant]);
-				if (!@count($this->data->grants[$type][$id])) {
+				if (!$grant) {
 					unset($this->data->grants[$type][$id]);
+				} else {
+					unset($this->data->grants[$type][$id][$grant]);
+					if (!@count($this->data->grants[$type][$id])) {
+						unset($this->data->grants[$type][$id]);
+					}
 				}
-
 				if ($id==$this->data->login && $type==$this->type) {
-					unset($this->data->usergrants[$this->path][$grant]);
-					if (!@count($this->data->usergrants[$this->path])) {
+					if (!$grant) {
 						unset($this->data->usergrants[$this->path]);
+					} else {
+						unset($this->data->usergrants[$this->path][$grant]);
+						if (!@count($this->data->usergrants[$this->path])) {
+							unset($this->data->usergrants[$this->path]);
+						}
 					}
 				} else {
 					$result=@current($this->get($path, "system.save.grants.user.phtml", Array(

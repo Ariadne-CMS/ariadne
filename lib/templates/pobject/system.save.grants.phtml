@@ -45,9 +45,13 @@
 				}
 			}
 			if ($delete) {
-				unset($this->data->grants[$type][$id][$grant]);
-				if (!@count($this->data->grants[$type][$id])) {
+				if (!$grant) {
 					unset($this->data->grants[$type][$id]);
+				} else {
+					unset($this->data->grants[$type][$id][$grant]);
+					if (!@count($this->data->grants[$type][$id])) {
+						unset($this->data->grants[$type][$id]);
+					}
 				}
 				$result=@current($this->get($path, "system.save.grants.user.phtml", Array(
 								"action"	=> "delete",

@@ -29,11 +29,19 @@
 		// first make sure that the object is clean (data can only be set via 
 		// the defined interface: $arCallArgs)
 		$this->data=@current($this->get(".","system.get.data.phtml"));
+
+		$action=$this->getdata("action","none");
+		$path=$this->getdata("path","none");
+		$grant=$this->getdata("grant","none");
 		switch($action) {
 			case "delete" :
-				unset($this->data->usergrants[$path][$grant]);
-				if (!@count($this->data->usergrants[$path])) {
+				if (!$grant) {
 					unset($this->data->usergrants[$path]);
+				} else {
+					unset($this->data->usergrants[$path][$grant]);
+					if (!@count($this->data->usergrants[$path])) {
+						unset($this->data->usergrants[$path]);
+					}
 				}
 				break;
 			case "add" :
