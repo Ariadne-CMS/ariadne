@@ -93,7 +93,7 @@
 										if (substr($newgrant,0,1)=="+") {
 											$newgrant=substr($newgrant,1);
 										}
-										$this->data->grants[$type][$id][$newgrant]=1;
+										$this->data->grants[$type][$id][$newgrant]=true;
 										$result=@current($this->get($path, "system.save.grants.user.phtml", Array(
 													"action"	=> "add",
 													"path"		=> $this->path,
