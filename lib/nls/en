@@ -347,6 +347,6 @@
 	$ARnls["years"]							=	"Years";
 	$ARnls["yes"]							=	"Yes";
 	$ARnls["zipcode"]						=	"ZipCode";
-
-
+	$ARnls["change_owner"]					=	"Change owner";
+	$ARnls["change_owner_recursive"]		=	"Change owner on all children";
 ?>

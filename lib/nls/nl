@@ -340,6 +340,7 @@
 	$ARnls["years"]							=	"Jaar";
 	$ARnls["yes"]							=	"Ja";
 	$ARnls["zipcode"]						=	"Postcode";
-
+	$ARnls["change_owner"]					=	"Wijzig eigenaar";
+	$ARnls["change_owner_recursive"]		=	"Wijzig eigenaar van alle kinderen";
 
 ?>
