@@ -42,7 +42,7 @@
 <img width="20" height="20" src="<?php echo $AR->dir->images; ?>icons/<?php echo $this->type; ?>.gif"	alt="<?php echo $this->path; ?>" border="0">
 
 <a contextmenu="normalContextMenu" disableditems="<?php echo $disabledItems; ?>"
-	href="#" class="unselectedItem" onClick="selectItem(this);" onDblClick="top.View(this.getAttribute('path'))" path="<?php echo $this->path; ?>" fullPath="<?php echo $this->make_url($this->path); ?>">&nbsp;<?php
+	href="#" class="unselectedItem" onClick="selectItem(this); return false;" onDblClick="top.View(this.getAttribute('path'))" path="<?php echo $this->path; ?>" fullPath="<?php echo $this->make_url($this->path); ?>">&nbsp;<?php
 		if (strlen($nlsdata->name)>32) {
 			$name=substr($nlsdata->name,0, 32)."...";
 		} else {
