@@ -1,3 +1,8 @@
+<?php
+// Include them for the ARESCAPE definition.
+        require_once("./ariadne.inc");
+        require_once($ariadne."/configs/ariadne.phtml");
+?>
 <html>
 <body bgcolor="white">
 <script>
