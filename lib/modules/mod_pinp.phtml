@@ -201,10 +201,9 @@ class scanner {
 						switch ($yych) {
 							case '/':
 								$yych = $YYBUFFER[++$YYCURSOR];
-								while ($yych != "\n" && ord($yych)!==0) {
+								while ($yych != "\n" && $yych != "\r" && ord($yych)!==0) {
 									$yych = $YYBUFFER[++$YYCURSOR];
 								}
-								--$YYCURSOR;
 								$result = "";
 								return T_UNPARSED;
 							break;
