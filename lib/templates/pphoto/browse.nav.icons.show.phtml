@@ -17,7 +17,7 @@
 	if ($this->CheckConfig()) {
 ?>
 <SPAN class=item>
-	<A TITLE="<?php echo $nlsdata->name; ?>" HREF="javascript:top.View('<?php echo $this->path; ?>','<?php echo $nlsdata->name; ?>');"><IMG 
+	<A TITLE="<?php echo $nlsdata->name; ?>" HREF="javascript:top.View('<?php echo $this->path; ?>','<?php echo AddCSlashes($nlsdata->name,ARESCAPE); ?>');"><IMG 
 		SRC="<?php echo $this->make_url(); ?>view.thumb.html" border=0 HSPACE=0 VSPACE=0 WIDTH="40" HEIGHT="40" ALT="<?php echo $nlsdata->name; ?>"><br>
 	<?php 
 		if (!$this->CheckSilent("read")) {
