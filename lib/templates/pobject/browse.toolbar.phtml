@@ -1,6 +1,18 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 ?>
+	<script>
+		function doHover(object, align) {
+			object.className='tbutton_'+align+'_hover';
+		}
+		function undoHover(object, align) {
+			if (object.id=='b_'+viewmode) {
+				object.className='tbutton_'+align+'_pressed';	
+			} else {
+				object.className='tbutton_'+align;	
+			}
+		}
+	</script>
 	<div id="toolbar" style="background: buttonface; border: 2px groove buttonhighlight; border-bottom: 0px; width: 100%; height: 26px;">
 		<div id="b_first" class="tbutton_left" style="visibility: hidden;" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_first();"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/first.gif"></div>
 		<div id="b_prev" class="tbutton_left" style="visibility: hidden;" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_prev();"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/prev.gif"></div>
@@ -12,11 +24,27 @@
 				</select>
 			</form>
 		</div>
-		<div title="<?php echo $ARnls["m_web"]; ?>" id="b_web" class="tbutton_left" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_setView('web');"><a href="<?php echo $this->make_url(); ?>" onClick="return false;"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/web.gif" border="0"></a></div>
-		<div title="<?php echo $ARnls["m_page"]; ?>" id="b_page" class="tbutton_left" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_setView('page');"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/page.gif"></div>
-		<div title="<?php echo $ARnls["m_large"]; ?>" id="b_large" class="tbutton_left" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_setView('icons');"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/large.gif"></div>
-		<div title="<?php echo $ARnls["m_small"]; ?>" id="b_small" class="tbutton_left" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_setView('list');"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/small.gif"></div>
-		<div title="<?php echo $ARnls["m_details"]; ?>" id="b_details" class="tbutton_left" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_setView('details');"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/details.gif"></div>
+		<script>
+			var buttons='';
+		<?php
+			$list["web"]="web";
+			$list["page"]="page";
+			$list["icons"]="large";
+			$list["list"]="small";
+			$list["details"]="details";
+			while (list($key, $value)=each($list)) {
+				?>
+					if (viewmode=='<?php echo $key; ?>') {
+						var pressed='_pressed';
+					} else {
+						var pressed='';
+					}
+					buttons=buttons+'<div title="<?php echo $ARnls["m_".$value]; ?>" id="b_<?php echo $key; ?>" class="tbutton_left'+pressed+'" onMouseOver="doHover(this, \'left\');" onMouseOut="undoHover(this,\'left\');" onClick="b_setView(\'<?php echo $key; ?>\');"><a href="<?php echo $this->make_url(); ?>" onClick="return false;"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/<?php echo $value; ?>.gif" border="0"></a></div>';
+				<?php
+			}
+		?>
+			document.write(buttons);
+		</script>
 		<div id="b_last" class="tbutton_right" style="visibility: hidden;" onMouseOver="this.className='tbutton_right_hover'" onMouseOut="this.className='tbutton_right'" onClick="b_last();"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/last.gif"></div>
 		<div id="b_next" class="tbutton_right" style="visibility: hidden;" onMouseOver="this.className='tbutton_right_hover'" onMouseOut="this.className='tbutton_right'" onClick="b_next();"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/next.gif"></div>
 	</div>

@@ -52,6 +52,10 @@
 	function arEdit(object, arguments) {
 		arshow('edit_object_data','<?php echo $this->store->root; ?>'+object+'edit.object.data.phtml', arguments);
 	}
+
+	function init() {
+		parent.LoadingDone();
+	}
 </script>
 <style>
 #icon {
@@ -59,7 +63,7 @@
 }
 </style>
 </head>
-<body scroll="no" bgcolor="white" onLoad="parent.LoadingDone();">
+<body scroll="no" bgcolor="white" onLoad="init();">
 <div id="kill-scrollbars" style="position: relative;">
 <?php
 
