@@ -298,7 +298,7 @@ function drawNode(pre, level) {
 		}
 		width=(level*20)+125;
 		// Mozilla ignores <nobr> tags with image placement, so calculate a minimum width here
-		result='<div id="'+this.id+'" class="node"><div class="row" style="width: '+width+'px;"><nobr>'+
+		result="\n"+'<div id="'+this.id+'" class="node"><div class="row" style="width: '+width+'px;"><nobr>'+
 			pre+plusminus+'<a href="javascript:parent.View(\''+this.id+'\');" title="'+this.fullname+'" '+
 			'onMouseOver="window.status=\''+this.link+'\'; return true;" onMouseOut="window.status=\'\'; return true;">'+
             icon+'<span class="item">'+style+this.pre+this.name+post+'</span></a></nobr></div>';
@@ -328,9 +328,9 @@ function Draw() {
 	target.document.open();
 
     MenuDraw="<html>\n<head>\n<link REL=STYLESHEET type='text/css' HREF='<?php echo $wwwroot; ?>styles/<?php echo $interface; ?>tree.css'>\n";
-    MenuDraw=MenuDraw+"</head>\n<body>\n";
+    MenuDraw=MenuDraw+"</head>\n<body scroll='no'><div id='nodes'>\n";
 	MenuDraw=MenuDraw+root.draw('',1);
-	MenuDraw=MenuDraw+"</body>\n</html>";
+	MenuDraw=MenuDraw+"</div></body>\n</html>";
 	target.document.writeln(MenuDraw);
 	target.document.close();
 	if (x || y) {

@@ -7,6 +7,17 @@ BODY    {
 	BORDER-LEFT: 1px inset;
 	BORDER-RIGHT: 1px inset;
     BACKGROUND-COLOR: white;
+	margin: 0px;
+	padding: 0px;
+	height: 100%;
+}
+#nodes {
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+	height: 100%;
+	width: 100%;
+	overflow: auto;
 }
 .item {
 	line-height: 20px;
