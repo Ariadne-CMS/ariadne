@@ -34,10 +34,12 @@
 
 	require_once("./ariadne.inc");
 	require_once($ariadne."/configs/ariadne.phtml");
+	require_once($ariadne."/configs/authentication.phtml");
 	require_once($ariadne."/configs/store.phtml");
 	include_once($store_config['code']."stores/".$store_config["dbms"]."store.phtml");
 	include_once($store_config['code']."modules/mod_session.phtml");
 	include_once($store_config['code']."includes/loader.web.php");
+	include_once($store_config['code']."modules/mod_auth/".$auth_config['method'].".php");
 	
 	include_once($store_config['code']."modules/mod_virusscan.php");
 	include_once($store_config['code']."modules/mod_stats.php");
@@ -279,7 +281,10 @@
 
 			register_shutdown_function("ldOnFinish");
 
-			$result = ldCheckLogin($args["ARLogin"], $args["ARPassword"]);
+
+			$auth_class = "mod_auth_".$auth_config["method"];
+			$mod_auth = new $auth_class($auth_config);
+			$result = $mod_auth->checkLogin($args["ARLogin"], $args["ARPassword"]);
 			if ($result!==true) {
 				if ($result == LD_ERR_ACCESS) {
 					$function = "user.login.html";
