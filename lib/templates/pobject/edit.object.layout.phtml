@@ -39,6 +39,12 @@
 	input {
 		width: 75px;
 	}
+	.row0 td {
+		background-color: white;
+	}
+	.row1 td {
+		background-color: #EEEEEE;
+	}
 </style>
 <script src="<?php echo $AR->dir->www; ?>widgets/window/savesize.js"></script>
 </head>
@@ -65,9 +71,10 @@
 			</td>
 		</tr><?php
 			if (($data->pinp) && is_array($data->pinp)) {
+				$currcol=0;
 				while (list($type, $values)=each($data->pinp)) {
-					while (list($function, $templatelist)=each($values)) {
-					?><tr>
+					while (list($function, $templatelist)=each($values)) {	
+						?><tr class="row<?php echo $currcol; ?>">
 							<td class="type"><?php echo $type; ?>&nbsp;</td>
 							<td align="center"><?php 
 								if (!$data->templates[$type][$function]) {
@@ -85,6 +92,8 @@
 								}
 							?></td>
 						</tr><?php
+						$currcol++;
+						$currcol=$currcol%2;
 					}
 				}
 			}
