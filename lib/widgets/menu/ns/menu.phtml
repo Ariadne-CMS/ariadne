@@ -66,7 +66,7 @@
   SubEdit.addSeparator();
   SubEdit.addMenuItem('Find', 'javascript:arshow(\'edit_find\', \'edit.find.phtml\')');
   SubEdit.addSeparator();
-  SubEdit.addMenuItem('Preferences', 'javascript:arshow(\'edit_preferences\',\'edit.preferences.phtml\')');
+  SubEdit.addMenuItem('<?php echo $ARnls["preferences"]; ?>', 'javascript:arshow(\'<?php echo $this->make_url($AR->user->path); ?>edit_preferences\',\'edit.preferences.phtml\')');
 
   SubEditObject.addMenuItem('Data','javascript:arshow(\'edit_object_data\', \'edit.object.data.phtml\')', 0 <?php echo $edit; ?>);
   SubEditObject.addMenuItem('Shortcut','<?php echo $shortcutlink; ?>', 0 <?php echo $shortcut; ?>);
@@ -76,6 +76,7 @@
   SubEditObject.addSeparator();
   SubEditObject.addMenuItem('Grants','javascript:arshow(\'edit_object_grants\',\'edit.object.grants.phtml\')', 0 <?php echo $config; ?>);
   SubEditObject.addMenuItem('Types','javascript:arshow(\'edit_object_types\',\'edit.object.types.phtml\')', 0 <?php echo $config; ?>);
+  SubEditObject.addMenuItem('Language','javascript:arshow(\'edit_object_nls\',\'edit.object.nls.phtml\')', 0 <?php echo $config; ?>);
 
   SubView.addMenuItem('Fonts', 'javascript:arshow(\'view_fonts\',\'view.fonts.phtml\')');
   SubView.addSeparator();

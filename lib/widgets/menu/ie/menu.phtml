@@ -146,6 +146,11 @@
 								<td>Types</td>
 								<td></td>
 							</tr>
+							<tr <?php echo $config; ?> href="javascript:arshow('edit_object_nls','edit.object.nls.phtml')">
+								<td></td>
+								<td>Language</td>
+								<td></td>
+							</tr>
 						</table>
 					</td>
 				</tr>
@@ -160,9 +165,9 @@
 				<tr class="disabled">
 					<td colspan="3"><hr></td>
 				</tr>
-				<tr href="javascript:arshow('edit_preferences','edit.preferences.phtml')">
+				<tr href="javascript:arshow('edit_preferences','<?php echo $this->make_url($AR->user->path); ?>edit.preferences.phtml')">
 					<td></td>
-					<td>Preferences</td>
+					<td><?php echo $ARnls["preferences"]; ?></td>
 					<td></td>
 				</tr>
 			</table>
