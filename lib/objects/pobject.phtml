@@ -895,7 +895,7 @@ class pobject extends object { // pobject class definition
 	// browser.
 	// All these templates must exist under a fixed directory, $AR->dir->templates
 	global $nocache, $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls, $HTTP_POST_VARS, $HTTP_GET_VARS, $ARConfigChecked;
-		debug("pobject::CheckConfig($arCallFunction, $arCallArgs)","object");
+		debug("pobject::CheckConfig($arCallFunction, $arCallArgs)(".$this->path.")","object");
 		$MAX_LOOP_COUNT=10;
 
 
@@ -942,7 +942,7 @@ class pobject extends object { // pobject class definition
 			if ($this->data->custom[$nls]) {
 				$this->customnlsdata=$this->data->custom[$nls];
 			}
-			if (	(	$config->cache && ( ( $config->cache>0 ) || ($config->cache==-2))		) &&
+			if (	(	$config->cache && ($config->cache!=-1) ) &&
 					(	$arCallFunction	&& !$ARConfigChecked		) && 
 					( 	!$nocache 									) && 
 					(	$AR->OS=="UNIX" || 
@@ -963,7 +963,7 @@ class pobject extends object { // pobject class definition
 				debug("CheckConfig: caching disabled","all");
 				debug("             config->cache: ".$config->cache."; nocache: ".$nocache."; user: ".$AR->user->data->login."; os: ".$AR->OS,"all");
 			}
-
+//debugoff();
 			/*
 				Set ARConfigChecked to true to indicate that we have been here
 				earlier.
@@ -1127,10 +1127,9 @@ class pobject extends object { // pobject class definition
 		debug("pobject: ClearCache: end","all");
 	}
 
-
-	function cached($name, $nls="") {
-		debug("cached($name)","object");
+	function getcache($name, $nls="") {
 		global $ARCurrent;
+		$result=false;
 		if ($name) {
 			$result=false;
 			if (!$nls) {
@@ -1145,12 +1144,12 @@ class pobject extends object { // pobject class definition
 				if ($ARCurrent->session) {
 					$session="/-".$ARCurrent->session->id."-";
 				}
-				echo str_replace("{arSession}", $session, $pcache->read($this->id, $file));
-				$result=true;
+				$result=str_replace("{arSession}", $session, $pcache->read($this->id, $file));
 			} else {
-				debug("cached: $name not found, start new cache image.","all");
+				$result=false;
+				debug("getcache: $name not found, start new cache image.","all");
 				$ARCurrent->cache[]=$file;
-				debug("cached: ob_start()","all");
+				debug("getcache: ob_start()","all");
 				ob_start();
 				/* output buffering is recursive, so this won't interfere with
 				   normal page caching, unless you forget to call savecache()...
@@ -1161,7 +1160,18 @@ class pobject extends object { // pobject class definition
 			}
 		} else {
 			error($ARnls["err:nonamecache"]);
-			// FROP error("cached() : no name given for cache.");
+		}
+		return $result;
+	}
+
+	function cached($name, $nls="") {
+		debug("cached($name)","object");
+		global $ARCurrent;
+		if ($image=$this->getcache($name, $nls)) {
+			echo $image;
+			$result=true;
+		} else {
+			$result=fale;
 		}
 		return $result;
 	}
@@ -1653,8 +1663,12 @@ class pobject extends object { // pobject class definition
 		return $this->make_url($path, $nls, $session, $https);
 	}
 
-	function _cached($name) {
-		return $this->cached($name);
+	function _getcache($name, $nls='') {
+		return $this->getcache($name, $nls);
+	}
+
+	function _cached($name, $nls='') {
+		return $this->cached($name, $nls);
 	}
 
 	function _savecache($time="") {
@@ -1753,5 +1767,14 @@ class pobject extends object { // pobject class definition
 		return html_to_text($text);
 	}
 
+	function _newobject($filename, $type) {
+        $newpath=$this->make_path($filename);
+		$newparent=$this->store->make_path($newpath, "..");
+		$data=new object;
+		$data=serialize($data);
+		$object=$this->store->newobject($newpath, $newparent, $type, $data);
+		$object->arIsNewObject=true;
+		return $object;
+	}
 } // end of pobject class definition
 ?>
