@@ -18,7 +18,7 @@
 	if ($continue) {
 		$locks=$this->store->mod_lock->get_locks($this->data->login);
 
-		if (!is_array($locks) && $arReturnPage) {
+		if ((!is_array($locks)) && $arReturnPage) {
 			ldRedirect($arReturnPage);
 			$continue=false;
 		}
@@ -86,16 +86,18 @@
 		</tr>
 <?php
 	$currcol=0;
-	while (list($path,$lock)=each($locks)) {
-		echo "<tr class=\"row".$currcol."\"><td align=\"left\"><font face=\"helvetica,sans-serif\">";
-		echo $path;
-		echo "</td><td></td><td align=\"left\">";
-		echo date("d-m-Y H:i:s",$lock["release"]);
-		echo "</td><td></td><td align=\"center\">";
-		echo "<input type=\"checkbox\" name=\"unlock_$path\">";
-		echo "</td></tr>";
-		$currcol++;
-		$currcol=$currcol%2;
+	if(is_array($locks)){
+		while (list($path,$lock)=each($locks)) {
+			echo "<tr class=\"row".$currcol."\"><td align=\"left\"><font face=\"helvetica,sans-serif\">";
+			echo $path;
+			echo "</td><td></td><td align=\"left\">";
+			echo date("d-m-Y H:i:s",$lock["release"]);
+			echo "</td><td></td><td align=\"center\">";
+			echo "<input type=\"checkbox\" name=\"unlock_$path\">";
+			echo "</td></tr>";
+			$currcol++;
+			$currcol=$currcol%2;
+		}
 	}
 ?>
 		</table>
