@@ -386,7 +386,8 @@ function EXIT_onclick() {
 	if (tbContentElement.contentWindow.EXIT_onclick) {
 		tbContentElement.contentWindow.EXIT_onclick();
 	} else {
-		if (isDirty() && doConfirmSave()) {
+		var temp=isDirty();
+		if (temp && doConfirmSave()) {
 			SAVE_onclick('<?php echo $this->make_url(); ?>');
 		} else {
 		    window.location='<?php echo $this->make_url(); ?>';
@@ -975,6 +976,7 @@ function setValue(data_name, value) {
 }
 
 var arFieldRegistry=new Array();
+var arFieldList=new Array(); // simple array to keep all editable fields
 var arObjectRegistry=new Array();
 var arChangeRegistry=new Array();
 var currentEditableField=false;
@@ -989,6 +991,7 @@ function registerDataField(fieldId, fieldName, objectPath, objectId) {
 		arObjectRegistry[objectId][fieldName]=new Array();
 	}
 	arObjectRegistry[objectId][fieldName][arObjectRegistry[objectId][fieldName].length]=arFieldRegistry[fieldId];
+	arFieldList.push(arFieldRegistry[fieldId]); // add to full list of editable fields
 }
 
 function requiredField(title, fieldId) {
@@ -1037,6 +1040,7 @@ function initEditable() {
 			editable.onfocus=checkChangeStart;
 			editable.onblur=checkChangeEnd;
 			editable.contentEditable=true;
+			editable.style.backgroundImage="url('<?php echo $this->store->root; ?>images/dot.gif')";
 		}
 	}
 }
@@ -1072,6 +1076,10 @@ function isDirty() {
 		currentEditableField.onblur();
 	}
 	return arChangeRegistry.length;
+}
+
+function clearDirty() {
+	arChangeRegistry=new Array();
 }
 
 function getEditableField() {
