@@ -50,6 +50,10 @@ class pfile extends pobject { // pfile class definition
 
 	function ShowFile() {
 		global $AR;
+		$template = $this->getvar("arCallFunction");
+		if (!$template || $template == "view.html") {
+			$filename = basename($this->path);
+		}
 		$files=$this->store->get_filestore("files");
 		if (!ereg("^text/",$this->data->mimetype)) {
 			$size=$files->size($this->id, "file");
@@ -70,6 +74,9 @@ class pfile extends pobject { // pfile class definition
 			$stop=true;
 		}
 		if( !$stop ) {
+			if ($filename) {
+				ldHeader("Content-Disposition: filename=$filename");
+			}
 			if ($this->data->mimetype=="text/html") { // parse {arRoot}
 				// assume html files to use charset UTF-8; this will always work correctly
 				// with the MSIE html editor, and won't corrupt 'normal' html.
