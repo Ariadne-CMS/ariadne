@@ -108,11 +108,14 @@ global $AR;
 						$temp_pinp = $object->data->pinp;
 						unset($object->data);
 						$object->data=$dummy->data;
-						if (!$ARCurrent->options["without_templates"]) {
-							$object->data->templates=$temp_templates;
-							$object->data->pinp=$temp_pinp;
-						}
+						$object->data->templates=$temp_templates;
+						$object->data->pinp=$temp_pinp;
 						$object->dummy_save=1;
+					}
+
+					if ($ARCurrent->options["without_templates"]) {
+						unset($object->data->templates);
+						unset($object->data->pinp);
 					}
 
 					if (!$saved_object[$object->id]) {
