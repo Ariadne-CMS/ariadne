@@ -60,6 +60,28 @@
 		?></textarea>
 	</td>
 </tr>
+<tr valign="top">
+	<td align="right">
+		<font face="helvetica, sans-serif">
+		<?php echo $ARnls["page"]; ?>:
+		</font>
+	</td>
+	<td align="left">
+		<font face="helvetica, sans-serif">
+		<?php
+			if (!$arNewType) {
+				$wgHTMLEditName="page";
+				$wgHTMLEditLanguage=$nls;
+				$wgHTMLEditContent=$this->getdata("page",$nls);
+				include($this->store->code."widgets/htmledit/js.html");
+				include($this->store->code."widgets/htmledit/form.html");
+			} else {
+				echo "available when object is created";
+			}
+		?>
+		</font>
+	 </td>
+</tr>
 </table>
 <p>
 <?php
