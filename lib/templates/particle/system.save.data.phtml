@@ -1,11 +1,9 @@
-<?php
+7<?php
 	/******************************************************************
 	 system.save.data.phtml				 Muze Ariadne v2.1
 	 ------------------------------------------------------------------
  
 	******************************************************************/
-
-	$MAX_TITLE_LENGTH=40;
 
 	if ((($this->arIsNewObject && $this->CheckLogin("add", $this->type)) ||
 			(!$this->arIsNewObject && $this->CheckLogin("edit"))) && 
@@ -44,17 +42,12 @@
 							} else {
 								$newnlsdata=$this->data->$key;
 							}
-							if (strlen($name) > $MAX_TITLE_LENGTH ) {
-								$error=sprintf($ARnls["err:titlelength"], $MAX_TITLE_LENGTH);
-								break;
-							} else	{
-								$newnlsdata->name=$name;
-								$properties["name"][$count]["value"]="'".AddSlashes($name)."'";
-								$properties["name"][$count]["nls"]="'$key'";
-								$properties["text"][$count]["value"]="'".AddSlashes($name)."'";
-								$properties["text"][$count]["nls"]="'$key'";
-								$count++;
-							}
+							$newnlsdata->name=$name;
+							$properties["name"][$count]["value"]="'".AddSlashes($name)."'";
+							$properties["name"][$count]["nls"]="'$key'";
+							$properties["text"][$count]["value"]="'".AddSlashes($name)."'";
+							$properties["text"][$count]["nls"]="'$key'";
+							$count++;
 							$newnlsdata->summary=$this->getdata("summary", $key);
 							$properties["text"][$count]["value"]="'".AddSlashes(substr($this->getdata("summary", $key),0,255))."'";
 							$properties["text"][$count]["nls"]="'$key'";
