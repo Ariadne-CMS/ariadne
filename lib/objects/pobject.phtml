@@ -1361,20 +1361,25 @@ class pobject extends object { // pobject class definition
 		$this->setnls($nls);
 	}
 
-	function _widget($arWidgetName, $arWidgetTemplate, $arWidgetArgs="") {
+	function _widget($arWidgetName, $arWidgetTemplate, $arWidgetArgs="", $arWidgetType="lib") {
 	global $AR, $ARConfig, $ARCurrent, $ARnls;
 
 		debug("pobject: widget($arWidgetName, $arWidgetTemplate, $arWidgetArgs)","object");
-		$arWidgetName=ereg_replace("[^a-zA-Z0-9\.]","",$arWidgetName);
+		$arWidgetName=ereg_replace("[^a-zA-Z0-9\/]","",$arWidgetName);
 		$arWidgetTemplate=ereg_replace("[^a-zA-Z0-9\.]","",$arWidgetTemplate);
-		if (file_exists($this->store->code."widgets/$arWidgetName")) {
-			if (file_exists($this->store->code."widgets/$arWidgetName/$arWidgetTemplate")) {
+		if ($arWidgetType=="www") {
+			$coderoot=$AR->dir->www."widgets";
+		} else {
+			$coderoot=$this->store->code."widgets";
+		}
+		if (file_exists($coderoot."widgets/$arWidgetName")) {
+			if (file_exists($coderoot."widgets/$arWidgetName/$arWidgetTemplate")) {
 				if (is_array($arWidgetArgs)) {
 					extract($arWidgetArgs);
 				} else if (is_string($arWidgetArgs)) {
 					Parse_str($arWidgetArgs);
 				}
-				include($this->store->code."widgets/$arWidgetName/$arWidgetTemplate");
+				include($coderoot."widgets/$arWidgetName/$arWidgetTemplate");
 			} else {
 				error("Template $arWidgetTemplate for widget $arWidgetName not found.");
 			}
@@ -1506,7 +1511,7 @@ class pobject extends object { // pobject class definition
 	}
 
 	function _count_find($query) {
-		return $this->store->count($this->store->find($this->path, $query));
+		return $this->store->count($this->store->find($this->path, $query, 0));
 	}
 
 	function _count_ls() {
