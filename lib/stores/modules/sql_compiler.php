@@ -56,15 +56,15 @@
 					}
 				}
 			} else 
-			if ($regs[3+$regsoffset]) {
-				if ($regs[4+$regsoffset]) {
+			if (is_numeric($regs[3+$regsoffset])) {
+				if (is_numeric($regs[4+$regsoffset])) {
 					$node["id"]="float";
+					$node["value"]=(float)$regs[3+$regsoffset];
 				} else {
 					$node["id"]="int";
+					$node["value"]=(int)$regs[3+$regsoffset];
 				}
-				$node["value"]=$regs[3+$regsoffset];
-			} else
-			if (($str=$regs[5+$regsoffset]) || ($str=$regs[7+$regsoffset])) {
+			} else if (($str=$regs[5+$regsoffset]) || ($str=$regs[7+$regsoffset])) {
 				$node["id"]="string";
 				$node["value"]="'".substr($str, 1, -1)."'";
 			}
