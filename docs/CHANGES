@@ -58,6 +58,7 @@ Bugs Fixed:
 	- included nls data in import
 	- Removed the table tags from the allowed tags in the _loose editor.ini definition.
 	- Fixed a bug with CheckConfig which started looping when a pshortcut pointed to a parent
+	- Fixed a bug with konqueror with the explore.html, it should work now in IE, Mozilla and konqueror
 
 Changes in Ariadne since version 2.2
 

@@ -19,22 +19,27 @@ var cacheTemplate;
 var loader;
 
 
-document.registry=new Array();
+var ARregistry=new Array();
 
 function Set(name, value) {
-  document.registry[name]=new String(value);
+  ARregistry[name]=new String(value);
 }
 
 function Get(name) {
-  if (document.registry[name]) {
-    result=document.registry[name];
-  } else {
-    result=0;
-  }
-  return result;
+	var result;
+	if (ARregistry[name]) {
+		result=ARregistry[name];
+	} else {
+		result=0;
+	}
+	return result;
 }
 
 function View(link, template) {
+  var arLanguage;
+  var append;
+  var target;
+
   if (link=="..") {
     link="/";
   }
@@ -47,6 +52,7 @@ function View(link, template) {
   } else {
     append='';
   }
+
   if (template) {
     target='?template='+escape(template);
     window.cacheTemplate=escape(template);
