@@ -139,6 +139,12 @@ class ppage extends pobject { // ppage class definition
     }
     if ($matches=preg_split($regexp, " ".$page, -1, PREG_SPLIT_DELIM_CAPTURE)) {
       $leader=trim($matches[0]);
+      if ($leader) {
+        if ($withtitles) {
+          $this->section_titles[]=$this->nlsdata->name;
+        }
+        $this->sections[]=$leader;
+      }
       $start=1;
       $max=count($matches)-1;
       for ($i=$start; $i<$max; $i+=3) {
