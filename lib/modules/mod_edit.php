@@ -43,7 +43,18 @@
 				echo "<input type='text' class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title' value='";
 				echo $var;
 				echo "'>";
-			} else {
+			} else if (!edit::isEmpty($var)) {
+				echo $var;
+			}
+		}
+
+		function showInput($var, $name, $title, $type='text', $extra='') {
+			if (edit::getEditMode() && $this->CheckSilent('edit')) {
+				$id=edit::registerDataField($name);
+				echo "<input type='$type' class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title' value='";
+				echo $var;
+				echo "' $extra>";			
+			} else if (!edit::isEmpty($var)) {
 				echo $var;
 			}
 		}
@@ -54,7 +65,7 @@
 				echo "<span class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title'>";
 				echo $var;
 				echo "</span>";
-			} else {
+			} else if (!edit::isEmpty($var)) {
 				echo $var;
 			}
 		}
@@ -65,7 +76,7 @@
 				echo "<div class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title'>";
 				echo $var;
 				echo "</div>";
-			} else {
+			} else if (!edit::isEmpty($var)) {
 				echo $var;
 			}
 		}
@@ -96,6 +107,10 @@
 				echo "href='".$this->make_url($path)."'";
 			}
 		}
+
+		function isEmpty($var) {
+			return trim(ereg_replace('&nbsp;',' ',strip_tags($nlsdata->summary, '<img>'))); 
+		}
 	}
 
 	class pinp_edit {
@@ -116,8 +131,16 @@
 			return edit::getEditTarget();
 		}
 
+		function _registerDataField($name) {
+			return edit::registerDataField($name);
+		}
+
 		function _showInputText($var, $name, $title='') {
 			return edit::showInputText($var, $name, $title);
+		}
+
+		function _showInput($var, $name, $title, $type='text', $extra='') {
+			return edit::showInput($var, $name, $title, $type, $extra);
 		}
 
 		function _showSpan($var, $name, $title='') {
@@ -138,6 +161,10 @@
 		
 		function _showHref($path) {
 			return edit::showHref($path);
+		}
+
+		function _isEmpty($var) {
+			return edit::isEmpty($var);
 		}
 	}
 
