@@ -28,6 +28,9 @@
 					}
 					$newnlsdata->name=$this->getdata("name", $key);
 					$properties["name"][]["value"]="'".AddSlashes($this->getdata("name", $key))."'";
+					$newnlsdata->summary=$this->getdata("summary", $key);
+					$properties["text"][]["value"]="'".AddSlashes($this->getdata("summary", $key))."'";
+					$newnlsdata->effect=$this->getdata("effect", $key);
 					$this->data->$key=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
 				}

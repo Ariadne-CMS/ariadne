@@ -1,31 +1,33 @@
 <?php
-	/******************************************************************
-	 classic.form.phtml																			Muze Ariadne v2.0b
-	 ------------------------------------------------------------------
-	 Arguments: arNewType, arNewFilename
-	 Grant needed: read
-	 Global variables: none
+  /******************************************************************
+   classic.form.phtml                                      Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Called by 'classic.edit.phtml' and 'classic.new.phtml'
+   Arguments: newtype, newfilename
+   Grant needed: read
+   Interface/Widget: all
+   Global variables: none
 
-	 This template displays the input form for this object. If $arNewType
-	 is set, the form is called to create a new object. This means that
-	 $data points to the data of the object creating it!
-	 $newtype, $newfilename and $newparent are saved in hidden input
-	 fields for further processing by whatever template is called when
-	 the form is processed.
-	 The html form tag in a form template should always leave the action
-	 property out.
+   This template displays the input form for this object. If $newtype
+   is set, the form is called to create a new object. This means that
+   $data points to the data of the object creating it!
+   $newtype, $newfilename and $newparent are saved in hidden input
+   fields for further processing by whatever template is called when
+   the form is processed.
+   The html form tag in a form template should always leave the action
+   property out.
 
-	 This template must be available in every pobject derivative's
-	 template directory.
+   This template must be available in every pobject derivative's
+   template directory.
 
-	 no result.
+   no result.
 
-	******************************************************************/
-	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+  ******************************************************************/
+  if ($this->CheckLogin("read")) {
 ?>
 <body bgcolor="white">
 <?php
-	$this->parents($this->path, "show.link.phtml","target=classic.edit.phtml");
+  $this->parents($this->path, "show.link.phtml","target=classic.edit.phtml");
 ?>
 <form method="post">
 <!-- hidden form variables needed by new.phtml/save.phtml -->
@@ -35,50 +37,69 @@
 
 <table border="0" cellspacing="0" width="100%"> 
 <tr>
-	<td bgcolor="#404074">
-		<?php
-			$wgNLSpretext="<font face=\"helvetica, sans-serif\" size=\"+1\" color=\"white\"><b>".
-				$ARnls["editscenario"].":</b></font><br>";
-			include($this->store->code."widgets/nls/form.phtml");
-		?>
-	</td>
+  <td bgcolor="#404074">
+    <?php
+      $wgNLSpretext="<font face=\"helvetica, sans-serif\" size=\"+1\" color=\"white\"><b>".
+        $ARnls["editscenario"].":</b></font><br>";
+      include($this->store->code."widgets/nls/form.phtml");
+    ?>
+  </td>
 </tr>
 </table>
 <table border="0">
 <tr>
-	<td align="right">
-		<font face="helvetica, sans-serif"><b><?php echo $ARnls["name"]; ?>&nbsp;:</b></font>
-	</td>
-	<td>
-		<input type="text" name="<?php echo $selectednls; ?>[name]" maxlength="50" value="<?php $this->showdata("name",$selectednls); ?>">
-	</td>
-	<td align="right">
-		<font face="helvetica, sans-serif"><b><?php echo $ARnls["priority"]; ?>&nbsp;:</b></font>
-	</td>
-	<td>
-		<input type="text" name="priority" size="5" value="<?php if (!$newtype) { $this->showdata("priority","none"); } else { echo 0; } ?>">
-	</td>
-
+  <td align="right">
+    <font face="helvetica, sans-serif"><b><?php echo $ARnls["name"]; ?>&nbsp;:</b></font>
+  </td>
+  <td>
+    <input type="text" name="<?php echo $selectednls; ?>[name]" maxlength="50" value="<?php $this->showdata("name",$selectednls); ?>">
+  </td>
+</tr><tr>
+  <td align="right">
+    <font face="helvetica, sans-serif"><?php echo $ARnls["priority"]; ?>&nbsp;:</font>
+  </td>
+  <td>
+    <input type="text" name="priority" size="5" value="<?php $this->showdata("priority","none"); ?>">
+  </td>
+</tr><tr>
+  <td align="right" valign="top">
+    <font face="helvetica, sans-serif"><?php echo $ARnls["summary"]; ?>&nbsp;:</font>
+  </td>
+  <td>
+    <textarea name="<?php echo $selectednls."[summary]"; ?>" cols="50" rows="4" wrap="soft"><?php
+        echo ereg_replace("&","&amp;",$this->getdata("summary",$selectednls));
+    ?></textarea>
+  </td>
+</tr><tr>
+  <td align="right" valign="top">
+    <font face="helvetica, sans-serif"><?php echo $ARnls["effect"]; ?>&nbsp;:</font>
+  </td>
+  <td>
+    <textarea name="<?php echo $selectednls."[effect]"; ?>" cols="50" rows="4" wrap="soft"><?php
+        echo ereg_replace("&","&amp;",$this->getdata("effect",$selectednls));
+    ?></textarea>
+  </td>
 </tr>
 </table>
-
-<br>
-<table>
-
-<table border="0">
-<tr><td align="left">
-<b><?php echo $ARnls["display"]; ?></b>
+<table border="0" cellspacing="0" width="100%"> 
+<tr>
+  <td bgcolor="#404074">
+    <font face="helvetica, sans-serif" color="white" size="+1"><b><?php echo $ARnls["display"]; ?></b>  
+  </td>
+</tr>
+</table>
+<table border="0" width="300">
+<td></td><td align="left">
+<b><font face="helvetica,sans-serif"><?php echo $ARnls["start"]; ?></font></b>
 </td><td align="left">
-<b><?php echo $ARnls["start"]; ?></b>
-</td><td align="left">
-<b><?php echo $ARnls["end"]; ?></b>
+<b><font face="helvetica,sans-serif"><?php echo $ARnls["end"]; ?></font></b>
 </td></tr>
 <?php
-	if ($displays=$this->ls("/system/newspaper/displays/","system.get.value.phtml")) {
-		while (list($key,$val)=each($displays)) {
+	$displays=$this->ls("/system/newspaper/displays/","system.get.value.phtml");
+	while (is_array($displays) && list($key,$val)=each($displays)) {
 ?>
 <tr><td align="left">
-<b><?php echo $val; ?></b>
+<font face="helvetica,sans-serif"><?php echo $val; ?></font>
 </td><td align="left">
 <input type="text" size="4" name="<?php echo $val; ?>_start" value="<?php echo $data->display[$val]["start"]; ?>">
 </td><td align="left">
@@ -86,7 +107,6 @@
 </td>
 </tr>
 <?php
-		}
 	}
 ?>
 </table>
@@ -95,27 +115,27 @@
 <p>
 <table width="100%" cellspacing="0" border="0">
 <tr bgcolor="#404074">
-	<td>
-		<?php if ($newtype) { ?>
-			<input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="history.back()">
-		<?php } else { ?>
-			<input type="submit" name="arSubmit" value="<?php echo $ARnls["cancel"]; ?>">
+  <td>
+    <?php if ($arNewType) { ?>
+      <input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="history.back()">
+    <?php } else { ?>
+      <input type="submit" name="arSubmit" value="<?php echo $ARnls["cancel"]; ?>">
 <?php
-	$wgRecurseConfirm=$ARnls["q:removescenario"];
-	$wgRecurseAction="delete";
-	$wgRecurseTitle=$ARnls["delete"];
-	include($this->store->code."widgets/recurse/form.js");
-	include($this->store->code."widgets/recurse/form.html");
+    $wgRecurseConfirm=$ARnls["q:removescenario"];
+    $wgRecurseAction="delete";
+    $wgRecurseTitle=$ARnls["delete"];
+    include($this->store->code."widgets/recurse/form.js");
+    include($this->store->code."widgets/recurse/form.html");
 ?>
-		<?php } ?>
-	</td>
-	<td align="right">
-		<input type="submit" name="arSubmit" value="<?php echo $ARnls["save"]; ?>">	
-	</td>
+    <?php } ?>
+  </td>
+  <td align="right">
+    <input type="submit" name="arSubmit" value="<?php echo $ARnls["save"]; ?>">  
+  </td>
 </tr>
 </table>
 </form>
 </body>
 <?php
-	}
+  }
 ?>
