@@ -1,16 +1,19 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		// first do normal copyto
-		$this->call("super::system.copyto.phtml");
-		if (!$arResult) {
-			// no errors: copy files
-			$this->Mkdir("files".$newpath);
-			$dir=dir($this->store->files."files".$this->path);
-			while ($entry=$dir->read()) {
-				if (!is_dir($dir->path.$entry)) {
-					copy($dir->path.$entry,$this->store->files."files".$newpath.$entry);
+		if (!($result=$this->call("pobject::system.copyto.phtml", $arCallArgs))) {
+			if ($newpath=$ARCurrent->newpath) {
+				// no errors: copy files
+				$this->Mkdir("files".$newpath);
+				$dir=dir($this->store->files."files".$this->path);
+				while ($entry=$dir->read()) {
+					if (!is_dir($dir->path.$entry)) {
+						copy($dir->path.$entry,$this->store->files."files".$newpath.$entry);
+					}
 				}
 			}
+		} else {
+			$arResult=$result;
 		}
 	}
 ?>
