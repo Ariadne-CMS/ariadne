@@ -95,12 +95,13 @@ function IsDigit()
 		PictureForm.border.value=arr['border'];
 		PictureForm.hspace.value=arr['hspace'];
 		PictureForm.vspace.value=arr['vspace'];
-		for (alignment in PictureForm.align.options) {
+		for (i=0; i<PictureForm.align.options.length; i++) {
+			alignment=PictureForm.align.options[i];
 			if (alignment.value==arr['align']) {
 				alignment.selected=true;
 				break;
 			}
-		}		
+		}
 	}
 // -->
 </SCRIPT>
@@ -130,8 +131,8 @@ function IsDigit()
 			<tr>
 				<td><?php echo $ARnls["e_alignment"]; ?>:</td>
 				<td><select name="align" class="layout">
-					<option value="" defaultSelected>Not Set</option>
 					<?php
+						$list["none"]="Not Set";
 						$list["left"]="Left";
 						$list["right"]="Right";
 						$list["textTop"]="Texttop";
