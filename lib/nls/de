@@ -204,6 +204,7 @@
 	$ARnls["passwordincorrect"]				=	"Passwort falsch, bitte probieren Sie noch einmal.";
 	$ARnls["path"]							=	"Pfad";
 	$ARnls["photo"]							=	"Foto";
+	$ARnls["photobook"]						=	"Galerie";
 	$ARnls["pobox"]							=	"Postfach";
 	$ARnls["preferences"]					=	"Einstellungen";
 	$ARnls["prev"]							=	"Zur&uuml;ck";

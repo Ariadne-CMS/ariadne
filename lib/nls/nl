@@ -237,6 +237,7 @@
 	$ARnls["passwordincorrect"]				=	"Incorrect wachtwoord";
 	$ARnls["path"]							=	"Pad";
 	$ARnls["photo"]							=	"Foto";
+	$ARnls["photobook"]						=	"Fotoboek";
 	$ARnls["pobox"]							=	"Postbus";
 	$ARnls["preferences"]					=	"Instellingen";
 	$ARnls["prev"]							=	"Vorige";

@@ -237,6 +237,7 @@
 	$ARnls["passwordincorrect"]				=	"Mot de passe incorrecte, merci d'essayer encore.";
 	$ARnls["path"]							=	"Chemin d'acc&egrave;s";
 	$ARnls["photo"]							=	"Photo";
+	$ARnls["photobook"]						=	"Album Photo";
 	$ARnls["pobox"]							=	"Code postal";
 	$ARnls["preferences"]					=	"Pr&eacute;f&eacute;rences";
 	$ARnls["prev"]							=	"Pr&eacute;c&eacute;dent";

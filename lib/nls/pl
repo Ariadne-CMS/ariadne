@@ -238,6 +238,7 @@
 	$ARnls["passwordincorrect"]				=	"Nieprawidłowe hasło, spróbuj ponownie.";
 	$ARnls["path"]							=	"Ścieżka";
 	$ARnls["photo"]							=	"Zdjęcie";
+	$ARnls["photobook"]						=	"Photobook";
 	$ARnls["pobox"]							=	"POBox";
 	$ARnls["preferences"]					=	"Ustawienia";
 	$ARnls["prev"]							=	"Wstecz";
