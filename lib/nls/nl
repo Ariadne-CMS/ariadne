@@ -54,6 +54,7 @@ $ARnls["edittemplate"]=		"Bewerk template %s";
 $ARnls["email"]=		"E-mail";
 $ARnls["end"]=			"Einde";
 $ARnls["endson"]=		"Eindigt op";
+$ARnls["enternewvalue"]=	"Vul nieuwe waarde in";
 $ARnls["err:alreadyexists"]=	"%s bestaat al.";
 $ARnls["err:cannotedit.phtml"]=	"U kunt geen templates bewerken met extensie .phtml";
 $ARnls["err:cannotlockobject"]= "Kan object %s niet locken";

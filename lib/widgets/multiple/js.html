@@ -1,3 +1,11 @@
+	<?php
+		if (!$wgMultipleNewQuery) {
+			$wgMultipleNewQuery=$ARnls["enternewvalue"];
+		}
+		if (!$wgMultipleEditQuery) {
+			$wgMultipleEditQuery=$ARnls["enternewvalue"];
+		}
+	?>
 	<script language="javascript">
 	<!--
 		function collect_items(src,dest) {
@@ -11,10 +19,9 @@
 		}
 
 
-		function add_new_item(src,dest) {
-			if (src.value) {
-				dest.options[dest.options.length]=new Option(src.value,src.value);
-				src.value="";
+		function add_new_item(dest) {
+			if (value=prompt('<?php echo $wgMultipleNewQuery; ?>','')) {
+				dest.options[dest.options.length]=new Option(value,value);
 			}
 		}
 
@@ -27,8 +34,12 @@
 
 		function edit_item(src,dest) {
 			if (src.selectedIndex!=-1) {
-				dest.value=src.options[src.selectedIndex].value;
-				src.options[src.selectedIndex]=null;
+				value=prompt('<?php echo $wgMultipleEditQuery; ?>',src.options[src.selectedIndex].value);
+				if (value) {
+					src.options[src.selectedIndex]=new Option(value,value);
+				} else if (value!=null) {
+					remove_item(src);
+				}
 			}
 		}
 	// -->
