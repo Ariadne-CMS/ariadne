@@ -281,4 +281,5 @@ $ARnls["location"]=		"Location";
 $ARnls["cover"]=		"Cover Image";
 $ARnls["editor"]=		"HTML Editor";
 $ARnls["wysiwyg"]=		"WYSIWYG";
+$ARnls["fullpath"]=		"Include full path";
 ?>

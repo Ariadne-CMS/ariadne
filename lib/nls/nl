@@ -281,4 +281,5 @@ $ARnls["location"]=		"Locatie";
 $ARnls["cover"]=		"Omslag";
 $ARnls["editor"]=		"HTML Editor";
 $ARnls["wysiwyg"]=		"WYSIWYG";
+$ARnls["fullpath"]=		"Met volledig pad";
 ?>
