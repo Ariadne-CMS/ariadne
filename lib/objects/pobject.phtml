@@ -721,10 +721,7 @@ class pobject {
 	}
 
 	function _startsession() {
-	global $ARCurrent, $session_config;
-
-		$ARCurrent->session=new session($session_config, 0);
-		$this->store->root=ldSetSession($ARCurrent->session->id);
+		return $this->store->root=ldStartSession(0);
 	}
 
 	function _putsessionvar($varname, $varvalue) {
@@ -746,6 +743,7 @@ class pobject {
 	}
 
 	function _sessionid() {
+	global $ARCurrent;
 		if ($ARCurrent->session) {
 			return $ARCurrent->session->id;
 		} else {
