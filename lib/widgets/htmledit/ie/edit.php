@@ -793,6 +793,7 @@ function DECMD_IMAGE_onclick() {
     args['border'] = "";
   }
   args['editOptions'] = tbContentEditOptions;
+  args['stylesheet'] = tbContentEditOptions["css"]["stylesheet"];
   arr = showModalDialog( '<?php echo $this->store->root.$this->path; ?>' + 
 	"edit.object.html.image.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:600px; dialogHeight:400px; status: no; resizable: yes;");
   if (arr != null){
