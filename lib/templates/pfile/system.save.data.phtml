@@ -61,8 +61,7 @@
 					if ($this->store->is_supported("fulltext")) {
 						$properties["fulltext"][$count]["value"]="'".AddSlashes($this->store->format_for_fti(
 								$newnlsdata->name." ".
-								$this->html_to_text($newnlsdata->summary)." ".
-								$this->GetPlainText()
+								$this->html_to_text($newnlsdata->summary)." "
 								))."'";
 						$properties["fulltext"][$count]["nls"]="'$key'";
 					}
@@ -80,6 +79,7 @@
 		
 		if ($this->save($properties)) {
 			$this->ClearCache();
+			$fulltext = $properties['fulltext'];
 			unset($properties);
 
 			$this->arIsNewObject=false;
@@ -99,11 +99,23 @@
 							$this->data->mimetype=$this->getdata("file_type","none");
 						}
 						$this->data->filesize=$this->getdata("file_size","none"); 
+
 					} else {
 						$tempfile=false;
 					}
 				} 
-				$this->save();
+				if ($this->store->is_supported("fulltext")) {
+					$filetext = $this->GetPlainText();
+					if ($filetext) {
+						$count++;
+						$properties["fulltext"] = $fulltext;
+						$properties["fulltext"][$count]["value"]="'".AddSlashes($this->store->format_for_fti(
+								$filetext
+								))."'";
+					}
+				}
+
+				$this->save($properties);
 			} else {
 				debug("err: $this->error");
 			}
