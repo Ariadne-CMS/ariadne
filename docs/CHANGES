@@ -35,6 +35,12 @@ New Features:
 	  on it (and it's parents) available to its target. 
 	- Added getExif() method to pphoto. Thanks to Gerhard Hoogterp
 	- The toolbars in the editor are now configurable via the editor.ini template.
+	- Cleaned the postgresql install store from pg_exec calls and replaced them
+	  with $this->store_run_query furter added transaction support in initialize
+	  and added analyze in the store close routine of the postgresql install
+	  store. Cleaned a lot of code, and made it more readable by replacing obfuscated
+	  code. Added Analyze after the store initialisation to increase the speed
+	  just after the install. 
 
 Bugs Fixed:
 	- Fixed the ftp server it's mimetype extension fallback.

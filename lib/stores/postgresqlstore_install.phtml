@@ -5,6 +5,9 @@ include_once($ariadne."/stores/postgresqlstore.phtml");
 class postgresqlstore_install extends postgresqlstore {
 
 	function initialize() {
+		$this->error = false;
+		$return = false;
+		$this->start_transaction();
 		echo "initializing PostgreSQL store.\n";
 		$queries[0]["msg"]="creating nodes table.";
 		$queries[0]["query_string"]="
@@ -47,28 +50,24 @@ CREATE INDEX ".$this->tbl_prefix."types_type ON ".$this->tbl_prefix."types (type
 CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES (implements);
 ";
 
-		while ((list($key, $query)=each($queries)) && (!$error)) {
+		while ((list($key, $query)=each($queries)) && (!$this->error)) {
 			if ($query["msg"]) {
 				echo $query["msg"]."\n";
 			}
-			$exec=pg_exec($this->connect_id,$query["query_string"]);
-			$err=pg_errormessage($this->connect_id);
-			if ($err) {
-				$error=$err;
-				error("PostgreSQL: $err");
+			$exec = $this->store_run_query($query["query_string"]);
+			if($exec === false){
+				error($this->error);
+				break;
 			}
 		}
 
-
-		if (!$error) {
+		if ($this->error === false) {
 			$return=true;
 			// initialize locking tables
 			$this->mod_lock->init($this->tbl_prefix);
-
 			echo "PostgreSQL store initialized.\n\n";
-		} else {
-			$return=false;
 		}
+		$this->stop_transaction($return);
 		return $return;
 	}
 
@@ -104,7 +103,7 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 	 
 	**********************************************************************/
 		$result=1;
-		$this->error="";
+		$this->error=false;
 		if (eregi("^[a-z][a-z0-9_-]*$",$property) && strlen($property)<=16) {
 			$tablename=$this->tbl_prefix."prop_".AddSlashes($property);
 			$create_string="create table ".AddSlashes($tablename)." (\n";
@@ -168,19 +167,15 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 					$create_string.=$indexstring;
 					// finally add the index on the object field and close the query.
 					$create_string.="CREATE INDEX ".$tablename."_object ON $tablename (object);\n";
-					$exec=pg_exec($this->connect_id,$create_string);
-					$err=pg_errormessage($this->connect_id);
-					if (!$err) {
-						$query_string="insert into ".$this->tbl_prefix."properties values ( '".AddSlashes($property)."' )";
-						$exec=pg_exec($this->connect_id,$query_string);
-						$err=pg_errormessage($this->connect_id);
-						if ($err) {
-							$this->error=$err;
-							error("ERROR: PostgreSQL: ".$this->error);
-						}
+					$exec=$this->store_run_query($create_string);
+					if($exec == false){
+						error($this->error);
 					} else {
-						$this->error=$err;
-						error("ERROR: PostgreSQL: ".$this->error);
+						$query_string="insert into ".$this->tbl_prefix."properties values ( '".AddSlashes($property)."' )";
+						$exec=$this->store_run_query($query_string);
+						if($exec == false){
+							error($this->error);
+						}
 					}
 					//FIXME: check for succes first, how?
 				}
@@ -204,16 +199,14 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 
 	**********************************************************************/
 
-		$this->error="";
+		$this->error=false;
 		$eproperty=AddSlashes($property);
 		$remove_string="drop ".$this->tbl_prefix."table prop_$eproperty";
 		debug($remove_string,"store");
-		pg_exec($this->connect_id,$remove_string);
+		$this->store_run_query($remove_string);
 		$query_string="delete from ".$this->tbl_prefix."properties where name='$eproperty'";
-		$exec=pg_exec($this->connect_id,$query_string);
-		$err=pg_errormessage($this->connect_id);
-		if ($err) {
-			$this->error=$err;
+		$exec=$this->store_run_query($query_string);
+		if (!$exec) {
 			error("ERROR: PostgreSQL: ".$this->error);
 		}
 		//FIXME: check for succes first, check whether table no longer exists.
@@ -230,16 +223,14 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 
 	**********************************************************************/
 
-		$this->error="";
+		$this->error=false;
 		if ($type && $implements && (strlen($type)<17) && (strlen($implements)<17)) {
 			$etype=AddSlashes($type);
 			$eimplements=AddSlashes($implements);
 			$query_string="insert into ".$this->tbl_prefix."types values ('$etype','$eimplements')";
 			debug($query_string,"store");
-			pg_exec($this->connect_id,$query_string);
-			$err=pg_errormessage($this->connect_id);
-			if ($err) {
-				$this->error=$err;
+			$exec = $this->store_run_query($query_string);
+			if (!exec) {
 				$result=0;
 				error("ERROR: PostgreSQL: ".$this->error);
 			} else {
@@ -260,7 +251,7 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 
 	**********************************************************************/
 
-		$this->error="";
+		$this->error=false;
 		$etype=AddSlashes($type);
 		if (!$implements) {
 			$query_string="delete from ".$this->tbl_prefix."types where type='$etype' or implements='$etype'";
@@ -269,16 +260,20 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 			$query_string="delete from ".$this->tbl_prefix."types where type='$etype' and implements='$etype'";
 		}
 		debug($query_string,"store");
-		pg_exec($this->connect_id,$query_string);
-		$err=pg_errormessage($this->connect_id);
-		if ($err) {
-			$this->$error=$err;
+		$exec = $this->store_run_query($query_string);
+		if (!$exec) {
 			error("ERROR: PostgreSQL: ".$this->error);
 			$result=0;
 		} else {
 			$result=1;
 		}
 		return $result;
+	}
+
+	function close() {
+		$query = "analyze";
+		$this->store_run_query($query);
+		parent::close();
 	}
 
 }

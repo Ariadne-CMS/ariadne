@@ -799,14 +799,14 @@ class postgresqlstore {
 		return ($result);
 	}
 
-	function store_run_query($query) {
+	function store_run_query(&$query) {
 		debug("store_run_query: $query","store");
 		$result = @pg_exec($this->connect_id,$query);
 		$err = pg_errormessage($this->connect_id);
 		if ($err) {
 			$this->error = "ERROR: PostgreSQL: $err";
-			debug("store_run_query: ".$this->error,"store");
 			debug("store_run_query: query=$query","store");
+			debug("store_run_query: ".$this->error,"store");
 			$result = false;
 		}
 		return $result;
