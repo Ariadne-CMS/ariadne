@@ -1,15 +1,23 @@
-<?php
+ï»¿<?php
+	/*****************************************************************************
+
+		The German nls files are contributed by: ?
+
+		Modified by Christoph Lindemann <christoph@lindemann.nu> 2005-01-06
+
+	*****************************************************************************/
+
 	// Attention: The WYSIWYG editor and its context menus require UTF-8!
 	// (The external dialogs do not)
 
 	//     0xc3+
-	// ä: 0xa4
-	// ö: 0xb6
-	// ü: 0xbc
-	// Ä: 0x84
-	// Ö: 0x96
-	// Ü: 0x9c
-	// ß: 0x9f
+	// : 0xa4
+	// : 0xb6
+	// : 0xbc
+	// : 0x84
+	// : 0x96
+	// : 0x9c
+	// : 0x9f
 
 	// lib/widgets/htmledit/ie/edit.php
 
@@ -29,7 +37,7 @@
 	$ARnls["e_alternate_text"]				=	"Alternativ-Text";
 	$ARnls["e_background_color"]			=	"Hintergrund-Farbe";
 	$ARnls["e_bold"]						=	"Fett";
-	$ARnls["e_border_thickness"]			=	"Rahmenst&auml;rke";
+	$ARnls["e_border_thickness"]			=	"RahmenstÃ¤rke";
 	$ARnls["e_bring_above_text"]			=	"Vor dem Text";
 	$ARnls["e_bring_forward"]				=	"Eine Ebene nach vorne";
 	$ARnls["e_bring_to_front"]				=	"In den Vordergrund";
@@ -45,7 +53,7 @@
 	$ARnls["e_edit"]						=	"Bearbeiten";
 	$ARnls["e_file"]						=	"Seite";
 	$ARnls["e_find"]						=	"Suchen...";
-	$ARnls["e_fontformat"]					=	"Schriftformat";
+	$ARnls["e_fontformat"]					=	"Schriftart";
 	$ARnls["e_foreground_color"]			=	"Vordergrund-Farbe";
 	$ARnls["e_formatting"]					=	"Format";
 	$ARnls["e_horizontal"]					=	"Horizontal";
@@ -54,7 +62,7 @@
 	$ARnls["e_hyperlink_information"]		=	"Hyperlink-Informationen";
 	$ARnls["e_hyperlink_path"]				=	"Pfad";
 	$ARnls["e_hyperlink_type"]				=	"Typ";
-	$ARnls["e_image_options"]				=	"Image Options";
+	$ARnls["e_image_options"]				=	"Bildoptionen";
 	$ARnls["e_increase_indent"]				=	"Einzug vergrÃ¶ÃŸern";
 	$ARnls["e_insert_image"]				=	"Grafik einfÃ¼gen";
 	$ARnls["e_insert_table"]				=	"Tabelle einfÃ¼gen";
@@ -63,7 +71,7 @@
 	$ARnls["e_insertrow"]					=	"Zeile einfÃ¼gen";
 	$ARnls["e_italic"]						=	"Kursiv";
 	$ARnls["e_layout"]						=	"Layout";
-	$ARnls["e_link"]						=	"Link";
+	$ARnls["e_link"]						=	"Hyperlink";
 	$ARnls["e_lock"]						=	"Sperren";
 	$ARnls["e_make_absolute"]				=	"Absolut positionieren";
 	$ARnls["e_mergecells"]					=	"Zellen verbinden";
@@ -82,10 +90,10 @@
 	$ARnls["e_set_foreground_color"]		=	"Vordergrund-Farbe festlegen...";
 	$ARnls["e_show_details"]				=	"Details anzeigen";
 	$ARnls["e_snap_to_grid"]				=	"Nach Rasterfeld ausrichten";
-	$ARnls["e_spacing"]						=	"Abst&auml;nde";
+	$ARnls["e_spacing"]						=	"AbstÃ¤nde";
 	$ARnls["e_splitcell"]					=	"Zelle teilen";
 	$ARnls["e_standard"]					=	"Standard";
-	$ARnls["e_style"]						=	"!Style";
+	$ARnls["e_style"]						=	"Stil";
 	$ARnls["e_table"]						=	"Tabelle";
 	$ARnls["e_toolbars"]					=	"Symbolleisten";
 	$ARnls["e_underline"]					=	"Unterstrichen";

@@ -1,36 +1,43 @@
+﻿	/*****************************************************************************
+
+		The German nls files are contributed by: Reini Urban <rurban@x-ray.at>
+
+		Modified by Christoph Lindemann <christoph@lindemann.nu> 2005-01-06
+
+	*****************************************************************************/
 <?php
 
-	$ARnls["xp_about"]						=	"Über...";
-	$ARnls["xp_browsebydate"]				=	"Browse by Datum";
-	$ARnls["xp_browsebyletter"]				=	"Browse by Buchstabe";
-	$ARnls["xp_cache"]						=	"Cache einstellen für ";
+	$ARnls["xp_about"]						=	"Über Ariadne";
+	$ARnls["xp_browsebydate"]				=	"Nach Datum ordnen";
+	$ARnls["xp_browsebyletter"]				=	"Nach Buchstaben ordnen";
+	$ARnls["xp_cache"]						=	"Zwischenspeicher einstellen für ";
 	$ARnls["xp_copy"]						=	"Kopieren ";
 	$ARnls["xp_customfields"]				=	"Benutzerdefinierte Felder einstellen für ";
 	$ARnls["xp_delete"]						=	"Löschen ";
 	$ARnls["xp_details"]					=	"Details";
 	$ARnls["xp_detailsH"]					=	"Mehr...";
-	$ARnls["xp_edit"]						=	"Bearbeiten ";
-	$ARnls["xp_explore"]					=	"Explore";
+	$ARnls["xp_edit"]						=	"Bearbeiten";
+	$ARnls["xp_explore"]					=	"Durchsuchen";
 	$ARnls["xp_export"]						=	"Exportieren";
 	$ARnls["xp_folders"]					=	"Ordner";
-	$ARnls["xp_grants"]						=	"Rechte einstellen für ";
+	$ARnls["xp_grants"]						=	"Rechte einstellen für";
 	$ARnls["xp_help"]						=	"Hilfe";
-	$ARnls["xp_iconview"]					=	"Icon Ansicht";
+	$ARnls["xp_iconview"]					=	"Symbol Ansicht";
 	$ARnls["xp_import"]						=	"Importieren";
 	$ARnls["xp_info"]						=	"Info";
 	$ARnls["xp_language"]					=	"Sprache einstellen für ";
-	$ARnls["xp_large"]						=	"Icons";
-	$ARnls["xp_link"]						=	"Link ";
+	$ARnls["xp_large"]						=	"Grosse Symbole";
+	$ARnls["xp_link"]						=	"Verknüpfung ";
 	$ARnls["xp_new"]						=	"Neues Objekt hinzufügen";
-	$ARnls["xp_preferences"]				=	"Präferenzen";
+	$ARnls["xp_preferences"]				=	"Einstellungen";
 	$ARnls["xp_priority"]					=	"Priorität einstellen für ";
 	$ARnls["xp_rename"]						=	"Umbenennen ";
 	$ARnls["xp_search"]						=	"Suchen";
-	$ARnls["xp_settings"]					=	"Einstellungen";
-	$ARnls["xp_shortcut"]					=	"Shortcut bearbeiten";
-	$ARnls["xp_small"]						=	"List";
+	$ARnls["xp_settings"]					=	"Eigenschaften";
+	$ARnls["xp_shortcut"]					=	"Verknüpfung bearbeiten";
+	$ARnls["xp_small"]						=	"Listenansicht";
 	$ARnls["xp_templates"]					=	"Vorlagen einestellen für ";
-	$ARnls["xp_tutorials"]					=	"Tutorials";
+	$ARnls["xp_tutorials"]					=	"Beispiele";
 	$ARnls["xp_types"]						=	"Typenstamm einstellen für ";
 	$ARnls["xp_up"]							=	"Hoch";
 	$ARnls["xp_view"]						=	"Anzeigen";
