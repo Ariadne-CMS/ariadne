@@ -32,6 +32,10 @@
   target=0;
   caller=0;
 
+  function frop() {
+    alert('frop');
+  }
+
   function AddLinks(parent, icon, name, link, pre) {
     if (Links[parent]) {
       for (i=0; i<Links[parent].length; i++) {
@@ -57,8 +61,8 @@
       for (i=0; i<Links[link].length; i++) {
         Links[link][i].del();
       }
+      Draw();
     }
-    Draw();
   }
 
   function Node(parent, prev, next, icon, name, link, pre) {
