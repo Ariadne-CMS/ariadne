@@ -1,11 +1,15 @@
-Ariadne 2.3.2-dev
+Ariadne 2.4RC2
 
 Changes in Ariadne since version Ariadne 2.3.1-dev
 
 New Features:
-	- moved the multipart page extension from ppage to mod_multipart
-	- mod_edit (easy WYSIWYG editing of multiple objects) is now workable 
-	  and almost finished.
+	- moved the multipart page extension from ppage to mod_multipart,
+      mod_multipart only has the ShowSection and ShowSections methods
+	  but you can emulate ShowTitle(s) easily in your templates. The
+	  new version also supports nested sections.
+	- mod_edit (easy WYSIWYG editing of multiple objects) is working,
+      some minor features left to implement. See the docs/mod_edit.txt
+	  file for extra information on use.
 	- Add FTP MDTM command, thanks to Goran Topic.
 	- Static skeleton support in profiles, just use the filename 'static' 
 	  immediately below a profile, and the contents will be copied when 
@@ -69,6 +73,19 @@ New Features:
 	  and the real store, so that users can't view the store config with print_r
 
 Bugs Fixed:
+	- Fixed calling the workflow templates, they now also have the
+	  arIsNewObject variable if set.
+	- Fixed a bug in the edit wizard, cancel will now always close the 
+	  wizard window.
+	- get_articles in pnewspaper now limits the find to twice the maximum
+	  number of results given, so when finding the same article multiple
+	  times it will usually still return a list of size $max.
+	- Fixed a bug in the grants dialog, it used make_url() instead of
+	  $this->store->root. 
+	- Fixed a problem with the winXP interface sidebar when the requested
+	  language wasn't available in an object.
+	- Fixed a problem in the browse widget when using complex variables
+	  (arrays)
 	- Fixed a bug in the FTP loader which made the loader not display templates
 	  with NLST. Thanks to Gorant Topic.
 	- Fixed a bug in store::make_path(), it should now always return a
