@@ -1,10 +1,10 @@
 <?php
 	if ($this) $store=&$this->store;
-
+	global $AR;
 	require($store->code."modules/mod_ax.phtml");
 
 	$mod=new mod_ax;
-	if (!$error=$mod->open($ax_file,"",$store->files."temp/")) {
+	if (!$error=$mod->open($ax_file,$AR->ax,"",$store->files."temp/")) {
 		if (!$store->exists($export_path)) {
 			$error="err:exportpathdoesntexist";
 		} else {

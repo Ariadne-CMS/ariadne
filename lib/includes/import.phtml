@@ -1,4 +1,5 @@
 <?php
+	global $AR;
 	if ($this) $store=&$this->store;
 
 	include_once($store->code."includes/system.functions.merge.phtml");
@@ -10,7 +11,7 @@
 	$mod=new mod_ax;
     if (!$store->exists($import_path)) {
 		$error="err:importpathdoesntexist";
-	} else if (!($error=$mod->open($ax_file,"unpack",$store->files."temp/"))) {
+	} else if (!($error=$mod->open($ax_file,$AR->ax,"unpack",$store->files."temp/"))) {
 		if (!$fp=fopen($mod->tempdir."/objects.data","r")) {
 			$error="err:noobjectdata";
 		} else {
