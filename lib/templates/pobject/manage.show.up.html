@@ -1,5 +1,11 @@
+<?php
+  if ($this->CheckConfig()) {
+?>
 <SPAN class=item>
    <A HREF="<?php echo $this->make_url(".."); ?>manage.html" onClick="if (top.tree) { top.View('<?php echo $this->parent; ?>'); return false; }"><IMG 
      SRC="<?php echo $AR->dir->images."icons/pdir.gif"; ?>" border=0 HSPACE=0 VSPACE=0 WIDTH="36" HEIGHT="36" ALT="<?php echo $ARnls["up"]; ?>"><br>
    ..</A>
 </SPAN>
+<?php
+  }
+?>

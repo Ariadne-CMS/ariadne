@@ -1,4 +1,6 @@
-<span class="item">
+<?php
+  if ($this->CheckConfig()) {
+?><span class="item">
   <A HREF="<?php $url=$this->make_url(".."); echo $url; ?>manage.html" onClick="if (top.tree) { top.View('<?php echo $this->parent; ?>'); return false; }"><IMG 
      SRC="<?php echo $AR->dir->images."icons/pdir.gif"; ?>" border=0 HSPACE=30 VSPACE=15 
      ALT="<?php echo $ARnls["up"]; ?>" WIDTH="36" HEIGHT="36"></a>
@@ -6,3 +8,6 @@
     <center><A href="<?php echo $url; ?>"  onClick="if (top.tree) { top.View('<?php echo $this->parent; ?>'); return false; }">..</A></center>
   </layer>
 </span>
+<?php
+  }
+?>
