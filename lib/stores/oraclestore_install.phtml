@@ -60,13 +60,13 @@ class oraclestore_install extends oraclestore {
 			)";
 		$i++;
 
-		$queries[$i]["query_string"] = "drop sequence objectid";
+		$queries[$i]["query_string"] = "drop sequence ".$this->tbl_prefix."ObjectID";
 		$i++;
 
 		$queries[$i]["msg"] = "creating object sequence";
-		$queries[$i]["query_string"] = "CREATE SEQUENCE ObjectID increment by 1 start with 1";
+		$queries[$i]["query_string"] = "CREATE SEQUENCE ".$this->tbl_prefix."ObjectID increment by 1 start with 1";
 		$i++;
-		
+
 		$indexes = Array("lastchanged", "type", "vtype");
 		foreach ($indexes as $index) {
 			$indexn = $this->tbl_prefix."objects$index";
@@ -116,6 +116,7 @@ class oraclestore_install extends oraclestore {
 			if ($query["msg"]) {
 				echo $query["msg"]."\n";
 			}
+			echo "<b>".$query['query_string']."</b><br>\n";
 			$this->store_run_query($query['query_string']);
 			if ($this->error) {
 				error($this->error);
@@ -192,7 +193,8 @@ class oraclestore_install extends oraclestore {
 						case "string": 
 							if ($size>0 && $size<256) {
 								$index[]="$name";
-								$create_string.="varchar2(".$size.") default ''  not null ,\n";
+								//$create_string.="varchar2(".$size.") default ''  not null ,\n";
+								$create_string.="varchar2(".$size.") ,\n";
 							} else {
 								$result=0;
 								$this->error="Wrong format for typedefinition $name: incorrect size."; 
@@ -208,7 +210,8 @@ class oraclestore_install extends oraclestore {
 							break;
 						case "text":
 							$index[]="$name";
-							$create_string.="$name varchar2(2000) default ''  not null,\n";
+							//$create_string.="$name varchar2(2000) default ''  not null,\n";
+							$create_string.="$name varchar2(2000) ,\n";
 							break;
 					}
 				}
@@ -253,12 +256,12 @@ class oraclestore_install extends oraclestore {
 				$queries[$i]["query_string"] = "create index $index on $property_tbl (object)";
 				$i++;
 
-
 				if ($result) {
 					while ((list($key, $query)=each($queries)) && (!$error)) {
 						if ($query["msg"]) {
 							echo $query["msg"]."\n";
 						}
+						echo "<b>".$query['query_string']."</b><br>\n";
 						$this->store_run_query($query['query_string']);
 						if ($this->error) {
 							error($error);

@@ -1,8 +1,8 @@
 <?php
 /******************************************************************************
-  Oracle Store 1.0						Ariadne 2.0
+  Oracle Store 1.0						Ariadne 2.4
 
-  Copyright (C) 1998-2000  Muze 
+  Copyright (C) 1998-2004  Muze 
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -20,7 +20,7 @@
 
   --------------------------------------------------------------------------
 
-  This is an implementation of the store class for MySQL. The store class is
+  This is an implementation of the store class for Oracle. The store class is
   an interface between Ariadne objects and a storage layer. It is used by all 
   Ariadne objects to call templates in other objects or to manipulate
   the location and contents of objects in the Ariadne system.
@@ -54,22 +54,19 @@ class oraclestore {
 		debug("oraclestore($path, [array])","store");
 		$this->error="";
 
-		$this->connect_id=ocilogon($config["user"], $config["password"], $config["database"]);
+		$this->connect_id=OCILogon($config["user"], $config["password"], $config["database"]);
 
 		$this->root=$path;
 		$this->code=$config["code"];
 		$this->files=$config["files"];
 		$this->tbl_prefix=$config["prefix"];
 
-		// necessary to avoid the 'mysql_select_db' bug, it will select
-		// a database for all open connect_id's
-		// so we have to supply the database name wheenever a query is run
 		$this->database=$config["database"];
 
 		$this->config=$config;
 
-		/* Include module mysql_compiler */
-//		include_once($this->code."stores/modules/oracle_compiler.php");
+		/* Include module oracle_compiler */
+		include_once($this->code."stores/modules/oracle_compiler.php");
 
 		/* Instantiate module locking */
 /*
@@ -109,7 +106,7 @@ class oraclestore {
 		$result = Array();
 		$this->error="";
 
-		while (ocifetchinto($objects['list'], $row, OCI_ASSOC)) {
+		while (OCIFetchInto($objects['list'], $row = Array(), OCI_ASSOC)) {
 			$count++;
 			// FIXME: find out how to let ORACLE give us a unixtimestamp
 			$lastchanged = strtotime($row['lastchanged']);
@@ -136,7 +133,7 @@ class oraclestore {
 		if ($query_string) {
 			$list = $this->store_run_query($query_string);
 			if (!$this->errno) {
-				ocifetchinto($list, $row, OCI_ASSOC);
+				OCIFetchInto($list, $row = Array(), OCI_ASSOC);
 				$result = $row['count'];
 			}
 		}
@@ -146,7 +143,7 @@ class oraclestore {
 	function info($objects) {
 		debug("info([list])","store");
 		
-		while (ocifetchinto($objects["list"], $row, OCI_ASSOC)) {
+		while (OCIFetchInto($objects["list"], $row = Array(), OCI_ASSOC)) {
 			unset($row["object"]);
 			$result[]=$row;
 		}
@@ -254,7 +251,7 @@ class oraclestore {
 			$query_string = "select $nodes_tbl.object as \"object\" from $nodes_tbl where $nodes_tbl.path = '$epath'";
 			$qresult = $this->store_run_query($query_string);
 			if (!$this->errno) {
-				ocifetchinto($qresult, $temp, OCI_ASSOC);
+				OCIFetchInto($qresult, $temp = Array(), OCI_ASSOC);
 				$id = $temp["object"];
 			}
 		}
@@ -382,9 +379,12 @@ class oraclestore {
 	 **********************************************************************************/
 		debug("find($path, [criteria], $limit, $offset)","store");
 		if (!is_array($criteria) && ($criteria=trim($criteria))) {
-			echo "<h3>not implemented: search ($criteria)</h3>\n";  
-			$sqlcompiler=new mysql_compiler($this, $this->tbl_prefix);
-			$query_string=$sqlcompiler->compile($path, $criteria, $limit, $offset);
+			//echo "<h3>not implemented: search ($criteria)</h3>\n";  
+			$sqlcompiler=new oracle_compiler($this, $this->tbl_prefix);
+			$query=$sqlcompiler->compile($path, $criteria, $limit, $offset);
+			$query_string = $query["query"];
+			$count_query = $query["count_query"];
+			$this->query = $query_string;
 			if ($sqlcompiler->error) {
 				$this->error=$sqlcompiler->error;
 			}
@@ -486,16 +486,10 @@ class oraclestore {
 			from (
 				select ROW_NUMBER() OVER($orderby_s) LINENUM,
 					$nodes_tbl.path as \"path\", $nodes_tbl.parent as \"parent\", $nodes_tbl.priority as \"priority\", $objects_tbl.id as \"id\", $objects_tbl.type as \"type\", $objects_tbl_data.object as \"object\", TO_CHAR($objects_tbl.lastchanged, 'MM-DD-YYYY HH24:MI:SS') as \"lastchanged\", $objects_tbl.vtype as \"vtype\"  
-				from $nodes_tbl, $objects_tbl, $objects_tbl_data
+				from $nodes_tbl, $objects_tbl, $objects_tbl_data $from $types
 				where $objects_tbl.id = $nodes_tbl.object and $objects_tbl.id = $objects_tbl_data.id
-				and $nodes_tbl.path IN (
+				and $nodes_tbl.path like '$epath%' $where_s
 
-					select distinct($nodes_tbl.path) as \"path\"
-					from $nodes_tbl, $objects_tbl $from $types
-					where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path like '$epath%'
-						$where_s
-
-				)
 				$orderby_s
 			) where $limit_s
 			";
@@ -521,7 +515,7 @@ class oraclestore {
 				$filestore->close();
 			}
 		}
-		return ocilogoff($this->connect_id);
+		return OCILogOff($this->connect_id);
 	}
 
 
@@ -598,14 +592,14 @@ class oraclestore {
 				}
 				debug("save: query=$query_string","all");
 				$this->store_run_query($query_string);
-				if (!$this->errno) { // mysql_affected_rows doesn't always work
+				if (!$this->errno) { 
 					debug("save: query=$query_string","all");
 
 
 					$query_string="update $objects_tbl_data set object=:one_lob where id=$id";
-					$stmt = ociparse($this->connect_id, $query_string);
-					ocibindbyname($stmt, ':one_lob', $edata);
-					ociexecute($stmt);
+					$stmt = OCIParse($this->connect_id, $query_string);
+					OCIBindByName($stmt, ':one_lob', $edata);
+					OCIExecute($stmt);
 
 					if (!$this->errno) {
 						debug("save: query=$query_string","all");
@@ -652,19 +646,11 @@ class oraclestore {
 					// if the last part of a path matches something like {2:id} this
 					// part will automatically create a new number, unique in this directory, and fill it in.
 					// before we proceed, we need to lock the 'nodes' and 'objects' table
-					$query_string="lock tables ".$this->tbl_prefix."nodes write, ".$this->tbl_prefix."objects write";
-					if (mysql_db_query($this->database, $query_string, $this->connect_id)) {
-						$needunlocking = true;
 
 						$subid=$this->get_nextid($parent, $mask);
 						$path=ereg_replace("\{([0-9]:)?id\}",strval($subid),$path);
 						$epath=AddSlashes($path);
 						debug("save: new path: $path ($subid)","all");
-					} else {
-						error("PANIC: could not obtain write lock on nodes table!");
-						$this->close();
-						exit;
-					}
 				}
 
 				if (strlen($path)>=MAX_PATH_LENGTH) {
@@ -672,24 +658,24 @@ class oraclestore {
 					$this->error="ERROR: Maximum path length (".MAX_PATH_LENGTH." characters) exceeded. Please shorten your filenames.";
 					$result=false;
 				} else {
-					$query_string="insert into $objects_tbl (id,type,vtype) values (ObjectID.NextVal, '$etype', '$evtype')";
+					$query_string="insert into $objects_tbl (id,type,vtype) values (".$this->tbl_prefix."ObjectID.NextVal, '$etype', '$evtype')";
 					debug("save: query=$query_string","all");
 					$this->store_run_query($query_string);
 					if (!$this->errno) {
 
-						$query_string="insert into $objects_tbl_data (id, object) values (ObjectID.CurrVal, :one_lob)";
+						$query_string="insert into $objects_tbl_data (id, object) values (".$this->tbl_prefix."ObjectID.CurrVal, :one_lob)";
 
-						$stmt = ociparse($this->connect_id, $query_string);
-						ocibindbyname($stmt, ':one_lob', $edata);
-						ociexecute($stmt);
+						$stmt = OCIParse($this->connect_id, $query_string);
+						OCIBindByName($stmt, ':one_lob', $edata);
+						OCIExecute($stmt);
 
 						debug("save: query=$query_string","all");
 						if (!$this->errno) {
-							$query_string="insert into $nodes_tbl (path, parent, object, priority) values ('$epath', '$eparent', ObjectID.CurrVal, $epriority)";
+							$query_string="insert into $nodes_tbl (path, parent, object, priority) values ('$epath', '$eparent', ".$this->tbl_prefix."ObjectID.CurrVal, $epriority)";
 							debug("save: query=$query_string","all");
 							$this->store_run_query($query_string);
 							if (!$this->errno) {				
-								$this->save_properties($properties, 'ObjectID.CurrVal', $this);
+								$this->save_properties($properties, $this->tbl_prefix.'ObjectID.CurrVal', $this);
 								$result=$path;
 							} else {
 								debug("save: insert node failed!","store");
@@ -746,7 +732,7 @@ class oraclestore {
 			$query_string="delete from $nodes_tbl where object=$object";
 			$temp=$this->store_run_query($query_string);
 			if ($temp) {
-				$result=ocirowcount($temp);
+				$result=OCIRowCount($temp);
 			}
 			$this->del_property($object);
 			$query_string="delete from $objects_tbl where id=$object";
@@ -794,7 +780,7 @@ class oraclestore {
 			} else { // only delete the given path
 				$query_string="delete from $nodes_tbl where path='$epath'";
 				$temp=$this->store_run_query($query_string);
-				if (ocirowcount($temp)) {
+				if (OCIRowCount($temp)) {
 					$result=1;
 				} else {
 					$result=0;
@@ -827,7 +813,7 @@ class oraclestore {
 		$query_string="select object from $nodes_tbl where path='$epath'";
 		$temp=$this->store_run_query($query_string);
 		$row = Array();
-		if ($temp && (ocifetchinto($temp, $row, OCI_ASSOC))) {
+		if ($temp && (OCIFetchInto($temp, $row = Array(), OCI_ASSOC))) {
 			$object=intval($row["OBJECT"]);
 			debug("exists: end (yes)","all");
 		} else {
@@ -871,25 +857,17 @@ class oraclestore {
 		} else { 
 			$mask = substr($destination, strlen($parent));
 			if (ereg("(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) {
-				$query_string="lock tables ".$this->tbl_prefix."nodes write";
-				if (mysql_db_query($this->database, $query_string, $this->connect_id)) {
-					$needunlocking = true;
 					$subid = $this->get_nextid($parent, $mask);
 					$destination=ereg_replace("\{([0-9]:)?id\}",strval($subid),$destination);
 					$edestination=AddSlashes($destination);
 					debug("link: new destination: $destination ($subid)","all");
-				} else {
-					error("PANIC: could not obtain write lock on nodes table!");
-					$this->close();
-					exit;
-				}
 			}
 			$id=$this->exists($source);
 			if ($id) {
 				$query_string="insert into $nodes_tbl (path, parent, object ) values ('$edestination', '$eparent', $id)";
 				$temp = $this->store_run_query($query_string);
 				if ($this->errno) {				
-					$this->error="ERROR: Mysql: ".$this->errno.": ".$this->error;
+					$this->error="ERROR: Oracle: ".$this->errno.": ".$this->error;
 					debug("link: insert node failed!","store");
 					debug("link: ".$this->error,"store");
 					debug("link: query=$query_string","store");
@@ -902,22 +880,33 @@ class oraclestore {
 				debug("link: end (no $source)","store");
 			}
 		}
-		if ($needunlocking) {
-			$query_string = "unlock tables";
-			mysql_db_query($this->database,$query_string, $this->connect_id);
+		return $result;
+	}
+
+	function store_get_columns($tbl_name) {
+		/* private function, retrieves the columns of $tbl_name */
+		$result = Array();
+		$etbl_name = AddSlashes(strtoupper($tbl_name));
+		$query = "select column_name as \"column\" from sys.user_tab_columns where table_name='$etbl_name'";
+		$stmt = $this->store_run_query($query);
+		if (!$this->errno) {
+			while (OCIFetchInto($stmt, $row = Array(), OCI_ASSOC)) {
+				$result[$row['column']] = $row;
+			}
 		}
 		return $result;
 	}
 
 	function store_run_query($query) {
 		/* private function, do not use this outside this class */
-//		echo "query ($query)<br>\n";
-		$result = ociparse($this->connect_id, $query);
-		ociexecute($result);
-		$err = ocierror($this->connect_id);
+		debug("query ($query)", "store");
+		$result = OCIParse($this->connect_id, $query);
+		OCIExecute($result);
+		$err = OCIError($this->connect_id);
 		$errno=$err['code'];
 		$error=$err['message'];
 		if ($errno) {				
+			echo "<b>query: $query</b><br>\n";
 			$this->error="ERROR: Oracle: $errno: $error";
 			debug("run_query: ".$this->error,"store");
 			debug("run_query: query=$query_string","store");
@@ -959,18 +948,10 @@ class oraclestore {
 		} else { 
 			$mask = substr($destination, strlen($parent));
 			if (ereg("(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) {
-				$query_string="lock tables ".$this->tbl_prefix."nodes write";
-				if (mysql_db_query($this->database, $query_string, $this->connect_id)) {
-					$needunlocking = true;
 					$subid = $this->get_nextid($parent, $mask);
 					$destination=ereg_replace("\{([0-9]:)?id\}",strval($subid),$destination);
 					$edestination=AddSlashes($destination);
 					debug("move: new destination: $destination ($subid)","all");
-				} else {
-					error("PANIC: could not obtain write lock on nodes table!");
-					$this->close();
-					exit;
-				}
 			}
 			$id=$this->exists($source);
 			if ($id) {
@@ -980,9 +961,9 @@ class oraclestore {
 				// move the top path
 				$query_string="update $nodes_tbl set path='$edestination', parent='$eparent' where path='$esource'";
 				$result=$this->store_run_query($query_string);
-				if ($result) {
+				if (!$this->errno) {
 					// now move all the children
-					$query_string="update $nodes_tbl set path=CONCAT('$edestination', SUBSTRING(path, $sourcelength+1)), parent=CONCAT('$edestination', SUBSTRING(parent, $sourcelength+1)) where parent like '$esource%'";
+					$query_string="update $nodes_tbl set path='$edestination'||substr(path, $sourcelength+1), parent='$edestination'||substr(parent, $sourcelength+1) where parent like '$esource%'";
 					$result=$this->store_run_query($query_string);
 				}
 				debug("move: end","all");
@@ -990,11 +971,6 @@ class oraclestore {
 				$result=false;
 				debug("move: end (no $source)","store");
 			}
-		}
-
-		if ($needunlocking) {
-			$query_string = "unlock tables";
-			mysql_db_query($this->database,$query_string, $this->connect_id);
 		}
 
 		if ($result) {
@@ -1023,7 +999,7 @@ class oraclestore {
 		$object=$this->exists($path);
 		$query_string="select path from $nodes_tbl where object=$object";
 		$temp=$this->store_run_query($query_string);
-		while ($row = ocifetchinto($temp, $row, OCI_ASSOC)) {
+		while (OCIFetchInto($temp, $row = Array(), OCI_ASSOC)) {
 			$result[]=$row["path"];
 		}
 		debug("list_paths: end","all");
@@ -1046,9 +1022,9 @@ class oraclestore {
 
 		$query_string="select distinct(type) from $types_tbl where implements='".AddSlashes($implements)."' and type='".AddSlashes($type)."'";
 		$this->error="";
-		$temp=$this->store_run_query($query);
+		$temp=$this->store_run_query($query_string);
 		if ($temp) {
-			$row = ocifetchinto($temp, $row, OCI_ASSOC);
+			OCIFetchInto($temp, $row = Array(), OCI_ASSOC);
 		}
 		if ($row) {
 			$result = 1;
@@ -1100,28 +1076,10 @@ class oraclestore {
 		return $result;
 	}
 
-	function format_for_fti($text) {
-	/**********************************************************************
- 
-		This function prepares the passed string to be interpreted properly
-	by the store's full text indexing system.
-		For MySQL, all characters over 126 and the select allowed characters
-	are escaped with the underscore character; whitespace characters are
-	collapsed into a single space.
-
-	**********************************************************************/
-
-		debug("format_for_fti($text)","all");
-		$allowedchars="_'-";
-		$search = array("%[\\x80-\\xFF$allowedchars]%es", "%\\s+%s");
-		$replace = array("'_'.dechex(ord('\\0'))", " ");
-		return preg_replace($search, $replace, $text);
-	}
-
 	function save_properties($properties, $id) {
 	/********************************************************************
 
-		'private' function of mysql.phtml. It updates all property tables
+		'private' function. It updates all property tables
 		defined in $properties and sets the values to the values in
 		$properties.
 
@@ -1147,9 +1105,10 @@ class oraclestore {
 	function load_properties($object, $values="") {
 		debug("load_properties($object, [values])","all");
 		if ($object) {
-			$query_string = "select \"name\" from ".$this->tbl_prefix."properties";
+			$prop_tbl = $this->tbl_prefix."properties";
+			$query_string = "select $prop_tbl.name as \"name\" from $prop_tbl";
 			$temp = $this->store_run_query($query_string);
-			while (ocifetchinto($temp, $prop, OCI_ASSOC)) {
+			while (OCIFetchInto($temp, $prop = Array(), OCI_ASSOC)) {
 				if ($value=$this->load_property($object, $prop["name"], $values)) {
 					$result[$prop["name"]] = $value;
 				}
@@ -1165,9 +1124,25 @@ class oraclestore {
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
+		$prop_tbl=$this->tbl_prefix."prop_".AddSlashes($property);
 
 		if ($object) {
-			$query_string="select * from ".$this->tbl_prefix."prop_".AddSlashes($property)." where ";
+			$query_string="";
+			$columns = $this->store_get_columns($prop_tbl);
+			foreach ($columns as $column => $crow) {
+				switch ($column) {
+					default:
+						$column = "AR_".substr(strtolower($column), 3);
+						if ($query_string) {
+							$query_string .= ", ";
+						}
+						$query_string .= "$prop_tbl.$column as \"$column\" ";
+					break;
+					case "ID":
+					case "OBJECT":
+				}
+			}
+			$query_string="select $query_string  from $prop_tbl where ";
 			if (is_array($values)) {
 				while (list($name, $value)=each($values)) {
 					$query_string.="AR_".AddSlashes($name)."=$value and ";
@@ -1176,7 +1151,7 @@ class oraclestore {
 			$query_string.="object=$object";
 			$temp = $this->store_run_query($query_string);
 			$currProp=0;
-			while (ocifetchinto($temp, $prop, OCI_ASSOC)) {
+			while (OCIFetchInto($temp, $prop = Array(), OCI_ASSOC)) {
 				reset($prop);
 				while (is_array($prop) && (list($name,$val)=each($prop)) ) {
 					if (($name!="object")&&(!is_int($name))) {
@@ -1188,6 +1163,7 @@ class oraclestore {
 					}
 				}
 				$currProp++;
+				$prop = Array();
 			}
 		}
 		debug("load_property: end","all");
@@ -1209,7 +1185,7 @@ class oraclestore {
 				}
 			}
 			$query_string="insert into ".$this->tbl_prefix."prop_".AddSlashes($property)." ( ".
-										$query_names."object ) values ( ".$query_values."$object )";
+										$query_names."object ) values ( ".$query_values."$object)";
 			debug($query_string, "all");
 			$this->store_run_query($query_string);
 		}
@@ -1226,12 +1202,11 @@ class oraclestore {
 
 		if (intval($object)) {
 			if (!$property) { // remove all properties for $object
-				$row = Array();
 				$query_string = "select name from ".$this->tbl_prefix."properties";
 				$stmt = $this->store_run_query($query_string);
-				while (!$this->errno && ocifetchinto($stmt, $row, OCI_ASSOC)) {
+				while (!$this->errno && OCIFetchInto($stmt, $row = Array(), OCI_ASSOC)) {
 					$query_string="delete from ".$this->tbl_prefix."prop_".$row["name"]." where object=$object";
-					$result += ocirowcount($this->store_run_query($query_string));
+					$result += OCIRowCount($this->store_run_query($query_string));
 				}
 			} else {
 				$query_string="delete from ".$this->tbl_prefix."prop_".AddSlashes($property)." where ";
@@ -1241,7 +1216,7 @@ class oraclestore {
 					}
 				}
 				$query_string.="object=$object";
-				$result=ocirowcount($this->store_run_query($query_string));
+				$result=OCIRowCount($this->store_run_query($query_string));
 			}
 		}
 		debug("del_property: end","all");
@@ -1251,7 +1226,7 @@ class oraclestore {
 	function set_nextid($path, $newid) {
 	/**********************************************************************
 
-		'private' function of mysql store. 
+		'private' function. 
 		(deprecated, but still available for backward compatibility).
 
 	**********************************************************************/
@@ -1262,7 +1237,7 @@ class oraclestore {
 	function get_nextid($path, $mask="{5:id}") {
 	/**********************************************************************
 
-		'private' function of mysql store. This will return the next
+		'private' function. This will return the next
 		'autoid' for $path.
 
 	**********************************************************************/
@@ -1277,15 +1252,14 @@ class oraclestore {
 			$substr_l = intval(substr($matches[2], 0, 1));
 			$mask_post= $matches[3];
 			$query_string = 
-				"select max(substring(path, $substr_s, $substr_l)) as id
+				"select max(substr(path, $substr_s, $substr_l)) as \"id\"
 				from ".$this->tbl_prefix."nodes where 
 				path like '$path%' and
-				path regexp '^".$path.$mask_pre."[0-9]\{".$substr_l."\}".$mask_post."'";
+				regexp_like (path, '^".$path.$mask_pre."[0-9]{".$substr_l."}".$mask_post."')";
 
-			//error($query_string);
-			$result = mysql_db_query($this->database, $query_string, $this->connect_id);
-			if ($result) {
-				$row = mysql_fetch_array($result);
+			$result = $this->store_run_query($query_string);
+			if (!$this->errno) {
+				OCIFetchInto($result, $row = Array(), OCI_ASSOC);
 				$subid  = intval($row["id"]);
 			}
 			$subid=$subid+1;
