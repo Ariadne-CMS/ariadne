@@ -1,0 +1,111 @@
+<?php
+	if ($this->CheckLogin("delete") && $this->CheckConfig()) {
+		$target=$this->getdata("target");
+		$target=$this->store->make_path($this->parent, $this->getdata("target","none"));
+		if (substr($target, 0, strlen('/system/groups/'))!='/system/groups/') {
+			$this->error=$ARnls["err:invaliduserlocation"];
+		} else {
+			if (!$this->exists($target)) {
+				// new filename -> new login, so check if it is unique
+				$newparent=$this->store->make_path($target, "..");
+				$newlogin=substr($target, strlen($newparent), -1);
+				$crit["login"]["value"]["="]="'".AddSlashes($newlogin)."'";
+				$result=$this->find("/system/users/",$crit,"system.get.id.phtml");
+				if (count($result) && $result[0] != $this->id) {
+					$this->error=sprintf($ARnls["err:loginexists"],$newlogin);
+				}
+			}
+			if (!$this->error) {
+				$users = $this->ls(".", "system.get.path.phtml");
+				if (is_array($users)) {
+					reset($users);
+					while (list($key, $path) = each($users)) {
+						$this->get(	$path,
+									"system.set.group.phtml",
+									Array(
+										"action" => "remove",
+										"path" => $this->path
+									));
+					}
+				}
+				$oldusergrants = $this->data->usergrants;
+				$oldlogin = $this->data->login;
+				if (is_array($this->data->usergrants)) {
+					// remove usergrants
+					while (list($key, $value)=each($this->data->usergrants)) {
+						$this->get($key, "system.save.grants.phtml", Array("delete" => true, "id" => $this->data->login, "type" => $this->type));
+					}
+				}
+
+				$this->call("pobject::system.rename.phtml", $arCallArgs);
+				$this->data->login=substr($this->path, strlen($this->parent), -1);
+				$properties["login"][0]["value"]="'".AddSlashes($this->data->login)."'";
+				$this->save($properties);
+				if (!$this->error) {
+					// re-add users
+					if (is_array($users)) {
+						reset($users);
+						while (list($key, $path) = each($users)) {
+							$this->get(	$path,
+										"system.set.group.phtml",
+										Array(
+											"action" => "add",
+											"path" => $this->path,
+											"id" => $this->data->login
+										));
+						}
+					}
+
+
+					// update grants
+					if (is_array($oldusergrants)) {
+						reset($oldusergrants);
+						while (list($path, $grants) = each($oldusergrants)) {
+							$grantstring = "";
+							reset($grants);
+							while (list($grant, $granttype) = each($grants)) {
+								if (is_array($granttype)) {
+									$grantstring .= " $grant ( ";
+									reset($granttype);
+									while (list($class, $modifierId)=each($granttype)) {
+										switch($modifierId) {
+											case ARGRANTLOCAL:
+												$modifier = "=";
+											break;
+											case ARGRANTCHILDREN:
+												$modifier = ">";
+											break;
+											default:
+												$modifier = "";
+										}
+										$grantstring .= " $modifier$class ";
+									}
+									$grantstring .= " ) ";
+								} else {
+									switch($granttype) {
+										case ARGRANTLOCAL:
+											$modifier = "=";
+										break;
+										case ARGRANTCHILDREN:
+											$modifier = ">";
+										break;
+										default:
+											$modifier = "";
+									}
+									$grantstring .= " $modifier$grant ";
+								}
+							}
+							$this->get( $path,
+										"system.save.grants.phtml",
+										Array(
+											"path" => $this->path,
+											"newgrants" => $grantstring
+										));
+						}
+					}
+				}
+			}
+		}
+	}
+	$arResult=$target;
+?>
