@@ -136,7 +136,7 @@
   }
 
   function loadUser(type, id) {
-	parent.loadUser(type, id);
+	parent.loadUser(type, id, id2path[type][id]);
   }
 
   id2path = new Array();
@@ -224,6 +224,15 @@
  							echo "<tr class=\"$class\" valign=\"middle\" id=\"grants-$type-$id\"><td>";
 							echo "<img src=\"".$AR->dir->images."icons/".$type.".gif\"></td>";
 							echo "<td valign=\"middle\">";
+							switch ($type) {
+								case 'pgroup':
+									$path  = current($AR->user->find('/system/groups/', 'login.value="'.$id.'"', 'system.get.path.phtml'));
+									break;
+								case 'puser':
+									$path  = current($AR->user->find('/system/users/', 'login.value="'.$id.'"', 'system.get.path.phtml'));
+									break;
+							}
+							echo "<script>  id2path['$type']['$id'] = '$path';  </script>\n";
 							echo "<a href=\"javascript:loadUser('$type', '$id');\">$id</a>";
 							echo "</td>";
 							echo "<td valign=\"middle\">";

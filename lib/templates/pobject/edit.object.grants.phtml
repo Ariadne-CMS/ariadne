@@ -184,9 +184,13 @@
 		setGrantOptions();
 	}
 
-	function loadUser(type, id) {
+	function loadUser(type, id, path) {
 		var form = document.forms.grantsform;
-		form['path'].value = grantslist.id2path[type][id];
+		if (!path) {
+			form['path'].value = grantslist.id2path[type][id];
+		} else {
+			form['path'].value = path;
+		}
 	}
 
 	function setGrantOptions() {
@@ -336,19 +340,20 @@
 <tr>
   <td id="grantstop" height="100%">
 	<fieldset id="grants_list">
-		<legend>Grants for <?php $this->parents($this->path, 'edit.object.grants.show.path.phtml','','/'); ?></legend>
+		<legend><?php echo $ARnls["grants_for"]." "; $this->parents($this->path, 'edit.object.grants.show.path.phtml','','/'); ?></legend>
 		<iframe name="grantslist" id="grants_list_frame" src="<?php echo $this->make_url(); ?>edit.object.grants.list.phtml"></iframe>
 	</fieldset>
   </td>
 </tr><tr>
   <td id="grantsbottom" height="270">
 	<fieldset id="grants_grant">
-		<legend>Add or update grants for <?php echo $this->path; ?></legend>
+		<legend><?php echo $ARnls["grants_add_update"]." ".$this->path; ?></legend>
 		<div style="margin-bottom: 10px;">
 		<div style="float: right">
-			<input type="button" style="width: 80px;" name="explain" value="Explain" onClick="explainGrants(this.form.path.value);">
+			<input type="button" style="width: 80px;" name="explain" value="<?php echo $ARnls["explain"]; ?>" onClick="explainGrants(this.form.path.value);">
 		</div>
-		User or group: <?php
+		<?php
+			echo $ARnls["grants_user_group"].": ";
 			$wgBrowsePath="/system/groups/";
 			$wgBrowseName="path";
 			$wgBrowseFilter="puser";
@@ -358,8 +363,8 @@
 		</div>
 		<table cellspacing="0" cellpadding="0">
 		<tr>
-			<th>grant</th>
-			<th colspan="2">modifiers</th>
+			<th><?php echo $ARnls["grant"]; ?></th>
+			<th colspan="2"><?php echo $ARnls["grants_modifiers"]; ?></th>
 		</tr>
 		<tr>
 			<td valign="top">
@@ -416,13 +421,13 @@
 				</div>
 			</td>
 		</tr><tr>
-			<th valign="top" height="1%">valid for</th>
+			<th valign="top" height="1%"><?php echo $ARnls["grants_valid"]; ?></th>
 		</tr><tr>
 			<td valign="top" height="100%">
 				<select name="type" onClick="updateGrantsString()">
-					<option value="<?php echo ARMASKGLOBAL; ?>">Default</option>
-					<option value="<?php echo ARMASKCHILDREN; ?>">Children only</option>
-					<option value="<?php echo ARMASKLOCAL; ?>">This object only</option>
+					<option value="<?php echo ARMASKGLOBAL; ?>"><?php echo $ARnls["grants_global"]; ?></option>
+					<option value="<?php echo ARMASKCHILDREN; ?>"><?php echo $ARnls["grants_children"]; ?></option>
+					<option value="<?php echo ARMASKLOCAL; ?>"><?php echo $ARnls["grants_local"]; ?></option>
 				</select>
 			</td>
 		</tr>
