@@ -88,6 +88,8 @@ New Features:
 	  and the real store, so that users can't view the store config with print_r
 
 Bugs Fixed:
+	- Fixed a small problem in the winxp browse list, it now uses the
+	  same templates as the 'new' interface does.
 	- The axstore doesn't store the properties with AddSlashes() anymore. This
 	  change made us to bump the .ax version to 2
 	- Fixed some bugs in the mysql store::move() and store::link() methods.
