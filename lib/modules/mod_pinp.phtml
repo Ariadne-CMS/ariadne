@@ -318,7 +318,7 @@ class scanner {
 									continue;
 								} else {
 									$string=substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR - $YYCURSOR_START - 1);
-									$YYCURSOR--;
+									$string.='\\$';										
 									array_push($multi_string, Array(T_SUBSTRING => $string));
 									$YYCURSOR_START=$YYCURSOR;
 								}
@@ -447,10 +447,10 @@ class pinp {
 		  "xml_parser_get_option|xml_parser_set_option";
 		$debug_funcs="debug|debugon|debugoff";
 		$loader_funcs="ldheader|ldredirect|ldsetcontent|ldsetclientcache|ldgetusercookie|ldsetusercookie"; 
-
+		$ob_funcs="flush|ob_clean|ob_end_clean|ob_end_flush|ob_flush|ob_get_contents|ob_get_length|ob_get_level|ob_implicit_flush|ob_start";
 		$this->allowed_functions=array_flip(explode("|", "$array_funcs|$control_funcs|$datetime_funcs|$math_funcs|".
 		  "$misc_funcs|$net_funcs|$regex_funcs|$string_funcs|$var_funcs|$xml_funcs|".
-		  "$allowed_functions|$debug_funcs|$loader_funcs|"));
+		  "$allowed_functions|$debug_funcs|$loader_funcs|$ob_funcs|"));
 
 	}
 
