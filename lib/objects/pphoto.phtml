@@ -30,7 +30,7 @@ class pphoto extends pfile { // definitie class
 		return $result;		
 	}
 
-	function scale($x, $y, $fillcolor=false, $image="") {
+	function scale($x, $y, $fillcolor=false) {
 		global $ARConfig;
 
 		$x=(int)$x;
@@ -40,7 +40,7 @@ class pphoto extends pfile { // definitie class
 		return true;
 	}
 
-	function annotate($text, $x, $y, $style="default", $image="") {
+	function annotate($text, $x, $y, $style="default") {
 		global $ARConfig;
 
 		$x=(int)$x;
@@ -127,14 +127,15 @@ class pphoto extends pfile { // definitie class
 				}
 			}
 		}
+		unset($ARConfig->photoStack[$this->id]);
 	}
 
-	function _convert($format="", $image="") {
-		return $this->convert($format, $image);
+	function _convert($format="") {
+		return $this->convert($format);
 	}
 
-	function _scale($x, $y, $fillcolor=false, $image="") {
-		return $this->scale($x, $y, $fillcolor, $image);
+	function _scale($x, $y, $fillcolor=false) {
+		return $this->scale($x, $y, $fillcolor);
 	}
 
 	function _getThumbSettings() {
@@ -145,8 +146,8 @@ class pphoto extends pfile { // definitie class
 		return $this->setFontStyle($name, $font, $pointsize, $color);
 	}
 
-	function _annotate($text, $x, $y, $style="default", $image="") {
-		return $this->annotate($text, $x, $y, $style, $image);
+	function _annotate($text, $x, $y, $style="default") {
+		return $this->annotate($text, $x, $y, $style);
 	}
 	
 	function _build() {
