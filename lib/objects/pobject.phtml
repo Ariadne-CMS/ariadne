@@ -123,9 +123,28 @@ class pobject {
 		return $this->store->exists($path);
 	}
 
-	function make_path($path) {
+	function make_path($path="") {
 		debug("pobject: make_path($path)","object");
 		return $this->store->make_path($this->path, $path);
+	}
+
+	function make_url($path="") {
+		global $ARConfig;
+		debug("pobject: make_url($path)","object");
+		$object_path=$this->path;
+		$path=$this->make_path($path);
+		while ($object_path && !$url) {
+			$config=$ARConfig->cache[$object_path];
+			$rootpath=$config->root["path"];
+			if (substr($path, 0, strlen($rootpath))==$rootpath) {
+				debug("make_url: root from '$rootpath' = ".$config->root["value"].$this->store->rootoptions,"all");
+				$path=substr($path, strlen($rootpath)-1);
+				$url=$config->root["value"].$this->store->rootoptions.$path;
+			} else {
+				$object_path=substr($object_path, 0, strrpos("/", substr($object_path, 0, -1)));
+			}
+		}
+		return $url;			
 	}
 
 	function implements($implements) {
@@ -444,15 +463,15 @@ class pobject {
 			$nocache=true; // make sure no other parts are cached either;
 			if ($this->data->pinp[$this->type][$arCallFunction][$this->nls]) {
 				$config->templates[$this->type][$arCallFunction][$this->nls]=$this->data->pinp[$this->type][$arCallFunction][$this->nls];
-			} else if ($this->data->pinp[$this->type][$arCallFunction]['*']) {
-				$config->templates[$this->type][$arCallFunction]['*']=$this->data->pinp[$this->type][$arCallFunction]['*'];
+			} else if ($this->data->pinp[$this->type][$arCallFunction]['any']) {
+				$config->templates[$this->type][$arCallFunction]['any']=$this->data->pinp[$this->type][$arCallFunction]['any'];
 			}
 			$arType=get_class($this);
 			while ($arType && !$arCallTemplate) {
 				if ($config->templates[$arType][$arCallFunction][$this->nls]) {
 					$arCallTemplate=$config->templates[$arType][$arCallFunction][$this->nls];
-				} else if ($config->templates[$arType][$arCallFunction]['*']) {
-					$arCallTemplate=$config->templates[$arType][$arCallFunction]['*'];
+				} else if ($config->templates[$arType][$arCallFunction]['any']) {
+					$arCallTemplate=$config->templates[$arType][$arCallFunction]['any'];
 				} else {
 					$arTemp=new $arType();
 					$arType=get_parent_class($arTemp);
@@ -705,6 +724,9 @@ class pobject {
 		} else {
 			error("Widget $wgName not found");
 		}
+		if ($wgResult) {
+			return $wgResult;
+		}
 	}
 
 	function _getdata($varname, $nls="none") { 
@@ -756,5 +778,12 @@ class pobject {
 		$ARBeenHere=Array();
 	}
 
+	function _make_path($path="") {
+		return $this->make_path($path);
+	}
+
+	function _make_url($path="") {
+		return $this->make_url($path);
+	}
 } // end class pobject
 ?>
