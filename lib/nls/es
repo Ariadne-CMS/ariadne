@@ -229,6 +229,8 @@
 	$ARnls["noprofile"]						=	"Sin Perfil";
 	$ARnls["norepeat"]						=	"No repetir";
 	$ARnls["notfound"]						=	"El objeto solicitado no se encuentra en este servidor.";
+	$ARnls["notfoundpath"]						=	"The requested path could not be found.";
+	$ARnls["notfoundtemplate"]					=	"The requested template could not be found.";
 	$ARnls["notime"]						=	"Sin Horario";
 	$ARnls["notodo"]						=	"Sin items por hacer encontrados";
 	$ARnls["objectsoftype"]					=	"Objetos del tipo";

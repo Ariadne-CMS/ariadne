@@ -225,6 +225,8 @@
 	$ARnls["noprofile"]						=	"Brak Profilu";
 	$ARnls["norepeat"]						=	"No repeat";
 	$ARnls["notfound"]						=	"Wskazany obiekt nie może zostać znaleziony na tym serwerze.";
+	$ARnls["notfoundpath"]						=	"The requested path could not be found.";
+	$ARnls["notfoundtemplate"]					=	"The requested template could not be found.";
 	$ARnls["notime"]						=	"Brak wprowadzonego czasu";
 	$ARnls["notodo"]						=	"Nie ma żadnych obiektów ToDo";
 	$ARnls["objectsoftype"]					=	"Obiekty typu";

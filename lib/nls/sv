@@ -232,6 +232,8 @@
 	$ARnls["noprofile"]						=	"Ingen profil";
 	$ARnls["norepeat"]						=	"Repetera ej";
 	$ARnls["notfound"]						=	"Objektet du s&ouml;kte kunde inte hittas p&aring; denna server.";
+	$ARnls["notfoundpath"]						=	"The requested path could not be found.";
+	$ARnls["notfoundtemplate"]					=	"The requested template could not be found.";
 	$ARnls["notime"]						=	"Ingen tid";
 	$ARnls["notodo"]						=	"Inga att g&ouml;ra saker funna";
 	$ARnls["objectsoftype"]					=	"Objekt av typ";

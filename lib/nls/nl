@@ -224,6 +224,8 @@
 	$ARnls["noprofile"]						=	"Geen Profiel";
 	$ARnls["norepeat"]						=	"Niet herhalen";
 	$ARnls["notfound"]						=	"Het door u gevraagde object kon niet gevonden worden op dit systeem.";
+	$ARnls["notfoundpath"]						=	"Het door u gevraagde pad kon niet gevonden worden.";
+	$ARnls["notfoundtemplate"]					=	"Het door u gevraagde template kon niet gevonden worden.";
 	$ARnls["notime"]						=	"Geen Tijd";
 	$ARnls["notodo"]						=	"Niets meer te doen";
 	$ARnls["objectsoftype"]					=	"Objecten van type";

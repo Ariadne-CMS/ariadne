@@ -224,6 +224,8 @@
 	$ARnls["noprofile"]						=	"Bez profila";
 	$ARnls["norepeat"]						=	"Bez ponavljanja";
 	$ARnls["notfound"]						=	"Objekt koji ste tražili ne može se naći na ovom serveru.";
+	$ARnls["notfoundpath"]						=	"The requested path could not be found.";
+	$ARnls["notfoundtemplate"]					=	"The requested template could not be found.";
 	$ARnls["notime"]						=	"Bez vremena";
 	$ARnls["notodo"]						=	"Nema nijednog zapisa u zadaćama";
 	$ARnls["objectsoftype"]					=	"Objekti tipa";
