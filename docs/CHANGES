@@ -18,7 +18,8 @@ New Features:
 	  in a seperate tree in Ariadne that can be used anywhere in your site through a config.ini
 	  template.
 	- Added a PINP XML wrapper module. The parse_curl() method was created
-	  by Lukasz Keler. 
+	  by Lukasz Keler.
+	- The 'open editor' button now has an adjustable text. 
 
 Bugs Fixes:
 	- Fixed a small problem in the nls handling of the new wizards. Sometimes the tab
