@@ -2,7 +2,7 @@
 	/******************************************************************
 	 system.save.grants.phtml                              Muze Ariadne
 	 ------------------------------------------------------------------
-	 Arguments: $delete, $type, $id, $newgrants
+	 Arguments: $delete, $type, $id, $newgrants. $path
 	 Grant needed: config
 	 Global variables: none
 
@@ -192,7 +192,11 @@
 										} else {
 											$this->data->grants[$type][$id][$newgrant]=$granttype;
 										}
-										if ($id==$this->data->login && $type==$this->type) {
+										// check whether the given id and type match the current object
+										if ($id==$this->data->login && 
+											( ( $type=="pgroup" && $this->implements("pgroup") ) ||
+											  ( $type=="puser") ) ) {
+											// they match, so make the changes here, otherwise they will be overwritten
 											$this->data->usergrants[$this->path][$newgrant]=$this->data->grants[$type][$id][$newgrant];
 										} else {
 											$result=@current($this->get($path, "system.save.grants.user.phtml", Array(
