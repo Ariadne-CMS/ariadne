@@ -267,6 +267,11 @@
 		}
 	}
 
+	function explainGrants(obpath) {
+		// show all the grants affecting this user or group
+		var explainwindow=window.open('edit.object.grants.explain.phtml?path='+escape(obpath),'explainwindow','width=400,height=300');
+	}
+
 	var frop=1;
 	function fixIESize() {
 		// silly hack to make IE6 respect sizes and padding of iframes in a fieldset.
@@ -301,7 +306,7 @@
 		<legend>Add or update grants</legend>
 		<div style="margin-bottom: 10px;">
 		<div style="float: right">
-			<input type="button" style="width: 80px;" name="explain" value="Explain">
+			<input type="button" style="width: 80px;" name="explain" value="Explain" onClick="explainGrants(this.form.path.value);">
 		</div>
 		User or group: <?php
 			$wgBrowsePath="/system/groups/";

@@ -1,0 +1,289 @@
+<?php
+	/******************************************************************
+	 edit.object.grants.explain.phtml                      Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: path
+	 Grant needed: config
+	 Global variables: none
+
+	 This template displays the grants for the given user or group
+	 affecting the current path.
+	 
+	 no result
+
+	******************************************************************/
+	if ($this->CheckLogin("config") && $this->CheckConfig()) {
+		// check whether the given path implements puser and perhaps also pgroup
+		$mode='invalid';
+		if ($path && $this->exists($path)) {
+			$user=@current($this->get($path, 'system.get.phtml'));
+			if ($user->implements('pgroup')) {
+				$mode='group';
+			} else if ($user->implements('puser')) {
+				$mode='user';
+			}
+		}
+?>
+<html>
+<head>
+<style>
+	body, form {
+		border: 0px;
+		margin: 0px;
+		padding: 0px;
+		width: auto;
+		overflow: hidden;
+		background-color: threedface;
+	}
+	body {
+		padding: 5px;
+	}
+	body, form, td, input, select {
+		font: menu;
+	}
+	table#grants, td#grantstop, td#grantsbottom {
+		border: 0px;
+		background-color: threedface;
+		margin: 0px;
+		padding: 0px;
+		width: 100%;
+	}
+	table#grantslist {
+		padding: 0px;
+		width: 100%;
+		height: 100%;
+		border-top: 1px solid buttonshadow;
+		border-left: 1px solid buttonshadow;
+		border-right: 1px solid buttonhighlight;
+		border-bottom: 1px solid buttonhighlight;
+	}
+	table th {
+		background-color: buttonface;
+		BORDER-RIGHT: buttonshadow 1px solid; 
+		BORDER-TOP: buttonhighlight 1px solid; 
+		BORDER-LEFT: buttonhighlight 1px solid; 
+		CURSOR: default; 
+		BORDER-BOTTOM: buttonshadow 1px solid;
+		FONT: menu;
+	}
+	table tbody {
+		background-color: white;
+	}
+	table thead {
+		background-color: buttonface;
+	}
+	table td {
+		margin: 0px;
+		border: 0px;
+		PADDING-RIGHT: 5px; 
+		PADDING-LEFT: 5px; 
+		PADDING-BOTTOM: 2px; 
+		PADDING-TOP: 2px
+	}
+	table thead td {
+		BORDER-RIGHT: buttonshadow 1px solid; 
+		BORDER-TOP: buttonhighlight 1px solid; 
+		BORDER-LEFT: buttonhighlight 1px solid; 
+		CURSOR: default; 
+		BORDER-BOTTOM: buttonshadow 1px solid
+	}
+	table tbody tr.selected {
+		background-color: highlight;
+		color: highlighttext;
+	}
+	table tbody tr.selected A {
+		color: highlighttext;
+	}
+	table tbody tr.grey, table tbody tr.grey A {
+		color: #999999;
+	}
+	table td A:hover, table td A:active {
+		background-color: highlight;
+		color: highlighttext;
+	}
+	A {
+		text-decoration: none;
+		color: black;
+	}
+	.wgBrowseInput {
+		width: 125px;
+	}
+	.wgBrowseButton {
+		width: 80px;
+	}
+	A.hasgrants {
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	A.hasnogrants {
+		font-weight: normal;
+	}
+</style>
+<title>Explaining grants for <?php echo $user->data->name; ?></title>
+</head>
+<body>
+<table id="grants" cellspacing="0" cellpadding="0" border="0" height="100%">
+<tr>
+  <td id="grantstop">
+		<table cellspacing="0" id="grantslist">
+		<thead>
+		<tr>
+			<td><?php echo $ARnls["path"]; ?></td>
+			<td>&nbsp;</td><td><?php echo $ARnls["id"]; ?></td>
+			<td><?php echo $ARnls["grants"]; ?></td>
+		</tr>
+		</thead>
+		<tbody>
+		<?php
+
+	function arGetGrantType($value) {
+		if (($value & ARMASKLOCAL) && ($value & ARMASKCHILDREN)) { 
+			$result=""; 
+		} else if ($value & ARMASKLOCAL) {
+			$result="=";
+		} else {
+			$result="&gt;";
+		}
+		return $result;
+	}
+
+	function DisplayGrants($grants) {
+		global $AR, $ARCurrent, $ARnls;
+		if ($grants && is_array($grants)) {
+			ksort($grants);
+			reset($grants);
+			while (list($grant, $modifiers)=each($grants)) {
+				if (!is_array($modifiers)) {
+					echo arGetGrantType($modifiers);
+				}
+				echo $grant." ";
+				if (is_array($modifiers)) {
+					echo "( ";
+					while (list($modifier, $value)=each($modifiers)) {
+						echo arGetGrantType($value);
+						echo $modifier." "; 
+					}
+					echo ")";
+				}
+			}
+		}
+	}
+
+	function explainUser($user, $path) {
+	global $AR;
+
+		debug("pobject: GetValidGrants()","object");
+		if ($user) { 	// login and retrieval of user object 
+			if (!$user->grants[$path]) {
+				$grants=Array();
+				$userpath=$user->FindGrants($path, $grants);
+				$temppath=$userpath;
+				while ($temppath!='/') {
+					$temppath=$user->make_path($temppath."..");
+					$tempgrants=Array();
+					if ($user->GetGrants($temppath, $tempgrants)) {
+						echo '<tr class="grey"><td>'.$temppath.'</td><td>';
+						echo "<img src=\"".$AR->dir->images."icons/puser.gif\"></td>";
+						echo '</td><td>'.$user->data->login.'</td><td>';
+						DisplayGrants($tempgrants);
+						echo '</td></tr>';
+					}
+				}
+				echo '<tr><td>'.$userpath.'</td><td>';
+				echo "<img src=\"".$AR->dir->images."icons/puser.gif\"></td>";
+				echo '</td><td>'.$user->data->login.'</td><td>';
+				DisplayGrants($grants);
+				echo '</td></tr>';
+
+				// if not already done, find all groups of which the user is a member
+				$criteria["members"]["login"]["="]="'".AddSlashes($AR->user->data->login)."'";
+				if (!$user->groups) {
+					$groups=$user->find("/system/groups/", $criteria, "system.get.phtml");
+					if (is_array($groups)) {
+						reset($groups);
+						while (list($key, $group) = each($groups)) {
+							if (is_object($group)) {
+								$user->groups[$group->data->login] = $group;
+							}
+						}
+					}
+					if (!$user->groups["public"]) {
+						if ($public=current($user->get("/system/groups/public/", "system.get.phtml"))) {
+							$user->groups["public"] = $public;
+						}
+					}
+				}
+				if ($user->groups) {
+					/* check for owner grants (set by system.get.config.phtml) */
+					if (is_array($user->ownergrants)) {
+						if (!$user->groups["owner"]) {
+							$user->groups["owner"] = @current($user->get("/system/groups/owner/", "system.get.phtml"));
+						}
+						$user->groups["owner"]->data->usergrants = $user->ownergrants;
+					}
+					reset($user->groups);
+					while (list($key, $group)=each($user->groups)) { 
+						explainGroup($group, $path, $userpath);
+					}
+				}
+			}
+		}
+	}
+
+	function explainGroup($group, $path, $userpath="", $showparents=false) {
+		global $AR;
+		$groupgrants=Array();
+		if (is_object($group)) {
+			$grouppath=$group->FindGrants($path, $groupgrants, $userpath);
+			if ($showparents) {
+				$temppath=$grouppath;
+				while ($temppath!='/') {
+					$temppath=$group->make_path($temppath."..");
+					$tempgrants=Array();
+					if ($group->GetGrants($temppath, $tempgrants)) {
+						echo '<tr class="grey"><td>'.$temppath.'</td><td>';
+						echo "<img src=\"".$AR->dir->images."icons/pgroup.gif\"></td>";
+						echo '</td><td>'.$user->data->login.'</td><td>';
+						DisplayGrants($tempgrants);
+						echo '</td></tr>';
+					}
+				}
+			}
+			echo '<tr><td>'.$grouppath.'</td><td>';
+			echo "<img src=\"".$AR->dir->images."icons/pgroup.gif\"></td>";
+			echo '</td><td>'.$group->data->login.'</td><td>';
+			DisplayGrants($groupgrants);
+			echo '</td></tr>';
+		}
+	}
+
+
+			if ($mode != 'invalid') {
+				if ($mode=='user') {
+					explainUser($user, $this->path);
+				} else {
+					explainGroup($user, $this->path, "", true);
+				}
+			} else {
+				echo '<tr><td colspan="3">'.$path.' is not a user or a group.</td></tr>';
+				// FIXME: nls stuff above
+			}
+		?>
+		<tr height="100%"><td colspan="4"></td></tr>
+		</tbody>
+		</table>
+  </td>
+</tr>
+</tbody>
+<tfoot>
+<tr>
+  <td align="right" height="20"><input type="button" style="width: 75px;" name='ok' value="&nbsp;Ok&nbsp;" onClick="window.close();"></td>
+</tr>
+</tfoot>
+</table>
+</form>
+</body>
+</html>
+<?php 
+	}
+?>
