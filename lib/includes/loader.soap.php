@@ -53,6 +53,46 @@
 		debug("error: '$text'");
 	}
 
+
+	function ldRegisterFile($field = "file", &$error) {
+	global $ARnls, $store, $arguments, $HTTP_POST_VARS;
+		debug("ldRegisterFile([$field], [error])");
+
+		require_once($store->code."modules/mod_mimemagic.php");
+
+		$result = false;
+		$file_data = $arguments[$field];
+		if ($file_data) {
+			$file_data = base64_decode($file_data);
+			if (!$file_data) {
+				$error = "could not base64_decode file '$field'";
+			} else {
+				$file_temp = tempnam($store->files."temp", "upload");
+				$fp = fopen($file_temp, "wb+");
+				if (!$fp) {
+					$error = "could not write file '$field'";
+				} else {
+					debug("	file_data (".$file_data.")");
+					fwrite($fp, $file_data, strlen($file_data));
+					fclose($fp);
+
+					$file_type = get_mime_type($file_temp);
+
+					$HTTP_POST_VARS[$field] = $field;
+					$HTTP_POST_VARS[$field."_temp"] = substr($file_temp, strlen($store->files."temp/"));
+					$HTTP_POST_VARS[$field."_size"] = filesize($file_temp);
+					$HTTP_POST_VARS[$field."_type"] = $file_type;
+					debug(" http_post_vars (".serialize($HTTP_POST_VARS).")");
+					$result = true;
+				}
+			}
+		}
+		debug("ldRegisterFile[end] ($result)");
+		return $result;
+	}
+
+
+
 	function ldObjectNotFound($requestedpath, $requestedtemplate) {
 	global $SOAP_Fault;
 		debug("soap::ldObjectNotFound($requestedpath, $requestedtemplate)", "loader");
