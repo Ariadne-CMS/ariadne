@@ -136,12 +136,17 @@
   }
 
   function loadUser(type, id) {
-	parent.loadUser(type, id, id2path[type][id]);
+	parent.loadUser(type, id, grant_strings[type][id]);
   }
 
   id2path = new Array();
   id2path['pgroup'] = new Array();
   id2path['puser'] = new Array();
+
+  grant_strings = new Array();
+  grant_strings['pgroup'] = new Array();
+  grant_strings['puser'] = new Array();
+  
 <?php
     if (is_array($data->config->grants)) {
 		foreach ($data->config->grants as $type => $grantslist) {
@@ -208,6 +213,7 @@
 				if ($grantslist[$type] && is_array($grantslist[$type])) {
 					ksort($grantslist[$type]);
 					while (list($id, $grants)=each($grantslist[$type])) { // path was login en is weer login
+						$grant_string = "";
 						if (!$ARCurrent->donelist[$type][$id]) {
 							$ARCurrent->donelist[$type][$id]=true;
  				        	if ($ARCurrent->oddline=($ARCurrent->oddline+1)%2) {
@@ -264,18 +270,24 @@
 										}
 										$grant_display = "[$grant]";
 									}
+
+									$grant_string .= "[$grant] ";
+
 									if (!$grey) {
 										echo "<a href=\"javascript:editGrant('$type', '$id', '$grant');\">$grant_display";
 									} else {
 										echo $grant;
 									} 
 									if (is_array($modifiers)) {
+										$grant_string .= "( ";
 										echo "( ";
 										while (list($modifier, $value)=each($modifiers)) {
 											echo arGetGrantType($value);
 											echo $modifier." "; 
+											$grant_string .= arGetGrantType($value).$modifier." ";
 										}
-										echo ")";
+										echo ") ";
+										$grant_string .= ") ";
 									}
 									if (!$grey) {
 										echo "</a> ";
@@ -283,7 +295,9 @@
 										echo " ";
 									}
 								}
+								$grant_string .= " ";
 							}
+							echo "<script> grant_strings['$type']['$id']='$grant_string'; </script>\n";
 							echo "</td></tr>";
 						}
 					}

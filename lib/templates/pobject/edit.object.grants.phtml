@@ -202,13 +202,10 @@
 		setGrantOptions();
 	}
 
-	function loadUser(type, id, path) {
+	function loadUser(type, id, grant_string) {
 		var form = document.forms.grantsform;
-		if (!path) {
-			form['path'].value = grantslist.id2path[type][id];
-		} else {
-			form['path'].value = path;
-		}
+		form['path'].value = grantslist.id2path[type][id];
+		form['newgrants'].value = grant_string;
 	}
 
 	function setGrantOptions() {
