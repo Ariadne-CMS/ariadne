@@ -11,6 +11,10 @@
 	Returns true on success , false on an error.
   ******************************************************************/
   if ($this->CheckLogin("edit")) {
+	if ($ARCurrent->options["without_grants"]) {
+		$keep_grants	= $this->data->grants;
+		$keep_usergrants = $this->data->usergrants;
+	}
 	$keep_templates = $this->data->templates;
 	$keep_pinp		= $this->data->pinp;
 
@@ -19,6 +23,8 @@
 		unset($newObject->data->usergrants);
 	}
 	$this->data=$newObject->data;
+	$this->data->usergrants=$keep_usergrants;
+	$this->data->grants=$keep_grants;
 	$this->data->templates=$keep_templates;
 	$this->data->pinp=$keep_pinp;
 	$this->priority=$newObject->priority;
