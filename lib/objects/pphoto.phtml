@@ -324,9 +324,9 @@ class pphoto extends pfile { // pphoto class definition
 		  $gravcmd = "-gravity $gravity ";
 		}
 		if($rotate!=0) {
-		  $rotcmd = "rotate $rotate";
+		  $rotcmd = "-rotate $rotate";
 		}
-		$ARConfig->photoStack[$this->id][]=" -pointsize $pointsize -fill $color $gravcmd -draw '$rotcmd text $x,$y \"".addcslashes($text,ARESCAPE)."\"'";
+		$ARConfig->photoStack[$this->id][]=" -pointsize $pointsize -fill $color $gravcmd $rotcmd -draw \"text $x,$y '".addcslashes($text,ARESCAPE)."'\"";
 		return true;
 	}
 
@@ -401,7 +401,7 @@ class pphoto extends pfile { // pphoto class definition
 						$exec_string .= " ".$tmpsrc;
 						system($exec_string,$failed);
 						debug("executing ($exec_string)");
-						// echo( $exec_string."<br>");
+						//echo( $exec_string."<br>");
 					}
 				}
 				if (!$failed) {
