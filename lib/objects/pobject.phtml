@@ -74,7 +74,6 @@ class pobject extends object { // pobject class definition
 		if (!$arCallFunction) {
 			$arCallFunction="view.html";
 		}
-		
 		// clear previous results
 		unset($ARCurrent->arResult);
 
@@ -133,6 +132,7 @@ class pobject extends object { // pobject class definition
 		} else {
 			$arType=$this->type;
 		}
+
 		if ($arCallFunction[0] === "#") {
 			$ARCurrent->arCallClassTemplate = true;
 			$arCallFunction = substr($arCallFunction, 1);
@@ -148,6 +148,7 @@ class pobject extends object { // pobject class definition
 			if (file_exists($arCallTemplate)) {
 				// template found
 				debug("pobject::call template($arCallTemplate)", "all");
+				$arCallFunction = $arCallFunctionOrig;
 				include($arCallTemplate);
 				debug("pobject::call end template", "all");
 				break;

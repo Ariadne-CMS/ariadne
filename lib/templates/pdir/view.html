@@ -19,6 +19,6 @@
 		$ARCurrent->cachepage=$this->path.$arCallFunction;
 		$this->get("index.html/","view.html", $arCallArgs);
 	} else {
-		$this->call("pobject::view.html", $arCallArgs);
+		$this->CheckConfig($arCallFunction, $arCallArgs);
 	}
 ?>
