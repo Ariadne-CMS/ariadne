@@ -1392,17 +1392,27 @@ class pobject extends object {
 		return $this->savecache($time);
 	}
 
-	function _currentsite() {
+	function currentsite() {
 		global $ARConfig;
-		$config=$ARConfig->cache[$this->path];
+		if (!$config=$ARConfig->cache[$this->path]) {
+			$config=$ARConfig->cache[$this->parent];
+		}
 		return $config->site;
 	}
 
-	function _parentsite($site) {
+	function parentsite($site) {
 		global $ARConfig;
 		$path=$this->store->make_path($site, "..");
 		$config=$ARConfig->cache[$path];
 		return $config->site;
+	}
+
+	function _currentsite() {
+		return $this->currentsite();
+	}
+
+	function _parentsite($site) {
+		return $this->parentsite($site);
 	}
 
 	function _checkgrant($grant, $modifier=ARTHISTYPE) {
