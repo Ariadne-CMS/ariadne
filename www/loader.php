@@ -135,11 +135,10 @@
 			($HTTP_SERVER_VARS["REQUEST_METHOD"]!="POST")) {
 
 			$ctime=filectime($cachedimage);
-			if (strtotime($HTTP_IF_MODIFIED_SINCE) >= $ctime) {
+			if ($HTTP_IF_MODIFIED_SINCE && (strtotime($HTTP_IF_MODIFIED_SINCE) >= $ctime)) {
 				// the mtime is used as expiration time, the ctime is the correct last modification time.
 				// as an object clears the cache upon a save.
 				ldHeader("HTTP/1.1 304 Not Modified");
-				// echo "not modified\n";
 			} else {
 				// now send caching headers too, maximum 1 hour client cache.
 				// FIXME: make this configurable. per directory? as a fraction?
