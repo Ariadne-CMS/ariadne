@@ -8,6 +8,26 @@
 	******************************************************************/
 
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+		$customoffset=0;
+		$configcache=$ARConfig->cache[$this->path];
+		if ($configcache->custom) {
+			while (list($key, $definition)=each($configcache->custom)) {
+				if (($definition["type"]==$this->type) ||
+					($definition["inherit"] && ($this->implements($definition["type"])))) {
+					$customdata=true;
+					$customoffset=1;
+					break;
+				}
+			}
+		}
+		if (count($ARConfig->nls->list)>1) { // more than one language available
+			$languages=true;
+			$saveoffset=1;
+		} else {
+			$saveoffset=0;
+		}
+		$custom="edit.object.data.custom.phtml";
+
 		include($this->store->code."widgets/wizard/code.php");
 
 		$name="edit.object.data.name.phtml";
@@ -21,27 +41,42 @@
 		$wgWizFlow[$i]["title"]=$ARnls["name"];
 		$wgWizFlow[$i]["template"]=$name;
 		$wgWizFlow[$i]["next"]=$i+1; 
+			$wgWizFlow[$i]["save"]=$i+3+$saveoffset+$customoffset;
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["address"];
 		$wgWizFlow[$i]["template"]=$address;
 		$wgWizFlow[$i]["prev"]=$i-1;
 		$wgWizFlow[$i]["next"]=$i+1; 
+		$wgWizFlow[$i]["save"]=$i+2+$saveoffset+$customoffset;
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["contactinformation"];
 		$wgWizFlow[$i]["template"]=$contact;
 		$wgWizFlow[$i]["prev"]=$i-1;
-		if (count($ARConfig->nls->list)>1) { // just one language available
+		if ($customdata) {
+			$wgWizFlow[$i]["next"]=$i+1;
+			$wgWizFlow[$i]["save"]=$i+2+$saveoffset;
+			$i++;
+			$wgWizFlow[$i]["title"]=$ARnls["customdata"];
+			$wgWizFlow[$i]["template"]=$custom;
+			$wgWizFlow[$i]["prev"]=$i-1;
+		}
+		if ($languages) { // more than one language available
 			$wgWizFlow[$i]["next"]=$i+1;
 			$wgWizFlow[$i]["save"]=$i+2;
 			$i++;
 			$wgWizFlow[$i]["title"]=$ARnls["language"];
 			$wgWizFlow[$i]["template"]=$language;
-			$wgWizFlow[$i]["next"]=$i-3;
-			$wgWizFlow[$i]["prev"]=$i-3;
+			if ($customdata) {
+				$wgWizFlow[$i]["next"]=$i-4;
+			} else {
+				$wgWizFlow[$i]["next"]=$i-3;
+			}
+			$wgWizFlow[$i]["prev"]=$i-1;
 			$wgWizFlow[$i]["save"]=$i+1;
 		} else {
 			$wgWizFlow[$i]["save"]=$i+1;
 		}
+
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["save"];
 		$wgWizFlow[$i]["template"]=$finish;

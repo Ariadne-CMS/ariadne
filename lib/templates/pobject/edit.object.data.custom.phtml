@@ -1,0 +1,203 @@
+<?php
+	/******************************************************************
+	 edit.object.data.custom.phtml                    Muze Ariadne v2.0
+	 ------------------------------------------------------------------
+	 Grant needed: read
+	 Global variables: none
+
+	 This template displays the custom data entry step for creating or 
+     editing an object. The template is meant to be used as part of a 
+     wizard.
+
+	 no result.
+
+	******************************************************************/
+	if ($this->CheckSilent("read") && $this->CheckConfig()) {
+		$arLanguage=$this->getdata("arLanguage","none");
+		if (!$arLanguage) {
+		 $arLanguage=$ARConfig->nls->default;
+		}
+		$selectednls=$arLanguage;
+		$selectedlanguage=$ARConfig->nls->list[$arLanguage];
+		$flagsrc=$AR->dir->images."nls/small/$selectednls.gif";
+		$flag="<img src=\"$flagsrc\" alt=\"$selectedlanguage\">";
+		$any=$AR->dir->images."nls/small/any.gif";
+?>
+<script>
+
+	CustomList=new Array();
+	CustomData=new Array();
+	CustomData['<?php echo $selectednls; ?>']=new Array;
+	CustomData['none']=new Array;
+	current_node=0;
+	Started=false;
+
+	function init() {
+		dest=document.wgWizForm.fieldname.options;
+		<?php
+			$customdata=$this->getdata("customdata","none");
+			@parse_str($customdata);
+			if (is_array($customdata)) {
+				while (list($cdnls, $cdvalues)=each($customdata)) {
+					echo "	CustomData['".AddSlashes($cdnls)."']=new Array();\n";
+					while (list($cdname, $cdvalue)=each($cdvalues)) {
+						echo "	CustomData['".AddSlashes($cdnls)."']['".Addslashes($cdname)."']='".AddSlashes($cdvalue)."';\n";
+					}
+				}
+			}
+			$configcache=$ARConfig->cache[$this->path];
+			if (is_array($configcache->custom)) {
+				while (list($name, $custom)=each($configcache->custom)) {
+					if (($custom["type"]==$this->type) || 
+							($custom["inherit"] && 
+								($this->implements($custom["type"]))
+							)
+						) {
+						if ($custom["nls"]=="true") {
+							$showdata=$customdata[$selectednls][$name];
+						} else {
+							$showdata=$customdata['none'][$name];
+						}
+						echo "		dest[dest.length]=new Option('".AddSlashes($name)."','".AddSlashes($name)."');\n";
+						echo "		CustomList[CustomList.length]=new custom_node(\n";
+						echo "			'".AddSlashes($custom["type"])."',";
+						if ($custom["inherit"]=="true") {
+							echo "true";
+						} else {
+							echo "false";
+						}
+						echo ",\n";
+						echo "			'".AddSlashes($name)."','".AddSlashes($custom["size"])."',\n";
+						echo "			'".AddSlashes($custom["grant"])."',";
+						if ($custom["nls"]=="true") {
+							echo "true";
+						} else {
+							echo "false";
+						}
+						echo ",\n";
+						echo "			'".AddSlashes($custom["check"])."');\n";
+					}
+				}
+			}
+		?>
+		if (document.wgWizForm['fieldname'].options.length>0) {
+			document.wgWizForm['fieldname'].options[0].selected=true;
+			show();
+		}
+		document.wgWizForm['fieldname'].focus();
+	}
+
+	function save() {
+		if (message=updateCustom(document.wgWizForm.showcustomdata)) {
+			alert(message);
+			return false;
+		} else {
+			savestring='';
+			for (nls in CustomData) {
+				data=CustomData[nls];
+				for (name in data) {
+					savestring+='&customdata['+escape(nls)+']['+escape(name)+']='+escape(data[name]);
+				}
+			}
+			document.wgWizForm.customdata.value=savestring;
+			return true;
+		}
+	}
+
+	function show() {
+		form=document.wgWizForm;
+		if (form.fieldname.options.length>0) {
+			if (Started && (message=updateCustom(form.showcustomdata))) {
+				alert(message);
+				form.fieldname.selectedIndex=current_node;
+				form.showcustomdata.focus();
+			} else {
+				id=form.fieldname.selectedIndex;
+				current_node=id;
+				fielddata=CustomList[id];
+				if (fielddata.nls) {
+					nls='<?php echo $selectednls; ?>';
+					document.flagimage.src='<?php echo $flagsrc; ?>';
+				} else {
+					nls='none';
+					document.flagimage.src='<?php echo $any; ?>';
+				}
+				if (CustomData[nls] && CustomData[nls][fielddata.name]) {
+					newvalue=CustomData[nls][fielddata.name];
+				} else {
+					newvalue='';
+				}
+				form.showcustomdata.value=newvalue;
+			}
+		}
+		Started=true;
+	}
+
+	function custom_node(type, inherit, name, size, grant, nls, check) {
+		this.name=name;
+		this.type=type;
+		this.inherit=inherit;
+		this.size=size;
+		this.grant=grant;
+		this.nls=nls;
+		this.check=check;
+	}
+
+	function updateCustom(element, byMouseDown) {
+		result=false;
+		fields=document.wgWizForm.fieldname;
+		id=current_node; //fields.selectedIndex;
+		if (fielddata=CustomList[id]) {
+			data=new String(element.value);
+			returnfocus=false;
+			if (data.length>fielddata.size) {
+				result=fielddata.name+': <?php echo $ARnls["err:maxsize"]; ?> '+data.length+' ('+fielddata.size+')';
+			} else if (fielddata.check) {
+				if (!data.match(fielddata.check)) {
+					result=fielddata.name+': <?php echo $ARnls["err:invalidcontent"]; ?>';
+				} else if (fielddata.nls) {
+					CustomData['<?php echo $selectednls; ?>'][fielddata.name]=data;
+				} else {
+					CustomData['none'][fielddata.name]=data;
+				}
+			}
+		} else {
+			alert('no fielddata: '+id);
+		}
+		return result;
+	}
+
+</script>
+<style>
+.nameselect {
+	width: 125px;
+}
+</style>
+<input type="hidden" name="customdata">
+<table border="0" width="90%">
+<tr>
+	<td>
+		<fieldset>
+		<legend><?php echo $ARnls["customdata"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+			<table border="0" width="100%" align="center" cellspacing="4" vspace="10" hspace="10">
+			<tr>
+				<td align="center" valign="top">
+					<select name="fieldname" size="10" width="16" class="nameselect" onChange="show();">
+					</select>
+				</td><td valign="top" style="width: 250px;">
+					<img name="flagimage" src="<?php echo $any; ?>" alt="" align="right"><br clear="all">
+					<textarea name="showcustomdata" rows="9" cols="20"></textarea>
+    			</td>
+			</tr>
+		</table>
+		</fieldset>
+	</td>
+</tr>
+</table>
+<script>
+	document.wgWizForm.wgWizSubmitHandler=save;
+	window.onload=init;
+</script>
+<?php
+	}
+?>

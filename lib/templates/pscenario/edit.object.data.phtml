@@ -1,74 +1,100 @@
 <?php
-  /******************************************************************
-   edit.object.data.phtml			   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
+	/******************************************************************
+	 edit.object.data.phtml                                Muze Ariadne
+	 ------------------------------------------------------------------
 
-   No result.
+	 No result.
 
-  ******************************************************************/
+	******************************************************************/
 
-  if ($this->CheckLogin("edit",$this->type) && $this->CheckConfig()) {
-    include($this->store->code."widgets/wizard/code.php");
+	if ($this->CheckLogin("edit",$this->type) && $this->CheckConfig()) {
+		$customoffset=0;
+		$configcache=$ARConfig->cache[$this->path];
+		if ($configcache->custom) {
+			while (list($key, $definition)=each($configcache->custom)) {
+				if (($definition["type"]==$this->type) ||
+					($definition["inherit"] && ($this->implements($definition["type"])))) {
+					$customdata=true;
+					$customoffset=1;
+					break;
+				}
+			}
+		}
+		if (count($ARConfig->nls->list)>1) { // more than one language available
+			$languages=true;
+			$saveoffset=1;
+		} else {
+			$saveoffset=0;
+		}
+		$custom="edit.object.data.custom.phtml";
 
-    $summary="edit.object.data.form.phtml";
-	$displays="edit.object.data.displays.phtml";
-    $language="edit.object.language.phtml";
-    $save="edit.object.data.save.phtml";
-   
-    $wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
-    $wgWizList[1]="summary";
-    $wgWizFlow["summary"]["title"]=$ARnls["data"];
-    $wgWizFlow["summary"]["template"]=$summary;
-    $wgWizFlow["summary"]["next"]="displays";
-    $wgWizFlow["summary"]["save"]="save";
-    $last="summary";
-    if (count($ARConfig->nls->list)>1) { // more than one language available
-      $languageselect=true;
-    }
-    $wgWizList[]="displays";
-    $wgWizFlow["displays"]["title"]=$ARnls["display"];
-    $wgWizFlow["displays"]["template"]=$displays;
-    $wgWizFlow["displays"]["prev"]="summary";
-    if ($languageselect) {
-      $wgWizFlow["displays"]["next"]="language";      
-    } else {
-      $last="displays";
-    }
-    $wgWizFlow["displays"]["save"]="save";
+		include($this->store->code."widgets/wizard/code.php");
 
-    if ($languageselect) {
-      $wgWizList[]="language";
-      $wgWizFlow["language"]["title"]=$ARnls["language"];
-      $wgWizFlow["language"]["template"]=$language;
-      $wgWizFlow["language"]["next"]="summary";
-      $wgWizFlow["language"]["prev"]="displays"; // toch??
-      $wgWizFlow["language"]["save"]="save";
-      $last="language";
-    }
+		$summary="edit.object.data.form.phtml";
+		$displays="edit.object.data.displays.phtml";
+		$language="edit.object.language.phtml";
+		$save="edit.object.data.save.phtml";
+	 
+		$wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
 
-    $wgWizList[]="save";
-    $wgWizFlow["save"]["title"]=$ARnls["save"];
-    $wgWizFlow["save"]["template"]=$save;
-    $wgWizFlow["save"]["back"]=$last;
-    
-    $arLanguage=$this->getdata("arLanguage","none");
-    if ($wgWizFlow[0]["current"]=="language") { // =edit.object.language.phtml
-      $arControl=$this->getdata("wgWizControl","none");
-      if ($arControl==$ARnls["prev"]) { // if previous selected, ignore the language select list.
-        $arLanguage=$this->getdata("arPrevLanguage","none");
-        $ARCurrent->arLanguage=$arLanguage;
-      }
-    }
-    if (!$arLanguage) { // language select hasn't been done yet, so start with default language
-      $arLanguage=$ARConfig->nls->default;
-      $ARCurrent->arLanguage=$arLanguage;
-    }
-    global $HTTP_POST_VARS;
-    $HTTP_POST_VARS["arLanguage"]=$arLanguage;
-    $wgWizControl=$this->getdata("wgWizControl","none");
-    $wgWizCurrent=$this->getdata("wgWizCurrent","none");
-    $result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
-    $wgWizTitle=$ARnls["edit"]." ".$result[0];    
-    include($this->store->code."widgets/wizard/classic.html");
-  }
+		$i++;
+		$wgWizFlow[$i]["title"]=$ARnls["data"];
+		$wgWizFlow[$i]["template"]=$summary;
+		$wgWizFlow[$i]["next"]=$i+1;
+		$wgWizFlow[$i]["save"]=$i+2+$saveoffset+$customoffset;
+
+		$i++;
+		$wgWizFlow[$i]["title"]=$ARnls["display"];
+		$wgWizFlow[$i]["template"]=$displays;
+		$wgWizFlow[$i]["prev"]=$i-1;
+		if ($customdata) {
+			$wgWizFlow[$i]["next"]=$i+1;
+			$wgWizFlow[$i]["save"]=$i+2+$saveoffset;
+			$i++;
+			$wgWizFlow[$i]["title"]=$ARnls["customdata"];
+			$wgWizFlow[$i]["template"]=$custom;
+			$wgWizFlow[$i]["prev"]=$i-1;
+		}
+		if ($languages) { // more than one language available
+			$wgWizFlow[$i]["next"]=$i+1;
+			$wgWizFlow[$i]["save"]=$i+2;
+			$i++;
+			$wgWizFlow[$i]["title"]=$ARnls["language"];
+			$wgWizFlow[$i]["template"]=$language;
+			if ($customdata) {
+				$wgWizFlow[$i]["next"]=$i-2;
+			} else {
+				$wgWizFlow[$i]["next"]=$i-1;
+			}
+			$wgWizFlow[$i]["prev"]=$i-1;
+			$wgWizFlow[$i]["save"]=$i+1;
+		} else {
+			$wgWizFlow[$i]["save"]=$i+1;
+		}
+
+		$i++;
+		$wgWizFlow[$i]["title"]=$ARnls["save"];
+		$wgWizFlow[$i]["template"]=$save;
+		$wgWizFlow[$i]["back"]=$i-1;
+		
+		$arLanguage=$this->getdata("arLanguage","none");
+		if ($wgWizFlow[0]["current"]=="language") { // =edit.object.language.phtml
+			$arControl=$this->getdata("wgWizControl","none");
+			if ($arControl==$ARnls["prev"]) { // if previous selected, ignore the language select list.
+				$arLanguage=$this->getdata("arPrevLanguage","none");
+				$ARCurrent->arLanguage=$arLanguage;
+			}
+		}
+		if (!$arLanguage) { // language select hasn't been done yet, so start with default language
+			$arLanguage=$ARConfig->nls->default;
+			$ARCurrent->arLanguage=$arLanguage;
+		}
+		global $HTTP_POST_VARS;
+		$HTTP_POST_VARS["arLanguage"]=$arLanguage;
+		$wgWizControl=$this->getdata("wgWizControl","none");
+		$wgWizCurrent=$this->getdata("wgWizCurrent","none");
+		$result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
+		$wgWizTitle=$ARnls["edit"]." ".$result[0];		
+		include($this->store->code."widgets/wizard/classic.html");
+	}
 ?>

@@ -1,46 +1,68 @@
 <?php
-  /******************************************************************
-   object.new.phtml				   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
+	/******************************************************************
+	 object.new.flow.phtml                                 Muze Ariadne
+	 ------------------------------------------------------------------
 
-   No result.
+	 No result.
 
-  ******************************************************************/
+	******************************************************************/
 
-  $start="object.new.filename.phtml";
-  $step1="edit.object.data.form.phtml";
-  $finish="edit.object.data.save.phtml";
+	$configcache=$ARConfig->cache[$this->parent];
+	if ($configcache->custom) {
+		reset($configcache->custom);
+		while (list($key, $definition)=each($configcache->custom)) {
+			if (($definition["type"]==$this->type) ||
+				($definition["inherit"] && ($this->implements($definition["type"])))) {
+				$customdata=true;
+				break;
+			}
+		}
+	}
+	$custom="edit.object.data.custom.phtml";
+
+	$start="object.new.filename.phtml";
+	$step1="edit.object.data.form.phtml";
+	$finish="edit.object.data.save.phtml";
  
-  $arFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
-  $i++;
-  $arFlow[$i]["title"]=$ARnls["login"];
-  $arFlow[$i]["template"]=$start;
-  $arFlow[$i]["next"]=$i+1; 
-  $i++;
-  $arFlow[$i]["title"]=$ARnls["data"];
-  $arFlow[$i]["template"]=$step1;
-  $arFlow[$i]["prev"]=$i-1;
-  $arFlow[$i]["save"]=$i+1;
-  $i++;
-  $arFlow[$i]["title"]=$ARnls["save"];
-  $arFlow[$i]["template"]=$finish;
-  $arFlow[$i]["back"]=$i-1;
-  
-  $wgWizCurrent=$this->getdata("wgWizCurrent","none");
-  $wgWizControl=$this->getdata("wgWizControl","none");
-  if (($wgWizCurrent==1) && ($wgWizControl==$ARnls["next"])) {
-    $arNewFilename=$this->getdata("arNewFilename","none");
-    if (!$arNewFilename) {
-      $arFlow[0]["error"]=$ARnls["err:mustenterlogin"];
-      $ARCurrent->wgWizNextStep=1;
-    } else {
-      $criteria["login"]["value"]["="]="'".AddSlashes($arNewFilename)."'";
-      $result=$this->find("/system/users/", $criteria, "system.get.phtml");
-      if ($result) {
-        $arFlow[0]["error"]=sprintf($ARnls["err:loginexists"],$newfilename);
-        $ARCurrent->wgWizNextStep=1;
-      }
-    }  
-  }
-  $arResult=$arFlow;
+	$arFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["login"];
+	$arFlow[$i]["template"]=$start;
+	$arFlow[$i]["next"]=$i+1; 
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["data"];
+	$arFlow[$i]["template"]=$step1;
+	$arFlow[$i]["prev"]=$i-1;
+
+	if ($customdata) {
+		$arFlow[$i]["next"]=$i+1;
+		$arFlow[$i]["save"]=$i+2;
+		$i++;
+		$arFlow[$i]["title"]=$ARnls["customdata"];
+		$arFlow[$i]["template"]=$custom;
+		$arFlow[$i]["prev"]=$i-1;
+	}
+	$arFlow[$i]["save"]=$i+1;
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["save"];
+	$arFlow[$i]["template"]=$finish;
+	$arFlow[$i]["back"]=$i-1;
+	
+	$wgWizCurrent=$this->getdata("wgWizCurrent","none");
+	$wgWizControl=$this->getdata("wgWizControl","none");
+	if (($wgWizCurrent==1) && ($wgWizControl==$ARnls["next"])) {
+		$arNewFilename=$this->getdata("arNewFilename","none");
+		if (!$arNewFilename) {
+			$arFlow[0]["error"]=$ARnls["err:mustenterlogin"];
+			$ARCurrent->wgWizNextStep=1;
+		} else {
+			$criteria["login"]["value"]["="]="'".AddSlashes($arNewFilename)."'";
+			$result=$this->find("/system/users/", $criteria, "system.get.phtml");
+			if ($result) {
+				$arFlow[0]["error"]=sprintf($ARnls["err:loginexists"],$newfilename);
+				$ARCurrent->wgWizNextStep=1;
+			}
+		}	
+	}
+	$arResult=$arFlow;
 ?>

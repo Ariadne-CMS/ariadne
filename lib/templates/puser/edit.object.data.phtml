@@ -8,6 +8,20 @@
 	******************************************************************/
 
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+		$customoffset=0;
+		$configcache=$ARConfig->cache[$this->path];
+		if ($configcache->custom) {
+			while (list($key, $definition)=each($configcache->custom)) {
+				if (($definition["type"]==$this->type) ||
+					($definition["inherit"] && ($this->implements($definition["type"])))) {
+					$customdata=true;
+					$customoffset=1;
+					break;
+				}
+			}
+		}
+		$custom="edit.object.data.custom.phtml";
+
 		include($this->store->code."widgets/wizard/code.php");
 
 		$start="edit.object.data.form.phtml";
@@ -20,18 +34,22 @@
 		$wgWizFlow[$i]["template"]=$start;
 		if ($this->CheckSilent("config")) {
 			$wgWizFlow[$i]["next"]=$i+1;
-			$wgWizFlow[$i]["save"]=$i+2;
+			$wgWizFlow[$i]["save"]=$i+2+$customoffset;
 			$i++;
 			$wgWizFlow[$i]["title"]=$ARnls["groups"];
 			$wgWizFlow[$i]["template"]=$step1;
 			$wgWizFlow[$i]["prev"]=$i-1;
-			$wgWizFlow[$i]["save"]=$i+1;
-			$i++;
-		} else {
-			$wgWizFlow[$i]["save"]=$i+1;
-			$i++;
-
 		}
+		if ($customdata) {
+			$wgWizFlow[$i]["next"]=$i+1;
+			$wgWizFlow[$i]["save"]=$i+2;
+			$i++;
+			$wgWizFlow[$i]["title"]=$ARnls["customdata"];
+			$wgWizFlow[$i]["template"]=$custom;
+			$wgWizFlow[$i]["prev"]=$i-1;
+		}
+		$wgWizFlow[$i]["save"]=$i+1;
+		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["save"];
 		$wgWizFlow[$i]["template"]=$finish;
 		$wgWizFlow[$i]["back"]=$i-1;

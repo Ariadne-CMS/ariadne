@@ -8,13 +8,33 @@
   ******************************************************************/
 	global $HTTP_POST_VARS, $HTTP_POST_FILES;
 
+	$configcache=$ARConfig->cache[$this->parent];
+	$customoffset=0;
+	if ($configcache->custom) {
+		reset($configcache->custom);
+		while (list($key, $definition)=each($configcache->custom)) {
+			if (($definition["type"]==$this->type) ||
+				($definition["inherit"] && ($this->implements($definition["type"])))) {
+				$customdata=true;
+				$customoffset=1;
+				break;
+			}
+		}
+	}
+	if (count($ARConfig->nls->list)>1) { // more than one language available
+		$languages=true;
+		$saveoffset=1;
+	} else {
+		$saveoffset=0;
+	}
+	
+	$custom="edit.object.data.custom.phtml";
+
 	$filename="object.new.filename.phtml";
 	$summary="edit.object.data.form.phtml";
 	$conversion="edit.object.data.thumb.phtml";
 	$language="edit.object.language.phtml";
 	$finish="edit.object.data.save.phtml";
-
-
  
 	$arFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
 
@@ -24,38 +44,40 @@
 	$arFlow[$i]["prev"]=$i-1;
 	$arFlow[$i]["next"]=$i+1; 
 
-	if (count($ARConfig->nls->list)>1) {
-		$languageselect=true;
-	} else {
-		$languageselect=false;
-	}
-
 	$i++;
 	$arFlow[$i]["title"]=$ARnls["data"];
 	$arFlow[$i]["template"]=$summary;
 	$arFlow[$i]["prev"]=$i-1;
 	$arFlow[$i]["next"]=$i+1; 
-    if (!$languageselect) {
-		$arFlow[$i]["save"]=$i+2;
-	} else {
- 		$arFlow[$i]["save"]=$i+3;
-	}
+	$arFlow[$i]["save"]=$i+2+$saveoffset+$customoffset;
 
 	$i++;
 	$arFlow[$i]["title"]=$ARnls["thumbnail"];
 	$arFlow[$i]["template"]=$conversion;
 	$arFlow[$i]["prev"]=$i-1;
 
-	if (!$languageselect) {
-		$arFlow[$i]["save"]=$i+1;
-	} else {
+	if ($customdata) {
 		$arFlow[$i]["next"]=$i+1;
-		$arFlow[$i]["save"]=$i+2; 
+		$arFlow[$i]["save"]=$i+2+$saveoffset;
+		$i++;
+		$arFlow[$i]["title"]=$ARnls["customdata"];
+		$arFlow[$i]["template"]=$custom;
+		$arFlow[$i]["prev"]=$i-1;
+	}
+	if ($languages) { // more than one language available
+		$arFlow[$i]["next"]=$i+1;
+		$arFlow[$i]["save"]=$i+2;
 		$i++;
 		$arFlow[$i]["title"]=$ARnls["language"];
 		$arFlow[$i]["template"]=$language;
-		$arFlow[$i]["next"]=$i-2;
-		$arFlow[$i]["prev"]=$i-2;
+		if ($customdata) {
+			$arFlow[$i]["next"]=$i-3;
+		} else {
+			$arFlow[$i]["next"]=$i-2;
+		}
+		$arFlow[$i]["prev"]=$i-1;
+		$arFlow[$i]["save"]=$i+1;
+	} else {
 		$arFlow[$i]["save"]=$i+1;
 	}
 
