@@ -36,6 +36,8 @@ Bugs fixed:
 	- Fixed a problem with saving ppage (and deratives) objects over
 	  existing objects.
 	- Rename now unlocks() the renamed object.
+	- Removed all occurances of $AR->host which caused Ariadne not to
+	  work via some proxy configurations
 
 Changes in Ariadne since version 2.1.3
 
