@@ -16,7 +16,7 @@ class session {
 				// 3 bytes id
 				$genid=chr(rand(1,255)).chr(rand(1,255)).chr(rand(1,255));
 				// replace all slashes with "0" 
-				$id=str_replace("/","0",base64_encode($genid));
+				$id=strtr(base64_encode($genid),"/+","01");
 			} while ($this->sessionstore->exists("/".$id."/"));
 			// save new session object
 			$this->data=new object;
