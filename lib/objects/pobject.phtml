@@ -935,25 +935,28 @@ class pobject extends object { // pobject class definition
 		return $result;
 	}
 
-	function loadConfig() {
+	function loadConfig($path='') {
 	global $ARConfig;
-		if (!$ARConfig->cache[$this->path]) {
+		$path=$this->make_path($path);
+		$parent=$this->make_path($path.'../');
+		if (!$ARConfig->cache[$path]) {
 			if (!$this->arIsNewObject) {
 				$this->pushContext(Array("scope" => "php"));
-					$this->get($this->path, "system.get.config.phtml");
+				$this->get($path, "system.get.config.phtml");
 				$this->popContext();
-				$config=$ARConfig->cache[$this->path];
+				$config=$ARConfig->cache[$path];
 			} else {
-				if (!$ARConfig->cache[$this->parent]) {
+				if (!$ARConfig->cache[$parent]) {
 					$this->pushContext(Array("scope" => "php"));
-						$this->get($this->parent, 'system.get.config.phtml');
+					$this->get($parent, 'system.get.config.phtml');
 					$this->popContext();
 				}
-				$config=$ARConfig->cache[$this->parent];
+				$config=$ARConfig->cache[$parent];
 			}
 		} else {
-			$config=$ARConfig->cache[$this->path];
+			$config=$ARConfig->cache[$path];
 		}
+		//FIXME: in PHP5 make sure a clone is returned instead of a reference
 		return $config;
 	}
 
@@ -987,6 +990,8 @@ class pobject extends object { // pobject class definition
 				$ARCurrent->arContentTypeSent = true;
 			}
 
+/*			// FIXME: the acceptlang code works a bit too well.. it overrides psite configuration settings.
+
 			if ($ARCurrent->acceptlang && !$ARCurrent->nls) {
 				if ($ARCurrent->acceptlang && is_array($this->data->nls->list)) {
 					$validlangs = array_intersect(array_keys($ARCurrent->acceptlang), array_keys($this->data->nls->list));
@@ -996,7 +1001,7 @@ class pobject extends object { // pobject class definition
 					$ARCurrent->nls = $reqnls;
 				}
 			}
-
+*/
 			// if this object isn't available in the requested language, show
 			// a language select dialog with all available languages for this object.
 			if (isset($this->data->nls) && !$this->data->name) {
@@ -2064,6 +2069,9 @@ class pobject extends object { // pobject class definition
 		return preg_replace($pattern, $newrepl, $text, $limit);
 	}
 
+	function _loadConfig($path='') {
+		return $this->loadConfig($path);
+	}
 
 } // end of pobject class definition
 ?>
