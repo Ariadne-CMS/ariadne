@@ -8,7 +8,8 @@ WARNING: Ariadne 2.1 its internal charset has been changed to UTF-8.
 New features:
 	- Added french translation of the default Ariadne databases.
 	  (ariadne.ax and stripped.ax) Thanks to Arnaud Siminski.
-	- Added italian translation of ariadne. Thanks to Dino Termini.
+	- Added italian translation of Ariadne, and the default Ariadne
+	  database. Thanks to Dino Termini.
 	- The tree is now interface dependant. Thanks to Paul Meijers.
 	- IE only tab-key catching in the template editor. Thanks to
 	  Dieter Struik.
@@ -17,6 +18,7 @@ New features:
 	  readable sizes. Example: 1 KB 2 M etc...
 	- Added a show.poweredby.phtml template to pobject, so users of
 	  Ariadne can easily show their sites are powered by Ariadne.
+	- Import can now also update selected languages instead of all.
 
 Bugs fixed:
 	- Importing with --without-grants will nolonger destroy
