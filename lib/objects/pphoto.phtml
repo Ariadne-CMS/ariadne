@@ -166,7 +166,7 @@ class pphoto extends pfile { // definitie class
 		}
 
 		if (chdir($this->store->files.'temp/')) {
-			$exec_string=$AR->IM->mogrify.$fontconf." -pointsize $pointsize -fill $color -draw \"text $x,$y $text\" -format jpg $tmpsrc $tmpsrc.jpg";
+			$exec_string=$AR->IM->mogrify.$fontconf." -pointsize $pointsize -fill $color -draw 'text $x,$y \"".addslashes($text)."\"' -format jpg $tmpsrc $tmpsrc.jpg";
 			system($exec_string,$failed);
 			if (!$failed) {
 				ob_start();
