@@ -284,10 +284,15 @@ class scanner {
 								++$YYCURSOR;
 							} else
 							if ($yych == '$') {
-								$string=substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR - $YYCURSOR_START - 1);
-								array_push($multi_string, Array(T_SUBSTRING => $string));
-								$YYCURSOR_START = $YYCURSOR;
-
+								/*	
+									push previous parsed string on stack
+									if we've got one
+								*/
+								if ($YYCURSOR_START != $YYCURSOR) {
+									$string=substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR - $YYCURSOR_START);
+									array_push($multi_string, Array(T_SUBSTRING => $string));
+									$YYCURSOR_START = $YYCURSOR;
+								}
 								$yych = $YYBUFFER[++$YYCURSOR];
 								if ($YYCLASSES["ID_FIRST"][$yych]) {
 									$yych = $YYBUFFER[++$YYCURSOR];
