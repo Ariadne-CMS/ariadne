@@ -27,6 +27,10 @@
 		if (ini_get("safe_mode")) {
 			error("Ariadne will not work correctly with safe_mode set to 'On'. Please edit your php.ini file and set it to 'Off'.");
 		}
+		if (Headers_sent()) {
+			error("The loader has detected that PHP has already sent the HTTP Headers. This error is usually caused by trailing white space or newlines in the configuration files. See the following error message for the exact file that is causing this:");
+			Header("Misc: this is a test header");
+		}
 		@ob_end_clean(); // just in case the output buffering is set on in php.ini, disable it here, as Ariadne's cache system gets confused otherwise. 
 		// go check for a sessionid
 		$root=$AR->root;
