@@ -7,6 +7,9 @@
  
 	******************************************************************/
 
+	if ($this->arIsNewObject) {
+		$newlink=true;
+	}
 	$this->call("system.save.data.phtml",$arCallArgs);
 	if ($this->error) {
 		?>
@@ -28,9 +31,13 @@
 			<script> 
 				if (window.opener.top.tree) {
 					<?php
-						echo "window.opener.top.tree.UpdateLinks('{$folder["icon"]}','".AddSlashes($folder["name"])."','{$folder["path"]}','".AddSlashes($folder["pre"])."');\n";
+						if ($newlink) {
+							echo "window.opener.top.tree.AddLink('{$this->parent},'{$folder["icon"]}','".AddSlashes($folder["name"])."','{$folder["path"]}','".AddSlashes($folder["pre"])."');\n";
+						} else {
+							echo "window.opener.top.tree.UpdateLinks('{$folder["icon"]}','".AddSlashes($folder["name"])."','{$folder["path"]}','".AddSlashes($folder["pre"])."');\n";
+						}
 					?>
-					document.location='<?php echo $returnpage; ?>';
+					document.location='<?php echo $arReturnPage; ?>';
 				}
 			</script>
 		<?php

@@ -1,34 +1,36 @@
 <?php
-  /******************************************************************
-   edit.object.data.save.phtml			   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
+	/******************************************************************
+	 edit.object.shortcut.save.phtml                       Muze Ariadne
+	 ------------------------------------------------------------------
 
-   no result.
+	 no result.
  
-  ******************************************************************/
-  $vtype=$this->call("system.save.shortcut.phtml",$arCallArgs);
-  if ($this->error) {
-    ?>
-      <font color="red"><?php echo $this->error; ?></font><p>
-    <?php
-  } else {
-    ?>
-      <script>
-        if (window.opener) {
-          <?php
-            if ($this->store->implements($vtype, 'pdir')) {
-              $folder=$this->call("system.get.folder.phtml");
-              if ($this->arIsNewObject) {
-                echo "  window.opener.top.tree.AddLinks('{$this->parent}','{$folder["icon"]}','".AddSlashes($folder["name"])."','{$folder["path"]}','".AddSlashes($folder["pre"])."');\n";
-              } else {
-                echo "  window.opener.top.tree.UpdateLinks('{$folder["icon"]}','".AddSlashes($folder["name"])."','{$folder["path"]}','".AddSlashes($folder["pre"])."');\n";
-              }
-            }
-          ?>
-          window.opener.objectadded('<?php echo $this->type; ?>','<?php echo $nlsdata->name; ?>','<?php echo $this->path; ?>'); 
-          window.close()
-        } 
-      </script>
-    <?php
-  }
+	******************************************************************/
+	$vtype=$this->call("system.save.shortcut.phtml",$arCallArgs);
+	if ($this->error) {
+		?>
+			<font color="red"><?php echo $this->error; ?></font><p>
+		<?php
+	} else {
+		?>
+			<script>
+				if (window.opener) {
+					<?php
+						if ($this->store->implements($vtype, 'pdir')) {
+							$folder=$this->call("system.get.folder.phtml");
+							if ($this->arIsNewObject) {
+								echo "	window.opener.top.tree.AddLinks('{$this->parent}','{$folder["icon"]}','".AddSlashes($folder["name"])."','{$folder["path"]}','".AddSlashes($folder["pre"])."');\n";
+							} else {
+								echo "	window.opener.top.tree.UpdateLinks('{$folder["icon"]}','".AddSlashes($folder["name"])."','{$folder["path"]}','".AddSlashes($folder["pre"])."');\n";
+							}
+						}
+					?>
+					if (window.opener.objectadded) {
+						window.opener.objectadded('<?php echo $this->type; ?>','<?php echo $nlsdata->name; ?>','<?php echo $this->path; ?>'); 
+					}
+					window.close()
+				} 
+			</script>
+		<?php
+	}
 ?>

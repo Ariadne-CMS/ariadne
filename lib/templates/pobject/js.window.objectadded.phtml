@@ -19,7 +19,9 @@
 ?>
 <script>
 <!--
-  window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddSlashes($nlsdata->name); ?>','<?php echo $this->path; ?>');
-  top.window.close();
+	if (window.opener.objectadded) {
+		window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddSlashes($nlsdata->name); ?>','<?php echo $this->path; ?>');
+	}
+	top.window.close();
 // -->
 </script>

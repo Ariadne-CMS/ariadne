@@ -25,7 +25,9 @@
 		?>
 			<script> 
 				if (window.opener) {
-					window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddSlashes($this->nlsdata->name); ?>','<?php echo $this->path; ?>'); 
+					if (window.opener.objectadded) {
+						window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddSlashes($this->nlsdata->name); ?>','<?php echo $this->path; ?>'); 
+					}
 					window.close();
 				} 
 			</script>
