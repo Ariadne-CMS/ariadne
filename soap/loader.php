@@ -16,6 +16,52 @@
 		}
 	}
 
+	function unpack_array_names($source, &$target) {
+		if (is_array($source)) {
+			reset($source);
+			while (list($key, $val) = each($source)) {
+				$kpos = strpos($key, '.');
+				if ($kpos !== false) {
+					$count = 0;
+					$targetkey = substr($key, 0, $kpos);
+					if (!is_array($target[$targetkey])) {
+						$target[$targetkey] = Array();
+					}
+					$subtarget = &$target[$targetkey];
+					debug("creating array ($targetkey)");
+					do {
+						$count++;
+						if ($count > 10) {
+							debug("endless loop detected, dying");
+							exit;
+						}
+						$kendpos = strpos($key, '.', $kpos+1);
+						if (!$kendpos) {
+							$kendpos = strlen($key)-1;
+						}
+						debug("key kpos($kpos) kendpos($kendpos)");
+						$klen = $kendpos - $kpos;
+						$targetkey = substr($key, $kpos+1, $klen);
+						debug("soap::unpack_array_names found($targetkey)");
+
+						if (!is_array($subtarget[$targetkey])) {
+							$subtarget[$targetkey] = Array();
+						}
+						$subtarget = &$subtarget[$targetkey];
+
+						$kpos = strpos($key, '.', $kendpos+1);
+					} while ($kpos !== false);
+					debug("soap::unpack_array_names   setting value\n");
+					$subtarget = $val;
+				} else {
+					unpack_array_names($val, $target);
+				}
+			}
+		}
+
+	}
+
+
 	$PATH_INFO=$HTTP_SERVER_VARS["PATH_INFO"];
 	if (!$PATH_INFO) {
 
@@ -62,6 +108,10 @@
 		$arguments  = $soapserver->get_request($HTTP_RAW_POST_DATA);
 		$function   = "soap.".$soapserver->methodname.".phtml";
 
+		if ($arguments["arUnpackArrayNames"]) {
+			debug("loader starting unpackarraynames\n\n");
+			unpack_array_names($arguments, $arguments);
+		}
 		if ($arguments["SessionID"]) {
 			$SOAP_SessionID = $arguments["SessionID"];
 			unset($arguments["SessionID"]);
