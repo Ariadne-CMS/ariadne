@@ -12,11 +12,14 @@ IMPORTANT:
 New Features:
 	- user.notfound.html now calls 2 templates depending on the full page not
 	  found or part of a page, user.notfound.full.html user.notfound.inpage.html
+	- You can now call class templates directly without consulting the pinp templates
+	  through: call("#view.html") instead of call("view.html")
 
 Bugs Fixed:
 	- Removed some legacy code which made it impossible to 'renew' an expired
 	  session.
-
+	- We now call the link dialog in the WYSIWYG editor on the current object.
+	- Fixed passing of data to pobject::_NewObject()
 
 Changes in Ariadne since version 2.2
 
