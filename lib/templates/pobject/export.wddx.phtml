@@ -15,7 +15,7 @@ if( $this->CheckLogin("config") ) {
 	}
 	export_wddx::header($fp);
 	$query="";
-	$this->find(".", $query, "export.wddx.object.phtml", "", 0);
+	$this->find($this->make_path($path), $query, "export.wddx.object.phtml", "", 0);
 	export_wddx::footer($fp);
 }
 ?>
