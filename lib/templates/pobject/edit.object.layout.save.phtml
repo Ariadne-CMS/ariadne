@@ -54,14 +54,8 @@
 			}
 			ldRedirect($arReturnPage);
 		} else { 
-			?>
-			<body>
-			<script>
-				alert('<?php echo AddCSlashes($this->error, ARESCAPE); ?>');
-				history.back();
-			</script>
-			</body>
-			<?php
+			$arCallArgs["error"]=$this->error;
+			$this->call("edit.object.layout.form.phtml",$arCallArgs);
 		}
 	}
 ?>

@@ -29,9 +29,19 @@
     height: 82%;
   }
 </style>
+<script>
+  function init() {
+    <?php
+      if ($error) {
+		echo "alert('".AddCSlashes($error, ARESCAPE)."');\n";
+      }
+    ?>
+    document.forms[0].template.focus();
+  }
+</script>
 </head>
 <script src="<?php echo $AR->dir->www; ?>widgets/window/savesize.js"></script>
-<body>
+<body onload="init();">
 <form action="edit.object.layout.save.phtml" method="post" style="height: 100%;">
 <input type="hidden" name="type" value="<?php echo $type; ?>">
 <input type="hidden" name="function" value="<?php echo $function; ?>">
@@ -81,16 +91,18 @@
 	</tr>
 </table>
 <textarea cols="78" rows="20" name="template" wrap="off" class="full"><?php
-	if ($data->pinp[$type][$function][$language]) {
-		$template=$type.".".$function.".".$language.".pinp";
-		$templates=$this->store->get_filestore("templates");
-		if ($templates->exists($this->id, $template)) {
-			$file=$templates->read($this->id, $template);
-			$file=ereg_replace("&","&amp;",$file);
-			$file=ereg_replace("<","&lt;", ereg_replace(">","&gt;",$file));
-			echo $file;
+	if (!($file=$template)) {
+		if ($data->pinp[$type][$function][$language]) {
+			$template=$type.".".$function.".".$language.".pinp";
+			$templates=$this->store->get_filestore("templates");
+			if ($templates->exists($this->id, $template)) {
+				$file=$templates->read($this->id, $template);
+			}
 		}
 	}
+	$file=ereg_replace("&","&amp;",$file);
+	$file=ereg_replace("<","&lt;", ereg_replace(">","&gt;",$file));
+	echo $file;
 ?></textarea>
 <table border="0" width="100%" height="10%" cellspacing="0">
 <tr>
