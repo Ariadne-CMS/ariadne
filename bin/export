@@ -59,15 +59,15 @@
 		$AR->user->data->login="admin";
 
 		if ($arg_c>3) {
-			$config["database"]=$arg_v[3];
+			$ax_config["database"]=$arg_v[3];
 			$srcpath=$arg_v[1];
 			$destpath=$arg_v[2];
 		} else {
-			$config["database"]=$arg_v[2];
+			$ax_config["database"]=$arg_v[2];
 			$srcpath=$arg_v[1];
 		}
-		$config["writeable"]=true;
-		$importStore=new axstore("", $config);
+		$ax_config["writeable"]=true;
+		$importStore=new axstore("", $ax_config);
 		$ARCurrent->importStore=&$importStore;
 		if (!$importStore->error) {
 			$store=new mysqlstore($root,$store_config);

@@ -74,7 +74,7 @@
 		}
 
 		if (file_exists($ax)) {
-			$tempdir=tempnam($config["files"]."temp", "convert");
+			$tempdir=tempnam($ax_config["temp"], "convert");
 			@unlink($tempdir);
 			mkdir($tempdir, 0755);
 

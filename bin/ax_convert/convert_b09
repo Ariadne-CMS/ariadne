@@ -61,9 +61,9 @@
 						fclose($obfp);
 						$axdata=unserialize($axdata);
 
-						$config["database"]=$argv[2];
-						$config["writeable"]=true;
-						$store=new axstore(".", $config);
+						$ax_config["database"]=$argv[2];
+						$ax_config["writeable"]=true;
+						$store=new axstore(".", $ax_config);
 
 						while (is_array($axdata->nodes) && (list($key, $id)=each($axdata->nodes))) {
 							echo "$key ($id)\n";

@@ -58,8 +58,8 @@
 		$AR->user->data=new object;
 		$AR->user->data->login="admin";
 
-		$config["writeable"]=false;
-		$config["database"]=$arg_v[1];
+		$ax_config["writeable"]=false;
+		$ax_config["database"]=$arg_v[1];
 		if ($arg_c>3) {
 			$destpath=$arg_v[3];
 			$srcpath=$arg_v[2];
@@ -68,7 +68,7 @@
 			$srcpath="/";
 		}
 
-		$store=new axstore("", $config);
+		$store=new axstore("", $ax_config);
 		if (!$store->error) {
 			$ARCurrent->importStore=new mysqlstore($root,$store_config);
 
