@@ -159,6 +159,13 @@
 		$store->add_type("pphotobook","pphoto");
 		$store->add_type("pphotobook","pphotobook");
 
+		// install pprofile type
+		
+		$store->add_type("pprofile","pobject");
+		$store->add_type("pprofile","pdir");
+		$store->add_type("pprofile","ppage");
+		$store->add_type("pprofile","pprofile");
+
 		echo "== importing ariadne.ax file\n\n";
 
 		$ARCurrent->options["verbose"]=true;
