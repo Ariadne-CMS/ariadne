@@ -1,0 +1,29 @@
+<?php
+  if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+    // check arguments, remove ".."
+    $type=str_replace("..",".",$type);
+    $function=str_replace("..",".",$function);
+    $language=str_replace("..",".",$language);
+
+    $template_dir=$this->path."class=/".$type."/";
+    $template_path=$template_dir.$function.".".$language;
+   
+    if (eregi("^[a-z0-9\._-]+$",$function)) {
+      if (isset($data->pinp[$type][$function][$language])) {
+        unset($data->pinp[$type][$function][$language]);
+        unset($data->templates[$type][$function][$language]);
+        if (count($data->pinp[$type][$function])==0) {
+          unset($data->pinp[$type][$function]);
+          unset($data->templates[$type][$function]);
+          if (count($data->pinp[$type])==0) {
+            unset($data->pinp[$type]);
+            unset($data->templates[$type]);
+          }
+        }
+        $this->save($this->path, $this->type, $data);
+        unlink($this->store->files."templates".$template_path);
+        unlink($this->store->files."templates".$template_path.".pinp");
+      }
+    }
+  }
+?>

@@ -7,23 +7,29 @@
   .width100 { width: 100; }
   .width200 { width: 200; }
   .width300 { width: 300; }
-  H1    { FONT: 12pt sans-serif; FONT-WEIGHT: bold; }
-  TD        { FONT: 10pt sans-serif; }
-  BODY      { FONT: 10pt sans-serif;
-              BORDER: 0;
+  H1    { 
+    FONT: 12pt sans-serif; 
+    FONT-WEIGHT: bold;
+  }
+  TD        {
+    FONT: 10pt sans-serif;
+  }
+  BODY      {
+    FONT: 10pt sans-serif;
+    BORDER: 0;
   <?php
     $browser=$this->call("browsercheck.phtml");
     if ($browser["id"]=="ns" && $browser["version"]<=4) {
   ?>
-              BACKGROUND-COLOR: #BBBBBB;
+    BACKGROUND-COLOR: #BBBBBB;
   <?php
     } else {
   ?>
-              BACKGROUND-COLOR: buttonface;
+    BACKGROUND-COLOR: buttonface;
   <?php
     }
   ?>
-            }
+  }
 </style>
 </head>
 <body bgcolor="#BBBBBB" onLoad="nextnode();" scroll="no">

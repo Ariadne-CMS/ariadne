@@ -31,7 +31,6 @@
     </td><td>
       <span class="required"><?php echo $ARnls["language"]; ?></span>
     </td><td>
-      <span class="required"><nobr><?php echo $ARnls["setasdefault"]; ?></nobr></span>
     </td></tr>
     <tr><td>
       <select name="newtype">
@@ -56,14 +55,13 @@
       </select>
     </td><td>
       <?php 
-        if ($data->templates[$type][$function][$language]) {
+        if ($data->templates[$type][$function][$language] || !$function) {
           $default=1;
         }
       ?>
-      <input type="radio" name="default" value="1" <?php 
-        if ($default) { echo " checked"; } ?>> <?php echo $ARnls["yes"]; ?>
-      <input type="radio" name="default" value="0" <?php 
-        if (!$default) { echo " checked"; } ?>> <?php echo $ARnls["no"]; ?>
+      <input type="checkbox" name="default" value="1" <?php 
+        if ($default) { echo " checked"; } ?>>
+      <span class="required"><nobr><?php echo $ARnls["default"]; ?></nobr></span>
     </td>
     </tr><tr>
       <td colspan="4">

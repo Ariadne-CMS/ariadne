@@ -1,0 +1,48 @@
+<?php
+  if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+    // check arguments, remove ".."
+    $newtype=str_replace("..",".",$newtype);
+    $newfunction=str_replace("..",".",$newfunction);
+    $newlanguage=str_replace("..",".",$newlanguage);
+
+    $template_dir=$this->path."class=/".$newtype."/";
+    $template_path=$template_dir.$newfunction.".".$newlanguage;
+   
+    include($this->store->code."modules/mod_pinp.phtml");
+    if (!$newfunction) {
+      $this->error=$ARnls["err:notemplatename"];
+    } else if (ereg("\.phtml$",$newfunction)) {
+      $this->error=$ARnls["err:endswith.phtml"];
+    } else if (!eregi("^[a-z0-9\._-]*$",$newfunction)) {
+      $this->error=$ARnls["err:illegalchars"];
+    } else {
+      if (!file_exists($this->store->files."templates".$template_dir)) {
+        $this->MkDir("templates".$template_dir);
+      }
+      $pinp=new pinp("header","this->", "\$this->_");
+      $compiled=$pinp->compile(strtr($template,"\r",""));
+      $data->pinp[$newtype][$newfunction][$newlanguage]=$template_path;
+
+      $fp=fopen($this->store->files."templates".$template_path.".pinp","w");
+      fwrite($fp, $template);
+      fclose($fp);
+      $fp=fopen($this->store->files."templates".$template_path,"w");
+      fwrite($fp, $compiled);
+      fclose($fp);
+      if ($default) { // add pinp template from default templates list
+        $data->templates[$newtype][$newfunction][$newlanguage]=$template_path;
+      } else { // remove pinp template from default templates list
+        if (isset($data->templates[$newtype][$newfunction][$newlanguage])) {
+          unset($data->templates[$newtype][$newfunction][$newlanguage]);
+          if (count($data->templates[$newtype][$newfunction])==0) {
+            unset($data->templates[$newtype][$newfunction]);
+            if (count($data->templates[$newtype])==0) {
+              unset($data->templates[$newtype]);
+            }
+          }
+        }
+      }
+      $this->save($this->path, $this->type, $data);
+    }
+  }
+?>

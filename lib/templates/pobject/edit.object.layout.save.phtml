@@ -1,94 +1,27 @@
 <?php
-  if ($this->CheckLogin("layout")) {
-   
-    switch($next) {
-      case $ARnls["save"] :
-        include($this->store->code."modules/mod_pinp.phtml");
-        if (!$newfunction) {
-          $error=$ARnls["err:notemplatename"];
-        } else if (ereg("\.phtml$",$newfunction)) {
-          $error=$ARnls["err:endswith.phtml"];
-        } else if (ereg("\.\.",$newfunction)) {
-          $error=$ARnls["err:nodirchanges"];
-        } else if (!eregi("^[a-z0-9\._-]*$",$newfunction)) {
-          $error=$ARnls["err:illegalchars"];
-        } else {
-          $writedir="templates".$this->path.$newtype."/";
-          if (!file_exists($this->store->files.$writedir)) {
-            $this->MkDir($writedir);
-          }
-          $pinp=new pinp("header","this->", "\$this->_");
-          $compiled=$pinp->compile(strtr($template,"\r",""));
-          $data->pinp[$newtype][$newfunction][$newlanguage]=$this->path.$newtype."/".$newfunction.".".$newlanguage;
-
-          $fp=fopen($this->store->files."templates".$this->path.$newtype."/".$newfunction.".".$newlanguage.".pinp","w");
-          fwrite($fp, $template);
-          fclose($fp);
-          $fp=fopen($this->store->files."templates".$this->path.$newtype."/".$newfunction.".".$newlanguage,"w");
-          fwrite($fp, $compiled);
-          fclose($fp);
-          if ($default) { // add pinp template from default templates list
-            $data->templates[$newtype][$newfunction][$newlanguage]=$this->path.$newtype."/".$newfunction.".".$newlanguage;
-          } else { // remove pinp template from default templates list
-            if ($data->templates[$newtype][$newfunction][$newlanguage]) {
-              while (list($oldtype, $functions)=each($data->templates)) {
-                while(list($oldfunction, $oldtemplatelist)=each($functions)) {
-                  while(list($oldlanguage, $value)=each($oldtemplatelist)) {
-                    if (($oldfunction!=$newfunction) ||
-                        ($oldtype!=$newtype) ||
-                        ($oldlanguage!=$newlanguage)) {
-                      $templates[$oldtype][$oldfunction][$oldlanguage]=$value;
-                    }
-                  }
-                }
-              }
-  	        $data->templates=$templates;
-            }
-          }
-          $this->save($this->path, $this->type, $data);
-        }
-        break;
-
-      case $ARnls["delete"] :
-        if (!ereg("\.\.",$function) && eregi("^[a-z0-9\._-]+$",$function)) {
-          if ($data->pinp[$type][$function][$language]) {
-            while (list($oldtype, $functions)=each($data->pinp)) {
-              while(list($oldfunction, $oldtemplatelist)=each($functions)) {
-                while(list($oldlanguage, $value)=each($oldtemplatelist)) {
-                  if (($oldfunction!=$function) ||
-                     ($oldtype!=$type) ||
-                     ($oldlanguage!=$language)) {
-                    $pinp[$oldtype][$oldfunction][$oldlanguage]=$value;
-                  }
-                }
-              }
-            }
-            $data->pinp=$pinp;
-            if ($data->templates[$type][$function][$language]) {
-              while (list($oldtype, $functions)=each($data->templates)) {
-                while(list($oldfunction, $oldtemplatelist)=each($functions)) {
-                  while(list($oldlanguage, $value)=each($oldtemplatelist)) {
-                    if (($oldfunction!=$function) ||
-                        ($oldtype!=$type) ||
-                        ($oldlanguage!=$language)) {
-                      $templates[$oldtype][$oldfunction][$oldlanguage]=$value;
-                    }
-                  }
-                }
-              }
-              $data->templates=$templates;
-            }
-            $this->save($this->path, $this->type, $data);
-            unlink($this->store->files."templates".$this->path.$type."/".$function.".".$language);
-            unlink($this->store->files."templates".$this->path.$type."/".$function.".".$language.".pinp");
-          }
-        }
-        break;
-    }
-    if (!$error) {
-      Header("Location: ".$this->store->root.$this->path."edit.object.layout.phtml");
-    } else {
-      include($this->store->code."includes/error.phtml");
-    } 
-  }
+	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		switch($next) {
+			case $ARnls["save"] :
+				$this->call("system.save.layout.phtml",$arCallArgs);
+				break;
+			case $ARnls["delete"] :
+				$this->call("system.delete.layout.phtml",$arCallArgs);
+				break;
+		}
+		if (!$this->error) {
+			if (!$returnpage) {
+				$returnpage=$this->store->root.$this->path."edit.object.layout.phtml";
+			}
+			Header("Location: ".$returnpage);
+		} else { 
+?>
+<body>
+<script>
+	alert('<?php echo $this->error; ?>');
+	history.back();
+</script>
+</body>
+<?php
+		}
+	}
 ?>

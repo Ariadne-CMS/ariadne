@@ -47,7 +47,7 @@ function ClearLoader() {
         echo(5);
       break;
 
-      case 'templates.phtml':
+      case 'edit.object.layout.phtml':
         echo(6);
       break;
 
@@ -148,7 +148,7 @@ max=7;
 ?>><?php echo $ARnls["edit"]; ?></a></td>
 <td valign="top"><img src="<?php echo $AR->dir->images; ?>tabs/behind_o.gif" width="10" height="63" name="o5"></td>
 <!-- begin bottom tab  -->
-<td bgcolor="white" valign="top"><a onClick="tofront(6); top.cacheTemplate='templates.phtml';" href="templates.phtml"<?php
+<td bgcolor="white" valign="top"><a onClick="tofront(6); top.cacheTemplate='edit.object.layout.phtml';" href="edit.object.layout.phtml"<?php
   if (!$AR->user->grants["layout"]) {
     echo "><font color=\"#CCCCCC\""; 
   }  
