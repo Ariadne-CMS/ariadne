@@ -985,6 +985,101 @@ class pobject extends object {
 		return $charset;
 	}
 
+	function HTTPrequest($method, $url, $postdata = "" ) { 
+		$maxtries = 5;
+		$tries = 0;
+		$redirecting = true;
+
+		if(is_array($postdata)) { 
+			foreach($postdata as $key=>$val) { 
+				if(!is_integer($key)) {
+					$data .= "$key=".urlencode($val)."&"; 
+				}
+			} 
+		} else { 
+			$data = $postdata; 
+		}
+
+		while ($redirecting && $tries < $maxtries) {
+			$tries++; 
+			// get host name and URI from URL, URI not needed though 
+			preg_match("/^([htps]*:\/\/)?([^\/]+)(.+)/i", $url, $matches); 
+			$host = $matches[2]; 
+			$uri = $matches[3]; 
+			if (!$matches[1]) {
+				$url="http://".$url;
+			}
+			$connection = pfsockopen( $host, 80, &$errno, &$errstr, 120); 
+			if( $connection ) { 
+				if( strtoupper($method) == "GET" ) { 
+					$url .= "?" . $data; 
+					fputs( $connection, "GET $url HTTP/1.0\n"); 
+				} else 
+				if( strtoupper($method) == "POST" ) { 
+					fputs( $connection, "POST $url HTTP/1.0\n"); 
+				} 
+
+				fputs( $connection, "Accept: */*\n"); 
+				fputs( $connection, "Accept: image/gif\n"); 
+				fputs( $connection, "Accept: image/x-xbitmap\n"); 
+				fputs( $connection, "Accept: image/jpeg\n"); 
+
+				if( strtoupper($method) == "POST" ) { 
+					$strlength = strlen( $data); 
+					fputs( $connection, "Content-type: application/x-www-form-urlencoded\n" ); 
+					fputs( $connection, "Content-length: ".$strlength."\n\n"); 
+					fputs( $connection, $data."\n"); 
+				} 
+
+
+				fputs( $connection, "\n" , 1); 
+				$output = ""; 
+
+				$headerStart = 0; 
+				$headerEnd = 0; 
+				$redirecting = false; 
+
+				while (!feof($connection)) { 
+					$currentLine = fgets ($connection, 1024); 
+					if ($headerEnd && $redirecting) { 
+						break; 
+					} else if ($headerEnd && !$redirecting) { 
+						//this is the html from the page 
+						$contents = $contents . $currentLine; 
+					} else if ( ereg("^HTTP", $currentLine) ) { 
+						//came to the start of the header 
+						$headerStart = 1; 
+					} else if ( $headerStart && preg_match('/^[\n\r\t ]*$/', $currentLine) ) { 
+						//came to the end of the header 
+						$headerEnd = 1; 
+					} else { 
+						//this is the header, if you want it... 
+						if (preg_match("/Location: (.+?)\n/is",$currentLine,$matches) ) { 
+							//redirects are sometimes relative 
+							$newurl = $matches[1]; 
+							if (!preg_match("/http:\/\//i", $newurl, $matches) ) { 
+								$url .= $newurl; 
+							} else { 
+								$url = $newurl; 
+							} 
+							//extra \r's get picked up sometimes 
+							//i think only with relative redirects 
+							//this is a quick fix. 
+							$url = preg_replace("/\r/s","",$url); 
+							$redirecting = true; 
+						} 
+					} 
+				} 
+			} else {
+				echo "$errstr ($errno)\n";
+				$url = "";
+			}
+			fclose($connection); 
+		}
+		return $contents; 
+	} 
+
+
 /********************************************************************
 
   "safe" functions.
@@ -1233,5 +1328,8 @@ class pobject extends object {
 		return $this->store->count($this->store->ls($this->path));
 	}
 
+	function _HTTPrequest($method, $url, $postdata = "") {
+		$this->HTTPrequest($method, $url, $postdata);
+	}
 } // end class pobject
 ?>
