@@ -1,4 +1,21 @@
 <?php
   if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+	$groups=$this->getdata("groups", "none");
+?>
+
+<div id="details">
+		<table width="100%">
+			<tr><td valign="top" rowspan="<?php echo(count($groups)+1); ?>"><?php echo $ARnls["groups"]; ?>:</td></tr>
+<?php 
+while (list($path, $group)=@each($data->groups)) {
+?>
+			<tr><td valign="top" class="data"><?php echo $group ?></td></tr>
+<?php
+}
+?>
+		</table>
+</div>
+
+<?php
   }
 ?>
