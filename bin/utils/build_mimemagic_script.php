@@ -114,7 +114,7 @@
 				}
 
 				// test if it is really a mimetype and not some sort of a vague file description
-				if (eregi('^[a-z0-9_-]+/[a-z0-9_-]+$', $mimetype, $regs)) {
+				if (eregi('^[.a-z0-9_-]+/[.a-z0-9_-]+$', $mimetype, $regs)) {
 					echo "	\$mimemagic_data[$offset][$len][\"";
 					for ($i=0; $i<strlen($data); $i++) {
 						echo "\\".decoct(ord($data[$i]));
