@@ -148,7 +148,9 @@
 	}
 
 	function ldSetCredentials($login, $password) {
-	global $ARCurrent, $ARCookie;
+	global $ARCurrent, $HTTP_COOKIE_VARS;
+
+		$ARCookie = stripslashes($HTTP_COOKIE_VARS["ARCookie"]);
 
 		debug("ldSetCredentials($login, [password])","object");
 		if (!$ARCurrent->session || ($ARCurrent->session->get("ARLogin")!=$login)) {
@@ -181,7 +183,14 @@
 	}
 
 	function ldCheckCredentials($login, $password) {
-	global $ARCurrent, $AR, $ARCookie;
+	global $ARCurrent, $AR, $HTTP_COOKIE_VARS;
+		/* 
+			FIXME:
+			this is a hack: php 4.0.3pl1 (and up?) runs 'magic_quotes' on
+			cookies put in $HTTP_COOKIE_VARS which will cause unserialize
+			to not function correctly.
+		*/
+		$ARCookie = stripslashes($HTTP_COOKIE_VARS["ARCookie"]);
 		debug("ldCheckCredentials()","object");
 		$result=false;
 		$cookie=unserialize($ARCookie);
