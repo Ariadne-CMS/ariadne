@@ -347,7 +347,7 @@ function NEW_onclick() {
 	if (tbContentElement.contentWindow.NEW_onclick) {
 		tbContentElement.contentWindow.NEW_onclick();
 	} else {
-	    addwindow=window.open( "<?php echo $this->make_url($this->currentsite()); ?>object.new.select.phtml", 'addwindow',
+	    addwindow=window.open( "<?php echo $this->make_url(); ?>object.new.select.phtml", 'addwindow',
 	        'directories=no,height=400,width=550,location=no,status=yes,toolbar=no,resizable=no');
 		addwindow.focus();
 	}
