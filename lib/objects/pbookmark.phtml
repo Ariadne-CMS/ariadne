@@ -1,0 +1,197 @@
+<?php
+    /******************************************************************
+     pbookmark.phtml                  Muze Ariadne: pBookmark extension
+     ------------------------------------------------------------------
+     Author: Auke van Slooten (auke@muze.nl)
+     Date: 30 october 2002
+
+     Copyright 2002 Muze
+
+     This file is part of Ariadne: pBookmark extension, pBookmark.
+
+     pBookmark is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published 
+     by the Free Software Foundation; either version 2 of the License, 
+     or (at your option) any later version.
+ 
+     pBookmark is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with pBookmark; if not, write to the Free Software 
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
+     02111-1307  USA
+
+    -------------------------------------------------------------------
+
+     Class inheritance: 	pobject > pbookmark
+     Description:
+
+       This is the class definition file of the purl class.
+
+    ******************************************************************/
+
+
+debug("pbookmark: Load","object");
+include_once($this->code."objects/pobject.phtml");
+
+class pbookmark extends pobject { // class definition
+
+	function CheckLink($url='') {
+		if (!$url) {
+			$url=$this->data->value;
+		}
+		$this->errorcode=0;
+		// first check the syntax
+		if ($url) {
+			if (eregi("([a-z]+://)?(([a-z0-9]+:)?([a-z0-9]+@)?)([a-z0-9.]+)(:[0-9]+)?(.*)", $url, $matches)) {
+				$protocol=strtolower($matches[1]);
+				$user=$matches[3];
+				$password=$matches[4];
+				$host=$matches[5];
+				$port=$matches[6];
+				$path=$matches[7];
+				if (!$protocol) {
+					$protocol="http://";
+				}
+				// check dns
+				if (function_exists("checkdnsrr")) {
+					if (!checkdnsrr($host, "ANY")) {
+						$this->errorcode=3;
+						$this->errorseverity=10;
+						$this->errormessage="Error: No DNS record for $host.";
+					}
+				}
+				if (!$this->errorcode) {
+					switch ($protocol) {
+						case "http://":
+							// check host
+							if (!$port) {
+								$port=80;
+							}
+							$result=$this->HTTPRequest("HEAD", $url,'',$port);						
+							if (!$result) {
+								$this->errorcode=5;
+								$this->errorseverity=5;
+								$this->errormessage="Error: Could not connect to WWW server on $host:$port, or server returned an empty page.";
+							} else if (eregi("HTTP/... ([0-9]+)(.*)", $result, $matches)) {
+								$statuscode=intval($matches[1]);
+								$statusmessage=$matches[2];
+								switch($statuscode) {
+									// status ok
+									case 100:
+									case 101:
+									case 200:
+									case 201:
+									case 202:
+									case 203:
+									case 204:
+									case 205:
+									case 206:
+									case 300:
+									case 302:
+									case 303:
+									case 304:
+									case 305:
+									case 306:
+										
+										break;
+									// update link
+									case 301:
+										$this->errorcode=6;
+										$this->errorseverity=2;
+										$this->errormessage="Warning: Update link location.";
+										break;
+
+									// permanently broken link
+									case 400:
+									case 401:
+									case 402:
+									case 403:
+									case 404:
+									case 405:
+									case 406:
+									case 407:
+									case 408:
+									case 409:
+									case 410:
+									case 411:
+									case 412:
+									case 413:
+									case 414:
+									case 415:
+									case 416:
+									case 417:
+									case 501:
+									case 502:
+									case 505:
+										$this->errorcode=7;
+										$this->errorseverity=10;
+										$this->errormessage="Error: Broken link, server returned '".$statuscode." ".$statusmessage."'.";
+										break;
+
+									// temporarily broken
+									case 500:
+									case 503:
+									case 504:
+										$this->errorcode=8;
+										$this->errorseverity=1;
+										$this->errormessage="Warning: Link temporarily unavailable, server returned '".$statuscode." ".$statusmessage."'.";
+										break;
+									default:
+										$this->errorcode=9;
+										$this->errorseverity=5;
+										$this->errormessage="Error: Server returned an unknown respons: '".$statuscode." ".$statusmessage."'.";
+										break;
+								}
+							} else {
+								$this->errorcode=10;
+								$this->errorseverity=5;
+								$this->errormessage="Error: Server returned an unknown respons.";
+								echo "<pre>\n";
+								echo htmlspecialchars($result);
+								echo "\n</pre>";
+							}
+							break;
+
+						case "ftp://":
+							// check host
+							if (!$port) {
+								$port=21;
+							}
+							if (function_exists("ftp_connect")) {
+								if ($resource=ftp_connect($host, $port, 1)) {
+									ftp_quit($resource);
+								} else {
+									$this->errorcode=4;
+									$this->errorseverity=5;
+									$this->errormessage="Error: Could not connect to FTP server on $host:$port.";
+								}
+							}
+							break;
+						default:
+							break;	
+					}
+				}
+			} else {
+				$this->errorcode=2;
+				$this->errorseverity=1;
+				$this->errormessage="Warning: unrecognized URL syntax.";				
+			}			
+		} else {
+			$this->errorcode=1;
+			$this->errorseverity=1;
+			$this->errormessage="Warning: no URL entered.";
+		}
+		// FIXME: remember lastchange date, if available.
+		return ($this->errorcode==0);
+	}
+
+	function _CheckLink($url='') {
+		return $this->CheckLink($url);
+	}
+
+} // end of pbookmark class definition
+?>

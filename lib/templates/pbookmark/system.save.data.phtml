@@ -1,0 +1,97 @@
+<?php
+	/******************************************************************
+	 system.save.data.phtml               Muze Ariadne - pBookmark extension
+	 ------------------------------------------------------------------
+	 Author: Auke van Slooten (auke@muze.nl)
+	 Date: 30 october 2002
+
+	 Copyright 2002 Muze
+
+	 This file is part of the Ariadne: pBookmark extension, pBookmark.
+
+	 pBookmark is free software; you can redistribute it and/or modify
+	 it under the terms of the GNU General Public License as published 
+	 by the Free Software Foundation; either version 2 of the License, 
+	 or (at your option) any later version.
+ 
+	 pBookmark is distributed in the hope that it will be useful,
+	 but WITHOUT ANY WARRANTY; without even the implied warranty of
+	 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	 GNU General Public License for more details.
+
+	 You should have received a copy of the GNU General Public License
+	 along with pBookmark; if not, write to the Free Software 
+	 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
+	 02111-1307  USA
+
+	-------------------------------------------------------------------
+
+	 Description:
+	   This template checks the user input from the wizard or classic
+	   form and saves the user editable data.
+
+	******************************************************************/
+
+	if ((($this->arIsNewObject && $this->CheckLogin("add", $this->type)) ||
+			(!$this->arIsNewObject && $this->CheckLogin("edit"))) && 
+			$this->CheckConfig()) {
+		if (!$this->arIsNewObject) {
+			// first make sure that the object is clean (data can only be set via 
+			// the defined interface: $arCallArgs)
+			$this->data=current($this->get(".","system.get.data.phtml"));
+		} else {
+			$this->data=new object;
+		}
+		$this->data->value=$this->getdata("value","none");
+/*
+		if (!$this->CheckLink()) {
+			if ($this->errorseverity>=5) {
+				$this->error=$this->errormessage;
+			}
+		}
+*/
+		if (!$this->error) {
+			$properties["value"][]["value"]="'".AddSlashes($this->data->value)."'";
+			if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
+				$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+			} else {
+				if (!$this->data->nls) {
+					$this->data->nls=new object;
+				}
+				$this->data->nls->default=$ARConfig->nls->default;
+
+				reset($AR->nls->list);
+				$count=0;
+				while (list($key, $value)=each($AR->nls->list)) {
+					
+					if ($name=$this->getdata("name",$key)) { 
+						if (!$this->data->$key) {
+							$newnlsdata=new object;
+						} else {
+							$newnlsdata=$this->data->$key;
+						}
+						$newnlsdata->name=$name;
+						$properties["name"][$count]["value"]="'".AddSlashes($newnlsdata->name)."'";
+						$properties["name"][$count]["nls"]="'$key'";
+						$properties["text"][$count]["value"]="'".AddSlashes($newnlsdata->name)."'";
+						$properties["text"][$count]["nls"]="'$key'";
+						$count++;
+						$newnlsdata->summary=$this->getdata("summary", $key);
+						$properties["text"][$count]["value"]="'".AddSlashes($newnlsdata->summary)."'";
+						$properties["text"][$count]["nls"]="'$key'";
+						$count++;
+						$this->data->$key=$newnlsdata;
+						$this->data->nls->list[$key]=$value;
+					} else { // clear language values for $key->name if set, keep the rest, just in case.
+						if ($this->data->$key) {
+							unset($this->data->$key->name);
+							unset($this->data->nls->list[$key]);
+						}
+					}
+				}
+			}
+			$this->save($properties);
+			$this->ClearCache();
+		}
+	}
+?>
