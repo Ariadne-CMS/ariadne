@@ -1251,7 +1251,7 @@ class pobject extends object { // pobject class definition
 
 	function make_filesize( $size="" ) {
 		$result = "0";
-		if( $size == "" ) {
+		if( $size === "" ) {
 			$size = $this->size;
 		}
 		if ($size>1048576) {
