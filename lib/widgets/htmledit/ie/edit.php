@@ -1,5 +1,6 @@
 <?php
 	Header("Content-Type: text/html; charset=UTF-8");
+	$arEditorSettings=$this->call("editor.ini");
 ?><!--TOOLBAR_START--><!--TOOLBAR_EXEMPT--><!--TOOLBAR_END-->
 <!-- Copyright 2000 Microsoft Corporation. All rights reserved. -->
 <!-- Author: Steve Isaac, Microsoft Corporation -->
@@ -717,8 +718,14 @@ function DECMD_IMAGE_onclick() {
     args['alt'] = "";
     args['border'] = "";
   }
-  arr = showModalDialog( "<?php echo $this->store->root.$AR->user->path; 
-		?>edit.object.html.image.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:35em; dialogHeight:14em; status: no; resizable: yes;");
+  arr = showModalDialog( "<?php 
+        echo $this->store->root; 
+        if ($arEditorSettings["photobook"]["location"]) { 
+          echo $arEditorSettings["photobook"]["location"]; 
+        } else { 
+          echo $AR->user->path; 
+        } 
+	?>edit.object.html.image.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:35em; dialogHeight:14em; status: no; resizable: yes;");
   if (arr != null){
 	IMAGE_set(arr);
   }
