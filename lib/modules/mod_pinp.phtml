@@ -374,6 +374,7 @@ class scanner {
 class pinp {
 
 	function pinp($allowed_functions, $var_prefix, $function_prefix="") {
+		$var_prefix="\$".$var_prefix;
 		if (!$function_prefix) {
 			$function_prefix=$var_prefix;
 		}
