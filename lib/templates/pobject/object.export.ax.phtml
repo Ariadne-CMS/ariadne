@@ -16,6 +16,15 @@
 		$srcpath=$this->path;
 		$ax_config["writeable"]=true;
 		$ARCurrent->session->put("tempname",$ax_config["database"]);
+		if ($full_path) {
+			$destpath=$srcpath;
+		} else {
+			if ($this->parent=="..") {
+				$destpath="/";
+			} else {
+				$destpath="/".substr($this->path, strlen($this->parent));
+			}
+		}
 ?>
 <html>
 <head>
@@ -40,7 +49,7 @@
 <tr>
 	<td align="center" colspan="2">
 		<textarea cols="50" rows="13" wrap="off"><?php
-
+			echo "Exporting $srcpath to $destpath\n";
 			$importStore=new axstore("", $ax_config);
 			if (!$importStore->error) {
 

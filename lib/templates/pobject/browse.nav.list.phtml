@@ -49,8 +49,9 @@
 	if ($filter) {
 		$crit["object"]["implements"]["="]="'".AddSlashes($filter)."'";
 	}
+	$limit=100;
 	$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
-	$this->find(".",$crit, "browse.nav.list.show.phtml");
+	$this->find(".",$crit, "browse.nav.list.show.phtml", "", $limit, $offset);	
 ?>
 </body>
 <?php

@@ -59,7 +59,8 @@
 </tr>
 <?php
 	if ($query) {
-		if (!$this->find(".", $query, "edit.find.results.show.phtml")) {
+		$limit=100;
+		if (!$this->find(".", $query, "edit.find.results.show.phtml", "", $limit, $offset)) {
 			if ($this->error) {
 ?>
 <script>

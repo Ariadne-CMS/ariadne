@@ -69,7 +69,8 @@
 		$crit["object"]["implements"]["="]="'".AddSlashes($filter)."'";
 	}
 	$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
-	$this->find(".",$crit, "browse.nav.details.show.phtml");
+	$limit=100;
+	$this->find(".",$crit, "browse.nav.details.show.phtml","",$limit, $offset);
 ?>
 </table>
 </body>
