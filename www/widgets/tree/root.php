@@ -69,6 +69,9 @@
     this.prev=prev;
     this.next=next;
     this.name=name;
+    if (this.name.length>20) {
+      this.name=this.name.substring(0,20)+"...";
+    }
     this.pre=pre;
     this.link=link;
     this.icon=icon;
