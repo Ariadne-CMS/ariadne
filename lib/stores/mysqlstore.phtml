@@ -177,7 +177,6 @@ class mysqlstore {
 		debug("newobject($path, $parent, $type, [data], $id, $lastchanged, $vtype, $size, $priority)","all");
 		include_once($this->code."objects/".$type.".phtml");
 		$object=new $type;
-		$object->init($this->proxystore, $path, $data);
 		$object->type=$type;
 		$object->parent=$parent;
 		$object->id=(int)$id;
@@ -185,6 +184,7 @@ class mysqlstore {
 		$object->vtype=$vtype;
 		$object->size=(int)$size;
 		$object->priority=(int)$priority;
+		$object->init($this->proxystore, $path, $data);
 		return $object;
 	}
 
