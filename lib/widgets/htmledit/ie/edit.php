@@ -13,9 +13,11 @@
 <!-- Styles -->
 <link REL="stylesheet" TYPE="text/css" HREF="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/Toolbars/toolbars.css">
 
-
 <!-- Script Functions and Event Handlers -->
 <script LANGUAGE="JavaScript" SRC="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/Inc/dhtmled.js">
+</script>
+
+<script LANGUAGE="JavaScript" SRC="<?php echo $AR->host.$AR->dir->www; ?>widgets/compose/compose.js">
 </script>
 
 <script ID="clientEventHandlersJS" LANGUAGE="javascript">
@@ -203,6 +205,8 @@ function loadpage(root, path, file, name, language, type, value, save2form) {
     tbContentElement.DocumentHTML=tbContentValue;
   }
   tbContentElement.BaseURL=root+path;
+  tbContentElement.onkeypress=wgCompose_keypress;
+  tbContentElement.onkeydown=wgCompose_check;
   tbContentElement.focus();
 }
 
@@ -679,6 +683,13 @@ function IMAGE_set(arr) {
     }
   }
 }  
+
+function wgCompose_show(buffer) {
+  el=tbContentElement.DOM.selection;
+  // el.clear();
+  rg=el.createRange();
+  rg.pasteHTML(buffer);
+}
 
 function DECMD_HYPERLINK_onclick() {
   var elIMG = false;
@@ -1315,6 +1326,22 @@ return tbContentElement_ContextMenuAction(itemIndex)
     <img class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/spltcell.gif" WIDTH="23" HEIGHT="22">
   </div>
 </div>
+
+<SCRIPT LANGUAGE=JavaScript FOR=tbContentElement EVENT=onkeypress>
+    myevent=tbContentElement.DOM.parentWindow.event;
+    if (!wgCompose_keypress(myevent)) {
+      tbContentElement.DOM.parentWindow.event.cancelBubble=true; 
+	  tbContentElement.DOM.parentWindow.event.returnValue=false; 
+    }
+</SCRIPT>
+
+<script LANGUAGE="javascript" FOR="tbContentElement" EVENT="onkeydown">
+    myevent=tbContentElement.DOM.parentWindow.event;
+    if (!wgCompose_check(myevent)) {
+      tbContentElement.DOM.parentWindow.event.cancelBubble=true; 
+	  tbContentElement.DOM.parentWindow.event.returnValue=false; 
+    }
+</script>
 
 <!-- DHTML Editing control Object. This will be the body object for the toolbars. -->
 <object ID="tbContentElement" CLASS="tbContentElement" 
