@@ -1,10 +1,15 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		$filename=substr($this->path, strlen($this->parent), -1);
-		?><option value="<?php echo $filename; ?>"<?php 
-		if ($selected==$filename) { 
-			echo " selected";
-		} 
-		?>><?php echo $nlsdata->name; ?></option><?php
+		if (!$modifier) {
+			$modifier=ARTHISTYPE;
+		}
+		if (!$grant || $this->CheckSilent($grant, $modifier)) {
+			$filename=substr($this->path, strlen($this->parent), -1);
+			?><option value="<?php echo $filename; ?>"<?php 
+			if ($selected==$filename) { 
+				echo " selected";
+			} 
+			?>><?php echo $nlsdata->name; ?></option><?php
+		}
 	}
 ?>

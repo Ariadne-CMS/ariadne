@@ -1,9 +1,14 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		?><option value="<?php echo $this->path; ?>"<?php 
-		if ($selected==$this->path) { 
-			echo " selected";
-		} 
-		?>><?php echo $nlsdata->name; ?></option><?php
+		if (!$modifier) {
+			$modifier=ARTHISTYPE;
+		}
+		if (!$grant || $this->CheckSilent($grant, $modifier)) {
+			?><option value="<?php echo $this->path; ?>"<?php 
+			if ($selected==$this->path) { 
+				echo " selected";
+			} 
+			?>><?php echo $nlsdata->name; ?></option><?php
+		}
 	}
 ?>

@@ -1,14 +1,19 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		$filename=substr($this->path, strlen($this->parent), -1);
-		?><option value="<?php echo $filename; ?>"<?php
-			if( $selected ) {
-				while( list($key,$value) = each($selected) ) {
-					// echo " f=\"$value\"";
-					if ($value==$filename) { echo " selected"; }
+		if (!$modifier) {
+			$modifier=ARTHISTYPE;
+		}
+		if (!$grant || $this->CheckSilent($grant, $modifier)) {
+			$filename=substr($this->path, strlen($this->parent), -1);
+			?><option value="<?php echo $filename; ?>"<?php
+				if( $selected ) {
+						while( list($key,$value) = each($selected) ) {
+						// echo " f=\"$value\"";
+						if ($value==$filename) { echo " selected"; }
+					}
 				}
-			}
-		?>><?php echo $nlsdata->name; ?></option>
-<?php
+			?>><?php echo $nlsdata->name; ?></option>
+<?php	
+		}
 	}
 ?>
