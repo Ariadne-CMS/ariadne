@@ -147,6 +147,12 @@
 							$g_comp->compile($newgrants, $grants);
 							if (!$g_comp->error) {
 								$this->data->grants[$type][$id] = $grants;
+								if (!@count($this->data->grants[$type][$id])) {
+									unset($this->data->grants[$type][$id]);
+									if (!@count($this->data->grants[$type])) {
+										unset($this->data->grants[$type]);
+									}
+								}
 							} else {
 								$this->error = $g_comp->error;
 							}
