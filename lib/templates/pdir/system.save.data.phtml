@@ -15,8 +15,7 @@
     reset($AR->nls->list);
     while (list($key, $value)=each($AR->nls->list)) {
       
-      if ($this->getdata($key,"none")) { // FIXME: not always sufficient check
-                                         // (if user selects a language but enters nothing and then submits, $$key will be set, but all values empty)
+      if ($this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
         if (!$this->data->$key) {
           $newnlsdata=new object;
         } else {
@@ -30,6 +29,11 @@
         $newnlsdata->summary=$this->getdata("summary",$key);
         $this->data->$key=$newnlsdata;
         $this->data->nls->list[$key]=$value;
+      } else { // clear language values for $key->name if set, keep the rest, just in case.
+        if ($this->data->$key) {
+          unset($this->data->$key->name);
+          unset($this->data->nls->list[$key]);
+        }
       }
     }
   }
