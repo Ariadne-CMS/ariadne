@@ -71,12 +71,12 @@ include($this->store->code."widgets/formlock/js.html");
     <tr>
       <td>
         <input type="text" name="firstname" size="12" maxlength="50" 
-          value="<?php echo $data->firstname; ?>">
+          value="<?php $this->showdata("firstname","none"); ?>">
         <input type="text" name="middlename" maxlength="50" 
-          size="5" value="<?php echo $data->middlename; ?>">
+          size="5" value="<?php $this->showdata("middlename","none"); ?>">
       </td><td>
 		<input type="text" name="lastname" size="20" maxlength="50" 
-           value="<?php echo $data->lastname; ?>">
+           value="<?php echo $this->showdata("lastname","none"); ?>">
       </td>
     </tr>
     </table>
@@ -87,7 +87,7 @@ include($this->store->code."widgets/formlock/js.html");
 		<font face="helvetica, sans-serif">
 		<?php echo $ARnls["address"]; ?> :</font>
 	</td><td colspan="2">
-		<input type="text" size="30"  name="address" value="<?php echo $data->address; ?>">
+		<input type="text" size="30"  name="address" value="<?php $this->showdata("address","none"); ?>">
 	</td>
 </tr>
 <tr>
@@ -95,10 +95,10 @@ include($this->store->code."widgets/formlock/js.html");
 		<font face="helvetica, sans-serif">
 		<?php echo $ARnls["zipcode"]; ?> :</font>
 	</td><td colspan="2">
-		<input type="text" size="6" maxlength="6" name="zipcode" value="<?php echo $data->zipcode; ?>">
+		<input type="text" size="6" maxlength="6" name="zipcode" value="<?php echo $this->showdata("zipcode","none"); ?>">
 		<font face="helvetica, sans-serif">
 		<?php echo $ARnls["city"]; ?> :</font>
-		<input type="text" size="15" name="city" value="<?php echo $data->city; ?>">
+		<input type="text" size="15" name="city" value="<?php echo $this->showdata("city","none"); ?>">
 	</td>
 </tr>
 <tr>
@@ -108,7 +108,7 @@ include($this->store->code."widgets/formlock/js.html");
 	</td><td colspan="2">
 	<select name="country">
 	<?php
-		$this->ls("/system/addressbook/countries/","ShowOption.phtml","selected=".$data->country);
+		$this->ls("/system/addressbook/countries/","ShowOption.phtml","selected=".$this->getdata("country","none"));
 	?>
 	</select>
 	</td>
@@ -118,7 +118,7 @@ include($this->store->code."widgets/formlock/js.html");
 		<font face="helvetica, sans-serif">
 		<?php echo $ARnls["telephone"]; ?> :</font>
 	</td><td colspan="2">
-		<input type="text" name="telephone" value="<?php echo $data->telephone; ?>">
+		<input type="text" name="telephone" value="<?php $this->showdata("telephone","none"); ?>">
 	</td>
 </tr>
 <tr>
@@ -126,7 +126,7 @@ include($this->store->code."widgets/formlock/js.html");
 		<font face="helvetica, sans-serif">
 		<?php echo $ARnls["mobile"]; ?> :</font>
 	</td><td colspan="2">
-		<input type="text" name="mobile" value="<?php echo $data->mobile; ?>">
+		<input type="text" name="mobile" value="<?php $this->showdata("mobile","none"); ?>">
 	</td>
 </tr>
 <tr>
