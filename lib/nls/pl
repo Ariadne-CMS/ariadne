@@ -1,7 +1,7 @@
 <?php
 
-	// Polish Language ver. 1.0 for Ariadne 2.0 RC2
-	// by Lukasz.Keler@ceti.pl
+	// Polish Language ver. 1.1 beta for Ariadne 2.4 RC1
+	// by Lukasz Keler <kelcon (at) poczta.fm>
 	debug("ARnls lib: pl","all");
 
 	$ARnls["aboutariadne"]					=	"O Ariadne";
@@ -17,11 +17,11 @@
 	$ARnls["all"]							=	"Wszystko";
 	$ARnls["allgrants"]						=	"Wszystkie prawa do %s";
 	$ARnls["allobjects"]					=	"Wszystkie obiekty";
-	$ARnls["any"]							=	"Any";
+	$ARnls["any"]							=	"Dowolny";
 	$ARnls["apply"]							=	"Zastosuj";
 	$ARnls["article"]						=	"Artykuł";
 	$ARnls["available"]						=	"Dostępny";
-	$ARnls["axnorootnode"]					=	"plik ax nie posiada root node, utworzymy nowy\n";
+	$ARnls["axnorootnode"]					=	"plik ax nie posiada rdzenia (root node), utworzymy nowy\n";
 	$ARnls["back"]							=	"Wstecz";
 	$ARnls["browse"]						=	"Przeglądaj";
 	$ARnls["caching"]						=	"Cache";
@@ -45,7 +45,7 @@
 	$ARnls["copy"]							=	"Kopiuj";
 	$ARnls["copying"]						=	"Kopiuje";
 	$ARnls["country"]						=	"Państwo";
-	$ARnls["cover"]							=	"Cover Image";
+	$ARnls["cover"]							=	"Okładka";
 	$ARnls["current"]						=	"Aktualny";
 	$ARnls["customdata"]					=	"Opcjonalne dane";
 	$ARnls["data"]							=	"Dane";
@@ -83,7 +83,7 @@
 	$ARnls["effect"]						=	"Efekt";
 	$ARnls["email"]							=	"E-mail";
 	$ARnls["end"]							=	"Koniec";
-	$ARnls["endson"]						=	"Ends on";
+	$ARnls["endson"]						=	"Kończy się na";
 	$ARnls["enternewvalue"]					=	"Wprowadź nową wartość";
 	$ARnls["err:alreadyexists"]				=	"%s już istnieje.";
 	$ARnls["err:cannotdelsystemusers"]		=	"Nie możesz usunąć użytkowników systemowych (admin oraz public)";
@@ -94,7 +94,7 @@
 	$ARnls["err:containsobj"]				=	"Obiekt zawiera inny obiekt, wpierw go usuń.";
 	$ARnls["err:convillegalformat"]			=	"Konwersja wywołana z niedozwolonym formatem (%s)";
 	$ARnls["err:corruptpathnosave"]			=	"Niewłaściwa ścieżka, niemożliwe jest zapisanie obiektu.";
-	$ARnls["err:couldnotopen"]				=	"Nie mogę otworzć (%s)";
+	$ARnls["err:couldnotopen"]				=	"Nie mogę otworzyć (%s)";
 	$ARnls["err:dontuseid"]					=	"Nie można używać '{id}' w nazwie użytkownika";
 	$ARnls["err:endswith.phtml"]			=	"Nie możesz edytować szablonów o rozszerzeniu .phtml.";
 	$ARnls["err:fileillegalchars"]			=	"%s nie jest prawidłową nazwą, można używać wyłącznie: a-z, A-Z, 0-9 '_' i '-'.";
@@ -102,7 +102,7 @@
 	$ARnls["err:filenameinvalidnoparent"]	=	"%s jest niewłaściwy(a): %s nie istnieje.";
 	$ARnls["err:fileupload"]				=	"Coś poszło nie tak podczas przesyłania pliku. Spróbuj ponownie\n\nJeżeli problem będzie się powtarzał, skontaktuj się z administratorem.";
 	$ARnls["err:fileuploadphtml"]			=	"Nie możesz przesyłać plików o rozszerzeniu .phtml.";
-	$ARnls["err:fileuploadvirus"]			=	"!The file contains the %s virus! Please check your system and then try again.\nIf the problem persists, contact your system administrator.";
+	$ARnls["err:fileuploadvirus"]			=	"!Plik zawiera wirusa %s! Sprawdź prosze swój system i spróbuj ponownie.\nJeżeli problem się powtórzy, skontaktuj się z administratorem..";
 	$ARnls["err:ftpnorenameself"]			=	"nie mogę zmienić nazwy na taką samą";
 	$ARnls["err:ftpnotemplate"]				=	"nie ma takiego szablonu";
 	$ARnls["err:ftpnotemplatebadperm"]		=	"nie mogę znaleźć szablonu (błędne uprawnienia do pliku?)";
@@ -127,7 +127,7 @@
 	$ARnls["err:nonamecache"]				=	"cached(): brak nazwy dla cache.";
 	$ARnls["err:nonameentered"]				=	"Musisz wprowadzić nazwę dla języka '%s'";
 	$ARnls["err:nonewtype"]					=	"arNewType nie jest zdefiniowany.";
-	$ARnls["err:noparent"]					=	"parent %s nie istnieje.";
+	$ARnls["err:noparent"]					=	"obiekt nadrzędny %s nie istnieje.";
 	$ARnls["err:noparentcreatefirst"]		=	"%s nie istnieje, utwórz go najpierw.";
 	$ARnls["err:noparentdefined"]			=	"Nie zdefiniowano obiektu nadrzędnego dla %s";
 	$ARnls["err:nosupportforshortcuts"]		=	"%s nie obsługuje skrótów.";
@@ -139,7 +139,7 @@
 	$ARnls["err:notfindusergroup"]			=	"Nie moge znaleźć użytkownika/grupy %s";
 	$ARnls["err:notgetlogin"]				=	"Nie mogę pobrać loginu/id z %s";
 	$ARnls["err:nothtmlfile"]				=	"To nie jest plik html.";
-	$ARnls["err:notmplupdate"]				=	"template(%s) no update";
+	$ARnls["err:notmplupdate"]				=	"szablon(%s) bez zmian";
 	$ARnls["err:notremovegrant"]			=	"Nie mogę usunąć uprawnień w %s (%s)";
 	$ARnls["err:notsavegrant"]				=	"Nie moge zapisać uprawnień w %s";
 	$ARnls["err:nousergroup"]				=	"%s nie jest użytkownikiem lub grupą";
@@ -178,7 +178,7 @@
 	$ARnls["groups"]						=	"Grupy";
 	$ARnls["height"]						=	"Wysokość";
 	$ARnls["help"]							=	"Pomoc";
-	$ARnls["highlight"]						=	"Highlight";
+	$ARnls["highlight"]						=	"Podświetlenie";
 	$ARnls["home"]							=	"Katalog domowy";
 	$ARnls["hours"]							=	"Godzin(y)";
 	$ARnls["id"]							=	"ID";
@@ -197,20 +197,20 @@
 	$ARnls["layouttempl"]					=	"Szablony dla %s";
 	$ARnls["link"]							=	"Link";
 	$ARnls["list"]							=	"Lista";
-	$ARnls["loading"]						=	"Loading...";
+	$ARnls["loading"]						=	"Wczytuję...";
 	$ARnls["location"]						=	"Lokalizacja";
 	$ARnls["locks"]							=	"Blokady";
 	$ARnls["login"]							=	"Login";
 	$ARnls["loginrequired"]					=	"Konieczna autoryzacja.";
 	$ARnls["logoff"]						=	"Wyloguj";
-	$ARnls["lookin"]						=	"Look in";
+	$ARnls["lookin"]						=	"Patrz w";
 	$ARnls["mailto"]						=	"Wyślij do";
 	$ARnls["manage"]						=	"Zarządzaj";
 	$ARnls["membersofgroup"]				=	"Członkowie tej grupy";
-	$ARnls["middle"]						=	"Middle";
+	$ARnls["middle"]						=	"Środek";
 	$ARnls["minutes"]						=	"Minuty";
 	$ARnls["mobile"]						=	"Komórka";
-	$ARnls["mode"]							=	"Mode";
+	$ARnls["mode"]							=	"Tryb";
 	$ARnls["modified"]						=	"Modyfikacja";
 	$ARnls["mon"]							=	"Pon";
 	$ARnls["month"]							=	"Miesiąc";
@@ -221,14 +221,14 @@
 	$ARnls["new"]							=	"Nowy";
 	$ARnls["next"]							=	"Dalej";
 	$ARnls["no"]							=	"Nie";
-	$ARnls["none"]							=	"None";
+	$ARnls["none"]							=	"Żaden";
 	$ARnls["nopermimportnew"]				=	"Brak uprawnień aby importować nowy obiekt";
 	$ARnls["nopermission"]					=	"Nie masz uprawnień aby skasować %s, czy kontynuować?";
 	$ARnls["noprofile"]						=	"Brak Profilu";
-	$ARnls["norepeat"]						=	"No repeat";
+	$ARnls["norepeat"]						=	"Bez powtórzeń";
 	$ARnls["notfound"]						=	"Wskazany obiekt nie może zostać znaleziony na tym serwerze.";
-	$ARnls["notfoundpath"]					=	"The requested path could not be found.";
-	$ARnls["notfoundtemplate"]				=	"The requested template could not be found.";
+	$ARnls["notfoundpath"]					=	"Ścieżka nie może być znaleziona.";
+	$ARnls["notfoundtemplate"]				=	"Szablon nie może być znalezion.";
 	$ARnls["notime"]						=	"Brak wprowadzonego czasu";
 	$ARnls["notodo"]						=	"Nie ma żadnych obiektów ToDo";
 	$ARnls["objectsoftype"]					=	"Obiekty typu";
@@ -245,8 +245,8 @@
 	$ARnls["passwordincorrect"]				=	"Nieprawidłowe hasło, spróbuj ponownie.";
 	$ARnls["path"]							=	"Ścieżka";
 	$ARnls["photo"]							=	"Zdjęcie";
-	$ARnls["photobook"]						=	"Photobook";
-	$ARnls["pobox"]							=	"POBox";
+	$ARnls["photobook"]						=	"Album zdjęć";
+	$ARnls["pobox"]							=	"Skrytka pocztowa";
 	$ARnls["preferences"]					=	"Ustawienia";
 	$ARnls["prev"]							=	"Wstecz";
 	$ARnls["priority"]						=	"Priorytet";
@@ -259,23 +259,23 @@
 	$ARnls["q:fileoverwrite"]				=	"'%s' już istnieje, czy nadpisać?";
 	$ARnls["q:logoff"]						=	"Czy na pewno chcesz się wylogować?";
 	$ARnls["q:morelanguages"]				=	"Wybierz język.<br>Naciśnij przycisk 'dalej' aby wprowadzić dane dla tego języka. Naciśnij przycisk 'zapisz' aby zapisać dane i zakończyć edycje.";
-	$ARnls["q:removeaddressbook"]			=	"Czy jesteś pewien, że chcesz usunąć tą książkę adresową?";
+	$ARnls["q:removeaddressbook"]			=	"Czy na pewno chcesz usunąć tą książkę adresową?";
 	$ARnls["q:removeall"]					=	"%s zawiera %s, czy chcesz usunąć wszytsko?";
-	$ARnls["q:removeallgrants"]				=	"Czy jesteś pewien, że chcesz usunąć wszystkie prawa do %s ?";
-	$ARnls["q:removearticle"]				=	"Czy jesteś pewien, że chcesz usunąć ten artykuł?";
-	$ARnls["q:removecalendar"]				=	"Czy jesteś pewien, że chcesz usunąć ten kalendarz?";
-	$ARnls["q:removecalitem"]				=	"Czy jesteś pewien, że chcesz usunąć ten element kalendarza?";
-	$ARnls["q:removedir"]					=	"Czy jesteś pewien, że chcesz usunąć ten katalog?";
-	$ARnls["q:removefile"]					=	"Czy jesteś pewien, że chcesz usunąć ten plik?";
-	$ARnls["q:removegrant"]					=	"Czy jesteś pewien, że chcesz usunąć prawa %s do %s ?";
-	$ARnls["q:removegroup"]					=	"Czy jesteś pewien, że chcesz usunąć tą grupe?";
-	$ARnls["q:removenewspaper"]				=	"Czy jesteś pewien, że chcesz usunąć ten newspaper?";
-	$ARnls["q:removeobject"]				=	"Czy jesteś pewien, że chcesz usunąć ten obiekt?";
-	$ARnls["q:removepage"]					=	"Czy jesteś pewien, że chcesz usunąć tę stronę?";
-	$ARnls["q:removeshortcut"]				=	"Czy jesteś pewien, że chcesz usunąć ten skrót?";
-	$ARnls["q:removetemplate"]				=	"Czy jesteś pewien, że chcesz usunąć szablon %s dla %s?";
-	$ARnls["q:removethistemplate"]			=	"Czy jesteś pewien, że chcesz usunąć ten szablon?";
-	$ARnls["q:removeuser"]					=	"Czy jesteś pewien, że chcesz usunąć tego użytkownika?";
+	$ARnls["q:removeallgrants"]				=	"Czy na pewno chcesz chcesz usunąć wszystkie prawa do %s ?";
+	$ARnls["q:removearticle"]				=	"Czy na pewno chcesz usunąć ten artykuł?";
+	$ARnls["q:removecalendar"]				=	"Czy na pewno chcesz usunąć ten kalendarz?";
+	$ARnls["q:removecalitem"]				=	"Czy na pewno chcesz usunąć ten element kalendarza?";
+	$ARnls["q:removedir"]					=	"Czy na pewno chcesz usunąć ten katalog?";
+	$ARnls["q:removefile"]					=	"Czy na pewno chcesz usunąć ten plik?";
+	$ARnls["q:removegrant"]					=	"Czy na pewno chcesz usunąć prawa %s do %s ?";
+	$ARnls["q:removegroup"]					=	"Czy na pewno chcesz usunąć tą grupe?";
+	$ARnls["q:removenewspaper"]				=	"Czy na pewno chcesz usunąć ten newspaper?";
+	$ARnls["q:removeobject"]				=	"Czy na pewno chcesz usunąć ten obiekt?";
+	$ARnls["q:removepage"]					=	"Czy na pewno chcesz usunąć tę stronę?";
+	$ARnls["q:removeshortcut"]				=	"Czy na pewno chcesz usunąć ten skrót?";
+	$ARnls["q:removetemplate"]				=	"Czy na pewno chcesz usunąć szablon %s dla %s?";
+	$ARnls["q:removethistemplate"]			=	"Czy na pewno chcesz usunąć ten szablon?";
+	$ARnls["q:removeuser"]					=	"Czy na pewno chcesz usunąć tego użytkownika?";
 	$ARnls["refreshnow"]					=	"Odśwież teraz!";
 	$ARnls["refreshonch."]					=	"Odśwież w razie zmiany";
 	$ARnls["refreshonrq."]					=	"Odśwież na żądanie";
@@ -301,11 +301,11 @@
 	$ARnls["telephone"]						=	"Telefon";
 	$ARnls["template"]						=	"Szablon";
 	$ARnls["templatecreated"]				=	"szablon(%s) utworzony";
-	$ARnls["templateonserver"]				=	"Template on Server";
+	$ARnls["templateonserver"]				=	"Szablon na serwerze";
 	$ARnls["templates"]						=	"Szablony";
 	$ARnls["text"]							=	"Tekst";
-	$ARnls["thisobject"]					=	"This Object";
-	$ARnls["thu"]							=	"Thu";
+	$ARnls["thisobject"]					=	"Ten obiekt";
+	$ARnls["thu"]							=	"Czw";
 	$ARnls["thumbcolor"]					=	"Kolor";
 	$ARnls["thumbheight"]					=	"Wysokość";
 	$ARnls["thumbnail"]						=	"Ikonka";
@@ -313,10 +313,10 @@
 	$ARnls["time"]							=	"Czas";
 	$ARnls["title"]							=	"Tytuł";
 	$ARnls["todo"]							=	"Todo";
-	$ARnls["tue"]							=	"Tue";
+	$ARnls["tue"]							=	"Wto";
 	$ARnls["type"]							=	"Typ";
 	$ARnls["types"]							=	"Typy";
-	$ARnls["typetree"]						=	"Typetree";
+	$ARnls["typetree"]						=	"Drzewo typów";
 	$ARnls["unlock"]						=	"Odblokuj";
 	$ARnls["up"]							=	"W górę";
 	$ARnls["update"]						=	"Uaktualnij";

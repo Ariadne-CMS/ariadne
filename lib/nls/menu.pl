@@ -1,7 +1,7 @@
 <?php
 
-// Polish Language ver. 1.0 for Ariadne 2.0 RC2
-// by Lukasz.Keler@ceti.pl
+	// Polish Language ver. 1.1 beta for Ariadne 2.4 RC1
+	// by Lukasz Keler <kelcon (at) poczta.fm>
 
 	$ARnls["m_about"]						=	"O&nbsp;Ariadne";
 	$ARnls["m_cache"]						=	"Cache";
@@ -27,6 +27,7 @@
 	$ARnls["m_logoff"]						=	"Wyloguj";
 	$ARnls["m_new"]							=	"Nowy";
 	$ARnls["m_object"]						=	"Obiekt";
+	$ARnls["m_owner"]						=	"Właściciel";
 	$ARnls["m_page"]						=	"Strona";
 	$ARnls["m_preferences"]					=	"Ustawienia";
 	$ARnls["m_priority"]					=	"Priorytet";
