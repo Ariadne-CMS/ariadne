@@ -21,10 +21,6 @@
 	if ($data->thumbwidth || $data->thumbheight) {
 		$configcache->thumb["width"]=$data->thumbwidth;
 		$configcache->thumb["height"]=$data->thumbheight;
-	} else {
-		debugon();
-		debug("no thumb width or height at ".$this->path);
-		debugoff();
 	}
 	if ($data->thumbcolor) {
 		$configcache->thumb["color"]=$data->thumbcolor;
