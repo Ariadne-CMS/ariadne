@@ -1,14 +1,9 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-	$width=$data->thumbwidth;
-	$height=$data->thumbheight;
-	if (!$width) {
-		$width=$height;
-	}
-	if (!$width) {
-		$width=40;
-		$height=40;
-	}
+	$settings=$this->get_thumb_settings();
+	$width=$settings["width"];
+	$height=$settings["height"];
+	$thumbcolor=$settings["color"];
 	$width+=10;
 	$height+=10;
 ?>
@@ -16,7 +11,7 @@
   .photo {
      float: left;
      margin: 4px;
-     background-color: #<?php if ($data->thumbcolor) { echo $data->thumbcolor; } else { echo "CCCCCC"; } ?>;
+     background-color: #<?php echo $thumbcolor; ?>;
      border: outset 2px;
   }
 </style>
