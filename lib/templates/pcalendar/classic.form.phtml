@@ -1,12 +1,12 @@
 <?php
 	/******************************************************************
-	 classic.form.phtml                                    Muze Ariadne
+	 classic.form.phtml															Muze Ariadne v2.0b
 	 ------------------------------------------------------------------
 	 Arguments: $arNewType, $arNewFilename, $arReturnPage
 	 Grant needed: read
 	 Global variables: none
 
-	 This template displays the input form for this object. 
+	 This template displays the input form for this object.
 
 	 no result.
 
@@ -22,34 +22,51 @@
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
 </head>
 <body bgcolor="white">
-<form>
+<form method="post">
+<!-- hidden form variables needed by new.phtml/save.phtml -->
 <input type="hidden" name="arNewType" value="<?php echo $arNewType; ?>">
 <input type="hidden" name="arNewFilename" value="<?php echo $arNewFilename; ?>">
 <input type="hidden" name="arReturnPage" value="<?php echo $arReturnPage; ?>">
 
-<table border="0" cellspacing="0">
-<tr bgcolor="#404074">
-	<td colspan="2">
+<table border="0" cellspacing="0" width="100%"> 
+<tr>
+	<td bgcolor="#404074">
 		<?php
-			$wgNLSpretext="<font face=\"helvetica, sans-serif\" color=\"white\" size=\"+1\"><b>".
+			$wgNLSpretext="<font face=\"helvetica, sans-serif\" size=\"+1\" color=\"white\"><b>".
 				$title.":</b></font><br>";
 			include($this->store->code."widgets/nls/form.phtml");
 		?>
 	</td>
-</tr><tr>
+</tr>
+</table>
+<table border="0">
+<tr>
 	<td align="right">
-		<font face="helvetica, sans-serif"><b><?php echo $ARnls["name"]; ?>&nbsp;:</b></font>
+		<font face="helvetica, sans-serif"><b><?php echo $ARnls["name"]; ?> :</b></font>
+	</td><td>
+		<input type="text" name="<?php echo $nls."[name]"; ?>" maxlength="50" 
+			value="<?php $this->showdata("name",$nls); ?>">
 	</td>
-	<td>
-		<input type="text" name="<?php echo $nls; ?>[name]" maxlength="50" value="<?php $this->showdata("name",$nls); ?>">
+</tr><tr>
+	<td align="right" valign="top">
+		<font face="helvetica, sans-serif"><?php echo $ARnls["summary"]; ?>&nbsp;:</font>
+	</td>
+	<td colspan="2">
+		<textarea name="<?php echo $nls."[summary]"; ?>" cols="50" rows="4" wrap="soft"><?php 
+			echo ereg_replace("&","&amp;",$this->getdata("summary",$nls)); 
+		?></textarea>
 	</td>
 </tr>
-<tr>
+</table>
+<p>
+<table width="100%" cellspacing="0" border="0">
+<tr bgcolor="#404074">
 	<td>
 		<?php if ($arNewType) { ?>
 			<input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="history.back()">
 		<?php } else { ?>
-			<input type="submit" name="next" value="<?php echo $ARnls["cancel"]; ?>">
+			<input type="submit" name="arSubmit" value="<?php echo $ARnls["cancel"]; ?>">
+
 			<?php
 				$wgRecurseConfirm=$ARnls["q:removecalendar"];
 				$wgRecurseAction="delete";
@@ -57,15 +74,17 @@
 				include($this->store->code."widgets/recurse/form.js");
 				include($this->store->code."widgets/recurse/form.html");
 			?>
+
 		<?php } ?>
 	</td>
 	<td align="right">
-		<input type="submit" name="next" value="<?php echo $ARnls["save"]; ?>">	
+		<input type="submit" name="arSubmit" value="<?php echo $ARnls["save"]; ?>">	
 	</td>
 </tr>
 </table>
 </form>
 </body>
+</html>
 <?php
 	}
 ?>
