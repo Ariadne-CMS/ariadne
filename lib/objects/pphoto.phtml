@@ -68,6 +68,20 @@ class pphoto extends pfile { // pphoto class definition
 		return $result;		
 	}
 
+	function getExif( $sections = false, $arrays = true, $thumbnail = false) {
+		if (function_exists('exif_read_data')) {
+			$tmpsrc = tempnam($this->store->files."temp/", "photo");
+			$f_store=$this->store->get_filestore("files");
+			$f_store->copy_from_store($tmpsrc, $this->id, "file");
+			$result=@exif_read_data($tmpsrc,$sections,$arrays,$thumbnail);
+			unlink($tmpsrc);
+			$f_store->close();
+		} else {
+			$result['ERROR']='EXIF not supported by PHP';
+		}
+		return $result;
+	}
+	
 	function scale($x, $y, $fillcolor=false) {
 		global $ARConfig;
 
@@ -529,6 +543,10 @@ class pphoto extends pfile { // pphoto class definition
 			return $this->getimageinfo();
 		}
 	}
-
+	
+	function _getExif( $sections = false, $arrays = true, $thumbnail = true) {
+		return $this->getExif( $sections, $arrays, $thumbnail);
+	}
+	
 } // end of pphoto class definition
 ?>
