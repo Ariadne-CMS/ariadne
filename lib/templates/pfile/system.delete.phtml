@@ -1,13 +1,14 @@
 <?php
   if ($this->CheckLogin("read") && $this->CheckConfig()) {
-    // first do normal copyto
-    include($this->store->code."templates/pobject/system.delete.phtml");
+    // first do normal delete
+    $this->call("pobject::system.delete.phtml");
     if (!$arResult) {
       // no errors: delete files
-      $d=dir($this->store->files."files".$this->path);
-      while ($entry=$d->read()) {
-        if (!is_dir($this->store->files."files".$this->path.$entry)) {
-          unlink($this->store->files."files".$this->path.$entry);
+      if ($d=@dir($this->store->files."files".$this->path)) {
+        while ($entry=$d->read()) {
+          if (!is_dir($this->store->files."files".$this->path.$entry)) {
+            unlink($this->store->files."files".$this->path.$entry);
+          }
         }
       }
     }
