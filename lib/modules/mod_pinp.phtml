@@ -59,7 +59,7 @@ class scanner {
 		$YYCURSOR = 0;
 	}
 
-	function scan($result) {
+	function scan(&$result) {
 		$YYCURSOR = &$this->YYCURSOR;
 		$YYBUFFER = &$this->YYBUFFER;
 		$YYCLASSES = &$this->YYCLASSES;
@@ -166,6 +166,7 @@ class scanner {
 								}
 							break;
 							default:
+								++$YYCURSOR;
 								$result = "<$yych";
 							break;
 						}
@@ -457,7 +458,7 @@ class pinp {
 	function next_token() {
 		$value="";
 		if (count($this->tokens) == 0) {
-			$token = $this->scanner->scan(&$value);
+			$token = $this->scanner->scan($value);
 			if (is_array($value)) {
 				$this->tokens = $value;
 				$this->token = T_MULTIPART_STRING_START;
