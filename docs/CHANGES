@@ -70,6 +70,7 @@ Bugs Fixed:
 	  aborted , because the transaction isn't rolled back then, but the next
 	  connection will be seen as a continuation of the current connection.
 	  Bug found by reading commends on www.php.net
+	- redo on the error handling in the postgresql store, i should give nice error's now, and removed a lot of duplicate output
 
 Changes in Ariadne since version 2.2
 

@@ -51,7 +51,7 @@ class postgresqlstore {
 	 **********************************************************************************/
 
 		debug("postgresqlstore($path, [array])", "store");
-		if (! function_exists("pg_pconnect")) {
+		if (!extension_loaded("pgsql")) {
 			dl("pgsql.so");
 		}
 		$this->error = "";
@@ -217,9 +217,8 @@ class postgresqlstore {
 			$epath = AddSlashes($id);
 			$query_string = "select $nodes_tbl.object from $nodes_tbl where $nodes_tbl.path = '$epath'";
 			$qresult = $this->store_run_query($query_string);
-			if (!$qresult) {
-				$this->error = "Could not fetch object id";
-				debug($this->error,"store");
+			if ($qresult === false) {
+				debug("get: failed on query","store");
 			} else {
 				$temp = pg_fetch_array($qresult);
 				$id = $temp["object"];
@@ -235,9 +234,8 @@ class postgresqlstore {
 			$etimestamp = AddSlashes($timestamp);
 			$query_string = "update $objects_tbl set lastchanged='".date("r",$timestamp)."' where id = $eid";
 			$qresult = $this->store_run_query($query_string);
-			if (!$qresult) {
-				$this->error = "Could not update object";
-				debug($this->error,"store");
+			if ($qresult === false) {
+				debug("touch: failed on query","store");
 			} else {
 				debug("Updated object","store");
 				$result = pg_affected_rows($qresult);
@@ -504,32 +502,23 @@ class postgresqlstore {
 			} else {
 				$query_string = "update $objects_tbl set object='$edata', lastchanged=current_timestamp where id=$id"; 
 			}
-			$this->store_run_query( $query_string);
-			$err = pg_errormessage($this->connect_id);
-			if (! $err) {
+			$err = $this->store_run_query( $query_string);
+			if ($err === false) {
+				debug("save: update object failed on query!","store");
+				$result = 0;
+			} else {
 				debug("save: query=$query_string","all");
 				$this->save_properties($properties, $id, $this); 
 				if($priority !== false) {
 					$query_string = "update $nodes_tbl set priority=$epriority where path='$epath'";
-					$this->store_run_query( $query_string);
-					$err = pg_errormessage($this->connect_id);
-					if (! $err) {
-						debug("save: query=$query_string","all");
-						$result = $path;
-					} else {
-						$this->error="ERROR: PostgreSQL: $err";
-						debug("save: query=$query_string","store");
-						debug("save: update object failed!","store");
-						debug("save: ".$this->error,"store");
+					$err = $this->store_run_query( $query_string);
+					if ($err === false) {
+						debug("save: update object failed on query!","store");
 						$result = 0;
+					} else {
+						$result = $path;
 					}
 				}
-			} else {
-				$this->error="ERROR: PostgreSQL: $err";
-				debug("save: query=$query_string","store");
-				debug("save: update object failed!","store");
-				debug("save: ".$this->error,"store");
-				$result = 0;
 			}
 		} else { // insert new
 			debug("save: new","all");
@@ -557,7 +546,6 @@ class postgresqlstore {
 				}
 				$query_string = "insert into $objects_tbl (type,object,vtype) values ('$etype','$edata','$evtype')";
 				$exec = $this->store_run_query( $query_string);
-				$err = pg_errormessage($this->connect_id);
 				$id = false;
 				if ($exec !== false) {
 					$query_string = "select currval('".$objects_tbl."_id_seq') as id from $objects_tbl";
@@ -568,26 +556,22 @@ class postgresqlstore {
 					}
 				}
 
-				if (! $err && ($id !== false)) {
+				if ($exec !== false && ($id !== false)) {
 					$query_string = "insert into $nodes_tbl (path,parent,object,priority) values ('$epath','$eparent',$id,$epriority)";
 					$exec = $this->store_run_query( $query_string);
-					$err = pg_errormessage($this->connect_id);
-					if (!$err) {				
+					if ($exec) {
 						$this->save_properties($properties, $id, $this);
 						$result=$path;
 					} else {
-						$this->error="ERROR: PostgreSQL: $err";
-						debug("save: insert node failed!","store");
-						debug("save: ".$this->error,"store");
+						debug("save: insert node failed on query!","store");
 						$result=0;
 					}
 				} else {
-					$this->error="ERROR: PostgreSQL: $err";
-					debug("save: insert object failed!","store");
-					debug("save: ".$this->error,"store");
+					debug("save: insert object failed on query!","store");
 					$result=0;
 				}
 			} else {
+				error($this->error);
 				error("PANIC: could not obtain write lock on nodes table!");
 				$this->close();
 				exit;
@@ -680,12 +664,19 @@ class postgresqlstore {
 			if (sizeof($paths) == 1) { // only one path for this object
 				$result = $this->purge($path); // therefore purge the object.
 			} else { // only delete the given path
+				$this->start_transaction();
 				$query_string = "delete from $nodes_tbl where path='$epath'";
 				$exec = $this->store_run_query( $query_string);
-				if (pg_cmdtuples($exec)) {
-					$result = 1;
+				if($exec){
+					if (pg_cmdtuples($exec)) {
+						$result = 1;
+					} else {
+						$result = 0;
+					}
+					$this->stop_transaction(true);
 				} else {
-					$result = 0;
+					debug("delete: delete failed on query!","store");
+					$this->stop_transaction(false);
 				}
 			}
 		}
@@ -707,6 +698,7 @@ class postgresqlstore {
 		debug("exists($path)","store");
 		$this->error = "";
 		$epath = AddSlashes($path);
+		$object = false;
 
 		$nodes_tbl = $this->tbl_prefix."nodes";
 		$objects_tbl = $this->tbl_prefix."objects";
@@ -714,11 +706,15 @@ class postgresqlstore {
 
 		$query_string = "select object from $nodes_tbl where path='$epath'";
 		$exec = $this->store_run_query( $query_string);
-		if ($exec && (pg_numrows($exec) > 0) && ($row = pg_fetch_array($exec, 0))) {
-			$object=intval($row["object"]);
-			debug("exists: end (yes)","all");
+		if ($exec){
+			if( (pg_numrows($exec) > 0) && ($row = pg_fetch_array($exec, 0))) {
+				$object=intval($row["object"]);
+				debug("exists: end (yes)","all");
+			} else {
+				debug("exists: end (no)","all");
+			}
 		} else {
-			debug("exists: end (no)","all");
+			debug("exists: failed on query!","all");
 		}
 		return ($object);
 	}
@@ -766,6 +762,7 @@ class postgresqlstore {
 					$edestination = AddSlashes($destination);
 					debug("link: new destination: $destination ($subid)","all");
 				} else {
+					error("link: ".$this->error);
 					error("PANIC: could not obtain write lock on nodes table!");
 					$this->close();
 					exit;
@@ -775,12 +772,8 @@ class postgresqlstore {
 			if ($id) {
 				$query_string = "insert into $nodes_tbl (path, parent, object ) values ('$edestination', '$eparent', $id)";
 				$exec = $this->store_run_query( $query_string);
-				$err = pg_errormessage($this->connect_id);
-				if ($err) {				
-					$this->error = "ERROR: PostgreSQL: $err";
-					debug("link: insert node failed!","store");
-					debug("link: ".$this->error,"store");
-					debug("link: query=$query_string","store");
+				if ($exec === false) {
+					debug("link: insert node failed on query!","store");
 					$result = false;
 				}
 				debug("link: end","all");
@@ -849,12 +842,14 @@ class postgresqlstore {
 			$mask = substr($destination, strlen($parent));
 			if (ereg("(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) {
 				$query_string = "LOCK TABLE $nodes_tbl IN SHARE MODE";
-				if ($exec = $this->store_run_query( $query_string)) {
+				$exec = $this->store_run_query( $query_string);
+				if ($exec ==! false ) {
 					$subid = $this->get_nextid($parent,$mask);
 					$destination = ereg_replace("\{[0-9]:id\}",strval($subid),$destination);
 					$edestination = AddSlashes($destination);
 					debug("move: new destination: $destination ($subid)","all");
 				} else {
+					error($this->error);
 					error("PANIC: could not obtain write lock on nodes table!");
 					$this->close();
 					exit;
@@ -867,10 +862,20 @@ class postgresqlstore {
 				$parentlength = strlen($parent);
 				// first move the root path
 				$query_string = "update $nodes_tbl set path='$edestination', parent='$eparent' where path='$esource'";
-				if ($result=$this->store_run_query($query_string)) {
-						// then move the children
-						$query_string = "update $nodes_tbl set path=('$edestination' || substring(path FROM $sourcelength+1)), parent=('$edestination' || substring(parent, $sourcelength+1)) where path like '$esource%'";
-						$result=$this->store_run_query($query_string);
+				$exec = $this->store_run_query($query_string);
+				if ($exec !== false) {
+					// then move the children
+					$query_string = "update $nodes_tbl set path=('$edestination' || substring(path FROM $sourcelength+1)), parent=('$edestination' || substring(parent, $sourcelength+1)) where path like '$esource%'";
+					$exec=$this->store_run_query($query_string);
+					if ($exec === false) {
+						$result = false;
+						debug("move: update of childen failed on query","all");
+					} else {
+						$result = true;
+					}
+				} else {
+					$result = false;
+					debug("move: update of node failed on query","all");
 				}
 				debug("move: end","all");
 			} else {
@@ -929,15 +934,18 @@ class postgresqlstore {
 		$nodes_tbl = $this->tbl_prefix."nodes";
 		$objects_tbl = $this->tbl_prefix."objects";
 		$types_tbl = $this->tbl_prefix."types";
+		$result = false;
 
 		$query_string = "select distinct type from $types_tbl where implements='".AddSlashes($implements)."' and type='".AddSlashes($type)."'";
 		$this->error = "";
 		$exec = $this->store_run_query( $query_string);
-		if ($exec && pg_numrows($exec) > 0) {
-			$row = pg_fetch_array($exec, 0);
+		if ($exec !== false){
+			if( pg_numrows($exec) > 0) {
+				$row = pg_fetch_array($exec, 0);
+			}
 		}
 		if ($row) {
-			$result = 1;
+			$result = true;
 		}
 		debug("implements: end ($result)","all");
 		return ($result);
@@ -1017,11 +1025,13 @@ class postgresqlstore {
 		debug("load_properties($object)","all");
 		if ($object) {
 			$query_string = "select name from ".$this->tbl_prefix."properties";
-			$exec = @$this->store_run_query( $query_string);
+			$exec = $this->store_run_query( $query_string);
 			$i = 0;
-			while ($prop = @pg_fetch_array($exec, $i++)) {
-				if ($value = $this->load_property($object,$prop["name"])) {
-					$result[$prop["name"]] = $value;
+			if($exec !== false){
+				while ($prop = @pg_fetch_array($exec, $i++)) {
+					if ($value = $this->load_property($object,$prop["name"])) {
+						$result[$prop["name"]] = $value;
+					}
 				}
 			}
 		}
