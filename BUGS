@@ -19,9 +19,7 @@ Currently known broken in CVS / Todo before 2.0b10
 - pobject: CheckSilent() is broken, only works after a CheckLogin, even if a cookie is available.
 - install.php: needs a user interface with configuration entry form and 
     PHP checks.
-- store: link() doesn't check if the parent of destination exists.
 - add/edit/delete(type) not in CVS yet.
-- nls wizard in new interface not yet implemented.
 
 Todo before 2.0RC1
 
@@ -34,3 +32,4 @@ Todo before 2.0RC1
 - fix logoff menu entry
 - show/hide explorer bar
 - create manage.html templates per type, use small/large icons/details
+- user profiles
