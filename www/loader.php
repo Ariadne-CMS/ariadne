@@ -117,7 +117,7 @@
 				// headers_sent check should not be neccessary, but apparantly is... 
 				$headerlist=explode("\n",$headers);
 				while (list($key,$header)=@each($headerlist)) {
-					Header($header);
+					ldHeader($header);
 				}
 			}
 			ob_end_flush();
