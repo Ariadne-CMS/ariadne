@@ -1,9 +1,10 @@
 Readme                                                             Muze Ariadne 
 ===============================================================================
 
-WARNING: The internal character set in Ariadne 2.1 has been changed to UTF-8. 
-         If you want to import older .ax files (for upgrades) you
-         need to read the docs/upgrade.txt file first.
+WARNING: The way configuration data is stored in Ariadne 2.4 is different from
+         Ariadne 2.2. There is an upgrade.php script in the install directory
+         which will convert your existing database and adds a few new objects.
+         See the file docs/upgrade.txt for more information.
 
 Ariadne is a web application server and a content management system. It is a 
 lot like Zope, but not quite the same.
@@ -49,7 +50,7 @@ For more information or questions, point your mail client to
 'ariadne@muze.nl', or read the newsgroups at 'news.muze.nl'.
 
 14-02-2000
-Last Updated 15-02-2002
+Last Updated 19-11-2004
 
 Auke van Slooten
 Muze
