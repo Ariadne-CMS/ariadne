@@ -1037,7 +1037,7 @@ return tbContentElement_ContextMenuAction(itemIndex)
 
 	<div class="tbSeparator" unselectable='on'></div>
 
-	<div class="tbButton" unselectable='on' ID="DECMD_DETAILS" TITLE="Undo" LANGUAGE="javascript" onclick="return DECMD_DETAILS_onclick()">
+	<div class="tbButton" unselectable='on' ID="DECMD_DETAILS" TITLE="Details" LANGUAGE="javascript" onclick="return DECMD_DETAILS_onclick()">
 		<img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/details.gif" WIDTH="23" HEIGHT="22">
 	</div>
 </div>
