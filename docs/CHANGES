@@ -56,6 +56,7 @@ Bugs Fixed:
 	- Fixed pinp interface to ls() and find() in psearch.
 	- Fixed importing of users in group, when the users does already exists then link it under the group instead of complaining
 	- included nls data in import
+	- Removed the table tags from the allowed tags in the _loose editor.ini definition.
 
 Changes in Ariadne since version 2.2
 
