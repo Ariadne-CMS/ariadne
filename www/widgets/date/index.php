@@ -57,13 +57,29 @@
 <tr>
   <td rowspan="3"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
   <td><a href="<?php echo $PHP_SELF; ?>?date=<?php 
-      echo mktime(0,0,0,$date_arr["mon"]-1,$date_arr["mday"],$date_arr["year"]).$args; 
+
+			$mday = $date_arr["mday"];
+			$newtime = mktime( 0, 0, 0, $date_arr["mon"]-1, $date_arr["mday"], $date_arr["year"]);
+			$newtime_arr = getdate($newtime);
+			if ($newtime_arr["mday"] < $mday) {
+				$mday -= $newtime_arr["mday"];
+			}
+			echo mktime( 0, 0, 0, $date_arr["mon"]-1, $mday, $date_arr["year"]); 
+
     ?>"><img src="<?php echo $AR->dir->images; ?>calendar/prev.gif" alt="<" border="0"></a>
       <font face="arial, helvetica" size="2" color="white"><b>&nbsp;<?php 
       echo $date_arr["month"]; 
     ?>&nbsp;</b></font>
       <a href="<?php echo $PHP_SELF; ?>?date=<?php 
-      echo mktime(0,0,0,$date_arr["mon"]+1,$date_arr["mday"],$date_arr["year"]).$args; 
+
+			$mday = $date_arr["mday"];
+			$newtime = mktime( 0, 0, 0, $date_arr["mon"]+1, $date_arr["mday"], $date_arr["year"]);
+			$newtime_arr = getdate($newtime);
+			if ($newtime_arr["mday"] < $mday) {
+				$mday = $mday - $newtime_arr["mday"];
+			}
+			echo mktime( 0, 0, 0, $date_arr["mon"]+1, $mday, $date_arr["year"]); 
+
     ?>"><img src="<?php echo $AR->dir->images; ?>calendar/next.gif" alt=">" border="0"></a>
   </td>
   <td align="center">&nbsp;</td>
