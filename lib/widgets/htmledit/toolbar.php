@@ -336,11 +336,7 @@ function tbContentElement_DisplayChanged() {
 
 
 function SAVE_onclick(newurl) {
-	if (tbContentFrame.do_save) {
-		tbContentFrame.do_save();
-	} else {
-		savewindow=window.open(wgSaveTmpl+'?arReturnPage='+escape(newurl), 'savewindow', 'directories=no,height=100,width=300,location=no,status=no,toolbar=no,resizable=no');
-	}
+	savewindow=window.open(wgSaveTmpl+'?arReturnPage='+escape(newurl), 'savewindow', 'directories=no,height=100,width=300,location=no,status=yes,toolbar=no,resizable=no');
 	top.wgTBIsDirty=false;
 }
 
@@ -765,22 +761,15 @@ function tbContentElement_DocumentComplete() {
 }
 
 
+/*
 function loadStyleSheet() {
 	tbContentElement=document.getElementById('tbContentElement');
 	if (navigator.appName.indexOf("Microsoft")!=-1) {
 		var e = tbContentElement.contentWindow.document.createElement( '<link href="' + tbContentEditOptions['css']['stylesheet'] + '" rel="stylesheet" type="text/css">' );
 		tbContentElement.contentWindow.document.body.appendChild( e );
-/*
-		KeepState=new StateObject();
-		tbContentElement.contentWindow.document.body.onBlur=KeepState.SaveSelection;
-		tbContentElement.contentWindow.document.body.onkeyup=tbContentElement_DisplayChanged;
-		tbContentElement.contentWindow.document.body.onmouseup=tbContentElement_DisplayChanged;
-		tbContentElement.contentWindow.document.body.DocumentComplete=tbContentElement_DocumentComplete;
-		tbContentElement.contentWindow.document.body.onkeypress=tbContentElement_Compose_press;
-		tbContentElement.contentWindow.document.body.onkeydown=tbContentElement_Compose_down;
-*/
 	}
 }
+*/
 
 function getContents(data_id) {
 	var data="";
@@ -844,12 +833,151 @@ function getValue(data_name) {
 				}
 				break;
 			default :
-				value='';
+				value=data.innerHTML;
 				break;
 		}
 		return value;
 	} else {
 		return '';
+	}
+}
+
+function setValue(data_name, value) {
+	var data="";
+	if (data=tbContentElement.contentWindow.document.getElementById(data_name)) {
+		switch (data.type) {
+			case 'checkbox' :
+				if (data.checked) {
+					value=data.value;
+				}
+				break;
+			case 'radio' :
+				var radio=tbContentElement.contentWindow.document.all[data_name];
+				if (radio) { 
+					for (var i=0; i<radio.length; i++) {
+						if (radio[i].checked) {
+							value=radio[i].value;
+							break;
+						}
+					}
+				}
+				break;
+			case 'hidden' :
+			case 'password' :
+			case 'text' :
+				data.value = value;
+				break;
+			case 'select-one' :
+				value=data.options[data.selectedIndex].value;
+				break;
+			case 'select-multiple' :
+				value=new Array();
+				for (var i=0; i<data.length; i++) {
+					if (data.options[i].selected) {
+						value[value.length]=data.options[i].value;
+					}
+				}
+				break;
+			default :
+				data.innerHTML = value;
+				break;
+		}
+	}
+}
+
+var arFieldRegistry=new Array();
+var arObjectRegistry=new Array();
+var arChangeRegistry=new Array();
+
+function registerDataField(fieldId, fieldName, objectPath, objectId) {
+	arFieldRegistry[fieldId]=new dataField(fieldId, fieldName, objectPath, objectId);
+	if (!arObjectRegistry[objectId]) {
+		arObjectRegistry[objectId]=new Array();
+	}
+	if (!arObjectRegistry[objectId][fieldName]) {
+		arObjectRegistry[objectId][fieldName]=new Array();
+	}
+	arObjectRegistry[objectId][fieldName][arObjectRegistry[objectId][fieldName].length]=arFieldRegistry[fieldId];
+}
+
+function dataField(fieldid, name, path, id) {
+	this.fieldId=fieldid;
+	this.name=name;
+	this.path=path; //FIXME: an object may have multiple paths, not all of which the user may have edit grants on
+	this.id=id;
+}
+
+function registerChange(fieldId) {
+	var objectId=arFieldRegistry[fieldId].id;
+	var fieldName=arFieldRegistry[fieldId].name;
+	if (!arChangeRegistry[fieldName+objectId]) {
+		var index=arChangeRegistry.length;
+		arChangeRegistry[index]=arFieldRegistry[fieldId];
+		arChangeRegistry[new String(fieldName+objectId)]=index;
+	}
+}
+
+function initEditable() {
+	var editable;
+	var editWindow=document.getElementById('tbContentElement').contentWindow;
+	for (i=0; i<editWindow.document.all.length; i++) {
+		if (editWindow.document.all[i].className == "editable") {
+			editable=editWindow.document.all[i];
+			editable.onfocus=checkChangeStart;
+			editable.onblur=checkChangeEnd;
+			editable.contentEditable=true;
+		}
+	}
+}
+
+function checkChangeStart() {
+	this.startContent=getValue(this.id);
+}
+
+function checkChangeEnd() {
+	var newValue = getValue(this.id);
+	if (this.startContent!=newValue) {
+		registerChange(this.id);
+
+		var objectId = arFieldRegistry[this.id].id;
+		for (var i in arObjectRegistry[objectId][arFieldRegistry[this.id].name]) {
+			var fieldId = arObjectRegistry[objectId][arFieldRegistry[this.id].name][i].fieldId;
+			arFieldRegistry[fieldId].value = newValue;
+			setValue(fieldId, newValue);
+		}
+		
+	}
+}
+
+function isDirty() {
+	return arChangeRegistry.length;
+}
+
+function getDirtyField() {
+	return arChangeRegistry.pop();
+}
+
+function DECMD_DETAILS_onclick() {
+	var mydoc=tbContentElement.contentWindow.document;
+	var foundit=false;
+	if (mydoc.styleSheets[0]) {
+		var myRules=mydoc.styleSheets[0].rules;
+		for (var i=0; i<myRules.length; i++) {
+			if (myRules[i].selectorText=='.editable') {
+				if (myRules[i].style.borderWidth=="1px") {
+					myRules[i].style.borderWidth='0px';
+				} else {
+					myRules[i].style.borderWidth='1px';
+					myRules[i].style.borderColor='black';
+					myRules[i].style.borderStyle='dotted';
+				}	
+				foundit=true;
+			}
+		}
+		if (!foundit) {
+			// append a style
+			alert('no .editable');
+		}
 	}
 }
 
@@ -902,10 +1030,16 @@ return tbContentElement_ContextMenuAction(itemIndex)
 	<div class="tbButton" unselectable='on' ID="DECMD_UNDO" TITLE="Undo" LANGUAGE="javascript" onclick="return DECMD_UNDO_onclick()">
 		<img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/undo.gif" WIDTH="23" HEIGHT="22">
 	</div>
+
 	<div class="tbButton" unselectable='on' ID="DECMD_REDO" TITLE="Redo" LANGUAGE="javascript" onclick="return DECMD_REDO_onclick()">
 		<img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/redo.gif" WIDTH="23" HEIGHT="22">
 	</div>
 
+	<div class="tbSeparator" unselectable='on'></div>
+
+	<div class="tbButton" unselectable='on' ID="DECMD_DETAILS" TITLE="Undo" LANGUAGE="javascript" onclick="return DECMD_DETAILS_onclick()">
+		<img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/details.gif" WIDTH="23" HEIGHT="22">
+	</div>
 </div>
 
 <div class="tbToolbar" unselectable='on' ID="StyleToolbar" style="visibility: hidden">
@@ -978,7 +1112,7 @@ return tbContentElement_ContextMenuAction(itemIndex)
 	</div>
 </div>
 
-<IFRAME name="tbContentFrame" ID="tbContentElement" CLASS="tbContentElement" onLoad="loadStyleSheet()" unselectable='on' oldstyle="border: 0px; background-color: white; height: 100%; width: 100%; overflow: scroll;" <?php
+<IFRAME ID="tbContentElement" CLASS="tbContentElement" onLoad="initEditable()" unselectable='on' oldstyle="border: 0px; background-color: white; height: 100%; width: 100%; overflow: scroll;" <?php
 	if (!$wgHTMLEditTemplate) {
 		$wgHTMLEditTemplate="user.edit.page.html";
 	}
@@ -990,13 +1124,13 @@ return tbContentElement_ContextMenuAction(itemIndex)
 
 <!-- Toolbar Code File. Note: This must always be the last thing on the page -->
 <script>
-  if (navigator.appName.indexOf("Microsoft")!=-1) {
-    document.write('<script LANGUAGE="Javascript" SRC="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/Toolbars/toolbars.js"></scrip'+'t>');
-    document.write('<script LANGUAGE="Javascript">');
-    document.write('  tbScriptletDefinitionFile = "<?php echo $AR->dir->www; ?>widgets/htmledit/ie/Toolbars/menubody.htm";');
-    document.write('</scrip'+'t>');
-    document.write('<script LANGUAGE="Javascript" SRC="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/Toolbars/tbmenus.js"></scrip'+'t>');
-  }
+	if (navigator.appName.indexOf("Microsoft")!=-1) {
+		document.write('<script LANGUAGE="Javascript" SRC="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/Toolbars/toolbars.js"></scrip'+'t>');
+		document.write('<script LANGUAGE="Javascript">');
+		document.write('	tbScriptletDefinitionFile = "<?php echo $AR->dir->www; ?>widgets/htmledit/ie/Toolbars/menubody.htm";');
+		document.write('</scrip'+'t>');
+		document.write('<script LANGUAGE="Javascript" SRC="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/Toolbars/tbmenus.js"></scrip'+'t>');
+	}
 </script>
 </body>
 </html>
