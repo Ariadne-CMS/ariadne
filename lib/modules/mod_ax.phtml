@@ -8,23 +8,50 @@
 ************************************************************************/
 class mod_ax {
 
-	function open($exportfile,$mode="unpack",$tempdir="/tmp/") {
-		$this->tempdir=tempnam($tempdir,"export_");
-		$this->exportfile=$exportfile;
+	function open($exportfile,$cmdlist,$mode="unpack",$tempdir="/tmp/") {
+		$this->tempdir=$this->mktempdir($tempdir,"export_");
+		if (!file_exists($this->exportfile=$exportfile)) {
+			$result="err:cannotfindaxfile";
+		} else {
+			$this->cmdlist=$cmdlist;
 
-		if (!file_exists($this->tempdir)) {
-			mkdir($this->tempdir,0777);
-		}
-		if ($mode=="unpack") {
-			// tar will (g)unzip and untar the file into tempdir 
-			$command="tar -zxf $exportfile -C ".$this->tempdir;
-			@system($command,$retVar);
-			if ($retVar!=0) {
-				$result="err:cannotuntar";
+			if (!file_exists($this->tempdir)) {
+				mkdir($this->tempdir,0777);
+			}
+
+			if (strpos($this->exportfile,"/")===false) {
+				$slash="\\";
+			} else {
+				$slash="/";
+			}
+			$tempexpf=substr($this->exportfile,$pos=strrpos($this->exportfile,"$slash")+1);
+			copy($this->exportfile,$this->tempdir."/$tempexpf");
+			$this->exportfile=$exportfile=$tempexpf;
+			if ($mode=="unpack") {
+				// tar will (g)unzip and untar the file into tempdir 
+
+				if (($olddir=getcwd()) && chdir($this->tempdir)) {
+					$command=sprintf($this->cmdlist->cmd_untar,$exportfile);
+					system($command,$retVar);
+					chdir($olddir);
+					if ($retVar!=0) {
+						$result="err:cannotuntar";
+					}
+				} else {
+					$result="err:cannotchdir";
+				}
 			}
 		}
-		
 		return $result;
+	}
+
+	function mktempdir($dir,$prefix="tdir") {
+		$nr=0; if ($dir[strlen($dir)-1]!="/") $dir.="/";
+		while (file_exists($dir.$prefix.($nr))) {
+			$nr++;
+		}				
+
+		return ($dir.$prefix.($nr));
 	}
 
 	function MkDir($path) {
@@ -43,45 +70,42 @@ class mod_ax {
 
 	// remove directories with content
 	function RmDir($path) {
-		if ($path[strlen($path)-1]!="/") {
-			$path.="/";
-		}
-
-		if (!($dh=opendir($path))) {
-			$result="err:cannotopendir";
-		} else {
-			while ($file=readdir($dh)) {
-				if (($file!=".") && ($file!="..")) {
-					$file=$path.$file;
-					if (is_dir($file)) {
-						if  ($result=$this->RmDir($file."/")) {
-							break;
-						}
-					} else {
-						if (unlink($file)===false) {
-							$result="err:cannotunlink";
-							break;
-						}
-					}
-				}
-			}
-			closedir($dh);
-			if (!$result) { 
-				if (rmdir($path)===false) {
-					$result="err:cannotremovedir";
-				}
-			}
+		$command=sprintf($this->cmdlist->cmd_rmdir,$path);
+				
+		//system($command,$retVar);
+		if ($retVar!=0) {
+			$result="err:cannotremovedir";
 		}
 		return $result;
 	}
 
+	function rmvolume($path) {
+		if (substr($tmpdir=$this->tempdir,1,2)==":/") {
+			// we have a windows volume name...
+			// delete it
+			$tmpdir=substr($tmpdir,2);
+		}
+
+		return $tmpdir;
+	}
+
 	function importfiles($type,$path) {
-		if (!($result=$this->MkDir($path))) {
+		if (!($result=$this->MkDir($this->rmvolume($path)))) {
 			if (file_exists($this->tempdir."/$type.tgz")) {
-				$command="tar -C $path -zxf ".$this->tempdir."/$type.tgz";
-				@system($command,$retVar);
-				if ($retVar!=0) {
-					$result="err:cannotimport";
+				if (($olddir=getcwd()) && chdir($path)) {
+					// if we have a windows volume name...
+					// delete it, since we stay in the same
+					// partition
+					$tmpdir=$this->rmvolume($this->tempdir);
+
+					$command=sprintf($this->cmdlist->cmd_untar,$tmpdir."/$type.tgz");
+					system($command,$retVar);
+					chdir($olddir);
+					if ($retVar!=0) {
+						$result="err:cannotimport";
+					}
+				} else {
+					$result="err:cannotchdir";
 				}
 			}
 		}
@@ -92,10 +116,18 @@ class mod_ax {
 		if (file_exists($path)) {
 			$path2=substr($path,$rpos=strrpos(substr($path,0,-1),"/")+1);
 			$path=substr($path,0,$rpos);
-			$command="tar -zc -C $path $path2 -f ".$this->tempdir."/$type.tgz";
-			@system($command,$retVar);
-			if ($retVar!=0) {
-				$result="err:cannotexport";
+
+			if (($olddir=getcwd()) && chdir($path)) {
+				//$command="tar -zc $path2 -f ".$this->tempdir."/$type.tgz";
+				$command=sprintf($this->cmdlist->tar,$path2,$this->tempdir."/$type.tgz");
+				
+				system($command,$retVar);
+				chdir($olddir);
+				if ($retVar!=0) {
+					$result="err:cannotexport";
+				}
+			} else {
+				$result="err:cannotchdir";
 			}
 		}
 		return $result;
@@ -111,13 +143,19 @@ class mod_ax {
 			}
 			closedir($dh);
 
-			$command="tar -zc -C ".$this->tempdir." $exp  -f ".$this->exportfile;
-
-			@system($command,$retVar);
-			if ($retVar!=0) {
-				$result="err:cannotmakeax";
+			if (($olddir=getcwd()) && chdir($this->tempdir)) {
+				//$command="tar -zc $exp  -f ".$this->exportfile;
+				$command=sprintf($this->cmdlist->tar,$exp,$this->exportfile);
+				
+				system($command,$retVar);
+				chdir($olddir);
+				if ($retVar!=0) {
+					$result="err:cannotmakeax";
+				} else {
+					$result=$this->RmDir($this->tempdir);
+				}
 			} else {
-				$result=$this->RmDir($this->tempdir);
+				$result="err:cannotchdir";
 			}
 		}
 		return $result;
