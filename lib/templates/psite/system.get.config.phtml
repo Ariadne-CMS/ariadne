@@ -2,7 +2,7 @@
 	/******************************************************************
 	 system.get.config.phtml							 Muze Ariadne v2.0b
 	 ------------------------------------------------------------------
-	 Arguments: see super::system.get.config.phtml
+	 Arguments: see pdir::system.get.config.phtml
 	 Grant needed: none
 	 Global variables: none
 
@@ -16,7 +16,7 @@
 	******************************************************************/
 
 	debug($this->type."/system.get.config.phtml ".$this->path,"class");
-	$this->call("super::system.get.config.phtml");
+	$this->call("pdir::system.get.config.phtml",$arCallArgs);
 	$configcache=$ARConfig->cache[$this->path];
 	// this is the only
 	if ($data->url) {

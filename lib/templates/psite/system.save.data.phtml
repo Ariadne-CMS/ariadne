@@ -8,7 +8,7 @@
 	if (($this->arIsNewObject && $this->CheckLogin("add")) ||
 			(!$this->arIsNewObject && $this->CheckLogin("edit")) &&
 			$this->CheckConfig()) {
-		$this->call("super::system.save.data.phtml",$arCallArgs);
+		$this->call("pdir::system.save.data.phtml",$arCallArgs);
 		if (!$this->error) {
 			$url=$this->getdata("url","none");
 			if ($this->data->url!=$url) {
