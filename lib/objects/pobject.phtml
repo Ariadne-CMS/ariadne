@@ -66,6 +66,10 @@ class pobject {
 		}
 		array_pop($ARCurrent->arCallStack);
 		debug("pobject: call: end","all");
+		if ($ARCurrent->arResult) {
+			$arResult=$ARCurrent->arResult;
+			$ARCurrent->arResult=false;
+		}
 		if (isset($arResult)) {
 			// only do a return if we really have something to return
 			return $arResult;
@@ -129,6 +133,14 @@ class pobject {
 	}
 
 	function make_url($path="") {
+		/* FIXME:
+		   make_url should first try to make relative links, instead
+		   of full absolute urls
+		   if the path corresponds with the same root as the current object
+		   that should be possible, just find the common root, and add ".."
+		   to it for each directory of the current object from that root, 
+		   then add the rest of the path of the image.
+		*/
 		global $ARConfig;
 		debug("pobject: make_url($path)","object");
 		$object_path=$this->path;
@@ -154,6 +166,7 @@ class pobject {
 	}
 
 	function getlocks() {
+		debug("pobject: getlocks()","object");
 		return $this->store->mod_lock->getlocks($AR->user->data->login);
 	}
 
@@ -578,7 +591,12 @@ class pobject {
 			if ( file_exists($this->store->files."privatecache".$file) &&
 			     (filemtime($this->store->files."privatecache".$file)>time()) ) {
 				debug("cached: $name exists, reading from cache.","all");
-				readfile($this->store->files."privatecache".$file);
+				// FIXME!: should fix links, replace old session id's; use correct root, etc.
+				if ($ARCurrent->session) {
+					$session="/-".$ARCurrent->session->id."-";
+				}
+				echo str_replace("{arSession}",$session,
+					implode("",file($this->store->files."privatecache".$file)));
 				$result=true;
 			} else {
 				debug("cached: $name not found, start new cache image.","all");
@@ -604,7 +622,22 @@ class pobject {
 		if (!$time) {
 			$time=2; // 'freshness' in hours.
 		}
+		/* FIXME!: change links to current root with a placeholder.
+		   problem: make_url makes it possible that the image also
+		   contains other 'roots'. Which should be changed to their 
+		   corresponding correct session id's.
+		   possible fix: only replace the session id with a placeholder:
+		   <img src="http://a.host.com/-abcd-/en/a/dir/img.gif"> to
+		   <img src="http://a.host.com{arSession}/en/a/dir/img.gif">
+		   language gets cached correctly.
+           better fix: change this->store->root to {arRoot}, then change
+           any remaining session id's to {arSession} ?
+		*/
 		if (($file=array_pop($ARCurrent->cache)) && $image=ob_get_contents()) {
+			if ($ARCurrent->session) {
+				$image=str_replace("/-".$ARCurrent->session->id."-","{arSession}",$image);
+				$session="/-".$ARCurrent->session->id."-";
+			}
 			$path=substr($file, 0, strrpos($file, "/"));
 			if (!file_exists($this->store->files."privatecache".$path)) {
 				ldMkDir("privatecache".$path);
@@ -623,7 +656,7 @@ class pobject {
 			   FIXME: test again in php 4.0.4 
 			*/
 			ob_end_clean();
-			echo $image;
+			echo str_replace("{arSession}",$session,$image);
 			debug("savecache: ob_end_flush()","all");
 		} else {
 			error("savecache: no file or image ...");
@@ -757,8 +790,8 @@ class pobject {
 
 		debug("pobject: getvar($var)","object");
 		if ($ARCurrent->arCallStack) {
-			end($ARCurrent->arCallStack);
-			Parse_Str(current($ARCurrent->arCallStack));
+			$arCallArgs=end($ARCurrent->arCallStack);
+			Parse_Str($arCallArgs);
 		}
 		if ($$var) {
 			$result=$$var;
