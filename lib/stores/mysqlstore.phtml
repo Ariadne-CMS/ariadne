@@ -147,7 +147,7 @@ class mysqlstore {
 		$this->error="";
 		$this->count=@mysql_num_rows($objects["list"]);
 		while ($row=@mysql_fetch_array($objects["list"])) {
-			$object=$this->newobject($row["path"], $row["parent"], $row["type"], unserialize($row["object"]), $row["id"], $row["lastchanged"], $row["vtype"], strlen($row["object"]));
+			$object=$this->newobject($row["path"], $row["parent"], $row["type"], unserialize($row["object"]), $row["id"], $row["lastchanged"], $row["vtype"], strlen($row["object"]), $row["priority"]);
 			$result[]=$object->call($template, $args);
 		}
 
@@ -160,17 +160,18 @@ class mysqlstore {
 		return $result;
 	}
 
-	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0) {
+	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) {
 		debug("newobject($path, $parent, $type, [data], $id, $lastchanged, $vtype)","all");
 		include_once($this->code."objects/".$type.".phtml");
 		$object=new $type;
 		$object->init($this, $path, $data);
 		$object->type=$type;
 		$object->parent=$parent;
-		$object->id=$id; 
-		$object->lastchanged=$lastchanged;
+		$object->id=(int)$id;
+		$object->lastchanged=(int)$lastchanged;
 		$object->vtype=$vtype;
-		$object->size=$size;
+		$object->size=(int)$size;
+		$object->priority=(int)$priority;
 		return $object;
 	}
 
@@ -191,7 +192,7 @@ class mysqlstore {
 		$result["method"]="get";
 		$result["path"]=$path;
 		$epath=AddSlashes(strtoupper($path));
-		$query_string="select nodes.path, nodes.parent, objects.id, objects.type, objects.object, UNIX_TIMESTAMP(objects.lastchanged) as lastchanged, objects.vtype from objects, nodes where objects.id=nodes.object and UPPER(nodes.path)='$epath'";
+		$query_string="select nodes.path, nodes.parent, nodes.priority, objects.id, objects.type, objects.object, UNIX_TIMESTAMP(objects.lastchanged) as lastchanged, objects.vtype from objects, nodes where objects.id=nodes.object and UPPER(nodes.path)='$epath'";
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
 		debug("get: end","all");
 		return $result;
@@ -212,7 +213,7 @@ class mysqlstore {
 		debug("ls($path)","store");
 		$this->error="";
 		$epath=AddSlashes(strtoupper($path));
-		$query_string="select distinct(nodes.path), nodes.parent, objects.id, objects.type, objects.object, UNIX_TIMESTAMP(objects.lastchanged) as lastchanged, objects.vtype from objects, nodes where objects.id=nodes.object and UPPER(nodes.parent)='$epath' order by nodes.priority DESC, nodes.path";
+		$query_string="select distinct(nodes.path), nodes.parent, nodes.priority, objects.id, objects.type, objects.object, UNIX_TIMESTAMP(objects.lastchanged) as lastchanged, objects.vtype from objects, nodes where objects.id=nodes.object and UPPER(nodes.parent)='$epath' order by nodes.priority DESC, nodes.path";
 		$result["method"]="ls";
 		$result["path"]=$path;
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
@@ -237,7 +238,7 @@ class mysqlstore {
 		debug("parents($path)","store");
 		$this->error="";
 		$epath=AddSlashes(strtoupper($path));
-		$query_string="select distinct(nodes.path), nodes.parent, objects.id, objects.type, objects.object, UNIX_TIMESTAMP(objects.lastchanged) as lastchanged, objects.vtype from objects, nodes where objects.id=nodes.object and UPPER(nodes.path)=substring('$epath',1,length(path)) order by path";
+		$query_string="select distinct(nodes.path), nodes.parent, nodes.priority, objects.id, objects.type, objects.object, UNIX_TIMESTAMP(objects.lastchanged) as lastchanged, objects.vtype from objects, nodes where objects.id=nodes.object and UPPER(nodes.path)=substring('$epath',1,length(path)) order by path";
 		$result["method"]="parents";
 		$result["path"]=$path;
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
@@ -317,7 +318,7 @@ class mysqlstore {
 				$where.=" prop_$eproperty.object=objects.id)	";
 			}
 		}
-		$query_string="select distinct(nodes.path), nodes.parent, objects.id, objects.type, objects.object, UNIX_TIMESTAMP(objects.lastchanged) as lastchanged, objects.vtype from nodes, objects $from $types where objects.id=nodes.object and UPPER(nodes.path) like '$epath%'";
+		$query_string="select distinct(nodes.path), nodes.parent, nodes.priority, objects.id, objects.type, objects.object, UNIX_TIMESTAMP(objects.lastchanged) as lastchanged, objects.vtype from nodes, objects $from $types where objects.id=nodes.object and UPPER(nodes.path) like '$epath%'";
         $where=substr($where,4);
         if ($where) { 
           $query_string.=" and ( ( $where ) )";
@@ -338,7 +339,7 @@ class mysqlstore {
 	}
 
 
-	function save($path, $type, $data, $properties="", $vtype="") {
+	function save($path, $type, $data, $properties="", $vtype="", $priority=0) {
 	/***************************************************************
 
 		This function takes as argument a path, type, objectdata and 
@@ -377,7 +378,7 @@ class mysqlstore {
 
 	***************************************************************/
 
-		debug("save($path, $type, [data], [properties], $vtype)","store");
+		debug("save($path, $type, [data], [properties], $vtype, $priority)","store");
 		$this->error="";
 		if ($path!="/") {
 			$parent=$this->make_path($path, "..");
@@ -398,6 +399,7 @@ class mysqlstore {
 		$edata=AddSlashes(serialize($data));
 		$epath=AddSlashes($path);
 		$etype=AddSlashes($type);
+		$epriority=(int)$priority;
 		if ($id=$this->exists($path)) { //update
 			debug("save: updating","all");
 			if ($vtype) { // only change/save vtype if it is explicitly set
@@ -412,7 +414,19 @@ class mysqlstore {
 			if (!$errno) { // mysql_affected_rows doesn't always work
 				debug("save: query=$query_string","all");
 				$this->save_properties($properties, $id, $this); 
-				$result=$path;
+				$query_string="update nodes set priority=$epriority where path='$epath'";
+				mysql_db_query($this->database,$query_string, $this->connect_id);
+				$errno=mysql_errno($this->connect_id);
+				if (!$errno) {
+					debug("save: query=$query_string","all");
+					$result=$path;
+				} else {
+					$this->error="ERROR: Mysql: $errno: ".mysql_error($this->connect_id);
+					debug("save: query=$query_string","store");
+					debug("save: update object failed!","store");
+					debug("save: ".$this->error,"store");
+					$result=0;
+				}
 			} else {
 				$this->error="ERROR: Mysql: $errno: ".mysql_error($this->connect_id);
 				debug("save: query=$query_string","store");
@@ -432,7 +446,7 @@ class mysqlstore {
 			$errno=mysql_errno($this->connect_id);
 			$error=mysql_error($this->connect_id);
 			if (!$errno && $id=mysql_insert_id($this->connect_id)) {
-				$query_string="insert into nodes (path,parent,object) values ('$epath','$eparent',$id)";
+				$query_string="insert into nodes (path,parent,object,priority) values ('$epath','$eparent',$id,$epriority)";
 				debug("save: query=$query_string","all");
 				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
 				$errno=mysql_errno($this->connect_id);
