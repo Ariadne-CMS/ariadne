@@ -18,6 +18,7 @@ class export_wddx {
 	}
 
 	function header($fp){
+		global $ARCurrent;
 		fwrite($fp,'<?xml version="1.0" encoding="UTF-8"?>'."\n");
 		fwrite($fp,
 			"<wddxPacket version=\"1.0\">\n".
@@ -25,10 +26,11 @@ class export_wddx {
 					"<comment>Ariadne Export File</comment>\n".
 				"</header>\n".
 				"<data>\n".
-					"<struct type=\"hash\">\n".
-						"<var name=\"version\">\n".
-							"<number>2</number>\n".
-						"</var>\n".
+					"<struct type=\"hash\">\n"
+			);
+		export_wddx::export_data($fp,'version',2);
+		export_wddx::export_data($fp,'options',$ARCurrent->wddxoptions);
+		fwrite($fp,
 					"</struct>\n".
 					"<struct type=\"hash\">\n"
 			);
@@ -39,7 +41,7 @@ class export_wddx {
 					"</struct>\n".
 				"</data>\n".
 			"</wddxPacket>\n"
-		);
+			);
 	}
 
 
@@ -91,6 +93,7 @@ class export_wddx {
 				} else {
 					fwrite($fp,"<struct type=\"object\" class=\"".get_class($value)."\">\n");
 				}
+				reset($value);
 				while (list($key, $val)=each($value)) {
 					export_wddx::export_data($fp,$key, $val);
 				}
@@ -150,14 +153,14 @@ class export_wddx {
 	function export_files($fp,&$object) {
 		$files = $object->store->get_filestore("files");
 		$filearray = $files->ls($object->id);
-		if( is_array($filearray) ) {
+		if( is_array($filearray) && count($filearray) >= 1) {
 			export_wddx::print_verbose("       Files:\n");
 			fwrite($fp,"<var name=\"files\">\n");
 			fwrite($fp,"<struct type=\"hash\">\n");
 			
 			while( list( $key, $file ) = each($filearray) ) {
 				export_wddx::print_verbose('              ');
-				export_wddx::print_verbose("[".$name."]: ");
+				export_wddx::print_verbose("[".$file."]: ");
 				fwrite($fp,"<var name=\"".$file."\">\n");
 				fwrite($fp,"<struct type=\"hash\" >\n");
 				fwrite($fp,"<var name=\"file\" >\n");
