@@ -43,8 +43,8 @@
 	$ARnls["country"]						=	"Land";
 	$ARnls["cover"]							=	"Omslag";
 	$ARnls["current"]						=	"Huidige";
-	$ARnls["customdata"]					=	"Eigen Data";
-	$ARnls["data"]							=	"Data";
+	$ARnls["customdata"]					=	"Eigen Gegevens";
+	$ARnls["data"]							=	"Gegevens";
 	$ARnls["date"]							=	"Datum";
 	$ARnls["day"]							=	"Dag";
 	$ARnls["days"]							=	"Dagen";
