@@ -41,6 +41,8 @@ New features:
 	  is specifically written to allow this, like:
 	- Added PEAR DB wrapper, which allows you to access any database 
 	  supported by PEAR DB, while keeping the store connection secure. 
+	- The parents() function now defaults to currentsite() as the topmost 
+	  object to be called. Explicitly set another top to prevent this.
 		
 Bugs fixed:
 	- Fixed sessions cleanup in the bin/cleanup script. It now removes
