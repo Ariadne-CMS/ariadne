@@ -37,15 +37,21 @@
 ?>
 	<div id="infobox">
 		<table width="100%">
-			<tr><td valign="top"><?php echo $ARnls["type"]; ?>:</td><td valign="top" class="data"><?php echo $this->type; ?></td></tr>
-			<tr><td valign="top"><?php echo $ARnls["user"]; ?>:</td><td valign="top" class="data"><?php echo $this->data->owner_name; ?></td></tr>
-			<tr><td valign="top"><?php echo $ARnls["date"]; ?>:</td><td valign="top" class="data"><?php echo strftime("%m-%d-%Y",$this->data->ctime); ?></td></tr>
-			<tr><td valign="top"><?php echo $ARnls["modified"]; ?>:</td><td valign="top" class="data"><?php echo strftime("%m-%d-%Y",$this->data->mtime); ?></td></tr>
-			<tr><td valign="top"><?php echo $ARnls["size"]; ?>:</td><td valign="top" class="data"><?php echo $this->make_filesize(); ?></td></tr>
-			<tr><td valign="top"><?php echo $ARnls["priority"]; ?>:</td><td valign="top" class="data"><?php 
-				echo "<a href=\"javascript:arshow('edit_priority','edit.priority.phtml')\" title=\"".$ARnls['priority']." \">".$this->priority."</a>";
-				?>
-			</span></td></tr>
+			<tr><td valign="top"><?php echo $ARnls["type"]; ?>:</td>
+				<td valign="top" class="data"><?php echo $this->type; ?></td></tr>
+			<tr><td valign="top"><?php echo $ARnls["user"]; ?>:</td>
+				<td valign="top" class="data"><a href="javascript:arshow('edit_object_owner','edit.config.owner.phtml')" title="<?php echo $ARnls['change_owner']; ?>"><?php 
+					echo $this->data->owner_name; ?></a></td></tr>
+			<tr><td valign="top"><?php echo $ARnls["date"]; ?>:</td>
+				<td valign="top" class="data"><?php echo strftime("%m-%d-%Y",$this->data->ctime); ?></td></tr>
+			<tr><td valign="top"><?php echo $ARnls["modified"]; ?>:</td>
+				<td valign="top" class="data"><?php echo strftime("%m-%d-%Y",$this->data->mtime); ?></td></tr>
+			<tr><td valign="top"><?php echo $ARnls["size"]; ?>:</td>
+				<td valign="top" class="data"><?php echo $this->make_filesize(); ?></td></tr>
+			<tr><td valign="top"><?php echo $ARnls["priority"]; ?>:</td>
+				<td valign="top" class="data"><?php 
+					echo "<a href=\"javascript:arshow('edit_priority','edit.priority.phtml')\" title=\"".$ARnls['priority']." \">".$this->priority."</a>";
+				?></span></td></tr>
 			<?php
 				if (is_array($data->nls->list)) {
 			?>
