@@ -1,0 +1,57 @@
+<?php
+	$this->CheckConfig();
+	if ($file) {
+		$arNewType="";
+		$mimetypes = $ARConfig->cache[$this->path]->mimetypes;
+		@reset($mimetypes);
+		while (!$arNewType && (list($regexp, $arType)=@each($mimetypes))) {
+			if (eregi($regexp, $file_type, $regs)) {
+				$arNewType = $arType;
+			}
+		}
+		if (!$arNewType) {
+			$arNewType = "pfile";
+		}
+
+		if (!$arNewFilename) {
+			$arNewFilename=str_replace('\\', '/', $file);
+			if (($rpos = strrpos('/', $arNewFilename)) !== false) {
+				$arNewFilename=substr($arNewFilename, $rpos+1);
+			}
+		}
+		$arNewPath=$this->make_path($arNewFilename);
+
+		$createnew = true;
+		if ($this->exists($arNewPath)) {
+			$eobject = current($this->get($arNewPath, "system.get.phtml"));
+			if ($eobject->type == $arNewType) {
+				if ($eobject->CheckSilent("edit", $eobject->type)) {
+					$arResult=$eobject->call("system.import.file.save.phtml", $arCallArgs);
+					if ($eobject->error) {
+						$this->error = $eobject->error;
+					}
+					$createnew = false;
+				} else {
+					$this->error = $ARnls["err:wronggrants"];
+				}
+			} else {
+				$eobject->call("system.delete.phtml");
+				if ($eobject->error) {
+					$this->error = $eobject->error;
+				} 
+			}
+		}
+
+		if ($createnew && !$this->error) {		
+			$arNewData=new object;
+			$arNewObj=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData);
+			$arNewObj->arIsNewObject=true;
+			$arResult=$arNewObj->call("system.import.file.save.phtml", $arCallArgs);
+			if ($arNewObj->error) {
+				$this->error = $arNewObj->error;
+			}
+		}
+	} else {
+		$this->error="no file";
+	}
+?>
