@@ -147,7 +147,14 @@ class pobject extends object {
 	function find($path, $criteria, $function="list.html", $args="", $limit=100, $offset=0) {
 		debug("pobject: find($path, [crit], $function, $args)","object");
 		$path=$this->store->make_path($this->path, $path);
-		return $this->store->call($function, $args, $this->store->find($path, $criteria, $limit, $offset));
+		$objects=$this->store->find($path, $criteria, $limit, $offset);
+		if (!$this->store->error) {
+			$result=$this->store->call($function, $args, $objects);
+		} else {
+			$this->error=$this->store->error;
+			$result=false;
+		}
+		return $result;
 	}
 
 
