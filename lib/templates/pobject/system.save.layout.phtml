@@ -39,7 +39,6 @@
 			$this->data=current($this->get(".","system.get.data.phtml"));
 
 			$templates=$this->store->get_filestore("templates");
-			$file=$type.".".$function.".".$language;
 			$pinp=new pinp("header","this->", "\$this->_");
 			$compiled=$pinp->compile(strtr($template,"\r",""));
 			if ($pinp->error) {
