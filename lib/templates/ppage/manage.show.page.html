@@ -1,5 +1,9 @@
 <?php
 	if ($this->CheckLogin('read') && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		$this->ShowPage($arLanguage, false, true);
+		if( $this->nlsdata->page != "" ) {
+			$this->ShowPage($arLanguage, false, true);
+		} else {
+			$this->call("browse.nav.list.phtml", $arCallArgs);
+		}
 	}
 ?>
