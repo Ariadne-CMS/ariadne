@@ -1,17 +1,9 @@
 <?php
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) { 
 		$newdata=$data;
-		// first decode unicode characters...
-		$html=utf8_decode($html);
-		// now change special characters to their html entity
-		$html=htmlentities($html);
-		// now change '<', '>', '"', '~' and '&' back.
-		$html=str_replace("&lt;","<",$html);
-		$html=str_replace("&gt;",">",$html);
-		$html=str_replace("&quot;","\"",$html);
-		$html=str_replace("&tilde;","~",$html);
-		// do this last, think about it :)
-		$html=str_replace("&amp;","&",$html);
+		// only keep the body.innerHTML
+		$page=eregi_replace("^.*<body[^>]*>","",$page);
+		$page=eregi_replace("</body[^>]*>.*$","",$page);
 		// change hardcoded links and images to use a placeholder for the root
 		$html=ereg_replace("(http://[^/]*)?".$this->store->root,"{arRoot}",$html);
 		if ($this->data->mimetype=="text/html") {

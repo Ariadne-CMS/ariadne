@@ -20,6 +20,9 @@ class pfile extends pobject { // definitie class
 		}
 		if( !$stop ) {
 			if ($this->data->mimetype=="text/html") { // parse {arRoot}
+				// assume html files to use charset UTF-8; this will always work correctly
+				// with the MSIE html editor, and won't corrupt 'normal' html.
+				ldHeader("Content-Type: text/html; charset=UTF-8");
 				echo str_replace("{arRoot}",$this->store->root,$files->read($this->id, "file"));
 			} else {
 				$files->show($this->id, "file");

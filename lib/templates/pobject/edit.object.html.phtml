@@ -1,47 +1,48 @@
 <?php
-  global $HTTP_USER_AGENT;
-  if (eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
-       $regs[1] && (intval($regs[1])>=4)) { //ie4+
-    include($this->store->code."widgets/htmledit/ie/edit.php");
-  } else {
-    if ($file) {
-      $file.="/";
-    }
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		global $HTTP_USER_AGENT;
+		if (eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
+				 $regs[1] && (intval($regs[1])>=4)) { //ie4+
+			include($this->store->code."widgets/htmledit/ie/edit.php");
+		} else {
+			if ($file) {
+				$file.="/";
+			}
 ?>
 <html>
 <head>
 <script>
 <!--
 
-  NewObject=<?php if ($newobject && $newobject!=='false') echo 'true'; else echo 'false'; ?>;
+	NewObject=<?php if ($newobject && $newobject!=='false') echo 'true'; else echo 'false'; ?>;
 
-  function loadpage(root, path, file, name, language, type, newobject) {
-    if (file) {
-      document.location.href=root+path+file+'/edit.object.data.'+name+'.phtml?'+
-      'root='+escape(root)+'&path='+escape(path)+'&file='+escape(file)+
-      '&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type)+'&newobject='+escape(newobject);
-    } else {
-      document.location.href=root+path+'edit.object.data.'+name+'.phtml?'+
-      'root='+escape(root)+'&path='+escape(path)+'&file='+escape(file)+
-      '&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type)+'&newobject='+escape(newobject);
-    }
-  }
+	function loadpage(root, path, file, name, language, type, newobject) {
+		if (file) {
+			document.location.href=root+path+file+'/edit.object.data.'+name+'.phtml?'+
+			'root='+escape(root)+'&path='+escape(path)+'&file='+escape(file)+
+			'&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type)+'&newobject='+escape(newobject);
+		} else {
+			document.location.href=root+path+'edit.object.data.'+name+'.phtml?'+
+			'root='+escape(root)+'&path='+escape(path)+'&file='+escape(file)+
+			'&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type)+'&newobject='+escape(newobject);
+		}
+	}
 
-  function checknewobject() {
-    if (NewObject && window.opener && window.opener.wgHTMLEditContent) {
-      window.opener.wgHTMLEditContent.value=document.editform['<?php echo $name; ?>'].value;
-      top.window.close();
-    } else {
-      return true;
-    }
-  }
+	function checknewobject() {
+		if (NewObject && window.opener && window.opener.wgHTMLEditContent) {
+			window.opener.wgHTMLEditContent.value=document.editform['<?php echo $name; ?>'].value;
+			top.window.close();
+		} else {
+			return true;
+		}
+	}
 
-  function init() {
-    if (NewObject && window.opener && window.opener.wgHTMLEditContent) {
-      document.editform['<?php echo $name; ?>'].value=window.opener.wgHTMLEditContent.value;
-    }
-    document.editform['<?php echo $name; ?>'].focus();
-  }
+	function init() {
+		if (NewObject && window.opener && window.opener.wgHTMLEditContent) {
+			document.editform['<?php echo $name; ?>'].value=window.opener.wgHTMLEditContent.value;
+		}
+		document.editform['<?php echo $name; ?>'].focus();
+	}
 // -->
 </script>
 </head>
@@ -49,23 +50,24 @@
 <form name="editform" method="post" action="<?php echo $root.$path.$file."edit.".$name.".save.phtml"; ?>" onSubmit="return checknewobject();">
 <input name="ContentLanguage" type="hidden" value="<?php echo $language; ?>">
 <table width="100%" border="0" cellspacing="0"><tr>
-  <td colspan="2">
-    <textarea name="<?php echo $name; ?>" cols="75" rows="24" wrap="soft"><?php
-      if (!$newobject || ($newobject=='false')) {
-        $this->get($path.$file,"show.".$name.".phtml",Array("language" => $language, "source" => true));
-      }
-    ?></textarea>
-  </td>
+	<td colspan="2">
+		<textarea name="<?php echo $name; ?>" cols="75" rows="24" wrap="soft"><?php
+			if (!$newobject || ($newobject=='false')) {
+				$this->get($path.$file,"show.".$name.".phtml",Array("language" => $language, "source" => true));
+			}
+		?></textarea>
+	</td>
 </tr><tr bgcolor="#404074">
-  <td>&nbsp;</td>
-  <td align="right">
-    <input type="button" name="cancel" value="Cancel" onClick="window.close()">
-    <input type="submit" name="save" value="Save">
-  </td>
+	<td>&nbsp;</td>
+	<td align="right">
+		<input type="button" name="cancel" value="Cancel" onClick="window.close()">
+		<input type="submit" name="save" value="Save">
+	</td>
 </tr></table>
 </form>
 </body>
 </html>
 <?php
-  }
+		}
+	}
 ?>

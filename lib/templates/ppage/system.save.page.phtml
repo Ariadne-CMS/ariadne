@@ -8,24 +8,24 @@
 		$page=eregi_replace("^.*<body[^>]*>","",$page);
 		$page=eregi_replace("</body[^>]*>.*$","",$page);
 
-		if ($AR->nls->charsets[$ContentLanguage]) {
-			if ($AR->nls->charsets[$ContentLanguage] == "ISO-8859-1") {
-				$page=utf8_decode($page);
-			}
-		} else
-		if ($AR->nls->charsets["default"] == "ISO-8859-1") {
-			$page=utf8_decode($page);
+		$arCheckCharSet=$ContentLanguage;
+		if (!$AR->nls->charsets[$arCheckCharSet]) {
+			$arCheckCharSet="default";
 		}
-
-		// now change special characters to their html entity
-		$page=htmlentities($page);
-		// now change '<', '>', '"', '~' and '&' back.
-		$page=str_replace("&lt;","<",$page);
-		$page=str_replace("&gt;",">",$page);
-		$page=str_replace("&quot;","\"",$page);
-		$page=str_replace("&tilde;","~",$page);
-		// do this last, think about it :)
-		$page=str_replace("&amp;","&",$page);
+		if ($AR->nls->charsets[$arCheckCharSet] == "ISO-8859-1") {
+			$page=utf8_decode($page);
+			// now change special characters to their html entity
+			$page=htmlentities($page);
+			// now change '<', '>', '"', '~' and '&' back.
+			$page=str_replace("&lt;","<",$page);
+			$page=str_replace("&gt;",">",$page);
+			$page=str_replace("&quot;","\"",$page);
+			$page=str_replace("&tilde;","~",$page);
+			// do this last, think about it :)
+			$page=str_replace("&amp;","&",$page);
+		} else if ($AR->nls->charsets[$arCheckCharSet] != "UTF-8") {
+			// FIXME: add translations for other character sets. use libiconv()?
+		} 
 		// change hardcoded links and images to use a placeholder for the root
 		$page=ereg_replace("(http://[^/]*)?".$this->store->root,"{arRoot}",$page);
 		// first make sure that the object is clean (data can only be set via 
