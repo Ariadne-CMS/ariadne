@@ -988,12 +988,7 @@ class pobject extends object { // pobject class definition
 		debug("CheckConfig: searching for template ($arCallType::$arCallFunction)", "all");
 		$path = $this->make_path($path);
 
-		if (is_array($ARCurrent->shortcut_redirect)) {
-			$redir = end($ARCurrent->shortcut_redirect);
-			if (substr($path, 0, strlen($redir["dest"])) == $redir["dest"]) {
-				$path = $redir["src"];
-			}
-		}
+
 
 		/* first check current templates */
 		if ($this->path == $path) {
@@ -1065,7 +1060,6 @@ class pobject extends object { // pobject class definition
 	// browser.
 	// All these templates must exist under a fixed directory, $AR->dir->templates
 	global $nocache, $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls, $HTTP_POST_VARS, $HTTP_GET_VARS, $ARConfigChecked;
-
 		debug("pobject::CheckConfig($arCallFunction, $arCallArgs)(".$this->path.")","object");
 		$MAX_LOOP_COUNT=10;
 
@@ -1178,7 +1172,15 @@ class pobject extends object { // pobject class definition
 						//}
 					}
 				} else {
-					$template = $this->getPinpTemplate($arCallFunction);
+					if (is_array($ARCurrent->shortcut_redirect)) {
+						$redir = end($ARCurrent->shortcut_redirect);
+						if (substr($path, 0, strlen($redir["dest"])) == $redir["dest"]) {
+							$template = $this->getPinpTemplate($arCallFunction, $this->make_path($redir["src"]));
+						}
+					}
+					if (!$template["arTemplateId"]) {
+						$template = $this->getPinpTemplate($arCallFunction);
+					}
 				}
 				if ($template["arCallTemplate"] && $template["arTemplateId"]) {
 					debug("CheckConfig: arCallTemplate=".$template["arCallTemplate"].", arTemplateId=".$template["arTemplateId"],"object");
