@@ -17,8 +17,8 @@ New Features:
 	  by Lukasz Keler. 
 
 Bugs Fixes:
-	- Fixed a URL check in pbookmark which did not accept '-' and '_' chars as 
-	  valid domain characters.
+	- Fixed a URL check in pbookmark which did not accept '-' as a valid domain
+	  character.
 	- helene (the syntax highlighting editor) now understands javascript in templates
 	- user.workflow.* didn't set $ARCurrent->nolangcheck, now they do ;-)
 	- toolbar.php new objects were made in the currentsite, changed to current path.
