@@ -241,15 +241,11 @@
 					gstring += ' ';
 				}
 				var arGrant = form['type'].options[form['type'].options.selectedIndex].value;
-
-				if ((arGrant & <?php echo ARMASKLOCAL; ?>) && (arGrant & <?php echo ARMASKCHILDREN; ?>)) {
-				} else
-				if (arGrant & <?php echo ARMASKLOCAL; ?>) {
-					alert('local');
-					gstring += '=';
-				} else {
-					alert('children');
+				if (arGrant == <?php echo ARMASKCHILDREN; ?>) {
 					gstring += '>';
+				} else
+				if (arGrant == <?php echo ARMASKLOCAL; ?>) {
+					gstring += '=';
 				}
 
 				gstring += form['grants[]'][i].value;
@@ -333,12 +329,12 @@
 							$half=ceil($total/2);
 							for ($i=0; $i<$half; $i++) {
 								$grant = $grants[$i]->data->value;
-								echo '<input type="checkbox" name="grants[]" onchange="updateGrantsString()" value="'.$grant.'">'.$grants[$i]->nlsdata->name.'<br>';
+								echo '<input type="checkbox" name="grants[]" onClick="updateGrantsString()" value="'.$grant.'">'.$grants[$i]->nlsdata->name.'<br>';
 							}
 							echo '</td><td valign="top">';
 							for ($i=$i; $i<$total; $i++) {
 								$grant = $grants[$i]->data->value;
-								echo '<input type="checkbox" name="grants[]" onchange="updateGrantsString()" value="'.$grant.'">'.$grants[$i]->nlsdata->name.'<br>';
+								echo '<input type="checkbox" name="grants[]" onClick="updateGrantsString()" value="'.$grant.'">'.$grants[$i]->nlsdata->name.'<br>';
 							}
 						}
 					?>
@@ -360,13 +356,13 @@
 						$types = $this->find("/system/ariadne/types/", "object.type='pobject' order by name.$nls.value", "system.get.phtml");
 						$count = count($types);
 						for ($i = 0; $i < $count/2; $i++) {
-							echo "<input type=\"checkbox\" name=\"modifiers[]\" onchange=\"updateGrantsString()\" value=\"".$types[$i]->data->value."\">".$types[$i]->nlsdata->name."<br>\n";
+							echo "<input type=\"checkbox\" name=\"modifiers[]\" onClick=\"updateGrantsString()\" value=\"".$types[$i]->data->value."\">".$types[$i]->nlsdata->name."<br>\n";
 						}
 					?>
 				</td><td valign="top" rowspan="4" height:100%; overflow: auto;">	
 					<?php
 						for ($j = $i; $j < $count; $j++) {
-							echo "<input type=\"checkbox\" name=\"modifiers[]\" onchange=\"updateGrantsString()\" value=\"".$types[$j]->data->value."\">".$types[$j]->nlsdata->name."<br>\n";
+							echo "<input type=\"checkbox\" name=\"modifiers[]\" onClick=\"updateGrantsString()\" value=\"".$types[$j]->data->value."\">".$types[$j]->nlsdata->name."<br>\n";
 						}
 					?>
 		 		</td>
@@ -378,7 +374,7 @@
 			<th valign="top" height="1%">valid for</th>
 		</tr><tr>
 			<td valign="top" height="100%">
-				<select name="type" onchange="updateGrantsString()">
+				<select name="type" onClick="updateGrantsString()">
 					<option value="<?php echo ARMASKGLOBAL; ?>">Default</option>
 					<option value="<?php echo ARMASKCHILDREN; ?>">Children only</option>
 					<option value="<?php echo ARMASKLOCAL; ?>">This object only</option>
