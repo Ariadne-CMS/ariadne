@@ -2,9 +2,10 @@
   include_once($this->code."stores/modules/sql_compiler.php");
 
   class mysql_compiler extends sql_compiler {
-	function mysql_compiler($tbl_prefix="") {
+	function mysql_compiler(&$store, $tbl_prefix="") {
 		debug("mysql_compiler($tbl_prefix)", "store");
 		$this->tbl_prefix=$tbl_prefix;
+		$this->store=$store;
 	}
 
 	function compile_tree(&$node) {
@@ -113,10 +114,30 @@
 					}
 					$result=" $left $operator $right ";
 				} else {
-					$table=$this->tbl_prefix."types";
-					$this->used_tables[$table]=$table;
 					$type=$this->compile_tree($node["right"]);
-					$result=" (".$this->tbl_prefix."types.implements $operator $type and ".$this->tbl_prefix."objects.vtype = ".$this->tbl_prefix."types.type ) ";
+					switch ($operator) {
+						case '!=':
+							/* retrieve an implements list */
+							$types_tbl=$this->tbl_prefix."types";
+							$query = "
+									select type from $types_tbl where
+									$types_tbl.implements = $type";
+							$qresult = $this->store->store_run_query($query);
+							while ($iresult = mysql_fetch_array($qresult)) {
+								if (!$ilist) {
+									$ilist = " '".$iresult['type']."' ";
+								} else {
+									$ilist .= ", '".$iresult['type']."' ";
+								}
+							}
+							$result = " (".$this->tbl_prefix."objects.type not in ($ilist)) ";
+						break;
+						default:
+							$table=$this->tbl_prefix."types";
+							$this->used_tables[$table]=$table;
+							$result=" (".$this->tbl_prefix."types.implements $operator $type and ".$this->tbl_prefix."objects.vtype = ".$this->tbl_prefix."types.type ) ";
+						break;
+					}
 				}
 			break;
 			case 'group':
