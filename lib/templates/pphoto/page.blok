@@ -1,0 +1,20 @@
+<tr>
+  <td align="right">
+    <font face="helvetica, sans-serif"><?php echo $ARnls["page"]; ?>&nbsp;:</font>
+  </td>
+  <td width="100%">
+  <?php 
+    if (!$newtype) {
+      $wgHTMLEditName="page";
+      $wgHTMLEditLanguage=$nls;
+      $wgHTMLEditPath=$this->parent;
+      $wgHTMLEditFile=substr($this->path, strlen($this->parent), -1);
+      $wgHTMLEditContent=$this->getdata("page",$nls);
+      include($this->store->code."widgets/htmledit/js.html"); 
+      include($this->store->code."widgets/htmledit/form.html"); 
+    } else {
+      echo "available after object is created";
+    }
+  ?>
+  </td>
+</tr>

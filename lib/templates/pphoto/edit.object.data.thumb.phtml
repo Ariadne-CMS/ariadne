@@ -1,0 +1,68 @@
+<?php
+  /******************************************************************
+
+  ******************************************************************/
+  if ($this->CheckSilent("read")) {
+    $mimetype=$this->getdata("mimetype","none");
+    $filters=$this->GetUserFilters($mimetype);
+    echo "<!-- $mimetype : ".serialize($filters)." -->";
+?>
+<table border="0" width="90%">
+<tr>
+  <td>
+    <fieldset id="filters">
+    <legend><?php echo $ARnls["thumbnail"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+      <table border="0" align="center">
+      <tr>
+        <td>
+          <?php echo $ARnls["thumbwidth"]; ?>
+        </td><td>
+          <?php echo $ARnls["thumbheight"]; ?>   
+        </td>
+      </tr><tr>
+        <td>
+          <input type="text" size="4" maxlength="3" name="thumbwidth" value="<?php 
+            $width=$this->getdata("thumbwidth","none"); 
+            if (!$width) {
+              $width=40;
+            }
+            echo $width;
+          ?>">
+        </td><td>
+          <input type="text" size="4" maxlength="3" name="thumbheight" value="<?php 
+            $height=$this->getdata("thumbheight","none"); 
+            if (!$height) {
+              $height=40;
+            }
+            echo $height;
+          ?>">
+        </td>
+      </tr><tr>
+        <td colspan="2">
+          <?php echo $ARnls["thumbcolor"]; ?>
+        </td>
+      </tr><tr>
+        <td colspan="2">
+          # <input type="text" size="15" name="thumbcolor" value="<?php
+            $color=$this->getdata("thumbcolor","none");
+            if (!$color) {
+              $color="CCCCCC";
+            }
+            echo $color;
+          ?>">
+        </td>
+      </tr>
+      </table>
+    </fieldset>
+  </td>
+</tr>
+</table>
+<script>
+  window.onload=init;
+  function init() {
+    document.wgWizForm["thumbwidth"].focus();
+  }
+</script>
+<?php
+  }
+?>

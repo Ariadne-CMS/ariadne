@@ -1,0 +1,5 @@
+<?php
+  if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+    echo "<html><body><img src=\"".$this->make_url($this->path)."view.html\" alt=\"".$this->nlsdata->name."\"></body></html>";
+  }
+?>
