@@ -23,11 +23,13 @@
 		$modifier=$this->getdata("modifier", "none");
 		if ($delete) {
 			if (!$type || !$id || !$delete) {
-				$this->error="Missing parameters";
+				$this->error=$ARnls["err:missingparam"];
+				// FROP $this->error="Missing parameters";
 			}
 		} else {
 			if (!$path || !$newgrants) {
-				$this->error="Missing parameters";
+				$this->error=$ARnls["err:missingparam"];
+				// FROP $this->error="Missing parameters";
 			}
 		}
 
@@ -76,7 +78,8 @@
 				if ($temp=@current($this->find($searchpath[$type], $criteria, "system.get.phtml"))) {
 					$path=$temp->path;
 				} else {
-					$this->error="Couldn't find user/group $id";
+					$this->error=sprintf($ARnls["err:notfindusergroup"],$id);
+					// FROP $this->error="Couldn't find user/group $id";
 				}
 			}
 			if ($delete) {
@@ -90,7 +93,8 @@
 										"grant"		=> $grant,
 										"modifier"	=> $modifier)));
 					if ($result!="ok") {
-						$this->error="Couldn't remove grant in $id ($path)";
+						$this->error=sprintf($ARnls["err:notremovegrant"],$id,$path);
+						// FROP $this->error="Couldn't remove grant in $id ($path)";
 					}			
 				}
 			} else if ($newgrants) {
@@ -100,7 +104,8 @@
 					} else if ($this->store->implements($type, "puser")) { 
 						$type="puser";
 					} else {
-						$this->error="$path is not a user or group";
+						$this->error=sprintf($ARnls["err:nousergroup"],$path);
+						// FROP $this->error="$path is not a user or group";
 					}
 					if (!$this->error) { 
 						if ($id=@current($this->get($path, "system.get.login.phtml"))) {
@@ -163,7 +168,8 @@
 														"grant"		=> $delgrant,
 														"modifier"	=> $modifier)));
 											if ($result!="ok") {
-												$this->error="Couldn't save grant in $path";
+												$this->error=sprintf($ARnls["err:notsavegrant"],$path);
+												// FROP $this->error="Couldn't save grant in $path";
 											}
 										}
 									} else {
@@ -206,7 +212,8 @@
 													"modifier"	=> $modifier,
 													"granttype"	=> $granttype)));
 											if ($result!="ok") {
-												$this->error="Couldn't save grant in $path";
+												$this->error=sprintf($ARnls["err:notsavegrant"],$path);
+												// FROP $this->error="Couldn't save grant in $path";
 											}
 										}
 									}
@@ -216,11 +223,13 @@
 								$newgrant=strtok(" ");
 							}
 						} else {
-							$this->error="Couldn't get login/id from $path";							
+							$this->error=sprintf($ARnls["err:notgetlogin"],$path);
+							// FROP $this->error="Couldn't get login/id from $path";							
 						}
 					}
 				} else {
-					$this->error="Couldn't retrieve user/group $path";
+					$this->error=sprintf($ARnls["err:notfindusergroup"],$path);
+					// FROP $this->error="Couldn't retrieve user/group $path";
 				}
 			}
 			if (!$this->error) {

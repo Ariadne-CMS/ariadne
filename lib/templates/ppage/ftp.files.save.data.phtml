@@ -8,7 +8,8 @@
 		$tempfile = $this->store->files."temp/$tempfile";
 		$fp = @fopen($tempfile, "r");
 		if (!$fp) {
-			$this->error = "Could not open ($tempfile)";
+			$this->error = sprintf($ARnls["err:couldnotopen"],$tempfile);
+			// FROP $this->error = "Could not open ($tempfile)";
 		} else {
 			$page = "";
 			while (!feof($fp)) {

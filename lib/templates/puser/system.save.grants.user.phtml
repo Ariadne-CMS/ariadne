@@ -68,12 +68,14 @@
 				break;
 		}
 		if ($this->save()) {
-			$arResult="ok";
+			$arResult=$ARnls["ok"];
+			// FROP $arResult="ok";
 		} else {
 			$arResult=$this->error;
 		}
 	} else {
-		$arResult="Access denied";
+		$arResult=$ARnls["accessdenied"];
+		// FROP $arResult="Access denied";
 	}
 	debug("res:".$arResult);
 ?>

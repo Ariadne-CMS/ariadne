@@ -147,7 +147,8 @@
 				break;
 			case "copy" :
 				if (!$target) {
-					error("no target specified");
+					error($ARnls["err:notarget"]);
+					// FROP error("no target specified");
 					die();
 				}
 				?>

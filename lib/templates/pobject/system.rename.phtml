@@ -7,7 +7,8 @@
 			$target=$this->store->make_path($this->parent, $this->getdata("target","none"));
 			if ($this->exists($target)) {
 				if (substr($target, 0, strlen($this->path))==$this->path) {
-					$this->error="You cannot move an object below itself.";
+					$this->error=$ARnls["err:nomovebelow"];
+					// FROP $this->error="You cannot move an object below itself.";
 				} else {
 					$parent=$target;
 					$target.=substr($this->path, strlen($this->parent));
@@ -15,13 +16,16 @@
 			} else {
 				$parent=$this->store->make_path($target, '..');
 				if (!$this->exists($parent)) {
-					$this->error="$parent doesn't exists, create it first.";
+					$this->error=sprintf($ARnls["err:noparentcreatefirst"],$parent);
+					// FROP $this->error="$parent doesn't exists, create it first.";
 				} else if (substr($parent, 0, strlen($this->path))==$this->path) {
-					$this->error="You cannot move an object below itself.";
+					$this->error=$ARnls["err:nomovebelow"];
+					// FROP $this->error="You cannot move an object below itself.";
 				}
 			}
 			if (!eregi("^[a-z0-9_\{\}\.\:/-]+$",$target)) { 
-				$this->error="Illegal characters in filename: $target";
+				$this->error=sprintf($ARnls["err:fileillegalchars"],$target);
+				// FROP $this->error="Illegal characters in filename: $target";
 			}
 			if (!$this->error) {
 				// FIXME: check add permission in $target

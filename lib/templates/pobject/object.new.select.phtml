@@ -98,7 +98,8 @@
 			$col++;
 		}
 	} else {
-		error("Something is wrong with your grants, please contact the system administrator.");
+		error($ARnls["err:wronggrants"]);
+		// FROP error("Something is wrong with your grants, please contact the system administrator.");
 	}
 ?>
 </tr>

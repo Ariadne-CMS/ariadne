@@ -14,7 +14,8 @@
 	if ($data->mimetype=="text/html") {
 		$this->call("system.save.html.phtml", $arCallArgs);
 	} else {
-		$this->error="This is not an html file.";
+		$this->error=$ARnls["err:nothtmlfile"];
+		// FROP $this->error="This is not an html file.";
 	}
 ?>
 <hmtl>
@@ -22,7 +23,8 @@
 <body bgcolor="#CCCCCC"><font face="arial,helvetica,sasn-serif">
 <?php
 		if (!$this->error) {
-			echo "File saved";
+			echo $ARnls["filesaved"];
+			// FROP echo "File saved";
 			?>
 <script>
   window.setTimeout('window.close()',500);

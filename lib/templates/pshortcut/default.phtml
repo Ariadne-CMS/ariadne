@@ -9,10 +9,12 @@
 				$arResult=@current($this->get($path, $arCallFunction, $arCallArgs));
 			} else {
 				$arResult=false;
-				$this->error="Error: Shortcut ".$this->path." points to nonexisting path: ".$path.".";
+				$this->error=sprintf($ARnls["err:shortcutnopath"],$this->path,$path);
+				// FROP $this->error="Error: Shortcut ".$this->path." points to nonexisting path: ".$path.".";
 			}
 		}
 	} else {
-		error("$data->path$arCallFunction called more than $MAXLOOPCOUNT times, recursive ShortCut $this->path?");
+		error( sprintf($ARnls["err:shortcutloopexceed"],$data->path, $arCallFunction,$MAXLOOPCOUNT,$this->path) );
+		// FROP error("$data->path$arCallFunction called more than $MAXLOOPCOUNT times, recursive ShortCut $this->path?");
 	}
 ?>

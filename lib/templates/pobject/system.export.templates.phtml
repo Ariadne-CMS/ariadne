@@ -25,16 +25,20 @@
 					if ($new_filestore->exists($this->newObject->id, $template) &&
 						( $new_filestore->mtime($this->newObject->id, $template) >
 							$orig_filestore->mtime($this->id, $template))) {
-								display("	template($template) no update");
+								display("	".sprintf($ARnls["err:notmplupdate"],$template));
+								// FROP display("	template($template) no update");
 					} else {
 						$tempname=tempnam($this->store->files."temp", "temp");
 						if (!$orig_filestore->copy_from_store($tempname, $this->id, $template)) {
-							display("	error: could not copy $template from store !");
+							display("	".sprintf($ARnls["err:notemplatefromstore"],$template));
+							// FROP display("	error: could not copy $template from store !");
 						} else {
 							if (!$new_filestore->copy_to_store($tempname, $this->newObject->id, $template)) {
-								display("	error: could not copy $template to store");
+								display("	".sprintf($ARnls["err:notemplatetostore"],$template));
+								// FROP display("	error: could not copy $template to store");
 							} else {
-								display("	template($template) created");
+								display("	".sprintf($ARnls["templatecreated"],$template));
+								// FROP display("	template($template) created");
 							}
 						}
 						@unlink($tempname);

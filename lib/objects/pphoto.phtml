@@ -21,7 +21,8 @@ class pphoto extends pfile { // definitie class
 
 		$result=false;
 		if (eregi('[^a-z0-9+]',$format)) {
-			$this->error="Convert called with illegal format ($format)";
+			$this->error=sprintf($ARnls["err:convillegalformat"],$format);
+			// FROP $this->error="Convert called with illegal format ($format)";
 		} else {
 			$ARConfig->photoStack[$this->id][]=" -format $format";
 			$this->targetformat=$format;
@@ -106,10 +107,12 @@ class pphoto extends pfile { // definitie class
 					@unlink($tmpsrc);
 					@unlink($destsrc);
 				} else {
-					$this->error="Could not run ImageMagick scale program (mogrify)<br>\n(".$exec_string.")";
+					$this->error=sprintf($ARnls["err:noimagemagick"],$exec_string);
+					// FROP $this->error="Could not run ImageMagick scale program (mogrify)<br>\n(".$exec_string.")";
 				}
 			} else {
-				$this->error="Could not changedir to ".$this->store->files."temp/ ";
+				$this->error=sprintf($ARnls["err:changetempdirfailed"],$this->store->files);
+				// FROP $this->error="Could not changedir to ".$this->store->files."temp/ ";
 			}
 		}
 		if ($this->error) {
