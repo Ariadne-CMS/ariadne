@@ -6,13 +6,14 @@ Known issues
   possibility.
 
 ---
-Currently known broken in CVS
+Currently known broken in CVS / Todo before 2.0b10
 
 - pcalitem: calendar items don't get saved
 - puser: profile and group selection in wizard unfinished.
 - files/templates: storage is broken conceptually, needs a new approach.
+  -> use filestore for templates and files, see mod_filestore.
 - pobject: recurse.copy(to).phtml are broken (templates get copied wrong)
-- pperson,porganization: show.card.phtml forgets rootoptions in link
+  also needs a user interface
 - recurse: lock alert doesn't show who locked what
 - htmledit: button (form.html) in a new object doesn't work: save to form in that case
 - pobject: CheckSilent() is broken, only works after a CheckLogin, even if a cookie is available.
@@ -20,3 +21,17 @@ Currently known broken in CVS
     PHP checks.
 - store: link() doesn't check if the parent of destination exists.
 - add/edit/delete(type) not in CVS yet.
+- nls wizard in new interface not yet implemented.
+- view->webpage -> new window
+
+Todo before 2.0RC1
+
+- add link / move recurse templates and user interface
+- add help pages
+  - index
+  - tutorials
+- add search page in classic and new interface.
+- import/export user interface in new interface
+- fix logoff menu entry
+- show/hide explorer bar
+- create manage.html templates per type, use small/large icons/details
