@@ -20,33 +20,56 @@
 <head>
 <title><?php echo $ARnls["templates"]; ?></title>
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
+<style>
+	.required {
+		background-color: buttonface;
+		border: 2px outset;
+		padding: 2px;
+		font-weight: bold;
+	}	
+	.required div {
+		width: 100%;
+	}
+	td.type {
+		padding-left: 2px;
+	}
+	a.button {
+		border: 1px outset;
+	}
+	input {
+		width: 75px;
+	}
+</style>
 <script src="<?php echo $AR->dir->www; ?>widgets/window/savesize.js"></script>
 </head>
 <body bgcolor="white">
+<script>
+	if (document.all) {
+		window.innerHeight=document.body.clientHeight;
+		window.innerWidth=document.body.clientWidth;
+	}	
+</script>
 <form action="edit.object.layout.form.phtml">
-<table border="0" width="75%" align="center" cellspacing="4" vspace="10" hspace="10">
+<table border="0" width="100%" align="center" cellspacing="2" vspace="10" hspace="10">
 <tr>
-	<td colspan="2" align="center">
-		<fieldset id="templates">
-		<table border="0" width="75%" cellspacing="4">
+	<td colspan="2" bgcolor="white" style="border: 2px inset; padding: 0px;"><script> 
+			document.write('<div style="height:'+(window.innerHeight-50)+'px; overflow: auto; margin: 0px; border: 0px;">'); 
+		</script><table border="0" bgcolor="white" width="100%" cellspacing="0" cellpadding="0">
 		<tr>
-			<td>
-				<span class="required"><?php echo $ARnls["type"]; ?></span>
-			</td><td width="12" units="pixels">
-			</td><td>
-				<span class="required"><?php echo $ARnls["template"]; ?></span>
-			</td><td>
-				<span class="required"><?php echo $ARnls["language"]; ?></span>
+			<td valign="top" class="required">
+				<div><?php echo $ARnls["type"]; ?></div>
+			</td><td valign="top" colspan="2" class="required">
+				<div><?php echo $ARnls["template"]; ?></div>
+			</td><td valign="top" class="required">
+				<div><?php echo $ARnls["language"]; ?></div>
 			</td>
-		</tr>
-		<?php
+		</tr><?php
 			if (($data->pinp) && is_array($data->pinp)) {
 				while (list($type, $values)=each($data->pinp)) {
 					while (list($function, $templatelist)=each($values)) {
-					?>
-						<tr>
-							<td><?php echo $type; ?>&nbsp;</td>
-							<td align="right"><?php 
+					?><tr>
+							<td class="type"><?php echo $type; ?>&nbsp;</td>
+							<td align="center"><?php 
 								if (!$data->templates[$type][$function]) {
 									echo "<img src='{$AR->dir->images}local.gif' alt='local' height='12' width='11'>";	
 								}
@@ -57,22 +80,21 @@
 								reset($templatelist);
 								while (list($language, $template)=each($templatelist)) {
 									$flag="<img src=\"".$AR->dir->images."nls/small/$language.gif\" alt=\"".$AR->nls->list[$language]."\" border=\"0\">";
-									echo "<a href=\"edit.object.layout.form.phtml?type=".$type."&function=".RawUrlEncode($function).
+									echo "<a class=\"button\" href=\"edit.object.layout.form.phtml?type=".$type."&function=".RawUrlEncode($function).
 										"&language=".$language."\">$flag</a> ";
 								}
 							?></td>
-						</tr>
-					<?php
+						</tr><?php
 					}
 				}
 			}
-		?>
-		</table>		
-		</fieldset>
-	</td>
+		?><tr>
+			<td></td>
+		</tr>
+		</table></div></td>
 </tr><tr>
-	<td><input type="button" name="action" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();"></td>
-	<td align="right"><input type="hidden" name="type" value="<?php echo $this->type; ?>">
+	<td valign="bottom"><input type="button" name="action" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();"></td>
+	<td align="right" valign="bottom"><input type="hidden" name="type" value="<?php echo $this->type; ?>">
 		<input type="submit" name="action" value="<?php echo $ARnls["new"]; ?>"></td>
 </tr>
 </table>
