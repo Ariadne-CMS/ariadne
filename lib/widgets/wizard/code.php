@@ -48,17 +48,23 @@
         if ($key!=="arStoreVars") {
           wgWizKeepVars($value, $prefix.$key.$postfix);
         }
-      } else if ($ARCurrent->override) { // don't check $ARCurrent->seenit, do set it.
+      } else 
+      if ($ARCurrent->override) { // don't check $ARCurrent->seenit, do set it.
         if ($toplevel) { // this is a normal name-value pair
           $ARCurrent->seenit[$prefix.$key.$postfix]=true;
         } else { // it's part of an array
           $ARCurrent->seenit[$prefix]=true;
         }
-        echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".str_replace('"','&quot;',$value)."\">\n";
-      } else if (!$ARCurrent->seenit[$prefix] && !$toplevel) { // value part of array
-        echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".str_replace('"','&quot;',$value)."\">\n";
-      } else if (!$ARCurrent->seenit[$prefix.$key.$postfix] && $toplevel) { // value not in array
-        echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".str_replace('"','&quot;',$value)."\">\n";
+        $value = htmlentities($value);
+        echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
+      } else 
+      if (!$ARCurrent->seenit[$prefix] && !$toplevel) { // value part of array
+        $value = htmlentities($value);
+        echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
+      } else
+      if (!$ARCurrent->seenit[$prefix.$key.$postfix] && $toplevel) { // value not in array
+        $value = htmlentities($value);
+        echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
       }
     }
   }
