@@ -485,9 +485,12 @@ class pobject extends object {
 				}
 			}
 		}
-		if ($continue) {
+		$recheck = true;
+		while ($continue && $recheck) {
+			$recheck = false;
 			if ($AR->user->data->login!="admin" && !$AR->user->grants[$this->path]) {
 				$AR->user->grants[$this->path]=$this->GetValidGrants();
+				debug("usergrants: ".$AR->user->grants[$this->path]);
 			}
 			if ($AR->user->data->login!="public") {
 				// Don't remove this or MSIE users won't get uptodate pages...
@@ -498,14 +501,57 @@ class pobject extends object {
 						|| ( $modifier && is_array($grants[$grant]) && !$grants[$grant][$modifier] )
 					) && $ARLogin!="admin" ) {
 				// do login
+				$continue=false;
 				debug("pobject: CheckLogin: insufficient grants ($ARLogin)","object");
 				if ($ARLogin!="public") {
 					$arLoginMessage = $ARnls["accessdenied"];
 				} else if ($fallback) {
 					$arLoginMessage = $ARnls["accessdenied"].": ".$ARnls["q:cookiesenabled"];
+				} else
+				if (!$ARCurrent->session && !$ARCurrent->arNoSessionRespawn) {
+					$arLoginMessage = $ARnls["accessdenied"].": ".$ARnls["q:cookiesenabled"];
+					/* 
+						there is no session, public could not authorise, let's
+						look if the user has got a session in one of his cookies 
+					*/
+					$credentials = ldGetCredentials();
+					// debugon('all');
+					if (is_array($credentials)) {
+						while (!$continue && (list($sessionid, $cdata)=each($credentials))) {
+							debug("checking sessionid($sessionid)");
+							ldStartSession($sessionid);
+							if ($ARCurrent->session->id == $sessionid) {
+								if (ldCheckCredentials($ARCurrent->session->get("ARLogin"),
+													$ARCurrent->session->get("ARPassword"))) {
+
+									$ARLogin = $ARCurrent->session->get("ARLogin");
+									$ARPassword = $ARCurrent->session->get("ARPassword");
+									$continue = true;
+									$recheck = true;
+									$criteria["login"]["value"]["="]="'".AddSlashes($ARLogin)."'";
+									$result=@current($this->find("/system/users/",$criteria,"system.get.phtml"));
+									$AR->user = $result;
+									unset($criteria);	
+									debug("respawning session($sessionid) for user ($ARLogin)");
+								} else {
+									$ARCurrent->session->suspend();
+									unset($ARCurrent->session);
+									debug("could not respawn session($sessionid) for user ($ARLogin): permission denied");
+								}
+							} else {
+								/* could not respawn session */
+								$ARCurrent->session->kill();
+								unset($ARCurrent->session);
+								debug("could not respawn session($sessionid) for user ($ARLogin): session too old?");
+							}
+						}
+					}
 				}
-				ldAccessDenied($this->path, $arLoginMessage);
-				$continue=false;
+
+				if (!$continue) {
+					debug('access denied, no continue');
+					ldAccessDenied($this->path, $arLoginMessage);
+				}
 			}
 		}
 		$ARPassword=0;
@@ -518,8 +564,10 @@ class pobject extends object {
 		}
 
 		$ARCurrent->arLoginSilent=1;
+//		debugoff();
 		return $result;
 	}
+
 
 	function CheckPublic($grant, $modifier=ARTHISTYPE) {
 	global $AR;
