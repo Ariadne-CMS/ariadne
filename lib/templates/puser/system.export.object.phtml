@@ -1,7 +1,9 @@
 <?php
 	if (!$setDummyObject) {
 		$this->properties=$this->load_properties();
-		$this->call("system.export.get.grants.phtml");
+		if (!$ARCurrent->options["without_grants"]) {
+			$this->call("system.export.get.grants.phtml");
+		}
 	} else {
 		$this->dummy_save=1;
 	}
