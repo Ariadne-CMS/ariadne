@@ -3,9 +3,7 @@
 			 ( !$this->arIsNewObject && $this->CheckLogin("edit") ) ) {
 		global $HTTP_POST_FILES, $HTTP_POST_VARS;
 
-		if (!$form_field) {
-			$form_field="file";
-		}
+		$form_field="file";
 
 		$file_temp=$HTTP_POST_FILES[$form_field]['tmp_name'];
 		$file=$HTTP_POST_FILES[$form_field]['name'];
