@@ -19,6 +19,6 @@
 		$ARCurrent->cachepage=$this->path.$arCallFunction;
 		$this->get("index.html/","view.html", $arCallArgs);
 	} else {
-		$this->CheckConfig($arCallFunction, $arCallArgs);
+		$this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs);
 	}
 ?>
