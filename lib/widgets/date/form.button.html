@@ -1,0 +1,28 @@
+<?php 
+  if (!$wgDate) {
+    $temp=getdate(time()); 
+  } else {
+    $temp=getdate($wgDate);
+  }
+  // adjust timestamp to midnight
+  $wgDate=mktime(0,0,0,$temp["mon"],$temp["mday"],$temp["year"]);
+  if (!$wgDateName) {
+    $wgDateName="date";
+  }
+  if (!$wgDateTitle) {
+    // $wgDateTitle="Select Date";
+  }
+  if (!$wgDateFormat) {
+    $wgDateFormat="%d-%m-%Y";
+  }
+  if (!$wgDateSize) {
+    $wgDateSize=10;
+  }
+?>
+<input type="hidden" name="<?php echo $wgDateName; ?>" value="<?php echo $wgDate; ?>">
+<input type="text" name="<?php echo $wgDateName; ?>formatted" value="<?php 
+  echo strftime($wgDateFormat, $wgDate); 
+?>" size="<?php echo $wgDateSize; ?>"><input type="image" src="<?php echo
+$AR->dir->images; ?>icons/pcalendar.gif" border="0" onClick="return SelectDate(this.form, this.form.<?php 
+  echo $wgDateName.", $wgDate, '$wgDateName', '$wgDateTitle', '$wgDateFormat'"; 
+?>);">
