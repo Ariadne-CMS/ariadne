@@ -149,7 +149,7 @@
 		}
 		$query.=" $this->limit_s ";
 		$query.="($nodes.path), $nodes.parent, $nodes.priority, ";
-		$query.=" $objects.id, $objects.type, $objects.object, datediff(ss, '1970-01-01 00:00:00.000', $objects_tbl.lastchanged) as lastchanged, $objects.vtype ";
+		$query.=" $objects.id, $objects.type, $objects.object, datediff(ss, '1970-01-01 00:00:00.000', $objects.lastchanged) as lastchanged, $objects.vtype ";
 		$query.=" from $tables where ";
 		$query.=" $nodes.object=$objects.id $prop_dep";
 		$query.=" and ( $this->where_s ) ";
