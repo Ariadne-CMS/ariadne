@@ -40,14 +40,16 @@
 	input {
 		width: 75px;
 	}
-	.row0 td {
+	.row0x td {
 		background-color: white;
 	}
-	.row1 td {
+	.row1x td {
 		background-color: #EEEEEE;
 	}
 </style>
 <script src="<?php echo $AR->dir->www; ?>widgets/window/savesize.js"></script>
+<script src="<?php echo $AR->dir->www; ?>widgets/webfx/tablesort/tablesort.js"></script>
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->www; ?>widgets/webfx/tablesort/tablesort.css">
 </head>
 <body bgcolor="white">
 <script>
@@ -62,36 +64,36 @@
 	<td colspan="2" bgcolor="white" style="border: 2px inset; padding: 0px;" height="90%" valign="top">
 
 	<div style="height: 100%; width: 100%; overflow: auto; margin: 0px; border: 0px;">
-		<table border="0" bgcolor="white" width="100%" cellspacing="0" cellpadding="0">
-		<tr>
-			<td valign="top" class="required" colspan="2">
-				<div><?php echo $ARnls["type"]; ?></div>
-			</td><td valign="top" colspan="2" class="required">
-				<div><?php echo $ARnls["template"]; ?></div>
+		<table border="0" background="<?php echo $AR->dir->www; ?>widgets/webfx/tablesort/tablebackground.jpg" bgcolor="white" width="100%" cellspacing="0" cellpadding="0" onclick="sortColumn(event)">
+		<thead style="cursor:hand;">
+		<tr>    
+			<td valign="top" class="required">
+				<?php echo $ARnls["type"]; ?>
 			</td><td valign="top" class="required">
-				<div><?php echo $ARnls["language"]; ?></div>
+				<?php echo $ARnls["template"]; ?>
 			</td><td valign="top" class="required">
-				<div><?php echo $ARnls["size"]; ?></div>
+				<?php echo $ARnls["language"]; ?>
 			</td><td valign="top" class="required">
-				<div><?php echo $ARnls["modified"]; ?></div>
+				<?php echo $ARnls["size"]; ?>
+			</td><td valign="top" class="required">
+				<?php echo $ARnls["modified"]; ?>
 			</td>
-		</tr><?php
+		</tr></thead><tbody><?php
 			$filestore = $this->store->get_filestore("templates");
 			if (($data->pinp) && is_array($data->pinp)) {
 				$currcol=0;
 				while (list($type, $values)=each($data->pinp)) {
 					while (list($function, $templatelist)=each($values)) {	
 						?><tr valign="middle" class="row<?php echo $currcol; ?>">
-							<td class="type">
-								<img src="<?php echo $AR->dir->images. "icons/$type.gif"; ?>" width="20" height="20">
-							</td><td align="left">
+						       <td align="left" valign="middle" style="height:23px">
+								<img src="<?php echo $AR->dir->images. "icons/$type.gif"; ?>" width="20" height="20" align="absmiddle">
 								<?php echo $type; ?>&nbsp;</td>
-							<td align="center"><?php 
+							<td align="left"><?php 
 								if (!$data->templates[$type][$function]) {
 									echo "<img src='{$AR->dir->images}local.gif' alt='local' height='12' width='11'>";	
 								}
-							?></td>
-							<td><?php echo $function; ?></td>
+							?>
+							<?php echo $function; ?></td>
 							<td><?php
 								ksort($templatelist);
 								reset($templatelist);
@@ -120,10 +122,10 @@
 
 								?>
 							<td>
-								<?php echo $this->make_filesize($msize); ?>&nbsp;
+								<div style="display:none;"><?php printf("%010d", $msize); ?></div><?php echo $this->make_filesize($msize); ?>&nbsp;
 							</td>
 							<td>
-
+								<div style="display:none;"><?php print $mtime; ?></div>
 								<?php echo strftime("%H:%M", $mtime); ?>&nbsp;&nbsp;
 								<?php echo strftime("%d %b %Y", $mtime); ?>&nbsp;
 							</td>
@@ -134,9 +136,7 @@
 					}
 				}
 			}
-		?><tr>
-			<td></td>
-		</tr>
+		?></tbody>
 		</table>
 	</div>
 	</td>
