@@ -14,11 +14,17 @@
 		arr["attributes"]=new Array();
         arr["attributes"][0] = new attribute('ar:type','internal');
         arr["attributes"][1] = new attribute('ar:path','<?php echo $ar_path; ?>');
+		arr["attributes"][2] = new attribute('ar:nls','<?php echo $ar_nls; ?>');
 		var name = '<?php echo $name; ?>';
 		if (name) {
 			arr['name'] =  name;
 		}
-        arr["URL"] = '<?php echo $this->make_url($ar_path); ?>';
+		<?php
+			if ($ar_nls == "none") {
+				$ar_nls = false;
+			}
+		?>   
+		arr["URL"] = '<?php echo $this->make_url($ar_path, $ar_nls); ?>';
 		top.window.returnValue = arr;
 		top.window.close();
 	}

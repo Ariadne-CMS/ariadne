@@ -48,6 +48,9 @@ BODY 	{
 .name {
 	width: 90px;
 }
+.langselect {
+	width: 100px;
+}
 .wgBrowseInput {
 		width: 140px;
 }
@@ -68,8 +71,31 @@ BODY 	{
 </SCRIPT>
 <SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
 <!--
+	var language_is_set = false;
 	for ( elem in top.window.dialogArguments ) {
 		switch( elem ) {
+			case "ar_nls":
+			case "ar:nls":
+				var ar_select = document.forms[0]['ar_nls'];
+				for (i=0; i<ar_select.options.length; i++) {
+					if (ar_select.options[i].value == top.window.dialogArguments[elem])
+					{
+						ar_select.selectedIndex = i;
+						language_is_set = true;
+					}
+				}
+			break;
+			case "tbContentLanguage":
+				var ar_select = document.forms[0]['ar_nls'];
+				if (!language_is_set) {
+					for (i=0; i<ar_select.options.length; i++) {
+						if (ar_select.options[i].value == top.window.dialogArguments[elem])
+						{
+							ar_select.selectedIndex = i;
+						}
+					}
+				}
+				break;
 			case "ar_path":
 			case "ar:path":
 				document.forms[0]['ar_path'].value = top.window.dialogArguments[elem];
@@ -117,6 +143,19 @@ BODY 	{
 			include($this->store->code."widgets/browse/js.html");
 			include($this->store->code."widgets/browse/form.html");
 		?></nobr>
+		</td>
+	</tr><tr>
+		<td><?php echo $ARnls["language"]; ?>:</td>
+		<td colspan="3">
+			<select class="langselect" name="ar_nls">
+			<option value="none"><?php echo $ARnls["none"]; ?></option>
+			<?php
+				global $AR;
+				foreach ($AR->nls->list as $key => $value) {
+					echo "<option value=\"$key\">$value</option>\n";
+				}
+			?>
+			</select>
 		</td>
 	</tr>
 </form>

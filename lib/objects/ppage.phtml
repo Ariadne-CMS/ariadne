@@ -50,37 +50,51 @@ class ppage extends pobject { // ppage class definition
 		$page = eregi_replace('^.*<BODY[^>]*>','',
         			eregi_replace('</BODY.*$','',$page));
 	}
+	$root = $this->store->root;
+	if (substr($root, -3) == "/$this->nls") {
+		$root = substr($root, 0, -3);
+	}
+
 	if ($site && $site !== '/') {
       return str_replace("{arSession}", $session, 
+			str_replace("{arBase}",$AR->host.$root, 
 			str_replace("{arRoot}",$AR->host.$this->store->root, 
 			str_replace("{arRoot}$site", $this->make_url($site),
 			str_replace("{arCurrentPage}", $this->make_url(),
-        			$page))));
+        			$page)))));
 	} else {
       return str_replace("{arSession}", $session, 
+			str_replace("{arBase}",$AR->host.$root, 
 			str_replace("{arRoot}",$AR->host.$this->store->root, 
 			str_replace("{arCurrentPage}", $this->make_url(),
-        			$page)));
+        			$page))));
 	}
   }
 
-  function RAWtoAR($page) {
+  function RAWtoAR($page, $nls="") {
   global $ARCurrent, $AR;
 
 	/* find and replace the current page */
-	$page = str_replace($this->make_url(), "{arCurrentPage}", $page);
-    $page = ereg_replace("(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?(/".$this->nls.")?".$this->path, "{arCurrentPage}", $page);
+	$page = str_replace($this->make_url($this->path, $nls), "{arCurrentPage}", $page);
+	$nls_match = "";
+	if ($nls) {
+		$nls_match = "/$nls";
+	}
+	$page = ereg_replace("(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?".$nls_match.$this->path, "{arCurrentPage}", $page);
 
 	// change hardcoded links and images to use a placeholder for the root
 	if ($this->store->root) {
-		if (substr($this->store->root, -3) !== "/$this->nls") {
-			$nls_reg = "(/$this->nls)?";
+		$root = $this->store->root;
+		if (substr($root, -3) == "/$nls") {
+			$root = substr($root, 0, -3);
 		}
-		$page = ereg_replace("(http[s]?://)?".$AR->host.$this->store->root.$nls_reg, "{arRoot}", $page);
-		$page = ereg_replace("(http[s]?://)?".$this->store->root.$nls_reg, "{arRoot}", $page);
+		$page = ereg_replace("(http[s]?://)?".$AR->host.$root, "{arBase}", $page);
+		$page = ereg_replace("(http[s]?://)?".$root, "{arBase}", $page);
+
+		
 	}
     // change hand pasted sources, which may or may not include session id's
-    $page = ereg_replace("(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?(/".$this->nls.")?", "{arRoot}", $page);
+    $page = ereg_replace("(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?", "{arBase}", $page);
 	if ($ARCurrent->session && $ARCurrent->session->id) {
       // check for other session id's:
       $page = str_replace("/-".$ARCurrent->session->id."-", "{arSession}", $page);

@@ -979,12 +979,13 @@ function DECMD_HYPERLINK_onclick()
 			}
 		}
 	}
+	args["tbContentLanguage"]=tbContentLanguage;
 	/* 
 	here popup your own dialog, pass the arg array to that, get what the user
 	entered there and come back here
 	*/ 
 	arr = showModalDialog(tbContentTarget + 
-		"edit.object.html.link.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:12em; status: no; resizable: yes;");
+		"edit.object.html.link.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:15em; status: no; resizable: yes;");
 	if (arr != null){
 		var newLink='<a';
 		if (arr['URL']) {
