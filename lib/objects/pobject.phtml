@@ -639,7 +639,7 @@ class pobject extends object { // pobject class definition
 								// change the user back
 								$ARLogin=$user_login;
 								unset($AR->user);
-								if ($AR->user=current($this->get($user_path, "system.get.phtml")) {
+								if ($AR->user=current($this->get($user_path, "system.get.phtml"))) {
 									$continue=true;
 								} else {
 									debug("pobject: CheckLogin: couldn't create ldap user ","object");
@@ -649,7 +649,7 @@ class pobject extends object { // pobject class definition
 								}
 							} else {
 								debug("pobject: CheckLogin: ldap user not valid","object");
-								$arLoginMessage=$ARnls["accessdenied"],$ARLogin);
+								$arLoginMessage=$ARnls["accessdenied"];
 								ldAccessDenied($this->path, $arLoginMessage);
 								$continue=false;
 							}

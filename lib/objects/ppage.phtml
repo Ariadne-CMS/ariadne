@@ -46,11 +46,11 @@ class ppage extends pobject { // ppage class definition
       $session='';
     } 
     if (!$full) {
-      return str_replace("{arSession}", $session, str_replace("{arRoot}",$this->store->root, 
+      return str_replace("{arSession}", $session, str_replace("{arRoot}",$AR->host.$this->store->root, 
         eregi_replace('^.*<BODY[^>]*>','',
         eregi_replace('</BODY.*$','',$page))));
     } else {
-      return str_replace("{arSession}", $session, str_replace("{arRoot}",$this->store->root, $page));
+      return str_replace("{arSession}", $session, str_replace("{arRoot}",$AR->host.$this->store->root, $page));
     }
   }
 
@@ -61,6 +61,7 @@ class ppage extends pobject { // ppage class definition
 		if (substr($this->store->root, -3) !== "/$this->nls") {
 			$nls_reg = "(/$this->nls)?";
 		}
+		$page = ereg_replace($AR->host.$this->store->root.$nls_reg, "{arRoot}", $page);
 		$page = ereg_replace("(http[s]?://)?".$this->store->root.$nls_reg, "{arRoot}", $page);
 	}
     // change hand pasted sources, which may or may not include session id's
