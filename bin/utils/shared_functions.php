@@ -23,7 +23,7 @@
 	function untar($tarfile, $file, $dstdir) {
 		global $error, $ax_config;
 		if ($ax_config["tar"]["error_handler"]) {
-			$errfile="./tar.errors";
+			$errfile="$dstdir/tar.errors";
 			$handler=sprintf($ax_config["tar"]["error_handler"], $errfile);
 		}
 
@@ -61,7 +61,7 @@
 	function tar($tarfile, $file, $dstdir) {
 		global $error, $ax_config;
 		if ($ax_config["tar"]["error_handler"]) {
-			$errfile="./tar.errors";
+			$errfile="$dstdir/tar.errors";
 			$handler=sprintf($ax_config["tar"]["error_handler"], $errfile);
 		}
 
