@@ -3,6 +3,7 @@ Ariadne 2.3.2-dev
 Changes in Ariadne since version Ariadne 2.3.1-dev
 
 New Features:
+	- Added Portugese translation. Thanks to Marc R.J. Brevoort.
 	- The GrantsCache is now local to the user (this makes it easier to switch
 	  users runtime).
 	- added regexp support for both mysql and postgresql (thanks to Goran Topic)
