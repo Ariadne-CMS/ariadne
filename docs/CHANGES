@@ -58,6 +58,8 @@ Bugs fixed:
 	- Added a missing CheckConfig() to system.save.data.phtml of pfile.
 	- fixed wizard widget bug: now you can use wgWizNextStep as an argument
 	  in the URL (via GET) to step to the correct wizard step immediately.
+	- fixed a bug in the save of particle, too long titles were not checked
+	  properly. Thanks to Johan de Boer.
 
 Changes in Ariadne since version 2.1.3
 
