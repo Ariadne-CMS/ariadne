@@ -55,7 +55,7 @@ class ppage extends pobject { // ppage class definition
 	}
 	if ($ARCurrent->session->id) {
         // change hand pasted sources, which may or may not include session id's
-		$page = ereg_replace("(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?(/".$nls.")?", "{arRoot}", $page);
+		$page = ereg_replace("(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?(/".$this->nls.")?", "{arRoot}", $page);
 		// check for other session id's:
 		$page = str_replace("/-".$ARCurrent->session->id."-", "", $page);
 	}
