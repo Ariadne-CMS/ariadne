@@ -23,6 +23,8 @@ Bugs Fixed:
 	- We now call the link dialog in the WYSIWYG editor on the current object.
 	- Fixed passing of data to pobject::_NewObject()
 	- Fixed recursive calling of user.login.html
+	- Fixed a changed root problem (which was only triggerd with some clients
+      like ncftp).
 
 Changes in Ariadne since version 2.2
 
