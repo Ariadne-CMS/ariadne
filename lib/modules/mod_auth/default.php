@@ -200,7 +200,8 @@
 								}
 							}
 						}
-					} else {
+					}
+					if (!$result) {
 						debug("checkLogin: normal public login", "all");
 						$result = $this->authUser("public", "none");
 					}
