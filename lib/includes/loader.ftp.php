@@ -132,10 +132,8 @@
 		}
 
 		function socket_read($arg1, $arg2, $arg3) {
-			debug("socket_read($arg1, $arg2, $arg3)");
 			$buffer="";
 			read($arg1, $buffer, $arg2, PHP_BINARY_READ);
-			debug("socket_read::return ($buffer)");
 			return $buffer;
 		}
 	}	
