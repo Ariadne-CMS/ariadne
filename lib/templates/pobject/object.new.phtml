@@ -21,6 +21,9 @@
     $wgWizCallObject=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData);
     $wgWizCallObject->newobject=true;
     $wgWizFlow=$wgWizCallObject->call("object.new.flow.phtml", $arCallArgs);
+    if ($wgWizFlow[0]["error"]) {
+      $wgWizAlert=$wgWizFlow[0]["error"];
+    }
     $wgWizControl=$this->getdata("wgWizControl","none");
     $wgWizCurrent=$this->getdata("wgWizCurrent","none");
     if ($wgWizControl && $wgWizCurrent) {
