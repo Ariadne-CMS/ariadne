@@ -70,7 +70,7 @@
 			reset($ARConfig->nls->list);
 			while (list($arnls, $arlanguage)=each($ARConfig->nls->list)) {
 				// now list all non-selected-language variables
-				$arlanguage=htmlentities($arlanguage);
+				// $arlanguage=htmlentities($arlanguage);
 				$image=$AR->dir->images.'nls/'.$arnls.'.gif';
 				if (isset($this->data->nls->list[$arnls])) {
 					ldSetNls($arnls);
