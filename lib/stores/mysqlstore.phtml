@@ -669,6 +669,20 @@ class mysqlstore {
 		return $result;
 	}
 
+	function store_run_query($query) {
+		/* private function, do not use this outside this class */
+		$result=mysql_db_query($this->database, $query, $this->connect_id);
+		$errno=mysql_errno($this->connect_id);
+		$error=mysql_error($this->connect_id);
+		if ($errno) {				
+			$this->error="ERROR: Mysql: $errno: $error";
+			debug("run_query: ".$this->error,"store");
+			debug("run_query: query=$query_string","store");
+			$result=false;
+		}
+		return $result;
+	}
+
 	function move($source, $destination) {
 	/**********************************************************************
 
@@ -710,39 +724,32 @@ class mysqlstore {
 				$destinationlength=strlen($destination);
 				$sourcelength=strlen($source);
 				$parentlength=strlen($parent);
+				// move the top path
 				$query_string="update $nodes_tbl set path='$edestination', parent='$eparent' where path='$esource'";
-				debug($query_string);
-				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
-				$errno=mysql_errno($this->connect_id);
-				$error=mysql_error($this->connect_id);
-				if ($errno) {				
-					$this->error="ERROR: Mysql: $errno: $error";
-					debug("move: update nodes failed!","store");
-					debug("move: ".$this->error,"store");
-					debug("move: query=$query_string","store");
-					$result=false;
-				} else {
-					$query_string="update $nodes_tbl set path=CONCAT('$edestination', SUBSTRING(path, $sourcelength+1)), parent=CONCAT('$edestination', SUBSTRING(parent, $sourcelength+1)) where path like '$esource%'";
-					debug($query_string);
-					$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
-					$errno=mysql_errno($this->connect_id);
-					$error=mysql_error($this->connect_id);
-					if ($errno) {				
-						$this->error="ERROR: Mysql: $errno: $error";
-						debug("move: update nodes failed!","store");
-						debug("move: ".$this->error,"store");
-						debug("move: query=$query_string","store");
-						$result=false;
+				if ($result=$this->store_run_query($query_string)) {
+					// move the nextid path too
+					$query_string="update ".$this->tbl_prefix."seq_id set path='$edestination' where path='$esource'";
+					if ($result=$this->store_run_query($query_string)) {
+						// now move all the children
+						$query_string="update $nodes_tbl set path=CONCAT('$edestination', SUBSTRING(path, $sourcelength+1)), parent=CONCAT('$edestination', SUBSTRING(parent, $sourcelength+1)) where path like '$esource%'";
+						if ($result=$this->store_run_query($query_string)) {
+							// finally move the nextid's for the children
+							$query_string="update ".$this->tbl_prefix."seq_id set path=CONCAT('$edestination', SUBSTRING(path, $sourcelength+1)) where path like '$esource%'";
+							$result=$this->store_run_query($query_string);	
+						}
 					}
 				}
 				debug("move: end","all");
-				$result=$destination;
 			} else {
 				$result=false;
 				debug("move: end (no $source)","store");
 			}
 		}
-		return $result;
+		if ($result) {
+			return $destination;
+		} else {
+			return false;
+		}
 	}
 
 

@@ -671,6 +671,19 @@ class postgresqlstore {
 		return ($result);
 	}
 
+	function store_run_query($query) {
+		debug("store_run_query: $query","store");
+		$result				= pg_exec($this->connect_id,$query);
+		$err				= pg_errormessage($this->connect_id);
+		if ($err) {				
+			$this->error	= "ERROR: PostgreSQL: $err";
+			debug("store_run_query: ".$this->error,"store");
+			debug("store_run_query: query=$query","store");
+			$result			= false;
+		}
+		return $result;
+	}
+
 	function move($source, $destination) {
 	/**********************************************************************
 
@@ -712,37 +725,32 @@ class postgresqlstore {
 				$destinationlength	= strlen($destination);
 				$sourcelength		= strlen($source);
 				$parentlength		= strlen($parent);
+				// first move the root path
 				$query_string		= "update $nodes_tbl set path='$edestination', parent='$eparent' where path='$esource'";
-				debug($query_string);
-				$exec				= pg_exec($this->connect_id,$query_string);
-				$err				= pg_errormessage($this->connect_id);
-				if ($err) {				
-					$this->error	= "ERROR: PostgreSQL: $err";
-					debug("move: update nodes failed!","store");
-					debug("move: ".$this->error,"store");
-					debug("move: query=$query_string","store");
-					$result			= false;
-				} else {
-					$query_string	= "update $nodes_tbl set path=('$edestination' || substring(path FROM $sourcelength+1)), parent=('$edestination' || substring(parent, $sourcelength+1)) where path like '$esource%'";
-					debug($query_string);
-					$exec			= pg_exec($this->connect_id, $query_string);
-					$err			= pg_errormessage($this->connect_id);
-					if ($err) {				
-						$this->error	= "ERROR: PostgreSQL: $err";
-						debug("move: update nodes failed!","store");
-						debug("move: ".$this->error,"store");
-						debug("move: query=$query_string","store");
-						$result			= false;
+				if ($result=$this->store_run_query($query_string)) {
+					// now move the nextid path
+					$query_string="update ".$this->tbl_prefix."seq_id set path='$edestination' where path='$esource'";
+					if ($result=$this->store_run_query($query_string)) {
+						// then move the children
+						$query_string	= "update $nodes_tbl set path=('$edestination' || substring(path FROM $sourcelength+1)), parent=('$edestination' || substring(parent, $sourcelength+1)) where path like '$esource%'";
+						if ($result=$this->store_run_query($query_string)) {
+							// finally move the nextid's of the children
+							$query_string="update ".$this->tbl_prefix."seq_id set path=('$edestination' || substring(path FROM $sourcelength+1)) where path like '$esource%'";
+							$result=$this->store_run_query($query_string);					
+						}
 					}
 				}
 				debug("move: end","all");
-				$result	= $destination;
 			} else {
 				$result	= false;
 				debug("move: end (no $source)","store");
 			}
 		}
-		return ($result);
+		if ($result) {
+			return $destination;
+		} else {
+			return false;
+		}
 	}
 
 	function list_paths($path) {
