@@ -21,6 +21,7 @@ New Features:
 	- moved the function RAWtoAR and its reverse ARtoRAW from ppage.phtml into the
 	  mod_url.php, to be more widely available, and extended the variables with
 	  the nls option: {arCurrentPage/en} expands to the english version, etc.
+	- Added Helene as highlighted editting option for the templatae editor
 	  
 Bugs Fixed:
 	- Fixed logging in with another user on your own session.

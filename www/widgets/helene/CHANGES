@@ -1,0 +1,30 @@
+Helene version 0.3
+
+Changes in Helene since version 0.2
+
+New features:
+- Actions are now all controlled via configurable key bindings.
+- Added some joe bindings (^k-v ^k-u ^e ^a ^x ^z)
+- Added setKeyBinding() which allows on the fly switching.
+  Also enabled the demo with that.
+
+Bugs fixed:
+- Fixed a javascript error when clicking outside of the LI SPAN or TEXTAREA.
+- Fixed Mozilla keypress handling. We now cancel the onKeyPress.
+- Fixed inputline positioning and lineheight problems (background color)
+- Fixed insertion of \n\n with setContents
+- Fixed weird mozilla background color behaviour
+
+Changes in Helene since version 0.1
+
+New Features:
+- Loading and saving is now implemented
+- Mouseclicks are correctly handled by both IE and Mozilla.
+
+Bugs fixed:
+- Lots and lots.
+
+
+First release of Helene
+
+We now have a somewhat working version. And released it as 0.1

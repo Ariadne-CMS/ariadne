@@ -1,0 +1,36 @@
+	.h_pinp_block {
+		background-color: #DDDDDD;
+	}
+	.h_pinp {
+		color: blue;
+	}
+	.h_special_char {
+		color: darkcyan;
+	}
+	.h_operator {
+		color: red;
+	}
+	.h_doublequote {
+		color: red;
+	}
+	.h_singlequote {
+		color: red;
+	}
+	.h_var {
+		color: green;
+	}
+	.h_ident {
+		color: purple;
+	}
+	.h_single_comments {
+		color: darkorange;
+	}
+	.h_blockcomment {
+		color: darkorange;
+	}
+	.h_script_block {
+		background-color: #FFFFFF;
+	}
+	.h_script {
+		color: blue;
+	}
