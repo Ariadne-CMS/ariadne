@@ -1,9 +1,43 @@
-Upgrading to 2.0b10/2.0b11                                         Muze Ariadne
-================================================================================
+Upgrading to 2.0                                                   Muze Ariadne
+===============================================================================
 
-Ariadne 2.0b10 introduces a lot of low level changes, not only in the
-database store, but also in the export file format. For this reason,
-upgrading is a bit more complex.
+Ariadne 2.0 introduces a lot of low level changes in the database store. The 
+export file format is changed a bit too, but is backwards compatible with 
+2.0b10 and 2.0b11. If you are running an older version of Ariadne, please see
+the instructions at the section 'Upgrading from Ariadne 2.0b9 or earlier'.
+
+The following instructions should be used whenever you install a new version 
+of Ariadne, unless stated otherwise.
+
+0.	Backup your Ariadne code and database. But you do that regulary
+	anyway, right? :)
+
+1.	Before you upgrade the Ariadne code, export your current site. 
+	You can run export as root, or as the web user (e.g. www-data),
+	from the ariadne/bin/ directory, e.g.:
+
+	./export --with-grants / oldsite.ax
+
+2.	Install Ariadne 2.0 in a new directory. Follow the normal installation 
+	procedure.
+
+3.	Now import the export file, either via the web interface or through the 
+	command line import tool, e.g:
+
+	./import --with-grants oldsite.ax /
+
+	When using the command line import tool, make sure you 'su' to the same
+	user id that is used to run the webserver, e.g. 'www-data' or 'nobody' 
+	depending on your configuration.
+
+That's it. Your old website should now work in the new Ariadne. Check if 
+everything is ok and then remove the old Ariadne version. Don't forget the 
+databases.
+
+
+Upgrading from 2.0b9 or earlier                                    Muze Ariadne
+===============================================================================
+
 
 0.	Backup your Ariadne code and database. But you do that regulary
 	anyway, right? :)
@@ -40,6 +74,6 @@ upgrading is a bit more complex.
 
 	import newsite.ax /
 
-	If ran it as root, make sure the files (ariadne/files/) are chowned to
-	the web user.
+	If you ran it as root, make sure the files (ariadne/files/) are chowned 
+	to the web user.
 

@@ -5,8 +5,8 @@ Known issues
   - breaks on 'broken' html.
 
   The Internet Explorer html editor cannot edit framesets or html files with
-  multiple body statemens. There should be a check on this and a 'backup' edit
-  possibility.
+  multiple body statemens. The solution is to switch to the 'text' editor
+  temporarily and edit the offending page through that interface.
 
   - switch between WYSIWYG / HTML view is 'lossy'
 
@@ -14,11 +14,4 @@ Known issues
   keep the source code intact. Specifically, switching from HTML source view
   to WYSIWYG view will lose/mangle javascript code. We've been unable to get
   the dhtml editor to work as advertised (by Microsoft that is).
-
-
-- Missing features.
-
-  In this beta there are still a number of unimplemented screens. This will
-  be fixed in the next release. All the important screens are working though 
-  (we hope).
 

@@ -26,9 +26,9 @@ Requirements:
    e.g.:
 
      cd /usr/local/lib/
-     tar xvzf ~/ariadne.2.0b10.tgz
+     tar xvzf ~/ariadne.2.0.tgz
      cd /var/www
-     ln -s /usr/local/lib/ariadne.2.0b10/www/ ariadne
+     ln -s /usr/local/lib/ariadne.2.0/www/ ariadne
 
 3) Make sure the files directory and the sessions directory are writable by the 
    webserver user.
@@ -36,9 +36,9 @@ Requirements:
    disk. So check to see which user your webserver is running as (look in
    httpd.conf) and (as root) do something like:
 
-     cd /usr/local/lib/ariadne.2.0b10/files/
+     cd /usr/local/lib/ariadne.2.0/files/
      chown -R www:www * 
-     cd /usr/local/lib/ariadne.2.0b10/sessions/
+     cd /usr/local/lib/ariadne.2.0/sessions/
      chown -R www:www * 
 
 3) create a database for Ariadne to use in MySQL.
@@ -66,8 +66,7 @@ Requirements:
    from a webbrowser. It allows you to set your admin password. Then try again.
 
 8) If everything works ok click on 'Administrator', then on 'edit' in the
-   newly appeared tabdisplay on the right. Now change the administrator
-   password. You will immediately be asked for authorization again.
+   frame on the right. Now change the administrator password. 
 
 9) move the directory www/install and all it's contents somewhere safe,
    meaning _not_ in your webserver's documentroot.
