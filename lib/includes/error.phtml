@@ -1,8 +1,10 @@
 <?php
     echo "<b>$error</b><br>\n";
-    echo "Click your browsers back button to fix this.";
 ?>    
   <script>
-    alert('<?php echo $error; ?>');
+    alert('<?php echo ereg_replace("'","\\'",$error); ?>');
     history.back();
   </script>
+<form>
+<input type="button" name="back" value="Back" onClick="history.back()">
+</form>
