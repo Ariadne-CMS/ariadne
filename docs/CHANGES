@@ -3,8 +3,8 @@ Ariadne 2.3.1-dev
 Changes in Ariadne since version Ariadne 2.3-dev
 
 IMPORTANT:
-	The postgresql store layer has gone through some major changes to make it more
-	like the mysql store layer, but still using the extra features that
+	The postgresql store layer has gone through some major changes to make it
+	more like the mysql store layer, but still using the extra features that
 	postgresql offers. After using this revision of the postgresql store,
 	reverting back to the older revision of the store needs an export/import
 	into a new instalation to reset some tables with state data. to use all the
@@ -13,63 +13,73 @@ IMPORTANT:
 	on most locations. Using an old instalation will work but it will mis the
 	most of the speed improvements. 
 
-	The editor.ini has undergone some restructuring. Please update your 
-	current editor.ini with the one from CVS.
+	The editor.ini has undergone some restructuring. Please update your current
+	editor.ini with the one from CVS.
 
 New Features:
 
 	- More sane window sizes (even for mozilla) thanks to Dino Termini.
-	- Session timeout has a seperate callback template: user.session.timeout.html
+	- Session timeout has a seperate callback template:
+	  user.session.timeout.html
 	- Added an extra 'nls' selector to the link dialogs in the WYSIWYG editor
-	(you can now add links to objects in a specific language).
+	  (you can now add links to objects in a specific language).
 	- Added locking to the 'edit' wizards.
 	- Popus of Ariadne are now optionally reused or not, this means you can have
 	  2 seperate template editors open on one Ariadne instance.
 	- user.notfound.html now calls 2 templates depending on the full page not
 	  found or part of a page, user.notfound.full.html user.notfound.inpage.html
-	- You can now call class templates directly without consulting the pinp templates
-	  through: call("#view.html") instead of call("view.html")
-	- You can now switch to a syntax-highlighted non-editable view in the template editor.
-	- Added htmlcleaner by troels@kyberfabrikken.dk. Added rules based html parsing to it.
-	- Added the option to select a css style for a selection in the WYSIWYG editor, using <SPAN>.
+	- You can now call class templates directly without consulting the pinp
+	  templates through: call("#view.html") instead of call("view.html")
+	- You can now switch to a syntax-highlighted non-editable view in the
+	  template editor.
+	- Added htmlcleaner by troels@kyberfabrikken.dk. Added rules based html
+	  parsing to it.
+	- Added the option to select a css style for a selection in the WYSIWYG
+	  editor, using <SPAN>.
 	- Extended the WYSIWYG image dialog with a style setting. 
-	- Added a mod_html, which will allow easier access to a number of html related modules.
+	- Added a mod_html, which will allow easier access to a number of html
+	  related modules.
 	- You can now configure the specialchars surrounding the ftp list modes
 	  (thanks to Gerhard Hoogterp).
 	- Added xml exporting of an Ariadne tree, no import yet.
 	- Added option to add named hyperlinks and anchor tags in the WYSWYG editor. 
-	- Made the shortcut object behave more like the unix symlink. It will redirect
-	  child requests (via web) to it's target. It will also make templates defined
-	  on it (and it's parents) available to its target. 
+	- Made the shortcut object behave more like the unix symlink. It will
+	  redirect child requests (via web) to it's target. It will also make
+	  templates defined on it (and it's parents) available to its target. 
 	- Added getExif() method to pphoto. Thanks to Gerhard Hoogterp
-	- The toolbars in the editor are now configurable via the editor.ini template.
+	- The toolbars in the editor are now configurable via the editor.ini
+	  template.
 	- Cleaned the postgresql install store from pg_exec calls and replaced them
 	  with $this->store_run_query furter added transaction support in initialize
 	  and added analyze in the store close routine of the postgresql install
-	  store. Cleaned a lot of code, and made it more readable by replacing obfuscated
-	  code. Added Analyze after the store initialisation to increase the speed
-	  just after the install. 
-	- Updated the windows XP look to work with large directories and work under mozilla.
-	- Added a PDF write module, which allows you to create PDF documents using pinp, and
-	  also convert simple html to pdf. Uses fpdf, which must be installed seperately.
-	- Added the option to add spans, divs and other html tags with or without classnames
-	  using the editor.
-	- The browse widget now also handles large directories (> 100 objects) by showing a page 
-	  select list.
-	- The owner of an object now only get set if it wasn't set before in $this->save();
+	  store. Cleaned a lot of code, and made it more readable by replacing
+	  obfuscated code. Added Analyze after the store initialisation to increase
+	  the speed just after the install. 
+	- Updated the windows XP look to work with large directories and work under
+	  mozilla.
+	- Added a PDF write module, which allows you to create PDF documents using
+	  pinp, and also convert simple html to pdf. Uses fpdf, which must be
+	  installed seperately.
+	- Added the option to add spans, divs and other html tags with or without
+	  classnames using the editor.
+	- The browse widget now also handles large directories (> 100 objects) by
+	  showing a page select list.
+	- The owner of an object now only get set if it wasn't set before in
+	  $this->save();
 	- added autofocus for the priority edit popup
 	- Extended the ppage class with methods for multi page articles.
-	- Fixed a problem with the image and browse dialog, the pphoto in the browse view now
-	  always shows the thumbnail, instead of the entire image or a non-existant template style
+	- Fixed a problem with the image and browse dialog, the pphoto in the browse
+	  view now always shows the thumbnail, instead of the entire image or a
+	  non-existant template style
 	- added the name input field to all hyperlink dialogs and fixed the size.
-    - deprecated the ppage::RAWtoAR() function, the new name now is CompilePage() (as it is
-      the reverse of ParsePage())
+	- deprecated the ppage::RAWtoAR() function, the new name now is
+	  CompilePage() (as it is the reverse of ParsePage())
 
 Bugs Fixed:
 	- Fixed recursive calling of the login template when a session has been
 	  timed out.
-	- Adding users to groups upon import (so you don't need to export 
-		/system/groups/ also).
+	- Adding users to groups upon import (so you don't need to export
+	  /system/groups/ also).
 	- Changed .jpg template to .html in browse.nav.icons.show.phtml for pphoto.
 	  Thanks to Goran Topic
 	- Changed short php tags in puser/edit.object.data.form.phtml to long tags.
@@ -81,11 +91,11 @@ Bugs Fixed:
 	  workaround is to remove these tags before we give it to htmltidy.
 	- Fixed cwd in the ftp loader for newer PHP configs who do not automatically
 	  chdir to the path of the script.
-	- Fixed recursive calling of user.login.html in the popup window when 
+	- Fixed recursive calling of user.login.html in the popup window when
 	  entering an invalid username/password
 	- Special Characters now work in custom data fields. Thanks to Dino Termini
 	- The loader will now call user.login.html when somebody enters a wrong
-	login/password combo (instead of falling back to 'public').
+	  login/password combo (instead of falling back to 'public').
 	- Fixed a bug which made it impossible to start a hidden session without
 	  logging in.
 	- Added missing German WinXP NLS by Daniel Sepeur.
@@ -97,31 +107,38 @@ Bugs Fixed:
 	- Fixed passing of data to pobject::_NewObject()
 	- Fixed recursive calling of user.login.html
 	- Fixed a changed root problem (which was only triggerd with some clients
-      like ncftp).
+	  like ncftp).
 	- Fixed a bug in the offset/limit generation in the postgresql store
 	- Fixed the bug that the postgresql store used numeric and integer which
-	  didn't did well on join. We changed numeric to bigint or integer in the store.
+	  didn't did well on join. We changed numeric to bigint or integer in the
+	  store.
 	- Placed a workaround around the not so suported fulltext property so that
 	  the import of a object with a fulltext property doesn't fail when
 	  importing it into a store which does not support it
 	- Fixed a compiler bug  which created illigal query's for postgresql when
 	  using orderby on properties.
 	- Fixed pinp interface to ls() and find() in psearch.
-	- Fixed importing of users in group, when the users does already exists then link it under the group instead of complaining
+	- Fixed importing of users in group, when the users does already exists then
+	  link it under the group instead of complaining
 	- included nls data in import
-	- Removed the table tags from the allowed tags in the _loose editor.ini definition.
-	- Fixed a bug with CheckConfig which started looping when a pshortcut pointed to a parent
-	- Fixed a bug with konqueror with the explore.html, it should work now in IE, Mozilla and konqueror
+	- Removed the table tags from the allowed tags in the _loose editor.ini
+	  definition.
+	- Fixed a bug with CheckConfig which started looping when a pshortcut
+	  pointed to a parent
+	- Fixed a bug with konqueror with the explore.html, it should work now in
+	  IE, Mozilla and konqueror
 	- Fixed a postgresql store bug, pconnect gives nasty bugs when a pageload is
 	  aborted , because the transaction isn't rolled back then, but the next
-	  connection will be seen as a continuation of the current connection.
-	  Bug found by reading comments on www.php.net
-	- redo on the error handling in the postgresql store, i should give nice error's now, and removed a lot of duplicate output
+	  connection will be seen as a continuation of the current connection.  Bug
+	  found by reading comments on www.php.net
+	- redo on the error handling in the postgresql store, i should give nice
+	  error's now, and removed a lot of duplicate output
 	- all the stores use now 32 char long object types instead of 16 and 32
-	- removed the usage of ARLogin in CheckLogin and changed it to Ar->user->login
+	- removed the usage of ARLogin in CheckLogin and changed it to
+	  Ar->user->login
 	- The wizard input fields now resize with the window.
-	- Added error checks on the store and object save routine, to prevent 
-	  saving objects with a path that is too long for the database.
+	- Added error checks on the store and object save routine, to prevent saving
+	  objects with a path that is too long for the database.
 	- yet another round of places where a object type was hardcoded to 16
 	  characters this time it was add_type in the install stores
 	- fixes a locale typo in the ariadne.phtml-unix and ariadne.phtml-win
@@ -130,10 +147,11 @@ Bugs Fixed:
 	  stored when there given as a array.
 	- fixed a bug in edit.object.html.phtml with CheckLogin, now it get the
 	  right type instead of "ppage"
-    - fixed a bug in the browse dialog when browsing to images, it now simply
-      always shows a thumbnail of the image, instead of the broken javascript
-      code.
-    - fixed a bug in the wysiwyg editor, the dialogs now get called on the parent when editing a new object.
+	- fixed a bug in the browse dialog when browsing to images, it now simply
+	  always shows a thumbnail of the image, instead of the broken javascript
+	  code.
+	- fixed a bug in the wysiwyg editor, the dialogs now get called on the
+	  parent when editing a new object.
 
 Changes in Ariadne since version 2.2
 
