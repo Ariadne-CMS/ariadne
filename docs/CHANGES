@@ -12,13 +12,26 @@ New Features:
 	  function. This argument is an array which you can use to select the
 	  properties you want to load (thanks to Goran Topic).
 	- made the German nls files up to date (thanks to Marcel Felix - FT EDV GmbH)
+	- Added a 'loading' screen to the wysiwyg-editor toolbar
 	- added mod_url.php - a URL manipulation module.
 	- moved the function RAWtoAR and its reverse ARtoRAW from ppage.phtml into the
 	  mod_url.php, to be more widely available, and extended the variables with
 	  the nls option: {arCurrentPage/en} expands to the english version, etc.
 	  
-
 Bugs Fixed:
+	- Tidy is configured to accept documents that are UTF-8. Thanks to Jeroen van Gorkum.
+	- Fixed image dialog: it now correctly loads images with another URL root
+	  then $store->root.
+	- Fixed renaming of groups. It checked for an existing userid instead of
+	  a groupid.
+	- Made the default.phtml redirect to the currentsite url, instead of the	
+	  ariadne root url.
+	- Sessions spawned for a public user won't ever timeout anymore.
+	- Fixed ppage::ParsePage() to also map the current site url to arBase
+	  tags.
+	- Fixed the htmlcleaner so that it won't insert any redundant enters
+	- Fixed the htmlcleaner so that it now accepts input without a 
+	  container tag.
 	- The public user will not inherit 'owner' grants anymore.
 	- Changed the 'cancel' button in the rename wizard from 'submit' to a
 	  normal button so it won't rename your object(s) if you hit cancel.
