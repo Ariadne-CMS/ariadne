@@ -43,12 +43,12 @@
 			}
 		}
 
-		function showInputText($var, $name, $title='') {
+		function showInputText($var, $name, $title='', $extra='') {
 			if (edit::getEditMode() && $this->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
 				echo "<input type='text' class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title' value='";
 				echo $var;
-				echo "'>";
+				echo "' $extra>";
 			} else if (!edit::isEmpty($var)) {
 				echo $var;
 			}
@@ -89,10 +89,10 @@
 			}
 		}
 
-		function showSpan($var, $name, $title='') {
+		function showSpan($var, $name, $title='', $extra='') {
 			if (edit::getEditMode() && $this->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
-				echo "<span class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title'>";
+				echo "<span class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title' $extra>";
 				echo $var;
 				echo "</span>";
 			} else if (!edit::isEmpty($var)) {
@@ -100,10 +100,10 @@
 			}
 		}
 
-		function showDiv($var, $name, $title='') {
+		function showDiv($var, $name, $title='', $extra='') {
 			if (edit::getEditMode() && $this->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
-				echo "<div class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title'>";
+				echo "<div class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title' $extra>";
 				echo $var;
 				echo "</div>";
 			} else if (!edit::isEmpty($var)) {
@@ -169,8 +169,8 @@
 			return edit::requireDataField($name, $title);
 		}
 
-		function _showInputText($var, $name, $title='') {
-			return edit::showInputText($var, $name, $title);
+		function _showInputText($var, $name, $title='', $extra='') {
+			return edit::showInputText($var, $name, $title, $extra);
 		}
 
 		function _showInput($var, $name, $title, $type='text', $extra='') {
@@ -181,12 +181,12 @@
 			return edit::showSelect($var, $name, $title, $list, $bykey, $extra);
 		}
 
-		function _showSpan($var, $name, $title='') {
-			return edit::showSpan($var, $name, $title);
+		function _showSpan($var, $name, $title='', $extra='') {
+			return edit::showSpan($var, $name, $title, $extra);
 		}
 
-		function _showDiv($var, $name, $title='') {
-			return edit::showDiv($var, $name, $title);
+		function _showDiv($var, $name, $title='', $extra='') {
+			return edit::showDiv($var, $name, $title, $extra);
 		}
 
 		function _showLink($path='', $extra='') {
