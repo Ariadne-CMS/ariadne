@@ -901,7 +901,11 @@ class pobject extends object { // pobject class definition
 					} else if ($arTemplateId=$curr_templates[$arType][$arCallFunction]['any']) {
 						$arCallTemplate=$arType.".".$arCallFunction.".any";
 					} else {
-						$arTemp=new $arType();
+						if (!class_exists($arType)) {
+							$arTemp=$this->store->newobject('.', '.', $arType, new object);
+						} else {
+							$arTemp=new $arType();
+						}
 						$arType=get_parent_class($arTemp);
 					}
 				}
