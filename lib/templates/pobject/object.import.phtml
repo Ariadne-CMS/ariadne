@@ -1,0 +1,60 @@
+<?php
+	if ($this->CheckLogin("config") && $this->CheckConfig()) {
+		include($this->store->code."nls/menu.".$nls);
+?>
+<html>
+<head>
+<title><?php echo $ARnls["m_import"]; ?></title>
+<?php
+	include($this->store->code."widgets/wizard/classic.css");
+?>
+<script>
+	function init() {
+		document.importform.source.focus();
+	}
+</script>
+</head>
+<body onLoad="init()">
+<table border="0" width="100%" cellspacing="0" cellpadding="2" height="100%">
+<form action="object.import.ax.phtml" name="importform" method="POST" ENCTYPE="multipart/form-data">
+<tr>
+	<td colspan="2">&nbsp;</td>
+</tr><tr>
+	<td align="center" colspan="2">
+		<?php 
+			echo $ARnls["file"].":&nbsp;";
+		?>
+		<input type="file" name="source">
+	</td>
+</tr><tr>
+	<td colspan="2">&nbsp;</td>
+</tr><tr>
+	<td colspan="2" align="center" valign="top">
+		<table border="0" width="60%">
+		<tr>
+			<td>
+				<fieldset>
+				<legend><?php echo $ARnls["options"]; ?></legend>
+					<input type="checkbox" name="without_grants" value="1" checked><?php echo $ARnls["withoutgrants"]; ?><br>
+					<input type="checkbox" name="force" value="1"><?php echo $ARnls["force"]; ?>
+				</fieldset>
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr><tr>
+	<td colspan="2">&nbsp;</td>
+</tr><tr>
+	<td align="left" valign="bottom">
+		<input type="submit" name="cancel" style="width: 100px" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();">
+	</td><td align="right" valign="bottom">
+		<input type="submit" name="submit" style="width: 100px" value="<?php echo $ARnls["m_import"]; ?>">
+	</td>
+</tr>
+</form>
+</table>
+</body>
+</html>
+<?php
+	}
+?>

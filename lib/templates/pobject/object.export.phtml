@@ -1,0 +1,50 @@
+<?php
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		include($this->store->code."nls/menu.".$nls);
+?>
+<html>
+<head>
+<title><?php echo $ARnls["m_export"]; ?></title>
+<?php
+	include($this->store->code."widgets/wizard/classic.css");
+?>
+<script>
+	function init() {
+		document.exportform.without_grants.focus();
+	}
+</script>
+</head>
+<body onLoad="init()">
+<table border="0" width="100%" cellspacing="0" cellpadding="2" height="100%">
+<form action="object.export.ax.phtml" name="exportform">
+<tr>
+	<td colspan="2">&nbsp;</td>
+</tr><tr>
+	<td colspan="2" align="center" valign="top">
+		<table border="0" width="60%">
+		<tr>
+			<td>
+				<fieldset>
+				<legend><?php echo $ARnls["options"]; ?></legend>
+					<input type="checkbox" name="without_grants" value="1" checked><?php echo $ARnls["withoutgrants"]; ?><br>
+				</fieldset>
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr><tr>
+	<td colspan="2">&nbsp;</td>
+</tr><tr>
+	<td align="left" valign="bottom">
+		<input type="submit" name="cancel" style="width: 100px" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();">
+	</td><td align="right" valign="bottom">
+		<input type="submit" name="submit" style="width: 100px" value="<?php echo $ARnls["m_export"]; ?>">
+	</td>
+</tr>
+</form>
+</table>
+</body>
+</html>
+<?php
+	}
+?>

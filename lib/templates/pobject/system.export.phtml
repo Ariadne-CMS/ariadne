@@ -1,11 +1,10 @@
 <?php
 if ($this->CheckLogin("read")) {
-	global $options;
 
 	if (!function_exists('display')) {
 		function display($str) {
-			global $options;
-			if ($options["verbose"]) {
+			global $ARCurrent;
+			if ($ARCurrent->options["verbose"]) {
 				echo $str;
 			}
 		}
@@ -59,14 +58,14 @@ if ($this->CheckLogin("read")) {
 			while (is_array($result) && (list($key,$object)=each($result))) {
 				$newpath=$destpath.substr($object->path, strlen($rootpath));
 				display("processing($newpath)	");
-				if ($options["without_data"]) {
+				if ($ARCurrent->options["without_data"]) {
 					display("no data for (".$object->path.")\n");
 					unset($object->data);
 					unset($object->properties);
 				}
 
 				if (!$saved_object[$object->id]) {
-					if (!$options["force"] && $ARCurrent->importStore->exists($newpath)) {
+					if (!$ARCurrent->options["force"] && $ARCurrent->importStore->exists($newpath)) {
 						$saved_object[$object->id]=$newpath;
 
 						$oldObject=current($ARCurrent->importStore->call("system.get.phtml", "",
@@ -116,7 +115,7 @@ if ($this->CheckLogin("read")) {
 			}
 			$offset+=sizeof($result);
 		}
-		if (!$options["without_grants"]) {
+		if (!$ARCurrent->options["without_grants"]) {
 			display("updating grants (groups)\n");
 			@reset($ARCurrent->grants_list);
 			while (list($type, $type_logins)=@each($ARCurrent->grants_list)) {

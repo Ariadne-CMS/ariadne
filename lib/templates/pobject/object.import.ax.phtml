@@ -1,0 +1,80 @@
+<?php
+	if ($this->CheckLogin("config") && $this->CheckConfig()) {
+?>
+<html>
+<head>
+<title><?php echo $ARnls["m_import"]; ?></title>
+<?php
+	include($this->store->code."widgets/wizard/classic.css");
+?>
+<script>
+	function update() {
+		if (window.opener) {
+			window.opener.location.href=window.opener.location.href;
+		}
+	}
+</script>
+</head>
+<body onLoad="update();">
+<table border="0" width="100%" cellspacing="0" cellpadding="2">
+<form name="importform">
+<tr>
+	<td align="center" colspan="2">
+		<textarea cols="50" rows="13" wrap="off"><?php
+			global $HTTP_POST_FILES;
+			$source=$HTTP_POST_FILES["source"]["tmp_name"];
+			if ($source && is_uploaded_file($source)) { 
+
+				require($this->store->code."/configs/axstore.phtml");
+				include($this->store->code."/stores/axstore.phtml");
+
+				$ARCurrent->options["verbose"]=true;
+				if ($without_grants=$this->getdata("without_grants","none")) {
+					$ARCurrent->options["without_grants"]=true;
+				}
+				if ($force=$this->getdata("force","none")) {
+					$ARCurrent->options["force"]=true;		
+				}
+				
+				$ax_config["writeable"]=false;
+				$ax_config["database"]=$source;
+
+				$store=new axstore("", $ax_config);
+				if (!$store->error) {
+
+					$ARCurrent->importStore=&$this->store;
+					// srcpath and destpath may be empty
+					$callArgs=Array("srcpath" => $srcpath,
+									"destpath" => $this->path);
+
+					$store->call("system.export.phtml", $callArgs,
+						$store->get("/"));
+					$error=$store->error;
+
+					$store->close();
+
+				} else {
+					$error="import error: ".$this->store->error;
+				}
+				unlink($source);
+			} else {
+				$error="import error: '$source' file corrupt";
+			}
+
+			if ($error) {
+				echo $error."\n";
+			}
+		?></textarea>
+	</td>
+</tr><tr>
+	<td align="right">
+		<input type="submit" name="submit" style="width: 100px" value="<?php echo $ARnls["ok"]; ?>" onClick="window.close();">
+	</td>
+</tr>
+</form>
+</table>
+</body>
+</html>
+<?php
+	}
+?>

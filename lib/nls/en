@@ -271,4 +271,7 @@ $ARnls["check"]=		"Check";
 $ARnls["rename"]=		"Rename";
 $ARnls["err:maxsize"]=	"Error: Maximum size limit exceeded";
 $ARnls["err:invalidcontent"]="Error: Invalid content";
+$ARnls["force"]=		"Forced updates from file.";
+$ARnls["withoutgrants"]="Don't import grants";
+$ARnls["options"]=		"Options";
 ?>
