@@ -3,6 +3,7 @@ Ariadne 2.4RC2
 Changes in Ariadne since version Ariadne 2.3.1-dev
 
 New Features:
+	- Updated Polish translations by Lukasz Keler
 	- moved the multipart page extension from ppage to mod_multipart,
       mod_multipart only has the ShowSection and ShowSections methods
 	  but you can emulate ShowTitle(s) easily in your templates. The
