@@ -8,8 +8,9 @@
   $this->nlson=true; // set nls mode on for getdata
 
   // first find the selected language (if any)
-  reset($ARConfig->nls->list);
-  while (list($arnls, $arlanguage)=each($ARConfig->nls->list)) {
+  $config=$ARConfig->cache[$this->path];
+  reset($config->nls->list);
+  while (list($arnls, $arlanguage)=each($config->nls->list)) {
     if ($HTTP_POST_VARS[$arlanguage."_x"] ||
         $HTTP_GET_VARS[$arlanguage."_x"]) {
       $selectednls=$arnls;
@@ -20,17 +21,17 @@
     if ($setnls) { // hidden option when other submit buttons are pressed
       $selectednls=$setnls;
     } else {
-      $selectednls=$ARConfig->nls->default;
+      $selectednls=$config->nls->default;
     }
   }
   $this->nls=$selectednls;
   $nls=$selectednls;
-  $selectedlanguage=$ARConfig->nls->list[$selectednls];
+  $selectedlanguage=$config->nls->list[$selectednls];
   // enter this information in the form
   echo "<input type=\"hidden\" name=\"setnls\" value=\"$selectednls\">\n";
   // now 'remember' all language specific information and display the flags
-  reset($ARConfig->nls->list);
-  while (list($arnls, $arlanguage)=each($ARConfig->nls->list)) {
+  reset($config->nls->list);
+  while (list($arnls, $arlanguage)=each($config->nls->list)) {
     // now list all non-selected-language variables
     if (isset($$arnls)) {
       // assume no data is actually filled in -> faded flag (unless this is the currently selected language!)
