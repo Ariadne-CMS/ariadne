@@ -43,10 +43,10 @@ class particle extends ppage { // particle class definition
         if (eregi("<a>",$summary)) {
             $summary=eregi_replace("<a>","<a href=\"".$this->make_url()."$template\" $extra>",$summary);
         } else {
-			if (!$text) {
+			if ($text==="") {
 				$text=$ARnls["more"]."...";
 			}
-			if ($this->nlsdata->page) {
+			if ($text!==false && $this->nlsdata->page) {
 				$summary.=" <a href=\"".$this->make_url()."$template\" $extra>$text</a>";
 			}
 		}
