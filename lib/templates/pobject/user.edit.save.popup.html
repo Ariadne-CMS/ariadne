@@ -1,0 +1,40 @@
+<!--TOOLBAR_START--><!--TOOLBAR_EXEMPT--><!--TOOLBAR_END-->
+<!-- Copyright 2000 Microsoft Corporation. All rights reserved. -->
+<HTML>
+<HEAD>
+<TITLE>Saving Page</TITLE>
+
+<STYLE TYPE="text/css">
+ BODY   {margin-left:10; font-family:Verdana; font-size:12; background:menu}
+ BUTTON {width:5em}
+ TABLE  {font-family:Verdana; font-size:12}
+ P      {text-align:center}
+</STYLE>
+
+<SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
+<!--
+  var iframesrc='';
+  for ( elem in window.dialogArguments )
+  {
+    switch( elem )
+    {
+    case "ReturnPage":
+      iframesrc+='?arReturnPage='+escape(window.dialogArguments["ReturnPage"]);
+      break;
+    case "SaveTemplate":
+      iframesrc=window.dialogArguments["SaveTemplate"]+iframesrc;
+      break;
+	case "OpenerWindow":
+      window.opener=window.dialogArguments["OpenerWindow"];
+      break;
+    }
+  }
+  document.getElementById('saveFrame').src=iframesrc;  
+// -->
+</SCRIPT>
+</HEAD>
+
+<BODY>
+<IFRAME ID="saveFrame" style="width: 100%; height: 100%; margin: 0px; border: 0px; padding: 0px;"></IFRAME>
+</BODY>
+</HTML>
