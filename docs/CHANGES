@@ -1,10 +1,19 @@
-Ariadne 2.1.1
-Changes in Ariadne since version 2.1
+Ariadne 2.1.2
+Changes in Ariadne since version 2.1.1
 
 WARNING: Ariadne 2.1 its internal charset has been changed to UTF-8. 
          If you want to import older .ax files (for upgrades) you
          need to read the docs/upgrade.txt file first.
 
+
+New features:
+	- Made the WYSIWYG editor NLS aware. This means that all the menu
+	items etc are now displayed in your language. Available nls files
+	for the editor are English and German. (Thanks to Johann Hanne).
+
+
+Ariadne 2.1.1
+Changes in Ariadne since version 2.1
 New features:
 	- The experimental soap layer now has support for arrays.
 
