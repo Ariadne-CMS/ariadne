@@ -21,38 +21,7 @@
 	?>
 <html>
 <head>
-<style>
-	SPAN.item { 
-		left: 5 px;
-		width: 60px;
-		height: 68px;
-		position: relative;
-		margin-top: 5px;
-		margin-right: 5px;
-		vertical-align: top;
-		text-align: center;
-		<?php
-			if ($browser["id"]!="msie" || $browser["version"]!=4) { 
-		?>
-				float: left;
-		<?php
-			}
-		?>
-		overflow: hidden;
-	}
-	BODY {
-		font: 9pt sans-serif,Arial,Helvetica
-		margin: 0px;
-		padding: 0px;
-	}
-	A { 
-		text-decoration: none;
-		color: #000000
-	}
-	IMG {
-		padding-top: 0px
-	}
-</style>
+<link type="text/css" rel="stylesheet" href="<?php echo $AR->dir->www; ?>styles/browse.icons.css">
 <body bgcolor="white">
 <?php
 	if ($filter) {
