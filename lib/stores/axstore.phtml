@@ -630,6 +630,8 @@ class axstore {
 				$path="//".$regs[1].substr($path,2);
 			}
 		}
+		// escape spaces
+		$path=ereg_replace('([^\])[ ]', '\1\ ', $path);
 		return $path;
 	}
 

@@ -35,6 +35,8 @@
     if (eregi('^([a-z]):', $tar_path, $regs)) {
       $tar_path="//".$regs[1].substr($tar_path,2);
     }
+    $tar_path=ereg_replace('([^\])[ ]', '\1\ ', $tar_path);
+
     $compress_cmd                     = '--use-compress-program='.($tar_path).'bin/gzip.exe';
     $tar_cmd                          = $ariadne_root.'bin\tar.exe '.$compress_cmd;
     $ax_config['tar_error_handler']   = '';
