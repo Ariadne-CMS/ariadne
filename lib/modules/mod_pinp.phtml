@@ -60,6 +60,7 @@ class scanner {
 
 		$cclass_trailing["\n"] = 1;
 		$cclass_trailing[" "] = 1;
+		$cclass_trailing["\t"] = 1;
 		$this->YYCLASSES["ID_TRAILING"] = $cclass_trailing;
 
 		$cclass['"'] = 1;
