@@ -1249,6 +1249,21 @@ class pobject extends object { // pobject class definition
 		return $contents; 
 	} 
 
+	function make_filesize( $size ) {
+		$result = "0";
+		if( !isset($size) ) {
+			$size = $this->size;
+		}
+		if ($size>1048576) {
+			$result = round(intval($size)/1048576)." M";;
+		} elseif ($size>1024) {
+			$result = round(intval($size)/1024)." KB";
+		} else {
+			$result = intval($size)." B";
+		}
+		return $result;
+	}
+
 
 /********************************************************************
 
@@ -1520,6 +1535,10 @@ class pobject extends object { // pobject class definition
 
 	function _HTTPRequest($method, $url, $postdata = "") {
 		return $this->HTTPRequest($method, $url, $postdata);
+	}
+	
+	function _make_filesize( $size ) {
+		return $this->make_filesize( $size );
 	}
 } // end of pobject class definition
 ?>
