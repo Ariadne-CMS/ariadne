@@ -760,8 +760,8 @@ function getContents(data_id) {
 		// full paths to hyperlinks, even if you just enter #something.
 		// so removing it again here.
 		var temp=new String(data.innerHTML);
-		var replaceurl=tbContentElement.location;
-		temp=temp.replace(replaceurl, '');
+		var replaceregexp=new RegExp(tbContentElement.location, 'g');
+		temp=temp.replace(replaceregexp, '');
 		return temp;
 	} else {
 		return '';
