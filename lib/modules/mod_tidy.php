@@ -42,6 +42,11 @@
 		}
 
 		function clean($html) {
+			global $AR;
+			if ($AR->OS=="WIN32") {
+				include_once($AR->dir->install."/lib/modules/mod_unicode.php");
+				$html=unicode::utf8convert($html);
+			}
 			$file = tempnam($this->temp,'tidy-php-tmp');
 			$errfile = tempnam($this->temp,'tidy-php-err');
 
@@ -49,7 +54,7 @@
 			fwrite($fd,$html,strlen($html));
 			fclose($fd);
 
-			$pd = popen($this->tidy." --error-file ".$errfile." ".$this->options." ".$file,"r");
+			$pd = popen($this->tidy." -f ".$errfile." ".$this->options." ".$file,"r");
 			while (!feof($pd)) {
 				$outhtml .= fread($pd, 1024);
 			}
