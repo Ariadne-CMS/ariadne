@@ -36,6 +36,7 @@
 		$generalfilter="edit.object.data.generalfilter.phtml";
 		$searchtranslation="edit.object.data.searchtranslation.phtml";
 		$otherparams="edit.object.data.otherparams.phtml";
+		$usermapping="edit.object.data.usermapping.phtml";
 
 		$language="edit.object.language.phtml";
 		$save="edit.object.data.save.phtml";
@@ -49,7 +50,7 @@
 		$wgWizFlow[$i]["title"]=$ARnls["data"];
 		$wgWizFlow[$i]["template"]=$summary;
 		$wgWizFlow[$i]["next"]=$i+1;
-		$wgWizFlow[$i]["save"]=$i+5+$saveoffset+$customoffset;
+		$wgWizFlow[$i]["save"]=$i+6+$saveoffset+$customoffset;
 		$wgWizFlow[$i]["cancel"]=0;
 
 		$i++;
@@ -57,7 +58,7 @@
 		$wgWizFlow[$i]["template"]=$conninfo;
 		$wgWizFlow[$i]["prev"]=$i-1;
 		$wgWizFlow[$i]["next"]=$i+1;
-		$wgWizFlow[$i]["save"]=$i+4+$saveoffset+$customoffset;
+		$wgWizFlow[$i]["save"]=$i+5+$saveoffset+$customoffset;
 		$wgWizFlow[$i]["cancel"]=0;
 
 		$i++;
@@ -65,7 +66,7 @@
 		$wgWizFlow[$i]["template"]=$generalfilter;
 		$wgWizFlow[$i]["prev"]=$i-1;
 		$wgWizFlow[$i]["next"]=$i+1;
-		$wgWizFlow[$i]["save"]=$i+3+$saveoffset+$customoffset;
+		$wgWizFlow[$i]["save"]=$i+4+$saveoffset+$customoffset;
 		$wgWizFlow[$i]["cancel"]=0;
 
 		$i++;
@@ -73,12 +74,20 @@
 		$wgWizFlow[$i]["template"]=$searchtranslation;
 		$wgWizFlow[$i]["prev"]=$i-1;
 		$wgWizFlow[$i]["next"]=$i+1;
-		$wgWizFlow[$i]["save"]=$i+2+$saveoffset+$customoffset;
+		$wgWizFlow[$i]["save"]=$i+3+$saveoffset+$customoffset;
 		$wgWizFlow[$i]["cancel"]=0;
 
 		$i++;
 		$wgWizFlow[$i]["title"]="Other parameters"; //FIXME
 		$wgWizFlow[$i]["template"]=$otherparams;
+		$wgWizFlow[$i]["prev"]=$i-1;
+		$wgWizFlow[$i]["next"]=$i+1;
+		$wgWizFlow[$i]["save"]=$i+2+$saveoffset+$customoffset;
+		$wgWizFlow[$i]["cancel"]=0;
+
+		$i++;
+		$wgWizFlow[$i]["title"]="User mapping"; //FIXME
+		$wgWizFlow[$i]["template"]=$usermapping;
 		$wgWizFlow[$i]["prev"]=$i-1;
 		$wgWizFlow[$i]["save"]=$i+1+$saveoffset+$customoffset;
 		$wgWizFlow[$i]["cancel"]=0;

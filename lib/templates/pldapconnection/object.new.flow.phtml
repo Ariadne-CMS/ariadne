@@ -33,8 +33,9 @@
 	$step3="edit.object.data.generalfilter.phtml";
 	$step4="edit.object.data.searchtranslation.phtml";
 	$step5="edit.object.data.otherparams.phtml";
+	$step6="edit.object.data.usermapping.phtml";
 
-	$step6="edit.object.language.phtml";
+	$step7="edit.object.language.phtml";
 	$finish="edit.object.data.save.phtml";
 	$cancel="object.new.cancel.phtml";
  
@@ -74,6 +75,12 @@
 	$arFlow[$i]["title"]="Other parameters"; //FIXME
 	$arFlow[$i]["template"]=$step5;
 	$arFlow[$i]["prev"]=$i-1;
+	$arFlow[$i]["next"]=$i+1; 
+	$arFlow[$i]["cancel"]=0;
+	$i++;
+	$arFlow[$i]["title"]="User mapping"; //FIXME
+	$arFlow[$i]["template"]=$step6;
+	$arFlow[$i]["prev"]=$i-1;
 	$arFlow[$i]["cancel"]=0;
 
 	if ($hascustomdata) {
@@ -90,7 +97,7 @@
 		$arFlow[$i]["save"]=$i+2;
 		$i++;
 		$arFlow[$i]["title"]=$ARnls["language"];
-		$arFlow[$i]["template"]=$step6;
+		$arFlow[$i]["template"]=$step7;
 		if ($hascustomdata) {
 			$arFlow[$i]["next"]=$i-6;
 		} else {

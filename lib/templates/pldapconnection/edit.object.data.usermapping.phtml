@@ -1,0 +1,41 @@
+<?php
+	/******************************************************************
+
+	******************************************************************/
+	if ($this->CheckSilent("read")) {
+?>
+<table border="0" width="90%">
+<tr>
+	<td>
+		<?php 
+			$arLanguage=$this->getdata("arLanguage","none");
+			if (!$arLanguage) {
+			 $arLanguage=$ARConfig->nls->default;
+			}
+			$selectednls=$arLanguage;
+			$selectedlanguage=$ARConfig->nls->list[$arLanguage];
+			$flag="<img src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\">";
+		?>
+
+		<fieldset id="usermapping">
+		<legend><?php echo "User mapping"; //FIXME ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+			<table border="0" align="center" width="100%">
+			<tr>
+				<td><?php
+					$wgBrowsePath=($this->getdata("mappeduser", "none") ? $this->getdata("mappeduser", "none") : "/system/users/");
+					$wgBrowseName="mappeduser";
+					$wgBrowseFilter="pshadowuser";
+					include($this->store->code."widgets/browse/js.html");
+					include($this->store->code."widgets/browse/form.html");
+				?>
+				</td>
+			</tr>
+			</table>
+		</fieldset>
+
+	</td>
+</tr>
+</table>
+<?php
+	}
+?>

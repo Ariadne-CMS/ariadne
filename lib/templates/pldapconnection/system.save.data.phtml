@@ -67,6 +67,7 @@
 		$this->data->ldap_useiso8859 = $this->getdata("ldap_useiso8859", "none");
 		$this->data->ldap_nameattribute = $this->getdata("ldap_nameattribute", "none");
 		$this->data->ldap_defsortattr = $this->getdata("ldap_defsortattr", "none");
+		$this->data->mappeduser = $this->getdata("mappeduser", "none");
 
 		$this->save($properties);
 		$this->ClearCache();
