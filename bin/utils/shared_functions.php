@@ -27,7 +27,21 @@
 			$handler=sprintf($ax_config["tar_error_handler"], $errfile);
 		}
 
-		$command=sprintf($ax_config["tar_untar"], $dstdir, $file, $tarfile, $handler );
+	//	$command=sprintf($ax_config["tar_untar"], $dstdir, $file, $tarfile, $handler );
+
+		$arguments = Array(
+						"%destdir%" => $dstdir,
+						"%contents%" => $file,
+						"%archive%" => $tarfile,
+						"%errorhandler%" => $handler
+					 );
+
+		$command = $ax_config["tar_untar"];
+		while (list($key, $val) = each($arguments)) {
+			$command = str_replace($key, $val, $command);
+		}
+
+
 		echo " exec($command)\n";
 		system($command,$retVar);
 		if ($retVar!=0) {
@@ -51,7 +65,22 @@
 			$handler=sprintf($ax_config["tar_error_handler"], $errfile);
 		}
 
-		$command=sprintf($ax_config["tar_tar"], $dstdir, $file, $tarfile, $handler );
+		//$command=sprintf($ax_config["tar_tar"], $dstdir, $file, $tarfile, $handler );
+
+		$arguments = Array(
+						"%destdir%" => $dstdir,
+						"%contents%" => $file,
+						"%archive%" => $tarfile,
+						"%errorhandler%" => $handler
+					 );
+
+		$command = $ax_config["tar_tar"];
+
+		while (list($key, $val) = each($arguments)) {
+			$command = str_replace($key, $val, $command);
+		}
+
+
 		echo " exec($command)\n";
 		system($command,$retVar);
 		if ($retVar!=0) {
