@@ -18,7 +18,11 @@
 		$arNewCallObject=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData);
 		$arNewCallObject->arIsNewObject=true;
 
-		$arNewCallObject->call("system.save.data.phtml", $arCallArgs);
+		if ($arNewType == 'pshortcut') {
+			$arNewCallObject->call("system.save.shortcut.phtml", $arCallArgs);
+		} else {
+			$arNewCallObject->call("system.save.data.phtml", $arCallArgs);
+		}
 		if (!$arNewCallObject->error) {
 			$arResult=$arNewCallObject->path;
 		} else {
