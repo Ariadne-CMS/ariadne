@@ -79,11 +79,19 @@
 		$ARConfig->cache[$this->path]=$configcache;
 
 		/* load pinp configuration data via config.ini */
-		$ARConfig->pinpcache[$this->path] = $this->call("config.ini", Array("config" => $ARConfig->pinpcache[$this->parent]));
+		$nolangcheck = $ARCurrent->nolangcheck;	
+		$ARCurrent->nolangcheck = true;
+		$ARCurrent->arConfig=$ARConfig->pinpcache[$this->parent];
+		if ($this->CheckConfig('config.ini',$arCallArgs)) {
+			/* calling config.ini directly for each system.get.config.phtml call */
+		}
+		$ARConfig->pinpcache[$this->path]=$ARCurrent->arConfig;
+		$ARCurrent->nolangcheck = $nolangcheck;
 
 		/* now load the library configuration data into our normal cache */
 		if ($ARConfig->pinpcache[$this->path]["library"]) {
 			$ARConfig->cache[$this->path]->library = $ARConfig->pinpcache[$this->path]["library"];
 		}
+
 	}
 ?>
