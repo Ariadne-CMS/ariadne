@@ -50,7 +50,7 @@
 	
 	$wgWizCurrent=$this->getdata("wgWizCurrent","none");
 	$wgWizControl=$this->getdata("wgWizControl","none");
-	if (($wgWizCurrent==1) && ($wgWizControl==$ARnls["next"])) {
+	if (($wgWizCurrent==1) && (wgWizGetAction($wgWizControl)=="next")) {
 		$arNewFilename=$this->getdata("arNewFilename","none");
 		if (!$arNewFilename) {
 			$arFlow[0]["error"]=$ARnls["err:mustenterlogin"];

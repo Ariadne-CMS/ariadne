@@ -109,7 +109,7 @@
 		$arLanguage=$this->getdata("arLanguage","none");
 		if ($wgWizFlow[0]["current"]==5) { // =edit.object.language.phtml
 			$arControl=$this->getdata("wgWizControl","none");
-			if ($arControl==$ARnls["prev"]) { // if previous selected, ignore the language select list.
+			if (wgWizGetAction($arControl)=="prev") { // if previous selected, ignore the language select list.
 				$arLanguage=$this->getdata("arPrevLanguage","none");
 				$ARCurrent->arLanguage=$arLanguage;
 			}

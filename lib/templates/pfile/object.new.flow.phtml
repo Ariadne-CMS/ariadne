@@ -84,7 +84,7 @@
 
 	$arControl=$this->getdata("wgWizControl","none");
 	if ($arFlow[0]["current"]==1) {
-		if ($arControl==$ARnls["next"]) {
+		if (wgWizGetAction($arControl)=="next") {
 			$this->call("system.save.tempfile.phtml");
 			$HTTP_POST_VARS["mimetype"]=$HTTP_POST_VARS["file_type"];
 			while (list($key, $value)=each($ARConfig->nls->list)) {

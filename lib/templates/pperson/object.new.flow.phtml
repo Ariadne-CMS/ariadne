@@ -87,9 +87,6 @@
 	$arFlow[$i]["back"]=$i-1;
 	
 	$arLanguage=$this->getdata("arLanguage","none");
-	if (!$arLanguage) {
-		$arLanguage=$ARConfig->nls->default;
-	}
 	$arControl=wgWizGetAction($this->getdata("wgWizControl","none"));
 	if ($arFlow[0]["current"]==$language_num) { // =edit.object.language.phtml
 		if ($arControl=="prev") { // if previous selected, ignore the language select list.
