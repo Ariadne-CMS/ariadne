@@ -25,14 +25,13 @@
 	// first check whether the user has the config grant on the given path
 	$grants=@current($this->get($arPath, "system.get.grants.phtml"));
 	if ($AR->user && ($AR->user->data->login=="admin" || $grants["config"])) { // can not be called directly from loader
-
 		// first make sure that the object is clean (data can only be set via 
 		// the defined interface: $arCallArgs)
 		$this->data=@current($this->get(".","system.get.data.phtml"));
 		switch($arAction) {
 			case "delete" :
 				include_once($this->store->code."includes/DelGrant.phtml");
-				$this->data->usergrants=DelGrant($data->usergrants, $arPath, $grant);
+				$this->data->usergrants=DelGrant($this->data->usergrants, $arPath, $grant);
 				break;
 			case "add" :
 				$this->data->usergrants[$arPath][$grant]=1;

@@ -32,14 +32,13 @@
 				break;
 			case $ARnls["cancel"] :	// stop editing -> release locks 
 				include($this->store->code."includes/cancel.phtml");
-				include($this->store->code."includes/unlock.phtml");
+				$this->unlock();
 				break;
 			default : 	// edit	
 				// every object _must_ also have a form.phtml:
-					include($this->store->code."includes/lock.phtml");
-				if (!$arResult) {
+				if ($this->lock()) {
 					// object locked, show us by who
-					include($this->store->code."includes/viewlocks.phtml");
+					$this->call("show.locks.phtml");
 				} else {
 					$this->call("classic.form.phtml",$arCallArgs);
 				}

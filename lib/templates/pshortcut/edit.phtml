@@ -6,12 +6,11 @@
       Header("Location: ".$this->store->root.$data->path."edit.phtml?returnpage=".RawUrlEncode($returnpage));
     } else if ($next==$ARnls["cancel"]) {
       include($this->store->code."includes/cancel.phtml");
-      include($this->store->code."includes/unlock.phtml");
+		$this->unlock();
     } else { // edit it.
-      include($this->store->code."includes/lock.phtml");
-      if (!$arResult) {
+      if ($this->lock()) {
         // object locked, show us by who
-        include($this->store->code."includes/viewlocks.phtml");
+		$this->call("show.locks.phtml");
       } else {
         include($this->store->code."templates/".$this->type."/form.phtml");
       }

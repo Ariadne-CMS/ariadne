@@ -1,0 +1,80 @@
+<?php
+if ($this->CheckLogin("read")) {
+	global $AR, $options, $path_array;
+	include($this->store->code."modules/mod_ax.phtml");
+
+	$mod=new mod_ax;
+
+	if (!function_exists('display')) {
+		function display($str) {
+			global $options;
+			if ($options["verbose"]) {
+				echo $str;
+			}
+		}
+	}
+
+	if (!$error=$mod->open($options["axFile"],$AR->ax,"",$this->store->files."temp/")) {
+		if ($mod->openObjectsData("w+")) {
+
+			// some header information...
+			$header=new object;
+			$header->data=new object;
+			$header->data->options=$options;
+			$mod->writeObject($header);
+
+			while (is_array($path_array) && (list($aspath, $path)=each($path_array))) {
+				display("export($path) as ($aspath)\n");
+				$criteria["object"]["implements"]["="]="'pobject'";
+				$offset=0;
+				while ($result=$this->store->call("system.export.object.phtml","",$this->store->find($path,$criteria,100,$offset))) {
+					display("searching offset($offset)\n");
+					while (is_array($result) && (list($key,$object)=each($result))) {
+						// chop $path from $object->path
+						if (!$aspath) {
+							$object->path=substr($object->path, strlen($path)-1);
+						} else {
+							$object->path="/$aspath/".substr($object->path, strlen($path));
+						}
+
+						if ($options["without_data"]) {
+							display("no data for (".$object->path.")\n");
+							unset($object->data);
+							unset($object->properties);
+						} else {
+							display("writing object(".$object->path.")\n");
+						}
+						$mod->writeObject($object);
+					}
+
+					$offset+=sizeof(result);
+				}
+
+				if (!$options["without_templates"]) {
+					display("templates ($path)\n");
+					$error=$mod->exportfiles("templates_$aspath", $this->store->files."templates".$path, ".");
+				}
+
+				if (!$error && !$options["without_files"]) {
+					display("files     ($path)\n");
+					$error=$mod->exportfiles("files_$aspath", $this->store->files."files".$path, ".");
+				}
+			
+			}
+			$mod->closeObjectsData();
+
+		} else {
+			$error="err: can not open objects data file";
+		}
+
+		if (($err=$mod->close()) && !$error) {
+			// only export an error when there wasn't a
+			// previous error
+			$error=$err;
+		}
+	
+	}
+
+	$arResult=$error;
+}
+?>

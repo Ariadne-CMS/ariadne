@@ -61,14 +61,14 @@
 									$delgrant=substr($newgrant,1);
 									$this->data->grants[$type]=DelGrant($this->data->grants[$type],$id,$delgrant);
 									$this->find($searchpath[$type], $criteria, "system.save.grants.user.phtml",  
-													"action=delete&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($delgrant));
+													"arAction=delete&arPath=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($delgrant));
 								} else {
 									if (substr($newgrant,0,1)=="+") {
 										$newgrant=substr($newgrant,1);
 									}
 									$this->data->grants[$type][$id][$newgrant]=1;
 									$this->find($searchpath[$type], $criteria, "system.save.grants.user.phtml",   
-												"action=add&arPath=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($newgrant));
+												"arAction=add&arPath=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($newgrant));
 								}
 							}
 							$newgrant=strtok(" ");

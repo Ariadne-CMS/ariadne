@@ -1,6 +1,6 @@
 <?php   
   if ($this->CheckSilent("delete")) {
-    if (($result=$this->lock(0,"T")) && ($result["identity"])) {
+    if ($this->lock("T")) {
       $this->error=$ARnls["err:cannotlockobject"];
     } else {
       if (!$this->ls(".","system.get.phtml")) {
@@ -30,7 +30,9 @@
               }
             }
             // FIXME: typedirs will be renamed to $path/class=/$type/ because of possible name conflicts.
-            rmdir($this->store->files."templates".$this->path.$type."/");
+            if (!rmdir($this->store->files."templates".$this->path.$type."/")) {
+               echo "can not remove dir(".$this->store->files."templates".$this->path.$type."/".")\n";
+            }
           }
         }        
         // remove files

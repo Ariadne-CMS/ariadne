@@ -65,7 +65,7 @@
 					echo "</script>\n";
 				} else {
 					if ($this->CheckSilent("delete")) {
-						if (!($result=$this->lock(0,"T")) || (!$result["identity"])) {
+						if (!$this->lock("T")) {
 							?>
 
 								function start() {
