@@ -15,7 +15,7 @@
 	$this->call("system.save.data.phtml",$arCallArgs);
 	if (!$this->error) {
 		if (!$arReturnPage) {
-			$arReturnPage=$this->store->root.$parent; 
+			$arReturnPage=$this->store->root.$this->parent; 
 		}
 		Header("Location: $arReturnPage");
 	} else {
