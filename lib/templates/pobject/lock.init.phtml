@@ -1,0 +1,27 @@
+<?php 
+if ($this->CheckSilent("edit")) {
+	if ($this->lock()) { 
+		$arResult=true;
+?>
+	<script language="javascript">
+	<!--
+		lockInterval=<?php echo $this->store->mod_lock->lock_duration - 5; ?> * 1000;
+
+		function updateLock() {
+			document.lock_img.src='<?php echo $this->make_url(); ?>lock.update.phtml';
+			setTimeout("updateLock()", lockInterval);
+		}
+		function releaseLock() {
+			document.lock_img.src='<?php echo $this->make_url(); ?>lock.release.phtml';
+		}
+
+		setTimeout("updateLock()", lockInterval);
+
+	//-->
+	</script>
+<?php
+	} else {
+		$this->call("lock.report.phtml");
+	}
+}
+?>
