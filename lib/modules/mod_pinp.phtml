@@ -193,6 +193,7 @@ class scanner {
 									}
 									if ($yych == '*') {
 										if  (($yych = $YYBUFFER[++$YYCURSOR]) == '/') {
+											++$YYCURSOR;
 											return T_UNPARSED;
 										}
 									} else {
