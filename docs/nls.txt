@@ -1,12 +1,13 @@
-This version of Ariadne has inbuilt support for multiple languages.
-Currently you can only choose between English and Dutch, as I am not fluent
-in other languages. For people interested in adding more languages, the file
-lib/nls/en contains all language strings you need to translate.
+NLS support                                                     Muze Ariadne 2.0
+================================================================================
+Ariadne has inbuilt support for multiple languages. For people interested in 
+adding more languages, the files lib/nls/en and lib/nls/menu.en contain all 
+language strings you need to translate.
 
 
 
 How does it work?
-
+--------------------------------------------------------------------------------
 
 
 lib/configs/ariadne.phtml contains a list of available languages and the
@@ -14,7 +15,8 @@ default language for the whole system.
 
 In your user edit form you can select your preferred language from this list. 
 When you login to Ariadne, the www/index.php script checks your language
-choice and adds it to all URL's (at least those referencing the loader) like this:
+choice and adds it to all URL's (at least those referencing the loader) like 
+this:
 
 language choice: English -> en
 URL: /ariadne/loader.php/en/
@@ -25,8 +27,8 @@ PATH_INFO and checks whether it is a valid language code (en, nl, etc.)
 Therefor the root would become '/ariadne/loader.php/en'. This way the
 language choice will be included in all links. Then it will set the variable
 $ARCurrent->nls to this language code. 
-  If the first part is not a valid language code, the loader assumes it is part of the
-path of the requested object, and assumes the system default language
+  If the first part is not a valid language code, the loader assumes it is part 
+of the path of the requested object, and assumes the system default language
 choice, but does not add that to the store root. The root would become
 '/ariadne/loader.php'. 
 
@@ -61,7 +63,7 @@ $this->CheckConfig, the saga continues.
 
 
 CheckConfig():
-
+--------------------------------------------------------------------------------
 
 
 You can set the list of available languages and the default language per
@@ -97,7 +99,7 @@ will display with it's default language instead of the requested one.
 
 
 Forms and save.phtml
-
+--------------------------------------------------------------------------------
 
 
 All forms have been changed to include a language selection. This is by
@@ -134,7 +136,8 @@ I hope this explains how the NLS system in Ariadne works. It's a bit
 complex, but I've tried to keep the complexity out of the templates as much
 as possible. 
 
+
 19-05-2000
-Updated 23-09-2000
+Updated 26-04-2002
 Auke van Slooten
 Muze
