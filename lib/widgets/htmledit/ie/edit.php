@@ -572,11 +572,11 @@ function DECMD_IMAGE_onclick() {
     if (elIMG) {
       // alert(elIMG.outerHTML);
       src=new String(elIMG.src);
-      root=new String('<?php echo $AR->host.$this->store->root; ?>');
+      root=new String('<?php echo $this->store->root; ?>');
       if (src.substring(0,root.length)==root) {
         src=src.substring(root.length);
       } else { // htmledit component automatically adds http://
-        temp=new String('http://<?php echo $this->store->root; ?>');
+        temp=new String('<?php echo $this->store->root; ?>');
         if (src.substring(0,temp.length)==temp) {
           src=src.substring(temp.length);
         } else {
