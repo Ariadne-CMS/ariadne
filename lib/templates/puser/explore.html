@@ -1,5 +1,5 @@
 <?php
-  if ($this->CheckLogin("read")) {
+  if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
     if ($data->language) {
       $nls=$data->language;
 	  ldSetNls($nls);
