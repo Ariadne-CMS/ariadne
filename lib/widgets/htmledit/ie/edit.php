@@ -839,8 +839,8 @@ function DECMD_IMAGE_onclick() {
   } else {
     elIMG=false;
     window.rg=el.createRange();
-    args['src'] = "<?php echo $this->path; ?>";
-	args['ar:path'] = args['src'];
+    args['src'] = "";
+    args['ar:path'] = "<?php echo $this->path; ?>";
     args['hspace'] = "";
     args['vspace'] = "";
     args['align'] = ""; 
