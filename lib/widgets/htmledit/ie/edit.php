@@ -669,7 +669,7 @@ function DECMD_IMAGE_onclick() {
     args['border'] = "";
   }
 
-  imgwindow=window.open("<?php echo $this->store->root.$this->path; 
+  imgwindow=window.open("<?php echo $this->store->root.$AR->user->path; 
     ?>edit.object.html.image.phtml?src="+escape(args['src'])+
     "&border="+escape(args['border'])+"&hspace="+escape(args['hspace'])+
     "&vspace="+escape(args['vspace'])+"&align="+escape(args['align'])+
