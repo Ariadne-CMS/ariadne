@@ -269,10 +269,10 @@
 											$grant .= ", $g_add";
 										}
 										$grant_display = "[$grant]";
+										$grant_string .= "[$grant]";
+									} else {
+										$grant_string .= "$grant ";
 									}
-
-									$grant_string .= "[$grant] ";
-
 									if (!$grey) {
 										echo "<a href=\"javascript:editGrant('$type', '$id', '$grant');\">$grant_display";
 									} else {
