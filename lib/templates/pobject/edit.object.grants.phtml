@@ -11,7 +11,9 @@
 	 
 	 no result
 
-	 	******************************************************************/
+	 FIXME: clean up the unused javascript mess
+	 
+ 	******************************************************************/
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
 ?>
 <html>
@@ -202,10 +204,40 @@
 		setGrantOptions();
 	}
 
-	function loadUser(type, id, grant_string) {
+	function loadUser(type, id, grant_string, grants) {
 		var form = document.forms.grantsform;
 		form['path'].value = grantslist.id2path[type][id];
+		setOptions(grants);
 		form['newgrants'].value = grant_string;
+	}
+
+	function setOptions(grants) {
+		var form = document.forms.grantsform;
+
+		form['grant_other'].value = '';
+
+		for (var i = 0; i < form['modifiers[]'].length; i++) {
+			form['modifiers[]'][i].checked = false;
+		}
+
+		for (var i = 0; i < form['grants[]'].length; i++) {
+			form['grants[]'][i].checked = false;
+			for (var j in grants) {
+				if (j == form['grants[]'][i].value) {
+					form['grants[]'][i].checked = true;
+					grants[j] = null;
+				}
+			}
+		}
+
+		for (var i in grants) {
+			if (grants[i] != null) {
+				form['grant_other'].value += i+' ';
+			}
+		}
+
+		form['type'].options.selectedIndex = 0;
+
 	}
 
 	function setGrantOptions() {

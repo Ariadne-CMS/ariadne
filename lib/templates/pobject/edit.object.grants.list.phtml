@@ -5,7 +5,7 @@
 			} else if ($value & ARMASKLOCAL) {
 				$result="=";
 			} else {
-				$result="&gt;";
+				$result=">";
 			}
 			return $result;
 		}
@@ -136,7 +136,7 @@
   }
 
   function loadUser(type, id) {
-	parent.loadUser(type, id, grant_strings[type][id]);
+	parent.loadUser(type, id, grant_strings[type][id], grants[type][id]);
   }
 
   id2path = new Array();
@@ -261,30 +261,34 @@
 								ksort($grants);
 								while (list($grant, $modifiers)=each($grants)) {
 									if (!is_array($modifiers)) {
-										echo arGetGrantType($modifiers);
+										$grant_type=arGetGrantType($modifiers);
+										echo htmlspecialchars($grant_type);
+									} else {
+										$grant_type='';
 									} 
 									$grant_display = $grant;
 									if (is_array($grants_eq[$grant])) {
 										foreach ($grants_eq[$grant] as $g_add) {
-											$grant .= ", $g_add";
+											$grant .= ", ".$grant_type."$g_add";
 										}
 										$grant_display = "[$grant]";
 										$grant_string .= "[$grant]";
 									} else {
-										$grant_string .= "$grant ";
+										$grant_string .= "$grant_type$grant ";
 									}
 									if (!$grey) {
 										echo "<a href=\"javascript:editGrant('$type', '$id', '$grant');\">$grant_display";
 									} else {
-										echo $grant;
+										echo $grant_display;
 									} 
 									if (is_array($modifiers)) {
 										$grant_string .= "( ";
 										echo "( ";
 										while (list($modifier, $value)=each($modifiers)) {
-											echo arGetGrantType($value);
+											$grant_type=arGetGrantType($value);
+											echo htmlspecialchars($grant_type);
 											echo $modifier." "; 
-											$grant_string .= arGetGrantType($value).$modifier." ";
+											$grant_string .= $grant_type.$modifier." ";
 										}
 										echo ") ";
 										$grant_string .= ") ";
