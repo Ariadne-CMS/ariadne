@@ -28,6 +28,7 @@
   tbContentType='<?php echo $type; ?>';
   tbContentValue='<?php echo $value; ?>';
   tbContentSave2Form=<?php if ($save2form && $save2form!=='false') echo 'true'; else echo 'false'; ?>;
+  tbDetailsSetting=false;
 //
 // Constants
 //
@@ -376,25 +377,11 @@ function MENU_FILE_SAVE_onclick() {
   }
 }
 
-function AR_GET_HTML() {
-  if (ViewHTML.TBSTATE=="checked") {
-
-    var sContents=tbContentElement.DocumentHTML;
-
-  } else {
-
-    var sContents=tbContentElement.DOM.body.innerText;
-
-  }
-  return sContents;
-}
-
-
 function VIEW_HTML_onclick() {
-  sContents=AR_GET_HTML();
   if (ViewHTML.TBSTATE=="checked") {
 
     TBSetState(ViewHTML, "unchecked");
+    var sContents=tbContentElement.DocumentHTML;
 
 	// don't even think about changing the next few lines... 
 	// the htmlediting component is extremely picky
@@ -419,7 +406,10 @@ function VIEW_HTML_onclick() {
     ToolbarTableState=TableToolbar.TBSTATE;
     TBSetState(TableToolbar, "hidden");
     TBSetState(ToolbarMenuTable, "gray");
+    tbDetailsSetting=tbContentElement.ShowDetails;
+    tbContentElement.ShowDetails = false;
   } else {
+    var sContents=tbContentElement.DOM.body.innerText;
     TBSetState(FormatToolbar, ToolbarFormatState);
     if (ToolbarFormatState=="hidden") {
       TBSetState(ToolbarMenuFmt, "unchecked");
@@ -438,6 +428,7 @@ function VIEW_HTML_onclick() {
     } else {
       TBSetState(ToolbarMenuTable, "checked");
     }
+    tbContentElement.ShowDetails = tbDetailsSetting;
     TBSetState(ViewHTML, "checked");
     tbContentElement.DocumentHTML=sContents
     tbContentElement.BaseURL=tbContentRoot+tbContentPath;
