@@ -882,7 +882,7 @@ class mssqlstore {
 			while (list($key, $pathticle) = each($splitpath)) {
 				switch($pathticle) {
 					case ".." :
-						$result	= substr($result, 0, strrpos(substr($result,0,-1), "/")+1);
+						$result	= substr($result, 0, strrpos(substr($result,0,-1), "/"));
 						break;
 					case "." :
 						break;

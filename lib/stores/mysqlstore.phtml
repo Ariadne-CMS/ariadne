@@ -991,11 +991,11 @@ class mysqlstore {
 
 			while (list($key, $pathticle)=each($splitpath)) {
 				switch($pathticle) {
-					case ".." : $result=substr($result, 0, strrpos(substr($result,0,-1), "/")+1);
+					case ".." : $result=substr($result, 0, strrpos(substr($result,0,-1), "/"));
 								break;
 					case "." : break;
 					case ""	 : break;
-					default	 : $result=$result.$pathticle."/";
+					default	 : $result.=$pathticle."/";
 				}
 			}
 		}
