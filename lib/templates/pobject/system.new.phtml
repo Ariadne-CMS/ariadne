@@ -19,7 +19,11 @@
 		$arNewCallObject->arIsNewObject=true;
 
 		$arNewCallObject->call("system.save.data.phtml", $arCallArgs);
-		$arResult=$arNewCallObject->path;
-		$this->error=$arNewCallObject->error;
+		if (!$arNewCallObject->error) {
+			$arResult=$arNewCallObject->path;
+		} else {
+			$this->error=$arNewCallObject->error;
+			$arResult=false;
+		}
 	}
 ?>
