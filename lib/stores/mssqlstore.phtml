@@ -942,11 +942,8 @@ class mssqlstore {
 		if ($object) {
 			while (list($name, $value)=each($values)) {
 				if ($value != "") {
-					$query_names .= "AR_".AddSlashes($name).", ";
-					//value contains slashed data inside single quotes so we have to make it SQL friendly
-					$value = substr($value,1,strlen($value)-2);
-					$value = stripslashes($value);
-					$query_values .= "'".AddSlashes($value)."', ";
+					$query_names.="AR_".AddSlashes($name).", ";
+					$query_values.="$value, ";
 				}
 			}
 			$query_string = "insert into ".$this->tbl_prefix."prop_".AddSlashes($property)." ( ".
