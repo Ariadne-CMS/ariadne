@@ -768,7 +768,7 @@ function DECMD_IMAGE_onclick() {
     args['border'] = "";
   }
   arr = showModalDialog( '<?php echo $this->store->root; ?>' + photobook + 
-	"edit.object.html.image.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:35em; dialogHeight:14em; status: no; resizable: yes;");
+	"edit.object.html.image.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:39em; dialogHeight:14em; status: no; resizable: yes;");
   if (arr != null){
 	IMAGE_set(arr);
   }
