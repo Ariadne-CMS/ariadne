@@ -21,6 +21,8 @@ New Features:
 	  by Lukasz Keler. 
 
 Bugs Fixes:
+	- Fixed a Mozilla reserved keyword 'implements' bug in the Ariadne Search window. Thanks
+	  to Stefan Schreinert.
 	- particle will now fill the endtime and enddate with the starttime / startdate if not set.
 	- Fixed pphoto to work around the bug that causes ImageMagick to break on a . in the ariadne
 	  path. Thanks to Stefan Schreinert for reporting this.
