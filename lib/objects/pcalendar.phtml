@@ -23,5 +23,28 @@ class pcalendar extends pdir { // definitie class
 		debug("pcalendar: populate: end","all");
 	}
 
+	function get_items($priority, $max="", $start="", $end="") {
+		global $ARCurrent;
+		unset($ARCurrent->arCalItems);
+		unset($ARCurrent->arDateList);
+		$this->populate($start, $end, $priority, "system.get.item-by-time.phtml");
+		if (is_array($ARCurrent->arCalItems)) {
+			asort($ARCurrent->arDateList);
+			reset($ARCurrent->arDateList);
+			$i=0;
+			while ((!$max || ($i<$max)) && (list($key, $item)=each($ARCurrent->arDateList))) {
+				$items[]=$ARCurrent->arCalItems[$key];
+				$i++;
+			}
+		} else {
+			debug("no items found?","all");
+		}
+		return $items;
+	}
+
+	function _get_items($priority, $max="", $start="", $end="") {
+		return $this->get_items($priority, $max, $start, $end);
+	}
+
 } // end class pcalendar
 ?>

@@ -16,7 +16,8 @@ class pnewspaper extends pdir { // definitie class
 		$criteria["article"]["display"]["="]="'".AddSlashes($display)."'";
 		$this->find(".",$criteria,"system.get.article-by-priority.phtml","display=$display");
 		if (is_array($ARCurrent->priority)) {
-			$ARCurrent->priority=array_reverse($ARCurrent->priority);
+//			$ARCurrent->priority=array_reverse($ARCurrent->priority);
+// FIXME: whats the above line doing here? removed it for the time being. auke.
 			arsort($ARCurrent->priority);
 			reset($ARCurrent->priority);
 			while ((!$max || ($i<$max)) && (list($key,$val)=each($ARCurrent->priority))) {
@@ -37,6 +38,8 @@ class pnewspaper extends pdir { // definitie class
 	}
 
 	function clear_articles() {
+		// FIXME: in current news system this should be done 
+		// automatically by get_articles? check with CMS.
 		global $ARCurrent;
 		unset($ARCurrent->articles);
 		unset($ARCurrent->priority);

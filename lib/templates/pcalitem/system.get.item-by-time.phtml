@@ -1,0 +1,14 @@
+<?php
+	/******************************************************************
+	 system.get.item-by-date                               Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: none
+	 Global variables: none
+	 
+	******************************************************************/
+	if (isset($nlsdata)) {
+		$ARCurrent->arDateList[$this->path]=$this->data->startdate + $this->data->starttime;
+		$ARCurrent->arCalItems[$this->path]=$this;
+	}
+?>

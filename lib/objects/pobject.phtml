@@ -882,6 +882,10 @@ class pobject extends object {
 				$this->make_path($path))); 
 	}
 
+	function _call_object($object, $function, $args="") {
+		return $object->call($function, $args);
+	}
+
 	function _ls($function="list.html", $args="") {
 		debug("pobject: ls($function, $args)","object");
 		// remove possible path information (greedy match)
