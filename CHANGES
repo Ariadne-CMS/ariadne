@@ -1,4 +1,18 @@
-Ariadne 2.0b8
+Ariadne 2.0b9
+
+Changes in ariadne since version 2.0b8
+
+lib/modules/mod_ax.phtml
+	- system() commands are now checked by exitcode
+	instead of the result of the command (output).
+
+	- added $this->RmDir() which deletes directories
+        even when these contains files.
+	This eliminates the need for the system "rm -rf " call.
+
+	- fixed problem with importing files:
+	importfiles tried to untar even if there wasn't a tgz file available.
+
 
 Changes in ariadne since version 2.0b7
 
