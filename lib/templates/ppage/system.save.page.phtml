@@ -34,7 +34,6 @@
 		// change hardcoded links and images to use a placeholder for the root
 		$page=ereg_replace("(https?://)?".$this->store->root,"{arRoot}",$page);
         // also change hand pasted sources, which may or may not include session id's
-        echo "// <script>\n alert('(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?(/".$nls.")?');\n </script>";
         $page=ereg_replace("(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?(/".$nls.")?","{arRoot}",$page);
         // finally check for other session id's:
         $page=str_replace("/-".$ARCurrent->session->id."-","",$page);
