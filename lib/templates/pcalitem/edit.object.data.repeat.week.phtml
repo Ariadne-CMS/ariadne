@@ -27,24 +27,20 @@
 			$flag="<img src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\">";
 		?>
 		<fieldset id="data">
-		<legend><?php echo $ARnls["repeat"]."/".$ARnls["week"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+		<legend><?php echo $ARnls["repeat"].": ".$ARnls["week"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
 			<table border="0" align="center">
 			<tr>
 				<td>
 					<?php echo $ARnls["every"]; ?>
-				</td><td>
+				</td><td colspan="3">
 					<input size="3" maxlength="3" type="text" name="repeatn" value="<?php if ($this->getdata("repeatn", "none")) { $this->showdata("repeatn", "none"); } else { echo "1"; } ?>">
 					&nbsp;<?php echo $ARnls["weeks"]; ?>
 				</td>
-			</tr><tr valign="top">
-				<td colspan="2">
+			</tr><tr>
+				<td>
 					<nobr><?php echo $ARnls["repeaton"]; ?></nobr>
 				</td>
-			</tr><tr>
-				<td colspan="2">
-					<table border="0" cellpadding="0" cellspacing="0">
-					<tr>
-					<?php
+				<?php
 					$woptions=array(
 							$ARnls["sun"],
 							$ARnls["mon"],
@@ -58,25 +54,20 @@
 					reset($woptions);
 					while (list($key,$option)=each($woptions)) {
 
-						if ($key==4) {
-							echo "</tr><tr>\n";
+						if (($key==3) || ($key==6)) {
+							echo "</tr><tr><td></td>\n";
 						}
-						echo "<td>";						
-							echo "<input type=\"checkbox\" name=\"repeat_on[$key]\" value=\"1\"";
+							echo "<td><input type=\"checkbox\" name=\"repeat_on[$key]\" value=\"1\"";
 							if ($repeat_on[$key]) {
 								echo " checked";
 							}
-							echo ">&nbsp;$option ";
-						echo "</td>\n";
+							echo ">&nbsp;$option</td>";
 					}
 					?>
-					</tr>
-					</table>
-				</td>
 			</tr><tr>
 				<td>
 					<?php echo $ARnls["endson"]; ?>
-				</td><td><?php
+				</td><td colspan="3"><?php
 							if ($this->getdata("repeatend", "none")) {
 								$wgDate=$this->getdata("repeatend", "none");
 							} else {

@@ -27,7 +27,7 @@
 			$flag="<img src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\">";
 		?>
 		<fieldset id="data">
-		<legend><?php echo $ARnls["repeat"]."/".$ARnls["month"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+		<legend><?php echo $ARnls["repeat"].": ".$ARnls["month"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
 			<table border="0" align="center">
 			<tr>
 				<td>
@@ -36,11 +36,10 @@
 					<input size="3" maxlength="3" type="text" name="repeatn" value="<?php if ($this->getdata("repeatn", "none")) { $this->showdata("repeatn", "none"); } else { echo "1"; } ?>">
 					&nbsp;<?php echo $ARnls["months"]; ?>
 				</td>
-			</tr><tr valign="top">
-				<td colspan="2">
+			</tr><tr>
+				<td>
 					<nobr><?php echo $ARnls["repeatby"]; ?></nobr>
 				</td>
-			</tr><tr>
 				<td>
 					<?php
 					$repeat_by=$this->getdata("repeat_by", "none");
@@ -51,7 +50,6 @@
 					<input type="radio" name="repeat_by" value="<?php echo $ARnls["day"]; ?>" 
 							<?php if ($repeat_by=="day")  echo "checked"; ?>>
 							<?php echo $ARnls["day"]; ?>
-				</td><td>
 					<input type="radio" name="repeat_by" value="<?php echo $ARnls["date"]; ?>" 
 							<?php if ($repeat_by=="date")  echo "checked"; ?>>
 							<?php echo $ARnls["date"]; ?>

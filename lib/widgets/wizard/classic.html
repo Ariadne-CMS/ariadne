@@ -118,10 +118,9 @@
   </td>
 </tr><tr>  
   <td bgcolor="#404074" rowspan="2"><script>
-    document.write('<img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="'+(window.innerHeight-70)+'" alt="">');
+    document.write('<img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="'+(window.innerHeight-60)+'" alt="">');
   </script></td>
-  <td valign="top">
-    <table>
+  <td valign="top" background="<?php echo $AR->dir->images; ?>clock.gif" rowspan="2"><table class="menu" cellspacing="0" cellpadding="2">
     <tr><td>
     <?php
       if ($wgWizList && is_array($wgWizList)) {
@@ -138,7 +137,7 @@
           if ($step==$wgWizNextStep) {
             $item=$head.' class="current">'.$item.$tail; 
           } else {
-            $item=$head.'>'.$item.$tail;
+            $item=$head.' class="step">'.$item.$tail;
           }
           echo $item;
         }
@@ -155,7 +154,7 @@
           if ($i==$wgWizNextStep) {
             $item=$head.' class="current">'.$item.$tail; 
           } else {
-            $item=$head.'>'.$item.$tail;
+            $item=$head.' class="step">'.$item.$tail;
           }
           echo $item;
         }
@@ -163,11 +162,8 @@
         error("ERROR: No flow information");
       }
     ?>
-
-
     </td></tr>
-    </table>
-  </td>
+    </table></td>
   <td bgcolor="#404074" rowspan="2"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
 </tr><tr>
   <td valign="bottom"><?php echo $wgWizCaption; ?></td>

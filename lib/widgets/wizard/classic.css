@@ -5,12 +5,11 @@ TD {
 .required {
 	FONT-WEIGHT: bold
 }
-.current {
-	FONT-WEIGHT: bold
-}
 BODY 	{
 	FONT: 10pt sans-serif;
 	BORDER: 0;
+	margin: 0px;
+	padding: 4px;
   <?php
     global $HTTP_USER_AGENT;
     if (eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
@@ -27,5 +26,21 @@ BODY 	{
 }
 .wgWizButton {
 	width: 90px;
+}
+.menu {
+	color: #EEEEEE;
+	width: 120px;
+	margin: 0px;
+	margin-top: 5px;
+	padding: 0px;
+	border: 0px;
+}
+.current {
+	color: #FFFFFF;
+	font-weight: bold;
+	padding: 5px;
+}
+.step {
+	padding: 5px;
 }
 </style>
