@@ -356,15 +356,13 @@ class pobject extends object { // pobject class definition
 		debug("pobject: make_url($path) (from: ".$this->path.")","object");
 		$rootoptions=$this->store->rootoptions;
 		if (!$session || $nls) {
-			if (!$session) {
-				$sessionid="";	
-			} else {
-				$sessionid=$ARCurrent->session->id;
+			$rootoptions = "";
+			if ($session) {
+				$rootoptions .= "/-".$ARCurrent->session->id."-";
 			}
 			if ($nls) {
-				$nls='/'.$nls;
+				$rootoptions .= $nls ='/'.$nls;
 			}
-			$rootoptions=$sessionid.$nls;
 		}
 		$object_path=$this->path;
 		$path=$this->make_path($path);
