@@ -11,8 +11,13 @@
 	} else {
 		$browser_string = "IE4";
 	}
-	?>
+?>
 <LINK REL=stylesheet HREF="<?php echo $AR->dir->www; ?>styles/menu.css" TYPE="text/css">
+<script>
+  if (document.all) {
+	document.body.style.border='1px inset buttonhighlight';
+  }
+</script>
 <script language="JavaScript1.2"
         src="<?php echo $AR->dir->www; ?>widgets/menu/config.php?arDirWWW=<?php echo rawurlencode($AR->dir->www); ?>"
         type='text/javascript'>
@@ -24,7 +29,7 @@
 
 <form>
 <div id="hideoverflow" style="position: relative; width: 100%; margin: 0px; overflow: hidden;">
-<table id="menu" width="100%" style="border-width:2;border-style:outset;border-color:#CFCFCF;background-color: <?php echo $bgcolor; ?>;padding:0px;" cellspacing="0" cellpadding="0">
+<table id="menu" width="100%" style="border: 1px solid buttonhighlight; border-bottom: 2px groove buttonhighlight; border-right: 1px solid buttonshadow; background-color: <?php echo $bgcolor; ?>;padding:0px;" cellspacing="0" cellpadding="0">
 	<tr><td valign="top"><table width="220" border="0" cellpadding="0" cellspacing="0">
 		<tr align="center" class="menu_header" valign="bottom">
 			<td><div style="width: 0px; height: 26px;"></div></td>
