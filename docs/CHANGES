@@ -9,6 +9,8 @@ New features:
 	- Added french translation of the default Ariadne databases.
 	  (ariadne.ax and stripped.ax) Thanks to Arnaud Siminski.
 	- The tree is now interface dependant. Thanks to Paul Meijers.
+	- IE only tab-key catching in the template editor. Thanks to
+	  Dieter Struik.
 Bugs fixed:
 	- Importing with --without-grants will nolonger destroy
 	  existing grants.
