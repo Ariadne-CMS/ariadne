@@ -108,30 +108,25 @@
 
 	function ldCheckCredentials($login, $password) {
 	global $ARCurrent, $AR, $ARCookie;
-		debug("ldGetCredentials()","object");
+		debug("ldCheckCredentials()","object");
 		$result=false;
 		$cookie=unserialize($ARCookie);
 		if ($login==$cookie[$ARCurrent->session->id]['login']
 			&& ($saved=$cookie[$ARCurrent->session->id]['check'])) {
-			$check="{".md5($password.$ARCurrent->session->id)."}";
+			$check="{".ARCrypt($password.$ARCurrent->session->id)."}";
 			if ($check==$saved) {
 				$result=true;
 			} else {
-//				echo "<!-- check failed -->";
+				debug("login check failed","all");
 			}
 		} else {
-//			echo "<!-- wrong login or no check -->";
+			debug("wrong login or corrupted cookie","all");
 		}			
 		return $result;
 	}
 
 	function ldRedirect($uri) {
-		$result=false;
-		if (!Headers_sent()) {
-			$result=true;
-			ldHeader("Location: $uri");
-		}
-		return $result;
+		return ldHeader("Location: $uri");
 	}
 
 	function ldHeader($header) {
@@ -142,41 +137,35 @@
 			$result=true;
 			Header($header);
 			$ARCurrent->ldHeaders[]=$header;			
+		} else {
+			debug("Headers already sent, couldn't send $header","all");
 		}
 		return $result;
 	}
 
 	function ldSetClientCache($cache_on, $expires=0, $modified=0) {
-		$result=false;
-		if (!Headers_sent()) {
-			$result=true;
-			if ($cache_on) {
-				if (!$expires) {
-					$expires=time()+1800;
-				}
-				ldHeader("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$expires));
-			} else {
-				if (!$modified) {
-					$modified=time();
-				}
-				ldHeader("Pragma: no-cache");
-				ldHeader("Cache-control: no-store, no-cache, must-revalidate, max-age=0");
-				ldHeader("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$expires));
-				ldHeader("Last-Modified: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$modified));
-				ldHeader("Cache-control: private");
+		if ($cache_on) {
+			if (!$expires) {
+				$expires=time()+1800;
 			}
+			$result=ldHeader("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$expires));
+		} else {
+			if (!$modified) {
+				$modified=time();
+			}
+			ldHeader("Pragma: no-cache");
+			ldHeader("Cache-control: no-store, no-cache, must-revalidate, max-age=0");
+			ldHeader("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$expires));
+			ldHeader("Last-Modified: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$modified));
+			$result=ldHeader("Cache-control: private");
 		}
 		return $result;
 	}
 
 	function ldSetContent($mimetype, $size=0) {
-		$result=false;
-		if (!Headers_sent()) {
-			$result=true;
-			ldHeader("Content-type: ".$mimetype);
-			if ($size) {
-				ldHeader("Content-Length: ".$size);
-			}
+		$result=ldHeader("Content-type: ".$mimetype);
+		if ($size) {
+			$result=ldHeader("Content-Length: ".$size);
 		}
 		return $result;
 	}
