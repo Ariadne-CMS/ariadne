@@ -696,7 +696,7 @@ class pobject extends object { // pobject class definition
 	}
 
 	function CheckSilent($grant, $modifier=ARTHISTYPE) {
-	global $AR;
+	global $AR, $ARConfig;
 
 		debug("pobject: CheckSilent($grant)","object");
 		if ($modifier==ARTHISTYPE) {
