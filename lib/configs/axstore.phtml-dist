@@ -33,8 +33,12 @@
   /*************************************************************************/
 
   if ($AR->OS=='WIN32') {
-    $compress_cmd                     = '--use-compress-program='.AddSlashes($ariadne_root.'bin\gzip');
-    $tar_cmd                          = $ariadne_root.'bin/tar.exe '.$compress_cmd;
+    $tar_path=str_replace('\\', '/', $ariadne_root);
+    if (eregi('^([a-z]):', $tar_path, $regs)) {
+      $tar_path="//".$regs[1].substr($tar_path,2);
+    }
+    $compress_cmd                     = '--use-compress-program='.($tar_path).'bin/gzip.exe';
+    $tar_cmd                          = $ariadne_root.'bin\tar.exe '.$compress_cmd;
     $ax_config['tar_error_handler']   = '';
   } else {
     $tar_cmd                          = 'tar -z ';

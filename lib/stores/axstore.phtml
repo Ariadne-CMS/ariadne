@@ -25,8 +25,7 @@ class axstore {
 	*****************/
 
 	function axstore($path, $config) {
-		$config["database"]=str_replace("\\", "/", $config["database"]);
-		$this->database=ereg_replace('^([a-zA-Z]:)', '', $config["database"]);
+		$this->database=$config["database"];
 
 		$this->writeable=$config["writeable"];
 		$this->temp=$config["temp"];
@@ -40,11 +39,6 @@ class axstore {
 
 		// create tempdir (and do some windows compat magic)
 		$this->tempdir=tempnam($this->temp, "axtemp");
-		$this->tempdir=str_replace('\\', '/', $this->tempdir);
-		$this->tempdir=str_replace('//', '/', $this->tempdir);
-		if ($this->tempdir[1]==':') {
-			$this->tempdir=substr($this->tempdir, 2);
-		}
 		@unlink($this->tempdir);
 
 		if (@mkdir($this->tempdir, 0777)) {
@@ -62,7 +56,7 @@ class axstore {
 									$line.=trim($rline);
 								}
 								$data=explode("&", $line);
-								if (sizeof($data)==7) {
+								if (sizeof($data)>=7) {
 									include_once($this->code."objects/".$data[1].".phtml");
 									// check if this is a link (does the object already exist?)
 
@@ -628,11 +622,26 @@ class axstore {
 		return $result;
 	}
 
+	function _fix_tar_paths($path) {
+	global $AR;
+		if ($AR->OS=="WIN32") {
+			$path=str_replace('\\', '/', $path);
+			if (eregi('^([a-z]):', $path, $regs)) {
+				$path="//".$regs[1].substr($path,2);
+			}
+		}
+		return $path;
+	}
+
 	function _untar($tarfile, $file, $dstdir) {
 		if ($this->tar_error_handler) {
 			$errfile=$this->tempdir."/tar.errors";
+			$errfile=$this->_fix_tar_paths($errfile);
 			$handler=sprintf($this->tar_error_handler, $errfile);
 		}
+		$dstdir=$this->_fix_tar_paths($dstdir);
+		$tarfile=$this->_fix_tar_paths($tarfile);
+
 		$command=sprintf($this->tar_untar, $dstdir, $file, $tarfile, $handler );
 		system($command,$retVar);
 		if (!$this->tar_nofail && ($retVar!=0 && $retVar!=259)) {
@@ -652,8 +661,12 @@ class axstore {
 	function _tar($tarfile, $file, $dstdir) {
 		if ($this->tar_error_handler) {
 			$errfile=$this->tempdir."/tar.errors";
+			$errfile=$this->_fix_tar_paths($errfile);
 			$handler=sprintf($this->tar_error_handler, $errfile);
 		}
+
+		$dstdir=$this->_fix_tar_paths($dstdir);
+		$tarfile=$this->_fix_tar_paths($tarfile);
 
 		$command=sprintf($this->tar_tar, $dstdir, $file, $tarfile, $handler );
 		system($command,$retVar);
