@@ -177,6 +177,8 @@
 										$impObject->path = $newpath;
 										if ($newpath!="/") {
 											$impObject->parent = $this->store->make_path($newpath, "..");
+										} else {
+											$impObject->parent = "..";
 										}
 										$impObject->store = &$ARCurrent->importStore;
 										$impObject->call("system.import.phtml");
