@@ -20,9 +20,6 @@ define("T_INCLUDE",			237);
 define("T_INCLUDE_ONCE",	236);
 define("T_REQUIRE",			235);
 define("T_REQUIRE_ONCE",	234);
-define("T_COMMA",			233);
-define("T_PAR_CLOSE",		232);
-define("T_HASH",			231);
 
 define("YY_STATE_HTML",			1);
 define("YY_STATE_PINP",			2);
@@ -76,7 +73,6 @@ class scanner {
 		$cclass['%'] = 1;
 		$cclass['?'] = 1;
 		$cclass['('] = 1;
-		$cclass['#'] = 1;
 		$cclass[chr(0)] = 1;
 		$this->YYCLASSES["START_TRANSITION"] = $cclass;
 	}
@@ -86,10 +82,6 @@ class scanner {
 		$this->YYLINE = 1;
 		$this->YYSTATE = YY_STATE_HTML;
 		$YYCURSOR = 0;
-	}
-
-	function alias($key, $value) {
-		$this->aliasses[$key]=$value;
 	}
 
 	function scan(&$result) {
@@ -138,8 +130,7 @@ class scanner {
 				}
 			break;
 			case YY_STATE_PINP:
-				//echo "PINP($yych)<br>\n";
-				
+				//echo "PINP($yych)\n";
 				switch($yych) {
 					case '$': 
 						$yych = $YYBUFFER[++$YYCURSOR];
@@ -243,18 +234,6 @@ class scanner {
 							break;
 						}
 					break;
-					case '#':
-						//echo "<script> alert('found hash'); </script>";
-						$yych = $YYBUFFER[++$YYCURSOR];
-						$result = "#";
-						return T_HASH;
-					break;
-					case ')':
-						$yych = $YYBUFFER[++$YYCURSOR];
-						while ($YYCLASSES["ID_TRAILING"][$YYBUFFER[++$YYCURSOR]]);
-						$result = ")";
-						return T_PAR_CLOSE;
-					break;
 					case 'a':
 					case 'b':
 					case 'c':
@@ -321,9 +300,6 @@ class scanner {
 						if ($construct) {
 							return $construct;
 						} else {
-							if ($this->aliasses[$result]) {
-								$result = $this->aliasses[$result];
-							}
 							return T_IDENT;
 						}
 					break;
@@ -579,29 +555,6 @@ class pinp {
 		return $result;
 	}
 
-	function parse_preproc() {
-		$this->next_token();
-		if ($this->token_ahead == T_IDENT) {
-			$this->next_token();
-			switch (chop($this->token_value)) {
-				case 'define':
-					if ($this->token_ahead == T_IDENT) {
-						$this->next_token();
-						$key = $this->token_value;
-						if ($this->token_ahead == T_IDENT) {
-							$this->next_token();
-							$this->scanner->alias(chop($key), chop($this->token_value));
-						} else {
-							$this->error = "Expected 'value' for \"#define key value\"";
-						}
-					} else {
-						$this->error = "Expected 'key' for \"#define key value\"";
-					}
-				break;
-			}
-		}
-		return "#";
-	}
 
 	/*
 		parse_ident()
@@ -696,15 +649,8 @@ class pinp {
 				case T_IDENT:
 					$this->new_template .= $this->parse_ident();
 				break;
-				case T_HASH:
-					$this->new_template .= $this->parse_preproc();
-				break;
 				case T_PAR_OPEN:
 					$this->new_template.="(";
-					$this->next_token();
-				break;
-				case T_PAR_CLOSE:
-					$this->new_template.=")";
 					$this->next_token();
 				break;
 				case T_ERROR:
