@@ -307,7 +307,7 @@ function drawNode(pre, level) {
 }
 
 function Draw() {
-	target=window.treeview;
+	var target=window.treeview;
 	if (target.document.body && ( target.document.body.scrollTop || target.document.body.scrollLeft ) ) {
 		y=target.document.body.scrollTop;
 		x=target.document.body.scrollLeft;
