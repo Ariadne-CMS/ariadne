@@ -4,14 +4,11 @@
 		$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
 		if ($filter=$this->getvar('filter')) {
 			$query.=" and object.implements='".AddSlashes($filter)."'";
-			$crit["object"]["implements"]["="]="'".AddSlashes($filter)."'";
 		}
 		if ($name=$this->getvar('name')) {
 			$query.=" and name.value ~= '%".AddSlashes($name)."%'";
-			$crit["name"]["value"]["like"]="'%".AddSlashes($name)."%'";
 		} else if ($letter=$this->getvar('letter')) {
 			$query.=" and name.value ~= '".AddSlashes($letter)."%'";
-			$crit["name"]["value"]["like"]="'".AddSlashes($letter)."%'";
 		}
 		if ($AR->user->data->orderedbrowsing) {
 			$query.=" order by name.$nls.value";
