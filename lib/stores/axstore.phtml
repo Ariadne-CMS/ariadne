@@ -127,7 +127,7 @@ class axstore {
 							$this->error="Could not open objects.data within ax file for reading";
 						}
 					} else {
-						$this->error="Possibly supplied an corrupted ax file: could not find objects.data";
+						$this->error="Possibly supplied an corrupted ax file: could not find ".$this->tempdir."/objects.data";
 					}
 
 					if (!$this->error && file_exists($this->tempdir."/templates.tgz")) {
