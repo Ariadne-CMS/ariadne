@@ -41,8 +41,11 @@
   SubObject.addMenuItem('<?php echo $ARnls["m_export"]; ?>', 'javascript:arshow(\'object_export\',\'object.export.phtml\')');
   SubObject.addSeparator();
   SubObject.addMenuItem('<?php echo $ARnls["m_delete"]; ?>', 'javascript:arshow(\'object_fs\',\'object.delete.phtml\')', 0 <?php echo $delete; ?>);
+  SubObject.addSeparator();
+  SubObject.addMenuItem('<?php echo $ARnls["m_logoff"]; ?>', 'javascript:arshow(\'object_fs\',\'object.logoff.phtml\')', 0 <?php echo $delete; ?>);
 
   SubEdit.addMenuItem('<?php echo $ARnls["m_object"]; ?>', 'javascript:void(0)', 'SubEditObject');
+  SubEdit.addMenuItem('<?php echo $ARnls["m_priority"]; ?>', 'javascript:arshow(\'edit_priority\', \'edit.priority.phtml\')');
   SubEdit.addSeparator();
   SubEdit.addMenuItem('<?php echo $ARnls["m_find"]; ?>', 'javascript:arshow(\'edit_find\', \'edit.find.phtml\')');
   SubEdit.addSeparator();
@@ -58,7 +61,7 @@
   SubEditObject.addMenuItem('<?php echo $ARnls["m_types"]; ?>','javascript:arshow(\'edit_object_types\',\'edit.object.types.phtml\')', 0 <?php echo $config; ?>);
   SubEditObject.addMenuItem('<?php echo $ARnls["m_language"]; ?>','javascript:arshow(\'edit_object_nls\',\'edit.object.nls.phtml\')', 0 <?php echo $config; ?>);
 
-  SubView.addMenuItem('<?php echo $ARnls["m_fonts"]; ?>', 'javascript:arshow(\'view_fonts\',\'view.fonts.phtml\')');
+  SubView.addMenuItem('<?php echo $ARnls["m_explorerbar"]; ?>', 'javascript:arexplorerbar()');
   SubView.addSeparator();
   SubView.addMenuItem('<?php echo $ARnls["m_small"]; ?>', 'javascript:setview(\'small\')');
   SubView.addMenuItem('<?php echo $ARnls["m_large"]; ?>', 'javascript:setview(\'large\')');
