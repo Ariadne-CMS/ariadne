@@ -32,10 +32,10 @@
 		switch($arAction) {
 			case "delete" :
 				include_once($this->store->code."includes/DelGrant.phtml");
-				$this->data->usergrants=DelGrant($data->usergrants, $path, $grant);
+				$this->data->usergrants=DelGrant($data->usergrants, $arPath, $grant);
 				break;
 			case "add" :
-				$this->data->usergrants[$path][$grant]=1;
+				$this->data->usergrants[$arPath][$grant]=1;
 				break;
 		}
 		$this->save();
