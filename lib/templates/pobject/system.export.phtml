@@ -131,11 +131,12 @@ global $AR;
 												$ARCurrent->importStore->get($newpath)));
 
 								if (($object->lastchanged > $oldObject->lastchanged)) {
-									$update_obj = true;
+									display("(updating)\n");
+									$save_obj = true;
 								} else {
+									$save_obj = false;
 									display("(ok)\n");
 									unset($oldObject);	// no update needed
-									$save_obj = false;
 								}
 							} else {
 								$save_obj = false;
@@ -147,8 +148,15 @@ global $AR;
 							// next one has to be linked
 							$saved_object[$object->id]=$newpath;
 
-								display("(saving)\n");
-								$ARCurrent->importStore->save(
+								if ($ARCurrent->importStore->exists($newpath)) {
+									$ARCurrent->importStore->call(
+											"system.export.update.phtml", 
+											Array("newObject" => $object),
+											$ARCurrent->importStore->get($newpath));
+
+								} else {
+									display("(saving)\n");
+									$ARCurrent->importStore->save(
 											$newpath, 
 											$object->type,
 											$object->data,
@@ -156,14 +164,9 @@ global $AR;
 											$object->vtype,
 											$object->priority,
 											$object->dummy_save);
-
+								}
 						} else
 						if ($update_obj) {
-								$ARCurrent->importStore->call(
-											"system.export.update.phtml", 
-											Array("newObject" => $object),
-											$ARCurrent->importStore->get($newpath));
-
 						}
 
 						// (update or set templates and files)
