@@ -3,7 +3,7 @@
 	/*****************************************************************************
 
 	The Spanish nls files are contributed by: 
-		Andres Marcos Bianciotto <abianciotto@e-volution.com>
+		Andres Marcos Bianciotto <andres@bianciotto.com.ar>
 
 	*****************************************************************************/
 
@@ -16,7 +16,7 @@
 	$ARnls["m_delete"]						=	"Eliminar";
 	$ARnls["m_details"]						=	"Detalles";
 	$ARnls["m_edit"]						=	"Editar";
-	$ARnls["m_explorerbar"]					=	"Barra&nbsp;de&nbsp;Explorer";
+	$ARnls["m_explorerbar"]					=	"Barra&nbsp;de&nbsp;explorer";
 	$ARnls["m_export"]						=	"Exportar";
 	$ARnls["m_find"]						=	"Buscar";
 	$ARnls["m_fonts"]						=	"Fuentes";
@@ -25,7 +25,7 @@
 	$ARnls["m_import"]						=	"Importar";
 	$ARnls["m_index"]						=	"Indice";
 	$ARnls["m_language"]					=	"Idioma";
-	$ARnls["m_large"]						=	"Iconos&nbsp;Grandes";
+	$ARnls["m_large"]						=	"Iconos&nbsp;grandes";
 	$ARnls["m_layout"]						=	"Layout";
 	$ARnls["m_link"]						=	"V&iacute;nculo";
 	$ARnls["m_logoff"]						=	"Log&nbsp;off";
@@ -36,8 +36,8 @@
 	$ARnls["m_priority"]					=	"Prioridad";
 	$ARnls["m_rename"]						=	"Renombrar";
 	$ARnls["m_search"]						=	"B&uacute;squeda";
-	$ARnls["m_shortcut"]					=	"Acceso directo";
-	$ARnls["m_small"]						=	"Iconos&nbsp;Peque&ntilde;os";
+	$ARnls["m_shortcut"]					=	"Acceso&nbsp;directo";
+	$ARnls["m_small"]						=	"Iconos&nbsp;peque&ntilde;os";
 	$ARnls["m_templates"]					=	"Templates";
 	$ARnls["m_tutorials"]					=	"Tutoriales";
 	$ARnls["m_types"]						=	"Tipos";

@@ -1,11 +1,12 @@
 <?php
 
-	/*****************************************************************************
+/*****************************************************************************
 
 	The Spanish nls files are contributed by: 
-		Andres Marcos Bianciotto <abianciotto@e-volution.com>
+		Andres Marcos Bianciotto <andres@bianciotto.com.ar>
 
 	*****************************************************************************/
+
 	debug("ARnls lib: es","all");
 
 	$ARnls["aboutariadne"]					=	"Acerca de Ariadne";
@@ -74,7 +75,7 @@
 	$ARnls["editfile"]						=	"Editar Archivo";
 	$ARnls["editnewspaper"]					=	"Editar Peri&oacute;dico";
 	$ARnls["editobject"]					=	"Editar Objeto; //FIXME: uit /system/ariadne/types/ ";
-	$ARnls["editor"]						=	"Editor";
+	$ARnls["editor"]						=	"Editor HTML";
 	$ARnls["editorganization"]				=	"Editar Organizaci&oacute;n";
 	$ARnls["editoriginal"]					=	"Editar original";
 	$ARnls["editpage"]						=	"Editar P&aacute;gina";
@@ -106,7 +107,7 @@
 	$ARnls["err:filenameinvalidnoparent"]	=	"%s es inv&aacute;lido: %s no existe.";
 	$ARnls["err:fileupload"]				=	"Algo fall&oacute; durante el upload. Por favor, intente hacerlo nuevamente.\nSi el problema persiste, contacte al administrador del sistema.";
 	$ARnls["err:fileuploadphtml"]			=	"No debe hacer upload de archivos con extensi&oacute;n .phtml.";
-	$ARnls["err:fileuploadvirus"]			=	"!The file contains the %s virus! Please check your system and then try again.\nIf the problem persists, contact your system administrator.";
+	$ARnls["err:fileuploadvirus"]			=	"El archivo contiene el virus %s! Por favor verifique su sistema e intente nuevamente.\nSi el problema persisten, contacte a su administrador.";
 	$ARnls["err:ftpnorenameself"]			=	"no se puede renombrar un template con el mismo nombre";
 	$ARnls["err:ftpnotemplate"]				=	"no existe el template";
 	$ARnls["err:ftpnotemplatebadperm"]		=	"no se puede encontrar template (insuficientes permisos de disco?)";
@@ -165,7 +166,7 @@
 	$ARnls["expires"]						=	"Expira";
 	$ARnls["fax"]							=	"Fax";
 	$ARnls["file"]							=	"Archivo";
-	$ARnls["filename"]						=	"Nombre de Archivo";
+	$ARnls["filename"]						=	"Nombre de archivo";
 	$ARnls["filesaved"]						=	"Archivo guardado";
 	$ARnls["first"]							=	"Primer";
 	$ARnls["forall"]						=	"para todo(s)";
@@ -188,7 +189,7 @@
 	$ARnls["id"]							=	"ID";
 	$ARnls["importobject"]					=	"Importar objetos";
 	$ARnls["inherit"]						=	"Heredar";
-	$ARnls["inheritcache"]					=	"Heredar Configuracion de Cache";
+	$ARnls["inheritcache"]					=	"Heredar configuracion de Cache";
 	$ARnls["interface"]						=	"Interfaz";
 	$ARnls["item"]							=	"Item";
 	$ARnls["keepimage"]						=	"Mantener imagen";
@@ -242,7 +243,7 @@
 	$ARnls["open"]							=	"Abrir";
 	$ARnls["openlocks"]						=	"Abrir bloqueos para %s:";
 	$ARnls["options"]						=	"Opciones";
-	$ARnls["orderedbrowsing"]				=	"!Ordered browsing";
+	$ARnls["orderedbrowsing"]				=	"Navegaci&oacute;n ordenada";
 	$ARnls["overwrite"]						=	"Sobreescribir";
 	$ARnls["page"]							=	"Pagina";
 	$ARnls["password"]						=	"Password";
