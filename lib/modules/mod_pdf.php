@@ -1,7 +1,7 @@
 <?php
 require_once("fpdf151/fpdf.php");
 //define('FPDF_FONTPATH','D:/Program Files/Ariadne/lib/modules/fpdf151/font/');
-define('FPDF_FONTPATH','D:/Program Files/Ariadne/lib/modules/fpdf151/font/');
+define('FPDF_FONTPATH','font/');
 
 class pinp_PDF {
 	function _init($orientation='P',$unit='mm',$format='A4') {
@@ -15,12 +15,16 @@ class pinp_FPDF extends FPDF
 
 function pinp_FPDF($orientation='P',$unit='mm',$format='A4')
 {
+    //Call parent constructor
     $this->FPDF($orientation,$unit,$format);
     //Initialization
     $this->B=0;
     $this->I=0;
     $this->U=0;
     $this->HREF='';
+    $this->fontlist=array("arial","times","courier","helvetica","symbol");
+    $this->issetfont=false;
+    $this->issetcolor=false;
 }
 
 function _SetMargins($left,$top,$right=-1)
@@ -68,7 +72,7 @@ function _SetSubject($subject)
 	return $this->SetSubject($subject);
 }
 
-function SetAuthor($author)
+function _SetAuthor($author)
 {
 	return $this->SetAuthor($author);
 }
@@ -255,21 +259,80 @@ function _Output($file='',$download=false)
 	return $this->Output($file,$download);
 }
 
-var $B;
-var $I;
-var $U;
-var $HREF;
-
 function _WriteHTML($html)
 {
 	return $this->WriteHTML($html);
 }
 
+function _OpenTag($tag,$attr)
+{
+	return $this->OpenTag($tag,$attr);
+}
+
+function _CloseTag($tag)
+{
+	return $this->CloseTag($tag);
+}
+
+function _SetStyle($tag,$enable)
+{
+	return $this->SetStyle($tag,$enable);
+}
+
+function _PutLink($URL,$txt)
+{
+	return $this->PutLink($URL,$txt);
+}
+
+// code originally from HTML2PDF by Clément Lavoillotte
+// ac.lavoillotte@noos.fr
+// webmaster@streetpc.tk
+// http://www.streetpc.tk
+
+// function hex2dec
+// returns an associative array (keys: R,G,B) from
+// a hex html code (e.g. #3FE5AA)
+function hex2dec($color = "#000000"){
+    $R = substr($color, 1, 2);
+    $rouge = hexdec($R);
+    $V = substr($color, 3, 2);
+    $vert = hexdec($V);
+    $B = substr($color, 5, 2);
+    $bleu = hexdec($B);
+    $tbl_color = array();
+    $tbl_color['R']=$rouge;
+    $tbl_color['G']=$vert;
+    $tbl_color['B']=$bleu;
+    return $tbl_color;
+}
+
+// conversion pixel -> millimeter in 72 dpi
+function px2mm($px){
+    return $px*25.4/72;
+}
+
+function txtentities($html){
+    $trans = get_html_translation_table(HTML_ENTITIES);
+    $trans = array_flip($trans);
+    return strtr($html, $trans);
+}
+
+//variables of html parser
+var $B;
+var $I;
+var $U;
+var $HREF;
+var $fontList;
+var $issetfont;
+var $issetcolor;
+
 function WriteHTML($html)
 {
-    //HTML parser
-    $html=str_replace("\n",' ',$html);
-    $a=preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE);
+	require_once('mod_unicode.php');
+	$html=unicode::utf8toiso8859($html);
+    $html=strip_tags($html,"<b><u><i><a><img><p><br><strong><em><font><tr><blockquote>"); //remove all unsupported tags
+    $html=str_replace("\n",' ',$html); //replace carriage returns by spaces
+    $a=preg_split('/<(.*)>/U',$html,-1,PREG_SPLIT_DELIM_CAPTURE); //explodes the string
     foreach($a as $i=>$e)
     {
         if($i%2==0)
@@ -278,7 +341,7 @@ function WriteHTML($html)
             if($this->HREF)
                 $this->PutLink($this->HREF,$e);
             else
-                $this->Write(5,$e);
+                $this->Write(5,stripslashes($this->txtentities($e)));
         }
         else
         {
@@ -300,29 +363,58 @@ function WriteHTML($html)
     }
 }
 
-function _OpenTag($tag,$attr)
-{
-	return $this->OpenTag($tag,$attr);
-}
-
 function OpenTag($tag,$attr)
 {
     //Opening tag
-    if($tag=='STRONG')
-        $tag='B';
-    if($tag=='EM')
-        $tag='I';
-    if($tag=='B' or $tag=='I' or $tag=='U')
-        $this->SetStyle($tag,true);
-    if($tag=='A')
-        $this->HREF=$attr['HREF'];
-    if($tag=='BR')
-        $this->Ln(5);
-}
-
-function _CloseTag($tag)
-{
-	return $this->CloseTag($tag);
+    switch($tag){
+        case 'STRONG':
+            $this->SetStyle('B',true);
+            break;
+        case 'EM':
+            $this->SetStyle('I',true);
+            break;
+        case 'B':
+        case 'I':
+        case 'U':
+            $this->SetStyle($tag,true);
+            break;
+        case 'A':
+            $this->HREF=$attr['HREF'];
+            break;
+        case 'IMG':
+			if ($attr['SRC'] && substr($attr['SRC'], -1)=='/') {
+				$attr['SRC']=substr($attr['SRC'], 0, -1);
+			}
+			// FIXME: make the image available as a file.
+			// FIXME: remove width or height requirement.
+            if(isset($attr['SRC']) and (isset($attr['WIDTH']) or isset($attr['HEIGHT']))) {
+                if(!isset($attr['WIDTH']))
+                    $attr['WIDTH'] = 0;
+                if(!isset($attr['HEIGHT']))
+                    $attr['HEIGHT'] = 0;
+                $this->Image($attr['SRC'], $this->GetX(), $this->GetY(), $this->px2mm($attr['WIDTH']), $this->px2mm($attr['HEIGHT']));
+            }
+            break;
+        case 'TR':
+        case 'BLOCKQUOTE':
+        case 'BR':
+            $this->Ln(5);
+            break;
+        case 'P':
+            $this->Ln(10);
+            break;
+        case 'FONT':
+            if (isset($attr['COLOR']) and $attr['COLOR']!='') {
+                $coul=$this->hex2dec($attr['COLOR']);
+                $this->SetTextColor($coul['R'],$coul['G'],$coul['B']);
+                $this->issetcolor=true;
+            }
+            if (isset($attr['FACE']) and in_array(strtolower($attr['FACE']), $this->fontlist)) {
+                $this->SetFont(strtolower($attr['FACE']));
+                $this->issetfont=true;
+            }
+            break;
+    }
 }
 
 function CloseTag($tag)
@@ -330,19 +422,21 @@ function CloseTag($tag)
     //Closing tag
     if($tag=='STRONG')
         $tag='B';
-    if ($tag=='EM')
+    if($tag=='EM')
         $tag='I';
     if($tag=='B' or $tag=='I' or $tag=='U')
         $this->SetStyle($tag,false);
     if($tag=='A')
         $this->HREF='';
-    if($tag=='P')
-        $this->Ln(10);
-}
-
-function _SetStyle($tag,$enable)
-{
-	return $this->SetStyle($tag,$enable);
+    if($tag=='FONT'){
+        if ($this->issetcolor==true) {
+            $this->SetTextColor(0);
+        }
+        if ($this->issetfont) {
+            $this->SetFont('arial');
+            $this->issetfont=false;
+        }
+    }
 }
 
 function SetStyle($tag,$enable)
@@ -354,11 +448,6 @@ function SetStyle($tag,$enable)
         if($this->$s>0)
             $style.=$s;
     $this->SetFont('',$style);
-}
-
-function _PutLink($URL,$txt)
-{
-	return $this->PutLink($URL,$txt);
 }
 
 function PutLink($URL,$txt)

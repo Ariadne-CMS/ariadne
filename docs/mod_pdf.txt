@@ -5,8 +5,11 @@ fpdf allows. The WriteHTML() method in the wrapper already knows basic html
 stuff like headings, paragraphs, links, underline, bold and italic. It doesn't
 yet support tables or images.
 
-example:
+Make sure your template has the .pdf extension, or otherwise MSIE will not show
+your pdf correctly. (If someone figures out the magic http headers to make MSIE
+behave correctly, please send them to me).
 
+ppage::view.pdf
 <pinp>
 
   load('mod_pdf.php');
