@@ -33,4 +33,5 @@ $ARnls["m_explorerbar"]="Explorer&nbsp;Bar";
 $ARnls["m_priority"]=	"Priority";
 
 $ARnls["m_custom"]=		"Custom&nbsp;Fields";
+$ARnls["m_config"]=		"Configuration";
 ?>

@@ -33,4 +33,5 @@ $ARnls["m_explorerbar"]="Navigatie&nbsp;Menu";
 $ARnls["m_priority"]=	"Prioriteit";
 
 $ARnls["m_custom"]=		"Eigen&nbsp;Velden"
+$ARnls["m_config"]=		"Configuratie";
 ?>
