@@ -245,7 +245,7 @@ class pobject extends object {
 		   then add the rest of the path of the image.
 		*/
 		global $ARConfig;
-		debug("pobject: make_url($path)","object");
+		debug("pobject: make_url($path) (from: ".$this->path.")","object");
 		$object_path=$this->path;
 		$path=$this->make_path($path);
 		while ($object_path && !$url) {
@@ -257,9 +257,11 @@ class pobject extends object {
 				$url=$config->root["value"].$this->store->rootoptions.$path;
 			} else {
 				// jump to cache information of the parent of $rootpath
-				$object_path=substr($rootpath, 0, strrpos("/", substr($rootpath, 0, -1)));
+				$object_path=substr($rootpath, 0, strrpos(substr($rootpath, 0, -1),'/')+1);
+				debug("make_url: no root from '$rootpath', jump to '$object_path'","all");
 			}
 		}
+		debug("url: $url",'all');
 		return $url;			
 	}
 
