@@ -171,6 +171,8 @@ class pphoto extends pfile { // definitie class
 	function annotate($text, $x, $y, $style="default") {
 		global $ARConfig;
 
+		require_once($this->store->code."modules/mod_unicode.php");
+		$text=unicode::utf8toiso8859($text);
 		$this->set_context("mogrify");
 
 		$x=(int)$x;
