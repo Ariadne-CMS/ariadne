@@ -79,10 +79,10 @@
 	}
 
 	function ldSetCredentials($login, $password) {
-	global $ARCurrent, $AR, $ARCookie;
+	global $ARCurrent, $ARCookie;
 
 		debug("ldSetCredentials($login, [password])","object");
-		if (!$ARCurrent->session || ($AR->user->data->login!=$login)) {
+		if (!$ARCurrent->session || ($ARCurrent->session->get("ARLogin")!=$login)) {
 			// start a new session when there is no session yet, or
 			// when a user uses a new login. (su)
 			ldStartSession();
@@ -98,7 +98,7 @@
 					$ARCurrent->session->sessionstore->get("/$sessionid/"))) {
 				unset($cookie[$sessionid]);
 			}
-		}	
+		}
 		$cookie[$ARCurrent->session->id]['login']=$login;
 		$cookie[$ARCurrent->session->id]['timestamp']=time();
 		$cookie[$ARCurrent->session->id]['check']="{".md5($password.$ARCurrent->session->id)."}";
@@ -116,7 +116,11 @@
 			$check="{".md5($password.$ARCurrent->session->id)."}";
 			if ($check==$saved) {
 				$result=true;
+			} else {
+				echo "<!-- check failed -->";
 			}
+		} else {
+			echo "<!-- wrong login or no check -->";
 		}			
 		return $result;
 	}
