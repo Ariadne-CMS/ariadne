@@ -7,12 +7,21 @@
     include_once($ariadne."/stores/".$store_config["dbms"]."store.phtml");
 	include_once($ariadne."/includes/loader.web.php");
 
+	/* become admin */
+	$ARLogin="admin";
+	$AR->user=new object;
+	$AR->user->data=new object;
+	$AR->user->data->login="admin";
+
 	$inst_store = $store_config["dbms"]."store";
     $store=new $inst_store(".",$store_config);
   
-    $data=unserialize('O:6:"object":5:{s:4:"name";s:13:"Administrator";s:5:"login";s:5:"admin";s:8:"password";s:13:"0vZxQzc/c2glI";s:6:"groups";a:1:{s:21:"/system/groups/admin/";s:5:"admin";}s:8:"loggedon";i:949605712;}');
-    $data->password=ARCrypt($password);
-    $store->save("/system/users/admin/","puser",$data);
+	/* update the admin user with the supplied password */
+	$store->call("system.save.data.phtml", 
+					Array(
+						"newpass1" => $password,
+						"newpass2" => $password
+					), $store->get("/system/users/admin/"));
     $store->close();
     echo "You should now be able to log on";
   } else {
