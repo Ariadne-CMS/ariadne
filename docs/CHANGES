@@ -50,6 +50,8 @@ New Features:
 	  members of other groups)
 
 Bugs Fixed:
+	- Fixed a bug in store::make_path(), it should now always return a
+	  valid path, no matter what.
 	- Fixed a bug in the filestore::read() function. In some cases the store 
 	  tried to read files with a buffer length of 0. Thanks to Florian Overkamp.
 	- Fixed logging in with another user on your own session.
