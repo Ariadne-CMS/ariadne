@@ -42,16 +42,19 @@ class pnewspaper extends pdir { // pnewspaper class definition
 	function get_articles($display, $max="", $start="", $end="", $nls="") {
 		global $ARCurrent;
 		debug("pnewspaper: get_articles($display, $max, $start, $end)","object");
-		if (!$start) { $start=time(); }
-		if (!$end) { $end=$start; }
-		$criteria["object"]["implements"]["="]="'particle'";
-		$criteria["article"]["start"]["<="]=$end;
-		$criteria["article"]["end"][">="]=$start;
-		$criteria["article"]["display"]["="]="'".AddSlashes($display)."'";
-		if ($nls) {
-			$criteria["name"]["nls"]["="]="'".AddSlashes($nls)."'";
+		if (!$start) { 
+			$start=time(); 
 		}
-		$this->find(".",$criteria,"system.get.article-by-priority.phtml","display=$display");
+		if (!$end) { 
+			$end=$start; 
+		}
+		$query="object.implements='particle' and article.start<=$end ".
+			"and article.end>=$start and article.display='".AddSlashes($display)."'";
+		if ($nls) {
+			$query.=" and name.nls='".AddSlashes($nls)."'";
+		}
+		$query.=" limit ".(((int)$max)*2);
+		$this->find(".",$query,"system.get.article-by-priority.phtml","display=$display");
 		if (is_array($ARCurrent->priority)) {
 			$ARCurrent->priority=array_reverse($ARCurrent->priority, true);
 			arsort($ARCurrent->priority);
