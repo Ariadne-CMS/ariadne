@@ -1249,9 +1249,9 @@ class pobject extends object { // pobject class definition
 		return $contents; 
 	} 
 
-	function make_filesize( $size ) {
+	function make_filesize( $size="" ) {
 		$result = "0";
-		if( !isset($size) ) {
+		if( $size == "" ) {
 			$size = $this->size;
 		}
 		if ($size>1048576) {
@@ -1537,7 +1537,7 @@ class pobject extends object { // pobject class definition
 		return $this->HTTPRequest($method, $url, $postdata);
 	}
 	
-	function _make_filesize( $size ) {
+	function _make_filesize( $size="" ) {
 		return $this->make_filesize( $size );
 	}
 } // end of pobject class definition
