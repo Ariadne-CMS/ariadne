@@ -13,7 +13,7 @@ $ARnls["m_delete"]=		"Löschen";
 $ARnls["m_find"]=		"Finden";
 $ARnls["m_preferences"]=	"Voreinstellungen";
 $ARnls["m_data"]=		"Daten";
-$ARnls["m_shortcut"]=		"Shortcut";
+$ARnls["m_shortcut"]=		"Verknüpfung";
 $ARnls["m_cache"]=		"Cache";
 $ARnls["m_layout"]=		"Layout";
 $ARnls["m_grants"]=		"Rechte";
@@ -29,6 +29,6 @@ $ARnls["m_tutorials"]=		"Lernprogramm";
 $ARnls["m_search"]=		"Suche";
 $ARnls["m_about"]=		"Über&nbsp;Ariadne";
 $ARnls["m_logoff"]=		"Abmelden";
-$ARnls["m_explorerbar"]=	"Explorer&nbsp;Bar";
+$ARnls["m_explorerbar"]=	"Explorer&nbsp;Leiste";
 $ARnls["m_priority"]=		"Priorität";
 ?>
