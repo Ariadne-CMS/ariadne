@@ -102,7 +102,7 @@
 	}
 </style>
 </head>
-<body scroll="no" onLoad="parent.fixIESize();"> 
+<body onLoad="parent.fixIESize();"> 
 		<table cellspacing="0">
 		<thead>
 		<tr>
@@ -127,7 +127,7 @@
 							echo "><td>";
 							echo "<img src=\"".$AR->dir->images."icons/".$type.".gif\"></td>";
 							echo "<td valign=\"middle\">";
-							echo "<a href=\"javascript:selectUser('$id');\">$id</a>";
+							echo "<a href=\"javascript:parent.selectUser('$id');\">$id</a>";
 							echo "</td>";
 							echo "<td valign=\"middle\">";
 							if ($grants && is_array($grants)) {
@@ -137,7 +137,7 @@
 										echo arGetGrantType($modifiers);
 									} 
 									if (!$grey) {
-										echo "<a href=\"javascript:selectGrant('$grant');\">$grant";
+										echo "<a href=\"javascript:parent.selectGrant('$grant');\">$grant";
 									} else {
 										echo $grant;
 									} 

@@ -193,13 +193,13 @@
 </head>
 <body onLoad="fixIESize();">
 <form name="grantsform" action="edit.object.grants.save.phtml">
+<?php
+	$ARCurrent->arReturnPage=$this->store->root.$this->path."edit.object.grants.phtml";
+?>
 <input type="hidden" name="arReturnPage" value="<?php echo $ARCurrent->arReturnPage; ?>">
 <table id="grants" cellspacing="0" cellpadding="0" border="0" height="100%">
 <tr>
   <td id="grantstop" height="100%">
-	<?php
-		$ARCurrent->arReturnPage=$this->store->root.$this->path."edit.object.grants.phtml";
-	?>
 	<fieldset id="grants_list">
 		<legend>Grants for <?php $this->parents($this->path, 'edit.object.grants.show.path.phtml','','/'); ?></legend>
 		<iframe id="grants_list_frame" src="<?php echo $this->make_url(); ?>edit.object.grants.list.phtml"></iframe>
