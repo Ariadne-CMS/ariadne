@@ -16,8 +16,8 @@
 			if (isset($this->data->pinp[$type][$function][$language])) {
 				unset($this->data->pinp[$type][$function][$language]);
 				unset($this->data->templates[$type][$function][$language]);
-				unlink($this->store->files."templates".$template_path);
-				unlink($this->store->files."templates".$template_path.".pinp");
+				@unlink($this->store->files."templates".$template_path);
+				@unlink($this->store->files."templates".$template_path.".pinp");
 				if (count($this->data->pinp[$type][$function])==0) {
 					unset($this->data->pinp[$type][$function]);
 					unset($this->data->templates[$type][$function]);
