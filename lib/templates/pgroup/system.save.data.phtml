@@ -15,7 +15,8 @@
 
 
 		$this->data->name=$this->getdata("name","none");
-		$properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
+		$properties["name"][]["value"]="'".AddSlashes($this->data->name)."'";
+		$properties["text"][]["value"]="'".AddSlashes($this->data->name)."'";
 		if ($this->arIsNewObject) {
 			$login=$this->getdata("arNewFilename","none");
 			if ($login) {
@@ -28,7 +29,7 @@
 						$this->error=$ARnls["err:donotuseid"];
 					} else {
 						$this->data->login=$login;
-						$properties["login"][0]["value"]="'".AddSlashes($newdata->login)."'";
+						$properties["login"][0]["value"]="'".AddSlashes($this->data->login)."'";
 					}
 				}
 			} else {

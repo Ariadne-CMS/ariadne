@@ -21,6 +21,7 @@
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
 			reset($AR->nls->list);
+			$count=0;
 			while (list($key, $value)=each($AR->nls->list)) {
 				
 				if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
@@ -33,10 +34,15 @@
 					}
 					debug("name found: $name","all");
 					$newnlsdata->name=$name;
-					$properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
-					$properties["text"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
+					$properties["name"][$count]["value"]="'".AddSlashes($newnlsdata->name)."'";
+					$properties["name"][$count]["nls"]="'$key'";
+					$properties["text"][$count]["value"]="'".AddSlashes($newnlsdata->name)."'";
+					$properties["text"][$count]["nls"]="'$key'";
+					$count++;
 					$newnlsdata->summary=$this->getdata("summary",$key);
-					$properties["text"][]["value"]="'".AddSlashes($newnlsdata->summary)."'";
+					$properties["text"][$count]["value"]="'".AddSlashes($newnlsdata->summary)."'";
+					$properties["text"][$count]["nls"]="'$key'";
+					$count++;
 					if ($page=$this->getdata("page",$key)) {
 						$newnlsdata->page=$page;
 					}

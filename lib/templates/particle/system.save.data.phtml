@@ -32,6 +32,7 @@
 					// it is set as the default language for this object too.
 					$this->data->nls->default=$ARConfig->nls->default;
 					reset($AR->nls->list);
+					$count=0;
 					while (list($key, $value)=each($AR->nls->list)) {
 						// for each language in the list, get the nls specific data
 						if ($name=$this->getdata("name",$key)) { 
@@ -46,15 +47,20 @@
 								break;
 							} else	{
 								$newnlsdata->name=$name;
-								$properties["name"][]["value"]="'".AddSlashes($name)."'";
-								$properties["text"][]["value"]="'".AddSlashes($name)."'";
+								$properties["name"][$count]["value"]="'".AddSlashes($name)."'";
+								$properties["name"][$count]["nls"]="'$key'";
+								$properties["text"][$count]["value"]="'".AddSlashes($name)."'";
+								$properties["text"][$count]["nls"]="'$key'";
+								$count++;
 							}
 							$newnlsdata->summary=$this->getdata("summary", $key);
-							$properties["text"][]["value"]="'".AddSlashes(substr($this->getdata("summary", $key),0,255))."'";
-
+							$properties["text"][$count]["value"]="'".AddSlashes(substr($this->getdata("summary", $key),0,255))."'";
+							$properties["text"][$count]["nls"]="'$key'";
+							$count++;
 							$newnlsdata->title=$this->getdata("title", $key);
-							$properties["text"][]["value"]="'".AddSlashes(substr($this->getdata("title", $key),0,255))."'";
-
+							$properties["text"][$count]["value"]="'".AddSlashes(substr($this->getdata("title", $key),0,255))."'";
+							$properties["text"][$count]["nls"]="'$key'";
+							$count++;
 							if ($page=$this->getdata("page",$key)) {
 								$newnlsdata->page=$page;
 							}

@@ -31,6 +31,7 @@
 		$properties["value"][]["value"]="'".AddSlashes($value)."'";
 		$this->data->name=$this->getdata("name","none");
 		$properties["name"][]["value"]="'".AddSlashes($this->data->name)."'";
+		$properties["text"][]["value"]="'".AddSlashes($this->data->name)."'";
 		if ($this->arIsNewObject) {
 			$login=$this->getdata("arNewFilename","none");
 			if ($login) {

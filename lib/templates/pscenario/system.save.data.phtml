@@ -15,6 +15,7 @@
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
 			reset($AR->nls->list);
+			$count=0;
 			while (list($key, $value)=each($AR->nls->list)) {
 				if ($this->getdata($key, "none")) {
 					if (!$this->data->$key) {
@@ -26,9 +27,15 @@
 						$this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
 					}
 					$newnlsdata->name=$this->getdata("name", $key);
-					$properties["name"][]["value"]="'".AddSlashes($this->getdata("name", $key))."'";
+					$properties["name"][$count]["value"]="'".AddSlashes($this->getdata("name", $key))."'";
+					$properties["name"][$count]["nls"]="'$key'";
+					$properties["text"][$count]["value"]="'".AddSlashes($this->getdata("name", $key))."'";
+					$properties["text"][$count]["nls"]="'$key'";
+					$count++;
 					$newnlsdata->summary=$this->getdata("summary", $key);
-					$properties["text"][]["value"]="'".AddSlashes($this->getdata("summary", $key))."'";
+					$properties["text"][$count]["value"]="'".AddSlashes($this->getdata("summary", $key))."'";
+					$properties["text"][$count]["nls"]="'$key'";
+					$count++;
 					$newnlsdata->effect=$this->getdata("effect", $key);
 					$this->data->$key=$newnlsdata;
 					$this->data->nls->list[$key]=$value;

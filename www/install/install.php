@@ -46,12 +46,14 @@
 		$store->add_type("pphotobook","pphotobook");
 
 		$name["value"]["string"]=50;
+		$name["nls]["string"]=4;
 		$store->create_property("name", $name);
 
 		$value["value"]["string"]=128;
 		$store->create_property("value",$value);
 
 		$ptext["value"]["string"]=128;
+		$ptext["nls]["string"]=4;
 		$store->create_property("text",$ptext);
 
 		$locked["id"]["string"]=16;
