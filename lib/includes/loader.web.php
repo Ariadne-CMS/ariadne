@@ -94,8 +94,8 @@
 		@reset($cookie);
 		while (list($sessionid, $data)=@each($cookie)) {
 			if (!$ARCurrent->session->sessionstore->exists("/$sessionid/")
-				|| $ARCurrent->session->sessionstore->call("system.expired.phtml","",
-					$ARCurrent->session->sessionstore->get("/$sessionid/"))) {
+				|| @current($ARCurrent->session->sessionstore->call("system.expired.phtml","",
+					$ARCurrent->session->sessionstore->get("/$sessionid/")))) {
 				unset($cookie[$sessionid]);
 			}
 		}
