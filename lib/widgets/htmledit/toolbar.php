@@ -305,8 +305,9 @@ function tbContentElement_DisplayChanged() {
 }
 
 
-function SAVE_onclick() {
-  savewindow=window.open(wgSaveTmpl, 'savewindow', 'directories=no,height=100,width=300,location=no,status=no,toolbar=no,resizable=no');
+function SAVE_onclick(newurl) {
+  savewindow=window.open(wgSaveTmpl+'?arReturnPage='+escape(newurl), 'savewindow', 'directories=no,height=100,width=300,location=no,status=no,toolbar=no,resizable=no');
+  top.wgTBIsDirty=false;
 }
 
 
@@ -619,6 +620,15 @@ function getContents(data_id) {
 	}
 }
 
+function getTextContents(data_id) {
+	var data="";
+	if (data=tbContentElement.document.getElementById(data_id)) {
+		return data.innerText;
+	} else {
+		return '';
+	}
+}
+
 function getValue(data_name) {
 	var data="";
 	var value='';
@@ -645,7 +655,7 @@ function getValue(data_name) {
 			case 'text' :
 				value=data.value;
 				break;
-			case 'select' :
+			case 'select-one' :
 				value=data.options[data.selectedIndex].value;
 				break;
 			case 'select-multiple' :
@@ -692,7 +702,7 @@ return tbContentElement_ContextMenuAction(itemIndex)
 
 <!-- Toolbars -->
 <div class="tbToolbar" ID="StandardToolbar" unselectable='on'>
-  <!-- div class="tbButton" ID="SAVE" unselectable='on' TITLE="Save File" LANGUAGE="javascript" onclick="return SAVE_onclick()">
+  <div class="tbButton" ID="SAVE" unselectable='on' TITLE="Save File" LANGUAGE="javascript" onclick="return SAVE_onclick(0)">
     <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/save.gif" WIDTH="23" HEIGHT="22">
   </div>
   
