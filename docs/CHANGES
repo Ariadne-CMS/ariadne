@@ -30,6 +30,8 @@ New features:
 	- ParseSummary() has a new (4th) argument; if false, it won't add a
 	  'read more...' link.
 	- Added Swedish translation by Niklas Koskela.
+	- Added configurable save option to the user.edit.html toolbar. Just
+	  redefine the user.edit.save.html and user.add.save.html templates.
 		
 Bugs fixed:
 	- Fixed sessions cleanup in the bin/cleanup script. It now removes
