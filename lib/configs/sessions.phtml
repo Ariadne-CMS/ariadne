@@ -1,4 +1,5 @@
 <?php
+
   /*************************************************************************/
   /* Ariadne Session Store Configuration                                   */
   /* ==================================                                    */
@@ -6,13 +7,11 @@
   /* Store. E.g. which database on which host to connect to, the location  */
   /* of the code library (as the session store is just another Ariadne     */
   /* Object Store), etc.                                                   */
+  /* By default the session store uses the settings from the main          */
+  /* configuration file: ariadne.phtml                                     */ 
   /*************************************************************************/
 
-  /*************************************************************************/
-  /* DBMS for this store                                                   */
-  /*************************************************************************/
-
-  $session_config['dbms']         = 'mysql';
+  $session_config['prefix']      = 'session_';
 
   /*************************************************************************/
   /* Database Information:                                                 */
@@ -23,40 +22,37 @@
   /* which uses just one database.                                         */
   /*************************************************************************/
 
-  $session_config['host']       = 'localhost';
-  $session_config['database']   = 'ariadne';
+  $session_config['dbms']        = $AR->DB->dbms;
+  $session_config['host']        = $AR->DB->host;
+  $session_config['database']    = $AR->DB->database;
+  $session_config['user']        = $AR->DB->user;
+  $session_config['password']    = $AR->DB->password;
 
-  $session_config['user']       = 'www';
-  $session_config['password']   = 'secret';
-
-  $session_config['prefix']     = 'session_';
 
   /*************************************************************************/
   /* Path Information:                                                     */
   /* Fill in the location of the Ariadne code library and the files        */
   /* file repository (used for temporary files, caching, templates, etc.)  */
   /*************************************************************************/
-  /* Ariadne Install Directory                                             */ 
-  /*************************************************************************/
-
-  $ariadne_root                 = '/usr/local/lib/ariadne/';
 
   /*************************************************************************/
   /* Ariadne Code Library (lib)                                            */
   /*************************************************************************/
 
-  $session_config['code']       = $ariadne_root.'lib/';
+  $session_config['code']        = $AR->dir->install.'/lib/';
+
 
   /*************************************************************************/
   /* Ariadne Files Repository (files)                                      */
   /*************************************************************************/
 
-  $session_config['files']      = $ariadne_root.'sessions/';
+  $session_config['files']       = $AR->dir->install.'/sessions/';
+
 
   /*************************************************************************/
   /* Ariadne Session Timeout                                               */
   /*************************************************************************/
 
-  $session_config['timeout']    = 3600;
+  $session_config['timeout']     = 3600;
 
 ?>

@@ -1,17 +1,16 @@
 <?php
+
   /*************************************************************************/
   /* Ariadne Object Store Configuration                                    */
   /* ==================================                                    */
   /* This file contains configuration information for the Ariadne Object   */
   /* Store. E.g. which database on which host to connect to, the location  */
   /* of the code library, etc.                                             */
+  /* By default the store uses the settings from the main configuration    */
+  /* file: ariadne.phtml                                                   */ 
   /*************************************************************************/
 
-  /*************************************************************************/
-  /* DBMS for this store                                                   */
-  /*************************************************************************/
-
-  $store_config['dbms']         = 'mysql';
+  $store_config['prefix']        = 'store_';
 
   /*************************************************************************/
   /* Database Information:                                                 */
@@ -22,12 +21,11 @@
   /* which uses just one database.                                         */
   /*************************************************************************/
 
-  $store_config['host']          = 'localhost';
-  $store_config['database']      = 'ariadne';
-  $store_config['prefix']        = 'store_';
-
-  $store_config['user']          = 'www';
-  $store_config['password']      = 'secret';
+  $store_config['dbms']          = $AR->DB->dbms;
+  $store_config['host']          = $AR->DB->host;
+  $store_config['database']      = $AR->DB->database;
+  $store_config['user']          = $AR->DB->user;
+  $store_config['password']      = $AR->DB->password;
 
 
   /*************************************************************************/
@@ -35,25 +33,21 @@
   /* Fill in the location of the Ariadne code library and the files        */
   /* file repository (used for temporary files, caching, templates, etc.)  */
   /*************************************************************************/
-  /* Ariadne Install Directory                                             */ 
-  /*************************************************************************/
-
-  $ariadne_root                  = '/usr/local/lib/ariadne/';
 
   /*************************************************************************/
   /* Ariadne Code Library (lib)                                            */
   /*************************************************************************/
 
-  $store_config['code']          = $ariadne_root.'lib/';
+  $store_config['code']          = $AR->dir->install.'/lib/';
 
   /*************************************************************************/
   /* Ariadne Files Repository (files)                                      */
   /*************************************************************************/
 
-  $store_config['files']         = $ariadne_root.'files/';
+  $store_config['files']         = $AR->dir->install.'/files/';
 
   /*************************************************************************/
-  /* Ariadne Lock Duration                                                 */
+  /* Lock Duration                                                         */
   /*************************************************************************/
 
   $store_config['lock_duration'] = 3600;

@@ -1,12 +1,12 @@
 <?php
   /*************************************************************************/
-  /* Path Information:                                                     */
-  /* Fill in the location of the Ariadne code library and the files        */
+  /* Ariadne Export Store Configuration                                    */
+  /* ==================================                                    */
+  /* This file contains configuration information for the Ariadne Export   */
+  /* Store. There should be no need to change anything here.               */
+  /* By default the store uses the settings from the main configuration    */
+  /* file: ariadne.phtml                                                   */ 
   /*************************************************************************/
-  /* Ariadne Install Directory                                             */ 
-  /*************************************************************************/
-
-  $ariadne_root                       = '/usr/local/lib/ariadne/';
 
   /*************************************************************************/
   /* DBMS for this store                                                   */
@@ -18,13 +18,13 @@
   /* Ariadne Code Library (lib)                                            */
   /*************************************************************************/
 
-  $ax_config['code']                  = $ariadne_root.'lib/';
+  $ax_config['code']                  = $AR->dir->install.'/lib/';
 
   /*************************************************************************/
   /* Ariadne Export temp directory                                         */
   /*************************************************************************/
 
-  $ax_config['temp']                  = $ariadne_root.'files/temp/';
+  $ax_config['temp']                  = $Ar->dir->install.'/files/temp/';
 
   /*************************************************************************/
   /* Tar configuration                                                     */

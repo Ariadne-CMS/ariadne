@@ -7,8 +7,66 @@
   /*   // do not change                                                     */
   /**************************************************************************/
 
-  class object { }          // do not change
-  $AR=new object;           // do not change
+                              class object { }          // do not change
+                              $AR = new object;         // do not change
+                              $AR->dir = new object;    // do not change
+                              $AR->IM = new object;     // do not change
+                              $AR->DB = new object;     // do not change 
+
+  /**************************************************************************/
+  /* Fill in the location of the root of the Ariadne install directory     */                                                             
+  /* Leave out the last '/' or '\' of the pathname.                        */
+  /*************************************************************************/
+
+  $AR->root                 = '/usr/local/lib/ariadne';
+
+
+  /**************************************************************************/
+  /* Fill in the path from the document root to the ariadne www pages.      */
+  /* The document root is the root directory in which all webpages reside   */
+  /* Check the configuration of your webserver. This can change per site.   */
+  /*                                                                        */
+  /* Only fill in the path, starting in the document root, e.g. If the      */
+  /* document root is '/var/www/', and the ariadne webpages are installed   */
+  /* in '/var/www/ariadne/', then the correct entry is '/ariadne'.          */
+  /**************************************************************************/
+
+  $AR->dir->www             = '/ariadne';
+
+
+  /**************************************************************************/
+  /* ImageMagick information                                                */
+  /* For the photobook Ariadne needs to know where to find the ImageMagick  */
+  /* utilities. The default setting works for a debian potato linux install */
+  /* Don't forget to install ImageMagick.                                   */
+  /**************************************************************************/
+
+  $AR->IM->convert          = '/usr/bin/X11/convert';
+  $AR->IM->mogrify          = '/usr/bin/X11/mogrify';
+
+
+  /*************************************************************************/
+  /* Database Information:                                                 */
+  /* Fill in the Hostname, and database name of the database server, and   */
+  /* the username and password with which to connect to it.                */
+  /*************************************************************************/
+
+  $AR->DB->dbms             = 'mysql';
+  $AR->DB->host             = 'localhost';
+  $AR->DB->database         = 'ariadne';
+  $AR->DB->user             = 'ariadne';
+  $AR->DB->password         = 'secret';
+
+
+
+
+
+/****************************************************************************/
+/* The rest of the configuration is automatic, only change this when it     */
+/* doesn't work for you and you know what you are doing                     */
+/****************************************************************************/
+
+
 
   /**************************************************************************/
   /* WIN32 or UNIX                                                          */
@@ -17,16 +75,12 @@
   /* either 'WIN32' or 'UNIX'.                                              */
   /**************************************************************************/
 
-  // $AR->OS                = 'WIN32';         // Windows 95/98/ME/NT/2000
-  $AR->OS                   = 'UNIX';          // All unix/linux variants
+  if (eregi("Win",$HTTP_ENV_VARS["OSTYPE"])) {
+     $AR->OS                = 'WIN32';         // Windows 95/98/ME/NT/2000
+  } else {
+     $AR->OS                = 'UNIX';          // All unix/linux variants
+  }
 
-  $AR->dir=new object;                         // do not change
-  
-  /**************************************************************************/
-  /* Path information                                                       */
-  /* ================                                                       */
-  /* A list of all the relevant paths, path to the document root, to the    */
-  /* Ariadne code library, etc.                                             */
   /**************************************************************************/
   /* Fill in the full path to the webservers document root below            */
   /* The default should work on most systems, but you can override it with  */
@@ -36,27 +90,22 @@
  
   $AR->dir->docroot         = $HTTP_SERVER_VARS['DOCUMENT_ROOT'];
 
-  /**************************************************************************/
-  /* Fill in the path from the document root to the ariadne www pages       */
-  /**************************************************************************/
-
-  $AR->dir->www             = '/ariadne/';
+  $AR->dir->www.='/';  // do not change
 
   /**************************************************************************/
   /* If you installed ariadne in your own homedirectory, e.g. under ~user/, */
   /* then change the following line to the full path of the ariadne www     */
   /* directory. e.g. :                                                      */
-  /*   $AR->dir->root='/home/user/public_html/ariadne.2.0b9/';              */
+  /*   $AR->dir->root='/home/user/public_html/ariadne/';                    */
   /* Otherwise, don't change the default.                                   */
-  /**************************************************************************/
+  /**************************************************************************/  
 
   $AR->dir->root            = $AR->dir->docroot.$AR->dir->www;
+  // $AR->dir->root	        = '/home/user/public_html/ariadne';
 
   /**************************************************************************/
-  /* If you want you can change the default server name below. You should   */
-  /* only do this if the default setting doesn't work. e.g.:                */
-  /*   $AR->host='http://your.host.com';                                    */
-  /* If you do change it, leave out the entire block of code.               */
+  /* The next lines check whether the current host uses http or https as    */
+  /* its protocol. Don't change this.                                       */
   /**************************************************************************/
 
   if ($HTTP_SERVER_VARS['HTTPS']=='on') {
@@ -65,21 +114,13 @@
     $AR->host = 'http://';
   }
 
+  /**************************************************************************/
+  /* If you want you can change the default server name below. You should   */
+  /* only do this if the default setting doesn't work. e.g.:                */
+  /*   $AR->host='your.host.com';                                           */
+  /**************************************************************************/
+
   $AR->host                 .= $HTTP_SERVER_VARS['HTTP_HOST'];
-
-  if ($HTTP_SERVER_VARS['SERVER_PORT']!=80) {
-    $AR->host.=':'.$HTTP_SERVER_VARS['SERVER_PORT'];
-  }
-
-  /**************************************************************************/
-  /* ImageMagick information                                                */
-  /* For the photobook Ariadne needs to know where to find the ImageMagick  */
-  /* utilities. The default setting works for a debian potato linux install */
-  /* Don't forget to install ImageMagick.                                   */
-  /**************************************************************************/
-
-  $AR->IM->convert='/usr/bin/X11/convert';
-  $AR->IM->mogrify='/usr/bin/X11/mogrify';
 
   /**************************************************************************/
   /* Only change this if you have made your own loader                      */
@@ -128,7 +169,7 @@
   $AR->nls->default         = 'en';
 
   /**************************************************************************/
-  /* you shouldn't need to change anything below this line                  */
+  /* you really don't want to change anything below this line                  */
   /**************************************************************************/
 
   $ARConfig=new object;                        // do not change
@@ -151,7 +192,12 @@
   $ARConfig->cache[".."]->mimetypes['.*']          = "pfile";
 
 
+  /**************************************************************************/
+  /* Setup the variable repository for putvar/getvar                        */
+  /**************************************************************************/
+
   $ARCurrent=new object;                       // do not change
+
  
   /* To crypt or not to crypt ***********************************************/
 
@@ -159,6 +205,9 @@
     return md5($text);
   }
  
+  /**************************************************************************/
+  /* Global defines, used for the login functions, don't change these!      */
+  /**************************************************************************/
   define('ARGRANTOLD', 1);
   define('ARGRANTLOCAL', 2);
   define('ARGRANTCHILDREN',4);
