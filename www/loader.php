@@ -37,6 +37,11 @@
 		$function=substr($PATH_INFO,$split+1);
 		if (!$function) {
 			$function="view.html";
+			$PATH_INFO.=$function;
+		}
+		$ldCacheFilename=$PATH_INFO."=";
+		if ($QUERY_STRING) {
+			$ldCacheFilename.=$QUERY_STRING;
 		}
 		$split=strpos(substr($PATH_INFO, 1), "/");
 		$ARCurrent->nls=substr($path, 1, $split);
@@ -57,13 +62,14 @@
 			// system template: no language check
 			$ARCurrent->nolangcheck=1;
 		}
-		$cachedimage=$store_config["files"]."cache".$cachenls.$path.$function."=".$QUERY_STRING;
-		$cachedheader=$store_config["files"]."cacheheaders".$cachenls.$path.$function."=".$QUERY_STRING;
+		$cachedimage=$store_config["files"]."cache".$ldCacheFilename;
+		$cachedheader=$store_config["files"]."cacheheaders".$ldCacheFilename;
 		// yes, the extra '=' is needed, don't remove it. trust me.
 		
 		$timecheck=time();
 		if (file_exists($cachedimage) && 
-			(strpos(implode("",getallheaders()),"no-cache") === false) &&
+			(strpos($HTTP_SERVER_VARS["ALL_HTTP"],"no-cache") === false) &&
+			(strpos($HTTP_PRAGMA,"no-cache") === false) &&
 			(($mtime=filemtime($cachedimage))>$timecheck) &&
 			($HTTP_SERVER_VARS["REQUEST_METHOD"]!="POST")) {
 				// now send caching headers too, maximum 1 hour client cache.
@@ -82,6 +88,7 @@
 				}
 			}
 			readfile($cachedimage);
+			
 		} else {
 			$args=array_merge($HTTP_GET_VARS,$HTTP_POST_VARS);
 			$store->call($function, $args, $store->get($path));
@@ -103,19 +110,12 @@
 		}
 		// now check for outputbuffering
 		if ($image=ob_get_contents()) {
-			if ($ARCurrent->headers && !headers_sent()) {
-				// headers_sent check should not be neccessary, but apparantly is... 
-				$headerlist=explode("\n",$headers);
-				while (list($key,$header)=@each($headerlist)) {
-					ldHeader($header);
-				}
-			}
 			ob_end_flush();
 			debug("loader: ob_end_flush()","all");
 			if (is_array($ARCurrent->cache) && ($file=array_pop($ARCurrent->cache))) {
 				error("cached() opened but not closed with savecache()");
 			} else {
-				ldSetCache($ARCurrent->filename, $ARCurrent->cachetime, $image, $ARCurrent->headers);
+				ldSetCache($ldCacheFilename, $ARCurrent->cachetime, $image, @implode("\n",$ARCurrent->ldHeaders));
 			}
 		}
 	}
