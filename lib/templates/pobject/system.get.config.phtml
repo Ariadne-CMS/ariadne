@@ -38,6 +38,11 @@
 	// first inherit parent configuration data
 	$configcache=$ARConfig->cache[$this->parent];
 
+	// do not inherit the templates_path setting
+	// FIXME: maybe we should add it to the config cache but
+	// create a new array for it.
+	unset($configcache->templates_path);
+
 	// cache default templates
 	$configcache->templates=$data->templates;
 
