@@ -950,7 +950,7 @@
 
 
 	sleep(1);
-//	debugon("pinp");
+	//debugon("pinp");
 
 	// set PHP error handling
 	error_reporting(1);
@@ -960,7 +960,7 @@
 
 	$FTP = new object;
 	$inst_store = $store_config["dbms"]."store";
-	$store=new $inst_store(".", $store_config);
+	$store=new $inst_store("", $store_config);
 
 	// fill in your own server ip number:
 	$FTP->server_ip = $ftp_config["server_ip"];
