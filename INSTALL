@@ -32,6 +32,10 @@ Requirements:
      cd /var/www
      ln -s /usr/local/lib/ariadne.2.0/www/ ariadne
 
+   To keep things simple, you might also want to link ariadne to ariadne.2.0:
+
+     ln -s /usr/local/lib/ariadne.2.0/ /usr/local/lib/ariadne/
+
 3) Make sure the files directory and the sessions directory are writable by the 
    webserver user.
    Ariadne needs to write cache images and templates and other files to
@@ -48,10 +52,10 @@ Requirements:
 
      mysqladmin create ariadne
 
-4) copy the files ariadne.phtml-dist, store.phtml-dist and
-   sessions.phtml-dist in lib/configs to ariadne.phtml, store.phtml and
-   sessions.phtml respectively and edit them to match your system.
-   You need to at least enter your host name and check all paths.
+4) copy the files ariadne.phtml-dist, store.phtml-dist, axstore.phtml-dist and
+   sessions.phtml-dist in lib/configs to ariadne.phtml, store.phtml, 
+   axstore.phtml and sessions.phtml respectively and edit them to match your 
+   system. You need to at least enter your host name and check all paths.
 
 5) copy the file www/ariadne.inc-dist to www/ariadne.inc and edit it to reflect 
    the includepath to the Ariadne lib directory.
