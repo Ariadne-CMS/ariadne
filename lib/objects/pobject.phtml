@@ -703,6 +703,12 @@ class pobject extends object { // pobject class definition
 			$modifier=$this->type;
 		}
 		$result=false;
+
+		/* load config cache */
+		if (!$ARConfig->cache[$this->path]) {
+			$this->call("system.get.config.phtml");
+		}
+
 		if ($AR->user->data->login=="admin") {
 			$result=1;
 		} else if ($grants=$AR->user->grants[$this->path]) {
