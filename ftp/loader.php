@@ -982,7 +982,7 @@
 				fputs($FTP->stdout, "$code-".$msg[0]."\n");
 				next($msg);
 				while (list(,$line)=each($msg)) {
-					fputs($FTP->stdout, $line."\n");
+					fputs($FTP->stdout, $line."\r\n");
 					debug($line);
 				}
 			} else {
