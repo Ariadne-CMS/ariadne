@@ -1,0 +1,77 @@
+#!/usr/bin/php -q
+<?php
+	$stack=array();
+	$in=fopen('php://stdin', 'r');
+
+	function process_v($data) {
+		if(strcmp($data, "NaN")) {
+		if($data>12500000) {
+			$data=sprintf(" NaN ");
+		}
+		if($data<0) {
+			$data=sprintf(" NaN ");
+		}
+	}
+		return $data;
+	}
+	
+	function startElement($parser, $name, $attrs) {
+		global $stack;
+		switch($name) {
+			case "wddxPacket":
+			case "header":
+			case "comment":
+			case "version":
+			case "data":
+				break;
+			case "var":
+			case "struct":
+			case "number":
+			case "string":
+			case "boolean":
+				array_push($GLOBALS['stack'], Array("type" => $name, "attr" => $attrs));
+				break;
+		}
+	}
+	
+	function endElement($parser, $name) {
+		$var=array_pop($GLOBALS['stack']);
+		switch($name) {
+			case "var":
+			case "struct":
+			case "number":
+			case "string":
+			case "boolean":
+				break;
+		}
+		
+	}
+	
+	function characterData($parser, $data) {
+		global $stack;
+		$el=$stack[count($stack)-1];
+		switch($el) {
+			default:
+				break;
+		}
+//		print $data;
+	}
+	
+	$xml_parser = xml_parser_create();
+	// use case-folding so we are sure to find the tag in $map_array
+	xml_parser_set_option($xml_parser, XML_OPTION_CASE_FOLDING, false);
+	xml_set_element_handler($xml_parser, "startElement", "endElement");
+	xml_set_character_data_handler($xml_parser, "characterData");
+	if (!$in) {
+		die("could not open XML input");
+	}
+	
+	while ($data = fgets($in, 65535)) {
+		if (!xml_parse($xml_parser, $data, feof($in))) {
+			die(sprintf("XML error: %s at line %d",
+				xml_error_string(xml_get_error_code($xml_parser)),
+				xml_get_current_line_number($xml_parser)));
+		}
+	}
+	xml_parser_free($xml_parser);
+?>
