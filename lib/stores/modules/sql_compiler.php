@@ -64,7 +64,7 @@
 			} else
 			if (($str=$regs[5]) || ($str=$regs[7])) {
 				$node["id"]="string";
-				$node["value"]="'".AddSlashes(substr($str, 1, -1))."'";
+				$node["value"]="'".substr($str, 1, -1)."'";
 			}
 
 			$query=substr($query, strlen($regs[0]));
