@@ -61,6 +61,9 @@
 				}
 			}
 		}
+		if ($path == $this->path) {
+			$this->error=sprintf($ARnls["err:nosupportforshortcuts"],$path);
+		} else
 		if ($this->store->exists($path)) {
 			$result=$this->get($path, "system.get.type.phtml");
 			if ($result && $result[0]) {
