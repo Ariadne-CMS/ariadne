@@ -21,10 +21,8 @@
 <tr>
 	<td align="center" colspan="2">
 		<textarea cols="50" rows="13" wrap="off"><?php
-			global $HTTP_POST_FILES;
-			$source=$HTTP_POST_FILES["source"]["tmp_name"];
-			if ($source && is_uploaded_file($source)) { 
-
+			$file = ldRegisterFile("source", $this->error);
+			if ($file && !$this->error) { 
 				require($this->store->code."/configs/axstore.phtml");
 				include($this->store->code."/stores/axstore.phtml");
 
@@ -44,7 +42,7 @@
 				if ($force=$this->getdata("force","none")) {
 					$ARCurrent->options["force"]=true;		
 				}
-				
+				$source = $this->store->files."temp/".$file["source_temp"];
 				$ax_config["writeable"]=false;
 				$ax_config["database"]=$source;
 				set_time_limit(0);
