@@ -7,6 +7,25 @@
 		if (!$page) {
 			$page=$htmltext;
 		}
+		if ($arEditorSettings=$this->call("editor.ini")) {
+			if ($arEditorSettings["htmltidy"]["enabled"]) {
+				include_once($this->store->code."modules/mod_tidy.php");
+				$config=$arEditorSettings["htmltidy"];
+				$config["temp"]=$this->store->files."temp/";
+				$config["path"]=$AR->Tidy->path;
+				$tidy=new tidy($config);
+				$result=$tidy->clean($page);
+//				if ($result["errors"]) {
+//					$this->error=$result["errors"];
+//				} else {
+					$page=$result["html"];
+//				}
+			}
+			if ($arEditorSettings["allow_tags"]) {
+				$page=strip_tags($page, $arEditorSettings["allow_tags"]);
+			}
+		}
+
 		// only keep the body.innerHTML
 		// $page=eregi_replace("^.*<body[^>]*>","",$page);
 		// $page=eregi_replace("</body[^>]*>.*$","",$page);
