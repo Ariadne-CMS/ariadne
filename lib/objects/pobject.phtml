@@ -1550,8 +1550,10 @@ class pobject extends object { // pobject class definition
 	function _killsession() {
 	global $ARCurrent;
 
-		$ARCurrent->session->kill();
-		unset($ARCurrent->session);
+		if ($ARCurrent->session) {
+			$ARCurrent->session->kill();
+			unset($ARCurrent->session);
+		}
 	}
 
 	function _sessionid() {
