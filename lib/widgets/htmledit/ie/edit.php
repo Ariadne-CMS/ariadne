@@ -865,7 +865,24 @@ function IMAGE_set(arr) {
     src=new String(arr['src']);
     temp=new String('http://');
     if (src.substring(0,temp.length)!=temp) {
+      <?php
+        /* 
+          remove the nls part from the store->root var so it won't get
+          saved in the image URL
+        */
+        $root = $this->store->root;
+        $rootoptions = $this->store->rootoptions;
+        if ($ARCurrent->session && $ARCurrent->session->id) {
+          ldSetRoot($ARCurrent->session->id);
+        } else {
+          ldSetRoot();
+        }
+      ?>
       src='<?php echo $AR->host.$this->store->root; ?>'+src;
+      <?php
+        $this->store->root = $root;
+        $this->store->rootoptions = $rootoptions;
+      ?>
     }
 	temp='<IMG SRC="'+src+'"';
 	if (arr['border']!='') {
