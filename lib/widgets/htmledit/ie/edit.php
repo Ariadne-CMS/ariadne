@@ -1,4 +1,6 @@
-<!--TOOLBAR_START--><!--TOOLBAR_EXEMPT--><!--TOOLBAR_END-->
+<?php
+	Header("Content-Type: text/html; charset=UTF-8");
+?><!--TOOLBAR_START--><!--TOOLBAR_EXEMPT--><!--TOOLBAR_END-->
 <!-- Copyright 2000 Microsoft Corporation. All rights reserved. -->
 <!-- Author: Steve Isaac, Microsoft Corporation -->
 <!-- Changes by Auke van Slooten, Muze V.O.F. to implement source view and add images from Ariadne. -->
@@ -18,6 +20,12 @@
 </script>
 
 <script LANGUAGE="JavaScript" SRC="<?php echo $AR->host.$AR->dir->www; ?>widgets/compose/compose.js">
+</script>
+
+<script LANGUAGE="JavaScript" SRC="<?php echo $AR->host.$AR->dir->www; ?>widgets/webfx/richedit/getxhtml.js">
+</script>
+
+<script LANGUAGE="JavaScript" SRC="<?php echo $AR->host.$AR->dir->www; ?>widgets/webfx/richedit/stringbuilder.js">
 </script>
 
 <script ID="clientEventHandlersJS" LANGUAGE="javascript">
@@ -40,8 +48,12 @@
       $name="page";
     }
     if (!$target) {
-      global $HTTP_SERVER_VARS;
-      if (substr($HTTP_SERVER_VARS['SCRIPT_NAME'],0,strlen($root))!=$root) {
+      global $HTTP_SERVER_VARS, $AR;
+      $server_name=ereg_replace('[htpfs]+://','',$AR->host);
+      if ($HTTP_SERVER_VARS['SERVER_NAME']!=$server_name) {
+        // editor called directly from an ariadne hosted site, not via the AR->host
+        // so the user credentials cookie is only available there and save must
+        // be called on that hostname.
         $target=$this->make_url();
       } else {
         $target=$root.$path;
@@ -56,7 +68,7 @@
   tbContentLanguage='<?php echo $language; ?>';
   tbContentType='<?php echo $type; ?>';
   if (!window.opener || !window.opener.wgHTMLEditContent) {
-    tbContentValue=unescape('<?php echo RawUrlEncode($value); ?>');
+    tbContentValue='<?php echo AddCSlashes($value, ARESCAPE); ?>';
   } else {
     tbContentValue='';
   }
@@ -208,6 +220,28 @@ function window_onload() {
   for (var i=0;i<arr.length;i++) {
     ParagraphStyle.options[ParagraphStyle.options.length]=new Option(arr[i], arr[i]);
   }
+  tbContentElement.supportsXHTML = tbContentElement.DOM.documentElement && tbContentElement.DOM.childNodes != null;
+
+  tbContentElement.getXHTML = function () {
+    if (!tbContentElement.supportsXHTML) {
+      alert("Document root node cannot be accessed in IE4.x");
+      return;
+    }
+    else if (typeof window.StringBuilder != "function") {
+      alert("StringBuilder is not defined. Make sure to include stringbuilder.js");
+      return;
+    }
+
+    var sb = new StringBuilder;
+    // IE5 and IE55 has trouble with the document node
+    var cs = tbContentElement.DOM.childNodes;
+    var l = cs.length;
+    for (var i = 0; i < l; i++)
+      _appendNodeXHTML(cs[i], sb);
+
+    return sb.toString();
+  }
+
   loadpage(tbContentRoot, tbContentPath, tbContentFile, tbContentName, tbContentLanguage, tbContentType, tbContentValue, tbContentSave2Form, tbContentTarget);
 }
 
@@ -388,6 +422,7 @@ function tbContentElement_DisplayChanged() {
 function MENU_FILE_SAVE_onclick() {
   if (ViewHTML.TBSTATE=="checked") {
     var sContents=tbContentElement.DocumentHTML;
+	//var sContents=tbContentElement.getXHTML();
   } else {
     var sContents=tbContentElement.DOM.body.innerText;
   }
@@ -682,7 +717,13 @@ function DECMD_IMAGE_onclick() {
     args['alt'] = "";
     args['border'] = "";
   }
+  arr = showModalDialog( "<?php echo $this->store->root.$AR->user->path; 
+		?>edit.object.html.image.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:35em; dialogHeight:14em; status: no; resizable: yes;");
+  if (arr != null){
+	IMAGE_set(arr);
+  }
 
+  /*
   imgwindow=window.open("<?php echo $this->store->root.$AR->user->path; 
     ?>edit.object.html.image.phtml?src="+escape(args['src'])+
     "&border="+escape(args['border'])+"&hspace="+escape(args['hspace'])+
@@ -690,6 +731,7 @@ function DECMD_IMAGE_onclick() {
     "&alt="+escape(args['alt']),"imgwindow","directories=no,height=160,width=425,location=no,menubar=no,status=no,toolbar=no,resizable=yes");
   imgwindow.focus();
   window.setfocusto=imgwindow;
+  */
 }
 
 function IMAGE_set(arr) {
