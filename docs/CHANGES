@@ -3,6 +3,7 @@ Ariadne 2.3.2-dev
 Changes in Ariadne since version Ariadne 2.3.1-dev
 
 New Features:
+	- Added a 'change owner' dialog to the edit->config menu.
 	- Added a wrapper function for the store::is_supported() function.
 	- Added Portugese translation. Thanks to Marc R.J. Brevoort.
 	- The web-loader does not save the user's supplied password in the session
