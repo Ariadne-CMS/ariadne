@@ -7,8 +7,8 @@
   $AR=new object;
 
   /* WIN32 or UNIX */
-  $AR->OS="WIN32";     /* Windows 95/98/ME/NT/2000   */
-  // $AR->OS="UNIX";   /* All unix/linux variants */
+  // $AR->OS="WIN32";     /* Windows 95/98/ME/NT/2000   */
+  $AR->OS="UNIX";   /* All unix/linux variants */
 
   /* Fill in the full hostname of your server below */
   /* e.g. "http://your.host.com" */
