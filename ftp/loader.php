@@ -167,13 +167,20 @@
 
 		function ftp_WriteDC($bdata) {
 		global $FTP;
-
+			/*
+				make a copy of $data otherwise we will crash php
+				(you can't write to data from an output buffer)
+			*/
 			if ($FTP->resume) {
 				debug("ftp::WriteDC() truncating data");
 				$data = substr($bdata, $FTP->resume);
 			} else {
 				$data = $bdata;
 			}
+
+			/* free unused data */
+			unset($bdata);
+
 			if (strlen($data)) {
 				debug("ftp::WriteDC([data]) (".strlen($data).")");
 				if ($FTP->DC["type"]==="A") {
