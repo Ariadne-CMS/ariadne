@@ -144,6 +144,12 @@
   $ARConfig->cache['..']->thumb['height']=40;   // do not change
   $ARConfig->cache['..']->thumb['color']='EEEEEE';   // do not change
 
+  /* register mimetype to class conversions *********************************/
+
+  $ARConfig->cache[".."]->mimetypes['^image/']  = "pphoto";
+  $ARConfig->cache[".."]->mimetypes['.*']       = "pfile";
+
+
   $ARCurrent=new object;                       // do not change
  
   /* To crypt or not to crypt ***********************************************/
