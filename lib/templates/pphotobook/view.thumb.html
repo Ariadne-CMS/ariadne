@@ -3,6 +3,8 @@
   if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 	if ($this->data->picture && $this->exists($this->data->picture)) {
 		$this->get($this->data->picture,"view.thumb.html");
+	} else {
+		$this->get("/system/photo/nothumb/", "view.thumb.html");
 	}
   }
 ?>

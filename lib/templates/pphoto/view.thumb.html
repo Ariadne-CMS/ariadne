@@ -35,7 +35,7 @@
 				$this->get("/system/photo/nothumb/","view.html");
 				$this->savecache(0);
 			} else {
-				echo $this->error;
+				$this->ShowFile();
 				$this->savecache(0);
 			}
 		}
