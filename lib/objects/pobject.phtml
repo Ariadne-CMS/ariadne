@@ -334,41 +334,43 @@ class pobject extends object { // pobject class definition
 									}
 								}
 							}
-							if ($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)) {
-								unset($this->arIsNewObject);
-								$this->id=$this->exists($this->path);
+							if (!$this->error) {
+								if ($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)) {
+									unset($this->arIsNewObject);
+									$this->id=$this->exists($this->path);
 
-								$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
-								$wf_result = $wf_object->call("user.workflow.post.html", Array("properties" => $properties));
-								$this->priority = $wf_object->priority;
-								$this->data = $wf_object->data;
-								$this->data->config = $config;
-								if (is_array($wf_result)) {
-									foreach ($wf_result as $wf_prop_name => $wf_prop) {
-										foreach ($wf_prop as $wf_prop_record) {
-											foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
-												switch (gettype($wf_prop_value)) {
-													case "integer":
-													case "boolean":
-													case "double":
-														$value = $wf_prop_value;
-													break;
-													default:
-														$value = "'".AddSlashes($wf_prop_value)."'";
+									$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+									$wf_result = $wf_object->call("user.workflow.post.html", Array("properties" => $properties));
+									$this->priority = $wf_object->priority;
+									$this->data = $wf_object->data;
+									$this->data->config = $config;
+									if (is_array($wf_result)) {
+										foreach ($wf_result as $wf_prop_name => $wf_prop) {
+											foreach ($wf_prop as $wf_prop_record) {
+												foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
+													switch (gettype($wf_prop_value)) {
+														case "integer":
+														case "boolean":
+														case "double":
+															$value = $wf_prop_value;
+														break;
+														default:
+															$value = "'".AddSlashes($wf_prop_value)."'";
+													}
+													$record[$wf_prop_field] = $value;
 												}
-												$record[$wf_prop_field] = $value;
+												$properties[$wf_prop_name][] = $record;
 											}
-											$properties[$wf_prop_name][] = $record;
+										}
+										if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) {
+											$this->error = $this->store->error;
 										}
 									}
-									if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) {
-										$this->error = $this->store->error;
-									}
+								} else {
+									$this->error=$this->store->error;
 								}
-							} else {
-								$this->error=$this->store->error;
+								$result=$this->path;
 							}
-							$result=$this->path;
 						} else {
 							$this->error=sprintf($ARnls["err:noparent"],$arNewParent);
 							// FROP $this->error="parent $arNewParent doesn't exist.";
@@ -458,46 +460,48 @@ class pobject extends object { // pobject class definition
 							}
 						}
 					}
-					if($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)){
-						$result=$this->path;
-						$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
-						$wf_result = $wf_object->call("user.workflow.post.html", Array("properties" => $properties));
-						$this->priority = $wf_object->priority;
-						$this->data = $wf_object->data;
-						$this->data->config = $config;
-						if (is_array($wf_result)) {
-							foreach ($wf_result as $wf_prop_name => $wf_prop) {
-								foreach ($wf_prop as $wf_prop_record) {
-									foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
-										switch (gettype($wf_prop_value)) {
-											case "integer":
-											case "boolean":
-											case "double":
-												$value = $wf_prop_value;
-											break;
-											default:
-												$value = "'".AddSlashes($wf_prop_value)."'";
+					if (!$this->error) {
+						if($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)){
+							$result=$this->path;
+							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+							$wf_result = $wf_object->call("user.workflow.post.html", Array("properties" => $properties));
+							$this->priority = $wf_object->priority;
+							$this->data = $wf_object->data;
+							$this->data->config = $config;
+							if (is_array($wf_result)) {
+								foreach ($wf_result as $wf_prop_name => $wf_prop) {
+									foreach ($wf_prop as $wf_prop_record) {
+										foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
+											switch (gettype($wf_prop_value)) {
+												case "integer":
+												case "boolean":
+												case "double":
+													$value = $wf_prop_value;
+												break;
+												default:
+													$value = "'".AddSlashes($wf_prop_value)."'";
+											}
+											$record[$wf_prop_field] = $value;
 										}
-										$record[$wf_prop_field] = $value;
+										$properties[$wf_prop_name][] = $record;
 									}
-									$properties[$wf_prop_name][] = $record;
+								}
+								if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) {
+									$this->error = $this->store->error;
 								}
 							}
-							if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) {
-								$this->error = $this->store->error;
-							}
+							$this->data->config = $config;
+							//$this->ClearCache($this->path, true, false);
+						} else {
+							$this->error = $this->store->error;
+							$result = false;
 						}
-						$this->data->config = $config;
-						//$this->ClearCache($this->path, true, false);
-					} else {
-						$this->error = $this->store->error;
-						$result = false;
 					}
-					$this->unlock();
 				} else {
 					$this->error=$ARnls["err:corruptpathnosave"];
 					// FROP $this->error="Path is corrupt, won't save the object.";
 				}
+				$this->unlock();
 			} else {
 				$this->error=$ARnls["err:objectalreadylocked"];
 				// FROP $this->error="Object already locked.";
