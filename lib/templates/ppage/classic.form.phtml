@@ -67,7 +67,7 @@
 		if (!$arNewType) {
 			$wgHTMLEditName="page";
 			$wgHTMLEditLanguage=$nls;
-			$wgHTMLEditContent=$this->getdata("page",$nls);
+			$wgHTMLEditContent=$this->ParsePage($this->getdata("page",$nls));
 			include($this->store->code."widgets/htmledit/js.html"); 
 			include($this->store->code."widgets/htmledit/form.html"); 
 		} else {
