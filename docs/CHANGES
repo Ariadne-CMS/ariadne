@@ -1,6 +1,10 @@
 Ariadne 2.1
 Changes in ariadne since version 2.0
 
+WARNING: Ariadne 2.1 its internal charset has been changed to UTF-8. 
+         If you want to import older .ax files (for upgrades) you
+         need to read the docs/upgrade.txt file first.
+
 New features:
 	- Ariadne's internal characterencoding is now set to UTF-8.
 	- Added a new 'WinXP' interface (v0.3), by Chris van de Steeg.
