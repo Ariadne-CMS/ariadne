@@ -37,6 +37,23 @@ class pfile extends pobject { // definitie class
 				$files->show($this->id, "file");
 			}
 		}
+		$files->close();
+	}
+
+	function DownloadFile() {
+		$files=$this->store->get_filestore("files");
+		if (!ereg("^text/",$this->data->mimetype)) {
+			$size=$files->size($this->id, "file");
+		}
+		$filename=substr($this->path, strlen($this->parent), -1);
+		ldHeader('Cache-Control: no-cache, must-revalidate');
+		ldHeader('Pragma: no-cache');
+		if (!ldHeader("Content-type: application/x-ariadne-download\nContent-Disposition: inline; filename=\"".$filename."\"\nContent-length:".(string)$size)) {
+			error("headers already sent and this is not a text file (".$this->path.")");
+		} else {
+			$files->show($this->id, "file");
+		}
+		$files->close();
 	}
 
 	function _ParseFile($file) {
@@ -49,6 +66,10 @@ class pfile extends pobject { // definitie class
   
 	function _ShowFile() {
 		return $this->ShowFile();
+	}
+
+	function _DownloadFile() {
+		return $this->DownloadFile();
 	}
   
 } // end class pfile
