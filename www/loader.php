@@ -25,7 +25,7 @@
 	} else {
 
 		if (ini_get("safe_mode")) {
-			error("Ariadne will not work correctly with sage_mode set to 'On'. Please edit your php.ini file and set it to 'Off'.");
+			error("Ariadne will not work correctly with safe_mode set to 'On'. Please edit your php.ini file and set it to 'Off'.");
 		}
 		@ob_end_clean(); // just in case the output buffering is set on in php.ini, disable it here, as Ariadne's cache system gets confused otherwise. 
 		// go check for a sessionid
