@@ -3,6 +3,7 @@
 	$ariadne="../lib";
 	require($ariadne."/configs/ariadne.phtml");
 	require($ariadne."/configs/store.phtml");
+	require($ariadne."/includes/loader.web.php");
 	require($ariadne."/stores/mysqlstore.phtml");
 
 	global $options;

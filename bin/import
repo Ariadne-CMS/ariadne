@@ -3,6 +3,7 @@
 	$ariadne="../lib";
 	require($ariadne."/configs/ariadne.phtml");
 	require($ariadne."/configs/store.phtml");
+	require($ariadne."/includes/loader.web.php");
 	require($ariadne."/stores/mysqlstore.phtml");
 
 	global $options;
@@ -81,8 +82,14 @@
 				$AR->user->data=new object;
 				$AR->user->data->login="admin";
 
-				$store->call("system.import.phtml", "",
+				$result=$store->call("system.import.phtml", "",
 						$store->get("/"));
+
+				if (!$result) {
+					$error="can not import file";
+				} else {
+					$error=@current($result);
+				}
 
 				$store->close();
 			}
