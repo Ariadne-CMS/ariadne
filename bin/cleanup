@@ -35,7 +35,7 @@
 		echo "Clearing temporary files...";
 		$tempdir=$store_config["files"]."temp/";
 		if (file_exists($tempdir)) {
-			system("find $tempdir -ctime 1 -a -mindepth 1 \( -path \*/.svn -a -prune -o -exec rm -r {} ';'\)");
+			system("find $tempdir -ctime 1 -a -mindepth 1 \( -path \*/.svn -a -prune -o -exec rm -r {} ';' \)");
 		}
 		echo "done.\n";
 	} else {
