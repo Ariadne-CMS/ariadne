@@ -142,7 +142,7 @@
 		while ($dir) {
 			$curr.=$dir."/";
 			debug("ldMkDir: $curr","all");
-			mkdir($curr, 0755);
+			@mkdir($curr, 0755);
 			$dir=strtok("/");
 		}
 	}
