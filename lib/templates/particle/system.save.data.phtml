@@ -44,7 +44,7 @@
 							} else {
 								$newnlsdata=$this->data->$key;
 							}
-							if (strlen($name>$MAX_TITLE_LENGTH)) {
+							if (strlen($name) > $MAX_TITLE_LENGTH ) {
 								$error=sprintf($ARnls["err:titlelength"], $MAX_TITLE_LENGTH);
 								break;
 							} else	{
