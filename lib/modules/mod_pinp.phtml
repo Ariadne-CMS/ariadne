@@ -15,33 +15,50 @@ class pinp {
       $allowed_functions=implode("|",$allowed_functions);
     }
 
-    $control_funcs="if|while|for|switch|foreach";
-    $array_funcs="array|array_count_values|array_flip|array_keys|array_merge|".
-      "array_pad|array_pop|array_push|array_reverse|array_shift|array_slice|".
-      "array_splice|array_unshift|array_values|array_walk|arsort|asort|".
-      "count|current|each|end|in_array|key|krsort|ksort|list|next|pos|prev|".
-      "range|reset|rsort|shuffle|sizeof|sort";
-    $string_funcs="AddSlashes|bin2hex|Chop|Chr|chunk_split|convert_cyr_string|".
-      "crypt|echo|explode|flush|get_html_translation_table|htmlentities|".
-      "htmlspecialchars|implode|join|ltrim|md5|Metaphone|nl2br|Ord|print|".
-      "printf|quoted_printable_decode|QuoteMeta|rawurldecode|rawurlencode|".
-      "setlocale|similar_text|soundex|sprintf|strcasecmp|strchar|strcmp|".
-      "strcspn|strip_tags|StripCSlashes|StripSlashes|stristr|strlen|strpos|".
-      "strrchr|str_repeat|strrev|strrpos|strspn|strstr|strtok|strtolower|".
-      "strtoupper|str_replace|strtr|substr|substr_replace|trim|ucfirst|ucwords";
+    $array_funcs="array|array_change_key_case|array_chunk|array_count_values|".
+	  "array_diff|array_flip|array_fill|array_intersect|array_key_exists|array_keys|".
+	  "array_merge|array_merge_recursive|array_multisort|array_pad|array_pop|".
+	  "array_push|array_rand|array_reverse|array_shift|array_slice|array_splice|".
+	  "array_sum|array_unique|array_unshift|array_values|arsort|asort|count|current|".
+	  "each|end|in_array|array_search|key|krsort|ksort|list|natsort|natcasesort|".
+	  "next|pos|prev|range|reset|rsort|shuffle|sizeof|sort";
+    $control_funcs="if|elseif|do|while|for|switch|foreach";
+    $datetime_funcs="checkdate|date|getdate|gettimeofday|gmdate|gmmktime|".
+      "gmstrftime|localtime|microtime|mktime|strftime|time|strtotime|".
+	  "easter_days|easter_date";
     $math_funcs="abs|acos|asin|atan|atan2|base_convert|bindec|ceil|cos|".
       "decbin|dechex|decoct|exp|floor|getrandmax|hexdec|log|log10|max|min|".
       "mt_rand|mt_srand|mt_getrandmax|number_format|octdec|pi|pow|rand|round|".
-      "sin|sqrt|srand|tan";
-    $var_funcs="doubleval|empty|gettype|intval|is_array|is_double|is_float|".
-      "is_int|is_integer|is_long|is_numeric|is_object|is_real|is_string|isset|settype|".
-      "strval|unset|print_r";
-    $time_funcs="checkdate|date|getdate|gettimeofday|gmdate|gmmktime|".
-      "gmstrftime|microtime|mktime|strftime|time|easter_days|easter_date";
-    $regex_funcs="ereg|ereg_replace|eregi|eregi_replace|split";
+      "sin|sqrt|srand|tan|bcadd|bccomp|bcdiv|bcmod|bcmul|bcpow|bcscale|bcsqrt|".
+	  "bcsub|gmp_[a-z_]+";
+	$misc_funcs="mail|highligh_string|pack|get_browser";
+	$net_funcs="checkdnsrr|gethostbyaddr|gethostbyname|gethostbynamel|getmxrr|".
+	  "getservbyport|getservbyname|ip2long|long2ip";
+    $regex_funcs="ereg|ereg_replace|eregi|eregi_replace|split|spliti|preg_match|".
+	  "preg_match_all|preg_replace|preg_split|preg_quote|preg_grep";
+    $string_funcs="addslashes|addcslashes|bin2hex|chop|chr|chunk_split|".
+	  "convert_cyr_string|count_chars|crc32|crypt|echo|explode|flush|".
+	  "get_html_translation_table|htmlentities|htmlspecialchars|implode|join|".
+	  "levenshtein|localeconv|ltrim|md5|metaphone|nl2br|ord|print|printf|".
+	  "quoted_printable_decode|quotemeta|rawurldecode|rawurlencode|rtrim|str_rot13|".
+      "sscanf|setlocale|similar_text|soundex|sprintf|strncasecmp|strcasecmp|strchr|".
+	  "strcmp|strcoll|strcspn|strip_tags|stripcslashes|stripslashes|stristr|strlen|".
+	  "strnatcmp|strnatcasecmp|strncmp|str_pad|strpos|strrchr|str_repeat|strrev|".
+	  "strrpos|strspn|strstr|strtok|strtolower|strtoupper|str_replace|strtr|substr|".
+	  "substr_count|substr_replace|trim|ucfirst|ucwords|vprintf|vsprintf|wordwrap|".
+	  "base64_decode|base64_encode|urldecode|urlencode|parse_url";
+    $var_funcs="doubleval|empty|floatval|gettype|intval|is_array|is_bool|is_double|".
+	  "is_float|is_int|is_integer|is_long|is_null|is_numeric|is_object|is_real|".
+	  "is_resource|is_scalar|is_string|isset|settype|serialize|strval|unserialize|".
+	  "unset|print_r|var_dump|var_export";
+	$xml_funcs="xmldoc|xmltree|domxml_[a-z_]+|xpath_[a-z_]+|xptr_[a-z_]+|".
+	  "xml_parser_create|xml_parse_into_struct|xml_parser_free|".
+	  "xml_parser_get_option|xml_parser_set_option";
     $debug_funcs="debug|debugon|debugoff";
     $loader_funcs="ldHeader|ldRedirect|ldSetContent|ldSetClientCache"; 
-	$this->re_allowed="|$control_funcs|$array_funcs|$string_funcs|$math_funcs|$var_funcs|$time_funcs|$allowed_functions|$debug_funcs|$regex_funcs|$loader_funcs|";
+	$this->re_allowed="|$array_funcs|$control_funcs|$datetime_funcs|$math_funcs|".
+	  "$misc_funcs|$net_funcs|$regex_funcs|$string_funcs|$var_funcs|$xml_funcs|".
+	  "$allowed_functions|$debug_funcs|$loader_funcs|";
 
     // dont touch this unless you know what you are doing
     $slash="\\\\";
