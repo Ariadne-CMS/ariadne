@@ -2,10 +2,8 @@
   include($this->code."stores/modules/sql_compiler.php");
 
   class postgresql_compiler extends sql_compiler {
-	function postgresql_compiler($tbl_prefix="", $limit=100, $offset=0) {
+	function postgresql_compiler($tbl_prefix="") {
 		$this->tbl_prefix	= $tbl_prefix;
-		$this->limit		= $limit;
-		$this->offset		= $offset;
 	}
 
 	function compile_tree(&$node) {
@@ -78,6 +76,13 @@
 			case 'orderbyfield':
 				$left=$this->compile_tree($node["left"]);
 				$right=$this->compile_tree($node["right"]);
+				/*
+					all groupby fields must be present in the select list
+					because we use distinct()
+				*/
+				if (substr($node["right"]["table"], 0, 5)==="prop_") {
+					$this->select_list[$right] = "$right as ".$node["right"]["table"].$node["right"]["field"];
+				}
 				if ($left) {
 					$result=" $left ,  $right ".$node["type"]." ";
 				} else {
@@ -115,8 +120,15 @@
 			}
 		}
 
+		$select_list = "";
+		if (is_array($this->select_list)) {
+			while (list($key, $val)=each($this->select_list)) {
+				$select_list.=" , $val ";
+			}
+		}
 		$query="select distinct($nodes.path), $nodes.parent, $nodes.priority, ";
 		$query.=" $objects.id, $objects.type, $objects.object, date_part('epoch', $objects.lastchanged) as lastchanged, $objects.vtype ";
+		$query.=" $select_list ";
 		$query.=" from $tables where ";
 		$query.=" $nodes.object=$objects.id $prop_dep";
 		$query.=" and ( $this->where_s ) ";
@@ -125,11 +137,9 @@
 		} else {
 			$query.= " order by $nodes.priority DESC, $nodes.path ASC ";
 		}
-		if (!$this->limit_s && $this->limit) {
-			$this->limit_s="limit ".$this->limit.",".$this->offset;
-		}
 		$query.=" $this->limit_s ";
 
+		debug("compiled query: ($query)\n", "store");
 		return $query;
 	}
 
