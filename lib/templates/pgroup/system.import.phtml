@@ -4,8 +4,8 @@
 			$this->CheckConfig()) {
 
 		$criteria["login"]["value"]["="]="'".AddSlashes($this->data->login)."'";
-		$result = current($this->find("/system/groups/", $criteria, "system.get.phtml"));
-		if ($result) {
+		$result = $this->find("/system/groups/", $criteria, "system.get.phtml");
+		if (is_array($result) && current($result)) {
 			$this->error = "group '".$this->data->login."' already exists";
 		} else {
 			$this->store->save(
