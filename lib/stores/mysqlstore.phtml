@@ -707,6 +707,8 @@ class mysqlstore {
 			debug("run_query: ".$this->error,"store");
 			debug("run_query: query=$query_string","store");
 			$result=false;
+		} else if (!isset($result)) {
+			$result=true;
 		}
 		return $result;
 	}
@@ -982,7 +984,7 @@ class mysqlstore {
 
 		if (intval($object)) {
 			if (!$property) { // remove all properties for $object
-				$query_string="select name from properties";
+				$query_string="select name from ".$this->tbl_prefix."properties";
 				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
 				while ($row=@mysql_fetch_array($temp)) {
 					$query_string="delete from ".$this->tbl_prefix."prop_".$row["name"]." where object=$object";
