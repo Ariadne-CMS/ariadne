@@ -558,6 +558,9 @@ class pinp {
 
 							/* break out of the parser loop */
 							break 2;
+							case "function":
+								$this->error = "error at line ".$this->scanner->YYLINE.": you can not declare functions in pinp";
+							break;
 							default:
 								$this->new_template.=$ident;
 								/* 
