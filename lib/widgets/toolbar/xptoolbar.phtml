@@ -57,10 +57,6 @@ body {
 	src="<?php echo $AR->dir->www; ?>widgets/menu/config.php?arDirWWW=<?php echo rawurlencode($AR->dir->www); ?>"
 	type='text/javascript'>
 </script>
-<!-- script language="JavaScript1.2" 
-	src="<?php echo $AR->dir->www; ?>widgets/menu/HM_Script<?php echo $browser_string; ?>.js" 
-	type="text/javascript">
-</script -->
 <script language="JavaScript">
 	function setXpView(type) {
 		top.Set('viewmode',type);
@@ -203,10 +199,7 @@ body {
 					<a 
 						id="help" href="javascript:arshow('help','
 							<?php 
-								$oldnls = $this->nls;
-								$this->setnls('en');
-								echo $this->make_url('/system/ariadne/help/reference/');
-								$this->setnls($oldnls);
+								echo $this->make_url('/system/ariadne/help/reference/','en');
 							?>')" 
 						onMouseOver="makeHot(this);" 
 						onMouseOut="makeNot(this);"
@@ -222,10 +215,7 @@ body {
 					<a 
 						id="tutor" href="javascript:arshow('help','
 							<?php 
-								$oldnls = $this->nls;
-								$this->setnls('en');
-								echo $this->make_url('/system/ariadne/help/tutorials/');
-								$this->setnls($oldnls);
+								echo $this->make_url('/system/ariadne/help/tutorials/','en');
 							?>')" 
 						onMouseOver="makeHot(this);" 
 						onMouseOut="makeNot(this);"
