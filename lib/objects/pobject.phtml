@@ -291,9 +291,12 @@ class pobject extends object { // pobject class definition
 									}
 								}
 							}
-							$this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority);
-							unset($this->arIsNewObject);
-							$this->id=$this->exists($this->path);
+							if ($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)) {
+								unset($this->arIsNewObject);
+								$this->id=$this->exists($this->path);
+							} else {
+								$this->error=$this->store->error;
+							}
 							$result=$this->path;
 						} else {
 							$this->error=sprintf($ARnls["err:noparent"],$arNewParent);
@@ -409,15 +412,6 @@ class pobject extends object { // pobject class definition
 	}
 
 	function make_url($path="", $nls="", $session=true, $https=NULL) {
-		/* FIXME:
-		   make_url should first try to make relative links, instead
-		   of full absolute urls
-		   if the path corresponds with the same root as the current object
-		   that should be possible, just find the common root, and add ".."
-		   to it for each directory of the current object from that root, 
-		   then add the rest of the path of the image.
-		   FIXME: extra feature: nls as an argument to make_url
-		*/
 		global $ARConfig, $AR, $ARCurrent;
 		debug("pobject: make_url($path) (from: ".$this->path.")","object");
 		$rootoptions=$this->store->rootoptions;
@@ -589,11 +583,15 @@ class pobject extends object { // pobject class definition
 					if (is_array($groups)) {
 						reset($groups);
 						while (list($key, $group) = each($groups)) {
-							$AR->user->groups[$group->data->login] = $group;
+							if (is_object($group)) {
+								$AR->user->groups[$group->data->login] = $group;
+							}
 						}
 					}
 					if (!$AR->user->groups["public"]) {
-						$AR->user->groups["public"] = current($this->get("/system/groups/public/", "system.get.phtml"));
+						if ($public=current($this->get("/system/groups/public/", "system.get.phtml"))) {
+							$AR->user->groups["public"] = $public;
+						}
 					}
 				}
 				if ($AR->user->groups) {
@@ -607,22 +605,24 @@ class pobject extends object { // pobject class definition
 					reset($AR->user->groups);
 					while (list($key, $group)=each($AR->user->groups)) { 
 						$groupgrants=Array();
-						$group->FindGrants($path, $groupgrants, $userpath);
-						if (is_array($grants)) {
-							reset($groupgrants);
-							while (list($gkey, $gval)=each($groupgrants)) {
-								if (is_array($grants[$gkey]) && is_array($gval)) {
-									$grants[$gkey]=array_merge($gval, $grants[$gkey]);
-								} else 
-								if ($gval && !is_array($gval)) {
-									$grants[$gkey] = $gval;
-								} else
-								if ($gval && !$grants[$gkey]) {
-									$grants[$gkey] = $gval;
+						if (is_object($group)) {
+							$group->FindGrants($path, $groupgrants, $userpath);
+							if (is_array($grants)) {
+								reset($groupgrants);
+								while (list($gkey, $gval)=each($groupgrants)) {
+									if (is_array($grants[$gkey]) && is_array($gval)) {
+										$grants[$gkey]=array_merge($gval, $grants[$gkey]);
+									} else 
+									if ($gval && !is_array($gval)) {
+										$grants[$gkey] = $gval;
+									} else
+									if ($gval && !$grants[$gkey]) {
+										$grants[$gkey] = $gval;
+									}
 								}
+							} else {
+								$grants = $groupgrants;
 							}
-						} else {
-							$grants = $groupgrants;
 						}
 					}
 				}
