@@ -8,7 +8,7 @@
 	******************************************************************/
 
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
-		global $HTTP_POST_FILES, $HTTP_POST_VARS;
+		global $HTTP_POST_VARS;
 
 		$customoffset=0;
 		$configcache=$ARConfig->cache[$this->path];
