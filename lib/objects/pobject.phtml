@@ -354,26 +354,16 @@ class pobject extends object {
 
 		debug("pobject: GetValidGrants()","object");
 		if ($AR->user) { 	// login and retrieval of user object 
-			// must be handled first.
- 			// first create a list of all parent paths, to be used later.
-			$subpaths=explode("/", $this->path);
-			$path='/';
-			$paths[]=''; 	// stop value : prev will not fail, but $path==false
-			$paths[]='/';
-			while (next($subpaths)) { // last subpath is empty -> next() == false
-				$path.=current($subpaths)."/";
-				$paths[]=$path;
-			}
-			$grants=Array();
-			$userpath=$AR->user->FindGrants($this->path, $grants);
 			if (!$AR->user->grants[$this->path]) {
+				$grants=Array();
+				$userpath=$AR->user->FindGrants($this->path, $grants);
 				// if not already done, find all groups of which the user is a member
 				$criteria["members"]["login"]["="]="'".AddSlashes($AR->user->data->login)."'";
 				if ($AR->user->groups || ($AR->user->groups=$this->find("/system/groups/",$criteria, "system.get.phtml"))) {
-					$path=end($paths);
+					// $path=end($paths);
 					reset($AR->user->groups);
 					while (list($key, $group)=each($AR->user->groups)) { 
-						$group->FindGrants($path, $grants, $userpath);
+						$group->FindGrants($this->path, $grants, $userpath);
 					}
 				}
 				$AR->user->grants[$this->path]=$grants;
@@ -384,9 +374,12 @@ class pobject extends object {
 		return $grants;
 	}
 
-	function CheckLogin($grant) {
+	function CheckLogin($grant, $modifier=ARTHISTYPE) {
 	global $AR,$ARnls,$ARCurrent,$ARLogin,$ARPassword,$ARCookie,$session_config;
 		debug("pobject: CheckLogin($grant)","object");
+		if ($modifier==ARTHISTYPE) {
+			$modifier=$this->type;
+		}
 		// check for a sessionid
 		$silent=($AR->user) ? 1:0;
 		$continue=true;
@@ -438,7 +431,9 @@ class pobject extends object {
 				ldSetClientCache(false);
 			}
 			$grants=$AR->user->grants[$this->path];
-			if (!$grants[$grant] && $ARLogin!="admin") {
+			if ( 	( !$grants[$grant] 
+						|| ( $modifier && is_array($grants[$grant]) && !$grants[$grant][$modifier] )
+					) && $ARLogin!="admin" ) {
 				// do login
 				debug("pobject: CheckLogin: insufficient grants ($ARLogin)","object");
 				if (!$silent) {
@@ -463,10 +458,13 @@ class pobject extends object {
 		return $result;
 	}
 
-	function CheckSilent($grant) {
+	function CheckSilent($grant, $modifier=ARTHISTYPE) {
 	global $AR;
 
 		debug("pobject: CheckSilent($grant)","object");
+		if ($modifier==ARTHISTYPE) {
+			$modifier=$this->type;
+		}
 		$result=false;
 		if ($AR->user->data->login=="admin") {
 			$result=1;
@@ -475,6 +473,9 @@ class pobject extends object {
 		} else {
 			$grants=$this->GetValidGrants();
 			$result=$grants[$grant];
+		}
+		if ($modifier && is_array($result)) {
+			$result=$result[$modifier];
 		}
 		debug("pobject: CheckSilent: end","all");
 		return $result;
