@@ -1,9 +1,42 @@
 <?php
+    /******************************************************************
+     pphotobook.phtml                                      Muze Ariadne
+     ------------------------------------------------------------------
+     Author: Muze (info@muze.nl)
+     Date: 31 october 2002
+
+     Copyright 2002 Muze
+
+     This file is part of Ariadne.
+
+     Ariadne is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published 
+     by the Free Software Foundation; either version 2 of the License, 
+     or (at your option) any later version.
+ 
+     Ariadne is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with Ariadne; if not, write to the Free Software 
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
+     02111-1307  USA
+
+    -------------------------------------------------------------------
+
+     Class inheritance: 	pobject > ppage > pdir > pphotobook
+     Description:
+
+       This is the class definition file of the pphotobook class.
+
+    ******************************************************************/
 
 debug("pphotobook: Load","object");
 include_once($this->code."objects/pdir.phtml");
 
-class pphotobook extends pdir { // definitie class
+class pphotobook extends pdir { // pphotobook class definition
 
 	function get_photos($max=0,$start=0) {
 		$crit["object"]["implements"]["="]="'pphoto'";
@@ -23,5 +56,5 @@ class pphotobook extends pdir { // definitie class
 	function _get_photos($max=0, $start=0) {
 		return $this->get_photos($max, $start);
 	}
-} // end class pphotobook
+} // end of pphotobook class definition
 ?>

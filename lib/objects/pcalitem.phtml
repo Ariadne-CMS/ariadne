@@ -1,10 +1,42 @@
 <?php
+    /******************************************************************
+     pcalitem.phtml                                        Muze Ariadne
+     ------------------------------------------------------------------
+     Author: Auke van Slooten (auke@muze.nl)
+     Date: 31 october 2002
 
-include_once($this->code."objects/pobject.phtml");
+     Copyright 2002 Muze
+
+     This file is part of Ariadne.
+
+     Ariadne is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published 
+     by the Free Software Foundation; either version 2 of the License, 
+     or (at your option) any later version.
+ 
+     Ariadne is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with Ariadne; if not, write to the Free Software 
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
+     02111-1307  USA
+
+    -------------------------------------------------------------------
+
+     Class inheritance: 	pobject > pcalitem
+     Description:
+
+       This is the class definition file of the pcalitem class.
+
+    ******************************************************************/
 
 debug("pcalitem: Load","object");
+include_once($this->code."objects/pobject.phtml");
 
-class pcalitem extends pobject { // definitie class
+class pcalitem extends pobject { // pcalitem class definition
 
 	function DelTimeframe($date) {
 		debug("pcalitem->DelTimeframe($date)","object");
@@ -38,5 +70,5 @@ class pcalitem extends pobject { // definitie class
 		return $result;
 	}
 
-} // end class ptimeframe
+} // end of pcalitem class definition
 ?>

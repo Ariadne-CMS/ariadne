@@ -1,4 +1,37 @@
 <?php
+    /******************************************************************
+     paddressbook.phtml                                    Muze Ariadne
+     ------------------------------------------------------------------
+     Author: Muze (info@muze.nl)
+     Date: 31 october 2002
+
+     Copyright 2002 Muze
+
+     This file is part of Ariadne.
+
+     Ariadne is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published 
+     by the Free Software Foundation; either version 2 of the License, 
+     or (at your option) any later version.
+ 
+     Ariadne is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with Ariadne; if not, write to the Free Software 
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
+     02111-1307  USA
+
+    -------------------------------------------------------------------
+
+     Class inheritance: 	pobject > ppage > pdir > paddressbook
+     Description:
+
+       This is the class definition file of the paddressbook class.
+
+    ******************************************************************/
 debug("paddressbook: Load","object");
 include_once($this->code."objects/pdir.phtml");
 
@@ -15,7 +48,7 @@ function sort_addresses($a,$b) {
 
 define("DONT_SORT", false);
 
-class paddressbook extends pdir { // definitie class
+class paddressbook extends pdir { // paddressbook class definition
 
 	function get_addresses($search_criteria="",$sortby="name") {
 		global $ARCurrent;
@@ -49,5 +82,5 @@ class paddressbook extends pdir { // definitie class
 	function _call_address($address, $template="", $args="") {
 		return $address->call($template,$args);
 	}
-} // end class paddressbook
+} // end of paddressbook class definition
 ?>
