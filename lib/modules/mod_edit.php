@@ -78,15 +78,18 @@
 			}
 		}
 
-		function _showEditableLink($path, $extra='') {
+		function _showEditableLink($path, $extra='', $url=false) {
 			if (pinp_edit::_getEditMode()) {
-				echo "<a onDblClick=\"top.location='".$this->make_url($path).pinp_edit::_getEditTemplate()."'\" $extra>";
+				echo "<a onClick=\"event.cancelBubble=true\" onDblClick=\"top.location='".$this->make_url($path).pinp_edit::_getEditTemplate()."'\" $extra>";
 			} else {
-				echo "<a href='".$this->make_url($path)."' $extra>";				
+				if (!$url) {
+					$url=$this->make_url($path);
+				}
+				echo "<a href='".$url."' $extra>";				
 			}
 		}
 		
-		function _showImageMapLink($path, $extra='') {
+		function _showHref($path, $extra='') {
 			if (pinp_edit::_getEditMode()) {
 				echo "href='".$this->make_url($path).pinp_edit::_getEditTemplate()."' $extra target='".pinp_edit::_getEditTarget()."'";
 			} else {
