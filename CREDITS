@@ -26,8 +26,11 @@ Johann Hanne <johann DOT hanne AT klinikum DOT ingolstadt DOT de>
 	Contributed a patch which made the WYSIWYG editor nls aware.
 	Author of the German and English NLS files for the WYSIWYG editor.
 
-Lukasz Keler <Lukasz.Keler AT ceti DOT pl>
+Lukasz Keler <Lukasz DOT Keler AT ceti DOT pl>
 	Author of the Polish NLS files.
+
+Niklas Koskela <niklas DOT koskela AT htc-sweden DOT com>
+	Author of the Swedish NLS files.
 
 Pascal Hofstee / eMAXX <pascal AT emaxx DOT nl>
 	Author of the PostgreSQL store;
