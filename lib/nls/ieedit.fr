@@ -22,7 +22,7 @@
 	$ARnls["e_z_order"]			=	"Ordre Z-A ";
 	$ARnls["e_send_to_back"]		=	"Mettre en arri&egrave;re plan";
 	$ARnls["e_bring_to_front"]		=	"Mettre en premier plan";
-	$ARnls["e_send_backward"]		=	"Reculler";
+	$ARnls["e_send_backward"]		=	"Reculer";
 	$ARnls["e_bring_forward"]		=	"Avancer";
 	$ARnls["e_send_below_text"]		=	"Sous le texte";
 	$ARnls["e_bring_above_text"]		=	"Sur le texte";
