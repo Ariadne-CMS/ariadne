@@ -27,6 +27,8 @@
 
 *******************************************************************************/
 
+define(MAX_PATH_LENGTH, 128);
+
 // general objectstore functions
 
 class postgresqlstore {
@@ -493,97 +495,107 @@ class postgresqlstore {
 		$objects_tbl = $this->tbl_prefix."objects";
 		$types_tbl = $this->tbl_prefix."types";
 
-		$this->start_transaction();
-		if ($id = $this->exists($path)) { //update
-			debug("save: updating","all");
-			if ($vtype) { // only change/save vtype if it is explicitly set
+		if (strlen($path)<MAX_PATH_LENGTH) {
+			$this->start_transaction();
+			if ($id = $this->exists($path)) { //update
+				debug("save: updating","all");
+				if ($vtype) { // only change/save vtype if it is explicitly set
+					$evtype = AddSlashes($vtype);
+					$query_string = "update $objects_tbl set object='$edata', vtype='$evtype', lastchanged=current_timestamp where id=$id"; 
+				} else {
+					$query_string = "update $objects_tbl set object='$edata', lastchanged=current_timestamp where id=$id"; 
+				}
+				$err = $this->store_run_query( $query_string);
+				if ($err === false) {
+					debug("save: update object failed on query!","store");
+					$result = 0;
+				} else {
+					debug("save: query=$query_string","all");
+					$this->save_properties($properties, $id, $this); 
+					if($priority !== false) {
+						$query_string = "update $nodes_tbl set priority=$epriority where path='$epath'";
+						$err = $this->store_run_query( $query_string);
+						if ($err === false) {
+							debug("save: update object failed on query!","store");
+							$result = 0;
+						} else {
+							$result = $path;
+						}
+					}
+				}
+			} else { // insert new
+				debug("save: new","all");
+				if ($vtype == "") { // if vtype is not set, it defaults to type for new objects
+					$vtype=$type; 
+				}
 				$evtype = AddSlashes($vtype);
-				$query_string = "update $objects_tbl set object='$edata', vtype='$evtype', lastchanged=current_timestamp where id=$id"; 
-			} else {
-				$query_string = "update $objects_tbl set object='$edata', lastchanged=current_timestamp where id=$id"; 
-			}
-			$err = $this->store_run_query( $query_string);
-			if ($err === false) {
-				debug("save: update object failed on query!","store");
-				$result = 0;
-			} else {
-				debug("save: query=$query_string","all");
-				$this->save_properties($properties, $id, $this); 
-				if($priority !== false) {
-					$query_string = "update $nodes_tbl set priority=$epriority where path='$epath'";
-					$err = $this->store_run_query( $query_string);
-					if ($err === false) {
-						debug("save: update object failed on query!","store");
-						$result = 0;
-					} else {
-						$result = $path;
+
+				if($priority === false){
+					// default priority == 0
+					$priority = 0;
+					$epriority=(int)$priority;
+				}
+				$query_string = "LOCK TABLE $nodes_tbl IN SHARE MODE";
+				if ($exec = $this->store_run_query( $query_string)) {
+
+					$mask = substr($path, strlen($parent));
+					if (ereg("^(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) { 
+						// if the last part of a path matches something like {2:id} this
+						// part will automatically create a new number, unique in this directory, and fill it in.
+						$subid=$this->get_nextid($parent, $mask);
+						$path=ereg_replace("\{([0-9]:)?id\}",strval($subid),$path);
+						$epath=AddSlashes($path);
+						debug("save: new path: $path ($subid)","all");
 					}
-				}
-			}
-		} else { // insert new
-			debug("save: new","all");
-			if ($vtype == "") { // if vtype is not set, it defaults to type for new objects
-				$vtype=$type; 
-			}
-			$evtype = AddSlashes($vtype);
-
-			if($priority === false){
-				// default priority == 0
-				$priority = 0;
-				$epriority=(int)$priority;
-			}
-			$query_string = "LOCK TABLE $nodes_tbl IN SHARE MODE";
-			if ($exec = $this->store_run_query( $query_string)) {
-
-				$mask = substr($path, strlen($parent));
-				if (ereg("^(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) { 
-					// if the last part of a path matches something like {2:id} this
-					// part will automatically create a new number, unique in this directory, and fill it in.
-					$subid=$this->get_nextid($parent, $mask);
-					$path=ereg_replace("\{([0-9]:)?id\}",strval($subid),$path);
-					$epath=AddSlashes($path);
-					debug("save: new path: $path ($subid)","all");
-				}
-				$query_string = "insert into $objects_tbl (type,object,vtype) values ('$etype','$edata','$evtype')";
-				$exec = $this->store_run_query( $query_string);
-				$id = false;
-				if ($exec !== false) {
-					$query_string = "select currval('".$objects_tbl."_id_seq') as id from $objects_tbl";
-					$exec = $this->store_run_query( $query_string);
-					if ($exec !== false) {
-						$row = pg_fetch_array($exec, 0);
-						$id = $row["id"];
-					}
-				}
-
-				if ($exec !== false && ($id !== false)) {
-					$query_string = "insert into $nodes_tbl (path,parent,object,priority) values ('$epath','$eparent',$id,$epriority)";
-					$exec = $this->store_run_query( $query_string);
-					if ($exec) {
-						$this->save_properties($properties, $id, $this);
-						$result=$path;
+					if (strlen($path)>=MAX_PATH_LENGTH) {
+						// extra check on rewritten path
+						$this->error="ERROR: Maximum path length exceeded (".MAX_PATH_LENGTH." characters). Please shorten your filename.";
+						$result=false;
 					} else {
-						debug("save: insert node failed on query!","store");
-						$result=0;
+						$query_string = "insert into $objects_tbl (type,object,vtype) values ('$etype','$edata','$evtype')";
+						$exec = $this->store_run_query( $query_string);
+						$id = false;
+						if ($exec !== false) {
+							$query_string = "select currval('".$objects_tbl."_id_seq') as id from $objects_tbl";
+							$exec = $this->store_run_query( $query_string);
+							if ($exec !== false) {
+								$row = pg_fetch_array($exec, 0);
+								$id = $row["id"];
+							}
+						}
+
+						if ($exec !== false && ($id !== false)) {
+							$query_string = "insert into $nodes_tbl (path,parent,object,priority) values ('$epath','$eparent',$id,$epriority)";
+							$exec = $this->store_run_query( $query_string);
+							if ($exec) {
+								$this->save_properties($properties, $id, $this);
+								$result=$path;
+							} else {
+								debug("save: insert node failed on query!","store");
+								$result=0;
+							}
+						} else {
+							debug("save: insert object failed on query!","store");
+							$result=0;
+						}
 					}
 				} else {
-					debug("save: insert object failed on query!","store");
-					$result=0;
+					error($this->error);
+					error("PANIC: could not obtain write lock on nodes table!");
+					$this->close();
+					exit;
 				}
-			} else {
-				error($this->error);
-				error("PANIC: could not obtain write lock on nodes table!");
-				$this->close();
-				exit;
 			}
-		}
-		debug("save: result=(".$result.")","store");
-		if($result === 0) {
-			$this->stop_transaction(false);
+			debug("save: result=(".$result.")","store");
+			if($result === 0) {
+				$this->stop_transaction(false);
+			} else {
+				$this->stop_transaction(true);
+			}
 		} else {
-			$this->stop_transaction(true);
+			$this->error="ERROR: Maximum path length exceeded (".MAX_PATH_LENGTH." characters). Please shorten your filename.";
+			$result=false;
 		}
-
 		debug("save: end","all");
 		return $result;
 	}

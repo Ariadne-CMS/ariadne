@@ -27,6 +27,7 @@
 
 *******************************************************************************/
 
+define(MAX_PATH_LENGTH, 128);
 
 // general objectstore functions
 
@@ -494,112 +495,122 @@ class mysqlstore {
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
 
-		if ($id=$this->exists($path)) { //update
-			debug("save: updating","all");
-			if ($vtype) { // only change/save vtype if it is explicitly set
-				$evtype=AddSlashes($vtype);
-				$query_string="update $objects_tbl set object='$edata', vtype='$evtype', lastchanged=NULL where id=$id"; 
-			} else {
-				$query_string="update $objects_tbl set object='$edata', lastchanged=NULL where id=$id"; 
-			}
-			debug("save: query=$query_string","all");
-			mysql_db_query($this->database,$query_string, $this->connect_id);
-			$errno=mysql_errno($this->connect_id);
-			if (!$errno) { // mysql_affected_rows doesn't always work
-				debug("save: query=$query_string","all");
-				$this->save_properties($properties, $id, $this); 
-				if($priority !== false) {
-					$query_string="update $nodes_tbl set priority=$epriority where path='$epath'";
-					mysql_db_query($this->database,$query_string, $this->connect_id);
-					$errno=mysql_errno($this->connect_id);
-					if (!$errno) {
-						debug("save: query=$query_string","all");
-						$result=$path;
-					} else {
-						$this->error="ERROR: Mysql: $errno: ".mysql_error($this->connect_id);
-						debug("save: query=$query_string","store");
-						debug("save: update object failed!","store");
-						debug("save: ".$this->error,"store");
-						$result=0;
-					}
-				} 
-			} else {
-				$this->error="ERROR: Mysql: $errno: ".mysql_error($this->connect_id);
-				debug("save: query=$query_string","store");
-				debug("save: update object failed!","store");
-				debug("save: ".$this->error,"store");
-				$result=0;
-			}
-		} else { // insert new
-			debug("save: new","all");
-			if ($vtype=="") { // if vtype is not set, it defaults to type for new objects
-				$vtype=$type; 
-			}
-			$evtype=AddSlashes($vtype);
-
-			if($priority === false){
-				// default priority == 0
-				$priority = 0;
-				$epriority=(int)$priority;
-			}
-
-			$mask = substr($path, strlen($parent));
-			if (ereg("^(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) { 
-				// if the last part of a path matches something like {2:id} this
-				// part will automatically create a new number, unique in this directory, and fill it in.
-				// before we proceed, we need to lock the 'nodes' and 'objects' table
-				$query_string="lock tables ".$this->tbl_prefix."nodes write, ".$this->tbl_prefix."objects write";
-				if (mysql_db_query($this->database, $query_string, $this->connect_id)) {
-					$needunlocking = true;
-
-					$subid=$this->get_nextid($parent, $mask);
-					$path=ereg_replace("\{([0-9]:)?id\}",strval($subid),$path);
-					$epath=AddSlashes($path);
-					debug("save: new path: $path ($subid)","all");
+		if (strlen($path)<MAX_PATH_LENGTH) { // initial check
+			if ($id=$this->exists($path)) { //update
+				debug("save: updating","all");
+				if ($vtype) { // only change/save vtype if it is explicitly set
+					$evtype=AddSlashes($vtype);
+					$query_string="update $objects_tbl set object='$edata', vtype='$evtype', lastchanged=NULL where id=$id"; 
 				} else {
-					error("PANIC: could not obtain write lock on nodes table!");
-					$this->close();
-					exit;
+					$query_string="update $objects_tbl set object='$edata', lastchanged=NULL where id=$id"; 
 				}
-			}
-
-
-			$query_string="insert into $objects_tbl (id,type,object,vtype) values (0,'$etype','$edata','$evtype')";
-			debug("save: query=$query_string","all");
-			$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
-			$errno=mysql_errno($this->connect_id);
-			$error=mysql_error($this->connect_id);
-			if (!$errno && $id=mysql_insert_id($this->connect_id)) {
-				$query_string="insert into $nodes_tbl (path,parent,object,priority) values ('$epath','$eparent',$id,$epriority)";
 				debug("save: query=$query_string","all");
-				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+				mysql_db_query($this->database,$query_string, $this->connect_id);
 				$errno=mysql_errno($this->connect_id);
-				$error=mysql_error($this->connect_id);
-				if (!$errno) {				
-					if ($needunlocking) {
-						$query_string = "unlock tables";
+				if (!$errno) { // mysql_affected_rows doesn't always work
+					debug("save: query=$query_string","all");
+					$this->save_properties($properties, $id, $this); 
+					if($priority !== false) {
+						$query_string="update $nodes_tbl set priority=$epriority where path='$epath'";
 						mysql_db_query($this->database,$query_string, $this->connect_id);
-						$needunlocking = false;
-					}
-					$this->save_properties($properties, $id, $this);
-					$result=$path;
+						$errno=mysql_errno($this->connect_id);
+						if (!$errno) {
+							debug("save: query=$query_string","all");
+							$result=$path;
+						} else {
+							$this->error="ERROR: Mysql: $errno: ".mysql_error($this->connect_id);
+							debug("save: query=$query_string","store");
+							debug("save: update object failed!","store");
+							debug("save: ".$this->error,"store");
+							$result=0;
+						}
+					} 
 				} else {
-					$this->error="ERROR: Mysql: $errno: $error";
-					debug("save: insert node failed!","store");
+					$this->error="ERROR: Mysql: $errno: ".mysql_error($this->connect_id);
+					debug("save: query=$query_string","store");
+					debug("save: update object failed!","store");
 					debug("save: ".$this->error,"store");
 					$result=0;
 				}
-			} else {
-				$this->error="ERROR: Mysql: $errno: $error";
-				debug("save: insert object failed!","store");
-				debug("save: ".$this->error,"store");
-				$result=0;
-			}			
+			} else { // insert new
+				debug("save: new","all");
+				if ($vtype=="") { // if vtype is not set, it defaults to type for new objects
+					$vtype=$type; 
+				}
+				$evtype=AddSlashes($vtype);
 
-			if ($needunlocking) {
-				$query_string = "unlock tables";
-				mysql_db_query($this->database,$query_string, $this->connect_id);
+				if($priority === false){
+					// default priority == 0
+					$priority = 0;
+					$epriority=(int)$priority;
+				}
+
+				$mask = substr($path, strlen($parent));
+				if (ereg("^(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) { 
+					// if the last part of a path matches something like {2:id} this
+					// part will automatically create a new number, unique in this directory, and fill it in.
+					// before we proceed, we need to lock the 'nodes' and 'objects' table
+					$query_string="lock tables ".$this->tbl_prefix."nodes write, ".$this->tbl_prefix."objects write";
+					if (mysql_db_query($this->database, $query_string, $this->connect_id)) {
+						$needunlocking = true;
+
+						$subid=$this->get_nextid($parent, $mask);
+						$path=ereg_replace("\{([0-9]:)?id\}",strval($subid),$path);
+						$epath=AddSlashes($path);
+						debug("save: new path: $path ($subid)","all");
+					} else {
+						error("PANIC: could not obtain write lock on nodes table!");
+						$this->close();
+						exit;
+					}
+				}
+
+				if (strlen($path)>=MAX_PATH_LENGTH) {
+					// extra check, after rewrite of filename
+					$this->error="ERROR: Maximum path length (".MAX_PATH_LENGTH." characters) exceeded. Please shorten your filenames.";
+					$result=false;
+				} else {
+					$query_string="insert into $objects_tbl (id,type,object,vtype) values (0,'$etype','$edata','$evtype')";
+					debug("save: query=$query_string","all");
+					$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+					$errno=mysql_errno($this->connect_id);
+					$error=mysql_error($this->connect_id);
+					if (!$errno && $id=mysql_insert_id($this->connect_id)) {
+						$query_string="insert into $nodes_tbl (path,parent,object,priority) values ('$epath','$eparent',$id,$epriority)";
+						debug("save: query=$query_string","all");
+						$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+						$errno=mysql_errno($this->connect_id);
+						$error=mysql_error($this->connect_id);
+						if (!$errno) {				
+							if ($needunlocking) {
+								$query_string = "unlock tables";
+								mysql_db_query($this->database,$query_string, $this->connect_id);
+								$needunlocking = false;
+							}
+							$this->save_properties($properties, $id, $this);
+							$result=$path;
+						} else {
+							$this->error="ERROR: Mysql: $errno: $error";
+							debug("save: insert node failed!","store");
+							debug("save: ".$this->error,"store");
+							$result=0;
+						}
+					} else {
+						$this->error="ERROR: Mysql: $errno: $error";
+						debug("save: insert object failed!","store");
+						debug("save: ".$this->error,"store");
+						$result=0;
+					}			
+				}
+				if ($needunlocking) {
+					$query_string = "unlock tables";
+					mysql_db_query($this->database,$query_string, $this->connect_id);
+				}
 			}
+		} else {
+			// path too long
+			$this->error="ERROR: Maximum path length (".MAX_PATH_LENGTH." characters) exceeded. Please shorten your filenames.";
+			$result=false;
 		}
 		debug("save: end","all");
 		return $result;
