@@ -46,9 +46,11 @@ class ppage extends pobject { // ppage class definition
       $session='';
     } 
     if (!$full) {
-      return str_replace("{arSession}", $session, str_replace("{arRoot}",$AR->host.$this->store->root, 
-        eregi_replace('^.*<BODY[^>]*>','',
-        eregi_replace('</BODY.*$','',$page))));
+      return str_replace("{arSession}", $session, 
+			str_replace("{arRoot}",$AR->host.$this->store->root, 
+			str_replace("{arCurrentPage}", $this->make_url(),
+        		eregi_replace('^.*<BODY[^>]*>','',
+        		eregi_replace('</BODY.*$','',$page)))));
     } else {
       return str_replace("{arSession}", $session, str_replace("{arRoot}",$AR->host.$this->store->root, $page));
     }
@@ -56,6 +58,11 @@ class ppage extends pobject { // ppage class definition
 
   function RAWtoAR($page) {
   global $ARCurrent, $AR;
+
+	/* find and replace the current page */
+	$page = str_replace($this->make_url(), "{arCurrentPage}", $page);
+    $page = ereg_replace("(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?(/".$this->nls.")?".$this->path, "{arCurrentPage}", $page);
+
 	// change hardcoded links and images to use a placeholder for the root
 	if ($this->store->root) {
 		if (substr($this->store->root, -3) !== "/$this->nls") {
