@@ -101,20 +101,21 @@ class mysqlstore {
 	 **********************************************************************************/ 
 
 		debug("call($template, ".serialize($args).", [list])","store");
+
 		$result = Array();
 		$this->error="";
-		$this->count=@mysql_num_rows($objects["list"]);
+		$count=@mysql_num_rows($objects["list"]);
 		while ($row=@mysql_fetch_array($objects["list"])) {
 			$object=$this->newobject($row["path"], $row["parent"], $row["type"], unserialize($row["object"]), $row["id"], $row["lastchanged"], $row["vtype"], strlen($row["object"]), $row["priority"]);
 			$result[]=$object->call($template, $args);
 		}
 
-		if (!$this->count) {
-			debug("call: end: no objects found whatsoever.","all");
+		if (!$count) {
+			debug("call: end($template): no objects found whatsoever.","all");
 		} else {
-			debug("call: end: $this->count objects found","all");
+			debug("call: end($template): $this->count objects found","all");
 		}
-		$this->total+=$this->count;
+		$this->total+=$count;
 		return $result;
 	}
 
