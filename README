@@ -1,5 +1,9 @@
-Readme                                                         Muze Ariadne 2.1
+Readme                                                             Muze Ariadne 
 ===============================================================================
+
+WARNING: The internal character set in Ariadne 2.1 has been changed to UTF-8. 
+         If you want to import older .ax files (for upgrades) you
+         need to read the docs/upgrade.txt file first.
 
 Ariadne is a web application server and a content management system. It is a 
 lot like Zope, but not quite the same.
