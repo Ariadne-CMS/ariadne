@@ -186,6 +186,7 @@
 	$ARnls["interface"]						=	"Gebruiksomgeving";
 	$ARnls["item"]							=	"Item";
 	$ARnls["keepimage"]						=	"Bewaar cache";
+	$ARnls["keepshortcuturl"]				=	"Behoud shortcut URL";
 	$ARnls["keywords"]						=	"Trefwoorden";
 	$ARnls["language"]						=	"Taal";
 	$ARnls["languagenotavailable"]			=	"Deze pagina is niet beschikbaar in taalkeuze %s.";

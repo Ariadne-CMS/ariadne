@@ -190,6 +190,7 @@
 	$ARnls["interface"]						=	"Interface";
 	$ARnls["item"]							=	"Item";
 	$ARnls["keepimage"]						=	"Keep image";
+	$ARnls["keepshortcuturl"]				=	"Keep shortcut URL";
 	$ARnls["keywords"]						=	"Keywords";
 	$ARnls["language"]						=	"Language";
 	$ARnls["languagenotavailable"]			=	"Language %s not available.";
