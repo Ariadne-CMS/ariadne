@@ -20,7 +20,7 @@
 	
 	******************************************************************/
 
-	if ($this->CheckSilent("edit")) {
+	if ($this->CheckSilent("edit") && $this->CheckConfig()) {
 		$donotcache=-1;
 		$inherited=0;
 		$onrequest=1;
