@@ -1,0 +1,25 @@
+<?php
+	debug("puser::system.set.group.phtml: $action $path","class");
+	// first check wether the user has edit grant on the given group.
+	// FIXME: this is a bit dirty...
+	$realpath=$this->path;
+	$this->path=$path;
+	if ($this->CheckSilent("edit")) {
+		$granted=true;
+	} else {
+		$granted=false;
+	}
+	$this->path=$realpath;
+	if ($granted) {
+		// FIXME: check whether $path is a group?
+		// now make sure this->data is clean.
+		$this->data=@current($this->get($this->path, "system.get.data.phtml"));
+		if ($action=="add") {
+			$this->data->groups[$path]=$id;
+			$this->save();
+		} else {
+			unset($this->data->groups[$path]);
+			$this->save();
+		}
+	}
+?>
