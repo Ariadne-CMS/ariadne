@@ -135,7 +135,7 @@ class mssqlstore {
 	}
 
 	function count($objects) {
-		return (mssql_num_rows($objects["list"]));
+		return (($objects["list"]) ? mssql_num_rows($objects["list"]) : 0);
 	}
 
 	function info($objects) {
