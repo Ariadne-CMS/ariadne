@@ -148,7 +148,7 @@
 			($HTTP_SERVER_VARS["REQUEST_METHOD"]!="POST")) {
 
 			$ctime=filectime($cachedimage);
-			if ($HTTP_IF_MODIFIED_SINCE && (strtotime($HTTP_IF_MODIFIED_SINCE) >= $ctime)) {
+			if ($_SERVER['HTTP_IF_MODIFIED_SINCE'] && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $ctime) {
 				// the mtime is used as expiration time, the ctime is the correct last modification time.
 				// as an object clears the cache upon a save.
 				ldHeader("HTTP/1.1 304 Not Modified");
