@@ -25,7 +25,6 @@
         }
         $newnlsdata->name=$nlsformdata["name"];
         $newnlsdata->summary=$nlsformdata["summary"];
-        $newnlsdata->page=RawUrlDecode($nlsformdata["page"]);
         $properties["name"][]["value"]="'".AddSlashes($nlsformdata["name"])."'";
         $newdata->$key=$newnlsdata;
         $newdata->nls->list[$key]=$value;
