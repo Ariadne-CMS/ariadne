@@ -161,13 +161,15 @@ class mysqlstore {
 		$this->error="";
 		$result["method"]="get";
 		$result["path"]=$path;
-		$epath=AddSlashes(strtoupper($path));
+//		$epath=AddSlashes(strtoupper($path));
+		$epath=AddSlashes($path);
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
 
-		$query_string="select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and UPPER($nodes_tbl.path)='$epath'";
+//		$query_string="select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and UPPER($nodes_tbl.path)='$epath'";
+		$query_string="select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path='$epath'";
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
 		debug("get: end","all");
 		return $result;
@@ -187,13 +189,15 @@ class mysqlstore {
 
 		debug("ls($path)","store");
 		$this->error="";
-		$epath=AddSlashes(strtoupper($path));
+//		$epath=AddSlashes(strtoupper($path));
+		$epath=AddSlashes($path);
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
 
-		$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and UPPER($nodes_tbl.parent)='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
+//		$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and UPPER($nodes_tbl.parent)='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
+		$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.parent='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
 		$result["method"]="ls";
 		$result["path"]=$path;
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
@@ -217,14 +221,17 @@ class mysqlstore {
 
 		debug("parents($path)","store");
 		$this->error="";
-		$epath=AddSlashes(strtoupper($path));
-		$etop=AddSlashes(strtoupper($top));
+//		$epath=AddSlashes(strtoupper($path));
+//		$etop=AddSlashes(strtoupper($top));
+		$epath=AddSlashes($path);
+		$etop=AddSlashes($top);
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
 
-		$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and UPPER($nodes_tbl.path)=substring('$epath',1,length(path)) and UPPER($nodes_tbl.path) LIKE '$etop%' order by path";
+//		$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and UPPER($nodes_tbl.path)=substring('$epath',1,length(path)) and UPPER($nodes_tbl.path) LIKE '$etop%' order by path";
+		$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path=substring('$epath',1,length(path)) and $nodes_tbl.path LIKE '$etop%' order by path";
 		debug($query_string, "all");
 		$result["method"]="parents";
 		$result["path"]=$path;
@@ -267,7 +274,8 @@ class mysqlstore {
 			$result["method"]="find";
 			$result["path"]=$path;
 			$result["criteria"]=$criteria;
-			$epath=AddSlashes(strtoupper($path));
+//			$epath=AddSlashes(strtoupper($path));
+			$epath=AddSlashes($path);
 
 			$nodes_tbl=$this->tbl_prefix."nodes";
 			$objects_tbl=$this->tbl_prefix."objects";
@@ -298,7 +306,8 @@ class mysqlstore {
 										$where.=" and ( $types_tbl.implements $ecompare $value and $objects_tbl.vtype=$types_tbl.type ) ";
 										break;
 									case ("parent") :
-										$where.=" and UPPER($nodes_tbl.parent) $ecompare UPPER($value) ";
+//										$where.=" and UPPER($nodes_tbl.parent) $ecompare UPPER($value) ";
+										$where.=" and $nodes_tbl.parent $ecompare $value ";
 										break;
 									case ("lastchanged") :
 										$where.=" and UNIX_TIMESTAMP($objects_tbl.lastchanged) $ecompare $value ";
@@ -314,7 +323,7 @@ class mysqlstore {
 					$where.=" ".$this->tbl_prefix."prop_$eproperty.object=$objects_tbl.id)	";
 				}
 			}
-			$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $nodes_tbl, $objects_tbl $from $types where $objects_tbl.id=$nodes_tbl.object and UPPER($nodes_tbl.path) like '$epath%'";
+			$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $nodes_tbl, $objects_tbl $from $types where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path like '$epath%'";
 			$where=substr($where,4);
 			if ($where) { 
 				$query_string.=" and ( ( $where ) )";
@@ -520,8 +529,10 @@ class mysqlstore {
 			$paths=$this->list_paths($path);
 			if (is_array($paths)) {
 				while (list($key, $path)=each($paths)) {
-					$epath=AddSlashes(strtoupper($path));
-					$query_string="delete from $nextid_tbl where UPPER(path)='$epath'";
+//					$epath=AddSlashes(strtoupper($path));
+//					$query_string="delete from $nextid_tbl where UPPER(path)='$epath'";
+					$epath=AddSlashes($path);
+					$query_string="delete from $nextid_tbl where path='$epath'";
 					$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
 				}
 			}
@@ -544,7 +555,8 @@ class mysqlstore {
 
 		debug("delete($path)","store");
 		$this->error="";
-		$epath=AddSlashes(strtoupper($path));
+//		$epath=AddSlashes(strtoupper($path));
+		$epath=AddSlashes($path);
 		$paths=$this->list_paths($path);
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
@@ -557,14 +569,16 @@ class mysqlstore {
 			if (sizeof($paths)==1) { // only one path for this object
 				$result=$this->purge($path); // therefore purge the object.
 			} else { // only delete the given path
-				$query_string="delete from $nodes_tbl where UPPER(path)='$epath'";
+//				$query_string="delete from $nodes_tbl where UPPER(path)='$epath'";
+				$query_string="delete from $nodes_tbl where path='$epath'";
 				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
 				if (mysql_affected_rows($this->connect_id)) {
 					$result=1;
 				} else {
 					$result=0;
 				}
-				$query_string="delete from $nextid_tbl where UPPER(path)='$epath'";
+//				$query_string="delete from $nextid_tbl where UPPER(path)='$epath'";
+				$query_string="delete from $nextid_tbl where path='$epath'";
 				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
 
 			}
@@ -586,13 +600,15 @@ class mysqlstore {
 
 		debug("exists($path)","store");
 		$this->error="";
-		$epath=AddSlashes(strtoupper($path));
+//		$epath=AddSlashes(strtoupper($path));
+		$epath=AddSlashes($path);
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
 
-		$query_string="select object from $nodes_tbl where UPPER(path)='$epath'";
+//		$query_string="select object from $nodes_tbl where UPPER(path)='$epath'";
+		$query_string="select object from $nodes_tbl where path='$epath'";
 		$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
 		if ($temp && ($row=mysql_fetch_array($temp))) {
 			$object=intval($row["object"]);
@@ -973,7 +989,8 @@ class mysqlstore {
 
 	**********************************************************************/
 
-		$epath=AddSlashes(strtoupper($path));
+//		$epath=AddSlashes(strtoupper($path));
+		$epath=AddSlashes($path);
 		$path=AddSlashes($path);
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
@@ -982,7 +999,8 @@ class mysqlstore {
 
 		$query_string="lock tables ".$this->tbl_prefix."seq_id write";
 		if ($temp=mysql_db_query($this->database,$query_string, $this->connect_id)) {
-			$query_string="select next_id from ".$this->tbl_prefix."seq_id where UPPER(path)='$epath'";
+//			$query_string="select next_id from ".$this->tbl_prefix."seq_id where UPPER(path)='$epath'";
+			$query_string="select next_id from ".$this->tbl_prefix."seq_id where path='$epath'";
 			if (($temp=mysql_db_query($this->database,$query_string, $this->connect_id)) && (mysql_affected_rows($this->connect_id)>0)) {
 				$row=mysql_fetch_array($temp);
 				$id=intval($row["next_id"]);
@@ -991,7 +1009,8 @@ class mysqlstore {
 				$query_string="insert into ".$this->tbl_prefix."seq_id values ('$path', 1 )";
 				mysql_db_query($this->database,$query_string, $this->connect_id);
 			}
-			$query_string="update ".$this->tbl_prefix."seq_id set next_id=".($id+1)." where UPPER(path)='$epath'";		
+//			$query_string="update ".$this->tbl_prefix."seq_id set next_id=".($id+1)." where UPPER(path)='$epath'";		
+			$query_string="update ".$this->tbl_prefix."seq_id set next_id=".($id+1)." where path='$epath'";		
 			mysql_db_query($this->database,$query_string, $this->connect_id);
 			$query_string="unlock tables";
 			mysql_db_query($this->database,$query_string, $this->connect_id);
@@ -1011,7 +1030,8 @@ class mysqlstore {
 
 	**********************************************************************/
 
-		$epath=AddSlashes(strtoupper($path));
+//		$epath=AddSlashes(strtoupper($path));
+		$epath=AddSlashes($path);
 		$path=AddSlashes($path);
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
@@ -1020,7 +1040,8 @@ class mysqlstore {
 
 		$query_string="lock tables ".$this->tbl_prefix."seq_id write";
 		if ($temp=mysql_db_query($this->database,$query_string, $this->connect_id)) {
-			$query_string="select next_id from ".$this->tbl_prefix."seq_id where UPPER(path)='$epath'";
+//			$query_string="select next_id from ".$this->tbl_prefix."seq_id where UPPER(path)='$epath'";
+			$query_string="select next_id from ".$this->tbl_prefix."seq_id where path='$epath'";
 			if (($temp=mysql_db_query($this->database,$query_string, $this->connect_id)) && (mysql_affected_rows($this->connect_id)>0)) {
 				$row=mysql_fetch_array($temp);
 				$id=intval($row["next_id"]);
@@ -1033,7 +1054,8 @@ class mysqlstore {
 			/* check if we have to set 'nextid' to $newid	*/
 
 			if ($newid > $id) {
-				$query_string="update ".$this->tbl_prefix."seq_id set next_id=".($newid)." where UPPER(path)='$epath'";
+//				$query_string="update ".$this->tbl_prefix."seq_id set next_id=".($newid)." where UPPER(path)='$epath'";
+				$query_string="update ".$this->tbl_prefix."seq_id set next_id=".($newid)." where path='$epath'";
 				mysql_db_query($this->database,$query_string, $this->connect_id);
 			}
 			$query_string="unlock tables";
@@ -1055,14 +1077,16 @@ class mysqlstore {
 
 	**********************************************************************/
 
-		$epath=AddSlashes(strtoupper($path));
+//		$epath=AddSlashes(strtoupper($path));
+		$epath=AddSlashes($path);
 		$path=AddSlashes($path);
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
 
-		$query_string="select next_id from ".$this->tbl_prefix."seq_id where UPPER(path)='$epath'";
+//		$query_string="select next_id from ".$this->tbl_prefix."seq_id where UPPER(path)='$epath'";
+		$query_string="select next_id from ".$this->tbl_prefix."seq_id where path='$epath'";
 		if (($temp=mysql_db_query($this->database,$query_string, $this->connect_id)) && (mysql_affected_rows($this->connect_id)>0)) {
 			$row=mysql_fetch_array($temp);
 			$id=intval($row["next_id"]);
