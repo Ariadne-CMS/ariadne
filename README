@@ -23,7 +23,7 @@ database directly.
 
 The objects and templates shipped provide a rich management system for a
 website. But the real power of Ariadne lies not in the easy online management
-of a website, but in it's fast and powerfull object manipulation and
+of a website, but in it's fast and powerful object manipulation and
 retrieval. It's very easy to build a complex dynamic website with multiple
 interactive object types and complex views. As an example a pretty complex
 calendar application is shipped with Ariadne. But you could also build a
@@ -31,14 +31,15 @@ threaded message board, a complex multi-site news system or even a clickable
 map of a country, with different selectable categories of information mapped
 on it. The last two have been done already :)
 
-Also built in is a complete user and rights (or grants) management system.
+Also built-in is a complete user and rights (or grants) management system.
 You can create a new user, add it to different groups and change grants for
 users and groups on objects. 
 
 A lot more is possible, but you'll have to see for yourself.
 
 Do read the installation instructions as Ariadne is very particular about
-it's installation. They are in the file INSTALL.
+it's installation. They are in 'install.txt' which can be found in the docs
+directory.
 
 For more information or questions, point your mail client to
 'ariadne@muze.nl', or read the newsgroups at 'news.muze.nl'.
@@ -46,6 +47,7 @@ For more information or questions, point your mail client to
 14-02-2000
 Updated 28-03-2001
 And again on 23-12-2001
+Editted slightly on 15-02-2002
 
 Auke van Slooten
 Muze
