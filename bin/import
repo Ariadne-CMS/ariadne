@@ -18,6 +18,7 @@
 		--without-grants	Don't export grant information
 		--tar_nofail		Suppres tar/gz errors
 		--force			Overwrites everything
+		--convert2UTF8-[nls] Convert data for language [nls] from ISO-8859-1 to UTF-8
 		--help			This information\n\n";
 
 	$arg_c=0;
@@ -48,6 +49,10 @@
 				break;
 				case 'without':
 					$ARCurrent->options["without_$option"]=true;
+				break;
+
+				case 'convert2UTF8':
+					$callArgs["convert_charsets"][] = $option;
 				break;
 
 				case 'verbose':
@@ -103,8 +108,10 @@
 			$importStore=new $inst_store($root,$store_config);
 
 			$ARCurrent->importStore=&$importStore;
-			$callArgs=Array("srcpath" => $srcpath,
-							"destpath" => $destpath);
+			$callArgs["srcpath"]  = $srcpath;
+			$callArgs["destpath"] = $destpath;
+
+			print_r($callArgs);
 
 			$store->call("system.export.phtml", $callArgs,
 				$store->get("/"));
