@@ -24,7 +24,7 @@
 	}
 ?>
 <div class='object'><nobr><a title="<?php echo $nlsdata->name; ?>" 
-	href="javascript:top.View('<?php echo $this->path; ?>','<?php echo $nlsdata->name; ?>');"><img 
+	href="javascript:top.View('<?php echo $this->path; ?>','<?php echo AddCSlashes($nlsdata->name,ARESCAPE); ?>');"><img 
 	width="20" height="20" src="<?php echo $AR->dir->images; ?>icons/<?php echo $this->type; ?>.gif" 
 	alt="<?php echo $this->path; ?>" border="0"> <?php
 		$nlsname = unicode::utf8convert($nlsdata->name); 

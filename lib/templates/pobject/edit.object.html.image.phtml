@@ -424,10 +424,10 @@ BODY 	{
 	<tr>
 	  <td valign="top" rowspan="2">
 		<div class="menu" id="mnMenu">
-	   	 	<a class="menuButton" id="mnCurrent" href="#" onClick="browseTo('<?php echo $this->path; ?>', this, '<?php echo $nlsdata->name; ?>');"><img src="<?php echo $AR->dir->images; ?>wizard/current.gif" border="0"><br>This&nbsp;Object</a>
-	   	 	<a class="menuButton" id="mnPhotobook" href="#" onClick="browseTo(tbContentEditOptions['photobook']['location'], this, 'Photobook');"><img src="<?php echo $AR->dir->images; ?>wizard/photobook.gif" border="0"><br>Photobook</a>
-		    <a class="menuButton" id="mnHome" href="#" onClick="browseTo('<?php echo $AR->user->path; ?>', this, '<?php echo $AR->user->data->name; ?>');"><img src="<?php echo $AR->dir->images; ?>wizard/home.gif" border="0"><br>Home</a>
-	   	 	<a class="menuButton" id="mnURL" href="#" onClick="BrowseURL();"><img src="<?php echo $AR->dir->images; ?>wizard/url.gif" border="0"><br>URL</a>
+	   	 	<a class="menuButton" id="mnCurrent" href="#" onClick="browseTo('<?php echo $this->path; ?>', this, '<?php echo $nlsdata->name; ?>');"><img src="<?php echo $AR->dir->images; ?>wizard/current.gif" border="0"><br><nobr><?php echo $ARnls["thisobject"]; ?></nobr></a>
+	   	 	<a class="menuButton" id="mnPhotobook" href="#" onClick="browseTo(tbContentEditOptions['photobook']['location'], this, 'Photobook');"><img src="<?php echo $AR->dir->images; ?>wizard/photobook.gif" border="0"><br><?php echo $ARnls["photobook"]; ?></a>
+		    <a class="menuButton" id="mnHome" href="#" onClick="browseTo('<?php echo $AR->user->path; ?>', this, '<?php echo $AR->user->data->name; ?>');"><img src="<?php echo $AR->dir->images; ?>wizard/home.gif" border="0"><br><?php echo $ARnls["home"]; ?></a>
+	   	 	<a class="menuButton" id="mnURL" href="#" onClick="BrowseURL();"><img src="<?php echo $AR->dir->images; ?>wizard/url.gif" border="0"><br><?php echo $ARnls["url"]; ?></a>
 		</div>
 	  </td><td valign="top" width="100%" id="mnToolbar">
 
@@ -485,7 +485,7 @@ BODY 	{
 	</div>
 
 	<div class="tab-page" id="tabPage2">
-		<h2 class="tab">Image Options</h2>
+		<h2 class="tab"><?php echo $ARnls["e_image_options"]; ?></h2>
 		
 		<script type="text/javascript">tp1.addTabPage( document.getElementById( "tabPage2" ) );</script>
 		
@@ -496,7 +496,7 @@ BODY 	{
       <input id="alt" type="text" name="alt" value="<?php echo $alt; ?>" size="20" class="alternate" style="width: 225px;" onChange="showPreview();">
 	  Stijl: 
         <select name="imgstyle" onChange="showPreview();" style="width: 75px;">
-		<option value="view.html">default</option>
+		<option value="view.html"><?php echo $ARnls["default"]; ?></option>
 		</select>
     </td>
 </tr><tr height="100%">
@@ -507,16 +507,16 @@ BODY 	{
 			</tr><tr>
 				<td><select name="align" class="layout" onChange="showPreview();">
 					<?php
-						$list["none"]="Not Set";
-						$list["left"]="Left";
-						$list["right"]="Right";
-						$list["textTop"]="Texttop";
-						$list["absMiddle"]="Absmiddle";
-						$list["baseline"]="Baseline";
-						$list["absBottom"]="Absbottom";
-						$list["bottom"]="Bottom";
-						$list["middle"]="Middle";
-						$list["top"]="Top";				 
+						$list["none"]=$ARnls["e_align_not_set"];
+						$list["left"]=$ARnls["e_align_left"];
+						$list["right"]=$ARnls["e_align_right"];
+						$list["textTop"]=$ARnls["e_align_texttop"];
+						$list["absMiddle"]=$ARnls["e_align_absmiddle"];
+						$list["baseline"]=$ARnls["e_align_baseline"];
+						$list["absBottom"]=$ARnls["e_align_absbottom"];
+						$list["bottom"]=$ARnls["e_align_bottom"];
+						$list["middle"]=$ARnls["e_align_middle"];
+						$list["top"]=$ARnls["e_align_top"];				 
 						while (list($key, $value)=each($list)) {
 							echo "<option value=\"$key\"";
 							if ($key==$align) { echo " selected"; }
