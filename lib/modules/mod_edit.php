@@ -85,6 +85,14 @@
 				echo "<a href='".$this->make_url($path)."' $extra>";				
 			}
 		}
+		
+		function _showImageMapLink($path) {
+			if (pinp_edit::_getEditMode()) {
+				echo "href='".$this->make_url($path).pinp_edit::_getEditTemplate()."'";
+			} else {
+				echo "<href='".$this->make_url($path)."'";
+			}
+		}
 	}
 
 ?>
