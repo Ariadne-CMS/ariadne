@@ -1,8 +1,5 @@
 <pre>
 <?php
-		require($ariadne."/configs/axstore.phtml");
-		require($ariadne."/stores/axstore.phtml");
-
 		echo "== importing grants names\n\n";
 		$ARCurrent->nolangcheck = true;
 		$ARCurrent->options["verbose"]=true;
