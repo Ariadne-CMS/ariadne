@@ -135,6 +135,11 @@ class axstore {
 							$this->error="Could not untar files archive";
 						}
 					}
+
+					if (!$this->error) {
+						/* create a temporary 'temp' directory */
+						@mkdir($this->files."temp/", 0755);
+					}
 				}
 			} else 
 			if ($this->writeable) {
@@ -778,6 +783,10 @@ class axstore {
 								$this->error="Could not create files archive";
 							}
 							$this->rm_dir($this->tempdir."/files");
+						}
+
+						if (file_exists($this->files."/temp")) {
+							$this->rm_dir($this->files."/temp");
 						}
 
 						if (!$this->_tar($this->database, " . ", $this->tempdir)) {
