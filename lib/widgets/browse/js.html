@@ -9,7 +9,11 @@ function Browse(resultobject, path, name, title, mode, filter, filename) {
   }
   browsewindow=window.open(
     '<?php
-       $path=$this->path;
+       if ($this->exists($this->path)) { // sometimes, even i do not exist
+	 $path=$this->path;
+       } else {
+         $path=$this->parent;
+       }	
        echo $this->store->root.$path; 
      ?>browse.phtml?path='+escape(path)+'&title='+escape(title)+
        '&name='+escape(name)+'&mode='+escape(mode)+'&filter='+escape(filter)+
