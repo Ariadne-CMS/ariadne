@@ -79,13 +79,6 @@
   $AR->output_compression = 0;
 
 
-/****************************************************************************/
-/* The rest of the configuration is automatic, only change this when it     */
-/* doesn't work for you and you know what you are doing                     */
-/****************************************************************************/
-
-
-
   /**************************************************************************/
   /* WIN32 or UNIX                                                          */
   /* =============                                                          */
@@ -94,6 +87,12 @@
   /**************************************************************************/
 
   $AR->OS                = 'WIN32';         // Windows 95/98/ME/NT/2000
+
+/****************************************************************************/
+/* The rest of the configuration is automatic, only change this when it     */
+/* doesn't work for you and you know what you are doing                     */
+/****************************************************************************/
+
 
   /**************************************************************************/
   /* Fill in the full path to the webservers document root below            */
