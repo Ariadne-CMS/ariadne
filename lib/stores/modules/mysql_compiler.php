@@ -109,6 +109,7 @@
 				$result=" $left or $right ";
 			break;
 			case 'cmp':
+				$not="";
 				switch ($node["operator"]) {
 					case '=':
 					case '==':
@@ -121,22 +122,55 @@
 					case '>':
 						$operator=$node["operator"];
 					break;
+					case '!~':
+					case '!~~':
+						$not="NOT ";
  					case '~=':
 					case '=~':
-						$operator="LIKE";
+					case '=~~':
+						$operator=$not."LIKE";
+						/* double tildes indicate case-sensitive */
+						if (strlen($operator)==3) {
+							$operator.=" BINARY";
+						}
 					break;
-					case '!~':
-						$operator="NOT LIKE";
+					case '!/':
+					case '!//':
+						$not="NOT ";
+					case '=/':
+					case '=//':
+						$operator=$not."REGEXP";
+						/* double slashes indicate case-sensitive */
+						if (strlen($operator)==3) {
+							$operator.=" BINARY";
+						}
 					break;
 					case '!*':
+					case '!**':
 						$not = " not";
 					case '=*':
-						if ($node["left"]["id"]!=="implements") {
+					case '=**':
+						if ($node["left"]["id"]!=="implements" && $this->store->is_supported("fulltext")) {
 							$left=$this->compile_tree($node["left"], Array("no_context_join" => true));
 							$right=$this->compile_tree($node["right"]);
-							/* fulltext search operators: =*, !*, =**, !** (double asterices indicate boolean mode) */
+							/* fulltext search operators: =*, !*, =**, !** */
 							$operator = $node["operator"];
-							$result = "$not match ($left) against ('".mysqlstore::format_for_fti(substr($right,1,-1))."$boolmode') ";
+							$query = stripslashes(substr($right,1,-1));
+							if (strlen($operator)==3 && $this->store->is_supported("fulltext_boolean")) {
+								/* double asterisks indicate boolean mode */
+								/* make sure the operators are not formatted_for_fti */
+								$storeclass=get_class($this->store);
+								$query = preg_replace(
+										'%(^|\s)([-+~<>(]*)("([^"]*)"|([^ "*]*))([)*]?)%e',
+										"'\\1\\2'.('\\4'?'\"'.$storeclass::format_for_fti('\\4').'\"':$storeclass::format_for_fti('\\5')).'\\6'",
+										$query);
+								$boolmode = " in boolean mode";
+							} else {
+								$boolmode = "";
+								$query = $this->store->format_for_fti($query);
+							}
+							$result = "$not match ($left) against ('$query'$boolmode) ";
+							$this->fulltext_expr[':'.$node["right"]["record_id"]] = $result;
 							return $result;
 						}
 					break;
@@ -191,7 +225,11 @@
 			case 'orderbyfield':
 				$this->in_orderby = true;
 				$left=$this->compile_tree($node["left"]);
-				$right=$this->compile_tree($node["right"]);
+				if ($node["right"]["field"] == 'AR_relevance' && $this->store->is_supported("fulltext")) {
+					$right = $this->fulltext_expr[':'.$node["right"]["record_id"]];
+				} else {
+					$right=$this->compile_tree($node["right"]);
+				}
 				if ($left) {
 					$result=" $left ,  $right ".$node["type"]." ";
 				} else {

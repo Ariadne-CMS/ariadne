@@ -36,8 +36,8 @@ class mysql4store extends mysqlstore {
 
 	function mysql4store($path, $config) {
 		mysqlstore::mysqlstore($path, $config);
-		/* Include module mysql4_compiler */
-		include_once($this->code."stores/modules/mysql4_compiler.php");
+		/* Include module mysql_compiler */
+		include_once($this->code."stores/modules/mysql_compiler.php");
 	}
 
 	function is_supported($feature) {
@@ -46,11 +46,11 @@ class mysql4store extends mysqlstore {
 		true if this feature is supported and false otherwise
 	**********************************************************************************/
 		switch	($feature) {
-			case "fulltext":
-				$result = true;
+			case "fulltext_boolean":
+				$result = mysqlstore::is_supported("fulltext");
 			break;
 			default:
-				$result = mysql_store::supported($feature);
+				$result = mysqlstore::is_supported($feature);
 			break;
 		}
 		return $result;

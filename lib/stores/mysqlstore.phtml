@@ -148,6 +148,9 @@ class mysqlstore {
 					$result = false;
 				}
 			break;
+			case 'regexp':
+				$result = true;
+			break;
 			default:
 				$result = false;
 			break;
@@ -1026,7 +1029,7 @@ class mysqlstore {
 		$properties.
 
 	********************************************************************/
-
+		
 		debug("save_properties([properties], $id)","all");
 		if ($properties && (is_array($properties)) && (is_int($id))) {
 			while (list($property, $property_set)=each($properties)) {
@@ -1042,13 +1045,13 @@ class mysqlstore {
 	}
 
 
-	function load_properties($object) {
-		debug("load_properties($object)","all");
+	function load_properties($object, $values="") {
+		debug("load_properties($object, [values])","all");
 		if ($object) {
 			$query_string="select name from ".$this->tbl_prefix."properties";
 			$query=@mysql_db_query($this->database,$query_string,$this->connect_id);
 			while ($prop=@mysql_fetch_array($query)) {
-				if ($value=$this->load_property($object,$prop["name"])) {
+				if ($value=$this->load_property($object,$prop["name"],$values)) {
 					$result[$prop["name"]]=$value;
 				}
 			}
@@ -1057,15 +1060,21 @@ class mysqlstore {
 		return $result;
 	}
 
-	function load_property($object, $property) {
-		debug("load_property($object, $property)","all");
+	function load_property($object, $property, $values="") {
+		debug("load_property($object, $property, [values])","all");
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
 
 		if ($object) {
-			$query_string="select * from ".$this->tbl_prefix."prop_".AddSlashes($property)." where object=$object";
+			$query_string="select * from ".$this->tbl_prefix."prop_".AddSlashes($property)." where ";
+			if (is_array($values)) {
+				while (list($name, $value)=each($values)) {
+					$query_string.="AR_".AddSlashes($name)."=$value and ";
+				}
+			}
+			$query_string.="object=$object";
 			$query=@mysql_db_query($this->database,$query_string,$this->connect_id);
 			$currProp=0;
 			while ($prop=@mysql_fetch_array($query)) {

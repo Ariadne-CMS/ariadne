@@ -154,6 +154,9 @@ class postgresqlstore {
 	**********************************************************************************/
 		$result = false;
 		switch($feature) {
+			case 'regexp':
+				return true;
+			break;
 			default:
 				$result = false;
 			break;
@@ -1046,15 +1049,15 @@ class postgresqlstore {
 		return($result);
 	}
 
-	function load_properties($object) {
-		debug("load_properties($object)","all");
+	function load_properties($object, $values="") {
+		debug("load_properties($object, [values])","all");
 		if ($object) {
 			$query_string = "select name from ".$this->tbl_prefix."properties";
 			$exec = $this->store_run_query( $query_string);
 			$i = 0;
 			if($exec !== false){
 				while ($prop = @pg_fetch_array($exec, $i++)) {
-					if ($value = $this->load_property($object,$prop["name"])) {
+					if ($value = $this->load_property($object,$prop["name"],$values)) {
 						$result[$prop["name"]] = $value;
 					}
 				}
@@ -1064,15 +1067,21 @@ class postgresqlstore {
 		return ($result);
 	}
 
-	function load_property($object, $property) {
-		debug("load_property($object, $property)","all");
+	function load_property($object, $property, $values) {
+		debug("load_property($object, $property, [values])","all");
 
 		$nodes_tbl = $this->tbl_prefix."nodes";
 		$objects_tbl = $this->tbl_prefix."objects";
 		$types_tbl = $this->tbl_prefix."types";
 
 		if ($object) {
-			$query_string = "select * from ".$this->tbl_prefix."prop_".AddSlashes($property)." where object=$object";
+			$query_string="select * from ".$this->tbl_prefix."prop_".AddSlashes($property)." where ";
+			if (is_array($values)) {
+				while (list($name, $value)=each($values)) {
+					$query_string.="AR_".AddSlashes($name)."=$value and ";
+				}
+			}
+			$query_string.="object=$object";
 			$exec = @$this->store_run_query( $query_string);
 			$i = 0;
 			$currProp=0;

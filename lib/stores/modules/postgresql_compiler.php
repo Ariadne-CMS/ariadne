@@ -105,13 +105,27 @@
 					case '>':
 						$operator=$node["operator"];
 					break;
+					case '!~':
+					case '!~~':
+						$not="NOT ";
  					case '~=':
 					case '=~':
-						$operator="LIKE";
+					case '=~~':
+						if (!strlen($operator)==3) {
+							$not.="I";
+						}
+						$operator=$not."LIKE";
 					break;
-					case '!~':
-						$operator="NOT LIKE";
-					break;
+					case '!/':
+					case '!//':
+						$not="!";
+					case '=/':
+					case '=//':
+						$operator=$not."~";
+						if (strlen($operator)==3) {
+							$operator.="*";
+						}
+						break;
 				}
 				if ($node["left"]["id"]!=="implements") {
 					$left=$this->compile_tree($node["left"]);
