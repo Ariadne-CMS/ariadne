@@ -1,0 +1,13 @@
+<?php
+// FIXME: add error checking and html cleanup stuff
+	if ($this->CheckLogin('edit') && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		if (is_array($changes)) {
+			while (list($path, $fields)=each($changes)) {
+				$this->get($path, 'system.save.data.phtml', $fields);
+			}
+		}
+	}
+?>
+<script>
+  window.close();
+</script>

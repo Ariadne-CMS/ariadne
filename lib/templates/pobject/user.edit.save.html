@@ -5,17 +5,28 @@
 <head>
 <title>Saving Data</title>
 <script>
+  function addFormElement(name, value) {
+    eValue=new String(value);
+    eValue.replace('/"/','&quot;');
+  	document.forms[0].insertAdjacentHTML('BeforeEnd','<input type="hidden" name="'+name+'" value="'+eValue+'">');
+  }
+
   function dosave() {
-    document.forms[0].page.value=window.opener.getContents("page");
+	while (window.opener.isDirty()) {
+		if (field = window.opener.getDirtyField()) {
+			addFormElement('changes['+field.path+']'+field.name, field.value);
+			alert('f:'+field.path+':'+field.name+':'+field.value);
+		} else {
+			alert('frop');
+		}
+	}
     document.forms[0].submit();
   }
 </script>
 </head>
 <body bgcolor="#CCCCCC" onLoad="dosave();">
 <font face='Arial,helvetica,sans-serif'>
-<form method='POST' action='edit.page.save.phtml'>
-<input type='hidden' name='page'>
-<input type='hidden' name='ContentLanguage' value='<?php echo $nls; ?>'>
+<form method='POST' action='user.edit.save.all.phtml'>
 </form>
 <br>
 Saving Data
