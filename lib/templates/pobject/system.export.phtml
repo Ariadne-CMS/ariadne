@@ -157,31 +157,29 @@ global $AR;
 
 								} else {
 									display("(saving ".(($object->axflags) ? " (".$object->axflags.") " : "").")");
-									$ARCurrent->importStore->save(
-											$newpath, 
-											$object->type,
-											$object->data,
-											$object->properties,
-											$object->vtype,
-											$object->priority,
-											$object->axflags);
+									$impObject = $object;
+									$impObject->arIsNewObject = true;
+									$impObject->path = $newpath;
+									$impObject->parent = $this->store->make_path($newpath, "..");
+									$impObject->store = &$ARCurrent->importStore;
+									$impObject->call("system.import.phtml");
 								}
 						} else
 						if ($update_obj) {
 						}
 
 						if (!($object->axflags & AX_DUMMY)) {
-							$object->newObject=current(
-								$ARCurrent->importStore->call("system.get.phtml","",
-									$ARCurrent->importStore->get($newpath)));
+								$object->newObject=current(
+									$ARCurrent->importStore->call("system.get.phtml","",
+										$ARCurrent->importStore->get($newpath)));
 
-							if (!($object->axflags & AX_WITHOUT_TEMPLATES)) {
-								// (update or set templates and files)
-								$object->call("system.export.templates.phtml", "");
-							}
-							if (!($object->axflags & AX_WITHOUT_FILES)) {
-								$object->call("system.export.files.phtml", "");
-							}
+								if (!($object->axflags & AX_WITHOUT_TEMPLATES)) {
+									// (update or set templates and files)
+									$object->call("system.export.templates.phtml", "");
+								}
+								if (!($object->axflags & AX_WITHOUT_FILES)) {
+									$object->call("system.export.files.phtml", "");
+								}
 						}
 
 					} else {
@@ -196,7 +194,7 @@ global $AR;
 					if ($oldpath!=$srcpath && !$nextid_checks[$check_path]) {
 						$nextid_checks[$check_path] = true;
 						$nextid = $this->store->get_nextid($this->store->make_path($oldpath, ".."));
-						if ($nextid) {
+						if ($nextid > 1) {
 							$ARCurrent->importStore->set_nextid($check_path, $nextid);
 							display("setting nextid ($nextid)\n");
 						}

@@ -1,0 +1,16 @@
+<?php
+	if ((($this->arIsNewObject && $this->CheckLogin("add", $this->type)) ||
+			(!$this->arIsNewObject && $this->CheckLogin("edit"))) && 
+			$this->CheckConfig()) {
+
+		$this->store->save(
+				$this->path,
+				$this->type,
+				$this->data,
+				$this->properties,
+				$this->vtype,
+				$this->priority);
+
+		$this->error = $this->store->error;
+	}
+?>
