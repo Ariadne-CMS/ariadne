@@ -52,29 +52,6 @@
 		$wgWizFlow[$i]["prev"]=$i-1;
 		$wgWizFlow[$i]["next"]=$i+1; 
 
-		$repeat=$this->getdata("repeat", "none");
-		if ($repeat==="day") {
-			$step4="edit.object.data.repeat.day.phtml";
-		} else
-		if ($repeat==="week") {
-			$step4="edit.object.data.repeat.week.phtml";
-		} else
-		if ($repeat==="month") {
-			$step4="edit.object.data.repeat.month.phtml";
-		} else
-		if ($repeat==="year") {
-			$step4="edit.object.data.repeat.year.phtml";
-		} else {
-			$wgWizFlow[0]["current"]++; // skip step4
-		}
-		if ($step4) {
-			$i++;
-			$wgWizFlow[$i]["title"]=$ARnls["repeat"]."&nbsp;".$ARnls["data"];
-			$wgWizFlow[$i]["template"]=$step4;
-			$wgWizFlow[$i]["prev"]=$i-1;
-			$wgWizFlow[$i]["next"]=$i+1; 
-		}
-
 		if ($hascustomdata) {
 			$wgWizFlow[$i]["next"]=$i+1;
 			$wgWizFlow[$i]["save"]=$i+2+$saveoffset;
