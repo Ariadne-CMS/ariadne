@@ -183,7 +183,7 @@ class pobject extends object {
 				$this->error="$arNewFilename is no valid filename, do not use '..' in filenames.";
 			}
 		} else { // update an existing object
-			if (!($result=$this->lock(0,"O")) || ($result["locks"][$this->path]["identity"]==$AR->user->data->login)) {
+			if (!$this->lock()) {
 				if ($this->exists($this->path)) { // prevent 'funny stuff'
 					$this->data->mtime=time();
 					// $properties["time"]["mtime"]=$this->data->mtime;
@@ -267,15 +267,16 @@ class pobject extends object {
 	}
 
 	function getlocks() {
+		global $AR;
 		debug("pobject: getlocks()","object");
 		return $this->store->mod_lock->getlocks($AR->user->data->login);
 	}
 
-	function lock($time=0,$mode="O") {
+	function lock($mode="O", $time=0) {
 	global $AR;
 
-		debug("pobject: lock($time, $mode)","object");
-		return $this->store->mod_lock->lock($AR->user->data->login,$this->path,$time,$mode);
+		debug("pobject: lock($mode, $time)","object");
+		return $this->store->mod_lock->lock($AR->user->data->login,$this->path,$mode,$time);
 	}
 
 	function unlock() {
@@ -379,7 +380,6 @@ class pobject extends object {
 
 	function CheckLogin($grant) {
 	global $AR,$ARnls,$ARCurrent,$ARLogin,$ARPassword,$ARCookie,$session_config;
-
 		debug("pobject: CheckLogin($grant)","object");
 		// check for a sessionid
 		$silent=($AR->user) ? 1:0;

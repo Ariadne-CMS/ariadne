@@ -49,19 +49,15 @@ class mysqllock {
 		release >=".time()." and identity='".AddSlashes($identity)."'";
 		$query=@mysql_db_query($this->database, $query_string,$this->connectid);
 		while ($temp=@mysql_fetch_array($query)) {
-			$result["locks"][$temp["path"]]=$temp;
-
-			if ($temp["release"]>$result["release"]) {
-				$result["release"]=$temp["release"];
-			}
+			$result[$temp["path"]]=$temp;
 		}
         debug("mysqllock:get_locks end","all");
 		return $result;		
 	}
 
-	function lock($identity,$path,$time=0,$type="O") {
+	function lock($identity, $path, $type="O", $time=0) {
 	/**********************************************************************
-		This function locks a object/path
+		This function locks an object/path
 	**********************************************************************/
         debug("mysqllock:lock($identity,$path,$time,$type)","store");
 		if (!$time) {
@@ -91,18 +87,9 @@ class mysqllock {
 		// see if this lock is still alive
 		$query_string.="AND release>=".time();
 		$query=@mysql_db_query($this->database, $query_string,$this->connectid);
-		while ($temp=@mysql_fetch_array($query)) {
-			$result["locks"][$temp["path"]]=$temp;
+		$result=@mysql_fetch_array($query);
 
-			if ($temp["release"]>$result["release"]) {
-				$result["release"]=$temp["release"];
-			}
-			if ($temp["identity"]!=$identity) {
-				$result["identity"][]=$temp["identity"];
-			}
-		}
-
-		if (!$result || !$result["identity"]) {
+		if (!$result || ($result["identity"]==$identity)) {
 			if (!$result) {
 				$query_string="
 				insert into locks (path, release, type, identity) values (
@@ -117,8 +104,11 @@ class mysqllock {
 				identity='".AddSlashes($identity)."'";
 			}
 
+			unset($result);
 			mysql_db_query($this->database, $query_string,$this->connectid);
 		}
+
+		$this->lastLock=$result;
 
 		$query_string="unlock tables";
 		mysql_db_query($this->database,$query_string,$this->connectid);
