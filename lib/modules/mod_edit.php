@@ -5,26 +5,26 @@
 	
 	*/
 
-	class pinp_edit {
+	class edit {
 
-		function _setEditMode($mode=false, $template='user.edit.html', $target='_top') {
+		function setEditMode($mode=false, $template='user.edit.html', $target='_top') {
 			global $mod_edit_data;
 			$mod_edit_data['editmode']=$mode;
 			$mod_edit_data['edittemplate']=$template;
 			$mod_edit_data['edittarget']=$target;
 		}
 
-		function _getEditMode() {
+		function getEditMode() {
 			global $mod_edit_data;
 			return $mod_edit_data['editmode'];
 		}
 
-		function _getEditTemplate() {
+		function getEditTemplate() {
 			global $mod_edit_data;
 			return $mod_edit_data['edittemplate'];
 		}
 
-		function _getEditTarget() {
+		function getEditTarget() {
 			global $mod_edit_data;
 			return $mod_edit_data['edittarget'];
 		}
@@ -37,9 +37,9 @@
 			return $id;
 		}
 
-		function _showInputText($var, $name, $title='') {
-			if (pinp_edit::_getEditMode() && $this->CheckSilent('edit')) {
-				$id=pinp_edit::registerDataField($name);
+		function showInputText($var, $name, $title='') {
+			if (edit::getEditMode() && $this->CheckSilent('edit')) {
+				$id=edit::registerDataField($name);
 				echo "<input type='text' class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title' value='";
 				echo $var;
 				echo "'>";
@@ -48,9 +48,9 @@
 			}
 		}
 
-		function _showSpan($var, $name, $title='') {
-			if (pinp_edit::_getEditMode() && $this->CheckSilent('edit')) {
-				$id=pinp_edit::registerDataField($name);
+		function showSpan($var, $name, $title='') {
+			if (edit::getEditMode() && $this->CheckSilent('edit')) {
+				$id=edit::registerDataField($name);
 				echo "<span class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title'>";
 				echo $var;
 				echo "</span>";
@@ -59,9 +59,9 @@
 			}
 		}
 
-		function _showDiv($var, $name, $title='') {
-			if (pinp_edit::_getEditMode() && $this->CheckSilent('edit')) {
-				$id=pinp_edit::registerDataField($name);
+		function showDiv($var, $name, $title='') {
+			if (edit::getEditMode() && $this->CheckSilent('edit')) {
+				$id=edit::registerDataField($name);
 				echo "<div class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title'>";
 				echo $var;
 				echo "</div>";
@@ -70,17 +70,17 @@
 			}
 		}
 
-		function _showLink($path, $extra='') {
-			if (pinp_edit::_getEditMode()) {
-				echo "<a href='".$this->make_url($path).pinp_edit::_getEditTemplate()."' $extra target='".pinp_edit::_getEditTarget()."'>";
+		function showLink($path, $extra='') {
+			if (edit::getEditMode()) {
+				echo "<a href='".$this->make_url($path).edit::getEditTemplate()."' $extra target='".edit::getEditTarget()."'>";
 			} else {
 				echo "<a href='".$this->make_url($path)."' $extra>";				
 			}
 		}
 
-		function _showEditableLink($path, $extra='', $url=false) {
-			if (pinp_edit::_getEditMode()) {
-				echo "<a onClick=\"event.cancelBubble=true\" onDblClick=\"top.location='".$this->make_url($path).pinp_edit::_getEditTemplate()."'\" $extra>";
+		function showEditableLink($path, $extra='', $url=false) {
+			if (edit::getEditMode()) {
+				echo "<a onClick=\"event.cancelBubble=true\" onDblClick=\"top.location='".$this->make_url($path).edit::getEditTemplate()."'\" $extra>";
 			} else {
 				if (!$url) {
 					$url=$this->make_url($path);
@@ -89,12 +89,57 @@
 			}
 		}
 		
-		function _showHref($path, $extra='') {
-			if (pinp_edit::_getEditMode()) {
-				echo "href='".$this->make_url($path).pinp_edit::_getEditTemplate()."' $extra target='".pinp_edit::_getEditTarget()."'";
+		function showHref($path) {
+			if (edit::getEditMode()) {
+				echo "href='".$this->make_url($path).edit::getEditTemplate()."' target='".edit::getEditTarget()."'";
 			} else {
 				echo "href='".$this->make_url($path)."'";
 			}
 		}
 	}
+
+	class pinp_edit {
+
+		function _setEditMode($mode=false, $template='user.edit.html', $target='_top') {
+			return edit::setEditMode($mode, $template, $target);
+		}
+
+		function _getEditMode() {
+			return edit::getEditMode();
+		}
+
+		function _getEditTemplate() {
+			return edit::getEditTemplate();
+		}
+
+		function _getEditTarget() {
+			return edit::getEditTarget();
+		}
+
+		function _showInputText($var, $name, $title='') {
+			return edit::showInputText($var, $name, $title);
+		}
+
+		function _showSpan($var, $name, $title='') {
+			return edit::showSpan($var, $name, $title);
+		}
+
+		function _showDiv($var, $name, $title='') {
+			return edit::showDiv($var, $name, $title);
+		}
+
+		function _showLink($path, $extra='') {
+			return edit::showLink($path, $extra);
+		}
+
+		function _showEditableLink($path, $extra='', $url=false) {
+			return edit::showEditableLink($path, $extra, $url);			
+		}
+		
+		function _showHref($path) {
+			return edit::showHref($path);
+		}
+	}
+
+
 ?>

@@ -2,9 +2,11 @@
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin('read') && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 ?>
-<body contentEditable='true' id='page'>
+<body>
 <?php
-		$this->ShowPage();
+	$this->_load('mod_edit.php');
+	edit::setEditMode(true);
+	edit::showDiv($this->GetPage(), "[$nls][page]");
 ?>
 </body>
 <?php
