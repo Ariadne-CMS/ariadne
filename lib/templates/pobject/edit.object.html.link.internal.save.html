@@ -1,0 +1,27 @@
+<?php
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+?>
+<script>
+<!-- 
+	function attribute(name, value) {
+		this.name=name;
+		this.value=value;
+	}
+
+	function doSubmit() {
+		var arr = new Array();
+		arr["attributes"]=new Array();
+        arr["attributes"][0] = new attribute('ar_type','internal');
+        arr["attributes"][1] = new attribute('ar_path','<?php echo $ar_path; ?>');
+        arr["URL"] = '<?php echo $this->make_url($ar_path); ?>';
+		top.window.returnValue = arr;
+		top.window.close();
+	}
+
+	doSubmit();
+
+// -->
+</SCRIPT>
+<?php
+	}
+?>

@@ -1,0 +1,120 @@
+<?php
+	/******************************************************************
+	 edit.object.html.link.phtml                          Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $src
+	 Grant needed: read
+	 Global variables: none
+
+	 This template displays a hyperlink dialog window for the MSIE WYSIWYG
+	 HTML editor.
+
+	 It is meant to be called via a (MSIE specific) showModalDialog()
+	 On submit it calls the javascript function LINK_set() in the 
+	 opener window, with an array with the new values.
+	 
+	 no result
+
+	******************************************************************/
+
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		// show image select box with browse button 
+		global $PHP_SELF,$QUERY_STRING; 
+		$settings=$this->call("editor.ini");
+?>
+<HTML>
+<HEAD>
+<title>Hyperlink</title>
+<style>
+TD {
+	FONT: 11px arial, helvetica, sans-serif;
+}
+INPUT {
+	FONT: 11px arial, helvetica, sans-serif;
+	MARGIN: 2px 4px 2px 4px;
+	WIDTH: 50px;
+}
+SELECT {
+	FONT: 11px arial, helvetica, sans-serif;
+	MARGIN: 2px 4px 2px 4px;
+	WIDTH: 75px;
+}
+BODY 	{
+	FONT: 11px arial, helvetica, sans-serif;
+	BORDER: 0;
+	BACKGROUND-COLOR: buttonface;
+	PADDING: 0px;
+	MARGIN: 7px;
+}
+.button {
+	width:75px;
+	margin-left: 10px;
+}
+.alternate {
+	width: 235px;
+}
+.fieldset {
+	width: 245px;
+}
+.layout {
+	width: 75px;
+}
+.url {
+	width: 225px;
+}
+</style>
+<SCRIPT LANGUAGE=JavaScript>
+<!--
+function IsDigit()
+{
+	return ((event.keyCode >= 48) && (event.keyCode <= 57))
+}
+// -->
+</SCRIPT>
+
+<SCRIPT LANGUAGE=JavaScript>
+<!--
+	function doSubmit(form) {
+		realform.doSubmit();
+	}
+
+	function init() {
+		var defaultType='<?php echo current($settings["hyperlink"]); ?>';
+		var allTypes=new Array();
+		<?php
+			reset($settings["hyperlink"]);
+			while (list($key, $value)=each($settings["hyperlink"])) {
+				echo "		allTypes['$key']='$value';\n";
+			}
+		?>
+		if (window.dialogArguments['ar_type']) {
+			arType=allTypes[window.dialogArguments['ar_type']];
+		} else {
+			arType=defaultType;
+		}
+		document.all['realform'].src=arType;
+	}
+// -->
+</SCRIPT>
+</HEAD>
+<BODY SCROLL=NO onLoad="init()">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<form onSubmit="doSubmit(this)">
+<tr>
+	<td>
+		<fieldset id="hyperlink">
+		<legend>Hyperlink Information</legend>
+		<iframe name="realform" style="margin: 0px; padding: 0px; height: 70px; width: 270px;">
+		</iframe>
+		</fieldset>
+		</td><td>
+	<td valign="top"><input type="button" name="ok" value="OK" class="button" onClick="doSubmit(this.form);"><BR>
+        <input type="button" name="cancel" value="Cancel" onClick="window.close();" class="button"></td>
+</tr>
+</form>
+</table>
+</body>
+</html>
+<?php
+	}
+?>

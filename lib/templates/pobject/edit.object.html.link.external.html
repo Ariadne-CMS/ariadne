@@ -1,0 +1,114 @@
+<?php
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		$settings=$this->call('editor.ini');
+?><html>
+<head>
+<style>
+TD {
+	FONT: 11px arial, helvetica, sans-serif;
+}
+INPUT {
+	FONT: 11px arial, helvetica, sans-serif;
+	MARGIN: 2px 4px 2px 4px;
+	WIDTH: 50px;
+}
+SELECT {
+	FONT: 11px arial, helvetica, sans-serif;
+	MARGIN: 2px 4px 2px 4px;
+	WIDTH: 75px;
+}
+BODY 	{
+	FONT: 11px arial, helvetica, sans-serif;
+	BORDER: 0;
+	BACKGROUND-COLOR: buttonface;
+	MARGIN: 0px;
+	PADDING: 0px;
+}
+.button {
+	width:75px;
+	margin-left: 10px;
+}
+.alternate {
+	width: 235px;
+}
+.fieldset {
+	width: 245px;
+}
+.layout {
+	width: 75px;
+}
+.url {
+	width: 225px;
+}
+</style>
+<SCRIPT LANGUAGE=JavaScript>
+<!--
+	function doSubmit() {
+		document.forms[0].submit();
+	}
+
+	function doChangeType(type) {
+		document.location.href=type;
+	}
+// -->
+</SCRIPT>
+<SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
+<!--
+	for ( elem in top.window.dialogArguments ) {
+		switch( elem ) {
+			case "URL":
+				document.forms[0]['URL'].value = top.window.dialogArguments["URL"];
+				break;
+			case "ar_type":
+				var ar_type = top.window.dialogArguments["ar_type"];
+				for (i=0; i<document.forms[0]['ar_type'].options.length; i++) {
+					if (document.forms[0]['ar_type'].options[i].value==ar_type) {
+						document.forms[0]['ar_type'].selectedIndex=i;
+						break;
+					}
+				}						
+				break;				
+		}
+	}
+// -->
+</script>
+</HEAD>
+<BODY SCROLL=NO>
+		<table class="fieldset" align="left">
+		<form action="edit.object.html.link.external.save.html">
+			<tr>
+				<td>Type:</td>
+				<td><select name="ar_type" class="layout" onChange="doChangeType(this.options[this.selectedIndex].value);">
+					<?php
+						$type="edit.object.html.link.external.html";
+						while (list($key, $value)=each($settings["hyperlink"])) {
+							echo "<option value=\"$value\"";
+							echo ">$key</option>";
+						}
+					?>
+				</select></td>
+				<!-- td>Protocol:</td>
+				<td><select name="protocol" class="layout">
+					<?php
+						$list["http"]="http:";
+						$list["ftp"]="ftp:";
+						$list["mailto"]="mailto:";
+						$list["news"]="news:";
+						while (list($key, $value)=each($list)) {
+							echo "<option value=\"$key\"";
+							if ($key==$protocol) { echo " selected"; }
+							echo ">$value</option>";
+						}
+					?>
+				</select></td -->
+			</tr><tr>
+				<td>URL:</td>
+				<td colspan="3"><INPUT ID=URL TYPE=TEXT NAME=URL value="<?php echo $URL; ?>" class="url"></td>
+			</tr>
+			</form>
+		</table>
+</body>
+</html>
+<?php
+	}
+?>
