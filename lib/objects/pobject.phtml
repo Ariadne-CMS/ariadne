@@ -783,7 +783,7 @@ class pobject extends object {
             if ($ARCurrent->arCallStack) {
                 Parse_Str(end($ARCurrent->arCallStack));
             }
-            if (${$nls}[$varname]) {
+            if (isset(${$nls}[$varname])) {
                 $result=${$nls}[$varname];
 			} else if (isset($ARCurrent->$nls->$varname)) {
 				$result=$ARCurrent->$nls->$varname;
@@ -805,7 +805,7 @@ class pobject extends object {
 			if ($ARCurrent->arCallStack) {
 				Parse_Str(end($ARCurrent->arCallStack));
 			}
-			if ($$varname) {
+			if (isset($$varname)) {
 				$result=$$varname;
 			} else if (isset($ARCurrent->$varname)) {
 				$result=$ARCurrent->$varname;
