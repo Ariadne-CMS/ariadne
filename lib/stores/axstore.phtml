@@ -592,8 +592,8 @@ class axstore {
 		}
 		$command=sprintf($this->tar_untar, $dstdir, $file, $tarfile, $handler );
 		system($command,$retVar);
-		if ($retVar!=0) {
-			$this->error="Error: Can't untar $tarfile, untar failed in $dstdir with errorcode ($retVar)\n";
+		if ($retVar!=0 && $retVar!=259) {
+			$this->error.="Error:\n	($command):\n	Can't untar $tarfile, untar failed in $dstdir with errorcode ($retVar)\n";
 			if ($errfile && file_exists($errfile)) {
 				$this->error.=implode("",file($errfile));						
 				unlink($errfile);
@@ -615,7 +615,7 @@ class axstore {
 		$command=sprintf($this->tar_tar, $dstdir, $file, $tarfile, $handler );
 		system($command,$retVar);
 		if ($retVar!=0) {
-			$this->error="Error: ($command): Can't tar to $tarfile, tar failed in $dstdir with errorcode ($retVar)\n";
+			$this->error="Error: ($command):\n	Can't tar to $tarfile, tar failed in $dstdir with errorcode ($retVar)\n";
 			if ($errfile && file_exists($errfile)) {
 				$this->error.=implode("",file($errfile));						
 				unlink($errfile);
