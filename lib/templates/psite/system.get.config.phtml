@@ -2,36 +2,21 @@
 	/******************************************************************
 	 system.get.config.phtml							 Muze Ariadne v2.0b
 	 ------------------------------------------------------------------
-	 Called by 'pobject->CheckConfig()' (from file 'ariadne/pobject.phtml')
-	 Arguments: $req_function
+	 Arguments: see super::system.get.config.phtml
 	 Grant needed: none
-	 Interface/Widget: none
-	 Global variables: $newtemplate, $cacheconfig
+	 Global variables: none
 
-	 This template is called from pobject itself, via CheckConfig().
-	 It will set the global variables $ARConfig->template and 
-	 $ARConfig->cache according to the values filled in via the 
-	 config.phtml template.
+	 This template calls its superclass template first, and then adds
+	 the url defined in psite to the configcache->root.
 
-	 It has one argument, $req_function, which stands for 'requested 
-	 function'. It will check in it's list with template pointers 
-	 ($data->templates) if the requested function has a new template
-	 assigned to it and if so set the path to this template as the 
-	 global variable $ARConfig->template.
+	 This allows make_url() to generate correct user specified url's.
 
-	 It will furthermore set the global variable $ARConfig->cache to 
-	 it's own cache setting ($data->cacheconfig, also entered via 
-	 config.phtml) if that cache setting is not 'inherit cache config'
-	 (meaning: $data->cacheconfig is set and not 0).
-
-	 $req_function must be a valid string.
-
-	 No return value.	
+	 No result.	
 
 	******************************************************************/
 
 	debug($this->type."/system.get.config.phtml ".$this->path,"class");
-	$this->call(get_parent_class($this)."::system.get.config.phtml");
+	$this->call("super::system.get.config.phtml");
 	$configcache=$ARConfig->cache[$this->path];
 	// this is the only
 	if ($data->url) {

@@ -1,0 +1,71 @@
+<?php
+	/******************************************************************
+
+	******************************************************************/
+	if ($this->CheckSilent("read")) {
+?>
+<table border="0" width="90%">
+<tr>
+	<td>
+		<?php 
+			$arLanguage=$this->getdata("arLanguage","none");
+			if (!$arLanguage) {
+			 $arLanguage=$ARConfig->nls->default;
+			}
+			$selectednls=$arLanguage;
+			$selectedlanguage=$ARConfig->nls->list[$arLanguage];
+			$flag="<img src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\">";
+		?>
+		<fieldset id="data">
+		<legend><?php echo $ARnls["address"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+			<table border="0" align="center">
+			<tr>
+				<td>
+					<?php echo $ARnls["address"]; ?>
+				</td><td align="right">
+					<?php echo $flag; ?>
+				</td>
+			</tr><tr>
+				<td colspan="2">
+					<input type="text" name="address" maxlength="50" size="32"
+						value="<?php $this->showdata("address", "none"); ?>">
+				</td>
+			</tr><tr>
+				<td>
+					<?php echo $ARnls["zipcode"]; ?>
+				</td><td>
+					<?php echo $ARnls["city"]; ?>
+				</td>
+			</tr><tr>
+				<td>
+					<input type="text" name="zipcode" size="10" maxlength="10" value="<?php $this->showdata("zipcode","none"); ?>">
+				</td><td>
+					<input type="text" name="city" size="16" value="<?php $this->showdata("city","none"); ?>">
+				</td>
+			</tr><tr>
+				<td>
+					<?php echo $ARnls["country"]; ?>
+				</td>
+			</tr><tr>
+				<td colspan="2">
+					<select name="country">
+					<?php
+						$this->ls("/system/addressbook/countries/","show.option.value.phtml","selected=".$this->getdata("country","none"));
+					?>
+					</select>
+				</td>
+			</tr>
+			</table>
+		</fieldset>
+	</td>
+</tr>
+</table>
+<script>
+	window.onload=init;
+	function init() {
+		document.wgWizForm["address"].focus();
+	}
+</script>
+<?php
+	}
+?>

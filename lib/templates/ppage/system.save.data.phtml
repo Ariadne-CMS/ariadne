@@ -13,7 +13,6 @@
 			// the defined interface: $arCallArgs)
 		    $this->data=@current($this->get(".","system.get.data.phtml"));
 		}
-
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
 			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
 		} else {
@@ -24,21 +23,24 @@
 			reset($AR->nls->list);
 			while (list($key, $value)=each($AR->nls->list)) {
 				
-				if ($this->getdata("name", $key)) {
+				if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
 					if (!$this->data->$key) {
+						debug("$key not yet set","all");
 						$newnlsdata=new object;
 					} else {
+						debug("$key was set","all");
 						$newnlsdata=$this->data->$key;
 					}
-					if (!$this->getdata("name",$key)) {
-						$this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
-					}
-					$newnlsdata->name=$this->getdata("name",$key);
+					debug("name found: $name","all");
+					$newnlsdata->name=$name;
 					$properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
 					$properties["text"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
 					$newnlsdata->summary=$this->getdata("summary",$key);
 					$properties["text"][]["value"]="'".AddSlashes($newnlsdata->summary)."'";
-					$this->data->$key=$newnlsdata;
+					if ($page=$this->getdata("page",$key)) {
+						$newnlsdata->page=$page;
+					}
+					$this->data->{$key}=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
 				} else { // clear language values for $key->name if set, keep the rest, just in case.
 					if ($this->data->$key) {
@@ -47,27 +49,7 @@
 					}
 				}
 			}
-			$this->data->address=$this->getdata("address","none");
-			$this->data->zipcode=$this->getdata("zipcode","none");
-			$this->data->city=$this->getdata("city","none");
-			$this->data->country=$this->getdata("country","none");
-			$this->data->telephone=$this->getdata("telephone","none");
-			$this->data->fax=$this->getdata("fax","none");
-			$this->data->pobox=$this->getdata("pobox","none");
-			$this->data->url=$this->getdata("url","none");
-			$emails=explode(",",$this->getdata("emails","none"));
-			if ($emails[0]) {
-					$this->data->emails=$emails;
-			} else {
-					unset($this->data->emails);
-			}
-			$properties["address"][0]["street"]="'".AddSlashes($this->data->address)."'";
-			$properties["address"][0]["zipcode"]="'".AddSlashes($this->data->zipcode)."'";
-			$properties["address"][0]["city"]="'".AddSlashes($this->data->city)."'";
-			$properties["address"][0]["country"]="'".AddSlashes($this->data->country)."'";
-			if (!$this->error) {
-				$this->save($properties);
-			}
 		}
+		$this->save($properties);
 	}
 ?>

@@ -1,7 +1,7 @@
 <?php
   if ($this->CheckLogin("read") && $this->CheckConfig()) {
     // first do normal delete
-    $this->call(get_parent_class($this)."::system.delete.phtml");
+    $this->call("super::system.delete.phtml");
     if (!$arResult) {
       // no errors: delete files
       if ($d=@dir($this->store->files."files".$this->path)) {

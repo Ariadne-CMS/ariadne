@@ -15,7 +15,10 @@
 ?>
 <html>
 <head>
-<title><?php echo $ARnls["editobject"]; ?></title>
+<title><?php 
+	$title=$ARnls["edit"]." ".@current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml")); 
+	echo $title;
+?></title>
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
 </head>
 <body bgcolor="white">
@@ -32,7 +35,7 @@
 <table border="0" cellspacing="0" width="100%">
 <tr>
 	<td colspan="2" bgcolor="#404074">
-		<font face="helvetica, sans-serif" color="white" size="+1"><b><?php echo $ARnls["editobject"]; ?> :</b></font>
+		<font face="helvetica, sans-serif" color="white" size="+1"><b><?php echo $title; ?> :</b></font>
 	</td>
 </tr><tr>
 	<td align="right">

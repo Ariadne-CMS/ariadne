@@ -1,0 +1,20 @@
+<?php
+	if ( ( $this->arIsNewObject && $this->CheckLogin("add") ) ||
+			 ( !$this->arIsNewObject && $this->CheckLogin("edit") ) ) {
+		global $HTTP_POST_FILES, $HTTP_POST_VARS;
+
+		$file_temp=$HTTP_POST_FILES['file']['tmp_name'];
+		$file=$HTTP_POST_FILES['file']['name'];
+		if ($file && is_uploaded_file($file_temp)) {
+			// new file uploaded -> save it before PHP deletes it
+			$file_artemp=tempnam($this->store->files."temp","upload");
+			if (move_uploaded_file($file_temp, $file_artemp)) {
+				// now make the new values available to wgWizKeepVars()
+				$HTTP_POST_VARS["file"]=$file;
+				$HTTP_POST_VARS["file_temp"]=substr($file_artemp,strlen($this->store->files."temp"));
+				$HTTP_POST_VARS["file_size"]=$HTTP_POST_FILES['file']['size'];
+				$HTTP_POST_VARS["file_type"]=$HTTP_POST_FILES['file']['type'];
+			} 
+		}
+	}
+?>

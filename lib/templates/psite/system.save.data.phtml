@@ -1,50 +1,25 @@
 <?php
-  /******************************************************************
-   system.save.data.phtml			   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
+	/******************************************************************
+	 system.save.data.phtml				 Muze Ariadne v2.0b
+	 ------------------------------------------------------------------
  
-  ******************************************************************/
+	******************************************************************/
 
-  if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-    $this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
-  } else {
-    if (!$this->data->nls) {
-      $this->data->nls=new object;
-    }
-    $this->data->nls->default=$ARConfig->nls->default;
-    reset($AR->nls->list);
-    while (list($key, $value)=each($AR->nls->list)) {
-      
-      if ($this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
-        if (!$this->data->$key) {
-          $newnlsdata=new object;
-        } else {
-          $newnlsdata=$this->data->$key;
-        }
-        if (!$this->getdata("name",$key)) {
-          $this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
-        }
-        $newnlsdata->name=$this->getdata("name",$key);
-        $properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
-        $newnlsdata->summary=$this->getdata("summary",$key);
-        $this->data->$key=$newnlsdata;
-        $this->data->nls->list[$key]=$value;
-      } else { // clear language values for $key->name if set, keep the rest, just in case.
-        if ($this->data->$key) {
-          unset($this->data->$key->name);
-          unset($this->data->nls->list[$key]);
-        }
-      }
-    }
-  }
-  $url=$this->getdata("url","none");
-  if ($this->data->url!=$url) {
-    $this->data->url=$url;
-    // Changing the root url invalidates all cache images below this.
-    $this->ClearCache();
-  }
-  if (substr($this->data->url,-1)=="/") {
-    $this->data->url=substr($this->data->url,0,-1);
-  }
-  include($this->store->code."includes/system.save.phtml");
+	if (($this->arIsNewObject && $this->CheckLogin("add")) ||
+			(!$this->arIsNewObject && $this->CheckLogin("edit")) &&
+			$this->CheckConfig()) {
+		$this->call("super::system.save.data.phtml",$arCallArgs);
+		if (!$this->error) {
+			$url=$this->getdata("url","none");
+			if ($this->data->url!=$url) {
+				$this->data->url=$url;
+				// Changing the root url invalidates all cache images below this.
+				$this->ClearCache();
+			}
+			if (substr($this->data->url,-1)=="/") {
+				$this->data->url=substr($this->data->url,0,-1);
+			}
+			$this->save();
+		}
+	}
 ?>

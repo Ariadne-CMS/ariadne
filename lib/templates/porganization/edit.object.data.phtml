@@ -8,24 +8,36 @@
 	******************************************************************/
 
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+		global $HTTP_POST_FILES, $HTTP_POST_VARS;
 		include($this->store->code."widgets/wizard/code.php");
 
-		$summary="edit.object.data.form.phtml";
+		$name="edit.object.data.name.phtml";
+		$address="edit.object.data.address.phtml";
+		$contact="edit.object.data.contact.phtml"; 
 		$language="edit.object.language.phtml";
-		$save="edit.object.data.save.phtml";
-
+		$finish="edit.object.data.save.phtml";
+ 
 		$wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
 		$i++;
-		$wgWizFlow[$i]["title"]=$ARnls["data"];
-		$wgWizFlow[$i]["template"]=$summary;
-		if (count($ARConfig->nls->list)>1) {
-			$languagecontrol=true;
-			$wgWizFlow[$i]["save"]=$i+2;
+		$wgWizFlow[$i]["title"]=$ARnls["name"];
+		$wgWizFlow[$i]["template"]=$name;
+		$wgWizFlow[$i]["next"]=$i+1; 
+		$i++;
+		$wgWizFlow[$i]["title"]=$ARnls["address"];
+		$wgWizFlow[$i]["template"]=$address;
+		$wgWizFlow[$i]["prev"]=$i-1;
+		$wgWizFlow[$i]["next"]=$i+1; 
+		$i++;
+		$wgWizFlow[$i]["title"]=$ARnls["contactinformation"];
+		$wgWizFlow[$i]["template"]=$contact;
+		$wgWizFlow[$i]["prev"]=$i-1;
+		if (count($ARConfig->nls->list)>1) { // just one language available
 			$wgWizFlow[$i]["next"]=$i+1;
+			$wgWizFlow[$i]["save"]=$i+2;
 			$i++;
 			$wgWizFlow[$i]["title"]=$ARnls["language"];
 			$wgWizFlow[$i]["template"]=$language;
-			$wgWizFlow[$i]["next"]=$i-1;;
+			$wgWizFlow[$i]["next"]=$i-3;
 			$wgWizFlow[$i]["prev"]=$i-1;
 			$wgWizFlow[$i]["save"]=$i+1;
 		} else {
@@ -33,19 +45,12 @@
 		}
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["save"];
-		$wgWizFlow[$i]["template"]=$save;
+		$wgWizFlow[$i]["template"]=$finish;
 		$wgWizFlow[$i]["back"]=$i-1;
-
-		global $HTTP_POST_VARS, $HTTP_POST_FILES;		
-		if ($wgWizFlow[0]["current"]==1) {
-			$arControl=$this->getdata("wgWizControl","none");
-			if (($arControl==$ARnls["next"]) || ($arControl==$ARnls["save"])) {
-				$this->call("system.save.tempfile.phtml");
-			}
-		}
+	 
 		$arLanguage=$this->getdata("arLanguage","none");
-		if ($languagecontrol && $wgWizFlow[0]["current"]==2) { // =edit.object.language.phtml
-			$arControl=$this->getdata("wgWizControl","none");
+		$arControl=$this->getdata("wgWizControl","none");
+		if ($wgWizFlow[0]["current"]==4) { // =edit.object.language.phtml
 			if ($arControl==$ARnls["prev"]) { // if previous selected, ignore the language select list.
 				$arLanguage=$this->getdata("arPrevLanguage","none");
 				$ARCurrent->arLanguage=$arLanguage;
@@ -55,9 +60,15 @@
 			$arLanguage=$ARConfig->nls->default;
 			$ARCurrent->arLanguage=$arLanguage;
 		}
+		$arNewFilename=$this->getdata("arNewFilename","none");
+		if (!$arNewFilename) {
+			$arNewFilename="{5:id}";
+			$ARCurrent->arNewFilename=$arNewFilename;
+		}		
 		$HTTP_POST_VARS["arLanguage"]=$arLanguage;
-		$name=@current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml"));
-		$wgWizTitle=$ARnls["edit"]." ".$name;		
+
+		$result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
+		$wgWizTitle=$ARnls["edit"]." ".$result[0];		
 		include($this->store->code."widgets/wizard/classic.html");
 	}
 ?>

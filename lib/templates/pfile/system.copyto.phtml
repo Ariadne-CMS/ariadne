@@ -1,7 +1,7 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		// first do normal copyto
-		$this->call(get_parent_class($this)."::system.copyto.phtml");
+		$this->call("super::system.copyto.phtml");
 		if (!$arResult) {
 			// no errors: copy files
 			$this->Mkdir("files".$newpath);

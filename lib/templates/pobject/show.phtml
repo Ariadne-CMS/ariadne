@@ -7,7 +7,7 @@
 		echo "<a href=\"".$this->store->root.$this->path."\"".
 				 " onClick=\"if (top.tree) { top.View('$this->path'); return false; }\">";
 	}
-	echo '<img src="'.$AR->dir->images.'icons/'.$this->type.'.gif" alt="[view]" border="0">';
+	echo '<img src="'.$AR->dir->images.'icons/'.$this->type.'.gif" alt="[view]" border="0"> ';
 	if (!$this->CheckSilent("read")) {
 		echo "$flag<font color=\"#CCCCCC\"><b>$nlsdata->name</b></font></a>{$nlsdata->summary}";
 	} else {

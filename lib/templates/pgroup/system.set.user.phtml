@@ -1,0 +1,34 @@
+<?php
+	if ($this->CheckSilent("edit")) {
+
+		// first make sure that the object is clean (data can only be set via 
+		// the defined interface: $arCallArgs)
+		$this->data=@current($this->get(".","system.get.data.phtml"));
+
+		if ($user=@current($this->get($path, "system.get.phtml")) &&
+				$this->store->implements($user->type, "puser")) {
+			$user->call("system.set.group.phtml", "action=$action&path=".
+						RawUrlEncode($this->path)."&id=".RawUrlEncode($this->data->login));
+			if ($action=="add") {
+				$this->link($path, $this->path.$user->data->login."/");
+			} else {
+				//FIXME: check path
+				$this->delete($path);						
+			}
+			// FIXME: update tree
+		}
+		if (!$arReturnPage) {
+			$arReturnPage=$this->store->root.$this->path."classic.edit.phtml";
+		}
+		//calculate and save new member properties
+		$members=$this->ls(".","system.get.id.phtml");
+		while (list($key, $member)=@each($members)) {
+			$properties["members"][]["login"]="'".AddSlashes($member)."'";
+		} 
+		if (!$properties["members"]) {
+			// make sure the members property is cleared
+			$properties["members"]=1;
+		}
+		$this->save($properties);
+	}
+?>

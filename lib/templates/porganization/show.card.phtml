@@ -1,4 +1,8 @@
-<?php $width="1"; $height="1"; ?>
+<?php 
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		$width="1"; 
+		$height="1";
+?>
 <table border="0" cellspacing="0" celllpadding="0" width="100%">
 <tr><td colspan="3" bgcolor="#DDDDDD"><img height="<?php echo $height; ?>" width="<?php echo $width; ?>" src="<?php echo $AR->dir->images."dot.gif"; ?>"></td></tr>
 <tr><td bgcolor="#DDDDDD" width="1"><img border="0" width="<?php echo $width; ?>" height="<?php echo $height; ?>" src="<?php echo $AR->dir->images."dot.gif"; ?>"></td>
@@ -15,14 +19,14 @@
 	<?php $this->showdata("zipcode"); ?>&nbsp;&nbsp;
 	<?php $this->showdata("city"); ?><br>
 	<?php
-		$this->get("/system/addressbook/countries/".$this->data->country,"ShowName.phtml");
+		$this->get("/system/addressbook/countries/".$this->data->country,"show.name.phtml");
 	?><br><br>
 	<?php $this->showdata("telephone"); ?><br>
 	<?php $this->showdata("mobile"); ?><br>
 	</td><td width="100">&nbsp;</td>
 	<td align="left" valign="top">
 		<?php
-			echo $this->nlsdata->summary; 
+			echo $nlsdata->summary; 
 		?>
 		<br><br>
 		<?php
@@ -41,3 +45,6 @@
 <tr><td colspan="3" bgcolor="#DDDDDD"><img height="<?php echo $height; ?>" width="<?php echo $width; ?>" src="<?php echo $AR->dir->images."dot.gif"; ?>"></td></tr>
 </table>
 <p>
+<?php
+	}
+?>

@@ -1,21 +1,17 @@
 <?php
-  /******************************************************************
-   index.html					   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
-   Arguments: none
-   Grant needed: read
-   Interface/Widget: all
-   Global variables: none
+	/******************************************************************
+	 view.html                                             Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: read
+	 Global variables: none
 
-   This displays a suitable overview of the object.
+	 This displays a suitable overview of the object.
 
-   no result.
+	 no result.
  
-  ******************************************************************/
-  if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs) ) {
-    if ($this->exists("index.html/")) {
-      $this->get("index.html/","view.html");
-    } else {
+	******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs) ) {
 ?>
 <html>
 <head>
@@ -27,7 +23,7 @@
 <?php 
 	echo $data->address."<br>";
 	echo $data->zipcode."&nbsp;&nbsp;".$data->city."<br>";
-	$this->get("/system/addressbook/countries/".$this->data->country,"ShowName.phtml");
+	$this->get("/system/addressbook/countries/".$this->data->country,"show.name.phtml");
 	echo "<br>";
 	echo $data->telephone."<br>";
 	echo $data->mobile."<br>";
@@ -42,6 +38,6 @@
 </body>
 </html>
 <?php
-    }
-  }
+		}
+	}
 ?>

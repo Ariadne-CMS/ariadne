@@ -1,19 +1,18 @@
 <?php
-  /******************************************************************
-   edit.page.save.phtml				   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
-   Arguments: $nls[page]
-   Grant needed: edit
-   Widget: htmledit
-   Global variables: none
+	/******************************************************************
+	 edit.page.save.phtml                                  Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $nls[page]
+	 Grant needed: edit
+	 Global variables: none
 
-   No result.
+	 No result.
 
-  ******************************************************************/
-  // FIXME: use nls text
-  if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+	******************************************************************/
+	// FIXME: use nls text
+	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 	if ($data->mimetype=="text/html") {
-    	$this->call("system.save.html.phtml", $arCallArgs);
+			$this->call("system.save.html.phtml", $arCallArgs);
 	} else {
 		$this->error="This is not an html file.";
 	}
@@ -22,17 +21,17 @@
 <head><title>Saving HTML File</title></head>
 <body bgcolor="#CCCCCC"><font face="arial,helvetica,sasn-serif">
 <?php
-    if (!$this->error) {
-      echo "File saved";
-    } else {
-      echo "Error: $this->error";
-    }
-?>    
+		if (!$this->error) {
+			echo "File saved";
+		} else {
+			echo "Error: $this->error";
+		}
+?>		
 </font>
 <form>
 <input type="button" name="ok" value=" OK " onClick="window.close();">
 </form>
 </body>
 <?php
-  }
+	}
 ?>

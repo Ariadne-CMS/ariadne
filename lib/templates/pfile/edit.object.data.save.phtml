@@ -1,76 +1,76 @@
 <?php
-  /******************************************************************
-   edit.object.data.save.phtml			   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
+	/******************************************************************
+	 edit.object.data.save.phtml                           Muze Ariadne
+	 ------------------------------------------------------------------
 
-   no result.
+	 no result.
  
-  ******************************************************************/
-  if ($this->arIsNewObject) {
-    $newobject=true;
-    // check whether the given filename already exists
-    if ($this->exists($this->path)) {
-      $overwrite=$this->getdata("wgOverwrite","none");
-      $old=@current($this->get($this->path, "system.get.phtml"));
-      if ($old->type!="pfile") {
-        $this->error=$ARnls["err:alreadyexists"];
-        $continue=false;
-      } else if (!$overwrite) { // ask if file may be overwritten
-        $continue=false;
-?>
-<input type="hidden" name="wgOverwrite">
-<input type="hidden" id="wgWizControl" name="wgWizControl">
-<script>
-  function init() {
-    if (confirm('<?php echo AddSlashes(sprintf($ARnls["q:fileoverwrite"], $old->nlsdata->name)); ?>')) {
-      document.wgWizForm.wgOverwrite.value='yes';
-    } else {
-      document.wgWizForm.wgOverwrite.value='no';
-    }
-    document.wgWizForm.submit();
-  }
-  window.onload=init;
-</script>
-<?php
-      } else {
-        // overwrite
-        $this->data=$old->data;
-        $this->arIsNewObject=false;
-        $continue=true;
-      }
-    } else {
-      $continue=true;
-    }
-  } else {
-    $continue=true;
-  }
-  if ($continue) {
-    $this->call("system.save.data.phtml",$arCallArgs);
-  }
-  if ($this->error) {
-    ?>
-      <font color="red" face="arial,helvetica,sans-serif" size=+1><?php echo $this->error; ?></font><p>
-    <?php
-  } else if ($continue) {
-    ?>
-      <script> 
-        if (window.opener) {
-          window.opener.objectadded('<?php echo $this->type; ?>','<?php echo $nlsdata->name; ?>','<?php echo $this->path; ?>'); 
-        } 
-        <?php
-          if ($newobject || $overwrite) {
-            ?>
-              window.location='<?php echo $this->store->root.$this->path; ?>edit.object.data.phtml';
-            <?php
-          } else {
-            ?>
-              if (window.opener) {
-                window.close();
-              }
-            <?php
-          }
-        ?>
-      </script>
-    <?php
-  }
+	******************************************************************/
+	if ($this->arIsNewObject) {
+		$newobject=true;
+		// check whether the given filename already exists
+		if ($this->exists($this->path)) {
+			$overwrite=$this->getdata("wgOverwrite","none");
+			$old=@current($this->get($this->path, "system.get.phtml"));
+			if ($old->type!="pfile") {
+				$this->error=$ARnls["err:alreadyexists"];
+				$continue=false;
+			} else if (!$overwrite) { // ask if file may be overwritten
+				$continue=false;
+				?>
+				<input type="hidden" name="wgOverwrite">
+				<input type="hidden" id="wgWizControl" name="wgWizControl">
+				<script>
+					function init() {
+						if (confirm('<?php echo AddSlashes(sprintf($ARnls["q:fileoverwrite"], $old->nlsdata->name)); ?>')) {
+							document.wgWizForm.wgOverwrite.value='yes';
+						} else {
+							document.wgWizForm.wgOverwrite.value='no';
+						}
+						document.wgWizForm.submit();
+					}
+					window.onload=init;
+				</script>
+				<?php
+			} else {
+				// overwrite
+				$this->data=$old->data;
+				$this->arIsNewObject=false;
+				$continue=true;
+			}
+		} else {
+			$continue=true;
+		}
+	} else {
+		$continue=true;
+	}
+	if ($continue) {
+		$this->call("system.save.data.phtml",$arCallArgs);
+	}
+	if ($this->error) {
+		?>
+			<font color="red" face="arial,helvetica,sans-serif" size=+1><?php echo $this->error; ?></font><p>
+		<?php
+	} else if ($continue) {
+		?>
+			<script> 
+				if (window.opener) {
+					window.opener.objectadded('<?php echo $this->type; ?>','<?php echo $nlsdata->name; ?>','<?php echo $this->path; ?>'); 
+				} 
+				<?php
+					if ($newobject || $overwrite) {
+						?>
+							window.location='<?php echo $this->store->root.$this->path; ?>edit.object.data.phtml';
+						<?php
+					} else {
+						?>
+							if (window.opener) {
+								window.close();
+							}
+						<?php
+					}
+				?>
+			</script>
+		<?php
+	}
 ?>

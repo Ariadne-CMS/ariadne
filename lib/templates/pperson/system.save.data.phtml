@@ -1,6 +1,6 @@
 <?php
 	/******************************************************************
-	 system.save.data.phtml				 Muze Ariadne v2.0b
+	 system.save.data.phtml                                Muze Ariadne
 	 ------------------------------------------------------------------
  
 	******************************************************************/
@@ -14,9 +14,25 @@
 		    $this->data=@current($this->get(".","system.get.data.phtml"));
 		}
 
-		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+		if (!$this->getdata("lastname","none")) { // default language for this path
+			$this->error=$ARnls["err:nolastnameentered"];
 		} else {
+			$this->data->firstname=$this->getdata("firstname","none");
+			$this->data->middlename=$this->getdata("middlename","none");
+			$this->data->lastname=$this->getdata("lastname","none");
+			$this->data->name=$this->data->lastname;
+			$comma=", ";
+			if ($this->data->middlename) { 
+				$this->data->name.=$comma.$this->data->middlename." ";
+				$comma="";
+			}
+			$this->data->name.=$comma.$this->data->firstname;
+			if (!$this->data->nls) {
+				$this->data->nls=new object;
+			}
+			$properties["name"][]["value"]="'".AddSlashes($this->data->name)."'";
+			$properties["text"][]["value"]="'".AddSlashes($this->data->name)."'";
+
 			if (!$this->data->nls) {
 				$this->data->nls=new object;
 			}
@@ -24,7 +40,7 @@
 			reset($AR->nls->list);
 			while (list($key, $value)=each($AR->nls->list)) {
 				
-				if ($this->getdata("name", $key)) {
+				if ($this->getdata("summary",$key)) {  // name is language independant
 					if (!$this->data->$key) {
 						$newnlsdata=new object;
 					} else {
@@ -33,9 +49,7 @@
 					if (!$this->getdata("name",$key)) {
 						$this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
 					}
-					$newnlsdata->name=$this->getdata("name",$key);
-					$properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
-					$properties["text"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
+					$newnlsdata->name=$this->data->name;
 					$newnlsdata->summary=$this->getdata("summary",$key);
 					$properties["text"][]["value"]="'".AddSlashes($newnlsdata->summary)."'";
 					$this->data->$key=$newnlsdata;
@@ -43,18 +57,18 @@
 				} else { // clear language values for $key->name if set, keep the rest, just in case.
 					if ($this->data->$key) {
 						unset($this->data->$key->name);
+						unset($this->data->$key->summary);
 						unset($this->data->nls->list[$key]);
 					}
 				}
 			}
+
 			$this->data->address=$this->getdata("address","none");
 			$this->data->zipcode=$this->getdata("zipcode","none");
 			$this->data->city=$this->getdata("city","none");
 			$this->data->country=$this->getdata("country","none");
 			$this->data->telephone=$this->getdata("telephone","none");
-			$this->data->fax=$this->getdata("fax","none");
-			$this->data->pobox=$this->getdata("pobox","none");
-			$this->data->url=$this->getdata("url","none");
+			$this->data->mobile=$this->getdata("mobile","none");
 			$emails=explode(",",$this->getdata("emails","none"));
 			if ($emails[0]) {
 					$this->data->emails=$emails;

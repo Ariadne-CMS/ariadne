@@ -2,16 +2,20 @@
 	/******************************************************************
 	 classic.save.phtml                                    Muze Ariadne
 	 ------------------------------------------------------------------
-	 Arguments: see system.save.data.phtml, $arReturnPage
+	 Arguments: $newtype, $newfilename
 	 Grant needed: add or edit
 	 Global variables: none
 
-	 This is a wrapper around system.save.data.phtml for the classic
-	 interface.	 
+	 This template is a wrapper around system.save.data.phtml for the
+	 classic interface.
 
 	 no result.
  
 	******************************************************************/
+	// first make sure the uploaded file is in the place where 
+	// system.save.data.phtml expects it.
+	$this->call("system.save.tempfile.phtml");
+	// only then call system.save.data.phtml
 	$this->call("system.save.data.phtml",$arCallArgs);
 	if (!$this->error) {
 		if (!$arReturnPage) {

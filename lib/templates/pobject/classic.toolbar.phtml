@@ -170,22 +170,22 @@ BODY {
 <tr>
 	<!-- TAB 1 -->
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/left5.gif" alt="" name="l1" width="5" height="20" border="0"></td>
-	<td align="center"><a onClick="tofront(1); top.cacheTemplate='classic.manage.html';" class="category"
+	<td align="center" valign="top"><a onClick="tofront(1); top.cacheTemplate='classic.manage.html';" class="category"
 		href="classic.manage.html"><?php echo $ARnls["manage"]; ?></a></td>
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/right5.gif" alt="" name="r1" width="5" height="20" border="0"></td>
 	<!-- TAB 2 -->
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/neighbour5.gif" alt="" name="l2" width="5" height="20" border="0"></td>
-	<td align="center"><a onClick="tofront(2); top.cacheTemplate='view.html'" class="category"
+	<td align="center" valign="top"><a onClick="tofront(2); top.cacheTemplate='view.html'" class="category"
 		href="view.html"><?php echo $ARnls["view"]; ?></a></td>
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/right5.gif" alt="" name="r2" width="5" height="20" border="0"></td>
 	<!-- TAB 3 -->
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/left5.gif" alt="" name="l3" width="5" height="20" border="0"></td>
-	<td align="center"><a onClick="tofront(3); top.cacheTemplate='classic.search.phtml';" 
+	<td align="center" valign="top"><a onClick="tofront(3); top.cacheTemplate='classic.search.phtml';" 
 		href="classic.search.phtml"><?php echo $ARnls["search"]; ?></a></td>
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/right5.gif" alt="" name="r3" width="5" height="20" border="0"></td>
 	<!-- TAB 4 -->
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/left5.gif" alt="" name="l4" width="5" height="20" border="0"></td>
-	<td align="center"><a onClick="tofront(4); top.cacheTemplate='classic.config.phtml';" href="classic.config.phtml"<?php
+	<td align="center" valign="top"><a onClick="tofront(4); top.cacheTemplate='classic.config.phtml';" href="classic.config.phtml"<?php
 		if (!$AR->user->grants["config"]) {
 			echo "><font color=\"#666666\""; 
 		}
@@ -193,7 +193,7 @@ BODY {
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/right5.gif" alt="" name="r4" width="5" height="20" border="0"></td>
 	<!-- TAB 5 -->
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/left5.gif" alt="" name="l5" width="5" height="20" border="0"></td>
-	<td align="center"><a onClick="tofront(5); top.cacheTemplate='classic.edit.phtml';" href="classic.edit.phtml?returnpage=<?php
+	<td align="center" valign="top"><a onClick="tofront(5); top.cacheTemplate='classic.edit.phtml';" href="classic.edit.phtml?returnpage=<?php
 		echo RawUrlEncode($this->store->root.$this->path)."\"";
 		if (!$AR->user->grants["edit"] 
 				|| (is_array($AR->user->grants["edit"]) && !$AR->user->grants["edit"][$this->type])) {
@@ -203,7 +203,7 @@ BODY {
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/right5.gif" alt="" name="r5" width="5" height="20" border="0"></td>
 	<!-- TAB 6 -->
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/left5.gif" alt="" name="l6" width="5" height="20" border="0"></td>
-	<td align="center"><a onClick="tofront(6); top.cacheTemplate='edit.object.layout.phtml';" href="edit.object.layout.phtml"<?php
+	<td align="center" valign="top"><a onClick="tofront(6); top.cacheTemplate='edit.object.layout.phtml';" href="edit.object.layout.phtml"<?php
 		if (!$AR->user->grants["layout"]) {
 			echo "><font color=\"#666666\""; 
 		}	
@@ -211,7 +211,7 @@ BODY {
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/right5.gif" alt="" name="r6" width="5" height="20" border="0"></td>
 	<!-- TAB 7 -->
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/left5.gif" alt="" name="l7" width="5" height="20" border="0"></td>
-	<td align="center"><a onClick="tofront(7); top.cacheTemplate='classic.new.phtml';" href="classic.new.phtml"<?php
+	<td align="center" valign="top"><a onClick="tofront(7); top.cacheTemplate='classic.new.phtml';" href="classic.new.phtml"<?php
 		if (!$AR->user->grants["add"]) {
 			echo "><font color=\"#666666\"";
 		}

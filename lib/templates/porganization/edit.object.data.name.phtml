@@ -1,0 +1,56 @@
+<?php
+	/******************************************************************
+
+	******************************************************************/
+	if ($this->CheckSilent("read")) {
+?>
+<table border="0" width="90%">
+<tr>
+	<td>
+		<?php 
+			$arLanguage=$this->getdata("arLanguage","none");
+			if (!$arLanguage) {
+				$arLanguage=$ARConfig->nls->default;
+			}
+			$selectednls=$arLanguage;
+			$selectedlanguage=$ARConfig->nls->list[$arLanguage];
+			$flag="<img src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\" align=\"right\">";
+		?>
+		<fieldset id="data">
+		<legend><?php echo $ARnls["data"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+			<table border="0" align="center">
+			<tr>
+				<td>
+					<span class="required"><?php echo $ARnls["name"]; ?></span>
+				</td><td>
+					<?php echo $flag; ?>
+				</td>
+			</tr><tr>
+				<td>
+					<input type="text" name="name" size="16" value="<?php $this->showdata("name","none"); ?>">
+				</td>
+			</tr><tr>
+				<td colspan="2"><?php echo $ARnls["summary"]; ?></td>
+			</tr><tr>
+				<td colspan="2">
+					<textarea name="<?php echo $selectednls."[summary]"; ?>" cols="35" rows="4" wrap="soft"><?php 
+							echo ereg_replace("&","&amp;",$this->getdata("summary", $selectednls)); 
+					?></textarea>
+				</td>
+			</tr>
+			</table>
+		</fieldset>
+	</td>
+</tr>
+</table>
+<script>
+	window.onload=init;
+	function init() {
+		document.wgWizForm["name"].focus();
+	}
+</script>
+<?php
+		$arResult["next"]["name"]["ereg"]=".+";
+		$arResult["next"]["name"]["error"]=$ARnls["err:nonameentered"];
+	}
+?>

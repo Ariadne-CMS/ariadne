@@ -1,0 +1,172 @@
+<?php
+	/******************************************************************
+	 classic.form.phtml                                    Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: arNewType, arNewFilename
+	 Grant needed: read
+	 Global variables: none
+
+	 This template displays the input form for this object.
+
+	 no result.
+
+	******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+?>
+<head>
+	<?php
+		include($this->store->code."widgets/multiple/js.html");
+	?>
+</head>
+
+<body bgcolor="white">
+<form method="post">
+<!-- hidden form variables needed by new.phtml/save.phtml -->
+<input type="hidden" name="arNewType" value="<?php echo $arNewType; ?>">
+<input type="hidden" name="arNewFilename" value="<?php echo $arNewFilename; ?>">
+<input type="hidden" name="arReturnPage" value="<?php echo $arReturnPage; ?>">
+<?php
+	include($this->store->code."widgets/formlock/js.html");
+?>
+
+<table border="0" cellspacing="0" width="100%"> 
+<tr>
+	<td bgcolor="#404074">
+		<?php
+			$wgNLSpretext="<font face=\"helvetica, sans-serif\" size=\"+1\" color=\"white\"><b>".
+				$ARnls["editorganization"].":</b></font><br>";
+			include($this->store->code."widgets/nls/form.phtml");
+		?>
+	</td>
+</tr>
+</table>
+
+
+<table border="0">
+<tr>
+	<td align="right">
+		<font face="helvetica, sans-serif"><b>
+		<?php echo $ARnls["name"]; ?></b>&nbsp;:</font>
+	</td><td align="left">
+		<input type="text" size="30"	name="<?php echo $nls; ?>[name]" value="<?php $this->showdata("name",$nls); ?>">
+	</td>
+</tr>
+<tr>
+	<td align="right">
+		<font face="helvetica, sans-serif">
+		<?php echo $ARnls["address"]; ?>&nbsp;:</font>
+	</td><td align="left">
+		<input type="text" size="30"	name="address" value="<?php $this->showdata("address","none"); ?>">
+	</td>
+</tr>
+<tr>
+	<td align="right">
+		<font face="helvetica, sans-serif">
+		<?php echo $ARnls["zipcode"]; ?>&nbsp;:</font>
+	</td><td align="left">
+				<input type="text" size="6" maxlength="6" name="zipcode" value="<?php $this->showdata("zipcode","none"); ?>">
+				<font face="helvetica, sans-serif">
+				&nbsp;&nbsp;<?php echo $ARnls["city"]; ?>&nbsp;:</font>
+				<input type="text" size="15" name="city" value="<?php $this->showdata("city","none"); ?>">
+	</td>
+</tr>
+<tr>
+	<td align="right">
+		<font face="helvetica, sans-serif">
+		<?php echo $ARnls["pobox"]; ?>&nbsp;:</font>
+	</td><td align="left">
+		<input type="text" size="10"	name="pobox" value="<?php $this->showdata("pobox","none"); ?>">
+	</td>
+</tr>
+<tr>
+	<td align="right">
+		<font face="helvetica, sans-serif">
+		<?php echo $ARnls["country"]; ?>&nbsp;:</font>
+	</td><td align="left">
+	<select name="country">
+	<?php
+		$this->ls("/system/addressbook/countries/","show.option.value.phtml","selected=".$this->getdata("country","none"));
+	?>
+	</select>
+	</td>
+</tr>
+<tr>
+	<td align="right">
+		<font face="helvetica, sans-serif">
+		<?php echo $ARnls["telephone"]; ?>&nbsp;:</font>
+	</td><td align="left">
+		<input type="text" name="telephone" value="<?php $this->showdata("telephone","none"); ?>">
+	</td>
+</tr>
+<tr>
+	<td align="right">
+		<font face="helvetica, sans-serif">
+		<?php echo $ARnls["fax"]; ?>&nbsp;:</font>
+	</td><td align="left">
+		<input type="text" name="fax" value="<?php $this->showdata("fax","none"); ?>">
+	</td>
+</tr>
+<tr>
+	<td align="right">
+		<font face="helvetica, sans-serif">
+		<?php echo $ARnls["url"]; ?>&nbsp;:</font>
+	</td><td align="left">
+		<input type="text" name="url" value="<?php $this->showdata("url","none"); ?>">
+	</td>
+</tr>
+
+<tr valign="top">
+	<td align="right">
+		<font face="helvetica, sans-serif">
+		<?php echo $ARnls["email"]; ?>&nbsp;:</font>
+	</td><td align="left">
+	<?php
+		$wgMultipleName="emails";
+		$wgMultipleArray=$this->getdata("emails","none");
+		if (!is_array($wgMultipleArray) && ($wgMultipleArray)) {
+			$wgMultipleArray=explode(",",$emails);
+		}
+		include($this->store->code."widgets/multiple/form.html");
+	?>
+	</td>
+</tr><tr>
+	<td align="right" valign="top">
+		<font face="helvetica, sans-serif"><?php echo $ARnls["summary"]; ?>&nbsp;:</font>
+	</td>
+	<td colspan="2">
+		<textarea name="<?php echo $nls."[summary]"; ?>" cols="50" rows="4" wrap="soft"><?php
+				echo ereg_replace("&","&amp;",$this->getdata("summary",$nls));
+		?></textarea>
+	</td>
+</tr>
+</table>
+ 
+
+<p>
+
+<table width="100%" cellspacing="0" border="0">
+<tr bgcolor="#404074">
+	<td>
+		<?php if ($arNewType) { ?>
+			<input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="history.back()">
+		<?php } else { ?>
+			<input type="submit" name="arSubmit" value="<?php echo $ARnls["cancel"]; ?>">
+			<?php
+				$wgRecurseConfirm=$ARnls["q:removeorganization"];
+				$wgRecurseAction="delete";
+				$wgRecurseTitle=$ARnls["delete"];
+				include($this->store->code."widgets/recurse/form.js");
+				include($this->store->code."widgets/recurse/form.html");
+			?>
+		<?php } ?>
+	</td>
+	<td align="right">
+		<input type="submit" name="arSubmit" value="<?php echo $ARnls["save"]; ?>">	
+	</td>
+</tr>
+</table>
+</form>
+</body>
+<?php
+	}
+?>

@@ -102,7 +102,7 @@
 	}
 	$addresses=$this->get_addresses($criteria,"name");
 	while (is_array($addresses) && (list($key,$address)=each($addresses))) {	
-		$address->call("show.card.html");
+		$address->call("show.card.phtml");
 	}
 
 ?>

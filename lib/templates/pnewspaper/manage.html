@@ -1,0 +1,63 @@
+<?php
+  /******************************************************************
+   index.html					   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Arguments: none
+   Grant needed: read
+   Interface/Widget: all
+   Global variables: none
+
+   This displays a suitable overview of the object.
+
+   no result.
+
+  ******************************************************************/
+  if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs) ) {
+
+  function maketime($date) {
+    $tok=explode("-",$date);
+    return (mktime(0,0,0,$tok[1],$tok[0],$tok[2]));
+  }
+
+?>
+<html>
+<body bgcolor="white">
+<font face="helvetica, sans-serif" size="2">
+<h3><?php echo $nlsdata->name; ?>.</h3>
+<p>
+<?php echo $nlsdata->summary; ?>
+<form name="range" method="post">
+<table border="0" bgcolor="#DDDDDD" cellspacing="0" width="100%">
+<tr>
+  <td align="left"><b><?php echo $ARnls["start"]; ?>:</b>
+  <input type="text" name="startdate" size="11" maxlength="11" value="<?php echo $startdate=($startdate) ? $startdate : date("d-m-Y",time()-(3600*24*4)); ?>">
+  </td>
+  <td align="left"><b><?php echo $ARnls["end"]; ?>:</b>
+  <input type="text" name="enddate" size="11" maxlength="11" value="<?php echo $enddate=($enddate) ? $enddate : date("d-m-Y",time()+(3600*24*4)); ?>">
+  </td>
+  <td align="left">
+  <input type="submit" name="view" value="<?php echo $ARnls["show"]; ?>">
+  </td>
+</tr>
+</table>
+</form>
+
+<?php
+  $crit["published"]["value"][">="]=maketime($startdate);
+  $crit["published"]["value"]["<="]=maketime($enddate);
+  // because this is the management interface, don't recurse into subdirs.
+  $crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
+
+  if (is_array($art=$this->find(".",$crit,"system.get.phtml"))) { 
+	arsort($art);
+	while ((list($key,$obj)=each($art))) {
+	  $obj->call("show.phtml");
+  	}
+  }
+?>
+</font>
+</body>
+</html>
+<?php
+  }
+?>

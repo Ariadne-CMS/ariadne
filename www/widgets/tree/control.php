@@ -14,7 +14,7 @@ INPUT {
     <td align="left" valign="top">
       <input type="submit" value="Log Off">
     </td>
-  </form><form action="<?php echo $arUserPath; ?>treeinit.phtml" target="treeload">
+  </form><form action="<?php echo $arUserPath; ?>tree.init.phtml" target="treeload">
     <td align="right" valign="top">
       <input type="submit" value="Refresh">
     </td>

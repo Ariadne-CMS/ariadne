@@ -1,21 +1,17 @@
 <?php
-  /******************************************************************
-   index.html					   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
-   Arguments: none
-   Grant needed: read
-   Interface/Widget: all
-   Global variables: none
+	/******************************************************************
+	 view.html                                             Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: read
+	 Global variables: none
 
-   This displays a suitable overview of the object.
+	 This displays a suitable overview of the object.
 
-   no result.
+	 no result.
  
-  ******************************************************************/
-  if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs) ) {
-    if ($this->exists("index.html/")) {
-      $this->get("index.html/","view.html");
-    } else {
+	******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs) ) {
 ?>
 <html>
 <head>
@@ -28,27 +24,28 @@
 	echo $data->address."<br>";
 	echo $data->zipcode."&nbsp;&nbsp;".$data->city."<br>";
 
-	$this->get("/system/addressbook/countries/".$data->country,"ShowName.phtml");
+	$this->get("/system/addressbook/countries/".$data->country,"show.name.phtml");
 
 	echo "<br><br>";
 
-	if ($data->telephone)
-	echo $data->telephone."<br>";
-	if ($data->fax)
-	echo $data->fax."<br><br>";
-
+	if ($data->telephone) {
+		echo $data->telephone."<br>";
+	}
+	if ($data->fax) {
+		echo $data->fax."<br><br>";
+	}
 	echo "<a href=\"".$data->url."\">".$data->url."</a><br>";
 	while (is_array($data->emails) && (list($key,$email)=each($data->emails))) {
 		echo "<a href=\"mailto:$email\">$email</a><br>";
 	}
 	echo "<p>";
-	$this->ls(".","Show.phtml");
+	$this->ls(".","show.phtml");
 ?>
 </font>
 </div>
 </body>
 </html>
 <?php
-    }
-  }
+		}
+	}
 ?>

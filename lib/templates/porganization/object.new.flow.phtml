@@ -1,62 +1,73 @@
 <?php
-  /******************************************************************
-   object.new.phtml				   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
+	/******************************************************************
+	 object.new.flow.phtml                                 Muze Ariadne
+	 ------------------------------------------------------------------
 
-   No result.
+	 No result.
 
-  ******************************************************************/
+	******************************************************************/
 
-  $start="object.new.filename.phtml";
-  $step1="edit.object.data.form.phtml";
-  $step2="edit.object.language.phtml";
-  $finish="edit.object.data.save.phtml";
+	$start="object.new.filename.phtml";
+	$name="edit.object.data.name.phtml";
+	$address="edit.object.data.address.phtml";
+	$contact="edit.object.data.contact.phtml"; 
+	$language="edit.object.language.phtml";
+	$finish="edit.object.data.save.phtml";
  
-  $arFlow[0]["current"]=$this->getdata("arCurrent","none");
-  $arFlow[1]["title"]=$ARnls["filename"];
-  $arFlow[1]["template"]=$start;
-  $arFlow[1]["next"]=2; 
-
-  $arFlow[2]["title"]=$ARnls["data"];
-  $arFlow[2]["template"]=$step1;
-  $arFlow[2]["prev"]=1;
-  $arFlow[2]["next"]=3;
-  $arFlow[2]["save"]=4;
-
-  $arFlow[3]["title"]=$ARnls["language"];
-  $arFlow[3]["template"]=$step2;
-  $arFlow[3]["next"]=2;
-  $arFlow[3]["prev"]=2;
-  $arFlow[3]["save"]=4;
-
-  $arFlow[4]["title"]=$ARnls["save"];
-  $arFlow[4]["template"]=$finish;
-  $arFlow[4]["back"]=3;
-  
-
-  $arLanguage=$this->getdata("arLanguage","none");
-  if ($arFlow[0]["current"]==3) { // =edit.object.language.phtml
-    echo "<!-- last was language select -->";
-    $arControl=$this->getdata("arControl","none");
-    if ($arControl==$ARnls["prev"]) { // if previous selected, ignore the language select list.
-      echo "<!-- previous selected -->";
-      $arLanguage=$this->getdata("arPrevLanguage","none");
-      $ARCurrent->arLanguage=$arLanguage;
-      echo "<!-- goto language $arLanguage -->";
-    } else {
-      echo "<!-- $arControl -->";
-    }
-  } else {
-    echo "<!-- ".$arFlow[0]["current"]." -->";
-  }
-  if (!$arLanguage) { // language select hasn't been done yet, so start with default language
-    $arLanguage=$ARConfig->nls->default;
-    $ARCurrent->arLanguage=$arLanguage;
-  }
-  $arNewFilename=$this->getdata("arNewFilename","none");
-  if (!$arNewFilename) {
-    $arNewFilename="{5:id}";
-    $ARCurrent->arNewFilename=$arNewFilename;
-  }    
-  $arResult=$arFlow;
+	$arFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["filename"];
+	$arFlow[$i]["template"]=$start;
+	$arFlow[$i]["next"]=$i+1; 
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["name"];
+	$arFlow[$i]["template"]=$name;
+	$arFlow[$i]["prev"]=$i-1;
+	$arFlow[$i]["next"]=$i+1; 
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["address"];
+	$arFlow[$i]["template"]=$address;
+	$arFlow[$i]["prev"]=$i-1;
+	$arFlow[$i]["next"]=$i+1; 
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["contactinformation"];
+	$arFlow[$i]["template"]=$contact;
+	$arFlow[$i]["prev"]=$i-1;
+	if (count($ARConfig->nls->list)>1) { // just one language available
+		$arFlow[$i]["next"]=$i+1;
+		$arFlow[$i]["save"]=$i+2;
+		$i++;
+		$arFlow[$i]["title"]=$ARnls["language"];
+		$arFlow[$i]["template"]=$step2;
+		$arFlow[$i]["next"]=$i-1;
+		$arFlow[$i]["prev"]=$i-1;
+		$arFlow[$i]["save"]=$i+1;
+	} else {
+		$arFlow[$i]["save"]=$i+1;
+	}
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["save"];
+	$arFlow[$i]["template"]=$finish;
+	$arFlow[$i]["back"]=$i-1;
+	
+	$arLanguage=$this->getdata("arLanguage","none");
+	if ($arFlow[0]["current"]==3) { // =edit.object.language.phtml
+		$arControl=$this->getdata("wgWizControl","none");
+		if ($arControl==$ARnls["prev"]) { // if previous selected, ignore the language select list.
+			$arLanguage=$this->getdata("arPrevLanguage","none");
+			$ARCurrent->arLanguage=$arLanguage;
+		}
+	}
+	if (!$arLanguage) { // language select hasn't been done yet, so start with default language
+		$arLanguage=$ARConfig->nls->default;
+		$ARCurrent->arLanguage=$arLanguage;
+	}
+	$arNewFilename=$this->getdata("arNewFilename","none");
+	if (!$arNewFilename) {
+		$arNewFilename="{5:id}";
+		$ARCurrent->arNewFilename=$arNewFilename;
+	}		
+	global $HTTP_POST_VARS;
+	$HTTP_POST_VARS["arLanguage"]=$arLanguage;
+	$arResult=$arFlow;
 ?>

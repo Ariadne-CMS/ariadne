@@ -49,8 +49,11 @@
 ?>
 <html>
 <head>
-	<title><?php echo $ARnls["edit"]." ".$ARnls["calendarentry"]; ?></title>
-	<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>menu.css"> 
+<title><?php 
+	$title=$ARnls["edit"]." ".@current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml")); 
+	echo $title;
+?></title>
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
 </head>
 <body bgcolor="white">
 <form>
@@ -128,7 +131,7 @@
 	<td colspan="2">
 		<table width="100%">
 		<tr><td>
-			<font face="helvetica, sans-serif" size="+1"><?php echo $ARnls["calenderentry"]; ?></font>
+			<font face="helvetica, sans-serif" size="+1"><?php echo $title; ?></font>
 		</td><td align="right">
 		<?php 
 			$wgDateName="date";

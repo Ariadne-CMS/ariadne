@@ -83,7 +83,7 @@
 			if (!$arNewFilename) { 
 				$arNewFilename="{5:id}";
 			}
-			$arNewData=serialize(new object);
+			$arNewData=new object;
 			$arNewPath=$this->make_path($arNewFilename);
 			$arNewObject=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData);
 			$arNewObject->arIsNewObject=true;

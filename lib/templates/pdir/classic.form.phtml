@@ -1,23 +1,12 @@
 <?php
 	/******************************************************************
-	 form.phtml																			Muze Ariadne v2.0b
+	 classic.form.phtml                                    Muze Ariadne
 	 ------------------------------------------------------------------
 	 Arguments: arNewType, arNewFilename
 	 Grant needed: read
-	 Interface/Widget: all
 	 Global variables: none
 
-	 This template displays the input form for this object. If $arNewType
-	 is set, the form is called to create a new object. This means that
-	 $data points to the data of the object creating it!
-	 $arNewType, $arNewFilename and $newparent are saved in hidden input
-	 fields for further processing by whatever template is called when
-	 the form is processed.
-	 The html form tag in a form template should always leave the action
-	 property out.
-
-	 This template must be available in every pobject derivative's
-	 template directory.
+	 This template displays the input form for this object.
 
 	 no result.
 
@@ -26,7 +15,10 @@
 ?>
 <html>
 <head>
-<title><?php echo $ARnls["addnewobject"]; ?></title>
+<title><?php 
+	$title=$ARnls["edit"]." ".@current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml")); 
+	echo $title;
+?></title>
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
 <script>
 	function objectadded() {
@@ -63,7 +55,7 @@
 	<td bgcolor="#404074">
 		<?php
 			$wgNLSpretext="<font face=\"helvetica, sans-serif\" size=\"+1\" color=\"white\"><b>".
-				$ARnls["editdir"].":</b></font><br>";
+				$title.":</b></font><br>";
 			include($this->store->code."widgets/nls/form.phtml");
 		?>
 	</td>

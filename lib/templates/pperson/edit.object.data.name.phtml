@@ -1,0 +1,66 @@
+<?php
+  /******************************************************************
+
+  ******************************************************************/
+  if ($this->CheckSilent("read")) {
+?>
+<table border="0" width="90%">
+<tr>
+  <td>
+    <?php 
+      $arLanguage=$this->getdata("arLanguage","none");
+      if (!$arLanguage) {
+       $arLanguage=$ARConfig->nls->default;
+      }
+      $selectednls=$arLanguage;
+      $selectedlanguage=$ARConfig->nls->list[$arLanguage];
+      $flag="<img src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\" align=\"right\">";
+    ?>
+    <fieldset id="name">
+    <legend><?php echo $ARnls["name"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+      <table border="0" align="center">
+      <tr>
+        <td>
+          <?php echo $ARnls["first"]; ?>
+        </td><td>
+          <span class="required"><?php echo $ARnls["last"]; ?></span>
+        </td>
+      </tr><tr>
+        <td><nobr>
+          <input type="text" name="firstname" size="12" maxlength="50"
+            value="<?php $this->showdata("firstname","none"); ?>">
+          <input type="text" name="middlename" maxlength="50"
+            size="5" value="<?php $this->showdata("middlename","none"); ?>"></nobr>
+        </td><td>
+          <input type="text" name="lastname" size="20" maxlength="50"
+             value="<?php $this->showdata("lastname","none"); ?>">
+        </td>
+      </tr>
+      </table>
+    </fieldset>
+    <fieldset id="comments">
+    <legend><?php echo $ARnls["comments"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+      <table border="0" align="center">
+      <tr>
+        <td>
+          <textarea name="<?php echo $selectednls."[summary]"; ?>" cols="35" rows="4" wrap="soft"><?php 
+              echo ereg_replace("&","&amp;",$this->getdata("summary", $selectednls)); 
+          ?></textarea>
+        </td>
+      </tr>
+      </table>
+    </fieldset>
+  </td>
+</tr>
+</table>
+<script>
+  window.onload=init;
+  function init() {
+    document.wgWizForm["firstname"].focus();
+  }
+</script>
+<?php
+    $arResult["next"]["lastname"]["ereg"]=".+";
+    $arResult["next"]["lastname"]["error"]=sprintf($ARnls["err:nolastnameentered"]);
+  }
+?>
