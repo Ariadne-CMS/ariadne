@@ -11,6 +11,7 @@
 		// $page=eregi_replace("^.*<body[^>]*>","",$page);
 		// $page=eregi_replace("</body[^>]*>.*$","",$page);
 
+/* FIXME: check whether this code really can be removed.
 		$arCheckCharSet=$ContentLanguage;
 		if (!$AR->nls->charsets[$arCheckCharSet]) {
 			$arCheckCharSet="default";
@@ -34,6 +35,7 @@
 		} else {
 //			$page=unicode::utf8convert($page);
 		}
+*/
 		// change hardcoded links and images to use a placeholder for the root
 		if ($this->store->root) {
 			$page=ereg_replace("(http[s]?://)?".$this->store->root,"{arRoot}",$page);
