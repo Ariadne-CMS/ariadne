@@ -275,7 +275,6 @@
 		if (is_array($this->nls_join)) {
 			reset($this->nls_join);
 			while (list($key, $value)=each($this->nls_join)) {
-				echo "<script> alert(\"nls join: $value\"); </script>\n";
 				$join .= $value;
 			}
 		}
