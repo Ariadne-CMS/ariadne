@@ -1,6 +1,6 @@
 	var viewmode=parent.Get('viewmode');
 	var b_offset=0;
-	var b_limit=5;
+	var b_limit=50;
 	var b_total=0;
 	var b_page=0;
 	if (!viewmode) {
