@@ -56,6 +56,7 @@ $ARnls["end"]=			"End";
 $ARnls["endson"]=		"Ends on";
 $ARnls["err:alreadyexists"]=	"%s already exists.";
 $ARnls["err:cannotedit.phtml"]=	"You cannot edit templates ending with '.phtml'";
+$ARnls["err:cannotlockobject"]=	"Can't lock object %s";
 $ARnls["err:containsobj"]=	"Object contains other object, remove these first.";
 $ARnls["err:dontuseid"]=	"Do not use '{id}' in login names";
 $ARnls["err:endswith.phtml"]=	"You cannot edit templates ending with .phtml.";

@@ -56,6 +56,7 @@ $ARnls["end"]=			"Einde";
 $ARnls["endson"]=		"Eindigt op";
 $ARnls["err:alreadyexists"]=	"%s bestaat al.";
 $ARnls["err:cannotedit.phtml"]=	"U kunt geen templates bewerken met extensie .phtml";
+$ARnls["err:cannotlockobject"]= "Kan object %s niet locken";
 $ARnls["err:containsobj"]=	"Dit object bevat andere objecten, verwijder deze eerst.";
 $ARnls["err:dontuseid"]=	"Gebruik geen {id} in login namen";
 $ARnls["err:endswith.phtml"]=	"U kunt geen templates bewerken die eindigen op .phtml.";
