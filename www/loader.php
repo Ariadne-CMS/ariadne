@@ -124,12 +124,12 @@
 			) {
 
 			$AR->output_compression = 0;
-			if (!$session_id) {
-				$cachedimage=$store_config["files"]."cache/normal".$ldCacheFilename;
-				$cachedheader=$store_config["files"]."cacheheaders/normal".$ldCacheFilename;
-			} else {
+			if ($session_id && !$AR->hideSessionIDfromURL) {
 				$cachedimage=$store_config["files"]."cache/session".$ldCacheFilename;
 				$cachedheader=$store_config["files"]."cacheheaders/session".$ldCacheFilename;
+			} else {
+				$cachedimage=$store_config["files"]."cache/normal".$ldCacheFilename;
+				$cachedheader=$store_config["files"]."cacheheaders/normal".$ldCacheFilename;
 			}
 		} else {
 			$cachedimage=$store_config["files"]."cache/compressed".$ldCacheFilename;
@@ -170,9 +170,7 @@
 					}
 				}
 				ldSetClientCache(true, $cachetime, $ctime);
-				if (!$session_id) {
-					readfile($cachedimage);
-				} else {
+				if ($session_id && !$AR->hideSessionIDfromURL) {
 					$tag = '{arSessionID}';
 					$tag_size = strlen($tag);
 					$data = "";
@@ -185,6 +183,8 @@
 					}
 					echo $data;
 					fclose($fp);
+				} else {
+					readfile($cachedimage);
 				}
 			}
 
@@ -302,7 +302,7 @@
 					echo $image;
 				}
 			} else {
-				if ($ARCurrent->session && $ARCurrent->session->id) {
+				if (!$AR->hideSessionIDfromURL && $ARCurrent->session && $ARCurrent->session->id) {
 					$ldCacheFilename = "/session".$ldCacheFilename;
 					$image = str_replace('-'.$ARCurrent->session->id.'-', '{arSessionID}', $image);
 				} else {
