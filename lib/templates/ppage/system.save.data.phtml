@@ -42,6 +42,25 @@
 					$properties["text"][$count]["nls"]="'$key'";
 					$count++;
 					$newnlsdata->summary=$this->getdata("summary",$key);
+					if ($ContentEditOptionsPath) {
+						$arEditorSettings=current($this->get($ContentEditOptionsPath, "editor.ini"));
+					} else {
+						$arEditorSettings=$this->call("editor.ini");
+					}
+					if ($arEditorSettings) {
+						if ($arEditorSettings["htmltidy"]["enabled"]) {
+							include_once($this->store->code."modules/mod_tidy.php");
+							$config=$arEditorSettings["htmltidy"];
+							$config["temp"]=$this->store->files."temp/";
+							$config["path"]=$AR->Tidy->path;
+							$tidy=new tidy($config);
+							$result=$tidy->clean($newnlsdata->summary);
+							$summary=$result["html"];
+						}
+						if ($arEditorSettings["allow_tags_summary"]) {
+							$newnlsdata->summary=strip_tags($newnlsdata->summary, $arEditorSettings["allow_tags_summary"]);
+						}
+					}
 					$properties["text"][$count]["value"]="'".AddSlashes($newnlsdata->summary)."'";
 					$properties["text"][$count]["nls"]="'$key'";
 					$count++;
