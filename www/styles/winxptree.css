@@ -1,12 +1,8 @@
-* {
-FONT: 11px tahoma,sans-serif; background-color:#FFFFFF
-}
-
 TD {
-    FONT: 13px sans-serif;
+    FONT: 11px tahoma, sans-serif;
 }
 BODY    {
-    FONT: 13px sans-serif;
+    FONT: 11px tahoma,sans-serif;
     BORDER: 0;
 	BORDER-LEFT: 1px inset;
 	BORDER-RIGHT: 1px inset;
