@@ -56,9 +56,11 @@
 	var T_PHP_END = 18;
 	var T_SCRIPT_START = 19;
 	var T_SCRIPT_END = 20;
+	var T_TAB = 21;
 
 	var hLines = new Array();
 	var debug = 0;
+	var scannerPos = 0;
 
 	function hLineToken(tokenType, tokenData) {
 		this.type = tokenType;
@@ -87,19 +89,33 @@
 				this.data = this.data.replace(/[>]/g, '&gt;');
 			case T_SPACE:
 				this.data = this.data.replace(/[ ]/g, '&nbsp;');
-				this.data = this.data.replace(/[\t]/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
+			break;
+			case T_TAB:
+				var myTabRest = scannerPos % 8;
+				var addLength = 8 - myTabRest;
+				// alert( 'scannerPos ' + scannerPos + ' myTabRest ' + myTabRest + ' addLength ' + addLength);
+				this.data = this.data.replace(/[\t]/g, '<span style="padding-left: '+ (addLength*letterWidth) + 'px;"></span>');
+				scannerPos += (addLength -1);
 			break;
 		}
+		scannerPos += tokenData.length;
 	}
 
 	function getToken(sData) {
 		var re, match;
 
 		/* white space */
-		re = /^([\t ]+)/;
+		re = /^([ ]+)/;
 		match = re.exec(sData);
 		if (match) {
 			result = new hLineToken(T_SPACE, match[1]);
+			return result;
+		}
+
+		re = /^([\t])/;
+		match = re.exec(sData);
+		if (match) {
+			result = new hLineToken(T_TAB, match[1]);
 			return result;
 		}
 
@@ -208,6 +224,7 @@
 		var token;
 		this.tokens = new Array();
 
+		scannerPos = 0;
 		while (sData != '') {
 			token = getToken(sData);
 			this.tokens[this.tokens.length] = token;	

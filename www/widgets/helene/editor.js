@@ -75,6 +75,7 @@
 	keyBindings["default"]["33"] = do_PageUp;			// page-up
 	keyBindings["default"]["s33"] = do_SelectPageUp;	// shift-page-up
 	keyBindings["default"]["36"] = do_Home;			// home
+	keyBindings["default"]["9"] = do_Tab;			// Tab
 
 	/* joe bindings */
 	keyBindings["joe"] = new Array();			
@@ -423,7 +424,11 @@
 	}
 
 	function getLineContent(lineNo) {
+		var myString = new String();
 		if(lines.childNodes[lineNo-1]){
+			if( lines.childNodes[lineNo-1].originalInnerText ) {
+				return lines.childNodes[lineNo-1].originalInnerText;
+			}
 			if (lines.childNodes[lineNo-1].innerText) {
 				return lines.childNodes[lineNo-1].innerText;
 			} else if (document.createRange) {
@@ -433,7 +438,7 @@
 					myLine++;
 				}
 				html.selectNodeContents(lines.childNodes[myLine]);
-				var myString = html.toString();
+				myString = html.toString();
 				myString = myString.replace(/\n/g, '');
 				return myString;
 			}
@@ -775,6 +780,16 @@
 		return false;
 	}
 
+	function do_Tab() {
+		var line = inputLineEntry.value;
+		var cursor = getCursorPos();
+		line = line.substr(0,cursor) + "\t" + line.substr(cursor);
+		inputLineEntry.value = line;
+		setCursorPos(cursor + 1 );
+		isDirty=true;
+		return false;
+	}
+
 	function do_skipCharsRight() {
 		return skipChars(1);
 	}
@@ -950,6 +965,7 @@
 	}
 
 	function updateLine(lineNo, lineContent) {
+		lines.childNodes[lineNo-1].originalInnerText = lineContent;
 		highlightUpdateLine(lineNo-1, lineContent, applyHighlightedLine);
 		if (lineContent.length>longestLine) {
 			longestLine=lineContent.length;
@@ -962,6 +978,8 @@
 	function setLineContent(lineNo, lineContent) {
 		if(lines.childNodes[lineNo-1]){
 			lines.childNodes[lineNo-1].innerHTML=lineContent;
+			
+			lines.childNodes[lineNo-1].originalInnerHTML=lineContent;
 		}
 	}
 

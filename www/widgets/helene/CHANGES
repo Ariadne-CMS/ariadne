@@ -1,4 +1,13 @@
-Helene version 0.3
+Helene version 0.4
+
+Changes in Helene since version 0.3
+
+New features:
+- Helene now has tab support. No tabWidth can be set yet.
+
+Bugs fixed:
+- Fixed insertion of \n\n with setContents
+- Fixed weird mozilla background color behaviour
 
 Changes in Helene since version 0.2
 
@@ -12,8 +21,6 @@ Bugs fixed:
 - Fixed a javascript error when clicking outside of the LI SPAN or TEXTAREA.
 - Fixed Mozilla keypress handling. We now cancel the onKeyPress.
 - Fixed inputline positioning and lineheight problems (background color)
-- Fixed insertion of \n\n with setContents
-- Fixed weird mozilla background color behaviour
 
 Changes in Helene since version 0.1
 
