@@ -1,210 +1,525 @@
 <?php
+define("T_VARIABLE",		254);
+define("T_STRING",			253);
+define("T_SUBSTRING",		252);
+define("T_IDENT",			251);
+define("T_UNPARSED",		250);
+define("T_EOF",				249);
+define("T_MULTIPART_STRING_START",	248);
+define("T_MULTIPART_STRING_END",	247);
+define("T_PINP_START",		246);
+define("T_PINP_END",		245);
+
+define("YY_STATE_HTML",			1);
+define("YY_STATE_PINP",			2);
+
+class scanner {
+
+	function scanner() {
+		/*
+			create character classes
+		*/
+		for ($c = ord('a'); $c <= ord('z'); $c++) {
+			$cclass[chr($c)] = 1;
+			$cclass[strtoupper(chr($c))] = 1;
+		}
+		$cclass["_"] = 1;
+		$this->YYCLASSES["ID_FIRST"] = $cclass;
+
+		$cclass_second = $cclass;
+		for ($c = ord('0'); $c <= ord('9'); $c++) {
+			$cclass_second[chr($c)] = 1;
+		}
+		$this->YYCLASSES["ID_SECOND"] = $cclass_second;
+
+		$cclass['"'] = 1;
+		$cclass["'"] = 1;
+		$cclass['$'] = 1;
+		$cclass['/'] = 1;
+		$cclass['-'] = 1;
+		$cclass['`'] = 1;
+		$cclass['<'] = 1;
+		$cclass[chr(0)] = 1;
+		$this->YYCLASSES["START_TRANSITION"] = $cclass;
+	}
+
+	function init($buffer) {
+		$this->YYBUFFER = $buffer."\0";
+		$this->YYLINE = 0;
+		$this->YYSTATE = YY_STATE_HTML;
+		$YYCURSOR = 0;
+	}
+
+	function scan($result) {
+		$YYCURSOR = &$this->YYCURSOR;
+		$YYBUFFER = &$this->YYBUFFER;
+		$YYCLASSES = &$this->YYCLASSES;
+		$YYCURSOR_START = $YYCURSOR;
+		$YYSTATE = &$this->YYSTATE;
+
+		$yych = $YYBUFFER[$YYCURSOR];
+		switch ($YYSTATE) {
+			case YY_STATE_HTML:
+				switch ($yych) {
+					case '<':
+						$yych = $YYBUFFER[++$YYCURSOR];
+						while ($yych == ' ') {
+							$yych = $YYBUFFER[++$YYCURSOR];
+						} 
+						$tag_element = "";
+						while ($yych != ' ' && $yych != "\0" && $yych != '>') {
+							$tag_element .= $yych;
+							$yych = $YYBUFFER[++$YYCURSOR];
+						}
+						while ($yych != "\0" && $yych!='>') {
+							$yych = $YYBUFFER[++$YYCURSOR];
+						}
+						/* eat '>' sign */
+						if ($yych == '>') {
+							++$YYCURSOR;
+						}
+						if ($tag_element == "pinp") {
+							$YYSTATE = YY_STATE_PINP;
+							return T_PINP_START;
+						} else
+						if (strtolower($tag_element) == "script") {
+							$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
+							$result = "<?php echo \"".AddCSlashes($result, ARESCAPE)."\"; ?>";
+							return T_UNPARSED;
+						} else {
+							$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
+							return T_UNPARSED;
+						}
+					break;					
+					case "\0":
+						--$YYCURSOR;
+						return T_EOF;
+					break;
+					default:
+						$yych = $YYBUFFER[++$YYCURSOR];
+						while ($yych != '<' && $yych != "\0") {
+							$yych = $YYBUFFER[++$YYCURSOR];
+						}
+						$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
+						return T_UNPARSED;
+					break;
+				}
+			break;
+			case YY_STATE_PINP:
+				switch($yych) {
+					case '$': 
+						$yych = $YYBUFFER[++$YYCURSOR];
+						if ($YYCLASSES["ID_FIRST"][$yych]) {
+							$yych = $YYBUFFER[++$YYCURSOR];
+							while ($YYCLASSES["ID_SECOND"][$yych]) {
+								$yych = $YYBUFFER[++$YYCURSOR];
+							}
+							$result = substr($YYBUFFER, $YYCURSOR_START+1, $YYCURSOR-$YYCURSOR_START-1);
+							return T_VARIABLE;
+						} else {
+							$result = "single dollar sign";
+							return T_ERROR;
+						}
+					break;
+/*
+					case '%':
+					case '?':
+						$firstchar = $yych;
+						$yych = $YYBUFFER[++$YYCURSOR];
+						if ($yych == '>') {
+							$result = "";
+							$YYSTATE = $YY_STATE_HTML;
+							return T_PINP_END;
+						} else {
+							$result = "$firstchar$yych";
+							return T_UNPARSED;
+						}
+					break;
+*/
+					case '<':
+						$yych = $YYBUFFER[++$YYCURSOR];
+						switch ($yych) {
+							case '/':
+								$yych = $YYBUFFER[++$YYCURSOR];
+								while ($yych == ' ') {
+									$yych = $YYBUFFER[++$YYCURSOR];
+								} 
+								$tag_element = "";
+								while ($yych != ' ' && $yych != "\0" && $yych != '>') {
+									$tag_element .= $yych;
+									$yych = $YYBUFFER[++$YYCURSOR];
+								}
+								while ($yych != "\0" && $yych!='>') {
+									$yych = $YYBUFFER[++$YYCURSOR];
+								}
+								if ($yych=='>') {
+									++$YYCURSOR;
+								}
+								if ($tag_element == "pinp") {
+									$result="";
+									$YYSTATE = YY_STATE_HTML;
+									return T_PINP_END;
+								} else {
+									$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
+									return T_UNPARSED;
+								}
+							break;
+							default:
+								$result = "<$yych";
+							break;
+						}
+						return T_UNPARSED;
+					break;					
+					case '/':
+						$yych = $YYBUFFER[++$YYCURSOR];
+						switch ($yych) {
+							case '/':
+								$yych = $YYBUFFER[++$YYCURSOR];
+								while ($yych != "\n" && $yych != "\0") {
+									$yych = $YYBUFFER[++$YYCURSOR];
+								}
+								/* character already eaten */
+								continue;
+							break;
+							case '*':
+								$result="";
+								$start_line = $this->YYLINE;
+								$yych = $YYBUFFER[++$YYCURSOR];
+								while ($yych != "\0") {
+									if ($yych == "\n") {
+										$this->YYLINE++;
+										$result.="\n";
+									}
+									if ($yych == '*') {
+										if  (($yych = $YYBUFFER[++$YYCURSOR]) == '/') {
+											return T_UNPARSED;
+										}
+									} else {
+										$yych = $YYBUFFER[++$YYCURSOR];
+									}
+								}
+								$result = "unterminated comment, started at $start_line";
+								return T_SCANNER_ERROR;
+							break;
+						}
+					break;
+					case 'a':
+					case 'b':
+					case 'c':
+					case 'd':
+					case 'e':
+					case 'f':
+					case 'g':
+					case 'h':
+					case 'i':
+					case 'j':
+					case 'k':
+					case 'l':
+					case 'm':
+					case 'n':
+					case 'o':
+					case 'p':
+					case 'q':
+					case 'r':
+					case 's':
+					case 't':
+					case 'u':
+					case 'v':
+					case 'w':
+					case 'x':
+					case 'y':
+					case 'z':
+					case 'A':
+					case 'B':
+					case 'C':
+					case 'D':
+					case 'E':
+					case 'F':
+					case 'G':
+					case 'H':
+					case 'I':
+					case 'J':
+					case 'K':
+					case 'L':
+					case 'M':
+					case 'N':
+					case 'O':
+					case 'P':
+					case 'Q':
+					case 'R':
+					case 'S':
+					case 'T':
+					case 'U':
+					case 'V':
+					case 'W':
+					case 'X':
+					case 'Y':
+					case 'Z':
+					case '_':
+						/* Identifier */
+						$yych = $YYBUFFER[++$YYCURSOR];
+						while ($YYCLASSES["ID_SECOND"][$yych]) {
+							$yych = $YYBUFFER[++$YYCURSOR];
+						}
+						$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
+						return T_IDENT;
+					break;
+					case '`':
+						$result = "backtick encounterd at line ".$this->YYLINE;
+						return T_SCANNER_ERROR;
+					break;
+					case '"':
+						$start_line = $this->YYLINE;
+						$multi_string = Array();
+						$yych = $YYBUFFER[$YYCURSOR_START=++$YYCURSOR];
+						while ($yych != '"' && $yych != "\0") {
+							if ($yych == '\\') {
+								++$YYCURSOR;
+							} else
+							if ($yych == "\n") {
+								$this->YYLINE++;
+								++$YYCURSOR;
+							} else
+							if ($yych == '$') {
+								$string=substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR - $YYCURSOR_START - 1);
+								array_push($multi_string, Array(T_SUBSTRING => $string));
+								$YYCURSOR_START = $YYCURSOR;
+
+								$yych = $YYBUFFER[++$YYCURSOR];
+								if ($YYCLASSES["ID_FIRST"][$yych]) {
+									$yych = $YYBUFFER[++$YYCURSOR];
+									while ($YYCLASSES["ID_SECOND"][$yych]) {
+										$yych = $YYBUFFER[++$YYCURSOR];
+									}
+									$string=substr($YYBUFFER, $YYCURSOR_START+1, $YYCURSOR - $YYCURSOR_START -1);	
+									array_push($multi_string, Array(T_VARIABLE => $string));
+									$YYCURSOR_START = $YYCURSOR;
+									/* 
+										token already read, so continue 'while'
+										statement.
+									*/
+									continue;
+								} else {
+									$string=substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR - $YYCURSOR_START - 1);
+									$string.='\\$';										
+									array_push($multi_string, Array(T_SUBSTRING => $string));
+									$YYCURSOR_START=$YYCURSOR;
+								}
+							}
+							$yych = $YYBUFFER[++$YYCURSOR];
+						}
+						if ($yych != "\0") {
+							$YYCURSOR++;
+							$string=substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR - $YYCURSOR_START - 1);
+
+							array_push($multi_string, Array(T_SUBSTRING => $string));
+							$result = $multi_string;
+							return T_STRING;
+						} else {
+							$result = "unterminated quote, started at $start_line:$start_col";
+							return T_SCANNER_ERROR;
+						}
+					break;
+					case "'":
+						$start_line = $this->YYLINE;
+						$yych = $YYBUFFER[++$YYCURSOR];
+						while ($yych != "'" && $yych != "\0") {
+							if ($yych == '\\') {
+								++$YYCURSOR;
+							} else
+							if ($yych == "\n") {
+								$this->YYLINE++;
+								++$YYCURSOR;
+							}
+							$yych = $YYBUFFER[++$YYCURSOR];
+						}
+						if ($yych != "\0") {
+							$YYCURSOR++;
+							$result=substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR - $YYCURSOR_START);
+							return T_UNPARSED;
+						} else {
+							$result = "unterminated quote, started at $start_line:$start_col";
+							return T_SCANNER_ERROR;
+						}
+					break;
+					case "-":
+						if (($yych=$YYBUFFER[++$YYCURSOR])=='>') {
+							++$YYCURSOR;
+							return T_OBJECT_OPERATOR;
+						} else {
+							$result="-";
+							--$YYCURSOR;
+							return T_UNPARSED;
+						}
+					break;
+					case "\0":
+						return T_EOF;
+					break;
+					default:
+						while (!$YYCLASSES["START_TRANSITION"][$yych]) {
+							if ($yych == "\n") {
+								$this->YYLINE++;
+							}
+							$yych = $YYBUFFER[++$YYCURSOR];
+						}
+						$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
+						return T_UNPARSED;
+					break;
+				}
+			break;
+		}
+	}
+}
 
 class pinp {
 
-  function pinp($allowed_functions, $var_prefix, $function_prefix="") {
-    if (!$function_prefix) {
-      $function_prefix=$var_prefix;
-    }
-    $this->starttag="<pinp>";
-    $this->endtag="</pinp>";
-    $this->var_prefix=$var_prefix;
-    $this->function_prefix=$function_prefix;
-
-    if (is_array($allowed_functions)) {
-      $allowed_functions=implode("|",$allowed_functions);
-    }
-
-    $array_funcs="array|array_change_key_case|array_chunk|array_count_values|".
-	  "array_diff|array_flip|array_fill|array_intersect|array_key_exists|array_keys|".
-	  "array_merge|array_merge_recursive|array_multisort|array_pad|array_pop|".
-	  "array_push|array_rand|array_reverse|array_shift|array_slice|array_splice|".
-	  "array_sum|array_unique|array_unshift|array_values|arsort|asort|count|current|".
-	  "each|end|in_array|array_search|key|krsort|ksort|list|natsort|natcasesort|".
-	  "next|pos|prev|range|reset|rsort|shuffle|sizeof|sort";
-    $control_funcs="if|elseif|do|while|for|switch|foreach";
-    $datetime_funcs="checkdate|date|getdate|gettimeofday|gmdate|gmmktime|".
-      "gmstrftime|localtime|microtime|mktime|strftime|time|strtotime|".
-	  "easter_days|easter_date";
-    $math_funcs="abs|acos|acosh|asin|asinh|atan|atanh|atan2|base_convert|bindec|ceil|cos|".
-      "cosh|decbin|dechex|decoct|deg2rad|exp|expm1|floor|getrandmax|hexdec|hypot|lcg_value|log|log10|log1p|max|min|".
-      "mt_rand|mt_srand|mt_getrandmax|number_format|octdec|pi|pow|rad2deg|rand|round|".
-      "sin|sinh|sqrt|srand|tan|tanh|bcadd|bccomp|bcdiv|bcmod|bcmul|bcpow|bcscale|bcsqrt|".
-	  "bcsub|gmp_[a-z_]+";
-	$misc_funcs="mail|highligh_string|pack|get_browser";
-	$net_funcs="checkdnsrr|gethostbyaddr|gethostbyname|gethostbynamel|getmxrr|".
-	  "getservbyport|getservbyname|ip2long|long2ip";
-    $regex_funcs="ereg|ereg_replace|eregi|eregi_replace|split|spliti|preg_match|".
-	  "preg_match_all|preg_replace|preg_split|preg_quote|preg_grep";
-    $string_funcs="addslashes|addcslashes|bin2hex|chop|chr|chunk_split|".
-	  "convert_cyr_string|count_chars|crc32|crypt|echo|explode|flush|".
-	  "get_html_translation_table|htmlentities|htmlspecialchars|implode|join|".
-	  "levenshtein|localeconv|ltrim|md5|metaphone|nl2br|ord|print|printf|".
-	  "quoted_printable_decode|quotemeta|rawurldecode|rawurlencode|rtrim|str_rot13|".
-      "sscanf|setlocale|similar_text|soundex|sprintf|strncasecmp|strcasecmp|strchr|".
-	  "strcmp|strcoll|strcspn|strip_tags|stripcslashes|stripslashes|stristr|strlen|".
-	  "strnatcmp|strnatcasecmp|strncmp|str_pad|strpos|strrchr|str_repeat|strrev|".
-	  "strrpos|strspn|strstr|strtok|strtolower|strtoupper|str_replace|strtr|substr|".
-	  "substr_count|substr_replace|trim|ucfirst|ucwords|vprintf|vsprintf|wordwrap|".
-	  "base64_decode|base64_encode|urldecode|urlencode|parse_url";
-    $var_funcs="doubleval|empty|floatval|gettype|intval|is_array|is_bool|is_double|".
-	  "is_float|is_int|is_integer|is_long|is_null|is_numeric|is_object|is_real|".
-	  "is_resource|is_scalar|is_string|isset|settype|serialize|strval|unserialize|".
-	  "unset|print_r|var_dump|var_export";
-	$xml_funcs="xmldoc|xmltree|domxml_[a-z_]+|xpath_[a-z_]+|xptr_[a-z_]+|".
-	  "xml_parser_create|xml_parse_into_struct|xml_parser_free|".
-	  "xml_parser_get_option|xml_parser_set_option";
-    $debug_funcs="debug|debugon|debugoff";
-    $loader_funcs="ldHeader|ldRedirect|ldSetContent|ldSetClientCache"; 
-	$this->re_allowed="|$array_funcs|$control_funcs|$datetime_funcs|$math_funcs|".
-	  "$misc_funcs|$net_funcs|$regex_funcs|$string_funcs|$var_funcs|$xml_funcs|".
-	  "$allowed_functions|$debug_funcs|$loader_funcs|";
-
-    // dont touch this unless you know what you are doing
-    $slash="\\\\";
-    $delimiter="'"; 
-    $this->re_string1="([^'\"]*)($delimiter([^$slash]|$slash.)*?$delimiter)";  
-    $delimiter='"';
-    $this->re_string2="([^'\"]*)($delimiter([^$slash]|$slash.)*?$delimiter)";  
-    $this->re_pinp=$this->starttag."([^'\"]*?|($this->re_string1|$this->re_string2)*?[^'\"]*?)".$this->endtag; 
-    $this->pre_comments='|/\*.*\*/|U';
-  }
-
-  function compile($template, $recurse=false) {
-	if (!$recurse) {
-		$clean_template="";
-		while (eregi('^(.*)(<\?|<%|<script[^>]*php[^>]*>)(.*)', $template, $start_regs) &&
-			$start_regs[2]) {
-			$clean_template.=$start_regs[1];
-			$clean_template.="<?php echo \"".AddCSlashes($start_regs[2], ARESCAPE)."\"; ?>";
-			$template=$start_regs[3];
-			unset($start_regs);	
-			if (eregi('^(.*)(\?>|%>|</script>)(.*)', $template, $start_regs) &&
-						$start_regs[2]) {
-				$clean_template.=$start_regs[1];
-				$clean_template.="<?php echo \"".AddCSlashes($start_regs[2], ARESCAPE)."\"; ?>";
-				$template=$start_regs[3];
-				unset($start_regs);	
-			} else {
-				$clean_template.=$template;
-			}
+	function pinp($allowed_functions, $var_prefix, $function_prefix="") {
+		if (!$function_prefix) {
+			$function_prefix=$var_prefix;
+		}
+		if (is_array($allowed_functions)) {
+			$allowed_functions=implode("|", $allowed_functions);
 		}
 
-		if ($clean_template!=="") {
-			$template=$clean_template;
+		$this->var_prefix = $var_prefix;
+		$this->function_prefix = $function_prefix;
+
+		$array_funcs="array|array_change_key_case|array_chunk|array_count_values|".
+		  "array_diff|array_flip|array_fill|array_intersect|array_key_exists|array_keys|".
+		  "array_merge|array_merge_recursive|array_multisort|array_pad|array_pop|".
+		  "array_push|array_rand|array_reverse|array_shift|array_slice|array_splice|".
+		  "array_sum|array_unique|array_unshift|array_values|arsort|asort|count|current|".
+		  "each|end|in_array|array_search|key|krsort|ksort|list|natsort|natcasesort|".
+		  "next|pos|prev|range|reset|rsort|shuffle|sizeof|sort";
+		$control_funcs="if|elseif|do|while|for|switch|foreach";
+		$datetime_funcs="checkdate|date|getdate|gettimeofday|gmdate|gmmktime|".
+	      "gmstrftime|localtime|microtime|mktime|strftime|time|strtotime|".
+		  "easter_days|easter_date";
+		$math_funcs="abs|acos|acosh|asin|asinh|atan|atanh|atan2|base_convert|bindec|ceil|cos|".
+	      "cosh|decbin|dechex|decoct|deg2rad|exp|expm1|floor|getrandmax|hexdec|hypot|lcg_value|log|log10|log1p|max|min|".
+	      "mt_rand|mt_srand|mt_getrandmax|number_format|octdec|pi|pow|rad2deg|rand|round|".
+	      "sin|sinh|sqrt|srand|tan|tanh|bcadd|bccomp|bcdiv|bcmod|bcmul|bcpow|bcscale|bcsqrt|".
+		  "bcsub|gmp_[a-z_]+";
+		$misc_funcs="mail|highligh_string|pack|get_browser";
+		$net_funcs="checkdnsrr|gethostbyaddr|gethostbyname|gethostbynamel|getmxrr|".
+		  "getservbyport|getservbyname|ip2long|long2ip";
+		$regex_funcs="ereg|ereg_replace|eregi|eregi_replace|split|spliti|preg_match|".
+		  "preg_match_all|preg_replace|preg_split|preg_quote|preg_grep";
+		$string_funcs="addslashes|addcslashes|bin2hex|chop|chr|chunk_split|".
+		  "convert_cyr_string|count_chars|crc32|crypt|echo|explode|flush|".
+		  "get_html_translation_table|htmlentities|htmlspecialchars|implode|join|".
+		  "levenshtein|localeconv|ltrim|md5|metaphone|nl2br|ord|print|printf|".
+		  "quoted_printable_decode|quotemeta|rawurldecode|rawurlencode|rtrim|str_rot13|".
+	      "sscanf|setlocale|similar_text|soundex|sprintf|strncasecmp|strcasecmp|strchr|".
+		  "strcmp|strcoll|strcspn|strip_tags|stripcslashes|stripslashes|stristr|strlen|".
+		  "strnatcmp|strnatcasecmp|strncmp|str_pad|strpos|strrchr|str_repeat|strrev|".
+		  "strrpos|strspn|strstr|strtok|strtolower|strtoupper|str_replace|strtr|substr|".
+		  "substr_count|substr_replace|trim|ucfirst|ucwords|vprintf|vsprintf|wordwrap|".
+		  "base64_decode|base64_encode|urldecode|urlencode|parse_url";
+		$var_funcs="doubleval|empty|floatval|gettype|intval|is_array|is_bool|is_double|".
+		  "is_float|is_int|is_integer|is_long|is_null|is_numeric|is_object|is_real|".
+		  "is_resource|is_scalar|is_string|isset|settype|serialize|strval|unserialize|".
+		  "unset|print_r|var_dump|var_export";
+		$xml_funcs="xmldoc|xmltree|domxml_[a-z_]+|xpath_[a-z_]+|xptr_[a-z_]+|".
+		  "xml_parser_create|xml_parse_into_struct|xml_parser_free|".
+		  "xml_parser_get_option|xml_parser_set_option";
+		$debug_funcs="debug|debugon|debugoff";
+		$loader_funcs="ldHeader|ldRedirect|ldSetContent|ldSetClientCache"; 
+
+		$this->allowed_functions=array_flip(explode("|", "$array_funcs|$control_funcs|$datetime_funcs|$math_funcs|".
+		  "$misc_funcs|$net_funcs|$regex_funcs|$string_funcs|$var_funcs|$xml_funcs|".
+		  "$allowed_functions|$debug_funcs|$loader_funcs"));
+
+	}
+
+	function next_token() {
+		$value="";
+		if (count($this->tokens) == 0) {
+			$token = $this->scanner->scan(&$value);
+			if (is_array($value)) {
+				$this->tokens = $value;
+				$this->token = T_MULTIPART_STRING_START;
+				array_push($this->tokens, Array( T_MULTIPART_STRING_END => 1 ));
+			} else {
+				$this->token = $token;
+				$this->token_value = $value;
+			}
+		} else {
+			list($this->token, $this->token_value) = each(array_shift($this->tokens));
 		}
 	}
-    // then remove /* .. */ comments, even in html code... for security
-    // since php supports comment tags including ? > and < ?php the comments check must be made first. 
-    $template=preg_replace($this->pre_comments,"",$template); // this does :)
-    $template=str_replace("\r\n", "\n", $template);
 
-    // now find next <pinp> </pinp> block
-    if (preg_match("!^(.*?)".$this->re_pinp."!m",$template,$matches)) {
+	function compile($template) {
+		$this->scanner = new scanner();
+		$this->scanner->init($template);
+		$this->tokens = Array();
+		$this->new_template = "";
 
-      // pinp code block found, move 'head' to result
-      $result=substr($template, 0, strpos($template, $matches[0]));
-
-      // cut matched part from the template
-      $template=substr($template, strpos($template, $matches[0])+strlen($matches[0]));
-
-      // fix code, call compile on rest recursively
-      $result.=$matches[1].$this->fixcode("<"."?php ".$matches[2]." ?".">").$this->compile($template, true);      
-
-    } else { // no pinp code found
-      $result=$template;
-    } 
-    return $result;
-  }
-
-  function fixcode($code) {
-    // find first occurance of a string
-    if (preg_match("!^(".$this->re_string1."|".$this->re_string2.")!m", $code, $matches)) {
-      if (($matchpos=strpos($code, $mathes[0]))!==0) { 
-        // a single ' or " found, but isn't matched in any of the $matches
-        $pre=substr($code, 0, $matchpos);
-      }
-      // string found, cut matched part from $code
-      $code=substr($code, strpos($code, $matches[0])+strlen($matches[0]));
-      // check which kind of string was found '' or "".
-      if ($matches[2]) { //single quoted string found
-        // $matches[2] is the part before the string, 
-        // $matches[3] is the string ('')
-        $pre.=$matches[2];
-        $string=$matches[3];
-      } else { // double quoted string found
-        // $matches[5] is the part before the string
-        // $matches[6] is the string ("")
-        $pre.=$matches[5];
-        $string=$matches[6];
-      }
-      if (preg_match("|//[^\n]*\$|",$pre)) {
-        if (preg_match("|([^\n]*)\n|",$string.$code, $matches)) {
-          $pre.=$matches[1]."\n";
-          $code=substr($string.$code, strlen($matches[1])+1);
-          $string="";          
-        }
-      } 
-      $result=$this->fixother($pre).$this->fixstring($string).$this->fixcode($code);
-    } else {
-      $result=$this->fixother($code);
-    }
-    return $result;
-  }
-
-  function fixstring($string) {
-    // in a string only the variables need to be fixed
-    
-    $slash="\\\\";
-    return ereg_replace("([^$slash]($slash$slash)*\\\$)","\\1".$this->var_prefix,$string);
-  }
-
-  function fixother($other) {
-    // fix variables and functions  
-
-    // remove backticks
-    $other=ereg_replace("`","",$other);
-
-    $result=ereg_replace("\\\$","\$".$this->var_prefix,$other); // fixes variables
-    return $this->fixfunctions($result);
-  }
-
-  function fixfunctions($varfixed) {
-    // functions that are not in the allowed list must be prefixed
-
-    // prevent any attempt of creating a new object.
-    $varfixed=eregi_replace("([^a-z0-9_-])new([^a-z0-9_-])","\\1nonew\\2",$varfixed);
-    // find function names
-    while (eregi("([^a-z0-9_-])([a-z][a-z0-9_-]*)[[:space:]]*\(",$varfixed,$matches)) {
-      // function name found
-      $function=$matches[2];
-
-      // add 'head' to the result
-      $result.=substr($varfixed, 0, strpos($varfixed, $matches[0]));
-      $result.=$matches[1];
-
-      // cut matched part from $varfixed
-      $varfixed=substr($varfixed, strpos($varfixed, $matches[0])+strlen($matches[0])-1);
-
-      // check if function is allowed
-      if (!eregi("\|".$function."\|", $this->re_allowed)) {
-
-        // function not allowed, add prefix
-        $result.=$this->function_prefix.$function;
-
-      } else {
-
-        // function allowed, copy unchanged 
-        $result.=$function;
-      }
-    }
-
-    // add remainder to $result
-    $result.=$varfixed;
-
-    return $result;
-  }
-
+		$this->next_token();
+		while ($this->token != T_EOF) {
+			switch ($this->token) {
+				case T_PINP_START:
+					$this->new_template.="<?php";
+				break;
+				case T_PINP_END:
+					$this->new_template.="?>";
+				break;
+				case T_VARIABLE:
+					$this->new_template.=$this->var_prefix.$this->token_value;
+					$this->next_token();
+					while ($this->token == T_OBJECT_OPERATOR) {
+						$this->new_template.="->";
+						$this->next_token();
+						if ($this->token == T_IDENT) {
+							$this->new_template.=$this->token_value;
+							$this->next_token();
+						} else {
+							break;
+						}
+					}
+					continue 2;
+				break;
+				case T_STRING:
+					$this->new_template.=$this->token_value;
+				break;
+				case T_MULTIPART_STRING_START:
+					$this->new_template.="\"";
+					$this->next_token();
+					do {
+						switch($this->token) {
+							case T_SUBSTRING:
+								$this->new_template.=$this->token_value;
+							break;
+							case T_VARIABLE:
+								$this->new_template.=$this->var_prefix.$this->token_value;
+							break;
+							default:
+						}
+						$this->next_token();
+					} while ($this->token!=T_MULTIPART_STRING_END);
+					$this->new_template.="\"";
+				break;
+				case T_OBJECT_OPERATOR:
+					$this->new_template.="->";
+				break;
+				case T_UNPARSED:
+					$this->new_template.=$this->token_value;
+				break;
+				case T_IDENT:
+					if (!$this->allowed_functions[$this->token_value]) {
+						$this->new_template.=$this->function_prefix.$this->token_value;
+					} else {
+						$this->new_template.=$this->token_value;
+					}
+				break;
+				case T_SCANNER_ERROR:
+					$this->error = $this->token_value;
+					break 2;
+				break;
+			}
+			$this->next_token();
+		}
+		return $this->new_template;
+	}
 }
-
 ?>
