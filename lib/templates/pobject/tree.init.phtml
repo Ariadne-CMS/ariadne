@@ -22,9 +22,12 @@
 					node=window.parent.root;
 					node.status="Open";
 					<?php
-						$criteria["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
-						$criteria["object"]["implements"]["="]="'pdir'";
-						if ($folders=$this->find("",$criteria,"system.get.folder.phtml",$args)) {
+					// also show links below a profile user object if a profile is set
+					if($profile=$this->getdata("profile","none")){
+						$pquery=" OR object.parent = '".addslashes($profile)."'";
+					}
+					$criteria="(object.parent = '".addslashes($this->path)."'".$pquery.") and (object.implements =  'pdir' OR object.type = 'pshortcut')";
+                       			if ($folders=$this->find("/",$criteria,"system.get.folder.phtml",$args)) {
 							while (list($key, $folder)=each($folders)) {
 								?>
 									node.add("<?php echo AddCSlashes($folder["icon"], ARESCAPE); ?>",
