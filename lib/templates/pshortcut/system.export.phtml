@@ -236,7 +236,10 @@ global $AR;
 						} 
 					}
 				}
+
 			}
+			display("clearing cache.\n");
+			$ARCurrent->importStore->call("system.cache.clear.phtml", "", $ARCurrent->importStore->get($destpath));
 
 		}
 }
