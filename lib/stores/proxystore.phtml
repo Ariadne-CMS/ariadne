@@ -199,7 +199,7 @@ class proxystore {
 	 **********************************************************************************/
 		global $AR;
 		debug("proxy parents($path)","store");
-		$result = &$AR->stores[$this->key]->parents($path);
+		$result = &$AR->stores[$this->key]->parents($path,$top);
 		$this->error = $AR->stores[$this->key]->error;
 		debug("proxy parents: end","all");
 		return $result;

@@ -70,6 +70,7 @@ class postgresqlstore {
 		$this->files = $config["files"];
 		$this->tbl_prefix = $config["prefix"];
 		$this->transaction = false;
+		$this->batchmode = false;
 
 		/* Instantiate module postgresql_compiler */
 		include_once($this->code."stores/modules/postgresql_compiler.php");
@@ -1242,20 +1243,29 @@ class postgresqlstore {
 		return ($this->filestores[$name]);
 	}
 
-	function start_transaction(){
-	/**********************************************************************
+	function start_transaction($startbatch=false){
+		/**********************************************************************
 
-		'private' function of postgressql store. This will start a transaction.
+		  'private' function of postgressql store. This will start a transaction.
 
-	**********************************************************************/
+		 **********************************************************************/
 		$query_string = "BEGIN WORK";
-		if($this->store_run_query( $query_string)){
-			$this->transaction = true;
+		if(($startbatch === false && $this->batchmode === false) || $startbatch === true){
+			debug("start_transaction: |".($startbatch?"1":"0")."|".($this->batchmode?"1":"0")."|",'store');
+			if($this->store_run_query( $query_string)){
+				$this->transaction = true;
+			}
+			if($startbatch === true){
+				$this->batchmode = true;
+				debug('start_transaction: batchmode enabled','store');
+			}
+		} else{
+			debug('start_transaction: didn\'t start a stansaction because batchmode is on','store');
 		}
 		return $this->transaction;
 	}
 
-	function stop_transaction($how){
+	function stop_transaction($how,$endbatch=false){
 	/**********************************************************************
 
 		'private' function of postgressql store. This will end a transaction when
@@ -1263,13 +1273,26 @@ class postgresqlstore {
 
 	**********************************************************************/
 		if($this->transaction){
+			$query_string = false;
+			debug("stop_transaction: |".($endbatch?"1":"0")."|".($this->batchmode?"1":"0")."|",'store');
 			if($how){
-				$query_string = "COMMIT WORK;";
+				if(($this->batchmode === true && $endbatch === true) || $this->batchmode === false){
+					$query_string = "COMMIT WORK;";
+				} else {
+					debug('stop_transaction: didn\'t stop the transaction because we are in batchmode','store');
+				}
 			} else {
 				$query_string = "ROLLBACK WORK;";
 			}
-			if($this->store_run_query( $query_string)){
-				$this->transaction = false;
+			if($query_string){
+				if($this->store_run_query( $query_string)){
+					$this->transaction = false;
+					$this->batchmode = false;
+				}
+			}
+			if($endbatch === true){
+				$query_string = "analyze";
+				$this->store_run_query( $query_string);
 			}
 		}
 		return !$this->transaction;
