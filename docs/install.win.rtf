@@ -1,5 +1,5 @@
-{\rtf1\ansi\ansicpg1252\deff0\deflang1033\deflangfe1043\deftab708{\fonttbl{\f0\fswiss\fprq2\fcharset0 Arial;}{\f1\fmodern\fprq1\fcharset0 Courier New;}{\f2\fswiss\fprq2\fcharset0 Franklin Gothic Book;}}
-\viewkind4\uc1\pard\nowidctlpar\lang1043\b\f0\fs32 Ariadne installation instructions - Windows 2000/NT\par
+{\rtf1\ansi\ansicpg1252\deff0\deflang1033\deflangfe1043\deftab708{\fonttbl {\f0\fswiss\fprq2\fcharset0 Arial;}{\f1\fmodern\fprq1\fcharset0 Courier New;}{\f2\fswiss\fprq2\fcharset0 Franklin Gothic Book;}}
+\uc1\pard\nowidctlpar\lang1043\ulnone\b\f0\fs32 Ariadne installation instructions - Windows 2000/NT\par
 \b0\fs24\par
 \par
 \fs32 Using IIS\par
@@ -130,7 +130,7 @@ Next you need to configure Ariadne. There are a few configuration files, if you 
 \par
 The first file is in the \b www\b0  (or /ariadne/) directory, called '\b ariadne.inc-dist\b0 '. Copy this file to 'ariadne.inc' and edit it. Change the path in the file to point to the (fully qualified) path of the \b lib\b0  directory under the Ariadne installation dir (e.g. C:\\Progra~1\\Ariadne\\lib\\).\par
 \par
-\pard\nowidctlpar\fi-360\li1080\b Important:\b0  Only use 'legacy' filenames for directories, the tar and gzip utilities used by Ariadne don't understand spaces in filenames.\par
+\pard\fi-360\li1080\nowidctlpar\b Important:\b0  Only use 'legacy' filenames for directories, the tar and gzip utilities used by Ariadne don't understand spaces in filenames.\par
 \pard\nowidctlpar\par
 The next files are in the \b lib/configs/\b0  directory under the ariadne installation directory. Copy \b ariadne.phtml-dist\b0  to ariadne.phtml and edit it. Make sure you change the $AR->OS variable to \b win32\b0 . For the rest, follow the instructions in the configuration file itself. Copy \b store.phtml-dist\b0  to store.phtml and edit it and do the same with \b sessions.phtml-dist\b0  and \b axstore.phtml-dist\b0 . Remember to enter the username and password and database names you entered when you installed MySQL.\par
 \par
@@ -143,6 +143,8 @@ You should now be able to login to Ariadne. Point your webbrowser to your webser
 If you successfully logged on, then before you do anything else remove the ariadne/install/ directory in the document root. This is an installation directory used for the webbased install, which can mess up your database if someone runs the scripts in it later. You might want to keep the files around somewhere, as there is also a script 'setadmin.php' in it, which come in handy if you ever forget the password for 'admin'. \par
 \par
 Then decide if you want to have a guest user account, if you don't, browse through the ariadne tree to \b /system/users/guest/\b0 , click on \b edit\b0  and change the password. The default is 'guest'. Also, remember to change the password for the admin user.\par
+\par
+To make full use of image manipulation you need to have ImageMagick installed. Make sure the path to ImageMagick is correctly set in the Ariadne config. ImageMagick can be obtained from \b http://www.imagemagick.org/www/archives.html\b0\par
 \par
 If you need more assistance with the installation, try the newsgroups at news://ariadne.muze.nl/.\par
 \par

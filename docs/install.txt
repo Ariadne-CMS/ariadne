@@ -89,7 +89,7 @@ Recommended:
 
 12) To make full use of image manipulation you need to have ImageMagick
     installed. Make sure the path to ImageMagick is correctly set in the Ariadne
-    config.
+    config. ImageMagick can be obtained from http://www.imagemagick.org/www/archives.html
 
 More information on programming for/in Ariadne, user manuals, administrator
 manuals, etc. can be found at http://www.muze.nl/
