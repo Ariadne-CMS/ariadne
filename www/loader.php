@@ -83,17 +83,7 @@
 			}
 			readfile($cachedimage);
 		} else {
-			$args=$HTTP_SERVER_VARS["QUERY_STRING"];
-			if ($HTTP_SERVER_VARS["REQUEST_METHOD"]=="POST") {
-				$nocache=1; // never cache pages resulting from 'post' operations.
-				while ( list( $key, $val ) = each( $HTTP_POST_VARS ) ) {
-					if (is_array($val)) {
-						$args.=ldSquishArray($key, $val);
-					} else {
-						$args.="&".RawUrlEncode($key)."=".RawUrlEncode($val);
-					}
-				}
-			}
+			$args=array_merge($HTTP_GET_VARS,$HTTP_POST_VARS);
 			$store->call($function, $args, $store->get($path));
 			if (!$store->total) {
 				$requestedpath=$path;
@@ -101,8 +91,8 @@
 					$path=$store->make_path($path, "..");
 				}
 				$store->call("user.notfound.html",
-					 "arRequestedPath=".RawUrlEncode($requestedpath).
-					 "arRequestedTemplate=".RawUrlEncode($function),
+					 Array(	"arRequestedPath" => $requestedpath,
+					 		"arRequestedTemplate" => $function ),
 					 $store->get($path));
 			}
 			$store->close();
