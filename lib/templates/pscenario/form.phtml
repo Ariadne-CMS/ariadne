@@ -105,8 +105,13 @@ include($this->store->code."widgets/formlock/js.html");
       <input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="history.back()">
     <?php } else { ?>
       <input type="submit" name="next" value="<?php echo $ARnls["cancel"]; ?>">
-      <input type="submit" name="next" value="<?php echo $ARnls["delete"]; ?>" 
-       onClick="return confirm('<?php echo $ARnls["q:removescenario"]; ?>');">
+<?php
+    $wgRecurseConfirm=$ARnls["q:removescenario"];
+	$wgRecurseAction="delete";
+	$wgRecurseTitle=$ARnls["delete"];
+    include($this->store->code."widgets/recurse/form.js");
+	include($this->store->code."widgets/recurse/form.html");
+?>
     <?php } ?>
   </td>
   <td align="right">
