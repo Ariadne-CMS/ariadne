@@ -7,6 +7,7 @@ New Features:
 	  it possible to have debugging and/or verbose enabled during the export.
 	  this also makes the usage of ob_ functions obsolete. this also reduces the
 	  usage of memory
+	- Updated mod_soap.php with SOAP_Header support.
 
 Bugs Fixes:
 	- user.workflow.* didn't set $ARCurrent->nolangcheck, now they do ;-)
