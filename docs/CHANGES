@@ -88,6 +88,7 @@ New Features:
 	  and the real store, so that users can't view the store config with print_r
 
 Bugs Fixed:
+	- Added $data->path of pshortcut to the references.path property.
 	- Fixed a problem with workflow and the owner data, owner data doesn't 
 	  disappear anymore.
 	- Fixed a small problem in the winxp browse list, it now uses the
