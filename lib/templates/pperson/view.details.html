@@ -18,7 +18,9 @@
 <?php 
 	echo $data->address."<br>";
 	echo $data->zipcode."&nbsp;&nbsp;".$data->city."<br>";
-	$this->get("/system/addressbook/countries/".$this->data->country,"show.name.phtml");
+	if ($this->data->country) {
+		$this->get("/system/addressbook/countries/".$this->data->country,"show.name.phtml");
+	}
 	echo "<br>";
 	echo $data->telephone."<br>";
 	echo $data->mobile."<br>";
