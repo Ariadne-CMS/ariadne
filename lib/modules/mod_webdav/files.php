@@ -119,7 +119,7 @@
 			$options['path'] = $path;
 
 			if (!$this->store->exists($path)) {
-				$status = "404 Not Found";
+				$status = false;
 			} else {
 				$info = current($this->store->call('webdav.files.get.file.phtml', '',
 							$this->store->get($path)));
@@ -128,7 +128,7 @@
 					$options[$key] = $value;
 				}
 				$options['data'] = $info['contents'];
-				$status = "200 OK";
+				$status = true;
 			}
 			debug("webdav:files:get [$status]");
 			return $status;
@@ -199,10 +199,10 @@
 				}
 
 				debug("webdav:files:put creating $filename in $parent");
-				$result = current($this->store->call('webdav.files.put.phtml',
+				$result = current($this->store->call('webdav.files.put.file.phtml',
 						Array( 'file' =>
 							Array(
-								'temp_name' => $temp,
+								'tmp_name' => $temp,
 								'name' => $filename,
 								'type' => $mime_type,
 								'size' => filesize($temp)
