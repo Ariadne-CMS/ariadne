@@ -16,17 +16,17 @@
 	// lib/widgets/htmledit/ie/edit.php
 
 	$ARnls["e_absolute_positioning"]		=	"Absolute Positionierung";
-	$ARnls["e_align_absbottom"]				=	"Absbottom";
-	$ARnls["e_align_absmiddle"]				=	"Absmiddle";
-	$ARnls["e_align_baseline"]				=	"Baseline";
-	$ARnls["e_align_bottom"]				=	"Bottom";
+	$ARnls["e_align_absbottom"]				=	"Absoulte Unterkante";
+	$ARnls["e_align_absmiddle"]				=	"Absolute Mitte";
+	$ARnls["e_align_baseline"]				=	"Grundlinie";
+	$ARnls["e_align_bottom"]				=	"Unterseite";
 	$ARnls["e_align_center"]				=	"Zentriert";
-	$ARnls["e_align_left"]					=	"Left";
-	$ARnls["e_align_middle"]				=	"Middle";
-	$ARnls["e_align_not_set"]				=	"Not Set";
-	$ARnls["e_align_right"]					=	"Right";
-	$ARnls["e_align_texttop"]				=	"Texttop";
-	$ARnls["e_align_top"]					=	"Top";
+	$ARnls["e_align_left"]					=	"Links";
+	$ARnls["e_align_middle"]				=	"Mitte";
+	$ARnls["e_align_not_set"]				=	"Nicht Eingestellt";
+	$ARnls["e_align_right"]					=	"Rechts";
+	$ARnls["e_align_texttop"]				=	"Textoberseite";
+	$ARnls["e_align_top"]					=	"Oben";
 	$ARnls["e_alignment"]					=	"Ausrichtung";
 	$ARnls["e_alternate_text"]				=	"Alternativ-Text";
 	$ARnls["e_background_color"]			=	"Hintergrund-Farbe";
@@ -47,7 +47,7 @@
 	$ARnls["e_edit"]						=	"Bearbeiten";
 	$ARnls["e_file"]						=	"Seite";
 	$ARnls["e_find"]						=	"Suchen...";
-	$ARnls["e_fontformat"]					=	"!Font Format";
+	$ARnls["e_fontformat"]					=	"Schriftformat";
 	$ARnls["e_foreground_color"]			=	"Vordergrund-Farbe";
 	$ARnls["e_formatting"]					=	"Format";
 	$ARnls["e_horizontal"]					=	"Horizontal";

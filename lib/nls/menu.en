@@ -28,6 +28,7 @@
 	$ARnls["m_preferences"]					=	"Preferences";
 	$ARnls["m_priority"]					=	"Priority";
 	$ARnls["m_rename"]						=	"Rename";
+	$ARnls["m_roles"]						=	"Roles";
 	$ARnls["m_search"]						=	"Search";
 	$ARnls["m_shortcut"]					=	"Shortcut";
 	$ARnls["m_small"]						=	"Small&nbsp;Icons";

@@ -16,12 +16,12 @@
 	$ARnls["m_details"]						=	"Details";
 	$ARnls["m_edit"]						=	"Bearbeiten";
 	$ARnls["m_explorerbar"]					=	"Explorerleiste";
-	$ARnls["m_export"]						=	"Export";
+	$ARnls["m_export"]						=	"Exportieren";
 	$ARnls["m_find"]						=	"Suchen";
 	$ARnls["m_fonts"]						=	"Schriftart";
 	$ARnls["m_grants"]						=	"Rechte";
 	$ARnls["m_help"]						=	"Hilfe";
-	$ARnls["m_import"]						=	"Import";
+	$ARnls["m_import"]						=	"Importieren";
 	$ARnls["m_index"]						=	"Inhalt";
 	$ARnls["m_language"]					=	"Sprache";
 	$ARnls["m_large"]						=	"Gro&szlig;e&nbsp;Icons";
