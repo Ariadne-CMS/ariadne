@@ -1,22 +1,25 @@
 <?php
-  /******************************************************************
-   index.html					   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
-   Arguments: none
-   Grant needed: read
-   Interface/Widget: all
-   Global variables: none
+	/******************************************************************
+	 view.html                                             Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: read
+	 Global variables: none
 
-   This displays a suitable overview of the object.
+	 This displays a suitable overview of the object.
 
-   no result.
+	 If a child object with the filename 'index.html' exists, view.html
+	 of that object will be called instead. This will still happen even
+	 if you override this template with an object template.
+
+	 no result.
  
-  ******************************************************************/
-  if ($this->exists("index.html/")) {
-    $ARCurrent->cachepage=$this->path.$arCallFunction;
-    $this->get("index.html/","view.html");
-  } else {
-    if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs) ) {
+	******************************************************************/
+	if ($this->exists("index.html/")) {
+		$ARCurrent->cachepage=$this->path.$arCallFunction;
+		$this->get("index.html/","view.html");
+	} else {
+		if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs) ) {
 ?>
 <html>
 <head>
@@ -26,15 +29,15 @@
 <font face="helvetica, sans-serif" size="2">
 <h3><?php echo $nlsdata->name; ?>.</h3>
 <?php
-  $this->ShowPage();
-  echo "<p>";
-  $this->ls("","Show.phtml");
+	$this->ShowPage();
+	echo "<p>";
+	$this->ls("","show.phtml");
 ?>
 </font>
 </div>
 </body>
 </html>
 <?php
-    }
-  }
+		}
+	}
 ?>
