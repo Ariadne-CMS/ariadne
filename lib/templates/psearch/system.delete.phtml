@@ -1,0 +1,47 @@
+<?php   
+	if ($this->CheckSilent("delete")) {
+		if (!$this->lock("T")) {
+			$this->error=$ARnls["err:cannotlockobject"];
+		} else {
+			if (!$this->real_ls(".","system.get.phtml")) {
+				// remove grants for this object in all user objects.
+				if ($data->grants && is_array($data->grants)) {
+					while (list($login, $grants)=each($data->grants)) {		
+						$criteria["login"]["value"]["="]="'".$login."'";
+						$this->find("/system/users/", $criteria, "system.update.grants.phtml", Array(
+									"action" => "delete",
+									"path" => $this->path) );
+					}
+				}
+				/*
+					do not remove templates if we have links to this object
+				*/
+				if (count($this->store->list_paths($this->path)) == 1) {
+					// remove templates
+					if ($data->pinp) {
+						$templates=$this->store->get_filestore("templates");
+						while (list($type, $values)=each($data->pinp)) {
+							while (list($function, $templatelist)=each($values)) {
+								while (list($language, $template)=each($templatelist)) {
+									$file=$type.".".$function.".".$language;
+									$templates->remove($this->id, $file);
+									$file.=".pinp";
+									$templates->remove($this->id, $file);
+								}
+							}
+						}
+					}				
+				}
+				// clear cache
+				$this->ClearCache();
+				// finally remove object itself
+				$this->delete();
+			} else {
+				$this->error=$ARnls["err:containsobj"];
+			}
+			$this->unlock();
+		}
+	} else {
+		$this->error=$ARnls["nopermission"];
+	}
+?>

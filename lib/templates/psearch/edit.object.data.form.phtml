@@ -1,0 +1,94 @@
+<?php
+	/******************************************************************
+	 edit.object.data.form.phtml Muze Ariadne v2.1
+	 ------------------------------------------------------------------
+	 Arguments: newtype, newparent, newfilename
+	 Grant needed: read
+	 Global variables: none
+
+	 This template displays the data entry step for creating or editing
+	 an object. The template is meant to be used as part of a wizard.
+
+	 no result.
+
+	******************************************************************/
+	if ($this->CheckSilent("read") && $this->CheckConfig()) {
+?>
+<table border="0" width="90%">
+<tr>
+	<td>
+		<?php 
+			$arLanguage=$this->getdata("arLanguage","none");
+			if (!$arLanguage) {
+			 $arLanguage=$ARConfig->nls->default;
+			}
+			$selectednls=$arLanguage;
+			$selectedlanguage=$AR->nls->list[$arLanguage];
+			$flag="<img src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\">";
+		?>
+		<fieldset id="data">
+		<legend><?php echo $ARnls["data"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+			<table border="0" align="center">
+			<tr>
+				<td>
+					<span class="required"><?php echo $ARnls["name"]; ?></span>
+				</td><td align="right">
+					<?php echo $flag; ?>
+				</td>
+			</tr><tr>
+				<td colspan="2">
+					<input type="text" name="<?php echo $selectednls."[name]"; ?>" 
+						value="<?php $this->showdata("name", $selectednls); ?>">
+				</td>
+            </tr><tr>
+                <td colspan="2">
+                    <span class="required"><?php echo $ARnls["path"]; ?></span>
+                </td>
+            </tr><tr>
+                <td colspan="2">
+                    <?php
+                        if (!$wgBrowsePath=$this->getdata("path","none")) {
+                            $wgBrowsePath=$this->parent;
+                        }
+                        $wgBrowseName="path";
+                        include($this->store->code."widgets/browse/js.html");
+                        include($this->store->code."widgets/browse/form.html");
+                    ?>
+                </td>
+ 			</tr><tr>
+				<td colspan="2">
+					<?php echo $ARnls["search"]; ?>
+				</td>
+			</tr><tr>
+				<td colspan="2">
+					<input type="text" name="query"
+						value="<?php $this->showdata("query","none"); ?>">
+				</td>
+			</tr>
+			</table>
+		</fieldset>
+	</td>
+</tr>
+</table>
+<script>
+	window.onload=init;
+	function init() {
+		document.wgWizForm["<?php echo $selectednls; ?>[name]"].focus();
+	}
+</script>
+<?php
+		if ($selectednls==$ARConfig->nls->default) {
+			$arResult["save"][$selectednls."[name]"]["ereg"]=".+";
+			$arResult["save"][$selectednls."[name]"]["error"]=sprintf($ARnls["err:nonameentered"],$selectedlanguage);
+			$arResult["next"]=$arResult["save"];
+		} else {
+			$arResult["next"][$selectednls."[name]"]["ereg"]=".+";
+			$arResult["next"][$selectednls."[name]"]["confirm"]=sprintf($ARnls["confirm:nonameentered"],$selectedlanguage);
+			if ($this->getdata("name",$ARConfig->nls->default)) {
+				$arResult["save"]=$arResult["next"];
+			} else {
+				$arResult["save"]=false;
+			}
+		}
+	}
+?>
