@@ -110,9 +110,20 @@
     $store->create_property("address", $address);
 
     echo "== importing ariadne.ax file\n\n";
-    $import_path="/"; $ax_file="ariadne.ax";
-  //  printf("install: ".$AR->ax->cmd_untar."\n", $ax_file, "");
-    include($ariadne."/includes/import.phtml");
+	global $AR, $ARLogin, $options, $import_list; // ax options
+	$options["import_path"]="/";		// import ariadne root
+	$options["axFile"]="ariadne.ax";	// the export file to be imported
+	$options["verbose"]=true;			// show us what is happening
+	$options["grants"]=true;		// import grants also
+	$import_list[0]=".";				// import first object (root)
+
+	// become admin
+	$AR->user=new object;
+	$AR->user->data=new object;
+	$AR->user->data->login=$ARLogin="admin";
+
+	$store->call("system.import.phtml", "",
+		$store->get("/"));
 
     if ($error) {
       error($error);
