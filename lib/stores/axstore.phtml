@@ -488,8 +488,9 @@ class axstore {
 		return $result;
 	}
 
-	function save($path, $type, $data, $properties="", $vtype="", $priority=0, $axflags=AX_NORMAL) {
+	function save($path, $type, $data, $properties="", $vtype="", $priority=false, $axflags=AX_NORMAL) {
 		//echo "axstore::save($path, $type, [data], [properties], $vtype, $priority)\n";
+		$epriority = (int)$priority;
 		$this->error="";
 		if ($path!="/") {
 			$parent=$this->make_path($path, "..");
@@ -531,7 +532,7 @@ class axstore {
 			$object->lastchanged=time();
 			$this->_set_object_properties($properties, $object);
 			$this->nodes[$path]->axflags=$axflags;
-			$this->nodes[$path]->priority=$priority;
+			$this->nodes[$path]->priority=$epriority;
 
 			// save object into the database
 			$this->_save_object($path, $object);
@@ -557,7 +558,7 @@ class axstore {
 
 			$node=new object;
 			$node->path=$path;
-			$node->priority=$priority;
+			$node->priority=$epriority;
 			$node->axflags=$axflags;
 
 			$this->nodes[$path]=$node;
