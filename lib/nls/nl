@@ -279,4 +279,6 @@ $ARnls["contextsearch"]="Context";
 $ARnls["advancedsearch"]="Uitgebreid";
 $ARnls["location"]=		"Locatie";
 $ARnls["cover"]=		"Omslag";
+$ARnls["editor"]=		"HTML Editor";
+$ARnls["wysiwyg"]=		"WYSIWYG";
 ?>
