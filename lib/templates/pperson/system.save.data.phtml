@@ -46,9 +46,6 @@
 					} else {
 						$newnlsdata=$this->data->$key;
 					}
-					if (!$this->getdata("name",$key)) {
-						$this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
-					}
 					$newnlsdata->name=$this->data->name;
 					$newnlsdata->summary=$this->getdata("summary",$key);
 					$properties["text"][]["value"]="'".AddSlashes($newnlsdata->summary)."'";
