@@ -122,8 +122,14 @@
 	$AR->user->data=new object;
 	$AR->user->data->login=$ARLogin="admin";
 
-	$store->call("system.import.phtml", "",
+	$result=$store->call("system.import.phtml", "",
 		$store->get("/"));
+
+	if (!$result) {
+		$error="Failed to import ax file";
+	} else {
+		$error=@current($result);
+	}
 
     if ($error) {
       error($error);
