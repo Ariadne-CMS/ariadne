@@ -4,7 +4,7 @@
 		$path=($path[strlen($path)-1]=="/") ? $path : $path."/";
 		if (file_exists($path)) {
 			$dir=opendir($path);
-			while ($entry=readdir($dir)) {
+			while (false !== ($entry = readdir($dir))) {
 				if ($entry!="." && $entry!="..") {
 					if (is_dir($path.$entry)) {
 						rm_dir($path.$entry);
