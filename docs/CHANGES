@@ -3,6 +3,7 @@ Ariadne 2.3.2-dev
 Changes in Ariadne since version Ariadne 2.3.1-dev
 
 New Features:
+	- Added a wrapper function for the store::is_supported() function.
 	- Added Portugese translation. Thanks to Marc R.J. Brevoort.
 	- The web-loader does not save the user's supplied password in the session
 	  anymore. It now creates a unique session key which is stored in the 
@@ -25,6 +26,8 @@ New Features:
 	  
 Bugs Fixed:
 	- Fixed logging in with another user on your own session.
+	- Fixed recursive calling of user.login.html after a session has been 
+	  timed out.
 	- Tidy is configured to accept documents that are UTF-8. Thanks to Jeroen van Gorkum.
 	- Fixed image dialog: it now correctly loads images with another URL root
 	  then $store->root.
