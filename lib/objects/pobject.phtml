@@ -112,7 +112,9 @@ class pobject extends object {
 				// no template found, no default.phtml found, try superclass.
 				if (!class_exists($arType)) {
 					// the given class was not yet loaded, so do that now
-					include_once($this->store->code."objects/".$arType.".phtml");
+					$this->store->newobject('','',$arType,'');
+					// include_once($this->store->code."objects/".$arType.".phtml");
+					
 				}
 				$arTemp=new $arType();
 				$arType=get_parent_class($arTemp);
