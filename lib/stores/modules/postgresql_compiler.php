@@ -198,14 +198,14 @@
 				if ($left) {
 					$result=" $left ,  $right ".$node["type"]." ";
 					if($node["left"]['id'] == 'property' && !$node["right"]['nls']){
-						$leftttablefield = $this->tbl_prefix.$node["left"]['table'].".".$node["left"]['field'];
+						$lefttablefield = $this->tbl_prefix.$node["left"]['table'].".".$node["left"]['field'];
 						$this->select_list[$lefttablefield] = $lefttablefield;
 					}
 				} else {
 					$result=" $right ".$node["type"]." ";
 				}
 				if($node["right"]['id'] == 'property' && !$node["right"]['nls']){
-					$rightttablefield = $this->tbl_prefix.$node["right"]['table'].".".$node["right"]['field'];
+					$righttablefield = $this->tbl_prefix.$node["right"]['table'].".".$node["right"]['field'];
 					$this->select_list[$righttablefield] = $righttablefield;
 				}
 			break;
