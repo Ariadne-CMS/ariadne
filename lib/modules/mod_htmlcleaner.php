@@ -217,63 +217,42 @@ class htmlcleaner
 	// removes the worst mess from word.
 	function cleanup($body, $rules)
 	{
-		$rewrite = $rules["rewrite"];
-		$preserve = $rules["preserve"];
+		$rewrite_rules = $rules["rewrite"];
 
 		$return = '';
 		foreach (htmlcleaner::dessicate($body) as $part) {
-			if (($rewrite[$part->nodeName] && ($arule = $rewrite[$part->nodeName])) 
-				|| ($rewrite["*"] && ($arule = $rewrite["*"]))) {
-
-				if (isset($arule["*"])) {
-					if (isset($preserve[$part->nodeName])) {
-						$rarule = $preserve[$part->nodeName];
-						foreach ($part->attributes as $attrib => $attrib_value) {
-							if (isset($rarule[$attrib])) {
-								if (is_array($rarule[$attrib]) && !$rarule[$attrib][$attrib_value]) {
-									if (!$arule["*"]) {
-										unset($part->attributes[$attrib]);
-									} else {
-										$part->attributes[$attrib] = $arule["*"];
+			if (is_array($rewrite_rules)) {
+				foreach ($rewrite_rules as $tag_rule=>$attrib_rules) {
+					if (eregi($tag_rule, $part->nodeName)) {
+						if (is_array($attrib_rules)) {
+							foreach ($attrib_rules as $attrib_rule=>$value_rules) {
+								foreach ($part->attributes as $attrib_key=>$attrib_val) {
+									if (eregi($attrib_rule, $attrib_key)) {
+										if (is_array($value_rules)) {
+											foreach ($value_rules as $value_rule=>$value) {
+												if (eregi($value_rule, $attrib_val)) {
+													$part->attributes[$attrib_key] = $value;
+												}
+											}
+										} else
+										if ($value_rules === false) {
+											unset($part->attributes[$attrib_key]);
+										} else {
+											$part->attributes[$attrib_key] = $value_rules;
+										}
 									}
 								}
-							} else {
-								if (!$arule["*"]) {
-									unset($part->attributes[$attrib]);
-								} else {
-									$part->attributes[$attrib] = $arule["*"];
-								}
 							}
-						}
-					}
-				} else {
-					$rarule = $preserve[$part->nodeName];
-					foreach ($arule as $attrib => $attrib_value) {
-						if (isset($part->attributes[$attrib])) {
-							if ($rarule[$attrib]) {
-								if ((is_array($rarule[$attrib]) && $rarule[$attrib][$part->attributes[$attrib]])
-									|| !is_array($rarule[$attrib])) {
-									// preserve
-								} else {
-									if (!$arule[$attrib]) {
-										unset($part->attributes[$attrib]);
-									} else { 
-										$part->attributes[$attrib] = $arule[$attrib];
-									}
-								}
-							} else {
-								if (!$arule[$attrib]) {
-									unset($part->attributes[$attrib]);
-								} else { 
-									$part->attributes[$attrib] = $arule[$attrib];
-								}
-							}
+						} else
+						if ($attrib_rules === false) {
+							unset($part);
+						} else {
+							$part->nodeName = $attrib_rules;
 						}
 					}
 				}
-				
 			}
-			if (strstr($part->nodeValue,'<?xml:namespace')===false)
+			if ($part && strstr($part->nodeValue,'<?xml:namespace')===false)
 				$return .= $part->toString();
 		}
 		return $return;
