@@ -1,8 +1,11 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		global $HTTP_USER_AGENT;
-		if (eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
-				 $regs[1] && (intval($regs[1])>=4)) { //ie4+
+		if	(	eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
+				$regs[1] && 
+				(intval($regs[1])>=4) && 
+				($AR->user->data->editor!="text")
+			) { //ie4+ && wysiwyg set as default editor
 			include($this->store->code."widgets/htmledit/ie/edit.php");
 		} else {
 			if ($file) {
