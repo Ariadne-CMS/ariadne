@@ -20,10 +20,10 @@
 			arr['name'] =  name;
 		}
 		<?php
-			if ($ar_nls == "none") {
-				$ar_nls = false;
+			if ($ar_nls == 'none') {
+				$ar_nls = '';
 			}
-		?>   
+		?>
 		arr["URL"] = '<?php echo $this->make_url($ar_path, $ar_nls); ?>';
 		top.window.returnValue = arr;
 		top.window.close();

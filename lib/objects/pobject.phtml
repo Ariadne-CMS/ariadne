@@ -441,7 +441,7 @@ class pobject extends object { // pobject class definition
 		global $ARConfig, $AR, $ARCurrent;
 		debug("pobject: make_url($path) (from: ".$this->path.")","object");
 		$rootoptions=$this->store->rootoptions;
-		if (!$session || $nls) {
+		if (!$session || $nls || $nls === "") {
 			$rootoptions = "";
 			if ($session && $ARCurrent->session->id && !$AR->hideSessionIDfromURL) {
 				$rootoptions .= "/-".$ARCurrent->session->id."-";
@@ -488,15 +488,15 @@ class pobject extends object { // pobject class definition
 		}
 		debug("url: $url",'all');
 */
-    if (is_bool($https)) {
-    	if ($https) {
-    		if ($AR->https) {
-    			$url = ereg_replace('^http:', 'https:', $url);
-    		}
-    	} else {
-    		$url = ereg_replace('^https:', 'http:', $url);
-    	}
-    }
+		if (is_bool($https)) {
+			if ($https) {
+				if ($AR->https) {
+					$url = ereg_replace('^http:', 'https:', $url);
+				}
+			} else {
+				$url = ereg_replace('^https:', 'http:', $url);
+			}
+		}
 		return $url;			
 	}
 
