@@ -56,15 +56,35 @@
 		if ($this->arIsNewObject && ($profile=$this->getdata("profile","none"))) {
 			// fill in values from the given profile
 		}
-		if ($groups=$this->getdata("groups","none")) {
-			// overrides data from profile
-		}
 		if ($language=$this->getdata("language","none")) {
 			$this->data->language=$language;
 		}
 		if ($interface=$this->getdata("interface","none")) {
 			$this->data->interface=$interface;
 		}
-		$this->save($properties);
+		if (!$this->error) {
+			$this->save($properties);
+			if (!$this->error) {
+				if (($groups=$this->getdata("groups","none")) && ($groups!=$this->data->groups)) {
+					// overrides data from profile
+					reset($groups);
+					while (list($key, $group)=each($groups)) {
+						if (!$this->data->groups[$group]) {
+							$this->get($group, "system.set.user.phtml", Array(
+								"action" => "add",
+								"path" => $this->path));
+						}
+					}
+					@reset($this->data->groups);
+					while (list($group, $value)=@each($this->data->groups)) {
+						if (!in_array($group, $groups)) {
+							$this->get($group, "system.set.user.phtml", Array(
+								"action" => "delete",
+								"path" => $this->path));
+						}
+					}
+				} 
+			}
+		}
 	}
 ?>

@@ -1,50 +1,49 @@
 <?php
-  /******************************************************************
-   edit.object.data.phtml			   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
+	/******************************************************************
+	 edit.object.data.phtml                                Muze Ariadne
+	 ------------------------------------------------------------------
 
-   No result.
+	 No result.
 
-  ******************************************************************/
+	******************************************************************/
 
-  if ($this->CheckLogin("edit") && $this->CheckConfig()) {
-    include($this->store->code."widgets/wizard/code.php");
+	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+		include($this->store->code."widgets/wizard/code.php");
 
-    $start="edit.object.data.form.phtml";
-    $step1="edit.object.data.groups.phtml";
-    $finish="edit.object.data.save.phtml";
-   
-    $wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
-    $i++;
-    $wgWizFlow[$i]["title"]=$ARnls["data"];
-    $wgWizFlow[$i]["template"]=$start;
-    if ($this->CheckSilent("config")) {
-      $wgWizFlow[$i]["next"]=$i+1;
-      $wgWizFlow[$i]["save"]=$i+2;
-      $i++;
-      $wgWizFlow[$i]["title"]=$ARnls["groups"];
-      $wgWizFlow[$i]["template"]=$step1;
-      $wgWizFlow[$i]["prev"]=$i-1;
-      $wgWizFlow[$i]["save"]=$i+1;
-      $i++;
-    } else {
-      $wgWizFlow[$i]["save"]=$i+1;
-      $i++;
+		$start="edit.object.data.form.phtml";
+		$step1="edit.object.data.groups.phtml";
+		$finish="edit.object.data.save.phtml";
+	 
+		$wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
+		$i++;
+		$wgWizFlow[$i]["title"]=$ARnls["data"];
+		$wgWizFlow[$i]["template"]=$start;
+		if ($this->CheckSilent("config")) {
+			$wgWizFlow[$i]["next"]=$i+1;
+			$wgWizFlow[$i]["save"]=$i+2;
+			$i++;
+			$wgWizFlow[$i]["title"]=$ARnls["groups"];
+			$wgWizFlow[$i]["template"]=$step1;
+			$wgWizFlow[$i]["prev"]=$i-1;
+			$wgWizFlow[$i]["save"]=$i+1;
+			$i++;
+		} else {
+			$wgWizFlow[$i]["save"]=$i+1;
+			$i++;
 
-    }
-    $wgWizFlow[$i]["title"]=$ARnls["save"];
-    $wgWizFlow[$i]["template"]=$finish;
-    $wgWizFlow[$i]["back"]=$i-1;
-    
-    $wgWizControl=$this->getdata("wgWizControl","none");
-    $wgWizCurrent=$this->getdata("wgWizCurrent","none");
-    if ($wgWizControl && $wgWizCurrent) {
-      $wgWizNextStep=$wgWizFlow[$wgWizCurrent][wgWizGetAction($wgWizControl)];
-      $wgWizButtons=$wgWizFlow[$wgWizNextStep];
-    }
-    $result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
-    $wgWizTitle=$ARnls["edit"]." ".$result[0];    
-//	$wgWizCaption="<img src=\"".$AR->dir->images."icons/".$this->type.".gif\" alt=\"\"> ".$result[0];
-    include($this->store->code."widgets/wizard/classic.html");
-  }
+		}
+		$wgWizFlow[$i]["title"]=$ARnls["save"];
+		$wgWizFlow[$i]["template"]=$finish;
+		$wgWizFlow[$i]["back"]=$i-1;
+		
+		$wgWizControl=$this->getdata("wgWizControl","none");
+		$wgWizCurrent=$this->getdata("wgWizCurrent","none");
+		if ($wgWizControl && $wgWizCurrent) {
+			$wgWizNextStep=$wgWizFlow[$wgWizCurrent][wgWizGetAction($wgWizControl)];
+			$wgWizButtons=$wgWizFlow[$wgWizNextStep];
+		}
+		$result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
+		$wgWizTitle=$ARnls["edit"]." ".$result[0];		
+		include($this->store->code."widgets/wizard/classic.html");
+	}
 ?>
