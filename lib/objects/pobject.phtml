@@ -1000,8 +1000,10 @@ class pobject extends object { // pobject class definition
 							if (filetype($fpath.$entry)!="dir") {
 								@unlink($fpath.$entry);
 								@unlink($hpath.$entry);
-							} else if ($entry!="." && $entry!=".." && $recurse) {
+							} else if ($entry!="." && $entry!=".." && $recurse
+									&& !$recursed[$entry]) {
 								$this->ClearCache($path.$entry."/", false, true);
+								$recursed[$entry]=true;
 							}
 						}
 					}

@@ -21,6 +21,8 @@ Bugs Fixed:
 	- the add grant checks changed to check the parent, not the new object
 	- Fixed the indirect link tool in the wysiwyg editor so that it now
 	  correctly handles complex urls.
+	- changed pobject::ClearCache() to avoid a combinatorial explosion on
+	  multi-nls objects
 
 Changes in Ariadne since version Ariadne 2.3-dev
 
