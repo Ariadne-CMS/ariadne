@@ -214,6 +214,10 @@
 	function ldSetCredentials($login, $password) {
 	global $ARCurrent, $SOAP_SessionID;
 
+		// Make sure the login is lower case. Because of the
+		// numerous checks on "admin".
+		$login = strtolower( $login );
+
 		debug("ldSetCredentials($login, [password])","object");
 		$ARCurrent->session->put("ARLogin", $login);
 		$ARCurrent->session->put("ARPassword", $password, 1);

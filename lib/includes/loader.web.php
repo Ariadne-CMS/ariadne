@@ -269,6 +269,10 @@
 	function ldSetCredentials($login, $password) {
 	global $ARCurrent, $AR, $HTTP_COOKIE_VARS;
 
+		// Make sure the login is lower case. Because of the
+		// numerous checks on "admin".
+		$login = strtolower( $login );
+
 		$ARCookie = stripslashes($HTTP_COOKIE_VARS["ARCookie"]);
 
 		debug("ldSetCredentials($login, [password])","object");
