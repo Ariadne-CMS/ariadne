@@ -151,9 +151,7 @@
 		// install pphoto(book) types
 
 		$store->add_type("pphoto","pobject");
-		$store->add_type("pphoto","pphoto");
 		$store->add_type("pphoto","pfile");
-		$store->add_type("pphoto","ppage");
 		$store->add_type("pphoto","pphoto");
 		$store->add_type("pphotobook","pobject");
 		$store->add_type("pphotobook","ppage");
