@@ -64,9 +64,9 @@
 			archildren=window.archildren;
 		}
 		if (archildren.src) {
-			archildren.src='browse.nav.'+type+'.phtml';
+			archildren.src='browse.nav.'+type+'.phtml?'+document.location.search;
 		} else {
-			archildren.location.href='browse.nav.'+type+'.phtml';
+			archildren.location='browse.nav.'+type+'.phtml?'+document.location.search;
 		}
 	}
 
