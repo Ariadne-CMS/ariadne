@@ -9,10 +9,10 @@
 			$user->call("system.set.group.phtml", "action=$action&path=".
 						RawUrlEncode($this->path)."&id=".RawUrlEncode($this->data->login));
 			if ($action=="add") {
-				$this->link($path, $this->path.$user->data->login."/");
+				$this->store->link($path, $this->path.$user->data->login."/");
 			} else {
 				//FIXME: check path
-				$this->delete($path);						
+				$this->store->delete($path);						
 			}
 			// FIXME: update tree
 		}
