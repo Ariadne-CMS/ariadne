@@ -12,6 +12,7 @@ CREATE TABLE nodes (
 	path varchar(127) DEFAULT '' NOT NULL,
 	parent varchar(127) DEFAULT '' NOT NULL,
 	object int(11) DEFAULT '0' NOT NULL,
+	priority int(11) DEFAULT '0' NOT NULL,
 	PRIMARY KEY (path),
 	KEY object (object),
 	KEY parent (parent)
