@@ -24,6 +24,19 @@
 				$this->vtype,
 				$this->priority);
 				$this->error = $this->store->error;
+
+				if ($ARCurrent->AXAction == "import") {
+					if (is_array($this->data->groups)) {
+						reset($this->data->groups);
+						while (list($key, $val)=each($this->data->groups)) {
+							if ($this->exists($key)) {
+								$target = $key.substr($this->path, strlen($this->parent));
+								display("		adding (".$this->path." to $target)\n");
+								$this->get($key, "system.set.user.phtml", Array("path" => $this->path, "action" => "add"));
+							}
+						}
+					}
+				}
 		}
 	}
 ?>
