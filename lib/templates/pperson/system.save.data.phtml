@@ -14,7 +14,7 @@
 		    $this->data=@current($this->get(".","system.get.data.phtml"));
 		}
 
-		if (!$this->getdata("lastname","none")) { // default language for this path
+		if (!$this->getdata("lastname","none")) {
 			$this->error=$ARnls["err:nolastnameentered"];
 		} else {
 			$this->data->firstname=$this->getdata("firstname","none");
@@ -39,8 +39,6 @@
 			$this->data->nls->default=$ARConfig->nls->default;
 			reset($AR->nls->list);
 			while (list($key, $value)=each($AR->nls->list)) {
-				
-				if ($this->getdata("summary",$key)) {  // name is language independant
 					if (!$this->data->$key) {
 						$newnlsdata=new object;
 					} else {
@@ -51,13 +49,6 @@
 					$properties["text"][]["value"]="'".AddSlashes($newnlsdata->summary)."'";
 					$this->data->$key=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
-				} else { // clear language values for $key->name if set, keep the rest, just in case.
-					if ($this->data->$key) {
-						unset($this->data->$key->name);
-						unset($this->data->$key->summary);
-						unset($this->data->nls->list[$key]);
-					}
-				}
 			}
 
 			$this->data->address=$this->getdata("address","none");
