@@ -107,6 +107,7 @@
   <td colspan="3" bgcolor="#404074"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
   <td rowspan="4" valign="top" align="center" width="100%">
     <?php
+      echo "<!-- template: ".$wgWizFlow[$wgWizNextStep]["template"]."; step: $wgWizNextStep; -->";
       $checks=$wgWizCallObject->call($wgWizFlow[$wgWizNextStep]["template"], $wgWizCallArgs);
       if (!$checks) { // object templates (pinp) cannot return values, use ARCurrent instead
         $checks=$ARCurrent->wgWizChecks;
