@@ -23,6 +23,7 @@
    No result.
 
   ******************************************************************/
+  global $PHP_SELF;
 
   if (!$wgWizCallObject) {
     if ($wgWizNewType) {
@@ -77,6 +78,7 @@
   }  
 </script>
 <form method="post" name="wgWizForm" 
+  action="<?php echo $PHP_SELF; ?>"
   onSubmit="return checksubmit();"
   ENCTYPE="multipart/form-data">
 <?php

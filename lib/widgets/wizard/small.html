@@ -23,6 +23,8 @@
 
   ******************************************************************/
 
+  global $PHP_SELF;
+
   if (!$wgWizCallObject) {
     if ($wgWizNewType) {
       if (!$wgWizNewfilename) {
@@ -75,6 +77,7 @@
   }  
 </script>
 <form method="post" name="wgWizForm" 
+  action="<?PHP echo $PHP_SELF; ?>"
   onSubmit="return checksubmit();"
   ENCTYPE="multipart/form-data">
 <?php
