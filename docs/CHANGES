@@ -10,6 +10,8 @@ IMPORTANT:
 New features:
 	- pobject now has a convert2UTF8() function which can
 	  convert data from other charsets to UTF8.
+	- No more need for preconfigged .zip or .tgz packages for
+	  different OS types.
 
 Bugs fixed:
 	- Fixed a warning when make_filesize() is called without
