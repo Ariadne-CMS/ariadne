@@ -149,6 +149,7 @@ class pobject extends object {
 	***********************************************************************/
 	global $AR, $ARConfig;
 		debug("pobject: save([properties], $vtype)","object");
+		debug("pobject: path=".$this->path,"object");
 		$result=false;
 		if ($this->arIsNewObject) { // save a new object
 			$arNewParent=$this->make_path("..");
@@ -392,9 +393,9 @@ class pobject extends object {
 			if ($continue) {
 				// check password
 				$criteria["login"]["value"]["="]="'".AddSlashes($ARLogin)."'";
-				$result=$this->find("/system/users/",$criteria,"system.get.phtml");
+				$result=@current($this->find("/system/users/",$criteria,"system.get.phtml"));
 				unset($criteria);	
-				if (!($AR->user=$result[0])) {
+				if (!($AR->user=$result)) {
 					debug("pobject: CheckLogin: user in cookie not found","object");
 					if (!$silent) {
 						$arLoginMessage=$ARnls["accessdenied"].": ".sprintf($ARnls["userunknown"],$ARLogin);
@@ -645,7 +646,7 @@ class pobject extends object {
 			if ($dir=@dir($ppath)) {
 				while ($entry=$dir->read()) {
 					if (filetype($ppath.$entry)!="dir") {
-						unlink($ppath.$entry);
+						@unlink($ppath.$entry);
 					} else if ($entry!="." && $entry!="..") {
 						$this->ClearCache($path.$entry."/");
 					}
@@ -655,18 +656,19 @@ class pobject extends object {
 				while ($entry=$dir->read()) {
 					if ($entry!="." && $entry!="..") {
 						if (filetype($fpath.$entry)!="dir") {
-							unlink($fpath.$entry);
-							unlink($hpath.$entry);
+							@unlink($fpath.$entry);
+							@unlink($hpath.$entry);
 						} else if ($entry!="." && $entry!="..") {
 							$this->ClearCache($path.$entry."/");
 						}
 					}
 				}
 			} else if (file_exists(substr($fpath,0,-1)."=")) {
-				unlink(substr($fpath,0,-1)."=");
-				unlink(substr($hpath,0,-1)."=");
+				@unlink(substr($fpath,0,-1)."=");
+				@unlink(substr($hpath,0,-1)."=");
 			}
 		}
+		debug("pobject: ClearCache: end","all");
 	}
 
 	function cached($name, $nls="") {
