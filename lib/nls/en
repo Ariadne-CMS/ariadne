@@ -234,5 +234,8 @@ $ARnls["objectsoftype"]="Objects of type";
 $ARnls["open"]=			"Open";
 $ARnls["allobjects"]=	"All Objects";
 $ARnls["modified"]=		"Modified";
-$ARnls["size"]=			"Size"
+$ARnls["size"]=			"Size";
+$ARnls["list"]=			"List";
+$ARnls["details"]=		"Details";
+$ARnls["home"]=			"Home";
 ?>
