@@ -3,6 +3,7 @@
   require("../lib/configs/ariadne.phtml");
   require("../lib/configs/store.phtml");
   require("../lib/configs/sessions.phtml");
+  require("../lib/includes/loader.cmd.php");
   require("../lib/stores/mysqlstore.phtml");
   
   echo "Clearing old sessions...";
