@@ -107,21 +107,38 @@ if ($this->CheckLogin("read")) {
 					}
 				}
 			}
-
 			$offset+=sizeof($result);
 		}
-
 		if ($options["grants"]) {
-			display("updating grants\n");
+			display("updating grants (groups)\n");
+			reset($ARCurrent->grants_list);
+			while (list($type, $type_logins)=each($ARCurrent->grants_list)) {
+				while (list($login, )=each($type_logins)) {
+					if ($type=="pgroup") {
+						unset($criteria);
+						$criteria["login"]["value"]["="]="'$login'";
+						$criteria["object"]["type"]["="]="'pgroup'";
+						$ARCurrent->importStore->call("system.import.groupgrants.phtml", 
+														array(
+																"importDestPath" => $destpath,
+																"importRootPath" => $rootpath
+														) ,
+														$result=$ARCurrent->importStore->find("/system/groups/", $criteria));
+					} 
+				}
+			}
+
+			display("updating grants (users)\n");
 			reset($ARCurrent->grants_list);
 			while (list($type, $type_logins)=each($ARCurrent->grants_list)) {
 				while (list($login, )=each($type_logins)) {
 					if ($type=="puser") {
 						unset($criteria);
 						$criteria["login"]["value"]["="]="'$login'";
+						$criteria["object"]["type"]["="]="'puser'";
 						$ARCurrent->importStore->call("system.import.usergrants.phtml", "",
 							$result=$ARCurrent->importStore->find("/system/users/", $criteria));
-					}
+					} 
 				}
 			}
 		}
