@@ -233,37 +233,33 @@
 	}
 
 	function ldSetCredentials($login, $password) {
-	global $ARCurrent, $HTTP_COOKIE_VARS;
+	global $ARCurrent, $AR, $HTTP_COOKIE_VARS;
 
 		$ARCookie = stripslashes($HTTP_COOKIE_VARS["ARCookie"]);
 
 		debug("ldSetCredentials($login, [password])","object");
 		if ($ARCurrent->session && 
-			(!$ARCurrent->session->get("ARSessionActivated",1) ||
-			!$ARCurrent->session->get("ARLogin"))) {
-
+					(!$ARCurrent->session->get("ARSessionActivated",1) ||
+					!$ARCurrent->session->get("ARLogin"))) {
 			/* use the same sessionid if the user didn't login before */
 			ldStartSession($ARCurrent->session->id);
 			$ARCurrent->session->put("ARLogin",$login);
 			$ARCurrent->session->put("ARPassword",$password,1);
 			$ARCurrent->session->put("ARSessionActivated",false,1);
-
-		} else
-		if (!$ARCurrent->session || 
-			(!$ARCurrent->session->get("ARSessionActivated",1)) || 
-			($ARCurrent->session->get("ARLogin")!=$login)) {
+		} else if (!$ARCurrent->session || 
+					(!$ARCurrent->session->get("ARSessionActivated",1)) || 
+ 					($ARCurrent->session->get("ARLogin")!=$login)) {
 			// start a new session when there is no session yet, or
 			// when a user uses a new login. (su)
 			ldStartSession();
 			$ARCurrent->session->put("ARLogin",$login);
 			$ARCurrent->session->put("ARPassword",$password,1);
-		} else
-		if ($ARCurrent->session->get("ARSessionTimedout", 1)  &&
-				ldCheckCredentials($login, $password) &&
-				$ARCurrent->session->get("ARLogin") === $login &&
-				$ARCurrent->session->get("ARPassword",1) === $password ) {
-				/* cookie and login matches session */
-				$ARCurrent->session->put("ARSessionTimedout", false, 1);
+		} else if ($ARCurrent->session->get("ARSessionTimedout", 1)  &&
+					ldCheckCredentials($login, $password) &&
+					$ARCurrent->session->get("ARLogin") === $login &&
+					$ARCurrent->session->get("ARPassword",1) === $password ) {
+			/* cookie and login matches session */
+			$ARCurrent->session->put("ARSessionTimedout", false, 1);
 		}
 
 		/* now save our session */
@@ -300,6 +296,7 @@
 			$cookie[$ARCurrent->session->id]['timestamp']=time();
 			$cookie[$ARCurrent->session->id]['check']="{".ARCrypt($password.$ARCurrent->session->id)."}";
 			$ARCookie=serialize($cookie);
+			debug("setting cookie ($ARCookie)");
 			setcookie("ARCookie",$ARCookie, 0, '/');
 		}
 	}
