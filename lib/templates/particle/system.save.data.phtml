@@ -102,14 +102,16 @@
 					$i++;
 				}
 				$properties["published"][0]["value"]=$this->data->published;
-				$this->save($properties);
-				reset($AR->nls->list);
-				while (list($key, $value)=each($AR->nls->list)) {
-					if ($page=$this->getdata("page",$key)) {
-						$this->call("system.save.page.phtml",Array("ContentLanguage" => $key, "page" => $page));
+
+				if ($this->save($properties)) {
+					reset($AR->nls->list);
+					while (list($key, $value)=each($AR->nls->list)) {
+						if ($page=$this->getdata("page",$key)) {
+							$this->call("system.save.page.phtml",Array("ContentLanguage" => $key, "page" => $page));
+						}
 					}
+					$this->ClearCache();
 				}
-				$this->ClearCache();
 			} else {
 				$this->error=sprintf($ARnls["err:notascenario"],$scenario);
 				// FROP $this->error="'$scenario' is not a pscenario.";
