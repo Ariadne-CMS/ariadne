@@ -419,9 +419,81 @@ function wgCompose_show(buffer) {
   sel.pasteHTML(buffer);
 }
 
-function DECMD_HYPERLINK_onclick() {
-  setFormat("CreateLink");
-}
+	function DECMD_HYPERLINK_onclick() {
+		var arr,args,oSel, oParent, sType;
+
+		oSel = document.selection;
+		sType=oSel.type;
+		arr=null;
+		args=new Array();
+		//set a default value for your link button
+		args["URL"] = "http://";
+		/*
+		The logic is similar if there is a selection
+		of text or image. You get the nearest parent and
+		then go up the DOM to see the nearest parent A element
+		*/
+		if(sType=="Text" || sType=="None"){
+			oParent = GetElement(oSel.createRange().parentElement(),"A");
+		} else { 
+			oParent = GetElement(oSel.createRange().item(0),"A");
+		}
+		/* 
+		So, if you get a parent A (anchor) element, you use the href property
+		of that. Now, there is an obvious caveat here, because A can
+		be a link or an anchor. So, you need to see if it has an href.
+		*/
+		if(oParent && oParent.href) {
+			args["URL"] = oParent.href;
+			for (var i=0; i<oParent.attributes.length; i++) {
+				oAttr=oParent.attributes.item(i);
+				if (oAttr.specified) {
+					args[oAttr.nodeName]=oAttr.nodeValue;
+				}
+			}
+		}
+		/* 
+		here popup your own dialog, pass the arg array to that, get what the user
+		entered there and come back here
+		*/ 
+		arr = showModalDialog( "<?php echo $this->store->root.$AR->user->path; 
+			?>edit.object.html.link.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:12em");
+		if (arr != null){
+			if (oParent) {
+				for (i=0; i<oParent.attributes.length; i++) {
+					oldAttribute=oParent.attributes.item(i);
+					var dummy=new String(oldAttribute.name);
+					if (dummy.substring(0,3)=='ar_') {
+						oParent.removeAttribute(oldAttribute.name);
+					}
+				}
+				oParent.href=arr['URL'];
+				if (arr['attributes']) {
+					for (var i in arr['attributes']) {
+						var arAttribute=arr['attributes'][i];
+						oParent.setAttribute(arAttribute.name, arAttribute.value);
+					}
+				}
+			} else {
+				var newHTML="<a href=\""+arr['URL']+"\"";
+				if (arr['attributes']) {
+					for (var i in arr['attributes']) {
+						var arAttribute=arr['attributes'][i];
+						newHTML=newHTML+" "+arAttribute.name+"=\""+arAttribute.value+"\"";
+					}
+				}
+				oRange=oSel.createRange();
+				if (sType=="Control") {
+					var myimg=oRange.item(0);
+					newHTML=newHTML+">" + myimg.outerHTML + "</a>";
+					myimg.outerHTML=newHTML;
+				} else {
+					newHTML=newHTML+">" + oRange.htmlText + "</a>";
+					oRange.pasteHTML(newHTML);
+				}
+			}
+		}
+	}
 
 function DECMD_DELETE_onclick() {
   setFormat("Delete");
