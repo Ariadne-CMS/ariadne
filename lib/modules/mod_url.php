@@ -27,7 +27,6 @@ class URL {
 		$site = $this->currentsite();
 		if ($site && $site !== '/') {
 			$find[] = "%\\Q".$this->make_url($site, "\\E{0}(".$nls_match.")?\\Q")."\\E?%"; 
-echo "frip: $site<br>\n";
 			$repl[] = "{arSite\\1}";
 		}
 
