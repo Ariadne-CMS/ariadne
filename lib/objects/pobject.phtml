@@ -293,6 +293,7 @@ class pobject extends object { // pobject class definition
 			if ($this->lock()) {
 				if ($this->exists($this->path)) { // prevent 'funny stuff'
 					$this->data->mtime=time();
+					$this->data->muser=$AR->user->data->login;
 					$properties["time"][0]["ctime"]=$this->data->ctime;
 					$properties["time"][0]["mtime"]=$this->data->mtime;
 					$properties["time"][0]["muser"]="'".AddSlashes($AR->user->data->login)."'";
