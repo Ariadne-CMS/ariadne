@@ -20,6 +20,7 @@
     $store->add_type("puser","puser");
     $store->add_type("pgroup","pobject");
     $store->add_type("pgroup","pdir");
+	$store->add_type("pgroup","puser");
     $store->add_type("pgroup","pgroup");
     $store->add_type("pfile","pobject");
     $store->add_type("pfile","pfile");
