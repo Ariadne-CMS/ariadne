@@ -15,19 +15,16 @@
     reset($AR->nls->list);
     while (list($key, $value)=each($AR->nls->list)) {
       
-      if ($this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
+      if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
         if (!$this->data->$key) {
           $newnlsdata=new object;
         } else {
           $newnlsdata=$this->data->$key;
         }
-        if (!$newnlsdata->name=$this->getdata("name",$key)) {
-          $this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
-        }
-//        $newnlsdata->name=$this->getdata("name",$key);
+        $newnlsdata->name=$name;
         $properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
         $newnlsdata->summary=$this->getdata("summary",$key);
-        $this->data->$key=$newnlsdata;
+        $this->data->{$key}=$newnlsdata;
         $this->data->nls->list[$key]=$value;
       } else { // clear language values for $key->name if set, keep the rest, just in case.
         if ($this->data->$key) {
