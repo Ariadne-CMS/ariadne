@@ -1,0 +1,40 @@
+<?php
+
+if( $this->CheckConfig($arCallFunction, $arCallArgs) ) {
+?>
+<html>
+<head>
+<title>Ariadne - <?php echo $ARnls["notfound"]; ?></title>
+<style>
+  .width100 { width: 100; }
+  .width200 { width: 200; }
+  .width300 { width: 300; }
+  H1    { FONT: 12pt sans-serif; FONT-WEIGHT: bold; }
+  TD        { FONT: 10pt sans-serif; }
+  BODY      { FONT: 10pt sans-serif;
+              BORDER: 0;
+  <?php
+    global $HTTP_USER_AGENT;
+    if (eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
+       $regs[1] && (intval($regs[1])>=4)) { //ie4+
+  ?>
+              BACKGROUND-COLOR: buttonface;
+  <?php
+    } else {
+  ?>
+              BACKGROUND-COLOR: #BBBBBB;
+  <?php
+    }
+  ?>
+            }
+</style>
+</head>
+<body bgcolor="#BBBBBB">
+<?php
+	$this->call("user.notfound.inpage.html", $arCallArgs);
+?>
+</body>
+</html>
+<?php
+}
+?>

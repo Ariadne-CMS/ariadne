@@ -1,0 +1,14 @@
+<?php
+if( $this->CheckConfig($arCallFunction, $arCallArgs) ) {
+?>
+<table align="center" border="0" width="300">
+<tr>
+  <td align="center">
+    <h1><?php echo $ARnls["notfound"]; ?></h1>
+    <?php echo $arRequestedPath.$arRequestedTemplate; ?>
+  </td>
+</tr>
+</table>
+<?php
+}
+?>
