@@ -835,7 +835,8 @@ class pobject extends object { // pobject class definition
 				if (!isset($this->data->nls->list[$reqnls]) || !$config->nls->list[$reqnls]) {
 					if (!$ARCurrent->nolangcheck ) {
 						$ARCurrent->nolangcheck=1;
-						$this->call("user.languageselect.html", Array("arOriginalFunction" => $arCallFunction));
+						$arCallArgs["arOriginalFunction"] = $arCallFunction;
+						$this->call("user.languageselect.html", $arCallArgs);
 						return false;
 					} else {
 						$this->nlsdata=$this->data->$nls;
