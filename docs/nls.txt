@@ -1,4 +1,4 @@
-NLS support                                                     Muze Ariadne 2.0
+NLS support                                                     Muze Ariadne 2.1
 ================================================================================
 Ariadne has inbuilt support for multiple languages. For people interested in 
 adding more languages, the files lib/nls/en and lib/nls/menu.en contain all 
