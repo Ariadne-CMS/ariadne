@@ -896,7 +896,8 @@ function GetElement(oElement,sTag)
   return oElement;
 }
 
-function DECMD_HYPERLINK_onclick() {
+function DECMD_HYPERLINK_onclick() 
+{
 	var arr,args,oSel, oParent, sType;
 	var oATag=false;
 
@@ -913,11 +914,13 @@ function DECMD_HYPERLINK_onclick() {
 	args=new Array();
 	//set a default value for your link button
 	args["URL"] = "http:/"+"/";
+	args["anchors"] = HYPERLINK_getAnchors();
   	if (oParent.tagName=="A") {
 		oATag=oParent;
 		args["URL"] = oParent.href;
+		args['name'] = oParent.name;
 		for (var i=0; i<oParent.attributes.length; i++) {
-			oAttr=oParent.attributes.item(i);
+			var oAttr=oParent.attributes.item(i);
 			if (oAttr.specified) {
 				args[oAttr.nodeName]=oAttr.nodeValue;
 			}
@@ -930,21 +933,27 @@ function DECMD_HYPERLINK_onclick() {
 	arr = showModalDialog(tbContentTarget + 
 		"edit.object.html.link.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:12em; status: no; resizable: yes;");
 	if (arr != null){
-	    if (!oATag && arr['URL']) {
-			var newLink="<a href=\""+arr['URL']+"\"";
-			if (arr['attributes']) {
-				for (var i in arr['attributes']) {
-					var arAttribute=arr['attributes'][i];
-					newLink=newLink+" "+arAttribute.name+"=\""+arAttribute.value+"\"";
-				}
+		var newLink='<a';
+		if (arr['URL']) {
+			newLink+=" href=\""+arr['URL']+"\"";
+		}
+		if (arr['name']) {
+			newLink+=' name="'+arr['name']+'"';
+		}
+		if (arr['attributes']) {
+			for (var i in arr['attributes']) {
+				var arAttribute=arr['attributes'][i];
+				newLink=newLink+" "+arAttribute.name+"=\""+arAttribute.value+"\"";
 			}
-			newLink=newLink+">";
+		}
+		newLink=newLink+">";
+	    if (!oATag && (arr['URL'] || arr['name'])) {
 			if (sType=='Control') {
 				oElement.outerHTML=newLink+oElement.outerHTML+"</A>";
 			} else {
 				
 				// first let the dhtmledit component set the link, since it is better in it.
-				tbContentElement.ExecCommand(DECMD_HYPERLINK, OLECMDEXECOPT_DONTPROMPTUSER, arr['URL']);
+				tbContentElement.ExecCommand(DECMD_HYPERLINK, OLECMDEXECOPT_DONTPROMPTUSER, 'http://www.example.com/');
 				// now collapse the range, so even if the range overlaps a link partly, the parent
 				// element will become the link. trust me.... 
 				oRange.collapse();
@@ -952,26 +961,11 @@ function DECMD_HYPERLINK_onclick() {
 				oATag=oRange.parentElement();
 			}
 		}
-		if (oATag && arr['URL']) {
-			for (i=0; i<oATag.attributes.length; i++) {
-				oldAttribute=oATag.attributes.item(i);
-				var dummy=new String(oldAttribute.name);
-				if ((dummy.substring(0,3)=='ar_') || (dummy.substring(0,3)=="ar:")) {
-					oATag.removeAttribute(oldAttribute.name);
-				}
-			}
-			oATag.href=arr['URL'];
-			if (arr['attributes']) {
-				for (var i in arr['attributes']) {
-					var arAttribute=arr['attributes'][i];
-					oATag.setAttribute(arAttribute.name, arAttribute.value);
-				}
-			}
+		if (oATag && (arr['URL'] || arr['name'])) {
+			oATag.outerHTML=newLink+oATag.innerHTML+'</a>';
 		}
-		if (oATag && !arr['URL']) {
+		if (oATag && !arr['URL'] && !arr['name']) {
 			oATag.outerHTML=oATag.innerHTML;
-//			unlink seems broken, when removing a link on an image, it also removes the image...
-//			tbContentElement.ExecCommand(DECMD_UNLINK,OLECMDEXECOPT_DONTPROMPTUSER);
 		}
 		// this is needed since otherwise if the link contains images and text, the image 'disappears'
 		// although still in the HTML...
@@ -980,6 +974,20 @@ function DECMD_HYPERLINK_onclick() {
 		//		tbContentElement.DocumentHTML=tbContentElement.DocumentHTML;
 	}
 	tbContentElement.focus();
+}
+
+function HYPERLINK_getAnchors() {
+	var aATags = tbContentElement.DOM.getElementsByTagName('A');
+	var result = new Array();
+	var i=0;
+	for (var elem in aATags) {
+		var oATag=aATags[elem];
+		if (oATag.name) {
+			result[i]='#'+oATag.name;
+			i++;
+		}
+	}	
+	return result;
 }
 
 function DECMD_FINDTEXT_onclick() {
@@ -1197,18 +1205,26 @@ function cssStyle_onChange(command)
 
 	var oSelection = tbContentElement.DOM.selection ;
 	var oTextRange = oSelection.createRange() ;
+
 	var sTag = new String(command.value);
 	var aTagAndClass = sTag.split('.');
-	if (aTagAndClass[0]) {
+	if (aTagAndClass[0]) 
+	{
 		sTag = aTagAndClass[0];
-	} else {
+	} 
+	else 
+	{
 		sTag = "";
 	}
-	if (aTagAndClass.length==2) {
+	if (aTagAndClass.length==2) 
+	{
 		var sClass = aTagAndClass[1]; 
-	} else {
+	} 
+	else 
+	{
 		var sClass = "";
 	}
+
 	if (oSelection.type == "Text")
 	{
 		var oSpan = document.createElement("SPAN") ;
@@ -1232,24 +1248,29 @@ function cssStyle_onChange(command)
 					oParent.className = null;
 				}
 			} else {
-				oParent.className = command.value ;
+				oParent.className = sClass ;
 			}
 		}
 		else
 		{
-			if (!command.value) {
+			if (!command.value) 
+			{
 				var text = oSpan.innerText;
 				oTextRange.pasteHTML(text);
-			} else {
+			} 
+			else
+			{ 
 				var text = oTextRange.htmlText;
-				if (sTag) {
-
-				} else {
+				if (sTag=='') 
+				{
 					sTag='span';
 				}
-				if (sClass) {
+				if (sClass) 
+				{
 					oTextRange.pasteHTML('<'+sTag+' class="' + sClass + '">' + text + '</'+sTag+'>');
-				} else {
+				} 
+				else 
+				{
 					oTextRange.pasteHTML('<'+sTag+'>' + text + '</'+sTag+'>');
 				}
 			}
@@ -1258,7 +1279,10 @@ function cssStyle_onChange(command)
 	else if (oSelection.type == "Control" && oTextRange.length == 1)
 	{
 		var oControl = oTextRange.item(0) ;
-		oControl.className = command.value ;
+		if (sTag=='' || oControl.tagName==sTag) 
+		{
+			oControl.className = sClass ;
+		}
 	}
 	command.selectedIndex = 0 ;	
 	tbContentElement.focus();
