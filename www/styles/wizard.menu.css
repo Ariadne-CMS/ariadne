@@ -1,0 +1,41 @@
+.menu {
+	background:	buttonshadow;
+	font-family: arial, helvetica, sans-serif;
+	font-size: 13px;
+	width: 110px;
+	height: 99%;
+	overflow: auto;
+	border: 2px inset buttonshadow;
+	padding: 5px;
+	margin: 2px;
+}
+
+A.menuButton, A.menuButtonDisabled, A.menuButtonCurrent {
+	display: 		block;
+	padding: 		2px;
+	margin:			0px;
+	text-align: 	center;
+	border: 		1px solid buttonshadow;
+	text-decoration:	none;
+	color:		white;
+}
+
+A.menuButton IMG, A.menuButtonDisabled IMG {
+	filter: gray();
+}
+
+A.menuButton:hover IMG, A.menuButton:active IMG, A.menuButtonCurrent IMG {
+	filter: none;
+}
+
+A.menuButton:hover, A.menuButtonCurrent:hover {
+	border-top-color:		threedlightshadow;
+	border-left-color:		threedlightshadow;
+	border-bottom-color:	threeddarkshadow;
+	border-right-color:		threeddarkshadow;
+	color: white;
+}
+
+A.menuButton:visited, A.menuButtonCurrent:visited {
+	color: white;
+}
