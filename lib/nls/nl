@@ -254,9 +254,11 @@ $ARnls["scenario"]=		"Scenario";
 $ARnls["article"]=		"Artikel";
 $ARnls["link"]=			"Link";
 $ARnls["target"]=		"Doel";
+$ARnls["id"]=			"ID";
 $ARnls["copy"]=			"Kopieer";
 $ARnls["locks"]=		"Afschermingen";
 $ARnls["expires"]=		"Verloopt";
 $ARnls["openlocks"]=	"Afschermingen voor %s:";
 $ARnls["unlock"]=		"Hef op";
+$ARnls["err:nolastnameentered"]=	"U dient een achternaam in te voeren";
 ?>
