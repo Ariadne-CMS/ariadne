@@ -6,19 +6,21 @@
 	$nocache=true;
 	// make sure no language select dialog is shown.
 	$ARCurrent->nolangcheck=true;
+	global $PATH_INFO; 
+	if (!$arReturnPath) {
+		$split=strrpos($PATH_INFO, "/");
+		$function=substr($PATH_INFO,$split+1);
+		$arReturnPath=$this->path;
+	}
+	if (!$arReturnTemplate) {
+		$arReturnTemplate=$function;
+		if (ldGetServerVar("QUERY_STRING")) {
+			$arReturnTemplate.="?".ldGetServerVar("QUERY_STRING");
+		}
+	}
+	$arCallArgs['arReturnPath'] = $arReturnPath;
+	$arCallArgs['arReturnTemplate'] = $arReturnTemplate;
 	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
-		global $PATH_INFO; 
-		if (!$arReturnPath) {
-			$split=strrpos($PATH_INFO, "/");
-			$function=substr($PATH_INFO,$split+1);
-			$arReturnPath=$this->path;
-		}
-		if (!$arReturnTemplate) {
-			$arReturnTemplate=$function;
-			if (ldGetServerVar("QUERY_STRING")) {
-				$arReturnTemplate.="?".ldGetServerVar("QUERY_STRING");
-			}
-		}
 		if (!$arPopup) {
 			$this->call("user.login.form.html", $arCallArgs);
 		} else {
