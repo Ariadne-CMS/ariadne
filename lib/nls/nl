@@ -272,7 +272,7 @@ $ARnls["rename"]=		"Hernoem";
 $ARnls["err:maxsize"]=	"Fout: Maximum grootte overschreden";
 $ARnls["err:invalidcontent"]="Fout: Ongeldige inhoud";
 $ARnls["force"]=		"Forceer vernieuwing vanuit bestand.";
-$ARnls["withoutgrants"]="Vernieuw rechten niet.";
+$ARnls["withoutgrants"]="Sluit rechten uit.";
 $ARnls["options"]=		"Opties";
 $ARnls["err:logintoolong"]="Login is te lang, maximum lengte is 32 tekens.";
 ?>

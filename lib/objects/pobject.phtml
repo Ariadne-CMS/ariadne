@@ -182,14 +182,16 @@ class pobject extends object {
 							$properties["time"][0]["muser"]="'".AddSlashes($this->data->owner)."'";
 							$properties["owner"][0]["value"]="'".AddSlashes($this->data->owner)."'";
 							$i=0;
-							while (list($nls, $cdata)=each($this->data->customdata)) {
-								while (list($name, $value)=each($cdata)) {
-									// one index, this order (name, value, nls) ?
-									if ($configcache->custom[$name]['property']) {
-										$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
-										$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
-										$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
-										$i++;
+							if (is_array($this->data->customdata)) {
+								while (list($nls, $cdata)=each($this->data->customdata)) {
+									while (list($name, $value)=each($cdata)) {
+										// one index, this order (name, value, nls) ?
+										if ($configcache->custom[$name]['property']) {
+											$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
+											$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
+											$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
+											$i++;
+										}
 									}
 								}
 							}
@@ -221,16 +223,16 @@ class pobject extends object {
 					@parse_str($customdata);
 					$this->data->customdata=$customdata;
 					$i=0;
-					while (list($nls, $cdata)=each($this->data->customdata)) {
-						while (list($name, $value)=each($cdata)) {
-							if ($configcache->custom[$name]['property']) {
-								// one index, this order (name, value, nls) ?
-								$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
-								$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
-								$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
-								$i++;
-							} else {
-								echo "<!-- ".serialize($configcache->customconfig)." -->";	
+					if (is_array($this->data->customdata)) {
+						while (list($nls, $cdata)=each($this->data->customdata)) {
+							while (list($name, $value)=each($cdata)) {
+								if ($configcache->custom[$name]['property']) {
+									// one index, this order (name, value, nls) ?
+									$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
+									$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
+									$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
+									$i++;
+								}
 							}
 						}
 					}

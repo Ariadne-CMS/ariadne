@@ -272,7 +272,7 @@ $ARnls["rename"]=		"Rename";
 $ARnls["err:maxsize"]=	"Error: Maximum size limit exceeded";
 $ARnls["err:invalidcontent"]="Error: Invalid content";
 $ARnls["force"]=		"Forced updates from file.";
-$ARnls["withoutgrants"]="Don't import grants";
+$ARnls["withoutgrants"]="Exclude grants";
 $ARnls["options"]=		"Options";
 $ARnls["err:logintoolong"]="Login is too long, maximum length is 32 characters.";
 ?>
