@@ -24,7 +24,7 @@
 		$time_index[2][0]="muser";
 		$store->create_property("time", $time, $time_index);
 
-		$owner["owner"]["string"]=32;
+		$owner["value"]["string"]=32;
 		$store->create_property("owner",$owner);
 
 		$custom["name"]["string"]=32;
