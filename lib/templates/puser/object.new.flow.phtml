@@ -88,6 +88,28 @@
 				$ARCurrent->wgWizNextStep=1;
 			}
 		}	
+	} else
+	if ( $wgWizCurrent == 2 && wgWizGetAction($wgWizControl) == "next" ) {
+	global $HTTP_POST_VARS;
+
+		$profile = $this->getdata("profile", "none");
+		if ($profile && $this->getdata("arProfileLoaded", "none") != $profile) {
+			$pdata = current($this->get($profile,'system.get.data.phtml'));
+			if (is_object($pdata)) {
+				$HTTP_POST_VARS["language"] = $pdata->language;
+				$HTTP_POST_VARS["interface"] = $pdata->interface;
+				$HTTP_POST_VARS["editor"] = $pdata->editor;
+				$HTTP_POST_VARS["email"] = $pdata->email;
+				$HTTP_POST_VARS["telephone"] = $pdata->telephone;
+				if (is_array($pdata->groups)) {
+					reset($pdata->groups);
+					while (list($key, $val)=each($pdata->groups)) {
+						$HTTP_POST_VARS["groups"][$key] = $val;
+					}
+				}
+				$HTTP_POST_VARS["arProfileLoaded"] = $profile;
+			}
+		}
 	}
 	$arResult=$arFlow;
 ?>

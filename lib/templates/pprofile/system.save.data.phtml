@@ -50,33 +50,26 @@
 		if ($editor=$this->getdata("editor","none")) {
 			$this->data->editor=$editor;
 		}
+
+		$this->data->email = $this->getdata("email","none");
+		$this->data->telephone = $this->getdata("telephone","none");
+
+		$this->data->groups = Array();
+		$groups = $this->getdata("groups", "none");
+		if (is_array($groups)) {
+			reset($groups);
+			while (list($key, $val)=each($groups)) {
+				if (substr($val, 0, 1) == "/") {
+					$this->data->groups[$val] = $val;
+				} else {
+					$this->data->groups[$key] = $val;
+				}
+			}
+		}
+
 		if (!$this->error) {
 			$this->save($properties);
 			$this->ClearCache();
-			if (!$this->error) {
-				if (($groups=$this->getdata("groups","none")) && ($groups!=$this->data->groups)) {
-					reset($groups);
-					while (list($key, $group)=each($groups)) {
-						if (!$this->data->groups[$group]) {
-							$id = current($this->get($group, "system.get.login.phtml"));
-							$this->call( "system.set.group.phtml", Array(
-								"action" => "add",
-								"path" => $group,
-								"id" => $id));
-						}
-					}
-					@reset($this->data->groups);
-					while (list($group, $value)=@each($this->data->groups)) {
-						if (!in_array($group, $groups)) {
-							$id = current($this->get($group, "system.get.login.phtml"));
-							$this->call("system.set.group.phtml", Array(
-								"action" => "delete",
-								"path" => $group,
-								"id" => $id));
-						}
-					}
-				} 
-			}
 		}
 	}
 ?>

@@ -64,22 +64,24 @@
 			}
 		}
 
-		$oldgroups=$this->data->groups;
-		unset($this->data->groups);
-		if ($groups=$this->getdata("groups","none")) {
-			if($groups){
-				foreach($groups as $group){
-					$this->data->groups[$group]=true;
+		$selected = $this->getdata("groups", "none");
+		$groups = Array();
+		if (is_array($selected)) {
+			reset($selected);
+			while (list($key, $val)=each($selected)) {
+				if (substr($val, 0, 1) == "/") {
+					$groups[$val] = $val;
+				} else {
+					$groups[$key] = $val;
 				}
-				$customgroups=true;
 			}
-		}else{
-			$this->data->groups=$oldgroups;
 		}
+		
+
 
 		if ($profile=$this->getdata("profile","none")) {
 			$this->data->profile=$profile;
-			if($this->arIsNewObject){
+			if ($this->arIsNewObject && !$this->getdata("arProfileLoaded")){
 				$pdata=current($this->get($profile,'system.get.phtml'));
 				/* 
 					now setting default values from the profile, 
@@ -90,7 +92,7 @@
 				$this->data->interface=$pdata->data->interface;
 				$this->data->editor=$pdata->data->editor;
 				if(!$customgrants) {
-					$this->data->groups=$pdata->data->groups;
+					$groups=$pdata->data->groups;
 				}
        
 			}    
@@ -110,21 +112,29 @@
 			$this->save($properties);
 			$this->ClearCache();
 			if (!$this->error) {
-				$groups=$this->data->groups;
-				@reset($oldgroups);
-				while (list($group, $value)=@each($oldgroups)) {
-					$this->get($group, "system.set.user.phtml", Array(
-									"action" => "delete",
-									"path" => $this->path));
-				}	
-				foreach($groups as $group => $value) {
-					if(strval(intval($group))!=$group) {
-						$this->get($group, "system.set.user.phtml", Array(
-									"action" => "add",
-									"path" => $this->path));
+				$oldgroups = $this->data->groups;
+				if (is_array($oldgroups)) {
+					reset($oldgroups);
+					while (list($key, $val)=each($oldgroups)) {
+						if (!$groups[$key]) {
+							$this->get($key, "system.set.user.phtml", Array(
+										"action" => "remove",
+										"path" => $this->path));
+						}
 					}
 				}
 
+				if (is_array($groups)) {
+					reset($groups);
+					while (list($key, $val)=each($groups)) {
+						if (!$oldgroups[$key]) {
+							$this->get($key, "system.set.user.phtml", Array(
+										"action" => "add",
+										"path" => $this->path));
+						}
+					}
+
+				}
 				if ($ARCurrent->session->get("ARLogin") == $this->data->login
 					&& $pass1) {
 					$ARCurrent->session->put("ARLogin", "");
