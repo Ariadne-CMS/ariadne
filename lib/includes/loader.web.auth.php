@@ -46,6 +46,7 @@
 			debug("ldGetUser: user('$user') not found", "all");
 			$result = LD_ERR_ACCESS;
 		}
+		return $result;
 	}
 
 	function ldCheckLogin($login, $password) {
@@ -164,6 +165,7 @@
 		$session_key = ARCrypt(uniqid(rand(), true));
 
 		$ARCurrent->session->put("ARSessionKey", $session_key, true);
+		$ARCurrent->session->put("ARSessionTimedout", 0, 1);
 
 		/* now save our session */
 		$ARCurrent->session->save();
@@ -220,7 +222,7 @@
 		if ($login==$cookie[$ARCurrent->session->id]['login']
 			&& ($saved=$cookie[$ARCurrent->session->id]['check'])) {
 			$check="{".ARCrypt($login.$session_key)."}";
-			if ($check==$saved) {
+			if ($check==$saved && !$ARCurrent->session->get('ARSessionTimedout', 1)) {
 				$result=true;
 			} else {
 				debug("login check failed","all");
