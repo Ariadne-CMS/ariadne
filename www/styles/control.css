@@ -1,0 +1,13 @@
+TD {
+	FONT: 13px sans-serif;
+}
+BODY 	{
+	FONT: 13px sans-serif;
+	BORDER: 0;
+    CURSOR: wait;
+	BACKGROUND-COLOR: #BBBBBB;
+	margin: 0px 0px 0px 0px;
+	padding: 2px 2px 2px 2px;
+	border: 2px groove;
+}
+@import "background.css";
