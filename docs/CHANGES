@@ -42,6 +42,7 @@ New Features:
 	  database (e.g. LDAP).
 	- Added some documentation about the LDAP feature (docs/ldap.txt)
 	- Added AcceptLanguage support
+	- Added export.wddx 
 
 Bugs Fixed:
 	- Fixed a bug in the filestore::read() function. In some cases the store 
