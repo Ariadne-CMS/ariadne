@@ -17,6 +17,8 @@ IMPORTANT:
 	current editor.ini with the one from CVS.
 
 New Features:
+	- Popus of Ariadne are now optionally reused or not, this means you can have
+	  2 seperate template editors open on one Ariadne instance.
 	- user.notfound.html now calls 2 templates depending on the full page not
 	  found or part of a page, user.notfound.full.html user.notfound.inpage.html
 	- You can now call class templates directly without consulting the pinp templates
