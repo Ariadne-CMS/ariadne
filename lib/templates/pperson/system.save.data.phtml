@@ -25,11 +25,10 @@
 			$this->data->lastname=$this->getdata("lastname","none");
 			$this->data->name=$this->data->lastname;
 			$comma=", ";
-			if ($this->data->middlename) { 
-				$this->data->name.=$comma.$this->data->middlename." ";
-				$comma="";
+			$this->data->name=$this->data->lastname.$comma.$this->data->firstname;
+			if ($this->data->middlename) {
+				$this->data->name.=" ".$this->data->middlename;
 			}
-			$this->data->name.=$comma.$this->data->firstname;
 			if (!$this->data->nls) {
 				$this->data->nls=new object;
 			}
