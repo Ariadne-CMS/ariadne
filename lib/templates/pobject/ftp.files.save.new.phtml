@@ -1,14 +1,26 @@
 <?php
 	if ($this->CheckLogin("add") && $this->CheckConfig()) {
 
+		$fileinfo=$this->getdata("file");
+
 		/*	first check which object type we have to use for this
 			kind of file											*/
 
-		if (!$arNewType) {
-			$arNewType="pfile";
+		unset($arNewType);
+		$mimetypes = $ARConfig->cache[$this->path]->mimetypes;
+		@reset($mimetypes);
+		while (!$arNewType && (list($regexp, $arType)=@each($mimetypes))) {
+			if (eregi($regexp, $fileinfo["type"], $regs)) {
+				$arNewType = $arType;
+			}
 		}
 
-		$fileinfo=$this->getdata("file");
+		if (!$arNewType) {
+			// default to pfile
+			$arNewType = "pfile";
+		}
+
+		debug("saving new file of type $arNewType");
 		$arNewFilename=$fileinfo["name"];
 		$arNewPath=$this->make_path($arNewFilename);
 		$arNewData=new object;
