@@ -8,7 +8,10 @@ IMPORTANT:
     need to read the docs/upgrade.txt file first.
 
 New features:
-
+	- Added Polish translation of the newspaper at login. Thanks to
+	  Lukasz Keler.
+	- Updated the logoff screen to new login layout. Thanks to Dino
+	  Termini
 
 Bugs fixed:
 	- Fixed a bug which made it impossible to rename e.g. '/Test/' to
