@@ -1,27 +1,48 @@
 <?php
 if ($this->CheckLogin("read")) {
-	global $options;
-
+global $AR;
 	if (!function_exists('display')) {
 		function display($str) {
-			global $options;
-			if ($options["verbose"]) {
+			global $ARCurrent;
+			if ($ARCurrent->options["verbose"]) {
 				echo $str;
 			}
 		}
 	}
 
+		/* create a dummy object for later use */
+		$dummy = new pobject;
+		$dummy->nls = new object;
+		$dummy->dummy = true;
+		$dummy->type = "pobject";
+		reset($AR->nls->list);
+		while (list($key, $val)=each($AR->nls->list)) {
+			$dummy->$key=new object;
+			$dummy->$key->name="Dummy node";
+			$dummy->nls->list[$key]=$val;
+		}
+
+
+		if (!$srcpath) {
+			$srcpath="/";
+		}
 		display("export($srcpath) to ($destpath)\n");
+
+
 		if (!$destpath) {
 			if ($srcpath!="/") {
-				$checkpaths[]="/";
+				if (!$ARCurrent->importStore->exists("/")) {
+					$checkpaths[]="/";
+				}
 				$path_str="/";
 				$calc_path=substr($srcpath, 0, strrpos(substr($srcpath,0,-1),'/'));
 				$path_elements=explode("/", $calc_path);
 				while (list(,$element)=each($path_elements)) {
 					if ($element) {
 						$path_str.=$element."/";
-						$checkpaths[]=$path_str;
+						if (!$ARCurrent->importStore->exists($path_str)) {
+							$checkpaths[]=$path_str;
+						}
 					}
 				}
 				
@@ -29,102 +50,177 @@ if ($this->CheckLogin("read")) {
 			$destpath="/";
 			$rootpath="/";
 		} else {
+			if ($destpath!="/") {
+				$parent=$this->store->make_path($destpath, "..");
+				if (!$ARCurrent->importStore->exists($parent)) {
+					if ($parent=="/") {
+						display("ax file does not have a root node, we will create one\n");
+
+						$ARCurrent->importStore->save(
+								"/", 
+								"pobject",
+								$dummy,
+								0,
+								0,
+								0,
+								1);
+					} else {
+						$ARCurrent->importStore->error="No parent defined for $destpath";
+					}
+				}
+			}
 			$rootpath=$srcpath;
 		}
 
 		$offset=0;
-		while ($result=$this->store->call("system.export.object.phtml","",$this->store->find($srcpath,$criteria,100,$offset))) {
-			if (is_array($checkpaths)) {
-				unset($newresult);
-				@reset($checkpaths);
-				while (list(,$path)=@each($checkpaths)) {
-					$newresult[]=current($this->store->call("system.export.object.phtml", "",
-										$this->store->get($path)));
-				}
-				while (list($key,)=each($result)) {
-					$newresult[]=$result[$key];
-				}
-				$result=$newresult;
-				reset($result);
-				unset($checkpaths);
-			}
+		if (!$ARCurrent->importStore->error) {
+			while (($result=$this->store->call("system.export.object.phtml","",$this->store->find($srcpath,$criteria,100,$offset)))) {
+				if (is_array($checkpaths)) {
+					unset($newresult);
+					@reset($checkpaths);
+					while (list(,$path)=@each($checkpaths)) {
+						if (!$ARCurrent->importStore->exists($path)) {
+							$temp_obj=current($this->store->call("system.export.object.phtml",
+													Array("setDummyObject" => true),
+													$this->store->get($path)));
 
-			while (is_array($result) && (list($key,$object)=each($result))) {
-				$newpath=$destpath.substr($object->path, strlen($rootpath));
-				display("processing($newpath)	");
-				if ($options["without_data"]) {
-					display("no data for (".$object->path.")\n");
-					unset($object->data);
-					unset($object->properties);
-				}
-
-				if (!$saved_object[$object->id]) {
-					if ($ARCurrent->importStore->exists($newpath)) {
-						$saved_object[$object->id]=$newpath;
-
-						$oldObject=current($ARCurrent->importStore->call("system.get.phtml", "",
-										$ARCurrent->importStore->get($newpath)));
-
-						if ($object->lastchanged > $oldObject->lastchanged) {
-							display("(updating)\n");
-							$object->oldObject=$oldObject;
-							$object->call("system.export.update.phtml");
-						} else {
-							display("(ok)\n");
-							unset($oldObject);	// no update needed
-							unset($object);
+							$newresult[]=$temp_obj;
+							echo "CREATING ($path) ($temp_obj->type)\n";
 						}
+					}
+					while (list($key,)=each($result)) {
+						$newresult[]=$result[$key];
+					}
+					$result=$newresult;
+					reset($result);
+					unset($checkpaths);
+				}
 
+				while (is_array($result) && (list($key,$object)=each($result))) {
+					$newpath=$destpath.substr($object->path, strlen($rootpath));
+
+					$update_obj = false;
+					$save_obj = true;
+
+					display("processing($newpath)	");
+					if ($ARCurrent->options["without_data"]) {
+						display("no data for (".$object->path.")\n");
+						$temp_templates = $object->data->templates;
+						$temp_pinp = $object->data->pinp;
+						unset($object->data);
+						$object->data=$dummy->data;
+						$object->data->templates=$temp_templates;
+						$object->data->pinp=$temp_pinp;
+						$object->dummy = true;
+						$object->dummy_save=1;
 					}
 
+					if ($ARCurrent->options["without_templates"]) {
+						unset($object->data->templates);
+						unset($object->data->pinp);
+					}
 
-					if ($object) {
-						// next one has to be linked
-						$saved_object[$object->id]=$newpath;
+					if (!$saved_object[$object->id]) {
+						if ((!$ARCurrent->options["force"] || $object->dummy) && $ARCurrent->importStore->exists($newpath)) {
+							$saved_object[$object->id]=$newpath;
 
-						display("(saving)\n");
-						$ARCurrent->importStore->save(
-									$newpath, 
-									$object->type,
-									$object->data,
-									$object->properties,
-									$object->vtype,
-									$object->priority);
+							// we may never overwrite an existing object with a
+							// dummy object
+							if (!$object->dummy) {
+								$oldObject=current($ARCurrent->importStore->call("system.get.phtml", "",
+												$ARCurrent->importStore->get($newpath)));
+
+								if (($object->lastchanged > $oldObject->lastchanged)) {
+									display("(updating)\n");
+									$save_obj = true;
+								} else {
+									$save_obj = false;
+									display("(ok)\n");
+									unset($oldObject);	// no update needed
+								}
+							} else {
+								display("(dummy)\n");
+								$save_obj = false;
+							}
+						}
+
+
+						if ($save_obj) {
+							// next one has to be linked
+							$saved_object[$object->id]=$newpath;
+
+								if ($ARCurrent->importStore->exists($newpath)) {
+									$ARCurrent->importStore->call(
+											"system.export.update.phtml", 
+											Array("newObject" => $object),
+											$ARCurrent->importStore->get($newpath));
+
+								} else {
+									display("(saving ".(($object->dummy_save) ? "dummy" : "").")\n");
+									$ARCurrent->importStore->save(
+											$newpath, 
+											$object->type,
+											$object->data,
+											$object->properties,
+											$object->vtype,
+											$object->priority,
+											$object->dummy_save);
+								}
+						} else
+						if ($update_obj) {
+						}
 
 						// (update or set templates and files)
-
 						$object->newObject=current(
 							$ARCurrent->importStore->call("system.get.phtml","",
 								$ARCurrent->importStore->get($newpath)));
 
 						$object->call("system.export.templates.phtml", "");
 						$object->call("system.export.files.phtml", "");
+
+
+					} else {
+						if (!$ARCurrent->importStore->exists($newpath)) {
+							display("(linking)\n");
+							$ARCurrent->importStore->link($saved_object[$object->id], $newpath);
+						}
 					}
-				} else {
-					if (!$ARCurrent->importStore->exists($newpath)) {
-						display("(linking)\n");
-						$ARCurrent->importStore->link($saved_object[$object->id], $newpath);
+				}
+				$offset+=sizeof($result);
+			}
+			if (!$ARCurrent->options["without_grants"]) {
+				display("updating grants (groups)\n");
+				@reset($ARCurrent->grants_list);
+				while (list($type, $type_logins)=@each($ARCurrent->grants_list)) {
+					while (list($login, )=each($type_logins)) {
+						if ($type=="pgroup") {
+							unset($criteria);
+							$criteria["login"]["value"]["="]="'$login'";
+							$criteria["object"]["type"]["="]="'pgroup'";
+							$ARCurrent->importStore->call("system.import.groupgrants.phtml", 
+															array(
+																	"importDestPath" => $destpath,
+																	"importRootPath" => $rootpath
+															) ,
+															$result=$ARCurrent->importStore->find("/system/groups/", $criteria));
+						} 
+					}
+				}
+
+				display("updating grants (users)\n");
+				@reset($ARCurrent->grants_list);
+				while (list($type, $type_logins)=@each($ARCurrent->grants_list)) {
+					while (list($login, )=each($type_logins)) {
+						if ($type=="puser") {
+							unset($criteria);
+							$criteria["login"]["value"]["="]="'$login'";
+							$criteria["object"]["type"]["="]="'puser'";
+							$ARCurrent->importStore->call("system.import.usergrants.phtml", "",
+								$result=$ARCurrent->importStore->find("/system/users/", $criteria));
+						} 
 					}
 				}
 			}
-
-			$offset+=sizeof($result);
 		}
-
-		if ($options["grants"]) {
-			display("updating grants\n");
-			reset($ARCurrent->grants_list);
-			while (list($type, $type_logins)=each($ARCurrent->grants_list)) {
-				while (list($login, )=each($type_logins)) {
-					if ($type=="puser") {
-						unset($criteria);
-						$criteria["login"]["value"]["="]="'$login'";
-						$ARCurrent->importStore->call("system.import.usergrants.phtml", "",
-							$result=$ARCurrent->importStore->find("/system/users/", $criteria));
-					}
-				}
-			}
-		}
-
 }
 ?>

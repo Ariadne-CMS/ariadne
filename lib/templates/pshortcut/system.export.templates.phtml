@@ -1,18 +1,28 @@
 <?php
- if ($this->CheckConfig("read") && !$this->newObject->dummy) {
+  if ($this->CheckLogin("read") && !$ARCurrent->options["without_templates"]) {
 	if ( ($this->newObject->arIsNewObject && $this->CheckLogin("add", $this->newObject->type)) ||
 		(!$this->newObject->arIsNewObject && $this->CheckLogin("edit"))) {
-
 		 $orig_filestore=$this->store->get_filestore("templates");
 		 $orig_templates=$orig_filestore->ls($this->id);
 		 if (is_array($orig_templates)) {
 
 			$new_filestore=$this->newObject->store->get_filestore("templates");
+			/* 
+				if we have to do a forced update, we have to remove all 
+				files in the new_filestore first
+			*/
+			if ($ARCurrent->options["force"]) {
+				$new_filestore->purge($this->newObject->id);
+				unset($this->newObject->data->templates);
+				unset($this->newObject->data->pinp);
+				$save=1;
+			}
+
 			while (list(,$template)=each($orig_templates)) {
 				if ($new_filestore->exists($this->newObject->id, $template) &&
-					( $new_filestore->mtime($this->newObject->id, $template) <
+					( $new_filestore->mtime($this->newObject->id, $template) >
 						$orig_filestore->mtime($this->id, $template))) {
-							display("	template($template) updating\n");
+							display("	template($template) no update\n");
 				} else {
 					$tempname=tempnam($this->store->files."temp", "temp");
 					if (!$orig_filestore->copy_from_store($tempname, $this->id, $template)) {
@@ -30,7 +40,7 @@
 
 			if ($this->data->templates) {
 				$save=1;
-				$templates=$this->newObject->data->templates;
+				$templates=$this->data->templates;
 				while (is_array($templates) && (list($type, $functions)=each($templates))) {
 					while (is_array($functions) && (list($function, $languages)=each($functions))) {
 						while (is_array($languages) && (list($language, $file)=each($languages))) {
@@ -42,7 +52,7 @@
 			}
 			if ($this->data->pinp) {
 				$save=1;
-				$pinp=$this->newObject->data->pinp;
+				$pinp=$this->data->pinp;
 				while (is_array($pinp) && (list($type, $functions)=each($pinp))) {
 					while (is_array($functions) && (list($function, $languages)=each($functions))) {
 						while (is_array($languages) && (list($language, $file)=each($languages))) {
@@ -54,10 +64,17 @@
 			}
 
 			if ($save) {
-				$this->newObject->save();
+				$this->newObject->store->save(
+					$this->newObject->path,
+					$this->newObject->type,
+					$this->newObject->data,
+					$this->newObject->properties,
+					$this->newObject->vtype,
+					$this->newObject->priority,
+					$this->newObject->dummy);
 			}
 		 }
 	}
  }
-
+  
 ?>
