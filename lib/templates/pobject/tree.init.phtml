@@ -7,8 +7,10 @@
 </head>
 <body>
 <div class="border">
-  <span class="hoverbutton" style="float: right"><a href="#" onClick="top.hidetree(); return false;"><img src="<?php echo $AR->dir->images; ?>tree/x.gif" border="0" height="18" width="18" vspace="2"></a></span>
+  <span class="hoverbutton" style="float: right"><a href="#" onClick="top.hidetree(); return false;"><img src="<?php echo $AR->dir->images; ?>tree/x.gif" border="0" height="7" width="8" vspace="2"></a></span>
+  <div style="padding: 4px;">
   <img src="<?php echo $AR->dir->images; ?>tree/wait.gif" style="float: left" hspace="2" height="15" width="15"> Loading...
+</div>
   <?php
 		flush();
 		if ($folder=$this->call("system.get.folder.phtml")) {

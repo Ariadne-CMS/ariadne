@@ -12,13 +12,15 @@
 	</script>
 	<span class="tbutton_right" style="float: right" onMouseOver="this.className='tbutton_right_hover';"
 		 onMouseOut="this.className='tbutton_right';" onClick="top.hidetree();"><img src="<?php echo $AR->dir->images; ?>tree/x.gif" 
-		 border="0" height="18" width="18" vspace="1"></span>
+		 border="0" height="7" width="8" vspace="1"></span>
 	<?php
 		$this->store->accessdenied='Access Denied';
 		if ($this->CheckLogin("read") && $this->CheckConfig()) {
 			$path=$this->store->make_path($this->parent, $data->path);
 			?>
+  <div style="padding: 4px;">
 				<img src="<?php echo $AR->dir->images; ?>tree/wait.gif" hspace="2" width="15" height="15" style="float: left"> Loading...
+</div>
 				<script>
 					function doload() {
 						node=parent.Nodes[<?php echo $node; ?>];

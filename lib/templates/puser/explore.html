@@ -130,7 +130,7 @@ loader=0;
 <FRAMESET COLS="200,*" onLoad="init();">
   <FRAME NAME="tree" 
     SRC="<?php echo $AR->dir->www; ?>widgets/tree/root.php?wwwroot=<?php echo $AR->dir->www; ?>&loader=<?php echo $this->store->root; ?>&path=<?php 
-    echo RawUrlEncode($AR->user->path); ?>" marginwidth="0" marginheight="0" >
+    echo RawUrlEncode($AR->user->path); ?>&interface=<?php echo $data->interface; ?>" marginwidth="0" marginheight="0" >
   <FRAME NAME="view" SRC="<?php echo $this->store->root; ?>/system/ariadne/news/" marginwidth="0" marginheight="0">
 </FRAMESET>
 </HTML>
