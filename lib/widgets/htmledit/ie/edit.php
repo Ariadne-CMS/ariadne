@@ -589,7 +589,6 @@ function DECMD_IMAGE_onclick() {
     elIMG=el.createRange().item(0);
     window.elIMG=elIMG;
     if (elIMG) {
-      // alert(elIMG.outerHTML);
       src=new String(elIMG.src);
       root=new String('<?php echo $this->store->root; ?>');
       if (src.substring(0,root.length)==root) {
@@ -688,11 +687,19 @@ function IMAGE_set(arr) {
 }  
 
 function DECMD_HYPERLINK_onclick() {
+  var elIMG = false;
+
+  el=tbContentElement.DOM.selection;
+  if (el.type=="Control") {
+    elIMG=el.createRange().item(0);
+  }
   tbContentElement.ExecCommand(DECMD_HYPERLINK,OLECMDEXECOPT_PROMPTUSER);
   // The following line fixes a display bug in the MSHTML editor: when
   // you add a link to an image, the image dissapears. The following line
   // 'fixes' this.
-  tbContentElement.DocumentHTML=AR_GET_HTML();  
+  if (elIMG) {
+    elIMG.src=elIMG.src;
+  }
   tbContentElement.focus();
 }
 
