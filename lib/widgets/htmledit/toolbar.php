@@ -164,8 +164,10 @@ function init_cssStyle() {
   var inline = tbContentEditOptions['css']['inline'];
   cssStyle.options[0] = new Option('Styles', '');
   cssStyle.options[1] = new Option('Clear', '');
-  for (i=0; i<inline.length; i++) {
-    cssStyle.options[i+2] = new Option(inline[i], inline[i]);
+  var i=0;
+  for (var istyle in inline) {
+    cssStyle.options[i+2] = new Option(inline[istyle], istyle);
+    i++;
   }
 }
 
@@ -522,7 +524,18 @@ function cssStyle_onChange(command)
 
 	var oSelection = tbContentElement.document.selection ;
 	var oTextRange = oSelection.createRange() ;
-
+	var sTag = new String(command.value);
+	var aTagAndClass = sTag.split('.');
+	if (aTagAndClass[0]) {
+		sTag = aTagAndClass[0];
+	} else {
+		sTag = "";
+	}
+	if (aTagAndClass.length==2) {
+		var sClass = aTagAndClass[1]; 
+	} else {
+		var sClass = "";
+	}
 	if (oSelection.type == "Text")
 	{
 		var oSpan = document.createElement("SPAN") ;
@@ -531,7 +544,7 @@ function cssStyle_onChange(command)
 		var oParent = oTextRange.parentElement() ;
 		var oFirstChild = oSpan.firstChild ;
 		
-		if (oFirstChild.nodeType == 1 && oFirstChild.outerHTML == oSpan.innerHTML && 
+		if (sTag=='' && oFirstChild.nodeType == 1 && oFirstChild.outerHTML == oSpan.innerHTML && 
 				(oFirstChild.tagName == "SPAN"
 				|| oFirstChild.tagName == "FONT"
 				|| oFirstChild.tagName == "P"
@@ -556,7 +569,16 @@ function cssStyle_onChange(command)
 				oTextRange.pasteHTML(text);
 			} else {
 				var text = oTextRange.htmlText;
-				oTextRange.pasteHTML("<span class=" + command.value + ">" + text + "</span>");
+				if (sTag) {
+
+				} else {
+					sTag='span';
+				}
+				if (sClass) {
+					oTextRange.pasteHTML('<'+sTag+' class="' + sClass + '">' + text + '</'+sTag+'>');
+				} else {
+					oTextRange.pasteHTML('<'+sTag+'>' + text + '</'+sTag+'>');
+				}
 			}
 		}
 	}
