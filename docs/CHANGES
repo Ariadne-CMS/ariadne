@@ -10,7 +10,7 @@ New Features:
 
 Bugs Fixes:
 	- user.workflow.* didn't set $ARCurrent->nolangcheck, now they do ;-)
-
+	- toolbar.php new objects were made in the currentsite, changed to current path.
 Ariadne 2.4
 
 Changes in Ariadne since version Ariadne 2.3.1-dev
