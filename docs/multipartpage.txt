@@ -1,0 +1,107 @@
+Multi part pages
+
+
+Ppage now has a set of new methods to allow you to publish multi part pages, or multi page articles.
+
+function CountSections()
+
+function CutPage($tag='h1', $withtags=true, $withtitles=true, $page=false)
+
+function GetSection($section=0)
+
+function GetSections() 
+
+function GetTitle($section=0)
+
+function GetTitles() 
+
+function ShowSection($section=0, $template=null)
+
+function ShowSections($template=null)
+
+function ShowTitle($section=0, $template=null)
+
+function ShowTitles($template=null)
+
+
+example:
+
+the contents of the page:
+
+<html>
+<head>
+  <meta content="text/html; charset=UTF-8" httpequiv="Content-Type">
+  <title></title>
+</head>
+<body>
+  <p>This is a leading intro thingie</p>
+  <h1><em>Page 1</em></h1>
+  <p>Text of page 1</p>
+  <h1>Page 2</h1>
+  <p>Text of page 2</p>
+  <h1>Page 3</h1>
+  <p>Text of page 3</p>
+  <p>More text on page 3</p>
+</body>
+</html>
+
+ppage::view.html
+<pinp>
+  $section=getvar('section');
+</pinp>
+<html>
+<head>
+  <title><pinp> echo $nlsdata->name; </pinp></title>
+</head>
+<body>
+<div id="menu">
+  <pinp>
+    ShowTitles('show.title.html');
+  </pinp>
+</div>
+<div id="content">
+  <pinp>
+    ShowSection($section);
+  </pinp>
+</div>
+</body>
+</html>
+
+ppage::show.title.html
+<a href="<pinp> 
+  echo make_url().'?section='.getvar('section'); 
+</pinp>"><pinp> 
+  echo getvar('section_title'); 
+</pinp></a>
+
+
+or an extended example:
+
+ppage::view.html
+<pinp>
+  $section=getvar('section');
+</pinp>
+<html>
+<head>
+  <title><pinp> echo $nlsdata->name; </pinp></title>
+</head>
+<body>
+<div id="menu">
+  <pinp>
+    CutPage('h1',false,false);
+    ShowTitles('show.title.html');
+  </pinp>
+</div>
+<div id="content">
+  <pinp>
+    ShowSection($section);
+  </pinp>
+</div>
+</body>
+</html>
+
+
+Things to do:
+
+The intro / leader must be available. Also, if no titles are extracted, you might simply use the intro
+as the first page.
