@@ -157,9 +157,9 @@
 			$query.=" and ( $this->where_s ) ";
 		}
 		if ($this->orderby_s) {
-			$query.= " order by $this->orderby_s, $nodes.priority DESC, $nodes.path ASC ";
+			$query.= " order by $this->orderby_s, $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
 		} else {
-			$query.= " order by $nodes.priority DESC, $nodes.path ASC ";
+			$query.= " order by $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
 		}
 
 		return $query;
