@@ -43,6 +43,7 @@ New Features:
 	  just after the install. 
 
 Bugs Fixed:
+	- Added missing German WinXP NLS by Daniel Sepeur.
 	- Fixed the ftp server it's mimetype extension fallback.
 	- Fixed a bug in the grant system: local grants did get inherited.
 	- Removed some legacy code which made it impossible to 'renew' an expired
