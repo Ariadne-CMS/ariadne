@@ -235,6 +235,7 @@
 	$ARnls["on"]							=	"Aan";
 	$ARnls["open"]							=	"Open";
 	$ARnls["openlocks"]						=	"Afschermingen voor %s:";
+	$ARnls["openinnewwindow"]						=	"Open in een nieuw scherm";
 	$ARnls["options"]						=	"Opties";
 	$ARnls["orderedbrowsing"]				=	"!Ordered browsing";
 	$ARnls["overwrite"]						=	"Overschrijven";

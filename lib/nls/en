@@ -239,6 +239,7 @@
 	$ARnls["on"]							=	"On";
 	$ARnls["open"]							=	"Open";
 	$ARnls["openlocks"]						=	"Open locks for %s:";
+	$ARnls["openinnewwindow"]						=	"Open in a new window";
 	$ARnls["options"]						=	"Options";
 	$ARnls["orderedbrowsing"]				=	"Ordered browsing";
 	$ARnls["overwrite"]						=	"Overwrite";
