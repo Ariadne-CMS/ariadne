@@ -164,11 +164,21 @@ function window_onload() {
   loadpage(tbContentRoot, tbContentPath, tbContentFile, tbContentName, tbContentLanguage, tbContentType);
 }
 
+window.onfocus=checkfocus;
+
+function checkfocus() {
+  if (window.setfocusto) {
+    window.setfocusto.focus();
+  }
+  window.onfocus=checkfocus;
+}
+
 function loadpage(root, path, file, name, language, type) {
   // FIXME check isDirty and ask for save first.
   if (ViewHTML.TBSTATE=="unchecked") {
     VIEW_HTML_onclick();
   }
+  // window.document.title='Edit '+path+file+' ( '+name+': '+language+')';
   tbContentRoot=root;
   tbContentPath=path;
   tbContentFile=file;
@@ -507,10 +517,125 @@ function DECMD_INDENT_onclick() {
   tbContentElement.focus();
 }
 
-function DECMD_IMAGE_onclick() {
-  tbContentElement.ExecCommand(DECMD_IMAGE,OLECMDEXECOPT_PROMPTUSER);
-  tbContentElement.focus();
+function getEl(sTag,start) {
+  while ((start!=null) && (start.tagName!=sTag))
+    start = start.parentElement
+  return start
 }
+
+
+function DECMD_IMAGE_onclick() {
+  var args = new Array();
+  var elIMG = false;
+  var el = false;
+  var rg = false;
+
+  window.el=false;
+  window.elIMG=false;
+  window.rg=false;
+  el=tbContentElement.DOM.selection;
+  window.el=el;
+  if (el.type=="Control") {
+    elIMG=el.createRange().item(0);
+    window.elIMG=elIMG;
+    if (elIMG) {
+      // alert(elIMG.outerHTML);
+      src=new String(elIMG.src);
+      root=new String('<?php echo $AR->host.$this->store->root; ?>');
+      if (src.substring(0,root.length)==root) {
+        src=src.substring(root.length);
+      } else { // htmledit component automatically adds http://
+        temp=new String('http://<?php echo $this->store->root; ?>');
+        if (src.substring(0,temp.length)==temp) {
+          src=src.substring(temp.length);
+        } else {
+          temp=new String('http:///');
+          if (src.substring(0,temp.length)==temp) {
+            src=src.substring(temp.length-1);
+          }
+        }
+      }
+      args['src'] = src;
+      args['border'] = elIMG.border;
+      args['hspace'] = elIMG.hspace;
+      args['vspace'] = elIMG.vspace;
+      args['align'] = elIMG.align;
+      args['alt'] = elIMG.alt;
+    }
+  } else {
+    elIMG=false;
+    window.rg=el.createRange();
+    src = '<?php echo $this->path; ?>';
+    args['src'] = src;
+    args['hspace'] = "";
+    args['vspace'] = "";
+    args['align'] = ""; 
+    args['alt'] = "";
+    args['border'] = "";
+  }
+
+  imgwindow=window.open("<?php echo $this->store->root.$this->path; 
+    ?>edit.object.html.image.phtml?src="+escape(args['src'])+
+    "&border="+escape(args['border'])+"&hspace="+escape(args['hspace'])+
+    "&vspace="+escape(args['vspace'])+"&align="+escape(args['align'])+
+    "&alt="+escape(args['alt']),"imgwindow","directories=no,height=160,width=425,location=no,menubar=no,status=no,toolbar=no,resizable=yes");
+  imgwindow.focus();
+  window.setfocusto=imgwindow;
+}
+
+function IMAGE_set(arr) {
+  window.setfocusto=false;
+  var el=window.el;
+  if (arr != null) {
+    src=new String(arr['src']);
+    temp=new String('http://');
+    if (src.substring(0,temp.length)!=temp) {
+      src='<?php echo $this->store->root; ?>'+src;
+    }
+    if (window.elIMG) { // insert a new img
+      elIMG=window.elIMG;
+      elIMG.src=src;
+      if (arr['border']!='') {
+        elIMG.border=arr['border'];
+      }
+      if (arr['hspace']!='') {
+        elIMG.hspace=arr['hspace'];
+      }
+      if (arr['vspace']!='') {
+        elIMG.vspace=arr['vspace'];
+      }
+      if (arr['align']!='') {
+        elIMG.align=arr['align'];
+      }
+      if (arr['alt']!='') {
+        elIMG.alt=arr['alt'];
+      }
+    } else {
+      el=window.el;
+      if ((el.type=="None") || (el.type=="Text"))  {
+        temp='<IMG SRC="'+src+'"';
+        if (arr['border']!='') {
+          temp+=' BORDER='+arr['border'];
+        }
+        if (arr['hspace']!='') {
+          temp+=' HSPACE='+arr['hspace'];
+        }
+        if (arr['vspace']!='') {
+          temp+=' VSPACE='+arr['vspace'];
+        }
+        if (arr['align']!='') {
+          temp+=' ALIGN='+arr['align'];
+        }
+        if (arr['alt']!='') {
+          temp+=' ALT="'+arr['alt']+'"';
+        }
+        temp+='>';
+        rg.pasteHTML(temp);
+        rg.select();
+      }
+    }
+  }
+}  
 
 function DECMD_HYPERLINK_onclick() {
   tbContentElement.ExecCommand(DECMD_HYPERLINK,OLECMDEXECOPT_PROMPTUSER);
@@ -813,7 +938,7 @@ return tbContentElement_ContextMenuAction(itemIndex)
     <div class="tbSeparator"></div>
 
     <div class="tbMenuItem" id="ViewHTML" TBTYPE="toggle" TBSTATE="checked" ID="VIEW_HTML" TBTYPE="toggle" LANGUAGE="javascript" onclick="return VIEW_HTML_onclick()">
-      HTML
+      WYSIWYG
     </div>
   </div> 
   
