@@ -151,7 +151,7 @@
 		<?php if ($arNewType) { ?>
 			<input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="history.back()">
 		<?php } else { ?>
-			<input type="submit" name="next" value="<?php echo $ARnls["cancel"]; ?>">
+			<input type="submit" name="arSubmit" value="<?php echo $ARnls["cancel"]; ?>">
 			<?php
 				$wgRecurseConfirm=$ARnls["q:removeperson"];
 				$wgRecurseAction="delete";
@@ -162,7 +162,7 @@
 		<?php } ?>
 	</td>
 	<td align="right">
-		<input type="submit" name="next" value="<?php echo $ARnls["save"]; ?>">	
+		<input type="submit" name="arSubmit" value="<?php echo $ARnls["save"]; ?>">	
 	</td>
 </tr>
 </table>
