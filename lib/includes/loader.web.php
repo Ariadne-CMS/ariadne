@@ -101,7 +101,7 @@
 	}
  
 	function ldStartSession($sessionid='') {
-	global $ARCurrent, $ariadne;
+	global $ARCurrent, $AR, $ariadne;
 
 		require($ariadne."/configs/sessions.phtml");
 		$ARCurrent->session=new session($session_config,$sessionid);
