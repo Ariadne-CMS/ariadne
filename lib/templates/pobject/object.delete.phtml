@@ -1,0 +1,35 @@
+<?php
+  /******************************************************************
+
+   No return value.
+  
+  ******************************************************************/
+  if ($this->CheckLogin("delete") && $this->CheckConfig()) {
+?>
+<html>
+<head>
+<title><?php echo $ARnls["delete"]; ?></title>
+<?php
+  include($this->store->code."widgets/wizard/classic.css");
+?>
+</head>
+<body>
+<table border="0" width="100%" cellspacing="0">
+<form action="recurse.phtml">
+<input type="hidden" name="action" value="delete">
+<tr>
+  <td align="center" colspan="2">
+    <?php echo $ARnls["q:removeobject"]."<br>( $this->path )"; ?>
+  </td>
+</tr><tr>
+  <td align="left">
+    <input type="button" name="cancel" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();">
+  </td><td align="right">
+    <input type="submit" name="submit" value="<?php echo $ARnls["ok"]; ?>">
+  </td>
+</tr>
+</form>
+</table>
+</body>
+</html>
+<?php } ?>
