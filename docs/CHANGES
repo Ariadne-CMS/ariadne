@@ -191,6 +191,7 @@ Bugs Fixed:
 				store_nodes as a, store_nodes as b 
 			where
 				lower(a.path) = lower(b.path) and a.path  != b.path;"
+	- updated the postgresql_compiler so it accepts 'order by name.en.value' in find
 
 Changes in Ariadne since version Ariadne 2.3-dev
 

@@ -29,16 +29,30 @@
 				$field=$node["field"];
 				$record_id=$node["record_id"];
 				if (!$record_id) {
-					$this->used_tables[$table]=$table;
 					if (!$this->in_orderby) {
 						$result=" $table.object = ".$this->tbl_prefix."objects.id and $table.$field ";
+						$this->used_tables[$table]=$table;
 					} else {
-						/*
-							if we are parsing 'orderby' properties we have to
-							join our tables for the whole query
-						*/
-						$this->select_tables[$table]=$table;
-						$result=" $table.$field ";
+						if ($this->in_orderby && $node["nls"]) {
+							/* 
+								we do a left join so that we will also find non
+								matching objects
+							*/
+							$objects_table = $this->tbl_prefix."objects";
+							$this->nls_join[$table] = "left join $table as order_$table on $objects_table.id=order_$table.object and order_$table.AR_nls='".$node["nls"]."' ";
+
+							$result = " order_$table.$field ";
+							$this->select_list["order_".$table.".".$field] = "order_$table.$field";
+
+						} else {
+							/*
+								if we are parsing 'orderby' properties we have 
+								to join our tables for the whole query
+							*/
+							$this->select_tables[$table]=$table;
+							$this->used_tables[$table]=$table;
+							$result=" $table.$field ";
+						}
 					}
 				} else {
 					$this->used_tables["$table as $table$record_id"] = $table.$record_id;
@@ -183,14 +197,16 @@
 				$right=$this->compile_tree($node["right"]);
 				if ($left) {
 					$result=" $left ,  $right ".$node["type"]." ";
-					if($node["left"]['id'] == 'property'){
-						$this->select_list[$node["left"]['table'].".".$node["left"]['field']] = $this->tbl_prefix.$node["left"]['table'].".".$node["left"]['field'];
+					if($node["left"]['id'] == 'property' && !$node["right"]['nls']){
+						$leftttablefield = $this->tbl_prefix.$node["left"]['table'].".".$node["left"]['field'];
+						$this->select_list[$lefttablefield] = $lefttablefield;
 					}
 				} else {
 					$result=" $right ".$node["type"]." ";
 				}
-				if($node["right"]['id'] == 'property'){
-					$this->select_list[$node["right"]['table'].".".$node["right"]['field']] = $this->tbl_prefix.$node["right"]['table'].".".$node["right"]['field'];
+				if($node["right"]['id'] == 'property' && !$node["right"]['nls']){
+					$rightttablefield = $this->tbl_prefix.$node["right"]['table'].".".$node["right"]['field'];
+					$this->select_list[$righttablefield] = $righttablefield;
 				}
 			break;
 
@@ -234,6 +250,12 @@
 				$prop_dep.=" and $val.object=$objects.id ";
 			}
 		}
+		if (is_array($this->nls_join)) {
+			reset($this->nls_join);
+			while (list($key, $value)=each($this->nls_join)) {
+				$join .= $value;
+			}
+		}
 		if(is_array($this->select_list)){
 			@reset($this->select_list);
 			while (list($key, $val)=each($this->select_list)) {
@@ -247,8 +269,8 @@
 			$query .= $select;
 		}
 
-		$query.=" from $tables where ";
-		$query.=" $nodes.object=$objects.id $prop_dep";
+		$query.=" from $tables $join";
+		$query.=" where $nodes.object=$objects.id $prop_dep";
 		$query.=" and $nodes.path like '".AddSlashes($this->path)."%' ";
 		if ($this->where_s) {
 			$query.=" and ( $this->where_s ) ";
