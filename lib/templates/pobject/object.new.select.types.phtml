@@ -46,6 +46,33 @@
 	.greyed {
 		COLOR: #CCCCCC;
 	}
+    tbody A {
+      text-decoration: none;
+      display: block;
+      text-align: center;
+      padding: 2px;
+      margin: 4px;
+      font: menu;
+      color: black;
+      border: 1px solid white;
+    }
+    tbody A:hover {
+      border: 1px solid #4A6799;
+      background-color: #D0DCF7;
+    }
+	table thead td {
+		border: 2px outset buttonhighlight;
+		background-color: buttonface;
+		text-align: center;
+		height: 20px;
+	}
+	table thead td a, table thead td a:hover {
+		text-decoration: none;
+		color: black;
+		display: block;
+		font: menu;
+		padding-top: 2px;
+	}
 </style>
 <script>
 	function View(path) {
@@ -67,13 +94,15 @@
 		$currentpath=$this->make_url();
 	}
 	if ($AR->user->data->login=="admin") {
+		echo "<thead>";
 		if( $showall ) {
-			echo "<tr><td colspan=\"4\"><a href=\"".$currentpath."object.new.select.types.phtml?showall=0\">Show Typetree</a></td></tr>";
+			echo "<tr><td colspan=\"4\"><a href=\"".$currentpath."object.new.select.types.phtml?showall=0\">".$ARnls["show"].": ".$ARnls["typetree"]."</a></td></tr>";
 		} else {
-			echo "<tr><td colspan=\"4\"><a href=\"".$currentpath."object.new.select.types.phtml?showall=1\">Show All</a></td></tr>";
+			echo "<tr><td colspan=\"4\"><a href=\"".$currentpath."object.new.select.types.phtml?showall=1\">".$ARnls["show"].": ".$ARnls["all"]."</a></td></tr>";
 		}
+		echo "</thead>";
 	}
-
+	echo "<tbody>";
 	if( !$showall ) {
 		$configcache=$ARConfig->cache[$this->path];
 		if ($configcache->typetree) {
@@ -124,6 +153,7 @@
 	}
 ?>
 </tr>
+</tbody>
 </TABLE>
 </div>
 </body>
