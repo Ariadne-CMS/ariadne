@@ -8,6 +8,7 @@
 	include_once($store_config['code']."includes/loader.web.php");
 	include_once($store_config['code']."stores/".$ax_config["dbms"]."store.phtml");
 	include_once($store_config['code']."stores/".$store_config["dbms"]."store_install.phtml");
+        include_once($store_config['code']."nls/".$AR->nls->default);
 	$ERRMODE="text";
 
 
