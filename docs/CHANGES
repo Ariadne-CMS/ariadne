@@ -18,6 +18,7 @@ IMPORTANT:
 
 New Features:
 
+	- More sane window sizes (even for mozilla) thanks to Dino Termini.
 	- Session timeout has a seperate callback template: user.session.timeout.html
 	- Added an extra 'nls' selector to the link dialogs in the WYSIWYG editor
 	(you can now add links to objects in a specific language).
