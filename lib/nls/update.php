@@ -1,51 +1,61 @@
 #!/usr/bin/php4 -q
 <?php
-  include("../configs/ariadne.phtml");
-  include("../includes/loader.cmd.php");
-  include("en");  
+  $ariadne="../";
+  include($ariadne."configs/ariadne.phtml");
+  include($ariadne."configs/store.phtml");
+  include($ariadne."includes/loader.web.php");
 
-  $default=$ARnls;
-  ksort($default);
-  unset($ARnls);
+  $languages=Array('nl','de','es','pl','hr','it','fr','sv');
+  $modules=Array('','winxp.','ieedit.','menu.');
+  $target='./new/';
 
-  reset($AR->nls->list);
-  while( list($key, $value)=each($AR->nls->list)) {
-    include($key);
-	reset($default);
-    while (list($arkey, $arvalue)=each($default)) {
-      $tabs=substr("								",(int)((strlen($arkey)+2)/4));
-      if ($ARnls[$arkey]) {
-        echo "	\$ARnls[\"$arkey\"]$tabs=	\"".AddCSlashes($ARnls[$arkey], ARESCAPE)."\";\n";
-      } else {
-        echo "	\$ARnls[\"$arkey\"]$tabs=	\"!".AddCSlashes($arvalue, ARESCAPE)."\";\n";
-      }
-    }
+  ob_start();
+
+
+  reset($modules);
+  while (list($key1, $module)=each($modules)) {
+    include($module."en");  
+    $default=$ARnls;
+    ksort($default);
     unset($ARnls);
-	echo "\n\n";
+    reset($languages);
+    while( list($key2, $language)=each($languages)) {
+//      echo "Updating ".$module.$language."\n";
+      include($module.$language);
+      reset($default);
+
+
+
+      echo "<?"."php\n\n";
+      @include($module.$language.".head");
+      while (list($arkey, $arvalue)=each($default)) {
+        $tabs=substr("								",(int)((strlen($arkey)+2)/4));
+        if ($ARnls[$arkey]) {
+          echo "	\$ARnls[\"$arkey\"]$tabs=	\"".AddCSlashes($ARnls[$arkey], ARESCAPE)."\";\n";
+        } else {
+          echo "	\$ARnls[\"$arkey\"]$tabs=	\"!".AddCSlashes($arvalue, ARESCAPE)."\";\n";
+        }
+      }
+      unset($ARnls);
+      echo "\n\n?".">";
+
+      $file=ob_get_contents();
+      ob_clean();
+
+      $filename=$target.$module.$language;
+      // write file
+	  if ($fp=fopen($filename, 'w')) {
+        fwrite($fp, $file);
+        fclose($fp);
+      } else {
+        die("ERROR: couldn't open $filename for writing.\n");
+      }
+
+    }
+    unset($default);
   }
 
-  unset($default);
-  include("menu.en");
+  ob_end_clean();
 
-  $default=$ARnls;
-  ksort($default);
-  unset($ARnls);
 
-  reset($AR->nls->list);
-  while( list($key, $value)=each($AR->nls->list)) {
-    include("menu.".$key);
-	reset($default);
-    while (list($arkey, $arvalue)=each($default)) {
-      $tabs=substr("								",(int)((strlen($arkey)+2)/4));
-      if ($ARnls[$arkey]) {
-        echo "	\$ARnls[\"$arkey\"]$tabs=	\"".AddCSlashes($ARnls[$arkey], ARESCAPE)."\";\n";
-      } else {
-        echo "	\$ARnls[\"$arkey\"]$tabs=	\"!".AddCSlashes($arvalue, ARESCAPE)."\";\n";
-      }
-    }
-    unset($ARnls);
-	echo "\n\n";
-  }
-  
-
-?> 
+?>

@@ -45,6 +45,7 @@
 	$ARnls["e_standard"]			=	"Standard";
 	$ARnls["e_toolbars"]			=	"Toolbars";
 	$ARnls["e_formatting"]			=	"Formatting";
+	$ARnls["e_fontformat"]			=	"Font Format";
 	$ARnls["e_absolute_positioning"]	=	"Absolute Positioning";
 	$ARnls["e_table"]			=	"Table";
 
@@ -98,6 +99,7 @@
 	$ARnls["e_align_bottom"]		=	"Bottom";
 	$ARnls["e_align_middle"]		=	"Middle";
 	$ARnls["e_align_top"]			=	"Top";
+	$ARnls["e_style"]			=	"Style";
 
 
 	// lib/templates/pobject/edit.object.html.link*.phtml

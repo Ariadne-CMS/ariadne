@@ -1,4 +1,5 @@
-<?PHP
+<?php
+
 
 	/*****************************************************************************
 
@@ -6,7 +7,6 @@
                                                       Karl Thysell <karl@htc.se>
 
 	*****************************************************************************/
-
 	$ARnls["m_about"]						=	"Om&nbsp;Ariadne";
 	$ARnls["m_cache"]						=	"Cache";
 	$ARnls["m_config"]						=	"Konfiguration";
@@ -31,6 +31,7 @@
 	$ARnls["m_logoff"]						=	"Logga&nbsp;av";
 	$ARnls["m_new"]							=	"Nytt";
 	$ARnls["m_object"]						=	"Objekt";
+	$ARnls["m_page"]						=	"Sida";
 	$ARnls["m_preferences"]					=	"Inst&auml;llningar";
 	$ARnls["m_priority"]					=	"Prioritet";
 	$ARnls["m_rename"]						=	"Byt namn";
@@ -42,5 +43,6 @@
 	$ARnls["m_types"]						=	"Typer";
 	$ARnls["m_view"]						=	"Visa";
 	$ARnls["m_web"]							=	"Webbsida";
-	$ARnls["m_page"]						=	"Sida";
+
+
 ?>

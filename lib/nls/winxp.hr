@@ -1,43 +1,40 @@
 <?php
-	$ARnls["xp_new"]						=	"Dodaj novi objekt";
-	$ARnls["xp_rename"]						=	"Preimenuj ";
-	$ARnls["xp_copy"]						=	"Kopiraj ";
-	$ARnls["xp_link"]						=	"Napravi kraticu za ";
-	$ARnls["xp_edit"]						=	"Editiraj ";
-	$ARnls["xp_shortcut"]					=	"Editiraj kraticu";
-	$ARnls["xp_delete"]						=	"Izbriši ";
-	$ARnls["xp_cache"]						=	"Zadaj keširanje za ";
-	$ARnls["xp_templates"]					=	"Zadaj predloške za ";
-	$ARnls["xp_customfields"]				=	"Zadaj korisnička polja za ";
-	$ARnls["xp_language"]					=	"Zadaj jezik za ";
-	$ARnls["xp_grants"]						=	"Zadaj dozvole za ";
-	$ARnls["xp_types"]						=	"Zadaj stablo tipova za ";
-	$ARnls["xp_priority"]					=	"Zadaj prioritet za ";
-	$ARnls["xp_viewweb"]					=	"Prikaži web stranicu";
-	$ARnls["xp_view"]						=	"Prikaži";
-	$ARnls["xp_explore"]					=	"Istraži";
-	
-	//headers
-	$ARnls["xp_settings"]					=	"Postavke";
-	$ARnls["xp_info"]						=	"Podaci";
-	$ARnls["xp_detailsH"]					=	"Više...";
-	$ARnls["xp_browsebyletter"]				=	"Razgledaj po slovu";
+
+	$ARnls["xp_about"]						=	"O...";
 	$ARnls["xp_browsebydate"]				=	"Razgledaj po datumu";
-	
-	//toolbar
-	$ARnls["xp_up"]							= 	"Gore";
-	$ARnls["xp_search"]						= 	"Traži";
-	$ARnls["xp_folders"]					= 	"Mape";
-	$ARnls["xp_small"]						= 	"Lista";
-	$ARnls["xp_large"]						= 	"Ikone";
-	$ARnls["xp_details"]					= 	"Detalji";
-	$ARnls["xp_iconview"]					= 	"Izaberi vrstu prikaza";
-	$ARnls["xp_import"]						= 	"Uvezi";
-	$ARnls["xp_export"]						= 	"Izvezi";
-	$ARnls["xp_preferences"]				= 	"Preferencije";
-	$ARnls["xp_help"]						= 	"Pomoć";
-	$ARnls["xp_tutorials"]					= 	"Vodiči";
-	$ARnls["xp_about"]						= 	"O...";
+	$ARnls["xp_browsebyletter"]				=	"Razgledaj po slovu";
+	$ARnls["xp_cache"]						=	"Zadaj keširanje za ";
+	$ARnls["xp_copy"]						=	"Kopiraj ";
+	$ARnls["xp_customfields"]				=	"Zadaj korisnička polja za ";
+	$ARnls["xp_delete"]						=	"Izbriši ";
+	$ARnls["xp_details"]					=	"Detalji";
+	$ARnls["xp_detailsH"]					=	"Više...";
+	$ARnls["xp_edit"]						=	"Editiraj ";
+	$ARnls["xp_explore"]					=	"Istraži";
+	$ARnls["xp_export"]						=	"Izvezi";
+	$ARnls["xp_folders"]					=	"Mape";
+	$ARnls["xp_grants"]						=	"Zadaj dozvole za ";
+	$ARnls["xp_help"]						=	"Pomoć";
+	$ARnls["xp_iconview"]					=	"Izaberi vrstu prikaza";
+	$ARnls["xp_import"]						=	"Uvezi";
+	$ARnls["xp_info"]						=	"Podaci";
+	$ARnls["xp_language"]					=	"Zadaj jezik za ";
+	$ARnls["xp_large"]						=	"Ikone";
+	$ARnls["xp_link"]						=	"Napravi kraticu za ";
+	$ARnls["xp_new"]						=	"Dodaj novi objekt";
+	$ARnls["xp_preferences"]				=	"Preferencije";
+	$ARnls["xp_priority"]					=	"Zadaj prioritet za ";
+	$ARnls["xp_rename"]						=	"Preimenuj ";
+	$ARnls["xp_search"]						=	"Traži";
+	$ARnls["xp_settings"]					=	"Postavke";
+	$ARnls["xp_shortcut"]					=	"Editiraj kraticu";
+	$ARnls["xp_small"]						=	"Lista";
+	$ARnls["xp_templates"]					=	"Zadaj predloške za ";
+	$ARnls["xp_tutorials"]					=	"Vodiči";
+	$ARnls["xp_types"]						=	"Zadaj stablo tipova za ";
+	$ARnls["xp_up"]							=	"Gore";
+	$ARnls["xp_view"]						=	"Prikaži";
+	$ARnls["xp_viewweb"]					=	"Prikaži web stranicu";
 
 
 ?>

@@ -1,4 +1,5 @@
 <?php
+
 	/*****************************************************************************
 
 	The Spanish nls files are contributed by: 
@@ -35,14 +36,14 @@
 	$ARnls["check"]							=	"Check";
 	$ARnls["city"]							=	"Ciudad";
 	$ARnls["classic"]						=	"Cl&aacute;sico";
-	$ARnls["clickback"]						=	"Haga click en el bot&oacute;n 'Atr&aacute;s' de su browser para corregirlo.";
+	$ARnls["clickback"]						=	"Haga click en el bot&oacute;n \'Atr&aacute;s\' de su browser para corregirlo.";
 	$ARnls["collectinginfo"]				=	"Recolectando Informaci&oacute;n...";
 	$ARnls["color"]							=	"Color";
 	$ARnls["comments"]						=	"Comentarios";
 	$ARnls["config"]						=	"Config";
 	$ARnls["configuration"]					=	"Configuraci&oacute;n";
 	$ARnls["configure"]						=	"Configurar %s ";
-	$ARnls["confirm:nonameentered"]			=	"No ha ingresado un nombre para el lenguaje '%s'.\nDesea grabar los cambios de todas maneras?";
+	$ARnls["confirm:nonameentered"]			=	"No ha ingresado un nombre para el lenguaje \'%s\'.\nDesea grabar los cambios de todas maneras?";
 	$ARnls["contactinformation"]			=	"Info. de Contacto";
 	$ARnls["contextsearch"]					=	"Contexto";
 	$ARnls["copy"]							=	"Copiar";
@@ -90,7 +91,7 @@
 	$ARnls["enternewvalue"]					=	"Ingresar nuevo valor";
 	$ARnls["err:alreadyexists"]				=	"%s ya existe.";
 	$ARnls["err:cannotdelsystemusers"]		=	"No puede borrar o mover los usuarios del Sistema (admin y public)";
-	$ARnls["err:cannotedit.phtml"]			=	"Los templates con nombres terminados en '.phtml' no son editables";
+	$ARnls["err:cannotedit.phtml"]			=	"Los templates con nombres terminados en \'.phtml\' no son editables";
 	$ARnls["err:cannotlockobject"]			=	"No se puede bloquear el objeto %s";
 	$ARnls["err:changetempdirfailed"]		=	"No se pudo cambiar directorio a %stemp/ ";
 	$ARnls["err:chooseotherfilename"]		=	"%s ya existe. Por favor elija otro.";
@@ -98,19 +99,20 @@
 	$ARnls["err:convillegalformat"]			=	"Convert llamado con formato no v&aacute;lido (%s)";
 	$ARnls["err:corruptpathnosave"]			=	"El path es incorrecto, el objeto no ser&aacute; guardado.";
 	$ARnls["err:couldnotopen"]				=	"No se pudo abrir (%s)";
-	$ARnls["err:dontuseid"]					=	"No use '{id}' en el login";
+	$ARnls["err:dontuseid"]					=	"No use \'{id}\' en el login";
 	$ARnls["err:endswith.phtml"]			=	"No se puden editar los templates terminados en .phtml.";
 	$ARnls["err:fileillegalchars"]			=	"%s no es un nombre de archivo v&aacute;lido, use solamente a-z, A-Z, 0-9 y _ o -.";
-	$ARnls["err:filenamedirup"]				=	"%s no es un nombre de archivo v&aacute;lido, no use '..' en nombres de archivo.";
+	$ARnls["err:filenamedirup"]				=	"%s no es un nombre de archivo v&aacute;lido, no use \'..\' en nombres de archivo.";
 	$ARnls["err:filenameinvalidnoparent"]	=	"%s es inv&aacute;lido: %s no existe.";
 	$ARnls["err:fileupload"]				=	"Algo fall&oacute; durante el upload. Por favor, intente hacerlo nuevamente.\nSi el problema persiste, contacte al administrador del sistema.";
 	$ARnls["err:fileuploadphtml"]			=	"No debe hacer upload de archivos con extensi&oacute;n .phtml.";
+	$ARnls["err:fileuploadvirus"]			=	"!The file contains the %s virus! Please check your system and then try again.\nIf the problem persists, contact your system administrator.";
 	$ARnls["err:ftpnorenameself"]			=	"no se puede renombrar un template con el mismo nombre";
 	$ARnls["err:ftpnotemplate"]				=	"no existe el template";
 	$ARnls["err:ftpnotemplatebadperm"]		=	"no se puede encontrar template (insuficientes permisos de disco?)";
 	$ARnls["err:groupidexists"]				=	"El id de Grupo %s ya existe, elija uno diferente.";
 	$ARnls["err:headerssentnottext"]		=	"encabezados ya enviados y no es un archivo de texto (%s)";
-	$ARnls["err:illegalchars"]				=	"El nombre del template debe consistir solo de caracteres normales: (a-z, A-Z, 0-9), '-', '_' y '.'.";
+	$ARnls["err:illegalchars"]				=	"El nombre del template debe consistir solo de caracteres normales: (a-z, A-Z, 0-9), \'-\', \'_\' y \'.\'.";
 	$ARnls["err:invalidcontent"]			=	"Error: Contenido no v&aacute;lido";
 	$ARnls["err:invaliduserlocation"]		=	"No puede mover usuarios fuera del &aacute;rbol /system/users/.";
 	$ARnls["err:loginexists"]				=	"El login %s ya existe, elija uno diferente";
@@ -120,21 +122,21 @@
 	$ARnls["err:maxsize"]					=	"Error: Tama&ntilde;o m&aacute;ximo excedido";
 	$ARnls["err:missingparam"]				=	"Faltan par&aacute;metros.";
 	$ARnls["err:mustenterlogin"]			=	"Debe ingresar un nombre de login.";
-	$ARnls["err:nodatafordefaultlanguage"]	=	"No ha ingresado informaci&oacute;n para el lenguaje default '%s'.";
+	$ARnls["err:nodatafordefaultlanguage"]	=	"No ha ingresado informaci&oacute;n para el lenguaje default \'%s\'.";
 	$ARnls["err:nodirchanges"]				=	"No se permite ingresar informaci&oacute;n de directorios como parte de nombres de templates.";
 	$ARnls["err:noexportfile"]				=	"Falta el archivo de exportaci&oacute;n. No est&aacute; en %s%s.";
 	$ARnls["err:noimagemagick"]				=	"No se pudo ejecutar ImageMagick para imagen a escala (mogrify)<br>\n(%s)";
 	$ARnls["err:nolastnameentered"]			=	"Debe ingresar el apellido";
 	$ARnls["err:nomovebelow"]				=	"No puede mover un objeto por debajo de s&iacute; mismo.";
 	$ARnls["err:nonamecache"]				=	"cached(): no se dio un nombre.";
-	$ARnls["err:nonameentered"]				=	"Debe ingresar un nombre para el lenguaje '%s'";
+	$ARnls["err:nonameentered"]				=	"Debe ingresar un nombre para el lenguaje \'%s\'";
 	$ARnls["err:nonewtype"]					=	"arNewType no definido.";
 	$ARnls["err:noparent"]					=	"el padre %s no existe.";
 	$ARnls["err:noparentcreatefirst"]		=	"%s no existe, debe crearlo primero.";
 	$ARnls["err:noparentdefined"]			=	"No se defini&oacute; un padre para %s";
 	$ARnls["err:nosupportforshortcuts"]		=	"%s no admite Accesos directos.";
 	$ARnls["err:notarget"]					=	"no se especific&oacute; un destino";
-	$ARnls["err:notascenario"]				=	"'%s' no es un pscenario.";
+	$ARnls["err:notascenario"]				=	"\'%s\' no es un pscenario.";
 	$ARnls["err:notemplatefromstore"]		=	"error: no se pudo copiar %s desde el repositorio";
 	$ARnls["err:notemplatename"]			=	"Debe ingresar un nombre para el template.";
 	$ARnls["err:notemplatetostore"]			=	"error: no se pudo copiar %s al repositorio";
@@ -147,18 +149,18 @@
 	$ARnls["err:nousergroup"]				=	"%s no es un usuario o grupo";
 	$ARnls["err:objectalreadylocked"]		=	"Objeto ya bloqueado.";
 	$ARnls["err:savecachenofile"]			=	"savecache(): sin archivo o imagen ...";
-	$ARnls["err:scenerionotfound"]			=	"Escenario '%s' no existe.";
+	$ARnls["err:scenerionotfound"]			=	"Escenario \'%s\' no existe.";
 	$ARnls["err:shortcutloopexceed"]		=	"%s%s llamado m&aacute;s de %s veces, acceso directo recursivo %s?";
 	$ARnls["err:shortcutnopath"]			=	"Error: El acceso directo %s apunta a un path inexistente: %s.";
 	$ARnls["err:shorttitle"]				=	"Ingrese un t&iacute;tulo breve.";
-	$ARnls["err:startendslash"]				=	"El path debe comenzar y finalizar con '/'.";
+	$ARnls["err:startendslash"]				=	"El path debe comenzar y finalizar con \'/\'.";
 	$ARnls["err:titlelength"]				=	"El t&iacute;tulo contiene m&aacute;s de %s caracteres";
 	$ARnls["err:validdate"]					=	"Debe ingresar una fecha v&aacute;lida.";
 	$ARnls["err:validpassword"]				=	"Debe ingresar un password v&aacute;lido en ambos campos, id&eacute;ntico en los dos";
 	$ARnls["err:widgetnotfound"]			=	"Widget %s no encontrado";
 	$ARnls["err:wronggrants"]				=	"Hay un problema con sus privilegios, contacte al administrador.";
 	$ARnls["err:wrongpath"]					=	"%s no existe";
-	$ARnls["err:{id}ingroupname"]			=	"No use '{id}' en nombres de grupo";
+	$ARnls["err:{id}ingroupname"]			=	"No use \'{id}\' en nombres de grupo";
 	$ARnls["every"]							=	"Cada";
 	$ARnls["expires"]						=	"Expira";
 	$ARnls["fax"]							=	"Fax";
@@ -229,8 +231,8 @@
 	$ARnls["noprofile"]						=	"Sin Perfil";
 	$ARnls["norepeat"]						=	"No repetir";
 	$ARnls["notfound"]						=	"El objeto solicitado no se encuentra en este servidor.";
-	$ARnls["notfoundpath"]						=	"The requested path could not be found.";
-	$ARnls["notfoundtemplate"]					=	"The requested template could not be found.";
+	$ARnls["notfoundpath"]					=	"The requested path could not be found.";
+	$ARnls["notfoundtemplate"]				=	"The requested template could not be found.";
 	$ARnls["notime"]						=	"Sin Horario";
 	$ARnls["notodo"]						=	"Sin items por hacer encontrados";
 	$ARnls["objectsoftype"]					=	"Objetos del tipo";
@@ -254,12 +256,12 @@
 	$ARnls["profile"]						=	"Perfil";
 	$ARnls["publisheddata"]					=	"[Publicado por <b>%s</b> en <b>%s</b>]";
 	$ARnls["q:applychanges"]				=	"Desea aplicar estos cambios a <em>todas</em> las instancias de este mismo item o solo al elemento <em>actual</em>?";
-	$ARnls["q:cannotlockretry"]				=	"'%s' est&aacute; bloqueado por %s (%s), reintentar?";
+	$ARnls["q:cannotlockretry"]				=	"\'%s\' est&aacute; bloqueado por %s (%s), reintentar?";
 	$ARnls["q:cookiesenabled"]				=	"Ha habilitado las <em>cookies</em> en su browser?";
 	$ARnls["q:deleteall"]					=	"Desea eliminar <em>todas</em> las instancias de este mismo item o solamente el elemento <em>actual</em>?";
-	$ARnls["q:fileoverwrite"]				=	"'%s' ya existe, desea sobreescribir?";
+	$ARnls["q:fileoverwrite"]				=	"\'%s\' ya existe, desea sobreescribir?";
 	$ARnls["q:logoff"]						=	"Seguro quiere salir del sistema?";
-	$ARnls["q:morelanguages"]				=	"Seleccione un lenguaje.<br>Haga click en 'Siguiente' para ingresar informaci&oacute;n para este lenguaje.<br>Haga click en 'Guardar' para guardar los datos.";
+	$ARnls["q:morelanguages"]				=	"Seleccione un lenguaje.<br>Haga click en \'Siguiente\' para ingresar informaci&oacute;n para este lenguaje.<br>Haga click en \'Guardar\' para guardar los datos.";
 	$ARnls["q:removeaddressbook"]			=	"Seguro desea eliminar esta libreta de direcciones?";
 	$ARnls["q:removeall"]					=	"%s contiene %s objetos, desea eliminarlos a todos?";
 	$ARnls["q:removeallgrants"]				=	"Seguro desea quitar todos los privilegios para %s ?";
@@ -305,7 +307,7 @@
 	$ARnls["templateonserver"]				=	"Template en Server";
 	$ARnls["templates"]						=	"Templates";
 	$ARnls["text"]							=	"Texto";
-	$ARnls["thisobject"]						=	"This Object";
+	$ARnls["thisobject"]					=	"This Object";
 	$ARnls["thu"]							=	"Jue";
 	$ARnls["thumbcolor"]					=	"Color";
 	$ARnls["thumbheight"]					=	"Alto";
@@ -343,5 +345,6 @@
 	$ARnls["years"]							=	"A&ntilde;os";
 	$ARnls["yes"]							=	"Si";
 	$ARnls["zipcode"]						=	"C&oacute;d. Postal";
+
 
 ?>

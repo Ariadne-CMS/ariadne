@@ -1,4 +1,4 @@
-<?PHP
+<?php
 
 	$ARnls["m_about"]						=	"A &nbsp;propos de";
 	$ARnls["m_cache"]						=	"Cache";
@@ -9,7 +9,7 @@
 	$ARnls["m_delete"]						=	"Suprimer";
 	$ARnls["m_details"]						=	"D&eacute;tails";
 	$ARnls["m_edit"]						=	"Editer";
-	$ARnls["m_explorerbar"]						=	"Barre&nbsp;Explorateur";
+	$ARnls["m_explorerbar"]					=	"Barre&nbsp;Explorateur";
 	$ARnls["m_export"]						=	"Export";
 	$ARnls["m_find"]						=	"Chercher";
 	$ARnls["m_fonts"]						=	"Polices";
@@ -17,23 +17,25 @@
 	$ARnls["m_help"]						=	"Aide";
 	$ARnls["m_import"]						=	"Import";
 	$ARnls["m_index"]						=	"Index";
-	$ARnls["m_language"]						=	"Langage";
+	$ARnls["m_language"]					=	"Langage";
 	$ARnls["m_large"]						=	"Grandes&nbsp;Icones";
 	$ARnls["m_layout"]						=	"Mise en page";
 	$ARnls["m_link"]						=	"Lien";
 	$ARnls["m_logoff"]						=	"Fermer&nbsp;la&nbsp;session";
 	$ARnls["m_new"]							=	"Nouveau";
 	$ARnls["m_object"]						=	"Objet";
-	$ARnls["m_preferences"]					    	=	"Pr&eacute;f&eacute;rences";
-	$ARnls["m_priority"]						=	"Priorit&eacute;";
+	$ARnls["m_page"]						=	"Page";
+	$ARnls["m_preferences"]					=	"Pr&eacute;f&eacute;rences";
+	$ARnls["m_priority"]					=	"Priorit&eacute;";
 	$ARnls["m_rename"]						=	"Renommer";
 	$ARnls["m_search"]						=	"Rechercher";
-	$ARnls["m_shortcut"]						=	"Raccourci";
+	$ARnls["m_shortcut"]					=	"Raccourci";
 	$ARnls["m_small"]						=	"Petites&nbsp;Icones";
-	$ARnls["m_templates"]						=	"Gabarits";
-	$ARnls["m_tutorials"]						=	"Tutorial";
+	$ARnls["m_templates"]					=	"Gabarits";
+	$ARnls["m_tutorials"]					=	"Tutorial";
 	$ARnls["m_types"]						=	"Types";
 	$ARnls["m_view"]						=	"Vue";
 	$ARnls["m_web"]							=	"Page Web";
-	$ARnls["m_page"]						=	"Page";
+
+
 ?>

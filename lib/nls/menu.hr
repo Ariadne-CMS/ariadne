@@ -1,4 +1,4 @@
-<?PHP
+<?php
 
 	$ARnls["m_about"]						=	"O&nbsp;Ariadne";
 	$ARnls["m_cache"]						=	"Cache";
@@ -24,6 +24,7 @@
 	$ARnls["m_logoff"]						=	"Odjavi&nbsp;se";
 	$ARnls["m_new"]							=	"Novi";
 	$ARnls["m_object"]						=	"Objekt";
+	$ARnls["m_page"]						=	"Stranica";
 	$ARnls["m_preferences"]					=	"Preferencije";
 	$ARnls["m_priority"]					=	"Prioriret";
 	$ARnls["m_rename"]						=	"Preimenuj";
@@ -35,5 +36,6 @@
 	$ARnls["m_types"]						=	"Tipovi";
 	$ARnls["m_view"]						=	"Pogledaj";
 	$ARnls["m_web"]							=	"Web&nbsp;stranica";
-	$ARnls["m_page"]						=	"Stranica";
+
+
 ?>

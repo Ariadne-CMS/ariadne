@@ -1,111 +1,92 @@
 <?php
 
+
 	// Attention: The WYSIWYG editor and its context menus require UTF-8!
 	// (The external dialogs do not)
 
 	// lib/widgets/htmledit/ie/edit.php
 
-	$ARnls["e_cut"]				=	"Couper";
-	$ARnls["e_copy"]			=	"Copier";
-	$ARnls["e_paste"]			=	"Coller";
-	$ARnls["e_delete"]			=	"Supprimer";
+	$ARnls["e_absolute_positioning"]		=	"Positionnement Absolut";
+	$ARnls["e_align_absbottom"]				=	"Absbottom";
+	$ARnls["e_align_absmiddle"]				=	"Absmiddle";
+	$ARnls["e_align_baseline"]				=	"Baseline";
+	$ARnls["e_align_bottom"]				=	"Bottom";
+	$ARnls["e_align_center"]				=	"Centrer";
+	$ARnls["e_align_left"]					=	"Left";
+	$ARnls["e_align_middle"]				=	"Middle";
+	$ARnls["e_align_not_set"]				=	"Not Set";
+	$ARnls["e_align_right"]					=	"Right";
+	$ARnls["e_align_texttop"]				=	"Texttop";
+	$ARnls["e_align_top"]					=	"Top";
+	$ARnls["e_alignment"]					=	"Alignement";
+	$ARnls["e_alternate_text"]				=	"Texte&nbsp;alternatif";
+	$ARnls["e_background_color"]			=	"Couleur de fond";
+	$ARnls["e_bold"]						=	"Gras";
+	$ARnls["e_border_thickness"]			=	"Epaisseur&nbsp;de&nbsp;la&nbsp;bordure";
+	$ARnls["e_bring_above_text"]			=	"Sur le texte";
+	$ARnls["e_bring_forward"]				=	"Avancer";
+	$ARnls["e_bring_to_front"]				=	"Mettre en premier plan";
+	$ARnls["e_bulleted_list"]				=	"Puces";
+	$ARnls["e_color"]						=	"Couleur";
+	$ARnls["e_copy"]						=	"Copier";
+	$ARnls["e_cut"]							=	"Couper";
+	$ARnls["e_decrease_indent"]				=	"Num&eacute;rotation descendente";
+	$ARnls["e_delete"]						=	"Supprimer";
+	$ARnls["e_deletecells"]					=	"Supprimer Cellule";
+	$ARnls["e_deletecols"]					=	"Supprimer Colonne";
+	$ARnls["e_deleterows"]					=	"Supprimer Lignes";
+	$ARnls["e_edit"]						=	"Edition";
+	$ARnls["e_file"]						=	"Fichier";
+	$ARnls["e_find"]						=	"Trouver...";
+	$ARnls["e_fontformat"]					=	"!Font Format";
+	$ARnls["e_foreground_color"]			=	"Couleur";
+	$ARnls["e_formatting"]					=	"Mise en forme";
+	$ARnls["e_horizontal"]					=	"Horizontale";
+	$ARnls["e_hyperlink"]					=	"Lien Hypertext";
+	$ARnls["e_hyperlink_affiliate"]			=	"Affili&eacute;";
+	$ARnls["e_hyperlink_information"]		=	"Information sur le lien Hypertext";
+	$ARnls["e_hyperlink_path"]				=	"Chemin";
+	$ARnls["e_hyperlink_type"]				=	"Type";
+	$ARnls["e_image_options"]				=	"Image Options";
+	$ARnls["e_increase_indent"]				=	"Num&eacute;rotation montante";
+	$ARnls["e_insert_image"]				=	"Ins&eacute;rer une image";
+	$ARnls["e_insert_table"]				=	"Ins&eacute;rer un tableau";
+	$ARnls["e_insertcell"]					=	"Ins&eacute;rer Cellule";
+	$ARnls["e_insertcol"]					=	"Ins&eacute;rer Colonne";
+	$ARnls["e_insertrow"]					=	"Ins&eacute;rer Ligne";
+	$ARnls["e_italic"]						=	"Italique";
+	$ARnls["e_layout"]						=	"Pr&eacute;sentation";
+	$ARnls["e_link"]						=	"Lien";
+	$ARnls["e_lock"]						=	"Bloquer";
+	$ARnls["e_make_absolute"]				=	"Rendre absolut";
+	$ARnls["e_mergecells"]					=	"Fusionner les cellules";
+	$ARnls["e_numbered_list"]				=	"Num&eacute;rotation";
+	$ARnls["e_paste"]						=	"Coller";
+	$ARnls["e_picture"]						=	"Photo";
+	$ARnls["e_picture_source"]				=	"Source&nbsp;de&nbsp;la&nbsp;photo";
+	$ARnls["e_redo"]						=	"Refaire";
+	$ARnls["e_save_file"]					=	"Sauvegarder";
+	$ARnls["e_select_all"]					=	"S&eacute;lectionner tout";
+	$ARnls["e_select_color"]				=	"Choisir une couleur";
+	$ARnls["e_send_backward"]				=	"Reculer";
+	$ARnls["e_send_below_text"]				=	"Sous le texte";
+	$ARnls["e_send_to_back"]				=	"Mettre en arri&egrave;re plan";
+	$ARnls["e_set_background_color"]		=	"Selectionner la couleur de fond...";
+	$ARnls["e_set_foreground_color"]		=	"Selectionner la couleur...";
+	$ARnls["e_show_details"]				=	"Montrer les d&eacute;tails";
+	$ARnls["e_snap_to_grid"]				=	"Coller &agrave; la grille";
+	$ARnls["e_spacing"]						=	"Espacement";
+	$ARnls["e_splitcell"]					=	"Scinder les cellules";
+	$ARnls["e_standard"]					=	"Standard";
+	$ARnls["e_style"]						=	"!Style";
+	$ARnls["e_table"]						=	"Tableau";
+	$ARnls["e_toolbars"]					=	"Barres d\'outils";
+	$ARnls["e_underline"]					=	"Soulign&eacute;";
+	$ARnls["e_undo"]						=	"D&eacute;faire";
+	$ARnls["e_vertical"]					=	"Verticale";
+	$ARnls["e_view"]						=	"Voir";
+	$ARnls["e_visible_borders"]				=	"Bordures visibles";
+	$ARnls["e_z_order"]						=	"Ordre Z-A ";
 
-	$ARnls["e_insertrow"]			=	"Ins&eacute;rer Ligne";
-	$ARnls["e_deleterows"]			=	"Supprimer Lignes";
-	$ARnls["e_insertcol"]			=	"Ins&eacute;rer Colonne";
-	$ARnls["e_deletecols"]			=	"Supprimer Colonne";
-	$ARnls["e_insertcell"]			=	"Ins&eacute;rer Cellule";
-	$ARnls["e_deletecells"]			=	"Supprimer Cellule";
-	$ARnls["e_mergecells"]			=	"Fusionner les cellules";
-	$ARnls["e_splitcell"]			=	"Scinder les cellules";
-
-	$ARnls["e_z_order"]			=	"Ordre Z-A ";
-	$ARnls["e_send_to_back"]		=	"Mettre en arri&egrave;re plan";
-	$ARnls["e_bring_to_front"]		=	"Mettre en premier plan";
-	$ARnls["e_send_backward"]		=	"Reculer";
-	$ARnls["e_bring_forward"]		=	"Avancer";
-	$ARnls["e_send_below_text"]		=	"Sous le texte";
-	$ARnls["e_bring_above_text"]		=	"Sur le texte";
-	$ARnls["e_visible_borders"]		=	"Bordures visibles";
-	$ARnls["e_show_details"]		=	"Montrer les d&eacute;tails";
-	$ARnls["e_make_absolute"]		=	"Rendre absolut";
-	$ARnls["e_lock"]			=	"Bloquer";
-	$ARnls["e_snap_to_grid"]		=	"Coller &agrave; la grille";
-
-	$ARnls["e_file"]			=	"Fichier";
-	$ARnls["e_save_file"]			=	"Sauvegarder";
-
-	$ARnls["e_edit"]			=	"Edition";
-	$ARnls["e_undo"]			=	"D&eacute;faire";
-	$ARnls["e_redo"]			=	"Refaire";
-	$ARnls["e_select_all"]			=	"S&eacute;lectionner tout";
-	$ARnls["e_find"]			=	"Trouver...";
-
-	$ARnls["e_view"]			=	"Voir";
-	$ARnls["e_standard"]			=	"Standard";
-	$ARnls["e_toolbars"]			=	"Barres d'outils";
-	$ARnls["e_formatting"]			=	"Mise en forme";
-	$ARnls["e_absolute_positioning"]	=	"Positionnement Absolut";
-	$ARnls["e_table"]			=	"Tableau";
-
-	$ARnls["e_bold"]			=	"Gras";
-	$ARnls["e_italic"]			=	"Italique";
-	$ARnls["e_underline"]			=	"Soulign&eacute;";
-
-	$ARnls["e_set_foreground_color"]	=	"Selectionner la couleur...";
-	$ARnls["e_set_background_color"]	=	"Selectionner la couleur de fond...";
-	$ARnls["e_foreground_color"]		=	"Couleur";
-	$ARnls["e_background_color"]		=	"Couleur de fond";
-
-	$ARnls["e_align_left"]			=	"Aligner &agrave; gauche";
-	$ARnls["e_align_center"]		=	"Centrer";
-	$ARnls["e_align_right"]			=	"Aligner &agrave; droite";
-
-	$ARnls["e_numbered_list"]		=	"Num&eacute;rotation";
-	$ARnls["e_bulleted_list"]		=	"Puces";
-
-	$ARnls["e_decrease_indent"]		=	"Num&eacute;rotation descendente";
-	$ARnls["e_increase_indent"]		=	"Num&eacute;rotation montante";
-
-	$ARnls["e_link"]			=	"Lien";
-	$ARnls["e_insert_image"]		=	"Ins&eacute;rer une image";
-	$ARnls["e_insert_table"]		=	"Ins&eacute;rer un tableau";
-
-	// lib/templates/pobject/edit.object.html.selectcolor.phtml
-
-	$ARnls["e_select_color"]		=	"Choisir une couleur";
-	$ARnls["e_color"]			=	"Couleur";
-
-	// lib/templates/pobject/edit.object.html.image.phtml
-
-	$ARnls["e_picture"]			=	"Photo";
-	$ARnls["e_picture_source"]		=	"Source&nbsp;de&nbsp;la&nbsp;photo";
-	$ARnls["e_alternate_text"]		=	"Texte&nbsp;alternatif";
-	$ARnls["e_layout"]			=	"Pr&eacute;sentation";
-	$ARnls["e_alignment"]			=	"Alignement";
-	$ARnls["e_border_thickness"]		=	"Epaisseur&nbsp;de&nbsp;la&nbsp;bordure";
-	$ARnls["e_spacing"]			=	"Espacement";
-	$ARnls["e_horizontal"]			=	"Horizontale";
-	$ARnls["e_vertical"]			=	"Verticale";
-	$ARnls["e_image_options"]		=	"Image Options";
-	$ARnls["e_align_not_set"]		=	"Not Set";
-	$ARnls["e_align_left"]			=	"Left";
-	$ARnls["e_align_right"]			=	"Right";
-	$ARnls["e_align_texttop"]		=	"Texttop";
-	$ARnls["e_align_absmiddle"]		=	"Absmiddle";
-	$ARnls["e_align_baseline"]		=	"Baseline";
-	$ARnls["e_align_absbottom"]		=	"Absbottom";
-	$ARnls["e_align_bottom"]		=	"Bottom";
-	$ARnls["e_align_middle"]		=	"Middle";
-	$ARnls["e_align_top"]			=	"Top";
-
-
-	// lib/templates/pobject/edit.object.html.link*.phtml
-
-	$ARnls["e_hyperlink"]			=	"Lien Hypertext";
-	$ARnls["e_hyperlink_information"]	=	"Information sur le lien Hypertext";
-	$ARnls["e_hyperlink_type"]		=	"Type";
-	$ARnls["e_hyperlink_path"]		=	"Chemin";
-	$ARnls["e_hyperlink_affiliate"]		=	"Affili&eacute;";
 
 ?>

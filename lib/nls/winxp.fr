@@ -1,43 +1,40 @@
 <?php
-	$ARnls["xp_new"]						=	"Ajouter un nouvel objet";
-	$ARnls["xp_rename"]						=	"Renommer ";
-	$ARnls["xp_copy"]						=	"Copier ";
-	$ARnls["xp_link"]						=	"Lier ";
-	$ARnls["xp_edit"]						=	"Modifier ";
-	$ARnls["xp_shortcut"]					=	"Changer le lien";
-	$ARnls["xp_delete"]						=	"Supprimer ";
-	$ARnls["xp_cache"]						=	"R&eacute;gler les r&egrave;gles de cache pour ";
-	$ARnls["xp_templates"]					=	"R&eacute;gler les gabarits pour ";
-	$ARnls["xp_customfields"]				=	"R&eacute;gler les champs paramètrables pour ";
-	$ARnls["xp_language"]					=	"R&eacute;gler la langue pour  ";
-	$ARnls["xp_grants"]						=	"R&eacute;gler les droits pour ";
-	$ARnls["xp_types"]						=	"R&eacute;gler le type d'arborescence pour ";
-	$ARnls["xp_priority"]					=	"R&eacute;gler la priorit&eacute; pour ";
-	$ARnls["xp_viewweb"]					=	"Voir la page web";
-	$ARnls["xp_view"]						=	"Voir";
-	$ARnls["xp_explore"]					=	"Explorer";
-	
-	//headers
-	$ARnls["xp_settings"]					=	"Param&egrave;tres";
-	$ARnls["xp_info"]						=	"Info";
-	$ARnls["xp_detailsH"]					=	"Encore...";
-	$ARnls["xp_browsebyletter"]				=	"Afficher par ordre alphab&eacute;tique";
+
+	$ARnls["xp_about"]						=	"A propos...";
 	$ARnls["xp_browsebydate"]				=	"Afficher par date";
-	
-	//toolbar
-	$ARnls["xp_up"]							= 	"haut";
-	$ARnls["xp_search"]						= 	"Recherche";
-	$ARnls["xp_folders"]					= 	"Dossier";
-	$ARnls["xp_small"]						= 	"Liste";
-	$ARnls["xp_large"]						= 	"Ic&ocirc;nes";
-	$ARnls["xp_details"]					= 	"D&eacute;tails";
-	$ARnls["xp_iconview"]					= 	"Choisir la vue";
-	$ARnls["xp_import"]						= 	"Import";
-	$ARnls["xp_export"]						= 	"Export";
-	$ARnls["xp_preferences"]				= 	"Pr&eacute;f&eacute;rences";
-	$ARnls["xp_help"]						= 	"Aide";
-	$ARnls["xp_tutorials"]					= 	"Tutoriaux";
-	$ARnls["xp_about"]						= 	"A propos...";
+	$ARnls["xp_browsebyletter"]				=	"Afficher par ordre alphab&eacute;tique";
+	$ARnls["xp_cache"]						=	"R&eacute;gler les r&egrave;gles de cache pour ";
+	$ARnls["xp_copy"]						=	"Copier ";
+	$ARnls["xp_customfields"]				=	"R&eacute;gler les champs paramètrables pour ";
+	$ARnls["xp_delete"]						=	"Supprimer ";
+	$ARnls["xp_details"]					=	"D&eacute;tails";
+	$ARnls["xp_detailsH"]					=	"Encore...";
+	$ARnls["xp_edit"]						=	"Modifier ";
+	$ARnls["xp_explore"]					=	"Explorer";
+	$ARnls["xp_export"]						=	"Export";
+	$ARnls["xp_folders"]					=	"Dossier";
+	$ARnls["xp_grants"]						=	"R&eacute;gler les droits pour ";
+	$ARnls["xp_help"]						=	"Aide";
+	$ARnls["xp_iconview"]					=	"Choisir la vue";
+	$ARnls["xp_import"]						=	"Import";
+	$ARnls["xp_info"]						=	"Info";
+	$ARnls["xp_language"]					=	"R&eacute;gler la langue pour  ";
+	$ARnls["xp_large"]						=	"Ic&ocirc;nes";
+	$ARnls["xp_link"]						=	"Lier ";
+	$ARnls["xp_new"]						=	"Ajouter un nouvel objet";
+	$ARnls["xp_preferences"]				=	"Pr&eacute;f&eacute;rences";
+	$ARnls["xp_priority"]					=	"R&eacute;gler la priorit&eacute; pour ";
+	$ARnls["xp_rename"]						=	"Renommer ";
+	$ARnls["xp_search"]						=	"Recherche";
+	$ARnls["xp_settings"]					=	"Param&egrave;tres";
+	$ARnls["xp_shortcut"]					=	"Changer le lien";
+	$ARnls["xp_small"]						=	"Liste";
+	$ARnls["xp_templates"]					=	"R&eacute;gler les gabarits pour ";
+	$ARnls["xp_tutorials"]					=	"Tutoriaux";
+	$ARnls["xp_types"]						=	"R&eacute;gler le type d\'arborescence pour ";
+	$ARnls["xp_up"]							=	"haut";
+	$ARnls["xp_view"]						=	"Voir";
+	$ARnls["xp_viewweb"]					=	"Voir la page web";
 
 
 ?>

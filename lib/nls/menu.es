@@ -1,4 +1,5 @@
-<?PHP
+<?php
+
 	/*****************************************************************************
 
 	The Spanish nls files are contributed by: 
@@ -30,6 +31,7 @@
 	$ARnls["m_logoff"]						=	"Log&nbsp;off";
 	$ARnls["m_new"]							=	"Nuevo";
 	$ARnls["m_object"]						=	"Objeto";
+	$ARnls["m_page"]						=	"Pagina";
 	$ARnls["m_preferences"]					=	"Preferencias";
 	$ARnls["m_priority"]					=	"Prioridad";
 	$ARnls["m_rename"]						=	"Renombrar";
@@ -41,5 +43,6 @@
 	$ARnls["m_types"]						=	"Tipos";
 	$ARnls["m_view"]						=	"Ver";
 	$ARnls["m_web"]							=	"P&aacute;gina&nbsp;web";
-	$ARnls["m_page"]						=	"Pagina";
+
+
 ?>
