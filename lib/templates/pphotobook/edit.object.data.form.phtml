@@ -52,7 +52,7 @@
         <td>
           <?php
             $wgBrowsePath=$this->getdata("picture","none");
-            if (!$wgBrowsePath) {
+            if (!$wgBrowsePath || !$this->exists($wgBrowsePath)) {
               $wgBrowsePath=$this->parent;
             }
             $wgBrowseName="picture";
