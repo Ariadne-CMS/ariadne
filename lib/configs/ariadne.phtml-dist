@@ -122,10 +122,17 @@
   /* command to tar the (second %s) file and create tar file (first %s) *****/
 
   if ($AR->OS=="WIN32") {
-    $AR->ax->cmd_tar          = "tar -zc %s -f %s";
+    $AR->ax->error_handler="";
   } else {
-    $AR->ax->cmd_tar          = "tar -zc %s -f %s 2> tar.errors";
+    $AR->ax->error_handler=" 2> %s";
   }
+
+  $AR->ax->cmd_untar  = "tar -zx -C %s %s -f %s %s";
+
+
+  $AR->ax->cmd_tar    = "tar -zc -C %s %s -f %s %s";
+
+  $AR->ax->cmd_list   = "tar -zt -f %s";
 
   /* command to remove directory (%s) ***************************************/
 
