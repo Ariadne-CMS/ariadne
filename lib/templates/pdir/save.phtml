@@ -18,6 +18,7 @@
    no result.
  
   ******************************************************************/
+  debug("pdir/save.phtml","class");
   if ($newtype) {
     $newdata=new object;
   } else {
@@ -45,10 +46,14 @@
         $newnlsdata->name=$nlsformdata["name"];
         $newnlsdata->summary=$nlsformdata["summary"];
         $properties["name"][]["value"]="'".AddSlashes($nlsformdata["name"])."'";
+        if ($nlsformdata["page"]) {
+          $newnlsdata->page=$nlsformdata["page"]; 
+        }
         $newdata->$key=$newnlsdata;
         $newdata->nls->list[$key]=$value;
       }
     }
   }
   include($this->store->code."includes/save.dir.phtml");
+  debug("error: $error","class");
 ?>
