@@ -48,8 +48,12 @@
 						$properties["name"][]["value"]="'".AddSlashes($name)."'";
 						$properties["text"][]["value"]="'".AddSlashes($name)."'";
 					}
-					$newnlsdata->summary=$nlsformdata["summary"];
-					$properties["text"][]["value"]="'".AddSlashes(substr($nlsformdata["summary"],0,255))."'";
+					$newnlsdata->summary=$this->getdata("summary", $key);
+					$properties["text"][]["value"]="'".AddSlashes(substr($this->getdata("summary", $key),0,255))."'";
+
+					$newnlsdata->title=$this->getdata("title", $key);
+					$properties["text"][]["value"]="'".AddSlashes(substr($this->getdata("title", $key),0,255))."'";
+
 					if ($page=$this->getdata("page",$key)) {
 						$newnlsdata->page=$page;
 					}
