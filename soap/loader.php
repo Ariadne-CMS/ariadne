@@ -7,8 +7,6 @@
 	include_once($store_config['code']."modules/mod_soap.phtml");
 	include_once($store_config['code']."includes/loader.soap.php");
 
-debugon("pinp");
-
 	function fix_quotes(&$value) {
 		if (is_array($value)) {
 			reset($value);
@@ -153,7 +151,6 @@ debugon("pinp");
 			$soapserver->send_returnvalue($SOAP_Fault);
 		}
 		$store->close();
-debugoff();
 	}
 
 	// save session data
