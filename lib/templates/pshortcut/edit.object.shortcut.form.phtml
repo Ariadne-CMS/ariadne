@@ -63,7 +63,7 @@
 			<span class="required"><?php echo $ARnls["path"]; ?></span>
 		</td>
 	</tr><tr>
-		<td colspan="2">
+		<td colspan="1">
 			<?php 
 				if (!$wgBrowsePath=$this->getdata("path","none")) {
 					$wgBrowsePath=$this->parent;
@@ -72,6 +72,12 @@
 				include($this->store->get_config("code")."widgets/browse/js.html");
 				include($this->store->get_config("code")."widgets/browse/form.html"); 
 			?>
+		</td>
+		<td>
+			<?php echo $ARnls["keepshortcuturl"]; ?><select name="keepurl">
+				<option value="" <?php if (!$this->getdata("keepurl")) echo "selected"; ?>>No</option>
+				<option value="1" <?php if ($this->getdata("keepurl")) echo "selected"; ?>>Yes</option>
+			</select>
 		</td>
 	</tr>
 	</table>
