@@ -35,7 +35,7 @@ New features:
 	  redefine the user.edit.save.html and user.add.save.html templates.
       Added getContents and getValue functions in the toolbar.php widget,
       to be used by user.edit.save.html
-	- Added import() function. This allows you to import modules from the
+	- Added load() function. This allows you to load modules from the
 	  lib/modules directory in pinp templates.
 	- Added possibility to call functions on objects directly. This 
 	  deprecates the call_object function. PINP will automatically insert
