@@ -10,13 +10,5 @@
 	 expired, (boolean) false otherwise.
 
 	******************************************************************/
-	if (!$timeout) {
-		$timout = $ARCurrent->session->timeout;
-	}
-	$valid = time() - $timeout;
-	if ($this->lastchanged < $valid) {
-		$arResult = false;
-	} else {
-		$arResult = $this->data;
-	}
+	$arResult = $this;
 ?>

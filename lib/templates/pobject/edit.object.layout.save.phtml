@@ -25,6 +25,13 @@
 	******************************************************************/
 
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		/* reimport arCallArgs */
+		if (is_string($arCallArgs)) {
+			Parse_str($arCallArgs);
+		} else if (is_array($arCallArgs)) {
+			extract($arCallArgs);
+		}
+		
 		switch($next) {
 			case $ARnls["apply"] :
 				$arReturnPage="edit.object.layout.form.phtml?type=".RawUrlEncode($newtype).

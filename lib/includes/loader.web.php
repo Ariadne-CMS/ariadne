@@ -59,10 +59,22 @@
 
 	function ldAccessDenied($path, $message) {
 	global $ARCurrent, $store;
+		/* 
+			since there is no 'peek' function, we need to pop and push
+			the arCallArgs variable.
+		*/
 
+		$arCallArgs = array_pop($ARCurrent->arCallStack);
+		array_push($ARCurrent->arCallStack, $arCallArgs);
+
+		if (!$arCallArgs || is_array($arCallArgs)) {
+			$arCallArgs["arLoginMessage"] = $message;
+		} else {
+			$arCallArgs.="&arLoginMessage=".urlencode($message);
+		}
 		if (!$ARCurrent->arLoginSilent) {
 			$store->call("user.login.html", 
-								Array( "arLoginMessage" => $message ),
+								$arCallArgs,
 								$store->get($path) );
 		}
 	}
@@ -158,9 +170,21 @@
 			// start a new session when there is no session yet, or
 			// when a user uses a new login. (su)
 			ldStartSession();
+			$ARCurrent->session->put("ARLogin",$login);
+			$ARCurrent->session->put("ARPassword",$password,1);
+		} else
+		if ($ARCurrent->session->get("ARSessionTimedout", 1)  &&
+				ldCheckCredentials($login, $password) &&
+				$ARCurrent->session->get("ARLogin") === $login &&
+				$ARCurrent->session->get("ARPassword",1) === $password ) {
+
+				/* cookie and login matches session */
+				$ARCurrent->session->put("ARSessionTimedout", false, 1);
 		}
-		$ARCurrent->session->put("ARLogin",$login);
-		$ARCurrent->session->put("ARPassword",$password);
+
+		/* now save our session */
+		$ARCurrent->session->save();
+
 		$cookie=unserialize($ARCookie);
 		// FIXME: now clean up the cookie, remove old sessions
 		@reset($cookie);
@@ -171,16 +195,16 @@
 					// but do kill it if it's older than one day
 					unset($cookie[$sessionid]);
 				}
-			} else if (@current($ARCurrent->session->sessionstore->call("system.expired.phtml","",
-						$ARCurrent->session->sessionstore->get("/$sessionid/")))) {
-				unset($cookie[$sessionid]);
-			}
+			} 
 		}
-		$cookie[$ARCurrent->session->id]['login']=$login;
-		$cookie[$ARCurrent->session->id]['timestamp']=time();
-		$cookie[$ARCurrent->session->id]['check']="{".ARCrypt($password.$ARCurrent->session->id)."}";
-		$ARCookie=serialize($cookie);
-		setcookie("ARCookie",$ARCookie, 0, '/');
+
+		if (!$ARCurrent->session->timedout) {
+			$cookie[$ARCurrent->session->id]['login']=$login;
+			$cookie[$ARCurrent->session->id]['timestamp']=time();
+			$cookie[$ARCurrent->session->id]['check']="{".ARCrypt($password.$ARCurrent->session->id)."}";
+			$ARCookie=serialize($cookie);
+			setcookie("ARCookie",$ARCookie, 0, '/');
+		}
 	}
 
 	function ldGetCredentials() {

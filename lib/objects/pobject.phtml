@@ -43,7 +43,7 @@ class pobject extends object {
 		}
 
 		// callstack is needed for getvar()
-		$ARCurrent->arCallStack[]=$arCallArgs;
+		$ARCurrent->arCallStack[]=&$arCallArgs;
 		if (is_string($arCallArgs)) {
 			Parse_str($arCallArgs);
 		} else if (is_array($arCallArgs)) {
@@ -450,6 +450,7 @@ class pobject extends object {
 
 	function CheckLogin($grant, $modifier=ARTHISTYPE) {
 	global $AR,$ARnls,$ARCurrent,$ARLogin,$ARPassword,$ARCookie,$session_config;
+
 		debug("pobject: CheckLogin($grant)","object");
 		if ($modifier==ARTHISTYPE) {
 			$modifier=$this->type;
@@ -458,17 +459,31 @@ class pobject extends object {
 		// check for a sessionid
 		$continue=true;
 		if (!$AR->user) {
-			if (!$ARCurrent->session || !$ARCurrent->session->get("ARLogin")) {
+			if ($ARCurrent->session && $ARCurrent->session->get("ARSessionTimedout", 1)) {
+				debug("pobject: CheckLogin: session expired","object");
+				$arCallArgs = array_pop($ARCurrent->arCallStack);
+				array_push($ARCurrent->arCallStack, $arCallArgs);
+
+				/* store arCallArgs */
+				if ($ARCurrent->session && !$ARCurrent->session->get("oldArCallArgs",1)) {
+					$ARCurrent->session->put("oldArCallArgs", $arCallArgs, 1);
+					$ARCurrent->session->save(0, true);
+				}
+
+				$arLoginMessage=$ARnls["accessdenied"];
+				ldAccessDenied($this->path, $arLoginMessage);
+				$continue=false;
+			} else if (!$ARCurrent->session || !$ARCurrent->session->get("ARLogin")) {
 				$ARLogin="public"; $ARPassword="none";
 				debug("pobject: CheckLogin: use public","object");
 			} else {
-				if (!ldCheckCredentials($ARCurrent->session->get("ARLogin"), $ARCurrent->session->get("ARPassword"))) {
+				if (!ldCheckCredentials($ARCurrent->session->get("ARLogin"), $ARCurrent->session->get("ARPassword",1))) {
 					$ARLogin="public"; $ARPassword="none";
 					// default fallback is 'public'.
 					$fallback=true;
 				} else {
 					$ARLogin=$ARCurrent->session->get("ARLogin");
-					$ARPassword=$ARCurrent->session->get("ARPassword");
+					$ARPassword=$ARCurrent->session->get("ARPassword",1);
 				}
 			}
 
@@ -529,10 +544,10 @@ class pobject extends object {
 							ldStartSession($sessionid);
 							if ($ARCurrent->session->id == $sessionid) {
 								if (ldCheckCredentials($ARCurrent->session->get("ARLogin"),
-													$ARCurrent->session->get("ARPassword"))) {
+													$ARCurrent->session->get("ARPassword",1))) {
 
 									$ARLogin = $ARCurrent->session->get("ARLogin");
-									$ARPassword = $ARCurrent->session->get("ARPassword");
+									$ARPassword = $ARCurrent->session->get("ARPassword",1);
 									$continue = true;
 									$recheck = true;
 									$criteria["login"]["value"]["="]="'".AddSlashes($ARLogin)."'";
@@ -563,6 +578,11 @@ class pobject extends object {
 		}
 		$ARPassword=0;
 		if ($continue) {
+			if ($ARCurrent->session && ($oldArCallArgs = $ARCurrent->session->get("oldArCallArgs",1))) {
+				/* restore arCallArgs from before login */
+				$ARCurrent->arCallStack[sizeof($ARCurrent->arCallStack)-1] = $oldArCallArgs;
+				$ARCurrent->session->put("oldArCallArgs", 0, 1);
+			}
 			debug("pobject: CheckLogin: end","all");
 			$result=($grants || ($ARLogin=="admin"));
 		} else {
@@ -571,7 +591,7 @@ class pobject extends object {
 		}
 
 		$ARCurrent->arLoginSilent=1;
-//		debugoff();
+
 		return $result;
 	}
 

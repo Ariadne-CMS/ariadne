@@ -11,25 +11,7 @@ class session {
 		$this->timeout=$session_config["timeout"];
 
 		if ((!$id) || (!$this->sessionstore->exists("/$id/")))  { 
-			$genNewSession = true;
-		} else { // retrieve session
-			$result=current($this->sessionstore->call(
-													"system.get.session.phtml",
-													Array( "timeout" => $this->timeout ),
-													$this->sessionstore->get("/$id/")
-												));
-			if ($result !== false) {
-				debug("session found ($result) in database");
-				$this->id=$id;
-				$this->data=$result;
-				$genNewSession = false;
-			} else {
-				debug("session expired: will generate new one");
-				$genNewSession = true;
-			}
-		}
-
-		if ($genNewSession)  { 
+			debug("session: generating new id", "all");
 			// generate new id
 			srand((double)microtime()*1000000);
 			do { 
@@ -41,30 +23,66 @@ class session {
 			// save new session object
 			$this->data=new object;
 			$this->id=$id;
+			$this->lastchanged=time();
+			$this->system = new object;
+			$this->system->ARSessionTimedout=false;
 			$this->save();
+		} else { // retrieve session
+			$result=current($this->sessionstore->call(
+													"system.get.session.phtml",
+													"",
+													$this->sessionstore->get("/$id/")
+												));
+			$this->id=$id;
+			$this->lastchanged=$result->lastchanged;
+			$this->system = $result->data->system;
+			unset($result->data->system);
+			if ($this->lastchanged < (time()-$this->timeout)) {
+				debug("session: ".$this->id." ARSessionTimedout", "all");
+				$this->system->ARSessionTimedout = true;
+			} else {
+				$this->system->ARSessionTimedout = $this->data->ARSessionTimedout;
+			}			
+			$this->data=$result->data;
 		}
+
 		$this->put("ARSessionId",$this->id);
         debug("session: end","all");
 	}
 
-	function put($varname, $value) {
-		debug("session->put($varname,$value)","store");
-		$this->data->$varname=$value;
-        debug("session->put: end","all");
+	function put($varname, $value, $system=0) {
+		debug("session->put($varname,$value,$system)","store");
+		if (!$system) {
+			$this->data->$varname=$value;
+		} else {
+			$this->system->$varname=$value;
+		}
+		debug("session->put: end","all");
 	}
 
-	function get($varname) {
-        debug("session->get($varname)","store");
-		return $this->data->$varname;
+	function get($varname, $system=0) {
+        debug("session->get($varname, $system)","store");
+		if (!$system) {
+			$result = $this->data->$varname;
+		} else {
+			$result = $this->system->$varname;
+		}
         debug("session->get: end","all");
-   
-	}
+		return $result;
+   	}
 
-	function save($id=0) {
+	function save($id=0, $forceupdate=0) {
         debug("session->save($id)","store");
-		if (!$id) { $id=$this->id; } else { $this->id=$id; }
-		// store session data
-		$this->sessionstore->save("/$id/","psession",$this->data);
+		if (!$this->system->ARSessionTimedout || $forceupdate) {
+			if (!$id) { $id=$this->id; } else { $this->id=$id; }
+			// store session data
+			$this->data->system = $this->system;
+			$this->sessionstore->save("/$id/","psession",$this->data);
+			unset($this->data->system);
+			$this->lastchanged=time();
+		} else {
+			debug("session timed out: no save!", "all");
+		}
         debug("session->save: end","all");
 	}
 
