@@ -4,7 +4,7 @@
 	 no result.
 
 	******************************************************************/
-	if ($this->CheckSilent("read")) {
+	if ($this->CheckSilent("read") && $this->CheckConfig()) {
 ?>
 <table border="0" width="90%">
 <tr>
@@ -18,10 +18,10 @@
 				</td><td>
 					<select name="language" style="width: 100px;">
 					<?php
-						if (!$newtype) {
+						if (!$this->getdata("arNewType", "none")) {
 							$language=$data->language;
 						} else {
-							$language=$ARCurrent->default;
+							$language=$AR->nls->default;
 						}
 						reset($AR->nls->list);
 						while (list($key, $value)=each($AR->nls->list)) {
@@ -40,8 +40,8 @@
 					<?php echo $ARnls["interface"]; ?>
 				</td><td>
 					<select name="interface" style="width: 100px;">
-							<option value="classic"><?php echo $ARnls["classic"]; ?></option>
 							<option value="new" <?php if ($data->interface=="new") { echo "selected"; } ?>><?php echo $ARnls["new"]; ?></option>
+							<option value="classic" <?php if ($data->interface=="classic") { echo "selected"; } ?>><?php echo $ARnls["classic"]; ?></option>
 					</select>
 				<td>
 			</tr>
