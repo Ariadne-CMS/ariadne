@@ -151,6 +151,7 @@ body {
 
 </script>
 <script language="JavaScript" src="<?php echo $AR->dir->www; ?>widgets/browse/toolbar.js"></script>
+<div id="toolbars">
 	<div class="toolbar">
 	<table align="left" border="0" cellpadding="0" cellspacing="0">
 		<tr>
@@ -334,10 +335,10 @@ body {
 
 			<td><div class="seperator"></div></td>
 
-			<td>&nbsp;<?php echo $ARnls["path"];?>&nbsp;<input
+			<td><nobr>&nbsp;<?php echo $ARnls["path"];?>&nbsp;<input
 	type=text name=path value="<?php echo $this->path;?>" size=64
 	style="border:1px solid black; width: 400px;">&nbsp;<input align="absmiddle" type=image
-	src="<?php echo $AR->dir->images."winxp/go.gif";?>" width=16 height=16>&nbsp;</td>
+	src="<?php echo $AR->dir->images."winxp/go.gif";?>" width=16 height=16>&nbsp;</nobr></td>
 
 			<td><div class="seperator"></div></td>
 
@@ -374,9 +375,8 @@ body {
 		</form>
 		</table>
 	</div>
-
-
 	<script language="javascript">
 		if (top.gettreestatus() == 'visible')
 			makeSelected(document.getElementById('folders'));
 	</script>
+</div>
