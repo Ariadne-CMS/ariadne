@@ -13,23 +13,54 @@
 	******************************************************************/
 
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+		$configcache=$ARConfig->cache[$this->path];
+		if ($configcache->custom) {
+			while (list($key, $definition)=each($configcache->custom)) {
+				if (($definition["type"]==$this->type) ||
+					($definition["inherit"] && ($this->implements($definition["type"])))) {
+					$customdata=true;
+					break;
+				}
+			}
+		}
+		if (count($ARConfig->nls->list)>1) { // more than one language available
+			$languages=true;
+		}
 		include($this->store->code."widgets/wizard/code.php");
 
 		$start="edit.object.data.form.phtml";
-		$step1="edit.object.language.phtml";
+		$step1="edit.object.data.custom.phtml";
+		$step2="edit.object.language.phtml";
 		$finish="edit.object.data.save.phtml";
 	 
 		$wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["data"];
 		$wgWizFlow[$i]["template"]=$start;
-		if (count($ARConfig->nls->list)>1) { // more than one language available
+		if ($customdata) {
+			$wgWizFlow[$i]["next"]=$i+1;
+			if ($languages) {
+				$saveoffset=2;
+			} else {
+				$saveoffset=1;
+			}
+			$wgWizFlow[$i]["save"]=$i+$saveoffset;
+			$i++;
+			$wgWizFlow[$i]["title"]=$ARnls["customdata"];
+			$wgWizFlow[$i]["template"]=$step1;
+			$wgWizFlow[$i]["prev"]=$i-1;
+		}
+		if ($languages) { // more than one language available
 			$wgWizFlow[$i]["next"]=$i+1;
 			$wgWizFlow[$i]["save"]=$i+2;
 			$i++;
 			$wgWizFlow[$i]["title"]=$ARnls["language"];
-			$wgWizFlow[$i]["template"]=$step1;
-			$wgWizFlow[$i]["next"]=$i-1;
+			$wgWizFlow[$i]["template"]=$step2;
+			if ($customdata) {
+				$wgWizFlow[$i]["next"]=$i-2;
+			} else {
+				$wgWizFlow[$i]["next"]=$i-1;
+			}
 			$wgWizFlow[$i]["prev"]=$i-1;
 			$wgWizFlow[$i]["save"]=$i+1;
 		} else {

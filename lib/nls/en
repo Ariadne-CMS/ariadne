@@ -268,4 +268,6 @@ $ARnls["customdata"]=	"Custom Data";
 $ARnls["grant"]=		"Grant";
 $ARnls["check"]=		"Check";
 $ARnls["rename"]=		"Rename";
+$ARnls["err:maxsize"]=	"Error: Maximum size limit exceeded";
+$ARnls["err:invalidcontent"]="Error: Invalid content";
 ?>

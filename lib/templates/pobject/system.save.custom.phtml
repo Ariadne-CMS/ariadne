@@ -8,6 +8,7 @@
 		parse_str($this->getdata("customdata","none"));
 		if (is_array($customdata)) {
 			while (list($key, $value)=each($customdata)) {
+				echo ":$key:".$value["name"].":".$value["nls"].":<br>\n";
 				$this->data->customconfig[$value["name"]]["type"]=$value["type"];
 				$this->data->customconfig[$value["name"]]["inherit"]=$value["inherit"];
 				$this->data->customconfig[$value["name"]]["size"]=$value["size"];

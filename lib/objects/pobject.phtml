@@ -166,6 +166,9 @@ class pobject extends object {
 							$this->data->mtime=$this->data->ctime;
 							$this->data->owner_name=$AR->user->data->name;
 							$this->data->owner=$AR->user->data->login;
+							$customdata=$this->getdata("customdata","none");
+							@parse_str($customdata);
+							$this->data->customdata=$customdata;
 							// $properties["time"]["ctime"]=$this->data->ctime;
 							// $properties["time"]["mtime"]=$this->data->mtime;
 							// $properties["owner"]["value"]=$this->data->owner;
@@ -189,6 +192,9 @@ class pobject extends object {
 				if ($this->exists($this->path)) { // prevent 'funny stuff'
 					$this->data->mtime=time();
 					// $properties["time"]["mtime"]=$this->data->mtime;
+					$customdata=$this->getdata("customdata","none");
+					@parse_str($customdata);
+					$this->data->customdata=$customdata;
 					$this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority);
 					$result=$this->path;
 					$this->ClearCache();
@@ -835,6 +841,7 @@ class pobject extends object {
 			} else if (isset($HTTP_GET_VARS[$varname])) {
 				$result=$HTTP_GET_VARS[$varname];
 			} else if (($arStoreVars=$HTTP_POST_VARS["arStoreVars"]) && isset($arStoreVars[$varname])) {
+				debug('POST[arStoreVars]','all');
 				$result=$arStoreVars[$varname];
 			} else if (($arStoreVars=$HTTP_GET_VARS["arStoreVars"]) && isset($arStoreVars[$varname])) {
 				$result=$arStoreVars[$varname];

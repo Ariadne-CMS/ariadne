@@ -268,4 +268,6 @@ $ARnls["customdata"]=	"Eigen Data";
 $ARnls["grant"]=		"Recht";
 $ARnls["check"]=		"Controle";
 $ARnls["rename"]=		"Hernoem";
+$ARnls["err:maxsize"]=	"Fout: Maximum grootte overschreden";
+$ARnls["err:invalidcontent"]="Fout: Ongeldige inhoud";
 ?>

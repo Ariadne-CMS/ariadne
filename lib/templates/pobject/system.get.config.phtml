@@ -69,6 +69,9 @@
 		$configcache->nls=$data->nlsconfig;
 		debug("nls found");
 	}
+	if ($data->customconfig) {
+		$configcache->custom=array_merge($configcache->custom, $data->customconfig);
+	}
 	$ARConfig->cache[$this->path]=$configcache;
 
 ?>

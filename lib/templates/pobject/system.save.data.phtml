@@ -24,6 +24,7 @@
 				$this->data->nls=new object;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
+
 			reset($AR->nls->list);
 			$count=0;
 			while (list($key, $value)=each($AR->nls->list)) {

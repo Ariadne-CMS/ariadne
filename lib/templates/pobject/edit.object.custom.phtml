@@ -1,15 +1,14 @@
 <?php
 	/******************************************************************
-	 edit.object.layout.phtml                              Muze Ariadne
+	 edit.object.custom.phtml                              Muze Ariadne
 	 ------------------------------------------------------------------
 	 Arguments: none
 	 Grant needed: layout
 	 Global variables: none
 
-	 This template displays a list of object templates defined at the
-	 current object. It displays a list of clickable flags denoting the
-	 different languages for which the template is defined, linked to
-	 the template edit form for that template in that language.
+	 This template displays a list of Custom data fieldnames, and their
+	 definition. Fields added here, can be used to add custom defined
+	 data entry fields per class.
 	 
 	 no result
 
@@ -30,12 +29,13 @@
 		dest=document.customform.fieldname.options;
 		<?php
 			if (is_array($this->data->customconfig)) {
+				reset($this->data->customconfig);
 				while (list($name, $custom)=each($this->data->customconfig)) {
 					echo "		dest[dest.length]=new Option('".AddSlashes($name)."','".AddSlashes($name)."');\n";
 					echo "		customlist[customlist.length]=new custom_node(\n";
-					echo "			'".AddSlashes($custom["type"])."','".AddSlashes($custom["inherit"])."',\n";
+					echo "			'".AddSlashes($custom["type"])."',".AddSlashes($custom["inherit"]).",\n";
 					echo "			'".AddSlashes($name)."','".AddSlashes($custom["size"])."',\n";
-					echo "			'".AddSlashes($custom["grant"])."','".AddSlashes($custom["nls"])."',\n";
+					echo "			'".AddSlashes($custom["grant"])."',".AddSlashes($custom["nls"]).",\n";
 					echo "			'".AddSlashes($custom["check"])."');\n";
 				}
 			}
@@ -98,13 +98,13 @@
 		savestring='';
 		for (i=0; i<customlist.length; i++) {
 			data=customlist[i];
-			savestring+='&customdata['+i+'][name]='+escape(data['name']);
-			savestring+='&customdata['+i+'][type]='+escape(data['type']);
-			savestring+='&customdata['+i+'][inherit]='+escape(data['inherit']);
-			savestring+='&customdata['+i+'][size]='+escape(data['size']);
-			savestring+='&customdata['+i+'][nls]='+escape(data['nls']);
-			savestring+='&customdata['+i+'][grant]='+escape(data['grant']);
-			savestring+='&customdata['+i+'][check]='+escape(data['check']);
+			savestring+='&customdata['+i+'][name]='+escape(data.name);
+			savestring+='&customdata['+i+'][type]='+escape(data.type);
+			savestring+='&customdata['+i+'][inherit]='+escape(data.inherit);
+			savestring+='&customdata['+i+'][size]='+escape(data.size);
+			savestring+='&customdata['+i+'][nls]='+escape(data.nls);
+			savestring+='&customdata['+i+'][grant]='+escape(data.grant);
+			savestring+='&customdata['+i+'][check]='+escape(data.check);
 		}
 		document.customform.customdata.value=savestring;
 		return true;
@@ -229,11 +229,11 @@ BODY, TD {
 			<tr>
 				<td align="right"><?php echo $ARnls["type"]; ?></td>
 				<td><select class="typeselect" name="cdtype" onChange="updateCustom(this);" ><?php $this->ls('/system/ariadne/types/','show.option.value.phtml'); ?></select></td>
-				<td><input type="checkbox" name="cdinherit" value="1" onChange="updateCustom(this);" checked> <?php echo $ARnls["inherit"]; ?></td>
+				<td><input type="checkbox" name="cdinherit" value="1" onClick="updateCustom(this);" checked> <?php echo $ARnls["inherit"]; ?></td>
 			</tr><tr>
 				<td align="right"><?php echo $ARnls["name"]; ?></td>
 				<td><input class="text" type="text" name="cdname" value="" size="16" onBlur="updateCustom(this);" ></td>
-				<td><input type="checkbox" name="cdnls" value="1" onChange="updateCustom(this);" checked> nls</td>
+				<td><input type="checkbox" name="cdnls" value="1" onClick="updateCustom(this);" checked> nls</td>
 			</tr><tr>
 				<td align="right"><?php echo $ARnls["size"]; ?></td>
 				<td><input type="text" name="cdsize" value="255" size="4" onBlur="updateCustom(this);" ></td>

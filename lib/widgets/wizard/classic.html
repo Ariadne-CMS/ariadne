@@ -208,6 +208,9 @@
           default: 
             break;
         }
+		if (result && document.wgWizForm.wgWizSubmitHandler) {
+			result=document.wgWizForm.wgWizSubmitHandler();
+		}
         return result;
       }
     </script>
