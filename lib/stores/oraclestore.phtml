@@ -131,19 +131,21 @@ class oraclestore {
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
 
-		$query_string = "select count($nodes_tbl.path) as \"count\" ";
-		$query_string .= $objects["query_string"];
-		$list = $this->store_run_query($query_string);
-		if (!$this->errno) {
-			ocifetchinto($list, $row, OCI_ASSOC);
-			$result = $row['count'];
+		$query_string = $objects['count_query'];
+		if ($query_string) {
+			$list = $this->store_run_query($query_string);
+			if (!$this->errno) {
+				ocifetchinto($list, $row, OCI_ASSOC);
+				$result = $row['count'];
+			}
 		}
 		return $result;
 	}
 
 	function info($objects) {
-		debug("call($template, $args, [list])","store");
-		while ($row=@mysql_fetch_array($objects["list"])) {
+		debug("info([list])","store");
+		
+		while (ocifetchinto($objects["list"], $row, OCI_ASSOC)) {
 			unset($row["object"]);
 			$result[]=$row;
 		}
@@ -212,7 +214,15 @@ class oraclestore {
 			where $objects_tbl.id=$nodes_tbl.object and $objects_tbl.id=$objects_tbl_data.id and $nodes_tbl.path='$epath'
 			";
 
+
+		$count_query = "
+			select count($nodes_tbl.path) as \"count\" 
+			from $nodes_tbl 
+			where $node_tbl.path = '$epath'
+			";
+
 		$result["list"] = $this->store_run_query($query_string);
+		$result["count_query"] = $count_query;
 		debug("get: end","all");
 		return $result;
 	}
@@ -291,9 +301,17 @@ class oraclestore {
 			order by $nodes_tbl.priority DESC, $nodes_tbl.path
 			";
 
+		$count_query = "
+			select count($nodes_tbl.path) as \"count\"
+			from $nodes_tbl
+			where $nodes_tbl.parent = '$epath'
+			";
+
 		$result["method"]="ls";
 		$result["path"]=$path;
 		$result["list"] = $this->store_run_query($query_string);
+		$result["count_query"] = $count_query;
+
 		debug("ls: query=$query_string","all");
 		debug("ls: end","all");
 		return $result;
@@ -328,10 +346,20 @@ class oraclestore {
 			where $objects_tbl.id=$nodes_tbl.object and $objects_tbl.id=$objects_tbl_data.id and $nodes_tbl.path=substr('$epath',1,length(path)) and $nodes_tbl.path LIKE '$etop%' order by path
 			";
 
+
+		$count_query="
+			select count($nodes_tbl.path) as \"count\", $nodes_tbl.path as \"path\"
+			from $nodes_tbl
+			where $nodes_tbl.path=substr('$epath',1,length(path)) and $nodes_tbl.path LIKE '$etop%'
+			";
+
 		debug($query_string, "all");
+
 		$result["method"]="parents";
 		$result["path"]=$path;
 		$result["list"]=$this->store_run_query($query_string);
+		$result["count_query"]=$count_query;
+
 		debug("parents: end","all");
 		return $result;
 	}
@@ -372,6 +400,7 @@ class oraclestore {
 
 			$nodes_tbl=$this->tbl_prefix."nodes";
 			$objects_tbl=$this->tbl_prefix."objects";
+			$objects_tbl_data=$objects_tbl."_data";
 			$types_tbl=$this->tbl_prefix."types";
 
 			while (list($property, $values)=@each($criteria)) {
@@ -437,24 +466,49 @@ class oraclestore {
 					$where.=" ".$this->tbl_prefix."prop_$eproperty.object=$objects_tbl.id)	";
 				}
 			}
-			$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $nodes_tbl, $objects_tbl $from $types where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path like '$epath%'";
-			$where=substr($where,4);
-			if ($where) { 
-				$query_string.=" and ( ( $where ) )";
-			} 
-			$query_string.=" order by $nodes_tbl.parent, $nodes_tbl.priority DESC, $nodes_tbl.path";
+
 			if ($limit) {
-				$query_string.=" limit ";
 				if ($offset) {
-					$query_string.="$offset,";
+					$limit_s="LINENUM > $offset and";
 				}
-				$query_string.="$limit";
+				$limit_s.=" LINENUM <= ".((int)$offset + (int)$limit);
 			}
+
+			$where_s=substr($where,4);
+			if ($where_s) { 
+				$where_s=" and ( ( $where_s ) )";
+			}
+
+			$orderby_s = "order by $nodes_tbl.parent, $nodes_tbl.priority DESC, $nodes_tbl.path";
+
+			$query_string="
+			select \"path\", \"parent\", \"object\", \"type\", \"id\", \"priority\", \"id\", \"lastchanged\", \"vtype\"
+			from (
+				select ROW_NUMBER() OVER($orderby_s) LINENUM,
+					$nodes_tbl.path as \"path\", $nodes_tbl.parent as \"parent\", $nodes_tbl.priority as \"priority\", $objects_tbl.id as \"id\", $objects_tbl.type as \"type\", $objects_tbl_data.object as \"object\", TO_CHAR($objects_tbl.lastchanged, 'MM-DD-YYYY HH24:MI:SS') as \"lastchanged\", $objects_tbl.vtype as \"vtype\"  
+				from $nodes_tbl, $objects_tbl, $objects_tbl_data
+				where $objects_tbl.id = $nodes_tbl.object and $objects_tbl.id = $objects_tbl_data.id
+				and $nodes_tbl.path IN (
+
+					select distinct($nodes_tbl.path) as \"path\"
+					from $nodes_tbl, $objects_tbl $from $types
+					where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path like '$epath%'
+						$where_s
+
+				)
+				$orderby_s
+			) where $limit_s
+			";
+
+			$count_query = "
+				select count(*) as \"count\" from ( $query_string )
+			";
 		}
 		debug("find: query=$query_string","all");
-		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
+		$result["list"]=$this->store_run_query($query_string);
+		$result["count_query"]=$count_query;
 		if ($result["list"]) {
-			debug("find: end (".mysql_num_rows($result["list"]).")","all");
+			debug("find: end ","all");
 		}
 		return $result;
 	}
