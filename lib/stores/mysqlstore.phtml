@@ -398,29 +398,8 @@ class mysqlstore {
 			$parent="..";
 		}
 		$eparent=AddSlashes($parent);
-		$mask = substr($path, strlen($parent));
-		if (ereg("^(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) { 
-			// if the last part of a path matches something like {2:id} this
-			// part will automatically create a new number, unique in this directory, and fill it in.
-			// before we proceed, we need to lock the 'nodes' and 'objects' table
-
-			$query_string="lock tables ".$this->tbl_prefix."nodes write, ".$this->tbl_prefix."objects write";
-			if (mysql_db_query($this->database, $query_string, $this->connect_id)) {
-				$needunlocking = true;
-
-				$subid=$this->get_nextid($parent, $mask);
-
-				$path=ereg_replace("\{([0-9]:)?id\}",strval($subid),$path);
-				debug("save: new path: $path ($subid)","all");
-			} else {
-				error("PANIC: could not obtain write lock on nodes table!");
-				$this->close();
-				exit;
-			}
-		}
-
-		$edata=AddSlashes(serialize($data));
 		$epath=AddSlashes($path);
+		$edata=AddSlashes(serialize($data));
 		$etype=AddSlashes($type);
 		$epriority=(int)$priority;
 
@@ -468,6 +447,28 @@ class mysqlstore {
 				$vtype=$type; 
 			}
 			$evtype=AddSlashes($vtype);
+
+			$mask = substr($path, strlen($parent));
+			if (ereg("^(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) { 
+				// if the last part of a path matches something like {2:id} this
+				// part will automatically create a new number, unique in this directory, and fill it in.
+				// before we proceed, we need to lock the 'nodes' and 'objects' table
+				$query_string="lock tables ".$this->tbl_prefix."nodes write, ".$this->tbl_prefix."objects write";
+				if (mysql_db_query($this->database, $query_string, $this->connect_id)) {
+					$needunlocking = true;
+
+					$subid=$this->get_nextid($parent, $mask);
+					$path=ereg_replace("\{([0-9]:)?id\}",strval($subid),$path);
+					$epath=AddSlashes($path);
+					debug("save: new path: $path ($subid)","all");
+				} else {
+					error("PANIC: could not obtain write lock on nodes table!");
+					$this->close();
+					exit;
+				}
+			}
+
+
 			$query_string="insert into $objects_tbl (id,type,object,vtype) values (0,'$etype','$edata','$evtype')";
 			debug("save: query=$query_string","all");
 			$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
@@ -480,6 +481,11 @@ class mysqlstore {
 				$errno=mysql_errno($this->connect_id);
 				$error=mysql_error($this->connect_id);
 				if (!$errno) {				
+					if ($needunlocking) {
+						$query_string = "unlock tables";
+						mysql_db_query($this->database,$query_string, $this->connect_id);
+						$needunlocking = false;
+					}
 					$this->save_properties($properties, $id, $this);
 					$result=$path;
 				} else {
@@ -494,10 +500,11 @@ class mysqlstore {
 				debug("save: ".$this->error,"store");
 				$result=0;
 			}			
-		}
-		if ($needunlocking) {
-			$query_string = "unlock tables";
-			mysql_db_query($this->database,$query_string, $this->connect_id);
+
+			if ($needunlocking) {
+				$query_string = "unlock tables";
+				mysql_db_query($this->database,$query_string, $this->connect_id);
+			}
 		}
 		debug("save: end","all");
 		return $result;
@@ -1036,17 +1043,15 @@ class mysqlstore {
 			$substr_l = intval(substr($matches[2], 0, 1));
 			$mask_post= $matches[3];
 			$query_string = 
-				"select max(substring(path, $substr_s)) as id
+				"select max(substring(path, $substr_s, $substr_l)) as id
 				from ".$this->tbl_prefix."nodes where 
-				path regexp '^".$path.$mask_pre."[0-9]+".$mask_post."'";
+				path regexp '^".$path.$mask_pre."[0-9]\{".$substr_l."\}".$mask_post."'";
 
 			//error($query_string);
 			$result = mysql_db_query($this->database, $query_string, $this->connect_id);
 			if ($result) {
 				$row = mysql_fetch_array($result);
-				if (ereg('([0-9]+)', $row["id"], $matches)) {
-					$subid  = intval($matches[1]);
-				}
+				$subid  = intval($row["id"]);
 			}
 			$subid=$subid+1;
 			$subid = sprintf("%0".$substr_l."d", $subid);
