@@ -8,8 +8,8 @@ class pcalitem extends pobject { // definitie class
 
 	function DelTimeframe($date) {
 		debug("pcalitem->DelTimeframe($date)","object");
-		reset($this->data->timeframes);
-		while (list($index, $timeframe)=each($this->data->timeframes)) {
+		@reset($this->data->timeframes);
+		while (list($index, $timeframe)=@each($this->data->timeframes)) {
 			if ($timeframe["start"]!=$date) {
 				$result[]=$timeframe;
 			} else {
