@@ -1,0 +1,15 @@
+<?php
+	if ($this->CheckLogin("add") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		if (!$arNewType) {
+			error($ARnls["err:nonewtype"]);
+		} else if (!$arNewFilename) {
+			error("no arNewFilename.");
+        } else {
+			$arNewData=new object;
+			$arNewPath=$this->make_path($arNewFilename);
+			$arCallObject=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData);
+			$arCallObject->arIsNewObject=true;
+			$arCallObject->call("user.edit.page.html", $arCallArgs);
+		}
+	}
+?>
