@@ -596,9 +596,10 @@ class mysqlstore {
 				}
 				debug("link: end","all");
 				$result=$destination;
+			} else {
+				debug("link: end (no $source)","store");
 			}
 		}
-		debug("link: end (no $source)","store");
 		return $result;
 	}
 
