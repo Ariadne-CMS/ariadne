@@ -348,7 +348,7 @@
 							$FTP->listMode=$FTP->defaultListMode;
 						}
 
-						$path=$FTP->store->make_path($FTP->site.$FTP->cwd, $args);
+						$path=$FTP->store->make_path($FTP->cwd, $args);
 						debug("ftp: cwd absolute path is ($path)");
 						while (ereg('/#([^/]*)#/', $path, $regs) && $regs[1]) {
 							$FTP->listMode=$regs[1];
@@ -901,7 +901,7 @@
 					ftp_Tell(530, "Please login with USER and PASS.");
 				}
 			}
-			ftp_Tell(230, "User '".$this->user."' logged in at $FTP->site$FTP->cwd ");
+			ftp_Tell(230, "User '".$this->user."' logged in at $FTP->cwd ");
 		}
 
 		function ftp_FetchCMD(&$cmd, &$args) {
