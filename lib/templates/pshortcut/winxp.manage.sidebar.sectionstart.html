@@ -1,0 +1,69 @@
+<?php
+  	include_once($this->store->get_config("code")."nls/winxp.".$this->reqnls);
+	
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		if (!$arLanguage) {
+			$arLanguage=$nls;
+		}
+		if ($data->$arLanguage) {
+			$nlsdata=$data->$arLanguage;
+		}
+		if ($specialSection){
+			$normalSection = "false";
+			$firstColumnWidth="130px";
+			$maxheadlength = 15;
+		}else{
+			$normalSection = "true";
+			$firstColumnWidth="160px";
+			$maxheadlength = 20;
+		}
+		if (!$sectionDisplayName)
+			$sectionDisplayName = $ARnls["xp_$sectionName"];
+		
+		if (strlen($sectionDisplayName) > $maxheadlength)
+			$sectionDisplayName = "<span title=\"$sectionDisplayName\">".substr($sectionDisplayName, 0, $maxheadlength-3)."..."."</span>";
+		if (strlen($sectionDisplayName) < 11){
+			$diff = 11-strlen($sectionDisplayName);
+			while($diff>0){ // some kind of weird MOZ bug? the title needs to be at least 11 charachter to display in a 'special_section'
+				$sectionDisplayName = $sectionDisplayName."&nbsp;";
+				$diff--;
+			}
+		}
+		$sectionDisplayName = str_replace( " ","&nbsp;",$sectionDisplayName);
+		?>
+				<div class="sidebar_<?php if ($specialSection) echo "special_"; ?>grouphead" align="left" style="text-align: left;">
+						<table border="0" cellspacing="0" cellpadding="0" width="200">
+							<tr>
+								<td valign="middle" nowrap="nowrap" style="width: <?php echo $firstColumnWidth; ?>;overflow: hidden;"><a href="javascript: toggleSection('<?php echo $sectionName; ?>', <?php echo $normalSection; ?>)"><?php echo $sectionDisplayName; ?></a></td>
+								<td align="right" width="20" style="width: 20px">
+									<a href="javascript: toggleSection('<?php echo $sectionName; ?>', <?php echo $normalSection; ?>)">
+									<img align="top" src="<?php echo $AR->dir->images."winxp/";
+										if ($specialSection) 
+											echo "special";
+										else 
+											echo  "normal";
+										if (strstr(strtolower($invisibleSections), $sectionName.";"))
+											echo "expand";
+										else
+											echo "collapse";
+										echo ".png\" id=\"".$sectionName."_togglebutton\"".
+											" onMouseOver=\"makeHotOrNot(this, '$sectionName', $normalSection, true)\"".
+											" onMouseOut=\"makeHotOrNot(this, '$sectionName', $normalSection, false)\"".
+											" border=\"0\" alt=\"\" align=\"right\" vspace=\"0\" hspace=\"0\" width=\"19\" height=\"19\" /></span>";
+									?></a>
+								</td>
+							</tr>
+						</table>
+				</div>
+				<div class="sidebar_<?php if ($specialSection) echo "special_"; ?>section"
+					 id="<?php echo $sectionName; ?>_body" style="<?php
+						if (strstr(strtolower($invisibleSections), "$sectionName;")) {
+							echo "visibility:hidden; height: 1px; width: auto; overflow: hidden;";
+						} else {
+							echo "visible: visible; height: auto; width: auto; overflow: visible";
+						}
+					?>">
+					<div class="section_content">
+	<?php
+		}
+	?>
