@@ -177,11 +177,9 @@
 								$ARCurrent->saved_object[$object->id]=$newpath;
 
 									if ($ARCurrent->importStore->exists($newpath)) {
-										$arguments = $arCallArgs;
-										$arguments["newObject"] = $object;
 										$ARCurrent->importStore->call(
 												"system.export.update.phtml", 
-												$arguments,
+												Array("newObject" => $object),
 												$ARCurrent->importStore->get($newpath));
 
 									} else {
