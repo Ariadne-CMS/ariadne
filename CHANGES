@@ -7,6 +7,12 @@ Changes in ariadne since version 2.0b11
 New features:
 	- property text and name now have an nls value too. 
       Used as $criteria["name"]["nls"]["="]="'$nls'"; with find().
+	  *IMPORTANT* This requires a modification of existing Ariadne stores. 
+      The easiest way is to export the website, clear the databases, run 
+	  install.php from this version, and then import the website again.
+	  Alternatively with MySQL you can run the following SQL statements:
+		mysql> alter table prop_name add AR_nls varchar(4);
+		mysql> alter table prop_text add AR_nls varchar(4);
 
 Bugs:
 	- make_url now uses the default ariadne root when CheckConfig()
