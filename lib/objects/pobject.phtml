@@ -153,14 +153,15 @@ class pobject extends object {
 	***********************************************************************/
 	global $AR, $ARConfig;
 		debug("pobject: save([properties], $vtype)","object");
-		debug("pobject: path=".$this->path,"object");
+		debug("pobject: save: path=".$this->path,"object");
 		$result=false;
 		if ($this->arIsNewObject) { // save a new object
+			debug("pobject: save: new object","all");
 			$arNewParent=$this->make_path("..");
 			$arNewFilename=substr($this->path, strlen($arNewParent), -1);
 			if (!eregi("\.\.",$arNewFilename)) {
 				if (eregi("^[a-z0-9_\{\}\.\:-]+$",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
-					if (!$this->exists($arNewFilename)) {
+					if (!$this->exists($this->path)) { //arNewFilename)) {
 						if ($this->exists($arNewParent)) {
 							$this->data->ctime=time();
 							$this->data->mtime=$this->data->ctime;
@@ -199,6 +200,7 @@ class pobject extends object {
 				$this->error="$arNewFilename is no valid filename, do not use '..' in filenames.";
 			}
 		} else { // update an existing object
+			debug("pobject: save: existing object","all");
 			if ($this->lock()) {
 				if ($this->exists($this->path)) { // prevent 'funny stuff'
 					$this->data->mtime=time();
