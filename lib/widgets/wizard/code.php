@@ -54,11 +54,11 @@
         } else { // it's part of an array
           $ARCurrent->seenit[$prefix]=true;
         }
-        echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".ereg_replace('"','&quot;',$value)."\">\n";
+        echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".str_replace('"','&quot;',$value)."\">\n";
       } else if (!$ARCurrent->seenit[$prefix] && !$toplevel) { // value part of array
-        echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".ereg_replace('"','&quot;',$value)."\">\n";
+        echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".str_replace('"','&quot;',$value)."\">\n";
       } else if (!$ARCurrent->seenit[$prefix.$key.$postfix] && $toplevel) { // value not in array
-        echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".ereg_replace('"','&quot;',$value)."\">\n";
+        echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".str_replace('"','&quot;',$value)."\">\n";
       }
     }
   }
