@@ -20,16 +20,19 @@
 class mysqllock {
 
 	function mysqllock($host="localhost",$user="root",$password="",$database="modules") {
+        debug("mysqllock($host, $user, [password], $database)","store");
 		$this->host=$host;
 		$this->user=$user;
 		$this->password=$password;
         $this->database=$database;
 		$this->connectid=mysql_pconnect($host,$user,$password);
 		mysql_select_db("$database",$this->connectid);
+        debug("mysqllock end","all");
 	}
 
 
 	function get_locks($identity) {
+        debug("mysqllock:get_locks($identity)","store");
 		$query_string="select path,release, type, identity from locks where 
 		release >=".time()." and identity='".AddSlashes($identity)."'";
 		$query=@mysql_db_query($this->database, $query_string,$this->connectid);
@@ -40,6 +43,7 @@ class mysqllock {
 				$result["release"]=$temp["release"];
 			}
 		}
+        debug("mysqllock:get_locks end","all");
 		return $result;		
 	}
 
@@ -47,6 +51,7 @@ class mysqllock {
 	/**********************************************************************
 		This function locks a object/path
 	**********************************************************************/
+        debug("mysqllock:lock($identity,$path,$time,$type)","store");
 		if (!$time) {
 			$time=time()+$this->lock_duration;
  		}
@@ -80,11 +85,12 @@ class mysqllock {
 			if ($temp["release"]>$result["release"]) {
 				$result["release"]=$temp["release"];
 			}
+			if ($temp["identity"]!=$identity) {
+				$result["identity"][]=$temp["identity"];
+			}
 		}
 
-
-		if (!$result || ($result["locks"][$path]["identity"]==$identity)) {
-
+		if (!$result || !$result["identity"]) {
 			if (!$result) {
 				$query_string="
 				insert into locks (path, release, type, identity) values (
