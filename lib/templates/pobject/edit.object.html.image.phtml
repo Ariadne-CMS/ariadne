@@ -219,7 +219,13 @@ BODY 	{
 		} else {
 			document.forms[0].imgstyle.disabled=true;
 		}
-		View(CurrentPath, 'Selected Picture', true);
+		if( CurrentPath == '<?php echo $this->path; ?>' ) {
+			mnCurrent.className='menuButtonCurrent';
+			CurrentButton=mnCurrent;
+			View(CurrentPath, '<?php echo $this->call("system.get.name.phtml"); ?>', true);
+		} else {
+			View(CurrentPath, 'Selected Picture', true);
+		}
 	}
 
 	function View(path,name,top) {
@@ -412,7 +418,7 @@ BODY 	{
 <div class="tab-pane" id="tabPane1">
 
 <script type="text/javascript">
-	tp1 = new WebFXTabPane( document.getElementById( "tabPane1" ) );
+	tp1 = new WebFXTabPane( document.getElementById( "tabPane1" ), false );
 </script>
 
 	<div class="tab-page" id="tabPage1">
