@@ -440,7 +440,7 @@ BODY 	{
 	<tr>
 	  <td valign="top" rowspan="2">
 		<div class="menu" id="mnMenu">
-	   	 	<a class="menuButton" id="mnCurrent" href="#" onClick="browseTo('<?php echo $this->path; ?>', this, '<?php echo $nlsdata->name; ?>');"><img src="<?php echo $AR->dir->images; ?>wizard/current.gif" border="0"><br><nobr><?php echo $ARnls["thisobject"]; ?></nobr></a>
+	   	 	<a class="menuButton" id="mnCurrent" href="#" onClick="browseTo('<?php echo $this->path; ?>', this, '<?php echo $this->nlsdata->name; ?>');"><img src="<?php echo $AR->dir->images; ?>wizard/current.gif" border="0"><br><nobr><?php echo $ARnls["thisobject"]; ?></nobr></a>
 	   	 	<a class="menuButton" id="mnPhotobook" href="#" onClick="browseTo(tbContentEditOptions['photobook']['location'], this, 'Photobook');"><img src="<?php echo $AR->dir->images; ?>wizard/photobook.gif" border="0"><br><?php echo $ARnls["photobook"]; ?></a>
 		    <a class="menuButton" id="mnHome" href="#" onClick="browseTo('<?php echo $AR->user->path; ?>', this, '<?php echo $AR->user->data->name; ?>');"><img src="<?php echo $AR->dir->images; ?>wizard/home.gif" border="0"><br><?php echo $ARnls["home"]; ?></a>
 	   	 	<a class="menuButton" id="mnURL" href="#" onClick="BrowseURL();"><img src="<?php echo $AR->dir->images; ?>wizard/url.gif" border="0"><br><?php echo $ARnls["url"]; ?></a>
@@ -457,9 +457,6 @@ BODY 	{
 					<nobr>&nbsp;&nbsp;<?php echo $ARnls["lookin"]; ?>&nbsp;:</nobr>
 				</td><td align="left" valign="top">
 					<select name="BrowseNav" style="width: 150px; padding: 2px; margin: 2px;" onChange="View(this.options[this.options.selectedIndex].value);" class="minimal">
-					<?php
-//						$this->parents(".","browse.show.option.phtml",Array("selected" => $this->path));
-					?>
 					</select>
 							</nobr>
 				</td>
