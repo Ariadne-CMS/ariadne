@@ -1,0 +1,70 @@
+<?php
+  /******************************************************************
+
+  ******************************************************************/
+  if ($this->CheckSilent("read")) {
+?>
+<table border="0" width="90%">
+<tr>
+  <td>
+    <?php 
+      $arLanguage=$this->getdata("arLanguage","none");
+      if (!$arLanguage) {
+       $arLanguage=$ARConfig->nls->default;
+      }
+      $selectednls=$arLanguage;
+      $selectedlanguage=$ARConfig->nls->list[$arLanguage];
+      $flag="<img src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\">";
+    ?>
+    <script>
+      summary=new Array();
+      <?php
+        $this->ls("/system/newspaper/scenarios/","system.get.summary.phtml");
+		while (list($key, $value)=each($ARCurrent->summary)) {
+          echo "summary['$key']='".AddSlashes($value)."';\n";
+        }
+      ?>
+      function updatedescription(form) {
+        if (form.scenario.selectedIndex!=-1) {
+          form.description.value=summary[form.scenario.options[form.scenario.selectedIndex].value];
+        }
+      }
+    </script>
+    <fieldset id="selectscenario">
+    <legend><?php echo $ARnls["scenario"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+      <table border="0" align="center">
+      <tr>
+        <td>
+          <span class="required"><?php echo $ARnls["scenario"]; ?></span>
+        </td><td>
+		  <?php echo $ARnls["description"]; ?>
+        </td>
+      </tr><tr>
+        <td>
+          <select name="scenario" size="6" onChange="updatedescription(this.form)">
+          <?php
+            $this->ls("/system/newspaper/scenarios/","show.option.phtml","selected=".RawUrlEncode($this->getdata("scenario","none")));
+          ?>
+          </select>
+        </td><td>
+	      <textarea name="description" onFocus="blur()" wrap="soft" cols="32" rows="6"></textarea>
+        </td>
+      </tr>
+      </table>
+    </fieldset>
+  </td>
+</tr>
+</table>
+<script>
+  window.onload=init;
+  function init() {
+    document.wgWizForm["scenario"].focus();
+    if (document.wgWizForm["scenario"].selectedIndex==-1) {
+      document.wgWizForm["scenario"].options[0].selected=true;
+    }
+    updatedescription(wgWizForm);
+  }
+</script>
+<?php
+  }
+?>

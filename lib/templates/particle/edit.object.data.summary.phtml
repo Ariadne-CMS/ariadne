@@ -1,0 +1,76 @@
+<?php
+  /******************************************************************
+
+  ******************************************************************/
+  if ($this->CheckSilent("read")) {
+?>
+
+<script>
+  enddate_altered=false;
+
+// -->
+</script>
+
+
+<table border="0" width="90%">
+<tr>
+  <td>
+    <?php 
+      $arLanguage=$this->getdata("arLanguage","none");
+      if (!$arLanguage) {
+       $arLanguage=$ARConfig->nls->default;
+      }
+      $selectednls=$arLanguage;
+      $selectedlanguage=$ARConfig->nls->list[$arLanguage];
+      $flag="<img align=\"left\" vspace=\"3\" src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\">";
+    ?>
+    <fieldset id="setsummary">
+    <legend><?php echo $flag; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+      <table border="0" align="center">
+      <tr>
+        <td>
+          <span class="required"><?php echo $ARnls["title"]; ?></span> ( <?php echo $ARnls["name"]; ?> )
+        </td>
+      </tr><tr>
+        <td>
+          <input type="text" name="<?php echo $selectednls."[name]"; ?>" 
+            value="<?php $this->showdata("name", $selectednls); ?>" size=35>
+        </td>
+      </tr><tr>
+        <td valign="bottom">
+          <?php echo $ARnls["summary"]; ?>
+        </td>
+      </tr><tr>
+        <td>
+          <textarea name="<?php echo $selectednls."[summary]"; ?>" cols="35" rows="6" wrap="soft"><?php 
+              echo ereg_replace("&","&amp;",$this->getdata("summary", $selectednls)); 
+          ?></textarea>
+        </td>
+      </tr>
+      </table>
+    </fieldset>
+  </td>
+</tr>
+</table>
+<script>
+  window.onload=init;
+  function init() {
+    document.wgWizForm["<?php echo $selectednls; ?>[name]"].focus();
+  }
+</script>
+<?php
+    if ($selectednls==$ARConfig->nls->default) {
+      $arResult["save"][$selectednls."[name]"]["ereg"]=".+";
+      $arResult["save"][$selectednls."[name]"]["error"]=sprintf($ARnls["err:nonameentered"],$selectedlanguage);
+      $arResult["next"]=$arResult["save"];
+    } else {
+      $arResult["next"][$selectednls."[name]"]["ereg"]=".+";
+      $arResult["next"][$selectednls."[name]"]["confirm"]=sprintf($ARnls["confirm:nonameentered"],$selectedlanguage);
+      if ($this->getdata("name",$ARConfig->nls->default)) {
+        $arResult["save"]=$arResult["next"];
+      } else {
+        $arResult["save"]=false;
+      }
+    }
+  }
+?>
