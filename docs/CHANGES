@@ -3,6 +3,8 @@ Ariadne 2.2.1
 Changes in Ariadne since version 2.2
 
 New features:
+	- Added a new Search Folder class, which allows you to enter a
+	  search query, and use that as a virtual folder.
 	- The columns in the templates overview are now sortable.
 	- Added a rotate() method to pphoto
 	- mkdir in FTP now creates a configurable object type.
