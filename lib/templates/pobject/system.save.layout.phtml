@@ -20,14 +20,13 @@
 	 no result
 
 	******************************************************************/
-
 	if ($this->CheckSilent("layout") && $this->CheckConfig()) {
 		// check arguments, remove ".."
 		$type=str_replace("..",".",$type);
 		$function=str_replace("..",".",$function);
 		$language=str_replace("..",".",$language);
 
-		include($this->store->code."modules/mod_pinp.phtml");
+		include_once($this->store->code."modules/mod_pinp.phtml");
 		if (!$function) {
 			$this->error=$ARnls["err:notemplatename"];
 		} else if (ereg("\.phtml$",$function)) {
