@@ -1,0 +1,9 @@
+<?php
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		if ($url) {
+			ldRedirect($url);
+		} else {
+			error("Missing url");
+		}
+	}
+?>
