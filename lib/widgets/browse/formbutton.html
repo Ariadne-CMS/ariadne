@@ -16,7 +16,7 @@ value="<?php
   echo $wgBrowsePath;
 ?>"><input type="button"
 class="wgBrowseButton" name="select" value="<?php echo $wgBrowseTitle; ?>"
-onClick="Browse(this.form.<?php echo $wgBrowseName; ?>, '<?php
+onClick="Browse(this.form['<?php echo $wgBrowseName; ?>'], '<?php
   echo $wgBrowsePath;
 ?>', '<?php echo $wgBrowseName; ?>', '<?php echo $wgBrowseTitle; ?>', '<?php
 echo $wgBrowseMode; ?>');">
