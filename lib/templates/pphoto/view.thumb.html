@@ -17,7 +17,12 @@
 		$thumbwidth=$configcache->thumb["width"];
 		$thumbheight=$configcache->thumb["height"];
 		$thumbcolor=$configcache->thumb["color"];		
-		ldSetClientCache(true, time()+7200);
+		if ($AR->user->data->login=="public" || $this->CheckPublic("read")) {
+			// always set the client cache for thumbnails, even when caching
+			// is turned off. Otherwise the server might grind to a halt.
+			// If caching is on, the loader will override it based on that.
+			ldSetClientCache(true, time()+7200);
+		}
 		ldSetContent("image/jpeg");
 		if (!$this->cached("ar_thumb_".$thumbwidth."x".$thumbheight.$thumbcolor)) {
 			$this->convert("jpg");
