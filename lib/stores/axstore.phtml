@@ -1,0 +1,719 @@
+<?php
+// general objectstore functions
+
+class axstore {
+
+	var $nodes;
+	var $objects;
+	var $lastobjectid;
+
+	/****************
+		axstore constructor
+
+		config contains:
+			- ['database']			=> name of the ax file
+			- ['code']				=> ariadne 'code base'
+			- ['files']				=> where to find a suitable tempdirectory
+			- ['writeable']			=> open database to write to (export)
+
+	*****************/
+
+	function axstore($path, $config) {
+		$this->database=$config["database"];
+		$this->writeable=$config["writeable"];
+		$this->files=$config["files"];
+		$this->code=$config["code"];
+
+		$this->tar_error_handler=$config["tar_error_handler"];
+		$this->tar_tar=$config["tar_tar"];
+		$this->tar_untar=$config["tar_untar"];
+		$this->tar_list=$config["tar_list"];
+
+		// create tempdir
+		$this->tempdir=tempnam($this->files."temp/", "axtemp");
+		if (file_exists($this->tempdir)) {
+			// when file exists, we have to delete it...
+			unlink($this->tempdir);
+		}
+		if (mkdir($this->tempdir, 0750)) {
+			if (file_exists($this->database)) {
+				if ($this->_untar($this->database, " ", $this->tempdir)) {
+					if (file_exists($this->tempdir."/objects.data")) {
+						// now we have found our objects.data, lets make an index of it
+						$this->ofile=fopen($this->tempdir."/objects.data", "r");
+						if ($this->ofile) {
+							$currentoffset=ftell($this->ofile);
+							while ($rline=fgets($this->ofile, 3000)) {
+								$line=trim($rline);
+								while (strlen($rline)==3000-1) {
+									$rline=fgets($this->ofile, 3000);
+									$line.=trim($rline);
+								}
+								$data=explode("&", $line);
+								if (sizeof($data)==7) {
+									include_once($this->code."objects/".$data[1].".phtml");
+									// check if this is a link (does the object already exist?)
+
+									if (!$this->objects[$data[0]]) {
+										$object=new $data[1];
+										$object->id=(int)$data[0];
+										$object->type=$data[1];
+										$object->vtype=$data[2];
+										$object->lastchanged=(int)$data[3];
+										$object->priority=(int)$data[4];
+										$object->storage=new object;
+										$object->storage->fp=$this->ofile;
+										$object->storage->offset=$currentoffset;
+										$object->refcount=1;
+										$this->objects[$object->id]=$object; // copy object
+									}
+
+									if ($this->lastobjectid < $object->id) {
+										$this->lastobjectid=$object->id;
+									}
+									
+
+								} else {
+									print_r($data);
+									echo "warning: corrupted data found in objects.data\n";
+								}
+								$currentoffset=ftell($this->ofile);
+							}
+
+							// read nodes data
+							$fp_nodes=fopen($this->tempdir."/nodes.data", "r");
+							if ($fp_nodes) {
+								while ($data=fgets($fp_nodes, 3000)) {
+									$data=explode("&", $data);
+									$node=new object;
+									$node->path=$data[0];
+									$this->nodes[$node->path]=$node;
+									$this->nodes[$node->path]->object=&$this->objects[$data[1]];
+
+									// create references under parents to their
+									// children
+									$parent=$this->make_path($node->path, "..");
+
+									if (($parent!=$node->path) && is_object($this->nodes[$parent])) {
+										// since php kills all local variables when we
+										// leave local scope (even when there is an
+										// refcount > 1) we have to address our
+										// objects and nodes via $this->...
+										$this->nodes[$parent]->children[$node->path]=&$this->nodes[$node->path];
+									}
+								}
+								fclose($fp_nodes);
+								ksort($this->nodes);	// sort nodes list
+							} else {
+								$this->error="Could not open nodes.data";
+							}
+						} else {
+							$this->error="Could not open objects.data within ax file for reading";
+						}
+					} else {
+						$this->error="Possibly supplied an corrupted ax file: could not find objects.data";
+					}
+
+					if (!$this->error && file_exists($this->tempdir."/templates.tgz")) {
+						if (!$this->_untar($this->tempdir."/templates.tgz", "", $this->tempdir)) {
+							$this->error="Could not untar templates archive";
+						}
+					}
+
+					if (!$this->error && file_exists($this->tempdir."/files.tgz")) {
+						if (!$this->_untar($this->tempdir."/files.tgz", "", $this->tempdir)) {
+							$this->error="Could not untar files archive";
+						}
+					}
+				}
+			} else 
+			if ($this->writeable) {
+				// create new database...
+			
+			} else {
+				$this->error="Could not find database (".$this->database.")";
+			}
+		} else {
+			$this->error="Could not create tempdir";
+		}
+
+		return $result;
+	}
+
+
+	function get($path) {
+		$result["list"][0]=&$this->nodes[$path];
+		return $result;
+	}
+
+	function ls($path) {
+		$result["list"]=&$this->nodes[$path]->children;
+		return $result;
+	}
+
+
+
+	/*
+		$node[path]->children[path]->children[path]
+	*/
+	function _recurse_find($node, &$result, &$criteria, &$limit, &$offset) {
+		if (!$criteria["object"]["type"]["="] || $criteria["object"]["type"]["="]=="'".$node->object->type."'") {
+			if (!$criteria["object"]["vtype"]["="] || $criteria["object"]["vtype"]["="]=="'".$node->object->vtype."'") {
+				$found=1;
+				if (is_array($criteria)) {
+					$found=0;
+					$this->_load_object_data($node->object);
+					@reset($criteria);
+					while (list($criteria_table_key, $criteria_table)=each($criteria)) {
+						while (list($criteria_table_prop_key, $criteria_table_prop)=each($criteria_table)) {
+								while (list($criteria_condition , $criteria_condition_value)=each($criteria_table_prop)) {
+									//echo "testing ([$criteria_table_key][$criteria_table_prop_key][$criteria_condition]=$criteria_condition_value)\n";
+									switch ($criteria_condition) {
+										case '=':
+											@reset($node->object->properties);
+											$found=false;
+											while (!$found && (list(,$propvalue)=@each($node->object->properties[$criteria_table_key]))) {
+												if ($criteria_condition_value==$propvalue[$criteria_table_prop_key]) {
+													$found=true;
+												}
+											}
+										break;
+									}
+								}
+						}
+					}
+					$this->_free_object_data($node->object);
+				}
+				if ($found && $offset--<=0 && $limit-->0) {
+					$result[$node->path]=$this->nodes[$node->path];
+				}
+			}
+		}
+		if (is_array($node->children)) {
+			while (($limit>0) && (list(,$child)=each($node->children))) {
+				$this->_recurse_find($child, $result, $criteria, $limit, $offset);
+			}
+		}
+	}
+
+	function find($path, $criteria, $limit=100, $offset=0) {
+		//echo "axstore::find($path, [criteria], $limit, $offset)\n";
+		if ($this->nodes[$path]) {
+			$this->_recurse_find($this->nodes[$path], $result["list"], $criteria, $limit, $offset);
+		}
+		return $result;
+	}
+
+
+	function list_paths($path) {
+		if ($this->nodes[$path]) {
+			$id=$this->nodes[$path]->object->id;
+			$refcount=$this->objects[$id]->refcount;
+			@reset($this->nodes);
+			while ($refcount && (list($path, )=each($this->nodes))) {
+				if ($this->nodes[$path]->object->id==$id) {
+					$refcount--;
+					$result[]=$path;
+				}
+			}
+		}
+		return $result;
+	}
+
+	function purge($path) {
+		if ($this->nodes[$path]) {
+			$id=$this->nodes[$path]->object->id;
+			$refcount=$this->objects[$id]->refcount;
+			@reset($this->nodes);
+			while ($refcount && (list($path, )=each($this->nodes))) {
+				if ($this->nodes[$path]->object->id==$id) {
+					$parent=$this->make_path($path,"..");
+					// delete parent's reference
+					unset($this->nodes[$parent]->children[$path]);
+					$refcount=--$this->nodes[$path]->object->refcount;
+					unset($this->nodes[$path]);
+					if ($refcount<=0) {
+						$refcount=0;
+						unset($this->objects[$id]);	// eliminate
+					}
+					
+				}
+			}
+			$result=1;
+		}
+		return $result;
+	}
+
+	function link($source, $destination) {
+	/**********************************************************************
+
+		Link adds an extra path to an already existing object. It has two
+	arguments: $source and $destination. $source is an existing path of
+	an object, $destination is the new path. $destination must not already
+	exist.
+
+	$destination should always start and end with a '/'.
+
+	**********************************************************************/
+
+		debug("link($source,$destination)","store");
+		$this->error="";
+		$edestination=AddSlashes($destination);
+		$esource=AddSlashes($source); 
+		$parent=$this->make_path($destination, "..");
+		$eparent=AddSlashes($parent);
+		if ($this->exists($destination)) {
+			$this->error="$destination already exists, cannot overwrite.";
+			debug("link: ERROR: ".$this->error,"store");
+			$result=false;
+		} else if (!$this->exists($parent)) {
+			$this->error="$parent does not exist, cannot link.";
+			debug("link: ERROR: ".$this->error,"store");
+			$result=false;
+		} else { 
+			if (ereg("\{([0-9]):id\}",$destination,$match)) {
+				$subid=$this->nextid($parent);
+				if ($match[1]) {
+					$subid=substr("000000000".$subid,-(intval($match[1])));
+				}
+				$destination=ereg_replace("\{[0-9]:id\}",strval($subid),$destination);
+				$edestination=AddSlashes($destination);
+				debug("link: new destination: $destination ($subid)","all");
+			}
+			$id=$this->exists($source);
+			if ($id) {
+				$node=new object;
+				$node->path=$destination;
+				$node->object=&$this->objects[$id];
+				$this->nodes[$destination]=$node;
+				$this->nodes[$parent]->children[$destination]=&$this->nodes[$destination];
+				debug("link: end","all");
+				$result=$destination;
+			} else {
+				$result=false;
+				debug("link: end (no $source)","store");
+			}
+		}
+		return $result;
+	}
+
+
+	function delete($path) {
+	/**********************************************************************
+
+		This function deletes the path given. If this is the last path pointing
+	to an object, the object will be purged instead.
+
+	$path should always start and end with a '/'.
+
+	**********************************************************************/
+
+		$this->error="";
+		if ($this->nodes[$path]) {
+			if ($this->nodes[$path]->object->refcount<=1) { // only one path for this object
+				$result=$this->purge($path); // therefore purge the object.
+			} else { // only delete the given path
+				if ($this->nodes[$path]->parent) {
+					// delete parent's reference
+					unset($this->nodes[$this->nodes[$path]->parent]->children[$path]);
+
+					$this->nodes[$path]->object->refcount--;
+					unset($this->node[$path]);
+					$result=1;
+				}
+			}
+		}
+		return $result;
+	}
+
+
+	function call($template, $args, $objects) {
+		if (is_array($objects["list"])) {
+			reset($objects["list"]);
+			while (list(,$node)=each($objects["list"])) {
+				$this->_load_object_data($node->object);
+				//echo "axstore::call (".$node->object->type.", $node->path, $template, $args) \n";
+				$node->object->init($this, $node->path, $node->object->data);
+				$parent=$this->make_path($node->path, "..");
+				if ($parent=="/") {
+					$parent="..";
+				}
+				$node->object->parent=$parent;
+		
+				$result[]=$node->object->call($template, $args);
+				$this->_free_object_data($node->object);
+			}
+		}
+
+		return $result;
+	}
+
+	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) {
+		include_once($this->code."objects/".$type.".phtml");
+		$object=new $type;
+		$object->init($this, $path, $data);
+		$object->type=$type;
+		$object->parent=$parent;
+		$object->id=(int)$id;
+		$object->lastchanged=(int)$lastchanged;
+		$object->vtype=$vtype;
+		$object->size=(int)$size;
+		$object->priority=(int)$priority;
+		return $object;
+	}
+
+	function nextid($path) {
+		if ($this->nodes[$path]) {
+			$result=++$this->nodes[$path]->nextid;
+		}
+		return $result;
+	}
+
+	function exists($path) {
+		if ($this->nodes[$path]) {
+			$result=$this->nodes[$path]->object->id;
+		} else {
+			debug("store::exists($path) false", "store");
+		}
+		return $result;
+	}
+
+	function save($path, $type, $data, $properties="", $vtype="", $priority=0) {
+		//echo "axstore::save($path, $type, [data], [properties], $vtype, $priority)\n";
+		$this->error="";
+		if ($path!="/") {
+			$parent=$this->make_path($path, "..");
+		} else {
+			$parent="..";
+		}
+		if (ereg("\{([0-9]):id\}",$path,$match)) { 
+			// if the last part of a path matches something like {2:id} this
+			// part will automatically create a new number, unique in this directory, and fill it in.
+			$subid=$this->nextid($parent);
+			if ($match[1]) { 
+				$subid=substr("000000000".$subid,-(intval($match[1])));
+			}
+			$path=ereg_replace("\{[0-9]:id\}",strval($subid),$path);
+		}
+
+		if ($id=$this->exists($path)) { //update
+			$this->_load_object_data($this->objects[$id]);
+			$object=&$this->objects[$id];
+			$object->type=$type;
+			if ($vtype) { // only change/save vtype if it is explicitly set
+				$object->vtype=$vtype;
+			}
+			$object->data=$data;
+			$object->lastchanged=time();
+			$this->_set_object_properties($properties, $object);
+			$this->nodes[$path]->priority=$priority;
+
+			// save object into the database
+			$this->_save_object($path, $object);
+
+			$this->_free_object_data($object);
+
+		} else { // insert new
+			if ($vtype=="") { // if vtype is not set, it defaults to type for new objects
+				$vtype=$type; 
+			}
+			include_once($this->code."objects/".$type.".phtml");
+			$object=new $type;	
+			$object->id=++$this->lastobjectid;
+			$object->refcount=1;
+
+			$object->type=$type;
+			$object->vtype=$vtype;
+			$object->data=$data;
+			$object->lastchanged=time();
+			$this->_set_object_properties($properties, $object);
+
+			$this->objects[$object->id]=$object;
+
+			$node=new object;
+			$node->path=$path;
+			$node->priority=$priority;
+
+			$this->nodes[$path]=$node;
+			$this->nodes[$path]->object=&$this->objects[$object->id];
+
+			ksort($this->nodes);	// resort nodes array
+
+			if ($this->nodes[$parent]) {
+				$this->nodes[$parent]->children[$path]=&$this->nodes[$path];
+				ksort($this->nodes[$parent]->children); // sort list
+			}
+
+			$this->_save_object($path, $this->objects[$object->id]);
+
+			$this->_free_object_data($this->objects[$object->id]);
+		}
+		return $result;
+	}
+
+	// private function which will set $properties to the given $object
+	// it assumes that the original properties are already loaded into
+	// the object
+	function _set_object_properties($properties, &$object) {
+		if (is_array($properties) && ($object)) {
+			while (list($property, $property_set)=each($properties)) {
+				unset($object->properties[$property]);
+				if (is_array($property_set)) {
+					$object->properties[$property]=$property_set;
+				}
+			}
+		}
+	}
+
+	function load_properties($object) {
+		if ($object) {
+			$result=$this->objects[$object]->properties;
+		}
+		return $result;
+	}
+
+
+
+	function make_path($curr_dir, $path) {
+	/**********************************************************************
+ 
+		This function creates an absolute path from the given starting path
+	($curr_dir) and a relative (or absolute) path ($path). If $path starts
+	with a '/' $curr_dir is ignored. 
+	$path must be a string of substrings seperated by '/'. each of these 
+	substrings may consist of charachters and/or numbers. If a substring
+	is "..", it and the previuos substring will be removed. If a substring
+	is "." or "", it is removed. All other substrings are then concatenated
+	with a '/' between them and at the start and the end. This string is 
+	then returned.
+
+	**********************************************************************/
+
+		$this->error="";
+		if (substr($path,0,1)=="/") {
+			$result="/";
+			$path=substr($path, 1);
+		} else {
+			$result=$curr_dir;
+		}
+		if (substr($path,-1)=="/") {
+			$path=substr($path, 0, -1);
+		}
+		if ($path) {
+			$splitpath=split("/", $path);
+
+			while (list($key, $pathticle)=each($splitpath)) {
+				switch($pathticle) {
+					case ".." : $result=substr($result, 0, strrpos(substr($result,0,-1), "/")+1);
+								break;
+					case "." : break;
+					case ""	 : break;
+					default	 : $result=$result.$pathticle."/";
+				}
+			}
+		}
+		return $result;
+	}
+
+	function get_filestore($name) {
+		require_once($this->code."modules/mod_filestore.phtml");
+		if (!$this->filestores[$name]) {
+			$this->filestores[$name]=new filestore($name, $this->tempdir."/");
+		}
+		return $this->filestores[$name];
+	}
+
+
+	function _save_object($path, &$object) {
+		if (!$this->sfp) {
+			$this->sfp=fopen($this->tempdir."/objects.save", "wb+");
+			if (!$this->sfp) {
+				$this->error="could not create tempory file 'objects.save'";
+			}
+		}
+		if (!$this->error) {
+			fseek($this->sfp, 0, SEEK_END);
+			if (!$object->storage) {
+				$object->storage=new object;
+			}
+			$object->storage->fp=$this->sfp;
+			$object->storage->offset=ftell($this->sfp);
+
+			$wstring=
+				(int)($object->id)."&".
+				$object->type."&".
+				$object->vtype."&".
+				(int)($object->lastchanged)."&".
+				(int)($object->priority)."&".
+				base64_encode(serialize($object->data))."&".
+				base64_encode(serialize($object->properties)).
+				"\n";
+			$result=fwrite($this->sfp, $wstring);
+		}
+		return $result;
+	}
+
+	// private function which loads $object->data and $object->properties
+	function _load_object_data(&$object) {
+		if ($object && !$object->data) {
+			fseek($object->storage->fp, $object->storage->offset);
+			$rline=fgets($object->storage->fp, 3000);
+			while (strlen($rline)==3000-1) {
+				$line.=$rline;
+				$rline=fgets($object->storage->fp, 3000);
+			}
+			$line.=$rline;
+
+			if ($line && sizeof($fdata=explode("&", $line))) {
+				$object->properties=unserialize(base64_decode($fdata[6]));
+				$object->data=unserialize(base64_decode($fdata[5]));
+				$result=1;
+			}
+		}
+		return $result;
+	}
+
+	function _free_object_data(&$object) {
+		if ($object) {
+			unset($object->data);
+			unset($object->properties);
+			$result=1;
+		}
+		return $result;
+	}
+
+	function _untar($tarfile, $file, $dstdir) {
+		if ($this->tar_error_handler) {
+			$errfile="./tar.errors";
+			$handler=sprintf($this->tar_error_handler, $errfile);
+		}
+
+		$command=sprintf($this->tar_untar, $dstdir, $file, $tarfile, $handler );
+		system($command,$retVar);
+		if ($retVar!=0) {
+			$this->error="Error: Can't untar $tarfile, untar failed in $dstdir with errorcode ($retVar)\n";
+			if ($errfile && file_exists($errfile)) {
+				$this->error.=implode("",file($errfile));						
+				unlink($errfile);
+				$this->error.="\n";
+			}
+			$result=0;
+		} else {
+			$result=1; // ok
+		}
+		return $result;
+	}
+
+	function _tar($tarfile, $file, $dstdir) {
+		if ($this->tar_error_handler) {
+			$errfile="./tar.errors";
+			$handler=sprintf($this->tar_error_handler, $errfile);
+		}
+
+		$command=sprintf($this->tar_tar, $dstdir, $file, $tarfile, $handler );
+		system($command,$retVar);
+		if ($retVar!=0) {
+			$this->error="Error: ($command): Can't tar to $tarfile, tar failed in $dstdir with errorcode ($retVar)\n";
+			if ($errfile && file_exists($errfile)) {
+				$this->error.=implode("",file($errfile));						
+				unlink($errfile);
+				$this->error.="\n";
+			}
+			$result=0;
+		} else {
+			$result=1; // ok
+		}
+		return $result;
+	}
+
+	function rm_dir($path) {
+		$path=($path[strlen($path)-1]=="/") ? $path : $path."/";
+		if (file_exists($path)) {
+			$dir=dir($path);
+			while ($entry=$dir->read()) {
+				if ($entry!="." && $entry!="..") {
+					if (is_dir($path.$entry)) {
+						$this->rm_dir($path.$entry);
+					} else {
+						unlink($path.$entry);
+					}
+				}
+			}
+			rmdir($path);
+		}
+	}
+
+
+	function close() {
+		// destructor of this store...
+		if ($this->writeable) {
+			ksort($this->nodes);
+			reset($this->nodes);
+			if ($fp_objects=fopen($this->tempdir."/tempobjects.data", "w")) {
+				if ($fp_nodes=fopen($this->tempdir."/nodes.data", "w")) {
+					while (list($path, $node)=each($this->nodes)) {
+						if (!$node->object->written_to_file) {
+							fseek($node->object->storage->fp, $node->object->storage->offset);
+
+							$temp_line=fgets($node->object->storage->fp, 3000);
+							$object_line=trim($temp_line);
+							while (strlen($temp_line)==3000-1) {
+								$temp_line=fgets($node->object->storage->fp, 3000);
+								$object_line.=trim($temp_line);
+							}
+
+							$object_line.="\n";
+
+							$node->object->written_to_file=true;
+							fwrite($fp_objects, $object_line);
+						}
+						$node_line=$path."&".(int)$node->object->id;
+						$node_line.="&".(int)$node->nextid;
+						$node_line.="\n";
+						fwrite($fp_nodes, $node_line);
+					}
+					fclose($fp_nodes);
+					fclose($fp_objects);
+					if (file_exists($this->tempdir."/tempobjects.data")) {
+						rename($this->tempdir."/tempobjects.data", $this->tempdir."/objects.data");
+						if ($this->sfp) {
+							fclose($this->sfp);
+							unlink($this->tempdir."/objects.save");
+						}
+						if ($this->ofp) {
+							fclose($this->ofp);
+						}
+
+						// filestores:
+						if (file_exists($this->tempdir."/templates")) {
+							if (!$this->_tar($this->tempdir."/templates.tgz", "templates", $this->tempdir)) {
+								$this->error="Could not create templates archive";
+							}
+							$this->rm_dir($this->tempdir."/templates");
+						}
+
+						if (file_exists($this->tempdir."/files")) {
+							if (!$this->_tar($this->tempdir."/files.tgz", "files", $this->tempdir)) {
+								$this->error="Could not create files archive";
+							}
+							$this->rm_dir($this->tempdir."/files");
+						}
+
+						if (!$this->_tar($this->database, " . ", $this->tempdir)) {
+							$this->error="Could not save the new export file $this->database\n";
+						} else {
+							$this->rm_dir($this->tempdir);
+						}
+					} else {
+						$this->error="Something went wrong while writing intermediate objects.data";
+					}
+				} else {
+					$this->error="Can not write nodes.data file: aborting";
+				}
+			} else {
+				$this->error="Can not write intermediate objects.data file: aborting";
+			}
+		}
+	}
+}
+?>

@@ -69,10 +69,10 @@
 			if ($tempfile) {
 				$tempfile=ereg_replace("[\\\/]","",$tempfile); // make sure nobody gets /etc/passwd			
 				$tempfile=$this->store->files."temp/".$tempfile;
-				if (file_exists($tempfile)) {
-					$path=$this->store->files."files".$this->path;
-					$this->MkDir("files".$this->path);
-					copy($tempfile, $path."view=");
+
+				if (file_exists($tempfile)) {	
+					$files=$this->store->get_filestore("files");
+					$files->copy_to_store($tempfile, $this->id, "file");
 					unlink($tempfile);
 					if (!$this->data->mimetype=$this->getdata("mimetype","none")) {
 						$this->data->mimetype=$this->getdata("file_type","none");

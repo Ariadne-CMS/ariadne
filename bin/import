@@ -1,14 +1,13 @@
-#!/usr/local/bin/php -q
+#!/usr/bin/php -q
 <?php
 	$ariadne="../lib";
 	require($ariadne."/configs/ariadne.phtml");
 	require($ariadne."/configs/store.phtml");
+	require($ariadne."/configs/axstore.phtml");
 	require($ariadne."/includes/loader.web.php");
 	require($ariadne."/stores/mysqlstore.phtml");
-
+	include($ariadne."/stores/axstore.phtml");
 	global $options;
-
-	// import ax_file [object][children] destination-path
 
 	$arg_c=0;
 	$arg_v[$arg_c++]=$argv[0];
@@ -26,7 +25,6 @@
 					$option_value=substr($cmd, strpos($cmd, "=")+1);
 					$option=substr($cmd, strlen($option_switch)+3, strpos($cmd, "=") - (strlen($option_switch)+3));
 				} else {
-					$option_value=true;
 					$option=substr($cmd, strlen($option_switch)+3);
 				}
 			}
@@ -35,7 +33,7 @@
 
 			switch ($option_switch) {
 				case 'with':
-					$options[$option]=$option_value;
+					$options[$option]=($option_value) ? $option_value : true;
 				break;
 				case 'without':
 					$options["without_$option"]=true;
@@ -53,52 +51,44 @@
 		}
 	}
 
-	if ($arg_c>2) {
 
-		$ax_file=$arg_v[1];
-		$import_path=$arg_v[$arg_c-1];
+	if ($arg_c>=3) {
+		$ARLogin="admin";
+		$AR->user=new object;
+		$AR->user->data=new object;
+		$AR->user->data->login="admin";
 
-		if ($arg_c > 3) {
-			for ($i=2; $i<$arg_c-1; $i++) {
-				$import_list[$i-2]=$arg_v[$i];
-			}
+		$config["writeable"]=false;
+		$config["database"]=$arg_v[1];
+		if ($arg_c>3) {
+			$destpath=$arg_v[3];
+			$srcpath=$arg_v[2];
 		} else {
-			$import_list[0]=".";
+			$srcpath=$arg_v[2];
 		}
 
-		if (!$error) {
-			if (!file_exists($ax_file)) { 
-				$error="err:filedoesntexist";
-			} else {
-				global $AR, $ARLogin, $import_list;
-				$store=new mysqlstore($root,$store_config);
+		$store=new axstore("", $config);
+		if (!$store->error) {
+			$ARCurrent->importStore=new mysqlstore($root,$store_config);
 
+			$args="srcpath=".rawurlencode($srcpath)."&destpath=".rawurlencode($destpath);
+			echo "args ($args)\n";
+			$store->call("system.export.phtml", $args,
+				$store->get("/"));
+			$error=$store->error;
 
-				$options["axFile"]=$ax_file;
-				$options["import_path"]=$import_path;
-				// become admin
-				$ARLogin="admin";
-				$AR->user=new object;
-				$AR->user->data=new object;
-				$AR->user->data->login="admin";
+			echo "closing store\n";
+			$store->close();
+			$ARCurrent->importStore->close();
 
-				$result=$store->call("system.import.phtml", "",
-						$store->get("/"));
-
-				if (!$result) {
-					$error="can not import file";
-				} else {
-					$error=@current($result);
-				}
-
-				$store->close();
-			}
+		} else {
+			$error="ax error: ".$importStore->error;
 		}
 
 		if ($error) {
 			echo $error."\n";
 		}
 	} else {
-		echo "USAGE: import [ax_file] [object][path] [destination_path] \n";
+		echo "USAGE: import [ax_file] [ax_path] [import_path]\n";
 	}
 ?>

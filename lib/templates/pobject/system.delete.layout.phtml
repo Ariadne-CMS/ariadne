@@ -16,21 +16,10 @@
 			if (isset($this->data->pinp[$type][$function][$language])) {
 				unset($this->data->pinp[$type][$function][$language]);
 				unset($this->data->templates[$type][$function][$language]);
-				@unlink($this->store->files."templates".$template_path);
-				@unlink($this->store->files."templates".$template_path.".pinp");
-				if (count($this->data->pinp[$type][$function])==0) {
-					unset($this->data->pinp[$type][$function]);
-					unset($this->data->templates[$type][$function]);
-					if (count($this->data->pinp[$type])==0) {
-						unset($this->data->pinp[$type]);
-						unset($this->data->templates[$type]);
-						rmdir($this->store->files."templates".$template_dir);
-						if (count($this->data->pinp)==0) {
-							rmdir($this->store->file."templates".$this->path."class=/");
-							rmdir($this->store->file."templates".$this->path);
-						}
-					}
-				}
+				$template=$type.".".$function.".".$language;
+				$templates=$this->store->get_filestore("templates");
+				$templates->remove($this->id, $template);
+				$templates->remove($this->id, $template.".pinp");
 				$this->save();
 			}
 		}

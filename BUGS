@@ -10,7 +10,7 @@ Currently known broken in CVS / Todo before 2.0b10
 
 - puser: profile and group selection in wizard unfinished.
   -> add group selection, leave profiles out.
-- files/templates: storage is broken conceptually, needs a new approach.
++ files/templates: storage is broken conceptually, needs a new approach.
   -> use filestore for templates and files, see mod_filestore.
 - IIS version.
 - add nls fields to text properties.

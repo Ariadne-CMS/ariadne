@@ -83,13 +83,13 @@
 			<td colspan="4">
 			<textarea class="full" cols="78" rows="20" name="template" wrap="off"><?php
 				if ($data->pinp[$type][$function][$language]) {
-					$template=$this->store->files."templates".$data->pinp[$type][$function][$language].".pinp";
-					if (file_exists($template)) {
-						$file=file($template);
-			$file=implode("",$file);
-			$file=ereg_replace("&","&amp;",$file);
+					$template=$type.".".$function.".".$language.".pinp";
+					$templates=$this->store->get_filestore("templates");
+					if ($templates->exists($this->id, $template)) {
+						$file=$templates->read($this->id, $template);
+						$file=ereg_replace("&","&amp;",$file);
 						$file=ereg_replace("<","&lt;", ereg_replace(">","&gt;",$file));
-			echo $file;
+						echo $file;
 					}
 				}
 			?></textarea>

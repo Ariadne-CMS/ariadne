@@ -1,9 +1,6 @@
 <?php
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) { 
 		$newdata=$data;
-		if (!file_exists($this->store->files."files".$this->path)) {
-			$this->MkDir("files".$this->path);
-		}
 		// first decode unicode characters...
 		$html=utf8_decode($html);
 		// now change special characters to their html entity
@@ -18,12 +15,11 @@
 		// change hardcoded links and images to use a placeholder for the root
 		$html=ereg_replace("(http://[^/]*)?".$this->store->root,"{arRoot}",$html);
 		if ($this->data->mimetype=="text/html") {
-			$path=$this->store->files."files".$this->path."view=";
+			$file="file";
 		} else {
-			$path=$this->store->files."files".$this->path."view.html=";
+			$file="file.html";
 		}
-		$fp=fopen($path,"w");
-		fwrite($fp, RawUrlDecode($html));
-		fclose($fp);
+		$files=$this->store->get_filestore("files");
+		$files->write($html, $this->id, $file);
 	}
 ?>

@@ -6,8 +6,9 @@ include_once($this->code."objects/pobject.phtml");
 class pfile extends pobject { // definitie class
 
 	function ShowFile() {
+		$files=$this->store->get_filestore("files");
 		if (!ereg("^text/",$this->data->mimetype)) {
-			$size=filesize($this->store->files."files".$this->path."/view=");
+			$size=$files->size($this->id, "file");
 		}
 		if (ldSetContent($this->data->mimetype, $size)) {
 			$cacheseconds=1800; // 1/2 hour
@@ -19,16 +20,16 @@ class pfile extends pobject { // definitie class
 		}
 		if( !$stop ) {
 			if ($this->data->mimetype=="text/html") { // parse {arRoot}
-				echo str_replace("{arRoot}",$this->store->root,@implode("",@file($this->store->files."files".$this->path."/view=")));
+				echo str_replace("{arRoot}",$this->store->root,$files->read($this->id, "file"));
 			} else {
-				@readfile($this->store->files."files".$this->path."/view=");
+				$files->show($this->id, "file");
 			}
 		}
 	}
 
-  function _ShowFile() {
-    return $this->ShowFile();
-  }
+	function _ShowFile() {
+		return $this->ShowFile();
+	}
   
 } // end class pfile
 ?>

@@ -1,9 +1,6 @@
 <?php
 if ($this->CheckLogin("read")) {
-	global $AR, $options, $path_array;
-	include($this->store->code."modules/mod_ax.phtml");
-
-	$mod=new mod_ax;
+	global $options;
 
 	if (!function_exists('display')) {
 		function display($str) {
@@ -14,67 +11,118 @@ if ($this->CheckLogin("read")) {
 		}
 	}
 
-	if (!$error=$mod->open($options["axFile"],$AR->ax,"",$this->store->files."temp/")) {
-		if ($mod->openObjectsData("w+")) {
+		display("export($srcpath) to ($destpath)\n");
+		if (!$destpath) {
+			if ($srcpath!="/") {
+				$checkpaths[]="/";
+				$path_str="/";
+				$calc_path=substr($srcpath, 0, strrpos(substr($srcpath,0,-1),'/'));
+				$path_elements=explode("/", $calc_path);
+				while (list(,$element)=each($path_elements)) {
+					if ($element) {
+						$path_str.=$element."/";
+						$checkpaths[]=$path_str;
+					}
+				}
+				
+			}
+			$destpath="/";
+			$rootpath="/";
+		} else {
+			$rootpath=$srcpath;
+		}
 
-			// some header information...
-			$header=new object;
-			$header->data=new object;
-			$header->data->options=$options;
-			$mod->writeObject($header);
+		$offset=0;
+		while ($result=$this->store->call("system.export.object.phtml","",$this->store->find($srcpath,$criteria,100,$offset))) {
+			if (is_array($checkpaths)) {
+				unset($newresult);
+				reset($checkpaths);
+				while (list(,$path)=each($checkpaths)) {
+					$newresult[]=current($this->store->call("system.export.object.phtml", "",
+										$this->store->get($path)));
+				}
+				while (list($key,)=each($result)) {
+					$newresult[]=$result[$key];
+				}
+				$result=$newresult;
+				reset($result);
+				unset($checkpaths);
+			}
 
-			while (is_array($path_array) && (list($aspath, $path)=each($path_array))) {
-				display("export($path) as ($aspath)\n");
-				$criteria["object"]["implements"]["="]="'pobject'";
-				$offset=0;
-				while ($result=$this->store->call("system.export.object.phtml","",$this->store->find($path,$criteria,100,$offset))) {
-					display("searching offset($offset)\n");
-					while (is_array($result) && (list($key,$object)=each($result))) {
-						// chop $path from $object->path
-						if (!$aspath) {
-							$object->path=substr($object->path, strlen($path)-1);
+			while (is_array($result) && (list($key,$object)=each($result))) {
+				$newpath=$destpath.substr($object->path, strlen($rootpath));
+				display("processing($newpath)\n");
+				if ($options["without_data"]) {
+					display("no data for (".$object->path.")\n");
+					unset($object->data);
+					unset($object->properties);
+				}
+
+				if (!$saved_object[$object->id]) {
+					if ($ARCurrent->importStore->exists($newpath)) {
+						$saved_object[$object->id]=$newpath;
+
+						$oldObject=current($ARCurrent->importStore->call("system.get.phtml", "",
+										$ARCurrent->importStore->get($newpath)));
+
+						if ($object->lastchanged > $oldObject->lastchanged) {
+							$object->oldObject=$oldObject;
+							$object->call("system.export.update.phtml");
 						} else {
-							$object->path="/$aspath/".substr($object->path, strlen($path));
+							unset($oldObject);	// no update needed
+							unset($object);
 						}
 
-						if ($options["without_data"]) {
-							display("no data for (".$object->path.")\n");
-							unset($object->data);
-							unset($object->properties);
-						} else {
-							display("writing object(".$object->path.")\n");
-						}
-						$mod->writeObject($object);
 					}
 
-					$offset+=sizeof($result);
-				}
 
-				if (!$options["without_templates"]) {
-					display("templates ($path)\n");
-					$error=$mod->exportfiles("templates_$aspath", $this->store->files."templates".$path, ".");
-				}
+					if ($object) {
+						// next one has to be linked
+						$saved_object[$object->id]=$newpath;
 
-				if (!$error && !$options["without_files"]) {
-					display("files     ($path)\n");
-					$error=$mod->exportfiles("files_$aspath", $this->store->files."files".$path, ".");
+						display("save($newpath)\n");
+						$ARCurrent->importStore->save(
+									$newpath, 
+									$object->type,
+									$object->data,
+									$object->properties,
+									$object->vtype,
+									$object->priority);
+
+						// (update or set templates and files)
+
+						$object->newObject=current(
+							$ARCurrent->importStore->call("system.get.phtml","",
+								$ARCurrent->importStore->get($newpath)));
+
+						$object->call("system.export.templates.phtml", "");
+						$object->call("system.export.files.phtml", "");
+					}
+				} else {
+					if (!$ARCurrent->importStore->exists($newpath)) {
+						display("linking ($object->id) $newpath -> ".$saved_object[$object->id]."\n");
+						$ARCurrent->importStore->link($saved_object[$object->id], $newpath);
+					}
 				}
-			
 			}
-			$mod->closeObjectsData();
 
-		} else {
-			$error="err: can not open objects data file";
+			$offset+=sizeof($result);
 		}
 
-		if (($err=$mod->close()) && !$error) {
-			// only export an error when there wasn't a
-			// previous error
-			$error=$err;
+		if ($options["grants"]) {
+			display("updating grants\n");
+			reset($ARCurrent->grants_list);
+			while (list($type, $type_logins)=each($ARCurrent->grants_list)) {
+				while (list($login, )=each($type_logins)) {
+					if ($type=="puser") {
+						unset($criteria);
+						$criteria["login"]["value"]["="]="'$login'";
+						$ARCurrent->importStore->call("system.import.usergrants.phtml", "",
+							$result=$ARCurrent->importStore->find("/system/users/", $criteria));
+					}
+				}
+			}
 		}
-	
-	}
 
-	$arResult=$error;
 }
 ?>

@@ -2,13 +2,12 @@
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		// first do normal copyto
 		if (!($result=$this->call("pobject::system.copyto.phtml", $arCallArgs))) {
-			if ($newpath=$ARCurrent->newpath) {
+			if ($newpath=$ARCurrent->newpath && $newid=$ARCurrent->newid) {
 				// no errors: copy files
-				$this->Mkdir("files".$newpath);
-				$dir=dir($this->store->files."files".$this->path);
-				while ($entry=$dir->read()) {
-					if (!is_dir($dir->path.$entry)) {
-						copy($dir->path.$entry,$this->store->files."files".$newpath.$entry);
+				$files=$this->store->get_filestore("files");
+				if ($list=$files->ls($this->id)) {
+					while (list($key, $file)=each($list)) {
+						$files->copy($this->id, $file, $ARCurrent->newid, $file);
 					}
 				}
 			}

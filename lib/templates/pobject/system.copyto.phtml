@@ -32,40 +32,36 @@
 					// the defined interface: $arCallArgs)
 					$this->data=@current($this->get(".","system.get.data.phtml"));
 
-					// first save templates for the new object
-					if ($this->data->pinp) {
-						$templateroot=$this->store->files."templates";
-						while (list($type, $values)=each($data->pinp)) {
-							$this->MkDir("templates".$newpath.$type."/");
-							while (list($function, $templatelist)=each($values)) {
-								while (list($language, $template)=each($templatelist)) {
-									$targetdir=$target."class=/".$type."/";
-									$targetfile=$targetdir.$function.".".$language;
-									if (!file_exists($templateroot.$targetdir)) {
-										$this->MkDir("templates".$targetdir);
-									}
-									// FIXME: check for illegal values of $template
-									if (file_exists($templateroot.$template)) {
-										copy($templateroot.$template,$templateroot.$targetfile);
-									}
-									$this->data->pinp[$type][$function][$language]=$targetfile;
-									if ($this->data->templates[$type][$function][$language]) {
-										$this->data->templates[$type][$function][$language]=$targetfile;
-									}
-									$template.=".pinp";
-									$targetfile.=".pinp";
-									if (file_exists($templateroot.$template)) {
-										copy($templateroot.$template,$templateroot.$targetfile);
-									}
-								}
-							}
-						}
-					}
+					// now save the object to get its new id.
 					if (!$this->data->$defaultnls) {
 						$this->data->nls->default=$ARConfig->nls->default;
 					}
 					$properties=$this->load_properties();
 					$ARCurrent->newpath=$this->store->save($target, $this->type, $this->data, $this->properties, $this->vtype, $this->priority);
+					if ($ARCurrent->newid=$this->exists($ARCurrent->newpath)) {
+
+						// now save templates for the new object
+						if ($this->data->pinp) {
+							$templates=$this->store->get_filestore("templates");
+							while (list($type, $values)=each($data->pinp)) {
+								while (list($function, $templatelist)=each($values)) {
+									while (list($language, $id)=each($templatelist)) {
+										$template=$type.".".$function.".".$language;
+										$templates->copy($this->id, $template.".pinp", $ARCurrent->newid, $template.".pinp");
+										$templates->copy($this->id, $template, $ARCurrent->newid, $template);
+										$this->data->pinp[$type][$function][$language]=$ARCurrent->newid;
+	
+										if ($this->data->templates[$type][$function][$language]) {
+											$this->data->templates[$type][$function][$language]=$ARCurrent->newid;
+										}
+									}
+								}
+							}
+							// now save the modified templates arrays.
+							$this->store->save($ARCurrent->newpath, $this->type, $this->data);
+						}
+					} // else: first save failed.
+
 				} else {
 					$arResult=sprintf($ARnls["err:alreadyexists"],$target);
 				}

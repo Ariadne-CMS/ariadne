@@ -170,6 +170,7 @@ class pobject extends object {
 							// $properties["time"]["mtime"]=$this->data->mtime;
 							// $properties["owner"]["value"]=$this->data->owner;
 							$this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority);
+							$this->id=$this->exists($this->path);
 							$result=$this->path;
 						} else {
 							$this->error="parent $arNewParent doesn't exist.";
@@ -270,21 +271,34 @@ class pobject extends object {
 	function getlocks() {
 		global $AR;
 		debug("pobject: getlocks()","object");
-		return $this->store->mod_lock->getlocks($AR->user->data->login);
+		if ($this->store->mod_lock) {
+			$result=$this->store->mod_lock->getlocks($AR->user->data->login);
+		} else {
+			$result="";
+		}
+		return $result;
 	}
 
 	function lock($mode="O", $time=0) {
 	global $AR;
-
 		debug("pobject: lock($mode, $time)","object");
-		return $this->store->mod_lock->lock($AR->user->data->login,$this->path,$mode,$time);
+		if ($this->store->mod_lock) {
+			$result=$this->store->mod_lock->lock($AR->user->data->login,$this->path,$mode,$time);
+		} else {
+			$result=true; // no lock module, so lock is 'set'
+		}
+		return $result;
 	}
 
 	function unlock() {
 	global $AR;
-
 		debug("pobject: unlock()","object");
-		return $this->store->mod_lock->unlock($AR->user->data->login,$this->path);
+		if ($this->store->mod_lock) {
+			$result=$this->store->mod_lock->unlock($AR->user->data->login,$this->path);
+		} else {
+			$result=true;
+		}
+		return $result;
 	}
 
 
@@ -564,20 +578,23 @@ class pobject extends object {
 			}
 			$arType=get_class($this);
 			while ($arType && !$arCallTemplate) {
-				if ($config->templates[$arType][$arCallFunction][$this->nls]) {
-					$arCallTemplate=$config->templates[$arType][$arCallFunction][$this->nls];
-				} else if ($config->templates[$arType][$arCallFunction]['any']) {
-					$arCallTemplate=$config->templates[$arType][$arCallFunction]['any'];
+				if ($arTemplateId=$config->templates[$arType][$arCallFunction][$this->nls]) {
+					$arCallTemplate=$arType.".".$arCallFunction.".".$this->nls;
+				} else if ($arTemplateId=$config->templates[$arType][$arCallFunction]['any']) {
+					$arCallTemplate=$arType.".".$arCallFunction.".any";
+//					echo "<h2>2, $arCallFunction , $arTemplateId</h2>";
 				} else {
 					$arTemp=new $arType();
 					$arType=get_parent_class($arTemp);
+//					echo "<h2>$arType</h2>";
 				}
 			}
-			if ($arCallTemplate) {
-				debug("CheckConfig: arCallTemplate=$arCallTemplate","object");
-				$arCallTemplate=$this->store->files."templates".$arCallTemplate;
+			if ($arCallTemplate && $arTemplateId) {
+				debug("CheckConfig: arCallTemplate=$arCallTemplate, arTemplateId=$arTemplateId","object");
+				// $arCallTemplate=$this->store->files."templates".$arCallTemplate;
 				// check if template exists, if it doesn't exist, then continue the original template that called CheckConfig
-				if (file_exists($arCallTemplate)) { 
+				$arTemplates=$this->store->get_filestore("templates");
+				if ($arTemplates->exists($arTemplateId, $arCallTemplate)) { 
 					debug("CheckConfig: $arCallTemplate exists","object");
 					// check if the requested language exists, if not do not display anything, 
 					// unless otherwise indicated by $ARCurrent->allnls
@@ -588,25 +605,26 @@ class pobject extends object {
 					if (isset($this->data->nls->list[$reqnls])) {
 						// the requested language is available.
 						$this->nlsdata=$this->data->$nls;
-						include($arCallTemplate);
+						$continue=true;
 					} else if (!isset($this->data->nls)) {
 						debug("pobject: CheckConfig: no nls data ","all");
 						// the object has no language support
 						$this->nlsdata=&$this->data;
-						include($arCallTemplate);
+						$continue=true;
 					} else if ($ARCurrent->allnls) {
 						debug("pobject: CheckConfig: no $reqnls, but allnls set","all");
 						// all objects must be displayed
 						// $this->reqnls=$this->nls; // set requested nls, for checks
 						$this->nls=$this->data->nls->default;
 						$this->nlsdata=$this->data->$nls;
-						include($arCallTemplate);
+						$continue=true;
 					} else {
 						// requested language not available, allnls not set
 						// -> skip this object (do not run template but do return false)
+						$continue=false;
 					}
-					if ($arIncResult) {
-						$ARCurrent->arResult=$arIncResult;
+					if ($continue) {
+						$arTemplates->import($arTemplateId, $arCallTemplate, "",$this);
 					}
 					array_pop($ARCurrent->arCallStack);
 					return false;
@@ -644,16 +662,6 @@ class pobject extends object {
 		while (list($nls,$language)=each($nlslist)) {
 			$fpath=$this->store->files."cache/$nls/".$path;
 			$hpath=$this->store->files."cacheheaders/$nls/".$path;
-			$ppath=$this->store->files."privatecache/$nls/".$path;
-			if ($dir=@dir($ppath)) {
-				while ($entry=$dir->read()) {
-					if (filetype($ppath.$entry)!="dir") {
-						@unlink($ppath.$entry);
-					} else if ($entry!="." && $entry!="..") {
-						$this->ClearCache($path.$entry."/");
-					}
-				}
-			}		
 			if ($dir=@dir($fpath)) {
 				while ($entry=$dir->read()) {
 					if ($entry!="." && $entry!="..") {
@@ -670,6 +678,9 @@ class pobject extends object {
 				@unlink(substr($hpath,0,-1)."=");
 			}
 		}
+		// now remove any private cache entries.
+		$pcache=$this->store->get_filestore("privatecache");
+		$pcache->purge($this->id);
 		debug("pobject: ClearCache: end","all");
 	}
 
@@ -681,16 +692,16 @@ class pobject extends object {
 			if (!$nls) {
 				$nls=$this->nls;
 			}
-			$file="/".$nls.$this->path.$name."=";
-			if ( file_exists($this->store->files."privatecache".$file) &&
-			     (filemtime($this->store->files."privatecache".$file)>time()) ) {
+			$file=$nls.".".$name;
+			$pcache=$this->store->get_filestore("privatecache");
+			if ( $pcache->exists($this->id, $file) &&
+			     ($pcache->mtime($this->id, $file)>time()) ) {
 				debug("cached: $name exists, reading from cache.","all");
 				// FIXME!: should fix links, replace old session id's; use correct root, etc.
 				if ($ARCurrent->session) {
 					$session="/-".$ARCurrent->session->id."-";
 				}
-				echo str_replace("{arSession}",$session,
-					implode("",file($this->store->files."privatecache".$file)));
+				echo str_replace("{arSession}", $session, $pcache->read($this->id, $file));
 				$result=true;
 			} else {
 				debug("cached: $name not found, start new cache image.","all");
@@ -732,15 +743,17 @@ class pobject extends object {
 				$image=str_replace("/-".$ARCurrent->session->id."-","{arSession}",$image);
 				$session="/-".$ARCurrent->session->id."-";
 			}
-			$path=substr($file, 0, strrpos($file, "/"));
-			if (!file_exists($this->store->files."privatecache".$path)) {
-				ldMkDir("privatecache".$path);
-			}
-			$fp=fopen($this->store->files."privatecache".$file, "w");
-			fwrite($fp, $image);
-			fclose($fp);
+			//$path=substr($file, 0, strrpos($file, "/"));
+			//if (!file_exists($this->store->files."privatecache".$path)) {
+			//	ldMkDir("privatecache".$path);
+			//}
+			//$fp=fopen($this->store->files."privatecache".$file, "w");
+			//fwrite($fp, $image);
+			//fclose($fp);
+			$pcache=$this->store->get_filestore("privatecache");
+			$pcache->write($image, $this->id, $file);
 			$time=time()+($time*3600);
-			if (!touch($this->store->files."privatecache".$file, $time)) {
+			if (!$pcache->touch($this->id, $file, $time)) {
 				debug("savecache: ERROR: couldn't touch $file","object");
 			}
 			/* it seems that ob_end_flush doesn't really clean the output

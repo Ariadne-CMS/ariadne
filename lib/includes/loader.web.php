@@ -97,7 +97,6 @@
 
 	function ldCheckCredentials($login, $password) {
 	global $ARCurrent, $AR, $ARCookie;
-
 		debug("ldGetCredentials()","object");
 		$result=false;
 		$cookie=unserialize($ARCookie);

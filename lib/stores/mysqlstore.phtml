@@ -411,6 +411,7 @@ class mysqlstore {
 			$path=ereg_replace("\{[0-9]:id\}",strval($subid),$path);
 			debug("save: new path: $path ($subid)","all");
 		}
+
 		$edata=AddSlashes(serialize($data));
 		$epath=AddSlashes($path);
 		$etype=AddSlashes($type);

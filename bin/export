@@ -1,11 +1,12 @@
-#!/usr/local/bin/php -q
+#!/usr/bin/php -q
 <?php
 	$ariadne="../lib";
 	require($ariadne."/configs/ariadne.phtml");
 	require($ariadne."/configs/store.phtml");
+	require($ariadne."/configs/axstore.phtml");
 	require($ariadne."/includes/loader.web.php");
 	require($ariadne."/stores/mysqlstore.phtml");
-
+	include($ariadne."/stores/axstore.phtml");
 	global $options;
 
 	$arg_c=0;
@@ -32,7 +33,7 @@
 
 			switch ($option_switch) {
 				case 'with':
-					$options[$option]=$option_value;
+					$options[$option]=($option_value) ? $option_value : true;
 				break;
 				case 'without':
 					$options["without_$option"]=true;
@@ -52,36 +53,37 @@
 
 
 	if ($arg_c>=3) {
-		$i=1;
-		while ($i < $arg_c-1) {
+		$ARLogin="admin";
+		$AR->user=new object;
+		$AR->user->data=new object;
+		$AR->user->data->login="admin";
 
-			if ( ($i < ($arg_c - 2)) && (strtoupper($arg_v[$i+1])=="AS") ) {
-				$aspath=$arg_v[$i+2];
-				$nexti=$i+3;
-			} else {
-				$aspath=substr($arg_v[$i], strrpos(substr($arg_v[$i], 0, -1), "/") + 1, -1);
-				$nexti=$i+1;
-			}
-			
-			$aspath=ereg_replace("/", "", $aspath);
-			$path_array[$aspath]=$arg_v[$i];
-			if (!$aspath) {
-				$error="err: supply an alias for ".$arg_v[$i];
-			}
-			$i=$nexti;
+		if ($arg_c>3) {
+			$config["database"]=$arg_v[3];
+			$srcpath=$arg_v[1];
+			$destpath=$arg_v[2];
+		} else {
+			$config["database"]=$arg_v[2];
+			$srcpath=$arg_v[1];
 		}
-
-		if (!$error) {
-			$options["axFile"]=$arg_v[$arg_c-1];
+		$config["writeable"]=true;
+		$importStore=new axstore("", $config);
+		$ARCurrent->importStore=&$importStore;
+		if (!$importStore->error) {
 			$store=new mysqlstore($root,$store_config);
 
-			$ARLogin="admin";
-			$AR->user=new object;
-			$AR->user->data=new object;
-			$AR->user->data->login="admin";
-			$error=@current($store->call("system.export.phtml", "",
+			$args="srcpath=".rawurlencode($srcpath)."&destpath=".rawurlencode($destpath);
+			//echo "args ($args)\n";
+			$error=@current($store->call("system.export.phtml", $args,
 				$store->get("/")));
+
+			//echo "closing store\n";
+			$importStore->close();
+
+		} else {
+			$error="ax error: ".$importStore->error;
 		}
+
 		if ($error) {
 			echo $error."\n";
 		}

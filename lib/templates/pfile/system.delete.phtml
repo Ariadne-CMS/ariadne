@@ -1,16 +1,11 @@
 <?php
-  if ($this->CheckLogin("read") && $this->CheckConfig()) {
-    // first do normal delete
-    $this->call("pobject::system.delete.phtml");
-    if (!$arResult) {
-      // no errors: delete files
-      if ($d=@dir($this->store->files."files".$this->path)) {
-        while ($entry=$d->read()) {
-          if (!is_dir($this->store->files."files".$this->path.$entry)) {
-            unlink($this->store->files."files".$this->path.$entry);
-          }
-        }
-      }
-    }
-  }
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		// first do normal delete
+		$this->call("pobject::system.delete.phtml");
+		if (!$this->error) {
+			// no errors: delete files
+			$files=$this->store->get_filestore("files");
+			$files->purge($this->id);
+		}
+	}
 ?>

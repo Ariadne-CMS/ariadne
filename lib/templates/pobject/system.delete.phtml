@@ -15,37 +15,18 @@
 				}
 				// remove templates
 				if ($data->pinp) {
+					$templates=$this->store->get_filestore("templates");
 					while (list($type, $values)=each($data->pinp)) {
 						while (list($function, $templatelist)=each($values)) {
 							while (list($language, $template)=each($templatelist)) {
-								$file=$this->store->files."templates".$template;
-								// FIXME: check for illegal values of $template
-								if (file_exists($file)) {
-									unlink($file);
-								}
+								$file=$type.".".$function.".".$language;
+								$templates->remove($this->id, $file);
 								$file.=".pinp";
-								if (file_exists($file)) {
-									unlink($file);
-								}
+								$templates->remove($this->id, $file);
 							}
-						}
-						if (!@rmdir($this->store->files."templates".$this->path."class=/".$type."/")) {
-							 debug("can not remove dir(".$this->store->files."templates".$this->path."class=/".$type."/".")","class");
 						}
 					}
 				}				
-				// remove files
-				$dir=$this->store->files."files".$this->path;
-				if ($handle=@opendir($dir)) {
-					while (false!==($file=readdir($handle))) {
-						if ($file!="." && $file!="..") {
-							// as recurse should have taken care of subdirectories, unlink should suffice.
-							unlink($dir.$file);
-						}
-					}
-					closedir($handle);
-					@rmdir($dir);
-				}
 				// clear cache
 				$this->ClearCache();
 				// finally remove object itself

@@ -1,0 +1,30 @@
+<?php
+  /******************************************************************
+	system.export.update.phtml				Muze Ariadne v2.0b
+	------------------------------------------------------------------
+	Arguments: $this->import (object to import)
+	Grant needed: edit
+	Global variables: none
+
+	Called when an object has to be updated from an export file.
+
+	Returns true on success , false on an error.
+  ******************************************************************/
+  if ($this->CheckLogin("edit")) {
+	display("system.export.update.phtml (".$this->path.")\n");
+
+	// get object grants.
+
+	$this->call("system.export.get.grants.phtml");
+
+	if ($this->error) {
+		$arResult=false;
+	} else {
+		$arResult=true;
+	}
+
+  } else {
+	$arResult=false;
+	$this->error="No permission to import a new object";
+  }
+?>
