@@ -30,8 +30,11 @@ New features:
 	- ParseSummary() has a new (4th) argument; if false, it won't add a
 	  'read more...' link.
 	- Added Swedish translation by Niklas Koskela.
-	- Added configurable save option to the user.edit.html toolbar. Just
+	- User editable pages support extended.
+      Added configurable save option to the user.edit.html toolbar. Just
 	  redefine the user.edit.save.html and user.add.save.html templates.
+      Added getContents and getValue functions in the toolbar.php widget,
+      to be used by user.edit.save.html
 	- Added import() function. This allows you to import modules from the
 	  lib/modules directory in pinp templates.
 	- Added possibility to call functions on objects directly. This 
