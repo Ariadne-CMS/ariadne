@@ -15,6 +15,7 @@ class pfile extends pobject { // definitie class
 	}
 
 	function ShowFile() {
+		global $AR;
 		$files=$this->store->get_filestore("files");
 		if (!ereg("^text/",$this->data->mimetype)) {
 			$size=$files->size($this->id, "file");
@@ -22,7 +23,13 @@ class pfile extends pobject { // definitie class
 		if (ldSetContent($this->data->mimetype, $size)) {
 			$cacheseconds=1800; // 1/2 hour
 			$expires=time()+$cacheseconds;
-			ldSetClientCache(true, $expires);
+			if ($AR->user->data->login=="public" || $this->CheckPublic("read")) {
+				// always set the client side cache headers, independant of
+				// server side cache configuration. Except for private content
+				// (needed to prevent proxies from caching it too). If server 
+				// side caching is on, the loader will override this header.
+				ldSetClientCache(true, $expires);
+			}
 		} else if(!ereg("^text/",$this->data->mimetype)) {
 			error("headers already sent and this is not a text file (".$this->path.")");
 			$stop=true;
