@@ -85,6 +85,8 @@ In order to install the Ariadne FTP loader as an FTP server you need the
 following system configuration:
 
 	- an inetd/xinetd (or equivalent) application.
+	(windows users can find a inetd program in ariadne/bin/inetd.exe)
+
 	- a php-cgi binary, version 4.0.6 or higher, with mysql (or postgresql) 
 	  and socket support.	
 
@@ -178,6 +180,16 @@ files by executing:
 	On RedHat based systems:
 
 	/etc/rc.d/init.d/xinetd reload
+
+4.4 Installing under windows
+----------------------------
+
+To install the ariadne ftp server under windows you have to edit
+the ftpd.bat file found in the ariadne/bin/ directory. Change here
+the path to your php cgi and the path to the ariadne ftp loader.
+
+When done with configering you can double click the ftpd.bat file
+in order to run the ariadne ftp server. 
 
 5. Problems
 ----------------------------
