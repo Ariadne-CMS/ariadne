@@ -1,11 +1,11 @@
-﻿	/*****************************************************************************
+<?php
+	/*****************************************************************************
 
 		The German nls files are contributed by: Reini Urban <rurban@x-ray.at>
 
 		Modified by Christoph Lindemann <christoph@lindemann.nu> 2005-01-06
 
 	*****************************************************************************/
-<?php
 
 	$ARnls["xp_about"]						=	"Über Ariadne";
 	$ARnls["xp_browsebydate"]				=	"Nach Datum ordnen";
