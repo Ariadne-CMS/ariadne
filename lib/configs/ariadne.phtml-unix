@@ -79,7 +79,7 @@
   $AR->IM->mogrify          = '/usr/bin/mogrify';
   $AR->IM->composite        = '/usr/bin/composite';
   // $AR->IM->composite        = '/usr/bin/combine';
-
+  $AR->IM->identify			= '/usr/bin/identify';
 
   /**************************************************************************/
   /* VirusScanner information                                               */

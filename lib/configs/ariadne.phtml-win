@@ -79,6 +79,7 @@
   $AR->IM->mogrify          = '/usr/bin/X11/mogrify';
   $AR->IM->composite        = '/usr/bin/X11/composite';
   // $AR->IM->composite        = '/usr/bin/X11/combine';
+  $AR->IM->identify			= '/usr/bin/X11/identify';
 
 
   /**************************************************************************/
