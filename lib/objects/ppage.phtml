@@ -48,6 +48,20 @@ class ppage extends pobject { // ppage class definition
     }
   }
 
+  function RAWtoAR($page) {
+	// change hardcoded links and images to use a placeholder for the root
+	if ($this->store->root) {
+		$page = ereg_replace("(http[s]?://)?".$this->store->root, "{arRoot}", $page);
+	}
+	if ($ARCurrent->session->id) {
+        // change hand pasted sources, which may or may not include session id's
+		$page = ereg_replace("(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?(/".$nls.")?", "{arRoot}", $page);
+		// check for other session id's:
+		$page = str_replace("/-".$ARCurrent->session->id."-", "", $page);
+	}
+	return $page;
+  }
+
   function GetPage($nls="", $source=false, $full=false) {
     if (!$nls) {
       $target=$this->nlsdata->page;
@@ -85,5 +99,8 @@ class ppage extends pobject { // ppage class definition
     return $this->ParsePage($page, $full);
   }
 
+  function _RAWtoAR($page) {
+	return $this->RAWtoAR($page);
+  }
 } // end of ppage class definition
 ?>
