@@ -346,7 +346,7 @@ function MENU_FILE_SAVE_onclick() {
   } else {
     file='';
   }
-  if (window.opener && window.opener.wgHTMLEditContent) {
+  if (window.opener && !window.opener.closed && window.opener.wgHTMLEditContent) {
     savewindow=window.open('','savewindow','directories=no,height=100,width=300,location=no,status=no,toolbar=no,resizable=no');
     savewindow.document.open();
     savewindow.document.write("<html><body bgcolor=#CCCCCC><font face='Arial,helvetica,sans-serif'>");
