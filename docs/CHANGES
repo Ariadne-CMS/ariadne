@@ -14,6 +14,7 @@ New Features:
 	  found or part of a page, user.notfound.full.html user.notfound.inpage.html
 	- You can now call class templates directly without consulting the pinp templates
 	  through: call("#view.html") instead of call("view.html")
+	- You can now switch to a syntax-highlighted non-editable view in the template editor.
 
 Bugs Fixed:
 	- Removed some legacy code which made it impossible to 'renew' an expired
