@@ -7,7 +7,12 @@
 		if (!$page) {
 			$page=$htmltext;
 		}
-		if ($arEditorSettings=$this->call("editor.ini")) {
+		if ($ContentEditOptionsPath) {
+			$arEditorSettings=current($this->get($ContentEditOptionsPath, "editor.ini"));
+		} else {
+			$arEditorSettings=$this->call("editor.ini");
+		}
+		if ($arEditorSettings) {
 			if ($arEditorSettings["htmltidy"]["enabled"]) {
 				include_once($this->store->code."modules/mod_tidy.php");
 				$config=$arEditorSettings["htmltidy"];
@@ -25,7 +30,6 @@
 				$page=strip_tags($page, $arEditorSettings["allow_tags"]);
 			}
 		}
-
 		// only keep the body.innerHTML
 		// $page=eregi_replace("^.*<body[^>]*>","",$page);
 		// $page=eregi_replace("</body[^>]*>.*$","",$page);
