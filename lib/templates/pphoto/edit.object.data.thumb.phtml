@@ -4,8 +4,6 @@
   ******************************************************************/
   if ($this->CheckSilent("read")) {
     $mimetype=$this->getdata("mimetype","none");
-    $filters=$this->GetUserFilters($mimetype);
-    echo "<!-- $mimetype : ".serialize($filters)." -->";
 ?>
 <table border="0" width="90%">
 <tr>
