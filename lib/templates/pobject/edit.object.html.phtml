@@ -12,27 +12,48 @@
 <head>
 <script>
 <!--
-  function loadpage(root, path, file, name, language, type) {
+
+  NewObject=<?php if ($newobject && $newobject!=='false') echo 'true'; else echo 'false'; ?>;
+
+  function loadpage(root, path, file, name, language, type, newobject) {
     if (file) {
       document.location.href=root+path+file+'/edit.object.data.'+name+'.phtml?'+
       'root='+escape(root)+'&path='+escape(path)+'&file='+escape(file)+
-      '&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type);
+      '&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type)+'&newobject='+escape(newobject);
     } else {
       document.location.href=root+path+'edit.object.data.'+name+'.phtml?'+
       'root='+escape(root)+'&path='+escape(path)+'&file='+escape(file)+
-      '&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type);
+      '&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type)+'&newobject='+escape(newobject);
     }
+  }
+
+  function checknewobject() {
+    if (NewObject && window.opener && window.opener.wgHTMLEditContent) {
+      window.opener.wgHTMLEditContent.value=document.editform['<?php echo $name; ?>'].value;
+      top.window.close();
+    } else {
+      return true;
+    }
+  }
+
+  function init() {
+    if (NewObject && window.opener && window.opener.wgHTMLEditContent) {
+      document.editform['<?php echo $name; ?>'].value=window.opener.wgHTMLEditContent.value;
+    }
+    document.editform['<?php echo $name; ?>'].focus();
   }
 // -->
 </script>
 </head>
-<body bgcolor="white">
-<form name="editform" method="post" action="<?php echo $root.$path.$file."edit.".$name.".save.phtml"; ?>">
+<body bgcolor="white" onLoad="init();">
+<form name="editform" method="post" action="<?php echo $root.$path.$file."edit.".$name.".save.phtml"; ?>" onSubmit="return checknewobject();">
 <input name="ContentLanguage" type="hidden" value="<?php echo $language; ?>">
 <table width="100%" border="0" cellspacing="0"><tr>
   <td colspan="2">
     <textarea name="<?php echo $name; ?>" cols="75" rows="24" wrap="soft"><?php
-      $this->get($path.$file,"show.".$name.".phtml",Array("language" => $language, "source" => true));
+      if (!$newobject || ($newobject=='false')) {
+        $this->get($path.$file,"show.".$name.".phtml",Array("language" => $language, "source" => true));
+      }
     ?></textarea>
   </td>
 </tr><tr bgcolor="#404074">
