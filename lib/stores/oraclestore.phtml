@@ -207,7 +207,7 @@ class oraclestore {
 		$objects_tbl_data=$objects_tbl."_data";
 
 		$query_string = "
-			select $nodes_tbl.path as \"path\", $nodes_tbl.parent as \"parent\", $nodes_tbl.priority as \"priority\", $objects_tbl.id as \"id\", $objects_tbl.type as \"type\", $objects_tbl_data.object as \"object\", TO_CHAR($objects_tbl.lastchanged, 'MM-DD-YYYY HH24:MI:SS') as \"lastchanged\", $objects_tbl.vtype as \"vtype\"  
+			select $nodes_tbl.path as \"path\", $nodes_tbl.parent as \"parent\", $nodes_tbl.priority as \"priority\", $objects_tbl.id as \"id\", $objects_tbl.type as \"type\", $objects_tbl_data.object as \"object\", TO_CHAR($objects_tbl.lastchanged, 'YYYY-MM-DD HH24:MI:SS') as \"lastchanged\", $objects_tbl.vtype as \"vtype\"  
 			from $objects_tbl, $nodes_tbl, $objects_tbl_data 
 			where $objects_tbl.id=$nodes_tbl.object and $objects_tbl.id=$objects_tbl_data.id and $nodes_tbl.path='$epath'
 			";
@@ -485,7 +485,7 @@ class oraclestore {
 			select \"path\", \"parent\", \"object\", \"type\", \"id\", \"priority\", \"id\", \"lastchanged\", \"vtype\"
 			from (
 				select ROW_NUMBER() OVER($orderby_s) LINENUM,
-					$nodes_tbl.path as \"path\", $nodes_tbl.parent as \"parent\", $nodes_tbl.priority as \"priority\", $objects_tbl.id as \"id\", $objects_tbl.type as \"type\", $objects_tbl_data.object as \"object\", TO_CHAR($objects_tbl.lastchanged, 'MM-DD-YYYY HH24:MI:SS') as \"lastchanged\", $objects_tbl.vtype as \"vtype\"  
+					$nodes_tbl.path as \"path\", $nodes_tbl.parent as \"parent\", $nodes_tbl.priority as \"priority\", $objects_tbl.id as \"id\", $objects_tbl.type as \"type\", $objects_tbl_data.object as \"object\", TO_CHAR($objects_tbl.lastchanged, 'YYYY-MM-DD HH24:MI:SS') as \"lastchanged\", $objects_tbl.vtype as \"vtype\"  
 				from $nodes_tbl, $objects_tbl, $objects_tbl_data $from $types
 				where $objects_tbl.id = $nodes_tbl.object and $objects_tbl.id = $objects_tbl_data.id
 				and $nodes_tbl.path like '$epath%' $where_s
@@ -901,11 +901,15 @@ class oraclestore {
 		/* private function, do not use this outside this class */
 		debug("query ($query)", "store");
 		$result = OCIParse($this->connect_id, $query);
-		OCIExecute($result);
+		ob_start();
+			OCIExecute($result);
+			$frop = ob_get_contents();
+		ob_end_clean();
 		$err = OCIError($this->connect_id);
 		$errno=$err['code'];
 		$error=$err['message'];
-		if ($errno) {				
+		if ($errno || $frop) {				
+			//print_r(debug_backtrace());
 			echo "<b>query: $query</b><br>\n";
 			$this->error="ERROR: Oracle: $errno: $error";
 			debug("run_query: ".$this->error,"store");
@@ -1202,7 +1206,7 @@ class oraclestore {
 
 		if (intval($object)) {
 			if (!$property) { // remove all properties for $object
-				$query_string = "select name from ".$this->tbl_prefix."properties";
+				$query_string = "select name as \"name\" from ".$this->tbl_prefix."properties";
 				$stmt = $this->store_run_query($query_string);
 				while (!$this->errno && OCIFetchInto($stmt, $row = Array(), OCI_ASSOC)) {
 					$query_string="delete from ".$this->tbl_prefix."prop_".$row["name"]." where object=$object";
