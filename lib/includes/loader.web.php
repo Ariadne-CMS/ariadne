@@ -487,7 +487,7 @@
 		return $cookie;
 	}
 
-	function ldSetUserCookie($cookie, $cookiename="ARUserCookie", $expire=0, $path="/", $domain="", $secure=0) {
+	function ldSetUserCookie($cookie, $cookiename="ARUserCookie", $expire=null, $path="/", $domain="", $secure=0) {
 	global $HTTP_COOKIE_VARS;
 		
 		$result = false;
