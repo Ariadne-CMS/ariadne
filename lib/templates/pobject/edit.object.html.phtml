@@ -1,7 +1,32 @@
 <?php
-	if ( ( 	($this->arIsNewObject && $this->CheckLogin("add")) ||
-			(!$this->arIsNewObject && $this->CheckLogin("edit")) )
+	$proceed = false;
+
+	if ($path == $this->path) {
+		if ( ( 	($this->arIsNewObject && $this->CheckLogin("add", "ppage")) ||
+				(!$this->arIsNewObject && $this->CheckLogin("edit", "ppage")) )
         && $this->CheckConfig()) {
+
+			$proceed = true;
+		}
+	} else {
+		if ($this->exists($path)) {
+			$target = current($this->get($path, "system.get.phtml"));
+			if ($target->CheckLogin("edit", "ppage") && $this->CheckConfig()) {
+				$proceed = true;
+			}
+		} else {
+			$target = current($this->get(
+								$this->store->make_path($path, ".."),
+								"system.get.phtml"));
+
+			if ($target->CheckLogin("add", "ppage") && $this->CheckConfig()) {
+				$proceed = true;
+			}
+		}
+	}
+
+
+	if ($proceed) {
 		global $HTTP_SERVER_VARS;
 		if	(	eregi(".*msie ([0-9]+).*",$HTTP_SERVER_VARS["HTTP_USER_AGENT"], $regs) &&
 				$regs[1] && 
