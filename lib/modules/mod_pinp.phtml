@@ -76,13 +76,13 @@ class pinp {
 	while (eregi('^(.*)(<\?|<%|<script[^>]*php[^>]*>)(.*)', $template, $start_regs) &&
 		$start_regs[2]) {
 		$clean_template.=$start_regs[1];
-		$clean_template.="<?php echo \"".AddSlashes($start_regs[2])."\"; ?>";
+		$clean_template.="<?php echo \"".AddCSlashes($start_regs[2], ARESCAPE)."\"; ?>";
 		$template=$start_regs[3];
 		unset($start_regs);	
 		if (eregi('^(.*)(\?>|%>|</script>)(.*)', $template, $start_regs) &&
 					$start_regs[2]) {
 			$clean_template.=$start_regs[1];
-			$clean_template.="<?php echo \"".AddSlashes($start_regs[2])."\"; ?>";
+			$clean_template.="<?php echo \"".AddCSlashes($start_regs[2], ARESCAPE)."\"; ?>";
 			$template=$start_regs[3];
 			unset($start_regs);	
 		} else {
