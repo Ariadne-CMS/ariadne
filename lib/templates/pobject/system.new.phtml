@@ -15,7 +15,8 @@
 		$arNewFilename=$this->getdata("arNewFilename","none");
 		$arNewData=new object;
 		$arNewPath=$this->make_path($arNewFilename);
-		$arNewCallObject=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData);
+		$arNewParent=$this->store->make_path($arNewFilename, "..");
+		$arNewCallObject=$this->store->newobject($arNewPath, $arNewParent, $arNewType, $arNewData);
 		$arNewCallObject->arIsNewObject=true;
 
 		$arNewCallObject->call("system.save.data.phtml", $arCallArgs);
