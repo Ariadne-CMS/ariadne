@@ -368,17 +368,31 @@ function MENU_FILE_SAVE_onclick() {
 
 function VIEW_HTML_onclick() {
   if (ViewHTML.TBSTATE=="checked") {
+
     TBSetState(ViewHTML, "unchecked");
-    var sContents=tbContentElement.DocumentHTML;
+
+//    var sContents=tbContentElement.DocumentHTML;
+    if (tbContentElement.DOM.body.innerHTML) {
+      var sContents=tbContentElement.FilterSourceCode(tbContentElement.DOM.body.innerHTML);
+    } else {
+      var sContents=new String();
+    }
 	// don't even think about changing the next few lines... 
 	// the htmlediting component is extremely picky
     sContents=sContents.replace(/&/g,"&amp;");
     sContents=sContents.replace(/</g,"&lt;");
     sContents=sContents.replace(/>/g,"&gt;");  
 	sContents=sContents.replace(/\r/g,""); // KILL KILL KILL
-    sContents=new String("<BODY style=\"font:10pt courier, monospace\"><PRE>"+sContents+"</PRE></BODY>");
+    sContents=new String("<html><head><style> p { margin: 0pt; } </style></head><BODY style=\"font:10pt courier, monospace\"><PRE>"+sContents+"</PRE></BODY></html>");
 	// now you can edit anything you want...
     tbContentElement.DocumentHTML=sContents;
+/*
+    if (tbContentElement.DOM.styleSheets.length==0) {
+      tbContentElement.DOM.createStyleSheet(tbContentRoot+tbContentPath+tbContentFile+'edit.css');
+    } else {
+      tbContentElement.DOM.styleSheets(0).href=tbContentRoot+tbContentPath+tbContentFile+'edit.css';
+    }
+*/
     ToolbarFormatState=FormatToolbar.TBSTATE;
     TBSetState(FormatToolbar, "hidden");
     TBSetState(ToolbarMenuFmt, "gray");    
@@ -408,10 +422,22 @@ function VIEW_HTML_onclick() {
       TBSetState(ToolbarMenuTable, "checked");
     }
     TBSetState(ViewHTML, "checked");
+
+/*
+    if (tbContentElement.DOM.styleSheets.length==0) {
+      tbContentElement.DOM.createStyleSheet(tbContentRoot+tbContentPath+tbContentFile+'style.css');
+    } else {
+      tbContentElement.DOM.styleSheets(0).href=tbContentRoot+tbContentPath+tbContentFile+'style.css';
+    }
+*/
 	// it's impossible to get the source back _with_ all 
     // the original indentation, except by:
-    var sContents=tbContentElement.DOM.body.innerText;
-    sContents=sContents.replace(/\r/g,""); // and again! get rid of those pesky returns
+    if (tbContentElement.DOM.body.innerText) {
+      var sContents=tbContentElement.FilterSourceCode(tbContentElement.DOM.body.innerText);
+    } else {
+      var sContents=new String();
+    }
+    // sContents=sContents.replace(/\r/g,""); // and again! get rid of those pesky returns
     tbContentElement.DocumentHTML=sContents
     tbContentElement.BaseURL=tbContentRoot+tbContentPath;
   }
@@ -1276,7 +1302,9 @@ return tbContentElement_ContextMenuAction(itemIndex)
 <!-- DHTML Editing control Object. This will be the body object for the toolbars. -->
 <object ID="tbContentElement" CLASS="tbContentElement" 
   CLASSID="clsid:2D360201-FFF5-11D1-8D03-00A0C959BC0A" VIEWASTEXT>
-  <param name=Scrollbars value=true>
+  <param name="Scrollbars" value=true>
+  <param name="SourceCodePreservation" value="1">
+  <param name="UseDivOnCarriageReturn" value="1">
 </object>
 <!-- unsafe CLASSID="clsid:2D360200-FFF5-11D1-8D03-00A0C959BC0A" -->
 <!-- DEInsertTableParam Object -->
