@@ -26,5 +26,6 @@
   }
   echo "<input type=\"button\" name=\"$wgHTMLEditName".
        "_button\" value=\"Open Editor\"".
-       " onClick=\"HTMLEdit('$wgHTMLEditRoot','$wgHTMLEditPath','$wgHTMLEditFile','$wgHTMLEditName','$wgHTMLEditLanguage','$wgHTMLEditType','$wgHTMLEditTitle');\">"; 
+       " onClick=\"HTMLEdit('$wgHTMLEditRoot','$wgHTMLEditPath','$wgHTMLEditFile','$wgHTMLEditName','$wgHTMLEditLanguage','$wgHTMLEditType','".
+       str_replace("'","\\'",HTMLSpecialChars($wgHTMLEditTitle))."');\">"; 
 ?>
