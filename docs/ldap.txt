@@ -1,0 +1,164 @@
+This document describes the LDAP implementation in Ariadne. LDAP
+connections are configured by creating pldapconnection objects in the
+store (i.e. not in the config file) which allows for multiple LDAP
+connections and easy configuration with a wizard.
+
+The LDAP implementation enables you to make LDAP objects appear as
+Ariadne objects. However, the LDAP tree is completely flattened, so that
+the LDAP objects appear as child objects of a single Ariadne object
+(which is the pldapconnection).
+
+You should understand that the LDAP implementation allows for MORE than
+just authenticating users against a LDAP server. Actually using LDAP for
+authentication purposes is just an extension of the generic LDAP
+support.
+
+The following text documents the wizard that appers when
+adding/configuring a pldapconnection object.
+
+
+
+1. Connection
+
+"LDAP server hostname or IP address"
+Simply the hostname or IP address of the LDAP server you want to connect
+to.
+
+"LDAP username", "LDAP password"
+The credentials used to bind to the LDAP server.
+
+If your LDAP server supports anonymous binds, leaving both fields empty
+might work. Note however that for security reasons the vendors and
+adminstrators of LDAP servers tend to disable anonymous binds.
+
+The username should be entered as distinguished name (e.g.
+cn=ldapquery,ou=special users,dc=example,dc=com), but this might depend 
+on the LDAP server, Active Directory servers also seem to support 
+"username@example.com".
+
+It is sufficient that the user has READ permissions on the LDAP server!
+So it's a good idea to create a new user on the LDAP server which is
+only used for querying the LDAP database.
+
+"LDAP base DN"
+The base dn of your LDAP server. Something like "DC=example, DC=com".
+Some LDAP servers might default to the correct thing if you leave this
+empty.
+
+2. General filter
+
+This filter expression is added to EVERY query. For details on LDAP
+filter expressions see RFC 2254. If you use a LDAP connection for user
+authentication it is a good idea to use this filter to restrict the
+search to user objects. For Active Directory this would be
+"&(objectclass=user)(!(objectclass=computer))". For Novell NDS this
+would be "objectclass=inetOrgPerson". For OpenLDAP i don't know - if you 
+do know, report it to the Ariadne mailing list/newsgroup and
+chances are that this will be added to this documentation. Note that RFC
+2254 requires the LDAP filter string to be surrounded by brackets (i.e.
+"(objectclass=inetOrgPerson)"), but Ariadne does add them automatically
+for you, if required, so you may as well leave them out.
+
+3. Search translation
+
+This is the core of the LDAP connection. As you should know from the
+documentation, Ariadne has its own syntax(es) for searching its store:
+- The array syntax, e.g. $criteria["object"]["implements"]["="]='puser';
+- The sql-like syntax, e.g. $criteria="object.implements='puser'";
+If you don't understand the Ariadne search syntax, read the according
+documentation as it's important to understand the search translation.
+
+LDAP uses "LDAP filters" for searching its database as defined in RFC
+2254, e.g. "(cn=username)".
+
+As both Ariadne and LDAP use a hierarchical database, it's possible to
+convert the Ariadne search expressions to LDAP filter expressions. The
+pldapconnection object type does exactly that. Furthermore it overrides
+the find() and the ls() methods of the pobject type. Thus you can run
+find() or ls() on a pldapconnection object and instead of querying the
+Ariadne store it will query the LDAP database and return the LDAP
+datasets as Ariadne objects.
+
+In addition to the different query syntaxes, also the property (or
+"attribute" in LDAP terms) names are different. For example, Ariadne
+stores the user's login name in a property named "login.value". LDAP
+might store the user's login name in an attribute named "cn". I say
+"might" because this differs among different LDAP servers. Active
+directory used "sAMAccountName", Novell NDS uses "uid".
+
+With that knowledge you should understand that it's necessary to
+configure a mapping from Ariadne property names to LDAP attribute names
+to fit your LDAP server. You can configure two mapping types:
+- Simple property name -> attribute name translation
+  Example: login.value -> cn
+  This will translate the Ariadne search expression 
+  "login.value='someusername'"
+  to the LDAP filter expression
+  "(cn=someusername)".
+  Note that the value ("someusername") remains unchanged.
+- property name with a specific value -> attribute name with the value replaced
+  Example: object.implements='puser' -> objectclass=user
+  This will translate the Ariadne search expression
+  "object.implements='puser'"
+  to the LDAP filter expression
+  "(objectclass=user)".
+  Note that the value ("puser") is changed here (to "user"). Also note
+  that the Ariadne search expression is ONLY translated if both
+  property name AND value match. With the given example this means
+  that "object.implements='ppage'" will NOT be translated.
+This two examples ("login.value -> cn" and "object.implements='puser' ->
+objectclass=user") are adequate for usage with Active directory.
+
+If you want to run a query on a pldapconnection and directly use LDAP
+attribute names, you can do that by prefixing "ldap." to the "Ariadne
+property name", e.g. if you want to get ALL objects from the LDAP
+server, you would use "ldap.objectclass=~'%'", which will be translated
+into "(objectclass=*").
+
+4. Other parameters
+
+"Use ISO-8859 instead of UTF-8"
+I'm not familiar with the charset normally used with LDAP. I THINK LDAP
+usually uses UTF-8, so it wouldn't require a translation because Ariadne
+uses UTF-8, too. However, I've seen that at least Active Directory uses
+ISO-8859, so this option allows for translation from ISO-8859 to UTF-8
+(using the internal Ariadne functions). However I might be totally wrong
+with this, so if you know better, please report it to the Ariadne
+mailing list/newsgroup.
+
+"LDAP attribute to use as name"
+This is the LDAP attribute which is used to fill in the $data->name
+value used in Ariadne. This will for example be the object name
+displayed in the Ariadne browse dialogs. Please note that you will have
+to write the attribute name in lower case, because the PHP LDAP module
+converts the LDAP attribute names to lower case.
+
+"Default sorting attribute"
+This is the LDAP attribute which is used to sort the LDAP data befor
+it's displayed. Please note that you will have to write the attribute
+name in lower case, because the PHP LDAP module converts the LDAP
+attribute names to lower case.
+
+5. User mapping
+
+"User mapping"
+Ariadne requires a user to exist in the Ariadne store in order to be
+able to log in. LDAP users obviously don't exist in the Ariadne store,
+so they have to be mapped to a user which does exist in the store. This
+is what you configure here. You have to choose a pshadowuser from
+the Ariadne store, which will be used for all users logging in via that
+pldapconnection. In order to give different grants to different LDAP
+users, you have to use groups. Just create the group in the LDAP
+database AND in the Ariadne store (in /system/groups/ of course)
+and use the same name. If a LDAP user is a member of a specific group on
+the LDAP server, this user will be regarded as a member of that Ariadne
+group as well and have the grants of that Ariadne group.
+
+Some people may wish to dynamically create one Ariadne user per LDAP
+user as soon as the LDAP user logs into Ariadne. The ldapconnection
+design allows to add this feature, but it remains to be done, i.e. this
+is NOT yet supported.
+
+
+
+Johann Hanne, 2004-04-20
