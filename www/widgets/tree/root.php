@@ -20,8 +20,10 @@
   ******************************************************/
 
 	/* retrieve HTTP GET variables */
+	global $HTTP_GET_VARS;
 	$path 	= $HTTP_GET_VARS["path"];
 	$loader = $HTTP_GET_VARS["loader"];	
+	$wwwroot = $HTTP_GET_VARS["wwwroot"];
 ?>
 <html>
 <head>
@@ -262,12 +264,12 @@ function drawNode(pre, level) {
 			prev=prev.prev;
 		}
 		if (next) {
-			addpre='<img src="../../images/tree/line.gif" alt="" width=20" height="20" align="left" valign="middle">'
+			addpre='<img src="<?php echo $wwwroot; ?>images/tree/line.gif" alt="" width=20" height="20" align="left" valign="middle">'
 			if (!prev && pre=='') {
 				img+='top';
 			}
 		} else if (this.parent) {
-			addpre='<img src="../../images/tree/blank.gif" alt="" width=20" height="20" align="left" valign="middle">'
+			addpre='<img src="<?php echo $wwwroot; ?>images/tree/blank.gif" alt="" width=20" height="20" align="left" valign="middle">'
 			if (!prev && pre=='') {
 				img+='only';
 			} else {
@@ -281,14 +283,14 @@ function drawNode(pre, level) {
 		if (this.parent) {
 			if (this.status=="Open") {
 				currimg='minus';
-				plusminus='<a href="javascript:parent.toggle(\''+this.id+'\');"><img src="../../images/tree/minus'+img+'.gif" alt="" width=20" height="20" border="0" align="left" valign="middle"></a>';
+				plusminus='<a href="javascript:parent.toggle(\''+this.id+'\');"><img src="<?php echo $wwwroot; ?>images/tree/minus'+img+'.gif" alt="" width=20" height="20" border="0" align="left" valign="middle"></a>';
 			} else {
 				currimg='plus';
-				plusminus='<a href="javascript:parent.toggle(\''+this.id+'\');"><img src="../../images/tree/plus'+img+'.gif" alt="" width=20" height="20" border="0" align="left" valign="middle"></a>';
+				plusminus='<a href="javascript:parent.toggle(\''+this.id+'\');"><img src="<?php echo $wwwroot; ?>images/tree/plus'+img+'.gif" alt="" width=20" height="20" border="0" align="left" valign="middle"></a>';
 			}
 		}
 		if (this.icon) {
-			icon='<img class="icon" src="../../images/icons/'+this.icon+'.gif" alt="" width="20" height="20" border="0" align="left" valign="middle">';
+			icon='<img class="icon" src="<?php echo $wwwroot; ?>images/icons/'+this.icon+'.gif" alt="" width="20" height="20" border="0" align="left" valign="middle">';
 		} else {
 			icon='';
 		}
@@ -323,7 +325,7 @@ function Draw() {
 	// Draw the entire tree
 	target.document.open();
 
-    MenuDraw="<html>\n<head>\n<BASE HREF='"+window.location+"'>\n<link REL=STYLESHEET type='text/css' HREF='../../styles/tree.css'>\n";
+    MenuDraw="<html>\n<head>\n<link REL=STYLESHEET type='text/css' HREF='<?php echo $wwwroot; ?>styles/tree.css'>\n";
     MenuDraw=MenuDraw+"</head>\n<body>\n";
 	MenuDraw=MenuDraw+root.draw('',1);
 	MenuDraw=MenuDraw+"</body>\n</html>";

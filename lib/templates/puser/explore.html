@@ -52,13 +52,21 @@ function View(link, template) {
       target='?template=classic.manage.html'; // set default template
     }
   }
-<?php if ($data->interface!="new") { ?>
-  window.view.location.href='<?php echo $AR->dir->www; ?>view.php/<?php echo "-".$ARCurrent->session->id."-/$nls"; ?>'+link+target+append;
+<?php if ($data->interface=="winxp") { ?>
+	template='winxp.view.phtml';
+	window.tree.treeload.location.href='<?php echo $AR->dir->www; ?>loader.php/<?php echo "-".$ARCurrent->session->id."-/$nls";
+?>/manage.goto.phtml?link='+escape(link)+'&template='+escape(template)+append;
+<?php } else if ($data->interface!="new") { ?>
+  window.view.location.href='<?php echo $AR->dir->www; ?>view.php/<?php echo
+"-".$ARCurrent->session->id."-/$nls"; ?>'+link+target+append;
 <?php } else { ?>
   template='view.phtml';
-  window.tree.treeload.location.href='<?php echo $AR->dir->www; ?>loader.php/<?php echo "-".$ARCurrent->session->id."-/$nls"; ?>/manage.goto.phtml?link='+escape(link)+'&template='+escape(template)+append;
+  window.tree.treeload.location.href='<?php echo $AR->dir->www;
+?>loader.php/<?php echo "-".$ARCurrent->session->id."-/$nls";
+?>/manage.goto.phtml?link='+escape(link)+'&template='+escape(template)+append;
 <?php } ?>
 }
+
 
 function Loading() {
   window.tree.treeload.location.href='<?php echo $AR->dir->www; ?>loading.html';
@@ -119,7 +127,7 @@ loader=0;
 </HEAD>
 <FRAMESET COLS="200,*" onLoad="init();">
   <FRAME NAME="tree" 
-    SRC="<?php echo $AR->dir->www; ?>widgets/tree/root.php?loader=<?php echo $this->store->root; ?>&path=<?php 
+    SRC="<?php echo $AR->dir->www; ?>widgets/tree/root.php?wwwroot=<?php echo $AR->dir->www; ?>&loader=<?php echo $this->store->root; ?>&path=<?php 
     echo RawUrlEncode($AR->user->path); ?>" marginwidth="0" marginheight="0" >
   <FRAME NAME="view" SRC="<?php echo $this->store->root; ?>/system/ariadne/news/" marginwidth="0" marginheight="0">
 </FRAMESET>
