@@ -19,15 +19,21 @@ class URL {
 		global $ARCurrent, $AR;
 
 		$nls_match = "(/(?:".implode('|', array_keys($AR->nls->list))."))?";
+		// FIXME: make the rest of the code also use the $nls_match2 expression
+		// which doesn't match deel1/ as the nlsid 'de'
+		$nls_match2 = "((".implode('|', array_keys($AR->nls->list)).")/)?";
+
 		/* find and replace the current page */
-		$find[] = "%\\Q".$this->make_url($this->path, "\\E{0}(".$nls_match.")\\Q")."\\E%"; $repl[] = "{arCurrentPage\\1}";
-		$find[] = "%".preg_replace("%^https?://%", "https?\\Q://", $AR->host).$AR->dir->www."loader.php\\E(?:/-".$ARCurrent->session->id."-)?".$nls_match."\\Q".$this->path."\\E%"; $repl[] = "{arCurrentPage\\1}";
+		$find[] = "%\\Q".$this->make_url($this->path, "\\E{0}(".$nls_match.")\\Q")."\\E%"; 
+		$repl[] = "{arCurrentPage\\1}";
+		$find[] = "%".preg_replace("%^https?://%", "https?\\Q://", $AR->host).$AR->dir->www."loader.php\\E(?:/-".$ARCurrent->session->id."-)?".$nls_match."\\Q".$this->path."\\E%"; 
+		$repl[] = "{arCurrentPage\\1}";
 
 		// change the site links
 		$site = $this->currentsite();
 		if ($site && $site !== '/') {
-			$find[] = "%\\Q".$this->make_url($site, "\\E{0}(".$nls_match.")?\\Q")."\\E?%"; 
-			$repl[] = "{arSite\\1}";
+			$find[] = "%\\Q".$this->make_url($site, "")."\\E".$nls_match2."%e";
+			$repl[] = "(\"\${2}\") ? \"{arSite/\\2}\" : \"{arSite}\"";
 		}
 
 		// change hardcoded links and images to use a placeholder for the root
@@ -41,6 +47,7 @@ class URL {
 			$find[] = "%(http[s]?://)?\\Q".$root."\\E".$nls_match."%"; 
 			$repl[] = "{arBase\\1}";
 		}
+
 		// change hand pasted sources, which may or may not include session id's
 		$find[] = "%(https?://)?\\Q".$AR->host.$AR->dir->www."loader.php\\E(/-".$ARCurrent->session->id."-)?".$nls_match."%"; 
 		$repl[] = "{arBase\\1}";
