@@ -1,18 +1,30 @@
 mod_edit.php documentation
 
-status: not finished
+status: almost finished
 
 methods:
 
-	function _setEditmode(&$object, $mode=false) 
+	function _setEditMode($mode=false, $template='user.edit.html', $target='_top') {
 
-		set editMode on (true) or off (false)
+		set editMode on (true) or off (false),
+		set the template and target to use in links when editmode is on.
 
+	function _getEditMode() {
 
-	function _getEditmode(&$object) 
+		returns true if the editMode is on, false otherwise
 
-		get current editMode setting
+	function _getEditTemplate() {
 
+		returns the template to use in links in editmode
+
+	function _getEditTarget() {
+
+		returns the target to use in links in editmode
+
+	function _showInput(&$object, $var, $name) 
+
+		show an editable element as an input line, if 
+		editMode is on, or simply echo it if not
 
 	function _showSpan(&$object, $var, $name) 
 
@@ -24,27 +36,8 @@ methods:
 		show an editable element as an editable div, if 
 		editMode is on, or simply echo it if not.
 
-	function _openForm(&$object) 
-
-		Open a form tag if editMode is on, needed if you
-		need to display meta data input fields
-
-	function _closeForm(&$object) 
-
-		Close the form tag if editMode is on.
-
-	function _registerData(&$object) 
-
-		register all the data fields and objects that are
-		editable on the current page. This function is not
-		finished yet.
-
-
 Missing:
 
-- a printHeaders() method, or something like it, which makes
-  sure the correct javascript and css files are loaded.
-- easy save routines for user.edit.save.html
 - workable user interface for adding new objects, without using 
   the wizards
 - better solution for presenting metadata
@@ -68,7 +61,7 @@ In the mean time, this is how it is supposed to work:
 
 view.html:
 <pinp>
-  load('mod_edit.php');
+  import('mod_edit.php');
 </pinp>
 <html>
 <body>
@@ -89,7 +82,7 @@ view.html:
 
 show.subnav.html:
 <pinp>
-  load('mod_edit.php');
+  import('mod_edit.php');
 </pinp>
 <li><pinp>
   edit::showSpan($nlsdata->name, $nls.'[name]');
@@ -97,12 +90,11 @@ show.subnav.html:
 
 user.edit.page.html
 <pinp>
-  load('mod_edit.php');
+  import('mod_edit.php');
   if (checkgrant('edit')) {
     edit::setEditMode(true); 
   }
   call('view.html');  
-  edit::registerData();
 </pinp>
 
 where when the user via either a link in a page, or a bookmarklet button 

@@ -1,5 +1,180 @@
 Multi part pages
 
+The methods in ppage are now deprecated, there is a new module
+(mod_multipart) which is more powerfull and more generic.
+This module can be used like this:
+
+<html>
+<body>
+<pinp>
+	import('mod_multipart.php');
+	$page=GetPage();
+	$chapters=multipart::CutPage('h1', false, true, $page);
+</pinp>
+<ul>
+<pinp> multipart::ShowSections($chapters, 'show.title.html'); </pinp>
+</ul>
+<pinp> multipart::ShowSections($chapters, 'show.section.html'); </pinp>
+</body>
+</html>
+
+There are only 3 methods left in mod_multipart:
+
+    (array) CutPage($tag, $withtags=true, $withtitles=true, $page=false)
+
+    (void) ShowSection($section, $template="", $args="") 
+
+    (void) ShowSections($sections, $template="", $args="")
+
+Since CutPage now returns the array with sections, there is no need for
+GetSection, CountSections, etc. There was also no real need for ShowTitle
+and ShowTitles, since ShowSection and ShowSections can do exactly the same
+given the correct template.
+
+
+CutPage
+=======
+
+	(array) CutPage($tag, $withtags=true, $withtitles=true, $page=false)
+
+	$tag:		The tag to split the page on, without '<' and '>', e.g. "h1"
+	$withtags:	Whether or not to include $tag in the sections
+	$withtitles:Whether or not to include the title in the section content
+	$page: 		Optional html fragment, if not set $this->GetPage() is used.
+
+	Cutpage now works slightly different in that it returns the sections found
+	in an array. The array has the format:
+
+	Array(Array('title' => $section_title, 'content' => $section_content));
+
+	where
+
+	$section_title is always a string, but may be empty
+	$section_content is also a string
+
+	The array starts at 1, except when a 'leader' section is found, that is
+	returned at position 0, with no title set. So the following html:
+
+		<p>This is a leader</p>
+		<h1>Section 1</h1>
+		<p>This is section 1</p>
+		<h1>Section 2</h1>
+		<p>This is section 2</p>
+
+	with the following code:
+
+		$chapters=multipart::CutPage('h1');
+
+	would result in $chapters being:
+
+		Array
+		(
+		      [0] => Array
+		          (
+		              [content] => <p>This is a leader</p>
+		          )
+
+		      [1] => Array
+		          (
+		              [title] => Section 1
+		              [content] => <h1>Section 1</h1>
+		<p>This is section 1</p>
+		          )
+
+		      [2] => Array
+		          (
+		              [title] => Section 2
+		              [content] => <h1>Section 2</h1>
+		<p>This is section 2</p>
+		          )
+		)
+
+ShowSection
+===========
+
+	(void) ShowSection($section, $template="", $args="", $recurse=false, $level=0)
+
+	$section:	The section title and content from the CutPage result array
+	$template:	The template to call to display this section
+	$args:		The arguments to pass to the template
+	$recurse:	Whether or not to recurse into the section content if that
+				is an array.
+	$level:		Argument which gets incremented when recursing through the
+				sections.
+
+	If no template is given, a default layout will be shown.
+    The template called is given two extra arguments: 
+		$section_title and $section_content.
+	$section_title may be empty.
+
+ShowSections
+============
+
+    (void) ShowSections($sections, $template="", $args="", $recurse=false, $level=0)
+
+    see above, except $sections is an array of sections, e.g. the result of
+    CutPage().
+
+    One of the things you can do now is create a nested list of sections.
+	You can first cut the page on 'hr' tags, and then for each content
+	section cut that section on 'h1' tags, etc.
+
+
+example template which shows a recursive unordered list with anchor links:
+
+<pinp>
+  $section_title=getvar('section_title');
+  $section_content=getvar('section_content');
+  $prefix=getvar('prefix');
+  if ($prefix) {
+    $prefix.=' - ';
+  }
+  if ($section_title) {
+    // don't link to the leader sections
+    </pinp>
+      <li><a href="#<pinp> echo RawUrlEncode($prefix.$section_title);
+          </pinp>"><pinp> echo $section_title; </pinp></a></li>
+    <pinp>
+  }
+  if (is_array($section_content)) {
+    </pinp>
+      <ul><pinp> multipart::ShowSections($section_content, 'show.title.html',
+               Array('prefix' => $section_title)); </pinp></ul>
+    <pinp>
+  }
+</pinp>
+
+example template which simply shows all sections, but with anchors and h1 -
+h7 depending on nesting level.
+
+<pinp>
+  $section_title=getvar('section_title');
+  $section_content=getvar('section_content');
+  $prefix=getvar('prefix');
+  if ($prefix) $prefix.=' - ';
+  if (!$level) {
+    $level=1;
+  }
+  if ($section_title) {
+    </pinp>
+    <h<pinp> echo $level; </pinp>><a name="<pinp> echo
+      RawUrlEncode($prefix.$section_title); </pinp>"><pinp> echo $section_title;
+      </pinp></a></h<pinp> echo $level; </pinp>>
+    <pinp>
+  }
+  if (is_array($section_content)) {
+    $level++;
+    multipart::ShowSections($section_content, 'show.section.html',
+      Array('prefix' => $section_title));
+    $level--;
+  } else {
+    echo $section_content;    
+  }
+</pinp>
+
+------------------------------------------------------
+documentation for the now deprecated methods in ppage:
+======================================================
 
 Ppage now has a set of new methods to allow you to publish multi part pages, or multi page articles.
 
