@@ -4,7 +4,7 @@ TD {
 BODY 	{
 	FONT: 13px sans-serif;
 	BORDER: 0;
-	BACKGROUND-COLOR: #BFBFBF;
+	BACKGROUND-COLOR: buttonface;
 	margin: 5px;
 	padding: 2px;
 }
@@ -21,4 +21,3 @@ SELECT, INPUT {
 A {
 	text-decoration: none;
 }
-@import: url(background.css);
