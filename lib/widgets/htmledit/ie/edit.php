@@ -1349,7 +1349,6 @@ function cssStyle_onChange(command)
 					var currSelectElement=oFirstChild;
 					while (currSelectElement) {
 						tempSelectHTML=new String(currSelectElement.innerHTML);
-						alert(tempSelectHTML);
 						tempHTML=new String(currElement.innerHTML);
 						tempHTML=tempHTML.replace(tempSelectHTML, tagStart+tempSelectHTML+tagEnd);
 						currElement.innerHTML=tempHTML;
