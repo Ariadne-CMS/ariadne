@@ -11,9 +11,9 @@ class mssqlstore_install extends mssqlstore {
 		$queries[0]["query_string"]="
 CREATE TABLE ".$this->tbl_prefix."objects (
 	[id] integer IDENTITY (1,1) PRIMARY KEY,
-	[type] varchar(16) DEFAULT '' NOT NULL,
+	[type] varchar(32) DEFAULT '' NOT NULL,
 	[object] text,
-	[vtype] varchar(16) DEFAULT '' NOT NULL,
+	[vtype] varchar(32) DEFAULT '' NOT NULL,
 	[lastchanged] DATETIME DEFAULT CURRENT_TIMESTAMP
 );";
 		$queries[1]["msg"]="creating objects index.";
@@ -48,8 +48,8 @@ CREATE TABLE ".$this->tbl_prefix."seq_id (
 		$queries[8]["msg"]="creating types table.";
 		$queries[8]["query_string"]="
 CREATE TABLE ".$this->tbl_prefix."types (
-	[type] varchar(16) DEFAULT '' NOT NULL,
-	[implements] varchar(16) DEFAULT '' NOT NULL
+	[type] varchar(32) DEFAULT '' NOT NULL,
+	[implements] varchar(32) DEFAULT '' NOT NULL
 );";
 		$queries[9]["msg"]="creating objects index.";
 		$queries[9]["query_string"]="CREATE INDEX ".$this->tbl_prefix."types_type ON ".$this->tbl_prefix."types (type);";

@@ -27,9 +27,9 @@ CREATE INDEX ".$this->tbl_prefix."nodes_priority ON ".$this->tbl_prefix."nodes (
 CREATE SEQUENCE ".$this->tbl_prefix."objects_id_seq START 1;
 CREATE TABLE ".$this->tbl_prefix."objects (
 	id bigint DEFAULT nextval('".$this->tbl_prefix."objects_id_seq') PRIMARY KEY,
-	type varchar(16) DEFAULT '' NOT NULL,
+	type varchar(32) DEFAULT '' NOT NULL,
 	object text,
-	vtype varchar(16) DEFAULT '' NOT NULL,
+	vtype varchar(32) DEFAULT '' NOT NULL,
 	lastchanged TIMESTAMP DEFAULT current_timestamp NOT NULL
 );
 CREATE INDEX ".$this->tbl_prefix."objects_lastchanged ON ".$this->tbl_prefix."objects (lastchanged);
@@ -43,8 +43,8 @@ CREATE TABLE ".$this->tbl_prefix."properties (
 		$queries[4]["msg"]="creating types table.";
 		$queries[4]["query_string"]="
 CREATE TABLE ".$this->tbl_prefix."types (
-	type varchar(16) DEFAULT '' NOT NULL,
-	implements varchar(16) DEFAULT '' NOT NULL
+	type varchar(32) DEFAULT '' NOT NULL,
+	implements varchar(32) DEFAULT '' NOT NULL
 );
 CREATE INDEX ".$this->tbl_prefix."types_type ON ".$this->tbl_prefix."types (type);
 CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES (implements);
