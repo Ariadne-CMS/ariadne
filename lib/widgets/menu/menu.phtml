@@ -1,15 +1,18 @@
 <?
 	include($this->store->code."widgets/menu/menuarray.phtml");
 
+	$bgcolor="buttonface";
 	$browser=$this->call("browsercheck.phtml");
 	if ($browser["id"]=="ns" && $browser["version"]=="4") {
 		$browser_string = "NS4";
+		$bgcolor="#bfbfbf";
 	} else if($browser["version"]>=5) { 
 		$browser_string = "DOM";
 	} else {
 		$browser_string = "IE4";
 	}
 	?>
+<LINK REL=stylesheet HREF="<?php echo $AR->dir->www; ?>styles/menu.css" TYPE="text/css">
 <script language="JavaScript1.2"
         src="<?php echo $AR->dir->www; ?>widgets/menu/config.php?arDirWWW=<?php echo rawurlencode($AR->dir->www); ?>"
         type='text/javascript'>
@@ -20,33 +23,32 @@
 </script>
 
 <form>
-<table bgcolor="#dfdfdf" width="100%" style="border-width:2;border-style:outset;border-color:#CFCFCF;padding:0px;" cellspacing="0" cellpadding="0">
-	<tr><td>
-		<table width="220" border="0" cellpadding="0">
-		<tr>
+<table id="menu" width="100%" style="border-width:2;border-style:outset;border-color:#CFCFCF;background-color: <?php echo $bgcolor; ?>;padding:0px;" cellspacing="0" cellpadding="0">
+	<tr><td valign="top"><table width="220" border="0" cellpadding="0" cellspacing="0">
+		<tr align="center" class="menu_header" valign="bottom">
+			<td><div style="width: 0px; height: 26px;"></div></td>
 			<td width="60">
-				<a class="menu_header" HREF="javascript:void()"
+				<a HREF="javascript:;"
 					onMouseOver="popUp('HM_Menu1',event)"
 					onMouseOut="popDown('HM_Menu1')"><?php echo $ARnls["m_object"]; ?>&nbsp;&nbsp;&nbsp;</a>
 				</td>
 			<td width="50">
-				<a class="menu_header" HREF="javascript:arshow('edit_object_data','edit.object.data.phtml')"
+				<a HREF="javascript:arshow('edit_object_data','edit.object.data.phtml')"
 					onMouseOver="popUp('HM_Menu2',event)"
 					onMouseOut="popDown('HM_Menu2')"><?php echo $ARnls["m_edit"]; ?>&nbsp;&nbsp;&nbsp;</a>
 			</td>
 			<td width="60">
-				<a class="menu_header" HREF="javascript:arshow('_new','<?php echo $this->make_url(); ?>view.html')"
+				<a HREF="javascript:arshow('_new','<?php echo $this->make_url(); ?>view.html')"
 					onMouseOver="popUp('HM_Menu3',event)"
 					onMouseOut="popDown('HM_Menu3')"><?php echo $ARnls["m_view"]; ?>&nbsp;&nbsp;&nbsp;</a>
 			</td>
 			<td width="60">
-				<a class="menu_header" HREF="javascript:void()"
+				<a HREF="javascript:;"
 					onMouseOver="popUp('HM_Menu4',event)"
 					onMouseOut="popDown('HM_Menu4')"><?php echo $ARnls["m_help"]; ?>&nbsp;&nbsp;&nbsp;</a>
 			</td>
 		</tr>
-		</table>
-	</td>
+		</table></td>
 	<td align="right">
 		<input type="text" name="path" size="50" value="<?php echo $this->path; ?>">
 	</td>
