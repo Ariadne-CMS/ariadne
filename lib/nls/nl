@@ -252,4 +252,6 @@ $ARnls["contactinformation"]="Contact Info";
 $ARnls["effect"]=		"Effect";
 $ARnls["scenario"]=		"Scenario";
 $ARnls["article"]=		"Artikel";
+$ARnls["link"]=			"Link";
+$ARnls["target"]=		"Doel";
 ?>
