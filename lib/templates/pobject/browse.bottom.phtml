@@ -42,9 +42,9 @@
 			<option value=""><?php echo $ARnls["allobjects"]; ?></option>
 			<?php
 				if ($AR->user->data->login=="admin") {
-					$this->ls('/system/ariadne/types/','show.option.value.phtml','selected='.RawUrlEncode($wgBrowseFilter));
+					$this->ls('/system/ariadne/types/','show.option.value.phtml', Array('selected' => $wgBrowseFilter));
 				} else {
-					$this->ls($ARConfig->typetree,'show.option.value.phtml','selected='.RawUrlEncode($wgBrowseFilter));
+					$this->ls($ARConfig->typetree,'show.option.value.phtml', Array('selected' => $wgBrowseFilter));
 				}
 			?>
 		</select>

@@ -48,8 +48,10 @@
 			}
 			if ($delete) {
 				$this->data->grants[$type]=DelGrant($this->data->grants[$type], $id, $grant);
-				$result=@current($this->get($path, "system.save.grants.user.phtml", 
-								"action=delete&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($grant)));
+				$result=@current($this->get($path, "system.save.grants.user.phtml", Array(
+								"action"	=> "delete",
+								"path"		=> $this->path,
+								"grant"		=> $grant)));
 				if ($result=="ok") {
 					$this->save();
 				} else {
@@ -63,7 +65,7 @@
 							$newgrants=ereg_replace("[[:space:]]"," ",$newgrants);
 							$newgrant=strtok($newgrants, " ");
 							if ($newgrant==".") {
-								if ($result=@current($this->get($path,"system.get.grants.phtml","path=".RawUrlEncode($this->path)))) {
+								if ($result=@current($this->get($path, "system.get.grants.phtml", Array("path" => $this->path)))) {
 									$current=implode(" ", array_keys($result));
 									$newgrants=ereg_replace(" ?\. ?",AddSlashes($current),$newgrants);		
 								}
@@ -80,8 +82,10 @@
 									if (substr($newgrant,0,1)=="-") {
 										$delgrant=substr($newgrant,1);
 										$this->data->grants[$type]=DelGrant($this->data->grants[$type],$id,$delgrant);
-										$result=@current($this->get($path, "system.save.grants.user.phtml", 
-													"action=delete&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($delgrant)));
+										$result=@current($this->get($path, "system.save.grants.user.phtml", Array(
+													"action"	=> "delete",
+													"path"		=> $this->path,
+													"grant"		=> $delgrant )));
 										if ($result!="ok") {
 											$this->error="Couldn't save grant in $path";
 										}
@@ -90,8 +94,10 @@
 											$newgrant=substr($newgrant,1);
 										}
 										$this->data->grants[$type][$id][$newgrant]=1;
-										$result=@current($this->get($path, "system.save.grants.user.phtml",   
-													"action=add&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($newgrant)));
+										$result=@current($this->get($path, "system.save.grants.user.phtml", Array(
+													"action"	=> "add",
+													"path"		=> $this->path,
+													"grant"		=> $newgrant)));
 										if ($result!="ok") {
 											$this->error="Couldn't save grant in $path";
 										}

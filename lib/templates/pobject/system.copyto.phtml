@@ -19,7 +19,7 @@
 							$this->find($searchpath[$type], 
 								Array("login" => Array ( "value" => Array ("=" => "'".AddSlashes($id)."'" ) ) ), 
 								"updategrant.phtml", 
-								"action=add&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($newgrant) 
+								Array ( "action" => "add", "path" => $this->path, "grant" => $newgrant) 
 							);
 						}
 					}

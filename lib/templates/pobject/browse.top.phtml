@@ -111,7 +111,7 @@
 	</td><td align="left" valign="top">
 		<select name="BrowseNav" style="width: 150px; padding: 2px; margin: 2px;" onChange="top.View(this.options[this.options.selectedIndex].value);" class="minimal">
 		<?php
-			$this->parents(".","browse.show.option.phtml","selected=".urlencode($this->path));
+			$this->parents(".","browse.show.option.phtml",Array("selected" => $this->path));
 		?>
 		</select>
 				</nobr>

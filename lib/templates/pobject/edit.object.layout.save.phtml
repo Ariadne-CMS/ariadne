@@ -30,9 +30,12 @@
 				$arReturnPage="edit.object.layout.form.phtml?type=".RawUrlEncode($newtype).
 					"&function=".RawUrlEncode($newfunction)."&language=".RawUrlEncode($newlanguage);
 			case $ARnls["save"] :
-				$this->call("system.save.layout.phtml","type=".RawUrlEncode($newtype).
-					"&function=".RawUrlEncode($newfunction)."&language=".RawUrlEncode($newlanguage).
-					"&default=".RawUrlEncode($default)."&template=".RawUrlEncode($template));
+				$this->call("system.save.layout.phtml", Array( 
+					"type"		=> $newtype,
+					"function"	=> $newfunction,
+					"language"	=> $newlanguage,
+					"default"	=> $default,
+					"template"	=> $template));
 				break;
 			case $ARnls["delete"] :
 				$this->call("system.delete.layout.phtml",$arCallArgs);

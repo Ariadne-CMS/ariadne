@@ -1,59 +1,59 @@
 <?php   
-  if ($this->CheckSilent("delete")) {
-    if (!$this->lock("T")) {
-      $this->error=$ARnls["err:cannotlockobject"];
-    } else {
-      if (!$this->ls(".","system.get.phtml")) {
-        // remove grants for this object in all user objects.
-        if ($data->grants && is_array($data->grants)) {
-          while (list($login, $grants)=each($data->grants)) {    
-            $criteria["login"]["value"]["="]="'".$login."'";
-            $this->find("/system/users/", $criteria, "updategrant.phtml", 
-                        "action=delete&path=".RawUrlEncode($this->path)
-                   );
-          }
-        }
-        // remove templates
-        if ($data->pinp) {
-          while (list($type, $values)=each($data->pinp)) {
-            while (list($function, $templatelist)=each($values)) {
-              while (list($language, $template)=each($templatelist)) {
-                $file=$this->store->files."templates".$template;
-                // FIXME: check for illegal values of $template
-				if (file_exists($file)) {
-                  unlink($file);
-                }
-                $file.=".pinp";
-                if (file_exists($file)) {
-                  unlink($file);
-                }
-              }
-            }
-            if (!@rmdir($this->store->files."templates".$this->path."class=/".$type."/")) {
-               debug("can not remove dir(".$this->store->files."templates".$this->path."class=/".$type."/".")","class");
-            }
-          }
-        }        
-        // remove files
-        $dir=$this->store->files."files".$this->path;
-        if ($handle=@opendir($dir)) {
-          while (false!==($file=readdir($handle))) {
-            if ($file!="." && $file!="..") {
-              // as recurse should have taken care of subdirectories, unlink should suffice.
-              unlink($dir.$file);
-            }
-          }
-          closedir($handle);
-          @rmdir($dir);
-        }
-        // clear cache
-        $this->ClearCache();
-        // finally remove object itself
-        $this->delete();
-      }
-      $this->unlock();
-    }
-  } else {
-    $this->error=$ARnls["nopermission"];
-  }
+	if ($this->CheckSilent("delete")) {
+		if (!$this->lock("T")) {
+			$this->error=$ARnls["err:cannotlockobject"];
+		} else {
+			if (!$this->ls(".","system.get.phtml")) {
+				// remove grants for this object in all user objects.
+				if ($data->grants && is_array($data->grants)) {
+					while (list($login, $grants)=each($data->grants)) {		
+						$criteria["login"]["value"]["="]="'".$login."'";
+						$this->find("/system/users/", $criteria, "updategrant.phtml", Array(
+									"action" => "delete",
+									"path" => $this->path) );
+					}
+				}
+				// remove templates
+				if ($data->pinp) {
+					while (list($type, $values)=each($data->pinp)) {
+						while (list($function, $templatelist)=each($values)) {
+							while (list($language, $template)=each($templatelist)) {
+								$file=$this->store->files."templates".$template;
+								// FIXME: check for illegal values of $template
+								if (file_exists($file)) {
+									unlink($file);
+								}
+								$file.=".pinp";
+								if (file_exists($file)) {
+									unlink($file);
+								}
+							}
+						}
+						if (!@rmdir($this->store->files."templates".$this->path."class=/".$type."/")) {
+							 debug("can not remove dir(".$this->store->files."templates".$this->path."class=/".$type."/".")","class");
+						}
+					}
+				}				
+				// remove files
+				$dir=$this->store->files."files".$this->path;
+				if ($handle=@opendir($dir)) {
+					while (false!==($file=readdir($handle))) {
+						if ($file!="." && $file!="..") {
+							// as recurse should have taken care of subdirectories, unlink should suffice.
+							unlink($dir.$file);
+						}
+					}
+					closedir($handle);
+					@rmdir($dir);
+				}
+				// clear cache
+				$this->ClearCache();
+				// finally remove object itself
+				$this->delete();
+			}
+			$this->unlock();
+		}
+	} else {
+		$this->error=$ARnls["nopermission"];
+	}
 ?>

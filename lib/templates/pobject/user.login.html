@@ -9,7 +9,11 @@
 	if ($ARCurrent->session) {
 		$arLoginOld=$ARCurrent->session->get("ARLogin");
 		$arPasswordOld=$ARCurrent->session->get("ARPassword");
-		$arCallArgs.="&arLoginOld=".RawUrlEncode($arLoginOld);
+		if (is_string($arCallArgs)) {
+			$arCallArgs.="&arLoginOld=".RawUrlEncode($arLoginOld);
+		} else if (is_array($arCallArgs)) {
+			$arCallArgs=array_merge($arCallArgs, Array("arLoginOld" => $arLoginOld));
+		}
 		// when current user is logged on as public, then don't delete his
 		// session.
 		if ($AR->user && ($AR->user->data->login!="public")) {

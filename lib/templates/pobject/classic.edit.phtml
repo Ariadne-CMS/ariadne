@@ -16,9 +16,8 @@
 
 	******************************************************************/
 	$ARCurrent->allnls=1;
-	if (!$arReturnPage) {
-		$arReturnPage=$this->store->root.$this->path."view.html";
-		$arCallArgs.="&arReturnPage=".RawUrlEncode($arReturnPage);
+	if (!$this->getdata("arReturnPage","none")) {
+		$ARCurrent->arReturnPage=$this->store->root.$this->path."view.html";
 	}
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 		if ($arSubmit==$ARnls["save"]) { // save data
