@@ -57,6 +57,7 @@
 			$ARCurrent->wgWizNextStep=1;
 		} else {
 			$criteria["login"]["value"]["="]="'".AddSlashes($arNewFilename)."'";
+			$criteria["object"]["implements"]["="]="'pgroup'";
 			$result=$this->find("/system/groups/", $criteria, "system.get.phtml");
 			if ($result) {
 				$arFlow[0]["error"]=sprintf($ARnls["err:loginexists"],$newfilename);

@@ -23,6 +23,7 @@
 			$login=$this->getdata("arNewFilename","none");
 			if ($login) {
 				$criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
+				$criteria["object"]["implements"]["="]="'pgroup'";
 				$result=$this->find("/system/groups/",$criteria,"system.get.phtml");
 				if ($result) {
 					$this->error=sprintf($ARnls["err:loginexists"],$login);
