@@ -33,7 +33,6 @@
 // Constants
 //
 var MENU_SEPARATOR = ""; // Context menu separator
-var sHeader="<BODY STYLE=\"font:12pt times new roman,times,serif\">";
 
 //
 // Globals
@@ -176,16 +175,15 @@ function window_onload() {
   for (var i=0;i<arr.length;i++) {
     ParagraphStyle.options[ParagraphStyle.options.length]=new Option(arr[i], arr[i]);
   }
-
   loadpage(tbContentRoot, tbContentPath, tbContentFile, tbContentName, tbContentLanguage, tbContentType, tbContentValue, tbContentSave2Form);
 }
 
 
 function loadpage(root, path, file, name, language, type, value, save2form) {
   // FIXME check isDirty and ask for save first.
-  if (ViewHTML.TBSTATE=="unchecked") {
-    VIEW_HTML_onclick();
-  }
+  // if (ViewHTML.TBSTATE=="unchecked") {
+  //   VIEW_HTML_onclick();
+  // }
   // window.document.title='Edit '+path+file+' ( '+name+': '+language+')';
   tbContentRoot=root;
   tbContentPath=path;
@@ -195,13 +193,14 @@ function loadpage(root, path, file, name, language, type, value, save2form) {
   tbContentType=type;
   tbContentValue=value;
   tbContentSave2Form=save2form;
-  if (file) {
-    file+='/';
+  var test=new String(window.opener.wgHTMLEditContent.value);
+  if (test.match(/<FRAME/i) && (ViewHTML.TBSTATE=="checked")) {
+    VIEW_HTML_onclick();
   }
-  if (value) {
-    tbContentElement.DocumentHTML=window.opener.wgHTMLEditContent.value;
+  if (ViewHTML.TBSTATE!="checked") {
+    tbContentElement.DocumentHTML=AR_FORMAT_HTML(window.opener.wgHTMLEditContent.value);
   } else {
-    tbContentElement.LoadURL(root+path+file+'show.'+name+'.phtml?language='+escape(language));
+    tbContentElement.DocumentHTML=window.opener.wgHTMLEditContent.value;
   }
   tbContentElement.BaseURL=root+path;
   tbContentElement.focus();
@@ -344,7 +343,11 @@ function tbContentElement_DisplayChanged() {
 }
 
 function MENU_FILE_SAVE_onclick() {
-  sContents=AR_GET_HTML();
+  if (ViewHTML.TBSTATE=="checked") {
+    var sContents=tbContentElement.DocumentHTML;
+  } else {
+    var sContents=tbContentElement.DOM.body.innerText;
+  }
   if (tbContentFile) {
     file=tbContentFile+'/';
   } else {
@@ -377,25 +380,30 @@ function MENU_FILE_SAVE_onclick() {
   }
 }
 
+function AR_FORMAT_HTML(code) {
+  var sContents=new String(code);
+  // don't even think about changing the next few lines... 
+  // the htmlediting component is extremely picky
+  sContents=sContents.replace(/&/g,"&amp;");
+  sContents=sContents.replace(/</g,"&lt;");
+  sContents=sContents.replace(/>/g,"&gt;");  
+  sContents=sContents.replace(/ /g,"&nbsp;");
+  sContents=new String("<html><head><style> p { margin: 0px;} </style></head><BODY style=\"font:10pt courier new, monospace\">"+sContents+"</BODY></html>");
+  var linebreak=sContents.lastIndexOf('\n');
+  while (linebreak!=-1) {
+    sContents=sContents.substr(0, linebreak-1)+'<P>'+sContents.substr(linebreak+1); 
+    linebreak=sContents.lastIndexOf('\n');
+  }
+  // now you can edit anything you want...
+  return sContents;
+}
+
 function VIEW_HTML_onclick() {
   if (ViewHTML.TBSTATE=="checked") {
 
     TBSetState(ViewHTML, "unchecked");
-    var sContents=tbContentElement.DocumentHTML;
+    var sContents=AR_FORMAT_HTML(tbContentElement.DocumentHTML);
 
-	// don't even think about changing the next few lines... 
-	// the htmlediting component is extremely picky
-    sContents=sContents.replace(/&/g,"&amp;");
-    sContents=sContents.replace(/</g,"&lt;");
-    sContents=sContents.replace(/>/g,"&gt;");  
-    sContents=sContents.replace(/ /g,"&nbsp;");
-    sContents=new String("<html><head><style> p { margin: 0px;} </style></head><BODY style=\"font:10pt courier new, monospace\">"+sContents+"</BODY></html>");
-    var linebreak=sContents.lastIndexOf('\n');
-    while (linebreak!=-1) {
-      sContents=sContents.substr(0, linebreak-1)+'<P>'+sContents.substr(linebreak+1); 
-      linebreak=sContents.lastIndexOf('\n');
-    }
-	// now you can edit anything you want...
     tbContentElement.DocumentHTML=sContents;
     ToolbarFormatState=FormatToolbar.TBSTATE;
     TBSetState(FormatToolbar, "hidden");
@@ -406,34 +414,40 @@ function VIEW_HTML_onclick() {
     ToolbarTableState=TableToolbar.TBSTATE;
     TBSetState(TableToolbar, "hidden");
     TBSetState(ToolbarMenuTable, "gray");
+    TBRebuildMenu(ViewHTML.parentElement, true);
     tbDetailsSetting=tbContentElement.ShowDetails;
     tbContentElement.ShowDetails = false;
-  } else {
+  } else if (ViewHTML.TBSTATE=="unchecked") {
     var sContents=tbContentElement.DOM.body.innerText;
-    TBSetState(FormatToolbar, ToolbarFormatState);
-    if (ToolbarFormatState=="hidden") {
-      TBSetState(ToolbarMenuFmt, "unchecked");
+    if (sContents.match(/<FRAME/i)) {
+      alert('HTML contains a frameset\nWYSIWYG view disabled');
     } else {
-      TBSetState(ToolbarMenuFmt, "checked");
+      var sContents=tbContentElement.DOM.body.innerText;
+      TBSetState(FormatToolbar, ToolbarFormatState);
+      if (ToolbarFormatState=="hidden") {
+        TBSetState(ToolbarMenuFmt, "unchecked");
+      } else {
+        TBSetState(ToolbarMenuFmt, "checked");
+      }
+      TBSetState(AbsolutePositioningToolbar, ToolbarAbsState);
+      if (ToolbarAbsState=="hidden") {
+        TBSetState(ToolbarMenuAbs, "unchecked");
+      } else {
+        TBSetState(ToolbarMenuAbs, "checked");
+      }
+      TBSetState(TableToolbar, ToolbarTableState);
+      if (ToolbarTableState=="hidden") {
+        TBSetState(ToolbarMenuTable, "unchecked");
+      } else {
+        TBSetState(ToolbarMenuTable, "checked");
+      }
+      tbContentElement.ShowDetails = tbDetailsSetting;
+      TBSetState(ViewHTML, "checked");
+      TBRebuildMenu(ViewHTML.parentElement, true);
+      tbContentElement.DocumentHTML=sContents
+      tbContentElement.BaseURL=tbContentRoot+tbContentPath;
     }
-    TBSetState(AbsolutePositioningToolbar, ToolbarAbsState);
-    if (ToolbarAbsState=="hidden") {
-      TBSetState(ToolbarMenuAbs, "unchecked");
-    } else {
-      TBSetState(ToolbarMenuAbs, "checked");
-    }
-    TBSetState(TableToolbar, ToolbarTableState);
-    if (ToolbarTableState=="hidden") {
-      TBSetState(ToolbarMenuTable, "unchecked");
-    } else {
-      TBSetState(ToolbarMenuTable, "checked");
-    }
-    tbContentElement.ShowDetails = tbDetailsSetting;
-    TBSetState(ViewHTML, "checked");
-    tbContentElement.DocumentHTML=sContents
-    tbContentElement.BaseURL=tbContentRoot+tbContentPath;
   }
-  TBRebuildMenu(ViewHTML.parentElement, true);
   tbContentElement.focus();
 }
 
@@ -846,7 +860,7 @@ function TOOLBARS_onclick(toolbar, menuItem) {
   tbContentElement.focus();
 }
 
-function ParagraphStyle_onchange() {	 
+function ParagraphStyle_onchange() {
   tbContentElement.ExecCommand(DECMD_SETBLOCKFMT, OLECMDEXECOPT_DODEFAULT, ParagraphStyle.value);
   tbContentElement.focus();
 }
@@ -977,13 +991,14 @@ return tbContentElement_ContextMenuAction(itemIndex)
       </div>
     </div>
 
-    <div class="tbSeparator"></div>
+     <div class="tbSeparator"></div>
 
     <div class="tbMenuItem" id="ViewHTML" TBTYPE="toggle" TBSTATE="checked" ID="VIEW_HTML" TBTYPE="toggle" LANGUAGE="javascript" onclick="return VIEW_HTML_onclick()">
       WYSIWYG
     </div>
   </div> 
   
+<!--
   <div class="tbMenu" ID="FORMAT" LANGUAGE="javascript" tbOnMenuShow="return OnMenuShow(QueryStatusFormatMenu, FORMAT)">
     Format
     <div class="tbMenuItem" ID="FORMAT_FONT" LANGUAGE="javascript" onclick="return FORMAT_FONT_onclick()">
@@ -1091,7 +1106,7 @@ return tbContentElement_ContextMenuAction(itemIndex)
       </div>
     </div>
   </div>
-
+-->
 </div>
 
 <div class="tbToolbar" ID="StandardToolbar">
