@@ -53,17 +53,23 @@
 <title>Ariadne - <?php echo $arLoginMessage; ?></title>
 <script language="javascript">
 function dopopup() {
+/*
+  FIXME: this needs changes in the popup javascript routines as well
   if (document.all) {
     var popup_left=window.screenLeft+(document.body.clientWidth/2)-250;
     var popup_top=window.screenTop+10;
     var popup_method=showModalDialog;
     var popup_properties='dialogHeight:308px; dialogWidth:515px; dialogLeft:'+popup_left+'px; dialogTop:'+popup_top+'px; resizable: yes; status: no; help: no;';
+    // var popup_properties='left='+popup_left+',top='+popup_top+',directories=no,location=no,menubar=no,status=no,toolbar=no,resizable=yes,height=275,width=500';
     var popup_focus=false;
+    // var popup_method=window.open;
+    // var popup_focus=true;
   } else {
+*/
     var popup_method=window.open;
     var popup_properties='directories=no,location=no,menubar=no,status=no,toolbar=no,resizable=yes,height=275,width=500';
     var popup_focus=true;
-  }
+//  }
   popup=popup_method('<?php 
 	echo $this->make_url()."user.login.popup.html".
 			"?arLoginMessage=".RawUrlEncode($arLoginMessage).
