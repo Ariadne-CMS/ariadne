@@ -103,7 +103,7 @@ class export_wddx {
 					fwrite($fp,"<struct type=\"object\" class=\"".get_class($value)."\">\n");
 				}
 				reset($value);
-				while (list($key, $val)=each($value)) {
+				foreach( $value as $key => $val){
 					export_wddx::export_data($fp,$key, $val);
 				}
 				fwrite($fp,"</struct>\n");
@@ -123,13 +123,13 @@ class export_wddx {
 			fwrite($fp,"<struct type=\"hash\">\n");
 			$templates=$object->store->get_filestore("templates");
 			export_wddx::print_verbose("   Templates:\n");
-			while (list($type, $functions)=each($object->data->config->pinp)) {
+			foreach($object->data->config->pinp as $type =>  $functions){
 				fwrite($fp,"<var name=\"$type\">\n");
 				fwrite($fp,"<struct type=\"hash\" >\n");
-				while (list($function, $languages)=each($functions)) {
+				foreach($functions as $function => $languages){
 					fwrite($fp,"<var name=\"$function\">\n");
 					fwrite($fp,"<struct type=\"hash\" >\n");
-					while (list($language, $ids)=each($languages)) {
+					foreach($languages as $language => $ids){
 						$file=$type.".".$function.".".$language.".pinp";
 						export_wddx::print_verbose('              ');
 						export_wddx::print_verbose("[".$file."]: ");
@@ -167,7 +167,7 @@ class export_wddx {
 			fwrite($fp,"<var name=\"files\">\n");
 			fwrite($fp,"<struct type=\"hash\">\n");
 			
-			while( list( $key, $file ) = each($filearray) ) {
+			foreach( $filearray as $file){
 				export_wddx::print_verbose('              ');
 				export_wddx::print_verbose("[".$file."]: ");
 				fwrite($fp,"<var name=\"".$file."\">\n");

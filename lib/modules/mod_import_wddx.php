@@ -122,6 +122,9 @@ class import_wddx {
 			4) object files
 		 */
 		debug("WDDX working on ".$objdata['path'],'all');
+
+		$changed = false;
+	
 		if($this->config['prefix']){
 			$path = $this->store->make_path($this->config['prefix'],".".$objdata['path']);
 		} else {
@@ -164,15 +167,17 @@ class import_wddx {
 			if($id = $this->store->exists($path))
 			{
 				debug("WDDX data: object exists",'all');
-				$this->print_verbose(" ( updating ) \n");
-				$object = current(
-						$this->store->call("system.get.phtml",
-							array(),$this->store->get($path))
-						);
+				if(!is_object($object)){
+					$object = current(
+							$this->store->call("system.get.phtml",
+								array(),$this->store->get($path))
+							);
+				}
 				if(
 						($object->lastchanged <= $objdata['lastchanged']) ||
 						($this->config['forcedata'] === true))
 				{
+					$this->print_verbose(" ( updating ) \n");
 
 					$tmpconfig = $object->data->config;
 					unset($object->data);
@@ -186,8 +191,9 @@ class import_wddx {
 					$object->size = $objdata['size'];
 					$object->priority = $objdata['priority'];
 					$object->type = $objdata['type'];
-					debug("WDDX data: calling save");
 					$object->save($objdata['properties']);
+				} else {
+					$this->print_verbose(" ( skipping ) \n");
 				}
 			} else
 			{
@@ -207,7 +213,6 @@ class import_wddx {
 					unset($objdata['properties']['fulltext']);
 				}
 
-				debug("WDDX data: calling save");
 				$object->save($objdata['properties']);
 				if($object->error){
 					debug("WDDX data: error during save");
@@ -242,10 +247,12 @@ class import_wddx {
 			if($id = $this->store->exists($path))
 			{
 				debug("WDDX templates: object exists",'all');
-				$object = current(
-						$this->store->call("system.get.phtml",
-							array(),$this->store->get($path))
-						);
+				if(!is_object($object)){
+					$object = current(
+							$this->store->call("system.get.phtml",
+								array(),$this->store->get($path))
+							);
+				}
 				$templates=$object->store->get_filestore("templates");
 
 				/*
@@ -264,15 +271,15 @@ class import_wddx {
 				 */
 				if(is_Array($objdata['templates'])){
 					$this->print_verbose("   Templates:\n");
-					while(list($type,$tval) = each($objdata['templates']))
+					foreach($objdata['templates'] as $type => $tval)
 					{
 						if(is_array($tval))
 						{
-							while(list($function,$nval) = each($tval))
+							foreach($tval as $function => $nval)
 							{
 								if(is_array($nval))
 								{
-									while(list($language,$val) = each($nval))
+									foreach($nval as $language => $val)
 									{
 										$file = $type.".".$function.".".$language;
 										debug("WDDX templates: ".$object->id."working on template $file",'all');
@@ -347,12 +354,18 @@ class import_wddx {
 											}
 										}
 									}
+								} else {
+									debug("WDDX template: nval != array",'all');
 								}
 							}
+						} else {
+							debug("WDDX template: tval != array",'all');
 						}
 					}
+				} else {
+					debug("WDDX template: templates != array",'all');
 				}
-				$object->save();
+				$changed = true;
 			}
 		}
 
@@ -374,14 +387,16 @@ class import_wddx {
 			if($id = $this->store->exists($path))
 			{
 				debug('WDDX grants: yeah the path exists','all');
-				$object = current(
-						$this->store->call("system.get.phtml",
-							array(),$this->store->get($path))
-						);
+				if(!is_object($object)){
+					$object = current(
+							$this->store->call("system.get.phtml",
+								array(),$this->store->get($path))
+							);
+				}
 				if(is_array($objdata['data']->config->grants)){
 					$this->print_verbose("   Grants: installing\n");
 					$object->data->config->grants = $objdata['data']->config->grants;
-					$object->save();
+					$changed = true;
 				}
 			}
 		}
@@ -408,10 +423,12 @@ class import_wddx {
 			debug('WDDX work files','all');
 			if($id = $this->store->exists($path))
 			{
-				$object = current(
-						$this->store->call("system.get.phtml",
-							array(),$this->store->get($path))
-						);
+				if(!is_object($object)){
+					$object = current(
+							$this->store->call("system.get.phtml",
+								array(),$this->store->get($path))
+							);
+				}
 
 				$files=$object->store->get_filestore("files");
 				debug('WDDX files: yeah the path exists','all');
@@ -419,7 +436,7 @@ class import_wddx {
 				if(is_Array($objdata[files]) && count($objdata[files]) > 0)
 				{
 					$this->print_verbose("       Files:\n");
-					while(list($key,$val) = each($objdata[files]))
+					foreach($objdata[files] as $key => $val)
 					{
 						$this->print_verbose('              ');
 						$this->print_verbose("[".$key."]: ");
@@ -448,6 +465,10 @@ class import_wddx {
 					}
 				}
 			}
+		}
+		// save the object
+		if($changed){
+			$object->save();
 		}
 	}
 
