@@ -29,6 +29,7 @@ New Features:
 	- You can now configure the specialchars surrounding the ftp list modes
 	  (thanks to Gerhard Hoogterp).
 	- Added xml exporting of an Ariadne tree, no import yet.
+	- Added option to add named hyperlinks and anchor tags in the WYSWYG editor. 
 
 Bugs Fixed:
 	- Fixed a bug in the grant system: local grants did get inherited.
