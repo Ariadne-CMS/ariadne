@@ -1,5 +1,5 @@
 <?php
-	$ARCurrent->allnls=true;
+	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
 		$tempfile=$ARCurrent->session->get("tempname");
 		$forwardslash=strrpos($tempfile,'/');
@@ -24,6 +24,7 @@
 		}
 		if (!$error) {
 			$filename=substr($this->path, strlen($this->parent), -1);
+			ldHeader("Cache-control: ");
 			ldSetContent("application/ariadne-export", filesize($tempfile));
 			// ldHeader("Content-Disposition: attachment; filename=$filename.ax");
 			readfile($tempfile);
