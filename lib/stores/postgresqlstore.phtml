@@ -83,9 +83,10 @@ class postgresqlstore {
 		$this->mod_lock->lock_duration = $config["lock_duration"];
 
 		$config["password"] = "";
+		$this->proxystore = &proxystore::createproxy($this,$config);
+
 		debug("postgresqlstore: end", "all");
 
-		$this->proxystore = &proxystore::createproxy($this,$config);
 	}
 
 	function call($template, $args, $objects) {
