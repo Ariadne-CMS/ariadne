@@ -208,7 +208,8 @@
 		}
 		// now check for outputbuffering
 		if ($image=ob_get_contents()) {
-			if ($ARCurrent->headers) {
+			if ($ARCurrent->headers && !headers_sent()) {
+				// headers_sent check should not be neccessary, but apparantly is... 
 				$headerlist=explode("\n",$headers);
 				while (list($key,$header)=@each($headerlist)) {
 					Header($header);
