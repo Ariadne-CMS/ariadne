@@ -31,6 +31,8 @@ Bugs fixed:
 	- The HTTP_IF_MODIFIED_SINCE header was not parsed correctly. This
 	  has been fixed by Johann Hanne.
 	- Fixed the postgresqlstore's nextid() function.
+	- Fixed the object not found errors when calling an object.delete,
+	  object.copy etc via $this->get($path,"object...);
 
 Changes in Ariadne since version 2.1.3
 
