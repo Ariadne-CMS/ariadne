@@ -1,41 +1,45 @@
 <html>
 <body bgcolor="white">
-  <script>
-  <!--
-    link='<?php echo $link; ?>';
-    if (top.tree) {
-      <?php switch($do) {
-        case "add" : ?>
-        top.tree.AddLinks(link, '<?php echo $icon ?>','<?php echo AddSlashes($name); ?>','<?php echo $path; ?>','<?php echo AddSlashes($pre); ?>');
-        <?php 
+<script>
+<!--
+  link='<?php echo $link; ?>';
+  if (top.tree) {
+    <?php 
+      switch($do) {
+        case "add" :
+          echo "    alert('add: $returnpage');\n";
+          echo "    top.tree.AddLinks(link, '$icon','".AddSlashes($name)."','$path','".AddSlashes($pre)."');\n";
           if ($shortcut) {
-        ?>
-        top.tree.AddLinks('<?php echo $shortcut; ?>','<?php echo $icon ?>','<?php echo AddSlashes($name); ?>','<?php echo $path; ?>','<?php echo AddSlashes($pre); ?>');
-        <?php 
+            echo "    top.tree.AddLinks('$shortcut','$icon','".AddSlashes($name)."','$path','".AddSlashes($pre)."');\n";
           }
-        ?>
-        document.location.href='<?php echo $returnpage; ?>';
-      <?php break;
-        case "update" : ?>
-        top.tree.UpdateLinks('<?php echo $icon; ?>','<?php echo AddSlashes($name); ?>', '<?php echo $path; ?>','<?php echo AddSlashes($pre); ?>');
-        document.location.href='<?php echo $returnpage; ?>';
-      <?php break;
-        case "delete" : ?>
-        top.tree.DelLinks('<?php echo $path; ?>');
-        <?php if (!$parent) { ?>
-          document.location.href='<?php echo $returnpage; ?>';
-        <?php } else { ?>
-          top.View('<?php echo $parent; ?>');
-        <?php } ?>
-      <?php } ?>
-    } else {
-      document.location.href='<?php echo $returnpage; ?>';
-    }
-  //-->
-  </script>
-  <noscript>
+          echo "    document.location.href='$returnpage';\n";
+          break;
+
+        case "update" : 
+          echo "    alert('update: $returnpage');\n";
+          echo "    top.tree.UpdateLinks('$icon','".AddSlashes($name)."', '$path','".AddSlashes($pre)."');\n";
+          echo "    document.location.href='$returnpage';\n";
+          break;
+
+        case "delete" :
+          echo "    alert('delete: $returnpage');\n";
+          echo "    top.tree.DelLinks('$path');\n";
+          if (!$parent) {
+            echo "    document.location.href='$returnpage;';\n";
+          } else {
+            echo "    top.View('$parent');\n";
+          }
+          break;
+      }
+    ?> 
+  } else {
+    document.location.href='<?php echo $returnpage; ?>';
+  }
+//-->
+</script>
+<noscript>
   <META HTTP-EQUIV="Refresh" content="0;URL=<?php echo $returnpage; ?>">
   <a href="<?php echo $returnpage; ?>">Continue</a>.
-  </noscript>
+</noscript>
 </body>
 </html>
