@@ -64,6 +64,7 @@
 		$this->data->mimetype=$this->getdata("mimetype","none");
 		
 		$this->save($properties);
+		$this->ClearCache();
 		unset($properties);
 
 		$this->arIsNewObject=false;

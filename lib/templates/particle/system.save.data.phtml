@@ -106,6 +106,7 @@
 				}
 				$properties["published"][0]["value"]=$this->data->published;
 				$this->save($properties);
+				$this->ClearCache();
 			} else {
 				$this->error="'$scenario' is not a pscenario.";
 			}

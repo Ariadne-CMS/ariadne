@@ -216,6 +216,7 @@
 			}
 			if (!$this->error) {
 				$this->save($properties);
+				$this->ClearCache($this->path, false, true);
 			}
 		}
 	}

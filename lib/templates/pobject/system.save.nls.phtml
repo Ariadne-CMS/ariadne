@@ -30,6 +30,7 @@
 		}
 		if (!$this->error) {
 			$this->save();
+			$this->ClearCache($this->path, false, true);
 		}
 	}
 ?>

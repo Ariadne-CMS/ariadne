@@ -72,6 +72,7 @@
 			$properties["address"][0]["country"]="'".AddSlashes($this->data->country)."'";
 			if (!$this->error) {
 				$this->save($properties);
+				$this->ClearCache();
 			}
 		}
 	}

@@ -73,6 +73,7 @@
 		if (!$this->error) {
 			$this->vtype=$vtype;
 			$this->save($properties, $vtype);
+			$this->ClearCache();
 		}
 	}
 ?>

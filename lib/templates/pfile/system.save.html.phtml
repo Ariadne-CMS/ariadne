@@ -13,5 +13,6 @@
 		}
 		$files=$this->store->get_filestore("files");
 		$files->write($html, $this->id, $file);
+		$this->ClearCache();
 	}
 ?>

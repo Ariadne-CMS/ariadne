@@ -257,6 +257,7 @@
 					$this->data->timeframes=$properties["timeframe"];
 				}
 				$this->save($properties);
+				$this->ClearCache();
 			}
 		}
 	}

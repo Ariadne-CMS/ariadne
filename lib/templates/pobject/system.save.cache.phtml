@@ -39,7 +39,7 @@
 		$this->data->cacheconfig=$cache;
 		$this->save();
 		if ($refresh) {
-			$this->ClearCache();
+			$this->ClearCache($this->path, true, true);
 		}
 	} else {
 		$this->error=$ARnls["accessdenied"];

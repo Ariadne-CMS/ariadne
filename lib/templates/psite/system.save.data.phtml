@@ -30,6 +30,7 @@
 				$this->data->url=substr($this->data->url,0,-1);
 			}
 			$this->save($properties);
+			$this->ClearCache();
 		}
 	}
 ?>

@@ -73,6 +73,7 @@
 		}
 		if (!$this->error) {
 			$this->save($properties);
+			$this->ClearCache();
 			if (!$this->error) {
 				if (($groups=$this->getdata("groups","none")) && ($groups!=$this->data->groups)) {
 					// overrides data from profile

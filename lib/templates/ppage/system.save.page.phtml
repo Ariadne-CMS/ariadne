@@ -38,5 +38,6 @@
 		$this->data=@current($this->get(".","system.get.data.phtml"));
 		$this->data->$ContentLanguage->page=$page;
 		$this->save();
+		$this->ClearCache();
 	}
 ?>
