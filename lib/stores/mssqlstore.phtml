@@ -297,7 +297,30 @@ class mssqlstore {
 				}
 				while (list($valuename, $compare) = each($values)) {
 					while (list($function, $value) = each($compare)) {
-						$ecompare	= AddSlashes($function);
+						switch(strtolower($function)) {
+							case '=':
+							case '==':
+								$ecompare = '=';
+							break;
+							case '!=':
+								$ecompare = '<>';
+							break;
+							case '<=':
+							case '>=':
+							case '<':
+							case '>':
+								$ecompare = $function;
+							break;
+							case '~=':
+							case '=~':
+							case 'like':
+								$ecompare = "like";
+							break;
+							case '!~':
+							case 'not like':
+								$ecompare = "not like";
+							break;
+						}
 						$evaluename	= AddSlashes($valuename);
 						if ($value == "") { 
 							// empty strings as value generate strange results in SQL land
