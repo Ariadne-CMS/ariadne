@@ -1,0 +1,2 @@
+This is a placeholder. If we do not have this file here, CVS and/or the ZIP
+programs won't not include these directories when checking out / unzipping.
