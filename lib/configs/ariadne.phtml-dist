@@ -58,6 +58,13 @@
   $AR->VS->scannername      = 'f-prot';		// f-prot is the only supported type right now
   $AR->VS->path             = '/usr/local/bin/';// where is your scanner binary
 
+  /**************************************************************************/
+  /* HTMLTidy information                                                   */
+  /**************************************************************************/
+
+  $AR->Tidy->path           = '/usr/bin/tidy'; 
+  $AR->Tidy->options		= '--tidy-mark no --show-warnings yes --output-encoding utf8 --force-output yes';
+
   /*************************************************************************/
   /* Database Information:                                                 */
   /* Fill in the Hostname, and database name of the database server, and   */
