@@ -109,7 +109,7 @@ class proxystore {
 		return $result;
 	}
 
-	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="",$size=0, $priority=0) {
+	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) {
 		global $AR;
 		debug("proxynewobject($path, $parent, $type, [data], $id, $lastchanged, $vtype,$size, $priority)","all");
 		$result= &$AR->stores[$this->key]->newobject($path, $parent, $type, $data, $id, $lastchanged, $vtype, $size, $priority);
@@ -156,7 +156,7 @@ class proxystore {
 		return $result;
 	}
 
-	function  touch($id, $timestamp=-1) {
+	function touch($id, $timestamp = -1) {
 		global $AR;
 		debug("proxy touch($path)","store");
 		$result = &$AR->stores[$this->key]->touch($id, $timestamp);
@@ -185,7 +185,7 @@ class proxystore {
 		return $result;
 	}
 
-	function parents($path,$top="/") {
+	function parents($path, $top="/") {
 	/**********************************************************************************
 
 	 This function takes as argument a path to an object in the store. It will return 
@@ -239,7 +239,7 @@ class proxystore {
 	}
 
 
-	function save($path, $type, $data, $properties="", $vtype="",$priority=false) {
+	function save($path, $type, $data, $properties="", $vtype="", $priority=false) {
 	/***************************************************************
 
 		This function takes as argument a path, type, objectdata and 
@@ -310,7 +310,7 @@ class proxystore {
 		return $result;
 	}
 
-	function count($objects){
+	function count($objects) {
 		global $AR;
 		debug("proxyinfo($objects)","store");
 		$result = $AR->stores[$this->key]->count($objects);
@@ -320,7 +320,7 @@ class proxystore {
 	}
 		
 	
-	function info($objects){
+	function info($objects) {
 		global $AR;
 		debug("proxyinfo($objects)","store");
 		$result = $AR->stores[$this->key]->info($objects);
@@ -460,7 +460,7 @@ class proxystore {
 	}
 
 
-	function load_properties($object,$values="") {
+	function load_properties($object, $values="") {
 		global $AR;
 		debug("proxyload_properties($object)","all");
 		$result = $AR->stores[$this->key]->load_properties($object,$values);
@@ -469,7 +469,7 @@ class proxystore {
 		return $result;
 	}
 
-	function load_property($object, $property,$values="") {
+	function load_property($object, $property, $values="") {
 		global $AR;
 		debug("proxyload_property($object, $property)","all");
 		$result = $AR->stores[$this->key]->load_property($object, $property,$values);
@@ -511,7 +511,7 @@ class proxystore {
 		return $result;
 	}
 
-	function set_nextid($path,$next) {
+	function set_nextid($path, $newid) {
 	/**********************************************************************
 
 		'private' function of the store. Used by link and save.
@@ -520,8 +520,8 @@ class proxystore {
 
 	**********************************************************************/
 		global $AR;
-		debug("proxyset_nextid($path, $next)","all");
-		$result = $AR->stores[$this->key]->set_nextid($path,$next);
+		debug("proxyset_nextid($path, $newid)","all");
+		$result = $AR->stores[$this->key]->set_nextid($path,$newid);
 		$this->error = $AR->stores[$this->key]->error;
 		debug("proxyset_nextid: end","all");
 		return $result;

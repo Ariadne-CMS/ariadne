@@ -219,7 +219,7 @@ class postgresqlstore {
 		return ($result);
 	}
 
-	function touch($id, $timestamp=-1) {
+	function touch($id, $timestamp = -1) {
 		debug("touch($id, $timestamp)","store");
 		$this->error="";
 
@@ -829,7 +829,7 @@ class postgresqlstore {
 		return ($result);
 	}
 
-	function store_run_query(&$query) {
+	function store_run_query($query) {
 	/**********************************************************************
 
 		`private` function to handle query's and set $this->error when this fails
@@ -1078,7 +1078,7 @@ class postgresqlstore {
 		return ($result);
 	}
 
-	function load_property($object, $property, $values) {
+	function load_property($object, $property, $values="") {
 		debug("load_property($object, $property, [values])","all");
 
 		$nodes_tbl = $this->tbl_prefix."nodes";
