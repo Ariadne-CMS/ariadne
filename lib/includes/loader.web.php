@@ -363,7 +363,7 @@
 	}
 
 	function ldSetContent($mimetype, $size=0) {
-		$result=ldHeader("Content-type: ".$mimetype);
+		$result=ldHeader("Content-Type: ".$mimetype);
 		if ($size) {
 			$result=ldHeader("Content-Length: ".$size);
 		}
