@@ -1,4 +1,4 @@
-Installing Ariadne.                                            Muze Ariadne 2.2
+Installing Ariadne.                                            Muze Ariadne 2.3
 ===============================================================================
 
   IMPORTANT: Ariadne needs PHP 4.0.6 or higher *
@@ -34,7 +34,7 @@ Apache configuration (httpd.conf).
    e.g.:
 
      cd /usr/local/lib/
-     tar xvzf ~/ariadne.2.2.tgz
+     tar xvzf ~/ariadne.2.3.1-dev.tgz
      cd /var/www
      ln -s /usr/local/lib/ariadne/www/ ariadne
 
