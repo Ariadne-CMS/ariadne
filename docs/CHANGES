@@ -107,6 +107,8 @@ Bugs Fixed:
 	  saving objects with a path that is too long for the database.
 	- yet another round of places where a object type was hardcoded to 16
 	  characters this time it was add_type in the install stores
+	- fixes a locale typo in the ariadne.phtml-unix and ariadne.phtml-win
+	- changed the default of mkdir in the ftp interface back to pdir
 
 Changes in Ariadne since version 2.2
 

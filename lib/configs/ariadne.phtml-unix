@@ -267,7 +267,7 @@
   $AR->nls->locales['fr']   = 'fr_FR';
   $AR->nls->locales['it']   = 'it_IT';
   $AR->nls->locales['sv']   = 'sv_SE';
-  $AR->nls->locales['sv']   = 'hr_HR';
+  $AR->nls->locales['hr']   = 'hr_HR';
 
   $AR->nls->default         = 'en';
   /**************************************************************************/
@@ -295,7 +295,7 @@
 
   /* what to generate on a mkdir in ftp context *****************************/
   // FIXME: build a better system for this, type dependant?
-  $ARConfig->cache[".."]->FTP['mkdir']="pphotobook";
+  $ARConfig->cache[".."]->FTP['mkdir']="pdir";
 
 
   /**************************************************************************/
