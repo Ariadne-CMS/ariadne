@@ -39,20 +39,15 @@
 			// the defined interface: $arCallArgs)
 			$this->data=@current($this->get(".","system.get.data.phtml"));
 
-			debug("1");
 			$templates=$this->store->get_filestore("templates");
-			debug("2");
 			$file=$type.".".$function.".".$language;
 			$pinp=new pinp("header","this->", "\$this->_");
 			$compiled=$pinp->compile(strtr($template,"\r",""));
 			$this->data->pinp[$type][$function][$language]=$this->id;
 
-			debug("3");
 			$file=$type.".".$function.".".$language;
 			$templates->write($template, $this->id, $file.".pinp");
-			debug("4");
 			$templates->write($compiled, $this->id, $file);
-			debug("5");
 			if ($default) { // add pinp template from default templates list
 				$this->data->templates[$type][$function][$language]=$this->id;
 			} else { // remove pinp template from default templates list

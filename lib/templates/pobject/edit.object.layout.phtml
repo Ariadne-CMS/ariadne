@@ -53,7 +53,8 @@
 							?></td>
 							<td><?php echo $function; ?></td>
 							<td><?php
-								asort($templatelist);
+								ksort($templatelist);
+								reset($templatelist);
 								while (list($language, $template)=each($templatelist)) {
 									$flag="<img src=\"".$AR->dir->images."nls/small/$language.gif\" alt=\"".$AR->nls->list[$language]."\" border=\"0\">";
 									echo "<a href=\"edit.object.layout.form.phtml?type=".$type."&function=".RawUrlEncode($function).

@@ -42,6 +42,7 @@
 				while (list($arnls, $value)=each($ARConfig->nls->list)) {
 					$count++;
 					if ($count>$middle) { 
+						$count=0;
 						echo "</td><td>\n"; 
 					}
 					if ($this->getdata("name",$arnls)) {
