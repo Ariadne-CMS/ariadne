@@ -5,37 +5,47 @@ include_once($this->code."objects/pobject.phtml");
 
 class ppage extends pobject { // definitie class
 
-  function ParsePage($page) {
-    return str_replace("{arRoot}",$this->store->root,$page);
+  function ParsePage($page, $full=false) {
+    if (!$full) {
+      return str_replace("{arRoot}",$this->store->root, 
+        eregi_replace('^.*<BODY[^>]*>','',
+        eregi_replace('</BODY.*$','',$page)));
+    } else {
+      return str_replace("{arRoot}",$this->store->root, $page);
+    }
   }
 
-  function GetPage($nls="", $source=false) {
+  function GetPage($nls="", $source=false, $full=false) {
     if (!$nls) {
       $target=$this->nlsdata->page;
     } else if ($this->data->$nls) {
       $target=$this->data->$nls->page;
     }
     if ($source) {
-      return htmlspecialchars($this->ParsePage($target));
+      return htmlspecialchars($this->ParsePage($target, $full));
     } else {
-      return $this->ParsePage($target);
+      return $this->ParsePage($target, $full);
     }
   }
 
-  function ShowPage($nls="", $source=false) {
-    echo $this->GetPage($nls, $source);
+  function ShowPage($nls="", $source=false, $full=false) {
+    echo $this->GetPage($nls, $source, $full);
   }
 
-  function _ParsePage($page) {
-    return $this->ParsePage($page);
+  function _GetPage($nls="", $source=false, $full=false) {
+    return $this->GetPage($nls, $source, $full);
   }
 
-  function _GetPage($nls="", $source=false) {
-    return $this->GetPage($nls, $source);
+  function _GetFullPage($nls="", $source=false) {
+    return $this->GetPage($nls, $source, true);
   }
 
-  function _ShowPage($nls="") {
-    return $this->ShowPage($nls);
+  function _ShowPage($nls="", $source=false, $full=false) {
+    return $this->ShowPage($nls, $source, $full);
+  }
+
+  function _ShowFullPage($nls="", $source=false) {
+    return $this->ShowPage($nls, $source, true);
   }
 
 } // end class ppage
