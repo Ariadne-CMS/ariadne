@@ -41,9 +41,13 @@
 		<?php
 	} else {
 		$arIsNewObject=$this->arIsNewObject;
-		if (!$arOverwrite || $arOverwrite="yes") { 
-			$this->call("system.save.data.phtml",$arCallArgs);
+		if ($arIsNewObject && $arOverwrite=="yes") { 
+			/* since an overwrite is really a update of an existing
+				object, this object should not be tagged as New */
+			$this->arIsNewObject=false;
 		}
+
+		$this->call("system.save.data.phtml",$arCallArgs);
 		if ($this->error) {
 			?>
 				<font color="red" face="arial,helvetica,sans-serif" size=+1><?php echo $this->error; ?></font><p>

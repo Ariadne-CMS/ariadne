@@ -178,11 +178,10 @@ class pobject extends object {
 			debug("pobject: save: new object","all");
 			$arNewParent=$this->make_path("..");
 			$arNewFilename=substr($this->path, strlen($arNewParent), -1);
-			$arOverwrite=$this->getdata("arOverwrite", "none");
 			$configcache=$ARConfig->cache[$arNewParent];
 			if (!eregi("\.\.",$arNewFilename)) {
 				if (eregi("^[a-z0-9_\{\}\.\:-]+$",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
-					if (!$this->exists($this->path) || $arOverwrite) { //arNewFilename)) {
+					if (!$this->exists($this->path)) { //arNewFilename)) {
 						if ($this->exists($arNewParent)) {
 							$this->data->ctime=time();
 							$this->data->mtime=$this->data->ctime;
