@@ -1,5 +1,5 @@
 <?PHP
-// Polish Language ver. 1.0 for Ariadne 2.0
+// Polish Language ver. 1.0 for Ariadne 2.0 RC2
 // by Lukasz.Keler@ceti.pl
 
 $ARnls["m_object"]=		"Obiekt";

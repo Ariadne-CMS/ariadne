@@ -1,7 +1,7 @@
 <?php
-	// Polish Language ver. 1.01 for Ariadne 2.0 RC2
+	// Polish Language ver. 1.0 for Ariadne 2.0 RC2
 	// by Lukasz.Keler@ceti.pl
-	debug("ARnls lib: en","all");
+	debug("ARnls lib: pl","all");
 
 	$ARnls["aboutariadne"]					=	"O Ariadne";
 	$ARnls["accessdenied"]					=	"Dostęp wzbroniony";
@@ -31,7 +31,7 @@
 	$ARnls["city"]							=	"Miasto";
 	$ARnls["classic"]						=	"Klasyczny";
 	$ARnls["clickback"]						=	"Kliknij w przycisk 'powrót' przeglądarki.";
-	$ARnls["collectinginfo"]				=	"Zbieram informację...";
+	$ARnls["collectinginfo"]				=	"Zbieram informacje...";
 	$ARnls["color"]							=	"Kolor";
 	$ARnls["comments"]						=	"Komentarz";
 	$ARnls["config"]						=	"Konfiguracja";
@@ -86,7 +86,7 @@
 	$ARnls["err:alreadyexists"]				=	"%s już istnieje.";
 	$ARnls["err:cannotdelsystemusers"]		=	"Nie możesz usunąć użytkowników systemowych (admin oraz public)";
 	$ARnls["err:cannotedit.phtml"]			=	"Nie możesz edytować szablonów o rozszerzeniu '.phtml'";
-	$ARnls["err:cannotlockobject"]			=	"Nie mogę wplowadzić blokady na %s";
+	$ARnls["err:cannotlockobject"]			=	"Nie mogę wprowadzić blokady na %s";
 	$ARnls["err:containsobj"]				=	"Obiekt zawiera inny obiekt, wpierw go usuń.";
 	$ARnls["err:dontuseid"]					=	"Nie można używać '{id}' w nazwie użytkownika";
 	$ARnls["err:endswith.phtml"]			=	"Nie możesz edytować szablonów o rozszerzeniu .phtml.";
