@@ -22,7 +22,6 @@ Currently known broken in CVS / Todo before 2.0b10
 - store: link() doesn't check if the parent of destination exists.
 - add/edit/delete(type) not in CVS yet.
 - nls wizard in new interface not yet implemented.
-- view->webpage -> new window
 
 Todo before 2.0RC1
 
