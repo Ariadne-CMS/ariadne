@@ -1881,8 +1881,14 @@ class pobject extends object { // pobject class definition
 	}
 
 	function _save($properties="", $vtype="") {
-		$this->data->config = current($this->get('.', 'system.get.data.config.phtml'));
-		return $this->save($properties, $vtype);
+		if ($this->arIsNewObject && $this->CheckSilent('add', $this->type)) {
+			unset($this->data->config);
+			$result = $this->save($properties, $vtype);
+		} else if (!$this->arIsNewObject && $this->CheckSilent('edit', $this->type)) {
+			$this->data->config = current($this->get('.', 'system.get.data.config.phtml'));
+			$result = $this->save($properties, $vtype);
+		}
+		return $result;
 	}
 
 	function _is_supported($feature) {
