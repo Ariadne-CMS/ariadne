@@ -1,0 +1,311 @@
+<?PHP
+	/**************************************************************************
+	File Store Module
+	---------------------------------------------------------------------------
+
+	init($name, $root)
+
+    write($contents, $id, $name)
+
+	read($id, $name, $limit=0, $offset=0)
+
+	show($id, $name)
+
+	exists($id, $name)
+
+	include($fsId, $fsName, $fsLocalVars, $fsObject)
+
+	copy_to_store($source, $id, $name="")
+
+	copy_from_store($target, $id, $name="")
+
+	remove($id, $name="")
+
+	is_empty($id)
+
+	copy($id, $newid, $name="", $newname="")
+
+	move($id, $newid, $name="", $newname="")
+
+	size($id, $name)
+	
+	purge($id)
+
+	close()
+
+	**************************************************************************/
+
+	class filestore {
+
+		define ("WRITE",true);
+		define ("READ",false);
+		define ("PATHTICLESIZE",100);
+		define ("DIRMODE",0770);
+		define ("FILEMODE",0660);
+
+
+		/* public */
+
+		function init($name, $root) {
+			// initialize filestore
+			$this->name=$name;
+			// make a copy of the store data, not a reference
+			// for security reasons
+			$this->root=$root.$name;
+			if (!file_exists($this->root)) {
+				mkdir($this->root, DIRMODE);
+			}
+		}
+
+		function write($contents, $id, $name) {
+			$result=false;
+			if ($name) {
+				$path=$this->make_path($id, $name, WRITE);
+				if ($fp=fopen($path, "bw")) {
+					$result=fwrite($fp, $contents);
+					fclose($fp);
+				}
+			}
+			return $result;
+		}
+
+		function read($id, $name, $limit=0, $offset=0) {
+			$result=false;
+			$path=$this->make_path($id, $name);
+			if (file_exists($path))	{
+				if (!$limit) {
+					$limit=filesize($path)-$offset;
+				}
+				if ($fp=fopen($path, "br")) {
+					if ($offset) {
+						fseek($fp, $offset);
+					}
+					$result=fread($fp, $limit);
+					fclose($fp);
+				}
+			}
+			return $result;
+		}
+
+		function show($id, $name) {
+			$result=false;
+			$path=$this->make_path($id, $name);
+			if (file_exists($path))	{
+				$result=readfile($path);				
+			}
+			return $result;
+		}
+
+		function exists($id, $name) {
+			return file_exists($this->make_path($id, $name));
+		}
+
+		function include($fsId, $fsName, $fsLocalVars="", &$fsObject="") {
+			$fsPath=$this->make_path($fsId, $fsName);
+			if (file_exists($fsPath)) {
+				Parse_str($fsLocalVars);
+				if ($fsObject) {
+					$fsOldThis=&$this;
+					$this=&$fsObject;
+				}
+				include($fsPath);
+				if ($fsOldThis) {
+					$this=&$fsOldThis;
+				}					
+			} else {
+				$arResult=false;
+			}
+			if (isset($arResult)) {
+				return $arResult;
+			}
+		}
+
+		function copy_to_store($file, $id, $name="") {
+			$result=false;
+			if (file_exists($file)) {
+				if (file_type($file)=="dir") {
+					$path=$this->make_path($id, "", WRITE);
+					// copy all files, result is number of files
+					$count=0;
+					if ($dir=opendir($file)) {
+						while ($temp=readdir($dir)) {
+							if ($result=copy($file.$temp, $path.$temp)) {
+								$count++;
+							}
+						}
+					}
+					$result=$count;
+				} else {
+					if (!$name) {
+						$name=basename($file);
+					}
+					$path=$this->make_path($id, $name, WRITE);
+					$result=copy($file, $path);
+				}
+			}
+			return $result;
+		}
+
+		function copy_from_store($target, $id, $name="") {
+			$result=false;
+			if ($name) {
+				$path=$this->make_path($id, $name);
+				if (!file_exists($target)) {
+					$result=@copy($path, $target);
+				} else if (file_type($target)=="dir") {
+					if (substr($target, -1)!="/") {
+						$target.="/";
+					}
+					$target=$target.$name;
+					$result=@copy($path, $target);
+				}
+			} else {
+				if (!file_exists($target)) {
+					mkdir($target);
+				}
+				if (file_exists($target) && (file_type($target)=="dir")) {
+					if (substr($target, -1)!="/") {
+						$target.="/";
+					}
+					$path=$this->make_path($id);
+					$count=0;
+					if ($dir=@opendir($path)) {
+						while ($file=readdir($dir)) {
+							if (file_type($dir.$file)=="file") {
+								$result=@copy($dir.$file, $target.$file);
+								if ($result) {
+									$count++;
+								}
+							}
+						}
+					}
+					$result=$count;
+				}
+			}			
+			return $result;
+		}
+
+		function remove($id, $name="") {
+			$result=false;
+			$path=$this->make_path($id, $name);
+			if (file_exists($path)) {
+				unlink($path);
+				if ($this->is_empty($id)) {
+					$this->rmdir($id);
+				}		
+			}
+		}
+
+		function is_empty($id) {
+			$empty=true;
+			if ($dir=@opendir($this->make_path($id))) {
+				while ($empty && ($file=readdir($dir))) {
+					if ($file!="." && $file!="..") {
+						$emtpy=false;
+					}
+				}
+				closedir($dir);
+			}
+			return $empty;
+		}
+
+		function purge($id) {
+			$path=$this->make_path($id);
+			if ($dir=opendir($path)) {
+				while ($file=readdir($dir)) {
+				if ($file!="." && $file!="..") {
+					if (filetype($path.$file)=="file")) {
+						unlink($file);
+					}
+				}
+				closedir($dir);
+				$this->rmdir($id);
+			}
+		}
+
+
+		function copy($id, $name, $newid, $newname) {
+			$source=$this->make_path($id, $name);
+			$target=$this->make_path($newid, $newname, WRITE);
+			return copy($source, $target);
+		}
+
+		function move($id, $name, $newid, $newname) {
+			$result=false;
+			$source=$this->make_path($id, $name);
+			$target=$this->make_path($newid, $newname, WRITE);
+			if (copy($source, $target)) {
+				$result=unlink($source);
+			}
+			return $result;
+		}
+
+		function size($id, $name) {
+			$path=$this->make_path($id, $name);
+			if (file_exists($path)) {
+				$result=filesize($path);
+			} else {
+				$result=false;
+			}
+			return $result;
+		}
+
+		function close() {
+		}
+
+		/* private functions */
+		function makepath($id, $name="", $write=false) {
+			// calculate path based on $id and $name
+			$path=$this->root;
+			if (!file_exists($path) && $write) {
+				mkdir($path, DIRMODE);
+			}	
+			while ($id) {
+				$next=floor($id/PATHTICLESIZE);
+				$part=$id%PATHTICLESIZE;
+				$path.="/$part";
+				if (!file_exists($path) && $write) {
+					mkdir($path, DIRMODE);
+				}
+				$id=$next;				
+			}
+			return $path."/_".$name;
+		}
+
+		function getparentid($id) {
+			$parent=0;
+			$count=0;
+			while ($id) {
+				$next=floor($id/PATHTICLESIZE);
+				$part=$id%PATHTICLESIZE;
+				if ($next) {
+					$parent=$part*(pow(PATHTICLESIZE,$count))+$parent;
+				}
+				$id=$next;
+				$count++;
+			}
+			return $parent;
+		}	
+
+		function rmdir($id) {
+			$result=true;
+			if ($this->is_empty($id)) {
+				$path=$this->make_path($id);
+				if (file_exists($path)) {
+					$result=rmdir($path);
+				}
+				$parent=$this->getparentid($id);
+				while ($parent) {
+					if ($this->rmdir($parent)) {
+						$parent=$this->getparentid($parent);
+					} else {
+						$parent=0;
+					}
+				}						
+			} else {
+				$result=false;
+			}
+		}
+	}
+
+?>
