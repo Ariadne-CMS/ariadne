@@ -19,7 +19,7 @@ New features:
 	  now have unique names containing the session this will allow users
 	  to have multiple template editors open given a different session
 	  for each editor.
-
+	- French translation of Ariadne by Arnaud Siminski <asiminski@rollingcost.com>
 
 Bugs fixed:
 	- The postgresql locking module didn't use table prefixes in the
