@@ -12,8 +12,9 @@ New features:
 	for the editor are English and German. (Thanks to Johann Hanne).
 
 Bugs fixed:
-	- The postgresql locking module did use table prefixes which caused
-	an 'unkown table' reference. (thanks to Christoph Nelles for giving
+	- The postgresql locking module didn't use table prefixes in the
+	"lock update" query which caused an 'unkown table' reference. (thanks 
+	to Christoph Nelles for giving
 	us access to his postgresql installation).
 	- Fixed the postgresql find() function; it now uses the 'limit' and
 	'offset' statements instead of only the 'limit' statement.
