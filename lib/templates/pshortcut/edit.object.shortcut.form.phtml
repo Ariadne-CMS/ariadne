@@ -71,7 +71,7 @@
 				<td colspan="2">
 					<?php 
 						if (!$wgBrowsePath=$this->getdata("path","none")) {
-							$wgBrowsePath=$data->path;
+							$wgBrowsePath=$this->parent;
 						}
 						$wgBrowseName="path";
 						include($this->store->code."widgets/browse/js.html");
