@@ -39,7 +39,16 @@
     if (!$name) {
       $name="page";
     }
+    if (!$target) {
+      global $HTTP_SERVER_VARS;
+      if (substr($HTTP_SERVER_VARS['SCRIPT_NAME'],0,strlen($root))!=$root) {
+        $target=$this->make_url();
+      } else {
+        $target=$root.$path;
+      }
+    }
   ?>
+  tbContentTarget="<?php echo $target; ?>";
   tbContentRoot="<?php echo $root; ?>";
   tbContentPath="<?php echo $path; ?>";
   tbContentFile="<?php echo $file; ?>";
@@ -199,13 +208,18 @@ function window_onload() {
   for (var i=0;i<arr.length;i++) {
     ParagraphStyle.options[ParagraphStyle.options.length]=new Option(arr[i], arr[i]);
   }
-  loadpage(tbContentRoot, tbContentPath, tbContentFile, tbContentName, tbContentLanguage, tbContentType, tbContentValue, tbContentSave2Form);
+  loadpage(tbContentRoot, tbContentPath, tbContentFile, tbContentName, tbContentLanguage, tbContentType, tbContentValue, tbContentSave2Form, tbContentTarget);
 }
 
 
-function loadpage(root, path, file, name, language, type, value, save2form) {
+function loadpage(root, path, file, name, language, type, value, save2form, target) {
   // FIXME check isDirty and ask for save first.
   // window.document.title='Edit '+path+file+' ( '+name+': '+language+')';
+  if (target) {
+    tbContentTarget=target;
+  } else {
+    tbContentTarget=root+path;
+  }
   tbContentRoot=root;
   tbContentPath=path;
   tbContentFile=file;
@@ -398,7 +412,7 @@ function MENU_FILE_SAVE_onclick() {
     savewindow=window.open('','savewindow','directories=no,height=100,width=300,location=no,status=no,toolbar=no,resizable=no');
     savewindow.document.open();
     savewindow.document.write("<html><body bgcolor=#CCCCCC><font face='Arial,helvetica,sans-serif'>");
-    savewindow.document.write("<form method='POST' action='"+tbContentRoot+tbContentPath+file+"edit."+tbContentName+".save.phtml'>");
+    savewindow.document.write("<form method='POST' action='"+tbContentTarget+file+"edit."+tbContentName+".save.phtml'>");
     savewindow.document.write("<input type='hidden' name='"+tbContentName+"'>");
     savewindow.document.write("<input type='hidden' name='ContentLanguage'>");
     savewindow.document.write("</form><br>Saving "+tbContentName+"</font></body></html>");
