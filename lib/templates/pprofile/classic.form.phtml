@@ -1,0 +1,155 @@
+<?php
+	/******************************************************************
+	 classic.form.phtml                                    Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $arNewType, $arNewFilename
+	 Grant needed: read
+	 Global variables: none
+
+	 This template displays the input form for this object. 
+
+	 no result.
+
+	******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+?>
+<html>
+<head>
+<title><?php echo $ARnls["edituser"]; ?></title>
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
+<?php
+		if ($this->call("lock.init.phtml")) {
+?>
+</head>
+<body bgcolor="white" onUnLoad="releaseLock()">
+<form onSubmit="if (document.wgWizForm.wgWizSubmitHandler) { document.wgWizForm.wgWizSubmitHandler(); }">
+<input type="hidden" name="arNewType" value="<?php echo $arNewType; ?>">
+<input type="hidden" name="arNewFilename" value="<?php echo $arNewFilename; ?>">
+<input type="hidden" name="arReturnPage" value="<?php echo $arReturnPage; ?>">
+
+<table border="0" width="100%" cellspacing="0">
+<tr>
+	<td bgcolor="#404074" colspan="2">
+		<font face="helvetica, sans-serif" color="white"><b><?php $ARnls["userdata"]; ?>
+		<?php if (!$arNewType) { echo $data->login; } else { echo $arNewFilename; } ?></b></font>
+	</td>
+</tr><tr>
+	<td align="right">
+		<font face="helvetica, sans-serif"><b><?php echo $ARnls["name"]; ?>&nbsp;:</b></font>
+	</td>
+	<td>
+		<input type="text" name="name" maxlength="32" value="<?php $this->showdata("name"); ?>">
+	</td>
+</tr><tr>
+	<td bgcolor="#404074" colspan="2">
+		<font face="helvetica, sans-serif" color="white"><b><?php echo $ARnls["preferences"]; ?></b></font>
+	</td>
+</tr><tr>
+	<td align="right">
+		<font face="helvetica, sans-serif"><b><?php echo $ARnls["language"]; ?>&nbsp;:</b></font>
+	</td>
+	<td>
+		<select name="language">
+		<?php
+			if (!$arNewType) {
+				$language=$data->language;
+			} else {
+				$language=$ARCurrent->default;
+			}
+			reset($AR->nls->list);
+			while (list($key, $value)=each($AR->nls->list)) {
+				if ($key==$language) {
+					echo "<option value=\"$key\" selected>$value</option>\n";
+				} else {
+					echo "<option value=\"$key\">$value</option>\n";
+				}
+			}
+		?>
+		</select>
+	<font face="helvetica, sans-serif"><b><?php echo $ARnls["interface"]; ?>&nbsp;:</b></font>
+		<select name="interface">
+		<option value="classic"><?php echo $ARnls["classic"]; ?></option>
+		<option value="new" <?php if ($data->interface=="new") { echo "selected"; } ?>><?php echo $ARnls["new"]; ?></option>
+		<option value="winxp" <?php if ($data->interface=="winxp") { echo "winxp"; } ?>><?php echo $ARnls["winxp"]; ?></option>
+	</select>
+	</td>
+</tr><tr>
+	<td align="right"><font face="helvetica, sans-serif"><b><?php echo $ARnls["editor"]; ?>&nbsp;:</b></font></td>
+	<td>
+		<select name="editor">
+		<option value="wysiwyg"><?php echo $ARnls["wysiwyg"]; ?></option>
+		<option value="text" <?php if ($data->editor=="text") { echo "selected"; } ?>><?php echo $ARnls["text"]; ?></option>
+	</select>
+	</td>
+</tr><tr>
+	<td></td>
+	<td><font face="helvetica, sans-serif"><i><?php echo $ARnls["changeeffectivenextlogin"]; ?></i></font></td>
+</tr>
+</table>
+<p>
+<script>
+	<!-- set wgWizForm to the current form -->
+	document.wgWizForm = document.forms[0];
+</script>
+<table width="100%" cellspacing="0" border="0">
+<?php
+	$configcache=$ARConfig->cache[$this->path];
+	if ($configcache->custom) {
+		reset($configcache->custom);
+		while (list($key, $definition)=each($configcache->custom)) {
+			if (($definition["type"]==$this->type) ||
+				($definition["inherit"] && ($this->implements($definition["type"])))) {
+				$hascustomdata=true;
+				break;
+			}
+		}
+	}
+
+	if ($hascustomdata) {
+?><tr>
+	<td colspan="2" bgcolor="#404074">
+		<font face="helvetica, sans-serif" color="white">
+		<?php 
+			echo $ARnls["customdata"];
+		?></font>
+	</td>
+</tr><tr>
+	<td colspan="2">
+		<?php
+				$this->call("edit.object.data.custom.phtml", Array("arLanguage" => $selectednls));
+		?>
+	</td>
+</tr>
+<?php
+	}
+?>
+<tr>
+	<td>
+		<?php if ($arNewType) { ?>
+			<input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="history.back()">
+		<?php } else { ?>
+			<input type="submit" name="arSubmit" value="<?php echo $ARnls["cancel"]; ?>">
+			<?php
+				$wgRecurseConfirm=$ARnls["q:removeuser"];
+				$wgRecurseAction="delete";
+				$wgRecurseTitle=$ARnls["delete"];
+				include($this->store->code."widgets/recurse/form.js");
+				include($this->store->code."widgets/recurse/form.html");
+			?>
+		<?php } ?>
+	</td>
+	<td align="right">
+		<input type="submit" name="arSubmit" value="<?php echo $ARnls["save"]; ?>">	
+	</td>
+</tr>
+</table>
+<?php
+	$this->call("lock.form.phtml");
+?>
+</form>
+</body>
+</html>
+<?php
+		}
+	}
+?>

@@ -23,49 +23,7 @@
           <input type="text" name="name" maxlength="32" 
             value="<?php $this->showdata("name", "none"); ?>">
         </td>
-      </tr><tr>
-        <td colspan="2">
-          <?php echo $ARnls["password"]; ?>
-        </td>
-      </tr><tr>
-        <td colspan="2">
-          <input type="password" name="newpass1" maxlength="50" 
-            value="">
-        </td>
-      </tr><tr>
-        <td colspan="2">
-          <?php echo $ARnls["again"]; ?>
-        </td>
-      </tr><tr>
-        <td colspan="2">
-          <input type="password" name="newpass2" maxlength="50" 
-            value="">
-        </td>
-        </tr>
-
-                <?
-              // profile support
-                if($this->CheckSilent("config")) {
-                ?>
-         <tr>
-          <td colspan="2">
-            <?php echo $ARnls["profile"]; ?>
-          </td>
-        </tr><tr>
-          <td colspan="2">
-            <select name="profile">
-              <option value=""><?php echo $ARnls["noprofile"]; ?></option>
-              <?php
-                      $selected=$this->getdata("profile");
-                $crit['object']['type']['=']="'pprofile'";
-                $this->find("/system/profiles/",$crit,"show.option.phtml",'selected='.$selected);
-              ?>
-            </select>
-          </td>
       </tr>
-                <?
-                }
-                ?>
       </table>
     </fieldset>
   </td>
