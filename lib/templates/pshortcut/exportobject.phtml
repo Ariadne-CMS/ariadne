@@ -1,9 +1,0 @@
-<?php
-	$ARCurrent->nodes[$this->path]=$this->id;
-	$ARCurrent->objects[$this->id]["data"]=$this->data;
-	$ARCurrent->objects[$this->id]["type"]=$this->type;
-	if ($vtype=@current($this->get($this->data->path, "system.get.type.phtml"))) {
-		$ARCurrent->objects[$this->id]["vtype"]=$vtype;
-	}
-	$ARCurrent->objects[$this->id]["properties"]=$this->load_properties();
-?>

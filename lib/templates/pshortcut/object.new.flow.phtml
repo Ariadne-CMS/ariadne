@@ -1,0 +1,59 @@
+<?php
+	/******************************************************************
+	 object.new.flow.phtml                                 Muze Ariadne
+	 ------------------------------------------------------------------
+
+	 No result.
+
+	******************************************************************/
+
+	$start="pobject::object.new.filename.phtml";
+	$step1="edit.object.shortcut.form.phtml";
+	$step2="edit.object.shortcut.language.phtml";
+	$finish="edit.object.shortcut.save.phtml";
+ 
+	$arFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["filename"];
+	$arFlow[$i]["template"]=$start;
+	$arFlow[$i]["next"]=$i+1; 
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["data"];
+	$arFlow[$i]["template"]=$step1;
+	$arFlow[$i]["prev"]=$i-1;
+	if (count($ARConfig->nls->list)>1) { // just one language available
+		$arFlow[$i]["next"]=$i+1;
+		$arFlow[$i]["save"]=$i+2;
+		$i++;
+		$arFlow[$i]["title"]=$ARnls["language"];
+		$arFlow[$i]["template"]=$step2;
+		$arFlow[$i]["next"]=$i-1;
+		$arFlow[$i]["prev"]=$i-1;
+		$arFlow[$i]["save"]=$i+1;
+	} else {
+		$arFlow[$i]["save"]=$i+1;
+	}
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["save"];
+	$arFlow[$i]["template"]=$finish;
+	$arFlow[$i]["back"]=$i-1;
+	
+	$arLanguage=$this->getdata("arLanguage","none");
+	if ($arFlow[0]["current"]==3) { // =edit.object.language.phtml
+		$arControl=$this->getdata("wgWizControl","none");
+		if ($arControl==$ARnls["prev"]) { // if previous selected, ignore the language select list.
+			$arLanguage=$this->getdata("arPrevLanguage","none");
+			$ARCurrent->arLanguage=$arLanguage;
+		}
+	}
+	if (!$arLanguage) { // language select hasn't been done yet, so start with default language
+		$arLanguage=$ARConfig->nls->default;
+		$ARCurrent->arLanguage=$arLanguage;
+	}
+	$arNewFilename=$this->getdata("arNewFilename","none");
+	if (!$arNewFilename) {
+		$arNewFilename="{5:id}";
+		$ARCurrent->arNewFilename=$arNewFilename;
+	}		
+	$arResult=$arFlow;
+?>

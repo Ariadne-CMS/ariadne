@@ -1,50 +1,67 @@
 <?php
-  /* FIXME: what to do if the shortcut points to another shortcut? */
-  /******************************************************************
-   system.save.shortcut.phtml			   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
+	/* FIXME: what to do if the shortcut points to another shortcut? */
+	/******************************************************************
+	 system.save.shortcut.phtml                            Muze Ariadne
+	 ------------------------------------------------------------------
  
-  ******************************************************************/
+	******************************************************************/
 
-  $this->data->path=$this->getdata("path","none");
-  $path=$this->make_path($this->data->path);
-  if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-    $this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
-  } else {
-    if (!$this->data->nls) {
-      $this->data->nls=new object;
-    }
-    $this->data->nls->default=$ARConfig->nls->default;
-    reset($AR->nls->list);
-    while (list($key, $value)=each($AR->nls->list)) {
-      
-      if ($this->getdata($key,"none")) { // FIXME: not always sufficient check
-                                         // (if user selects a language but enters nothing and then submits, $$key will be set, but all values empty)
-        if (!$this->data->$key) {
-          $newnlsdata=new object;
-        } else {
-          $newnlsdata=$this->data->$key;
+    if ((($this->arIsNewObject && $this->CheckLogin("add")) ||
+            (!$this->arIsNewObject && $this->CheckLogin("edit"))) &&
+            $this->CheckConfig()) {
+        if (!$this->arIsNewObject) {
+            // first make sure that the object is clean (data can only be set via
+            // the defined interface: $arCallArgs)
+            $this->data=@current($this->get(".","system.get.data.phtml"));
         }
-        if (!$this->getdata("name",$key)) {
-          $this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
-        }
-        $newnlsdata->name=$this->getdata("name",$key);
-        $properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
-        $this->data->$key=$newnlsdata;
-        $this->data->nls->list[$key]=$value;
-      }
-    }
-  }
-  if ($this->store->exists($path)) {
-    $result=$this->get($path, "system.get.type.phtml");
-    if ($result && $result[0]) {
-      $vtype=$result[0];
-      $arResult=$vtype;
-    } else {
-      $this->error=sprintf($ARnls["err:nosupportforshortcuts"],$path);
-    }
-  } else {
-    $this->error=sprintf($ARnls["err:wrongpath"],$path);
-  }
-  include($this->store->code."includes/system.save.phtml");
+
+
+		$this->data->path=$this->getdata("path","none");
+		$path=$this->make_path($this->data->path);
+
+		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
+			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+		} else {
+			if (!$this->data->nls) {
+				$this->data->nls=new object;
+			}
+			$this->data->nls->default=$ARConfig->nls->default;
+			reset($AR->nls->list);
+			while (list($key, $value)=each($AR->nls->list)) {
+				
+				if ($name=$this->getdata("name",$key)) {
+																					 // (if user selects a language but enters nothing and then submits, $$key will be set, but all values empty)
+					if (!$this->data->$key) {
+						$newnlsdata=new object;
+					} else {
+						$newnlsdata=$this->data->$key;
+					}
+					$newnlsdata->name=$this->getdata("name",$key);
+					$properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
+					$this->data->$key=$newnlsdata;
+					$this->data->nls->list[$key]=$value;
+				} else {
+					if ($this->data->$key) {
+						unset($this->data->$key->name);
+						unset($this->data->nls->list[$key]);
+					}
+				}
+			}
+		}
+		if ($this->store->exists($path)) {
+			$result=$this->get($path, "system.get.type.phtml");
+			if ($result && $result[0]) {
+				$vtype=$result[0];
+				$arResult=$vtype;
+			} else {
+				$this->error=sprintf($ARnls["err:nosupportforshortcuts"],$path);
+			}
+		} else {
+			$this->error=sprintf($ARnls["err:wrongpath"],$path);
+		}
+		if (!$this->error) {
+			$this->vtype=$vtype;
+			$this->save($properties, $vtype);
+		}
+	}
 ?>
