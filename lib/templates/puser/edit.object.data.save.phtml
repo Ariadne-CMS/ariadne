@@ -17,7 +17,14 @@
 		$folder=$this->call("system.get.folder.phtml");
 		$arReturnPath=$this->path;
 		$arReturnTemplate="js.window.objectadded.phtml?arIsNewObject=".RawUrlEncode($arIsNewObject);
-		$arReturnPage=$this->store->root.$arReturnPath.$arReturnTemplate;
+		if (($password=$this->getdata("newpass1","none")) &&    
+				($this->data->login==$AR->user->data->login)) {   
+					$arReturnPage=$this->store->root.$this->path."login.phtml?ARLogin=".RawUrlEncode($data->login).
+						"&ARPassword=".RawUrlEncode($password)."&arReturnPath=".RawUrlEncode($arReturnPath).
+						"&arReturnTemplate=".RawUrlEncode($arReturnTemplate);   
+		} else {
+			$arReturnPage=$this->store->root.$arReturnPath.$arReturnTemplate;
+		}
 		?>
 			<script> 
 				if (top.window.opener) {
