@@ -942,10 +942,10 @@ function checkChangeEnd() {
 		var objectId = arFieldRegistry[this.id].id;
 		for (var i in arObjectRegistry[objectId][arFieldRegistry[this.id].name]) {
 			var fieldId = arObjectRegistry[objectId][arFieldRegistry[this.id].name][i].fieldId;
+			arFieldRegistry[fieldId].value = newValue;
 			if (fieldId!=this.id) {
 				// don't update the content of the current field, since that breaks
 				// selections.
-				arFieldRegistry[fieldId].value = newValue;
 				setValue(fieldId, newValue);
 			}
 		}
