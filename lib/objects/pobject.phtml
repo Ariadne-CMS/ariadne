@@ -309,7 +309,7 @@ class pobject extends object {
 		return $this->store->make_path($this->path, $path);
 	}
 
-	function make_url($path="") {
+	function make_url($path="", $nls="", $session=true) {
 		/* FIXME:
 		   make_url should first try to make relative links, instead
 		   of full absolute urls
@@ -319,8 +319,20 @@ class pobject extends object {
 		   then add the rest of the path of the image.
 		   FIXME: extra feature: nls as an argument to make_url
 		*/
-		global $ARConfig;
+		global $ARConfig, $AR, $ARCurrent;
 		debug("pobject: make_url($path) (from: ".$this->path.")","object");
+		$rootoptions=$this->store->rootoptions;
+		if (!$session || $nls) {
+			if (!$session) {
+				$sessionid="";	
+			} else {
+				$sessionid=$ARCurrent->session->id;
+			}
+			if ($nls) {
+				$nls='/'.$nls;
+			}
+			$rootoptions=$sessionid.$nls;
+		}
 		$object_path=$this->path;
 		$path=$this->make_path($path);
 		while ($object_path && !$url) {
@@ -330,9 +342,8 @@ class pobject extends object {
 			}
 			$rootpath=$config->root["path"];
 			if (substr($path, 0, strlen($rootpath))==$rootpath) {
-				debug("make_url: root from '$rootpath' = ".$config->root["value"].$this->store->rootoptions,"all");
 				$path=substr($path, strlen($rootpath)-1);
-				$url=$config->root["value"].$this->store->rootoptions.$path;
+				$url=$config->root["value"].$rootoptions.$path;
 			} else {
 				// jump to cache information of the parent of $rootpath
 				$object_path=substr($rootpath, 0, strrpos(substr($rootpath, 0, -1),'/')+1);
@@ -516,6 +527,7 @@ class pobject extends object {
 				// Don't remove this or MSIE users won't get uptodate pages...
 				ldSetClientCache(false);
 			}
+			debug("checking grants for ".$this->path);
 			$grants=$AR->user->grants[$this->path];
 			if ( 	( !$grants[$grant] 
 						|| ( $modifier && is_array($grants[$grant]) && !$grants[$grant][$modifier] )
@@ -631,6 +643,7 @@ class pobject extends object {
 		if ($modifier && is_array($result)) {
 			$result=$result[$modifier];
 		}
+		debug("pobject: CheckSilent: result: ".serialize($grants));
 		debug("pobject: CheckSilent: end","all");
 		return $result;
 	}
@@ -1376,8 +1389,8 @@ class pobject extends object {
 		return $this->make_path($path);
 	}
 
-	function _make_url($path="") {
-		return $this->make_url($path);
+	function _make_url($path="", $nls="", $session=true) {
+		return $this->make_url($path, $nls, $session);
 	}
 
 	function _cached($name) {
