@@ -44,13 +44,13 @@ class pphotobook extends pdir { // pphotobook class definition
 		return $this->find($this->path,$crit,"system.get.phtml","",$max,$start);
 	}
 
-	function get_thumb_settings() {
+	function getThumbSettings() {
 		global $ARConfig;
 		return $ARConfig->cache[$this->path]->thumb;
 	}
 
-	function _get_thumb_settings() {
-		return $this->get_thumb_settings();
+	function _getThumbSettings() {
+		return $this->getThumbSettings();
 	}
 
 	function _get_photos($max=0, $start=0) {
