@@ -2,7 +2,7 @@
 
   include_once($this->store->code."nls/menu.".$this->reqnls);
 
-	$disabled_open = "<font color='#B5B5B5'>";
+	$disabled_open = "<font color='#959595'>";
 	$disabled_close = "</font>";
 $permcheck = array();
 $permcheck[] = "add";
@@ -31,71 +31,71 @@ if($this->implements("pshortcut")) {
 <script>
 
 HM_Array1 = [
-[95,                          // menu width
+[150,                          // menu width
 2, // left_position
 27,
 ],
-["<?=$add[1].$ARnls["m_new"].$add[2]?>","<?if($add[0] != 0) echo "javascript:arshow('edit_object_data','object.new.select.phtml')";?>",1,0,0],
-["<?=$delete[1].$ARnls["m_rename"].$delete[2]?>","<?=$delete[0]?"javascript:arshow('object_fs','object.rename.phtml')":''?>",1,0,0],
-["<?=$ARnls["m_copy"]?>","javascript:arshow('object_fs','object.copy.phtml')",1,0,0],
-["<?=$ARnls["m_link"]?>","javascript:arshow('object_fs','object.link.phtml')",1,0,0],
-['<hr>','',0,0,0],
-["<?=$add[1].$ARnls["m_import"].$add[2]?>","<?=$add[0]?"javascript:arshow('object_import','object.import.phtml')":''?>",1,0,0],
-["<?=$ARnls["m_export"]?>","javascript:arshow('object_export','object.export.phtml')",1,0,0],
-['<hr>','',0,0,0],
-["<?=$delete[1].$ARnls["m_delete"].$delete[2]?>","<?=$delete[0]?"javascript:arshow('object_fs','object.delete.phtml')":''?>",1,0,0],
-["<?=$ARnls["m_logoff"]?>","javascript:arshow('object_fs','object.logoff.phtml')",1,0,0]
+["<?php echo $add[1].$ARnls["m_new"].$add[2]; ?>","<?php if ($add[0] != 0) { echo "javascript:arshow('edit_object_data','object.new.select.phtml')";} ?>",1,0,0],
+["<?php echo $delete[1].$ARnls["m_rename"].$delete[2]; ?>","<?php echo $delete[0]?"javascript:arshow('object_fs','object.rename.phtml')":''; ?>",1,0,0],
+["<?php echo $ARnls["m_copy"]; ?>","javascript:arshow('object_fs','object.copy.phtml')",1,0,0],
+["<?php echo $ARnls["m_link"]; ?>","javascript:arshow('object_fs','object.link.phtml')",1,0,0],
+['<hr>','<img src="<?php echo $AR->dir->images; ?>hr.gif" width="100%" height="2" alt="" style="padding: 4px 2px 4px -20px;">',0,0,0],
+["<?php echo $add[1].$ARnls["m_import"].$add[2]; ?>","<?php echo $add[0]?"javascript:arshow('object_import','object.import.phtml')":''; ?>",1,0,0],
+["<?php echo $ARnls["m_export"]; ?>","javascript:arshow('object_export','object.export.phtml')",1,0,0],
+['<hr>','<img src="<?php echo $AR->dir->images; ?>hr.gif" width="100%" height="2" alt="" style="padding: 4px 2px 4px -20px;">',0,0,0],
+["<?php echo $delete[1].$ARnls["m_delete"].$delete[2]; ?>","<?php echo $delete[0]?"javascript:arshow('object_fs','object.delete.phtml')":''; ?>",1,0,0],
+["<?php echo $ARnls["m_logoff"]; ?>","javascript:arshow('object_fs','object.logoff.phtml')",1,0,0]
 ]
 
 HM_Array2 = [
-[95,
+[150,
 60,
 27,
 ],
-["<?=$ARnls["m_object"]?>","",1,0,1],
-["<?=$ARnls["m_priority"]?>","javascript:arshow('edit_priority','edit.priority.phtml')",1,0,0],
-["<?=$ARnls["m_find"]?>","javascript:arshow('edit_find','edit.find.phtml')",1,0,0]
+["<?php echo $ARnls["m_object"]; ?>","",1,0,1],
+["<?php echo $ARnls["m_priority"]; ?>","javascript:arshow('edit_priority','edit.priority.phtml')",1,0,0],
+['<hr>','<img src="<?php echo $AR->dir->images; ?>hr.gif" width="100%" height="2" alt="" style="padding: 4px 2px 4px -20px;">',0,0,0],
+["<?php echo $ARnls["m_find"]; ?>","javascript:arshow('edit_find','edit.find.phtml')",1,0,0],
+['<hr>','<img src="<?php echo $AR->dir->images; ?>hr.gif" width="100%" height="2" alt="" style="padding: 4px 2px 4px -20px;">',0,0,0],
+["<?php echo $ARnls["m_preferences"]; ?>","javascript:arshow('edit_preferences','<?php echo $this->store->root.$AR->user->path; ; ?>edit.preferences.phtml')",1,0,0]
 ]
 
 HM_Array3 = [
-[95,
+[150,
 108,
 27,
 ],
-["<?=$ARnls["m_web"]?>","javascript:arshow('_new','<?=$this->make_url(); ?>view.html')",1,0,0],
-["<?=$ARnls["m_details"]?>","javascript:setViewit('details')",1,0,0],
-['<hr>','',0,0,0],
-["<?=$ARnls["m_explorerbar"]?>","javascript:artoggleexplorerbar()",1,0,0],
-['<hr>','',0,0,0],
-["<?=$ARnls["m_small"]?>","javascript:setViewit('small')",1,0,0],
-["<?=$ARnls["m_large"]?>","javascript:setViewit('large')",1,0,0],
-['<hr>','',0,0,0],
-["<?=$ARnls["m_preferences"]?>","javascript:arshow('edit_preferences','<?=$this->store->root.$AR->user->path; ?>edit.preferences.phtml')",1,0,0]
-
+["<?php echo $ARnls["m_web"]; ?>","javascript:arshow('_new','<?php echo $this->make_url(); ; ?>view.html')",1,0,0],
+['<hr>','<img src="<?php echo $AR->dir->images; ?>hr.gif" width="100%" height="2" alt="" style="padding: 4px 2px 4px -20px;">',0,0,0],
+["<?php echo $ARnls["m_small"]; ?>","javascript:setViewit('small')",1,0,0],
+["<?php echo $ARnls["m_large"]; ?>","javascript:setViewit('large')",1,0,0],
+["<?php echo $ARnls["m_details"]; ?>","javascript:setViewit('details')",1,0,0],
+['<hr>','<img src="<?php echo $AR->dir->images; ?>hr.gif" width="100%" height="2" alt="" style="padding: 4px 2px 4px -20px;">',0,0,0],
+['<div id="explorerbar_icon" class="selectedOption">a</div><?php echo $ARnls["m_explorerbar"]; ?>',"javascript:artoggleexplorerbar()",1,0,0]
 ]
 
 
 HM_Array4 = [
-[95,                          // menu width
+[150,                          // menu width
 163, // left_position
 27,
 ],
 
-["<?=$ARnls["m_index"]?>","javascript:arshow('help','help.topics.phtml')",1,0,0],
-["<?=$ARnls["m_tutorials"]?>","javascript:arshow('help','help.tutorials.phtml')",1,0,0],
-["<?=$ARnls["m_search"]?>","javascript:arshow('help','help.search.phtml')",1,0,0],
-["<?=$ARnls["m_about"]?>","javascript:arshow('help_about','help.about.phtml')",1,0,0]
+["<?php echo $ARnls["m_index"]; ?>","javascript:arshow('help','help.topics.phtml')",1,0,0],
+["<?php echo $ARnls["m_tutorials"]; ?>","javascript:arshow('help','help.tutorials.phtml')",1,0,0],
+["<?php echo $ARnls["m_search"]; ?>","javascript:arshow('help','help.search.phtml')",1,0,0],
+["<?php echo $ARnls["m_about"]; ?>","javascript:arshow('help_about','help.about.phtml')",1,0,0]
 ]
 
 HM_Array2_1 = [
 [],
-["<?=$ARnls["m_data"]?>","javascript:arshow('edit_object_data','edit.object.data.phtml')",1,0,0],
-["<?=$shortcut[1].$ARnls["m_shortcut"].$shortcut[2]?>","<?=$shortcut[0]?"javascript:arshow('edit_object_shortcut','edit.object.shortcut.phtml')":''?>",1,0,0],
-["<?=$edit[1].$ARnls["m_cache"].$edit[2]?>","<?=$edit[0]?"javascript:arshow('edit_object_cache','edit.object.cache.phtml')":''?>",1,0,0],
-["<?=$layout[1].$ARnls["m_layout"].$layout[2]?>","<?=$layout[0]?"javascript:arshow('edit_object_layout','edit.object.layout.phtml')":''?>",1,0,0],
-["<?=$config[1].$ARnls["m_grants"].$config[2]?>","<?=$config[0]?"javascript:arshow('edit_object_grants','edit.object.grants.phtml')":''?>",1,0,0],
-["<?=$config[1].$ARnls["m_types"].$config[2]?>","<?=$config[0]?"javascript:arshow('edit_object_types','edit.object.types.phtml')":''?>",1,0,0],
-["<?=$config[1].$ARnls["m_language"].$config[2]?>","<?=$config[0]?"javascript:arshow('edit_object_nls','edit.object.nls.phtml')":''?>",1,0,0]
+["<?php echo $ARnls["m_data"]; ?>","javascript:arshow('edit_object_data','edit.object.data.phtml')",1,0,0],
+["<?php echo $shortcut[1].$ARnls["m_shortcut"].$shortcut[2]; ?>","<?php echo $shortcut[0]?"javascript:arshow('edit_object_shortcut','edit.object.shortcut.phtml')":''; ?>",1,0,0],
+["<?php echo $edit[1].$ARnls["m_cache"].$edit[2]; ?>","<?php echo $edit[0]?"javascript:arshow('edit_object_cache','edit.object.cache.phtml')":''; ?>",1,0,0],
+["<?php echo $layout[1].$ARnls["m_layout"].$layout[2]; ?>","<?php echo $layout[0]?"javascript:arshow('edit_object_layout','edit.object.layout.phtml')":''; ?>",1,0,0],
+["<?php echo $config[1].$ARnls["m_grants"].$config[2]; ?>","<?php echo $config[0]?"javascript:arshow('edit_object_grants','edit.object.grants.phtml')":''; ?>",1,0,0],
+["<?php echo $config[1].$ARnls["m_types"].$config[2]; ?>","<?php echo $config[0]?"javascript:arshow('edit_object_types','edit.object.types.phtml')":''; ?>",1,0,0],
+["<?php echo $config[1].$ARnls["m_language"].$config[2]; ?>","<?php echo $config[0]?"javascript:arshow('edit_object_nls','edit.object.nls.phtml')":''; ?>",1,0,0]
 
 ]
 </script>
