@@ -1,8 +1,3 @@
 - renaming of objects doesn't update grant information.
-- grants overview in puser needs to be ported from the classic interface to
-  the new interface.
 - file overwrite confirmation dialog is broken.
-- manage.show.page.html is not available for the winxp interface.
-- on a compile error in the template editor, the template editor will lose
-  the template its name and type information.
 
