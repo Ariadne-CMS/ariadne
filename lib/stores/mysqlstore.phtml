@@ -759,7 +759,11 @@ class mysqlstore {
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
 
-		if ($this->exists($destination)) {
+		if ($this->exists($destination) &&
+				! ( strtolower($destination) === strtolower($source) &&
+					$destination !== $source
+				)) {
+
 			$this->error="$destination already exists, cannot overwrite.";
 			debug("move: ERROR: ".$this->error,"store");
 			$result=false;
@@ -793,7 +797,7 @@ class mysqlstore {
 				$result=$this->store_run_query($query_string);
 				if ($result) {
 					// now move all the children
-					$query_string="update $nodes_tbl set path=CONCAT('$edestination', SUBSTRING(path, $sourcelength+1)), parent=CONCAT('$edestination', SUBSTRING(parent, $sourcelength+1)) where path like '$esource%'";
+					$query_string="update $nodes_tbl set path=CONCAT('$edestination', SUBSTRING(path, $sourcelength+1)), parent=CONCAT('$edestination', SUBSTRING(parent, $sourcelength+1)) where parent like '$esource%'";
 					$result=$this->store_run_query($query_string);
 				}
 				debug("move: end","all");

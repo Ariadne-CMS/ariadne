@@ -6,9 +6,13 @@
 			$target=$this->getdata("target");
 			$target=$this->store->make_path($this->parent, $this->getdata("target","none"));
 			if ($this->exists($target)) {
-				if (substr($target, 0, strlen($this->path))==$this->path) {
-					$this->error=$ARnls["err:nomovebelow"];
-					// FROP $this->error="You cannot move an object below itself.";
+				if (substr(strtolower($target), 0, strlen(strtolower($this->path)))==strtolower($this->path)) {
+					if (strtolower($target) == strtolower($this->path)) {
+						$parent = $this->parent;
+					} else {
+						$this->error=$ARnls["err:nomovebelow"];
+						// FROP $this->error="You cannot move an object below itself.";
+					}
 				} else {
 					$parent=$target;
 					$target.=substr($this->path, strlen($this->parent));
