@@ -106,7 +106,7 @@
 
 		function tar_system($tarfile, $file, $dstdir) {
 			if ($this->tar_error_handler) {
-				$errfile=$this->tempdir."/tar.errors";
+				$errfile=$dstdir."/tar.errors";
 				$errfile=$this->_fix_tar_paths($errfile);
 				$handler=sprintf($this->tar_error_handler, $errfile);
 			}
