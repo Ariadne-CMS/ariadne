@@ -230,13 +230,18 @@
 		global $FTP;
 			$listMode="";
 			$template="";
+			$absolute = ($path[0] === '/') ? true : false;
 			$path=$FTP->site.$FTP->store->make_path($FTP->cwd, $path);
-			while (ereg('/-([^/]*)-/', $path, $regs) && $regs[1]) {
+			while (ereg('/#([^/]*)#/', $path, $regs) && $regs[1]) {
 				$listMode=$regs[1];
-				$path=str_replace("/-".$listMode."-/", "/", $path);
+				$path=str_replace("/#".$listMode."#/", "/", $path);
 			}
-			if (!$listMode) {
-				$listMode=$FTP->listMode;
+			if (!$listMode) {				
+				if (!$absolute && $FTP->listMode) {
+					$listMode=$FTP->listMode;
+				} else {
+					$listMode=$FTP->defaultListMode;
+				}
 			}
 			debug("ftp: Translate $debug_path:: (FTP->listMode = '$FTP->listMode', listMode = '$listMode', path = '$path', template = '$template')");
 		}
@@ -262,7 +267,7 @@
 						return 0;
 					break;
 					case 'PWD':
-						$dir="/-".$FTP->listMode."-".$FTP->cwd;
+						$dir="/#".$FTP->listMode."#".$FTP->cwd;
 						$dir=substr($dir,0,-1);
 						ftp_Tell(257, "\"$dir\" is current directory.");
 					break;
@@ -295,12 +300,19 @@
 						}
 					break;
 					case 'CWD':
-						$path=$FTP->store->make_path($FTP->site.$FTP->cwd, $args);
-						while (ereg('/-([^/]*)-/', $path, $regs) && $regs[1]) {
-							$FTP->listMode=$regs[1];
-							$path=str_replace("/-".$FTP->listMode."-/", "/", $path);
+						/* if CWD path is absolute then listmode is set to
+						the default value */
+
+						$absolute = ($args[0]=="/") ? true : false;
+						if ($absolute) {
+							$FTP->listMode=$FTP->defaultListMode;
 						}
 
+						$path=$FTP->store->make_path($FTP->site.$FTP->cwd, $args);
+						while (ereg('/#([^/]*)#/', $path, $regs) && $regs[1]) {
+							$FTP->listMode=$regs[1];
+							$path=str_replace("/#".$FTP->listMode."#/", "/", $path);
+						}
 						$cwd=$FTP->store->make_path($FTP->cwd, $path);
 						if ($FTP->store->exists($FTP->site.$cwd)) {
 							$result=current($FTP->store->call("system.get.phtml", "",
@@ -456,53 +468,76 @@
 
 							ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ASCII' : 'BINARY')." mode data connection");
 							if (ftp_OpenDC()!==false) {
-
+								unset($mode);
 								debug("ftp: listing ($path) ($listMode)");
-								if ($listMode!=="files") {
-									$mode["filename"]="-files-";
-									$mode["date"]=time();
-									$mode["type"]="shortcut";
-									$mode["target"]="/-files-$FTP->cwd";
-									$mode["size"]=0;
-									$mode["grants"]["read"]=true;
-									if ($cmd!=="NLST") {
-										$data=ftp_GenListEntry($mode);
-										echo "$data";
-									} else {
-										echo $mode["filename"]."\n";
-									}
-								}
 
-								if ($listMode!=="templates") {
-									$mode["filename"]="-templates-";
-									$mode["date"]=time();
-									$mode["type"]="shortcut";
-									$mode["target"]="/-templates-$FTP->cwd";
-									$mode["size"]=0;
-									$mode["grants"]["read"]=true;
-									if ($cmd!=="NLST") {
-										$data=ftp_GenListEntry($mode);
-										echo "$data";
-									} else {
-										echo $mode["filename"]."\n";
-									}
-								}
+									if ($listMode!=="files") {
+										$mode["filename"]="#files#";
+										$mode["date"]=time();
+										if ($FTP->cwd!=="/") {
+											$mode["type"]="shortcut";
+											$mode["target"]=$FTP->cwd;
+											if ($FTP->defaultListMode!="files") {
+												$mode["target"]="/#files#".$mode["target"];
+											}
+										} else {
+											$mode["type"]="dir";
+										}
+										$mode["size"]=0;
+										$mode["grants"]["read"]=true;
 
-								if ($listMode!=="objects") {
-									$mode["filename"]="-objects-";
-									$mode["date"]=time();
-									$mode["type"]="shortcut";
-									$mode["target"]="/-objects-$FTP->cwd";
-									$mode["size"]=0;
-									$mode["grants"]["read"]=true;
-									$data=ftp_GenListEntry($mode);
-									if ($cmd!=="NLST") {
-										$data=ftp_GenListEntry($mode);
-										echo "$data";
-									} else {
-										echo $mode["filename"]."\n";
+										if ($cmd!=="NLST") {
+											$data=ftp_GenListEntry($mode);
+											echo "$data";
+										} else {
+											echo $mode["filename"]."\n";
+										}
 									}
-								}
+
+									if ($listMode!=="templates") {
+										$mode["filename"]="#templates#";
+										$mode["date"]=time();
+										if ($FTP->cwd!=="/") {
+											$mode["type"]="shortcut";
+											$mode["target"]=$FTP->cwd;
+											if ($FTP->defaultListMode!="templates") {
+												$mode["target"]="/#templates#".$mode["target"];
+											}
+										} else {
+											$mode["type"]="dir";
+										}
+										$mode["size"]=0;
+										$mode["grants"]["read"]=true;
+										if ($cmd!=="NLST") {
+											$data=ftp_GenListEntry($mode);
+											echo "$data";
+										} else {
+											echo $mode["filename"]."\n";
+										}
+									}
+
+									if ($listMode!=="objects") {
+										$mode["filename"]="#objects#";
+										$mode["date"]=time();
+										$mode["size"]=0;
+										$mode["grants"]["read"]=true;
+										if ($FTP->cwd!=="/") {
+											$mode["type"]="shortcut";
+											$mode["target"]=$FTP->cwd;
+											if ($FTP->defaultListMode!="objects") {
+												$mode["target"]="/#objects#".$mode["target"];
+											}
+										} else {
+											$mode["type"]="dir";
+										}
+										if ($cmd!=="NLST") {
+											$data=ftp_GenListEntry($mode);
+											echo "$data";
+										} else {
+											echo $mode["filename"]."\n";
+										}
+									}
+
 								$template="ftp.".$listMode.".list.phtml";
 								$result=current($FTP->store->call($template, "",
 													$FTP->store->get($path)));
@@ -809,7 +844,9 @@
 
 			if ($entry["type"]==="dir") {
 				$data.="d";
-				$file=substr($file, 0, -1);
+				if ($file[strlen($file)-1]==='/') {
+					$file=substr($file, 0, -1);
+				}
 			} else if ($entry["type"]==="shortcut") {
 				$data.="l";
 				if ($file[strlen($file)-1]==='/') {
@@ -845,14 +882,14 @@
 			$data.=substr($data, 1);
 			$data.="---";
 
-			$data.="    1 "; // we just say this directory contains 1 child
+			$data.="   1 "; // we just say this directory contains 1 child
 
 			$user = substr($user, 0, 9);
-			$userentry = substr("         ", strlen($user)).$user;
+			$userentry = $user.substr("         ", strlen($user));
 			$data.=$userentry.$userentry;			
 
-			$size = substr($entry["size"], 0, 9);
-			$sizeentry = substr("         ", strlen($size)).$size;
+			$size = substr($entry["size"], 0, 8);
+			$sizeentry = substr("        ", strlen($size)).$size;
 			$data.=$sizeentry;
 
 			$date=substr(date("M d h:i", $entry["date"]), 0, 12);
@@ -868,7 +905,7 @@
 
 
 	sleep(1);
-	//debugon("pinp");
+//	debugon("pinp");
 
 	// set PHP error handling
 	error_reporting(1);
@@ -885,7 +922,7 @@
 	$FTP->host = $ftp_config["site"];
 	$FTP->store = &$store;
 	// default listMode ( files, objects or templates )
-	$FTP->listMode = "files";
+	$FTP->defaultListMode = "files";
 
 	// default type is ASCII
 	$FTP->DC["type"] = "A";
