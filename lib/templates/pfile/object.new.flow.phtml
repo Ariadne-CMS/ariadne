@@ -96,7 +96,7 @@
 	if (!$arNewFilename) {
 		$file=$this->getdata("file","none");
 		if (($file=$this->getdata("file","none")) && ereg("[^\/\\]*\$",$file, $matches)) {
-			$arNewFilename=$matches[0];
+			$arNewFilename==eregi_replace("[^a-z0-9\./_-]","_",$matches[0]);
 		} else {
 			$arNewFilename="{5:id}";
 		}

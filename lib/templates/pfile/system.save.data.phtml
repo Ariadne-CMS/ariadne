@@ -63,34 +63,35 @@
 		}
 		$this->data->mimetype=$this->getdata("mimetype","none");
 		
-		$this->save($properties);
-		$this->ClearCache();
-		unset($properties);
+		if ($this->save($properties)) {
+			$this->ClearCache();
+			unset($properties);
 
-		$this->arIsNewObject=false;
+			$this->arIsNewObject=false;
 
-		$tempfile=$this->getdata("file_temp","none");
-		// now check whether $file_temp is defined, if so, move it
-		if (!$this->error) {
-			if ($tempfile) {
-				$tempfile=ereg_replace("[\\\/]","",$tempfile); // make sure nobody gets /etc/passwd			
-				$tempfile=$this->store->files."temp/".$tempfile;
+			$tempfile=$this->getdata("file_temp","none");
+			// now check whether $file_temp is defined, if so, move it
+			if (!$this->error) {
+				if ($tempfile) {
+					$tempfile=ereg_replace("[\\\/]","",$tempfile); // make sure nobody gets /etc/passwd			
+					$tempfile=$this->store->files."temp/".$tempfile;
 
-				if (file_exists($tempfile)) {	
-					$files=$this->store->get_filestore("files");
-					$files->copy_to_store($tempfile, $this->id, "file");
-					unlink($tempfile);
-					if (!$this->data->mimetype=$this->getdata("mimetype","none")) {
-						$this->data->mimetype=$this->getdata("file_type","none");
+					if (file_exists($tempfile)) {	
+						$files=$this->store->get_filestore("files");
+						$files->copy_to_store($tempfile, $this->id, "file");
+						unlink($tempfile);
+						if (!$this->data->mimetype=$this->getdata("mimetype","none")) {
+							$this->data->mimetype=$this->getdata("file_type","none");
+						}
+						$this->data->filesize=$this->getdata("file_size","none"); 
+					} else {
+						$tempfile=false;
 					}
-					$this->data->filesize=$this->getdata("file_size","none"); 
-				} else {
-					$tempfile=false;
-				}
-			} 
-			$this->save();
-		} else {
-			debug("err: $this->error");
+				} 
+				$this->save();
+			} else {
+				debug("err: $this->error");
+			}
 		}
 	}
 ?>
