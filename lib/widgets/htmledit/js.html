@@ -8,10 +8,8 @@ function HTMLEdit(root, path, file, name, language, type, title) {
   } else {
     editwindow.location.href='edit.object.html.phtml?'+
     'root='+escape(root)+'&path='+escape(path)+'&file='+escape(file)+
-    '&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type);
-  }
-  if (title) {
-    editwindow.document.title=title;
+    '&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type)+
+    '&title='+escape(title);
   }
   editwindow.focus();
 }
