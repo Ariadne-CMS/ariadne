@@ -2,7 +2,7 @@
   require("./ariadne.inc");
   require($ariadne."/configs/ariadne.phtml");
   require($ariadne."/configs/store.phtml");
-  require($ariadne."/stores/mysql.phtml");
+  require($ariadne."/stores/mysqlstore.phtml");
 
   function squisharray($name, $array) {
     while (list($key, $val)=each($array)) {
@@ -50,8 +50,10 @@
 		exit;
 	}
       }
+      $olddir=getcwd();
+      chdir($store->files."temp/");
 
-      $ax_file=$store->files."temp/".$store->nextid("files");
+      $ax_file=$store->nextid("files").".ax";
       $export_path=$path;
       include($store->code."includes/export.phtml");
       if (!$error) {
@@ -62,7 +64,7 @@
 	} else
 		$error="Error processing tempory file $ax_file";
       } 
-
+      chdir($olddir);
 
       $store->close();
  }
