@@ -11,5 +11,14 @@ class pphotobook extends pdir { // definitie class
 		return $this->find($this->path,$crit,"system.get.phtml","",$max,$start);
 	}
 
+	function get_thumb_settings() {
+		global $ARConfig;
+		return $ARConfig->cache[$this->path]->thumb;
+	}
+
+	function _get_thumb_settings() {
+		return $this->get_thumb_settings();
+	}
+
 } // end class pphotobook
 ?>

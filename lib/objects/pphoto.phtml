@@ -74,6 +74,14 @@ class pphoto extends pfile { // definitie class
 		return $this->scale($x, $y, $fillcolor);
 	}
 
+	function get_thumb_settings() {
+		global $ARConfig;
+		return $ARConfig->cache[$this->path]->thumb;
+	}
+
+	function _get_thumb_settings() {
+		return $this->get_thumb_settings();
+	}
 
 } // end class pphoto
 ?>
