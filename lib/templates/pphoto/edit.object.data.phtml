@@ -16,49 +16,44 @@
 		$save="edit.object.data.save.phtml";
 	 
 		$wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
-		$wgWizList[1]="summary";
-		$wgWizFlow["summary"]["title"]=$ARnls["data"];
-		$wgWizFlow["summary"]["template"]=$summary;
-		$wgWizFlow["summary"]["save"]="save";
-		$last="summary";
+		$i++;
+		$wgWizFlow[$i]["title"]=$ARnls["data"];
+		$wgWizFlow[$i]["template"]=$summary;
 		if (count($ARConfig->nls->list)>1) { // more than one language available
 			$languageselect=true;
-		}
-		$mimetype=$this->getdata("mimetype","none");
-		$wgWizFlow["summary"]["next"]="conversion";
-		$wgWizList[]="conversion";
-		$wgWizFlow["conversion"]["title"]=$ARnls["thumbnail"];
-		$wgWizFlow["conversion"]["template"]=$conversion;
-		$wgWizFlow["conversion"]["prev"]="summary";
-		if ($languageselect) {
-			$wgWizFlow["conversion"]["next"]="language";			
+			$wgWizFlow[$i]["save"]=$i+3;
 		} else {
-			$last="conversion";
+			$wgWizFlow[$i]["save"]=$i+2;
 		}
-		$wgWizFlow["conversion"]["save"]="save";
+		$wgWizFlow[$i]["next"]=$i+1;
+		$i++
+		$wgWizFlow[$i]["title"]=$ARnls["thumbnail"];
+		$wgWizFlow[$i]["template"]=$conversion;
+		$wgWizFlow[$i]["prev"]="summary";
 		if ($languageselect) {
-			$wgWizList[]="language";
-			$wgWizFlow["language"]["title"]=$ARnls["language"];
-			$wgWizFlow["language"]["template"]=$language;
-			$wgWizFlow["language"]["next"]="summary";
-			$wgWizFlow["language"]["prev"]="summary";
-			$wgWizFlow["language"]["save"]="save";
-			$last="language";
-		}
-		$wgWizList[]="save";
-		$wgWizFlow["save"]["title"]=$ARnls["save"];
-		$wgWizFlow["save"]["template"]=$save;
-		$wgWizFlow["save"]["back"]=$last;
+			$wgWizFlow[$i]["next"]=$i+1;			
+			$wgWizFlow[$i]["save"]=$i+2;
+			$i++;
+			$wgWizFlow[$i]["title"]=$ARnls["language"];
+			$wgWizFlow[$i]["template"]=$language;
+			$wgWizFlow[$i]["next"]=$i-2;
+			$wgWizFlow[$i]["prev"]=$i-2;
+			$wgWizFlow[$i]["save"]=$i+1;
+		} 
+		$i++
+		$wgWizFlow[$i]["title"]=$ARnls["save"];
+		$wgWizFlow[$i]["template"]=$save;
+		$wgWizFlow[$i]["back"]=$i-1;
 		
-		if ($wgWizFlow[0]["current"]=="summary") {
+		global $HTTP_POST_VARS, $HTTP_POST_FILES;
+		if ($wgWizFlow[0]["current"]==1) {
 			$arControl=$this->getdata("wgWizControl","none");
 			if (($arControl==$ARnls["next"]) || ($arControl==$ARnls["save"])) {
 				$this->call("system.save.tempfile.phtml");
 			}
 		}
-
 		$arLanguage=$this->getdata("arLanguage","none");
-		if ($wgWizFlow[0]["current"]=="language") { // =edit.object.language.phtml
+		if ($languageselect && $wgWizFlow[0]["current"]==3) { // =edit.object.language.phtml
 			$arControl=$this->getdata("wgWizControl","none");
 			if ($arControl==$ARnls["prev"]) { // if previous selected, ignore the language select list.
 				$arLanguage=$this->getdata("arPrevLanguage","none");
@@ -69,12 +64,9 @@
 			$arLanguage=$ARConfig->nls->default;
 			$ARCurrent->arLanguage=$arLanguage;
 		}
-		global $HTTP_POST_VARS;
 		$HTTP_POST_VARS["arLanguage"]=$arLanguage;
-		$wgWizControl=$this->getdata("wgWizControl","none");
-		$wgWizCurrent=$this->getdata("wgWizCurrent","none");
-		$result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
-		$wgWizTitle=$ARnls["edit"]." ".$result[0];		
+		$name=@current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml"));
+		$wgWizTitle=$ARnls["edit"]." ".$name;		
 		include($this->store->code."widgets/wizard/classic.html");
 	}
 ?>

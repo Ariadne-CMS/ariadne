@@ -30,9 +30,9 @@
 	$arFlow[$i]["next"]=$i+1; 
 
 	if (count($ARConfig->nls->list)>1) {
-		$languagestep=1;
+		$languageselect=true;
 	} else {
-		$languagestep=0;
+		$languageselect=false;
 	}
 
 	$i++;
@@ -40,16 +40,22 @@
 	$arFlow[$i]["template"]=$summary;
 	$arFlow[$i]["prev"]=$i-1;
 	$arFlow[$i]["next"]=$i+1; 
-	$arFlow[$i]["save"]=$i+2+$languagestep;
+    if (!$languageselect) {
+		$arFlow[$i]["save"]=$i+2;
+	} else {
+ 		$arFlow[$i]["save"]=$i+3;
+	}
 
 	$i++;
 	$arFlow[$i]["title"]=$ARnls["thumbnail"];
 	$arFlow[$i]["template"]=$conversion;
 	$arFlow[$i]["prev"]=$i-1;
-	$arFlow[$i]["next"]=$i+1;
-	$arFlow[$i]["save"]=$i+1+$languagestep; 
 
-	if ($languagestep) {
+	if (!$languageselect) {
+		$arFlow[$i]["save"]=$i+1;
+	} else {
+		$arFlow[$i]["next"]=$i+1;
+		$arFlow[$i]["save"]=$i+2; 
 		$i++;
 		$arFlow[$i]["title"]=$ARnls["language"];
 		$arFlow[$i]["template"]=$language;
@@ -71,6 +77,10 @@
 		if ($arControl==$ARnls["next"]) {
 			// check whether the file has changed
 			$this->call("system.save.tempfile.phtml");
+			$HTTP_POST_VARS["mimetype"]=$HTTP_POST_VARS["file_type"];
+			while (list($key, $value)=each($ARConfig->nls->list)) {
+				$HTTP_POST_VARS[$key]["name"]=$HTTP_POST_VARS["file"];
+			}
 		}
 	}
 
@@ -85,14 +95,5 @@
 		$ARCurrent->arNewFilename=$arNewFilename;
 	}		
 
-
-	if ($arFlow[0]["current"]==3) {
-		$wgOverwrite=$this->getdata("wgOverwrite","none");
-		if (!$wgOverwrite || $wgOverwrite=="no") {
-			$arFlow[0]["current"]=2;
-			$HTTP_POST_VARS["wgWizControl"]="";
-			$HTTP_POST_VARS["wgOverwrite"]="";
-		}
-	}
 	$arResult=$arFlow;
 ?>

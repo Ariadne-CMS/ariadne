@@ -1,23 +1,29 @@
 <?php
+	/******************************************************************
+	 system.save.data.phtml                                Muze Ariadne
+	 ------------------------------------------------------------------
+	 
+	******************************************************************/
+
 	if (($this->arIsNewObject && $this->CheckLogin("add")) ||
 			(!$this->arIsNewObject && $this->CheckLogin("edit")) &&
 			$this->CheckConfig()) {
-		if (!$this->arIsNewObject) {
+		if ($this->arIsNewObject) {
+			$filename=$this->getdata("arNewFilename","none");
+			if (!$this->data->mimetype=$this->getdata("mimetype","none")) {
+				$this->data->mimetype=$this->getdata("file_type","none");
+			}
+			$this->data->filesize=$this->getdata("file_size","none");
+			while (list($key,$value)=each($ARConfig->nls->list)) {
+				if (!$this->data->$key->name) {
+					$this->data->$key->name=$filename;
+				}
+			}
+        } else {
 			// first make sure that the object is clean (data can only be set v
 			// the defined interface: $arCallArgs)
 			$this->data=@current($this->get(".","system.get.data.phtml"));
-	        } else {
-			$this->data->author=$AR->user->getdata("name", "none");
-			$this->data->authorpath=$AR->user->path;
-			$this->data->created=time();
-
-			$filename=$this->getdata("arNewFilename","none");
-			while (list($key,$value)=each($ARConfig->nls->list)) {
-				$this->data->$key->name=$filename;
-			}
 		}
-
-		$this->data->mimetype=$this->getdata("mimetype","none");
 
 		if (!$this->getdata("name", $ARConfig->nls->default)) {
 			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
@@ -28,31 +34,40 @@
 			$this->data->nls->default=$ARConfig->nls->default;
 			reset($AR->nls->list);
 			while (list($key, $value)=each($AR->nls->list)) {
-				if ($this->getdata($key,"none")) {
+
+				if ($this->getdata("name",$key)) {
 					if (!isset($this->data->$key)) {
 						$newnlsdata=new object;
 					} else {
 						$newnlsdata=$newdata->$key;
 					}
-					if (!$this->getdata("name", $key)) {
-						$this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
-					} else {
-						$newnlsdata->name=$this->getdata("name",$key);
-						$properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
-						$properties["text"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
+					$newnlsdata->name=$this->getdata("name",$key);
+					$properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
+					$properties["text"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
 
-						$newnlsdata->summary=$this->getdata("summary", $key);
-						$properties["text"][]["value"]="'".AddSlashes($newnlsdata->summary)."'";
+					$newnlsdata->summary=$this->getdata("summary", $key);
+					$properties["text"][]["value"]="'".AddSlashes($newnlsdata->summary)."'";
 
-						$newnlsdata->keywords=$this->getdata("keywords", $key);
-						$properties["text"][]["value"]="'".AddSlashes($newnlsdata->keywords)."'";
+					$newnlsdata->keywords=$this->getdata("keywords", $key);
+					$properties["text"][]["value"]="'".AddSlashes($newnlsdata->keywords)."'";
 
-						$this->data->$key=$newnlsdata;
-						$this->data->nls->list[$key]=$value;
+					$this->data->$key=$newnlsdata;
+					$this->data->nls->list[$key]=$value;
+				} else {
+					if ($this->data->$key) {
+						unset($this->data->$key->name);
+						unset($this->data->nls->list[$key]);
 					}
 				}
 			}
 		}
+		$this->data->mimetype=$this->getdata("mimetype","none");
+
+		$this->save($properties);
+		unset($properties);
+
+		$this->arIsNewObject=false;
+
 		$tempfile=$this->getdata("file_temp", "none");
 		// now check whether $file_temp is defined, if so, move it
 		if (!$this->error) {
@@ -64,7 +79,9 @@
 					$this->MkDir("files".$this->path);
 					copy($tempfile, $path."view=");
 					unlink($tempfile);
-					$this->data->mimetype=$this->getdata("file_type","none");
+					if (!$this->data->mimetype=$this->getdata("mimetype","none")) {
+						$this->data->mimetype=$this->getdata("file_type","none");
+					}
 					$this->data->filesize=$this->getdata("file_size","none"); 
 				} else {
 					$tempfile=false;
@@ -87,7 +104,6 @@
 
 			$properties["mimetype"][0]["type"]="'".AddSlashes($this->data->mime["type"])."'";
 			$properties["mimetype"][0]["subtype"]="'".AddSlashes($this->data->mime["subtype"])."'";
-
 
 			$this->save($properties);
 		}
