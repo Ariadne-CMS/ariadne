@@ -1,0 +1,51 @@
+<?php
+    /******************************************************************
+     psearch.phtml                                     Muze Ariadne
+     ------------------------------------------------------------------
+     Author: Muze (info@muze.nl)
+     Date: August 8 2003
+
+     Copyright 2003 Muze
+
+    -------------------------------------------------------------------
+
+     Class inheritance: 	pobject > ppage > pdir > psearch
+     Description:
+
+       This is the class definition file of the psearch class.
+
+    ******************************************************************/
+
+debug("psearch: Load","object");
+include_once($this->code."objects/pdir.phtml");
+
+class psearch extends pdir { // psearch class definition
+
+	function ls($path, $function="list.html", $args="") {
+		$path=$this->store->make_path($this->path, $path);
+		if( (substr($path, 0, strlen($this->path))==$this->path)) {
+			return pobject::find($this->data->path, $this->data->query, $function, $args);
+		} else {
+			return pobject::ls($path, $function, $args);
+		}
+	}
+
+	function real_ls($path, $function="list.html", $args="") {
+		return pobject::ls($path, $function, $args);
+	}
+
+	function find($path, $criteria, $function="list.html", $args="", $limit=100, $offset=0) {
+		$path=$this->store->make_path($this->path, $path);
+		if( (substr($path, 0, strlen($this->path))==$this->path)) {
+			return pobject::find($this->data->path, $this->data->query, $function, $args, $limit, $offset);
+		} else {
+			return pobject::find($path, $criteria, $function, $args, $limit, $offset);
+		}
+	}
+
+	function real_find($path, $criteria, $function="list.html", $args="", $limit=100, $offset=0) {
+		return pobject::find($path, $criteria, $function, $args, $limit, $offset);
+	}
+
+} // end of psearch class definition
+?>
