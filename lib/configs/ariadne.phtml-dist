@@ -42,10 +42,10 @@
   /* refer to 'composite' as 'combine'.                                     */
   /**************************************************************************/
 
-  $AR->IM->convert          = '/usr/bin/X11/convert';
-  $AR->IM->mogrify          = '/usr/bin/X11/mogrify';
-  $AR->IM->composite        = '/usr/bin/X11/composite';
-  // $AR->IM->composite        = '/usr/bin/X11/combine';
+  $AR->IM->convert          = '/usr/bin/convert';
+  $AR->IM->mogrify          = '/usr/bin/mogrify';
+  $AR->IM->composite        = '/usr/bin/composite';
+  // $AR->IM->composite        = '/usr/bin/combine';
 
   /**************************************************************************/
   /* VirusScanner information                                               */
