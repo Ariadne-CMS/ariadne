@@ -64,6 +64,8 @@
 			}
 		}
 
+		/* now for backwards compatibility use the key if $val is not a path, 
+		   in that case the key will be a path. */
 		$selected = $this->getdata("groups", "none");
 		$groups = Array();
 		if (is_array($selected)) {
@@ -112,7 +114,9 @@
 			$this->save($properties);
 			$this->ClearCache();
 			if (!$this->error) {
+				/* warning: do not save this object again, since system.set.user.phtml updates the object also.. */
 				$oldgroups = $this->data->groups;
+
 				if (is_array($oldgroups)) {
 					reset($oldgroups);
 					while (list($key, $val)=each($oldgroups)) {

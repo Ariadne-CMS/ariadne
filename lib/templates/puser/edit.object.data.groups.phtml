@@ -18,6 +18,7 @@
 					<?php
 						$selected = Array();
 						$groups = $this->getdata("groups", "none");
+						/* now for backwards compatibility use the key if $val is not a path, in that case the key will be a path. */
 						if (is_array($groups)) {
 							reset($groups);
 							while (list($key, $val)=each($groups)) {
@@ -33,7 +34,7 @@
 								"/system/groups/", 
 								$criteria, 
 								"show.option.multiple.phtml", 
-								Array("selected" => $selected)
+								Array("selected" => $selected, "grant" => "edit")
 								);
 					?>
 					</select>
