@@ -2011,8 +2011,10 @@ class pobject extends object { // pobject class definition
 		// as this is called within a pinp template, 
 		// all the grants are already loaded, so
 		// checksilent will fullfill our needs
-
-		return $this->CheckSilent($grant, $modifier);
+		$this->pushContext(Array("scope" => "php"));
+			$result = $this->CheckSilent($grant, $modifier);
+		$this->popContext();
+		return $result;
 	}
 
 	function _checkpublic($grant, $modifier=ARTHISTYPE) {
