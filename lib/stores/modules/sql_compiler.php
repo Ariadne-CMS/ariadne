@@ -3,15 +3,15 @@
 
 	function parse_const(&$query) {
 		/* integer or float regs[1] (& regs[2] : indicates float) */
-		$reg_id.='(-?[0-9]+([.][0-9]+)?)|';
+		$reg_id.='(-?[0-9]+([.][0-9]+)?)';
 
 		/* single quoted string regs[3] */
-		$reg_id.="([']('')*([^']|[^\\\\]['][']|\\\\')*['])|";
+		$reg_id.="|([']('')*([^']|[^\\\\]['][']|\\\\')*['])";
 
 		/* double quoted string regs[6] */
-		$reg_id.='("([^"]|\\\\\")*")';
+		$reg_id.='|("([^"]|\\\\\")*")';
 
-		$reg_id.='[[:space:]]*';
+		//$reg_id = '$reg_id)[[:space:]]*';
 
 		if (eregi($reg_id, $query, $regs)) {
 			if (is_numeric($regs[1])) {
@@ -28,8 +28,11 @@
 				$node["value"]="'".substr($str, 1, -1)."'";
 			} else if ($str=$regs[6]) {
 				$node["id"]="string";
-				$node["type"]="double";
-				$node["value"]='"'.substr($str, 1, -1).'"';
+				$node["type"]="single";
+				$value=substr($str, 1, -1);
+				$value = ereg_replace('([^\\]\\")', '"', $value); 
+				$value = str_replace("'", AddSlashes("'"), $value);
+				$node["value"] = "'$value'";
 			}
 
 			$query=substr($query, strlen($regs[0]));
