@@ -61,6 +61,9 @@ New Features:
 	- Extended the ppage class with methods for multi page articles.
 	- Fixed a problem with the image and browse dialog, the pphoto in the browse view now
 	  always shows the thumbnail, instead of the entire image or a non-existant template style
+	- added the name input field to all hyperlink dialogs and fixed the size.
+    - deprecated the ppage::RAWtoAR() function, the new name now is CompilePage() (as it is
+      the reverse of ParsePage())
 
 Bugs Fixed:
 	- Fixed recursive calling of the login template when a session has been
@@ -127,6 +130,10 @@ Bugs Fixed:
 	  stored when there given as a array.
 	- fixed a bug in edit.object.html.phtml with CheckLogin, now it get the
 	  right type instead of "ppage"
+    - fixed a bug in the browse dialog when browsing to images, it now simply
+      always shows a thumbnail of the image, instead of the broken javascript
+      code.
+    - fixed a bug in the wysiwyg editor, the dialogs now get called on the parent when editing a new object.
 
 Changes in Ariadne since version 2.2
 
