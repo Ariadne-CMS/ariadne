@@ -1,327 +1,323 @@
 <?php
-    /******************************************************************
-     ppage.phtml                                        Muze Ariadne
-     ------------------------------------------------------------------
-     Author: Muze (info@muze.nl)
-     Date: 31 october 2002
+		/******************************************************************
+		 ppage.phtml																				Muze Ariadne
+		 ------------------------------------------------------------------
+		 Author: Muze (info@muze.nl)
+		 Date: 31 october 2002
 
-     Copyright 2002 Muze
+		 Copyright 2002 Muze
 
-     This file is part of Ariadne.
+		 This file is part of Ariadne.
 
-     Ariadne is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published 
-     by the Free Software Foundation; either version 2 of the License, 
-     or (at your option) any later version.
+		 Ariadne is free software; you can redistribute it and/or modify
+		 it under the terms of the GNU General Public License as published 
+		 by the Free Software Foundation; either version 2 of the License, 
+		 or (at your option) any later version.
  
-     Ariadne is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
+		 Ariadne is distributed in the hope that it will be useful,
+		 but WITHOUT ANY WARRANTY; without even the implied warranty of
+		 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.	See the
+		 GNU General Public License for more details.
 
-     You should have received a copy of the GNU General Public License
-     along with Ariadne; if not, write to the Free Software 
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
-     02111-1307  USA
+		 You should have received a copy of the GNU General Public License
+		 along with Ariadne; if not, write to the Free Software 
+		 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA	
+		 02111-1307	USA
 
-    -------------------------------------------------------------------
+		-------------------------------------------------------------------
 
-     Class inheritance: 	pobject > ppage
-     Description:
+		 Class inheritance: 	pobject > ppage
+		 Description:
 
-       This is the class definition file of the ppage class.
+			 This is the class definition file of the ppage class.
 
-    ******************************************************************/
+		******************************************************************/
 
 debug("ppage: Load","object");
 include_once($this->code."objects/pobject.phtml");
 
 class ppage extends pobject { // ppage class definition
 
-  function ParsePage($page, $full=false) {
-    global $ARCurrent, $AR;
-    if ($ARCurrent->session && $ARCurrent->session->id) {
-      $session='/-'.$ARCurrent->session->id.'-';
-    } else {
-      $session='';
-    } 
-	$site = $this->currentsite();
-	if (!$full) {
-		$page = eregi_replace('^.*<BODY[^>]*>','',
-        			eregi_replace('</BODY.*$','',$page));
-	}
-	$root = $this->store->root;
-	if (substr($root, -3) == "/$this->nls") {
-		$root = substr($root, 0, -3);
-	}
+	function ParsePage($page, $full=false) {
+		global $ARCurrent, $AR;
+		if ($ARCurrent->session && $ARCurrent->session->id) {
+			$session='/-'.$ARCurrent->session->id.'-';
+		} else {
+			$session='';
+		} 
+		$site = $this->currentsite();
+		if (!$full) {
+			$page = eregi_replace('^.*<BODY[^>]*>','',
+								eregi_replace('</BODY.*$','',$page));
+		}
+		$root = $this->store->root;
+		if (substr($root, -3) == "/$this->nls") {
+			$root = substr($root, 0, -3);
+		}
 
-	if ($site && $site !== '/') {
-      return str_replace("{arSession}", $session, 
+		if ($site && $site !== '/') {
+			return str_replace("{arSession}", $session, 
 			str_replace("{arBase}",$AR->host.$root, 
 			str_replace("{arRoot}",$AR->host.$this->store->root, 
 			str_replace("{arRoot}$site", $this->make_url($site),
 			str_replace("{arCurrentPage}", $this->make_url(),
-        			$page)))));
-	} else {
-      return str_replace("{arSession}", $session, 
+				$page)))));
+		} else {
+			return str_replace("{arSession}", $session, 
 			str_replace("{arBase}",$AR->host.$root, 
 			str_replace("{arRoot}",$AR->host.$this->store->root, 
 			str_replace("{arCurrentPage}", $this->make_url(),
-        			$page))));
-	}
-  }
-
-  function RAWtoAR($page, $nls="") {
-    return $this->CompilePage($page, $nls); 
-  }
- 
-  function CompilePage($page, $nls="") {
-  global $ARCurrent, $AR;
-
-	/* find and replace the current page */
-	$page = str_replace($this->make_url($this->path, $nls), "{arCurrentPage}", $page);
-	$nls_match = "";
-	if ($nls) {
-		$nls_match = "/$nls";
-	}
-	$page = ereg_replace("(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?".$nls_match.$this->path, "{arCurrentPage}", $page);
-
-	// change hardcoded links and images to use a placeholder for the root
-	if ($this->store->root) {
-		$root = $this->store->root;
-		if (substr($root, -3) == "/$nls") {
-			$root = substr($root, 0, -3);
+				$page))));
 		}
-		$page = ereg_replace("(http[s]?://)?".$AR->host.$root, "{arBase}", $page);
-		$page = ereg_replace("(http[s]?://)?".$root, "{arBase}", $page);
-
-		
 	}
-    // change hand pasted sources, which may or may not include session id's
-    $page = ereg_replace("(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?", "{arBase}", $page);
-	if ($ARCurrent->session && $ARCurrent->session->id) {
-      // check for other session id's:
-      $page = str_replace("/-".$ARCurrent->session->id."-", "{arSession}", $page);
-    }
-	return $page;
-  }
 
-  function GetReferences($page) {
-	// Use Perl compatible regex for non-greedy matching
-	preg_match_all("/['\"](\{(arRoot|arCurrentPage)}.+?)['\"]/", $page, $matches);
-	$refs=str_replace(array("{arRoot}", "{arCurrentPage}"),
-						array("", $this->path),
-						$matches[1]);
-	return $refs;
-  }
+	function RAWtoAR($page, $nls="") {
+		return $this->CompilePage($page, $nls); 
+	}
+ 
+	function CompilePage($page, $nls="") {
+		global $ARCurrent, $AR;
 
-  function GetPage($nls="", $source=false, $full=false) {
-    if (!$nls) {
-      $target=$this->nlsdata->page;
-    } else if ($this->data->$nls) {
-      $target=$this->data->$nls->page;
-    }
-    if ($source) {
-      return htmlspecialchars($this->ParsePage($target, $full));
-    } else {
-      return $this->ParsePage($target, $full);
-    }
-  }
+		/* find and replace the current page */
+		$page = str_replace($this->make_url($this->path, $nls), "{arCurrentPage}", $page);
+		$nls_match = "";
+		if ($nls) {
+			$nls_match = "/$nls";
+		}
+		$page = ereg_replace("(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?".$nls_match.$this->path, "{arCurrentPage}", $page);
 
-  function CutPage($tag='h1', $withtags=true, $withtitles=true, $page=false) {
-    if ($withtitles) {
-      $regexp='/(<'.$tag.'[^>]*>(.*)<\/'.$tag.'[^>]*>)/Usi';
-    } else {
-      $regexp='/(<('.$tag.')[^>]*>)/Usi';
-    }
-    if (!$page) {
-      $page=$this->GetPage();
-    }
-    if ($matches=preg_split($regexp, " ".$page, -1, PREG_SPLIT_DELIM_CAPTURE)) {
-      $leader=trim($matches[0]);
-      if ($leader) {
-        if ($withtitles) {
-          $this->section_titles[]=$this->nlsdata->name;
-        }
-        $this->sections[]=$leader;
-      }
-      $start=1;
-      $max=count($matches)-1;
-      for ($i=$start; $i<$max; $i+=3) {
-        $split=$matches[$i];
-        if ($withtitles) {
-          $this->section_titles[]=$matches[$i+1];
-        }
+		// change hardcoded links and images to use a placeholder for the root	
+		if ($this->store->root) {
+			$root = $this->store->root;
+			if (substr($root, -3) == "/$nls") {
+				$root = substr($root, 0, -3);
+			}
+			$page = ereg_replace("(http[s]?://)?".$AR->host.$root, "{arBase}", $page);
+			$page = ereg_replace("(http[s]?://)?".$root, "{arBase}", $page);
+		}
+		// change hand pasted sources, which may or may not include session id's
+		$page = ereg_replace("(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?", "{arBase}", $page);
+		if ($ARCurrent->session && $ARCurrent->session->id) {
+			// check for other session id's:
+			$page = str_replace("/-".$ARCurrent->session->id."-", "{arSession}", $page);
+		}
+		return $page;
+	}
+
+	function GetReferences($page) {
+		// Use Perl compatible regex for non-greedy matching
+		preg_match_all("/['\"](\{(arRoot|arCurrentPage)}.+?)['\"]/", $page, $matches);
+		$refs=str_replace(array("{arRoot}", "{arCurrentPage}"),	array("", $this->path), $matches[1]);
+		return $refs;
+	}
+
+	function GetPage($nls="", $source=false, $full=false) {
+		if (!$nls) {
+			$target=$this->nlsdata->page;
+		} else if ($this->data->$nls) {
+			$target=$this->data->$nls->page;
+		}
+		if ($source) {
+			return htmlspecialchars($this->ParsePage($target, $full));
+		} else {
+			return $this->ParsePage($target, $full);
+		}
+	}
+
+	function CutPage($tag='h1', $withtags=true, $withtitles=true, $page=false) {
+		if ($withtitles) {
+			$regexp='/(<'.$tag.'[^>]*>(.*)<\/'.$tag.'[^>]*>)/Usi';
+		} else {
+			$regexp='/(<('.$tag.')[^>]*>)/Usi';
+		}
+		if (!$page) {
+			$page=$this->GetPage();
+		}
+		if ($matches=preg_split($regexp, " ".$page, -1, PREG_SPLIT_DELIM_CAPTURE)) {
+			$leader=trim($matches[0]);
+			if ($leader) {
+				if ($withtitles) {
+					$this->section_titles[]=$this->nlsdata->name;
+				}
+				$this->sections[]=$leader;
+			}
+			$start=1;
+			$max=count($matches)-1;
+			for ($i=$start; $i<$max; $i+=3) {
+				$split=$matches[$i];
+				if ($withtitles) {
+					$this->section_titles[]=$matches[$i+1];
+				}
 		if ($withtags) {
-          $this->sections[]=$split.$matches[$i+2];          
-        } else {
-          $this->sections[]=$matches[$i+2];
-        }
-      }
-    } 
-    return $max-1;
-  }
+					$this->sections[]=$split.$matches[$i+2];					
+				} else {
+					$this->sections[]=$matches[$i+2];
+				}
+			}
+		} 
+		return $max-1;
+	}
 
-  function GetSections() {
-    if (!$this->sections) {
-      $this->CutPage();
-    } 
-    return $this->sections;
-  }
+	function GetSections() {
+		if (!$this->sections) {
+			$this->CutPage();
+		} 
+		return $this->sections;
+	}
 
-  function GetSection($section=0) {
-    if (!$this->sections) {
-      $this->CutPage();
-    } 
-    return $this->sections[$section];
-  }
+	function GetSection($section=0) {
+		if (!$this->sections) {
+			$this->CutPage();
+		} 
+		return $this->sections[$section];
+	}
 
-  function CountSections() {
-	if (!$this->sections) {
-      $this->CutPage();
-    }
-    return count($this->sections);
-  }
+	function CountSections() {
+		if (!$this->sections) {
+			$this->CutPage();
+		}
+		return count($this->sections);
+	}
 
-  function GetTitle($section=0) {
-    if (!$this->sections) {
-      $this->CutPage();
-    }
-    if ($this->section_titles) {
-      return $this->section_titles[$section];
-    } else {
-      return $section;
-    }
-  }
+	function GetTitle($section=0) {
+		if (!$this->sections) {
+			$this->CutPage();
+		}
+		if ($this->section_titles) {
+			return $this->section_titles[$section];
+		} else {
+			return $section;
+		}
+	}
 
-  function GetTitles() {
-    if (!$this->sections) {
-      $this->CutPage();
-    }
-    if ($this->section_titles) {
-      return $this->section_titles;
-    } else {
-      for ($i=0; $i<count($this->sections); $i++) {
-        $titles[]=$i;
-      }
-      return $titles;
-    }
-  }
+	function GetTitles() {
+		if (!$this->sections) {
+			$this->CutPage();
+		}
+		if ($this->section_titles) {
+			return $this->section_titles;
+		} else {
+			for ($i=0; $i<count($this->sections); $i++) {
+				$titles[]=$i;
+			}
+			return $titles;
+		}
+	}
 
-  function ShowSection($section=0, $template="", $args="") {
-    if (!$template) {
-      echo $this->ParsePage($this->GetSection((int)$section));
-    } else {
-      $this->call($template, array_merge($args, Array('section' => (int) $section, 'section_content' => $this->ParsePage($this->GetSection($section)))));
-    }
-  } 
+	function ShowSection($section=0, $template="", $args="") {
+		if (!$template) {
+			echo $this->ParsePage($this->GetSection((int)$section));
+		} else {
+			$this->call($template, array_merge($args, Array('section' => (int) $section, 'section_content' => $this->ParsePage($this->GetSection($section)))));
+		}
+	} 
 
-  function ShowSections($template="", $args="") {
-    $max=$this->CountSections();
-    for ($i=0; $i<$max; $i++) {
-      if ($template) {
-        $this->call($template, array_merge($args, Array('section' => $i, 'section_content' => $this->ParsePage($this->GetSection($i)))));
-        $this->_resetloopcheck();
-      } else {
-        echo ParsePage($this->GetSection($i));
-      }
-    }      
-  }
+	function ShowSections($template="", $args="") {
+		$max=$this->CountSections();
+		for ($i=0; $i<$max; $i++) {
+			if ($template) {
+				$this->call($template, array_merge($args, Array('section' => $i, 'section_content' => $this->ParsePage($this->GetSection($i)))));
+				$this->_resetloopcheck();
+			} else {
+				echo ParsePage($this->GetSection($i));
+			}
+		}			
+	}
 
-  function ShowTitles($template="", $args="") {
-    if (!$template) {
-      echo $this->GetTitle($section);
-    } else {
-      $max=$this->CountSections();
-      for ($i=0; $i<$max; $i++) {
-        $this->call($template, array_merge($args, Array('section' => $i, 'section_title' => $this->GetTitle($i))));
-        $this->_resetloopcheck();
-      }      
-    }    
-  }
+	function ShowTitles($template="", $args="") {
+		if (!$template) {
+			echo $this->GetTitle($section);
+		} else {
+			$max=$this->CountSections();
+			for ($i=0; $i<$max; $i++) {
+				$this->call($template, array_merge($args, Array('section' => $i, 'section_title' => $this->GetTitle($i))));
+				$this->_resetloopcheck();
+			}			
+		}		
+	}
 
-  function ShowTitle($section=0, $template="", $args="") {
-    if (!$template) {
-      echo $this->GetSection((int)$section);
-    } else {
-      $this->call($template, array_merge($args, Array('section' => (int)$section, 'section_title' => $this->GetTitle($ection))));
-    }
-  }
+	function ShowTitle($section=0, $template="", $args="") {
+		if (!$template) {
+			echo $this->GetSection((int)$section);
+		} else {
+			$this->call($template, array_merge($args, Array('section' => (int)$section, 'section_title' => $this->GetTitle($ection))));
+		}
+	}
 
-  function _CutPage($tag, $withtags=true, $withtitles=true) {
-    return $this->CutPage($tag, $withtags, $withtitles);
-  }
+	function _CutPage($tag, $withtags=true, $withtitles=true) {
+		return $this->CutPage($tag, $withtags, $withtitles);
+	}
 
-  function _GetSections() {
-    return $this->GetSections();
-  }
+	function _GetSections() {
+		return $this->GetSections();
+	}
 
-  function _GetSection($section=0) {
-    return $this->GetSection($section);
-  }
+	function _GetSection($section=0) {
+		return $this->GetSection($section);
+	}
 
-  function _CountSections() {
-    return $this->CountSections();
-  }
+	function _CountSections() {
+		return $this->CountSections();
+	}
 
-  function _GetTitles() {
-    return $this->GetTitles();
-  }
+	function _GetTitles() {
+		return $this->GetTitles();
+	}
 
-  function _GetTitle($section=0) {
-    return $this->GetTitle($section);
-  }
+	function _GetTitle($section=0) {
+		return $this->GetTitle($section);
+	}
 
-  function _ShowSection($section=0, $template="", $args="") {
-    return $this->ShowSection($section, $template, $args);
-  }
+	function _ShowSection($section=0, $template="", $args="") {
+		return $this->ShowSection($section, $template, $args);
+	}
 
-  function _ShowSections($template="", $args="") {
-    return $this->ShowSections($template);
-  }
+	function _ShowSections($template="", $args="") {
+		return $this->ShowSections($template);
+	}
 
-  function _ShowTitles($template="", $args="") {
-    return $this->ShowTitles($template);
-  }
+	function _ShowTitles($template="", $args="") {
+		return $this->ShowTitles($template);
+	}
 
-  function _ShowTitle($section=0, $template="", $args="") {
-    return $this->ShowTitle($section, $template);
-  }
+	function _ShowTitle($section=0, $template="", $args="") {
+		return $this->ShowTitle($section, $template);
+	}
 
-  function ShowPage($nls="", $source=false, $full=false) {
-    echo $this->GetPage($nls, $source, $full);
-  }
+	function ShowPage($nls="", $source=false, $full=false) {
+		echo $this->GetPage($nls, $source, $full);
+	}
 
-  function _GetPage($nls="", $source=false, $full=false) {
-    return $this->GetPage($nls, $source, $full);
-  }
+	function _GetPage($nls="", $source=false, $full=false) {
+		return $this->GetPage($nls, $source, $full);
+	}
 
-  function _GetFullPage($nls="", $source=false) {
-    return $this->GetPage($nls, $source, true);
-  }
+	function _GetFullPage($nls="", $source=false) {
+		return $this->GetPage($nls, $source, true);
+	}
 
-  function _GetReferences($page) {
-	return $this->GetReferences($page);
-  }
+	function _GetReferences($page) {
+		return $this->GetReferences($page);
+	}
 
-  function _ShowPage($nls="", $source=false, $full=false) {
-    return $this->ShowPage($nls, $source, $full);
-  }
+	function _ShowPage($nls="", $source=false, $full=false) {
+		return $this->ShowPage($nls, $source, $full);
+	}
 
-  function _ShowFullPage($nls="", $source=false) {
-    return $this->ShowPage($nls, $source, true);
-  }
+	function _ShowFullPage($nls="", $source=false) {
+		return $this->ShowPage($nls, $source, true);
+	}
 
-  function _ParsePage($page, $full=false) {
-    return $this->ParsePage($page, $full);
-  }
+	function _ParsePage($page, $full=false) {
+		return $this->ParsePage($page, $full);
+	}
 
-  function _RAWtoAR($page, $nls="") {
-	return $this->RAWtoAR($page, $nls);
-  }
+	function _RAWtoAR($page, $nls="") {
+		return $this->RAWtoAR($page, $nls);
+	}
 
-  function _CompilePage($page, $nls="") {
-    return $this->CompilePage($page, $nls);
-  }
+	function _CompilePage($page, $nls="") {
+		return $this->CompilePage($page, $nls);
+	}
 } // end of ppage class definition
 ?>
