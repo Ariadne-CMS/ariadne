@@ -1695,10 +1695,16 @@ class pobject extends object { // pobject class definition
 		return $user;
 	}
 
-	function _import($class) {
+
+	function _load($class) {
 		// only allow access to modules in the modules directory.
 		$class=eregi_replace('[^a-z0-9\._]','',$class);
 		include_once($this->store->code."modules/".$class);
+	}
+
+	function _import($class) {
+		// deprecated
+		return $this->_load($class);
 	}
 
 } // end of pobject class definition
