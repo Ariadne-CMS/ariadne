@@ -1,9 +1,9 @@
 <?php
   /******************************************************************
-   form.phtml                                      Muze Ariadne v2.0b
+   classic.form.phtml                              Muze Ariadne v2.0b
    ------------------------------------------------------------------
-   Called by 'edit.phtml' and 'new.phtml'
-   Arguments: newtype, newfilename
+   Called by 'classic.edit.phtml' and 'classic.new.phtml'
+   Arguments: arNewType, arNewFilename
    Grant needed: read
    Interface/Widget: all
    Global variables: none
@@ -24,19 +24,27 @@
 
   ******************************************************************/
   if ($this->CheckLogin("read") && $this->CheckConfig()) {
+
+	if ($this->call("lock.init.phtml")) {
 ?>
+<html>
+<head>
+<title><?php 
+	$title=$ARnls["edit"]." ".@current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml")); 
+	echo $title;
+?></title>
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
+
 <body bgcolor="white">
 <?php
-  $this->parents($this->path, "ShowLink.phtml","target=edit.phtml");
-  echo "<!-- this(path)".$this->path." -->\n";
+  $this->parents($this->path, "show.link.phtml","target=classic.edit.phtml");
 ?>
 <form ENCTYPE="multipart/form-data" method="post">
 <!-- hidden form variables needed by new.phtml/save.phtml -->
 <input type="hidden" name="MAX_FILE_SIZE" value="10000000">
-<input type="hidden" name="newtype" value="<?php echo $newtype; ?>">
-<input type="hidden" name="newparent" value="<?php echo $this->path; ?>">
-<input type="hidden" name="newfilename" value="<?php echo $newfilename; ?>">
-<input type="hidden" name="returnpage" value="<?php echo $returnpage; ?>">
+<input type="hidden" name="arNewType" value="<?php echo $arNewType; ?>">
+<input type="hidden" name="arNewFilename" value="<?php echo $arNewFilename; ?>">
+<input type="hidden" name="arReturnPage" value="<?php echo $arReturnPage; ?>">
 
 <table border="0" cellspacing="0">
 <tr>
@@ -52,7 +60,7 @@
     <font face="helvetica, sans-serif"><b><?php echo $ARnls["name"]; ?>&nbsp;:</b></font>
   </td>
   <td>
-    <input type="text" name="<?php echo $nls; ?>[name]" size="16" maxlength="50" value="<?php $this->showdata("name",$nls); ?>">
+    <input type="text" name="<?php echo $selectednls; ?>[name]" size="16" maxlength="50" value="<?php $this->showdata("name",$selectednls); ?>">
     &nbsp;<font face="helvetica, sans-serif"><b>Mimetype&nbsp;:</b></font>
     <input type="text" name="mimetype" size="16" maxlength="50" value="<?php $this->showdata("mimetype","none"); ?>">
   </td>
@@ -60,16 +68,16 @@
   <td align="right" valign="top">
     <font face="helvetica, sans-serif"><?php echo $ARnls["summary"]; ?>&nbsp;:</font>
   </td><td>
-    <textarea cols=50 rows=3 wrap=soft name="<?php echo $nls; ?>[summary]"><?php 
-      echo ereg_replace('&','&amp;',$this->getdata("summary",$nls)); 
+    <textarea cols=50 rows=3 wrap=soft name="<?php echo $selectednls; ?>[summary]"><?php 
+      echo ereg_replace('&','&amp;',$this->getdata("summary",$selectednls)); 
     ?></textarea>
   </td>
 </tr><tr>
   <td align="right" valign="top">
     <font face="helvetica, sans-serif"><?php echo $ARnls["keywords"]; ?>&nbsp;:</font>
   </td><td>
-    <textarea cols=50 rows=3 wrap=soft name="<?php echo $nls; ?>[keywords]"><?php 
-      echo $this->getdata("keywords",$nls); 
+    <textarea cols=50 rows=3 wrap=soft name="<?php echo $selectednls; ?>[keywords]"><?php 
+      echo $this->getdata("keywords",$selectednls); 
     ?></textarea>
   </td>
 </tr><tr>
@@ -86,10 +94,10 @@
   <?php 
     if (!$newtype) {
       $wgHTMLEditName="page";
-      $wgHTMLEditLanguage=$nls;
+      $wgHTMLEditLanguage=$selectednls;
       $wgHTMLEditPath=$this->parent;
       $wgHTMLEditFile=substr($this->path, strlen($this->parent), -1);
-      $wgHTMLEditContent=$this->getdata("page",$nls);
+      $wgHTMLEditContent=$this->getdata("page",$selectednls);
       include($this->store->code."widgets/htmledit/js.html"); 
       include($this->store->code."widgets/htmledit/form.html"); 
     } else {
@@ -145,10 +153,10 @@
 <table width="100%" cellspacing="0" border="0">
 <tr bgcolor="#404074">
   <td>
-    <?php if ($newtype) { ?>
+    <?php if ($arNewType) { ?>
       <input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="history.back()">
     <?php } else { ?>
-      <input type="submit" name="next" value="<?php echo $ARnls["cancel"]; ?>">
+      <input type="submit" name="arSubmit" value="<?php echo $ARnls["cancel"]; ?>">
 <?php
     $wgRecurseConfirm=$ARnls["q:removephoto"];
     $wgRecurseAction="delete";
@@ -159,12 +167,17 @@
     <?php } ?>
   </td>
   <td align="right">
-    <input type="submit" name="next" value="<?php echo $ARnls["save"]; ?>">  
+    <input type="submit" name="arSubmit" value="<?php echo $ARnls["save"]; ?>">  
   </td>
 </tr>
 </table>
+<?php
+	$this->call("lock.form.phtml");
+?>
 </form>
 </body>
+</html>
 <?php
+	}
   }
 ?>

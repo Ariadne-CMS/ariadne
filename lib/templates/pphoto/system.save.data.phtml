@@ -1,103 +1,111 @@
 <?php
-  /******************************************************************
-   system.save.data.phtml			   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
- 
-  ******************************************************************/
-
-  if ( ( $this->->arIsNewObject && $this->CheckLogin("add",$this->type) ) ||
-       ( !$this->->arIsNewObject && $this->CheckLogin("edit",$this->type) ) ) {
-    if ($this->->arIsNewObject) {
-      $filename=$this->getdata("arNewFilename","none");
-      while (list($key,$value)=each($ARConfig->nls->list)) {
-        $this->data->$key->name=$filename;
-      }
-    }
-    $tempfile=$this->getdata("file_temp","none");
-    if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-      $this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
-    } else {
-      if (!$this->data->nls) {
-        $this->data->nls=new object;
-      }
-      $this->data->nls->default=$ARConfig->nls->default;
-      reset($AR->nls->list);
-      while (list($key, $value)=each($AR->nls->list)) {
-        
-        if ($this->getdata($key,"none")) { // FIXME: not always sufficient check
-                                           // (if user selects a language but enters nothing and then submits, $$key will be set, but all values empty)
-          if (!$this->data->$key) {
-            $newnlsdata=new object;
-          } else {
-            $newnlsdata=$this->data->$key;
-          }
-          if (!$this->getdata("name",$key)) {
-            $this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
-          }
-          $newnlsdata->name=$this->getdata("name",$key);
-          $properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
-          $properties["text"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
-
-          $newnlsdata->keywords=$this->getdata("keywords",$key);
-          $properties["text"][]["value"]="'".AddSlashes($newnlsdata->keywords)."'"; 
-
-          $newnlsdata->summary=$this->getdata("summary",$key);
-          $properties["text"][]["value"]="'".AddSlashes(substr($newnlsdata->summary,0,255))."'";
-
-          $this->data->$key=$newnlsdata;
-          $this->data->nls->list[$key]=$value;
-        }
-      }
-    }
-    $this->data->mimetype=$this->getdata("mimetype","none");
-    $this->data->thumbwidth=$this->getdata("thumbwidth","none");
-    if (!$this->data->thumbwidth) {
-      $this->data->thumbwidth=40;
-    }
-    $this->data->thumbheight=$this->getdata("thumbheight","none");
-    if (!$this->data->thumbheight) {
-      $this->data->thumbheight=40;
-    }
-    $this->data->thumbcolor=$this->getdata("thumbcolor","none");
-    if (!$this->data->thumbcolor) {
-      $this->data->thumbcolor="CCCCCC";
-    }
-    
-    include($this->store->code."includes/system.save.phtml");
-
-    $this->->arIsNewObject=false;
-
-    // now check whether $file_temp is defined, if so, move it
-    unset($properties);
-    if (!$this->error) {
-      if ($tempfile) {
-        $tempfile=ereg_replace("[\\\/]","",$tempfile); // make sure nobody gets /etc/passwd      
-        $tempfile=$this->store->files."temp/".$tempfile;
-        if (file_exists($tempfile)) {  
-          $path=$this->store->files."files".$this->path;
-          $this->MkDir("files".$this->path);
-          copy($tempfile, $path."view=");
-          unlink($tempfile);
-          if (!$this->data->mimetype) {
-            $this->data->mimetype=$this->getdata("file_type","none");
-          }
-          $this->data->filesize=$this->getdata("file_size","none"); 
-          $temp=explode("/",$this->data->mimetype);
-          $this->data->mime["type"]=$temp[0];
-          $this->data->mime["subtype"]=$temp[1];
-          $properties["mimetype"][0]["type"]="'".AddSlashes($this->data->mime["type"])."'";
-          $properties["mimetype"][0]["subtype"]="'".AddSlashes($this->data->mime["subtype"])."'";
+	if (($this->arIsNewObject && $this->CheckLogin("add")) ||
+			(!$this->arIsNewObject && $this->CheckLogin("edit")) &&
+			$this->CheckConfig()) {
+		if (!$this->arIsNewObject) {
+			// first make sure that the object is clean (data can only be set v
+			// the defined interface: $arCallArgs)
+			$this->data=@current($this->get(".","system.get.data.phtml"));
         } else {
-          $tempfile=false;
-        }
-      }
-      $imgfile=$this->store->files."files".$this->path."view=";
-      $thumbfile=$this->store->files."files".$this->path."view.thumb=";
-      include($this->store->code."includes/create.thumb.phtml");
-      if ($error) {
-        $this->error=$error;
-      } 
-      $this->save($this->path, $this->type, $this->data, $properties);
-    }
-  }
+			$this->data->author=$AR->user->getdata("name", "none");
+			$this->data->authorpath=$AR->user->path;
+			$this->data->created=time();
+		}
+
+		$this->data->mimetype=$this->getdata("mimetype","none");
+
+		if (!$this->getdata("name", $ARConfig->nls->default)) {
+			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+		} else {
+			if (!$this->data->nls) {
+				$this->data->nls=new object;
+			}
+			$this->data->nls->default=$ARConfig->nls->default;
+			reset($AR->nls->list);
+			while (list($key, $value)=each($AR->nls->list)) {
+				if (isset(${$key})) {
+					if (!isset($this->data->$key)) {
+						$newnlsdata=new object;
+					} else {
+						$newnlsdata=$newdata->$key;
+					}
+					if (!$this->getdata("name", $key)) {
+						$this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
+					} else {
+						$newnlsdata->name=$this->getdata("name",$key);
+						$properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
+						$properties["text"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
+
+				        $newnlsdata->summary=$this->getdata("summary", $key);
+						$properties["text"][]["value"]="'".AddSlashes($newnlsdata->summary)."'";
+
+						$newnlsdata->keywords=$this->getdata("keywords", $key);
+						$properties["text"][]["value"]="'".AddSlashes($newnlsdata->keywords)."'";
+
+						$this->data->$key=$newnlsdata;
+						$this->data->nls->list[$key]=$value;
+					}
+				}
+			}
+		}
+		if (!$this->error) {
+
+			global $HTTP_POST_FILES;
+
+			if ( ($HTTP_POST_FILES['file'] && 
+					is_uploaded_file($classic_temp=$HTTP_POST_FILES['file']['tmp_name']) ) 
+				||
+					($wizard_temp=$this->getdata("file_temp", "none")) ) {
+
+
+				$this->MkDir("files".$this->path);
+
+				$path=$this->store->files."files".$this->path.'/view=';
+
+				if ($classic_temp) {
+					// file uploaded via classic.form
+
+					$this->data->size=$HTTP_POST_FILES['file']['size'];
+					if (!$this->data->mimetype) {
+						$this->data->mimetype=$HTTP_POST_FILES['file']['type'];
+					}
+					if (!move_uploaded_file($classic_temp , $path)) {
+						$this->error="Couldn't move file to $path";
+					}
+
+				} else {
+					// file uploaded via wizard interface
+
+					$this->data->size=$this->getdata("file_size", "none");
+					if (!$this->data->mimetype) {
+						$this->data->mimetype=$this->getdata("file_type", "none");
+					}
+
+					if (!rename($this->store->files."temp".$wizard_temp,$path)) {
+						$this->error="Couldn't move file to $path";
+					}
+				}
+			}
+		}
+
+		if (!$this->error) {
+			$temp=explode("/",$this->data->mimetype);
+			$this->data->mime["type"]=$temp[0];
+			$this->data->mime["subtype"]=$temp[1];
+
+			$imgfile=$this->store->files."files".$this->path."view=";
+			$this->data->thumbwidth=$thumbwidth=$newthumbwidth;
+			$this->data->thumbheight=$thumbheight=$newthumbheight;
+			$this->data->thumbcolor=$thumbcolor=$newthumbcolor;
+			$thumbfile=$this->store->files."files".$this->path."view.thumb=";	
+
+			include($this->store->code."includes/create.thumb.phtml");
+
+			$properties["mimetype"][0]["type"]="'".AddSlashes($this->data->mime["type"])."'";
+			$properties["mimetype"][0]["subtype"]="'".AddSlashes($this->data->mime["subtype"])."'";
+
+
+			$this->save($properties);
+		}
+	}
 ?>

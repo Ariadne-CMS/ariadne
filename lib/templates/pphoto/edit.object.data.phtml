@@ -66,31 +66,12 @@
             $HTTP_POST_VARS["file_temp"]=substr($file_artemp,strlen($this->store->files."temp"));
             $HTTP_POST_VARS["file_size"]=$HTTP_POST_FILES['file']['size'];
             $HTTP_POST_VARS["file_type"]=$HTTP_POST_FILES['file']['type'];
+			unset($HTTP_POST_FILES['file']); // do it the wizard way,.. always
           } 
         }
       }
     }
-    if ($wgWizFlow[0]["current"]=="conversion") {
-      $arControl=$this->getdata("wgWizControl","none");
-      if (($arControl==$ARnls["next"]) || ($arControl==$ARnls["save"])) {
-        // check whether the file has changed
-        global $HTTP_POST_VARS, $HTTP_POST_FILES;
-        $file_temp=$HTTP_POST_FILES['thumb']['tmp_name'];
-        $file=$HTTP_POST_FILES['thumb']['name'];
-        $automatic=$this->getdata("automatic","none");
-        if (!$automatic && $file && is_uploaded_file($file_temp)) {
-          // new file uploaded -> save it before PHP deletes it
-          $file_artemp=tempnam($this->store->files."temp","upload");
-          if (move_uploaded_file($file_temp, $file_artemp)) {
-            // now make the new values available to wgWizKeepVars()
-            $HTTP_POST_VARS["thumb"]=$file;
-            $HTTP_POST_VARS["thumb_temp"]=substr($file_artemp,strlen($this->store->files."temp"));
-            $HTTP_POST_VARS["thumb_size"]=$HTTP_POST_FILES['thumb']['size'];
-            $HTTP_POST_VARS["thumb_type"]=$HTTP_POST_FILES['thumb']['type'];
-          } 
-        }
-      }
-    }
+
     $arLanguage=$this->getdata("arLanguage","none");
     if ($wgWizFlow[0]["current"]=="language") { // =edit.object.language.phtml
       $arControl=$this->getdata("wgWizControl","none");
