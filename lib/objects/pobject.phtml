@@ -359,8 +359,10 @@ class pobject extends object { // pobject class definition
 		}
 		if ($this->data->nls->list[$this->nls]) {
 			$this->nlsdata=$this->data->{$this->nls};
-		} else {
+		} else if ($this->data->nls->default) {
 			$this->nlsdata=$this->data->{$this->data->nls->default};
+		} else {
+			$this->nlsdata=$this->data;
 		}
 		debug("pobject: save: end","all");
 		return $result;
