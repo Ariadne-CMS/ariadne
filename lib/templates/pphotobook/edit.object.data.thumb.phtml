@@ -3,13 +3,12 @@
 
   ******************************************************************/
   if ($this->CheckSilent("read")) {
-    $mimetype=$this->getdata("mimetype","none");
 ?>
 <table border="0" width="90%">
 <tr>
   <td>
     <fieldset id="filters">
-    <legend><?php echo $ARnls["createthumb"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+    <legend><?php echo $ARnls["thumbnail"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
       <table border="0" align="center">
       <tr>
         <td>
@@ -39,20 +38,6 @@
         </td>
       </tr>
       </table>
-    </fieldset>
-  </td>
-</tr>
-<tr>
-  <td>
-    <fieldset>
-    <legend><?php echo $ARnls["oruploadthumb"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
-      <table border="0" align="center">
-      <tr>
-		<td><?php echo $ARnls["file"]; ?>&nbsp;:</td>
-		<td><input type="file" name="thumbfile"></td>
-      </tr>
-      </table>
-    </legend>
     </fieldset>
   </td>
 </tr>

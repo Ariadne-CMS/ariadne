@@ -94,40 +94,9 @@
 						$this->data->mimetype=$this->getdata("file_type","none");
 					}
 					$this->data->filesize=$this->getdata("file_size","none"); 
-				} else {
-					$tempfile=false;
+					$this->save($properties);
 				}
 			} 
-		}
-
-
-		$tempfile=$this->getdata("thumbfile_temp", "none");
-		// now check whether $thumbfile_temp is defined, if so, move it
-		if (!$this->error) {
-			if ($tempfile) {
-				$tempfile=ereg_replace("[\\\/]","",$tempfile); // make sure nobody gets /etc/passwd			
-				$tempfile=$this->store->files."temp/".$tempfile;
-				if (file_exists($tempfile)) {	
-					$f_store=$this->store->get_filestore("files");
-					$f_store->copy_to_store($tempfile, $this->id, "file.thumb");
-					$f_store->close();
-					@unlink($tempfile);
-					$this->data->thumb_mimetype=$this->getdata("thumbfile_type","none");
-					$this->data->thumb_filesize=$this->getdata("thumbfile_size","none"); 
-				} else {
-					$tempfile=false;
-				}
-			} else 
-			if (!$this->error && ($this->getdata("thumbwidth","none") || $this->getdata("thumbheight", "none"))) {
-
-				$this->data->thumbwidth=$this->getdata("newthumbwidth", "none");
-				$this->data->thumbheight=$this->getdata("newthumbheight", "none");
-				$this->data->thumbcolor=$this->getdata("newthumbcolor", "none");
-				$this->call("system.save.thumb.phtml");
-
-			}
-
-			$this->save($properties);
 		}
 	}
 ?>

@@ -5,5 +5,58 @@ include_once($this->code."objects/pfile.phtml");
 
 class pphoto extends pfile { // definitie class
 
+	function convert($target) {
+		global $AR;
+		if (eregi('^(GIF|PNG|JPG|BMP)$',$target)) {
+			$tmpsrc=$AR->dir->temp.$this->id;
+			$tmpdst=$tmpsrc.".".$target;
+			$f_store=$this->store->get_filestore("files");
+			$f_store->copy_from_store($tmpsrc, $this->id, "file");
+			$f_store->close();
+			system($AR->IM->convert." $tmpsrc $tmpdst",$failed);
+			if (!$failed) {
+				ob_start();
+				readfile($tmpdst);
+				$result=ob_get_contents();
+				ob_end_clean();
+			} else {
+				$this->error="Could not run ImageMagick convert program";
+			}
+		} else {
+			$this->error="Convert called with illegal target ($target), valid targets are: GIF, PNG, JPG or BMP";
+		}
+		return $result;
+	}
+
+	function scale($x, $y, $fillcolor=false) {
+		global $AR;
+		$x=(int)$x;
+		$y=(int)$y;
+		$tmpsrc=$this->store->files."temp/".$this->id;
+		$f_store=$this->store->get_filestore("files");
+		$f_store->copy_from_store($tmpsrc, $this->id, "file");
+		$f_store->close();
+		$exec_string=$AR->IM->mogrify." -geometry ".$x."x".$y." -format png $tmpsrc";
+		system($exec_string,$failed);
+		if (!$failed) {
+			ob_start();
+			readfile($tmpsrc.".png");
+			$result=ob_get_contents();
+			ob_end_clean();
+		} else {
+			$this->error="Could not run ImageMagick scale program (mogrify)<br>\n(".$exec_string.")";
+		}
+		return $result;
+	}
+
+	function _convert($target) {
+		return $this->convert($target);
+	}
+
+	function _scale($x, $y, $fillcolor=false) {
+		return $this->scale($x, $y, $fillcolor);
+	}
+
+
 } // end class pphoto
 ?>

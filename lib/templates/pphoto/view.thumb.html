@@ -13,12 +13,23 @@
 	******************************************************************/
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		if (ldSetContent("image/png")) {
-			$f_store=$this->store->get_filestore("files");
-			if (!$f_store->show($this->id, "file.thumb")) {
-				$this->call("view.thumb.error.html");
+		$configcache=$ARConfig->cache[$this->path];
+		$thumbwidth=$configcache->thumb["width"];
+		$thumbheight=$configcache->thumb["height"];
+		$thumbcolor=$configcache->thumb["color"];		
+		if (!$this->cached("ar_thumb_".$thumbwidth."x".$thumbheight.$thumbcolor)) {
+			$result=$this->scale($thumbwidth, $thumbheight, $thumbcolor);
+			if ($result) {
+				ldSetContent("image/png");
+				echo $result;
+				$this->savecache(999);
+			} else if ($this->path!="/system/photo/nothumb/") {
+				$this->get("/system/photo/nothumb/","view.html");
+				$this->savecache(0);
+			} else {
+				echo $this->error;
+				$this->savecache(0);
 			}
-			$f_store->close();
 		}
 	}
 ?>

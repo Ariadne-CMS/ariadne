@@ -72,6 +72,16 @@
   }
 
   /**************************************************************************/
+  /* ImageMagick information                                                */
+  /* For the photobook Ariadne needs to know where to find the ImageMagick  */
+  /* utilities. The default setting works for a debian potato linux install */
+  /* Don't forget to install ImageMagick.                                   */
+  /**************************************************************************/
+
+  $AR->IM->convert="/usr/bin/X11/convert";
+  $AR->IM->mogrify="/usr/bin/X11/mogrify";
+
+  /**************************************************************************/
   /* Only change this if you have made your own loader                      */
   /**************************************************************************/
 
@@ -123,6 +133,9 @@
   $ARConfig->cache[".."]->root["path"]="/";    /* must always start with a '/' */
   $ARConfig->cache[".."]->root["value"]=$AR->root;  // do not change
   $ARConfig->cache[".."]->site="/";            // do not change
+  $ARConfig->cache[".."]->thumb["width"]=40;   // do not change
+  $ARConfig->cache[".."]->thumb["height"]=40;   // do not change
+  $ARConfig->cache[".."]->thumb["color"]="EEEEEE";   // do not change
 
   $ARCurrent=new object;                       // do not change
  

@@ -47,21 +47,7 @@
 		$wgWizFlow[$i]["template"]=$save;
 		$wgWizFlow[$i]["back"]=$i-1;
 		
-		global $HTTP_POST_VARS, $HTTP_POST_FILES;
-		if ($wgWizFlow[0]["current"]==1) {
-			$arControl=$this->getdata("wgWizControl","none");
-			if (($arControl==$ARnls["next"]) || ($arControl==$ARnls["save"])) {
-				$this->call("system.save.tempfile.phtml");
-			}
-		}
-
-		// check for thumbnail
-		if ($wgWizFlow[0]["current"]==2) {
-			$arControl=$this->getdata("wgWizControl","none");
-			if (($arControl==$ARnls["next"]) || ($arControl==$ARnls["save"])) {
-				$this->call("system.save.tempfile.phtml", Array("form_field" => "thumbfile"));
-			}
-		}
+		global $HTTP_POST_VARS;
 
 		$arLanguage=$this->getdata("arLanguage","none");
 		if ($languageselect && $wgWizFlow[0]["current"]==3) { // =edit.object.language.phtml
