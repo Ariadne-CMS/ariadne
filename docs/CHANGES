@@ -48,6 +48,8 @@ New Features:
 	  also convert simple html to pdf. Uses fpdf, which must be installed seperately.
 	- Added the option to add spans, divs and other html tags with or without classnames
 	  using the editor.
+	- The browse widget now also handles large directories (> 100 objects) by showing a page 
+	  select list.
 
 Bugs Fixed:
 	- Fixed a bug which made it impossible to start a hidden session without
@@ -83,6 +85,7 @@ Bugs Fixed:
 	- redo on the error handling in the postgresql store, i should give nice error's now, and removed a lot of duplicate output
 	- all the stores use now 32 char long object types instead of 16 and 32
 	- removed the usage of ARLogin in CheckLogin and changed it to Ar->user->login
+	- The wizard input fields now resize with the window.
 
 Changes in Ariadne since version 2.2
 
