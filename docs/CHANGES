@@ -52,6 +52,8 @@ New Features:
 	  select list.
 
 Bugs Fixed:
+	- Changed short php tags in puser/edit.object.data.form.phtml to long tags.
+	  Thanks to Goran Topic
 	- Fixed class::template calling within pinp to other pinp scripts which
 	  override class templates.
 	- Added a workaround for a bug in htmltidy: some word documents produce an
