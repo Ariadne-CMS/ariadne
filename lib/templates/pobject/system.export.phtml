@@ -44,8 +44,14 @@ if ($this->CheckLogin("read")) {
 				unset($newresult);
 				@reset($checkpaths);
 				while (list(,$path)=@each($checkpaths)) {
-					$newresult[]=current($this->store->call("system.export.object.phtml", "",
-										$this->store->get($path)));
+					if (!$ARCurrent->importStore->exists($path)) {
+						$temp_obj=current($this->store->call("system.export.object.phtml",
+												Array("setDummyObject" => true),
+												$this->store->get($path)));
+
+						$newresult[]=$temp_obj;
+						echo "CREATING ($path) ($temp_obj->type)\n";
+					}
 				}
 				while (list($key,)=each($result)) {
 					$newresult[]=$result[$key];
@@ -65,22 +71,25 @@ if ($this->CheckLogin("read")) {
 				}
 
 				if (!$saved_object[$object->id]) {
-					if (!$ARCurrent->options["force"] && $ARCurrent->importStore->exists($newpath)) {
+					if ((!$ARCurrent->options["force"] || $object->dummy) && $ARCurrent->importStore->exists($newpath)) {
 						$saved_object[$object->id]=$newpath;
 
-						$oldObject=current($ARCurrent->importStore->call("system.get.phtml", "",
-										$ARCurrent->importStore->get($newpath)));
+						// we may never overwrite an existing object with a
+						// dummy object
+						if (!$object->dummy) {
+							$oldObject=current($ARCurrent->importStore->call("system.get.phtml", "",
+											$ARCurrent->importStore->get($newpath)));
 
-						if (($object->lastchanged > $oldObject->lastchanged)) {
-							display("(updating)\n");
-							$object->oldObject=$oldObject;
-							$object->call("system.export.update.phtml");
+							if (($object->lastchanged > $oldObject->lastchanged)) {
+								display("(updating)\n");
+							} else {
+								display("(ok)\n");
+								unset($oldObject);	// no update needed
+								unset($object);
+							}
 						} else {
-							display("(ok)\n");
-							unset($oldObject);	// no update needed
 							unset($object);
 						}
-
 					}
 
 
@@ -88,23 +97,23 @@ if ($this->CheckLogin("read")) {
 						// next one has to be linked
 						$saved_object[$object->id]=$newpath;
 
-						display("(saving)\n");
-						$ARCurrent->importStore->save(
-									$newpath, 
-									$object->type,
-									$object->data,
-									$object->properties,
-									$object->vtype,
-									$object->priority);
+							display("(saving)\n");
+							$ARCurrent->importStore->save(
+										$newpath, 
+										$object->type,
+										$object->data,
+										$object->properties,
+										$object->vtype,
+										$object->priority,
+										$object->dummy_save);
 
-						// (update or set templates and files)
+							// (update or set templates and files)
+							$object->newObject=current(
+								$ARCurrent->importStore->call("system.get.phtml","",
+									$ARCurrent->importStore->get($newpath)));
 
-						$object->newObject=current(
-							$ARCurrent->importStore->call("system.get.phtml","",
-								$ARCurrent->importStore->get($newpath)));
-
-						$object->call("system.export.templates.phtml", "");
-						$object->call("system.export.files.phtml", "");
+							$object->call("system.export.templates.phtml", "");
+							$object->call("system.export.files.phtml", "");
 					}
 				} else {
 					if (!$ARCurrent->importStore->exists($newpath)) {

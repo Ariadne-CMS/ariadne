@@ -1,5 +1,5 @@
 <?php
- if ($this->CheckConfig("read")) {
+ if ($this->CheckConfig("read") && !$this->newObject->dummy) {
 	if ( ($this->newObject->arIsNewObject && $this->CheckLogin("add", $this->newObject->type)) ||
 		(!$this->newObject->arIsNewObject && $this->CheckLogin("edit"))) {
 
