@@ -40,6 +40,9 @@ TD {
 		BACKGROUND-COLOR: white;
 		BORDER-STYLE: inset;
 		BORDER-WIDTH: thin;
+		HEIGHT: 100%;
+		WIDTH: 100%;
+		OVERFLOW: auto;
 }
 .listheading {
 		BACKGROUND-COLOR: #404074;
@@ -61,7 +64,8 @@ TD {
 <tr>
 	<td><script> document.write('<img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="'+(window.innerHeight-80)+'" alt="">'); </script></td>
 	<td valign="top">
-		<table bgcolor="white" border="0" cellspacing="0" cellpadding="3" width="100%" height="100%" class="list">
+		<script> document.write('<div class="list" style="height: '+(window.innerHeight-80)+'">'); </script>
+		<table bgcolor="white" border="0" cellspacing="0" cellpadding="3" width="100%">
 		<tr>
 			<td class="listheading" width="18" height="18" unit="pixels">
 				<img src="<?php echo $AR->dir->images; ?>dot.gif" width="18" height="1">
@@ -120,8 +124,9 @@ TD {
 				DisplayGrants($data->grants,"puser");
 			}
 		?>
-	<tr></tr>
+		<tr></tr>
 		</table>
+		</div>
 	</td>
 </tr><tr>
 	<td colspan="2">
