@@ -1,0 +1,45 @@
+Upgrading to 2.0b10                                                Muze Ariadne
+================================================================================
+
+Ariadne 2.0b10 introduces a lot of low level changes, not only in the
+database store, but also in the export file format. For this reason,
+upgrading is a bit more complex.
+
+0.	Backup your Ariadne code and database. But you do that regulary
+	anyway, right? :)
+
+1.	Before you upgrade the Ariadne code, export your current site. 
+	You can run export as root, or as the web user (e.g. www-data),
+	from the ariadne/bin/ directory, e.g.:
+
+	./export / oldsite.ax
+	
+
+2.	Install Ariadne 2.0b10 as if it was a fresh Ariadne installation.
+	Please see the file INSTALL for more information.
+	Make sure that you do not use the same database as for the previous
+	version of Ariadne. You can also simply drop the old databases and
+	remove the old code...
+
+3.	In ariadne.2.0b10/bin/ run:
+
+	./axconvert [ax_file] > [new_ax_file]
+
+	e.g.
+
+	./axconvert oldsite.ax > newsite.ax
+
+	This converts your old data to the new file format.
+
+4.	Now make sure you are logged in as the web user (e.g. www-data) or
+	root and run:
+
+	import [new_ax_file] [path]
+
+	e.g.
+
+	import newsite.ax /
+
+	If ran it as root, make sure the files (ariadne/files/) are chowned to
+	the web user.
+

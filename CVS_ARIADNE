@@ -1,7 +1,7 @@
-CVS Server													  Muze Ariadne 2.0b7
+CVS Serve                                                   Muze Ariadne 2.0b10
 ================================================================================
 
-From now on you can download the latest development version of Ariadne from
+You can download the latest development version of Ariadne from
 our CVS server using a public read-only cvs account. We will still release
 'stable' snapshots from time to time, hopefully not too many untill the first
 non-beta release :)

@@ -2,24 +2,83 @@ Ariadne 2.0b10
 
 Changes in ariadne since version 2.0b9
 
-New Features
-- Object templates are automatically inherited to subclasses, just like
-  Class templates.
-- default.phtml class template is no longer neccessary
-- You can call templates from other classes by prepending 'classname::' to
-  the template name. e.g. call('pobject::show.html');
-- Easier configuration, the files are more readable and contain better
-  default values.
-- A new photobook. The photobook automatically generates thumbnails of
-  images and allows easy navigation.
-- The HTML Editor has a new image dialog, you can now select images from
-  the ariadne tree to insert into a page.
-- Private Cache. Page Caching can only be used
+This release introduces a lot of new features and changes since the previous
+version. While this means some more work to do when upgrading, it also means
+a lot more power and a lot less headaches compared to beta 9. Since not
+every screen of the user interface is finished, we couldn't call it a
+release candidate yet, but the next release will be RC1. (Unless someone
+finds a really obnoxious bug...)
+Please see the file 'UPGRADING' on notes for upgrading older systems to
+2.0b10.
 
-Important Bugfixes
-- Cache, now uses output buffering and actually works.
-- HTMLEditor now displays the correct paragraph styles even in non-english 
-  browsers, thanks to Matt Finn, NETDesign Inc.
+
+New Features
+  - PSite: With this object and the Apache Alias/Rewrite engine, you can
+    host multiple sites in one Ariadne tree, all with their own domain or
+    directory. E.g. our own website runs ariadne.muze.nl and www.muze.nl
+    from one ariadne tree. 
+  - PPhotobook: The photobook automatically generates thumbnails of
+    images and allows easy navigation. Requires GD and Gif2Png.
+  - The HTML Editor has a new image dialog, you can now select images from
+    the ariadne tree to insert into a page.
+  - Private Cache. Normal (page) caching can only be used when the page is 
+    accessed by the user 'public'. With the private cache, you can now
+    cache (parts of) a page, while still keeping the cache image 'private'.
+    See the functions 'cached()' and 'savecache()'.
+  - New interface almost finished. All objects can now be created, edited
+    and removed via wizards. Most items in the pull down menu work. Copy and
+    delete work recursively.
+  - 'Classic' interface has also received a facelift.
+  - Priority field per node allows custom ordering of nodes. You can now
+    order your menu exactly the way you want without any extra code.
+
+
+- Templates:
+  - Object templates are automatically inherited to subclasses, just like
+    Class templates. This means that a template defined for 'pobject' will
+    also work on a ppage.
+  - default.phtml class template is no longer neccessary
+  - You can call templates from other classes by prepending 'classname::' to
+    the template name. e.g. call('pobject::show.html');
+  - All templates have been cleaned up and fitted into the new naming
+    scheme. It should be much easier to find the correct template for each
+    function:
+    	system.*	lowest level templates. They will not output
+			anything, but will only return values or errors.
+	classic.*	templates used by the classic interface.
+	object.*	templates accessed via the object menu
+	edit.*		templates accessed via the edit menu
+	view.*		templates accessed via the view menu
+	help.*		templates accessed via the help menu
+	manage.*	templates used by the default manage views per class.
+	
+
+
+- Installation:
+  - Easier configuration, the configuration files are more readable and contain 
+    better default values.
+  - More robust installation. The install script checks for a number of
+    failure conditions and hopefully delivers better error messages.
+
+
+- Important Bugfixes:
+  - Cache, now uses output buffering and actually works.
+  - HTMLEditor now displays the correct paragraph styles even in non-english 
+    browsers, thanks to Matt Finn, NETDesign Inc.
+  - Files, templates and private cache files are now accessed via a
+    filestore. This filestore saves the file sper object id, not per node path.
+    This fixed an important problem in 2.0b9, where linking objects could get ou
+    in trouble quick. Also this means that you can now build a database driven
+    filestore, which makes it easier to run ariadne on a distributed system
+    (multiple webservers with one (or more) database servers).
+
+- Optimizations:
+  - CheckLogin and CheckConfig have gotten a big boost by caching the data
+    per node. This means that you can generate more complex pages with much
+    less performance penalty than before. The price is a small loss in
+    performance for very simple pages.
+
+
 
 Changes in ariadne since version 2.0b8
 

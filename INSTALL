@@ -1,18 +1,8 @@
 Installing Ariadne.                                         Muze Ariadne 2.0b10
 ===============================================================================
 
-  IMPORTANT: This version of Ariadne needs PHP4!
+  IMPORTANT: Ariadne needs PHP4!
            
-  Because of the many problems with PHP3 and objects, and because 
-  of the better memory management of PHP4, we've completely
-  switched to PHP4. You should too :)
-
-  What this means is that you no longer need to compile the PHP into apache,
-  you can now also use php4 as a module (--with-apxs)
-  Because of a few changes in php4 with regard to configuration settings,
-  you will need to tune your php.ini. Specifically, Ariadne is allergic to 
-  magic_quotes, so set all magic_quotes to 'Off'. Also, Ariadne needs the
-  php.ini setting track_vars set to 'On'.
 
 Windows
 =======
@@ -36,9 +26,9 @@ Requirements:
    e.g.:
 
      cd /usr/local/lib/
-     tar xvzf ~/ariadne.2.0b9.tgz
+     tar xvzf ~/ariadne.2.0b10.tgz
      cd /var/www
-     ln -s /usr/local/lib/ariadne.2.0b9/www/ ariadne
+     ln -s /usr/local/lib/ariadne.2.0b10/www/ ariadne
 
 3) Make sure the files directory and the sessions directory are writable by the 
    webserver user.
@@ -46,9 +36,9 @@ Requirements:
    disk. So check to see which user your webserver is running as (look in
    httpd.conf) and (as root) do something like:
 
-     cd /usr/local/lib/ariadne.2.0b9/files/
+     cd /usr/local/lib/ariadne.2.0b10/files/
      chown -R www:www * 
-     cd /usr/local/lib/ariadne.2.0b7/sessions/
+     cd /usr/local/lib/ariadne.2.0b10/sessions/
      chown -R www:www * 
 
 3) create a database for Ariadne to use in MySQL.

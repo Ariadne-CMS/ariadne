@@ -1,37 +1,24 @@
 Known issues
 
-- WYSIWYG Htmleditor breaks on 'broken' html
+- WYSIWYG Htmleditor 
+
+  - breaks on 'broken' html.
+
   The Internet Explorer html editor cannot edit framesets or html files with
   multiple body statemens. There should be a check on this and a 'backup' edit
   possibility.
 
----
-Currently known broken in CVS / Todo before 2.0b10
+  - switch between WYSIWYG / HTML view is 'lossy'
 
-- puser: profile and group selection in wizard unfinished.
-  -> add group selection, leave profiles out.
-+ files/templates: storage is broken conceptually, needs a new approach.
-  -> use filestore for templates and files, see mod_filestore.
-- IIS version.
-- add nls fields to text properties.
-  -> no convert script, import imports the text fields without an nls value, each save will 'fix' that 
-     objects text properties.
-- add user: tree update broken.
+  It seems to be impossible to let the microsoft dhtml editing component
+  keep the source code intact. Specifically, switching from HTML source view
+  to WYSIWYG view will lose/mangle javascript code. We've been unable to get
+  the dhtml editor to work as advertised (by Microsoft that is).
 
-Todo before 2.0RC1
 
-- add link / move recurse templates and user interface
-- add help pages
-  - index
-  - tutorials
-- add search page in classic and new interface.
-- import/export user interface in new interface
-- fix logoff menu entry
-- show/hide explorer bar
-- create manage.html templates per type, use small/large icons/details
-- user profiles
-- htmledit: button (form.html) in a new object doesn't work: save to form in that case
-- install.php: needs a user interface with configuration entry form and 
-    PHP checks.
-- add/edit/delete(type) not in CVS yet.
-- add usergrants config in new interface.
+- Missing features.
+
+  In this beta there are still a number of unimplemented screens. This will
+  be fixed in the next release. All the important screens are working though 
+  (we hope).
+
