@@ -13,7 +13,7 @@
 	
 	******************************************************************/
 	if ($this->CheckLogin("config")) {
-		$ARCurrent->returnpage=$this->store->root.$this->path."config.phtml";
+		$ARCurrent->returnpage=$this->store->root.$this->path."classic.config.phtml";
 ?>
 <html>
 <head>
@@ -40,7 +40,7 @@
 					while (list($id, $grants)=each($grantslist[$type])) { // path was login en is weer login
 						echo "<tr><td>";
 						echo "<img src=\"".$AR->dir->images."icons/".$type.".gif\">";
-						echo "<a href=\"savegrants.phtml?delete=true&type=$type&id=".RawUrlEncode($id).
+						echo "<a href=\"classic.config.grants.save.phtml?delete=true&type=$type&id=".RawUrlEncode($id).
 								 "&returnpage=".RawUrlEncode($ARCurrent->returnpage).
 								 "\" onClick=\"return confirm('".sprintf($ARnls["q:removeallgrants"],$id)."')\">$id</a></td>";
 						echo "</td><td>";
@@ -48,7 +48,7 @@
 							ksort($grants);
 							while (list($grant, $value)=each($grants)) {
 								if ($value) { 
-									echo "<a href=\"savegrants.phtml?delete=true&type=$type&id=".
+									echo "<a href=\"classic.config.grants.save.phtml?delete=true&type=$type&id=".
 										RawUrlEncode($id)."&grant=".
 										RawUrlEncode($grant)."&returnpage=".
 										RawUrlEncode($ARCurrent->returnpage).
