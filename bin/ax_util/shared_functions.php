@@ -1,10 +1,11 @@
 <?php
 
 	function rm_dir($path) {
+
 		$path=($path[strlen($path)-1]=="/") ? $path : $path."/";
 		if (file_exists($path)) {
-			$dir=dir($path);
-			while ($entry=$dir->read()) {
+			$dir=opendir($path);
+			while ($entry=readdir($dir)) {
 				if ($entry!="." && $entry!="..") {
 					if (is_dir($path.$entry)) {
 						rm_dir($path.$entry);
@@ -12,8 +13,11 @@
 						unlink($path.$entry);
 					}
 				}
+				unset($entry);
 			}
-			rmdir($path);
+			closedir($dir);
+			rmdir($path.$entry."/");
+
 		}
 	}
 

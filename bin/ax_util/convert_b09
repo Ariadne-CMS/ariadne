@@ -29,41 +29,45 @@
 
 	if ($argc>2) {
 		$axfile=$argv[1];
-		$temp=tempnam($store_config["files"]."temp", "axconvert");
-		if (file_exists($temp)) {
-			unlink($temp);
+		$tempdir=tempnam($store_config["files"]."temp", "axconvert");
+		if (file_exists($tempdir)) {
+			unlink($tempdir);
 		}
-		mkdir($temp, 0777);
-		if (!untar($axfile, "", $temp)) {
+		mkdir($tempdir, 0777);
+		if (!untar($axfile, "", $tempdir)) {
 			echo "error ($retvar) $error\n";
 		} else {
-			if (file_exists($temp."/files.tgz")) {
-				$files=$temp."/files";
+			if (file_exists($tempdir."/files.tgz")) {
+				$files=$tempdir."/files";
 				mkdir($files, 0777);
-				untar("$temp/files.tgz", "", $files);
+				untar("$tempdir/files.tgz", "", $files);
 			}
 			if ($error) {
 				echo "error ($retvar) $error\n";
 			} else {
-				if (file_exists($temp."/templates.tgz")) {
-					$templates=$temp."/templates";
+				if (file_exists($tempdir."/templates.tgz")) {
+					$templates=$tempdir."/templates";
 					mkdir($templates, 0777);
-					untar("$temp/templates.tgz", "", $templates);
+					untar("$tempdir/templates.tgz", "", $templates);
 				}
 				if ($error) {
 					echo "error ($retvar) $error\n";
 				} else {
-					$obfp=fopen($temp."/objects.data","rb");
+					$obfp=fopen($tempdir."/objects.data","rb");
 					if (!$obfp) {
 						echo "error: can not open objects.data\n";
 					} else {
-						$axdata=fread($obfp, filesize($temp."/objects.data"));
+						$axdata=fread($obfp, filesize($tempdir."/objects.data"));
 						fclose($obfp);
 						$axdata=unserialize($axdata);
 
 						$ax_config["database"]=$argv[2];
 						$ax_config["writeable"]=true;
 						$store=new axstore(".", $ax_config);
+
+
+						$files_store=$store->get_filestore("files");
+						$templates_store=$store->get_filestore("templates");
 
 						while (is_array($axdata->nodes) && (list($key, $id)=each($axdata->nodes))) {
 							echo "$key ($id)\n";
@@ -75,28 +79,25 @@
 										$store->get($key)))) {
 
 									$newid=$newobject->id;
-									$fstore=$newobject->store->get_filestore("templates");
+
 									if (is_array($newobject->data->pinp)) {
 										while (list($type, $templates)=each($newobject->data->pinp)) {
 											while (list($template, $languages)=each($templates)) {
 												while (list($language, $file)=each($languages)) {
 													$newobject->data->pinp[$type][$template][$language]=$newid;
 													$newobject->data->templates[$type][$template][$language]=$newid;
-													echo "copy_to_store($temp/templates".$file.", $newid,  $type.$template.$language)\n";
-													$fstore->copy_to_store($temp."/templates".$file, $newid,  "$type.$template.$language");
+													//echo "copy_to_store($tempdir/templates".$file.", $newid,  $type.$template.$language)\n";
+													$templates_store->copy_to_store($tempdir."/templates".$file, $newid,  "$type.$template.$language");
 												}
 											}
 										}
 									}
-									$fstore->close();
 
-									$fstore=$newobject->store->get_filestore("files");
-									$fpath="$temp/files".$key;
-									if (file_exists($fpath) &&
-											is_dir($fpath) ) {
-										$dir=dir($fpath);
-										while ($entry=$dir->read()) {
-											if (!is_dir($fpath.$entry)) {
+									$files_path="$tempdir/files".$key;
+									if (file_exists($files_path) && is_dir($files_path) ) {
+										$dir=opendir($file_path);
+										while ($entry=readdir($dir)) {
+											if (!is_dir($files_path.$entry)) {
 												if ($entry=="view=") {
 													$target="file";
 												} else
@@ -105,22 +106,26 @@
 												} else {
 													$target=$entry;
 												}
-												$fstore->copy_to_store($fpath.$entry, $newid, $target);
+												//echo "copy_to_store($files_path".$entry.", $newid,  $target)\n";
+												$files_store->copy_to_store($files_path.$entry, $newid, $target);
 											}
 										}
+										closedir($dir);
 									}
-									$fstore->close();
 
 								} else {
-									echo "error: couldnot get saved object ($key)\n";
+									echo "error: could not get saved object ($key)\n";
 								}
 							}
+							echo "store tempdir=".$store->tempdir."\n";
 						}
+						$files_store->close();
+						$templates_store->close();
 					}
 				}
 			}
 			$store->close();
-			rm_dir($temp);
+			rm_dir($tempdir);
 		}
 	} else {
 		echo "USAGE: convert_v01_v02 axfile newaxfile\n";

@@ -19,23 +19,27 @@
 		$argv[2]=str_replace('\\', '/', $argv[2]);
 		$axfile=$argv[1];
 
-		$temp=tempnam($store_config["files"]."temp", "axconvert");
-		if (file_exists($temp)) {
-			unlink($temp);
+		$tempdir=tempnam($store_config["files"]."temp", "axconvert");
+		if (file_exists($tempdir)) {
+			unlink($tempdir);
 		}
-		mkdir($temp, 0777);
-		if (!untar($axfile, "", $temp)) {
+		mkdir($tempdir, 0777);
+		if (!untar($axfile, "", $tempdir)) {
 			echo "error ($retvar) $error\n";
 		} else {
-			if (file_exists($temp."/nodes.data")) {
+			if (file_exists($tempdir."/nodes.data")) {
 				echo "no convert needed\n";
+				rm_dir($tempdir);
 			} else {
-					$obfp=fopen($temp."/objects.data","rb");
+					$obfp=fopen($tempdir."/objects.data","rb");
 					if (!$obfp) {
 						echo "error: can not open objects.data\n";
+						rm_dir($tempdir);
 					} else {
 						$head=fread($obfp, strlen("O:6:\"object\""));
 						fclose($obfp);
+						rm_dir($tempdir);
+						unset($tempdir);
 
 						for ($i=1; $i<=2; $i++) {
 							if ($argv[$i]!="/") {
@@ -55,7 +59,6 @@
 					}
 			}
 		}
-		rm_dir($temp);
 	} else {
 		echo "USAGE: axconvert [old_axfile] [new_axfile]\n";
 	}
