@@ -148,13 +148,14 @@
 		global $FTP;
 
 			if (strlen($data)) {
+				debug("ftp::WriteDC($data) (".strlen($data).")");
 				if ($FTP->DC["type"]==="A") {
 					$offset = 0;
 					$chunk = substr($data, $offset, 4096);
 					while ($chunk!==false) {
-						$len = strlen($chunk);
-						debug("ftp_WriteDC:: writing chunk($offset, 4096) (".$len.")");
 						$chunk=str_replace("\n", "\r\n", $chunk);
+						$len = strlen($chunk);
+						debug("ftp_WriteDC:: writing chunk([chunk], $offset, 4096) (".$len.")");
 						if (!write($FTP->DC["msgsocket"], $chunk, $len)) {
 							debug("ftp_WriteDC:: chunk ERROR write $len bytes!");
 							$chunk = false;
@@ -191,6 +192,7 @@
 					$data.=$postdata;
 				}
 				$data=str_replace("\r\n", "\n", $data);
+				debug("ftp::ReadDC([ASCII]) ($data) (".strlen($data).")");
 			}
 			$FTP->DC["transfered"]+=strlen($data);
 			return $data;
@@ -323,7 +325,7 @@
 						if (ftp_OpenDC()!==false) {
 							if ($FTP->store->exists($path)) {
 
-								ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ascii' : 'binary')." mode data connection for $args[0] (".strlen($file_data)." bytes)");
+								ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ASCII' : 'BINARY')." mode data connection for $args[0] (".strlen($file_data)." bytes)");
 								$FTP->store->call("ftp.$getmode.get.phtml", array("arRequestedTemplate" => $template),
 											$FTP->store->get($path));
 								//$file_data=ob_get_contents();
@@ -347,7 +349,7 @@
 						debug("ftp: LIST path=$path, mode=$listMode");
 						if ($FTP->store->exists($path)) {
 
-							ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ascii' : 'binary')." mode data connection");
+							ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ASCII' : 'BINARY')." mode data connection");
 							if (ftp_OpenDC()!==false) {
 
 								debug("ftp: listing ($path) ($listMode)");
@@ -462,7 +464,7 @@
 						ftp_TranslatePath($target, $listMode);
 						$path = $FTP->store->make_path($target, "..");
 
-						ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ascii' : 'binary')." mode data connection");
+						ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ASCII' : 'BINARY')." mode data connection");
 						debug("ftp: client wants to store file ($target)");
 						if (ftp_OpenDC()) {
 							$tempfile=tempnam($FTP->store->files."temp/", "upload");
@@ -550,7 +552,7 @@
 					break;
 
 					case 'SYST':
-						ftp_Tell(215, "Test php-ftpd");
+						ftp_Tell(215, "UNIX Type: L8");
 					break;
 
 					case 'NOOP':
@@ -764,6 +766,9 @@
 	$FTP->host = "muze.nl";
 	$FTP->store = &$store;
 	$FTP->listMode = "objects";
+
+	// default type is ASCII
+	$FTP->DC["type"] = "A";
 
 	$FTP->stdin=fopen("php://stdin", "r");
 	if ($FTP->stdin) {
