@@ -21,3 +21,6 @@ SELECT, INPUT {
 A {
 	text-decoration: none;
 }
+.required {
+	font-weight: bold;
+}
