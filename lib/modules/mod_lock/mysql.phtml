@@ -19,17 +19,28 @@
 
 class mysqllock {
 
-	function mysqllock($host="localhost",$user="root",$password="",$database="modules") {
-        debug("mysqllock($host, $user, [password], $database)","store");
+	function mysqllock() {
+        debug("mysqllock::mysqllock()");
+        debug("mysqllock::mysqllock end","all");
+	}
+
+	function connect($host="localhost",$user="root",$password="") {
+        debug("mysqllock::connect($host, $user, [password])","store");
 		$this->host=$host;
 		$this->user=$user;
 		$this->password=$password;
-        $this->database=$database;
 		$this->connectid=mysql_pconnect($host,$user,$password);
-		mysql_select_db("$database",$this->connectid);
-        debug("mysqllock end","all");
+        debug("mysqllock::connect end","all");
 	}
 
+	function select_db($database="modules", $connectid=false) {
+	debug("mysqllock::select_db($database, $connectid)");
+		$this->database=$database;
+		if ($connectid!==false) {
+			$this->connectid=$connectid;
+		}
+	debug("mysqllock::select_db end");
+	}
 
 	function get_locks($identity) {
         debug("mysqllock:get_locks($identity)","store");
