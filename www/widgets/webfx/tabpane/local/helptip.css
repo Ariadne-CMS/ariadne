@@ -25,7 +25,8 @@ a.helpLink:hover {
 	font:		StatusBar;
 	font:		Status-Bar;
 	padding:	3px;
-	filter:		progid:DXImageTransform.Microsoft.Shadow(color="#777777", Direction=135, Strength=3);	z-index:	10000;
+	filter:		progid:DXImageTransform.Microsoft.Shadow(color="#777777", Direction=135, Strength=3);
+	z-index:	10000;
 }
 
 

@@ -6,7 +6,8 @@
  * For usage see license at http://webfx.eae.net/license.html	
  *
  * Version: 1.0
- * Created: 2001-09-27 * Updated: 2001-11-25	Added a resize to the tooltip if the document width is too small
+ * Created: 2001-09-27
+ * Updated: 2001-11-25	Added a resize to the tooltip if the document width is too small
  *
  * Dependencies: helptip.css (To set up the CSS of the help-tooltip class)
  *
@@ -56,10 +57,13 @@ function showHelpTip(e, s) {
 	};
 	
 	// position tooltip
-	var dw = document.width ? document.width : document.documentElement.offsetWidth - 25;	
+	var dw = document.width ? document.width : document.documentElement.offsetWidth - 25;
+	
 	if (d.offsetWidth >= dw)
-		d.style.width = dw - 10 + "px";	else
-		d.style.width = "";	
+		d.style.width = dw - 10 + "px";
+	else
+		d.style.width = "";
+	
 	var scroll = getScroll();
 	if (e.clientX > dw - d.offsetWidth)
 		d.style.left = dw - d.offsetWidth + scroll.x + "px";
