@@ -1,22 +1,57 @@
-<script language="javascript">
+<?php
+	if (!$wgHTMLEditOptionsPath) {
+		$wgHTMLEditOptionsPath=$this->path;
+	}
+	if (!$wgHTMLEditOptions) {
+		$wgHTMLEditOptions=current($this->get($wgHTMLEditOptionsPath, "editor.ini"));
+	}
+?><script language="javascript">
 <!--
+var wgHTMLEditOptions=new Array();
+<?php
+	if (is_array($wgHTMLEditOptions)) {
+		$options="";
+		while (list($key, $value)=each($wgHTMLEditOptions)) {
+			if (is_string($key)) {
+				$skey='"'.$key.'"';
+			} else {
+				$skey=$key;
+			}
+			if (is_array($value)) {
+				echo "wgHTMLEditOptions[$skey]=new Array();\n";
+				while (list($key2, $value2)=each($value)) {
+					if (is_string($key2)) {
+						$skey2='"'.$key2.'"';
+					} else {
+						$skey2=$key2;
+					}
+					echo "wgHTMLEditOptions[$skey][$skey2]='".AddCSlashes($value2, ARESCAPE)."';\n";
+					$options.="options[$key][$key2]=".RawUrlEncode($value2)."&";
+				}
+			} else {
+				echo "wgHTMLEditOptions[$skey]='".AddCSlashes($value, ARESCAPE)."';\n";
+				$options.="options[$key]=".RawUrlEncode($value)."&";
+			}
+		}
+	}
+?>
 
 function HTMLEdit(root, path, file, name, language, type, title, value, save2form) {
-  if (value) {
-    window.wgHTMLEditContent=value;
-  }
-  editwindow=window.open('','editwindow', 'directories=no,height=450,width=640,location=no,menubar=no,status=yes,toolbar=no,resizable=yes');
-  top.editwindow=editwindow;
-  editwindow.opener=window;
-  if (editwindow.exists) {
-    editwindow.loadpage(root, path, file, name, language, type, value, save2form); 
-  } else {
-    editwindow.location.href='edit.object.html.phtml?'+
-    'root='+escape(root)+'&path='+escape(path)+'&file='+escape(file)+
-    '&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type)+
-    '&title='+escape(title)+'&value='+escape(value)+'&save2form='+escape(save2form);
-  }
-  editwindow.focus();
+	if (value) {
+		window.wgHTMLEditContent=value;
+	}
+	editwindow=window.open('','editwindow', 'directories=no,height=450,width=640,location=no,menubar=no,status=yes,toolbar=no,resizable=yes');
+	top.editwindow=editwindow;
+	editwindow.opener=window;
+	if (editwindow.exists) {
+		editwindow.loadpage(root, path, file, name, language, type, value, save2form, '', wgHTMLEditOptions); 
+	} else {
+		editwindow.location.href='edit.object.html.phtml?'+
+		'root='+escape(root)+'&path='+escape(path)+'&file='+escape(file)+
+		'&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type)+
+		'&title='+escape(title)+'&value='+escape(value)+'&save2form='+escape(save2form)+'&<?php echo $options; ?>';
+	}
+	editwindow.focus();
 }
 
 

@@ -1,6 +1,6 @@
 <?php
-	Header("Content-Type: text/html; charset=UTF-8");
-	$arEditorSettings=$this->call("editor.ini");
+	ldHeader("Content-Type: text/html; charset=UTF-8");
+//	$arEditorSettings=$this->call("editor.ini");
 
 	include($this->store->code."nls/ieedit.".$this->reqnls);
 
@@ -63,7 +63,45 @@
         $target=$root.$path;
       }
     }
-  ?>
+?>
+  tbContentEditOptions=new Array();
+<?php
+//	echo "/*"; print_r($options); echo "*/";
+/*
+    if (is_array($options)) {
+        while (list($key, $value)=each($options)) {
+            if (is_string($key)) {
+                $skey='"'.$key.'"';
+            } else {
+				$skey=$key;
+			}
+            echo "  tbContentEditOptions[$skey]='$value';\n";
+        }
+    }
+*/
+	if (is_array($options)) {
+		while (list($key, $value)=each($options)) {
+			if (is_string($key)) {
+				$skey='"'.$key.'"';
+			} else {
+				$skey=$key;
+			}
+			if (is_array($value)) {
+				echo "  tbContentEditOptions[$skey]=new Array();\n";
+				while (list($key2, $value2)=each($value)) {
+					if (is_string($key2)) {
+						$skey2='"'.$key2.'"';
+					} else {
+						$skey2=$key2;
+					}
+					echo "  tbContentEditOptions[$skey][$skey2]='$value2';\n";
+				}
+			} else {
+				echo "  tbContentEditOptions[$skey]='$value';\n";
+			}
+		}
+	}
+?>
   tbContentTarget="<?php echo $target; ?>";
   tbContentRoot="<?php echo $root; ?>";
   tbContentPath="<?php echo $path; ?>";
@@ -155,6 +193,7 @@ function window_onload() {
   QueryStatusToolbarButtons[26] = new QueryStatusItem(DECMD_SPLITCELL, document.body.all["DECMD_SPLITCELL"]);
   QueryStatusToolbarButtons[27] = new QueryStatusItem(DECMD_SETFORECOLOR, document.body.all["DECMD_SETFORECOLOR"]);
   QueryStatusToolbarButtons[28] = new QueryStatusItem(DECMD_SETBACKCOLOR, document.body.all["DECMD_SETBACKCOLOR"]);
+  QueryStatusToolbarButtons[29] = new QueryStatusItem(DECMD_IMAGE, document.body.all["DECMD_IMAGE"]);
   QueryStatusEditMenu[0] = new QueryStatusItem(DECMD_UNDO, document.body.all["EDIT_UNDO"]);
   QueryStatusEditMenu[1] = new QueryStatusItem(DECMD_REDO, document.body.all["EDIT_REDO"]);
   QueryStatusEditMenu[2] = new QueryStatusItem(DECMD_CUT, document.body.all["EDIT_CUT"]);
@@ -236,7 +275,7 @@ function window_onload() {
       return;
     }
 
-    var sb = new StringBuilder;
+     var sb = new StringBuilder;
     // IE5 and IE55 has trouble with the document node
     var cs = tbContentElement.DOM.childNodes;
     var l = cs.length;
@@ -246,11 +285,11 @@ function window_onload() {
     return sb.toString();
   }
 
-  loadpage(tbContentRoot, tbContentPath, tbContentFile, tbContentName, tbContentLanguage, tbContentType, tbContentValue, tbContentSave2Form, tbContentTarget);
+  loadpage(tbContentRoot, tbContentPath, tbContentFile, tbContentName, tbContentLanguage, tbContentType, tbContentValue, tbContentSave2Form, tbContentTarget, tbContentEditOptions);
 }
 
 
-function loadpage(root, path, file, name, language, type, value, save2form, target) {
+function loadpage(root, path, file, name, language, type, value, save2form, target, editoptions) {
   // FIXME check isDirty and ask for save first.
   // window.document.title='Edit '+path+file+' ( '+name+': '+language+')';
   if (target) {
@@ -264,13 +303,21 @@ function loadpage(root, path, file, name, language, type, value, save2form, targ
   tbContentName=name;
   tbContentLanguage=language;
   tbContentType=type;
+  tbContentEditOptions=editoptions;
+  var buttons_off=tbContentEditOptions["disabled"].split(":");
+  tbContentEditOptions["buttons_off"]=new Array();
+  for (i=0; i<buttons_off.length; i++) {
+    if (buttons_off[i]) {
+      tbContentEditOptions["buttons_off"][buttons_off[i]]=1;
+    }
+  }
   if (window.opener && window.opener.wgHTMLEditContent) {
     tbContentValue=new String(window.opener.wgHTMLEditContent.value);
   } else if (value) {
     tbContentValue=value;
   }
   if (tbContentValue=='') {
-    tbContentValue='<HTML>\n<HEAD>\n  <META content="text/html; charset=UTF-8" http-equiv="Content-Type">\n  <TITLE></TITLE>\n</HEAD>\n<BODY>\n<P>&nbsp;</P>\n</BODY>\n</HTML>\n';
+    tbContentValue=tbContentEditOptions["emptydoc"];
   }
   tbContentSave2Form=save2form;
   if (tbContentValue.match(/<FRAME/i) && (ViewHTML.TBSTATE=="checked")) {
@@ -282,6 +329,11 @@ function loadpage(root, path, file, name, language, type, value, save2form, targ
     tbContentElement.DocumentHTML=tbContentValue;
   }
   tbContentElement.BaseURL=root+path;
+/*
+  if (tbContentEditOptions["stylesheet"]) {
+	tbContentElement.DOM.styleSheets[1].href=tbContentEditOptions["stylesheet"];
+  }
+*/
   tbContentElement.onkeypress=wgCompose_keypress;
   tbContentElement.onkeydown=wgCompose_check;
   tbContentElement.focus();
@@ -357,7 +409,11 @@ function tbContentElement_ShowContextMenu() {
   for (i=0; i<ContextMenu.length; i++) {
     menuStrings[i] = ContextMenu[i].string;
     if (menuStrings[i] != MENU_SEPARATOR) {
-      state = tbContentElement.QueryStatus(ContextMenu[i].cmdId);
+      if (tbContentEditOptions["buttons_off"][ContextMenu[i].cmdId]) {
+        state = DECMDF_DISABLED;
+      } else {
+        state = tbContentElement.QueryStatus(ContextMenu[i].cmdId);
+      }
     } else {
       state = DECMDF_ENABLED;
     }
@@ -390,24 +446,36 @@ function tbContentElement_DisplayChanged() {
   var i, s;
 
   for (i=0; i<QueryStatusToolbarButtons.length; i++) {
-    s = tbContentElement.QueryStatus(QueryStatusToolbarButtons[i].command);
+    if (tbContentEditOptions["buttons_off"][QueryStatusToolbarButtons[i].command]) {
+      s = DECMDF_DISABLED;
+    } else {
+      s = tbContentElement.QueryStatus(QueryStatusToolbarButtons[i].command);
+    }
     if (s == DECMDF_DISABLED || s == DECMDF_NOTSUPPORTED) {
       TBSetState(QueryStatusToolbarButtons[i].element, "gray"); 
     } else if (s == DECMDF_ENABLED  || s == DECMDF_NINCHED) {
-       TBSetState(QueryStatusToolbarButtons[i].element, "unchecked"); 
+      TBSetState(QueryStatusToolbarButtons[i].element, "unchecked"); 
     } else { // DECMDF_LATCHED
-       TBSetState(QueryStatusToolbarButtons[i].element, "checked");
+      TBSetState(QueryStatusToolbarButtons[i].element, "checked");
     }
   }
 
-  s = tbContentElement.QueryStatus(DECMD_GETBLOCKFMT);
+  if (tbContentEditOptions["buttons_off"] && tbContentEditOptions["buttons_off"][DECMD_SETBLOCKFMT]) {
+    s = DECMDF_DISABLED;
+  } else {
+    s = tbContentElement.QueryStatus(DECMD_GETBLOCKFMT);
+  }
   if (s == DECMDF_DISABLED || s == DECMDF_NOTSUPPORTED) {
     ParagraphStyle.disabled = true;
   } else {
     ParagraphStyle.disabled = false;
     ParagraphStyle.value = tbContentElement.ExecCommand(DECMD_GETBLOCKFMT, OLECMDEXECOPT_DODEFAULT);
   }
-  s = tbContentElement.QueryStatus(DECMD_GETFONTNAME);
+  if (tbContentEditOptions["buttons_off"] && tbContentEditOptions["buttons_off"][DECMD_SETFONTNAME]) {
+    s = DECMDF_DISABLED;
+  } else {
+    s = tbContentElement.QueryStatus(DECMD_GETFONTNAME);
+  }
   if (s == DECMDF_DISABLED || s == DECMDF_NOTSUPPORTED) {
     FontName.disabled = true;
   } else {
@@ -425,8 +493,11 @@ function tbContentElement_DisplayChanged() {
 
 function MENU_FILE_SAVE_onclick() {
   if (ViewHTML.TBSTATE=="checked") {
-    var sContents=tbContentElement.DocumentHTML;
-	//var sContents=tbContentElement.getXHTML();
+    if (tbContentEditOptions["xhtml"]) {
+	  var sContents=tbContentElement.getXHTML();
+    } else {
+      var sContents=tbContentElement.DocumentHTML;
+    }
   } else {
     var sContents=tbContentElement.DOM.body.innerText;
   }
@@ -470,29 +541,9 @@ function AR_FORMAT_HTML(code) {
   sContents=sContents.replace(/</g,"&lt;");
   sContents=sContents.replace(/>/g,"&gt;");  
 
-/* 
-  This version doesn't seem to be faster, and it certainly isn't more readable.
-  //Test JScript version.
-  var ver = Number(ScriptEngineMajorVersion() + "." + ScriptEngineMinorVersion())
-  if (ver >= 5.5){
-    // replace all spaces at the start of a line with non-breaking spaces for indentation.
-    // don't replace spaces in the rest of the line, or you will need a very wide screen.
-    sContents=sContents.replace(/[\n]( +)/g, 
-      function (str, match) {
-        var len=match.length;
-        var result='\n';
-        for (i=0; i<len; i++) {
-          result+='&nbsp;';
-        }
-        return result;
-      }
-    )
-  } else {
-*/
-    while (sContents.match(/[\n](&nbsp;)* /)) {
-      sContents=sContents.replace(/([\n](&nbsp;)*) /, "$1&nbsp;");
-    }
-//  }
+  while (sContents.match(/[\n](&nbsp;)* /)) {
+    sContents=sContents.replace(/([\n](&nbsp;)*) /, "$1&nbsp;");
+  }
   sContents=new String("<HTML><HEAD><META content=\"text/html; charset=UTF-8\" http-equiv=Content-Type><STYLE> P { margin: 0px;} </STYLE></HEAD><BODY STYLE=\"font:10pt courier new, monospace\">"+sContents+"</BODY></HTML>");
   var linebreak=sContents.lastIndexOf('\n');
   while (linebreak!=-1) {
@@ -507,7 +558,12 @@ function VIEW_HTML_onclick() {
   if (ViewHTML.TBSTATE=="checked") {
 
     TBSetState(ViewHTML, "unchecked");
-    var sContents=AR_FORMAT_HTML(tbContentElement.DocumentHTML);
+    if (tbContentEditOptions["xhtml"]) {
+	  var sContents=tbContentElement.getXHTML();
+    } else {
+      var sContents=tbContentElement.DocumentHTML;
+    }
+    sContents=AR_FORMAT_HTML(sContents);
 
     tbContentElement.DocumentHTML=sContents;
     ToolbarFormatState=FormatToolbar.TBSTATE;
@@ -686,6 +742,12 @@ function DECMD_IMAGE_onclick() {
   window.rg=false;
   el=tbContentElement.DOM.selection;
   window.el=el;
+  if (tbContentEditOptions["photobook"] && tbContentEditOptions["photobook"]["location"]) {
+    var photobook=tbContentEditOptions["photobook"]["location"];
+  } else {
+    alert('frop'+tbContentEditOptions["photobook"]["location"]);
+    var photobook='<?php echo $AR->user->path; ?>';
+  }
   if (el.type=="Control") {
     elIMG=el.createRange().item(0);
     window.elIMG=elIMG;
@@ -715,7 +777,7 @@ function DECMD_IMAGE_onclick() {
   } else {
     elIMG=false;
     window.rg=el.createRange();
-    src = '<?php echo $this->path; ?>';
+    src = photobook;
     args['src'] = src;
     args['hspace'] = "";
     args['vspace'] = "";
@@ -723,27 +785,12 @@ function DECMD_IMAGE_onclick() {
     args['alt'] = "";
     args['border'] = "";
   }
-  arr = showModalDialog( "<?php 
-        echo $this->store->root; 
-        if ($arEditorSettings["photobook"]["location"]) { 
-          echo $arEditorSettings["photobook"]["location"]; 
-        } else { 
-          echo $AR->user->path; 
-        } 
-	?>edit.object.html.image.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:35em; dialogHeight:14em; status: no; resizable: yes;");
+  arr = showModalDialog( '<?php echo $this->store->root; ?>' + photobook + 
+	"edit.object.html.image.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:35em; dialogHeight:14em; status: no; resizable: yes;");
   if (arr != null){
 	IMAGE_set(arr);
   }
 
-  /*
-  imgwindow=window.open("<?php echo $this->store->root.$AR->user->path; 
-    ?>edit.object.html.image.phtml?src="+escape(args['src'])+
-    "&border="+escape(args['border'])+"&hspace="+escape(args['hspace'])+
-    "&vspace="+escape(args['vspace'])+"&align="+escape(args['align'])+
-    "&alt="+escape(args['alt']),"imgwindow","directories=no,height=160,width=425,location=no,menubar=no,status=no,toolbar=no,resizable=yes");
-  imgwindow.focus();
-  window.setfocusto=imgwindow;
-  */
 }
 
 function IMAGE_set(arr) {
@@ -1088,6 +1135,11 @@ function tbContentElement_DocumentComplete() {
     }
   }
 
+  if (tbContentEditOptions["stylesheet"]) {
+    if (tbContentElement.DOM.styleSheets.length==0) {
+      tbContentElement.DOM.createStyleSheet(tbContentEditOptions["stylesheet"],0);
+    }    
+  }
   initialDocComplete = true;
   docComplete = true;
 }
