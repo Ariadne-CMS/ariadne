@@ -5,7 +5,12 @@ Changes in Ariadne since version Ariadne 2.3.1-dev
 New Features:
 	- The GrantsCache is now local to the user (this makes it easier to switch
 	  users runtime).
-
+	- added regexp support for both mysql and postgresql (thanks to Goran Topic)
+	- added boolean search (thanks to Goran Topic)
+	- added fulltext.relevance (which you can use in the orderby clause) (thanks to Goran Topic)
+	- added a second argument to the store load_property and load_properties
+	  function. This argument is an array which you can use to select the
+	  properties you want to load (thanks to Goran Topic).
 
 Bugs Fixed:
 	- The public user will not inherit 'owner' grants anymore.
