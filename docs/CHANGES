@@ -8,7 +8,7 @@ IMPORTANT:
     need to read the docs/upgrade.txt file first.
 
 New features:
-	- pobject now has a convert2UTF8() function which can
+	- pobject now has a convertToUTF8() function which can
 	  convert data from other charsets to UTF8.
 	- No more need for preconfigged .zip or .tgz packages for
 	  different OS types.
@@ -18,6 +18,8 @@ Bugs fixed:
 	  arguments.
 	- Fixed order of CheckLogin/CheckConfig and argument passing
 	  for some calendar templates
+	- Fixed time out of public sessions: it will now reactivate those
+	  sessions instead of showing a login window.
 	- Removed iconv from mod_unicode.php, it was too unreliable.
 	- Fixed a bug which caused customdata fields to be cleared.
 	- Various layout and consistency fixes
