@@ -10,7 +10,7 @@ IMPORTANT:
 	into a new instalation to reset some tables with state data. to use all the
 	new features and bugfixes in the postgresql store you need to export/import
 	into a fresh instalation as well because we changed from numeric to bigint
-	on most locations. Using a old instalation will work but it will mis the
+	on most locations. Using an old instalation will work but it will mis the
 	most of the speed improvements. 
 
 	The editor.ini has undergone some restructuring. Please update your 
