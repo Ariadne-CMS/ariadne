@@ -221,7 +221,9 @@ class pobject extends object { // pobject class definition
 							$this->data->ctime=time();
 							$this->data->mtime=$this->data->ctime;
 							$this->data->muser=$AR->user->data->login;
-							$this->data->owner_name=$AR->user->data->name;
+							if( !$this->data->owner_name) { 
+								$this->data->owner_name=$AR->user->data->name;
+							}
 							$this->data->owner=$AR->user->data->login;
 							$custom=$this->getdata("custom","none");
 							@parse_str($custom);
