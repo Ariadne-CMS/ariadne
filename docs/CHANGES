@@ -9,6 +9,9 @@ IMPORTANT:
 	reverting back to the older revision of the store needs an export/import
 	to reset some tables with state data.
 
+	The editor.ini has undergone some restructuring. Please update your 
+	current editor.ini with the one from CVS.
+
 New Features:
 	- user.notfound.html now calls 2 templates depending on the full page not
 	  found or part of a page, user.notfound.full.html user.notfound.inpage.html
@@ -16,6 +19,8 @@ New Features:
 	  through: call("#view.html") instead of call("view.html")
 	- You can now switch to a syntax-highlighted non-editable view in the template editor.
 	- Added htmlcleaner by troels@kyberfabrikken.dk. Added rules based html parsing to it.
+	- Added the option to select a style for a selection in the WYSIWYG editor.
+	- Extended the WYSIWYG image dialog with a style setting. 
 
 Bugs Fixed:
 	- Removed some legacy code which made it impossible to 'renew' an expired
