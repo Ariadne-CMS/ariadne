@@ -68,6 +68,11 @@
 	if ($filter) {
 		$crit["object"]["implements"]["="]="'".AddSlashes($filter)."'";
 	}
+	if ($name) {
+		$crit["name"]["value"]["like"]="'%".AddSlashes($name)."%'";
+	} else if ($letter) {
+		$crit["name"]["value"]["like"]="'".AddSlashes($letter)."%'";
+	}	
 	$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
 	$limit=100;
 	$this->find(".",$crit, "browse.nav.details.show.phtml","",$limit, $offset);
