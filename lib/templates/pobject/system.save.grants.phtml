@@ -12,7 +12,15 @@
 	 no result
 
 	******************************************************************/
-	if ($this->CheckSilent("config") && $this->CheckConfig()) {
+	if ($this->CheckLogin("config") && $this->CheckConfig()) {
+		// some variable fetching stuff
+		$path=$this->getdata("path", "none");
+		$newgrants=$this->getdata("newgrants", "none");
+		$delete=$this->getdata("delete", "none");
+		$type=$this->getdata("type", "none");
+		$id=$this->getdata("id", "none");
+		$grant=$this->getdata("grant" , "none");
+
 		include_once($this->store->code."includes/DelGrant.phtml");
 
 		// first make sure that the object is clean (data can only be set via 
@@ -25,7 +33,8 @@
 		if ($delete) {
 			$this->data->grants[$type]=DelGrant($this->data->grants[$type], $id, $grant);
 			$this->find($searchpath[$type], $criteria, "system.save.grants.user.phtml", 
-							"action=delete&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($grant));
+							"arAction=delete&arPath=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($grant));
+			$this->save();
 		} else if ($newgrants) {
 			if ($type=@current($this->get($path, "system.get.type.phtml"))) {
 				if ($this->store->implements($type, "puser")) {	
@@ -59,7 +68,7 @@
 									}
 									$this->data->grants[$type][$id][$newgrant]=1;
 									$this->find($searchpath[$type], $criteria, "system.save.grants.user.phtml",   
-												"action=add&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($newgrant));
+												"action=add&arPath=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($newgrant));
 								}
 							}
 							$newgrant=strtok(" ");
