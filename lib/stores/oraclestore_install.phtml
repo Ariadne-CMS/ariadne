@@ -2,11 +2,16 @@
 
 include_once($ariadne."/stores/oraclestore.phtml");
 
-class oraclestore_install extends mysqlstore {
+class oraclestore_install extends oraclestore {
 
 	function initialize() {
 		echo "initializing oracle store.\n";
 		$i = 0;
+
+		$queries[$i]["query_string"] = "drop table ".$this->tbl_prefix."nodes"; 
+		$queries[$i]["msg"] = $queries[$i]["query_string"];
+		$i++;
+
 		$queries[$i]["msg"]="creating nodes table.";
 		$queries[$i]["query_string"]="
 			CREATE TABLE ".$this->tbl_prefix."nodes (
@@ -17,40 +22,64 @@ class oraclestore_install extends mysqlstore {
 				PRIMARY KEY (path))";
 		$i++;
 
-		$indexes = Array("object", "parent", "path", "priority");
+		$indexes = Array("object", "parent", "priority");
 		foreach ($indexes as $index) {
+			$indexn = $this->tbl_prefix."nodes$index";
 			$queries[$i]["msg"]="creating index '$index' for nodes table";
 			$queries[$i]["query_string"] = "
-				CREATE INDEX $index on ".$this->tbl_prefix."nodes ($index)
+				CREATE INDEX $indexn on ".$this->tbl_prefix."nodes ($index)
 				";
 			$i++;
 		}
+
+		$queries[$i]["query_string"] = "drop table ".$this->tbl_prefix."objects"; 
+		$queries[$i]["msg"] = $queries[$i]["query_string"];
+		$i++;
 
 		$queries[$i]["msg"]="creating objects table.";
 		$queries[$i]["query_string"]="
 			CREATE TABLE ".$this->tbl_prefix."objects (
 				id integer  NOT NULL ,
 				type varchar2(32) DEFAULT '' NOT NULL,
-				object long raw,
 				vtype varchar2(32) DEFAULT '' NOT NULL,
 				lastchanged date,
-				PRIMARY KEY (id),
+				PRIMARY KEY (id)
 			)";
 		$i++;
 
+		$queries[$i]["query_string"] = "drop table ".$this->tbl_prefix."objects_data"; 
+		$queries[$i]["msg"] = $queries[$i]["query_string"];
+		$i++;
+
+		$queries[$i]["msg"]="creating objects_data table.";
+		$queries[$i]["query_string"]="
+			CREATE TABLE ".$this->tbl_prefix."objects_data (
+				id integer  NOT NULL ,
+				object long,
+				PRIMARY KEY (id)
+			)";
+		$i++;
+
+		$queries[$i]["query_string"] = "drop sequence objectid";
+		$i++;
 
 		$queries[$i]["msg"] = "creating object sequence";
-		$queries[$i]["query"] = "CREATE SEQUENCE objectid";
+		$queries[$i]["query_string"] = "CREATE SEQUENCE ObjectID increment by 1 start with 1";
 		$i++;
 		
-		$indexes = Array("lastchanged");
+		$indexes = Array("lastchanged", "type", "vtype");
 		foreach ($indexes as $index) {
-			$queries[$i]["msg"]="creating index '$index' for objects table";
+			$indexn = $this->tbl_prefix."objects$index";
+			$queries[$i]["msg"]="creating index '$indexn' for objects table";
 			$queries[$i]["query_string"] = "
-				CREATE INDEX $index on ".$this->tbl_prefix."objects ($index)
+				CREATE INDEX $indexn on ".$this->tbl_prefix."objects ($index)
 				";
 			$i++;
 		}
+
+		$queries[$i]["query_string"] = "drop table ".$this->tbl_prefix."properties"; 
+		$queries[$i]["msg"] = $queries[$i]["query_string"];
+		$i++;
 
 		$queries[$i]["msg"]="creating properties table.";
 		$queries[$i]["query_string"]="
@@ -58,6 +87,10 @@ class oraclestore_install extends mysqlstore {
 				name varchar2(21) DEFAULT '' NOT NULL,
 				PRIMARY KEY (name)
 			)";
+		$i++;
+
+		$queries[$i]["query_string"] = "drop table ".$this->tbl_prefix."types"; 
+		$queries[$i]["msg"] = $queries[$i]["query_string"];
 		$i++;
 
 		$queries[$i]["msg"]="creating types table.";
@@ -70,19 +103,20 @@ class oraclestore_install extends mysqlstore {
 
 		$indexes = Array("type", "implements");
 		foreach ($indexes as $index) {
-			$queries[$i]["msg"]="creating index '$index' for types table";
+			$indexn = $this->tbl_prefix."types$index";
+			$queries[$i]["msg"]="creating index '$indexn' for types table";
 			$queries[$i]["query_string"] = "
-				CREATE INDEX $index on ".$this->tbl_prefix."types ($index)
+				CREATE INDEX $indexn on ".$this->tbl_prefix."types ($index)
 				";
 			$i++;
 		}
 
-
-		while ((list($key, $query)=each($queries)) && (!$error)) {
+		reset($queries);
+		while ((list($key, $query)=each($queries)) && (!$this->error)) {
 			if ($query["msg"]) {
 				echo $query["msg"]."\n";
 			}
-			$this->store_run_query($query['query']);
+			$this->store_run_query($query['query_string']);
 			if ($this->error) {
 				error($this->error);
 			}
@@ -101,7 +135,7 @@ class oraclestore_install extends mysqlstore {
 		return $return;
 	}
 
-	function create_property($property, $definition, $indexes="") {
+	function create_property($property, $definition, $cindexes="") {
 	/**********************************************************************
 
 		This function creates a new property type. This property can then be
@@ -136,6 +170,13 @@ class oraclestore_install extends mysqlstore {
 		$i = 0;
 		$this->error="";
 		$property_tbl = $this->tbl_prefix."prop_".AddSlashes($property);
+
+		/* load custom indexes if available */
+		if (is_array($cindexes)) {
+			$indexes = $cindexes;
+		} else {
+			$indexes = Array();
+		}
 		
 		if (eregi("^[a-z][a-z0-9_-]*$", $property) && strlen($property)<=16) {
 			$create_string="create table ".$this->tbl_prefix."prop_".AddSlashes($property)." (\n";
@@ -150,7 +191,7 @@ class oraclestore_install extends mysqlstore {
 					switch($type) {
 						case "string": 
 							if ($size>0 && $size<256) {
-								$indexes[]="AR_$name";
+								$index[]="$name";
 								$create_string.="varchar2(".$size.") not null,\n";
 							} else {
 								$result=0;
@@ -158,47 +199,67 @@ class oraclestore_install extends mysqlstore {
 							}
 							break;
 						case "number":
-							$indexes[]="AR_$name";
+							$index[]="$name";
 							$create_string.="number not null,\n";
 							break;
 						case "boolean":
-							$indexes="AR_$name";
+							$index[]="$name";
 							$create_string.="integer not null,\n";
 							break;
 						case "text":
-							$indexes="AR_$name";
+							$index[]="$name";
 							$create_string.="$name varchar2(2000) not null,\n";
 							break;
 					}
 				}
 			}
+
+			$indexes[] = $index;
+
 			if ($result) {
-				// now add the 'object' field.
-				$create_string.="object int not null,\n";
+
+				$queries[$i]["query_string"] = "drop table ".$this->tbl_prefix."prop_$property"; 
+				$queries[$i]["msg"] = $queries[$i]["query_string"];
+				$i++;
+
 				$queries[$i]["msg"] = "Creating property table ($property)";
-				$queries[$i]["query"] = $create_string." object int not null)";
+				$queries[$i]["query_string"] = $create_string." object integer not null)";
 				$i++;
 
 				$queries[$i]["msg"] = "Registering property table";
-				$queries[$i]["query"] = "insert into ".$store->prefix."properties values ('".AddSlashes($property)."')";
+				$queries[$i]["query_string"] = "insert into ".$this->tbl_prefix."properties values ('".AddSlashes($property)."')";
 				$i++;
 				
-				// now add the correct indexes.
-				if ($indexes && is_array($indexes)) {
-					$indexstring="";
-					foreach ($indexes as $index) {
-						$queries[$i]["msg"] = "Creating index ($index) on $property_tbl";
-						$queries[$i]["query"] = "create index $index on $property_tbl ($index)";
+				if ($cindexes != 'none' && $indexes && is_array($indexes)) {
+					foreach ($indexes as $ikey => $index) {
+						$icolumns = '';
+						foreach ($index as $icolumn) {
+							if (!$icolumns) {
+								$icolumns = 'AR_'.$icolumn;
+								$indexn = $property_tbl."_".$ikey."_".$icolumn;
+							} else {
+								$icolumns .= ', AR_'.$icolumn;
+							}
+						}
+						$queries[$i]["msg"] = "Creating index ($indexn) on $property_tbl ($icolumns)";
+						$queries[$i]["query_string"] = "create index $indexn on $property_tbl ($icolumns)";
 						$i++;
 					}
 				}
+
+				/* the object index */
+				$index = $this->tbl_prefix."prop_".$property."_object";
+				$queries[$i]["msg"] = "Creating index ($index) on $property_tbl (object)";
+				$queries[$i]["query_string"] = "create index $index on $property_tbl (object)";
+				$i++;
+
 
 				if ($result) {
 					while ((list($key, $query)=each($queries)) && (!$error)) {
 						if ($query["msg"]) {
 							echo $query["msg"]."\n";
 						}
-						$this->store_run_query($query['query']);
+						$this->store_run_query($query['query_string']);
 						if ($this->error) {
 							error($error);
 							$result = 0;

@@ -31,7 +31,7 @@ define(MAX_PATH_LENGTH, 128);
 
 // general objectstore functions
 
-class mysqlstore {
+class oraclestore {
 
 	var $connect_id;
 	var $error;
@@ -54,7 +54,7 @@ class mysqlstore {
 		debug("oraclestore($path, [array])","store");
 		$this->error="";
 
-		$this->connect_id=oci_connect($config["user"], $config["password"], $config["database"]);
+		$this->connect_id=ocilogon($config["user"], $config["password"], $config["database"]);
 
 		$this->root=$path;
 		$this->code=$config["code"];
@@ -69,13 +69,15 @@ class mysqlstore {
 		$this->config=$config;
 
 		/* Include module mysql_compiler */
-		include_once($this->code."stores/modules/oracle_compiler.php");
+//		include_once($this->code."stores/modules/oracle_compiler.php");
 
 		/* Instantiate module locking */
+/*
 		include_once($this->code."modules/mod_lock/oraclesql.phtml");
 		$this->mod_lock=new oraclelock($config["prefix"]);
 		$this->mod_lock->select_db($config["database"], $this->connect_id);
 		$this->mod_lock->lock_duration=$config["lock_duration"];
+*/
 		$config["password"]="";
 		debug("oraclestore: end","all");
 	}
@@ -105,8 +107,11 @@ class mysqlstore {
 
 		$result = Array();
 		$this->error="";
-		$count=@mysql_num_rows($objects["list"]);
-		while ($row=@mysql_fetch_array($objects["list"])) {
+
+		while (ocifetchinto($objects['list'], $row, OCI_ASSOC)) {
+			$count++;
+			// FIXME: find out how to let ORACLE give us a unixtimestamp
+			$lastchanged = strtotime($row['lastchanged']);
 			$object=$this->newobject($row["path"], $row["parent"], $row["type"], unserialize($row["object"]), $row["id"], $row["lastchanged"], $row["vtype"], strlen($row["object"]), $row["priority"]);
 			$result[]=$object->call($template, $args);
 		}
@@ -121,7 +126,19 @@ class mysqlstore {
 	}
 
 	function count($objects) {
-		return @mysql_num_rows($objects["list"]);
+		$result = 0;
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+
+		$query_string = "select count($nodes_tbl.path) as \"count\" ";
+		$query_string .= $objects["query_string"];
+		$list = $this->store_run_query($query_string);
+		if (!$this->errno) {
+			ocifetchinto($list, $row, OCI_ASSOC);
+			$result = $row['count'];
+		}
+		return $result;
 	}
 
 	function info($objects) {
@@ -140,14 +157,10 @@ class mysqlstore {
 	**********************************************************************************/
 		switch($feature) {
 			case 'fulltext':
-				if ($this->config["fulltext"]) {
-					$result = true;
-				} else {
-					$result = false;
-				}
+				$result = false;
 			break;
 			case 'regexp':
-				$result = true;
+				$result = false;
 			break;
 			default:
 				$result = false;
@@ -191,10 +204,15 @@ class mysqlstore {
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
-		$types_tbl=$this->tbl_prefix."types";
+		$objects_tbl_data=$objects_tbl."_data";
 
-		$query_string="select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path='$epath'";
-		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
+		$query_string = "
+			select $nodes_tbl.path as \"path\", $nodes_tbl.parent as \"parent\", $nodes_tbl.priority as \"priority\", $objects_tbl.id as \"id\", $objects_tbl.type as \"type\", $objects_tbl_data.object as \"object\", TO_CHAR($objects_tbl.lastchanged, 'MM-DD-YYYY HH24:MI:SS') as \"lastchanged\", $objects_tbl.vtype as \"vtype\"  
+			from $objects_tbl, $nodes_tbl, $objects_tbl_data 
+			where $objects_tbl.id=$nodes_tbl.object and $objects_tbl.id=$objects_tbl_data.id and $nodes_tbl.path='$epath'
+			";
+
+		$result["list"] = $this->store_run_query($query_string);
 		debug("get: end","all");
 		return $result;
 	}
@@ -262,12 +280,20 @@ class mysqlstore {
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
+		$objects_tbl_data=$objects_tbl."_data";
 		$types_tbl=$this->tbl_prefix."types";
 
-		$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.parent='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
+
+		$query_string = "
+			select $nodes_tbl.path as \"path\", $nodes_tbl.parent as \"parent\", $nodes_tbl.priority as \"priority\", $objects_tbl.id as \"id\", $objects_tbl.type as \"type\", $objects_tbl_data.object as \"object\", TO_CHAR($objects_tbl.lastchanged, 'MM-DD-YYYY HH24:MI:SS') as \"lastchanged\", $objects_tbl.vtype as \"vtype\"  
+			from $objects_tbl, $nodes_tbl, $objects_tbl_data 
+			where $objects_tbl.id = $nodes_tbl.object and $objects_tbl.id = $objects_tbl_data.id and $nodes_tbl.parent = '$epath'
+			order by $nodes_tbl.priority DESC, $nodes_tbl.path
+			";
+
 		$result["method"]="ls";
 		$result["path"]=$path;
-		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
+		$result["list"] = $this->store_run_query($query_string);
 		debug("ls: query=$query_string","all");
 		debug("ls: end","all");
 		return $result;
@@ -293,13 +319,19 @@ class mysqlstore {
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
+		$objects_tbl_data=$objects_tbl."_data";
 		$types_tbl=$this->tbl_prefix."types";
 
-		$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path=substring('$epath',1,length(path)) and $nodes_tbl.path LIKE '$etop%' order by path";
+		$query_string="
+			select $nodes_tbl.path as \"path\", $nodes_tbl.parent as \"parent\", $nodes_tbl.priority as \"priority\", $objects_tbl.id as \"id\", $objects_tbl.type as \"type\", $objects_tbl_data.object as \"object\", TO_CHAR($objects_tbl.lastchanged, 'MM-DD-YYYY HH24:MI:SS') as \"lastchanged\", $objects_tbl.vtype as \"vtype\"
+			from $objects_tbl, $nodes_tbl, $objects_tbl_data
+			where $objects_tbl.id=$nodes_tbl.object and $objects_tbl.id=$objects_tbl_data.id and $nodes_tbl.path=substr('$epath',1,length(path)) and $nodes_tbl.path LIKE '$etop%' order by path
+			";
+
 		debug($query_string, "all");
 		$result["method"]="parents";
 		$result["path"]=$path;
-		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
+		$result["list"]=$this->store_run_query($query_string);
 		debug("parents: end","all");
 		return $result;
 	}
@@ -435,7 +467,7 @@ class mysqlstore {
 				$filestore->close();
 			}
 		}
-		return @mysql_close($this->connect_id);
+		return ocilogoff($this->connect_id);
 	}
 
 
@@ -494,40 +526,49 @@ class mysqlstore {
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
+		$objects_tbl_data=$objects_tbl."_data";
 		$types_tbl=$this->tbl_prefix."types";
+		$lastchanged = "TO_DATE('".date("m-d-Y H:i:s")."', 'MM-DD-YYYY HH24:MI:SS')"; 
 
 		if (strlen($path)<MAX_PATH_LENGTH) { // initial check
 			if ($id=$this->exists($path)) { //update
+				// FIXME: do this in a transaction
 				debug("save: updating","all");
 				if ($vtype) { // only change/save vtype if it is explicitly set
 					$evtype=AddSlashes($vtype);
-					$query_string="update $objects_tbl set object='$edata', vtype='$evtype', lastchanged=NULL where id=$id"; 
+					$query_string="update $objects_tbl set vtype='$evtype', lastchanged=$lastchanged where id=$id"; 
 				} else {
-					$query_string="update $objects_tbl set object='$edata', lastchanged=NULL where id=$id"; 
+					$query_string="update $objects_tbl set lastchanged=$lastchanged where id=$id"; 
 				}
 				debug("save: query=$query_string","all");
-				mysql_db_query($this->database,$query_string, $this->connect_id);
-				$errno=mysql_errno($this->connect_id);
-				if (!$errno) { // mysql_affected_rows doesn't always work
+				$this->store_run_query($query_string);
+				if (!$this->errno) { // mysql_affected_rows doesn't always work
 					debug("save: query=$query_string","all");
-					$this->save_properties($properties, $id, $this); 
-					if($priority !== false) {
-						$query_string="update $nodes_tbl set priority=$epriority where path='$epath'";
-						mysql_db_query($this->database,$query_string, $this->connect_id);
-						$errno=mysql_errno($this->connect_id);
-						if (!$errno) {
-							debug("save: query=$query_string","all");
-							$result=$path;
-						} else {
-							$this->error="ERROR: Mysql: $errno: ".mysql_error($this->connect_id);
-							debug("save: query=$query_string","store");
-							debug("save: update object failed!","store");
-							debug("save: ".$this->error,"store");
-							$result=0;
-						}
-					} 
+					$query_string="update $objects_tbl_data set object='$edata' where id=$id";
+					$this->store_run_query($query_string);
+					if (!$this->errno) {
+						debug("save: query=$query_string","all");
+						$this->save_properties($properties, $id, $this); 
+						if($priority !== false) {
+							$query_string="update $nodes_tbl set priority=$epriority where path='$epath'";
+							$this->store_run_query($query_string);
+							if (!$this->errno) {
+								debug("save: query=$query_string","all");
+								$result=$path;
+							} else {
+								debug("save: query=$query_string","store");
+								debug("save: update nodes failed!","store");
+								debug("save: ".$this->error,"store");
+								$result=0;
+							}
+						} 
+					} else {
+						debug("save: query=$query_string","store");
+						debug("save: update object_data failed!","store");
+						debug("save: ".$this->error,"store");
+						$result=0;
+					}
 				} else {
-					$this->error="ERROR: Mysql: $errno: ".mysql_error($this->connect_id);
 					debug("save: query=$query_string","store");
 					debug("save: update object failed!","store");
 					debug("save: ".$this->error,"store");
@@ -571,41 +612,35 @@ class mysqlstore {
 					$this->error="ERROR: Maximum path length (".MAX_PATH_LENGTH." characters) exceeded. Please shorten your filenames.";
 					$result=false;
 				} else {
-					$query_string="insert into $objects_tbl (id,type,object,vtype) values (0,'$etype','$edata','$evtype')";
+					$query_string="insert into $objects_tbl (id,type,vtype) values (ObjectID.NextVal, '$etype', '$evtype')";
 					debug("save: query=$query_string","all");
-					$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
-					$errno=mysql_errno($this->connect_id);
-					$error=mysql_error($this->connect_id);
-					if (!$errno && $id=mysql_insert_id($this->connect_id)) {
-						$query_string="insert into $nodes_tbl (path,parent,object,priority) values ('$epath','$eparent',$id,$epriority)";
+					$this->store_run_query($query_string);
+					if (!$this->errno) {
+						$query_string="insert into $objects_tbl_data (id, object) values (ObjectID.CurrVal, '$edata')";
 						debug("save: query=$query_string","all");
-						$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
-						$errno=mysql_errno($this->connect_id);
-						$error=mysql_error($this->connect_id);
-						if (!$errno) {				
-							if ($needunlocking) {
-								$query_string = "unlock tables";
-								mysql_db_query($this->database,$query_string, $this->connect_id);
-								$needunlocking = false;
+						$this->store_run_query($query_string);
+						if (!$this->errno) {
+							$query_string="insert into $nodes_tbl (path, parent, object, priority) values ('$epath', '$eparent', ObjectID.CurrVal, $epriority)";
+							debug("save: query=$query_string","all");
+							$this->store_run_query($query_string);
+							if (!$this->errno) {				
+								$this->save_properties($properties, $id, $this);
+								$result=$path;
+							} else {
+								debug("save: insert node failed!","store");
+								debug("save: ".$this->error,"store");
+								$result=0;
 							}
-							$this->save_properties($properties, $id, $this);
-							$result=$path;
 						} else {
-							$this->error="ERROR: Mysql: $errno: $error";
-							debug("save: insert node failed!","store");
+							debug("save: insert object data failed!","store");
 							debug("save: ".$this->error,"store");
 							$result=0;
 						}
 					} else {
-						$this->error="ERROR: Mysql: $errno: $error";
 						debug("save: insert object failed!","store");
 						debug("save: ".$this->error,"store");
 						$result=0;
 					}			
-				}
-				if ($needunlocking) {
-					$query_string = "unlock tables";
-					mysql_db_query($this->database,$query_string, $this->connect_id);
 				}
 			}
 		} else {
@@ -637,27 +672,28 @@ class mysqlstore {
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
+		$objects_tbl_data=$objects_tbl."_data";
 		$types_tbl=$this->tbl_prefix."types";
 		$nextid_tbl=$this->tbl_prefix."seq_id";
 
 		$object=$this->exists($path);
 		if ($object) {
 			$query_string="delete from $nodes_tbl where object=$object";
-			$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+			$temp=$this->store_run_query($query_string);
 			if ($temp) {
-				$result=mysql_affected_rows($this->connect_id);
+				$result=ocirowcount($temp);
 			}
 			$this->del_property($object);
 			$query_string="delete from $objects_tbl where id=$object";
-			mysql_db_query($this->database,$query_string, $this->connect_id);
-			$paths=$this->list_paths($path);
-			if (is_array($paths)) {
-				while (list($key, $path)=each($paths)) {
-					$epath=AddSlashes($path);
-					$query_string="delete from $nextid_tbl where path='$epath'";
-					$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+			$this->store_run_query($query_string);
+			if (!$this->errno) {
+				$query_string = "delete from $objects_tbl_data where id=$object";
+				$this->store_run_query($query_string);
+				if (!$this->errno) {
+					$result = 1;
 				}
 			}
+
 		} else { // no such path, so purge already succeeded :)
 			$result=1;
 		}
@@ -682,6 +718,7 @@ class mysqlstore {
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
+		$objects_tbl_data=$objects_tbl."_data";
 		$types_tbl=$this->tbl_prefix."types";
 		$nextid_tbl=$this->tbl_prefix."seq_id";
 
@@ -691,15 +728,12 @@ class mysqlstore {
 				$result=$this->purge($path); // therefore purge the object.
 			} else { // only delete the given path
 				$query_string="delete from $nodes_tbl where path='$epath'";
-				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
-				if (mysql_affected_rows($this->connect_id)) {
+				$temp=$this->store_run_query($query_string);
+				if (ocirowcount($temp)) {
 					$result=1;
 				} else {
 					$result=0;
 				}
-				$query_string="delete from $nextid_tbl where path='$epath'";
-				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
-
 			}
 		}
 		debug("delete: end","all");
@@ -726,9 +760,10 @@ class mysqlstore {
 		$types_tbl=$this->tbl_prefix."types";
 
 		$query_string="select object from $nodes_tbl where path='$epath'";
-		$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
-		if ($temp && ($row=mysql_fetch_array($temp))) {
-			$object=intval($row["object"]);
+		$temp=$this->store_run_query($query_string);
+		$row = Array();
+		if ($temp && (ocifetchinto($temp, $row, OCI_ASSOC))) {
+			$object=intval($row["OBJECT"]);
 			debug("exists: end (yes)","all");
 		} else {
 			debug("exists: end (no)","all");
@@ -813,7 +848,9 @@ class mysqlstore {
 
 	function store_run_query($query) {
 		/* private function, do not use this outside this class */
+		echo "query ($query)<br>\n";
 		$result = ociparse($this->connect_id, $query);
+		ociexecute($result);
 		$err = ocierror($this->connect_id);
 		$errno=$err['code'];
 		$error=$err['message'];
@@ -822,8 +859,6 @@ class mysqlstore {
 			debug("run_query: ".$this->error,"store");
 			debug("run_query: query=$query_string","store");
 			$result=false;
-		} else if (!isset($result)) {
-			$result=true;
 		}
 		return $result;
 	}
@@ -924,8 +959,8 @@ class mysqlstore {
 
 		$object=$this->exists($path);
 		$query_string="select path from $nodes_tbl where object=$object";
-		$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
-		while ($row=@mysql_fetch_array($temp)) {
+		$temp=$this->store_run_query($query_string);
+		while ($row = ocifetchinto($temp, $row, OCI_ASSOC)) {
 			$result[]=$row["path"];
 		}
 		debug("list_paths: end","all");
@@ -946,14 +981,14 @@ class mysqlstore {
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
 
-		$query_string="select distinct type from $types_tbl where implements='".AddSlashes($implements)."' and type='".AddSlashes($type)."'";
+		$query_string="select distinct(type) from $types_tbl where implements='".AddSlashes($implements)."' and type='".AddSlashes($type)."'";
 		$this->error="";
-		$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+		$temp=$this->store_run_query($query);
 		if ($temp) {
-			$row=mysql_fetch_array($temp);
+			$row = ocifetchinto($temp, $row, OCI_ASSOC);
 		}
 		if ($row) {
-			$result=1;
+			$result = 1;
 		}
 		debug("implements: end ($result)","all");
 		return $result;
@@ -1047,11 +1082,11 @@ class mysqlstore {
 	function load_properties($object, $values="") {
 		debug("load_properties($object, [values])","all");
 		if ($object) {
-			$query_string="select name from ".$this->tbl_prefix."properties";
-			$query=@mysql_db_query($this->database,$query_string,$this->connect_id);
-			while ($prop=@mysql_fetch_array($query)) {
-				if ($value=$this->load_property($object,$prop["name"],$values)) {
-					$result[$prop["name"]]=$value;
+			$query_string = "select \"name\" from ".$this->tbl_prefix."properties";
+			$temp = $this->store_run_query($query_string);
+			while (ocifetchinto($temp, $prop, OCI_ASSOC)) {
+				if ($value=$this->load_property($object, $prop["name"], $values)) {
+					$result[$prop["name"]] = $value;
 				}
 			}
 		}
@@ -1074,9 +1109,9 @@ class mysqlstore {
 				}
 			}
 			$query_string.="object=$object";
-			$query=@mysql_db_query($this->database,$query_string,$this->connect_id);
+			$temp = $this->store_run_query($query_string);
 			$currProp=0;
-			while ($prop=@mysql_fetch_array($query)) {
+			while (ocifetchinto($temp, $prop, OCI_ASSOC)) {
 				reset($prop);
 				while (is_array($prop) && (list($name,$val)=each($prop)) ) {
 					if (($name!="object")&&(!is_int($name))) {
@@ -1111,8 +1146,7 @@ class mysqlstore {
 			$query_string="insert into ".$this->tbl_prefix."prop_".AddSlashes($property)." ( ".
 										$query_names."object ) values ( ".$query_values."$object )";
 			debug($query_string, "all");
-			mysql_db_query($this->database,$query_string, $this->connect_id);
-			$result=mysql_affected_rows($this->connect_id);
+			$this->store_run_query($query_string);
 		}
 		debug("add_property: end","all");
 		return $result;
@@ -1127,12 +1161,12 @@ class mysqlstore {
 
 		if (intval($object)) {
 			if (!$property) { // remove all properties for $object
-				$query_string="select name from ".$this->tbl_prefix."properties";
-				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
-				while ($row=@mysql_fetch_array($temp)) {
+				$row = Array();
+				$query_string = "select name from ".$this->tbl_prefix."properties";
+				$stmt = $this->store_run_query($query_string);
+				while (!$this->errno && ocifetchinto($stmt, $row, OCI_ASSOC)) {
 					$query_string="delete from ".$this->tbl_prefix."prop_".$row["name"]." where object=$object";
-					mysql_db_query($this->database,$query_string, $this->connect_id);
-					$result+=mysql_affected_rows($this->connect_id);
+					$result += ocirowcount($this->store_run_query($query_string));
 				}
 			} else {
 				$query_string="delete from ".$this->tbl_prefix."prop_".AddSlashes($property)." where ";
@@ -1142,8 +1176,7 @@ class mysqlstore {
 					}
 				}
 				$query_string.="object=$object";
-				mysql_db_query($this->database,$query_string, $this->connect_id);
-				$result=mysql_affected_rows($this->connect_id);
+				$result=ocirowcount($this->store_run_query($query_string));
 			}
 		}
 		debug("del_property: end","all");
