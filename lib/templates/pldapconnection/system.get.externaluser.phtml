@@ -4,7 +4,7 @@
 // from the "login.value" property to the LDAP attribute which he
 // wishes to use as the login name for the pldapconnection object
 
-global $ARCurrent;
+global $AR, $ARCurrent;
 
 // If there is no user mapping, there is nothing we can do...
 if ($this->data->mappeduser) {
@@ -25,6 +25,21 @@ if ($this->data->mappeduser) {
 	}
 
 	//print_r($ldapdata);
+
+	// Different LDAP implementations have different attributes
+	// for group memberships; we try to support them all...
+	$groupattrs=array("groupmembership", "memberof");
+	$AR->externalgroupmemberships=array();
+	// Store the LDAP group memberships as they will be used later to
+	// virtually add the user to Ariadne groups with the same name
+	foreach ($groupattrs as $groupattr) {
+		if (is_array($ldapdata[$groupattr])) {
+			for ($c=0;$c<$ldapdata[$groupattr]["count"];$c++) {
+				list($group)=ldap_explode_dn($ldapdata[$groupattr][$c], 1);
+				array_push($AR->externalgroupmemberships, strtolower($group));
+			}
+		}
+	}
 
 	$arResult=current($this->store->call("system.get.phtml", "",
 	                             $this->store->get($this->data->mappeduser)));
