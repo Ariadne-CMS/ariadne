@@ -900,6 +900,14 @@ class pobject extends object {
 		ldSetNls($nls);
 	}
 
+	function getcharset() {
+		global $AR;
+		if (!($charset=$AR->nls->charsets[$this->nls])) {
+			$charset=$AR->nls->charsets["default"];
+		}
+		return $charset;
+	}
+
 /********************************************************************
 
   "safe" functions.
@@ -1118,6 +1126,10 @@ class pobject extends object {
 		// checksilent will fullfill our needs
 
 		return $this->CheckSilent($grant);
+	}
+
+	function _getcharset() {
+		return $this->getcharset();
 	}
 } // end class pobject
 ?>
