@@ -89,7 +89,7 @@
 								"path"		=> $this->path,
 								"grant"		=> $grant,
 								"modifier"	=> $modifier)));
-				if ($result=="ok" || !$path) {
+				if ($result==$ARnls["ok"] || !$path) {
 					$this->save();
 				} else {
 					$this->error=sprintf($ARnls["err:notremovegrant"],$id,$path);
