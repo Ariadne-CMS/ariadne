@@ -62,9 +62,9 @@
 			$wgWizFlow[$i]["title"]=$ARnls["language"];
 			$wgWizFlow[$i]["template"]=$language;
 			if ($customdata) {
-				$wgWizFlow[$i]["next"]=$i-2;
+				$wgWizFlow[$i]["next"]=$i-3;
 			} else {
-				$wgWizFlow[$i]["next"]=$i-1;
+				$wgWizFlow[$i]["next"]=$i-2;
 			}
 			$wgWizFlow[$i]["prev"]=$i-1;
 			$wgWizFlow[$i]["save"]=$i+1;
@@ -91,8 +91,6 @@
 		}
 		global $HTTP_POST_VARS;
 		$HTTP_POST_VARS["arLanguage"]=$arLanguage;
-		$wgWizControl=$this->getdata("wgWizControl","none");
-		$wgWizCurrent=$this->getdata("wgWizCurrent","none");
 		$result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
 		$wgWizTitle=$ARnls["edit"]." ".$result[0];		
 		include($this->store->code."widgets/wizard/classic.html");
