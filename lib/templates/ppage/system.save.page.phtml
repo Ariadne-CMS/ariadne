@@ -14,6 +14,11 @@
 				$arEditorSettings=$this->call("editor.ini");
 			}
 			if ($arEditorSettings) {
+				if ($arEditorSettings["htmlcleaner"]["enabled"]) {
+					include_once($this->store->code."modules/mod_htmlcleaner.php");
+					$config = $arEditorSettings["htmlcleaner"];
+					$page = htmlcleaner::cleanup($page, $config);
+				}
 				if ($arEditorSettings["htmltidy"]["enabled"]) {
 					include_once($this->store->code."modules/mod_tidy.php");
 					$config=$arEditorSettings["htmltidy"];
@@ -24,11 +29,6 @@
 					$page=$result["html"];
 				}
 
-				if ($arEditorSettings["htmlcleaner"]["enabled"]) {
-					include_once($this->store->code."modules/mod_htmlcleaner.php");
-					$config = $arEditorSettings["htmlcleaner"];
-					$page = htmlcleaner::cleanup($page, $config);
-				}
 
 				if ($arEditorSettings["allow_tags"]) {
 					$page=strip_tags($page, $arEditorSettings["allow_tags"]);
