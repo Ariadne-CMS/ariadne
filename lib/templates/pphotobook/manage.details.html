@@ -4,7 +4,9 @@
 	<div id="details">
 		<div style="padding: 5px;">
 			<img src="<?php echo $this->make_url(); ?>view.thumb.html"><br>
-			<?php echo $this->data->picture; ?><br>
+			<div style="position: absolute; width: 180px; overflow: auto;"><?php 
+				echo $this->data->picture; 
+			?></div><br>
 		</div>
 	</div>
 <?php
