@@ -18,6 +18,10 @@ HM_IsMenu = (HM_DOM || HM_NS4 || (HM_IE4 && !HM_IE4M));
 
 HM_BrowserString = HM_NS4 ? "NS4" : HM_DOM ? "DOM" : "IE4";
 
+<?php
+	$arDirWWW = $HTTP_GET_VARS["arDirWWW"];
+?>
+
 if(window.event + "" == "undefined") event = null;
 
 function HM_f_PopUp(){return false};

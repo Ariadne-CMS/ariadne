@@ -18,6 +18,10 @@
          link moet de nieuwe node als child krijgen.
 
   ******************************************************/
+
+	/* retrieve HTTP GET variables */
+	$path 	= $HTTP_GET_VARS["path"];
+	$loader = $HTTP_GET_VARS["loader"];	
 ?>
 <html>
 <head>
