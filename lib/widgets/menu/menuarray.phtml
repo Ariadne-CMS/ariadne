@@ -86,9 +86,8 @@ HM_Array4 = [
 27,
 ],
 
-["<?php echo $ARnls["m_index"]; ?>","javascript:arshow('help','help.topics.phtml')",1,0,0],
-["<?php echo $ARnls["m_tutorials"]; ?>","javascript:arshow('help','help.tutorials.phtml')",1,0,0],
-["<?php echo $ARnls["m_search"]; ?>","javascript:arshow('help','help.search.phtml')",1,0,0],
+["<?php echo $ARnls["m_index"]; ?>","javascript:arshow('help','<?php echo $this->make_url('/system/ariadne/help/reference/'); ?>')",1,0,0],
+["<?php echo $ARnls["m_tutorials"]; ?>","javascript:arshow('help','<?php echo $this->make_url('/system/ariadne/help/tutorials/'); ?>')",1,0,0],
 ["<?php echo $ARnls["m_about"]; ?>","javascript:arshow('help_about','help.about.phtml')",1,0,0]
 ]
 
