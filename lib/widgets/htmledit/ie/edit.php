@@ -26,6 +26,7 @@
   tbContentName='<?php echo $name; ?>';  
   tbContentLanguage='<?php echo $language; ?>';
   tbContentType='<?php echo $type; ?>';
+  tbContentNewObject=<?php if ($newobject && $newobject!=='false') echo 'true'; else echo 'false'; ?>;
 //
 // Constants
 //
@@ -174,11 +175,11 @@ function window_onload() {
     ParagraphStyle.options[ParagraphStyle.options.length]=new Option(arr[i], arr[i]);
   }
 
-  loadpage(tbContentRoot, tbContentPath, tbContentFile, tbContentName, tbContentLanguage, tbContentType);
+  loadpage(tbContentRoot, tbContentPath, tbContentFile, tbContentName, tbContentLanguage, tbContentType, tbContentNewObject);
 }
 
 
-function loadpage(root, path, file, name, language, type) {
+function loadpage(root, path, file, name, language, type, newobject) {
   // FIXME check isDirty and ask for save first.
   if (ViewHTML.TBSTATE=="unchecked") {
     VIEW_HTML_onclick();
@@ -193,7 +194,11 @@ function loadpage(root, path, file, name, language, type) {
   if (file) {
     file+='/';
   }
-  tbContentElement.LoadURL(root+path+file+'show.'+name+'.phtml?language='+escape(language));
+  if (newobject) {
+    tbContentElement.DocumentHTML=window.opener.wgHTMLEditContent.value;
+  } else {
+    tbContentElement.LoadURL(root+path+file+'show.'+name+'.phtml?language='+escape(language));
+  }
   tbContentElement.BaseURL=root+path;
   tbContentElement.focus();
 }
@@ -335,40 +340,62 @@ function tbContentElement_DisplayChanged() {
 }
 
 function MENU_FILE_SAVE_onclick() {
-  if (ViewHTML.TBSTATE=="checked") {
-    var sContents=tbContentElement.DocumentHTML;
-  } else {
-    var sContents=tbContentElement.DOM.body.innerText;
-  }
+  sContents=AR_GET_HTML();
   if (tbContentFile) {
     file=tbContentFile+'/';
   } else {
     file='';
   }
-  savewindow=window.open('','savewindow','directories=no,height=100,width=300,location=no,status=no,toolbar=no,resizable=no');
-  savewindow.document.open();
-  savewindow.document.write("<html><body bgcolor=#CCCCCC><font face='Arial,helvetica,sans-serif'>");
-  savewindow.document.write("<form method='POST' action='"+tbContentRoot+tbContentPath+file+"edit."+tbContentName+".save.phtml'>");
-  savewindow.document.write("<input type='hidden' name='"+tbContentName+"'>");
-  savewindow.document.write("<input type='hidden' name='ContentLanguage'>");
-  savewindow.document.write("</form><br>Saving "+tbContentName+"</font></body></html>");
-  savewindow.document.close();
-  savewindow.document.forms[0][tbContentName].value=sContents;
-  savewindow.document.forms[0].ContentLanguage.value=tbContentLanguage;
-  savewindow.document.forms[0].submit();
+  if (window.opener && window.opener.wgHTMLEditContent) {
+    savewindow=window.open('','savewindow','directories=no,height=100,width=300,location=no,status=no,toolbar=no,resizable=no');
+    savewindow.document.open();
+    savewindow.document.write("<html><body bgcolor=#CCCCCC><font face='Arial,helvetica,sans-serif'>");
+    savewindow.document.write("<br>Saving "+tbContentName+"</font></body></html>");
+    savewindow.document.close();
+    window.opener.wgHTMLEditContent.value=sContents;
+    savewindow.close();
+  } else {
+    savewindow=window.open('','savewindow','directories=no,height=100,width=300,location=no,status=no,toolbar=no,resizable=no');
+    savewindow.document.open();
+    savewindow.document.write("<html><body bgcolor=#CCCCCC><font face='Arial,helvetica,sans-serif'>");
+    savewindow.document.write("<form method='POST' action='"+tbContentRoot+tbContentPath+file+"edit."+tbContentName+".save.phtml'>");
+    savewindow.document.write("<input type='hidden' name='"+tbContentName+"'>");
+    savewindow.document.write("<input type='hidden' name='ContentLanguage'>");
+    savewindow.document.write("</form><br>Saving "+tbContentName+"</font></body></html>");
+    savewindow.document.close();
+    savewindow.document.forms[0][tbContentName].value=sContents;
+    savewindow.document.forms[0].ContentLanguage.value=tbContentLanguage;
+    savewindow.document.forms[0].submit();
+  }
 }
 
-function VIEW_HTML_onclick() {
+function AR_GET_HTML() {
   if (ViewHTML.TBSTATE=="checked") {
 
-    TBSetState(ViewHTML, "unchecked");
-
-//    var sContents=tbContentElement.DocumentHTML;
     if (tbContentElement.DOM.body.innerHTML) {
       var sContents=tbContentElement.FilterSourceCode(tbContentElement.DOM.body.innerHTML);
     } else {
       var sContents=new String();
     }
+  } else {
+	// it's impossible to get the source back _with_ all 
+    // the original indentation, except by:
+    if (tbContentElement.DOM.body.innerText) {
+      var sContents=tbContentElement.FilterSourceCode(tbContentElement.DOM.body.innerText);
+    } else {
+      var sContents=new String();
+    }
+  }
+  return sContents;
+}
+
+
+function VIEW_HTML_onclick() {
+  sContents=AR_GET_HTML();
+  if (ViewHTML.TBSTATE=="checked") {
+
+    TBSetState(ViewHTML, "unchecked");
+
 	// don't even think about changing the next few lines... 
 	// the htmlediting component is extremely picky
     sContents=sContents.replace(/&/g,"&amp;");
@@ -422,14 +449,6 @@ function VIEW_HTML_onclick() {
       tbContentElement.DOM.styleSheets(0).href=tbContentRoot+tbContentPath+tbContentFile+'style.css';
     }
 */
-	// it's impossible to get the source back _with_ all 
-    // the original indentation, except by:
-    if (tbContentElement.DOM.body.innerText) {
-      var sContents=tbContentElement.FilterSourceCode(tbContentElement.DOM.body.innerText);
-    } else {
-      var sContents=new String();
-    }
-    // sContents=sContents.replace(/\r/g,""); // and again! get rid of those pesky returns
     tbContentElement.DocumentHTML=sContents
     tbContentElement.BaseURL=tbContentRoot+tbContentPath;
   }
