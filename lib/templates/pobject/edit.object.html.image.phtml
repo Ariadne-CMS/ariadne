@@ -22,6 +22,12 @@
 
 		include($this->store->code."nls/ieedit.".$this->reqnls);
 
+		if( $this->nlsdata->name ) {
+			$currentname = $this->nlsdata->name;
+		} else {
+			$currentname = $ARnls["thisobject"];
+		}
+
 ?>
 <HTML>
 <HEAD>
@@ -227,7 +233,7 @@ BODY 	{
 			if( CurrentPath == '<?php echo $this->path; ?>' ) {
 				mnCurrent.className='menuButtonCurrent';
 				CurrentButton=mnCurrent;
-				View(CurrentPath, '<?php echo $this->call("system.get.name.phtml"); ?>', true);
+				View(CurrentPath, '<?php echo $currentname; ?>', true);
 			} else {
 				View(CurrentPath, 'Selected Picture', true);
 			}
@@ -440,13 +446,6 @@ BODY 	{
 	<tr>
 	  <td valign="top" rowspan="2">
 		<div class="menu" id="mnMenu">
-			<?php
-				if( $this->nlsdata->name ) {
-					$currentname = $this->nlsdata->name;
-				} else {
-					$currentname = $ARnls["thisobject"];
-				}
-			?>
 	   	 	<a class="menuButton" id="mnCurrent" href="#" onClick="browseTo('<?php echo $this->path; ?>', this, '<?php echo $currentname; ?>');"><img src="<?php echo $AR->dir->images; ?>wizard/current.gif" border="0"><br><nobr><?php echo $currentname; ?></nobr></a>
 	   	 	<a class="menuButton" id="mnPhotobook" href="#" onClick="browseTo(tbContentEditOptions['photobook']['location'], this, 'Photobook');"><img src="<?php echo $AR->dir->images; ?>wizard/photobook.gif" border="0"><br><?php echo $ARnls["photobook"]; ?></a>
 		    <a class="menuButton" id="mnHome" href="#" onClick="browseTo('<?php echo $AR->user->path; ?>', this, '<?php echo $AR->user->data->name; ?>');"><img src="<?php echo $AR->dir->images; ?>wizard/home.gif" border="0"><br><?php echo $ARnls["home"]; ?></a>
