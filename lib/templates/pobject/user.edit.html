@@ -1,0 +1,7 @@
+<?php
+	if ( ( 	($this->arIsNewObject && $this->CheckLogin("add")) ||
+			(!$this->arIsNewObject && $this->CheckLogin("edit")) )
+        && $this->CheckConfig()) {
+		include($this->store->code."widgets/htmledit/toolbar.php");
+	}
+?>
