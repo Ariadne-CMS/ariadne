@@ -60,11 +60,11 @@ This is how it is supposed to work:
 
 view.html:
 <pinp>
-  import('mod_edit.php');
+  load('mod_edit.php');
 </pinp>
 <html>
 <body>
-  <h1><pinp> edit::showSpan($nlsdata->name, "[$nls][name]", "Title"); </pinp></h1>
+  <h1><pinp> edit::showInputText($nlsdata->name, "[$nls][name]", "Title"); </pinp></h1>
   <p><pinp>
     edit::showDiv(ParsePage($nlsdata->summary), "[$nls][summary]", "Summary");
   </pinp></p>
@@ -81,7 +81,7 @@ view.html:
 
 show.subnav.html:
 <pinp>
-  import('mod_edit.php');
+  load('mod_edit.php');
 </pinp>
 <li><pinp>
   edit::showEditableLink($path);
@@ -90,7 +90,7 @@ show.subnav.html:
 
 user.edit.page.html
 <pinp>
-  import('mod_edit.php');
+  load('mod_edit.php');
   if (checkgrant('edit')) {
     edit::setEditMode(true); 
   }
