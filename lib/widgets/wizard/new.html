@@ -467,9 +467,9 @@
                     echo " if (!check.match('".$checklist["ereg"]."')) {\n";
                     if ($checklist["error"]) {
                       echo "   alert('".str_replace("'","\\'",str_replace("\n","\\n",$checklist["error"]))."');\n";
-                      echo "   return false;\n";
+                      echo "   result=false;\n";
                     } else if ($checklist["confirm"]) {
-                      echo "   return confirm('".str_replace("'","\\'",str_replace("\n","\\n",$checklist["confirm"]))."');\n";
+                      echo "   result=confirm('".str_replace("'","\\'",str_replace("\n","\\n",$checklist["confirm"]))."');\n";
                     } 
                     echo " } ";
                   }
@@ -485,6 +485,9 @@
         }
 		if (result && document.wgWizForm.wgWizSubmitHandler) {
 			result=document.wgWizForm.wgWizSubmitHandler();
+		}
+		if( !result ) {
+			document.wgWizForm.wgWizAction.value = '';
 		}
         return result;
       }
