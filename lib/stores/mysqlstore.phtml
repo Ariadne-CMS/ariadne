@@ -67,6 +67,8 @@ class mysqlstore {
 		// so we have to supply the database name wheenever a query is run
 		$this->database=$config["database"];
 
+		$this->config=$config;
+
 		/* Include module mysql_compiler */
 		include_once($this->code."stores/modules/mysql_compiler.php");
 
@@ -137,7 +139,19 @@ class mysqlstore {
 		This function takes as argument a feature description and returns
 		true if this feature is supported and false otherwise
 	**********************************************************************************/
-		return false;
+		switch($feature) {
+			case 'fulltext':
+				if ($this->config["fulltext"]) {
+					$result = true;
+				} else {
+					$result = false;
+				}
+			break;
+			default:
+				$result = false;
+			break;
+		}
+		return $result;
 	}
 
 	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) {

@@ -91,6 +91,18 @@
 					case '!~':
 						$operator="NOT LIKE";
 					break;
+					case '!*':
+						$not = " not";
+					case '=*':
+						if ($node["left"]["id"]!=="implements") {
+							$left=$this->compile_tree($node["left"]);
+							$right=$this->compile_tree($node["right"]);
+							/* fulltext search operators: =*, !*, =**, !** (double asterices indicate boolean mode) */
+							$operator = $node["operator"];
+							$result = "$not match ($left) against ('".mysqlstore::format_for_fti(substr($right,1,-1))."$boolmode') ";
+							return $result;
+						}
+					break;
 				}
 				if ($node["left"]["id"]!=="implements") {
 					$left=$this->compile_tree($node["left"]);
