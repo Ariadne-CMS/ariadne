@@ -16,8 +16,7 @@ class pnewspaper extends pdir { // definitie class
 		$criteria["article"]["display"]["="]="'".AddSlashes($display)."'";
 		$this->find(".",$criteria,"system.get.article-by-priority.phtml","display=$display");
 		if (is_array($ARCurrent->priority)) {
-//			$ARCurrent->priority=array_reverse($ARCurrent->priority);
-// FIXME: whats the above line doing here? removed it for the time being. auke.
+			$ARCurrent->priority=array_reverse($ARCurrent->priority);
 			arsort($ARCurrent->priority);
 			reset($ARCurrent->priority);
 			while ((!$max || ($i<$max)) && (list($key,$val)=each($ARCurrent->priority))) {
