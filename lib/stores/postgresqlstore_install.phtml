@@ -27,7 +27,7 @@ CREATE TABLE ".$this->tbl_prefix."objects (
 	type varchar(16) DEFAULT '' NOT NULL,
 	object text,
 	vtype varchar(16) DEFAULT '' NOT NULL,
-	lastchanged TIMESTAMP
+	lastchanged TIMESTAMP DEFAULT current_timestamp NOT NULL
 );
 CREATE INDEX ".$this->tbl_prefix."objects_lastchanged ON ".$this->tbl_prefix."objects (lastchanged);
 ";
