@@ -34,6 +34,8 @@ Bugs fixed:
 	- The axstore now receives correct error messages from mod_tar.
 	- Passing the QUERY_STRING through user.login.html under IIS now
 	  works. See ldGetServerVar().
+	- When creating a new shortcut the browse... button now points to an
+	  existing path.
 
 
 Ariadne 2.1.1
