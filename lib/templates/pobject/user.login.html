@@ -53,17 +53,29 @@
 <title>Ariadne - <?php echo $arLoginMessage; ?></title>
 <script language="javascript">
 function dopopup() {
-  popup=window.open('<?php 
+  if (document.all) {
+    var popup_left=window.screenLeft+(document.body.clientWidth/2)-250;
+    var popup_top=window.screenTop+10;
+    var popup_method=showModalDialog;
+    var popup_properties='dialogHeight:308px; dialogWidth:515px; dialogLeft:'+popup_left+'px; dialogTop:'+popup_top+'px; resizable: yes; status: no; help: no;';
+    var popup_focus=false;
+  } else {
+    var popup_method=window.open;
+    var popup_properties='directories=no,location=no,menubar=no,status=no,toolbar=no,resizable=yes,height=275,width=500';
+    var popup_focus=true;
+  }
+  popup=popup_method('<?php 
 	echo $this->make_url()."user.login.popup.html".
 			"?arLoginMessage=".RawUrlEncode($arLoginMessage).
 			"&arErrorMessage=".RawUrlEncode($arErrorMessage).
 			"&ARLogin=".RawUrlEncode($ARLogin).
 			"&arReturnPath=".RawUrlEncode($arReturnPath).
 			"&arReturnTemplate=".RawUrlEncode($arReturnTemplate); ?>',
-	'login','directories=no,location=no,menubar=no,status=no,toolbar=no,resizable=yes,height=275,width=500');
-  popup.focus();
+	'popup_login',popup_properties);
+  if (popup_focus) {
+    popup.focus();
+  }
 }
-dopopup();
 </script>
 <style>
 	.width100 { width: 100; }
@@ -89,12 +101,7 @@ dopopup();
 						}
 </style>
 </head>
-<body bgcolor="#BBBBBB">
-
-<b>You should now have a popup window with a login screen.</b><br>
-If this window is not there your browser is probably killing the
-popups.<br>
-Try this <a href="javascript:dopopup();">LINK</a>
+<body bgcolor="#BBBBBB" onLoad='dopopup();'>
 
 <form name="login" method="POST" action="<?php echo $this->make_url(); ?>login.phtml">
 <input type="hidden" name="arReturnPath" value="<?php echo $arReturnPath; ?>">
@@ -127,12 +134,6 @@ Try this <a href="javascript:dopopup();">LINK</a>
 	<td align="right"><input type="submit" class="width100" name="ok" value="&nbsp;<?php echo $ARnls["ok"]; ?>&nbsp;"></td>
 </tr>
 </table>
-</noscript>
-<script>
-	<!-- these hidden input fields are being used by the popup window -->
-	document.write('<input type="hidden" name="ARLogin">');
-	document.write('<input type="hidden" name="ARPassword">');
-</script>
 </form>
 </body>
 </html>
