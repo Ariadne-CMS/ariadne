@@ -66,7 +66,6 @@
 
 	function ldAuthUser($login, $password) {
 	global $ARLogin, $ARPassword, $store, $AR;
-
 		$criteria["object"]["implements"]["="]="'puser'";
 		$criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
 		$user = current(
@@ -82,7 +81,7 @@
 				/* welcome to Ariadne :) */
 				ldSetCredentials($login, $password);
 			}
-			$ARLogin = $login;
+			$ARLogin = $user->data->login;
 			$ARPassword = 0;
 			$AR->user = $user;
 			$result = true;
@@ -135,13 +134,16 @@
 			}
 		} else {
 			if ($ARCurrent->session) {
+				if (!$ARCurrent->session->get("ARLogin")) {
+					if ($ARCurrent->session->get("ARSessionTimedout", 1)) {
+						$ARCurrent->session->put("ARSessionTimedout", 0, 1);
+					}
+					debug("ldCheckLogin: logging in with public session (".$ARCurrent->session->id.")", "all");
+					$result = ldCheckLogin("public", "none");
+				} else
 				if ($ARCurrent->session->get("ARSessionTimedout", 1)) {
 					debug("ldCheckLogin: session has been timedout, forcing login", "all");
 					$result = LD_ERR_SESSION;
-				} else
-				if (!$ARCurrent->session->get("ARLogin")) {
-					debug("ldCheckLogin: logging in with public session (".$ARCurrent->session->id.")", "all");
-					$result = ldCheckLogin("public", "none");
 				} else {
 					$cookie = ldGetCredentials();
 					$cookie_login = $cookie[$ARCurrent->session->id]['login'];
