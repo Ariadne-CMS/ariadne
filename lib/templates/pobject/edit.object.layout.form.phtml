@@ -108,7 +108,7 @@ function event_templatescroll(){
 </table>
 <table border="0" width="100%" cellspacing="0" class="full"> 
 <tr><td valign="top">
-<textarea name="linenumber" id="linenumber"  wrap="off" readonly class="linenumbers">
+<textarea name="linenumber" id="linenumber"  wrap="off" readonly class="linenumbers" tabindex="-1">
 <?php
 	if (!($file=$template)) {
 		if ($data->pinp[$type][$function][$language]) {
@@ -130,7 +130,7 @@ function event_templatescroll(){
 ?>
 </textarea>
 </td><td width="100%">
-<textarea cols="78" rows="20" name="template" wrap="off" class="templatefield" onscroll="event_templatescroll();"><?php
+<textarea cols="78" rows="20" name="template" id="template" wrap="off" class="templatefield" onscroll="event_templatescroll();"><?php
 	echo $file;
 ?></textarea>
 </td></tr></table>
