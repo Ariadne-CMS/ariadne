@@ -10,16 +10,20 @@
 
 
 	$HELP_INFO="export [--options] [source path] [destination path] file.ax
-	The import command will export from the current Ariadne database to
-	to specified .ax file. It will import all objects specified 
-	by [source path] to your .ax at [destination path].
+  The export command will export objects from the current Ariadne database to
+  the specified .ax file. It will export all objects specified 
+  by [source path] to your .ax at [destination path].
 
-	options are:
-		--verbose		Display what we are doing
-		--force			Force saving of objects
-		--without-grants	Don't export grant information
-		--tar_nofail		Suppres tar/gz errors
-		--help			This information\n";
+  options are:
+    --verbose                Display what we are doing
+    --force                  Force saving of objects
+    --without-grants         Don't export grant information
+    --tar_nofail             Skip tar/gz errors
+    --convertToUTF8-[nls]=[source charset] 
+                             Convert data for language [nls] from 
+                             [source-charset] to UTF-8. Default 
+                             source-charset is CP1252.
+    --help                   This information\n\n";
 
 
 
@@ -56,6 +60,14 @@
 				case 'help':
 					echo $HELP_INFO;
 					exit;
+				break;
+
+				case 'convertToUTF8':
+				case 'convert2UTF8':
+					if (!$option_value) {
+						$option_value = "CP1252";
+					}
+					$callArgs["convert_charsets"][$option] = $option_value;
 				break;
 
 				case 'verbose':
@@ -116,15 +128,15 @@
 					$destpath = $patharray_entry[1];
 					echo "srcpath ($srcpath) destpath($destpath)\n";					
 					$ARCurrent->importStore=&$importStore;
-					$callArgs=Array("srcpath" => $srcpath,
-							"destpath" => $destpath);
+					$callArgs["srcpath"] = $srcpath;
+					$callArgs["destpath"] = $destpath;
 					$error=current($store->call("system.export.phtml", $callArgs,
 						$store->get("/")));
 				}
 			} else {
 				$ARCurrent->importStore=&$importStore;
-				$callArgs=Array("srcpath" => $srcpath,
-								"destpath" => $destpath);
+				$callArgs["srcpath"] = $srcpath;
+				$callArgs["destpath"] = $destpath;
 				$error=current($store->call("system.export.phtml", $callArgs,
 					$store->get("/")));
 			}

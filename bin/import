@@ -9,17 +9,20 @@
 	include($ariadne."/stores/axstore.phtml");
 
 	$HELP_INFO="import [--options] file.ax [source path] [destination path]
-	The import command will import the supplied .ax into the current
-	Ariadne database. It will import all objects specified by [source path]
-	to your Ariadne database at [destination path].
+  The import command will import the supplied .ax into the current
+  Ariadne database. It will import all objects specified by [source path]
+  to your Ariadne database at [destination path].
 
-	options are:
-		--verbose		Display what we are doing
-		--without-grants	Don't export grant information
-		--tar_nofail		Suppres tar/gz errors
-		--force			Overwrites everything
-		--convert2UTF8-[nls] Convert data for language [nls] from ISO-8859-1 to UTF-8
-		--help			This information\n\n";
+  options are:
+    --verbose                Display what we are doing.
+    --without-grants         Don't import grant information.
+    --tar_nofail             Skip tar/gz errors.
+    --force                  Overwrites existing objects.
+    --convertToUTF8-[nls]=[source charset] 
+                             Convert data for language [nls] from 
+                             [source-charset] to UTF-8. Default 
+                             source-charset is CP1252.
+    --help                   This information.\n\n";
 
 	$arg_c=0;
 	$arg_v[$arg_c++]=$argv[0];
@@ -51,8 +54,12 @@
 					$ARCurrent->options["without_$option"]=true;
 				break;
 
+				case 'convertToUTF8':
 				case 'convert2UTF8':
-					$callArgs["convert_charsets"][] = $option;
+					if (!$option_value) {
+						$option_value = "CP1252";
+					}
+					$callArgs["convert_charsets"][$option] = $option_value;
 				break;
 
 				case 'verbose':
@@ -85,6 +92,7 @@
 	}
 
 	set_time_limit(0);
+
 
 	if ($arg_c>=2) {
 		$ARLogin="admin";
