@@ -1,0 +1,157 @@
+<?php
+  // tokens: (, ), and, or,
+  class scanner {
+	function scanner($text) {
+		$this->data=$text;
+	}
+
+	function gettoken() {
+		$re='^[[:space:]]*("[^"]*"|[()]|and|or)';
+		if (!$this->data) {
+			$result["id"]=false;
+		} else
+		if (eregi($re, $this->data, $matches)) {
+			if ($matches[1][0]==='"') {
+				$result["id"]="var";
+				$result["text"]=substr($matches[1], 1, -1);
+			} else {
+				$result["id"]=$matches[1];
+			}
+			$this->data=substr($this->data, strlen($matches[0]));
+		} else {
+			$re='^[[:space:]]*([^[:space:]()]+)';
+			if (eregi($re, $this->data, $matches)) {
+				$result["id"]="var";
+				$result["text"]=$matches[1];
+				$this->data=substr($this->data, strlen($matches[0]));
+			}
+		}
+		return $result;
+	}
+  }
+
+  /*
+
+    expr ::= var |
+             '(' expr ')' |
+             expr op expr
+
+    op   ::= 'or' | 'and' | ' '
+
+    var  ::= '"' [^"]* '"' | [^ ]+
+
+    $nodes[$op][0]=(string|node)
+               [1]=...
+
+  */
+
+  class parser {
+
+    function parser($text) {
+		$this->scanner=new scanner($text);
+		$this->next_token();
+    }
+
+	function next_token() {
+		if (!$this->token || $this->token->id!==0) {
+			$this->token=$this->token_ahead;
+			if (!$this->token_ahead || $this->token_ahead->id!==0) {
+				$this->token_ahead=$this->scanner->gettoken();
+			}
+		}
+		return $this->token->id;
+	}
+
+	function parse() {
+		$this->parse_or_expr($result);
+		return $result;
+	}
+
+	function parse_or_expr(&$result) {
+		$retVal=$this->parse_and_expr($result);
+		while ($retVal && ($this->token_ahead["id"]=="or") ) {
+			$this->next_token();
+			$retVal=$this->parse_and_expr($rvalue);
+			if ($retVal) {
+				$newnode["id"]="or";
+				$newnode["left"]=$result;
+				$newnode["right"]=$rvalue;
+				$result=$newnode;
+			}
+		}
+		return $retVal;
+	}  
+
+	function parse_and_expr(&$result) {
+		$retVal=$this->parse_group_expr($result);
+		while ($retVal && ($this->token_ahead["id"]==="and"  || $this->token_ahead["id"]=="var" 
+				|| $this->token_ahead["id"]=="(" ) ) {
+			if ($this->token_ahead["id"]==="and") {
+				$this->next_token();
+			}
+			$retVal=$this->parse_group_expr($rvalue);
+			if ($retVal) {
+				$newnode["id"]="and";
+				$newnode["left"]=$result;
+				$newnode["right"]=$rvalue;
+				$result=$newnode;
+			}
+		}
+		return $retVal;
+	}
+
+	function parse_group_expr(&$result) {
+		if ($this->token_ahead["id"]==='(') {
+			$this->next_token();
+			$retVal=$this->parse_or_expr($result);
+			if ($retVal) {
+				if ($this->token_ahead["id"]==')') {
+					$this->next_token();
+				}
+			}
+		} else {
+			$retVal=$this->parse_var_expr($result);
+		}
+		return $retVal;
+	}
+
+	function parse_var_expr(&$result) {
+		$this->next_token();
+		$result["id"]="var";
+		$result["token"]=$this->token["text"];
+		return true;
+	}
+  }
+
+  function compile_query(&$object, $node) {
+	if (is_array($node)) {
+		switch ($node["id"]) {
+			case 'or':
+				//echo "or<br>";
+				$left=compile_query($object, $node["left"]);
+				$right=compile_query($object, $node["right"]);
+				$result = " ($left) or ($right) ";
+			break;
+			case 'and':
+				//echo "and<br>";
+				$left=compile_query($object, $node["left"]);
+				$right=compile_query($object, $node["right"]);
+				$result = " ($left) and ($right) ";
+			break;
+			case 'var':
+				//echo "search for ".$node["token"]."<br>";
+				//$criteria["text"]["value"]["LIKE"]="'%".AddSlashes($node["token"])."%'";
+				//$criteria["object"]["implements"]["="]="'particle'";
+				//$result=$object->find(".", $criteria, "system.get.path.phtml");				
+
+				$result = "text.value~='%".AddSlashes($node["token"])."%'";
+			break;
+		}
+	}
+	return $result;
+  }
+
+  $parser=new parser($search_query);  
+  $result=$parser->parse();
+  $arResult=compile_query($this, $result);
+?>
