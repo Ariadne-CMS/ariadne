@@ -5,6 +5,7 @@
   // $wgHTMLEditFile = filename of the page or file, or empty in case of dir
   // $wgHTMLEditName = name of variable (via show.$name.phtml template)
   // $wgHTMLEditLanguage = language (none for no language)
+  // $wgHTMLEditValue = text displayed on the open editor button
   // $wgHTMLEditType = 'full'/'body' for full html page or only body.innerHTML  
   if (!$wgHTMLEditRoot) {
     $wgHTMLEditRoot=$this->store->root;
@@ -32,6 +33,9 @@
   if (!$wgHTMLEditClass) {
     $wgHTMLEditClass="wgHTMLEditButton";
   }
+  if(!$wgHTMLEditValue) {
+  	$wgHTMLEditValue="Open Editor";
+  }
   if ($this->arIsNewObject) {
     $wgHTMLEditSave2Form="true";
   } else {
@@ -39,7 +43,7 @@
   }
     echo "<input type=\"hidden\" name=\"$wgHTMLEditContentName\" value=\"".htmlspecialchars($wgHTMLEditContent)."\">\n";
     echo "<input type=\"button\" name=\"$wgHTMLEditName".
-       "_button\" value=\"Open Editor\" class=\"$wgHTMLEditClass\"".
+       "_button\" value=\"".htmlspecialchars($wgHTMLEditValue)."\" class=\"$wgHTMLEditClass\"".
        " onClick=\"HTMLEdit('$wgHTMLEditRoot','$wgHTMLEditPath','$wgHTMLEditFile','$wgHTMLEditName','$wgHTMLEditLanguage','$wgHTMLEditType','".
        str_replace("'","\\'",HTMLSpecialChars($wgHTMLEditTitle))."', this.form['$wgHTMLEditContentName'], ".$wgHTMLEditSave2Form.");\">"; 
 /*
