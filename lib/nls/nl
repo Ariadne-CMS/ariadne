@@ -249,4 +249,7 @@ $ARnls["thumbwidth"]=		"Breedte";
 $ARnls["thumbheight"]=		"Hoogte";
 $ARnls["thumbcolor"]=		"Kleur";
 $ARnls["contactinformation"]="Contact Info";
+$ARnls["effect"]=		"Effect";
+$ARnls["scenario"]=		"Scenario";
+$ARnls["article"]=		"Artikel";
 ?>
