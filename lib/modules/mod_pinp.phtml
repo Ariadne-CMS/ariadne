@@ -72,7 +72,7 @@ class pinp {
       $template=substr($template, strpos($template, $matches[0])+strlen($matches[0]));
 
       // fix code, call compile on rest recursively
-      $result.=$matches[1].$this->fixcode("<"."?php\n ".$matches[2]." \n?".">").$this->compile($template);      
+      $result.=$matches[1].$this->fixcode("<"."?php ".$matches[2]." ?".">").$this->compile($template);      
 
     } else { // no pinp code found
       $result=$template;
