@@ -1790,6 +1790,82 @@ class pobject extends object { // pobject class definition
 		return $config->section;
 	}
 
+	function getValue($name, $nls=false) {
+	global $ARCurrent;
+		switch ($nls) {
+			case "none":
+				$result = $this->data->$name;
+			break;
+			case false:
+				$nls = $ARCurrent->nls;
+				if (!isset($this->data->$nls) || !isset($this->data->$nls->$name)) {
+					$result = $this->data->$name;
+					break;
+				}
+			default:
+				$result = $this->data->$nls->$name;
+		}
+		return $result;
+	}
+
+	function setValue($name, $value, $nls=false) {
+	global $AR, $ARConfig;
+		if ($value == NULL) {
+			if ($nls && $nls!="none") {
+				unset($this->data->$nls->$name);
+				if (!count(get_class_vars($this->data->$nls))) {
+					unset($this->data->$nls);
+					unset($this->data->nls->list[$nls]);
+					if (!count($this->data->nls->list)) {
+						unset($this->data->nls->list);
+						unset($this->data->nls);
+					} else {
+						if ($this->data->nls->default == $nls) {
+							if ($this->data->nls->list[$ARConfig->nls->default]) {
+								$this->data->nls->default = $ARConfig->nls->default;
+							} else {
+								list($this->data->nls->default) = each($this->data->nls->list);
+							}								
+						}
+					}
+				}
+			} else {
+				unset($this->data->$name);
+			}
+		} else
+		if (!$nls) {
+			$this->data->$name = $value;
+		} else {
+			if (!$this->data->$nls) {
+				$this->data->$nls = new object;
+				if (!$this->data->nls) {
+					$this->data->nls = new object;
+					$this->data->nls->default = $nls;
+				}
+				$this->data->nls->list[$nls] = $AR->nls->list[$nls];
+			}
+			$this->data->$nls->$name = $value;
+		}
+	}
+
+	function showValue($name, $nls=false) {
+		$result = $this->getValue($name, $nls);
+		echo $result;
+		return $result;
+	}
+
+	function _getValue($name, $nls=false) {
+		return $this->getValue($name, $nls);
+	}
+
+	function _setValue($name, $value, $nls=false) {
+		return $this->setValue($name, $value, $nls);
+	}
+
+	function _showValue($name, $nls=false) {
+		return $this->showValue($name, $nls);
+	}
+
 	function _currentsite() {
 		return $this->currentsite();
 	}
