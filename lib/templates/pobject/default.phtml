@@ -26,7 +26,7 @@
 		// first check if it's a pdir, if so, change the location
 		$result=$this->get($this->path.$arCallFunction."/","system.get.type.phtml");
 		if ($result && ($type=$result[0]) && $this->store->implements($type, "pdir")) {
-			ldRedirect($this->store->root.$this->path.$arCallFunction."/");
+			ldRedirect($this->make_url($arCallFunction));
 		} else {
 			// any cache image must be saved under the current url,
 			// not the rewritten one, ergo:
