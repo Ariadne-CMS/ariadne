@@ -1,8 +1,7 @@
 <script language="javascript">
 <!--
 
-function SelectDate(form, formobject, date, name, title, format) {
-  document.dform=form;
+function SelectDate(formobject, date, name, title, format) {
   if (formobject.value) {
     date=formobject.value;
   }
@@ -13,13 +12,11 @@ function SelectDate(form, formobject, date, name, title, format) {
     '&name='+escape(name),
     'datewindow', 'directories=no,height=250,width=300,location=no,menubar=no,status=no,toolbar=no,resizable=yes');
   datewindow.opener=this;
-  return false;
 }
 
-function SetDate(name, date, formatted) {
-  document.dform[name].value=date;
-  document.dform[name+'formatted'].value=formatted;
-}
-
+  function SetDate(name, date, formatted) {
+    document.dform[name].value=date;
+    document.dform[name+'formatted'].value=formatted;
+  }
 // -->
 </script>
