@@ -32,6 +32,7 @@
 	}
 	form {
 		height: 100%;
+		width: 100%;
 	}
 	body, form, td, input, select {
 		font: menu;
@@ -348,20 +349,17 @@
 </script>
 </head>
 <body onLoad="fixIESize();">
-<form name="grantsform" action="edit.object.grants.save.phtml">
+<form id="grantsform" action="edit.object.grants.save.phtml">
 <?php
 	$ARCurrent->arReturnPage=$this->store->root.$this->path."edit.object.grants.phtml";
 ?>
 <input type="hidden" name="arReturnPage" value="<?php echo $ARCurrent->arReturnPage; ?>">
 <table id="grants" cellspacing="0" cellpadding="0" border="0" height="100%">
-<thead>
 <tr>
   <td valign="middle" align="right" id="grants_header" height="48">
     <?php echo $ARnls["grants"]; ?><img src="<?php echo $AR->dir->images; ?>wizard/sections/grants.gif" alt="" height="40" width="40" hspace="4" align="absmiddle">
   </td>
 </tr>
-</thead>
-<tbody>
 <tr>
   <td id="grantstop" height="100%">
 	<fieldset id="grants_list">
@@ -466,7 +464,6 @@
 
   </td>
 </tr>
-</tbody>
 </table>
 </form>
 <!-- /div -->
