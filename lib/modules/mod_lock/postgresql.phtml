@@ -38,10 +38,10 @@ class postgresqllock {
 		$this->password		= $password;
 		$this->database		= $database;
 		$this->connectid	= pg_connect(
-				($host ? " host=".$host : "").
-				" user=".$user.
-				" password=".$password.
-				" dbname=".$database) OR DIE ("Could not connect to PostgreSQL database ".$database);
+				($host ? " host='$host'" : "").
+				" user='$user'".
+				" password='$password'".
+				" dbname='$database'") OR DIE ("Could not connect to PostgreSQL database ".$database);
         debug("postgresqllock::connect end","all");
 	}
 
@@ -156,10 +156,10 @@ CREATE TABLE ".$this->tbl_prefix."locks (
         identity varchar(32) NOT NULL,
         path varchar(127) NOT NULL
 );
-CREATE INDEX locks_release ON ".$this->tbl_prefix."locks (release);
-CREATE INDEX locks_type ON ".$this->tbl_prefix."locks (type);
-CREATE INDEX locks_identity ON ".$this->tbl_prefix."locks (identity);
-CREATE INDEX locks_path ON ".$this->tbl_prefix."locks (path);
+CREATE INDEX ".$this->tbl_prefix."locks_release ON ".$this->tbl_prefix."locks (release);
+CREATE INDEX ".$this->tbl_prefix."locks_type ON ".$this->tbl_prefix."locks (type);
+CREATE INDEX ".$this->tbl_prefix."locks_identity ON ".$this->tbl_prefix."locks (identity);
+CREATE INDEX ".$this->tbl_prefix."locks_path ON ".$this->tbl_prefix."locks (path);
 ";
 		pg_exec($this->connectid, $query_string);
 	}
