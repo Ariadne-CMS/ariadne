@@ -35,8 +35,8 @@
 
 	$file = str_replace("\r", "", $file);
 	$file = str_replace("\n", "\\n", $file);
-	$file = str_replace("'", "\'", $file);
-	$file = str_replace("\t", "        ", $file);
+	$file = str_replace('"', '\"', $file);
+	$file = str_replace("\t", "\\t", $file);
 
 	if( $newtype ) { 
 		$type = $newtype; 
@@ -57,7 +57,7 @@
 		 echo "alert('".AddCSlashes($error, ARESCAPE)."');\n";
 	 }
     ?>
-     editor.setContents('<?php echo $file; ?>');
+     editor.setContents("<?php echo $file; ?>");
     
     
   }

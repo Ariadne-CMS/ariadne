@@ -459,27 +459,24 @@
 
 	function setContents(content) {
 		var myHead;
-		var myLine = 1;
 		var re = /^([^\n]*)\n/;
 		var match;
+		var originalArray = new Array();
 
 		deleteContents();
 
 		match = re.exec(content);
 		if( match && match[1] != null ) {
-			updateLine(myLine,match[1]);
+			updateLine(1,match[1]);
+			originalArray[lastLine] = match[1];
 			content = content.substr(match[1].length + 1);
 		} else {
-			updateLine(myLine,content);
+			updateLine(1,content);
+			originalArray[lastLine] = content;
 			content = false;
 		}
 		if(content != false) {
 			var htmlcontent = '';
-			content = content.replace(/[&]/g,"&amp;");
-			content = content.replace(/[<]/g,"&lt;");
-			content = content.replace(/[>]/g,"&gt;");
-			content = content.replace(/[ ]/g,"&nbsp;");
-			content = content.replace(/["]/g,"&quot;");
 			while( content != false ) {
 				var trans;
 				match = re.exec(content);
@@ -491,6 +488,12 @@
 					content = false;
 				}
 				lastLine++;
+				originalArray[lastLine] = trans;
+				trans = trans.replace(/[&]/g,"&amp;");
+				trans = trans.replace(/[<]/g,"&lt;");
+				trans = trans.replace(/[>]/g,"&gt;");
+				trans = trans.replace(/[ ]/g,"&nbsp;");
+				trans = trans.replace(/["]/g,"&quot;");
 				htmlcontent += "<li>"+trans+"\n</li>";
 			}
 			if(htmlcontent){
@@ -500,13 +503,15 @@
 		var _temp='';
 		for (var i=1; i<lines.childNodes.length; i++) {
 			// need to remove trailing ' ', which IE puts there.
+			lines.childNodes[i].originalInnerText = originalArray[i+1];
 			_temp=getLineContent(i+1);
-			if (navigator.appName.indexOf("Microsoft")!=-1) {
-				_temp=_temp.substr(0, _temp.length-1);
-			}
+//			if (navigator.appName.indexOf("Microsoft")!=-1) {
+//				_temp=_temp.substr(0, _temp.length-1);
+//			}
 			if (_temp.length>longestLine) {
 				longestLine=_temp.length;
 			}
+			
 			currLine=new hLine(i, _temp);
 			currLine.doHighlight(applyHighlightedLine);
 		}
