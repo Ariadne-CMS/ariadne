@@ -1,0 +1,71 @@
+/**********************************************************************
+	SQL_compiler BNF
+
+	- start expression is 'query'
+	- all words written with capitals are parser generated tokens
+	- all letters/words found between single quotes (') are "pure" tokens
+
+	- the following tokens are identified by the scanner:
+		INT		-?[0-9]+ 
+		FLOAT	-?[0-9]+[.][0-9]+
+		IDENT	[a-zA-Z_]+([.][a-zA-Z_]+)?	(note that if the scanner
+											doesn't find the trailing .[a-zA-Z_]+
+											it will prefix the found ident
+											with "object." )
+		CMP_OP	~=|==?|\\!=|<=|>=|<|>
+		ORDERBY	order[ ]*by		
+		
+***********************************************************************/
+
+
+constant:
+	INT
+|	FLOAT
+;
+
+terminal:
+	constant
+|	IDENT
+;
+
+cmp_expression:
+	terminal
+|	terminal CMP_OP constant
+;
+
+compound_expression:
+	'(' or_expression ')'
+|	cmp_expression
+;
+
+and_expression:
+	compound_expression 'and' compound_expression
+;
+
+or_expression:
+	and_expression 'or' and_expression
+;
+
+orderby_arguments:
+  ',' IDENT 'asc' orderby_arguments
+| ',' IDENT 'desc' orderby_arguments
+| ',' IDENT  orderby_arguments
+|
+;
+
+orderby_expression:
+	ORDERBY IDENT orderby_arguments
+|	ORDERBY IDENT 'asc' orderby_arguments
+|	ORDERBY	IDENT 'desc' orderby_arguments
+|
+;	
+
+limit_expression:
+	LIMIT INT
+|	LIMIT INT ',' INT
+|
+;
+
+query:
+	or_expression orderby_expression limit_expression
+
