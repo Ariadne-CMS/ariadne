@@ -7,9 +7,9 @@
         $returnpage=$this->store->root.$this->parent;
       } 
       Header("Location: ".$AR->dir->www.
-  	"setlink.php?do=delete&path=".RawUrlEncode($this->path).
+          "setlink.php?do=delete&path=".RawUrlEncode($this->path).
           "&returnpage=".RawUrlEncode($returnpage).
-  	"&parent=".RawUrlEncode($this->parent));
+          "&parent=".RawUrlEncode($this->parent));
     }
   } else {
     include($this->store->code."includes/error.phtml");
