@@ -229,7 +229,7 @@
 		
 
 		echo "== importing ariadne.ax file\n\n";
-
+		$ARCurrent->nolangcheck = true;
 		$ARCurrent->options["verbose"]=true;
 		// become admin
 		$AR->user=new object;
