@@ -1,5 +1,5 @@
 <?php
-	// Polish Language ver. 1.0 for Ariadne 2.0
+	// Polish Language ver. 1.01 for Ariadne 2.0 RC2
 	// by Lukasz.Keler@ceti.pl
 	debug("ARnls lib: en","all");
 
@@ -84,7 +84,7 @@
 	$ARnls["endson"]						=	"Ends on";
 	$ARnls["enternewvalue"]					=	"Wprowadź nową wartość";
 	$ARnls["err:alreadyexists"]				=	"%s już istnieje.";
-	$ARnls["err:cannotdelsystemusers"]		=	"!You cannot delete or move the system users (admin and public)";
+	$ARnls["err:cannotdelsystemusers"]		=	"Nie możesz usunąć użytkowników systemowych (admin oraz public)";
 	$ARnls["err:cannotedit.phtml"]			=	"Nie możesz edytować szablonów o rozszerzeniu '.phtml'";
 	$ARnls["err:cannotlockobject"]			=	"Nie mogę wplowadzić blokady na %s";
 	$ARnls["err:containsobj"]				=	"Obiekt zawiera inny obiekt, wpierw go usuń.";
@@ -97,7 +97,7 @@
 	$ARnls["err:groupidexists"]				=	"Grupa %s już istnieje, wybierz inną nazwę.";
 	$ARnls["err:illegalchars"]				=	"Nazwa szablonu może zawierać wyłącznie znaki: (a-z, A-Z, 0-9) '-', '_' i '.'.";
 	$ARnls["err:invalidcontent"]			=	"Błąd: Niewłaściwa treść";
-	$ARnls["err:invaliduserlocation"]		=	"!You cannot move users out of the /system/users/ tree.";
+	$ARnls["err:invaliduserlocation"]		=	"Nie możesz przenieść użytkownika poza katalog /system/users/ i jego podkatalogi.";
 	$ARnls["err:loginexists"]				=	"Login %s już istnieje, wybierz inny";
 	$ARnls["err:logintoolong"]				=	"Login jest za długi, może mieć maksymalnie 32 znaki.";
 	$ARnls["err:logoffyourself"]			=	"Przykro mi, możesz wylogować tylko siebie";
@@ -200,7 +200,7 @@
 	$ARnls["prev"]							=	"Wstecz";
 	$ARnls["priority"]						=	"Priorytet";
 	$ARnls["profile"]						=	"Profil";
-	$ARnls["publisheddata"]					=	"[Oblikował: <b>%s</b> - <b>%s</b>]";
+	$ARnls["publisheddata"]					=	"[Opublikował: <b>%s</b> - <b>%s</b>]";
 	$ARnls["q:applychanges"]				=	"Czy chcesz wprowadzić zmiany do <em>wszystkich</em> tego obiektu czy tylko do <em>tego</em> wpisu?";
 	$ARnls["q:cannotlockretry"]				=	"'%s' jest zablokowany przez użytkownika %s do %s, ponowić akcję?";
 	$ARnls["q:cookiesenabled"]				=	"Czy masz włączoną obsługę cookies?";
@@ -243,7 +243,7 @@
 	$ARnls["show"]							=	"Pokaż";
 	$ARnls["size"]							=	"Rozmiar";
 	$ARnls["start"]							=	"Start";
-    $ARnls["state"]                         =   "!State";
+    $ARnls["state"]                         =   "Stan";
 	$ARnls["summary"]						=	"Podsumowanie";
 	$ARnls["sun"]							=	"Nie";
 	$ARnls["target"]						=	"Cel";
@@ -279,10 +279,10 @@
 	$ARnls["week"]							=	"Tydzień";
 	$ARnls["weeks"]							=	"Tygodnie";
 	$ARnls["width"]							=	"Długość";
-	$ARnls["withoutdata"]					=	"!Without data";
-	$ARnls["withoutfiles"]					=	"!Without files";
+	$ARnls["withoutdata"]					=	"Bez danych";
+	$ARnls["withoutfiles"]					=	"Bez plików";
 	$ARnls["withoutgrants"]					=	"Pomiń prawa";
-	$ARnls["withouttemplates"]				=	"!Without templates";
+	$ARnls["withouttemplates"]				=	"Bez szablonów";
 	$ARnls["wysiwyg"]						=	"WYSIWYG";
 	$ARnls["year"]							=	"Rok";
 	$ARnls["years"]							=	"Lata";
