@@ -1,4 +1,8 @@
-<!-- Copyright 2000 Microsoft Corporation. All rights reserved. -->
+<?php
+	if (!$wgHTMLEditSaveTemplate) {
+		$wgHTMLEditSaveTemplate="user.edit.save.html";
+	}
+?><!-- Copyright 2000 Microsoft Corporation. All rights reserved. -->
 <!-- Author: Steve Isaac, Microsoft Corporation -->
 <!--This demo shows how to host the DHTML Editing component on a Web page. -->
 <!-- 2002, Muze: extensive changes to use the toolbar on contentEditable content --> 
@@ -17,6 +21,47 @@
 <script LANGUAGE="JavaScript" SRC="<?php echo $AR->dir->www; ?>widgets/compose/compose.js">
 </script>
 
+<script ID="editorSettings" LANGUAGE="JavaScript">
+  var buttons_disabled=new Array();
+  var tbContentEditOptions=new Array();
+  var wgSaveTmpl='<?php echo $wgHTMLEditSaveTemplate; ?>';
+<?php
+	// load editor.ini, in case the editor is started directly, not through the 
+	// js.html file
+	$options=$this->call("editor.ini");
+	if (is_array($options)) {
+		while (list($key, $value)=each($options)) {
+			if (is_string($key)) {
+				$skey='"'.$key.'"';
+			} else {
+				$skey=$key;
+			}
+			if (is_array($value)) {
+				echo "  tbContentEditOptions[$skey]=new Array();\n";
+				while (list($key2, $value2)=each($value)) {
+					if (is_string($key2)) {
+						$skey2='"'.$key2.'"';
+					} else {
+						$skey2=$key2;
+					}
+					echo "  tbContentEditOptions[$skey][$skey2]='".AddCSlashes($value2, ARESCAPE)."';\n";
+				}
+			} else {
+				echo "  tbContentEditOptions[$skey]='".AddCSlashes($value, ARESCAPE)."';\n";
+			}
+		}
+	}
+?>
+  if (tbContentEditOptions["disabled"]) {
+    var temp=tbContentEditOptions["disabled"].split(":");
+    for (i=0; i<temp.length; i++) {
+      if (temp[i]) {
+        buttons_disabled[temp[i]]=1;
+      }
+    }
+  }
+</script>
+
 <script ID="clientEventHandlersJS" LANGUAGE="javascript">
 <!--
 //
@@ -32,6 +77,7 @@ var docComplete = false;
 var initialDocComplete = false;
 
 var QueryStatusToolbarButtons = new Array();
+var CommandCrossReference = new Array();
 var ContextMenu = new Array();
 var GeneralContextMenu = new Array();
 
@@ -140,6 +186,23 @@ function window_onload() {
   QueryStatusToolbarButtons[13] = new QueryStatusItem("Underline", document.body.all["DECMD_UNDERLINE"]);
   QueryStatusToolbarButtons[14] = new QueryStatusItem("Undo", document.body.all["DECMD_UNDO"]);
   QueryStatusToolbarButtons[15] = new QueryStatusItem("InsertUnorderedList", document.body.all["DECMD_UNORDERLIST"]);
+  // Initialize cross reference
+  CommandCrossReference["Bold"]					= DECMD_BOLD;
+  CommandCrossReference["Copy"] 				= DECMD_COPY;
+  CommandCrossReference["Cut"] 					= DECMD_CUT;
+  CommandCrossReference["CreateLink"]	 		= DECMD_HYPERLINK;
+  CommandCrossReference["Indent"] 				= DECMD_INDENT;
+  CommandCrossReference["Italic"] 				= DECMD_ITALIC;
+  CommandCrossReference["JustifyLeft"] 			= DECMD_JUSTIFYLEFT;
+  CommandCrossReference["JustifyCenter"] 		= DECMD_JUSTIFYCENTER;
+  CommandCrossReference["JustifyRight"] 		= DECMD_JUSTIFYRIGHT;
+  CommandCrossReference["InsetOrderedList"] 	= DECMD_ORDERLIST;
+  CommandCrossReference["Outdent"] 				= DECMD_OUTDENT;
+  CommandCrossReference["Redo"] 				= DECMD_REDO;
+  CommandCrossReference["Underline"] 			= DECMD_UNDERLINE;
+  CommandCrossReference["Undo"] 				= DECMD_UNDO;
+  CommandCrossReference["InsertUnorderedList"] 	= DECMD_UNORDERLIST;
+  
   // Initialize the context menu arrays.
   GeneralContextMenu[0] = new ContextMenuItem("Cut", DECMD_CUT);
   GeneralContextMenu[1] = new ContextMenuItem("Copy", DECMD_COPY);
@@ -221,9 +284,10 @@ function tbContentElement_ContextMenuAction(itemIndex) {
 // every time a character is typed. QueryStatus those toolbar buttons that need
 // to be in synch with the current state of the document and update. 
 function tbContentElement_DisplayChanged() {
-  var i, s;
-  for (i=0; i<QueryStatusToolbarButtons.length; i++) {
-    if (!tbContentElement.document.queryCommandState(QueryStatusToolbarButtons[i].command)) {
+  for ( var i=0; i<QueryStatusToolbarButtons.length; i++) {
+    if (buttons_disabled[CommandCrossReference[QueryStatusToolbarButtons[i].command]]) {
+      TBSetState(QueryStatusToolbarButtons[i].element, "gray"); 
+    } else if(!tbContentElement.document.queryCommandState(QueryStatusToolbarButtons[i].command)) {
       if (!tbContentElement.document.queryCommandSupported(QueryStatusToolbarButtons[i].command) ||
           !tbContentElement.document.queryCommandEnabled(QueryStatusToolbarButtons[i].command)) {
 	    TBSetState(QueryStatusToolbarButtons[i].element, "gray"); 
@@ -236,6 +300,12 @@ function tbContentElement_DisplayChanged() {
   }
   return true;
 }
+
+
+function SAVE_onclick() {
+  savewindow=window.open(wgSaveTmpl, 'savewindow', 'directories=no,height=100,width=300,location=no,status=no,toolbar=no,resizable=no');
+}
+
 
 
 function DECMD_UNORDERLIST_onclick() {
@@ -358,21 +428,12 @@ function DECMD_IMAGE_onclick() {
     args['alt'] = "";
     args['border'] = "";
   }
+  args['editOptions']=tbContentEditOptions;
   arr = showModalDialog( "<?php echo $this->store->root.$AR->user->path; 
 		?>edit.object.html.image.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:600px; dialogHeight:400px; status: no; resizable: yes;");
   if (arr != null){
 	IMAGE_set(arr);
   }
-
-  /*
-  imgwindow=window.open("<?php echo $this->store->root.$AR->user->path; 
-    ?>edit.object.html.image.phtml?src="+escape(args['src'])+
-    "&border="+escape(args['border'])+"&hspace="+escape(args['hspace'])+
-    "&vspace="+escape(args['vspace'])+"&align="+escape(args['align'])+
-    "&alt="+escape(args['alt']),"imgwindow","directories=no,height=160,width=425,location=no,menubar=no,status=no,toolbar=no,resizable=yes");
-  imgwindow.focus();
-  window.setfocusto=imgwindow;
-  */
 }
 
 function IMAGE_set(arr) {
@@ -443,27 +504,14 @@ function DECMD_HYPERLINK_onclick() {
 	var arr,args,oSel, oParent, sType;
 
 	oSel = tbContentElement.document.selection;
+	oRange = oSel.createRange();
 	sType=oSel.type;
 	arr=null;
 	args=new Array();
 	//set a default value for your link button
 	args["URL"] = "http:/"+"/";
-	/*
-	The logic is similar if there is a selection
-	of text or image. You get the nearest parent and
-	then go up the DOM to see the nearest parent A element
-	*/
-	if(sType=="Text" || sType=="None"){
-		oParent = GetElement(oSel.createRange().parentElement(),"A");
-	} else { 
-		oParent = GetElement(oSel.createRange().item(0),"A");
-	}
-	/* 
-	So, if you get a parent A (anchor) element, you use the href property
-	of that. Now, there is an obvious caveat here, because A can
-	be a link or an anchor. So, you need to see if it has an href.
-	*/
-	if(oParent && oParent.href) {
+  	if (oRange.parentElement().tagName=="A") {
+		oParent=oRange.parentElement();
 		args["URL"] = oParent.href;
 		for (var i=0; i<oParent.attributes.length; i++) {
 			oAttr=oParent.attributes.item(i);
@@ -476,49 +524,49 @@ function DECMD_HYPERLINK_onclick() {
 	here popup your own dialog, pass the arg array to that, get what the user
 	entered there and come back here
 	*/ 
-	arr = showModalDialog( "<?php echo $this->store->root.$AR->user->path; 
-		?>edit.object.html.link.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:11em; status: no;");
+	arr = showModalDialog( "edit.object.html.link.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:12em; status: no; resizable: yes;");
 	if (arr != null){
-	    if (oParent) {
-			if (arr['URL']) {
-				for (i=0; i<oParent.attributes.length; i++) {
-					oldAttribute=oParent.attributes.item(i);
-					var dummy=new String(oldAttribute.name);
-					if (dummy.substring(0,3)=='ar_') {
-						oParent.removeAttribute(oldAttribute.name);
-					}
-				}
-				oParent.href=arr['URL'];
-				if (arr['attributes']) {
-					for (var i in arr['attributes']) {
-						var arAttribute=arr['attributes'][i];
-						oParent.setAttribute(arAttribute.name, arAttribute.value);
-					}
-				}
-			} else {
-				oParent.outerHTML=oParent.innerHTML;
-			}
-	    } else {
-			if (arr['URL']) {
-				var newHTML="<a href=\""+arr['URL']+"\"";
-				if (arr['attributes']) {
-					for (var i in arr['attributes']) {
-						var arAttribute=arr['attributes'][i];
-						newHTML=newHTML+" "+arAttribute.name+"=\""+arAttribute.value+"\"";
-					}
-				}
-				oRange=oSel.createRange();
-				if (sType=="Control") {
-					var myimg=oRange.item(0);
-					newHTML=newHTML+">" + myimg.outerHTML + "</a>";
-					myimg.outerHTML=newHTML;
-				} else {
-					newHTML=newHTML+">" + oRange.htmlText + "</a>";
-					oRange.pasteHTML(newHTML);
+	    if (!oParent && arr['URL']) {
+			oldText=oRange.htmlText;
+			// first let the msie set the link, since it is better in it.
+			setFormat("CreateLink", arr['URL']);
+			var newHTML=new String(oRange.htmlText);
+			// now replace the <A href="arr['url']> with the complete one:
+			var newLink="<a href=\""+arr['URL']+"\"";
+			if (arr['attributes']) {
+				for (var i in arr['attributes']) {
+					var arAttribute=arr['attributes'][i];
+					newLink=newLink+" "+arAttribute.name+"=\""+arAttribute.value+"\"";
 				}
 			}
-	    }
+			newLink=newLink+">";
+			var start=newHTML.indexOf("<A");
+			var old=new String("<A href=\""+arr['URL']+"\">");
+			var end=start+old.length;
+			newHTML=newHTML.substr(0,start)+newLink+newHTML.substr(end);
+			// Don't remove the following line, or MSIE adds imagined extra links
+			oRange.pasteHTML('');
+			oRange.pasteHTML(newHTML);
+		} else if (oParent && arr['URL']) {
+			for (i=0; i<oParent.attributes.length; i++) {
+				oldAttribute=oParent.attributes.item(i);
+				var dummy=new String(oldAttribute.name);
+				if ((dummy.substring(0,3)=='ar_') || (dummy.substring(0,3)=="ar:")) {
+					oParent.removeAttribute(oldAttribute.name);
+				}
+			}
+			oParent.href=arr['URL'];
+			if (arr['attributes']) {
+				for (var i in arr['attributes']) {
+					var arAttribute=arr['attributes'][i];
+					oParent.setAttribute(arAttribute.name, arAttribute.value);
+				}
+			}
+		} else {
+			setFormat("UnLink");
+		}
 	}
+	tbContentElement.focus();
 }
 
 function DECMD_DELETE_onclick() {
@@ -559,6 +607,15 @@ function tbContentElement_DocumentComplete() {
   docComplete = true;
 }
 
+function getContents(data_id) {
+	var data="";
+	if (data=tbContentElement.document.getElementById(data_id)) {
+		return data.innerHTML;
+	} else {
+		return '';
+	}
+}
+
 //-->
 </script>
 
@@ -585,11 +642,11 @@ return tbContentElement_ContextMenuAction(itemIndex)
 
 <!-- Toolbars -->
 <div class="tbToolbar" ID="StandardToolbar" unselectable='on'>
-  <!-- div class="tbButton" ID="MENU_FILE_SAVE" unselectable='on' TITLE="Save File" LANGUAGE="javascript" onclick="return MENU_FILE_SAVE_onclick()">
+  <div class="tbButton" ID="SAVE" unselectable='on' TITLE="Save File" LANGUAGE="javascript" onclick="return SAVE_onclick()">
     <img class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/save.gif" WIDTH="23" HEIGHT="22">
   </div>
   
-  <div class="tbSeparator"></div -->
+  <div class="tbSeparator"></div>
 
   <div class="tbButton" unselectable='on' ID="DECMD_CUT" TITLE="Cut" LANGUAGE="javascript" onclick="return DECMD_CUT_onclick();">
     <img class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/cut.gif" WIDTH="23" HEIGHT="22">
