@@ -19,7 +19,9 @@
     $name="date";
   }
   $args="&format=".RawUrlEncode($format)."&title=".RawUrlEncode($title)."&name=".RawUrlEncode($name);
-?><html>
+
+?>
+<html>
 <head>
 <title> 
 <?php echo $title; ?>
@@ -96,7 +98,7 @@ A.cal { text-decoration:none; }
 				$mday -= $newtime_arr["mday"];
 			}
 			echo mktime( 0, 0, 0, $date_arr["mon"]-1, $mday, $date_arr["year"]); 
-
+			echo $args;
     ?>"><img src="<?php echo $AR->dir->images; ?>calendar/xp.prev.gif" alt="<" border="0"></a> 
       <font class="date">&nbsp; 
       <?php 
@@ -111,7 +113,7 @@ A.cal { text-decoration:none; }
 				$mday = $mday - $newtime_arr["mday"];
 			}
 			echo mktime( 0, 0, 0, $date_arr["mon"]+1, $mday, $date_arr["year"]); 
-
+			echo $args;
     ?>"><img src="<?php echo $AR->dir->images; ?>calendar/xp.next.gif" alt=">" border="0"></a> 
     </td>
     <td align="center">&nbsp;</td>
