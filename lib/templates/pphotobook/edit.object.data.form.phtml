@@ -62,7 +62,7 @@
           ?>
         </td><td>
           <?php
-            if (!$this->arIsNewObject) {
+            if (!$this->newobject) {
               $wgHTMLEditName="page";
               $wgHTMLEditLanguage=$arLanguage;
               $wgHTMLEditContent=$this->getdata("page",$arLanguage);
