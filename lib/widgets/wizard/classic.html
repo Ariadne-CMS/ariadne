@@ -52,14 +52,20 @@
       error("wgWizFlow undefined or corrupt");
     }
   }
-  if (!$wgWizButtons) {
-    /*
-    // $wgWizButtons=$ARCurrent->wgWizButtons;
-    // echo "<!-- ".serialize($wgWizButtons)." -->";
-    if (!$wgWizButtons) {
-      $wgWizButtons["next"]=true;
+  if (!$wgWizControl) {
+    $wgWizControl=$this->getdata("wgWizControl","none");
+  }
+  if (!$wgWizCurrent) {
+    $wgWizCurrent=$this->getdata("wgWizCurrent","none");
+  }
+  if (!$wgWizNextStep) {
+    if ($wgWizControl && $wgWizCurrent) {
+      $wgWizNextStep=$wgWizFlow[$wgWizCurrent][wgWizGetAction($wgWizControl)];
+    } else {
+      $wgWizNextStep=1;
     }
-    */
+  }
+  if (!$wgWizButtons) {
     $wgWizButtons=$wgWizFlow[$wgWizNextStep];
   }
 ?>
@@ -91,9 +97,11 @@
   if (!$arStoreVars) {
     $arStoreVars=$this->getdata("arStoreVars","none");
   }
-  wgWizKeepVars($HTTP_GET_VARS);
-  wgWizKeepVars($arStoreVars, "arStoreVars");
+  $ARCurrent->override=true; // POST vars always get included in the hidden arStoreVars list
   wgWizKeepVars($HTTP_POST_VARS);
+  $ARCurrent->override=false;
+  wgWizKeepVars($arStoreVars, "arStoreVars");
+  wgWizKeepVars($HTTP_GET_VARS);
 ?>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr>
@@ -176,6 +184,8 @@
       <td width="100" units="pixels">
         <?php if ($wgWizButtons["back"]) { ?>
           <input type="submit" name="wgWizControl" value="<?php echo $ARnls["back"]; ?>" onClick="document.action='back';">
+        <?php } else { ?>
+          <input type="button" name="wgWizControl" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();">
         <?php } ?>
       </td><td>
         <?php if ($wgWizButtons["prev"]) { ?>
@@ -197,5 +207,23 @@
 </table>
 <input type="hidden" name="wgWizCurrent" value="<?php echo $wgWizNextStep; ?>">
 </form>
+<?php
+  if ($wgWizAlert) {
+?>
+<script>
+  function wgWizAlert() {
+    alert('<?php echo AddSlashes($wgWizAlert); ?>');
+    if (window.oldonload) {
+      window.oldonload();
+    }
+  }
+  if (window.onload) {
+    window.oldonload=window.onload;
+  }
+  window.onload=wgWizAlert;
+</script>
+<?php
+  }
+?>
 </body>
 </html>
