@@ -111,7 +111,8 @@ class mysqlstore {
 			dl("mysql.so");
 		}
 		$this->error="";
-		$this->connect_id=mysql_connect($config["host"], $config["user"], $config["password"]);
+		$this->connect_id=mysql_connect($config["host"], $config["user"], $config["password"]) or die ("Could not connect to MySQL");
+		mysql_select_db($config["database"]) or die ("Could not access database '".$config["database"]."'.");
 		$this->root=$path;
 		$this->code=$config["code"];
 		$this->files=$config["files"];
