@@ -34,13 +34,14 @@
 
 			$i=@count($ARCurrent->todolist[$from]);
 			$ARCurrent->todolist[$from][$i]["text"]="<a class=\"cal\" href=\"".
-				$this->make_url($path)."classic.edit.phtml?entry=$from&arReturnPage=".
+				$ARCurrent->parent->make_url($path)."classic.edit.phtml?entry=$from&arReturnPage=".
 				RawUrlEncode($PHP_SELF."?date=".$ARCurrent->date)."\">$name</a>";
 			$ARCurrent->todolist[$from][$i]["to"]=$to;			
 		}
 
 		unset($ARBeenHere["populate"]);
 		$ARCurrent->date=$date;
+		$ARCurrent->parent=&$this;
 		$this->populate($starttime, $endtime, $priority, "system.add.time.phtml","timefunc=AddTodo&from=$starttime&to=$endtime");
 		if ((!is_array($ARCurrent->todolist)) || (count($ARCurrent->todolist)==0)) {
 			$ARCurrent->todolist[0][0]["text"]=$ARnls["notodo"];
