@@ -4,15 +4,22 @@
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>menu.css">
+<script>
+
+  function showFilename() {
+    document.selectform.filename.scrollLeft=1000000;
+  }
+
+</script>
 </head>
-<body>
-<form>
+<body onLoad="showFilename()"> 
+<form name="selectform">
 <table border="0" cellpadding="2" cellspacing="2">
 <tr valign="middle">
 	<td>
 		<?php echo $ARnls["filename"]; ?> :
 	</td><td>
-		<input type="text" name="filename" style="width: 200;" value="<?php echo $wgBrowseFilename; ?>">
+		<input type="text" name="filename" style="width: 200;" value="<?php echo $this->path; ?>">
 	</td><td>
 		&nbsp;&nbsp;<input type="button" name="open" style="width: 75px" value="<?php echo $ARnls["open"]; ?>" onClick="top.opener.wgBrowseResult.value=top.CurrentPath; top.close();">
 	</td>

@@ -101,8 +101,8 @@
         </nobr>
 	</td><td align="left" valign="top">
 		<nobr>
-			<a href="javascript:browseUp()"><img name="up" src="<?php echo $AR->dir->images; ?>browse/up.gif" width="23" height="22" alt="<?php echo $ARnls["up"]; ?>" border="0" hspace="2" vspace="2"></a>
-			<a href="javascript:browseHome()"><img name="home" src="<?php echo $AR->dir->images; ?>browse/home.gif" width="23" height="22" alt="<?php echo $ARnls["home"]; ?>" border="0" hspace="2" vspace="2"></a>
+			<a href="#" onClick="browseUp(); return false;"><img name="up" src="<?php echo $AR->dir->images; ?>browse/up.gif" width="23" height="22" alt="<?php echo $ARnls["up"]; ?>" border="0" hspace="2" vspace="2"></a>
+			<a href="#" onClick="browseHome(); return false;"><img name="home" src="<?php echo $AR->dir->images; ?>browse/home.gif" width="23" height="22" alt="<?php echo $ARnls["home"]; ?>" border="0" hspace="2" vspace="2"></a>
 			<?php
 				if (!$this->CheckSilent("add")) {
 			?>
@@ -110,12 +110,12 @@
 			<?php 
 				} else {
 			?>
-				<a href="javascript:New()"><img name="new" src="<?php echo $AR->dir->images; ?>browse/new.gif" alt="<?php echo $ARnls["new"]; ?>" width="23" height="22" border="0" hspace="4" vspace="2"></a> 
+				<a href="#" onClick="New(); return false;"><img name="new" src="<?php echo $AR->dir->images; ?>browse/new.gif" alt="<?php echo $ARnls["new"]; ?>" width="23" height="22" border="0" hspace="4" vspace="2"></a> 
 			<?php
 				}
 			?>
-			<a href="javascript:ViewMode('list')"><img name="list" src="<?php echo $AR->dir->images; ?>browse/list.gif" alt="<?php echo $ARnls["list"]; ?>" width="23" height="22" border="0" hspace="0" vspace="2"></a><a 
-			href="javascript:ViewMode('details')"><img name="details" src="<?php echo $AR->dir->images; ?>browse/details.gif" alt="<?php echo $ARnls["details"]; ?>" width="23" height="22" border="0" hspace="0" vspace="2"></a>
+			<a href="#" onClick="ViewMode('list'); return false;"><img name="list" src="<?php echo $AR->dir->images; ?>browse/list.gif" alt="<?php echo $ARnls["list"]; ?>" width="23" height="22" border="0" hspace="0" vspace="2"></a><a 
+			href="#" onClick="ViewMode('details'); return false;"><img name="details" src="<?php echo $AR->dir->images; ?>browse/details.gif" alt="<?php echo $ARnls["details"]; ?>" width="23" height="22" border="0" hspace="0" vspace="2"></a>
 		<nobr>
 	</td>
 </tr>

@@ -2,21 +2,16 @@
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 ?>
 <style>
-	.object {
-		width: 100%;
-		overflow: hidden;
-	}
 	BODY, TD {
 		font: 10pt Arial,Helvetica,sans-serif;
 		line-height: 15pt;
 	}
-	A {
-		text-decoration: none;
-		color: black;
-	}
 	BODY {
 		margin: 0px;
 		padding: 0px;
+	}
+	TD {
+		margin: 1px;
 	}
 	A {
 		text-decoration: none;
@@ -24,13 +19,22 @@
 	}
 	.heading {
 		font: 10pt Arial,Helvetica,sans-serif;
-		background: buttonface;
+		<?php
+			$browser=$this->call("browsercheck.phtml");
+			if ($browser["id"]=="ns" && $browser["version"]==4) {
+		?>
+			background: #BBBBBB;
+			width: 100px;
+		<?php
+			} else {
+		?>
+			background: buttonface;
+			width: 100%;
+		<?php
+			}
+		?>
 		border: 2px outset;
 		text-align: center;
-		width: 100%;
-	}
-	TD {
-		margin: 1px;
 	}
 </style>
 <body bgcolor="white">
