@@ -67,56 +67,38 @@ class scanner {
 		$yych = $YYBUFFER[$YYCURSOR];
 		switch ($YYSTATE) {
 			case YY_STATE_HTML:
-				switch ($yych) {
-					case '<':
-						$yych = $YYBUFFER[++$YYCURSOR];
-						if ($yych == '?' || $yych == '%') {
-							$result = "php tags found at line: ".$this->YYLINE;
-							return T_ERROR;
-						} else {
-							while ($yych == ' ') {
-								$yych = $YYBUFFER[++$YYCURSOR];
-							} 
-							$tag_element = "";
-							while ($yych != ' ' && ord($yych)!==0 && $yych != '>') {
-								$tag_element .= $yych;
-								$yych = $YYBUFFER[++$YYCURSOR];
-							}
-							while (ord($yych)!==0 && $yych!='>') {
-								$yych = $YYBUFFER[++$YYCURSOR];
-							}
-							/* eat '>' sign */
-							if ($yych == '>') {
-								++$YYCURSOR;
-							}
-							if ($tag_element == "pinp") {
+				if (ord($yych) == 0) {
+					return T_EOF;
+				} else {
+					$matches='';
+					$scan_buffer = substr($YYBUFFER, $YYCURSOR);
+					$re_code="^(.*)(<pinp>|<script[^>]+language[^>]*=[^>]*php[^>]*>|<[%?])";
+					if (preg_match("!".$re_code."!Usi", $scan_buffer, $matches)) {
+						if ($matches[2]) {
+							if (strtolower($matches[2]) === "<pinp>") {
+								/* pinp tag found */
+								$result = $matches[1];
+								$YYCURSOR+=strlen($matches[0]);
 								$YYSTATE = YY_STATE_PINP;
 								return T_PINP_START;
-							} else
-							if (strtolower($tag_element) == "script") {
-								$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
-								$result = "<?php echo \"".str_replace('$', '\\$', AddCSlashes($result, ARESCAPE))."\"; ?>";
-								return T_UNPARSED;
 							} else {
-								$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
+								/* php start tag found */
+								$result = $matches[1];
+								$YYCURSOR+=strlen($matches[0]);
+								$result .= "<?php echo \"".str_replace('$', '\\$', AddCSlashes($matches[2], ARESCAPE))."\"; ?>";
 								return T_UNPARSED;
 							}
+						} else {
+							$result = $matches[1];
+							$YYCURSOR+=strlen($matches[0]);
+							return T_UNPARSED;
 						}
-					break;					
-					case "\0":
-						--$YYCURSOR;
-						return T_EOF;
-					break;
-					default:
-						while ($yych != '<' && ord($yych)!==0) {
-							if ($yych == "\n") {
-								$this->YYLINE++;
-							}
-							$yych = $YYBUFFER[++$YYCURSOR];
-						}
-						$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
+					} else {
+						$result = $scanbuffer;
+						$YYBUFFER = chr(0);
+						$YYCURSOR = 0;
 						return T_UNPARSED;
-					break;
+					}
 				}
 			break;
 			case YY_STATE_PINP:
@@ -478,7 +460,7 @@ class pinp {
 		while ($this->token != T_EOF) {
 			switch ($this->token) {
 				case T_PINP_START:
-					$this->new_template.="<?php";
+					$this->new_template.=$this->token_value."<?php";
 				break;
 				case T_PINP_END:
 					$this->new_template.="?>";
