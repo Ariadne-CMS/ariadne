@@ -1,0 +1,21 @@
+<?php
+	if ($ARCurrent->CurrentListCol>=$ncols) {
+		echo "</tr><tr valign=\"middle\">\n";
+		$ARCurrent->CurrentListCol=0;
+	}
+	$ARCurrent->CurrentListCol++;
+?>
+<td valign="top" align="center" width="<?php echo (100/$ncols); ?>%">
+<?php
+  $BrowseGrant=$this->CheckSilent("read");
+  if ($BrowseGrant) {
+    $class="class='greyed'";
+  } else {
+    $class="";
+  }
+  echo "<a $class href=\"".$this->store->root.$this->path."\" onClick=\"if (top.View) { top.View('".$this->path."'); return false; }\">";
+?>
+<img width="40" height="40" src="<?php 
+  echo $this->store->root.$this->getdata("picture","none"); ?>view.thumb.html" alt="[view]" border="0"><br>
+<?php echo $nlsdata->name; ?></a>
+</td>

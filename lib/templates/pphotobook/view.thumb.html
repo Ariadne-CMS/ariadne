@@ -1,0 +1,8 @@
+<?php
+  $ARCurrent->nolangcheck=true;
+  if ($this->CheckLogin("read") && $this->CheckConfig()) {
+	if ($this->exists($data->picture)) {
+		$this->get($data->picture,"view.thumb.html");
+	}
+  }
+?>

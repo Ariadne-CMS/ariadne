@@ -1,0 +1,55 @@
+<?php
+  /******************************************************************
+   system.save.data.phtml			   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+ 
+  ******************************************************************/
+
+  if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
+    $this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+  } else {
+    if (!$this->data->nls) {
+      $this->data->nls=new object;
+    }
+    $this->data->nls->default=$ARConfig->nls->default;
+    reset($AR->nls->list);
+    while (list($key, $value)=each($AR->nls->list)) {
+      
+      debug($key);
+      if ($this->getdata($key,"none")) { // FIXME: not always sufficient check
+                                         // (if user selects a language but enters nothing and then submits, $$key will be set, but all values empty)
+        if (!$this->data->$key) {
+          $newnlsdata=new object;
+        } else {
+          $newnlsdata=$this->data->$key;
+        }
+        if (!$this->getdata("name",$key)) {
+          $this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
+        }
+        $newnlsdata->name=$this->getdata("name",$key);
+        $properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
+        $properties["text"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
+
+        $newnlsdata->summary=$this->getdata("summary",$key);
+        $properties["text"][]["value"]="'".AddSlashes($newnlsdata->summary)."'";
+
+        $this->data->$key=$newnlsdata;
+        $this->data->nls->list[$key]=$value;
+      }
+    }
+  }
+  $picture=$this->getdata("picture","none");
+  if (!$picture || !$this->exists($picture)) {
+    $picture='/system/photo/nothumb/';
+  } else {
+    $object=$this->get($picture,"system.get.phtml");
+    if ($object && $object[0]) {
+      $object=$object[0];
+      if (!$object->implements('pphoto')) {
+        $picture='/system/photo/nothumb/';
+      }
+    }  
+  }
+  $this->data->picture=$picture;
+  include($this->store->code."includes/system.save.phtml");
+?>

@@ -1,0 +1,54 @@
+<body bgcolor="white">
+<?php
+	$photo=$this->get_photos(1,$start);
+	$photo=$photo[0];
+	if (!$photo) {
+?>
+	<script language="javascript">
+	history.back();
+	</script>
+<?php
+	exit;
+	}
+?>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+	<tr bgcolor="#404074">
+	<td align="left">
+	<font color="white">
+	<h3><a href="<?php echo $this->store->root.$this->path; ?>"><?php echo $nlsdata->name; ?></a>/<?php echo $photo->getdata("name",$nls); ?></h3>
+	</font>
+	</td>
+	<td align="right">
+	<table border="0">
+		<tr valign="middle">
+		<td align="left">
+		<form method="post"><input type="hidden" name="start" value="<?php
+			if ($start>0) $dstart=$start-1;
+			else $dstart=$start;
+			echo $dstart; ?>"><input type="submit" name="prev" value="Prev"></form>
+		</td>
+		<td><h3>
+		<font color="white"><?php echo $start; ?></font></h3>
+		</td>
+		<td align="right">
+		<form method="post"><input type="hidden" name="start" value="<?php
+			echo ($start+1); ?>"><input type="submit" name="next" value="Next"></form>
+		</td>
+		</tr>
+	</table>
+	</td>
+	</tr>
+</table>
+<br><br>
+<center>
+<table border="0">
+	<tr><td align="left">
+	<img src="<?php echo $this->store->root.$photo->path; ?>photo.html">
+	<br>
+	<?php echo $photo->call("GetPage.phtml"); ?><br>
+	<?php echo $photo->call("GetSummary.phtml"); ?>
+	</td>
+	</tr>
+</table>
+</center>
+</body>
