@@ -1,0 +1,46 @@
+<?php   
+	if ($this->CheckSilent("delete")) {
+		if (!$this->lock("T")) {
+			$this->error=$ARnls["err:cannotlockobject"];
+		} else {
+			if (substr($this->path, 0, strlen('/system/users/'))=='/system/users/') {
+				// this is a live user object, not a link in a group
+				if ($this->data->login=="public" || $this->data->login=="admin") {
+					$this->error=$ARnls["err:cannotdelsystemusers"];
+				} else {
+					if (is_array($this->data->usergrants)) {
+						// remove usergrants
+						while (list($key, $value)=each($this->data->usergrants)) {
+							$this->get($key, "system.save.grants.phtml", Array("delete" => true, "id" => $this->data->login, "type" => "puser"));
+						}
+					}
+					if (is_array($this->data->groups)) {
+						// remove user object from groups
+						while (list($key, $value)=each($this->data->groups)) {
+							$this->get($key, "system.set.user.phtml", Array("path" => $this->path, "action" => "delete"));
+						}
+					}
+				}
+			} else {
+				// this is probably a link in a group
+				$parentobject=@current($this->get($this->parent, "system.get.phtml"));
+				if ($parentobject && $parentobject->implements("pgroup")) {
+					// so it is, so remove the user from the group
+					// which will by the way also delete the current object
+					// first get the original users path
+					$crit["login"]["value"]["="]="'".AddSlashes($this->data->login)."'";
+					$realuser=@current($this->find("/system/users/",$crit,"system.get.phtml"));
+					if ($realuser && $realuser->path) {
+						$realpath=$realuser->path;
+						$parentobject->call("system.set.user.phtml", Array("path" => $realpath, "action" => "delete"));
+					}
+				}
+			}			
+			if (!$this->error) {
+				$this->call("pobject::system.delete.phtml",$arCallArgs);
+			}
+		}
+	} else {
+		$this->error=$ARnls["nopermission"];
+	}
+?>
