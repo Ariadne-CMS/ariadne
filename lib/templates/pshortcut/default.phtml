@@ -15,7 +15,13 @@
 		if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
 			if ($path && $this->store->exists($path)) {
 				$arCallArgs=array_merge($arCallArgs, Array("arShortCut" => $this->path));
-				$arResult=current($this->get($path, $arCallFunction, $arCallArgs));
+
+				if (!is_array($ARCurrent->shortcut_redirect)) {
+					$ARCurrent->shortcut_redirect = Array();
+				}
+				array_push($ARCurrent->shortcut_redirect, Array($this->path => $path));
+					$arResult=current($this->get($path, $arCallFunction, $arCallArgs));
+				array_pop($ARCurrent->shortcut_redirect);
 			} else {
 				$arResult=false;
 				$this->error=sprintf($ARnls["err:shortcutnopath"],$this->path,$path);

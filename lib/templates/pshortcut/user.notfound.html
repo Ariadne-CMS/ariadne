@@ -9,8 +9,15 @@
 			$configcache->templates_path = $this->path;
 			$ARConfig->cache[$this->data->path] = $configcache;
 
+			$arCallArgs["arRequestedPath"] = $arRequestedPath;
 			$subpath = substr($arRequestedPath, strlen($this->path));
-			$arResult = $this->get($this->data->path.$subpath, $arRequestedTemplate, $arCallArgs);
+			
+			if (!is_array($ARCurrent->shortcut_redirect)) {
+				$ARCurrent->shortcut_redirect = Array();
+			}
+			array_push($ARCurrent->shortcut_redirect, Array($this->path => $this->data->path));
+				$arResult = $this->get($this->data->path.$subpath, $arRequestedTemplate, $arCallArgs);
+			array_pop($ARCurrent->shortcut_redirect);
 
 			unset($ARConfig->cache[$this->data->path]->templates_path);
 		} else {
