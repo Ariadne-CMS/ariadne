@@ -68,51 +68,53 @@
 			}
 		}
 
-		/* now for backwards compatibility use the key if $val is not a path, 
-		   in that case the key will be a path. */
-		$selected = $this->getdata("groups", "none");
-		$groups = Array();
-		if (is_array($selected)) {
-			reset($selected);
-			while (list($key, $val)=each($selected)) {
-				if (substr($val, 0, 1) == "/") {
-					$groups[$val] = $val;
-				} else {
-					$groups[$key] = $val;
+		if (!$this->error) {
+			/* now for backwards compatibility use the key if $val is not a path, 
+			   in that case the key will be a path. */
+			$selected = $this->getdata("groups", "none");
+			$groups = Array();
+			if (is_array($selected)) {
+				reset($selected);
+				while (list($key, $val)=each($selected)) {
+					if (substr($val, 0, 1) == "/") {
+						$groups[$val] = $val;
+					} else {
+						$groups[$key] = $val;
+					}
 				}
 			}
-		}
-		
+			
 
 
-		if ($profile=$this->getdata("profile","none")) {
-			$this->data->profile=$profile;
-			if ($this->arIsNewObject && !$this->getdata("arProfileLoaded")){
-				$pdata=current($this->get($profile,'system.get.phtml'));
-				/* 
-					now setting default values from the profile, 
-					guess it would be better to preload them directly in the templates
-					(direct feedback & the possibility to override 
-				*/
-				$this->data->language=$pdata->data->language;
-				$this->data->interface=$pdata->data->interface;
-				$this->data->editor=$pdata->data->editor;
-				if(!$customgrants) {
-					$groups=$pdata->data->groups;
-				}
-       
-			}    
-		} else {
-			unset($this->data->profile);
-		}
-		if ($language=$this->getdata("language","none")) {
-			$this->data->language=$language;
-		}
-		if ($interface=$this->getdata("interface","none")) {
-			$this->data->interface=$interface;
-		}
-		if ($editor=$this->getdata("editor","none")) {
-			$this->data->editor=$editor;
+			if ($profile=$this->getdata("profile","none")) {
+				$this->data->profile=$profile;
+				if ($this->arIsNewObject && !$this->getdata("arProfileLoaded")){
+					$pdata=current($this->get($profile,'system.get.phtml'));
+					/* 
+						now setting default values from the profile, 
+						guess it would be better to preload them directly in the templates
+						(direct feedback & the possibility to override 
+					*/
+					$this->data->language=$pdata->data->language;
+					$this->data->interface=$pdata->data->interface;
+					$this->data->editor=$pdata->data->editor;
+					if(!$customgrants) {
+						$groups=$pdata->data->groups;
+					}
+	       
+				}    
+			} else {
+				unset($this->data->profile);
+			}
+			if ($language=$this->getdata("language","none")) {
+				$this->data->language=$language;
+			}
+			if ($interface=$this->getdata("interface","none")) {
+				$this->data->interface=$interface;
+			}
+			if ($editor=$this->getdata("editor","none")) {
+				$this->data->editor=$editor;
+			}
 		}
 		if (!$this->error) {
 			$this->save($properties);
