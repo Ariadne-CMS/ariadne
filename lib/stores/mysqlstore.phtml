@@ -122,6 +122,11 @@ class mysqlstore {
 		// a database for all open connect_id's
 		// so we have to supply the database name wheenever a query is run
 		$this->database=$config["database"];
+
+		/* Instantiate module mysql_compiler */
+		include_once($this->code."stores/modules/mysql_compiler.php");
+		$this->sqlcompiler=new mysql_compiler($this->tbl_prefix);
+
 		/* Instantiate module locking */
 		include_once($this->code."modules/mod_lock/mysql.phtml");
 		$this->mod_lock=new mysqllock();
@@ -303,71 +308,78 @@ class mysqlstore {
 
 	 **********************************************************************************/
 
-		debug("find($path, [array], $limit, $offset)","store");
-		if (!$limit) {
-			$limit=100;
-		}
-		if (!$offset) {
-			$offset=0;
-		}
-		$this->error="";
-		$count=0;
-		$result["method"]="find";
-		$result["path"]=$path;
-		$result["criteria"]=$criteria;
-		$epath=AddSlashes(strtoupper($path));
-
-		$nodes_tbl=$this->tbl_prefix."nodes";
-		$objects_tbl=$this->tbl_prefix."objects";
-		$types_tbl=$this->tbl_prefix."types";
-
-		while (list($property, $values)=@each($criteria)) {
-			$eproperty=AddSlashes($property);
-			if ($property!="object") {
-				$from.=", ".$this->tbl_prefix."prop_$eproperty";
-				$where.=" and (";
+		if (is_array($criteria)) {
+			debug("find($path, [array], $limit, $offset)","store");
+			if (!$limit) {
+				$limit=100;
 			}
-			while (list($valuename, $compare)=each($values)) {
-				while (list($function, $value)=each($compare)) {
-					$ecompare=AddSlashes($function);
-					$evaluename=AddSlashes($valuename);
-					if ($value=="") { 
-						// empty strings as value generate strange results in SQL land
-						$value=0;
-					}
-					switch($property) {
-						case "object" :
-							switch($valuename) {
-								case ("type") : 
-									$where.=" and $objects_tbl.type $ecompare $value ";
-								 	break;
-								case ("implements") : 
-									$types=", $types_tbl";
-									$where.=" and ( $types_tbl.implements $ecompare $value and $objects_tbl.vtype=$types_tbl.type ) ";
-									break;
-								case ("parent") :
-									$where.=" and UPPER($nodes_tbl.parent) $ecompare UPPER($value) ";
-									break;
-								case ("lastchanged") :
-									$where.=" and UNIX_TIMESTAMP($objects_tbl.lastchanged) $ecompare $value ";
-									break;
-							}
-							break;
-						default :
-							$where.=$this->tbl_prefix."prop_$eproperty.AR_$evaluename $ecompare $value and "; 
+			if (!$offset) {
+				$offset=0;
+			}
+			$this->error="";
+			$count=0;
+			$result["method"]="find";
+			$result["path"]=$path;
+			$result["criteria"]=$criteria;
+			$epath=AddSlashes(strtoupper($path));
+
+			$nodes_tbl=$this->tbl_prefix."nodes";
+			$objects_tbl=$this->tbl_prefix."objects";
+			$types_tbl=$this->tbl_prefix."types";
+
+			while (list($property, $values)=@each($criteria)) {
+				$eproperty=AddSlashes($property);
+				if ($property!="object") {
+					$from.=", ".$this->tbl_prefix."prop_$eproperty";
+					$where.=" and (";
+				}
+				while (list($valuename, $compare)=each($values)) {
+					while (list($function, $value)=each($compare)) {
+						$ecompare=AddSlashes($function);
+						$evaluename=AddSlashes($valuename);
+						if ($value=="") { 
+							// empty strings as value generate strange results in SQL land
+							$value=0;
+						}
+						switch($property) {
+							case "object" :
+								switch($valuename) {
+									case ("type") : 
+										$where.=" and $objects_tbl.type $ecompare $value ";
+									 	break;
+									case ("implements") : 
+										$types=", $types_tbl";
+										$where.=" and ( $types_tbl.implements $ecompare $value and $objects_tbl.vtype=$types_tbl.type ) ";
+										break;
+									case ("parent") :
+										$where.=" and UPPER($nodes_tbl.parent) $ecompare UPPER($value) ";
+										break;
+									case ("lastchanged") :
+										$where.=" and UNIX_TIMESTAMP($objects_tbl.lastchanged) $ecompare $value ";
+										break;
+								}
+								break;
+							default :
+								$where.=$this->tbl_prefix."prop_$eproperty.AR_$evaluename $ecompare $value and "; 
+						}
 					}
 				}
+				if ($property!="object") {
+					$where.=" ".$this->tbl_prefix."prop_$eproperty.object=$objects_tbl.id)	";
+				}
 			}
-			if ($property!="object") {
-				$where.=" ".$this->tbl_prefix."prop_$eproperty.object=$objects_tbl.id)	";
+			$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $nodes_tbl, $objects_tbl $from $types where $objects_tbl.id=$nodes_tbl.object and UPPER($nodes_tbl.path) like '$epath%'";
+	        $where=substr($where,4);
+	        if ($where) { 
+	          $query_string.=" and ( ( $where ) )";
+	        } 
+	        $query_string.=" order by $nodes_tbl.parent, $nodes_tbl.priority DESC, $nodes_tbl.path limit $offset,$limit";
+		} else {
+			$query_string=$this->sqlcompiler->compile("path ~= '$path%' and  $criteria ");
+			if ($this->sqlcompiler->error) {
+				$this->error=$this->sqlcompiler->error;
 			}
 		}
-		$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $nodes_tbl, $objects_tbl $from $types where $objects_tbl.id=$nodes_tbl.object and UPPER($nodes_tbl.path) like '$epath%'";
-        $where=substr($where,4);
-        if ($where) { 
-          $query_string.=" and ( ( $where ) )";
-        } 
-        $query_string.=" order by $nodes_tbl.parent, $nodes_tbl.priority DESC, $nodes_tbl.path limit $offset,$limit";
 		debug("find: query=$query_string","all");
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
 
