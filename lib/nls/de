@@ -246,6 +246,7 @@
 	$ARnls["show"]							=	"Zeige";
 	$ARnls["size"]							=	"Größe";
 	$ARnls["start"]							=	"Start";
+    $ARnls["state"]                         =   "!State";
 	$ARnls["summary"]						=	"Übersicht";
 	$ARnls["sun"]							=	"So";
 	$ARnls["target"]						=	"Ziel";

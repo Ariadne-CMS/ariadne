@@ -35,7 +35,7 @@
 	$ARnls["config"]						=	"Configuratie";
 	$ARnls["configuration"]					=	"Configuratie";
 	$ARnls["configure"]						=	"Configureer %s";
-	$ARnls["confirm:nonameentered"]			=	"U heeft geen naam ingevuld voor taal '%s'.\nWilt U toch doorgaan?";
+	$ARnls["confirm:nonameentered"]			=	"U heeft geen naam ingevuld voor taal '%s'.\\nWilt U toch doorgaan?";
 	$ARnls["contactinformation"]			=	"Contact Info";
 	$ARnls["contextsearch"]					=	"Context";
 	$ARnls["copy"]							=	"Kopieer";
@@ -241,6 +241,7 @@
 	$ARnls["show"]							=	"Laat zien";
 	$ARnls["size"]							=	"Grootte";
 	$ARnls["start"]							=	"Start";
+	$ARnls["state"]							=	"Staat / Provincie";
 	$ARnls["summary"]						=	"Samenvatting";
 	$ARnls["sun"]							=	"Zon";
 	$ARnls["target"]						=	"Doel";

@@ -15,9 +15,9 @@
     while (list($arkey, $arvalue)=each($default)) {
       $tabs=substr("								",(int)((strlen($arkey)+2)/4));
       if ($ARnls[$arkey]) {
-        echo "	\$ARnls[\"$arkey\"]$tabs=	\"".$ARnls[$arkey]."\";\n";
+        echo "	\$ARnls[\"$arkey\"]$tabs=	\"".AddSlashes($ARnls[$arkey])."\";\n";
       } else {
-        echo "	\$ARnls[\"$arkey\"]$tabs=	\"!$arvalue\";\n";
+        echo "	\$ARnls[\"$arkey\"]$tabs=	\"!".AddSlashes($arvalue)."\";\n";
       }
     }
     unset($ARnls);
@@ -38,9 +38,9 @@
     while (list($arkey, $arvalue)=each($default)) {
       $tabs=substr("								",(int)((strlen($arkey)+2)/4));
       if ($ARnls[$arkey]) {
-        echo "	\$ARnls[\"$arkey\"]$tabs=	\"".$ARnls[$arkey]."\";\n";
+        echo "	\$ARnls[\"$arkey\"]$tabs=	\"".AddSlashes($ARnls[$arkey])."\";\n";
       } else {
-        echo "	\$ARnls[\"$arkey\"]$tabs=	\"!$arvalue\";\n";
+        echo "	\$ARnls[\"$arkey\"]$tabs=	\"!".AddSlashes($arvalue)."\";\n";
       }
     }
     unset($ARnls);

@@ -247,6 +247,7 @@
 	$ARnls["show"]							=	"Mostrar";
 	$ARnls["size"]							=	"Tamaño";
 	$ARnls["start"]							=	"Inicio";
+	$ARnls["state"]							=	"!State";
 	$ARnls["summary"]						=	"Sumario";
 	$ARnls["sun"]							=	"Dom";
 	$ARnls["target"]						=	"Destino";
