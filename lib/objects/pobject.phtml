@@ -635,7 +635,7 @@ class pobject extends object { // pobject class definition
 	}
 
 	function CheckLogin($grant, $modifier=ARTHISTYPE) {
-	global $AR,$ARnls,$ARConfig,$ARCurrent,$ARLogin,$ARPassword,$ARCookie,$session_config;
+	global $AR,$ARnls,$ARConfig,$ARCurrent,$ARPassword,$ARCookie,$session_config;
 		debug("pobject: CheckLogin($grant)","object");
 		if ($modifier==ARTHISTYPE) {
 			$modifier=$this->type;
@@ -660,17 +660,17 @@ class pobject extends object { // pobject class definition
 		$grants=$AR->user->grants[$this->path];
 		if ( 	( !$grants[$grant] 
 					|| ( $modifier && is_array($grants[$grant]) && !$grants[$grant][$modifier] )
-				) && $ARLogin!="admin" ) {
+				) && $AR->user->data->login!="admin" ) {
 			// do login
 			$continue=false;
-			debug("pobject: CheckLogin: insufficient grants ($ARLogin)","object");
+			debug("pobject: CheckLogin: insufficient grants (".$AR->user->data->login.")","object");
 			$arLoginMessage = $ARnls["accessdenied"];
 			ldAccessDenied($this->path, $arLoginMessage);
 			$result=false;
 			debug("pobject: CheckLogin: end (failed)","all");
 		} else {
 			debug("pobject: CheckLogin: end","all");
-			$result=($grants || ($ARLogin=="admin"));
+			$result=($grants || ($AR->user->data->login=="admin"));
 		}
 
 		$ARCurrent->arLoginSilent=1;
