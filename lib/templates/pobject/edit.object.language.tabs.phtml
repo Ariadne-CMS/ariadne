@@ -27,7 +27,7 @@
     }
     $configcache=$ARConfig->cache[$this->path];
     $nlsconfig=$configcache->nls;
-    if (!$arLanguage || !$nlsconfig[$arLanguage]) {
+    if (!$arLanguage || !$nlsconfig->list[$arLanguage]) {
       // make sure the selected language makes sense
       $arLanguage = $this->data->nls->default;
       $ARCurrent->arLanguage=$arLanguage;
