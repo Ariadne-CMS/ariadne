@@ -33,37 +33,40 @@
 			}
 		}
 
-		function arGetGrantType($value) {
-			if (($value & ARMASKLOCAL) && ($value & ARMASKCHILDREN)) {
-				$result="+";
-			} else if ($value & ARMASKLOCAL) {
-				$result="=";
-			} else {
-				$result=">";
-			}
-			return $result;
+		if (!function_exists("arGetGrantType")) {
+		    function arGetGrantType($value) {
+			    if (($value & ARMASKLOCAL) && ($value & ARMASKCHILDREN)) {
+				    $result="+";
+			    } else if ($value & ARMASKLOCAL) {
+				    $result="=";
+			    } else {
+				    $result=">";
+			    }
+			    return $result;
+		    }
 		}
 
-		function arDelGrant(&$grants, $id, $grant='', $modifier='') {
-			if ($grants[$id]) {
-				if (!$grant) {
-					unset($grants[$id]);
-				} else {
-					if (!$modifier) {
-						unset($grants[$id][$grant]);
-					} else {
-						unset($grants[$id][$grant][$modifier]);
-						if (!@count($grants[$id][$grant])) {
-							unset($grants[$id][$grant]);
-						}
-					}
-					if (!@count($grants[$id])) {
+		if (!function_exists("arDelGrant")) {
+			function arDelGrant(&$grants, $id, $grant='', $modifier='') {
+				if ($grants[$id]) {
+					if (!$grant) {
 						unset($grants[$id]);
+					} else {
+						if (!$modifier) {
+							unset($grants[$id][$grant]);
+						} else {
+							unset($grants[$id][$grant][$modifier]);
+							if (!@count($grants[$id][$grant])) {
+								unset($grants[$id][$grant]);
+							}
+						}
+						if (!@count($grants[$id])) {
+							unset($grants[$id]);
+						}
 					}
 				}
 			}
 		}
-
 
 
 		if (!$this->error) {
