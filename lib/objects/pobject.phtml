@@ -555,6 +555,15 @@ class pobject extends object { // pobject class definition
 	function make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=false) {
 		global $ARConfig, $AR, $ARCurrent;
 		debug("pobject: make_url($path) (from: ".$this->path.")","object");
+		if (@count($ARCurrent->shortcut_redirect)) {
+			$path = $this->make_path($path);
+			list($redir_src, $redir_dest) = each(end($ARCurrent->shortcut_redirect));
+//echo "path: $path src: $redir_src, dest: $redir_dest<br>\n";
+			if (substr($path, 0, strlen($redir_dest)) == $redir_dest) {
+				$path = $redir_src .= substr($path, strlen($redir_dest));
+//echo "new: $path<br>\n";
+			}
+		}
 		$rootoptions=$this->store->rootoptions;
 		if (!$session || ($nls !== false)) {
 			$rootoptions = "";
