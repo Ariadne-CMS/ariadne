@@ -8,7 +8,7 @@
   $languages=Array('nl','de','es','pl','hr','it','fr','sv', 'en');
   $modules=Array('','winxp.','ieedit.','menu.');
   $target='./new/';
-  define('NLSESCAPE', str_replace("'", "", ARESCAPE));
+  define('NLSESCAPE', "\"\\\n\r");
 
   ob_start();
 
@@ -32,9 +32,9 @@
       while (list($arkey, $arvalue)=each($default)) {
         $tabs=substr("								",(int)((strlen($arkey)+2)/4));
         if ($ARnls[$arkey]) {
-          echo "	\$ARnls[\"$arkey\"]$tabs=	\"".AddCSlashes(str_replace('\\\'', "'", $ARnls[$arkey]), NLSESCAPE)."\";\n";
+          echo "	\$ARnls[\"$arkey\"]$tabs=	\"".AddCSlashes($ARnls[$arkey], NLSESCAPE)."\";\n";
         } else {
-          echo "	\$ARnls[\"$arkey\"]$tabs=	\"!".AddCSlashes(str_replace('\\\'', "'", $arvalue), NLSESCAPE)."\";\n";
+          echo "	\$ARnls[\"$arkey\"]$tabs=	\"!".AddCSlashes($arvalue, NLSESCAPE)."\";\n";
         }
       }
       unset($ARnls);

@@ -45,7 +45,7 @@
 	$ARnls["config"]						=	"Konfigurera";
 	$ARnls["configuration"]					=	"Konfiguration";
 	$ARnls["configure"]						=	"Konfigurera %s ";
-	$ARnls["confirm:nonameentered"]			=	"Du har inte angivit n&aring;got namn f&ouml;r spr&aring;ket '%s'.\\nVill du forts&auml;tta &auml;nd&aring;?";
+	$ARnls["confirm:nonameentered"]			=	"Du har inte angivit n&aring;got namn f&ouml;r spr&aring;ket '%s'.\nVill du forts&auml;tta &auml;nd&aring;?";
 	$ARnls["contactinformation"]			=	"Kontakt Information";
 	$ARnls["contextsearch"]					=	"Inneh&aring;ll";
 	$ARnls["copy"]							=	"Kopiera";

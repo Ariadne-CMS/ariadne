@@ -39,7 +39,7 @@
 	$ARnls["config"]						=	"Konfiguracja";
 	$ARnls["configuration"]					=	"Konfiguracja";
 	$ARnls["configure"]						=	"Konfiguracja %s ";
-	$ARnls["confirm:nonameentered"]			=	"Nie wprowadziłeś nazwy dla języka '%s'.\\Czy chcesz mimo to kontynuować?";
+	$ARnls["confirm:nonameentered"]			=	"Nie wprowadziłeś nazwy dla języka '%s'.\Czy chcesz mimo to kontynuować?";
 	$ARnls["contactinformation"]			=	"Informacje kontaktowe";
 	$ARnls["contextsearch"]					=	"Kontekst";
 	$ARnls["copy"]							=	"Kopiuj";

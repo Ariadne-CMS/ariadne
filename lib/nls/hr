@@ -37,7 +37,7 @@
 	$ARnls["config"]						=	"Postavke";
 	$ARnls["configuration"]					=	"Postavke";
 	$ARnls["configure"]						=	"Namjesti postavke za %s ";
-	$ARnls["confirm:nonameentered"]			=	"Ime za jezik '%s' nije unešeno.\\nŽelite li nastaviti bez obzira na to?";
+	$ARnls["confirm:nonameentered"]			=	"Ime za jezik '%s' nije unešeno.\nŽelite li nastaviti bez obzira na to?";
 	$ARnls["contactinformation"]			=	"Kontakt-podaci";
 	$ARnls["contextsearch"]					=	"Kontekst";
 	$ARnls["copy"]							=	"Kopiraj";
