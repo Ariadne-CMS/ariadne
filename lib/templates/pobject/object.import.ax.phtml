@@ -68,7 +68,7 @@
 				}
 				unlink($source);
 			} else {
-				$error="import error: '$source' file corrupt";
+				$error="import error: '$source' could not find uploaded file. (does the filesize exceed the maximum upload size?)";
 			}
 
 			if ($error) {
