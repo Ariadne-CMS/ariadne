@@ -31,4 +31,6 @@ $ARnls["m_about"]=		"Over&nbsp;Ariadne";
 $ARnls["m_logoff"]=		"Log&nbsp;uit";
 $ARnls["m_explorerbar"]="Navigatie&nbsp;Menu";
 $ARnls["m_priority"]=	"Prioriteit";
+
+$ARnls["m_custom"]=		"Eigen&nbsp;Velden"
 ?>

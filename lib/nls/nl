@@ -264,4 +264,8 @@ $ARnls["err:nolastnameentered"]=	"U dient een achternaam in te voeren";
 
 $ARnls["q:logoff"]=		"Weet U zeker dat U zich af wilt melden?";
 $ARnls["logoff"]=		"Meld af";
+$ARnls["customdata"]=	"Eigen Data";
+$ARnls["grant"]=		"Recht";
+$ARnls["check"]=		"Controle";
+$ARnls["rename"]=		"Hernoem";
 ?>

@@ -1,0 +1,23 @@
+<?php
+	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		// first make sure that the object is clean (data can only be set via 
+		// the defined interface: $arCallArgs)
+		$this->data=@current($this->get(".","system.get.data.phtml"));
+
+		unset($this->data->customconfig);
+		parse_str($this->getdata("customdata","none"));
+		if (is_array($customdata)) {
+			while (list($key, $value)=each($customdata)) {
+				$this->data->customconfig[$value["name"]]["type"]=$value["type"];
+				$this->data->customconfig[$value["name"]]["inherit"]=$value["inherit"];
+				$this->data->customconfig[$value["name"]]["size"]=$value["size"];
+				$this->data->customconfig[$value["name"]]["nls"]=$value["nls"];
+				$this->data->customconfig[$value["name"]]["grant"]=$value["grant"];
+				$this->data->customconfig[$value["name"]]["check"]=$value["check"];
+			}
+		}
+		if (!$this->error) {
+			$this->save();
+		}
+	}
+?>

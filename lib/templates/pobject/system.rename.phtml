@@ -1,0 +1,23 @@
+<?php
+	if ($this->CheckLogin("delete") && $this->CheckConfig()) {
+		$target=$this->store->make_path($this->parent, $this->getdata("target","none"));
+		if ($this->exists($target)) {
+			if (substr($target, 0, strlen($this->path))==$this->path) {
+				$this->error="You cannot move an object below itself.";
+			} else {
+				$target.=substr($this->path, strlen($this->parent));
+			}
+		} else {
+			$parent=$this->store->make_path($target, '..');
+			if (!$this->exists($parent)) {
+				$this->error="$parent doesn't exists, create it first.";
+			} else if (substr($parent, 0, strlen($this->path))==$this->path) {
+				$this->error="You cannot move an object below itself.";
+			}
+		}
+		if (!$this->error) {
+			// FIXME: check add permission in $target
+			$this->store->move($this->path, $target);			
+		}
+	}
+?>

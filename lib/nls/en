@@ -264,4 +264,8 @@ $ARnls["unlock"]=		"Unlock";
 
 $ARnls["q:logoff"]=		"Are you sure you want to logoff?";
 $ARnls["logoff"]=		"Log off";
+$ARnls["customdata"]=	"Custom Data";
+$ARnls["grant"]=		"Grant";
+$ARnls["check"]=		"Check";
+$ARnls["rename"]=		"Rename";
 ?>

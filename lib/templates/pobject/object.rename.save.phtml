@@ -1,0 +1,17 @@
+<?php
+	/******************************************************************
+	
+	******************************************************************/
+
+	$this->call("system.rename.phtml", $arCallArgs);
+	if (!$this->error) {
+		// FIXME: update tree and main window. (path)
+		?>
+			<script>
+//				window.close();
+			</script>
+		<?php
+	} else {
+		echo "<font color='red'>$this->error</font>";
+	}
+?>

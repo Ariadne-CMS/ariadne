@@ -660,6 +660,7 @@ class mysqlstore {
 
 	**********************************************************************/
 
+		debugon('all');
 		debug("move($source,$destination)","store");
 		$this->error="";
 		$edestination=AddSlashes($destination);
@@ -692,8 +693,10 @@ class mysqlstore {
 			$id=$this->exists($source);
 			if ($id) {
 				$destinationlength=strlen($destination);
+				$sourcelength=strlen($source);
 				$parentlength=strlen($parent);
-				$query_string="update $nodes_tbl set path=CONCAT('$edestination', SUBSTRING(path, $destinationlength+1)), parent=CONCAT('$eparent', SUBSTRING(parent, $parenlength+1)) where path like '$esource%'";
+				$query_string="update $nodes_tbl set path='$edestination', parent='$eparent' where path='$esource'";
+				debug($query_string);
 				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
 				$errno=mysql_errno($this->connect_id);
 				$error=mysql_error($this->connect_id);
@@ -703,6 +706,19 @@ class mysqlstore {
 					debug("move: ".$this->error,"store");
 					debug("move: query=$query_string","store");
 					$result=false;
+				} else {
+					$query_string="update $nodes_tbl set path=CONCAT('$edestination', SUBSTRING(path, $sourcelength+1)), parent=CONCAT('$edestination', SUBSTRING(parent, $sourcelength+1)) where path like '$esource%'";
+					debug($query_string);
+					$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+					$errno=mysql_errno($this->connect_id);
+					$error=mysql_error($this->connect_id);
+					if ($errno) {				
+						$this->error="ERROR: Mysql: $errno: $error";
+						debug("move: update nodes failed!","store");
+						debug("move: ".$this->error,"store");
+						debug("move: query=$query_string","store");
+						$result=false;
+					}
 				}
 				debug("move: end","all");
 				$result=$destination;
@@ -711,6 +727,7 @@ class mysqlstore {
 				debug("move: end (no $source)","store");
 			}
 		}
+		debugoff();
 		return $result;
 	}
 

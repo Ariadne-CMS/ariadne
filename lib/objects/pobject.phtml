@@ -654,7 +654,7 @@ class pobject extends object {
 		ldSetCache($file, $time, $image, $headers);
 	}
 
-	function ClearCache($path="") {
+	function ClearCache($path="",$private=true) {
 	global $AR;
  
 		debug("pobject: ClearCache($path)","object");
@@ -671,7 +671,7 @@ class pobject extends object {
 							@unlink($fpath.$entry);
 							@unlink($hpath.$entry);
 						} else if ($entry!="." && $entry!="..") {
-							$this->ClearCache($path.$entry."/");
+							$this->ClearCache($path.$entry."/", false);
 						}
 					}
 				}
@@ -680,11 +680,18 @@ class pobject extends object {
 				@unlink(substr($hpath,0,-1)."=");
 			}
 		}
-		// now remove any private cache entries.
-		$pcache=$this->store->get_filestore("privatecache");
-		$ids=$this->find("","","system.get.id.phtml");
-		while (list($key, $id)=each($ids)) {
-			$pcache->purge($id);
+		if ($private) {
+			// now remove any private cache entries.
+			// FIXME: this doesn't scale very well.
+			//        only scalable solution is storage in a database
+			//        but it will need the original path info to
+			//        remove recursively fast enough.
+	        //        this means a change in the filestore api. -> 2.5
+			$pcache=$this->store->get_filestore("privatecache");
+			$ids=$this->store->info($this->store->find("","",0));
+			while (list($key, $value)=each($ids)) {
+				$pcache->purge($value["id"]);
+			}
 		}
 		debug("pobject: ClearCache: end","all");
 	}

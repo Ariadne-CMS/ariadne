@@ -9,6 +9,7 @@
 	windowprops['edit_object_data']=windowprops['common']+',height=275,width=450';
 	windowprops['edit_object_cache']=windowprops['common']+',height=250,width=250';
 	windowprops['edit_object_layout']=windowprops['common']+',height=400,width=700';
+	windowprops['edit_object_custom']=windowprops['common']+',height=210,width=400';
 	windowprops['edit_object_shortcut']=windowprops['common']+',height=250,width=450';
 	windowprops['edit_object_grants']=windowprops['common']+',height=300,width=550';
 	windowprops['edit_object_types']=windowprops['common']+',height=150,width=250';
