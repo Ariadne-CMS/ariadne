@@ -9,7 +9,7 @@ class pfile extends pobject { // definitie class
 		if (!ereg("^text/",$this->data->mimetype)) {
 			$size=filesize($this->store->files."files".$this->path."/view=");
 		}
-		if (ldSetContent($this->data->mimetype, $size) {
+		if (ldSetContent($this->data->mimetype, $size)) {
 			$cacheseconds=1800; // 1/2 hour
 			$expires=time()+$cacheseconds;
 			ldSetClientCache(true, $expires);
