@@ -20,7 +20,7 @@
 <h3><?php echo $nlsdata->name; ?>.</h3>
 <?php
   if ($nlsdata->page) {
-    echo $nlsdata->page;
+    $this->ShowPage();
   } else {
     echo $nlsdata->summary;
   }
