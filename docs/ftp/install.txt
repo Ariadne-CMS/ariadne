@@ -179,3 +179,27 @@ files by executing:
 
 	/etc/rc.d/init.d/xinetd reload
 
+5. Problems
+----------------------------
+
+If after following the instructions for installation your Ariadne FTP Server
+doesn't work. Telnet to the port specified in your configs. The server
+should return an errormessage. This can be something like:
+
+------ telnet 0 2121 -------
+Trying 0.0.0.0...
+Connected to 0.
+Escape character is '^]'.
+X-Powered-By: PHP/4.1.0
+Content-type: text/html
+
+<br>
+<b>Fatal error</b>:  Failed opening required
+'/usr/local/lib/ariadne/lib/configs/ftp/default.phtml'
+(include_path='.:/usr/local/lib/php') in
+<b>/usr/local/lib/ariadne/ftp/loader.php</b> on line <b>10</b><br>
+Connection closed by foreign host.
+----------------------------
+
+In this case the default.phtml is missing, since I forgot to change it from
+default.phtml-dist to default.phtml :^)
