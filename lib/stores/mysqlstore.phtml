@@ -468,17 +468,14 @@ class mysqlstore {
 				if (!$errno) {				
 					$this->save_properties($properties, $id, $this);
 					$result=$path;
-					debug("save: query=$query_string","all");
 				} else {
 					$this->error="ERROR: Mysql: $errno: $error";
-					debug("save: query=$query_string","store");
 					debug("save: insert node failed!","store");
 					debug("save: ".$this->error,"store");
 					$result=0;
 				}
 			} else {
 				$this->error="ERROR: Mysql: $errno: $error";
-				debug("save: query=$query_string","store");
 				debug("save: insert object failed!","store");
 				debug("save: ".$this->error,"store");
 				$result=0;
