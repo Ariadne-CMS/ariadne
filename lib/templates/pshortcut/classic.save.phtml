@@ -36,7 +36,7 @@
 		} else {
 			$url=$arReturnPage;
 		}
-		Header("Location: $url");
+		ldRedirect($url);
 	} else {
 		$this->call("show.error.phtml");
 	}

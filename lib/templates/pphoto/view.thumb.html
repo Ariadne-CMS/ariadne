@@ -1,40 +1,35 @@
 <?php
-  /******************************************************************
-   index.html					   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
-   Arguments: none
-   Grant needed: read
-   Interface/Widget: all
-   Global variables: none
+	/******************************************************************
+	 view.thumb.html                                       Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: read
+	 Global variables: none
 
-   This displays a suitable overview of the object.
+	 This displays a thumbnail of the image.
 
-   no result.
+	 no result.
 
-  ******************************************************************/
-  $ARCurrent->nolangcheck=true;
-  if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-   if (($width && ($width!=$this->getdata("thumbwidth"))) || ($height && ($height!=$this->getdata("thumbheight")))) {
-	$imgfile=$this->store->files."files".$this->path."/view=";
-	$thumbfile="";
-	$thumbwidth=$width; $thumbheight=$height;
-	$thumbcolor=($color) ? $color : "CCCCCC";
-        Header("Content-type: image/png");
-	include($this->store->code."includes/create.thumb.phtml");
-   } else {
-    $file=$this->store->files."files".$this->path."/view.thumb=";
-    if (file_exists($file)) {
-      if (!headers_sent()) {
-        Header("Content-type: image/png");
-      } else {
-        $stop=true;
-      }
-      if (!$stop) {
-        readfile($file);
-      }
-    } else {
-	$this->call("view.thumb.error.html");
-    } 
-   }
-  }
+	******************************************************************/
+	$ARCurrent->nolangcheck=true;
+	if	($this->CheckLogin("read")	&&	$this->CheckConfig($arCallFunction,	$arCallArgs))	{
+		if	(($width &&	($width!=$this->getdata("thumbwidth")))	
+			|| ($height && ($height!=$this->getdata("thumbheight"))))	{
+			$imgfile=$this->store->files."files".$this->path."/view=";
+			$thumbfile="";
+			$thumbwidth=$width;	$thumbheight=$height;
+			$thumbcolor=($color) ? $color : "CCCCCC";
+			ldSetContent("image/png");
+			include($this->store->code."includes/create.thumb.phtml");
+		} else {
+			$file=$this->store->files."files".$this->path."/view.thumb=";
+			if (file_exists($file)) {
+				if (ldSetContent("image/png")) {
+					readfile($file);
+				} else {
+					$this->call("view.thumb.error.html");
+				}	
+			}
+		}
+	}
 ?>

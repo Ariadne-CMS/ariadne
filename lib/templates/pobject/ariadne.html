@@ -1,6 +1,6 @@
 <?php
 	if ($this->CheckLogin("read")) {
 		// AR->user should now be available so:
-		Header("Location: ".$this->store->root.$AR->user->path."explore.html");
+		ldRedirect($this->store->root.$AR->user->path."explore.html");
 	}
 ?>

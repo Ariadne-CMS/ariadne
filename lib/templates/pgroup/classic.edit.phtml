@@ -18,10 +18,13 @@
 	$ARCurrent->allnls=1;
 
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+		if (!$arReturnPage) {
+			$arReturnPage=$this->store->root.$this->parent;
+		}
 		if ($arSubmit==$ARnls["save"]) { // save data
 			$this->call("classic.save.phtml",$arCallArgs);
 		} else if ($arSubmit==$ARnls["cancel"]) {
-			include($this->store->code."includes/cancel.phtml");
+			ldRedirect($arReturnPage);
 		} else if ($arSubmit==$ARnls["add"]) { // add new user to this group
 			$this->call("classic.set.user.phtml",$arCallArgs);
 		} else {// edit it

@@ -24,7 +24,7 @@
 		if ($arSubmit==$ARnls["save"]) { // save data
 			$this->call("classic.save.phtml",$arCallArgs);
 		} else if ($arSubmit==$ARnls["cancel"]) {
-			include($this->store->code."includes/cancel.phtml");
+			ldRedirect($arReturnPage);
 		} else {// edit it
 			// every object _must_ also have a form.phtml:
 			$this->call("classic.form.phtml",$arCallArgs);	

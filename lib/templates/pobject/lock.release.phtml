@@ -1,6 +1,6 @@
 <?php
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 		$this->unlock();
-		Header("Location: ".$AR->dir->images."dot.gif");
+		ldRedirect($AR->dir->images."dot.gif");
 	}
 ?>

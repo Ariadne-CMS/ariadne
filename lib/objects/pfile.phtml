@@ -6,18 +6,13 @@ include_once($this->code."objects/pobject.phtml");
 class pfile extends pobject { // definitie class
 
 	function ShowFile() {
-		if (!headers_sent()) {
-			Header("Content-type: ".$this->data->mimetype);
-			if (!ereg("^text/",$this->data->mimetype)) {
-				$size=filesize($this->store->files."files".$this->path."/view=");
-				Header("Content-Length: ".$size);
-			}
+		if (!ereg("^text/",$this->data->mimetype)) {
+			$size=filesize($this->store->files."files".$this->path."/view=");
+		}
+		if (ldSetContent($this->data->mimetype, $size) {
 			$cacheseconds=1800; // 1/2 hour
-			$cachetime=time()+$cacheseconds;
-			Header("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$cachetime));
-			Header("Cache-Control: max-age=$cacheseconds, s-max-age=$cacheseconds");
-
-
+			$expires=time()+$cacheseconds;
+			ldSetClientCache(true, $expires);
 		} else if(!ereg("^text/",$this->data->mimetype)) {
 			error("headers already sent and this is not a text file (".$this->path.")");
 			$stop=true;

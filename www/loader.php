@@ -4,102 +4,12 @@
 	require_once($ariadne."/configs/store.phtml");
 	include_once($ariadne."/stores/mysqlstore.phtml");
 	include_once($ariadne."/modules/mod_session.phtml");
-
-	function ldSetRoot($session='', $nls='') {
-	global $store, $AR, $ARCurrent;
-
-		$root=$AR->root;
-		if ($session) {
-			$rootoptions.="/-".$session."-";
-			$ARCurrent->session->id=$session;
-		}
-		if ($nls) {
-			$rootoptions.="/$nls";
-			$ARCurrent->nls=$nls;
-		}
-		$root.=$rootoptions;
-		if ($store) { // loader.php uses this function before the store is initialized.
-			$store->root=$root;
-			$store->rootoptions=$rootoptions;
-		}	
-	}
-
-	function ldSetNls($nls) {
-	global $ARCurrent;
-
-		$session=$ARCurrent->session->id;
-		ldSetRoot($session, $nls);
-	}
-
-	function ldSetSession($session='') {
-	global $ARCurrent;
-
-		$nls=$ARCurrent->nls;
-		ldSetRoot($session, $nls);
-	}
- 
-	function ldStartSession($sessionid='') {
-	global $ARCurrent, $ariadne;
-
-		require($ariadne."/configs/sessions.phtml");
-		$ARCurrent->session=new session($session_config,$sessionid);
-		ldSetSession($ARCurrent->session->id);
-	}
-
-	function ldSetCache($file, $time, $image, $headers) {
-	global $store;
-
-		debug("ldSetCache($file, $time, [image], [headers])","object");
-		$time=time()+($time*3600);
-		if (!ereg("\.\.",$file)) {
-			if ($image) {
-				$path=substr($file, 1, strrpos($file, "/")-1);
-				if (!file_exists($store->files."cache/".$path)) {
-					ldMkDir("cache/".$path);
-					ldMkDir("cacheheaders/".$path);
-				}
-				$fp=fopen($store->files."cache/".$file, "w");
-				fwrite($fp, $image);
-				fclose($fp);
-				$fp=fopen($store->files."cacheheaders/".$file, "w");
-				fwrite($fp, $headers);
-				fclose($fp);
-				if (!touch($store->files."cache/".$file, $time)) {
-					debug("ldSetCache: ERROR: couldn't touch image","object");
-				}
-			}
-		}
-	}
-
-	function ldMkDir($dir) {
-	global $store;
-
-		debug("ldMkDir($dir)","object");
-		$dir=strtok($dir, "/");
-		$curr=$store->files;
-		while ($dir) {
-			$curr.=$dir."/";
-			@mkdir($curr, 0755);
-			$dir=strtok("/");
-		}
-	}
-
-	function squisharray($name, $array) {
-
-		while (list($key, $val)=each($array)) {
-			if (is_array($val)) {
-				$result.=squisharray($name."[".$key."]",$val);
-			} else {
-				$result.="&".$name."[".RawUrlEncode($key)."]=".RawUrlEncode($val);
-			}
-		}
-		return $result;		
-	}
+	include_once($ariadne."/includes/loader.web.php");
 
 	$PATH_INFO=$HTTP_SERVER_VARS["PATH_INFO"];
 	if (!$PATH_INFO) {
 
-		Header("Location: ".$HTTP_SERVER_VARS["PHP_SELF"]."/");
+		ldRedirect($HTTP_SERVER_VARS["PHP_SELF"]."/");
 		exit;
 
 	} else {
@@ -161,29 +71,24 @@
 				$freshness=$mtime-$timecheck;
 			if ($freshness>3600) { 
 				$cachetime=$timecheck+3600;
-				$cacheseconds=3600;
 			} else {
 				$cachetime=$mtime; 
-				$cacheseconds=$freshness;
 			}
-			// now send client side cache headers
-			// e.g. Expires: Thu, 01 Dec 1994 16:00:00 GMT
-			Header("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$cachetime));
-			Header("Cache-Control: max-age=$cacheseconds, s-max-age=$cacheseconds");
+			ldSetClientCache(true, $cachetime);
 			if (file_exists($cachedheader)) {
 				$headers=file($cachedheader);
 				while (list($key, $header)=@each($headers)) {
-					Header(chop($header));
+					ldHeader(chop($header));
 				}
 			}
 			readfile($cachedimage);
-		} else {			
+		} else {
 			$args=$HTTP_SERVER_VARS["QUERY_STRING"];
 			if ($HTTP_SERVER_VARS["REQUEST_METHOD"]=="POST") {
 				$nocache=1; // never cache pages resulting from 'post' operations.
 				while ( list( $key, $val ) = each( $HTTP_POST_VARS ) ) {
 					if (is_array($val)) {
-						$args.=squisharray($key, $val);
+						$args.=ldSquishArray($key, $val);
 					} else {
 						$args.="&".RawUrlEncode($key)."=".RawUrlEncode($val);
 					}

@@ -19,7 +19,7 @@
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 		$this->call("system.save.cache.phtml",$arCallArgs);
 		if (!$this->error) {
-			Header("Location: $arReturnPage");
+			ldRedirect($arReturnPage);
 			?>
 				<a href="<?php echo $arReturnPage; ?>">Continue</a>
 			<?php

@@ -20,6 +20,9 @@
 	******************************************************************/
 
 	if ($this->CheckConfig($arCallFunction, $arCallArgs) && $this->CheckLogin("edit")) {
+		if (!$arReturnPage) {
+			$arReturnPage=$this->store->root.$this->parent;
+		}
 		switch($arSubmit) {
 			case $ARnls["save"] :	// save data
 				// every object _must_ have a save.phtml, so:
@@ -29,7 +32,7 @@
 				$this->call("classic.remove.phtml",$arCallArgs);
 				break;
 			case $ARnls["cancel"] :	// stop editing 
-				include($this->store->code."includes/cancel.phtml");
+				ldRedirect($arReturnPage);
 				break;
 			default : 	// edit	
 				// every object _must_ also have a form.phtml:

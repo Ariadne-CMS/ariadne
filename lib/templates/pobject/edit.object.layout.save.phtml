@@ -42,7 +42,7 @@
 			if (!$arReturnPage) {
 				$arReturnPage=$this->store->root.$this->path."edit.object.layout.phtml";
 			}
-			Header("Location: ".$arReturnPage);
+			ldRedirect($arReturnPage);
 		} else { 
 			?>
 			<body>

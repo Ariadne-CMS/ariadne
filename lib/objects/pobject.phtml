@@ -371,17 +371,10 @@ class pobject extends object {
 				$ARLogin="public"; $ARPassword="none";
 				debug("pobject: CheckLogin: use public","object");
 			} else {
-				// FIXME: move the password from session: store it where it cannot be
-				// accessed from pinp. Restore it to the session at the end of the loader
-				// go check for cookie
-				if ($ARCookie!=($md=$ARCurrent->session->get("ARLogin")."{".md5(
-					$ARCurrent->session->get("ARPassword").
-					$ARCurrent->session->id))."}") {
-
-					debug("pobject: CheckLogin: error in cookie auth ($md -> $ARCookie)","object");
+				if (!ldCheckCredentials($ARCurrent->session->get("ARLogin"), $ARCurrent->session->get("ARPassword"))) {
 					if (!$silent) {
 						$arLoginMessage=$ARnls["accessdenied"].": ".$ARnls["q:cookiesenabled"];
-						$this->call("user.login.html","arLoginMessage=".urlencode($ARLoginMessage));
+						$this->call("user.login.html","arLoginMessage=".RawUrlEncode($arLoginMessage));
 					}
 					$continue=false;
 				} else {
@@ -418,13 +411,9 @@ class pobject extends object {
 			if ($AR->user->data->login!="admin" && !$AR->user->grants[$this->path]) {
 				$AR->user->grants[$this->path]=$this->GetValidGrants();
 			}
-			if ($AR->user->data->login!="public" && !Headers_sent()) {
+			if ($AR->user->data->login!="public") {
 				// Don't remove this or MSIE users won't get uptodate pages...
-				Header("Pragma: no-cache");
-				Header("Cache-control: no-store, no-cache, must-revalidate, max-age=0");
-				Header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
-				Header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
-				Header("Cache-control: private");
+				ldSetClientCache(false);
 			}
 			$grants=$AR->user->grants[$this->path];
 			if (!$grants[$grant] && $ARLogin!="admin") {

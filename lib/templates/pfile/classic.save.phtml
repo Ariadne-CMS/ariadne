@@ -21,7 +21,7 @@
 		if (!$arReturnPage) {
 			$arReturnPage=$this->store->root.$parent; 
 		}
-		Header("Location: $arReturnPage");
+		ldRedirect($arReturnPage);
 	} else {
 		$this->call("show.error.phtml");
 	}
