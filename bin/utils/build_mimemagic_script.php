@@ -125,6 +125,8 @@
 						$data_index.="\\".decoct(ord($data[$i]));
 					}
 
+		//			echo "	\$mimemagic_data[$offset][$len][\"".$data_index;
+		//			echo "\"]=\"".AddSlashes($mimetype)."\"; \n";
 					$mimemagic_data[$offset][$len][$data_index] = $mimetype;
 				}
 				$len=0;
@@ -137,7 +139,7 @@
 		ksort($mimemagic_data);
 		while (list($offset, $len_array)=each($mimemagic_data)) {
 			reset($len_array);
-			ksort($len_array);
+			krsort($len_array);
 			while (list($len, $data_array)=each($len_array)) {
 				reset($data_array);
 				ksort($data_array);
