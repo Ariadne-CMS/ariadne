@@ -15,11 +15,13 @@ Currently known broken in CVS / Todo before 2.0b10
 - pobject: recurse.copy(to).phtml are broken (templates get copied wrong)
   also needs a user interface
 - recurse: lock alert doesn't show who locked what
-- htmledit: button (form.html) in a new object doesn't work: save to form in that case
 - pobject: CheckSilent() is broken, only works after a CheckLogin, even if a cookie is available.
-- install.php: needs a user interface with configuration entry form and 
-    PHP checks.
-- add/edit/delete(type) not in CVS yet.
+- articles won't show in View. (newspaper)
+- IIS version.
+- logoff / locks
+- add a way to get the path to the nearest psite parent (or root) in object/class templates. (to avoid using full absolute paths in templates) 
+- browse : even cancel updates browsepath.
+- browse : typeing in a new (non existant) path doesn't work.
 
 Todo before 2.0RC1
 
@@ -33,3 +35,8 @@ Todo before 2.0RC1
 - show/hide explorer bar
 - create manage.html templates per type, use small/large icons/details
 - user profiles
+- htmledit: button (form.html) in a new object doesn't work: save to form in that case
+- install.php: needs a user interface with configuration entry form and 
+    PHP checks.
+- add/edit/delete(type) not in CVS yet.
+
