@@ -1368,9 +1368,9 @@ class pobject extends object { // pobject class definition
 		$arWidgetName=ereg_replace("[^a-zA-Z0-9\/]","",$arWidgetName);
 		$arWidgetTemplate=ereg_replace("[^a-zA-Z0-9\.]","",$arWidgetTemplate);
 		if ($arWidgetType=="www") {
-			$coderoot=$AR->dir->www."widgets";
+			$coderoot=$AR->dir->www;
 		} else {
-			$coderoot=$this->store->code."widgets";
+			$coderoot=$this->store->code;
 		}
 		if (file_exists($coderoot."widgets/$arWidgetName")) {
 			if (file_exists($coderoot."widgets/$arWidgetName/$arWidgetTemplate")) {
