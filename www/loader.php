@@ -92,9 +92,10 @@
     return $result;    
   }
 
+  $PATH_INFO=$HTTP_SERVER_VARS["PATH_INFO"];
   if (!$PATH_INFO) {
 
-    Header("Location: $PHP_SELF/");
+    Header("Location: ".$HTTP_SERVER_VARS["PHP_SELF"]."/");
     exit;
 
   } else {
@@ -150,7 +151,7 @@
     if (file_exists($cachedimage) && 
        (strpos(implode("",getallheaders()),"no-cache") === false) &&
        (($mtime=filemtime($cachedimage))>$timecheck) &&
-       ($REQUEST_METHOD!="POST")) {
+       ($HTTP_SERVER_VARS["REQUEST_METHOD"]!="POST")) {
         // now send caching headers too, maximum 1 hour client cache.
         // FIXME: make this configurable. per directory? as a fraction?
         $freshness=$mtime-$timecheck;
@@ -174,8 +175,8 @@
 		readfile($cachedimage);
     } else {      
 
-      $args=$QUERY_STRING;
-      if ($REQUEST_METHOD=="POST") {
+      $args=$HTTP_SERVER_VARS["QUERY_STRING"];
+      if ($HTTP_SERVER_VARS["REQUEST_METHOD"]=="POST") {
         $nocache=1; // never cache pages resulting from 'post' operations.
         while ( list( $key, $val ) = each( $HTTP_POST_VARS ) ) {
           if (is_array($val)) {
