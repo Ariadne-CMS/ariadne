@@ -7,7 +7,7 @@
   // $wgHTMLEditLanguage = language (none for no language)
   // $wgHTMLEditType = 'full'/'body' for full html page or only body.innerHTML  
   if (!$wgHTMLEditRoot) {
-    $wgHTMLEditRoot=$AR->host.$this->store->root;
+    $wgHTMLEditRoot=$this->store->root;
   }
   if (!$wgHTMLEditPath) {
     $wgHTMLEditPath=$this->path;
