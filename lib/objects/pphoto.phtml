@@ -421,6 +421,20 @@ class pphoto extends pfile { // pphoto class definition
 		unset($ARConfig->photoStack[$this->id]);
 	}
 
+	function getimageinfo($extrainfo=false) {
+		$tmpsrc = tempnam($this->store->files."temp/", "photo");
+		$f_store=$this->store->get_filestore("files");
+		$f_store->copy_from_store($tmpsrc, $this->id, "file");
+		if ($extrainfo!==false) {
+			$result=getimagesize($tmpsrc, &$extrainfo);
+		} else {
+			$result=getimagesize($tmpsrc);
+		}
+		unlink($tmpsrc);
+		$f_store->close();
+		return $result;
+	}
+
 	function _convert($format="") {
 		return $this->convert($format);
 	}
@@ -471,6 +485,14 @@ class pphoto extends pfile { // pphoto class definition
 
 	function _cleanup() {
 		return $this->cleanup();
+	}
+
+	function _getimageinfo($extrainfo=false) {
+		if ($extrainfo!==false) {
+			return $this->getimageinfo(&$extrainfo);
+		} else {
+			return $this->getimageinfo();
+		}
 	}
 
 } // end of pphoto class definition
