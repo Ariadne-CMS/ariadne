@@ -9,7 +9,7 @@
   $sessionstore=new mysqlstore(".",$session_config);
   $criteria["object"]["lastchanged"]["<"]=strftime("%Y%m%d%H%M%S",time()-$session_config["timeout"]);
   $criteria["object"]["implements"]["="]="'psession'";
-  $sessionstore->call("expired.phtml","",$sessionstore->find("/",$criteria));
+  $sessionstore->call("system.expire.phtml","",$sessionstore->find("/",$criteria));
   echo $sessionstore->count." expired sessions removed.\n";
   $sessionstore->close();
   echo "done.\n";
@@ -19,7 +19,7 @@
     echo "Clearing temporary files...";
     $tempdir=$store_config["files"]."temp/";
     if (file_exists($tempdir)) {
-      system("rm `find $tempdir -ctime 1 -mindepth 1`"); 
+      system("find $tempdir -ctime 1 -mindepth 1 -exec rm {} ';'"); 
     }
     echo "done.\n";
   } else {
