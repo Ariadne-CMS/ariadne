@@ -1,0 +1,22 @@
+<?php
+  if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+     $members=$this->ls(".","system.get.login.phtml");
+?>
+
+<div id="details">
+		<table width="100%">
+			<tr><td valign="top" rowspan="<?php echo(count($members)+1); ?>"><?php echo $ARnls["membersofgroup"]; ?>:</td></tr>
+<?php 
+
+                while (list($key, $member)=@each($members)) {
+?>
+			<tr><td valign="top" class="data"><?php echo $member ?></td></tr>
+<?php
+}
+?>
+		</table>
+</div>
+
+<?php
+  }
+?>
