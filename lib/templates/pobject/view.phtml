@@ -46,7 +46,7 @@
 		parent.LoadingDone();
 	}
 	function objectadded() {
-		window.location = "view.phtml";
+		window.location = "<?php echo $this->make_url(); ?>view.phtml";
 	}
 
 	function arEdit(object, arguments) {
