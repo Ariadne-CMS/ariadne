@@ -1,5 +1,5 @@
 <?php
-	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+	if ($this->CheckLogin("manage") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		global $QUERY_STRING;
 		if (!$arLanguage) {
 			$arLanguage=$nls;
@@ -31,15 +31,45 @@
 	</div>
 	</td></tr><tr><td valign="top" height="60%">
 	<div id="container">
+	<script>
+		var myCookie=document.cookie;
+
+		function Get(name) {
+			var index = myCookie.indexOf(name + "=");
+			if (index == -1) return null;
+			index = myCookie.indexOf("=", index) + 1; // first character
+			var endstr = myCookie.indexOf(";", index);
+			if (endstr == -1) endstr = myCookie.length; // last character
+			return unescape(myCookie.substring(index, endstr));
+		}
+
+		function Set(name, value) {
+			var today=new Date();
+			var expires=new Date(today.getTime() + 2678400000); // 31 days
+			document.cookie=name+'='+value+'; expires='+expires.toGMTString();
+		}
+
+	</script>
 	<script src="<?php echo $AR->dir->www; ?>widgets/browse/toolbar.js"></script>
 	<?php $this->call("browse.toolbar.phtml"); ?>
 	<script>
+
+
+		function View(link, template) { 
+			viewwindow=window.open('<?php echo $this->store->root; ?>'+link, 'viewwindow');
+		}
+
 		if (document.all) {
 			window.innerHeight=document.body.clientHeight;
 			window.innerWidth=document.body.clientWidth;
 		}
+
 		var height=window.innerHeight-254;
 		var query='<?php echo $QUERY_STRING; ?>';
+		viewmode=top.Get('viewmode');
+		if (!viewmode) {
+			viewmode='page';
+		}
 		<?php
 			$oldnls=$nls;
 			$this->setnls($arLanguage);
@@ -50,6 +80,8 @@
 		<?php
 			$this->setnls($oldnls);
 		?>
+
+
 	</script>
 	</div>
 	<script>
