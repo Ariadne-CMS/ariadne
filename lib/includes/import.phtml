@@ -37,9 +37,15 @@
 								$obj["data"]=$old->data;
 							}
 						}
-						$store->save($newfilename, $obj["type"], $obj["data"], $obj["properties"], $obj["vtype"]);
+						$result=$store->save($newfilename, $obj["type"], $obj["data"], $obj["properties"], $obj["vtype"]);
+						if (!$result) {
+							$error=$store->error;
+						}
 					} else {
-						$store->link($savedObject[$object],$newfilename);
+						$result=$store->link($savedObject[$object],$newfilename);
+						if (!$result) {
+							$error=$store->error;
+						}
 					}
 				}
 			}
