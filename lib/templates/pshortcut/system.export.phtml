@@ -36,8 +36,8 @@ if ($this->CheckLogin("read")) {
 		while ($result=$this->store->call("system.export.object.phtml","",$this->store->find($srcpath,$criteria,100,$offset))) {
 			if (is_array($checkpaths)) {
 				unset($newresult);
-				reset($checkpaths);
-				while (list(,$path)=each($checkpaths)) {
+				@reset($checkpaths);
+				while (list(,$path)=@each($checkpaths)) {
 					$newresult[]=current($this->store->call("system.export.object.phtml", "",
 										$this->store->get($path)));
 				}
@@ -51,7 +51,7 @@ if ($this->CheckLogin("read")) {
 
 			while (is_array($result) && (list($key,$object)=each($result))) {
 				$newpath=$destpath.substr($object->path, strlen($rootpath));
-				display("processing($newpath)\n");
+				display("processing($newpath)	");
 				if ($options["without_data"]) {
 					display("no data for (".$object->path.")\n");
 					unset($object->data);
@@ -66,9 +66,11 @@ if ($this->CheckLogin("read")) {
 										$ARCurrent->importStore->get($newpath)));
 
 						if ($object->lastchanged > $oldObject->lastchanged) {
+							display("(updating)\n");
 							$object->oldObject=$oldObject;
 							$object->call("system.export.update.phtml");
 						} else {
+							display("(ok)\n");
 							unset($oldObject);	// no update needed
 							unset($object);
 						}
@@ -80,7 +82,7 @@ if ($this->CheckLogin("read")) {
 						// next one has to be linked
 						$saved_object[$object->id]=$newpath;
 
-						display("save($newpath)\n");
+						display("(saving)\n");
 						$ARCurrent->importStore->save(
 									$newpath, 
 									$object->type,
@@ -100,7 +102,7 @@ if ($this->CheckLogin("read")) {
 					}
 				} else {
 					if (!$ARCurrent->importStore->exists($newpath)) {
-						display("linking ($object->id) $newpath -> ".$saved_object[$object->id]."\n");
+						display("(linking)\n");
 						$ARCurrent->importStore->link($saved_object[$object->id], $newpath);
 					}
 				}

@@ -1,5 +1,4 @@
 <?php
- display("files(".$this->path.")($this->id) -> (".$this->newObject->path.")(".$this->newObject->id.")\n");
  $orig_filestore=$this->store->get_filestore("files");
  $orig_files=$orig_filestore->ls($this->id);
  if (is_array($orig_files)) {
@@ -11,7 +10,6 @@
 					display("	file($file) updating\n");
 		} else {
 			$tempname=tempnam($this->store->files."temp", "temp");
-			@unlink($tempname);
 			$orig_filestore->copy_from_store($tempname, $this->id, $file);
 			$new_filestore->copy_to_store($tempname, $this->newObject->id, $file);
 			@unlink($tempname);
