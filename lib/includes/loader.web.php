@@ -61,6 +61,16 @@
 		}
 	}
 
+	function ldOnFinish() {
+	global $ARCurrent, $store;
+
+		if ($ARCurrent->session) {
+			$ARCurrent->session->save();
+		}
+		if ($store) {
+			$store->close();
+		}
+	}
 
 	function ldObjectNotFound($requestedpath, $requestedtemplate) {
 	global $store;

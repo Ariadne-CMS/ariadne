@@ -174,20 +174,18 @@
 				$ARCurrent->nolangcheck=1;
 			}
 
+
+			register_shutdown_function("ldOnFinish");
 			
+
 			// finally call the requested object
 			$store->call($function, $args, $store->get($path));
 			if (!$store->total) {
 				ldObjectNotFound($path, $function);
 			}
-			$store->close();
 
 		}
 
-		// save session data
-		if ($ARCurrent->session) {
-			$ARCurrent->session->save();
-		}
 		// now check for outputbuffering (caching)
 		if ($image=ob_get_contents()) {
 			// first set clientside cache headers
@@ -243,4 +241,7 @@
 			}
 		}
 	}
+
+	/* Finish execution */
+	exit;
 ?>
