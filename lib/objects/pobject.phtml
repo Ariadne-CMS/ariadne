@@ -74,9 +74,9 @@ class pobject extends object { // pobject class definition
 		if (!$arCallFunction) {
 			$arCallFunction="view.html";
 		}
-
-		// clear previous results   
-		unset($ARCurrent->arResult); 
+		
+		// clear previous results
+		unset($ARCurrent->arResult);
 
 		// callstack is needed for getvar()
 		$ARCurrent->arCallStack[]=&$arCallArgs;
@@ -125,6 +125,7 @@ class pobject extends object { // pobject class definition
 			$customnlsdata=$this->data->custom[$nls];
 		}
 		debug("pobject: call: nls set to $nls","all"); 
+		
 		$arCallFunctionOrig = $arCallFunction;
 		if (strpos($arCallFunction,"::")!==false) {
 			// template of a specific class defined via call("class::template");
@@ -266,10 +267,19 @@ class pobject extends object { // pobject class definition
 									while (list($name, $value)=each($cdata)) {
 										// one index, this order (name, value, nls) ?
 										if ($configcache->custom[$name]['property']) {
-											$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
-											$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
-											$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
-											$i++;
+											if (is_array($value)) {
+												while (list($valkey, $valvalue)=each($value)) {
+													$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
+													$properties["custom"][$i]["value"]="'".AddSlashes($valvalue)."'";
+													$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
+													$i++;													
+												}
+											} else {
+												$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
+												$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
+												$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
+												$i++;
+											}
 										}
 									}
 								}
@@ -324,10 +334,19 @@ class pobject extends object { // pobject class definition
 							while (list($name, $value)=each($cdata)) {
 								if ($configcache->custom[$name]['property']) {
 									// one index, this order (name, value, nls) ?
-									$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
-									$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
-									$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
-									$i++;
+									if (is_array($value)) {
+										while (list($valkey, $valvalue)=each($value)) {
+											$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
+											$properties["custom"][$i]["value"]="'".AddSlashes($valvalue)."'";
+											$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
+											$i++;													
+										}
+									} else {
+										$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
+										$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
+										$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
+										$i++;
+									}
 								}
 							}
 						}
@@ -347,8 +366,10 @@ class pobject extends object { // pobject class definition
 		}
 		if ($this->data->nls->list[$this->nls]) {
 			$this->nlsdata=$this->data->{$this->nls};
-		} else {
+		} else if ($this->data->nls->default) {
 			$this->nlsdata=$this->data->{$this->data->nls->default};
+		} else {
+			$this->nlsdata=$this->data;
 		}
 		debug("pobject: save: end","all");
 		return $result;
@@ -490,6 +511,16 @@ class pobject extends object { // pobject class definition
 		return $result;
 	}
 
+	function touch($id=0, $timestamp=-1) {
+		if (!$id) {
+			$id = $this->id;
+		}
+		$result = $this->store->touch($id, $timestamp);
+		if ($this->store->error) {
+			$this->error = $this->store->error;
+		}
+		return $result;
+	}
 
 	function load_properties() {
 		debug("pobject: load_properties()","object");
@@ -570,7 +601,22 @@ class pobject extends object { // pobject class definition
 					while (list($key, $group)=each($AR->user->groups)) { 
 						$groupgrants=Array();
 						$group->FindGrants($path, $groupgrants, $userpath);
-						$grants=array_merge($groupgrants, $grants);
+						if (is_array($grants)) {
+							reset($groupgrants);
+							while (list($gkey, $gval)=each($groupgrants)) {
+								if (is_array($grants[$gkey]) && is_array($gval)) {
+									$grants[$gkey]=array_merge($gval, $grants[$gkey]);
+								} else 
+								if ($gval && !is_array($gval)) {
+									$grants[$gkey] = $gval;
+								} else
+								if ($gval && !$grants[$gkey]) {
+									$grants[$gkey] = $gval;
+								}
+							}
+						} else {
+							$grants = $groupgrants;
+						}
 					}
 				}
 				$AR->user->grants[$path]=$grants;
@@ -588,201 +634,36 @@ class pobject extends object { // pobject class definition
 			$modifier=$this->type;
 		}
 
-		// check for a sessionid
-		$continue=true;
-		if (!$AR->user) {
-			debug('no user');
-
-			if (!$ARCurrent->session || !$ARCurrent->session->get("ARLogin")) {
-				if ($ARCurrent->session && $ARCurrent->session->get("ARSessionTimedout", 1)) {
-					/* public session timedout, re-activating it */
-					debug("pobject: CheckLogin: re-activating public session ", "object");
-					$ARCurrent->session->put("ARSessionTimedout", 0, 1);
-				}
-				$ARLogin="public"; $ARPassword="none";
-				debug("pobject: CheckLogin: use public","object");
-			} else if ($ARCurrent->session && $ARCurrent->session->get("ARSessionTimedout", 1)) {
-				debug("pobject: CheckLogin: session disabled","object");
-				$arLoginMessage=$ARnls["accessdenied"];
-				ldAccessDenied($this->path, $arLoginMessage);
-				$continue=false;
-			} else {
-				if (!ldCheckCredentials($ARCurrent->session->get("ARLogin"), $ARCurrent->session->get("ARPassword",1))) {
-					$ARLogin="public"; $ARPassword="none";
-					// default fallback is 'public'.
-					$fallback=true;
-				} else {
-					$ARLogin=$ARCurrent->session->get("ARLogin");
-					$ARPassword=$ARCurrent->session->get("ARPassword",1);
-				}
-			}
-
-			if ($continue) {
-				// check password
-				$criteria["login"]["value"]["="]="'".AddSlashes($ARLogin)."'";
-				$result=current($this->find("/system/users/",$criteria,"system.get.phtml"));
-				unset($criteria);	
-				if (!($AR->user=$result)) {
-					if ($AR->LDAP["enabled"] && ($user_profile=$AR->LDAP["userprofile"])) {
-						$ldap_userdir=$AR->LDAP["userdir"] ? $AR->LDAP["userdir"] : '/system/users/' ; // location of new users
-						$ldap_oncreate=$AR->LDAP["oncreate"]; // template to execute when after creating a new user
-						$continue=false;
-						if ($ldap_connection=ldap_connect($AR->LDAP["ds"])) {
-							if ($AR->LDAP["type"]=="ActiveDirectory") {
-								$ldap_dn=$ARLogin."@".$AR->LDAP["domain"];
-							}
-							if (@ldap_bind($ldap_connection, $ldap_dn, $ARPassword)) {
-								// su to admin, to create the new user
-								$user_login=$ARLogin;
-								$AR->user=current($this->get("/system/users/admin/","system.get.phtml"));							
-								$ARLogin="admin";
-								// create the new user
-								$user_path=$this->store->make_path($ldap_userdir, $user_login);
-								$user=$this->store->newobject($user_path, $ldap_userdir, $AR->LDAP["userclass"], new object);
-								$user->arIsNewObject = true;
-								$userdata["arNewFilename"] = $user_login;
-								$userdata["newpass1"] = $ARPassword;
-								$userdata["newpass2"] = $ARPassword;
-								$userdata["profile"] = $user_profile;
-								$userdata["name"] = $user_login;
-								$user->call("system.save.data.phtml", $userdata);
-								// change the owner of the user to itself
-								$user->call("system.save.owner.phtml", Array("owner" => $user_path));
-								// call the oncreate handler, if defined
-								if ($ldap_oncreate=$AR->LDAP["oncreate"]) { // template to execute when after creating a new user
-									$this->get($ldap_oncreate["path"], $ldap_oncreate["template"], Array("user_login" => $user_login, "user_path" => $user_path));
-								}
-								// change the user back
-								$ARLogin=$user_login;
-								unset($AR->user);
-								if ($AR->user=current($this->get($user_path, "system.get.phtml"))) {
-									$continue=true;
-								} else {
-									debug("pobject: CheckLogin: couldn't create ldap user ","object");
-									$arLoginMessage=$ARnls["accessdenied"].": ".sprintf($ARnls["userunknown"],$ARLogin);
-									ldAccessDenied($this->path, $arLoginMessage);
-									$continue=false;
-								}
-							} else {
-								debug("pobject: CheckLogin: ldap user not valid","object");
-								$arLoginMessage=$ARnls["accessdenied"];
-								ldAccessDenied($this->path, $arLoginMessage);
-								$continue=false;
-							}
-							ldap_close($ldap_connection);
-						} else {
-							debug("pobject: CheckLogin: no ldap server present","object");
-							$arLoginMessage=$ARnls["accessdenied"].": ".sprintf($ARnls["userunknown"],$ARLogin);
-							ldAccessDenied($this->path, $arLoginMessage);
-							$continue=false;
-						}
-					} else {
-						debug("pobject: CheckLogin: user in cookie not found","object");
-						$arLoginMessage=$ARnls["accessdenied"].": ".sprintf($ARnls["userunknown"],$ARLogin);
-						ldAccessDenied($this->path, $arLoginMessage);
-						$continue=false;
-					}
-				} else if (!$AR->user->CheckPassword($ARPassword)) {
-					debug("pobject: CheckLogin: wrong password in cookie","object");
-					$arLoginMessage=$ARnls["accessdenied"].": ".$ARnls["passwordincorrect"];
-					unset($AR->user);
-					ldAccessDenied($this->path, $arLoginMessage);
-					$continue=false;
-				} else {
-					debug("pobject: CheckLogin: got user ".$result->data->name,"all");
-				}
-			}
+		/* load config cache */
+		if (!$ARConfig->cache[$this->path]) {
+			$this->call("system.get.config.phtml");
 		}
-		$recheck = true;
-		while ($continue && $recheck) {
-			$recheck = false;
-			/* load config cache */
-			if (!$ARConfig->cache[$this->path]) {
-				$this->call("system.get.config.phtml");
-			}
 
 
-			if ($AR->user->data->login!="admin" && !$AR->user->grants[$this->path]) {
-				$AR->user->grants[$this->path]=$this->GetValidGrants();
-				debug("usergrants: ".$AR->user->grants[$this->path]);
-			}
-			if ($AR->user->data->login!="public") {
-				// Don't remove this or MSIE users won't get uptodate pages...
-				ldSetClientCache(false);
-			}
-			debug("checking grants for ".$this->path);
-			$grants=$AR->user->grants[$this->path];
-			if ( 	( !$grants[$grant] 
-						|| ( $modifier && is_array($grants[$grant]) && !$grants[$grant][$modifier] )
-					) && $ARLogin!="admin" ) {
-				// do login
-				$continue=false;
-				debug("pobject: CheckLogin: insufficient grants ($ARLogin)","object");
-				if ($ARLogin!="public") {
-					$arLoginMessage = $ARnls["accessdenied"];
-				} else if ($fallback) {
-					$arLoginMessage = $ARnls["accessdenied"].": ".$ARnls["q:cookiesenabled"];
-				} else
-				if (!$ARCurrent->session && $AR->arSessionRespawn) {
-					$arLoginMessage = $ARnls["accessdenied"].": ".$ARnls["q:cookiesenabled"];
-					/* 
-						there is no session, public could not authorise, let's
-						look if the user has got a session in one of his cookies 
-					*/
-					$credentials = ldGetCredentials();
-					// debugon('all');
-					if (is_array($credentials)) {
-						while (!$continue && (list($sessionid, $cdata)=each($credentials))) {
-							debug("checking sessionid($sessionid)");
-							ldStartSession($sessionid);
-							if ($ARCurrent->session->id == $sessionid) {
-								debug("session ok");
-								$ARLogin = $ARCurrent->session->get("ARLogin");
-								$ARPassword = $ARCurrent->session->get("ARPassword",1);
-								if (ldCheckCredentials($ARLogin,$ARPassword)) {
-
-									$criteria["login"]["value"]["="]="'".AddSlashes($ARLogin)."'";
-									$AR->user=current($this->find("/system/users/",$criteria,"system.get.phtml"));
-									if (is_object($AR->user) && $AR->user->CheckPassword($ARPassword)) {
-										$continue = true;
-										$recheck = true;
-									} else {
-										unset($AR->user); //incorrect password, so don't keep this user
-									}
-									unset($criteria);	
-									debug("respawning session($sessionid) for user ($ARLogin)");
-								} else {
-									$ARCurrent->session->suspend();
-									unset($ARCurrent->session);
-									debug("could not respawn session($sessionid) for user ($ARLogin): permission denied");
-								}
-							} else {
-								/* could not respawn session */
-								$ARCurrent->session->kill();
-								unset($ARCurrent->session);
-								debug("could not respawn session($sessionid) for user ($ARLogin): session too old?");
-							}
-						}
-					}
-				}
-
-				if (!$continue) {
-					debug('access denied, no continue');
-					ldAccessDenied($this->path, $arLoginMessage);
-				}
-			}
+		if ($AR->user->data->login!="admin" && !$AR->user->grants[$this->path]) {
+			$AR->user->grants[$this->path]=$this->GetValidGrants();
+			debug("usergrants: ".$AR->user->grants[$this->path]);
 		}
-		$ARPassword=0;
-		if ($continue) {
-			if ($ARCurrent->session) {
-				/* make this session active */
-				$ARCurrent->session->put("ARSessionActivated",true,1);
-			}
-			debug("pobject: CheckLogin: end","all");
-			$result=($grants || ($ARLogin=="admin"));
-		} else {
+		if ($AR->user->data->login!="public") {
+			// Don't remove this or MSIE users won't get uptodate pages...
+			ldSetClientCache(false);
+		}
+
+		debug("checking grants for ".$this->path);
+		$grants=$AR->user->grants[$this->path];
+		if ( 	( !$grants[$grant] 
+					|| ( $modifier && is_array($grants[$grant]) && !$grants[$grant][$modifier] )
+				) && $ARLogin!="admin" ) {
+			// do login
+			$continue=false;
+			debug("pobject: CheckLogin: insufficient grants ($ARLogin)","object");
+			$arLoginMessage = $ARnls["accessdenied"];
+			ldAccessDenied($this->path, $arLoginMessage);
 			$result=false;
 			debug("pobject: CheckLogin: end (failed)","all");
+		} else {
+			debug("pobject: CheckLogin: end","all");
+			$result=($grants || ($ARLogin=="admin"));
 		}
 
 		$ARCurrent->arLoginSilent=1;
@@ -877,7 +758,7 @@ class pobject extends object { // pobject class definition
 	// browser.
 	// All these templates must exist under a fixed directory, $AR->dir->templates
 	global $nocache, $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls, $HTTP_POST_VARS, $HTTP_GET_VARS, $ARConfigChecked;
-		debug("pobject::CheckConfig($arCallFunction, $arCallArgs)","object");
+		debug("pobject::CheckConfig($arCallFunction, $arCallArgs)(".$this->path.")","object");
 		$MAX_LOOP_COUNT=10;
 
 
@@ -924,7 +805,7 @@ class pobject extends object { // pobject class definition
 			if ($this->data->custom[$nls]) {
 				$this->customnlsdata=$this->data->custom[$nls];
 			}
-			if (	(	$config->cache && ( $config->cache>0 )		) &&
+			if (	(	$config->cache && ($config->cache!=-1) ) &&
 					(	$arCallFunction	&& !$ARConfigChecked		) && 
 					( 	!$nocache 									) && 
 					(	$AR->OS=="UNIX" || 
@@ -952,13 +833,21 @@ class pobject extends object { // pobject class definition
 			*/
 			$ARConfigChecked = true;
 
+			if (strpos($arCallFunction,"::")!==false) {
+				// template of a specific class defined via call("class::template");
+				list($arCallType, $arCallFunction)=explode("::",$arCallFunction);
+			} else {
+				$arCallType=$this->type;
+			}
+			debug("CheckConfig: searching for template ($arCallType::$arCallFunction)", "all");
+
 			/* first check current templates */
 			$curr_templates=$this->data->pinp;
 
 			$checkpath=$this->path;
 			$lastcheckedpath="";
 			while (!$arCallTemplate && $checkpath!=$lastcheckedpath) {
-				$arType=get_class($this);
+				$arType=$arCallType;
 				while ($arType && !$arCallTemplate) {
 					if ($arTemplateId=$curr_templates[$arType][$arCallFunction][$this->reqnls]) {
 						$arCallTemplate=$arType.".".$arCallFunction.".".$this->reqnls;
@@ -1109,10 +998,9 @@ class pobject extends object { // pobject class definition
 		debug("pobject: ClearCache: end","all");
 	}
 
-
-	function cached($name, $nls="") {
-		debug("cached($name)","object");
+	function getcache($name, $nls="") {
 		global $ARCurrent;
+		$result=false;
 		if ($name) {
 			$result=false;
 			if (!$nls) {
@@ -1127,12 +1015,12 @@ class pobject extends object { // pobject class definition
 				if ($ARCurrent->session) {
 					$session="/-".$ARCurrent->session->id."-";
 				}
-				echo str_replace("{arSession}", $session, $pcache->read($this->id, $file));
-				$result=true;
+				$result=str_replace("{arSession}", $session, $pcache->read($this->id, $file));
 			} else {
-				debug("cached: $name not found, start new cache image.","all");
+				$result=false;
+				debug("getcache: $name not found, start new cache image.","all");
 				$ARCurrent->cache[]=$file;
-				debug("cached: ob_start()","all");
+				debug("getcache: ob_start()","all");
 				ob_start();
 				/* output buffering is recursive, so this won't interfere with
 				   normal page caching, unless you forget to call savecache()...
@@ -1143,7 +1031,18 @@ class pobject extends object { // pobject class definition
 			}
 		} else {
 			error($ARnls["err:nonamecache"]);
-			// FROP error("cached() : no name given for cache.");
+		}
+		return $result;
+	}
+
+	function cached($name, $nls="") {
+		debug("cached($name)","object");
+		global $ARCurrent;
+		if ($image=$this->getcache($name, $nls)) {
+			echo $image;
+			$result=true;
+		} else {
+			$result=false;
 		}
 		return $result;
 	}
@@ -1478,8 +1377,6 @@ class pobject extends object { // pobject class definition
 		eregi('(.*[/\\])?(.*)', $function, $regs);
 		$function=$regs[2];
 		return $this->parents($this->path, $function, $args, $top);
-//		return $this->store->call($function, $args, 
-//			$this->store->parents($this->path, $top));
 	}
 
 	function _find($criteria, $function="list.html", $args="", $limit=100, $offset=0) {
@@ -1636,8 +1533,12 @@ class pobject extends object { // pobject class definition
 		return $this->make_url($path, $nls, $session, $https);
 	}
 
-	function _cached($name) {
-		return $this->cached($name);
+	function _getcache($name, $nls='') {
+		return $this->getcache($name, $nls);
+	}
+
+	function _cached($name, $nls='') {
+		return $this->cached($name, $nls);
 	}
 
 	function _savecache($time="") {
@@ -1746,6 +1647,64 @@ class pobject extends object { // pobject class definition
 		// deprecated
 		return $this->_load($class);
 	}
+
+	function html_to_text($text) {
+		$trans = array_flip(get_html_translation_table(HTML_ENTITIES));
+		//strip nonbreaking space, strip script and style blocks, strip html tags, convert html entites, strip extra white space
+		$search_clean = array("%&nbsp;%i", "%<(script|style)[^>]*>.*?<\/(script|style)[^>]*>%si", "%<[\/]*[^<>]*>%Usi", "%(\&[a-zA-Z0-9\#]+;)%es", "%\s+%");
+		$replace_clean = array(" ", " ", " ", "strtr('\\1',\$trans)", " ");
+		return preg_replace($search_clean, $replace_clean, $text);
+	}
+
+	function _html_to_text($text) {
+		return html_to_text($text);
+	}
+
+	function _newobject($filename, $type) {
+        $newpath=$this->make_path($filename);
+		$newparent=$this->store->make_path($newpath, "..");
+		$data=new object;
+		$data=serialize($data);
+		$object=$this->store->newobject($newpath, $newparent, $type, $data);
+		$object->arIsNewObject=true;
+		return $object;
+	}
+
+	/*
+		since the preg_replace() function is able to execute normal php code
+		we have to intercept all preg_replace() calls and parse the
+		php code with the pinp parser.
+	*/
+
+
+	/*	this is a private function used by the _preg_replace wrapper */
+
+	function preg_replace_compile($pattern, $replacement) {
+		include_once($this->store->code."modules/mod_pinp.phtml");
+		ereg("^\s*(.)", $pattern, $regs);
+		$delim = $regs[1];
+		if (eregi($k="${delim}[^$delim]*e[^$delim]*".'$', $pattern)) {
+			$pinp = new pinp("header", 'this->', '$this->_');
+			return substr($pinp->compile("<pinp>$replacement</pinp>"), 5, -2);
+		} else {
+			return $replacement;
+		}
+	}
+ 
+	function _preg_replace($pattern, $replacement, $text, $limit = -1) {
+		if (is_array($pattern)) {
+			$newrepl = array();
+			reset($replacement);
+			foreach ($pattern as $i_pattern) {
+				list(, $i_replacement) = each($replacement);
+				$newrepl[] = $this->preg_replace_compile($i_pattern, $i_replacement);
+			}
+		} else {
+			$newrepl = $this->preg_replace_compile($pattern, $replacement);
+		}
+		return preg_replace($pattern, $newrepl, $text, $limit);
+	}
+
 
 } // end of pobject class definition
 ?>
