@@ -5,7 +5,7 @@
 
 	// lib/widgets/htmledit/ie/edit.php
 
-	$ARnls["e_cut"]				=	"Cut";
+	$ARnls["e_cut"]				=	"Wytnij";
 	$ARnls["e_copy"]			=	"Copy";
 	$ARnls["e_paste"]			=	"Paste";
 	$ARnls["e_delete"]			=	"Delete";
@@ -27,7 +27,7 @@
 	$ARnls["e_send_below_text"]		=	"Send Below Text";
 	$ARnls["e_bring_above_text"]		=	"Bring Above Text";
 	$ARnls["e_visible_borders"]		=	"Visible Borders";
-	$ARnls["e_show_details"]		=	"Show Details";
+	$ARnls["e_show_details"]		=	"Pokaż Szczegóły";
 	$ARnls["e_make_absolute"]		=	"Make Absolute";
 	$ARnls["e_lock"]			=	"Lock";
 	$ARnls["e_snap_to_grid"]		=	"Snap to Grid";

@@ -19,7 +19,7 @@
 	$ARnls["m_grants"]						=	"Diritti";
 	$ARnls["m_help"]						=	"Aiuto";
 	$ARnls["m_import"]						=	"Importa";
-	$ARnls["m_index"]						=	"Index";
+	$ARnls["m_index"]						=	"Indice";
 	$ARnls["m_language"]						=	"Lingua";
 	$ARnls["m_large"]						=	"Icone&nbsp;grandi";
 	$ARnls["m_layout"]						=	"Layout";
@@ -33,7 +33,7 @@
 	$ARnls["m_search"]						=	"Cerca";
 	$ARnls["m_shortcut"]						=	"Collegamento";
 	$ARnls["m_small"]						=	"Icone&nbsp;piccole";
-	$ARnls["m_templates"]						=	"Templates";
+	$ARnls["m_templates"]						=	"Template";
 	$ARnls["m_tutorials"]						=	"Manuali";
 	$ARnls["m_types"]						=	"Tipi";
 	$ARnls["m_view"]						=	"Vista";

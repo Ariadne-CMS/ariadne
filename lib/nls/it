@@ -197,7 +197,7 @@
 	$ARnls["layouttempl"]					=	"Template di layout per %s";
 	$ARnls["link"]						=	"Collega";
 	$ARnls["list"]						=	"Lista";
-	$ARnls["loading"]					=	"Loading...";
+	$ARnls["loading"]					=	"Caricamento...";
 	$ARnls["location"]					=	"Posizione";
 	$ARnls["locks"]						=	"Blocchi";
 	$ARnls["login"]						=	"Login";
@@ -297,7 +297,7 @@
 	$ARnls["template"]					=	"Template";
 	$ARnls["templatecreated"]				=	"template(%s) creato";
 	$ARnls["templateonserver"]				=	"Template sul server";
-	$ARnls["templates"]					=	"Templates";
+	$ARnls["templates"]					=	"Template";
 	$ARnls["text"]						=	"Testo";
 	$ARnls["thu"]						=	"Gio";
 	$ARnls["thumbcolor"]					=	"Colore";

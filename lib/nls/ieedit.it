@@ -22,7 +22,7 @@
 	$ARnls["e_mergecells"]			=	"Unisci celle";
 	$ARnls["e_splitcell"]			=	"Dividi celle";
 
-	$ARnls["e_z_order"]			=	"Z Order";
+	$ARnls["e_z_order"]			=	"Ordine Z";
 	$ARnls["e_send_to_back"]		=	"Secondo piano";
 	$ARnls["e_bring_to_front"]		=	"Primo piano";
 	$ARnls["e_send_backward"]		=	"Porta avanti";
