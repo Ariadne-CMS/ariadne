@@ -31,50 +31,52 @@
 	******************************************************************/
 
 	debug($this->type."/system.get.config.phtml ".$this->path,"class");
-	// first check whether parent config info is in cache
-	if (!$ARConfig->cache[$this->parent] && $this->parent!="..") {
-		$this->get($this->parent, "system.get.config.phtml");
-	}
-	// first inherit parent configuration data
-	$configcache=$ARConfig->cache[$this->parent];
+	$context = $this->getContext(ARCALLINGCONTEXT);
+	if ($context["scope"] != "pinp") {
+		// first check whether parent config info is in cache
+		if (!$ARConfig->cache[$this->parent] && $this->parent!="..") {
+			$this->get($this->parent, "system.get.config.phtml");
+		}
+		// first inherit parent configuration data
+		$configcache=$ARConfig->cache[$this->parent];
 
-	// do not inherit the templates_path setting
-	// FIXME: maybe we should add it to the config cache but
-	// create a new array for it.
-	unset($configcache->templates_path);
+		// do not inherit the templates_path setting
+		// FIXME: maybe we should add it to the config cache but
+		// create a new array for it.
+		unset($configcache->templates_path);
 
-	// cache default templates
-	$configcache->templates=$data->config->templates;
+		// cache default templates
+		$configcache->templates=$data->config->templates;
 
-	if ($data->config->cacheconfig) {
-		$configcache->cache=$data->config->cacheconfig;
-	}
-	if ($data->config->typetree && ($data->config->typetree!="inherit")) {
-		$configcache->typetree=$data->config->typetree;
-	}
-	if ($data->config->nlsconfig->list) {
-		$configcache->nls=$data->config->nlsconfig;
-		debug("nls found");
-	}
+		if ($data->config->cacheconfig) {
+			$configcache->cache=$data->config->cacheconfig;
+		}
+		if ($data->config->typetree && ($data->config->typetree!="inherit")) {
+			$configcache->typetree=$data->config->typetree;
+		}
+		if ($data->config->nlsconfig->list) {
+			$configcache->nls=$data->config->nlsconfig;
+			debug("nls found");
+		}
 
-	if ($data->config->grants["pgroup"]["owner"]) {
-		$configcache->ownergrants = $data->config->grants["pgroup"]["owner"];
-	}
-	if (is_array($configcache->ownergrants)) {
-		if ($AR->user && $AR->user->data->login != 'public' && $AR->user->data->login === $this->data->config->owner) {
-			$ownergrants = $configcache->ownergrants;
-			if (is_array($ownergrants)) {
-				reset($ownergrants);
-				while (list($grant, $val) = each($ownergrants)) {
-					$AR->user->ownergrants[$this->path][$grant] = $val;
+		if ($data->config->grants["pgroup"]["owner"]) {
+			$configcache->ownergrants = $data->config->grants["pgroup"]["owner"];
+		}
+		if (is_array($configcache->ownergrants)) {
+			if ($AR->user && $AR->user->data->login != 'public' && $AR->user->data->login === $this->data->config->owner) {
+				$ownergrants = $configcache->ownergrants;
+				if (is_array($ownergrants)) {
+					reset($ownergrants);
+					while (list($grant, $val) = each($ownergrants)) {
+						$AR->user->ownergrants[$this->path][$grant] = $val;
+					}
 				}
 			}
 		}
-	}
 
-	if ($data->config->customconfig) {
-		$configcache->custom=array_merge($configcache->custom, $data->config->customconfig);
+		if ($data->config->customconfig) {
+			$configcache->custom=array_merge($configcache->custom, $data->config->customconfig);
+		}
+		$ARConfig->cache[$this->path]=$configcache;
 	}
-	$ARConfig->cache[$this->path]=$configcache;
-
 ?>
