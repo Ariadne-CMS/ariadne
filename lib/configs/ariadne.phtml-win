@@ -191,7 +191,7 @@
   /* Only change this if you have made your own loader                      */
   /**************************************************************************/
 
-  $AR->root                 = $AR->host.$AR->dir->www.'loader.php';
+  $AR->root                 = $AR->dir->www.'loader.php';
 
   /**************************************************************************/
   /* Only change this if you have moved the images directory                */
