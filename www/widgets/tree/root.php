@@ -85,6 +85,7 @@
     this.prev=prev;
     this.next=next;
     this.name=name;
+    this.fullname=name;
     if (this.name.length>20) {
       this.name=this.name.substring(0,20)+"...";
     }
@@ -290,7 +291,7 @@ function drawNode(pre, level) {
 		width=(level*20)+125;
 		// Mozilla ignores <nobr> tags with image placement, so calculate a minimum width here
 		result='<div id="'+this.id+'" class="node"><div class="row" style="width: '+width+'px;"><nobr>'+
-			pre+plusminus+'<a href="javascript:parent.View(\''+this.id+'\');" '+
+			pre+plusminus+'<a href="javascript:parent.View(\''+this.id+'\');" title="'+this.fullname+'" '+
 			'onMouseOver="window.status=\''+this.link+'\'; return true;" onMouseOut="window.status=\'\'; return true;">'+
             icon+'<span class="item">'+style+this.pre+this.name+post+'</span></a></nobr></div>';
 		if (this.firstChild && this.status=="Open" ) {
