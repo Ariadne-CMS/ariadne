@@ -293,6 +293,10 @@
   $ARConfig->cache[".."]->mimetypes['^text/html']  = "ppage";
   $ARConfig->cache[".."]->mimetypes['.*']          = "pfile";
 
+  /* what to generate on a mkdir in ftp context *****************************/
+  // FIXME: build a better system for this, type dependant?
+  $ARConfig->cache[".."]->FTP['mkdir']="pphotobook";
+
 
   /**************************************************************************/
   /* Setup the variable repository for putvar/getvar                        */
