@@ -2,6 +2,13 @@ Ariadne 2.2.1
 
 Changes in Ariadne since version 2.2
 
+IMPORTANT:
+	The postgresql store layer has gone through some major changes to make it more
+	like the mysql store layer, but still using the extra features that
+	postgresql offers. After using this revision of the postgresql store,
+	reverting back to the older revision of the store needs an export/import
+	to reset some tables with state data.
+
 New features:
 	- Added a new Search Folder class, which allows you to enter a
 	  search query, and use that as a virtual folder.
@@ -11,6 +18,7 @@ New features:
 	- Changed the 'refresh cache on change' to be really permanent.
 	- added getcache() method in pobject, that returns the contents
 	  of a privatecache image.
+	- revised the Postgresql store to use more features
 	
 Bugs Fixed:
 	- fixed a bug in the pfile wizard which broke the flow when using 

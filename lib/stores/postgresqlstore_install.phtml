@@ -37,12 +37,6 @@ CREATE TABLE ".$this->tbl_prefix."properties (
 	name varchar(21) DEFAULT '' NOT NULL PRIMARY KEY
 )";
 
-		$queries[3]["msg"]="creating seq_id table.";
-		$queries[3]["query_string"]="
-CREATE TABLE ".$this->tbl_prefix."seq_id (
-	path varchar(127) DEFAULT '' NOT NULL PRIMARY KEY,
-	next_id numeric(11) DEFAULT '0' NOT NULL
-)";
 		$queries[4]["msg"]="creating types table.";
 		$queries[4]["query_string"]="
 CREATE TABLE ".$this->tbl_prefix."types (

@@ -54,29 +54,29 @@ class postgresqlstore {
 		if (! function_exists("pg_connect")) {
 			dl("pgsql.so");
 		}
-		$this->error		= "";
+		$this->error = "";
 
-		$query_string		= (($config["host"]) ? "host='".$config["host"]."'" : "").
+		$query_string = (($config["host"]) ? "host='".$config["host"]."'" : "").
 			" user='".$config["user"]."'".
 			" password='".$config["password"]."'".
 			" dbname='".$config["database"]."'";
 
-		$this->connect_id	= pg_connect($query_string) OR DIE ("Could not connect to PostgreSQL database ".$config["database"].". Please create this database manually." );
-		$this->root			= $path;
-		$this->code			= $config["code"];
-		$this->files		= $config["files"];
-		$this->tbl_prefix	= $config["prefix"];
+		$this->connect_id = pg_pconnect($query_string) OR DIE ("Could not connect to PostgreSQL database ".$config["database"].". Please create this database manually." );
+		$this->root = $path;
+		$this->code = $config["code"];
+		$this->files = $config["files"];
+		$this->tbl_prefix = $config["prefix"];
 
 		/* Instantiate module postgresql_compiler */
 		include_once($this->code."stores/modules/postgresql_compiler.php");
 
 		/* Instantiate module locking */
 		include_once($this->code."modules/mod_lock/postgresql.phtml");
-		$this->mod_lock		= new postgresqllock($config["prefix"]);
+		$this->mod_lock = new postgresqllock($config["prefix"]);
 		$this->mod_lock->connect($config["host"], $config["user"], $config["password"], $config["database"]);
-		$this->mod_lock->lock_duration	= $config["lock_duration"];
+		$this->mod_lock->lock_duration = $config["lock_duration"];
 
-		$config["password"]	= "";
+		$config["password"] = "";
 		debug("postgresqlstore: end", "all");
 	}
 
@@ -102,12 +102,12 @@ class postgresqlstore {
 	 **********************************************************************************/ 
 
 		debug("call($template, ".serialize($args).", [list])", "store");
-		$result				= Array();
-		$this->error		= "";
-		$this->count		= @pg_numrows($objects["list"]);
-		$i					= 0;
+		$result = Array();
+		$this->error = "";
+		$this->count = @pg_numrows($objects["list"]);
+		$i = 0;
 		while ($row = @pg_fetch_array($objects["list"], $i++)) {
-			$object			= $this->newobject($row["path"],
+			$object = $this->newobject($row["path"],
 					$row["parent"],
 					$row["type"],
 					unserialize($row["object"]),
@@ -148,21 +148,27 @@ class postgresqlstore {
 		This function takes as argument a feature description and returns
 		true if this feature is supported and false otherwise
 	**********************************************************************************/
-		return false;
+		$result = false;
+		switch($feature) {
+			default:
+				$result = false;
+			break;
+		}
+		return $result;
 	}
 
 	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) {
 		debug("newobject($path, $parent, $type, [data], $id, $lastchanged, $vtype, $size, $priority)","all");
 		include_once($this->code."objects/".$type.".phtml");
-		$object				= new $type;
+		$object = new $type;
 		$object->init($this, $path, $data);
-		$object->type		= $type;
-		$object->parent		= $parent;
-		$object->id			= (int)$id;
+		$object->type = $type;
+		$object->parent = $parent;
+		$object->id = (int)$id;
 		$object->lastchanged = (int)$lastchanged;
-		$object->vtype		= $vtype;
-		$object->size		= (int)$size;
-		$object->priority	= (int)$priority;
+		$object->vtype = $vtype;
+		$object->size = (int)$size;
+		$object->priority = (int)$priority;
 		return ($object);
 	}
 
@@ -179,17 +185,17 @@ class postgresqlstore {
 	 **********************************************************************************/
 
 		debug("get($path)","store");
-		$this->error		= "";
-		$result["method"]	= "get";
-		$result["path"]		= $path;
+		$this->error = "";
+		$result["method"] = "get";
+		$result["path"] = $path;
 		$epath=AddSlashes($path);
 
-		$nodes_tbl			= $this->tbl_prefix."nodes";
-		$objects_tbl		= $this->tbl_prefix."objects";
-		$types_tbl			= $this->tbl_prefix."types";
+		$nodes_tbl = $this->tbl_prefix."nodes";
+		$objects_tbl = $this->tbl_prefix."objects";
+		$types_tbl = $this->tbl_prefix."types";
 
-		$query_string		= "select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, date_part('epoch', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path='$epath'";
-		$result["list"]		= pg_exec($this->connect_id, $query_string);
+		$query_string = "select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, date_part('epoch', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path='$epath'";
+		$result["list"] = $this->store_run_query($query_string);
 		debug("get: end","all");
 		return ($result);
 	}
@@ -209,8 +215,7 @@ class postgresqlstore {
 		if (is_string($id)) {
 			$epath = AddSlashes($id);
 			$query_string = "select $nodes_tbl.object from $nodes_tbl where $nodes_tbl.path = '$epath'";
-			debug("query: $query_string");
-			$qresult = pg_exec($this->connect_id, $query_string);
+			$qresult = $this->store_run_query($query_string);
 			if (!$qresult) {
 				$this->error = "Could not fetch object id";
 				debug($this->error,"store");
@@ -228,8 +233,7 @@ class postgresqlstore {
 			$eid = AddSlashes($id);
 			$etimestamp = AddSlashes($timestamp);
 			$query_string = "update $objects_tbl set lastchanged='".date("r",$timestamp)."' where id = $eid";
-			debug("query: $query_string");
-			$qresult = pg_exec($this->connect_id,$query_string);
+			$qresult = $this->store_run_query($query_string);
 			if (!$qresult) {
 				$this->error = "Could not update object";
 				debug($this->error,"store");
@@ -255,17 +259,17 @@ class postgresqlstore {
 	 **********************************************************************************/
 
 		debug("ls($path)","store");
-		$this->error		= "";
-		$epath				= AddSlashes($path);
+		$this->error = "";
+		$epath = AddSlashes($path);
 
-		$nodes_tbl			= $this->tbl_prefix."nodes";
-		$objects_tbl		= $this->tbl_prefix."objects";
-		$types_tbl			= $this->tbl_prefix."types";
+		$nodes_tbl = $this->tbl_prefix."nodes";
+		$objects_tbl = $this->tbl_prefix."objects";
+		$types_tbl = $this->tbl_prefix."types";
 
-		$query_string		= "select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, date_part('epoch', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.parent='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
-		$result["method"]	= "ls";
-		$result["path"]		= $path;
-		$result["list"]		= pg_exec($this->connect_id, $query_string);
+		$query_string = "select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, date_part('epoch', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.parent='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
+		$result["method"] = "ls";
+		$result["path"] = $path;
+		$result["list"] = $this->store_run_query( $query_string);
 		debug("ls: query=$query_string","all");
 		debug("ls: end","all");
 		return ($result);
@@ -285,19 +289,19 @@ class postgresqlstore {
 	 **********************************************************************************/
 
 		debug("parents($path)","store");
-		$this->error		= "";
-		$epath				= AddSlashes($path);
-		$etop				= AddSlashes($top);
+		$this->error = "";
+		$epath = AddSlashes($path);
+		$etop = AddSlashes($top);
 
-		$nodes_tbl			= $this->tbl_prefix."nodes";
-		$objects_tbl		= $this->tbl_prefix."objects";
-		$types_tbl			= $this->tbl_prefix."types";
+		$nodes_tbl = $this->tbl_prefix."nodes";
+		$objects_tbl = $this->tbl_prefix."objects";
+		$types_tbl = $this->tbl_prefix."types";
 
-		$query_string		= "select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, date_part('epoch', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path=substring('$epath',1,length(path)) and $nodes_tbl.path LIKE '$etop%' order by path";
+		$query_string = "select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, date_part('epoch', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path=substring('$epath',1,length(path)) and $nodes_tbl.path LIKE '$etop%' order by path";
 		debug($query_string, "all");
-		$result["method"]	= "parents";
-		$result["path"]		= $path;
-		$result["list"]		= pg_exec($this->connect_id, $query_string);
+		$result["method"] = "parents";
+		$result["path"] = $path;
+		$result["list"] = $this->store_run_query( $query_string);
 		debug("parents: end","all");
 		return ($result);
 	}
@@ -324,26 +328,26 @@ class postgresqlstore {
 			debug("raw query: $query_raw", "store");
 			$query_string = $sqlcompiler->compile($path, $criteria, $limit, $offset);
 			if ($sqlcompiler->error) {
-				$this->error	= $sqlcompiler->error;
+				$this->error = $sqlcompiler->error;
 			}
 			unset($sqlcompiler);
 		} else {
-			$this->error		= "";
-			$count				= 0;
-			$result["method"]	= "find";
-			$result["path"]		= $path;
-			$result["criteria"]	= $criteria;
-			$epath				= AddSlashes($path);
+			$this->error = "";
+			$count = 0;
+			$result["method"] = "find";
+			$result["path"] = $path;
+			$result["criteria"] = $criteria;
+			$epath = AddSlashes($path);
 
-			$nodes_tbl			= $this->tbl_prefix."nodes";
-			$objects_tbl		= $this->tbl_prefix."objects";
-			$types_tbl			= $this->tbl_prefix."types";
+			$nodes_tbl = $this->tbl_prefix."nodes";
+			$objects_tbl = $this->tbl_prefix."objects";
+			$types_tbl = $this->tbl_prefix."types";
 
 			while (list($property, $values) = @each($criteria)) {
 				$eproperty=AddSlashes($property);
 				if ($property != "object") {
-					$from	.= ", ".$this->tbl_prefix."prop_$eproperty";
-					$where	.= " and (";
+					$from .= ", ".$this->tbl_prefix."prop_$eproperty";
+					$where .= " and (";
 				}
 				while (list($valuename, $compare) = each($values)) {
 					while (list($function, $value) = each($compare)) {
@@ -369,42 +373,42 @@ class postgresqlstore {
 								$ecompare = "not like";
 							break;
 						}
-						$evaluename	= AddSlashes($valuename);
+						$evaluename = AddSlashes($valuename);
 						if ($value == "") { 
 							// empty strings as value generate strange results in SQL land
-							$value	= 0;
+							$value = 0;
 						}
 						switch($property) {
 							case "object" :
 								switch($valuename) {
 									case ("type") : 
-										$where	.= " and $objects_tbl.type $ecompare $value ";
+										$where .= " and $objects_tbl.type $ecompare $value ";
 									 	break;
 									case ("implements") : 
-										$types	 = ", $types_tbl";
-										$where	.= " and ( $types_tbl.implements $ecompare $value and $objects_tbl.vtype=$types_tbl.type ) ";
+										$types = ", $types_tbl";
+										$where .= " and ( $types_tbl.implements $ecompare $value and $objects_tbl.vtype=$types_tbl.type ) ";
 										break;
 									case ("parent") :
-										$where	.= " and $nodes_tbl.parent $ecompare $value ";
+										$where .= " and $nodes_tbl.parent $ecompare $value ";
 										break;
 									case ("lastchanged") :
-										$where	.= " and date_part('epoch', $objects_tbl.lastchanged) $ecompare $value ";
+										$where .= " and date_part('epoch', $objects_tbl.lastchanged) $ecompare $value ";
 										break;
 								}
 								break;
 							default :
-								$where	.= $this->tbl_prefix."prop_$eproperty.AR_$evaluename $ecompare $value and "; 
+								$where .= $this->tbl_prefix."prop_$eproperty.AR_$evaluename $ecompare $value and "; 
 						}
 					}
 				}
 				if ($property != "object") {
-					$where	.= " ".$this->tbl_prefix."prop_$eproperty.object=$objects_tbl.id)	";
+					$where .= " ".$this->tbl_prefix."prop_$eproperty.object=$objects_tbl.id)	";
 				}
 			}
-			$query_string	= "select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, date_part('epoch', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $nodes_tbl, $objects_tbl $from $types where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path like '$epath%'";
-	        $where			= substr($where,4);
+			$query_string = "select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, date_part('epoch', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $nodes_tbl, $objects_tbl $from $types where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path like '$epath%'";
+	        $where = substr($where,4);
 	        if ($where) { 
-	          $query_string	.= " and ( ( $where ) )";
+	          $query_string .= " and ( ( $where ) )";
 	        } 
 			$query_string.=" order by $nodes_tbl.parent, $nodes_tbl.priority DESC, $nodes_tbl.path";
 
@@ -415,8 +419,7 @@ class postgresqlstore {
 				$query_string.=" offset $offset";
 			}
 		}
-		debug("find: query=$query_string","all");
-		$result["list"]=pg_exec($this->connect_id, $query_string);
+		$result["list"]=$this->store_run_query( $query_string);
 
 
 		debug("find: end","all");
@@ -471,67 +474,54 @@ class postgresqlstore {
 		Only those properties listed in $properties will be updated.
 		Any other property set will remain as it was.
 
-	FIXME:	i could not find any documentation on howto use the 'automatic' timestamp
-			updates for row updates (it's now done by explicitly setting 
-			'lastchanged=current_timestamp' for row updates)
-
 	***************************************************************/
 
 		debug("save($path, $type, [data], [properties], $vtype, $priority)","store");
-		$this->error	= "";
+		$this->error = "";
 		if ($path!="/") {
-			$parent	= $this->make_path($path, "..");
+			$parent = $this->make_path($path, "..");
 		} else {
-			$parent	= "..";
+			$parent = "..";
 		}
-		$eparent	= AddSlashes($parent);
-		if (ereg("\{([0-9]):id\}",$path,$match)) { 
-			// if the last part of a path matches something like {2:id} this
-			// part will automatically create a new number, unique in this directory, and fill it in.
-			$subid	= $this->nextid($parent);
-			if ($match[1]) { 
-				$subid	= substr("000000000".$subid,-(intval($match[1])));
-			}
-			$path	= ereg_replace("\{[0-9]:id\}",strval($subid),$path);
-			debug("save: new path: $path ($subid)","all");
-		}
+		$eparent = AddSlashes($parent);
+		$epath=AddSlashes($path);
+		$edata=AddSlashes(serialize($data));
+		$etype=AddSlashes($type);
+		$epriority=(int)$priority;
 
-		$edata			= AddSlashes(serialize($data));
-		$epath			= AddSlashes($path);
-		$etype			= AddSlashes($type);
-		$epriority		= (int)$priority;
+		$nodes_tbl = $this->tbl_prefix."nodes";
+		$objects_tbl = $this->tbl_prefix."objects";
+		$types_tbl = $this->tbl_prefix."types";
 
-		$nodes_tbl		= $this->tbl_prefix."nodes";
-		$objects_tbl	= $this->tbl_prefix."objects";
-		$types_tbl		= $this->tbl_prefix."types";
+		$query_string = "BEGIN WORK";
+		$this->store_run_query( $query_string);
 
 		if ($id = $this->exists($path)) { //update
 			debug("save: updating","all");
 			if ($vtype) { // only change/save vtype if it is explicitly set
-				$evtype			= AddSlashes($vtype);
-				$query_string	= "update $objects_tbl set object='$edata', vtype='$evtype', lastchanged=current_timestamp where id=$id"; 
+				$evtype = AddSlashes($vtype);
+				$query_string = "update $objects_tbl set object='$edata', vtype='$evtype', lastchanged=current_timestamp where id=$id"; 
 			} else {
-				$query_string	= "update $objects_tbl set object='$edata', lastchanged=current_timestamp where id=$id"; 
+				$query_string = "update $objects_tbl set object='$edata', lastchanged=current_timestamp where id=$id"; 
 			}
-			debug("save: query=$query_string","all");
-			pg_exec($this->connect_id, $query_string);
-			$err	= pg_errormessage($this->connect_id);
+			$this->store_run_query( $query_string);
+			$err = pg_errormessage($this->connect_id);
 			if (! $err) {
 				debug("save: query=$query_string","all");
 				$this->save_properties($properties, $id, $this); 
 				if($priority !== false) {
-					$query_string	= "update $nodes_tbl set priority=$epriority where path='$epath'";
-					pg_exec($this->connect_id, $query_string);
-					$err			= pg_errormessage($this->connect_id);
+					$query_string = "update $nodes_tbl set priority=$epriority where path='$epath'";
+					$this->store_run_query( $query_string);
+					$err = pg_errormessage($this->connect_id);
 					if (! $err) {
 						debug("save: query=$query_string","all");
-						$result	= $path;
+						$result = $path;
 					} else {
 						$this->error="ERROR: PostgreSQL: $err";
 						debug("save: query=$query_string","store");
 						debug("save: update object failed!","store");
 						debug("save: ".$this->error,"store");
-						$result	= 0;
+						$result = 0;
 					}
 				}
 			} else {
@@ -539,54 +529,81 @@ class postgresqlstore {
 				debug("save: query=$query_string","store");
 				debug("save: update object failed!","store");
 				debug("save: ".$this->error,"store");
-				$result	= 0;
+				$result = 0;
 			}
 		} else { // insert new
 			debug("save: new","all");
 			if ($vtype == "") { // if vtype is not set, it defaults to type for new objects
-				$vtype	= $type; 
+				$vtype=$type; 
 			}
-			$evtype			= AddSlashes($vtype);
+			$evtype = AddSlashes($vtype);
 
 			if($priority === false){
 				// default priority == 0
 				$priority = 0;
 				$epriority=(int)$priority;
 			}
-			$query_string	= "insert into $objects_tbl (type,object,vtype) values ('$etype','$edata','$evtype')";
-			debug("save: query=$query_string","all");
-			$exec	= pg_exec($this->connect_id, $query_string);
-			$err	= pg_errormessage($this->connect_id);
-			$id		= false;
-			if ($exec !== false) {
-				$query_string	= "select currval('".$objects_tbl."_id_seq') as id from $objects_tbl";
-				$exec			= pg_exec($this->connect_id, $query_string);
-				if ($exec !== false) {
-					$row	= pg_fetch_array($exec, 0);
-					$id		= $row["id"];
+			$query_string = "LOCK TABLE $nodes_tbl IN SHARE MODE";
+			if ($exec = $this->store_run_query( $query_string)) {
+
+				$mask = substr($path, strlen($parent));
+				if (ereg("^(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) { 
+					// if the last part of a path matches something like {2:id} this
+					// part will automatically create a new number, unique in this directory, and fill it in.
+					$subid=$this->get_nextid($parent, $mask);
+					$path=ereg_replace("\{([0-9]:)?id\}",strval($subid),$path);
+					$epath=AddSlashes($path);
+					debug("save: new path: $path ($subid)","all");
 				}
-			}
-			if (! $err && ($id !== false)) {
-				$query_string	= "insert into $nodes_tbl (path,parent,object,priority) values ('$epath','$eparent',$id,$epriority)";
-				debug("save: query=$query_string","all");
-				$exec			= pg_exec($this->connect_id, $query_string);
-				$err			= pg_errormessage($this->connect_id);
-				if (!$err) {				
-					$this->save_properties($properties, $id, $this);
-					$result=$path;
+				$query_string = "insert into $objects_tbl (type,object,vtype) values ('$etype','$edata','$evtype')";
+				$exec = $this->store_run_query( $query_string);
+				$err = pg_errormessage($this->connect_id);
+				$id = false;
+				if ($exec !== false) {
+					$query_string = "select currval('".$objects_tbl."_id_seq') as id from $objects_tbl";
+					$exec = $this->store_run_query( $query_string);
+					if ($exec !== false) {
+						$row = pg_fetch_array($exec, 0);
+						$id = $row["id"];
+					}
+				}
+
+				if (! $err && ($id !== false)) {
+					$query_string = "insert into $nodes_tbl (path,parent,object,priority) values ('$epath','$eparent',$id,$epriority)";
+					$exec = $this->store_run_query( $query_string);
+					$err = pg_errormessage($this->connect_id);
+					if (!$err) {				
+						$this->save_properties($properties, $id, $this);
+						$result=$path;
+					} else {
+						$this->error="ERROR: PostgreSQL: $err";
+						debug("save: insert node failed!","store");
+						debug("save: ".$this->error,"store");
+						$result=0;
+					}
 				} else {
 					$this->error="ERROR: PostgreSQL: $err";
-					debug("save: insert node failed!","store");
+					debug("save: insert object failed!","store");
 					debug("save: ".$this->error,"store");
 					$result=0;
 				}
 			} else {
-				$this->error="ERROR: PostgreSQL: $err";
-				debug("save: insert object failed!","store");
-				debug("save: ".$this->error,"store");
-				$result=0;
-			}			
+				$query_string = "ROLLBACK WORK;";
+				$this->store_run_query( $query_string);
+				error("PANIC: could not obtain write lock on nodes table!");
+				$this->close();
+				exit;
+			}
 		}
+		debug("save: result=(".$result.")","store");
+		if($result === 0) {
+			$query_string = "ROLLBACK WORK;";
+			$this->store_run_query( $query_string);
+		} else {
+			$query_string = "COMMIT WORK;";
+			$this->store_run_query( $query_string);
+		}
+
 		debug("save: end","all");
 		return $result;
 	}
@@ -606,24 +623,42 @@ class postgresqlstore {
 	**********************************************************************/
 
 		debug("purge($path)","store");
-		$this->error	= "";
+		$this->error = "";
 
-		$nodes_tbl		= $this->tbl_prefix."nodes";
-		$objects_tbl	= $this->tbl_prefix."objects";
-		$types_tbl		= $this->tbl_prefix."types";
+		$nodes_tbl = $this->tbl_prefix."nodes";
+		$objects_tbl = $this->tbl_prefix."objects";
+		$types_tbl = $this->tbl_prefix."types";
 
-		$object			= $this->exists($path);
+		$object = $this->exists($path);
 		if ($object) {
-			$query_string	= "delete from $nodes_tbl where object=$object";
-			$exec			= pg_exec($this->connect_id, $query_string);
+			$result=false;
+			$query_string = "BEGIN WORK";
+			$this->store_run_query( $query_string);
+			$query_string = "delete from $nodes_tbl where object=$object";
+			$exec = $this->store_run_query( $query_string);
 			if ($exec) {
 				$result=pg_cmdtuples($exec);
+				if($this->del_property($object) === false){
+					$result=false;
+				} else {
+					$query_string = "delete from $objects_tbl where id=$object";
+					$exec = $this->store_run_query($query_string);
+					 if (!$exec) {
+					 	$result=false;
+					 }
+				}
+			} else {
+				$result = false;
 			}
-			$this->del_property($object);
-			$query_string	= "delete from $objects_tbl where id=$object";
-			pg_exec($this->connect_id,$query_string);
 		} else { // no such path, so purge already succeeded :)
 			$result=1;
+		}
+		if($result === false) {
+			$query_string = "ROLLBACK WORK;";
+			$this->store_run_query( $query_string);
+		} else {
+			$query_string = "COMMIT WORK;";
+			$this->store_run_query( $query_string);
 		}
 		debug("purge: end","all");
 		return ($result);
@@ -640,24 +675,24 @@ class postgresqlstore {
 	**********************************************************************/
 
 		debug("delete($path)","store");
-		$this->error	= "";
-		$epath			= AddSlashes($path);
-		$paths			= $this->list_paths($path);
+		$this->error = "";
+		$epath = AddSlashes($path);
+		$paths = $this->list_paths($path);
 
-		$nodes_tbl		= $this->tbl_prefix."nodes";
-		$objects_tbl	= $this->tbl_prefix."objects";
-		$types_tbl		= $this->tbl_prefix."types";
+		$nodes_tbl = $this->tbl_prefix."nodes";
+		$objects_tbl = $this->tbl_prefix."objects";
+		$types_tbl = $this->tbl_prefix."types";
 
 		if ($paths) {
 			if (sizeof($paths) == 1) { // only one path for this object
-				$result	= $this->purge($path); // therefore purge the object.
+				$result = $this->purge($path); // therefore purge the object.
 			} else { // only delete the given path
-				$query_string	= "delete from $nodes_tbl where path='$epath'";
-				$exec			= pg_exec($this->connect_id, $query_string);
+				$query_string = "delete from $nodes_tbl where path='$epath'";
+				$exec = $this->store_run_query( $query_string);
 				if (pg_cmdtuples($exec)) {
-					$result	= 1;
+					$result = 1;
 				} else {
-					$result	= 0;
+					$result = 0;
 				}
 			}
 		}
@@ -677,15 +712,15 @@ class postgresqlstore {
 	**********************************************************************/
 
 		debug("exists($path)","store");
-		$this->error	= "";
-		$epath			= AddSlashes($path);
+		$this->error = "";
+		$epath = AddSlashes($path);
 
-		$nodes_tbl		= $this->tbl_prefix."nodes";
-		$objects_tbl	= $this->tbl_prefix."objects";
-		$types_tbl		= $this->tbl_prefix."types";
+		$nodes_tbl = $this->tbl_prefix."nodes";
+		$objects_tbl = $this->tbl_prefix."objects";
+		$types_tbl = $this->tbl_prefix."types";
 
-		$query_string	= "select object from $nodes_tbl where path='$epath'";
-		$exec			= pg_exec($this->connect_id, $query_string);
+		$query_string = "select object from $nodes_tbl where path='$epath'";
+		$exec = $this->store_run_query( $query_string);
 		if ($exec && (pg_numrows($exec) > 0) && ($row = pg_fetch_array($exec, 0))) {
 			$object=intval($row["object"]);
 			debug("exists: end (yes)","all");
@@ -708,65 +743,84 @@ class postgresqlstore {
 	**********************************************************************/
 
 		debug("link($source,$destination)","store");
-		$this->error	= "";
-		$edestination	= AddSlashes($destination);
-		$esource		= AddSlashes($source); 
-		$parent			= $this->make_path($destination, "..");
-		$eparent		= AddSlashes($parent);
+		$this->error = "";
+		$edestination = AddSlashes($destination);
+		$esource = AddSlashes($source); 
+		$parent = $this->make_path($destination, "..");
+		$eparent = AddSlashes($parent);
 
-		$nodes_tbl		= $this->tbl_prefix."nodes";
-		$objects_tbl	= $this->tbl_prefix."objects";
-		$types_tbl		= $this->tbl_prefix."types";
+		$nodes_tbl = $this->tbl_prefix."nodes";
+		$objects_tbl = $this->tbl_prefix."objects";
+		$types_tbl = $this->tbl_prefix."types";
+		$result = false;
+
+		$query_string = "BEGIN WORK";
+		$this->store_run_query( $query_string);
 
 		if ($this->exists($destination)) {
 			$this->error="$destination already exists, cannot overwrite.";
 			debug("link: ERROR: ".$this->error,"store");
-			$result	= false;
+			$result = false;
 		} else if (!$this->exists($parent)) {
-			$this->error	= "$parent does not exist, cannot link.";
+			$this->error = "$parent does not exist, cannot link.";
 			debug("link: ERROR: ".$this->error,"store");
-			$result			= false;
+			$result = false;
 		} else { 
-			if (ereg("\{([0-9]):id\}",$destination,$match)) {
-				$subid	= $this->nextid($parent);
-				if ($match[1]) {
-					$subid	= substr("000000000".$subid,-(intval($match[1])));
+			$mask = substr($destination, strlen($parent));
+			if (ereg("(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) {
+				$query_string = "LOCK TABLE $nodes_tbl IN SHARE MODE";
+				if ($exec = $this->store_run_query( $query_string)) {
+					$subid = $this->get_nextid($parent,$mask);
+					$destination = ereg_replace("\{[0-9]:id\}",strval($subid),$destination);
+					$edestination = AddSlashes($destination);
+					debug("link: new destination: $destination ($subid)","all");
+				} else {
+					$query_string = "ROLLBACK WORK;";
+					$this->store_run_query( $query_string);
+					error("PANIC: could not obtain write lock on nodes table!");
+					$this->close();
+					exit;
 				}
-				$destination	= ereg_replace("\{[0-9]:id\}",strval($subid),$destination);
-				$edestination	= AddSlashes($destination);
-				debug("link: new destination: $destination ($subid)","all");
 			}
-			$id	= $this->exists($source);
+			$id = $this->exists($source);
 			if ($id) {
-				$query_string	= "insert into $nodes_tbl (path, parent, object ) values ('$edestination', '$eparent', $id)";
-				$exec			= pg_exec($this->connect_id, $query_string);
-				$err			= pg_errormessage($this->connect_id);
+				$query_string = "insert into $nodes_tbl (path, parent, object ) values ('$edestination', '$eparent', $id)";
+				$exec = $this->store_run_query( $query_string);
+				$err = pg_errormessage($this->connect_id);
 				if ($err) {				
-					$this->error	= "ERROR: PostgreSQL: $err";
+					$this->error = "ERROR: PostgreSQL: $err";
 					debug("link: insert node failed!","store");
 					debug("link: ".$this->error,"store");
 					debug("link: query=$query_string","store");
-					$result			= false;
+					$result = false;
 				}
 				debug("link: end","all");
-				$result	= $destination;
+				$result = $destination;
 			} else {
-				$result	= false;
+				$result = false;
 				debug("link: end (no $source)","store");
 			}
+		}
+		debug("link: result=(".$result.")","store");
+		if($result === false){
+			$query_string = "ROLLBACK WORK;";
+			$this->store_run_query( $query_string);
+		} else {
+			$query_string = "COMMIT WORK;";
+			$this->store_run_query( $query_string);
 		}
 		return ($result);
 	}
 
 	function store_run_query($query) {
 		debug("store_run_query: $query","store");
-		$result				= pg_exec($this->connect_id,$query);
-		$err				= pg_errormessage($this->connect_id);
+		$result = pg_exec($this->connect_id,$query);
+		$err = pg_errormessage($this->connect_id);
 		if ($err) {				
-			$this->error	= "ERROR: PostgreSQL: $err";
+			$this->error = "ERROR: PostgreSQL: $err";
 			debug("store_run_query: ".$this->error,"store");
 			debug("store_run_query: query=$query","store");
-			$result			= false;
+			$result = false;
 		}
 		return $result;
 	}
@@ -779,59 +833,69 @@ class postgresqlstore {
 	**********************************************************************/
 
 		debug("move($source,$destination)","store");
-		$this->error	= "";
-		$edestination	= AddSlashes($destination);
-		$esource		= AddSlashes($source); 
-		$parent			= $this->make_path($destination, "..");
-		$eparent		= AddSlashes($parent);
+		$this->error = "";
+		$edestination = AddSlashes($destination);
+		$esource = AddSlashes($source); 
+		$parent = $this->make_path($destination, "..");
+		$eparent = AddSlashes($parent);
 
-		$nodes_tbl		= $this->tbl_prefix."nodes";
-		$objects_tbl	= $this->tbl_prefix."objects";
-		$types_tbl		= $this->tbl_prefix."types";
+		$nodes_tbl = $this->tbl_prefix."nodes";
+		$objects_tbl = $this->tbl_prefix."objects";
+		$types_tbl = $this->tbl_prefix."types";
+		$result = false;
+
+		$query_string = "BEGIN WORK";
+		$this->store_run_query( $query_string);
 
 		if ($this->exists($destination)) {
-			$this->error	= "$destination already exists, cannot overwrite.";
+			$this->error = "$destination already exists, cannot overwrite.";
 			debug("move: ERROR: ".$this->error,"store");
-			$result			= false;
+			$result = false;
 		} else if (!$this->exists($parent)) {
-			$this->error	= "$parent does not exist, cannot move.";
+			$this->error = "$parent does not exist, cannot move.";
 			debug("move: ERROR: ".$this->error,"store");
-			$result			= false;
+			$result = false;
 		} else { 
-			if (ereg("\{([0-9]):id\}",$destination,$match)) {
-				$subid			= $this->nextid($parent);
-				if ($match[1]) {
-					$subid	= substr("000000000".$subid,-(intval($match[1])));
+			$mask = substr($destination, strlen($parent));
+			if (ereg("(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) {
+				$query_string = "LOCK TABLE $nodes_tbl IN SHARE MODE";
+				if ($exec = $this->store_run_query( $query_string)) {
+					$subid = $this->get_nextid($parent,$mask);
+					$destination = ereg_replace("\{[0-9]:id\}",strval($subid),$destination);
+					$edestination = AddSlashes($destination);
+					debug("move: new destination: $destination ($subid)","all");
+				} else {
+					$query_string = "ROLLBACK WORK;";
+					$this->store_run_query( $query_string);
+					error("PANIC: could not obtain write lock on nodes table!");
+					$this->close();
+					exit;
 				}
-				$destination	= ereg_replace("\{[0-9]:id\}",strval($subid),$destination);
-				$edestination	= AddSlashes($destination);
-				debug("move: new destination: $destination ($subid)","all");
 			}
-			$id	= $this->exists($source);
+			$id = $this->exists($source);
 			if ($id) {
-				$destinationlength	= strlen($destination);
-				$sourcelength		= strlen($source);
-				$parentlength		= strlen($parent);
+				$destinationlength = strlen($destination);
+				$sourcelength = strlen($source);
+				$parentlength = strlen($parent);
 				// first move the root path
-				$query_string		= "update $nodes_tbl set path='$edestination', parent='$eparent' where path='$esource'";
+				$query_string = "update $nodes_tbl set path='$edestination', parent='$eparent' where path='$esource'";
 				if ($result=$this->store_run_query($query_string)) {
-					// now move the nextid path
-					$query_string="update ".$this->tbl_prefix."seq_id set path='$edestination' where path='$esource'";
-					if ($result=$this->store_run_query($query_string)) {
 						// then move the children
-						$query_string	= "update $nodes_tbl set path=('$edestination' || substring(path FROM $sourcelength+1)), parent=('$edestination' || substring(parent, $sourcelength+1)) where path like '$esource%'";
-						if ($result=$this->store_run_query($query_string)) {
-							// finally move the nextid's of the children
-							$query_string="update ".$this->tbl_prefix."seq_id set path=('$edestination' || substring(path FROM $sourcelength+1)) where path like '$esource%'";
-							$result=$this->store_run_query($query_string);					
-						}
-					}
+						$query_string = "update $nodes_tbl set path=('$edestination' || substring(path FROM $sourcelength+1)), parent=('$edestination' || substring(parent, $sourcelength+1)) where path like '$esource%'";
+						$result=$this->store_run_query($query_string);
 				}
 				debug("move: end","all");
 			} else {
-				$result	= false;
+				$result = false;
 				debug("move: end (no $source)","store");
 			}
+		}
+		if($result === false){
+			$query_string = "ROLLBACK WORK;";
+			$this->store_run_query( $query_string);
+		} else {
+			$query_string = "COMMIT WORK;";
+			$this->store_run_query($query_string);
 		}
 		if ($result) {
 			return $destination;
@@ -849,18 +913,18 @@ class postgresqlstore {
 	**********************************************************************/
 
 		debug("list_paths($path)","store");
-		$this->error	= "";
+		$this->error = "";
 
-		$nodes_tbl		= $this->tbl_prefix."nodes";
-		$objects_tbl	= $this->tbl_prefix."objects";
-		$types_tbl		= $this->tbl_prefix."types";
+		$nodes_tbl = $this->tbl_prefix."nodes";
+		$objects_tbl = $this->tbl_prefix."objects";
+		$types_tbl = $this->tbl_prefix."types";
 
-		$object			= $this->exists($path);
-		$query_string	= "select path from $nodes_tbl where object=$object";
-		$exec			= pg_exec($this->connect_id, $query_string);
-		$i				= 0;
+		$object = $this->exists($path);
+		$query_string = "select path from $nodes_tbl where object=$object";
+		$exec = $this->store_run_query( $query_string);
+		$i = 0;
 		while ($row=@pg_fetch_array($exec, $i++)) {
-			$result[]	= $row["path"];
+			$result[] = $row["path"];
 		}
 		debug("list_paths: end","all");
 		return ($result);
@@ -876,18 +940,18 @@ class postgresqlstore {
 
 		debug("implements($implements)","store");
 
-		$nodes_tbl		= $this->tbl_prefix."nodes";
-		$objects_tbl	= $this->tbl_prefix."objects";
-		$types_tbl		= $this->tbl_prefix."types";
+		$nodes_tbl = $this->tbl_prefix."nodes";
+		$objects_tbl = $this->tbl_prefix."objects";
+		$types_tbl = $this->tbl_prefix."types";
 
-		$query_string	= "select distinct type from $types_tbl where implements='".AddSlashes($implements)."' and type='".AddSlashes($type)."'";
-		$this->error	= "";
-		$exec			= pg_exec($this->connect_id, $query_string);
+		$query_string = "select distinct type from $types_tbl where implements='".AddSlashes($implements)."' and type='".AddSlashes($type)."'";
+		$this->error = "";
+		$exec = $this->store_run_query( $query_string);
 		if ($exec && pg_numrows($exec) > 0) {
-			$row		= pg_fetch_array($exec, 0);
+			$row = pg_fetch_array($exec, 0);
 		}
 		if ($row) {
-			$result		= 1;
+			$result = 1;
 		}
 		debug("implements: end ($result)","all");
 		return ($result);
@@ -909,30 +973,30 @@ class postgresqlstore {
 	**********************************************************************/
 
 		debug("make_path($curr_dir, $path)","all");		
-		$this->error	= "";
+		$this->error = "";
 		if (substr($path,0,1) == "/") {
-			$result		= "/";
-			$path		= substr($path, 1);
+			$result = "/";
+			$path = substr($path, 1);
 		} else {
-			$result		= $curr_dir;
+			$result = $curr_dir;
 		}
 		if (substr($path,-1) == "/") {
-			$path		= substr($path, 0, -1);
+			$path = substr($path, 0, -1);
 		}
 		if ($path) {
-			$splitpath	= explode("/", $path);
+			$splitpath = explode("/", $path);
 
 			while (list($key, $pathticle) = each($splitpath)) {
 				switch($pathticle) {
 					case ".." :
-						$result	= substr($result, 0, strrpos(substr($result,0,-1), "/")+1);
+						$result = substr($result, 0, strrpos(substr($result,0,-1), "/")+1);
 						break;
 					case "." :
 						break;
 					case ""	 :
 						break;
 					default	 :
-						$result	= $result.$pathticle."/";
+						$result = $result.$pathticle."/";
 				}
 			}
 		}
@@ -966,12 +1030,12 @@ class postgresqlstore {
 	function load_properties($object) {
 		debug("load_properties($object)","all");
 		if ($object) {
-			$query_string	= "select name from ".$this->tbl_prefix."properties";
-			$exec			= @pg_exec($this->connect_id, $query_string);
-			$i				= 0;
+			$query_string = "select name from ".$this->tbl_prefix."properties";
+			$exec = @$this->store_run_query( $query_string);
+			$i = 0;
 			while ($prop = @pg_fetch_array($exec, $i++)) {
 				if ($value = $this->load_property($object,$prop["name"])) {
-					$result[$prop["name"]]	= $value;
+					$result[$prop["name"]] = $value;
 				}
 			}
 		}
@@ -982,23 +1046,23 @@ class postgresqlstore {
 	function load_property($object, $property) {
 		debug("load_property($object, $property)","all");
 
-		$nodes_tbl		= $this->tbl_prefix."nodes";
-		$objects_tbl	= $this->tbl_prefix."objects";
-		$types_tbl		= $this->tbl_prefix."types";
+		$nodes_tbl = $this->tbl_prefix."nodes";
+		$objects_tbl = $this->tbl_prefix."objects";
+		$types_tbl = $this->tbl_prefix."types";
 
 		if ($object) {
-			$query_string	= "select * from ".$this->tbl_prefix."prop_".AddSlashes($property)." where object=$object";
-			$exec			= @pg_exec($this->connect_id, $query_string);
-			$i				= 0;
+			$query_string = "select * from ".$this->tbl_prefix."prop_".AddSlashes($property)." where object=$object";
+			$exec = @$this->store_run_query( $query_string);
+			$i = 0;
 			$currProp=0;
 			while ($prop=@pg_fetch_array($exec, $i++, PGSQL_ASSOC)) {
 				reset($prop);
 				while (is_array($prop) && (list($name,$val)=each($prop)) ) {
 					if ($name != "object") {
 						if (is_string($val)) {
-							$result[$currProp][substr($name,3)]	= "'".AddSlashes($val)."'";
+							$result[$currProp][substr($name,3)] = "'".AddSlashes($val)."'";
 						} else {
-							$result[$currProp][substr($name,3)]	= $val;
+							$result[$currProp][substr($name,3)] = $val;
 						}
 					}
 				}
@@ -1012,21 +1076,21 @@ class postgresqlstore {
 	function add_property($object, $property, $values) {
 		debug("add_property($object, $property, [values])","all");
 
-		$nodes_tbl		= $this->tbl_prefix."nodes";
-		$objects_tbl	= $this->tbl_prefix."objects";
-		$types_tbl		= $this->tbl_prefix."types";
+		$nodes_tbl = $this->tbl_prefix."nodes";
+		$objects_tbl = $this->tbl_prefix."objects";
+		$types_tbl = $this->tbl_prefix."types";
 
 		if ($object) {
 			while (list($name, $value)=each($values)) {
 				if ($value != "") {
-					$query_names	.= "AR_".AddSlashes($name).", ";
-					$query_values	.= "$value, ";
+					$query_names .= "AR_".AddSlashes($name).", ";
+					$query_values .= "$value, ";
 				}
 			}
-			$query_string	= "insert into ".$this->tbl_prefix."prop_".AddSlashes($property)." ( ".
+			$query_string = "insert into ".$this->tbl_prefix."prop_".AddSlashes($property)." ( ".
 										$query_names."object ) values ( ".$query_values."$object )";
-			$exec			= pg_exec($this->connect_id, $query_string);
-			$result			= pg_cmdtuples($exec);
+			$exec = $this->store_run_query( $query_string);
+			$result = pg_cmdtuples($exec);
 		}
 		debug("add_property: end","all");
 		return ($result);
@@ -1034,141 +1098,82 @@ class postgresqlstore {
 
 	function del_property($object, $property="", $values="") {
 		debug("del_property($object, $property, [values])","all");
+		$result=false;
 
-		$nodes_tbl		= $this->tbl_prefix."nodes";
-		$objects_tbl	= $this->tbl_prefix."objects";
-		$types_tbl		= $this->tbl_prefix."types";
+		$nodes_tbl = $this->tbl_prefix."nodes";
+		$objects_tbl = $this->tbl_prefix."objects";
+		$types_tbl = $this->tbl_prefix."types";
 
 		if (intval($object)) {
 			if (!$property) { // remove all properties for $object
-				$query_string	= "select name from ".$this->tbl_prefix."properties";
-				$exec			= pg_exec($this->connect_id, $query_string);
-				$i				= 0;
+				$query_string = "select name from ".$this->tbl_prefix."properties";
+				$exec = $this->store_run_query( $query_string);
+				$i = 0;
 				while ($row=@pg_fetch_array($exec, $i++)) {
-					$query_string	 = "delete from ".$this->tbl_prefix."prop_".$row["name"]." where object=$object";
-					$exec_del		 = pg_exec($this->connect_id, $query_string);
-					$result			+= pg_cmdtuples($exec_del);
+					$query_string = "delete from ".$this->tbl_prefix."prop_".$row["name"]." where object=$object";
+					$exec_del = $this->store_run_query( $query_string);
+					$result += pg_cmdtuples($exec_del);
 				}
 			} else {
-				$query_string	= "delete from ".$this->tbl_prefix."prop_".AddSlashes($property)." where ";
+				$query_string = "delete from ".$this->tbl_prefix."prop_".AddSlashes($property)." where ";
 				if (is_array($values)) {
 					while (list($name, $value) = each($values)) {
-						$query_string	.= "AR_".AddSlashes($name)."=$value and ";
+						$query_string .= "AR_".AddSlashes($name)."=$value and ";
 					}
 				}
-				$query_string	.= "object=$object";
-				$exec			= pg_exec($this->connect_id, $query_string);
-				$result			= pg_cmdtuples($exec);
+				$query_string .= "object=$object";
+				$exec = $this->store_run_query( $query_string);
+				$result = pg_cmdtuples($exec);
 			}
 		}
 		debug("del_property: end","all");
 		return $result;
 	}
 
-	function nextid($path) {
-	/**********************************************************************
-
-		'private' function of PostgreSQL store. Used by link and save.
-		This function calculates and returns the next unused id (number) for 
-	the given path. 
-
-	**********************************************************************/
-
-		$epath			= AddSlashes($path);
-		$path			= AddSlashes($path);
-
-		$nodes_tbl		= $this->tbl_prefix."nodes";
-		$objects_tbl	= $this->tbl_prefix."objects";
-		$types_tbl		= $this->tbl_prefix."types";
-
-		// start transaction
-		$query_string	= "BEGIN WORK; LOCK TABLE ".$this->tbl_prefix."seq_id IN SHARE MODE";
-		if (pg_exec($this->connect_id, $query_string)) {
-			$query_string	= "select next_id from ".$this->tbl_prefix."seq_id where path='$epath'";
-			if (($exec = pg_exec($this->connect_id, $query_string)) && (pg_numrows($exec)>0)) {
-				$row=pg_fetch_array($exec, 0);
-				$id=intval($row["next_id"]);
-			} else {
-				$id=1;
-				$query_string="insert into ".$this->tbl_prefix."seq_id values ('$path', 1 )";
-				pg_exec($this->connect_id, $query_string);
-			}
-			$query_string="update ".$this->tbl_prefix."seq_id set next_id=".($id+1)." where path='$epath'";		
-			pg_exec($this->connect_id, $query_string);
-			// finish transaction
-			$query_string="COMMIT";
-			pg_exec($this->connect_id, $query_string);
-		} else {
-			error("no lock.");
-			$this->close();
-		}
-
-		return ($id);
-	}
 
 	function set_nextid($path, $newid) {
 	/**********************************************************************
 
+		'private' function of postgresql store. 
+		(deprecated, but still available for backward compatibility).
 
 	**********************************************************************/
-
-		$epath			= AddSlashes($path);
-		$path			= AddSlashes($path);
-
-		$nodes_tbl		= $this->tbl_prefix."nodes";
-		$objects_tbl	= $this->tbl_prefix."objects";
-		$types_tbl		= $this->tbl_prefix."types";
-
-		// start transaction
-		$query_string	= "BEGIN WORK; LOCK TABLE ".$this->tbl_prefix."seq_id IN SHARE MODE";
-		if (pg_exec($this->connect_id, $query_string)) {
-			$query_string	= "select next_id from ".$this->tbl_prefix."seq_id where path='$epath'";
-			if (($exec = pg_exec($this->connect_id, $query_string)) && (pg_cmdtuples($exec)>0)) {
-				$row=pg_fetch_array($temp, 0);
-				$id=intval($row["next_id"]);
-			} else {
-				$id=1;
-				$query_string="insert into ".$this->tbl_prefix."seq_id values ('$path', 1 )";
-				pg_exec($this->connect_id, $query_string);
-			}
-			if ($newid > $id) {
-				$query_string="update ".$this->tbl_prefix."seq_id set next_id=".($newid)." where path='$epath'";		
-				pg_exec($this->connect_id, $query_string);
-			}
-			// finish transaction
-			$query_string="COMMIT";
-			pg_exec($this->connect_id, $query_string);
-		} else {
-			error("no lock.");
-			$this->close();
-		}
-
-		return ($id);
+		return $newid;
 	}
 
 
-
-	function get_nextid($path) {
+	function get_nextid($path, $mask="{5:id}") {
 	/**********************************************************************
+
+		'private' function of mysql store. This will return the next
+		'autoid' for $path.
 
 	**********************************************************************/
 
-		$epath			= AddSlashes($path);
-		$path			= AddSlashes($path);
+		$path=AddSlashes($path);
 
-		$nodes_tbl		= $this->tbl_prefix."nodes";
-		$objects_tbl	= $this->tbl_prefix."objects";
-		$types_tbl		= $this->tbl_prefix."types";
+		$substr_s = strlen($path);
+		if (ereg("^(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) { 
+			$subid = 0;
+			$mask_pre = $matches[1];
+			$substr_s += strlen($mask_pre)+1;
+			$substr_l = intval(substr($matches[2], 0, 1));
+			$mask_post= $matches[3];
+			$query_string = 
+				"select max(substr(path, $substr_s, $substr_l)) as id
+				from ".$this->tbl_prefix."nodes where 
+				path ~ '^".$path.$mask_pre."[0-9]\{".$substr_l."\}".$mask_post."'";
 
-		// start transaction
-		$query_string	= "select next_id from ".$this->tbl_prefix."seq_id where path='$epath'";
-		if (($exec = pg_exec($this->connect_id, $query_string)) && (pg_cmdtuples($exec)>0)) {
-			$row=pg_fetch_array($temp, 0);
-			$id=intval($row["next_id"]);
-		} else {
-			$id=1;
+			//error($query_string);
+			$result = $this->store_run_query( $query_string);
+			if ($result) {
+				$row = pg_fetch_array($result);
+				$subid = intval($row["id"]);
+			}
+			$subid=$subid+1;
+			$subid = sprintf("%0".$substr_l."d", $subid);
 		}
-		return ($id);
+		return $subid;
 	}
 
 	function get_filestore($name) {
