@@ -1,4 +1,5 @@
 <?php
+	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 ?>
 <script>
@@ -11,7 +12,7 @@
 	function doSubmit() {
 		var arr = new Array();
 		arr["attributes"]=new Array();
-		arr["attributes"][0] = new attribute('ar_type','external');
+		arr["attributes"][0] = new attribute('ar:type','external');
 		arr["URL"] = '<?php echo $URL; ?>';
 		top.window.returnValue = arr;
 		top.window.close();

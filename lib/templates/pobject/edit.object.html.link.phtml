@@ -89,8 +89,14 @@ function IsDigit()
 				echo "		allTypes['$key']='$value';\n";
 			}
 		?>
-		if (window.dialogArguments['ar_type']) {
-			arType=allTypes[window.dialogArguments['ar_type']];
+		var ar_type=window.dialogArguments['ar:type'];
+		if (window.dialogArguments['ar:type']) {
+			var ar_type=window.dialogArguments['ar:type'];
+		} else if (window.dialogArguments['ar_type']) {
+			var ar_type=window.dialogArguments['ar_type'];
+		} 
+		if (ar_type && allTypes[ar_type]) {
+			arType=allTypes[ar_type];
 		} else {
 			arType=defaultType;
 		}

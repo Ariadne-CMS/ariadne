@@ -1,4 +1,5 @@
 <?php
+	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		$settings=$this->call('editor.ini');
 
@@ -63,7 +64,8 @@ BODY 	{
 				document.forms[0]['URL'].value = top.window.dialogArguments["URL"];
 				break;
 			case "ar_type":
-				var ar_type = top.window.dialogArguments["ar_type"];
+			case "ar:type":
+				var ar_type = top.window.dialogArguments[elem];
 				for (i=0; i<document.forms[0]['ar_type'].options.length; i++) {
 					if (document.forms[0]['ar_type'].options[i].value==ar_type) {
 						document.forms[0]['ar_type'].selectedIndex=i;
