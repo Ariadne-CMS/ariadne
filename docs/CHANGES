@@ -1,4 +1,9 @@
-Ariadne 2.2
+Ariadne 2.2.1
+
+Changes in Ariadne since version 2.2
+
+New features:
+	- The columns in the templates overview are now sortable.
 
 Changes in Ariadne since version 2.1.4
 
