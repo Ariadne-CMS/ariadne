@@ -2,59 +2,59 @@
 
 	class pinp_edit {
 
-		function _setEditmode(&$object, $mode=false) {
+		function _setEditmode($mode=false) {
 			global $mod_edit_data;
 			$mod_edit_data['editmode']=$mode;
 		}
 
-		function _getEditmode(&$object) {
+		function _getEditmode() {
 			global $mod_edit_data;
 			return $mod_edit_data['editmode'];
 		}
 
-		function _showSpan(&$object, $var, $name) {
+		function _showSpan($var, $name) {
 			global $mod_edit_data;
 			if ($mod_edit_data['editmode']) {
 				$id=++$mod_edit_data['id'];
-				echo "<span class='editable' id='editable_$id' ar:path='".$object->path."' ar:id='".$object->id."'>";
+				echo "<span class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."'>";
 				echo $var;
 				echo "</span>";
-				$mod_edit_data['formdata'][$object->path][$name][]=$id;
+				$mod_edit_data['formdata'][$this->path][$name][]=$id;
 			} else {
 				echo $var;
 			}
 		}
 
-		function _showDiv(&$object, $var, $name) {
+		function _showDiv($var, $name) {
 			global $mod_edit_data;
 			if ($mod_edit_data['editmode']) {
 				$id=++$mod_edit_data['id'];
-				echo "<div class='editable' id='editable_$id' ar:path='".$object->path."' ar:id='".$object->id."'>";
+				echo "<div class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."'>";
 				echo $var;
 				echo "</div>";
-				$mod_edit_data['formdata'][$object->path][$name][]=$id;
+				$mod_edit_data['formdata'][$this->path][$name][]=$id;
 			} else {
 				echo $var;
 			}
 		}
 
-		function _openForm(&$object) {
+		function _openForm() {
 			global $mod_edit_data, $formcounter;
 			if ($mod_edit_data['editmode']) {
 				$id=++$mod_edit_data['formcounter'];
-				echo "<form id='edit_form_".$id."' ar:path='".$object->path."' ar:id='".$object->id."'>";
-				$mod_edit_data['forms'][$object->path][]=$id;
+				echo "<form id='edit_form_".$id."' ar:path='".$this->path."' ar:id='".$this->id."'>";
+				$mod_edit_data['forms'][$this->path][]=$id;
 			}
 		}
 
-		function _closeForm(&$object) {
+		function _closeForm() {
 			global $mod_edit_data;
 			if ($mod_edit_data['editmode']) {
 				echo "</form>";
 			}
 		}
 
-		function _registerData(&$object) {
+		function _registerData() {
 			global $mod_edit_data;
 			if ($mod_edit_data['editmode']) {
 				echo "<script>\n";
