@@ -4,19 +4,14 @@
 		$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
 		if ($filter=$this->getvar('filter')) {
 			$query.=" and object.implements='".AddSlashes($filter)."'";
-			$crit["object"]["implements"]["="]="'".AddSlashes($filter)."'";
 		}
 		if ($name=$this->getvar('name')) {
 			$query.=" and name.value ~= '%".AddSlashes($name)."%'";
-			$crit["name"]["value"]["like"]="'%".AddSlashes($name)."%'";
 		} else if ($letter=$this->getvar('letter')) {
 			$query.=" and name.value ~= '".AddSlashes($letter)."%'";
-			$crit["name"]["value"]["like"]="'".AddSlashes($letter)."%'";
 		}
 		if ($date=$this->getvar('date')) {
 			$date=ereg_replace("[^0-9]*","",$date);
-			$crit["timeframe"]["start"]["<="]=$date+86400;
-			$crit["timeframe"]["end"][">="]=$date;
 			$query.=" and timeframe.start <= ".($date+86400)." and timeframe.end >= ".$date;
 		}
 		if ($AR->user->data->orderedbrowsing) {
