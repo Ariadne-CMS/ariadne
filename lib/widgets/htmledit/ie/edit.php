@@ -15,10 +15,6 @@
 <script LANGUAGE="JavaScript" SRC="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/Inc/dhtmled.js">
 </script>
 
-<!-- wgHTMLEditParagraphStyles lists per language, as DECMD_GETBLOCKFORMATNAMES is too much for us simpletons to understand... -->
-<script LANGUAGE="JavaScript" SRC="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/Inc/nls.js">
-</script>
-
 <script ID="clientEventHandlersJS" LANGUAGE="javascript">
 <!--
   window.exists=true; // do not reload editing environment if window still exists.
@@ -68,6 +64,7 @@ function QueryStatusItem(command, element) {
   this.command = command;
   this.element = element;
 }
+
 
 //
 // Event handlers
@@ -162,14 +159,19 @@ function window_onload() {
   AbsPosContextMenu[6] = new ContextMenuItem(MENU_SEPARATOR, 0);
   AbsPosContextMenu[7] = new ContextMenuItem("Send Below Text", DECMD_SEND_BELOW_TEXT);
   AbsPosContextMenu[8] = new ContextMenuItem("Bring Above Text", DECMD_BRING_ABOVE_TEXT);
-
   docComplete = false;
-  testStyle = tbContentElement.ExecCommand(DECMD_GETBLOCKFMT, OLECMDEXECOPT_DODEFAULT);
-  if (wgHTMLEditParagraphStyles[testStyle]) {
-    for (key in wgHTMLEditParagraphStyles[testStyle]) {
-      ParagraphStyle.options[ParagraphStyle.options.length]=new Option(wgHTMLEditParagraphStyles[testStyle][key], wgHTMLEditParagraphStyles[testStyle][key]);
-    }
+
+  var f=new ActiveXObject("DEGetBlockFmtNamesParam.DEGetBlockFmtNamesParam");
+
+  tbContentElement.ExecCommand(DECMD_GETBLOCKFMTNAMES,OLECMDEXECOPT_DODEFAULT,f);
+
+  vbarr = new VBArray(f.Names);
+  arr = vbarr.toArray();
+
+  for (var i=0;i<arr.length;i++) {
+    ParagraphStyle.options[ParagraphStyle.options.length]=new Option(arr[i], arr[i]);
   }
+
   loadpage(tbContentRoot, tbContentPath, tbContentFile, tbContentName, tbContentLanguage, tbContentType);
 }
 
