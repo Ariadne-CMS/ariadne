@@ -1,0 +1,38 @@
+<?php
+	if ($this->CheckLogin("config") && $this->CheckConfig()) {
+		set_time_limit(0);
+		$ARCurrent->wddxoptions = array('verbose' => true);
+		$filename = tempnam($this->store->get_config("files")."temp/","wddx");
+		$ARCurrent->session->put("tempname",$filename);
+		$ARCurrent->wddxfp = fopen($filename,'w');
+		if(!$ARCurrent->wddxfp){
+			$error = "Error opening output file";
+		} else {
+			
+?>
+<script>
+	error=false;
+	window.onload=startdownload;
+	
+	function startdownload() {
+		if (!error) {
+			location.href='object.export.wddx';
+		}
+	}
+	
+</script>
+
+<pre style="background-color: white; border: 2px inset buttonhighlight; font-size: 12px; margin: 4px; padding: 2px;"><?php
+			echo "Exporting $srcpath \n";
+			$this->call("export.wddx.phtml",array());
+			if ($error) {
+				echo $error."\n";
+			}
+		}
+?></pre><?php
+		if ($error) {
+			// prevent js download code from running 
+			echo "<script> error=true; </script>";
+		}
+	}
+?>

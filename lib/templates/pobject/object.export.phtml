@@ -17,10 +17,10 @@
 		include($this->store->get_config("code")."nls/menu.".$nls);
 
 		$start="object.export.form.phtml";
-		$finish="object.export.ax.phtml";
+		$finish="object.export.do.phtml";
 	 
 		$wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
-		$wgWizFlow[0]["save"]='object.export.ax.phtml';
+		$wgWizFlow[0]["save"]=$finish;
 		$wgWizFlow[0]["cancel"]='js.window.close.phtml';
 		$wgWizFlow[0]["template"]='object.export.form.phtml';
                 
