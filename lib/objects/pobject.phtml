@@ -685,6 +685,12 @@ class pobject extends object {
 	
 		debug("pobject::CheckConfig($arCallFunction, $arCallArgs)","object");
 		$MAX_LOOP_COUNT=10;
+
+		if (!isset($ARBeenHere)) {
+			/* this is the first time 'CheckConfig' has been called */
+			$firstCheckConfigCall = true;
+		}
+
 		if ($ARBeenHere[$this->path][$arCallFunction]<$MAX_LOOP_COUNT) { // protect against infinite loops
 			$ARBeenHere[$this->path][$arCallFunction]+=1;
 			if (!$ARConfig->cache[$this->path]) {
@@ -742,12 +748,18 @@ class pobject extends object {
 				$ARCurrent->cachetime=$config->cache;
 				// start output buffering...	
 				debug("CheckConfig: ob_start()","all");
-				ob_start();
+				// if output compression is on, we don't want
+				// to start another output buffer
+				if (!$AR->output_compression) {
+					ob_start();
+				}
 			} else {
+				if ($firstCheckConfigCall) {
+					$nocache = true;
+				}
 				debug("CheckConfig: caching disabled","all");
 				debug("             config->cache: ".$config->cache."; nocache: ".$nocache."; user: ".$AR->user->data->login."; os: ".$AR->OS,"all");
 			}
-			$nocache=true; // make sure no other parts are cached either;
 
 			/* first check current templates */
 			$curr_templates=$this->data->pinp;
@@ -848,28 +860,34 @@ class pobject extends object {
 
 	function ClearCache($path="",$private=true, $recurse=false) {
 	global $AR;
- 
 		debug("pobject: ClearCache($path)","object");
 		if (!$path) { $path=$this->path; }
 		$nlslist=$AR->nls->list;
 		$nlslist["."]="default";
-		while (list($nls,$language)=each($nlslist)) {
-			$fpath=$this->store->files."cache/$nls/".$path;
-			$hpath=$this->store->files."cacheheaders/$nls/".$path;
-			if ($dir=@dir($fpath)) {
-				while ($entry=$dir->read()) {
-					if ($entry!="." && $entry!="..") {
-						if (filetype($fpath.$entry)!="dir") {
-							@unlink($fpath.$entry);
-							@unlink($hpath.$entry);
-						} else if ($entry!="." && $entry!=".." && $recurse) {
-							$this->ClearCache($path.$entry."/", false, true);
+		$cache_types[] = "normal";
+		if ($AR->output_compression) {
+			$cache_types[] = "compressed";
+		}
+		while (list($key, $type)=each($cache_types)) {
+			reset($nlslist);
+			while (list($nls,$language)=each($nlslist)) {
+				$fpath=$this->store->files."cache/$type/$nls".$path;
+				$hpath=$this->store->files."cacheheaders/$type/$nls".$path;
+				if ($dir=dir($fpath)) {
+					while ($entry=$dir->read()) {
+						if ($entry!="." && $entry!="..") {
+							if (filetype($fpath.$entry)!="dir") {
+								@unlink($fpath.$entry);
+								@unlink($hpath.$entry);
+							} else if ($entry!="." && $entry!=".." && $recurse) {
+								$this->ClearCache($path.$entry."/", false, true);
+							}
 						}
 					}
+				} else if (file_exists(substr($fpath,0,-1)."=")) {
+					@unlink(substr($fpath,0,-1)."=");
+					@unlink(substr($hpath,0,-1)."=");
 				}
-			} else if (file_exists(substr($fpath,0,-1)."=")) {
-				@unlink(substr($fpath,0,-1)."=");
-				@unlink(substr($hpath,0,-1)."=");
 			}
 		}
 		if ($private) {
@@ -891,6 +909,7 @@ class pobject extends object {
 		}
 		debug("pobject: ClearCache: end","all");
 	}
+
 
 	function cached($name, $nls="") {
 		debug("cached($name)","object");

@@ -42,6 +42,9 @@
 			$session_id=0;
 		}
 
+
+
+
 		// set the default user (public)
 		$AR->login="public";
 
@@ -59,8 +62,20 @@
 			$ldCacheFilename.=$QUERY_STRING;
 		}
 
-		$cachedimage=$store_config["files"]."cache".$ldCacheFilename;
-		$cachedheader=$store_config["files"]."cacheheaders".$ldCacheFilename;
+
+		if (!$AR->output_compression 
+				|| strpos($HTTP_SERVER_VARS["HTTP_ACCEPT_ENCODING"], "gzip")===false 
+				|| !function_exists("gzcompress")
+			) {
+
+			$AR->output_compression = 0;
+			$cachedimage=$store_config["files"]."cache/normal".$ldCacheFilename;
+			$cachedheader=$store_config["files"]."cacheheaders/normal".$ldCacheFilename;
+		} else {
+			$cachedimage=$store_config["files"]."cache/compressed".$ldCacheFilename;
+			$cachedheader=$store_config["files"]."cacheheaders/compressed".$ldCacheFilename;
+		}
+
 		
 		$timecheck=time();
 		if (file_exists($cachedimage) && 
@@ -85,13 +100,25 @@
 					$cachetime=$mtime; 
 				}
 				if (file_exists($cachedheader)) {
-					ldHeader(file($cachedheader));
+					$filedata = file($cachedheader);
+					if (is_array($filedata)) {
+						while (list($key, $header)=each($filedata)) {
+							ldHeader($header);
+						}
+					}
 				}
 				ldSetClientCache(true, $cachetime, $ctime);
 				readfile($cachedimage);
 			}
 
 		} else {
+			/*
+				start output buffering
+			*/
+			if ($AR->output_compression) {
+				ob_start();
+				ob_implicit_flush(0);
+			}
 
 			// look for the language
 			$split=strpos(substr($PATH_INFO, 1), "/");
@@ -160,13 +187,48 @@
 		if ($ARCurrent->session) {
 			$ARCurrent->session->save();
 		}
-
 		// now check for outputbuffering (caching)
 		if ($image=ob_get_contents()) {
 			// first set clientside cache headers
-			if (!$ARCurrent->arDontCache && $ARCurrent->cachetime) {
+			if (!$ARCurrent->arDontCache && !$nocache && $ARCurrent->cachetime) {
 				ldSetClientCache(true, time()+(($ARCurrent->cachetime * 3600)/2));
 			}
+
+
+			if ($AR->output_compression) {
+				/*
+					FIXME: when output may not be compressed, it still get saved under 
+					the cache/compressed/ directory so that another request will load
+					it from cache. (maybe we can save it to cache/normal/ and
+					create a (sym)link under cache/compressed/ to it? ).
+				*/
+				$ldCacheFilename = "/compressed".$ldCacheFilename;
+				$skip_compression = false;
+
+				if (is_array($ARCurrent->ldHeaders) && is_array($AR->output_compression_skip)) {
+					while(!$skip_compression && (list($key, $ctype)=each($AR->output_compression_skip))) {
+						if ($ARCurrent->ldHeaders["content-type: $ctype"]) {
+							$skip_compression = true;
+						}
+					}
+				}
+
+				if (!$skip_compression) {
+					ob_clean();
+					$crc = crc32($image);
+					$size = strlen($image);
+					$image = gzcompress($image, $AR->output_compression);
+					$image = substr($image, 0, strlen($image) - 4);
+					ldHeader("Content-Encoding: gzip");
+					/* add header */
+					$image = "\x1f\x8b\x08\x00\x00\x00\x00\x00".$image;
+					$image.= pack('V', $crc).pack('V', $size);
+					echo $image;
+				}
+			} else {
+				$ldCacheFilename = "/normal".$ldCacheFilename;
+			}
+
 			// because we have the full content, we can now also calculate the content length
 			ldHeader("Content-Length: ".strlen($image));
 			// flush the buffer, this will send the contents to the browser
@@ -175,7 +237,7 @@
 			// check whether caching went correctly, then save the cache
 			if (is_array($ARCurrent->cache) && ($file=array_pop($ARCurrent->cache))) {
 				error("cached() opened but not closed with savecache()");
-			} else if (!$ARCurrent->arDontCache) {
+			} else if (!$ARCurrent->arDontCache && !$nocache) {
 				ldSetCache($ldCacheFilename, $ARCurrent->cachetime, $image, @implode("\n",$ARCurrent->ldHeaders));
 			}
 		}

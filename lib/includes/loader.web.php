@@ -251,7 +251,7 @@
 		if (!Headers_sent()) {
 			$result=true;
 			Header($header);
-			$ARCurrent->ldHeaders[]=$header;			
+			$ARCurrent->ldHeaders[strtolower($header)]=$header;
 		} else {
 			debug("Headers already sent, couldn't send $header","all");
 		}
