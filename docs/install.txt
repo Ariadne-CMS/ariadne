@@ -1,7 +1,7 @@
 Installing Ariadne.                                            Muze Ariadne 2.1
 ===============================================================================
 
-  IMPORTANT: Ariadne needs PHP4.0.6 or higher *
+  IMPORTANT: Ariadne needs PHP 4.0.6 or higher *
 
   * If you don't need the FTP daemon, PHP 4.0.3pl1 is the minimum
            
@@ -85,6 +85,19 @@ Recommended:
 
 More information on programming for/in Ariadne, user manuals, administrator
 manuals, etc. can be found at http://ariadne.muze.nl/
+
+Notes:
+  If you happen to use a Postgresql database then the install procedure is
+  exact the same except for the database creation and configuration:
+
+    1) create a database (e.g. ariadne)
+    2) add a postgres user who is able to:
+      - logon to the database
+      - create tables (only needed for the ariadne install procedure)
+      - do insert and updates on all the ariadne database tables
+    3) set the $AR->DB->dbms variable in lib/configs/ariadne.phtml to 
+       "postgresql"
+
 
 Auke van Slooten
 Muze
