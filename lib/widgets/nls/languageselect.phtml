@@ -27,7 +27,7 @@
 				// now list all non-selected-language variables
 				$arlanguage=htmlentities($arlanguage);
 				$image=$AR->dir->images.'nls/'.$arnls.'.gif';
-				if (isset($this->data->$arnls)) {
+				if (isset($this->data->nls->list[$arnls])) {
 					ldSetNls($arnls);
 					echo "<td align=\"center\"><font face=\"arial, helvetica, sans-serif\"><a href=\"".$this->store->root.$this->path."$arCallFunction$arCallArgs\"><img alt=\"$arlanguage\" src=\"$image\"><br>$arlanguage</a></font></td>\n";
 				}
