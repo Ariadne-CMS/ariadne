@@ -41,16 +41,18 @@
 			$this->data->nls->default=$ARConfig->nls->default;
 			reset($AR->nls->list);
 			while (list($key, $value)=each($AR->nls->list)) {
+				if ($summary=$this->getdata("summary", $key)) {
 					if (!$this->data->$key) {
 						$newnlsdata=new object;
 					} else {
 						$newnlsdata=$this->data->$key;
 					}
 					$newnlsdata->name=$this->data->name;
-					$newnlsdata->summary=$this->getdata("summary",$key);
+					$newnlsdata->summary=$summary;
 					$properties["text"][]["value"]="'".AddSlashes($newnlsdata->summary)."'";
 					$this->data->$key=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
+				}
 			}
 
 			$this->data->address=$this->getdata("address","none");

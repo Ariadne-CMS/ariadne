@@ -39,10 +39,15 @@
       </table>
     </fieldset>
     <fieldset id="comments">
-    <legend><?php echo $ARnls["comments"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
       <table border="0" align="center">
       <tr>
         <td>
+          <?php echo $ARnls["comments"]; ?>
+        </td><td align="right">
+          <?php echo $flag; ?>
+        </td>
+      </tr><tr>
+        <td colspan="2">
           <textarea name="<?php echo $selectednls."[summary]"; ?>" cols="35" rows="4" wrap="soft"><?php 
               echo ereg_replace("&","&amp;",$this->getdata("summary", $selectednls)); 
           ?></textarea>
