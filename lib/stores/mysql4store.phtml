@@ -36,8 +36,8 @@ class mysql4store extends mysqlstore {
 
 	function mysql4store($path, $config) {
 		mysqlstore::mysqlstore($path, $config);
-		/* Include module mysql_compiler */
-		include_once($this->code."stores/modules/mysql_compiler.php");
+		/* Include module mysql4_compiler */
+		include_once($this->code."stores/modules/mysql4_compiler.php");
 	}
 
 	function is_supported($feature) {
