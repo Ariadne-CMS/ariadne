@@ -24,12 +24,16 @@
 	include($this->store->get_config("code")."widgets/wizard/classic.css");
 
 	if (!($file=$template)) {
-		if ($data->pinp[$type][$function][$language]) {
+		if ($data->config->pinp[$type][$function][$language]) {
 			$template=$type.".".$function.".".$language.".pinp";
 			$templates=$this->store->get_filestore("templates");
 			if ($templates->exists($this->id, $template)) {
 				$file=$templates->read($this->id, $template);
+			} else {
+				echo "$type::$function.$language doesn't exist";
 			}
+		} else {
+			echo "$type::$function.$language not found";
 		}
 	}
 
@@ -37,6 +41,7 @@
 	$file = str_replace("\n", "\\n", $file);
 	$file = str_replace('"', '\"', $file);
 	$file = str_replace("\t", "\\t", $file);
+	$file = str_replace("</script>", "</\"+\"script>", $file);
 
 	if( $newtype ) { 
 		$type = $newtype; 

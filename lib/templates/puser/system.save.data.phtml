@@ -106,6 +106,7 @@
 					$this->data->languagelist=$pdata->data->languagelist;
 					$this->data->interface=$pdata->data->interface;
 					$this->data->editor=$pdata->data->editor;
+					$this->data->template_editor=$pdata->data->template_editor;
 					if(!$customgrants) {
 						$groups=$pdata->data->groups;
 					}
@@ -126,6 +127,9 @@
 			}
 			if ($editor=$this->getdata("editor","none")) {
 				$this->data->editor=$editor;
+			}
+			if ($template_editor=$this->getdata("template_editor","none")) {
+				$this->data->template_editor=$template_editor;
 			}
 			if($windowprefs=$this->getdata("windowprefs","none")) {
 				$this->data->windowprefs=$windowprefs;

@@ -11,11 +11,21 @@
       <table border="0" align="center">
       <tr>
         <td>
-          <?php echo $ARnls["default"]; ?>
+          HTML
         </td><td>
           <select name="editor" style="width: 100px;">
               <option value="wysiwyg"><?php echo $ARnls["wysiwyg"]; ?></option>
               <option value="text" <?php if ($data->editor=="text") { echo "selected"; } ?>><?php echo $ARnls["text"]; ?></option>
+          </select>
+        <td>
+      </tr>
+      <tr>
+        <td>
+          <?php echo $ARnls["templates"]; ?>
+        </td><td>
+          <select name="template_editor" style="width: 100px;">
+              <option value="text"><?php echo $ARnls["text"]; ?></option>
+              <option value="helene" <?php if ($data->template_editor=="helene") { echo "selected"; } ?>>Helene</option>
           </select>
         <td>
       </tr>
