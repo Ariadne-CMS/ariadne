@@ -6,6 +6,7 @@ function HTMLEdit(root, path, file, name, language, type, title, value, save2for
     window.wgHTMLEditContent=value;
   }
   editwindow=window.open('','editwindow', 'directories=no,height=450,width=640,location=no,menubar=no,status=yes,toolbar=no,resizable=yes');
+  top.editwindow=editwindow;
   editwindow.opener=window;
   if (editwindow.exists) {
     editwindow.loadpage(root, path, file, name, language, type, value, save2form); 
