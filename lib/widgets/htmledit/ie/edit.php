@@ -391,18 +391,30 @@ function AR_FORMAT_HTML(code) {
   sContents=sContents.replace(/&/g,"&amp;");
   sContents=sContents.replace(/</g,"&lt;");
   sContents=sContents.replace(/>/g,"&gt;");  
-  // replace all spaces at the start of a line with non-breaking spaces for indentation.
-  // don't replace spaces in the rest of the line, or you will need a very wide screen.
-  sContents=sContents.replace(/[\n]( +)/g, 
-    function (str, match) {
-      var len=match.length;
-      var result='\n';
-      for (i=0; i<len; i++) {
-        result+='&nbsp;';
+
+/* 
+  This version doesn't seem to be faster, and it certainly isn't more readable.
+  //Test JScript version.
+  var ver = Number(ScriptEngineMajorVersion() + "." + ScriptEngineMinorVersion())
+  if (ver >= 5.5){
+    // replace all spaces at the start of a line with non-breaking spaces for indentation.
+    // don't replace spaces in the rest of the line, or you will need a very wide screen.
+    sContents=sContents.replace(/[\n]( +)/g, 
+      function (str, match) {
+        var len=match.length;
+        var result='\n';
+        for (i=0; i<len; i++) {
+          result+='&nbsp;';
+        }
+        return result;
       }
-      return result;
+    )
+  } else {
+*/
+    while (sContents.match(/[\n](&nbsp;)* /)) {
+      sContents=sContents.replace(/([\n](&nbsp;)*) /, "$1&nbsp;");
     }
-  )
+//  }
   sContents=new String("<HTML><HEAD><META content=\"text/html; charset=UTF-8\" http-equiv=Content-Type><STYLE> P { margin: 0px;} </STYLE></HEAD><BODY STYLE=\"font:10pt courier new, monospace\">"+sContents+"</BODY></HTML>");
   var linebreak=sContents.lastIndexOf('\n');
   while (linebreak!=-1) {
