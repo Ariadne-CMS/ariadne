@@ -1,6 +1,6 @@
-Ariadne 2.3-dev
+Ariadne 2.3.1-dev
 
-Changes in Ariadne since version 2.2
+Changes in Ariadne since version Ariadne 2.3-dev
 
 IMPORTANT:
 	The postgresql store layer has gone through some major changes to make it more
@@ -8,6 +8,18 @@ IMPORTANT:
 	postgresql offers. After using this revision of the postgresql store,
 	reverting back to the older revision of the store needs an export/import
 	to reset some tables with state data.
+
+New Features:
+	- user.notfound.html now calls 2 templates depending on the full page not
+	  found or part of a page, user.notfound.full.html user.notfound.inpage.html
+
+Bugs Fixed:
+	- Removed some legacy code which made it impossible to 'renew' an expired
+	  session.
+
+
+Changes in Ariadne since version 2.2
+
 
 New features:
 	- Added a new Search Folder class, which allows you to enter a
