@@ -19,6 +19,8 @@ Bugs Fixed:
 	  on the target
 	- make_url('','',true) does not generate empty session ids (--) any more
 	- the add grant checks changed to check the parent, not the new object
+	- Fixed the indirect link tool in the wysiwyg editor so that it now
+	  correctly handles complex urls.
 
 Changes in Ariadne since version Ariadne 2.3-dev
 
