@@ -1,0 +1,23 @@
+The new pdf module is a wrapper around fpdf, and works exactly like it. 
+You cannot currently override the default behaviour of the pdf module, like
+defining your own WriteHTML(). But you can do all the 'normal' stuff that
+fpdf allows. The WriteHTML() method in the wrapper already knows basic html
+stuff like headings, paragraphs, links, underline, bold and italic. It doesn't
+yet support tables or images.
+
+example:
+
+<pinp>
+
+  load('mod_pdf.php');
+
+  $pdf=PDF::init();
+
+  $pdf->Open();
+  $pdf->AddPage();
+  $pdf->SetFont('Arial','',10);
+  $pdf->WriteHTML(GetPage());
+  $pdf->Output();
+
+</pinp>
+
