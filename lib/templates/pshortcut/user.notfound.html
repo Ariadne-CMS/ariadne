@@ -15,7 +15,7 @@
 			if (!is_array($ARCurrent->shortcut_redirect)) {
 				$ARCurrent->shortcut_redirect = Array();
 			}
-			array_push($ARCurrent->shortcut_redirect, Array($this->path => $this->data->path));
+			array_push($ARCurrent->shortcut_redirect, Array("src" => $this->path, "dest" => $this->data->path, "keepurl" => $this->data->keepurl));
 				$arResult = $this->get($this->data->path.$subpath, $arRequestedTemplate, $arCallArgs);
 			array_pop($ARCurrent->shortcut_redirect);
 
