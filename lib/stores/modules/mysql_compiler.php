@@ -8,7 +8,10 @@
 		$this->store=$store;
 	}
 
-	function compile_tree(&$node) {
+	function compile_tree(&$node, $arguments=null) {
+		if ($arguments) {
+			extract($arguments);
+		}
 		switch ((string)$node["id"]) {
 			case 'property':
 				$table=$this->tbl_prefix.$node["table"];
@@ -16,7 +19,7 @@
 				$record_id=$node["record_id"];
 				if (!$record_id) {
 					$this->used_tables[$table]=$table;
-					if (!$this->in_orderby) {
+					if (!$this->in_orderby && !$no_context_join) {
 						$result=" $table.object = ".$this->tbl_prefix."objects.id and $table.$field ";
 					} else {
 						/*
@@ -28,7 +31,7 @@
 					}
 				} else {
 					$this->used_tables["$table as $table$record_id"] = $table.$record_id;
-					if (!$this->in_orderby) {
+					if (!$this->in_orderby && !$no_context_join) {
 						$result=" $table$record_id.object = ".$this->tbl_prefix."objects.id and $table$record_id.$field ";
 					} else {
 						$this->select_tables["$table as $table$record_id"] = $table.$record_id;
@@ -118,11 +121,11 @@
 						$not = " not";
 					case '=*':
 						if ($node["left"]["id"]!=="implements") {
-							$left=$this->compile_tree($node["left"]);
+							$left=$this->compile_tree($node["left"], Array("no_context_join" => true));
 							$right=$this->compile_tree($node["right"]);
 							/* fulltext search operators: =*, !*, =**, !** (double asterices indicate boolean mode) */
 							$operator = $node["operator"];
-							$result = "$not match ($left) against ('".mysqlstore::format_for_fti(substr($right,1,-1))."$boolmode') ";
+							$result .= "$not match ($left) against ('".mysqlstore::format_for_fti(substr($right,1,-1))."$boolmode') ";
 							return $result;
 						}
 					break;
