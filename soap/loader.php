@@ -4,7 +4,7 @@
 	require_once($ariadne."/configs/store.phtml");
 	include_once($store_config['code']."stores/".$store_config["dbms"]."store.phtml");
 	include_once($store_config['code']."modules/mod_session.phtml");
-	include_once($store_config['code']."modules/mod_soap.phtml");
+	include_once($store_config['code']."includes/loader.soap.server.php");
 	include_once($store_config['code']."includes/loader.soap.php");
 
 	function fix_quotes(&$value) {
