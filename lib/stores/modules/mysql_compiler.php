@@ -18,15 +18,25 @@
 				$field=$node["field"];
 				$record_id=$node["record_id"];
 				if (!$record_id) {
-					$this->used_tables[$table]=$table;
 					if (!$this->in_orderby && !$no_context_join) {
 						$result=" $table.object = ".$this->tbl_prefix."objects.id and $table.$field ";
+						$this->used_tables[$table]=$table;
 					} else {
-						/*
-							if we are parsing 'orderby' properties we have to
-							join our tables for the whole query
-						*/							
-						$this->select_tables[$table]=$table;
+						if ($this->in_orderby && $node["nls"]) {
+							/* 
+								we do a left join so that we will also find non
+								matching objects
+							*/
+							$objects_table = $this->tbl_prefix."objects";
+							$this->nls_join[$table] = "left join $table on $objects_table.id=$table.object and $table.AR_nls='".$node["nls"]."' ";
+						} else {
+							/*
+								if we are parsing 'orderby' properties we have 
+								to join our tables for the whole query
+							*/							
+							$this->select_tables[$table]=$table;
+							$this->used_tables[$table]=$table;
+						}
 						$result=" $table.$field ";
 					}
 				} else {
@@ -218,20 +228,29 @@
 		$this->used_tables[$objects]=$objects;
 		@reset($this->used_tables);
 		while (list($key, $val)=each($this->used_tables)) {
-			if ($tables) {
-				$tables.=", $key";
-			} else {
-				$tables="$key";
+			/* do not select tables if they are already joined */
+			if (!$this->nls_join[$key]) {
+				if ($tables) {
+					$tables.=", $key";
+				} else {
+					$tables="$key";
+				}
+				if ($this->select_tables[$key]) {
+					$prop_dep.=" and $val.object=$objects.id ";
+				}
 			}
-			if ($this->select_tables[$key]) {
-				$prop_dep.=" and $val.object=$objects.id ";
+		}
+		if (is_array($this->nls_join)) {
+			reset($this->nls_join);
+			while (list($key, $value)=each($this->nls_join)) {
+				$join .= $value;
 			}
 		}
 
 		$query="select distinct($nodes.path), $nodes.parent, $nodes.priority, ";
 		$query.=" $objects.id, $objects.type, $objects.object, UNIX_TIMESTAMP($objects.lastchanged) as lastchanged, $objects.vtype ";
-		$query.=" from $tables where ";
-		$query.=" $nodes.object=$objects.id $prop_dep";
+		$query.=" from $tables $join";
+		$query.=" where $nodes.object=$objects.id $prop_dep";
 		$query.=" and $nodes.path like '".AddSlashes($this->path)."%' ";
 		if ($this->where_s) {
 			$query.=" and ( $this->where_s ) ";
@@ -245,7 +264,6 @@
 			$query.= " order by $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
 		}
 		$query.=" $this->limit_s ";
-
 		return $query;
 	}
 

@@ -88,6 +88,10 @@
 				$node["field"] = $field;
 			} else {
 				$node["id"]="property";
+				if ($match_3) {
+					$node["nls"] = $field;
+					$field = $match_3;
+				}
 				$node["table"]="prop_".$table;
 				$node["field"]="AR_".$field;
 				$node["record_id"] = $record_id;
