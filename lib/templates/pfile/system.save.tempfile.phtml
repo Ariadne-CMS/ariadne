@@ -3,6 +3,8 @@
 			 ( !$this->arIsNewObject && $this->CheckLogin("edit") ) ) {
 		global $HTTP_POST_FILES, $HTTP_POST_VARS;
 
+		require_once($this->store->code."modules/mod_mimemagic.php");
+
 		$form_field="file";
 
 		$file_temp=$HTTP_POST_FILES[$form_field]['tmp_name'];
@@ -24,7 +26,11 @@
 				$HTTP_POST_VARS[$form_field]=$file;
 				$HTTP_POST_VARS[$form_field."_temp"]=substr($file_artemp,strlen($this->store->files."temp"));
 				$HTTP_POST_VARS[$form_field."_size"]=$HTTP_POST_FILES[$form_field]['size'];
-				$HTTP_POST_VARS[$form_field."_type"]=$HTTP_POST_FILES[$form_field]['type'];
+				$type = get_mime_type($file_artemp);
+				if (!$type) {
+					$type = get_mime_type($file, MIME_EXT);
+				}
+				$HTTP_POST_VARS[$form_field."_type"]=$type;
 			}
 		}
 	}
