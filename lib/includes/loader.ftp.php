@@ -12,13 +12,18 @@
 	$DB["file"]=$ftp_config["debugfile"];
 
 	function debug($text, $level="pinp", $indent="") {
-	global $DB, $DB_INDENT;
-	 	if ($DB["level"]>=$DB[$level]) {
+	global $DB, $DB_INDENT, $AR;
+		if ($DB["level"]>=$DB[$level]) {
 			if ($indent=="OUT") {
 				$DB_INDENT=substr($DB_INDENT,0,-2);
 			}
-			fwrite($DB["fp"], "$DB_INDENT $level::$text\n");
-			fflush($DB["fp"]);
+			if ( ($AR->DEBUG == 'WEB') || ($AR->DEBUG == 'BOTH') ) {
+				echo "$DB_INDENT<b>$level::$text</b><BR>\n";
+			}
+			if ( ($AR->DEBUG == 'SYSLOG') || ($AR->DEBUG == 'BOTH') ) {
+				syslog(LOG_NOTICE,"(Ariadne) $level::$text");
+			}
+			flush();
 			if ($indent=="IN") {
 				$DB_INDENT.="  ";
 			}

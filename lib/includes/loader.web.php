@@ -12,12 +12,17 @@
 	$ERRMODE="htmljs"; // alternative: "text"/"html"/"js"
 
 	function debug($text, $level="pinp", $indent="") {
-		global $DB, $DB_INDENT;
-	 	if ($DB["level"]>=$DB[$level]) {
+	global $DB, $DB_INDENT, $AR;
+		if ($DB["level"]>=$DB[$level]) {
 			if ($indent=="OUT") {
 				$DB_INDENT=substr($DB_INDENT,0,-2);
 			}
-			echo "$DB_INDENT<b>$level::$text</b><BR>\n";
+			if ( ($AR->DEBUG == 'WEB') || ($AR->DEBUG == 'BOTH') ) {
+				echo "$DB_INDENT<b>$level::$text</b><BR>\n";
+			}
+			if ( ($AR->DEBUG == 'SYSLOG') || ($AR->DEBUG == 'BOTH') ) {
+				syslog(LOG_NOTICE,"(Ariadne) $level::$text");
+			}
 			flush();
 			if ($indent=="IN") {
 				$DB_INDENT.="  ";
