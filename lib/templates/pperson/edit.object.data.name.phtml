@@ -10,7 +10,7 @@
     <?php 
       $arLanguage=$this->getdata("arLanguage","none");
       if (!$arLanguage) {
-       $arLanguage=$ARConfig->nls->default;
+        $arLanguage=$ARConfig->nls->default;
       }
       $selectednls=$arLanguage;
       $selectedlanguage=$ARConfig->nls->list[$arLanguage];

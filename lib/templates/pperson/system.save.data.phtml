@@ -19,6 +19,7 @@
 		if (!$this->getdata("lastname","none")) {
 			$this->error=$ARnls["err:nolastnameentered"];
 		} else {
+			$this->data->initials=$this->getdata("initials", "none");
 			$this->data->firstname=$this->getdata("firstname","none");
 			$this->data->middlename=$this->getdata("middlename","none");
 			$this->data->lastname=$this->getdata("lastname","none");
@@ -57,6 +58,7 @@
 			$this->data->zipcode=$this->getdata("zipcode","none");
 			$this->data->city=$this->getdata("city","none");
 			$this->data->country=$this->getdata("country","none");
+			$this->data->state=$this->getdata("state","none");
 			$this->data->telephone=$this->getdata("telephone","none");
 			$this->data->mobile=$this->getdata("mobile","none");
 			$emails=explode(",",$this->getdata("emails","none"));

@@ -7,6 +7,8 @@
 
 	******************************************************************/
 
+	global $HTTP_POST_VARS;
+
 	$configcache=$ARConfig->cache[$this->parent];
 	if ($configcache->custom) {
 		reset($configcache->custom);
@@ -65,6 +67,7 @@
 		$arFlow[$i]["next"]=$i+1;
 		$arFlow[$i]["save"]=$i+2;
 		$i++;
+		$language_num=$i;
 		$arFlow[$i]["title"]=$ARnls["language"];
 		$arFlow[$i]["template"]=$language;
 		if ($customdata) {
@@ -84,12 +87,18 @@
 	$arFlow[$i]["back"]=$i-1;
 	
 	$arLanguage=$this->getdata("arLanguage","none");
-	if ($arFlow[0]["current"]==$save_num) { // =edit.object.language.phtml
-		$arControl=$this->getdata("wgWizControl","none");
-		if ($arControl==$ARnls["prev"]) { // if previous selected, ignore the language select list.
+	if (!$arLanguage) {
+		$arLanguage=$ARConfig->nls->default;
+	}
+	$arControl=wgWizGetAction($this->getdata("wgWizControl","none"));
+	if ($arFlow[0]["current"]==$language_num) { // =edit.object.language.phtml
+		if ($arControl=="prev") { // if previous selected, ignore the language select list.
 			$arLanguage=$this->getdata("arPrevLanguage","none");
 			$ARCurrent->arLanguage=$arLanguage;
 		}
+	}
+	if (($arFlow[0]["current"]==2) && ($arControl=="next")) {
+		$HTTP_POST_VARS[$arLanguage]["name"]=$this->getdata("lastname");
 	}
 	if (!$arLanguage) { // language select hasn't been done yet, so start with default language
 		$arLanguage=$ARConfig->nls->default;
