@@ -387,21 +387,15 @@ function IMAGE_set(arr) {
     if (window.elIMG) { // insert a new img
       elIMG=window.elIMG;
       elIMG.src=src;
-      if (arr['border']!='') {
-        elIMG.border=arr['border'];
-      }
-      if (arr['hspace']!='') {
-        elIMG.hspace=arr['hspace'];
-      }
-      if (arr['vspace']!='') {
-        elIMG.vspace=arr['vspace'];
-      }
-      if (arr['align']!='') {
+      elIMG.border=arr['border'];
+      elIMG.hspace=arr['hspace'];
+      elIMG.vspace=arr['vspace'];
+      if (arr['align']=='none') {
+        elIMG.align='';
+      } else {
         elIMG.align=arr['align'];
       }
-      if (arr['alt']!='') {
-        elIMG.alt=arr['alt'];
-      }
+      elIMG.alt=arr['alt'];
     } else {
       el=window.el;
       if ((el.type=="None") || (el.type=="Text"))  {
