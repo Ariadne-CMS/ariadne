@@ -11,7 +11,6 @@ define("T_PINP_START",		246);
 define("T_PINP_END",		245);
 define("T_ERROR",			244);
 define("T_PAR_OPEN",		243);
-define("T_PAR_CLOSE",		242);
 
 define("YY_STATE_HTML",			1);
 define("YY_STATE_PINP",			2);
@@ -389,11 +388,6 @@ class scanner {
 						++$YYCURSOR;
 						return T_PAR_OPEN;
 					break;
-					case ")":
-						$result = ")";
-						++$YYCURSOR;
-						return T_PAR_CLOSE;
-					break;
 					case "\0":
 						return T_EOF;
 					break;
@@ -467,7 +461,7 @@ class pinp {
 		  "xml_parser_create|xml_parse_into_struct|xml_parser_free|".
 		  "xml_parser_get_option|xml_parser_set_option";
 		$debug_funcs="debug|debugon|debugoff";
-		$loader_funcs="ldheader|ldredirect|ldsetcontent|ldsetclientcache|ldgetusercookie|ldsetusercookie|ldgetclientvar|"; 
+		$loader_funcs="ldheader|ldredirect|ldsetcontent|ldsetclientcache|ldgetusercookie|ldsetusercookie|ldgetclientvar"; 
 		$ob_funcs="flush|ob_clean|ob_end_clean|ob_end_flush|ob_flush|ob_get_contents|ob_get_length|ob_get_level|ob_implicit_flush|ob_start";
 		$this->allowed_functions=array_flip(explode("|", "$array_funcs|$control_funcs|$datetime_funcs|$math_funcs|".
 		  "$misc_funcs|$net_funcs|$regex_funcs|$string_funcs|$var_funcs|$xml_funcs|".
@@ -579,16 +573,6 @@ class pinp {
 						$this->next_token();
 						if ($this->token == T_IDENT) {
 							$this->new_template.="pinp_$ident::_".$this->token_value;
-							$this->next_token();
-							if ($this->token == T_PAR_OPEN) {
-								// pass $this as first argument
-								$this->new_template.="(\$this";
-								$this->next_token();	
-								if ($this->token !== T_PAR_CLOSE) {
-									$this->new_template .= ", ";
-								}
-								continue 2;
-							}
 						} else {
 							$this->error = "expecting an identifier following the class operator";
 							break 2;
@@ -625,9 +609,6 @@ class pinp {
 				break;
 				case T_PAR_OPEN:
 					$this->new_template.="(";
-				break;
-				case T_PAR_CLOSE:
-					$this->new_template.=")";
 				break;
 				case T_ERROR:
 					$this->error = "error: ".$this->token_value;
