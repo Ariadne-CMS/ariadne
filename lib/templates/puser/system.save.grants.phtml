@@ -106,10 +106,10 @@
 							if ($newgrant=="{}") {
 								if ($result=@current($this->get($path,"system.get.grants.phtml",Array("path" => $this->path)))) {
 									$current=implode(" ", array_keys($result));
-									$newgrants=ereg_replace(" ?\{\} ?",AddSlashes($current),$newgrants);		
+									$newgrants=ereg_replace(' ?\{\} ?',AddSlashes($current),$newgrants);		
 								}
 								$newgrant=strtok($newgrants, " ");
-							} else if (ereg("({(.*)})",$newgrant,$regs)) {
+							} else if (ereg('(\{(.*)\})',$newgrant,$regs)) {
 								$cloned="";
 								if ($this->data->grants[$type][$regs[2]]) {
 									while (list($key, $value)=each($this->data->grants[$type][$regs[2]])) {
