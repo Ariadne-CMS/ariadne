@@ -125,7 +125,7 @@
 							$right=$this->compile_tree($node["right"]);
 							/* fulltext search operators: =*, !*, =**, !** (double asterices indicate boolean mode) */
 							$operator = $node["operator"];
-							$result .= "$not match ($left) against ('".mysqlstore::format_for_fti(substr($right,1,-1))."$boolmode') ";
+							$result = "$not match ($left) against ('".mysqlstore::format_for_fti(substr($right,1,-1))."$boolmode') ";
 							return $result;
 						}
 					break;
