@@ -34,7 +34,6 @@
   $AR->dir->www             = '/ariadne';
 
 
-
   /**************************************************************************/
   /* ImageMagick information                                                */
   /* For the photobook Ariadne needs to know where to find the ImageMagick  */
@@ -47,7 +46,6 @@
   $AR->IM->mogrify          = '/usr/bin/X11/mogrify';
   $AR->IM->composite        = '/usr/bin/X11/composite';
   // $AR->IM->composite        = '/usr/bin/X11/combine';
-
 
   /*************************************************************************/
   /* Database Information:                                                 */
@@ -71,13 +69,6 @@
   $AR->host                 = $HTTP_SERVER_VARS['HTTP_HOST'];
 
 
-  /**************************************************************************/
-  /* Set Ariadne's output compression level (0-9)                           */
-  /* (0 will disable output compression)                                    */
-  /**************************************************************************/
-
-  $AR->output_compression = 0;
-
 
   /**************************************************************************/
   /* WIN32 or UNIX                                                          */
@@ -86,7 +77,7 @@
   /* either 'WIN32' or 'UNIX'.                                              */
   /**************************************************************************/
 
-  $AR->OS                = 'WIN32';         // Windows 95/98/ME/NT/2000
+  $AR->OS                = 'WIN32';          // All unix/linux variants
 
 
   /**************************************************************************/
@@ -94,6 +85,14 @@
   /**************************************************************************/
 
   $AR->DEBUG = "WEB";
+
+
+  /**************************************************************************/
+  /* Set Ariadne's output compression level (0-9)                           */
+  /* (0 will disable output compression)                                    */
+  /**************************************************************************/
+
+  $AR->output_compression = 0;
 
 
 
@@ -181,7 +180,6 @@
   $AR->nls->charsets['de']  = 'ISO-8859-1';
 
   $AR->nls->default         = 'en';
-
   /**************************************************************************/
   /* you really don't want to change anything below this line                  */
   /**************************************************************************/
@@ -212,6 +210,9 @@
 
   $ARCurrent=new object;                       // do not change
 
+  /* on Default we do not respawn sessions **********************************/
+
+  $ARCurrent->noSessionRespawn = true;
  
   /* To crypt or not to crypt ***********************************************/
 
