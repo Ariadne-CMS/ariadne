@@ -113,7 +113,7 @@
   $AR->nls->list['en']      = 'English';
   $AR->nls->list['es']      = 'Espa&ntilde;ol';
   $AR->nls->list['de']      = 'Deutsch';
-  $AR->nls->list['pl']      = 'Polska';
+  $AR->nls->list['pl']      = 'Polski';
 
   $AR->nls->locales['nl']   = 'nl_NL';
   $AR->nls->locales['en']   = 'en_US';
