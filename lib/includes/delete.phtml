@@ -1,7 +1,7 @@
 <?php   
 if ($this->CheckLogin("delete")) {
   if (($result=$this->lock(0,"T")) && ($result["locks"][$this->path]["identity"]!=$AR->user->data->login)) {
-    $error="Can not lock object.\n";
+    $error=$ARnls["err:cannotlockobject"];
   } else {
     if ($this->ls(".","Get.phtml")) {
       $error="Object contains other objects, remove these first.";

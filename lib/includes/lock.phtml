@@ -6,7 +6,7 @@
 
 	if (!$lock_type) $lock_type="O";
 
-	if (($result=$this->lock($locktime,$lock_type)) && ($result["locks"][$this->path]["identity"]!=$AR->user->data->login)) {
+	if (($result=$this->lock($locktime,$lock_type)) && ($result["locks"][$this->path]["identity"]!=($user=$AR->user->data->login))) {
 		$arResult=false;
 		$ARCurrent->locks[$this->path]=$result;
 	} else {
