@@ -278,4 +278,5 @@ $ARnls["err:logintoolong"]="Login is too long, maximum length is 32 characters."
 $ARnls["contextsearch"]="Context";
 $ARnls["advancedsearch"]="Advanced";
 $ARnls["location"]=		"Location";
+$ARnls["cover"]=		"Cover Image";
 ?>

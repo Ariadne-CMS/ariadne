@@ -278,4 +278,5 @@ $ARnls["err:logintoolong"]="Login is te lang, maximum lengte is 32 tekens.";
 $ARnls["contextsearch"]="Context";
 $ARnls["advancedsearch"]="Uitgebreid";
 $ARnls["location"]=		"Locatie";
+$ARnls["cover"]=		"Omslag";
 ?>
