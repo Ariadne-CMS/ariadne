@@ -32,7 +32,18 @@ class URL {
 		// change the site links
 		$site = $this->currentsite();
 		if ($site && $site !== '/') {
-			$find[] = "%\\Q".$this->make_url($site, "")."\\E".$nls_match2."%e";
+			$siteURL = $this->make_url($site, "");
+			$rootURL = $this->make_url("/", "");
+			if (substr($siteURL, 0, strlen($rootURL)) == $rootURL) {
+				/* use the rootURL to rebuild the site URL */
+				$find[] = "%\\Q$rootURL\\E".$nls_match2."\\Q".substr($site, 1)."\\E%e";
+			} else {
+				/* 
+					a site has been configured so we can directly place
+					the nls_match2 after the siteURL
+				*/
+				$find[] = "%\\Q$siteURL\\E".$nls_match2."%e";
+			}
 			$repl[] = "(\"\${2}\") ? \"{arSite/\\2}\" : \"{arSite}\"";
 		}
 
