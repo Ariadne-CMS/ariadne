@@ -166,7 +166,7 @@
 	function ldSquishArray($name, $array) {
 		while (list($key, $val)=each($array)) {
 			if (is_array($val)) {
-				$result.=squisharray($name."[".$key."]",$val);
+				$result.=ldSquishArray($name."[".$key."]",$val);
 			} else {
 				$result.="&".$name."[".RawUrlEncode($key)."]=".RawUrlEncode($val);
 			}
