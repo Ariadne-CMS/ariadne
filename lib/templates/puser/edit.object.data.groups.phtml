@@ -30,6 +30,7 @@
 							}
 						}
 						$criteria["object"]["implements"]["="]="'pgroup'";
+						$criteria["login"]["value"]["!="]="'owner'";
 						$this->find(
 								"/system/groups/", 
 								$criteria, 
