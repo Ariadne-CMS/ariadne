@@ -1338,9 +1338,9 @@ class pobject extends object { // pobject class definition
 				Parse_Str($arCallArgs);
 			}
 		}
-		if ($$var) {
+		if (isset($$var)) {
 			$result=$$var;
-		} if ($ARCurrent->$var) {
+		} if (isset($ARCurrent->$var)) {
 			$result=$ARCurrent->$var;
 		} else if ($HTTP_POST_VARS[$var]) {
 			$result=$HTTP_POST_VARS[$var];
