@@ -24,7 +24,7 @@
 			$flag="<img src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\">";
 
 			function input_time($name,$time) {
-				if (!$time) {
+				if (!is_numeric($time)) {
 						$date=getdate(time());
 						$hours=$date["hours"]; $mins=$date["minutes"];
 					$time=$hours*3600+$minutes*60;
