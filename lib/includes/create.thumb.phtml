@@ -26,18 +26,8 @@
 		case 1:
 			$l=strrpos($imgfile,'/');
 			$leftpath=substr($imgfile,0,$l);
-			/*
-			$rightpath=substr($imgfile,$l+1);
 
-			$l=strrpos($rightpath,'.');
-			if ($l!==false) {
-				$newimg=substr($rightpath,0,$l).'.png';
-			} else {
-				$newimg=$rightpath.'.png';
-			}
-			*/
 			$newimg=$leftpath."/view=.png";
-			// $newimg=$this->store->files."files".$this->path."view=.png";
 			system("gif2png $imgfile",$retvar);
 			if ($retvar) {
 				debug("err:gif2png","class");
