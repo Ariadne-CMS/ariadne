@@ -3,7 +3,12 @@
 		if (!$this->lock("T")) {
 			$this->error=$ARnls["err:cannotlockobject"];
 		} else {
-			if (substr($this->path, 0, strlen('/system/users/'))=='/system/users/') {
+			if ($this->implements("pgroup")) {
+				$systempath = "/system/groups/";
+			} else {
+				$systempath = "/system/users/";
+			}
+			if (substr($this->path, 0, strlen($systempath))==$systempath) {
 				// this is a live user object, not a link in a group
 				if ($this->data->login=="public" || $this->data->login=="admin") {
 					$this->error=$ARnls["err:cannotdelsystemusers"];
@@ -11,7 +16,7 @@
 					if (is_array($this->data->usergrants)) {
 						// remove usergrants
 						while (list($key, $value)=each($this->data->usergrants)) {
-							$this->get($key, "system.save.grants.phtml", Array("delete" => true, "id" => $this->data->login, "type" => "puser"));
+							$this->get($key, "system.save.grants.phtml", Array("delete" => true, "id" => $this->data->login, "type" => $this->type));
 						}
 					}
 					if (is_array($this->data->groups)) {
