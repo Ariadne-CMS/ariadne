@@ -18,7 +18,8 @@ class mod_ax {
 		if ($mode=="unpack") {
 			// tar will (g)unzip and untar the file into tempdir 
 			$command="tar -zxf $exportfile -C ".$this->tempdir;
-			if (!@system($command,$retVar)) {
+			@system($command,$retVar);
+			if ($retVar!=0) {
 				$result="err:cannotuntar";
 			}
 		}
@@ -40,25 +41,60 @@ class mod_ax {
 		return $result;
 	}
 
+	// remove directories with content
+	function RmDir($path) {
+		if ($path[strlen($path)-1]!="/") {
+			$path.="/";
+		}
+
+		if (!($dh=opendir($path))) {
+			$result="err:cannotopendir";
+		} else {
+			while ($file=readdir($dh)) {
+				if (($file!=".") && ($file!="..")) {
+					$file=$path.$file;
+					if (is_dir($file)) {
+						if  ($result=$this->RmDir($file."/")) {
+							break;
+						}
+					} else {
+						if (unlink($file)===false) {
+							$result="err:cannotunlink";
+							break;
+						}
+					}
+				}
+			}
+			closedir($dh);
+			if (!$result) { 
+				if (rmdir($path)===false) {
+					$result="err:cannotremovedir";
+				}
+			}
+		}
+		return $result;
+	}
 
 	function importfiles($type,$path) {
 		if (!($result=$this->MkDir($path))) {
-			$command="tar -C $path -zxf ".$this->tempdir."/$type.tgz";
-			if (!system($command)) {
-				$result="err:cannotimport";
+			if (file_exists($this->tempdir."/$type.tgz")) {
+				$command="tar -C $path -zxf ".$this->tempdir."/$type.tgz";
+				@system($command,$retVar);
+				if ($retVar!=0) {
+					$result="err:cannotimport";
+				}
 			}
 		}
 		return $result;
 	}
 
 	function exportfiles($type,$path) {
-		if (!file_exists($path)) {
-			$result="err:cannotopenfile";
-		} else {
+		if (file_exists($path)) {
 			$path2=substr($path,$rpos=strrpos(substr($path,0,-1),"/")+1);
 			$path=substr($path,0,$rpos);
 			$command="tar -zc -C $path $path2 -f ".$this->tempdir."/$type.tgz";
-			if (!system($command)) {
+			@system($command,$retVar);
+			if ($retVar!=0) {
 				$result="err:cannotexport";
 			}
 		}
@@ -77,13 +113,11 @@ class mod_ax {
 
 			$command="tar -zc -C ".$this->tempdir." $exp  -f ".$this->exportfile;
 
-			if (!system($command,$retVar)) {
+			@system($command,$retVar);
+			if ($retVar!=0) {
 				$result="err:cannotmakeax";
 			} else {
-				// FIXME: remove tempdir without using a
-				// system call
-				$command="rm -rf ".$this->tempdir;
-				system($command);
+				$result=$this->RmDir($this->tempdir);
 			}
 		}
 		return $result;
