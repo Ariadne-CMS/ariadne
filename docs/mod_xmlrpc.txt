@@ -1,0 +1,80 @@
+Using mod_xmlrpc in Ariadne
+
+Example:
+
+Via system templates:
+
+<?php
+        if( $this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs) ) {
+
+                require_once($this->store->code."modules/mod_xmlrpc.php");
+
+                $result = XMLRPC::call( "http://www.mirrorproject.com/xmlrpc/", "mirror.Random", Array() );
+
+                if( gettype($result) == "string" ) {
+                        echo $result;  // Error message
+                } else {
+                        echo $result[0]; // echo the random image
+                }
+        }
+?>
+
+Via PINP:
+
+<pinp>
+
+  $result = call("xmlrpc.call.phtml", 
+                Array(  
+                "xmlrpcUrl" => "http://www.mirrorproject.com/xmlrpc/",
+                "xmlrpcFunction" => "mirror.Random",
+                "xmlrpcArgs" => Array() 
+                )
+      );
+
+   if( is_array( $result ) ) {
+      echo $result[0];
+   } else {
+      echo "Retrieval of random mirror image failed.";
+   }
+
+</pinp>
+
+
+The Arguments Array is built up via a key value combinations with the
+keys containing either the type and name or just the type or the name of
+the argument. Names are only used withing Struct type arguments and
+discarded for the rest.
+
+Passing just 1 argument:
+
+Type & Name:  $arguments = Array( "int:x" => 10 );
+Type:         $arguments = Array( "int:" => 10 );
+Name:         $arguments = Array( "x" => 10 );
+
+When no explicit type is passed it is "guessed" by mod_xmlrpc.
+
+Pssing more than 1 argument:
+
+$arguments = Array(
+   "int:x" => 10,
+   "int:y" => 20
+);
+
+Passing a struct with type-defined members:
+
+$arguments = Array(
+    "struct:myStruct" => Array(
+        "string:name" => "myname",
+        "password" => "Rt7VD"
+    )
+);
+
+
+Passing a struct without type-definition:
+
+$arguments = Array(
+    "struct:myStruct" => Array(
+       "name" => "myname",
+       "password" => "Rt7VD"
+    )
+);
