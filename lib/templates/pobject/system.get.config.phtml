@@ -38,26 +38,8 @@
 	// first inherit parent configuration data
 	$configcache=$ARConfig->cache[$this->parent];
 
-	// add/overwrite template information for this object.
-	if (is_array($configcache->templates)) {
-		while (list($tType, $tTemplates)=@each($data->templates)) {
-			if (is_array($configcache->templates[$tType])) {
-				while (list($tTemplate, $tLanguages)=@each($tTemplates)) {
-					if (is_array($configcache->templates[$tType][$tTemplate]) && !$data->templates[$tType][$tTemplate]["any"]) {
-						while (list($tLanguage, $tID)=@each($tLanguages)) {
-							$configcache->templates[$tType][$tTemplate][$tLanguage]=$tID;
-						}
-					} else {
-						$configcache->templates[$tType][$tTemplate]=$tLanguages;
-					}
-				}
-			} else {
-				$configcache->templates[$tType]=$tTemplates;
-			}
-		}
-	} else {
-		$configcache->templates=$data->templates;
-	}
+	// cache default templates
+	$configcache->templates=$data->templates;
 
 	if ($data->cacheconfig) {
 		$configcache->cache=$data->cacheconfig;

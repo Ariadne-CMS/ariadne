@@ -651,22 +651,28 @@ class pobject extends object {
 			}
 			$nocache=true; // make sure no other parts are cached either;
 
-			if ($this->data->pinp[$this->type][$arCallFunction][$this->nls]) {
-				$config->templates[$this->type][$arCallFunction][$this->nls]=$this->data->pinp[$this->type][$arCallFunction][$this->nls];
-			} else if ($this->data->pinp[$this->type][$arCallFunction]['any']) {
-				$config->templates[$this->type][$arCallFunction]['any']=$this->data->pinp[$this->type][$arCallFunction]['any'];
-			}
-			$arType=get_class($this);
-			while ($arType && !$arCallTemplate) {
-				if ($arTemplateId=$config->templates[$arType][$arCallFunction][$this->nls]) {
-					$arCallTemplate=$arType.".".$arCallFunction.".".$this->nls;
-				} else if ($arTemplateId=$config->templates[$arType][$arCallFunction]['any']) {
-					$arCallTemplate=$arType.".".$arCallFunction.".any";
-				} else {
-					$arTemp=new $arType();
-					$arType=get_parent_class($arTemp);
+			/* first check current templates */
+			$curr_templates=$this->data->pinp;
+
+			$checkpath=$this->path;
+			$lastcheckedpath="";
+			while (!$arCallTemplate && $checkpath!=$lastcheckedpath) {
+				$arType=get_class($this);
+				while ($arType && !$arCallTemplate) {
+					if ($arTemplateId=$curr_templates[$arType][$arCallFunction][$this->nls]) {
+						$arCallTemplate=$arType.".".$arCallFunction.".".$this->nls;
+					} else if ($arTemplateId=$curr_templates[$arType][$arCallFunction]['any']) {
+						$arCallTemplate=$arType.".".$arCallFunction.".any";
+					} else {
+						$arTemp=new $arType();
+						$arType=get_parent_class($arTemp);
+					}
 				}
+				$lastcheckedpath=$checkpath;
+				$checkpath=$this->make_path("..");
+				$curr_templates=$ARConfig->cache[$checkpath]->templates;
 			}
+
 			if ($arCallTemplate && $arTemplateId) {
 				debug("CheckConfig: arCallTemplate=$arCallTemplate, arTemplateId=$arTemplateId","object");
 				// $arCallTemplate=$this->store->files."templates".$arCallTemplate;
