@@ -70,7 +70,7 @@
 		global $HTTP_POST_VARS, $HTTP_POST_FILES;		
 		$arControl=wgWizGetAction($this->getdata("wgWizControl","none"));
 		if ($wgWizFlow[0]["current"]==1) {
-			if ($arControl=="next") || ($arControl=="save")) {
+			if ($arControl=="next" || $arControl=="save") {
 				$this->call("system.save.tempfile.phtml");
 			}
 		}
