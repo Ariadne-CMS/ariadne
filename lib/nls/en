@@ -144,6 +144,7 @@ $ARnls["priority"]=		"Priority";
 $ARnls["publisheddata"]=	"[Published by <b>%s</b> at <b>%s</b>]";
 $ARnls["q:applychanges"]=	"Do you wish to apply these changes to <em>all</em> instances of this repeating item or only to the <em>current</em> entry?";
 $ARnls["q:cookiesenabled"]=	"Do you have cookies enabled in your browser?";
+$ARnls["q:cannotlockretry"]="'%s' is locked by another user, retry?";
 $ARnls["q:deleteall"]=		"Do you wish to delete <em>all</em> instances of this item or only the <em>current</em> entry?";
 $ARnls["q:fileoverwrite"]=	"'%s' already exists, do you wish to overwrite?";
 $ARnls["q:morelanguages"]=	"Select a language.<br>Click 'next' to enter data for this language.<br>Click 'save' to save the data at this time.";
