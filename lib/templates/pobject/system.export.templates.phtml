@@ -10,10 +10,16 @@
 					display("	template($template) updating\n");
 		} else {
 			$tempname=tempnam($this->store->files."temp", "temp");
-			$orig_filestore->copy_from_store($tempname, $this->id, $template);
-			$new_filestore->copy_to_store($tempname, $this->newObject->id, $template);
+			if (!$orig_filestore->copy_from_store($tempname, $this->id, $template)) {
+				display("	error: could not copy $template from store !\n");
+			} else {
+				if (!$new_filestore->copy_to_store($tempname, $this->newObject->id, $template)) {
+					display("	error: could not copy $template to store\n");
+				} else {
+					display("	template($template) created\n");
+				}
+			}
 			@unlink($tempname);
-			display("	template($template) created\n");
 		}
 	}
 
