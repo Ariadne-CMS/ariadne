@@ -163,14 +163,4 @@
 		return $result;
 	}
 
-	function ldSquishArray($name, $array) {
-		while (list($key, $val)=each($array)) {
-			if (is_array($val)) {
-				$result.=ldSquishArray($name."[".$key."]",$val);
-			} else {
-				$result.="&".$name."[".RawUrlEncode($key)."]=".RawUrlEncode($val);
-			}
-		}
-		return $result;		
-	}
 ?>
