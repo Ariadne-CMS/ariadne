@@ -6,13 +6,13 @@
 	include_once($ariadne."/modules/mod_session.phtml");
 	include_once($ariadne."/includes/loader.web.php");
 
-	function fix_quotes($input) {
-		if (is_array($input)) {
-			array_walk($input, "fix_quotes");
+	function fix_quotes(&$value, $key) {
+		if (is_array($value)) {
+			reset($value);
+			array_walk($value, 'fix_quotes');
 		} else {
-			$input=stripslashes($input);
+			$value=stripslashes($value);
 		}
-		return $input;
 	}
 
 
@@ -114,12 +114,13 @@
 		} else {
 
 			set_magic_quotes_runtime(0);
-			$args=array_merge($HTTP_GET_VARS,$HTTP_POST_VARS);
 			if (get_magic_quotes_gpc()) {
 				// this fixes magic_quoted input
-				$args=fix_quotes($args);
+				fix_quotes($HTTP_GET_VARS, "nokey");
+				fix_quotes($HTTP_POST_VARS, "nokey");
 				$ARCookie=stripslashes($ARCookie);
 			}
+			$args=array_merge($HTTP_GET_VARS,$HTTP_POST_VARS);
 			
 			$store->call($function, $args, $store->get($path));
 			if (!$store->total) {
