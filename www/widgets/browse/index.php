@@ -8,7 +8,7 @@
   function ReturnPath(path) {
     window.opener.wgBrowseResult.value=path;
     if (window.opener.wgBrowseAction) {
-      window.opener.wgBrowseAction('<?php echo AddSlashes($name); ?>', path);
+      window.opener.wgBrowseAction('<?php echo AddCSlashes($name, "'\"\\\n\r"); ?>', path);
     }
     top.window.close();
   }
