@@ -87,7 +87,7 @@
 		if( $DB["method"]["syslog"] ) {
 			$debugisoff .= " [syslog]";
 		}
-		if( $debugisoff != "") {
+		if( $debugisoff != "" && $DB["level"] > 0) {
 			debug("Debugging OFF ".$debugisoff,$level,$stream);
 			if( $DB["fp"] ) {
 				@fclose($DB["fp"]);
@@ -116,17 +116,17 @@
 			}
 
 			if( $DB["method"]["file"] && $DB["fp"] ) {
-				@fwrite($DB["fp"], "(".$timestamping.")".$message."\n");
+				@fwrite($DB["fp"], "(".$timestamping.")".$DB_INDENT.$message."\n");
 				@fflush($DB["fp"]);
 			}
 			/* Check if we're debugging to the loader debug_print function and
 			   the loader is capable of debugging. 
 			*/
 			if( $DB["method"]["loader"] && function_exists("debug_print") ) {
-				debug_print( "(".$timestamping.")".$message."\n" );
+				debug_print( "(".$timestamping.")".$DB_INDENT.$message."\n" );
 			}
 			if( $DB["method"]["syslog"] ) {
-				syslog(LOG_NOTICE,"(Ariadne) ".$message);
+				syslog(LOG_NOTICE,"(Ariadne) ".$DB_INDENT.$message);
 			}
 		}
 	}
