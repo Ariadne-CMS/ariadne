@@ -20,6 +20,11 @@
 <?php
     if (!$this->error) {
       echo "Page saved";
+?>
+<script>
+  window.setTimeout('window.close()',500);
+</script>
+<?php
     } else {
       echo "Error: $this->error";
     }
