@@ -1,49 +1,53 @@
-<?php
-	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-?>
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>control.css">
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>button.css">
 </head>
-<body class="border">
-  <span class="hoverbutton" style="float: right"><a href="#" onClick="top.hidetree(); return false;"><img src="<?php echo $AR->dir->images; ?>tree/x.gif" border="0" height="18" width="18" vspace="2"></a></span>
-		<script>
-			function doload() {
-				node=parent.Nodes[<?php echo $node; ?>];
-				<?php
-					flush();
-					$criteria["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
-					$criteria["object"]["implements"]["="]="'pdir'";
-					if ($folders=$this->find("",$criteria,"system.get.folder.phtml",$args)) {
-						echo " // timestamp: ".time()."\n";
-						flush();
-						while (list($key, $folder)=each($folders)) {
-							?>
-								node.add("<?php echo AddSlashes($folder["icon"]); ?>",
-										 "<?php echo AddSlashes($folder["name"]); ?>",
-										 "<?php echo AddSlashes($folder["path"]); ?>",
-										 "<?php echo AddSlashes($folder["pre"]); ?>",
-										 "<?php echo AddSlashes($folder["shortcut"]); ?>");
-							<?php
-								echo "// ".time()."\n";	// please leave the timestamp and flush here
-								flush(); 				// it seems to improve PHP's performance... black voodoo magic.
-						}
+<body><div class="border-top"><div id="spanner" style="border: 0px; margin: 0px; padding: 0px; height: 28px;">
+	<script>
+		if (document.all) {
+			document.body.style.border='1px inset';
+			spanner.style.height='26px';
+		}
+	</script>
+	<span class="tbutton_right" style="float: right" onMouseOver="this.className='tbutton_right_hover';"
+		 onMouseOut="this.className='tbutton_right';" onClick="top.hidetree();"><img src="<?php echo $AR->dir->images; ?>tree/x.gif" 
+		 border="0" height="18" width="18" vspace="1"></span>
+	<?php
+		$this->store->accessdenied='Access Denied';
+		if ($this->CheckLogin("read") && $this->CheckConfig()) {
+			?>
+				<img src="<?php echo $AR->dir->images; ?>tree/wait.gif" hspace="2" width="15" height="15" style="float: left"> Loading...
+				<script>
+					function doload() {
+						node=parent.Nodes[<?php echo $node; ?>];
+						<?php
+							flush();
+							$criteria["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
+							$criteria["object"]["implements"]["="]="'pdir'";
+							if ($folders=$this->find("",$criteria,"system.get.folder.phtml",$args)) {
+								echo " // timestamp: ".time()."\n";
+								flush();
+								while (list($key, $folder)=each($folders)) {
+									?>
+										node.add("<?php echo AddSlashes($folder["icon"]); ?>",
+												 "<?php echo AddSlashes($folder["name"]); ?>",
+												 "<?php echo AddSlashes($folder["path"]); ?>",
+												 "<?php echo AddSlashes($folder["pre"]); ?>",
+												 "<?php echo AddSlashes($folder["shortcut"]); ?>");
+									<?php
+										echo "// ".time()."\n";	// please leave the timestamp and flush here
+										flush(); 				// it seems to improve PHP's performance... black voodoo magic.
+								}
+							}
+						?>
+						parent.Draw();
 					}
-				?>
-				parent.Draw();
-			}
-			window.onload=doload; 
-		</script>
-  <?php
-	$this->store->accessdenied='Access Denied';
-	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-      ?>
-        <img src="<?php echo $AR->dir->images; ?>tree/wait.gif" hspace="2" width="15" height="15" style="float: left"> Loading...  
-      <?php 
-	}
-  ?>
+					window.onload=doload; 
+				</script>
+			<?php
+		}
+	?>
+</div></div>
 </body>
 </html>
-<?php
-	}
-?>
