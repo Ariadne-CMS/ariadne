@@ -1,0 +1,24 @@
+<?php
+  if ($this->CheckSilent("edit")) {
+    $donotcache=-1;
+    $inherited=0;
+    $onrequest=1;
+    $onchange=999;  
+
+    $cache=$this->getdata("cacheconfig","none");
+    $refresh=$this->getdata("refresh","none");
+    $keepfor=$this->getdata("keepfor","none");
+    if ($this->CheckLogin("edit")) {
+      if ($cache==$onrequest) {
+        $cache=$keepfor;
+      }
+      $data->cacheconfig=$cache;
+      $this->save($this->path, $this->type, $data, "");
+      if ($refresh) {
+        $this->ClearCache();
+      }
+    }
+  } else {
+    $this->error=$ARnls["accessdenied"];
+  } 
+?>
