@@ -4,12 +4,14 @@
 
 		// parse identifier regs[1] (& regs[2] : field_id)
 		if ($type!=="const") {
+			$regsoffset=0;
 			$reg_id='^[[:space:]]*([a-z_][a-z0-9_]*([.][a-z_][a-z0-9_]*)?)';
 		}
 		if ($type!=="ident") {
 			if ($reg_id) {
 				$reg_id.="|";
 			}
+			$regsoffset=-2;
 			// integer or float regs[3] (& regs[4] : indicates float)
 			$reg_id.='(-?[0-9]+([.][0-9]+)?)|';
 			// single quoted string regs[5]
@@ -20,7 +22,7 @@
 		$reg_id.='[[:space:]]*';
 
 		if (eregi($reg_id, $query, $regs)) {
-			if ($regs[1]) {
+			if ($type!=="const" && $regs[1]) {
 				$node["id"]="ident";
 				if (!$regs[2]) {
 					if ($regs[1]==="implements") {
@@ -54,15 +56,15 @@
 					}
 				}
 			} else 
-			if ($regs[3]) {
-				if ($regs[4]) {
+			if ($regs[3+$regsoffset]) {
+				if ($regs[4+$regsoffset]) {
 					$node["id"]="float";
 				} else {
 					$node["id"]="int";
 				}
-				$node["value"]=$regs[3];
+				$node["value"]=$regs[3+$regsoffset];
 			} else
-			if (($str=$regs[5]) || ($str=$regs[7])) {
+			if (($str=$regs[5+$regsoffset]) || ($str=$regs[7+$regsoffset])) {
 				$node["id"]="string";
 				$node["value"]="'".substr($str, 1, -1)."'";
 			}
