@@ -55,6 +55,22 @@ while (list(,$cmd)=each($argv)) {
 				$ARCurrent->wddxoptions["verbose"]=true;
 				break;
 
+			case 'skiptemplates':
+				$ARCurrent->wddxoptions["export_skiptemplates"] = true;
+				break;
+
+			case 'skipgrants':
+				$ARCurrent->wddxoptions["export_skipgrants"] = true;
+				break;
+
+			case 'skipdata':
+				$ARCurrent->wddxoptions["export_skipdata"] = true;
+				break;
+
+			case 'skipfiles':
+				$ARCurrent->wddxoptions["export_skipfiles"] = true;
+				break;
+
 			default:
 				echo "unknow option-switch ($option_switch)\n";
 		}
