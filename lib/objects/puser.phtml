@@ -27,6 +27,7 @@ class puser extends pdir { // definitie class
 		global $ARConfig;
 		debug("puser: FindGrants($path, result)","object");
 		debug("(in $this->path)","object");
+		$newpath=$path;
 		if ($path==$top) {
 			$newpath="";
 		} else {
