@@ -87,22 +87,26 @@ class pinp {
   function fixcode($code) {
     // find first occurance of a string
     if (preg_match("!^(".$this->re_string1."|".$this->re_string2.")!m", $code, $matches)) {
-      
+      if (($matchpos=strpos($code, $mathes[0]))!==0) { 
+        // a single ' or " found, but isn't matched in any of the $matches
+        $pre=substr($code, 0, $matchpos);
+      }
       // string found, cut matched part from $code
       $code=substr($code, strpos($code, $matches[0])+strlen($matches[0]));
       // check which kind of string was found '' or "".
       if ($matches[2]) { //single quoted string found
         // $matches[2] is the part before the string, 
         // $matches[3] is the string ('')
-        $pre=$matches[2];
+        $pre.=$matches[2];
         $string=$matches[3];
       } else { // double quoted string found
         // $matches[5] is the part before the string
         // $matches[6] is the string ("")
-        $pre=$matches[5];
+        $pre.=$matches[5];
         $string=$matches[6];
       }
       if (preg_match("|//[^\n]*\$|",$pre)) {
+        echo "--$pre--$string--<br>\n";
         if (preg_match("|([^\n]*)\n|",$string.$code, $matches)) {
           $pre.=$matches[1]."\n";
           $code=substr($string.$code, strlen($matches[1])+1);
