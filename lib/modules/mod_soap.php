@@ -33,12 +33,18 @@
     ******************************************************************/
 
 	require_once("SOAP/Client.php");
+	require_once("SOAP/Parser.php");
 
 	class pinp_SOAP {
 
 		function _Client($endpoint, $wsdl = false , $portName = false, $proxy_params=array() ) {
 			return new pinp_SOAP_Client( $endpoint, $wsdl, $portName, $proxy_params);
 		}
+
+		function _Parser($xml, $encoding = SOAP_DEFAULT_ENCODING, $attachments=NULL) {
+			return new pinp_SOAP_Parser( $xml, $encoding, $attachments );
+		}
+
 		
 		function _Value($name, $type, $value, $namespaces=false) {
 			if( $namespaces===false ) {
@@ -53,7 +59,50 @@
 		}
 
 	}
-	
+
+	class pinp_SOAP_Parser extends SOAP_Parser {
+
+		function pinp_SOAP_Parser( $xml, $encoding = SOAP_DEFAULT_ENCODING, $attachments=NULL ) {
+			parent::SOAP_Parser( $xml, $encoding, $attachments );
+		}
+
+		function _getResponse() {
+			return $this->getResponse();
+		}
+
+		function _parseMessage($nr=0) {
+			$msg = &$this->message;
+			switch(strtolower($msg[$nr]["type"])) {
+			case 'struct':
+				$result = Array();
+				$children = explode("|", $msg[$nr]["children"]);
+				$to_array = Array();
+				foreach($children as $child) {
+					$key = $msg[$child]["name"];
+					$value = $this->_parseMessage($child);
+					if ($result[$key]) {
+						if (!$to_array[$key]) {
+							$temp = $result[$key];
+							$result[$key] = Array();
+							$result[$key][] = $temp;
+							$to_array[$key] = true;
+						}
+						$result[$key][] = $value;
+					} else {
+						$result[$key] = $value;
+					}
+				}
+			break;
+				default:
+				case 'string':
+					$result = $msg[$nr]["cdata"];
+				break;
+			}
+			return $result;
+		}
+	}	
+
+
 	class pinp_SOAP_Client extends SOAP_Client {
 	
 		function pinp_SOAP_Client($endpoint, $wsdl = false, $portName = false, $proxy_params=array()) {
