@@ -21,12 +21,24 @@
   // the variable itself.
   // Only 'leaf' node or array elements are checked.
 
-    global $ARCurrent;
+    global $ARCurrent, $AR;
     if (!$prefix) {
       $prefix="arStoreVars";
     }
     $prefix.="[";
     if ($prefix==="arStoreVars[") {
+      $toplevel=true;
+    }
+    if (!($regexp=$ARCurrent->regexp)) {
+      $regexp='^arStoreVars\[(';
+      reset($AR->nls->list);
+      while (list($key, $value)=each($AR->nls->list)) {
+        $regexp.=$key.'|';
+      }
+      $regexp=substr($regexp,0,-1).')\]\[$';
+      $ARCurrent->regexp=$regexp;
+    }
+    if (ereg($ARCurrent->regexp, $prefix)) {
       $toplevel=true;
     }
     $postfix="]";
