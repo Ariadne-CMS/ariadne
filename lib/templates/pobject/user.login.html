@@ -10,15 +10,19 @@
     $arLoginOld=$ARCurrent->session->get("ARLogin");
     echo "<!-- $arLoginOld -->";
     $arCallArgs.="&arLoginOld=".RawUrlEncode($arLoginOld);
-    // now set the user back to 'public'
-    $temp=$this->get("/system/users/public","Get.phtml");
-    if ($temp && $temp[0]) {
-      $AR->user=$temp[0];
-      $AR->user->grants=$this->GetValidGrants();
-      // do not update the cookie and session data
-      // cookies must be set only by login.phtml
-      // just kill the session
-      $this->store->root=$ARCurrent->session->kill();
+    // when current user is logged on as public, then don't delete his
+    // session.
+    if ($AR->user && ($AR->user->data->login!="public")) {
+      // now set the user back to 'public'
+      $temp=$this->get("/system/users/public","Get.phtml");
+      if ($temp && $temp[0]) {
+        $AR->user=$temp[0];
+        $AR->user->grants=$this->GetValidGrants();
+        // do not update the cookie and session data
+        // cookies must be set only by login.phtml
+        // just kill the session
+        $this->store->root=$ARCurrent->session->kill();
+      }
     }
   }
   if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
