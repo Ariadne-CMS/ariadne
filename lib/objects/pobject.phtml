@@ -988,6 +988,13 @@ class pobject extends object { // pobject class definition
 		debug("CheckConfig: searching for template ($arCallType::$arCallFunction)", "all");
 		$path = $this->make_path($path);
 
+		if (is_array($ARCurrent->shortcut_redirect)) {
+			$redir = end($ARCurrent->shortcut_redirect);
+			if (substr($path, 0, strlen($redir["dest"])) == $redir["dest"]) {
+				$path = $redir["src"];
+			}
+		}
+
 		/* first check current templates */
 		if ($this->path == $path) {
 			$curr_templates=$this->data->config->pinp;
