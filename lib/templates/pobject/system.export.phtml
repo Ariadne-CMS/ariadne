@@ -10,6 +10,19 @@ global $AR;
 		}
 	}
 
+		/* create a dummy object for later use */
+		$dummy = new pobject;
+		$dummy->nls = new object;
+		$dummy->dummy = true;
+		$dummy->type = "pobject";
+		reset($AR->nls->list);
+		while (list($key, $val)=each($AR->nls->list)) {
+			$dummy->$key=new object;
+			$dummy->$key->name="Dummy node";
+			$dummy->nls->list[$key]=$val;
+		}
+
+
 		if (!$srcpath) {
 			$srcpath="/";
 		}
@@ -42,15 +55,6 @@ global $AR;
 				if (!$ARCurrent->importStore->exists($parent)) {
 					if ($parent=="/") {
 						display("ax file does not have a root node, we will create one\n");
-
-						$dummy = new object;
-						$dummy->nls = new object;
-						reset($AR->nls->list);
-						while (list($key, $val)=each($AR->nls->list)) {
-							$dummy->$key=new object;
-							$dummy->$key->name="Dummy node";
-							$dummy->nls->list[$key]=$val;
-						}
 
 						$ARCurrent->importStore->save(
 								"/", 
@@ -94,11 +98,21 @@ global $AR;
 
 				while (is_array($result) && (list($key,$object)=each($result))) {
 					$newpath=$destpath.substr($object->path, strlen($rootpath));
+
+					$save_obj = true;
+
 					display("processing($newpath)	");
 					if ($ARCurrent->options["without_data"]) {
 						display("no data for (".$object->path.")\n");
+						$temp_templates = $object->data->templates;
+						$temp_pinp = $object->data->pinp;
 						unset($object->data);
-						unset($object->properties);
+						$object->data=$dummy->data;
+						if (!$ARCurrent->options["without_templates"]) {
+							$object->data->templates=$temp_templates;
+							$object->data->pinp=$temp_pinp;
+						}
+						$object->dummy_save=1;
 					}
 
 					if (!$saved_object[$object->id]) {
@@ -113,18 +127,19 @@ global $AR;
 
 								if (($object->lastchanged > $oldObject->lastchanged)) {
 									display("(updating)\n");
+									$update_obj = true;
 								} else {
 									display("(ok)\n");
 									unset($oldObject);	// no update needed
-									unset($object);
+									$save_obj = false;
 								}
 							} else {
-								unset($object);
+								$save_obj = false;
 							}
 						}
 
 
-						if ($object) {
+						if ($save_obj) {
 							// next one has to be linked
 							$saved_object[$object->id]=$newpath;
 
@@ -137,15 +152,17 @@ global $AR;
 											$object->vtype,
 											$object->priority,
 											$object->dummy_save);
-
-								// (update or set templates and files)
-								$object->newObject=current(
-									$ARCurrent->importStore->call("system.get.phtml","",
-										$ARCurrent->importStore->get($newpath)));
-
-								$object->call("system.export.templates.phtml", "");
-								$object->call("system.export.files.phtml", "");
 						}
+
+						// (update or set templates and files)
+						$object->newObject=current(
+							$ARCurrent->importStore->call("system.get.phtml","",
+								$ARCurrent->importStore->get($newpath)));
+
+						$object->call("system.export.templates.phtml", "");
+						$object->call("system.export.files.phtml", "");
+
+
 					} else {
 						if (!$ARCurrent->importStore->exists($newpath)) {
 							display("(linking)\n");
