@@ -1,42 +1,50 @@
 mod_edit.php documentation
 
-status: almost finished
-
 methods:
 
-	function _setEditMode($mode=false, $template='user.edit.html', $target='_top') {
+	function setEditMode($mode=false, $template='user.edit.html', $target='_top') {
 
 		set editMode on (true) or off (false),
 		set the template and target to use in links when editmode is on.
 
-	function _getEditMode() {
+	function getEditMode() {
 
 		returns true if the editMode is on, false otherwise
 
-	function _getEditTemplate() {
+	function getEditTemplate() {
 
 		returns the template to use in links in editmode
 
-	function _getEditTarget() {
+	function getEditTarget() {
 
 		returns the target to use in links in editmode
 
-	function _showInputText($var, $name, $title='') 
+	function showInputText($var, $name, $title='') 
 
 		show an editable element as an input line, if 
 		editMode is on, or simply echo it if not
 
-	function _showSpan($var, $name, $title='') 
+	function showSpan($var, $name, $title='') 
 
 		show an editable element as an editable span, if 
 		editMode is on, or simply echo it if not
 
-	function _showDiv($var, $name, $title='') 
+	function showDiv($var, $name, $title='') 
 
 		show an editable element as an editable div, if 
 		editMode is on, or simply echo it if not.
 
-	function _showImageMapLink($path, $extra)
+	function showLink($path, $extra)
+
+		show a link, with the correct template and target
+
+	function showEditableLink($path, $extra)
+
+		show a link, with the correct template and target,
+		but no href in edit mode, the action is on double 
+		click instead.
+
+	function showHref($path)
 
 		replaces the href tag within an imagemap by echoing the
 		url or adding the edit template to the url in the echo.
@@ -48,22 +56,7 @@ Missing:
 - better solution for presenting metadata
 - more error checking in the save routines
 
-The first two problems may have a single solution:
-
-How about we add a sidebar to the editor widget, which can enabled 
-or disabled by the user. If you click on an editable element, the
-sidebar will show a form with the current data for the object of 
-which the element is a part. This form allows full access to all 
-the data elements of the object. It should probably be updated 
-immediately when the clicked element is changed, preferably character 
-for character, just as any 'copy' of the element elsewhere in the page
-is also immediately updated on any change.
-
-Now if you add a new object, you simply display the sidebar, show
-the form for a new object, and when a minimal amount of info is set,
-allow it to be saved and update the editable page.
-
-In the mean time, this is how it is supposed to work:
+This is how it is supposed to work:
 
 view.html:
 <pinp>
@@ -71,9 +64,9 @@ view.html:
 </pinp>
 <html>
 <body>
-  <h1><pinp> edit::showSpan($nlsdata->name, "[$nls][name]"); </pinp></h1>
+  <h1><pinp> edit::showSpan($nlsdata->name, "[$nls][name]", "Title"); </pinp></h1>
   <p><pinp>
-    edit::showDiv(ParsePage($nlsdata->summary), "[$nls][summary]");
+    edit::showDiv(ParsePage($nlsdata->summary), "[$nls][summary]", "Summary");
   </pinp></p>
   <ul>
   <pinp>
@@ -81,7 +74,7 @@ view.html:
   </pinp>
   </ul>
   <pinp>
-    edit::showDiv( GetPage(), "[$nls][page]");
+    edit::showDiv( GetPage(), "[$nls][page]", "Page");
   </pinp>
 </body>
 </html>
@@ -91,8 +84,9 @@ show.subnav.html:
   import('mod_edit.php');
 </pinp>
 <li><pinp>
-  edit::showSpan($nlsdata->name, "[$nls][name]");
-</pinp></li>
+  edit::showEditableLink($path);
+  edit::showSpan($nlsdata->name, "[$nls][name]", "Title");
+</pinp></a></li>
 
 user.edit.page.html
 <pinp>

@@ -1,7 +1,7 @@
 Installing Ariadne.                                            Muze Ariadne 2.4
 ===============================================================================
 
-  IMPORTANT: Ariadne needs PHP 4.0.6 or higher *
+  IMPORTANT: Ariadne needs PHP 4.0.6 or higher, PHP 5 is not yet supported *
 
   * If you don't need the FTP daemon, PHP 4.0.3pl1 is the minimum
            
@@ -38,15 +38,12 @@ Apache configuration (httpd.conf).
      cd /var/www
      ln -s /usr/local/lib/ariadne/www/ ariadne
 
-3) Make sure the files directory and the sessions directory are writable by the 
-   webserver user.
+3) Make sure the files directory is writable by the webserver user.
    Ariadne needs to write cache images and templates and other files to
    disk. So check to see which user your webserver is running as (look in
    httpd.conf, we'll presume www-data here) and (as root) do something like:
 
      cd /usr/local/lib/ariadne/files/
-     chown -R www-data:www-data * 
-     cd /usr/local/lib/ariadne/sessions/
      chown -R www-data:www-data * 
 
 3) Create a database for Ariadne to use in MySQL.
