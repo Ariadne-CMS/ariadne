@@ -37,7 +37,12 @@
       }
     }
   }
-  $this->data->url=$this->getdata("url","none");
+  $url=$this->getdata("url","none");
+  if ($this->data->url!=$url) {
+    $this->data->url=$url;
+    // Changing the root url invalidates all cache images below this.
+    $this->ClearCache();
+  }
   if (substr($this->data->url,-1)=="/") {
     $this->data->url=substr($this->data->url,0,-1);
   }
