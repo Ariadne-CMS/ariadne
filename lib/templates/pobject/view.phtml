@@ -13,7 +13,17 @@
 
  ******************************************************************/
 
-	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+	if ($path && $this->exists($path)) {
+?>
+<html>
+<body>
+<script>
+  top.View('<?php echo $path; ?>');
+</script>
+</body>
+</html>
+<?php
+	} else if ($this->CheckLogin("read") && $this->CheckConfig()) {
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 <html>
