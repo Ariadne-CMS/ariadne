@@ -2,9 +2,9 @@
 	require_once("./ariadne.inc");
 	require_once($ariadne."/configs/ariadne.phtml");
 	require_once($ariadne."/configs/store.phtml");
-	include_once($ariadne."/stores/".$store_config["dbms"]."store.phtml");
-	include_once($ariadne."/modules/mod_session.phtml");
-	include_once($ariadne."/includes/loader.web.php");
+	include_once($store_config['code']."stores/".$store_config["dbms"]."store.phtml");
+	include_once($store_config['code']."modules/mod_session.phtml");
+	include_once($store_config['code']."includes/loader.web.php");
 
 	function fix_quotes(&$value) {
 		if (is_array($value)) {
