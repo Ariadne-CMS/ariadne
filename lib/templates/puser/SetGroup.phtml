@@ -1,9 +1,11 @@
 <?php
+  debug("SetGroup: $action $path");
   if ($action=="add") {
     $data->groups[$path]=$id;
     $this->save($this->path, $this->type, $data);
   } else {
     unset($data->groups[$path]);
+    debug(serialize($data));
     $this->save($this->path, $this->type, $data);
   }
 ?>
