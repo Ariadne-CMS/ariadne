@@ -80,6 +80,7 @@ class oraclestore {
 */
 		$config["password"]="";
 		debug("oraclestore: end","all");
+//		debugon("all");
 	}
 
 	function call($template, $args, $objects) {
@@ -112,7 +113,7 @@ class oraclestore {
 			$count++;
 			// FIXME: find out how to let ORACLE give us a unixtimestamp
 			$lastchanged = strtotime($row['lastchanged']);
-			$object=$this->newobject($row["path"], $row["parent"], $row["type"], unserialize($row["object"]), $row["id"], $row["lastchanged"], $row["vtype"], strlen($row["object"]), $row["priority"]);
+			$object=$this->newobject($row["path"], $row["parent"], $row["type"], unserialize($row["object"]), $row["id"], $lastchanged, $row["vtype"], strlen($row["object"]), $row["priority"]);
 			$result[]=$object->call($template, $args);
 		}
 
@@ -250,23 +251,21 @@ class oraclestore {
 
 		if (is_string($id)) {
 			$epath = AddSlashes($id);
-			$query_string = "select $nodes_tbl.object from $nodes_tbl where $nodes_tbl.path = '$epath'";
-			$qresult = mysql_db_query($this->database, $query_string, $this->connect_id);
-			if (!$qresult) {
-				$this->error = "Could not fetch object id";
-			} else {
-				$temp = mysql_fetch_array($qresult);
+			$query_string = "select $nodes_tbl.object as \"object\" from $nodes_tbl where $nodes_tbl.path = '$epath'";
+			$qresult = $this->store_run_query($query_string);
+			if (!$this->errno) {
+				ocifetchinto($qresult, $temp, OCI_ASSOC);
 				$id = $temp["object"];
 			}
 		}
 
 
-		if ($id && !$this->error) {
+		if ($id && !$this->errno) {
 			$eid = AddSlashes($id);
-			$etimestamp = AddSlashes($timestamp);
-			$query_string = "update $objects_tbl set lastchanged=FROM_UNIXTIME($etimestamp) where id = $eid";
-			$qresult = mysql_db_query($this->database, $query_string, $this->connect_id);
-			$result = mysql_affected_rows($this->connect_id);
+			$lastchanged = "TO_DATE('".date("m-d-Y H:i:s", $timestamp)."', 'MM-DD-YYYY HH24:MI:SS')"; 
+
+			$query_string = "update $objects_tbl set lastchanged=$lastchanged where id = $eid";
+			$result = $this->store_run_query($query_string);
 		}
 		debug("touch: end","all");
 		return $result;
@@ -383,6 +382,7 @@ class oraclestore {
 	 **********************************************************************************/
 		debug("find($path, [criteria], $limit, $offset)","store");
 		if (!is_array($criteria) && ($criteria=trim($criteria))) {
+			echo "<h3>not implemented: search ($criteria)</h3>\n";  
 			$sqlcompiler=new mysql_compiler($this, $this->tbl_prefix);
 			$query_string=$sqlcompiler->compile($path, $criteria, $limit, $offset);
 			if ($sqlcompiler->error) {
@@ -574,7 +574,8 @@ class oraclestore {
 		}
 		$eparent=AddSlashes($parent);
 		$epath=AddSlashes($path);
-		$edata=AddSlashes(serialize($data));
+		$edata=serialize($data);
+
 		$etype=AddSlashes($type);
 		$epriority=(int)$priority;
 
@@ -598,8 +599,13 @@ class oraclestore {
 				$this->store_run_query($query_string);
 				if (!$this->errno) { // mysql_affected_rows doesn't always work
 					debug("save: query=$query_string","all");
-					$query_string="update $objects_tbl_data set object='$edata' where id=$id";
-					$this->store_run_query($query_string);
+
+
+					$query_string="update $objects_tbl_data set object=:one_lob where id=$id";
+					$stmt = ociparse($this->connect_id, $query_string);
+					ocibindbyname($stmt, ':one_lob', $edata);
+					ociexecute($stmt);
+
 					if (!$this->errno) {
 						debug("save: query=$query_string","all");
 						$this->save_properties($properties, $id, $this); 
@@ -670,15 +676,20 @@ class oraclestore {
 					debug("save: query=$query_string","all");
 					$this->store_run_query($query_string);
 					if (!$this->errno) {
-						$query_string="insert into $objects_tbl_data (id, object) values (ObjectID.CurrVal, '$edata')";
+
+						$query_string="insert into $objects_tbl_data (id, object) values (ObjectID.CurrVal, :one_lob)";
+
+						$stmt = ociparse($this->connect_id, $query_string);
+						ocibindbyname($stmt, ':one_lob', $edata);
+						ociexecute($stmt);
+
 						debug("save: query=$query_string","all");
-						$this->store_run_query($query_string);
 						if (!$this->errno) {
 							$query_string="insert into $nodes_tbl (path, parent, object, priority) values ('$epath', '$eparent', ObjectID.CurrVal, $epriority)";
 							debug("save: query=$query_string","all");
 							$this->store_run_query($query_string);
 							if (!$this->errno) {				
-								$this->save_properties($properties, $id, $this);
+								$this->save_properties($properties, 'ObjectID.CurrVal', $this);
 								$result=$path;
 							} else {
 								debug("save: insert node failed!","store");
@@ -876,11 +887,9 @@ class oraclestore {
 			$id=$this->exists($source);
 			if ($id) {
 				$query_string="insert into $nodes_tbl (path, parent, object ) values ('$edestination', '$eparent', $id)";
-				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
-				$errno=mysql_errno($this->connect_id);
-				$error=mysql_error($this->connect_id);
-				if ($errno) {				
-					$this->error="ERROR: Mysql: $errno: $error";
+				$temp = $this->store_run_query($query_string);
+				if ($this->errno) {				
+					$this->error="ERROR: Mysql: ".$this->errno.": ".$this->error;
 					debug("link: insert node failed!","store");
 					debug("link: ".$this->error,"store");
 					debug("link: query=$query_string","store");
@@ -902,7 +911,7 @@ class oraclestore {
 
 	function store_run_query($query) {
 		/* private function, do not use this outside this class */
-		echo "query ($query)<br>\n";
+//		echo "query ($query)<br>\n";
 		$result = ociparse($this->connect_id, $query);
 		ociexecute($result);
 		$err = ocierror($this->connect_id);
@@ -1119,10 +1128,12 @@ class oraclestore {
 	********************************************************************/
 		
 		debug("save_properties([properties], $id)","all");
-		if ($properties && (is_array($properties)) && (is_int($id))) {
+		if ($properties && (is_array($properties))) {
+			reset($properties);
 			while (list($property, $property_set)=each($properties)) {
 				$this->del_property($id, $property);
 				if (is_array($property_set)) {
+					reset($property_set);
 					while (list($key, $values)=each($property_set)) {
 						$this->add_property($id, $property, $values);
 					}

@@ -192,7 +192,7 @@ class oraclestore_install extends oraclestore {
 						case "string": 
 							if ($size>0 && $size<256) {
 								$index[]="$name";
-								$create_string.="varchar2(".$size.") not null,\n";
+								$create_string.="varchar2(".$size.") default ''  not null ,\n";
 							} else {
 								$result=0;
 								$this->error="Wrong format for typedefinition $name: incorrect size."; 
@@ -200,15 +200,15 @@ class oraclestore_install extends oraclestore {
 							break;
 						case "number":
 							$index[]="$name";
-							$create_string.="number not null,\n";
+							$create_string.="number default '0' not null ,\n";
 							break;
 						case "boolean":
 							$index[]="$name";
-							$create_string.="integer not null,\n";
+							$create_string.="integer default '0' not null ,\n";
 							break;
 						case "text":
 							$index[]="$name";
-							$create_string.="$name varchar2(2000) not null,\n";
+							$create_string.="$name varchar2(2000) default ''  not null,\n";
 							break;
 					}
 				}
