@@ -1714,7 +1714,7 @@ class pobject extends object { // pobject class definition
 	}
 
 	function _html_to_text($text) {
-		return html_to_text($text);
+		return $this->html_to_text($text);
 	}
 
 	function _newobject($filename, $type) {
