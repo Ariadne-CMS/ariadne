@@ -5,9 +5,7 @@
     if (!$language) {
       $language=$nls;
     }
-    if ($language!="none" && $data->$language->page) {
-      echo $data->$language->page;
-    }
+    $this->ShowPage($language);
 ?></BODY>
 <?PHP
   }
