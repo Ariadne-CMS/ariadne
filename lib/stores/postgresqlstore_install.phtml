@@ -92,7 +92,7 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 	which type (and size) each value is.
 	$definition is defined as: $definition[{name}][{type}]={size}
 		{name} is defined like $name above
-		(type} can be 'number', 'string' or 'boolean'
+		(type} can be 'number', 'string', 'text' or 'boolean'
 		{size} is only used for the string type and can not be more than 255. 
 	$indexes describes which indexes the storage layer should consider
 		for the property. Default behaviour is to create one index for the
@@ -124,20 +124,20 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 				$indexstring.="AR_$name,";
 				while (list($type,$size)=each($typedef)) {
 					switch($type) {
-				case "string": 
-					if ($size>0 && $size<256) {
-						$create_string.="varchar(".$size.") DEFAULT '' not null,\n";
-					} else {
-						$result=0;
-						$this->error="Wrong format for typedefinition $name: incorrect size."; 
-					}
-					break;
-				case "number":
-					$create_string.="numeric(11) DEFAULT 0 not null,\n";
-					break;
-				case "boolean":
-					$create_string.="bool DEFAULT false not null,\n";
-					break;
+						case "string": 
+							if ($size>0 && $size<256) {
+								$create_string.="varchar(".$size.") DEFAULT '' not null,\n";
+							} else {
+								$result=0;
+								$this->error="Wrong format for typedefinition $name: incorrect size."; 
+							}
+							break;
+						case "number":
+							$create_string.="numeric(11) DEFAULT 0 not null,\n";
+							break;
+						case "boolean":
+							$create_string.="bool DEFAULT false not null,\n";
+							break;
 					}
 				}
 			}
