@@ -386,13 +386,13 @@ class mysqlstore {
 			}
 			debug("save: query=$query_string","all");
 			mysql_db_query($this->database,$query_string, $this->connect_id);
-			$errno=mysql_errno();
+			$errno=mysql_errno($this->connect_id);
 			if (!$errno) { // mysql_affected_rows doesn't always work
 				debug("save: query=$query_string","all");
 				$this->save_properties($properties, $id, $this); 
 				$result=$path;
 			} else {
-				$this->error="ERROR: Mysql: $errno: ".mysql_error();
+				$this->error="ERROR: Mysql: $errno: ".mysql_error($this->connect_id);
 				debug("save: query=$query_string","store");
 				debug("save: update object failed!","store");
 				debug("save: ".$this->error,"store");
@@ -406,13 +406,13 @@ class mysqlstore {
 			$evtype=AddSlashes($vtype);
 			$query_string="insert into objects (id,type,object,vtype) values (0,'$etype','$edata','$evtype')";
 			$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
-			$errno=mysql_errno();
-			$error=mysql_error();
+			$errno=mysql_errno($this->connect_id);
+			$error=mysql_error($this->connect_id);
 			if (!$errno && $id=mysql_insert_id($this->connect_id)) {
 				$query_string="insert into nodes (path,parent,object) values ('$epath','$eparent',$id)";
 				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
-				$errno=mysql_errno();
-				$error=mysql_error();
+				$errno=mysql_errno($this->connect_id);
+				$error=mysql_error($this->connect_id);
 				if (!$errno) {				
 					$this->save_properties($properties, $id, $this);
 					$result=$path;
@@ -564,8 +564,8 @@ class mysqlstore {
 			if ($id) {
 				$query_string="insert into nodes (path, parent, object ) values ('$edestination', '$eparent', $id)";
 				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
-				$errno=mysql_errno();
-				$error=mysql_error();
+				$errno=mysql_errno($this->connect_id);
+				$error=mysql_error($this->connect_id);
 				if ($errno) {				
 					$this->error="ERROR: Mysql: $errno: $error";
 					debug("link: insert node failed!","store");
