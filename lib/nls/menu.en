@@ -28,4 +28,7 @@ $ARnls["m_index"]=		"Index";
 $ARnls["m_tutorials"]=	"Tutorials";
 $ARnls["m_search"]=		"Search";
 $ARnls["m_about"]=		"About&nbsp;Ariadne";
+$ARnls["m_logoff"]=		"Log&nbsp;off";
+$ARnls["m_explorerbar"]="Explorer&nbsp;Bar";
+$ARnls["m_priority"]=	"Priority";
 ?>
