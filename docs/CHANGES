@@ -17,6 +17,7 @@ Bugs Fixes:
 	- toolbar.php new objects were made in the currentsite, changed to current path.
 	- added a upgrade script which fixes the es nls name in objects which still
 	  have the latin1 encoding.
+	- The pinp call for HTTPRequest in pobject is now equal to the php one.
 
 Ariadne 2.4
 
