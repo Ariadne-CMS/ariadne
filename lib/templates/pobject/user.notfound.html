@@ -6,11 +6,11 @@
 	$fullpage = false;
 	if( !$ARConfigChecked ) {
 		$fullpage = true;
-		ldHeader("HTTP/1.0 404 Not Found");
 	}
 
 	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
 		if( $fullpage ) {
+			ldHeader("HTTP/1.0 404 Not Found");
 			$this->call("user.notfound.full.html", $arCallArgs);
 		} else {
 			$this->call("user.notfound.inpage.html", $arCallArgs);
