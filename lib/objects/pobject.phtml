@@ -874,7 +874,7 @@ class pobject extends object {
 				$fpath=$this->store->files."cache/$type/$nls".$path;
 				$hpath=$this->store->files."cacheheaders/$type/$nls".$path;
 				if ($dir=dir($fpath)) {
-					while ($entry=$dir->read()) {
+					while ($entry=@$dir->read()) {
 						if ($entry!="." && $entry!="..") {
 							if (filetype($fpath.$entry)!="dir") {
 								@unlink($fpath.$entry);
