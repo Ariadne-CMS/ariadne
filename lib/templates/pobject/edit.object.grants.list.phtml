@@ -214,6 +214,7 @@
 					ksort($grantslist[$type]);
 					while (list($id, $grants)=each($grantslist[$type])) { // path was login en is weer login
 						$grant_string = "";
+						unset($grants_eq);
 						if (!$ARCurrent->donelist[$type][$id]) {
 							$ARCurrent->donelist[$type][$id]=true;
  				        	if ($ARCurrent->oddline=($ARCurrent->oddline+1)%2) {
