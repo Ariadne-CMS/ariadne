@@ -21,6 +21,7 @@ Bugs Fixed:
 	  session.
 	- We now call the link dialog in the WYSIWYG editor on the current object.
 	- Fixed passing of data to pobject::_NewObject()
+	- Fixed recursive calling of user.login.html
 
 Changes in Ariadne since version 2.2
 
