@@ -22,6 +22,7 @@ New Features:
 	- The 'open editor' button now has an adjustable text. 
 
 Bugs Fixes:
+	- Added missing wmv mimetype to mod_mimetype.php
 	- Fixed a small problem in the nls handling of the new wizards. Sometimes the tab
 	  and the actual language shown differed.
 	- Fixed a Mozilla reserved keyword 'implements' bug in the Ariadne Search window. Thanks
