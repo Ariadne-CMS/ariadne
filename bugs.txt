@@ -1,0 +1,8 @@
+- When renaming an object the grants set for users on that object are not
+  updated. This means the grants on the user will break since they point to
+  the old filename of the object. Workaround: Delete all grants pointing to
+  the object before renaming the object.
+- When uploading a file with an existing filename in Ariadne it will
+  popup an overwrite confirmation dialog. Pressing "Ok" yes overwrite does
+  not work. Workaround: Delete the old file and upload a new one.
+
