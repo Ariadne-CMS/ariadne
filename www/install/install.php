@@ -1,16 +1,9 @@
 #!/usr/bin/php4 -q
 <pre>
 <?php
-	require("../ariadne.inc");
-	require($ariadne."/configs/ariadne.phtml");
-	require($ariadne."/configs/store.phtml");
-	require($ariadne."/configs/axstore.phtml");
-	include_once($store_config['code']."includes/loader.web.php");
-	include_once($store_config['code']."stores/".$ax_config["dbms"]."store.phtml");
-	include_once($store_config['code']."stores/".$store_config["dbms"]."store_install.phtml");
-	include_once($store_config['code']."nls/".$AR->nls->default);
-	$ERRMODE="text";
+	include_once("check.php");
 
+	$ERRMODE="text";
 
 	$inst_store = $store_config["dbms"]."store_install";
 	$store=new $inst_store(".",$store_config);
