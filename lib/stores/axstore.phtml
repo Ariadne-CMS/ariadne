@@ -677,9 +677,13 @@ class axstore {
 					}
 					fclose($fp_nodes);
 					fclose($fp_objects);
-					fclose($this->ofile); 
+
+					if ($this->ofile) {
+						fclose($this->ofile); 
+						@unlink($this->tempdir."/objects.data");
+					}
+
 					if (file_exists($this->tempdir."/tempobjects.data")) {
-						unlink($this->tempdir."/objects.data");
 						rename($this->tempdir."/tempobjects.data", $this->tempdir."/objects.data");
 						if ($this->sfp) {
 							fclose($this->sfp);
