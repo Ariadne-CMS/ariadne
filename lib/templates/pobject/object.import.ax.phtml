@@ -47,6 +47,7 @@
 				
 				$ax_config["writeable"]=false;
 				$ax_config["database"]=$source;
+				set_time_limit(0);
 
 				$store=new axstore("", $ax_config);
 				if (!$store->error) {

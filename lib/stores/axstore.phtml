@@ -1,6 +1,11 @@
 <?php
 // general objectstore functions
 
+define("AX_NORMAL", 0);
+define("AX_DUMMY", 1);
+define("AX_WITHOUT_DATA", 2);
+define("AX_WITHOUT_TEMPLATES", 4);
+
 class axstore {
 
 	var $nodes;
@@ -95,8 +100,8 @@ class axstore {
 									$node->path=$data[0];
 									$node->nextid=$data[2];
 									$node->priority=$data[3];
-									/* dummy */
-									$node->dummy=chop($data[4]);
+									/* axflags */
+									$node->axflags=chop($data[4]);
 									$this->nodes[$node->path]=$node;
 									$this->nodes[$node->path]->object=&$this->objects[$data[1]];
 
@@ -348,7 +353,7 @@ class axstore {
 					$parent="..";
 				}
 				$node->object->parent=$parent;
-				$node->object->dummy=$node->dummy;
+				$node->object->axflags=$node->axflags;
 				$node->object->priority=$node->priority;
 				$result[]=$node->object->call($template, $args);
 				$node->object->runtime_ref--;
@@ -416,7 +421,7 @@ class axstore {
 		return $result;
 	}
 
-	function save($path, $type, $data, $properties="", $vtype="", $priority=0, $dummy=0) {
+	function save($path, $type, $data, $properties="", $vtype="", $priority=0, $axflags=AX_NORMAL) {
 		//echo "axstore::save($path, $type, [data], [properties], $vtype, $priority)\n";
 		$this->error="";
 		if ($path!="/") {
@@ -444,7 +449,7 @@ class axstore {
 			$object->data=$data;
 			$object->lastchanged=time();
 			$this->_set_object_properties($properties, $object);
-			$this->nodes[$path]->dummy=$dummy;
+			$this->nodes[$path]->axflags=$axflags;
 			$this->nodes[$path]->priority=$priority;
 
 			// save object into the database
@@ -472,7 +477,7 @@ class axstore {
 			$node=new object;
 			$node->path=$path;
 			$node->priority=$priority;
-			$node->dummy=$dummy;
+			$node->axflags=$axflags;
 
 			$this->nodes[$path]=$node;
 			$this->nodes[$path]->object=&$this->objects[$object->id];
@@ -709,7 +714,7 @@ class axstore {
 						$node_line=$path."&".(int)$node->object->id;
 						$node_line.="&".(int)$node->nextid;
 						$node_line.="&".(int)$node->priority;
-						$node_line.="&".(int)$node->dummy;
+						$node_line.="&".(int)$node->axflags;
 						$node_line.="\n";
 						fwrite($fp_nodes, $node_line);
 					}

@@ -3,7 +3,7 @@
 		$this->properties=$this->load_properties();
 		$this->call("system.export.get.grants.phtml");
 	} else {
-		$this->dummy_save=1;
+		$this->axflags=AX_DUMMY;
 	}
 
 	$arResult=$this;

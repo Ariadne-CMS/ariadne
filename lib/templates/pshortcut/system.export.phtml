@@ -13,7 +13,7 @@ global $AR;
 		/* create a dummy object for later use */
 		$dummy = new pobject;
 		$dummy->nls = new object;
-		$dummy->dummy = true;
+		$dummy->axflags = true;
 		$dummy->type = "pobject";
 		reset($AR->nls->list);
 		while (list($key, $val)=each($AR->nls->list)) {
@@ -63,7 +63,7 @@ global $AR;
 								0,
 								0,
 								0,
-								1);
+								AX_DUMMY);
 					} else {
 						$ARCurrent->importStore->error="No parent defined for $destpath";
 					}
@@ -110,22 +110,28 @@ global $AR;
 						$object->data=$dummy->data;
 						$object->data->templates=$temp_templates;
 						$object->data->pinp=$temp_pinp;
-						$object->dummy = true;
-						$object->dummy_save=1;
+						$object->axflags |= AX_WITHOUT_DATA;
 					}
 
 					if ($ARCurrent->options["without_templates"]) {
 						unset($object->data->templates);
 						unset($object->data->pinp);
+						$object->axflags |= AX_WITHOUT_TEMPLATES;
+					}
+
+					if ($ARCurrent->options["without_files"]) {
+						$object->axflags |= AX_WITHOUT_FILES;
 					}
 
 					if (!$saved_object[$object->id]) {
-						if ((!$ARCurrent->options["force"] || $object->dummy) && $ARCurrent->importStore->exists($newpath)) {
+						if ((!$ARCurrent->options["force"] || $object->axflags) && $ARCurrent->importStore->exists($newpath)) {
 							$saved_object[$object->id]=$newpath;
 
 							// we may never overwrite an existing object with a
 							// dummy object
-							if (!$object->dummy) {
+							if (!($object->axflags & AX_DUMMY) && 
+								!($object->axflags & AX_WITHOUT_DATA)) {
+
 								$oldObject=current($ARCurrent->importStore->call("system.get.phtml", "",
 												$ARCurrent->importStore->get($newpath)));
 
@@ -138,7 +144,7 @@ global $AR;
 									unset($oldObject);	// no update needed
 								}
 							} else {
-								display("(dummy)\n");
+								display("(no overwrite)\n");
 								$save_obj = false;
 							}
 						}
@@ -155,7 +161,7 @@ global $AR;
 											$ARCurrent->importStore->get($newpath));
 
 								} else {
-									display("(saving ".(($object->dummy_save) ? "dummy" : "").")\n");
+									display("(saving ".(($object->axflags) ? " (".$object->axflags.") " : "").")\n");
 									$ARCurrent->importStore->save(
 											$newpath, 
 											$object->type,
@@ -163,20 +169,25 @@ global $AR;
 											$object->properties,
 											$object->vtype,
 											$object->priority,
-											$object->dummy_save);
+											$object->axflags);
 								}
 						} else
 						if ($update_obj) {
 						}
 
-						// (update or set templates and files)
-						$object->newObject=current(
-							$ARCurrent->importStore->call("system.get.phtml","",
-								$ARCurrent->importStore->get($newpath)));
+						if (!($object->axflags & AX_DUMMY)) {
+							$object->newObject=current(
+								$ARCurrent->importStore->call("system.get.phtml","",
+									$ARCurrent->importStore->get($newpath)));
 
-						$object->call("system.export.templates.phtml", "");
-						$object->call("system.export.files.phtml", "");
-
+							if (!($object->axflags & AX_WITHOUT_TEMPLATES)) {
+								// (update or set templates and files)
+								$object->call("system.export.templates.phtml", "");
+							}
+							if (!($object->axflags & AX_WITHOUT_FILES)) {
+								$object->call("system.export.files.phtml", "");
+							}
+						}
 
 					} else {
 						if (!$ARCurrent->importStore->exists($newpath)) {
