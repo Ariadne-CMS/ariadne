@@ -1,0 +1,47 @@
+<?php
+  /******************************************************************
+
+   no result.
+
+  ******************************************************************/
+  if ($this->CheckSilent("read")) {
+?>
+    <fieldset id="interface">
+    <legend><?php echo $ARnls["interface"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+      <table border="0" align="center">
+      <tr>
+        <td>
+          <?php echo $ARnls["default"]; ?>
+        </td><td>
+          <select name="interface" style="width: 100px;">
+              <option value="classic"><?php echo $ARnls["classic"]; ?></option>
+              <option value="new" <?php if ($data->interface=="new") { echo "selected"; } ?>><?php echo $ARnls["new"]; ?></option>
+              <option value="winxp" <?php if ($data->interface=="winxp") { echo "selected"; } ?>><?php echo $ARnls["winxp"]; ?></option>
+          </select>
+        <td>
+      </tr>
+      </table>
+    </fieldset>
+
+    <fieldset id="windowprefs">
+    <legend><?php echo $ARnls["openinnewwindow"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+      <table border="0" align="center">
+      <tr>
+        <td><?php echo $ARnls["layout"]; ?></td>
+        <td align="center">
+          <input type="radio" name="windowprefs[edit_object_layout]" value="1" <?php if( $this->data->windowprefs["edit_object_layout"] ) echo "checked"; ?>><?php echo $ARnls["yes"]; ?>
+          <input type="radio" name="windowprefs[edit_object_layout]" value="0" <?php if( !$this->data->windowprefs["edit_object_layout"] ) echo "checked"; ?>><?php echo $ARnls["no"]; ?>
+        </td>
+      </tr>
+      <tr>
+        <td><?php echo $ARnls["grants"]; ?></td>
+        <td align="center">
+          <input type="radio" name="windowprefs[edit_object_grants]" value="1" <?php if( $this->data->windowprefs["edit_object_grants"] ) echo "checked"; ?>><?php echo $ARnls["yes"]; ?>
+          <input type="radio" name="windowprefs[edit_object_grants]" value="0" <?php if( !$this->data->windowprefs["edit_object_grants"] ) echo "checked"; ?>><?php echo $ARnls["no"]; ?>
+        </td>
+      </tr>
+      </table>
+    </fieldset>
+<?php
+  }
+?>

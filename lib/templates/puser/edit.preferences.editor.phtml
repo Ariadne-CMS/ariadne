@@ -1,0 +1,26 @@
+<?php
+  /******************************************************************
+
+   no result.
+
+  ******************************************************************/
+  if ($this->CheckSilent("read")) {
+?>
+    <fieldset id="editor">
+    <legend><?php echo $ARnls["editor"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+      <table border="0" align="center">
+      <tr>
+        <td>
+          <?php echo $ARnls["default"]; ?>
+        </td><td>
+          <select name="editor" style="width: 100px;">
+              <option value="wysiwyg"><?php echo $ARnls["wysiwyg"]; ?></option>
+              <option value="text" <?php if ($data->editor=="text") { echo "selected"; } ?>><?php echo $ARnls["text"]; ?></option>
+          </select>
+        <td>
+      </tr>
+      </table>
+    </fieldset>
+<?php
+  }
+?>

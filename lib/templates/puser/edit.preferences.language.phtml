@@ -1,0 +1,39 @@
+<?php
+  /******************************************************************
+
+   no result.
+
+  ******************************************************************/
+  if ($this->CheckSilent("read")) {
+?>
+    <fieldset id="language">
+    <legend><?php echo $ARnls["language"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+      <table border="0" align="center">
+      <tr>
+        <td>
+          <?php echo $ARnls["default"]; ?>
+        </td><td>
+          <select name="language" style="width: 100px;">
+          <?php
+            if (!$newtype) {
+              $language=$data->language;
+            } else {
+              $language=$ARCurrent->default;
+            }
+            reset($AR->nls->list);
+            while (list($key, $value)=each($AR->nls->list)) {
+              if ($key==$language) {
+                echo "<option value=\"$key\" selected>$value</option>\n";
+              } else {
+                echo "<option value=\"$key\">$value</option>\n";
+              }
+            }
+          ?>
+          </select>
+        </td>
+      </tr>
+      </table>
+    </fieldset>
+<?php
+  }
+?>

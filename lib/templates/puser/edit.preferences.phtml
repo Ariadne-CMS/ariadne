@@ -10,14 +10,27 @@
   if ($this->CheckLogin("edit") && $this->CheckConfig()) {
     include($this->store->code."widgets/wizard/code.php");
 
-    $start="edit.preferences.form.phtml";
+    $start="edit.preferences.language.phtml";
+    $interface="edit.preferences.interface.phtml";
+    $editor="edit.preferences.editor.phtml";
     $finish="edit.preferences.save.phtml";
-   
+	$cancel="js.window.close.phtml";
+	   
     $wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
+    $wgWizFlow[0]["save"]=$finish;
+    $wgWizFlow[0]["cancel"]=$cancel;
     $i++;
-    $wgWizFlow[$i]["title"]=$ARnls["preferences"];
+    $wgWizFlow[$i]["title"]=$ARnls["language"];
+    $wgWizFlow[$i]["image"]=$AR->dir->images."wizard/languages.png";
     $wgWizFlow[$i]["template"]=$start;
-    $wgWizFlow[$i]["save"]=$i+1;
+    $i++;
+    $wgWizFlow[$i]["title"]=$ARnls["interface"];
+    $wgWizFlow[$i]["image"]=$AR->dir->images."wizard/customdata.png";
+    $wgWizFlow[$i]["template"]=$interface;
+    $i++;
+    $wgWizFlow[$i]["title"]=$ARnls["editor"];
+    $wgWizFlow[$i]["image"]=$AR->dir->images."wizard/data.png";
+    $wgWizFlow[$i]["template"]=$editor;
     $i++;
     $wgWizFlow[$i]["title"]=$ARnls["save"];
     $wgWizFlow[$i]["template"]=$finish;
@@ -31,6 +44,7 @@
       $wgWizButtons=$wgWizFlow[$wgWizNextStep];
     }
     $wgWizTitle=$ARnls["preferences"];    
-    include($this->store->code."widgets/wizard/small.html");
+    $wgWizHeader=$ARnls["preferences"];    
+    include($this->store->code."widgets/wizard/new.html");
   }
 ?>
