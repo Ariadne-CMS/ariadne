@@ -79,14 +79,10 @@
 <input type="hidden" name="arReturnPath" value="<?php echo $arReturnPath; ?>">
 <input type="hidden" name="arReturnTemplate" value="<?php echo $arReturnTemplate; ?>">
 <input type="hidden" name="arPopup" value="true">
-<table align="center" border="0" width="300">
+<table align="center" valign="middle" border="0" width="300">
 <tr>
-	<td align="center" colspan="2">
-		<h1><?php echo $arErrorMessage; ?>&nbsp;</h1>
-	</td>
-</tr><tr>
-	<td colspan="2" align="center">
-			<table width="50%" align="right">
+	<td colspan="2" align="center" valign="middle">
+			<table align="right">
 			<tr>
 				<td align="right"><?php echo $ARnls["user"]; ?>&nbsp;:</td>
 				<td><input type="text" name="ARLogin" size="16" value="<?php echo $ARLogin; ?>"></td>
@@ -110,6 +106,11 @@
 </table>
 <script>
   function init() {
+	<?php
+      if ($arErrorMessage) {
+        echo "    alert('".AddSlashes($arErrorMessage)."');\n";
+      }
+    ?>
 	document.login.ARLogin.focus();
   }
 </script>
