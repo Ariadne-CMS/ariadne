@@ -51,9 +51,15 @@ class session {
 	function put($varname, $value, $system=0) {
 		debug("session->put($varname,$value,$system)","store");
 		if (!$system) {
-			$this->data->$varname=$value;
+			if ($this->data->$varname !== $value) {
+				$this->data->$varname=$value;
+				$this->changed = true;
+			}
 		} else {
-			$this->system->$varname=$value;
+			if ($this->system->$varname !== $value) {
+				$this->system->$varname=$value;
+				$this->changed = true;
+			}
 		}
 		debug("session->put: end","all");
 	}
@@ -75,7 +81,11 @@ class session {
 			if (!$id) { $id=$this->id; } else { $this->id=$id; }
 			// store session data
 			$this->data->system = $this->system;
-			$this->sessionstore->save("/$id/","psession",$this->data);
+			if ($this->changed) {
+				$this->sessionstore->save("/$id/","psession",$this->data);
+			} else {
+				$this->sessionstore->touch("/$id/", time());
+			}
 			unset($this->data->system);
 			$this->lastchanged=time();
 		} else {

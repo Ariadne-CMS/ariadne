@@ -175,6 +175,51 @@ class mysqlstore {
 		return $result;
 	}
 
+	function touch($id, $timestamp = -1) {
+	/**********************************************************************************
+
+	 This function takes as argument a path to an object (or id of an object)
+     in the store and will set the timestamp to $timestamp.
+
+	 $path should always start and end with a '/'.
+
+	 **********************************************************************************/
+
+		debug("touch($path, $timestamp)","store");
+		$this->error="";
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+
+		if ($timestamp == -1) {
+			$timestamp = time();
+		}
+
+		if (is_string($id)) {
+			$epath = AddSlashes($id);
+			$query_string = "select $nodes_tbl.object from $nodes_tbl where $nodes_tbl.path = '$epath'";
+			$qresult = mysql_db_query($this->database, $query_string, $this->connect_id);
+			if (!$qresult) {
+				$this->error = "Could not fetch object id";
+			} else {
+				$temp = mysql_fetch_array($qresult);
+				$id = $temp["object"];
+			}
+		}
+
+
+		if ($id && !$this->error) {
+			$eid = AddSlashes($id);
+			$etimestamp = AddSlashes($timestamp);
+			$query_string = "update $objects_tbl set lastchanged=FROM_UNIXTIME($etimestamp) where id = $eid";
+			$qresult = mysql_db_query($this->database, $query_string, $this->connect_id);
+			$result = mysql_affected_rows($this->connect_id);
+		}
+		debug("touch: end","all");
+		return $result;
+	}
+
 	function ls($path) {
 	/**********************************************************************************
 

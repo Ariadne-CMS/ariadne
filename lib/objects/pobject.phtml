@@ -483,6 +483,16 @@ class pobject extends object { // pobject class definition
 		return $result;
 	}
 
+	function touch($id=0, $timestamp=-1) {
+		if (!$id) {
+			$id = $this->id;
+		}
+		$result = $this->store->touch($id, $timestamp);
+		if ($this->store->error) {
+			$this->error = $this->store->error;
+		}
+		return $result;
+	}
 
 	function load_properties() {
 		debug("pobject: load_properties()","object");

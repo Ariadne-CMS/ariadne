@@ -1,0 +1,8 @@
+<?php
+	if ($this->CheckLogin("edit", $this->type) && $this->CheckConfig()) {
+		if (!isset($timestamp)) {
+			$timestamp = -1;
+		}
+		$this->touch($this->id, $timestamp);
+	}
+?>
