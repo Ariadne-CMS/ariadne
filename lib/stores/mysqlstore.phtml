@@ -331,7 +331,9 @@ class mysqlstore {
 		}
 		debug("find: query=$query_string","all");
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
-		debug("find: end (".mysql_num_rows($result["list"]).")","all");
+		if ($result["list"]) {
+			debug("find: end (".mysql_num_rows($result["list"]).")","all");
+		}
 		return $result;
 	}
 
