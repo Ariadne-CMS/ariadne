@@ -121,8 +121,14 @@
 		$address["street"]["string"]=50;
 		$address["zipcode"]["string"]=6;
 		$address["city"]["string"]=50;
+		$address["state"]["string"]=50;
 		$address["country"]["string"]=50;
-		$store->create_property("address", $address);
+		$address_index[0][0]="city";
+		$address_index[0][1]="street";
+		$address_index[1][0]="zipcode";
+		$address_index[2][0]="country";
+		$address_index[2][1]="state";
+		$store->create_property("address", $address, $address_index);
 
 		// install psite types and properties
 
