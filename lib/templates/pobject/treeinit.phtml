@@ -1,7 +1,41 @@
 <?php
   if ($this->CheckLogin("read") && $this->CheckConfig()) {
 ?>
-<body bgcolor="#404074" text="white">
+<html>
+<head>
+<style>
+TD {
+	FONT: 13px sans-serif;
+}
+BODY 	{
+	FONT: 13px sans-serif;
+	BORDER: 0;
+    CURSOR: wait;
+  <?php
+    global $HTTP_USER_AGENT;
+    if (eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
+       $regs[1] && (intval($regs[1])>=4)) { //ie4+
+  ?>
+	BACKGROUND-COLOR: buttonface;
+  <?php
+    } else {
+  ?>
+	BACKGROUND-COLOR: #BBBBBB;
+  <?php
+    }
+  ?>
+}
+</style>
+</head>
+<body>
+<fieldset>
+<table width="100%">
+<tr>
+  <td valign="middle"><img src="<?php echo $AR->images; ?>tree/wait.gif" align="left" hspace="2">Loading...</td>
+  <td align="right"><img align="right" src="<?php echo $AR->images; ?>tree/x.png" vspace="1"></td>
+</tr>
+</table>
+</fieldset>
 <?php
   flush();
   $folders=$this->get(".","GetFolder.phtml");
@@ -39,6 +73,7 @@
   }
 ?>
 </body>
+</html>
 <?php   
   } 
 ?>
