@@ -192,6 +192,8 @@
 	function setGrantOptions() {
 		var form = document.forms.grantsform;
 
+		form['grant_other'].value = '';
+
 		for (var i = 0; i < form['modifiers[]'].length; i++) {
 			if (userGrantsData[selectedUserGrant][form['modifiers[]'][i].value]) {
 				form['modifiers[]'][i].checked = true;
