@@ -807,9 +807,28 @@ function IMAGE_set(arr) {
     src=new String(arr['src']);
     temp=new String('http://');
     if (src.substring(0,temp.length)!=temp) {
-      src='<?php echo $this->store->root; ?>'+src;
+      src='<?php echo $AR->host.$this->store->root; ?>'+src;
     }
+	temp='<IMG SRC="'+src+'"';
+	if (arr['border']!='') {
+		temp+=' BORDER="'+arr['border']+'"';
+	}
+	if (arr['hspace']!='') {
+	  temp+=' HSPACE="'+arr['hspace']+'"';
+	}
+	if (arr['vspace']!='') {
+	  temp+=' VSPACE="'+arr['vspace']+'"';
+	}
+	if (arr['align']!='') {
+	  temp+=' ALIGN="'+arr['align']+'"';
+	}
+	if (arr['alt']!='') {
+	  temp+=' ALT="'+arr['alt']+'"';
+	}
+	temp+='>';
     if (window.elIMG) { // insert a new img
+      window.elIMG.outerHTML=temp;
+/*
       elIMG=window.elIMG;
       elIMG.src=src;
       elIMG.border=arr['border'];
@@ -821,9 +840,11 @@ function IMAGE_set(arr) {
         elIMG.align=arr['align'];
       }
       elIMG.alt=arr['alt'];
+*/
     } else {
       el=window.el;
       if ((el.type=="None") || (el.type=="Text"))  {
+/*
         temp='<IMG SRC="'+src+'"';
         if (arr['border']!='') {
           temp+=' BORDER='+arr['border'];
@@ -841,6 +862,7 @@ function IMAGE_set(arr) {
           temp+=' ALT="'+arr['alt']+'"';
         }
         temp+='>';
+*/
         rg.pasteHTML(temp);
         rg.select();
       }
