@@ -1,0 +1,97 @@
+<?php
+	/******************************************************************
+	 object.new.flow.phtml                                 Muze Ariadne
+	 ------------------------------------------------------------------
+
+	 No result.
+
+	******************************************************************/
+
+	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+		include($this->store->code."widgets/wizard/code.php");
+
+		$step1="edit.object.data.item.phtml";
+		$step2="edit.object.data.date.phtml";
+		$step3="edit.object.data.repeat.phtml";
+
+		$step5="edit.object.language.phtml";
+
+		$finish="edit.object.data.save.phtml";
+	 
+		$wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
+		$i++;
+		$wgWizFlow[$i]["title"]=$ARnls["item"];
+		$wgWizFlow[$i]["template"]=$step1;
+		$wgWizFlow[$i]["prev"]=$i-1;
+		$wgWizFlow[$i]["next"]=$i+1; 
+		$i++;
+		$wgWizFlow[$i]["title"]=$ARnls["date"];
+		$wgWizFlow[$i]["template"]=$step2;
+		$wgWizFlow[$i]["prev"]=$i-1;
+		$wgWizFlow[$i]["next"]=$i+1; 
+		$i++;
+		$wgWizFlow[$i]["title"]=$ARnls["repeat"];
+		$wgWizFlow[$i]["template"]=$step3;
+		$wgWizFlow[$i]["prev"]=$i-1;
+		$wgWizFlow[$i]["next"]=$i+1; 
+
+		$repeat=$this->getdata("repeat", "none");
+		if ($repeat==="day") {
+			$step4="edit.object.data.repeat.day.phtml";
+		} else
+		if ($repeat==="week") {
+			$step4="edit.object.data.repeat.week.phtml";
+		} else
+		if ($repeat==="month") {
+			$step4="edit.object.data.repeat.month.phtml";
+		} else
+		if ($repeat==="year") {
+			$step4="edit.object.data.repeat.year.phtml";
+		} else {
+			$wgWizFlow[0]["current"]++; // skip step4
+		}
+		if ($step4) {
+			$i++;
+			$wgWizFlow[$i]["title"]=$ARnls["repeat"]."&nbsp;".$ARnls["data"];
+			$wgWizFlow[$i]["template"]=$step4;
+			$wgWizFlow[$i]["prev"]=$i-1;
+			$wgWizFlow[$i]["next"]=$i+1; 
+		}
+
+		if (count($ARConfig->nls->list)>1) { // just one language available
+			$wgWizFlow[$i]["next"]=$i+1;
+			$wgWizFlow[$i]["save"]=$i+2;
+			$i++;
+			$wgWizFlow[$i]["title"]=$ARnls["language"];
+			$wgWizFlow[$i]["template"]=$step5;
+			$wgWizFlow[$i]["next"]=1;
+			$wgWizFlow[$i]["prev"]=$i-1;
+			$wgWizFlow[$i]["save"]=$i+1;
+		} else {
+			$wgWizFlow[$i]["save"]=$i+1;
+			unset($wgWizFlow[$i]["next"]);
+		}
+
+		$i++;
+		$wgWizFlow[$i]["title"]=$ARnls["save"];
+		$wgWizFlow[$i]["template"]=$finish;
+		$wgWizFlow[$i]["back"]=$i-1;
+		
+		$arLanguage=$this->getdata("arLanguage","none");
+		if ($wgWizFlow[0]["current"]==5) { // =edit.object.language.phtml
+			$arControl=$this->getdata("wgWizControl","none");
+			if ($arControl==$ARnls["prev"]) { // if previous selected, ignore the language select list.
+				$arLanguage=$this->getdata("arPrevLanguage","none");
+				$ARCurrent->arLanguage=$arLanguage;
+			}
+		}
+		if (!$arLanguage) { // language select hasn't been done yet, so start with default language
+			$arLanguage=$ARConfig->nls->default;
+			$ARCurrent->arLanguage=$arLanguage;
+		}
+
+		$result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
+		$wgWizTitle=$ARnls["edit"]." ".$result[0];		
+		include($this->store->code."widgets/wizard/classic.html");
+	}
+?>

@@ -1,0 +1,63 @@
+<?php
+	/******************************************************************
+	 edit.object.data.item.phtml Muze Ariadne v2.0b
+	 ------------------------------------------------------------------
+	 Arguments: newtype, newparent, newfilename
+	 Grant needed: read
+	 Global variables: none
+
+	 This template displays the data entry step for creating or editing
+	 an object. The template is meant to be used as part of a wizard.
+
+	 no result.
+
+	******************************************************************/
+	if ($this->CheckSilent("read") && $this->CheckConfig()) {
+?>
+<table border="0" width="90%">
+<tr>
+	<td>
+		<?php 
+			$arLanguage=$this->getdata("arLanguage","none");
+			if (!$arLanguage) {
+			 $arLanguage=$ARConfig->nls->default;
+			}
+			$selectednls=$arLanguage;
+			$selectedlanguage=$ARConfig->nls->list[$arLanguage];
+			$flag="<img src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\">";
+		?>
+		<fieldset id="data">
+		<legend><?php echo $ARnls["repeat"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+			<table border="0" align="center">
+			<tr>
+				<?php
+					$roptions = array(
+								"none" 	=> $ARnls["none"],
+								"day"  	=> $ARnls["day"],
+								"week" 	=> $ARnls["week"],
+								"month"	=> $ARnls["month"],
+								"year"	=> $ARnls["year"]);
+
+					$repeat=$this->getdata("repeat", "none");
+					while (list($key, $val)=each($roptions)) {
+						?>
+					<tr>
+						<td>
+							<input <?php if ((!$repeat && $key=="none") || ($repeat==$key)) { echo "checked"; } ?>
+									type="radio" name="repeat" value="<?php echo $key; ?>">
+						</td><td>&nbsp;</td><td>
+							<?php echo $val; ?>
+						</td>
+					</tr>
+						<?php
+					}
+				?>
+			</tr>
+			</table>
+		</fieldset>
+	</td>
+</tr>
+</table>
+<?php
+	}
+?>

@@ -1,0 +1,67 @@
+<?php
+	/******************************************************************
+	 edit.object.data.item.phtml Muze Ariadne v2.0b
+	 ------------------------------------------------------------------
+	 Arguments: newtype, newparent, newfilename
+	 Grant needed: read
+	 Global variables: none
+
+	 This template displays the data entry step for creating or editing
+	 an object. The template is meant to be used as part of a wizard.
+
+	 no result.
+
+	******************************************************************/
+	if ($this->CheckSilent("read") && $this->CheckConfig()) {
+?>
+<table border="0" width="90%">
+<tr>
+	<td>
+		<?php 
+			$arLanguage=$this->getdata("arLanguage","none");
+			if (!$arLanguage) {
+			 $arLanguage=$ARConfig->nls->default;
+			}
+			$selectednls=$arLanguage;
+			$selectedlanguage=$ARConfig->nls->list[$arLanguage];
+			$flag="<img src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\">";
+		?>
+		<fieldset id="data">
+		<legend><?php echo $ARnls["repeat"]."/".$ARnls["day"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+			<table border="0" align="center">
+			<tr>
+				<td>
+					<?php echo $ARnls["every"]; ?>
+				</td><td>
+					<input size="3" maxlength="3" type="text" name="repeatn" value="<?php if ($this->getdata("repeatn", "none")) { $this->showdata("repeatn", "none"); } else { echo "1"; } ?>">
+					&nbsp;<?php echo $ARnls["days"]; ?>
+				</td>
+			</tr><tr>
+				<td>
+					<?php echo $ARnls["endson"]; ?>
+				</td><td><?php
+							if ($this->getdata("repeatend", "none")) {
+								$wgDate=$this->getdata("repeatend", "none");
+							} else {
+								$wgDate=$this->getdata("date", "none") + $this->getdata("starthour","none")*3600 + $this->getdata("startminute", "none") * 60;
+							}
+							$wgDateName="repeatend";
+							include($this->store->code."widgets/date/js.html");
+							include($this->store->code."widgets/date/form.html");
+						?>
+				</td>
+			</tr>
+			</table>
+		</fieldset>
+	</td>
+</tr>
+</table>
+<script>
+	window.onload=init;
+	function init() {
+		document.wgWizForm["repeatn"].focus();
+	}
+</script>
+<?php
+	}
+?>

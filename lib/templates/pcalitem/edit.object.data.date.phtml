@@ -1,0 +1,203 @@
+<?php
+	/******************************************************************
+	 edit.object.data.item.phtml Muze Ariadne v2.0b
+	 ------------------------------------------------------------------
+	 Arguments: newtype, newparent, newfilename
+	 Grant needed: read
+	 Global variables: none
+
+	 This template displays the data entry step for creating or editing
+	 an object. The template is meant to be used as part of a wizard.
+
+	 no result.
+
+	******************************************************************/
+	if ($this->CheckSilent("read") && $this->CheckConfig()) {
+
+		if (!$starttime) { 
+			if ($data->starttime)	{ 
+				$starttime=$data->starttime; 
+			} else {
+				$starttime=mktime() ;
+			}
+		}
+		$stime_arr=getdate($starttime);
+		if (!$endtime) {
+			if ($data->endtime) {
+				$endtime=$data->endtime;
+				echo "<script>\n	endtime_changed=1;\n</script>";
+			} else { // default is starttime + 1 hour.
+				$endtime=mktime($stime_arr["hours"]+1,$stime_arr["minutes"],$stime_arr["seconds"],
+								$stime_arr["mon"],$stime_arr["mday"],$stime_arr["year"]);
+			}
+		}
+		$date=$this->getdata("date", "none");
+		$etime_arr=getdate($endtime);
+		if (!$date) {
+			$date=$starttime;
+		}
+		if (!$starthour) {
+			$starthour=$stime_arr["hours"];
+		}
+		if (!$startminute) {
+			$startminute=$stime_arr["minutes"];
+		}
+		if (!$endhour) {
+			$endhour=$etime_arr["hours"];
+		}
+		if (!$endminute) {
+			$endminute=$etime_arr["minutes"];
+		}
+
+?>
+<script>
+<!--
+
+	starthour=<?php echo $starthour; ?>;
+	startminute=<?php echo $startminute; ?>;
+	endhour=<?php echo $endhour; ?>;
+	endminute=<?php echo $endminute; ?>;
+
+	function UpdateEndlists(form) {
+		diffh=form.starthour.options[form.starthour.selectedIndex].value - starthour;
+		diffm=form.startminute.options[form.startminute.selectedIndex].value - startminute;
+		endhour=endhour+diffh;
+		endminute=endminute+diffm;		
+		starthour=starthour+diffh;
+		startminute=startminute+diffm;
+		RedrawEndlists(form);
+	}
+	
+	function UpdateEndtime(form) {
+		diffh=form.endhour.options[form.endhour.selectedIndex].value - endhour;
+		diffm=form.endminute.options[form.endminute.selectedIndex].value - endminute;
+		endhour=endhour+diffh;
+		endminute=endminute+diffm;
+		RedrawEndlists(form); 
+	}
+
+	function Select(list, value) {
+		for (i=0; i<list.length; i++) {
+			if (list.options[i].value==value) {
+				list.options[i].selected=true;
+				break;
+			}			
+		}
+	}
+
+	function RedrawEndlists(form) {
+		if (endhour<starthour) {
+			endhour=starthour;
+			endminute=startminute;
+		}
+		if (endhour==starthour && endminute<startminute) {
+			endminute=startminute;
+		}
+		if (endminute>55) {
+			endhour+=1;
+			endminute=endminute-60;
+		}
+		if (endhour>23) {
+			endhour=23;
+			endminute=55;
+		}
+		Select(form.endhour, endhour);
+		Select(form.endminute, endminute);
+	}
+//-->
+</script>
+<table border="0" width="90%">
+<tr>
+	<td>
+		<?php 
+			$arLanguage=$this->getdata("arLanguage","none");
+			if (!$arLanguage) {
+			 $arLanguage=$ARConfig->nls->default;
+			}
+			$selectednls=$arLanguage;
+			$selectedlanguage=$ARConfig->nls->list[$arLanguage];
+			$flag="<img src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\">";
+		?>
+		<fieldset id="data">
+		<legend><?php echo $ARnls["date"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+			<table border="0" align="center">
+			<tr>
+				<td colspan="2">
+				<?php 
+					$wgDateName="date";
+					$wgDate=$date;
+					include($this->store->code."widgets/date/js.html");
+					include($this->store->code."widgets/date/form.html");
+				?>
+				</td>
+			</tr><tr>
+				<td colspan="2">
+				<br></td>
+			</tr><tr>
+				<td>
+					<?php echo $ARnls["priority"]; ?>
+				</td><td align="right">
+					<select name="priority">
+						<?php
+							$priority=$this->getdata("priority", "none");
+							$this->ls("/system/calendar/priorities/", "show.option.value.phtml","selected=$priority");
+						?>
+					</select>
+				</td>
+			</tr><tr>
+				<td colspan="2">
+				<br>
+				<fieldset id="data">
+				<legend><?php echo $ARnls["time"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+				<br><table border=0 cellpadding=0 cellspacing=0>
+				<tr>
+					<td>&nbsp;</td>
+					<td>
+					<nobr><?php
+						function ShowList($start, $end, $step, $selected) {
+							$selected=round($selected / $step) * $step;
+							for ($i=$start; $i<=$end; $i+=$step) {
+								echo "<option value=\"$i\"";
+								if ($i==$selected) {
+									echo " selected"; 
+								}
+								echo ">$i\n";
+							}
+						}
+						echo $ARnls["start"]." : \n"; 
+						echo "<select name=\"starthour\" onChange=\"UpdateEndlists(this.form)\">\n";
+						$start=0; $end=23; $step=1;
+						ShowList($start,$end,$step,$starthour);
+						echo "</select>\n";
+						echo " : ";
+						echo "<select name=\"startminute\" onChange=\"UpdateEndlists(this.form)\">\n";
+						$start=0; $end=55; $step=5;
+						ShowList($start,$end,$step,$startminute); 
+						echo "</select>";
+
+					?></nobr></td><td>&nbsp;&nbsp;&nbsp;</td><td><nobr><?php
+
+						echo $ARnls["end"]." : \n";
+						echo "<select name=\"endhour\" onChange=\"UpdateEndtime(this.form)\">\n";
+						$start=0; $end=23; $step=1;
+						ShowList($start,$end,$step,$endhour);
+						echo "</select>\n";
+						echo " : ";
+						echo "<select name=\"endminute\" onChange=\"UpdateEndtime(this.form)\">\n";
+						$start=0; $end=55; $step=5;
+						ShowList($start,$end,$step,$endminute); 
+						echo "</select></nobr>\n"; 
+					?>
+					</td>
+					<td>&nbsp;</td>
+				</tr>
+				</table><br>
+			</tr>
+			</table>
+		</fieldset>
+	</td>
+</tr>
+</table>
+<?php
+	}
+?>
