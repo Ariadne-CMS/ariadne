@@ -43,7 +43,7 @@
 					?></textarea>
 				</td>
 			<?php
-				if (!$arNewType) {
+				//if (!$this->arIsNewObject) {
 					echo "</tr><tr><td>";
 					$wgHTMLEditName="page";
 					$wgHTMLEditLanguage=$arLanguage;
@@ -51,7 +51,7 @@
 					include($this->store->code."widgets/htmledit/js.html"); 
 					include($this->store->code."widgets/htmledit/form.html"); 
 					echo "</td><td align=\"right\">$flag</td>";
-				}
+				//}
 			?>
 			</tr>
 			</table>

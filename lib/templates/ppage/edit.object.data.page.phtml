@@ -12,8 +12,13 @@
 <head>
 <script>
 <!--
-  function loadpage(root, path, file, name, language, type) {
-    if (file) {
+
+  window.contentelement=false;  
+
+  function loadpage(root, path, file, name, language, type, content) {
+    if (content) {
+	  document.editform.htmltext.value=window.opener.wgHTMLEditContent.value;
+    } else if (file) {
       document.location.href=root+path+file+'/edit.object.data.'+name+'.phtml?'+
       'root='+escape(root)+'&path='+escape(path)+'&file='+escape(file)+
       '&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type);
@@ -23,11 +28,21 @@
       '&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type);
     }
   }
+
+  function checksubmit() {
+    if (window.opener && window.opener.wgHTMLEditContent) {
+	  window.opener.wgHTMLEditContent.value=document.editform.htmltext.value;
+      window.close;
+    } else {
+      return true;
+    }
+  }
+
 // -->
 </script>
 </head>
 <body bgcolor="white">
-<form name="editform" method="post" action="<?php echo $root.$path.$file."edit.".$name.".save.phtml"; ?>">
+<form name="editform" method="post" action="<?php echo $root.$path.$file."edit.".$name.".save.phtml"; ?>" onSubmit="return checksubmit();">
 <input name="ContentLanguage" type="hidden" value="<?php echo $language; ?>">
 <table width="100%" border="0" cellspacing="0"><tr>
   <td colspan="2">
