@@ -146,21 +146,39 @@
 
 		function ftp_WriteDC($data) {
 		global $FTP;
-		// FIXME: use little chunks (copy!) while doing ASCII stuff so that
-		//			PHP will not copy the whole output buffer.
-		//			in case of a readfile, PHP has mmap'ed the file..
 
 			if (strlen($data)) {
 				if ($FTP->DC["type"]==="A") {
-					$data=str_replace("\n", "\r\n", $data);
+					$offset = 0;
+					$chunk = substr($data, $offset, 4096);
+					while ($chunk!==false) {
+						$len = strlen($chunk);
+						debug("ftp_WriteDC:: writing chunk($offset, 4096) (".$len.")");
+						$chunk=str_replace("\n", "\r\n", $chunk);
+						if (!write($FTP->DC["msgsocket"], $chunk, $len)) {
+							debug("ftp_WriteDC:: chunk ERROR write $len bytes!");
+							$chunk = false;
+						} else {
+							debug("ftp_WriteDC:: chunk success");
+							$offset+=strlen($chunk);
+							$FTP->DC["transfered"]+=strlen($data);
+							$chunk = substr($data, $offset, 4096);
+						}
+					}
+					
+				} else {
+					$len=strlen($data);
+					debug("ftp_WriteDC:: writing len (".$len.")");
+					if (!write($FTP->DC["msgsocket"], $data, $len)) {
+						debug("ftp_WriteDC:: ERROR write $len bytes!");
+					} else {
+						debug("ftp_WriteDC:: success");
+					}
+					$FTP->DC["transfered"]+=strlen($data);
 				}
-				$len=strlen($data);
-				debug("ftp_WriteDC:: writing len (".$len.")");
-				if (!write($FTP->DC["msgsocket"], $data, $len)) {
-					debug("ftp_WriteDC:: ERROR write $len bytes!");
-				}
-				$FTP->DC["transfered"]+=strlen($data);
 			}
+
+			return "";	// empty string
 		}
 
 		function ftp_ReadDC() {
@@ -181,15 +199,18 @@
 		function ftp_CloseDC() {
 		global $FTP;
 			if ($FTP->DC["ob_active"]) {
-				debug("ftp: closing output buffer");
+				debug("ftp::CloseDC:: closing output buffer");
 				ob_end_clean();
+				debug("ftp::CLoseDC:: ok, ob closed");
 				$FTP->DC["ob_active"]=false;
 			}
 
 			debug("ftp: closing connection");
 			$con=$FTP->DC["msgsocket"];
 			if ($con) {
+				debug("ftp::CloseDC:: closing connection");
 				close($con);
+				debug("ftp::CloseDC:: connection closed");
 			}
 		}
 
@@ -302,14 +323,16 @@
 						if (ftp_OpenDC()!==false) {
 							if ($FTP->store->exists($path)) {
 
+								ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ascii' : 'binary')." mode data connection for $args[0] (".strlen($file_data)." bytes)");
 								$FTP->store->call("ftp.$getmode.get.phtml", array("arRequestedTemplate" => $template),
 											$FTP->store->get($path));
-								$file_data=ob_get_contents();
-								ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ascii' : 'binary')." mode data connection for $args[0] (".strlen($file_data)." bytes)");
-
+								//$file_data=ob_get_contents();
+								debug("ftp::get::going to close dc");
 								ftp_CloseDC();
+								debug("ftp::get::dc closed");
 								ftp_Tell(226, "Transfer complete");
 							} else {
+								ftp_CloseDC();
 								ftp_Tell(550, "$file does not exist");
 							}
 						}
@@ -707,7 +730,7 @@
 	$store=new mysqlstore(".", $store_config);
 
 	// fill in your own server ip number:
-	$FTP->server_ip = "your.ip.address";
+	$FTP->server_ip = "your.ip.number";
 
 	$FTP->host = "muze.nl";
 	$FTP->store = &$store;
