@@ -119,7 +119,7 @@
   $AR->nls->locales["es"]   = "es";
   $AR->nls->locales["de"]   = "de";
 
-  $AR->nls->charsets["default"] = "UTF-8": // or "ISO-8859-1";
+  $AR->nls->charsets["default"] = "UTF-8"; // or "ISO-8859-1";
  
   $AR->nls->default         = "en";
 
