@@ -10,7 +10,6 @@
 				$this->error=$ARnls["err:cannotdelsystemusers"];
 			} else {
 				if (!$this->exists($target)) {
-					// FIXME: change grants in objects too
 					// new filename -> new login, so check if it is unique
 					$newparent=$this->store->make_path($target, "..");
 					$newlogin=substr($target, strlen($newparent), -1);
@@ -21,7 +20,7 @@
 					}
 				}
 				if (!$this->error) {
-					// now remove groups
+					// remove groups
 					if (is_array($this->data->groups)) {
 						reset($this->data->groups);
 						while (list($path) = each($this->data->groups)) {
@@ -33,6 +32,16 @@
 									));
 						}
 					}
+					// remove grants
+					$oldusergrants = $this->data->usergrants;
+					$oldlogin = $this->data->login;
+					if (is_array($this->data->usergrants)) {
+						// remove usergrants
+						while (list($key, $value)=each($this->data->usergrants)) {
+							$this->get($key, "system.save.grants.phtml", Array("delete" => true, "id" => $this->data->login, "type" => $this->type));
+						}
+					}
+
 					$this->call("pobject::system.rename.phtml", $arCallArgs);
 					$this->data->login=substr($this->path, strlen($this->parent), -1);
 					$properties["login"][0]["value"]="'".AddSlashes($this->data->login)."'";
@@ -48,6 +57,52 @@
 											"action" => "add",
 											"path" => $this->path
 										));
+							}
+						}
+						// update grants
+						if (is_array($oldusergrants)) {
+							reset($oldusergrants);
+							while (list($path, $grants) = each($oldusergrants)) {
+								$grantstring = "";
+								reset($grants);
+								while (list($grant, $granttype) = each($grants)) {
+									if (is_array($granttype)) {
+										$grantstring .= " $grant ( ";
+										reset($granttype);
+										while (list($class, $modifierId)=each($granttype)) {
+											switch($modifierId) {
+												case ARGRANTLOCAL:
+													$modifier = "=";
+												break;
+												case ARGRANTCHILDREN:
+													$modifier = ">";
+												break;
+												default:
+													$modifier = "";
+											}
+											$grantstring .= " $modifier$class ";
+										}
+										$grantstring .= " ) ";
+									} else {
+										switch($granttype) {
+											case ARGRANTLOCAL:
+												$modifier = "=";
+											break;
+											case ARGRANTCHILDREN:
+												$modifier = ">";
+											break;
+											default:
+												$modifier = "";
+										}
+										$grantstring .= " $modifier$grant ";
+									}
+								}
+								$this->get( $path,
+											"system.save.grants.phtml",
+											Array(
+												"path" => $this->path,
+												"newgrants" => $grantstring
+											));
 							}
 						}
 					}

@@ -35,37 +35,40 @@
 			}
 		}
 
-		function arGetGrantType($value) {
-			if (($value & ARMASKLOCAL) && ($value & ARMASKCHILDREN)) {
-				$result="+";
-			} else if ($value & ARMASKLOCAL) {
-				$result="=";
-			} else {
-				$result=">";
+		if (!function_exists("arGetGrantType")) {
+			function arGetGrantType($value) {
+				if (($value & ARMASKLOCAL) && ($value & ARMASKCHILDREN)) {
+					$result="+";
+				} else if ($value & ARMASKLOCAL) {
+					$result="=";
+				} else {
+					$result=">";
+				}
+				return $result;
 			}
-			return $result;
 		}
 
-		function arDelGrant(&$grants, $id, $grant='', $modifier='') {
-			// for those wondering why $id is needed: try unsetting a reference...
-			// unset($grants) will not remove the original data, only the reference to it
-			if (!$grant) {
-				unset($grants[$id]);
-			} else if ($grants[$id]) {
-				if (!$modifier) {
-					unset($grants[$id][$grant]);
-				} else {
-					unset($grants[$id][$grant][$modifier]);
-					if (!@count($grants[$id][$grant])) {
+		if (!function_exists("arDelGrant")) {
+			function arDelGrant(&$grants, $id, $grant='', $modifier='') {
+				// for those wondering why $id is needed: try unsetting a reference...
+				// unset($grants) will not remove the original data, only the reference to it
+				if (!$grant) {
+					unset($grants[$id]);
+				} else if ($grants[$id]) {
+					if (!$modifier) {
 						unset($grants[$id][$grant]);
+					} else {
+						unset($grants[$id][$grant][$modifier]);
+						if (!@count($grants[$id][$grant])) {
+							unset($grants[$id][$grant]);
+						}
+					}
+					if (!@count($grants[$id])) {
+						unset($grants[$id]);
 					}
 				}
-				if (!@count($grants[$id])) {
-					unset($grants[$id]);
-				}
 			}
 		}
-
 		if (!$this->error) {
 			// first make sure that the object is clean (data can only be set via 
 			// the defined interface: $arCallArgs)
