@@ -15,7 +15,7 @@
 			// integer or float regs[3] (& regs[4] : indicates float)
 			$reg_id.='(-?[0-9]+([.][0-9]+)?)|';
 			// single quoted string regs[5]
-			$reg_id.='([\']([^\']|\\\\\')*[\'])|';
+			$reg_id.="([']('')*([^']|[^\\\\]['][']|\\\\')*['])|";
 			// double quoted string regs[7]
 			$reg_id.='("([^"]|\\\\\")*")';
 		}
@@ -64,9 +64,14 @@
 					$node["id"]="int";
 					$node["value"]=(int)$regs[3+$regsoffset];
 				}
-			} else if (($str=$regs[5+$regsoffset]) || ($str=$regs[7+$regsoffset])) {
+			} else if ($str=$regs[5+$regsoffset]) { 
 				$node["id"]="string";
+				$node["type"]="single";
 				$node["value"]="'".substr($str, 1, -1)."'";
+			} else if ($str=$regs[8+$regsoffset]) {
+				$node["id"]="string";
+				$node["type"]="double";
+				$node["value"]='"'.substr($str, 1, -1).'"';
 			}
 
 			$query=substr($query, strlen($regs[0]));
