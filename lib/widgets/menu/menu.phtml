@@ -6,10 +6,10 @@
 	if ($browser["id"]=="ns" && $browser["version"]=="4") {
 		$browser_string = "NS4";
 		$bgcolor="#bfbfbf";
-	} else if($browser["version"]>=5) { 
-		$browser_string = "DOM";
-	} else {
+	} else if ($browser["id"]="msie" && $browser["version"]=="4") {
 		$browser_string = "IE4";
+	} else {
+		$browser_string = "DOM";
 	}
 ?>
 <LINK REL=stylesheet HREF="<?php echo $AR->dir->www; ?>styles/menu.css" TYPE="text/css">
