@@ -1,4 +1,4 @@
-#!/usr/local/bin/php -q
+#!/usr/bin/php4 -q
 <?php
 	$ariadne="../lib";
 	require($ariadne."/configs/ariadne.phtml");
@@ -6,6 +6,8 @@
 	require($ariadne."/stores/mysqlstore.phtml");
 
 	if (($import_path=$argv[2]) && ($ax_file=$argv[1])) {
+		$ARImportNoGrants=$argv[3];
+
 		if (!file_exists($ax_file)) { 
 			$error="err:filedoesntexist";
 		} else {
@@ -17,6 +19,6 @@
 			echo $error."\n";
 		}
 	} else {
-		echo "USAGE: import [ax_file] [import_path]\n";
+		echo "USAGE: import [ax_file] [import_path] [grants: [Y/n]]\n";
 	}
 ?>
