@@ -191,10 +191,6 @@
   $AR->nls->locales['de']   = 'de';
   $AR->nls->locales['pl']   = 'pl';
 
-  $AR->nls->charsets['default'] = 'UTF-8'; // or 'ISO-8859-1';
-  $AR->nls->charsets['es']  = 'ISO-8859-1'; 
-  $AR->nls->charsets['de']  = 'ISO-8859-1';
-
   $AR->nls->default         = 'en';
   /**************************************************************************/
   /* you really don't want to change anything below this line                  */
