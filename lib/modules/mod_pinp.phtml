@@ -507,7 +507,7 @@ class pinp {
 					$this->new_template.=$this->token_value;
 				break;
 				case T_IDENT:
-					if (!$this->allowed_functions[$this->token_value]) {
+					if (!$this->allowed_functions[strtolower($this->token_value)]) {
 						$this->new_template.=$this->function_prefix.$this->token_value;
 					} else {
 						$this->new_template.=$this->token_value;
