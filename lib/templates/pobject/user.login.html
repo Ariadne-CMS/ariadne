@@ -57,7 +57,7 @@
 </style>
 </head>
 <body bgcolor="#BBBBBB">
-<form name="login" method="POST" action="<?php echo $this->store->root.$this->path; ?>login.phtml">
+<form name="login" method="POST" action="<?php echo $this->make_url(); ?>login.phtml">
 <?php
 	global $PATH_INFO, $QUERY_STRING; 
 	if (!$arReturnPath) {
