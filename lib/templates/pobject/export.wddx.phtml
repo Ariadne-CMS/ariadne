@@ -15,6 +15,11 @@ if( $this->CheckLogin("config") ) {
 </header>
 <data>
 <struct type="hash">
+	<var name="version">
+		<number>2</number>
+	</var>
+</struct>
+<struct type="hash">
 <?php
   $query="";
   $this->find(".", $query, "export.wddx.object.phtml", "", 0);
