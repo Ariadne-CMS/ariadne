@@ -959,13 +959,13 @@
 
 
 	sleep(1);
-//	debugon("pinp");
+	debugon("pinp");
 
 	// set PHP error handling
 	error_reporting(1);
 	set_error_handler("ftp_ErrorHandler");
 	error_reporting(1);
-
+	set_time_limit(0);
 
 	$FTP = new object;
 	$inst_store = $store_config["dbms"]."store";
