@@ -42,6 +42,11 @@ Bugs fixed:
 	  work via some proxy configurations
 	- Fixed the occurance of '0' grants when typing a space after
 	  > + = - in grants.
+	- Fixed an regex in the ftp loader for the detection of file extensions.
+	- The ftp loader does now update objects while uploading files with
+	  the same name instead of deleting them first.
+	- Fixed a bug in the ftp loader which sometimes caused downloaded files
+      (in ASCII mode) to be corrupted.
 
 Changes in Ariadne since version 2.1.3
 
