@@ -33,6 +33,7 @@
 				}
 				echo "<input type=\"hidden\" name=\"arPrevLanguage\" value=\"$arLanguage\">\n";
 				$middle=@count($ARConfig->nls->list)/2;
+				$middle=ceil($middle);
 				if ($middle<2) {
 					$middle=@count($ARConfig->nls->list);
 				}		
