@@ -18,6 +18,8 @@ Bugs fixed:
 	  '/test/'.
 	- Fixed a bug causing the edit window not to close for pdir and
 	  deratives. Thanks to Gustavo Ribeiro Amigo.
+	- The HTTP_IF_MODIFIED_SINCE header was not parsed correctly. This
+	  has been fixed by Johann Hanne.
 
 Changes in Ariadne since version 2.1.3
 
