@@ -16,7 +16,7 @@
       exit();
     }
     $arNewFilename=$this->getdata("arNewFilename","none");
-    $arNewData=serialize(new object);
+    $arNewData=new object;
     $arNewPath=$this->make_path($arNewFilename);
     $wgWizCallObject=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData);
     $wgWizCallObject->newobject=true;
