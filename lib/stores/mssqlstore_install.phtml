@@ -14,7 +14,7 @@ CREATE TABLE ".$this->tbl_prefix."objects (
 	[type] varchar(16) DEFAULT '' NOT NULL,
 	[object] text,
 	[vtype] varchar(16) DEFAULT '' NOT NULL,
-	[lastchanged] datetime
+	[lastchanged] DATETIME DEFAULT CURRENT_TIMESTAMP
 );";
 		$queries[1]["msg"]="creating objects index.";
 		$queries[1]["query_string"]="CREATE INDEX ".$this->tbl_prefix."objects_lastchanged ON ".$this->tbl_prefix."objects (lastchanged);";
