@@ -2,6 +2,15 @@
 TD {
 	FONT: 10pt sans-serif;
 }
+INPUT, TEXTAREA {
+	width: 99%;
+}
+.wgHTMLEditButton, .wgBrowseButton, .wgBrowseInput {
+	width: auto;
+}
+.autoSized {
+	width: auto;
+}
 .required {
 	FONT-WEIGHT: bold
 }

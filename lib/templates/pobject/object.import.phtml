@@ -33,7 +33,7 @@
 		<?php 
 			echo $ARnls["file"].":&nbsp;";
 		?>
-		<input type="file" name="source">
+		<input type="file" name="source" class="autoSized">
 	</td>
 </tr><tr>
 	<td colspan="2">&nbsp;</td>
@@ -44,8 +44,8 @@
 			<td>
 				<fieldset>
 				<legend><?php echo $ARnls["options"]; ?></legend>
-					<input type="checkbox" name="without_grants" value="1" checked><?php echo $ARnls["withoutgrants"]; ?><br>
-					<input type="checkbox" name="force" value="1"><?php echo $ARnls["force"]; ?>
+					<input type="checkbox" class="autoSized" name="without_grants" value="1" checked><?php echo $ARnls["withoutgrants"]; ?><br>
+					<input type="checkbox" class="autoSized" name="force" value="1"><?php echo $ARnls["force"]; ?>
 				</fieldset>
 			</td>
 		</tr>
@@ -53,9 +53,9 @@
 			<td>
 				<fieldset>
 				<legend><?php echo $ARnls["advanced"]; ?></legend>
-					<input type="checkbox" name="without_data" value="1"><?php echo $ARnls["withoutdata"]; ?><br>
-					<input type="checkbox" name="without_files" value="1"><?php echo $ARnls["withoutfiles"]; ?><br>
-					<input type="checkbox" name="without_templates" value="1"><?php echo $ARnls["withouttemplates"]; ?><br>
+					<input type="checkbox" class="autoSized" name="without_data" value="1"><?php echo $ARnls["withoutdata"]; ?><br>
+					<input type="checkbox" class="autoSized" name="without_files" value="1"><?php echo $ARnls["withoutfiles"]; ?><br>
+					<input type="checkbox" class="autoSized" name="without_templates" value="1"><?php echo $ARnls["withouttemplates"]; ?><br>
 				</fieldset>
 			</td>
 		</tr>
