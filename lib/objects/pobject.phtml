@@ -919,7 +919,7 @@ class pobject extends object { // pobject class definition
 		if (!$arCallFunction || $ARBeenHere[$this->path][$arCallFunction]<$MAX_LOOP_COUNT) { // protect against infinite loops
 			$ARBeenHere[$this->path][$arCallFunction]+=1;
 			if (!$ARConfig->cache[$this->path]) {
-				$this->call("system.get.config.phtml");
+				$this->get($this->path, "system.get.config.phtml");
 			}
 			$config=$ARConfig->cache[$this->path];
 			$ARConfig->nls=$config->nls;
