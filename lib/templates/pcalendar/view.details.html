@@ -1,5 +1,5 @@
 <?php
-	if ($this->CheckConfig($arCallFunction, $arCallArgs) && $this->CheckLogin("read")) {
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 ?>
 <h1><?php echo $nlsdata->name; ?></h1>
 <table border="0">

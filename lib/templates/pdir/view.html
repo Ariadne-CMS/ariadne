@@ -17,8 +17,8 @@
 	******************************************************************/
 	if ($this->exists("index.html/")) {
 		$ARCurrent->cachepage=$this->path.$arCallFunction;
-		$this->get("index.html/","view.html");
+		$this->get("index.html/","view.html", $arCallArgs);
 	} else {
-		$this->call("pobject::view.html");
+		$this->call("pobject::view.html", $arCallArgs);
 	}
 ?>
