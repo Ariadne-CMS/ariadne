@@ -9,7 +9,7 @@
 	global $store, $AR, $ARCurrent;
 	$root=$AR->root;
 	if ($session) {
-		$rootoptions.="/=$session=";
+		$rootoptions.="/-".$session."-";
 		$ARCurrent->session->id=$session;
 	}
 	if ($nls) {
@@ -99,11 +99,13 @@
 
   } else {
 
-//    debugon("all");
+    if (get_magic_quotes_gpc()==1) {
+      error("Ariadne will not work correctly with the magic_quotes_gpc option set to 'On'. Please edit your php.ini file and set it to 'Off'.");
+    }
     // go check for a sessionid
     $root=$AR->root;
     $store=new mysqlstore($root,$store_config);
-    $re="^/=(.*)=/";
+    $re="^/-(.*)-/";
     if (eregi($re,$PATH_INFO,$matches)) {
 		$session_id=$matches[1];
 		$PATH_INFO=substr($PATH_INFO,strlen($matches[0])-1);
@@ -174,7 +176,7 @@
         while ( list( $key, $val ) = each( $HTTP_POST_VARS ) ) {
           if (is_array($val)) {
             $args.=squisharray($key, $val);
-          } else { 
+          } else {
             $args.="&".RawUrlEncode($key)."=".RawUrlEncode($val);
           }
         }
