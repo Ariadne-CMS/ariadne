@@ -14,6 +14,7 @@ Dini Termini <dtermini AT mbigroup DOT it>
 
 Florian Overkamp <florian AT obsimref DOT com>
 	Author of the new pphoto functionality which utilizes imageMagick.
+	Converted use of phpOpentracker in the loader to generic mod_stats.
 
 Gabriel Wicke <2002 AT gabrielwicke DOT de>
 	Updated the German NLS files.
