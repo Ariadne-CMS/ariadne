@@ -73,7 +73,7 @@ class scanner {
 					return T_EOF;
 				} else {
 					$matches='';
-					$scan_buffer = substr($YYBUFFER, $YYCURSOR);
+					$scan_buffer = substr($YYBUFFER, $YYCURSOR, -1);
 					$re_code="^(.*)(<pinp>|<script[^>]+language[^>]*=[^>]*php[^>]*>|<[%?])";
 					if (preg_match("!".$re_code."!Usi", $scan_buffer, $matches)) {
 						if ($matches[2]) {
@@ -97,8 +97,7 @@ class scanner {
 						}
 					} else {
 						$result = $scan_buffer;
-						$YYBUFFER = chr(0);
-						$YYCURSOR = 0;
+						$YYCURSOR = strlen($YYBUFFER);
 						return T_UNPARSED;
 					}
 				}
