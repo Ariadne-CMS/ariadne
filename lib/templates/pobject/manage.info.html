@@ -60,6 +60,9 @@
 						echo "<a class='$class' href='".ldGetServerVar("PHP_SELF")."?".ldGetServerVar("QUERY_STRING")."&arLanguage=$key' onClick=\"top.Set('arLanguage','$key'); return true;\"><img src=\"".$AR->dir->images."nls/small/".$key.".gif\" border=\"0\" alt=\"".$AR->nls->list[$key]."\"></a> ";
 					}
 				?></td></tr>
+			<?php
+				}
+			?>
 			<tr><td valign="top"><?php echo $ARnls["details"]; ?>:</td><td valign="top" class="data"><?php 
 				if (count($data->templates)) { 
 					echo "<a href=\"javascript:arshow('edit_object_layout','edit.object.layout.phtml')\" title=\"".$ARnls['template']."\">T</a>&nbsp;"; 
@@ -69,10 +72,6 @@
 				}; 
 				?>
 				</span></td></tr>
-
-			<?php
-				}
-			?>
 		</table>
 	</div>
 <?php
