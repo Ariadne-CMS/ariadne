@@ -1,0 +1,65 @@
+<?php
+	/******************************************************************
+
+	 no result.
+
+	******************************************************************/
+	if ($this->CheckSilent("read")) {
+?>
+<table border="0" width="90%">
+<tr>
+	<td>
+		<fieldset id="preferences">
+		<legend><?php echo $ARnls["preferences"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+			<table border="0" align="center">
+			<tr>
+				<td>
+					<?php echo $ARnls["language"]; ?>
+				</td><td>
+					<select name="language" style="width: 100px;">
+					<?php
+						if (!$newtype) {
+							$language=$data->language;
+						} else {
+							$language=$ARCurrent->default;
+						}
+						reset($AR->nls->list);
+						while (list($key, $value)=each($AR->nls->list)) {
+							if ($key==$language) {
+								echo "<option value=\"$key\" selected>$value</option>\n";
+							} else {
+								echo "<option value=\"$key\">$value</option>\n";
+							}
+						}
+					?>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<?php echo $ARnls["interface"]; ?>
+				</td><td>
+					<select name="interface" style="width: 100px;">
+							<option value="classic"><?php echo $ARnls["classic"]; ?></option>
+							<option value="new" <?php if ($data->interface=="new") { echo "selected"; } ?>><?php echo $ARnls["new"]; ?></option>
+					</select>
+				<td>
+			</tr>
+			<tr>
+				<td>
+					<?php echo $ARnls["editor"]; ?>
+				</td><td>
+					<select name="editor" style="width: 100px;">
+							<option value="wysiwyg"><?php echo $ARnls["wysiwyg"]; ?></option>
+							<option value="text" <?php if ($data->editor=="text") { echo "selected"; } ?>><?php echo $ARnls["text"]; ?></option>
+					</select>
+				<td>
+			</tr>
+			</table>
+		</fieldset>
+	</td>
+</tr>
+</table>
+<?php
+	}
+?>
