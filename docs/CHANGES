@@ -52,6 +52,7 @@ New Features:
 	  select list.
 
 Bugs Fixed:
+	- Special Characters now work in custom data fields. Thanks to Dino Termini
 	- The loader will now call user.login.html when somebody enters a wrong
 	login/password combo (instead of falling back to 'public').
 	- Fixed a bug which made it impossible to start a hidden session without
