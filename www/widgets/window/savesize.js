@@ -15,7 +15,7 @@
     }
     if (top.window.opener && !top.window.opener.closed) {
       if (top.window.opener.top.Set) {
-        window.opener.top.Set(window.name, dprops);
+        top.window.opener.top.Set(window.name, dprops);
       /*
         FIXME: this somehow breaks in IE5.0, maybe others too 
 		} else if (top.window.opener.top.window.opener && 

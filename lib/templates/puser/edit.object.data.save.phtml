@@ -20,12 +20,12 @@
 		$arReturnPage=$this->store->root.$arReturnPath.$arReturnTemplate;
 		?>
 			<script> 
-				if (window.opener && window.opener.top.tree) {
+				if (top.window.opener && top.window.opener.top.tree) {
 					<?php
 						if ($arIsNewObject) {
-							echo "  window.opener.top.tree.AddLinks('{$this->parent}','{$folder["icon"]}','".AddCSlashes($folder["name"], ARESCAPE)."','{$folder["path"]}','".AddCSlashes($folder["pre"], ARESCAPE)."');\n";
+							echo "  top.window.opener.top.tree.AddLinks('{$this->parent}','{$folder["icon"]}','".AddCSlashes($folder["name"], ARESCAPE)."','{$folder["path"]}','".AddCSlashes($folder["pre"], ARESCAPE)."');\n";
 						} else {
-							echo "  window.opener.top.tree.UpdateLinks('{$folder["icon"]}','".AddCSlashes($folder["name"], ARESCAPE)."','{$folder["path"]}','".AddCSlashes($folder["pre"], ARESCAPE)."');\n";
+							echo "  top.window.opener.top.tree.UpdateLinks('{$folder["icon"]}','".AddCSlashes($folder["name"], ARESCAPE)."','{$folder["path"]}','".AddCSlashes($folder["pre"], ARESCAPE)."');\n";
 						}
 					?>
 					document.location='<?php echo $arReturnPage; ?>';

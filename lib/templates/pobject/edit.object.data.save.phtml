@@ -25,18 +25,18 @@
 	} else {
 		?>
 			<script> 
-				if (window.opener) {
-					if (window.opener.objectadded) {
-						window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddCSlashes($this->nlsdata->name, ARESCAPE); ?>','<?php echo $this->path; ?>'); 
+				if (top.window.opener) {
+					if (top.window.opener.objectadded) {
+						top.window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddCSlashes($this->nlsdata->name, ARESCAPE); ?>','<?php echo $this->path; ?>'); 
 					}
 					<?php
 						if (!$arIsNewObject || $this->getdata("arCloseWindow", "none")) {
 					?>
-							window.close();
+							top.window.close();
 					<?php
 						} else {
 					?>
-							window.location.href='object.new.select.phtml';
+							top.window.location.href='object.new.select.phtml';
 					<?php
 						}
 					?>
