@@ -14,6 +14,8 @@
         $error=$ARnls["err:fileupload"];
       } else if (eregi(".*\.phtml$",$file_name)) {
         $error=$ARnls["err:fileuploadphtml"];
+      } else if ($this->CheckNewFile($file_name)) {
+        $error=$this->error;
       } else {
         debug("file ok");
         // 2. get filename and mimetype
