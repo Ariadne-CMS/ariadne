@@ -34,10 +34,6 @@
   } else {
     $wgHTMLEditSave2Form="false";
   }
-    if (!$wgHTMLEditContent) {
-      $wgHTMLEditContent='<p>&nbsp;</p>';
-    }
-
     echo "<input type=\"hidden\" name=\"$wgHTMLEditContentName\" value=\"".htmlspecialchars($wgHTMLEditContent)."\">\n";
     echo "<input type=\"button\" name=\"$wgHTMLEditName".
        "_button\" value=\"Open Editor\"".
