@@ -91,10 +91,13 @@ class pobject extends object {
 			$arCallTemplate=$this->store->code."templates/".$arType."/".$arCallFunction;
 			if (file_exists($arCallTemplate)) {
 				// template found
+				debug("pobject::call template($arCallTemplate)", "all");
 				include($arCallTemplate);
+				debug("pobject::call end template", "all");
 				break;
 			} else if (file_exists($this->store->code."templates/".$arType."/default.phtml")) {
 				// template not found, but we did find a 'default.phtml'
+				debug("pobject::call $arType/default.phtml", "all");
 				include($this->store->code."templates/".$arType."/default.phtml");
 				break;
 			} else {
@@ -183,7 +186,7 @@ class pobject extends object {
 				$this->error="$arNewFilename is no valid filename, do not use '..' in filenames.";
 			}
 		} else { // update an existing object
-			if (!$this->lock()) {
+			if ($this->lock()) {
 				if ($this->exists($this->path)) { // prevent 'funny stuff'
 					$this->data->mtime=time();
 					// $properties["time"]["mtime"]=$this->data->mtime;
