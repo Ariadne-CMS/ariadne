@@ -149,8 +149,7 @@
 
 		echo "== importing ariadne.ax file\n\n";
 
-		global $options;
-		$options["verbose"]=true;
+		$ARCurrent->options["verbose"]=true;
 		// become admin
 		$AR->user=new object;
 		$AR->user->data=new object;
