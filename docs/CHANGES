@@ -34,6 +34,7 @@ New Features:
 	  child requests (via web) to it's target. It will also make templates defined
 	  on it (and it's parents) available to its target. 
 	- Added getExif() method to pphoto. Thanks to Gerhard Hoogterp
+	- The toolbars in the editor are now configurable via the editor.ini template.
 
 Bugs Fixed:
 	- Fixed the ftp server it's mimetype extension fallback.
