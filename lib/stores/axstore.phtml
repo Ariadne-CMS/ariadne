@@ -662,7 +662,19 @@ class axstore {
 		$dstdir=$this->_fix_tar_paths($dstdir);
 		$tarfile=$this->_fix_tar_paths($tarfile);
 
-		$command=sprintf($this->tar_untar, $dstdir, $file, $tarfile, $handler );
+		//$command=sprintf($this->tar_untar, $dstdir, $file, $tarfile, $handler );
+		$arguments = Array(
+						"%destdir%" => $dstdir,
+						"%contents%" => $file,
+						"%archive%" => $tarfile,
+						"%errorhandler%" => $handler
+					 );
+
+		$command = $this->tar_untar;
+		while (list($key, $val) = each($arguments)) {
+			$command = str_replace($key, $val, $command);
+		}
+
 		system($command,$retVar);
 		if (!$this->tar_nofail && ($retVar!=0 && $retVar!=259)) {
 			$this->error.="Error:\n	($command):\n	Can't untar $tarfile, untar failed in $dstdir with errorcode ($retVar)\n";
@@ -688,7 +700,20 @@ class axstore {
 		$dstdir=$this->_fix_tar_paths($dstdir);
 		$tarfile=$this->_fix_tar_paths($tarfile);
 
-		$command=sprintf($this->tar_tar, $dstdir, $file, $tarfile, $handler );
+		//$command=sprintf($this->tar_tar, $dstdir, $file, $tarfile, $handler );
+		$arguments = Array(
+						"%destdir%" => $dstdir,
+						"%contents%" => $file,
+						"%archive%" => $tarfile,
+						"%errorhandler%" => $handler
+					 );
+
+		$command = $this->tar_tar;
+
+		while (list($key, $val) = each($arguments)) {
+			$command = str_replace($key, $val, $command);
+		}
+
 		system($command,$retVar);
 		if (!$this->tar_nofail && $retVar!=0) {
 			$this->error="Error: ($command):\n	Can't tar to $tarfile, tar failed in $dstdir with errorcode ($retVar)\n";
