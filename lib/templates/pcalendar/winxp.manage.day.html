@@ -1,6 +1,39 @@
 <?php
+    /******************************************************************
+     winxp.manage.day.html                                 Muze Ariadne
+     ------------------------------------------------------------------
+     Author: Muze (info@muze.nl)
+     Date: 11 december 2002
+
+     Copyright 2002 Muze
+
+     This file is part of Ariadne.
+
+     Ariadne is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published 
+     by the Free Software Foundation; either version 2 of the License, 
+     or (at your option) any later version.
+ 
+     Ariadne is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with Ariadne; if not, write to the Free Software 
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
+     02111-1307  USA
+
+    -------------------------------------------------------------------
+
+     Description:
+
+       Shows the day overview of the pcalendar in the WinXP management
+       interface.
+
+    ******************************************************************/
+
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		global $PHP_SELF, $QUERY_STRING;
 		if (!$arLanguage) {
 			$arLanguage=$nls;
 		}
@@ -52,7 +85,7 @@
 				 if $from==$to -> no timespan, just a reminder or something, don't add a span
 				 else -> timespan, add item, add end timemarker, add span
 		*/
-		global $ARCurrent, $PHP_SELF, $QUERY_STRING;
+		global $ARCurrent;
 		debug("pcalendar/day.html:AddTime($from, $to, $path, $name, $summary)","class");
 			if ($from>$to)	 { // 'no time' entry. pile at ARCurrent->timelist[0], no span, no start, no end time.
 				$i=@count($ARCurrent->timelist[0]);
@@ -142,13 +175,13 @@
 //--></style>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td><a href="<?php echo $PHP_SELF."?".$QUERY_STRING; ?>&date=<?php
+<td><a href="<?php echo ldGetServerVar("PHP_SELF")."?".ldGetServerVar("QUERY_STRING"); ?>&date=<?php
 			echo mktime(0,0,0,$date_arr["mon"],$date_arr["mday"]-1,$date_arr["year"]);
 		?>#details">&lt;&lt;</a></td>
 	<td align="center"><?php
 			echo $date_arr["month"]." ".$date_arr["mday"].", ".$date_arr["year"];
 		?></td>
-	<td align="right"><a href="<?php echo $PHP_SELF."?".$QUERY_STRING; ?>&date=<?php
+	<td align="right"><a href="<?php echo ldGetServerVar("PHP_SELF")."?".ldGetServerVar("QUERY_STRING"); ?>&date=<?php
 			echo mktime(0,0,0,$date_arr["mon"],$date_arr["mday"]+1,$date_arr["year"]);
 		?>#details">&gt;&gt;</a></td>
 </tr><tr>
