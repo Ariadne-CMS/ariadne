@@ -104,7 +104,7 @@
 			} else {
 				$tables="$val";
 			}
-			if (substr($val, 0, 5)=="prop_") {
+			if (substr($val, 0, 5+strlen($this->tbl_prefix))==$this->tbl_prefix."prop_") {
 				$prop_dep.=" and $val.object=$objects.id ";
 			}
 		}
