@@ -105,7 +105,7 @@
 
 								$node_line=$path;
 								$node_line.="&".$data["id"];
-								$node_line.="&0";
+								$node_line.="&0&0";
 								$node_line.="\n";
 								fwrite($fp_nodes, $node_line);
 
