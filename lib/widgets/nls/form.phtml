@@ -41,7 +41,7 @@
         $image=$AR->dir->images.'nls/'.$arnls.'.gif';
       }
       while (list($key, $value)=each($$arnls)) {
-        if ($value && ($arnls!=$selectednls)) {
+        if ($arnls!=$selectednls) {
           echo "<input type=\"hidden\" name=\"".$arnls."[$key]\" value=\"".ereg_replace('"','&quot;',$value)."\">\n";
           // data entered, so our assumption proved wrong. -> full flag
           $image=$AR->dir->images.'nls/'.$arnls.'.gif';
