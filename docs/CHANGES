@@ -20,6 +20,8 @@ New Features:
 	  by Lukasz Keler. 
 
 Bugs Fixes:
+	- The pinp variant of user.login.html does now have access to the
+	  arReturnPath and arReturnTemplate variables.
 	- Added a fix to pfile which should make Explorer download pfiles postfixed
 	  with a slash with their correct filename. Thanks to Johann Hanne.  
 	- Fixed URL rewriting in mod_url when a siteobject had not yet been
