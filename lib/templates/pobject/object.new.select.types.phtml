@@ -67,8 +67,14 @@
 		$currentpath=$this->make_url();
 	}
 	if ($AR->user->data->login=="admin") {
-		$result=$this->ls("/system/ariadne/types/","system.get.phtml");
-	} else {
+		if( $showall ) {
+			echo "<tr><td colspan=\"4\"><a href=\"".$currentpath."object.new.select.types.phtml?showall=0\">Show Typetree</a></td></tr>";
+		} else {
+			echo "<tr><td colspan=\"4\"><a href=\"".$currentpath."object.new.select.types.phtml?showall=1\">Show All</a></td></tr>";
+		}
+	}
+
+	if( !$showall ) {
 		$configcache=$ARConfig->cache[$this->path];
 		if ($configcache->typetree) {
 			$result=$this->ls($configcache->typetree."/".$this->type."/",
@@ -77,6 +83,8 @@
 			$result=$this->ls("/system/ariadne/typetree/normal/".$this->type."/",
 				"system.get.phtml");
 		}
+	} else {
+		$result=$this->ls("/system/ariadne/types/","system.get.phtml");
 	}
 	$cols=4;
 	if ($result && is_array($result)) {
