@@ -847,7 +847,7 @@ function DECMD_IMAGE_onclick() {
   }
   args['editOptions'] = tbContentEditOptions;
   args['stylesheet'] = tbContentEditOptions["css"]["stylesheet"];
-  arr = showModalDialog( '<?php echo $this->store->root.$this->path; ?>' + 
+  arr = showModalDialog( tbContentEditOptions["dialogpath"] + 
 	"edit.object.html.image.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:600px; dialogHeight:400px; status: no; resizable: yes;");
   if (arr != null){
 	IMAGE_set(arr);
@@ -983,8 +983,10 @@ function DECMD_HYPERLINK_onclick()
 	/* 
 	here popup your own dialog, pass the arg array to that, get what the user
 	entered there and come back here
+    tbContentTarget may not yet exist, so call the dialogs on the safe dialogpath
+    this path should always exist.
 	*/ 
-	arr = showModalDialog(tbContentTarget + 
+	arr = showModalDialog(tbContentEditOptions["dialogpath"] + 
 		"edit.object.html.link.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:15em; status: no; resizable: yes;");
 	if (arr != null){
 		var newLink='<a';

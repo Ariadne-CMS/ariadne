@@ -34,6 +34,7 @@
     $options.="options[editor.ini]=".RawUrlEncode($wgHTMLEditOptionsPath);
 ?>
 wgHTMLEditOptions["editor.ini"]="<?php echo $wgHTMLEditOptionsPath; ?>";
+wgHTMLEditOptions["dialogpath"]="<?php echo $this->store->root; if ($this->arIsNewObject) { echo $this->parent; } else { echo $this->path; } ?>"; 
 
 function HTMLEdit(root, path, file, name, language, type, title, value, save2form) {
 	if (value) {
