@@ -91,11 +91,7 @@
   /* either 'WIN32' or 'UNIX'.                                              */
   /**************************************************************************/
 
-  if ($HTTP_ENV_VARS["windir"]) {
-     $AR->OS                = 'WIN32';         // Windows 95/98/ME/NT/2000
-  } else {
-     $AR->OS                = 'UNIX';          // All unix/linux variants
-  }
+  $AR->OS                = 'UNIX';          // All unix/linux variants
 
   /**************************************************************************/
   /* Fill in the full path to the webservers document root below            */
