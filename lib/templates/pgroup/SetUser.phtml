@@ -27,8 +27,10 @@
   }
   
   if ($this->save($this->path, $this->type, $data, $properties)) {
-    Header("Location: ".$returnpage);
-    echo "<a href=\"$returnpage\">Return</a>";
+	if (!$silent) {
+		Header("Location: ".$returnpage);
+		echo "<a href=\"$returnpage\">Return</a>";
+	}
   } else {
     echo $this->store->error;
   }
