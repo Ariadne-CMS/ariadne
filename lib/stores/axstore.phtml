@@ -23,7 +23,6 @@ class axstore {
 		$this->writeable=$config["writeable"];
 		$this->files=$config["files"];
 		$this->code=$config["code"];
-
 		$this->tar_error_handler=$config["tar_error_handler"];
 		$this->tar_tar=$config["tar_tar"];
 		$this->tar_untar=$config["tar_untar"];
@@ -55,6 +54,7 @@ class axstore {
 									// check if this is a link (does the object already exist?)
 
 									if (!$this->objects[$data[0]]) {
+
 										$object=new $data[1];
 										$object->id=(int)$data[0];
 										$object->type=$data[1];
@@ -167,7 +167,6 @@ class axstore {
 					while (list($criteria_table_key, $criteria_table)=each($criteria)) {
 						while (list($criteria_table_prop_key, $criteria_table_prop)=each($criteria_table)) {
 								while (list($criteria_condition , $criteria_condition_value)=each($criteria_table_prop)) {
-									//echo "testing ([$criteria_table_key][$criteria_table_prop_key][$criteria_condition]=$criteria_condition_value)\n";
 									switch ($criteria_condition) {
 										case '=':
 											@reset($node->object->properties);
@@ -584,10 +583,9 @@ class axstore {
 
 	function _untar($tarfile, $file, $dstdir) {
 		if ($this->tar_error_handler) {
-			$errfile="./tar.errors";
+			$errfile=$this->tempdir."/tar.errors";
 			$handler=sprintf($this->tar_error_handler, $errfile);
 		}
-
 		$command=sprintf($this->tar_untar, $dstdir, $file, $tarfile, $handler );
 		system($command,$retVar);
 		if ($retVar!=0) {
@@ -606,7 +604,7 @@ class axstore {
 
 	function _tar($tarfile, $file, $dstdir) {
 		if ($this->tar_error_handler) {
-			$errfile="./tar.errors";
+			$errfile=$this->tempdir."/tar.errors";
 			$handler=sprintf($this->tar_error_handler, $errfile);
 		}
 
