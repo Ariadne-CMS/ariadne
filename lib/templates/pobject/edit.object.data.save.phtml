@@ -8,19 +8,17 @@
   ******************************************************************/
   $this->call("system.save.data.phtml",$arCallArgs);
   if ($this->error) {
-?>
-  <font color="red"><?php
-    echo $this->error;
-  ?></font><p>
-<?php
+    ?>
+      <font color="red" face="arial,helvetica,sans-serif" size=+1><?php echo $this->error; ?></font><p>
+    <?php
   } else {
-?>
-  <script> 
-    if (window.opener) {
-      window.opener.objectadded('<?php echo $this->type; ?>','<?php echo $nlsdata->name; ?>','<?php echo $this->path; ?>'); 
-      window.close();
-    } 
-  </script>
-<?php
+    ?>
+      <script> 
+        if (window.opener) {
+          window.opener.objectadded('<?php echo $this->type; ?>','<?php echo $nlsdata->name; ?>','<?php echo $this->path; ?>'); 
+          window.close();
+        } 
+      </script>
+    <?php
   }
 ?>
