@@ -55,7 +55,28 @@
       </table>
     </fieldset>
   </td>
-</tr><tr>
+</tr><tr valign="top">
+  <td>
+    <fieldset id="windowprefs">
+    <legend><?php echo $ARnls["windowprefs"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+      <table border="0" align="center">
+      <tr>
+        <td align="left">&nbsp;</td>
+        <td>New Window</td>
+      </tr>
+      <tr>
+        <td><?php echo $ARnls["layout"]; ?></td>
+        <input type="hidden" name="windowprefs[edit_object_layout]" value="0">
+        <td align="center"><input type="checkbox" name="windowprefs[edit_object_layout]" value="1" <?php if( $this->data->windowprefs["edit_object_layout"] ) echo "checked"; ?>></td>
+      </tr>
+      <tr>
+        <td><?php echo $ARnls["grants"]; ?></td>
+        <input type="hidden" name="windowprefs[edit_object_grants]" value="0">
+        <td align="center"><input type="checkbox" name="windowprefs[edit_object_grants]" value="1" <?php if( $this->data->windowprefs["edit_object_grants"] ) echo "checked"; ?>></td>
+      </tr>
+      </table>
+    </fieldset>
+  </td>
   <td>
     <fieldset id="editor">
     <legend><?php echo $ARnls["editor"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
@@ -73,7 +94,6 @@
       </table>
     </fieldset>
   </td>
-
 </tr><tr>
   <td colspan="2">
     <fieldset>

@@ -33,10 +33,24 @@
 
 	function arshow(windowname, link, arguments) {
 		properties=windowprops[windowname];
+		myNewWindow = 0;
+		if( windowname == 'edit_object_layout' && top.Get('window_new_layout')) {
+			myNewWindow = 1;
+		}
 
+		if( windowname == 'edit_object_grants' && top.Get('window_new_grants')) {
+			myNewWindow = 1;
+		}
+		
+		if( myNewWindow ) {
+			// append a timestamp to allow multiple template windows
+			myDate = new Date();
+			windowname = myDate.getTime() + windowname;
+		}
 		// get the SessionID from the top so we can uniquely name windows
 		sessionid = top.Get("SessionID");
 		windowname = sessionid+windowname;
+		
 
 		/* FIXME: doesn't work without frames on mozilla*/ 
 		windowsize=top.Get(windowname);

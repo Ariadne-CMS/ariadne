@@ -118,6 +118,9 @@
 			if ($editor=$this->getdata("editor","none")) {
 				$this->data->editor=$editor;
 			}
+			if($windowprefs=$this->getdata("windowprefs","none")) {
+				$this->data->windowprefs=$windowprefs;
+			}
 		}
 		if (!$this->error) {
 			$this->save($properties);

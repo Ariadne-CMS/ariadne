@@ -21,6 +21,17 @@ var loader;
 
 var ARregistry=new Array();
 
+<?php
+
+	if( $this->data->windowprefs["edit_object_layout"] ) {
+		echo "ARregistry['window_new_layout']=1;\n";
+	}
+	if( $this->data->windowprefs["edit_object_grants"] ) {
+		echo "ARregistry['window_new_grants']=1;\n";
+	}
+
+?>
+
 function Set(name, value) {
   ARregistry[name]=new String(value);
 }
