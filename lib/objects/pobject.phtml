@@ -92,18 +92,7 @@ class pobject extends object { // pobject class definition
 		// tree selected defaults)
 		if ($ARCurrent->nls) { 
 			$this->reqnls=$ARCurrent->nls; 
-		} else if ($ARCurrent->acceptlang) {
-			if ($ARCurrent->acceptlang) {
-				$validlangs = array_intersect(array_keys($ARCurrent->acceptlang), array_keys($AR->nls->list));
-			}
-			if ($validlangs) {
-				$ARCurrent->nls=$validlangs[0];
-				ldSetNls($ARCurrent->nls);
-				$this->reqnls=$ARCurrent->nls;
-			} else {
-				$this->reqnls=$AR->nls->default;
-			}
-		} else { 
+		} else {
 			$this->reqnls=$AR->nls->default; 
 		}
 		if (isset($this->data->nls->list[$this->reqnls]) || !isset($this->data->nls)) {  
@@ -828,6 +817,15 @@ class pobject extends object { // pobject class definition
 			if (!$ARCurrent->arContentTypeSent) {
 				ldHeader("Content-Type: text/html; charset=UTF-8");
 				$ARCurrent->arContentTypeSent = true;
+			}
+			if ($ARCurrent->acceptlang && !$ARCurrent->nls) {
+				if ($ARCurrent->acceptlang && is_array($this->data->nls->list)) {
+					$validlangs = array_intersect(array_keys($ARCurrent->acceptlang), array_keys($this->data->nls->list));
+				}
+				if ($validlangs) {
+					$reqnls=array_shift($validlangs);
+					$ARCurrent->nls = $reqnls;
+				}
 			}
 			// if this object isn't available in the requested language, show
 			// a language select dialog with all available languages for this object.
