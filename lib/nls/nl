@@ -221,6 +221,10 @@ $ARnls["year"]=			"Jaar";
 $ARnls["years"]=		"Jaren";
 $ARnls["yes"]=			"Ja";
 $ARnls["zipcode"]=		"Postcode";
-
 $ARnls["manage"]=		"Beheer";
+
+$ARnls["interface"]=	"Gebruiksomgeving";
+$ARnls["classic"]=		"Klassiek";
+$ARnls["preferences"]=	"Instellingen";
+$ARnls["changeeffectivenextlogin"]="Veranderingen worden doorgevoerd wanneer U zich opnieuw aanmeld.";
 ?>

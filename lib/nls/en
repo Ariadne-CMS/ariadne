@@ -221,6 +221,10 @@ $ARnls["year"]=			"Year";
 $ARnls["years"]=		"Years";
 $ARnls["yes"]=			"Yes";
 $ARnls["zipcode"]=		"ZipCode";
-
 $ARnls["manage"]=		"Manage";
+
+$ARnls["interface"]=	"Interface";
+$ARnls["classic"]=		"Classic";
+$ARnls["preferences"]=	"Preferences";
+$ARnls["changeeffectivenextlogin"]="Changes will take effect when you login next time.";
 ?>
