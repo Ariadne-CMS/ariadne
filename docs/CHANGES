@@ -38,6 +38,7 @@ Bugs fixed:
 	  existing path.
 	- After getting an error when saving a pinp template the editor
 	  nolonger forgets type, function and language.
+	- The axstore now cleans up its mess after updating an .ax file.
 
 
 Ariadne 2.1.1
