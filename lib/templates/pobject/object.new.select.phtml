@@ -27,6 +27,9 @@
 		WIDTH: 100%;
 		HEIGHT: 100%;
 	}
+	.greyed {
+		filter: gray();
+	}
 	<?php
 		$browser=$this->call("browsercheck.phtml");
 		if ($browser["id"]!="ns" || $browser["version"]!=4) {
