@@ -22,8 +22,7 @@
 			}
 		}
 
-		if ($ARCurrent->AXHeader["version"] <= 1 &&
-				$ARCurrent->AXAction == "import" &&
+		if ( $ARCurrent->AXAction == "import" &&
 					is_array($convert_charsets)) {
 
 			reset($convert_charsets);
