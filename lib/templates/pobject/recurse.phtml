@@ -192,6 +192,36 @@
 					<title><?php printf($ARnls["copying"],$this->path); ?></title>
 				<?php
 				break;
+			case "setowner" :
+				?>
+						function start() {
+							OrderedList=OrderedList.sort();
+							OrderedList.reverse();
+							setTimeout("setownernode();",250);
+						}
+
+						function setownernode() {
+							if (path=OrderedList[OrderedList.length-1]) {
+								OrderedList.length-=1;
+								set_info_location("<?php echo $this->store->root; ?>"+path+"recurse.setowner.phtml?owner=<?php echo RawUrlEncode($owner); ?>");
+							} else {
+								if (top.window) {
+									if (top.window.opener && top.window.opener.wgRecurseDone) {
+										top.window.opener.wgRecurseDone();
+									}
+									top.window.close();
+								} else {
+									if (window.opener && window.opener.wgRecurseDone) {
+										window.opener.wgRecurseDone();
+									}
+									window.close();
+								}
+							}
+						}
+					</script>
+					<title><?php printf($ARnls["copying"],$this->path); ?></title>
+				<?php
+				break;
 			case "move" :
 
 			default :
