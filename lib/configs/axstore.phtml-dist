@@ -26,7 +26,7 @@
   /* Ariadne Export temp directory                                         */
   /*************************************************************************/
 
-  $ax_config["temp"]                  = "/tmp/";
+  $ax_config["temp"]                  = $ariadne_root."files/temp/";
 
   /*************************************************************************/
   /* Tar configuration                                                     */
