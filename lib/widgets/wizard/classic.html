@@ -23,8 +23,15 @@
    No result.
 
   ******************************************************************/
-  global $PHP_SELF;
-
+  if (!isset($HTTP_GET_VARS)) {
+    global $HTTP_GET_VARS;
+  }
+  if (!isset($HTTP_POST_VARS)) {
+    global $HTTP_POST_VARS;
+  }
+  if (!isset($HTTP_SERVER_VARS)) {
+    global $HTTP_SERVER_VARS;
+  }
   if (!$wgWizCallObject) {
     if ($wgWizNewType) {
       if (!$wgWizNewfilename) {
@@ -84,16 +91,10 @@
 </script>
 <script src="<?php echo $AR->dir->www; ?>widgets/window/savesize.js"></script>
 <form method="post" name="wgWizForm" 
-  action="<?php echo $PHP_SELF; ?>"
+  action="<?php echo $HTTP_SERVER_VARS["SCRIPT_NAME"].$HTTP_SERVER_VARS["PATH_INFO"]; ?>"
   onSubmit="return checksubmit();"
   ENCTYPE="multipart/form-data">
 <?php
-  if (!$HTTP_GET_VARS) {
-    global $HTTP_GET_VARS;
-  }
-  if (!$HTTP_POST_VARS) {
-    global $HTTP_POST_VARS;
-  }
   if (!$arStoreVars) {
     $arStoreVars=$this->getdata("arStoreVars","none");
   }

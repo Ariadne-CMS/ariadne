@@ -1304,7 +1304,6 @@ return tbContentElement_ContextMenuAction(itemIndex)
   CLASSID="clsid:2D360201-FFF5-11D1-8D03-00A0C959BC0A" VIEWASTEXT>
   <param name="Scrollbars" value=true>
   <param name="SourceCodePreservation" value="1">
-  <param name="UseDivOnCarriageReturn" value="1">
 </object>
 <!-- unsafe CLASSID="clsid:2D360200-FFF5-11D1-8D03-00A0C959BC0A" -->
 <!-- DEInsertTableParam Object -->
