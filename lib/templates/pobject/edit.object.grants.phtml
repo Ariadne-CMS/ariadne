@@ -68,7 +68,7 @@ TD {
 					while (list($id, $grants)=each($grantslist[$type])) { // path was login en is weer login
 						echo "<tr valign=\"top\"><td>";
 						echo "<img src=\"".$AR->dir->images."icons/".$type.".gif\"></td><td>";
-						echo "<a href=\"savegrants.phtml?delete=true&type=$type&id=".RawUrlEncode($id).
+						echo "<a href=\"edit.object.grants.save.phtml?delete=true&type=$type&id=".RawUrlEncode($id).
 								 "&arReturnPage=".RawUrlEncode($ARCurrent->arReturnPage).
 								 "\" onClick=\"return confirm('".sprintf($ARnls["q:removeallgrants"],$id)."')\">$id</a></td>";
 						echo "</td><td>";
@@ -76,7 +76,7 @@ TD {
 							ksort($grants);
 							while (list($grant, $value)=each($grants)) {
 								if ($value) { 
-									echo "<a href=\"savegrants.phtml?delete=true&type=$type&id=".
+									echo "<a href=\"edit.object.grants.save.phtml?delete=true&type=$type&id=".
 										RawUrlEncode($id)."&grant=".
 										RawUrlEncode($grant)."&arReturnPage=".
 										RawUrlEncode($ARCurrent->arReturnPage).
