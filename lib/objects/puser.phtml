@@ -7,23 +7,8 @@ class puser extends pdir { // definitie class
 
 function CheckPassword($password) {
   debug("CheckPassword");
-  $now=time();
-  if (!$this->data->loggedon) { 
-    // fail once for users who have logged off.
-    debug("failing once; user was logged off");
-    $this->data->loggedon=time();
-    $this->save($this->path, $this->type, $this->data);
-  } else {
-    if (ereg('\$[0-9]+\$[^\$]+\$',$this->data->password,$matches)) {
-      $salt=$matches[0];
-      debug("deluxe crypt: $salt");
-    } else { 
-      $salt=substr($this->data->password, 0, 2);
-      debug("normal crypt");
-    }  
-    $password=ARCrypt($password, $salt);
-    debug($password." == ".$this->data->password." ?");
-  }
+  $password=ARCrypt($password);
+  debug($password." == ".$this->data->password." ?");
   return $password==$this->data->password;
 }
 

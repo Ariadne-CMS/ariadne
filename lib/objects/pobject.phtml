@@ -271,7 +271,7 @@ class pobject {
 	$AR->user->grants=$grants;
 	if (!$grants[$grant] && $ARLogin!="admin") {
 		debug("$ARLogin: $grant: ".serialize($grants));
-	// do login
+		// do login
 		debug("CheckLogin (after cookie): access denied ($ARLogin, $ARPassword)");
 		if (!$silent) {
 			$this->call("user.login.html");
@@ -361,7 +361,7 @@ class pobject {
             include($this->store->code."widgets/nls/languageselect.phtml");
             return false;
           } else {
-            $this->nlsdata=$this->data->{$this->nls->default};
+            $this->nlsdata=$this->data->$nls;
           }
         } else {
           $this->nlsdata=$this->data->$reqnls;
@@ -400,6 +400,7 @@ class pobject {
         	echo $file;
         return false;       
       } else {
+        $nocache=true; // make sure no other parts are cached either;
         debug("not caching ".$this->path.".".$arCallFunction.".".$this->nls);
         if ($this->data->pinp[$this->type][$arCallFunction][$this->nls]) {
         	unset($ARConfig->template);
