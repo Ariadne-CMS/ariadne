@@ -6,7 +6,6 @@
 <title>Saving Data</title>
 <script>
   function dosave() {
-    alert(window.opener.getContents("page"));
     document.forms[0].page.value=window.opener.getContents("page");
     document.forms[0].submit();
   }
