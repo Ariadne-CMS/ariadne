@@ -11,10 +11,12 @@ function sort_addresses($a,$b) {
 
 class paddressbook extends pdir { // definitie class
 
-	function get_addresses($crit,$sortby="name") {
+	function get_addresses($crit="",$sortby="name") {
 		global $ARCurrent;
 
-		$criteria=$crit;
+		if (is_array($crit)) {
+			$criteria=$crit;
+		}
 		$criteria["object"]["implements"]["="]="'address'";
 		$this->find(".",$criteria,"populate.phtml","");
 
@@ -29,12 +31,11 @@ class paddressbook extends pdir { // definitie class
 
 			uasort($ARCurrent->addresses,sort_addresses);
 		}
-
 		return $ARCurrent->addresses;
 	}
 
-	function _get_addresses($crit,$sortby="") {
-		$this->get_addresses($crit,$sortby);
+	function _get_addresses($crit="",$sortby="") {
+		return $this->get_addresses($crit,$sortby);
 	}
 
 	function _call_address($address,$template="",$args="") {
