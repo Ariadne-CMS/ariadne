@@ -1,0 +1,22 @@
+<?php
+	/******************************************************************
+	 system.get.session.phtml                              Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: timeout 
+	 Grant needed: none
+	 Global variables: none
+
+	 This template returns it's data if this session has not been 
+	 expired, (boolean) false otherwise.
+
+	******************************************************************/
+	if (!$timeout) {
+		$timout = $ARCurrent->session->timeout;
+	}
+	$valid = time() - $timeout;
+	if ($this->lastchanged < $valid) {
+		$arResult = false;
+	} else {
+		$arResult = $this->data;
+	}
+?>

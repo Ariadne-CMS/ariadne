@@ -11,6 +11,25 @@ class session {
 		$this->timeout=$session_config["timeout"];
 
 		if ((!$id) || (!$this->sessionstore->exists("/$id/")))  { 
+			$genNewSession = true;
+		} else { // retrieve session
+			$result=current($this->sessionstore->call(
+													"system.get.session.phtml",
+													Array( "timeout" => $this->timeout ),
+													$this->sessionstore->get("/$id/")
+												));
+			if ($result !== false) {
+				debug("session found ($result) in database");
+				$this->id=$id;
+				$this->data=$result;
+				$genNewSession = false;
+			} else {
+				debug("session expired: will generate new one");
+				$genNewSession = true;
+			}
+		}
+
+		if ($genNewSession)  { 
 			// generate new id
 			srand((double)microtime()*1000000);
 			do { 
@@ -23,11 +42,6 @@ class session {
 			$this->data=new object;
 			$this->id=$id;
 			$this->save();
-		} else { // retrieve session
-			$result=$this->sessionstore->call("system.get.data.phtml","",$this->sessionstore->get("/$id/"));
-			debug("session found ($result) in database");
-			$this->id=$id;
-			$this->data=$result[0];
 		}
 		$this->put("ARSessionId",$this->id);
         debug("session: end","all");
