@@ -66,6 +66,8 @@ Bugs Fixed:
 	  Session IDs any more
 	- in pobject::_killsession(), added a check to see if the session exists
 	- MS Word DOT files now correctly downloaded on Windows
+	- fixed the pcalander todo.html template so it uses the right way off
+	  setlocale, because the old way is depricated since php 4.2.0
 
 Changes in Ariadne since version Ariadne 2.3-dev
 
