@@ -16,7 +16,9 @@
   $args="&format=".RawUrlEncode($format)."&title=".RawUrlEncode($title)."&name=".RawUrlEncode($name);
 ?><html>
 <head>
-<title><?php echo $title; ?></title>
+<title> 
+<?php echo $title; ?>
+</title>
 <?php
   /*
     arguments: 
@@ -39,9 +41,31 @@
   $highlight=$date_arr["mday"];
 
 ?>
+
 <style>
 <!--
-  A.cal { text-decoration:none; } -->
+* {font-family:tahoma,arial,verdana;font-size: 11px;color:#666666}
+.date {color:white ; font-weight:bold}
+.day {background-color:#D6DFF7}
+.table1{background-color:#215DC6}
+
+A	{
+	text-decoration: none;
+	color: #003FEB;
+}
+A:hover {
+	text-decoration: none;
+	color: #428EFF; 
+}
+A.selected {
+	border: inset 1px;
+}
+A.unselected {
+	border: outset 1px;
+}
+A.cal { text-decoration:none; } 
+
+-->
 </style>
 <script>
 <!--
@@ -51,12 +75,14 @@
   }
 //-->
 </script>
+
 </head>
 <body bgcolor="white">
-<table border="0" cellspacing="0" cellpadding="0" bgcolor="#404074">
-<tr>
-  <td rowspan="3"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
-  <td><a href="<?php echo $PHP_SELF; ?>?date=<?php 
+
+<table border="0" cellspacing="0" cellpadding="0" class="table1">
+  <tr> 
+    <td rowspan="3"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
+    <td><a href="<?php echo $PHP_SELF; ?>?date=<?php 
 
 			$mday = $date_arr["mday"];
 			$newtime = mktime( 0, 0, 0, $date_arr["mon"]-1, $date_arr["mday"], $date_arr["year"]);
@@ -66,11 +92,12 @@
 			}
 			echo mktime( 0, 0, 0, $date_arr["mon"]-1, $mday, $date_arr["year"]); 
 
-    ?>"><img src="<?php echo $AR->dir->images; ?>calendar/prev.gif" alt="<" border="0"></a>
-      <font face="arial, helvetica" size="2" color="white"><b>&nbsp;<?php 
+    ?>"><img src="<?php echo $AR->dir->images; ?>calendar/xp.prev.gif" alt="<" border="0"></a> 
+      <font class="date">&nbsp; 
+      <?php 
       echo $date_arr["month"]; 
-    ?>&nbsp;</b></font>
-      <a href="<?php echo $PHP_SELF; ?>?date=<?php 
+    ?>
+      &nbsp;</font><a href="<?php echo $PHP_SELF; ?>?date=<?php 
 
 			$mday = $date_arr["mday"];
 			$newtime = mktime( 0, 0, 0, $date_arr["mon"]+1, $date_arr["mday"], $date_arr["year"]);
@@ -80,39 +107,42 @@
 			}
 			echo mktime( 0, 0, 0, $date_arr["mon"]+1, $mday, $date_arr["year"]); 
 
-    ?>"><img src="<?php echo $AR->dir->images; ?>calendar/next.gif" alt=">" border="0"></a>
-  </td>
-  <td align="center">&nbsp;</td>
-  <td align="right"><a href="<?php echo $PHP_SELF; ?>?date=<?php 
+    ?>"><img src="<?php echo $AR->dir->images; ?>calendar/xp.next.gif" alt=">" border="0"></a> 
+    </td>
+    <td align="center">&nbsp;</td>
+    <td align="right"><a href="<?php echo $PHP_SELF; ?>?date=<?php 
       echo mktime(0,0,0,$date_arr["mon"],$date_arr["mday"],$date_arr["year"]-1).$args; 
-    ?>"><img src="<?php echo $AR->dir->images; ?>calendar/prev.gif" alt="<" border="0"></a>
-      <font face="arial, helvetica" size="2" color="white"><b>&nbsp;<?php 
+    ?>"><img src="<?php echo $AR->dir->images; ?>calendar/xp.prev.gif" alt="<" border="0"></a> 
+      <font class="date">&nbsp; 
+      <?php 
       echo $date_arr["year"]; 
-    ?>&nbsp;</b></font>
-      <a href="<?php echo $PHP_SELF; ?>?date=<?php 
+    ?>
+      &nbsp;</font><a href="<?php echo $PHP_SELF; ?>?date=<?php 
       echo mktime(0,0,0,$date_arr["mon"],$date_arr["mday"],$date_arr["year"]+1).$args; 
-    ?>"><img src="<?php echo $AR->dir->images; ?>calendar/next.gif" alt=">" border="0"></a></td>
-  <td rowspan="3"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
-</tr><tr>
-  <td bgcolor="white" colspan="3">
-    <table border="0" cellspacing="2" cellpadding="2">
-    <tr>
-      <td bgcolor="#404074" align="center"><font face="arial, helvetica" size="2" 
-        color="white"><b>Sun</b></font><br><img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
-      <td bgcolor="#404074" align="center"><font face="arial, helvetica" size="2" 
-        color="white"><b>Mon</b></font><br><img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
-      <td bgcolor="#404074" align="center"><font face="arial, helvetica" size="2" 
-        color="white"><b>Tue</b></font><br><img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
-      <td bgcolor="#404074" align="center"><font face="arial, helvetica" size="2" 
-        color="white"><b>Wed</b></font><br><img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
-      <td bgcolor="#404074" align="center"><font face="arial, helvetica" size="2" 
-        color="white"><b>Thu</b></font><br><img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
-      <td bgcolor="#404074" align="center"><font face="arial, helvetica" size="2" 
-        color="white"><b>Fri</b></font><br><img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
-      <td bgcolor="#404074" align="center"><font face="arial, helvetica" size="2" 
-        color="white"><b>Sat</b></font><br><img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
-    </tr><tr>
-    <?php
+    ?>"><img src="<?php echo $AR->dir->images; ?>calendar/xp.next.gif" alt=">" border="0"></a></td>
+    <td rowspan="3" class="trday"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
+  </tr>
+  <tr> 
+    <td bgcolor="white" colspan="3"> 
+      <table border="0" cellspacing="2" cellpadding="2">
+        <tr> 
+          <td align="center" class="day"><font class="date">Sun</font><br>
+            <img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
+          <td class="day" align="center"><font class="date">Mon</font><br>
+            <img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
+          <td class="day" align="center"><font class="date">Tue</font><br>
+            <img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
+          <td class="day" align="center"><font class="date">Wed</font><br>
+            <img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
+          <td class="day" align="center"><font class="date">Thu</font><br>
+            <img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
+          <td class="day" align="center"><font class="date">Fri</font><br>
+            <img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
+          <td class="day" align="center"><font class="date">Sat</font><br>
+            <img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
+        </tr>
+        <tr> 
+          <?php
       for ($i=$firstweekday; $i; $i--) {
         echo "<td align=\"center\" valign=\"middle\"><a href=\"$PHP_SELF?date=".
           mktime(0,0,0,$date_arr["mon"],(-$i+1),$date_arr["year"]).$args.
@@ -124,7 +154,7 @@
         } else {
           echo "  <td bgcolor=\"#EEEEEE\">";
         }
-        echo "<font face=\"arial, helvetica\" size=\"2\">";
+        
 	$idate=mktime(0,0,0,$date_arr["mon"],$i,$date_arr["year"]);
         if ($i==$current) {
           echo "<u><a class=\"current\" href=\"javascript:SetDate($idate,'".
@@ -133,7 +163,7 @@
           echo "<a class=\"cal\" href=\"javascript:SetDate($idate,'".
             strftime($format, $idate)."');\">$i</a>";
         }
-        echo "</font></td>\n";
+        echo "</td>\n";
         if ((($i+$firstweekday)%7)==0) { // end of the week, next row
           echo "</tr>";
           if ($i<$monthsize) { // only start a new row if there are more days
@@ -151,12 +181,13 @@
         }
       }
     ?>
-    </tr>
-    </table>
-  </td>
-</tr><tr>
-  <td colspan="3"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>  
-</tr>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr> 
+    <td colspan="3"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
+  </tr>
 </table>
 <form>
   <table width="100%" border="0">
