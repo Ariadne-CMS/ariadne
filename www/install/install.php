@@ -21,6 +21,9 @@
   $store->add_type("pfile","pfile");
   $store->add_type("ppage","pobject");
   $store->add_type("ppage","ppage");
+  $store->add_type("psite","pobject");
+  $store->add_type("psite","pdir");
+  $store->add_type("psite","psite");
 
   $name["value"]["string"]=50;
   $store->create_property("name", $name);
@@ -66,6 +69,7 @@
   $store->add_type("pscenario","pobject");
   $store->add_type("pscenario","pscenario");
   $store->add_type("particle","pobject");
+  $store->add_type("particle","ppage");
   $store->add_type("particle","particle");
   $store->add_type("pnewspaper","pobject");
   $store->add_type("pnewspaper","pdir");
