@@ -17,8 +17,6 @@
 	
 	require($ariadne."/modules/mod_virusscan.php");
 
-debugon();
-
 		/* this function has been taken from the php manual		*/
 		
 		function ftp_ErrorHandler ($errno, $errmsg, $filename, $linenum, $vars) {
@@ -680,9 +678,8 @@ debugon();
 
 						ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ASCII' : 'BINARY')." mode data connection");
 						debug("ftp: client wants to store file ($target)");
-						if (eregi('.*[.](.[^.]+)?/$', $target, $regs)) {
-							$ext = $regs[1];
-						}
+						eregi('^/(.*/)?[^./]*[.]([^./]+)/$', $target, $regs);
+						$ext = $regs[2];
 						if (ftp_OpenDC()) {
 							$tempfile=tempnam($FTP->store->files."temp/", "upload");
 							debug("tempfile: '$tempfile' ext: '$ext'");
@@ -705,7 +702,6 @@ debugon();
 									$FTP->store->call("ftp.templates.save.phtml", Array("file" => $fileinfo),
 										$FTP->store->get($target));
 								} else {
-									debugon("all");
 									$file=substr($target, strlen($path), -1);
 									$fileinfo["name"]=eregi_replace('[^.a-z0-9_-]', '_', $file);
 									if ($FTP->store->exists($target)) {
@@ -718,7 +714,6 @@ debugon();
 										$FTP->store->call("ftp.$listMode.save.new.phtml", Array("file" => $fileinfo),
 											$FTP->store->get($path));
 									}
-									debugon();
 								}
 								if (file_exists($tempfile)) {
 									@unlink($tempfile);
