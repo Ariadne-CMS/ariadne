@@ -1,0 +1,41 @@
+<?php
+	if ($this->CheckLogin("delete") && $this->CheckConfig()) {
+?>
+<html>
+<head>
+<title><?php echo $ARnls["link"]; ?></title>
+<?php
+	include($this->store->code."widgets/wizard/classic.css");
+?>
+<script>
+	function init() {
+		document.linkform.target.focus();
+	}
+</script>
+</head>
+<body onLoad="init()">
+<table border="0" width="100%" cellspacing="0" cellpadding="2">
+<form action="object.link.save.phtml" name="linkform">
+<tr>
+	<td align="center" colspan="2">
+		<?php 
+			echo $ARnls["target"].":&nbsp;";
+			$wgBrowseName="target";
+			include($this->store->code."widgets/browse/js.html");
+			include($this->store->code."widgets/browse/form.html");
+		?><p>
+	</td>
+</tr><tr>
+	<td align="left">
+		<input type="submit" name="cancel" style="width: 100px" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();">
+	</td><td align="right">
+		<input type="submit" name="submit" style="width: 100px" value="<?php echo $ARnls["link"]; ?>">
+	</td>
+</tr>
+</form>
+</table>
+</body>
+</html>
+<?php
+	}
+?>

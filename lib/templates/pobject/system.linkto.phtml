@@ -1,0 +1,36 @@
+<?php
+	if ($this->CheckLogin("config") && $this->CheckConfig()) {
+		if ($target) {
+			// first check to see if the target is valid
+			$parent=$this->store->make_path($target, "..");
+			if ($this->exists($parent)) {
+				$target=$this->make_path($target);
+				if ($this->exists($target)) {
+					$parent=$target;
+					$filename=basename(substr($this->path, 0, -1));
+					$target.=$filename."/";
+					if ($this->exists($target)) {
+						$arResult=sprintf($ARnls["err:alreadyexists"],$target);
+					}
+				}
+				if (!$arResult) {
+					$realpath=$this->path;
+					$this->path=$parent;
+					if ($this->CheckSilent("add")) {
+						$this->path=$realpath;
+						if (!$this->link($target)) {
+							$arResult=$this->error;
+						}
+					} else {
+						$arResult=$ARnls["accessdenied"];
+					}
+					$this->path=$realpath;
+				}	
+			} else {
+				$arResult=sprintf($ARnls["err:wrongpath"],$parent);
+			}
+		}
+	} else {
+		$arResult=$ARnls["accessdenied"];
+	}
+?>
