@@ -572,7 +572,7 @@ class mysqlstore {
 		if ($this->exists($destination)) {
 			$this->error="$destination already exists, cannot overwrite.";
 			debug("link: ERROR: ".$this->error,"store");
-			$result=0;
+			$result=false;
 		} else { 
 			if (ereg("\{([0-9]):id\}",$destination,$match)) {
 				$subid=$this->nextid($parent);
@@ -594,11 +594,12 @@ class mysqlstore {
 					debug("link: insert node failed!","store");
 					debug("link: ".$this->error,"store");
 					debug("link: query=$query_string","store");
-					$result=0;
+					$result=false;
 				}
 				debug("link: end","all");
 				$result=$destination;
 			} else {
+				$result=false;
 				debug("link: end (no $source)","store");
 			}
 		}
