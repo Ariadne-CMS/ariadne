@@ -1,0 +1,24 @@
+<?php
+  if ($this->CheckLogin("read") && $this->CheckConfig()) {
+	$target = $this->make_path($target);
+	if (substr($target, 0, strlen("/system/users/")) != "/system/users/") {
+		$arResult = $ARnls["err:invaliduserlocation"];
+	} else {
+		$newpath = $target;
+		$newparent = $this->store->make_path($target, "..");
+		$newlogin = substr($newpath, strlen($newparent), -1);
+		if (ereg('\{.*\}', $newlogin)) {
+			$arResult = $ARnls["err:donotuseid"];
+		} else {
+			$criteria["login"]["value"]["="]="'".AddSlashes($newlogin)."'";
+			$result=$this->find("/system/users/",$criteria,"system.get.phtml");
+			if (count($result)) {
+				$arResult = sprintf($ARnls["err:loginexists"], $newlogin);
+			} else {
+				unset($this->data->usergrants);
+				$arResult = $this->call("pobject::system.copyto.phtml", $arCallArgs);
+			}
+		}
+	}
+  }
+?>
