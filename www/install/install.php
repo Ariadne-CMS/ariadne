@@ -91,7 +91,7 @@
 
   // import ariadne content
   echo "install: ".$AR->ax->cmd_untar."\n";
-  $import_path="/"; $ax_file="/home/gijs/cvs/ariadne/www/install/ariadne.2.0b8.ax";
+  $import_path="/"; $ax_file="ariadne.ax";
   include($ariadne."/includes/import.phtml");
 
   if ($error) {
