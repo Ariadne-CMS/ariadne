@@ -113,29 +113,29 @@ Finally you need to create two databases for Ariadne to use later. Click on the 
 \par
 \fs32 3. Install Ariadne\par
 \fs24\par
-Start by unzipping the file \b ariadne.2.0b10.zip\b0  to a suitable directory ( e.g. \b C:\\Program Files\\Ariadne.2.0b10\\\b0  ) . This directory should not be in your webservers document root! (That would allow hackers to read the programs source code via the web, which is a bad thing.)\par
+Start by unzipping the file \b ariadne.2.0b11.zip\b0  to a suitable directory ( e.g. \b C:\\Program Files\\Ariadne.2.0b11\\\b0  ) . This directory should not be in your webservers document root! (That would allow hackers to read the programs source code via the web, which is a bad thing.)\par
 \par
 Now you can either move the \b www\b0  directory from the ariadne installation directory to a new directory in the document root of the webserver, e.g. \b /ariadne/\b0 , or you can direct the webserver to an alternative directory. \par
 \par
 If you are using Apache, you can add an \b alias\b0  directive to the Apache's \b httpd.conf\b0 . e.g.:\par
 \par
-\f1 Alias /ariadne/ "C:/Program Files/Ariadne.2.0b10/www/"\par
+\f1 Alias /ariadne/ "C:/Program Files/Ariadne.2.0b11/www/"\par
 \f0\par
 Don't forget to restart Apache again after this change.\par
 \par
-If you are using IIS, you can add a Virtual Directory with the same effect. In the Internet Services Manager you can select the Ariadne website, right-click on it and select 'new' -> 'Virtual Directory'. In the wizard enter a name for the ariadne virtual directory, e.g. "ariadne", and point it to the C:\\Program Files\\ariadne.2.0b10\\www\\ directory.\par
+If you are using IIS, you can add a Virtual Directory with the same effect. In the Internet Services Manager you can select the Ariadne website, right-click on it and select 'new' -> 'Virtual Directory'. In the wizard enter a name for the ariadne virtual directory, e.g. "ariadne", and point it to the C:\\Program Files\\ariadne.2.0b11\\www\\ directory.\par
 \par
 \fs32 4. Configure Ariadne\par
 \fs24\par
 Next you need to configure Ariadne. There are a few configuration files, if you forget one of these, Ariadne won't run and remain strangely quiet :)\par
 \par
-The first file is in the \b www\b0  (or /ariadne/) directory, called '\b ariadne.inc-dist\b0 '. Copy this file to 'ariadne.inc' and edit it. Change the path in the file to point to the (fully qualified) path of the \b lib\b0  directory under the Ariadne installation dir (e.g. C:/Progra~1/Ariadne.2.0b10/lib/).\par
+The first file is in the \b www\b0  (or /ariadne/) directory, called '\b ariadne.inc-dist\b0 '. Copy this file to 'ariadne.inc' and edit it. Change the path in the file to point to the (fully qualified) path of the \b lib\b0  directory under the Ariadne installation dir (e.g. C:/Progra~1/Ariadne.2.0b11/lib/).\par
 \par
 \pard\nowidctlpar\fi-360\li1080\b Important:\b0  Only use 'legacy' filenames for directories, the tar and gzip utilities used by Ariadne don't understand spaces in filenames. Also remember to use only forward slashes ('/') in paths, as the backslash ('\\') has special meaning as an 'escape' character in PHP.\par
 \pard\nowidctlpar\par
 The next files are in the \b lib/configs/\b0  directory under the ariadne installation directory. Copy \b ariadne.phtml-dist\b0  to ariadne.phtml and edit it. Make sure you change the $AR->OS variable to \b win32\b0 . For the rest, follow the instructions in the configuration file itself. Copy \b store.phtml-dist\b0  to store.phtml and edit it and do the same with \b sessions.phtml-dist\b0  and \b axstore.phtml-dist\b0 . Remember to enter the username and password and database names you entered when you installed MySQL.\par
 \par
-Now goto the control panel and start \b system\b0  again. Click on \b advanced\b0  and then \b Environment Variables\b0 . Select the \b Path\b0  variable from the system variables box and press \b Edit\b0 . Now add the \b bin\b0  directory in the Ariadne installation directory to the path, e.g. \b C:\\Program Files\\ariadne.2.0b10\\bin\b0  .\par
+Now goto the control panel and start \b system\b0  again. Click on \b advanced\b0  and then \b Environment Variables\b0 . Select the \b Path\b0  variable from the system variables box and press \b Edit\b0 . Now add the \b bin\b0  directory in the Ariadne installation directory to the path, e.g. \b C:\\Program Files\\ariadne.2.0b11\\bin\b0  .\par
 \par
 The final step is running the Ariadne initial installation script. This script populates the database with a minimal set of objects. Start your browser and go to the url \b http://localhost/ariadne/install/install.php\b0 . The script will display a lot of messages, as long as none of them say 'ERROR', you are allright :)\par
 \par
