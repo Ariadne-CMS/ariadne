@@ -3,7 +3,7 @@
 		arguments: 
 			$date - unix time stamp, month set will be shown, highlights this day.
 	*/
-	if ($this->CheckConfig($function, $args) && $this->CheckLogin("read")) {
+	if ( $this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		setlocale("LC_TIME",$AR->nls->locales[$nls]);
 		if (!$PHP_SELF) {
 			global $PHP_SELF;
