@@ -63,9 +63,6 @@
 							$properties["text"][$count]["value"]="'".AddSlashes(substr($this->getdata("title", $key),0,255))."'";
 							$properties["text"][$count]["nls"]="'$key'";
 							$count++;
-							if ($page=$this->getdata("page",$key)) {
-								$newnlsdata->page=$page;
-							}
 							$this->data->$key=$newnlsdata;
 							$this->data->nls->list[$key]=$value;
 						} else { // clear language values for $key->name if set, keep the rest, just in case.
@@ -106,6 +103,12 @@
 				}
 				$properties["published"][0]["value"]=$this->data->published;
 				$this->save($properties);
+				reset($AR->nls->list);
+				while (list($key, $value)=each($AR->nls->list)) {
+					if ($page=$this->getdata("page",$key)) {
+						$this->call("system.save.page.phtml",Array("ContentLanguage" => $key, "page" => $page));
+					}
+				}
 				$this->ClearCache();
 			} else {
 				$this->error="'$scenario' is not a pscenario.";
