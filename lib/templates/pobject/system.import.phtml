@@ -3,6 +3,35 @@
 			(!$this->arIsNewObject && $this->CheckLogin("edit"))) && 
 			$this->CheckConfig()) {
 
+		if (!function_exists("convData2UTF8")) {
+			function convData2UTF8($data) {
+				if (is_array($data)) {
+					reset($data);
+					while (list($key, $val)=each($data)) {
+						$data[$key] = convData2UTF8($val);
+					}
+				} else
+				if (is_object($data)) {
+					while (list($key, $val)=each($data)) {
+						$data->$key = convData2UTF8($val);
+					}
+				} else {
+					$data = utf8_encode($data);
+				}
+				return $data;
+			}
+		}
+
+		if ($ARCurrent->AXHeader["version"] <= 1 &&
+				$ARCurrent->AXAction == "import" &&
+					is_array($convert_charsets)) {
+
+			reset($convert_charsets);
+			while (list($nlsk, $nls)=each($convert_charsets)) {
+				$this->data->$nls = convData2UTF8($this->data->$nls);
+			}
+		}
+
 		$this->store->save(
 				$this->path,
 				$this->type,
