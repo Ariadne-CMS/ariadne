@@ -307,12 +307,13 @@ function loadpage(root, path, file, name, language, type, value, save2form, targ
   tbContentName=name;
   tbContentLanguage=language;
   tbContentType=type;
-  tbContentEditOptions=editoptions;
   if (!editoptions) {
     if (window.opener && window.opener.wgHTMLEditOptions) {
       tbContentEditOptions=window.opener.wgHTMLEditOptions;
     }
-  }
+  } else {
+    tbContentEditOptions=editoptions;
+  }	
   if (tbContentEditOptions["disabled"]) {
     var temp=tbContentEditOptions["disabled"].split(":");
     for (i=0; i<temp.length; i++) {
@@ -791,8 +792,9 @@ function DECMD_IMAGE_onclick() {
     args['alt'] = "";
     args['border'] = "";
   }
+  args['editOptions'] = tbContentEditOptions;
   arr = showModalDialog( '<?php echo $this->store->root; ?>' + photobook + 
-	"edit.object.html.image.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:600px; dialogHeight:350px; status: no; resizable: yes;");
+	"edit.object.html.image.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:600px; dialogHeight:400px; status: no; resizable: yes;");
   if (arr != null){
 	IMAGE_set(arr);
   }
