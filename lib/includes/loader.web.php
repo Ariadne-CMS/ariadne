@@ -67,7 +67,7 @@
 
 		require_once($store->code."modules/mod_mimemagic.php");
 
-		$result = false;
+		$result = Array();
 
 		$file_temp=$HTTP_POST_FILES[$field]['tmp_name'];
 		$file=$HTTP_POST_FILES[$field]['name'];
@@ -82,15 +82,14 @@
 				$file_artemp=tempnam($store->files."temp","upload");
 				if (move_uploaded_file($file_temp, $file_artemp)) {
 					// now make the new values available to wgWizKeepVars()
-					$HTTP_POST_VARS[$field]=$file;
-					$HTTP_POST_VARS[$field."_temp"]=substr($file_artemp,strlen($store->files."temp"));
-					$HTTP_POST_VARS[$field."_size"]=$HTTP_POST_FILES[$field]['size'];
+					$result[$field]=$file;
+					$result[$field."_temp"]=substr($file_artemp,strlen($store->files."temp"));
+					$result[$field."_size"]=$HTTP_POST_FILES[$field]['size'];
 					$type = get_mime_type($file_artemp);
 					if (!$type) {
 						$type = get_mime_type($file, MIME_EXT);
 					}
-					$HTTP_POST_VARS[$field."_type"]=$type;
-					$result = true;
+					$result[$field."_type"]=$type;
 				}
 			}
 		}
