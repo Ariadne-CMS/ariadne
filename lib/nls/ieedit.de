@@ -1,0 +1,108 @@
+<?php
+
+	// Attention: The WYSIWYG editor and its context menus require UTF-8!
+	// (The external dialogs do not)
+
+	//     0xc3+
+	// �: 0xa4
+	// �: 0xb6
+	// �: 0xbc
+	// �: 0x84
+	// �: 0x96
+	// �: 0x9c
+	// �: 0x9f
+
+	// lib/widgets/htmledit/ie/edit.php
+
+	$ARnls["e_cut"]				=	"Ausschneiden";
+	$ARnls["e_copy"]			=	"Kopieren";
+	$ARnls["e_paste"]			=	"Einfügen";
+	$ARnls["e_delete"]			=	"Löschen";
+
+	$ARnls["e_insertrow"]			=	"Zeile einfügen";
+	$ARnls["e_deleterows"]			=	"Zeilen löschen";
+	$ARnls["e_insertcol"]			=	"Spalte einfügen";
+	$ARnls["e_deletecols"]			=	"Spalten löschen";
+	$ARnls["e_insertcell"]			=	"Zelle einfügen";
+	$ARnls["e_deletecells"]			=	"Zellen löschen";
+	$ARnls["e_mergecells"]			=	"Zellen verbinden";
+	$ARnls["e_splitcell"]			=	"Zelle teilen";
+
+	$ARnls["e_z_order"]			=	"Reihenfolge";
+	$ARnls["e_send_to_back"]		=	"In den Hintergrund";
+	$ARnls["e_bring_to_front"]		=	"In den Vordergrund";
+	$ARnls["e_send_backward"]		=	"Eine Ebene nach hinten";
+	$ARnls["e_bring_forward"]		=	"Eine Ebene nach vorne";
+	$ARnls["e_send_below_text"]		=	"Hinter dem Text";
+	$ARnls["e_bring_above_text"]		=	"Vor dem Text";
+	$ARnls["e_visible_borders"]		=	"Sichtbare Ränder";
+	$ARnls["e_show_details"]		=	"Details anzeigen";
+	$ARnls["e_make_absolute"]		=	"Absolut positionieren";
+	$ARnls["e_lock"]			=	"Sperren";
+	$ARnls["e_snap_to_grid"]		=	"Nach Rasterfeld ausrichten";
+
+	$ARnls["e_file"]			=	"Seite";
+	$ARnls["e_save_file"]			=	"Seite speichern";
+
+	$ARnls["e_edit"]			=	"Bearbeiten";
+	$ARnls["e_undo"]			=	"Rückgänging";
+	$ARnls["e_redo"]			=	"Wiederholen";
+	$ARnls["e_select_all"]			=	"Alles auswählen";
+	$ARnls["e_find"]			=	"Suchen...";
+
+	$ARnls["e_view"]			=	"Ansicht";
+	$ARnls["e_standard"]			=	"Standard";
+	$ARnls["e_toolbars"]			=	"Symbolleisten";
+	$ARnls["e_formatting"]			=	"Format";
+	$ARnls["e_absolute_positioning"]	=	"Absolute Positionierung";
+	$ARnls["e_table"]			=	"Tabelle";
+
+	$ARnls["e_bold"]			=	"Fett";
+	$ARnls["e_italic"]			=	"Kursiv";
+	$ARnls["e_underline"]			=	"Unterstrichen";
+
+	$ARnls["e_set_foreground_color"]	=	"Vordergrund-Farbe festlegen...";
+	$ARnls["e_set_background_color"]	=	"Hintergrund-Farbe festlegen...";
+	$ARnls["e_foreground_color"]		=	"Vordergrund-Farbe";
+	$ARnls["e_background_color"]		=	"Hintergrund-Farbe";
+
+	$ARnls["e_align_left"]			=	"Linksbündig";
+	$ARnls["e_align_center"]		=	"Zentriert";
+	$ARnls["e_align_right"]			=	"Rechtsbündig";
+
+	$ARnls["e_numbered_list"]		=	"Nummerierung";
+	$ARnls["e_bulleted_list"]		=	"Aufzählungszeichen";
+
+	$ARnls["e_decrease_indent"]		=	"Einzug verkleinern";
+	$ARnls["e_increase_indent"]		=	"Einzug vergrößern";
+
+	$ARnls["e_link"]			=	"Link";
+	$ARnls["e_insert_image"]		=	"Grafik einfügen";
+	$ARnls["e_insert_table"]		=	"Tabelle einfügen";
+
+	// lib/templates/pobject/edit.object.html.selectcolor.phtml
+
+	$ARnls["e_select_color"]		=	"Farbauswahl";
+	$ARnls["e_color"]			=	"Farbe";
+
+	// lib/templates/pobject/edit.object.html.image.phtml
+
+	$ARnls["e_picture"]			=	"Bild";
+	$ARnls["e_picture_source"]		=	"Bild-Quelle";
+	$ARnls["e_alternate_text"]		=	"Alternativ-Text";
+	$ARnls["e_layout"]			=	"Layout";
+	$ARnls["e_alignment"]			=	"Ausrichtung";
+	$ARnls["e_border_thickness"]		=	"Rahmenst&auml;rke";
+	$ARnls["e_spacing"]			=	"Abst&auml;nde";
+	$ARnls["e_horizontal"]			=	"Horizontal";
+	$ARnls["e_vertical"]			=	"Vertikal";
+
+	// lib/templates/pobject/edit.object.html.link*.phtml
+
+	$ARnls["e_hyperlink"]			=	"Hyperlink";
+	$ARnls["e_hyperlink_information"]	=	"Hyperlink-Informationen";
+	$ARnls["e_hyperlink_type"]		=	"Typ";
+	$ARnls["e_hyperlink_path"]		=	"Pfad";
+	$ARnls["e_hyperlink_affiliate"]		=	"Verwandte Site";
+
+?>
