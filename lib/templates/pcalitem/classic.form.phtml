@@ -1,14 +1,14 @@
 <?php
 	/******************************************************************
-	 classic.form.phtml                                    Muze Ariadne
-	 ------------------------------------------------------------------
-	 Arguments: $arNewType, $arNewFilename, $starttime, $endtime
-	 Grant needed: read
-	 Global variables: none
+	classic.form.phtml                                    Muze Ariadne
+	------------------------------------------------------------------
+	Arguments: $arNewType, $arNewFilename, $starttime, $endtime
+	Grant needed: read
+	Global variables: none
 
-	 This template displays the input form for this object.
+	This template displays the input form for this object.
 
-	 no result.
+	no result.
 
 	******************************************************************/
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
@@ -38,7 +38,7 @@
 		$starthour=$stime_arr["hours"];
 	}
 	if (!$startminute) {
-	 	$startminute=$stime_arr["minutes"];
+		$startminute=$stime_arr["minutes"];
 	}
 	if (!$endhour) {
 		$endhour=$etime_arr["hours"];
@@ -55,7 +55,7 @@
 ?></title>
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
 <?php
-	$this->call("lock.init.phtml");
+	if ($this->call("lock.init.phtml")) {
 ?>
 </head>
 <body bgcolor="white" onUnLoad="releaseLock()">
@@ -103,7 +103,7 @@
 			if (list.options[i].value==value) {
 				list.options[i].selected=true;
 				break;
-			}			 
+			}			
 		}
 	}
 
@@ -154,13 +154,9 @@
 			<?php echo $ARnls["priority"]; ?> : 
 			<select name="priority">
 				<?php
-					 if (!$priority) { $priority=$data->priority; } 
-						 /* $priority is also an element of pcalendar, as the default priority 
-								for new items. As for a new item this template is run from pcalendar, 
-								this will automatically become the default priority. 
-						 */
-					 $this->ls("/system/calendar/priorities/", "show.option.value.phtml","selected=$priority");
-				 ?>
+					if (!$priority) { $priority=$data->priority; } 
+					$this->ls("/system/calendar/priorities/", "show.option.value.phtml","selected=$priority");
+				?>
 			</select>
 			<?php
 				function ShowList($start, $end, $step, $selected) {
@@ -184,7 +180,7 @@
 				ShowList($start,$end,$step,$startminute); 
 				echo "</select>";
 
-			 	echo $ARnls["end"]." : \n";
+				echo $ARnls["end"]." : \n";
 				echo "<select name=\"endhour\" onChange=\"UpdateEndtime(this.form)\">\n";
 				$start=0; $end=23; $step=1;
 				ShowList($start,$end,$step,$endhour);
@@ -251,16 +247,16 @@
 										"week"	=> $ARnls["week"],
 										"month"	=> $ARnls["month"],
 										"year"	=> $ARnls["year"]);
-								 $rroptions=array(
+								$rroptions=array(
 										$ARnls["none"]	=> "none",
 										$ARnls["day"]	=> "day",
 										$ARnls["week"]	=> "week",
 										$ARnls["month"]	=> "month",
 										$ARnls["year"]	=> "year");
-								 $moptions=array(
+								$moptions=array(
 										"day"	=> $ARnls["day"],
 										"date"	=> $ARnls["date"]);
-								 $woptions=array(
+								$woptions=array(
 										$ARnls["sun"],
 										$ARnls["mon"],
 										$ARnls["tue"],
@@ -268,108 +264,109 @@
 										$ARnls["thu"],
 										$ARnls["fri"],
 										$ARnls["sat"]);
-								 if (!$repeat) {
-									 if ($data->repeat) {
-										 $repeatnls=$ARnls[$data->repeat];
-										 $repeat=$data->repeat;
-										 $repeat_on=$data->repeat_on;
-										 $repeat_by=$data->repeat_by;
-										 $days=24*60*60;
-										 $repeatend=$data->repeatend-$days+1;
-										 $repeatn=$data->repeatn;
-									 } else {
-										 $repeatnls=$ARnls["none"];
-										 $repeat="none";
-									 }
-								 }
-								 if (!$repeat_by) {
-									 $repeat_by=$moptions[1];
-								 }
-								 if (!$repeatn) {
-									 $repeatn=1;
-								 }
-								 if (!$repeatend) {
-									 $repeatend=$starttime;
-								 }
-								 echo "<input type=\"hidden\" name=\"repeatnls\" value=\"$repeat\">";
-								 while (list($key, $item)=each($roptions)) {
-									 if ($repeatnls==$item) {
-										 echo "<td bgcolor=\"#404074\"><font color=\"white\">&nbsp;$item&nbsp;</font></td>\n";
-									 } else {
-										 echo "<td><input type=\"submit\" name=\"repeatnls\" value=\"$item\"></td>\n";
-									 }
-								 }
-							 ?>
+								if (!$repeatnls) {
+									if ($repeat) {
+										$repeatnls=$ARnls[$repeat];
+									} else if ($data->repeat) {
+										$repeatnls=$ARnls[$data->repeat];
+										$repeat_on=$data->repeat_on;
+										$repeat_by=$data->repeat_by;
+										$days=24*60*60;
+										$repeatend=$data->repeatend-$days+1;
+										$repeatn=$data->repeatn;
+									} else {
+										$repeatnls=$ARnls["none"];
+									}
+								}
+								$repeat=$rroptions[$repeatnls];
+								if (!$repeat_by) {
+									$repeat_by=$moptions[1];
+								}
+								if (!$repeatn) {
+									$repeatn=1;
+								}
+								if (!$repeatend) {
+									$repeatend=$starttime;
+								}
+								echo "<input type=\"hidden\" name=\"repeat\" value=\"$repeat\">";
+								while (list($key, $item)=each($roptions)) {
+									if ($repeatnls==$item) {
+										echo "<td bgcolor=\"#404074\"><font color=\"white\">&nbsp;$item&nbsp;</font></td>\n";
+									} else {
+										echo "<td><input type=\"submit\" name=\"repeatnls\" value=\"$item\"></td>\n";
+									}
+								}
+							?>
 						</tr>
 						</table>
 					</td>
 				</tr><tr>
 				<?php 
-					if ($repeatnls!=$ARnls["none"]) { ?>
+					if ($repeat!="none") { ?>
 						<td><?php echo $ARnls["every"]; ?> :</td>
 						<td><input type="text" name="repeatn" size="3" value="<?php echo $repeatn; ?>">
-							<?php echo $ARnls[$rroptions[$repeat]."s"]; ?>.</td>
+							<?php echo $ARnls[$repeat."s"]; ?>.</td>
 						</tr><tr>
 						<?php
 					}
 					switch($repeat) {
-						case $ARnls["none"] :
+						case "none" :
 							?>
 								<td></td>
 								<td><?php echo $ARnls["norepeat"]; ?></td>
 							</tr><tr>
 							<?php
-				 			break;
-						case $ARnls["week"] :
-				 			echo "</tr><tr><td valign=\"top\">".$ARnls["repeaton"]." :</td><td>";
-				 			if ($arNewType) { // default to current weekday
-				 				if ($repeat_on) {
-				 					while (list($key, $option)=each($woptions)) {
-				 						if ($repeat_on[$option]) {
-				 							$foundone=$option;
-				 						}
-				 					}
-				 				}
-				 				if (!$foundone) {
+							break;
+						case "week" :
+							echo "</tr><tr><td valign=\"top\">".$ARnls["repeaton"]." :</td><td>";
+							if ($arNewType) { // default to current weekday
+								if ($repeat_on) {
+									while (list($key, $option)=each($woptions)) {
+										if ($repeat_on[$option]) {
+											$foundone=$option;
+										}
+									}
+								}
+								if (!$foundone) {
 									$repeat_on[$stime_arr["wday"]]=1;
-				 					echo "<!-- ".$stime_arr["wday"].$woptions[$stime_arr["wday"]]." -->";
-				 				} else {
-				 					echo "<!-- ".$foundone." -->";
-				 				}
-				 			}
-				 			reset($woptions);
-				 			while (list($key,$option)=each($woptions)) {
-				 				echo "<input type=\"checkbox\" name=\"repeat_on[$key]\" value=\"1\"";
-				 				if ($repeat_on[$key]) {
-				 					echo " checked";
-				 				}
-				 				echo ">&nbsp;$option ";
-				 			}
-				 			echo "</td></tr><tr>";
-				 			break;
-						case $ARnls["month"] :
-				 			if ($arNewType && !$repeat_by) {
-				 				$repeat_by=$ARnls["day"];
-				 			}
-				 			echo "</tr><tr><td valign=\"top\">".$ARnls["repeatby"]." :</td><td>";
-				 			while (list($key,$option)=each($moptions)) {
-				 				echo "<input type=\"radio\" name=\"repeat_by\" value=\"$option\"";
-				 				if ($repeat_by==$option) {
-				 					echo " checked";
-				 				}
-				 				echo ">&nbsp;$option ";
-				 			}
-				 			echo "</td></tr><tr>";
-				 			break;
+									echo "<!-- ".$stime_arr["wday"].$woptions[$stime_arr["wday"]]." -->";
+								} else {
+									echo "<!-- ".$foundone." -->";
+								}
+							}
+							reset($woptions);
+							while (list($key,$option)=each($woptions)) {
+								echo "<input type=\"checkbox\" name=\"repeat_on[$key]\" value=\"1\"";
+								if ($repeat_on[$key]) {
+									echo " checked";
+								}
+								echo ">&nbsp;$option ";
+							}
+							echo "</td></tr><tr>";
+							break;
+						case "month" :
+							if ($arNewType && !$repeat_by) {
+								$repeat_by=$ARnls["day"];
+							}
+							echo "</tr><tr><td valign=\"top\">".$ARnls["repeatby"]." :</td><td>";
+							while (list($key,$option)=each($moptions)) {
+								echo "<input type=\"radio\" name=\"repeat_by\" value=\"$option\"";
+								if ($repeat_by==$option) {
+									echo " checked";
+								}
+								echo ">&nbsp;$option ";
+							}
+							echo "</td></tr><tr>";
+							break;
 					}
 					if ($repeat_by && $repeatnls!=$ARnls["month"]) { // preserve month options
 						echo "<input type=\"hidden\" name=\"repeat_by\" value=\"$repeat_by\">\n";
 					}
 					if ($repeat_on && $repeatnls!=$ARnls["week"]) { // preserve week options
 						while (list($key, $option)=each($woptions)) {
-					 		echo "<input type=\"hidden\" name=\"repeat_on[$key]\" value=\"".
-					 			$repeat_on[$key]."\">\n";
-					 	}
+							echo "<input type=\"hidden\" name=\"repeat_on[$key]\" value=\"".
+								$repeat_on[$key]."\">\n";
+						}
 					}
 					if ($repeatnls!=$ARnls["none"]) {
 						?>
@@ -389,136 +386,142 @@
 				<table border="0" cellspacing="0">
 				<tr>
 					<td colspan="2">
-		<?php 
-			if (!$alarm) {
-				if ($data->alarm) {
-					$alarm=$data->alarm;
-				} else {
-					$alarm=$ARnls["off"];
-				}
-			}
-			if (!isset($alarm_at)) {
-				if ($data->alarm_at) {
-					$alarm_at=$data->alarm_at;
-					$alarm_units=$data->alarm_units;
-				} else {
-					$alarm_at="5";
-					$alarm_units=$ARnls["minutes"];
-				}
-			}
-			$units[]=$ARnls["minutes"];
-			$units[]=$ARnls["hours"];
-			$units[]=$ARnls["days"];
-			if ($alarm==$ARnls["on"]) {
-				?>
+						<?php 
+							if (!$alarm) {
+								if ($data->alarm) {
+									$alarm=$data->alarm;
+								} else {
+									$alarm=$ARnls["off"];
+								}
+							}
+							if (!isset($alarm_at)) {
+								if ($data->alarm_at) {
+									$alarm_at=$data->alarm_at;
+									$alarm_units=$data->alarm_units;
+								} else {
+									$alarm_at="5";
+									$alarm_units=$ARnls["minutes"];
+								}
+							}
+							$units[]=$ARnls["minutes"];
+							$units[]=$ARnls["hours"];
+							$units[]=$ARnls["days"];
+							if ($alarm==$ARnls["on"]) {
+						?>
 						<table border="0" width="100%"><tr>
 							<input type="hidden" name="alarm" value="<?php echo $ARnls["on"]; ?>">
 							<td bgcolor="#404074"><font color="white">&nbsp;<?php echo $ARnls["on"]; ?>&nbsp;</font></td>
 							<td><input type="submit" name="alarm" value="<?php echo $ARnls["off"]; ?>"></td>
 							<td align="right"><input type="text" name="alarm_at" value="<?php echo $alarm_at; ?>" size="3">
-						<select name="alarm_units">
-		<?php
-			while (list($key, $unit)=each($units)) {
-				echo "<option";
-				if ($unit==$alarm_units) {
-					echo " selected>";
-				} else {
-					echo ">";
-				}
-				echo $unit."\n";
-			}
-		?>
-						</select>
+								<select name="alarm_units">
+								<?php
+									while (list($key, $unit)=each($units)) {
+										echo "<option";
+										if ($unit==$alarm_units) {
+											echo " selected>";
+										} else {
+											echo ">";
+										}
+										echo $unit."\n";
+									}
+								?>
+								</select>
 							</td>
 						</tr></table>
 				</tr><tr>
 					<td>
 						<?php echo $ARnls["mailto"]; ?> :
 					</td><td>
-		<?php
-		if (!$alarm_notify) {
-			if ($data->alarm_notify) {
-				$alarm_notify=$data->alarm_notify;
-			}
-		}
-		/*
-		$notify_options[]="E-mail";
-		$notify_options[]="IRC";
-		$notify_options[]="ICQ";
-		$notify_options[]="SMS";
-		while (list($key, $option)=each($notify_options)) {
-			if ($AR->user->data->contact[$option]) {
-				echo "<input type=\"checkbox\" name=\"alarm_notify[$option]\"";
-				if ($alarm_notify[$option]) {
-					echo " checked";
-				}
-				echo "> $option<br>";
-			}
-		}
-		*/
-		?>
-		<input type="text" name="alarm_notify" size="30" maxlength="255" value="<?php echo $alarm_notify; ?>">
-		<!-- FIXME: delete this line --></td></tr><tr><td colspan="2" align="center"><em><?php echo $ARnls["n.y.i."]; ?></em>
-				<?php
-			} else {
-				?>
+						<?php
+							if (!$alarm_notify) {
+								if ($data->alarm_notify) {
+									$alarm_notify=$data->alarm_notify;
+								}
+							}
+							/*
+							$notify_options[]="E-mail";
+							$notify_options[]="IRC";
+							$notify_options[]="ICQ";
+							$notify_options[]="SMS";
+							while (list($key, $option)=each($notify_options)) {
+								if ($AR->user->data->contact[$option]) {
+									echo "<input type=\"checkbox\" name=\"alarm_notify[$option]\"";
+									if ($alarm_notify[$option]) {
+										echo " checked";
+									}
+									echo "> $option<br>";
+								}
+							}
+							*/
+						?>
+						<input type="text" name="alarm_notify" size="30" maxlength="255" value="<?php echo $alarm_notify; ?>">
+						<!-- FIXME: delete this line --></td></tr><tr><td colspan="2" align="center"><em><?php echo $ARnls["n.y.i."]; ?></em>
+						<?php
+							} else {
+						?>
 						<table border="0"><tr>
 							<input type="hidden" name="alarm" value="<?php echo $ARnls["off"]; ?>">			
 							<td><input type="submit" name="alarm" value="<?php echo $ARnls["on"]; ?>"></td>
 							<td bgcolor="#404074"><font color="white">&nbsp;<?php echo $ARnls["off"]; ?>&nbsp;</font></td>
 						</tr></table>
-				<?php
-			}
-				?>
+						<?php
+							}
+						?>
 					</td>
 				</tr>
 				</table>
 			</td>
 		</tr><tr>
 			<td colspan="2">&nbsp;</td>
- <?php } // advanced options ?>
- </tr><tr>
-	 <td>&nbsp;</td><td>&nbsp;</td>
- </tr><tr>
-	 <td colspan="2" bgcolor="#404074">
-		 <table width="100%" cellpadding="0">
-		 <tr>
-			 <td>
-				 <?php if ($arNewType) { 
-					 if ($arReturnPage) { ?>
-						 <input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="document.location.href='<?php echo $arReturnPage; ?>'">
-					 <?php } else { ?>
-						 <input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="history.back()">
-				 <?php 
-						 } 
-					 } else { ?>
-					 <input type="submit" name="next" value="<?php echo $ARnls["cancel"]; ?>">
-<?php
-		$wgRecurseConfirm=$ARnls["q:removecalitem"];
-	$wgRecurseAction="delete";
-	$wgRecurseTitle=$ARnls["delete"];
-		include($this->store->code."widgets/recurse/form.js");
-	include($this->store->code."widgets/recurse/form.html");
+<?php 
+	} 
+	// advanced options 
 ?>
-				 <?php } ?>
-			 </td>
-			 <td align="right">
-				 <?php 
-	if (!$Advanced) { 
- 		echo "<input type=\"submit\" name=\"Advanced\" value=\"".$ARnls["advanced"]."\">"; 
- 	} ?> 
-	<input type="submit" name="next" value="<?php echo $ARnls["save"]; ?>">
-			 </td>
-		 </tr>
-		 </table>
-	 </td>
- </tr>
- </table>
+</tr><tr>
+	<td>&nbsp;</td><td>&nbsp;</td>
+</tr><tr>
+	<td colspan="2" bgcolor="#404074">
+		<table width="100%" cellpadding="0">
+		<tr>
+			<td>
+				<?php 
+					if ($arNewType) { 
+						if ($arReturnPage) { 
+							?>
+								<input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="document.location.href='<?php echo $arReturnPage; ?>'">
+							<?php 
+						} else { 
+							?>
+								<input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="history.back()">
+							<?php 
+						} 
+					} else { 
+						?>
+							<input type="submit" name="arSubmit" value="<?php echo $ARnls["cancel"]; ?>">
+							<input type="submit" name="arSubmit" value="<?php echo $ARnls["delete"]; ?>" onClick="return confirm('<?php echo $ARnls["q:removecalitem"]; ?>');">
+						<?php
+					}
+				?>
+			</td>
+			<td align="right">
+				<?php 
+					if (!$Advanced) { 
+						echo "<input type=\"submit\" name=\"Advanced\" value=\"".$ARnls["advanced"]."\">"; 
+					}
+				?> 
+				<input type="submit" name="arSubmit" value="<?php echo $ARnls["save"]; ?>">
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr>
+</table>
 <?php
 	$this->call("lock.form.phtml");
 ?>
- </form>
- </body>
- <?php
+</form>
+</body>
+<?php
+		}
 	}
 ?>

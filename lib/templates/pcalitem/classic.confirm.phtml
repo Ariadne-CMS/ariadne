@@ -1,0 +1,42 @@
+<?php
+	global $PHP_SELF;
+	$url=$PHP_SELF."?".$arCallArgs;
+?>
+<html>
+<body bgcolor="white">
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<form>
+	<table border="0" cellspacing="0" width="400" cellpadding="0" bgcolor="#404074" align="center">
+	<tr>
+		<td colspan="3">&nbsp;&nbsp;<font face="helvetica, sans-serif" color="white"><b>Confirm</b></font></td>
+	</tr><tr>
+		<td><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
+		<td bgcolor="white">
+			<table vspace="1" hspace="1" border="0" cellspacing="0" cellpadding="5" width="100%">
+			<tr><td colspan="2">
+				<font face="helvetica,sans-serif"><?php echo $question; ?></font></td>
+			</tr><tr>
+				<td>
+					<input type="button" name="cancel" value="Cancel" onClick="history.back();">
+				</td><td align="right">
+					<?php 
+						while (list($key, $button)=each($buttons)) { 
+							?>
+								<input type="button" name="confirm" value="&nbsp;<?php echo $button; ?>&nbsp;" 
+									onClick="document.location.href='<?php echo $url."&confirm=$button"; ?>'">&nbsp;&nbsp;
+							<?php 
+						} 
+					?>
+				</td>
+			</tr>
+			</table>
+		</td>
+		<td><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
+	</tr><tr>
+		<td colspan="3"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
+	</tr>
+	</table>
+</form>	
+</body>
+</html>

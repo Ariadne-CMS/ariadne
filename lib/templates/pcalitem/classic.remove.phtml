@@ -14,10 +14,10 @@
 			if (!$this->data->repeat || ($this->data->repeat=="none")) {
 				$confirm=$ARnls["current"];
 			} else {
-				$question=$ARnls["q:deleteall"];
-				$buttons[]=$ARnls["all"];
-				$buttons[]=$ARnls["current"];
-				$this->call("confirm.phtml");
+				$arCallArgs.="&question=".RawUrlEncode($ARnls["q:deleteall"]);
+				$arCallArgs.="&buttons[]=".RawUrlEncode($ARnls["all"]);
+				$arCallArgs.="&buttons[]=".RawUrlEncode($ARnls["current"]);
+				$this->call("classic.confirm.phtml", $arCallArgs);
 			}
 		}
 		if ($confirm) {

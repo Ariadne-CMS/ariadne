@@ -1,4 +1,7 @@
 <?php
+	if ((($this->arIsNewObject && $this->CheckLogin("add")) ||
+		(!$this->arIsNewObject && $this->CheckLogin("edit"))) &&
+		$this->CheckConfig()) {
 		//	$repeatn: int
 		//	week:  $repeat_on[$option]=0/1 
 		//	       $option {0-7)
@@ -16,11 +19,7 @@
 			if ($entry=$this->getdata("entry","none")) {
 				$entry_arr=getdate($entry);
 			}
-			if ($repeatnls=$this->getdata("repeatnls","none")) {
-				$repeat=$roptions[$repeatnls];
-			} else {
-				$repeat=$this->data->repeat;
-			}			
+			$repeat=$this->getdata("repeat","none");			
 			$repeatend=$this->getdata("repeatend","none");
 			$repeatn=$this->getdata("repeatn","none");
 			$repeat_on=$this->getdata("repeat_on","none");
@@ -30,12 +29,13 @@
 					(!$this->data->repeat) ||
 					($this->data->repeat=="none")) { // default all for new items, and none repeating items
 				$confirm=$ARnls["all"];
-			} else if ($repeatnls) && ( // when changing the repeat values, default to all
+			} else if (($repeatnls) && ( 
 					($this->data->repeatend<($repeatend+24*60*60-1)) ||
 					($this->data->repeatn!=$repeatn) ||
 					($this->data->repeat!=$repeat) ||
 					((serialize($this->data->repeat_on)!=serialize($repeat_on)) && ($repeat=="week")) ||
 					((serialize($this->data->repeat_by)!=serialize($repeat_by)) && ($repeat=="month")) ) ) {
+				// when changing the repeat values, default to all
 				$confirm=$ARnls["all"];
 			} else if ($date && $entry &&
 					 ( ($entry_arr["year"]!=$date_arr["year"]) ||
@@ -43,15 +43,16 @@
 					 ($entry_arr["mday"]!=$date_arr["mday"]) ) ) { // when the date is changed, default to current
 				$confirm=$ARnls["current"];
 			} else {
-				$this->call("confirm.phtml","question=".RawUrlEncode($ARnls["q:applychanges"]).
+				$this->call("classic.confirm.phtml",$arCallArgs."&question=".RawUrlEncode($ARnls["q:applychanges"]).
 					"&buttons[]=".RawUrlEncode($ARnls["all"]).
-					"&buttons[]=".RawUrlEncode($ARnls["current"].$arCallArgs));
+					"&buttons[]=".RawUrlEncode($ARnls["current"]));
 			}
 		} 
 		if ($confirm) {		
 			$this->call("system.save.data.phtml",$arCallArgs.
 				"&repeat=".RawUrlEncode($repeat).
 				"&confirm=".RawUrlEncode($confirm));
+			ldRedirect($arReturnPage);
 		}
 	}
 ?>

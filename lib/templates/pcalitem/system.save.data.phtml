@@ -9,6 +9,7 @@
 			(!$this->arIsNewObject && $this->CheckLogin("edit"))) && 
 			$this->CheckConfig()) {
 		if (!$this->arIsNewObject) {
+			debug("pcalitem/system.save.data.phtml: get clean data","all");
 			// first make sure that the object is clean (data can only be set via 
 			// the defined interface: $arCallArgs)
 		    $this->data=@current($this->get(".","system.get.data.phtml"));
@@ -58,16 +59,13 @@
 			reset($AR->nls->list);
 			while (list($key, $value)=each($AR->nls->list)) {
 				
-				if ($this->getdata("name",$key)) { 
+				if ($name=$this->getdata("name",$key)) { 
 					if (!$this->data->$key) {
 						$newnlsdata=new object;
 					} else {
 						$newnlsdata=$this->data->$key;
 					}
-					if (!$this->getdata("name",$key)) {
-						$this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
-					}
-					$newnlsdata->name=$this->getdata("name",$key);
+					$newnlsdata->name=$name;
 					$properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
 					$properties["text"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
 					$newnlsdata->summary=$this->getdata("summary",$key);
@@ -106,10 +104,12 @@
 				$this->data->priority=$this->getdata("priority","none");
 				$properties["priority"][0]["value"]=AddSlashes($priority);
 				if (!$repeat || ($repeat=="none")) { // advanced options not selected
+					debug("pcalitem/system.save.data.phtml: no advanced: repeat set to none ($repeat)","all");
 					$this->data->repeat="none";
 					$this->data->repeatn=1;
 				} else { // advanced options selected
 					$this->data->repeat=$repeat;
+					debug("pcalitem/system.save.data.phtml: advanced: repeat set to $repeat","all");
 					$this->data->repeatn=abs(intval($repeatn));
 					if (!$this->data->repeatn) { // must never be 0!
 						$this->data->repeatn=1;
@@ -177,9 +177,11 @@
 								while (list($day,$checked)=each($this->data->repeat_on)) {
 									if ($checked) {
 										$diff=($day-$wday) * $days;
-										$properties["timeframe"][$i]["start"]=$time+$diff;
-										$properties["timeframe"][$i]["end"]=$time+$diff+$length;
-										$i++;
+										if (($time+$diff)>=$this->data->starttime) { // $diff can be negative
+											$properties["timeframe"][$i]["start"]=$time+$diff;
+											$properties["timeframe"][$i]["end"]=$time+$diff+$length;
+											$i++;
+										}
 									}
 								}
 								$time+=($this->data->repeatn*$weeks);	
@@ -190,7 +192,7 @@
 							$stime_arr=getdate($this->data->starttime);
 							$time=$this->data->starttime;
 							if ($this->data->repeat_by=="day") { // .. the nth weekday of the month or .. 
-								$week=($stime_arr["mday"]-($stime_arr["mday"] % 7)) / 7; // get n (this simulates a 'div 7') 
+								$week=floor($stime_arr["mday"] / 7); // get n (this simulates a 'div 7') 
 								while ($time<=$this->data->repeatend) {
 									$properties["timeframe"][$i]["start"]=$time;
 									$properties["timeframe"][$i]["end"]=$time+$length;
