@@ -1,4 +1,5 @@
 <?php
+  $password = $HTTP_GET_VARS["password"];
   if ($password) {
     include("../ariadne.inc");
     include($ariadne."/configs/ariadne.phtml");
