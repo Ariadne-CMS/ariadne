@@ -25,16 +25,16 @@
 		</td>
 		<td valign="top">
 			<input type="hidden" name="<?php echo $wgMultipleName; ?>" value="<?php echo $wgMultipleValue; ?>">
-            <input type="button" class="mybutton" width="80%" 
-              onClick="add_new_item(this.form.<?php echo $wgMultipleName."container"; ?>); 
-                       collect_items(this.form.<?php echo $wgMultipleName."container"; ?>,this.form.<?php echo $wgMultipleName; ?>);" 
-              name="e_add" value="&nbsp;<?php echo $ARnls["new"]; ?>&nbsp;">
+			<input type="button" class="mybutton" width="80%" 
+				onClick="add_new_item(this.form.<?php echo $wgMultipleName."container"; ?>); 
+					collect_items(this.form.<?php echo $wgMultipleName."container"; ?>,this.form.<?php echo $wgMultipleName; ?>);" 
+				name="e_add" value="&nbsp;<?php echo $ARnls["new"]; ?>&nbsp;"><BR>
 			<input type="button" class="mybutton" width="80%" name="e_edit" value="&nbsp;<?php echo $ARnls["edit"]; ?>&nbsp;" 
-              onClick="edit_item(this.form.<?php echo $wgMultipleName."container"; ?>);  
-                       collect_items(this.form.<?php echo $wgMultipleName."container"; ?>,this.form.<?php echo $wgMultipleName; ?>);"><br>
-            <input type="button" class="mybutton" width="80%" name="e_remove" value="<?php echo $ARnls["remove"]; ?>" 
-              onClick="remove_item(this.form.<?php echo $wgMultipleName."container"; ?>);  
-                       collect_items(this.form.<?php echo $wgMultipleName."container"; ?>,this.form.<?php echo $wgMultipleName; ?>);">
+				onClick="edit_item(this.form.<?php echo $wgMultipleName."container"; ?>);  
+					collect_items(this.form.<?php echo $wgMultipleName."container"; ?>,this.form.<?php echo $wgMultipleName; ?>);"><br>
+			<input type="button" class="mybutton" width="80%" name="e_remove" value="<?php echo $ARnls["remove"]; ?>" 
+				onClick="remove_item(this.form.<?php echo $wgMultipleName."container"; ?>);  
+					collect_items(this.form.<?php echo $wgMultipleName."container"; ?>,this.form.<?php echo $wgMultipleName; ?>);">
 		</td>
 	</tr>
 	</table>
