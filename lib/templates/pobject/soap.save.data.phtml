@@ -1,0 +1,10 @@
+<?php
+  if ( (($this->arIsNewObject && $this->CheckLogin("add", $arNewType)) ||
+			(!$this->arIsNewObject && $this->CheckLogin("edit"))) &&
+			$this->CheckConfig()) {
+
+	debug("soap.save.data.phtml: calling system.save.data.phtml on ".$this->path);
+	$this->call("system.save.data.phtml", $arCallArgs);
+
+  }
+?>
