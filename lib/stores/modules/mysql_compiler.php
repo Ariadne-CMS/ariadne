@@ -24,8 +24,9 @@
 							matching objects
 						*/
 						$objects_table = $this->tbl_prefix."objects";
-						$this->nls_join[$table] = "left join $table as order_$table on $objects_table.id=order_$table.object and order_$table.AR_nls='".$node["nls"]."' ";
-						$result = " order_$table.$field ";
+						$aliastable = $table.$node['nls'];
+						$this->nls_join[$table.$node['nls']] = "left join $table as order_$aliastable on $objects_table.id=order_$aliastable.object and order_$aliastable.AR_nls='".$node["nls"]."' ";
+						$result = " order_$aliastable.$field ";
 					} else {
 						/*
 							if we are parsing 'orderby' properties we have 
@@ -274,6 +275,7 @@
 		if (is_array($this->nls_join)) {
 			reset($this->nls_join);
 			while (list($key, $value)=each($this->nls_join)) {
+				echo "<script> alert(\"nls join: $value\"); </script>\n";
 				$join .= $value;
 			}
 		}
