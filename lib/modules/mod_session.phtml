@@ -60,7 +60,7 @@ class session {
 		$this->sessionstore->close();
 		$this->id=0;
         debug("session->suspend: end","all");
-		return ldSetSession();      
+		ldSetSession();      
 	}
  
 	function kill() {
@@ -70,7 +70,7 @@ class session {
 		$this->sessionstore->close();
 		$this->id=0;
 		debug("session->kill: end","all");
-		return ldSetSession();
+		ldSetSession();
 	}
 }
 ?>
