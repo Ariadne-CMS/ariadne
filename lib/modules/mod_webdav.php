@@ -117,7 +117,9 @@
 			return $this->modules['files']->put($params);
 		}
 
+		function proppatch(&$options) {
 
+		}
 
 	} // end class definition
 ?>

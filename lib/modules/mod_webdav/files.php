@@ -161,8 +161,9 @@
 		function put(&$params) {
 		global $ARCurrent;
 			
-			$filename = basename($params['path']);
+			//$filename = basename($params['path']);
 			$path = $this->store->make_path($params['path']);
+			$filename = basename($path);
 			$parent = $this->store->make_path($path, '..');
 			$size = $params['content_length'];
 			$stream = $params['stream'];
