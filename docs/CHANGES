@@ -10,6 +10,9 @@ New Features:
 	- Updated mod_soap.php with SOAP_Header support.
 	- Added a preference setting for the template editor, normal textarea or helene,
 	  the syntax highlighting editor.
+	- Pinp library support is now available, allowing you to have a library of templates
+	  in a seperate tree in Ariadne that can be used anywhere in your site through a config.ini
+	  template.
 
 Bugs Fixes:
 	- helene (the syntax highlighting editor) now understands javascript in templates
