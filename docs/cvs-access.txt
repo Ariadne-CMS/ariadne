@@ -11,9 +11,10 @@ and password 'guest'. It runs on the default port '2401'.
 
 If you use the default cvs system for linux, you can access it using:
 
-	export CVSROOT=:pserver:guest@ariadne.muze.nl:/var/cvs
-	cvs login
-	cvs checkout ariadne
+	cvs -d:pserver:guest@ariadne.muze.nl:/var/cvs login
+	(password is 'guest')
+
+	cvs -z3 -d:pserver:guest@ariadne.muze.nl:/var/cvs co ariadne
 
 If you later want to get a newer version of the code do:
 
