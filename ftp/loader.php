@@ -731,6 +731,9 @@
 									fclose($fp);
 									ftp_CloseDC();
 									$fileinfo["type"]=get_mime_type($tempfile);
+									if (!$fileinfo["type"]) {
+										$fileinfo["type"]=get_mime_type($fileinfo["name"], MIME_EXT);
+									}
 									$fileinfo["size"]=filesize($tempfile);
 
 									debug("ftp: writing template to  ($target$template)");
@@ -757,7 +760,11 @@
 										}
 										fclose($fp);
 										ftp_CloseDC();
+
 										$fileinfo["type"]=get_mime_type($tempfile);
+										if (!$fileinfo["type"]) {
+											$fileinfo["type"]=get_mime_type($fileinfo["name"], MIME_EXT);
+										}
 										$fileinfo["size"]=filesize($tempfile);
 										debug("ftp::store total size of fileupload is: ".$fileinfo["size"]);
 										// if $target already exists
@@ -771,7 +778,11 @@
 										}
 										fclose($fp);
 										ftp_CloseDC();
+
 										$fileinfo["type"]=get_mime_type($tempfile);
+										if (!$fileinfo["type"]) {
+											$fileinfo["type"]=get_mime_type($fileinfo["name"], MIME_EXT);
+										}
 										$fileinfo["size"]=filesize($tempfile);
 
 										$FTP->store->call("ftp.$listMode.save.new.phtml", Array("file" => $fileinfo),
