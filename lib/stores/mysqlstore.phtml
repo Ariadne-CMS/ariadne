@@ -88,7 +88,7 @@ class mysqlstore {
 			dl("mysql.so");
 		}
 		$this->error="";
-		$this->connect_id=mysql_connect($config["host"], $config["user"], $config["password"]));
+		$this->connect_id=mysql_connect($config["host"], $config["user"], $config["password"]);
 		$this->root=$path;
 		$this->code=$config["code"];
 		$this->files=$config["files"];
