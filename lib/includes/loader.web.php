@@ -52,10 +52,10 @@
 					ldMkDir("cache/".$path);
 					ldMkDir("cacheheaders/".$path);
 				}
-				$fp=fopen($store->files."cache/".$file, "w");
+				$fp=fopen($store->files."cache/".$file, "wb");
 				fwrite($fp, $image);
 				fclose($fp);
-				$fp=fopen($store->files."cacheheaders/".$file, "w");
+				$fp=fopen($store->files."cacheheaders/".$file, "wb");
 				fwrite($fp, $headers);
 				fclose($fp);
 				if (!touch($store->files."cache/".$file, $time)) {
@@ -129,16 +129,19 @@
 		$result=false;
 		if (!Headers_sent()) {
 			$result=true;
-			Header("Location: $uri");
+			ldHeader("Location: $uri");
 		}
 		return $result;
 	}
 
 	function ldHeader($header) {
+	global $ARCurrent;
+
 		$result=false;
 		if (!Headers_sent()) {
 			$result=true;
 			Header($header);
+			$ARCurrent->ldHeaders[]=$header;			
 		}
 		return $result;
 	}
@@ -151,16 +154,16 @@
 				if (!$expires) {
 					$expires=time()+1800;
 				}
-				Header("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$expires));
+				ldHeader("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$expires));
 			} else {
 				if (!$modified) {
 					$modified=time();
 				}
-				Header("Pragma: no-cache");
-				Header("Cache-control: no-store, no-cache, must-revalidate, max-age=0");
-				Header("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$expires));
-				Header("Last-Modified: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$modified));
-				Header("Cache-control: private");
+				ldHeader("Pragma: no-cache");
+				ldHeader("Cache-control: no-store, no-cache, must-revalidate, max-age=0");
+				ldHeader("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$expires));
+				ldHeader("Last-Modified: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$modified));
+				ldHeader("Cache-control: private");
 			}
 		}
 		return $result;
@@ -170,9 +173,9 @@
 		$result=false;
 		if (!Headers_sent()) {
 			$result=true;
-			Header("Content-type: ".$mimetype);
+			ldHeader("Content-type: ".$mimetype);
 			if ($size) {
-				Header("Content-Length: ".$size);
+				ldHeader("Content-Length: ".$size);
 			}
 		}
 		return $result;
