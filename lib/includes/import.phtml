@@ -11,11 +11,11 @@
 	$mod=new mod_ax;
 
     if (!$store->exists($import_path)) {
-		$error="err:importpathdoesntexist";
+		$error="Error: Import path $import_path doesn't exist";
     } else
       if (!($error=$mod->open($ax_file,$AR->ax,"unpack",$store->files."temp/"))) {
 		if (!$fp=$mod->openObjectsData("r")) {
-			$error="err:noobjectdata";
+			$error="Error: No object data found in $ax_file";
 		} else {
 			unset($savedObject);
 			while ($object=$mod->getObject()) {
@@ -40,7 +40,7 @@
 							merge($old->data,$object->data);
 							$object->data=$old->data;
 						} else {
-							echo "not merging ($newfilename)\n";
+							// echo "not merging ($newfilename)\n";
 						}
 					}
 					$result=$store->save($newfilename, $object->type, $object->data, $object->properties, $object->vtype);

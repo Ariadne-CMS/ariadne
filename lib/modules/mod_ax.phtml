@@ -18,7 +18,7 @@ class mod_ax {
 
 		if ($mode=="unpack") {
 			if (!file_exists($this->exportfile=$exportfile)) {
-				$result="err:cannotfindaxfile";
+				$result="Error: Can't find .ax file ($exportfile)";
 			} else {
 				if (strpos($this->exportfile,"/")===false) {
 					$slash="\\";
@@ -37,14 +37,20 @@ class mod_ax {
 				// tar will (g)unzip and untar the file into tempdir 
 
 				if (($olddir=getcwd()) && chdir($this->tempdir)) {
-					$command=sprintf($this->cmdlist->cmd_untar,$exportfile);
+					$errfile=$this->tempdir."/tar.errors";
+					$command=sprintf($this->cmdlist->cmd_untar, $exportfile, $errfile);
 					system($command,$retVar);
 					chdir($olddir);
 					if ($retVar!=0) {
-						$result="err:cannotuntar";
+						$result="Error: Can't untar $exportfile in ".$this->tempdir."\n";
+						if (file_exists($errfile)) {
+							$result.=implode("",file($errfile));						
+							unlink($errfile);
+							$result.="\n";
+						}
 					}
 				} else {
-					$result="err:cannotchdir";
+					$result="Error: Can't chdir to ".$this->tempdir;
 				}
 			}
 		}
@@ -68,7 +74,7 @@ class mod_ax {
 			$str.="\n";
 			$result=fputs($this->ofp,$str, strlen($str));
 		} else {
-			$this->error="err: data to be written is not an object";
+			$this->error="error: writeObject called with misformed argument (not an object)";
 		}
 		return $result;
 	}
@@ -88,7 +94,7 @@ class mod_ax {
 				$result->data=unserialize(base64_decode($data[6]));
 			} else {
 				$result=false;
-				$this->error="err: read line corrupted";
+				$this->error="error: line not of expected format at offset ".$this->ofp;
 			}
 		}
 		return $result;
@@ -116,7 +122,7 @@ class mod_ax {
 			$curr.="/".$path;
 			if (!file_exists($curr)) {
 				if (!@mkdir($curr,0755)) {
-					$result="err:cannotmakedir $curr";
+					$result="Error: Can't makedir $curr";
 					break;
 				}
 			}
@@ -130,7 +136,7 @@ class mod_ax {
 				
 		//system($command,$retVar);
 		if ($retVar!=0) {
-			$result="err:cannotremovedir";
+			$result="Error: Can't remove dir $path";
 		}
 		return $result;
 	}
@@ -153,15 +159,20 @@ class mod_ax {
 					// delete it, since we stay in the same
 					// partition
 					$tmpdir=$this->rmvolume($this->tempdir);
-
-					$command=sprintf($this->cmdlist->cmd_untar,$tmpdir."/$type.tgz");
+					$errfile=$tmpdir."/tar.errors";
+					$command=sprintf($this->cmdlist->cmd_untar,$tmpdir."/$type.tgz",$errfile);
 					system($command,$retVar);
 					chdir($olddir);
 					if ($retVar!=0) {
-						$result="err:cannotimport";
+						$result="Error: Can't import $tmpdir/$type.tgz, untar failed in $path\n";
+						if (file_exists($errfile)) {
+							$result.=implode("",file($errfile));						
+							unlink($errfile);
+							$result.="\n";
+						}
 					}
 				} else {
-					$result="err:cannotchdir";
+					$result="Error: Can't chdir to $path";
 				}
 			}
 		}
@@ -176,14 +187,21 @@ class mod_ax {
 
 			if (($olddir=getcwd()) && chdir($path)) {
 				//$command="tar -zc $path2 -f ".$this->tempdir."/$type.tgz";
-				$command=sprintf($this->cmdlist->cmd_tar,$this->rmvolume($path2),$this->rmvolume($this->tempdir)."/$type.tgz");
+				$tmpdir=$this->rmvolume($this->tempdir);
+				$errfile=$tmpdir."/tar.errors";
+				$command=sprintf($this->cmdlist->cmd_tar,$this->rmvolume($path2),$tmpdir."/$type.tgz", $tmpdir."/tar.errors");
 				system($command,$retVar);
 				chdir($olddir);
 				if ($retVar!=0) {
-					$result="err:cannotexport";
+					$result="Error: Can't export, $command failed in $path.\n";
+					if (file_exists($errfile)) {
+						$result.=implode("",file($errfile));						
+						unlink($errfile);
+						$result.="\n";
+					}
 				}
 			} else {
-				$result="err:cannotchdir";
+				$result="Error: Can't chdir to $path";
 			}
 		}
 		return $result;
@@ -202,16 +220,22 @@ class mod_ax {
 
 				if (($olddir=getcwd()) && chdir($this->tempdir)) {
 					//$command="tar -zc $exp  -f ".$this->exportfile;
-					$command=sprintf($this->cmdlist->cmd_tar,$exp,$this->exportfile);
+					$errfile=$this->tempdir."/tar.errors";
+					$command=sprintf($this->cmdlist->cmd_tar,$exp,$this->exportfile,$errfile);
 					system($command,$retVar);
 					chdir($olddir);
 					copy($this->tempdir."/".$this->exportfile,$this->exportfile);
 
 					if ($retVar!=0) {
-						$result="err:cannotmakeax";
+						$result="Error: Can't make .ax export file ".$this->exportfile."\n";
+						if (file_exists($errfile)) {
+							$result.=implode("",file($errfile));						
+							unlink($errfile);
+							$result.="\n";
+						}
 					}
 				} else {
-					$result="err:cannotchdir";
+					$result="Error: Can't chdir to ".$this->tempdir;
 				}
 			}
 		}
