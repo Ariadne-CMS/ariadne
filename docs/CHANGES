@@ -34,6 +34,8 @@ Bugs Fixed:
 	  correctly handles complex urls.
 	- changed pobject::ClearCache() to avoid a combinatorial explosion on
 	  multi-nls objects
+	- if Session IDs are hidden from URL, make_url with a nls does not show
+	  Session IDs any more
 
 New Features:
 	- added mod_url.php - a URL manipulation module (not much in it yet)
