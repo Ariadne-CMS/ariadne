@@ -105,7 +105,7 @@ class import_wddx {
 		//debugon('all');
 		debug("working on ".$objdata['path'],'all');
 		$path = $objdata['path'];
-		$path = '/test'.$path;
+		//$path = '/test'.$path;
 
 		/*
 			step 1
@@ -129,15 +129,15 @@ class import_wddx {
 							array(),$this->store->get($path))
 						);
 				if(
-						($object->lastchanged < $objdata['lastchanged']) ||
+						($object->lastchanged <= $objdata['lastchanged']) ||
 						($this->config['forcedata'] === true))
 				{
-					$tmppinp = $object->data->pinp;
-					$tmptemplates = $object->data->templates;
+					$tmpconfig = $object->data->config;
 					unset($object->data);
 					$object->data = $objdata['data'];
-					$object->data->pinp = $tmppinp;
-					$object->data->templates = $tmptemplates;
+					$object->data->config->grants = $tmpconfig->grants;
+					$object->data->config->pinp = $tmpconfig->pinp;
+					$object->data->config->templates = $tmpconfig->templates;
 					$object->type = $objdata['type'];
 					$object->vtype = $objdata['vtype'];
 					$object->lastchanged = $objdata['lastchanged'];
@@ -154,8 +154,6 @@ class import_wddx {
 						$this->store->make_path($path,'..'), $objdata['type'],
 						$objdata['data'], 0, $objdata['lastchanged'],
 						$objdata['vtype'], $objdata['size'], $objdata['priority']);
-				$object->data->pinp =  array();
-				$object->data->templates =  array();
 				$object->arIsNewObject = true;
 				debug("data: calling save");
 				$object->save($objdata['properties']);
@@ -199,15 +197,15 @@ class import_wddx {
 				{
 					/* delete all current templates */
 					$templates->purge($object->id);
-					$object->data->pinp = array();
-					$object->data->templates = array();
+					$object->data->config->pinp = array();
+					$object->data->config->templates = array();
 				}
 
 				/*
 					do something about those templates
 				 */
-				if(is_Array($objdata['templates'])){
-					while(list($type,$tval) = each($objdata['templates']))
+				if(is_Array($objdata['data']->config->templates)){
+					while(list($type,$tval) = each($objdata['data']->config->templates))
 					{
 						if(is_array($tval))
 						{
@@ -236,19 +234,19 @@ class import_wddx {
 												$templates->touch($object->id,$file."pinp",$val['mtime']);
 												$templates->write($compiled, $object->id, $file);
 												$templates->touch($object->id,$file,$val['mtime']);
-												$object->data->pinp[$type][$function][$language]=$object->id;
+												$object->data->config->pinp[$type][$function][$language]=$object->id;
 												/* is it a default template ? */
-												if( $objdata['data']->templates[$type][$function][$language] === $objdata['id'])
+												if( $objdata['data']->config->templates[$type][$function][$language] === $objdata['id'])
 												{
-													$object->data->templates[$type][$function][$language] = $object->id;
+													$object->data->config->templates[$type][$function][$language] = $object->id;
 												}
 												else { // remove pinp template from default templates list
-													if (isset($object->data->templates[$type][$function][$language])) {
-														unset($object->data->templates[$type][$function][$language]);
-														if (count($object->data->templates[$type][$function])==0) {
-															unset($object->data->templates[$type][$function]);
-															if (count($object->data->templates[$type])==0) {
-																unset($object->data->templates[$type]);
+													if (isset($object->data->config->templates[$type][$function][$language])) {
+														unset($object->data->config->templates[$type][$function][$language]);
+														if (count($object->data->config->templates[$type][$function])==0) {
+															unset($object->data->config->templates[$type][$function]);
+															if (count($object->data->config->templates[$type])==0) {
+																unset($object->data->config->templates[$type]);
 															}
 
 														}
@@ -264,19 +262,19 @@ class import_wddx {
 											$templates->write($compiled, $object->id, $file);
 											$templates->touch($object->id,$file,$val['mtime']);
 											
-											$object->data->pinp[$type][$function][$language]=$object->id;
+											$object->data->config->pinp[$type][$function][$language]=$object->id;
 											/* is it a default template ? */
-											if( $objdata['data']->templates[$type][$function][$language] === $objdata['id'])
+											if( $objdata['data']->config->templates[$type][$function][$language] === $objdata['id'])
 											{
-												$object->data->templates[$type][$function][$language] = $object->id;
+												$object->data->config->templates[$type][$function][$language] = $object->id;
 											}
 											else { // remove pinp template from default templates list
-												if (isset($object->data->templates[$type][$function][$language])) {
-													unset($object->data->templates[$type][$function][$language]);
-													if (count($object->data->templates[$type][$function])==0) {
-														unset($object->data->templates[$type][$function]);
-														if (count($object->data->templates[$type])==0) {
-															unset($object->data->templates[$type]);
+												if (isset($object->data->config->templates[$type][$function][$language])) {
+													unset($object->data->config->templates[$type][$function][$language]);
+													if (count($object->data->config->templates[$type][$function])==0) {
+														unset($object->data->config->templates[$type][$function]);
+														if (count($object->data->config->templates[$type])==0) {
+															unset($object->data->config->templates[$type]);
 														}
 
 													}
@@ -311,6 +309,14 @@ class import_wddx {
 			if($id = $this->store->exists($path))
 			{
 				debug('grants: yeah the path exists','all');
+				$object = current(
+						$this->store->call("system.get.phtml",
+							array(),$this->store->get($path))
+						);
+				if(is_array($objdata['data']->config->grants)){
+					$object->data->config->grants = $objdata['data']->config->grants;
+					$object->save();
+				}
 			}
 		}
 
@@ -363,10 +369,8 @@ class import_wddx {
 						{
 							debug('files: create template','all');
 							$files->write(base64_decode($val[file]), $object->id, $key);
-							debugon('all');
 							debug("files: touch $file with".$val['mtime'],'all');
 							$files->touch($object->id,$file,$val['mtime']);
-							debugoff();
 						}
 					}
 				}
