@@ -1,5 +1,5 @@
 <?php
-	if ($this->CheckConfig($arCallFunction, $arCallArgs) && $this->CheckLogin("read")) {
+	if ( $this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		if (!$PHP_SELF) {
 			global $PHP_SELF;
 		}
