@@ -1,5 +1,5 @@
-{\rtf1\ansi\ansicpg1252\deff0\deflang1033\deflangfe1043\deftab708{\fonttbl {\f0\fswiss\fprq2\fcharset0 Arial;}{\f1\fmodern\fprq1\fcharset0 Courier New;}{\f2\fswiss\fprq2\fcharset0 Franklin Gothic Book;}}
-\uc1\pard\nowidctlpar\lang1043\ulnone\b\f0\fs32 Ariadne installation instructions - Windows 2000/NT\par
+{\rtf1\ansi\ansicpg1252\deff0\deflang1033\deflangfe1043\deftab708{\fonttbl{\f0\fswiss\fprq2\fcharset0 Arial;}{\f1\fmodern\fprq1\fcharset0 Courier New;}{\f2\fswiss\fprq2\fcharset0 Franklin Gothic Book;}}
+\viewkind4\uc1\pard\nowidctlpar\lang1043\b\f0\fs32 Ariadne installation instructions - Windows 2000/NT\par
 \b0\fs24\par
 \par
 \fs32 Using IIS\par
@@ -91,16 +91,7 @@ Start a web browser and go to \b http://localhost/info.php\b0 . If everything in
 \fs32\par
 Common installation steps:\par
 \par
-1. Configure PHP 4\fs24\par
-\par
-PHP needs to be configured a bit before it can run Ariadne without problems. Start a text editor and create a new file with the following line:\par
-\par
-\f1\tab magic_quotes_gpc\tab =\tab Off\par
-\f0\par
-Save this file as \b\\winnt\\php.ini\b0 . Make sure it doesn't get saved as php.ini.txt\par
-(You can also edit your existing php.ini file, just make sure that magic quotes are off).\par
-\fs32\par
-2. Install MySQL\fs24\par
+1. Install MySQL\fs24\par
 \par
 Start by unzipping the file \b mysql-3.23.40- win.zip\b0 . If you use WinZip you can immediately press \b Install\b0 , otherwise you can unzip the files to a temporary directory and start \b setup.exe\b0 .\par
 \par
@@ -110,7 +101,7 @@ After the installation wizard finishes, start the program \b winmysqladmin.exe\b
 \par
 Finally you need to create two databases for Ariadne to use later. Click on the tab \b databases\b0 . Right click on the computer name in the Databases overview and select \b create database\b0 . Now enter the name of your ariadne database, e.g. \b ariadne\b0 , and click on \b create the database\b0 . The input dialog will remain and you can enter the second database, used for storing session information, you might call that \b ariadne_sessions\b0 .\par
 \par
-\fs32 3. Install Ariadne\par
+\fs32 2. Install Ariadne\par
 \fs24\par
 Start by unzipping the file \b ariadne.2.0.zip\b0  to a suitable directory ( e.g. \b C:\\Program Files\\Ariadne\\\b0  ) . This directory should not be in your webservers document root! (That would allow hackers to read the programs source code via the web, which is a bad thing.)\par
 \par
@@ -124,15 +115,15 @@ Don't forget to restart Apache again after this change.\par
 \par
 If you are using IIS, you can add a Virtual Directory with the same effect. In the Internet Services Manager you can select the Ariadne website, right-click on it and select 'new' -> 'Virtual Directory'. In the wizard enter a name for the ariadne virtual directory, e.g. "ariadne", and point it to the C:\\Program Files\\Ariadne\\www\\ directory.\par
 \par
-\fs32 4. Configure Ariadne\par
+\fs32 3. Configure Ariadne\par
 \fs24\par
-Next you need to configure Ariadne. There are a few configuration files, if you forget one of these, Ariadne won't run and remain strangely quiet :)\par
+Next you need to configure Ariadne. There are two configuration files, if you forget one of these, Ariadne won't run and remain strangely quiet :)\par
 \par
 The first file is in the \b www\b0  (or /ariadne/) directory, called '\b ariadne.inc-dist\b0 '. Copy this file to 'ariadne.inc' and edit it. Change the path in the file to point to the (fully qualified) path of the \b lib\b0  directory under the Ariadne installation dir (e.g. C:\\Progra~1\\Ariadne\\lib\\).\par
 \par
-\pard\fi-360\li1080\nowidctlpar\b Important:\b0  Only use 'legacy' filenames for directories, the tar and gzip utilities used by Ariadne don't understand spaces in filenames.\par
+\pard\nowidctlpar\fi-360\li1080\b Important:\b0  Only use 'legacy' filenames for directories, the tar and gzip utilities used by Ariadne don't understand spaces in filenames. e.g. C:\\Progra~1\\ instead of C:\\Program Files\\\par
 \pard\nowidctlpar\par
-The next files are in the \b lib/configs/\b0  directory under the ariadne installation directory. Copy \b ariadne.phtml-dist\b0  to ariadne.phtml and edit it. Make sure you change the $AR->OS variable to \b win32\b0 . For the rest, follow the instructions in the configuration file itself. Copy \b store.phtml-dist\b0  to store.phtml and edit it and do the same with \b sessions.phtml-dist\b0  and \b axstore.phtml-dist\b0 . Remember to enter the username and password and database names you entered when you installed MySQL.\par
+The next files are in the \b lib/configs/\b0  directory under the ariadne installation directory. Copy \b ariadne.phtml-dist\b0  to ariadne.phtml and edit it. Follow the instructions in the configuration file itself. Remember to enter the username and password and database names you entered when you installed MySQL.\par
 \par
 Now goto the control panel and start \b system\b0  again. Click on \b advanced\b0  and then \b Environment Variables\b0 . Select the \b Path\b0  variable from the system variables box and press \b Edit\b0 . Now add the \b bin\b0  directory in the Ariadne installation directory to the path, e.g. \b C:\\Program Files\\Ariadne\\bin\b0  .\par
 \par
@@ -140,13 +131,13 @@ The final step is running the Ariadne initial installation script. This script p
 \par
 You should now be able to login to Ariadne. Point your webbrowser to your webserver, e.g. http://your.host.com/ariadne/ and enter 'admin' as username and 'muze' as password. If you don't see a logon form but a message saying 'the object you requested could not be found', then the installation went wrong. Check to see if you entered the correct paths and fix them if necessary. Then drop the ariadne and ariadne_sessions databases and create them again (the fastest way to 'clear' them) and run the install.php script again.\par
 \par
-If you successfully logged on, then before you do anything else remove the ariadne/install/ directory in the document root. This is an installation directory used for the webbased install, which can mess up your database if someone runs the scripts in it later. You might want to keep the files around somewhere, as there is also a script 'setadmin.php' in it, which come in handy if you ever forget the password for 'admin'. \par
+If you successfully logged on, then before you do anything else \b remove the ariadne/install/ directory\b0  in the document root. This is an installation directory used for the webbased install, which can mess up your database if someone runs the scripts in it later. You might want to keep the files around somewhere, as there is also a script 'setadmin.php' in it, which come in handy if you ever forget the password for 'admin'. \par
 \par
 Then decide if you want to have a guest user account, if you don't, browse through the ariadne tree to \b /system/users/guest/\b0 , click on \b edit\b0  and change the password. The default is 'guest'. Also, remember to change the password for the admin user.\par
 \par
 To make full use of image manipulation you need to have ImageMagick installed. Make sure the path to ImageMagick is correctly set in the Ariadne config. ImageMagick can be obtained from \b http://www.imagemagick.org/www/archives.html\b0\par
 \par
-If you need more assistance with the installation, try the newsgroups at news://ariadne.muze.nl/.\par
+If you need more assistance with the installation, try the newsgroups at news://ariadne.muze.nl/ or the mirrored mailing lists at http://lists.muze.nl/.\par
 \par
 Have fun,\par
 Auke van Slooten\par

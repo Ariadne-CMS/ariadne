@@ -1,7 +1,7 @@
 Installing Ariadne.                                            Muze Ariadne 2.0
 ===============================================================================
 
-  IMPORTANT: Ariadne needs PHP4.0.6 *
+  IMPORTANT: Ariadne needs PHP4.0.6 or higher *
 
   * If you don't need the FTP daemon, PHP 4.0.3pl1 is the minimum
            
@@ -10,8 +10,8 @@ Windows
 =======
 
   We've tested Ariadne with Windows NT, Windows 2000 Server and Windows 2000
-  Professional. Full Installation instructions can be found in the file
-  'install.win.rtf'.
+  Professional. Full Installation instructions for windows can be found in 
+  the file 'install.win.rtf'.
   
 Unix/Linux
 ==========
@@ -55,10 +55,9 @@ Recommended:
 
      mysqladmin create ariadne
 
-4) Copy the files ariadne.phtml-dist, store.phtml-dist, axstore.phtml-dist and
-   sessions.phtml-dist in lib/configs to ariadne.phtml, store.phtml, 
-   axstore.phtml and sessions.phtml respectively and edit them to match your 
-   system. You need to at least enter your host name and check all paths.
+4) Copy the file ariadne.phtml-dist in lib/configs to ariadne.phtml. Edit this
+   file and fill in your system specific details. You need to at least enter 
+   your host name and check all paths.
 
 5) Copy the file www/ariadne.inc-dist to www/ariadne.inc and edit it to reflect 
    the includepath to the Ariadne lib directory.
@@ -81,18 +80,15 @@ Recommended:
    meaning _not_ in your webserver's documentroot.
    Really.
 
-10) Make sure you have the magic_quotes_gpc setting set to 'Off' and
-    track_vars to 'On'
-
-11) Schedule the cleanup script (bin/cleanup) to run daily. It removes
+10) Schedule the cleanup script (bin/cleanup) to run daily. It removes
     expired session data.
 
-12) To make full use of image manipulation you need to have ImageMagick
+11) To make full use of image manipulation you need to have ImageMagick
     installed. Make sure the path to ImageMagick is correctly set in the Ariadne
     config. ImageMagick can be obtained from http://www.imagemagick.org/www/archives.html
 
 More information on programming for/in Ariadne, user manuals, administrator
-manuals, etc. can be found at http://www.muze.nl/
+manuals, etc. can be found at http://ariadne.muze.nl/
 
 Auke van Slooten
 Muze

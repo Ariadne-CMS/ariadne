@@ -1,4 +1,109 @@
-Ariadne 2.0RC2
+Ariadne 2.0
+
+Changes in ariadne since version 2.0RC3
+
+New features:
+	- Simplified the configuration procedure
+	  - Ariadne is now compatible with the default PHP configuration.
+	- Improved look and feel:
+	  - Items in the browse view and in the tree now have the full name 
+	    of the item as title, which shows up as a yellow 'popup' in 
+	    Internet Explorer. 
+	  - New icons for many of the object classes. Thanks to KDE.
+	  - The toolbar now visually shows which view you have selected.
+	  - Added page view and webpage view. The page view shows the $nlsdata->page 
+	    data, for those objects supporting it, the image in the case of a pphoto.
+	    webpage view loads the view.html template in the browse frame.
+	- Sessions that are still valid (not timed out) will automatically 
+	  be resumed whenever the 'public' grants are insufficient. 
+	- Improved support for IE6 and Mozilla 0.9.9+ and even Konqueror.
+	  - The login screen now shows a second login form below the popup, 
+	    specifically for Mozilla's anti-popup feature.
+	- Performance optimizations in the loader, getting objects from the
+	  cache is now much faster.
+	- Improved the WYSIWYG source view mode, it now keeps source code 
+	  formatting as close as possible to the original.
+	- You can now save HTML files directly to ppage objects via FTP.
+	- You can now call edit.object.html.phtml directly on an object, this
+	  will start the html editor on that object. Together with session
+	  respawning and a javascript bookmarklet this allows a pretty usefull
+	  interface to Ariadne. Just press a button to edit the page you are
+	  currently looking at.
+	- Added a $arCloseWindow argument to the new object wizard. If set, the 
+	  popup window is closed on save, instead of showing the type selection 
+	  window again.
+	- Added the HTTPRequest method, it will be rewritten for Ariadne 2.1 
+	  though, so use it with care.
+	- Added a 'not like' operator to find(): '!~'.
+
+Bugs fixed:
+	- Fixed some cache related problems: 
+	  - Full cache headers are set, so image roll overs now work correctly.
+	  - Private files set only the private cache header, so they won't
+	    be cached in proxies.
+	  - Content-Length header is set, for cacheable pages only.
+	- Arguments in the find() query may now be 0 (and won't be changed to '').
+	- Fixed the session timeouts, sessions will now actually time out :)
+	- Fixed a serious bug with regard to the nextid function. Importing, 
+	  copying and moving objects will now correctly set the nextid for the 
+	  target directory. This prevents new objects from overwriting existing
+	  ones, when the default '{5:id}' filename is used.
+	- Fixed postgresl support, which was broken in RC3.
+	- Shortcuts may now be relative, calculated from the parent.
+	- Fixed a problem when calling templates of specific classes, using 
+	  class::template. The class definition is now loaded before trying
+	  to find the superclass, when needed.
+	- Fixed some problems in recurse (delete, copy, etc.) with special 
+	  (unicode) characters.
+	- Images and links in the editor are now parsed (changed to {arRoot}...)
+	  more robustly.
+	- Fixed a bug when deleting linked objects with templates. Templates
+	  must only be removed when the last node pointing to an object is deleted.
+
+
+Changes in ariadne since version 2.0RC2
+
+New features
+    - WYSIWYG editor:
+      - automatic utf-8 character translation to html unicode entities
+      - source view now keeps the original formatting intact.
+      - added character composition for special characters
+    - Extended the name property length to 128 (from 50)
+    - The pphoto class uses new stack based manipulation functions, for
+      improved performance.
+      WARNING: This is incompatible with the previous pphoto class,
+      update your templates.
+    - Added a $ARCurrent->ARDontCache variable, which prevents templates
+      from becoming cached. (putvar('ARDontCache',true) in object 
+      templates)
+    - Added a toolbar for the file/children list in the manage template. 
+      This allows you to browse through very large directories.
+    - Added a preview on image uploads. Thanks to Gabriel Wicke.
+    - Added download links for files in the manage view.
+
+Bugs fixed:
+    - fixed some installation problems with Windows
+    - UTF-8 characters are now properly displayed in the tree
+    - user id's and group id's may now overlap
+    - you can now override the default language select page
+    - import/export
+      - now check user grants for completeness
+      - keep the automatic id counter up to date.
+    - todo list of the calendar has been fixed.
+    - fixed some javascript problems in MSIE6
+    - fixed a large performance problem with the MySQL and PostgreSQL store,
+        the stores now makes better use of the indexes.
+        Thanks to Sebastiaan Smith
+    - fixed numerous compatibility problems between the FTP server and some
+        ftp clients.
+    - fixed the type list (used by implements()): pdir didn't implement 
+      ppage.
+    - fixed some problems with broken shortcuts.
+    - fixed the order in which templates are retrieved. Ariadne searches 
+      for templates first by path, then by inheritance. 
+      E.g. a template defined for pobject will override a template for 
+      ppage on a page object, if that template is defined closer by.
+
 
 Changes in ariadne since version 2.0RC1
 
