@@ -211,7 +211,6 @@
 	}
 
 	function parse_query(&$query) {
-
 		if (!eregi('^[[:space:]]*order[[:space:]]*by[[:space:]]+', $query, $regs)) {
 			$result=$this->parse_or_expr($query);
 		} else {
@@ -244,9 +243,10 @@
 	function priv_sql_compile($node) {
 	}
 
-	function compile($query, $limit=100, $offset=0) {
-		debug("sql_compiler::compile ($query, $limit, $offset)", "store");
+	function compile($path, $query, $limit=100, $offset=0) {
+		debug("sql_compiler::compile ($path, $query, $limit, $offset)", "store");
 		$this->error="";
+		$this->path = $path;
 		$compiled_query=$this->cache[$query];
 
 		$this->limit=$limit;

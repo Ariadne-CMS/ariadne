@@ -174,7 +174,10 @@
 		$query.=" $objects.id, $objects.type, $objects.object, UNIX_TIMESTAMP($objects.lastchanged) as lastchanged, $objects.vtype ";
 		$query.=" from $tables where ";
 		$query.=" $nodes.object=$objects.id $prop_dep";
-		$query.=" and ( $this->where_s ) ";
+		$query.=" and $nodes.path like '".AddSlashes($this->path)."%' ";
+		if ($this->where_s) {
+			$query.=" and ( $this->where_s ) ";
+		}
 		if ($this->where_s_ext) {
 			$query .= " and ($this->where_s_ext) ";
 		}

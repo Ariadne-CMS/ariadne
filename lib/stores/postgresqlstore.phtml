@@ -264,11 +264,9 @@ class postgresqlstore {
 
 	 **********************************************************************************/
 		if (! is_array($criteria) && ($criteria = trim($criteria))) {
-			$criteria = " and $criteria ";
 			$sqlcompiler = new postgresql_compiler($this->tbl_prefix);
-			$query_raw = "path ~= '$path%'$criteria";
 			debug("raw query: $query_raw", "store");
-			$query_string = $sqlcompiler->compile($query_raw, $limit, $offset);
+			$query_string = $sqlcompiler->compile($path, $criteria, $limit, $offset);
 			if ($sqlcompiler->error) {
 				$this->error	= $sqlcompiler->error;
 			}

@@ -254,10 +254,8 @@ class mysqlstore {
 	 **********************************************************************************/
 		debug("find($path, [criteria], $limit, $offset)","store");
 		if (!is_array($criteria) && ($criteria=trim($criteria))) {
-			$criteria=" and $criteria ";
-
 			$sqlcompiler=new mysql_compiler($this->tbl_prefix);
-			$query_string=$sqlcompiler->compile("path ~= '$path%'$criteria", $limit, $offset);
+			$query_string=$sqlcompiler->compile($path, $criteria, $limit, $offset);
 			if ($sqlcompiler->error) {
 				$this->error=$sqlcompiler->error;
 			}

@@ -152,7 +152,10 @@
 		$query.=" $objects.id, $objects.type, $objects.object, datediff(ss, '1970-01-01 00:00:00.000', $objects.lastchanged) as lastchanged, $objects.vtype ";
 		$query.=" from $tables where ";
 		$query.=" $nodes.object=$objects.id $prop_dep";
-		$query.=" and ( $this->where_s ) ";
+		$query.=" and $nodes.path like '".AddSlashes($this->path)."%' ";
+		if ($this->where_s) {
+			$query.=" and ( $this->where_s ) ";
+		}
 		if ($this->orderby_s) {
 			$query.= " order by $this->orderby_s, $nodes.priority DESC, $nodes.path ASC ";
 		} else {
