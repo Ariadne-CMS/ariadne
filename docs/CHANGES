@@ -88,6 +88,8 @@ New Features:
 	  and the real store, so that users can't view the store config with print_r
 
 Bugs Fixed:
+	- Fixed a problem with workflow and the owner data, owner data doesn't 
+	  disappear anymore.
 	- Fixed a small problem in the winxp browse list, it now uses the
 	  same templates as the 'new' interface does.
 	- The axstore doesn't store the properties with AddSlashes() anymore. This
