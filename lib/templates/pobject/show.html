@@ -2,9 +2,9 @@
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		// show a short representation of the object
 		if ($target) {
-			echo '<a class="nav" href="'.$this->make_url($target).'">';
+			echo '<a class="nav" href="'.$this->make_url($target).$target_template.'">';
 		} else {
-			echo '<a class="nav" href="'.$this->make_url($this->path).'">';
+			echo '<a class="nav" href="'.$this->make_url($this->path).$target_template.'">';
 		}
 		echo '<img src="'.$AR->dir->images.'icons/'.$this->type.'.gif" alt="[view]" border="0"> ';
 		echo "$flag$nlsdata->name";
