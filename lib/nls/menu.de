@@ -1,39 +1,44 @@
 <?PHP
-/*****************************************************************************
+	/*****************************************************************************
 
-The German nls files are contributed by: Reini Urban <rurban@x-ray.at>
+		The German nls files are contributed by: Reini Urban <rurban@x-ray.at>
 
-*****************************************************************************/
-$ARnls["m_object"]=		"Objekt";
-$ARnls["m_edit"]=		"Bearbeiten";
-$ARnls["m_view"]=		"Ansicht";
-$ARnls["m_help"]=		"Hilfe";
-$ARnls["m_new"]=		"Neu";
-$ARnls["m_rename"]=		"Umbenennen";
-$ARnls["m_copy"]=		"Kopieren";
-$ARnls["m_link"]=		"Link";
-$ARnls["m_import"]=		"Import";
-$ARnls["m_export"]=		"Export";
-$ARnls["m_delete"]=		"Löschen";
-$ARnls["m_find"]=		"Finden";
-$ARnls["m_preferences"]=	"Voreinstellungen";
-$ARnls["m_data"]=		"Daten";
-$ARnls["m_shortcut"]=		"Verknüpfung";
-$ARnls["m_cache"]=		"Cache";
-$ARnls["m_layout"]=		"Layout";
-$ARnls["m_grants"]=		"Rechte";
-$ARnls["m_types"]=		"Typen";
-$ARnls["m_language"]=		"Sprache";
-$ARnls["m_fonts"]=		"Zeichensatz";
-$ARnls["m_small"]=		"Kleine&nbsp;Icons";
-$ARnls["m_large"]=		"Große&nbsp;Icons";
-$ARnls["m_details"]=		"Details";
-$ARnls["m_web"]=		"Internet&nbsp;Seite";
-$ARnls["m_index"]=		"Index";
-$ARnls["m_tutorials"]=		"Lernprogramm";
-$ARnls["m_search"]=		"Suche";
-$ARnls["m_about"]=		"Über&nbsp;Ariadne";
-$ARnls["m_logoff"]=		"Abmelden";
-$ARnls["m_explorerbar"]=	"Explorer&nbsp;Leiste";
-$ARnls["m_priority"]=		"Priorität";
+	*****************************************************************************/
+
+	$ARnls["m_about"]						=	"Über&nbsp;Ariadne";
+	$ARnls["m_cache"]						=	"Cache";
+	$ARnls["m_config"]						=	"!Configuration";
+	$ARnls["m_copy"]						=	"Kopieren";
+	$ARnls["m_custom"]						=	"!Custom&nbsp;Fields";
+	$ARnls["m_data"]						=	"Daten";
+	$ARnls["m_delete"]						=	"Löschen";
+	$ARnls["m_details"]						=	"Details";
+	$ARnls["m_edit"]						=	"Bearbeiten";
+	$ARnls["m_explorerbar"]					=	"Explorer&nbsp;Leiste";
+	$ARnls["m_export"]						=	"Export";
+	$ARnls["m_find"]						=	"Finden";
+	$ARnls["m_fonts"]						=	"Zeichensatz";
+	$ARnls["m_grants"]						=	"Rechte";
+	$ARnls["m_help"]						=	"Hilfe";
+	$ARnls["m_import"]						=	"Import";
+	$ARnls["m_index"]						=	"Index";
+	$ARnls["m_language"]					=	"Sprache";
+	$ARnls["m_large"]						=	"Große&nbsp;Icons";
+	$ARnls["m_layout"]						=	"Layout";
+	$ARnls["m_link"]						=	"Link";
+	$ARnls["m_logoff"]						=	"Abmelden";
+	$ARnls["m_new"]							=	"Neu";
+	$ARnls["m_object"]						=	"Objekt";
+	$ARnls["m_preferences"]					=	"Voreinstellungen";
+	$ARnls["m_priority"]					=	"Priorität";
+	$ARnls["m_rename"]						=	"Umbenennen";
+	$ARnls["m_search"]						=	"Suche";
+	$ARnls["m_shortcut"]					=	"Verknüpfung";
+	$ARnls["m_small"]						=	"Kleine&nbsp;Icons";
+	$ARnls["m_templates"]					=	"!Templates";
+	$ARnls["m_tutorials"]					=	"Lernprogramm";
+	$ARnls["m_types"]						=	"Typen";
+	$ARnls["m_view"]						=	"Ansicht";
+	$ARnls["m_web"]							=	"Internet&nbsp;Seite";
+
 ?>
