@@ -35,6 +35,7 @@
 					// remove grants
 					$oldusergrants = $this->data->usergrants;
 					$oldlogin = $this->data->login;
+					$oldpath = $this->path;
 					if (is_array($this->data->usergrants)) {
 						// remove usergrants
 						while (list($key, $value)=each($this->data->usergrants)) {
@@ -63,6 +64,10 @@
 						if (is_array($oldusergrants)) {
 							reset($oldusergrants);
 							while (list($path, $grants) = each($oldusergrants)) {
+								if (substr($path, 0, strlen($oldpath)) == $path) {
+									$path = $target.substr($path, strlen($oldpath));
+								}
+
 								$grantstring = "";
 								reset($grants);
 								while (list($grant, $granttype) = each($grants)) {
