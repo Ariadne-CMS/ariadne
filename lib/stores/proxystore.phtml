@@ -233,7 +233,9 @@ class proxystore {
 	function close() {
 		// This is the destructor function, nothing much to see :)
 		debug("proxyclose()","store");
-		return true;
+		$result = &$AR->stores[$this->key]->close();
+		$this->error = $AR->stores[$this->key]->error;
+		return $result;
 	}
 
 
@@ -394,8 +396,8 @@ class proxystore {
 
 		global $AR;
 		debug("proxylist_paths($path)","store");
-		$this->error="";
-		$object=$this->exists($path);
+		$result = $AR->stores[$this->key]->list_paths($path);
+		$this->error = $AR->stores[$this->key]->error;
 		debug("proxylist_paths: end","all");
 		return $result;
 	}
@@ -534,8 +536,13 @@ class proxystore {
 
 	**********************************************************************/
 
-		$path=AddSlashes($path);
-		return $id;
+		
+		global $AR;
+		debug("proxynextid($path)","all");
+		$result = $AR->stores[$this->key]->nextid($path);
+		$this->error = $AR->stores[$this->key]->error;
+		debug("proxynextid: end","all");
+		return $result;
 	}
 
 
@@ -550,6 +557,20 @@ class proxystore {
 		$result = $AR->stores[$this->key]->move($source,$destination);
 		$this->error = $AR->stores[$this->key]->error;
 		debug("proxy_move: end","all");
+		return $result;
+	}
+
+	function store_run_query($query) {
+	/**********************************************************************
+
+	$destination should always start and end with a '/'.
+
+	**********************************************************************/
+		global $AR;
+		debug("proxy_store_run_query($query)","all");
+		$result = $AR->stores[$this->key]->store_run_query($query);
+		$this->error = $AR->stores[$this->key]->error;
+		debug("proxy_store_run_query: end","all");
 		return $result;
 	}
 
