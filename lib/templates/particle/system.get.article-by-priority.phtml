@@ -8,7 +8,10 @@
 	 
 	******************************************************************/
 	if (isset($nlsdata)) {
-		$ARCurrent->priority[$this->path]=$this->data->priority-(abs( ($this->data->startdate + $this->data->starttime)-time() )/60);
-		$ARCurrent->article[$this->path]=$this;
+		if (!$ARCurrent->idlist[$this->id]) {
+			$ARCurrent->priority[$this->path]=$this->data->priority-(abs( ($this->data->startdate + $this->data->starttime)-time() )/60);
+			$ARCurrent->article[$this->path]=$this;
+			$ARCurrent->idlist[$this->id]=$this->path;
+		}
 	}
 ?>
