@@ -138,6 +138,14 @@
 			}
 		}
 
+        function showUrl($path='') {
+            if (edit::getEditMode()) {
+                echo $this->make_url($path).edit::getEditTemplate();
+            } else {
+                echo $this->make_url($path);
+            }
+        }
+
 		function isEmpty($var) {
 			return trim(ereg_replace('&nbsp;',' ',strip_tags($nlsdata->summary, '<img>'))); 
 		}
@@ -199,6 +207,10 @@
 		
 		function _showHref($path='') {
 			return edit::showHref($path);
+		}
+
+		function _showUrl($path='') {
+			return edit::showUrl($path);
 		}
 
 		function _isEmpty($var) {
