@@ -31,7 +31,8 @@
 	$newdata->firstname=$firstname;
 	$newdata->lastname=$lastname;
 	$newdata->middlename=$middlename;
-
+    $newdata->title=$title;
+ 
 	$newdata->address=$address;
 	$newdata->zipcode=$zipcode;
 	$newdata->city=$city;
@@ -46,13 +47,14 @@
 	}
   }
 
-  if (!isset(${$ARConfig->nls->default}) && !isset($newdata->{$ARConfig->nls->default})) { // default language for this path
-    $error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
-  } else {
     if (!$newdata->nls) {
       $newdata->nls=new object;
     }
     $newdata->nls->default=$ARConfig->nls->default;
+    $newdata->nls->list[$ARConfig->nls->default]=$AR->nls->list[$ARConfig->nls->default];
+    $newdata->{$ARConfig->nls->default}=new object;
+    $newdata->{$ARConfig->nls->default}->name=$newdata->name;
+
     reset($AR->nls->list);
     while (list($key, $value)=each($AR->nls->list)) {
       if (isset(${$key})) {
@@ -68,10 +70,6 @@
         $newdata->nls->list[$key]=$value;
       }
     }
-  }
-
-
-
 
   if (!$error) {
 	$properties["name"][0]["value"]="'".AddSlashes($newdata->name)."'";
