@@ -12,7 +12,7 @@ class pobject {
 		debug("pobject: init([store], $path, [data])","object");
 		$this->store=$store;
 		$this->path=$path;
-		$this->data=unserialize($data);
+		$this->data=$data;
 	}
 
 	function call($arCallFunction="view.html", $arCallArgs="") {
