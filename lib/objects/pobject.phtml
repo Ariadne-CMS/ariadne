@@ -1035,5 +1035,12 @@ class pobject extends object {
 		return $config->site;
 	}
 
+	function _checkgrant($grant) {
+		// as this is called within a pinp template, 
+		// all the grants are already loaded, so
+		// checksilent will fullfill our needs
+
+		return $this->CheckSilent($grant);
+	}
 } // end class pobject
 ?>
