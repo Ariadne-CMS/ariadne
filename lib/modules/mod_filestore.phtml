@@ -3,7 +3,7 @@
 	File Store Module
 	---------------------------------------------------------------------------
 
-	init($name, $root)
+	filestore($name, $root)
 
     write($contents, $id, $name)
 
@@ -13,7 +13,7 @@
 
 	exists($id, $name)
 
-	include($fsId, $fsName, $fsLocalVars, $fsObject)
+	import($fsId, $fsName, $fsLocalVars, $fsObject)
 
 	copy_to_store($source, $id, $name="")
 
@@ -31,22 +31,23 @@
 	
 	purge($id)
 
+    ls($id)
+
 	close()
 
 	**************************************************************************/
 
+	define("WRITE",true);
+	define("READ",false);
+	define("PATHTICLESIZE",100);
+	define("DIRMODE",0770);
+	define("FILEMODE",0660);
+
 	class filestore {
-
-		define ("WRITE",true);
-		define ("READ",false);
-		define ("PATHTICLESIZE",100);
-		define ("DIRMODE",0770);
-		define ("FILEMODE",0660);
-
 
 		/* public */
 
-		function init($name, $root) {
+		function filestore($name, $root) {
 			// initialize filestore
 			$this->name=$name;
 			// make a copy of the store data, not a reference
@@ -61,7 +62,7 @@
 			$result=false;
 			if ($name) {
 				$path=$this->make_path($id, $name, WRITE);
-				if ($fp=fopen($path, "bw")) {
+				if ($fp=fopen($path, "wb")) {
 					$result=fwrite($fp, $contents);
 					fclose($fp);
 				}
@@ -76,7 +77,7 @@
 				if (!$limit) {
 					$limit=filesize($path)-$offset;
 				}
-				if ($fp=fopen($path, "br")) {
+				if ($fp=fopen($path, "rb")) {
 					if ($offset) {
 						fseek($fp, $offset);
 					}
@@ -100,7 +101,24 @@
 			return file_exists($this->make_path($id, $name));
 		}
 
-		function include($fsId, $fsName, $fsLocalVars="", &$fsObject="") {
+		function ls($id) {
+			$path=$this->make_path($id);
+			if ($dir=@opendir($path)) {
+				$result=array();
+				while ($file=readdir($dir)) {
+					if (is_file($path.$file)) {
+						$result[]=$this->get_filename($file);
+					}
+				}
+				closedir($dir);
+			} else {
+				$result=false;
+			}
+			return $result;
+		}
+			
+
+		function import($fsId, $fsName, $fsLocalVars="", $fsObject="") {
 			$fsPath=$this->make_path($fsId, $fsName);
 			if (file_exists($fsPath)) {
 				Parse_str($fsLocalVars);
@@ -123,16 +141,20 @@
 		function copy_to_store($file, $id, $name="") {
 			$result=false;
 			if (file_exists($file)) {
-				if (file_type($file)=="dir") {
+				if (is_dir($file)) {
 					$path=$this->make_path($id, "", WRITE);
 					// copy all files, result is number of files
 					$count=0;
 					if ($dir=opendir($file)) {
 						while ($temp=readdir($dir)) {
-							if ($result=copy($file.$temp, $path.$temp)) {
-								$count++;
+							if (is_file($file.$temp)) {
+								$target=$this->make_path($id, $temp);
+								if ($result=copy($file.$temp, $target)) {
+									$count++;
+								}
 							}
 						}
+						closedir($dir);
 					}
 					$result=$count;
 				} else {
@@ -152,7 +174,7 @@
 				$path=$this->make_path($id, $name);
 				if (!file_exists($target)) {
 					$result=@copy($path, $target);
-				} else if (file_type($target)=="dir") {
+				} else if (is_dir($target)) {
 					if (substr($target, -1)!="/") {
 						$target.="/";
 					}
@@ -163,19 +185,18 @@
 				if (!file_exists($target)) {
 					mkdir($target);
 				}
-				if (file_exists($target) && (file_type($target)=="dir")) {
+				if (file_exists($target) && (is_dir($target))) {
 					if (substr($target, -1)!="/") {
 						$target.="/";
 					}
-					$path=$this->make_path($id);
 					$count=0;
-					if ($dir=@opendir($path)) {
-						while ($file=readdir($dir)) {
-							if (file_type($dir.$file)=="file") {
-								$result=@copy($dir.$file, $target.$file);
-								if ($result) {
-									$count++;
-								}
+					$files=$this->ls($id);
+					if (is_array($files)) {
+						while (list($key, $file)=each($files)) {
+							$source=$this->make_path($id, $file);
+							$result=@copy($source, $target.$file);
+							if ($result) {
+								$count++;
 							}
 						}
 					}
@@ -213,16 +234,16 @@
 			$path=$this->make_path($id);
 			if ($dir=opendir($path)) {
 				while ($file=readdir($dir)) {
-				if ($file!="." && $file!="..") {
-					if (filetype($path.$file)=="file")) {
-						unlink($file);
+					if ($file!="." && $file!="..") {
+						if (is_file($path.$file)) {
+							unlink($path.$file);
+						}
 					}
 				}
 				closedir($dir);
 				$this->rmdir($id);
 			}
 		}
-
 
 		function copy($id, $name, $newid, $newname) {
 			$source=$this->make_path($id, $name);
@@ -254,7 +275,8 @@
 		}
 
 		/* private functions */
-		function makepath($id, $name="", $write=false) {
+
+		function make_path($id, $name="", $write=false) {
 			// calculate path based on $id and $name
 			$path=$this->root;
 			if (!file_exists($path) && $write) {
@@ -269,10 +291,18 @@
 				}
 				$id=$next;				
 			}
-			return $path."/_".$name;
+			$path.="/";
+			if ($name) {
+				$path.="_$name";
+			}			
+			return $path;
 		}
 
-		function getparentid($id) {
+		function get_filename($file) {
+			return substr($file, 1);
+		}
+
+		function get_parent_id($id) {
 			$parent=0;
 			$count=0;
 			while ($id) {
@@ -294,18 +324,18 @@
 				if (file_exists($path)) {
 					$result=rmdir($path);
 				}
-				$parent=$this->getparentid($id);
+				$parent=$this->get_parent_id($id);
 				while ($parent) {
 					if ($this->rmdir($parent)) {
-						$parent=$this->getparentid($parent);
+						$parent=$this->get_parent_id($parent);
 					} else {
 						$parent=0;
 					}
-				}						
+				}
 			} else {
 				$result=false;
 			}
+			return $result;
 		}
 	}
-
 ?>
