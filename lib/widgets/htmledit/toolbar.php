@@ -341,7 +341,7 @@ function DECMD_IMAGE_onclick() {
   } else {
     sel.collapse(true);
     KeepState.IMG=false;
-    args['src']    = '<?php echo $this->path; ?>';
+    args['src']    = '<?php if ($wgHTMLEditImageDir) { echo $wgHTMLEditImageDir; } else { echo $this->path; } ?>';
     args['hspace'] = "";
     args['vspace'] = "";
     args['align']  = ""; 
@@ -487,11 +487,11 @@ return tbContentElement_ContextMenuAction(itemIndex)
 
 <!-- Toolbars -->
 <div class="tbToolbar" ID="StandardToolbar" unselectable='on'>
-  <div class="tbButton" ID="MENU_FILE_SAVE" unselectable='on' TITLE="Save File" LANGUAGE="javascript" onclick="return MENU_FILE_SAVE_onclick()">
+  <!-- div class="tbButton" ID="MENU_FILE_SAVE" unselectable='on' TITLE="Save File" LANGUAGE="javascript" onclick="return MENU_FILE_SAVE_onclick()">
     <img class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/save.gif" WIDTH="23" HEIGHT="22">
   </div>
   
-  <div class="tbSeparator"></div>
+  <div class="tbSeparator"></div -->
 
   <div class="tbButton" unselectable='on' ID="DECMD_CUT" TITLE="Cut" LANGUAGE="javascript" onclick="return DECMD_CUT_onclick();">
     <img class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/cut.gif" WIDTH="23" HEIGHT="22">
@@ -580,7 +580,7 @@ return tbContentElement_ContextMenuAction(itemIndex)
   </div>
 </div>
 
-<IFRAME ID="tbContentElement" CLASS="tbContentElement" unselectable='off' oldstyle="border: 1px inset buttonhighlight; background-color: white; padding: 8px; overflow: scroll;" <?php
+<IFRAME ID="tbContentElement" CLASS="tbContentElement" unselectable='on' oldstyle="border: 1px inset buttonhighlight; background-color: white; padding: 8px; overflow: scroll;" <?php
   if ($wgHTMLEditTemplate) {
     echo "SRC=\"$wgHTMLEditTemplate\"";
   } else {
