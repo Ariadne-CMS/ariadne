@@ -90,10 +90,10 @@ class pobject {
 		return $this->store->call($function, $args, $this->store->parents($path));
 	}
 
-	function find($path, $criteria, $function="list.html", $args="") {
+	function find($path, $criteria, $function="list.html", $args="", $limit="", $offset="") {
 		debug("pobject: find($path, [crit], $function, $args)","object");
 		$path=$this->store->make_path($this->path, $path);
-		return $this->store->call($function, $args, $this->store->find($path, $criteria));
+		return $this->store->call($function, $args, $this->store->find($path, $criteria, $limit, $offset));
 	}
 
 	function save($path, $type, $data, $properties="", $vtype="") {
@@ -614,9 +614,9 @@ class pobject {
 			$this->store->parents($this->path));
 	}
 
-	function _find($criteria, $function="list.html", $args="") {
+	function _find($criteria, $function="list.html", $args="", $limit="", $offset="") {
 		return $this->store->call($function, $args, 
-		$this->store->find($this->path, $criteria));
+		$this->store->find($this->path, $criteria, $limit, $offset));
 	}
 
 	function _exists($path) {
