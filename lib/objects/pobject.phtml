@@ -134,9 +134,12 @@ class pobject extends object { // pobject class definition
 			$arType=$this->type;
 		}
 		if ($arCallFunction[0] === "#") {
-			$arCallArgs["arCallClassTemplate"] = true;
+			$ARCurrent->arCallClassTemplate = true;
 			$arCallFunction = substr($arCallFunction, 1);
+		} else {
+			$ARCurrent->arCallClassTemplate = false;
 		}
+
 		while ($arType!="object") {
 			debug("class: $arType","object");
 			// search for the template, stop at the root class ('object')
@@ -850,8 +853,7 @@ class pobject extends object { // pobject class definition
 
 			$checkpath=$this->path;
 			$lastcheckedpath="";
-			$arCallClassTemplate = $arCallArgs["arCallClassTemplate"];
-			unset($arCallArgs["arCallClassTemplate"]);
+			$arCallClassTemplate = $ARCurrent->arCallClassTemplate;
 			while (!$arCallClassTemplate && !$arCallTemplate && $checkpath!=$lastcheckedpath) {
 				$arType=$arCallType;
 				while ($arType && !$arCallTemplate) {
