@@ -248,4 +248,5 @@ $ARnls["user"]=			"User";
 $ARnls["thumbwidth"]=		"Width";
 $ARnls["thumbheight"]=		"Height";
 $ARnls["thumbcolor"]=		"Color";
+$ARnls["contactinformation"]="Contact Info";
 ?>

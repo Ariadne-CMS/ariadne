@@ -248,4 +248,5 @@ $ARnls["group"]=		"Groep";
 $ARnls["thumbwidth"]=		"Breedte";
 $ARnls["thumbheight"]=		"Hoogte";
 $ARnls["thumbcolor"]=		"Kleur";
+$ARnls["contactinformation"]="Contact Info";
 ?>
