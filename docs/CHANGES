@@ -53,6 +53,11 @@ New features:
 	  object to be called. Explicitly set another top to prevent this.
 		
 Bugs fixed:
+	- Removed the "overwrite" confirmation from the pfile wizard. It now
+	  behaves exactly like every other object when the filename already
+	  exists.
+	- Fixed a bug in the store::find() function which made it impossible
+	  to sort results without filling in the where clause first.
 	- Added an error dialog to the pfile wizards, to inform the user about
 	  virus infection (the current behaviour was to ignore the error, resulting
 	  in an empty file, leaving the user wondering) Thanks to Goran Topic.
