@@ -59,6 +59,8 @@ New Features:
 	- The owner of an object now only get set if it wasn't set before in $this->save();
 	- added autofocus for the priority edit popup
 	- Extended the ppage class with methods for multi page articles.
+	- Fixed a problem with the image and browse dialog, the pphoto in the browse view now
+	  always shows the thumbnail, instead of the entire image or a non-existant template style
 
 Bugs Fixed:
 	- Fixed recursive calling of the login template when a session has been
