@@ -13,7 +13,7 @@
 
 	******************************************************************/
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
-		$ARCurrent->returnpage=$this->store->root.$this->path."edit.object.grants.phtml";
+		$ARCurrent->arReturnPage=$this->store->root.$this->path."edit.object.grants.phtml";
 ?>
 <html>
 <head>
@@ -46,7 +46,7 @@ TD {
 </script>
 <table border="0" width="100%" cellspacing="0">
 <form name="grantsform" action="edit.object.grants.save.phtml">
-<input type="hidden" name="returnpage" value="<?php echo $ARCurrent->returnpage; ?>">
+<input type="hidden" name="arReturnPage" value="<?php echo $ARCurrent->arReturnPage; ?>">
 <tr>
 	<td><script> document.write('<img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="'+(window.innerHeight-80)+'" alt="">'); </script></td>
 	<td valign="top">
@@ -69,7 +69,7 @@ TD {
 						echo "<tr valign=\"top\"><td>";
 						echo "<img src=\"".$AR->dir->images."icons/".$type.".gif\"></td><td>";
 						echo "<a href=\"savegrants.phtml?delete=true&type=$type&id=".RawUrlEncode($id).
-								 "&returnpage=".RawUrlEncode($ARCurrent->returnpage).
+								 "&arReturnPage=".RawUrlEncode($ARCurrent->arReturnPage).
 								 "\" onClick=\"return confirm('".sprintf($ARnls["q:removeallgrants"],$id)."')\">$id</a></td>";
 						echo "</td><td>";
 						if ($grants && is_array($grants)) {
@@ -78,8 +78,8 @@ TD {
 								if ($value) { 
 									echo "<a href=\"savegrants.phtml?delete=true&type=$type&id=".
 										RawUrlEncode($id)."&grant=".
-										RawUrlEncode($grant)."&returnpage=".
-										RawUrlEncode($ARCurrent->returnpage).
+										RawUrlEncode($grant)."&arReturnPage=".
+										RawUrlEncode($ARCurrent->arReturnPage).
 										"\" onClick=\"return confirm('".sprintf($ARnls["q:removegrant"],$grant,$id)."')\">$grant</a> "; 
 								} 
 							}

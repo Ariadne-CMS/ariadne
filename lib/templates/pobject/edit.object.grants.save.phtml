@@ -2,22 +2,22 @@
 	/******************************************************************
 	 edit.object.grants.save.phtml                         Muze Ariadne
 	 ------------------------------------------------------------------
-	 Arguments: $returnpage
+	 Arguments: $arReturnPage
 	 Grant needed: config
 	 Global variables: none
 
 	 This template is a wrapper around system.save.grants.phtml.
 	 
-	 $returnpage is a fully qualified URL.
+	 $arReturnPage is a fully qualified URL.
 
 	 no result
 
 	******************************************************************/
 	$this->call("system.save.grants.phtml");
 	if (!$this->error) {
-		Header("Location: $returnpage");
+		Header("Location: $arReturnPage");
 		?>
-			<a href="<?php echo $returnpage; ?>">Continue</a>
+			<a href="<?php echo $arReturnPage; ?>">Continue</a>
 		<?php
 	} else {
 		$this->call("show.error.phtml");

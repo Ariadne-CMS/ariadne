@@ -27,7 +27,7 @@
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		switch($next) {
 			case $ARnls["apply"] :
-				$returnpage="edit.object.layout.form.phtml?type=".RawUrlEncode($newtype).
+				$arReturnPage="edit.object.layout.form.phtml?type=".RawUrlEncode($newtype).
 					"&function=".RawUrlEncode($newfunction)."&language=".RawUrlEncode($newlanguage);
 			case $ARnls["save"] :
 				$this->call("system.save.layout.phtml","type=".RawUrlEncode($newtype).
@@ -39,10 +39,10 @@
 				break;
 		}
 		if (!$this->error) {
-			if (!$returnpage) {
-				$returnpage=$this->store->root.$this->path."edit.object.layout.phtml";
+			if (!$arReturnPage) {
+				$arReturnPage=$this->store->root.$this->path."edit.object.layout.phtml";
 			}
-			Header("Location: ".$returnpage);
+			Header("Location: ".$arReturnPage);
 		} else { 
 			?>
 			<body>
