@@ -1,6 +1,6 @@
 <?php
-	if ($argc > 0) {
-		$config=$argv[0];
+	if ($argc > 1) {
+		$config=$argv[1];
 	} else {
 		$config="default";
 	}
