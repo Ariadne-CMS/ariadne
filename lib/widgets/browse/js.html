@@ -12,7 +12,7 @@ function Browse(resultobject, path, name, title, mode, filter, filename) {
   }
   if (top.Get) {
     dprops=top.Get('browsewindow');
-  } else if (top.window.opener.top.Get) {
+  } else if (top.window.opener && top.window.opener.top.Get) {
     dprops=top.window.opener.top.Get('browsewindow');
   } else {
     dprops='';
