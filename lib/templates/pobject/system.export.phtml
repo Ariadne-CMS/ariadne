@@ -133,9 +133,9 @@
 							$object->axflags |= AX_WITHOUT_FILES;
 						}
 
-						if (!$saved_object[$object->id]) {
+						if (!$ARCurrent->saved_object[$object->id]) {
 							if ((!$ARCurrent->options["force"] || $object->axflags) && $ARCurrent->importStore->exists($newpath)) {
-								$saved_object[$object->id]=$newpath;
+								$ARCurrent->saved_object[$object->id]=$newpath;
 
 								// we may never overwrite an existing object with a
 								// dummy object
@@ -162,7 +162,7 @@
 
 							if ($save_obj) {
 								// next one has to be linked
-								$saved_object[$object->id]=$newpath;
+								$ARCurrent->saved_object[$object->id]=$newpath;
 
 									if ($ARCurrent->importStore->exists($newpath)) {
 										$ARCurrent->importStore->call(
@@ -207,7 +207,7 @@
 						} else {
 							if (!$ARCurrent->importStore->exists($newpath)) {
 								display("(linking)");
-								$ARCurrent->importStore->link($saved_object[$object->id], $newpath);
+								$ARCurrent->importStore->link($ARCurrent->saved_object[$object->id], $newpath);
 							}
 						}
 						display("\n");
