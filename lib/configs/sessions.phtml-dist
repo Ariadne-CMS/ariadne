@@ -12,20 +12,18 @@
   /* Database Information:                                                 */
   /* Fill in the Hostname, and database name of the database server, and   */
   /* the username and password with which to connect to it.                */
+  /* Prefix is an optional prefix to add to each table name ariadne uses   */
+  /* for this store. This allows you to have a full Ariadne installation   */
+  /* which uses just one database.                                         */
   /*************************************************************************/
 
   $session_config["host"]       = "localhost";
-  $session_config["database"]   = "ariadne_sessions";
+  $session_config["database"]   = "ariadne";
 
   $session_config["user"]       = "www";
   $session_config["password"]   = "secret";
 
-  /*************************************************************************/
-  /* A table prefix is used when you have to use the same Database as the  */
-  /* ObjectStore uses.                                                     */
-  /*************************************************************************/
-
-  $session_config["tbl_prefix"] = "session_";
+  $session_config["prefix"]     = "session_";
 
   /*************************************************************************/
   /* Path Information:                                                     */

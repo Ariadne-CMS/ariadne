@@ -11,10 +11,14 @@
   /* Database Information:                                                 */
   /* Fill in the Hostname, and database name of the database server, and   */
   /* the username and password with which to connect to it.                */
+  /* Prefix is an optional prefix to add to each table name ariadne uses   */
+  /* for this store. This allows you to have a full Ariadne installation   */
+  /* which uses just one database.                                         */
   /*************************************************************************/
 
   $store_config["host"]          = "localhost";
   $store_config["database"]      = "ariadne";
+  $store_config["prefix"]        = "store_";
 
   $store_config["user"]          = "www";
   $store_config["password"]      = "secret";

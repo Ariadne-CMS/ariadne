@@ -116,7 +116,7 @@ class mysqlstore {
 		$this->root=$path;
 		$this->code=$config["code"];
 		$this->files=$config["files"];
-		$this->tbl_prefix=$config["tbl_prefix"];
+		$this->tbl_prefix=$config["prefix"];
 
 		// necessary to avoid the 'mysql_select_db' bug, it will select
 		// a database for all open connect_id's
