@@ -8,8 +8,8 @@
 	include("../www/ariadne.inc");
 	require($ariadne."/configs/ariadne.phtml");
     require($ariadne."/configs/ftp/$configfile");
-	require($ariadne."/includes/loader.ftp.php");
 	require($ariadne."/configs/store.phtml");
+	require($ariadne."/includes/loader.ftp.php");
 	require($ariadne."/configs/sessions.phtml");
 	require($ariadne."/stores/".$store_config["dbms"]."store.phtml");
 	require($ariadne."/nls/en");
