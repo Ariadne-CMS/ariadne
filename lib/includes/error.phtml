@@ -1,4 +1,5 @@
 <?php
+  if (!$silent) {
     echo "<b>$error</b><br>\n";
 ?>    
   <script>
@@ -8,3 +9,6 @@
 <form>
 <input type="button" name="back" value="Back" onClick="history.back()">
 </form>
+<?php
+  }
+?>

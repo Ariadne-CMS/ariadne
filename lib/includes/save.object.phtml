@@ -1,11 +1,13 @@
 <?php
   include($this->store->code."includes/save.phtml");
-  if (!$error) {
-    if (!$returnpage) {
-      $returnpage=$this->store->root.$parent; 
+  if (!$silent) {
+    if (!$error) {
+      if (!$returnpage) {
+        $returnpage=$this->store->root.$parent; 
+      }
+      Header("Location: $returnpage");
+    } else {
+      include($this->store->code."includes/error.phtml");
     }
-    Header("Location: $returnpage");
-  } else {
-    include($this->store->code."includes/error.phtml");
   }
 ?>
