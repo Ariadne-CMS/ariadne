@@ -15,7 +15,7 @@
 	windowprops['edit_object_types']=windowprops['common']+',height=150,width=250';
 	windowprops['edit_object_nls']=windowprops['common']+',height=270,width=400';
 	windowprops['edit_priority']=windowprops['common']+',height=150,width=250';
-	windowprops['edit_object_owner']=windowprops['common']+',height=100,width=400';
+	windowprops['edit_object_owner']=windowprops['common']+',height=150,width=410';
 	windowprops['view_fonts']=windowprops['common']+',height=300,width=450';
 	windowprops['help']=windowprops['common']+',height=450,width=600';
 
