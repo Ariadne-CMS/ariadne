@@ -215,6 +215,9 @@ function window_onload() {
   tbContentElement.document.body.DocumentComplete=tbContentElement_DocumentComplete;
   tbContentElement.document.body.onkeypress=tbContentElement_Compose_press;
   tbContentElement.document.body.onkeydown=tbContentElement_Compose_down;
+  if (tbContentElement.onLoadHandler) {
+	tbContentElement.onLoadHandler();
+  }
 }
 
 function tbContentElement_Compose_press() {
@@ -689,11 +692,11 @@ return tbContentElement_ContextMenuAction(itemIndex)
 
 <!-- Toolbars -->
 <div class="tbToolbar" ID="StandardToolbar" unselectable='on'>
-  <div class="tbButton" ID="SAVE" unselectable='on' TITLE="Save File" LANGUAGE="javascript" onclick="return SAVE_onclick()">
+  <!-- div class="tbButton" ID="SAVE" unselectable='on' TITLE="Save File" LANGUAGE="javascript" onclick="return SAVE_onclick()">
     <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/save.gif" WIDTH="23" HEIGHT="22">
   </div>
   
-  <div class="tbSeparator"></div>
+  <div class="tbSeparator"></div -->
 
   <div class="tbButton" unselectable='on' ID="DECMD_CUT" TITLE="Cut" LANGUAGE="javascript" onclick="return DECMD_CUT_onclick();">
     <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/cut.gif" WIDTH="23" HEIGHT="22">
