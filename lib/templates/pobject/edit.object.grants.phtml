@@ -142,8 +142,9 @@
 <script>
 	var selectedUserId = '';
 	var selectedUserType = '';
-	var selectedUserGrants = new Array;
+	var userGrantsData = new Array;
 	var selectedUserGrant = '';
+	var selectedUserGrants = new Array;
 
 	function selectTableRow(row, part) {
 		if (oldRow[part]) {
@@ -167,7 +168,7 @@
 //		document.getElementById('www_grants_grant').style.display='none';
 		selectedUserType = type;
 		selectedUserId = id;
-		selectedUserGrants = grants;
+		userGrantsData = grants;
 		setOptions();
 	}
 
@@ -177,31 +178,48 @@
 		
 		selectedUserType = type;
 		selectedUserId = id;
-		selectedUserGrants = grants;
-		selectedUserGrant = grant;
+		userGrantsData = grants;
+		selectedUserGrants = grant.split(', ');
+		selectedUserGrant = selectedUserGrants[0];
 		setGrantOptions();
+	}
+
+	function loadUser(type, id) {
+		var form = document.forms.grantsform;
+		form['path'].value = grantslist.id2path[type][id];
 	}
 
 	function setGrantOptions() {
 		var form = document.forms.grantsform;
 
 		for (var i = 0; i < form['modifiers[]'].length; i++) {
-			if (selectedUserGrants[selectedUserGrant][form['modifiers[]'][i].value]) {
+			if (userGrantsData[selectedUserGrant][form['modifiers[]'][i].value]) {
 				form['modifiers[]'][i].checked = true;
 			} else {
 				form['modifiers[]'][i].checked = false;
 			}
 		}
+
+		var grantsCopy = new Array();
+		grantsCopy = grantsCopy.concat(selectedUserGrants);
 		for (var i = 0; i < form['grants[]'].length; i++) {
-			if (selectedUserGrant == form['grants[]'][i].value) {
-				form['grants[]'][i].checked = true;
-			} else {
-				form['grants[]'][i].checked = false;
+			form['grants[]'][i].checked = false;
+			for (var j in selectedUserGrants) {
+				if (selectedUserGrants[j] == form['grants[]'][i].value) {
+					form['grants[]'][i].checked = true;
+					grantsCopy[j] = null;
+				}
 			}
 		}
+		for (var i in grantsCopy) {
+			if (grantsCopy[i] != null) {
+				form['grant_other'].value += grantsCopy[i]+' ';
+			}
+		}
+
 		var arGrant;
-		for (var i in selectedUserGrants[selectedUserGrant]) {
-			arGrant = selectedUserGrants[selectedUserGrant][i];
+		for (var i in userGrantsData[selectedUserGrant]) {
+			arGrant = userGrantsData[selectedUserGrant][i];
 			if ((arGrant & <?php echo ARMASKLOCAL; ?>) && (arGrant & <?php echo ARMASKCHILDREN; ?>)) {
 				arGrant = <?php echo ARMASKGLOBAL; ?>;
 			} else
@@ -222,8 +240,13 @@
 		updateGrantsString();
 	}
 
+	function removeGrants() {
+		updateGrantsString(true);
+		document.forms.grantsform.submit();
+	}
 
-	function updateGrantsString() {
+
+	function updateGrantsString(remove) {
 		var form = document.forms.grantsform;
 		var gstring = new String();
 		var mstring = new String();
@@ -235,20 +258,35 @@
 				mstring += form['modifiers[]'][i].value
 			}
 		}
+
+		var selectedGrants = new Array();
+		var re = /[^a-z]*([a-zA-Z]+)/gi;
+		var grants = new String(form['grant_other'].value).match(re);
+		for (var i in grants) {
+			selectedGrants[grants[i]] = true;
+		}
+
 		for (var i = 0; i < form['grants[]'].length; i++) {
 			if (form['grants[]'][i].checked) {
-				if (gstring.length) {
-					gstring += ' ';
-				}
-				var arGrant = form['type'].options[form['type'].options.selectedIndex].value;
-				if (arGrant == <?php echo ARMASKCHILDREN; ?>) {
+				selectedGrants[form['grants[]'][i].value] = true;
+			}
+		}
+		for (var grant in selectedGrants) {
+			if (gstring.length) {
+				gstring += ' ';
+			}
+			if (remove) {
+				gstring += "-"+grant;
+			} else {
+				var arInheritance = form['type'].options[form['type'].options.selectedIndex].value;
+				if (arInheritance == <?php echo ARMASKCHILDREN; ?>) {
 					gstring += '>';
 				} else
-				if (arGrant == <?php echo ARMASKLOCAL; ?>) {
+				if (arInheritance == <?php echo ARMASKLOCAL; ?>) {
 					gstring += '=';
 				}
 
-				gstring += form['grants[]'][i].value;
+				gstring += grant;
 				if (mstring.length) {
 					gstring += '('+mstring+')';
 				}
@@ -346,7 +384,7 @@
 					</td>
 				</tr><tr>
 					<td colspan="2">
-						<input style="width: 140px;" type="text" name="grant_other"><br>
+						<input style="width: 140px;" type="text" name="grant_other" onblur="updateGrantsString()"><br>
 					</td>
 				</tr>
 				</table>
@@ -388,7 +426,7 @@
 		</tr>
 		</table>
 		<div style="margin-top: 10px;">
-		<input type="button" name="remove" style="width: 80px;" value="Remove">
+		<input type="button" name="remove" onClick="removeGrants()" style="width: 80px;" value="<?php echo $ARnls["delete"]; ?>">
 		<input type="text" name="newgrants" size="25" style="margin-left: 10px; width: 277px;">
 		<input type="submit" name="Add" value="<?php echo $ARnls["add"]; ?>" style="width: 80px;">
 		</div>

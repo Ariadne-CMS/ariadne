@@ -128,32 +128,38 @@
 	parent.selectGrant(type, id, grant, grants[type][id]);
   }
 
+  function loadUser(type, id) {
+	parent.loadUser(type, id);
+  }
+
   id2path = new Array();
   id2path['pgroup'] = new Array();
   id2path['puser'] = new Array();
 <?php
-	foreach ($data->grants as $type => $grantslist) {
-		while (list($id, $grants)=each($grantslist)) {
-			switch ($type) {
-				case 'pgroup':
-					$path  = current($this->find('/system/groups/', 'login.value="'.$id.'"', 'system.get.path.phtml'));
-				break;
-				case 'puser':
-					$path  = current($this->find('/system/users/', 'login.value="'.$id.'"', 'system.get.path.phtml'));
-				break;
-			}
-			echo "  id2path['$type']['$id'] = '$path'; \n";
-			echo "  grants['$type']['$id'] = new Array();\n";
-			if ($grants && is_array($grants)) {
-				ksort($grants);
-				while (list($grant, $modifiers)=each($grants)) {
-					echo "  grants['$type']['$id']['$grant'] = new Array();\n";
-					if (!is_array($modifiers)) {
-						echo "  grants['$type']['$id']['$grant']['*'] = $modifiers; \n";
-					} else
-					if (is_array($modifiers)) {
-						while (list($modifier, $value)=each($modifiers)) {
-							echo "  grants['$type']['$id']['$grant']['$modifier'] = $value;\n";
+    if (is_array($data->grants)) {
+		foreach ($data->grants as $type => $grantslist) {
+			while (list($id, $grants)=@each($grantslist)) {
+				switch ($type) {
+					case 'pgroup':
+						$path  = current($this->find('/system/groups/', 'login.value="'.$id.'"', 'system.get.path.phtml'));
+					break;
+					case 'puser':
+						$path  = current($this->find('/system/users/', 'login.value="'.$id.'"', 'system.get.path.phtml'));
+					break;
+				}
+				echo "  id2path['$type']['$id'] = '$path'; \n";
+				echo "  grants['$type']['$id'] = new Array();\n";
+				if ($grants && is_array($grants)) {
+					ksort($grants);
+					while (list($grant, $modifiers)=each($grants)) {
+						echo "  grants['$type']['$id']['$grant'] = new Array();\n";
+						if (!is_array($modifiers)) {
+							echo "  grants['$type']['$id']['$grant']['*'] = $modifiers; \n";
+						} else
+						if (is_array($modifiers)) {
+							while (list($modifier, $value)=each($modifiers)) {
+								echo "  grants['$type']['$id']['$grant']['$modifier'] = $value;\n";
+							}
 						}
 					}
 				}
@@ -174,6 +180,22 @@
 		</thead>
 		<tbody>
 		<?php
+			function array_compare(&$ar1, &$ar2) {
+				if (count($ar1) != count($ar2)) {
+					return false;
+				} else {
+					foreach ($ar1 as $key => $value) {
+						if (is_array($value) && is_array($ar2[$key])) {
+							return array_compare($ar1[$key], $ar2[$key]);
+						} else 
+						if ($value !== $ar2[$key]) {
+							return false;
+						}
+						return true;
+					}
+				}
+			} 
+
 			function DisplayGrants(&$grantslist, $type, $grey=false) {
 				global $AR, $ARCurrent, $ARnls;
 				if ($grantslist[$type] && is_array($grantslist[$type])) {
@@ -188,15 +210,31 @@
 							echo "><td>";
 							echo "<img src=\"".$AR->dir->images."icons/".$type.".gif\"></td>";
 							echo "<td valign=\"middle\">";
-							echo "$id";
+							echo "<a href=\"javascript:loadUser('$type', '$id');\">$id</a>";
 							echo "</td>";
 							echo "<td valign=\"middle\">";
 							if ($grants && is_array($grants)) {
+								$grants_check = $grants;
+								foreach ($grants as $grant => $grant_ar) {
+									array_shift($grants_check);
+									foreach ($grants_check as $grant_c => $grant_ar_c) {
+										if (array_compare($grant_ar, $grant_ar_c)) {
+											$grants_eq[$grant][] = $grant_c;
+											unset($grants[$grant_c]);
+										}
+									}
+								}
+								reset($grants);
 								ksort($grants);
 								while (list($grant, $modifiers)=each($grants)) {
 									if (!is_array($modifiers)) {
 										echo arGetGrantType($modifiers);
 									} 
+									if (is_array($grants_eq[$grant])) {
+										foreach ($grants_eq[$grant] as $g_add) {
+											$grant .= ", $g_add";
+										}
+									}
 									if (!$grey) {
 										echo "<a href=\"javascript:editGrant('$type', '$id', '$grant');\">$grant";
 									} else {
