@@ -1,10 +1,12 @@
 #!/usr/bin/php -q
 <?php
-	require("../lib/configs/ariadne.phtml");
-	require("../lib/configs/store.phtml");
-	require("../lib/configs/sessions.phtml");
-	require("../lib/includes/loader.cmd.php");
+	$ariadne="../lib";
+	require($ariadne."/configs/ariadne.phtml");
+	require($ariadne."/configs/store.phtml");
+	require($ariadne."/configs/sessions.phtml");
+	require($ariadne."/includes/loader.cmd.php");
 	require($store_config['code']."stores/".$store_config["dbms"]."store.phtml");
+
 
 	echo "Clearing old sessions...";
 	$inst_store = $store_config["dbms"]."store";
