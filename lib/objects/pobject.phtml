@@ -123,6 +123,7 @@ class pobject extends object { // pobject class definition
 		}
 		debug("pobject: call: nls set to $nls","all"); 
 		
+		$arCallFunctionOrig = $arCallFunction;
 		if (strpos($arCallFunction,"::")!==false) {
 			// template of a specific class defined via call("class::template");
 			list($arType, $arCallFunction)=explode("::",$arCallFunction);
@@ -981,12 +982,20 @@ class pobject extends object { // pobject class definition
 				debug("CheckConfig: caching disabled","all");
 				debug("             config->cache: ".$config->cache."; nocache: ".$nocache."; user: ".$AR->user->data->login."; os: ".$AR->OS,"all");
 			}
-//debugoff();
+
 			/*
 				Set ARConfigChecked to true to indicate that we have been here
 				earlier.
 			*/
 			$ARConfigChecked = true;
+
+			if (strpos($arCallFunction,"::")!==false) {
+				// template of a specific class defined via call("class::template");
+				list($arCallType, $arCallFunction)=explode("::",$arCallFunction);
+			} else {
+				$arCallType=$this->type;
+			}
+			debug("CheckConfig: searching for template ($arCallType::$arCallFunction)", "all");
 
 			/* first check current templates */
 			$curr_templates=$this->data->pinp;
@@ -994,7 +1003,7 @@ class pobject extends object { // pobject class definition
 			$checkpath=$this->path;
 			$lastcheckedpath="";
 			while (!$arCallTemplate && $checkpath!=$lastcheckedpath) {
-				$arType=get_class($this);
+				$arType=$arCallType;
 				while ($arType && !$arCallTemplate) {
 					if ($arTemplateId=$curr_templates[$arType][$arCallFunction][$this->reqnls]) {
 						$arCallTemplate=$arType.".".$arCallFunction.".".$this->reqnls;
@@ -1523,8 +1532,7 @@ class pobject extends object { // pobject class definition
 		// remove possible path information (greedy match)
 		eregi('(.*[/\\])?(.*)', $function, $regs);
 		$function=$regs[2];
-		return $this->store->call($function, $args, 
-			$this->store->parents($this->path, $top));
+		return $this->parents($this->path, $function, $args, $top);
 	}
 
 	function _find($criteria, $function="list.html", $args="", $limit=100, $offset=0) {

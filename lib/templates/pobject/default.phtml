@@ -21,6 +21,7 @@
 	
 	******************************************************************/
 
+	debug("default.phtml: ($arCallFunction)", "object");
 	if ($this->exists($this->path.$arCallFunction."/")) {
 		// first check if it's a pdir, if so, change the location
 		$result=$this->get($this->path.$arCallFunction."/","system.get.type.phtml");
@@ -32,7 +33,7 @@
 			$ARCurrent->cachepage=$this->path.$arCallFunction;
 			$this->get($this->path.$arCallFunction."/","view.html",$arCallArgs);
 		}
-	} else if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+	} else if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunctionOrig, $arCallArgs)) {
 		ldObjectNotFound($this->path, $arCallFunction);
 	}
 ?>
