@@ -50,6 +50,7 @@ New features:
 	- Updated documentation in ariadne.ax
 	- Now using small nls flags for language selection in the wizard. Thank to Paul Meijers.
 	- Updated ldSetUserCookie and ldGetUserCookie to use more options from setcookie()
+	- Added enhance pre-install checking, should prevent most common mistakes.
 		
 Bugs Fixed:
 	- Removed an extra character '7' from particle/system.save.data.phtml
