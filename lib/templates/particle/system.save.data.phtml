@@ -98,11 +98,11 @@
 				}
 				$properties["published"][0]["value"]=$this->data->published;
 				$this->save($properties);
+			} else {
+				$this->error="'$scenario' is not a pscenario.";
 			}
 		} else {
-			$this->error="'$scenario' is not a pscenario.";
+			$this->error="Scenario '$scenario' doesn't exist.";
 		}
-	} else {
-		$this->error="Scenario '$scenario' doesn't exist.";
 	}
 ?>
