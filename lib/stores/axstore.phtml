@@ -177,7 +177,10 @@ class axstore {
 
 
 	function get($path) {
-		$result["list"][0]=&$this->nodes[$path];
+		$node = &$this->nodes[$path];
+		if ($node) {
+			$result["list"][0]=$node;
+		}
 		return $result;
 	}
 
