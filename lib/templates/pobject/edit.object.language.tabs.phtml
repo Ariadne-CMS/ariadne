@@ -19,8 +19,9 @@
 <?php
 	$arLanguage=$this->getdata('arLanguage');
     if (!$AR->user->data->languagelist) {
-      // make sure at least one language is available for editing
-      $languagelist=Array($AR->user->data->language => $AR->nls->list[$AR->user->data->language]);
+      // if no languages are selected in the user preferences, use them all...
+      // this makes it backwards compatible
+      $languagelist=$AR->nls->list;
     } else {
       $languagelist=$AR->user->data->languagelist;
     }

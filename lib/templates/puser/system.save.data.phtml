@@ -116,6 +116,7 @@
 				$this->data->language=$language;
 			}
 			if ($languagelist=$this->getdata("languagelist","none")) {
+				unset($languagelist['none']); // dummy entry so you can make the array 'empty'
 				$this->data->languagelist=$languagelist;
 			}
 			if ($interface=$this->getdata("interface","none")) {
