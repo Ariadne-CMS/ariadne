@@ -521,7 +521,7 @@ class pobject extends object {
 			// if this object isn't available in the requested language, show
 			// a language select dialog with all available languages for this object.
 			if (isset($this->data->nls)) {
-				if (!isset($this->data->$reqnls) || !$config->nls->list[$reqnls]) {
+				if (!isset($this->data->nls->list[$reqnls]) || !$config->nls->list[$reqnls]) {
 					if (!$ARCurrent->nolangcheck ) {
 						include($this->store->code."widgets/nls/languageselect.phtml");
 						return false;
@@ -581,7 +581,7 @@ class pobject extends object {
 					// as the first template (in the url) will first trigger the language
 					// choice dialogue instead.
 					$ARCurrent->arCallStack[]=$arCallArgs;
-					if (isset($this->data->$reqnls)) {
+					if (isset($this->data->nls->list[$reqnls])) {
 						// the requested language is available.
 						$this->nlsdata=$this->data->$nls;
 						include($arCallTemplate);
