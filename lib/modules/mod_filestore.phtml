@@ -85,7 +85,9 @@
 				if (!$limit) {
 					$limit=filesize($path)-$offset;
 				}
-				if ($fp=fopen($path, "rb")) {
+				if (!$limit) {
+					$result = '';
+				} else if ($fp=fopen($path, "rb")) {
 					if ($offset) {
 						fseek($fp, $offset);
 					}
