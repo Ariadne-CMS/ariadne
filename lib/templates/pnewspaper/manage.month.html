@@ -4,13 +4,24 @@
 			$date - unix time stamp, month set will be shown, highlights this day.
 	*/
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		global $PHP_SELF, $QUERY_STRING;
+		global $PHP_SELF, $QUERY_STRING, $HTTP_GET_VARS;
 		if (!$date) {
 			$date=time();
 			debug("date not set"); 
 		} else {
 			debug("date: $date");
 		}
+		// clear old date arguments from the query string.
+		if (is_array($HTTP_GET_VARS)) {
+			$QUERY_STRING='';
+			reset($HTTP_GET_VARS);
+			while (list($key, $value)=each($HTTP_GET_VARS)) {
+				if ($key!='date') {
+					$QUERY_STRING.="&".RawUrlEncode($key)."=".RawUrlEncode($value);
+				}
+			}
+		}
+
 		
 		// calculate first weekday of this month
 		$date_arr=getdate($date);
@@ -36,9 +47,13 @@
 
 		$articles=$this->get_articles("default",0, $starttime, $endtime);
 		if (is_array($articles)) {
+			reset($articles);
 			while (list($key, $article)=each($articles)) {
-				$from_arr=getdate($article->data->startdate);
-				$ARCurrent->daylist[$from_arr["mday"]]="1";
+				if (($article->data->startdate<$endtime) &&
+					($article->data->startdate>$starttime)) {
+					$from_arr=getdate($article->data->startdate);
+					$ARCurrent->daylist[$from_arr["mday"]]="1";
+				}
 			}
 		}
 		unset($articles);
@@ -142,5 +157,6 @@
 </tr>
 </table>
 <?php
+		$QUERY_STRING.="&date=".RawUrlEncode($date);
 	}
 ?>

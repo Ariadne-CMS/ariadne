@@ -46,8 +46,8 @@ CREATE TABLE ".$this->tbl_prefix."seq_id (
 		$queries[4]["msg"]="creating types table.";
 		$queries[4]["query_string"]="
 CREATE TABLE ".$this->tbl_prefix."types (
-	type varchar(16) DEFAULT '' NOT NULL,
-	implements varchar(16) DEFAULT '' NOT NULL,
+	type varchar(32) DEFAULT '' NOT NULL,
+	implements varchar(32) DEFAULT '' NOT NULL,
 	KEY type (type),
 	KEY implements (implements)
 )";

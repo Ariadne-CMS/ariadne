@@ -1,5 +1,6 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		global $QUERY_STRING;
 		if (!$arLanguage) {
 			$arLanguage=$nls;
 			if (is_array($arCallArgs)) {
@@ -119,6 +120,7 @@ A.unselected {
 #icon {
 	position: absolute;
 	top: 40px;
+	left: 4px;
 }
 #topdiv {
 	height: 180px;
@@ -155,8 +157,9 @@ A.unselected {
 		<?php
 			$oldnls=$nls;
 			$this->setnls($arLanguage);
+			$url=$this->store->root.$this->make_path();
 		?>
-		document.write('<iframe id="archildren" height="'+height+'" width="100%" src="<?php echo $this->make_url(); ?>browse.nav.'+viewmode+'.phtml"></iframe>');
+		document.write('<iframe id="archildren" height="'+height+'" width="100%" src="<?php echo $url; ?>browse.nav.'+viewmode+'.phtml?<?php echo $QUERY_STRING; ?>"></iframe>');
 		<?php
 			$this->setnls($oldnls);
 		?>

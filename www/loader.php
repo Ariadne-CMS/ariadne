@@ -24,6 +24,8 @@
 
 	} else {
 
+		// needed for IIS.
+		$PHP_SELF=$HTTP_SERVER_VARS["SCRIPT_NAME"].$PATH_INFO;
 		if (ini_get("safe_mode")) {
 			error("Ariadne will not work correctly with safe_mode set to 'On'. Please edit your php.ini file and set it to 'Off'.");
 		}
@@ -52,6 +54,7 @@
 			$PATH_INFO.=$function;
 		}
 		$ldCacheFilename=strtolower($PATH_INFO)."=";
+		// yes, the extra '=' is needed, don't remove it. trust me.
 		if ($QUERY_STRING) {
 			$ldCacheFilename.=$QUERY_STRING;
 		}
@@ -76,7 +79,6 @@
 		}
 		$cachedimage=$store_config["files"]."cache".$ldCacheFilename;
 		$cachedheader=$store_config["files"]."cacheheaders".$ldCacheFilename;
-		// yes, the extra '=' is needed, don't remove it. trust me.
 		
 		$timecheck=time();
 		if (file_exists($cachedimage) && 
@@ -111,10 +113,10 @@
 
 		} else {
 
-			// FIX magic_quoted input
 			set_magic_quotes_runtime(0);
 			$args=array_merge($HTTP_GET_VARS,$HTTP_POST_VARS);
 			if (get_magic_quotes_gpc()) {
+				// this fixes magic_quoted input
 				$args=fix_quotes($args);
 				$ARCookie=stripslashes($ARCookie);
 			}

@@ -1,0 +1,81 @@
+<?php 
+	/******************************************************************
+	 browse.nav.details.phtml                              Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $filter
+	 Grant needed: read
+	 Global variables: none
+
+	 This templates displays the detailed list of files in the browse
+	 files view. 
+	 
+	 $filter must be a valid argument for the object.implements search
+	 criteria.
+	 
+	 no result
+
+	******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+?>
+<style>
+	BODY, TD {
+		font: 10pt Arial,Helvetica,sans-serif;
+		line-height: 15pt;
+	}
+	BODY {
+		margin: 0px;
+		padding: 0px;
+	}
+	TD {
+		margin: 1px;
+	}
+	A {
+		text-decoration: none;
+		color: black;
+	}
+	.heading {
+		font: 10pt Arial,Helvetica,sans-serif;
+		<?php
+			$browser=$this->call("browsercheck.phtml");
+			if ($browser["id"]=="ns" && $browser["version"]==4) {
+		?>
+			background: #BBBBBB;
+		<?php
+			} else {
+		?>
+			background: buttonface;
+		<?php
+			}
+		?>
+		border: 2px outset;
+		text-align: center;
+	}
+</style>
+<body bgcolor="white">
+<table width="100%" cellspacing="0" cellpadding="0" border="0">
+<tr>
+  <td class="heading"><?php echo $ARnls["name"]; ?></td>
+  <td class="heading"><?php echo $ARnls["size"]; ?></td>
+  <td class="heading"><?php echo $ARnls["type"]; ?></td>
+  <td class="heading"><?php echo $ARnls["modified"]; ?></td>
+</tr>
+<?php
+	if ($this->parent!="..") {
+		$this->call("browse.nav.details.show.up.phtml");
+	}
+	if ($filter) {
+		$crit["object"]["implements"]["="]="'".AddSlashes($filter)."'";
+	}
+	if ($date) {
+		$date=ereg_replace("[^0-9]*","",$date);
+		$crit["article"]["start"]["<="]=$date+86400;
+		$crit["article"]["end"][">="]=$date;
+	}
+	$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
+	$this->find(".",$crit, "browse.nav.details.show.phtml");
+?>
+</table>
+</body>
+<?php
+	}
+?>
