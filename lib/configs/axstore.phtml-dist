@@ -1,9 +1,30 @@
 <?php
-	$ariadne_root="/usr/local/lib/ariadne/";
-	$config["files"]=				$ariadne_root."files/";
-	$config["code"]=				$ariadne_root."lib/";
-	$config["tar_error_handler"]=	" 2> %s";
-	$config["tar_tar"]=				"tar -zc -C %s %s -f %s %s";
-	$config["tar_untar"]=			"tar -zx -C %s %s -f %s %s";
-	$config["tar_list"]=			"tar -zt -f %s";
+  /*************************************************************************/
+  /* Path Information:                                                     */
+  /* Fill in the location of the Ariadne code library and the files        */
+  /*************************************************************************/
+  /* Ariadne Install Directory                                             */ 
+  /*************************************************************************/
+
+  $ariadne_root                       = "/usr/local/lib/ariadne/";
+
+  /*************************************************************************/
+  /* Ariadne Code Library (lib)                                            */
+  /*************************************************************************/
+
+  $ax_config["code"]                  = $ariadne_root."lib/";
+
+  /*************************************************************************/
+  /* Ariadne Export temp directory                                         */
+  /*************************************************************************/
+
+  $ax_config["temp"]                  = "/tmp/";
+
+  /*************************************************************************/
+  /* Tar configuration                                                     */
+  /*************************************************************************/
+
+  $ax_config["tar_error_handler"]     = " 2> %s";
+  $ax_config["tar_tar"]               = "tar -zc -C %s %s -f %s %s";
+  $ax_config["tar_untar"]             = "tar -zx -C %s %s -f %s %s";
 ?>

@@ -21,20 +21,19 @@ class axstore {
 	function axstore($path, $config) {
 		$this->database=$config["database"];
 		$this->writeable=$config["writeable"];
-		$this->files=$config["files"];
+		$this->temp=$config["temp"];
 		$this->code=$config["code"];
 		$this->tar_error_handler=$config["tar_error_handler"];
 		$this->tar_tar=$config["tar_tar"];
 		$this->tar_untar=$config["tar_untar"];
-		$this->tar_list=$config["tar_list"];
 
 		// create tempdir
-		$this->tempdir=tempnam($this->files."temp/", "axtemp");
+		$this->tempdir=tempnam($this->temp, "axtemp");
 		if (file_exists($this->tempdir)) {
 			// when file exists, we have to delete it...
-			unlink($this->tempdir);
+			@unlink($this->tempdir);
 		}
-		if (mkdir($this->tempdir, 0750)) {
+		if (@mkdir($this->tempdir, 0750)) {
 			if (file_exists($this->database)) {
 				if ($this->_untar($this->database, " ", $this->tempdir)) {
 					if (file_exists($this->tempdir."/objects.data")) {
