@@ -35,6 +35,9 @@ Bugs Fixed:
 	- changed pobject::ClearCache() to avoid a combinatorial explosion on
 	  multi-nls objects
 
+New Features:
+	- added mod_url.php - a URL manipulation module (not much in it yet)
+
 Changes in Ariadne since version Ariadne 2.3-dev
 
 IMPORTANT:
