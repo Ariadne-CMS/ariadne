@@ -599,10 +599,6 @@ class axstore {
 		return $result;
 	}
 
-	function get_nextid($path) {
-		return $this->nodes[$path]->nextid;
-	}
-
 	function get_filestore($name) {
 		require_once($this->code."modules/mod_filestore.phtml");
 		if (!$this->filestores[$name]) {
