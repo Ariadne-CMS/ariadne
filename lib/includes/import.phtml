@@ -20,6 +20,7 @@
 			if (!isset($mod->data->nodes)) {
 				$error="err:corruptobjectdata";
 			} else {
+				// collecting user and group grants
 				ksort($mod->data->nodes);
 				unset($savedObject);
 				while (is_array($mod->data->nodes) && (list($path,$object)=each($mod->data->nodes))) {
@@ -28,13 +29,20 @@
 					if (!$savedObject[$object]) {
 						$savedObject[$object]=$newfilename;
 						$obj=$mod->data->objects[$object];
+						if ($ARImportNoGrants) {
+							unset($obj["data"]->grants);
+							unset($obj["data"]->usergrants);
+						}
+						
 						if ($store->exists($newfilename)) {
-							$old=$store->get($newfilenmame,"Get.phtml");
+							$old=$store->call("Get.phtml","",$store->get($newfilename));
 							$old=$old[0];
 							if ($old->lastchanged<$obj["lastchanged"]) {
 							 	//ok, merge it
 								merge($old->data,$obj["data"]);
 								$obj["data"]=$old->data;
+							} else {
+								echo "not merging ($newfilename)\n";
 							}
 						}
 						$result=$store->save($newfilename, $obj["type"], $obj["data"], $obj["properties"], $obj["vtype"]);
