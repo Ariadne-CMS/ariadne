@@ -18,7 +18,7 @@
 
 ?>
 <SPAN class=item>
-	<A HREF="javascript:top.View('<?php echo $this->path; ?>');"><IMG 
+	<A HREF="javascript:top.View('<?php echo $this->path; ?>','<?php echo $nlsdata->name; ?>');"><IMG 
 		SRC="<?php echo $AR->dir->images."icons/".$folder['icon']."_open.gif"; ?>" border="0" HEIGHT="40" WIDTH="40" HSPACE=0 VSPACE=0 ALT="<?php echo $nlsdata->name; ?>"><br>
 	<?php 
 		if (!$this->CheckSilent("read")) {
