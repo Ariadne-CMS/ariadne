@@ -23,6 +23,9 @@ Bugs fixed:
 	- Several small fixes in the WinXP interface. Thanks to Paul
 	  Meijers.
 	- get_nextid() was declared twice in axstore.phtml, removed one.
+	- Logging of an already timed out session will nolonger give a
+	  login prompt.
+	- Various layout bugs fixed.
 
 Changes in Ariadne since version 2.1.1
 
