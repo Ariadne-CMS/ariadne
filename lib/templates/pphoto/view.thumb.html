@@ -18,10 +18,10 @@
 		$thumbheight=$configcache->thumb["height"];
 		$thumbcolor=$configcache->thumb["color"];		
 		ldSetClientCache(true, time()+7200);
-		ldSetContent("image/png");
+		ldSetContent("image/jpeg");
 		if (!$this->cached("ar_thumb_".$thumbwidth."x".$thumbheight.$thumbcolor)) {
 			$result=$this->scale($thumbwidth, $thumbheight, $thumbcolor);
-			if ($result) {	
+			if ($result) {
 				echo $result;
 				$this->savecache(999);
 			} else if ($this->path!="/system/photo/nothumb/") {
