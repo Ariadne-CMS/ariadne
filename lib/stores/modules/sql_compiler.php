@@ -87,6 +87,7 @@
 				}
 				$node["field"] = $field;
 			} else {
+				$node["id"]="property";
 				$node["table"]="prop_".$table;
 				$node["field"]="AR_".$field;
 				$node["record_id"] = $record_id;

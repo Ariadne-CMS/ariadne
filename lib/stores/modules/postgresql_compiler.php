@@ -10,21 +10,37 @@
 
 	function compile_tree(&$node) {
 		switch ((string)$node["id"]) {
-			case 'ident':
+			case 'property':
 				$table=$this->tbl_prefix.$node["table"];
 				$field=$node["field"];
 				$record_id=$node["record_id"];
 				if (!$record_id) {
 					$this->used_tables[$table]=$table;
-					if ($node["table"] == "objects" && $node["field"] == "lastchanged") {
-						$result = "lastchanged";
+					if (!$this->in_orderby) {
+						$result=" $table.object = ".$this->tbl_prefix."objects.id and $table.$field ";
 					} else {
+						/*
+							if we are parsing 'orderby' properties we have to
+							join our tables for the whole query
+						*/							
+						$this->select_tables[$table]=$table;
 						$result=" $table.$field ";
 					}
 				} else {
 					$this->used_tables["$table as $table$record_id"] = $table.$record_id;
-					$result = " $table$record_id.$field ";
+					if (!$this->in_orderby) {
+						$result=" $table$record_id.object = ".$this->tbl_prefix."objects.id and $table$record_id.$field ";
+					} else {
+						$this->select_tables["$table as $table$record_id"] = $table.$record_id;
+						$result=" $table$record_id.$field ";
+					}
 				}
+			break;
+			case 'ident':
+				$table=$this->tbl_prefix.$node["table"];
+				$field=$node["field"];
+				$this->used_tables[$table]=$table;
+				$result=" $table.$field ";
 			break;
 			case 'custom':
 				$table = $this->tbl_prefix."prop_custom";
@@ -168,7 +184,7 @@
 			} else {
 				$tables="$key";
 			}
-			if (substr($val, 0, 5+strlen($this->tbl_prefix))==$this->tbl_prefix."prop_") {
+			if ($this->select_tables[$key]) {
 				$prop_dep.=" and $val.object=$objects.id ";
 			}
 		}
