@@ -53,7 +53,7 @@ class pnewspaper extends pdir { // pnewspaper class definition
 		if ($nls) {
 			$query.=" and name.nls='".AddSlashes($nls)."'";
 		}
-		$query.=" limit ".(((int)$max)*2);
+		$query.=" limit 0"; //.(((int)$max)*2);
 		$this->find(".",$query,"system.get.article-by-priority.phtml","display=$display");
 		if (is_array($ARCurrent->priority)) {
 			$ARCurrent->priority=array_reverse($ARCurrent->priority, true);
