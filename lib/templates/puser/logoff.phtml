@@ -2,7 +2,7 @@
   if ($this->CheckLogin("read")) {
     if ($AR->user->data->login==$data->login || $AR->user->data->login=="admin") {
         if (!$checkedlocks) {
-			header("location: locks.phtml?returnpage=logoff.phtml?checkedlocks=true");
+			header("location: lock.user.report.phtml?returnpage=logoff.phtml?checkedlocks=true");
 		} else {
 			$ARCurrent->session->kill();
 ?>

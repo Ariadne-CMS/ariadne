@@ -17,8 +17,11 @@
 <head>
 <title><?php echo $ARnls["edituser"]; ?></title>
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
+<?php
+	$this->call("lock.init.phtml");
+?>
 </head>
-<body bgcolor="white">
+<body bgcolor="white" onUnLoad="releaseLock()">
 <form>
 <input type="hidden" name="arNewType" value="<?php echo $arNewType; ?>">
 <input type="hidden" name="arNewFilename" value="<?php echo $arNewFilename; ?>">
@@ -106,6 +109,9 @@
 	</td>
 </tr>
 </table>
+<?php
+	$this->call("lock.form.phtml");
+?>
 </form>
 </body>
 </html>
