@@ -5,5 +5,11 @@
 	} else {
 		$this->dummy_save=1;
 	}
+
+	/* 
+		unset grants defined on this object, they will be resetted after
+		the complete database is imported
+	*/
+	unset($this->data->grants);
 	$arResult=$this;
 ?>
