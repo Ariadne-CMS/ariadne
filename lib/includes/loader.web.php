@@ -268,10 +268,12 @@
 			$arCallArgs.="&arLoginMessage=".urlencode($message);
 		}
 		if (!$ARCurrent->arLoginSilent) {
+			$ARCurrent->arLoginSilent = true;
 			$store->call("user.login.html", 
 								$arCallArgs,
 								$store->get($path) );
 		}
+
 	}
 
 	function ldSetRoot($session='', $nls='') {
