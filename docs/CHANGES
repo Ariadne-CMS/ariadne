@@ -21,6 +21,8 @@ New Features:
 	  by Lukasz Keler. 
 
 Bugs Fixes:
+	- Fixed a small problem in the nls handling of the new wizards. Sometimes the tab
+	  and the actual language shown differed.
 	- Fixed a Mozilla reserved keyword 'implements' bug in the Ariadne Search window. Thanks
 	  to Stefan Schreinert.
 	- particle will now fill the endtime and enddate with the starttime / startdate if not set.
