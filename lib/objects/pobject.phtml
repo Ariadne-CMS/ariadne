@@ -966,12 +966,14 @@ class pobject extends object {
 	}
 
 	function _gettext($index) {
-		global $ARnls;
+	global $ARnls;
 		return $ARnls[$index];
 	}
 
 	function _startsession() {
-		return $this->store=ldStartSession(0);
+	global $ARCurrent;
+		ldStartSession(0);
+		return $ARCurrent->session->id;
 	}
 
 	function _putsessionvar($varname, $varvalue) {
