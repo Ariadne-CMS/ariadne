@@ -44,6 +44,7 @@ New features:
 	- Added strip_tags() functionality to ppage/system.save.data.phtml for use with summaries.
 	- Moved authentication functionality from pobject::CheckLogin() to the loader.
 	- You can now login as a different user on your current session.
+	- Updated documentation in ariadne.ax
 		
 Bugs Fixed:
 	- Removed an extra character '7' from particle/system.save.data.phtml
