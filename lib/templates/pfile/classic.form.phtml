@@ -25,9 +25,6 @@
 ?>
 </head>
 <body bgcolor="white" onUnLoad="releaseLock()">
-<?php
-	$this->parents($this->path, "ShowLink.phtml","target=edit.phtml");
-?>
 <form ENCTYPE="multipart/form-data" method="post">
 <input type="hidden" name="MAX_FILE_SIZE" value="10000000">
 <input type="hidden" name="arNewType" value="<?php echo $arNewType; ?>">
