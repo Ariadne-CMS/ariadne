@@ -11,7 +11,7 @@ $permcheck[] = "config";
 $permcheck[] = "delete";
 $permcheck[] = "layout";
 
-foreach($permcheck as $curgrant){
+foreach ($permcheck as $curgrant){
 		if($AR->user->grants[$curgrant] || $AR->user->data->login == "admin") {
 			${$curgrant} = array();
 			${$curgrant}[0]=1; ${$curgrant}[1]=''; ${$curgrant}[2]='';
@@ -35,14 +35,14 @@ HM_Array1 = [
 2, // left_position
 27,
 ],
-["<?=$add[1].$ARnls["m_new"].$add[2]?>","<?if($add[0] != 0)echo"javascript:arshow('edit_object_data','object.new.select.phtml')";?>",1,0,0],
+["<?=$add[1].$ARnls["m_new"].$add[2]?>","<?if($add[0] != 0) echo "javascript:arshow('edit_object_data','object.new.select.phtml')";?>",1,0,0],
 ["<?=$delete[1].$ARnls["m_rename"].$delete[2]?>","<?=$delete[0]?"javascript:arshow('object_fs','object.rename.phtml')":''?>",1,0,0],
 ["<?=$ARnls["m_copy"]?>","javascript:arshow('object_fs','object.copy.phtml')",1,0,0],
 ["<?=$ARnls["m_link"]?>","javascript:arshow('object_fs','object.link.phtml')",1,0,0],
-['-----------------','',0,0,0],
+['<hr>','',0,0,0],
 ["<?=$add[1].$ARnls["m_import"].$add[2]?>","<?=$add[0]?"javascript:arshow('object_import','object.import.phtml')":''?>",1,0,0],
 ["<?=$ARnls["m_export"]?>","javascript:arshow('object_export','object.export.phtml')",1,0,0],
-['-----------------','',0,0,0],
+['<hr>','',0,0,0],
 ["<?=$delete[1].$ARnls["m_delete"].$delete[2]?>","<?=$delete[0]?"javascript:arshow('object_fs','object.delete.phtml')":''?>",1,0,0],
 ["<?=$ARnls["m_logoff"]?>","javascript:arshow('object_fs','object.logoff.phtml')",1,0,0]
 ]
@@ -64,12 +64,12 @@ HM_Array3 = [
 ],
 ["<?=$ARnls["m_web"]?>","javascript:arshow('_new','<?=$this->make_url(); ?>view.html')",1,0,0],
 ["<?=$ARnls["m_details"]?>","javascript:setViewit('details')",1,0,0],
-['-----------------','',0,0,0],
+['<hr>','',0,0,0],
 ["<?=$ARnls["m_explorerbar"]?>","javascript:artoggleexplorerbar()",1,0,0],
-['-----------------','',0,0,0],
+['<hr>','',0,0,0],
 ["<?=$ARnls["m_small"]?>","javascript:setViewit('small')",1,0,0],
 ["<?=$ARnls["m_large"]?>","javascript:setViewit('large')",1,0,0],
-['-----------------','',0,0,0],
+['<hr>','',0,0,0],
 ["<?=$ARnls["m_preferences"]?>","javascript:arshow('edit_preferences','<?=$this->store->root.$AR->user->path; ?>edit.preferences.phtml')",1,0,0]
 
 ]

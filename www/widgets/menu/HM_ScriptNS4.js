@@ -9,66 +9,6 @@
 * Contact peterbelesis@yahoo.co.uk for all other uses.
 */
 
-HM_a_Parameters = [
-	["MenuWidth",          150,		"number"],
-	["FontFamily",         "Arial,sans-serif"],
-	["FontSize",           10,		"number"],
-	["FontBold",           false,	"boolean"],
-	["FontItalic",         false,	"boolean"],
-	["FontColor",          "black"],
-	["FontColorOver",      "white"],
-	["BGColor",            "white"],
-	["BGColorOver",        "black"],
-	["ItemPadding",        3,		"number"],
-	["BorderWidth",        2,		"number"],
-	["BorderColor",        "red"],
-	["SeparatorSize",      1,		"number"],
-	["ImageSrc",           "HM_More_black_right.gif"],
-	["ImageSrcOver",       null],
-	["ImageSrcLeft",       "HM_More_black_left.gif"],
-	["ImageSrcLeftOver",   null],
-	["ImageSize",          5,		"number"],
-	["ImageHorizSpace",    0,		"number"],
-	["ImageVertSpace",     0,		"number"],
-	["KeepHilite",         false,	"boolean"],
-	["ClickStart",         false,	"boolean"],
-	["ClickKill",          true,	"boolean"],
-	["ChildOverlap",       20,		"number"],
-	["ChildOffset",        10,		"number"],
-	["ChildPerCentOver",   null,	"number"],
-	["TopSecondsVisible",  .5,		"number"],
-	["ChildSecondsVisible",.3,		"number"],
-	["StatusDisplayBuild", 1,		"boolean"],
-	["StatusDisplayLink",  1,		"boolean"],
-	["UponDisplay",        null,	"delayed"],
-	["UponHide",           null,	"delayed"],
-	["RightToLeft",        false,	"boolean"],
-	["CreateTopOnly",      0,		"boolean"],
-	["ShowLinkCursor",     false,	"boolean"],
-	["NSFontOver",		   true,	"boolean"]
-]
-
-HM_MenuIDPrefix = "HM_Menu";
-HM_ItemIDPrefix = "HM_Item";
-HM_ArrayIDPrefix = "HM_Array";
-
-Function.prototype.isFunction = true;
-Function.prototype.isString = false;
-String.prototype.isFunction = false;
-String.prototype.isString = true;
-String.prototype.isBoolean = false;
-String.prototype.isNumber = false;
-Number.prototype.isString = false;
-Number.prototype.isFunction = false;
-Number.prototype.isBoolean = false;
-Number.prototype.isNumber = true;
-Boolean.prototype.isString = false;
-Boolean.prototype.isFunction = false;
-Boolean.prototype.isBoolean = true;
-Boolean.prototype.isNumber = false;
-Array.prototype.itemValidation = false;
-Array.prototype.isArray = true;
-
 
 function HM_f_AssignParameters(paramarray){
 	var ParamName = paramarray[0];
