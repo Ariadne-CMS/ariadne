@@ -32,7 +32,7 @@
 </head>
 <script src="<?php echo $AR->dir->www; ?>widgets/window/savesize.js"></script>
 <body>
-<form action="edit.object.layout.save.phtml" method="post">
+<form action="edit.object.layout.save.phtml" method="post" style="height: 100%;">
 <input type="hidden" name="type" value="<?php echo $type; ?>">
 <input type="hidden" name="function" value="<?php echo $function; ?>">
 <input type="hidden" name="language" value="<?php echo $language; ?>">
@@ -80,7 +80,7 @@
 		</td>
 	</tr>
 </table>
-<textarea class="full" cols="78" rows="20" name="template" wrap="off"><?php
+<textarea cols="78" rows="20" name="template" wrap="off" class="full"><?php
 	if ($data->pinp[$type][$function][$language]) {
 		$template=$type.".".$function.".".$language.".pinp";
 		$templates=$this->store->get_filestore("templates");
