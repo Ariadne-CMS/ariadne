@@ -1,0 +1,11 @@
+<?php
+	if ($this->CheckLogin('read') && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+?>
+<body contentEditable='true'>
+<?php
+		$this->ShowPage();
+?>
+</body>
+<?php
+	}
+?>
