@@ -273,15 +273,15 @@ class ppage extends pobject { // ppage class definition
 	}
 
 	function _ShowSections($template="", $args="") {
-		return $this->ShowSections($template);
+		return $this->ShowSections($template, $args);
 	}
 
 	function _ShowTitles($template="", $args="") {
-		return $this->ShowTitles($template);
+		return $this->ShowTitles($template, $args);
 	}
 
 	function _ShowTitle($section=0, $template="", $args="") {
-		return $this->ShowTitle($section, $template);
+		return $this->ShowTitle($section, $template, $args);
 	}
 
 	function ShowPage($nls="", $source=false, $full=false) {
