@@ -195,8 +195,51 @@ class postgresqlstore {
 	}
 
 	function touch($id, $timestamp=-1) {
-		/* FIXME: implement this */
-		return 0;
+		debug("touch($id, $timestamp)","store");
+		$this->error="";
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+
+		if ($timestamp == -1) {
+			$timestamp = time();
+		}
+
+		if (is_string($id)) {
+			$epath = AddSlashes($id);
+			$query_string = "select $nodes_tbl.object from $nodes_tbl where $nodes_tbl.path = '$epath'";
+			debug("query: $query_string");
+			$qresult = pg_exec($this->connect_id, $query_string);
+			if (!$qresult) {
+				$this->error = "Could not fetch object id";
+				debug($this->error,"store");
+			} else {
+				$temp = pg_fetch_array($qresult);
+				$id = $temp["object"];
+				debug("Fetched object id(".$id.")","store");
+			}
+		} else {
+			debug("\$id(".$id.") isn't a string, so we do not look it up","store");
+		}
+
+
+		if ($id && !$this->error) {
+			$eid = AddSlashes($id);
+			$etimestamp = AddSlashes($timestamp);
+			$query_string = "update $objects_tbl set lastchanged='".date("r",$timestamp)."' where id = $eid";
+			debug("query: $query_string");
+			$qresult = pg_exec($this->connect_id,$query_string);
+			if (!$qresult) {
+				$this->error = "Could not update object";
+				debug($this->error,"store");
+			} else {
+				debug("Updated object","store");
+				$result = pg_affected_rows($qresult);
+			}
+		}
+		debug("touch: end","all");
+		return $result;
 	}
 
 	function ls($path) {
