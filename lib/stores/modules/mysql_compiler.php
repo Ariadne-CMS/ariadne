@@ -11,9 +11,15 @@
 		switch ((string)$node["id"]) {
 			case 'ident':
 				$table=$this->tbl_prefix.$node["table"];
-				$this->used_tables[$table]=$table;
 				$field=$node["field"];
-				$result=" $table". "." ."$field ";
+				$record_id=$node["record_id"];
+				if (!$record_id) {
+					$this->used_tables[$table]=$table;
+					$result=" $table.$field ";
+				} else {
+					$this->used_tables["$table as $table$record_id"] = $table.$record_id;
+					$result = " $table$record_id.$field ";
+				}
 			break;
 			case 'custom':
 				$table = $this->tbl_prefix."prop_custom";

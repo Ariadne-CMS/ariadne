@@ -46,49 +46,50 @@
 			reg[2]: property name
 			reg[3]: only used with 'my' properties
 		*/
-		$reg_id='^[[:space:]]*([a-z_][a-z0-9_]*([.][a-z_][a-z0-9_]*)?([.][a-z_][a-z0-9_]*)?)';
+		$reg_id='^[[:space:]]*(([a-z_][a-z0-9_]*)(:[a-z]+)?([.][a-z_][a-z0-9_]*)?([.][a-z_][a-z0-9_]*)?)';
 		$reg_id.='[[:space:]]*';
 
 		if (eregi($reg_id, $query, $regs) && $regs[1]) {
+			$match_1   = $regs[2];
+			$record_id = substr($regs[3], 1);
+			$match_2   = substr($regs[4], 1);
+			$match_3   = substr($regs[5], 1);
+			if (!$match_2) {
+				/* default table is 'object' */
+				$match_2 = $match_1;
+				$match_1 = "object";
+			}
 			$node["id"]="ident";
-			if (!$regs[2]) {
-				if ($regs[1]==="implements") {
-					$node["id"]="implements";
-				} else
-				if ($regs[1]==="path" || $regs[1]==="parent" || $regs[1]==="priority") {
-					$node["table"]="nodes";
-					$node["field"]=$regs[1];
-				} else {
-					$node["table"]="objects";
-					$node["field"]=$regs[1];
-				}
-			} else {
-				$table=substr($regs[1],0,-strlen($regs[2].$regs[3]));
-				$field=substr($regs[2],1);
-				if ($table=="object") {
-					if ($field==="implements") {
+
+			$table=$match_1;
+			$field=$match_2;
+			if ($table=="object") {
+				switch ($field) {
+					case "implements":
 						$node["id"]="implements";
-					} else
-					if ($field==="path" || $field==="parent" || $field==="priority") {
+					break;
+					case "path":
+					case "parent":
+					case "priority":
 						$node["table"]="nodes";
 						$node["field"]=$field;
-					} else {
+					break;
+					default:
 						$node["table"]="objects";
 						$node["field"]=$field;
-					}
-				} else
-				if ($table == "my") {
-					$node["id"] = "custom";
-					if ($regs[3]) {
-						$node["nls"] = $field;
-						$field = substr($regs[3], 1);
-					}
-					$node["field"] = $field;
-				} else {
-					$node["table"]="prop_".$table;
-					$node["field"]="AR_".$field;
 				}
-
+			} else
+			if ($table == "my") {
+				$node["id"] = "custom";
+				if ($match_3) {
+					$node["nls"] = $field;
+					$field = $match_3;
+				}
+				$node["field"] = $field;
+			} else {
+				$node["table"]="prop_".$table;
+				$node["field"]="AR_".$field;
+				$node["record_id"] = $record_id;
 			}
 			$query=substr($query, strlen($regs[0]));
 		} else {
