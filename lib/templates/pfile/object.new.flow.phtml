@@ -86,6 +86,10 @@
 	if ($arFlow[0]["current"]==1) {
 		if (wgWizGetAction($arControl)=="next") {
 			$this->call("system.save.tempfile.phtml");
+			if ($this->error) {
+				$this->call("show.error.phtml");
+				exit;
+			}
 			$HTTP_POST_VARS["mimetype"]=$HTTP_POST_VARS["file_type"];
 			while (list($key, $value)=each($configcache->nls->list)) {
 				$HTTP_POST_VARS[$key]["name"]=$HTTP_POST_VARS["file"];

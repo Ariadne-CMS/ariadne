@@ -80,7 +80,7 @@
   /**************************************************************************/
 
   $AR->VS->performscan      = false;		// Set false to disable virusscanning completely
-  $AR->VS->scannername      = 'f-prot';		// f-prot is the only supported type right now
+  $AR->VS->scannername      = 'sophos';		// f-prot and sophos are the only supported types right now
   $AR->VS->path             = '/usr/local/bin/';// where is your scanner binary
 
 
@@ -196,7 +196,7 @@
 
   /**************************************************************************/
   /* The next lines check whether the current host uses http or https as    */
-  /* its protocol. Don't change this.                                       */
+  /* its default protocol. Don't change this.                               */
   /**************************************************************************/
 
   if ($HTTP_SERVER_VARS['HTTPS']=='on') {

@@ -1,6 +1,6 @@
 <?php 
 
-	$VSsupportedscanners = "f-prot";
+	$VSsupportedscanners = "f-prot|sophos";
 
 	function virusscan($filename) {
 		global $AR, $VSsupportedscanners;
@@ -42,6 +42,29 @@
 							}
 						}
 						break;
+				case "sophos": $cmd = $path."sweep -archive -nb";
+						exec("$cmd $filename", $output, $ret);
+						// process output
+						switch($ret) {
+							case 0:
+							case 1:
+							case 2: // No virusses found or cleaned, however, something MIGHT be wrong with the setup
+								$infected = false;
+								break;
+							case 3: // A virus or something else suspicious was found, perhaps cleaned.
+								$infected = true;
+								// Find the virus ID
+								break;
+						} // Switch
+						if($infected) {
+							// Find the virus ID
+							while(list($h, $i) = each($output)) {
+								if($j = strstr($i, ">>> ")) {
+									$infectiontype = substr($j, 11, strpos($j, '\'', 12) - 12);
+								}
+							}
+						}
+						break;
 			} // Switch
 		} else {
 			// No they dont
@@ -77,6 +100,25 @@
 								$cleaned = false;
 								break;
 							case 6: // At least one file was cleaned.
+								$cleaned = true;
+								break;
+						} // Switch
+						break;
+				case "sophos": $cmd = $path."sweep -di -nc -eec -nb";
+						exec("$cmd $filename", $output, $ret);
+						// process output
+						switch($ret) {
+							case 0:
+							case 8:
+							case 12:
+							case 16:
+							case 24:
+							case 32:
+							case 36:
+							case 40: // No virusses found or cleaned, however, something MIGHT be wrong with the setup
+								$cleaned = false;
+								break;
+							case 20: // At least one file was cleaned.
 								$cleaned = true;
 								break;
 						} // Switch

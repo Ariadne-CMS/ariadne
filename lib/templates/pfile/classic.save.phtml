@@ -15,6 +15,10 @@
 	// first make sure the uploaded file is in the place where 
 	// system.save.data.phtml expects it.
 	$this->call("system.save.tempfile.phtml");
+	if ($this->error) {
+		$this->call("show.error.phtml");
+		exit;
+	}
 	// only then call system.save.data.phtml
 	$this->call("system.save.data.phtml",$arCallArgs);
 	if (!$this->error) {

@@ -373,7 +373,7 @@ class pobject extends object { // pobject class definition
 		return $this->store->make_path($this->path, $path);
 	}
 
-	function make_url($path="", $nls="", $session=true) {
+	function make_url($path="", $nls="", $session=true, $https=NULL) {
 		/* FIXME:
 		   make_url should first try to make relative links, instead
 		   of full absolute urls
@@ -433,6 +433,15 @@ class pobject extends object { // pobject class definition
 		}
 		debug("url: $url",'all');
 */
+    if (is_bool($https)) {
+    	if ($https) {
+    		if ($AR->https) {
+    			$url = ereg_replace('^http:', 'https:', $url);
+    		}
+    	} else {
+    		$url = ereg_replace('^https:', 'http:', $url);
+    	}
+    }
 		return $url;			
 	}
 
@@ -1615,8 +1624,8 @@ class pobject extends object { // pobject class definition
 		return $this->make_path($path);
 	}
 
-	function _make_url($path="", $nls="", $session=true) {
-		return $this->make_url($path, $nls, $session);
+	function _make_url($path="", $nls="", $session=true, $https=-1) {
+		return $this->make_url($path, $nls, $session, $https);
 	}
 
 	function _cached($name) {
