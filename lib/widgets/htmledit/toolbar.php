@@ -657,7 +657,7 @@ return tbContentElement_ContextMenuAction(itemIndex)
     $wgHTMLEditTemplate="user.edit.page.html";
   }
   global $QUERY_STRING;
-  if ($QUERY_STRING) {
+  if ($QUERY_STRING && (strpos($wgHTMLEditTemplate,"?") === false) ) {
     $wgHTMLEditTemplate.="?".$QUERY_STRING;
   }
   echo "SRC=\"$wgHTMLEditTemplate\"";
