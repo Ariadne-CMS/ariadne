@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta NAME="GENERATOR" CONTENT="Microsoft Visual Studio 6.0">
-<META content="text/html; charset=unicode" http-equiv=Content-Type>
+<META content="text/html; charset=UTF-8" http-equiv=Content-Type>
 <title>Edit <?php echo $path.$file; ?></title>
 
 <!-- Styles -->
@@ -191,7 +191,7 @@ function loadpage(root, path, file, name, language, type, value, save2form) {
   tbContentType=type;
   tbContentValue=new String(window.opener.wgHTMLEditContent.value);
   if (tbContentValue=='') {
-    tbContentValue='<HTML>\n<HEAD>\n  <META content="text/html; charset=unicode" http-equiv="Content-Type">\n  <TITLE></TITLE>\n</HEAD>\n<BODY>\n<P>&nbsp;</P>\n</BODY>\n</HTML>\n';
+    tbContentValue='<HTML>\n<HEAD>\n  <META content="text/html; charset=UTF-8" http-equiv="Content-Type">\n  <TITLE></TITLE>\n</HEAD>\n<BODY>\n<P>&nbsp;</P>\n</BODY>\n</HTML>\n';
   }
   tbContentSave2Form=save2form;
   if (tbContentValue.match(/<FRAME/i) && (ViewHTML.TBSTATE=="checked")) {
@@ -388,7 +388,7 @@ function AR_FORMAT_HTML(code) {
   sContents=sContents.replace(/</g,"&lt;");
   sContents=sContents.replace(/>/g,"&gt;");  
   sContents=sContents.replace(/ /g,"&nbsp;");
-  sContents=new String("<HTML><HEAD><META content=\"text/html; charset=unicode\" http-equiv=Content-Type><STYLE> P { margin: 0px;} </STYLE></HEAD><BODY STYLE=\"font:10pt courier new, monospace\">"+sContents+"</BODY></HTML>");
+  sContents=new String("<HTML><HEAD><META content=\"text/html; charset=UTF-8\" http-equiv=Content-Type><STYLE> P { margin: 0px;} </STYLE></HEAD><BODY STYLE=\"font:10pt courier new, monospace\">"+sContents+"</BODY></HTML>");
   var linebreak=sContents.lastIndexOf('\n');
   while (linebreak!=-1) {
     sContents=sContents.substr(0, linebreak-1)+'<P>'+sContents.substr(linebreak+1); 
