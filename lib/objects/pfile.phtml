@@ -35,6 +35,7 @@
 
 debug("pfile: Load","object");
 include_once($this->code."objects/pobject.phtml");
+include_once($this->code."modules/mod_url.php");
 
 class pfile extends pobject { // pfile class definition
 
@@ -44,7 +45,7 @@ class pfile extends pobject { // pfile class definition
 	}
 
 	function ParseFile($file) {
-		return str_replace("{arRoot}",$this->store->root, $file);
+		return URL::ARtoRAW($this, $file, true);
 	}
 
 	function ShowFile() {
