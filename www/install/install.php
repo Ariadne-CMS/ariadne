@@ -38,7 +38,7 @@
 		$store->add_type("ppage","pobject");
 		$store->add_type("ppage","ppage");
 
-		$name["value"]["string"]=50;
+		$name["value"]["string"]=128;
 		$name["nls"]["string"]=4;
 		$store->create_property("name", $name);
 
