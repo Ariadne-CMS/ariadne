@@ -221,10 +221,10 @@ class mod_ax {
 				if (($olddir=getcwd()) && chdir($this->tempdir)) {
 					//$command="tar -zc $exp  -f ".$this->exportfile;
 					$errfile=$this->tempdir."/tar.errors";
-					$command=sprintf($this->cmdlist->cmd_tar,$exp,$this->exportfile,$errfile);
+					$command=sprintf($this->cmdlist->cmd_tar,$exp,"export.ax",$errfile);
 					system($command,$retVar);
 					chdir($olddir);
-					copy($this->tempdir."/".$this->exportfile,$this->exportfile);
+					copy($this->tempdir."/export.ax",$this->exportfile);
 
 					if ($retVar!=0) {
 						$result="Error: Can't make .ax export file ".$this->exportfile."\n";
