@@ -69,6 +69,7 @@
 			if ($result && $result[0]) {
 				$vtype=$result[0];
 				$arResult=$vtype;
+				$properties["references"][0]["path"] = "'".AddSlashes($this->data->path)."'";
 			} else {
 				$this->error=sprintf($ARnls["err:nosupportforshortcuts"],$path);
 			}
