@@ -15,6 +15,8 @@ New features:
 	- The "Loading..." message in the tree now comes from the NLS.
 	- There is now a make_filesize() function to create human
 	  readable sizes. Example: 1 KB 2 M etc...
+	- Added a show.poweredby.phtml template to pobject, so users of
+	  Ariadne can easily show their sites are powered by Ariadne.
 
 Bugs fixed:
 	- Importing with --without-grants will nolonger destroy
