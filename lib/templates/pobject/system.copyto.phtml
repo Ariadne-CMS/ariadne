@@ -1,69 +1,76 @@
 <?php
 	debug("pobject/system.copyto.phtml: start","class");
+
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		if ($target && ($target!=".")) {
 			debug("pobject/system.copyto.phtml: target:".$target.":","all");
 			// first check to see if the target is valid
 			$parent=$this->store->make_path($target, "..");
 			if ($this->exists($parent)) {
-				/*	
-				//FIXME: for the moment no grants are copied.
-				// need to check "add" and "config" grants
-				// in the target.
-				$searchpath["puser"]="/system/users/";
-				$searchpath["pgroup"]="/system/groups/";
-				// first check and copy grants to user/group objects
-				while (list($type, $idlist)=@each($this->data->grants)) {
-					while (list($id, $grants)=@each($idlist)) {
-						while (list($grant, $value)=@each($grants)) {
-							$this->find($searchpath[$type], 
-								Array("login" => Array ( "value" => Array ("=" => "'".AddSlashes($id)."'" ) ) ), 
-								"updategrant.phtml", 
-								Array ( "action" => "add", "path" => $this->path, "grant" => $newgrant) 
-							);
+				$pobject = current($this->get($parent, "system.get.phtml"));
+				if ($pobject->CheckSilent("add", $this->type)) {
+					$oldgrants = $this->data->grants;
+					unset($this->data->grants);
+					$target=$this->make_path($target);
+					if (!$this->exists($target)) {
+						// first make sure that the object is clean (data can only be set via 
+						// the defined interface: $arCallArgs)
+						$this->data=current($this->get(".","system.get.data.phtml"));
+
+						// now save the object to get its new id.
+						if (!$this->data->$defaultnls) {
+							$this->data->nls->default=$ARConfig->nls->default;
 						}
-					}
-				}
-				*/
-				unset($this->data->grants);
-				$target=$this->make_path($target);
-				if (!$this->exists($target)) {
-					// first make sure that the object is clean (data can only be set via 
-					// the defined interface: $arCallArgs)
-					$this->data=current($this->get(".","system.get.data.phtml"));
+						$properties=$this->load_properties();
+						$ARCurrent->newpath=$this->store->save($target, $this->type, $this->data, $properties, $this->vtype, $this->priority);
+						if ($ARCurrent->newid=$this->exists($ARCurrent->newpath)) {
 
-					// now save the object to get its new id.
-					if (!$this->data->$defaultnls) {
-						$this->data->nls->default=$ARConfig->nls->default;
-					}
-					$properties=$this->load_properties();
-					$ARCurrent->newpath=$this->store->save($target, $this->type, $this->data, $properties, $this->vtype, $this->priority);
-					if ($ARCurrent->newid=$this->exists($ARCurrent->newpath)) {
-
-						// now save templates for the new object
-						if ($this->data->pinp) {
-							$templates=$this->store->get_filestore("templates");
-							while (list($type, $values)=each($data->pinp)) {
-								while (list($function, $templatelist)=each($values)) {
-									while (list($language, $id)=each($templatelist)) {
-										$template=$type.".".$function.".".$language;
-										$templates->copy($this->id, $template.".pinp", $ARCurrent->newid, $template.".pinp");
-										$templates->copy($this->id, $template, $ARCurrent->newid, $template);
-										$this->data->pinp[$type][$function][$language]=$ARCurrent->newid;
-	
-										if ($this->data->templates[$type][$function][$language]) {
-											$this->data->templates[$type][$function][$language]=$ARCurrent->newid;
+							// now save templates for the new object
+							if ($this->data->pinp) {
+								$templates=$this->store->get_filestore("templates");
+								while (list($type, $values)=each($data->pinp)) {
+									while (list($function, $templatelist)=each($values)) {
+										while (list($language, $id)=each($templatelist)) {
+											$template=$type.".".$function.".".$language;
+											$templates->copy($this->id, $template.".pinp", $ARCurrent->newid, $template.".pinp");
+											$templates->copy($this->id, $template, $ARCurrent->newid, $template);
+											$this->data->pinp[$type][$function][$language]=$ARCurrent->newid;
+		
+											if ($this->data->templates[$type][$function][$language]) {
+												$this->data->templates[$type][$function][$language]=$ARCurrent->newid;
+											}
 										}
 									}
 								}
 							}
-							// now save the modified templates arrays.
+							/*	
+							//FIXME: for the moment no grants are copied.
+							// need to check "add" and "config" grants
+							// in the target.
+							$searchpath["puser"]="/system/users/";
+							$searchpath["pgroup"]="/system/groups/";
+							// first check and copy grants to user/group objects
+							while (list($type, $idlist)=@each($this->data->grants)) {
+								while (list($id, $grants)=@each($idlist)) {
+									while (list($grant, $value)=@each($grants)) {
+										$this->find($searchpath[$type], 
+											Array("login" => Array ( "value" => Array ("=" => "'".AddSlashes($id)."'" ) ) ), 
+											"updategrant.phtml", 
+											Array ( "action" => "add", "path" => $this->path, "grant" => $newgrant) 
+										);
+									}
+								}
+							}
+							*/
 							$this->store->save($ARCurrent->newpath, $this->type, $this->data);
-						}
-					} // else: first save failed.
 
+						} // else: first save failed.
+
+					} else {
+						$arResult=sprintf($ARnls["err:alreadyexists"],$target);
+					}
 				} else {
-					$arResult=sprintf($ARnls["err:alreadyexists"],$target);
+					$arResult = $ARnls["accessdenied"];
 				}
 			} else {
 				$arResult=sprintf($ARnls["err:wrongpath"],$parent);

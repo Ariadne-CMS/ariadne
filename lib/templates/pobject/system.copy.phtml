@@ -11,25 +11,22 @@
 				calling template should first remove it
 		FIXME: implement above description :)
 	*/
-	if ($this->CheckSilent("add")) {
-		if (!$source || !$this->exists($source)) {
-			$this->error=sprintf($ARnls["err:wrongpath"],$source);
-		} else {
-			if (!$target) {
-				$target=end(explode("/",$source));
-				if (!$target) {
-					$target="{5:id}"; // can only happen if $source=="/" ?
-				}
-			}
-			$this->error=current($this->get($source, "system.copyto.phtml", Array (
-						"target" 	=> $this->path.$target."/", 
-						"search"	=> $search,
-						"replace"	=> $replace,
-						"defaultnls"=> $ARConfig->nls->default)));
-		}
+	if (!$source || !$this->exists($source)) {
+		$this->error=sprintf($ARnls["err:wrongpath"],$source);
 	} else {
-		$this->error=$ARnls["err:nopermission"];
+		if (!$target) {
+			$target=end(explode("/",$source));
+			if (!$target) {
+				$target="{5:id}"; // can only happen if $source=="/" ?
+			}
+		}
+		$this->error=current($this->get($source, "system.copyto.phtml", Array (
+					"target" 	=> $this->path.$target."/", 
+					"search"	=> $search,
+					"replace"	=> $replace,
+					"defaultnls"=> $ARConfig->nls->default)));
 	}
+
 	if ($this->error) {
 		$arResult=$this->error;
 	}
