@@ -1,7 +1,7 @@
 1. Using the Ariadne FTP server.
 --------------------------------
 
-This document outlines howto use the Ariadne FTP server. It assumes that you
+This document outlines how to use the Ariadne FTP server. It assumes that you
 already have installed the Ariadne FTP server. You can find more information
 about installing the Ariadne FTP server in the file "install.txt" in this 
 directory.
@@ -40,7 +40,7 @@ changing which part of each object the server shows.
 	object and the output sent to the FTP client.
 
 	If you upload a file, while listmode is set to '#files#', the uploaded file 
-	will be transformed into Ariadne object. The class of the object depends on
+	will be transformed into an Ariadne object. The class of the object depends on
 	the mimetype of the file. For each uploaded file the mimetype is checked by
 	walking through a list of mimetype -> objecttype mappings. These mappings 
 	can be configured in the ariadne.phtml configuration file.
@@ -54,7 +54,7 @@ changing which part of each object the server shows.
 	with the mimetype of the uploaded file. If the regular expression matches 
 	the mimetype then the class of the object will be set to that value.
 
-	For example, if an uplaoded file has the mimetype 'image/x-jpeg',
+	For example, if an uploaded file has the mimetype 'image/x-jpeg',
 	the '^image/' expression will match it and the new object will be of the 
 	class "pphoto".
 
@@ -81,13 +81,13 @@ changing which part of each object the server shows.
 		'pphoto', ...)
 
 		[template name]
-		This is the name of the template (eg view.html)
+		This is the name of the template (e.g. view.html)
 
 		[language]
 		This tells Ariadne which language this template uses (en, nl, any, ...)
 
 
-	Any file uploaded in #templates# mode will be saved as a pinp template in 
+	Any file uploaded in #templates# mode will be saved as a PINP template in 
 	the current object.
 	It won't pass through the mimetype check. So, if you upload an image in 
 	#templates# mode, Ariadne will not create a pphoto object for you, it will 
@@ -97,7 +97,7 @@ changing which part of each object the server shows.
 
 	This mode is currently not finished. In the future it will allow you to 
 	download the entire object in an as yet unknown format.
-	FOr now it can be used to quickly browse through the Ariadne store.
+	For now it can be used to quickly browse through the Ariadne store.
 
 
 4 Tested FTP Clients

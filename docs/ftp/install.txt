@@ -4,7 +4,7 @@ The Ariadne FTP loader.
 1. What does it do?
 -------------------
 
-The Ariadne FTP loader is an PHP script which can handle FTP requests
+The Ariadne FTP loader is a PHP script which can handle FTP requests
 and translate them to Ariadne specific requests. This way you can use 
 an FTP client for:
 
@@ -42,7 +42,7 @@ configuration settings.
 
 	If you turn on the debug system within the Ariadne loader, all messages
 	will be written to this file. Make sure that the Ariadne FTP server
-	user has write permissions on this file.
+	user (see 4.2,4.3) has write permissions on this file.
 
 
 3. Setting up Ariadne
@@ -51,8 +51,9 @@ configuration settings.
 3.1 User grants
 ---------------
 
-Every user you want to have ftp access to Ariadne, need the 'ftp' grant on
-the ftp site root path. Note that the 'admin' user will always have access.
+If you want to give a user ftp access to Ariadne, you need to set the 'ftp'
+grant for that user on the path specified in $ftp_config['root'].
+Note that the 'admin' user will always have access.
 
 3.2 File-type casting
 ---------------------
@@ -149,7 +150,7 @@ This file should contain something like:
 		protocol	= tcp
 		disable		= no
 		flags		= REUSE
-		socket_type = stream
+		socket_type 	= stream
 		user		= apache
 		server		= /usr/bin/php
 		server_args	= -f /usr/local/lib/ariadne/ftp/loader.php default.phtml
