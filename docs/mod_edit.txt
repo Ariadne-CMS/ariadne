@@ -1,0 +1,112 @@
+mod_edit.php documentation
+
+status: not finished
+
+methods:
+
+	function _setEditmode(&$object, $mode=false) 
+
+		set editMode on (true) or off (false)
+
+
+	function _getEditmode(&$object) 
+
+		get current editMode setting
+
+
+	function _showSpan(&$object, $var, $name) 
+
+		show an editable element as an editable span, if 
+		editMode is on, or simply echo it if not
+
+	function _showDiv(&$object, $var, $name) 
+
+		show an editable element as an editable div, if 
+		editMode is on, or simply echo it if not.
+
+	function _openForm(&$object) 
+
+		Open a form tag if editMode is on, needed if you
+		need to display meta data input fields
+
+	function _closeForm(&$object) 
+
+		Close the form tag if editMode is on.
+
+	function _registerData(&$object) 
+
+		register all the data fields and objects that are
+		editable on the current page. This function is not
+		finished yet.
+
+
+Missing:
+
+- a printHeaders() method, or something like it, which makes
+  sure the correct javascript and css files are loaded.
+- easy save routines for user.edit.save.html
+- workable user interface for adding new objects, without using 
+  the wizards
+- better solution for presenting metadata
+
+The last two problems may have a single solution:
+
+How about we add a sidebar to the editor widget, which can enabled 
+or disabled by the user. If you click on an editable element, the
+sidebar will show a form with the current data for the object of 
+which the element is a part. This form allows full access to all 
+the data elements of the object. It should probably be updated 
+immediately when the clicked element is changed, preferably character 
+for character, just as any 'copy' of the element elsewhere in the page
+is also immediately updated on any change.
+
+Now if you add a new object, you simply display the sidebar, show
+the form for a new object, and when a minimal amount of info is set,
+allow it to be saved and update the editable page.
+
+In the mean time, this is how it is supposed to work:
+
+view.html:
+<pinp>
+  load('mod_edit.php');
+</pinp>
+<html>
+<body>
+  <h1><pinp> edit::showSpan($nlsdata->name, $nls.'[name]'); </pinp></h1>
+  <p><pinp>
+    edit::showDiv(ParsePage($nlsdata->summary), $nls.'[summary]');
+  </pinp></p>
+  <ul>
+  <pinp>
+    ls('show.subnav.html');
+  </pinp>
+  </ul>
+  <pinp>
+    edit::showDiv( GetPage(), $nls.'[page']);
+  </pinp>
+</body>
+</html>
+
+show.subnav.html:
+<pinp>
+  load('mod_edit.php');
+</pinp>
+<li><pinp>
+  edit::showSpan($nlsdata->name, $nls.'[name]');
+</pinp></li>
+
+user.edit.page.html
+<pinp>
+  load('mod_edit.php');
+  if (checkgrant('edit')) {
+    edit::setEditMode(true); 
+  }
+  call('view.html');  
+  edit::registerData();
+</pinp>
+
+where when the user via either a link in a page, or a bookmarklet button 
+in the browser, opens the user.edit.html template, it shows a toolbar, and
+loads an iframe with the user.edit.page.html template, which only sets the
+editMode on and then loads the normal view.html template.
+
