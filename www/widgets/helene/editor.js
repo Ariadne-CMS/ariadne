@@ -1148,6 +1148,11 @@
 
 	function do_Backspace() {
 		var result=true;
+		if(userSelecting) {
+			stopSelect();
+			removeSelectedText();
+			return false;
+		}
 		if (addedSpaces) {
 			removeAddedSpaces();
 			result=false;
