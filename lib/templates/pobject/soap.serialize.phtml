@@ -1,0 +1,20 @@
+<?php
+  if ($this->CheckSilent("read") && $this->CheckConfig()) {
+	if (is_array($this->data->nls->list)) {
+		reset($this->data->nls->list);
+		while (list($nlskey, $nlsvalue) = each($this->data->nls->list)) {
+			if (is_object($this->data->$nlskey)) {
+				reset($this->data->$nlskey);
+				while (list($key, $value) = each($this->data->$nlskey)) {
+					$result[$nlskey][$key] = (string)$value;
+				}
+			}
+		}
+	}
+
+	$result["type"] = $this->type;
+	$result["value"] = (string)$this->data->value;
+
+	$arResult = $result;
+  }
+?>
