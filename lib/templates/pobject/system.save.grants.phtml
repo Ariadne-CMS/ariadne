@@ -88,7 +88,7 @@
 				}
 			}
 			if ($delete) {
-				arDelGrant($this->data->grants[$type], $id, $grant, $modifier);
+				arDelGrant($this->data->config->grants[$type], $id, $grant, $modifier);
 				$result=current($this->get($path, "system.save.grants.user.phtml", Array(
 								"action"	=> "delete",
 								"path"		=> $this->path,
@@ -124,8 +124,8 @@
 								}
 							} else if (ereg('(\{(.*)\})',$firstgrant,$regs)) {
 								$cloned="";
-								if ($this->data->grants[$type][$regs[2]]) {
-									while (list($key, $value)=each($this->data->grants[$type][$regs[2]])) {
+								if ($this->data->config->grants[$type][$regs[2]]) {
+									while (list($key, $value)=each($this->data->config->grants[$type][$regs[2]])) {
 										if (is_array($value)) {
 											$cloned.="$key ( ";
 											while (list($modifier, $mod_val)=each($value)) {
@@ -140,17 +140,17 @@
 								$newgrants=ereg_replace(" ?".$regs[1]." ?",AddSlashes($cloned),$newgrants);
 							}
 							$g_comp = new mod_grant;
-							$grants = $this->data->grants[$type][$id];
+							$grants = $this->data->config->grants[$type][$id];
 							if (!is_array($grants)) {
 								$grants = Array();
 							}
 							$g_comp->compile($newgrants, $grants);
 							if (!$g_comp->error) {
-								$this->data->grants[$type][$id] = $grants;
-								if (!@count($this->data->grants[$type][$id])) {
-									unset($this->data->grants[$type][$id]);
-									if (!@count($this->data->grants[$type])) {
-										unset($this->data->grants[$type]);
+								$this->data->config->grants[$type][$id] = $grants;
+								if (!@count($this->data->config->grants[$type][$id])) {
+									unset($this->data->config->grants[$type][$id]);
+									if (!@count($this->data->config->grants[$type])) {
+										unset($this->data->config->grants[$type]);
 									}
 								}
 							} else {

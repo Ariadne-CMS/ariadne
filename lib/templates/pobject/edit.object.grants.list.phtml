@@ -143,8 +143,8 @@
   id2path['pgroup'] = new Array();
   id2path['puser'] = new Array();
 <?php
-    if (is_array($data->grants)) {
-		foreach ($data->grants as $type => $grantslist) {
+    if (is_array($data->config->grants)) {
+		foreach ($data->config->grants as $type => $grantslist) {
 			while (list($id, $grants)=@each($grantslist)) {
 				switch ($type) {
 					case 'pgroup':
@@ -289,9 +289,9 @@
 					}
 				}
 			}
-			if ($data->grants && is_array($data->grants)) {
-				DisplayGrants($data->grants,"pgroup");
-				DisplayGrants($data->grants,"puser");
+			if ($data->config->grants && is_array($data->config->grants)) {
+				DisplayGrants($data->config->grants,"pgroup");
+				DisplayGrants($data->config->grants,"puser");
 			}
 
 			// get a list of all previous defined grants
