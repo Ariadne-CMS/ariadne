@@ -299,7 +299,7 @@ function InsertTable() {
   
   arr = showModalDialog( "<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/Inc/instable.htm",
                              args,
-                             "font-family:Verdana; font-size:12; dialogWidth:36em; dialogHeight:25em");
+                             "font-family:Verdana; font-size:12; dialogWidth:36em; dialogHeight:24em; status: no;");
   if (arr != null) {
   
     // Initialize table object
@@ -584,7 +584,7 @@ function DECMD_SHOWDETAILS_onclick() {
 function DECMD_SETFORECOLOR_onclick() {
   var arr = showModalDialog( "<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/Inc/selcolor.htm",
                              "",
-                             "font-family:Verdana; font-size:12; dialogWidth:30em; dialogHeight:34em" );
+                             "font-family:Verdana; font-size:12; dialogWidth:30em; dialogHeight:33em; status: no;" );
 
   if (arr != null) {
     tbContentElement.ExecCommand(DECMD_SETFORECOLOR,OLECMDEXECOPT_DODEFAULT, arr);
@@ -594,7 +594,7 @@ function DECMD_SETFORECOLOR_onclick() {
 function DECMD_SETBACKCOLOR_onclick() {
   var arr = showModalDialog( "<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/Inc/selcolor.htm",
                              "",
-                             "font-family:Verdana; font-size:12; dialogWidth:30em; dialogHeight:34em" );
+                             "font-family:Verdana; font-size:12; dialogWidth:30em; dialogHeight:33em; status: no;" );
 
   if (arr != null) {
     tbContentElement.ExecCommand(DECMD_SETBACKCOLOR,OLECMDEXECOPT_DODEFAULT, arr);
@@ -844,7 +844,7 @@ function DECMD_HYPERLINK_onclick() {
 	entered there and come back here
 	*/ 
 	arr = showModalDialog( "<?php echo $this->store->root.$AR->user->path; 
-		?>edit.object.html.link.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:12em");
+		?>edit.object.html.link.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:11em; status: no;");
 	if (arr != null){
 	    if (oParent) {
 			for (i=0; i<oParent.attributes.length; i++) {
