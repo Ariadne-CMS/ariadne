@@ -16,7 +16,9 @@
 				} else
 				if (is_object($data)) {
 					while (list($key, $val)=each($data)) {
+						echo "converting ($key::$val)\n";
 						$data->$key = convData2UTF8($val, $charset);
+						echo "to (".$data->$key.")\n";
 					}
 				} else {
 					$data = unicode::convertToUTF8($charset, $data);
@@ -28,6 +30,7 @@
 		if (is_array($convert_charsets)) {
 			reset($convert_charsets);
 			while (list($nls, $charset)=each($convert_charsets)) {
+				echo "converting charset ($nls, $charset)\n";
 				$this->data->$nls = convData2UTF8($this->data->$nls, $charset);
 			}
 		}

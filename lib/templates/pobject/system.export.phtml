@@ -146,9 +146,9 @@
 						}
 
 						if (!$ARCurrent->saved_object[$object->id]) {
-							if ((!$ARCurrent->options["force"] || $object->axflags) && $ARCurrent->importStore->exists($newpath)) {
+							if ((!$ARCurrent->options["force"] || ($object->axflags & (AX_DUMMY | AX_WITHOUT_DATA))) && $ARCurrent->importStore->exists($newpath)) {
+echo "1\n";
 								$ARCurrent->saved_object[$object->id]=$newpath;
-
 								// we may never overwrite an existing object with a
 								// dummy object
 								if (!($object->axflags & AX_DUMMY) && 
