@@ -20,6 +20,8 @@ New Features:
 	  by Lukasz Keler. 
 
 Bugs Fixes:
+	- Fixed URL rewriting in mod_url when a siteobject had not yet been
+	  configured with an URL.
 	- Fixed a URL check in pbookmark which did not accept '-' as a valid domain
 	  character.
 	- helene (the syntax highlighting editor) now understands javascript in templates
