@@ -1,4 +1,30 @@
-Ariadne 2.0
+Ariadne 2.1
+Changes in ariadne since version 2.0
+
+New features:
+	- Added a new 'WinXP' interface, by Chris van de Steeg
+	- Added a new, rewritten PINP compiler, which should be much more secure
+	- Added profiles for users (pprofile)
+	- Added the combine method to pphoto class, which allows multiple images to be
+	  combined into a single image.
+	- Improved session functionality:
+	  - Ariadne is now able to respawn a session on a cookie only.
+	  - When a session expires, available POST and GET information will be 
+	    saved and restored after a succesful re-authentication.
+	- Added zlib output compression support to the www loader
+	- Added support for PEAR's TAR to the axstore
+
+Bugs fixed:
+	- Many bugfixes in the MSSQL store by Pascal Hofstee
+	- Updated NLS files and replaced static error messages with their
+	  NLS equivalents.
+	- Property deletion: properties weren't deleted upon object removal because of a typo.
+	- Fixed MySQL session updates (Thanks to Hanne Johann)
+	- Changed AddSlashes to AddCSlashes so we do not depend on PHP's
+	  default escaping mechanism (it clashed with the MSSQL settings)
+	- It's now possible to run PHP with 'register_globals' set to off.
+	- Fixed a security bug.
+	- and numerous other bugs.
 
 Changes in ariadne since version 2.0RC3
 
