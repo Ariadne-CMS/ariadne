@@ -179,7 +179,7 @@ class mysqlstore {
 		$result["method"]="get";
 		$result["path"]=$path;
 		$epath=AddSlashes(strtoupper($path));
-		$query_string="select nodes.path, nodes.parent, objects.id, objects.type, objects.object, objects.lastchanged from objects, nodes where objects.id=nodes.object and UPPER(nodes.path)='$epath'";
+		$query_string="select nodes.path, nodes.parent, objects.id, objects.type, objects.object, UNIX_TIMESTAMP(objects.lastchanged) as lastchanged from objects, nodes where objects.id=nodes.object and UPPER(nodes.path)='$epath'";
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
 		debug("get: end","all");
 		return $result;
@@ -200,7 +200,7 @@ class mysqlstore {
 		debug("ls($path)","store");
 		$this->error="";
 		$epath=AddSlashes(strtoupper($path));
-		$query_string="select distinct(nodes.path), nodes.parent, objects.id, objects.type, objects.object, objects.lastchanged from objects, nodes where objects.id=nodes.object and UPPER(nodes.parent)='$epath' order by nodes.path";
+		$query_string="select distinct(nodes.path), nodes.parent, objects.id, objects.type, objects.object, UNIX_TIMESTAMP(objects.lastchanged) as lastchanged from objects, nodes where objects.id=nodes.object and UPPER(nodes.parent)='$epath' order by nodes.path";
 		$result["method"]="ls";
 		$result["path"]=$path;
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
@@ -225,7 +225,7 @@ class mysqlstore {
 		debug("parents($path)","store");
 		$this->error="";
 		$epath=AddSlashes(strtoupper($path));
-		$query_string="select distinct(nodes.path), nodes.parent, objects.id, objects.type, objects.object, objects.lastchanged from objects, nodes where objects.id=nodes.object and UPPER(nodes.path)=substring('$epath',1,length(path)) order by path";
+		$query_string="select distinct(nodes.path), nodes.parent, objects.id, objects.type, objects.object, UNIX_TIMESTAMP(objects.lastchanged) as lastchanged from objects, nodes where objects.id=nodes.object and UPPER(nodes.path)=substring('$epath',1,length(path)) order by path";
 		$result["method"]="parents";
 		$result["path"]=$path;
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
@@ -286,7 +286,7 @@ class mysqlstore {
 									$where.=" and UPPER(nodes.parent) $ecompare UPPER($value) ";
 									break;
 								case ("lastchanged") :
-									$where.=" and objects.lastchanged $ecompare $value ";
+									$where.=" and UNIX_TIMESTAMP(objects.lastchanged) $ecompare $value ";
 									break;
 							}
 							break;
@@ -299,7 +299,7 @@ class mysqlstore {
 				$where.=" prop_$eproperty.object=objects.id)	";
 			}
 		}
-		$query_string="select distinct(nodes.path), nodes.parent, objects.id, objects.type, objects.object, objects.lastchanged from nodes, objects $from $types where objects.id=nodes.object and UPPER(nodes.path) like '$epath%' and ( (".substr($where,4).") ) order by nodes.path limit $offset,$limit";
+		$query_string="select distinct(nodes.path), nodes.parent, objects.id, objects.type, objects.object, UNIX_TIMESTAMP(objects.lastchanged) as lastchanged from nodes, objects $from $types where objects.id=nodes.object and UPPER(nodes.path) like '$epath%' and ( (".substr($where,4).") ) order by nodes.path limit $offset,$limit";
 		debug("find: query=$query_string","all");
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
 
@@ -751,7 +751,7 @@ class mysqlstore {
 			if (!$property) { // remove all properties for $object
 				$query_string="select name from properties";
 				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
-				while ($row=mysql_fetch_array($temp)) {
+				while ($row=@mysql_fetch_array($temp)) {
 					$query_string="delete from prop_".$row["name"]." where object=$object";
 					mysql_db_query($this->database,$query_string, $this->connect_id);
 					$result+=mysql_affected_rows($this->connect_id);

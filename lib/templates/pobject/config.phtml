@@ -112,21 +112,8 @@
       <td>
         <select name="typetree">
         <?php
-          $trees=$this->ls("/system/ariadne/typetree/","Get.phtml");
-          $options["inherit"]=$ARnls["inherit"];
-          if ($trees) {
-            while (list($key, $tree)=each($trees)) {
-              $options[$tree->path]=$tree->data->name;
-            }
-          }
-          reset($options);
-          while (list($path, $name)=each($options)) {
-            if ($path==$data->typetree) {
-              echo "<option value=\"$path\" selected>$name\n";
-            } else {
-              echo "<option value=\"$path\">$name\n";
-            }
-          }      
+          echo "<option value=\"inherit\">".$ARnls["inherit"]."</option>\n";
+          $this->ls("/system/ariadne/typetree/","show.option.phtml","selected=".RawUrlEncode($data->typetree));
         ?>
         </select>
       </td><td>
