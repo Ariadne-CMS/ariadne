@@ -14,6 +14,11 @@
 	| path     | varchar(127)  |      | MUL |         |       |
 	+----------+---------------+------+-----+---------+-------+
 
+	error numbers:
+
+	1	lock()	mysql error when running lock query
+	2	lock()	path already locked by someone else
+
 **************************************************************************/
 
 
@@ -35,12 +40,12 @@ class mysqllock {
 	}
 
 	function select_db($database="modules", $connectid=false) {
-	debug("mysqllock::select_db($database, $connectid)");
+		debug("mysqllock::select_db($database, $connectid)");
 		$this->database=$database;
 		if ($connectid!==false) {
 			$this->connectid=$connectid;
 		}
-	debug("mysqllock::select_db end");
+		debug("mysqllock::select_db end");
 	}
 
 	function get_locks($identity) {
@@ -67,35 +72,35 @@ class mysqllock {
 		$query_string="lock tables locks write";
 		@mysql_db_query($this->database, $query_string,$this->connectid);
 
-		// check if there is no parentlock
+		// check if the path is not already locked by a parent
 		$query_string="
-		select path, release, type, identity from locks where
-		(				
-			( path=substring('".AddSlashes($path)."',1,length(path)) AND
-			  type='T' ) OR
-			( path='".AddSlashes($path)."' )
-		) ";
+			select path, release, type, identity 
+			  from locks 
+			 where ( ( path=substring('".AddSlashes($path)."',1,length(path)) 
+				       AND type='T' ) 
+				     OR ( path='".AddSlashes($path)."' ) ) ";
 
-		// if we are locking a whole tree we must check if no
-		// child has been locked
+		// if we are locking a whole tree we must also check if no
+		// child has been locked already
 		if ($type=="T") {
-			$query_string.="
-			OR ( path like '".AddSlashes($path)."%' )
-			";
+			$query_string.=" OR ( path like '".AddSlashes($path)."%' ) ";
 		}
 
-		$locked=false;
+		$alreadylocked=false;
 		// see if this lock is still alive
 		$query_string.="AND release>=".time();
 		$query=@mysql_db_query($this->database, $query_string, $this->connectid);
-		while ($result=@mysql_fetch_array($query)) {
-			$locks[]=$result;
-			if ($result["identity"]!=$identity) {
-				$locked=true;
+		while ($lock=@mysql_fetch_array($query)) {
+			if ($lock["identity"]!=$identity) {
+				// this is a lock with another identity, so fail the current lock attempt
+				$alreadylocked=true;
+				$this->locklist[]=$lock;
 			}
 		}
 
-		if (!$locked) {
+		$result=false;
+		if (!$alreadylocked) {
+			// clear old lock entries
 			$query_string="
 				delete from locks where path='".AddSlashes($path)."'";
 
@@ -107,20 +112,28 @@ class mysqllock {
 				'".AddSlashes($identity)."')";
 
 			mysql_db_query($this->database, $query_string, $this->connectid);
+			if (!mysql_errno()) {
+				$result=true;
+			} else {
+				$this->error=2;
+				$this->error_message="MOD_LOCK: ERROR 2: ".mysql_error();
+			}
+		} else {
+			$this->error=1;
+			$this->error_message="MOD_LOCK: ERROR 1: $path already locked.";
 		}
-
-		$this->lastLockResult=$locks;
-
 		$query_string="unlock tables";
 		mysql_db_query($this->database,$query_string,$this->connectid);
 
-		return (!$locked);
+		return ($result);
 	}
 
 	function unlock($identity,$path="") {
 
 		$query_string="delete from locks where identity='".AddSlashes($identity)."'";
-		if ($path) $query_string.=" and path='".AddSlashes($path)."'";
+		if ($path) {
+			$query_string.=" and path='".AddSlashes($path)."'";
+		}
 		mysql_db_query($this->database, $query_string, $this->connectid);
 
 	}
