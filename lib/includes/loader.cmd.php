@@ -42,16 +42,17 @@
 	$DB["pinp"]=1;
 	$DB["off"]=0;
 	$DB["level"]=$DB["off"];
+	$DB["stream"]="all";
 
 	$DB["file"]="php://stderr";
 
-	function debug($text, $level="pinp", $indent="") {
+	function debug($text, $level="pinp", $stream="all", $indent="") {
 		global $DB, $DB_INDENT;
-	 	if ($DB["level"]>=$DB[$level]) {
+	 	if ( ($DB["level"]>=$DB[$level]) && (($DB["stream"]=="all") || ($DB["stream"]==$stream))) {
 			if ($indent=="OUT") {
 				$DB_INDENT=substr($DB_INDENT,0,-2);
 			}
-			fwrite($DB["fp"], "$DB_INDENT $level::$text\n");
+			fwrite($DB["fp"], "$DB_INDENT $level::$stream::$text\n");
 			fflush($DB["fp"]);
 			if ($indent=="IN") {
 				$DB_INDENT.="  ";
@@ -59,13 +60,14 @@
 		}
 	}
 
-	function debugon($level="pinp") {
+	function debugon($level="pinp", $stream="all") {
 		global $DB;
 		if (file_exists($DB["file"])) {
 			$DB["fp"]=fopen($DB["file"], "a+");
 			if ($DB["fp"]) {
 				$DB["level"]=$DB[$level];
-				debug("Debuglevel: $level");
+				$DB["stream"]=$stream;
+				debug("Debuglevel: $level Stream: $stream");
 			}
 		}
 	}

@@ -41,20 +41,21 @@
 	$DB["pinp"]=1;
 	$DB["off"]=0;
 	$DB["level"]=$DB["off"];
+	$DB["stream"]="all";
 
 	$DB["file"]=$ftp_config["debugfile"];
 
-	function debug($text, $level="pinp", $indent="") {
+	function debug($text, $level="pinp", $stream="all", $indent="") {
 	global $DB, $DB_INDENT, $AR;
-		if ($DB["level"]>=$DB[$level]) {
+		if ( ($DB["level"]>=$DB[$level]) && (($DB["stream"]=="all") || ($DB["stream"]==$stream))) {
 			if ($indent=="OUT") {
 				$DB_INDENT=substr($DB_INDENT,0,-2);
 			}
 			if ( ($AR->DEBUG == 'SYSLOG') || ($AR->DEBUG == 'BOTH') ) {
-				syslog(LOG_NOTICE,"(Ariadne) $level::$text");
+				syslog(LOG_NOTICE,"(Ariadne) $level::$stream::$text");
 			}
 
-			fwrite($DB["fp"], "$DB_INDENT $level::$text\n");
+			fwrite($DB["fp"], "$DB_INDENT $level::$stream::$text\n");
 			fflush($DB["fp"]);
 
 			flush();
@@ -64,12 +65,13 @@
 		}
 	}
 
-	function debugon($level="pinp") {
+	function debugon($level="pinp", $stream="all") {
 	global $DB;
 		$DB["fp"]=fopen($DB["file"], "a+");
 		if ($DB["fp"]) {
 			$DB["level"]=$DB[$level];
-			debug("Debuglevel: $level");
+			$DB["stream"]=$stream;
+			debug("Debuglevel: $level Stream: $stream");
 		}
 	}
 
