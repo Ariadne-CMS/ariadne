@@ -63,33 +63,30 @@
     }
 ?>
   var buttons_disabled=new Array();
-  var tbContentEditOptions=new Array();
+//  var tbContentEditOptions=new Array();
 <?php
 	// load editor.ini, in case the editor is started directly, not through the 
 	// js.html file
 	$options=$this->call("editor.ini");
-	if (is_array($options)) {
-		while (list($key, $value)=each($options)) {
-			if (is_string($key)) {
-				$skey='"'.$key.'"';
-			} else {
-				$skey=$key;
+
+	function make_ini_options($name, $option) {
+		if (is_array($option)) {
+			reset($option);
+			echo "	$name = new Array();\n";
+			while (list($key, $value)=each($option)) {
+				make_ini_options($name."[\"$key\"]", $value);
 			}
-			if (is_array($value)) {
-				echo "  tbContentEditOptions[$skey]=new Array();\n";
-				while (list($key2, $value2)=each($value)) {
-					if (is_string($key2)) {
-						$skey2='"'.$key2.'"';
-					} else {
-						$skey2=$key2;
-					}
-					echo "  tbContentEditOptions[$skey][$skey2]='".AddCSlashes($value2, ARESCAPE)."';\n";
-				}
-			} else {
-				echo "  tbContentEditOptions[$skey]='".AddCSlashes($value, ARESCAPE)."';\n";
-			}
+		} else
+		if (is_string($option)) {
+			echo "	$name = \"".AddCSlashes($option, ARESCAPE)."\";\n";
+		} else {
+			echo "	$name = ".(int)$option.";\n";
 		}
 	}
+
+	echo "var ";
+	make_ini_options("tbContentEditOptions", $options);
+
 ?>
   if (!tbContentEditOptions['editor.ini']) {
     tbContentEditOptions['editor.ini']='<?php echo $this->path; ?>';
@@ -783,6 +780,7 @@ function DECMD_IMAGE_onclick() {
       args['vspace'] = elIMG.vspace;
       args['align'] = elIMG.align;
       args['alt'] = elIMG.alt;
+      args['ar:type'] = elIMG['ar:type'];
     }
   } else {
     elIMG=false;
@@ -827,6 +825,12 @@ function IMAGE_set(arr) {
 	}
 	if (arr['alt']!='') {
 	  temp+=' ALT="'+arr['alt']+'"';
+	}
+	if (arr['class']!='') {
+		temp+=' CLASS="'+arr['class']+'"';
+	}
+	if (arr['ar:type']!='') {
+		temp+=' ar:type="'+arr['ar:type']+'"';
 	}
 	temp+='>';
     if (window.elIMG) { // insert a new img
@@ -1149,6 +1153,81 @@ function FontSize_onchange() {
   tbContentElement.focus();
 }
 
+function loadStyleSheet() {
+  tbContentElement.DOM.createStyleSheet(tbContentEditOptions["css"]["stylesheet"], 0);
+}
+
+function init_cssStyle() {
+  var inline = tbContentEditOptions['css']['inline'];
+  cssStyle.options[0] = new Option('Styles', '');
+  cssStyle.options[1] = new Option('Clear', '');
+  for (i=0; i<inline.length; i++) {
+    cssStyle.options[i+2] = new Option(inline[i], inline[i]);
+  }
+}
+
+function decCommand(cmdId, cmdExecOpt, url)
+{
+	var status = tbContentElement.QueryStatus(cmdId) ;
+	
+	if ( status != DECMDF_DISABLED && status != DECMDF_NOTSUPPORTED )
+	{
+		if (cmdExecOpt == null) cmdExecOpt = OLECMDEXECOPT_DODEFAULT ;
+		tbContentElement.ExecCommand(cmdId, cmdExecOpt, url) ;
+	}
+	tbContentElement.focus() ;
+}
+
+function cssStyle_onChange(command)
+{
+	
+	var oSelection = tbContentElement.DOM.selection ;
+	var oTextRange = oSelection.createRange() ;
+	if (oSelection.type == "Text")
+	{
+		decCommand(DECMD_REMOVEFORMAT);
+	//	doFormatBlock( FCKFormatBlockNames[0] );	// This value is loaded at CheckFontFormat()
+ 
+		var oSpan = document.createElement("SPAN") ;
+		oSpan.innerHTML = oTextRange.htmlText ;
+		
+		var oParent = oTextRange.parentElement() ;
+		var oFirstChild = oSpan.firstChild ;
+		
+		if (oFirstChild.nodeType == 1 && oFirstChild.outerHTML == oSpan.innerHTML && 
+				(oFirstChild.tagName == "SPAN"
+				|| oFirstChild.tagName == "FONT"
+				|| oFirstChild.tagName == "P"
+				|| oFirstChild.tagName == "DIV"))
+		{
+			if (!command.value) {
+				if (oFirstChild.tagName=="SPAN") {
+					oParent.outerHTML=oParent.innerHTML;
+				} else {
+					oParent.className = NULL;
+				}
+			} else {
+				oParent.className = command.value ;
+			}
+		}
+		else
+		{
+			oSpan.className = command.value ;
+			oTextRange.pasteHTML( oSpan.outerHTML ) ;
+		}
+	}
+	else if (oSelection.type == "Control" && oTextRange.length == 1)
+	{
+		var oControl = oTextRange.item(0) ;
+		oControl.className = command.value ;
+	}
+	
+	command.selectedIndex = 0 ;
+	
+	tbContentElement.focus();
+}
+
+
 function tbContentElement_DocumentComplete() {
 
     if (initialDocComplete) {
@@ -1159,12 +1238,14 @@ function tbContentElement_DocumentComplete() {
       URL_VALUE = tbContentElement.CurrentDocumentPath;
     }
   }
-
   if (tbContentEditOptions["stylesheet"]) {
     if (tbContentElement.DOM.styleSheets.length==0) {
-      tbContentElement.DOM.createStyleSheet(tbContentEditOptions["stylesheet"],0);
+      tbContentElement.DOM.createStyleSheet(tbContentEditOptions["css"]["stylesheet"],0);
     }    
   }
+  init_cssStyle();
+  loadStyleSheet();
+
   initialDocComplete = true;
   docComplete = true;
 }
@@ -1440,7 +1521,9 @@ return tbContentElement_ContextMenuAction(itemIndex)
     <option value="6">6
     <option value="7">7
   </select>
-  
+  <select ID="cssStyle" class="tbGeneral" style="width:90" TITLE="Style" LANGUAGE="javascript" onchange="return cssStyle_onChange(this)">  
+  </select>
+
   <div unselectable='on' class="tbSeparator"></div>
 
   <div unselectable='on' class="tbButton" ID="DECMD_BOLD" TITLE="<?php echo $ARnls["e_bold"]; ?>" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_BOLD_onclick()">

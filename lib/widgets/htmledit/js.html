@@ -11,30 +11,25 @@
 	}
 ?><script language="javascript">
 <!--
-var wgHTMLEditOptions=new Array();
 <?php
-	if (is_array($wgHTMLEditOptions)) {
-		$options="";
-		while (list($key, $value)=each($wgHTMLEditOptions)) {
-			if (is_string($key)) {
-				$skey='"'.$key.'"';
-			} else {
-				$skey=$key;
+	function make_ini_options($name, $option) {
+		if (is_array($option)) {
+			reset($option);
+			echo "	$name = new Array();\n";
+			while (list($key, $value)=each($option)) {
+				make_ini_options($name."[\"$key\"]", $value);
 			}
-			if (is_array($value)) {
-				echo "wgHTMLEditOptions[$skey]=new Array();\n";
-				while (list($key2, $value2)=each($value)) {
-					if (is_string($key2)) {
-						$skey2='"'.$key2.'"';
-					} else {
-						$skey2=$key2;
-					}
-					echo "wgHTMLEditOptions[$skey][$skey2]='".AddCSlashes($value2, ARESCAPE)."';\n";
-				}
-			} else {
-				echo "wgHTMLEditOptions[$skey]='".AddCSlashes($value, ARESCAPE)."';\n";
-			}
+		} else
+		if (is_string($option)) {
+			echo "	$name = \"".AddCSlashes($option, ARESCAPE)."\";\n";
+		} else {
+			echo "	$name = ".(int)$option.";\n";
 		}
+	}
+
+	if (is_array($wgHTMLEditOptions)) {
+		echo "var ";
+		make_ini_options("wgHTMLEditOptions", $wgHTMLEditOptions);
 	}
     $options.="options[editor.ini]=".RawUrlEncode($wgHTMLEditOptionsPath);
 ?>

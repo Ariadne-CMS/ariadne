@@ -29,28 +29,24 @@
 	// load editor.ini, in case the editor is started directly, not through the 
 	// js.html file
 	$options=$this->call("editor.ini");
-	if (is_array($options)) {
-		while (list($key, $value)=each($options)) {
-			if (is_string($key)) {
-				$skey='"'.$key.'"';
-			} else {
-				$skey=$key;
+
+	function make_ini_options($name, $option) {
+		if (is_array($option)) {
+			reset($option);
+			echo "	$name = new Array();\n";
+			while (list($key, $value)=each($option)) {
+				make_ini_options($name."[\"$key\"]", $value);
 			}
-			if (is_array($value)) {
-				echo "  tbContentEditOptions[$skey]=new Array();\n";
-				while (list($key2, $value2)=each($value)) {
-					if (is_string($key2)) {
-						$skey2='"'.$key2.'"';
-					} else {
-						$skey2=$key2;
-					}
-					echo "  tbContentEditOptions[$skey][$skey2]='".AddCSlashes($value2, ARESCAPE)."';\n";
-				}
-			} else {
-				echo "  tbContentEditOptions[$skey]='".AddCSlashes($value, ARESCAPE)."';\n";
-			}
+		} else
+		if (is_string($option)) {
+			echo "	$name = \"".AddCSlashes($option, ARESCAPE)."\";\n";
+		} else {
+			echo "	$name = ".(int)$option.";\n";
 		}
 	}
+
+	echo "var ";
+	make_ini_options("tbContentEditOptions", $options);
 ?>
   if (tbContentEditOptions["disabled"]) {
     var temp=tbContentEditOptions["disabled"].split(":");
@@ -163,7 +159,18 @@ function state_restoreSelection() {
   }
 }
 
-var KeepState
+
+function init_cssStyle() {
+  var inline = tbContentEditOptions['css']['inline'];
+  cssStyle.options[0] = new Option('Styles', '');
+  cssStyle.options[1] = new Option('Clear', '');
+  for (i=0; i<inline.length; i++) {
+    cssStyle.options[i+2] = new Option(inline[i], inline[i]);
+  }
+}
+
+
+var KeepState;
 //
 // Event handlers
 //
@@ -209,15 +216,22 @@ function window_onload() {
   GeneralContextMenu[2] = new ContextMenuItem("Paste", DECMD_PASTE);
   docComplete = false;
   KeepState=new StateObject();
+
+  // init the cssStyle select box
+  init_cssStyle();
+
   tbContentElement.document.body.onBlur=KeepState.SaveSelection;
   tbContentElement.document.body.onkeyup=tbContentElement_DisplayChanged;
   tbContentElement.document.body.onmouseup=tbContentElement_DisplayChanged;
   tbContentElement.document.body.DocumentComplete=tbContentElement_DocumentComplete;
   tbContentElement.document.body.onkeypress=tbContentElement_Compose_press;
   tbContentElement.document.body.onkeydown=tbContentElement_Compose_down;
+  
+
   if (tbContentElement.onLoadHandler) {
 	tbContentElement.onLoadHandler();
   }
+
 }
 
 function tbContentElement_Compose_press() {
@@ -488,6 +502,59 @@ function IMAGE_set(arr) {
   }
 }  
 
+function cssStyle_onChange(command)
+{
+	
+	var oSelection = tbContentElement.document.selection ;
+	var oTextRange = oSelection.createRange() ;
+
+	if (oSelection.type == "Text")
+	{
+		if (oTextRange.queryCommandSupported('RemoveFormat') && oTextRange.queryCommandEnabled('RemoveFormat')) {
+			setFormat('RemoveFormat');
+		}
+	//	doFormatBlock( FCKFormatBlockNames[0] );	// This value is loaded at CheckFontFormat()
+ 
+		var oSpan = document.createElement("SPAN") ;
+		oSpan.innerHTML = oTextRange.htmlText ;
+		
+		var oParent = oTextRange.parentElement() ;
+		var oFirstChild = oSpan.firstChild ;
+		
+		if (oFirstChild.nodeType == 1 && oFirstChild.outerHTML == oSpan.innerHTML && 
+				(oFirstChild.tagName == "SPAN"
+				|| oFirstChild.tagName == "FONT"
+				|| oFirstChild.tagName == "P"
+				|| oFirstChild.tagName == "DIV"))
+		{
+			if (!command.value) {
+				if (oFirstChild.tagName=="SPAN") {
+					oParent.outerHTML=oParent.innerHTML;
+				} else {
+					oParent.className = NULL;
+				}
+			} else {
+				oParent.className = command.value ;
+			}
+		}
+		else
+		{
+			oSpan.className = command.value ;
+			oTextRange.pasteHTML( oSpan.outerHTML ) ;
+		}
+	}
+	else if (oSelection.type == "Control" && oTextRange.length == 1)
+	{
+		var oControl = oTextRange.item(0) ;
+		oControl.className = command.value ;
+	}
+	
+	command.selectedIndex = 0 ;
+	
+	tbContentElement.focus();
+}
+
+
 function wgCompose_show(buffer) {
   var sel=KeepState.GetSelection();
   sel.pasteHTML(buffer);
@@ -622,6 +689,12 @@ function tbContentElement_DocumentComplete() {
   docComplete = true;
 }
 
+
+function loadStyleSheet() {
+  var e = tbContentElement.document.createElement( '<link href="' + tbContentEditOptions['css']['stylesheet'] + '" rel="stylesheet" type="text/css">' );
+  tbContentElement.document.body.appendChild( e );
+}
+
 function getContents(data_id) {
 	var data="";
 	if (data=tbContentElement.document.getElementById(data_id)) {
@@ -753,6 +826,9 @@ return tbContentElement_ContextMenuAction(itemIndex)
     <option value="PRE">Preformatted (PRE)</option>
   </select>
 
+  <select ID="cssStyle" class="tbGeneral" style="width:90" TITLE="Style" LANGUAGE="javascript" onchange="return cssStyle_onChange(this)">
+  </select>
+
   <div class="tbSeparator" unselectable='on'></div>
 
   <div class="tbButton" unselectable='on' ID="DECMD_BOLD" TITLE="Bold" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_BOLD_onclick();">
@@ -805,7 +881,7 @@ return tbContentElement_ContextMenuAction(itemIndex)
   </div>
 </div>
 
-<IFRAME ID="tbContentElement" CLASS="tbContentElement" unselectable='on' oldstyle="border: 1px inset buttonhighlight; background-color: white; padding: 8px; overflow: scroll;" <?php
+<IFRAME ID="tbContentElement" CLASS="tbContentElement" onLoad="loadStyleSheet()" unselectable='on' oldstyle="border: 1px inset buttonhighlight; background-color: white; padding: 8px; overflow: scroll;" <?php
   if (!$wgHTMLEditTemplate) {
     $wgHTMLEditTemplate="user.edit.page.html";
   }
