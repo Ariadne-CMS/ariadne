@@ -23,10 +23,17 @@ class pcalendar extends pdir { // definitie class
 		debug("pcalendar: populate: end","all");
 	}
 
-	function get_items($priority, $max="", $start="", $end="") {
+	function get_items($priority, $max=0, $start="", $end="") {
 		global $ARCurrent;
 		unset($ARCurrent->arCalItems);
 		unset($ARCurrent->arDateList);
+		$now=getdate(time());
+		if (!$start) {
+			$start=mktime(0,0,0,$now["month"],$now["mday"], $now["year"]);
+		}
+		if (!$end) {
+			$start=mktime(0,0,0,$now["month"],$now["mday"]+1, $now["year"]);
+		}
 		$this->populate($start, $end, $priority, "system.get.item-by-time.phtml");
 		if (is_array($ARCurrent->arCalItems)) {
 			asort($ARCurrent->arDateList);
@@ -42,7 +49,7 @@ class pcalendar extends pdir { // definitie class
 		return $items;
 	}
 
-	function _get_items($priority, $max="", $start="", $end="") {
+	function _get_items($priority, $max=0, $start="", $end="") {
 		return $this->get_items($priority, $max, $start, $end);
 	}
 
