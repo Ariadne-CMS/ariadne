@@ -1,11 +1,7 @@
 <tr>
 <td><?php $this->call("browse.nav.list.show.phtml"); ?></td>
-<td align="right"><?php
-		 	if ($this->size>1024) {
-				echo round(intval($this->size)/1024)."&nbsp;KB&nbsp;"; 
-			} else {
-				echo intval($this->size)."&nbsp;B&nbsp;";
-			}
+<td align="right"><?php 
+			echo str_replace(" ", "&nbsp;", $this->make_filesize())."&nbsp";
 ?></td>
 <td align="right"><?php echo $this->data->owner; ?>&nbsp;</td>
 <td><?php
