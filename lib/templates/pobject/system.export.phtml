@@ -6,7 +6,8 @@
 			function display($str) {
 				global $ARCurrent;
 				if ($ARCurrent->options["verbose"]) {
-					echo $str;
+					echo "$str";
+					flush();
 				}
 			}
 		}
