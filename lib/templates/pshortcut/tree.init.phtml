@@ -9,7 +9,7 @@
 <body>
 <div class="border">
   <span class="hoverbutton" style="float: right"><a href="#" onClick="top.hidetree(); return false;"><img src="<?php echo $AR->dir->images; ?>tree/x.gif" border="0" height="18" width="18" vspace="2"></a></span>
-  <img src="<?php echo $AR->dir->images; ?>tree/wait.gif" hspace="2" width="15" height="15" style="float: left"> Loading...  
+  <img src="<?php echo $AR->dir->images; ?>tree/wait.gif" hspace="2" width="15" height="15" style="float: left"> <?php echo $ARnls["loading"]; ?>  
   <?php
 		flush();
 		if ($folder=$this->call("system.get.folder.phtml")) {

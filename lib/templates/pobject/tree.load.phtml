@@ -18,7 +18,7 @@
 		if ($this->CheckLogin("read") && $this->CheckConfig()) {
 			?>
   <div style="padding: 4px;">
-				<img src="<?php echo $AR->dir->images; ?>tree/wait.gif" hspace="2" width="15" height="15" style="float: left"> Loading...
+				<img src="<?php echo $AR->dir->images; ?>tree/wait.gif" hspace="2" width="15" height="15" style="float: left"> <?php echo $ARnls["loading"]; ?>
   </div>
 				<script>
 					function doload() {
