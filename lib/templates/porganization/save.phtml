@@ -41,19 +41,17 @@
         } else {
           $newnlsdata=$newdata->$key;
         }
+        $newnlsdata->name=$nlsformdata["name"];
         $newnlsdata->summary=$nlsformdata["summary"];
         $newdata->$key=$newnlsdata;
         $newdata->nls->list[$key]=$value;
+	 	$properties["name"][0]["value"]="'".AddSlashes($nlsformdata["name"])."'";
       }
     }
   }
 
 
 
-  if (!$name) {
-	$error=$ARnls["err:nonameentered"];
-  } else {
-	$newdata->name=$name;
 	$newdata->address=$address;
 	$newdata->zipcode=$zipcode;
 	$newdata->pobox=$pobox;
@@ -64,10 +62,8 @@
 	$newdata->url=$url;
 	$emails=explode(",",$emails);
 	if ($emails) $newdata->emails=$emails;
-  }
 
   if (!$error) {
-	$properties["name"][0]["value"]="'".AddSlashes($newdata->name)."'";
 	$properties["address"][0]["street"]="'".AddSlashes($newdata->street)."'";
 	$properties["address"][0]["zipcode"]="'".AddSlashes($newdata->zipcode)."'";
 	$properties["address"][0]["city"]="'".AddSlashes($newdata->city)."'";

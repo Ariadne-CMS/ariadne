@@ -64,7 +64,7 @@ include($this->store->code."widgets/formlock/js.html");
 		<font face="helvetica, sans-serif"><b>
 		<?php echo $ARnls["name"]; ?></b>&nbsp;:</font>
 	</td><td align="left">
-		<input type="text" size="30"  name="name" value="<?php $this->showdata("name","none"); ?>">
+		<input type="text" size="30"  name="<?php echo $nls; ?>[name]" value="<?php $this->showdata("name",$nls); ?>">
 	</td>
 </tr>
 <tr>
@@ -146,8 +146,7 @@ include($this->store->code."widgets/formlock/js.html");
 		include($this->store->code."widgets/multiple/form.html");
 	?>
 	</td>
-</tr>
-<tr>
+</tr><tr>
   <td align="right" valign="top">
     <font face="helvetica, sans-serif"><?php echo $ARnls["summary"]; ?>&nbsp;:</font>
   </td>

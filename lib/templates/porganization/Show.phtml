@@ -11,8 +11,8 @@
   echo $AR->dir->images; ?>icons/<?php echo $this->type; ?>.gif" alt="[view]" border="0">
 <?php
   if (!$this->CheckSilent("read")) {
-    echo "$flag<font color=\"#CCCCCC\"><b>$data->name</b></font>";
+    echo "$flag<font color=\"#CCCCCC\"><b>$nlsdata->name</b></font>";
   } else {
-    echo "$flag<b>$data->name</b>";
+    echo "$flag<b>$nlsdata->name</b>";
   }
 ?></a> <?php echo $nlsdata->summary; ?><br>
