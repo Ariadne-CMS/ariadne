@@ -31,6 +31,12 @@
 			}
 		}
 
+		/* these grants will be set at the end of the import process */
+		if ($ARCurrent->AXAction == "import") {
+			unset($this->data->grants);
+			unset($this->data->usergrants);
+		}
+
 		$this->store->save(
 				$this->path,
 				$this->type,
