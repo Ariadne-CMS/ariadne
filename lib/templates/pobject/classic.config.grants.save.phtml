@@ -2,7 +2,7 @@
 	/******************************************************************
 	 classic.config.grants.save.phtml                      Muze Ariadne
 	 ------------------------------------------------------------------
-	 Arguments: $returnpage 
+	 Arguments: $arReturnPage 
 	 Grant needed: none
 	 Global variables: none
 
@@ -11,11 +11,11 @@
 	 no result
 
 	******************************************************************/
-	$this->call("system.save.grants.phtml");
+	$this->call("system.save.grants.phtml",$arCallArgs);
 	if (!$this->error) {
-		Header("Location: $returnpage");
+		Header("Location: $arReturnPage");
 		?>
-			<a href="<?php echo $returnpage; ?>">Continue</a>
+			<a href="<?php echo $arReturnPage; ?>">Continue</a>
 		<?php
 	} else {
 		$this->call("show.error.phtml");

@@ -2,7 +2,7 @@
 	/******************************************************************
 	 classic.config.cache.save.phtml                       Muze Ariadne
 	 ------------------------------------------------------------------
-	 Arguments: see system.save.cache.phtml
+	 Arguments: $arReturnPage 
 	 Grant needed: none
 	 Global variables: none
 
@@ -17,5 +17,12 @@
 	******************************************************************/
 
 	$this->call("system.save.cache.phtml",$arCallArgs);
-	Header("Location: ".$this->store->root.$this->path."classic.config.phtml");
+	if (!$this->error) {
+		Header("Location: $arReturnPage");
+		?>
+			<a href="<?php echo $arReturnPage; ?>">Continue</a>
+		<?php
+	} else {
+		$this->call("show.error.phtml");
+	}
 ?>

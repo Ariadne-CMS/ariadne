@@ -2,7 +2,7 @@
 	/******************************************************************
 	 classic.config.nls.save.phtml                         Muze Ariadne
 	 ------------------------------------------------------------------
-	 Arguments: see system.save.nls.phtml
+	 Arguments: $arReturnPage
 	 Grant needed: "config"
 	 Global variables: none
 
@@ -14,5 +14,12 @@
 	******************************************************************/
 
 	$this->call("system.save.nls.phtml",$arCallArgs);
-	Header("Location: ".$this->store->root.$this->path."config.phtml");
+	if (!$this->error) {
+		Header("Location: $arReturnPage");
+		?>
+			<a href="<?php echo $arReturnPage; ?>">Continue</a>
+		<?php
+	} else {
+		$this->call("show.error.phtml");
+	}
 ?>
