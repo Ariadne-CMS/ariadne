@@ -43,7 +43,7 @@
 		<div id="b_pages_div" style="float: left;">
 			<form name="b_pages" style="visibility: hidden; float: left; margin-top: 2px; font: menu;" onSubmit="b_goto(this.goto.options.selectedIndex); return false;">
 				<div style="float:left; padding: 2px;"><?php echo $ARnls["page"]; ?> : </div>
-				<select name="b_goto_select" onChange="return b_goto(this.options.selectedIndex);">
+				<select id="b_goto_select" name="b_goto_select" onChange="return b_goto(this.options.selectedIndex);">
 				</select>
 			</form>
 		</div>

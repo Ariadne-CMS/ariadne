@@ -25,6 +25,7 @@ div.toolbar{
 	text-align: left;
 	margin: 0px;
 	border: 1px outset buttonhighlight;
+	border-top: 1px solid buttonhighlight;
 	border-left: 1px solid buttonhighlight;
 }
 
@@ -36,18 +37,30 @@ div.toolbar{
 	padding: 3px;
 }
 .seperator {
-	background: #D8D2BD;
+	bbackground: #D8D2BD;
+	border-left: 1px solid buttonshadow;
+	border-right: 1px solid buttonhighlight;
+	width: 2px;
+	margin-left: 3px;
+	margin-right: 3px;
+	height: 24px;
+	overflow: hidden;
+}
+td > .seperator {
+	width: 0px;
+}
+body {
+	border: 1px inset buttonhighlight;
 }
 </style>
 <script language="JavaScript1.2"
 	src="<?php echo $AR->dir->www; ?>widgets/menu/config.php?arDirWWW=<?php echo rawurlencode($AR->dir->www); ?>"
 	type='text/javascript'>
 </script>
-<script language="JavaScript1.2" 
+<!-- script language="JavaScript1.2" 
 	src="<?php echo $AR->dir->www; ?>widgets/menu/HM_Script<?php echo $browser_string; ?>.js" 
 	type="text/javascript">
-</script>
-
+</script -->
 <script language="JavaScript">
 	function setXpView(type) {
 		top.Set('viewmode',type);
@@ -79,7 +92,7 @@ div.toolbar{
 	}
 
 	function makeHot(itm){
-		if (!itm.isDown){
+		if (!itm.isDown && (itm.style.visibility!='hidden')){
 			var imgLeft = document.getElementById(itm.id + 'Left');
 			var imgRight = document.getElementById(itm.id + 'Right');
 			var imgTd = itm.parentNode;
@@ -129,37 +142,18 @@ div.toolbar{
 		else
 			archildren=window.archildren;
 		if (archildren.contentWindow)
-			archildren.contentWindow.cm_popupAtPos('iconviewContextmenu', 95, -2);
+			archildren.contentWindow.cm_popupAtPos('iconviewContextmenu', 0, -2);
 		else
-			archildren.cm_popupAtPos('iconviewContextmenu', 95, -2);
+			archildren.window.cm_popupAtPos('iconviewContextmenu', 0, -2);
 	}
+
+	top.Set('browse_template','winxp.browse.nav.');
+
 </script>
+<script language="JavaScript" src="<?php echo $AR->dir->www; ?>widgets/browse/toolbar.js"></script>
 	<div class="toolbar">
 	<table align="left" border="0" cellpadding="0" cellspacing="0">
 		<tr>
-			<td><img id="folderUpLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
-			<td>
-			<?php
-					if ($this->parent!="..") {?>
-					<a 
-						id="folderUp" href="JavaScript: top.View('<?php echo $this->parent; ?>');" 
-						onMouseOver="makeHot(this);" 
-						onMouseOut="makeNot(this);"
-						title="<?php echo $ARnls["xp_up"]; ?>"
-						><img align="absbottom" src="<?php echo $AR->dir->images ?>winxp/folderup.png"
-							width="16" height="16" border="0" alt="<?php echo $ARnls["xp_up"]; ?>"
-							vspace="0" hspace="0" /></a>
-			<?php
-				}else{?>
-					<img src="<?php echo $AR->dir->images ?>winxp/folderupDisabled.png"
-							width="16" height="16" border="0" alt="<?php echo $ARnls["xp_up"]; ?>"
-							vspace="0" hspace="0" />
-				<?php } ?>
-			</td>
-			<td><img id="folderUpRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
-			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
-			<td class="seperator"><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="2" height="28" vspace="0" hspace="0" /></td>
-			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
 			<td><img id="searchLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
 			<td valign="middle">
 					<a 
@@ -184,61 +178,9 @@ div.toolbar{
 							vspace="0" hspace="0" /> <?php echo $ARnls["xp_folders"]; ?> </a>
 			</td>
 			<td><img id="foldersRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
-			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
-			<td class="seperator"><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="2" height="28" vspace="0" hspace="0" /></td>
-			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
-			<td><img id="importLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
-			<td valign="middle" align="center">
-					<?php 
-						if($this->CheckSilent("add")){?>
-					<a 
-						id="import" href="javascript:arshow('edit_object_data','object.import.phtml')" 
-						onMouseOver="makeHot(this);" 
-						onMouseOut="makeNot(this);"
-						title="<?php echo $ARnls["xp_import"]; ?>"
-						><img align="texttop" src="<?php echo $AR->dir->images ?>winxp/import.png"
-							width="17" height="16" border="0" alt="<?php echo $ARnls["xp_import"]; ?>"
-							vspace="0" hspace="0" /> <?php echo $ARnls["xp_import"]; ?>&nbsp;</a>
-					<?php
-						}else{?>
-						<img align="texttop" src="<?php echo $AR->dir->images ?>winxp/import_disabled.png"
-							width="17" height="16" border="0" alt="<?php echo $ARnls["xp_import"]; ?>"
-							vspace="0" hspace="0" /> <a href="javascript:;"><?php echo $ARnls["xp_import"]; ?>&nbsp;</a>
-					<?php
-						}?>
-						
-			</td>
-			<td><img id="importRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
-			<td><img id="exportLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
-			<td>
-					<a 
-						id="export" href="javascript:arshow('edit_object_data','object.export.phtml')" 
-						onMouseOver="makeHot(this);" 
-						onMouseOut="makeNot(this);"
-						title="<?php echo $ARnls["xp_export"]; ?>"
-						><img align="texttop" src="<?php echo $AR->dir->images ?>winxp/export.png"
-							width="17" height="16" border="0" alt="<?php echo $ARnls["xp_export"]; ?>"
-							vspace="0" hspace="0" /> <?php echo $ARnls["xp_export"]; ?>&nbsp;</a>
-			</td>
-			<td><img id="exportRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
-			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
-			<td class="seperator"><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="2" height="28" vspace="0" hspace="0" /></td>
-			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
-			<td><img id="folderViewLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
-			<td>
-					<a 
-						id="folderView" href="javascript:;" onClick="showViewMenu(event);"
-						onMouseOver="makeHot(this);"
-						onMouseOut="makeNot(this);popDown('xp_ViewArray');"
-						title="<?php echo $ARnls["xp_iconview"]; ?>"
-						><img align="middle" src="<?php echo $AR->dir->images ?>winxp/iconview.png"
-							width="21" height="16" border="0" alt="<?php echo $ARnls["xp_iconview"]; ?>"
-							vspace="0" hspace="0" /></a>
-			</td>
-			<td><img id="folderViewRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
-			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
-			<td class="seperator"><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="2" height="28" vspace="0" hspace="0" /></td>
-			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+
+			<td><div class="seperator"></div></td>
+
 			<td><img id="prefsLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
 			<td>
 					<a 
@@ -252,9 +194,9 @@ div.toolbar{
 						
 			</td>
 			<td><img id="prefsRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
-			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
-			<td class="seperator"><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="2" height="28" vspace="0" hspace="0" /></td>
-			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+
+			<td><div class="seperator"></div></td>
+
 			<td><img id="helpLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
 			<td>
 					<a 
@@ -309,6 +251,131 @@ div.toolbar{
 		</tr>
 	</table>
 	</div>
+	<div class="toolbar">
+		<table border="0" cellpadding="0" cellspacing="0">
+		<form onSubmit="parent.View(this.path.value)" name=browse>
+		<tr>
+			<td><img id="folderUpLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td>
+				<?php
+					if ($this->parent!="..") {
+				?>
+					<a 
+						id="folderUp" href="JavaScript: top.View('<?php echo $this->parent; ?>');" 
+						onMouseOver="makeHot(this);" 
+						onMouseOut="makeNot(this);"
+						title="<?php echo $ARnls["xp_up"]; ?>"
+						><img align="absbottom" src="<?php echo $AR->dir->images ?>browse/toolbar/up.gif"
+							width="20" height="20" border="0" alt="<?php echo $ARnls["xp_up"]; ?>"
+							vspace="0" hspace="0" /></a>
+				<?php
+					}else{
+				?>
+					<img src="<?php echo $AR->dir->images ?>winxp/folderupDisabled.png"
+							width="16" height="16" border="0" alt="<?php echo $ARnls["xp_up"]; ?>"
+							vspace="0" hspace="0" />
+				<?php 
+					} 
+				?>
+			</td>
+			<td><img id="folderUpRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+
+			<td><div class="seperator"></div></td>
+
+			<td><img id="b_firstLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td>
+					<a 
+						id="b_first" href="javascript:b_first()" 
+						onMouseOver="makeHot(this);" 
+						onMouseOut="makeNot(this);"
+						style="visibility: hidden;"
+						><img align="texttop" src="<?php echo $AR->dir->images ?>browse/toolbar/first.gif"
+							width="20" height="20" border="0"
+							vspace="0" hspace="0" /></a>
+						
+			</td>
+			<td><img id="b_firstRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+
+			<td><img id="b_prevLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td>
+					<a 
+						id="b_prev" href="javascript:b_prev()" 
+						onMouseOver="makeHot(this);" 
+						onMouseOut="makeNot(this);"
+						style="visibility: hidden;"
+						><img align="texttop" src="<?php echo $AR->dir->images ?>browse/toolbar/prev.gif"
+							width="20" height="20" border="0"
+							vspace="0" hspace="0" /></a>
+						
+			</td>
+			<td><img id="b_prevRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+
+			<td width="100">
+				<div id="b_pages" style="visibility: hidden;">
+						&nbsp;<?php echo $ARnls["page"]; ?>&nbsp;<select id="b_goto_select" style="border: 1px solid black; margin: 0px;" onChange="return b_goto(this.options.selectedIndex);">
+						</select>
+				</div>
+			</td>
+
+			<td><div class="seperator"></div></td>
+
+			<td><img id="folderViewLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td>
+					<a 
+						id="folderView" href="javascript:;" onClick="showViewMenu(event);"
+						onMouseOver="makeHot(this);"
+						onMouseOut="makeNot(this);popDown('xp_ViewArray');"
+						title="<?php echo $ARnls["xp_iconview"]; ?>"
+						><img align="middle" src="<?php echo $AR->dir->images ?>winxp/iconview.png"
+							width="21" height="16" border="0" alt="<?php echo $ARnls["xp_iconview"]; ?>"
+							vspace="0" hspace="0" /></a>
+			</td>
+			<td><img id="folderViewRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+
+			<td><div class="seperator"></div></td>
+
+			<td>&nbsp;<?php echo $ARnls["path"];?>&nbsp;<input
+	type=text name=path value="<?php echo $this->path;?>" size=64
+	style="border:1px solid black; width: 400px;">&nbsp;<input align="absmiddle" type=image
+	src="<?php echo $AR->dir->images."winxp/go.gif";?>" width=16 height=16>&nbsp;</td>
+
+			<td><div class="seperator"></div></td>
+
+			<td><img id="b_nextLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td>
+					<a 
+						id="b_next" href="javascript:b_next()" 
+						onMouseOver="makeHot(this);" 
+						onMouseOut="makeNot(this);"
+						style="visibility: hidden;"
+						><img align="texttop" src="<?php echo $AR->dir->images ?>browse/toolbar/next.gif"
+							width="20" height="20" border="0"
+							vspace="0" hspace="0" /></a>
+						
+			</td>
+			<td><img id="b_nextRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+
+
+			<td><img id="b_lastLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td>
+					<a 
+						id="b_last" href="javascript:b_next()" 
+						onMouseOver="makeHot(this);" 
+						onMouseOut="makeNot(this);"
+						style="visibility: hidden;"
+						><img align="texttop" src="<?php echo $AR->dir->images ?>browse/toolbar/next.gif"
+							width="20" height="20" border="0"
+							vspace="0" hspace="0" /></a>
+						
+			</td>
+			<td><img id="b_lastRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+
+		</tr>
+		</form>
+		</table>
+	</div>
+
+
 	<script language="javascript">
 		if (top.gettreestatus() == 'visible')
 			makeSelected(document.getElementById('folders'));

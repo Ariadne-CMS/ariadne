@@ -78,8 +78,21 @@ A.unselected {
 .sidebar{
 	width: 210px;
 }
+#kill-scrollbars {
+	margin: 0px;
+	border: 0px;
+	padding: 0px;
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+}
+body {
+	height: auto;
+	width: auto;
+	overflow: hidden;
+}
 </style>
-	<table>
+	<table border=0 cellpadding=0 cellspacing=0 style="width: auto; margin: 0px; border: 0px; overflow: hidden;">
 	<tr>
 		<td valign="top" style="background: url(<?php echo $AR->dir->images ?>winxp/ExplorerBarHeaderBackground.png) repeat-y;">
 		<script>
@@ -93,7 +106,7 @@ A.unselected {
 		</script>
 		</td>
 		<td valign="top" width="100%">
-	<div id="container">
+	<div id="container" style="width: 100%; height: 100%; overflow: auto; background-color: white;">
 		<script>
 		viewmode=parent.Get('viewmode');
 		if (!viewmode) {
@@ -104,7 +117,8 @@ A.unselected {
 			$this->setnls($arLanguage);
 			$url=$this->store->root.$this->make_path();
 		?>
-		document.write('<iframe frameborder="0" id="archildren" height="'+height+'" width="' + (width-260) + '" src="<?php echo $url; ?>winxp.browse.nav.'+viewmode+'.phtml?<?php echo ldGetServerVar("QUERY_STRING"); ?>"></iframe>');
+		var query='<?php echo ldGetServerVar("QUERY_STRING"); ?>';
+		document.write('<iframe frameborder="0" id="archildren" height="'+height+'" width="100%" src="<?php echo $url; ?>winxp.browse.nav.'+viewmode+'.phtml?'+query+'"></iframe>');
 		<?php
 			$this->setnls($oldnls);
 		?>

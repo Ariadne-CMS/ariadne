@@ -30,6 +30,9 @@ A.unselected {
 	color: #215DC6;
 	vertical-align : middle;
 }
+body > .sidebar {
+	width: 200px;
+}
 .sidebar_grouphead table{
 	background: url(../images/winxp/NormalGroupHead.png) no-repeat;
 }

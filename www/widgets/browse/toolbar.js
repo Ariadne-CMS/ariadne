@@ -20,12 +20,12 @@
 		b_total=total;
 		if (b_total>b_limit) {
 			var pages=(b_total/b_limit);
-			pages_select=document.b_pages.b_goto_select;
+			pages_select=document.getElementById('b_goto_select');
 			for (i=0; i<pages; i++) {
 				pages_select.options[i]=new Option(i+1, i+1);
 			}
 			pages_select.options[b_page].selected=true;
-			document.b_pages.style.visibility='inherit';
+			document.getElementById('b_pages').style.visibility='inherit';
 		}
 	}
 	function b_show(button) {
@@ -86,7 +86,11 @@
 		return false;
 	}
 	function b_draw() {
-		var newsrc='browse.nav.'+viewmode+'.phtml?'+query+'&limit='+b_limit+'&offset='+b_offset;
+		browse_template=top.Get('browse_template');
+		if (!browse_template) {
+			var browse_template='browse.nav.';
+		}
+		var newsrc=browse_template+viewmode+'.phtml?'+query+'&limit='+b_limit+'&offset='+b_offset;
 		if (!window.archildren) {
 			archildren=document.getElementById("archildren");
 		} else {
@@ -97,7 +101,7 @@
 		} else {
 			archildren.location=newsrc;
 		}
-		if (document.b_pages.b_goto_select.options.size) {
-			document.b_pages.b_goto_select.options[b_page].selected=true;
+		if (document.getElementById('b_goto_select').options.size) {
+			document.getElementById('b_goto_select').options[b_page].selected=true;
 		}
 	}
