@@ -7,7 +7,7 @@
 	 Global variables: none
 
 	 This displays the user interface for the configuration of the 
-	 current object (cache, templates, grants).
+	 current object (cache, templates, grants, usergrants).
 
 	 No return value.
 	
@@ -15,9 +15,12 @@
 	if ($this->CheckLogin("config")) {
 		$ARCurrent->arReturnPage=$this->store->root.$this->path."classic.config.phtml";
 ?>
+<html>
+<head>
+<title><?php printf($ARnls["configure"],$nlsdata->name); ?></title>
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
+</head>
 <body bgcolor="white">
-<br>
-<h3><?php printf($ARnls["configure"],$data->name); ?></h3>
 <table border="0" width="100%" cellspacing="4" vspace="10" hspace="10">
 <tr>
 	<td bgcolor="#404074" colspan="2">
@@ -51,8 +54,8 @@
 										RawUrlEncode($id)."&grant=".
 										RawUrlEncode($grant)."&arReturnPage=".
 										RawUrlEncode($ARCurrent->arReturnPage).
-										"\" onClick=\"return confirm('".sprintf($ARnls["q:removegrant"],$grant,$id)."')\">
-					$grant</a> "; 
+										"\" onClick=\"return confirm('".sprintf($ARnls["q:removegrant"],$grant,$id).
+										"')\">$grant</a> "; 
 								} 
 							}
 						}
@@ -73,6 +76,7 @@
 				<?php
 					$wgBrowsePath="/system/groups/";
 					$wgBrowseName="path";
+					$wgBrowseSize=18;
 					include($this->store->code."widgets/browse/js.html");
 					include($this->store->code."widgets/browse/form.html");
 				?>
@@ -82,7 +86,7 @@
 		</tr>
 		</table>
 	</td>
-		</form>
+	</form>
 </tr>
 <tr>
 	<td bgcolor="#404074" colspan="2">
@@ -98,7 +102,7 @@
 				while (list($path, $usergrants)=each($data->usergrants)) {	
 					echo "<tr>";
 					echo "<td><a href=\"".$this->store->root.$path."classic.config.grants.save.phtml?delete=true&type=puser&id=".RawUrlEncode($data->login).
-				"&arReturnPage=".RawUrlEncode($this->store->root.$this->path."config.phtml")."\"
+				"&arReturnPage=".RawUrlEncode($ARCurrent->arReturnPage)."\"
 				onClick=\"return confirm('".sprintf($ARnls["q:removeallgrants"],$path)."?')\">
 										$path</a></td><td>"; 
 					if ($usergrants && is_array($usergrants)) {
@@ -108,7 +112,7 @@
 								echo "<a href=\"".$this->store->root.$path.
 									"classic.config.grants.save.phtml?delete=true&type=puser&id=".RawUrlEncode($data->login).
 									"&grant=".RawUrlEncode($usergrant).
-									"&arReturnPage=".RawUrlEncode($this->store->root.$this->path."config.phtml").
+									"&arReturnPage=".RawUrlEncode($ARCurrent->arReturnPage).
 									"\"	onClick=\"return confirm('".sprintf($ARnls["q:removegrant"],$usergrant,$path).
 									"')\">$usergrant</a> "; 
 							}
@@ -141,22 +145,19 @@
 	<td bgcolor="#404074">&nbsp;
 		<font face="helvetica,sans-serif" color="white"><b><?php echo $ARnls["types"]; ?></b></font>
 	</td>
-	<td bgcolor="#404074" width="50%">&nbsp;
-		<font face="helvetica,sans-serif" color="white"><b><?php echo $ARnls["caching"]; ?></b></font>
+	<td bgcolor="#404074">&nbsp;
+		<font face="helvetica,sans-serif" color="white"><b><?php echo $ARnls["priority"]; ?></b></font>
 	</td>
 </tr>
 <tr>
-		<form action="SetTypes.phtml">
+	<form action="classic.config.types.save.phtml">
+	<input type="hidden" name="arReturnPage" value="<?php echo htmlspecialchars($ARCurrent->arReturnPage); ?>">
 	<td valign="top">
 		<table border="0" cellspacing="0" bgcolor="#EEEEEE" width="100%">
 		<tr>
 			<td>
 				<font face="helvetica,sans-serif"><?php echo $ARnls["typetree"]; ?></font>			 
 			</td><td>
-				<font face="helvetica,sans-serif"><?php echo $ARnls["delete"]; ?></font>			 
-			</td>
-		</tr><tr>
-			<td>
 				<select name="typetree">
 				<?php
 					echo "<option value=\"inherit\">".$ARnls["inherit"]."</option>\n";
@@ -169,50 +170,34 @@
 		</tr>
 		</table>
 	</td>
-		</form> 
-		<form action="SetCache.phtml">
-	<td valign="top" rowspan="3">
-		<table border="0" width="100%" cellspacing="0" bgcolor="#EEEEEE">
+	</form> 
+	<form action="classic.config.priority.save.phtml">
+	<input type="hidden" name="arReturnPage" value="<?php echo htmlspecialchars($ARCurrent->arReturnPage); ?>">
+	<td valign="top">
+		<table border="0" cellspacing="0" bgcolor="#EEEEEE" width="100%">
 		<tr>
-			<td valign="top"><input type="radio" name="cache" value="0" <?php if (!$data->cacheconfig) { echo "checked"; } ?>></td>
-			<td colspan="2">
-				<nobr><font face="helvetica,sans-serif"><?php echo $ARnls["inheritcache"]; ?></font></nobr>
-			</td>
-		</tr><tr>
-			<td valign="top"><input type="radio" name="cache" value="1" <?php if ($data->cacheconfig>0 && $data->cacheconfig<999) { echo "checked"; } ?>></td>
-			<td colspan="2">
-				<nobr><font face="helvetica,sans-serif"><?php echo $ARnls["refreshonrq."]; ?><br>
-				<?php echo $ARnls["keepimage"]; ?> <input type="text" name="keepfor" size="2" maxlength="3" value="<?php if ($data->cacheconfig>0 && $data->cacheconfig<999) { echo $data->cacheconfig; } else { echo "2"; } ?>"> <?php echo $ARnls["hours"]; ?>.</nobr>
-				</font>
-			</td>
-		</tr><tr>
-			<td valign="top"><input type="radio" name="cache" value="999" <?php if ($data->cacheconfig>=999) { echo "checked"; } ?>></td>
-			<td colspan="2">
-				<nobr><font face="helvetica,sans-serif"><?php echo $ARnls["refreshonch."]; ?></font></nobr>
-			</td>
-		</tr><tr>
-			<td valign="top"><input type="radio" name="cache" value="-1" <?php if ($data->cacheconfig<0) { echo "checked"; } ?>></td>
 			<td>
-				<nobr><font face="helvetica,sans-serif"><?php echo $ARnls["donotcache"]; ?></font></nobr>
-			</td><td rowspan="2" valign="bottom" align="right">
-				<input type="submit" name="Save" value="<?php echo $ARnls["save"]; ?>">
-			</td>
-		</tr><tr>
-			<td><input type="checkbox" name="refresh" value="now"></td>
-			<td>
-				<nobr><font face="helvetica,sans-serif"><?php echo $ARnls["refreshnow"]; ?></font></nobr>
+				<font face="helvetica,sans-serif"><?php echo $ARnls["value"]; ?></font>
+			</td><td>
+				<input type="text" name="priority" value="<?php echo $this->priority; ?>" size="10" maxlength="10">
+			</td><td>
+				<input type="submit" name="Update" value="<?php echo $ARnls["update"]; ?>">
 			</td>
 		</tr>
 		</table>
 	</td>
-		</form>	 
+	</form>
 </tr><tr>
 	<td bgcolor="#404074">
 		&nbsp;<font face="helvetica,sans-serif" color="white"><b><?php 
 			echo $ARnls["language"]; ?></b></font>
 	</td>
+	<td bgcolor="#404074" width="50%">&nbsp;
+		<font face="helvetica,sans-serif" color="white"><b><?php echo $ARnls["caching"]; ?></b></font>
+	</td>
 </tr><tr>
-		<form action="SetLanguage.phtml">
+	<form action="classic.config.nls.save.phtml">
+	<input type="hidden" name="arReturnPage" value="<?php echo htmlspecialchars($ARCurrent->arReturnPage); ?>">
 	<td>
 		<table border="0" width="100%" cellspacing="0" bgcolor="#EEEEEE">
 		<tr>
@@ -273,7 +258,44 @@
 			</font></td></tr></table>
 
 	</td>
-		</form>
+	</form>
+	<form action="classic.config.cache.save.phtml">
+	<input type="hidden" name="arReturnPage" value="<?php echo htmlspecialchars($ARCurrent->arReturnPage); ?>">
+	<td valign="top">
+		<table border="0" width="100%" cellspacing="0" bgcolor="#EEEEEE">
+		<tr>
+			<td valign="top"><input type="radio" name="cache" value="0" <?php if (!$data->cacheconfig) { echo "checked"; } ?>></td>
+			<td colspan="2">
+				<nobr><font face="helvetica,sans-serif"><?php echo $ARnls["inheritcache"]; ?></font></nobr>
+			</td>
+		</tr><tr>
+			<td valign="top"><input type="radio" name="cache" value="1" <?php if ($data->cacheconfig>0 && $data->cacheconfig<999) { echo "checked"; } ?>></td>
+			<td colspan="2">
+				<nobr><font face="helvetica,sans-serif"><?php echo $ARnls["refreshonrq."]; ?><br>
+				<?php echo $ARnls["keepimage"]; ?> <input type="text" name="keepfor" size="2" maxlength="3" value="<?php if ($data->cacheconfig>0 && $data->cacheconfig<999) { echo $data->cacheconfig; } else { echo "2"; } ?>"> <?php echo $ARnls["hours"]; ?>.</nobr>
+				</font>
+			</td>
+		</tr><tr>
+			<td valign="top"><input type="radio" name="cache" value="999" <?php if ($data->cacheconfig>=999) { echo "checked"; } ?>></td>
+			<td colspan="2">
+				<nobr><font face="helvetica,sans-serif"><?php echo $ARnls["refreshonch."]; ?></font></nobr>
+			</td>
+		</tr><tr>
+			<td valign="top"><input type="radio" name="cache" value="-1" <?php if ($data->cacheconfig<0) { echo "checked"; } ?>></td>
+			<td>
+				<nobr><font face="helvetica,sans-serif"><?php echo $ARnls["donotcache"]; ?></font></nobr>
+			</td><td rowspan="2" valign="bottom" align="right">
+				<input type="submit" name="Save" value="<?php echo $ARnls["save"]; ?>">
+			</td>
+		</tr><tr>
+			<td><input type="checkbox" name="refresh" value="now"></td>
+			<td>
+				<nobr><font face="helvetica,sans-serif"><?php echo $ARnls["refreshnow"]; ?></font></nobr>
+			</td>
+		</tr>
+		</table>
+	</td>
+	</form>	 
 </tr>
 </table>
 </body>
