@@ -79,10 +79,10 @@ class pobject extends object {
 			$data=&$this->data;
 		} 
 		if ($this->data->custom['none']) {
-			$customdata=&$this->data->custom['none'];
+			$customdata=$this->data->custom['none'];
 		}
 		if ($this->data->custom[$nls]) {
-			$customnlsdata=&$this->data->custom[$nls];
+			$customnlsdata=$this->data->custom[$nls];
 		}
 		debug("pobject: call: nls set to $nls","all"); 
 		
@@ -620,10 +620,10 @@ class pobject extends object {
 				}
 			} 
 			if ($this->data->custom['none']) {
-				$this->customdata=&$this->data->custom['none'];
+				$this->customdata=$this->data->custom['none'];
 			}
 			if ($this->data->custom[$nls]) {
-				$this->customnlsdata=&$this->data->custom[$nls];
+				$this->customnlsdata=$this->data->custom[$nls];
 			}
 			$ARCurrent->nolangcheck=1;
 			if (	(	$config->cache && ( $config->cache>0 )		) &&
