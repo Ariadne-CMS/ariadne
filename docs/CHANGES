@@ -32,6 +32,7 @@ New Features:
 	- Added option to add named hyperlinks and anchor tags in the WYSWYG editor. 
 
 Bugs Fixed:
+	- Fixed the ftp server it's mimetype extension fallback.
 	- Fixed a bug in the grant system: local grants did get inherited.
 	- Removed some legacy code which made it impossible to 'renew' an expired
 	  session.
