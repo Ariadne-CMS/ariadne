@@ -26,7 +26,7 @@
 
 	******************************************************************/
 	require_once($this->store->code."modules/mod_unicode.php");
-	$name=unicode::utf8convert($nlsdata->name);
+	$name=unicode::utf8convert(trim($nlsdata->name));
 	if ($AR->user && !$this->CheckSilent("read")) {
 		$arResult["pre"]="<font color='#CCCCCC'>$flag";
 		$arResult["name"]=$name."</font>";

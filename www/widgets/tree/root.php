@@ -91,9 +91,14 @@
     this.prev=prev;
     this.next=next;
     this.name=name;
+	if(this.name.substring(0,1) == '&') {
+		charbytes=6*20;
+	} else {
+		charbytes=1*20;
+	}
     this.fullname=name;
-    if (this.name.length>20) {
-      this.name=this.name.substring(0,20)+"...";
+    if (this.name.length>charbytes) {
+      this.name=this.name.substring(0,charbytes)+"...";
     }
     this.pre=pre;
     this.link=link;
