@@ -163,7 +163,7 @@
 	$ARnls["first"]							=	"premier";
 	$ARnls["forall"]						=	"pour tous";
 	$ARnls["force"]							=	"mise &agrave; jour par fichier forc&eacute;.";
-	$ARnls["fri"]							=	"Fri";
+	$ARnls["fri"]							=	"Ven";
 	$ARnls["fullpath"]						=	"inclure le chemin complet";
 	$ARnls["goodbye"]						=	"Aurevoir";
 	$ARnls["grant"]							=	"Droit";
@@ -193,9 +193,9 @@
 	$ARnls["layouttempl"]					=	"Gabarit de pr&eacute;senation  pour %s";
 	$ARnls["link"]							=	"Lien";
 	$ARnls["list"]							=	"Liste";
-	$ARnls["loading"]						=	"Loading...";
+	$ARnls["loading"]						=	"Chargement...";
 	$ARnls["location"]						=	"Emplacement";
-	$ARnls["locks"]							=	"Locks";
+	$ARnls["locks"]							=	"Verroux";
 	$ARnls["login"]							=	"Login";
 	$ARnls["loginrequired"]					=	"Autorisation requise.";
 	$ARnls["logoff"]						=	"D&eacute;connexion";
@@ -207,7 +207,7 @@
 	$ARnls["minutes"]						=	"Minutes";
 	$ARnls["mobile"]						=	"Mobile";
 	$ARnls["modified"]						=	"Derni&egrave;re modification";
-	$ARnls["mon"]							=	"Mon";
+	$ARnls["mon"]							=	"Lun";
 	$ARnls["month"]							=	"Mois";
 	$ARnls["months"]						=	"Mois";
 	$ARnls["n.y.i."]						=	"Pas encore impl&eacute;ment&eacute;.";
@@ -229,7 +229,7 @@
 	$ARnls["ok"]							=	"OK";
 	$ARnls["on"]							=	"On";
 	$ARnls["open"]							=	"Ouvrir";
-	$ARnls["openlocks"]						=	"Open locks for %s:";
+	$ARnls["openlocks"]						=	"Verroux sur %s:";
 	$ARnls["options"]						=	"Options";
 	$ARnls["overwrite"]						=	"R&eacute;ecrire";
 	$ARnls["page"]							=	"Page";
@@ -274,8 +274,8 @@
 	$ARnls["rename"]						=	"Renommer";
 	$ARnls["repeat"]						=	"Repeter";
 	$ARnls["repeatby"]						=	"Repeter par";
-	$ARnls["repeaton"]						=	"Repeat on";
-	$ARnls["sat"]							=	"Sat";
+	$ARnls["repeaton"]						=	"Rep&egrave;ter";
+	$ARnls["sat"]							=	"Sam";
 	$ARnls["save"]							=	"Enregistrer";
 	$ARnls["scenario"]						=	"Scenario";
 	$ARnls["search"]						=	"Rechercher";
@@ -287,7 +287,7 @@
 	$ARnls["start"]							=	"D&eacute;marrer";
 	$ARnls["state"]							=	"Etat";
 	$ARnls["summary"]						=	"Commentaire";
-	$ARnls["sun"]							=	"Sun";
+	$ARnls["sun"]							=	"Dim";
 	$ARnls["target"]						=	"Cible";
 	$ARnls["telephone"]						=	"T&eacute;l&eacute;phone";
 	$ARnls["template"]						=	"Gabarit";
@@ -295,7 +295,7 @@
 	$ARnls["templateonserver"]				=	"Gabarit sur le serveur ";
 	$ARnls["templates"]						=	"Gabarits";
 	$ARnls["text"]							=	"Texte";
-	$ARnls["thu"]							=	"Thu";
+	$ARnls["thu"]							=	"Jeu";
 	$ARnls["thumbcolor"]					=	"Couleur";
 	$ARnls["thumbheight"]					=	"hauteur";
 	$ARnls["thumbnail"]						=	"Ic&ocirc;nes";
@@ -303,7 +303,7 @@
 	$ARnls["time"]							=	"Heure";
 	$ARnls["title"]							=	"Titre";
 	$ARnls["todo"]							=	"A faire";
-	$ARnls["tue"]							=	"Tue";
+	$ARnls["tue"]							=	"Mar";
 	$ARnls["type"]							=	"Type";
 	$ARnls["types"]							=	"Types";
 	$ARnls["typetree"]						=	"Type d'arborescence";
@@ -318,7 +318,7 @@
 	$ARnls["userunknown"]					=	"L'utilisateur %s est inconnu, essayer encore.";
 	$ARnls["value"]							=	"Valeur";
 	$ARnls["view"]							=	"Voir";
-	$ARnls["wed"]							=	"Wed";
+	$ARnls["wed"]							=	"Mer";
 	$ARnls["week"]							=	"Semaine";
 	$ARnls["weeks"]							=	"Semaines";
 	$ARnls["width"]							=	"Largeur";
