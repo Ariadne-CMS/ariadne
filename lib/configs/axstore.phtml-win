@@ -24,7 +24,7 @@
   /* Ariadne Export temp directory                                         */
   /*************************************************************************/
 
-  $ax_config['temp']                  = $Ar->dir->install.'\files\temp\\';
+  $ax_config['temp']                  = $AR->dir->install.'\files\temp\\';
 
   /*************************************************************************/
   /* Tar configuration                                                     */
