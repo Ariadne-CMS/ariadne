@@ -203,6 +203,31 @@
 		}
 	}
 
+	function wgCompose_keydown(e) {
+		var keycode = e.keyCode;
+		var key=String.fromCharCode(keycode);
+
+		if (keycode==wgComposeKey) {
+			if (!wgComposing) {
+				wgComposing=true;
+				wgComposeNumeric=false;
+				window.status='Composing...';
+			}
+			return false;
+		}
+		if (wgComposing) {
+			if (keycode==27) { // esc
+				wgCompose_stop();
+				return false;
+			} else if (keycode==8) { // backspace
+				wgComposeBuffer=wgComposeBuffer.substr(0, wgComposeBuffer.length-1);
+				window.status=window.status.substr(0, window.status.length-1);
+				return false;
+			}
+		}
+		return true;
+	}
+
 	function wgCompose_keypress (e)	{
 		var keycode = e.keyCode;
 		var key=String.fromCharCode(keycode);
@@ -216,7 +241,7 @@
 			return false;
 		}
 		if (wgComposing) {
-			if (keycode==27) {
+			if (keycode==27) { // esc
 				wgCompose_stop();
 				return false;
 			}
