@@ -40,14 +40,14 @@
 	$arFlow[$i]["template"]=$start;
 	$arFlow[$i]["next"]=$i+1; 
 	$i++;
-	$arFlow[$i]["title"]=$ARnls["preferences"];
-	$arFlow[$i]["template"]=$preferences;
+	$arFlow[$i]["title"]=$ARnls["data"];
+	$arFlow[$i]["template"]=$user;
 	$arFlow[$i]["prev"]=$i-1;
 	$arFlow[$i]["next"]=$i+1; 
 	$arFlow[$i]["save"]=$i+3+$customoffset;
 	$i++;
-	$arFlow[$i]["title"]=$ARnls["data"];
-	$arFlow[$i]["template"]=$user;
+	$arFlow[$i]["title"]=$ARnls["preferences"];
+	$arFlow[$i]["template"]=$preferences;
 	$arFlow[$i]["prev"]=$i-1;
 	if ($this->CheckSilent("config")) {
 		$arFlow[$i]["next"]=$i+1;
