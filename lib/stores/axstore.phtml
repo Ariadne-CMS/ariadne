@@ -196,6 +196,13 @@ class axstore {
 		return $result;
 	}
 
+	function get_config($field) {
+		debug("store::get_config($field)", "store");
+		$result = $this->$field;
+		debug("store::get_config: end", "all");
+		return $result;
+	}
+
 	function is_supported($feature) {
 	/**********************************************************************************
 		This function takes as argument a feature description and returns
