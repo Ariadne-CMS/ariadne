@@ -2,32 +2,32 @@
 /***********************************************************************
 	Ariadne Export file manager
 
-	(We could use the Zlib module for php -compression module- but is
-	it also supported on the windows platform? Check it out.)
-
 ************************************************************************/
 class mod_ax {
 
 	function open($exportfile,$cmdlist,$mode="unpack",$tempdir="/tmp/") {
 		$this->tempdir=$this->mktempdir($tempdir,"export_");
-		if (!file_exists($this->exportfile=$exportfile)) {
-			$result="err:cannotfindaxfile";
-		} else {
-			$this->cmdlist=$cmdlist;
+		$this->cmdlist=$cmdlist;
+		$this->mode=$mode;
 
-			if (!file_exists($this->tempdir)) {
-				mkdir($this->tempdir,0777);
-			}
+		if (!file_exists($this->tempdir)) {
+			mkdir($this->tempdir,0777);
+		}
 
-			if (strpos($this->exportfile,"/")===false) {
-				$slash="\\";
+		$this->exportfile=$exportfile;
+
+		if ($mode=="unpack") {
+			if (!file_exists($this->exportfile=$exportfile)) {
+				$result="err:cannotfindaxfile";
 			} else {
-				$slash="/";
-			}
-			$tempexpf=substr($this->exportfile,$pos=strrpos($this->exportfile,"$slash")+1);
-			copy($this->exportfile,$this->tempdir."/$tempexpf");
-			$this->exportfile=$exportfile=$tempexpf;
-			if ($mode=="unpack") {
+				if (strpos($this->exportfile,"/")===false) {
+					$slash="\\";
+				} else {
+					$slash="/";
+				}
+				$tempexpf=substr($this->exportfile,$pos=strrpos($this->exportfile,"$slash")+1);
+				copy($this->exportfile,$this->tempdir."/$tempexpf");
+				$this->exportfile=$exportfile=$tempexpf;
 				// tar will (g)unzip and untar the file into tempdir 
 
 				if (($olddir=getcwd()) && chdir($this->tempdir)) {
@@ -80,7 +80,7 @@ class mod_ax {
 	}
 
 	function rmvolume($path) {
-		if (substr($tmpdir=$this->tempdir,1,2)==":/") {
+		if (substr($tmpdir=$path,1,2)==":/") {
 			// we have a windows volume name...
 			// delete it
 			$tmpdir=substr($tmpdir,2);
@@ -113,14 +113,14 @@ class mod_ax {
 	}
 
 	function exportfiles($type,$path) {
+		$path=$this->rmvolume($path);
 		if (file_exists($path)) {
 			$path2=substr($path,$rpos=strrpos(substr($path,0,-1),"/")+1);
 			$path=substr($path,0,$rpos);
 
 			if (($olddir=getcwd()) && chdir($path)) {
 				//$command="tar -zc $path2 -f ".$this->tempdir."/$type.tgz";
-				$command=sprintf($this->cmdlist->tar,$path2,$this->tempdir."/$type.tgz");
-				
+				$command=sprintf($this->cmdlist->cmd_tar,$this->rmvolume($path2),$this->rmvolume($this->tempdir)."/$type.tgz");
 				system($command,$retVar);
 				chdir($olddir);
 				if ($retVar!=0) {
@@ -134,29 +134,34 @@ class mod_ax {
 	}
 
 	function close() {
-		if (!($dh=opendir($this->tempdir))) {
-			$result="err:cannotopentempdir";
-		} else {
-			while ($data=readdir($dh)) {
-				if (($data!='.') && ($data!='..')) 
-					$exp.=" $data ";
-			}
-			closedir($dh);
-
-			if (($olddir=getcwd()) && chdir($this->tempdir)) {
-				//$command="tar -zc $exp  -f ".$this->exportfile;
-				$command=sprintf($this->cmdlist->tar,$exp,$this->exportfile);
-				
-				system($command,$retVar);
-				chdir($olddir);
-				if ($retVar!=0) {
-					$result="err:cannotmakeax";
-				} else {
-					$result=$this->RmDir($this->tempdir);
-				}
+		if ($this->mode!="unpack") {
+			if (!($dh=opendir($this->tempdir))) {
+				$result="err:cannotopentempdir";
 			} else {
-				$result="err:cannotchdir";
+				while ($data=readdir($dh)) {
+					if (($data!='.') && ($data!='..')) 
+						$exp.=" $data ";
+				}
+				closedir($dh);
+
+				if (($olddir=getcwd()) && chdir($this->tempdir)) {
+					//$command="tar -zc $exp  -f ".$this->exportfile;
+					$command=sprintf($this->cmdlist->cmd_tar,$exp,$this->exportfile);
+					system($command,$retVar);
+					chdir($olddir);
+					copy($this->tempdir."/".$this->exportfile,$this->exportfile);
+
+					if ($retVar!=0) {
+						$result="err:cannotmakeax";
+					}
+				} else {
+					$result="err:cannotchdir";
+				}
 			}
+		}
+
+		if (!$result) {
+			$result=$this->RmDir($this->tempdir);
 		}
 		return $result;
 	}
