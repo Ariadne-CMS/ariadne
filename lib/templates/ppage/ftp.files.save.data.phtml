@@ -1,7 +1,9 @@
 <?php
-	if ( (( $this->arIsNewObject && $this->CheckLogin("add") ) ||
-			 ( !$this->arIsNewObject && $this->CheckLogin("edit") )) &&
-					$this->CheckConfig() ) {
+	if ((($this->arIsNewObject &&
+			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
+			$parentobj->CheckLogin("add")) ||
+			(!$this->arIsNewObject && $this->CheckLogin("edit"))) &&
+			$this->CheckConfig()) {
 				
 				$nls=$ARConfig->nls->default;
 

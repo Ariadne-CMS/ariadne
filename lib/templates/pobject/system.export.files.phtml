@@ -1,7 +1,9 @@
 <?php
  if ($this->CheckConfig("read") && !$ARCurrent->options["without_files"]) {
-	if ( ($this->newObject->arIsNewObject && $this->CheckLogin("add", $this->newObject->type)) ||
-		(!$this->newObject->arIsNewObject && $this->CheckLogin("edit"))) {
+	if (($this->newObject->arIsNewObject &&
+			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
+			$parentobj->CheckLogin("add", $this->newObject->type)) ||
+			(!$this->newObject->arIsNewObject && $this->CheckLogin("edit"))) {
 		 $orig_filestore=$this->store->get_filestore("files");
 		 $orig_files=$orig_filestore->ls($this->id);
 		 if (is_array($orig_files)) {

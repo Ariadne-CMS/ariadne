@@ -1,5 +1,7 @@
 <?php
-  if ( (($this->arIsNewObject && $this->CheckLogin("add", $arNewType)) ||
+	if ((($this->arIsNewObject &&
+			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
+			$parentobj->CheckLogin("add", $arNewType)) ||
 			(!$this->arIsNewObject && $this->CheckLogin("edit"))) &&
 			$this->CheckConfig()) {
 

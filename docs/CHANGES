@@ -18,6 +18,7 @@ Bugs Fixed:
 	  usergrants; move can no longer create an object without the add grant
 	  on the target
 	- make_url('','',true) does not generate empty session ids (--) any more
+	- the add grant checks changed to check the parent, not the new object
 
 Changes in Ariadne since version Ariadne 2.3-dev
 

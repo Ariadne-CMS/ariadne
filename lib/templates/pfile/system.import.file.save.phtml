@@ -1,6 +1,8 @@
 <?php
-	if ( ( $this->arIsNewObject && $this->CheckLogin("add", $this->type) ) ||
-			 ( !$this->arIsNewObject && $this->CheckLogin("edit", $this->type) ) ) {
+	if (($this->arIsNewObject &&
+			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
+			$parentobj->CheckLogin("add", $this->type)) ||
+			(!$this->arIsNewObject && $this->CheckLogin("edit", $this->type))) {
 
 		if ($ARConfig->nls->default != $nls) {
 			$arCallArgs[$ARConfig->nls->default]["name"] = $arCallArgs["file"];

@@ -3,9 +3,12 @@ global $ARBeenHere;
 
   if ($this->CheckLogin("read") && !$ARCurrent->options["without_templates"]) {
 
-		if ( ($this->newObject->arIsNewObject && $this->newObject->CheckLogin("add", $this->newObject->type)) ||
-			(!$this->newObject->arIsNewObject && $this->newObject->CheckLogin("edit"))) {
-			 $orig_filestore=$this->store->get_filestore("templates");
+		if (($this->newObject->arIsNewObject &&
+				($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
+				$parentobj->CheckLogin("add", $this->type)) ||
+				(!$this->newObject->arIsNewObject && $this->CheckLogin("edit"))) {
+
+				$orig_filestore=$this->store->get_filestore("templates");
 
 				$new_filestore=$this->newObject->store->get_filestore("templates");
 				/* 
