@@ -46,9 +46,9 @@
 		function showInputText($var, $name, $title='', $extra='') {
 			if (edit::getEditMode() && $this->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
-				echo "<input type='text' class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title' value='";
-				echo $var;
-				echo "' $extra>";
+				echo "<input type='text' class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title' value=\"";
+				echo htmlspecialchars($var);
+				echo "\" $extra>";
 			} else if (!edit::isEmpty($var)) {
 				echo $var;
 			}
@@ -57,9 +57,9 @@
 		function showInput($var, $name, $title, $type='text', $extra='') {
 			if (edit::getEditMode() && $this->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
-				echo "<input name='$name' type='$type' class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title' value='";
-				echo $var;
-				echo "' $extra>";			
+				echo "<input name='$name' type='$type' class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title' value=\"";
+				echo htmlspecialchars($var);
+				echo "\" $extra>";			
 			} else if (!edit::isEmpty($var)) {
 				echo $var;
 			}
