@@ -80,10 +80,10 @@
 					} else {
 						$skey2=$key2;
 					}
-					echo "  tbContentEditOptions[$skey][$skey2]='$value2';\n";
+					echo "  tbContentEditOptions[$skey][$skey2]='".AddCSlashes($value2, ARESCAPE)."';\n";
 				}
 			} else {
-				echo "  tbContentEditOptions[$skey]='$value';\n";
+				echo "  tbContentEditOptions[$skey]='".AddCSlashes($value, ARESCAPE)."';\n";
 			}
 		}
 	}
