@@ -80,6 +80,17 @@ class pphoto extends pfile { // pphoto class definition
 		return true;
 	}
 
+	function rotate($degrees) {
+		global $ARConfig;
+
+		$this->set_context("mogrify");
+		$degrees=(int)$degrees;
+
+		$ARConfig->photoStack[$this->id][]=" -rotate ".$degrees;
+
+		return true;
+	}
+
 	function border($width, $height, $color=false) {
 		global $ARConfig;
 
@@ -416,6 +427,10 @@ class pphoto extends pfile { // pphoto class definition
 
 	function _scale($x, $y, $fillcolor=false) {
 		return $this->scale($x, $y, $fillcolor);
+	}
+
+	function _rotate($degrees) {
+		return $this->rotate($degrees);
 	}
 
 	function _scaledown($x, $y, $fillcolor=false) {
