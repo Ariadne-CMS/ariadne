@@ -963,12 +963,20 @@ function DECMD_HYPERLINK_onclick()
 	oSel = tbContentElement.DOM.selection;
 	oRange = oSel.createRange();
 	sType=oSel.type;
-    if (sType=="Control") {
+	if (sType=="Control") {
 		oElement=oRange.item(0);
-		oParent=oRange.item(0).parentElement;
 	} else {
-		oParent=oRange.parentElement();
+		oElement=oRange;
 	}
+
+	oParent=oElement.parentElement();
+
+	// Loop through the parent elements until we get the
+	// link tag
+	while (oParent.tagName!="A" && oParent.parentElement) {
+		oParent=oParent.parentElement;
+	}
+
 	arr=null;
 	args=new Array();
 	//set a default value for your link button
