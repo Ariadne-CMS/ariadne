@@ -490,7 +490,7 @@ class pinp {
 		$xml_funcs="xmldoc|xmltree|domxml_[a-z_]+|xpath_[a-z_]+|xptr_[a-z_]+|".
 		  "xml_parser_create|xml_parse_into_struct|xml_parser_free|".
 		  "xml_parser_get_option|xml_parser_set_option";
-		$debug_funcs="debug|debugon|debugoff";
+		$debug_funcs="debug|debugon|debugoff|pftime|pfprint|pfreset";
 		$loader_funcs="ldheader|ldredirect|ldsetcontent|ldsetclientcache|ldgetusercookie|ldsetusercookie|ldgetclientvar|ldregisterfile"; 
 		$ob_funcs="flush|ob_clean|ob_end_clean|ob_end_flush|ob_flush|ob_get_contents|ob_get_length|ob_get_level|ob_implicit_flush|ob_start";
 		$this->allowed_functions=array_flip(explode("|", "$array_funcs|$control_funcs|$datetime_funcs|$math_funcs|".

@@ -133,4 +133,46 @@
 		}
 	}
 
+	function pfTime($name) {
+		global $ARCurrent;
+		$ARCurrent->pfStack[][$name]=microtime_float();
+		return true;
+	}
+	
+	function pfReset() {
+		global $ARCurrent;
+		unset($ARCurrent->pfStack);
+		return true;
+	}
+	
+	function pfPrint() {
+		global $ARCurrent;
+		if (is_array($ARCurrent->pfStack)) {
+			$lastTimer=end($ARCurrent->pfStack);
+			$startTimer=reset($ARCurrent->pfStack);
+			$total=reset($lastTimer)-reset($startTimer);
+			$prevTime=reset($startTimer);
+			foreach($ARCurrent->pfStack as $i => $timer) {
+				list($name,$value)=each($timer);
+				$diff=($value-$prevTime);
+				$totalsByName[$name]['time']+=$diff;
+				$totalsByName[$name]['count']++;
+				debug($name.": ".$value."; diff previous: ".$diff."; % total: ".($diff/$total)*100, "pinp", "profiler");
+				$prevTime=$value;
+			}
+			debug("totals by name:","pinp","profiler");
+			foreach($totalsByName as $name => $value) {
+				debug($name.": ".$value['time']."; # calls:".$value['count'].";  % total: ".($value['time']/$total)*100, "pinp", "profiler");
+			}
+			debug("total time: ".$total,"pinp","profiler");
+		}
+	}
+
+	if (!function_exists("microtime_float")) {
+		function microtime_float() {
+			list($usec, $sec) = explode(" ", microtime());
+			return ((float)$usec + (float)$sec);
+		}
+	}
+	
 ?>
