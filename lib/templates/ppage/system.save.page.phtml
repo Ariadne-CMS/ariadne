@@ -8,6 +8,17 @@
     // only keep the body.innerHTML
     $page=eregi_replace("^.*<body[^>]*>","",$page);
     $page=eregi_replace("</body[^>]*>.*$","",$page);
+    // first decode unicode characters...
+    $page=utf8_decode($page);
+    // now change special characters to their html entity
+    $page=htmlentities($page);
+    // now change '<', '>', '"', '~' and '&' back.
+    $page=str_replace("&lt;","<",$page);
+    $page=str_replace("&gt;",">",$page);
+    $page=str_replace("&quot;","\"",$page);
+    $page=str_replace("&tilde;","~",$page);
+    // do this last, think about it :)
+    $page=str_replace("&amp;","&",$page);
     $newdata->$ContentLanguage->page=$page;
     include($this->store->code."includes/save.phtml");
     if ($error) {

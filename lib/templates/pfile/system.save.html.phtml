@@ -4,6 +4,17 @@
     if (!file_exists($this->store->files."files".$newdata->path)) {
       $this->MkDir("files".$newdata->path);
     }
+    // first decode unicode characters...
+    $html=utf8_decode($html);
+    // now change special characters to their html entity
+    $html=htmlentities($html);
+    // now change '<', '>', '"', '~' and '&' back.
+    $html=str_replace("&lt;","<",$html);
+    $html=str_replace("&gt;",">",$html);
+    $html=str_replace("&quot;","\"",$html);
+    $html=str_replace("&tilde;","~",$html);
+    // do this last, think about it :)
+    $html=str_replace("&amp;","&",$html);
     $fp=fopen($this->store->files."files".$newdata->path.$newdata->filename,"w");
     fwrite($fp, RawUrlDecode($html));
     fclose($fp);
