@@ -1,15 +1,13 @@
 <?php
 	ldHeader("Content-Type: text/html; charset=UTF-8");
-//	$arEditorSettings=$this->call("editor.ini");
 
 	include($this->store->code."nls/ieedit.".$this->reqnls);
 
 ?><!--TOOLBAR_START--><!--TOOLBAR_EXEMPT--><!--TOOLBAR_END-->
 <!-- Copyright 2000 Microsoft Corporation. All rights reserved. -->
 <!-- Author: Steve Isaac, Microsoft Corporation -->
-<!-- Changes by Auke van Slooten, Muze V.O.F. to implement source view and add images from Ariadne. -->
+<!-- Changes by Auke van Slooten, Muze V.O.F. to implement source view, add images from Ariadne, stylesheet support, configurable buttons, xhtml. -->
 <!-- Changes by Matt Finn, NetDesign Inc which make it work with non-english internet explorers (ParagraphStyles) -->
-<!--This demo shows how to host the DHTML Editing component on a Web page. -->
 <html>
 <head>
 <meta NAME="GENERATOR" CONTENT="Microsoft Visual Studio 6.0">
@@ -66,19 +64,6 @@
 ?>
   tbContentEditOptions=new Array();
 <?php
-//	echo "/*"; print_r($options); echo "*/";
-/*
-    if (is_array($options)) {
-        while (list($key, $value)=each($options)) {
-            if (is_string($key)) {
-                $skey='"'.$key.'"';
-            } else {
-				$skey=$key;
-			}
-            echo "  tbContentEditOptions[$skey]='$value';\n";
-        }
-    }
-*/
 	if (is_array($options)) {
 		while (list($key, $value)=each($options)) {
 			if (is_string($key)) {
@@ -329,11 +314,6 @@ function loadpage(root, path, file, name, language, type, value, save2form, targ
     tbContentElement.DocumentHTML=tbContentValue;
   }
   tbContentElement.BaseURL=root+path;
-/*
-  if (tbContentEditOptions["stylesheet"]) {
-	tbContentElement.DOM.styleSheets[1].href=tbContentEditOptions["stylesheet"];
-  }
-*/
   tbContentElement.onkeypress=wgCompose_keypress;
   tbContentElement.onkeydown=wgCompose_check;
   tbContentElement.focus();
