@@ -50,16 +50,16 @@
 	<td align="right">
 		<font face="helvetica, sans-serif"><b><?php echo $ARnls["name"]; ?> :</b></font>
 	</td><td>
-		<input type="text" name="<?php echo $nls."[name]"; ?>" maxlength="50" 
-			value="<?php $this->showdata("name",$nls); ?>">
+		<input type="text" name="<?php echo $selectednls."[name]"; ?>" maxlength="50" 
+			value="<?php $this->showdata("name",$selectednls); ?>">
 	</td>
 </tr><tr>
 	<td align="right" valign="top">
 		<font face="helvetica, sans-serif"><?php echo $ARnls["summary"]; ?>&nbsp;:</font>
 	</td>
 	<td colspan="2">
-		<textarea name="<?php echo $nls."[summary]"; ?>" cols="50" rows="4" wrap="soft"><?php 
-			echo ereg_replace("&","&amp;",$this->getdata("summary",$nls)); 
+		<textarea name="<?php echo $selectednls."[summary]"; ?>" cols="50" rows="4" wrap="soft"><?php 
+			echo ereg_replace("&","&amp;",$this->getdata("summary",$selectednls)); 
 		?></textarea>
 	</td>
 </tr>
