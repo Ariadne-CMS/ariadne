@@ -25,13 +25,15 @@
 		 (meaning, from the root of the current store).
 
 	******************************************************************/
+	require_once($this->store->code."modules/mod_unicode.php");
+	$name=unicode::utf8convert($nlsdata->name);
 	if ($AR->user && !$this->CheckSilent("read")) {
 		$arResult["pre"]="<font color='#CCCCCC'>$flag";
-		$arResult["name"]=$nlsdata->name."</font>";
+		$arResult["name"]=$name."</font>";
 	} else {
 		$grants=$this->GetValidGrants();			
 		$arResult["pre"]=$flag;
-		$arResult["name"]=$nlsdata->name;
+		$arResult["name"]=$name;
 	}
 	$arResult["icon"]=$this->type;
 	$arResult["path"]=$this->path;
