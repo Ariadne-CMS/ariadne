@@ -108,7 +108,7 @@ class pobject {
 
 	function link($from, $to) {
 		debug("pobject: link($from, $to)","object");
-		return $this->store->link($from, $to);
+		return $this->store->link($this->make_path($from), $this->make_path($to));
 	}
 
 	function delete($path) {
