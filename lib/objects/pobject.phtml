@@ -426,17 +426,17 @@ class pobject extends object { // pobject class definition
 		return $this->store->make_path($this->path, $path);
 	}
 
-	function make_url($path="", $nls="", $session=true, $https=NULL) {
+	function make_url($path="", $nls=false, $session=true, $https=NULL) {
 		global $ARConfig, $AR, $ARCurrent;
 		debug("pobject: make_url($path) (from: ".$this->path.")","object");
 		$rootoptions=$this->store->rootoptions;
-		if (!$session || $nls || $nls === "") {
+		if (!$session || ($nls !== false)) {
 			$rootoptions = "";
 			if ($session && $ARCurrent->session->id && !$AR->hideSessionIDfromURL) {
 				$rootoptions .= "/-".$ARCurrent->session->id."-";
 			}
 			if ($nls) {
-				$rootoptions .= $nls ='/'.$nls;
+				$rootoptions .= '/'.$nls;
 			}
 		}
 		$object_path=$this->path;
@@ -446,10 +446,6 @@ class pobject extends object { // pobject class definition
 		while ($getConfigPath && !$this->exists($getConfigPath)) {
 			$getConfigPath=$this->store->make_path($getConfigPath, "..");
 		}
-		// if the path was gibberish, at least start from the root
-		if (!$getConfigPath) {
-			$getConfigPath='/';
-		}
 		// now run CheckConfig and get the parentsite of the path found
 		if (!$temp_config=$ARConfig->cache[$getConfigPath]) {
 			$temp_site=current($this->get($getConfigPath, "system.get.site.phtml"));
@@ -458,25 +454,7 @@ class pobject extends object { // pobject class definition
 		$url=$temp_config->root["value"].$rootoptions;
 		$url.=substr($path, strlen($temp_config->root["path"])-1);
 		debug("make_url: ".$temp_config->root["path"]." = $temp_site : $temp_url","all");
-/*
 
-		while ($object_path && !$url) {
-			$config=$ARConfig->cache[$object_path];
-			if (!$config) {
-				$config=$ARConfig->cache[".."];
-			}
-			$rootpath=$config->root["path"];
-			if (substr($path, 0, strlen($rootpath))==$rootpath) {
-				$path=substr($path, strlen($rootpath)-1);
-				$url=$config->root["value"].$rootoptions.$path;
-			} else {
-				// jump to cache information of the parent of $rootpath
-				$object_path=substr($rootpath, 0, strrpos(substr($rootpath, 0, -1),'/')+1);
-				debug("make_url: no root from '$rootpath', jump to '$object_path'","all");
-			}
-		}
-		debug("url: $url",'all');
-*/
 		if (is_bool($https)) {
 			if ($https) {
 				if ($AR->https) {
@@ -818,6 +796,17 @@ class pobject extends object { // pobject class definition
 				ldHeader("Content-Type: text/html; charset=UTF-8");
 				$ARCurrent->arContentTypeSent = true;
 			}
+
+			if ($ARCurrent->acceptlang && !$ARCurrent->nls) {
+				if ($ARCurrent->acceptlang && is_array($this->data->nls->list)) {
+					$validlangs = array_intersect(array_keys($ARCurrent->acceptlang), array_keys($this->data->nls->list));
+				}
+				if ($validlangs) {
+					$reqnls=array_shift($validlangs);
+					$ARCurrent->nls = $reqnls;
+				}
+			}
+
 			// if this object isn't available in the requested language, show
 			// a language select dialog with all available languages for this object.
 			if (isset($this->data->nls) && !$this->data->name) {
