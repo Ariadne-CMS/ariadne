@@ -200,7 +200,7 @@
 		$crit["name"]["value"]["LIKE"]="'$letter%'";
 	}
 	
-	$limit=100;
+	$limit=0;
 	$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
 	
 	$this->find(".",$crit, "winxp.browse.nav.".$viewtype.".show.phtml", "", $limit, $offset);	
