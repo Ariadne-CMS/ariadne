@@ -24,27 +24,35 @@ class psearch extends pdir { // psearch class definition
 	function ls($path, $function="list.html", $args="") {
 		$path=$this->store->make_path($this->path, $path);
 		if( (substr($path, 0, strlen($this->path))==$this->path)) {
-			return pobject::find($this->data->path, $this->data->query, $function, $args);
+			return pdir::find($this->data->path, $this->data->query, $function, $args);
 		} else {
-			return pobject::ls($path, $function, $args);
+			return pdir::ls($path, $function, $args);
 		}
 	}
 
 	function real_ls($path, $function="list.html", $args="") {
-		return pobject::ls($path, $function, $args);
+		return pdir::ls($path, $function, $args);
 	}
 
 	function find($path, $criteria, $function="list.html", $args="", $limit=100, $offset=0) {
 		$path=$this->store->make_path($this->path, $path);
 		if( (substr($path, 0, strlen($this->path))==$this->path)) {
-			return pobject::find($this->data->path, $this->data->query, $function, $args, $limit, $offset);
+			return pdir::find($this->data->path, $this->data->query, $function, $args, $limit, $offset);
 		} else {
-			return pobject::find($path, $criteria, $function, $args, $limit, $offset);
+			return pdir::find($path, $criteria, $function, $args, $limit, $offset);
 		}
 	}
 
 	function real_find($path, $criteria, $function="list.html", $args="", $limit=100, $offset=0) {
-		return pobject::find($path, $criteria, $function, $args, $limit, $offset);
+		return pdir::find($path, $criteria, $function, $args, $limit, $offset);
+	}
+
+	function _ls($function='list.html', $args="") {
+		return $this->ls($this->path, $function, $args);
+	}
+
+	function _find($criteria, $function="list.html", $args="", $limit=100, $offset=0) {
+		return $this->find($this->path, $criteria, $function, $args, $limit, $offset);
 	}
 
 } // end of psearch class definition
