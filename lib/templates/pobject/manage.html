@@ -1,5 +1,5 @@
 <?php
-	if ($this->CheckLogin("manage") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		global $QUERY_STRING;
 		if (!$arLanguage) {
 			$arLanguage=$nls;
