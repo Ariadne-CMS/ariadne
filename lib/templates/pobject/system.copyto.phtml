@@ -1,6 +1,8 @@
 <?php
+	debug("pobject/system.copyto.phtml: start","class");
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		if ($target) {
+		if ($target && ($target!=".")) {
+			debug("pobject/system.copyto.phtml: target:".$target.":","all");
 			// first check to see if the target is valid
 			$parent=$this->store->make_path($target, "..");
 			if ($this->exists($parent)) {
@@ -37,12 +39,19 @@
 							$this->MkDir("templates".$newpath.$type."/");
 							while (list($function, $templatelist)=each($values)) {
 								while (list($language, $template)=each($templatelist)) {
-									$targetfile=$target.$type."/".$function.".".$language;
+									$targetdir=$target."class=/".$type."/";
+									$targetfile=$targetdir.$function.".".$language;
+									if (!file_exists($templateroot.$targetdir)) {
+										$this->MkDir("templates".$targetdir);
+									}
 									// FIXME: check for illegal values of $template
 									if (file_exists($templateroot.$template)) {
 										copy($templateroot.$template,$templateroot.$targetfile);
 									}
 									$this->data->pinp[$type][$function][$language]=$targetfile;
+									if ($this->data->templates[$type][$function][$language]) {
+										$this->data->templates[$type][$function][$language]=$targetfile;
+									}
 									$template.=".pinp";
 									$targetfile.=".pinp";
 									if (file_exists($templateroot.$template)) {
@@ -56,15 +65,22 @@
 						$this->data->nls->default=$ARConfig->nls->default;
 					}
 					$properties=$this->load_properties();
-					$newpath=$this->store->save($target, $this->type, $this->data, $this->properties, $this->vtype);
+					$ARCurrent->newpath=$this->store->save($target, $this->type, $this->data, $this->properties, $this->vtype, $this->priority);
 				} else {
 					$arResult=sprintf($ARnls["err:alreadyexists"],$target);
 				}
 			} else {
 				$arResult=sprintf($ARnls["err:wrongpath"],$parent);
 			}
+		} else {
+			$arResult=sprintf($ARnls["err:wrongpath"],$target);
 		}
 	} else {
 		$arResult=$ARnls["accessdenied"];
+	}
+	if ($arResult) {
+		debug("pobject/system.copyto.phtml: arResult: $arResult;","class");
+	} else {
+		debug("pobject/system.copyto.phtml: end","class");
 	}
 ?>

@@ -29,9 +29,8 @@
                 }
               }
             }
-            // FIXME: typedirs will be renamed to $path/class=/$type/ because of possible name conflicts.
-            if (!rmdir($this->store->files."templates".$this->path.$type."/")) {
-               echo "can not remove dir(".$this->store->files."templates".$this->path.$type."/".")\n";
+            if (!@rmdir($this->store->files."templates".$this->path."class=/".$type."/")) {
+               debug("can not remove dir(".$this->store->files."templates".$this->path."class=/".$type."/".")","class");
             }
           }
         }        
@@ -45,7 +44,7 @@
             }
           }
           closedir($handle);
-          rmdir($dir);
+          @rmdir($dir);
         }
         // clear cache
         $this->ClearCache();
