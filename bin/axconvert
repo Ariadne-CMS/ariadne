@@ -12,7 +12,7 @@
 		while (is_array($templates) && (list($type, $functions)=each($templates))) {
 			while (is_array($functions) && (list($function, $languages)=each($functions))) {
 				while (is_array($languages) && (list($language, $file)=each($languages))) {
-					echo "templates[$type][$function][$language]=".$id."\n";
+					//echo "templates[$type][$function][$language]=".$id."\n";
 					$data->templates[$type][$function][$language]=$id;
 				}
 			}
@@ -22,7 +22,7 @@
 		while (is_array($pinp) && (list($type, $functions)=each($pinp))) {
 			while (is_array($functions) && (list($function, $languages)=each($functions))) {
 				while (is_array($languages) && (list($language, $file)=each($languages))) {
-					echo "pinp[$type][$function][$language]=".$id."\n";
+					//echo "pinp[$type][$function][$language]=".$id."\n";
 					$data->pinp[$type][$function][$language]=$id;
 				}
 			}
