@@ -676,17 +676,21 @@ class axstore {
 		if (file_exists($path)) {
 			debug("axstore::rm_dir removing ($path)", "store");
 			$dir=opendir($path);
-			while ($entry=readdir($dir)) {
+			while (false !== ($entry=readdir($dir))) {
+				debug("entry($entry)");
 				if ($entry!="." && $entry!="..") {
 					if (is_dir($path.$entry)) {
 						$this->rm_dir($path.$entry);
 					} else {
-						@unlink($path.$entry);
+						debug("unlinking ($path$entry)\n");
+						unlink($path.$entry);
 					}
 				}
 			}
 			closedir($dir);
 			@rmdir($path);
+		} else {
+			debug("axstore::rmdir [$path] does not exist");
 		}
 	debug("axstore::rm_dir [end]");
 	}
