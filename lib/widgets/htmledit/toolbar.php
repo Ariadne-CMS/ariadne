@@ -549,21 +549,17 @@ function DECMD_HYPERLINK_onclick() {
 			if (sType=='Control') {
 				oElement.outerHTML=newLink+oElement.outerHTML+"</A>";
 			} else {
-				oldText=oRange.htmlText;
-
+				
 				// first let the msie set the link, since it is better in it.
 				setFormat("CreateLink", arr['URL']);
-				var newHTML=new String(oRange.htmlText);
-				// now replace the <A href="arr['url']> with the complete one:
-				var start=newHTML.indexOf("<A");
-				var old=new String("<A href=\""+arr['URL']+"\">");
-				var end=start+old.length;
-				newHTML=newHTML.substr(0,start)+newLink+newHTML.substr(end);
-				// Don't remove the following line, or MSIE adds imagined extra links
-				oRange.pasteHTML('');
-				oRange.pasteHTML(newHTML);
+				// now collapse the range, so even if the range overlaps a link partly, the parent
+				// element will become the link. trust me.... 
+				oRange.collapse();
+				// now set the ATag object, so it can be 'fixed' with the extra attributes later
+				oATag=oRange.parentElement();
 			}
-		} else if (oATag && arr['URL']) {
+		}
+		if (oATag && arr['URL']) {
 			for (i=0; i<oATag.attributes.length; i++) {
 				oldAttribute=oATag.attributes.item(i);
 				var dummy=new String(oldAttribute.name);
@@ -578,8 +574,11 @@ function DECMD_HYPERLINK_onclick() {
 					oATag.setAttribute(arAttribute.name, arAttribute.value);
 				}
 			}
-		} else {
-			setFormat("UnLink");
+		}
+		if (oATag && !arr['URL']) {
+			oATag.outerHTML=oATag.innerHTML;
+//			unlink seems broken, when removing a link on an image, it also removes the image...
+//			setFormat("UnLink");
 		}
 	}
 	tbContentElement.focus();
