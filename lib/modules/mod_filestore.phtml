@@ -148,7 +148,7 @@
 
 		function copy_to_store($file, $id, $name="") {
 			$result=false;
-			if (file_exists($file)) {
+			//if (file_exists($file)) {
 				if (is_dir($file)) {
 					$path=$this->make_path($id, "", WRITE);
 					// copy all files, result is number of files
@@ -172,7 +172,7 @@
 					$path=$this->make_path($id, $name, WRITE);
 					$result=copy($file, $path);
 				}
-			}
+			//}
 			return $result;
 		}
 
