@@ -1,4 +1,4 @@
-#!/usr/local/bin/php -q
+#!/usr/bin/php4 -q
 <pre>
 <?php
 	require("../ariadne.inc");
@@ -34,8 +34,6 @@
 		$store->add_type("pgroup","pdir");
 		$store->add_type("pgroup","puser");
 		$store->add_type("pgroup","pgroup");
-		$store->add_type("pfile","pobject");
-		$store->add_type("pfile","pfile");
 		$store->add_type("ppage","pobject");
 		$store->add_type("ppage","ppage");
 
@@ -148,6 +146,14 @@
 		$url["port"]["number"]=1;
 		$url["protocol"]["string"]=10;
 		$store->create_property("url", $url);
+
+		// install pfile type
+
+		$store->add_type("pfile","pobject");
+		$store->add_type("pfile","pfile");
+		$mimetype["type"]["string"] = 20;
+		$mimetype["subtype"]["string"] = 20;
+		$store->create_property("mimetype", $mimetype);
 
 		// install pphoto(book) types
 
