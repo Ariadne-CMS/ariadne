@@ -19,7 +19,7 @@ New features:
 	  now have unique names containing the session this will allow users
 	  to have multiple template editors open given a different session
 	  for each editor.
-	- French translation of Ariadne by Arnaud Siminski <asiminski@rollingcost.com>
+	- French translation of Ariadne by Arnaud Siminski
 
 Bugs fixed:
 	- The postgresql locking module didn't use table prefixes in the
@@ -36,6 +36,8 @@ Bugs fixed:
 	  works. See ldGetServerVar().
 	- When creating a new shortcut the browse... button now points to an
 	  existing path.
+	- After getting an error when saving a pinp template the editor
+	  nolonger forgets type, function and language.
 
 
 Ariadne 2.1.1
