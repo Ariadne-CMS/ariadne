@@ -364,6 +364,9 @@
 		$result=false;
 		if (!Headers_sent()) {
 			$result=true;
+			if (is_array($header)) {
+				$header=implode('\n',$header);
+			}
 			Header($header);
 			$ARCurrent->ldHeaders[strtolower($header)]=$header;
 		} else {
