@@ -1,0 +1,23 @@
+<?php
+if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+
+	$template="manage.show.html";
+	$up="manage.show.up.html";
+	$this->call("manage.info.html"); ?>
+	<table>
+	<tr valign="top">
+		<td width="80" valign="top">
+			<?php
+				$this->call($up,'view='.$view);
+			?>
+		</td><td>
+			<?php
+				$this->ls($this->data->path, $template, 'view='.$view);
+			?>
+		</td>
+	</tr>
+	</table>
+
+<?php
+	}
+?>

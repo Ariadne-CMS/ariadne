@@ -1,0 +1,33 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>control.css">
+</head>
+<body>
+<?php
+	if ($this->CheckConfig()) {
+?>
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+  <td align="center"><img src="<?php echo $AR->dir->images; ?>tree/wait.gif" width="15" height="15" vspace="0" border="0"> Loading...</td>
+  <td align="right"><a href="javascript:top.hidetree();"><img align="right" src="<?php echo $AR->dir->images; ?>tree/x.gif" width="18" height="18" border="0"></a></td>
+</tr>
+</table>
+<?php 
+		if ($link && $this->exists($link)) {
+			?>
+			<script>
+				top.view.location.href='<?php echo $this->make_url($link).$template; ?>';
+			</script>
+			<?php
+		} else {
+			?>
+			<script>
+				alert('<?php printf(AddSlashes($ARnls["err:wrongpath"]),$link); ?>');
+				history.back();
+			</script>
+			<?php
+		}
+	}
+?>
+</body>
+</html>
