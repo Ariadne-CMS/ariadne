@@ -1289,19 +1289,19 @@ class pobject extends object { // pobject class definition
 		return $result;
 	}
 
-	function convert2UTF8($data, $charset) {
+	function convertToUTF8($data, $charset = "CP1252") {
 
 		include_once($this->store->code."modules/mod_unicode.php");
 
 		if (is_array($data)) {
 			reset($data);
 			while (list($key, $val)=each($data)) {
-				$data[$key] = $this->convert2UTF8($val, $charset);
+				$data[$key] = $this->convertToUTF8($val, $charset);
 			}
 		} else
 		if (is_object($data)) {
 			while (list($key, $val)=each($data)) {
-				$data->$key = $this->convert2UTF8($val, $charset);
+				$data->$key = $this->convertToUTF8($val, $charset);
 			}
 		} else {
 			$data = unicode::convertToUTF8($charset, $data);
@@ -1586,8 +1586,8 @@ class pobject extends object { // pobject class definition
 		return $this->make_filesize( $size );
 	}
 
-	function _convert2UTF8($data, $charset) {
-		return $this->convert2UTF8($data,$charset);
+	function _convertToUTF8($data, $charset = "CP1252") {
+		return $this->convertToUTF8($data,$charset);
 	}
 
 } // end of pobject class definition
