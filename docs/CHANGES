@@ -3,6 +3,7 @@ Ariadne 2.5.0 ( Development branch )
 Changes in Ariadne since version Ariadne 2.4
 
 New Features:
+	- The pphoto class now has an identify() function to detect multiple pages/layers.
 	- Stefan Schreinert updated some entries in the german translations.
 	- Andres Marcos Bianciotto updated the Spanish translations.
 	- Added support for changing the flow of the standard Ariadne wizards.
