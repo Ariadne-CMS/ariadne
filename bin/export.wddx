@@ -23,20 +23,6 @@ options are:
 --verbose                Display what we are doing
 --help                   This information\n\n";
 
-function file_put_contents($file,$content) {
-	$nr_of_bytes = 0;
-	if(($nr_of_bytes = fwrite($file,$content) === false)) {
-		return false;
-	}
-	return $nr_of_bytes;
-}
-
-function ob_file($buffer){
-	global $outfile;
-	file_put_contents($outfile,&$buffer);
-	return '';
-}
-
 $arg_c=0;
 $arg_v[$arg_c++]=$argv[0];
 
@@ -66,7 +52,7 @@ while (list(,$cmd)=each($argv)) {
 				break;
 
 			case 'verbose':
-				$ARCurrent->options["verbose"]=true;
+				$ARCurrent->wddxoptions["verbose"]=true;
 				break;
 
 			default:
@@ -95,17 +81,10 @@ if ($arg_c>2) {
 
 	$outfile = fopen($dstfile,"w+");
 	if($outfile){
-		if($ARCurrent->options["verbose"]){
-			print "Starting Dump\n";
-		}
-		ob_start('ob_file');
+		$ARCurrent->wddxfp=$outfile;
 		$inst_store = $store_config["dbms"]."store";
 		$store=new $inst_store($root,$store_config);
 		$store->call("export.wddx.phtml", $callArgs,$store->get($srcpath));
-		ob_end_flush();
-		if($ARCurrent->options["verbose"]){
-			print "End Dump\n";
-		}
 		fclose($outfile);
 	} else {
 		$error = 'wddx: error on opening outfile';
@@ -115,7 +94,7 @@ if ($arg_c>2) {
 if ($error) {
 	echo $error."\n";
 }
-if($ARCurrent->options["verbose"]){
+if($ARCurrent->wddxoptions["verbose"]){
 	print "Done\n";
 }
 ?>

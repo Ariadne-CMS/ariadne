@@ -2,31 +2,38 @@
 
 if( $this->CheckLogin("config") ) {
 
-  Header("Content-Type: text/xml");
+	ldHeader("Content-Type: text/xml");
 
-  require_once($this->store->get_config("code")."modules/mod_export_wddx.php");
- 
+	require_once($this->store->get_config("code")."modules/mod_export_wddx.php");
 
-?>
-<?php echo "<";?>?xml version="1.0" encoding="UTF-8"?>
-<wddxPacket version="1.0">
+	$fp = $this->getvar('wddxfp','none');
+	if(!$fp){
+		$fp = fopen('php://stdout','w');
+		$options = $this->getvar('wddxoptions','none');
+		unset($options['verbose']);
+		$this->putvar('wddxoptions',$options);
+		$this->putvar('wddxfp',$fp);
+	}
+
+	fwrite($fp,'<?xml version="1.0" encoding="UTF-8"?>'."\n");
+	fwrite($fp,'<wddxPacket version="1.0">
 <header>
 <comment>Ariadne Export File</comment>
 </header>
 <data>
 <struct type="hash">
-	<var name="version">
-		<number>2</number>
-	</var>
+<var name="version">
+<number>2</number>
+</var>
 </struct>
 <struct type="hash">
-<?php
-  $query="";
-  $this->find(".", $query, "export.wddx.object.phtml", "", 0);
-?>
+');
+	$query="";
+	$this->find(".", $query, "export.wddx.object.phtml", "", 0);
+	fwrite($fp,'
 </struct>
 </data>
 </wddxPacket>
-<?php
+');
 }
 ?>

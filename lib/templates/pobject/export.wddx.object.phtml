@@ -1,5 +1,6 @@
 <?php
 	if( $this->CheckSilent("config") ) {
-		export_wddx::export($this);
+		$fp = $this->getvar('wddxfp','none');
+		export_wddx::export($fp,$this);
 	}
 ?>

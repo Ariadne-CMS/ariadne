@@ -3,6 +3,10 @@ Ariadne 2.5.0 ( Development branch )
 Changes in Ariadne since version Ariadne 2.4
 
 New Features:
+	- updated the wddx export module, it uses fwrite instead of echo, which made
+	  it possible to have debugging and/or verbose enabled during the export.
+	  this also makes the usage of ob_ functions obsolete. this also reduces the
+	  usage of memory
 
 Bugs Fixes:
 	- user.workflow.* didn't set $ARCurrent->nolangcheck, now they do ;-)
