@@ -1,16 +1,16 @@
 <?php
-  if ($this->CheckLogin("read") && $this->CheckConfig()) {
-    // first do normal copyto
-    include($this->store->code."templates/pobject/system.copyto.phtml");
-    if (!$arResult) {
-      // no errors: copy files
-      $this->Mkdir("files".$newpath);
-      $dir=dir($this->store->files."files".$this->path);
-      while ($entry=$dir->read()) {
-        if (!is_dir($dir->path.$entry)) {
-          copy($dir->path.$entry,$this->store->files."files".$newpath.$entry);
-        }
-      }
-    }
-  }
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		// first do normal copyto
+		$this->call(get_parent_class($this)."::system.copyto.phtml");
+		if (!$arResult) {
+			// no errors: copy files
+			$this->Mkdir("files".$newpath);
+			$dir=dir($this->store->files."files".$this->path);
+			while ($entry=$dir->read()) {
+				if (!is_dir($dir->path.$entry)) {
+					copy($dir->path.$entry,$this->store->files."files".$newpath.$entry);
+				}
+			}
+		}
+	}
 ?>

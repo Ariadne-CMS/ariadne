@@ -1,8 +1,0 @@
-<?php
-  if ($this->CheckLogin("read") && isset($nlsdata)) {
-?><option value="<?php echo $data->value; ?>"<?php 
-  if ($selected==$data->value) { echo " selected"; } 
-?>><?php echo $nlsdata->name; ?>
-<?php
-  }
-?>

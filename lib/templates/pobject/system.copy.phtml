@@ -1,38 +1,38 @@
-<?php   
-  /*
-    called by the parent of the target. e.g. 
-    copy /a/b/ to /c/
-      calls /c/system.copy.phtml?source=/a/b/
-      results in /c/b/
-    copy /a/b/ to /c
-      calls /system.copy.phtml?source=/a/b/&target=/c/
-      results in /c/
-      if /c/ exists, fail
-        calling template should first remove it
-    FIXME: implement above description :)
-  */
-  if ($this->CheckSilent("add")) {
-    if (!$source || !$this->exists($source)) {
-      $this->error=sprintf($ARnls["err:wrongpath"],$source);
-    } else {
-      if (!$target) {
-        $target=end(explode("/",$source));
-        if (!$target) {
-          $target="{5:id}"; // can only happen if $source=="/" ?
-        }
-      }
-      $result=$this->get($source, "system.copyto.phtml",
-        "target=".RawUrlEncode($this->path.$target."/").
-        "&search=".RawUrlEncode($search)."&replace=".RawUrlEncode($replace)).
-        "&defaultnls=".RawUrlEncode($ARConfig->nls->default);
-      if ($result && is_array($result)) {
-        $this->error=$result[0];
-      }
-    }
-  } else {
-    $this->error=$ARnls["err:nopermission"];
-  }
-  if ($this->error) {
-    $arResult=$this->error;
-  }
+<?php	 
+	/*
+		called by the parent of the target. e.g. 
+		copy /a/b/ to /c/
+			calls /c/system.copy.phtml?source=/a/b/
+			results in /c/b/
+		copy /a/b/ to /c
+			calls /system.copy.phtml?source=/a/b/&target=/c/
+			results in /c/
+			if /c/ exists, fail
+				calling template should first remove it
+		FIXME: implement above description :)
+	*/
+	if ($this->CheckSilent("add")) {
+		if (!$source || !$this->exists($source)) {
+			$this->error=sprintf($ARnls["err:wrongpath"],$source);
+		} else {
+			if (!$target) {
+				$target=end(explode("/",$source));
+				if (!$target) {
+					$target="{5:id}"; // can only happen if $source=="/" ?
+				}
+			}
+			$result=$this->get($source, "system.copyto.phtml",
+				"target=".RawUrlEncode($this->path.$target."/").
+				"&search=".RawUrlEncode($search)."&replace=".RawUrlEncode($replace)).
+				"&defaultnls=".RawUrlEncode($ARConfig->nls->default);
+			if ($result && is_array($result)) {
+				$this->error=$result[0];
+			}
+		}
+	} else {
+		$this->error=$ARnls["err:nopermission"];
+	}
+	if ($this->error) {
+		$arResult=$this->error;
+	}
 ?>

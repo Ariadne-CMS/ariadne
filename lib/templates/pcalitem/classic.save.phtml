@@ -1,0 +1,57 @@
+<?php
+		//	$repeatn: int
+		//	week:  $repeat_on[$option]=0/1 
+		//	       $option {0-7)
+		//	month: $repeat_by=$option {"Day","Date"}
+		//	       $repeatend: date int
+		$roptions=array(	$ARnls["none"]	=> "none",
+							$ARnls["day"]	=> "day",
+							$ARnls["week"]	=> "week",
+							$ARnls["month"]	=> "month",
+							$ARnls["year"]	=> "year");
+		if (!($confirm=$this->getdata("confirm","none"))) {
+			if ($date=$this->getdata("date","none")) {
+				$date_arr=getdate($date);
+			}
+			if ($entry=$this->getdata("entry","none")) {
+				$entry_arr=getdate($entry);
+			}
+			if ($repeatnls=$this->getdata("repeatnls","none")) {
+				$repeat=$roptions[$repeatnls];
+			} else {
+				$repeat=$this->data->repeat;
+			}			
+			$repeatend=$this->getdata("repeatend","none");
+			$repeatn=$this->getdata("repeatn","none");
+			$repeat_on=$this->getdata("repeat_on","none");
+			$repeat_by=$this->getdata("repeat_by","none");
+
+			if (($this->arIsNewObject) ||
+					(!$this->data->repeat) ||
+					($this->data->repeat=="none")) { // default all for new items, and none repeating items
+				$confirm=$ARnls["all"];
+			} else if ($repeatnls) && ( // when changing the repeat values, default to all
+					($this->data->repeatend<($repeatend+24*60*60-1)) ||
+					($this->data->repeatn!=$repeatn) ||
+					($this->data->repeat!=$repeat) ||
+					((serialize($this->data->repeat_on)!=serialize($repeat_on)) && ($repeat=="week")) ||
+					((serialize($this->data->repeat_by)!=serialize($repeat_by)) && ($repeat=="month")) ) ) {
+				$confirm=$ARnls["all"];
+			} else if ($date && $entry &&
+					 ( ($entry_arr["year"]!=$date_arr["year"]) ||
+					 ($entry_arr["mon"]!=$date_arr["mon"]) ||
+					 ($entry_arr["mday"]!=$date_arr["mday"]) ) ) { // when the date is changed, default to current
+				$confirm=$ARnls["current"];
+			} else {
+				$this->call("confirm.phtml","question=".RawUrlEncode($ARnls["q:applychanges"]).
+					"&buttons[]=".RawUrlEncode($ARnls["all"]).
+					"&buttons[]=".RawUrlEncode($ARnls["current"].$arCallArgs));
+			}
+		} 
+		if ($confirm) {		
+			$this->call("system.save.data.phtml",$arCallArgs.
+				"&repeat=".RawUrlEncode($repeat).
+				"&confirm=".RawUrlEncode($confirm));
+		}
+	}
+?>

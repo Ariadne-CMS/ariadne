@@ -1,35 +1,38 @@
 <?php
-  /******************************************************************
-   default.phtml				   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
-   Called by: multiple 
-   Arguments: none
-   Grant needed: "config"
-   Interface/Widget: all
-   Global variables: none
+	/******************************************************************
+	 default.phtml					 Muze Ariadne v2.0b
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: none
+	 Global variables: none
 
-   This function is called when a pobject template is unavailable.
-   It first checks whether the asked template ($arCallFunction) is
-   available as a new template in a different location (changed via
-   the config or templates tab in the management interface.). If
-   that fails, it will display a suitable error message.
+	 This function is called when a pobject template is unavailable.
+	 First it checks whether the template is actually the name of a
+	 child object. In that case if it implements 'pdir', this template
+	 will send a Location header, rewriting the url to include the last
+	 '/'. Otherwise it will simply get the child object with the 
+	 standard view.html template.
+	 If it is not a child object, the template checks for read access
+	 and then calls CheckConfig to see if it is an object template 
+	 (pinp). If one of these checks return 'false', the 
+	 'user.notfound.html' template is shown.
 
-   No return value.
-  
-  ******************************************************************/
+	 No return value.
+	
+	******************************************************************/
 
-  if ($this->exists($this->path.$arCallFunction."/")) {
-    // first check if it's a pdir, if so, change the location
-    $result=$this->get($this->path.$arCallFunction."/","system.get.type.phtml");
-    if ($result && ($type=$result[0]) && $this->store->implements($type, "pdir")) {
-      Header("Location: ".$this->store->root.$this->path.$arCallFunction."/");
-    } else {
-      // any cache image must be saved under the current url,
-      // not the rewritten one, ergo:
-      $ARCurrent->cachepage=$this->path.$arCallFunction;
-      $this->get($this->path.$arCallFunction."/","view.html",$arCallArgs);
-    }
-  } else if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-    $this->call("user.notfound.html");   
-  }
+	if ($this->exists($this->path.$arCallFunction."/")) {
+		// first check if it's a pdir, if so, change the location
+		$result=$this->get($this->path.$arCallFunction."/","system.get.type.phtml");
+		if ($result && ($type=$result[0]) && $this->store->implements($type, "pdir")) {
+			Header("Location: ".$this->store->root.$this->path.$arCallFunction."/");
+		} else {
+			// any cache image must be saved under the current url,
+			// not the rewritten one, ergo:
+			$ARCurrent->cachepage=$this->path.$arCallFunction;
+			$this->get($this->path.$arCallFunction."/","view.html",$arCallArgs);
+		}
+	} else if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		$this->call("user.notfound.html");	 
+	}
 ?>

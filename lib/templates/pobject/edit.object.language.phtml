@@ -1,89 +1,96 @@
 <?php
-  /******************************************************************
-   form.phtml					   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
+	/******************************************************************
+	 edit.object.language.phtml                            Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: read
+	 Global variables: none
 
-   no result.
+	 This template displays a (radiobutton) list of available languages
+	 to be used in the flow of an object edit wizard.
 
-  ******************************************************************/
-  if ($this->CheckSilent("read")) {
+	 no result
+
+	******************************************************************/
+
+	if ($this->CheckSilent("read") && $this->CheckConfig()) {
 ?>
-  <table border="0" cellspacing="4">
-  <tr>
-    <td align="center" valign="top">
-      <?php echo $ARnls["q:morelanguages"]; ?>
-    </td>
-  </tr><tr>
-    <td>
-      <fieldset id="languages">
-      <legend><?php echo $ARnls["language"]; ?></legend>
-      <img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1"><br>
-      <table border="0"><tr><td>
-<?php
-    $arLanguage=$this->getdata("arLanguage","none");
-    if (!$arLanguage) {
-      $arLanguage=$ARConfig->nls->default;
-    }
-    echo "<input type=\"hidden\" name=\"arPrevLanguage\" value=\"$arLanguage\">\n";
-    $middle=@count($ARConfig->nls->list)/2;
-    if ($middle<2) {
-      $middle=@count($ARConfig->nls->list);
-    }    
-    $count=0;
-    reset($ARConfig->nls->list);
-    asort($ARConfig->nls->list);
-    while (list($arnls, $value)=each($ARConfig->nls->list)) {
-      $count++;
-      if ($count>$middle) { echo "</td><td>\n"; }
-      if ($this->getdata("name",$arnls)) {
-        $image=$AR->dir->images.'nls/'.$arnls.'.gif';
-      } else {
-        $image=$AR->dir->images.'nls/faded/'.$arnls.'.gif';
-      }
-      if ($arnls==$arLanguage) {
-        $selected=" checked";
-      } else {
-        $selected="";
-      }
-      if ($arnls==$ARConfig->nls->default) {
-        $default=true;
-      } else {
-        $default=false;
-      }
+	<table border="0" cellspacing="4">
+	<tr>
+		<td align="center" valign="top">
+			<?php echo $ARnls["q:morelanguages"]; ?>
+		</td>
+	</tr><tr>
+		<td>
+			<fieldset id="languages">
+			<legend><?php echo $ARnls["language"]; ?></legend>
+			<img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1"><br>
+			<table border="0"><tr><td>
+			<?php
+				$arLanguage=$this->getdata("arLanguage","none");
+				if (!$arLanguage) {
+					$arLanguage=$ARConfig->nls->default;
+				}
+				echo "<input type=\"hidden\" name=\"arPrevLanguage\" value=\"$arLanguage\">\n";
+				$middle=@count($ARConfig->nls->list)/2;
+				if ($middle<2) {
+					$middle=@count($ARConfig->nls->list);
+				}		
+				$count=0;
+				reset($ARConfig->nls->list);
+				asort($ARConfig->nls->list);
+				while (list($arnls, $value)=each($ARConfig->nls->list)) {
+					$count++;
+					if ($count>$middle) { 
+						echo "</td><td>\n"; 
+					}
+					if ($this->getdata("name",$arnls)) {
+						$image=$AR->dir->images.'nls/'.$arnls.'.gif';
+					} else {
+						$image=$AR->dir->images.'nls/faded/'.$arnls.'.gif';
+					}
+					if ($arnls==$arLanguage) {
+						$selected=" checked";
+					} else {
+						$selected="";
+					}
+					if ($arnls==$ARConfig->nls->default) {
+						$default=true;
+					} else {
+						$default=false;
+					}
+					?>
+						<a href="#" onClick="selectnls('<?php echo $arnls; ?>');"><img alt="<?php echo htmlentities($value); ?>" src="<?php echo $image; ?>" align="left" vspace="4" alt="" border="0"></a>
+						<input type="radio" name="arLanguage" value="<?php echo $arnls; ?>"<?php echo $selected; ?>><?php 
+							if ($default) {
+								echo "<span class=\"required\">$value</span>";
+							} else {
+								echo $value; 
+							}
+						?><br clear="all">
+					<?php
+				}
+			?>
+			</td></tr></table>
+			</fieldset>
+		</td>
+	</tr>
+	</table>
+	<script>
+		function selectnls(nls) {
+			nlslist=document.wgWizForm.arLanguage;
+			for (var i=0; i<nlslist.length; i++) {
+				if (nlslist[i].value==nls) {
+					nlslist[i].checked=true;
+					break;
+				}
+			}
+			return false;
+		}
+	</script>
+	<?php
+		if (!$this->getdata("name",$ARConfig->nls->default)) {
+			$arResult["save"]=false;
+		}
+	}
 ?>
-      <a href="#" onClick="selectnls('<?php echo $arnls; ?>');"><img alt="<?php echo htmlentities($value); ?>" src="<?php echo $image; ?>" align="left" vspace="4" alt="" border="0"></a>
-      <input type="radio" name="arLanguage" value="<?php echo $arnls; ?>"<?php echo $selected; ?>><?php 
-        if ($default) {
-          echo "<span class=\"required\">$value</span>";
-        } else {
-          echo $value; 
-        }
-      ?><br clear="all">
-<?php
-    }
-?>
-      </td></tr></table>
-<?php
-  }
-?>
-      </fieldset>
-    </td>
-  </tr>
-  </table>
-  <script>
-    function selectnls(nls) {
-      nlslist=document.wgWizForm.arLanguage;
-      for (var i=0; i<nlslist.length; i++) {
-        if (nlslist[i].value==nls) {
-          nlslist[i].checked=true;
-          break;
-        }
-      }
-      return false;
-    }
-  </script>
-  <?php
-    if (!$this->getdata("name",$ARConfig->nls->default)) {
-      $arResult["save"]=false;
-    }
-  ?>

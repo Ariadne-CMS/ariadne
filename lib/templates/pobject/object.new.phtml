@@ -1,38 +1,37 @@
 <?php
-  /******************************************************************
-   object.new.phtml				   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
+	/******************************************************************
+	 object.new.phtml                                      Muze Ariadne
+	 ------------------------------------------------------------------
 
-   No result.
+	 No result.
 
-  ******************************************************************/
-
-  if ($this->CheckLogin("add") && $this->CheckConfig()) {
-    include($this->store->code."widgets/wizard/code.php");
-    $arNewType=$this->getdata("arNewType","none");
-    if (!$arNewType) {
-      error("arNewType not defined.");
-      $this->store->close();
-      exit();
-    }
-    $arNewFilename=$this->getdata("arNewFilename","none");
-    $arNewData=new object;
-    $arNewPath=$this->make_path($arNewFilename);
-    $wgWizCallObject=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData);
-    $wgWizCallObject->newobject=true;
-    $wgWizFlow=$wgWizCallObject->call("object.new.flow.phtml", $arCallArgs);
-    if ($wgWizFlow[0]["error"]) {
-      $wgWizAlert=$wgWizFlow[0]["error"];
-    }
-    $wgWizControl=$this->getdata("wgWizControl","none");
-    $wgWizCurrent=$this->getdata("wgWizCurrent","none");
-    if ($wgWizControl && $wgWizCurrent) {
-      $wgWizNextStep=$wgWizFlow[$wgWizCurrent][wgWizGetAction($wgWizControl)];
-      $wgWizButtons=$wgWizFlow[$wgWizNextStep];
-    }
-    $result=$this->get("/system/ariadne/types/$arNewType/","system.get.name.phtml");
-    $wgWizTitle=$ARnls["new"]." ".$result[0];    
-    $wgWizCallArgs=$arCallArgs.$wgWizFlow[0]["arCallArgs"];
-    include($this->store->code."widgets/wizard/classic.html");
-  }
+	******************************************************************/
+	if ($this->CheckLogin("add") && $this->CheckConfig()) {
+		include($this->store->code."widgets/wizard/code.php");
+		$arNewType=$this->getdata("arNewType","none");
+		if (!$arNewType) {
+			error("arNewType not defined.");
+			$this->store->close();
+			exit();
+		}
+		$arNewFilename=$this->getdata("arNewFilename","none");
+		$arNewData=new object;
+		$arNewPath=$this->make_path($arNewFilename);
+		$wgWizCallObject=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData);
+		$wgWizCallObject->arIsNewObject=true;
+		$wgWizFlow=$wgWizCallObject->call("object.new.flow.phtml", $arCallArgs);
+		if ($wgWizFlow[0]["error"]) {
+			$wgWizAlert=$wgWizFlow[0]["error"];
+		}
+		$wgWizControl=$this->getdata("wgWizControl","none");
+		$wgWizCurrent=$this->getdata("wgWizCurrent","none");
+		if ($wgWizControl && $wgWizCurrent) {
+			$wgWizNextStep=$wgWizFlow[$wgWizCurrent][wgWizGetAction($wgWizControl)];
+			$wgWizButtons=$wgWizFlow[$wgWizNextStep];
+		}
+		$result=$this->get("/system/ariadne/types/$arNewType/","system.get.name.phtml");
+		$wgWizTitle=$ARnls["new"]." ".$result[0];		
+		$wgWizCallArgs=$arCallArgs.$wgWizFlow[0]["arCallArgs"];
+		include($this->store->code."widgets/wizard/classic.html");
+	}
 ?>

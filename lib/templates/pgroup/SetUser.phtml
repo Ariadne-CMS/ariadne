@@ -1,35 +1,34 @@
 <?php
-  $result=$this->get($path, "Get.phtml");
-  if ($result && $result[0] 
-      && $this->store->implements($result[0]->type, "puser")) {
-    $this->get($path, "SetGroup.phtml", "action=$action&path=".
-      RawUrlEncode($this->path)."&id=".RawUrlEncode($data->login));
-    if ($action=="add") {
-      $this->link($path, $this->path.$result[0]->data->login."/");
-    } else {
-      //FIXME: check path
-      $this->delete($path);            
-    }
-    // FIXME: update tree
-  }
-  if (!$returnpage) {
-    $returnpage=$this->store->root.$this->path."edit.phtml";
-  }
-  //calculate and save new member properties
-  $members=$this->ls(".","GetId.phtml");
-  while (list($key, $member)=@each($members)) {
-    $properties["members"][]["login"]="'".AddSlashes($member)."'";
-  } 
-  if (!$properties["members"]) {
-    $properties["members"]=1;
-  }
-  
-  if ($this->save($this->path, $this->type, $data, $properties)) {
-	if (!$silent) {
-		Header("Location: ".$returnpage);
-		echo "<a href=\"$returnpage\">Return</a>";
+	$result=$this->get($path, "system.get.phtml");
+	if ($result && $result[0] && $this->store->implements($result[0]->type, "puser")) {
+		$this->get($path, "SetGroup.phtml", "action=$action&path=".
+					RawUrlEncode($this->path)."&id=".RawUrlEncode($data->login));
+		if ($action=="add") {
+			$this->link($path, $this->path.$result[0]->data->login."/");
+		} else {
+			//FIXME: check path
+			$this->delete($path);						
+		}
+		// FIXME: update tree
 	}
-  } else {
-    echo $this->store->error;
-  }
+	if (!$returnpage) {
+		$returnpage=$this->store->root.$this->path."edit.phtml";
+	}
+	//calculate and save new member properties
+	$members=$this->ls(".","system.get.id.phtml");
+	while (list($key, $member)=@each($members)) {
+		$properties["members"][]["login"]="'".AddSlashes($member)."'";
+	} 
+	if (!$properties["members"]) {
+		$properties["members"]=1;
+	}
+	
+	if ($this->save($this->path, $this->type, $data, $properties)) {
+		if (!$silent) {
+			Header("Location: ".$returnpage);
+			echo "<a href=\"$returnpage\">Return</a>";
+		}
+	} else {
+		echo $this->store->error;
+	}
 ?>

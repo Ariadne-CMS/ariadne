@@ -1,7 +1,4 @@
 <?php
-	/******************************************************************
-
-	******************************************************************/
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		if ($target) {
 			// first check to see if the target is valid
@@ -29,6 +26,10 @@
 				unset($this->data->grants);
 				$target=$this->make_path($target);
 				if (!$this->exists($target)) {
+					// first make sure that the object is clean (data can only be set via 
+					// the defined interface: $arCallArgs)
+					$this->data=@current($this->get(".","system.get.data.phtml"));
+
 					// first save templates for the new object
 					if ($this->data->pinp) {
 						$templateroot=$this->store->files."templates";
@@ -55,8 +56,7 @@
 						$this->data->nls->default=$ARConfig->nls->default;
 					}
 					$properties=$this->load_properties();
-					$newpath=$this->save($target, $this->type, $this->data, $this->properties, $this->vtype); 
-        
+					$newpath=$this->store->save($target, $this->type, $this->data, $this->properties, $this->vtype);
 				} else {
 					$arResult=sprintf($ARnls["err:alreadyexists"],$target);
 				}

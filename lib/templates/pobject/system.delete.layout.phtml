@@ -1,29 +1,38 @@
 <?php
-  if ($this->CheckLogin("layout") && $this->CheckConfig()) {
-    // check arguments, remove ".."
-    $type=str_replace("..",".",$type);
-    $function=str_replace("..",".",$function);
-    $language=str_replace("..",".",$language);
+	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		// first make sure that the object is clean (data can only be set via 
+		// the defined interface: $arCallArgs)
+		$this->data=@current($this->get(".","system.get.data.phtml"));
 
-    $template_dir=$this->path."class=/".$type."/";
-    $template_path=$template_dir.$function.".".$language;
-   
-    if (eregi("^[a-z0-9\._-]+$",$function)) {
-      if (isset($data->pinp[$type][$function][$language])) {
-        unset($data->pinp[$type][$function][$language]);
-        unset($data->templates[$type][$function][$language]);
-        if (count($data->pinp[$type][$function])==0) {
-          unset($data->pinp[$type][$function]);
-          unset($data->templates[$type][$function]);
-          if (count($data->pinp[$type])==0) {
-            unset($data->pinp[$type]);
-            unset($data->templates[$type]);
-          }
-        }
-        $this->save($this->path, $this->type, $data);
-        unlink($this->store->files."templates".$template_path);
-        unlink($this->store->files."templates".$template_path.".pinp");
-      }
-    }
-  }
+		// check arguments, remove ".."
+		$type=str_replace("..",".",$type);
+		$function=str_replace("..",".",$function);
+		$language=str_replace("..",".",$language);
+
+		$template_dir=$this->path."class=/".$type."/";
+		$template_path=$template_dir.$function.".".$language;
+	 
+		if (eregi("^[a-z0-9\._-]+$",$function)) {
+			if (isset($this->data->pinp[$type][$function][$language])) {
+				unset($this->data->pinp[$type][$function][$language]);
+				unset($this->data->templates[$type][$function][$language]);
+				unlink($this->store->files."templates".$template_path);
+				unlink($this->store->files."templates".$template_path.".pinp");
+				if (count($this->data->pinp[$type][$function])==0) {
+					unset($this->data->pinp[$type][$function]);
+					unset($this->data->templates[$type][$function]);
+					if (count($this->data->pinp[$type])==0) {
+						unset($this->data->pinp[$type]);
+						unset($this->data->templates[$type]);
+						rmdir($this->store->files."templates".$template_dir;
+						if (count($this->data->pinp)==0) {
+							rmdir($this->store->file."templates".$this->path."class=/");
+							rmdir($this->store->file."templates".$this->path);
+						}
+					}
+				}
+				$this->save();
+			}
+		}
+	}
 ?>

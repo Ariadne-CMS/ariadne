@@ -1,0 +1,250 @@
+<?php
+	/******************************************************************
+	 system.save.data.phtml                                Muze Ariadne
+	 ------------------------------------------------------------------
+ 
+	******************************************************************/
+
+	if ((($this->arIsNewObject && $this->CheckLogin("add")) ||
+			(!$this->arIsNewObject && $this->CheckLogin("edit"))) && 
+			$this->CheckConfig()) {
+		if (!$this->arIsNewObject) {
+			// first make sure that the object is clean (data can only be set via 
+			// the defined interface: $arCallArgs)
+		    $this->data=@current($this->get(".","system.get.data.phtml"));
+		}
+
+		//	$repeatn: int
+		//	week:  $repeat_on[$option]=0/1 
+		//	       $option {0-7)
+		//	month: $repeat_by=$option {"Day","Date"}
+		//	       $repeatend: date int
+		$roptions=array(	$ARnls["none"]	=> "none",
+							$ARnls["day"]	=> "day",
+							$ARnls["week"]	=> "week",
+							$ARnls["month"]	=> "month",
+							$ARnls["year"]	=> "year");
+		$moptions=array(	$ARnls["day"]	=> "day",
+							$ARnls["date"]	=> "date");
+		$woptions=array(	$ARnls["sun"]	=> "sun",
+							$ARnls["mon"]	=> "mon",
+							$ARnls["tue"]	=> "tue",
+							$ARnls["wed"]	=> "wed",
+							$ARnls["thu"]	=> "thu",
+							$ARnls["fri"]	=> "fri",
+							$ARnls["sat"]	=> "sat");
+
+		if ($date=$this->getdata("date","none")) {
+			$date_arr=getdate($date);
+		}
+		if ($entry=$this->getdata("entry","none")) {
+			$entry_arr=getdate($entry);
+		}
+		if (!$repeat=$this->getdata("repeat","none")) {
+			$repeat="none";
+		}			
+		$repeatend=$this->getdata("repeatend","none");
+		$repeatn=$this->getdata("repeatn","none");
+		$repeat_on=$this->getdata("repeat_on","none");
+		$repeat_by=$this->getdata("repeat_by","none");
+
+		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
+			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+		} else {
+			if (!$this->data->nls) {
+				$this->data->nls=new object;
+			}
+			$this->data->nls->default=$ARConfig->nls->default;
+			reset($AR->nls->list);
+			while (list($key, $value)=each($AR->nls->list)) {
+				
+				if ($this->getdata("name",$key)) { 
+					if (!$this->data->$key) {
+						$newnlsdata=new object;
+					} else {
+						$newnlsdata=$this->data->$key;
+					}
+					if (!$this->getdata("name",$key)) {
+						$this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
+					}
+					$newnlsdata->name=$this->getdata("name",$key);
+					$properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
+					$properties["text"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
+					$newnlsdata->summary=$this->getdata("summary",$key);
+					$properties["text"][]["value"]="'".AddSlashes($newnlsdata->summary)."'";
+					if ($page=$this->getdata("page",$key)) {
+						$newnlsdata->page=$page;
+					}
+					$this->data->$key=$newnlsdata;
+					$this->data->nls->list[$key]=$value;
+				} else { // clear language values for $key->name if set, keep the rest, just in case.
+					if ($this->data->$key) {
+						unset($this->data->$key->name);
+						unset($this->data->nls->list[$key]);
+					}
+				}
+			}
+
+			// calculate start and endtime, repeats etc.
+			if (!isset($date)) {
+				$this->error=$ARnls["err:validdate"];
+			} else {
+				$days=(24*60*60);
+				$weeks=(7*$days);
+				$date_arr=getdate($date);
+				$this->data->starthour=$this->getdata("starthour","none");
+				$this->data->startminute=$this->getdata("startminute","none");
+				$this->data->starttime=mktime($this->data->starthour, $this->data->startminute, 0, $date_arr["mon"], $date_arr["mday"], $date_arr["year"]);
+				// endtime
+				if ($this->data->no_time=$this->getdata("no_time")) {
+					$this->data->endtime=$this->data->starttime-1;
+				} else {
+					$this->data->endhour=$this->getdata("endhour","none");
+					$this->data->endminute=$this->getdata("endminute","none");
+					$this->data->endtime=mktime($this->data->endhour, $this->data->endminute, 0, $date_arr["mon"], $date_arr["mday"], $date_arr["year"]);
+				}
+				$this->data->priority=$this->getdata("priority","none");
+				$properties["priority"][0]["value"]=AddSlashes($priority);
+				if (!$repeat || ($repeat=="none")) { // advanced options not selected
+					$this->data->repeat="none";
+					$this->data->repeatn=1;
+				} else { // advanced options selected
+					$this->data->repeat=$repeat;
+					$this->data->repeatn=abs(intval($repeatn));
+					if (!$this->data->repeatn) { // must never be 0!
+						$this->data->repeatn=1;
+					}
+					$this->data->repeatend=intval($repeatend)+$days-1;
+					$this->data->repeat_on=$repeat_on;
+					$this->data->repeat_by=$moptions[$repeat_by];
+				}
+			}
+			if (!$this->error) {
+				// see if we need to split the object
+				$confirm=$this->getdata("confirm","none");
+				if ($confirm==$ARnls["current"]) {
+					// save a new pcalitem with the current values, no repeat
+					$newcalitem=$this->store->newobject($this->path."{0:id}/",$this->path,$this->type,$this->data);
+					$newcalitem->arIsNewObject=true;
+					$newcalitem->data->repeat="none";
+					$newcalitem->call("system.save.data.phtml");
+					// remove current entry from current object
+					$this->data->timeframes=$this->DelTimeframe($entry);
+					$dontsavetimeframes=true;
+				} else { // $confirm=="All" by default
+					// check whether this is the first item in the repeating row
+					//	 or the item doesn't repeat
+					// else -> split into two, save the newer (starting from now)
+					if (($this->data->repeat!="none") && ($this->data->timeframes[0]["start"]<$entry)) {
+						// save a new pcalitem, repeating from now
+						$newcalitem=$this->store->newobject($this->path."{0:id}/",$this->path,$this->type,$this->data);
+						$newcalitem->arIsNewObject=true;
+						$newcalitem->data->date=$entry;
+						$newcalitem->call("system.save.data.phtml");
+						// set endtime for the current object to current entry
+						$this->data->timeframes=$this->NewEndtime($entry);
+						$dontsavetimeframes=true;
+						$entry_arr=getdate($entry);
+						$this->data->repeatend=mktime(0,0,0, $entry_arr["mon"], $entry_arr["mday"], $entry_arr["year"]);
+					}
+				}
+
+				if (!$dontsavetimeframes) {
+					// now calculate the timeframes properties.
+					$length=$this->data->endtime - $this->data->starttime;
+					switch($this->data->repeat) {
+						case "none":	// add one entry;
+							$properties["timeframe"][0]["start"]=$this->data->starttime;
+							$properties["timeframe"][0]["end"]=$this->data->endtime;
+							break;
+						case "day":	// repeat ever $repeatn days untile $repeatend
+							$i=0;
+							$time=$this->data->starttime;
+							while (($time<=$this->data->repeatend) && ($i<100)) {
+								$properties["timeframe"][$i]["start"]=$time;
+								$properties["timeframe"][$i]["end"]=$time+$length;
+								$time+=($this->data->repeatn*$days);
+								$i++;
+							}
+							break;
+						case "week":	// repeat every $repeatn weeks on given weekdays until $repeatend
+			 				$i=0;
+							$time=$this->data->starttime; 
+							while ($time<=$this->data->repeatend) {
+								$time_arr=getdate($time);
+								$wday=$time_arr["wday"];
+								reset($this->data->repeat_on);
+								while (list($day,$checked)=each($this->data->repeat_on)) {
+									if ($checked) {
+										$diff=($day-$wday) * $days;
+										$properties["timeframe"][$i]["start"]=$time+$diff;
+										$properties["timeframe"][$i]["end"]=$time+$diff+$length;
+										$i++;
+									}
+								}
+								$time+=($this->data->repeatn*$weeks);	
+							}
+							break;
+						case "month":	// repeat every $repeatn months on ..
+							$i=0;
+							$stime_arr=getdate($this->data->starttime);
+							$time=$this->data->starttime;
+							if ($this->data->repeat_by=="day") { // .. the nth weekday of the month or .. 
+								$week=($stime_arr["mday"]-($stime_arr["mday"] % 7)) / 7; // get n (this simulates a 'div 7') 
+								while ($time<=$this->data->repeatend) {
+									$properties["timeframe"][$i]["start"]=$time;
+									$properties["timeframe"][$i]["end"]=$time+$length;
+									$i++;
+		 							// calculate mday of this weekday, this week of the next month
+		 							// first get the correct week
+		 							$check=getdate(mktime(0,0,0,$stime_arr["mon"]+$i, $week*7+1, $stime_arr["year"]));
+		 							// then get the first occurance of the weekday from there
+									// check_wday<=stime_wday -> mday=check_mday+(stime_wday-check_wday)
+									// check_wday
+		 							$temp=$stime_arr["wday"] - $check["wday"];
+									if ($temp<0) {
+										$mday=$check["mday"]+(7+$temp);
+									} else {
+										$mday=$check["mday"]+$temp;
+									}
+									$check=getdate(mktime(0,0,0,$stime_arr["mon"]+$i+1,-1,$stime_arr["year"]));
+									if ($mday>$check["mday"]) { // check that $mday isn't in the next month
+										$mday-=7; // then get the last wday of this month instead.
+									}
+			 						// now make the new time
+		 							$time=mktime($stime_arr["hours"], $stime_arr["minutes"],
+		 										$stime_arr["seconds"], $stime_arr["mon"]+$i,
+		 										$mday, $stime_arr["year"]);					
+								}
+							} else { // .. this date until $repeatend
+								while ($time<=$this->data->repeatend) {
+									$properties["timeframe"][$i]["start"]=$time;
+									$properties["timeframe"][$i]["end"]=$time+$length;
+									$i++;
+									$time=mktime($stime_arr["hours"], $stime_arr["minutes"],
+												$stime_arr["seconds"], $stime_arr["mon"]+$i,
+												$stime_arr["mday"], $stime_arr["year"]);
+								}
+							}
+							break;
+						case "year":	// repeat every $repeatn years on this date until $repeatend
+							$i=0;
+							$time=$this->data->starttime; 
+							$stime_arr=getdate($this->data->starttime);
+							while ($time<=$this->data->repeatend) {
+								$properties["timeframe"][$i]["start"]=$time;
+								$properties["timeframe"][$i]["end"]=$time+$length;
+								$i++;
+								$time=mktime($stime_arr["hours"], $stime_arr["minutes"],
+											$stime_arr["seconds"], $stime_arr["mon"],
+											$stime_arr["mday"], $stime_arr["year"]+$i);
+							}
+							break;
+					}
+					$this->data->timeframes=$properties["timeframe"];
+				}
+			}
+			$this->save($properties);
+		}
+	}
+?>

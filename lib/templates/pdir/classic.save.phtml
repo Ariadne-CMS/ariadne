@@ -1,0 +1,42 @@
+<?php
+	/******************************************************************
+	 classic.save.phtml                              Muze Ariadne v2.0b
+	 ------------------------------------------------------------------
+	 Arguments: $arReturnPage
+	 Grant needed: add or edit
+	 Global variables: none
+
+	 This template is z wrapper around system.save.data.phtml for the
+	 classic interface. It displays error messages if anything goes
+	 wrong, otherwise it adds the directory link in the tree and
+	 redirects the browser to the given returnpage.
+
+	 no result.
+ 
+	******************************************************************/
+	debug("pdir/classic.save.phtml","class");
+	if ($this->arIsNewObject) {
+		$url=$AR->dir->www."setlink.php?do=add";
+	} else {
+		$url=$AR->dir->www."setlink.php?do=update";
+	}
+	$this->call("system.save.data.phtml",$arCallArgs);
+	if (!$this->error) {
+		if (!$arReturnPage) {
+			$arReturnPage=$this->store->root.$parent;
+		}
+		$folder=$this->call("system.get.folder.phtml");
+		if ($arShortCut) {
+			$url.="&shortcut=".RawUrlEncode($arShortCut);
+		}
+		$url.="&link=".RawUrlEncode($this->parent);
+		$url.="&icon=".RawUrlEncode($folder["icon"]);
+		$url.="&name=".RawUrlEncode($folder["name"]);
+		$url.="&path=".RawUrlEncode($folder["path"]);
+		$url.="&pre=".RawUrlEncode($folder["pre"]);
+		$url.="&returnpage=".RawUrlEncode($arReturnPage);
+		Header("Location: $url");
+	} else {
+		$this->call("show.error.phtml");
+	}
+?>

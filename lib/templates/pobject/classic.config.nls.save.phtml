@@ -1,0 +1,18 @@
+<?php
+	/******************************************************************
+	 classic.config.nls.save.phtml                         Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: see system.save.nls.phtml
+	 Grant needed: "config"
+	 Global variables: none
+
+	 This template is a wrapper around system.save.nls.phtml the language (nls)
+	 configuration.
+ 
+	 No return value.
+	
+	******************************************************************/
+
+	$this->call("system.save.nls.phtml",$arCallArgs);
+	Header("Location: ".$this->store->root.$this->path."config.phtml");
+?>

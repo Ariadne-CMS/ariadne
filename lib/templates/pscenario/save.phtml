@@ -1,43 +1,44 @@
 <?php
-  if ($newtype) {
-    $newdata=new object;
-  } else { 
-    $newdata=$data;
-  }
-  if (!isset(${$ARConfig->nls->default}) && !isset($newdata->{$ARConfig->nls->default})) { // default language for this path
-    $error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
-  } else {
-    if (!$newdata->nls) {
-      $newdata->nls=new object;
-    }
-    $newdata->nls->default=$ARConfig->nls->default;
-    reset($AR->nls->list);
-    while (list($key, $value)=each($AR->nls->list)) {
-      if (isset(${$key})) {
-        $nlsformdata=$$key;
-        if (!$newdata->$key) {
-          $newnlsdata=new object;
-        } else {
-          $newnlsdata=$newdata->$key;
-        }
-        if (!$nlsformdata["name"]) {
-          $error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
-        }
-        $newnlsdata->name=$nlsformdata["name"];
-        $properties["name"][]["value"]="'".AddSlashes($nlsformdata["name"])."'";
-        $newdata->$key=$newnlsdata;
-        $newdata->nls->list[$key]=$value;
-      }
-    }
-  }
+	if ($newtype) {
+		$newdata=new object;
+	} else { 
+		$newdata=$data;
+	}
+	if (!isset(${$ARConfig->nls->default}) && !isset($newdata->{$ARConfig->nls->default})) { // default language for this path
+		$error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+	} else {
+		if (!$newdata->nls) {
+			$newdata->nls=new object;
+		}
+		$newdata->nls->default=$ARConfig->nls->default;
+		reset($AR->nls->list);
+		while (list($key, $value)=each($AR->nls->list)) {
+			if (isset(${$key})) {
+				$nlsformdata=$$key;
+				if (!$newdata->$key) {
+					$newnlsdata=new object;
+				} else {
+					$newnlsdata=$newdata->$key;
+				}
+				if (!$nlsformdata["name"]) {
+					$error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
+				}
+				$newnlsdata->name=$nlsformdata["name"];
+				$properties["name"][]["value"]="'".AddSlashes($nlsformdata["name"])."'";
+				$newdata->$key=$newnlsdata;
+				$newdata->nls->list[$key]=$value;
+			}
+		}
+	}
 
-  $newdata->priority=$priority;
+	$newdata->priority=$priority;
 
-  $displays=$this->ls("/system/newspaper/displays/","GetValue.phtml");
-  while (is_array($displays) && list($key,$val)=each($displays)) {
-	$newdata->display[$val]["start"]=${$val."_start"};
-	$newdata->display[$val]["end"]=${$val."_end"};
-  }
+	if ($displays=$this->ls("/system/newspaper/displays/","system.get.value.phtml")) {
+		while (list($key,$val)=each($displays)) {
+			$newdata->display[$val]["start"]=${$val."_start"};
+		$newdata->display[$val]["end"]=${$val."_end"};
+		}
+	}
 
-  include($this->store->code."includes/save.object.phtml");
+	include($this->store->code."includes/save.object.phtml");
 ?>

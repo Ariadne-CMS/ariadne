@@ -1,0 +1,98 @@
+<?php
+	/******************************************************************
+	 classic.new.phtml								 Muze Ariadne v2.0b
+	 ------------------------------------------------------------------
+	 Arguments: $arNewType, $arNewFilename, $arSubmit
+	 Grant needed: add
+	 Global variables: none
+
+	 This template controls the flow of templates when creating a new
+	 object.
+	 If $arNewType is not set it will display a suitable list of
+	 types, to be selected by the user, with a filename entry box. 
+	 Else if $arSubmit is not set to $ARnls['Save'] the form template 
+	 of the chosen type will be displayed. 
+	 Finally the save template of the chosen type will be called.
+
+	 $arNewType can be any valid Ariadne classname.
+	 $arNewFilenam can be any valid Ariadne object filename (no '..' 
+	   or '/'). If empty, it is set to the default value '{5:id}'.
+	 $arSubmit can be anything, if it is not $ARnls['save'] or
+	   $ARnls['next'], the form template of the chosen type is called
+	   again to handle the submit.
+
+	 No result.
+
+	******************************************************************/
+
+	if ($this->CheckLogin("add") && $this->CheckConfig()) {
+		if (!$arNewType) { // first choose an objecttype
+?>
+<html>
+<head>
+<title><?php echo $ARnls["addnewobject"]; ?></title>
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
+</head>
+<body bgcolor="white">
+<form>
+<table border="0" cellspacing="0">
+<tr>
+	<td colspan="2">
+		<font face="helvetica, sans-serif" size="+1"><b><?php echo $ARnls["addnewobject"]; ?>:</b></font>
+	</td>
+</tr><tr>
+	<td align="right">
+		<font face="helvetica, sans-serif"><b><?php echo $ARnls["type"]; ?> :</b></font>
+	</td>
+	<td>
+		<select name="arNewType">
+		<?php
+			if ($AR->user->data->login=="admin") {
+				$this->ls("/system/ariadne/types/","show.option.value.phtml");
+			} else { 
+				if ($ARConfig->typetree) {
+					$this->ls($ARConfig->typetree."/".$this->type."/",
+							"show.option.value.phtml");
+				} else {
+					$this->ls("/system/ariadne/typetree/normal/".$this->type."/",
+							"show.option.value.phtml");
+				}
+			}
+		?>
+		</select>
+	</td>
+</tr>
+<tr>
+	<td align="right">
+		<font face="helvetica, sans-serif"><b><?php echo $ARnls["filename"]; ?> :</b></font>
+	</td>
+	<td>
+		<input type="text" name="arNewFilename" size="16">
+	</td>
+</tr>
+<tr>
+	<td colspan="2" align="right">
+		<input type="submit" name="arSubmit" value="<?php echo $ARnls["next"]; ?>">
+	</td>
+</tr>
+</table>
+</body>
+</html>
+<?php
+		} else {
+			if (!$arNewFilename) { 
+				$arNewFilename="{5:id}";
+			}
+			$arNewData=serialize(new object);
+			$arNewPath=$this->make_path($arNewFilename);
+			$arNewObject=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData);
+			$arNewObject->arIsNewObject=true;
+
+			if ($arSubmit==$ARnls["save"]) { // now save it
+				$arNewObject->call("classic.save.phtml",$arCallArgs);
+			} else { // then fill in the data
+				$arNewObject->call("classic.form.phtml",$arCallArgs);
+			}
+		}
+	}
+?>

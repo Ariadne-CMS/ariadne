@@ -48,10 +48,10 @@
   // because this is the management interface, don't recurse into subdirs.
   $crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
 
-  if (is_array($art=$this->find(".",$crit,"Get.phtml"))) { 
+  if (is_array($art=$this->find(".",$crit,"system.get.phtml"))) { 
 	arsort($art);
 	while ((list($key,$obj)=each($art))) {
-	  $obj->call("Show.phtml");
+	  $obj->call("show.phtml");
   	}
   }
 ?>

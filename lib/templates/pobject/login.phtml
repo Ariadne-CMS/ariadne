@@ -1,16 +1,44 @@
 <?php
-	if (!$ARCurrent->session || ($AR->user->data->login!=$ARlogin)) {
-        // start a new session when there is no session yet, or
-        // when a user uses a new login. (su)
-		$this->store->root=ldStartSession();
-	}
-	$ARCurrent->session->put("ARLogin",$ARLogin);
-	$ARCurrent->session->put("ARPassword",$ARPassword);
-	// FIXME: keep session also outside hash? for 'resume' option?
-    $nls=$ARCurrent->nls;
-    $this->setnls("");
-	setcookie("ARCookie",$ARLogin."{".md5($ARPassword.$ARCurrent->session->id)."}", 0, $this->store->root);
-    $this->setnls($nls);
-	Header("Location: ".$this->store->root.$arReturnPage);
+	/******************************************************************
+	 login.phtml                                           Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $ARLogin, $ARPassword, $arReturnPath, $arReturnTemplate
+	 Grant needed: none
+	 Global variables: none
+
+	 This template sets the login cookie and adds the username and
+	 password to the session. If no session exists, or the session has
+	 a different username, a new session is started.
+
+	 Finally the template redirects the browser to $arReturnPage.
+
+	 $ARLogin must be a valid user id
+	 $ARPassword must be the password for that user
+	 $arReturnPath is the path of the object to which
+	   the browser must be redirected. This is the internal ariadne
+	   path.
+	 $arReturnTemplate is the name of the template to display in that
+	   object.
+	 
+	 no result
+
+	******************************************************************/
+	if ($this->CheckConfig()) {
+		if (!$ARCurrent->session || ($AR->user->data->login!=$ARlogin)) {
+	        // start a new session when there is no session yet, or
+	        // when a user uses a new login. (su)
+			ldStartSession();
+		}
+		$ARCurrent->session->put("ARLogin",$ARLogin);
+		$ARCurrent->session->put("ARPassword",$ARPassword);
+		// FIXME: keep session also outside hash? for 'resume' option?
+	    $nls=$ARCurrent->nls;
+	    $this->setnls("");
+		setcookie("ARCookie",$ARLogin."{".md5($ARPassword.$ARCurrent->session->id)."}", 0, $this->store->root);
+	    $this->setnls($nls);
+		Header("Location: ".$this->make_url($arReturnPath).$arReturnTemplate);
 ?>
-<a href="<?php echo $this->store->root.$arReturnPage; ?>">Continue</a>
+<a href="<?php echo $this->make_url($arReturnPath).$arReturnTemplate; ?>">Continue</a>
+<?php
+	}
+?>

@@ -3,7 +3,7 @@
     if (($result=$this->lock(0,"T")) && ($result["identity"])) {
       $this->error=$ARnls["err:cannotlockobject"];
     } else {
-      if (!$this->ls(".","Get.phtml")) {
+      if (!$this->ls(".","system.get.phtml")) {
         // remove grants for this object in all user objects.
         if ($data->grants && is_array($data->grants)) {
           while (list($login, $grants)=each($data->grants)) {    

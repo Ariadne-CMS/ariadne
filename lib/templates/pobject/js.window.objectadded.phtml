@@ -1,3 +1,22 @@
+<?php
+	/******************************************************************
+	 js.window.objectadded.phtml                           Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: none
+	 Global variables: none
+
+	 This template displays javascript code which calls the function 
+	 objectadded(type, name, path) in the opener of this window and
+	 then closes the window. 
+
+	 It is used in conjunction with scripts that must first do a 
+	 redirect before closing a window.
+	 
+	 no result
+
+	******************************************************************/
+?>
 <script>
 <!--
   window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddSlashes($nlsdata->name); ?>','<?php echo $this->path; ?>');

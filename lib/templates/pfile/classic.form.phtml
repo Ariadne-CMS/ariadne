@@ -1,0 +1,99 @@
+<?php
+	/******************************************************************
+	 classic.form.phtml                                    Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: arNewType, arNewFilename
+	 Grant needed: read
+	 Global variables: none
+
+	 This template displays the input form for this object. 
+
+	 no result.
+
+	******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+?>
+<body bgcolor="white">
+<?php
+	$this->parents($this->path, "ShowLink.phtml","target=edit.phtml");
+?>
+<form ENCTYPE="multipart/form-data" method="post">
+<input type="hidden" name="MAX_FILE_SIZE" value="10000000">
+<input type="hidden" name="arNewType" value="<?php echo $arNewType; ?>">
+<input type="hidden" name="arNewFilename" value="<?php echo $arNewFilename; ?>">
+<input type="hidden" name="arReturnPage" value="<?php echo $arReturnPage; ?>">
+<?php
+include($this->store->code."widgets/formlock/js.html");
+?>
+<table border="0" cellspacing="0">
+<tr>
+	<td colspan="2" bgcolor="#404074">
+		<?php
+			$wgNLSpretext="<font face=\"helvetica, sans-serif\" color=\"white\"><b>".
+				$ARnls["editfile"].":</b></font><br>";
+			include($this->store->code."widgets/nls/form.phtml"); 
+		?>
+	</td>
+</tr><tr>
+	<td align="right">
+		<font face="helvetica, sans-serif"><b><?php echo $ARnls["name"]; ?>&nbsp;:</b></font>
+	</td>
+	<td>
+		<input type="text" name="<?php echo $nls; ?>[name]" size="16" maxlength="50" value="<?php $this->showdata("name",$nls); ?>">
+		&nbsp;<font face="helvetica, sans-serif"><b>Mimetype&nbsp;:</b></font>
+		<input type="text" name="mimetype" size="16" maxlength="50" value="<?php $this->showdata("mimetype","none"); ?>">
+	</td>
+</tr><tr>
+	<td align="right" valign="top">
+		<font face="helvetica, sans-serif"><?php echo $ARnls["summary"]; ?>&nbsp;:</font>
+	</td><td>
+		<textarea cols=50 rows=3 wrap=soft name="<?php echo $nls; ?>[summary]"><?php 
+			echo ereg_replace('&','&amp;',$this->getdata("summary",$nls)); 
+		?></textarea>
+	</td>
+</tr><tr>
+	<td align="right" valign="top">
+		<font face="helvetica, sans-serif"><?php echo $ARnls["file"]; ?>&nbsp;:</font>
+	</td><td>
+		<input type="file" name="file">
+		<?php
+			if ($data->mimetype=="text/html") {
+				$wgHTMLEditName="html";
+				$wgHTMLEditPath=$this->parent;
+				$wgHTMLEditFile=$data->filename;
+				$wgHTMLEditLanguage="none";
+				$wgHTMLEditContent=implode(" ",file($this->store->files."files".$this->parent.$data->filename));
+				$wgHTMLEditType="full";
+				include($this->store->code."widgets/htmledit/js.html");
+				include($this->store->code."widgets/htmledit/form.html"); 
+			}
+		?>
+	</td>
+</tr>
+</table>
+<table width="100%" cellspacing="0" border="0">
+<tr bgcolor="#404074">
+	<td>
+		<?php if ($arNewType) { ?>
+			<input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="history.back()">
+		<?php } else { ?>
+			<input type="submit" name="arSubmit" value="<?php echo $ARnls["cancel"]; ?>">
+			<?php
+				$wgRecurseConfirm=$ARnls["q:removefile"];
+				$wgRecurseAction="delete";
+				$wgRecurseTitle=$ARnls["delete"];
+				include($this->store->code."widgets/recurse/form.js");
+				include($this->store->code."widgets/recurse/form.html");
+			?>
+		<?php } ?>
+	</td>
+	<td align="right">
+		<input type="submit" name="arSubmit" value="<?php echo $ARnls["save"]; ?>">	
+	</td>
+</tr>
+</table>
+</form>
+</body>
+<?php
+	}
+?>

@@ -1,0 +1,516 @@
+<?php
+	/******************************************************************
+	 classic.form.phtml                                    Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $arNewType, $arNewFilename, $starttime, $endtime
+	 Grant needed: read
+	 Global variables: none
+
+	 This template displays the input form for this object.
+
+	 no result.
+
+	******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+
+	if (!$starttime) { 
+		if ($data->starttime)	{ 
+			$starttime=$data->starttime; 
+		} else {
+			$starttime=mktime() ;
+		}
+	}
+	$stime_arr=getdate($starttime);
+	if (!$endtime) {
+		if ($data->endtime) {
+			$endtime=$data->endtime;
+			echo "<script>\n	endtime_changed=1;\n</script>";
+		} else { // default is starttime + 1 hour.
+			$endtime=mktime($stime_arr["hours"]+1,$stime_arr["minutes"],$stime_arr["seconds"],
+							$stime_arr["mon"],$stime_arr["mday"],$stime_arr["year"]);
+		}
+	}
+	$etime_arr=getdate($endtime);
+	if (!$date) {
+		$date=$starttime;
+	}
+	if (!$starthour) {
+		$starthour=$stime_arr["hours"];
+	}
+	if (!$startminute) {
+	 	$startminute=$stime_arr["minutes"];
+	}
+	if (!$endhour) {
+		$endhour=$etime_arr["hours"];
+	}
+	if (!$endminute) {
+		$endminute=$etime_arr["minutes"];
+	}
+?>
+<html>
+<head>
+	<title><?php echo $ARnls["edit"]." ".$ARnls["calendarentry"]; ?></title>
+	<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>menu.css"> 
+</head>
+<body bgcolor="white">
+<form>
+<input type="hidden" name="arReturnPage" value="<?php echo $arReturnPage; ?>">
+<input type="hidden" name="arNewType" value="<?php echo $arNewType; ?>">
+<input type="hidden" name="arNewFilename" value="<?php echo $arNewFilename; ?>">
+<input type="hidden" name="starttime" value="<?php echo $starttime; ?>">
+<?php
+	include($this->store->code."widgets/formlock/js.html");
+	if ($entry) {
+		?>
+			<input type="hidden" name="entry" value="<?php echo $entry; ?>">
+		<?php
+	}
+?>
+<p>
+<script>
+<!--
+
+	starthour=<?php echo $starthour; ?>;
+	startminute=<?php echo $startminute; ?>;
+	endhour=<?php echo $endhour; ?>;
+	endminute=<?php echo $endminute; ?>;
+
+	function UpdateEndlists(form) {
+		diffh=form.starthour.options[form.starthour.selectedIndex].value - starthour;
+		diffm=form.startminute.options[form.startminute.selectedIndex].value - startminute;
+		endhour=endhour+diffh;
+		endminute=endminute+diffm;		
+		starthour=starthour+diffh;
+		startminute=startminute+diffm;
+		RedrawEndlists(form);
+	}
+	
+	function UpdateEndtime(form) {
+		diffh=form.endhour.options[form.endhour.selectedIndex].value - endhour;
+		diffm=form.endminute.options[form.endminute.selectedIndex].value - endminute;
+		endhour=endhour+diffh;
+		endminute=endminute+diffm;
+		RedrawEndlists(form); 
+	}
+
+	function Select(list, value) {
+		for (i=0; i<list.length; i++) {
+			if (list.options[i].value==value) {
+				list.options[i].selected=true;
+				break;
+			}			 
+		}
+	}
+
+	function RedrawEndlists(form) {
+		if (endhour<starthour) {
+			endhour=starthour;
+			endminute=startminute;
+		}
+		if (endhour==starthour && endminute<startminute) {
+			endminute=startminute;
+		}
+		if (endminute>55) {
+			endhour+=1;
+			endminute=endminute-60;
+		}
+		if (endhour>23) {
+			endhour=23;
+			endminute=55;
+		}
+		Select(form.endhour, endhour);
+		Select(form.endminute, endminute);
+	}
+//-->
+</script>
+<table border="0" cellspacing="2" cellpadding="2" width="100%" vspace="10" hspace="10">
+<tr>
+	<td colspan="2">
+		<table width="100%">
+		<tr><td>
+			<font face="helvetica, sans-serif" size="+1"><?php echo $ARnls["calenderentry"]; ?></font>
+		</td><td align="right">
+		<?php 
+			$wgDateName="date";
+			$wgDate=$date;
+			include($this->store->code."widgets/date/js.html");
+			include($this->store->code."widgets/date/form.html");
+		?>
+		</td></tr>
+		</table>
+	</td>
+</tr><tr>
+	<td colspan="2" bgcolor="#404074">
+		<font face="helvetica, sans-serif" color="white"><b>&nbsp;<?php echo $ARnls["time"]; ?></b></font>
+	</td>
+</tr><tr>
+	<td colspan="2">
+		<font face="helvetica, sans-serif">
+			<?php echo $ARnls["priority"]; ?> : 
+			<select name="priority">
+				<?php
+					 if (!$priority) { $priority=$data->priority; } 
+						 /* $priority is also an element of pcalendar, as the default priority 
+								for new items. As for a new item this template is run from pcalendar, 
+								this will automatically become the default priority. 
+						 */
+					 $this->ls("/system/calendar/priorities/", "show.option.value.phtml","selected=$priority");
+				 ?>
+			</select>
+			<?php
+				function ShowList($start, $end, $step, $selected) {
+					$selected=round($selected / $step) * $step;
+					for ($i=$start; $i<=$end; $i+=$step) {
+						echo "<option value=\"$i\"";
+						if ($i==$selected) {
+							echo " selected"; 
+						}
+						echo ">$i\n";
+					}
+				}
+				echo $ARnls["start"]." : \n"; 
+				echo "<select name=\"starthour\" onChange=\"UpdateEndlists(this.form)\">\n";
+				$start=0; $end=23; $step=1;
+				ShowList($start,$end,$step,$starthour);
+				echo "</select>\n";
+				echo " : ";
+				echo "<select name=\"startminute\" onChange=\"UpdateEndlists(this.form)\">\n";
+				$start=0; $end=55; $step=5;
+				ShowList($start,$end,$step,$startminute); 
+				echo "</select>";
+
+			 	echo $ARnls["end"]." : \n";
+				echo "<select name=\"endhour\" onChange=\"UpdateEndtime(this.form)\">\n";
+				$start=0; $end=23; $step=1;
+				ShowList($start,$end,$step,$endhour);
+				echo "</select>\n";
+				echo " : ";
+				echo "<select name=\"endminute\" onChange=\"UpdateEndtime(this.form)\">\n";
+				$start=0; $end=55; $step=5;
+				ShowList($start,$end,$step,$endminute); 
+				echo "</select>\n"; 
+			?>
+			<input type="checkbox" name="no_time" <?php
+				if (($data->endtime<$data->starttime) || ($no_time)) { echo "checked"; } 
+			?>><?php echo $ARnls["notime"]; ?>
+		</font>
+	</td>
+</tr><tr>
+	<td colspan="2" bgcolor="#404074">
+		<?php
+			$wgNLSpretext="<font face=\"helvetica, sans-serif\" color=\"white\"><b>".
+				$ARnls["item"]."</b></font><br>";
+			include($this->store->code."widgets/nls/form.phtml");
+		?></td>
+</tr><tr>
+	<td colspan="2">
+		<table>
+		<tr>
+			<td align="right">
+				<font face="helvetica, sans-serif"><b><?php echo $ARnls["short"]; ?></b>&nbsp;:</font>
+			</td><td>
+				<input type="text" name="<?php echo $nls; ?>[name]" size="32" maxlength="32" value="<?php 
+					echo ereg_replace('&','&amp;',$this->getdata("name",$nls)); ?>">
+			</td>
+		</tr><tr>
+			<td align="right" valign="top">
+				<font face="helvetica, sans-serif"><?php echo $ARnls["text"]; ?>&nbsp;:</font>
+			</td>
+			<td>
+				<textarea name="<?php echo $nls; ?>[summary]" cols=62" rows="4" wrap="soft"><?php 
+					echo ereg_replace("&","&amp;",$this->getdata("summary",$nls)); 
+				?></textarea>
+			</td>
+		</tr>
+		</table>
+	</td>
+</tr><tr>
+<?php
+	if ($Advanced) {
+		// Only display advanced options when the button ($Advanced) is pressed.
+		?>
+			<input type="hidden" name="Advanced" value="1">
+			<td bgcolor="#404074" width="50%"><font face="arial,helvetica,sans-serif" color="white"><b>&nbsp;<?php echo $ARnls["repeat"]; ?></b></font></td>
+			<td bgcolor="#404074" width="50%"><font face="arial,helvetica,sans-serif" color="white"><b>&nbsp;<?php echo $ARnls["alarm"]; ?></b></font></td>
+		</tr><tr>
+			<td valign="top" bgcolor="#EEEEEE">
+				<table border="0" cellspacing="0" width="100%">
+				<tr>
+					<td colspan="2">
+						<table cellspacing="0" cellpadding="2" border="0">
+						<tr>
+							<?php
+								$roptions=array(
+										"none"	=> $ARnls["none"],
+										"day"	=> $ARnls["day"],
+										"week"	=> $ARnls["week"],
+										"month"	=> $ARnls["month"],
+										"year"	=> $ARnls["year"]);
+								 $rroptions=array(
+										$ARnls["none"]	=> "none",
+										$ARnls["day"]	=> "day",
+										$ARnls["week"]	=> "week",
+										$ARnls["month"]	=> "month",
+										$ARnls["year"]	=> "year");
+								 $moptions=array(
+										"day"	=> $ARnls["day"],
+										"date"	=> $ARnls["date"]);
+								 $woptions=array(
+										$ARnls["sun"],
+										$ARnls["mon"],
+										$ARnls["tue"],
+										$ARnls["wed"],
+										$ARnls["thu"],
+										$ARnls["fri"],
+										$ARnls["sat"]);
+								 if (!$repeat) {
+									 if ($data->repeat) {
+										 $repeatnls=$ARnls[$data->repeat];
+										 $repeat=$data->repeat;
+										 $repeat_on=$data->repeat_on;
+										 $repeat_by=$data->repeat_by;
+										 $days=24*60*60;
+										 $repeatend=$data->repeatend-$days+1;
+										 $repeatn=$data->repeatn;
+									 } else {
+										 $repeatnls=$ARnls["none"];
+										 $repeat="none";
+									 }
+								 }
+								 if (!$repeat_by) {
+									 $repeat_by=$moptions[1];
+								 }
+								 if (!$repeatn) {
+									 $repeatn=1;
+								 }
+								 if (!$repeatend) {
+									 $repeatend=$starttime;
+								 }
+								 echo "<input type=\"hidden\" name=\"repeatnls\" value=\"$repeat\">";
+								 while (list($key, $item)=each($roptions)) {
+									 if ($repeatnls==$item) {
+										 echo "<td bgcolor=\"#404074\"><font color=\"white\">&nbsp;$item&nbsp;</font></td>\n";
+									 } else {
+										 echo "<td><input type=\"submit\" name=\"repeatnls\" value=\"$item\"></td>\n";
+									 }
+								 }
+							 ?>
+						</tr>
+						</table>
+					</td>
+				</tr><tr>
+				<?php 
+					if ($repeatnls!=$ARnls["none"]) { ?>
+						<td><?php echo $ARnls["every"]; ?> :</td>
+						<td><input type="text" name="repeatn" size="3" value="<?php echo $repeatn; ?>">
+							<?php echo $ARnls[$rroptions[$repeat]."s"]; ?>.</td>
+						</tr><tr>
+						<?php
+					}
+					switch($repeat) {
+						case $ARnls["none"] :
+							?>
+								<td></td>
+								<td><?php echo $ARnls["norepeat"]; ?></td>
+							</tr><tr>
+							<?php
+				 			break;
+						case $ARnls["week"] :
+				 			echo "</tr><tr><td valign=\"top\">".$ARnls["repeaton"]." :</td><td>";
+				 			if ($arNewType) { // default to current weekday
+				 				if ($repeat_on) {
+				 					while (list($key, $option)=each($woptions)) {
+				 						if ($repeat_on[$option]) {
+				 							$foundone=$option;
+				 						}
+				 					}
+				 				}
+				 				if (!$foundone) {
+									$repeat_on[$stime_arr["wday"]]=1;
+				 					echo "<!-- ".$stime_arr["wday"].$woptions[$stime_arr["wday"]]." -->";
+				 				} else {
+				 					echo "<!-- ".$foundone." -->";
+				 				}
+				 			}
+				 			reset($woptions);
+				 			while (list($key,$option)=each($woptions)) {
+				 				echo "<input type=\"checkbox\" name=\"repeat_on[$key]\" value=\"1\"";
+				 				if ($repeat_on[$key]) {
+				 					echo " checked";
+				 				}
+				 				echo ">&nbsp;$option ";
+				 			}
+				 			echo "</td></tr><tr>";
+				 			break;
+						case $ARnls["month"] :
+				 			if ($arNewType && !$repeat_by) {
+				 				$repeat_by=$ARnls["day"];
+				 			}
+				 			echo "</tr><tr><td valign=\"top\">".$ARnls["repeatby"]." :</td><td>";
+				 			while (list($key,$option)=each($moptions)) {
+				 				echo "<input type=\"radio\" name=\"repeat_by\" value=\"$option\"";
+				 				if ($repeat_by==$option) {
+				 					echo " checked";
+				 				}
+				 				echo ">&nbsp;$option ";
+				 			}
+				 			echo "</td></tr><tr>";
+				 			break;
+					}
+					if ($repeat_by && $repeatnls!=$ARnls["month"]) { // preserve month options
+						echo "<input type=\"hidden\" name=\"repeat_by\" value=\"$repeat_by\">\n";
+					}
+					if ($repeat_on && $repeatnls!=$ARnls["week"]) { // preserve week options
+						while (list($key, $option)=each($woptions)) {
+					 		echo "<input type=\"hidden\" name=\"repeat_on[$key]\" value=\"".
+					 			$repeat_on[$key]."\">\n";
+					 	}
+					}
+					if ($repeatnls!=$ARnls["none"]) {
+						?>
+						<td><?php echo $ARnls["endson"]; ?>:</td>
+						<td><?php
+							$wgDate=$repeatend;
+							$wgDateName="repeatend";
+							include($this->store->code."widgets/date/form.html");
+						?></td>
+						<?php
+					}
+				?>
+				</tr>
+				</table>
+			</td>
+			<td valign="top" bgcolor="#EEEEEE">
+				<table border="0" cellspacing="0">
+				<tr>
+					<td colspan="2">
+		<?php 
+			if (!$alarm) {
+				if ($data->alarm) {
+					$alarm=$data->alarm;
+				} else {
+					$alarm=$ARnls["off"];
+				}
+			}
+			if (!isset($alarm_at)) {
+				if ($data->alarm_at) {
+					$alarm_at=$data->alarm_at;
+					$alarm_units=$data->alarm_units;
+				} else {
+					$alarm_at="5";
+					$alarm_units=$ARnls["minutes"];
+				}
+			}
+			$units[]=$ARnls["minutes"];
+			$units[]=$ARnls["hours"];
+			$units[]=$ARnls["days"];
+			if ($alarm==$ARnls["on"]) {
+				?>
+						<table border="0" width="100%"><tr>
+							<input type="hidden" name="alarm" value="<?php echo $ARnls["on"]; ?>">
+							<td bgcolor="#404074"><font color="white">&nbsp;<?php echo $ARnls["on"]; ?>&nbsp;</font></td>
+							<td><input type="submit" name="alarm" value="<?php echo $ARnls["off"]; ?>"></td>
+							<td align="right"><input type="text" name="alarm_at" value="<?php echo $alarm_at; ?>" size="3">
+						<select name="alarm_units">
+		<?php
+			while (list($key, $unit)=each($units)) {
+				echo "<option";
+				if ($unit==$alarm_units) {
+					echo " selected>";
+				} else {
+					echo ">";
+				}
+				echo $unit."\n";
+			}
+		?>
+						</select>
+							</td>
+						</tr></table>
+				</tr><tr>
+					<td>
+						<?php echo $ARnls["mailto"]; ?> :
+					</td><td>
+		<?php
+		if (!$alarm_notify) {
+			if ($data->alarm_notify) {
+				$alarm_notify=$data->alarm_notify;
+			}
+		}
+		/*
+		$notify_options[]="E-mail";
+		$notify_options[]="IRC";
+		$notify_options[]="ICQ";
+		$notify_options[]="SMS";
+		while (list($key, $option)=each($notify_options)) {
+			if ($AR->user->data->contact[$option]) {
+				echo "<input type=\"checkbox\" name=\"alarm_notify[$option]\"";
+				if ($alarm_notify[$option]) {
+					echo " checked";
+				}
+				echo "> $option<br>";
+			}
+		}
+		*/
+		?>
+		<input type="text" name="alarm_notify" size="30" maxlength="255" value="<?php echo $alarm_notify; ?>">
+		<!-- FIXME: delete this line --></td></tr><tr><td colspan="2" align="center"><em><?php echo $ARnls["n.y.i."]; ?></em>
+				<?php
+			} else {
+				?>
+						<table border="0"><tr>
+							<input type="hidden" name="alarm" value="<?php echo $ARnls["off"]; ?>">			
+							<td><input type="submit" name="alarm" value="<?php echo $ARnls["on"]; ?>"></td>
+							<td bgcolor="#404074"><font color="white">&nbsp;<?php echo $ARnls["off"]; ?>&nbsp;</font></td>
+						</tr></table>
+				<?php
+			}
+				?>
+					</td>
+				</tr>
+				</table>
+			</td>
+		</tr><tr>
+			<td colspan="2">&nbsp;</td>
+ <?php } // advanced options ?>
+ </tr><tr>
+	 <td>&nbsp;</td><td>&nbsp;</td>
+ </tr><tr>
+	 <td colspan="2" bgcolor="#404074">
+		 <table width="100%" cellpadding="0">
+		 <tr>
+			 <td>
+				 <?php if ($arNewType) { 
+					 if ($arReturnPage) { ?>
+						 <input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="document.location.href='<?php echo $arReturnPage; ?>'">
+					 <?php } else { ?>
+						 <input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="history.back()">
+				 <?php 
+						 } 
+					 } else { ?>
+					 <input type="submit" name="next" value="<?php echo $ARnls["cancel"]; ?>">
+<?php
+		$wgRecurseConfirm=$ARnls["q:removecalitem"];
+	$wgRecurseAction="delete";
+	$wgRecurseTitle=$ARnls["delete"];
+		include($this->store->code."widgets/recurse/form.js");
+	include($this->store->code."widgets/recurse/form.html");
+?>
+				 <?php } ?>
+			 </td>
+			 <td align="right">
+				 <?php 
+	if (!$Advanced) { 
+ 		echo "<input type=\"submit\" name=\"Advanced\" value=\"".$ARnls["advanced"]."\">"; 
+ 	} ?> 
+	<input type="submit" name="next" value="<?php echo $ARnls["save"]; ?>">
+			 </td>
+		 </tr>
+		 </table>
+	 </td>
+ </tr>
+ </table>
+ </form>
+ </body>
+ <?php
+	}
+?>

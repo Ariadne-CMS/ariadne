@@ -1,36 +1,35 @@
 <?php
-  /******************************************************************
-   edit.object.cache.phtml			   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
+	/******************************************************************
+	 edit.object.types.phtml                               Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $wgWizNextStep, $wgWizCurrent, $wgWizControl
+	 Grant needed: config
+	 Global variables: none
 
-   No result.
+	 This template controls the flow of the types (typetree) selection
+	 dialog.
+	 
+	 no result
 
-  ******************************************************************/
+	******************************************************************/
 
-  if ($this->CheckLogin("edit") && $this->CheckConfig()) {
-    include($this->store->code."widgets/wizard/code.php");
+	if ($this->CheckLogin("config") && $this->CheckConfig()) {
+		include($this->store->code."widgets/wizard/code.php");
 
-    $start="edit.object.types.form.phtml";
-    $finish="edit.object.types.save.phtml";
-   
-    $wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
-    $i++;
-    $wgWizFlow[$i]["title"]=$ARnls["types"];
-    $wgWizFlow[$i]["template"]=$start;
-    $wgWizFlow[$i]["save"]=$i+1;
-    $i++;
-    $wgWizFlow[$i]["title"]=$ARnls["save"];
-    $wgWizFlow[$i]["template"]=$finish;
-    $wgWizFlow[$i]["back"]=$i-1;
+		$start="edit.object.types.form.phtml";
+		$finish="edit.object.types.save.phtml";
+	 
+		$wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
+		$i++;
+		$wgWizFlow[$i]["title"]=$ARnls["types"];
+		$wgWizFlow[$i]["template"]=$start;
+		$wgWizFlow[$i]["save"]=$i+1;
+		$i++;
+		$wgWizFlow[$i]["title"]=$ARnls["save"];
+		$wgWizFlow[$i]["template"]=$finish;
+		$wgWizFlow[$i]["back"]=$i-1;
 
-    $wgWizNoSidebar=true;    
-    $wgWizControl=$this->getdata("wgWizControl","none");
-    $wgWizCurrent=$this->getdata("wgWizCurrent","none");
-    if ($wgWizControl && $wgWizCurrent) {
-      $wgWizNextStep=$wgWizFlow[$wgWizCurrent][wgWizGetAction($wgWizControl)];
-      $wgWizButtons=$wgWizFlow[$wgWizNextStep];
-    }
-    $wgWizTitle=$ARnls["types"];    
-    include($this->store->code."widgets/wizard/small.html");
-  }
+		$wgWizTitle=$ARnls["types"];		
+		include($this->store->code."widgets/wizard/small.html");
+	}
 ?>

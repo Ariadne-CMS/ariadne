@@ -1,21 +1,16 @@
 <?php
-  /******************************************************************
-
-   No return value.
-  
-  ******************************************************************/
-  if ($this->CheckLogin("delete") && $this->CheckConfig()) {
+	if ($this->CheckLogin("delete") && $this->CheckConfig()) {
 ?>
 <html>
 <head>
 <title><?php echo $ARnls["delete"]; ?></title>
 <?php
-  include($this->store->code."widgets/wizard/classic.css");
+	include($this->store->code."widgets/wizard/classic.css");
 ?>
 <script>
-  function init() {
-    document.confirmform.cancel.focus();
-  }
+	function init() {
+		document.confirmform.cancel.focus();
+	}
 </script>
 </head>
 <body onLoad="init()">
@@ -23,18 +18,20 @@
 <form action="recurse.phtml" name="confirmform">
 <input type="hidden" name="action" value="delete">
 <tr>
-  <td align="center" colspan="2">
-    <?php echo $ARnls["q:removeobject"]."<br>( $this->path )"; ?><p>
-  </td>
+	<td align="center" colspan="2">
+		<?php echo $ARnls["q:removeobject"]."<br>( $this->path )"; ?><p>
+	</td>
 </tr><tr>
-  <td align="right">
-    <input type="submit" name="cancel" style="width: 100px" value="<?php echo $ARnls["no"]; ?>" onClick="window.close();">
-  </td><td align="left">
-    <input type="submit" name="submit" style="width: 100px" value="<?php echo $ARnls["yes"]; ?>">
-  </td>
+	<td align="right">
+		<input type="submit" name="cancel" style="width: 100px" value="<?php echo $ARnls["no"]; ?>" onClick="window.close();">
+	</td><td align="left">
+		<input type="submit" name="submit" style="width: 100px" value="<?php echo $ARnls["yes"]; ?>">
+	</td>
 </tr>
 </form>
 </table>
 </body>
 </html>
-<?php } ?>
+<?php
+	}
+?>

@@ -1,0 +1,21 @@
+<?php
+	/******************************************************************
+	 classic.config.cache.save.phtml                       Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: see system.save.cache.phtml
+	 Grant needed: none
+	 Global variables: none
+
+	 This template is a wrapper for the classic interface around 
+	 system.save.cache.phtml
+
+	 The template saves the cache and then redirects the browser to 
+	 the classic.config.phtml template.
+
+	 No return value.
+	
+	******************************************************************/
+
+	$this->call("system.save.cache.phtml",$arCallArgs);
+	Header("Location: ".$this->store->root.$this->path."classic.config.phtml");
+?>

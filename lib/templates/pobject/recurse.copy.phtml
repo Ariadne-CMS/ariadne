@@ -1,169 +1,168 @@
 <?php
-  /*
-    copy $source to $target
-    if $target ends with a /, copy $source under $target, with the filename
-      from $source
-    if not , copy $source as $target
-      if the target exitst, ask if the user wants to overwrite it,
-        if yes, call recurse.phtml?action=delete on it in a new popup window
-        and continue when it's ready.
-    when copying check grants..
-      if the user has no config grant in the target dir, 
-        then don't copy the grants.
-      if the user has no add or config grants in the source object (only the object!)
-        then don't copy the grants of that object
-    FIXME: for the moment no grants are copied      
-    FIXME: overwrite not yet implemented
-    FIXME: on error on an object, subobjects should be skipped
-  */
-  if ($this->CheckLogin("read") && $this->CheckConfig()) {
-    // sub path is the path from the source to the current object (no leading /)
-    $subpath=substr($this->path, strlen($source));
-    if ($this->path==$source) { 
-      // first object to be copied
-      if (substr($target, -1)!="/") { 
-        // if $target doesn't end on '/', copy this to $target
-        $newpath=$target."/";
-      } else {
-        // if $target does end on '/', copy this under $target (with the same filename)
-        $newpath=$target.substr($this->path,strlen($this->parent));
-      }
-      $exacttarget=$newpath;
-    } else if (substr($target, -1)!="/") {
-      // not the first object, it's a subobject
-      // and $target doesn't end on '/', so the new path is target+subpath
-      $newpath=$target."/".$subpath;
-      $exacttarget=$target."/";
-    } else {
-      // not the first object
-      // target ends on '/'
-      // so the new path is target + source filename + subpath
-      $sourcefilename=substr($source,strrpos('/',substr($source,0,-1))+1);
-      $newpath=$target.$sourcefilename.$subpath;
-      $exacttarget=$target."/".substr($this->path, strlen($source), strpos("/",$subpath));
-    }
+	/*
+		copy $source to $target
+		if $target ends with a /, copy $source under $target, with the filename
+			from $source
+		if not , copy $source as $target
+			if the target exitst, ask if the user wants to overwrite it,
+				if yes, call recurse.phtml?action=delete on it in a new popup window
+				and continue when it's ready.
+		when copying check grants..
+			if the user has no config grant in the target dir, 
+				then don't copy the grants.
+			if the user has no add or config grants in the source object (only the object!)
+				then don't copy the grants of that object
+		FIXME: for the moment no grants are copied			
+		FIXME: overwrite not yet implemented
+		FIXME: on error on an object, subobjects should be skipped
+	*/
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		// sub path is the path from the source to the current object (no leading /)
+		$subpath=substr($this->path, strlen($source));
+		if ($this->path==$source) { 
+			// first object to be copied
+			if (substr($target, -1)!="/") { 
+				// if $target doesn't end on '/', copy this to $target
+				$newpath=$target."/";
+			} else {
+				// if $target does end on '/', copy this under $target (with the same filename)
+				$newpath=$target.substr($this->path,strlen($this->parent));
+			}
+			$exacttarget=$newpath;
+		} else if (substr($target, -1)!="/") {
+			// not the first object, it's a subobject
+			// and $target doesn't end on '/', so the new path is target+subpath
+			$newpath=$target."/".$subpath;
+			$exacttarget=$target."/";
+		} else {
+			// not the first object
+			// target ends on '/'
+			// so the new path is target + source filename + subpath
+			$sourcefilename=substr($source,strrpos('/',substr($source,0,-1))+1);
+			$newpath=$target.$sourcefilename.$subpath;
+			$exacttarget=$target."/".substr($this->path, strlen($source), strpos("/",$subpath));
+		}
 ?>
 <html>
 <head>
 <style>
-  .width100 { width: 100; }
-  .width200 { width: 200; }
-  .width300 { width: 300; }
-  H1    { FONT: 12pt sans-serif; FONT-WEIGHT: bold; }
-  TD        { FONT: 10pt sans-serif; }
-  BODY      { FONT: 10pt sans-serif;
-              BORDER: 0;
-  <?php
-    $browser=$this->call("browsercheck.phtml");
-    if ($browser["id"]=="ns" && $browser["version"]<=4) {
-  ?>
-              BACKGROUND-COLOR: #BBBBBB;
-  <?php
-    } else {
-  ?>
-              BACKGROUND-COLOR: buttonface;
-  <?php
-    }
-  ?>
-            }
+	.width100 { width: 100; }
+	.width200 { width: 200; }
+	.width300 { width: 300; }
+	H1		{ FONT: 12pt sans-serif; FONT-WEIGHT: bold; }
+	TD				{ FONT: 10pt sans-serif; }
+	BODY			{ FONT: 10pt sans-serif;
+							BORDER: 0;
+	<?php
+		$browser=$this->call("browsercheck.phtml");
+		if ($browser["id"]=="ns" && $browser["version"]<=4) {
+	?>
+							BACKGROUND-COLOR: #BBBBBB;
+	<?php
+		} else {
+	?>
+							BACKGROUND-COLOR: buttonface;
+	<?php
+		}
+	?>
+	}
 </style>
 <script>
-  <?php
-    if ($browser["id"]!="ns" || $browser["version"]!=4) {
-  ?>
-  function copynode() {
-    top.copynode();
-  }
-  <?php
-    }
-  ?>
-  function reloadpage(args) {
-    if (document.layers) {
-      window.document.layers.info.src=window.document.layers.info.src+args;
-    } else {
-      document.location.href=document.location.href+args;
-    }
-  }
+	<?php
+		if ($browser["id"]!="ns" || $browser["version"]!=4) {
+		?>
+			function copynode() {
+				top.copynode();
+			}
+		<?php
+		}
+	?>
+	function reloadpage(args) {
+		if (document.layers) {
+			window.document.layers.info.src=window.document.layers.info.src+args;
+		} else {
+			document.location.href=document.location.href+args;
+		}
+	}
 </script>
 </head>
 <body bgcolor="#BBBBBB" onLoad="nextnode();" scroll="no">
 <?php 
-  echo $ARnls["copying"]. "<br>".$newpath; 
-  if (!$this->exists($newpath)) {
-    // the target doesn't exist yet, so check if the parent exists
-    $newparent=$this->store->make_path($newpath, "..");
-    if (!$this->exists($newparent)) {
-      $this->error=sprintf($ARnls["err:wrongpath"],$newparent);
-    } else {
-      // parent exists, so copy current object under that parent
-      // get the filename to copy to, $subpath can be empty!
-      $filename=substr($newpath,strlen($newparent),-1);
-      $result=$this->get($newparent, "system.copy.phtml",
-        "target=".RawUrlEncode($filename)."&source=".RawUrlEncode($this->path)).
-        "&search=".RawUrlEncode($source)."&replace=".RawUrlEncode($exacttarget);
-      if ($result && $result[0]) {
-        $this->error=$result[0];
-      }
-    }
-?>
-<script>
-  function nextnode() {
-    <?php
-      if ($this->error) {
-		echo "\n// $this->error\n";
-    ?>
-      if (!confirm('<?php echo AddSlashes(sprintf($this->error,$newpath)); ?>')) {
-		if (top.window) {
-          top.window.close();
+	echo $ARnls["copying"]. "<br>".$newpath; 
+	if (!$this->exists($newpath)) {
+		// the target doesn't exist yet, so check if the parent exists
+		$newparent=$this->store->make_path($newpath, "..");
+		if (!$this->exists($newparent)) {
+			$this->error=sprintf($ARnls["err:wrongpath"],$newparent);
 		} else {
-          window.close();
-        }
-      } 
-    <?php
-      }
-    ?>
-    window.setTimeout("copynode();",100);
-  }
-</script>
-<?php
-  } else {
-    // newpath exists
-    if (!$confirm) {
-      // ask for overwrite
-?>
-<script>
+			// parent exists, so copy current object under that parent
+			// get the filename to copy to, $subpath can be empty!
+			$filename=substr($newpath,strlen($newparent),-1);
+			$result=$this->get($newparent, "system.copy.phtml",
+				"target=".RawUrlEncode($filename)."&source=".RawUrlEncode($this->path)).
+				"&search=".RawUrlEncode($source)."&replace=".RawUrlEncode($exacttarget);
+			if ($result && $result[0]) {
+				$this->error=$result[0];
+			}
+		}
+		?>
+			<script>
+				function nextnode() {
+					<?php
+						if ($this->error) {
+					echo "\n// $this->error\n";
+					?>
+						if (!confirm('<?php echo AddSlashes(sprintf($this->error,$newpath)); ?>')) {
+					if (top.window) {
+								top.window.close();
+					} else {
+								window.close();
+							}
+						} 
+					<?php
+						}
+					?>
+					window.setTimeout("copynode();",100);
+				}
+			</script>
+		<?php
+	} else {
+		// newpath exists
+		if (!$confirm) {
+			// ask for overwrite
+			?>
+				<script>
+					function nextnode() {
+						// onload function, ask for overwrite permission in this case.
+						if (confirm('<?php printf(AddSlashes($ARnls["q:fileoverwrite"]),$newpath); ?>')) {
+							reloadpage('&confirm=yes');
+						} else {
+							window.setTimeout("copynode();",100);		
+						}
+					}
+				</script>
+			<?php
+		} else {
+			// confirm set, so first delete newpath
+			include($this->store->code."widgets/recurse/general.js");
+			?>
+				<script>
+					function nextnode() {
+						// onload function, delete newpath in this case
+						wgRecurse('<?php echo $newpath; ?>','delete');
+					}
 
-  function nextnode() {
-    // onload function, ask for overwrite permission in this case.
-    if (confirm('<?php printf(AddSlashes($ARnls["q:fileoverwrite"]),$newpath); ?>')) {
-      reloadpage('&confirm=yes');
-    } else {
-      window.setTimeout("copynode();",100);    
-    }
-  }
-</script>
-<?php
-    } else {
-      // confirm set, so first delete newpath
-      include($this->store->code."widgets/recurse/general.js");
-?>
-<script>
-  function nextnode() {
-    // onload function, delete newpath in this case
-    wgRecurse('<?php echo $newpath; ?>','delete');
-  }
-
-  function wgRecurseDone() {
-    // function called by recurse.phtml when task is done
-    reloadpage();
-  }
-</script>
-<?php
-    }
-  }
+					function wgRecurseDone() {
+						// function called by recurse.phtml when task is done
+						reloadpage();
+					}
+				</script>
+			<?php
+		}
+	}
 ?>
 </body>
 </html>
 <?php
-  }
+	}
 ?>

@@ -1,9 +1,29 @@
 <?php
-  if ($this->CheckLogin("read") && $this->CheckConfig()) {
-    $path=$this->make_path($path);
-    if (!$path || !$this->exists($path)) {
-      $path=$this->path;
-    }
+	/******************************************************************
+	 browse.phtml                                          Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $filter, $path, $mode, $title
+	 Grant needed: read
+	 Global variables: none
+
+	 This templates sets up the frame set for the entire browse dialog.
+	 It is called by the browse widget.
+
+	 $filter can either be empty or a valid argument for the 
+	   object.implements search criteria.
+	 $path is the starting path of the browse dialog. If it doesn't 
+	   exist the path of this object is used instead.
+	 $mode can either be 'list','details' or 'web' (FIXME: not yet implemented)
+	 $title is the title of the window.
+
+	 no result
+
+	******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		$path=$this->make_path($path);
+		if (!$path || !$this->exists($path)) {
+			$path=$this->path;
+		}
 ?><html>
 <head>
 <title><?php echo $title; ?></title>
@@ -61,8 +81,8 @@
 	<frame name="browsemiddle" border="0" frameborder="0" 
 		src="<?php echo $this->store->root.$path; ?>browse.middle.phtml?filter=<?php echo RawUrlEncode($filter); ?>">
 	<frame name="browsebottom" border="0" frameborder="0" marginwidth="0" marginheight="0" border="0" scrolling="no" 
-		src="<?php echo $this->store->root.$path; ?>browse.bottom.phtml?wgBrowseFilename=<?php echo RawUrlEncode($filename); ?>&wgBrowseFilter=<?php echo RawUrlEncode($filter); ?>">
+		src="<?php echo $this->store->root.$path; ?>browse.bottom.phtml?filename=<?php echo RawUrlEncode($filename); ?>&filter=<?php echo RawUrlEncode($filter); ?>">
 </frameset>
 <?php
-  }
+	}
 ?>

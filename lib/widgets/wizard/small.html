@@ -35,7 +35,7 @@
       }
       $wgWizNewPath=$this->make_path($wgWizNewFilename);
       $wgWizCallObject=$this->store->newobject($wgWizNewPath, $this->path, $wgWizNewType, $wgWizNewData);
-      $wgWizCallObject->newobject=true;
+      $wgWizCallObject->arIsNewObject=true;
     } else {
       $wgWizCallObject=$this;
     }

@@ -1,24 +1,47 @@
 <?php
-  if ($this->CheckSilent("edit")) {
-    $donotcache=-1;
-    $inherited=0;
-    $onrequest=1;
-    $onchange=999;  
+	/******************************************************************
+	 system.save.cache.phtml                               Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $cache, $keepfor, $refresh
+	 Grant needed: "config"
+	 Global variables: none
 
-    $cache=$this->getdata("cacheconfig","none");
-    $refresh=$this->getdata("refresh","none");
-    $keepfor=$this->getdata("keepfor","none");
-    if ($this->CheckLogin("edit")) {
-      if ($cache==$onrequest) {
-        $cache=$keepfor;
-      }
-      $data->cacheconfig=$cache;
-      $this->save($this->path, $this->type, $data, "");
-      if ($refresh) {
-        $this->ClearCache();
-      }
-    }
-  } else {
-    $this->error=$ARnls["accessdenied"];
-  } 
+	 This template saves the cache configuration. 
+ 
+	 $cache is an integer between -1 and 999. If $cache==1 then $cache
+	   will become $keepfor. The value of $cache is saved in 
+	   $data->cacheconfig.
+	 $keepfor is an integer between 1 and 999.
+	 $refresh is the string "now" or is not set. If $refresh is set, 
+	   the cache will be cleared for all objects and templates from 
+	   the current object in the tree and onwards.
+
+	 No return value.
+	
+	******************************************************************/
+
+	if ($this->CheckSilent("edit")) {
+		$donotcache=-1;
+		$inherited=0;
+		$onrequest=1;
+		$onchange=999;	
+
+		// first make sure that the object is clean (data can only be set via 
+		// the defined interface: $arCallArgs)
+		$this->data=@current($this->get(".","system.get.data.phtml"));
+
+		$cache=$this->getdata("cacheconfig","none");
+		$refresh=$this->getdata("refresh","none");
+		$keepfor=$this->getdata("keepfor","none");
+		if ($cache==$onrequest) {
+			$cache=$keepfor;
+		}
+		$this->data->cacheconfig=$cache;
+		$this->save();
+		if ($refresh) {
+			$this->ClearCache();
+		}
+	} else {
+		$this->error=$ARnls["accessdenied"];
+	} 
 ?>

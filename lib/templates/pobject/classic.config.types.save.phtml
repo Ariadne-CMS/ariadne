@@ -1,0 +1,17 @@
+<?php
+	/******************************************************************
+	 classic.config.types.save.phtml                       Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: see system.save.types.phtml
+	 Grant needed: read
+	 Global variables: none
+
+	 This template is a wrapper around system.save.types.phtml for the
+	 classic config interface.
+	 
+	 no result
+
+	******************************************************************/
+	$this->call("system.save.types.phtml",$arCallArgs);
+	Header("Location:".$this->store->root.$this->path."config.phtml");
+?>

@@ -1,16 +1,27 @@
 <?php
-  $BrowseGrant=$this->CheckSilent("read");
-  echo "<div class='object'><nobr>";
-  if ($BrowseGrant) {
-    echo "<a href=\"javascript:top.View('".$this->path."');\">";
-  }
+	/******************************************************************
+	 browse.nav.list.show.phtml                            Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: none
+	 Global variables: none
+
+	 This template displays the icon and name of an object. If the 
+	 user doesn't have read access to the object, the name is displayed
+	 in grey.
+	 
+	 no result
+
+	******************************************************************/
+
 ?>
-<img width="18" height="18" src="<?php 
-  echo $AR->dir->images; ?>icons/<?php echo $this->type; ?>.gif" alt="[view]" border="0">
-<?php
-  if (!$BrowseGrant) {
-    echo "<font color=\"#CCCCCC\">$nlsdata->name</font>";
-  } else {
-    echo "$nlsdata->name</a>";
-  }
-?></nobr></div>
+<div class='object'><nobr><a 
+	href="javascript:top.View('<?php echo $this->path; ?>');"><img 
+	width="18" height="18" src="<?php echo $AR->dir->images; ?>icons/<?php echo $this->type; ?>.gif" 
+	alt="[view]" border="0"><?php
+		if (!$this->CheckSilent("read")) {
+			echo "<font color=\"#CCCCCC\">$nlsdata->name</font>";
+		} else {
+			echo "$nlsdata->name";
+		}
+	?></a></nobr></div>

@@ -1,3 +1,9 @@
-<option value="<?php echo $data->value; ?>"<?php 
-  if ($selected==$data->value) { echo " selected"; } 
-?>><?php echo $nlsdata->name; ?></option>
+<?php
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		?><option value="<?php echo $data->value; ?>"<?php 
+		if ($selected==$data->value) { 
+			echo " selected";
+		} 
+		?>><?php echo $nlsdata->name; ?></option><?php
+	}
+?>

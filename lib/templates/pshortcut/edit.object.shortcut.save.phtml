@@ -18,7 +18,7 @@
           <?php
             if ($this->store->implements($vtype, 'pdir')) {
               $folder=$this->call("system.get.folder.phtml");
-              if ($this->newobject) {
+              if ($this->arIsNewObject) {
                 echo "  window.opener.top.tree.AddLinks('{$this->parent}','{$folder["icon"]}','".AddSlashes($folder["name"])."','{$folder["path"]}','".AddSlashes($folder["pre"])."');\n";
               } else {
                 echo "  window.opener.top.tree.UpdateLinks('{$folder["icon"]}','".AddSlashes($folder["name"])."','{$folder["path"]}','".AddSlashes($folder["pre"])."');\n";

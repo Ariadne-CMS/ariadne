@@ -1,8 +1,8 @@
 <?php
-  if ($this->CheckLogin("read") && $this->CheckConfig()) {
-?>
-  addobject('<?php echo $this->path; ?>','<?php echo $this->parent; ?>', '<?php echo AddSlashes($nlsdata->name); ?>');
-<?php
-    $arResult=$this->path;
-  }
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		?>
+			addobject('<?php echo $this->path; ?>','<?php echo $this->parent; ?>', '<?php echo AddSlashes($nlsdata->name); ?>');
+		<?php
+		$arResult=$this->path;
+	}
 ?>

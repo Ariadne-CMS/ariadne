@@ -1,0 +1,14 @@
+<?php
+	/******************************************************************
+	 system.get.article-by-priority                        Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: none
+	 Global variables: none
+	 
+	******************************************************************/
+	if (isset($nlsdata)) {
+		$ARCurrent->priority[$this->path]=$this->data->priority-(abs( ($this->data->startdate + $this->data->starttime)-time() )/60);
+		$ARCurrent->article[$this->path]=$this;
+	}
+?>

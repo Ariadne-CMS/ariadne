@@ -1,48 +1,73 @@
 <?php
-  if ($this->CheckLogin("layout") && $this->CheckConfig()) {
-    // check arguments, remove ".."
-    $newtype=str_replace("..",".",$newtype);
-    $newfunction=str_replace("..",".",$newfunction);
-    $newlanguage=str_replace("..",".",$newlanguage);
+	/******************************************************************
+	 system.save.layout.phtml                              Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $type, $function, $language
+	 Grant needed: layout
+	 Global variables: none
 
-    $template_dir=$this->path."class=/".$newtype."/";
-    $template_path=$template_dir.$newfunction.".".$newlanguage;
-   
-    include($this->store->code."modules/mod_pinp.phtml");
-    if (!$newfunction) {
-      $this->error=$ARnls["err:notemplatename"];
-    } else if (ereg("\.phtml$",$newfunction)) {
-      $this->error=$ARnls["err:endswith.phtml"];
-    } else if (!eregi("^[a-z0-9\._-]*$",$newfunction)) {
-      $this->error=$ARnls["err:illegalchars"];
-    } else {
-      if (!file_exists($this->store->files."templates".$template_dir)) {
-        $this->MkDir("templates".$template_dir);
-      }
-      $pinp=new pinp("header","this->", "\$this->_");
-      $compiled=$pinp->compile(strtr($template,"\r",""));
-      $data->pinp[$newtype][$newfunction][$newlanguage]=$template_path;
+	 This template saves a new or changes object template.
 
-      $fp=fopen($this->store->files."templates".$template_path.".pinp","w");
-      fwrite($fp, $template);
-      fclose($fp);
-      $fp=fopen($this->store->files."templates".$template_path,"w");
-      fwrite($fp, $compiled);
-      fclose($fp);
-      if ($default) { // add pinp template from default templates list
-        $data->templates[$newtype][$newfunction][$newlanguage]=$template_path;
-      } else { // remove pinp template from default templates list
-        if (isset($data->templates[$newtype][$newfunction][$newlanguage])) {
-          unset($data->templates[$newtype][$newfunction][$newlanguage]);
-          if (count($data->templates[$newtype][$newfunction])==0) {
-            unset($data->templates[$newtype][$newfunction]);
-            if (count($data->templates[$newtype])==0) {
-              unset($data->templates[$newtype]);
-            }
-          }
-        }
-      }
-      $this->save($this->path, $this->type, $data);
-    }
-  }
+	 $type is the type of the object to which the template is 
+	   to be assigned 
+	 $function is the name assigned to this template. The name may 
+	   consist of the characters [a-zA-Z], [0-9], '.', '-' and '_'.
+	   The name must not contain '..' and must not end with '.phtml'.
+	 $language is the language associated with the template. It can be
+	   any of the keys defined in $AR->nls->list[] or 'any'.
+	   
+	 no result
+
+	******************************************************************/
+
+	if ($this->CheckSilent("layout") && $this->CheckConfig()) {
+		// check arguments, remove ".."
+		$type=str_replace("..",".",$type);
+		$function=str_replace("..",".",$function);
+		$language=str_replace("..",".",$language);
+
+		$template_dir=$this->path."class=/".$type."/";
+		$template_path=$template_dir.$function.".".$language;
+	 
+		include($this->store->code."modules/mod_pinp.phtml");
+		if (!$function) {
+			$this->error=$ARnls["err:notemplatename"];
+		} else if (ereg("\.phtml$",$function)) {
+			$this->error=$ARnls["err:endswith.phtml"];
+		} else if (!eregi("^[a-z0-9\._-]*$",$function)) {
+			$this->error=$ARnls["err:illegalchars"];
+		} else {
+			// first make sure that the object is clean (data can only be set via 
+			// the defined interface: $arCallArgs)
+			$this->data=@current($this->get(".","system.get.data.phtml"));
+
+			if (!file_exists($this->store->files."templates".$template_dir)) {
+				$this->MkDir("templates".$template_dir);
+			}
+			$pinp=new pinp("header","this->", "\$this->_");
+			$compiled=$pinp->compile(strtr($template,"\r",""));
+			$this->data->pinp[$type][$function][$language]=$template_path;
+
+			$fp=fopen($this->store->files."templates".$template_path.".pinp","w");
+			fwrite($fp, $template);
+			fclose($fp);
+			$fp=fopen($this->store->files."templates".$template_path,"w");
+			fwrite($fp, $compiled);
+			fclose($fp);
+			if ($default) { // add pinp template from default templates list
+				$this->data->templates[$type][$function][$language]=$template_path;
+			} else { // remove pinp template from default templates list
+				if (isset($this->data->templates[$type][$function][$language])) {
+					unset($this->data->templates[$type][$function][$language]);
+					if (count($this->data->templates[$type][$function])==0) {
+						unset($this->data->templates[$type][$function]);
+						if (count($this->data->templates[$type])==0) {
+							unset($this->data->templates[$type]);
+						}
+					}
+				}
+			}
+			$this->save();
+		}
+	}
 ?>

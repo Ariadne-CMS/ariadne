@@ -1,4 +1,17 @@
 <?php
+	/******************************************************************
+	 browse.top.phtml                                      Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: read
+	 Global variables: none
+
+	 This template displays the top pat of the browse dialog.
+	 
+	 no result
+
+	******************************************************************/
+
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 ?><html>
 <head>
@@ -19,7 +32,7 @@
 		}
 		if (inlist==-1) {
 			for (i=0; i<blist.length; i++) {
-				newname+="   ";
+				newname+="	 ";
 			}
 			newname+=name;
 			blist[blist.length]=new Option(newname,path);
@@ -47,6 +60,9 @@
 	function ViewMode(mode) {
 		if (mode=='details') {
 			document.images["details"].src='<?php echo $AR->dir->images; ?>browse/details-pressed.gif';			
+			document.images["list"].src='<?php echo $AR->dir->images; ?>browse/list.gif';			
+		} else if (mode=='web') {
+			document.images["details"].src='<?php echo $AR->dir->images; ?>browse/details.gif';			
 			document.images["list"].src='<?php echo $AR->dir->images; ?>browse/list.gif';			
 		} else {
 			document.images["details"].src='<?php echo $AR->dir->images; ?>browse/details.gif';
@@ -95,10 +111,10 @@
 	</td><td align="left" valign="top">
 		<select name="BrowseNav" style="width: 150px; padding: 2px; margin: 2px;" onChange="top.View(this.options[this.options.selectedIndex].value);" class="minimal">
 		<?php
-			$this->parents(".","browse.select.option.phtml","selected=".urlencode($this->path));
+			$this->parents(".","browse.show.option.phtml","selected=".urlencode($this->path));
 		?>
 		</select>
-        </nobr>
+				</nobr>
 	</td><td align="left" valign="top">
 		<nobr>
 			<a href="#" onClick="browseUp(); return false;"><img name="up" src="<?php echo $AR->dir->images; ?>browse/up.gif" width="23" height="22" alt="<?php echo $ARnls["up"]; ?>" border="0" hspace="2" vspace="2"></a>
@@ -124,5 +140,5 @@
 </body>
 </html>
 <?php
-  }
+	}
 ?>

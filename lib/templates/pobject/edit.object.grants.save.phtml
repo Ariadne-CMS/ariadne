@@ -1,84 +1,25 @@
 <?php
-  if ($this->CheckLogin("config")) {
+	/******************************************************************
+	 edit.object.grants.save.phtml                         Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $returnpage
+	 Grant needed: config
+	 Global variables: none
 
-    if (!$error) {
-      include_once($this->store->code."includes/DelGrant.phtml");
-      $searchpath["pgroup"]="/system/groups/";
-      $searchpath["puser"]="/system/users/";
-      if ($delete) {
-        $data->grants[$type]=DelGrant($data->grants[$type], $id, $grant);
-        $this->find($searchpath[$type], 
-                    Array("login" => Array ("value" => Array ("=" => "'".$id."'" ) ) ), 
-                    "system.user.grants.update.phtml", 
-                    "action=delete&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($grant) 
-                   );
-      } else if ($newgrants) {
-        $result=$this->get($path, "system.get.type.phtml");
-        if ($result && $result[0]) {
-          $type=$result[0];
-          if ($this->store->implements($type, "puser") ||
-	      $this->store->implements($type, "pgroup")  ) {
-            $result=$this->get($path, "system.get.login.phtml");
-            if ($result && $result[0]) {
-              $id=$result[0];
-              $newgrants=ereg_replace("[[:space:]]"," ",$newgrants);
-              $newgrant=strtok($newgrants, " ");
-              if ($newgrant==".") {
-                $criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
-		$result=$this->find($searchpath[$type],$criteria,"system.get.grants.phtml","path=".RawUrlEncode($this->path) );
-                if ($result && is_array($result[0])) {
-                  while (list($key, $value)=each($result[0])) {
-                    if ($value) { $current.=$key." "; }
-                  }
-                  $newgrants=ereg_replace(" ?\. ?",AddSlashes($current),$newgrants);    
-                }
-                $newgrant=strtok($newgrants, " ");
-              } else if (ereg("({(.*)})",$newgrant,$regs)) {
-                if ($data->grants[$type][$regs[2]]) {
-                  while (list($grant,$value)=each($data->grants[$type][$regs[2]])) {
-                    if ($value) {
-                      $cloned.=$grant." ";
-                    }
-                  }
-                }
-                $newgrants=ereg_replace(" ?".$regs[1]." ?",AddSlashes($cloned),$newgrants);
-                $newgrant=strtok($newgrants, " ");
-              }
-              while ($newgrant) {
-                if ($newgrant!=".") {
-                  if (substr($newgrant,0,1)=="-") {
-                    $delgrant=substr($newgrant,1);
-                    $data->grants[$type]=DelGrant($data->grants[$type],$id,$delgrant);
-                    $this->find($searchpath[$type], 
-                            Array("login" => Array ("value" => Array ("=" => "'".AddSlashes($id)."'" ) ) ), 
-                            "system.user.grants.update.phtml", 
-                            "action=delete&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($delgrant) 
-                           );
-                  } else {
-                    if (substr($newgrant,0,1)=="+") {
-                      $newgrant=substr($newgrant,1);
-                    }
-                    $data->grants[$type][$id][$newgrant]=1;
-                    $this->find($searchpath[$type], 
-                           Array("login" => Array ( "value" => Array ("=" => "'".AddSlashes($id)."'" ) ) ), 
-                          "system.user.grants.update.phtml", 
-                          "action=add&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($newgrant) 
-                         );
-                  }
-                }
-                $newgrant=strtok(" ");
-              }
-            }
-          }
-        }
-      }
-      $this->save($this->path, $this->type, $data, $properties);
-      Header("Location: $returnpage");
-    ?>
-    <a href="<?php echo $returnpage; ?>">Continue</a>
-    <?php
-    } else {
-      include($this->store->code."includes/error.phtml");
-    }
-  }
+	 This template is a wrapper around system.save.grants.phtml.
+	 
+	 $returnpage is a fully qualified URL.
+
+	 no result
+
+	******************************************************************/
+	$this->call("system.save.grants.phtml");
+	if (!$this->error) {
+		Header("Location: $returnpage");
+		?>
+			<a href="<?php echo $returnpage; ?>">Continue</a>
+		<?php
+	} else {
+		$this->call("show.error.phtml");
+	}
 ?>

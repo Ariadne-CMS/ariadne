@@ -5,9 +5,9 @@
  
   ******************************************************************/
 
-  if ( ( $this->newobject && $this->CheckLogin("add") ) ||
-       ( !$this->newobject && $this->CheckLogin("edit") ) ) {
-    if ($this->newobject) {
+  if ( ( $this->arIsNewObject && $this->CheckLogin("add") ) ||
+       ( !$this->arIsNewObject && $this->CheckLogin("edit") ) ) {
+    if ($this->arIsNewObject) {
       $filename=$this->getdata("arNewFilename","none");
       $this->data->mimetype=$this->getdata("file_type","none");
       $this->data->filesize=$this->getdata("file_size","none");
@@ -56,7 +56,7 @@
     
     include($this->store->code."includes/system.save.phtml");
 
-    $this->newobject=false;
+    $this->arIsNewObject=false;
 
     // now check whether $file_temp is defined, if so, move it
     if (!$this->error) {

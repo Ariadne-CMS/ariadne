@@ -1,11 +1,20 @@
 <?php
-  if ($this->CheckLogin("config")) {
-    $data->typetree=$typetree;
-    $this->save($this->path, $this->type, $data);
+	/******************************************************************
+	 edit.object.types.save.phtml                          Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: see system.save.types.phtml
+	 Grant needed: none
+	 Global variables: none
+
+	 This template is a wrapper around the system.save.types.phtml
+	 template.
+	 
+	 no result
+
+	******************************************************************/
+
+	$this->call("system.save.types.phtml", $arCallArgs);
 ?>
 <script>
   window.close();
 </script>
-<?php
-  }
-?>

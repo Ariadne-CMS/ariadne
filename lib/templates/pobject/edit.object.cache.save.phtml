@@ -1,37 +1,26 @@
 <?php
-  /******************************************************************
-   SetCache.phtml				   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
-   Called by 'config.phtml'
-   Arguments: $cache, $keepfor, $refresh
-   Grant needed: "config"
-   Interface/Widget: management
-   Global variables: none
+	/******************************************************************
+	 edit.object.cache.save.phtml                          Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: see system.save.cache.phtml
+	 Grant needed: none
+	 Global variables: none
 
-   This template is called by config.phtml and saves the cache 
-   configuration. If the checkbox 'clear cache now' is checked in 
-   config.phtml it will also call $this->ClearCache().
- 
-   $cache is an integer between -1 and 999. If $cache==1 then $cache
-     will become $keepfor. The value of $cache is saved in 
-     $data->cacheconfig.
-   $keepfor is an integer between 1 and 999.
-   $refresh is the string "now" or is not set. If $refresh is set, 
-     the cache will be cleared for all objects and templates from 
-     the current object in the tree and onwards.
+	 This template is a wrapper around the system.save.cache.phtml 
+	 template.
 
-   No return value.
-  
-  ******************************************************************/
+	 No result
+	
+	******************************************************************/
 
-  $this->call("system.save.cache.phtml");
-  if (!$this->error) {
-?>
-<script>
-  window.close();
-</script>
-<?php
-  } else {
-    echo "<font color='red'>$this->error</font>";
-  }
+	$this->call("system.save.cache.phtml");
+	if (!$this->error) {
+		?>
+		<script>
+			window.close();
+		</script>
+		<?php
+	} else {
+		$this->call("show.error.phtml");
+	}
 ?>

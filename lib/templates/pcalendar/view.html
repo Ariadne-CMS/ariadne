@@ -1,32 +1,32 @@
 <?php
-  if ($this->CheckConfig($arCallFunction, $arCallArgs) && $this->CheckLogin("read")) {
+	if ($this->CheckConfig($arCallFunction, $arCallArgs) && $this->CheckLogin("read")) {
 ?>
 <html>
 <body bgcolor="white">
 <h3><?php echo $nlsdata->name; ?>.</h3>
 <table border="0">
 <tr>
-  <td valign="top" height="0">
-<?php
-  $now=time();
-  if (!$date) {
-    $date=$now;
-  } 
-  include($this->store->code."templates/pcalendar/month.html");
-?>
-<img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="5"><br>
-<?php
-  include($this->store->code."templates/pcalendar/todo.html");
-?>
-</td><td valign="top" rowspan="2">
-<?php
-  include($this->store->code."templates/pcalendar/day.html");
-?>
-</td>
+	<td valign="top" height="0">
+		<?php
+			$now=time();
+			if (!$date) {
+				$date=$now;
+			} 
+			$this->call("month.html","date=".RawUrlEncode($date));
+		?>
+		<img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="5"><br>
+		<?php
+			$this->call("todo.html","date=".RawUrlEncode($date));
+		?>
+	</td><td valign="top" rowspan="2">
+		<?php
+			$this->call("day.html","date=".RawUrlEncode($date));
+		?>
+	</td>
 </tr>
 </table>
 </body>
 </html>
 <?php
-  }
+	}
 ?>

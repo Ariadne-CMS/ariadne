@@ -33,9 +33,7 @@
     }
   }
   if ($this->store->exists($path)) {
-    $result=$this->get($path, "GetType.phtml");
-    if ($result && $result[0]) {
-      $vtype=$result[0];
+    if ($vtype=@current($this->get($path, "system.get.type.phtml"))) {
       if ($this->store->implements($vtype, 'pdir')) {
         $saveinclude=$this->store->code."includes/save.dir.phtml";
       } else {

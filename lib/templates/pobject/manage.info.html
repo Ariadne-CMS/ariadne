@@ -1,25 +1,18 @@
 <?php
-  if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-/*
-  info: 
-    name, author, size, lastchange, cache?
-  actions:
-    edit, new, delete
-*/
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 ?>
 <script>
-    windowproperties='directories=no,location=no,menubar=no,status=no,toolbar=no,resizable=yes,height=300,width=500'
+	windowproperties='directories=no,location=no,menubar=no,status=no,toolbar=no,resizable=yes,height=300,width=500'
 
-    function editobject() {
-      newwindow=window.open('edit.object.data.phtml',
-                             'newwindow', windowproperties);
-      newwindow.focus();	
-      return false;
-    }
+	function editobject() {
+		newwindow=window.open('edit.object.data.phtml', 'newwindow', windowproperties);
+		newwindow.focus();	
+		return false;
+	}
 
-    function objectadded() {
-      document.location.href=document.location.href;
-    }
+	function objectadded() {
+		document.location.href=document.location.href;
+	}
 </script>
 <table border="0">
 <form>
@@ -36,21 +29,8 @@
 	<br>&nbsp;
 	</td>
 </tr>
-<tr>
-    <td align="center" bgcolor="#EEEEEE" style="width: 100px">
-        <input type="button" style="width: 80px;" value="<?php echo $ARnls["edit"]; ?>" name="edit" onClick="editobject();">
-<?php
-    $wgRecurseConfirm=$ARnls["q:removeobject"];
-    $wgRecurseAction="delete";
-    $wgRecurseTitle=$ARnls["delete"];
-    $wgRecurseStyle="width: 80px;";
-    include($this->store->code."widgets/recurse/form.js");
-    include($this->store->code."widgets/recurse/form.html");
-?>
-    </td>
-</tr>
 </form>
 </table>
 <?php
- }
+	}
 ?>

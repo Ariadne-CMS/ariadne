@@ -1,12 +1,11 @@
 <?php
-  if ($this->CheckLogin("read") && isset($nlsdata)) {
-?><option value="<?php echo $this->path; ?>"<?php
-  if( $selected ) {
-   while( list($key,$value) = each($selected) ) {
-    if ($value==$this->path) { echo " selected"; }
-   }
-  }
-?>><?php echo $nlsdata->name; ?>
-<?php
-  }
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		?><option value="<?php echo $this->path; ?>"<?php
+			if( $selected ) {
+				while( list($key,$value) = each($selected) ) {
+					if ($value==$this->path) { echo " selected"; }
+				}
+			}
+		?>><?php echo $nlsdata->name; ?><?php
+	}
 ?>

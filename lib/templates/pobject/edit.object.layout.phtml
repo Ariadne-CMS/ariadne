@@ -1,59 +1,81 @@
 <?php
-  if ($this->CheckLogin("layout")) {
+	/******************************************************************
+	 edit.object.layout.phtml                              Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: layout
+	 Global variables: none
+
+	 This template displays a list of object templates defined at the
+	 current object. It displays a list of clickable flags denoting the
+	 different languages for which the template is defined, linked to
+	 the template edit form for that template in that language.
+	 
+	 no result
+
+	******************************************************************/
+	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 ?>
 <html>
 <head>
 <title><?php echo $ARnls["templates"]; ?></title>
-<?php
-  include($this->store->code."widgets/wizard/classic.css");
-?>
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
 </head>
 <body bgcolor="white">
 <table border="0" width="75%" align="center" cellspacing="4" vspace="10" hspace="10">
 <form action="edit.object.layout.form.phtml">
 <tr>
-  <td colspan="2" align="center">
-    <fieldset id="templates">
-    <table border="0" width="75%" cellspacing="4">
-    <tr>
-      <td>
-        <span class="required"><?php echo $ARnls["type"]; ?></span>
-      </td><td>
-        <span class="required"><?php echo $ARnls["template"]; ?></span>
-      </td><td>
-        <span class="required"><?php echo $ARnls["language"]; ?></span>
-      </td>
-    </tr>
-      <?php
-        if (($data->pinp) && is_array($data->pinp)) {
-          while (list($type, $values)=each($data->pinp)) {
-            while (list($function, $templatelist)=each($values)) {
-            ?>
-    <tr>
-      <td><?php echo $type; ?>&nbsp;</td><td><?php echo $function; ?></td><td>
-            <?php
-              asort($templatelist);
-              while (list($language, $template)=each($templatelist)) {
-                $flag="<img src=\"".$AR->dir->images."nls/small/$language.gif\" alt=\"".$AR->nls->list[$language]."\" border=\"0\">";
-                echo "<a href=\"edit.object.layout.form.phtml?type=".$type."&function=".RawUrlEncode($function).
-                  "&language=".$language."\">$flag</a> ";
-              }
-            ?>
-      </td>
-    </tr>
-          <?php
-            }
-          }
-        }
-      ?>
-    </table>    
-    </fieldset>
-  </td>
+	<td colspan="2" align="center">
+		<fieldset id="templates">
+		<table border="0" width="75%" cellspacing="4">
+		<tr>
+			<td>
+				<span class="required"><?php echo $ARnls["type"]; ?></span>
+			</td><td width="12" units="pixels">
+			</td><td>
+				<span class="required"><?php echo $ARnls["template"]; ?></span>
+			</td><td>
+				<span class="required"><?php echo $ARnls["language"]; ?></span>
+			</td>
+		</tr>
+		<?php
+			if (($data->pinp) && is_array($data->pinp)) {
+				while (list($type, $values)=each($data->pinp)) {
+					while (list($function, $templatelist)=each($values)) {
+					?>
+						<tr>
+							<td><?php echo $type; ?>&nbsp;</td>
+							<td align="right"><?php 
+								if (!$data->templates[$type][$function]) {
+									echo "<img src='{$AR->dir->images}local.gif' alt='local' height='12' width='11'>";	
+								}
+							?></td>
+							<td><?php echo $function; ?></td>
+							<td><?php
+								asort($templatelist);
+								while (list($language, $template)=each($templatelist)) {
+									$flag="<img src=\"".$AR->dir->images."nls/small/$language.gif\" alt=\"".$AR->nls->list[$language]."\" border=\"0\">";
+									echo "<a href=\"edit.object.layout.form.phtml?type=".$type."&function=".RawUrlEncode($function).
+										"&language=".$language."\">$flag</a> ";
+								}
+							?></td>
+						</tr>
+					<?php
+					}
+				}
+			}
+		?>
+		</table>		
+		</fieldset>
+	</td>
+</tr><tr>
+	<td><input type="button" name="action" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();"></td>
+	<td align="right"><input type="hidden" name="type" value="<?php echo $this->type; ?>">
+		<input type="submit" name="action" value="<?php echo $ARnls["new"]; ?>"></td>
 </tr>
-    <tr><td><input type="button" name="action" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();"></td>
-        <td align="right"><input type="hidden" name="type" value="<?php echo $this->type; ?>">
-            <input type="submit" name="action" value="<?php echo $ARnls["new"]; ?>"></td></tr>
-    </form>
+</form>
 </table>
 </body>
-<?php } ?>
+<?php
+	}
+?>

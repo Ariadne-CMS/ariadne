@@ -1,15 +1,26 @@
 <?php
+	/******************************************************************
+	 browse.bottom.phtml                                   Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: read
+	 Global variables: none
+
+	 Displays the bottom part of the browse dialog. This includes the
+	 filename and filter input and the open and cancel buttons.
+
+	 no result.
+
+	******************************************************************/
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 ?>
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>menu.css">
 <script>
-
-  function showFilename() {
-    document.selectform.filename.scrollLeft=1000000;
-  }
-
+	function showFilename() {
+		document.selectform.filename.scrollLeft=1000000;
+	}
 </script>
 </head>
 <body onLoad="showFilename()"> 
@@ -46,5 +57,5 @@
 </body>
 </html>
 <?php
-  }
+	}
 ?>

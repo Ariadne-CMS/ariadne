@@ -1,4 +1,27 @@
+<?php
+	/******************************************************************
+	 browse.middle.phtml                                   Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $filter
+	 Grant needed: read
+	 Global variables: none
+
+	 This template displays the files frame set for the browse dialog.
+	 The left frame displays a list of objects implementing pdir via
+	 the browse.nav.phtml template.
+	 The right frame displays a list of objects, fullfilling the
+	 requirements passed via the $filter argument, vie the
+	 browse.nav.list.phtml template.
+	 
+	 no result
+
+	******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+?>
 <frameset cols="150,*">
 	<frame name="leftnav" src="<?php echo $this->store->root.$this->path; ?>browse.nav.phtml">
 	<frame name="rightnav" src="<?php echo $this->store->root.$this->path; ?>browse.nav.list.phtml?filter=<?php echo $filter; ?>">
 </frameset>
+<?php
+	}
+?>

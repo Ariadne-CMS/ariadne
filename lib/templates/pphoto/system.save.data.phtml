@@ -5,9 +5,9 @@
  
   ******************************************************************/
 
-  if ( ( $this->newobject && $this->CheckLogin("add",$this->type) ) ||
-       ( !$this->newobject && $this->CheckLogin("edit",$this->type) ) ) {
-    if ($this->newobject) {
+  if ( ( $this->->arIsNewObject && $this->CheckLogin("add",$this->type) ) ||
+       ( !$this->->arIsNewObject && $this->CheckLogin("edit",$this->type) ) ) {
+    if ($this->->arIsNewObject) {
       $filename=$this->getdata("arNewFilename","none");
       while (list($key,$value)=each($ARConfig->nls->list)) {
         $this->data->$key->name=$filename;
@@ -65,7 +65,7 @@
     
     include($this->store->code."includes/system.save.phtml");
 
-    $this->newobject=false;
+    $this->->arIsNewObject=false;
 
     // now check whether $file_temp is defined, if so, move it
     unset($properties);

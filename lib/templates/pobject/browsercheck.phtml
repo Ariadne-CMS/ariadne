@@ -1,14 +1,35 @@
 <?php
-  global $HTTP_USER_AGENT;
-  if (eregi(".*msie ([0-9]+).*", $HTTP_USER_AGENT, $regs) && 
-       $regs[1]) {
-    $arResult["id"]="msie";
-    $arResult["version"]=intval($regs[1]);
-  } else if (eregi(".*Mozilla/([0-9]+).*", $HTTP_USER_AGENT, $regs) &&
-       $regs[1]) {
-    $arResult["id"]="ns";
-    $arResult["version"]=intval($regs[1]);
-  } else {
-    $arResult["id"]="other";
-  }
+	/******************************************************************
+	 browsercheck.phtml                                    Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: none
+	 Global variables: none
+
+	 This templates checks the browser identification string sent by 
+	 the clients browser. It returns an array with an id and version.
+
+	 result value is:
+
+	   ({ "id" => string, "version" => int })
+
+	 The only id's returned currently are 'ns' (netscape and mozilla),
+	 'msie' (Microsoft Internet Explorer) and 'other'.
+	 If the id is "other", version is set to 0. Otherwise version is
+	 major version of the browser.
+
+	******************************************************************/
+	global $HTTP_USER_AGENT;
+	if (eregi(".*msie ([0-9]+).*", $HTTP_USER_AGENT, $regs) && 
+			 $regs[1]) {
+		$arResult["id"]="msie";
+		$arResult["version"]=intval($regs[1]);
+	} else if (eregi(".*Mozilla/([0-9]+).*", $HTTP_USER_AGENT, $regs) &&
+			 $regs[1]) {
+		$arResult["id"]="ns";
+		$arResult["version"]=intval($regs[1]);
+	} else {
+		$arResult["id"]="other";
+		$arResult["version"]=0;
+	}
 ?>

@@ -148,7 +148,7 @@
       <td>
         <select name="typetree">
         <?php
-          $trees=$this->ls("/system/ariadne/typetree/","Get.phtml");
+          $trees=$this->ls("/system/ariadne/typetree/","system.get.phtml");
           $options["inherit"]=$ARnls["inherit"];
           if ($trees) {
             while (list($key, $tree)=each($trees)) {

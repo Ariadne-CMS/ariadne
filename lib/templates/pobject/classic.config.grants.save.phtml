@@ -1,0 +1,23 @@
+<?php
+	/******************************************************************
+	 classic.config.grants.save.phtml                      Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $returnpage 
+	 Grant needed: none
+	 Global variables: none
+
+	 This is a wrapper around the system.save.grants.phtml template.
+	 
+	 no result
+
+	******************************************************************/
+	$this->call("system.save.grants.phtml");
+	if (!$this->error) {
+		Header("Location: $returnpage");
+		?>
+			<a href="<?php echo $returnpage; ?>">Continue</a>
+		<?php
+	} else {
+		$this->call("show.error.phtml");
+	}
+?>

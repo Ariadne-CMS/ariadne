@@ -1,9 +1,0 @@
-<?php
-    // template not found, try ancestor
-    $arCallTemplate=$this->store->code."templates/pobject/".$arCallFunction;
-    if (file_exists($arCallTemplate)) {
-      include($arCallTemplate);
-    } else {
-      include($this->store->code."templates/pobject/default.phtml");
-    }
-?>

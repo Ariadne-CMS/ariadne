@@ -6,7 +6,7 @@
    no result.
  
   ******************************************************************/
-  if ($this->newobject) {
+  if ($this->arIsNewObject) {
     $newobject=true;
     // check whether the given filename already exists
     if ($this->exists($this->path)) {
@@ -35,7 +35,7 @@
       } else {
         // overwrite
         $this->data=$old->data;
-        $this->newobject=false;
+        $this->arIsNewObject=false;
         $continue=true;
       }
     } else {

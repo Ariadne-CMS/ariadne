@@ -1,5 +1,18 @@
 <?php
-  if ($this->CheckLogin("read") && $this->CheckConfig()) {
+	/******************************************************************
+	 browse.nav.phtml                                      Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: read
+	 Global variables: none
+
+	 This template displays the list of directories in the left frame
+	 of the browse dialog.
+	 
+	 no result
+
+	******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 ?>
 <script language="javascript">
 <!--
@@ -31,5 +44,5 @@
 ?>
 </body>
 <?php
-  }
+	}
 ?>

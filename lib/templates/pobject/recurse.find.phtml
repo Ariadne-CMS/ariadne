@@ -1,62 +1,62 @@
 <?php
-  if ($this->CheckLogin("read") && $this->CheckConfig()) {
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 ?>
 <html>
 <title><?php echo $ARNls["collectinginfo"]; ?></title>
 <head>
 <style>
-  .width100 { width: 100; }
-  .width200 { width: 200; }
-  .width300 { width: 300; }
-  H1    { FONT: 12pt sans-serif; FONT-WEIGHT: bold; }
-  TD        { FONT: 10pt sans-serif; }
-  BODY      { FONT: 10pt sans-serif;
-              BORDER: 0;
-  <?php
-    $browser=$this->call("browsercheck.phtml");
-    if ($browser["id"]=="ns" && $browser["version"]<=4) {
-  ?>
-              BACKGROUND-COLOR: #BBBBBB;
-  <?php
-    } else {
-  ?>
-              BACKGROUND-COLOR: buttonface;
-  <?php
-    }
-  ?>
-            }
+	.width100 { width: 100; }
+	.width200 { width: 200; }
+	.width300 { width: 300; }
+	H1		{ FONT: 12pt sans-serif; FONT-WEIGHT: bold; }
+	TD				{ FONT: 10pt sans-serif; }
+	BODY			{ FONT: 10pt sans-serif;
+							BORDER: 0;
+		<?php
+			$browser=$this->call("browsercheck.phtml");
+			if ($browser["id"]=="ns" && $browser["version"]<=4) {
+				?>
+					BACKGROUND-COLOR: #BBBBBB;
+				<?php
+			} else {
+				?>
+					BACKGROUND-COLOR: buttonface;
+				<?php
+			}
+		?>
+	}
 </style>
 </head>
 <body bgcolor="#BBBBBB" scroll="no">
 <?php 
-  echo $ARnls["collectinginfo"]; 
+	echo $ARnls["collectinginfo"]; 
 ?>
 <script>
-<?php
-  if ($browser["id"]!="ns" || $browser["version"]!=4) {
-?>
-  function addobject(path, parent, name) {
-    top.addobject(path, parent, name);
-  }
-<?php
-  }
-  $result=$this->find(".","","recurse.info.phtml","",$limit,$offset);
-  if ($result && count($result)==$limit) { // more to find
-?>
-  window.setTimeout("top.findmore(<?php echo $offset+$limit; ?>)",500);
-<?php
-  } else { // all done
-?>
-  window.setTimeout("top.start();",500);
-<?php
-  }
-?>
+	<?php
+		if ($browser["id"]!="ns" || $browser["version"]!=4) {
+			?>
+				function addobject(path, parent, name) {
+					top.addobject(path, parent, name);
+				}
+			<?php
+		}
+		$result=$this->find(".","","recurse.info.phtml","",$limit,$offset);
+		if ($result && count($result)==$limit) { // more to find
+			?>
+				window.setTimeout("top.findmore(<?php echo $offset+$limit; ?>)",500);
+			<?php
+		} else { // all done
+			?>
+				window.setTimeout("top.start();",500);
+			<?php
+		}
+	?>
 </script>
 <?php
-  echo ($offset+intval(@count($result)))."\n"; 
+	echo ($offset+intval(@count($result)))."\n"; 
 ?>
 </body>
 </html>
 <?php
-  }
+	}
 ?>

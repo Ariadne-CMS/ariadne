@@ -1,4 +1,21 @@
 <?php 
+	/******************************************************************
+	 browse.nav.list.phtml                                 Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $filter
+	 Grant needed: read
+	 Global variables: none
+
+
+	 This templates displays the short list of files in the browse
+	 files view. 
+	 
+	 $filter must be a valid argument for the object.implements search
+	 criteria.
+	 
+	 no result
+
+	******************************************************************/
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		$browser=$this->call("browsercheck.phtml");
 ?>

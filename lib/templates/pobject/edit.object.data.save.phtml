@@ -1,24 +1,34 @@
 <?php
-  /******************************************************************
-   edit.object.data.save.phtml			   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
+	/******************************************************************
+	 edit.object.data.save.phtml				 Muze Ariadne v2.0b
+	 ------------------------------------------------------------------
+	 Arguments: see system.save.data.phtml
+	 Grant needed: read
+	 Global variables: none
 
-   no result.
- 
-  ******************************************************************/
-  $this->call("system.save.data.phtml",$arCallArgs);
-  if ($this->error) {
-    ?>
-      <font color="red" face="arial,helvetica,sans-serif" size=+1><?php echo $this->error; ?></font><p>
-    <?php
-  } else {
-    ?>
-      <script> 
-        if (window.opener) {
-          window.opener.objectadded('<?php echo $this->type; ?>','<?php echo $nlsdata->name; ?>','<?php echo $this->path; ?>'); 
-          window.close();
-        } 
-      </script>
-    <?php
-  }
+	 This template is a wrapper around system.save.data.phtml. It is
+	 meant to be used as the last step in a wizard.
+
+	 If system.save.data.phtml doesn't return an error, it will call
+	 the javascript function 'objectadded(type, name, path)' in its
+	 opener document and then close the current window.
+	 
+	 no result
+
+	******************************************************************/
+	$this->call("system.save.data.phtml",$arCallArgs);
+	if ($this->error) {
+		?>
+			<font color="red" face="arial,helvetica,sans-serif" size=+1><?php echo $this->error; ?></font><p>
+		<?php
+	} else {
+		?>
+			<script> 
+				if (window.opener) {
+					window.opener.objectadded('<?php echo $this->type; ?>','<?php echo $nlsdata->name; ?>','<?php echo $this->path; ?>'); 
+					window.close();
+				} 
+			</script>
+		<?php
+	}
 ?>

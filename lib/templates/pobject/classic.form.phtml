@@ -1,0 +1,94 @@
+<?php
+	/******************************************************************
+	 classic.form.phtml								 Muze Ariadne v2.0b
+	 ------------------------------------------------------------------
+	 Arguments: arNewType, arNewFilename, arReturnPage
+	 Grant needed: read
+	 Global variables: none
+
+	 This template displays the input form for this object. If $newtype
+	 is set, the form is called to create a new object. This means that
+	 $data points to the data of the object creating it!
+	 $arNewType, $arNewFilename, and $arReturnPage are saved in hidden 
+	 input fields for further processing by whatever template is called
+	 when the form is processed. 
+	 The html form tag in a form template should always leave the action
+	 property out.
+
+	 This template must be available in every pobject derivative's
+	 template directory.
+
+	 no result.
+
+	******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+?>
+<html>
+<head>
+<title><?php echo $ARnls["editobject"]; ?></title>
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>menu.css">
+</head>
+<body bgcolor="white">
+<br>
+<form>
+<!-- hidden form variables needed by new.phtml/save.phtml -->
+<input type="hidden" name="arNewType" value="<?php echo $arNewType; ?>">
+<input type="hidden" name="arNewFilename" value="<?php echo $arNewFilename; ?>">
+<input type="hidden" name="arReturnPage" value="<?php echo $arReturnPage; ?>">
+<?php
+	include($this->store->code."widgets/formlock/js.html");
+?>
+
+<table border="0" cellspacing="0" width="100%">
+<tr>
+	<td colspan="2" bgcolor="#404074">
+		<font face="helvetica, sans-serif" color="white" size="+1"><b><?php echo $ARnls["editobject"]; ?> :</b></font>
+	</td>
+</tr><tr>
+	<td align="right">
+		<font face="helvetica, sans-serif"><?php echo $ARnls["value"]; ?> :</font>
+	</td>
+	<td>
+		<input type="text" name="value" maxlength="50" 
+			value="<?php $this->showdata("value","none"); ?>">
+	</td>
+</tr><tr>
+	<td colspan="2" bgcolor="#404074">
+		<?php 
+			include($this->store->code."widgets/nls/form.phtml");
+		?>
+	</td>
+</tr><tr>
+	<td align="right">
+		<font face="helvetica, sans-serif"><b><?php echo $ARnls["name"]; ?> :</b></font>
+	</td>
+	<td>
+		<input type="text" name="<?php echo $nls."[name]"; ?>" maxlength="50" 
+			value="<?php $this->showdata("name",$nls); ?>">
+	</td>
+</tr><tr bgcolor="#404074">
+	<td>
+		<?php if ($arNewType) { ?>
+			<input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="history.back()">
+		<?php } else { ?>
+			<input type="submit" name="arSubmit" value="<?php echo $ARnls["cancel"]; ?>">
+			<?php
+				$wgRecurseConfirm=$ARnls["q:removeobject"];
+				$wgRecurseAction="delete";
+				$wgRecurseTitle=$ARnls["delete"];
+				include($this->store->code."widgets/recurse/form.js");
+				include($this->store->code."widgets/recurse/form.html");
+			?>
+		<?php } ?>
+	</td>
+	<td align="right">
+		<input type="submit" name="arSubmit" value="<?php echo $ARnls["save"]; ?>">	
+	</td>
+</tr>
+</table>
+</form>
+</body>
+</html>
+<?php
+	}
+?>

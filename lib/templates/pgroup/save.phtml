@@ -8,7 +8,7 @@
     } else { // now check for existing login
       $criteria["login"]["value"]["="]="'".AddSlashes($newfilename)."'";
       $criteria["object"]["implements"]["="]="'pgroup'";
-      $result=$this->find("/system/groups/", $criteria, "Get.phtml");
+      $result=$this->find("/system/groups/", $criteria, "system.get.phtml");
       if ($result && $result[0]) {
         $error=$ARnls["err:groupidexists"];
       } else {

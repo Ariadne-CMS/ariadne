@@ -1,69 +1,63 @@
 <?php
-  /******************************************************************
-   new.phtml					   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
-   Arguments: $newtype, $submit
-   Grant needed: add
-   Interface/Widget: all
-   Global variables: none
+	/******************************************************************
+	 object.new.select.phtml                               Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: add
+	 Global variables: none
 
-   This template controls the flow of templates when creating a new
-   object. if $newtype is not set it will display a suitable list of
-   types, to be selected by the user, with a filename entry box. Else 
-   if $submit is not 'Save' the form template of the chosen type will
-   be displayed. Finally the save template of the chosen type will be
-   called.
+	 No result.
 
-   No result.
-
-  ******************************************************************/
-
-  if ($this->CheckLogin("add") && $this->CheckConfig()) {
+	******************************************************************/
+	if ($this->CheckLogin("add") && $this->CheckConfig()) {
+		if (!$arReturnTemplate) {
+			$arReturnTemplate="object.new.phtml";
+		}
 ?>
 <html>
 <title><?php echo $ARnls["selecttype"]; ?></title>
 <?php
-  include($this->store->code."widgets/wizard/classic.css");
+	include($this->store->code."widgets/wizard/classic.css");
 ?>
 <style>
-  .list {
-    BACKGROUND-COLOR: white;
-    WIDTH: 100%;
-    HEIGHT: 100%;
-  }
-<?php
-  $browser=$this->call("browsercheck.phtml");
-  if ($browser["id"]!="ns" || $browser["version"]!=4) {
-?>
-  .listcontainer {
-    BORDER-STYLE: inset;
-    BORDER-WIDTH: thin;
-    WIDTH: 100%;
-    HEIGHT: 100%;
-    OVERFLOW: auto;
-  }
-<?php
-  }
-?>
-  .greyed {
-    COLOR: #CCCCCC;
-  }
+	.list {
+		BACKGROUND-COLOR: white;
+		WIDTH: 100%;
+		HEIGHT: 100%;
+	}
+	<?php
+		$browser=$this->call("browsercheck.phtml");
+		if ($browser["id"]!="ns" || $browser["version"]!=4) {
+		?>
+			.listcontainer {
+				BORDER-STYLE: inset;
+				BORDER-WIDTH: thin;
+				WIDTH: 100%;
+				HEIGHT: 100%;
+				OVERFLOW: auto;
+			}
+		<?php
+		}
+	?>
+	.greyed {
+		COLOR: #CCCCCC;
+	}
 </style>
 <body bgcolor="white">
 <div class="listcontainer">
 <table class="list" width="100%" border="0" cellspacing="0" cellpadding="4"><tr>
 <?php
-    if ($AR->user->data->login=="admin") {
-      $result=$this->ls("/system/ariadne/types/","system.get.phtml");
-    } else {
-      if ($ARConfig->typetree) {
-        $result=$this->ls($ARConfig->typetree."/".$this->type."/",
-          "system.get.phtml");
-      } else {
-        $result=$this->ls("/system/ariadne/typetree/normal/".$this->type."/",
-          "system.get.phtml");
-      }
-    }
+	if ($AR->user->data->login=="admin") {
+		$result=$this->ls("/system/ariadne/types/","system.get.phtml");
+	} else {
+		if ($ARConfig->typetree) {
+			$result=$this->ls($ARConfig->typetree."/".$this->type."/",
+				"system.get.phtml");
+		} else {
+			$result=$this->ls("/system/ariadne/typetree/normal/".$this->type."/",
+				"system.get.phtml");
+		}
+	}
 	$cols=4;
 	if ($result && is_array($result)) {
 		$col=1;
@@ -79,17 +73,17 @@
 				$col=1;
 				echo "</tr><tr valign='top'>";
 			}
-?>
-<td valign="top" align="center" width="<?php echo (100/$cols); ?>%">
-<a <?php echo $class; ?> href="object.new.phtml?arNewType=<?php echo RawUrlEncode($type); ?>">
-<img width="40" height="40" 
-     src="<?php echo $AR->dir->images."icons/".$type; ?>.gif" 
-     alt="<?php echo $type; ?>" border="0"><br>
-<?php
-  echo "$name</a>";
-?></a>
-</td>
-<?php
+			?>
+				<td valign="top" align="center" width="<?php echo (100/$cols); ?>%">
+					<a <?php echo $class; ?> href="$arReturnTemplate?arNewType=<?php echo RawUrlEncode($type); ?>">
+					<img width="40" height="40" 
+						 src="<?php echo $AR->dir->images."icons/".$type; ?>.gif" 
+						 alt="<?php echo $type; ?>" border="0"><br>
+					<?php
+						echo "$name</a>";
+					?></a>
+				</td>
+			<?php
 			$col++;
 		}
 		while ($col<=$cols) {
@@ -105,5 +99,5 @@
 </div>
 </body>
 <?php
-  }
+	}
 ?>

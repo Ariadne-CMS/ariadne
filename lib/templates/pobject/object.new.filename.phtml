@@ -1,27 +1,27 @@
-    <?php 
-      $arNewFilename=$this->getdata("arNewFilename","none");
-      if (!$arNewFilename) {
-        $arNewFilename="{5:id}";
-      }
-    ?>
-    <table border="0">
-      <td>
-        <span class="required"><?php echo $ARnls["filename"]; ?></span>
-      </td>
-    </tr><tr>
-      <td valign="top">
-        <input type="text" name="arNewFilename" size="16" value="<?php echo $arNewFilename; ?>">
-      </td>
-    </tr>
-    </table>
-    <script>
-      function forminit() { 
-        document.wgWizForm.arNewFilename.select();
-        document.wgWizForm.arNewFilename.focus();
-      }
-      window.onload=forminit;
-    </script>
-    <?php
-      $arResult["next"]["arNewFilename"]["ereg"]="^[a-zA-Z0-9_\{\}\.\:-]+\$";
-      $arResult["next"]["arNewFilename"]["error"]=AddSlashes(sprintf($ARnls["err:fileillegalchars"], ""));
-    ?>
+<?php 
+	$arNewFilename=$this->getdata("arNewFilename","none");
+	if (!$arNewFilename) {
+		$arNewFilename="{5:id}";
+	}
+?>
+<table border="0">
+	<td>
+		<span class="required"><?php echo $ARnls["filename"]; ?></span>
+	</td>
+</tr><tr>
+	<td valign="top">
+		<input type="text" name="arNewFilename" size="16" value="<?php echo $arNewFilename; ?>">
+	</td>
+</tr>
+</table>
+<script>
+	function forminit() { 
+		document.wgWizForm.arNewFilename.select();
+		document.wgWizForm.arNewFilename.focus();
+	}
+	window.onload=forminit;
+</script>
+<?php
+	$arResult["next"]["arNewFilename"]["ereg"]="^[a-zA-Z0-9_\{\}\.\:-]+\$";
+	$arResult["next"]["arNewFilename"]["error"]=AddSlashes(sprintf($ARnls["err:fileillegalchars"], ""));
+?>

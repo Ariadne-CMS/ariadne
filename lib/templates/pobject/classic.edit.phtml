@@ -1,0 +1,38 @@
+<?php
+	/******************************************************************
+	 classic.edit.phtml								 Muze Ariadne v2.0b
+	 ------------------------------------------------------------------
+	 Arguments: $arSubmit
+	 Grant needed: edit
+	 Global variables: none
+
+	 This template controls the flow between the form and save or delete
+	 templates. 
+	 First the classic.form.phtml template will be shown. This will set 
+	 $arSubmit to either 'Save' or 'Delete'. Then the corresponding 
+	 template will be called.
+
+	 No result.
+
+	******************************************************************/
+	$ARCurrent->allnls=1;
+
+
+	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+		if ($arSubmit==$ARnls["save"]) { // save data
+			$this->call("classic.save.phtml",$arCallArgs);
+		} else if ($arSubmit==$ARnls["cancel"]) {
+			include($this->store->code."includes/cancel.phtml");
+			include($this->store->code."includes/unlock.phtml");
+		} else {// edit it
+			include($this->store->code."includes/lock.phtml");
+			if (!$arResult) {
+				// object locked, show us by who
+				include($this->store->code."includes/viewlocks.phtml");
+			} else {
+				// every object _must_ also have a form.phtml:
+				$this->call("classic.form.phtml",$arCallArgs);	
+			}
+		}
+	}
+?>

@@ -3,14 +3,12 @@
   // populate moet automatisch shortcuts aflopen, net als elke andere find
   // _wel_ checken op grant?!
   $path=$this->store->make_path($this->parent, $data->path);
-  if (!$ARBeenhere[$arCallFunction][$path]) {
-    $ARBeenHere[$arCallFunction][$path]=1;
+  $MAXLOOPCOUNT=10;
+  if ($ARBeenhere[$arCallFunction][$path]<$MAXLOOPCOUNT) {
+    $ARBeenHere[$arCallFunction][$path]+=1;
     if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
       if ($path && $this->store->exists($path)) {
-        $result=$this->get($path, $arCallFunction, $arCallArgs."&arShortCut=".RawUrlEncode($this->path));
-        if ($result) {
-          $arResult=$result[0];
-        }
+        $arResult=@current($this->get($path, $arCallFunction, $arCallArgs."&arShortCut=".RawUrlEncode($this->path)));
       } else {
 ?>
 <html>
@@ -22,6 +20,6 @@
       }
     }
   } else {
-    error("$data->path$arCallFunction called for the second time, recursive ShortCut?");
+    error("$data->path$arCallFunction called more than $MAXLOOPCOUNT times, recursive ShortCut?");
   }
 ?>

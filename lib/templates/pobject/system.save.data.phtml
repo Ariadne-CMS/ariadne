@@ -1,43 +1,52 @@
 <?php
-  /******************************************************************
-   system.save.data.phtml			   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
+	/******************************************************************
+	 system.save.data.phtml				 Muze Ariadne v2.0b
+	 ------------------------------------------------------------------
  
-  ******************************************************************/
+	******************************************************************/
 
-  $value=$this->getdata("value","none");
-  $this->data->value=$value;
-  $properties["value"][]["value"]="'".AddSlashes($value)."'";
-  if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-    $this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
-  } else {
-    if (!$this->data->nls) {
-      $this->data->nls=new object;
-    }
-    $this->data->nls->default=$ARConfig->nls->default;
-    reset($AR->nls->list);
-    while (list($key, $value)=each($AR->nls->list)) {
-      
-      if ($this->getdata("name",$key)) { 
-        if (!$this->data->$key) {
-          $newnlsdata=new object;
-        } else {
-          $newnlsdata=$this->data->$key;
-        }
-        if (!$this->getdata("name",$key)) {
-          $this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
-        }
-        $newnlsdata->name=$this->getdata("name",$key);
-        $properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
-        $this->data->$key=$newnlsdata;
-        $this->data->nls->list[$key]=$value;
-      } else { // clear language values for $key->name if set, keep the rest, just in case.
-        if ($this->data->$key) {
-          unset($this->data->$key->name);
-          unset($this->data->nls->list[$key]);
-        }
-      }
-    }
-  }
-  include($this->store->code."includes/system.save.phtml");
+	if ((($this->arIsNewObject && $this->CheckLogin("add")) ||
+			(!$this->arIsNewObject && $this->CheckLogin("edit"))) && 
+			$this->CheckConfig()) {
+		if (!$this->arIsNewObject) {
+			// first make sure that the object is clean (data can only be set via 
+			// the defined interface: $arCallArgs)
+		    $this->data=@current($this->get(".","system.get.data.phtml"));
+		}
+		$this->data->value=$this->getdata("value","none");
+		$properties["value"][]["value"]="'".AddSlashes($this->data->value)."'";
+		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
+			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+		} else {
+			if (!$this->data->nls) {
+				$this->data->nls=new object;
+			}
+			$this->data->nls->default=$ARConfig->nls->default;
+			reset($AR->nls->list);
+			while (list($key, $value)=each($AR->nls->list)) {
+				
+				if ($this->getdata("name",$key)) { 
+					if (!$this->data->$key) {
+						$newnlsdata=new object;
+					} else {
+						$newnlsdata=$this->data->$key;
+					}
+					if (!$this->getdata("name",$key)) {
+						$this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
+					}
+					$newnlsdata->name=$this->getdata("name",$key);
+					$properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
+					$properties["text"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
+					$this->data->$key=$newnlsdata;
+					$this->data->nls->list[$key]=$value;
+				} else { // clear language values for $key->name if set, keep the rest, just in case.
+					if ($this->data->$key) {
+						unset($this->data->$key->name);
+						unset($this->data->nls->list[$key]);
+					}
+				}
+			}
+		}
+		$this->save($properties);
+	}
 ?>

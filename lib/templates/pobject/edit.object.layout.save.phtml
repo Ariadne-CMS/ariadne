@@ -1,11 +1,38 @@
 <?php
+	/******************************************************************
+	 edit.object.layout.save.phtml                         Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $next, $newtype, $newfunction, $newlanguage, $type,
+		$function, $language, $default.
+	 Grant needed: layout
+	 Global variables: none
+
+	 This template calls the save or delete template for layout based
+	 on the value of $next. It then returns to either the edit form or
+	 the list of templates.
+
+	 If $next = $ARnls["apply"] the template is saved and the form with
+	   the current template is displayed again.
+	 If $next = $ARnls["save"] the template is saved and the list of
+	   templates is displayed again.
+	 If $next = $ARnls["delete"] the template is removed and the list
+	   of templates is displayed again.
+	 otherwise nothing is done and the list of templates is displayed
+	 again.
+	 
+	 no result
+
+	******************************************************************/
+
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		switch($next) {
 			case $ARnls["apply"] :
 				$returnpage="edit.object.layout.form.phtml?type=".RawUrlEncode($newtype).
 					"&function=".RawUrlEncode($newfunction)."&language=".RawUrlEncode($newlanguage);
 			case $ARnls["save"] :
-				$this->call("system.save.layout.phtml",$arCallArgs);
+				$this->call("system.save.layout.phtml","type=".RawUrlEncode($newtype).
+					"&function=".RawUrlEncode($newfunction)."&language=".RawUrlEncode($newlanguage).
+					"&default=".RawUrlEncode($default)."&template=".RawUrlEncode($template));
 				break;
 			case $ARnls["delete"] :
 				$this->call("system.delete.layout.phtml",$arCallArgs);
@@ -17,14 +44,14 @@
 			}
 			Header("Location: ".$returnpage);
 		} else { 
-?>
-<body>
-<script>
-	alert('<?php echo AddSlashes($this->error); ?>');
-	history.back();
-</script>
-</body>
-<?php
+			?>
+			<body>
+			<script>
+				alert('<?php echo AddSlashes($this->error); ?>');
+				history.back();
+			</script>
+			</body>
+			<?php
 		}
 	}
 ?>

@@ -3,7 +3,7 @@
   arguments: $path, $function="view.html", $args="", 
              $layout -> different frame layouts.
                 at least three frames defined: treeview, treeload, view
-                onOpen will call link+"treeload.html?$args" in treeload
+                onOpen will call link+"tree.load.html?$args" in treeload
                 normal click will call link+"$function?$args" in view
 
   call GetFolder.html onOpen with $args
@@ -239,7 +239,7 @@
       if (node.status=="Closed") {
         node.status="Open";
         if (!node.firstChild) {
-          treeload.document.location='<?php echo $loader; ?>'+node.link+'treeload.phtml?node='+id;
+          treeload.document.location='<?php echo $loader; ?>'+node.link+'tree.load.phtml?node='+id;
         } else {
           Draw();
         }

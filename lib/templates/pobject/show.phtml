@@ -1,0 +1,17 @@
+<?php
+	// show a short representation of the object 
+	if ($target) { 
+		echo "<a href=\"".$this->store->root.$this->path.$target."\"".
+				 " onClick=\"if (top.tree) { top.View('$this->path','$target'); return false; }\">";	
+	} else {
+		echo "<a href=\"".$this->store->root.$this->path."\"".
+				 " onClick=\"if (top.tree) { top.View('$this->path'); return false; }\">";
+	}
+	echo '<img src="'.$AR->dir->images.'icons/'.$this->type.'.gif" alt="[view]" border="0">';
+	if (!$this->CheckSilent("read")) {
+		echo "$flag<font color=\"#CCCCCC\"><b>$nlsdata->name</b></font></a>{$nlsdata->summary}";
+	} else {
+		echo "$flag<b>$nlsdata->name</b></a>";
+	}
+	echo "</a><br>\n";
+?>

@@ -27,8 +27,6 @@
     if ($next==$ARnls["save"]) { // save data
       // every object _must_ have a save.phtml, so:
       include($this->store->code."templates/".$this->type."/save.phtml");
-    } else if ($next==$ARnls["delete"]) { // delete this object
-      $this->get(".","delete.phtml",$arCallArgs);
     } else if ($next==$ARnls["add"]) { // add new user to this group
       include($this->store->code."includes/lock.phtml");
       if (!$arResult) {
