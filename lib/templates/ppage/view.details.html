@@ -1,11 +1,9 @@
 <?php
 	/******************************************************************
-	 index.html						 Muze Ariadne v2.0b
+	 view.html                                             Muze Ariadne
 	 ------------------------------------------------------------------
 	 Arguments: none
 	 Grant needed: read
-	 Interface/Widget: all
-	 Global variables: none
 
 	 This displays a suitable overview of the object.
 
@@ -13,21 +11,12 @@
 
 	******************************************************************/
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		if ($this->exists("index.html/")) {
-			$this->get("index.html/","view.html");
-		} else {
 ?>
-<html>
-<body bgcolor="white">
 <font face="helvetica, sans-serif" size="2">
-<h3><?php echo $data->name; ?>.</h3>
-<?php
-	$this->ls(".","show.phtml");
-?>
+<h1><?php echo $nlsdata->name; ?></h1>
+<p><?php echo $nlsdata->summary; ?></p>
+<?php $this->ShowPage(); ?>
 </font>
-</body>
-</html>
 <?php
-		}
 	}
 ?>

@@ -2,15 +2,15 @@
 	if ($this->CheckConfig()) {
 		// show a short representation of the object
 		if ($target) {
-			echo '<a href="'.$this->make_url($target).'">';
+			echo '<a class="nav" href="'.$this->make_url($target).'">';
 		} else {
-			echo '<a href="'.$this->make_url($this->path).'">';
+			echo '<a class="nav" href="'.$this->make_url($this->path).'">';
 		}
 		echo '<img src="'.$AR->dir->images.'icons/'.$this->type.'.gif" alt="[view]" border="0"> ';
 		if (!$this->CheckSilent("read")) {
-			echo "$flag<font color=\"#CCCCCC\"><b>$nlsdata->name</b></font></a>{$nlsdata->summary}";
+			echo "$flag<font color=\"#CCCCCC\">$nlsdata->name</font>";
 		} else {
-			echo "$flag<b>$nlsdata->name</b></a>";
+			echo "$flag$nlsdata->name";
 		}
 		echo "</a><br>\n";
 	}

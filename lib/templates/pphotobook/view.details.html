@@ -1,0 +1,67 @@
+<?php
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+	$width=$data->thumbwidth;
+	$height=$data->thumbheight;
+	if (!$width) {
+		$width=$height;
+	}
+	if (!$width) {
+		$width=40;
+		$height=40;
+	}
+	$width+=10;
+	$height+=10;
+?>
+<style>
+  .photo {
+     float: left;
+     margin: 4px;
+     background-color: #<?php if ($data->thumbcolor) { echo $data->thumbcolor; } else { echo "CCCCCC"; } ?>;
+     border: outset 2px;
+  }
+</style>
+<form method="GET">
+<input type="hidden" name="offset" value="<?php echo $offset; ?>">
+<table border="0" width="100%">
+<tr>
+	<td align="left" width="100%">
+	<h1><img src="<?php echo $this->store->root.$data->picture; ?>view.thumb.html"> <?php echo $nlsdata->name; ?></h1>
+	</td>
+	<td align="left" bgcolor="#EEEEEE">
+		<font face="helvetica" size="2"><?php echo $ARnls["search"]; ?> :<br>
+		<input type="text" size="10" style="width: 100px;" value="<?php echo $srch_keywords; ?>" name="srch_keywords">
+        </font>
+	</td>
+</tr>
+<tr>
+	<td align="left" colspan="2">
+	<?php echo $nlsdata->summary; ?>
+	</td>
+</tr><tr>
+	<td colspan="2" valign="top">
+		<?php
+			if (!$limit) {
+				$limit=20;
+			}
+			$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
+			$args["width"]=$width;
+			$args["height"]=$height;
+			if (!$srch_keywords && !$src_imgtype) {
+				$this->find(".",$crit,"show.thumb.html",$args,$limit,$offset);
+			} else {
+				if ($srch_imgtype) {
+					$crit["mimetype"]["subtype"]["="]="'".AddSlashes($srch_imgtype)."'";
+				}
+				if ($srch_keywords) {
+					$crit["text"]["value"]["LIKE"]="'%".AddSlashes($srch_keywords)."%'";
+				}
+				$this->find(".",$crit,"show.thumb.html",$args,$limit,$offset);
+			}
+		?>
+		</td>
+	</tr>
+</table>
+</form>
+<?php
+	}
+?>

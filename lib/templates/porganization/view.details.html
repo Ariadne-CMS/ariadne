@@ -13,13 +13,8 @@
 	******************************************************************/
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs) ) {
 ?>
-<html>
-<head>
-	<TITLE><?php echo $nlsdata->name; ?></TITLE>
-</head>
-<body scroll="no" bgcolor="white">
 <font face="helvetica, sans-serif" size="2">
-<h3><?php echo $nlsdata->name; ?>.</h3>
+<h1><?php echo $nlsdata->name; ?></h1>
 <?php 
 	echo $data->address."<br>";
 	echo $data->zipcode."&nbsp;&nbsp;".$data->city."<br>";
@@ -38,13 +33,8 @@
 	while (is_array($data->emails) && (list($key,$email)=each($data->emails))) {
 		echo "<a href=\"mailto:$email\">$email</a><br>";
 	}
-	echo "<p>";
-	$this->ls(".","show.phtml");
 ?>
 </font>
-</div>
-</body>
-</html>
 <?php
 	}
 ?>

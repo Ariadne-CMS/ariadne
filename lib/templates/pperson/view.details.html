@@ -1,0 +1,34 @@
+<?php
+	/******************************************************************
+	 view.html                                             Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: read
+	 Global variables: none
+
+	 This displays a suitable overview of the object.
+
+	 no result.
+ 
+	******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs) ) {
+?>
+<font face="helvetica, sans-serif" size="2">
+<h1><?php echo $data->name; ?></h1>
+<?php 
+	echo $data->address."<br>";
+	echo $data->zipcode."&nbsp;&nbsp;".$data->city."<br>";
+	$this->get("/system/addressbook/countries/".$this->data->country,"show.name.phtml");
+	echo "<br>";
+	echo $data->telephone."<br>";
+	echo $data->mobile."<br>";
+
+	while (is_array($data->emails) && (list($key,$email)=each($data->emails))) {
+		echo "<a href=\"mailto:$email\">$email</a><br>";
+	}
+
+?>
+</font>
+<?php
+	}
+?>

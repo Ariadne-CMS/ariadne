@@ -1,9 +1,7 @@
 <?php
 	if ($this->CheckConfig($arCallFunction, $arCallArgs) && $this->CheckLogin("read")) {
 ?>
-<html>
-<body bgcolor="white">
-<h3><?php echo $nlsdata->name; ?>.</h3>
+<h1><?php echo $nlsdata->name; ?></h1>
 <table border="0">
 <tr>
 	<td valign="top" height="0">
@@ -25,8 +23,6 @@
 	</td>
 </tr>
 </table>
-</body>
-</html>
 <?php
 	}
 ?>

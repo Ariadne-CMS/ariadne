@@ -63,7 +63,7 @@
 	$articles=$this->get_articles("default",20,$startdate,$enddate);
 	if (is_array($articles)) {
 		while (list($key,$article)=each($articles)) {
-			$article->call("show.phtml");
+			$article->call("show.details.html");
 		}
 	}
 ?>

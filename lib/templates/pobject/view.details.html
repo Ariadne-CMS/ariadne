@@ -1,0 +1,10 @@
+<?php
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+?>
+	<font face="helvetica, sans-serif" size="2">
+		<h1><?php echo $nlsdata->name; ?></h1>
+		<P><?php echo $data->value; ?></p>
+	</font>
+<?php
+	}
+?>

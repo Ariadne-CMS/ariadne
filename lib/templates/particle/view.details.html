@@ -1,6 +1,6 @@
 <?php
   /******************************************************************
-   index.html					   Muze Ariadne v2.0b
+   view.html					   Muze Ariadne v2.0b
    ------------------------------------------------------------------
    Arguments: none
    Grant needed: read
@@ -12,13 +12,17 @@
    no result.
 
   ******************************************************************/
-  if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+  if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs) ) {
 ?>
-<head>
-<title><?php echo $nlsdata->name; ?></title>
-</head><body bgcolor="white">
-<?php $this->ShowPage(); ?>
-</body>
+<font face="helvetica, sans-serif" size="2">
+<h1><?php echo $nlsdata->name; ?></h1>
+<?php
+  echo $this->ParseSummary();
+  if ($nlsdata->page) {
+    $this->ShowPage();
+  }
+?>
+</font>
 <?php
   }
 ?>
