@@ -5,10 +5,12 @@ include_once($this->code."objects/pfile.phtml");
 
 class pphoto extends pfile { // definitie class
 
-	function setFontStyle($name, $font, $pointsize, $color) {
+	function setFontStyle($name, $font, $pointsize, $color, $gravity="northwest", $rotate=0) {
 		$this->arFontStyles[$name]["font"]=$font;
 		$this->arFontStyles[$name]["pointsize"]=$pointsize;
 		$this->arFontStyles[$name]["color"]=$color;
+		$this->arFontStyles[$name]["gravity"]=$gravity;
+		$this->arFontStyles[$name]["rotate"]=$rotate;
 	}
 
 	function getThumbSettings() {
@@ -45,6 +47,17 @@ class pphoto extends pfile { // definitie class
 		return true;
 	}
 
+	function scaledown($x, $y, $fillcolor=false) {
+		global $ARConfig;
+
+		$this->set_context("mogrify");
+
+		$x=(int)$x;
+		$y=(int)$y;
+		$ARConfig->photoStack[$this->id][]=" -geometry '".$x."x".$y.">'";
+
+		return true;
+	}
 
 	function setComposeStyle($name, $method, $width, $height, $xoffset, $yoffset, $percentage, $resize) {
 		$this->arComposeStyles[$name]["method"]=$method;
@@ -163,6 +176,8 @@ class pphoto extends pfile { // definitie class
 			$font = $def["font"];
 			$pointsize = $def["pointsize"];
 			$color = $def["color"];
+			$gravity = $def["gravity"];
+			$rotate = $def["rotate"];
 		}
 		if($font!="") {
 			$font_store=$this->store->get_filestore("files");
@@ -177,7 +192,14 @@ class pphoto extends pfile { // definitie class
 			}
 			$font_store->close();
 		}
-		$ARConfig->photoStack[$this->id][]=" -pointsize $pointsize -fill $color -draw 'text $x,$y \"".addcslashes($text,ARESCAPE)."\"'";
+		$rotcmd = "";
+		if($gravity!="") {
+		  $gravcmd = "-gravity $gravity ";
+		}
+		if($rotate!=0) {
+		  $rotcmd = "rotate $rotate";
+		}
+		$ARConfig->photoStack[$this->id][]=" -pointsize $pointsize -fill $color $gravcmd -draw '$rotcmd text $x,$y \"".addcslashes($text,ARESCAPE)."\"'";
 		return true;
 	}
 
@@ -305,12 +327,16 @@ class pphoto extends pfile { // definitie class
 		return $this->scale($x, $y, $fillcolor);
 	}
 
+	function _scaledown($x, $y, $fillcolor=false) {
+		return $this->scaledown($x, $y, $fillcolor);
+	}
+
 	function _getThumbSettings() {
 		return $this->getThumbSettings();
 	}
 
-	function _setFontStyle($name, $font, $pointsize, $color) {
-		return $this->setFontStyle($name, $font, $pointsize, $color);
+	function _setFontStyle($name, $font, $pointsize, $color, $gravity="northwest", $rotate=0) {
+		return $this->setFontStyle($name, $font, $pointsize, $color, $gravity, $rotate);
 	}
 
 	function _annotate($text, $x, $y, $style="default") {
