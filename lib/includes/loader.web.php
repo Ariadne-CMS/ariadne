@@ -182,8 +182,8 @@
 		setcookie("ARCookie",$ARCookie, 0, '/');
 	}
 
-	function ldCheckCredentials($login, $password) {
-	global $ARCurrent, $AR, $HTTP_COOKIE_VARS;
+	function ldGetCredentials() {
+	global $HTTP_COOKIE_VARS;
 		/* 
 			FIXME:
 			this is a hack: php 4.0.3pl1 (and up?) runs 'magic_quotes' on
@@ -191,9 +191,16 @@
 			to not function correctly.
 		*/
 		$ARCookie = stripslashes($HTTP_COOKIE_VARS["ARCookie"]);
+		debug("ldGetCredentials()","object");
+		$cookie=unserialize($ARCookie);
+		return $cookie;
+	}
+
+	function ldCheckCredentials($login, $password) {
+	global $ARCurrent, $AR;
 		debug("ldCheckCredentials()","object");
 		$result=false;
-		$cookie=unserialize($ARCookie);
+		$cookie=ldGetCredentials();
 		if ($login==$cookie[$ARCurrent->session->id]['login']
 			&& ($saved=$cookie[$ARCurrent->session->id]['check'])) {
 			$check="{".ARCrypt($password.$ARCurrent->session->id)."}";
