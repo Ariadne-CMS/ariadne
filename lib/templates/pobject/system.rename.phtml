@@ -31,6 +31,9 @@
 				$this->error=sprintf($ARnls["err:fileillegalchars"],$target);
 				// FROP $this->error="Illegal characters in filename: $target";
 			}
+
+			$this->unlock();
+
 			if (!$this->error) {
 				// FIXME: check add permission in $target
 				$target = $this->store->move($this->path, $target);			
