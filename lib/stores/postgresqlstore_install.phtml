@@ -11,8 +11,8 @@ class postgresqlstore_install extends postgresqlstore {
 CREATE TABLE ".$this->tbl_prefix."nodes (
 	path varchar(127) DEFAULT '' NOT NULL PRIMARY KEY,
 	parent varchar(127) DEFAULT '' NOT NULL,
-	object numeric(11) DEFAULT '0' NOT NULL,
-	priority numeric(11) DEFAULT '0' NOT NULL
+	object bigint DEFAULT '0' NOT NULL,
+	priority integer DEFAULT '0' NOT NULL
 );
 CREATE INDEX ".$this->tbl_prefix."nodes_object ON ".$this->tbl_prefix."nodes (object);
 CREATE INDEX ".$this->tbl_prefix."nodes_parent ON ".$this->tbl_prefix."nodes (parent);
@@ -23,7 +23,7 @@ CREATE INDEX ".$this->tbl_prefix."nodes_priority ON ".$this->tbl_prefix."nodes (
 		$queries[1]["query_string"]="
 CREATE SEQUENCE ".$this->tbl_prefix."objects_id_seq START 1;
 CREATE TABLE ".$this->tbl_prefix."objects (
-	id integer DEFAULT nextval('".$this->tbl_prefix."objects_id_seq') PRIMARY KEY,
+	id bigint DEFAULT nextval('".$this->tbl_prefix."objects_id_seq') PRIMARY KEY,
 	type varchar(16) DEFAULT '' NOT NULL,
 	object text,
 	vtype varchar(16) DEFAULT '' NOT NULL,
@@ -127,7 +127,7 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 							}
 							break;
 						case "number":
-							$create_string.="numeric(11) DEFAULT 0 not null,\n";
+							$create_string.="bigint DEFAULT 0 not null,\n";
 							break;
 						case "boolean":
 							$create_string.="bool DEFAULT false not null,\n";
@@ -137,7 +137,7 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 			}
 			if ($result) {
 				// now add the 'object' field.
-				$create_string.="object numeric(11) not null);\n";
+				$create_string.="object bigint not null);\n";
 				// now add the correct indexes.
 				if ($indexes=="none") {
 					$indexstring="";

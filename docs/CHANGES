@@ -7,7 +7,11 @@ IMPORTANT:
 	like the mysql store layer, but still using the extra features that
 	postgresql offers. After using this revision of the postgresql store,
 	reverting back to the older revision of the store needs an export/import
-	to reset some tables with state data.
+	into a new instalation to reset some tables with state data. to use all the
+	new features and bugfixes in the postgresql store you need to export/import
+	into a fresh instalation as well because we changed from numeric to bigint
+	on most locations. Using a old instalation will work but it will mis the
+	most of the speed improvements. 
 
 	The editor.ini has undergone some restructuring. Please update your 
 	current editor.ini with the one from CVS.
@@ -35,6 +39,8 @@ Bugs Fixed:
 	- Fixed a changed root problem (which was only triggerd with some clients
       like ncftp).
 	- Fixed a bug in the offset/limit generation in the postgresql store
+	- Fixed the bug that the postgresql store used numeric and integer which
+	  didn't did well on join. We changed numeric to bigint or integer in the store.
 
 Changes in Ariadne since version 2.2
 
