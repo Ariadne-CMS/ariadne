@@ -1,7 +1,7 @@
 <?php
 	if (!$ContentLanguage) {
 		$this->error="Somehow there was no language set. This is a bug.";
-	} else if (!$ARConfig->nls->list[$ContentLanguage]) {
+	} else if (!$AR->nls->list[$ContentLanguage]) {
 		$this->error="Unknown language selected... weird";
 	} else {
 		if (!$page) {
