@@ -1,43 +1,58 @@
 <?php
   $ARCurrent->nolangcheck=true;
   if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+
 		eregi('^(local[.])?([a-z_0-9]+)[.](.*)[.](.*)', $source_template, $regs);
-		$default=! $regs[1];
+		$default=(int)! $regs[1];
 		$type=$regs[2];
 		$function=$regs[3];
 		$language=$regs[4];
 		unset($regs);
-		if ($data->pinp[$type][$function][$language]) {
 
-			$template=$type.".".$function.".".$language.".pinp";
-			$templates=$this->store->get_filestore("templates");
-			if ($templates->exists($this->id, $template)) {
-				$file=$templates->read($this->id, $template);
-					$this->get($source, "system.delete.layout.phtml", 
-										Array(
-											"type"		=> $type,
-											"function"	=> $function,
-											"language"	=> $language 
-										));
+		eregi('^(local[.])?([a-z_0-9]+)[.](.*)[.](.*)', $target_template, $regs);
+		$tdefault	= (int)! $regs[1];
+		$ttype		= (isset($regs[2])) ? $regs[2] : $type;
+		$tfunction	= (isset($regs[3])) ? $regs[3] : $target_template;
+		$tlanguage	= (isset($regs[4])) ? $regs[4] : $language;
 
-				/* now we have to save our template */
 
-				eregi('^(local[.])?([a-z_0-9]+)[.](.*)[.](.*)', $target_template, $regs);
-				$tdefault	= ! $regs[1];
-				$ttype		= (isset($regs[2])) ? $regs[2] : $type;
-				$tfunction	= (isset($regs[3])) ? $regs[3] : $target_template;
-				$tlanguage	= (isset($regs[4])) ? $regs[4] : $language;
+		if ("$source.$default.$type.$function.$language"!=
+				"$target.$tdefault.$ttype.$tfunction.$tlanguage") {
 
-				debug("templates.rename to: $tdefault, $ttype, $tfunction, $tlanguage");				
-				$this->get($target, "system.save.layout.phtml", Array(
+			if ($data->pinp[$type][$function][$language]) {
+
+				$template=$type.".".$function.".".$language.".pinp";
+				$templates=$this->store->get_filestore("templates");
+				if ($templates->exists($this->id, $template)) {
+					$file=$templates->read($this->id, $template);
+					/* now we have to save our template */
+					debug("templates.rename to: $tdefault, $ttype, $tfunction, $tlanguage");				
+					$this->get($target, "system.save.layout.phtml", Array(
 														"template"	=> $file,
 														"default"	=> $tdefault,
 														"type"		=> $ttype,
 														"function"	=> $tfunction,
 														"language"	=> $tlanguage ));
-			}
-		}
 
+					/* if everything went ok, we are going to delete the source template */
+					if (!$this->error) {
+						$this->get($source, "system.delete.layout.phtml", 
+											Array(
+												"type"		=> $type,
+												"function"	=> $function,
+												"language"	=> $language 
+											));
+					}
+
+				} else {
+					$this->error="can not find template (bad disk permissions?)";
+				}
+			} else {
+				$this->error="no such template";
+			}
+		} else {
+			$this->error="can not rename template to itself";
+		}
 	$ARCurrent->ftp_error = $this->error;
   }
 ?>
