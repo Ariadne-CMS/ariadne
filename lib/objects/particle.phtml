@@ -41,13 +41,13 @@ class particle extends ppage { // particle class definition
 		debug("particle: ParseSummary()","object");
 		$summary=$this->ParsePage($this->nlsdata->summary);
         if (eregi("<a>",$summary)) {
-            $summary=eregi_replace("<a>","<a href=\"".$this->make_url()."$template\"$extra>",$summary);
+            $summary=eregi_replace("<a>","<a href=\"".$this->make_url()."$template\" $extra>",$summary);
         } else {
 			if (!$text) {
 				$text=$ARnls["more"]."...";
 			}
 			if ($this->nlsdata->page) {
-				$summary.=" <a href=\"".$this->make_url()."$template\"$extra>$text</a>";
+				$summary.=" <a href=\"".$this->make_url()."$template\" $extra>$text</a>";
 			}
 		}
 		return $summary;
