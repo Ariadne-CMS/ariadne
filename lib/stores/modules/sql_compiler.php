@@ -207,7 +207,7 @@
 				$query=substr($query, strlen($regs[0]));
 				$limit_s["id"]="limit";
 				$limit_s["offset"]=$regs[1];
-				$limit_s["limit"]=($regs[3]) ? $regs[3] : $this->limit;
+				$limit_s["limit"]=$regs[3];
 			} else {
 				$limit_s["id"]="limit";
 				$limit_s["offset"]=($this->offset) ? $this->offset : 0;

@@ -90,8 +90,11 @@
 
 			case 'limit':
 				$this->where_s=$this->compile_tree($node["left"]);
-				if ($node["limit"]) {
+				if (is_int($node["limit"])) {
 					$this->limit_s=" limit ".$node["offset"].", ".$node["limit"]." ";
+				} else
+				if (is_int($node["offset"])) {
+					$this->limit_s=" limit ".$node["offset"]." ";
 				}
 			break;
 		}
