@@ -392,6 +392,10 @@ class postgresqlstore {
 		Only those properties listed in $properties will be updated.
 		Any other property set will remain as it was.
 
+	FIXME:	i could not find any documentation on howto use the 'automatic' timestamp
+			updates for row updates (it's now done by explicitly setting 
+			'lastchanged=current_timestamp' for row updates)
+
 	***************************************************************/
 
 		debug("save($path, $type, [data], [properties], $vtype, $priority)","store");
@@ -426,9 +430,9 @@ class postgresqlstore {
 			debug("save: updating","all");
 			if ($vtype) { // only change/save vtype if it is explicitly set
 				$evtype			= AddSlashes($vtype);
-				$query_string	= "update $objects_tbl set object='$edata', vtype='$evtype' where id=$id"; 
+				$query_string	= "update $objects_tbl set object='$edata', vtype='$evtype', lastchanged=current_timestamp where id=$id"; 
 			} else {
-				$query_string	= "update $objects_tbl set object='$edata' where id=$id"; 
+				$query_string	= "update $objects_tbl set object='$edata', lastchanged=current_timestamp where id=$id"; 
 			}
 			debug("save: query=$query_string","all");
 			pg_exec($this->connect_id, $query_string);
@@ -983,7 +987,7 @@ class postgresqlstore {
 		$types_tbl		= $this->tbl_prefix."types";
 
 		// start transaction
-		$query_string	= "BEGIN WORK; LOCK TABLES ".$this->tbl_prefix."seq_id IN SHARE MODE";
+		$query_string	= "BEGIN WORK; LOCK TABLE ".$this->tbl_prefix."seq_id IN SHARE MODE";
 		if (pg_exec($this->connect_id, $query_string)) {
 			$query_string	= "select next_id from ".$this->tbl_prefix."seq_id where path='$epath'";
 			if (($exec = pg_exec($this->connect_id, $query_string)) && (pg_cmdtuples($exec)>0)) {
@@ -1021,7 +1025,7 @@ class postgresqlstore {
 		$types_tbl		= $this->tbl_prefix."types";
 
 		// start transaction
-		$query_string	= "BEGIN WORK; LOCK TABLES ".$this->tbl_prefix."seq_id IN SHARE MODE";
+		$query_string	= "BEGIN WORK; LOCK TABLE ".$this->tbl_prefix."seq_id IN SHARE MODE";
 		if (pg_exec($this->connect_id, $query_string)) {
 			$query_string	= "select next_id from ".$this->tbl_prefix."seq_id where path='$epath'";
 			if (($exec = pg_exec($this->connect_id, $query_string)) && (pg_cmdtuples($exec)>0)) {
