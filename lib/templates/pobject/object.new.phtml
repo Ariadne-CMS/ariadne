@@ -23,12 +23,6 @@
 		if ($wgWizFlow[0]["error"]) {
 			$wgWizAlert=$wgWizFlow[0]["error"];
 		}
-		$wgWizControl=$this->getdata("wgWizControl","none");
-		$wgWizCurrent=$this->getdata("wgWizCurrent","none");
-		if ($wgWizControl && $wgWizCurrent) {
-			$wgWizNextStep=$wgWizFlow[$wgWizCurrent][wgWizGetAction($wgWizControl)];
-			$wgWizButtons=$wgWizFlow[$wgWizNextStep];
-		}
 		$result=$this->get("/system/ariadne/types/$arNewType/","system.get.name.phtml");
 		$wgWizTitle=$ARnls["new"]." ".$result[0];		
 		$wgWizCallArgs=$arCallArgs.$wgWizFlow[0]["arCallArgs"];
