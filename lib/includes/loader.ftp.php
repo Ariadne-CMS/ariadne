@@ -17,12 +17,13 @@
 			if ($indent=="OUT") {
 				$DB_INDENT=substr($DB_INDENT,0,-2);
 			}
-			if ( ($AR->DEBUG == 'WEB') || ($AR->DEBUG == 'BOTH') ) {
-				echo "$DB_INDENT<b>$level::$text</b><BR>\n";
-			}
 			if ( ($AR->DEBUG == 'SYSLOG') || ($AR->DEBUG == 'BOTH') ) {
 				syslog(LOG_NOTICE,"(Ariadne) $level::$text");
 			}
+
+			fwrite($DB["fp"], "$DB_INDENT $level::$text\n");
+			fflush($DB["fp"]);
+
 			flush();
 			if ($indent=="IN") {
 				$DB_INDENT.="  ";
