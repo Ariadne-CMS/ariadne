@@ -83,6 +83,7 @@ class htmlcleanertag {
 		$return = array();
 		$_state = -1;
                 $_value = '';
+
 		while ($i<strlen($str)) {
 			$chr = $str[$i];
 			if ($_state == -1) {		// reset buffers
@@ -97,7 +98,7 @@ class htmlcleanertag {
 					$_state = 1;
 				}
 			} else if ($_state == 1) {	// state 1 : looking for equal
-				if (preg_match("/([a-zA-Z]{1})/",$chr)) {
+				if (preg_match("/([a-zA-Z:]{1})/",$chr)) {
 					$_name .= $chr;
 				} else if ($chr == '=') {
 					$_state = 2;
@@ -107,6 +108,8 @@ class htmlcleanertag {
 					$_quote = $chr;
 					$_value = '';
 					$_state = 3;
+				} else if (preg_match("/\\s{1}/",$chr)) {
+					$_state = 2;
 				} else {
 					$_quote = '';
 					$_value = $chr;
@@ -215,16 +218,15 @@ class htmlcleaner
 	}
 
 	// removes the worst mess from word.
-	function cleanup($body, $rules)
+	function cleanup($body, $config)
 	{
-		$rewrite_rules = $rules["rewrite"];
-
+		$rewrite_rules = $config["rewrite"];
 		$return = '';
 		foreach (htmlcleaner::dessicate($body) as $part) {
 			if (is_array($rewrite_rules)) {
 				foreach ($rewrite_rules as $tag_rule=>$attrib_rules) {
 					if (eregi($tag_rule, $part->nodeName)) {
-						if (is_array($attrib_rules)) {
+						if (is_array($attrib_rules) && is_array($part->attributes)) {
 							foreach ($attrib_rules as $attrib_rule=>$value_rules) {
 								foreach ($part->attributes as $attrib_key=>$attrib_val) {
 									if (eregi($attrib_rule, $attrib_key)) {
