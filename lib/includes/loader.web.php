@@ -227,20 +227,27 @@
 	}
 
 	function ldSetClientCache($cache_on, $expires=0, $modified=0) {
+		global $ARCurrent;
+		$now=time();
 		if ($cache_on) {
 			if (!$expires) {
-				$expires=time()+1800;
+				$expires=$now+1800;
 			}
-			$result=ldHeader("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$expires));
+			if (!$modified) {
+				$modified=$now;
+			}
+			ldHeader("Pragma: cache");
+			ldHeader("Cache-control: cache");
+			ldHeader("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$expires));
+			$result=ldHeader("Last-Modified: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$modified));
 		} else {
 			if (!$modified) {
 				$modified=time();
 			}
 			ldHeader("Pragma: no-cache");
-			ldHeader("Cache-control: no-store, no-cache, must-revalidate, max-age=0");
+			ldHeader("Cache-control: no-store, no-cache, must-revalidate, max-age=0, private");
 			ldHeader("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$expires));
-			ldHeader("Last-Modified: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$modified));
-			$result=ldHeader("Cache-control: private");
+			$result=ldHeader("Last-Modified: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$modified));
 		}
 		return $result;
 	}
