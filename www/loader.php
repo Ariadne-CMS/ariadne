@@ -191,13 +191,6 @@
 			if (!$store->total) {
 				ldObjectNotFound($path, $function);
 			}
-			$store->close();
-
-		}
-
-		// save session data
-		if ($ARCurrent->session) {
-			$ARCurrent->session->save();
 		}
 
 		// now check for outputbuffering (caching)
