@@ -16,7 +16,30 @@
 				$arResult = sprintf($ARnls["err:loginexists"], $newlogin);
 			} else {
 				unset($this->data->usergrants);
+				$groups = $this->data->groups;
+				unset($this->data->groups);
+
 				$arResult = $this->call("pobject::system.copyto.phtml", $arCallArgs);
+				$newpath = $ARCurrent->newpath;
+				if (!$this->error && $newpath) {
+					$this->path = $newpath;
+					$login = substr($this->path, strlen($this->store->make_path($this->path, "..")), -1);
+					$this->data->login = $login;
+					$properties["login"][0]["value"]="'".AddSlashes($login)."'";
+					$this->save($properties);
+
+					if (is_array($groups)) {
+						reset($groups);
+						while (list($path) = each($groups)) {
+							$this->get($path,
+									"system.set.user.phtml",
+									Array(
+										"action" => "add",
+										"path" => $this->path
+									));
+						}
+					}
+				}
 			}
 		}
 	}
