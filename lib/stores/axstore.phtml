@@ -633,11 +633,11 @@ class axstore {
 					if (is_dir($path.$entry)) {
 						$this->rm_dir($path.$entry);
 					} else {
-						unlink($path.$entry);
+						@unlink($path.$entry);
 					}
 				}
 			}
-			rmdir($path);
+			@rmdir($path);
 		}
 	}
 
@@ -645,8 +645,8 @@ class axstore {
 	function close() {
 		// destructor of this store...
 		if ($this->writeable) {
-			ksort($this->nodes);
-			reset($this->nodes);
+			@ksort($this->nodes);
+			@reset($this->nodes);
 			if ($fp_objects=fopen($this->tempdir."/tempobjects.data", "w")) {
 				if ($fp_nodes=fopen($this->tempdir."/nodes.data", "w")) {
 					while (list($path, $node)=each($this->nodes)) {
