@@ -37,6 +37,12 @@
 			return $id;
 		}
 
+		function requireDataField($name, $title) {
+			if (edit::getEditMode()) {
+				echo "<script> parent.requireDataField('".AddCSlashes($name, ARESCAPE)."',".$this->id.",'".AddCSlashes($title, ARESCAPE)."'); </script>\n";
+			}
+		}
+
 		function showInputText($var, $name, $title='') {
 			if (edit::getEditMode() && $this->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
@@ -59,14 +65,21 @@
 			}
 		}
 
-		function showSelect($var, $name, $title, $list, $extra) {
+		function showSelect($var, $name, $title, $list, $bykey=false, $extra='') {
 			if (edit::getEditMode() && $this->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
 				echo "<select class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title'>";
 				foreach ($list as $key => $value) {
 					echo "<option";
-					if ($value==$var) {
-						echo " selected";
+					if ($bykey) {
+						echo " value=\"$key\"";
+						if ($key==$var) {
+							echo " selected";
+						}
+					} else {
+						if ($value==$var) {
+							echo " selected";
+						}
 					}
 					echo ">$value</option>\n";
 				}
@@ -152,6 +165,10 @@
 			return edit::registerDataField($name);
 		}
 
+		function _requireDataField($name, $title) {
+			return edit::requireDataField($name, $title);
+		}
+
 		function _showInputText($var, $name, $title='') {
 			return edit::showInputText($var, $name, $title);
 		}
@@ -160,8 +177,8 @@
 			return edit::showInput($var, $name, $title, $type, $extra);
 		}
 
-		function _showSelect($var, $name, $title, $list, $extra='') {
-			return edit::showSelect($var, $name, $title, $list, $extra);
+		function _showSelect($var, $name, $title, $list, $bykey=false, $extra='') {
+			return edit::showSelect($var, $name, $title, $list, $bykey, $extra);
 		}
 
 		function _showSpan($var, $name, $title='') {

@@ -978,6 +978,7 @@ var arFieldRegistry=new Array();
 var arObjectRegistry=new Array();
 var arChangeRegistry=new Array();
 var currentEditableField=false;
+var arRequiredFieldRegistry=new Array();
 
 function registerDataField(fieldId, fieldName, objectPath, objectId) {
 	arFieldRegistry[fieldId]=new dataField(fieldId, fieldName, objectPath, objectId);
@@ -990,6 +991,24 @@ function registerDataField(fieldId, fieldName, objectPath, objectId) {
 	arObjectRegistry[objectId][fieldName][arObjectRegistry[objectId][fieldName].length]=arFieldRegistry[fieldId];
 }
 
+function requiredField(title, fieldId) {
+	this.title=title;
+	this.fieldId=fieldId;
+}
+
+function requireDataField(fieldName, objectId, title) {
+	var fieldId=arObjectRegistry[objectId][fieldName][0].fieldId;
+	arRequiredFieldRegistry.push(new requiredField(title, fieldId));
+}
+
+function getRequiredFields() {
+	return arRequiredFieldRegistry;
+}
+
+function getField(fieldId) {
+	return arFieldRegistry[fieldId];
+}
+
 function dataField(fieldid, name, path, id) {
 	this.fieldId=fieldid;
 	this.name=name;
@@ -998,12 +1017,14 @@ function dataField(fieldid, name, path, id) {
 }
 
 function registerChange(fieldId) {
-	var objectId=arFieldRegistry[fieldId].id;
-	var fieldName=arFieldRegistry[fieldId].name;
-	if (!arChangeRegistry[fieldName+objectId]) {
-		var index=arChangeRegistry.length;
-		arChangeRegistry[index]=arFieldRegistry[fieldId];
-		arChangeRegistry[new String(fieldName+objectId)]=index;
+	if (arFieldRegistry[fieldId]) {
+		var objectId=arFieldRegistry[fieldId].id;
+		var fieldName=arFieldRegistry[fieldId].name;
+		if (!arChangeRegistry[fieldName+objectId]) {
+			var index=arChangeRegistry.length;
+			arChangeRegistry[index]=arFieldRegistry[fieldId];
+			arChangeRegistry[new String(fieldName+objectId)]=index;
+		}
 	}
 }
 
@@ -1027,20 +1048,22 @@ function checkChangeStart() {
 
 function checkChangeEnd() {
 	var newValue = getValue(this.id);
-	if (this.startContent!=newValue) {
-		registerChange(this.id);
+	if (arFieldRegistry[this.id]) {
+		if (this.startContent!=newValue) {
+			registerChange(this.id);
 
-		var objectId = arFieldRegistry[this.id].id;
-		for (var i in arObjectRegistry[objectId][arFieldRegistry[this.id].name]) {
-			var fieldId = arObjectRegistry[objectId][arFieldRegistry[this.id].name][i].fieldId;
-			arFieldRegistry[fieldId].value = newValue;
-			if (fieldId!=this.id) {
-				// don't update the content of the current field, since that breaks
-				// selections.
-				setValue(fieldId, newValue);
+			var objectId = arFieldRegistry[this.id].id;
+			for (var i in arObjectRegistry[objectId][arFieldRegistry[this.id].name]) {
+				var fieldId = arObjectRegistry[objectId][arFieldRegistry[this.id].name][i].fieldId;
+				arFieldRegistry[fieldId].value = newValue;
+				if (fieldId!=this.id) {
+					// don't update the content of the current field, since that breaks
+					// selections.
+					setValue(fieldId, newValue);
+				}
 			}
+			this.startContent=newValue;
 		}
-		this.startContent=newValue;
 	}
 }
 
@@ -1096,6 +1119,22 @@ function DECMD_DETAILS_onclick() {
 			// append a style
 			alert('no .editable');
 		}
+	}
+}
+
+function getRequired() {
+    var labels=tbContentElement.contentWindow.document.getElementsByTagName('LABEL');
+	if (labels) {
+	    var required=new Array();
+		var i=labels.length-1;
+		do {
+			if (labels[i].className=='required') {
+				required[labels[i].htmlFor]=labels[i].innerText;
+			}
+		} while (i--);
+	    return required;
+	} else {
+		
 	}
 }
 

@@ -13,12 +13,27 @@
   }
 
   function dosave() {
-	while (top.window.opener.isDirty()) {
-		if (field = top.window.opener.getDirtyField()) {
-			addFormElement('changes['+field.path+']'+field.name, field.value);
+	var requiredFields=top.window.opener.getRequiredFields();
+    var message='';
+	if (requiredFields) {
+		for (var i=0; i<requiredFields.length; i++) {
+//			var field=top.window.opener.getField(requiredFields[i].fieldId);
+			if (!top.window.opener.getValue(requiredFields[i].fieldId)) {
+				message+=', '+requiredFields[i].title+'( '+i+': '+requiredFields[i].fieldId+')';
+			}			
 		}
 	}
-    document.forms[0].submit();
+	if (message) {
+		alert('Required fields missing: '+message.substr(2));
+		top.window.close();
+	} else {
+		while (top.window.opener.isDirty()) {
+			if (field = top.window.opener.getDirtyField()) {
+				addFormElement('changes['+field.path+']'+field.name, field.value);
+			}
+		}
+	    document.forms[0].submit();
+	}
   }
 </script>
 </head>
