@@ -463,29 +463,41 @@
 		return $result;
 	}
 
-	function ldGetUserCookie() {
+	function ldGetUserCookie($cookiename="ARUserCookie") {
 	global $HTTP_COOKIE_VARS;
-		/* 
-			FIXME:
-			this is a hack: php 4.0.3pl1 (and up?) runs 'magic_quotes' on
-			cookies put in $HTTP_COOKIE_VARS which will cause unserialize
-			to not function correctly.
-		*/
-		$ARUserCookie = stripslashes($HTTP_COOKIE_VARS["ARUserCookie"]);
-		debug("ldGetUserCookie() = $ARUserCookie","object");
-		$cookie=unserialize($ARUserCookie);
+	
+		$cookie = false;
+	
+		if( $HTTP_COOKIE_VARS[$cookiename] ) {
+			
+			/* 
+				FIXME:
+				this is a hack: php 4.0.3pl1 (and up?) runs 'magic_quotes' on
+				cookies put in $HTTP_COOKIE_VARS which will cause unserialize
+				to not function correctly.
+			*/
+			$ARUserCookie = stripslashes($HTTP_COOKIE_VARS[$cookiename]);
+			debug("ldGetUserCookie() = $ARUserCookie","object");
+			$cookie=unserialize($ARUserCookie);
+		}
 		return $cookie;
 	}
 
-	function ldSetUserCookie($cookie) {
+	function ldSetUserCookie($cookie, $cookiename="ARUserCookie", $expire=0, $path="/", $domain="", $secure=0) {
 	global $HTTP_COOKIE_VARS;
+		
+		$result = false;
 
-		$ARUserCookie = stripslashes($HTTP_COOKIE_VARS["ARUserCookie"]);
+		if( $HTTP_COOKIE_VARS[$cookiename] ) {
+			$ARUserCookie = stripslashes($HTTP_COOKIE_VARS[$cookiename]);
 
-		debug("ldSetUserCookie(".serialize($cookie).")","object");
+			debug("ldSetUserCookie(".serialize($cookie).")","object");
 
-		$ARUserCookie=serialize($cookie);
-		setcookie("ARUserCookie",$ARUserCookie, 0, '/');
+			$ARUserCookie=serialize($cookie);
+			$result = setcookie($cookiename,$ARUserCookie, $expire, $path, $domain, $secure);
+		}
+		
+		return $result;
 	}
 
 	function ldRedirect($uri) {
