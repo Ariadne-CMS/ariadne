@@ -1,0 +1,137 @@
+<?php 
+	/******************************************************************
+	 browse.nav.icons.phtml                                 Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $filter
+	 Grant needed: read
+	 Global variables: none
+
+
+	 This templates displays the icons list of files in the browse
+	 files view. 
+	 
+	 $filter must be a valid argument for the object.implements search
+	 criteria.
+	 
+	 no result
+
+	******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		$browser=$this->call("browsercheck.phtml");
+	?>
+<html>
+<head>
+<style>
+	<?php
+		if (($browser["id"]=="ns") && ($browser["version"]==4)) {
+			$template="browse.nav.icons.show.ns4.phtml";
+	?>
+	.text {
+		position: absolute;
+		left: -100px;
+		padding: 1px 20px 1px 2px;
+		top: 55px;
+		width: 100px;
+		height: 25px;
+	}
+</style>
+<SCRIPT language="JavaScript" type="text/javascript">
+<!--
+function MM_reloadPage(init) {	//reloads the window if Nav4 resized
+	if (init==true) with (navigator) {
+		if ((appName=="Netscape")&&(parseInt(appVersion)==4)) {
+			document.MM_pgW=innerWidth;
+			document.MM_pgH=innerHeight;
+			onresize=MM_reloadPage;
+		}
+	} else if (innerWidth!=document.MM_pgW || innerHeight!=document.MM_pgH) {
+		location.reload();
+	}
+}
+
+function AR_clip(layer) {
+	layer.bgColor="white";
+	layer.clip.height=16;
+	layer.clip.width=80;
+}
+
+function AR_unclip(layer) {
+	layer.bgColor="#FFFFCC";
+	layer.clip.height=layer.clipheight;
+	layer.clip.width=layer.clipwidth;
+	while(otherlayer=layer.siblingAbove) {
+		layer.zIndex=otherlayer.zIndex+1;
+	}
+}
+
+MM_reloadPage(true);
+
+function init() {
+	if (document.layers) {
+		source=document;
+		num=source.layers.length;
+		for (i=0; i<num; i++) {
+			layer=source.layers[i];
+			if (layer.name!='left') {
+				layer.clipheight=layer.clip.height-55;
+				layer.clipwidth=layer.clip.width;
+				layer.clip.top=55;
+				layer.clip.height=16;
+				layer.clip.width=80;
+			}
+		}
+	}
+}
+
+window.onload=init;
+
+//-->
+</script>
+<style>
+<?php			
+		} else {
+			$template="browse.nav.icons.show.phtml";
+?>
+SPAN.item { left: 5 px;
+						width: 60px;
+						height: 68px;
+						position: relative;
+						margin-top: 5px;
+						margin-right: 5px;
+						vertical-align: top;
+						text-align: center;
+<?php
+			if ($browser["id"]!="msie" || $browser["version"]!=4) { 
+?>
+						float: left;
+<?php
+			}
+?>
+						overflow: hidden;
+					}
+<?php
+		}
+?>
+	BODY {
+		font: 9pt sans-serif,Arial,Helvetica
+	}
+	A { 
+		text-decoration: none;
+		color: #000000
+	}
+	IMG {
+		padding-top: 0px
+	}
+</style>
+<body bgcolor="white">
+<?php
+	if ($filter) {
+		$crit["object"]["implements"]["="]="'".AddSlashes($filter)."'";
+	}
+	$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
+	$this->find(".", $crit, $template);
+?>
+</body>
+<?php
+	}
+?>

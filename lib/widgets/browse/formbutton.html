@@ -8,6 +8,9 @@
   if (!$wgBrowseTitle) {
     $wgBrowseTitle="Browse...";
   }
+  if (!$wgBrowseMode) {
+    $wgBrowseMode="list";
+  }
 ?><input type="hidden" class="wgBrowseInput" name="<?php echo $wgBrowseName; ?>"
 value="<?php
   echo $wgBrowsePath;
@@ -16,4 +19,4 @@ class="wgBrowseButton" name="select" value="<?php echo $wgBrowseTitle; ?>"
 onClick="Browse(this.form.<?php echo $wgBrowseName; ?>, '<?php
   echo $wgBrowsePath;
 ?>', '<?php echo $wgBrowseName; ?>', '<?php echo $wgBrowseTitle; ?>', '<?php
-echo $wgBrowseView; ?>');">
+echo $wgBrowseMode; ?>');">

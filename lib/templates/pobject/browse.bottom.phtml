@@ -41,11 +41,7 @@
 		<select name="filter" style="width: 200;" onChange="top.filter(this.options[this.selectedIndex].value)">
 			<option value=""><?php echo $ARnls["allobjects"]; ?></option>
 			<?php
-				if ($AR->user->data->login=="admin") {
-					$this->ls('/system/ariadne/types/','show.option.value.phtml', Array('selected' => $wgBrowseFilter));
-				} else {
-					$this->ls($ARConfig->typetree,'show.option.value.phtml', Array('selected' => $wgBrowseFilter));
-				}
+				$this->ls('/system/ariadne/types/','show.option.value.phtml', Array('selected' => $wgBrowseFilter));
 			?>
 		</select>
 	</td><td>

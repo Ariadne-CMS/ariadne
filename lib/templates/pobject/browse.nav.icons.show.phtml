@@ -1,0 +1,28 @@
+<?php
+	/******************************************************************
+	 browse.nav.list.show.phtml                            Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: none
+	 Global variables: none
+
+	 This template displays the icon and name of an object. If the 
+	 user doesn't have read access to the object, the name is displayed
+	 in grey.
+	 
+	 no result
+
+	******************************************************************/
+
+?>
+<SPAN class=item>
+	<A HREF="javascript:top.View('<?php echo $this->path; ?>');"><IMG 
+		SRC="<?php echo $AR->dir->images."icons/".$this->type.".gif"; ?>" border=0 HSPACE=0 VSPACE=0 WIDTH="36" HEIGHT="36" ALT="<?php echo $nlsdata->name; ?>"><br>
+	<?php 
+		if (!$this->CheckSilent("read")) {
+			echo "<font color=\"#CCCCCC\">$nlsdata->name</font>";
+		} else {
+			echo "$nlsdata->name";
+		}
+	?></A>
+</SPAN>
