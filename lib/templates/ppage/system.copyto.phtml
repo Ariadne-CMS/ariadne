@@ -6,6 +6,7 @@
 		if (!($result=$this->call("pobject::system.copyto.phtml", $arCallArgs))) {
 			// change links in $nlsdata->page
 			if ($search && $replace) {
+				reset($AR->nls->list);
 				while (list($nls, $language)=each($AR->nls->list)) {
 					if ($this->data->$nls && $this->data->$nls->page) {
 						$this->data->$nls->page=str_replace("{arRoot}".$search, "{arRoot}".$replace, $this->data->$nls->page);
