@@ -24,6 +24,47 @@
 					$result=" $right ".$node["type"]." ";
 				}
 			break;
+			case 'custom':
+				$table=$table_alias=$this->tbl_prefix."prop_custom";
+				$nodes=$this->tbl_prefix."nodes";
+				$field=$node["field"];
+				$record_id=$node["record_id"];
+
+				if ($record_id) {
+					$table_alias = $alias = $table.$record_id;
+				}
+
+				if (($record_id && !$this->used_tables["$table $table_alias"]) 
+						|| (!$record_id && !$this->used_tables[$table])) {
+
+					if ($node["nls"]) {
+						$nls = "and $table.AR_nls = '".$node["nls"]."' ";
+					}
+
+					$this->left_joins[] = "
+						left join $table $alias on  (
+							$table_alias.object = $nodes.object
+							and
+							$table_alias.RowId in (
+								select $table.RowId
+								from $table
+								where $table.object = $nodes.object
+								and $table.AR_name = '$field'
+								$nls
+								and RowNum = 1
+							)
+						)
+					";
+				}
+				/*
+				if ($record_id) {
+					$this->used_tables["$table $table_alias"] = $table_alias;
+				} else {
+					$this->used_tables["$table"] = $table;
+				}
+				*/
+				$result = "$table_alias.AR_value";
+			break;
 			case 'property':
 				$table=$table_alias=$this->tbl_prefix.$node["table"];
 				$nodes=$this->tbl_prefix."nodes";
@@ -31,11 +72,12 @@
 				$record_id=$node["record_id"];
 
 				if ($record_id) {
-					$table_alias = $table.$record_id;
+					$table_alias = $alias = $table.$record_id;
 				}
-				if (($record_id && !$this->used_tables["$table $table_alias"]) || (!$record_id && !$this->used_tables[$table])) {
-					$this->extra_joins[] = "
-						(
+				if (($record_id && !$this->used_tables["$table $table_alias"]) 
+						|| (!$record_id && !$this->used_tables[$table])) {
+					$this->left_joins[] = "
+						left join $table $alias on (
 							$table_alias.object = $nodes.object
 							and
 							$table_alias.RowId in (
@@ -47,14 +89,9 @@
 						)
 					";
 				}
-				if ($record_id) {
-					$this->used_tables["$table $table_alias"] = $table_alias;
-				} else {
-					$this->used_tables["$table"] = $table;
-				}
 				
 
-				$result = "$table$record_id.$field";
+				$result = "$table_alias.$field";
 			break;
 			case 'ident':
 				$table=$this->tbl_prefix.$node["table"];
@@ -121,29 +158,34 @@
 				$table = $this->tbl_prefix."prop_custom";
 				$field = $node["field"];
 				$nls = $node["nls"];
-				/*
-					when we are compiling orderby properties we always want
-					to assign it to a new table alias
-				*/
-				if ($this->in_orderby) {
-					$this->custom_id++;
-				}
-				$this->custom_ref++;
-				$this->used_tables[$table." as $table".$this->custom_id] = $table.$this->custom_id;
-				$this->select_tables[$table." as $table".$this->custom_id] = 1;
+				$nodes=$this->tbl_prefix."nodes";
+				$record_id=$node["record_id"];
 
-				$this->used_custom_fields[$field] = true;
-				$result = " $table".$this->custom_id.".AR_name = '$field' ";
-				if ($nls) {
-					$result = " $result and $table".$this->custom_id.".AR_nls = '$nls' ";
-				}
-
-				if (!$this->in_orderby) {
-					$result = " $result and $table".$this->custom_id.".AR_value ";
+				if ($record_id) {
+					$this->used_tables["$table $table$record_id"] = $table.$record_id;
 				} else {
-					$this->where_s_ext = $result;
-					$result = " $table".$this->custom_id.".AR_value ";
+					$this->used_tables["$table"] = $table;
 				}
+
+				if ($nls) {
+					$nls_query = "and $table.AR_nls = '$nls'";
+				}
+				$result = "
+					(
+						$table$record_id.object = $nodes.object
+						and
+						$table$record_id.RowId in (
+							select $table.RowId
+							from $table
+							where $table.object = $nodes.object
+							and $table.AR_name = '$field'
+							and $table.AR_value $operator $value
+							$nls_query
+							and RowNum = 1
+						)
+					)
+				";
+
 			break;
 			case 'string':
 			case 'float':
@@ -246,8 +288,8 @@
 		$objects_tbl=$this->tbl_prefix."objects";
 		$objects_tbl_data.=$objects_tbl."_data";
 
-		$this->used_tables[$nodes_tbl]=$nodes_tbl;
 		$this->used_tables[$objects_tbl]=$objects_tbl;
+		$this->used_tables[$nodes_tbl]=$nodes_tbl;
 		@reset($this->used_tables);
 		while (list($key, $val)=each($this->used_tables)) {
 			if ($tables) {
@@ -270,9 +312,9 @@
 			$where_s = "and ".$this->where_s;
 		}
 
-		if (is_array($this->extra_joins)) {
-			foreach($this->extra_joins as $join) {
-				$where_s .= " and $join";
+		if (is_array($this->left_joins)) {
+			foreach($this->left_joins as $join) {
+				$left_join_s .= " $join";
 			}
 		}
 
@@ -280,6 +322,8 @@
 			select ROW_NUMBER() OVER($orderby_s) LINENUM,
 					$nodes_tbl.path as \"path\", $nodes_tbl.parent as \"parent\", $nodes_tbl.priority as \"priority\", $objects_tbl.id as \"id\", $objects_tbl.type as \"type\", TO_CHAR($objects_tbl.lastchanged, 'MM-DD-YYYY HH24:MI:SS') as \"lastchanged\", $objects_tbl.vtype as \"vtype\"
 			from $tables
+			$left_join_s
+
 			where $nodes_tbl.object=$objects_tbl.id $prop_dep
 			and $nodes_tbl.path like '".AddSlashes($this->path)."%' 
 			$where_s
