@@ -41,7 +41,7 @@
 		<select name="filter" style="width: 200;" onChange="top.filter(this.options[this.selectedIndex].value)">
 			<option value=""><?php echo $ARnls["allobjects"]; ?></option>
 			<?php
-				$this->ls('/system/ariadne/types/','show.option.value.phtml', Array('selected' => $wgBrowseFilter));
+				$this->ls('/system/ariadne/types/','show.option.value.phtml', Array('selected' => $filter));
 			?>
 		</select>
 	</td><td>
