@@ -100,10 +100,10 @@ class proxystore {
 		return $result;
 	}
 
-	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="") {
+	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="",$size=0, $priority=0) {
 		global $AR;
-		debug("proxynewobject($path, $parent, $type, [data], $id, $lastchanged, $vtype)","all");
-		$result= &$AR->stores[$this->key]->newobject($path, $parent, $type, $data, $id, $lastchanged, $vtype);
+		debug("proxynewobject($path, $parent, $type, [data], $id, $lastchanged, $vtype,$size, $priority)","all");
+		$result= &$AR->stores[$this->key]->newobject($path, $parent, $type, $data, $id, $lastchanged, $vtype, $size, $priority);
 		$this->error = $AR->stores[$this->key]->error;
 		debug("proxynewobject: end","all");
 		return $result;
@@ -147,6 +147,16 @@ class proxystore {
 		return $result;
 	}
 
+	function  touch($id, $timestamp=-1) {
+		global $AR;
+		debug("proxy touch($path)","store");
+		$result = &$AR->stores[$this->key]->touch($id, $timestamp);
+		$this->error = $AR->stores[$this->key]->error;
+		debug("proxy touch: end","all");
+		return $result;
+	}
+	
+
 	function ls($path) {
 	/**********************************************************************************
 
@@ -166,7 +176,7 @@ class proxystore {
 		return $result;
 	}
 
-	function parents($path) {
+	function parents($path,$top="/") {
 	/**********************************************************************************
 
 	 This function takes as argument a path to an object in the store. It will return 
@@ -218,7 +228,7 @@ class proxystore {
 	}
 
 
-	function save($path, $type, $data, $properties="", $vtype="") {
+	function save($path, $type, $data, $properties="", $vtype="",$priority=false) {
 	/***************************************************************
 
 		This function takes as argument a path, type, objectdata and 
@@ -259,7 +269,7 @@ class proxystore {
 		global $AR;
 		//debugon('all');
 		debug("proxysave($path, $type, [data], [properties], $vtype)","store");
-		$result = $AR->stores[$this->key]->save($path, $type, $data, $properties, $vtype);
+		$result = $AR->stores[$this->key]->save($path, $type, $data, $properties, $vtype,$priority);
 		$this->error = $AR->stores[$this->key]->error;
 		debug("proxysave: end, results=".$result."","all");
 		//debugoff();
@@ -439,19 +449,19 @@ class proxystore {
 	}
 
 
-	function load_properties($object) {
+	function load_properties($object,$values="") {
 		global $AR;
 		debug("proxyload_properties($object)","all");
-		$result = $AR->stores[$this->key]->load_properties($object);
+		$result = $AR->stores[$this->key]->load_properties($object,$values);
 		$this->error = $AR->stores[$this->key]->error;
 		debug("proxyload_properties: end","all");
 		return $result;
 	}
 
-	function load_property($object, $property) {
+	function load_property($object, $property,$values="") {
 		global $AR;
 		debug("proxyload_property($object, $property)","all");
-		$result = $AR->stores[$this->key]->load_property($object, $property);
+		$result = $AR->stores[$this->key]->load_property($object, $property,$values);
 		$this->error = $AR->stores[$this->key]->error;
 		debug("proxyload_property: end","all");
 		return $result;
