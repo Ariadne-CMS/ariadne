@@ -987,6 +987,11 @@ class mysqlstore {
 
 		$epath=AddSlashes(strtoupper($path));
 		$path=AddSlashes($path);
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+
 		$query_string="lock tables ".$this->tbl_prefix."seq_id write";
 		if ($temp=mysql_db_query($this->database,$query_string, $this->connect_id)) {
 			$query_string="select next_id from ".$this->tbl_prefix."seq_id where UPPER(path)='$epath'";
