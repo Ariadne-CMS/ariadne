@@ -255,7 +255,9 @@ class pobject extends object { // pobject class definition
 				if (eregi("^[a-z0-9_\{\}\.\:-]+$",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
 					if (!$this->exists($this->path)) { //arNewFilename)) {
 						if ($this->exists($arNewParent)) {
-							$config = $this->data->config;
+							if (!$config = $this->data->config) {
+								$config=new object();
+							}
 							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 							$wf_object->arIsNewObject=true;
 							$wf_result = $wf_object->call("user.workflow.pre.html", Array("properties" => $properties));
@@ -339,6 +341,7 @@ class pobject extends object { // pobject class definition
 									unset($this->arIsNewObject);
 									$this->id=$this->exists($this->path);
 
+									$config=$this->data->config; // need to set it again, to copy owner config data
 									$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 									$wf_object->arIsNewObject = true;
 									$wf_result = $wf_object->call("user.workflow.post.html", Array("properties" => $properties));
