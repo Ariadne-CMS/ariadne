@@ -15,6 +15,9 @@
 <script LANGUAGE="JavaScript" SRC="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/Inc/dhtmled.js">
 </script>
 
+<!-- wgHTMLEditParagraphStyles lists per language, as DECMD_GETBLOCKFORMATNAMES is too much for us simpletons to understand... -->
+<script LANGUAGE="JavaScript" SRC="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/Inc/nls.js">
+</script>
 
 <script ID="clientEventHandlersJS" LANGUAGE="javascript">
 <!--
@@ -161,6 +164,12 @@ function window_onload() {
   AbsPosContextMenu[8] = new ContextMenuItem("Bring Above Text", DECMD_BRING_ABOVE_TEXT);
 
   docComplete = false;
+  testStyle = tbContentElement.ExecCommand(DECMD_GETBLOCKFMT, OLECMDEXECOPT_DODEFAULT);
+  if (wgHTMLEditParagraphStyles[testStyle]) {
+    for (key in wgHTMLEditParagraphStyles[testStyle]) {
+      ParagraphStyle.options[ParagraphStyle.options.length]=new Option(wgHTMLEditParagraphStyles[testStyle][key], wgHTMLEditParagraphStyles[testStyle][key]);
+    }
+  }
   loadpage(tbContentRoot, tbContentPath, tbContentFile, tbContentName, tbContentLanguage, tbContentType);
 }
 
@@ -1087,15 +1096,6 @@ return tbContentElement_ContextMenuAction(itemIndex)
 
 <div class="tbToolbar" ID="FormatToolbar">
   <select ID="ParagraphStyle" class="tbGeneral" style="width:90" TITLE="Paragraph Format" LANGUAGE="javascript" onchange="return ParagraphStyle_onchange()">
-    <option value="Normal">Normal
-    <option value="Heading 1">Heading 1
-    <option value="Heading 2">Heading 2
-    <option value="Heading 3">Heading 3
-    <option value="Heading 4">Heading 4
-    <option value="Heading 5">Heading 5
-    <option value="Heading 6">Heading 6
-    <option value="Address">Address
-    <option value="Formatted">Formatted
   </select>
   <select ID="FontName" class="tbGeneral" style="width:140" TITLE="Font Name" LANGUAGE="javascript" onchange="return FontName_onchange()">
     <option value="Arial">Arial
