@@ -146,6 +146,9 @@
 		}
 		// now check for outputbuffering
 		if ($image=ob_get_contents()) {
+			if (!$ARCurrent->arDontCache) {
+				ldSetClientCache(true, $ARCurrent->cachetime);
+			}
 			ob_end_flush();
 			debug("loader: ob_end_flush()","all");
 			if (is_array($ARCurrent->cache) && ($file=array_pop($ARCurrent->cache))) {
