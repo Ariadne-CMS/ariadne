@@ -169,9 +169,20 @@ class pobject extends object {
 							$customdata=$this->getdata("customdata","none");
 							@parse_str($customdata);
 							$this->data->customdata=$customdata;
-							// $properties["time"]["ctime"]=$this->data->ctime;
-							// $properties["time"]["mtime"]=$this->data->mtime;
-							// $properties["owner"]["value"]=$this->data->owner;
+							/* 	FIXME! add properties in install.
+								$properties["time"][0]["ctime"]=$this->data->ctime;
+								$properties["time"][0]["mtime"]=$this->data->mtime;
+								$properties["owner"][0]["value"]=$this->data->owner;
+								$i=0;
+								while (list($nls, $cdata)=each($this->data->custom)) {
+									while (list($name, $value)=each($cdata)) {
+										// one index, this order (name, value, nls) ?
+										$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
+										$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
+										$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
+									}
+								}
+							*/
 							$this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority);
 							$this->id=$this->exists($this->path);
 							$result=$this->path;
