@@ -13,7 +13,7 @@
 	 no result
 
 	******************************************************************/
-	$this->call("system.save.grants.phtml");
+	$this->call("system.save.grants.phtml",$arCallArgs);
 	if (!$this->error) {
 		Header("Location: $arReturnPage");
 		?>
