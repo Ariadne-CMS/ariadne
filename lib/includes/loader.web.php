@@ -187,7 +187,20 @@
 		$ARCookie = stripslashes($HTTP_COOKIE_VARS["ARCookie"]);
 
 		debug("ldSetCredentials($login, [password])","object");
-		if (!$ARCurrent->session || (!$ARCurrent->session->get("ARSessionActivated",1)) || ($ARCurrent->session->get("ARLogin")!=$login)) {
+		if ($ARCurrent->session && 
+			(!$ARCurrent->session->get("ARSessionActivated",1) ||
+			!$ARCurrent->session->get("ARLogin"))) {
+
+			/* use the same sessionid if the user didn't login before */
+			ldStartSession($ARCurrent->session->id);
+			$ARCurrent->session->put("ARLogin",$login);
+			$ARCurrent->session->put("ARPassword",$password,1);
+			$ARCurrent->session->put("ARSessionActivated",false,1);
+
+		} else
+		if (!$ARCurrent->session || 
+			(!$ARCurrent->session->get("ARSessionActivated",1)) || 
+			($ARCurrent->session->get("ARLogin")!=$login)) {
 			// start a new session when there is no session yet, or
 			// when a user uses a new login. (su)
 			ldStartSession();
@@ -198,7 +211,6 @@
 				ldCheckCredentials($login, $password) &&
 				$ARCurrent->session->get("ARLogin") === $login &&
 				$ARCurrent->session->get("ARPassword",1) === $password ) {
-
 				/* cookie and login matches session */
 				$ARCurrent->session->put("ARSessionTimedout", false, 1);
 		}
