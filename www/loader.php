@@ -253,8 +253,13 @@
 
 
 			register_shutdown_function("ldOnFinish");
-			
 
+			if (!ldCheckLogin($args["ARLogin"], $args["ARPassword"])) {
+				if (!ldAuthUser("public", "none")) {
+					$function = "user.login.html";
+				}
+			}
+			
 			// finally call the requested object
 			$store->call($function, $args, $store->get($path));
 			if (!$store->total) {

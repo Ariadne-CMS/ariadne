@@ -38,29 +38,6 @@
 	$nocache=true;
 	// make sure no language select dialog is shown.
 	$ARCurrent->nolangcheck=true;
-	// now make sure that the login template can use public resources:
-	// remember the failed login user
-	if ($ARCurrent->session) {
-		$arLoginOld=$ARCurrent->session->get("ARLogin");
-		$arPasswordOld=$ARCurrent->session->get("ARPassword");
-		$arCallArgs.="&arLoginOld=".RawUrlEncode($arLoginOld);
-		// when current user is logged on as public, then don't delete his
-		// session.
-		if ($AR->user && ($AR->user->data->login!="public")) {
-			// now set the user back to 'public'
-			$temp=$this->get("/system/users/public","system.get.phtml");
-			if ($temp && $temp[0]) {
-				$AR->user=$temp[0];
-				$AR->user->grants=$this->GetValidGrants();
-				// do not update the cookie and session data
-				// cookies must be set only by login.phtml
-				// just kill the session
-				// $ARCurrent->session->kill();
-				$ARCurrent->session->put("ARLogin","public");
-				$ARCurrent->session->put("ARPassword","none");
-			}
-		}
-	}
 	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
 ?>
 <html>
@@ -95,7 +72,7 @@
   <td valign="top" align="center"><img src="<?php echo $AR->dir->images; ?>ariadne.gif" alt="Ariadne - Web Application Server" vspace="5"></td>
 </tr><tr>
   <td valign="top" align="right">
-<form name="login" method="POST" action="<?php echo $this->make_url('', '', true, true); ?>login.phtml">
+<form name="login" method="POST" target="arRootWindow" onSubmit="window.close()" action="<?php echo $this->make_url($arReturnPath, '', true, true).$arReturnTemplate; ?>">
 <?php
 	global $PATH_INFO; 
 	if (!$arReturnPath) {
@@ -151,9 +128,5 @@
 </body>
 </html>
 <?php
-	}
-	if ($ARCurrent->session && $arLoginOld && $arPasswordOld) {
-		$ARCurrent->session->put("ARLogin",$arLoginOld);
-		$ARCurrent->session->put("ARPassword",$arPasswordOld);
 	}
 ?>

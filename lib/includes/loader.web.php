@@ -61,6 +61,126 @@
 		}
 	}
 
+	function ldAuthUser($login, $password) {
+	global $ARLogin, $ARPassword, $store, $AR;
+
+		$criteria["object"]["implements"]["="]="'puser'";
+		$criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
+		$user = current(
+					$store->call(
+						"system.authenticate.phtml",
+						Array(
+							"ARPassword" => $password
+						),
+						$store->find("/system/users/", $criteria)
+					));
+		if ($user) {
+			if ($login !== "public") {
+				/* welcome to Ariadne :) */
+				ldSetCredentials($login, $password);
+			}
+			$ARLogin = $login;
+			$ARPassword = 0;
+			$AR->user = $user;
+			$result = true;
+		} else {
+			debug("ldAuthUser: user('$user') could not authenticate", "all");
+		}
+		return $result;
+	}
+
+	function ldCheckLogin($login, $password) {
+	global $ARCurrent, $AR;
+		debug("ldCheckLogin($login, [password])", "all");
+		if ($login) {
+			debug("ldCheckLogin: initiating new login ($login)", "all");
+			if ($ARCurrent->session) {
+				if (!$ARCurrent->session->get("ARLogin") ||
+						$ARCurrent->session->get("ARLogin") == "public") {
+					debug("ldCheckLogin: logging into a public session (".$ARCurrent->session->id.")", "all");
+					$result = ldAuthUser($login, $password);
+				} else {
+					if (ldCheckCredentials($login, $password)) {
+						debug("ldCheckLogin: succesfully logged into private session (".$ARCurrent->session->id.")", "all");
+						$result = ldAuthUser($login, $password);
+					} else {
+						if ($ARCurrent->session->get("ARLogin") == $login) {
+							debug("ldCheckLogin: user ($login) tries to login to his session without a cookie set", "all");
+							if ($ARCurrent->session->get("ARPassword", true) == $password) {
+								debug("ldCheckLogin: user ($login) succesfully aquired session (".$ARCurrent->session->id."); logging in user", "all");
+								$result = ldAuthUser($login, $password);
+							} else {
+								debug("ldCheckLogin: wrong password in session (".$ARCurrent->session->id."); try again", "all");
+								$result = false;
+							}
+						} else {
+							debug("ldCheckLogin: could not login to private session (".$ARCurrent->session->id."): creating a new one", "all");
+							ldStartSession();
+							$result = ldAuthUser($login, $password);
+						}
+					}
+				}
+			} else {
+				debug("ldCheckLogin: starting new session", "all");
+				ldStartSession();
+				$result = ldAuthUser($login, $password);
+			}
+		} else {
+			if ($ARCurrent->session) {
+				if ($ARCurrent->session->get("ARSessionTimedout", 1)) {
+					debug("ldCheckLogin: session has been timedout, forcing login", "all");
+					$result = false;
+				} else
+				if (!$ARCurrent->session->get("ARLogin")) {
+					debug("ldCheckLogin: logging in with public session (".$ARCurrent->session->id.")", "all");
+					$result = ldCheckLogin("public", "none");
+				} else {
+					$cookie = ldGetCredentials();
+					$cookie_login = $cookie[$ARCurrent->session->id]['login'];
+					if ($cookie_login) {
+						$login = $ARCurrent->session->get("ARLogin");
+						$password = $ARCurrent->session->get("ARPassword", true);
+						if (ldCheckCredentials($login, $password)) {
+							debug("ldCheckLogin: logging ($login) into a private session (".$ARCurrent->session->id.") with credentials from cookie", "all");
+							$result = ldAuthUser($login, $password);
+						} else {
+							debug("ldCheckLogin: could not login ($login) on private session (".$ARCurrent->session->id.") with credentials from cookie: removing cookie", "all");
+							unset($cookie[$ARCurrent->session->id]);
+							setcookie("ARCookie", serialize($cookie), 0, '/');
+							$result = false;
+						}
+					} else {
+						debug("ldCheckLogin: user tried to hijack a session (".$ARCurrent->session->id.") ", "all");
+						$result = false;
+					}
+				}
+			} else {
+				if ($AR->arSessionRespawn) {
+					debug("ldCheckLogin: trying to respawn a session", "all");
+					$cookie = ldGetCredentials();
+					if (is_array($cookie)) {
+						reset($cookie);
+						while (!$result && (list($sid, $sval)=each($cookie))) {
+							ldStartSession($sid);
+							$login = $ARCurrent->session->get("ARLogin");
+							$password = $ARCurrent->session->get("ARPassword", 1);
+							debug("ldCheckLogin: trying to respawn session ($sid) for user ($login)", "all");
+							if (ldCheckCredentials($login, $password)) {
+								debug("ldCheckLogin: credentials matched, trying to login user", "all");
+								$result = ldAuthUser($login, $password);
+							} else {
+								debug("ldCheckLogin: credentials didn't match", "all");
+							}
+						}
+					}
+				} else {
+					debug("ldCheckLogin: normal public login", "all");
+					$result = ldAuthUser("public", "none");
+				}
+			}
+		}
+		return $result;
+	}
 
 	function ldRegisterFile($field = "file", &$error) {
 	global $ARnls, $store, $HTTP_POST_FILES, $HTTP_POST_VARS;

@@ -54,7 +54,6 @@
 			<?php
 				if (($password=$this->getdata("newpass1","none")) &&    
 					($this->data->login==$AR->user->data->login)) {   
-						$ARCurrent->session->put("ARLogin", "");
 
 						$arIncludePage=$this->store->root.$this->path."edit.object.data.save.relogin.phtml?ARLogin=".
 							RawUrlEncode($data->login)."&ARPassword=".RawUrlEncode($password);
