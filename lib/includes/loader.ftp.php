@@ -12,7 +12,7 @@
 	$DB["file"]=$ftp_config["debugfile"];
 
 	function debug($text, $level="pinp", $indent="") {
-		global $DB, $DB_INDENT;
+	global $DB, $DB_INDENT;
 	 	if ($DB["level"]>=$DB[$level]) {
 			if ($indent=="OUT") {
 				$DB_INDENT=substr($DB_INDENT,0,-2);
@@ -26,18 +26,16 @@
 	}
 
 	function debugon($level="pinp") {
-		global $DB;
-		if (file_exists($DB["file"])) {
-			$DB["fp"]=fopen($DB["file"], "a+");
-			if ($DB["fp"]) {
-				$DB["level"]=$DB[$level];
-				debug("Debuglevel: $level");
-			}
+	global $DB;
+		$DB["fp"]=fopen($DB["file"], "a+");
+		if ($DB["fp"]) {
+			$DB["level"]=$DB[$level];
+			debug("Debuglevel: $level");
 		}
 	}
 
 	function debugoff() {
-		global $DB;
+	global $DB;
 		if ($DB["fp"]) {
 			debug("Debugging off.");
 			$DB["level"]=$DB["off"];
