@@ -28,6 +28,7 @@
 *******************************************************************************/
 
 define(MAX_PATH_LENGTH, 128);
+define(MAX_PROPERTY_LENGTH, 128);
 
 // general objectstore functions
 
@@ -1104,17 +1105,21 @@ class postgresqlstore {
 			while (list($name, $value)=each($values)) {
 				if ($value != "") {
 					$query_names .= "AR_".AddSlashes($name).", ";
-					$query_values .= "$value, ";
+					if(strlen($value) >= MAX_PROPERTY_LENGTH) {
+						$query_values .= "substr(".$value.",1,".MAX_PROPERTY_LENGTH."), ";
+					} else {
+						$query_values .= "$value, ";
+					}
 				}
 			}
 			$query_string = "insert into ".$this->tbl_prefix."prop_".AddSlashes($property)." ( ".
-										$query_names."object ) values ( ".$query_values."$object )";
+				$query_names."object ) values ( ".$query_values."$object )";
 			$exec = $this->store_run_query( $query_string);
 			if($exec) {
 				$result = pg_cmdtuples($exec);
 			} else {
 				$result = false;
-				debug('add_propertie failed','store');
+				debug('add_property failed','store');
 			}
 		}
 		debug("add_property: end","all");
