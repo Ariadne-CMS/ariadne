@@ -43,6 +43,14 @@
 					$options["verbose"]=true;
 				break;
 
+				case 'tar_nofail':
+					$ax_config["tar_nofail"]=true;
+				break;
+
+				case 'tar_fail':
+					$ax_config["tar_nofail"]=false;
+				break;
+
 				default:
 					echo "unknow option-switch ($option_switch)\n";
 			}

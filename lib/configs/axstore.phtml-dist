@@ -36,4 +36,10 @@
   }
   $ax_config["tar_tar"]               = $tar_cmd." -c -C %s %s -f %s %s";
   $ax_config["tar_untar"]             = $tar_cmd." -x -C %s %s -f  %s %s";
+
+  // set this to true if you are really sure that tar throws errors which
+  // do not occur.
+
+  $ax_config["tar_nofail"]            = false;
+
 ?>

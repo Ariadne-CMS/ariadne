@@ -27,6 +27,7 @@ class axstore {
 		$this->tar_error_handler=$config["tar_error_handler"];
 		$this->tar_tar=$config["tar_tar"];
 		$this->tar_untar=$config["tar_untar"];
+		$this->tar_nofail=$config["tar_nofail"];
 
 		// create tempdir (and do some windows compat magic)
 		$this->tempdir=tempnam($this->temp, "axtemp");
@@ -592,7 +593,7 @@ class axstore {
 		}
 		$command=sprintf($this->tar_untar, $dstdir, $file, $tarfile, $handler );
 		system($command,$retVar);
-		if ($retVar!=0 && $retVar!=259) {
+		if (!$this->tar_nofail && ($retVar!=0 && $retVar!=259)) {
 			$this->error.="Error:\n	($command):\n	Can't untar $tarfile, untar failed in $dstdir with errorcode ($retVar)\n";
 			if ($errfile && file_exists($errfile)) {
 				$this->error.=implode("",file($errfile));						
@@ -614,7 +615,7 @@ class axstore {
 
 		$command=sprintf($this->tar_tar, $dstdir, $file, $tarfile, $handler );
 		system($command,$retVar);
-		if ($retVar!=0) {
+		if (!$this->tar_nofail && $retVar!=0) {
 			$this->error="Error: ($command):\n	Can't tar to $tarfile, tar failed in $dstdir with errorcode ($retVar)\n";
 			if ($errfile && file_exists($errfile)) {
 				$this->error.=implode("",file($errfile));						
