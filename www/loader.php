@@ -94,13 +94,18 @@
 			$store->call($function, $args, $store->get($path));
 			if (!$store->total) {
 				$requestedpath=$path;
-				while (!$store->exists($path)) {
+				while ($path!=$prevPath && !$store->exists($path)) {
+					$prevPath=$path;
 					$path=$store->make_path($path, "..");
 				}
-				$store->call("user.notfound.html",
-					 Array(	"arRequestedPath" => $requestedpath,
-					 		"arRequestedTemplate" => $function ),
-					 $store->get($path));
+				if ($prevPath==$path) {
+					error("Database is not initialised, please run <a href=\"".$AR->host.$AR->dir->www."install/install.php\">the installer</a>");
+				} else {
+					$store->call("user.notfound.html",
+						 Array(	"arRequestedPath" => $requestedpath,
+						 		"arRequestedTemplate" => $function ),
+						 $store->get($path));
+				}
 			}
 			$store->close();
 
