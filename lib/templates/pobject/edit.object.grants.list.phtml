@@ -148,10 +148,10 @@
 			while (list($id, $grants)=@each($grantslist)) {
 				switch ($type) {
 					case 'pgroup':
-						$path  = current($this->find('/system/groups/', 'login.value="'.$id.'"', 'system.get.path.phtml'));
+						$path  = current($this->find('/system/groups/', 'login.value=\''.$id.'\'', 'system.get.path.phtml'));
 					break;
 					case 'puser':
-						$path  = current($this->find('/system/users/', 'login.value="'.$id.'"', 'system.get.path.phtml'));
+						$path  = current($this->find('/system/users/', 'login.value=\''.$id.'\'', 'system.get.path.phtml'));
 					break;
 				}
 				echo "  id2path['$type']['$id'] = '$path'; \n";
@@ -226,10 +226,10 @@
 							echo "<td valign=\"middle\">";
 							switch ($type) {
 								case 'pgroup':
-									$path  = current($AR->user->find('/system/groups/', 'login.value="'.$id.'"', 'system.get.path.phtml'));
+									$path  = current($AR->user->find('/system/groups/', 'login.value=\''.$id.'\'', 'system.get.path.phtml'));
 									break;
 								case 'puser':
-									$path  = current($AR->user->find('/system/users/', 'login.value="'.$id.'"', 'system.get.path.phtml'));
+									$path  = current($AR->user->find('/system/users/', 'login.value=\''.$id.'\'', 'system.get.path.phtml'));
 									break;
 							}
 							echo "<script>  id2path['$type']['$id'] = '$path';  </script>\n";
