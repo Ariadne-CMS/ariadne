@@ -1,0 +1,146 @@
+<?php
+	/*
+		arguments: 
+			$date - unix time stamp, month set will be shown, highlights this day.
+	*/
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		global $PHP_SELF, $QUERY_STRING;
+		if (!$date) {
+			$date=time();
+			debug("date not set"); 
+		} else {
+			debug("date: $date");
+		}
+		
+		// calculate first weekday of this month
+		$date_arr=getdate($date);
+		$starttime=mktime(0,0,0,$date_arr["mon"],1,$date_arr["year"]);
+		$monthstart=getdate($starttime);
+		$firstweekday=$monthstart["wday"];
+		$endtime=mktime(0,0,0,$date_arr["mon"]+1,1,$date_arr["year"])-1;
+		$monthend=getdate($endtime);
+		$monthsize=$monthend["mday"];
+		
+		// is startdate in the current month -> highlight today.
+		$today=getdate();
+		if ($today["year"]==$date_arr["year"] && $today["mon"]==$date_arr["mon"]) {
+			$current=$today["mday"];
+		}
+		$highlight=$date_arr["mday"];
+
+		// now populate the month with all entries.
+
+		for ($i=1; $i<=$monthend["mday"]; $i++) {
+			$ARCurrent->daylist[$i]="0";
+		}
+
+		$articles=$this->get_articles("default",0, $starttime, $endtime);
+		if (is_array($articles)) {
+			while (list($key, $article)=each($articles)) {
+				$from_arr=getdate($article->data->startdate);
+				$ARCurrent->daylist[$from_arr["mday"]]="1";
+			}
+		}
+		unset($articles);
+?>
+<style>
+<!--
+	.hasdata A.cal{
+		color: blue;
+		text-decoration:none;
+	}
+	.hasnodata A.cal {
+		color: black;
+		text-decoration:none;
+	}
+	.hasdata A.current{
+		color: blue;
+		text-decoration:underline;
+	}
+	.hasnodata A.current {
+		color: black;
+		text-decoration:underline;
+	}
+	A.cal { text-decoration:none; } 
+	A.current { text-decoration: underline; }
+	TH {
+		font-size: 10px;
+		font-face: helvetica, sans-serif;
+		color: white;
+		background-color: #404074;
+		font-weight: normal;
+	}
+-->
+</style>
+<table border="0" cellspacing="0" cellpadding="0" align="center">
+<tr>
+	<td><a href="<?php echo $PHP_SELF."?".$QUERY_STRING; ?>&date=<?php 
+			echo mktime(0,0,0,$date_arr["mon"]-1,$date_arr["mday"],$date_arr["year"]); 
+		?>">&lt;&lt;</a></td>
+	<td align="center"><?php 
+			echo $date_arr["year"]." ".$date_arr["month"]; 
+		?></b></td>
+	<td align="right"><a href="<?php echo $PHP_SELF."?".$QUERY_STRING; ?>&date=<?php 
+			echo mktime(0,0,0,$date_arr["mon"]+1,$date_arr["mday"],$date_arr["year"]); 
+		?>">&gt;&gt;</a></td>
+</tr><tr>
+	<td bgcolor="white" colspan="3">
+		<table border="0" cellspacing="2" cellpadding="2">
+		<tr>
+			<th align="center"><?php echo substr($ARnls["sun"],0,2); ?><br><img src="<?php echo $AR->dir->images; ?>dot.gif" width="18" height="1" border="0" alt=""></th>
+			<th align="center"><?php echo substr($ARnls["mon"],0,2); ?><br><img src="<?php echo $AR->dir->images; ?>dot.gif" width="18" height="1" border="0" alt=""></th>
+			<th align="center"><?php echo substr($ARnls["tue"],0,2); ?><br><img src="<?php echo $AR->dir->images; ?>dot.gif" width="18" height="1" border="0" alt=""></th>
+			<th align="center"><?php echo substr($ARnls["wed"],0,2); ?><br><img src="<?php echo $AR->dir->images; ?>dot.gif" width="18" height="1" border="0" alt=""></th>
+			<th align="center"><?php echo substr($ARnls["thu"],0,2); ?><br><img src="<?php echo $AR->dir->images; ?>dot.gif" width="18" height="1" border="0" alt=""></th>
+			<th align="center"><?php echo substr($ARnls["fri"],0,2); ?><br><img src="<?php echo $AR->dir->images; ?>dot.gif" width="18" height="1" border="0" alt=""></th>
+			<th align="center"><?php echo substr($ARnls["sat"],0,2); ?><br><img src="<?php echo $AR->dir->images; ?>dot.gif" width="18" height="1" border="0" alt=""></th>
+		</tr><tr>
+		<?php
+			for ($i=$firstweekday; $i; $i--) {
+				echo "<td align=\"center\" valign=\"middle\"><a href=\"$PHP_SELF?$QUERY_STRING&date=".
+					mktime(0,0,0,$date_arr["mon"],(-$i+1),$date_arr["year"]).
+					"\"><img src=\"".$AR->dir->images."dot.gif\" width=\"18\" height=\"15\" border=\"0\" alt=\"-$i\"></a></td>";
+			}
+			for ($i=1; $i<=$monthsize; $i++) {
+				$idate=mktime(0,0,0,$date_arr["mon"],$i,$date_arr["year"]);
+				if ($i==$highlight) {
+					echo "	<td bgcolor=\"#CCCCCC\">";
+				} else {
+					echo "	<td bgcolor=\"#F6EEE6\">";
+				}
+				if ($ARCurrent->daylist[$i]) {
+					echo "<span class='hasdata'>";
+				} else {
+					echo "<span class='hasnodata'>";
+				}
+				if ($i==$current) {
+					echo "<a class=\"current\" href=\"$PHP_SELF?$QUERY_STRING&date=$idate\">$i</a>";
+				} else {
+					echo "<a class=\"cal\" href=\"$PHP_SELF?$QUERY_STRING&date=$idate\">$i</a>";
+				}
+				echo "</span></td>\n";
+				if ((($i+$firstweekday)%7)==0) { // end of the week, next row
+					echo "</tr>";
+					if ($i<$monthsize) { // only start a new row if there are more days
+						echo "<tr>\n";
+					}
+				}
+			}
+			$date_arr=getdate(mktime(0,0,0,$date_arr["mon"]+1,1,$date_arr["year"]));
+			$firstweekday=$date_arr["wday"]; // first week day of next month
+			if ($firstweekday) { // if first weekday is sunday, then don't display empty line
+				for ($i=1; $i<(8-$firstweekday); $i++) {
+					echo "<td align=\"center\" valign=\"middle\"><a href=\"$PHP_SELF?$QUERY_STRING&date=".
+						mktime(0,0,0,$date_arr["mon"],$i,$date_arr["year"]).
+						"\"><img src=\"".$AR->dir->images."dot.gif\" width=\"18\" height=\"15\" border=\"0\" alt=\"$i\"></a></td>";
+				}
+			}
+		?>
+		</tr>
+		</table>
+	</td>
+</tr>
+</table>
+<?php
+	}
+?>
