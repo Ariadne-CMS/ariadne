@@ -43,19 +43,26 @@
 </style>
 <body bgcolor="white">
 <?php
-	if ($this->parent!="..") {
-		$this->call("browse.nav.list.show.up.phtml");
-	}
 	if ($filter) {
 		$crit["object"]["implements"]["="]="'".AddSlashes($filter)."'";
+	}
+	if ($name) {
+		$crit["name"]["value"]["like"]="'%".AddSlashes($name)."%'";
+	} else if ($letter) {
+		$crit["name"]["value"]["like"]="'".AddSlashes($letter)."%'";
 	}
 	if ($date) {
 		$date=ereg_replace("[^0-9]*","",$date);
 		$crit["timeframe"]["start"]["<="]=$date+86400;
 		$crit["timeframe"]["end"][">="]=$date;
 	}
+	if (!$limit) {
+		$limit=100;
+	}
 	$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
-	$this->find(".",$crit, "browse.nav.list.show.phtml");
+	$total=$this->store->count($this->store->find("", $crit));
+	$this->find(".",$crit, "browse.nav.list.show.phtml", "", $limit, $offset);
+	$this->call("browse.update.toolbar.phtml", Array("total" => $total, "offset" => $offset, "limit" => $limit));
 ?>
 </body>
 <?php

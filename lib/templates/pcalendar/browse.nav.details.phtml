@@ -35,21 +35,13 @@
 	}
 	.heading {
 		font: 10pt Arial,Helvetica,sans-serif;
-		<?php
-			$browser=$this->call("browsercheck.phtml");
-			if ($browser["id"]=="ns" && $browser["version"]==4) {
-		?>
-			background: #BBBBBB;
-		<?php
-			} else {
-		?>
-			background: buttonface;
-		<?php
-			}
-		?>
-		border: 2px outset;
+		background: buttonface;
+		border: 1px solid buttonhighlight;
+		border-bottom-color: buttonshadow;
+		border-right-color: buttonshadow;
 		text-align: center;
 	}
+
 </style>
 <body bgcolor="white">
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
@@ -61,19 +53,26 @@
   <td><div class="heading">&nbsp;</div></td>
 </tr>
 <?php
-	if ($this->parent!="..") {
-		$this->call("browse.nav.details.show.up.phtml");
-	}
 	if ($filter) {
 		$crit["object"]["implements"]["="]="'".AddSlashes($filter)."'";
 	}
+	if ($name) {
+		$crit["name"]["value"]["like"]="'%".AddSlashes($name)."%'";
+	} else if ($letter) {
+		$crit["name"]["value"]["like"]="'".AddSlashes($letter)."%'";
+	}	
 	if ($date) {
 		$date=ereg_replace("[^0-9]*","",$date);
 		$crit["timeframe"]["start"]["<="]=$date+86400;
 		$crit["timeframe"]["end"][">="]=$date;
 	}
+	if (!$limit) {
+		$limit=100;
+	}
 	$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
-	$this->find(".",$crit, "browse.nav.details.show.phtml");
+	$total=$this->store->count($this->store->find("", $crit));
+	$this->find(".",$crit, "browse.nav.details.show.phtml", "", $limit, $offset);
+	$this->call("browse.update.toolbar.phtml", Array("total" => $total, "offset" => $offset, "limit" => $limit));
 ?>
 </table>
 </body>

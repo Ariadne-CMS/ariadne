@@ -42,6 +42,8 @@
 	}
 	BODY {
 		font: 9pt sans-serif,Arial,Helvetica
+		margin: 0px;
+		padding: 0px;
 	}
 	A { 
 		text-decoration: none;
@@ -53,19 +55,26 @@
 </style>
 <body bgcolor="white">
 <?php
-	if ($this->parent!="..") {
-		$this->call("browse.nav.icons.show.up.phtml");
-	}
 	if ($filter) {
 		$crit["object"]["implements"]["="]="'".AddSlashes($filter)."'";
+	}
+	if ($name) {
+		$crit["name"]["value"]["like"]="'%".AddSlashes($name)."%'";
+	} else if ($letter) {
+		$crit["name"]["value"]["like"]="'".AddSlashes($letter)."%'";
 	}
 	if ($date) {
 		$date=ereg_replace("[^0-9]*","",$date);
 		$crit["timeframe"]["start"]["<="]=$date+86400;
 		$crit["timeframe"]["end"][">="]=$date;
 	}
+	if (!$limit) {
+		$limit=100;
+	}
 	$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
-	$this->find(".", $crit, "browse.nav.icons.show.phtml");
+	$total=$this->store->count($this->store->find("", $crit));
+	$this->find(".",$crit, "browse.nav.icons.show.phtml", "", $limit, $offset);
+	$this->call("browse.update.toolbar.phtml", Array("total" => $total, "offset" => $offset, "limit" => $limit));
 ?>
 </body>
 <?php
