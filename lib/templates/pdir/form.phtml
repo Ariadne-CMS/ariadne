@@ -103,10 +103,11 @@ include($this->store->code."widgets/formlock/js.html");
       <input type="submit" name="next" value="<?php echo $ARnls["cancel"]; ?>">
 
 <?php
-    // FIXME: gijs, doe dat eens in nls
-	$wgFFmessage="<b>Deleting from ".$this->path."</b>";
-	$wgFFfunction="delete";
-	include($this->store->code."widgets/fsfunctions/form.html");
+    $wgRecurseConfirm=$ARnls["q:removedir"];
+	$wgRecurseAction="delete";
+	$wgRecurseTitle=$ARnls["delete"];
+    include($this->store->code."widgets/recurse/form.js");
+	include($this->store->code."widgets/recurse/form.html");
 ?>
 
     <?php } ?>
