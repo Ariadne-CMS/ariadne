@@ -1,4 +1,36 @@
 <?php
+    /******************************************************************
+     user.login.popup.html                                 Muze Ariadne
+     ------------------------------------------------------------------
+     Author: Muze (info@muze.nl)
+     Date: 11 december 2002
+
+     Copyright 2002 Muze
+
+     This file is part of Ariadne.
+
+     Ariadne is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published 
+     by the Free Software Foundation; either version 2 of the License, 
+     or (at your option) any later version.
+ 
+     Ariadne is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with Ariadne; if not, write to the Free Software 
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
+     02111-1307  USA
+
+    -------------------------------------------------------------------
+
+     Description:
+
+	Give the user a username and password prompt.
+
+    ******************************************************************/
 	if (!$arLoginMessage) {
 		$arLoginMessage=$ARnls["loginrequired"];
 	}
@@ -65,7 +97,7 @@
   <td valign="top" align="right">
 <form name="login" method="POST" action="<?php echo $this->make_url(); ?>login.phtml">
 <?php
-	global $PATH_INFO, $QUERY_STRING; 
+	global $PATH_INFO; 
 	if (!$arReturnPath) {
 		$split=strrpos($PATH_INFO, "/");
 		$function=substr($PATH_INFO,$split+1);
@@ -73,8 +105,8 @@
 	}
 	if (!$arReturnTemplate) {
 		$arReturnTemplate=$function;
-		if ($QUERY_STRING) {
-			$arReturnTemplate.="?$QUERY_STRING";
+		if (ldGetServerVar("QUERY_STRING")) {
+			$arReturnTemplate.="?".ldGetServerVar("QUERY_STRING");
 		}
 	}
 ?>

@@ -18,8 +18,7 @@
 	******************************************************************/
 
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		// show image select box with browse button 
-		global $PHP_SELF,$QUERY_STRING; 
+
 		$settings=$this->call("editor.ini");
 
 		include($this->store->code."nls/ieedit.".$this->reqnls);

@@ -10,7 +10,6 @@
 
 	******************************************************************/
 	if ($this->CheckLogin("add", ARANYTYPE) && $this->CheckConfig()) {
-		global $QUERY_STRING;
 		if (!$arReturnTemplate) {
 			$arReturnTemplate="object.new.phtml";
 		}
@@ -95,7 +94,7 @@
 			}
 			?>
 				<td valign="top" align="center" width="<?php echo (100/$cols); ?>%">
-					<a <?php echo $class; ?> href="#" onClick="return View('<?php echo $currentpath.$arReturnTemplate; ?>?arNewType=<?php echo RawUrlEncode($type)."&".$QUERY_STRING; ?>');">
+					<a <?php echo $class; ?> href="#" onClick="return View('<?php echo $currentpath.$arReturnTemplate; ?>?arNewType=<?php echo RawUrlEncode($type)."&".ldGetServerVar("QUERY_STRING"); ?>');">
 					<img width="40" height="40" 
 						 src="<?php echo $AR->dir->images."icons/".$type; ?>_open.gif" 
 						 alt="<?php echo $type; ?>" border="0"><br>
