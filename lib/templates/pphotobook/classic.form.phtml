@@ -100,6 +100,26 @@
     }
   ?>
   </td>
+</tr><tr><td><br></td></tr><tr>
+	<td align="left">
+		<font face="helvetica, sans-serif"><?php echo $ARnls["thumbnail"]; ?>&nbsp;:</b></font>
+	</td><td align="right">
+		<font face="helvetica, sans-serif"><?php echo $ARnls["thumbwidth"]; ?>&nbsp;:</b></font>
+		<input type="text" name="thumbwidth" size="3" maxlength="3" value="<?php 
+				$this->showdata("thumbwidth","none"); 
+		?>">
+
+		&nbsp;<font face="helvetica, sans-serif"><?php echo $ARnls["thumbheight"]; ?>&nbsp;:</b></font>
+		<input type="text" name="thumbheight" size="3" maxlength="3" value="<?php 
+				$this->showdata("thumbheight","none"); 
+		?>">
+
+	</td><td align="left">
+		&nbsp;<font face="helvetica, sans-serif"><?php echo $ARnls["thumbcolor"]; ?>&nbsp;:</b></font>
+		<input type="text" name="thumbcolor" size="6" maxlength="6" value="<?php 
+				$this->showdata("thumbcolor","none"); 
+		?>">
+	</td>
 </tr>
 </table>
 <p>
