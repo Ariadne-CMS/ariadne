@@ -1,75 +1,78 @@
 <?php
-  /* this file contains system wide variables and configuration information
-  */
+  /* this file contains system wide variables and configuration information */
 
   class object { }
 
   $AR=new object;
 
-  /* WIN32 or UNIX */
-  // $AR->OS="WIN32";     /* Windows 95/98/ME/NT/2000   */
-  $AR->OS="UNIX";   /* All unix/linux variants */
+  /* WIN32 or UNIX .........................................................*/
+  // $AR->OS="WIN32";     /* Windows 95/98/ME/NT/2000 ......................*/
+  $AR->OS="UNIX";         /* All unix/linux variants .......................*/
 
-  /* Fill in the full hostname of your server below */
-  /* e.g. "http://your.host.com" */
+  /* Fill in the full hostname of your server below ........................*/
+  /* e.g. "http://your.host.com" ...........................................*/
   $AR->host="http://your.host.com";
 
   $AR->dir=new object;
   
-  /* Fill in the full path to the webservers document root below */
-  /* leave out the last '/' */
-  // $AR->dir->docroot='C:/Progra~1/OpenSA/Apache/htdocs'; 
+  /* Fill in the full path to the webservers document root below ...........*/
+  /* leave out the last '/'. ...............................................*/
+  // $AR->dir->docroot='C:/Progra~1/OpenSA/Apache/htdocs';
   $AR->dir->docroot="/var/www";	                           
 
-  /* Fill in the path from the document root to the ariadne www pages */
-  /* start with a '/' */
+  /* Fill in the path from the document root to the ariadne www pages ......*/
+  /* start with a '/'. .....................................................*/
   $AR->dir->www="/ariadne/";
 
   /* If you installed ariadne in your own homedirectory, e.g. under ~user/, */
-  /* then change the following line to the full path of the ariadne www     */
-  /* directory. e.g.                                                        */
+  /* then change the following line to the full path of the ariadne www ....*/
+  /* directory. e.g. : .....................................................*/
   // $AR->dir->root="/home/user/public_html/ariadne.2.0b9/";
   $AR->dir->root=$AR->dir->docroot.$AR->dir->www;
 
-  /* Only change this if you have made your own loader */
+  /* Only change this if you have made your own loader .....................*/
   $AR->root=$AR->dir->www."loader.php";
 
-  /* Only change this if you have moved the images directory */
+  /* Only change this if you have moved the images directory ...............*/
   $AR->dir->images=$AR->dir->www."images/";
 
-  /* system wide nls configuration */
+  /* system wide nls configuration .........................................*/
 
   $AR->nls=new object;
 
-  /* list of all system wide available languages */
+  /* list of all system wide available languages ...........................*/
   $AR->nls->list["nl"]="Nederlands";
   $AR->nls->list["en"]="English";
 
-  /* default language */
+  /* default language *******************************************************/
   $AR->nls->default="en";
 
-  $ARConfig=new object;
+  /**************************************************************************/
+  /* you shouldn't need to change anything below this line                  */
+  /**************************************************************************/
 
-  $ARCurrent=new object;
- 
-/* configuration object for ariadne's import/export module */
+  /* configuration object for ariadne's import/export module ****************/
   $AR->ax=new object;
 
-  /* command to untar the (%s) file */
+  /* command to untar the (%s) file *****************************************/
   $AR->ax->cmd_untar="tar -zxf %s";
 
-  /* command to tar the (second %s) file and create tar file (first %s) */
+  /* command to tar the (second %s) file and create tar file (first %s) *****/
   $AR->ax->cmd_tar="tar -zc %s -f %s";
 
-  /* command to remove directory (%s) */
+  /* command to remove directory (%s) ***************************************/
   if( $AR->OS=="WIN32" ) $AR->ax->cmd_rmdir="rmdir /S /Q %s";
   else $AR->ax->cmd_rmdir="rm -rf %s";  
 
   $ARConfig=new object;
 
-  $ARCurrent=new object;
+  /* make default nls available for the root ********************************/
+  $ARConfig->cache[".."]=new object;
+  $ARConfig->cache[".."]->nls=$AR->nls;
 
-  /* To crypt or not to crypt */
+  $ARCurrent=new object;
+ 
+  /* To crypt or not to crypt ***********************************************/
   function ARCrypt($text) {
     return md5($text);
   }
