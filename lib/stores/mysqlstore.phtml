@@ -252,20 +252,14 @@ class mysqlstore {
 
 	 **********************************************************************************/
 
+		debug("find($path, [criteria], $limit, $offset)","store");
 		if (!is_array($criteria) && ($criteria=trim($criteria))) {
 			$criteria=" and $criteria ";
-			$query_string=$this->sqlcompiler->compile("path ~= '$path%'$criteria");
+			$query_string=$this->sqlcompiler->compile("path ~= '$path%'$criteria", $limit, $offset);
 			if ($this->sqlcompiler->error) {
 				$this->error=$this->sqlcompiler->error;
 			}
 		} else {
-			debug("find($path, [array], $limit, $offset)","store");
-			if (!$limit) {
-				$limit=100;
-			}
-			if (!$offset) {
-				$offset=0;
-			}
 			$this->error="";
 			$count=0;
 			$result["method"]="find";
@@ -319,16 +313,21 @@ class mysqlstore {
 				}
 			}
 			$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $nodes_tbl, $objects_tbl $from $types where $objects_tbl.id=$nodes_tbl.object and UPPER($nodes_tbl.path) like '$epath%'";
-	        $where=substr($where,4);
-	        if ($where) { 
-	          $query_string.=" and ( ( $where ) )";
-	        } 
-	        $query_string.=" order by $nodes_tbl.parent, $nodes_tbl.priority DESC, $nodes_tbl.path limit $offset,$limit";
+			$where=substr($where,4);
+			if ($where) { 
+				$query_string.=" and ( ( $where ) )";
+			} 
+			$query_string.=" order by $nodes_tbl.parent, $nodes_tbl.priority DESC, $nodes_tbl.path";
+			if ($limit) {
+				$query_string.=" limit ";
+				if ($offset) {
+					$query_string.="$offset,";
+				}
+				$query_string.="$limit";
+			}
 		}
 		debug("find: query=$query_string","all");
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
-
-
 		debug("find: end","all");
 		return $result;
 	}
