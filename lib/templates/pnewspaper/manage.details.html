@@ -133,7 +133,7 @@
 			<td align="center"><?php 
 					echo $date_arr["year"]." ".$date_arr["month"]; 
 				?></b></td>
-			<td align="right"><a href="<?php ldGetServerVar("PHP_SELF")."?".$QUERY_STRING; ?>&date=<?php 
+			<td align="right"><a href="<?php echo ldGetServerVar("PHP_SELF")."?".$QUERY_STRING; ?>&date=<?php 
 					echo mktime(0,0,0,$date_arr["mon"]+1,$date_arr["mday"],$date_arr["year"]); 
 				?>">&gt;&gt;</a></td>
 		</tr><tr>
