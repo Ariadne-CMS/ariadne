@@ -24,6 +24,7 @@ class axstore {
 		$this->temp=$config["temp"];
 		$this->files=$config["temp"];
 		$this->code=$config["code"];
+
 		$this->tar_error_handler=$config["tar_error_handler"];
 		$this->tar_tar=$config["tar_tar"];
 		$this->tar_untar=$config["tar_untar"];
@@ -337,6 +338,7 @@ class axstore {
 			while (list(,$node)=each($objects["list"])) {
 				$this->_load_object_data($node->object);
 				$node->object->init($this, $node->path, $node->object->data);
+				$node->object->runtime_ref++;
 				$parent=$this->make_path($node->path, "..");
 				if ($parent=="/") {
 					$parent="..";
@@ -345,6 +347,7 @@ class axstore {
 		
 				$node->object->priority=$node->priority;
 				$result[]=$node->object->call($template, $args);
+				$node->object->runtime_ref--;
 				$this->_free_object_data($node->object);
 			}
 		}
@@ -578,7 +581,7 @@ class axstore {
 	}
 
 	function _free_object_data(&$object) {
-		if ($object) {
+		if ($object && ( $object->runtime_ref <=0 )) {
 			unset($object->data);
 			unset($object->properties);
 			$result=1;
