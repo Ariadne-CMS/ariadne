@@ -1,4 +1,4 @@
-Ariadne 2.2.1
+Ariadne 2.3-dev
 
 Changes in Ariadne since version 2.2
 
@@ -19,13 +19,97 @@ New features:
 	- added getcache() method in pobject, that returns the contents
 	  of a privatecache image.
 	- revised the Postgresql store to use more features
-	
+	- Added mod_password a password generation class based on pwgen
+	- Added psection which behaves like a psite for the parents() call
+	- Added username and login to the title of Ariadne windows. (thanks to Gerhard Hoogterp)
+	- Added object type and template and grant information to the manage.info.html (thanks to Gerhard Hoogterp)
+	- Cleaned up the PINP compiler
+	- Added first verion of the inline editting module mod_edit.php
+	- pobject/browsercheck.phtml now returns the minor version number as $result['minor']
+	- Added function touch(id, timestamp) to the mysqlstore and postgresqlstore
+	- Added fulltext search and indexing support for mysql4 
+	  (contributed by Goran Topic) created a new mysql4 store and sql compiler for it.
+	- Added fulltext search and indexing support for mysql (>= 3.23.23)
+        - Added the store function store::is_supported() which you can ask if the
+	  store implements a specific feature (like 'fulltext').
+	- Added $AR->https to lib/configs/ariadne.phtml which enables or disables https usage in make_url();
+	- Enabled the save button in toolbar.php
+	- Added default settings for the image browse dialog in editor.ini
+	- Added pphoto::rotate(), pphoto::crop(), pphoto::getimageinfo()
+	- Added the ability to use a != operator in combination with .implements in query language
+	  (mysql/mysql4/postgresql)
+	- Added the ability to use properties which are not part of some of the classes in the result set. E.g:
+	  text.value and ((object.implements = 'particle' and article.start > 0) or (object.implements = 'pdir'))
+	  (mysql/mysql4/postgresql)
+	- Added strip_tags() functionality to ppage/system.save.data.phtml for use with summaries.
+	- Moved authentication functionality from pobject::CheckLogin() to the loader.
+	- You can now login as a different user on your current session.
+		
 Bugs Fixed:
+	- Removed an extra character '7' from particle/system.save.data.phtml
+	- We now use HTTP_SERVER_VARS["HTTP_HOST"] instead of HTTP_SERVER_VARS["SERVER_NAME"]
+	  throughout Ariadne (Thanks to Dino Termini)
+	- Removed obsolete muze_small.gif from www/images/
+	- Fixed the layout of wizard language selection.
+	- The photobook thumbnail browse now defaults to $this->parent if the thumbnail path can
+	  not be found. This prevents errors when opening the browse window.
+	- Fixed hyperlinking images in the WYSIWYG editor
+	- Fixed error reporting by system.new.phtml it now sets $this->error and returns false
+	- Fixed saving of name and text properties for puser, the nls now correctly saves as 'none'
 	- fixed a bug in the pfile wizard which broke the flow when using 
 	  custom fields.
 	- fixed a bug in view.thumb.html in pphotobook, you can now override
 	  this template.
 	- Fixed a bug in pobject::call(), the results are now unset every call()
+	- Fixed a bug in mod_db.php which only allowed the default arguments to 
+	  functions, where default arguments were defined.
+	- Fixed a bug in the toolbar.php, it now shows the correct heading names.
+	- Fixed copy/paste bugs in mod_db, you can now use the non-default options as well.
+	- Fixed a bug in the editor, it broke when adding a hyperlink on an image.
+	- Fixed a bug in the sql compilers, ordering via priorities is now again limited 
+	  to an objects container (directory).
+	- Fixed a bug in the mimemagic module, it now strtolowers() the file extension
+	  before parsing it (Thanks to Johann Hanne).
+	- Removed preg_replace() from the PINP allowed list, implemented preg_replace()
+	  wrapper function in pobject (Thanks to Goran Topic).
+	- Fixed saving of objects which don't have nls->default set.
+	- Fixed eternal cache problem
+	- Fixed class::function calling with pinp templates.	
+	- Fixed caching of pages containing sessionids: we now cache those
+	  pages in a seperate cache directory (session). All sessionids in such an
+	  image are replaced with an {arSessionID} tag. These tags are replaced
+	  with the active sessionid when an image gets send to the browser.
+	- Fixed the pphoto::rotate function under windows (Thanks to Paul Meijers.
+	- Added id check in pnewspaper so articles with the same id but different paths don't get added.
+	- Fixed bug which did save a pgroup object even with an error.
+	- Fixed bug in wizard/classic.html: now read $wgWizNextStep also from $ARCurrent
+	- Double quotes are now correctly escaped in browse.nav.list.show.phtml
+	- Added defaults for the image browse buttons in editor.ini
+	- Fixed flow bug in the puser wizard.
+	- Fixed LDAP login by moving the relogin feature out of puser/system.save.data.phtml.
+	- Fixed a problem with html entities in names, thanks to Goran Topic.
+	- Fixed a bug in GetValidGrants(): a group with grant modifiers in some cases
+	  overwrote group grants without modifiers which caused the user (member of
+	  both groups) to have less rights than expected.
+	- Fixed a bug in ParsePage().
+	- Fixed calenderitem: will now correctly remember the filled in date
+	- A file uploaded by ftp will now only get the default name set
+	- Changed grant requirement for saving priorities from 'layout' to 'edit'	
+	- Fixed a bug in the editor.ini, setting hidebuttons to 0 doesn't work,
+	  false does.
+	- Fixed a 'bug' in the priority wizard, you now only need 'edit' grant
+	  to save the priority. 
+	- Fixed the PINP parents() function, so it actually does stop at the
+	  currentsite().
+	- Disabled passing of properties to system.save.data.phtml templates.
+	- Fixed a bug in the editor with adding and removing hyperlinks, should now
+	  always work as expected. Except for the known bug that MSIE will sometimes
+	  appear to remove images when you want to include them in a link, the image is
+	  still there, just invisible. This is a MSIE bug, currently no satisfactory 
+	  workaround is available.
+	- Fixed a javascript bug while browsing in icon mode through a photobook
+	- Fixed 'object type' filter in the browse widget.
+
 
 Changes in Ariadne since version 2.1.4
 
