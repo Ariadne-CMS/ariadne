@@ -41,11 +41,13 @@
 <script>
   function init() {
     <?php
-      if ($error) {
-		echo "alert('".AddCSlashes($error, ARESCAPE)."');\n";
-      }
+	 if ($error) {
+		 echo "alert('".AddCSlashes($error, ARESCAPE)."');\n";
+	 }
+	 if( !$mode || $mode == "edit" ) {
+		 echo "document.forms[0].template.focus();";
+	 }
     ?>
-    document.forms[0].template.focus();
   }
 
 function event_templatescroll(){
