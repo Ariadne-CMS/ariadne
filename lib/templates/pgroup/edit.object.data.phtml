@@ -1,0 +1,30 @@
+<?php
+  /******************************************************************
+   edit.object.data.phtml                                Muze Ariadne
+   ------------------------------------------------------------------
+
+   No result.
+
+  ******************************************************************/
+
+  if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+    include($this->store->code."widgets/wizard/code.php");
+
+    $start="edit.object.data.form.phtml";
+    $finish="edit.object.data.save.phtml";
+   
+    $wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
+    $i++;
+    $wgWizFlow[$i]["title"]=$ARnls["data"];
+    $wgWizFlow[$i]["template"]=$start;
+    $wgWizFlow[$i]["save"]=$i+1;
+    $i++;
+    $wgWizFlow[$i]["title"]=$ARnls["save"];
+    $wgWizFlow[$i]["template"]=$finish;
+    $wgWizFlow[$i]["back"]=$i-1;
+    
+    $result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
+    $wgWizTitle=$ARnls["edit"]." ".$result[0];    
+    include($this->store->code."widgets/wizard/classic.html");
+  }
+?>
