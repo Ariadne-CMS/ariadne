@@ -6,6 +6,7 @@ class import_wddx {
 	var $input;
 	var $xml_parser;
 	var $store;
+	var $config;
 
 	function import_wddx(){
 		$this->input = null;
@@ -30,7 +31,7 @@ class import_wddx {
 				array_push($this->stack, Array("type" => "top", "data" => array()));
 				break;
 			case "struct":
-				if(($attribs["class"] == "object") && ($attribs["type"] == "object"))
+				if(($attribs["class"] == "object" || $attribs["class"] == "stdClass") && ($attribs["type"] == "object" ))
 				{
 					$value = new object();
 				} else
@@ -101,6 +102,7 @@ class import_wddx {
 			3) object grants
 			4) object files
 		 */
+		//debugon('all');
 		debug("working on ".$objdata['path'],'all');
 		$path = $objdata['path'];
 		$path = '/test'.$path;
@@ -142,6 +144,7 @@ class import_wddx {
 					$object->size = $objdata['size'];
 					$object->priority = $objdata['priority'];
 					$object->type = $objdata['type'];
+					debug("data: calling save");
 					$object->save($objdata['properties']);
 				}
 			} else
@@ -154,6 +157,7 @@ class import_wddx {
 				$object->data->pinp =  array();
 				$object->data->templates =  array();
 				$object->arIsNewObject = true;
+				debug("data: calling save");
 				$object->save($objdata['properties']);
 			}
 			unset($object);
@@ -217,7 +221,7 @@ class import_wddx {
 										debug("templates: working on template $file",'all');
 										$pinp=new pinp("header","this->", "\$this->_");
 
-										$template = $val['template'];
+										$template = base64_decode($val['template']);
 										$compiled=$pinp->compile(strtr($template,"\r",""));
 
 										if($templates->exists($object->id,$file))
@@ -279,6 +283,10 @@ class import_wddx {
 		if(!($this->config['skipgrants'] === true))
 		{
 			debug('work grants','all');
+			if($id = $this->store->exists($path))
+			{
+				debug('grants: yeah the path exists','all');
+			}
 		}
 
 		/*
@@ -301,6 +309,43 @@ class import_wddx {
 		if(!($this->config['skipfiles'] === true))
 		{
 			debug('work files','all');
+			if($id = $this->store->exists($path))
+			{
+				$object = current(
+						$this->store->call("system.get.phtml",
+							array(),$this->store->get($path))
+						);
+
+				$files=$object->store->get_filestore("files");
+				debug('files: yeah the path exists','all');
+
+				if(is_Array($objdata[files]))
+				{
+					while(list($key,$val) = each($objdata[files]))
+					{
+						if($files->exists($object->id,$key))
+						{
+							if(
+									($val['mtime'] >= $files->mtime($object->id,$key)) ||
+									($this->config['forcefiles'] === true)
+							  )
+							{
+								debug('files: overwrite existing file','all');
+								$files->write(base64_decode($val[file]), $object->id, $key);
+								$files->touch($object->id,$file,$val['mtime']);
+							}
+						}else
+						{
+							debug('files: create template','all');
+							$files->write(base64_decode($val[file]), $object->id, $key);
+							debugon('all');
+							debug("files: touch $file with".$val['mtime'],'all');
+							$files->touch($object->id,$file,$val['mtime']);
+							debugoff();
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -313,7 +358,7 @@ class import_wddx {
 				break;
 				case "boolean":
 					switch ($data) {
-						case "true":
+						case "true": 
 							$element["data"] = true;
 						break;
 						default:

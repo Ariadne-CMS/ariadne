@@ -91,7 +91,7 @@ class export_wddx {
 						echo "<var name=\"template\">\n";
 						echo "<string><![CDATA[";
 						$file=$type.".".$function.".".$language.".pinp";
-						echo export_wddx::strtoxmldata($templates->read($object->id, $file));
+						echo base64_encode($templates->read($object->id, $file));
 						echo "]]></string></var>\n";
 						echo "<var name=\"mtime\">\n";
 						echo "<number>".$templates->mtime($object->id, $file)."</number>\n";
@@ -116,13 +116,24 @@ class export_wddx {
 		$filearray = $files->ls($object->id);
 		if( is_array($filearray) ) {
 			echo "<var name=\"files\">\n";
-			echo "<struct>\n";
+			echo "<struct type=\"hash\">\n";
 			
 			while( list( $key, $file ) = each($filearray) ) {
 				echo "<var name=\"".$file."\">\n";
+				echo "<struct type=\"hash\" >\n";
+				echo "<var name=\"file\" >\n";
 				echo "<string><![CDATA[";
 				echo base64_encode($files->read($object->id, $file));
-				echo "]]></string></var>\n";
+				echo "]]></string>\n";
+				echo "</var>\n";
+				echo "<var name=\"mtime\">\n";
+				echo "<number>".$files->mtime($object->id, $file)."</number>\n";
+				echo "</var>\n";
+				echo "<var name=\"ctime\">\n";
+				echo "<number>".$files->ctime($object->id, $file)."</number>\n";
+				echo "</var>\n";
+				echo "</struct>\n";
+				echo "</var>\n";
 			}
 			
 			
