@@ -55,7 +55,10 @@
 				}
 			}
 		}
+
 		$this->save($properties);
+
+		unset($this->arIsNewObject);
 		reset($AR->nls->list);
 		while (list($key, $value)=each($AR->nls->list)) {
 			if ($page=$this->getdata("page",$key)) {
