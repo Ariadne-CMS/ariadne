@@ -308,10 +308,8 @@ class mysqlstore {
 
 	 **********************************************************************************/
 
-		if (!is_array($criteria)) {
-			if ($criteria=trim($criteria)) {
-				$criteria=" and $criteria ";
-			} 
+		if (!is_array($criteria) && ($criteria=trim($criteria))) {
+			$criteria=" and $criteria ";
 			$query_string=$this->sqlcompiler->compile("path ~= '$path%'$criteria");
 			if ($this->sqlcompiler->error) {
 				$this->error=$this->sqlcompiler->error;
