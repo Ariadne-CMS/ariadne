@@ -4,6 +4,7 @@
     include($ariadne."/configs/ariadne.phtml");
     include($ariadne."/configs/store.phtml");
     include_once($ariadne."/stores/mysqlstore.phtml");
+	include_once($ariadne."/includes/loader.web.php");
 
     $store=new mysqlstore(".",$store_config);
   
