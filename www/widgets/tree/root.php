@@ -31,6 +31,8 @@
   root=0;
   target=0;
   caller=0;
+  ShowInvis=false;
+  NodeOpened=false;
 
   function AddLinks(parent, icon, name, link, pre) {
     if (Links[parent]) {
@@ -71,6 +73,8 @@
     this.link=link;
     this.icon=icon;
     this.status="Closed";
+	this.visible=true;
+	this.editable=true;
     this.children=new Array;
     this.add=addNode;
     this.set=setNode;
@@ -176,64 +180,116 @@
     }
   }
 
-  function drawNode(pre, target) {
-    variant='';
-    line='<img src="../../images/tree/line.gif" width=18 height=18 border=0 align="left" hspace="0" vspace="0" alt="">';
-    blank='<img src="../../images/tree/blank.gif" width=18 height=18 border=0 align="left" hspace="0" vspace="0" alt="">';
-    target.write('<nobr>'+pre);
-    if (!this.next) {
-      if (!this.prev && !this.parent) {
-        variant='only';
-      } else {
-        variant='bottom';
-      }
-      pre=pre+blank;
-    } else {
-      if (!this.prev && !this.parent) {
-        variant='top';
-      }
-      pre=pre+line;
-    }
-    if (this.status=="Closed") {
-      plus='<img src="../../images/tree/plus'+variant+'.gif" border="0" width=18 height=18 border=0 align="left" hspace="0" vspace="0" alt="">';
-      target.writeln('<A HREF="javascript:toggle('+this.id+');">'+plus+'</A>'
-                    +'<img src="../../images/icons/'+this.icon+'.gif" border="0" width=18 height=18 alt="" valign="middle">'
-		    +'<span class="node"><nobr><A HREF="javascript:View('+this.id+');"'
-                    +' onMouseOver="window.status=\''+this.link+'\'; return true;" onMouseOut="window.status=\'\'; return true;">'
-                    +this.pre+this.name+'</A></nobr></span></nobr><br clear="all">');
-    } else {
-      minus='<img src="../../images/tree/minus'+variant+'.gif" border="0" width=18 height=18 border=0 align="left" hspace="0" vspace="0" alt="">';
-      target.writeln('<A HREF="javascript:toggle('+this.id+');">'+minus+'</A>'
-                    +'<img src="../../images/icons/'+this.icon+'.gif" border="0" width=18 height=18 alt="" valign="middle">'
-		    +'<span class="node"><nobr><A HREF="javascript:View('+this.id+');"'
-                    +' onMouseOver="window.status=\''+this.link+'\'; return true;" onMouseOut="window.status=\'\'; return true;">'
-                    +this.pre+this.name+'</A></nobr></span></nobr><br clear="all">');
-      if (this.firstChild) {
-        this.currnode=this.firstChild;
-        while (this.currnode.next) {
-          this.currnode.draw(pre, target);
-          this.currnode=this.currnode.next;
-        }
-        this.currnode.draw(pre, target);
-      }
-    }     
-  }
+function drawNode(pre, level) {
+	// display node with its style	
+	// + - both displayed, one in hidden div, other visible
+	// onClick -> switch div and display/hide children
+    result='';
+	addpre='';
+	imgplus='plus';
+	imgminus='minus';
+	imgjoin='join';
+	img='';
+	if (this.visible || ShowInvis) {
+		style='';
+		post='';
+		if (this.editable) {
+			style+='<span class="editable">';
+		} else {
+			style+='<span class="fixed">';
+		}
+		post+='</span>';
+		next=this.next;
+		while (next && !next.visible && !ShowInvis) {
+			next=next.next;
+		} 
+		prev=this.prev;
+		while (prev && !prev.visible && !ShowInvis) {
+			prev=prev.prev;
+		}
+		if (next) {
+			addpre='<img src="../../images/tree/line.gif" alt="" width=18" height="18" align="left" valign="middle">'
+			if (!prev && pre=='') {
+				img+='top';
+			}
+		} else {
+			addpre='<img src="../../images/tree/blank.gif" alt="" width=18" height="18" align="left" valign="middle">'
+			if (!prev && pre=='') {
+				img+='only';
+			} else {
+				img+='bottom';
+			}
+		}
+		if (!this.visible) {
+			style+='<span class="invisible">';
+			post+='</span>';
+		}
+		if (this.status=="Open") {
+			currimg='minus';
+			plusminus='<a href="javascript:parent.toggle(\''+this.id+'\');"><img src="../../images/tree/minus'+img+'.gif" alt="" width=18" height="18" border="0" align="left" valign="middle"></a>';
+		} else {
+			currimg='plus';
+			plusminus='<a href="javascript:parent.toggle(\''+this.id+'\');"><img src="../../images/tree/plus'+img+'.gif" alt="" width=18" height="18" border="0" align="left" valign="middle"></a>';
+		}
+		if (this.icon) {
+			icon='<img src="../../images/icons/'+this.icon+'.gif" alt="" width="18" height="18" border="0" align="left" valign="middle">';
+		} else {
+			icon='';
+		}
+		width=(level*18)+125;
+		// Mozilla ignores <nobr> tags with image placement, so calculate a minimum width here
+		result='<div id="'+this.id+'" class="node"><div class="row" style="width: '+width+'px;"><nobr>'+
+			pre+plusminus+'<a href="javascript:parent.View(\''+this.id+'\');">'+
+            icon+'<span class="item">'+style+this.name+post+'</span></a></nobr></div>';
+		if (this.firstChild && this.status=="Open" ) {
+			result=result+'<div name="sub" class="submenu" id="'+this.id+'_submenu">';
+			result=result+this.firstChild.draw(pre+addpre, level+1);
+			result=result+'</div>';
+		}
+	} 
+	result=result+'</div>';
+	if (this.next) {
+		result=result+this.next.draw(pre, level);
+ 	}
+    return result;
+}
 
-  function Draw() {
-    <?php 
-      // netscape takes the path of the calling page as root.
-      // thus calculate the absolute path of the tree widget docroot. 
-      $rootpath=substr($PHP_SELF,0,-strlen("root.php"));
-    ?>
-    window.treeview.document.location="<?php echo $rootpath; ?>draw.html";
-    window.parent.LoadingDone(); 
-  }
+function Draw() {
+	target=window.treeview;
+	if (target.document.body && ( target.document.body.scrollTop || target.document.body.scrollLeft ) ) {
+		y=target.document.body.scrollTop;
+		x=target.document.body.scrollLeft;
+	} else {
+		x=target.pageXOffset;
+		y=target.pageYOffset;
+	}
+	// Draw the entire tree
+	target.document.open();
+    MenuDraw="<html>\n<head>\n<BASE HREF='"+document.location.href+"'>\n<link REL=STYLESHEET type='text/css' HREF='../../styles/tree.css'>\n";
+    MenuDraw=MenuDraw+"</head>\n<body>\n";
+	MenuDraw=MenuDraw+root.draw('',1);
+	MenuDraw=MenuDraw+"</body>\n</html>";
+	target.document.writeln(MenuDraw);
+	target.document.close();
+	if (x || y) {
+		if (x && NodeOpened) {
+			x+=75;
+		}
+		if (y && NodeOpened) {
+			y+=75;
+		}
+		NodeOpened=false;
+		target.scrollTo(x,y);
+	}
+	parent.LoadingDone();
+}
 
   function toggle(id) {
     if (Nodes[id]) {
       node=Nodes[id];
       if (node.status=="Closed") {
         node.status="Open";
+		NodeOpened=true;
         if (!node.firstChild) {
           treeload.document.location='<?php echo $loader; ?>'+node.link+'tree.load.phtml?node='+id;
         } else {

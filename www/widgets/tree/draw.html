@@ -1,34 +1,16 @@
 <html>
 <head>
-<script language="javascript">
-<!--
-  function toggle(id) {
-    window.parent.toggle(id);
+<link REL=STYLESHEET type='text/css' HREF='<?php echo $AR->dir->styles; ?>tree.css'>
+<script>
+
+  function init() {
+    parent.RootTarget=window;
   }
-  function View(id) {
-    window.parent.View(id);
-  }
-// -->
 </script>
-<style type="text/css">
-<!--
-  .node A:link { color: black; text-decoration: none; }
-  .node A:visited { color: black; text-decoration: none; }
-  .node A:active { color: red; text-decoration: none; }
-  .node A:hover { color: red; text-decoration: none; }
-  .node { position: absolute; }
-//-->
-</style>
 </head>
-<body bgcolor="white">
-<font face="GENEVA, MS SANS SERIF, Helvetica, SANS-SERIF" SIZE="2">
-<script language="javascript">
-    if (window.parent.root) {
-      window.parent.root.draw("",document);
-    } else {
-      document.write('No nodes found. Press Reload or contact the administrator.\n');
-    }
+<body bgcolor="white" onLoad="init()">
+<script>
+	document.writeln(window.parent.root.draw(''));
 </script>
-</font>
 </body>
 </html>
