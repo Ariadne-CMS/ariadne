@@ -1,17 +1,24 @@
 <?php
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
 		$tempfile=$ARCurrent->session->get("tempname");
-		$tempfilename=substr($tempfile, strrpos($tempfile,'/')+1);
-		$tempfile=$this->store->files."temp/".$tempfilename;
+		$forwardslash=strrpos($tempfile,'/');
+		$backslash=strrpos($tempfile,'\\');
+		if ($backslash>$forwardslash) {
+			$matchslash='\\';
+		} else {
+			$matchslash='/';
+		}
+		$tempfilename=substr($tempfile, strrpos($tempfile,$matchslash)+1);
+		$tempfile=$this->store->files."temp".$matchslash.$tempfilename;
 		if (!file_exists($tempfile))  {
 			// file is not where we expected it, try to find out where it is
-			$test=tempnam($this->store->code."temp/","ax");
+			$test=tempnam($this->store->files."temp".$matchslash,"ax");
 			@unlink($test);
-			$testdir=substr($test, 0, strrpos($tempfile,'/')+1);
+			$testdir=substr($test, 0, strrpos($tempfile,$matchslash)+1);
 			if (file_exists($testdir) && file_exists($testdir.$tempfilename)) {
 				$tempfile=$testdir.$tempfilename;
 			} else {
-				$error="Export file is missing. Sorry, I forgot where I put it.";
+				$error="Export file is missing. It's not in ".$testdir.$tempfilename.".";
 			}
 		}
 		if (!$error) {
