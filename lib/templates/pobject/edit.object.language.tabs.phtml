@@ -18,7 +18,17 @@
 <ul id="tabnav">
 <?php
 	$arLanguage=$this->getdata('arLanguage');
-	$languages=array_merge($ARConfig->nls->list, $this->data->config->nls->list);
+    if (!$AR->user->data->languagelist) {
+      // make sure at least one language is available for editing
+      $languagelist=Array($AR->user->data->language => $AR->nls->list[$AR->user->data->language]);
+    } else {
+      $languagelist=$AR->user->data->languagelist;
+    }
+    if (!$languagelist[$arLanguage]) {
+      // make sure the currently selected language is also available at all times
+      $languagelist[$arLanguage]=$AR->nls->list[$arLanguage];
+    }
+	$languages=array_intersect($languagelist, array_merge($ARConfig->nls->list, $this->data->config->nls->list));
 	$count=count($languages);
 	while (list($nlskey, $language)=each($languages)) {
 		if (($this->data->config->nls->list[$nlskey]) || ($this->getdata('name',$nlskey))) {

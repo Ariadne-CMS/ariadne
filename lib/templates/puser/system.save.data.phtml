@@ -101,6 +101,7 @@
 						(direct feedback & the possibility to override 
 					*/
 					$this->data->language=$pdata->data->language;
+					$this->data->languagelist=$pdata->data->languagelist;
 					$this->data->interface=$pdata->data->interface;
 					$this->data->editor=$pdata->data->editor;
 					if(!$customgrants) {
@@ -113,6 +114,9 @@
 			}
 			if ($language=$this->getdata("language","none")) {
 				$this->data->language=$language;
+			}
+			if ($languagelist=$this->getdata("languagelist","none")) {
+				$this->data->languagelist=$languagelist;
 			}
 			if ($interface=$this->getdata("interface","none")) {
 				$this->data->interface=$interface;

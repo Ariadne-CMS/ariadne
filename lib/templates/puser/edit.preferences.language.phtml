@@ -1,39 +1,97 @@
 <?php
-  /******************************************************************
+	/******************************************************************
 
-   no result.
+	 no result.
 
-  ******************************************************************/
-  if ($this->CheckSilent("read")) {
+	******************************************************************/
+	if ($this->CheckSilent("read")) {
 ?>
-    <fieldset id="language">
-    <legend><?php echo $ARnls["language"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
-      <table border="0" align="center">
-      <tr>
-        <td>
-          <?php echo $ARnls["default"]; ?>
-        </td><td>
-          <select name="language" style="width: 100px;">
-          <?php
-            if (!$newtype) {
-              $language=$data->language;
-            } else {
-              $language=$ARCurrent->default;
-            }
-            reset($AR->nls->list);
-            while (list($key, $value)=each($AR->nls->list)) {
-              if ($key==$language) {
-                echo "<option value=\"$key\" selected>$value</option>\n";
-              } else {
-                echo "<option value=\"$key\">$value</option>\n";
-              }
-            }
-          ?>
-          </select>
-        </td>
-      </tr>
-      </table>
-    </fieldset>
+	<fieldset id="language">
+	<legend><?php echo $ARnls["language"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+		<table border="0" align="center">
+		<tr>
+			<td>
+				<?php echo $ARnls["default"]; ?>
+			</td><td>
+				<select name="language" style="width: 100px;">
+				<?php
+					if (!$newtype) {
+						$language=$data->language;
+					} else {
+						$language=$ARCurrent->default;
+					}
+					reset($AR->nls->list);
+					while (list($key, $value)=each($AR->nls->list)) {
+						if ($key==$language) {
+							echo "<option value=\"$key\" selected>$value</option>\n";
+						} else {
+							echo "<option value=\"$key\">$value</option>\n";
+						}
+					}
+				?>
+				</select>
+			</td>
+		</tr><tr>
+			<td valign="top">
+				<?php echo $ARnls["available"]; ?>
+			</td>
+			<td valign="top">
+			<?php
+				$middle=@count($AR->nls->list)/2;
+				$middle=ceil($middle);
+				$count=0;
+				$languagelist=$this->getdata("languagelist","none");
+				reset($AR->nls->list);
+				asort($AR->nls->list);
+				while (list($arnls, $value)=each($AR->nls->list)) {
+					$count++;
+					if ($count>$middle) { 
+						$count=0;
+						echo "</td><td valign=\"top\">\n"; 
+					}
+					if ($languagelist[$arnls]) {
+						$image=$AR->dir->images.'nls/small/'.$arnls.'.gif';
+						$selected=" checked";
+					} else {
+						$image=$AR->dir->images.'nls/small/faded/'.$arnls.'.gif';
+						$selected="";
+					}
+					?>
+						<nobr><a href="#" onClick="selectnls('<?php echo $arnls; ?>');"><img 
+								id="flag_<?php echo $arnls; ?>" alt="<?php echo $value; ?>" 
+								src="<?php echo $image; ?>" align="left" vspace="4" border="0"></a> 
+							<input style="width: auto;" type="checkbox" id="checkbox_<?php echo $arnls; ?>" 
+								name="languagelist[<?php echo $arnls; ?>]" onClick="setImage('<?php echo $arnls; ?>');"
+								value="<?php echo $value; ?>"<?php echo $selected; ?>> <?php 
+							echo $value; 
+						?></nobr><br clear="all">
+					<?php
+				}
+			?>
+			</td>
+		</tr></table>
+	</fieldset>
+	<script>
+		function selectnls(nls) {
+			var checkbox=document.getElementById('checkbox_'+nls);
+			if (checkbox.checked) {
+				checkbox.checked=false;
+			} else {
+				checkbox.checked=true;
+			}
+			setImage(nls);
+			return false;
+		}
+		function setImage(nls) {
+			var checkbox=document.getElementById('checkbox_'+nls);
+			if (checkbox.checked) {
+				document.images['flag_'+nls].src='<?php echo $AR->dir->images.'nls/small/'; ?>'+nls+'.gif';
+			} else {
+				document.images['flag_'+nls].src='<?php echo $AR->dir->images.'nls/small/faded/'; ?>'+nls+'.gif';
+			}
+			return false;			
+		}
+	</script>
 <?php
-  }
+	}
 ?>
