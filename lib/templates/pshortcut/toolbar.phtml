@@ -29,9 +29,6 @@ function ClearLoader() {
   top.LoadingDone();
   tofront(<?php
     switch($template) {
-      case 'manage.html':
-        echo(1);
-      break;
 
       case 'view.html':
         echo(2);
@@ -55,6 +52,11 @@ function ClearLoader() {
 
       case 'new.phtml':
         echo(7);
+      break;
+
+      case 'manage.html':
+      default:
+        echo(1);
       break;
 
     }
