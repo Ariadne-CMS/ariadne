@@ -6,17 +6,7 @@
 	 Grant needed: read
 	 Global variables: none
 
-	 This template displays the input form for this object. If $newtype
-	 is set, the form is called to create a new object. This means that
-	 $data points to the data of the object creating it!
-	 $arNewType, $arNewFilename, and $arReturnPage are saved in hidden 
-	 input fields for further processing by whatever template is called
-	 when the form is processed. 
-	 The html form tag in a form template should always leave the action
-	 property out.
-
-	 This template must be available in every pobject derivative's
-	 template directory.
+	 This template displays the input form for this object. 
 
 	 no result.
 
@@ -26,7 +16,7 @@
 <html>
 <head>
 <title><?php echo $ARnls["editobject"]; ?></title>
-<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>menu.css">
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
 </head>
 <body bgcolor="white">
 <br>
