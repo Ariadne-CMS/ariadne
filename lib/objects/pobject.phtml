@@ -75,6 +75,9 @@ class pobject extends object { // pobject class definition
 			$arCallFunction="view.html";
 		}
 
+		// clear previous results   
+		unset($ARCurrent->arResult); 
+
 		// callstack is needed for getvar()
 		$ARCurrent->arCallStack[]=&$arCallArgs;
 		// pass the context on to this object (is the calling template a php or pinp template?).
