@@ -251,7 +251,7 @@ class pobject {
 		$silent=($AR->user) ? 1:0;
 		$continue=true;
 		if (!$AR->user) {
-			if (!$ARCurrent->session) {
+			if (!$ARCurrent->session || !$ARCurrent->session->get("ARLogin")) {
 				$ARLogin="public"; $ARPassword="none";
 				debug("pobject: CheckLogin: use public","object");
 			} else {
