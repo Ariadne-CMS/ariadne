@@ -40,7 +40,7 @@ class pinp {
       "gmstrftime|microtime|mktime|strftime|time|easter_days|easter_date";
     $regex_funcs="ereg|ereg_replace|eregi|eregi_replace|split";
     $debug_funcs="debug|debugon|debugoff";
-    $this->re_allowed="|$control_funcs|$array_funcs|$string_funcs|$math_funcs|$var_funcs|$time_funcs|$allowed_functions|$debug_funcs|";
+    $this->re_allowed="|$control_funcs|$array_funcs|$string_funcs|$math_funcs|$var_funcs|$time_funcs|$allowed_functions|$debug_funcs|$regex_funcs|";
 
     // dont touch this unless you know what you are doing
     $slash="\\\\";
@@ -62,9 +62,6 @@ class pinp {
     // since php supports comment tags including ? > and < ?php the comments check must be made first. 
     $template=preg_replace($this->pre_comments,"",$template); // this does :)
     $template=str_replace("\r\n", "\n", $template);
-
-    // now remove '//.*\n', can be used to circumvent the code rewrite
-    // $template=preg_replace("|//.*\n|m","\n",$template);
 
     // now find next <pinp> </pinp> block
     if (preg_match("!^(.*?)".$this->re_pinp."!m",$template,$matches)) {
@@ -106,7 +103,6 @@ class pinp {
         $string=$matches[6];
       }
       if (preg_match("|//[^\n]*\$|",$pre)) {
-        echo "--$pre--$string--<br>\n";
         if (preg_match("|([^\n]*)\n|",$string.$code, $matches)) {
           $pre.=$matches[1]."\n";
           $code=substr($string.$code, strlen($matches[1])+1);
