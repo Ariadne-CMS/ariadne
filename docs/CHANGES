@@ -3,6 +3,9 @@ Ariadne 2.3.2-dev
 Changes in Ariadne since version Ariadne 2.3.1-dev
 
 New Features:
+	- moved the multipart page extension from ppage to mod_multipart
+	- mod_edit (easy WYSIWYG editing of multiple objects) is now workable 
+	  and almost finished.
 	- Add FTP MDTM command, thanks to Goran Topic.
 	- Static skeleton support in profiles, just use the filename 'static' 
 	  immediately below a profile, and the contents will be copied when 
