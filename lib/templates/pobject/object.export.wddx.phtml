@@ -2,6 +2,19 @@
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
 		set_time_limit(0);
 		$ARCurrent->wddxoptions = array('verbose' => true);
+		if ($without_grants=$this->getdata("without_grants","none")) {
+			$ARCurrent->wddxoptions["export_skipgrants"]=true;
+		}
+		if ($without_data=$this->getdata("without_data","none")) {
+			$ARCurrent->wddxoptions["export_skipdata"]=true;
+		}
+		if ($without_templates=$this->getdata("without_templates","none")) {
+			$ARCurrent->wddxoptions["export_skiptemplates"]=true;
+		}
+		if ($without_files=$this->getdata("without_files","none")) {
+			$ARCurrent->wddxoptions["export_skipfiles"]=true;
+		}
+
 		$filename = tempnam($this->store->get_config("files")."temp/","wddx");
 		$ARCurrent->session->put("tempname",$filename);
 		$ARCurrent->wddxfp = fopen($filename,'w');

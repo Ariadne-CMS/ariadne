@@ -68,10 +68,19 @@ class export_wddx {
 		fwrite($fp,"<number>".$object->size."</number>\n");
 		fwrite($fp,"</var>\n");
 
-		export_wddx::export_data($fp,"data", $object->data);
-		export_wddx::export_properties($fp,$object);
-		export_wddx::export_templates($fp,$object);
-		export_wddx::export_files($fp,$object);
+		if($ARCurrent->wddxoptions["export_skipdata"]){
+			if($ARCurrent->wddxoptions["export_skipgrants"]){
+				unset($object->data->config->grants);
+			}
+			export_wddx::export_data($fp,"data", $object->data);
+			export_wddx::export_properties($fp,$object);
+		}
+		if($ARCurrent->wddxoptions["export_skiptemplates"]){
+			export_wddx::export_templates($fp,$object);
+		}
+		if($ARCurrent->wddxoptions["export_skipfiles"]){
+			export_wddx::export_files($fp,$object);
+		}
 
 		fwrite($fp,"</struct>\n");
 		fwrite($fp,"</var>\n");
