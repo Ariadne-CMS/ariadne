@@ -49,8 +49,7 @@ class pinp {
     $delimiter='"';
     $this->re_string2="([^'\"]*)($delimiter([^$slash]|$slash.)*?$delimiter)";  
     $this->re_pinp=$this->starttag."([^'\"]*?|($this->re_string1|$this->re_string2)*?[^'\"]*?)".$this->endtag; 
-    $this->re_comments="/\\*([^\\*/]|\\*[^/]|[^\\*]/)*\\*/";
-     
+    $this->pre_comments='|/\*.*\*/|U';
   }
 
   function compile($template) {
@@ -61,8 +60,11 @@ class pinp {
 
     // then remove /* .. */ comments, even in html code... for security
     // since php supports comment tags including ? > and < ?php the comments check must be made first. 
-    // $template=preg_replace("!/\\*.*?\\*/!m","",$template); // somehow this doesn't work...
-    $template=ereg_replace($this->re_comments,"",$template); // this does :)
+    $template=preg_replace($this->pre_comments,"",$template); // this does :)
+    $template=str_replace("\r\n", "\n", $template);
+
+    // now remove '//.*\n', can be used to circumvent the code rewrite
+    // $template=preg_replace("|//.*\n|m","\n",$template);
 
     // now find next <pinp> </pinp> block
     if (preg_match("!^(.*?)".$this->re_pinp."!m",$template,$matches)) {
@@ -83,31 +85,31 @@ class pinp {
   }
 
   function fixcode($code) {
-    // remove comments ( // ... )
-    while (preg_match("!//.*$!m",$code, $matches)) {
-      $code=str_replace($matches[0],"",$code);
-    }
-
     // find first occurance of a string
     if (preg_match("!^(".$this->re_string1."|".$this->re_string2.")!m", $code, $matches)) {
       
       // string found, cut matched part from $code
       $code=substr($code, strpos($code, $matches[0])+strlen($matches[0]));
-
       // check which kind of string was found '' or "".
       if ($matches[2]) { //single quoted string found
-
         // $matches[2] is the part before the string, 
         // $matches[3] is the string ('')
-        $result=$this->fixother($matches[2]).$this->fixstring($matches[3]).$this->fixcode($code);
-
+        $pre=$matches[2];
+        $string=$matches[3];
       } else { // double quoted string found
-
         // $matches[5] is the part before the string
         // $matches[6] is the string ("")
-        $result=$this->fixother($matches[5]).$this->fixstring($matches[6]).$this->fixcode($code);
-
+        $pre=$matches[5];
+        $string=$matches[6];
       }
+      if (preg_match("|//[^\n]*\$|",$pre)) {
+        if (preg_match("|([^\n]*)\n|",$string.$code, $matches)) {
+          $pre.=$matches[1]."\n";
+          $code=substr($string.$code, strlen($matches[1])+1);
+          $string="";          
+        }
+      } 
+      $result=$this->fixother($pre).$this->fixstring($string).$this->fixcode($code);
     } else {
       $result=$this->fixother($code);
     }
