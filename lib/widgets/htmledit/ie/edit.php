@@ -391,7 +391,18 @@ function AR_FORMAT_HTML(code) {
   sContents=sContents.replace(/&/g,"&amp;");
   sContents=sContents.replace(/</g,"&lt;");
   sContents=sContents.replace(/>/g,"&gt;");  
-  sContents=sContents.replace(/ /g,"&nbsp;");
+  // replace all spaces at the start of a line with non-breaking spaces for indentation.
+  // don't replace spaces in the rest of the line, or you will need a very wide screen.
+  sContents=sContents.replace(/[\n]( +)/g, 
+    function (str, match) {
+      var len=match.length;
+      var result='\n';
+      for (i=0; i<len; i++) {
+        result+='&nbsp;';
+      }
+      return result;
+    }
+  )
   sContents=new String("<HTML><HEAD><META content=\"text/html; charset=UTF-8\" http-equiv=Content-Type><STYLE> P { margin: 0px;} </STYLE></HEAD><BODY STYLE=\"font:10pt courier new, monospace\">"+sContents+"</BODY></HTML>");
   var linebreak=sContents.lastIndexOf('\n');
   while (linebreak!=-1) {
