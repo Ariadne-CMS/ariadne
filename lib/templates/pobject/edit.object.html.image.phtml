@@ -41,6 +41,7 @@ SELECT {
 BODY 	{
 	FONT: 8pt sans-serif;
 	BORDER: 0;
+	PADDING: 4px;
 	BACKGROUND-COLOR: buttonface;
 }
 .button {
@@ -81,13 +82,28 @@ function IsDigit()
 		arr["align"] = form.align.options[form.align.selectedIndex].value;
 		arr["hspace"] = form.hspace.value;
 		arr["vspace"] = form.vspace.value;
-		window.opener.IMAGE_set(arr);
+		window.returnValue=arr;
 		window.close();
+	}
+
+	function init() {
+		arr=window.dialogArguments;
+		PictureForm.imgsrc.value=arr['src'];
+		PictureForm.alt.value=arr['alt'];
+		PictureForm.border.value=arr['border'];
+		PictureForm.hspace.value=arr['hspace'];
+		PictureForm.vspace.value=arr['vspace'];
+		for (alignment in PictureForm.align.options) {
+			if (alignment.value==arr['align']) {
+				alignment.selected=true;
+				break;
+			}
+		}		
 	}
 // -->
 </SCRIPT>
 </HEAD>
-<BODY SCROLL=NO>
+<BODY SCROLL=NO onLoad="init();">
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 <form method="post" name="PictureForm">
 <tr>
