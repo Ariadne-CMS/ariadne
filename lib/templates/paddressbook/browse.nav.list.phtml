@@ -1,0 +1,61 @@
+<?php 
+	/******************************************************************
+	 browse.nav.list.phtml                                 Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $filter
+	 Grant needed: read
+	 Global variables: none
+
+
+	 This templates displays the short list of files in the browse
+	 files view. 
+	 
+	 $filter must be a valid argument for the object.implements search
+	 criteria.
+	 
+	 no result
+
+	******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		$browser=$this->call("browsercheck.phtml");
+?>
+<style>
+	.object {
+		width: 150px;
+		overflow: hidden;
+		<?php
+			if (($browser["version"]!=4)) {
+		?>
+				float: left;
+		<?php
+			}
+		?>
+	}
+	BODY {
+		margin: 0px;
+		padding: 2px;
+		font: 10pt Arial,Helvetica,sans-serif;
+	}
+	A {
+		text-decoration: none;
+		color: black;
+	}
+</style>
+<body bgcolor="white">
+<?php
+	if ($this->parent!="..") {
+		$this->call("browse.nav.list.show.up.phtml");
+	}
+	if ($filter) {
+		$crit["object"]["implements"]["="]="'".AddSlashes($filter)."'";
+	}
+	if ($letter && ($letter=substr(eregi_replace("[^a-z]","",$letter),0,1))) {
+		$crit["name"]["value"]["LIKE"]="'$letter%'";
+	}
+	$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
+	$this->find(".",$crit, "browse.nav.list.show.phtml");
+?>
+</body>
+<?php
+	}
+?>
