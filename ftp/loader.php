@@ -815,24 +815,15 @@
 									$AR->user->grants[$AR->user->path]=$AR->user->GetValidGrants();
 								}
 
-								if ($site) {
-									if ($AR->user->data->login==="admin" || $site->CheckLogin("ftp")) {
-										$FTP->cwd="/";
-										$this->user=$login;
-									} else {
-										ftp_Tell(530, "Login incorrect: (site) permission denied");
-										unset($user);
-										unset($AR->user);
-									}
+								$siteroot = current($FTP->store->call("system.get.phtml", "", $FTP->store->get($FTP->site."/")));
+
+								if ($AR->user->data->login==="admin" || $siteroot->CheckLogin("ftp")) {
+									$FTP->cwd="/";
+									$this->user=$login;
 								} else {
-									if ($AR->user->data->login==="admin" || $AR->user->CheckLogin("ftp")) {
-										$FTP->cwd="/";
-										$this->user=$login;
-									} else {
-										ftp_Tell(530, "Login incorrect: (user) permission denied");
-										unset($user);
-										unset($AR->user);
-									}
+									ftp_Tell(530, "Login incorrect: (site) permission denied");
+									unset($user);
+									unset($AR->user);
 								}
 
 							} else {
@@ -959,7 +950,7 @@
 
 
 	sleep(1);
-	debugon("pinp");
+//	debugon("pinp");
 
 	// set PHP error handling
 	error_reporting(1);
