@@ -74,9 +74,13 @@
 				include("mod_unicode.$tablename.php");
 				$charset_table[$charset] = $table;
 			}
-			$result = "";
-			for ($i=0; $i<strlen($string); $i++) {
-				$result .= $charset_table[$charset][ord($string[$i])];
+			if (is_string($string)) {
+				$result = "";
+				for ($i=0; $i<strlen($string); $i++) {
+					$result .= $charset_table[$charset][ord($string[$i])];
+				}
+			} else {
+				$result = $string;
 			}
 			return $result;
 		}
