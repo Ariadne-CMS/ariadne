@@ -511,15 +511,20 @@ class postgresqlstore {
 					$result = 0;
 				} else {
 					debug("save: query=$query_string","all");
-					$this->save_properties($properties, $id, $this); 
-					if($priority !== false) {
-						$query_string = "update $nodes_tbl set priority=$epriority where path='$epath'";
-						$err = $this->store_run_query( $query_string);
-						if ($err === false) {
-							debug("save: update object failed on query!","store");
-							$result = 0;
-						} else {
-							$result = $path;
+					$err = $this->save_properties($properties, $id, $this); 
+					if ($err === false) {
+						debug("save: propertie save failed","store");
+						$result = 0;
+					} else {
+						if($priority !== false) {
+							$query_string = "update $nodes_tbl set priority=$epriority where path='$epath'";
+							$err = $this->store_run_query( $query_string);
+							if ($err === false) {
+								debug("save: update object failed on query!","store");
+								$result = 0;
+							} else {
+								$result = $path;
+							}
 						}
 					}
 				}
@@ -568,8 +573,13 @@ class postgresqlstore {
 							$query_string = "insert into $nodes_tbl (path,parent,object,priority) values ('$epath','$eparent',$id,$epriority)";
 							$exec = $this->store_run_query( $query_string);
 							if ($exec) {
-								$this->save_properties($properties, $id, $this);
-								$result=$path;
+								$err = $this->save_properties($properties, $id, $this);
+								if ($err === false) {
+									debug("save: propertie save failed","store");
+									$result = 0;
+								} else {
+									$result=$path;
+								}
 							} else {
 								debug("save: insert node failed on query!","store");
 								$result=0;
@@ -1021,16 +1031,18 @@ class postgresqlstore {
 
 		debug("save_properties([properties], $id)","all");
 		if ($properties && (is_array($properties)) && (intval($id))) {
-			while (list($property, $property_set) = each($properties)) {
+			$result = true;
+			while ((list($property, $property_set) = each($properties)) && ($result != false)) {
 				$this->del_property($id, $property);
 				if (is_array($property_set)) {
-					while (list($key, $values) = each($property_set)) {
-						$this->add_property($id, $property, $values);
+					while ((list($key, $values) = each($property_set)) && ($result != false)) {
+						$result = $this->add_property($id, $property, $values);
 					}
 				}
 			}
 		}
 		debug("save_properties: end","all");
+		return($result);
 	}
 
 	function load_properties($object) {
@@ -1098,7 +1110,12 @@ class postgresqlstore {
 			$query_string = "insert into ".$this->tbl_prefix."prop_".AddSlashes($property)." ( ".
 										$query_names."object ) values ( ".$query_values."$object )";
 			$exec = $this->store_run_query( $query_string);
-			$result = pg_cmdtuples($exec);
+			if($exec) {
+				$result = pg_cmdtuples($exec);
+			} else {
+				$result = false;
+				debug('add_propertie failed','store');
+			}
 		}
 		debug("add_property: end","all");
 		return ($result);
@@ -1117,10 +1134,16 @@ class postgresqlstore {
 				$query_string = "select name from ".$this->tbl_prefix."properties";
 				$exec = $this->store_run_query( $query_string);
 				$i = 0;
-				while ($row=@pg_fetch_array($exec, $i++)) {
-					$query_string = "delete from ".$this->tbl_prefix."prop_".$row["name"]." where object=$object";
-					$exec_del = $this->store_run_query( $query_string);
-					$result += pg_cmdtuples($exec_del);
+				if($exec){
+					while ($row=@pg_fetch_array($exec, $i++)) {
+						$query_string = "delete from ".$this->tbl_prefix."prop_".$row["name"]." where object=$object";
+						$exec_del = $this->store_run_query( $query_string);
+						if($exec_del){
+							$result += pg_cmdtuples($exec_del);
+						}
+					}
+				} else {
+					$result = false;
 				}
 			} else {
 				$query_string = "delete from ".$this->tbl_prefix."prop_".AddSlashes($property)." where ";
@@ -1131,7 +1154,9 @@ class postgresqlstore {
 				}
 				$query_string .= "object=$object";
 				$exec = $this->store_run_query( $query_string);
-				$result = pg_cmdtuples($exec);
+				if($exec){
+					$result = pg_cmdtuples($exec);
+				}
 			}
 		}
 		debug("del_property: end","all");
