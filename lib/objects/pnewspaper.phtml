@@ -14,7 +14,7 @@ class pnewspaper extends pdir { // definitie class
 		$criteria["article"]["start"]["<="]=$start;
 		$criteria["article"]["end"][">="]=$end;
 		$criteria["article"]["display"]["="]="'".AddSlashes($display)."'";
-		$this->find(".",$criteria,"GetForDisplay.phtml","display=$display");
+		$this->find(".",$criteria,"system.get.article-by-priority.phtml","display=$display");
 		if (is_array($ARCurrent->priority)) {
 			$ARCurrent->priority=array_reverse($ARCurrent->priority);
 			arsort($ARCurrent->priority);
