@@ -141,9 +141,10 @@
 			for (i=0; i<pages; i++) {
 				pages_select.options[i]=new Option(i+1, i+1);
 			}
-			pages_select.options[0].selected=true;
+			pages_select.options[b_page].selected=true;
 			document.getElementById('b_pages').style.visibility='inherit';
 		} else {
+			b_page=0;
 			document.getElementById('b_pages').style.visibility='hidden';
 		}
 	}
