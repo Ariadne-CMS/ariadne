@@ -57,10 +57,9 @@ class ppage extends pobject { // ppage class definition
 
 	function GetReferences($page) {
 		// Use Perl compatible regex for non-greedy matching
-		preg_match_all("/['\"](\{(arSite|arRoot|arBase|arCurrentPage)}.+?)['\"]/", $page, $matches);
-		$refs=str_replace(array("{arSite}","{(arRoot|arBase)}", "{arCurrentPage}"),
-			array($this->currentsite(),"", $this->path), $matches[1]);
-
+		preg_match_all("/['\"](\{(arSite|arRoot|arBase|arCurrentPage)(\/[a-z][a-z])?}.*?)['\"]/", $page, $matches);
+		$refs=preg_replace(array("|{arSite(/[a-z][a-z])?}|","|{arRoot(/[a-z][a-z])?}|","|{arBase(/[a-z][a-z])?}|", "|{arCurrentPage(/[a-z][a-z])?}|"),
+			array($this->currentsite(), "", "", $this->path), $matches[1]);
 		return $refs;
 	}
 
