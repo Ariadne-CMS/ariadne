@@ -70,71 +70,13 @@
 	</td>
 </tr><tr>
 	<td align="right" valign="top">
-		<font face="helvetica, sans-serif"><?php echo $ARnls["keywords"]; ?>&nbsp;:</font>
+		<font face="helvetica, sans-serif"><?php echo $ARnls["uploadfile"]; ?>&nbsp;:</font>
 	</td><td>
-		<textarea cols=50 rows=3 wrap=soft name="<?php echo $selectednls; ?>[keywords]"><?php 
-			echo $this->getdata("keywords",$selectednls); 
-		?></textarea>
-	</td>
-</tr><tr>
-	<td align="right">
-		<font face="helvetica, sans-serif"><?php echo $ARnls["page"]; ?>&nbsp;:</font>
-	</td>
-	<td width="100%">
-	<?php 
-		if (!$newtype) {
-			$wgHTMLEditName="page";
-			$wgHTMLEditLanguage=$selectednls;
-			$wgHTMLEditPath=$this->parent;
-			$wgHTMLEditFile=substr($this->path, strlen($this->parent), -1);
-			$wgHTMLEditContent=$this->getdata("page",$selectednls);
-			include($this->store->code."widgets/htmledit/js.html"); 
-			include($this->store->code."widgets/htmledit/form.html"); 
-		} else {
-			echo "available after object is created";
-		}
-	?>
-	</td>
-</tr>
-
-<tr><td><br></td></tr>
-
-<tr bgcolor="#404074">
-	<td align="left" colspan="2">
-	<font face="arial,helvetica" color="white"><?php echo $ARnls["createthumb"]; ?></font>
-	</td>
-</tr><tr>
-	<td align="right">
-		<font face="helvetica, sans-serif"><?php echo $ARnls["width"]; ?>&nbsp;:</b></font>
-	</td>
-	<td>
-		<input type="text" name="newthumbwidth" size="3" maxlength="3" value="<?php 
-				$this->showdata("thumbwidth","none"); 
-		?>">
-
-		&nbsp;<font face="helvetica, sans-serif"><?php echo $ARnls["height"]; ?>&nbsp;:</b></font>
-		<input type="text" name="newthumbheight" size="3" maxlength="3" value="<?php 
-				$this->showdata("thumbheight","none"); 
-		?>">
-
-		&nbsp;<font face="helvetica, sans-serif"><?php echo $ARnls["color"]; ?>&nbsp;:</b></font>
-		<input type="text" name="newthumbcolor" size="6" maxlength="6" value="<?php 
-				$this->showdata("thumbcolor","none"); 
-		?>">
-	</td>
-</tr><tr bgcolor="#404074">
-	<td align="left" colspan="2">
-	<font face="arial,helvetica" color="white"><?php echo $ARnls["oruploadthumb"]; ?></font>
-	</td>
-</tr><tr>
-	<td align="right">
-		<font face="helvetica, sans-serif"><?php echo $ARnls["file"]; ?>&nbsp;:</b></font>
-	</td>
-	<td align="left">
-		<input type="file" name="thumbfile">
+		<input type="file" name="file">
 	</td>
 </tr>
 </table>
+<br>
 <table width="100%" cellspacing="0" border="0">
 <tr bgcolor="#404074">
 	<td>
