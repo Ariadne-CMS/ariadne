@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/php4 -q
 <?php
 	$ariadne="../lib";
 	require($ariadne."/configs/ariadne.phtml");
@@ -7,13 +7,18 @@
 	require($ariadne."/includes/loader.cmd.php");
 	require($store_config['code']."stores/".$session_config["dbms"]."store.phtml");
 
+	set_time_limit(0);
 
 	echo "Clearing old sessions...";
 	$inst_store = $session_config["dbms"]."store";
-	$sessionstore=new $inst_store($root,$session_config);
-	$criteria["object"]["lastchanged"]["<"]=strftime("%Y%m%d%H%M%S",time()-($session_config["timeout"]*4));
-	$criteria["object"]["implements"]["="]="'psession'";
-	$sessionstore->call("system.expire.phtml","",$sessionstore->find("/",$criteria, 0));
+	$sessionstore=new $inst_store($root, $session_config);
+
+	$query = "object.implements='psession' and object.lastchanged < ".(time() - $session_config["timeout"]*4);
+
+	/* purge all expired sessions */
+	while (count($sessionstore->call("system.expire.phtml","",
+				$sessionstore->find("/", $query))) >= 100);
+
 	echo $sessionstore->total." expired sessions removed.\n";
 	$sessionstore->close();
 	echo "done.\n";
