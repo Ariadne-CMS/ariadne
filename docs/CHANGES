@@ -1,9 +1,16 @@
-Ariadne 2.1.5
+Ariadne 2.2
 
 Changes in Ariadne since version 2.1.4
 
 IMPORTANT: 
-    In Ariadne 2.1 the internal charset has been changed to UTF-8. 
+	The lib/configs/ariadne.phtml has changed slightly, please add
+	your configuration changes to the new configuration file and use
+	that instead of your existing one.
+
+	If you update only the Ariadne code, please create a new group 'owner'
+	in /system/groups/ manually.
+
+    Since Ariadne 2.1 the internal charset has been changed to UTF-8. 
     If you want to import older .ax files (for upgrades) you
     need to read the docs/upgrade.txt file first.
 
@@ -23,7 +30,7 @@ New features:
 	- Added the ability to match multiple records per property.
 	- Added "owner" group. The owner group is an alias for the object
 	  owner. To change the owner of an object, use the 
-	  system.set.owner.phtml template.
+	  system.save.owner.phtml template.
 	- Every Ariadne user is now added to the group 'public' on runtime.
 	- Added function 'ldGetClientVar()' which can be used by PINP scripts
 	  to read certain 'loader variables'. Thanks to Florian Overkamp.
@@ -34,16 +41,17 @@ New features:
 	- ParseSummary() has a new (4th) argument; if false, it won't add a
 	  'read more...' link.
 	- Added Swedish translation by Niklas Koskela.
-	- User editable pages support extended.
-      Added configurable save option to the user.edit.html toolbar. Just
-	  redefine the user.edit.save.html and user.add.save.html templates.
-      Added getContents and getValue functions in the toolbar.php widget,
-      to be used by user.edit.save.html
 	- Added load() function. This allows you to load modules from the
 	  lib/modules directory in pinp templates.
 	- Added possibility to call functions on objects directly. This 
 	  deprecates the call_object function. PINP will automatically insert
-	  '_' before each function called.
+	  '_' before each function called. This means that you can also call
+	  functions like ls() and find() directly on an Ariadne object, so we
+	  changed system.get.phtml to check on read grants when called from
+	  a pinp context. Yes you can now check whether a template is called
+	  from a pinp (object) template or a php (class) template. The context
+	  is available via the ($this->)arCallingContext variable, which can
+	  currently either be 'php' or 'pinp'.
 	- Added possibility to call functions of classes directly, if the class
 	  is specifically written to allow this, like DB::connect(); See next
 	  feature added.
@@ -51,7 +59,9 @@ New features:
 	  supported by PEAR DB, while keeping the store connection secure. 
 	- The parents() function now defaults to currentsite() as the topmost 
 	  object to be called. Explicitly set another top to prevent this.
-		
+	- Added editor configuration file 'editor.ini' which can be 
+	  changed/overridden as	a pinp template.
+
 Bugs fixed:
 	- Removed the "overwrite" confirmation from the pfile wizard. It now
 	  behaves exactly like every other object when the filename already
