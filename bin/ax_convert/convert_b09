@@ -1,0 +1,128 @@
+#!/usr/local/bin/php -q
+<?php
+/*****************************************************************
+
+	Convert axfiles generated under ariadne b09
+
+****************************************************************/
+
+	function cMkDir($dir) {
+		$curr="/";
+		$tokens=explode("/", $dir);
+		while (list(,$dir)=each($tokens)) {
+			if ($dir) {
+				$curr.=$dir."/";
+				if (!file_exists($curr)) {
+					mkdir($curr, 0755);
+				}
+			}
+		}
+	}
+
+	$ariadne="../../lib";
+	require($ariadne."/configs/ariadne.phtml");
+	require($ariadne."/configs/store.phtml");
+	require($ariadne."/configs/axstore.phtml");
+	require($ariadne."/stores/mysqlstore.phtml");
+	require($ariadne."/stores/axstore.phtml");
+	require("shared_functions.php");
+
+	if ($argc>2) {
+		$axfile=$argv[1];
+		$temp=tempnam($store_config["files"]."temp", "axconvert");
+		if (file_exists($temp)) {
+			unlink($temp);
+		}
+		mkdir($temp, 0777);
+		if (!untar($axfile, "", $temp)) {
+			echo "error ($retvar) $error\n";
+		} else {
+			if (file_exists($temp."/files.tgz")) {
+				$files=$temp."/files";
+				mkdir($files, 0777);
+				untar("$temp/files.tgz", "", $files);
+			}
+			if ($error) {
+				echo "error ($retvar) $error\n";
+			} else {
+				if (file_exists($temp."/templates.tgz")) {
+					$templates=$temp."/templates";
+					mkdir($templates, 0777);
+					untar("$temp/templates.tgz", "", $templates);
+				}
+				if ($error) {
+					echo "error ($retvar) $error\n";
+				} else {
+					$obfp=fopen($temp."/objects.data","rb");
+					if (!$obfp) {
+						echo "error: can not open objects.data\n";
+					} else {
+						$axdata=fread($obfp, filesize($temp."/objects.data"));
+						fclose($obfp);
+						$axdata=unserialize($axdata);
+
+						$config["database"]=$argv[2];
+						$config["writeable"]=true;
+						$store=new axstore(".", $config);
+
+						while (is_array($axdata->nodes) && (list($key, $id)=each($axdata->nodes))) {
+							echo "$key ($id)\n";
+							if (!$objects[$id]) {
+								$objects[$id]=true; // object seen
+								$object=$axdata->objects[$id];
+								$store->save($key, $object["type"], $object["data"], $object["properties"], $object["vtype"]);
+								if ($newobject=@current(@$store->call("system.get.phtml", "",
+										$store->get($key)))) {
+
+									$newid=$newobject->id;
+									$fstore=$newobject->store->get_filestore("templates");
+									if (is_array($newobject->data->pinp)) {
+										while (list($type, $templates)=each($newobject->data->pinp)) {
+											while (list($template, $languages)=each($templates)) {
+												while (list($language, $file)=each($languages)) {
+													$newobject->data->pinp[$type][$template][$language]=$newid;
+													$newobject->data->templates[$type][$template][$language]=$newid;
+													echo "copy_to_store($temp/templates".$file.", $newid,  $type.$template.$language)\n";
+													$fstore->copy_to_store($temp."/templates".$file, $newid,  "$type.$template.$language");
+												}
+											}
+										}
+									}
+									$fstore->close();
+
+									$fstore=$newobject->store->get_filestore("files");
+									$fpath="$temp/files".$key;
+									if (file_exists($fpath) &&
+											is_dir($fpath) ) {
+										$dir=dir($fpath);
+										while ($entry=$dir->read()) {
+											if (!is_dir($fpath.$entry)) {
+												if ($entry=="view=") {
+													$target="file";
+												} else
+												if ($entry=="view.thumb=") {
+													$target="file.thumb";
+												} else {
+													$target=$entry;
+												}
+												$fstore->copy_to_store($fpath.$entry, $newid, $target);
+											}
+										}
+									}
+									$fstore->close();
+
+								} else {
+									echo "error: couldnot get saved object ($key)\n";
+								}
+							}
+						}
+					}
+				}
+			}
+			$store->close();
+			rm_dir($temp);
+		}
+	} else {
+		echo "USAGE: convert_v01_v02 axfile newaxfile\n";
+	}
+?>

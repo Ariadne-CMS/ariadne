@@ -64,7 +64,8 @@
 			$destpath=$arg_v[3];
 			$srcpath=$arg_v[2];
 		} else {
-			$srcpath=$arg_v[2];
+			$destpath=$arg_v[2];
+			$srcpath="/";
 		}
 
 		$store=new axstore("", $config);
@@ -72,12 +73,11 @@
 			$ARCurrent->importStore=new mysqlstore($root,$store_config);
 
 			$args="srcpath=".rawurlencode($srcpath)."&destpath=".rawurlencode($destpath);
-			echo "args ($args)\n";
+
 			$store->call("system.export.phtml", $args,
 				$store->get("/"));
 			$error=$store->error;
 
-			echo "closing store\n";
 			$store->close();
 			$ARCurrent->importStore->close();
 
