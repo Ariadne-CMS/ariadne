@@ -873,7 +873,7 @@ class pobject extends object {
 			while (list($nls,$language)=each($nlslist)) {
 				$fpath=$this->store->files."cache/$type/$nls".$path;
 				$hpath=$this->store->files."cacheheaders/$type/$nls".$path;
-				if ($dir=dir($fpath)) {
+				if ($dir=@dir($fpath)) {
 					while ($entry=@$dir->read()) {
 						if ($entry!="." && $entry!="..") {
 							if (filetype($fpath.$entry)!="dir") {
