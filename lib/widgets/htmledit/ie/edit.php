@@ -26,7 +26,8 @@
   tbContentName='<?php echo $name; ?>';  
   tbContentLanguage='<?php echo $language; ?>';
   tbContentType='<?php echo $type; ?>';
-  tbContentNewObject=<?php if ($newobject && $newobject!=='false') echo 'true'; else echo 'false'; ?>;
+  tbContentValue='<?php echo $value; ?>';
+  tbContentSave2Form=<?php if ($save2form && $save2form!=='false') echo 'true'; else echo 'false'; ?>;
 //
 // Constants
 //
@@ -175,11 +176,11 @@ function window_onload() {
     ParagraphStyle.options[ParagraphStyle.options.length]=new Option(arr[i], arr[i]);
   }
 
-  loadpage(tbContentRoot, tbContentPath, tbContentFile, tbContentName, tbContentLanguage, tbContentType, tbContentNewObject);
+  loadpage(tbContentRoot, tbContentPath, tbContentFile, tbContentName, tbContentLanguage, tbContentType, tbContentValue, tbContentSave2Form);
 }
 
 
-function loadpage(root, path, file, name, language, type, newobject) {
+function loadpage(root, path, file, name, language, type, value, save2form) {
   // FIXME check isDirty and ask for save first.
   if (ViewHTML.TBSTATE=="unchecked") {
     VIEW_HTML_onclick();
@@ -191,10 +192,12 @@ function loadpage(root, path, file, name, language, type, newobject) {
   tbContentName=name;
   tbContentLanguage=language;
   tbContentType=type;
+  tbContentValue=value;
+  tbContentSave2Form=save2form;
   if (file) {
     file+='/';
   }
-  if (newobject) {
+  if (value) {
     tbContentElement.DocumentHTML=window.opener.wgHTMLEditContent.value;
   } else {
     tbContentElement.LoadURL(root+path+file+'show.'+name+'.phtml?language='+escape(language));
@@ -347,12 +350,16 @@ function MENU_FILE_SAVE_onclick() {
     file='';
   }
   if (window.opener && !window.opener.closed && window.opener.wgHTMLEditContent) {
+    // always update the form if it is available.
+    window.opener.wgHTMLEditContent.value=sContents;
+  }
+  if (tbContentSave2Form) {
+    // just show some visual confirmation of saving.
     savewindow=window.open('','savewindow','directories=no,height=100,width=300,location=no,status=no,toolbar=no,resizable=no');
     savewindow.document.open();
     savewindow.document.write("<html><body bgcolor=#CCCCCC><font face='Arial,helvetica,sans-serif'>");
     savewindow.document.write("<br>Saving "+tbContentName+"</font></body></html>");
     savewindow.document.close();
-    window.opener.wgHTMLEditContent.value=sContents;
     savewindow.close();
   } else {
     savewindow=window.open('','savewindow','directories=no,height=100,width=300,location=no,status=no,toolbar=no,resizable=no');

@@ -1,22 +1,19 @@
 <script language="javascript">
 <!--
 
-function HTMLEdit(root, path, file, name, language, type, title, content) {
-  if (content) {
-    window.wgHTMLEditContent=content;
-    newobject=true;
-  } else {
-    newobject=false;
+function HTMLEdit(root, path, file, name, language, type, title, value, save2form) {
+  if (value) {
+    window.wgHTMLEditContent=value;
   }
   editwindow=window.open('','editwindow', 'directories=no,height=450,width=640,location=no,menubar=no,status=no,toolbar=no,resizable=yes');
   editwindow.opener=window;
   if (editwindow.exists) {
-    editwindow.loadpage(root, path, file, name, language, type, newobject); 
+    editwindow.loadpage(root, path, file, name, language, type, value, save2form); 
   } else {
     editwindow.location.href='edit.object.html.phtml?'+
     'root='+escape(root)+'&path='+escape(path)+'&file='+escape(file)+
     '&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type)+
-    '&title='+escape(title)+'&newobject='+escape(newobject);
+    '&title='+escape(title)+'&value='+escape(value)+'&save2form='+escape(save2form);
   }
   editwindow.focus();
 }

@@ -30,18 +30,26 @@
     $wgHTMLEditContentName=$wgHTMLEditName;
   }
   if ($this->arIsNewObject) {
+    $wgHTMLEditSave2Form="true";
+  } else {
+    $wgHTMLEditSave2Form="false";
+  }
     if (!$wgHTMLEditContent) {
       $wgHTMLEditContent='<p>&nbsp;</p>';
     }
-    echo "<input type=\"hidden\" name=\"$wgHTMLEditContentName\" value=\"".htmlentities($wgHTMLEditContent)."\">\n";
+
+    echo "<input type=\"hidden\" name=\"$wgHTMLEditContentName\" value=\"".htmlspecialchars($wgHTMLEditContent)."\">\n";
+    echo "<input type=\"button\" name=\"$wgHTMLEditName".
+       "_button\" value=\"Open Editor\"".
+       " onClick=\"HTMLEdit('$wgHTMLEditRoot','$wgHTMLEditPath','$wgHTMLEditFile','$wgHTMLEditName','$wgHTMLEditLanguage','$wgHTMLEditType','".
+       str_replace("'","\\'",HTMLSpecialChars($wgHTMLEditTitle))."', this.form['$wgHTMLEditContentName'], ".$wgHTMLEditSave2Form.");\">"; 
+/*
+  } else {
+    echo "<input type=\"hidden\" name=\"$wgHTMLEditContentName\" value=\"".htmlspecialchars($wgHTMLEditContent)."\">\n";
     echo "<input type=\"button\" name=\"$wgHTMLEditName".
        "_button\" value=\"Open Editor\"".
        " onClick=\"HTMLEdit('$wgHTMLEditRoot','$wgHTMLEditPath','$wgHTMLEditFile','$wgHTMLEditName','$wgHTMLEditLanguage','$wgHTMLEditType','".
        str_replace("'","\\'",HTMLSpecialChars($wgHTMLEditTitle))."', this.form['$wgHTMLEditContentName']);\">"; 
-  } else {
-    echo "<input type=\"button\" name=\"$wgHTMLEditName".
-       "_button\" value=\"Open Editor\"".
-       " onClick=\"HTMLEdit('$wgHTMLEditRoot','$wgHTMLEditPath','$wgHTMLEditFile','$wgHTMLEditName','$wgHTMLEditLanguage','$wgHTMLEditType','".
-       str_replace("'","\\'",HTMLSpecialChars($wgHTMLEditTitle))."', false);\">"; 
   }
+*/
 ?>
