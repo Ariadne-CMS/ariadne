@@ -1,79 +1,38 @@
 <?php
-	if ($this->CheckLogin("config") && $this->CheckConfig()) {
+	/******************************************************************
+	 edit.object.cache.phtml                               Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: read
+	 Global variables: none
+
+	 This template manages the flow of the cache configuration wizard.
+	 
+	 no result
+
+	******************************************************************/
+
+	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+		include($this->store->code."widgets/wizard/code.php");
 		include($this->store->code."nls/menu.".$nls);
-?>
-<html>
-<head>
-<title><?php echo $ARnls["m_import"]; ?></title>
-<?php
-	include($this->store->code."widgets/wizard/classic.css");
-?>
-<script>
-	function init() {
-		document.importform.source.focus();
-	}
-</script>
-</head>
-<body onLoad="init()">
-<table border="0" width="100%" cellspacing="0" cellpadding="2" height="100%">
-<?php
-	$server_name=eregi_replace("^[htps:/]*/","",$AR->host);
-	global $HTTP_SERVER_VARS;
-        if ($HTTP_SERVER_VARS["HTTP_HOST"]==$server_name) {
-		$currentpath=$this->store->root.$this->path;
-	} else {
-		$currentpath=$this->make_url();
-	}
-?>
-<form action="<?php echo $currentpath; ?>object.import.ax.phtml" name="importform" method="POST" ENCTYPE="multipart/form-data">
-<tr>
-	<td colspan="2">&nbsp;</td>
-</tr><tr>
-	<td align="center" colspan="2">
-		<?php 
-			echo $ARnls["file"].":&nbsp;";
-		?>
-		<input type="file" name="source" class="autoSized">
-	</td>
-</tr><tr>
-	<td colspan="2">&nbsp;</td>
-</tr><tr>
-	<td colspan="2" align="center" valign="top">
-		<table border="0" width="60%">
-		<tr>
-			<td>
-				<fieldset>
-				<legend><?php echo $ARnls["options"]; ?></legend>
-					<input type="checkbox" class="autoSized" name="without_grants" value="1" checked><?php echo $ARnls["withoutgrants"]; ?><br>
-					<input type="checkbox" class="autoSized" name="force" value="1"><?php echo $ARnls["force"]; ?>
-				</fieldset>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<fieldset>
-				<legend><?php echo $ARnls["advanced"]; ?></legend>
-					<input type="checkbox" class="autoSized" name="without_data" value="1"><?php echo $ARnls["withoutdata"]; ?><br>
-					<input type="checkbox" class="autoSized" name="without_files" value="1"><?php echo $ARnls["withoutfiles"]; ?><br>
-					<input type="checkbox" class="autoSized" name="without_templates" value="1"><?php echo $ARnls["withouttemplates"]; ?><br>
-				</fieldset>
-			</td>
-		</tr>
-		</table>
-	</td>
-</tr><tr>
-	<td colspan="2">&nbsp;</td>
-</tr><tr>
-	<td align="left" valign="bottom">
-		<input type="submit" name="cancel" style="width: 100px" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();">
-	</td><td align="right" valign="bottom">
-		<input type="submit" name="submit" style="width: 100px" value="<?php echo $ARnls["m_import"]; ?>">
-	</td>
-</tr>
-</form>
-</table>
-</body>
-</html>
-<?php
+
+		$start="object.import.form.phtml";
+		$finish="object.import.ax.phtml";
+	 
+		$wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
+		$wgWizFlow[0]["save"]='object.import.ax.phtml';
+		$wgWizFlow[0]["cancel"]='js.window.close.phtml';
+		$wgWizFlow[0]["template"]='object.import.form.phtml';
+                
+		$wgWizTitle=$ARnls["importobject"];		
+		$wgWizSaveButton=$ARnls["m_import"];
+        $wgWizHeader=$wgWizTitle.'<img src="'.$AR->dir->images.'wizard/sections/config.gif" alt="" hspace="4" align="absmiddle">';
+		$wgWizTabsTemplate=false;
+		$wgWizAction=$this->getdata('wgWizAction');
+		if ($wgWizAction=='save') {
+			$wgWizCancelButton=$ARnls['ok'];
+			$wgWizSaveButton=false;
+		}
+		include($this->store->code."widgets/wizard/new.html");
 	}
 ?>

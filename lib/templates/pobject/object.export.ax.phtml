@@ -35,15 +35,10 @@
 			}
 		}
 ?>
-<html>
-<head>
-<title><?php echo $ARnls["m_export"]; ?></title>
-<?php
-	include($this->store->code."widgets/wizard/classic.css");
-?>
 <script>
 	error=false;
-
+	window.onload=startdownload;
+	
 	function startdownload() {
 		if (!error) {
 			location.href='object.export.ax';
@@ -51,13 +46,8 @@
 	}
 	
 </script>
-</head>
-<body onLoad="startdownload();">
-<table border="0" width="100%" cellspacing="0" cellpadding="2">
-<form name="importform">
-<tr>
-	<td align="center" colspan="2">
-		<textarea cols="50" rows="13" wrap="off" style="width: 100%"><?php
+
+<pre style="background-color: white; border: 2px inset buttonhighlight; font-size: 12px; margin: 4px; padding: 2px;"><?php
 			echo "Exporting $srcpath to $destpath\n";
 			$importStore=new axstore("", $ax_config);
 			if (!$importStore->error) {
@@ -77,23 +67,11 @@
 			if ($error) {
 				echo $error."\n";
 			}
-		?></textarea>
-		<?php
-			if ($error) {
-				// prevent js download code from running 
-				echo "<script> error=true; </script>";
-			}
 		?>
-	</td>
-</tr><tr>
-	<td align="right">
-		<input type="submit" name="submit" style="width: 100px" value="<?php echo $ARnls["ok"]; ?>" onClick="window.close();">
-	</td>
-</tr>
-</form>
-</table>
-</body>
-</html>
-<?php
+</pre><?php
+		if ($error) {
+			// prevent js download code from running 
+			echo "<script> error=true; </script>";
+		}
 	}
 ?>

@@ -15,7 +15,7 @@
 
 	******************************************************************/
 	if ($this->CheckSilent("edit")) {
-		$cacheconfig=$this->getdata("cacheconfig","none");
+		$cacheconfig=$this->data->config->cacheconfig;
 		$refresh=$this->getdata("refresh","none");
 		$keepfor=$this->getdata("keepfor","none");
 		if ($keepfor && $cacheconfig==1) {

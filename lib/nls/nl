@@ -314,7 +314,7 @@
 	$ARnls["todo"]							=	"Te doen";
 	$ARnls["tue"]							=	"Din";
 	$ARnls["type"]							=	"Type";
-	$ARnls["types"]							=	"Typen";
+	$ARnls["types"]							=	"Types";
 	$ARnls["typetree"]						=	"Typeboom";
 	$ARnls["unlock"]						=	"Hef op";
 	$ARnls["up"]							=	"Omhoog";

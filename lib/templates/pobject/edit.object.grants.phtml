@@ -25,14 +25,28 @@
 		overflow: hidden;
 		background-color: threedface;
 	}
-	body {
-		padding: 5px;
+	table thead {
+		margin: 0px;
+		border: 0px;
+		padding: 0px;
 	}
 	form {
 		height: 100%;
 	}
 	body, form, td, input, select {
 		font: menu;
+	}
+	#grants_header {
+		height: 48px;
+		background-image: url('<?php echo $AR->dir->images; ?>wizard/header_banner.jpeg');
+		background-repeat: no-repeat;
+		background-color: #496799;
+		background-position: bottom left;
+		border: 0px;
+		color: white;
+		font-size: 14px;
+		font-weight: bold;
+		padding-right: 5px;
 	}
 	#grants_list {
 		height: 80%;
@@ -66,6 +80,9 @@
 		width: 100%;
 		height: 100%;
 	}
+	table#grants tbody td {
+		padding: 5px;
+	}
 	fieldset table {
 		padding: 0px;
 		width: 100%;
@@ -77,7 +94,7 @@
 	fieldset table table {
 		border: 0px;
 	}
-	table th {
+	fieldset table th {
 		background-color: buttonface;
 		BORDER-RIGHT: buttonshadow 1px solid; 
 		BORDER-TOP: buttonhighlight 1px solid; 
@@ -86,13 +103,13 @@
 		BORDER-BOTTOM: buttonshadow 1px solid;
 		FONT: menu;
 	}
-	table tbody {
+	fieldset table tbody {
 		background-color: white;
 	}
-	table thead {
+	fieldset table thead {
 		background-color: buttonface;
 	}
-	table td {
+	fieldset table td {
 		margin: 0px;
 		border: 0px;
 		PADDING-RIGHT: 5px; 
@@ -100,24 +117,24 @@
 		PADDING-BOTTOM: 2px; 
 		PADDING-TOP: 2px
 	}
-	table thead td {
+	fieldset table thead td {
 		BORDER-RIGHT: buttonshadow 1px solid; 
 		BORDER-TOP: buttonhighlight 1px solid; 
 		BORDER-LEFT: buttonhighlight 1px solid; 
 		CURSOR: default; 
 		BORDER-BOTTOM: buttonshadow 1px solid
 	}
-	table tbody tr.selected {
+	fieldset table tbody tr.selected {
 		background-color: highlight;
 		color: highlighttext;
 	}
-	table tbody tr.selected A {
+	fieldset table tbody tr.selected A {
 		color: highlighttext;
 	}
-	table tbody tr.grey, table tbody tr.grey A {
+	fieldset table tbody tr.grey, table tbody tr.grey A {
 		color: #999999;
 	}
-	table td A:hover, table td A:active {
+	fieldset table td A:hover, table td A:active {
 		background-color: highlight;
 		color: highlighttext;
 	}
@@ -337,6 +354,14 @@
 ?>
 <input type="hidden" name="arReturnPage" value="<?php echo $ARCurrent->arReturnPage; ?>">
 <table id="grants" cellspacing="0" cellpadding="0" border="0" height="100%">
+<thead>
+<tr>
+  <td valign="middle" align="right" id="grants_header" height="48">
+    <?php echo $ARnls["grants"]; ?><img src="<?php echo $AR->dir->images; ?>wizard/sections/grants.gif" alt="" height="40" width="40" hspace="4" align="absmiddle">
+  </td>
+</tr>
+</thead>
+<tbody>
 <tr>
   <td id="grantstop" height="100%">
 	<fieldset id="grants_list">
@@ -441,8 +466,10 @@
 
   </td>
 </tr>
+</tbody>
 </table>
 </form>
+<!-- /div -->
 </body>
 </html>
 <?php 

@@ -56,6 +56,11 @@
       error("wgWizFlow undefined or corrupt");
     }
   }
+  if ($wgWizFlow && (count($wgWizFlow)>1)) {
+    $wgWizShowSections=true;
+  } else {
+    $wgWizShowSections=false;
+  }
   if (!$wgWizAction) {
      $wgWizAction=$this->getdata("wgWizAction","none");
   }
@@ -70,10 +75,13 @@
   }
   if ($wgWizAction=="save") {
     $wgWizTemplate=$wgWizFlow[0]['save'];
+    $wgWizSaveButton=false;
   } else if ($wgWizAction=="cancel") {
     $wgWizTemplate=$wgWizFlow[0]['cancel'];
-  } else {
+  } else if ($wgWizShowSections) {
     $wgWizTemplate=$wgWizFlow[$wgWizNextStep]["template"];
+  } else {
+    $wgWizTemplate=$wgWizFlow[0]["template"];
   }
   if (!$wgWizButtons) {
     $wgWizButtons=$wgWizFlow[$wgWizNextStep];
@@ -83,6 +91,12 @@
   }
   if (!$wgWizTabsTemplate && $wgWizTabsTemplate!==false) {
     $wgWizTabsTemplate='edit.object.language.tabs.phtml';
+  }
+  if (!$wgWizCancelButton && $wgWizCancelButton!==false) {
+    $wgWizCancelButton=$ARnls["cancel"];
+  }
+  if (!$wgWizSaveButton && $wgWizSaveButton!==false) {
+    $wgWizSaveButton=$ARnls["save"];
   }
 ?>
 <html>
@@ -352,6 +366,9 @@
 	?></td>
 </tr>
 <tr>
+<?php
+	if ($wgWizShowSections) {
+?>
 	<td id="wgWizLeftBorder"></td>
 	<td id="wgWizSectionList" align="center" valign="top">
 		<div id="wgWizSections">
@@ -376,7 +393,11 @@
     ?>
 		<img src="<?php echo $AR->dir->images; ?>dot.gif" id="wgWizSectionSpan" alt="">
 		</div>
-	</td><td colspan="2" valign="top">
+	</td>
+<?php
+	}
+?>	
+	<td colspan="2" valign="top">
 <div id="wgWizSectionData">
 	<div id="tabs">
 <?php
@@ -398,8 +419,12 @@
 	</td>
 </tr><tr id="wgWizControls">
 	<td colspan="4" align="right" valign="bottom">
-		<input type="submit" name="wgWizControl" class="wgWizControl" onClick="document.wgWizForm.wgWizAction.value='cancel';" value="<?php echo $ARnls["cancel"]; ?>">
-		<input type="submit" name="wgWizControl" class="wgWizControl" onClick="document.wgWizForm.wgWizAction.value='save';" value="<?php echo $ARnls["save"]; ?>">
+		<?php if ($wgWizCancelButton) { ?>
+			<input type="submit" name="wgWizControl" class="wgWizControl" onClick="document.wgWizForm.wgWizAction.value='cancel';" value="<?php echo $wgWizCancelButton; ?>">
+		<?php } ?>
+		<?php if ($wgWizSaveButton) { ?>
+			<input type="submit" name="wgWizControl" class="wgWizControl" onClick="document.wgWizForm.wgWizAction.value='save';" value="<?php echo $wgWizSaveButton; ?>">
+		<?php } ?>
 	</td>
 </tr>
 </table>

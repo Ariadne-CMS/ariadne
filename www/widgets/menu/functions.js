@@ -7,15 +7,15 @@
 	windowprops['edit_find']=windowprops['common']+',height=400,width=600';
 	windowprops['edit_preferences']=windowprops['common']+',height=400,width=500';
 	windowprops['edit_object_data']=windowprops['common']+',height=400,width=550';
-	windowprops['edit_object_cache']=windowprops['common']+',height=250,width=320';
+	windowprops['edit_object_cache']=windowprops['common']+',height=300,width=500';
 	windowprops['edit_object_layout']=windowprops['common']+',height=400,width=700';
-	windowprops['edit_object_custom']=windowprops['common']+',height=260,width=400';
-	windowprops['edit_object_shortcut']=windowprops['common']+',height=250,width=450';
-	windowprops['edit_object_grants']=windowprops['common']+',height=500,width=500';
-	windowprops['edit_object_types']=windowprops['common']+',height=150,width=250';
-	windowprops['edit_object_nls']=windowprops['common']+',height=270,width=400';
-	windowprops['edit_priority']=windowprops['common']+',height=150,width=250';
-	windowprops['edit_object_owner']=windowprops['common']+',height=150,width=410';
+	windowprops['edit_object_custom']=windowprops['common']+',height=260,width=450';
+	windowprops['edit_object_shortcut']=windowprops['common']+',height=400,width=550';
+	windowprops['edit_object_grants']=windowprops['common']+',height=550,width=500';
+	windowprops['edit_object_types']=windowprops['common']+',height=300,width=500';
+	windowprops['edit_object_nls']=windowprops['common']+',height=310,width=450';
+	windowprops['edit_priority']=windowprops['common']+',height=300,width=500';
+	windowprops['edit_object_owner']=windowprops['common']+',height=100,width=400';
 	windowprops['view_fonts']=windowprops['common']+',height=300,width=450';
 	windowprops['help']=windowprops['common']+',height=450,width=600';
 

@@ -464,8 +464,9 @@ class pobject extends object { // pobject class definition
 		return $this->store->make_path($this->path, $path);
 	}
 
-	function make_url($path="", $nls=false, $session=true, $https=NULL) {
+	function make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=false) {
 		global $ARConfig, $AR, $ARCurrent;
+//		echo "0"; flush();
 		debug("pobject: make_url($path) (from: ".$this->path.")","object");
 		$rootoptions=$this->store->rootoptions;
 		if (!$session || ($nls !== false)) {
@@ -479,16 +480,34 @@ class pobject extends object { // pobject class definition
 		}
 		$object_path=$this->path;
 		$path=$this->make_path($path);
-		// make sure CheckConfig has run on the most fitting object to $path
-		$getConfigPath=$path;
+//		if (!$keephost || (substr($path, 0, strlen($object_path))!=$object_path)) {
+			$getConfigPath=$path;
+//		} else {
+//			$getConfigPath=$object_path;
+//			$keephost=true;
+//		}
+//		echo "1"; flush();
+		// make sure CheckConfig has run on the most fitting object to $getConfigPath
 		while ($getConfigPath && !$this->exists($getConfigPath)) {
 			$getConfigPath=$this->store->make_path($getConfigPath, "..");
 		}
+//		echo "2"; flush();
 		// now run CheckConfig and get the parentsite of the path found
 		if (!$temp_config=$ARConfig->cache[$getConfigPath]) {
 			$temp_site=current($this->get($getConfigPath, "system.get.site.phtml"));
 			$temp_config=$ARConfig->cache[$temp_site];
 		}
+//		echo "3"; flush();
+//		if ($keephost) {
+//			// find the path to the site that is currently used
+//			while ($temp_site!='/' && strstr($temp_config->root["value"],'//'.$_SERVER['SERVER_NAME'])===false) {
+//				echo "::$temp_site:".$temp_config->root["value"].":".$_SERVER['SERVER_NAME'].":;";
+//				flush();
+//				$temp_site=$this->parentsite($temp_site);
+//				$temp_config=$ARConfig->cache[$temp_site];
+//			}
+//		}
+//		echo "4";
 		$url=$temp_config->root["value"].$rootoptions;
 		$url.=substr($path, strlen($temp_config->root["path"])-1);
 		debug("make_url: ".$temp_config->root["path"]." = $temp_site : $temp_url","all");
@@ -505,6 +524,10 @@ class pobject extends object { // pobject class definition
 		return $url;			
 	}
 
+	function make_local_url($path="", $nls=false, $session=true, $https=NULL) {
+		return $this->make_url($path, $nls, $session, $https, true);
+	}
+	
 	function implements($implements) {
 		debug("pobject: implements($implements)","object");
 		return $this->store->implements($this->type, $implements); 
@@ -814,7 +837,7 @@ class pobject extends object { // pobject class definition
 		$MAX_LOOP_COUNT=10;
 
 
-		if ($ARBeenHere[$this->path][$arCallFunction]<$MAX_LOOP_COUNT) { // protect against infinite loops
+		if (!$arCallFunction || $ARBeenHere[$this->path][$arCallFunction]<$MAX_LOOP_COUNT) { // protect against infinite loops
 			$ARBeenHere[$this->path][$arCallFunction]+=1;
 			if (!$ARConfig->cache[$this->path]) {
 				$this->call("system.get.config.phtml");
@@ -903,46 +926,48 @@ class pobject extends object { // pobject class definition
 			}
 			debug("CheckConfig: searching for template ($arCallType::$arCallFunction)", "all");
 
-			/* first check current templates */
-			$curr_templates=$this->data->config->pinp;
+			if ($arCallFunction) {
+				/* first check current templates */
+				$curr_templates=$this->data->config->pinp;
 
-			$checkpath=$this->path;
-			$lastcheckedpath="";
-			$arCallClassTemplate = $ARCurrent->arCallClassTemplate;
-			$templatebeenhere = array();
-			while (!$arCallClassTemplate && !$arCallTemplate && $checkpath!=$lastcheckedpath) {
-				debug("CheckConfig: loop (".$arCallClassTemplate.")(".$arCallTemplate.")(".$checkpath.")!=(".$lastcheckedpath.")","all");
-				$arType=$arCallType;
-				while ($arType && !$arCallTemplate) {
-					if ($arTemplateId=$curr_templates[$arType][$arCallFunction][$this->reqnls]) {
-						$arCallTemplate=$arType.".".$arCallFunction.".".$this->reqnls;
-					} else if ($arTemplateId=$curr_templates[$arType][$arCallFunction]['any']) {
-						$arCallTemplate=$arType.".".$arCallFunction.".any";
-					} else {
-						if (!class_exists($arType)) {
-							$arTemp=$this->store->newobject('.', '.', $arType, new object);
+				$checkpath=$this->path;
+				$lastcheckedpath="";
+				$arCallClassTemplate = $ARCurrent->arCallClassTemplate;
+				$templatebeenhere = array();
+				while (!$arCallClassTemplate && !$arCallTemplate && $checkpath!=$lastcheckedpath) {
+					debug("CheckConfig: loop (".$arCallClassTemplate.")(".$arCallTemplate.")(".$checkpath.")!=(".$lastcheckedpath.")","all");
+					$arType=$arCallType;
+					while ($arType && !$arCallTemplate) {
+						if ($arTemplateId=$curr_templates[$arType][$arCallFunction][$this->reqnls]) {
+							$arCallTemplate=$arType.".".$arCallFunction.".".$this->reqnls;
+						} else if ($arTemplateId=$curr_templates[$arType][$arCallFunction]['any']) {
+							$arCallTemplate=$arType.".".$arCallFunction.".any";
 						} else {
-							$arTemp=new $arType();
+							if (!class_exists($arType)) {
+								$arTemp=$this->store->newobject('.', '.', $arType, new object);
+							} else {
+								$arTemp=new $arType();
+							}
+							$arType=get_parent_class($arTemp);
 						}
-						$arType=get_parent_class($arTemp);
 					}
+					$lastcheckedpath=$checkpath;
+					debug("CheckConfig: checkpath = (".$checkpath.")","all");
+					if ($ARConfig->cache[$checkpath]->templates_path && 
+							($templatebeenhere[$ARConfig->cache[$checkpath]->templates_path] != 1)
+						) {
+						$checkpath = $ARConfig->cache[$checkpath]->templates_path;
+						debug("CheckConfig: from cache = (".$checkpath.")","all");
+					} else {
+						$checkpath=$this->store->make_path($checkpath, "..");
+						debug("CheckConfig: after make_path  (".$checkpath.")","all");
+					}
+					$curr_templates=$ARConfig->cache[$checkpath]->templates;
+					$templatebeenhere[$lastcheckedpath] = 1;
 				}
-				$lastcheckedpath=$checkpath;
-				debug("CheckConfig: checkpath = (".$checkpath.")","all");
-				if ($ARConfig->cache[$checkpath]->templates_path && 
-						($templatebeenhere[$ARConfig->cache[$checkpath]->templates_path] != 1)
-					) {
-					$checkpath = $ARConfig->cache[$checkpath]->templates_path;
-					debug("CheckConfig: from cache = (".$checkpath.")","all");
-				} else {
-					$checkpath=$this->store->make_path($checkpath, "..");
-					debug("CheckConfig: after make_path  (".$checkpath.")","all");
-				}
-				$curr_templates=$ARConfig->cache[$checkpath]->templates;
-				$templatebeenhere[$lastcheckedpath] = 1;
+				debug("CheckConfig: while loop ended","all");
 			}
-			debug("CheckConfig: while loop ended","all");
-
+			
 			if ($arCallTemplate && $arTemplateId) {
 				debug("CheckConfig: arCallTemplate=$arCallTemplate, arTemplateId=$arTemplateId","object");
 				// $arCallTemplate=$this->store->files."templates".$arCallTemplate;
@@ -1624,8 +1649,12 @@ class pobject extends object { // pobject class definition
 		return $this->make_path($path);
 	}
 
-	function _make_url($path="", $nls="", $session=true, $https=-1) {
-		return $this->make_url($path, $nls, $session, $https);
+	function _make_url($path="", $nls="", $session=true, $https=-1, $keephost=false) {
+		return $this->make_url($path, $nls, $session, $https, $keephost);
+	}
+
+	function _make_local_url($path="", $nls="", $session=true, $https=-1) {
+		return $this->make_local_url($path, $nls, $session, $https);
 	}
 
 	function _getcache($name, $nls='') {

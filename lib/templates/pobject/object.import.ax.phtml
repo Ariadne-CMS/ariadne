@@ -1,26 +1,7 @@
 <?php
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
 ?>
-<html>
-<head>
-<title><?php echo $ARnls["m_import"]; ?></title>
-<?php
-	include($this->store->code."widgets/wizard/classic.css");
-?>
-<script>
-	function update() {
-		if (window.opener) {
-			window.opener.location.href=window.opener.location.href;
-		}
-	}
-</script>
-</head>
-<body onLoad="update();">
-<table border="0" width="100%" cellspacing="0" cellpadding="2">
-<form name="importform">
-<tr>
-	<td align="center" colspan="2">
-		<textarea cols="50" rows="13" wrap="off"><?php
+<pre style="background-color: white; border: 2px inset buttonhighlight; font-size: 12px; margin: 4px; padding: 2px;"><?php
 			$file = ldRegisterFile("source", $this->error);
 			if ($file && !$this->error) { 
 				require($this->store->code."/configs/axstore.phtml");
@@ -56,7 +37,7 @@
 									"destpath" => $this->path);
 
 					$store->call("system.export.phtml", $callArgs,
-						$store->get("/"));
+					$store->get("/"));
 					$error=$store->error;
 
 					$store->close();
@@ -72,17 +53,7 @@
 			if ($error) {
 				echo $error."\n";
 			}
-		?></textarea>
-	</td>
-</tr><tr>
-	<td align="right">
-		<input type="submit" name="submit" style="width: 100px" value="<?php echo $ARnls["ok"]; ?>" onClick="window.close();">
-	</td>
-</tr>
-</form>
-</table>
-</body>
-</html>
-<?php
+		?>
+</pre><?php
 	}
 ?>

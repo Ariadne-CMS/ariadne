@@ -64,7 +64,7 @@
 	?>
 	<br />
 			<table width="100%" border="0" cellpadding="0" cellspacing="0">
-				<tr><td valign="top"><?php echo $ARnls["user"]; ?>:</td><td valign="top" class="data"><?php echo $this->data->owner_name; ?></td></tr>
+				<tr><td valign="top"><?php echo $ARnls["user"]; ?>:</td><td valign="top" class="data"><a href="javascript:arshow('edit_object_owner','edit.config.owner.phtml')" title="<?php echo $ARnls['change_owner']; ?>"><?php echo $this->data->owner_name; ?></a></td></tr>
 				<tr><td valign="top"><?php echo $ARnls["date"]; ?>:</td><td valign="top" class="data"><?php echo strftime("%m-%d-%Y",$this->data->ctime); ?></td></tr>
 				<tr><td valign="top"><?php echo $ARnls["modified"]; ?>:</td><td valign="top" class="data"><?php echo strftime("%m-%d-%Y",$this->data->mtime); ?></td></tr>
 				<tr><td valign="top"><?php echo $ARnls["size"]; ?>:</td><td valign="top" class="data"><?php echo $this->size; ?></td></tr>
