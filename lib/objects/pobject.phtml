@@ -124,7 +124,7 @@ class pobject extends object {
 		if (isset($ARCurrent->arResult)) {
 			// pinp templates can return results via putvar("arResult",$result);
 			$arResult=$ARCurrent->arResult;
-			$ARCurrent->arResult=false;
+			unset($ARCurrent->arResult);
 		}
 		if (isset($arResult)) {
 			// only do a return if we really have something to return
