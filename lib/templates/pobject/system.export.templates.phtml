@@ -1,5 +1,5 @@
 <?php
- if ($this->CheckConfig("read") && !$ARCurrent->options["without_templates"]) {
+  if ($this->CheckLogin("read") && !$ARCurrent->options["without_templates"]) {
 	if ( ($this->newObject->arIsNewObject && $this->CheckLogin("add", $this->newObject->type)) ||
 		(!$this->newObject->arIsNewObject && $this->CheckLogin("edit"))) {
 		 $orig_filestore=$this->store->get_filestore("templates");
@@ -69,5 +69,5 @@
 		 }
 	}
  }
-
+  
 ?>

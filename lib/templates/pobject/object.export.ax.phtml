@@ -8,6 +8,15 @@
 		if ($without_grants=$this->getdata("without_grants","none")) {
 			$ARCurrent->options["without_grants"]=true;
 		}
+		if ($without_data=$this->getdata("without_data","none")) {
+			$ARCurrent->options["without_data"]=true;
+		}
+		if ($without_templates=$this->getdata("without_templates","none")) {
+			$ARCurrent->options["without_templates"]=true;
+		}
+		if ($without_files=$this->getdata("without_files","none")) {
+			$ARCurrent->options["without_files"]=true;
+		}
 
         set_time_limit(0);
 
