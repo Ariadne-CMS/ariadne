@@ -179,6 +179,7 @@ class pobject extends object {
 						if ($this->exists($arNewParent)) {
 							$this->data->ctime=time();
 							$this->data->mtime=$this->data->ctime;
+							$this->data->muser=$AR->user->data->login;
 							$this->data->owner_name=$AR->user->data->name;
 							$this->data->owner=$AR->user->data->login;
 							$customdata=$this->getdata("customdata","none");
@@ -186,7 +187,7 @@ class pobject extends object {
 							$this->data->customdata=$customdata;
 							$properties["time"][0]["ctime"]=$this->data->ctime;
 							$properties["time"][0]["mtime"]=$this->data->mtime;
-							$properties["time"][0]["muser"]="'".AddSlashes($this->data->owner)."'";
+							$properties["time"][0]["muser"]="'".AddSlashes($this->data->muser)."'";
 							$properties["owner"][0]["value"]="'".AddSlashes($this->data->owner)."'";
 							$i=0;
 							if (is_array($this->data->customdata)) {
@@ -1076,6 +1077,17 @@ class pobject extends object {
 	function _gettext($index) {
 	global $ARnls;
 		return $ARnls[$index];
+	}
+
+	function _loadtext($nls, $section="") {
+	global $ARnls;
+		$nls=eregi_replace('[^a-z]*','',$nls);
+		$section=eregi_replace('[^a-z\._-]*','',$section);
+		if (!$section) {
+			include($this->store->code."nls/".$nls);
+		} else {
+			include($this->store->code."nls/".$section.".".$nls);
+		}
 	}
 
 	function _startsession() {
