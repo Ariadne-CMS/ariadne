@@ -870,27 +870,14 @@ function DECMD_HYPERLINK_onclick() {
 	var arr,args,oSel, oParent, sType;
 
 	oSel = tbContentElement.DOM.selection;
+	oRange = oSel.createRange();
 	sType=oSel.type;
 	arr=null;
 	args=new Array();
 	//set a default value for your link button
 	args["URL"] = "http:/"+"/";
-	/*
-	The logic is similar if there is a selection
-	of text or image. You get the nearest parent and
-	then go up the DOM to see the nearest parent A element
-	*/
-	if(sType=="Text" || sType=="None"){
-		oParent = GetElement(oSel.createRange().parentElement(),"A");
-	} else { 
-		oParent = GetElement(oSel.createRange().item(0),"A");
-	}
-	/* 
-	So, if you get a parent A (anchor) element, you use the href property
-	of that. Now, there is an obvious caveat here, because A can
-	be a link or an anchor. So, you need to see if it has an href.
-	*/
-	if(oParent && oParent.href) {
+  	if (oRange.parentElement().tagName=="A") {
+		oParent=oRange.parentElement();
 		args["URL"] = oParent.href;
 		for (var i=0; i<oParent.attributes.length; i++) {
 			oAttr=oParent.attributes.item(i);
@@ -906,46 +893,47 @@ function DECMD_HYPERLINK_onclick() {
 	arr = showModalDialog( "<?php echo $this->store->root; ?>" + tbContentEditOptions["editor.ini"] + 
 		"edit.object.html.link.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:12em; status: no; resizable: yes;");
 	if (arr != null){
-	    if (oParent) {
-			if (arr['URL']) {
-				for (i=0; i<oParent.attributes.length; i++) {
-					oldAttribute=oParent.attributes.item(i);
-					var dummy=new String(oldAttribute.name);
-					if (dummy.substring(0,3)=='ar_') {
-						oParent.removeAttribute(oldAttribute.name);
-					}
-				}
-				oParent.href=arr['URL'];
-				if (arr['attributes']) {
-					for (var i in arr['attributes']) {
-						var arAttribute=arr['attributes'][i];
-						oParent.setAttribute(arAttribute.name, arAttribute.value);
-					}
-				}
-			} else {
-				oParent.outerHTML=oParent.innerHTML;
-			}
-	    } else {
-			if (arr['URL']) {
-				var newHTML="<a href=\""+arr['URL']+"\"";
-				if (arr['attributes']) {
-					for (var i in arr['attributes']) {
-						var arAttribute=arr['attributes'][i];
-						newHTML=newHTML+" "+arAttribute.name+"=\""+arAttribute.value+"\"";
-					}
-				}
-				oRange=oSel.createRange();
-				if (sType=="Control") {
-					var myimg=oRange.item(0);
-					newHTML=newHTML+">" + myimg.outerHTML + "</a>";
-					myimg.outerHTML=newHTML;
-				} else {
-					newHTML=newHTML+">" + oRange.htmlText + "</a>";
-					oRange.pasteHTML(newHTML);
+	    if (!oParent && arr['URL']) {
+			oldText=oRange.htmlText;
+			// first let the dhtmledit component set the link, since it is better in it.
+			tbContentElement.ExecCommand(DECMD_HYPERLINK, OLECMDEXECOPT_DONTPROMPTUSER, arr['URL']);
+			var newHTML=new String(oRange.htmlText);
+			// now replace the <A href="arr['url']> with the complete one:
+			var newLink="<a href=\""+arr['URL']+"\"";
+			if (arr['attributes']) {
+				for (var i in arr['attributes']) {
+					var arAttribute=arr['attributes'][i];
+					newLink=newLink+" "+arAttribute.name+"=\""+arAttribute.value+"\"";
 				}
 			}
-	    }
+			newLink=newLink+">";
+			var start=newHTML.indexOf("<A");
+			var old=new String("<A href=\""+arr['URL']+"\">");
+			var end=start+old.length;
+			newHTML=newHTML.substr(0,start)+newLink+newHTML.substr(end);
+			// Don't remove the following line, or MSIE adds imagined extra links
+			oRange.pasteHTML('');
+			oRange.pasteHTML(newHTML);
+		} else if (oParent && arr['URL']) {
+			for (i=0; i<oParent.attributes.length; i++) {
+				oldAttribute=oParent.attributes.item(i);
+				var dummy=new String(oldAttribute.name);
+				if ((dummy.substring(0,3)=='ar_') || (dummy.substring(0,3)=="ar:")) {
+					oParent.removeAttribute(oldAttribute.name);
+				}
+			}
+			oParent.href=arr['URL'];
+			if (arr['attributes']) {
+				for (var i in arr['attributes']) {
+					var arAttribute=arr['attributes'][i];
+					oParent.setAttribute(arAttribute.name, arAttribute.value);
+				}
+			}
+		} else {
+			tbContentElement.ExecCommand(DECMD_UNLINK,OLECMDEXECOPT_DONTPROMPTUSER);
+		}
 	}
+	tbContentElement.focus();
 }
 
 function DECMD_FINDTEXT_onclick() {
