@@ -38,6 +38,8 @@ Bugs fixed:
 	- Rename now unlocks() the renamed object.
 	- Removed all occurances of $AR->host which caused Ariadne not to
 	  work via some proxy configurations
+	- Fixed the occurance of '0' grants when typing a space after
+	  > + = - in grants.
 
 Changes in Ariadne since version 2.1.3
 
