@@ -1,51 +1,97 @@
 <?php
-  /* this file contains system wide variables and configuration information */
+  /**************************************************************************/
+  /* Ariadne Global Configuration File                                      */
+  /* =================================                                      */
+  /* This file contains system wide variables and configuration information */
+  /* Some lines should not be changed, these are marked with the text:      */
+  /*   // do not change                                                     */
+  /**************************************************************************/
 
-  class object { }
+  class object { }          // do not change
+  $AR=new object;           // do not change
 
-  $AR=new object;
+  /**************************************************************************/
+  /* WIN32 or UNIX                                                          */
+  /* =============                                                          */
+  /* Which type of Operating System are you running Ariadne on? Fill in     */
+  /* either "WIN32" or "UNIX".                                              */
+  /**************************************************************************/
 
-  /* WIN32 or UNIX .........................................................*/
-  // $AR->OS="WIN32";     /* Windows 95/98/ME/NT/2000 ......................*/
-  $AR->OS="UNIX";         /* All unix/linux variants .......................*/
+  // $AR->OS="WIN32";       /* Windows 95/98/ME/NT/2000                     */
+  $AR->OS="UNIX";           /* All unix/linux variants                      */
 
-  /* Fill in the full hostname of your server below ........................*/
-  /* e.g. "http://your.host.com" ...........................................*/
-  $AR->host="http://your.host.com";
-
-  $AR->dir=new object;
+  $AR->dir=new object;      // do not change
   
-  /* Fill in the full path to the webservers document root below ...........*/
-  /* leave out the last '/'. ...............................................*/
-  // $AR->dir->docroot='C:/Progra~1/OpenSA/Apache/htdocs';
-  $AR->dir->docroot="/var/www";	                           
+  /**************************************************************************/
+  /* Path information                                                       */
+  /* ================                                                       */
+  /* A list of all the relevant paths, path to the document root, to the    */
+  /* Ariadne code library, etc.                                             */
+  /**************************************************************************/
+  /* Fill in the full path to the webservers document root below            */
+  /* The default should work on most systems, but you can override it with  */
+  /* an exact path if you need to. e.g.                                     */
+  /*   $AR->dir->docroot='/var/www/';                                       */
+  /**************************************************************************/
+ 
+  $AR->dir->docroot=$HTTP_SERVER_VARS["DOCUMENT_ROOT"];
 
-  /* Fill in the path from the document root to the ariadne www pages ......*/
-  /* start with a '/'. .....................................................*/
+  /**************************************************************************/
+  /* Fill in the path from the document root to the ariadne www pages       */
+  /**************************************************************************/
+
   $AR->dir->www="/ariadne/";
 
+  /**************************************************************************/
   /* If you installed ariadne in your own homedirectory, e.g. under ~user/, */
-  /* then change the following line to the full path of the ariadne www ....*/
-  /* directory. e.g. : .....................................................*/
-  // $AR->dir->root="/home/user/public_html/ariadne.2.0b9/";
+  /* then change the following line to the full path of the ariadne www     */
+  /* directory. e.g. :                                                      */
+  /*   $AR->dir->root="/home/user/public_html/ariadne.2.0b9/";              */
+  /* Otherwise, don't change the default.                                   */
+  /**************************************************************************/
+
   $AR->dir->root=$AR->dir->docroot.$AR->dir->www;
 
-  /* Only change this if you have made your own loader .....................*/
+  /**************************************************************************/
+  /* Only change this if you have made your own loader                      */
+  /**************************************************************************/
+
   $AR->root=$AR->dir->www."loader.php";
 
-  /* Only change this if you have moved the images directory ...............*/
+  /**************************************************************************/
+  /* Only change this if you have moved the images directory                */
+  /**************************************************************************/
+
   $AR->dir->images=$AR->dir->www."images/";
 
-  /* system wide nls configuration .........................................*/
+  /**************************************************************************/
+  /* If you want you can change the default server name below. You should   */
+  /* only do this if the default setting doesn't work. e.g.:                */
+  /*   $AR->host="http://your.host.com";                                    */
+  /* If you do change it, leave out the entire block of code.               */
+  /**************************************************************************/
 
-  $AR->nls=new object;
+  $AR->host="http://".$HTTP_SERVER_VARS["HTTP_HOST"];
+  if ($HTTP_SERVER_VARS["SERVER_PORT"]!=80) {
+    $AR->host.=":".$HTTP_SERVER_VARS["SERVER_PORT"];
+  }
 
-  /* list of all system wide available languages ...........................*/
+  /**************************************************************************/
+  /* NLS System                                                             */
+  /* ==========                                                             */
+  /* This contains the list of available languages. In Ariadne you can set  */
+  /* the list of available languages per object/directory, selected from    */
+  /* list below. Do not use html entities like &eacute;                     */                                                           */
+  /**************************************************************************/
+
+  $AR->nls=new object;      // do not change
+
   $AR->nls->list["nl"]="Nederlands";
   $AR->nls->list["en"]="English";
   $AR->nls->list["es"]="Español";
 
   /* default language *******************************************************/
+
   $AR->nls->default="en";
 
   /**************************************************************************/
@@ -53,29 +99,35 @@
   /**************************************************************************/
 
   /* configuration object for ariadne's import/export module ****************/
-  $AR->ax=new object;
+
+  $AR->ax=new object;       // do not change
 
   /* command to untar the (%s) file *****************************************/
+
   $AR->ax->cmd_untar="tar -zxf %s";
 
   /* command to tar the (second %s) file and create tar file (first %s) *****/
+
   $AR->ax->cmd_tar="tar -zc %s -f %s";
 
   /* command to remove directory (%s) ***************************************/
+
   if( $AR->OS=="WIN32" ) $AR->ax->cmd_rmdir="rmdir /S /Q %s";
   else $AR->ax->cmd_rmdir="rm -rf %s";  
 
-  $ARConfig=new object;
+  $ARConfig=new object;     // do not change
 
   /* make default nls available for the root ********************************/
-  $ARConfig->cache[".."]=new object;
-  $ARConfig->cache[".."]->nls=$AR->nls;
-  $ARConfig->cache[".."]->root["path"]="/"; /* must always start with a '/' */
-  $ARConfig->cache[".."]->root["value"]=$AR->root;
 
-  $ARCurrent=new object;
+  $ARConfig->cache[".."]=new object;        // do not change
+  $ARConfig->cache[".."]->nls=$AR->nls;     // do not change
+  $ARConfig->cache[".."]->root["path"]="/"; /* must always start with a '/' */
+  $ARConfig->cache[".."]->root["value"]=$AR->root;  // do not change
+
+  $ARCurrent=new object;    // do not change
  
   /* To crypt or not to crypt ***********************************************/
+
   function ARCrypt($text) {
     return md5($text);
   }
