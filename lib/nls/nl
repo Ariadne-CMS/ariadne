@@ -227,4 +227,6 @@ $ARnls["interface"]=	"Gebruiksomgeving";
 $ARnls["classic"]=		"Klassiek";
 $ARnls["preferences"]=	"Instellingen";
 $ARnls["changeeffectivenextlogin"]="Veranderingen worden doorgevoerd wanneer U zich opnieuw aanmeld.";
+$ARnls["netherlands"]=	"Nederland";
+$ARnls["aboutariadne"]=	"Over Ariadne";
 ?>

@@ -1,0 +1,31 @@
+<?PHP
+$ARnls["m_object"]=		"Object";
+$ARnls["m_edit"]=		"Edit";
+$ARnls["m_view"]=		"View";
+$ARnls["m_help"]=		"Help";
+$ARnls["m_new"]=		"New";
+$ARnls["m_rename"]=		"Rename";
+$ARnls["m_copy"]=		"Copy";
+$ARnls["m_link"]=		"Link";
+$ARnls["m_import"]=		"Import";
+$ARnls["m_export"]=		"Export";
+$ARnls["m_delete"]=		"Delete";
+$ARnls["m_find"]=		"Find";
+$ARnls["m_preferences"]="Preferences";
+$ARnls["m_data"]=		"Data";
+$ARnls["m_shortcut"]=	"Shortcut";
+$ARnls["m_cache"]=		"Cache";
+$ARnls["m_layout"]=		"Layout";
+$ARnls["m_grants"]=		"Grants";
+$ARnls["m_types"]=		"Types";
+$ARnls["m_language"]=	"Language";
+$ARnls["m_fonts"]=		"Fonts";
+$ARnls["m_small"]=		"Small&nbsp;Icons";
+$ARnls["m_large"]=		"Large&nbsp;Icons";
+$ARnls["m_details"]=	"Details";
+$ARnls["m_web"]=		"Webpage";
+$ARnls["m_index"]=		"Index";
+$ARnls["m_tutorials"]=	"Tutorials";
+$ARnls["m_search"]=		"Search";
+$ARnls["m_about"]=		"About&nbsp;Ariadne";
+?>
