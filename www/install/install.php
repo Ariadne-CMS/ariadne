@@ -198,6 +198,21 @@
 		$store->add_type("psection", "pdir");
 		$store->add_type("psection", "psection");
 
+		// install pconnector type
+		
+		$store->add_type("pconnector", "pobject");
+		$store->add_type("pconnector", "ppage");
+		$store->add_type("pconnector", "pdir");
+		$store->add_type("pconnector", "pconnector");
+
+		// install pldapconnection type
+		
+		$store->add_type("pldapconnection", "pobject");
+		$store->add_type("pldapconnection", "ppage");
+		$store->add_type("pldapconnection", "pdir");
+		$store->add_type("pldapconnection", "pconnector");
+		$store->add_type("pldapconnection", "pldapconnection");
+
 		echo "== importing ariadne.ax file\n\n";
 
 		$ARCurrent->options["verbose"]=true;
