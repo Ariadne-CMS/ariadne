@@ -4,6 +4,13 @@ Changes in Ariadne since version 2.2
 
 New features:
 	- The columns in the templates overview are now sortable.
+	- Added a rotate() method to pphoto
+	- mkdir in FTP now creates a configurable object type.
+	- Changed the 'refresh cache on change' to be really permanent.
+
+Bugs Fixed:
+	- fixed a bug in the pfile wizard which broke the flow when using 
+	  custom fields.
 
 Changes in Ariadne since version 2.1.4
 

@@ -196,7 +196,11 @@
 	global $store;
 
 		debug("ldSetCache($file, $time, [image], [headers])","object");
-		$time=time()+($time*3600);
+		if ($time==-2) {
+			$time=0;
+		} else {
+			$time=time()+($time*3600);
+		}
 		if (!ereg("\.\.",$file)) {
 			if ($image) {
 				$path=substr($file, 1, strrpos($file, "/")-1);

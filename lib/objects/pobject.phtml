@@ -927,7 +927,7 @@ class pobject extends object { // pobject class definition
 			if ($this->data->custom[$nls]) {
 				$this->customnlsdata=$this->data->custom[$nls];
 			}
-			if (	(	$config->cache && ( $config->cache>0 )		) &&
+			if (	(	$config->cache && ( ( $config->cache>0 ) || ($config->cache==-2))		) &&
 					(	$arCallFunction	&& !$ARConfigChecked		) && 
 					( 	!$nocache 									) && 
 					(	$AR->OS=="UNIX" || 

@@ -144,7 +144,7 @@
 		if (file_exists($cachedimage) && 
 			(strpos($HTTP_SERVER_VARS["ALL_HTTP"],"no-cache") === false) &&
 			(strpos($HTTP_PRAGMA,"no-cache") === false) &&
-			(($mtime=filemtime($cachedimage))>$timecheck) &&
+			((($mtime=filemtime($cachedimage))>$timecheck) || ($mtime==0)) &&
 			($HTTP_SERVER_VARS["REQUEST_METHOD"]!="POST")) {
 
 			$ctime=filectime($cachedimage);
@@ -265,8 +265,11 @@
 		// now check for outputbuffering (caching)
 		if ($image=ob_get_contents()) {
 			// first set clientside cache headers
-			if (!$ARCurrent->arDontCache && !$nocache && $ARCurrent->cachetime) {
-				ldSetClientCache(true, time()+(($ARCurrent->cachetime * 3600)/2));
+			if (!$ARCurrent->arDontCache && !$nocache && ($cachetime=$ARCurrent->cachetime)) {
+				if ($cachetime==-2) {
+					$cachetime=999;
+				}
+				ldSetClientCache(true, time()+(($cachetime * 3600)/2));
 			}
 
 

@@ -34,19 +34,19 @@
 					<nobr><font face="helvetica,sans-serif"><?php echo $ARnls["inheritcache"]; ?></font></nobr>
 				</td>
 			</tr><tr>
-				<td valign="top"><input type="radio" name="cacheconfig" value="1" <?php if ($cacheconfig>0 && $cacheconfig<999) { echo "checked"; } ?>></td>
+				<td valign="top"><input type="radio" name="cacheconfig" value="1" <?php if ($cacheconfig>0) { echo "checked"; } ?>></td>
 				<td>
 					<nobr><font face="helvetica,sans-serif"><?php echo $ARnls["refreshonrq."]; ?><br>
-					<?php echo $ARnls["keepimage"]; ?> <input type="text" name="keepfor" size="2" maxlength="3" value="<?php if ($cacheconfig>0 && $cacheconfig<999) { echo $cacheconfig; } else { echo "2"; } ?>"> <?php echo $ARnls["hours"]; ?>.</nobr>
+					<?php echo $ARnls["keepimage"]; ?> <input type="text" name="keepfor" size="2" maxlength="3" value="<?php if ($cacheconfig>0) { echo $cacheconfig; } else { echo "2"; } ?>"> <?php echo $ARnls["hours"]; ?>.</nobr>
 					</font>
 				</td>
 			</tr><tr>
-				<td valign="top"><input type="radio" name="cacheconfig" value="999" <?php if ($cacheconfig>=999) { echo "checked"; } ?>></td>
+				<td valign="top"><input type="radio" name="cacheconfig" value="-2" <?php if ($cacheconfig==-2) { echo "checked"; } ?>></td>
 				<td>
 					<nobr><font face="helvetica,sans-serif"><?php echo $ARnls["refreshonch."]; ?></font></nobr>
 				</td>
 			</tr><tr>
-				<td valign="top"><input type="radio" name="cacheconfig" value="-1" <?php if ($cacheconfig<0) { echo "checked"; } ?>></td>
+				<td valign="top"><input type="radio" name="cacheconfig" value="-1" <?php if ($cacheconfig==-1) { echo "checked"; } ?>></td>
 				<td>
 					<nobr><font face="helvetica,sans-serif"><?php echo $ARnls["donotcache"]; ?></font></nobr>
 				</td>
