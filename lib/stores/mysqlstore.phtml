@@ -501,6 +501,7 @@ class mysqlstore {
 		if (strlen($path)<MAX_PATH_LENGTH) { // initial check
 			if ($id=$this->exists($path)) { //update
 				debug("save: updating","all");
+				$result = $path;
 				if ($vtype) { // only change/save vtype if it is explicitly set
 					$evtype=AddSlashes($vtype);
 					$query_string="update $objects_tbl set object='$edata', vtype='$evtype', lastchanged=NULL where id=$id"; 
@@ -519,7 +520,6 @@ class mysqlstore {
 						$errno=mysql_errno($this->connect_id);
 						if (!$errno) {
 							debug("save: query=$query_string","all");
-							$result=$path;
 						} else {
 							$this->error="ERROR: Mysql: $errno: ".mysql_error($this->connect_id);
 							debug("save: query=$query_string","store");
