@@ -3,6 +3,20 @@ Ariadne 2.4RC2
 Changes in Ariadne since version Ariadne 2.3.1-dev
 
 New Features:
+
+	- Added experimental support for Oracle.
+	- Moved all configuration data to data->config.
+	- Added German translation to the ariadne.ax files. Thanks to Stefan Schreinert.
+	- Added 3 new pobject methods to easly set, get and show object values. 
+	  These	methods are: setValue(), getValue and showValue()
+	- Added workflow callbacks. The pobject::save() function will now call
+	  2 templates (user.workflow.pre.html -which is called before the actual
+	  store save- and user.workflow.post.html -which is called after the actual
+	  store save-).
+	- Added a pobject::save() wrapper for PINP so that PINP templates can 
+	  directly save objects to the store.
+	- Added a new context mechanism. The new context/stack operations include:
+	  pushContext(), popContext() and getContext().
 	- Updated Polish translations by Lukasz Keler
 	- moved the multipart page extension from ppage to mod_multipart,
       mod_multipart only has the ShowSection and ShowSections methods
@@ -74,6 +88,16 @@ New Features:
 	  and the real store, so that users can't view the store config with print_r
 
 Bugs Fixed:
+	- The axstore doesn't store the properties with AddSlashes() anymore. This
+	  change made us to bump the .ax version to 2
+	- Fixed some bugs in the mysql store::move() and store::link() methods.
+	- Fixed a flow bug in the puser wizard.
+	- Fixed a bug in the pfile and pphoto wizards which didn't handle the
+	  filename of the uploaded file correct.
+	- Fixed the not-working pfile::GetPlainText() pinp wrapper.
+	- Menu view->webpage will not include a sessionid if the ariadne management
+	  url doesn't match the site url.
+	- Many shortcut fixes.
 	- Fixed calling the workflow templates, they now also have the
 	  arIsNewObject variable if set.
 	- Fixed a bug in the edit wizard, cancel will now always close the 
@@ -88,7 +112,7 @@ Bugs Fixed:
 	- Fixed a problem in the browse widget when using complex variables
 	  (arrays)
 	- Fixed a bug in the FTP loader which made the loader not display templates
-	  with NLST. Thanks to Gorant Topic.
+	  with NLST. Thanks to Goran Topic.
 	- Fixed a bug in store::make_path(), it should now always return a
 	  valid path, no matter what.
 	- Fixed a bug in the filestore::read() function. In some cases the store 
