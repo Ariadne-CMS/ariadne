@@ -1,0 +1,108 @@
+#!/usr/bin/php -q
+<?php
+	$ariadne = "../lib";
+	if (!@include_once($ariadne."/configs/ariadne.phtml")) {
+		$cwd = getcwd();
+		chdir(substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')));
+		if(!include_once($ariadne."/configs/ariadne.phtml")){
+			echo "could not open ariadne.phtml";
+			exit(1);
+		}
+		chdir($cwd);
+	}
+	require($ariadne."/configs/axstore.phtml");
+	require($ariadne."/configs/store.phtml");
+	require($ariadne."/includes/loader.web.php");
+	include($ariadne."/stores/axstore.phtml");
+	include($ariadne."/nls/".$AR->nls->default);
+
+	$HELP_INFO="import [--options] file.ax file.wddx
+	this will convert a ax export to a wddx export file
+
+  options are:
+    --verbose                Display what we are doing.
+	 --debug                  Enabled debugging
+    --help                   This information.\n\n";
+
+	$arg_c=0;
+	$arg_v[$arg_c++]=$argv[0];
+
+	next($argv); // do not parse the filename
+	while (list(,$cmd)=each($argv)) {
+		if (strpos($cmd, "--") === 0) {
+			if (strpos(substr($cmd, 2),"-")===false) {
+				$option_switch=substr($cmd, 2);
+			} else {
+
+				$option_switch=substr($cmd, 2, strpos(substr($cmd, 2),"-"));
+
+				if (strpos($cmd, "=")!==false) {
+					$option_value=substr($cmd, strpos($cmd, "=")+1);
+					$option=substr($cmd, strlen($option_switch)+3, strpos($cmd, "=") - (strlen($option_switch)+3));
+				} else {
+					$option=substr($cmd, strlen($option_switch)+3);
+				}
+			}
+
+//			echo "switch($option_switch)($option)='$option_value'\n";
+
+			switch ($option_switch) {
+				case 'verbose':
+					$ARCurrent->wddxoptions["verbose"]=true;
+				break;
+				case 'debug':
+					$debug=true;
+					debugon('all');
+				break;
+
+				case 'help':
+					echo $HELP_INFO;
+					exit;
+				break;
+
+				default:
+					echo "unknow option-switch ($option_switch)\n";
+			}
+		} else {
+			$arg_v[$arg_c++]=$cmd;
+		}
+	}
+
+	set_time_limit(0);
+
+
+	if ($arg_c>=2) {
+		$ARLogin="admin";
+		$AR->user=new object;
+		$AR->user->data=new object;
+		$AR->user->data->login="admin";
+
+		$ARCurrent->allnls = true;
+		$ARCurrent->nolangcheck = true;
+		$ax_config["writeable"]=false;
+		$ax_config["database"]=$arg_v[1];
+		$outfile = $arg_v[2];
+		$ARCurrent->wddxfp = fopen($outfile,"w");
+		if(!$ARCurrent->wddxfp) {
+			echo "Error opening a output file\n\n";
+			exit(0);
+		}
+
+		$store=new axstore("", $ax_config);
+		if (!$store->error) {
+
+			$error=$store->error;
+			/* start the wddx export */
+			$store->call("export.wddx.phtml", array(), $store->get("/"));
+			$store->close();
+		} else {
+			$error="ax error: ".$importStore->error;
+		}
+
+		if ($error) {
+			echo $error."\n";
+		}
+	} else {
+		echo $HELP_INFO;
+	}
+?>
