@@ -1,7 +1,14 @@
 #!/usr/bin/php -q
 <?php
-	$ariadne="../lib";
-	require($ariadne."/configs/ariadne.phtml");
+	$ariadne = "../lib";
+	if (!@include_once($ariadne."/configs/ariadne.phtml")) {
+		chdir(substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')));
+		if(!include_once($ariadne."/configs/ariadne.phtml")){
+			echo "could not open ariadne.phtml";
+			exit(1);
+		}
+		
+	}
 	require($ariadne."/configs/store.phtml");
 	require($ariadne."/configs/axstore.phtml");
 	require($ariadne."/includes/loader.web.php");

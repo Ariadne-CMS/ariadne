@@ -124,6 +124,8 @@ Bugs Fixed:
 		when a object was saved multiple times in 1 sessen the $this->path was currupted
 	- Fixed an Ancient Bug (tm), you can now use ' in custom data fields in
 	  the wizard.
+	- Copied the fix in the ftp loader to all the scripts in ./bin/ so
+	  compensate for changes in php behavour
 
 Changes in Ariadne since version Ariadne 2.3-dev
 
