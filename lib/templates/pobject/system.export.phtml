@@ -118,8 +118,8 @@ if ($this->CheckLogin("read")) {
 		}
 		if (!$options["without_grants"]) {
 			display("updating grants (groups)\n");
-			reset($ARCurrent->grants_list);
-			while (list($type, $type_logins)=each($ARCurrent->grants_list)) {
+			@reset($ARCurrent->grants_list);
+			while (list($type, $type_logins)=@each($ARCurrent->grants_list)) {
 				while (list($login, )=each($type_logins)) {
 					if ($type=="pgroup") {
 						unset($criteria);
@@ -136,8 +136,8 @@ if ($this->CheckLogin("read")) {
 			}
 
 			display("updating grants (users)\n");
-			reset($ARCurrent->grants_list);
-			while (list($type, $type_logins)=each($ARCurrent->grants_list)) {
+			@reset($ARCurrent->grants_list);
+			while (list($type, $type_logins)=@each($ARCurrent->grants_list)) {
 				while (list($login, )=each($type_logins)) {
 					if ($type=="puser") {
 						unset($criteria);
