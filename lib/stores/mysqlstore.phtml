@@ -157,7 +157,7 @@ class mysqlstore {
 	 wether it is a substore.
 	 **********************************************************************************/ 
 
-		debug("call($template, $args, [list])","store");
+		debug("call($template, ".serialize($args).", [list])","store");
 		$this->error="";
 		$this->count=@mysql_num_rows($objects["list"]);
 		while ($row=@mysql_fetch_array($objects["list"])) {
