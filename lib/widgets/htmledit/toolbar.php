@@ -514,12 +514,14 @@ function DECMD_IMAGE_onclick() {
 			args['align'] = elIMG.align;
 			args['alt'] = elIMG.alt;
 			args['ar:type'] = elIMG['ar:type'];
+			args['ar:path'] = elIMG['ar:path'];
 		}
 	} else {
 		elIMG=false;
 		window.rg=el.createRange();
 		src = '<?php echo $this->path; ?>';
-		args['src'] = src;
+		args['src'] = "";
+		args['ar:path'] = src;
 		args['hspace'] = "";
 		args['vspace'] = "";
 		args['align'] = ""; 
