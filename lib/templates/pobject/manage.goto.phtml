@@ -27,7 +27,7 @@
 		if ($link && $this->exists($link)) {
 			?>
 			<script>
-				top.view.location='<?php echo $this->make_url($link).$template.$append; ?>';
+				top.view.location='<?php echo $this->store->root.$link.$template.$append; ?>';
 			</script>
 			<?php
 		} else {
