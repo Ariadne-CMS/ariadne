@@ -17,6 +17,7 @@
 	
 	require($ariadne."/modules/mod_virusscan.php");
 
+		
 		/* this function has been taken from the php manual		*/
 		
 		function ftp_ErrorHandler ($errno, $errmsg, $filename, $linenum, $vars) {
@@ -256,9 +257,9 @@
 			$template="";
 			$absolute = ($path[0] === '/') ? true : false;
 			$path=$FTP->site.$FTP->store->make_path($FTP->cwd, $path);
-			while (ereg('/#([^/]*)#/', $path, $regs) && $regs[1]) {
+			while (ereg('/'.ESPCHL.'([^/]*)'.ESPCHR.'/', $path, $regs) && $regs[1]) {
 				$listMode=$regs[1];
-				$path=str_replace("/#".$listMode."#/", "/", $path);
+				$path=str_replace("/".SPCHL.$listMode.SPCHR."/", "/", $path);
 			}
 			if (!$listMode) {				
 				if (!$absolute && $FTP->listMode) {
@@ -304,7 +305,7 @@
 					case 'PWD':
 						$dir=$FTP->cwd;
 						if ($FTP->listMode) {
-							$dir="/#".$FTP->listMode."#".$dir;
+							$dir="/".SPCHL.$FTP->listMode.SPCHR.$dir;
 						}
 						if (strlen($dir)>1) {
 							$dir=substr($dir,0,-1);
@@ -350,9 +351,9 @@
 
 						$path=$FTP->store->make_path($FTP->cwd, $args);
 						debug("ftp: cwd absolute path is ($path)");
-						while (ereg('/#([^/]*)#/', $path, $regs) && $regs[1]) {
+						while (ereg('/'.ESPCHL.'([^/]*)'.ESPCHR.'/', $path, $regs) && $regs[1]) {
 							$FTP->listMode=$regs[1];
-							$path=str_replace("/#".$FTP->listMode."#/", "/", $path);
+							$path=str_replace("/".SPCHL.$FTP->listMode.SPCHR."/", "/", $path);
 						}
 						$cwd=$FTP->store->make_path($FTP->cwd, $path);
 						if ($FTP->store->exists($FTP->site.$cwd)) {
@@ -548,13 +549,13 @@
 
 								if ($FTP->symlinkListModes) {
 									if ($listMode!=="files") {
-										$mode["filename"]="#files#";
+										$mode["filename"]=SPCHL."files".SPCHR;
 										$mode["date"]=time();
 										if ($FTP->cwd!=="/") {
 											$mode["type"]="shortcut";
 											$mode["target"]=$FTP->cwd;
 											if ($FTP->defaultListMode!="files") {
-												$mode["target"]="/#files#".$mode["target"];
+												$mode["target"]="/".SPCHL."files".SPCHR.$mode["target"];
 											}
 										} else {
 											$mode["type"]="dir";
@@ -571,13 +572,13 @@
 									}
 
 									if ($listMode!=="templates") {
-										$mode["filename"]="#templates#";
+										$mode["filename"]=SPCHL."templates".SPCHR;
 										$mode["date"]=time();
 										if ($FTP->cwd!=="/") {
 											$mode["type"]="shortcut";
 											$mode["target"]=$FTP->cwd;
 											if ($FTP->defaultListMode!="templates") {
-												$mode["target"]="/#templates#".$mode["target"];
+												$mode["target"]="/".SPCHL."templates".SPCHR.$mode["target"];
 											}
 										} else {
 											$mode["type"]="dir";
@@ -593,7 +594,7 @@
 									}
 
 									if ($listMode!=="objects") {
-										$mode["filename"]="#objects#";
+										$mode["filename"]=SPCHL."objects".SPCHR;
 										$mode["date"]=time();
 										$mode["size"]=0;
 										$mode["grants"]["read"]=true;
@@ -601,7 +602,7 @@
 											$mode["type"]="shortcut";
 											$mode["target"]=$FTP->cwd;
 											if ($FTP->defaultListMode!="objects") {
-												$mode["target"]="/#objects#".$mode["target"];
+												$mode["target"]="/".SPCHL."objects".SPCHR.$mode["target"];
 											}
 										} else {
 											$mode["type"]="dir";
@@ -797,7 +798,7 @@
 
 					case 'MKD':
 						$path_requested = $args;
-						$path=ereg_replace('/#[^/]*#/', "/", $args);
+						$path=ereg_replace('/'.ESPCHL.'[^/]*'.ESPCHR.'/', "/", $args);
 						eregi('^(.*[/])?(.*)$', $path, $regs);
 						$arNewFilename=eregi_replace('[^.a-z0-9_-]', '_', $regs[2]);
 

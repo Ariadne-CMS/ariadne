@@ -37,6 +37,20 @@
 
 
 /**************************************************************************
+*	SPCHL and SPCHR define the characters to start and end the special    *
+*	objects, templates and files directories.                             *
+*                                                                         *	
+*	SPCHL = SpecialCharLeft                                               *
+*	SPCHR = SpecialCharRight                                              *
+*                                                                         *
+*   ESPCHL and ESPCHR area quoted versions for the ereg function.         *
+***************************************************************************/
+
+	define ("SPCHL","#");  define("ESPCHL",preg_quote(SPCHL));
+	define ("SPCHR","#");  define("ESPCHR",preg_quote(SPCHR));
+
+
+/**************************************************************************
  *  The ftp debug/log file                                                *
  **************************************************************************/
 
