@@ -25,6 +25,7 @@ Bugs Fixed:
 	  custom fields.
 	- fixed a bug in view.thumb.html in pphotobook, you can now override
 	  this template.
+	- Fixed a bug in pobject::call(), the results are now unset every call()
 
 Changes in Ariadne since version 2.1.4
 
