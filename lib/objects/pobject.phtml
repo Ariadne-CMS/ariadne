@@ -715,7 +715,7 @@ class pobject extends object {
 			//        remove recursively fast enough.
 	        //        this means a change in the filestore api. -> 2.5
 			$pcache=$this->store->get_filestore("privatecache");
-			$ids=$this->store->info($this->store->find("","",0));
+			$ids=$this->store->info($this->store->find($path, "" ,0));
 			while (list($key, $value)=each($ids)) {
 				$pcache->purge($value["id"]);
 			}
