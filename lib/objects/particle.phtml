@@ -4,16 +4,20 @@ include_once($this->code."objects/ppage.phtml");
 
 class particle extends ppage { // definitie class
 
-	function ParseSummary() {
+	function ParseSummary($template="view.html", $extra="", $text="") {
 		debug("particle: ParseSummary()","object");
         if (eregi("<a>",$this->nlsdata->summary)) {
-            return eregi_replace("<a>","<a href=\"".$this->store->root.$this->path."\">",$this->nlsdata->summary);
-        }
-        return $this->nlsdata->summary;
+            return eregi_replace("<a>","<a href=\"".$this->make_url()."$template\"$extra>",$this->nlsdata->summary);
+        } else {
+			if (!$text) {
+				$text=$ARnls["more"]."...";
+			}
+			return $this->nlsdata->summary." <a href=\"".$this->make_url()."$template\"$extra>$text</a>";
+		}
 	}
 
-	function _ParseSummary() {
-		return $this->ParseSummary();
+	function _ParseSummary($template="view.html", $extra="", $text="") {
+		return $this->ParseSummary($template, $extra, $text);
 	}
 
 } // end class article
