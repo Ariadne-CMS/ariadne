@@ -1,6 +1,7 @@
 <?php
-	global $PHP_SELF;
-	$url=$PHP_SELF."?".$arCallArgs;
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		global $PHP_SELF;
+		$url=$PHP_SELF."?".$arCallArgs;
 ?>
 <html>
 <body bgcolor="white">
@@ -58,3 +59,6 @@
 </form>	
 </body>
 </html>
+<?php
+	}
+?>

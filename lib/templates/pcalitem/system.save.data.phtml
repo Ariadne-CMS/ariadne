@@ -128,35 +128,41 @@
 				}
 			}
 			if (!$this->error) {
-				// see if we need to split the object
-				$confirm=$this->getdata("confirm","none");
-				if ($confirm==$ARnls["current"]) {
-					debug("confirm: current","all");
-					// save a new pcalitem with the current values, no repeat
-					$newcalitem=$this->store->newobject($this->path."{0:id}/",$this->path,$this->type,$this->data);
-					$newcalitem->arIsNewObject=true;
-					$newcalitem->data->repeat="none";
-					$newcalitem->call("system.save.data.phtml");
-					// remove current entry from current object
-					$this->data->timeframes=$this->DelTimeframe($entry);
-					$dontsavetimeframes=true;
-				} else { // $confirm=="All" by default
-					debug("confirm: all","all");
-					// check whether this is the first item in the repeating row
-					//	 or the item doesn't repeat
-					// else -> split into two, save the newer (starting from now)
-					if (($this->data->repeat!="none") && ($this->data->timeframes[0]["start"]<$entry)) {
-						debug("save a new pcalitem, repeating from now","all");
-						// save a new pcalitem, repeating from now
+				if (!$this->arIsNewObject) {
+					// see if we need to split the object
+					$confirm=$this->getdata("confirm","none");
+					if ($confirm==$ARnls["current"]) {
+						debug("confirm: current","all");
+						// save a new pcalitem with the current values, no repeat
 						$newcalitem=$this->store->newobject($this->path."{0:id}/",$this->path,$this->type,$this->data);
 						$newcalitem->arIsNewObject=true;
-						$newcalitem->data->date=$entry;
-						$newcalitem->call("system.save.data.phtml");
-						// set endtime for the current object to current entry
-						$this->data->timeframes=$this->NewEndtime($entry);
+						$newcalitem->data->repeat="none";
+						$args=$arCallArgs;
+						$args["repeat"]="none";
+						$newcalitem->call("system.save.data.phtml", $args);
+						// remove current entry from current object
+						$this->data->timeframes=$this->DelTimeframe($entry);
 						$dontsavetimeframes=true;
-						$entry_arr=getdate($entry);
-						$this->data->repeatend=mktime(0,0,0, $entry_arr["mon"], $entry_arr["mday"], $entry_arr["year"]);
+					} else { // $confirm=="All" by default
+						debug("confirm: all","all");
+						// check whether this is the first item in the repeating row
+						//	 or the item doesn't repeat
+						// else -> split into two, save the newer (starting from now)
+						if (($this->data->repeat!="none") && ($this->data->timeframes[0]["start"]<$entry)) {
+							debug("save a new pcalitem, repeating from now","all");
+							// save a new pcalitem, repeating from now
+							$newcalitem=$this->store->newobject($this->path."{0:id}/",$this->path,$this->type,$this->data);
+							$newcalitem->arIsNewObject=true;
+							$newcalitem->data->date=$entry;
+							$args=$arCallArgs;
+							$args["date"]=$entry;
+							$newcalitem->call("system.save.data.phtml", $args);
+							// set endtime for the current object to current entry
+							$this->data->timeframes=$this->NewEndtime($entry);
+							$dontsavetimeframes=true;
+							$entry_arr=getdate($entry);
+							$this->data->repeatend=mktime(0,0,0, $entry_arr["mon"], $entry_arr["mday"], $entry_arr["year"]);
+						}
 					}
 				}
 
