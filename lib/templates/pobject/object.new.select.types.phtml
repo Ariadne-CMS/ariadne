@@ -59,7 +59,13 @@
 <div class='listcontainer'>
 <table class="list" width="100%" border="0" cellspacing="0" cellpadding="4"><tr>
 <?php
-	$currentpath=$this->store->root.$this->path;
+    $server_name=eregi_replace("^[htps:/]*/","",$AR->host);
+	global $HTTP_SERVER_VARS;	
+	if ($HTTP_SERVER_VARS["SERVER_NAME"]==$server_name) {
+		$currentpath=$this->store->root.$this->path;
+	} else {
+		$currentpath=$this->make_url();
+	}
 	if ($AR->user->data->login=="admin") {
 		$result=$this->ls("/system/ariadne/types/","system.get.phtml");
 	} else {
