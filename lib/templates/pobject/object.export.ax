@@ -25,9 +25,11 @@
 		}
 		if (!$error) {
 			$filename=substr($this->path, strlen($this->parent), -1);
-			ldHeader("Cache-control: ");
+			if (ldGetServerVar('HTTPS')) {
+				ldHeader("Pragma: cache");
+			}
 			ldSetContent("application/ariadne-export", filesize($tempfile));
-			// ldHeader("Content-Disposition: attachment; filename=$filename.ax");
+			ldHeader("Content-Disposition: attachment; filename=$filename.ax");
 			readfile($tempfile);
 			@unlink($tempfile);
 		} else {
