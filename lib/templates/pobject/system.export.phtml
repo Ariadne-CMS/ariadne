@@ -139,6 +139,7 @@ global $AR;
 									unset($oldObject);	// no update needed
 								}
 							} else {
+								display("(dummy)\n");
 								$save_obj = false;
 							}
 						}
@@ -155,7 +156,7 @@ global $AR;
 											$ARCurrent->importStore->get($newpath));
 
 								} else {
-									display("(saving)\n");
+									display("(saving ".(($object->dummy_save) ? "dummy" : "").")\n");
 									$ARCurrent->importStore->save(
 											$newpath, 
 											$object->type,

@@ -64,7 +64,14 @@
 			}
 
 			if ($save) {
-				$this->newObject->save();
+				$this->newObject->store->save(
+					$this->newObject->path,
+					$this->newObject->type,
+					$this->newObject->data,
+					$this->newObject->properties,
+					$this->newObject->vtype,
+					$this->newObject->priority,
+					$this->newObject->dummy);
 			}
 		 }
 	}
