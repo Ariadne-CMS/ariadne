@@ -1,6 +1,10 @@
 <?php
 	if (!$wgHTMLEditOptionsPath) {
-		$wgHTMLEditOptionsPath=$this->path;
+		if ($this->arIsNewObject) {
+			$wgHTMLEditOptionsPath=$this->parent;
+		} else {
+			$wgHTMLEditOptionsPath=$this->path;
+		}
 	}
 	if (!$wgHTMLEditOptions) {
 		$wgHTMLEditOptions=current($this->get($wgHTMLEditOptionsPath, "editor.ini"));
@@ -34,7 +38,9 @@ var wgHTMLEditOptions=new Array();
 			}
 		}
 	}
+    $options.="options[editor.ini]=".RawUrlEncode($wgHTMLEditOptionsPath);
 ?>
+wgHTMLEditOptions["editor.ini"]="<?php echo $wgHTMLEditOptionsPath; ?>";
 
 function HTMLEdit(root, path, file, name, language, type, title, value, save2form) {
 	if (value) {
