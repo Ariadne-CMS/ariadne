@@ -66,5 +66,19 @@
 			return unicode::utf8convert($string, 0xFF, $entities);
 		} 
 
+
+		function convertToUTF8($charset, $string) {
+			if (function_exists("iconv")) {
+				$result = iconv($charset, "UTF-8", $string);
+			} else {
+				$tablename = ereg_replace('[^a-z0-9_-]*', '', strtolower($charset));
+				include("mod_unicode.$tablename.php");
+				$result = "";
+				for ($i=0; $i<strlen($string); $i++) {
+					$result .= $table[ord($string[$i])];
+				}
+			}
+			return $result;
+		}
 	}
 ?>
