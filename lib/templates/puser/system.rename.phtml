@@ -21,12 +21,39 @@
 					}
 				}
 				if (!$this->error) {
+					// now remove groups
+					if (is_array($this->data->groups)) {
+						reset($this->data->groups);
+						while (list($path) = each($this->data->groups)) {
+							$this->get($path,
+									"system.set.user.phtml",
+									Array(
+										"action" => "delete",
+										"path" => $this->path
+									));
+						}
+					}
 					$this->call("pobject::system.rename.phtml", $arCallArgs);
 					$this->data->login=substr($this->path, strlen($this->parent), -1);
 					$properties["login"][0]["value"]="'".AddSlashes($this->data->login)."'";
 					$this->save($properties);
+					if (!$this->error) {
+						// now update groups
+						if (is_array($this->data->groups)) {
+							reset($this->data->groups);
+							while (list($path) = each($this->data->groups)) {
+								$this->get($path,
+										"system.set.user.phtml",
+										Array(
+											"action" => "add",
+											"path" => $this->path
+										));
+							}
+						}
+					}
 				}
 			}
+
 		} else {
 			// this is probably a link in a group
 			$parentobject=current($this->get($this->parent, "system.get.phtml"));
