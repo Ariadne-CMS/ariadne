@@ -547,15 +547,20 @@ class pobject extends object { // pobject class definition
 		$continue=true;
 		if (!$AR->user) {
 			debug('no user');
-			if ($ARCurrent->session && $ARCurrent->session->get("ARSessionTimedout", 1)) {
-				debug("pobject: CheckLogin: session disabled","object");
 
+			if (!$ARCurrent->session || !$ARCurrent->session->get("ARLogin")) {
+				if ($ARCurrent->session && $ARCurrent->session->get("ARSessionTimedout", 1)) {
+					/* public session timedout, re-activating it */
+					debug("pobject: CheckLogin: re-activating public session ", "object");
+					$ARCurrent->session->put("ARSessionTimedout", 0, 1);
+				}
+				$ARLogin="public"; $ARPassword="none";
+				debug("pobject: CheckLogin: use public","object");
+			} else if ($ARCurrent->session && $ARCurrent->session->get("ARSessionTimedout", 1)) {
+				debug("pobject: CheckLogin: session disabled","object");
 				$arLoginMessage=$ARnls["accessdenied"];
 				ldAccessDenied($this->path, $arLoginMessage);
 				$continue=false;
-			} else if (!$ARCurrent->session || !$ARCurrent->session->get("ARLogin")) {
-				$ARLogin="public"; $ARPassword="none";
-				debug("pobject: CheckLogin: use public","object");
 			} else {
 				if (!ldCheckCredentials($ARCurrent->session->get("ARLogin"), $ARCurrent->session->get("ARPassword",1))) {
 					$ARLogin="public"; $ARPassword="none";
