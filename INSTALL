@@ -1,7 +1,9 @@
-Installing Ariadne.                                         Muze Ariadne 2.0b11
+Installing Ariadne.                                            Muze Ariadne 2.0
 ===============================================================================
 
-  IMPORTANT: Ariadne needs PHP4!
+  IMPORTANT: Ariadne needs PHP4.0.6 *
+
+  * If you don't need the FTP daemon, PHP 4.0.3pl1 is the minimum
            
 
 Windows
