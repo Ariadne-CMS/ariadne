@@ -627,8 +627,8 @@ function pcreateMenuBottom()
   document.write ('<style type="text/css"> #GesSeparator { position: absolute; left: 0; top: ' + (top+hht) + '; width: 1; height: 1; z-Index: 2; } </style>');
 
   document.write('<span id="GesSeparator">\n' +
-                 '  <table border=0 cellspacing=0 cellpadding=0 width=' + wthges + ' height=5>\n' +
-                 '    <tr><td bgColor="#C3C6C3"><img src="'+imagedir+'dot.gif" width="1" height="3" alt=""></td></tr>\n' +
+                 '  <table border=0 cellspacing=0 cellpadding=0 width=' + wthges + ' height=3>\n' +
+                 '    <tr><td bgColor="#C3C6C3"><img src="'+imagedir+'dot.gif" width="1" height="1" alt=""></td></tr>\n' +
                  '    <tr><td bgColor="#828482"><img src="'+imagedir+'dot.gif" width="1" height="1" alt=""></td></tr>\n' +
                  '    <tr><td bgColor="#000000"><img src="'+imagedir+'dot.gif" width="1" height="1" alt=""></td></tr>\n' +
                  '  </table>\n' +
@@ -651,7 +651,7 @@ function pcreateLeisteNachRechts()
                   '  <table border=0 cellspacing=0 cellpadding=0 width=' + wthges + ' height=' + hht + '>\n' +
                   '    <form name="pathform" onSubmit="return viewpath(this.path.value);"><tr>\n' +
                   '      <td valign="middle" align="right">\n' +
-                  '        <input type="text" name="path" size="40" value="'+path+'">\n' +
+                  '        <input style="font-size: 13px; height: 18px" type="text" name="path" size="40" value="'+path+'">\n' +
                   '      </td>\n' +
                   '    </tr></form>\n' +
                   '  </table>\n' +
@@ -679,7 +679,7 @@ windowprops['edit_object_nls']=windowprops['common']+',height=150,width=250';
 windowprops['view_fonts']=windowprops['common']+',height=300,width=450';
 windowprops['view']=windowprops['common']+',height=500,width=600';
 windowprops['help']=windowprops['common']+',height=350,width=450';
-windowprops['help_about']=windowprops['common']+',height=200,width=200';
+windowprops['help_about']=windowprops['common']+',height=250,width=450';
 
 function viewpath(path) {
   top.View(path);

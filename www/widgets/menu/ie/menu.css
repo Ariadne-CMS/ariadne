@@ -1,5 +1,11 @@
 BODY			{margin: 0; border: 0}
 
+.path {
+  background: white;
+  font-size: 13px;
+  width: 400;
+  padding: 0;
+}
 #menu			{cursor: default; position: absolute; top: 0; left: 0;
 				background: buttonface; border: 1 solid buttonface;}
 #menu .menu		{background: buttonface; border: 2 outset buttonhighlight; position: absolute}
@@ -22,3 +28,4 @@ BODY			{margin: 0; border: 0}
 				z-index: -1;
 				height:90%; width:100%;
 				border: 2 inset white;}
+

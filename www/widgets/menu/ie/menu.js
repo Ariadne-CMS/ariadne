@@ -139,7 +139,7 @@ function menuOver() {
 	var toEl = getMenuItem(event.toElement);
 	if (fromEl == toEl)
 		return;
-	if ((toEl.className != "disabled") && (toEl.id != "menubar")){
+	if ((toEl.className != "path") && (toEl.className != "disabled") && (toEl.id != "menubar")){
 		if (toEl.className == "root") {
 			if (activeMenu) {
 				if (toEl.menu != activeMenu) {
@@ -185,7 +185,7 @@ function menuOut() {
 			normalButton(fromEl);
 	}
 	else {
-		if  ((fromEl.className != "disabled") && (fromEl.id != "menubar")){
+		if  ((fromEl.className != "path") && (fromEl.className != "disabled") && (fromEl.id != "menubar")){
 			if ((fromEl.className == "sub") && (getSub(toEl) == fromEl.subMenu) || (fromEl.subMenu == toEl.parentElement.parentElement))
 				return;
 			else if ((fromEl.className == "sub")){
@@ -497,7 +497,7 @@ windowprops['edit_object_nls']=windowprops['common']+',height=150,width=250';
 windowprops['view_fonts']=windowprops['common']+',height=300,width=450';
 windowprops['view']=windowprops['common']+',height=500,width=600';
 windowprops['help']=windowprops['common']+',height=350,width=450';
-windowprops['help_about']=windowprops['common']+',height=200,width=200';
+windowprops['help_about']=windowprops['common']+',height=200,width=450';
 
   function viewpath(path) {
     test=new String(path);
