@@ -111,16 +111,16 @@
 		savestring='';
 		for (i=0; i<customlist.length; i++) {
 			data=customlist[i];
-			savestring+='&customdata['+i+'][name]='+escape(data.name);
-			savestring+='&customdata['+i+'][type]='+escape(data.type);
-			savestring+='&customdata['+i+'][inherit]='+escape(data.inherit);
-			savestring+='&customdata['+i+'][size]='+escape(data.size);
-			savestring+='&customdata['+i+'][nls]='+escape(data.nls);
-			savestring+='&customdata['+i+'][grant]='+escape(data.grant);
-			savestring+='&customdata['+i+'][check]='+escape(data.check);
-			savestring+='&customdata['+i+'][property]='+escape(data.property);
+			savestring+='&customfields['+i+'][name]='+escape(data.name);
+			savestring+='&customfields['+i+'][type]='+escape(data.type);
+			savestring+='&customfields['+i+'][inherit]='+escape(data.inherit);
+			savestring+='&customfields['+i+'][size]='+escape(data.size);
+			savestring+='&customfields['+i+'][nls]='+escape(data.nls);
+			savestring+='&customfields['+i+'][grant]='+escape(data.grant);
+			savestring+='&customfields['+i+'][check]='+escape(data.check);
+			savestring+='&customfields['+i+'][property]='+escape(data.property);
 		}
-		document.customform.customdata.value=savestring;
+		document.customform.customfields.value=savestring;
 		return true;
 	}
 
@@ -248,7 +248,7 @@ BODY, TD {
 }
 </style>
 <form name="customform" action="edit.object.custom.save.phtml" method="POST" onSubmit="save()">
-<input type="hidden" name="customdata">
+<input type="hidden" name="customfields">
 <input type="hidden" name="arReturnPage" value="<?php echo $arReturnPage; ?>">
 <table border="0" width="100%" align="center" cellspacing="4" vspace="10" hspace="10">
 <tr>

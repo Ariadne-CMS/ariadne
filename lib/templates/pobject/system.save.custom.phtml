@@ -5,9 +5,9 @@
 		$this->data=@current($this->get(".","system.get.data.phtml"));
 
 		unset($this->data->customconfig);
-		parse_str($this->getdata("customdata","none"));
-		if (is_array($customdata)) {
-			while (list($key, $value)=each($customdata)) {
+		parse_str($this->getdata("customfields","none"));
+		if (is_array($customfields)) {
+			while (list($key, $value)=each($customfields)) {
 				$this->data->customconfig[$value["name"]]["type"]=$value["type"];
 				$this->data->customconfig[$value["name"]]["inherit"]=$value["inherit"];
 				$this->data->customconfig[$value["name"]]["size"]=$value["size"];
