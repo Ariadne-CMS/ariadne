@@ -29,9 +29,10 @@
 
 define(MAX_PATH_LENGTH, 128);
 define(MAX_PROPERTY_LENGTH, 128);
+require_once('store.php');
 
 // general objectstore functions
-class postgresqlstore {
+class postgresqlstore extends store {
 
 	var $connect_id;
 	var $error;
@@ -157,43 +158,6 @@ class postgresqlstore {
 		$result = $this->$field;
 		debug("store::get_config: end", "all");
 		return $result;
-	}
-
-	function is_supported($feature) {
-	/**********************************************************************************
-		This function takes as argument a feature description and returns
-		true if this feature is supported and false otherwise
-	**********************************************************************************/
-		$result = false;
-		switch($feature) {
-			case 'regexp':
-				return true;
-			break;
-			default:
-				$result = false;
-			break;
-		}
-		return $result;
-	}
-
-	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) {
-		debug("newobject($path, $parent, $type, [data], $id, $lastchanged, $vtype, $size, $priority)","all");
-		$class = $type;
-		if ($subcpos = strpos($type, '.')) {
-			$class = substr($type, 0, $subcpos);
-			$vtype = $class;
-		}
-		include_once($this->code."objects/".$class.".phtml");
-		$object=new $class;
-		$object->type=$type;
-		$object->parent=$parent;
-		$object->id=(int)$id;
-		$object->lastchanged=(int)$lastchanged;
-		$object->vtype=$vtype;
-		$object->size=(int)$size;
-		$object->priority=(int)$priority;
-		$object->init($this->proxystore, $path, $data);
-		return $object;
 	}
 
 	function get($path) {
@@ -449,13 +413,7 @@ class postgresqlstore {
 	}
 
 	function close() {
-		// This is the destructor function, nothing much to see :)
-		debug("close()","store");
-		if (is_array($this->filestores)) {
-			while (list($key, $filestore)=each($this->filestores)) {
-				$filestore->close();
-			}
-		}
+		parent::close();
 		$this->stop_transaction(false);
 		return (@pg_close($this->connect_id));
 	}
@@ -997,75 +955,6 @@ class postgresqlstore {
 		return ($result);
 	}
 
-	function make_path($curr_dir, $path) {
-	/**********************************************************************
- 
-		This function creates an absolute path from the given starting path
-	($curr_dir) and a relative (or absolute) path ($path). If $path starts
-	with a '/' $curr_dir is ignored. 
-	$path must be a string of substrings seperated by '/'. each of these 
-	substrings may consist of charachters and/or numbers. If a substring
-	is "..", it and the previuos substring will be removed. If a substring
-	is "." or "", it is removed. All other substrings are then concatenated
-	with a '/' between them and at the start and the end. This string is 
-	then returned.
-
-	**********************************************************************/
-
-		debug("make_path($curr_dir, $path)","all");
-		$this->error = "";
-		if (substr($path,0,1) == "/") {
-			$result = "/";
-			$path = substr($path, 1);
-		} else {
-			$result = $curr_dir;
-		}
-		if ($path) {
-			$splitpath = explode("/", $path);
-
-			foreach ($splitpath as $pathticle ) {
-				switch($pathticle) {
-					case ".." :
-						$result = substr($result, 0, strrpos(substr($result,0,-1), "/")+1);
-						break;
-					case "." :
-						break;
-					case ""	 :
-						break;
-					default	 :
-						$result = $result.$pathticle."/";
-				}
-			}
-		}
-		debug("make_path: end ($result)","all");
-		return ($result);
-	}
-
-	function save_properties($properties, $id) {
-	/********************************************************************
-
-		'private' function of postgresql.phtml. It updates all property tables
-		defined in $properties and sets the values to the values in
-		$properties.
-
-	********************************************************************/
-
-		debug("save_properties([properties], $id)","all");
-		if ($properties && (is_array($properties)) && (intval($id))) {
-			$result = true;
-			while ((list($property, $property_set) = each($properties)) && ($result != false)) {
-				$this->del_property($id, $property);
-				if (is_array($property_set)) {
-					while ((list($key, $values) = each($property_set)) && ($result != false)) {
-						$result = $this->add_property($id, $property, $values);
-					}
-				}
-			}
-		}
-		debug("save_properties: end","all");
-		return($result);
-	}
-
 	function load_properties($object, $values="") {
 		debug("load_properties($object, [values])","all");
 		if ($object) {
@@ -1238,14 +1127,6 @@ class postgresqlstore {
 			$subid = sprintf("%0".$substr_l."d", $subid);
 		}
 		return $subid;
-	}
-
-	function get_filestore($name) {
-		require_once($this->code."modules/mod_filestore.phtml");
-		if (!$this->filestores[$name]) {
-			$this->filestores[$name]=new filestore($name, $this->files);
-		}
-		return ($this->filestores[$name]);
 	}
 
 	function start_transaction(){
