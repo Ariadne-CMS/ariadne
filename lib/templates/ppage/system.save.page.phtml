@@ -29,14 +29,18 @@
 			// do this last, think about it :)
 			$page=str_replace("&amp;","&",$page);
 		} else {
-			$page=unicode::utf8convert($page);
+//			$page=unicode::utf8convert($page);
 		}
 		// change hardcoded links and images to use a placeholder for the root
-		$page=ereg_replace("(https?://)?".$this->store->root,"{arRoot}",$page);
-        // also change hand pasted sources, which may or may not include session id's
-        $page=ereg_replace("(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?(/".$nls.")?","{arRoot}",$page);
-        // finally check for other session id's:
-        $page=str_replace("/-".$ARCurrent->session->id."-","",$page);
+		if ($this->store->root) {
+			$page=ereg_replace("(http[s]?://)?".$this->store->root,"{arRoot}",$page);
+		}
+		if ($ARCurrent->session->id) {
+	        // also change hand pasted sources, which may or may not include session id's
+			$page=ereg_replace("(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?(/".$nls.")?","{arRoot}",$page);
+			// finally check for other session id's:
+			$page=str_replace("/-".$ARCurrent->session->id."-","",$page);
+		}
 
 		// first make sure that the object is clean (data can only be set via 
 		// the defined interface: $arCallArgs)
