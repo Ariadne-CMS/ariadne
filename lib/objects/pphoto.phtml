@@ -77,14 +77,14 @@ class pphoto extends pfile { // definitie class
 
 		$geo = false;
 
-		if( isset( $width, $height ) ) {
+		if( isset( $width ) && isset( $height ) ) {
 			$width=(int)abs($width);
 			$height=(int)abs($height);
 			$compose .= " -geometry \"".$width."x".$height;
 			$geo = true;
 
 		}
-		if( isset( $xoffset, $yoffset ) ) {
+		if( isset( $xoffset ) && isset( $yoffset ) ) {
 			if( !$geo ) {
 				$compose .= " -geometry \"";
 				$geo = true;
