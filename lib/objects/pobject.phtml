@@ -578,10 +578,14 @@ class pobject extends object {
 		}
 		$ARPassword=0;
 		if ($continue) {
-			if ($ARCurrent->session && ($oldArCallArgs = $ARCurrent->session->get("oldArCallArgs",1))) {
-				/* restore arCallArgs from before login */
-				$ARCurrent->arCallStack[sizeof($ARCurrent->arCallStack)-1] = $oldArCallArgs;
-				$ARCurrent->session->put("oldArCallArgs", 0, 1);
+			if ($ARCurrent->session) {
+				if ($oldArCallArgs = $ARCurrent->session->get("oldArCallArgs",1)) {
+					/* restore arCallArgs from before login */
+					$ARCurrent->arCallStack[sizeof($ARCurrent->arCallStack)-1] = $oldArCallArgs;
+					$ARCurrent->session->put("oldArCallArgs", 0, 1);
+				}
+				/* make this session active */
+				$ARCurrent->session->put("ARSessionActivated",true,1);
 			}
 			debug("pobject: CheckLogin: end","all");
 			$result=($grants || ($ARLogin=="admin"));

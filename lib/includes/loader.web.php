@@ -166,7 +166,7 @@
 		$ARCookie = stripslashes($HTTP_COOKIE_VARS["ARCookie"]);
 
 		debug("ldSetCredentials($login, [password])","object");
-		if (!$ARCurrent->session || ($ARCurrent->session->get("ARLogin")!=$login)) {
+		if (!$ARCurrent->session || (!$ARCurrent->session->get("ARSessionActivated",1)) || ($ARCurrent->session->get("ARLogin")!=$login)) {
 			// start a new session when there is no session yet, or
 			// when a user uses a new login. (su)
 			ldStartSession();
@@ -198,7 +198,12 @@
 			} 
 		}
 
-		if (!$ARCurrent->session->timedout) {
+		/* 
+			only set a cookie when our session has not been timed out and
+			our session is not active already.
+		*/
+		if (!$ARCurrent->session->get("ARSessionTimedout",1) &&
+				!$ARCurrent->session->get("ARSessionActivated", 1)) {
 			$cookie[$ARCurrent->session->id]['login']=$login;
 			$cookie[$ARCurrent->session->id]['timestamp']=time();
 			$cookie[$ARCurrent->session->id]['check']="{".ARCrypt($password.$ARCurrent->session->id)."}";
