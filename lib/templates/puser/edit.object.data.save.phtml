@@ -50,20 +50,8 @@
 						top.window.close();
 					}
 				}
+				done();
 			</script>
-			<?php
-				if (($password=$this->getdata("newpass1","none")) &&    
-					($this->data->login==$AR->user->data->login)) {   
-
-						$arIncludePage=$this->store->root.$this->path."edit.object.data.save.relogin.phtml?ARLogin=".
-							RawUrlEncode($data->login)."&ARPassword=".RawUrlEncode($password);
-				?>
-					<iframe style="width: 0px; height: 0px" src="<?php echo $arIncludePage; ?>"></iframe>
-				<?php
-				} else {
-					echo "<script> done(); </script>\n";
-				}
-			?>
 		<?php
 	}
 ?>
