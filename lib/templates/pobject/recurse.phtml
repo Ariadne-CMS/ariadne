@@ -23,6 +23,19 @@
 	total=0;
 	current=0;
 
+	function set_info_location(src) {
+		if (document.layers) {
+			document.layers.info.src=src;
+		} else if (document.all && info) {
+			info.location=src;
+		} else if (info=document.getElementById("info")) {
+			info.src=src;
+		} else {
+			alert("I'm sorry, your browser doesn't support the DOM level 1 specification. Ariadne will not function correctly.");
+		}
+	}
+
+
 	function addobject(path, parent, name) {
 		if (!Nodes[path]) {
 			if (!Nodes[parent]) {
@@ -38,11 +51,7 @@
 	}
 
 	function findmore(offset) {
-		if (document.layers) {
-			document.layers.info.src="recurse.find.phtml?offset="+offset+"&limit=50";
-		} else {
-			info.location="recurse.find.phtml?offset="+offset+"&limit=50";
-		}
+		set_info_location("recurse.find.phtml?offset="+offset+"&limit=50");
 	}
 
 	function Node(path, parent, name) {
@@ -86,11 +95,7 @@
 									current+=1;
 									if (path=OrderedList[OrderedList.length-1]) {
 										OrderedList.length-=1;
-										if (document.layers) {
-											document.layers.info.src="<?php echo $this->store->root; ?>"+path+"recurse.delete.phtml?total="+escape(total)+"&current="+escape(current);
-										} else {
-											info.location="<?php echo $this->store->root; ?>"+path+"recurse.delete.phtml?total="+escape(total)+"&current="+escape(current);
-										}
+										set_info_location("<?php echo $this->store->root; ?>"+path+"recurse.delete.phtml?total="+escape(total)+"&current="+escape(current));
 									} else {
 										if (top.window && top.window.opener) {
 											if (top.window.opener.top.View) {
@@ -155,11 +160,7 @@
 						function copynode() {
 							if (path=OrderedList[OrderedList.length-1]) {
 								OrderedList.length-=1;
-								if (document.layers) {
-									document.layers.info.src="<?php echo $this->store->root; ?>"+path+"recurse.copy.phtml?target=<?php echo RawUrlEncode($target); ?>&source=<?php echo RawUrlEncode($this->path); ?>";
-								} else {
-									info.location="<?php echo $this->store->root; ?>"+path+"recurse.copy.phtml?target=<?php echo RawUrlEncode($target); ?>&source=<?php echo RawUrlEncode($this->path); ?>";
-								}
+								set_info_location("<?php echo $this->store->root; ?>"+path+"recurse.copy.phtml?target=<?php echo RawUrlEncode($target); ?>&source=<?php echo RawUrlEncode($this->path); ?>");
 							} else {
 								if (top.window) {
 									if (top.window.opener && top.window.opener.wgRecurseDone) {
