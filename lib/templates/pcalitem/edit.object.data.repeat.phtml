@@ -34,7 +34,27 @@
 	currentRepeat=fieldset;
   }
 
-  
+  function updateRepeatN(value) {
+	document.wgWizForm.repeatn.value=value;
+	document.wgWizForm.day_repeatn.value=value;
+	document.wgWizForm.week_repeatn.value=value;
+	document.wgWizForm.month_repeatn.value=value;
+	document.wgWizForm.year_repeatn.value=value;
+  }
+
+  // alternative SetDate for the date widget
+  function SetDate(name, date, formatted) {
+    document.wgWizForm.repeatend.value=date;
+    document.wgWizForm['day_repeatend'].value=date;
+    document.wgWizForm['day_repeatendformatted'].value=formatted;
+    document.wgWizForm['week_repeatend'].value=date;
+    document.wgWizForm['week_repeatendformatted'].value=formatted;
+    document.wgWizForm['month_repeatend'].value=date;
+    document.wgWizForm['month_repeatendformatted'].value=formatted;
+    document.wgWizForm['year_repeatend'].value=date;
+    document.wgWizForm['year_repeatendformatted'].value=formatted;
+  }
+
 </script>
 <table border="0" width="90%">
 <tr>
@@ -75,6 +95,34 @@
 			</table>
 		</fieldset>
 
+		<?php
+			$repeatn=$this->getdata("repeatn","none");
+			if (!$repeatn) {
+				$repeatn=1;
+			}
+			$repeatend=$this->getdata("repeatend","none");
+			if (!$repeatend) {
+				$repeatend=$this->getdata("date", "none") + $this->getdata("starthour","none")*3600 + $this->getdata("startminute", "none") * 60;
+			}
+			$repeat_on=$this->getdata("repeat_on", "none");
+			$repeat_by=$this->getdata("repeat_by", "none");
+			if (!$repeat_by) {
+				$repeat_by="day";
+			}
+			$woptions=array(
+				$ARnls["sun"],
+				$ARnls["mon"],
+				$ARnls["tue"],
+				$ARnls["wed"],
+				$ARnls["thu"],
+				$ARnls["fri"],
+				$ARnls["sat"]);
+
+		?>
+		<input type="hidden" name="repeatn" value="<?php echo $repeatn; ?>">
+		<input type="hidden" name="repeatend" value="<?php echo $repeatend; ?>">
+		<input type="hidden" name="repeat_on" value="<?php echo $repeat_on; ?>">
+
 		<fieldset id="day" style="display: none;">
 		<legend><?php echo $ARnls["repeat"].": ".$ARnls["day"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
 			<table border="0" align="center" width="90%">
@@ -82,22 +130,19 @@
 				<td>
 					<?php echo $ARnls["every"]; ?>
 				</td><td>
-					<input size="3" maxlength="3" type="text" name="repeatn" value="<?php if ($this->getdata("repeatn", "none")) { $this->showdata("repeatn", "none"); } else { echo "1"; } ?>">
+					<input size="3" maxlength="3" type="text" name="day_repeatn" value="<?php echo $repeatn; ?>" onChange="updateRepeatN(this.value);">
 					&nbsp;<?php echo $ARnls["days"]; ?>
 				</td>
 			</tr><tr>
 				<td>
 					<?php echo $ARnls["endson"]; ?>
-				</td><td><?php
-							if ($this->getdata("repeatend", "none")) {
-								$wgDate=$this->getdata("repeatend", "none");
-							} else {
-								$wgDate=$this->getdata("date", "none") + $this->getdata("starthour","none")*3600 + $this->getdata("startminute", "none") * 60;
-							}
-							$wgDateName="repeatend";
-							include($this->store->code."widgets/date/js.html");
-							include($this->store->code."widgets/date/form.html");
-						?>
+				</td><td>
+					<?php
+						$wgDate=$repeatend;
+						$wgDateName="day_repeatend";
+						include($this->store->code."widgets/date/js.selectdate.html");
+						include($this->store->code."widgets/date/form.html");
+					?>
 				</td>
 			</tr>
 			</table>
@@ -110,7 +155,7 @@
 				<td>
 					<?php echo $ARnls["every"]; ?>
 				</td><td colspan="3">
-					<input size="3" maxlength="3" type="text" name="repeatn" value="<?php if ($this->getdata("repeatn", "none")) { $this->showdata("repeatn", "none"); } else { echo "1"; } ?>">
+					<input size="3" maxlength="3" type="text" name="week_repeatn" value="<?php echo $repeatn; ?>" onChange="updateRepeatN(this.value);">
 					&nbsp;<?php echo $ARnls["weeks"]; ?>
 				</td>
 			</tr><tr>
@@ -118,42 +163,28 @@
 					<nobr><?php echo $ARnls["repeaton"]; ?></nobr>
 				</td>
 				<?php
-					$woptions=array(
-							$ARnls["sun"],
-							$ARnls["mon"],
-							$ARnls["tue"],
-							$ARnls["wed"],
-							$ARnls["thu"],
-							$ARnls["fri"],
-							$ARnls["sat"]);
-
-					$repeat_on=$this->getdata("repeat_on", "none");
 					reset($woptions);
 					while (list($key,$option)=each($woptions)) {
 
 						if (($key==3) || ($key==6)) {
 							echo "</tr><tr><td></td>\n";
 						}
-							echo "<td><input type=\"checkbox\" name=\"repeat_on[$key]\" value=\"1\"";
-							if ($repeat_on[$key]) {
-								echo " checked";
-							}
-							echo ">&nbsp;$option</td>";
+						echo "<td><input type=\"checkbox\" name=\"repeat_on[$key]\" value=\"1\"";
+						if ($repeat_on[$key]) {
+							echo " checked";
+						}
+						echo ">&nbsp;$option</td>";
 					}
 					?>
 			</tr><tr>
 				<td>
 					<?php echo $ARnls["endson"]; ?>
-				</td><td colspan="3"><?php
-							if ($this->getdata("repeatend", "none")) {
-								$wgDate=$this->getdata("repeatend", "none");
-							} else {
-								$wgDate=$this->getdata("date", "none") + $this->getdata("starthour","none")*3600 + $this->getdata("startminute", "none") * 60;
-							}
-							$wgDateName="repeatend";
-							include($this->store->code."widgets/date/js.html");
-							include($this->store->code."widgets/date/form.html");
-						?>
+				</td><td colspan="3">
+					<?php
+						$wgDate=$repeatend;
+						$wgDateName="week_repeatend";
+						include($this->store->code."widgets/date/form.html");
+					?>
 				</td>
 			</tr>
 			</table>
@@ -166,7 +197,7 @@
 				<td>
 					<?php echo $ARnls["every"]; ?>
 				</td><td>
-					<input size="3" maxlength="3" type="text" name="repeatn" value="<?php if ($this->getdata("repeatn", "none")) { $this->showdata("repeatn", "none"); } else { echo "1"; } ?>">
+					<input size="3" maxlength="3" type="text" name="month_repeatn" value="<?php echo $repeatn; ?>" onChange="updateRepeatN(this.value);">
 					&nbsp;<?php echo $ARnls["months"]; ?>
 				</td>
 			</tr><tr>
@@ -174,12 +205,6 @@
 					<nobr><?php echo $ARnls["repeatby"]; ?></nobr>
 				</td>
 				<td>
-					<?php
-					$repeat_by=$this->getdata("repeat_by", "none");
-					if (!$repeat_by) {
-						$repeat_by="day";
-					}
-					?>
 					<input type="radio" name="repeat_by" value="<?php echo $ARnls["day"]; ?>" 
 							<?php if ($repeat_by=="day")  echo "checked"; ?>>
 							<?php echo $ARnls["day"]; ?>
@@ -190,16 +215,12 @@
 			</tr><tr>
 				<td>
 					<?php echo $ARnls["endson"]; ?>
-				</td><td><?php
-							if ($this->getdata("repeatend", "none")) {
-								$wgDate=$this->getdata("repeatend", "none");
-							} else {
-								$wgDate=$this->getdata("date", "none") + $this->getdata("starthour","none")*3600 + $this->getdata("startminute", "none") * 60;
-							}
-							$wgDateName="repeatend";
-							include($this->store->code."widgets/date/js.html");
-							include($this->store->code."widgets/date/form.html");
-						?>
+				</td><td>
+					<?php
+						$wgDate=$repeatend;
+						$wgDateName="month_repeatend";
+						include($this->store->code."widgets/date/form.html");
+					?>
 				</td>
 			</tr>
 			</table>
@@ -212,22 +233,18 @@
 				<td>
 					<?php echo $ARnls["every"]; ?>
 				</td><td>
-					<input size="3" maxlength="3" type="text" name="repeatn" value="<?php if ($this->getdata("repeatn", "none")) { $this->showdata("repeatn", "none"); } else { echo "1"; } ?>">
+					<input size="3" maxlength="3" type="text" name="year_repeatn" value="<?php echo $repeatn; ?>" onChange="updateRepeatN(this.value);">
 					&nbsp;<?php echo $ARnls["years"]; ?>
 				</td>
 			</tr><tr>
 				<td>
 					<?php echo $ARnls["endson"]; ?>
-				</td><td><?php
-							if ($this->getdata("repeatend", "none")) {
-								$wgDate=$this->getdata("repeatend", "none");
-							} else {
-								$wgDate=$this->getdata("date", "none") + $this->getdata("starthour","none")*3600 + $this->getdata("startminute", "none") * 60;
-							}
-							$wgDateName="repeatend";
-							include($this->store->code."widgets/date/js.html");
-							include($this->store->code."widgets/date/form.html");
-						?>
+				</td><td>
+					<?php
+						$wgDate=$repeatend;
+						$wgDateName="year_repeatend";
+						include($this->store->code."widgets/date/form.html");
+					?>
 				</td>
 			</tr>
 			</table>
