@@ -607,10 +607,65 @@ class pobject extends object { // pobject class definition
 				$result=current($this->find("/system/users/",$criteria,"system.get.phtml"));
 				unset($criteria);	
 				if (!($AR->user=$result)) {
-					debug("pobject: CheckLogin: user in cookie not found","object");
-					$arLoginMessage=$ARnls["accessdenied"].": ".sprintf($ARnls["userunknown"],$ARLogin);
-					ldAccessDenied($this->path, $arLoginMessage);
-					$continue=false;
+					if ($AR->LDAP["enabled"] && ($user_profile=$AR->LDAP["userprofile"])) {
+						$ldap_userdir=$AR->LDAP["userdir"] ? $AR->LDAP["userdir"] : '/system/users/' ; // location of new users
+						$ldap_oncreate=$AR->LDAP["oncreate"]; // template to execute when after creating a new user
+						$continue=false;
+						if ($ldap_connection=ldap_connect($AR->LDAP["ds"])) {
+							if ($AR->LDAP["type"]=="ActiveDirectory") {
+								$ldap_dn=$ARLogin."@".$AR->LDAP["domain"];
+							}
+							if (@ldap_bind($ldap_connection, $ldap_dn, $ARPassword)) {
+								// su to admin, to create the new user
+								$user_login=$ARLogin;
+								$AR->user=current($this->get("/system/users/admin/","system.get.phtml"));							
+								$ARLogin="admin";
+								// create the new user
+								$user_path=$this->store->make_path($ldap_userdir, $user_login);
+								$user=$this->store->newobject($user_path, $ldap_userdir, $AR->LDAP["userclass"], new object);
+								$user->arIsNewObject = true;
+								$userdata["arNewFilename"] = $user_login;
+								$userdata["newpass1"] = $ARPassword;
+								$userdata["newpass2"] = $ARPassword;
+								$userdata["profile"] = $user_profile;
+								$userdata["name"] = $user_login;
+								$user->call("system.save.data.phtml", $userdata);
+								// change the owner of the user to itself
+								$user->call("system.save.owner.phtml", Array("owner" => $user_path));
+								// call the oncreate handler, if defined
+								if ($ldap_oncreate=$AR->LDAP["oncreate"]) { // template to execute when after creating a new user
+									$this->get($ldap_oncreate["path"], $ldap_oncreate["template"], Array("user_login" => $user_login, "user_path" => $user_path));
+								}
+								// change the user back
+								$ARLogin=$user_login;
+								unset($AR->user);
+								if ($AR->user=current($this->get($user_path, "system.get.phtml")) {
+									$continue=true;
+								} else {
+									debug("pobject: CheckLogin: couldn't create ldap user ","object");
+									$arLoginMessage=$ARnls["accessdenied"].": ".sprintf($ARnls["userunknown"],$ARLogin);
+									ldAccessDenied($this->path, $arLoginMessage);
+									$continue=false;
+								}
+							} else {
+								debug("pobject: CheckLogin: ldap user not valid","object");
+								$arLoginMessage=$ARnls["accessdenied"],$ARLogin);
+								ldAccessDenied($this->path, $arLoginMessage);
+								$continue=false;
+							}
+							ldap_close($ldap_connection);
+						} else {
+							debug("pobject: CheckLogin: no ldap server present","object");
+							$arLoginMessage=$ARnls["accessdenied"].": ".sprintf($ARnls["userunknown"],$ARLogin);
+							ldAccessDenied($this->path, $arLoginMessage);
+							$continue=false;
+						}
+					} else {
+						debug("pobject: CheckLogin: user in cookie not found","object");
+						$arLoginMessage=$ARnls["accessdenied"].": ".sprintf($ARnls["userunknown"],$ARLogin);
+						ldAccessDenied($this->path, $arLoginMessage);
+						$continue=false;
+					}
 				} else if (!$AR->user->CheckPassword($ARPassword)) {
 					debug("pobject: CheckLogin: wrong password in cookie","object");
 					$arLoginMessage=$ARnls["accessdenied"].": ".$ARnls["passwordincorrect"];
