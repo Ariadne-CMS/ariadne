@@ -103,7 +103,6 @@ class mssqlstore {
 	 **********************************************************************************/ 
 
 		debug("call($template, ".serialize($args).", [list])", "store");
-		$result = Array();
 		$this->error = "";
 		$this->count = mssql_num_rows($objects["list"]);
 		debug("call: count=".$this->count,"all");
@@ -184,7 +183,7 @@ class mssqlstore {
 		$objects_tbl		= $this->tbl_prefix."objects";
 		$types_tbl			= $this->tbl_prefix."types";
 
-		$query_string		= "select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, $objects_tbl.lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path='$epath'";
+		$query_string		= "select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, datediff(s,'1970-01-01',$objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path='$epath'";
 		$result["list"]		= mssql_query($query_string);
 		debug("get: end","all");
 		return ($result);
@@ -210,7 +209,7 @@ class mssqlstore {
 		$objects_tbl		= $this->tbl_prefix."objects";
 		$types_tbl			= $this->tbl_prefix."types";
 
-		$query_string		= "select ($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, $objects_tbl.lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.parent='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
+		$query_string		= "select ($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, datediff(s,'1970-01-01',$objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.parent='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
 		$result["method"]	= "ls";
 		$result["path"]		= $path;
 		$result["list"]		= mssql_query($query_string);
@@ -242,7 +241,7 @@ class mssqlstore {
 		$objects_tbl		= $this->tbl_prefix."objects";
 		$types_tbl			= $this->tbl_prefix."types";
 
-		$query_string		= "select ($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, $objects_tbl.lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path=substring('$epath',1,length(path)) and $nodes_tbl.path LIKE '$etop%' order by path";
+		$query_string		= "select ($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, datediff(s,'1970-01-01',$objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path=substring('$epath',1,length(path)) and $nodes_tbl.path LIKE '$etop%' order by path";
 		debug($query_string, "all");
 		$result["method"]	= "parents";
 		$result["path"]		= $path;
@@ -268,7 +267,6 @@ class mssqlstore {
 	 $path should always start and end with a '/'.
 
 	 **********************************************************************************/
-
 		if (! is_array($criteria) && ($criteria = trim($criteria))) {
 			$criteria		= " and $criteria ";
 			$query_string	= $this->sqlcompiler->compile("path ~= '$path%'$criteria", $limit, $offset);
@@ -315,7 +313,7 @@ class mssqlstore {
 										$where	.= " and $nodes_tbl.parent $ecompare $value ";
 										break;
 									case ("lastchanged") :
-										$where	.= " and $objects_tbl.lastchanged $ecompare $value ";
+										$where	.= " and datediff(s,'1970-01-01',$objects_tbl.lastchanged) $ecompare $value ";
 										break;
 								}
 								break;
@@ -337,7 +335,7 @@ class mssqlstore {
 				//}
 				$query_string.="$limit";
 			}
-			$query_string .= " ($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, $objects_tbl.lastchanged, $objects_tbl.vtype from $nodes_tbl, $objects_tbl $from $types where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path like '$epath%'";
+			$query_string .= " ($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, datediff(s,'1970-01-01',$objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $nodes_tbl, $objects_tbl $from $types where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path like '$epath%'";
 	        $where			= substr($where,4);
 	        if ($where) { 
 	          $query_string	.= " and ( ( $where ) )";
@@ -346,7 +344,7 @@ class mssqlstore {
 		}
 		debug("find: query=$query_string","all");
 		$result["list"]=mssql_query($query_string);
-
+	
 		debug("find: end","all");
 		return ($result);
 	}

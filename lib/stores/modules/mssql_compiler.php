@@ -18,6 +18,32 @@
 				$result=" $table"."."."$field ";
 			break;
 			case 'string':
+				$result = "";
+				$strval = substr($node["value"], 1, -1);
+				$i = 0;
+				while ($i < strlen($strval)) {
+					if ($strval[$i] === '\\') {
+						if ($strval[$i+1] === "'") {
+							$result.="''";
+						} else {
+							$result.="\\".$strval[$i+1];
+						}
+						$i+=2;
+					} else
+					if ($strval[$i] === "'" && $strval[$i+1] === "'") {
+						if ($node["type"] === "double") {
+							$result.="''''";
+						} else {
+							$result.="''";
+						}
+						$i+=2;
+					} else {
+						$result.=$strval[$i];
+						$i++;
+					}
+				}
+				$result=" '$result' ";
+			break;
 			case 'float':
 			case 'int':
 				$result=" ".$node["value"]." ";
@@ -123,7 +149,7 @@
 		}
 		$query.=" $this->limit_s ";
 		$query.="($nodes.path), $nodes.parent, $nodes.priority, ";
-		$query.=" $objects.id, $objects.type, $objects.object, $objects.lastchanged as lastchanged, $objects.vtype ";
+		$query.=" $objects.id, $objects.type, $objects.object, datediff(s,'1970-01-01',$objects.lastchanged)as lastchanged, $objects.vtype ";
 		$query.=" from $tables where ";
 		$query.=" $nodes.object=$objects.id $prop_dep";
 		$query.=" and ( $this->where_s ) ";
