@@ -28,6 +28,8 @@ Bugs fixed:
 	- Logging of an already timed out session will nolonger give a
 	  login prompt.
 	- Various layout bugs fixed.
+	- The old find query format now also supports the compare operators
+	  used by the ariadne query language.
 
 Changes in Ariadne since version 2.1.1
 
