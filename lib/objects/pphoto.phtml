@@ -2,25 +2,8 @@
 
 debug("pphoto: Load","object");
 include_once($this->code."objects/pfile.phtml");
+
 class pphoto extends pfile { // definitie class
-
-  function ShowPage($nls="", $source=false) {
-    if (!$nls) {
-      $target=$this->nlsdata->page;
-    } else if ($this->data->$nls) {
-      $target=$this->data->$nls->page;
-    }
-    if ($source) {
-      echo htmlspecialchars(str_replace("{arRoot}",$this->store->root,$target));
-    } else {
-      echo str_replace("{arRoot}",$this->store->root,$target);
-    }
-  }
-
-  function _ShowPage($nls="") {
-    return $this->ShowPage($nls);
-  }
-   
 
 } // end class pphoto
 ?>

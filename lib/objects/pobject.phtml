@@ -29,7 +29,7 @@ class pobject extends object {
 		$ARCurrent->arCallStack[]=$arCallArgs;
 		Parse_str($arCallArgs);
 		// now find the initial nls selection (CheckConfig is needed for per
-		// tree selected fedaults)
+		// tree selected defaults)
 		if ($ARCurrent->nls) { 
 			$this->reqnls=$ARCurrent->nls; 
 		} else { 
@@ -79,7 +79,6 @@ class pobject extends object {
 		}
 		array_pop($ARCurrent->arCallStack);
 		debug("pobject: call: end","all");
-		debugoff();
 		if ($ARCurrent->arResult) {
 			$arResult=$ARCurrent->arResult;
 			$ARCurrent->arResult=false;
@@ -114,10 +113,49 @@ class pobject extends object {
 		return $this->store->call($function, $args, $this->store->find($path, $criteria, $limit, $offset));
 	}
 
-	function save($path, $type, $data, $properties="", $vtype="") {
-		debug("pobject: save($path, $type, $data, $properties, $vtype)","object");
-		$path=$this->make_path($path);
-		return $this->store->save($path, $type, $data, $properties, $vtype);
+
+	function save($properties="", $vtype="") {
+	/***********************************************************************
+	  save the current object.
+	  if this is a new object ($this->arIsNewObject) the path is checked and
+	  the object is saved under the new path.
+	***********************************************************************/
+	global $AR;
+		debug("pobject: save([properties], $vtype)","object");
+		$result=false;
+		if ($this->arIsNewObject) { // save a new object
+			$arNewParent=$this->make_path("..");
+			$arNewFilename=substr($this->path, strlen($arNewParent), -1);
+			if (!eregi("\.\.",$arNewFilename)) {
+				if (eregi("^[a-z0-9_\{\}\.\:-]+$",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
+					if (!$this->exists($arNewFilename)) {
+						$this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype);
+						$result=$this->path;
+					} else {
+						$this->error="$arNewFilename already exists.";
+					}
+				} else {
+					$this->error="$arNewFilename is no valid filename, use only a-z, A-Z, 0-9 and _ or -.";					
+				}
+			} else {
+				$this->error="$arNewFilename is no valid filename, do not use '..' in filenames.";
+			}
+		} else { // update an existing object
+			if (!($result=$this->lock(0,"O")) || ($result["locks"][$this->path]["identity"]==$AR->user->data->login)) {
+				if ($this->exists($this->path)) { // prevent 'funny stuff'
+					$this->path=$this->save($this->path, $this->type, $this->data, $properties, $vtype);
+					$result=$this->path;
+					$this->ClearCache();
+					$this->unlock();
+				} else {
+					$this->error="Path is corrupt, won't save the object.";
+				}
+			} else {
+				$this->error="Object already locked.";
+			}
+		}
+		debug("pobject: save: end","all");
+		return $result;
 	}
 
 	function link($from, $to) {
@@ -269,7 +307,7 @@ class pobject extends object {
 
 			// if not already done, find all groups of which the user is a member
 			$criteria["members"]["login"]["="]="'".AddSlashes($AR->user->data->login)."'";
-			if ($AR->user->groups || ($AR->user->groups=$this->find("/system/groups/",$criteria, "Get.phtml"))) {
+			if ($AR->user->groups || ($AR->user->groups=$this->find("/system/groups/",$criteria, "system.get.phtml"))) {
 				reset($AR->user->groups);
 				while (list($key, $group)=each($AR->user->groups)) { 
 					// for each group ...
@@ -322,7 +360,7 @@ class pobject extends object {
 			if ($continue) {
 				// check password
 				$criteria["login"]["value"]["="]="'".AddSlashes($ARLogin)."'";
-				$result=$this->find("/system/users/",$criteria,"Get.phtml");
+				$result=$this->find("/system/users/",$criteria,"system.get.phtml");
 				unset($criteria);	
 				if (!($AR->user=$result[0])) {
 					debug("pobject: CheckLogin: user in cookie not found","object");
@@ -756,12 +794,9 @@ class pobject extends object {
   above. 
   - They don't change anything in the database. 
     This means that to save/delete something, a user will need to call
-    "save.phtml" or "delete.phtml" which check grants.
+    "system.save.data.phtml" or "system.delete.phtml" which check grants.
   - All functions except _get and _exists don't take a path as 
     argument, they use the current objects path instead.
-  - The functions don't return anything, so a call to "Get.phtml" won't
-    return the object, and thus the user isn't able to call any
-    store/pobject function directly.
 
   These are meant to be used by 'pinp' versions of templates,
   meaning user defined templates. 'pinp' rewrites call to functions
