@@ -1,4 +1,41 @@
-Ariadne 2.0RC1
+Ariadne 2.0RC2
+
+Changes in ariadne since version 2.0RC1
+
+New features:
+	- added polish translation of Ariadne, thanks to Lukasz Keler.
+	- exporting and importing can now be optionally restricted to
+	  exclude either data, files or templates, in any combination. This
+	  allows you to only ex/import data, keeping the site layout the
+	  same, or vice-versa, just updating the site layout.
+	- added the functions ParsePage, GetPage to ppage, and ParseFile 
+	  and GetFile to pfile.
+	- because of a name conflict, the variable $data->customdata is
+	  renamed to $data->custom. The shortcuts $customdata and 
+	  $customnlsdata remain the same however.
+	- added system.new.phtml, which allows you to create new objects
+	  silently from inside pinp templates.
+	- puser no longer implements pdir, the class tree is unchanged 
+	  however. To effect this change you will need to install a fresh
+	  Ariadne and import your old site into it.
+	- The ftp daemon has it's own configuration directory now. You can
+	  add ftp servers per psite or one for the entire ariadne system.
+
+Bugs fixed:
+	- fixed WYSIWYG HTML Editor support for non ISO-8859-1 languages.
+	- fixed a problem with regexp's in Redhat/Mandrake and Win2K.
+	- fixed a problem with missing templates in pshortcut. Priorities
+	  should now work as expected on them.
+	- $arResult now works as expected in pinp templates.
+	- fixed a security problem in pinp
+	- fixed some problems with customdata, it seems to work now :)
+	- fixed the layout for the grants and templates list, it will now
+	  display a scrollbar when the list gets too large.
+	- fixed the magic_quotes_gpc on support.
+	- fixed some problems with special characters in object names.
+	- fixed bugs in deleting or moving users. Grants are now cleaned
+	  up correctly. You cannot move or delete the admin and public user
+	  and you cannot move a user out of the /system/users/ directory.
 
 Changes in ariadne since version 2.0b11
 
