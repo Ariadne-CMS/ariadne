@@ -1,0 +1,111 @@
+<?php
+
+	// Attention: The WYSIWYG editor and its context menus require UTF-8!
+	// (The external dialogs do not)
+
+	// lib/widgets/htmledit/ie/edit.php
+
+	$ARnls["e_cut"]				=	"Izreži";
+	$ARnls["e_copy"]			=	"Kopiraj";
+	$ARnls["e_paste"]			=	"Zalijepi";
+	$ARnls["e_delete"]			=	"Izbriši";
+
+	$ARnls["e_insertrow"]			=	"Umetni redak";
+	$ARnls["e_deleterows"]			=	"Izbriši retke";
+	$ARnls["e_insertcol"]			=	"Umetni kolonu";
+	$ARnls["e_deletecols"]			=	"Izbriši kolone";
+	$ARnls["e_insertcell"]			=	"Umetni ćeliju";
+	$ARnls["e_deletecells"]			=	"Izbriši ćelije";
+	$ARnls["e_mergecells"]			=	"Spoji ćelije";
+	$ARnls["e_splitcell"]			=	"Raskoli ćeliju";
+
+	$ARnls["e_z_order"]			=	"Z poredak";
+	$ARnls["e_send_to_back"]		=	"Pošalji na dno";
+	$ARnls["e_bring_to_front"]		=	"Dovedi na vrh";
+	$ARnls["e_send_backward"]		=	"Pošalji otraga";
+	$ARnls["e_bring_forward"]		=	"Dovedi naprijed";
+	$ARnls["e_send_below_text"]		=	"Pošalji pod tekst";
+	$ARnls["e_bring_above_text"]		=	"Dovedi nad tekst";
+	$ARnls["e_visible_borders"]		=	"Vidljivi rubovi";
+	$ARnls["e_show_details"]		=	"Pokaži detalje";
+	$ARnls["e_make_absolute"]		=	"Učini apsolutnim";
+	$ARnls["e_lock"]			=	"Zaključaj";
+	$ARnls["e_snap_to_grid"]		=	"Poravnaj po rešetki";
+
+	$ARnls["e_file"]			=	"Datoteka";
+	$ARnls["e_save_file"]			=	"Snimi datoteku";
+
+	$ARnls["e_edit"]			=	"Uredi";
+	$ARnls["e_undo"]			=	"Poništi";
+	$ARnls["e_redo"]			=	"Opet učini";
+	$ARnls["e_select_all"]			=	"Označi sve";
+	$ARnls["e_find"]			=	"Traži...";
+
+	$ARnls["e_view"]			=	"Prikaz";
+	$ARnls["e_standard"]			=	"Standardni";
+	$ARnls["e_toolbars"]			=	"Alatne trake";
+	$ARnls["e_formatting"]			=	"Formatiranje";
+	$ARnls["e_absolute_positioning"]	=	"Apsolutno pozicioniranje";
+	$ARnls["e_table"]			=	"Tablica";
+
+	$ARnls["e_bold"]			=	"Podebljano";
+	$ARnls["e_italic"]			=	"Kurziv";
+	$ARnls["e_underline"]			=	"Potcrtano";
+
+	$ARnls["e_set_foreground_color"]	=	"Zadaj boju teksta...";
+	$ARnls["e_set_background_color"]	=	"Zadaj boju pozadine...";
+	$ARnls["e_foreground_color"]		=	"Boja teksta";
+	$ARnls["e_background_color"]		=	"Boja pozadine";
+
+	$ARnls["e_align_left"]			=	"Poravnaj lijevo";
+	$ARnls["e_align_center"]		=	"Centriraj";
+	$ARnls["e_align_right"]			=	"Poravnaj desno";
+
+	$ARnls["e_numbered_list"]		=	"Obrojčana lista";
+	$ARnls["e_bulleted_list"]		=	"Lista po točkama";
+
+	$ARnls["e_decrease_indent"]		=	"Smanji uvlaku";
+	$ARnls["e_increase_indent"]		=	"Povećaj uvlaku";
+
+	$ARnls["e_link"]			=	"Poveži";
+	$ARnls["e_insert_image"]		=	"Umetni sliku";
+	$ARnls["e_insert_table"]		=	"Insert Table";
+
+	// lib/templates/pobject/edit.object.html.selectcolor.phtml
+
+	$ARnls["e_select_color"]		=	"Odaberi boju";
+	$ARnls["e_color"]			=	"Boja";
+
+	// lib/templates/pobject/edit.object.html.image.phtml
+
+	$ARnls["e_picture"]			=	"Slika";
+	$ARnls["e_picture_source"]		=	"Izvor&nbsp;slike";
+	$ARnls["e_alternate_text"]		=	"Zamjenski&nbsp;tekst";
+	$ARnls["e_layout"]			=	"Izgled";
+	$ARnls["e_alignment"]			=	"Poravnanje";
+	$ARnls["e_border_thickness"]		=	"Debljina&nbsp;ruba";
+	$ARnls["e_spacing"]			=	"Prored";
+	$ARnls["e_horizontal"]			=	"Vodoravno";
+	$ARnls["e_vertical"]			=	"Okomito";
+	$ARnls["e_image_options"]		=	"Podešavanja slike";
+	$ARnls["e_align_not_set"]		=	"Nije postavljeno";
+	$ARnls["e_align_left"]			=	"Lijevo";
+	$ARnls["e_align_right"]			=	"Desno";
+	$ARnls["e_align_texttop"]		=	"Vrh teksta";
+	$ARnls["e_align_absmiddle"]		=	"ApsSredina";
+	$ARnls["e_align_baseline"]		=	"Osnovna linija";
+	$ARnls["e_align_absbottom"]		=	"ApsDno";
+	$ARnls["e_align_bottom"]		=	"Dno";
+	$ARnls["e_align_middle"]		=	"Sredina";
+	$ARnls["e_align_top"]			=	"Vrh";
+
+
+	// lib/templates/pobject/edit.object.html.link*.phtml
+
+	$ARnls["e_hyperlink"]			=	"Hiperveza";
+	$ARnls["e_hyperlink_information"]	=	"Podaci&nbsp;o&nbsp;hipervezi";
+	$ARnls["e_hyperlink_type"]		=	"Tip";
+	$ARnls["e_hyperlink_path"]		=	"Put";
+	$ARnls["e_hyperlink_affiliate"]		=	"Pridružen";
+
+?>
