@@ -500,6 +500,14 @@ class proxystore {
 		return $filestore;
 	}
 
+	function get_nextid($path, $mask="{5:id}") {
+		global $AR;
+		debug("proxy::get_nextid($path, $mask)","all");
+		$result = $AR->stores[$this->key]->get_nextid($path, $mask);
+		$this->error = $AR->stores[$this->key]->error;
+		debug("proxy::get_nextid: end","all");
+		return $result;
+	}
 
 	function set_nextid($path,$next) {
 	/**********************************************************************
