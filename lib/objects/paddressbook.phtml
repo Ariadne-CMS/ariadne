@@ -1,5 +1,5 @@
 <?php
-
+debug("paddressbook: Load","object");
 include_once($this->code."objects/pdir.phtml");
 
 function sort_addresses($a,$b) {
@@ -14,6 +14,7 @@ class paddressbook extends pdir { // definitie class
 	function get_addresses($crit="",$sortby="name") {
 		global $ARCurrent;
 
+		debug("paddressbook: get_addresses([crit], $sortby)","object");
 		if (is_array($crit)) {
 			$criteria=$crit;
 		}
@@ -31,6 +32,7 @@ class paddressbook extends pdir { // definitie class
 
 			uasort($ARCurrent->addresses,sort_addresses);
 		}
+		debug("paddressbook: get_addresses: end","all");
 		return $ARCurrent->addresses;
 	}
 

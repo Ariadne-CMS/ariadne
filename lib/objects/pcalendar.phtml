@@ -1,26 +1,27 @@
 <?php
 
-// AR_IMPORT($im_dir, "pdir.phtml");
+debug("pcalendar: Load","object");
 include_once($this->code."objects/pdir.phtml");
 
 class pcalendar extends pdir { // definitie class
 
-  function populate($pop_from, $pop_to, $pop_priority, $pop_template="AddTime.phtml", $pop_args="") {
-    $criteria["timeframe"]["start"]["<"]=$pop_to;
-    $criteria["timeframe"]["end"][">"]=$pop_from;
-    $criteria["priority"]["value"][">="]=$pop_priority;
-    $this->find(".",$criteria, $pop_template, $pop_args);
-
-    unset($criteria);
-    $criteria["object"]["implements"]["="]="'pcalendar'";
-    $criteria["object"]["type"]["="]="'pshortcut'";
-    $this->find(".",$criteria,"populate.phtml",
-      "pop_from=".RawUrlEncode($pop_from).
-      "&pop_to=".RawUrlEncode($pop_to).
-      "&pop_priority=".RawUrlEncode($pop_priority).
-      "&pop_template=".RawUrlEncode($pop_template).
-      "&pop_args=".RawUrlEncode($pop_args));
-  }
+	function populate($pop_from, $pop_to, $pop_priority, $pop_template="AddTime.phtml", $pop_args="") {
+		debug("pcalendar: populate($prop_from, $prop_to, $prop_priority, $prop_template, $prop_args)","object");
+		$criteria["timeframe"]["start"]["<"]=$pop_to;
+		$criteria["timeframe"]["end"][">"]=$pop_from;
+		$criteria["priority"]["value"][">="]=$pop_priority;
+		$this->find(".",$criteria, $pop_template, $pop_args);
+		unset($criteria);
+		$criteria["object"]["implements"]["="]="'pcalendar'";
+		$criteria["object"]["type"]["="]="'pshortcut'";
+		$this->find(".",$criteria,"populate.phtml",
+			"pop_from=".RawUrlEncode($pop_from).
+			"&pop_to=".RawUrlEncode($pop_to).
+			"&pop_priority=".RawUrlEncode($pop_priority).
+			"&pop_template=".RawUrlEncode($pop_template).
+			"&pop_args=".RawUrlEncode($pop_args));
+		debug("pcalendar: populate: end","all");
+	}
 
 } // end class pcalendar
 ?>

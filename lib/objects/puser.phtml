@@ -1,30 +1,27 @@
 <?php
 
-// AR_IMPORT($im_dir, "pdir.phtml");
+debug("puser: Load","object");
 include_once($this->code."objects/pdir.phtml");
 
 class puser extends pdir { // definitie class
 
-function CheckPassword($password) {
-  debug("CheckPassword");
-  $password=ARCrypt($password);
-  debug($password." == ".$this->data->password." ?");
-  return $password==$this->data->password;
-}
+	function CheckPassword($password) {
+		debug("puser: CheckPassword([password])","object");
+		$password=ARCrypt($password);
+		return $password==$this->data->password;
+	}
 
-
-function GetGrants($path, &$result) {
-  debug("GetGrants: $path; ".$this->data->login);
-  if ($this->data->usergrants[$path]) {
-    reset($this->data->usergrants[$path]);
-    while (list($grant, $value)=each($this->data->usergrants[$path])) {
-      $result[$grant]=$value;
-      debug($grant);
-    }
-    return true;
-  }
-  return false;
-}
+	function GetGrants($path, &$result) {
+		debug("puser: GetGrants($path, result)","object");
+		if ($this->data->usergrants[$path]) {
+			reset($this->data->usergrants[$path]);
+			while (list($grant, $value)=each($this->data->usergrants[$path])) {
+				$result[$grant]=$value;
+			}
+			return true;
+		}
+		return false;
+	}
 
 } // end class puser
 ?>

@@ -1,6 +1,6 @@
 <?php
 
-//AR_IMPORT($im_dir,"pdir.phtml");
+debug("pnewspaper: Load","object");
 include_once($this->code."objects/pdir.phtml");
 
 
@@ -8,6 +8,7 @@ class pnewspaper extends pdir { // definitie class
 
 	function get_articles($display, $max="", $start="", $end="") {
 		global $ARCurrent;
+		debug("pnewspaper: get_articles($display, $max, $start, $end)","object");
 		if (!$start) { $start=time(); }
                 if (!$end) { $end=$start; }
 		$criteria["article"]["start"]["<="]=$start;
@@ -21,9 +22,9 @@ class pnewspaper extends pdir { // definitie class
 				$articles[]=$ARCurrent->article[$key];
 				$i++;
 			}
-			return $articles;
 		}
-		return false;
+		debug("pnewspaper: get_articles: end","all");
+		return $articles;
 	}
 
 	function _get_articles($display,$max="",$start="",$end="") {
