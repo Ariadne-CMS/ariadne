@@ -41,31 +41,46 @@
           <input type="password" name="newpass2" maxlength="50" 
             value="">
         </td>
-        </tr>
-
-                <?php
-              // profile support
-                if($this->CheckSilent("config")) {
-                ?>
-         <tr>
-          <td colspan="2">
-            <?php echo $ARnls["profile"]; ?>
-          </td>
-        </tr><tr>
-          <td colspan="2">
-            <select name="profile">
-              <option value=""><?php echo $ARnls["noprofile"]; ?></option>
-              <?php
-                      $selected=$this->getdata("profile");
-                $crit['object']['type']['=']="'pprofile'";
-                $this->find("/system/profiles/",$crit,"show.option.phtml",'selected='.$selected);
-              ?>
-            </select>
-          </td>
       </tr>
-                <?php
-                }
-                ?>
+
+      <?php
+        // profile support
+        if($this->CheckSilent("config")) {
+      ?>
+      <tr>
+        <td colspan="2">
+          <?php echo $ARnls["profile"]; ?>
+        </td>
+      </tr><tr>
+        <td colspan="2">
+          <select name="profile">
+            <option value=""><?php echo $ARnls["noprofile"]; ?></option>
+            <?php
+              $selected=$this->getdata("profile");
+              $crit['object']['type']['=']="'pprofile'";
+              $this->find("/system/profiles/",$crit,"show.option.phtml",'selected='.$selected);
+            ?>
+          </select>
+        </td>
+      </tr>
+      <?php
+        if ($this->arIsNewObject) {
+          // show set owner option
+      ?>
+      <tr>
+        <td colspan="2">
+          <?php echo $ARnls["change_owner_recursive"]; ?>
+        </td>
+      </tr><tr>
+        <td colspan="2">
+			<input type="radio" name="setowner" value="1" <?php if ($this->getdata('setowner')) { echo 'checked'; } ?>> <?php echo $ARnls["yes"]; ?>	
+			<input type="radio" name="setowner" value="0" <?php if (!$this->getdata('setowner')) { echo 'checked'; } ?>> <?php echo $ARnls["no"]; ?>
+        </td>
+      </tr>
+      <?php
+          }
+        }
+      ?>
       </table>
     </fieldset>
   </td>
