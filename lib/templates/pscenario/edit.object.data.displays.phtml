@@ -21,8 +21,14 @@
 		if ( sbox.selectedIndex != -1 ) {
 			display = sbox.options[ sbox.selectedIndex ].value;
 			if (display) {
-				document.wgWizForm["display-start"].value = document.wgWizForm[ "display[" + display + "][start]" ].value;
-				document.wgWizForm["display-end"].value = document.wgWizForm[ "display[" + display + "][end]" ].value;
+				if (! (document.wgWizForm["display-start"].value = document.wgWizForm[ "display[" + display + "][start]" ].value)) {
+					// default to zero
+					document.wgWizForm["display-start"].value = 0;
+				}
+				if (! (document.wgWizForm["display-end"].value = document.wgWizForm[ "display[" + display + "][end]" ].value)) {
+					// default to zero
+					document.wgWizForm["display-end"].value = 0;
+				}
 			}
 		}
 	}
@@ -54,26 +60,36 @@
 			$selectedlanguage=$ARConfig->nls->list[$arLanguage];
 			$flag="<img src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\">";
 		?>
-		<fieldset id="data">
-		<legend><?php echo $ARnls["display"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
-			<table border="0" align="center">
+			<table border="0" align="center" width="80%">
 			<tr>
-				<td>
-					<?php echo $ARnls["priority"]; ?>
+				<td align="center">
+				<fieldset id="data">
+				<legend><?php echo $ARnls["priority"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+					<table>
+					<tr>
+						<td>
+							<input type="text" name="priority" maxlength="4" size="6"
+								value="<?php $this->showdata("priority", "none"); ?>">
+						</td>
+					</tr>
+					</table>
 				</td>
+				</fieldset>
 			</tr><tr>
-				<td>
-					<input type="text" name="priority" maxlength="4" 
-						value="<?php $this->showdata("priority", "none"); ?>">
-				</td>
-			</tr><tr>
-				<td>
+				<td align="center">
+				<br>
+
 				<fieldset id="data">
 				<legend><?php echo $ARnls["display"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
-				<table width="100%">
+				<table>
+					<tr>
+						<td>
+							<?php echo $ARnls["id"]; ?>
+						</td>
+					</tr>
 					<tr>
 						<td colspan="2">
-							<select name="display-select" onChange=" show_display_values() ">
+							<select name="display-select" onChange=" show_display_values() " style = "width : 150px">
 							<?php
 								$displays=$this->ls("/system/newspaper/displays/","system.get.value.phtml");
 								while (is_array($displays) && (list($key, $val)=each($displays))) {
@@ -98,13 +114,13 @@
 					</tr><tr>
 						<td>
 							<?php echo $ARnls["start"]; ?>
-						</td><td>
+						</td><td align="right">
 							<?php echo $ARnls["end"]; ?>
 						</td>
 					</tr><tr>
 						<td>
 							<input type="text" onChange="commit_display_values()" size="4" name="display-start" value="">
-						</td><td>
+						</td><td align="right">
 							<input type="text" onChange="commit_display_values()" size="4" name="display-end" value="">
 						</td>
 					</tr>
@@ -113,7 +129,6 @@
 				</td>
 			</tr>
 		</table>
-		</fieldset>
 	</td>
 </tr>
 </table>
