@@ -1,0 +1,62 @@
+<?php
+/**************************************************************************
+	mod_lock v1.0b						stub class
+
+**************************************************************************/
+
+
+class stublock {
+
+	function stublock($tbl_prefix="") {
+		debug("stublock::stublock($tbl_prefix)");
+		echo("stublock: stublock NOT IMPLEMENTED");
+		debug("stublock::stublock end","all");
+	}
+
+	function connect($host="",$user="root",$password="",$database="") {
+		debug("stublock::connect($host, $user, [password], $database)", "store");
+		echo("stublock: connect NOT IMPLEMENTED");
+		debug("stublock::connect end","all");
+	}
+
+	function get_locks($identity) {
+		debug("stublock:get_locks($identity)","store");
+		echo("stublock: get_locks NOT IMPLEMENTED");
+		debug("stublock:get_locks end","all");
+		return $result;
+	}
+
+	function lock($identity, $path, $type="O", $time=0) {
+	/**********************************************************************
+		This function locks an object/path
+	**********************************************************************/
+		debug("stublock: unlock($identity,$path,$type,$time)","store");
+		echo("stublock: lock NOT IMPLEMENTED");
+	}
+
+	function unlock($identity,$path="") {
+	/**********************************************************************
+		This function unlocks an object/path
+	**********************************************************************/
+		debug("stublock: unlock($identity,$path,$type,$time)","store");
+		echo("stublock: unlock NOT IMPLEMENTED");
+
+	}
+
+	function close() {
+	/**********************************************************************
+		This function closes the mod_lock
+	**********************************************************************/
+		debug("stublock: close($identity,$path,$type,$time)","store");
+		echo("stublock: close NOT IMPLEMENTED");
+	}
+
+	function init() {
+	/**********************************************************************
+		This function is called on install to create the tables
+	**********************************************************************/
+		debug("stublock: init($identity,$path,$type,$time)","store");
+		echo("stublock: init NOT IMPLEMENTED");
+	}
+}
+?>

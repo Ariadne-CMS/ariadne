@@ -46,6 +46,15 @@ class proxystore {
 		$this->key = &$key;
 		$this->root = &$AR->stores[$key]->root;
 		$this->rootoptions=&$AR->stores[$key]->rootoptions;
+		// otherwise objects included dureing the inisalisation can't find the codebase
+		$this->code = $AR->stores[$key]->code;
+
+		/* Instantiate module locking */
+		include_once($AR->stores[$key]->code."modules/mod_lock/proxy.phtml");
+		$this->mod_lock = new proxylock($this->key);
+
+		// we don't want to leak information
+		unset($this->code);
 		debug("proxystore: end","all");
 	}
 
