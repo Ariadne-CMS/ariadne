@@ -55,7 +55,7 @@
 </head>
 <frameset rows="30,*,70" border="0">
 	<frame name="browsetop" border="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" 
-		src="<?php echo $this->store->root.$path; ?>browse.top.phtml">
+		src="<?php echo $this->store->root.$path; ?>browse.top.phtml?filter=<?php echo RawUrlEncode($filter); ?>">
 	<frame name="browsemiddle" border="0" frameborder="0" 
 		src="<?php echo $this->store->root.$path; ?>browse.middle.phtml?filter=<?php echo RawUrlEncode($filter); ?>">
 	<frame name="browsebottom" border="0" frameborder="0" marginwidth="0" marginheight="0" border="0" scrolling="no" 
