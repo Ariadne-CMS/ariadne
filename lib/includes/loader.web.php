@@ -111,7 +111,7 @@
 	}
 
 	function ldObjectNotFound($requestedpath, $requestedtemplate) {
-	global $store, $AR;
+	global $store, $AR, $ARCurrent,$args;
 
 		$path=$requestedpath;
 		if (!$path) {
@@ -121,13 +121,21 @@
 				$prevPath=$path;
 				$path=$store->make_path($path, "..");
 			}
+			if(count($ARCurrent->arCallStack) == 0) {
+				$arCallArgs = $args;
+			} else {
+				$arCallArgs = array_pop($ARCurrent->arCallStack);
+				array_push($ARCurrent->arCallStack, $arCallArgs);
+			}
 			if ($prevPath==$path) {
 				error("Database is not initialised, please run <a href=\"".$AR->dir->www."install/install.php\">the installer</a>");
 			} else {
 				// no results: page couldn't be found, show user definable 404 message
-				$store->call("user.notfound.html",
-					 Array(	"arRequestedPath" => $requestedpath,
-					 		"arRequestedTemplate" => $requestedtemplate ),
+				$myarCallArgs = array_merge($arCallArgs, 
+				Array(	"arRequestedPath" => $requestedpath,
+					 		"arRequestedTemplate" => $requestedtemplate 
+				));
+				$store->call("user.notfound.html",$myarCallArgs,
 					 $store->get($path));
 			}
 		}
