@@ -330,17 +330,20 @@ class mssqlstore {
 					$where	.= " ".$this->tbl_prefix."prop_$eproperty.object=$objects_tbl.id)	";
 				}
 			}
-			$query_string="select ";  // was distinct but text datatype is not compatible
+			
+			$query_string = "SELECT ";
 			if ($limit) {
-				$query_string.=" top ".($limit + $offset);
+				$query_string .=" TOP ".($limit + $offset);
 			}
-			$query_string .= " ($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, datediff(ss, '1970-01-01 00:00:00.000', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $nodes_tbl, $objects_tbl $from $types where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path like '$epath%'";
-	        $where			= substr($where,4);
-	        if ($where) { 
-	          $query_string	.= " and ( ( $where ) )";
-	        } 
-		  $query_string.=" order by $nodes_tbl.parent, $nodes_tbl.priority DESC, $nodes_tbl.path";
+			$query_string .= " ($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, datediff(ss, '1970-01-01 00:00:00.000', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype FROM $nodes_tbl, $objects_tbl WHERE $objects_tbl.id=$nodes_tbl.object AND $nodes_tbl.path IN (SELECT DISTINCT $nodes_tbl.path FROM $nodes_tbl, $objects_tbl $from $types WHERE $objects_tbl.id=$nodes_tbl.object AND $nodes_tbl.path LIKE '$epath%'";
+			
+			$where = substr($where,4);
+			if ($where) {
+				$query_string .= " and ( ( $where ) )";
+			}
+			$query_string.=") order by $nodes_tbl.parent, $nodes_tbl.priority DESC, $nodes_tbl.path";
 		}
+
 		debug("find: query=$query_string","all");
 		$result["list"]=mssql_query($query_string);
 		if (mssql_num_rows($result["list"]) > $offset) {
