@@ -1,3 +1,0 @@
-- renaming of objects doesn't update grant information.
-- file overwrite confirmation dialog is broken.
-
