@@ -35,6 +35,4 @@
 	$ARnls["xp_up"]							=	"Hoch";
 	$ARnls["xp_view"]						=	"Anzeigen";
 	$ARnls["xp_viewweb"]					=	"Webseite anzeigen";
-
-
 ?>

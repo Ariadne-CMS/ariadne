@@ -1,6 +1,4 @@
 <?php
-
-
 	// Attention: The WYSIWYG editor and its context menus require UTF-8!
 	// (The external dialogs do not)
 
@@ -96,6 +94,4 @@
 	$ARnls["e_view"]						=	"Ansicht";
 	$ARnls["e_visible_borders"]				=	"Sichtbare Ränder";
 	$ARnls["e_z_order"]						=	"Reihenfolge";
-
-
 ?>
