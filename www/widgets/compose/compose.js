@@ -178,6 +178,7 @@
 
 	wgComposeTable['t']=-1;
 	wgComposeTable['th']="thorn"; 
+	wgComposeTable['tm']="trade";
 	wgComposeTable['y"']="yuml";  
 
 	wgComposeTable['l']=-1;
