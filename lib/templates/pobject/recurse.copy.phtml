@@ -28,16 +28,19 @@
         // if $target does end on '/', copy this under $target (with the same filename)
         $newpath=$target.substr($this->path,strlen($this->parent));
       }
+      $exacttarget=$newpath;
     } else if (substr($target, -1)!="/") {
       // not the first object, it's a subobject
       // and $target doesn't end on '/', so the new path is target+subpath
       $newpath=$target."/".$subpath;
+      $exacttarget=$target."/";
     } else {
       // not the first object
       // target ends on '/'
       // so the new path is target + source filename + subpath
       $sourcefilename=substr($source,strrpos('/',substr($source,0,-1))+1);
       $newpath=$target.$sourcefilename.$subpath;
+      $exacttarget=$target."/".substr($this->path, strlen($source), strpos("/",$subpath));
     }
 ?>
 <html>
@@ -85,7 +88,6 @@
 </head>
 <body bgcolor="#BBBBBB" onLoad="nextnode();" scroll="no">
 <?php 
- 
   echo $ARnls["copying"]. "<br>".$newpath; 
   if (!$this->exists($newpath)) {
     // the target doesn't exist yet, so check if the parent exists
@@ -96,7 +98,9 @@
       // parent exists, so copy current object under that parent
       // get the filename to copy to, $subpath can be empty!
       $filename=substr($newpath,strlen($newparent),-1);
-      $result=$this->get($newparent, "system.copy.phtml","target=".RawUrlEncode($filename)."&source=".RawUrlEncode($this->path));
+      $result=$this->get($newparent, "system.copy.phtml",
+        "target=".RawUrlEncode($filename)."&source=".RawUrlEncode($this->path)).
+        "&search=".RawUrlEncode($source)."&replace=".RawUrlEncode($exacttarget);
       if ($result && $result[0]) {
         $this->error=$result[0];
       }
@@ -106,6 +110,7 @@
   function nextnode() {
     <?php
       if ($this->error) {
+		echo "\n// $this->error\n";
     ?>
       if (!confirm('<?php echo AddSlashes(sprintf($this->error,$newpath)); ?>')) {
 		if (top.window) {
