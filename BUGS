@@ -9,11 +9,13 @@ Known issues
 Currently known broken in CVS / Todo before 2.0b10
 
 - puser: profile and group selection in wizard unfinished.
+  -> add group selection, leave profiles out.
 - files/templates: storage is broken conceptually, needs a new approach.
   -> use filestore for templates and files, see mod_filestore.
 - IIS version.
-- add a way to get the path to the nearest psite parent (or root) in object/class templates. (to avoid using full absolute paths in templates) 
 - add nls fields to text properties.
+  -> no convert script, import imports the text fields without an nls value, each save will 'fix' that 
+     objects text properties.
 - add user: tree update broken.
 
 Todo before 2.0RC1
