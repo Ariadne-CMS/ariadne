@@ -57,6 +57,7 @@ New Features:
 	  members of other groups)
 	- Added a new default wizard layout for all classes, with a much
 	  easier way to build your own wizards.
+	- Updated most of the dialogs to use the new wizard layout.
 	- The admin user now sees objects from the typetree when adding a new one
 	  per default. A link is provided to switch from typetree to all
 	  objects.
