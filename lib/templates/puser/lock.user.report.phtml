@@ -18,7 +18,7 @@
 	if ($continue) {
 		$locks=$this->store->mod_lock->get_locks($this->data->login);
 
-		if ((!is_array($locks)) && $arReturnPage) {
+		if ( ( (!is_array($locks)) || (count($locks) == 0) ) && $arReturnPage ) {
 			ldRedirect($arReturnPage);
 			$continue=false;
 		}
