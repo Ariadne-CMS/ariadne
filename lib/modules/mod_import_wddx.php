@@ -103,6 +103,7 @@ class import_wddx {
 		 */
 		debug("working on ".$objdata['path'],'all');
 		$path = $objdata['path'];
+		$path = '/test'.$path;
 
 		/*
 			step 1
@@ -117,8 +118,6 @@ class import_wddx {
 		 */
 		if(!($this->config['skipdata'] === true))
 		{
-			unset($objdata['data']->pinp);
-			unset($objdata['data']->templates);
 			debug('work data','all');
 			if($id = $this->store->exists($path))
 			{
@@ -131,16 +130,19 @@ class import_wddx {
 						($object->lastchanged < $objdata['lastchanged']) ||
 						($this->config['forcedata'] === true))
 				{
-					$objdata['data']->pinp = $object->data->pinp;
-					$objdata['data']->templates = $object->data->templates;
+					$tmppinp = $object->data->pinp;
+					$tmptemplates = $object->data->templates;
 					unset($object->data);
 					$object->data = $objdata['data'];
+					$object->data->pinp = $tmppinp;
+					$object->data->templates = $tmptemplates;
 					$object->type = $objdata['type'];
 					$object->vtype = $objdata['vtype'];
 					$object->lastchanged = $objdata['lastchanged'];
 					$object->size = $objdata['size'];
 					$object->priority = $objdata['priority'];
 					$object->type = $objdata['type'];
+					$object->save($objdata['properties']);
 				}
 			} else
 			{
@@ -149,9 +151,11 @@ class import_wddx {
 						$this->store->make_path($path,'..'), $objdata['type'],
 						$objdata['data'], 0, $objdata['lastchanged'],
 						$objdata['vtype'], $objdata['size'], $objdata['priority']);
+				$object->data->pinp =  array();
+				$object->data->templates =  array();
 				$object->arIsNewObject = true;
+				$object->save($objdata['properties']);
 			}
-			//$object->save($objdata['properties']);
 			unset($object);
 		}
 
@@ -191,6 +195,8 @@ class import_wddx {
 				{
 					/* delete all current templates */
 					$templates->purge($object->id);
+					$object->data->pinp = array();
+					$object->data->templates = array();
 				}
 
 				/*
@@ -201,21 +207,60 @@ class import_wddx {
 					{
 						if(is_array($tval))
 						{
-							while(list($name,$nval) = each($tval))
+							while(list($function,$nval) = each($tval))
 							{
 								if(is_array($nval))
 								{
-									while(list($nls,$val) = each($nval))
+									while(list($language,$val) = each($nval))
 									{
-										print_r("#".$type."#".$name."#".$nls."#\n");
-										print_r($val);
-										print_r("#");
+										$file = $type.".".$function.".".$language;
+										debug("templates: working on template $file",'all');
+										$pinp=new pinp("header","this->", "\$this->_");
+
+										$template = $val['template'];
+										$compiled=$pinp->compile(strtr($template,"\r",""));
+
+										if($templates->exists($object->id,$file))
+										{
+											if(
+													($val['mtime'] >= $templates->mtime($object->id,$file)) ||
+													($this->config['forcedata'] === true)
+											  )
+											{
+												debug('templates: overwrite existing template','all');
+												$templates->write($template, $object->id, $file.".pinp");
+												$templates->touch($object->id,$file."pinp",$val['mtime']);
+												$templates->write($compiled, $object->id, $file);
+												$templates->touch($object->id,$file,$val['mtime']);
+												$object->data->pinp[$type][$function][$language]=$object->id;
+												/* is it a default template ? */
+												if( $objdata['data']->templates[$type][$function][$language] === $objdata['id'])
+												{
+													$object->data->templates[$type][$function][$language] = $object->id;
+												}
+											}
+										}else
+										{
+											debug('templates: create template','all');
+											$templates->write($template, $object->id, $file.".pinp");
+											$templates->touch($object->id,$file."pinp",$val['mtime']);
+											$templates->write($compiled, $object->id, $file);
+											$templates->touch($object->id,$file,$val['mtime']);
+											
+											$object->data->pinp[$type][$function][$language]=$object->id;
+											/* is it a default template ? */
+											if( $objdata['data']->templates[$type][$function][$language] === $objdata['id'])
+											{
+												$object->data->templates[$type][$function][$language] = $object->id;
+											}
+										}
 									}
 								}
 							}
 						}
 					}
 				}
+				$object->save();
 			}
 		}
 
@@ -283,6 +328,7 @@ class import_wddx {
 	}
 
 	function parse($in,$store) {
+		require_once($store->code."modules/mod_pinp.phtml");
 		$this->input = $in;
 		$this->store = $store;
 		while ($data = fgets($this->input, 65535)) {
