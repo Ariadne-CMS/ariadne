@@ -1,0 +1,22 @@
+<?php
+	/******************************************************************
+	 view.html                                             Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: read
+
+	 This displays a suitable overview of the object.
+
+	 no result.
+
+	******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		$page = ereg_replace( '<title>(.*)</title>',
+								"<title>$nlsdata->name</title>",
+								$nlsdata->page
+							);
+
+		$page = str_replace("{arRoot}", "", $page);
+		echo $page;
+	}
+?>
