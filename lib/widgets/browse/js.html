@@ -9,9 +9,7 @@ function Browse(resultobject, path, name, title) {
   }
   browsewindow=window.open(
     '<?php
-       if (!($path=$AR->user->path)) {
-         $path="/";
-       }
+       $path=$this->path;
        echo $this->store->root.$path; 
      ?>browse.phtml?path='+escape(path)+'&title='+
      escape(title)+'&name='+escape(name), 'browsewindow',
