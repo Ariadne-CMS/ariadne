@@ -1381,7 +1381,6 @@ class pobject extends object { // pobject class definition
 	}
 
 	function _loadtext($nls, $section="") {
-	global $ARnls;
 		$nls=eregi_replace('[^a-z]*','',$nls);
 		$section=eregi_replace('[^a-z\._-]*','',$section);
 		if (!$section) {
@@ -1389,6 +1388,7 @@ class pobject extends object { // pobject class definition
 		} else {
 			include($this->store->code."nls/".$section.".".$nls);
 		}
+		$this->ARnls = $ARnls;
 	}
 
 	function _startsession() {
