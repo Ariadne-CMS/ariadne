@@ -15,14 +15,7 @@
 	******************************************************************/
 
 ?>
-<SPAN class=item>
-	<A HREF="javascript:top.View('<?php echo $this->path; ?>');"><IMG 
-		SRC="<?php echo $AR->dir->images."icons/".$this->type."_open.gif"; ?>" border="0" HEIGHT="40" WIDTH="40" HSPACE=0 VSPACE=0 ALT="<?php echo $nlsdata->name; ?>"><br>
-	<?php 
-		if (!$this->CheckSilent("read")) {
-			echo "<font color=\"#CCCCCC\">$nlsdata->name</font>";
-		} else {
-			echo "$nlsdata->name";
-		}
-	?></A>
-</SPAN>
+<div class='object'><nobr><a 
+	href="javascript:top.View('<?php echo $this->parent; ?>');"><img 
+	width="20" height="20" src="<?php echo $AR->dir->images; ?>icons/pdir.gif" 
+	alt="[view]" border="0"> ..</a></nobr></div>

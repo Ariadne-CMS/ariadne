@@ -14,11 +14,17 @@
 
 	******************************************************************/
 
+	if (!$arLanguage) {
+		$arLanguage=$nls;
+	}
+	if ($data->$arLanguage) {
+		$nlsdata=$data->$arLanguage;
+	}
 ?>
 <div class='object'><nobr><a 
 	href="javascript:top.View('<?php echo $this->path; ?>');"><img 
-	width="18" height="18" src="<?php echo $AR->dir->images; ?>icons/<?php echo $this->type; ?>.gif" 
-	alt="[view]" border="0"><?php
+	width="20" height="20" src="<?php echo $AR->dir->images; ?>icons/<?php echo $this->type; ?>.gif" 
+	alt="[view]" border="0"> <?php
 		if (!$this->CheckSilent("read")) {
 			echo "<font color=\"#CCCCCC\">$nlsdata->name</font>";
 		} else {
