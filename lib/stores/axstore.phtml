@@ -401,10 +401,19 @@ class axstore {
 	}
 
 	function nextid($path) {
-		if ($this->nodes[$path]) {
-			$result=++$this->nodes[$path]->nextid;
-		}
+		$result=++$this->nodes[$path]->nextid;
 		return $result;
+	}
+
+	function set_nextid($path, $newid) {
+		if ($newid > $this->nodes[$path]->nextid) {
+			$this->nodes[$path]->nextid = $newid;
+		}
+		return $this->nodes[$path]->nextid;
+	}
+
+	function get_nextid($path) {
+		return $this->nodes[$path]->nextid;
 	}
 
 	function exists($path) {
@@ -553,6 +562,10 @@ class axstore {
 			}
 		}
 		return $result;
+	}
+
+	function get_nextid($path) {
+		return $this->nodes[$path]->nextid;
 	}
 
 	function get_filestore($name) {
