@@ -5,7 +5,7 @@ include_once($this->code."objects/pdir.phtml");
 
 class pcalendar extends pdir { // definitie class
 
-	function populate($pop_from, $pop_to, $pop_priority, $pop_template="AddTime.phtml", $pop_args="") {
+	function populate($pop_from, $pop_to, $pop_priority, $pop_template="system.get.item-by-time.phtml", $pop_args="") {
 		debug("pcalendar: populate($prop_from, $prop_to, $prop_priority, $prop_template, $prop_args)","object");
 		$criteria["timeframe"]["start"]["<"]=$pop_to;
 		$criteria["timeframe"]["end"][">"]=$pop_from;
