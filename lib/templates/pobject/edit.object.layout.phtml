@@ -70,8 +70,11 @@
 				<div><?php echo $ARnls["template"]; ?></div>
 			</td><td valign="top" class="required">
 				<div><?php echo $ARnls["language"]; ?></div>
+			</td><td valign="top" class="required">
+				<div><?php echo $ARnls["modified"]; ?></div>
 			</td>
 		</tr><?php
+			$filestore = $this->store->get_filestore("templates");
 			if (($data->pinp) && is_array($data->pinp)) {
 				$currcol=0;
 				while (list($type, $values)=each($data->pinp)) {
@@ -96,6 +99,23 @@
 										"&language=".$language."\">$flag</a> ";
 								}
 							?></td>
+							<td>
+								<?php
+									$tbasename = "$type.$function";
+									reset($templatelist);
+									$mtime = 0;
+									while (list($language, $template)=each($templatelist)) {
+										$time = $filestore->mtime($this->id, "$tbasename.$language.pinp");
+										if ($time > $mtime) {
+											$mtime = $time;
+										}
+									}
+
+								?>
+								<?php echo strftime("%R", $mtime); ?>&nbsp;&nbsp;
+								<?php echo strftime("%d %b %Y", $mtime); ?>&nbsp;
+							</td>
+
 						</tr><?php
 						$currcol++;
 						$currcol=$currcol%2;
