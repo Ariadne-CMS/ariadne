@@ -39,7 +39,7 @@
         $wgWizNewFilename="{5:id}";
       }
       if (!$wgWizNewData) {
-        $wgWizNewData=serialize(new object); 
+        $wgWizNewData=new object; 
       }
       $wgWizNewPath=$this->make_path($wgWizNewFilename);
       $wgWizCallObject=$this->store->newobject($wgWizNewPath, $this->path, $wgWizNewType, $wgWizNewData);
