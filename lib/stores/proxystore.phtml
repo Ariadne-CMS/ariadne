@@ -492,6 +492,22 @@ class proxystore {
 	}
 
 
+	function set_nextid($path,$next) {
+	/**********************************************************************
+
+		'private' function of the store. Used by link and save.
+		This function calculates and returns the next unused id (number) for 
+	the given path. 
+
+	**********************************************************************/
+		global $AR;
+		debug("proxyset_nextid($path, $next)","all");
+		$result = $AR->stores[$this->key]->set_nextid($path,$next);
+		$this->error = $AR->stores[$this->key]->error;
+		debug("proxyset_nextid: end","all");
+		return $result;
+	}
+
 	function nextid($path) {
 	/**********************************************************************
 
