@@ -1722,6 +1722,10 @@ class pobject extends object { // pobject class definition
 		return $object;
 	}
 
+	function _is_supported($feature) {
+		return $this->store->is_supported($feature);
+	}
+
 	/*
 		since the preg_replace() function is able to execute normal php code
 		we have to intercept all preg_replace() calls and parse the
