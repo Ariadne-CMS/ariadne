@@ -56,10 +56,10 @@
 
 			$FTP->DC["transfered"]=0;
 			if ($FTP->DC["mode"]==="active") {
-				$socket=socket(AF_INET, SOCK_STREAM, 0);
+				$socket=socket_create(AF_INET, SOCK_STREAM, 0);
 				if ($socket>=0) {
 					debug("ftp: opened socket");
-					$result=connect($socket, $FTP->DC["address"], $FTP->DC["port"]);
+					$result=socket_connect($socket, $FTP->DC["address"], $FTP->DC["port"]);
 					if ($result < 0) {
 						ftp_Tell(425, "Couldn't build data connection (rm: connection error: ".strerror($result).")");
 						$result=false;
@@ -74,7 +74,9 @@
 				}
 			} else {
 				// do passive mode
-				$msgsocket=accept_connect($FTP->DC["socket"]);
+				debug("ftp::OpenDC waiting on socket accept"); 
+				$msgsocket=socket_accept($FTP->DC["socket"]);
+				debug("ftp::OpenDC socket accepted? (".$msgsocket.")");
 				if ($msgsocket < 0) {
 					ftp_Tell(425, "Couldn't build data connection (rm: socket error: ".strerror($socket).")");
 					$result=false;
@@ -85,6 +87,7 @@
 					$FTP->DC["msgsocket"]=$msgsocket;
 					$result=true;
 				}
+				socket_close($FTP->DC["socket"]);
 			}
 
 			if ($result) {
@@ -106,22 +109,23 @@
 		global $FTP;
 			// client issued 'pasv' command
 			// so lets try to bind a socket to a port
-			$socket=socket(AF_INET, SOCK_STREAM, 0);
+			$socket=socket_create(AF_INET, SOCK_STREAM, 0);
 			if ($socket>=0) {
 				debug("ftp: open socket (pasv mode)");
 
 				// FIXME: make this configurable!
-				$notbound=1;
+				$bound=0;
 				$port=12000;
-				while ($notbound && $port<=12100) {
-					$notbound=bind($socket, $FTP->server_ip, $port);
-					if ($notbound) {
+				while (!$bound && $port<=12100) {
+					$bound=socket_bind($socket, $FTP->server_ip, $port);
+					debug("ftp::pasv socket_bind port $port ($bound)");
+					if (!$bound) {
 						$port++;
 					}
 				}
 
-				if (!$notbound) {
-					$ret=listen($socket, 1);
+				if ($bound) {
+					$ret=socket_listen($socket, 1);
 					if ($ret < 0) {
 						ftp_Tell(425, "Couldn't build data connection (rm: socket error:".strerror($socket).")");
 					} else {
@@ -148,7 +152,7 @@
 		global $FTP;
 
 			if (strlen($data)) {
-				debug("ftp::WriteDC($data) (".strlen($data).")");
+				debug("ftp::WriteDC([data]) (".strlen($data).")");
 				if ($FTP->DC["type"]==="A") {
 					$offset = 0;
 					$chunk = substr($data, $offset, 4096);
@@ -156,7 +160,7 @@
 						$chunk=str_replace("\n", "\r\n", $chunk);
 						$len = strlen($chunk);
 						debug("ftp_WriteDC:: writing chunk([chunk], $offset, 4096) (".$len.")");
-						if (!write($FTP->DC["msgsocket"], $chunk, $len)) {
+						if (!socket_write($FTP->DC["msgsocket"], $chunk, $len)) {
 							debug("ftp_WriteDC:: chunk ERROR write $len bytes!");
 							$chunk = false;
 						} else {
@@ -170,8 +174,8 @@
 				} else {
 					$len=strlen($data);
 					debug("ftp_WriteDC:: writing len (".$len.")");
-					if (!write($FTP->DC["msgsocket"], $data, $len)) {
-						debug("ftp_WriteDC:: ERROR write $len bytes!");
+					if (!socket_write($FTP->DC["msgsocket"], $data, $len)) {
+						debug("ftp_WriteDC:: ERROR writing $len bytes!");
 					} else {
 						debug("ftp_WriteDC:: success");
 					}
@@ -184,16 +188,15 @@
 
 		function ftp_ReadDC() {
 		global $FTP;
-			$data="";
-			read($FTP->DC["msgsocket"], $data, 3000, PHP_BINARY_READ);
+			$data = socket_read($FTP->DC["msgsocket"], 3000, PHP_BINARY_READ);
 			if (strlen($data) && ($FTP->DC["type"]==="A")) {
 				if ($data[strlen($data)-1]==="\r") {
-					read($FTP->DC["msgsocket"], $postdata, 1, PHP_BINARY_READ);
+					$postdata = socket_read($FTP->DC["msgsocket"], 1, PHP_BINARY_READ);
 					$data.=$postdata;
 				}
 				$data=str_replace("\r\n", "\n", $data);
-				debug("ftp::ReadDC([ASCII]) ($data) (".strlen($data).")");
 			}
+			debug("ftp::ReadDC() (".strlen($data).")");
 			$FTP->DC["transfered"]+=strlen($data);
 			return $data;
 		}
@@ -211,7 +214,7 @@
 			$con=$FTP->DC["msgsocket"];
 			if ($con) {
 				debug("ftp::CloseDC:: closing connection");
-				close($con);
+				socket_close($con);
 				debug("ftp::CloseDC:: connection closed");
 			}
 		}
@@ -253,6 +256,7 @@
 					break;
 					case 'PWD':
 						$dir="/-".$FTP->listMode."-".$FTP->cwd;
+						$dir=substr($dir,0,-1);
 						ftp_Tell(257, "\"$dir\" is current directory.");
 					break;
 					case 'HELP':
@@ -260,7 +264,7 @@
 					break;
 					case 'PORT':
 						$FTP->DC["mode"]="active";
-						$host=explode(",",$args[0]);
+						$host=explode(",",$args);
 						$address=$host[0].".".$host[1].".".$host[2].".".$host[3];
 						$FTP->DC["address"]=$address;
 						$port=((int)$host[4]) << 8;
@@ -284,7 +288,7 @@
 						}
 					break;
 					case 'CWD':
-						$path=$FTP->store->make_path($FTP->site.$FTP->cwd, $args[0]);
+						$path=$FTP->store->make_path($FTP->site.$FTP->cwd, $args);
 						while (ereg('/-([^/]*)-/', $path, $regs) && $regs[1]) {
 							$FTP->listMode=$regs[1];
 							$path=str_replace("/-".$FTP->listMode."-/", "/", $path);
@@ -308,16 +312,16 @@
 					break;
 
 					case 'TYPE':
-						if (eregi('a|i', $args[0])) {
-							$FTP->DC["type"]=strtoupper($args[0]);
-							ftp_Tell(200, "Type set to ".$args[0]);
+						if (eregi('a|i', $args)) {
+							$FTP->DC["type"]=strtoupper($args);
+							ftp_Tell(200, "Type set to ".$args);
 						} else {
-							ftp_Tell(500, "Type $args[0] not valid");
+							ftp_Tell(500, "Type $args not valid");
 						}
 					break;
 
 					case 'RNFR':
-						$rename_src_path = $args[0];
+						$rename_src_path = $args;
 						ftp_TranslatePath($rename_src_path, $rename_src_listMode);
 						if ($listMode === "templates") {
 							ftp_TranslateTemplate($rename_src_path, $rename_src_template);
@@ -346,11 +350,11 @@
 
 					case 'RNTO':
 						if ($rename_src_path) {
-							$rename_dest_path = $args[0];
+							$rename_dest_path = $args;
 							ftp_TranslatePath($rename_dest_path, $rename_dest_listMode);
 							if ($rename_dest_listMode === $rename_src_listMode) {
 								if ($rename_dest_listMode === "templates") {
-									$temp = $args[0];
+									$temp = $args;
 									if ($temp[strlen($temp)-1] === "/") {
 										$rename_dest_template = $rename_src_template;
 									} else {
@@ -358,7 +362,7 @@
 									}
 									$do_move = $FTP->store->exists($rename_dest_path);
 								} else {
-									$temp = $args[0];
+									$temp = $args;
 									if ($FTP->store->exists($rename_dest_path)) {
 										$parent = $FTP->store->make_path($rename_src_path, "..");
 										$file = substr($rename_src_path, strlen($parent));
@@ -386,7 +390,7 @@
 									}
 									$rename_src_path = "";
 								} else {
-									ftp_Tell(550, "Object [".$args[0]."] does already exist.");
+									ftp_Tell(550, "Object [".$args."] does already exist.");
 								}
 							} else {
 								ftp_Tell(550, "Moving objects between different modeses is not supported (yet).");
@@ -397,13 +401,19 @@
 					break;
 
 					case 'RETR':
-						$path=$args[0];
+						$path=$args;
 						ftp_TranslatePath($path, $listMode);
 						switch ($listMode) {
 							case "templates":
 								$reqpath = $path;
 								ftp_TranslateTemplate($path, $template);
 								$getmode = "templates";
+								
+								$result = @current(
+											$FTP->store->call("ftp.template.exists.phtml", 
+																Array("arRequestedTemplate" => $template),
+																$FTP->store->get($path)));
+								$file_size = $result["size"];
 							break;
 							default:
 								$getmode = "files";
@@ -415,7 +425,7 @@
 						if (ftp_OpenDC()!==false) {
 							if ($FTP->store->exists($path)) {
 
-								ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ASCII' : 'BINARY')." mode data connection for $args[0] (".strlen($file_data)." bytes)");
+								ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ASCII' : 'BINARY')." mode data connection for $args ($file_size bytes)");
 								$FTP->store->call("ftp.$getmode.get.phtml", array("arRequestedTemplate" => $template),
 											$FTP->store->get($path));
 								debug("ftp::get::going to close dc");
@@ -431,10 +441,9 @@
 
 					case 'NLST':
 					case 'LIST':
-						$args[0]=ereg_replace('-[^[:space:]]+[[:space:]]*', '', chop($args[0]));
-						$path=$args[0];
+						$args=ereg_replace('-[^[:space:]]+[[:space:]]*', '', chop($args));
+						$path=$args;
 						ftp_TranslatePath($path, $listMode);
-
 						debug("ftp: LIST path=$path, mode=$listMode");
 						if ($FTP->store->exists($path)) {
 
@@ -442,7 +451,6 @@
 							if (ftp_OpenDC()!==false) {
 
 								debug("ftp: listing ($path) ($listMode)");
-
 								if ($listMode!=="files") {
 									$mode["filename"]="-files-";
 									$mode["date"]=time();
@@ -514,13 +522,31 @@
 								debug("ftp: could not connect");
 							}
 						} else {
-							ftp_Tell(550, "Directory not found");
+							ftp_TranslateTemplate($path, $template);
+							debug("ftp::list maybe it's a template? ($path, $template)");
+							$result = @current($FTP->store->call("ftp.template.exists.phtml", 
+												Array("arRequestedTemplate" => $template),
+												$FTP->store->get($path)));
+
+							if (is_array($result)) {
+								ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ASCII' : 'BINARY')." mode data connection");
+								if (ftp_OpenDC()!==false) {
+									echo ftp_GenListEntry($result);								
+									ftp_CloseDC();
+									ftp_Tell(226, "Transfer complete");
+								} else {
+									ftp_Tell(550, "Could not connect to client");
+									debug("ftp: could not connect");
+								}
+							} else {
+								ftp_Tell(550, "Directory not found");
+							}
 						}
 					break;
 
 					case 'RMDIR':
 					case 'DELE':
-						$target = $args[0];
+						$target = $args;
 						ftp_TranslatePath($target, $listMode);
 
 						debug("ftp: removing $target");
@@ -550,7 +576,7 @@
 					break;
 
 					case 'STOR':
-						$target = $args[0];
+						$target = $args;
 						ftp_TranslatePath($target, $listMode);
 						$path = $FTP->store->make_path($target, "..");
 
@@ -614,9 +640,9 @@
 					break;
 
 					case 'MKD':
-						$path=ereg_replace('/-[^/]*-/', "/", $args[0]);
+						$path=ereg_replace('/-[^/]*-/', "/", $args);
 						eregi('^([/][^/]+[/])?(.*)$', $path, $regs);
-						$arNewFilename=$regs[2];
+						$arNewFilename=eregi_replace('[^.a-z0-9_-]', '_', $regs[2]);
 
 						$path=$FTP->store->make_path($FTP->site.$FTP->cwd, $path);
 						$parent=$FTP->store->make_path($path, "..");
@@ -668,11 +694,11 @@
 			while (!$AR->user) {
 				ftp_FetchCMD($cmd, $args);
 				if ($cmd==="USER") {
-					$login=$args[0];
+					$login=$args;
 					ftp_Tell(331, "Password required for '$login'");
 					ftp_FetchCMD($cmd, $args);
 					if ($cmd=="PASS") {
-						$password=$args[0];
+						$password=$args;
 						debug("ftp: auth ($login, $password)");
 						// do authentication
 						// ftp_Tell(230, "User '$this->user' logged in.");
@@ -708,7 +734,7 @@
 								} else {
 									if ($AR->user->data->login==="admin" || $AR->user->CheckLogin("ftp")) {
 										$FTP->site="";
-										$FTP->cwd=$user->path;
+										$FTP->cwd="/";
 										$this->user=$login;
 									} else {
 										ftp_Tell(530, "Login incorrect: (user) permission denied");
@@ -738,11 +764,10 @@
 			do {
 				$data=fgets($FTP->stdin, 2000);
 				debug("ftp: client:: '$data'");
-				if (eregi('^([a-z]+)([[:space:]]+([^[:space:]]+))?([[:space:]]+([^[:space:]]+))?[[:space:]]*', $data, $regs)) {
+				if (eregi('^([a-z]+)([[:space:]]+(.*))?', $data, $regs)) {
 					$cmd=strtoupper($regs[1]);
-					$args[0]=$regs[3];
-					$args[1]=$regs[5];
-					debug("ftp: cmd ($cmd) arg0 ($args[0]) arg1 ($args[1])");
+					$args=chop($regs[3]);
+					debug("ftp: cmd ($cmd) arg ($args)");
 				} else {
 					$cmd="";
 					exit;
@@ -852,11 +877,11 @@
 	$store=new $inst_store(".", $store_config);
 
 	// fill in your own server ip number:
-	$FTP->server_ip = "your.ip.number";
-
+	$FTP->server_ip = "217.114.97.244";
 	$FTP->host = "muze.nl";
 	$FTP->store = &$store;
-	$FTP->listMode = "objects";
+	// default listMode ( files, objects or templates )
+	$FTP->listMode = "files";
 
 	// default type is ASCII
 	$FTP->DC["type"] = "A";
@@ -895,6 +920,5 @@
 	} else {
 		$FTP->error="Could not open stdin";
 	}
-	ob_end_clean();
 	debugoff();
 ?>
