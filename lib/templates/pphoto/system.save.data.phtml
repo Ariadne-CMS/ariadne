@@ -75,10 +75,10 @@
 				$tempfile=ereg_replace("[\\\/]","",$tempfile); // make sure nobody gets /etc/passwd			
 				$tempfile=$this->store->files."temp/".$tempfile;
 				if (file_exists($tempfile)) {	
-					$path=$this->store->files."files".$this->path;
-					$this->MkDir("files".$this->path);
-					copy($tempfile, $path."view=");
-					unlink($tempfile);
+					$f_store=$this->store->get_filestore("files");
+					$f_store->copy_to_store($tempfile, $this->id, "file");
+					$f_store->close();
+					@unlink($tempfile);
 					if (!$this->data->mimetype=$this->getdata("mimetype","none")) {
 						$this->data->mimetype=$this->getdata("file_type","none");
 					}
@@ -94,13 +94,10 @@
 			$this->data->mime["type"]=$temp[0];
 			$this->data->mime["subtype"]=$temp[1];
 
-			$imgfile=$this->store->files."files".$this->path."view=";
-			$this->data->thumbwidth=$thumbwidth=$newthumbwidth;
-			$this->data->thumbheight=$thumbheight=$newthumbheight;
-			$this->data->thumbcolor=$thumbcolor=$newthumbcolor;
-			$thumbfile=$this->store->files."files".$this->path."view.thumb=";	
-
-			include($this->store->code."includes/create.thumb.phtml");
+			$this->data->thumbwidth=$this->getdata("newthumbwidth", "none");
+			$this->data->thumbheight=$this->getdata("newthumbheight", "none");
+			$this->data->thumbcolor=$this->getdata("newthumbcolor", "none");
+			$this->call("system.save.thumb.phtml");
 
 			$properties["mimetype"][0]["type"]="'".AddSlashes($this->data->mime["type"])."'";
 			$properties["mimetype"][0]["subtype"]="'".AddSlashes($this->data->mime["subtype"])."'";

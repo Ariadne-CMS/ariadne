@@ -12,24 +12,13 @@
 
 	******************************************************************/
 	$ARCurrent->nolangcheck=true;
-	if	($this->CheckLogin("read")	&&	$this->CheckConfig($arCallFunction,	$arCallArgs))	{
-		if	(($width &&	($width!=$this->getdata("thumbwidth")))	
-			|| ($height && ($height!=$this->getdata("thumbheight"))))	{
-			$imgfile=$this->store->files."files".$this->path."/view=";
-			$thumbfile="";
-			$thumbwidth=$width;	$thumbheight=$height;
-			$thumbcolor=($color) ? $color : "CCCCCC";
-			ldSetContent("image/png");
-			include($this->store->code."includes/create.thumb.phtml");
-		} else {
-			$file=$this->store->files."files".$this->path."/view.thumb=";
-			if (file_exists($file)) {
-				if (ldSetContent("image/png")) {
-					readfile($file);
-				} else {
-					$this->call("view.thumb.error.html");
-				}	
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		if (ldSetContent("image/png")) {
+			$f_store=$this->store->get_filestore("files");
+			if (!$f_store->show($this->id, "file.thumb")) {
+				$this->call("view.thumb.error.html");
 			}
+			$f_store->close();
 		}
 	}
 ?>
