@@ -32,7 +32,7 @@
 	</td><td>
 		<input type="text" name="filename" style="width: 200;" value="<?php echo $this->path; ?>">
 	</td><td>
-		&nbsp;&nbsp;<input type="button" name="open" style="width: 75px" value="<?php echo $ARnls["open"]; ?>" onClick="top.opener.wgBrowseResult.value=this.form.filename.value; top.close();">
+		&nbsp;&nbsp;<input type="button" name="open" style="width: 75px" value="<?php echo $ARnls["open"]; ?>" onClick="if (top.doSubmit) { top.doSubmit(this.form.filename.value); } else { top.opener.wgBrowseResult.value=this.form.filename.value; top.close(); }">
 	</td>
 </tr><tr>
 	<td>

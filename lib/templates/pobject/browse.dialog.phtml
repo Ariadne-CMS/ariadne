@@ -1,0 +1,96 @@
+<?php
+	/******************************************************************
+	 browse.dialog.phtml                                          Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $filter, $path, $mode, $title
+	 Grant needed: read
+	 Global variables: none
+
+	 This templates sets up the frame set for the entire browse dialog.
+	 It is called by the browse widget.
+
+	 $filter can either be empty or a valid argument for the 
+	   object.implements search criteria.
+	 $path is the starting path of the browse dialog. If it doesn't 
+	   exist the path of this object is used instead.
+	 $mode can either be 'list','details' or 'web' (FIXME: not yet implemented)
+	 $title is the title of the window.
+
+	 no result
+
+	******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+?><html>
+<head>
+<title><?php echo $title; ?></title>
+<script language="javascript">
+<!--
+	CurrentPath=window.dialogArguments['path'];
+	CurrentViewMode=window.dialogArguments['mode'];
+	CurrentFilter=window.dialogArguments['filter'];
+	CurrentFilename=window.dialogArguments['filename'];
+	window.title=window.dialogArguments['title'];
+
+	function View(path) {
+		CurrentPath=path;
+		top.browsemiddle.rightnav.location="<?php
+		echo $this->store->root; ?>"+path+"browse.nav."+
+			CurrentViewMode+".phtml?filter="+escape(CurrentFilter);
+		top.browsemiddle.leftnav.location="<?php
+		echo $this->store->root; ?>"+path+"browse.nav.phtml";
+		top.browsebottom.document.selectform.filename.value=path;
+		top.browsebottom.showFilename();
+	}
+
+	function ViewLoaded(path,name) {
+		if (top.browsetop && top.browsetop.loaded) {
+			top.browsetop.View(path,name);
+		}
+	}
+
+	function ViewMode(mode) {
+		CurrentViewMode=mode;
+		View(CurrentPath);
+	}
+
+	function New() {
+		top.browsemiddle.rightnav.location="<?php
+		echo $this->store->root; ?>"+CurrentPath+"classic.new.phtml?arReturnPage="+
+		"<?php echo $this->store->root; ?>"+
+		CurrentPath+"browse.nav."+CurrentViewMode+".phtml";
+	}
+
+	function filter(type) {
+		CurrentFilter=type;
+		View(CurrentPath);
+	}
+
+	function doSubmit(path) {
+		var arr=new Array();
+		arr['path']=path;
+		window.returnValue=arr;
+		window.close();
+	}
+//-->
+</script>
+<script src="<?php echo $AR->dir->www; ?>widgets/window/savesize.js"></script>
+<style>
+	FRAMESET, FRAME {
+		BORDER: 0;
+	}
+</style>
+</head>
+<script>
+  document.write('<frameset rows="30,*,70" border="0">\n');
+  document.write('	<frame name="browsetop" border="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0"\n'); 
+  document.write('		src="<?php echo $this->store->root; ?>'+CurrentPath+'browse.top.phtml?filter='+escape(CurrentFilter)+'">\n');
+  document.write('	<frame name="browsemiddle" border="0" frameborder="0"\n'); 
+  document.write('		src="<?php echo $this->store->root; ?>'+CurrentPath+'browse.middle.phtml?filter='+escape(CurrentFilter)+'">\n');
+  document.write('	<frame name="browsebottom" border="0" frameborder="0" marginwidth="0" marginheight="0" border="0" scrolling="no"\n');
+  document.write('		src="<?php echo $this->store->root; ?>'+CurrentPath+'browse.bottom.phtml?filename='+escape(CurrentFilename)+'&filter='+escape(CurrentFilter)+'">\n');
+  document.write('</frameset>\n');
+</script>
+</html>
+<?php
+	}
+?>
