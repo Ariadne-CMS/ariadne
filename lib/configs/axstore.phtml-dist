@@ -31,7 +31,7 @@
     $tar_cmd                            = $ariadne_root."bin/tar.exe ".$compress_cmd;
     $ax_config["tar_error_handler"]     = "";
   } else {
-    $tar_cmd                            = "tar";
+    $tar_cmd                            = "tar -z ";
     $ax_config["tar_error_handler"]     = " 2> %s ";
   }
   $ax_config["tar_tar"]               = $tar_cmd." -c -C %s %s -f %s %s";
