@@ -77,6 +77,10 @@ class pobject extends object { // pobject class definition
 
 		// callstack is needed for getvar()
 		$ARCurrent->arCallStack[]=&$arCallArgs;
+		// pass the context on to this object (is the calling template a php or pinp template?).
+		$this->arCallingContext=@end($AR->CallLevelStack);
+		// keep track of the context (php or pinp) in which the called template runs. call always sets it php, CheckConfig sets it to pinp if necessary.
+		$AR->CallLevelStack[]='php';
 		if (is_string($arCallArgs)) {
 			Parse_str($arCallArgs);
 		} else if (is_array($arCallArgs)) {
@@ -155,6 +159,7 @@ class pobject extends object { // pobject class definition
 			}
 		}
 		array_pop($ARCurrent->arCallStack);
+		array_pop($AR->CallLevelStack);
 		debug("pobject: call: end","all","all","OUT");
 		if (isset($ARCurrent->arResult)) {
 			// pinp templates can return results via putvar("arResult",$result);
@@ -909,6 +914,9 @@ class pobject extends object { // pobject class definition
 					// as the first template (in the url) will first trigger the language
 					// choice dialogue instead.
 					$ARCurrent->arCallStack[]=$arCallArgs;
+					// start running a pinp template
+					$AR->CallLevelStack[]='pinp';
+//					echo $this->path.$arCallFunction.":pinp\n"; // frop
 					if (isset($this->data->nls->list[$reqnls])) {
 						// the requested language is available.
 						$this->nlsdata=$this->data->$nls;
@@ -945,6 +953,8 @@ class pobject extends object { // pobject class definition
 						
 					}
 					array_pop($ARCurrent->arCallStack);
+					array_pop($AR->CallLevelStack);
+//					echo $this->path.$arCallFunction."<<pinp\n"; // frop
 					return false;
 				} else {
 					debug("pobject: CheckConfig: no such file: $arCallTemplate","all");
