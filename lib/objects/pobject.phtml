@@ -982,8 +982,6 @@ class pobject extends object { // pobject class definition
 		$lastcheckedpath="";
 		$arCallClassTemplate = $ARCurrent->arCallClassTemplate;
 
-		$arSearchStack=Array();
-
 		while (!$arCallClassTemplate && !$arCallTemplate && $checkpath!=$lastcheckedpath) {
 			debug("CheckConfig: loop (".$arCallClassTemplate.")(".$arCallTemplate.")(".$checkpath.")!=(".$lastcheckedpath.")","all");
 			$arType=$arCallType;
@@ -1018,8 +1016,6 @@ class pobject extends object { // pobject class definition
 
 				} else {
 
-					$arSearchStack[]=Array("type" => $arType, "path" => $checkpath, "template" => $arCallFunction);
-
 					if (!class_exists($arType)) {
 						$arTemp=$this->store->newobject('.', '.', $arType, new object);
 					} else {
@@ -1046,26 +1042,6 @@ class pobject extends object { // pobject class definition
 			$curr_templates=$ARConfig->cache[$checkpath]->templates;
 		}
 
-		// template caching, trust us
-		if ($arTemplateId && $arSearchStack) {
-			// pointer to original template and type
-			$templatePointer=Array('id'=>$arTemplateId, 'type'=>$arType);
-		} else if (!$arTemplateId) {
-			// flag denoting that the template isn't available, speeds up searches
-			$templatePointer=-1;
-		}
-		if ($templatePointer) {
-			while($entry=array_pop($arSearchStack)) {
-				$ARConfig->cache[$entry['path']]->templates[$entry['type']][$entry['template']][$arTemplateNls]=$templatePointer;
-				/* 
-					The above is a bit of a hack. Normally the templates array should end in an int, the object id where the template
-					is defined. In this case we want to add a pointer to the object id _and_ the original type/class on which
-					the template is defined, since we add it for all other classes that extend it as well, but the filename does
-					contain the original classname/type only. By adding both as an array, we can simply check if the entry is an array,
-					and set the arType and arTemplateId to the correct values again.
-				*/
-			}
-		}
 		debug("CheckConfig: while loop ended","all");
 
 		$result["arTemplateId"] = $arTemplateId;
