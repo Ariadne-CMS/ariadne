@@ -55,7 +55,7 @@
 				include_once($AR->dir->install."/lib/modules/mod_unicode.php");
 				$html=unicode::utf8convert($html);
 			}
-			$html = eregi_replace('(<?xml:namespace[^/]*office[^/]*/>)', '', $html);
+			$html = eregi_replace('(<[?]xml:namespace[^/]*office[^/]*/>)', '', $html);
 
 			$file = tempnam($config["temp"],'tidy-php-tmp');
 			$errfile = tempnam($config["temp"],'tidy-php-err');
