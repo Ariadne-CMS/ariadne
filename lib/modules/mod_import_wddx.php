@@ -242,6 +242,19 @@ class import_wddx {
 												{
 													$object->data->templates[$type][$function][$language] = $object->id;
 												}
+												else { // remove pinp template from default templates list
+													if (isset($object->data->templates[$type][$function][$language])) {
+														unset($object->data->templates[$type][$function][$language]);
+														if (count($object->data->templates[$type][$function])==0) {
+															unset($object->data->templates[$type][$function]);
+															if (count($object->data->templates[$type])==0) {
+																unset($object->data->templates[$type]);
+															}
+
+														}
+													}
+												}
+
 											}
 										}else
 										{
@@ -256,6 +269,18 @@ class import_wddx {
 											if( $objdata['data']->templates[$type][$function][$language] === $objdata['id'])
 											{
 												$object->data->templates[$type][$function][$language] = $object->id;
+											}
+											else { // remove pinp template from default templates list
+												if (isset($object->data->templates[$type][$function][$language])) {
+													unset($object->data->templates[$type][$function][$language]);
+													if (count($object->data->templates[$type][$function])==0) {
+														unset($object->data->templates[$type][$function]);
+														if (count($object->data->templates[$type])==0) {
+															unset($object->data->templates[$type]);
+														}
+
+													}
+												}
 											}
 										}
 									}
