@@ -81,7 +81,7 @@
 			}
 		}
 
-		function showLink($path, $extra='') {
+		function showLink($path='', $extra='') {
 			if (edit::getEditMode()) {
 				echo "<a href='".$this->make_url($path).edit::getEditTemplate()."' $extra target='".edit::getEditTarget()."'>";
 			} else {
@@ -89,7 +89,7 @@
 			}
 		}
 
-		function showEditableLink($path, $extra='', $url=false) {
+		function showEditableLink($path='', $extra='', $url=false) {
 			if (edit::getEditMode()) {
 				echo "<a onClick=\"event.cancelBubble=true\" onDblClick=\"top.location='".$this->make_url($path).edit::getEditTemplate()."'\" $extra>";
 			} else {
@@ -100,9 +100,9 @@
 			}
 		}
 		
-		function showHref($path) {
+		function showHref($path='', $extra='') {
 			if (edit::getEditMode()) {
-				echo "href='".$this->make_url($path).edit::getEditTemplate()."' target='".edit::getEditTarget()."'";
+				echo "href='".$this->make_url($path).edit::getEditTemplate()."' $extra target='".edit::getEditTarget()."'";
 			} else {
 				echo "href='".$this->make_url($path)."'";
 			}
