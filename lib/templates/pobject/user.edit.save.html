@@ -13,26 +13,47 @@
   }
 
   function dosave() {
-	var requiredFields=top.window.opener.getRequiredFields();
-    var message='';
-	if (requiredFields) {
-		for (var i=0; i<requiredFields.length; i++) {
-//			var field=top.window.opener.getField(requiredFields[i].fieldId);
-			if (!top.window.opener.getValue(requiredFields[i].fieldId)) {
-				message+=', '+requiredFields[i].title+'( '+i+': '+requiredFields[i].fieldId+')';
-			}			
+   	var message='';
+	var requiredFields=null;
+	if (top.window.opener.getRequiredFields) {
+		requiredFields=top.window.opener.getRequiredFields();
+		if (requiredFields) {
+			for (var i=0; i<requiredFields.length; i++) {
+//				var field=top.window.opener.getField(requiredFields[i].fieldId);
+				if (!top.window.opener.getValue(requiredFields[i].fieldId)) {
+					message+=', '+requiredFields[i].title+'( '+i+': '+requiredFields[i].fieldId+')';
+				}			
+			}
 		}
 	}
 	if (message) {
 		alert('Required fields missing: '+message.substr(2));
 		top.window.close();
 	} else {
-		while (top.window.opener.isDirty()) {
-			if (field = top.window.opener.getDirtyField()) {
-				addFormElement('changes['+field.path+']'+field.name, field.value);
+		var donelist=new Array();
+		var fields=top.window.opener.arFieldList;
+		if (fields && fields.length) {
+			// FIXME: this is a temporary 'fix' to make sure everything is
+			// saved. The change registry is unreliable.
+			for (var i=0; i<fields.length; i++) {
+				if (!donelist[fields[i].path+':'+fields[i].name]) {
+					donelist[fields[i].path+':'+fields[i].name]=true;
+					addFormElement('changes['+fields[i].path+']'+fields[i].name, top.window.opener.getValue(fields[i].fieldId));
+				}
+			}
+			top.window.opener.arChangeRegistry=new Array();
+		} else {
+			if (!top.window.opener.isDirty()) {
+				alert('No changes found, page is not saved.');
+			} else {
+				while (top.window.opener.isDirty()) {
+					if (field = top.window.opener.getDirtyField()) {
+						addFormElement('changes['+field.path+']'+field.name, field.value);
+					}
+				}
 			}
 		}
-	    document.forms[0].submit();
+		document.forms[0].submit();
 	}
   }
 </script>
