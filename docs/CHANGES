@@ -8,8 +8,11 @@ New Features:
 	  this also makes the usage of ob_ functions obsolete. this also reduces the
 	  usage of memory
 	- Updated mod_soap.php with SOAP_Header support.
+	- Added a preference setting for the template editor, normal textarea or helene,
+	  the syntax highlighting editor.
 
 Bugs Fixes:
+	- helene (the syntax highlighting editor) now understands javascript in templates
 	- user.workflow.* didn't set $ARCurrent->nolangcheck, now they do ;-)
 	- toolbar.php new objects were made in the currentsite, changed to current path.
 	- added a upgrade script which fixes the es nls name in objects which still
