@@ -69,7 +69,7 @@
 			if ($tempfile) {
 				$tempfile=ereg_replace("[\\\/]","",$tempfile); // make sure nobody gets /etc/passwd			
 				$tempfile=$this->store->files."temp/".$tempfile;
-				if (file_exists($tempfile)) {	
+				if (file_exists($tempfile)) {
 					$path=$this->store->files."files".$this->path;
 					$this->MkDir("files".$this->path);
 					copy($tempfile, $path."view=");
@@ -81,6 +81,8 @@
 				}
 			} 
 			$this->save();
+		} else {
+			debug("err: $this->error");
 		}
 	}
 ?>
