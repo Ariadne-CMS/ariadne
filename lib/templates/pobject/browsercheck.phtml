@@ -20,7 +20,11 @@
 
 	******************************************************************/
 	global $HTTP_SERVER_VARS;
-	if (eregi(".*msie ([0-9]+).*", $HTTP_SERVER_VARS["HTTP_USER_AGENT"], $regs) && 
+	if (eregi(".*Opera ([0-9]+).*",   $HTTP_SERVER_VARS["HTTP_USER_AGENT"], $regs) &&
+			$regs[1]) {
+		$arResult["id"]="opera";
+		$arResult["version"]=intval($regs[1]);
+	} else if (eregi(".*msie ([0-9]+).*", $HTTP_SERVER_VARS["HTTP_USER_AGENT"], $regs) && 
 			 $regs[1]) {
 		$arResult["id"]="msie";
 		$arResult["version"]=intval($regs[1]);
