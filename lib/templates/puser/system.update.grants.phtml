@@ -1,14 +1,16 @@
 <?php
-  if ($AR->user && ($AR->user->data->login=="admin" || $AR->user->grants["config"])) { // can not be called directly from loader
-    switch($action) {
-      case "delete" :
-          include_once($this->store->code."includes/DelGrant.phtml");
-          $data->usergrants=DelGrant($data->usergrants, $path, $grant);
-  	break;
-      case "add" :
-          $data->usergrants[$path][$grant]=1;
-  	break;
-    }
-    $this->save($this->path, $this->type, $data, "");
-  }
+	if ($AR->user && ($AR->user->data->login=="admin" || $AR->user->grants["config"])) { // can not be called directly from loader
+		switch($action) {
+			case "delete" :
+				unset($data->usergrants[$path][$grant]);
+				if (!@count($data->usergrants[$path])) {
+					unset($data->usergrants[$path]);
+				}
+			break;
+			case "add" :
+				$data->usergrants[$path][$grant]=1;
+			break;
+		}
+		$this->save($this->path, $this->type, $data, "");
+	}
 ?>

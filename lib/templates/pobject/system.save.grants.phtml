@@ -30,8 +30,6 @@
 			}
 		}
 		if (!$this->error) {
-			include_once($this->store->code."includes/DelGrant.phtml");
-
 			// first make sure that the object is clean (data can only be set via 
 			// the defined interface: $arCallArgs)
 			$this->data=@current($this->get(".","system.get.data.phtml"));
@@ -47,7 +45,10 @@
 				}
 			}
 			if ($delete) {
-				$this->data->grants[$type]=DelGrant($this->data->grants[$type], $id, $grant);
+				unset($this->data->grants[$type][$id][$grant]);
+				if (!@count($this->data->grants[$type][$id])) {
+					unset($this->data->grants[$type][$id]);
+				}
 				$result=@current($this->get($path, "system.save.grants.user.phtml", Array(
 								"action"	=> "delete",
 								"path"		=> $this->path,
@@ -81,7 +82,10 @@
 								if ($newgrant!=".") {
 									if (substr($newgrant,0,1)=="-") {
 										$delgrant=substr($newgrant,1);
-										$this->data->grants[$type]=DelGrant($this->data->grants[$type],$id,$delgrant);
+										unset($this->data->grants[$type][$id][$delgrant]);
+										if (!@count($this->data->grants[$type][$id])) {
+											unset($this->data->grants[$type][$id]);
+										}
 										$result=@current($this->get($path, "system.save.grants.user.phtml", Array(
 													"action"	=> "delete",
 													"path"		=> $this->path,

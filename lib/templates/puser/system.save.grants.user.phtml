@@ -31,8 +31,10 @@
 		$this->data=@current($this->get(".","system.get.data.phtml"));
 		switch($action) {
 			case "delete" :
-				include_once($this->store->code."includes/DelGrant.phtml");
-				$this->data->usergrants=DelGrant($this->data->usergrants, $path, $grant);
+				unset($this->data->usergrants[$path][$grant]);
+				if (!@count($this->data->usergrants[$path])) {
+					unset($this->data->usergrants[$path]);
+				}
 				break;
 			case "add" :
 				$this->data->usergrants[$path][$grant]=1;
