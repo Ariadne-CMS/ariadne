@@ -140,6 +140,7 @@ class pobject {
 		$parent=$this->store->make_path($target, "..");
 		if ($this->exists($parent)) {
 /*
+			//FIXME! : copy templates
 			//FIXME: for the moment no grants are copied.
 			// need to check "add" and "config" grants
 			// in the target.
@@ -429,15 +430,19 @@ class pobject {
 		$MAX_LOOP_COUNT=10;
 		if ($ARBeenHere[$this->path][$arCallFunction]<$MAX_LOOP_COUNT) { // protect against infinite loops
 			$ARBeenHere[$this->path][$arCallFunction]+=1;
-			$ARConfig->arCallArgs=$arCallArgs;
-			$ARConfig->template=array();
-			$ARConfig->nls=$AR->nls;
-			$this->parents($this->path, "GetConfig.phtml", "req_type=".$this->type."&req_function=".RawUrlEncode($arCallFunction));
+			//$ARConfig->arCallArgs=$arCallArgs;
+			//$ARConfig->template=array();
+			//$ARConfig->nls=$AR->nls;
+			//$this->parents($this->path, "GetConfig.phtml", "req_type=".$this->type."&req_function=".RawUrlEncode($arCallFunction));
+            if (!$ARConfig->cache[$this->path]) {
+				$this->call("system.get.config.phtml");
+			}
+			$config=$ARConfig->cache[$this->path];
 			// if a default language is entered in a parent and no language is
 			// explicitly selected in the url, use that default. 
 			// The root starts with the system default (ariadne.phtml config file)
-			if ($ARConfig->nls->default && !$ARCurrent->nls) {
-				$this->reqnls=$ARConfig->nls->default;
+			if ($config->nls->default && !$ARCurrent->nls) {
+				$this->reqnls=$config->nls->default;
 				$this->nls=$this->reqnls;
 			}
 			$nls=&$this->nls;
@@ -458,7 +463,7 @@ class pobject {
 			} 
 
 			$ARCurrent->nolangcheck=1;
-			if (($ARConfig->cache && ($ARConfig->cache>0)) &&
+			if (($config->cache && ($config->cache>0)) &&
 				(!$nocache) && ($AR->user->data->login=="public") &&
 				(!$arCallArgs || $AR->OS=="UNIX")) {
 				// caching is on and enabled in loader and user is public.
@@ -471,51 +476,52 @@ class pobject {
 				if ($ARCurrent->nls) {
 					$ARCurrent->filename="/".$ARCurrent->nls.$ARCurrent->filename;
 				}
-				$ARCurrent->cachetime=$ARConfig->cache;
+				$ARCurrent->cachetime=$config->cache;
 				// start output buffering...	
 				ob_start();
-				return true;
-			} else {
-				$nocache=true; // make sure no other parts are cached either;
-				if ($this->data->pinp[$this->type][$arCallFunction][$this->nls]) {
-					unset($ARConfig->template);
-					$ARConfig->template[$this->type][$arCallFunction][$this->nls]=$this->data->pinp[$this->type][$arCallFunction][$this->nls];
-				}
-				if ($ARConfig->template) {
-					$arCallTemplate=$this->store->files."templates".$ARConfig->template[$this->type][$arCallFunction][$this->nls];
-					// check if template exists, if it doesn't exist, then continue the original template that called CheckConfig
-					if (file_exists($arCallTemplate)) { 
-						// check if the requested language exists, if not do not display anything, 
-						// unless otherwise indicated by $ARCurrent->allnls
-						// This triggers only for pinp templates called by other templates,
-						// as the first template (in the url) will first trigger the language
-						// choice dialogue instead.
-						$ARCurrent->arCallStack[]=$arCallArgs;
-						if (isset($this->data->$reqnls)) {
-							// the requested language is available.
-							$this->nlsdata=$this->data->$nls;
-							include($arCallTemplate);
-						} else if (!isset($this->data->nls)) {
-							debug("pobject: CheckConfig: no nls data ","all");
-							// the object has no language support
-							$this->nlsdata=&$this->data;
-							include($arCallTemplate);
-						} else if ($ARCurrent->allnls) {
-							debug("pobject: CheckConfig: no $reqnls, but allnls set","all");
-							// all objects must be displayed
-							// $this->reqnls=$this->nls; // set requested nls, for checks
-							$this->nls=$this->data->nls->default;
-							$this->nlsdata=$this->data->$nls;
-							include($arCallTemplate);
-						}
-						array_pop($ARCurrent->arCallStack);
-						return false;
-					} else {
-						debug("pobject: CheckConfig: no such file: $arCallTemplate","all");
+			}
+			$nocache=true; // make sure no other parts are cached either;
+			if ($this->data->pinp[$this->type][$arCallFunction][$this->nls]) {
+				$config->templates[$this->type][$arCallFunction][$this->nls]=$this->data->pinp[$this->type][$arCallFunction][$this->nls];
+			}
+			if ($config->templates[$this->type][$arCallFunction][$this->nls]) {
+				$arCallTemplate=$this->store->files."templates".$config->templates[$this->type][$arCallFunction][$this->nls];
+				// check if template exists, if it doesn't exist, then continue the original template that called CheckConfig
+				if (file_exists($arCallTemplate)) { 
+					// check if the requested language exists, if not do not display anything, 
+					// unless otherwise indicated by $ARCurrent->allnls
+					// This triggers only for pinp templates called by other templates,
+					// as the first template (in the url) will first trigger the language
+					// choice dialogue instead.
+					$ARCurrent->arCallStack[]=$arCallArgs;
+					if (isset($this->data->$reqnls)) {
+						// the requested language is available.
+						$this->nlsdata=$this->data->$nls;
+						include($arCallTemplate);
+					} else if (!isset($this->data->nls)) {
+						debug("pobject: CheckConfig: no nls data ","all");
+						// the object has no language support
+						$this->nlsdata=&$this->data;
+						include($arCallTemplate);
+					} else if ($ARCurrent->allnls) {
+						debug("pobject: CheckConfig: no $reqnls, but allnls set","all");
+						// all objects must be displayed
+						// $this->reqnls=$this->nls; // set requested nls, for checks
+						$this->nls=$this->data->nls->default;
+						$this->nlsdata=$this->data->$nls;
+						include($arCallTemplate);
 					}
+					array_pop($ARCurrent->arCallStack);
+					return false;
+				} else {
+					debug("pobject: CheckConfig: no such file: $arCallTemplate","all");
 				}
 			}
-		} 
+		} else {
+			error("Max loop count exceeded in ".$this->path.$arCallFunction."?".$arCallArgs);
+			$this->store->close();
+			exit();
+		}
 		debug("pobject: CheckConfig: end","all");
 		return true;
 	}
@@ -563,8 +569,14 @@ class pobject {
 	global $ARCurrent, $HTTP_POST_VARS, $HTTP_GET_VARS;
 
 		debug("pobject: getdata($varname, $nls)","object");
+		$result=false;
 		if ($nls!="none") {
-			if (isset($ARCurrent->$nls->$varname)) {
+            if ($ARCurrent->arCallStack) {
+                Parse_Str(end($ARCurrent->arCallStack));
+            }
+            if (${$nls}[$varname]) {
+                $result=${$nls}[$varname];
+			} else if (isset($ARCurrent->$nls->$varname)) {
 				$result=$ARCurrent->$nls->$varname;
 			} else if (($values=$HTTP_POST_VARS[$nls]) && isset($values[$varname])) {
 				$result=$values[$varname];
@@ -575,12 +587,18 @@ class pobject {
 			} else if (($arStoreVars=$HTTP_GET_VARS["arStoreVars"]) && isset($arStoreVars[$nls][$varname])) {
 				$result=$arStoreVars[$nls][$varname];
 			}
-			if (!isset($result)) {
-				$dummy=$this->data->$nls;
-				$result=$dummy->$varname;
+			if ($result===false) {
+				if (isset($this->data->${nls}->${varname})) {
+					$result=$this->data->${nls}->${varname};
+				}
 			}
 		} else { // language independant variable.
-			if (isset($ARCurrent->$varname)) {
+			if ($ARCurrent->arCallStack) {
+				Parse_Str(end($ARCurrent->arCallStack));
+			}
+			if ($$varname) {
+				$result=$$varname;
+			} else if (isset($ARCurrent->$varname)) {
 				$result=$ARCurrent->$varname;
 			} else if (isset($HTTP_POST_VARS[$varname])) {
 				$result=$HTTP_POST_VARS[$varname];
@@ -590,8 +608,11 @@ class pobject {
 				$result=$arStoreVars[$varname];
 			} else if (($arStoreVars=$HTTP_GET_VARS["arStoreVars"]) && isset($arStoreVars[$varname])) {
 				$result=$arStoreVars[$varname];
-			} else {
-				$result=$this->data->$varname;
+			}
+			if ($result===false) {
+				if (isset($this->data->$varname)) {
+					$result=$this->data->$varname;
+				}
 			}        
 		}
 		return $result;
