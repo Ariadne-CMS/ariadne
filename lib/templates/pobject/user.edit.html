@@ -2,6 +2,12 @@
 	if ( ( 	($this->arIsNewObject && $this->CheckLogin("add")) ||
 			(!$this->arIsNewObject && $this->CheckLogin("edit")) )
         && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		if (!$wgHTMLEditTemplate) {
+			$wgHTMLEditTemplate='user.edit.page.html';
+		}
+		if (!$wgHTMLEditSaveTemplate) {
+			$wgHTMLEditSaveTemplate='user.edit.save.html';
+		}
 		include($this->store->code."widgets/htmledit/toolbar.php");
 	}
 ?>

@@ -1,0 +1,28 @@
+<?php
+	if ($this->CheckLogin('edit') && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+?>
+<html>
+<head>
+<title>Saving Data</title>
+<script>
+  function dosave() {
+    alert(window.opener.getContents("page"));
+    document.forms[0].page.value=window.opener.getContents("page");
+    document.forms[0].submit();
+  }
+</script>
+</head>
+<body bgcolor="#CCCCCC" onLoad="dosave();">
+<font face='Arial,helvetica,sans-serif'>
+<form method='POST' action='edit.page.save.phtml'>
+<input type='hidden' name='page'>
+<input type='hidden' name='ContentLanguage' value='<?php echo $nls; ?>'>
+</form>
+<br>
+Saving Data
+</font>
+</body>
+</html>
+<?php
+	}
+?>
