@@ -800,13 +800,17 @@ class postgresqlstore {
 	}
 
 	function store_run_query(&$query) {
-		debug("store_run_query: $query","store");
+	/**********************************************************************
+
+		`private` function to handle query's and set $this->error when this fails
+
+	**********************************************************************/
+		debug("store_run_query: query=(".$query.")","store");
 		$result = @pg_exec($this->connect_id,$query);
 		$err = pg_errormessage($this->connect_id);
 		if ($err) {
 			$this->error = "ERROR: PostgreSQL: $err";
-			debug("store_run_query: query=$query","store");
-			debug("store_run_query: ".$this->error,"store");
+			debug("store_run_query: error=(".$this->error.")","store");
 			$result = false;
 		}
 		return $result;
@@ -1167,6 +1171,11 @@ class postgresqlstore {
 	}
 
 	function start_transaction(){
+	/**********************************************************************
+
+		'private' function of postgressql store. This will start a transaction.
+
+	**********************************************************************/
 		$query_string = "BEGIN WORK";
 		if($this->store_run_query( $query_string)){
 			$this->transaction = true;
@@ -1175,6 +1184,12 @@ class postgresqlstore {
 	}
 
 	function stop_transaction($how){
+	/**********************************************************************
+
+		'private' function of postgressql store. This will end a transaction when
+		there is a transaction.
+
+	**********************************************************************/
 		if($this->transaction){
 			if($how){
 				$query_string = "COMMIT WORK;";
