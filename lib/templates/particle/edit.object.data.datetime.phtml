@@ -97,7 +97,7 @@
 	}
 	$startdate=$wgDate;
 	include($this->store->code."widgets/date/js.html");
-	include($this->store->code."widgets/date/form.button.html");
+	include($this->store->code."widgets/date/form.html");
 
 ?>
         </td><td>
@@ -122,7 +122,7 @@
 $wgDateName="enddate";
 $wgDate=$enddate;
 include($this->store->code."widgets/date/js.html");
-include($this->store->code."widgets/date/form.button.html");
+include($this->store->code."widgets/date/form.html");
 ?>
         </td><td>
 <?php input_time("endtime",$this->getdata("endtime","none")); ?>

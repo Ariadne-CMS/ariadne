@@ -10,8 +10,7 @@
   $start="object.new.filename.phtml";
   $scenario="edit.object.data.scenario.phtml";
   $datetime="edit.object.data.datetime.phtml";
-  $summary="edit.object.data.summary.phtml";
-  $article="edit.object.data.article.phtml";
+  $summary="edit.object.data.form.phtml";
   $language="edit.object.language.phtml";
   $finish="edit.object.data.save.phtml";
  
@@ -34,13 +33,8 @@
   $i++;
   $arFlow[$i]["title"]=$ARnls["summary"];
   $arFlow[$i]["template"]=$summary;
-  $arFlow[$i]["next"]=$i+1; 
   $arFlow[$i]["prev"]=$i-1; 
 
-  $i++;
-  $arFlow[$i]["title"]=$ARnls["article"];
-  $arFlow[$i]["template"]=$article;
-  $arFlow[$i]["prev"]=$i-1;
   if (count($ARConfig->nls->list)>1) { // just one language available
     $arFlow[$i]["next"]=$i+1;
     $arFlow[$i]["save"]=$i+2;
@@ -59,7 +53,7 @@
   $arFlow[$i]["back"]=$i-1;
   
   $arLanguage=$this->getdata("arLanguage","none");
-  if ($arFlow[0]["current"]==6) { // =edit.object.language.phtml
+  if ($arFlow[0]["current"]==5) { // =edit.object.language.phtml
     $arControl=$this->getdata("wgWizControl","none");
     if ($arControl==$ARnls["prev"]) { // if previous selected, ignore the language select list.
       $arLanguage=$this->getdata("arPrevLanguage","none");
