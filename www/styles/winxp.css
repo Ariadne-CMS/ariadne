@@ -69,10 +69,9 @@ A.unselected {
 	border-left: #ffffff 1px solid;
 	border-right: #ffffff 1px solid;
 	border-top: #C5D2F0 1px solid;
-	width: 192px;
 	margin-bottom: 15px;
 	padding: 3px;
-	overflow: hidden;
+	width: 0%;
 }
 .sidebar_special_section
 {
@@ -81,10 +80,16 @@ A.unselected {
 	border-left: #ffffff 1px solid;
 	border-right: #ffffff 1px solid;
 	border-top: #0C4EB7 1px solid;
-	width: 192px;
 	margin-bottom: 15px;
 	padding: 3px;
-	overflow: hidden;
+	width: 0%;
+}
+.section_content 
+{
+	margin: 0px;
+	border: 0px;
+	padding: 0px;
+	width: 192px;
 }
 .details
 {
