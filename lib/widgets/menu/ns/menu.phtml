@@ -67,7 +67,7 @@
   SubView.addMenuItem('<?php echo $ARnls["m_large"]; ?>', 'javascript:setview(\'large\')');
   SubView.addMenuItem('<?php echo $ARnls["m_details"]; ?>', 'javascript:setview(\'details\')');
   SubView.addSeparator();
-  SubView.addMenuItem('<?php echo $ARnls["m_web"]; ?>', 'javascript:arshow(\'_new\',\'view.html\')');
+  SubView.addMenuItem('<?php echo $ARnls["m_web"]; ?>', 'javascript:arshow(\'_new\',\'<?php echo $this->make_url(); ?>view.html\')');
 
   SubHelp.addMenuItem('<?php echo $ARnls["m_index"]; ?>', 'javascript:arshow(\'help\',\'help.topics.phtml\')');
   SubHelp.addMenuItem('<?php echo $ARnls["m_tutorials"]; ?>', 'javascript:arshow(\'help\',\'help.tutorials.phtml\')');
