@@ -1,3 +1,21 @@
+Ariadne 2.1.1
+Changes in Ariadne since version 2.1
+
+WARNING: Ariadne 2.1 its internal charset has been changed to UTF-8. 
+         If you want to import older .ax files (for upgrades) you
+         need to read the docs/upgrade.txt file first.
+
+New features:
+	- The experimental soap layer now has support for arrays.
+
+Bugs fixed:
+	- Make_url() was fixed, non-existing paths caused an infinite loop.
+	- count_find() was fixed. It now returns more than 100 results if
+	  needed.
+	- Trying to create a new object with an already existing filename
+	  will return errors now.
+
+
 Ariadne 2.1
 Changes in ariadne since version 2.0
 
