@@ -5,7 +5,10 @@
 		$configfile="default.phtml";
 	}
 
-	include("../www/ariadne.inc");
+	if (!@include("../www/ariadne.inc")) {
+		chdir(substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')));
+		include("../www/ariadne.inc");
+	}
 	require($ariadne."/configs/ariadne.phtml");
     require($ariadne."/configs/ftp/$configfile");
 	require($ariadne."/configs/store.phtml");
