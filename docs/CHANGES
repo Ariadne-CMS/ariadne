@@ -23,6 +23,7 @@ Bugs fixed:
 	- Various layout and consistency fixes
 	- Fixed a bug which caused --force to be ignored when other
 	  flags were set in import/export.
+	- Fixed consistency of Win32 and Unix configs
 
 Changes in Ariadne since version 2.1.2
 
