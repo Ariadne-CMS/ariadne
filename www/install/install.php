@@ -126,9 +126,8 @@
 		$AR->user->data->login=$ARLogin="admin";
 
 		$ax_config["writeable"]=false;
-		$ax_config["database"]=$AR->dir->root."install/ariadne.ax";
+		$ax_config["database"]="ariadne.ax";
 		echo "ax file (".$ax_config["database"].")\n";
-		chdir($ariadne_root."bin/");
 		set_time_limit(0);
 		$axstore=new axstore(".", $ax_config);
 		if (!$axstore->error) {
