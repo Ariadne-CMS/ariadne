@@ -28,7 +28,7 @@
 					if ($regs[1]==="implements") {
 						$node["id"]="implements";
 					} else
-					if ($regs[1]==="path" || $regs[1]==="parent") {
+					if ($regs[1]==="path" || $regs[1]==="parent" || $regs[1]==="priority") {
 						$node["table"]="nodes";
 						$node["field"]=$regs[1];
 					} else {
@@ -43,7 +43,7 @@
 						if ($field==="implements") {
 							$node["id"]="implements";
 						} else
-						if ($field==="path" || $field==="parent") {
+						if ($field==="path" || $field==="parent" || $field==="priority") {
 							$node["table"]="nodes";
 							$node["field"]=$field;
 						} else {
