@@ -6,7 +6,7 @@ define("AX_DUMMY", 1);
 define("AX_WITHOUT_DATA", 2);
 define("AX_WITHOUT_TEMPLATES", 4);
 define("AX_WITHOUT_FILES", 8);
-define("AX_VERSION", 1.3);
+define("AX_VERSION", 1.4);
 
 class axstore {
 
@@ -494,6 +494,19 @@ class axstore {
 				$subid=substr("000000000".$subid,-(intval($match[1])));
 			}
 			$path=ereg_replace("\{[0-9]:id\}",strval($subid),$path);
+		}
+
+		if (is_array($properties)) {
+			$edq = AddSlashes('"');
+			$esq = AddSlashes("'");
+			foreach ($properties as $property => $property_records) {
+				foreach ($property_records as $record_id => $record) {
+					foreach ($record as $column => $column_data) {
+						$properties[$property][$record_id][$column] = str_replace($edq, '"', str_replace($esq, "'", $column_data));
+					}
+				}
+			}
+
 		}
 
 		if ($id=$this->exists($path)) { //update
