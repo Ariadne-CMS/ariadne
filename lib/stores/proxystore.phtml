@@ -48,7 +48,6 @@ class proxystore {
 		$this->rootoptions=&$AR->stores[$key]->rootoptions;
 		// otherwise objects included dureing the inisalisation can't find the codebase
 		$this->code = $AR->stores[$key]->code;
-		$this->root = $AR->stores[$key]->root;
 
 		/* Instantiate module locking */
 		include_once($AR->stores[$key]->code."modules/mod_lock/proxy.phtml");
