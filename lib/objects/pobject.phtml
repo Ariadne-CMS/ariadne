@@ -575,7 +575,8 @@ class pobject {
 				$nls=$this->nls;
 			}
 			$file="/".$nls.$this->path.$name."=";
-			if (file_exists($this->store->files."privatecache".$file)) {
+			if ( file_exists($this->store->files."privatecache".$file) &&
+			     (filemtime($this->store->files."privatecache".$file)>time()) ) {
 				debug("cached: $name exists, reading from cache.","all");
 				readfile($this->store->files."privatecache".$file);
 				$result=true;
