@@ -16,86 +16,93 @@
 		    $this->data=@current($this->get(".","system.get.data.phtml"));
 		}
 
-		$scenario=$this->getdata("newscenario","none");
-		$displays=@current($this->get($scenario, "system.get.displays.phtml"));
-		$this->data->priority=$displays->data->priority;
+		$scenario=$this->getdata("scenario","none");
+		if ($scenario && $this->exists($scenario)) {
+			if ($displays=@current($this->get($scenario, "system.get.displays.phtml"))) {
+				$this->data->priority=$displays->data->priority;
 
-		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
-			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
-		} else {
-			if (!$this->data->nls) {
-				// its a new object, no nls data specified yet, create it
-				$this->data->nls=new object;
-			}
-			// data for the default language has been entered, so make sure
-			// it is set as the default language for this object too.
-			$this->data->nls->default=$ARConfig->nls->default;
-			reset($AR->nls->list);
-			while (list($key, $value)=each($AR->nls->list)) {
-				// for each language in the list, get the nls specific data
-				if ($name=$this->getdata("name",$key)) { 
-					// the name is the minimum requirement for an nls aware	object.
-					if (!$this->data->$key) {
-						$newnlsdata=new object;
-					} else {
-						$newnlsdata=$this->data->$key;
+				if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
+					$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+				} else {
+					if (!$this->data->nls) {
+						// its a new object, no nls data specified yet, create it
+						$this->data->nls=new object;
 					}
-					if (strlen($name>$MAX_TITLE_LENGTH)) {
-						$error=sprintf($ARnls["err:titlelength"], $MAX_TITLE_LENGTH);
-						break;
-					} else	{
-						$newnlsdata->name=$name;
-						$properties["name"][]["value"]="'".AddSlashes($name)."'";
-						$properties["text"][]["value"]="'".AddSlashes($name)."'";
-					}
-					$newnlsdata->summary=$this->getdata("summary", $key);
-					$properties["text"][]["value"]="'".AddSlashes(substr($this->getdata("summary", $key),0,255))."'";
+					// data for the default language has been entered, so make sure
+					// it is set as the default language for this object too.
+					$this->data->nls->default=$ARConfig->nls->default;
+					reset($AR->nls->list);
+					while (list($key, $value)=each($AR->nls->list)) {
+						// for each language in the list, get the nls specific data
+						if ($name=$this->getdata("name",$key)) { 
+							// the name is the minimum requirement for an nls aware	object.
+							if (!$this->data->$key) {
+								$newnlsdata=new object;
+							} else {
+								$newnlsdata=$this->data->$key;
+							}
+							if (strlen($name>$MAX_TITLE_LENGTH)) {
+								$error=sprintf($ARnls["err:titlelength"], $MAX_TITLE_LENGTH);
+								break;
+							} else	{
+								$newnlsdata->name=$name;
+								$properties["name"][]["value"]="'".AddSlashes($name)."'";
+								$properties["text"][]["value"]="'".AddSlashes($name)."'";
+							}
+							$newnlsdata->summary=$this->getdata("summary", $key);
+							$properties["text"][]["value"]="'".AddSlashes(substr($this->getdata("summary", $key),0,255))."'";
 
-					$newnlsdata->title=$this->getdata("title", $key);
-					$properties["text"][]["value"]="'".AddSlashes(substr($this->getdata("title", $key),0,255))."'";
+							$newnlsdata->title=$this->getdata("title", $key);
+							$properties["text"][]["value"]="'".AddSlashes(substr($this->getdata("title", $key),0,255))."'";
 
-					if ($page=$this->getdata("page",$key)) {
-						$newnlsdata->page=$page;
-					}
-					$this->data->$key=$newnlsdata;
-					$this->data->nls->list[$key]=$value;
-				} else { // clear language values for $key->name if set, keep the rest, just in case.
-					if ($this->data->$key) {
-						unset($this->data->$key->name);
-						unset($this->data->nls->list[$key]);
+							if ($page=$this->getdata("page",$key)) {
+								$newnlsdata->page=$page;
+							}
+							$this->data->$key=$newnlsdata;
+							$this->data->nls->list[$key]=$value;
+						} else { // clear language values for $key->name if set, keep the rest, just in case.
+							if ($this->data->$key) {
+								unset($this->data->$key->name);
+								unset($this->data->nls->list[$key]);
+							}
+						}
 					}
 				}
+				$this->data->scenario=$scenario;
+
+				$this->data->startdate=$this->getdata("startdate","none");
+				$this->data->enddate=$this->getdata("enddate","none");
+				$this->data->starttime=($this->getdata("starttime_hour","none")*3600)
+										+($this->getdata("starttime_minute","none")*60);
+				$this->data->endtime=($this->getdata("endtime_hour","none")*3600)
+										+($this->getdata("endtime_minute","none")*60);
+				if (!$this->data->published) {
+					$this->data->published=time();
+				}
+				if (!$this->data->author) {
+					$this->data->author=$AR->user->data->name;
+					$this->data->author_path=$AR->user->path;
+				}
+
+				$i=0;
+				@reset($displays);
+				while ((list($display,$val)=@each($displays))) {
+					$scenario_start=$this->data->startdate+$this->data->starttime +($val["start"]*3600*24);
+					$scenario_end=$this->data->enddate+$this->data->endtime+($val["end"]*3600*24);
+					$this->data->sstart[$display]=$scenario_start;
+					$this->data->send[$display]=$scenario_end;
+					$properties["article"][$i]["start"]=$scenario_start;
+					$properties["article"][$i]["end"]=$scenario_end;
+					$properties["article"][$i]["display"]="'".$display."'";
+					$i++;
+				}
+				$properties["published"][0]["value"]=$this->data->published;
+				$this->save($properties);
 			}
+		} else {
+			$this->error="'$scenario' is not a pscenario.";
 		}
-		$this->data->scenario=$scenario;
-
-		$this->data->startdate=$this->getdata("startdate","none");
-		$this->data->enddate=$this->getdata("enddate","none");
-		$this->data->starttime=($this->getdata("starttime_hour","none")*3600)
-								+($this->getdata("starttime_minute","none")*60);
-		$this->data->endtime=($this->getdata("endtime_hour","none")*3600)
-								+($this->getdata("endtime_minute","none")*60);
-		if (!$this->data->published) {
-			$this->data->published=time();
-		}
-		if (!$this->data->author) {
-			$this->data->author=$AR->user->data->name;
-			$this->data->author_path=$AR->user->path;
-		}
-
-		$i=0;
-		@reset($displays);
-		while ((list($display,$val)=@each($displays))) {
-			$scenario_start=$this->data->startdate+$this->data->starttime +($val["start"]*3600*24);
-			$scenario_end=$this->data->enddate+$this->data->endtime+($val["end"]*3600*24);
-			$this->data->sstart[$display]=$scenario_start;
-			$this->data->send[$display]=$scenario_end;
-			$properties["article"][$i]["start"]=$scenario_start;
-			$properties["article"][$i]["end"]=$scenario_end;
-			$properties["article"][$i]["display"]="'".$display."'";
-			$i++;
-		}
-		$properties["published"][0]["value"]=$this->data->published;
-		$this->save($properties);
+	} else {
+		$this->error="Scenario '$scenario' doesn't exist.";
 	}
 ?>
