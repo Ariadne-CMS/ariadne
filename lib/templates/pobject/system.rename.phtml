@@ -35,14 +35,21 @@
 			$this->unlock();
 
 			if (!$this->error) {
-				// FIXME: check add permission in $target
-				$target = $this->store->move($this->path, $target);			
-				if ($target) {
-					$this->path=$target;
-					$this->parent=$parent;
-					$arResult=$target;
+				if (current($this->get($parent, "system.check.grant.phtml", array("grant"=>"add", "modifier"=>$this->type)))) {
+					$this->find($this->path, "", "system.update.user.grants.phtml", array("action"=>"delete"));
+					$target = $this->store->move($this->path, $target);
+					
+					if ($target) {
+						$this->path=$target;
+						$this->parent=$parent;
+						$arResult=$target;
+						$this->find($this->path, "", "system.update.user.grants.phtml", array("config"=>$this->CheckSilent("config")));
+					} else {
+						$this->error=$this->store->error;
+					}
 				} else {
-					$this->error=$this->store->error;
+					$this->error=$ARnls["accessdenied"];
+					// FROP $this->error="Access denied";
 				}
 			}
 		}

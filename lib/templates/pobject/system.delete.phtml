@@ -32,6 +32,8 @@
 						}
 					}				
 				}
+				// clean up the user grants
+				$this->find($this->path, "", "system.update.user.grants.phtml", array("action"=>"delete"));
 				// clear cache
 				$this->ClearCache();
 				// finally remove object itself

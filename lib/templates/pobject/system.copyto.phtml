@@ -43,26 +43,10 @@
 									}
 								}
 							}
-							/*	
-							//FIXME: for the moment no grants are copied.
-							// need to check "add" and "config" grants
-							// in the target.
-							$searchpath["puser"]="/system/users/";
-							$searchpath["pgroup"]="/system/groups/";
-							// first check and copy grants to user/group objects
-							while (list($type, $idlist)=@each($this->data->grants)) {
-								while (list($id, $grants)=@each($idlist)) {
-									while (list($grant, $value)=@each($grants)) {
-										$this->find($searchpath[$type], 
-											Array("login" => Array ( "value" => Array ("=" => "'".AddSlashes($id)."'" ) ) ), 
-											"updategrant.phtml", 
-											Array ( "action" => "add", "path" => $this->path, "grant" => $newgrant) 
-										);
-									}
-								}
-							}
-							*/
+
 							$this->store->save($ARCurrent->newpath, $this->type, $this->data);
+
+							$this->find($ARCurrent->newpath, "", "system.update.user.grants.phtml", array("config"=>$pobject->CheckSilent("config")));
 
 						} // else: first save failed.
 
