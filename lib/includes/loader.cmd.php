@@ -33,53 +33,11 @@
 
     ******************************************************************/
 
-	// debugging functions.
-
-	$DB["all"]=5;
-	$DB["store"]=4;
-	$DB["class"]=3;
-	$DB["object"]=2;
-	$DB["pinp"]=1;
-	$DB["off"]=0;
-	$DB["level"]=$DB["off"];
-	$DB["stream"]="all";
-
-	$DB["file"]="php://stderr";
-
-	function debug($text, $level="pinp", $stream="all", $indent="") {
-		global $DB, $DB_INDENT;
-	 	if ( ($DB["level"]>=$DB[$level]) && (($DB["stream"]=="all") || ($DB["stream"]==$stream))) {
-			if ($indent=="OUT") {
-				$DB_INDENT=substr($DB_INDENT,0,-2);
-			}
-			fwrite($DB["fp"], "$DB_INDENT $level::$stream::$text\n");
-			fflush($DB["fp"]);
-			if ($indent=="IN") {
-				$DB_INDENT.="  ";
-			}
-		}
-	}
-
-	function debugon($level="pinp", $stream="all") {
-		global $DB;
-		if (file_exists($DB["file"])) {
-			$DB["fp"]=fopen($DB["file"], "a+");
-			if ($DB["fp"]) {
-				$DB["level"]=$DB[$level];
-				$DB["stream"]=$stream;
-				debug("Debuglevel: $level Stream: $stream");
-			}
-		}
-	}
-
-	function debugoff() {
-		global $DB;
-		if ($DB["fp"]) {
-			debug("Debugging off.");
-			$DB["level"]=$DB["off"];
-			@fclose($DB["fp"]);
-		}
-	}
+	include_once($store_config['code']."modules/mod_debug.php");
+	
+	$DB["method"]["loader"] = false;
+	$DB["method"]["file"] = true;
+	$DB["file"] = "php://stderr";
 
 	function error($text) {
 		debug("Error: $text");

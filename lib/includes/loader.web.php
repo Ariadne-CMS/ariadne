@@ -33,49 +33,13 @@
 
     ******************************************************************/
 
-	// debugging functions.
-
-	$DB["all"]=5;
-	$DB["store"]=4;
-	$DB["class"]=3;
-	$DB["object"]=2;
-	$DB["pinp"]=1;
-	$DB["off"]=0;
-	$DB["level"]=$DB["off"];
-	$DB["stream"]="all";
-
 	$ERRMODE="htmljs"; // alternative: "text"/"html"/"js"
 
-	function debug($text, $level="pinp", $stream="all", $indent="") {
-		global $DB, $DB_INDENT, $AR;
-		if ( ($DB["level"]>=$DB[$level]) && (($DB["stream"]=="all") || ($DB["stream"]==$stream)) ) {
-			if ($indent=="OUT") {
-				$DB_INDENT=substr($DB_INDENT,0,-2);
-			}
-			if ( ($AR->DEBUG == 'WEB') || ($AR->DEBUG == 'BOTH') ) {
-				echo "$DB_INDENT<b>$level::$stream::$text</b><BR>\n";
-			}
-			if ( ($AR->DEBUG == 'SYSLOG') || ($AR->DEBUG == 'BOTH') ) {
-				syslog(LOG_NOTICE,"(Ariadne) $level::$stream::$text");
-			}
-			flush();
-			if ($indent=="IN") {
-				$DB_INDENT.="  ";
-			}
-		}
-	}
-
-	function debugon($level="pinp", $stream="all") {
-		global $DB;
-		$DB["level"]=$DB[$level];
-		$DB["stream"]=$stream;
-		debug("Debuglevel: $level Debugstream: $stream");
-	}
-
-	function debugoff() {
-		global $DB;
-		debug("Debugging off.");
-		$DB["level"]=$DB["off"];
+	include_once($store_config['code']."modules/mod_debug.php");
+	
+	function debug_print( $text ) {
+		echo "<b>".$text."</b><br>";
+		flush();
 	}
 
 	function error($text) {
