@@ -19,7 +19,7 @@
 			}
 		}
 	}
-	if (count($ARConfig->nls->list)>1) { // more than one language available
+	if (count($configcache->nls->list)>1) { // more than one language available
 		$languages=true;
 		$saveoffset=1;
 	} else {
@@ -87,7 +87,7 @@
 		if (wgWizGetAction($arControl)=="next") {
 			$this->call("system.save.tempfile.phtml");
 			$HTTP_POST_VARS["mimetype"]=$HTTP_POST_VARS["file_type"];
-			while (list($key, $value)=each($ARConfig->nls->list)) {
+			while (list($key, $value)=each($configcache->nls->list)) {
 				$HTTP_POST_VARS[$key]["name"]=$HTTP_POST_VARS["file"];
 			}
 		}
@@ -103,7 +103,7 @@
 		$ARCurrent->arNewFilename=$arNewFilename;
 	}
 	if ($arFlow[0]["current"]==2) { // filename entered
-		while (list($key, $value)=each($ARConfig->nls->list)) {
+		while (list($key, $value)=each($configcache->nls->list)) {
 			$HTTP_POST_VARS[$key]["name"]=$arNewFilename;
 		}
 	}		
