@@ -1,0 +1,43 @@
+<?php
+	$ARnls["xp_new"]					=	"Aggiungi un oggetto";
+	$ARnls["xp_rename"]					=	"Rinomina ";
+	$ARnls["xp_copy"]					=	"Copia ";
+	$ARnls["xp_link"]					=	"Collega ";
+	$ARnls["xp_edit"]					=	"Modifica ";
+	$ARnls["xp_shortcut"]					=	"Modifica collegamento";
+	$ARnls["xp_delete"]					=	"Elimina ";
+	$ARnls["xp_cache"]					=	"Configura cache per ";
+	$ARnls["xp_templates"]					=	"Scegli i template per ";
+	$ARnls["xp_customfields"]				=	"Aggiungi un campo a ";
+	$ARnls["xp_language"]					=	"Scegli la lingua per ";
+	$ARnls["xp_grants"]					=	"Configura i diritti per ";
+	$ARnls["xp_types"]					=	"Scegli il typetree per ";
+	$ARnls["xp_priority"]					=	"Scegli la priorit&agrave; per ";
+	$ARnls["xp_viewweb"]					=	"Visualizza pagina web";
+	$ARnls["xp_view"]					=	"Visualizza oggetto";
+	$ARnls["xp_explore"]					=	"Esplora";
+	
+	//headers
+	$ARnls["xp_settings"]					=	"Settaggi";
+	$ARnls["xp_info"]					=	"Informazioni";
+	$ARnls["xp_detailsH"]					=	"Altro...";
+	$ARnls["xp_browsebyletter"]				=	"Naviga per lettera";
+	$ARnls["xp_browsebydate"]				=	"Naviga per data";
+	
+	//toolbar
+	$ARnls["xp_up"]						= 	"Su";
+	$ARnls["xp_search"]					= 	"Cerca";
+	$ARnls["xp_folders"]					= 	"Cartelle";
+	$ARnls["xp_small"]					= 	"Lista";
+	$ARnls["xp_large"]					= 	"Icone";
+	$ARnls["xp_details"]					= 	"Dettagli";
+	$ARnls["xp_iconview"]					=	"Selezione una vista a icone";
+	$ARnls["xp_import"]					= 	"Importa";
+	$ARnls["xp_export"]					= 	"Esporta";
+	$ARnls["xp_preferences"]				= 	"Preferenze";
+	$ARnls["xp_help"]					= 	"Aiuto";
+	$ARnls["xp_tutorials"]					= 	"Manuali";
+	$ARnls["xp_about"]					= 	"Informazioni";
+
+
+?>
