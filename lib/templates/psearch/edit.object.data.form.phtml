@@ -37,7 +37,7 @@
 				</td>
 			</tr><tr>
 				<td colspan="2">
-					<input type="text" name="<?php echo $selectednls."[name]"; ?>" 
+					<input type="text" name="<?php echo $selectednls."[name]"; ?>" class="inputline"
 						value="<?php $this->showdata("name", $selectednls); ?>">
 				</td>
             </tr><tr>
@@ -61,8 +61,9 @@
 				</td>
 			</tr><tr>
 				<td colspan="2">
-					<input type="text" name="query"
-						value="<?php $this->showdata("query","none"); ?>">
+					<textarea name="query" cols="30" rows="2" wrap="soft" class="smallinputbox"><?php 
+							$this->showdata("query","none");  
+					?></textarea>
 				</td>
 			</tr>
 			</table>

@@ -12,8 +12,8 @@
   }
 
   function dosave() {
-	while (window.opener.isDirty()) {
-		if (field = window.opener.getDirtyField()) {
+	while (top.window.opener.isDirty()) {
+		if (field = top.window.opener.getDirtyField()) {
 			addFormElement('changes['+field.path+']'+field.name, field.value);
 		}
 	}
@@ -21,13 +21,21 @@
   }
 </script>
 </head>
-<body bgcolor="#CCCCCC" onLoad="dosave();">
-<font face='Arial,helvetica,sans-serif'>
+<style>
+  body {
+    height: 100%;
+    width: 100%;
+    margin: 0px;
+    border: 0px;
+    padding: 0px;
+    font: menu;
+    background-color: buttonface;
+  }
+</style>
+<body onLoad="dosave();">
+<p>Saving Data...</p>
 <form method='POST' action='user.edit.save.all.phtml'>
 </form>
-<br>
-Saving Data
-</font>
 </body>
 </html>
 <?php

@@ -258,6 +258,7 @@ class pobject extends object { // pobject class definition
 						if ($this->exists($arNewParent)) {
 							$config = $this->data->config;
 							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+							$wf_object->arIsNewObject=true;
 							$wf_result = $wf_object->call("user.workflow.pre.html", Array("properties" => $properties));
 							$this->priority = $wf_object->priority;
 							$this->data = $wf_object->data;
@@ -340,6 +341,7 @@ class pobject extends object { // pobject class definition
 									$this->id=$this->exists($this->path);
 
 									$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+									$wf_object->arIsNewObject = true;
 									$wf_result = $wf_object->call("user.workflow.post.html", Array("properties" => $properties));
 									$this->priority = $wf_object->priority;
 									$this->data = $wf_object->data;
@@ -919,9 +921,18 @@ class pobject extends object { // pobject class definition
 		if (!$arCallFunction || $ARBeenHere[$this->path][$arCallFunction]<$MAX_LOOP_COUNT) { // protect against infinite loops
 			$ARBeenHere[$this->path][$arCallFunction]+=1;
 			if (!$ARConfig->cache[$this->path]) {
-				$this->get($this->path, "system.get.config.phtml");
+				if (!$this->arIsNewObject) {
+					$this->get($this->path, "system.get.config.phtml");
+					$config=$ARConfig->cache[$this->path];
+				} else {
+					if (!$ARConfig->cache[$this->parent]) {
+						$this->get($this->parent, 'system.get.config.phtml');
+					}
+					$config=$ARConfig->cache[$this->parent];
+				}
+			} else {
+				$config=$ARConfig->cache[$this->path];
 			}
-			$config=$ARConfig->cache[$this->path];
 			$ARConfig->nls=$config->nls;
 			// if a default language is entered in a parent and no language is
 			// explicitly selected in the url, use that default. 

@@ -27,7 +27,7 @@
         </td>
       </tr><tr>
         <td colspan="2">
-          <input type="text" name="<?php echo $selectednls."[name]"; ?>" size="35" 
+          <input type="text" name="<?php echo $selectednls."[name]"; ?>" size="35" class="inputline"
             value="<?php $this->showdata("name", $selectednls); ?>">
         </td>
       </tr><tr>
@@ -36,7 +36,7 @@
         </td>
       </tr><tr>
         <td colspan="2">
-          <input type="text" name="<?php echo $selectednls."[url]"; ?>" size="35" 
+          <input type="text" name="<?php echo $selectednls."[url]"; ?>" size="35" class="inputline"
             value="<?php 
 				if (!$url=$this->getdata("url", $selectednls)) {
 					if (!$this->arIsNewObject && ($selectednls==$this->data->nls->default)) {
@@ -52,7 +52,7 @@
         </td>
       </tr><tr>
         <td colspan="2">
-          <textarea name="<?php echo $selectednls."[summary]"; ?>" cols="30" rows="2" wrap="soft"><?php 
+          <textarea name="<?php echo $selectednls."[summary]"; ?>" cols="30" rows="2" wrap="soft" class="smallinputbox"><?php 
               echo ereg_replace("&","&amp;",$this->getdata("summary", $selectednls)); 
           ?></textarea>
         </td>

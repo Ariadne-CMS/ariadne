@@ -270,6 +270,9 @@ class htmlcleaner
 			if ($part && strstr($part->nodeValue,'<?xml:namespace')===false)
 				$return .= $part->toString();
 		}
+		//FIXME: htmlcleaner removes the '<' in '</htmlcleaner>' if the html code is broken
+		// ie: if the last tag in the input isn't properly closed... it should instead
+		// close any broken tag properly (add quotes and a '>')
 		return str_replace('<htmlcleaner>', '', str_replace('</htmlcleaner>', '', $return));
 	}
 }

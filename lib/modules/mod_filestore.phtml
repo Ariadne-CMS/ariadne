@@ -128,7 +128,7 @@
 		}
 			
 
-		function import($fsId, $fsName, $fsLocalVars="", $fsObject="") {
+		function import($fsId, $fsName, $fsLocalVars="", &$fsObject) {
 			$fsPath=$this->make_path($fsId, $fsName);
 			if (file_exists($fsPath)) {
 				Parse_str($fsLocalVars);
