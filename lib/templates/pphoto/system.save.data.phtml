@@ -9,6 +9,7 @@
 			(!$this->arIsNewObject && $this->CheckLogin("edit")) &&
 			$this->CheckConfig()) {
 		if ($this->arIsNewObject) {
+			$this->data=new object;
 			$filename=$this->getdata("arNewFilename","none");
 			if (!$this->data->mimetype=$this->getdata("mimetype","none")) {
 				$this->data->mimetype=$this->getdata("file_type","none");

@@ -5,6 +5,8 @@
 
 		if (!$this->arIsNewObject) {
 		    $this->data=@current($this->get(".","system.get.data.phtml"));
+		} else {
+			$this->data=new object;
 		}
 
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path

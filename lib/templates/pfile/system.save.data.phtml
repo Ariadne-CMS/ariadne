@@ -8,6 +8,7 @@
 	if ( ( $this->arIsNewObject && $this->CheckLogin("add") ) ||
 			 ( !$this->arIsNewObject && $this->CheckLogin("edit") ) ) {
 		if ($this->arIsNewObject) {
+			$this->data=new object;
 			$filename=$this->getdata("arNewFilename","none");
 			if (!$this->data->mimetype=$this->getdata("mimetype","none")) {
 				$this->data->mimetype=$this->getdata("file_type","none");
