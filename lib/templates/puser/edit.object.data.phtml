@@ -34,7 +34,13 @@
 		$wgWizFlow[$i]["title"]=$ARnls["data"];
 		$wgWizFlow[$i]["template"]=$start;
 		$wgWizFlow[$i]["next"]=$i+1;
-		$wgWizFlow[$i]["save"]=$i+3+$customoffset;
+		if ($this->CheckSilent("config")) {
+			/* include the 'groups' template */
+			$wgWizFlow[$i]["save"]=$i+3+$customoffset;
+		} else {
+			/* skip the 'groups' template */
+			$wgWizFlow[$i]["save"]=$i+2+$customoffset;
+		}
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["preferences"];
 		$wgWizFlow[$i]["template"]=$preferences;
