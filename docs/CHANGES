@@ -32,6 +32,11 @@ New features:
 	- Added Swedish translation by Niklas Koskela.
 	- Added configurable save option to the user.edit.html toolbar. Just
 	  redefine the user.edit.save.html and user.add.save.html templates.
+	- Added possibility to call functions on objects directly. This 
+	  deprecates the call_object function. PINP will automatically insert
+	  '_' before each function called.
+	- Added PEAR DB wrapper, which allows you to access any database 
+	  supported by PEAR DB, while keeping the store connection secure. 
 		
 Bugs fixed:
 	- Fixed sessions cleanup in the bin/cleanup script. It now removes
