@@ -17,7 +17,8 @@
    so will result in a large performance penalty.
 
   ******************************************************************/
-  if ($this->arCallingContext["scope"]=="pinp") {
+  if (($context=$this->getContext(ARCALLINGCONTEXT)) 
+  		&& $context["scope"]=="pinp") {
     if ($this->CheckLogin('read')) {
       $arResult=$this;
     }

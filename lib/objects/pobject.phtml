@@ -79,8 +79,6 @@ class pobject extends object { // pobject class definition
 
 		// callstack is needed for getvar()
 		$ARCurrent->arCallStack[]=&$arCallArgs;
-		// pass the context on to this object (is the calling template a php or pinp template?).
-		$this->arCallingContext = $this->getContext();
 		// keep track of the context (php or pinp) in which the called template runs. call always sets it php, CheckConfig sets it to pinp if necessary.
 		$this->pushContext(Array("scope" => "php"));
 
@@ -795,10 +793,10 @@ class pobject extends object { // pobject class definition
 		return $result;
 	}
 
-	function getContext() {
+	function getContext($level=0) {
 	global $AR;
 		if (is_array($AR->context)) {
-			$result = $AR->context[sizeof($AR->context)-1];
+			$result = $AR->context[sizeof($AR->context)-(1+$level)];
 		}
 		return $result;
 	}

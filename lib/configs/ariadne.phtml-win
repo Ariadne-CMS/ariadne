@@ -326,5 +326,5 @@
   /* Misc. Global defines, don't change these!                              */
   /**************************************************************************/
   define('ARESCAPE', "'\"\\\n\r");
-
+  define('ARCALLINGCONTEXT', 1);
 ?>
