@@ -494,6 +494,7 @@ windowprops['edit_object_shortcut']=windowprops['common']+',height=250,width=450
 windowprops['edit_object_grants']=windowprops['common']+',height=300,width=550';
 windowprops['edit_object_types']=windowprops['common']+',height=150,width=250';
 windowprops['edit_object_nls']=windowprops['common']+',height=150,width=250';
+windowprops['edit_priority']=windowprops['common']+',height=150,width=250';
 windowprops['view_fonts']=windowprops['common']+',height=300,width=450';
 windowprops['view']=windowprops['common']+',height=500,width=600';
 windowprops['help']=windowprops['common']+',height=350,width=450';
