@@ -26,48 +26,86 @@
 	if ($continue) {
 	?>
 <html>
+<head>
+<title><?php printf($ARnls["openlocks"],$nlsdata->name); ?></title>
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
+<style>
+	.required {
+		background-color: buttonface;
+		border: 2px outset;
+		padding: 2px;
+		font-weight: bold;
+	}	
+	.required div {
+		width: 100%;
+	}
+	td.type {
+		width: 22px;
+		padding-left: 2px;
+	}
+	a.button {
+		border: 1px outset;
+	}
+	input {
+		width: 75px;
+	}
+	.row0 td {
+		background-color: white;
+	}
+	.row1 td {
+		background-color: #EEEEEE;
+	}
+</style>
+</head>
 <body bgcolor="white">
-<table bgcolor="#404074" width="100%">
-<tr>
-	<td align="left">
-	<font face="helevetica,sans-serif" color="white"><b><?php printf($ARnls["openlocks"],$nlsdata->name); ?></b></font>
-	</td>
-</tr>
-</table>
+<script>
+	if (document.all) {
+		window.innerHeight=document.body.clientHeight;
+		window.innerWidth=document.body.clientWidth;
+	}	
+</script>
 
-<p>
-<form method="post">
+<form method="post" style="height: 95%">
 <input type="hidden" name="arReturnPage" value="<?php echo $arReturnPage; ?>">
 
-<table cellspacing="0" width="100%">
-<tr bgcolor="#EEEEEE">
-	<td><font face="helvetica,sans-serif"><b><?php echo $ARnls["path"]; ?></b></font></td>
-	<td>&nbsp;&nbsp;</td>
-	<td><font face="helvetica,sans-serif"><b><?php echo $ARnls["expires"]; ?></b></font></td>
-	<td>&nbsp;&nbsp;</td>
-	<td align="center"><font face="helvetica,sans-serif"><b><?php echo $ARnls["unlock"]; ?></b></font></td>
-</tr>
+<table border="0" width="100%" height="100%" align="center" cellspacing="2" vspace="10" hspace="10">
+<th><?php printf($ARnls["openlocks"],$nlsdata->name); ?></th>
+<tr>
+	<td colspan="2" bgcolor="white" style="border: 2px inset; padding: 0px;" height="90%" valign="top">
 
+	<div style="height: 100%; width: 100%; overflow: auto; margin: 0px; border: 0px;">
+		<table border="0" bgcolor="white" width="100%" cellspacing="0" cellpadding="0">
+		<tr>
+			<td valign="top" class="required" colspan="2">
+				<div><?php echo $ARnls["path"]; ?></div>
+			</td><td valign="top" colspan="2" class="required">
+				<div><?php echo $ARnls["expires"]; ?></div>
+			</td><td valign="top" class="required">
+				<div><?php echo $ARnls["unlock"]; ?></div>
+			</td>
+		</tr>
 <?php
+	$currcol=0;
 	while (list($path,$lock)=each($locks)) {
-		echo "<tr><td align=\"left\"><font face=\"helvetica,sans-serif\">";
+		echo "<tr class=\"row".$currcol."\"><td align=\"left\"><font face=\"helvetica,sans-serif\">";
 		echo $path;
 		echo "</td><td></td><td align=\"left\">";
 		echo date("d-m-Y H:i:s",$lock["release"]);
 		echo "</td><td></td><td align=\"center\">";
 		echo "<input type=\"checkbox\" name=\"unlock_$path\">";
 		echo "</td></tr>";
+		$currcol++;
+		$currcol=$currcol%2;
 	}
 ?>
+		</table>
+	</div>
+	</td>
+</tr><tr>
+	<td valign="bottom" align="right"><input type="submit" name="locks" value="<?php echo $ARnls["ok"]; ?>"></td>
+</tr>
 </table>
-<p>
-<table width="100%">
-<tr bgcolor="#404074"><td colspan="5" align="right">
-	<font face="helvetica,sans-serif" color="white">
-	<input type="submit" name="locks" value="<?php echo $ARnls["ok"]; ?>">
-	</font>
-</td></tr>
-</table>
+</form>
 </body>
 </html>
 <?php
