@@ -153,7 +153,7 @@ class postgresqllock {
 CREATE TABLE ".$this->tbl_prefix."locks (
         release numeric(11) NOT NULL,
         type char(1) check (type in ('O','T')) NOT NULL,
-        identity varchar(23) NOT NULL,
+        identity varchar(32) NOT NULL,
         path varchar(127) NOT NULL
 );
 CREATE INDEX locks_release ON locks (release);
