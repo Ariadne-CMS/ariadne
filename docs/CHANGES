@@ -10,6 +10,10 @@ New features:
 	- Made the WYSIWYG editor NLS aware. This means that all the menu
 	items etc are now displayed in your language. Available nls files
 	for the editor are English and German. (Thanks to Johann Hanne).
+	- Introducing a new config option named "$AR->hideSessionIDfromURL" which 
+	disables the inclusion of the session id in the URL. 
+	(Thanks to Johann Hanne)
+
 
 Bugs fixed:
 	- The postgresql locking module didn't use table prefixes in the
