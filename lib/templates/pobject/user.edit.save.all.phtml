@@ -9,5 +9,12 @@
 	}
 ?>
 <script>
-  top.window.close();
+  <?php
+  	if ($arReturnPage) {
+  ?>
+  	window.opener.location.href='<?php echo $arReturnPage; ?>';
+  <?php
+    }
+  ?>
+  window.close();
 </script>
