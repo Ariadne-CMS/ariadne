@@ -834,11 +834,13 @@ function DECMD_IMAGE_onclick() {
       args['align'] = elIMG.align;
       args['alt'] = elIMG.alt;
       args['ar:type'] = elIMG['ar:type'];
+      args['ar:path'] = elIMG['ar:path'];
     }
   } else {
     elIMG=false;
     window.rg=el.createRange();
     args['src'] = "<?php echo $this->path; ?>";
+	args['ar:path'] = args['src'];
     args['hspace'] = "";
     args['vspace'] = "";
     args['align'] = ""; 
@@ -886,6 +888,9 @@ function IMAGE_set(arr) {
 	}
 	if (arr['ar:type']!='') {
 		temp+=' ar:type="'+arr['ar:type']+'"';
+	}
+	if (arr['ar:path']!='') {
+		temp+=' ar:path="'+arr['ar:path']+'"';
 	}
 	temp+='>';
     if (window.elIMG) { // insert a new img
