@@ -117,7 +117,7 @@
 		  $step=$wgWizList[$i];
           $item="<nobr>$i&nbsp;".$wgWizFlow[$step]["title"]."</nobr>";
           if ($wgWizListClickable>=$i) {
-            $head="<a href=\"javascript:gotostep('".AddSlashes($step)."');\"";
+            $head="<a href=\"javascript:gotostep('".AddCSlashes($step, ARESCAPE)."');\"";
             $tail="</a><BR>\n";
           } else {
             $head="<span";
@@ -241,7 +241,7 @@
 ?>
 <script>
   function wgWizAlert() {
-    alert('<?php echo AddSlashes($wgWizAlert); ?>');
+    alert('<?php echo AddCSlashes($wgWizAlert, ARESCAPE); ?>');
     if (window.oldonload) {
       window.oldonload();
     }

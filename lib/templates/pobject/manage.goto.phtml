@@ -33,7 +33,7 @@
 		} else {
 			?>
 			<script>
-				alert('<?php printf(AddSlashes($ARnls["err:wrongpath"]),$link); ?>');
+				alert('<?php printf(AddCSlashes($ARnls["err:wrongpath"], ARESCAPE),$link); ?>');
 				history.back();
 			</script>
 			<?php

@@ -63,7 +63,7 @@
 	}
 
 	Nodes['<?php echo $this->path; ?>']=new Node('<?php echo $this->path; ?>',
-		'<?php echo $this->parent; ?>','<?php echo AddSlashes($nlsdata->name); ?>');
+		'<?php echo $this->parent; ?>','<?php echo AddCSlashes($nlsdata->name, ARESCAPE); ?>');
 	OrderedList[OrderedList.length]='<?php echo $this->path; ?>';
 	<?php
 		switch($action) {
@@ -127,7 +127,7 @@
 								}
 							}
 							?>
-								if (confirm('<?php printf(AddSlashes($ARnls["q:cannotlockretry"]),$lock["path"], $lock["identity"], strftime("%H:%M:%S",$lock["release"])); ?>')) {
+								if (confirm('<?php printf(AddCSlashes($ARnls["q:cannotlockretry"], ARESCAPE),$lock["path"], $lock["identity"], strftime("%H:%M:%S",$lock["release"])); ?>')) {
 									document.location.href=document.location.href;
 								} else {
 									if (top.window) {

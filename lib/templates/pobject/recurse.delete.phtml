@@ -52,7 +52,7 @@
 			$this->call("system.delete.phtml");
 			if ($this->error) {
 		?>
-		if (!confirm('<?php echo AddSlashes(sprintf($this->error,$this->path)); ?>')) {
+		if (!confirm('<?php echo AddCSlashes(sprintf($this->error,$this->path), ARESCAPE); ?>')) {
 			if (top.window) {
 				top.window.close();
 			} else {

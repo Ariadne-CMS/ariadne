@@ -110,7 +110,7 @@
   function init() {
 	<?php
       if ($arErrorMessage) {
-        echo "    alert('".AddSlashes($arErrorMessage)."');\n";
+        echo "    alert('".AddCSlashes($arErrorMessage, ARESCAPE)."');\n";
       }
     ?>
 	document.login.ARLogin.focus();

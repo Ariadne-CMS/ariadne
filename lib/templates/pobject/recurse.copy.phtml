@@ -109,7 +109,7 @@
 						if ($this->error) {
 							echo "\n// $this->error\n";
 							?>
-							if (!confirm('<?php echo AddSlashes(sprintf($this->error,$newpath)); ?>')) {
+							if (!confirm('<?php echo AddCSlashes(sprintf($this->error,$newpath), ARESCAPE); ?>')) {
 								if (top.window) {
 									top.window.close();
 								} else {
@@ -131,7 +131,7 @@
 				<script>
 					function nextnode() {
 						// onload function, ask for overwrite permission in this case.
-						if (confirm('<?php printf(AddSlashes($ARnls["q:fileoverwrite"]),$newpath); ?>')) {
+						if (confirm('<?php printf(AddCSlashes($ARnls["q:fileoverwrite"], ARESCAPE),$newpath); ?>')) {
 							reloadpage('&confirm=yes');
 						} else {
 							window.setTimeout("copynode();",100);		

@@ -17,5 +17,5 @@
     </script>
     <?php
       $arResult["next"]["arNewFilename"]["ereg"]="^[a-zA-Z0-9_\.-]+\$";
-      $arResult["next"]["arNewFilename"]["error"]=AddSlashes(sprintf($ARnls["err:fileillegalchars"], ""));
+      $arResult["next"]["arNewFilename"]["error"]=AddCSlashes(sprintf($ARnls["err:fileillegalchars"], ""), ARESCAPE);
     ?>

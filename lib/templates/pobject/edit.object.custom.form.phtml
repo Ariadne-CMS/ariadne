@@ -42,12 +42,12 @@
 						$custom['property']=1;
 					}
 						
-					echo "		dest[dest.length]=new Option('".AddSlashes($name)."','".AddSlashes($name)."');\n";
+					echo "		dest[dest.length]=new Option('".AddCSlashes($name, ARESCAPE)."','".AddCSlashes($name, ARESCAPE)."');\n";
 					echo "		customlist[customlist.length]=new custom_node(\n";
-					echo "			'".AddSlashes($custom["type"])."',".AddSlashes($custom["inherit"]).",\n";
-					echo "			'".AddSlashes($name)."','".AddSlashes($custom["size"])."',\n";
-					echo "			'".AddSlashes($custom["grant"])."',".AddSlashes($custom["nls"]).",\n";
-					echo "			'".AddSlashes($custom["check"])."',".AddSlashes($custom["property"]).");\n";
+					echo "			'".AddCSlashes($custom["type"], ARESCAPE)."',".AddCSlashes($custom["inherit"], ARESCAPE).",\n";
+					echo "			'".AddCSlashes($name, ARESCAPE)."','".AddCSlashes($custom["size"], ARESCAPE)."',\n";
+					echo "			'".AddCSlashes($custom["grant"], ARESCAPE)."',".AddCSlashes($custom["nls"], ARESCAPE).",\n";
+					echo "			'".AddCSlashes($custom["check"], ARESCAPE)."',".AddCSlashes($custom["property"], ARESCAPE).");\n";
 				}
 			}
 		?>

@@ -39,9 +39,9 @@
 			@parse_str($custom);
 			if (is_array($custom)) {
 				while (list($cdnls, $cdvalues)=each($custom)) {
-					echo "	CustomData['".AddSlashes($cdnls)."']=new Array();\n";
+					echo "	CustomData['".AddCSlashes($cdnls, ARESCAPE)."']=new Array();\n";
 					while (list($cdname, $cdvalue)=each($cdvalues)) {
-						echo "	CustomData['".AddSlashes($cdnls)."']['".Addslashes($cdname)."']='".AddSlashes($cdvalue)."';\n";
+						echo "	CustomData['".AddCSlashes($cdnls, ARESCAPE)."']['".AddCSlashes($cdname, ARESCAPE)."']='".AddCSlashes($cdvalue, ARESCAPE)."';\n";
 					}
 				}
 			}
@@ -58,24 +58,24 @@
 						} else {
 							$showdata=$custom['none'][$name];
 						}
-						echo "		dest[dest.length]=new Option('".AddSlashes($name)."','".AddSlashes($name)."');\n";
+						echo "		dest[dest.length]=new Option('".AddCSlashes($name, ARESCAPE)."','".AddCSlashes($name, ARESCAPE)."');\n";
 						echo "		CustomList[CustomList.length]=new custom_node(\n";
-						echo "			'".AddSlashes($customvalue["type"])."',";
+						echo "			'".AddCSlashes($customvalue["type"], ARESCAPE)."',";
 						if ($customvalue["inherit"] && ($customvalue["inherit"]!="false")) {
 							echo 1;
 						} else {
 							echo 0;
 						}
 						echo ",\n";
-						echo "			'".AddSlashes($name)."','".AddSlashes($customvalue["size"])."',\n";
-						echo "			'".AddSlashes($customvalue["grant"])."',";
+						echo "			'".AddCSlashes($name, ARESCAPE)."','".AddCSlashes($customvalue["size"], ARESCAPE)."',\n";
+						echo "			'".AddCSlashes($customvalue["grant"], ARESCAPE)."',";
 						if ($customvalue["nls"] && ($customvalue["nls"]!="false")) {
 							echo 1;
 						} else {
 							echo 0;
 						}
 						echo ",\n";
-						echo "			'".AddSlashes($customvalue["check"])."');\n";
+						echo "			'".AddCSlashes($customvalue["check"], ARESCAPE)."');\n";
 					}
 				}
 			}

@@ -20,7 +20,7 @@
 <script>
 <!--
 	if (window.opener.objectadded) {
-		window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddSlashes($nlsdata->name); ?>','<?php echo $this->path; ?>');
+		window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddCSlashes($nlsdata->name, ARESCAPE); ?>','<?php echo $this->path; ?>');
 	}
 	<?php
 		if (!$arIsNewObject) {

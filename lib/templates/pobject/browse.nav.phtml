@@ -17,7 +17,7 @@
 <script language="javascript">
 <!--
 	// announce ourselfs
-	top.ViewLoaded('<?php echo $this->path; ?>','<?php echo AddSlashes($nlsdata->name); ?>');
+	top.ViewLoaded('<?php echo $this->path; ?>','<?php echo AddCSlashes($nlsdata->name, ARESCAPE); ?>');
 //-->
 </script>
 <style>

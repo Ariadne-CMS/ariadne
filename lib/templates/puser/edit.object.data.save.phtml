@@ -30,9 +30,9 @@
 				if (window.opener.top.tree) {
 					<?php
 						if ($arIsNewObject) {
-							echo "  window.opener.top.tree.AddLinks('{$this->parent}','{$folder["icon"]}','".AddSlashes($folder["name"])."','{$folder["path"]}','".AddSlashes($folder["pre"])."');\n";
+							echo "  window.opener.top.tree.AddLinks('{$this->parent}','{$folder["icon"]}','".AddCSlashes($folder["name"], ARESCAPE)."','{$folder["path"]}','".AddCSlashes($folder["pre"], ARESCAPE)."');\n";
 						} else {
-							echo "  window.opener.top.tree.UpdateLinks('{$folder["icon"]}','".AddSlashes($folder["name"])."','{$folder["path"]}','".AddSlashes($folder["pre"])."');\n";
+							echo "  window.opener.top.tree.UpdateLinks('{$folder["icon"]}','".AddCSlashes($folder["name"], ARESCAPE)."','{$folder["path"]}','".AddCSlashes($folder["pre"], ARESCAPE)."');\n";
 						}
 					?>
 					document.location='<?php echo $arReturnPage; ?>';

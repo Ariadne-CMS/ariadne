@@ -50,7 +50,7 @@
 			?>
 			<body>
 			<script>
-				alert('<?php echo AddSlashes($this->error); ?>');
+				alert('<?php echo AddCSlashes($this->error, ARESCAPE); ?>');
 				history.back();
 			</script>
 			</body>

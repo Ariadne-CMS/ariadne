@@ -15,11 +15,11 @@
 		if ($folder=$this->call("system.get.folder.phtml")) {
 			?>
 				<script>
-					window.parent.init("<?php echo AddSlashes($folder["icon"]); ?>",
-							"<?php echo AddSlashes($folder["name"]); ?>",
-							"<?php echo AddSlashes($folder["path"]); ?>",
-							"<?php echo AddSlashes($folder["pre"]); ?>",
-							"<?php echo AddSlashes($folder["shortcut"]); ?>");
+					window.parent.init("<?php echo AddCSlashes($folder["icon"], ARESCAPE); ?>",
+							"<?php echo AddCSlashes($folder["name"], ARESCAPE); ?>",
+							"<?php echo AddCSlashes($folder["path"], ARESCAPE); ?>",
+							"<?php echo AddCSlashes($folder["pre"], ARESCAPE); ?>",
+							"<?php echo AddCSlashes($folder["shortcut"], ARESCAPE); ?>");
 					node=window.parent.root;
 					node.status="Open";
 					<?php
@@ -28,11 +28,11 @@
 						if ($folders=$this->find($path,$criteria,"system.get.folder.phtml",$args)) {
 							while (list($key, $folder)=each($folders)) {
 								?>
-									node.add("<?php echo AddSlashes($folder["icon"]); ?>",
-											 "<?php echo AddSlashes($folder["name"]); ?>",
-											 "<?php echo AddSlashes($folder["path"]); ?>",
-											 "<?php echo AddSlashes($folder["pre"]); ?>",
-											 "<?php echo AddSlashes($folder["shortcut"]); ?>");
+									node.add("<?php echo AddCSlashes($folder["icon"], ARESCAPE); ?>",
+											 "<?php echo AddCSlashes($folder["name"], ARESCAPE); ?>",
+											 "<?php echo AddCSlashes($folder["path"], ARESCAPE); ?>",
+											 "<?php echo AddCSlashes($folder["pre"], ARESCAPE); ?>",
+											 "<?php echo AddCSlashes($folder["shortcut"], ARESCAPE); ?>");
 								<?php
 							}
 						}

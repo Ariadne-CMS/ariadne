@@ -30,18 +30,7 @@
 	}
 	.heading {
 		font: 10pt Arial,Helvetica,sans-serif;
-		<?php
-			$browser=$this->call("browsercheck.phtml");
-			if ($browser["id"]=="ns" && $browser["version"]==4) {
-		?>
-			background: #BBBBBB;
-		<?php
-			} else {
-		?>
-			background: buttonface;
-		<?php
-			}
-		?>
+		background: buttonface;
 		border: 2px outset;
 		text-align: center;
 		width: 100%;
@@ -64,7 +53,7 @@
 			if ($this->error) {
 ?>
 <script>
-	alert('<?php echo AddSlashes($this->error); ?>');
+	alert('<?php echo AddCSlashes($this->error, ARESCAPE); ?>');
 </script>
 <?php
 			}

@@ -11,18 +11,7 @@
   TD        { FONT: 10pt sans-serif; }
   BODY      { FONT: 10pt sans-serif;
               BORDER: 0;
-  <?php
-    $browser=$this->call("browsercheck.phtml");
-    if ($browser["id"]=="ns" && $browser["version"]<=4) {
-  ?>
-              BACKGROUND-COLOR: #BBBBBB;
-  <?php
-    } else {
-  ?>
               BACKGROUND-COLOR: buttonface;
-  <?php
-    }
-  ?>
             }
 </style>
 </head>
@@ -51,7 +40,7 @@
     $this->call("system.delete.phtml");
     if ($this->error) {
 ?>
-      if (!confirm('<?php echo AddSlashes(sprintf($this->error,$this->path)); ?>')) {
+      if (!confirm('<?php echo AddCSlashes(sprintf($this->error,$this->path), ARESCAPE); ?>')) {
         if (top.window) {
           top.window.close();
         } else {

@@ -69,7 +69,7 @@ class pphoto extends pfile { // definitie class
 			}
 			$font_store->close();
 		}
-		$ARConfig->photoStack[$this->id][]=" -pointsize $pointsize -fill $color -draw 'text $x,$y \"".addslashes($text)."\"'";
+		$ARConfig->photoStack[$this->id][]=" -pointsize $pointsize -fill $color -draw 'text $x,$y \"".addcslashes($text,ARESCAPE)."\"'";
 		return true;
 	}
 

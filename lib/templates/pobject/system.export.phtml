@@ -1,14 +1,15 @@
 <?php
-if ($this->CheckLogin("read")) {
-global $AR;
-	if (!function_exists('display')) {
-		function display($str) {
-			global $ARCurrent;
-			if ($ARCurrent->options["verbose"]) {
-				echo $str;
+	if ($this->CheckLogin("read")) {
+		global $AR;
+
+		if (!function_exists('display')) {
+			function display($str) {
+				global $ARCurrent;
+				if ($ARCurrent->options["verbose"]) {
+					echo $str;
+				}
 			}
 		}
-	}
 
 		/* create a dummy object for later use */
 		$dummy = new pobject;
@@ -262,5 +263,5 @@ global $AR;
 						) , $ARCurrent->importStore->get($destpath));
 
 		}
-}
+	}
 ?>

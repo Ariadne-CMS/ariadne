@@ -197,7 +197,7 @@
 ?>
 <script>
   function wgWizAlert() {
-    alert('<?php echo AddSlashes($wgWizAlert); ?>');
+    alert('<?php echo AddCSlashes($wgWizAlert, ARESCAPE); ?>');
     if (window.oldonload) {
       window.oldonload();
     }

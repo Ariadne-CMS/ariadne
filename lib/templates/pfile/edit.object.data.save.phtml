@@ -58,7 +58,7 @@
 				<script> 
 					if (window.opener) {
 						if (window.opener.objectadded) {
-							window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddSlashes($this->nlsdata->name); ?>','<?php echo $this->path; ?>'); 
+							window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddCSlashes($this->nlsdata->name, ARESCAPE); ?>','<?php echo $this->path; ?>'); 
 						}
 						<?php
 							if (!$arIsNewObject || $this->getdata("arCloseWindow", "none")) {

@@ -727,8 +727,8 @@ class pobject extends object {
 			while (!$arCallTemplate && $checkpath!=$lastcheckedpath) {
 				$arType=get_class($this);
 				while ($arType && !$arCallTemplate) {
-					if ($arTemplateId=$curr_templates[$arType][$arCallFunction][$this->nls]) {
-						$arCallTemplate=$arType.".".$arCallFunction.".".$this->nls;
+					if ($arTemplateId=$curr_templates[$arType][$arCallFunction][$this->reqnls]) {
+						$arCallTemplate=$arType.".".$arCallFunction.".".$this->reqnls;
 					} else if ($arTemplateId=$curr_templates[$arType][$arCallFunction]['any']) {
 						$arCallTemplate=$arType.".".$arCallFunction.".any";
 					} else {

@@ -21,7 +21,7 @@
       <?php
         $summaries = $this->ls("/system/newspaper/scenarios/","system.get.summary.phtml");
 		while (list($key, $summary)=each($summaries)) {
-          echo "summary['".key($summary)."']='".AddSlashes(current($summary))."';\n";
+          echo "summary['".key($summary)."']='".AddCSlashes(current($summary), ARESCAPE)."';\n";
         }
       ?>
       function updatedescription(form) {
