@@ -66,6 +66,8 @@ class mssqlstore {
 		$this->code			= $config["code"];
 		$this->files		= $config["files"];
 		$this->tbl_prefix	= $config["prefix"];
+		
+		mssql_query("SET TEXTSIZE 536870912");
 
 		/* Instantiate module mssql_compiler */
 		include_once($this->code."stores/modules/mssql_compiler.php");
@@ -104,7 +106,7 @@ class mssqlstore {
 
 		debug("call($template, ".serialize($args).", [list])", "store");
 		$this->error = "";
-		$this->count = mssql_num_rows($objects["list"]);
+		$this->count = ($objects["list"]) ? mssql_num_rows($objects["list"]) : 0;
 		debug("call: count=".$this->count,"all");
 //		for ($i=0; $i<$this->count; $i++) {
 		while ($row = @mssql_fetch_array($objects["list"])) {
@@ -119,6 +121,7 @@ class mssqlstore {
 					$row["vtype"],
 					strlen($row["object"]),
 					$row["priority"]);
+
  			$result[]=$object->call($template, $args);
 		}
 
@@ -329,12 +332,7 @@ class mssqlstore {
 			}
 			$query_string="select ";  // was distinct but text datatype is not compatible
 			if ($limit) {
-				$query_string.=" top ";
-				// offsets not supported by MS-SQL 
-				//if ($offset) {
-				//	$query_string.="$offset,";
-				//}
-				$query_string.="$limit";
+				$query_string.=" top ".($limit + $offset);
 			}
 			$query_string .= " ($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, datediff(ss, '1970-01-01 00:00:00.000', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $nodes_tbl, $objects_tbl $from $types where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path like '$epath%'";
 	        $where			= substr($where,4);
@@ -345,6 +343,11 @@ class mssqlstore {
 		}
 		debug("find: query=$query_string","all");
 		$result["list"]=mssql_query($query_string);
+		if (mssql_num_rows($result["list"]) > $offset) {
+			mssql_data_seek($result["list"], $offset);
+		} else {
+			$result["list"] = FALSE;
+		}
 
 		debug("find: end","all");
 		return ($result);

@@ -116,7 +116,7 @@
 			case 'limit':
 				$this->where_s=$this->compile_tree($node["left"]);
 				if ($node["limit"]) {
-					$this->limit_s=" top ".$node["limit"]." ";
+					$this->limit_s=" top ".($node["limit"] + $node["offset"])." ";
 				}
 			break;
 		}
