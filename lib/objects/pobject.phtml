@@ -143,7 +143,7 @@ class pobject extends object {
 		} else { // update an existing object
 			if (!($result=$this->lock(0,"O")) || ($result["locks"][$this->path]["identity"]==$AR->user->data->login)) {
 				if ($this->exists($this->path)) { // prevent 'funny stuff'
-					$this->path=$this->save($this->path, $this->type, $this->data, $properties, $vtype);
+					$this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype);
 					$result=$this->path;
 					$this->ClearCache();
 					$this->unlock();
