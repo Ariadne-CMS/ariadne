@@ -123,7 +123,7 @@
 			$session_id = 0;
 		}
 
-		debug("soap::request ('$function')", "loader");
+		debug("soap::request ($path) ('$function')", "loader");
 
 		// instantiate the store
 		$inst_store = $store_config["dbms"]."store";
