@@ -238,4 +238,8 @@ $ARnls["size"]=			"Grootte";
 $ARnls["list"]=			"Lijst";
 $ARnls["details"]=		"Details";
 $ARnls["home"]=			"Start";
+$ARnls["err:mustenterlogin"]="U moet een inlognaam invullen";
+$ARnls["groups"]=		"Groepen";
+$ARnls["profile"]=		"Profiel";
+$ARnls["noprofile"]=	"Geen Profiel";
 ?>

@@ -238,4 +238,8 @@ $ARnls["size"]=			"Size";
 $ARnls["list"]=			"List";
 $ARnls["details"]=		"Details";
 $ARnls["home"]=			"Home";
+$ARnls["err:mustenterlogin"]="You must enter a login name.";
+$ARnls["groups"]=		"Groups";
+$ARnls["profile"]=		"Profile";
+$ARnls["noprofile"]=	"No Profile";
 ?>
