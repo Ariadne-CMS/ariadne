@@ -1,4 +1,4 @@
-CVS Server                                                   Muze Ariadne 2.0b10
+CVS Server                                                      Muze Ariadne 2.0
 ================================================================================
 
 You can download the latest development version of Ariadne from
@@ -22,7 +22,7 @@ If you later want to get a newer version of the code do:
 in the same directory you initially did the checkout.
 
 If you have any questions you can contact us at info@muze.nl, or you can try
-to read the newsgroups at ariadne.muze.nl first.
+to read the newsgroups at news.muze.nl first.
 
 happy hacking,
 Auke van Slooten
