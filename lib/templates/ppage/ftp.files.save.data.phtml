@@ -1,13 +1,16 @@
 <?php
-	if ( ( $this->arIsNewObject && $this->CheckLogin("add") ) ||
-			 ( !$this->arIsNewObject && $this->CheckLogin("edit") ) ) {
+	if ( (( $this->arIsNewObject && $this->CheckLogin("add") ) ||
+			 ( !$this->arIsNewObject && $this->CheckLogin("edit") )) &&
+					$this->CheckConfig() ) {
 				
 				$nls=$ARConfig->nls->default;
 
 		$tempfile = $this->getdata("file_temp", "none");
 		$tempfile = $this->store->files."temp/$tempfile";
+		debug("opening page ($tempfile)");
 		$fp = @fopen($tempfile, "r");
 		if (!$fp) {
+			debug("could not open tempfile containing page");
 			$this->error = sprintf($ARnls["err:couldnotopen"],$tempfile);
 			// FROP $this->error = "Could not open ($tempfile)";
 		} else {
@@ -58,6 +61,7 @@
 				$page=unicode::utf8convert($page);//$page=utf8_encode($page);
 			}
 
+			debug("pagedata(".$this->path.")($nls)");
 			$arCallArgs[$nls]["page"] = $page;
 
 			if (eregi('<title>(.*)</title>', $page, $regs)) {
