@@ -351,6 +351,7 @@ class axstore {
 
 
 	function call($template, $args, $objects) {
+		$result = Array();
 		if (is_array($objects["list"])) {
 			reset($objects["list"]);
 			while (list(,$node)=each($objects["list"])) {
