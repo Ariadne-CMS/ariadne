@@ -60,7 +60,6 @@ class axstore {
 										$object->type=$data[1];
 										$object->vtype=$data[2];
 										$object->lastchanged=(int)$data[3];
-										$object->priority=(int)$data[4];
 										$object->storage=new object;
 										$object->storage->fp=$this->ofile;
 										$object->storage->offset=$currentoffset;
@@ -87,6 +86,8 @@ class axstore {
 									$data=explode("&", $data);
 									$node=new object;
 									$node->path=$data[0];
+									$node->nextid=$data[2];
+									$node->priority=$data[3];
 									$this->nodes[$node->path]=$node;
 									$this->nodes[$node->path]->object=&$this->objects[$data[1]];
 
@@ -331,7 +332,6 @@ class axstore {
 			reset($objects["list"]);
 			while (list(,$node)=each($objects["list"])) {
 				$this->_load_object_data($node->object);
-				//echo "axstore::call (".$node->object->type.", $node->path, $template, $args) \n";
 				$node->object->init($this, $node->path, $node->object->data);
 				$parent=$this->make_path($node->path, "..");
 				if ($parent=="/") {
@@ -339,6 +339,7 @@ class axstore {
 				}
 				$node->object->parent=$parent;
 		
+				$node->object->priority=$node->priority;
 				$result[]=$node->object->call($template, $args);
 				$this->_free_object_data($node->object);
 			}
@@ -667,6 +668,7 @@ class axstore {
 						}
 						$node_line=$path."&".(int)$node->object->id;
 						$node_line.="&".(int)$node->nextid;
+						$node_line.="&".(int)$node->priority;
 						$node_line.="\n";
 						fwrite($fp_nodes, $node_line);
 					}
