@@ -1,14 +1,8 @@
 <?php
 
   function GetPassword($pass1, $pass2) {
-    if ($pass1) {
-      if ($pass1==$pass2) {
-        $password=ARCrypt($pass1);
-      } else {
-        debug("pass1!=pass2");
-      }
-    } else {
-      debu(" no pass1");
+    if ($pass1 && ($pass1==$pass2)) {
+      $password=ARCrypt($pass1);
     }
     return $password;
   }  
@@ -36,15 +30,12 @@
   $newdata->language=$language;
   $newdata->interface=$interface;
   if ($newpass1 || $newpass2) {
-    debug("newpassword found (old: ".$newdata->password.")");
     if (!($newdata->password=GetPassword($newpass1,$newpass2))) {
       $error=$ARnls["err:validpassword"];
     } else if (!$error && ($newdata->login==$AR->user->data->login)) {
-      debug("new password: $newdata->password");
       $returnpage=$this->store->root.$this->path."login.phtml?ARLogin=".RawUrlEncode($newdata->login)."&ARPassword=".RawUrlEncode($newpass1)."&arReturnPage=".RawUrlEncode($this->path);
     }
   } else {
-    debug(" no newpassword found");
     if ($newtype) {
       $error=$ARnls["err:validpassword"];
     }

@@ -13,20 +13,17 @@
                     "action=delete&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($grant) 
                    );
       } else if ($newgrants) {
-        debug("GetType:");
         $result=$this->get($path, "GetType.phtml");
         if ($result && $result[0]) {
           $type=$result[0];
           if ($this->store->implements($type, "puser") ||
 	        $this->store->implements($type, "pgroup")  ) {  
-            debug("GetId:");
             $result=$this->get($path, "GetId.phtml");
             if ($result && $result[0]) {
               $id=$result[0];
               $newgrants=ereg_replace("[[:space:]]"," ",$newgrants);
               $newgrant=strtok($newgrants, " ");
               if ($newgrant==".") {
-                debug("GetGrants:");
                 $criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
                 $result=$this->find($searchpath[$type],$criteria,"GetGrants.phtml","path=".RawUrlEncode($this->path) );
                 if ($result && is_array($result[0])) {
@@ -52,7 +49,6 @@
                   if (substr($newgrant,0,1)=="-") {
                     $delgrant=substr($newgrant,1);
                     $data->grants[$type]=DelGrant($data->grants[$type],$id,$delgrant);
-                    debug("updategrant: delete $newgrant");
                     $this->find($searchpath[$type], 
                             Array("login" => Array ("value" => Array ("=" => "'".AddSlashes($id)."'" ) ) ), 
                             "updategrant.phtml", 
@@ -63,7 +59,6 @@
                       $newgrant=substr($newgrant,1);
                     }
                     $data->grants[$type][$id][$newgrant]=1;
-                    debug("updategrant: add $newgrant");
                     $this->find($searchpath[$type], 
                            Array("login" => Array ( "value" => Array ("=" => "'".AddSlashes($id)."'" ) ) ), 
                           "updategrant.phtml", 
@@ -77,7 +72,6 @@
           }
         }
       }
-      debug("save");
       $this->save($this->path, $this->type, $data, $properties);
       Header("Location: $returnpage");
     ?>

@@ -4,9 +4,7 @@
     if (!$confirm) {
       // Check for .phtml files, disallow
       // 1. check file
-      debug("no confirm");
       if (!$HTTP_POST_FILES['file'] && is_uploaded_file($HTTP_POST_FILES['file']['tmp_name'])) {
-        debug("file error");
         $error=$ARnls["err:fileupload"];
       } else {
         $file=$HTTP_POST_FILES['file']['tmp_name'];
@@ -18,11 +16,9 @@
         } else if ($this->CheckNewFile($file_name)) {
           $error=$this->error;
         } else {
-          debug("file ok");
           // 2. get filename and mimetype
           // 3. check if $path/filename exists
           if ($this->exists($this->path.$file_name."/")) {
-            debug("ask overwrite");
             //    4 if exists : ask before overwrite
             // first move the file somewhere safe.
             $tempfile=$this->store->nextid("files");
@@ -33,7 +29,6 @@
   	    $buttons[]=$ARnls["overwrite"];
             include($this->store->code."includes/confirm.phtml");
           } else {
-  	    debug("new file");
             if ($this->CheckLogin("add")) {
               //    5 if not exists : create pfile and display edit.phtml
               //    fill in name in all nls name variables
@@ -50,14 +45,11 @@
         }
       }
     } else { // confirm
-      debug("confirm: $confirm");
       if ($confirm==$ARnls["overwrite"]) {
-        debug("overwriting");
         copy($this->store->files."temp/".$tempfile, $this->store->files."files".$this->path.$file_name);
         Header("Location: ".$this->store->root.$this->path.$file_name.
           "/edit.phtml?returnpage=".RawUrlEncode($returnpage));
       } else {
-        debug("removing");
         unlink($this->store->files."temp/".$tempfile);
         Header("Location: $returnpage");
       }

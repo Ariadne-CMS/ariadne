@@ -11,26 +11,21 @@
   function AddSpan($from, $to) {
     global $ARCurrent;
 
-    debug("addspan $from $to");
+    debug("pcalendar/day.html:addspan($from,$to)","class");
     // always return lowest possible number to span the time.
     $i=0;
     $spannumber=-1;
     while ($spannumber==-1) { 
       if ($ARCurrent->spanlist[$i]) { // existing spanlevel
-        debug("addspan: level $i found");
         $last=0;
         $temp=$ARCurrent->spanlist[$i];
         ksort($temp);
         while (list($start, $end)=each($temp)) {
-          debug("addspan: checking $start - $end");
           if (($start>=$to) && ($last<=$from)) {
             $ARCurrent->spanlist[$i][$from]=$to;
             $spannumber=$i;
-            debug("addspan: found gap before $start, after $last");
             break;
-          } else {
-            debug("addspan: no gap between $last and $start");
-          }
+          } 
           if ($end) {
             $last=$end;
           }
@@ -38,15 +33,11 @@
         if ($last && $last<=$from) { 
           $ARCurrent->spanlist[$i][$from]=$to;
           $spannumber=$i;
-          debug("addspan: found gap after $last");
-        } else {
-          debug("addspan: no gap after $end - ".key($temp).":".current($temp)." ");
         }
       } else { // new spanlevel
-        debug("addspan: new level $i");
         $ARCurrent->spanlist[$i][$from]=$to;
         $spannumber=$i;
-	$ARCurrent->totalspan=$i;
+     	$ARCurrent->totalspan=$i;
       }
       $i++;
     }    
@@ -63,10 +54,8 @@
     */
     global $ARCurrent, $PHP_SELF;
 
-    //debugon();
-    debug("AddTime: $from, $to, $path, $name, $summary");
+    debug("pcalendar/day.html:AddTime($from, $to, $path, $name, $summary)","class");
       if ($from>$to)   { // 'no time' entry. pile at ARCurrent->timelist[0], no span, no start, no end time.
-        debug("AddTime: 'no time' entry.");
         $i=@count($ARCurrent->timelist[0]);
         if ($path) { $ARCurrent->timelist[0][$i]["text"]="<a class=\"cal\" href=\"".
           $path."edit.phtml?entry=$from&date=".$ARCurrent->date."&returnpage=".
@@ -75,7 +64,6 @@
         $ARCurrent->timelist[0][$i]["summary"]=$summary;
         $ARCurrent->timelist[0][$i]["priority"]=$priority;
       } else if ($from==$to) { // no span, no end time.
-        debug("AddTime: 'no span' entry.");
         $i=@count($ARCurrent->timelist[$from]);
         if ($i && !$ARCurrent->timelist[$from][$i-1]["text"]) {
           // There already is an entry in the ARCurrent->timelist from $from, but
@@ -96,7 +84,6 @@
           $ARCurrent->timelist[$from][$i]["priority"]=$priority;
         }
       } else { // normal entry, start time, end time, span
-        debug("AddTime: normal entry.");
         $spannumber=AddSpan($from, $to);
         $i=@count($ARCurrent->timelist[$from]);
         if ($i && !$ARCurrent->timelist[$from][$i-1]["text"]) {
@@ -126,7 +113,6 @@
           $ARCurrent->timelist[$to][$i]["span"][$spannumber]="close";
         }
       }
-    //debugoff();
   }
 
   if (!$date) {
@@ -146,10 +132,7 @@
   // if no_time is set, endtime is starttime - 1 second. if starttime is 0:0h
   // then endtime will be in the previous day! thus the -2 and -3 above.
   unset($ARBeenHere["populate"]);
-//  debugon();
-  debug("start: $start, end: $end");
   $this->populate($start, $end, $data->min_priority["day"], "AddTime.phtml","from=$start&to=$end");
-//  debugoff();
   // AddTime.phtml calls AddTime, obviously :)
   // now display the list
 ?>

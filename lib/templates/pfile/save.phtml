@@ -14,7 +14,6 @@
   if (!isset(${$ARConfig->nls->default}) && !isset($newdata->{$ARConfig->nls->default})) { // default language for this path
     $error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
   } else {
-    debug($this->nls.": ".serialize(${$this->nls}));
     if (!$newdata->nls) {
       $newdata->nls=new object;
     }

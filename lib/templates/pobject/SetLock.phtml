@@ -1,13 +1,13 @@
 <?php
   // this template must always be called from between the
   // $AR->lockkey semaphores! Use pobject->lock!
-  debug("SetLock: $id , $duration");
+  debug($this->type."/SetLock.phtml: $id , $duration","class");
   $arResult=0;
   $ok=0;
   if ($id) {
     if ($this->CheckSilent("edit") || $this->CheckSilent("delete")) {
       // first check parents for locks (checks current object too!)
-      debug("grants ok");
+      debug("grants ok","all");
       $this->parents(".","GetLock.phtml");
       $criteria["locked"]["duration"][">"]=time();
       $this->find(".",$criteria,"GetLock.phtml");
@@ -21,7 +21,7 @@
         $ok=1;
       }
       if ($ok) {
-        debug("children ok");
+        debug("children ok","all");
         // all checks passed, lock it up.
         $data->locked["id"]=$id;
         $data->locked["duration"]=$duration;
@@ -32,4 +32,5 @@
       }
     }
   }
+  debug($this->type."/SetLock.phtml: end","all");
 ?>

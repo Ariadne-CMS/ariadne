@@ -3,9 +3,9 @@
 class session {
 
 	function session($session_config, $id=0) {
+        debug("session([array],$id)","store");
 		// init session store
 		$this->sessionstore=new mysqlstore($session_config["root"], $session_config);
-		debug("session store database = '".$this->sessionstore->database."'");
 
 		$this->timeout=$session_config["timeout"];
 
@@ -29,37 +29,47 @@ class session {
 			$this->data=$result[0];
 		}
 		$this->put("ARSessionId",$this->id);
+        debug("session: end","all");
 	}
 
 	function put($varname, $value) {
-		debug("session->put($varname,$value)");
+		debug("session->put($varname,$value)","store");
 		$this->data->$varname=$value;
+        debug("session->put: end","all");
 	}
 
 	function get($varname) {
+        debug("session->get($varname)","store");
 		return $this->data->$varname;
+        debug("session->get: end","all");
+   
 	}
 
 	function save($id=0) {
+        debug("session->save($id)","store");
 		if (!$id) { $id=$this->id; } else { $this->id=$id; }
 		// store session data
-		debug("session saving into ".$this->sessionstore->database."<br>");
 		$this->sessionstore->save("/$id/","psession",$this->data);
+        debug("session->save: end","all");
 	}
 
 
 	function suspend() {
+		debug("session->suspend()","store");
 		$this->save();
 		$this->sessionstore->close();
 		$this->id=0;
+        debug("session->suspend: end","all");
 		return ldSetSession();      
 	}
  
 	function kill() {
+		debug("session->kill()","store");
 		// remove session data from store
 		$this->sessionstore->purge("/".$this->id."/");
 		$this->sessionstore->close();
 		$this->id=0;
+		debug("session->kill: end","all");
 		return ldSetSession();
 	}
 }

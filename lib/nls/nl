@@ -1,5 +1,5 @@
 <?php
-debug("ARnls lib: nl");
+debug("ARnls lib: nl","all");
 $ARnls["accessdenied"]=		"Toegang geweigerd";
 $ARnls["add"]=			"Voegtoe";
 $ARnls["addnewobject"]=		"Voeg nieuw object toe";

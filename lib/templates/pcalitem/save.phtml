@@ -12,7 +12,6 @@
           (!$data->repeat) ||
           ($data->repeat=="none")) { // default all for new items, and none repeating items
         $confirm=$ARnls["all"];
-        debug("All");
       } else if (($repeat) && ( // when changing the repeat values, default to all
           ($data->repeatend<($repeatend+24*60*60-1)) ||
           ($data->repeatn!=$repeatn) ||
@@ -20,13 +19,11 @@
           ((serialize($data->repeat_on)!=serialize($repeat_on)) && ($repeat=="week")) ||
           ((serialize($data->repeat_by)!=serialize($repeat_by)) && ($repeat=="month")) ) ) {
         $confirm=$ARnls["all"];
-        debug("All.");
       } else if ($date && $entry &&
                  ( ($entry_arr["year"]!=$date_arr["year"]) ||
                    ($entry_arr["mon"]!=$date_arr["mon"]) ||
                    ($entry_arr["mday"]!=$date_arr["mday"]) ) ) { // when the date is changed, default to current
         $confirm=$ARnls["current"];
-        debug("Current");
       } else {
 	$question=$ARnls["q:applychanges"];
         $buttons[]=$ARnls["all"];
@@ -42,7 +39,6 @@
         $newdata=$data; 
         $savetimeframes=0;
         if ($confirm==$ARnls["current"]) {
-          debug("Do save current");
   	  // save a new pcalitem with the current values
  	  $newtype="pcalitem";
   	  $savetimeframes=1;
@@ -52,7 +48,6 @@
           $data->timeframes=$this->DelTimeframe($entry);
           $this->save($this->path, $this->type, $data);
         } else { // $confirm=="All"
-          debug("Do save all");
           // check whether this is the first item in the repeating row
   	  //   or the item doesn't repeat
           // else ->
@@ -163,12 +158,10 @@
         if ($savetimeframes) {
           switch($newdata->repeat) {
       	case "none":	// add one entry;
-			debug("repeat: None");
       			$properties["timeframe"][0]["start"]=$newdata->starttime;
       			$properties["timeframe"][0]["end"]=$newdata->endtime;
       			break;
       	case "day":	// repeat ever $repeatn days untile $repeatend
-                        debug("repeat: Day");
       			$i=0;
       			$time=$newdata->starttime;
       			while (($time<=$newdata->repeatend) && ($i<100)) {
@@ -179,7 +172,6 @@
       			}
       			break;
       	case "week":	// repeat every $repeatn weeks on given weekdays until $repeatend
-                        debug("repeat: Week");
        			$i=0;
       			$time=$newdata->starttime; 
     			while ($time<=$newdata->repeatend) {
@@ -198,15 +190,12 @@
       			}
       			break;
       	case "month":	// repeat every $repeatn months on ..
-			debug("repeat: Month");
       			$i=0;
       			$stime_arr=getdate($newdata->starttime);
       			$time=$newdata->starttime;
       			if ($newdata->repeat_by=="day") { // .. the nth weekday of the month or .. 
-  				debug("Day");
       				$week=($stime_arr["mday"]-($stime_arr["mday"] % 7)) / 7; // get n (this simulates a 'div 7') 
       				while ($time<=$newdata->repeatend) {
-					debug("add:".$time);
       					$properties["timeframe"][$i]["start"]=$time;
       					$properties["timeframe"][$i]["end"]=$time+$length;
       					$i++;
@@ -225,7 +214,6 @@
 					$check=getdate(mktime(0,0,0,$stime_arr["mon"]+$i+1,-1,$stime_arr["year"]));
 					if ($mday>$check["mday"]) { // check that $mday isn't in the next month
 						$mday-=7; // then get the last wday of this month instead.
-						debug("in ".$check["month"]." max: ".$check["mday"]." mday set to: ".$mday);
 					}
      					// now make the new time
      					$time=mktime($stime_arr["hours"], $stime_arr["minutes"],
@@ -233,7 +221,6 @@
      						$mday, $stime_arr["year"]);					
       				}
       			} else { // .. this date until $repeatend
-  				debug("date");
       				while ($time<=$newdata->repeatend) {
       					$properties["timeframe"][$i]["start"]=$time;
       					$properties["timeframe"][$i]["end"]=$time+$length;
@@ -245,7 +232,6 @@
       			}
       			break;
       	case "year":	// repeat every $repeatn years on this date until $repeatend
-			debug("repeat: Year");
       			$i=0;
       			$time=$newdata->starttime; 
       			$stime_arr=getdate($newdata->starttime);

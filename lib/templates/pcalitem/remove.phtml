@@ -24,11 +24,9 @@
     }
     if ($confirm) {
       if ($confirm==$ARnls["all"]) {
-        debug("remove all");
         $this->ls(".","remove.phtml","entry=$entry&confirm=All");
         $data->timeframes=$this->NewEndtime($entry);
       } else {
-        debug("remove current");
         $data->timeframes=$this->DelTimeframe($entry);
       }
       if (@count($data->timeframes)) { // entries left

@@ -20,13 +20,11 @@
     if ($setnls) { // hidden option when other submit buttons are pressed
       $selectednls=$setnls;
     } else {
-      debug("no selectednls");
       $selectednls=$ARConfig->nls->default;
     }
   }
   $this->nls=$selectednls;
   $nls=$selectednls;
-  debug("snls: $selectednls");
   $selectedlanguage=$ARConfig->nls->list[$selectednls];
   // enter this information in the form
   echo "<input type=\"hidden\" name=\"setnls\" value=\"$selectednls\">\n";

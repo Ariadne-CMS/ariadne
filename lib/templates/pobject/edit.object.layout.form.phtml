@@ -69,7 +69,6 @@
       <textarea class="full" cols="78" rows="20" name="template" wrap="off"><?php
         if ($data->pinp[$type][$function][$language]) {
           $template=$this->store->files."templates".$data->pinp[$type][$function][$language].".pinp";
-	  debug("t: ".$template);
           if (file_exists($template)) {
             $file=file($template);
 	    $file=implode("",$file);
@@ -77,8 +76,6 @@
             $file=ereg_replace("<","&lt;", ereg_replace(">","&gt;",$file));
 	    echo $file;
           }
-        } else {
-          debug("t: $type, f: $function");
         }
       ?></textarea>
       </td>

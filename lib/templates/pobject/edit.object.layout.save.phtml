@@ -3,7 +3,6 @@
    
     switch($next) {
       case $ARnls["save"] :
-        debug("save");
         include($this->store->code."modules/mod_pinp.phtml");
         if (!$newfunction) {
           $error=$ARnls["err:notemplatename"];
@@ -51,7 +50,6 @@
         break;
 
       case $ARnls["delete"] :
-        debug("Delete");
         if (!ereg("\.\.",$function) && eregi("^[a-z0-9\._-]+$",$function)) {
           if ($data->pinp[$type][$function][$language]) {
             while (list($oldtype, $functions)=each($data->pinp)) {
@@ -61,8 +59,6 @@
                      ($oldtype!=$type) ||
                      ($oldlanguage!=$language)) {
                     $pinp[$oldtype][$oldfunction][$oldlanguage]=$value;
-                  } else {
-                    debug("remove: $oldtype; $oldfunction; $oldlanguage");
                   }
                 }
               }

@@ -2,7 +2,6 @@
   $result=$this->get($path, "Get.phtml");
   if ($result && $result[0] 
       && $this->store->implements($result[0]->type, "puser")) {
-    debug(":$path:".$result[0]->data->login.":");
     $this->get($path, "SetGroup.phtml", "action=$action&path=".
       RawUrlEncode($this->path)."&id=".RawUrlEncode($data->login));
     if ($action=="add") {
@@ -20,7 +19,6 @@
   $members=$this->ls(".","GetId.phtml");
   while (list($key, $member)=@each($members)) {
     $properties["members"][]["login"]="'".AddSlashes($member)."'";
-    debug("member: $member");
   } 
   if (!$properties["members"]) {
     $properties["members"]=1;

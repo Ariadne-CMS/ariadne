@@ -7,7 +7,6 @@
     } else if ($next==$ARnls["editoriginal"]) {
       Header("Location: ".$this->store->root.$data->path."edit.phtml?returnpage=".RawUrlEncode($returnpage));
     } else if ($next==$ARnls["cancel"]) {
-      debug("Cancel");
       include($this->store->code."includes/cancel.phtml");
       include($this->store->code."includes/unlock.phtml");
     } else { // edit it.

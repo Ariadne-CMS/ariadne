@@ -33,24 +33,21 @@
    'default.phtml' is called (which it will).
 
   ******************************************************************/
-  debug($this->path." ( ".serialize($ARConfig)." ) ");
+  debug($this->type."/system.get.config.phtml (".$this->path.")","class");
   if ($data->templates[$req_type][$req_function]) { 
     unset($ARConfig->template);
     $ARConfig->template[$req_type][$req_function]=
       $data->templates[$req_type][$req_function];
-    debug($this->path." t: ".$ARConfig->template[$req_type][$req_function]);
   } else if ($data->templates["*"]) {
     if (@is_array($data->templates["*"])) {
       if ($data->templates["*"][$req_function]) {
 	unset($ARConfig->template);
         $ARConfig->template[$req_type][$req_function]=
           ereg_replace("{type}",$req_type,$data->templates["*"][$req_function]);
-        debug($this->path." t*: ".$ARConfig->template[$req_type][$req_function]);
 
       } else if ($data->templates["*"]["*"]) {
         $ARConfig->template=
           ereg_replace("{type}",$req_type,$data->templates["*"]["*"]);
-        debug($this->path." t**: ".$ARConfig->template);
       }
     }
   }
@@ -62,6 +59,5 @@
   }
   if ($data->nls->list) {
     $ARConfig->nls=$data->nls;
-    debug("nls found");
   }
 ?>

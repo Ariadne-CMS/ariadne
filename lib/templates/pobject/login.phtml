@@ -3,7 +3,6 @@
         // start a new session when there is no session yet, or
         // when a user uses a new login. (su)
 		$this->store->root=ldStartSession();
-		debug($this->store->root.$arReturnPage);
 	}
 	$ARCurrent->session->put("ARLogin",$ARLogin);
 	$ARCurrent->session->put("ARPassword",$ARPassword);

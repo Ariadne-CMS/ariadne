@@ -23,20 +23,15 @@
 
 
   if ($this->CheckLogin("edit") && $this->CheckConfig()) {
-    debug("returnpage: $returnpage");
     if ($next==$ARnls["save"]) { // save data
       // every object _must_ have a save.phtml, so:
-      debug("Save");
       include($this->store->code."templates/".$this->type."/save.phtml");
     } else if ($next==$ARnls["delete"]) { // delete this object
-      debug("Delete");
       $this->get(".","delete.phtml",$arCallArgs);
     } else if ($next==$ARnls["cancel"]) {
-      debug("Cancel");
       include($this->store->code."includes/cancel.phtml");
       include($this->store->code."includes/unlock.phtml");
     } else {// edit it
-      debug("Default: Edit ($next;".$ARnls["save"].")");
       include($this->store->code."includes/lock.phtml");
       if (!$arResult) {
 	// object locked, show us by who

@@ -1,20 +1,21 @@
 <?php
-  debug("GetLock: $id");
+  debug($this->type."/GetLock.phtml: $id","class");
   if ($data->locked) {
     if ($id) {
       if (($data->locked["id"]==$id) && ($data->locked["duration"]>time())) {
-        debug("lock $id found"); 
+        debug("lock $id found","all"); 
         $arResult=$data->locked;
         $ARCurrent->locks[$this->path]=$data->locked;
       } else {
-        debug("invalid or different lock");
+        debug("invalid or different lock","all");
       }
     } else {
       if ($data->locked["duration"]>time()) {
-        debug("lock ".$data->locked["id"]." found");
+        debug("lock ".$data->locked["id"]." found","all");
         $arResult=$data->locked;
         $ARCurrent->locks[$this->path]=$data->locked;
       }
     }
   }
+ debug($this->type."/Getlock.phtml: end","all");
 ?>

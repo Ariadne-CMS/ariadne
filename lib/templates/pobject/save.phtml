@@ -34,7 +34,6 @@
     $newdata->nls->default=$ARConfig->nls->default;
     reset($AR->nls->list);
     while (list($key, $value)=each($AR->nls->list)) {
-      debug($key);
       if (isset(${$key})) { // FIXME: not always sufficient check
                             // (if user selects a language but enters nothing and then submits, $$key will be set, but all values empty)
         $nlsformdata=$$key;

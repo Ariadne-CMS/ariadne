@@ -17,7 +17,6 @@
     <tr>
 <?php 
   if (!$ARConfig->nls) {
-    debug("no ARConfig->nls");
     $ARConfig->nls=$AR->nls;
   }
   reset($ARConfig->nls->list);

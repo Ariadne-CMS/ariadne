@@ -3,7 +3,6 @@
    
     switch($next) {
       case $ARnls["save"] :
-        debug("save");
         include($this->store->code."modules/mod_pinp.phtml");
         if (!$newfunction) {
           $error=$ARnls["err:notemplatename"];
@@ -56,14 +55,12 @@
         break;
 
       case $ARnls["delete"] :
-        debug("Delete");
         $this->get("","RemoveTemplate.phtml",
                    "type=".RawUrlEncode($newtype).
                    "&function=".RawUrlEncode($function));
 	break;
 
       default :
-        debug("default");
         Header("Location: ".$this->store->root.$this->path."templates.phtml");
          
 

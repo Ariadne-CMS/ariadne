@@ -18,7 +18,6 @@
     reset($AR->nls->list);
     while (list($key, $value)=each($AR->nls->list)) {
       
-      debug($key);
       if ($this->getdata($key,"none")) { // FIXME: not always sufficient check
                                          // (if user selects a language but enters nothing and then submits, $$key will be set, but all values empty)
         if (!$this->data->$key) {

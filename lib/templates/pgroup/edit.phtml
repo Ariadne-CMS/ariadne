@@ -38,7 +38,6 @@
         include($this->store->code."templates/".$this->type."/SetUser.phtml");
       }
     } if ($next==$ARnls["cancel"]) {
-      debug("Cancel");
       include($this->store->code."includes/cancel.phtml");
       include($this->store->code."includes/unlock.phtml");
     }  else {// edit it
