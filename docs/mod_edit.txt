@@ -36,6 +36,11 @@ methods:
 		show an editable element as an editable div, if 
 		editMode is on, or simply echo it if not.
 
+	function _showImageMapLink($path)
+
+		replaces the href tag within an imagemap by echoing the
+		url or adding the edit template to the url in the echo.
+
 Missing:
 
 - workable user interface for adding new objects, without using 
