@@ -1,0 +1,27 @@
+<?php   
+  if ($this->CheckSilent("delete")) {
+    if (($result=$this->lock(0,"T")) && ($result["identity"])) {
+      $this->error=$ARnls["err:cannotlockobject"];
+    } else {
+      if (!$this->ls(".","Get.phtml")) {
+        // remove grants for this object in all user objects.
+        if ($data->grants && is_array($data->grants)) {
+          while (list($login, $grants)=each($data->grants)) {    
+            $criteria["login"]["value"]["="]="'".$login."'";
+            $this->find("/system/users/", $criteria, "updategrant.phtml", 
+                        "action=delete&path=".RawUrlEncode($this->path)
+                   );
+          }
+        }
+        // FIXME: remove templates
+
+        // FIXME: remove files?
+ 
+        $this->delete($this->path);
+      }
+      $this->unlock();
+    }
+  } else {
+    $this->error=$ARnls["nopermission"];
+  }
+?>

@@ -1,0 +1,178 @@
+<?php
+  if ($this->CheckLogin("read")  && $this->CheckConfig()) {
+?>
+<html>
+<head>
+<style>
+  .width100 { width: 100; }
+  .width200 { width: 200; }
+  .width300 { width: 300; }
+  H1    { FONT: 12pt sans-serif; FONT-WEIGHT: bold; }
+  TD        { FONT: 10pt sans-serif; }
+  FORM		{ BORDER: 0; TOP: 77px; LEFT: 10px; POSITION: absolute; }
+  BODY      { FONT: 10pt sans-serif;
+              BORDER: 0;
+  <?php
+    $browser=$this->call("browsercheck.phtml");
+    if ($browser["id"]=="ns" && $browser["version"]<=4) {
+  ?>
+              BACKGROUND-COLOR: #BBBBBB;
+  <?php
+    } else {
+  ?>
+              BACKGROUND-COLOR: buttonface;
+  <?php
+    }
+  ?>
+            }
+</style>
+<script>
+  Nodes=new Array;
+  OrderedList=new Array;
+  id=0;
+  total=0;
+  current=0;
+
+  function addobject(path, parent, name) {
+    if (!Nodes[path]) {
+      if (!Nodes[parent]) {
+        alert("ERROR: "+parent+" not found");
+      } else {
+        with(Nodes[parent]) {
+          children[children.length]=path;
+        }
+        Nodes[path]=new Node(path, parent, name);     
+        OrderedList[OrderedList.length]=path;
+      }
+    }
+  }
+
+  function findmore(offset) {
+    if (document.layers) {
+      document.layers.info.src="recurse.find.phtml?offset="+offset+"&limit=50";
+    } else {
+      info.location="recurse.find.phtml?offset="+offset+"&limit=50";
+    }
+  }
+
+
+  function Node(path, parent, name) {
+    this.id=id++;
+    this.parent=parent;
+    this.path=path;
+    this.name=name;
+    this.children=new Array;
+  }
+
+  Nodes['<?php echo $this->path; ?>']=new Node('<?php echo $this->path; ?>',
+    '<?php echo $this->parent; ?>','<?php echo AddSlashes($nlsdata->name); ?>');
+  OrderedList[OrderedList.length]='<?php echo $this->path; ?>';
+
+<?php
+  switch($action) {
+    case "delete" :
+      if ($this->CheckSilent("delete")) {
+        if ($this->lock(0,"T")) {
+?>
+
+  function start() {
+    total=OrderedList.length;
+    temp=new String('<?php echo $ARnls["q:removeall"]; ?>');
+    re=/%s/
+    temp=temp.replace(re, '<?php echo $this->path; ?>');
+    temp=temp.replace(re, total);
+    if (id<2 || confirm(temp)) {
+      OrderedList=OrderedList.sort();
+      setTimeout("deletenode();",250);
+    } else {
+      window.close();
+    }
+  }
+
+  function deletenode() {
+    current+=1;
+    if (path=OrderedList[OrderedList.length-1]) {
+      OrderedList.length-=1;
+      if (document.layers) {
+        document.layers.info.src="<?php echo $this->store->root; ?>"+path+"recurse.delete.phtml?total="+escape(total)+"&current="+escape(current);
+      } else {
+        info.location="<?php echo $this->store->root; ?>"+path+"recurse.delete.phtml?total="+escape(total)+"&current="+escape(current);
+      }
+    } else {
+      if (top.window && top.window.opener) {
+        top.window.opener.top.View('<?php echo $this->parent; ?>');
+      } else if (window.opener) {
+        window.opener.top.View('<?php echo $this->parent; ?>');
+      }
+      window.close();
+    }
+  }
+<?php
+    } else {
+?>
+  // popup error cannot lock, retry? -> refresh
+<?php
+    }
+?>
+  </script>
+  <title><?php printf($ARnls["deleting"],$this->path); ?></title>
+<?php
+      }
+      break;
+    case "copy" :
+      if (!$target) {
+        error("no target specified");
+        die();
+      }
+?>
+      function start() {
+        OrderedList=OrderedList.sort();
+        OrderedList.reverse();
+        setTimeout("copynode();",250);
+      }
+
+      function copynode() {
+        if (path=OrderedList[OrderedList.length-1]) {
+          OrderedList.length-=1;
+          if (document.layers) {
+            document.layers.info.src="<?php echo $this->store->root; ?>"+path+"recurse.copy.phtml?target=<?php echo RawUrlEncode($target); ?>&source=<?php echo RawUrlEncode($this->path); ?>";
+          } else {
+            info.location="<?php echo $this->store->root; ?>"+path+"recurse.copy.phtml?target=<?php echo RawUrlEncode($target); ?>&source=<?php echo RawUrlEncode($this->path); ?>";
+          }
+        } else {
+          // FIXME: call window.opener to notify it that the action is
+          // complete and close the window.
+          alert('done');
+        }
+      }
+  </script>
+  <title><?php printf($ARnls["copying"],$this->path); ?></title>
+<?php
+      break;
+    case "move" :
+
+    case "link" :
+
+    default :
+      echo "</script></head><body>not implemented (yet)</body></html>";
+      die();
+      break;
+  }
+?>
+</head>
+<body bgcolor="#BBBBBB">
+<layer name="info" src="recurse.find.phtml?limit=50" width="100%" height="60">
+<iframe id="info" src="recurse.find.phtml?limit=50" width="100%" height="60">
+</iframe>
+</layer>
+<layer top=50>
+<form>
+<!-- FIXME: unlock object when cancel pressed -->
+<input type="button" name="cancel" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();">
+</form>
+</layer>
+</body>
+</html>
+<?php
+  }
+?>

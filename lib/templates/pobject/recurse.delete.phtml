@@ -1,0 +1,66 @@
+<?php
+  if ($this->CheckLogin("delete") && $this->CheckConfig()) {
+?>
+<html>
+<head>
+<style>
+  .width100 { width: 100; }
+  .width200 { width: 200; }
+  .width300 { width: 300; }
+  H1    { FONT: 12pt sans-serif; FONT-WEIGHT: bold; }
+  TD        { FONT: 10pt sans-serif; }
+  BODY      { FONT: 10pt sans-serif;
+              BORDER: 0;
+  <?php
+    $browser=$this->call("browsercheck.phtml");
+    if ($browser["id"]=="ns" && $browser["version"]<=4) {
+  ?>
+              BACKGROUND-COLOR: #BBBBBB;
+  <?php
+    } else {
+  ?>
+              BACKGROUND-COLOR: buttonface;
+  <?php
+    }
+  ?>
+            }
+</style>
+</head>
+<body bgcolor="#BBBBBB" onLoad="nextnode();" scroll="no">
+<?php 
+  echo $ARnls["deleting"]." ($current/$total)<br>".$this->path; 
+?>
+<script>
+<?php
+  if ($browser["id"]!="ns" || $browser["version"]!=4) {
+?>
+  function deletenode() {
+    top.deletenode();
+  }
+
+<?php
+  }
+?>
+  function nextnode() {
+<?php
+    $this->call("system.delete.phtml");
+    if ($this->error) {
+?>
+      if (!confirm('<?php echo AddSlashes(sprintf($this->error,$this->path)); ?>')) {
+        if (top.window) {
+          top.window.close();
+        } else {
+          window.close(); 
+        }
+      } 
+<?php
+    }
+?>
+    window.setTimeout("deletenode();",100);
+  }
+</script>
+</body>
+</html>
+<?php
+  }
+?>

@@ -1,0 +1,19 @@
+<?php global $AR; ?>
+<table border="0">
+<tr>
+	<td align="left">
+	<b><font color="#000000"><?php echo $nlsdata->name; ?></font></b>
+	</td>
+</tr>
+<tr>
+	<td align="left">
+	<img width="40" height="40" src="<?php echo $AR->dir->images."icons/".$this->type.".gif"; ?>">
+	</td>
+</tr>
+<tr>
+	<td align="left">
+	<br><br>
+	<?php echo $this->getdata("summary",$nls); ?>
+	</td>
+</tr>
+</table>
