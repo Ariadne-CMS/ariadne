@@ -3,31 +3,32 @@
 			(!$this->arIsNewObject && $this->CheckLogin("edit"))) && 
 			$this->CheckConfig()) {
 
+		include_once($this->store->code."modules/mod_unicode.php");
+
+
 		if (!function_exists("convData2UTF8")) {
-			function convData2UTF8($data) {
+			function convData2UTF8($data, $charset) {
 				if (is_array($data)) {
 					reset($data);
 					while (list($key, $val)=each($data)) {
-						$data[$key] = convData2UTF8($val);
+						$data[$key] = convData2UTF8($val, $charset);
 					}
 				} else
 				if (is_object($data)) {
 					while (list($key, $val)=each($data)) {
-						$data->$key = convData2UTF8($val);
+						$data->$key = convData2UTF8($val, $charset);
 					}
 				} else {
-					$data = utf8_encode($data);
+					$data = unicode::convertToUTF8($charset, $data);
 				}
 				return $data;
 			}
 		}
 
-		if ( $ARCurrent->AXAction == "import" &&
-					is_array($convert_charsets)) {
-
+		if (is_array($convert_charsets)) {
 			reset($convert_charsets);
-			while (list($nlsk, $nls)=each($convert_charsets)) {
-				$this->data->$nls = convData2UTF8($this->data->$nls);
+			while (list($nls, $charset)=each($convert_charsets)) {
+				$this->data->$nls = convData2UTF8($this->data->$nls, $charset);
 			}
 		}
 
