@@ -1,30 +1,96 @@
 <?php
-	$ARCurrent->arLoginSilent=1;
-	if ($this->CheckLogin("read")) {
-		if ($AR->user->data->login==$data->login || $AR->user->data->login=="admin") {
-			if (!$checkedlocks) {
-				ldRedirect("lock.user.report.phtml?arReturnPage=logoff.phtml?checkedlocks=true");
-			} else {
-				$ARCurrent->session->kill();
-				unset($ARCurrent->session);
-				?>
-					<h1>Goodbye <?php echo $data->name; ?>.</h1>
-					<form action="<?php echo $AR->dir->www; ?>">
-						<input type="submit" value="<?php echo $ARnls["login"]; ?>">
-					</form>
-				<?php
+
+$pageStart = "
+<html>
+<head>
+<title>Ariadne - Logout</title>
+<style>
+	.width100 { width: 100; }
+	.width200 { width: 200; }
+	.width300 { width: 300; }
+	H1		{ FONT: 12pt helvetica, sans-serif; FONT-WEIGHT: bold; }
+	TD		{ FONT: 10pt helvetica, sans-serif; }
+	BODY		{ FONT: 10pt helvetica, sans-serif;
+				BORDER: 0;
+				BACKGROUND-COLOR: steelblue;
 			}
-		} else {
-			?>
-				<h2>Sorry, you can only logoff yourself.</h2>
-			<?php
-		}
-	} else { 
-		?>
-			<h1>Goodbye...</h1>
-			<form action="<?php echo $AR->dir->www; ?>">
-				<input type="submit" value="<?php echo $ARnls["login"]; ?>">
-			</form>
-		<?php
-	}
+	IMG		{
+				BORDER: 0;
+				MARGIN: 0;
+				PADDING: 0;
+			}
+	.small		{
+				FONT: 8pt helvetica, sans-serif;
+			}
+	.large		{
+				FONT: 12pt helvetica, sans-serif; COLOR: darkblue;
+			}
+	.grey		{
+				BACKGROUND-COLOR:#EDEDED; BORDER: solid 1px #CCCCCC;
+			}
+</style>
+</head>
+<body bgcolor=\"#BBBBBB\">
+<table align=\"center\" border=\"1\" cellpadding=\"0\" cellspacing=\"0\" margin=\"0\" width=\"500\">
+<tr>
+ <td>
+  <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" margin=\"0\" width=\"500\" bgcolor=\"#FFFFFF\">
+   <tr>
+    <td rowspan=\"3\">
+     <img src=\"".$AR->host.$AR->dir->images."clock.gif\" alt=\"\" align=\"left\" border=\"0\" hspace=\"0\" vspace=\"0\"></td>
+    <td valign=\"top\" align=\"center\">
+     <img src=\"".$AR->host.$AR->dir->images."ariadne.gif\" alt=\"Ariadne - Web Application Server\" vspace=\"5\"></td>
+   </tr>
+   <tr>
+    <td valign=\"top\" align=\"center\"><span class=\"large\">";
+
+$pageEnd = "</span></td>
+   </tr>
+   <tr>
+    <td valign=\"bottom\" align=\"center\"><span class=\"small\">&copy; 1998 - 2003
+     <a href=\"http://www.muze.nl/\" target=\"_blank\">muze</a>. Ariadne comes with ABSOLUTELY NO WARRANTY.
+      Ariadne is free software, you are welcome to redistribute it under certain
+      <a href=\"help.about.license.phtml\" target=\"_blank\">conditions</a>.<br>&nbsp;</span></td>
+   </tr>
+  </table></td>
+</tr>
+</table>
+</body>
+</html>";
+
+$loginForm = "
+<br><br>
+<form action=\"".$AR->dir->www."\">
+ <input type=\"submit\" value=\"".$ARnls["login"]."\" class=\"grey\"></form>";
+
+$ARCurrent->arLoginSilent=1;
+if ($this->CheckLogin("read")) {
+  if ($AR->user->data->login==$data->login || $AR->user->data->login=="admin") {
+    if (!$checkedlocks) {
+      ldRedirect("lock.user.report.phtml?arReturnPage=logoff.phtml?checkedlocks=true");
+    } 
+    else {
+      $ARCurrent->session->kill();
+      unset($ARCurrent->session);
+      echo $pageStart;
+      
+      // Add nls for this phrase
+      echo "Session closed for ".$data->name;
+      echo $loginForm;
+      echo $pageEnd;   
+    }
+  }
+  else {
+    // Add nls for this phrase
+    echo "<h2>Sorry, you can only logoff yourself.</h2>";
+  }
+} 
+else { 
+  echo $pageStart;
+  
+  // Add nls for this phrase
+  echo "Session closed";
+  echo $loginForm;
+  echo $pageEnd;
+}
 ?>
