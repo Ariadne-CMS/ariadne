@@ -1,9 +1,12 @@
-Ariadne 2.3.1-dev
+Ariadne 2.3.2-dev
+
 Changes in Ariadne since version Ariadne 2.3.1-dev
 
 New Features:
 
 Bugs Fixed:
+	- ldSetUserCookie() now has a more sane default value for the expire time.
+	  User Cookies will now expire when the session ends and not immediately.
 	- changed the postgresql store a bit so it could better handle errors when
 	  the text of a property is longer then the database server would accept
 	- changed the postgresql store layer to behave like mysql, cut varchar to
@@ -11,7 +14,6 @@ Bugs Fixed:
 	  done for properties.
 	- made save() copy the $this->store->error to $this->error like when
 	  creating a new object, but now for updating a object
-
 
 Changes in Ariadne since version Ariadne 2.3-dev
 
