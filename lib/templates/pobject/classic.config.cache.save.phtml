@@ -16,13 +16,15 @@
 	
 	******************************************************************/
 
-	$this->call("system.save.cache.phtml",$arCallArgs);
-	if (!$this->error) {
-		Header("Location: $arReturnPage");
-		?>
-			<a href="<?php echo $arReturnPage; ?>">Continue</a>
-		<?php
-	} else {
-		$this->call("show.error.phtml");
+	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+		$this->call("system.save.cache.phtml",$arCallArgs);
+		if (!$this->error) {
+			Header("Location: $arReturnPage");
+			?>
+				<a href="<?php echo $arReturnPage; ?>">Continue</a>
+			<?php
+		} else {
+			$this->call("show.error.phtml");
+		}
 	}
 ?>

@@ -12,13 +12,15 @@
 	 no result
 
 	******************************************************************/
-	$this->call("system.save.types.phtml",$arCallArgs);
-	if (!$this->error) {
-		Header("Location: $arReturnPage");
-		?>
-			<a href="<?php echo $arReturnPage; ?>">Continue</a>
-		<?php
-	} else {
-		$this->call("show.error.phtml");
+	if ($this->CheckLogin("config") && $this->CheckConfig()) {
+		$this->call("system.save.types.phtml",$arCallArgs);
+		if (!$this->error) {
+			Header("Location: $arReturnPage");
+			?>
+				<a href="<?php echo $arReturnPage; ?>">Continue</a>
+			<?php
+		} else {
+			$this->call("show.error.phtml");
+		}
 	}
 ?>

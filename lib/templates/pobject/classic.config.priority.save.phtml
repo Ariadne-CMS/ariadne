@@ -1,18 +1,19 @@
 <?php
 	/******************************************************************
-	 classic.config.grants.save.phtml                      Muze Ariadne
+	 classic.config.priority.save.phtml                    Muze Ariadne
 	 ------------------------------------------------------------------
-	 Arguments: $arReturnPage 
-	 Grant needed: none
+	 Arguments: see system.save.priority.phtml
+	 Grant needed: read
 	 Global variables: none
 
-	 This is a wrapper around the system.save.grants.phtml template.
+	 This template is a wrapper around system.save.priority.phtml for 
+	 the classic config interface.
 	 
 	 no result
 
 	******************************************************************/
-	if ($this->CheckLogin("config") && $this->CheckConfig()) {
-		$this->call("system.save.grants.phtml",$arCallArgs);
+	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+		$this->call("system.save.priority.phtml",$arCallArgs);
 		if (!$this->error) {
 			Header("Location: $arReturnPage");
 			?>
