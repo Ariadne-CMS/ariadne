@@ -1,0 +1,12 @@
+<?php
+  if ( (($this->arIsNewObject && $this->CheckLogin("add", $arNewType)) ||
+			(!$this->arIsNewObject && $this->CheckLogin("edit"))) &&
+			$this->CheckConfig()) {
+
+	ldRegisterFile("file", $this->error);
+	if (!$this->error) {
+		$this->call("system.save.data.phtml", $arCallArgs);
+	}
+
+  }
+?>
