@@ -133,6 +133,7 @@ Bugs Fixed:
 	  * export didn't know about the $data to $data->config changes
 	  * imports' templates code was wrong
 	- change the way templates are included, because it was a bit wrong
+	- changed cleanup to ignore .svn directory's and the files below it, to keep svn trees working
 
 Changes in Ariadne since version Ariadne 2.3-dev
 
