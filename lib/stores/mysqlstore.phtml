@@ -39,10 +39,15 @@ $DB["level"]=$DB["off"];
 
 $ERRMODE="htmljs"; // alternative: "text"/"html"/"js"
 
-function debug($text, $level="pinp") {
-	global $DB;
+function debug($text, $level="pinp", $indent="") {
+	global $DB, $DB_INDENT;
+	if ($indent=="IN") {
+		$DB_INDENT.="  ";
+	} else if ($indent=="OUT") {
+		$DB_INDENT=substr($DB_INDENT,0,-2);
+	}
 	if ($DB["level"]>=$DB[$level]) {
-		echo "<b>$level::$text</b><BR>\n";
+		echo "$DB_INDENT<b>$level::$text</b><BR>\n";
 		flush();
 	}
 }
@@ -161,7 +166,7 @@ class mysqlstore {
 	}
 
 	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) {
-		debug("newobject($path, $parent, $type, [data], $id, $lastchanged, $vtype)","all");
+		debug("newobject($path, $parent, $type, [data], $id, $lastchanged, $vtype, $size, $priority)","all");
 		include_once($this->code."objects/".$type.".phtml");
 		$object=new $type;
 		$object->init($this, $path, $data);
