@@ -246,7 +246,7 @@ CREATE TABLE ".$this->tbl_prefix."types (
 	**********************************************************************/
 
 		$this->error="";
-		if ($type && $implements && (strlen($type)<17) && (strlen($implements)<17)) {
+		if ($type && $implements && (strlen($type)<33) && (strlen($implements)<33)) {
 			$etype=AddSlashes($type);
 			$eimplements=AddSlashes($implements);
 			$query_string="insert into ".$this->tbl_prefix."types values ('$etype','$eimplements')";

@@ -224,7 +224,7 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 	**********************************************************************/
 
 		$this->error=false;
-		if ($type && $implements && (strlen($type)<17) && (strlen($implements)<17)) {
+		if ($type && $implements && (strlen($type)<33) && (strlen($implements)<33)) {
 			$etype=AddSlashes($type);
 			$eimplements=AddSlashes($implements);
 			$query_string="insert into ".$this->tbl_prefix."types values ('$etype','$eimplements')";

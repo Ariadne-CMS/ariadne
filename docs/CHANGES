@@ -105,6 +105,8 @@ Bugs Fixed:
 	- The wizard input fields now resize with the window.
 	- Added error checks on the store and object save routine, to prevent 
 	  saving objects with a path that is too long for the database.
+	- yet another round of places where a object type was hardcoded to 16
+	  characters this time it was add_type in the install stores
 
 Changes in Ariadne since version 2.2
 
