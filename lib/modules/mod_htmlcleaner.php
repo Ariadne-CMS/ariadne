@@ -250,6 +250,7 @@ class htmlcleaner
 											unset($part->attributes[$attrib_key]);
 											if (!count($part->attributes)) {
 												unset($part);
+												break 2;
 											}
 										} else {
 											$part->attributes[$attrib_key] = $value_rules;
