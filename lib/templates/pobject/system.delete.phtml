@@ -13,20 +13,25 @@
 									"path" => $this->path) );
 					}
 				}
-				// remove templates
-				if ($data->pinp) {
-					$templates=$this->store->get_filestore("templates");
-					while (list($type, $values)=each($data->pinp)) {
-						while (list($function, $templatelist)=each($values)) {
-							while (list($language, $template)=each($templatelist)) {
-								$file=$type.".".$function.".".$language;
-								$templates->remove($this->id, $file);
-								$file.=".pinp";
-								$templates->remove($this->id, $file);
+				/*
+					do not remove templates if we have links to this object
+				*/
+				if (count($this->store->list_paths($this->path)) == 1) {
+					// remove templates
+					if ($data->pinp) {
+						$templates=$this->store->get_filestore("templates");
+						while (list($type, $values)=each($data->pinp)) {
+							while (list($function, $templatelist)=each($values)) {
+								while (list($language, $template)=each($templatelist)) {
+									$file=$type.".".$function.".".$language;
+									$templates->remove($this->id, $file);
+									$file.=".pinp";
+									$templates->remove($this->id, $file);
+								}
 							}
 						}
-					}
-				}				
+					}				
+				}
 				// clear cache
 				$this->ClearCache();
 				// finally remove object itself
