@@ -5,11 +5,85 @@
 	require($ariadne."/configs/store.phtml");
 	require($ariadne."/stores/mysqlstore.phtml");
 
-	if (($export_path=$argv[1]) && ($ax_file=$argv[2])) {
-		$store=new mysqlstore($root,$store_config);
-		include($ariadne."/includes/export.phtml");
-		if ($error)
-		echo $error."\n";
+	global $options;
+
+	$arg_c=0;
+	$arg_v[$arg_c++]=$argv[0];
+
+	next($argv); // do not parse the filename
+	while (list(,$cmd)=each($argv)) {
+		if (strpos($cmd, "--") === 0) {
+			if (strpos(substr($cmd, 2),"-")===false) {
+				$option_switch=substr($cmd, 2);
+			} else {
+
+				$option_switch=substr($cmd, 2, strpos(substr($cmd, 2),"-"));
+
+				if (strpos($cmd, "=")!==false) {
+					$option_value=substr($cmd, strpos($cmd, "=")+1);
+					$option=substr($cmd, strlen($option_switch)+3, strpos($cmd, "=") - (strlen($option_switch)+3));
+				} else {
+					$option=substr($cmd, strlen($option_switch)+3);
+				}
+			}
+
+			//echo "switch($option_switch)($option)='$option_value'\n";
+
+			switch ($option_switch) {
+				case 'with':
+					$options[$option]=$option_value;
+				break;
+				case 'without':
+					$options["without_$option"]=true;
+				break;
+
+				case 'verbose':
+					$options["verbose"]=true;
+				break;
+
+				default:
+					echo "unknow option-switch ($option_switch)\n";
+			}
+		} else {
+			$arg_v[$arg_c++]=$cmd;
+		}
+	}
+
+
+	if ($arg_c>=3) {
+		$i=1;
+		while ($i < $arg_c-1) {
+
+			if ( ($i < ($arg_c - 2)) && (strtoupper($arg_v[$i+1])=="AS") ) {
+				$aspath=$arg_v[$i+2];
+				$nexti=$i+3;
+			} else {
+				$aspath=substr($arg_v[$i], strrpos(substr($arg_v[$i], 0, -1), "/") + 1, -1);
+				$nexti=$i+1;
+			}
+			
+			$aspath=ereg_replace("/", "", $aspath);
+			$path_array[$aspath]=$arg_v[$i];
+			if (!$aspath) {
+				$error="err: supply an alias for ".$arg_v[$i];
+			}
+			$i=$nexti;
+		}
+
+		if (!$error) {
+			$options["axFile"]=$arg_v[$arg_c-1];
+			$store=new mysqlstore($root,$store_config);
+
+			$ARLogin="admin";
+			$AR->user=new object;
+			$AR->user->data=new object;
+			$AR->user->data->login="admin";
+			$error=@current($store->call("system.export.phtml", "",
+				$store->get("/")));
+		}
+		if ($error) {
+			echo $error."\n";
+		}
 	} else {
 		echo "USAGE: export [export_path] [ax_file]\n";
 	}

@@ -1,24 +1,97 @@
-#!/usr/bin/php4 -q
+#!/usr/local/bin/php -q
 <?php
 	$ariadne="../lib";
 	require($ariadne."/configs/ariadne.phtml");
 	require($ariadne."/configs/store.phtml");
 	require($ariadne."/stores/mysqlstore.phtml");
 
-	if (($import_path=$argv[2]) && ($ax_file=$argv[1])) {
-		$ARImportNoGrants=$argv[3];
+	global $options;
 
-		if (!file_exists($ax_file)) { 
-			$error="err:filedoesntexist";
+	// import ax_file [object][children] destination-path
+
+	$arg_c=0;
+	$arg_v[$arg_c++]=$argv[0];
+
+	next($argv); // do not parse the filename
+	while (list(,$cmd)=each($argv)) {
+		if (strpos($cmd, "--") === 0) {
+			if (strpos(substr($cmd, 2),"-")===false) {
+				$option_switch=substr($cmd, 2);
+			} else {
+
+				$option_switch=substr($cmd, 2, strpos(substr($cmd, 2),"-"));
+
+				if (strpos($cmd, "=")!==false) {
+					$option_value=substr($cmd, strpos($cmd, "=")+1);
+					$option=substr($cmd, strlen($option_switch)+3, strpos($cmd, "=") - (strlen($option_switch)+3));
+				} else {
+					$option_value=true;
+					$option=substr($cmd, strlen($option_switch)+3);
+				}
+			}
+
+			//echo "switch($option_switch)($option)='$option_value'\n";
+
+			switch ($option_switch) {
+				case 'with':
+					$options[$option]=$option_value;
+				break;
+				case 'without':
+					$options["without_$option"]=true;
+				break;
+
+				case 'verbose':
+					$options["verbose"]=true;
+				break;
+
+				default:
+					echo "unknow option-switch ($option_switch)\n";
+			}
 		} else {
-			$store=new mysqlstore($root,$store_config);
-			include($ariadne."/includes/import.phtml");
-			$store->close();
+			$arg_v[$arg_c++]=$cmd;
 		}
+	}
+
+	if ($arg_c>2) {
+
+		$ax_file=$arg_v[1];
+		$import_path=$arg_v[$arg_c-1];
+
+		if ($arg_c > 3) {
+			for ($i=2; $i<$arg_c-1; $i++) {
+				$import_list[$i-2]=$arg_v[$i];
+			}
+		} else {
+			$import_list[0]=".";
+		}
+
+		if (!$error) {
+			if (!file_exists($ax_file)) { 
+				$error="err:filedoesntexist";
+			} else {
+				global $AR, $ARLogin, $import_list;
+				$store=new mysqlstore($root,$store_config);
+
+
+				$options["axFile"]=$ax_file;
+				$options["import_path"]=$import_path;
+				// become admin
+				$ARLogin="admin";
+				$AR->user=new object;
+				$AR->user->data=new object;
+				$AR->user->data->login="admin";
+
+				$store->call("system.import.phtml", "",
+						$store->get("/"));
+
+				$store->close();
+			}
+		}
+
 		if ($error) {
 			echo $error."\n";
 		}
 	} else {
-		echo "USAGE: import [ax_file] [import_path] [grants: [Y/n]]\n";
+		echo "USAGE: import [ax_file] [object][path] [destination_path] \n";
 	}
 ?>
