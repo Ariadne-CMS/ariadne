@@ -257,13 +257,15 @@ class pobject extends object { // pobject class definition
 					if (!$this->exists($this->path)) { //arNewFilename)) {
 						if ($this->exists($arNewParent)) {
 							$config = $this->data->config;
-							$wf_result = $this->call("user.workflow.pre.html", Array("properties" => $properties));
+							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+							$wf_result = $wf_object->call("user.workflow.pre.html", Array("properties" => $properties));
+							$this->priority = $wf_object->priority;
+							$this->data->config = $config;
 							if (is_array($wf_result)) {
 								if (is_array($properties)) {
 									$properties += $wf_result;
 								}
 							}
-							$this->data->config = $config;
 							$this->data->ctime=time();
 							$this->data->mtime=$this->data->ctime;
 							$this->data->muser=$AR->user->data->login;
@@ -319,18 +321,20 @@ class pobject extends object { // pobject class definition
 							if ($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)) {
 								unset($this->arIsNewObject);
 								$this->id=$this->exists($this->path);
-								$config = $this->data->config;
-								$wf_result = $this->call("user.workflow.post.html", Array("properties" => $properties));
+
+								$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+								$wf_result = $wf_object->call("user.workflow.post.html", Array("properties" => $properties));
+								$this->priority = $wf_object->priority;
+								$this->data->config = $config;
 								if ($wf_result) {
 									$wf_properties = Array();
 									if (is_array($wf_result)) {
 										$wf_properties = $wf_result;
 									}
-									if (!$this->store->save($this->path, $this->type, $this->data, $wf_properties)) {
+									if (!$this->store->save($this->path, $this->type, $this->data, $wf_properties, $this->vtype, $this->priority)) {
 										$this->error = $this->store->error;
 									}
 								}
-								$this->data->config = $config;
 							} else {
 								$this->error=$this->store->error;
 							}
@@ -357,13 +361,15 @@ class pobject extends object { // pobject class definition
 			if ($this->lock()) {
 				if ($this->exists($this->path)) { // prevent 'funny stuff'
 					$config = $this->data->config;
-					$wf_result = $this->call("user.workflow.pre.html", Array("properties" => $properties));
+					$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+					$wf_result = $wf_object->call("user.workflow.pre.html", Array("properties" => $properties));
+					$this->priority = $wf_object->priority;
+					$this->data->config = $config;
 					if (is_array($wf_result)) {
 						if (is_array($properties)) {
 							$properties += $wf_result;
 						}
 					}
-					$this->data->config = $config;
 					$this->data->mtime=time();
 					$this->data->muser=$AR->user->data->login;
 					$properties["time"][0]["ctime"]=$this->data->ctime;
@@ -408,14 +414,16 @@ class pobject extends object { // pobject class definition
 					}
 					if($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)){
 						$result=$this->path;
-						$config = $this->data->config;
-						$wf_result = $this->call("user.workflow.post.html", Array("properties" => $properties));
+						$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+						$wf_result = $wf_object->call("user.workflow.post.html", Array("properties" => $properties));
+						$this->priority = $wf_object->priority;
+						$this->data->config = $config;
 						if ($wf_result) {
 							$wf_properties = Array();
 							if (is_array($wf_result)) {
 								$wf_properties = $wf_result;
 							}
-							if (!$this->store->save($this->path, $this->type, $this->data, $wf_properties)) {
+							if (!$this->store->save($this->path, $this->type, $this->data, $wf_properties, $this->vtype, $this->priority)) {
 								$this->error = $this->store->error;
 							}
 						}
@@ -474,7 +482,6 @@ class pobject extends object { // pobject class definition
 
 	function make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=false) {
 		global $ARConfig, $AR, $ARCurrent;
-//		echo "0"; flush();
 		debug("pobject: make_url($path) (from: ".$this->path.")","object");
 		$rootoptions=$this->store->rootoptions;
 		if (!$session || ($nls !== false)) {
@@ -1023,7 +1030,7 @@ class pobject extends object { // pobject class definition
 							echo "<div style=\"float: left; border: 0px; padding: 0px; margin: 0px;\" title=\"(".$this->type.")".$this->path.":$arCallTemplate\"".
 									" onMouseOver=\"this.style.border='1px dotted black';\" onMouseOut=\"this.style.border='0px';\">";
 						}
-						$arTemplates->import($arTemplateId, $arCallTemplate, "",$this);
+						$arTemplates->import($arTemplateId, $arCallTemplate, "", $this);
 						if ($ARCurrent->ARShowTemplateBorders) {
 							// echo "</fieldset>";
 							echo "</div>";
