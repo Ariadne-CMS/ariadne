@@ -17,6 +17,10 @@ IMPORTANT:
 	current editor.ini with the one from CVS.
 
 New Features:
+
+	- Added an extra 'nls' selector to the link dialogs in the WYSIWYG editor
+	(you can now add links to objects in a specific language).
+	- Added locking to the 'edit' wizards.
 	- Popus of Ariadne are now optionally reused or not, this means you can have
 	  2 seperate template editors open on one Ariadne instance.
 	- user.notfound.html now calls 2 templates depending on the full page not
@@ -54,6 +58,8 @@ New Features:
 	- added autofocus for the priority edit popup
 
 Bugs Fixed:
+	- Adding users to groups upon import (so you don't need to export 
+		/system/groups/ also).
 	- Changed .jpg template to .html in browse.nav.icons.show.phtml for pphoto.
 	  Thanks to Goran Topic
 	- Changed short php tags in puser/edit.object.data.form.phtml to long tags.
