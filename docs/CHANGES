@@ -116,6 +116,8 @@ Bugs Fixed:
 	  characters this time it was add_type in the install stores
 	- fixes a locale typo in the ariadne.phtml-unix and ariadne.phtml-win
 	- changed the default of mkdir in the ftp interface back to pdir
+	- fixed a system.save.date.phtml in pperson so that emailadreses are also
+	  stored when there given as a array.
 
 Changes in Ariadne since version 2.2
 

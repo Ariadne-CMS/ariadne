@@ -67,8 +67,8 @@
 			$this->data->mobile=$this->getdata("mobile","none");
 
 			$emails = $this->getdata("emails", "none");
-			$rawemails=$emails;
 			if (!is_array($emails)) {
+				$rawemails=$emails;
 				$emails=explode(",",$emails);
 				if ($emails[0]) {
 					for ($i=0; $i<count($emails); $i++) {
@@ -77,10 +77,13 @@
 							$newemails[]=$email;
 						}
 					}
-					$this->data->emails=$newemails;					
+					$this->data->emails=$newemails;
 				} else {
 					unset($this->data->emails);
 				}
+			} else {
+				$rawemails=implode(',',$emails);
+				$this->data->emails=$emails;
 			}
 
 			$properties["address"][0]["street"]="'".AddSlashes($this->data->address)."'";
