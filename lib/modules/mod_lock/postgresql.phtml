@@ -74,7 +74,7 @@ class postgresqllock {
 		// check if the path is not already locked by a parent
 		$query_string="
 			select path, release, type, identity 
-			from locks 
+			from ".$this->tbl_prefix."locks 
 			where ( ( path=substring('".AddSlashes($path)."',1,length(path)) 
 				       AND type='T' ) 
 				     OR ( path='".AddSlashes($path)."' )";
