@@ -540,6 +540,11 @@ function IMAGE_set(arr) {
 	window.setfocusto=false;
 	var el=window.el;
 	if (arr != null) {
+		// register change in the editable field, since the focus was already lost through the dialog
+		var editField=getEditableField();
+		if (editField) {
+			editField.onfocus();
+		}
 
 		src=new String(arr['src']);
 		temp=new String('http://');
@@ -589,6 +594,10 @@ function IMAGE_set(arr) {
 				rg.pasteHTML(temp);
 				rg.select();
 			}
+		}
+		// register change in the editable field, since the focus was already lost through the dialog
+		if (editField) {
+			editField.onblur();
 		}
 	}
 }	
@@ -731,6 +740,11 @@ function DECMD_HYPERLINK_onclick() {
 	*/ 
 	arr = showModalDialog( "edit.object.html.link.phtml", args,	"font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:13em; status: no; resizable: yes;");
 	if (arr != null){
+		// register change in the editable field, since the focus was already lost through the dialog
+		var editField=getEditableField();
+		if (editField) {
+			editField.onfocus();
+		}
 		var newLink="<a";
 		if (arr['URL']) {
 			newLink+=" href=\""+arr['URL']+"\"";
@@ -766,6 +780,10 @@ function DECMD_HYPERLINK_onclick() {
 			oATag.outerHTML=oATag.innerHTML;
 //			unlink seems broken, when removing a link on an image, it also removes the image...
 //			setFormat("UnLink");
+		}
+		// register change in the editable field, since the focus was already lost through the dialog
+		if (editField) {
+			editField.onblur();
 		}
 	}
 	tbContentElement.focus();
@@ -1025,6 +1043,26 @@ function isDirty() {
 		currentEditableField.onblur();
 	}
 	return arChangeRegistry.length;
+}
+
+function getEditableField() {
+	var parent=false;
+	var sel=KeepState.GetSelection();
+	if (sel) {
+		if (sel.type=="Control") {
+			parent=sel.item(0);
+		} else {
+			parent=sel.parentElement();
+		}
+		while (parent && parent.className!='editable' && parent.parentElement) {
+			parent=parent.parentElement;
+		}
+	}
+	if (parent && parent.className=='editable') {
+		return parent;
+	} else {
+		return false;
+	}
 }
 
 function getDirtyField() {
