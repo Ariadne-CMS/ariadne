@@ -7,9 +7,9 @@
     $ARBeenHere[$arCallFunction][$path]=1;
     if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
       if ($path && $this->store->exists($path)) {
-        $result=$this->get($path, $arCallFunction, $arCallArgs);
+        $result=$this->get($path, $arCallFunction, $arCallArgs."&arShortCut=".RawUrlEncode($this->path));
         if ($result) {
-	  $arResult=$result[0];
+          $arResult=$result[0];
         }
       } else {
 ?>
