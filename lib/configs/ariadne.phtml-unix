@@ -13,6 +13,17 @@
                               $AR->IM = new object;     // do not change
                               $AR->DB = new object;     // do not change 
 
+
+  /**************************************************************************/
+  /* WIN32 or UNIX                                                          */
+  /* =============                                                          */
+  /* Which type of Operating System are you running Ariadne on? Fill in     */
+  /* either 'WIN32' or 'UNIX'.                                              */
+  /**************************************************************************/
+
+  $AR->OS                = 'UNIX';          // All unix/linux variants
+
+
   /**************************************************************************/
   /* Fill in the location of the root of the Ariadne install directory     */                                                             
   /* Leave out the last '/' or '\' of the pathname.                        */
@@ -34,6 +45,19 @@
   $AR->dir->www             = '/ariadne';
 
 
+  /*************************************************************************/
+  /* Database Information:                                                 */
+  /* Fill in the Hostname, and database name of the database server, and   */
+  /* the username and password with which to connect to it.                */
+  /*************************************************************************/
+
+  $AR->DB->dbms             = 'mysql';
+  $AR->DB->host             = 'localhost';
+  $AR->DB->database         = 'ariadne';
+  $AR->DB->user             = 'ariadne';
+  $AR->DB->password         = 'secret';
+
+
   /**************************************************************************/
   /* ImageMagick information                                                */
   /* For the photobook Ariadne needs to know where to find the ImageMagick  */
@@ -47,6 +71,7 @@
   $AR->IM->composite        = '/usr/bin/composite';
   // $AR->IM->composite        = '/usr/bin/combine';
 
+
   /**************************************************************************/
   /* VirusScanner information                                               */
   /* For your security Ariadne can use an installed virusscanner to ensure  */
@@ -58,12 +83,14 @@
   $AR->VS->scannername      = 'f-prot';		// f-prot is the only supported type right now
   $AR->VS->path             = '/usr/local/bin/';// where is your scanner binary
 
+
   /**************************************************************************/
   /* HTMLTidy information                                                   */
   /**************************************************************************/
 
   $AR->Tidy->path           = '/usr/bin/tidy'; 
   $AR->Tidy->options		= '--tidy-mark no --show-warnings yes --output-encoding utf8 --force-output yes';
+
 
   /**************************************************************************/
   /* Stats information                                                      */
@@ -81,17 +108,6 @@
   $AR->Stats->ignore[]      = '/system/';       // paths listed here will not be logged at all
   $AR->Stats->ignore[]      = '/anotherpath/';  // paths listed here will not be logged at all
 
-  /*************************************************************************/
-  /* Database Information:                                                 */
-  /* Fill in the Hostname, and database name of the database server, and   */
-  /* the username and password with which to connect to it.                */
-  /*************************************************************************/
-
-  $AR->DB->dbms             = 'mysql';
-  $AR->DB->host             = 'localhost';
-  $AR->DB->database         = 'ariadne';
-  $AR->DB->user             = 'ariadne';
-  $AR->DB->password         = 'secret';
 
   /**************************************************************************/
   /* If you want you can change the default server name below. You should   */
@@ -101,17 +117,6 @@
   /**************************************************************************/
 
   $AR->host                 = $HTTP_SERVER_VARS['HTTP_HOST'];
-
-
-
-  /**************************************************************************/
-  /* WIN32 or UNIX                                                          */
-  /* =============                                                          */
-  /* Which type of Operating System are you running Ariadne on? Fill in     */
-  /* either 'WIN32' or 'UNIX'.                                              */
-  /**************************************************************************/
-
-  $AR->OS                = 'UNIX';          // All unix/linux variants
 
 
   /**************************************************************************/
