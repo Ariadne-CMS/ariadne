@@ -770,60 +770,75 @@ class mysqlstore {
 		$this->error="";
 		$edestination=AddSlashes($destination);
 		$esource=AddSlashes($source); 
-		$parent=$this->make_path($destination, "..");
-		$eparent=AddSlashes($parent);
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
 
-		if ($this->exists($destination)) {
-			$this->error="$destination already exists, cannot overwrite.";
-			debug("link: ERROR: ".$this->error,"store");
-			$result=false;
-		} else if (!$this->exists($parent)) {
+
+		$parent=$this->make_path($destination, "..");
+		$filename=substr($destination, strlen($parent));
+		$eparent = AddSlashes($parent);
+		
+		$query_string = "select path from $nodes_tbl where path = '$eparent'";
+		$qresult = mysql_db_query($this->database, $query_string, $this->connect_id);
+		if ($qresult && ($row = mysql_fetch_array($qresult))) {
+			$eparent = AddSlashes($row['path']);
+			$edestination = AddSlashes($eparent.$filename);
+
+
+			if ($this->exists($destination)) {
+				$this->error="$destination already exists, cannot overwrite.";
+				debug("link: ERROR: ".$this->error,"store");
+				$result=false;
+			} else if (!$this->exists($parent)) {
+				$this->error="$parent does not exist, cannot link.";
+				debug("link: ERROR: ".$this->error,"store");
+				$result=false;
+			} else { 
+				$mask = substr($destination, strlen($parent));
+				if (ereg("(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) {
+					$query_string="lock tables ".$this->tbl_prefix."nodes write";
+					if (mysql_db_query($this->database, $query_string, $this->connect_id)) {
+						$needunlocking = true;
+						$subid = $this->get_nextid($parent, $mask);
+						$destination=ereg_replace("\{([0-9]:)?id\}",strval($subid),$destination);
+						$edestination=AddSlashes($destination);
+						debug("link: new destination: $destination ($subid)","all");
+					} else {
+						error("PANIC: could not obtain write lock on nodes table!");
+						$this->close();
+						exit;
+					}
+				}
+				$id=$this->exists($source);
+				if ($id) {
+					$query_string="insert into $nodes_tbl (path, parent, object ) values ('$edestination', '$eparent', $id)";
+					$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+					$errno=mysql_errno($this->connect_id);
+					$error=mysql_error($this->connect_id);
+					if ($errno) {				
+						$this->error="ERROR: Mysql: $errno: $error";
+						debug("link: insert node failed!","store");
+						debug("link: ".$this->error,"store");
+						debug("link: query=$query_string","store");
+						$result=false;
+					}
+					debug("link: end","all");
+					$result=$destination;
+				} else {
+					$result=false;
+					debug("link: end (no $source)","store");
+				}
+			}
+			if ($needunlocking) {
+				$query_string = "unlock tables";
+				mysql_db_query($this->database,$query_string, $this->connect_id);
+			}
+		} else {
 			$this->error="$parent does not exist, cannot link.";
 			debug("link: ERROR: ".$this->error,"store");
 			$result=false;
-		} else { 
-			$mask = substr($destination, strlen($parent));
-			if (ereg("(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) {
-				$query_string="lock tables ".$this->tbl_prefix."nodes write";
-				if (mysql_db_query($this->database, $query_string, $this->connect_id)) {
-					$needunlocking = true;
-					$subid = $this->get_nextid($parent, $mask);
-					$destination=ereg_replace("\{([0-9]:)?id\}",strval($subid),$destination);
-					$edestination=AddSlashes($destination);
-					debug("link: new destination: $destination ($subid)","all");
-				} else {
-					error("PANIC: could not obtain write lock on nodes table!");
-					$this->close();
-					exit;
-				}
-			}
-			$id=$this->exists($source);
-			if ($id) {
-				$query_string="insert into $nodes_tbl (path, parent, object ) values ('$edestination', '$eparent', $id)";
-				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
-				$errno=mysql_errno($this->connect_id);
-				$error=mysql_error($this->connect_id);
-				if ($errno) {				
-					$this->error="ERROR: Mysql: $errno: $error";
-					debug("link: insert node failed!","store");
-					debug("link: ".$this->error,"store");
-					debug("link: query=$query_string","store");
-					$result=false;
-				}
-				debug("link: end","all");
-				$result=$destination;
-			} else {
-				$result=false;
-				debug("link: end (no $source)","store");
-			}
-		}
-		if ($needunlocking) {
-			$query_string = "unlock tables";
-			mysql_db_query($this->database,$query_string, $this->connect_id);
 		}
 		return $result;
 	}
