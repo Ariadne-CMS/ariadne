@@ -1,0 +1,65 @@
+<?php
+	/******************************************************************
+	 edit.object.data.save.phtml				 Muze Ariadne v2.0b
+	 ------------------------------------------------------------------
+	 Arguments: see system.save.data.phtml
+	 Grant needed: read
+	 Global variables: none
+
+	 This template is a wrapper around system.save.data.phtml. It is
+	 meant to be used as the last step in a wizard.
+
+	 If system.save.data.phtml doesn't return an error, it will call
+	 the javascript function 'objectadded(type, name, path)' in its
+	 opener document and then close the current window.
+	 
+	 no result
+
+	******************************************************************/
+	if ($this->arIsNewObject
+		&& (!$arOverwrite=$this->getdata("arOverwrite","none"))
+		&& ($this->exists($this->path))) {
+		?>
+			<table border="0" width="90%">
+			<tr>
+				<td>
+					<fieldset>
+					<table width="90%">
+					<tr>
+						<td align="center"><?php printf($ARnls["q:fileoverwrite"],$this->getdata("arNewFilename","none")); ?></td>
+					</tr><tr>
+						<td align="center">
+							<input type="radio" name="arOverwrite" value="no" checked><?php echo $ARnls["no"]; ?>
+							<input type="radio" name="arOverwrite" value="yes"><?php echo $ARnls["yes"]; ?>
+						</td>
+					</tr>
+					</table>
+					</fieldset>
+				</td>
+			</tr>
+			</table>
+		<?php
+	} else {
+		if (!$arOverwrite || $arOverwrite="yes") { 
+			$this->call("system.save.data.phtml",$arCallArgs);
+		}
+		debugoff();
+		if ($this->error) {
+			?>
+				<font color="red" face="arial,helvetica,sans-serif" size=+1><?php echo $this->error; ?></font><p>
+			<?php
+			$arResult["save"]=false;
+		} else {
+			?>
+				<script> 
+					if (window.opener) {
+						if (window.opener.objectadded) {
+							window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddSlashes($this->nlsdata->name); ?>','<?php echo $this->path; ?>'); 
+						}
+						window.close();
+					} 
+				</script>
+			<?php
+		}
+	}
+?>
