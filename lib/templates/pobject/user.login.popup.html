@@ -37,26 +37,25 @@
 	.width200 { width: 200; }
 	.width300 { width: 300; }
 	H1		{ FONT: 12pt sans-serif; FONT-WEIGHT: bold; }
-	TD				{ FONT: 10pt sans-serif; }
-	BODY			{ FONT: 10pt sans-serif;
-							BORDER: 0;
-	<?php
-		global $HTTP_USER_AGENT;
-		if (eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
-			 $regs[1] && (intval($regs[1])>=4)) { //ie4+
-	?>
-							BACKGROUND-COLOR: buttonface;
-	<?php
-		} else {
-	?>
-							BACKGROUND-COLOR: #BBBBBB;
-	<?php
-		}
-	?>
-						}
+	TD		{ FONT: 10pt sans-serif; }
+	BODY	{ FONT: 10pt sans-serif;
+		  		BORDER: 0;
+				BACKGROUND-COLOR: #FFFFFF;
+				MARGIN: 0;
+				PADDING: 0;
+	}
+	IMG 	{
+				BORDER: 0;
+				MARGIN: 0;
+				PADDING: 0;
+	}
 </style>
 </head>
-<body bgcolor="#BBBBBB">
+<body bgcolor="#BBBBBB" onLoad="init()">
+<table border="0" cellpadding="0" cellspacing="0" margin="0">
+<tr>
+  <td rowspan="2"><img src="<?php echo $AR->dir->images; ?>clock.gif" alt="" align="left" border="0" hspace="0" vspace="0"></td>
+  <td valign="top" align="right"><img src="<?php echo $AR->dir->images; ?>ariadne.gif" alt="Ariadne - Web Application Server" vspace="5">
 <form name="login" method="POST" action="<?php echo $this->make_url(); ?>login.phtml">
 <?php
 	global $PATH_INFO, $QUERY_STRING; 
@@ -77,34 +76,43 @@
 <input type="hidden" name="arPopup" value="true">
 <table align="center" border="0" width="300">
 <tr>
+<?php
+  if ($arErrorMessage) {
+?>
 	<td align="center" colspan="2">
-		<h1><?php echo $arLoginMessage; ?></h1>
+		<h1><?php echo $arErrorMessage; ?></h1>
 	</td>
 </tr><tr>
+<?php
+  }
+?>
 	<td colspan="2" align="center">
-		<fieldset><br>
-			<table width="50%" align="center">
+			<table width="50%" align="right">
 			<tr>
-				<td align="right"><?php echo $ARnls["login"]; ?>&nbsp;:</td>
+				<td align="right"><?php echo $ARnls["user"]; ?>&nbsp;:</td>
 				<td><input type="text" name="ARLogin" size="16" value="<?php echo $ARLogin; ?>"></td>
 			</tr><tr>
 				<td align="right"><?php echo $ARnls["password"]; ?>&nbsp;:</td>
 				<td><input type="password" name="ARPassword" size="16"></td>
 			</tr>
 			</table>
-			<br>
-		</fieldset>
 	</td>
 </tr><tr>
-	<td colspan="2">&nbsp;</td>
-</tr><tr>
-	<td><input type="button" class="width100" name="cancel" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.opener.history.back(); window.close();"></td>
-	<td align="right"><input type="submit" class="width100" name="ok" value="&nbsp;<?php echo $ARnls["ok"]; ?>&nbsp;"></td>
+	<td colspan="2" align="right"><input type="submit" name="ok" value="&nbsp;<?php echo $ARnls["login"]; ?>&nbsp;"></td>
 </tr>
 </table>
 </form>
+</td>
+</tr><tr><td valign="bottom" align="center">
+  <small>&copy; 1998 - 2001 <a href="http://www.muze.nl/" target="_blank">muze</a>. Ariadne comes with ABSOLUTELY NO WARRANTY. 
+  Ariadne is free software, you are welcome to redistribute it under certain <a href="help.about.license.phtml" target="_blank">conditions</a>.<br>&nbsp;
+  </small>
+</td></tr>
+</table>
 <script>
+  function init() {
 	document.login.ARLogin.focus();
+  }
 </script>
 </body>
 </html>
