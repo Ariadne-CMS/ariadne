@@ -112,7 +112,7 @@ if ($this->CheckLogin("read")) {
 						// ifso, check if it exists, otherwise we will
 						// import it
 						$p_path=substr($i_path, 0, strrpos(substr($i_path, 0, -1),"/")+1);
-						if ($o_path == substr($p_path, 0, strlen($o_path))) {
+						if (($o_path!=$p_path) && ($o_path == substr($p_path, 0, strlen($o_path)))) {
 							$check_path= $options["import_path"] . substr($o_path, 1);
 							display("checking parent path ($check_path) ");
 							if (!$this->store->exists($check_path)) {
@@ -133,6 +133,7 @@ if ($this->CheckLogin("read")) {
 							if ($i_path == $o_path) {
 								$fl=sizeof($file_list);
 								$file_list[$fl]["path"]=".".$o_path;
+								echo "adding $o_path\n";
 								$file_list[$fl]["c_path"]=$c_path;
 							}
 	
@@ -162,9 +163,10 @@ if ($this->CheckLogin("read")) {
 				display("-============templates & files=================-\n");
 			}
 	
+			@reset($file_list);
 			while (!$error && is_array($file_list) && (list($key, $val)=each($file_list))) {
 				$c_path=substr($val["c_path"],1);
-				//display("c_path($c_path)\n");
+				display("c_path($c_path)\n");
 	
 				if (!$options["without_templates"]) {
 					$path=$val["path"];
