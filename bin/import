@@ -78,16 +78,18 @@
 
 		$store=new axstore("", $ax_config);
 		if (!$store->error) {
-			$ARCurrent->importStore=new mysqlstore($root,$store_config);
+			$importStore=new mysqlstore($root,$store_config);
 
-			$args="srcpath=".rawurlencode($srcpath)."&destpath=".rawurlencode($destpath);
+			$ARCurrent->importStore=&$importStore;
+			$callArgs=Array("srcpath" => $srcpath,
+							"destpath" => $destpath);
 
-			$store->call("system.export.phtml", $args,
+			$store->call("system.export.phtml", $callArgs,
 				$store->get("/"));
 			$error=$store->error;
 
 			$store->close();
-			$ARCurrent->importStore->close();
+			$importStore->close();
 
 		} else {
 			$error="ax error: ".$importStore->error;

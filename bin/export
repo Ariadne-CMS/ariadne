@@ -77,16 +77,15 @@
 		}
 		$ax_config["writeable"]=true;
 		$importStore=new axstore("", $ax_config);
-		$ARCurrent->importStore=&$importStore;
 		if (!$importStore->error) {
 			$store=new mysqlstore($root,$store_config);
 
-			$args="srcpath=".rawurlencode($srcpath)."&destpath=".rawurlencode($destpath);
-			//echo "args ($args)\n";
-			$error=@current($store->call("system.export.phtml", $args,
+			$ARCurrent->importStore=&$importStore;
+			$callArgs=Array("srcpath" => $srcpath,
+							"destpath" => $destpath);
+			$error=@current($store->call("system.export.phtml", $callArgs,
 				$store->get("/")));
 
-			//echo "closing store\n";
 			$importStore->close();
 
 		} else {
