@@ -1,0 +1,18 @@
+	<table border="0" width="90%">
+	<tr>
+		<td>
+			<fieldset>
+			<table width="90%">
+			<tr>
+				<td align="center"><?php printf($ARnls["q:applychanges"],$this->getdata("arNewFilename","none")); ?></td>
+			</tr><tr>
+				<td align="center">
+					<input type="radio" name="confirm" value="<?php echo $ARnls["all"]; ?>" checked><?php echo $ARnls["all"]; ?>
+					<input type="radio" name="confirm" value="<?php echo $ARnls["current"]; ?>"><?php echo $ARnls["current"]; ?>
+				</td>
+			</tr>
+			</table>
+			</fieldset>
+		</td>
+	</tr>
+	</table>
