@@ -13,6 +13,9 @@
     } else {
       $url=$AR->dir->www."setlink.php?do=update";
     }
+    if ($arShortCut) {
+      $url.="&shortcut=".RawUrlEncode($arShortCut);
+    }
     $url.="&link=".RawUrlEncode($parent);
     $url.="&icon=".RawUrlEncode($folder["icon"]);
     $url.="&name=".RawUrlEncode($folder["name"]);
