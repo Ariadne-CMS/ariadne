@@ -150,7 +150,7 @@
 			debug("loader: ob_end_flush()","all");
 			if (is_array($ARCurrent->cache) && ($file=array_pop($ARCurrent->cache))) {
 				error("cached() opened but not closed with savecache()");
-			} else {
+			} else if (!$ARCurrent->arDontCache) {
 				ldSetCache($ldCacheFilename, $ARCurrent->cachetime, $image, @implode("\n",$ARCurrent->ldHeaders));
 			}
 		}
