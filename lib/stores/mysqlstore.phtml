@@ -978,10 +978,10 @@ class mysqlstore {
 		debug("make_path($curr_dir, $path)","all");		
 		$this->error="";
 		if (substr($path,0,1)=="/") {
-			$result="";
+			$result="/";
 			$path=substr($path, 1);
 		} else {
-			$result=substr($curr_dir, 1);
+			$result=$curr_dir;
 		}
 		if (substr($path,-1)=="/") {
 			$path=substr($path, 0, -1);
@@ -991,7 +991,7 @@ class mysqlstore {
 
 			while (list($key, $pathticle)=each($splitpath)) {
 				switch($pathticle) {
-					case ".." : $result=substr($result, 0, strrpos(substr($result,0,-1), "/"));
+					case ".." : $result=substr($result, 0, strrpos(substr($result,0,-1), "/")+1);
 								break;
 					case "." : break;
 					case ""	 : break;
@@ -1000,7 +1000,7 @@ class mysqlstore {
 			}
 		}
 		debug("make_path: end ($result)","all");		
-		return '/'.$result;
+		return $result;
 	}
 
 	function format_for_fti($text) {
