@@ -8,6 +8,10 @@ class pfile extends pobject { // definitie class
   function ShowFile() {
     if (!headers_sent()) {
       Header("Content-type: ".$this->data->mimetype);
+      if (!ereg("^text/",$this->data->mimetype)) {
+        $size=filesize($this->store->files."files".$this->path."/view=");
+        Header("Content-Length: ".$size);
+      }
     } else if(!ereg("^text/",$this->data->mimetype)) {
       error("headers already sent and this is not a text file (".$this->path.")");
       $stop=true;
