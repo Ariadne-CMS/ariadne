@@ -1,0 +1,18 @@
+    <table border="0">
+    <tr>
+      <td>
+        <span class="required"><?php echo $ARnls["file"]; ?></span>
+      </td>
+    </tr><tr>
+      <td valign="top">
+        <input type="hidden" name="oldfile" value="<?php $this->showdata("file","none"); ?>">
+        <input type="file" name="file">
+      </td>
+    </tr>
+    </table>
+    <script>
+      function forminit() { 
+        document.wgWizForm.file.focus();
+      }
+      window.onload=forminit;
+    </script>

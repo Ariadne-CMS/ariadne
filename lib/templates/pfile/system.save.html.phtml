@@ -1,8 +1,8 @@
 <?php
   if ($this->CheckLogin("edit") && $this->CheckConfig()) { 
     $newdata=$data;
-    if (!file_exists($this->store->files."files".$newdata->path)) {
-      $this->MkDir("files".$newdata->path);
+    if (!file_exists($this->store->files."files".$this->path)) {
+      $this->MkDir("files".$this->path);
     }
     // first decode unicode characters...
     $html=utf8_decode($html);
@@ -15,12 +15,15 @@
     $html=str_replace("&tilde;","~",$html);
     // do this last, think about it :)
     $html=str_replace("&amp;","&",$html);
-    $fp=fopen($this->store->files."files".$newdata->path.$newdata->filename,"w");
+    // change hardcoded links and images to use a placeholder for the root
+    $html=ereg_replace("(http://[^/]*)?".$this->store->root,"{arRoot}",$html);
+    if ($this->data->mimetype=="text/html") {
+      $path=$this->store->files."files".$this->path."view=";
+    } else {
+      $path=$this->store->files."files".$this->path."view.html=";
+    }
+    $fp=fopen($path,"w");
     fwrite($fp, RawUrlDecode($html));
     fclose($fp);
-    include($this->store->code."includes/save.phtml");
-    if ($error) {
-      $this->error=$error;
-    }
   }
 ?>

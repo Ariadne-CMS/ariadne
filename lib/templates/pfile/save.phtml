@@ -1,9 +1,7 @@
 <?php
+  global $HTTP_POST_FILES;
   if ($newtype) {
     $newdata=new object;
-    $newdata->filename=$newfilename;
-    $newdata->path=$this->path; // keep current path info, in case pfile is 
-                                // linked to from another path later on.
     $newdata->author=$AR->user->name;
     $newdata->authorpath=$AR->user->path;
     $newdata->created=time();
@@ -33,32 +31,26 @@
         $newnlsdata->name=$nlsformdata["name"];
         $newnlsdata->summary=$nlsformdata["summary"];
         $properties["name"][]["value"]="'".AddSlashes($nlsformdata["name"])."'";
+        $properties["text"][]["value"]="'".AddSlashes($nlsformdata["summary"])."'";
         $newdata->$key=$newnlsdata;
         $newdata->nls->list[$key]=$value;
       }
     }
     if (!$error) {
-      global $HTTP_POST_FILES;
       if ($HTTP_POST_FILES['file'] && is_uploaded_file($HTTP_POST_FILES['file']['tmp_name'])) {
         // a new file is uploaded via pfile/form.phtml 
+        $path=$this->store->files."files".$this->path."/view=";
         if ($newtype) {
-          if ($this->CheckNewFile($this->path.$newfilename."/")) {
-            $this->MkDir("files".$this->path);
-          } else {
-            $error=$this->error;
-          }
-          $path=$this->store->files."files".$this->path.$newdata->filename;
-          $newdata->size=$file_size;
-          if (!$newdata->mimetype) {
-            $newdata->mimetype=$HTTP_POST_FILES['file']['type'];
-          }
-        } else {
-          $path=$this->store->files."files".$newdata->path.$newdata->filename;
+          $this->MkDir("files".$this->path);
+        }
+        $newdata->size=$HTTP_POST_FILES['file']['size'];
+        if (!$newdata->mimetype) {
+          $newdata->mimetype=$HTTP_POST_FILES['file']['type'];
         }
         if (!$error) {
           if (!move_uploaded_file($HTTP_POST_FILES['file']['tmp_name'],$path)) {
-		$error="Couldn't move file to $path";
-          } 
+            $error="Couldn't move file to $path";
+          }
         }
       }
     }

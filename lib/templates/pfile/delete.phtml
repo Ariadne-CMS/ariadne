@@ -12,10 +12,17 @@
 
   ******************************************************************/
 
-  if ($this->CheckLogin("delete")) {
-    if (file_exists($this->store->files."/files".$data->path.$data->filename)) {
-      unlink($this->store->files."/files".$data->path.$data->filename);
+  include($this->store->code."includes/delete.object.phtml");
+  if (!$error && $this->CheckLogin("delete")) {
+    $root=$this->store->files."/files".$this->path;
+    if (file_exists($root)) {
+      $dir=opendir($root);
+      while ($file=readdir($dir)) {
+        if (!is_dir($root."/".$file)) {
+          unlink($root."/".$file);
+        }
+      }
+      closedir($dir);
     }
   }
-  include($this->store->code."includes/delete.dir.phtml");
 ?>

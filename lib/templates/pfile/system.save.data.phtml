@@ -1,0 +1,76 @@
+<?php
+  /******************************************************************
+   system.save.data.phtml			   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+ 
+  ******************************************************************/
+
+  if ( ( $this->newobject && $this->CheckLogin("add") ) ||
+       ( !$this->newobject && $this->CheckLogin("edit") ) ) {
+    if ($this->newobject) {
+      $filename=$this->getdata("arNewFilename","none");
+      $this->data->mimetype=$this->getdata("file_type","none");
+      $this->data->filesize=$this->getdata("file_size","none");
+      while (list($key,$value)=each($ARConfig->nls->list)) {
+        $this->data->$key->name=$filename;
+      }
+    }
+    $tempfile=$this->getdata("file_temp","none");
+    if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
+      $this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+    } else {
+      if (!$this->data->nls) {
+        $this->data->nls=new object;
+      }
+      $this->data->nls->default=$ARConfig->nls->default;
+      reset($AR->nls->list);
+      while (list($key, $value)=each($AR->nls->list)) {
+        
+        if ($this->getdata($key,"none")) { // FIXME: not always sufficient check
+                                           // (if user selects a language but enters nothing and then submits, $$key will be set, but all values empty)
+          if (!$this->data->$key) {
+            $newnlsdata=new object;
+          } else {
+            $newnlsdata=$this->data->$key;
+          }
+          if (!$this->getdata("name",$key)) {
+            $this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
+          }
+          $newnlsdata->name=$this->getdata("name",$key);
+          $properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
+          $properties["text"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
+ 
+          $newnlsdata->summary=$this->getdata("summary",$key);
+          $properties["text"][]["value"]="'".AddSlashes(substr($newnlsdata->summary,0,255))."'";
+
+          $this->data->$key=$newnlsdata;
+          $this->data->nls->list[$key]=$value;
+        }
+      }
+    }
+
+    
+    include($this->store->code."includes/system.save.phtml");
+
+    $this->newobject=false;
+
+    // now check whether $file_temp is defined, if so, move it
+    if (!$this->error) {
+      if ($tempfile) {
+        $tempfile=ereg_replace("[\\\/]","",$tempfile); // make sure nobody gets /etc/passwd      
+        $tempfile=$this->store->files."temp/".$tempfile;
+        if (file_exists($tempfile)) {  
+          $path=$this->store->files."files".$this->path;
+          $this->MkDir("files".$this->path);
+          copy($tempfile, $path."view=");
+          unlink($tempfile);
+          $this->data->mimetype=$this->getdata("file_type","none");
+          $this->data->filesize=$this->getdata("file_size","none"); 
+        } else {
+          $tempfile=false;
+        }
+      } 
+      $this->save($this->path, $this->type, $this->data);
+    }
+  }
+?>
