@@ -26,8 +26,6 @@ if ($this->data->mappeduser) {
 
 	//print_r($ldapdata);
 
-	$this->get_nested_groupmemberships($ldapdata);
-
 	// Test the supplied password by trying a ldap_bind() with it
 	if ($ldapdata["dn"]) {
 		$ds=@ldap_connect($this->data->ldap_server);
@@ -43,6 +41,7 @@ if ($this->data->mappeduser) {
 				                             $this->store->get($this->data->mappeduser)));
 				// If you change the mapping of LDAP attributes to Ariadne data
 				// below, also change it in system.get.externaluser.phtml
+				$arResult->externalgroupmemberships=$this->get_nested_groupmemberships($ldapdata);
 				$arResult->data->name=$ldapdata["displayname"][0];
 				$arResult->data->email=$ldapdata["mail"][0];
 			}

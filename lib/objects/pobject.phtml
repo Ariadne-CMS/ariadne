@@ -592,12 +592,12 @@ class pobject extends object { // pobject class definition
 				$grants=Array();
 				$userpath=$AR->user->FindGrants($path, $grants);
 				// if not already done, find all groups of which the user is a member
-				if (!is_array($AR->externalgroupmemberships) || sizeof($AR->externalgroupmemberships)==0) {
+				if (!is_array($AR->user->externalgroupmemberships) || sizeof($AR->user->externalgroupmemberships)==0) {
 					$criteria["members"]["login"]["="]="'".AddSlashes($AR->user->data->login)."'";
 				} else {
 					// Use the group memberships of external databases (e.g. LDAP)
 					$criteria="members.login='".AddSlashes($AR->user->data->login)."'";
-					foreach (array_keys($AR->externalgroupmemberships) as $group) {
+					foreach (array_keys($AR->user->externalgroupmemberships) as $group) {
 						$criteria.=" or login.value='".AddSlashes($group)."'";
 					}
 				}
