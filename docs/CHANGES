@@ -3,22 +3,23 @@ Changes in ariadne since version 2.0
 
 New features:
 	- Ariadne's internal characterencoding is now set to UTF-8.
-	- Added a new 'WinXP' interface, by Chris van de Steeg
-	- Added a new, rewritten PINP compiler, which should be much more secure
-	- Added profiles for users (pprofile)
+	- Added a new 'WinXP' interface (v0.3), by Chris van de Steeg.
+	- Added a new, rewritten PINP compiler, which should be much more secure.
+	- Added profiles for users (pprofile), by Gabriel Wicke.
 	- Added the combine method to pphoto class, which allows multiple images to be
 	  combined into a single image.
 	- Improved session functionality:
 	  - Ariadne is now able to respawn a session on a cookie only.
 	  - When a session expires, available POST and GET information will be 
 	    saved and restored after a succesful re-authentication.
-	- Added zlib output compression support to the www loader
-	- Added support for PEAR's TAR to the axstore
+	- Added zlib output compression support to the www loader.
+	- Added support for PEAR's TAR to the axstore.
 	- Added support for integrating a virusscanner into Ariadne by Florian Overkamp.
-	- Added experimental SOAP support
+	- Added experimental SOAP support.
 	- Added character conversion functionality to the import and export
 	  utilities.
-	- Added line numbers in the template editor.
+	- Added line numbers in the template editor. Internet Explorer only.
+	- Improved WYSIWYG editor image and URL dialogs.
 
 Bugs fixed:
 	- Many bugfixes in the MSSQL store by Pascal Hofstee
