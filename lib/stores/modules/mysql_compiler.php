@@ -2,10 +2,9 @@
   include($this->code."stores/modules/sql_compiler.php");
 
   class mysql_compiler extends sql_compiler {
-	function mysql_compiler($tbl_prefix="", $limit=100, $offset=0) {
+	function mysql_compiler($tbl_prefix="") {
+		debug("mysql_compiler($tbl_prefix)", "store");
 		$this->tbl_prefix=$tbl_prefix;
-		$this->limit=$limit;
-		$this->offset=$offset;
 	}
 
 	function compile_tree(&$node) {
@@ -118,9 +117,6 @@
 			$query.= " order by $this->orderby_s, $nodes.priority DESC, $nodes.path ASC ";
 		} else {
 			$query.= " order by $nodes.priority DESC, $nodes.path ASC ";
-		}
-		if (!$this->limit_s && $this->limit) {
-			$this->limit_s="limit ".$this->offset.",".$this->limit;
 		}
 		$query.=" $this->limit_s ";
 

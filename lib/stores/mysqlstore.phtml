@@ -67,9 +67,8 @@ class mysqlstore {
 		// so we have to supply the database name wheenever a query is run
 		$this->database=$config["database"];
 
-		/* Instantiate module mysql_compiler */
+		/* Include module mysql_compiler */
 		include_once($this->code."stores/modules/mysql_compiler.php");
-		$this->sqlcompiler=new mysql_compiler($this->tbl_prefix);
 
 		/* Instantiate module locking */
 		include_once($this->code."modules/mod_lock/mysql.phtml");
@@ -251,14 +250,17 @@ class mysqlstore {
 	 $path should always start and end with a '/'.
 
 	 **********************************************************************************/
-
 		debug("find($path, [criteria], $limit, $offset)","store");
 		if (!is_array($criteria) && ($criteria=trim($criteria))) {
 			$criteria=" and $criteria ";
-			$query_string=$this->sqlcompiler->compile("path ~= '$path%'$criteria", $limit, $offset);
-			if ($this->sqlcompiler->error) {
-				$this->error=$this->sqlcompiler->error;
+
+			$sqlcompiler=new mysql_compiler($this->tbl_prefix);
+			$query_string=$sqlcompiler->compile("path ~= '$path%'$criteria", $limit, $offset);
+			if ($sqlcompiler->error) {
+				$this->error=$sqlcompiler->error;
 			}
+			unset($sql_compiler);
+
 		} else {
 			$this->error="";
 			$count=0;
@@ -328,7 +330,7 @@ class mysqlstore {
 		}
 		debug("find: query=$query_string","all");
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
-		debug("find: end","all");
+		debug("find: end (".mysql_num_rows($result["list"]).")","all");
 		return $result;
 	}
 

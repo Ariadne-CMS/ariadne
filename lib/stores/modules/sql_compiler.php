@@ -202,11 +202,11 @@
 				$query=substr($query, strlen($regs[0]));
 				$limit_s["id"]="limit";
 				$limit_s["offset"]=$regs[1];
-				$limit_s["limit"]=($regs[3]) ? $regs[3] : 100;
+				$limit_s["limit"]=($regs[3]) ? $regs[3] : $this->limit;
 			} else {
 				$limit_s["id"]="limit";
-				$limit_s["offset"]=0;
-				$limit_s["limit"]=100;
+				$limit_s["offset"]=($this->offset) ? $this->offset : 0;
+				$limit_s["limit"]=($this->limit) ? $this->limit : 0;
 			}
 			$limit_s["left"]=$result;
 			$result=$limit_s;
@@ -218,9 +218,14 @@
 	function priv_sql_compile($node) {
 	}
 
-	function compile($query) {
+	function compile($query, $limit=100, $offset=0) {
+		debug("sql_compiler::compile ($query, $limit, $offset)", "store");
 		$this->error="";
 		$compiled_query=$this->cache[$query];
+
+		$this->limit=$limit;
+		$this->offset=$offset;
+
 		if (!$compiled_query) {
 			$cache_query=$query;
 			$tree=$this->parse_query($query);
