@@ -46,6 +46,7 @@ class postgresqllock {
 	}
 
 	function get_locks($identity) {
+		$result = array();
 		debug("postgresqllock:get_locks($identity)","store");
 		$i = 0;
 		$query_string = "select path, release, type, identity from ".$this->tbl_prefix."locks where release >=".time()." and identity='".AddSlashes($identity)."'";
