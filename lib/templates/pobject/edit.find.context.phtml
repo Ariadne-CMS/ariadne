@@ -38,10 +38,10 @@
 <script>
 	function makequery() {
 		query='';
-		if (name=document.queryform.name.value) {
-			query+="name.value ~= '%"+name+"%'";
+		if(searchname=document.queryform.searchname.value) {
+			query+="name.value ~= '%"+searchname+"%'";
 		}
-		if (text=document.queryform.text.value) {
+		if (text=document.queryform.searchtext.value) {
 			if (query) {
 				query+=' and ';
 			}
@@ -52,6 +52,11 @@
 				query+=' and ';
 			}
 			query+=" object.type='"+implements+"'";
+		} else {
+			if (query) {
+				query+=' and ';
+			}
+			query+=" object.implements='pobject'";
 		}
 		document.queryform.query.value=query;
 		return true;
@@ -67,7 +72,7 @@
 	<td align="right" width="150">
 		<?php echo $ARnls["name"]; ?> :
 	</td><td>
-		<input type="text" name="name" value="">
+		<input type="text" name="searchname" value="">
 	</td><td align="right">
 		<input type="submit" name="search" value="<?php echo $ARnls["search"]; ?>">
 	</td>
@@ -76,7 +81,7 @@
 	<td align="right">
 		<?php echo $ARnls["text"]; ?> :
 	</td><td>
-		<input type="text" name="text" value="">
+		<input type="text" name="searchtext" value="">
 	</td>
 </tr><tr>
 	<td align="right">
