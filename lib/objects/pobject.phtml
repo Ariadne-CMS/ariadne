@@ -133,46 +133,6 @@ class pobject {
 		return $this->store->implements($this->type, $implements); 
 	}
 
-	function copyto($target) {
-		debug("pobject: copyto($target)","object");
-		$result=false;
-		// first check to see if the target is valid
-		$parent=$this->store->make_path($target, "..");
-		if ($this->exists($parent)) {
-/*
-			//FIXME! : copy templates
-			//FIXME: for the moment no grants are copied.
-			// need to check "add" and "config" grants
-			// in the target.
-			$searchpath["puser"]="/system/users/";
-			$searchpath["pgroup"]="/system/groups/";
-			// first check and copy grants to user/group objects
-			while (list($type, $idlist)=@each($this->data->grants)) {
-				while (list($id, $grants)=@each($idlist)) {
-					while (list($grant, $value)=@each($grants)) {
-						$this->find($searchpath[$type], 
-							Array("login" => Array ( "value" => Array ("=" => "'".AddSlashes($id)."'" ) ) ), 
-							"updategrant.phtml", 
-							"action=add&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($newgrant) 
-						);
-					}
-				}
-			}
-*/
-			unset($this->data->grants);
-			$target=$this->make_path($target);
-			if (!$this->exists($target)) {
-				$properties=$this->load_properties();
-				$result=$this->save($target, $this->type, $this->data, $this->properties, $this->vtype); 
-			} else {
-				$this->error=sprintf($ARnls["err:alreadyexists"],$target);
-			}
-		} else {
-			$this->error=sprintf($ARnls["err:wrongpath"],$parent);
-		}
-		return $result;
-	}
-
 	function getlocks() {
 		return $this->store->mod_lock->getlocks($AR->user->data->login);
 	}

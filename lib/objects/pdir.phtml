@@ -5,5 +5,17 @@ include_once($this->code."objects/pobject.phtml");
 
 class pdir extends pobject { // definitie class
 
+  function ShowPage($nls="") {
+    if (!$nls) {
+      echo str_replace("{arRoot}",$this->store->root,$this->nlsdata->page);
+    } else if ($this->data->$nls) {
+      echo str_replace("{arRoot}",$this->store->root,$this->data->$nls->page);
+    }
+  }
+
+  function _ShowPage($nls="") {
+    return $this->ShowPage($nls);
+  }
+
 } // end class pdir
 ?>
