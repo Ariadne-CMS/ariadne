@@ -23,7 +23,15 @@ New Features:
 	  mod_url.php, to be more widely available, and extended the variables with
 	  the nls option: {arCurrentPage/en} expands to the english version, etc.
 	- Added Helene as highlighted editting option for the templatae editor
-	  
+	- Added pshadowuser object type; it has exactly the same behaviour
+	  as puser and is only used for distinguishing users coming from
+	  an external database (e.g. LDAP) from real Ariadne users.
+	- Added pconnector object type which is only an 'anonymous class'
+	  which all connections to other databases (e.g. LDAP) should
+	  be derived from
+	- Added pldapconnection object which can be used to map LDAP objects
+	  into the Ariadne store as well as to authenticate users.
+
 Bugs Fixed:
 	- Fixed logging in with another user on your own session.
 	- Fixed recursive calling of user.login.html after a session has been 
