@@ -1,6 +1,9 @@
 <?php
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
 		$tempfile=$ARCurrent->session->get("tempname");
+
+		// make sure we are dealing with forward slashes only
+		$tempfile=str_replace("\\", "/", $tempfile);
 		$tempfilename=substr($tempfile, strrpos($tempfile,'/')+1);
 		$tempfile=$this->store->files."temp/".$tempfilename;
 		if (!file_exists($tempfile))  {
