@@ -53,10 +53,9 @@
 <div class="listcontainer">
 <table class="list" width="100%" border="0" cellspacing="0" cellpadding="4"><tr>
 <?php
-    if ($AR->user->data->login=="admin") { // || $AR->user->grants["config"] ?
+    if ($AR->user->data->login=="admin") {
       $result=$this->ls("/system/ariadne/types/","system.get.phtml");
-    } else { // FIXME: normal -> change to config check on allowed types -> typetree
-      $this->parents("","GetConfig.phtml");
+    } else {
       if ($ARConfig->typetree) {
         $result=$this->ls($ARConfig->typetree."/".$this->type."/",
           "system.get.phtml");
