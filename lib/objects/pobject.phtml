@@ -1664,7 +1664,6 @@ class pobject extends object { // pobject class definition
         $newpath=$this->make_path($filename);
 		$newparent=$this->store->make_path($newpath, "..");
 		$data=new object;
-		$data=serialize($data);
 		$object=$this->store->newobject($newpath, $newparent, $type, $data);
 		$object->arIsNewObject=true;
 		return $object;
