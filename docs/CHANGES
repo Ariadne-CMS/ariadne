@@ -15,7 +15,7 @@ New features:
 	- Porganization and pperson now have manage.details.html templates.
 	- Added new sql property syntax and behaviour for custom properties;
 	  custom properties can now be addressed by my[.nls].[fieldname] and
-	  can also be used in OR statements.
+	  can also be used in AND statements.
 	- Added the ability to match multiple records per property.
 	- Added "owner" group. The owner group is an alias for the object
 	  owner.
