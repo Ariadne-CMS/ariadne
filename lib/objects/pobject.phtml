@@ -1140,6 +1140,11 @@ class pobject extends object { // pobject class definition
 				if (($libpos=strpos($arCallFunction,":"))!==false && $libpos!==strpos($arCallFunction, "::")) {
 					// template of a specific library defined via call("library:template");
 					$arLibrary = substr($arCallFunction, 0, $libpos);
+					if ($arLibrary == 'current') {
+						// load the current arLibrary 
+						$context = $this->getContext(1);
+						$arLibrary = $context['arLibrary'];
+					}
 					$arCallFunction = substr($arCallFunction, $libpos+1);
 					debug("CheckConfig: search for lib: '$arLibrary'; '$arCallFunction'", "all");
 					if ($config->library[$arLibrary]) {
@@ -1170,7 +1175,7 @@ class pobject extends object { // pobject class definition
 						}
 						$ARCurrent->arCallStack[]=$arCallArgs;
 						// start running a pinp template
-						$this->pushContext(Array("scope" => "pinp"));
+						$this->pushContext(Array("scope" => "pinp", "arLibrary" => $template['arLibrary']));
 						if (isset($this->data->nls->list[$reqnls])) {
 							// the requested language is available.
 							$this->nlsdata=$this->data->$nls;
@@ -1908,7 +1913,7 @@ class pobject extends object { // pobject class definition
 		if ($value == NULL) {
 			if ($nls && $nls!="none") {
 				unset($this->data->$nls->$name);
-				if (!count(get_class_vars($this->data->$nls))) {
+				if (!count(get_object_vars($this->data->$nls))) {
 					unset($this->data->$nls);
 					unset($this->data->nls->list[$nls]);
 					if (!count($this->data->nls->list)) {
