@@ -20,7 +20,7 @@
 						} else {
 							$class="unselected";
 						}
-						echo "<a class='$class' href='$PHP_SELF?$QUERY_STRING&arLanguage=$key' onClick=\"top.Set('arLanguage','$key'); return true;\"><img src=\"".$AR->dir->images."nls/small/".$key.".gif\" border=\"0\" alt=\"$nls\"></a> ";
+						echo "<a class='$class' href='$PHP_SELF?$QUERY_STRING&arLanguage=$key' onClick=\"top.Set('arLanguage','$key'); return true;\"><img src=\"".$AR->dir->images."nls/small/".$key.".gif\" border=\"0\" alt=\"".$AR->nls->list[$key]."\"></a> ";
 					}
 				?></td></tr>
 			<?php
