@@ -584,11 +584,9 @@ class pobject extends object {
 					$arCallTemplate=$arType.".".$arCallFunction.".".$this->nls;
 				} else if ($arTemplateId=$config->templates[$arType][$arCallFunction]['any']) {
 					$arCallTemplate=$arType.".".$arCallFunction.".any";
-//					echo "<h2>2, $arCallFunction , $arTemplateId</h2>";
 				} else {
 					$arTemp=new $arType();
 					$arType=get_parent_class($arTemp);
-//					echo "<h2>$arType</h2>";
 				}
 			}
 			if ($arCallTemplate && $arTemplateId) {
