@@ -1,6 +1,6 @@
 	var viewmode=parent.Get('viewmode');
 	var b_offset=0;
-	var b_limit=50;
+	var b_limit=5;
 	var b_total=0;
 	var b_page=0;
 	if (!viewmode) {
@@ -81,7 +81,7 @@
 		return false;
 	}
 	function b_draw() {
-		var newsrc=path+'browse.nav.'+viewmode+'.phtml?'+query+'&limit='+b_limit+'&offset='+b_offset;
+		var newsrc='browse.nav.'+viewmode+'.phtml?'+query+'&limit='+b_limit+'&offset='+b_offset;
 		if (!window.archildren) {
 			archildren=document.getElementById("archildren");
 		} else {
