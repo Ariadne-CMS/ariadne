@@ -504,17 +504,16 @@ function IMAGE_set(arr) {
 
 function cssStyle_onChange(command)
 {
-	
+	/*
+		following code is inspired if not copied from the very 
+		nicely done FCK editor: http://www.fredck.com/FCKeditor/
+	*/	
+
 	var oSelection = tbContentElement.document.selection ;
 	var oTextRange = oSelection.createRange() ;
 
 	if (oSelection.type == "Text")
 	{
-		if (oTextRange.queryCommandSupported('RemoveFormat') && oTextRange.queryCommandEnabled('RemoveFormat')) {
-			setFormat('RemoveFormat');
-		}
-	//	doFormatBlock( FCKFormatBlockNames[0] );	// This value is loaded at CheckFontFormat()
- 
 		var oSpan = document.createElement("SPAN") ;
 		oSpan.innerHTML = oTextRange.htmlText ;
 		
@@ -527,11 +526,13 @@ function cssStyle_onChange(command)
 				|| oFirstChild.tagName == "P"
 				|| oFirstChild.tagName == "DIV"))
 		{
-			if (!command.value) {
-				if (oFirstChild.tagName=="SPAN") {
-					oParent.outerHTML=oParent.innerHTML;
+			if (!command.value) 
+			{
+				if (oFirstChild.tagName=="SPAN") 
+				{
+					oParent.outerHTML = oParent.innerHTML;
 				} else {
-					oParent.className = NULL;
+					oParent.className = null;
 				}
 			} else {
 				oParent.className = command.value ;
@@ -539,8 +540,13 @@ function cssStyle_onChange(command)
 		}
 		else
 		{
-			oSpan.className = command.value ;
-			oTextRange.pasteHTML( oSpan.outerHTML ) ;
+			if (!command.value) {
+				var text = oSpan.innerText;
+				oTextRange.pasteHTML(text);
+			} else {
+				var text = oTextRange.htmlText;
+				oTextRange.pasteHTML("<span class=" + command.value + ">" + text + "</span>");
+			}
 		}
 	}
 	else if (oSelection.type == "Control" && oTextRange.length == 1)
@@ -548,12 +554,9 @@ function cssStyle_onChange(command)
 		var oControl = oTextRange.item(0) ;
 		oControl.className = command.value ;
 	}
-	
-	command.selectedIndex = 0 ;
-	
+	command.selectedIndex = 0 ;	
 	tbContentElement.focus();
 }
-
 
 function wgCompose_show(buffer) {
   var sel=KeepState.GetSelection();

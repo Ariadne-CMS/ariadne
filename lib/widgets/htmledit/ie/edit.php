@@ -972,6 +972,11 @@ function DECMD_HYPERLINK_onclick() {
 //			unlink seems broken, when removing a link on an image, it also removes the image...
 //			tbContentElement.ExecCommand(DECMD_UNLINK,OLECMDEXECOPT_DONTPROMPTUSER);
 		}
+		// this is needed since otherwise if the link contains images and text, the image 'disappears'
+		// although still in the HTML...
+		// FIXME: only do this when you also keep the selection or at least the cursor position the same...
+		// 	 for now just inform users.
+		//		tbContentElement.DocumentHTML=tbContentElement.DocumentHTML;
 	}
 	tbContentElement.focus();
 }
@@ -1180,14 +1185,16 @@ function decCommand(cmdId, cmdExecOpt, url)
 
 function cssStyle_onChange(command)
 {
-	
+	/*
+		following code is inspired if not copied from the very 
+		nicely done FCK editor: http://www.fredck.com/FCKeditor/
+	*/	
+
 	var oSelection = tbContentElement.DOM.selection ;
 	var oTextRange = oSelection.createRange() ;
+
 	if (oSelection.type == "Text")
 	{
-		decCommand(DECMD_REMOVEFORMAT);
-	//	doFormatBlock( FCKFormatBlockNames[0] );	// This value is loaded at CheckFontFormat()
- 
 		var oSpan = document.createElement("SPAN") ;
 		oSpan.innerHTML = oTextRange.htmlText ;
 		
@@ -1200,11 +1207,13 @@ function cssStyle_onChange(command)
 				|| oFirstChild.tagName == "P"
 				|| oFirstChild.tagName == "DIV"))
 		{
-			if (!command.value) {
-				if (oFirstChild.tagName=="SPAN") {
-					oParent.outerHTML=oParent.innerHTML;
+			if (!command.value) 
+			{
+				if (oFirstChild.tagName=="SPAN") 
+				{
+					oParent.outerHTML = oParent.innerHTML;
 				} else {
-					oParent.className = NULL;
+					oParent.className = null;
 				}
 			} else {
 				oParent.className = command.value ;
@@ -1212,8 +1221,13 @@ function cssStyle_onChange(command)
 		}
 		else
 		{
-			oSpan.className = command.value ;
-			oTextRange.pasteHTML( oSpan.outerHTML ) ;
+			if (!command.value) {
+				var text = oSpan.innerText;
+				oTextRange.pasteHTML(text);
+			} else {
+				var text = oTextRange.htmlText;
+				oTextRange.pasteHTML("<span class=" + command.value + ">" + text + "</span>");
+			}
 		}
 	}
 	else if (oSelection.type == "Control" && oTextRange.length == 1)
@@ -1221,12 +1235,9 @@ function cssStyle_onChange(command)
 		var oControl = oTextRange.item(0) ;
 		oControl.className = command.value ;
 	}
-	
-	command.selectedIndex = 0 ;
-	
+	command.selectedIndex = 0 ;	
 	tbContentElement.focus();
 }
-
 
 function tbContentElement_DocumentComplete() {
 
