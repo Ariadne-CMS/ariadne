@@ -431,7 +431,10 @@ class pobject extends object {
 				// do login
 				debug("pobject: CheckLogin: insufficient grants ($ARLogin)","object");
 				if (!$silent) {
-					$this->call("user.login.html");
+					if ($ARLogin!="public") {
+						$args="ARLoginMessage=".RawUrlEncode($ARnls["accessdenied"]);
+					}
+					$this->call("user.login.html", $args);
 				}
 				$continue=false;
 			}
