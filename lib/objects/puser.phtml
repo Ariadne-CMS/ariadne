@@ -23,6 +23,30 @@ class puser extends pdir { // definitie class
 		return false;
 	}
 
+	function FindGrants($path, &$result, $top="") {
+		global $ARConfig;
+		debug("puser: FindGrants($path, result)","object");
+		debug("(in $this->path)","object");
+		if ($path==$top) {
+			$newpath="";
+		} else {
+			if (isset($ARConfig->GrantsCache[$this->path][$path])) {
+				$newpath=$ARConfig->GrantsCache[$this->path][$path]["setby"];
+				$result=$ARConfig->GrantsCache[$this->path][$path]["grants"];
+			} else if ($path && !$this->GetGrants($path, $result)) {
+				if ($path=="/") {
+					$newpath="";
+				} else {
+					$newpath=$this->store->make_path($path, "..");
+					$newpath=$this->FindGrants($newpath, $result);
+				}
+				$ARConfig->GrantsCache[$this->path][$path]["grants"]=$result;
+				$ARConfig->GrantsCache[$this->path][$path]["setby"]=$newpath;
+			} 
+		}
+		return $newpath;
+	}
+
 	function copyto($target) {
 		$this->error=$ARnls["err:usercannotbecopied"];
 		return false;		
