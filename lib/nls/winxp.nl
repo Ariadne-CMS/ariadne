@@ -19,7 +19,7 @@
 	
 	//headers
 	$ARnls["xp_settings"]					= "Instellingen";
-	$ARnls["xp_info"]						=	"Info";
+	$ARnls["xp_info"]						= "Informatie";
 	$ARnls["xp_detailsH"]					= "Meer...";
 	$ARnls["xp_browsebyletter"]				= "Verken op letter";
 	$ARnls["xp_browsebydate"]				= "Verken op datum";
