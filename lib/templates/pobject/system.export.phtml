@@ -97,6 +97,7 @@ global $AR;
 
 				while (is_array($result) && (list($key,$object)=each($result))) {
 					$newpath=$destpath.substr($object->path, strlen($rootpath));
+					$oldpath=$object->path;
 
 					$update_obj = false;
 					$save_obj = true;
@@ -104,14 +105,6 @@ global $AR;
 					display("processing($newpath)	");
 					if ($ARCurrent->options["without_data"]) {
 						display("no data for (".$object->path.")");
-						/*
-						$temp_templates = $object->data->templates;
-						$temp_pinp = $object->data->pinp;
-						unset($object->data);
-						$object->data=$dummy->data;
-						$object->data->templates=$temp_templates;
-						$object->data->pinp=$temp_pinp;
-						*/
 						$object->axflags |= AX_WITHOUT_DATA;
 					}
 
@@ -198,6 +191,16 @@ global $AR;
 						}
 					}
 					display("\n");
+
+					$check_path = $this->store->make_path($newpath, "..");
+					if ($oldpath!=$srcpath && !$nextid_checks[$check_path]) {
+						$nextid_checks[$check_path] = true;
+						$nextid = $this->store->get_nextid($this->store->make_path($oldpath, ".."));
+						if ($nextid) {
+							$ARCurrent->importStore->set_nextid($check_path, $nextid);
+							display("setting nextid ($nextid)\n");
+						}
+					}
 				}
 				$offset+=sizeof($result);
 			}
