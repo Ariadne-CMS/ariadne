@@ -1,0 +1,16 @@
+People who want to upgrade their ariadne to ariadne 2.1 need to take care
+of the following:
+
+Ariadne 2.1 internally uses the UTF-8 characterset. This means
+that if you want to use your old ariadne data with this version, you
+need to make sure that your old data will also be imported as UTF-8.
+
+If your old data is not already in the UTF-8 charset, you can use the
+import mechanism to convert this. The parameters are:
+
+	--convertToUTF8-[nls]=[charset]
+
+This option tells import to convert all data for the
+language [nls] from the charset [charset] (CP1252 is default) to
+UTF-8.
+
