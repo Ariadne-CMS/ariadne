@@ -99,7 +99,7 @@
     <?php
       for ($i=$firstweekday; $i; $i--) {
         echo "<td align=\"center\" valign=\"middle\"><a href=\"$PHP_SELF?date=".
-          mktime(0,0,0,$date_arr["mon"],(-$i+1),$date_arr["year"]).
+          mktime(0,0,0,$date_arr["mon"],(-$i+1),$date_arr["year"]).$args.
           "\"><img src=\"".$AR->dir->images."dot.gif\" width=\"32\" height=\"20\" border=\"0\" alt=\"-$i\"></a></td>";
       }
       for ($i=1; $i<=$monthsize; $i++) {
@@ -130,7 +130,7 @@
       if ($firstweekday) { // skip if first weekday of next month is sunday
         for ($i=1; $i<(8-$firstweekday); $i++) {
           echo "<td align=\"center\" valign=\"middle\"><a href=\"$PHP_SELF?date=".
-            mktime(0,0,0,$date_arr["mon"],$i,$date_arr["year"]).
+            mktime(0,0,0,$date_arr["mon"],$i,$date_arr["year"]).$args.
             "\"><img src=\"".$AR->dir->images."dot.gif\" width=\"32\" height=\"20\" border=\"0\" alt=\"$i\"></a></td>";
         }
       }
