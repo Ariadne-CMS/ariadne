@@ -503,6 +503,7 @@ class postgresqlstore {
 			$this->start_transaction();
 			if ($id = $this->exists($path)) { //update
 				debug("save: updating","all");
+				$result = $path;
 				if ($vtype) { // only change/save vtype if it is explicitly set
 					$evtype = AddSlashes($vtype);
 					$query_string = "update $objects_tbl set object='$edata', vtype='$evtype', lastchanged=current_timestamp where id=$id"; 
@@ -526,8 +527,6 @@ class postgresqlstore {
 							if ($err === false) {
 								debug("save: update object failed on query!","store");
 								$result = 0;
-							} else {
-								$result = $path;
 							}
 						}
 					}
