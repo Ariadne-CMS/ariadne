@@ -711,7 +711,6 @@
 							$fp=fopen($tempfile, "wb");
 							if ($fp) {
 								$fileinfo["tmp_name"]=$tempfile;
-								$fileinfo["type"]=get_mime_type($tempfile);
 								if ($listMode === "templates") {
 									ftp_TranslateTemplate($target, $template);
 									$fileinfo["name"]=eregi_replace('[^.a-z0-9_-]', '_', $template);
@@ -731,6 +730,7 @@
 									}
 									fclose($fp);
 									ftp_CloseDC();
+									$fileinfo["type"]=get_mime_type($tempfile);
 									$fileinfo["size"]=filesize($tempfile);
 
 									debug("ftp: writing template to  ($target$template)");
@@ -757,6 +757,7 @@
 										}
 										fclose($fp);
 										ftp_CloseDC();
+										$fileinfo["type"]=get_mime_type($tempfile);
 										$fileinfo["size"]=filesize($tempfile);
 										debug("ftp::store total size of fileupload is: ".$fileinfo["size"]);
 										// if $target already exists
@@ -770,6 +771,7 @@
 										}
 										fclose($fp);
 										ftp_CloseDC();
+										$fileinfo["type"]=get_mime_type($tempfile);
 										$fileinfo["size"]=filesize($tempfile);
 
 										$FTP->store->call("ftp.$listMode.save.new.phtml", Array("file" => $fileinfo),
