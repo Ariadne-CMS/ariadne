@@ -26,6 +26,12 @@ Bugs Fixes:
 	- added a upgrade script which fixes the es nls name in objects which still
 	  have the latin1 encoding.
 	- The pinp call for HTTPRequest in pobject is now equal to the php one.
+	- added a call to fflush in export.wddx.object.phtml, to force flushing to output
+	  because some versions of php don't flush 
+	- fixed some output in mod_wddx_import
+	- added the missing call to fclose
+	- replaced php://stdout in php://output, because stdout is the wrong stream
+
 
 Ariadne 2.4
 

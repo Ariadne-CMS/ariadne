@@ -38,6 +38,7 @@
 <pre style="background-color: white; border: 2px inset buttonhighlight; font-size: 12px; margin: 4px; padding: 2px;"><?php
 			echo "Exporting $srcpath \n";
 			$this->call("export.wddx.phtml",array());
+			fclose($fp);
 			if ($error) {
 				echo $error."\n";
 			}

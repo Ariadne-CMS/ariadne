@@ -283,6 +283,7 @@ class import_wddx {
 										}else
 										{
 											debug('WDDX templates: create template','all');
+											$this->print_verbose(" saving\n");
 											$templates->write($template, $object->id, $file.".pinp");
 											$templates->touch($object->id,$file."pinp",$val['mtime']);
 											$templates->write($compiled, $object->id, $file);

@@ -4,9 +4,11 @@ if( $this->CheckLogin("config") ) {
 
 	require_once($this->store->get_config("code")."modules/mod_export_wddx.php");
 
+	$closefp = false;
+	set_time_limit(0);
 	$fp = $this->getvar('wddxfp','none');
 	if(!$fp){
-		$fp = fopen('php://stdout','w');
+		$fp = fopen('php://output','w');
 		$options = $this->getvar('wddxoptions','none');
 		unset($options['verbose']);
 		$this->putvar('wddxoptions',$options);
@@ -17,5 +19,9 @@ if( $this->CheckLogin("config") ) {
 	$query="";
 	$this->find($this->make_path($path), $query, "export.wddx.object.phtml", "", 0);
 	export_wddx::footer($fp);
+	if($closefp){
+		fclose($fp);
+	}
+
 }
 ?>

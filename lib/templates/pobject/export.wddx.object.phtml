@@ -2,5 +2,6 @@
 	if( $this->CheckSilent("config") ) {
 		$fp = $this->getvar('wddxfp','none');
 		export_wddx::export($fp,$this);
+		fflush($fp);
 	}
 ?>
