@@ -1,5 +1,6 @@
 <?php
-	if ($this->CheckLogin("read")	&& $this->CheckConfig()) {
+	if ((($action=="delete" && $this->CheckLogin("delete")) || ($action!="delete" && $this->CheckLogin("read")))	
+		&& $this->CheckConfig()) {
 ?>
 <html>
 <head>
@@ -141,6 +142,13 @@
 							</script>
 							<title><?php printf($ARnls["deleting"],$this->path); ?></title>
 						<?php
+					} else {
+						?>
+							</script>
+							<title><?php echo $ARnls["accessdenied"]; ?></title>
+							</head><body><?php echo $ARnls["accessdenied"]; ?></body></html>
+						<?php
+							die();
 					}
 				}
 				break;
@@ -194,16 +202,12 @@
 	?>
 </head>
 <body bgcolor="#BBBBBB">
-<layer name="info" src="recurse.find.phtml?limit=50" width="100%" height="60">
 <iframe id="info" src="recurse.find.phtml?limit=50" width="100%" height="60">
 </iframe>
-</layer>
-<layer top=50>
 <form>
 <!-- FIXME: unlock object when cancel pressed -->
 <input type="button" name="cancel" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();">
 </form>
-</layer>
 </body>
 </html>
 <?php

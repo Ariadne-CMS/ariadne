@@ -12,22 +12,11 @@
 	TD				{ FONT: 10pt sans-serif; }
 	BODY			{ FONT: 10pt sans-serif;
 							BORDER: 0;
-		<?php
-			$browser=$this->call("browsercheck.phtml");
-			if ($browser["id"]=="ns" && $browser["version"]<=4) {
-				?>
-					BACKGROUND-COLOR: #BBBBBB;
-				<?php
-			} else {
-				?>
 					BACKGROUND-COLOR: buttonface;
-				<?php
-			}
-		?>
 	}
 </style>
 </head>
-<body bgcolor="#BBBBBB" scroll="no">
+<body scroll="no">
 <?php 
 	echo $ARnls["collectinginfo"]; 
 ?>
