@@ -262,7 +262,7 @@
 		var selectedGrants = new Array();
 		var re = /[^a-z]*([a-zA-Z]+)/gi;
 		var grants = new String(form['grant_other'].value).match(re);
-		for (var i in grants) {
+		for (var i=0; grants && (i < grants.length); i++) {
 			selectedGrants[grants[i]] = true;
 		}
 
