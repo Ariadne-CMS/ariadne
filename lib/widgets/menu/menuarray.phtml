@@ -70,7 +70,17 @@ HM_Array3 = [
 108,
 27,
 ],
-["<?php echo $ARnls["m_web"]; ?>","javascript:arshow('_new','<?php echo $this->make_url(); ; ?>view.html')",1,0,0],
+["<?php echo $ARnls["m_web"]; ?>","javascript:arshow('_new','<?php 
+	$arLanguage=$this->getdata("arLanguage","none");
+	if ($arLanguage!=$this->reqnls) {
+		$oldnls=$this->reqnls;
+		$this->setnls($arLanguage);
+	}
+	echo $this->make_url();
+	if ($oldnls) {
+		$this->setnls($oldnls);
+	} 
+?>')",1,0,0],
 ['<hr>','<img src="<?php echo $AR->dir->images; ?>hr.gif" width="100%" height="2" alt="" style="padding: 4px 2px 4px -20px;">',0,0,0],
 ["<?php echo $ARnls["m_page"]; ?>","javascript:setView('page')",1,0,0],
 ["<?php echo $ARnls["m_small"]; ?>","javascript:setView('list')",1,0,0],
