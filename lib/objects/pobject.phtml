@@ -562,6 +562,7 @@ class pobject extends object { // pobject class definition
 				$rootoptions .= "/-".$ARCurrent->session->id."-";
 			}
 			if ($nls) {
+				$rootoptions_nonls = $rootoptions;
 				$rootoptions .= '/'.$nls;
 			}
 		}
@@ -591,7 +592,15 @@ class pobject extends object { // pobject class definition
 //				$temp_config=$ARConfig->cache[$temp_site];
 //			}
 //		}
-		$url=$temp_config->root["value"].$rootoptions;
+		if ($nls) {
+			$url=$temp_config->root["list"][$nls];
+			if ($url) {
+				$url .= $rootoptions_nonls;
+			}
+		}
+		if (!$url) {
+			$url=$temp_config->root["value"].$rootoptions;
+		}
 		$url.=substr($path, strlen($temp_config->root["path"])-1);
 		debug("make_url: ".$temp_config->root["path"]." = $temp_site : $temp_url","all");
 
@@ -1028,7 +1037,6 @@ class pobject extends object { // pobject class definition
 			debug("CheckConfig: after make_path  (".$checkpath.")","all");
 			$curr_templates=$ARConfig->cache[$checkpath]->templates;
 		}
-
 		debug("CheckConfig: while loop ended","all");
 
 		$result["arTemplateId"] = $arTemplateId;
@@ -1043,6 +1051,7 @@ class pobject extends object { // pobject class definition
 	// browser.
 	// All these templates must exist under a fixed directory, $AR->dir->templates
 	global $nocache, $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls, $HTTP_POST_VARS, $HTTP_GET_VARS, $ARConfigChecked;
+
 		debug("pobject::CheckConfig($arCallFunction, $arCallArgs)(".$this->path.")","object");
 		$MAX_LOOP_COUNT=10;
 
@@ -1205,6 +1214,7 @@ class pobject extends object { // pobject class definition
 										" onMouseOver=\"this.style.border='1px dotted black';\" onMouseOut=\"this.style.border='0px';\">";
 							}
 							$arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
+
 							if ($ARCurrent->ARShowTemplateBorders) {
 								// echo "</fieldset>";
 								echo "</div>";
@@ -1220,6 +1230,7 @@ class pobject extends object { // pobject class definition
 				} else {
 					debug("CheckConfig: no arCallTemplate","object");
 				}
+
 			}
 		}
 		debug("pobject: CheckConfig: end","all");

@@ -14,7 +14,7 @@
 		
 		// unset the properties array, so no properties can be passed to this template.
 		$properties = Array();
-		
+		$this->data->url_list = Array();		
 		if (!$this->error) {
 			$this->arIsNewObject=false;
             reset($AR->nls->list);
@@ -26,6 +26,9 @@
 					if ($url!=$this->data->$key->url) {
 						$clearcache=true;					
 						$this->data->$key->url=$url;
+					}
+					if ($url) {
+						$this->data->url_list[$key] = $url;
 					}
 					eregi('^([a-z0-9]+)://([^/:]+)(:[0-9]+)?', $url, $regs);
 					$properties["url"][$count]["protocol"]=	"'".AddSlashes($regs[1])."'";

@@ -24,7 +24,9 @@
 	if ($url) {
 		$configcache->root["path"]=$this->path;
 		$configcache->root["value"]=$url;
+		$configcache->root["list"]=$this->data->url_list;
 	}
+
 	$configcache->site=$this->path;
 	$configcache->section=$this->path;
 	$ARConfig->cache[$this->path]=$configcache;
