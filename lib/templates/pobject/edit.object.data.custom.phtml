@@ -1,13 +1,13 @@
 <?php
 	/******************************************************************
-	 edit.object.data.custom.phtml                    Muze Ariadne v2.0
+	 edit.object.data.custom.phtml					Muze Ariadne v2.0
 	 ------------------------------------------------------------------
 	 Grant needed: read
 	 Global variables: none
 
-	 This template displays the custom data entry step for creating or 
-     editing an object. The template is meant to be used as part of a 
-     wizard.
+	 This template displays the custom data entry step for creating or
+	 editing an object. The template is meant to be used as part of a
+	 wizard.
 
 	 no result.
 
@@ -41,15 +41,17 @@
 				while (list($cdnls, $cdvalues)=each($custom)) {
 					echo "	CustomData['".AddCSlashes($cdnls, ARESCAPE)."']=new Array();\n";
 					while (list($cdname, $cdvalue)=each($cdvalues)) {
-						echo "	CustomData['".AddCSlashes($cdnls, ARESCAPE)."']['".AddCSlashes($cdname, ARESCAPE)."']='".AddCSlashes($cdvalue, ARESCAPE)."';\n";
+					  // Note: cdvalue doesn't need a further "Ariadne level" backslashing
+					  //	echo "	CustomData['".AddCSlashes($cdnls, ARESCAPE)."']['".AddCSlashes($cdname, ARESCAPE)."']='".AddCSlashes($cdvalue, ARESCAPE)."';\n";
+						echo "	CustomData['".AddCSlashes($cdnls, ARESCAPE)."']['".AddCSlashes($cdname, ARESCAPE)."']='$cdvalue';\n";
 					}
 				}
 			}
 			$configcache=$ARConfig->cache[$this->path];
 			if (is_array($configcache->custom)) {
 				while (list($name, $customvalue)=each($configcache->custom)) {
-					if (($customvalue["type"]==$this->type) || 
-							($customvalue["inherit"] && 
+					if (($customvalue["type"]==$this->type) ||
+							($customvalue["inherit"] &&
 								($this->implements($customvalue["type"]))
 							)
 						) {
@@ -96,7 +98,13 @@
 			for (nls in CustomData) {
 				arData=CustomData[nls];
 				for (arName in arData) {
-					savestring+='&custom['+escape(nls)+']['+escape(arName)+']='+escape(arData[arName]);
+				  // Some characters has to be replaced by its encoding
+				  // Plus (+) char
+				  arData[arName] = arData[arName].replace(/\+/g, "%2B");
+
+				  // savestring+='&custom['+escape(nls)+']['+escape(arName)+']='+escape(arData[arName]);
+					savestring+='&custom['+escape(nls)+']['+escape(arName)+']='+arData[arName];
+
 				}
 
 			}
@@ -172,10 +180,11 @@
 </script>
 <style>
 .nameselect {
-	width: 100px;
+	width: 90%;
 }
 .valueentry {
-	width: 280px;
+	width: 99%;
+ height: 120px;
 }
 </style>
 <input type="hidden" name="custom">
@@ -188,13 +197,13 @@
 			<tr>
 				<td valign="top">
 					<img name="flagimage" src="<?php echo $any; ?>" alt="" align="right">
-					<select name="fieldname" width="16" class="nameselect" onChange="show();">
+					<select name="fieldname" class="nameselect" onChange="show();">
 					</select>
 				</td>
 			</tr><tr>
 				<td valign="top">
-					<textarea name="showcustomdata" rows="9" cols="30" class="valueentry"></textarea>
-    			</td>
+					<textarea name="showcustomdata" class="valueentry"></textarea>
+				</td>
 			</tr>
 		</table>
 		</fieldset>
