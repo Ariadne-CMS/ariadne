@@ -95,7 +95,7 @@ if ($arg_c>2) {
 		$dstfile=$arg_v[1];
 	}
 
-	$outfile = fopen($dstfile,"w+");
+	$outfile = fopen($dstfile,"w");
 	if($outfile){
 		$ARCurrent->wddxfp=$outfile;
 		$inst_store = $store_config["dbms"]."store";
