@@ -15,6 +15,10 @@ New features:
 	(Thanks to Johann Hanne)
 	- Added the ldGetServerVar() loader function to interface with
           HTTP_SERVER_VARS[] and dummy variants for the non-http loaders.
+	- Windows opened from the Menu (using the arshow() js function) do
+	  now have unique names containing the session this will allow users
+	  to have multiple template editors open given a different session
+	  for each editor.
 
 
 Bugs fixed:
