@@ -1067,7 +1067,9 @@ class mysqlstore {
 		if (($temp=mysql_db_query($this->database,$query_string, $this->connect_id)) && (mysql_affected_rows($this->connect_id)>0)) {
 			$row=mysql_fetch_array($temp);
 			$id=intval($row["next_id"]);
-		} 
+		} else {
+			$id=1;
+		}
 
 		return $id;
 	}
