@@ -31,6 +31,6 @@
  *  The ftp debug/log file                                                *
  **************************************************************************/
 
-    $ftp_config['debugfile']       = $AR->root.'files/temp/ftp_debug.txt';
+    $ftp_config['debugfile']       = $AR->dir->install.'/files/temp/ftp_debug.txt';
 
 ?>
