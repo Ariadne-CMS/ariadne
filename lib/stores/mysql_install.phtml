@@ -6,8 +6,8 @@ class mysqlstore_install extends mysqlstore {
 
 	function initialize() {
 		echo "initializing mysql store.\n";
-		echo "creating nodes table.\n";
-		$query_string="
+		$queries[0]["msg"]="creating nodes table.";
+		$queries[0]["query_string"]="
 CREATE TABLE nodes (
 	path varchar(127) DEFAULT '' NOT NULL,
 	parent varchar(127) DEFAULT '' NOT NULL,
@@ -16,14 +16,9 @@ CREATE TABLE nodes (
 	KEY object (object),
 	KEY parent (parent)
 )";
-		mysql_db_query($this->database,$query_string, $this->connect_id);
-		$errno=mysql_errno($this->connect_id);
-		if ($errno) {
-			$error=mysql_error($this->connect_id);
-			error("ERROR: Mysql: $errno: $error");
-		}
-		echo "creating objects table.\n";
-		$query_string="
+
+		$queries[1]["msg"]="creating objects table.";
+		$queries[1]["query_string"]="
 CREATE TABLE objects (
 	id int(11) DEFAULT '0' NOT NULL auto_increment,
 	type varchar(16) DEFAULT '' NOT NULL,
@@ -33,75 +28,60 @@ CREATE TABLE objects (
 	PRIMARY KEY (id),
 	KEY lastchanged (lastchanged)
 )";
-		mysql_db_query($this->database,$query_string, $this->connect_id);
-		$errno=mysql_errno($this->connect_id);
-		if ($errno) {
-			$error=mysql_error($this->connect_id);
-			error("ERROR: Mysql: $errno: $error");
-		}
-		echo "creating properties table.\n";
-		$query_string="
+		$queries[2]["msg"]="creating properties table.";
+		$queries[2]["query_string"]="
 CREATE TABLE properties (
 	name varchar(21) DEFAULT '' NOT NULL,
 	PRIMARY KEY (name)
 )";
-		mysql_db_query($this->database,$query_string, $this->connect_id);
-		$errno=mysql_errno($this->connect_id);
-		if ($errno) {
-			$error=mysql_error($this->connect_id);
-			error("ERROR: Mysql: $errno: $error");
-		}
-		echo "creating seq_id table.\n";
-		$query_string="
+		$queries[3]["msg"]="creating seq_id table.";
+		$queries[3]["query_string"]="
 CREATE TABLE seq_id (
 	path varchar(127) DEFAULT '' NOT NULL,
 	next_id int(11) DEFAULT '0' NOT NULL,
 	KEY path (path)
 )";
-		mysql_db_query($this->database,$query_string, $this->connect_id);
-		$errno=mysql_errno($this->connect_id);
-		if ($errno) {
-			$error=mysql_error($this->connect_id);
-			error("ERROR: Mysql: $errno: $error");
-		}
-		echo "creating types table.\n";
-		$query_string="
+		$queries[4]["msg"]="creating types table.";
+		$queries[4]["query_string"]="
 CREATE TABLE types (
 	type varchar(16) DEFAULT '' NOT NULL,
 	implements varchar(16) DEFAULT '' NOT NULL,
 	KEY type (type),
 	KEY implements (implements)
 )";
-		mysql_db_query($this->database,$query_string, $this->connect_id);
-		$errno=mysql_errno($this->connect_id);
-		if ($errno) {
-			$error=mysql_error($this->connect_id);
-			error("ERROR: Mysql: $errno: $error");
-		}
-		echo "creating default types.\n";
-		$this->add_type("pobject","pobject");
-		$this->add_type("pdir","pobject");
-		$this->add_type("pdir","pdir");
-		echo "creating root dir.\n";
-		$query_string="INSERT INTO nodes (path, parent, object) VALUES ('/','..',1)";
-		mysql_db_query($this->database,$query_string, $this->connect_id);
-		$errno=mysql_errno($this->connect_id);
-		if ($errno) {
-			$error=mysql_error($this->connect_id);
-			error("ERROR: Mysql: $errno: $error");
-		}
-		$query_string="INSERT INTO objects (id, type, object, vtype) VALUES (0,'pdir','O:6:\"object\":2:{s:2:\"en\";O:6:\"object\":1:{s:4:\"name\";s:7:\"Ariadne\";}s:3:\"nls\";O:6:\"object\":1:{s:7:\"default\";s:2:\"en\";}}','pdir')";
-		mysql_db_query($this->database,$query_string, $this->connect_id);
-		$errno=mysql_errno($this->connect_id);
-		if ($errno) {
-			$error=mysql_error($this->connect_id);
-			error("ERROR: Mysql: $errno: $error");
+		$queries[5]["msg"]="creating root dir.";
+		$queries[5]["query_string"]="INSERT INTO nodes (path, parent, object) VALUES ('/','..',1)";
+
+		$queries[6]["msg"]="";
+		$queries[6]["query_string"]="INSERT INTO objects (id, type, object, vtype) VALUES (0,'pdir','O:6:\"object\":2:{s:2:\"en\";O:6:\"object\":1:{s:4:\"name\";s:7:\"Ariadne\";}s:3:\"nls\";O:6:\"object\":1:{s:7:\"default\";s:2:\"en\";}}','pdir')";
+
+		while ((list($key, $query)=each($queries)) && (!$error)) {
+			if ($query["msg"]) {
+				echo $query["msg"]."\n";
+			}
+			mysql_db_query($this->database,$query["query_string"], $this->connect_id);
+			$errno=mysql_errno($this->connect_id);
+			if ($errno) {
+				$error=mysql_error($this->connect_id);
+				error("Mysql: $errno: $error");
+			}
 		}
 
-		// initialize locking tables
-		$this->mod_lock->init();
 
-		echo "mysql store initialized.\n\n";
+		if (!$error) {
+			echo "creating default types.\n";
+			$this->add_type("pobject","pobject");
+			$this->add_type("pdir","pobject");
+			$this->add_type("pdir","pdir");
+			$return=true;
+			// initialize locking tables
+			$this->mod_lock->init();
+
+			echo "mysql store initialized.\n\n";
+		} else {
+			$return=false;
+		}
+		return $return;
 	}
 
 	function create_property($property, $definition, $indexes="") {
