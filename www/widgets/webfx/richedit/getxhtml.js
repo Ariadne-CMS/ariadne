@@ -66,8 +66,11 @@ function _fixText(s) {
 	return String(s).replace(/\&/g, "&amp;").replace(/>/g, "&gt;").replace(/</g, "&lt;");
 }
 
-function _appendNodeXHTML(node, sb) {
+function _appendNodeXHTML(node, sb, indent) {
 
+	if (!indent) {
+		indent='';
+	}
 	switch (node.nodeType) {
 		case 1:	// ELEMENT
 		
@@ -79,8 +82,8 @@ function _appendNodeXHTML(node, sb) {
 			var name = node.nodeName;
 			if (node.scopeName == "HTML")
 				name = name.toLowerCase();
-		
-			sb.append("<" + name);
+			
+			sb.append(indent + "<" + name);
 			
 			// attributes
 			var attrs = node.attributes;
@@ -99,18 +102,68 @@ function _appendNodeXHTML(node, sb) {
 				
 			if (node.canHaveChildren || node.hasChildNodes()) {
 			
+				switch(name) {
+					case "p":
+					case "h1":
+					case "h2":
+					case "h3":
+					case "h4":
+					case "h5":
+					case "h6":
+					case "strong":
+					case "b":
+					case "em":
+					case "i":
+					case "q":
+					case "s":
+					case "strike":
+					case "tt":
+					case "u":
+					case "a":
+					case "img":
+					case "abbr":
+					case "acronym":
+					case "address":
+					case "big":
+					case "small":
+					case "cite":
+					case "code":
+					case "comment":
+					case "samp":
+					case "sub":
+					case "sup":
+					case "var":
+					case "td":
+					case "div":
+					case "span":
+						var childindent='';
+						break;
+					default:
+						if (indent=='') {
+							var childindent='\n  ';
+						} else {
+							var childindent=indent+'  ';
+						}
+						break;
+				}
 				sb.append(">");
 				
 				// childNodes
 				var cs = node.childNodes;
 				l = cs.length;
 				for (var i = 0; i < l; i++)
-					_appendNodeXHTML(cs[i], sb);
+					_appendNodeXHTML(cs[i], sb, childindent);
 				
+				if (childindent) {
+					if (indent=='') {
+						indent='\n';
+					}
+					sb.append(indent);
+				}
 				sb.append("</" + name + ">");
 			}
 			else if (name == "script")
-				sb.append(">" + node.text + "</" + name + ">");
+				sb.append(">" + indent + node.text + indent + "</" + name + ">");
 			else if (name == "title" || name == "style" || name == "comment")
 				sb.append(">" + node.innerHTML + "</" + name + ">");
 			else 
@@ -119,15 +172,15 @@ function _appendNodeXHTML(node, sb) {
 			break;
 			
 		case 3:	// TEXT
-			sb.append( _fixText(node.nodeValue) );
+			sb.append(_fixText(node.nodeValue) );
 			break;
 				
 		case 4:
-			sb.append("<![CDA" + "TA[\n" + node.nodeValue + "\n]" + "]>");
+			sb.append(indent + "<![CDA" + "TA[\n" + node.nodeValue + "\n]" + "]>");
 			break;
 				
 		case 8:
-			//sb.append("<!--" + node.nodeValue + "-->");
+			// sb.append("<!--" + node.nodeValue + "-->");
 			sb.append(node.text);
 			if (/(^<\?xml)|(^<\!DOCTYPE)/.test(node.text) )
 				sb.append("\n");
@@ -138,10 +191,10 @@ function _appendNodeXHTML(node, sb) {
 			var cs = node.childNodes;
 			l = cs.length;
 			for (var i = 0; i < l; i++)
-				_appendNodeXHTML(cs[i], sb);
+				_appendNodeXHTML(cs[i], sb, '\n  ');
 			break;
 			
 		default:
-			sb.append("<!--\nNot Supported:\n\n" + "nodeType: " + node.nodeType + "\nnodeName: " + node.nodeName + "\n-->");
+			sb.append('\n' + indent + "<!--\nNot Supported:\n\n" + "nodeType: " + node.nodeType + "\nnodeName: " + node.nodeName + "\n-->");
 	}
 }
