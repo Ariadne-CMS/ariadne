@@ -1,0 +1,41 @@
+<?php
+
+	$ARnls["m_about"]						=	"Acerca&nbsp;Ariadne";
+	$ARnls["m_cache"]						=	"Cache";
+	$ARnls["m_config"]						=	"Configura&ccedil;&atilde;o";
+	$ARnls["m_copy"]						=	"Copiar";
+	$ARnls["m_custom"]						=	"Campos&nbsp;configuraveis";
+	$ARnls["m_data"]						=	"Dados";
+	$ARnls["m_delete"]						=	"Apagar";
+	$ARnls["m_details"]						=	"Detalhes";
+	$ARnls["m_edit"]						=	"Alterar";
+	$ARnls["m_explorerbar"]					=	"Barra&nbsp;Explorer";
+	$ARnls["m_export"]						=	"Export";
+	$ARnls["m_find"]						=	"Procura";
+	$ARnls["m_fonts"]						=	"Fonts";
+	$ARnls["m_grants"]						=	"Permiss&otilde;es";
+	$ARnls["m_help"]						=	"Ajuda";
+	$ARnls["m_import"]						=	"Import";
+	$ARnls["m_index"]						=	"Index";
+	$ARnls["m_language"]					=	"Lingua";
+	$ARnls["m_large"]						=	"Miniaturas grandes";
+	$ARnls["m_layout"]						=	"Layout";
+	$ARnls["m_link"]						=	"Liga&ccedil;&atilde;o";
+	$ARnls["m_logoff"]						=	"Log&nbsp;off";
+	$ARnls["m_new"]							=	"Criar";
+	$ARnls["m_object"]						=	"Objecto";
+	$ARnls["m_page"]						=	"P&aacute;gina";
+	$ARnls["m_preferences"]					=	"Prefer&ecaret;ncias";
+	$ARnls["m_priority"]					=	"Prioridade";
+	$ARnls["m_rename"]						=	"Mudar nome";
+	$ARnls["m_search"]						=	"Pesquisa";
+	$ARnls["m_shortcut"]					=	"Atalho";
+	$ARnls["m_small"]						=	"Miniaturas pequenas";
+	$ARnls["m_templates"]					=	"Moldes";
+	$ARnls["m_tutorials"]					=	"Tutoriais";
+	$ARnls["m_types"]						=	"Tipos";
+	$ARnls["m_view"]						=	"Mostrar";
+	$ARnls["m_web"]							=	"P&aacute;gina web";
+
+
+?>

@@ -258,6 +258,7 @@
   $AR->nls->list['it']      = 'Italiana';
   $AR->nls->list['sv']      = 'Svenska';
   $AR->nls->list['hr']      = 'Hrvatski';
+  $AR->nls->list['pt']      = 'Portugu&ecirc;s';
 
   $AR->nls->locales['nl']   = 'nl_NL';
   $AR->nls->locales['en']   = 'en_US';
@@ -268,6 +269,7 @@
   $AR->nls->locales['it']   = 'it_IT';
   $AR->nls->locales['sv']   = 'sv_SE';
   $AR->nls->locales['hr']   = 'hr_HR';
+  $AR->nls->locales['pt']	= 'pt_PT';
 
   $AR->nls->default         = 'en';
   /**************************************************************************/
