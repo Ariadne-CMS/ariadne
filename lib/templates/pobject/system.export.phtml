@@ -98,6 +98,7 @@
 							$temp_obj=current($this->store->call("system.export.object.phtml",
 													$arguments,
 													$this->store->get($path)));
+							$temp_obj->axflags |= AX_DUMMY;
 
 							$newresult[]=$temp_obj;
 						}
@@ -182,8 +183,8 @@
 												$ARCurrent->importStore->get($newpath));
 
 									} else {
-										display("(saving ".(($object->axflags) ? " (".$object->axflags.") " : "").")");
 										$impObject = $object;
+										display("(saving ".(($impObject->axflags) ? " (".$object->axflags.") " : "").")");
 										$impObject->arIsNewObject = true;
 										$impObject->path = $newpath;
 										if ($newpath!="/") {
