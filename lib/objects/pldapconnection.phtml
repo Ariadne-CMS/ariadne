@@ -111,7 +111,7 @@ class pldapconnection extends pconnector { // psearch class definition
 				for ($c=0;$c<$ldapdata[$groupattr]["count"];$c++) {
 					$ldapgroups[$ldapdata[$groupattr][$c]]=true;
 					list($groupname)=ldap_explode_dn($ldapdata[$groupattr][$c], 1);
-					array_push($AR->externalgroupmemberships, strtolower($groupname));
+					$AR->externalgroupmemberships[strtolower($groupname)]=true;
 				}
 			}
 		}

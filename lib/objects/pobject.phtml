@@ -597,7 +597,7 @@ class pobject extends object { // pobject class definition
 				} else {
 					// Use the group memberships of external databases (e.g. LDAP)
 					$criteria="members.login='".AddSlashes($AR->user->data->login)."'";
-					foreach ($AR->externalgroupmemberships as $group) {
+					foreach (array_keys($AR->externalgroupmemberships) as $group) {
 						$criteria.=" or login.value='".AddSlashes($group)."'";
 					}
 				}
