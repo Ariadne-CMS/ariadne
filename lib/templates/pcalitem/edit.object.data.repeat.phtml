@@ -14,13 +14,35 @@
 	******************************************************************/
 	if ($this->CheckSilent("read") && $this->CheckConfig()) {
 ?>
+<script>
+  var currentRepeat=false;
+
+  function updateRepeat(value) {
+	if (!value) {
+		repeat=document.wgWizForm.repeat;
+		value=repeat.options[repeat.selectedIndex].value;
+	}
+    if (window.all) {
+      var fieldset=window.all[value];
+    } else {
+      var fieldset=document.getElementById(value);
+    }
+    if (currentRepeat) {
+      currentRepeat.style.display='none';
+	}
+    fieldset.style.display='block';
+	currentRepeat=fieldset;
+  }
+
+  
+</script>
 <table border="0" width="90%">
 <tr>
 	<td>
 		<?php 
 			$arLanguage=$this->getdata("arLanguage","none");
 			if (!$arLanguage) {
-			 $arLanguage=$ARConfig->nls->default;
+ 				$arLanguage=$ARConfig->nls->default;
 			}
 			$selectednls=$arLanguage;
 			$selectedlanguage=$ARConfig->nls->list[$arLanguage];
@@ -28,36 +50,202 @@
 		?>
 		<fieldset id="data">
 		<legend><?php echo $ARnls["repeat"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
-			<table border="0" align="center">
+			<table border="0" align="center" width="90%">
 			<tr>
-				<?php
-					$roptions = array(
+				<td>
+					<select name="repeat" onChange="updateRepeat();">
+					<?php
+						$roptions = array(
 								"none" 	=> $ARnls["none"],
 								"day"  	=> $ARnls["day"],
 								"week" 	=> $ARnls["week"],
 								"month"	=> $ARnls["month"],
 								"year"	=> $ARnls["year"]);
 
-					$repeat=$this->getdata("repeat", "none");
-					while (list($key, $val)=each($roptions)) {
+						$repeat=$this->getdata("repeat", "none");
+						while (list($key, $val)=each($roptions)) {
+							echo "<option value=\"$key\"";
+							if ((!$repeat && $key=="none") || ($repeat==$key)) { echo " selected"; }
+							echo ">$val</option>";
+						}
+					?>
+					</select>
+				</td>
+			</tr>
+			</table>
+		</fieldset>
+
+		<fieldset id="day" style="display: none;">
+		<legend><?php echo $ARnls["repeat"].": ".$ARnls["day"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+			<table border="0" align="center" width="90%">
+			<tr>
+				<td>
+					<?php echo $ARnls["every"]; ?>
+				</td><td>
+					<input size="3" maxlength="3" type="text" name="repeatn" value="<?php if ($this->getdata("repeatn", "none")) { $this->showdata("repeatn", "none"); } else { echo "1"; } ?>">
+					&nbsp;<?php echo $ARnls["days"]; ?>
+				</td>
+			</tr><tr>
+				<td>
+					<?php echo $ARnls["endson"]; ?>
+				</td><td><?php
+							if ($this->getdata("repeatend", "none")) {
+								$wgDate=$this->getdata("repeatend", "none");
+							} else {
+								$wgDate=$this->getdata("date", "none") + $this->getdata("starthour","none")*3600 + $this->getdata("startminute", "none") * 60;
+							}
+							$wgDateName="repeatend";
+							include($this->store->code."widgets/date/js.html");
+							include($this->store->code."widgets/date/form.html");
 						?>
-					<tr>
-						<td>
-							<input <?php if ((!$repeat && $key=="none") || ($repeat==$key)) { echo "checked"; } ?>
-									type="radio" name="repeat" value="<?php echo $key; ?>">
-						</td><td>&nbsp;</td><td>
-							<?php echo $val; ?>
-						</td>
-					</tr>
-						<?php
+				</td>
+			</tr>
+			</table>
+		</fieldset>
+
+		<fieldset id="week" style="display: none;">
+		<legend><?php echo $ARnls["repeat"].": ".$ARnls["week"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+			<table border="0" align="center" width="90%">
+			<tr>
+				<td>
+					<?php echo $ARnls["every"]; ?>
+				</td><td colspan="3">
+					<input size="3" maxlength="3" type="text" name="repeatn" value="<?php if ($this->getdata("repeatn", "none")) { $this->showdata("repeatn", "none"); } else { echo "1"; } ?>">
+					&nbsp;<?php echo $ARnls["weeks"]; ?>
+				</td>
+			</tr><tr>
+				<td>
+					<nobr><?php echo $ARnls["repeaton"]; ?></nobr>
+				</td>
+				<?php
+					$woptions=array(
+							$ARnls["sun"],
+							$ARnls["mon"],
+							$ARnls["tue"],
+							$ARnls["wed"],
+							$ARnls["thu"],
+							$ARnls["fri"],
+							$ARnls["sat"]);
+
+					$repeat_on=$this->getdata("repeat_on", "none");
+					reset($woptions);
+					while (list($key,$option)=each($woptions)) {
+
+						if (($key==3) || ($key==6)) {
+							echo "</tr><tr><td></td>\n";
+						}
+							echo "<td><input type=\"checkbox\" name=\"repeat_on[$key]\" value=\"1\"";
+							if ($repeat_on[$key]) {
+								echo " checked";
+							}
+							echo ">&nbsp;$option</td>";
 					}
-				?>
+					?>
+			</tr><tr>
+				<td>
+					<?php echo $ARnls["endson"]; ?>
+				</td><td colspan="3"><?php
+							if ($this->getdata("repeatend", "none")) {
+								$wgDate=$this->getdata("repeatend", "none");
+							} else {
+								$wgDate=$this->getdata("date", "none") + $this->getdata("starthour","none")*3600 + $this->getdata("startminute", "none") * 60;
+							}
+							$wgDateName="repeatend";
+							include($this->store->code."widgets/date/js.html");
+							include($this->store->code."widgets/date/form.html");
+						?>
+				</td>
+			</tr>
+			</table>
+		</fieldset>
+
+		<fieldset id="month" style="display: none;">
+		<legend><?php echo $ARnls["repeat"].": ".$ARnls["month"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+			<table border="0" align="center" width="90%">
+			<tr>
+				<td>
+					<?php echo $ARnls["every"]; ?>
+				</td><td>
+					<input size="3" maxlength="3" type="text" name="repeatn" value="<?php if ($this->getdata("repeatn", "none")) { $this->showdata("repeatn", "none"); } else { echo "1"; } ?>">
+					&nbsp;<?php echo $ARnls["months"]; ?>
+				</td>
+			</tr><tr>
+				<td>
+					<nobr><?php echo $ARnls["repeatby"]; ?></nobr>
+				</td>
+				<td>
+					<?php
+					$repeat_by=$this->getdata("repeat_by", "none");
+					if (!$repeat_by) {
+						$repeat_by="day";
+					}
+					?>
+					<input type="radio" name="repeat_by" value="<?php echo $ARnls["day"]; ?>" 
+							<?php if ($repeat_by=="day")  echo "checked"; ?>>
+							<?php echo $ARnls["day"]; ?>
+					<input type="radio" name="repeat_by" value="<?php echo $ARnls["date"]; ?>" 
+							<?php if ($repeat_by=="date")  echo "checked"; ?>>
+							<?php echo $ARnls["date"]; ?>
+				</td>
+			</tr><tr>
+				<td>
+					<?php echo $ARnls["endson"]; ?>
+				</td><td><?php
+							if ($this->getdata("repeatend", "none")) {
+								$wgDate=$this->getdata("repeatend", "none");
+							} else {
+								$wgDate=$this->getdata("date", "none") + $this->getdata("starthour","none")*3600 + $this->getdata("startminute", "none") * 60;
+							}
+							$wgDateName="repeatend";
+							include($this->store->code."widgets/date/js.html");
+							include($this->store->code."widgets/date/form.html");
+						?>
+				</td>
+			</tr>
+			</table>
+		</fieldset>
+
+		<fieldset id="year" style="display: none;">
+		<legend><?php echo $ARnls["repeat"].": ".$ARnls["year"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+			<table border="0" align="center" width="90%">
+			<tr>
+				<td>
+					<?php echo $ARnls["every"]; ?>
+				</td><td>
+					<input size="3" maxlength="3" type="text" name="repeatn" value="<?php if ($this->getdata("repeatn", "none")) { $this->showdata("repeatn", "none"); } else { echo "1"; } ?>">
+					&nbsp;<?php echo $ARnls["years"]; ?>
+				</td>
+			</tr><tr>
+				<td>
+					<?php echo $ARnls["endson"]; ?>
+				</td><td><?php
+							if ($this->getdata("repeatend", "none")) {
+								$wgDate=$this->getdata("repeatend", "none");
+							} else {
+								$wgDate=$this->getdata("date", "none") + $this->getdata("starthour","none")*3600 + $this->getdata("startminute", "none") * 60;
+							}
+							$wgDateName="repeatend";
+							include($this->store->code."widgets/date/js.html");
+							include($this->store->code."widgets/date/form.html");
+						?>
+				</td>
 			</tr>
 			</table>
 		</fieldset>
 	</td>
 </tr>
 </table>
+<script>
+	window.onload=init;
+	function init() {
+		<?php
+			if ($repeat) {
+				echo "		updateRepeat('".$repeat."');\n";
+			}
+		?>
+		document.wgWizForm.repeat.focus();
+	}
+</script>
 <?php
 	}
 ?>
