@@ -10,7 +10,7 @@ class pnewspaper extends pdir { // definitie class
 		global $ARCurrent;
 		debug("pnewspaper: get_articles($display, $max, $start, $end)","object");
 		if (!$start) { $start=time(); }
-                if (!$end) { $end=$start; }
+		if (!$end) { $end=$start; }
 		$criteria["article"]["start"]["<="]=$end;
 		$criteria["article"]["end"][">="]=$start;
 		$criteria["article"]["display"]["="]="'".AddSlashes($display)."'";
@@ -34,6 +34,16 @@ class pnewspaper extends pdir { // definitie class
 
 	function _call_article($article,$template="",$args="") {
 		return $article->call($template,$args);
+	}
+
+	function clear_articles() {
+		global $ARCurrent;
+		unset($ARCurrent->articles);
+		unset($ARCurrent->priority);
+	}
+
+	function _clear_articles() {
+		return $this->clear_articles();
 	}
 
 } // end class pnewspaper
