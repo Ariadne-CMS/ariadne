@@ -83,11 +83,13 @@ Bugs Fixed:
 	- Fixed a postgresql store bug, pconnect gives nasty bugs when a pageload is
 	  aborted , because the transaction isn't rolled back then, but the next
 	  connection will be seen as a continuation of the current connection.
-	  Bug found by reading commends on www.php.net
+	  Bug found by reading comments on www.php.net
 	- redo on the error handling in the postgresql store, i should give nice error's now, and removed a lot of duplicate output
 	- all the stores use now 32 char long object types instead of 16 and 32
 	- removed the usage of ARLogin in CheckLogin and changed it to Ar->user->login
 	- The wizard input fields now resize with the window.
+	- Added error checks on the store and object save routine, to prevent 
+	  saving objects with a path that is too long for the database.
 
 Changes in Ariadne since version 2.2
 
