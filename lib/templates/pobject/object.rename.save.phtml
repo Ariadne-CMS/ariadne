@@ -3,12 +3,23 @@
 	
 	******************************************************************/
 
-	$this->call("system.rename.phtml", $arCallArgs);
+	$folder=$this->call("system.get.folder.phtml");
+	$newlocation=$this->call("system.rename.phtml", $arCallArgs);
 	if (!$this->error) {
-		// FIXME: update tree and main window. (path)
+		// FIXME: add new path to tree
 		?>
 			<script>
-//				window.close();
+				if (top.window && top.window.opener && top.window.opener.top.tree) {
+					target=top.window.opener.top.tree;
+				} else if (window.opener && window.opener.top.tree) {
+					target=window.opener.top.tree;
+				}
+				target.DelLinks('<?php echo $this->path; ?>');
+				target.AddLinks('<?php echo $this->store->make_path($newlocation, '..'); ?>', 
+					'<?php echo $folder["icon"]; ?>', '<?php echo $folder["name"]; ?>', 
+					'<?php echo $newlocation; ?>', '<?php echo $folder["pre"]; ?>');
+				window.opener.top.View('<?php echo $newlocation; ?>');
+				window.close();
 			</script>
 		<?php
 	} else {
