@@ -102,6 +102,10 @@
     if (get_magic_quotes_gpc()==1) {
       error("Ariadne will not work correctly with the magic_quotes_gpc option set to 'On'. Please edit your php.ini file and set it to 'Off'.");
     }
+    if (ini_get("safe_mode")) {
+      error("Ariadne will not work correctly with sage_mode set to 'On'. Please edit your php.ini file and set it to 'Off'.");
+    }
+    @ob_end_clean(); // just in case the output buffering is set on in php.ini, disable it here, as Ariadne's cache system gets confused otherwise. 
     // go check for a sessionid
     $root=$AR->root;
     $store=new mysqlstore($root,$store_config);
