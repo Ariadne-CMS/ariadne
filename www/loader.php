@@ -112,6 +112,7 @@
 			// instantiate the store
 			$inst_store = $store_config["dbms"]."store";
 			$store=new $inst_store($root,$store_config);
+			$store->rootoptions = $rootoptions;
 			if ($session_id) {
 				ldStartSession($session_id);
 			}

@@ -68,9 +68,10 @@
 	}
 
 	function ldSetRoot($session='', $nls='') {
-	global $store, $AR, $ARCurrent;
+	global $store, $AR, $ARCurrent, $root, $rootoptions;
 
 		$root=$AR->root;
+		$rootoptions="";
 		if ($session) {
 			$rootoptions.="/-".$session."-";
 			$ARCurrent->session->id=$session;
