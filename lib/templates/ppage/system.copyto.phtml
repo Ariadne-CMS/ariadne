@@ -2,13 +2,25 @@
 	/******************************************************************
 
 	******************************************************************/
-	// change links in $nlsdata->page
-	if ($search && $replace) {
-		while (list($nls, $language)=each($AR->nls->list)) {
-			if ($this->data->$nls && $this->data->$nls->page) {
-				$this->data->$nls->page=str_replace($search, $replace, $this->data->$nls->page);
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		if (!($result=$this->call("pobject::system.copyto.phtml", $arCallArgs))) {
+			// change links in $nlsdata->page
+			if ($search && $replace) {
+				while (list($nls, $language)=each($AR->nls->list)) {
+					if ($this->data->$nls && $this->data->$nls->page) {
+						$this->data->$nls->page=str_replace("{arRoot}".$search, "{arRoot}".$replace, $this->data->$nls->page);
+					}
+				}
 			}
+			if ($ARCurrent->newpath) {
+				debug("ppage/system.copyto.phtml: path:".$ARCurrent->newpath,"all");
+				$this->store->save($ARCurrent->newpath, $this->type, $this->data);
+			} else {
+				$arResult="no path to save to";
+				debug("ppage/system.copyto.phtml: path:".$arResult,"all");
+			}
+		} else {
+			$arResult=$result;
 		}
 	}
-	include($this->store->code."templates/pobject/system.copyto.phtml");
 ?>
