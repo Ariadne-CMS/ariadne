@@ -21,7 +21,7 @@
         // do not update the cookie and session data
         // cookies must be set only by login.phtml
         // just kill the session
-        $this->store->root=$ARCurrent->session->kill();
+        $ARCurrent->session->kill();
       }
     }
   }

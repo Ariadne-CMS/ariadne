@@ -1,6 +1,9 @@
 <?php
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		switch($next) {
+			case $ARnls["apply"] :
+				$returnpage="edit.object.layout.form.phtml?type=".RawUrlEncode($newtype).
+					"&function=".RawUrlEncode($newfunction)."&language=".RawUrlEncode($newlanguage);
 			case $ARnls["save"] :
 				$this->call("system.save.layout.phtml",$arCallArgs);
 				break;
@@ -17,7 +20,7 @@
 ?>
 <body>
 <script>
-	alert('<?php echo $this->error; ?>');
+	alert('<?php echo AddSlashes($this->error); ?>');
 	history.back();
 </script>
 </body>
