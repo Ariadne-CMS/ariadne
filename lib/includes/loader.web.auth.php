@@ -12,6 +12,39 @@
 						),
 						$store->find("/system/users/", $criteria)
 					));
+
+		if (!$user) {
+			// User was not found in the internal Ariadne user
+			// database, so try to find him in the external
+			// user databases (e.g. LDAP), if any
+			$criteria=array();
+			$criteria["object"]["implements"]["="]="'pconnector'";
+
+			$connectors =
+					$store->call(
+						"system.get.phtml", "",
+						$store->find("/system/users/", $criteria)
+					);
+
+			// Don't blindly query all the pconnectors, but only one
+			// by one, so that not further pconnectors are not queried
+			// as soon as the user has been found
+			foreach ($connectors as $connector) {
+				// Object types which implement pconnector
+				// and do support external users, must
+				// have the system.authenticate.externaluser.phtml
+				// template
+				$user = $connector->call("system.authenticate.externaluser.phtml",
+					                   Array(
+								"ARLogin" => $login,
+								"ARPassword" => $password
+					                 ));
+				if ($user) {
+					break;
+				}
+			}
+		}
+
 		if ($user) {
 			if ($login !== "public") {
 				/* welcome to Ariadne :) */
@@ -38,6 +71,38 @@
 						Array(),
 						$store->find("/system/users/", $criteria)
 					));
+
+		if (!$user) {
+			// User was not found in the internal Ariadne user
+			// database, so try to find him in the external
+			// user databases (e.g. LDAP), if any
+			$criteria=array();
+			$criteria["object"]["implements"]["="]="'pconnector'";
+
+			$connectors =
+					$store->call(
+						"system.get.phtml", "",
+						$store->find("/system/users/", $criteria)
+					);
+
+			// Don't blindly query all the pconnectors, but only one
+			// by one, so that not further pconnectors are not queried
+			// as soon as the user has been found
+			foreach ($connectors as $connector) {
+				// Object types which implement pconnector
+				// and do support external users, must
+				// have the system.get.externaluser.phtml
+				// template
+				$user = $connector->call("system.get.externaluser.phtml",
+					                   Array(
+								"ARLogin" => $login
+					                 ));
+				if ($user) {
+					break;
+				}
+			}
+		}
+
 		if ($user) {
 			$ARLogin = $user->data->login;
 			$AR->user = $user;
@@ -138,6 +203,7 @@
 				}
 			}
 		}
+
 		return $result;
 	}
 
