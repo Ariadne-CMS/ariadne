@@ -21,9 +21,12 @@ Requirements:
   PHP4 (not running in safe mode)
   MySQL
 
-1) untar the Ariadne distribution. (since you're reading this, I guess
+Recommended:
+  ImageMagick
+
+1) Untar the Ariadne distribution. (since you're reading this, I guess
    that's already taken care off...)
-2) move the www, lib and files directories to their proper place. Preferably you
+2) Move the www, lib and files directories to their proper place. Preferably you
    don't want the lib and files directories under the document root. 
    e.g.:
 
@@ -47,24 +50,24 @@ Requirements:
      cd /usr/local/lib/ariadne.2.0/sessions/
      chown -R www:www * 
 
-3) create a database for Ariadne to use in MySQL.
+3) Create a database for Ariadne to use in MySQL.
    With MySQL do something like:
 
      mysqladmin create ariadne
 
-4) copy the files ariadne.phtml-dist, store.phtml-dist, axstore.phtml-dist and
+4) Copy the files ariadne.phtml-dist, store.phtml-dist, axstore.phtml-dist and
    sessions.phtml-dist in lib/configs to ariadne.phtml, store.phtml, 
    axstore.phtml and sessions.phtml respectively and edit them to match your 
    system. You need to at least enter your host name and check all paths.
 
-5) copy the file www/ariadne.inc-dist to www/ariadne.inc and edit it to reflect 
+5) Copy the file www/ariadne.inc-dist to www/ariadne.inc and edit it to reflect 
    the includepath to the Ariadne lib directory.
 
-6) run the file www/install/install.php. 
+6) Run the file www/install/install.php. 
    You can do this from the browser or, if you have the cgi version of php 
    installed, from the command line.
 
-7) point your webbrowser to your installed Ariadne url. You'll be asked for a 
+7) Point your webbrowser to your installed Ariadne url. You'll be asked for a 
    username and password. Use username 'admin' and password 'muze'.
    If everything is installed properly you should now see an explorer like
    interface with 'Administrator' in the top left corner.
@@ -74,7 +77,7 @@ Requirements:
 8) If everything works ok click on 'Administrator', then on 'edit' in the
    frame on the right. Now change the administrator password. 
 
-9) move the directory www/install and all it's contents somewhere safe,
+9) Move the directory www/install and all it's contents somewhere safe,
    meaning _not_ in your webserver's documentroot.
    Really.
 
@@ -84,7 +87,11 @@ Requirements:
 11) Schedule the cleanup script (bin/cleanup) to run daily. It removes
     expired session data.
 
-more information on programming for/in Ariadne, user manuals, administrator
+12) To make full use of image manipulation you need to have ImageMagick
+    installed. Make sure the path to ImageMagick is correctly set in the Ariadne
+    config.
+
+More information on programming for/in Ariadne, user manuals, administrator
 manuals, etc. can be found at http://www.muze.nl/
 
 Auke van Slooten
