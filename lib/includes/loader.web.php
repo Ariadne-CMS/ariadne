@@ -91,15 +91,14 @@
 		$ARCurrent->session->put("ARPassword",$password);
 		$cookie=unserialize($ARCookie);
 		// FIXME: now clean up the cookie, remove old sessions
-		@reset($cookie) {
-		while (list($sessionid, $data)=each($cookie)) {
+		@reset($cookie);
+		while (list($sessionid, $data)=@each($cookie)) {
 			if (!$ARCurrent->session->sessionstore->exists("/$sessionid/")
-				|| $ARCurrent->session->sessionstore->call("system.expired.phtml",,
-					$ARCurrent->session->sessionstore->get("/$sessionid/")) {
+				|| $ARCurrent->session->sessionstore->call("system.expired.phtml","",
+					$ARCurrent->session->sessionstore->get("/$sessionid/"))) {
 				unset($cookie[$sessionid]);
 			}
 		}	
-		
 		$cookie[$ARCurrent->session->id]['login']=$login;
 		$cookie[$ARCurrent->session->id]['timestamp']=time();
 		$cookie[$ARCurrent->session->id]['check']="{".md5($password.$ARCurrent->session->id)."}";
@@ -112,12 +111,13 @@
 		debug("ldGetCredentials()","object");
 		$result=false;
 		$cookie=unserialize($ARCookie);
-		if ($login==$cookie[$ARCurrent->session->id]['check'] && ($saved=$cookie[$ARCurrent->session->id]['check'])) {
+		if ($login==$cookie[$ARCurrent->session->id]['login']
+			&& ($saved=$cookie[$ARCurrent->session->id]['check'])) {
 			$check="{".md5($password.$ARCurrent->session->id)."}";
 			if ($check==$saved) {
 				$result=true;
 			}
-		}
+		}			
 		return $result;
 	}
 
