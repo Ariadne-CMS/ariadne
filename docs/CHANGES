@@ -38,7 +38,8 @@ New features:
 	  deprecates the call_object function. PINP will automatically insert
 	  '_' before each function called.
 	- Added possibility to call functions of classes directly, if the class
-	  is specifically written to allow this, like:
+	  is specifically written to allow this, like DB::connect(); See next
+	  feature added.
 	- Added PEAR DB wrapper, which allows you to access any database 
 	  supported by PEAR DB, while keeping the store connection secure. 
 	- The parents() function now defaults to currentsite() as the topmost 
