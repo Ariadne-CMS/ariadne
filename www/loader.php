@@ -24,7 +24,7 @@
 
 	} else {
 
-		// needed for IIS.
+		// needed for IIS: it doesn't set the PHP_SELF variable.
 		$PHP_SELF=$HTTP_SERVER_VARS["SCRIPT_NAME"].$PATH_INFO;
 		if (Headers_sent()) {
 			error("The loader has detected that PHP has already sent the HTTP Headers. This error is usually caused by trailing white space or newlines in the configuration files. See the following error message for the exact file that is causing this:");
@@ -34,7 +34,6 @@
 
 		// go check for a sessionid
 		$root=$AR->root;
-		$inst_store = $store_config["dbms"]."store";
 		$re="^/-(.*)-/";
 		if (eregi($re,$PATH_INFO,$matches)) {
 			$session_id=$matches[1];
@@ -59,20 +58,7 @@
 		if ($QUERY_STRING) {
 			$ldCacheFilename.=$QUERY_STRING;
 		}
-		$split=strpos(substr($PATH_INFO, 1), "/");
-		$ARCurrent->nls=substr($path, 1, $split);
-		if (!$AR->nls->list[$ARCurrent->nls]) {
-			// not a valid language
-			$ARCurrent->nls="";
-			$nls=$AR->nls->default;
-			$cachenls="";
-		} else {
-			// valid language
-			$path=substr($path, $split+1);
-			ldSetNls($ARCurrent->nls);
-			$nls=$ARCurrent->nls;
-			$cachenls="/$nls";
-		}
+
 		$cachedimage=$store_config["files"]."cache".$ldCacheFilename;
 		$cachedheader=$store_config["files"]."cacheheaders".$ldCacheFilename;
 		
@@ -99,10 +85,7 @@
 					$cachetime=$mtime; 
 				}
 				if (file_exists($cachedheader)) {
-					$headers=file($cachedheader);
-					while (list($key, $header)=@each($headers)) {
-						ldHeader(chop($header));
-					}
+					ldHeader(file($cachedheader));
 				}
 				ldSetClientCache(true, $cachetime, $ctime);
 				readfile($cachedimage);
@@ -110,15 +93,37 @@
 
 		} else {
 
+			// look for the language
+			$split=strpos(substr($PATH_INFO, 1), "/");
+			$ARCurrent->nls=substr($path, 1, $split);
+			if (!$AR->nls->list[$ARCurrent->nls]) {
+				// not a valid language
+				$ARCurrent->nls="";
+				$nls=$AR->nls->default;
+				$cachenls="";
+			} else {
+				// valid language
+				$path=substr($path, $split+1);
+				ldSetNls($ARCurrent->nls);
+				$nls=$ARCurrent->nls;
+				$cachenls="/$nls";
+			}
+
+			// instantiate the store
+			$inst_store = $store_config["dbms"]."store";
 			$store=new $inst_store($root,$store_config);
 			if ($session_id) {
 				ldStartSession($session_id);
 			}
+
+			// load language file
 			require($ariadne."/nls/".$nls);
 			if (substr($function, -6)==".phtml") {
 				// system template: no language check
 				$ARCurrent->nolangcheck=1;
 			}
+
+			// find (and fix) arguments
 			set_magic_quotes_runtime(0);
 			if (get_magic_quotes_gpc()) {
 				// this fixes magic_quoted input
@@ -128,6 +133,7 @@
 			}
 			$args=array_merge($HTTP_GET_VARS,$HTTP_POST_VARS);
 			
+			// finally call the requested object
 			$store->call($function, $args, $store->get($path));
 			if (!$store->total) {
 				$requestedpath=$path;
@@ -138,6 +144,7 @@
 				if ($prevPath==$path) {
 					error("Database is not initialised, please run <a href=\"".$AR->host.$AR->dir->www."install/install.php\">the installer</a>");
 				} else {
+					// no results: page couldn't be found, show user definable 404 message
 					$store->call("user.notfound.html",
 						 Array(	"arRequestedPath" => $requestedpath,
 						 		"arRequestedTemplate" => $function ),
@@ -147,17 +154,24 @@
 			$store->close();
 
 		}
+
+		// save session data
 		if ($ARCurrent->session) {
 			$ARCurrent->session->save();
 		}
-		// now check for outputbuffering
+
+		// now check for outputbuffering (caching)
 		if ($image=ob_get_contents()) {
+			// first set clientside cache headers
 			if (!$ARCurrent->arDontCache && $ARCurrent->cachetime) {
 				ldSetClientCache(true, time()+(($ARCurrent->cachetime * 3600)/2));
 			}
+			// because we have the full content, we can now also calculate the content length
 			ldHeader("Content-Length: ".strlen($image));
+			// flush the buffer, this will send the contents to the browser
 			ob_end_flush();
 			debug("loader: ob_end_flush()","all");
+			// check whether caching went correctly, then save the cache
 			if (is_array($ARCurrent->cache) && ($file=array_pop($ARCurrent->cache))) {
 				error("cached() opened but not closed with savecache()");
 			} else if (!$ARCurrent->arDontCache) {
