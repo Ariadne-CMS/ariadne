@@ -41,4 +41,5 @@
 	$ARnls["m_types"]						=	"Tipos";
 	$ARnls["m_view"]						=	"Ver";
 	$ARnls["m_web"]							=	"P&aacute;gina&nbsp;web";
+	$ARnls["m_page"]						=	"Pagina";
 ?>
