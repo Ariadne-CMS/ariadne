@@ -461,14 +461,6 @@ class pobject extends object {
 		if (!$AR->user) {
 			if ($ARCurrent->session && $ARCurrent->session->get("ARSessionTimedout", 1)) {
 				debug("pobject: CheckLogin: session expired","object");
-				$arCallArgs = array_pop($ARCurrent->arCallStack);
-				array_push($ARCurrent->arCallStack, $arCallArgs);
-
-				/* store arCallArgs */
-				if ($ARCurrent->session && !$ARCurrent->session->get("oldArCallArgs",1)) {
-					$ARCurrent->session->put("oldArCallArgs", $arCallArgs, 1);
-					$ARCurrent->session->save(0, true);
-				}
 
 				$arLoginMessage=$ARnls["accessdenied"];
 				ldAccessDenied($this->path, $arLoginMessage);
@@ -579,11 +571,6 @@ class pobject extends object {
 		$ARPassword=0;
 		if ($continue) {
 			if ($ARCurrent->session) {
-				if ($oldArCallArgs = $ARCurrent->session->get("oldArCallArgs",1)) {
-					/* restore arCallArgs from before login */
-					$ARCurrent->arCallStack[sizeof($ARCurrent->arCallStack)-1] = $oldArCallArgs;
-					$ARCurrent->session->put("oldArCallArgs", 0, 1);
-				}
 				/* make this session active */
 				$ARCurrent->session->put("ARSessionActivated",true,1);
 			}
