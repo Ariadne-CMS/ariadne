@@ -48,6 +48,8 @@ New Features:
 	  multiple file upload from a PINP context.
 	- pldapconnection honours nested groups (i.e. groups which are
 	  members of other groups)
+	- added a new default wizard layout for all classes, with a much
+	  easier way to build your own wizards.
 
 Bugs Fixed:
 	- Fixed a bug in store::make_path(), it should now always return a
