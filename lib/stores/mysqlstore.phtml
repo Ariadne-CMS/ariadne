@@ -660,7 +660,6 @@ class mysqlstore {
 
 	**********************************************************************/
 
-		debugon('all');
 		debug("move($source,$destination)","store");
 		$this->error="";
 		$edestination=AddSlashes($destination);
@@ -727,7 +726,6 @@ class mysqlstore {
 				debug("move: end (no $source)","store");
 			}
 		}
-		debugoff();
 		return $result;
 	}
 
