@@ -165,9 +165,15 @@
 		}
 
 
-		function ftp_WriteDC($data) {
+		function ftp_WriteDC($bdata) {
 		global $FTP;
 
+			if ($FTP->resume) {
+				debug("ftp::WriteDC() truncating data");
+				$data = substr($bdata, $FTP->resume);
+			} else {
+				$data = $bdata;
+			}
 			if (strlen($data)) {
 				debug("ftp::WriteDC([data]) (".strlen($data).")");
 				if ($FTP->DC["type"]==="A") {
@@ -272,7 +278,14 @@
 				$ARCurrent->arLoginSilent = 0;
 				$ARCurrent->ftp_error = "";
 
+				if ($last_cmd != 'REST') {
+					$FTP->resume = 0;
+				}
 				switch ($cmd) {
+					case 'REST':
+						$FTP->resume = (int)$args;
+						ftp_Tell(350, 'Restarting at '.$FTP->resume.'.');
+					break;
 					case 'QUIT':
 						ftp_Tell(221, "Goodbye.");
 						/* check if we have to close a 'passive' socket */
@@ -498,6 +511,7 @@
 						if (ftp_OpenDC()!==false) {
 							if ($FTP->store->exists($path)) {
 
+								$file_size -= $FTP->resume;
 								ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ASCII' : 'BINARY')." mode data connection for $args ($file_size bytes)");
 								$FTP->store->call("ftp.$getmode.get.phtml", array("arRequestedTemplate" => $template),
 											$FTP->store->get($path));
@@ -687,18 +701,29 @@
 							$tempfile.=$ext;
 							$fp=fopen($tempfile, "wb");
 							if ($fp) {
-								debug("ftp: writing to $tempfile\n");
-								while (($data=ftp_ReadDC())) {
-									fwrite($fp, $data);
-								}
-								fclose($fp);
-								ftp_CloseDC();
 								$fileinfo["tmp_name"]=$tempfile;
 								$fileinfo["type"]=get_mime_type($tempfile);
-								$fileinfo["size"]=filesize($tempfile);
 								if ($listMode === "templates") {
 									ftp_TranslateTemplate($target, $template);
 									$fileinfo["name"]=eregi_replace('[^.a-z0-9_-]', '_', $template);
+
+									debug("ftp: writing to $tempfile\n");
+									if ($FTP->resume) {
+										debug("ftp::store resuming file at $FTP->resume");
+										ob_start();
+											$FTP->store->call("ftp.$listMode.get.phtml", Array("arRequestedTemplate" => $template),
+												$FTP->store->get($target));
+											$data=ob_get_contents();
+											fwrite($fp, substr($data, 0, $FTP->resume));
+										ob_end_clean();
+									}
+									while (($data=ftp_ReadDC())) {
+										fwrite($fp, $data);
+									}
+									fclose($fp);
+									ftp_CloseDC();
+									$fileinfo["size"]=filesize($tempfile);
+
 									debug("ftp: writing template to  ($target$template)");
 									$FTP->store->call("ftp.templates.save.phtml", Array("file" => $fileinfo),
 										$FTP->store->get($target));
@@ -707,11 +732,37 @@
 									$fileinfo["name"]=eregi_replace('[^.a-z0-9_-]', '_', $file);
 									if ($FTP->store->exists($target)) {
 										debug("ftp::store updating $target");
+										debug("ftp: writing to $tempfile\n");
+										if ($FTP->resume) {
+											debug("ftp::store resuming file at $FTP->resume");
+											ob_start();
+												$FTP->store->call("ftp.$listMode.get.phtml", "",
+													$FTP->store->get($target));
+												$data=ob_get_contents();
+												debug("ftp::store resume pre-read ".strlen($data));
+												fwrite($fp, substr($data, 0, $FTP->resume));
+											ob_end_clean();
+										}
+										while (($data=ftp_ReadDC())) {
+											fwrite($fp, $data);
+										}
+										fclose($fp);
+										ftp_CloseDC();
+										$fileinfo["size"]=filesize($tempfile);
+										debug("ftp::store total size of fileupload is: ".$fileinfo["size"]);
 										// if $target already exists
 										$FTP->store->call("ftp.$listMode.save.phtml", Array("file" => $fileinfo),
 											$FTP->store->get($target));
 									} else {
 										debug("ftp::store storing $target");
+										debug("ftp: writing to $tempfile\n");
+										while (($data=ftp_ReadDC())) {
+											fwrite($fp, $data);
+										}
+										fclose($fp);
+										ftp_CloseDC();
+										$fileinfo["size"]=filesize($tempfile);
+
 										$FTP->store->call("ftp.$listMode.save.new.phtml", Array("file" => $fileinfo),
 											$FTP->store->get($path));
 									}
@@ -783,6 +834,7 @@
 						ftp_Tell(500, "Function $cmd not implemented (yet).");
 					break;
 				}
+				$last_cmd = $cmd;
 			}
 		}
 
