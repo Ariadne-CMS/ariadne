@@ -697,8 +697,9 @@ function HYPERLINK_getAnchors() {
 	var aATags = tbContentElement.document.getElementsByTagName('A');
 	var result = new Array();
 	var i=0;
-	for (var elem in aATags) {
-		var oATag=aATags[elem];
+	var ii=0;
+	for (ii=0; ii<aATags.length; ii++) {
+		var oATag=aATags[ii];
 		if (oATag.name) {
 			result[i]='#'+oATag.name;
 			i++;

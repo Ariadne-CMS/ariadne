@@ -1033,8 +1033,9 @@ function HYPERLINK_getAnchors() {
 	var aATags = tbContentElement.DOM.getElementsByTagName('A');
 	var result = new Array();
 	var i=0;
-	for (var elem in aATags) {
-		var oATag=aATags[elem];
+	var ii=0;
+	for (ii=0; ii<aATags.length; ii++) {
+		var oATag=aATags[ii];
 		if (oATag.name) {
 			result[i]='#'+oATag.name;
 			i++;
@@ -1285,7 +1286,7 @@ function cssStyle_onChange(command)
 		
 		var oParent = oTextRange.parentElement() ;
 		var oFirstChild = oSpan.firstChild ;
-		
+
 		if (sTag=='' && oFirstChild.nodeType == 1 && oFirstChild.outerHTML == oSpan.innerHTML && 
 				(oFirstChild.tagName == "SPAN"
 				|| oFirstChild.tagName == "FONT"
@@ -1320,11 +1321,44 @@ function cssStyle_onChange(command)
 				}
 				if (sClass) 
 				{
-					oTextRange.pasteHTML('<'+sTag+' class="' + sClass + '">' + text + '</'+sTag+'>');
+					var tagStart='<'+sTag+' class="' + sClass + '">';
+					var tagEnd='</'+sTag+'>';
 				} 
 				else 
 				{
-					oTextRange.pasteHTML('<'+sTag+'>' + text + '</'+sTag+'>');
+					var tagStart='<'+sTag+'>';
+					var tagEnd='</'+sTag+'>';
+				}
+
+				if (oFirstChild && oFirstChild.nodeType==1) {
+					// should only be true when the selection
+					// contains full or partial block elements
+					// FIXME: sorry.. not true. we'll need to do a better job
+					// match the parentElement / firstChil against the known block elements?
+					// probleem: <p> a <big> b c </big> d </p><p> e f</p>
+					// selectie: <p>   <big>   c </big> d </p><p> e  </p>
+					// firstChild <p>, but <big> is also split!
+					// same probably goes for the end of the string
+					// do this recursively? aargh
+
+					oTextStart=oTextRange.duplicate();
+					oTextStart.collapse(true);
+
+					var currElement=oTextStart.parentElement();
+					var currSelectElement=oFirstChild;
+					while (currSelectElement) {
+						tempSelectHTML=new String(currSelectElement.innerHTML);
+						alert(tempSelectHTML);
+						tempHTML=new String(currElement.innerHTML);
+						tempHTML=tempHTML.replace(tempSelectHTML, tagStart+tempSelectHTML+tagEnd);
+						currElement.innerHTML=tempHTML;
+						currElement=currElement.nextSibling;
+						currSelectElement=currSelectElement.nextSibling;
+					}
+				} else {
+					// no (partial) block elements
+					// so safely use pasteHTML
+					oTextRange.pasteHTML(tagStart+oSpan.innerHTML+tagEnd);	
 				}
 			}
 		}
