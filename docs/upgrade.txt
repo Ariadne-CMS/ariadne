@@ -1,7 +1,9 @@
-People who want to upgrade their ariadne to ariadne 2.1 need to take care
-of the following:
+Upgrade                                                            Muze Ariadne 
+===============================================================================
 
-Ariadne 2.1 internally uses the UTF-8 characterset. This means
+If you want to upgrade Ariadne 2.0 to Ariadne 2.1 take care of the following:
+
+Ariadne 2.1 internally exclusively uses the UTF-8 characterset. This means
 that if you want to use your old ariadne data with this version, you
 need to make sure that your old data will also be imported as UTF-8.
 
@@ -14,3 +16,11 @@ This option tells import to convert all data for the
 language [nls] from the charset [charset] (CP1252 is default) to
 UTF-8.
 
+Note 1: The conversion routine uses the iconv character conversion routines,
+which are part of the normal C library. Depending on which C library you
+use, you may or may not be able to convert from the source character set to
+UTF-8.
+
+Note 2: CP1252 is the name of the character set that windows uses instead
+of ISO-LATIN-1 (ISO-8859-1) in most western countries. It is the normal 
+latin-1 character set extended with a few extra characters.
