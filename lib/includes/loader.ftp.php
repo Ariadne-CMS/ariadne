@@ -50,6 +50,13 @@
 	}
 
 
+	function ldAccessDenied($path, $message) {
+	global $ARCurrent;
+		if (!$ARCurrent->arLoginSilent) {
+			$ARCurrent->ftp_error = "($path) $message";
+		}
+	}
+
 	function ldSetRoot($session='', $nls='') {
 		// dummy function
 	}

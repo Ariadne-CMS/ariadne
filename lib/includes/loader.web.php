@@ -57,6 +57,16 @@
 	}
 
 
+	function ldAccessDenied($path, $message) {
+	global $ARCurrent, $store;
+
+		if (!$ARCurrent->arLoginSilent) {
+			$store->call("user.login.html", 
+								Array( "arLoginMessage" => $message ),
+								$store->get($path) );
+		}
+	}
+
 	function ldSetRoot($session='', $nls='') {
 	global $store, $AR, $ARCurrent;
 
