@@ -58,6 +58,17 @@ function event_templatescroll(){
 </head>
 <script src="<?php echo $AR->dir->www; ?>widgets/window/savesize.js"></script>
 <body onload="init();">
+<?php
+	if( $newtype ) { 
+		$type = $newtype; 
+	}
+	if( $newfunction ) {
+		$function = $newfunction;
+	}
+	if( $newlanguage ) {
+		$language = $newlanguage;
+	}
+?>
 <form action="edit.object.layout.save.phtml" method="post" style="height: 100%;">
 <input type="hidden" name="type" value="<?php echo $type; ?>">
 <input type="hidden" name="function" value="<?php echo $function; ?>">
