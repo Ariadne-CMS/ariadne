@@ -565,6 +565,9 @@ function IMAGE_set(arr) {
 			elIMG.alt=arr['alt'];
 			elIMG['ar:type'] = arr['ar:type'];
 			elIMG['class'] = arr['class'];
+			if (arr['ar:path']) {
+				elIMG['ar:path']=arr['ar:path'];
+			}
 		} else {
 			el=window.el;
 			if ((el.type=="None") || (el.type=="Text"))	{
@@ -584,12 +587,15 @@ function IMAGE_set(arr) {
 				if (arr['alt']!='') {
 					temp+=' ALT="'+arr['alt']+'"';
 				}
-		if (arr['class']!='') {
-			temp+=' CLASS="'+arr['class']+'"';
-		}
-		if (arr['ar:type']!='') {
-			temp+=' ar:type="'+arr['ar:type']+'"';
-		}
+				if (arr['class']!='') {
+					temp+=' CLASS="'+arr['class']+'"';
+				}
+				if (arr['ar:type']!='') {
+					temp+=' ar:type="'+arr['ar:type']+'"';
+				}
+				if (arr['ar:path']!='') {
+					temp+=' ar:path="'+arr['ar:path']+'"';
+				}
 				temp+='>';
 				rg.pasteHTML(temp);
 				rg.select();
