@@ -2,6 +2,8 @@
 BODY {
 	background-color : #FFFFFF;
 	margin: 0px;
+	height: 100%;
+	width: 100%;
 }
 
 TH,TD,LI,P {

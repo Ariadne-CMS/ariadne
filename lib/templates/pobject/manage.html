@@ -1,11 +1,5 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-//		$template="browse.nav.list.show.phtml";
-//		$up="browse.nav.list.show.up.phtml";
-		$template="browse.nav.icons.show.phtml";
-		$up="browse.nav.icons.show.up.phtml";
-
-
 		if (!$arLanguage) {
 			$arLanguage=$nls;
 			if (is_array($arCallArgs)) {
@@ -56,38 +50,6 @@ H1 {
 	font-family : arial,helvetica,sans-serif;
 	margin-bottom : 2px;
 	margin-top : 15px;
-}
-
-.object {
-	width: 150px;
-	overflow: hidden;
-	<?php
-		$browser=$this->call("browsercheck.phtml");
-		if (($browser["version"]!=4)) {
-	?>
-			float: left;
-	<?php
-		}
-	?>
-	padding-right: 8px;
-}
-SPAN.item { 
-	left: 5 px;
-	width: 60px;
-	height: 78px;
-	position: relative;
-	margin-top: 5px;
-	margin-right: 5px;
-	vertical-align: top;
-	text-align: center;
-	<?php
-		if ($browser["id"]!="msie" || $browser["version"]!=4) {
-	?>
-	float: left;
-	<?php
-		}
-	?>
-	overflow: hidden;
 }
 
 .manage_info {
@@ -156,6 +118,7 @@ A.unselected {
 }
 #icon {
 	position: absolute;
+	top: 40px;
 }
 #topdiv {
 	height: 180px;
@@ -177,7 +140,7 @@ A.unselected {
 			$this->call("manage.details.html", $arCallArgs); 
 		?>
 	</div>
-	</td></tr><tr><td valign="top" height="60%" id="frop2">
+	</td></tr><tr><td valign="top" height="60%">
 	<div id="container">
 	<script>
 	    if (document.all) {
@@ -189,7 +152,14 @@ A.unselected {
 		if (!viewmode) {
 			viewmode='list';
 		}
-		document.write('<iframe id="archildren" height="'+height+'" width="100%" src="browse.nav.'+viewmode+'.phtml"></iframe>');
+		<?php
+			$oldnls=$nls;
+			$this->setnls($arLanguage);
+		?>
+		document.write('<iframe id="archildren" height="'+height+'" width="100%" src="<?php echo $this->make_url(); ?>browse.nav.'+viewmode+'.phtml"></iframe>');
+		<?php
+			$this->setnls($oldnls);
+		?>
 	</script>
 	</div>
 	<script>
@@ -197,7 +167,6 @@ A.unselected {
 			topdiv=document.getElementById('topdiv');
 			width=topdiv.offsetWidth-10;
 			height=container.offsetHeight-30;
-			top=container.offsetTop;
 			container.style.position='absolute';
 			container.style.width=width;
 			container.style.height=height;

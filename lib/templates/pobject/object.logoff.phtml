@@ -23,9 +23,9 @@
 	</td>
 </tr><tr>
 	<td align="right">
-		<input type="submit" name="cancel" style="width: 100px" value="<?php echo $ARnls["no"]; ?>" onClick="window.close();">
-	</td><td align="left">
 		<input type="submit" name="submit" style="width: 100px" value="<?php echo $ARnls["yes"]; ?>" onCLick="window.opener.top.document.location.href='<?php echo $this->make_url($AR->user->path); ?>logoff.phtml'; window.close();">
+	</td><td align="left">
+		<input type="submit" name="cancel" style="width: 100px" value="<?php echo $ARnls["no"]; ?>" onClick="window.close();">
 	</td>
 </tr>
 </form>

@@ -34,4 +34,5 @@ $ARnls["m_priority"]=	"Prioriteit";
 
 $ARnls["m_custom"]=		"Eigen&nbsp;Velden";
 $ARnls["m_config"]=		"Configuratie";
+$ARnls["m_templates"]=	"Templates";
 ?>

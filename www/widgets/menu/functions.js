@@ -27,20 +27,19 @@
 		}
 		re=/\/+/g
 		test=test.replace(re,'/');
-		parent.View(test);
+		top.View(test);
 		return false;
 	}
 
 	function arshow(windowname, link) {
 		properties=windowprops[windowname];
 
-		/* FIXME: doesn't work without frames on mozilla
-		windowsize=parent.Get(windowname);
+		/* FIXME: doesn't work without frames on mozilla*/ 
+		windowsize=top.Get(windowname);
 		if (windowsize) {
-			alert('windowsize='+windowsize);
+			// alert('windowsize='+windowsize);
 			properties=properties+','+windowsize;
 		}
-		*/
 		workwindow=window.open(link, windowname, properties);
 		workwindow.focus();
 	}
@@ -58,7 +57,7 @@
 	}
 
 	function setView(type) {
-		parent.Set('viewmode',type);
+		top.Set('viewmode',type);
 		if (!window.archildren) {
 			archildren=document.getElementById("archildren");
 		} else {
