@@ -48,11 +48,13 @@
 			if (!$config) {
 				$config["path"]=$this->tidy;
 				$config["temp"]=$this->temp;
-				$config["option"]=$this->options;
+				$config["options"]=$this->options;
 			}
 
-			include_once($AR->dir->install."/lib/modules/mod_unicode.php");
-			$html=unicode::utf8convert($html);
+			if ($AR->OS == "WIN32") {
+				include_once($AR->dir->install."/lib/modules/mod_unicode.php");
+				$html=unicode::utf8convert($html);
+			}
 
 			$file = tempnam($config["temp"],'tidy-php-tmp');
 			$errfile = tempnam($config["temp"],'tidy-php-err');
