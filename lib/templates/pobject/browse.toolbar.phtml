@@ -12,14 +12,28 @@
 				object.className='tbutton_'+align;	
 			}
 		}
+		var b_props='resizable,height=275,width=450';
+		function b_openwindow(windowname, link, arguments) {
+			if (window.arshow) {
+				window.arshow(windowname, link, arguments);
+			} else {
+				windowsize=top.Get(windowname);
+				if (windowsize) {
+					properties=b_props+','+windowsize;
+				} else {
+					properties=b_props;
+				}
+				window.open(link, windowname, properties);
+			}
+		}
 		function b_new() {
-			arshow('edit_object_data','object.new.select.phtml');
+			b_openwindow('edit_object_data','object.new.select.phtml');
 		}
 		function b_import() {
-			arshow('edit_object_data','object.import.phtml');
+			b_openwindow('edit_object_data','object.import.phtml');
 		}
 		function b_export() {
-			arshow('edit_object_data','object.export.phtml');
+			b_openwindow('edit_object_data','object.export.phtml');
 		}
 	</script>
 	<div id="toolbar" style="background: buttonface; border: 2px groove buttonhighlight; border-bottom: 0px; width: 100%; height: 26px;">
