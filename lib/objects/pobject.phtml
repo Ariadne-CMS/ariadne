@@ -225,12 +225,21 @@ class pobject extends object { // pobject class definition
 								$this->data->owner_name=$AR->user->data->name;
 							}
 							$this->data->owner=$AR->user->data->login;
-							$custom=$this->getdata("custom","none");
 							@parse_str($custom);
+							if (is_array($custom)) {
+								reset($custom);
+								while (list($nls, $entries)=each($custom)) {
+									if (is_array($entries)) {
+										reset($entries);
+										while (list($customkey, $customval)=each($entries)) {
+											$this->data->custom[$nls][$customkey] = $customval;
+										}
+									}
+								}
+							}
 							// the above works because either $custom comes from the form entry, and parse_str returns an 
 							// array with the name $custom, or $custom comes from the object and is an array and as such 
 							// parse_str fails miserably thus keeping the array $custom intact.
-							$this->data->custom=$custom;
 							$properties["time"][0]["ctime"]=$this->data->ctime;
 							$properties["time"][0]["mtime"]=$this->data->mtime;
 							$properties["time"][0]["muser"]="'".AddSlashes($this->data->muser)."'";
@@ -281,7 +290,17 @@ class pobject extends object { // pobject class definition
 					$custom=$this->getdata("custom","none");
 					@parse_str($custom);
 					// see comments above
-					$this->data->custom=$custom;
+					if (is_array($custom)) {
+						reset($custom);
+						while (list($nls, $entries)=each($custom)) {
+							if (is_array($entries)) {
+								reset($entries);
+								while (list($customkey, $customval)=each($entries)) {
+									$this->data->custom[$nls][$customkey] = $customval;
+								}
+							}
+						}
+					}
 					$i=0;
 					if (is_array($this->data->custom)) {
 						while (list($nls, $cdata)=each($this->data->custom)) {
