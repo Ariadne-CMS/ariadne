@@ -242,4 +242,5 @@ $ARnls["err:mustenterlogin"]="You must enter a login name.";
 $ARnls["groups"]=		"Groups";
 $ARnls["profile"]=		"Profile";
 $ARnls["noprofile"]=	"No Profile";
+$ARnls["apply"]=		"Apply";
 ?>

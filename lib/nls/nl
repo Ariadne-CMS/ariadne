@@ -242,4 +242,5 @@ $ARnls["err:mustenterlogin"]="U moet een inlognaam invullen";
 $ARnls["groups"]=		"Groepen";
 $ARnls["profile"]=		"Profiel";
 $ARnls["noprofile"]=	"Geen Profiel";
+$ARnls["apply"]=		"Toepassen";
 ?>
