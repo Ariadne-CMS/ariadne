@@ -18,7 +18,7 @@
 ?>
 <html>
 <head>
-<title><?php echo $ARnls["templates"]; ?></title>
+<title><?php echo $ARnls["templates"] . ' ' . $this->path; ?></title>
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
 <style>
 	.required {
@@ -31,6 +31,7 @@
 		width: 100%;
 	}
 	td.type {
+		width: 22px;
 		padding-left: 2px;
 	}
 	a.button {
@@ -63,7 +64,7 @@
 	<div style="height: 100%; overflow: auto; margin: 0px; border: 0px;">
 		<table border="0" bgcolor="white" width="100%" cellspacing="0" cellpadding="0">
 		<tr>
-			<td valign="top" class="required">
+			<td valign="top" class="required" colspan="2">
 				<div><?php echo $ARnls["type"]; ?></div>
 			</td><td valign="top" colspan="2" class="required">
 				<div><?php echo $ARnls["template"]; ?></div>
@@ -75,8 +76,11 @@
 				$currcol=0;
 				while (list($type, $values)=each($data->pinp)) {
 					while (list($function, $templatelist)=each($values)) {	
-						?><tr class="row<?php echo $currcol; ?>">
-							<td class="type"><?php echo $type; ?>&nbsp;</td>
+						?><tr valign="middle" class="row<?php echo $currcol; ?>">
+							<td class="type">
+								<img src="<?php echo $AR->dir->images. "icons/$type.gif"; ?>">
+							</td><td align="left">
+								<?php echo $type; ?>&nbsp;</td>
 							<td align="center"><?php 
 								if (!$data->templates[$type][$function]) {
 									echo "<img src='{$AR->dir->images}local.gif' alt='local' height='12' width='11'>";	
