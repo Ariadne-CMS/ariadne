@@ -23,9 +23,9 @@
 	function custom_init() {
 		dest=document.customform.fieldname.options;
 		<?php
-			if (is_array($this->data->customconfig)) {
-				reset($this->data->customconfig);
-				while (list($name, $custom)=each($this->data->customconfig)) {
+			if (is_array($this->data->config->customconfig)) {
+				reset($this->data->config->customconfig);
+				while (list($name, $custom)=each($this->data->config->customconfig)) {
 					if (!$custom['nls']) {
 						$custom['nls']=0;
 					} else {

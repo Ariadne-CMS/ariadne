@@ -11,7 +11,7 @@
 			<select name="typetree">
 			<?php
 				echo "<option value=\"inherit\">".$ARnls["inherit"]."</option>\n";
-				$this->ls("/system/ariadne/typetree/","show.option.phtml",Array("selected" => $data->typetree));
+				$this->ls("/system/ariadne/typetree/","show.option.phtml",Array("selected" => $data->config->typetree));
 			?>
 			</select>
 		</td><td>

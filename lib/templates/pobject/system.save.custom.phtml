@@ -4,17 +4,17 @@
 		// the defined interface: $arCallArgs)
 		$this->data=current($this->get(".","system.get.data.phtml"));
 
-		unset($this->data->customconfig);
+		unset($this->data->config->customconfig);
 		parse_str($this->getdata("customfields","none"));
 		if (is_array($customfields)) {
 			while (list($key, $value)=each($customfields)) {
-				$this->data->customconfig[$value["name"]]["type"]=$value["type"];
-				$this->data->customconfig[$value["name"]]["inherit"]=$value["inherit"];
-				$this->data->customconfig[$value["name"]]["size"]=$value["size"];
-				$this->data->customconfig[$value["name"]]["nls"]=$value["nls"];
-				$this->data->customconfig[$value["name"]]["grant"]=$value["grant"];
-				$this->data->customconfig[$value["name"]]["check"]=$value["check"];
-				$this->data->customconfig[$value["name"]]["property"]=$value["property"];
+				$this->data->config->customconfig[$value["name"]]["type"]=$value["type"];
+				$this->data->config->customconfig[$value["name"]]["inherit"]=$value["inherit"];
+				$this->data->config->customconfig[$value["name"]]["size"]=$value["size"];
+				$this->data->config->customconfig[$value["name"]]["nls"]=$value["nls"];
+				$this->data->config->customconfig[$value["name"]]["grant"]=$value["grant"];
+				$this->data->config->customconfig[$value["name"]]["check"]=$value["check"];
+				$this->data->config->customconfig[$value["name"]]["property"]=$value["property"];
 			}
 		}
 		if (!$this->error) {

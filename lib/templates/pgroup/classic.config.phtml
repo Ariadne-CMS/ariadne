@@ -43,9 +43,9 @@
 	<td colspan="2">
 		<table border="1" width="100%">
 		<?php
-			if ($data->usergrants && is_array($data->usergrants)) {
-				ksort($data->usergrants);
-				while (list($path, $usergrants)=each($data->usergrants)) {	
+			if ($data->config->usergrants && is_array($data->config->usergrants)) {
+				ksort($data->config->usergrants);
+				while (list($path, $usergrants)=each($data->config->usergrants)) {	
 					echo "<tr>";
 					echo "<td><a href=\"".$this->store->root.$path."classic.config.grants.save.phtml?delete=true&type=puser&id=".RawUrlEncode($data->login).
 				"&arReturnPage=".RawUrlEncode($ARCurrent->arReturnPage)."\"

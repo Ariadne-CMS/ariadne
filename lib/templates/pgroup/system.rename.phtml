@@ -28,11 +28,11 @@
 									));
 					}
 				}
-				$oldusergrants = $this->data->usergrants;
+				$oldusergrants = $this->data->config->usergrants;
 				$oldlogin = $this->data->login;
-				if (is_array($this->data->usergrants)) {
+				if (is_array($this->data->config->usergrants)) {
 					// remove usergrants
-					while (list($key, $value)=each($this->data->usergrants)) {
+					while (list($key, $value)=each($this->data->config->usergrants)) {
 						$this->get($key, "system.save.grants.phtml", Array("delete" => true, "id" => $this->data->login, "type" => $this->type));
 					}
 				}

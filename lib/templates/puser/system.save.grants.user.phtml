@@ -41,29 +41,29 @@
 		switch($action) {
 			case "delete" :
 				if ($grant===false) {
-					unset($this->data->usergrants[$path]);
+					unset($this->data->config->usergrants[$path]);
 				} else {
 					if (!$modifier) {
-						unset($this->data->usergrants[$path][$grant]);
+						unset($this->data->config->usergrants[$path][$grant]);
 					} else {
-						unset($this->data->usergrants[$path][$grant][$modifier]);
-						if (!@count($this->data->usergrants[$path][$grant])) {
-							unset($this->data->usergrants[$path][$grant]);
+						unset($this->data->config->usergrants[$path][$grant][$modifier]);
+						if (!@count($this->data->config->usergrants[$path][$grant])) {
+							unset($this->data->config->usergrants[$path][$grant]);
 						}
 					}
-					if (!@count($this->data->usergrants[$path])) {
-						unset($this->data->usergrants[$path]);
+					if (!@count($this->data->config->usergrants[$path])) {
+						unset($this->data->config->usergrants[$path]);
 					}
 				}
 				break;
 			case "add" :
 				if ($modifier) {
-					if (!is_array($this->data->usergrants[$path][$grant])) {
-						unset($this->data->usergrants[$path][$grant]);
+					if (!is_array($this->data->config->usergrants[$path][$grant])) {
+						unset($this->data->config->usergrants[$path][$grant]);
 					}
-					$this->data->usergrants[$path][$grant][$modifier]=$granttype;
+					$this->data->config->usergrants[$path][$grant][$modifier]=$granttype;
 				} else {
-					$this->data->usergrants[$path][$grant]=$granttype;
+					$this->data->config->usergrants[$path][$grant]=$granttype;
 				}
 				break;
 		}

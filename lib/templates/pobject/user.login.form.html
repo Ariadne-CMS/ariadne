@@ -76,8 +76,9 @@ function dopopup() {
     var popup_focus=true;
   }
   popup=popup_method('<?php 
-	echo $this->make_url()."user.login.popup.html".
+	echo $this->make_url()."user.login.html".
 			"?arLoginMessage=".RawUrlEncode($arLoginMessage).
+			"&arPopup=1".
 			"&arErrorMessage=".RawUrlEncode($arErrorMessage).
 			"&ARLoginFailed=".RawUrlEncode($ARLogin).
 			"&arReturnPath=".RawUrlEncode($arReturnPath).

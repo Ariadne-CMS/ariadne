@@ -15,7 +15,7 @@
 			if (count($result)) {
 				$arResult = sprintf($ARnls["err:loginexists"], $newlogin);
 			} else {
-				unset($this->data->usergrants);
+				unset($this->data->config->usergrants);
 				$groups = $this->data->groups;
 				unset($this->data->groups);
 

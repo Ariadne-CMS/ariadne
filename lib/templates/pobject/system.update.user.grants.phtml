@@ -16,7 +16,7 @@
 			$AR->user->grants[$this->path]['read']=6;
 	
 			foreach ($types as $type) {
-				if ($typegrants=$this->data->grants[$type]) {
+				if ($typegrants=$this->data->config->grants[$type]) {
 					foreach ($typegrants as $id=>$grants) {
 						$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
 						if ($temp=current($this->find($searchpath[$type], $criteria, "system.get.phtml"))) {
@@ -44,7 +44,7 @@
 			$AR->user->grants[$this->path]=$realgrants;
 			
 		} else { // the grants need to be removed (no config grant on the target)
-			unset($this->data->grants);
+			unset($this->data->config->grants);
 			$this->save();
 		}
 	}

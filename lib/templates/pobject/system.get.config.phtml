@@ -20,9 +20,9 @@
 	 global variable $ARConfig->template.
 
 	 It will furthermore set the global variable $ARConfig->cache to 
-	 it's own cache setting ($data->cacheconfig, also entered via 
+	 it's own cache setting ($data->config->cacheconfig, also entered via 
 	 config.phtml) if that cache setting is not 'inherit cache config'
-	 (meaning: $data->cacheconfig is set and not 0).
+	 (meaning: $data->config->cacheconfig is set and not 0).
 
 	 $req_function must be a valid string.
 
@@ -44,21 +44,21 @@
 	unset($configcache->templates_path);
 
 	// cache default templates
-	$configcache->templates=$data->templates;
+	$configcache->templates=$data->config->templates;
 
-	if ($data->cacheconfig) {
-		$configcache->cache=$data->cacheconfig;
+	if ($data->config->cacheconfig) {
+		$configcache->cache=$data->config->cacheconfig;
 	}
-	if ($data->typetree && ($data->typetree!="inherit")) {
-		$configcache->typetree=$data->typetree;
+	if ($data->config->typetree && ($data->config->typetree!="inherit")) {
+		$configcache->typetree=$data->config->typetree;
 	}
-	if ($data->nlsconfig->list) {
-		$configcache->nls=$data->nlsconfig;
+	if ($data->config->nlsconfig->list) {
+		$configcache->nls=$data->config->nlsconfig;
 		debug("nls found");
 	}
 
-	if ($data->grants["pgroup"]["owner"]) {
-		$configcache->ownergrants = $data->grants["pgroup"]["owner"];
+	if ($data->config->grants["pgroup"]["owner"]) {
+		$configcache->ownergrants = $data->config->grants["pgroup"]["owner"];
 	}
 	if (is_array($configcache->ownergrants)) {
 		if ($AR->user && $AR->user->data->login != 'public' && $AR->user->data->login === $this->data->owner) {
@@ -72,8 +72,8 @@
 		}
 	}
 
-	if ($data->customconfig) {
-		$configcache->custom=array_merge($configcache->custom, $data->customconfig);
+	if ($data->config->customconfig) {
+		$configcache->custom=array_merge($configcache->custom, $data->config->customconfig);
 	}
 	$ARConfig->cache[$this->path]=$configcache;
 

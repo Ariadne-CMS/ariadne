@@ -137,7 +137,7 @@ function tabKey(evt,item){
 			</select>
 		</td><td>
 			<?php 
-				if ($data->templates[$type][$function][$language] || !$function) {
+				if ($data->config->templates[$type][$function][$language] || !$function) {
 					$default=1;
 				}
 			?>
@@ -149,7 +149,7 @@ function tabKey(evt,item){
 </table>
 <?php
 	if (!($file=$template)) {
-		if ($data->pinp[$type][$function][$language]) {
+		if ($data->config->pinp[$type][$function][$language]) {
 			$template=$type.".".$function.".".$language.".pinp";
 			$templates=$this->store->get_filestore("templates");
 			if ($templates->exists($this->id, $template)) {

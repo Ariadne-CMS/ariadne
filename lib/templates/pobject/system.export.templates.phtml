@@ -17,13 +17,13 @@ global $ARBeenHere;
 				*/
 				if ($ARCurrent->options["force"]) {
 					$new_filestore->purge($this->newObject->id);
-					unset($this->newObject->data->templates);
-					unset($this->newObject->data->pinp);
+					unset($this->newObject->data->config->templates);
+					unset($this->newObject->data->config->pinp);
 					$save=1;
 				}
 
-				if ($this->data->pinp) {
-					$templates=$this->data->pinp;
+				if ($this->data->config->pinp) {
+					$templates=$this->data->config->pinp;
 					reset($templates);
 					display("\n	exporting/importing templates\n");
 					while (is_array($templates) && (list($type, $functions)=each($templates))) {
@@ -32,7 +32,7 @@ global $ARBeenHere;
 								display("	template [$type][$function][$language]\n");
 								$tdata = $orig_filestore->read($this->id, "$type.$function.$language.pinp");
 
-								if ($this->data->templates[$type][$function][$language]) {
+								if ($this->data->config->templates[$type][$function][$language]) {
 									$default = true;
 								} else {
 									$default = false;
@@ -55,9 +55,9 @@ global $ARBeenHere;
 									are being exported. We just copy them */
 
 									$save = 1;
-									$this->newObject->data->pinp[$type][$function][$language] = $this->newObject->id;
+									$this->newObject->data->config->pinp[$type][$function][$language] = $this->newObject->id;
 									if ($default) {
-										$this->newObject->data->templates[$type][$function][$language] = $this->newObject->id;
+										$this->newObject->data->config->templates[$type][$function][$language] = $this->newObject->id;
 									}
 									$new_filestore->write($tdata, $this->newObject->id, "$type.$function.$language.pinp");
 								}

@@ -82,8 +82,9 @@
 				   return ($a < $b) ? -1 : 1;
 				}
 			}
-			if (($data->pinp) && is_array($data->pinp)) {
-				while (list($type, $values)=each($data->pinp)) {
+			$pinp = $data->config->pinp;
+			if (($pinp) && is_array($pinp)) {
+				while (list($type, $values)=each($pinp)) {
 					uksort($values, 'layout_sortfunc');	
 					while (list($function, $templatelist)=each($values)) {
 						ksort($templatelist);
@@ -97,7 +98,7 @@
 								<img src="<?php echo $AR->dir->images. "icons/$type.gif"; ?>" width="20" height="20" align="absmiddle">
 								<?php echo $type; ?>&nbsp;</td>
 							<td align="left"><div style="display:none;"><?php echo $function; ?></div><?php  
-								if (!$data->templates[$type][$function]) {
+								if (!$data->config->templates[$type][$function]) {
 									echo "<img src='{$AR->dir->images}local.gif' alt='local' height='12' width='11'>";	
 								}
 							?>

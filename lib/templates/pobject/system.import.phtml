@@ -40,8 +40,8 @@
 
 		/* these grants will be set at the end of the import process */
 		if ($ARCurrent->AXAction == "import") {
-			unset($this->data->grants);
-			unset($this->data->usergrants);
+			unset($this->data->config->grants);
+			unset($this->data->config->usergrants);
 		}
 
 		if(!$this->store->is_supported("fulltext")){

@@ -253,7 +253,9 @@
 			$store->rootoptions = $rootoptions;
 
 			if ($session_id) {
+				//debugon("all");
 				ldStartSession($session_id);
+
 				if ($ARCurrent->session->get("ARSessionTimedout", 1)) {
 					if (!$ARCurrent->session->get("oldArCallArgs", 1)) {
 						$ARCurrent->session->put("oldArCallArgs", $args, 1);

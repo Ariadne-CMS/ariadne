@@ -19,7 +19,7 @@
 		if ("$source.$default.$type.$function.$language"!=
 				"$target.$tdefault.$ttype.$tfunction.$tlanguage") {
 
-			if ($data->pinp[$type][$function][$language]) {
+			if ($data->config->pinp[$type][$function][$language]) {
 
 				$template=$type.".".$function.".".$language.".pinp";
 				$templates=$this->store->get_filestore("templates");

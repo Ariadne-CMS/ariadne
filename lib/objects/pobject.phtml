@@ -256,6 +256,12 @@ class pobject extends object { // pobject class definition
 				if (eregi("^[a-z0-9_\{\}\.\:-]+$",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
 					if (!$this->exists($this->path)) { //arNewFilename)) {
 						if ($this->exists($arNewParent)) {
+							$wf_result = $this->call("user.workflow.pre.html", Array("properties" => $properties));
+							if (is_array($wf_result)) {
+								if (is_array($properties)) {
+									$properties += $wf_result;
+								}
+							}
 							$this->data->ctime=time();
 							$this->data->mtime=$this->data->ctime;
 							$this->data->muser=$AR->user->data->login;
@@ -311,6 +317,16 @@ class pobject extends object { // pobject class definition
 							if ($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)) {
 								unset($this->arIsNewObject);
 								$this->id=$this->exists($this->path);
+								$wf_result = $this->call("user.workflow.post.html", Array("properties" => $properties));
+								if ($wf_result) {
+									$wf_properties = Array();
+									if (is_array($wf_result)) {
+										$wf_properties = $wf_result;
+									}
+									if (!$this->store->save($this->path, $this->type, $this->data, $wf_properties)) {
+										$this->error = $this->store->error;
+									}
+								}
 							} else {
 								$this->error=$this->store->error;
 							}
@@ -336,6 +352,12 @@ class pobject extends object { // pobject class definition
 			$configcache=$ARConfig->cache[$this->path];
 			if ($this->lock()) {
 				if ($this->exists($this->path)) { // prevent 'funny stuff'
+					$wf_result = $this->call("user.workflow.pre.html", Array("properties" => $properties));
+					if (is_array($wf_result)) {
+						if (is_array($properties)) {
+							$properties += $wf_result;
+						}
+					}
 					$this->data->mtime=time();
 					$this->data->muser=$AR->user->data->login;
 					$properties["time"][0]["ctime"]=$this->data->ctime;
@@ -380,6 +402,16 @@ class pobject extends object { // pobject class definition
 					}
 					if($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)){
 						$result=$this->path;
+						$wf_result = $this->call("user.workflow.post.html", Array("properties" => $properties));
+						if ($wf_result) {
+							$wf_properties = Array();
+							if (is_array($wf_result)) {
+								$wf_properties = $wf_result;
+							}
+							if (!$this->store->save($this->path, $this->type, $this->data, $wf_properties)) {
+								$this->error = $this->store->error;
+							}
+						}
 						//$this->ClearCache($this->path, true, false);
 					} else {
 						$this->error = $this->store->error;
@@ -607,7 +639,7 @@ class pobject extends object { // pobject class definition
 						if (!$AR->user->groups["owner"]) {
 							$AR->user->groups["owner"] = @current($this->get("/system/groups/owner/", "system.get.phtml"));
 						}
-						$AR->user->groups["owner"]->data->usergrants = $AR->user->ownergrants;
+						$AR->user->groups["owner"]->data->config->usergrants = $AR->user->ownergrants;
 					}
 					reset($AR->user->groups);
 					while (list($key, $group)=each($AR->user->groups)) { 
@@ -872,7 +904,7 @@ class pobject extends object { // pobject class definition
 			debug("CheckConfig: searching for template ($arCallType::$arCallFunction)", "all");
 
 			/* first check current templates */
-			$curr_templates=$this->data->pinp;
+			$curr_templates=$this->data->config->pinp;
 
 			$checkpath=$this->path;
 			$lastcheckedpath="";
@@ -1730,6 +1762,11 @@ class pobject extends object { // pobject class definition
 		$object=$this->store->newobject($newpath, $newparent, $type, $data);
 		$object->arIsNewObject=true;
 		return $object;
+	}
+
+	function _save($properties="", $vtype="") {
+		$this->data->config = current($this->get('.', 'system.get.data.config.phtml'));
+		return $this->save($properties, $vtype);
 	}
 
 	function _is_supported($feature) {

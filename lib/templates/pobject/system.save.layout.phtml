@@ -44,20 +44,20 @@
 			if ($pinp->error) {
 				$this->error = $pinp->error;
 			} else {
-				$this->data->pinp[$type][$function][$language]=$this->id;
+				$this->data->config->pinp[$type][$function][$language]=$this->id;
 
 				$file=$type.".".$function.".".$language;
 				$templates->write($template, $this->id, $file.".pinp");
 				$templates->write($compiled, $this->id, $file);
 				if ($default) { // add pinp template from default templates list
-					$this->data->templates[$type][$function][$language]=$this->id;
+					$this->data->config->templates[$type][$function][$language]=$this->id;
 				} else { // remove pinp template from default templates list
-					if (isset($this->data->templates[$type][$function][$language])) {
-						unset($this->data->templates[$type][$function][$language]);
-						if (count($this->data->templates[$type][$function])==0) {
-							unset($this->data->templates[$type][$function]);
-							if (count($this->data->templates[$type])==0) {
-								unset($this->data->templates[$type]);
+					if (isset($this->data->config->templates[$type][$function][$language])) {
+						unset($this->data->config->templates[$type][$function][$language]);
+						if (count($this->data->config->templates[$type][$function])==0) {
+							unset($this->data->config->templates[$type][$function]);
+							if (count($this->data->config->templates[$type])==0) {
+								unset($this->data->config->templates[$type]);
 							}
 						}
 					}

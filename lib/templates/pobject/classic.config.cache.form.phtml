@@ -5,24 +5,24 @@
 	<input type="hidden" name="arReturnPage" value="<?php echo htmlspecialchars($ARCurrent->arReturnPage); ?>">
 	<table border="0" width="100%" cellspacing="0" bgcolor="#EEEEEE">
 	<tr>
-		<td valign="top"><input type="radio" name="cacheconfig" value="0" <?php if (!$data->cacheconfig) { echo "checked"; } ?>></td>
+		<td valign="top"><input type="radio" name="cacheconfig" value="0" <?php if (!$data->config->cacheconfig) { echo "checked"; } ?>></td>
 		<td colspan="2">
 			<nobr><font face="helvetica,sans-serif"><?php echo $ARnls["inheritcache"]; ?></font></nobr>
 		</td>
 	</tr><tr>
-		<td valign="top"><input type="radio" name="cacheconfig" value="1" <?php if ($data->cacheconfig>0 && $data->cacheconfig<999) { echo "checked"; } ?>></td>
+		<td valign="top"><input type="radio" name="cacheconfig" value="1" <?php if ($data->config->cacheconfig>0 && $data->config->cacheconfig<999) { echo "checked"; } ?>></td>
 		<td colspan="2">
 			<nobr><font face="helvetica,sans-serif"><?php echo $ARnls["refreshonrq."]; ?><br>
-			<?php echo $ARnls["keepimage"]; ?> <input type="text" name="keepfor" size="2" maxlength="3" value="<?php if ($data->cacheconfig>0 && $data->cacheconfig<999) { echo $data->cacheconfig; } else { echo "2"; } ?>"> <?php echo $ARnls["hours"]; ?>.</nobr>
+			<?php echo $ARnls["keepimage"]; ?> <input type="text" name="keepfor" size="2" maxlength="3" value="<?php if ($data->config->cacheconfig>0 && $data->config->cacheconfig<999) { echo $data->config->cacheconfig; } else { echo "2"; } ?>"> <?php echo $ARnls["hours"]; ?>.</nobr>
 			</font>
 		</td>
 	</tr><tr>
-		<td valign="top"><input type="radio" name="cacheconfig" value="999" <?php if ($data->cacheconfig>=999) { echo "checked"; } ?>></td>
+		<td valign="top"><input type="radio" name="cacheconfig" value="999" <?php if ($data->config->cacheconfig>=999) { echo "checked"; } ?>></td>
 		<td colspan="2">
 			<nobr><font face="helvetica,sans-serif"><?php echo $ARnls["refreshonch."]; ?></font></nobr>
 		</td>
 	</tr><tr>
-		<td valign="top"><input type="radio" name="cacheconfig" value="-1" <?php if ($data->cacheconfig<0) { echo "checked"; } ?>></td>
+		<td valign="top"><input type="radio" name="cacheconfig" value="-1" <?php if ($data->config->cacheconfig<0) { echo "checked"; } ?>></td>
 		<td>
 			<nobr><font face="helvetica,sans-serif"><?php echo $ARnls["donotcache"]; ?></font></nobr>
 		</td><td rowspan="2" valign="bottom" align="right">

@@ -16,18 +16,18 @@
      $arResult[$grant]=1;
 
   ******************************************************************/
-	if (($data->usergrants) && is_array($data->usergrants)) {
+	if (($data->config->usergrants) && is_array($data->config->usergrants)) {
 		$newpath=$path;
 		while (!$found && ($newpath!=$oldpath)) {
 			$oldpath=$newpath;
-			if ($data->usergrants[$oldpath]) {
+			if ($data->config->usergrants[$oldpath]) {
 					$found=true;
 			} else {
 				$newpath=$this->store->make_path($oldpath, "..");
 			}
 		}
 		if ($oldpath) {
-			$arResult=$data->usergrants[$oldpath];
+			$arResult=$data->config->usergrants[$oldpath];
 		}
 	}
 ?>

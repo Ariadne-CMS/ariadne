@@ -17,7 +17,7 @@
 			if ($result) {
 				@reset($grants);
 				while (list($grant, $value)=each($grants)) {
-					$this->data->usergrants[$newpath][$grant]=$value;
+					$this->data->config->usergrants[$newpath][$grant]=$value;
 				}
 			}
 		}

@@ -8,13 +8,13 @@
 
 		$fstore=$this->store->get_filestore("templates");
 
-		if (($data->pinp) && is_array($data->pinp)) {
-			while (list($type, $values)=each($data->pinp)) {
+		if (($data->config->pinp) && is_array($data->config->pinp)) {
+			while (list($type, $values)=each($data->config->pinp)) {
 				while (list($function, $templatelist)=each($values)) {
 							ksort($templatelist);
 							reset($templatelist);
 							while (list($language, $template)=each($templatelist)) {
-									if (!$this->data->templates[$type][$function]) {
+									if (!$this->data->config->templates[$type][$function]) {
 										$entry["filename"]="local.$type.$function.$language";
 									} else {
 										$entry["filename"]="$type.$function.$language";

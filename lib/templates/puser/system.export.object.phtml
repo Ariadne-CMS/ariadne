@@ -12,7 +12,7 @@
 		unset grants defined on this object, they will be resetted after
 		the complete database has been imported
 	*/
-	unset($this->data->grants);
-	unset($this->data->usergrants);
+	unset($this->data->config->grants);
+	unset($this->data->config->usergrants);
 	$arResult=$this;
 ?>

@@ -15,13 +15,13 @@
 			<tr>
 				<td>
 					<input type="radio" name="inherit" value="1" <?php
-						if (!$this->data->nlsconfig->list) { // set for this object
+						if (!$this->data->config->nlsconfig->list) { // set for this object
 							echo "checked";		
 						} 
 					?>><?php echo $ARnls["inherit"]; ?>
 				</td><td>
 					<input type="radio" name="inherit" value="0" <?php
-						if ($this->data->nlsconfig->list) { // set for this object
+						if ($this->data->config->nlsconfig->list) { // set for this object
 							echo "checked";
 						} 
 					?>><?php echo $ARnls["use"]; ?> :</font>
@@ -45,8 +45,8 @@
 					<?php echo $ARnls["available"]; ?><br>
 					<select multiple name="available[]" style="width: 150px; height: 70px;">
 					<?php
-					if ($data->nlsconfig->list) { // acquired from parents
-						$selected=$data->nlsconfig->list;
+					if ($data->config->nlsconfig->list) { // acquired from parents
+						$selected=$data->config->nlsconfig->list;
 					}
 					reset($AR->nls->list);
 					while (list($key, $value)=each($AR->nls->list)) {
@@ -74,8 +74,8 @@
 				<?php
 					unset($selected);
 					reset($AR->nls->list);
-					if ($data->nlsconfig->default) {
-						$selected=$data->nlsconfig->default;
+					if ($data->config->nlsconfig->default) {
+						$selected=$data->config->nlsconfig->default;
 					}
 					if (!$selected) {
 						$selected=$config->nls->default;

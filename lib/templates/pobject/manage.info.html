@@ -70,10 +70,10 @@
 				}
 			?>
 			<tr><td valign="top"><?php echo $ARnls["details"]; ?>:</td><td valign="top" class="data"><?php 
-				if (count($data->templates)) { 
+				if (count($data->config->templates)) { 
 					echo "<a href=\"javascript:arshow('edit_object_layout','edit.object.layout.phtml')\" title=\"".$ARnls['template']."\">T</a>&nbsp;"; 
 				}; 
-				if (count($data->grants)) { 
+				if (count($data->config->grants)) { 
 					echo "<a href=\"javascript:arshow('edit_object_grants','edit.object.grants.phtml')\" title=\"".$ARnls['grants']."\">G</a>&nbsp;"; 
 				}; 
 				?>

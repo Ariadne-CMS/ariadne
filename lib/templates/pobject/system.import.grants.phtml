@@ -1,7 +1,7 @@
 <?php
 	if ($this->CheckLogin("config")) {
 		while(list($grant,$val)=each($grants)) {
-			$this->data->grants[$type][$id][$grant]=$val;
+			$this->data->config->grants[$type][$id][$grant]=$val;
 				display("		$id : $grant\n");
 		}
 		$this->save();

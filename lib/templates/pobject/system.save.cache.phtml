@@ -10,7 +10,7 @@
  
 	 $cache is an integer between -1 and 999. If $cache==1 then $cache
 	   will become $keepfor. The value of $cache is saved in 
-	   $data->cacheconfig.
+	   $data->config->cacheconfig.
 	 $keepfor is an integer between 1 and 999.
 	 $refresh is the string "now" or is not set. If $refresh is set, 
 	   the cache will be cleared for all objects and templates from 
@@ -36,7 +36,7 @@
 		if ($cache==$onrequest) {
 			$cache=$keepfor;
 		}
-		$this->data->cacheconfig=$cache;
+		$this->data->config->cacheconfig=$cache;
 		$this->save();
 		if ($refresh) {
 			$this->ClearCache($this->path, true, true);

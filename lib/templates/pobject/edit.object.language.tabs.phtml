@@ -18,10 +18,10 @@
 <ul id="tabnav">
 <?php
 	$arLanguage=$this->getdata('arLanguage');
-	$languages=array_merge($ARConfig->nls->list, $this->data->nls->list);
+	$languages=array_merge($ARConfig->nls->list, $this->data->config->nls->list);
 	$count=count($languages);
 	while (list($nlskey, $language)=each($languages)) {
-		if (($this->data->nls->list[$nlskey]) || ($this->getdata('name',$nlskey))) {
+		if (($this->data->config->nls->list[$nlskey]) || ($this->getdata('name',$nlskey))) {
 			$image=$AR->dir->images."nls/small/".$nlskey.".gif";
 		} else {
 			$image=$AR->dir->images."nls/small/faded/".$nlskey.".gif";

@@ -3,16 +3,16 @@
 		switch($action) {
 			case "delete" :
 				if (!$grant) {
-					unset($data->usergrants[$path]);
+					unset($data->config->usergrants[$path]);
 				} else {
-					unset($data->usergrants[$path][$grant]);
-					if (!@count($data->usergrants[$path])) {
-						unset($data->usergrants[$path]);
+					unset($data->config->usergrants[$path][$grant]);
+					if (!@count($data->config->usergrants[$path])) {
+						unset($data->config->usergrants[$path]);
 					}
 				}
 			break;
 			case "add" :
-				$data->usergrants[$path][$grant]=1;
+				$data->config->usergrants[$path][$grant]=1;
 			break;
 		}
 		$this->save($this->path, $this->type, $data, "");

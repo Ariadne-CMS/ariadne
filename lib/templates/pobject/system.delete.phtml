@@ -5,8 +5,8 @@
 		} else {
 			if (!$this->ls(".","system.get.phtml")) {
 				// remove grants for this object in all user objects.
-				if ($data->grants && is_array($data->grants)) {
-					while (list($login, $grants)=each($data->grants)) {		
+				if ($data->config->grants && is_array($data->config->grants)) {
+					while (list($login, $grants)=each($data->config->grants)) {		
 						$criteria["login"]["value"]["="]="'".$login."'";
 						$this->find("/system/users/", $criteria, "system.update.grants.phtml", Array(
 									"action" => "delete",
@@ -18,9 +18,9 @@
 				*/
 				if (count($this->store->list_paths($this->path)) == 1) {
 					// remove templates
-					if ($data->pinp) {
+					if ($data->config->pinp) {
 						$templates=$this->store->get_filestore("templates");
-						while (list($type, $values)=each($data->pinp)) {
+						while (list($type, $values)=each($data->config->pinp)) {
 							while (list($function, $templatelist)=each($values)) {
 								while (list($language, $template)=each($templatelist)) {
 									$file=$type.".".$function.".".$language;

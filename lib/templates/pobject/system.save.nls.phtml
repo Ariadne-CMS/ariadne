@@ -4,7 +4,7 @@
 		// the defined interface: $arCallArgs)
 		$this->data=current($this->get(".","system.get.data.phtml"));
 
-		unset($this->data->nlsconfig);
+		unset($this->data->config->nlsconfig);
 		$inherit=$this->getdata("inherit","none");
 		if (!$inherit) {
 			$default=$this->getdata("default","none");
@@ -18,15 +18,15 @@
 			if ($this->data->nls && !$this->data->nls->list[$default]) {
 				$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$ARConfig->nls->list[$default]);
 			} else {
-				$this->data->nlsconfig=new object;
-				$this->data->nlsconfig->default=$default;
+				$this->data->config->nlsconfig=new object;
+				$this->data->config->nlsconfig->default=$default;
 				reset($available);
 				while (list($key, $lang)=each($available)) {
-					$this->data->nlsconfig->list[$lang]=$AR->nls->list[$lang];
+					$this->data->config->nlsconfig->list[$lang]=$AR->nls->list[$lang];
 				}
 			}
 		} else {
-			unset($this->data->nlsconfig);
+			unset($this->data->config->nlsconfig);
 		}
 		if (!$this->error) {
 			$this->save();

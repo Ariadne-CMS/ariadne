@@ -62,9 +62,9 @@
 		}
 
 
-		if ($data->grants && is_array($data->grants)) {
-			DisplayGrants($data->grants,"pgroup");
-			DisplayGrants($data->grants,"puser");
+		if ($data->config->grants && is_array($data->config->grants)) {
+			DisplayGrants($data->config->grants,"pgroup");
+			DisplayGrants($data->config->grants,"puser");
 		}
 	?>
 	</table>
