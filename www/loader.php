@@ -6,6 +6,16 @@
 	include_once($ariadne."/modules/mod_session.phtml");
 	include_once($ariadne."/includes/loader.web.php");
 
+	function fix_quotes($input) {
+		if (is_array($input)) {
+			array_walk($input, "fix_quotes");
+		} else {
+			$input=stripslashes($input);
+		}
+		return $input;
+	}
+
+
 	$PATH_INFO=$HTTP_SERVER_VARS["PATH_INFO"];
 	if (!$PATH_INFO) {
 
@@ -14,9 +24,6 @@
 
 	} else {
 
-		if (get_magic_quotes_gpc()==1) {
-			error("Ariadne will not work correctly with the magic_quotes_gpc option set to 'On'. Please edit your php.ini file and set it to 'Off'.");
-		}
 		if (ini_get("safe_mode")) {
 			error("Ariadne will not work correctly with sage_mode set to 'On'. Please edit your php.ini file and set it to 'Off'.");
 		}
@@ -90,6 +97,15 @@
 			readfile($cachedimage);
 			
 		} else {
+
+			// FIX magic_quoted input
+			set_magic_quotes_runtime(0);
+			$args=array_merge($HTTP_GET_VARS,$HTTP_POST_VARS);
+			if (get_magic_quotes_gpc()) {
+				$args=fix_quotes($args);
+				$ARCookie=stripslashes($ARCookie);
+			}
+			
 			$args=array_merge($HTTP_GET_VARS,$HTTP_POST_VARS);
 			$store->call($function, $args, $store->get($path));
 			if (!$store->total) {
