@@ -9,9 +9,22 @@
 			} else if ($this->data->login=="public" || $this->data->login=="admin") {
 				$this->error=$ARnls["err:cannotdelsystemusers"];
 			} else {
-				$this->call("pobject::system.rename.phtml", $arCallArgs);
-				$this->data->login=substr($this->path, strlen($this->parent), -1);
-				$this->save();
+				if (!$this->exists($target)) {
+					// new filename -> new login, so check if it is unique
+					$newparent=$this->store->make_path($target, "..");
+					$newlogin=substr($target, strlen($newparent), -1);
+					$crit["login"]["value"]["="]="'".AddSlashes($newlogin)."'";
+					$result=$this->find("/system/users/",$crit,"system.get.id.phtml");
+					if ($result) {
+						$this->error=sprintf($ARnls["err:loginexists"],$newlogin);
+					}
+				}
+				if (!$this->error) {
+					$this->call("pobject::system.rename.phtml", $arCallArgs);
+					$this->data->login=substr($this->path, strlen($this->parent), -1);
+					$properties["login"][0]["value"]="'".AddSlashes($this->data->login)."'";
+					$this->save($properties);
+				}
 			}
 		} else {
 			// this is probably a link in a group
