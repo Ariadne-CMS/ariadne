@@ -16,7 +16,7 @@
 		    $this->data=@current($this->get(".","system.get.data.phtml"));
 		}
 
-		$scenario=$this->getdata("scenario","none");
+		$scenario=$this->getdata("newscenario","none");
 		$displays=@current($this->get($scenario, "system.get.phtml"));
 		$this->data->priority=$displays->data->priority;
 		$displays=$displays->data->display; // we only need the display array
@@ -41,7 +41,7 @@
 					} else {
 						$newnlsdata=$this->data->$key;
 					}
-					if (strlen($name>$MAX_TITLE_LENGTH) {
+					if (strlen($name>$MAX_TITLE_LENGTH)) {
 						$error=sprintf($ARnls["err:titlelength"], $MAX_TITLE_LENGTH);
 						break;
 					} else	{
@@ -81,8 +81,8 @@
 		}
 
 		$i=0;
-		reset($displays);
-		while ((list($display,$val)=each($displays))) {
+		@reset($displays);
+		while ((list($display,$val)=@each($displays))) {
 			$scenario_start=$this->data->startdate+$this->data->starttime +($val["start"]*3600*24);
 			$scenario_end=$this->data->enddate+$this->data->endtime+($val["end"]*3600*24);
 			$this->data->sstart[$display]=$scenario_start;
