@@ -46,9 +46,9 @@
 						echo "</td><td valign=\"top\">\n"; 
 					}
 					if ($this->getdata("name",$arnls)) {
-						$image=$AR->dir->images.'nls/'.$arnls.'.gif';
+						$image=$AR->dir->images.'nls/small/'.$arnls.'.gif';
 					} else {
-						$image=$AR->dir->images.'nls/faded/'.$arnls.'.gif';
+						$image=$AR->dir->images.'nls/small/faded/'.$arnls.'.gif';
 					}
 					if ($arnls==$arLanguage) {
 						$selected=" checked";
