@@ -79,6 +79,7 @@
 		}
 	}
 
+	set_time_limit(0);
 
 	if ($arg_c>=2) {
 		$ARLogin="admin";
