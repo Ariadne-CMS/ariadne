@@ -48,15 +48,15 @@
 			// an object which is still referenced somewhere
 			// Use Perl compatible regex for non-greedy matching
 			$refs=$this->GetReferences($page);
-
 			$count=0;
 			foreach ($refs as $ref) {
-				// Drop the template name
-				$ref=substr($ref, 0, strrpos($ref, "/")+1);
+				if (substr($ref, -1) != '/' && !$this->exists($ref)) {
+					// Drop the template name
+					$ref=substr($ref, 0, strrpos($ref, "/")+1);
+				}
 				$properties["references"][$count]["path"]="'".AddSlashes($ref)."'";
 				$count++;
 			}
-
 			$this->save($properties);
 			$this->ClearCache();
 			$arResult=$page;
