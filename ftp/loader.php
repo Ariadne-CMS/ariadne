@@ -356,6 +356,36 @@
 						}
 					break;
 
+					case 'SIZE':
+						$path = $args;
+						ftp_TranslatePath($path, $listMode);
+						switch ($listMode) {
+							case 'templates':
+								ftp_TranslateTemplate($path, $template);
+								$getmode = "templates";
+								
+								$result = @current(
+											$FTP->store->call("ftp.template.exists.phtml", 
+																Array("arRequestedTemplate" => $template),
+																$FTP->store->get($path)));
+								$file_size = $result["size"];
+
+								ftp_Tell(213, (int)$file_size);
+							break;
+							default:
+								if ($FTP->store->exists($path)) {
+									$size = $FTP->store->call(
+											"ftp.$listMode.size.phtml",
+											"",
+											$FTP->store->get($path));
+									ftp_Tell(213, (int)$size[0]);
+								} else {
+									ftp_Tell(550, "No such file or directory");
+								}
+							break;
+						}
+					break;
+
 					case 'RNFR':
 						$rename_src_path = $args;
 						ftp_TranslatePath($rename_src_path, $rename_src_listMode);
@@ -453,7 +483,7 @@
 							break;
 							default:
 								$file_size = @current(
-											$FTP->store->call("system.get.filesize.phtml", "",
+											$FTP->store->call("ftp.files.size.phtml", "",
 																$FTP->store->get($path)));
 								$getmode = "files";
 							break;
