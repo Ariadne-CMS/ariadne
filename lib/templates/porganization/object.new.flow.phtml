@@ -20,16 +20,19 @@
 	$arFlow[$i]["template"]=$start;
 	$arFlow[$i]["next"]=$i+1; 
 	$i++;
+
 	$arFlow[$i]["title"]=$ARnls["name"];
 	$arFlow[$i]["template"]=$name;
 	$arFlow[$i]["prev"]=$i-1;
 	$arFlow[$i]["next"]=$i+1; 
 	$i++;
+
 	$arFlow[$i]["title"]=$ARnls["address"];
 	$arFlow[$i]["template"]=$address;
 	$arFlow[$i]["prev"]=$i-1;
 	$arFlow[$i]["next"]=$i+1; 
 	$i++;
+
 	$arFlow[$i]["title"]=$ARnls["contactinformation"];
 	$arFlow[$i]["template"]=$contact;
 	$arFlow[$i]["prev"]=$i-1;
@@ -37,8 +40,9 @@
 		$arFlow[$i]["next"]=$i+1;
 		$arFlow[$i]["save"]=$i+2;
 		$i++;
+
 		$arFlow[$i]["title"]=$ARnls["language"];
-		$arFlow[$i]["template"]=$step2;
+		$arFlow[$i]["template"]=$language;
 		$arFlow[$i]["next"]=$i-1;
 		$arFlow[$i]["prev"]=$i-1;
 		$arFlow[$i]["save"]=$i+1;
