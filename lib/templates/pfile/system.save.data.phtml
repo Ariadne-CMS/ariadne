@@ -25,6 +25,10 @@
 			// the defined interface: $arCallArgs)
 			$this->data=current($this->get(".","system.get.data.phtml"));
 		}
+		
+		// unset the properties array, so no properties can be passed to this template.
+		$properties = Array();
+		
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
 			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
 		} else {

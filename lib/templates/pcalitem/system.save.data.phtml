@@ -17,6 +17,9 @@
 			$this->data=new object;
 		}
 
+		// unset the properties array, so no properties can be passed to this template.
+		$properties = Array();
+
 		//	$repeatn: int
 		//	week:  $repeat_on[$option]=0/1 
 		//	       $option {0-7)

@@ -9,6 +9,10 @@
 			(!$this->arIsNewObject && $this->CheckLogin("edit")) &&
 			$this->CheckConfig()) {
 		$this->call("pdir::system.save.data.phtml",$arCallArgs);
+		
+		// unset the properties array, so no properties can be passed to this template.
+		$properties = Array();
+		
 		if (!$this->error) {
 			$this->arIsNewObject=false;
 			$url=$this->getdata("url","none");

@@ -16,6 +16,9 @@
 			$this->data=new object;
 		}
 
+		// unset the properties array, so no properties can be passed to this template.
+		$properties = Array();
+
 		if (!$this->getdata("lastname","none")) {
 			$this->error=$ARnls["err:nolastnameentered"];
 		} else {
