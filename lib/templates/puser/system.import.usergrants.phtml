@@ -1,0 +1,21 @@
+<?php
+	$paths=$ARCurrent->grants_list["puser"][$this->data->login];
+	while (list($path, $grants)=each($paths)) {
+		display("	$path\n");
+
+		
+		$ARCurrent->importGrants["puser"][$this->data->login]=&$grants;
+
+		$result=@current($this->get($path, "system.import.grants.phtml"));
+		if ($result) {
+			@reset($grants);
+			while (list($grant,)=each($grants)) {
+				$this->data->usergrants[$path][$grant]=1;
+			}
+		}
+
+		unset($ARCurrent->importGrants);
+	}
+
+	$this->save();
+?>
