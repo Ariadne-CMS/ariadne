@@ -7,6 +7,11 @@
 		viewmode='list';
 	}
 	function b_setView(type) {
+		if (document.all) {
+			document.all['b_'+viewmode].className='tbutton_left';
+		} else if (buttonpressed=document.getElementById('b_'+viewmode)) {
+			buttonpressed.className='tbutton_left';
+		}
 		viewmode=type;
 		top.Set('viewmode',viewmode);
 		b_draw();
