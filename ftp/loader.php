@@ -17,6 +17,8 @@
 	
 	require($ariadne."/modules/mod_virusscan.php");
 
+debugon();
+
 		/* this function has been taken from the php manual		*/
 		
 		function ftp_ErrorHandler ($errno, $errmsg, $filename, $linenum, $vars) {
@@ -678,12 +680,13 @@
 
 						ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ASCII' : 'BINARY')." mode data connection");
 						debug("ftp: client wants to store file ($target)");
-						if (eregi('.*[.]([^.]*)/', $target, $regs)) {
+						if (eregi('.*[.](.[^.]+)?/$', $target, $regs)) {
 							$ext = $regs[1];
 						}
 						if (ftp_OpenDC()) {
 							$tempfile=tempnam($FTP->store->files."temp/", "upload");
-							$tempfile.=".$ext";
+							debug("tempfile: '$tempfile' ext: '$ext'");
+							$tempfile.=$ext;
 							$fp=fopen($tempfile, "wb");
 							if ($fp) {
 								debug("ftp: writing to $tempfile\n");
@@ -702,20 +705,20 @@
 									$FTP->store->call("ftp.templates.save.phtml", Array("file" => $fileinfo),
 										$FTP->store->get($target));
 								} else {
+									debugon("all");
 									$file=substr($target, strlen($path), -1);
 									$fileinfo["name"]=eregi_replace('[^.a-z0-9_-]', '_', $file);
 									if ($FTP->store->exists($target)) {
-										debug("ftp::store removing $target first");
-										// if $target already exists, we have to delete it first
-										$result=$FTP->store->call("ftp.$listMode.delete.phtml", Array(),
+										debug("ftp::store updating $target");
+										// if $target already exists
+										$FTP->store->call("ftp.$listMode.save.phtml", Array("file" => $fileinfo),
 											$FTP->store->get($target));
-									}
-
-									if (!$ARCurrent->ftp_error) {
+									} else {
 										debug("ftp::store storing $target");
 										$FTP->store->call("ftp.$listMode.save.new.phtml", Array("file" => $fileinfo),
 											$FTP->store->get($path));
 									}
+									debugon();
 								}
 								if (file_exists($tempfile)) {
 									@unlink($tempfile);
