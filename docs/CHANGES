@@ -50,6 +50,7 @@ New Features:
 	  using the editor.
 	- The browse widget now also handles large directories (> 100 objects) by showing a page 
 	  select list.
+	- The owner of an object now only get set if it wasn't set before in $this->save();
 
 Bugs Fixed:
 	- Changed .jpg template to .html in browse.nav.icons.show.phtml for pphoto.
