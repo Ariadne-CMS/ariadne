@@ -87,6 +87,14 @@
 	</select>
 	</td>
 </tr><tr>
+	<td align="right"><font face="helvetica, sans-serif"><b><?php echo $ARnls["editor"]; ?>&nbsp;:</b></font></td>
+	<td>
+		<select name="editor">
+		<option value="wysiwyg"><?php echo $ARnls["wysiwyg"]; ?></option>
+		<option value="text" <?php if ($data->editor=="text") { echo "selected"; } ?>><?php echo $ARnls["text"]; ?></option>
+	</select>
+	</td>
+</tr><tr>
 	<td></td>
 	<td><font face="helvetica, sans-serif"><i><?php echo $ARnls["changeeffectivenextlogin"]; ?></i></font></td>
 </tr>

@@ -68,6 +68,9 @@
 		if ($interface=$this->getdata("interface","none")) {
 			$this->data->interface=$interface;
 		}
+		if ($editor=$this->getdata("editor","none")) {
+			$this->data->editor=$editor;
+		}
 		if (!$this->error) {
 			$this->save($properties);
 			if (!$this->error) {

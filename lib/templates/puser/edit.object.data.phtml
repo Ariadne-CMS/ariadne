@@ -25,13 +25,20 @@
 		include($this->store->code."widgets/wizard/code.php");
 
 		$start="edit.object.data.form.phtml";
-		$step1="edit.object.data.groups.phtml";
+		$preferences="edit.object.data.preferences.phtml";
+		$groups="edit.object.data.groups.phtml";
 		$finish="edit.object.data.save.phtml";
 	 
 		$wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["data"];
 		$wgWizFlow[$i]["template"]=$start;
+		$wgWizFlow[$i]["next"]=$i+1;
+		$wgWizFlow[$i]["save"]=$i+3+$customoffset;
+		$i++;
+		$wgWizFlow[$i]["title"]=$ARnls["preferences"];
+		$wgWizFlow[$i]["template"]=$preferences;
+		$wgWizFlow[$i]["prev"]=$i-1;		
 		if ($this->CheckSilent("config")) {
 			$wgWizFlow[$i]["next"]=$i+1;
 			$wgWizFlow[$i]["save"]=$i+2+$customoffset;
