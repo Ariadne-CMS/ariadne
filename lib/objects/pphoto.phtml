@@ -13,8 +13,7 @@ class pphoto extends pfile { // definitie class
 			$f_store=$this->store->get_filestore("files");
 			$f_store->copy_from_store($tmpsrc, $this->id, "file");
 			$f_store->close();
-			system('cd '.$this->store->file.'temp/', $failed);
-			if (!$failed) {
+			if (chdir($this->store->files.'temp/')) {
 				system($AR->IM->convert.' '.$this->id.' '.$this->id.'.'.$target, $failed);
 				if (!$failed) {
 					ob_start();
@@ -24,6 +23,8 @@ class pphoto extends pfile { // definitie class
 				} else {
 					$this->error="Could not run ImageMagick convert program";
 				}
+				@unlink($this->id);
+				@unlink($this->id.$target);
 			} else {
 				$this->error="Could not change dir to ".$this->store->files."temp/ ";
 			}
@@ -43,8 +44,7 @@ class pphoto extends pfile { // definitie class
 		$f_store->copy_from_store($tmpsrc, $this->id, "file");
 		$f_store->close();
 
-		system('cd '.$this->store->files.'temp/', $failed);
-		if (!$failed) {
+		if (chdir($this->store->files.'temp/')) {
 			$exec_string=$AR->IM->mogrify." -geometry ".$x."x".$y." -format jpg $this->id";
 			system($exec_string,$failed);
 			if (!$failed) {
@@ -54,9 +54,13 @@ class pphoto extends pfile { // definitie class
 				ob_end_clean();
 			} else {
 				$this->error="Could not run ImageMagick scale program (mogrify)<br>\n(".$exec_string.")";
+				echo $this->error;
 			}
+			@unlink($tmpsrc);
+			@unlink($tmpsrc.".jpg");
 		} else {
 			$this->error="Could not changedir to ".$this->store->files."temp/ ";
+			echo $this->error;
 		}
 
 		return $result;

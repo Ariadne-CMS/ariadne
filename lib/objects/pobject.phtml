@@ -678,7 +678,10 @@ class pobject extends object {
 		}
 		// now remove any private cache entries.
 		$pcache=$this->store->get_filestore("privatecache");
-		$pcache->purge($this->id);
+		$ids=$this->find("","","system.get.id.phtml");
+		while (list($key, $id)=each($ids)) {
+			$pcache->purge($id);
+		}
 		debug("pobject: ClearCache: end","all");
 	}
 
