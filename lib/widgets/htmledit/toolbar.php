@@ -311,85 +311,100 @@ function getEl(sTag,start) {
 
 
 function DECMD_IMAGE_onclick() {
-  var sel=KeepState.GetSelection();
-  var type=sel.type;
   var args = new Array();
+  var elIMG = false;
+  var el = false;
+  var rg = false;
 
-  if ((type=="Control") && (KeepState.IMG=sel.item(0))) {
-    var src=new String(KeepState.IMG.src);
-    var root=new String('<?php echo $this->store->root; ?>');
-    var temp='';
-    if (src.substring(0,root.length)==root) {
-      src=src.substring(root.length);
-    } else { // htmledit component automatically adds http://
-      temp=new String('<?php echo $this->store->root; ?>');
-      if (src.substring(0,temp.length)==temp) {
-        src=src.substring(temp.length);
-      } else {
-        temp=new String('http:///');
+  window.el=false;
+  window.elIMG=false;
+  window.rg=false;
+  el=tbContentElement.document.selection;
+  window.el=el;
+  if (el.type=="Control") {
+    elIMG=el.createRange().item(0);
+    window.elIMG=elIMG;
+    if (elIMG) {
+      src=new String(elIMG.src);
+      root=new String('<?php echo $this->store->root; ?>');
+      if (src.substring(0,root.length)==root) {
+        src=src.substring(root.length);
+      } else { // htmledit component automatically adds http://
+        temp=new String('<?php echo $this->store->root; ?>');
         if (src.substring(0,temp.length)==temp) {
-          src=src.substring(temp.length-1);
+          src=src.substring(temp.length);
+        } else {
+          temp=new String('http:///');
+          if (src.substring(0,temp.length)==temp) {
+            src=src.substring(temp.length-1);
+          }
         }
       }
+      args['src'] = src;
+      args['border'] = elIMG.border;
+      args['hspace'] = elIMG.hspace;
+      args['vspace'] = elIMG.vspace;
+      args['align'] = elIMG.align;
+      args['alt'] = elIMG.alt;
     }
-    args['src']    = src;
-    args['border'] = KeepState.IMG.border;
-    args['hspace'] = KeepState.IMG.hspace;
-    args['vspace'] = KeepState.IMG.vspace;
-    args['align']  = KeepState.IMG.align;
-    args['alt']    = KeepState.IMG.alt;
   } else {
-    sel.collapse(true);
-    KeepState.IMG=false;
-    args['src']    = '<?php if ($wgHTMLEditImageDir) { echo $wgHTMLEditImageDir; } else { echo $this->path; } ?>';
+    elIMG=false;
+    window.rg=el.createRange();
+    src = '<?php echo $this->path; ?>';
+    args['src'] = src;
     args['hspace'] = "";
     args['vspace'] = "";
-    args['align']  = ""; 
-    args['alt']    = "";
+    args['align'] = ""; 
+    args['alt'] = "";
     args['border'] = "";
   }
+  arr = showModalDialog( "<?php echo $this->store->root.$AR->user->path; 
+		?>edit.object.html.image.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:35em; dialogHeight:14em; status: no; resizable: yes;");
+  if (arr != null){
+	IMAGE_set(arr);
+  }
 
-  imgwindow=window.open("edit.object.html.image.phtml?src="+escape(args['src'])+
+  /*
+  imgwindow=window.open("<?php echo $this->store->root.$AR->user->path; 
+    ?>edit.object.html.image.phtml?src="+escape(args['src'])+
     "&border="+escape(args['border'])+"&hspace="+escape(args['hspace'])+
     "&vspace="+escape(args['vspace'])+"&align="+escape(args['align'])+
     "&alt="+escape(args['alt']),"imgwindow","directories=no,height=160,width=425,location=no,menubar=no,status=no,toolbar=no,resizable=yes");
   imgwindow.focus();
-  KeepState.RestoreSelection();
-  return true;
-
+  window.setfocusto=imgwindow;
+  */
 }
 
 function IMAGE_set(arr) {
-  var sel=KeepState.GetSelection();
-  var type=sel.type;
-  var src='';
-  var temp='';
-
+  window.setfocusto=false;
+  var el=window.el;
   if (arr != null) {
     src=new String(arr['src']);
     temp=new String('http://');
     if (src.substring(0,temp.length)!=temp) {
       src='<?php echo $this->store->root; ?>'+src;
     }
-    if (KeepState.IMG) { // insert a new img
-      KeepState.IMG.src=src;
+    if (window.elIMG) { // insert a new img
+      elIMG=window.elIMG;
+      elIMG.src=src;
       if (arr['border']!='') {
-        KeepState.IMG.border=arr['border'];
+        elIMG.border=arr['border'];
       }
       if (arr['hspace']!='') {
-        KeepState.IMG.hspace=arr['hspace'];
+        elIMG.hspace=arr['hspace'];
       }
       if (arr['vspace']!='') {
-        KeepState.IMG.vspace=arr['vspace'];
+        elIMG.vspace=arr['vspace'];
       }
       if (arr['align']!='') {
-        KeepState.IMG.align=arr['align'];
+        elIMG.align=arr['align'];
       }
       if (arr['alt']!='') {
-        KeepState.IMG.alt=arr['alt'];
+        elIMG.alt=arr['alt'];
       }
     } else {
-      if ((type=="None") || (type=="Text"))  {
+      el=window.el;
+      if ((el.type=="None") || (el.type=="Text"))  {
         temp='<IMG SRC="'+src+'"';
         if (arr['border']!='') {
           temp+=' BORDER='+arr['border'];
@@ -407,8 +422,8 @@ function IMAGE_set(arr) {
           temp+=' ALT="'+arr['alt']+'"';
         }
         temp+='>';
-        sel.pasteHTML(temp);
-        sel.select();
+        rg.pasteHTML(temp);
+        rg.select();
       }
     }
   }
@@ -419,47 +434,59 @@ function wgCompose_show(buffer) {
   sel.pasteHTML(buffer);
 }
 
-	function DECMD_HYPERLINK_onclick() {
-		var arr,args,oSel, oParent, sType;
+function GetElement(oElement,sTag) 
+{
+  /*Utility function; Goes up the DOM from the element oElement, till
+  a parent element with the tag that matches sTag
+  is found. Returns that parent element.*/
+  while (oElement!=null && oElement.tagName!=sTag){
+    oElement = oElement.parentElement;
+  }
+  return oElement;
+}
 
-		oSel = document.selection;
-		sType=oSel.type;
-		arr=null;
-		args=new Array();
-		//set a default value for your link button
-		args["URL"] = "http://";
-		/*
-		The logic is similar if there is a selection
-		of text or image. You get the nearest parent and
-		then go up the DOM to see the nearest parent A element
-		*/
-		if(sType=="Text" || sType=="None"){
-			oParent = GetElement(oSel.createRange().parentElement(),"A");
-		} else { 
-			oParent = GetElement(oSel.createRange().item(0),"A");
-		}
-		/* 
-		So, if you get a parent A (anchor) element, you use the href property
-		of that. Now, there is an obvious caveat here, because A can
-		be a link or an anchor. So, you need to see if it has an href.
-		*/
-		if(oParent && oParent.href) {
-			args["URL"] = oParent.href;
-			for (var i=0; i<oParent.attributes.length; i++) {
-				oAttr=oParent.attributes.item(i);
-				if (oAttr.specified) {
-					args[oAttr.nodeName]=oAttr.nodeValue;
-				}
+function DECMD_HYPERLINK_onclick() {
+	var arr,args,oSel, oParent, sType;
+
+	oSel = tbContentElement.document.selection;
+	sType=oSel.type;
+	arr=null;
+	args=new Array();
+	//set a default value for your link button
+	args["URL"] = "http:/"+"/";
+	/*
+	The logic is similar if there is a selection
+	of text or image. You get the nearest parent and
+	then go up the DOM to see the nearest parent A element
+	*/
+	if(sType=="Text" || sType=="None"){
+		oParent = GetElement(oSel.createRange().parentElement(),"A");
+	} else { 
+		oParent = GetElement(oSel.createRange().item(0),"A");
+	}
+	/* 
+	So, if you get a parent A (anchor) element, you use the href property
+	of that. Now, there is an obvious caveat here, because A can
+	be a link or an anchor. So, you need to see if it has an href.
+	*/
+	if(oParent && oParent.href) {
+		args["URL"] = oParent.href;
+		for (var i=0; i<oParent.attributes.length; i++) {
+			oAttr=oParent.attributes.item(i);
+			if (oAttr.specified) {
+				args[oAttr.nodeName]=oAttr.nodeValue;
 			}
 		}
-		/* 
-		here popup your own dialog, pass the arg array to that, get what the user
-		entered there and come back here
-		*/ 
-		arr = showModalDialog( "<?php echo $this->store->root.$AR->user->path; 
-			?>edit.object.html.link.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:12em");
-		if (arr != null){
-			if (oParent) {
+	}
+	/* 
+	here popup your own dialog, pass the arg array to that, get what the user
+	entered there and come back here
+	*/ 
+	arr = showModalDialog( "<?php echo $this->store->root.$AR->user->path; 
+		?>edit.object.html.link.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:11em; status: no;");
+	if (arr != null){
+	    if (oParent) {
+			if (arr['URL']) {
 				for (i=0; i<oParent.attributes.length; i++) {
 					oldAttribute=oParent.attributes.item(i);
 					var dummy=new String(oldAttribute.name);
@@ -475,6 +502,10 @@ function wgCompose_show(buffer) {
 					}
 				}
 			} else {
+				oParent.outerHTML=oParent.innerHTML;
+			}
+	    } else {
+			if (arr['URL']) {
 				var newHTML="<a href=\""+arr['URL']+"\"";
 				if (arr['attributes']) {
 					for (var i in arr['attributes']) {
@@ -492,8 +523,9 @@ function wgCompose_show(buffer) {
 					oRange.pasteHTML(newHTML);
 				}
 			}
-		}
+	    }
 	}
+}
 
 function DECMD_DELETE_onclick() {
   setFormat("Delete");
