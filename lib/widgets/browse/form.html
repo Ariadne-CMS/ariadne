@@ -11,9 +11,9 @@
   if (!$wgBrowseSize) {
     $wgBrowseSize="16";
   }
-?><input type="text" name="<?php echo $wgBrowseName; ?>" value="<?php 
+?><input type="text" class="wgBrowseInput" name="<?php echo $wgBrowseName; ?>" value="<?php 
   echo $wgBrowsePath; 
-?>" size="<?php echo $wgBrowseSize; ?>"><input type="button" name="select" value="<?php echo $wgBrowseTitle; ?>" 
+?>" size="<?php echo $wgBrowseSize; ?>"><input type="button" class="wgBrowseButton" name="select" value="<?php echo $wgBrowseTitle; ?>" 
 onClick="Browse(this.form.<?php echo $wgBrowseName; ?>, '<?php 
   echo $wgBrowsePath; 
 ?>', '<?php echo $wgBrowseName; ?>', '<?php echo $wgBrowseTitle; ?>');">
