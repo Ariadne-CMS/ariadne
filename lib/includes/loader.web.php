@@ -239,13 +239,13 @@
 					ldMkDir("cache/".$path);
 					ldMkDir("cacheheaders/".$path);
 				}
-				$fp=fopen($store->files."cache/".$file, "wb");
+				$fp=fopen($store->files."cache".$file, "wb");
 				fwrite($fp, $image);
 				fclose($fp);
-				$fp=fopen($store->files."cacheheaders/".$file, "wb");
+				$fp=fopen($store->files."cacheheaders".$file, "wb");
 				fwrite($fp, $headers);
 				fclose($fp);
-				if (!touch($store->files."cache/".$file, $time)) {
+				if (!touch($store->files."cache".$file, $time)) {
 					debug("ldSetCache: ERROR: couldn't touch image","object");
 				}
 			}
