@@ -9,11 +9,7 @@
 	if ($ARCurrent->session) {
 		$arLoginOld=$ARCurrent->session->get("ARLogin");
 		$arPasswordOld=$ARCurrent->session->get("ARPassword");
-		if (is_string($arCallArgs)) {
-			$arCallArgs.="&arLoginOld=".RawUrlEncode($arLoginOld);
-		} else if (is_array($arCallArgs)) {
-			$arCallArgs=array_merge($arCallArgs, Array("arLoginOld" => $arLoginOld));
-		}
+		$arCallArgs.="&arLoginOld=".RawUrlEncode($arLoginOld);
 		// when current user is logged on as public, then don't delete his
 		// session.
 		if ($AR->user && ($AR->user->data->login!="public")) {
@@ -32,32 +28,10 @@
 		}
 	}
 	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
-		global $PATH_INFO, $QUERY_STRING; 
-		if (!$arReturnPath) {
-			$split=strrpos($PATH_INFO, "/");
-			$function=substr($PATH_INFO,$split+1);
-			$arReturnPath=$this->path;
-		}
-		if (!$arReturnTemplate) {
-			$arReturnTemplate=$function;
-			if ($QUERY_STRING) {
-				$arReturnTemplate.="?$QUERY_STRING";
-			}
-		}
 ?>
 <html>
 <head>
 <title>Ariadne - <?php echo $arLoginMessage; ?></title>
-<script>
-  popup=window.open('<?php 
-	echo $this->make_url()."user.login.popup.html".
-			"?arLoginMessage=".RawUrlEncode($arLoginMessage).
-			"&ARLogin=".RawUrlEncode($ARLogin).
-			"&arReturnPath=".RawUrlEncode($arReturnPath).
-			"&arReturnTemplate=".RawUrlEncode($arReturnTemplate); ?>',
-	'login','directories=no,location=no,menubar=no,status=no,toolbar=no,resizable=yes,height=275,width=450');
-  popup.focus();
-</script>
 <style>
 	.width100 { width: 100; }
 	.width200 { width: 200; }
@@ -83,10 +57,24 @@
 </style>
 </head>
 <body bgcolor="#BBBBBB">
-<noscript>
 <form name="login" method="POST" action="<?php echo $this->make_url(); ?>login.phtml">
+<?php
+	global $PATH_INFO, $QUERY_STRING; 
+	if (!$arReturnPath) {
+		$split=strrpos($PATH_INFO, "/");
+		$function=substr($PATH_INFO,$split+1);
+		$arReturnPath=$this->path;
+	}
+	if (!$arReturnTemplate) {
+		$arReturnTemplate=$function;
+		if ($QUERY_STRING) {
+			$arReturnTemplate.="?$QUERY_STRING";
+		}
+	}
+?>
 <input type="hidden" name="arReturnPath" value="<?php echo $arReturnPath; ?>">
 <input type="hidden" name="arReturnTemplate" value="<?php echo $arReturnTemplate; ?>">
+<input type="hidden" name="arPopup" value="true">
 <table align="center" border="0" width="300">
 <tr>
 	<td align="center" colspan="2">
@@ -110,12 +98,14 @@
 </tr><tr>
 	<td colspan="2">&nbsp;</td>
 </tr><tr>
-	<td><input type="button" class="width100" name="cancel" value="<?php echo $ARnls["cancel"]; ?>" onClick="history.back();"></td>
+	<td><input type="button" class="width100" name="cancel" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.opener.history.back(); window.close();"></td>
 	<td align="right"><input type="submit" class="width100" name="ok" value="&nbsp;<?php echo $ARnls["ok"]; ?>&nbsp;"></td>
 </tr>
 </table>
 </form>
-</noscript>
+<script>
+	document.login.ARLogin.focus();
+</script>
 </body>
 </html>
 <?php
