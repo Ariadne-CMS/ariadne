@@ -49,8 +49,17 @@
 		window.location = "<?php echo $this->store->root.$this->path; ?>view.phtml";
 	}
 
-	function wgRecurseDone() {
-		window.location = "<?php echo $this->store->root.$this->path; ?>view.phtml";
+	function wgRecurseDone(action) {
+			switch( action ) {
+				case 'delete':
+					window.location = "<?php echo $this->store->root.$this->parent; ?>view.phtml";
+				break;
+				case 'copy':
+				case 'setowner':
+				default:
+					window.location = "<?php echo $this->store->root.$this->path; ?>view.phtml";
+				break;
+			}
 	}
 
 	function arEdit(object, arguments) {

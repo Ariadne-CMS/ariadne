@@ -100,14 +100,14 @@
 									} else {
 										if (top.window && top.window.opener) {
 											if (top.window.opener.wgRecurseDone) {
-												top.window.opener.wgRecurseDone();
+												top.window.opener.wgRecurseDone('delete');
 											} else if (top.window.opener.top.View) {
 												top.window.opener.top.View('<?php echo $this->parent; ?>');
 											}
 											
 										} else if (window.opener) {
 											if (window.opener.wgRecurseDone) {
-												window.opener.wgRecurseDone();
+												window.opener.wgRecurseDone('delete');
 											} else if (window.opener.top.View) {
 												window.opener.top.View('<?php echo $this->parent; ?>');
 											}
@@ -177,12 +177,12 @@
 							} else {
 								if (top.window) {
 									if (top.window.opener && top.window.opener.wgRecurseDone) {
-										top.window.opener.wgRecurseDone();
+										top.window.opener.wgRecurseDone('copy');
 									}
 									top.window.close();
 								} else {
 									if (window.opener && window.opener.wgRecurseDone) {
-										window.opener.wgRecurseDone();
+										window.opener.wgRecurseDone('copy');
 									}
 									window.close();
 								}
@@ -207,12 +207,12 @@
 							} else {
 								if (top.window) {
 									if (top.window.opener && top.window.opener.wgRecurseDone) {
-										top.window.opener.wgRecurseDone();
+										top.window.opener.wgRecurseDone('setowner');
 									}
 									top.window.close();
 								} else {
 									if (window.opener && window.opener.wgRecurseDone) {
-										window.opener.wgRecurseDone();
+										window.opener.wgRecurseDone('setowner');
 									}
 									window.close();
 								}
