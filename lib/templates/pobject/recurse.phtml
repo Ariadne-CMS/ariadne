@@ -65,7 +65,7 @@
 					echo "</script>\n";
 				} else {
 					if ($this->CheckSilent("delete")) {
-						if (!$this->lock("T")) {
+						if ($this->lock("T")) {
 							?>
 
 								function start() {

@@ -1,6 +1,6 @@
 <?php   
   if ($this->CheckSilent("delete")) {
-    if ($this->lock("T")) {
+    if (!$this->lock("T")) {
       $this->error=$ARnls["err:cannotlockobject"];
     } else {
       if (!$this->ls(".","system.get.phtml")) {

@@ -25,15 +25,9 @@
 			$this->call("classic.save.phtml",$arCallArgs);
 		} else if ($arSubmit==$ARnls["cancel"]) {
 			include($this->store->code."includes/cancel.phtml");
-			$this->unlock();
 		} else {// edit it
-			if ($this->lock()) {
-				// object locked, show us by who
-				$this->call("show.locks.phtml");
-			} else {
-				// every object _must_ also have a form.phtml:
-				$this->call("classic.form.phtml",$arCallArgs);	
-			}
+			// every object _must_ also have a form.phtml:
+			$this->call("classic.form.phtml",$arCallArgs);	
 		}
 	}
 ?>
