@@ -492,6 +492,7 @@ class pobject extends object {
 				} else if (!$AR->user->CheckPassword($ARPassword)) {
 					debug("pobject: CheckLogin: wrong password in cookie","object");
 					$arLoginMessage=$ARnls["accessdenied"].": ".$ARnls["passwordincorrect"];
+					unset($AR->user);
 					ldAccessDenied($this->path, $arLoginMessage);
 					$continue=false;
 				} else {
