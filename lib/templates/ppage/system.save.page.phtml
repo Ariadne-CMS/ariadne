@@ -21,12 +21,15 @@
 					$config["path"]=$AR->Tidy->path;
 					$tidy=new tidy($config);
 					$result=$tidy->clean($page);
-	//				if ($result["errors"]) {
-	//					$this->error=$result["errors"];
-	//				} else {
-						$page=$result["html"];
-	//				}
+					$page=$result["html"];
 				}
+
+				if ($arEditorSettings["htmlcleaner"]["enabled"]) {
+					include_once($this->store->code."modules/mod_htmlcleaner.php");
+					$config = $arEditorSettings["htmlcleaner"];
+					$page = htmlcleaner::cleanup($page, $config);
+				}
+
 				if ($arEditorSettings["allow_tags"]) {
 					$page=strip_tags($page, $arEditorSettings["allow_tags"]);
 				}
