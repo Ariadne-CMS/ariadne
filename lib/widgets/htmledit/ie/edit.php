@@ -7,6 +7,7 @@
 <html>
 <head>
 <meta NAME="GENERATOR" CONTENT="Microsoft Visual Studio 6.0">
+<META content="text/html; charset=unicode" http-equiv=Content-Type>
 <title>Edit <?php echo $path.$file; ?></title>
 
 <!-- Styles -->
@@ -181,9 +182,6 @@ function window_onload() {
 
 function loadpage(root, path, file, name, language, type, value, save2form) {
   // FIXME check isDirty and ask for save first.
-  // if (ViewHTML.TBSTATE=="unchecked") {
-  //   VIEW_HTML_onclick();
-  // }
   // window.document.title='Edit '+path+file+' ( '+name+': '+language+')';
   tbContentRoot=root;
   tbContentPath=path;
@@ -191,16 +189,18 @@ function loadpage(root, path, file, name, language, type, value, save2form) {
   tbContentName=name;
   tbContentLanguage=language;
   tbContentType=type;
-  tbContentValue=value;
+  tbContentValue=new String(window.opener.wgHTMLEditContent.value);
+  if (tbContentValue=='') {
+    tbContentValue='<HTML>\n<HEAD>\n  <META content="text/html; charset=unicode" http-equiv="Content-Type">\n  <TITLE></TITLE>\n</HEAD>\n<BODY>\n<P>&nbsp;</P>\n</BODY>\n</HTML>\n';
+  }
   tbContentSave2Form=save2form;
-  var test=new String(window.opener.wgHTMLEditContent.value);
-  if (test.match(/<FRAME/i) && (ViewHTML.TBSTATE=="checked")) {
+  if (tbContentValue.match(/<FRAME/i) && (ViewHTML.TBSTATE=="checked")) {
     VIEW_HTML_onclick();
   }
   if (ViewHTML.TBSTATE!="checked") {
-    tbContentElement.DocumentHTML=AR_FORMAT_HTML(window.opener.wgHTMLEditContent.value);
+    tbContentElement.DocumentHTML=AR_FORMAT_HTML(tbContentValue);
   } else {
-    tbContentElement.DocumentHTML=window.opener.wgHTMLEditContent.value;
+    tbContentElement.DocumentHTML=tbContentValue;
   }
   tbContentElement.BaseURL=root+path;
   tbContentElement.focus();
@@ -388,7 +388,7 @@ function AR_FORMAT_HTML(code) {
   sContents=sContents.replace(/</g,"&lt;");
   sContents=sContents.replace(/>/g,"&gt;");  
   sContents=sContents.replace(/ /g,"&nbsp;");
-  sContents=new String("<html><head><style> p { margin: 0px;} </style></head><BODY style=\"font:10pt courier new, monospace\">"+sContents+"</BODY></html>");
+  sContents=new String("<HTML><HEAD><META content=\"text/html; charset=unicode\" http-equiv=Content-Type><STYLE> P { margin: 0px;} </STYLE></HEAD><BODY STYLE=\"font:10pt courier new, monospace\">"+sContents+"</BODY></HTML>");
   var linebreak=sContents.lastIndexOf('\n');
   while (linebreak!=-1) {
     sContents=sContents.substr(0, linebreak-1)+'<P>'+sContents.substr(linebreak+1); 
@@ -422,7 +422,6 @@ function VIEW_HTML_onclick() {
     if (sContents.match(/<FRAME/i)) {
       alert('HTML contains a frameset\nWYSIWYG view disabled');
     } else {
-      var sContents=tbContentElement.DOM.body.innerText;
       TBSetState(FormatToolbar, ToolbarFormatState);
       if (ToolbarFormatState=="hidden") {
         TBSetState(ToolbarMenuFmt, "unchecked");
