@@ -12,8 +12,6 @@ Currently known broken in CVS / Todo before 2.0b10
 - puser: profile and group selection in wizard unfinished.
 - files/templates: storage is broken conceptually, needs a new approach.
   -> use filestore for templates and files, see mod_filestore.
-- pobject: recurse.copy(to).phtml are broken (templates get copied wrong)
-  also needs a user interface
 - recurse: lock alert doesn't show who locked what
 - pobject: CheckSilent() is broken, only works after a CheckLogin, even if a cookie is available.
 - articles won't show in View. (newspaper)
@@ -22,6 +20,7 @@ Currently known broken in CVS / Todo before 2.0b10
 - add a way to get the path to the nearest psite parent (or root) in object/class templates. (to avoid using full absolute paths in templates) 
 - browse : even cancel updates browsepath.
 - browse : typeing in a new (non existant) path doesn't work.
+- add grants: check whether user/group exists...
 
 Todo before 2.0RC1
 
