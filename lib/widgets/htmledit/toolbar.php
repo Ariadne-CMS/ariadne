@@ -733,13 +733,12 @@ return tbContentElement_ContextMenuAction(itemIndex)
   <select ID="ParagraphStyle" class="tbGeneral" style="width:90" TITLE="Paragraph Format" LANGUAGE="javascript" onchange="return ParagraphStyle_onchange()">
     <option value="P">Normal (P)</option>
     <option value="H1">Heading 1 (H1)</option>
-    <option value="H2">Heading 1 (H1)</option>
-    <option value="H3">Heading 2 (H1)</option>
-    <option value="H4">Heading 3 (H1)</option>
-    <option value="H5">Heading 4 (H1)</option>
-    <option value="H6">Heading 5 (H1)</option>
-    <option value="H7">Heading 6 (H1)</option>
-    <option value="H1">Heading 7 (H1)</option>
+    <option value="H2">Heading 2 (H2)</option>
+    <option value="H3">Heading 3 (H3)</option>
+    <option value="H4">Heading 4 (H4)</option>
+    <option value="H5">Heading 5 (H5)</option>
+    <option value="H6">Heading 6 (H6)</option>
+    <option value="H7">Heading 7 (H7)</option>
     <option value="PRE">Preformatted (PRE)</option>
   </select>
 
