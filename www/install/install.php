@@ -31,6 +31,9 @@
   $value["value"]["string"]=128;
   $store->create_property("value",$value);
 
+  $ptext["value"]["string"]=128;
+  $store->create_property("text",$ptext);
+
   $locked["id"]["string"]=16;
   $locked["duration"]["number"]=1;
   $store->create_property("locked", $locked);
