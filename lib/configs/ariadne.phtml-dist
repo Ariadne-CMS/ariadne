@@ -142,6 +142,7 @@
   $ARConfig->cache[".."]->nls=$AR->nls;        // do not change
   $ARConfig->cache[".."]->root["path"]="/";    /* must always start with a '/' */
   $ARConfig->cache[".."]->root["value"]=$AR->root;  // do not change
+  $ARConfig->cache[".."]->site="/";            // do not change
 
   $ARCurrent=new object;                       // do not change
  
