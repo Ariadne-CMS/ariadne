@@ -2,9 +2,10 @@
   include($this->code."stores/modules/sql_compiler.php");
 
   class postgresql_compiler extends sql_compiler {
-	function postgresql_compiler($tbl_prefix="") {
+	function postgresql_compiler(&$store, $tbl_prefix="") {
 		debug("postgresql_compiler($tbl_prefix)", "store");
 		$this->tbl_prefix=$tbl_prefix;
+		$this->store=$store;
 	}
 
 	function compile_tree(&$node) {
@@ -102,9 +103,16 @@
 					$result=" $left $operator $right ";
 				} else {
 					$table=$this->tbl_prefix."types";
-					$this->used_tables[$table]=$table;
 					$type=$this->compile_tree($node["right"]);
-					$result=" (".$this->tbl_prefix."types.implements $operator $type and ".$this->tbl_prefix."objects.vtype = ".$this->tbl_prefix."types.type ) ";
+					switch ($operator) {
+						case '!=':
+							$result=" (".$this->tbl_prefix."objects.type not in (select type from ".$this->tbl_prefix."types where implements = $type )) ";
+						break;
+						default:
+							$this->used_tables[$table]=$table;
+							$result=" (".$this->tbl_prefix."types.implements $operator $type and ".$this->tbl_prefix."objects.vtype = ".$this->tbl_prefix."types.type ) ";
+						break;
+					}
 				}
 			break;
 			case 'group':
