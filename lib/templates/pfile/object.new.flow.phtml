@@ -10,6 +10,8 @@
 
 	$start="object.new.uploadfile.phtml";
 	$filename="object.new.filename.phtml";
+	$summary="edit.object.data.form.phtml";
+	$language="edit.object.language.phtml";
 	$finish="edit.object.data.save.phtml";
  
 	$arFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
@@ -21,7 +23,32 @@
 	$arFlow[$i]["title"]=$ARnls["filename"];
 	$arFlow[$i]["template"]=$filename;
 	$arFlow[$i]["prev"]=$i-1;
-	$arFlow[$i]["save"]=$i+1; 
+	$arFlow[$i]["next"]=$i+1; 
+	$arFlow[$i]["save"]=$i+2;
+
+	if (count($ARConfig->nls->list)>1) {
+		$languagestep=1;
+	} else {
+		$languagestep=2;
+	}
+
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["data"];
+	$arFlow[$i]["template"]=$summary;
+	$arFlow[$i]["prev"]=$i-1;
+	$arFlow[$i]["next"]=$i+1;
+	$arFlow[$i]["save"]=$i+1+$languagestep;
+
+	if ($languagestep) {
+		$i++;
+		$arFlow[$i]["title"]=$ARnls["language"];
+		$arFlow[$i]["template"]=$language;
+		$arFlow[$i]["next"]=$i-1;
+		$arFlow[$i]["prev"]=$i-1;
+		$arFlow[$i]["save"]=$i+1;
+	}
+
+
 	$i++;
 	$arFlow[$i]["title"]=$ARnls["save"];
 	$arFlow[$i]["template"]=$finish;
@@ -44,7 +71,7 @@
 		}
 		$ARCurrent->arNewFilename=$arNewFilename;
 	}		
-	if ($arFlow[0]["current"]==3) {
+	if ($arFlow[0]["current"]==4) {
 		$wgOverwrite=$this->getdata("wgOverwrite","none");
 		if (!$wgOverwrite || $wgOverwrite=="no") {
 			$arFlow[0]["current"]=2;
