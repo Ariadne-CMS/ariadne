@@ -1,15 +1,20 @@
 <?php
   require("../../ariadne.inc");
   require($ariadne."/configs/ariadne.phtml");
+
+  $date = $HTTP_GET_VARS["date"];
   if (!$date) {
     $date=time();
   }
+  $format = $HTTP_GET_VARS["format"];
   if (!$format) {
     $format="%m-%d-%Y";  
   }
+  $title = $HTTP_GET_VARS["title"];
   if (!$title) {
     $title="Select Date";
   }
+  $name = $HTTP_GET_VARS["name"];
   if (!$name) {
     $name="date";
   }
