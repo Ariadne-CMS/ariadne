@@ -30,27 +30,30 @@
   /* Tar configuration                                                     */
   /*************************************************************************/
 
-  if ($AR->OS=='WIN32') {
-    $tar_path=str_replace('\\', '/', $AR->dir->install);
-    if (eregi('^([a-z]):', $tar_path, $regs)) {
-      $tar_path="//".$regs[1].substr($tar_path,2);
+  $ax_config["tar"]["mode"] = "system";
+
+  if ($ax_config["tar"]["mode"] == "system") {
+    if ($AR->OS=='WIN32') {
+      $tar_path=str_replace('\\', '/', $AR->dir->install);
+      if (eregi('^([a-z]):', $tar_path, $regs)) {
+        $tar_path="//".$regs[1].substr($tar_path,2);
+      }
+      $tar_path=ereg_replace('([^\])[ ]', '\1\ ', $tar_path);
+  
+      $compress_cmd                     = '--use-compress-program='.($tar_path).'/bin/gzip.exe';
+      $tar_cmd                          = $AR->dir->install.'\bin\tar.exe '.$compress_cmd;
+      $ax_config["tar"]["error_handler"]   = '';
+    } else {
+      $tar_cmd                          = 'tar -z ';
+      $ax_config["tar"]["error_handler"]   = ' 2> %s ';
     }
-    $tar_path=ereg_replace('([^\])[ ]', '\1\ ', $tar_path);
 
-    $compress_cmd                     = '--use-compress-program='.($tar_path).'/bin/gzip.exe';
-    $tar_cmd                          = $AR->dir->install.'\bin\tar.exe '.$compress_cmd;
-    $ax_config['tar_error_handler']   = '';
-  } else {
-    $tar_cmd                          = 'tar -z ';
-    $ax_config['tar_error_handler']   = ' 2> %s ';
+    $ax_config["tar"]["tar"]               = $tar_cmd." -c -C %destdir% %contents% -f %archive% %errorhandler%";
+    $ax_config["tar"]["untar"]             = $tar_cmd." -x -C %destdir% %contents% -f %archive% %errorhandler%";
+
+    // set this to true if you are really sure that tar throws errors which
+    // do not occur.
+
+    $ax_config["tar"]["nofail"]            = false;
   }
-
-  $ax_config["tar_tar"]               = $tar_cmd." -c -C %destdir% %contents% -f %archive% %errorhandler%";
-  $ax_config["tar_untar"]             = $tar_cmd." -x -C %destdir% %contents% -f %archive% %errorhandler%";
-
-  // set this to true if you are really sure that tar throws errors which
-  // do not occur.
-
-  $ax_config['tar_nofail']            = false;
-
 ?>
