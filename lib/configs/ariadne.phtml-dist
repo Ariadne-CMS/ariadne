@@ -146,8 +146,9 @@
 
   /* register mimetype to class conversions *********************************/
 
-  $ARConfig->cache[".."]->mimetypes['^image/']  = "pphoto";
-  $ARConfig->cache[".."]->mimetypes['.*']       = "pfile";
+  $ARConfig->cache[".."]->mimetypes['^image/']     = "pphoto";
+  $ARConfig->cache[".."]->mimetypes['^text/html']  = "ppage";
+  $ARConfig->cache[".."]->mimetypes['.*']          = "pfile";
 
 
   $ARCurrent=new object;                       // do not change
