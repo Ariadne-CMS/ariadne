@@ -39,12 +39,8 @@
       }
     }
     if (!$error) {
-      if (!isset($file)) {
-        global $file, $file_name, $file_size, $file_type;
-      } else {
-        global $file_type;
-      }
-      if ($file && file_exists($file)) {
+      global $HTTP_POST_FILES;
+      if ($HTTP_POST_FILES['file'] && is_uploaded_file($HTTP_POST_FILES['file']['tmp_name'])) {
         // a new file is uploaded via pfile/form.phtml 
         if ($newtype) {
           if ($this->CheckNewFile($this->path.$newfilename."/")) {
@@ -55,13 +51,15 @@
           $path=$this->store->files."files".$this->path.$newdata->filename;
           $newdata->size=$file_size;
           if (!$newdata->mimetype) {
-            $newdata->mimetype=$file_type;
+            $newdata->mimetype=$HTTP_POST_FILES['file']['type'];
           }
         } else {
           $path=$this->store->files."files".$newdata->path.$newdata->filename;
         }
         if (!$error) {
-          copy($file,$path); 
+          if (!move_uploaded_file($HTTP_POST_FILES['file']['tmp_name'],$path)) {
+		$error="Couldn't move file to $path";
+          } 
         }
       }
     }
