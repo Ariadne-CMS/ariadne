@@ -20,8 +20,17 @@
         </td>
       </tr><tr>
         <td colspan="2">
-          <input type="text" name="name" maxlength="50" 
+          <input type="text" name="name" 
             value="<?php $this->showdata("name", "none"); ?>">
+        </td>
+      </tr></tr>
+        <td>
+          <span><?php echo $ARnls["email"]; ?></span>
+        </td>
+      </tr><tr>
+        <td colspan="2">
+          <input type="text" name="email" 
+            value="<?php $this->showdata("email", "none"); ?>">
         </td>
       </tr>
       </table>
