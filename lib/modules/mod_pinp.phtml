@@ -77,6 +77,7 @@ class scanner {
 					$scan_buffer = substr($YYBUFFER, $YYCURSOR, -1);
 					$re_code="^(.*)(<pinp>|<script[^>]+language[^>]*=[^>]*php[^>]*>|<[%?])";
 					if (preg_match("!".$re_code."!Usi", $scan_buffer, $matches)) {
+						$this->YYLINE += substr_count($matches[1], "\n");
 						if ($matches[2]) {
 							if (strtolower($matches[2]) === "<pinp>") {
 								/* pinp tag found */
