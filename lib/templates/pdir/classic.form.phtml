@@ -16,8 +16,8 @@
 <html>
 <head>
 <?php
-	// lock this object first, if it succeeds, it will expose some js functions
-	$this->call("lock.init.phtml");
+		// lock this object first, if it succeeds, it will expose some js functions
+		if (!@current($this->call("lock.init.phtml"))) {
 ?>
 <title><?php 
 	$title=$ARnls["edit"]." ".@current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml")); 
@@ -69,8 +69,8 @@
 	<td align="right">
 		<font face="helvetica, sans-serif"><b><?php echo $ARnls["name"]; ?> :</b></font>
 	</td><td>
-		<input type="text" name="<?php echo $nls."[name]"; ?>" maxlength="50" 
-			value="<?php $this->showdata("name",$nls); ?>">
+		<input type="text" name="<?php echo $selectednls."[name]"; ?>" maxlength="50" 
+			value="<?php $this->showdata("name",$selectednls); ?>">
 	</td><td align="right">
 		<?php 
 			if (!$arNewType) {
@@ -84,8 +84,8 @@
 		<font face="helvetica, sans-serif"><?php echo $ARnls["summary"]; ?>&nbsp;:</font>
 	</td>
 	<td colspan="2">
-		<textarea name="<?php echo $nls."[summary]"; ?>" cols="50" rows="4" wrap="soft"><?php 
-				echo ereg_replace("&","&amp;",$this->getdata("summary",$nls)); 
+		<textarea name="<?php echo $selectednls."[summary]"; ?>" cols="50" rows="4" wrap="soft"><?php 
+				echo ereg_replace("&","&amp;",$this->getdata("summary",$selectednls)); 
 		?></textarea>
 	</td>
 </tr><tr>
@@ -96,7 +96,7 @@
 	<?php 
 		if (!$arNewType) {
 			$wgHTMLEditName="page";
-			$wgHTMLEditLanguage=$nls;
+			$wgHTMLEditLanguage=$selectednls;
 			$wgHTMLEditContent=$this->getdata("page",$nls);
 			include($this->store->code."widgets/htmledit/js.html"); 
 			include($this->store->code."widgets/htmledit/form.html"); 
@@ -133,5 +133,7 @@
 </body>
 </html>
 <?php
+
+		}	
 	}
 ?>
