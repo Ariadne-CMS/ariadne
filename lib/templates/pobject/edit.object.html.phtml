@@ -2,8 +2,8 @@
 	if ( ( 	($this->arIsNewObject && $this->CheckLogin("add")) ||
 			(!$this->arIsNewObject && $this->CheckLogin("edit")) )
         && $this->CheckConfig()) {
-		global $HTTP_USER_AGENT;
-		if	(	eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
+		global $HTTP_SERVER_VARS;
+		if	(	eregi(".*msie ([0-9]+).*",$HTTP_SERVER_VARS["HTTP_USER_AGENT"], $regs) &&
 				$regs[1] && 
 				(intval($regs[1])>=4) && 
 				($AR->user->data->editor!="text")
