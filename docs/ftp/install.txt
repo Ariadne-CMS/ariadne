@@ -1,0 +1,177 @@
+The Ariadne FTP loader.
+----------------------------------
+
+1. What does it do?
+-------------------
+
+The Ariadne FTP loader is an PHP script which can handle FTP requests
+and translate them to Ariadne specific requests. This way you can use 
+an FTP client for:
+
+	- adding and editing templates
+	- adding and editing files / photos
+	- object renaming
+	- object (and tree) deletion
+	- creating directories
+
+2. Configuring the Ariadne FTP loader.
+--------------------------------------
+
+The Ariadne FTP loader configuration files are found in the
+ariadne/lib/configs/ftp/ directory. In there you can find a standard
+configuration file (default.phtml-dist) which you can use to setup
+the Ariadne FTP loader. In this section we will walk through all available
+configuration settings.
+
+	$ftp_config['server_ip']
+
+	This variable tells the FTP loader to use this ip number for 'passive' 
+	modes. When a client starts a passive mode transaction, the server 
+	tells the client which ip adress to connect to.
+
+	$ftp_config['root']
+
+	This variable sets the root of the FTP site. Default value is '/'.
+
+	$ftp_config['greeting']
+
+	The content of this variable will be printed when a client connects to the
+	Ariadne FTP server.
+
+	$ftp_config['debugfile']
+
+	If you turn on the debug system within the Ariadne loader, all messages
+	will be written to this file. Make sure that the Ariadne FTP server
+	user has write permissions on this file.
+
+
+3. Setting up Ariadne
+---------------------
+
+3.1 User grants
+---------------
+
+Every user you want to have ftp access to Ariadne, need the 'ftp' grant on
+the ftp site root path. Note that the 'admin' user will always have access.
+
+3.2 File-type casting
+---------------------
+
+The Ariadne FTP server has the ability to cast/transform certain file types 
+(based on their mimetype) to Ariadne object types. The default object type
+for uploaded files is 'pfile'. With the file-type cast feature you can, for
+example, tell the FTP server that it has to create a pphoto when the mimetype 
+of the uploaded file matches 'image/.*'. These filetype casts can
+be configured in the ariadne/lib/configs/ariadne.phtml configuration file.
+
+An example of such an configuration entry is:
+
+	$ARConfig->cache[".."]->mimetypes['^image/']= "pphoto";
+	$ARConfig->cache[".."]->mimetypes['.*']		= "pfile";
+
+	the ->mimetype's index is the regular expression tested against
+	the mimetype of the uploaded file. The value is the object type
+	which the file has to be casted to.
+
+
+4. How to install the Ariadne FTP loader as an FTP server.
+----------------------------------------------------------
+
+4.1 Prerequisites
+-----------------
+
+In order to install the Ariadne FTP loader as an FTP server you need the 
+following system configuration:
+
+	- an inetd/xinetd (or equivalent) application.
+	- a php-cgi binary, version 4.0.6 or higher, with mysql (or postgresql) 
+	  and socket support.	
+
+Then you have to decide which port you want to use for the Ariadne FTP
+server. The standard port for FTP is 21, but since Ariadne can't share
+that port with an existing FTP server, we recommend to choose another
+port for it. In the following examples we will bind the Ariadne FTP server to
+port 2121.
+
+
+4.2 Installing under inetd.
+---------------------------
+
+To register the Ariadne FTP server with inetd, edit the file
+/etc/inetd.conf. Add an entry similar to the following to the inetd.conf file:
+
+2121 stream tcp nowait www-data /usr/bin/php \
+     -f /usr/local/lib/ariadne/ftp/loader.php default.phtml
+
+Explanation:
+
+[port] stream tcp nowait [webserver user] [path to php] \
+     -f [ftp loader] [config file]
+
+	- for [port] you should fill in the port number to use (e.g. 2121)
+
+	- [webserver user] this is the user that your webserver is running as.
+	Typically this is 'www-data' for Debian based systems and 'apache' for 
+	redhat based systems.
+
+	- [path to php] is the location of your php-cgi binary. This is typically 
+	/usr/bin/php
+
+	- [ftp loader] this is the path to the Ariadne FTP loader. If you have 
+	installed Ariadne under /usr/local/lib/ariadne/, the path to the Ariadne 
+	FTP loader will be /usr/local/lib/ariadne/ftp/loader.php
+
+	- [config file] The filename of the configuration file. The default
+	filename is "default.phtml".
+
+
+After you have added the entry to the inetd.conf, you should reload it. On 
+Debian based systems you need to execute the following line:
+
+	/etc/init.d/inetd reload
+
+On RedHat based systems:
+
+	/etc/rc.d/init.d/inetd reload
+
+
+4.3 Installing under xinetd.
+----------------------------
+
+To register the Ariadne FTP server with xinetd you have to add a configuration
+file under /etc/xinet.d/ for the Ariadne FTP service, we will name it ariadne_ftp.
+
+This file should contain something like:
+
+	service	2121 {
+		disable		= no
+		flags		= REUSE
+		socket_type = stream
+		user		= apache
+		server		= /usr/bin/php
+		server_args	= -f /usr/local/lib/ariadne/ftp/loader.php default.phtml
+	}
+
+
+Explanation:
+
+	- 'service 2121' this line contains the port number you want the
+	Ariadne FTP server to listen on. 
+
+	- The 'user' field contains the user that your webserver is running as.
+	Typically this is 'www-data' for Debian based systems and 'apache' for 
+	RedHat.
+
+	- The 'server' variable contains the path to the php-cgi binary
+
+	- 'server_args' contains the path to the ftp loader
+	(/usr/local/lib/ariadne/ftp/loader.php) and the configuration file of the
+	loader (default.phtml)
+
+In order to activate these changes, you need to reload the xinetd configuration
+files by executing:
+
+	On RedHat based systems:
+
+	/etc/rc.d/init.d/xinetd reload
+
