@@ -76,7 +76,7 @@ class puser extends pdir { // puser class definition
 					$newpath="";
 				} else {
 					$newpath=$this->store->make_path($path, "..");
-					$newpath=$this->FindGrants($newpath, $result, $top, ARMASKGLOBAL);
+					$newpath=$this->FindGrants($newpath, $result, $top, ARMASKCHILDREN);
 				}
 				$ARConfig->GrantsCache[$this->path][$path]["grants"]=$result;
 				$ARConfig->GrantsCache[$this->path][$path]["setby"]=$newpath;
