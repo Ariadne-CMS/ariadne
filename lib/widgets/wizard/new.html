@@ -81,6 +81,9 @@
   if (!$wgWizHeader) {
     $wgWizHeader="&nbsp;";
   }
+  if (!$wgWizTabsTemplate && $wgWizTabsTemplate!==false) {
+    $wgWizTabsTemplate='edit.object.language.tabs.phtml';
+  }
 ?>
 <html>
 <head>
@@ -235,19 +238,27 @@
   }
 
   #tabs {
+    position: relative;
     margin: 0px;
     padding: 0px;
     border: 0px;
   	padding-left: 4px;
+    height: 1px;
     width: 98%;
+    z-index: 2;
   }
 
   #tabsdata {
+    position: relative;
+    z-index: 1;
     clear: both;
     padding: 0px;
     margin: 0px;
+    margin-top: -1px;
+    padding-top: 1px;
   	margin-left: 4px;
   	border-left: 1px solid threedhighlight;
+  	border-top: 1px solid threedhighlight;
   	border-bottom: 1px solid threedshadow;
   	border-right: 1px solid threedshadow;
     width: 98%;
@@ -256,7 +267,6 @@
   ul#tabnav {
     list-style-type: none;
     padding-bottom: 25px;
-    border-bottom: 1px solid threedhighlight;
     margin: 0px;
   }
 
@@ -364,33 +374,11 @@
 	</td><td colspan="2" valign="top">
 <div id="wgWizSectionData">
 	<div id="tabs">
-		<ul id="tabnav">
 <?php
-	$languages=array_merge($ARConfig->nls->list, $this->data->nls->list);
-	$count=count($languages);
-	while (list($nlskey, $language)=each($languages)) {
-		if (($this->data->nls->list[$nlskey]) || ($this->getdata('name',$nlskey))) {
-			$image=$AR->dir->images."nls/small/".$nlskey.".gif";
-		} else {
-			$image=$AR->dir->images."nls/small/faded/".$nlskey.".gif";
-		}
-		if ($nlskey==$arLanguage) {
-			$class="tab-selected";
-			$image=$AR->dir->images."nls/small/".$nlskey.".gif";
-		} else {
-			$class="tab";
-		}
-		echo "<li class=\"$class\"><a href=\"javascript:switchLanguage('$nlskey');\">";
-		echo "<img src=\"$image\" alt=\"$language\" border=\"0\">";
-		if (($count<10) && ($count>4)) {
-			echo "&nbsp;".$nlskey;
-		} else if ($count<=4) {
-			echo "&nbsp;".$language;
-		}
-		echo "</a>";
+	if ($wgWizTabsTemplate) {
+		$this->call($wgWizTabsTemplate, $wgWizCallArgs);
 	}
 ?>
-		</ul>
 	</div>
 	<div id="tabsdata">
 	    <?php

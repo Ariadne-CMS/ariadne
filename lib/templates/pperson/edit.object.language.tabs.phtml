@@ -1,0 +1,48 @@
+<?php
+	/******************************************************************
+	 edit.object.language.tabs.phtml                       Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: read
+	 Global variables: none
+
+	 This template displays a tablist of available languages
+	 to be used in the flow of an object edit wizard.
+
+	 no result
+
+	******************************************************************/
+
+	if ($this->CheckSilent("read") && $this->CheckConfig()) {
+?>
+<ul id="tabnav">
+<?php
+	$arLanguage=$this->getdata('arLanguage');
+	$languages=array_merge($ARConfig->nls->list, $this->data->nls->list);
+	$count=count($languages);
+	while (list($nlskey, $language)=each($languages)) {
+		if (($this->data->nls->list[$nlskey]) || ($this->getdata('summary',$nlskey))) {
+			$image=$AR->dir->images."nls/small/".$nlskey.".gif";
+		} else {
+			$image=$AR->dir->images."nls/small/faded/".$nlskey.".gif";
+		}
+		if ($nlskey==$arLanguage) {
+			$class="tab-selected";
+			$image=$AR->dir->images."nls/small/".$nlskey.".gif";
+		} else {
+			$class="tab";
+		}
+		echo "<li class=\"$class\"><a href=\"javascript:switchLanguage('$nlskey');\">";
+		echo "<img src=\"$image\" alt=\"$language\" border=\"0\">";
+		if (($count<10) && ($count>4)) {
+			echo "&nbsp;".$nlskey;
+		} else if ($count<=4) {
+			echo "&nbsp;".$language;
+		}
+		echo "</a>";
+	}
+?>
+</ul>
+<?php
+	}
+?>
