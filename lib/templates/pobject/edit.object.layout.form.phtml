@@ -54,6 +54,20 @@ function event_templatescroll(){
 }
 
 
+function tabKey(evt,item){
+	evt = (evt) ? evt : ((event) ? event : null );
+	if( evt ) {
+		var charCode = (evt.charCode ? evt.charCode : ((evt.keyCode) ? evt.keyCode : evt.which));
+		if( charCode==9 ) {
+			item.focus();
+			item.selection=document.selection.createRange();
+			item.selection.text="\t";
+			return false;
+		}
+	}
+	return true;
+}
+
 </script>
 </head>
 <script src="<?php echo $AR->dir->www; ?>widgets/window/savesize.js"></script>
@@ -141,8 +155,8 @@ function event_templatescroll(){
 ?>
 </textarea>
 </td><td width="100%">
-<textarea cols="78" rows="20" name="template" id="template" wrap="off" class="templatefield" onscroll="event_templatescroll();"><?php
-	echo $file;
+<textarea onkeydown="return tabKey(event,this);" cols="78" rows="20" name="template" id="template" wrap="off" class="templatefield" onscroll="event_templatescroll();"><?php
+        echo $file;
 ?></textarea>
 </td></tr></table>
 <table border="0" width="100%" height="10%" cellspacing="0">
