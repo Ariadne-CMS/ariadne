@@ -43,15 +43,17 @@
 					 ($entry_arr["mday"]!=$date_arr["mday"]) ) ) { // when the date is changed, default to current
 				$confirm=$ARnls["current"];
 			} else {
-				$this->call("classic.confirm.phtml",$arCallArgs."&question=".RawUrlEncode($ARnls["q:applychanges"]).
-					"&buttons[]=".RawUrlEncode($ARnls["all"]).
-					"&buttons[]=".RawUrlEncode($ARnls["current"]));
+				$question=$ARnls["q:applychanges"];
+				$buttons[]=$ARnls["all"];
+				$buttons[]=$ARnls["current"];
+				$this->call("classic.confirm.phtml",array_merge($arCallArgs, compact($question, $buttons)));
 			}
 		} 
 		if ($confirm) {		
-			$this->call("system.save.data.phtml",$arCallArgs.
-				"&repeat=".RawUrlEncode($repeat).
-				"&confirm=".RawUrlEncode($confirm));
+			$this->call("system.save.data.phtml",array_merge($arCallArgs, compact("repeat","confirm")));
+			if (!$arReturnPage=$this->getdata("arReturnPage","none")) {
+				$arReturnPage=$this->store->root.$this->parent;
+			}
 			ldRedirect($arReturnPage);
 		}
 	}

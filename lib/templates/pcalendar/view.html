@@ -12,15 +12,15 @@
 			if (!$date) {
 				$date=$now;
 			} 
-			$this->call("month.html","date=".RawUrlEncode($date));
+			$this->call("month.html", compact("date"));
 		?>
 		<img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="5"><br>
 		<?php
-			$this->call("todo.html","date=".RawUrlEncode($date));
+			$this->call("todo.html",compact("date"));
 		?>
 	</td><td valign="top" rowspan="2">
 		<?php
-			$this->call("day.html","date=".RawUrlEncode($date));
+			$this->call("day.html",compact("date"));
 		?>
 	</td>
 </tr>

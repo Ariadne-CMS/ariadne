@@ -71,7 +71,7 @@
 		<font face="helvetica, sans-serif">
 		<select name="newscenario">
 		<?php
-			$this->ls("/system/newspaper/scenarios/","show.option.phtml","selected=".RawUrlEncode($data->scenario));
+			$this->ls("/system/newspaper/scenarios/","show.option.phtml", Array("selected" => $data->scenario));
 		?>
 		</select>
 		</font>

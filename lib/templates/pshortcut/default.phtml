@@ -5,7 +5,8 @@
 		$ARBeenHere[$arCallFunction][$path]+=1;
 		if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
 			if ($path && $this->store->exists($path)) {
-				$arResult=@current($this->get($path, $arCallFunction, $arCallArgs."&arShortCut=".RawUrlEncode($this->path)));
+				$arCallArgs=array_merge($arCallArgs, Array("arShortCut" => $this->path));
+				$arResult=@current($this->get($path, $arCallFunction, $arCallArgs));
 			} else {
 				?>
 					<html>

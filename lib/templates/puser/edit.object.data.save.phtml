@@ -1,34 +1,38 @@
 <?php
-  /******************************************************************
-   edit.object.data.save.phtml			   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
+	/******************************************************************
+	 edit.object.data.save.phtml				 Muze Ariadne v2.0b
+	 ------------------------------------------------------------------
 
-   no result.
+	 no result.
  
-  ******************************************************************/
+	******************************************************************/
 
-  $this->call("system.save.data.phtml",$arCallArgs);
-  if ($this->error) {
-    ?>
-      <font color="red" face="arial,helvetica,sans-serif" size=+1><?php echo $this->error; ?></font><p>
-    <?php
-  } else {
-    $folder=$this->call("system.get.folder.phtml");
-    $returnpage=$this->path."js.window.objectadded.phtml";
-    if (($password=$this->getdata("pass1","none")) && 
-        ($this->data->login==$AR->user->data->login)) {
-      $returnpage=$this->path."login.phtml?ARLogin=".RawUrlEncode($data->login).
-         "&ARPassword=".RawUrlEncode($password)."&arReturnPage=".RawUrlEncode($returnpage);
-    }
-    ?>
-      <script> 
-        if (window.opener.top.tree) {
-          <?php
-            echo "window.opener.top.tree.UpdateLinks('{$folder["icon"]}','".AddSlashes($folder["name"])."','{$folder["path"]}','".AddSlashes($folder["pre"])."');\n";
-          ?>
-          document.location='<?php echo $this->store->root.$returnpage; ?>';
-        }
-      </script>
-    <?php
-  }
+	$this->call("system.save.data.phtml",$arCallArgs);
+	if ($this->error) {
+		?>
+			<font color="red" face="arial,helvetica,sans-serif" size=+1><?php echo $this->error; ?></font><p>
+		<?php
+	} else {
+		$folder=$this->call("system.get.folder.phtml");
+		$arReturnPath=$this->path;
+		$arReturnTemplate="js.window.objectadded.phtml";
+		if (($password=$this->getdata("pass1","none")) && 
+				($this->data->login==$AR->user->data->login)) {
+			$arReturnPage=$this->store->root.$this->path."login.phtml?ARLogin=".RawUrlEncode($data->login).
+				"&ARPassword=".RawUrlEncode($password)."&arReturnPath=".RawUrlEncode($arReturnPath).
+				"&arReturnTemplate=".RawUrlEncode($arReturnTemplate);
+		} else {
+			$arReturnPage=$this->store->root.$arReturnPath.$arReturnTemplate;
+		}
+		?>
+			<script> 
+				if (window.opener.top.tree) {
+					<?php
+						echo "window.opener.top.tree.UpdateLinks('{$folder["icon"]}','".AddSlashes($folder["name"])."','{$folder["path"]}','".AddSlashes($folder["pre"])."');\n";
+					?>
+					document.location='<?php echo $returnpage; ?>';
+				}
+			</script>
+		<?php
+	}
 ?>

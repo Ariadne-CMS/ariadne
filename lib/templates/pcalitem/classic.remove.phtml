@@ -10,18 +10,19 @@
 
 	******************************************************************/
 	if ($this->CheckLogin("delete")) {
-		if (!$confirm) {
+		if (!$confirm=$this->getdata("confirm","none")) {
 			if (!$this->data->repeat || ($this->data->repeat=="none")) {
 				$confirm=$ARnls["current"];
 			} else {
-				$arCallArgs.="&question=".RawUrlEncode($ARnls["q:deleteall"]);
-				$arCallArgs.="&buttons[]=".RawUrlEncode($ARnls["all"]);
-				$arCallArgs.="&buttons[]=".RawUrlEncode($ARnls["current"]);
+				$question=$ARnls["q:deleteall"];
+				$buttons[]=$ARnls["all"];
+				$buttons[]=$ARnls["current"];
+				$arCallArgs=array_merge($arCallArgs, compact("question", "buttons"));
 				$this->call("classic.confirm.phtml", $arCallArgs);
 			}
 		}
 		if ($confirm) {
-			$this->call("system.remove.phtml","entry=$entry&confirm=".RawUrlEncode($confirm));
+			$this->call("system.remove.phtml",compact("entry","confirm"));
 			if (!$arReturnPage) {
 				$arReturnPage=$this->store->root.$this->parent;
 			}

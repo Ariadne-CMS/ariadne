@@ -11,6 +11,6 @@ Addressbook<br>
 				$criteria["address"][AddSlashes($search_property)]["LIKE"]="'%".AddSlashes($search_value)."%'";
 				break;
 		}
-		$this->find(".",$criteria,"show.card.html","search_property=".urlencode($search_property)."&search_value=".urlencode($search_value));
+		$this->find(".",$criteria,"show.card.html",compact("search_property", "search_value"));
 	}
 ?>

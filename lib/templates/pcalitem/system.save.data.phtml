@@ -123,6 +123,7 @@
 				// see if we need to split the object
 				$confirm=$this->getdata("confirm","none");
 				if ($confirm==$ARnls["current"]) {
+					debug("confirm: current","all");
 					// save a new pcalitem with the current values, no repeat
 					$newcalitem=$this->store->newobject($this->path."{0:id}/",$this->path,$this->type,$this->data);
 					$newcalitem->arIsNewObject=true;
@@ -132,10 +133,12 @@
 					$this->data->timeframes=$this->DelTimeframe($entry);
 					$dontsavetimeframes=true;
 				} else { // $confirm=="All" by default
+					debug("confirm: all","all");
 					// check whether this is the first item in the repeating row
 					//	 or the item doesn't repeat
 					// else -> split into two, save the newer (starting from now)
 					if (($this->data->repeat!="none") && ($this->data->timeframes[0]["start"]<$entry)) {
+						debug("save a new pcalitem, repeating from now","all");
 						// save a new pcalitem, repeating from now
 						$newcalitem=$this->store->newobject($this->path."{0:id}/",$this->path,$this->type,$this->data);
 						$newcalitem->arIsNewObject=true;

@@ -3,9 +3,8 @@
 		// first make sure that the object is clean (data can only be set via 
 		// the defined interface: $arCallArgs)
 	    $this->data=@current($this->get(".","system.get.data.phtml"));
-
 		if ($confirm==$ARnls["all"]) {
-			$this->ls(".","system.remove.phtml","entry=$entry&confirm=".RawUrlEncode($confirm));
+			$this->ls(".","system.remove.phtml",compact("entry","confirm"));
 		}
 		if ($confirm==$ARnls["all"]) {
 			$this->data->timeframes=$this->NewEndtime($entry);
