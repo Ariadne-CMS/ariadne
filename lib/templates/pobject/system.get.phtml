@@ -17,5 +17,11 @@
    so will result in a large performance penalty.
 
   ******************************************************************/
-  $arResult=$this;
+  if ($this->arCallingContext=='pinp') {
+    if ($this->CheckLogin('read')) {
+      $arResult=$this;
+    }
+  } else {
+    $arResult=$this;
+  }
 ?>
