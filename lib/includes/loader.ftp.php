@@ -77,6 +77,9 @@
 		// dummy function
 	}
 
+	function ldGetCredentials() {
+	}
+
 	function ldSetCredentials($login, $password) {
 	}
 
