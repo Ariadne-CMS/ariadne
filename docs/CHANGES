@@ -5,6 +5,7 @@ Changes in ariadne since version 2.0RC3
 New features:
 	- Simplified the configuration procedure
 	  - Ariadne is now compatible with the default PHP configuration.
+	- Added experimental support for MSSQL server. Thanks to Richard Banks.
 	- Improved look and feel:
 	  - Items in the browse view and in the tree now have the full name 
 	    of the item as title, which shows up as a yellow 'popup' in 
@@ -14,13 +15,13 @@ New features:
 	  - Added page view and webpage view. The page view shows the $nlsdata->page 
 	    data, for those objects supporting it, the image in the case of a pphoto.
 	    webpage view loads the view.html template in the browse frame.
-	- Sessions that are still valid (not timed out) will automatically 
-	  be resumed whenever the 'public' grants are insufficient. 
 	- Improved support for IE6 and Mozilla 0.9.9+ and even Konqueror.
 	  - The login screen now shows a second login form below the popup, 
 	    specifically for Mozilla's anti-popup feature.
 	- Performance optimizations in the loader, getting objects from the
 	  cache is now much faster.
+	- Sessions that are still valid (not timed out) will automatically 
+	  be resumed whenever the 'public' grants are insufficient. 
 	- Improved the WYSIWYG source view mode, it now keeps source code 
 	  formatting as close as possible to the original.
 	- You can now save HTML files directly to ppage objects via FTP.
