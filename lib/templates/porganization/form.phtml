@@ -23,7 +23,7 @@
    no result.
 
   ******************************************************************/
-  if ($this->CheckLogin("read")) {
+  if ($this->CheckLogin("read") && $this->CheckConfig()) {
 ?>
 <head>
 	<?php

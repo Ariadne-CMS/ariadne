@@ -23,7 +23,7 @@
    no result.
 
   ******************************************************************/
-  if ($this->CheckLogin("read")) {
+  if ($this->CheckLogin("read") && $this->CheckConfig()) {
 ?>
 <head>
 	<?php include($this->store->code."widgets/multiple/js.html"); ?>
