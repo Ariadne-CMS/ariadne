@@ -1009,7 +1009,7 @@ class pobject extends object {
 			if (!$matches[1]) {
 				$url="http://".$url;
 			}
-			$connection = pfsockopen( $host, 80, &$errno, &$errstr, 120); 
+			$connection = pfsockopen( $host, 80, $errno, $errstr, 120); 
 			if( $connection ) { 
 				if( strtoupper($method) == "GET" ) { 
 					$url .= "?" . $data; 
