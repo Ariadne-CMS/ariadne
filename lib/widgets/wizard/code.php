@@ -75,6 +75,7 @@
     $arReverseControl["< ".$ARnls["prev"]]="prev";
     $arReverseControl[$ARnls["save"]]="save";
     $arReverseControl[$ARnls["back"]]="back";
+    $arReverseControl[$ARnls["cancel"]]="cancel";
     return $arReverseControl[$wgWizButtonPressed];
   }
 

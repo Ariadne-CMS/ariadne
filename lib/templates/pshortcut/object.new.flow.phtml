@@ -30,16 +30,21 @@
 	$step1="edit.object.shortcut.form.phtml";
 	$step2="edit.object.shortcut.language.phtml";
 	$finish="edit.object.shortcut.save.phtml";
+	$cancel="object.new.cancel.phtml";
  
 	$arFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
+	$arFlow[0]["template"]=$cancel;
+ 
 	$i++;
 	$arFlow[$i]["title"]=$ARnls["filename"];
 	$arFlow[$i]["template"]=$start;
 	$arFlow[$i]["next"]=$i+1; 
+	$arFlow[$i]["cancel"]=0;
 	$i++;
 	$arFlow[$i]["title"]=$ARnls["data"];
 	$arFlow[$i]["template"]=$step1;
 	$arFlow[$i]["prev"]=$i-1;
+	$arFlow[$i]["cancel"]=0;
 	if ($hascustomdata) {
 		$arFlow[$i]["next"]=$i+1;
 		$arFlow[$i]["save"]=$i+2+$saveoffset;
@@ -47,6 +52,7 @@
 		$arFlow[$i]["title"]=$ARnls["customdata"];
 		$arFlow[$i]["template"]=$custom;
 		$arFlow[$i]["prev"]=$i-1;
+		$arFlow[$i]["cancel"]=0;
 	}
 	if ($languages) { // more than one language available
 		$arFlow[$i]["next"]=$i+1;
@@ -61,6 +67,7 @@
 		}
 		$arFlow[$i]["prev"]=$i-1;
 		$arFlow[$i]["save"]=$i+1;
+		$arFlow[$i]["cancel"]=0;
 	} else {
 		$arFlow[$i]["save"]=$i+1;
 	}
@@ -69,6 +76,7 @@
 	$arFlow[$i]["title"]=$ARnls["save"];
 	$arFlow[$i]["template"]=$finish;
 	$arFlow[$i]["back"]=$i-1;
+	$arFlow[$i]["cancel"]=0;
 	
 	$arLanguage=$this->getdata("arLanguage","none");
 	$arControl=wgWizGetAction($this->getdata("wgWizControl","none"));

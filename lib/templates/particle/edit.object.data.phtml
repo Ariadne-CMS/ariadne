@@ -35,28 +35,30 @@
 		$summary="edit.object.data.form.phtml";
 		$language="edit.object.language.phtml";
 		$finish="edit.object.data.save.phtml";
-
+		$lock="edit.object.lock.phtml";
+		$cancel="edit.object.cancel.phtml";
 
 		$wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
+		$wgWizFlow[0]["template"] = $cancel;
 
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["scenario"];
 		$wgWizFlow[$i]["template"]=$scenario;
 		$wgWizFlow[$i]["next"]=$i+1;
 		$wgWizFlow[$i]["save"]=$i+3+$customoffset+$saveoffset;
-
+		$wgWizFlow[$i]["cancel"]=0;
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["date"]."&nbsp;/&nbsp;".$ARnls["time"];
 		$wgWizFlow[$i]["template"]=$datetime;
 		$wgWizFlow[$i]["next"]=$i+1; 
 		$wgWizFlow[$i]["prev"]=$i-1; 
 		$wgWizFlow[$i]["save"]=$i+2+$customoffset+$saveoffset;
-
+		$wgWizFlow[$i]["cancel"]=0;
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["summary"];
 		$wgWizFlow[$i]["template"]=$summary;
 		$wgWizFlow[$i]["prev"]=$i-1;
-
+		$wgWizFlow[$i]["cancel"]=0;
 		if ($hascustomdata) {
 			$wgWizFlow[$i]["next"]=$i+1;
 			$wgWizFlow[$i]["save"]=$i+2+$saveoffset;
@@ -64,6 +66,7 @@
 			$wgWizFlow[$i]["title"]=$ARnls["customdata"];
 			$wgWizFlow[$i]["template"]=$custom;
 			$wgWizFlow[$i]["prev"]=$i-1;
+			$wgWizFlow[$i]["cancel"]=0;
 		}
 		if ($languages) { // more than one language available
 			$wgWizFlow[$i]["next"]=$i+1;
@@ -74,6 +77,7 @@
 			$wgWizFlow[$i]["next"]=$i-1-$customoffset;
 			$wgWizFlow[$i]["prev"]=$i-1;
 			$wgWizFlow[$i]["save"]=$i+1;
+			$wgWizFlow[$i]["cancel"]=0;
 		} else {
 			$wgWizFlow[$i]["save"]=$i+1;
 		}
@@ -81,6 +85,7 @@
 		$wgWizFlow[$i]["title"]=$ARnls["save"];
 		$wgWizFlow[$i]["template"]=$finish;
 		$wgWizFlow[$i]["back"]=$i-1;
+		$wgWizFlow[$i]["cancel"]=0;
 		
 		$arLanguage=$this->getdata("arLanguage","none");
 		if ($wgWizFlow[0]["current"]=="language") { // =edit.object.language.phtml

@@ -23,6 +23,7 @@
 			<font color="red" face="arial,helvetica,sans-serif" size=+1><?php echo $this->error; ?></font><p>
 		<?php
 	} else {
+		$this->unlock();
 		?>
 			<script> 
 				if (top.window.opener) {

@@ -33,22 +33,28 @@
 	$preferences="edit.object.data.preferences.phtml";
 	$groups="edit.object.data.groups.phtml";
 	$finish="edit.object.data.save.phtml";
+	$cancel="object.new.cancel.phtml";
  
 	$arFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
+	$arFlow[0]["template"]=$cancel;
+ 
 	$i++;
 	$arFlow[$i]["title"]=$ARnls["login"];
 	$arFlow[$i]["template"]=$start;
 	$arFlow[$i]["next"]=$i+1; 
+	$arFlow[$i]["cancel"]=0;
 	$i++;
 	$arFlow[$i]["title"]=$ARnls["data"];
 	$arFlow[$i]["template"]=$user;
 	$arFlow[$i]["prev"]=$i-1;
 	$arFlow[$i]["next"]=$i+1; 
 	$arFlow[$i]["save"]=$i+3+$customoffset;
+	$arFlow[$i]["cancel"]=0;
 	$i++;
 	$arFlow[$i]["title"]=$ARnls["preferences"];
 	$arFlow[$i]["template"]=$preferences;
 	$arFlow[$i]["prev"]=$i-1;
+	$arFlow[$i]["cancel"]=0;
 	if ($this->CheckSilent("config")) {
 		$arFlow[$i]["next"]=$i+1;
 		$arFlow[$i]["save"]=$i+2+$customoffset;
@@ -57,6 +63,7 @@
 		$arFlow[$i]["template"]=$groups;
 		$arFlow[$i]["prev"]=$i-1;
 		$arFlow[$i]["save"]=$i+1+$customoffset;
+		$arFlow[$i]["cancel"]=0;
 	} else {
 		$arFlow[$i]["save"]=$i+1+$customoffset;		
 	}
@@ -67,11 +74,13 @@
 		$arFlow[$i]["title"]=$ARnls["customdata"];
 		$arFlow[$i]["template"]=$custom;
 		$arFlow[$i]["prev"]=$i-1;
+		$arFlow[$i]["cancel"]=0;
 	}
 	$i++;
 	$arFlow[$i]["title"]=$ARnls["save"];
 	$arFlow[$i]["template"]=$finish;
 	$arFlow[$i]["back"]=$i-1;
+	$arFlow[$i]["cancel"]=0;
 	
 	$wgWizCurrent=$this->getdata("wgWizCurrent","none");
 	$wgWizControl=$this->getdata("wgWizControl","none");

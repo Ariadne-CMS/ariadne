@@ -37,23 +37,30 @@
 		$contact="edit.object.data.contact.phtml"; 
 		$language="edit.object.language.phtml";
 		$finish="edit.object.data.save.phtml";
- 
+		$lock="edit.object.lock.phtml";
+		$cancel="edit.object.cancel.phtml";
+
 		$wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
+		$wgWizFlow[0]["template"] = $cancel;
+ 
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["name"];
 		$wgWizFlow[$i]["template"]=$name;
 		$wgWizFlow[$i]["next"]=$i+1; 
 		$wgWizFlow[$i]["save"]=$i+3+$saveoffset+$customoffset;
+		$wgWizFlow[$i]["cancel"]=0;
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["address"];
 		$wgWizFlow[$i]["template"]=$address;
 		$wgWizFlow[$i]["prev"]=$i-1;
 		$wgWizFlow[$i]["next"]=$i+1; 
 		$wgWizFlow[$i]["save"]=$i+2+$saveoffset+$customoffset;
+		$wgWizFlow[$i]["cancel"]=0;
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["contactinformation"];
 		$wgWizFlow[$i]["template"]=$contact;
 		$wgWizFlow[$i]["prev"]=$i-1;
+		$wgWizFlow[$i]["cancel"]=0;
 		if ($hascustomdata) {
 			$wgWizFlow[$i]["next"]=$i+1;
 			$wgWizFlow[$i]["save"]=$i+2+$saveoffset;
@@ -61,6 +68,7 @@
 			$wgWizFlow[$i]["title"]=$ARnls["customdata"];
 			$wgWizFlow[$i]["template"]=$custom;
 			$wgWizFlow[$i]["prev"]=$i-1;
+			$wgWizFlow[$i]["cancel"]=0;
 		}
 		if ($languages) { // more than one language available
 			$wgWizFlow[$i]["next"]=$i+1;
@@ -75,6 +83,7 @@
 			}
 			$wgWizFlow[$i]["prev"]=$i-1;
 			$wgWizFlow[$i]["save"]=$i+1;
+			$wgWizFlow[$i]["cancel"]=0;
 		} else {
 			$wgWizFlow[$i]["save"]=$i+1;
 		}
@@ -83,7 +92,8 @@
 		$wgWizFlow[$i]["title"]=$ARnls["save"];
 		$wgWizFlow[$i]["template"]=$finish;
 		$wgWizFlow[$i]["back"]=$i-1;
-	 
+		$wgWizFlow[$i]["cancel"]=0;
+
 		$arLanguage=$this->getdata("arLanguage","none");
 		$arControl=wgWizGetAction($this->getdata("wgWizControl","none"));
 		if ($wgWizFlow[0]["current"]==4) { // =edit.object.language.phtml
@@ -102,6 +112,13 @@
 			$ARCurrent->arNewFilename=$arNewFilename;
 		}		
 		$HTTP_POST_VARS["arLanguage"]=$arLanguage;
+
+		if (!$this->lock('O')) {
+			$i = $wgWizFlow[0]["current"]+1;
+			$wgWizFlow[$i]["template"] = $lock;
+			unset($wgWizFlow[$i]["next"]);
+			unset($wgWizFlow[$i]["save"]);
+		}
 
 		$result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
 		$wgWizTitle=$ARnls["edit"]." ".$result[0];		

@@ -24,11 +24,16 @@
 
 		$start="edit.object.data.form.phtml";
 		$finish="edit.object.data.save.phtml";
-	 
+		$lock="edit.object.lock.phtml";
+		$cancel="edit.object.cancel.phtml";
+
 		$wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
+		$wgWizFlow[0]["template"] = $cancel;
+	 
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["data"];
 		$wgWizFlow[$i]["template"]=$start;
+		$wgWizFlow[$i]["cancel"]=0;
 		if ($hascustomdata) {
 			$wgWizFlow[$i]["next"]=$i+1;
 			$wgWizFlow[$i]["save"]=$i+2;
@@ -36,12 +41,21 @@
 			$wgWizFlow[$i]["title"]=$ARnls["customdata"];
 			$wgWizFlow[$i]["template"]=$custom;
 			$wgWizFlow[$i]["prev"]=$i-1;
+			$wgWizFlow[$i]["cancel"]=0;
 		}
 		$wgWizFlow[$i]["save"]=$i+1;
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["save"];
 		$wgWizFlow[$i]["template"]=$finish;
 		$wgWizFlow[$i]["back"]=$i-1;
+		$wgWizFlow[$i]["cancel"]=0;
+
+		if (!$this->lock('O')) {
+			$i = $wgWizFlow[0]["current"]+1;
+			$wgWizFlow[$i]["template"] = $lock;
+			unset($wgWizFlow[$i]["next"]);
+			unset($wgWizFlow[$i]["save"]);
+		}
 		
 		$result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
 		$wgWizTitle=$ARnls["edit"]." ".$result[0];		
