@@ -17,48 +17,35 @@
 <script>
 <!--
 
-	NewObject=<?php if ($newobject && $newobject!=='false') echo 'true'; else echo 'false'; ?>;
-
-	function loadpage(root, path, file, name, language, type, newobject) {
-		if (file) {
-			document.location.href=root+path+file+'/edit.object.data.'+name+'.phtml?'+
-			'root='+escape(root)+'&path='+escape(path)+'&file='+escape(file)+
-			'&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type)+'&newobject='+escape(newobject);
-		} else {
-			document.location.href=root+path+'edit.object.data.'+name+'.phtml?'+
-			'root='+escape(root)+'&path='+escape(path)+'&file='+escape(file)+
-			'&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type)+'&newobject='+escape(newobject);
+	function loadpage(root, path, file, name, language, type, value) {
+		if (value) {
+			document.editform.htmltext.value=value;
+		} else if (window.opener && !window.opener.closed && window.opener.wgHTMLEditContent) {
+			document.editform.htmltext.value=window.opener.wgHTMLEditContent.value;
 		}
+		document.editform.ContentLanguage=language;
+		document.editform.htmltext.focus();
 	}
 
-	function checknewobject() {
-		if (NewObject && window.opener && window.opener.wgHTMLEditContent) {
-			window.opener.wgHTMLEditContent.value=document.editform['<?php echo $name; ?>'].value;
-			top.window.close();
-		} else {
+	function checksubmit() {
+		if (window.opener && window.opener.wgHTMLEditContent) {
+			window.opener.wgHTMLEditContent.value=document.editform.htmltext.value;
+			window.close();
+			return false;
+		} else {			
 			return true;
 		}
 	}
 
-	function init() {
-		if (NewObject && window.opener && window.opener.wgHTMLEditContent) {
-			document.editform['<?php echo $name; ?>'].value=window.opener.wgHTMLEditContent.value;
-		}
-		document.editform['<?php echo $name; ?>'].focus();
-	}
 // -->
 </script>
 </head>
-<body bgcolor="white" onLoad="init();">
-<form name="editform" method="post" action="<?php echo $root.$path.$file."edit.".$name.".save.phtml"; ?>" onSubmit="return checknewobject();">
+<body bgcolor="white" onLoad="loadpage('<?php echo $root; ?>','<?php echo $path; ?>','<?php echo $file; ?>','<?php echo $name; ?>','<?php echo $language; ?>','<?php echo $language; ?>','<?php echo $content; ?>')">
+<form name="editform" method="post" action="<?php echo $root.$path.$file."edit.".$name.".save.phtml"; ?>" onSubmit="return checksubmit();">
 <input name="ContentLanguage" type="hidden" value="<?php echo $language; ?>">
 <table width="100%" border="0" cellspacing="0"><tr>
 	<td colspan="2">
-		<textarea name="<?php echo $name; ?>" cols="75" rows="24" wrap="soft"><?php
-			if (!$newobject || ($newobject=='false')) {
-				$this->get($path.$file,"show.".$name.".phtml",Array("language" => $language, "source" => true));
-			}
-		?></textarea>
+		<textarea name="htmltext" cols="75" rows="24" wrap="soft"></textarea>
 	</td>
 </tr><tr bgcolor="#404074">
 	<td>&nbsp;</td>
