@@ -30,11 +30,11 @@ var wgHTMLEditOptions=new Array();
 						$skey2=$key2;
 					}
 					echo "wgHTMLEditOptions[$skey][$skey2]='".AddCSlashes($value2, ARESCAPE)."';\n";
-					$options.="options[$key][$key2]=".RawUrlEncode($value2)."&";
+//					$options.="options[$key][$key2]=".RawUrlEncode($value2)."&";
 				}
 			} else {
 				echo "wgHTMLEditOptions[$skey]='".AddCSlashes($value, ARESCAPE)."';\n";
-				$options.="options[$key]=".RawUrlEncode($value)."&";
+//				$options.="options[$key]=".RawUrlEncode($value)."&";
 			}
 		}
 	}
@@ -55,7 +55,7 @@ function HTMLEdit(root, path, file, name, language, type, title, value, save2for
 		editwindow.location.href='edit.object.html.phtml?'+
 		'root='+escape(root)+'&path='+escape(path)+'&file='+escape(file)+
 		'&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type)+
-		'&title='+escape(title)+'&value='+escape(value)+'&save2form='+escape(save2form)+'&<?php echo $options; ?>';
+		'&title='+escape(title)+'&value='+escape(value)+'&save2form='+escape(save2form); //+'&<?php echo $options; ?>';
 	}
 	editwindow.focus();
 }
