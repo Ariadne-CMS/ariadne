@@ -11,6 +11,12 @@ New features:
 	items etc are now displayed in your language. Available nls files
 	for the editor are English and German. (Thanks to Johann Hanne).
 
+Bugs fixed:
+	- The postgresql locking module did use table prefixes which caused
+	an 'unkown table' reference. (thanks to Christoph Nelles for giving
+	us access to his postgresql installation).
+	- Fixed the postgresql find() function; it now uses the 'limit' and
+	'offset' statements instead of only the 'limit' statement.
 
 Ariadne 2.1.1
 Changes in Ariadne since version 2.1
