@@ -1,0 +1,9 @@
+<?php
+  if ($this->CheckSilent("edit")) {
+    $this->data->language=$this->getdata("language","none");
+    $this->data->interface=$this->getdata("interface","none");
+    $this->save($this->path, $this->type, $this->data);
+  } else {
+    $this->error=$ARnls["accessdenied"];
+  }
+?>

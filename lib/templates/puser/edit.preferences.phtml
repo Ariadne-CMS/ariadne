@@ -1,0 +1,36 @@
+<?php
+  /******************************************************************
+   edit.object.cache.phtml			   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+
+   No result.
+
+  ******************************************************************/
+
+  if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+    include($this->store->code."widgets/wizard/code.php");
+
+    $start="edit.preferences.form.phtml";
+    $finish="edit.preferences.save.phtml";
+   
+    $wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
+    $i++;
+    $wgWizFlow[$i]["title"]=$ARnls["preferences"];
+    $wgWizFlow[$i]["template"]=$start;
+    $wgWizFlow[$i]["save"]=$i+1;
+    $i++;
+    $wgWizFlow[$i]["title"]=$ARnls["save"];
+    $wgWizFlow[$i]["template"]=$finish;
+    $wgWizFlow[$i]["back"]=$i-1;
+
+    $wgWizNoSidebar=true;    
+    $wgWizControl=$this->getdata("wgWizControl","none");
+    $wgWizCurrent=$this->getdata("wgWizCurrent","none");
+    if ($wgWizControl && $wgWizCurrent) {
+      $wgWizNextStep=$wgWizFlow[$wgWizCurrent][wgWizGetAction($wgWizControl)];
+      $wgWizButtons=$wgWizFlow[$wgWizNextStep];
+    }
+    $wgWizTitle=$ARnls["preferences"];    
+    include($this->store->code."widgets/wizard/small.html");
+  }
+?>

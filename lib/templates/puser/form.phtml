@@ -91,10 +91,10 @@ include($this->store->code."widgets/formlock/js.html");
       }
     ?>
     </select>
-	<font face="helvetica, sans-serif"><b>Interface&nbsp;:</b></font>
+	<font face="helvetica, sans-serif"><b><?php echo $ARnls["interface"]; ?>&nbsp;:</b></font>
     <select name="interface">
-		<option value="classic">Classic</option>
-		<option value="new" <?php if ($data->interface=="new") { echo "selected"; } ?>>New</option>
+		<option value="classic"><?php echo $ARnls["classic"]; ?></option>
+		<option value="new" <?php if ($data->interface=="new") { echo "selected"; } ?>><?php echo $ARnls["new"]; ?></option>
 	</select>
   </td>
 </tr><tr>
