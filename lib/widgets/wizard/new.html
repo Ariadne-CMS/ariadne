@@ -56,6 +56,9 @@
       error("wgWizFlow undefined or corrupt");
     }
   }
+  if (!$wgWizAction) {
+     $wgWizAction=$this->getdata("wgWizAction","none");
+  }
   if (!$wgWizControl) {
     $wgWizControl=$this->getdata("wgWizControl","none");
   }
@@ -65,15 +68,18 @@
   if (!$wgWizNextStep && !($wgWizNextStep=$ARCurrent->wgWizNextStep)) {
     $wgWizNextStep=1;
   }
-  if ($wgWizControl==$ARnls["save"]) {
+  if ($wgWizAction=="save") {
     $wgWizTemplate=$wgWizFlow[0]['save'];
-  } else if ($wgWizControl==$ARnls["cancel"]) {
+  } else if ($wgWizAction=="cancel") {
     $wgWizTemplate=$wgWizFlow[0]['cancel'];
   } else {
     $wgWizTemplate=$wgWizFlow[$wgWizNextStep]["template"];
   }
   if (!$wgWizButtons) {
     $wgWizButtons=$wgWizFlow[$wgWizNextStep];
+  }
+  if (!$wgWizHeader) {
+    $wgWizHeader="&nbsp;";
   }
 ?>
 <html>
@@ -193,12 +199,14 @@
     width: 100%;
   }
   .inputbox {
-    height: 12em;
+    height: 10em;
   }
   table {
     width: 100%;
   }
   fieldset {
+	margin: 8px;
+	margin-top: 0px;
     padding: 5px;
   }
   #wgWizHeader {
@@ -208,6 +216,9 @@
     background-color: #496799;
     background-position: bottom left;
     border-bottom: 8px solid threedface;
+	color: white;
+    font-size: 14px;
+	font-weight: bold;
   }
   #wgWizFooter {
 	height: 8px;
@@ -216,7 +227,7 @@
 	width: 8px;
   }
   #wgWizSectionData {
-    margin-top: -8px;
+    margin-top: 0px;
     padding-top: 0px;
     border-top: 0px;
   }
@@ -250,7 +261,9 @@
 <input type="hidden" name="arLanguage" value="<?php echo $arLanguage; ?>">
 <table id="wgWizTable" cellpadding="0" cellspacing="0" border="0">
 <tr>
-	<td colspan="4" id="wgWizHeader" height="48">&nbsp;</td>
+	<td colspan="4" valign="middle" align="right" id="wgWizHeader" height="48"><?php
+		echo $wgWizHeader; 
+	?></td>
 </tr>
 <tr>
 	<td id="wgWizLeftBorder"></td>
@@ -292,8 +305,8 @@
 	</td>
 </tr><tr id="wgWizControls">
 	<td colspan="4" align="right" valign="bottom">
-		<input type="submit" name="wgWizControl" class="wgWizControl" onClick="document.action='save';" value="<?php echo $ARnls["save"]; ?>">
-		<input type="submit" name="wgWizControl" class="wgWizControl" onClick="document.action='cancel';" value="<?php echo $ARnls["cancel"]; ?>">
+		<input type="submit" name="wgWizControl" class="wgWizControl" onClick="document.wgWizForm.wgWizAction.value='save';" value="<?php echo $ARnls["save"]; ?>">
+		<input type="submit" name="wgWizControl" class="wgWizControl" onClick="document.wgWizForm.wgWizAction.value='cancel';" value="<?php echo $ARnls["cancel"]; ?>">
 	</td>
 </tr>
 </table>
@@ -301,7 +314,7 @@
       <script>
       function checksubmit() {
         result=true; 
-        switch(document.action) {
+        switch(document.wgWizForm.wgWizAction.value) {
           <?php
             if ($checks && is_array($checks)) {
               while (list($action, $namelist)=each($checks)) {
@@ -336,6 +349,7 @@
     </script>
 
 <input type="hidden" name="wgWizNextStep" value="0">
+<input type="hidden" name="wgWizAction" value="0">
 </form>
 <?php
   if ($wgWizAlert) {
