@@ -118,7 +118,6 @@
 				$ARCookie=stripslashes($ARCookie);
 			}
 			
-			$args=array_merge($HTTP_GET_VARS,$HTTP_POST_VARS);
 			$store->call($function, $args, $store->get($path));
 			if (!$store->total) {
 				$requestedpath=$path;
