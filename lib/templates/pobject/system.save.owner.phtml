@@ -1,0 +1,13 @@
+<?php
+  if ($this->CheckLogin("config") && $this->CheckConfig()) {
+	$user = current($this->get($owner, "system.get.phtml"));
+	if (!$user) {
+		$this->error = sprintf($ARnls["err:notfindusergroup"], $owner);
+	} else {
+		$this->data = current($this->get($this->path, "system.get.data.phtml"));
+		$this->data->owner = $user->data->login;
+		$this->data->owner_name = $user->data->name;
+		$this->save();
+	}
+  }
+?>
