@@ -92,57 +92,61 @@ function dopopup() {
 	.width100 { width: 100; }
 	.width200 { width: 200; }
 	.width300 { width: 300; }
-	H1		{ FONT: 12pt sans-serif; FONT-WEIGHT: bold; }
-	TD				{ FONT: 10pt sans-serif; }
-	BODY			{ FONT: 10pt sans-serif;
-							BORDER: 0;
-	<?php
-		global $HTTP_USER_AGENT;
-		if (eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
-			 $regs[1] && (intval($regs[1])>=4)) { //ie4+
-	?>
-							BACKGROUND-COLOR: buttonface;
-	<?php
-		} else {
-	?>
-							BACKGROUND-COLOR: #BBBBBB;
-	<?php
-		}
-	?>
-						}
+	H1		{ FONT: 12pt helvetica, sans-serif; FONT-WEIGHT: bold; }
+	TD		{ FONT: 10pt helvetica, sans-serif; }
+	BODY		{ FONT: 10pt helvetica, sans-serif;
+				BORDER: 0;
+				BACKGROUND-COLOR: #FFFFFF;
+			}
+	IMG		{
+				BORDER: 0;
+				MARGIN: 0;
+				PADDING: 0;
+			}
+	.small		{
+				FONT: 8pt helvetica, sans-serif;
+			}
 </style>
 </head>
 <body bgcolor="#BBBBBB" onLoad='dopopup();'>
+<table align="center" border="1" cellpadding="0" cellspacing="0" margin="0" width="480">
+<tr><td>
+<table align="center" border="0" cellpadding="0" cellspacing="0" margin="0" width="480">
+<tr>
+  <td rowspan="3"><img src="<?php echo $AR->host.$AR->dir->images; ?>clock.gif" alt="" align="left" border="0" hspace="0" vspace="0"></td>
+  <td valign="top" align="center"><img src="<?php echo $AR->host.$AR->dir->images; ?>ariadne.gif" alt="Ariadne - Web Application Server" vspace="5"></td>
+</tr><tr>
+  <td valign="top" align="right">
 
 <form name="login" method="POST" action="<?php echo $this->make_url(); ?>login.phtml">
 <input type="hidden" name="arReturnPath" value="<?php echo $arReturnPath; ?>">
 <input type="hidden" name="arReturnTemplate" value="<?php echo $arReturnTemplate; ?>">
-<table align="center" border="0" width="300">
+<table align="center" valign="middle" border="0" width="300">
 <tr>
-	<td align="center" colspan="2">
-		<h1><?php echo $arLoginMessage; ?></h1>
+	<td colspan="2" align="center" valign="middle">
+			<table align="right">
+			<tr>
+				<td align="right"><?php echo $ARnls["user"]; ?>&nbsp;:</td>
+				<td><input type="text" name="ARLogin" size="16" value="<?php echo $ARLogin; ?>"></td>
+			</tr><tr>
+				<td align="right"><?php echo $ARnls["password"]; ?>&nbsp;:</td>
+				<td><input type="password" name="ARPassword" size="16"></td>
+			</tr>
+			</table>
 	</td>
 </tr><tr>
-	<td colspan="2" align="center">
-        <div style="border: groove 2px buttonhighlight; padding: 10px; width: 100%;">
-		<table width="50%" align="center">
-		<tr>
-			<td align="right"><?php echo $ARnls["login"]; ?>&nbsp;:</td>
-			<td><input type="text" name="ARLogin" size="16" value="<?php echo $ARLogin; ?>"></td>
-		</tr><tr>
-			<td align="right"><?php echo $ARnls["password"]; ?>&nbsp;:</td>
-			<td><input type="password" name="ARPassword" size="16"></td>
-		</tr>
-		</table>
-		</div>
-	</td>
-</tr><tr>
-	<td colspan="2">&nbsp;</td>
-</tr><tr>
-	<td><input type="button" class="width100" name="cancel" value="<?php echo $ARnls["cancel"]; ?>" onClick="history.back();"></td>
-	<td align="right"><input type="submit" class="width100" name="ok" value="&nbsp;<?php echo $ARnls["ok"]; ?>&nbsp;"></td>
+	<td colspan="2" align="right"><input type="submit" name="ok" value="&nbsp;<?php echo $ARnls["login"]; ?>&nbsp;"></td>
 </tr>
 </table>
+</form>
+</td>
+</tr><tr><td valign="bottom" align="center">
+  <span class="small">&copy; 1998 - 2003 <a href="http://www.muze.nl/" target="_blank">muze</a>. Ariadne comes with ABSOLUTELY NO WARRANTY. 
+  Ariadne is free software, you are welcome to redistribute it under certain <a href="help.about.license.phtml" target="_blank">conditions</a>.<br>&nbsp;
+  </span>
+</td></tr>
+</table>
+</td></tr></table>
 </form>
 </body>
 </html>
