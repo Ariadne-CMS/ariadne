@@ -69,11 +69,9 @@
 	if (!$arNewFilename) {
 		if (($file=$this->getdata("file","none")) && ereg("[^\/\\]*\$",$file, $matches)) {
 			$arNewFilename=eregi_replace("[^a-z0-9\./_-]","_",$matches[0]);
-			$wgWizCallArgs['arNewFilename'] = $arNewFilename;
-		} else {
-			$arNewFilename="{5:id}";
+			$HTTP_POST_VARS['arNewFilename'] = $arNewFilename;
+			$this->path = $this->store->make_path($this->parent, $arNewFilename);
 		}
-		$ARCurrent->arNewFilename=$arNewFilename;
 		while (list($key, $value)=each($configcache->nls->list)) {
 			$HTTP_POST_VARS[$key]["name"]=$arNewFilename;
 		}
