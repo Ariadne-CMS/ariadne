@@ -1,80 +1,82 @@
 <?php
-	if (!$ContentLanguage) {
-		$this->error="Somehow there was no language set. This is a bug.";
-	} else if (!$AR->nls->list[$ContentLanguage]) {
-		$this->error="Unknown language selected... weird";
-	} else {
-		if (!$page) {
-			$page=$htmltext;
-		}
-		if ($ContentEditOptionsPath) {
-			$arEditorSettings=current($this->get($ContentEditOptionsPath, "editor.ini"));
+	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+		if (!$ContentLanguage) {
+			$this->error="Somehow there was no language set. This is a bug.";
+		} else if (!$AR->nls->list[$ContentLanguage]) {
+			$this->error="Unknown language selected... weird";
 		} else {
-			$arEditorSettings=$this->call("editor.ini");
-		}
-		if ($arEditorSettings) {
-			if ($arEditorSettings["htmltidy"]["enabled"]) {
-				include_once($this->store->code."modules/mod_tidy.php");
-				$config=$arEditorSettings["htmltidy"];
-				$config["temp"]=$this->store->files."temp/";
-				$config["path"]=$AR->Tidy->path;
-				$tidy=new tidy($config);
-				$result=$tidy->clean($page);
-//				if ($result["errors"]) {
-//					$this->error=$result["errors"];
-//				} else {
-					$page=$result["html"];
-//				}
+			if (!$page) {
+				$page=$htmltext;
 			}
-			if ($arEditorSettings["allow_tags"]) {
-				$page=strip_tags($page, $arEditorSettings["allow_tags"]);
+			if ($ContentEditOptionsPath) {
+				$arEditorSettings=current($this->get($ContentEditOptionsPath, "editor.ini"));
+			} else {
+				$arEditorSettings=$this->call("editor.ini");
 			}
-		}
-		// only keep the body.innerHTML
-		// $page=eregi_replace("^.*<body[^>]*>","",$page);
-		// $page=eregi_replace("</body[^>]*>.*$","",$page);
+			if ($arEditorSettings) {
+				if ($arEditorSettings["htmltidy"]["enabled"]) {
+					include_once($this->store->code."modules/mod_tidy.php");
+					$config=$arEditorSettings["htmltidy"];
+					$config["temp"]=$this->store->files."temp/";
+					$config["path"]=$AR->Tidy->path;
+					$tidy=new tidy($config);
+					$result=$tidy->clean($page);
+	//				if ($result["errors"]) {
+	//					$this->error=$result["errors"];
+	//				} else {
+						$page=$result["html"];
+	//				}
+				}
+				if ($arEditorSettings["allow_tags"]) {
+					$page=strip_tags($page, $arEditorSettings["allow_tags"]);
+				}
+			}
+			// only keep the body.innerHTML
+			// $page=eregi_replace("^.*<body[^>]*>","",$page);
+			// $page=eregi_replace("</body[^>]*>.*$","",$page);
 
-/* FIXME: check whether this code really can be removed.
-		$arCheckCharSet=$ContentLanguage;
-		if (!$AR->nls->charsets[$arCheckCharSet]) {
-			$arCheckCharSet="default";
-		}
-		require_once($this->store->code."modules/mod_unicode.php");
-		if ($AR->nls->charsets[$arCheckCharSet] == "ISO-8859-1") {
-			//$page=utf8_decode($page);
-			if ($AR->user->data->editor!="text") {
-				// FIXME: apparantly the text editor is never in UTF-8 mode
-				$page=unicode::utf8toiso8859($page);
+	/* FIXME: check whether this code really can be removed.
+			$arCheckCharSet=$ContentLanguage;
+			if (!$AR->nls->charsets[$arCheckCharSet]) {
+				$arCheckCharSet="default";
 			}
-			// now change special characters to their html entity
-			// $page=htmlentities($page);
-			// now change '<', '>', '"', '~' and '&' back.
-			$page=str_replace("&lt;","<",$page);
-			$page=str_replace("&gt;",">",$page);
-			$page=str_replace("&quot;","\"",$page);
-			$page=str_replace("&tilde;","~",$page);
-			// do this last, think about it :)
-			$page=str_replace("&amp;","&",$page);
-		} else {
-//			$page=unicode::utf8convert($page);
-		}
-*/
-		// change hardcoded links and images to use a placeholder for the root
-		if ($this->store->root) {
-			$page=ereg_replace("(http[s]?://)?".$this->store->root,"{arRoot}",$page);
-		}
-		if ($ARCurrent->session->id) {
-	        // also change hand pasted sources, which may or may not include session id's
-			$page=ereg_replace("(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?(/".$nls.")?","{arRoot}",$page);
-			// finally check for other session id's:
-			$page=str_replace("/-".$ARCurrent->session->id."-","",$page);
-		}
+			require_once($this->store->code."modules/mod_unicode.php");
+			if ($AR->nls->charsets[$arCheckCharSet] == "ISO-8859-1") {
+				//$page=utf8_decode($page);
+				if ($AR->user->data->editor!="text") {
+					// FIXME: apparantly the text editor is never in UTF-8 mode
+					$page=unicode::utf8toiso8859($page);
+				}
+				// now change special characters to their html entity
+				// $page=htmlentities($page);
+				// now change '<', '>', '"', '~' and '&' back.
+				$page=str_replace("&lt;","<",$page);
+				$page=str_replace("&gt;",">",$page);
+				$page=str_replace("&quot;","\"",$page);
+				$page=str_replace("&tilde;","~",$page);
+				// do this last, think about it :)
+				$page=str_replace("&amp;","&",$page);
+			} else {
+	//			$page=unicode::utf8convert($page);
+			}
+	*/
+			// change hardcoded links and images to use a placeholder for the root
+			if ($this->store->root) {
+				$page=ereg_replace("(http[s]?://)?".$this->store->root,"{arRoot}",$page);
+			}
+			if ($ARCurrent->session->id) {
+		        // also change hand pasted sources, which may or may not include session id's
+				$page=ereg_replace("(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?(/".$nls.")?","{arRoot}",$page);
+				// finally check for other session id's:
+				$page=str_replace("/-".$ARCurrent->session->id."-","",$page);
+			}
 
-		// first make sure that the object is clean (data can only be set via 
-		// the defined interface: $arCallArgs)
-		$this->data=current($this->get(".","system.get.data.phtml"));
-		$this->data->$ContentLanguage->page=$page;
-		$this->save();
-		$this->ClearCache();
+			// first make sure that the object is clean (data can only be set via 
+			// the defined interface: $arCallArgs)
+			$this->data=current($this->get(".","system.get.data.phtml"));
+			$this->data->$ContentLanguage->page=$page;
+			$this->save();
+			$this->ClearCache();
+		}
 	}
 ?>
