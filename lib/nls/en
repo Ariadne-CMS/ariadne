@@ -21,6 +21,7 @@ $ARnls["changenls"]=		"Changing your default language will take effect when you 
 $ARnls["city"]=			"City";
 $ARnls["clickback"]=		"Click your browser back button to fix this.";
 $ARnls["collectinginfo"]=	"Collecting Information...";
+$ARnls["color"]=		"Color";
 $ARnls["config"]=		"Config";
 $ARnls["configuration"]=	"Configuration";
 $ARnls["configure"]=		"Configure %s ";
