@@ -4,9 +4,6 @@
 		if (!$html) {
 			$html=$htmltext;
 		}
-		// only keep the body.innerHTML
-		//$html=eregi_replace("^.*<body[^>]*>","",$html);
-		//$html=eregi_replace("</body[^>]*>.*$","",$html);
 		// change hardcoded links and images to use a placeholder for the root
 		$html=ereg_replace("(http://[^/]*)?".$this->store->root,"{arRoot}",$html);
 		if ($this->data->mimetype=="text/html") {
