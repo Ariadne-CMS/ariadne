@@ -196,7 +196,7 @@
 			if (eregi('^[[:space:]]*[,]', $query, $regs)) {
 				$query=substr($query, strlen($regs[0]));
 				$field=$this->parse_ident($query);
-				$reg_sort_type='[[:space:]](ASC|DESC)';
+				$reg_sort_type='[[:space:]]*(ASC|DESC)';
 				if (eregi($reg_sort_type, $query, $regs)) {
 					$sort_type=$regs[1];
 					$query=substr($query, strlen($regs[0]));
