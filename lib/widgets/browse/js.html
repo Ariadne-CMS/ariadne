@@ -2,7 +2,7 @@
 <!--
 wgBrowseResult=0;
 
-function Browse(resultobject, path, name, title) {
+function Browse(resultobject, path, name, title, mode, filter, filename) {
   wgBrowseResult=resultobject;
   if (wgBrowseResult.value) {
     path=wgBrowseResult.value;
@@ -11,21 +11,14 @@ function Browse(resultobject, path, name, title) {
     '<?php
        $path=$this->path;
        echo $this->store->root.$path; 
-     ?>browse.phtml?path='+escape(path)+'&title='+
-     escape(title)+'&name='+escape(name), 'browsewindow',
+     ?>browse.phtml?path='+escape(path)+'&title='+escape(title)+
+       '&name='+escape(name)+'&mode='+escape(mode)+'&filter='+escape(filter)+
+       '&filename='+escape(filename), 'browsewindow',
     'directories=no,height=300,width=500,location=no,menubar=no,status=no,toolbar=no,resizable=yes');
   browsewindow.opener=this;
   browsewindow.focus();
   window.setfocusto=browsewindow;
 }
-
-function checkfocus() {
-  if (window.setfocusto) {
-    window.setfocusto.focus();
-  }
-}
-
-window.onfocus=checkfocus;
 
 // -->
 </script>

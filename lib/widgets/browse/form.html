@@ -11,9 +11,15 @@
   if (!$wgBrowseSize) {
     $wgBrowseSize="16";
   }
-?><input type="text" class="wgBrowseInput" name="<?php echo $wgBrowseName; ?>" value="<?php 
-  echo $wgBrowsePath; 
-?>" size="<?php echo $wgBrowseSize; ?>"><input type="button" class="wgBrowseButton" name="select" value="<?php echo $wgBrowseTitle; ?>" 
-onClick="Browse(this.form.<?php echo $wgBrowseName; ?>, '<?php 
-  echo $wgBrowsePath; 
-?>', '<?php echo $wgBrowseName; ?>', '<?php echo $wgBrowseTitle; ?>');">
+  if (!$wgBrowseMode) {
+    $wgBrowseMode="details";
+  }
+?>
+<input type="text" class="wgBrowseInput" name="<?php echo $wgBrowseName; ?>"
+         value="<?php echo $wgBrowsePath; ?>" size="<?php echo $wgBrowseSize; ?>">
+<input type="button" class="wgBrowseButton" name="select" 
+         value="<?php echo $wgBrowseTitle; ?>" 
+         onClick="Browse(this.form.<?php echo $wgBrowseName; ?>, '<?php echo $wgBrowsePath; ?>', 
+                    '<?php echo $wgBrowseName; ?>', '<?php echo $wgBrowseTitle; ?>',
+                    '<?php echo $wgBrowseMode; ?>', '<?php echo $wgBrowseFilter; ?>',
+                    '<?php echo $wgBrowseFilename; ?>');">
