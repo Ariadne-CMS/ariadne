@@ -381,7 +381,7 @@
 	<div id="tabs">
 <?php
 	if ($wgWizTabsTemplate) {
-		$this->call($wgWizTabsTemplate, $wgWizCallArgs);
+		$wgWizCallObject->call($wgWizTabsTemplate, $wgWizCallArgs);
 	}
 ?>
 	</div>
