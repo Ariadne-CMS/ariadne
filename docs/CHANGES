@@ -56,6 +56,8 @@ Bugs fixed:
 	- Fixed a bug in the ftp loader which sometimes caused downloaded files
 	  (in ASCII mode) to be corrupted.
 	- Added a missing CheckConfig() to system.save.data.phtml of pfile.
+	- fixed wizard widget bug: now you can use wgWizNextStep as an argument
+	  in the URL (via GET) to step to the correct wizard step immediately.
 
 Changes in Ariadne since version 2.1.3
 
