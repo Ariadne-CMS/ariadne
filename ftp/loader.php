@@ -338,8 +338,9 @@
 						}
 					break;
 
+					case 'NLST':
 					case 'LIST':
-						$args[0]=ereg_replace('[[:space:]]+-[^[:space:]]+[[:space:]]+', '', $args[0]);
+						$args[0]=ereg_replace('-[^[:space:]]+[[:space:]]*', '', chop($args[0]));
 						$path=$args[0];
 						ftp_TranslatePath($path, $listMode);
 
@@ -357,8 +358,12 @@
 									$mode["target"]="/-files-$FTP->cwd";
 									$mode["size"]=0;
 									$mode["grants"]["read"]=true;
-									$data=ftp_GenListEntry($mode);
-									echo "$data";
+									if ($cmd!=="NLST") {
+										$data=ftp_GenListEntry($mode);
+										echo "$data";
+									} else {
+										echo $mode["filename"]."\n";
+									}
 								}
 
 								if ($listMode!=="templates") {
@@ -368,8 +373,12 @@
 									$mode["target"]="/-templates-$FTP->cwd";
 									$mode["size"]=0;
 									$mode["grants"]["read"]=true;
-									$data=ftp_GenListEntry($mode);
-									echo "$data";
+									if ($cmd!=="NLST") {
+										$data=ftp_GenListEntry($mode);
+										echo "$data";
+									} else {
+										echo $mode["filename"]."\n";
+									}
 								}
 
 								if ($listMode!=="objects") {
@@ -380,7 +389,12 @@
 									$mode["size"]=0;
 									$mode["grants"]["read"]=true;
 									$data=ftp_GenListEntry($mode);
-									echo "$data";
+									if ($cmd!=="NLST") {
+										$data=ftp_GenListEntry($mode);
+										echo "$data";
+									} else {
+										echo $mode["filename"]."\n";
+									}
 								}
 								$template="ftp.".$listMode.".list.phtml";
 								$result=current($FTP->store->call($template, "",
@@ -390,8 +404,15 @@
 								@reset($result);
 								while (list($key, $entry)=@each($result)) {
 									debug("ftp: file path = (".$entry["path"].")");
-									$data=ftp_GenListEntry($entry);
-									echo "$data";
+									if ($cmd!=="NLST") {
+										$data=ftp_GenListEntry($entry);
+										echo "$data";
+									} else {
+										$parent = $FTP->store->make_path($entry["path"], "..");
+										$filename = substr($entry["path"], strlen($parent), -1);
+										debug("ftp::nlst	".$filename);
+										echo $filename."\n";
+									}
 								}
 
 								ftp_CloseDC();
