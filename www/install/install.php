@@ -181,9 +181,16 @@
 		// install pprofile type
 		
 		$store->add_type("pprofile","pobject");
-		$store->add_type("pprofile","pdir");
 		$store->add_type("pprofile","ppage");
+		$store->add_type("pprofile","pdir");
 		$store->add_type("pprofile","pprofile");
+
+		// install psearch type
+		
+		$store->add_type("psearch","pobject");
+		$store->add_type("psearch","ppage");
+		$store->add_type("psearch","pdir");
+		$store->add_type("psearch","psearch");
 
 		echo "== importing ariadne.ax file\n\n";
 
