@@ -9,6 +9,10 @@
 			$nlsdata=$data->$arLanguage;
 		}
 
+		ob_start(); // start output buffer, so we can throw away the entire section if
+					// no content is in it.
+		$skipsection=true;
+					
 		$arCallArgs["sectionName"] = "settings";
 		$arCallArgs["sectionDisplayName"] = 0;
 		$arCallArgs["specialSection"] = false;
@@ -18,12 +22,14 @@
 		if (strlen($myName) > 12)
 			$myName = "<span title=\"".$myName."\">".substr($myName, 0, 9)."..."."</span>";
 
-		if ($this->CheckSilent("edit"))
+		if ($this->CheckSilent("edit")) {
+			$skipsection=false;
 			echo "<a href=\"javascript:arshow('edit_object_cache','edit.object.cache.phtml')\">"
 				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/cache.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
 				.$ARnls["xp_cache"].$myName."</a><br />";
-
+		}
 		if ($this->CheckSilent("layout")) {
+			$skipsection=false;
 			echo "<a href=\"javascript:arshow('edit_object_layout','edit.object.layout.phtml')\">"
 				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/templates.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
 				.$ARnls["xp_templates"].$myName."</a><br />";
@@ -38,18 +44,27 @@
 		}
 
 		if ($this->CheckSilent("config")) {
+			$skipsection=false;
 			echo "<a href=\"javascript:arshow('edit_object_grants','edit.object.grants.phtml')\">"
 				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/grants.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
 				.$ARnls["xp_grants"].$myName."</a><br />";
+
 			echo "<a href=\"javascript:arshow('edit_object_types','edit.object.types.phtml')\">"
 				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/typetree.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
 				.$ARnls["xp_types"].$myName."</a><br />";
 		}
 
-		echo "<a href=\"javascript:arshow('edit_priority','edit.priority.phtml')\">"
-			."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/priority.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
-			.$ARnls["xp_priority"].$myName."</a><br />";
-		
+		if ($this->CheckSilent("edit")) 
+			echo "<a href=\"javascript:arshow('edit_priority','edit.priority.phtml')\">"
+				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/priority.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
+				.$ARnls["xp_priority"].$myName."</a><br />";
+
 		$this->call("winxp.manage.sidebar.sectionend.html", $arCallArgs);
+
+		if ($skipsection) {
+			ob_end_clean();
+		} else {
+			ob_end_flush();
+		}
 	}
 ?>

@@ -14,6 +14,9 @@
 		$arCallArgs["sectionName"] = "details";
 		$arCallArgs["sectionDisplayName"] = $ARnls["xp_detailsH"];
 		$arCallArgs["specialSection"] = false;
+		ob_start(); // start outputbuffer so we can throw away this section
+					// if it is empty	
+		$skipsection=true;	
 		$this->call("winxp.manage.sidebar.sectionstart.html", $arCallArgs);
 ?>
 	<div class="details">
@@ -22,12 +25,22 @@
 			global $HTTP_REFERER;
 			$oldPHP_SELF = $PHP_SELF;
 			$PHP_SELF = $HTTP_REFERER;
+			ob_start();
 			$this->Call("manage.details.html"); 
+			if ($contents=ob_get_contents()) {
+				$skipsection=false;
+			}
+			ob_end_flush();
 			$PHP_SELF = $oldPHP_SELF;
 			?><br />
 		<base target="_self" />
 	</div>
 <?php
-	$this->call("winxp.manage.sidebar.sectionend.html", $arCallArgs);
+		$this->call("winxp.manage.sidebar.sectionend.html", $arCallArgs);
+		if ($skipsection) {
+			ob_end_clean();
+		} else {
+			ob_end_flush();
+		}
 	}
 ?>

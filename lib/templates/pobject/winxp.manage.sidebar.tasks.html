@@ -41,14 +41,27 @@
 		echo "<a href=\"javascript:arshow('object_fs','object.copy.phtml')\">"
 			."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/copy.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
 			.$ARnls["xp_copy"].$myName."</a><br />";
-		echo "<a href=\"javascript:arshow('object_fs','object.link.phtml')\">"
-			."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/link.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
-			.$ARnls["xp_link"].$myName."</a><br />";
+
+		if ($this->CheckSilent("config")) 
+			echo "<a href=\"javascript:arshow('object_fs','object.link.phtml')\">"
+				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/link.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
+				.$ARnls["xp_link"].$myName."</a><br />";
 
 		if ($this->CheckSilent("delete"))
 			echo "<a href=\"javascript:arshow('object_fs','object.delete.phtml')\">"
 				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/delete.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
 				.$ARnls["xp_delete"].$myName."</a><br />";
+
+		if ($this->CheckSilent("config")) {
+			echo "<a href=\"javascript:arshow('edit_object_data','object.import.phtml')\">"
+				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/import.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
+				.$ARnls["xp_import"]."</a><br />";
+
+			echo "<a href=\"javascript:arshow('edit_object_data','object.export.phtml')\">"
+				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/export.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
+				.$ARnls["xp_export"]." ".$myName."</a><br />";
+		}
+
 		echo "<a href=\"javascript:arshow('_new','".$this->make_url()."view.html')\">"
 			."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/viewweb.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
 			.$ARnls["xp_viewweb"]."</a><br />";
