@@ -140,6 +140,7 @@
 		$store->add_type("psite","pobject");
 		$store->add_type("psite","ppage");
 		$store->add_type("psite","pdir");
+		$store->add_type("psite","psection");
 		$store->add_type("psite","psite");
 
 		$url["host"]["string"]=50;
@@ -191,6 +192,13 @@
 		$store->add_type("psearch","ppage");
 		$store->add_type("psearch","pdir");
 		$store->add_type("psearch","psearch");
+		
+		// install psection type
+		
+		$store->add_type("psection", "pobject");
+		$store->add_type("psection", "ppage");
+		$store->add_type("psection", "pdir");
+		$store->add_type("psection", "psection");
 
 		echo "== importing ariadne.ax file\n\n";
 
