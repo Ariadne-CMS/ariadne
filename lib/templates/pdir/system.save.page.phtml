@@ -19,6 +19,8 @@
     $page=str_replace("&tilde;","~",$page);
     // do this last, think about it :)
     $page=str_replace("&amp;","&",$page);
+    // change hardcoded links and images to use a placeholder for the root
+    $page=ereg_replace("(http://[^/]*)?".$this->store->root,"{arRoot}",$page);
     $newdata->$ContentLanguage->page=$page;
     include($this->store->code."includes/save.phtml");
     if ($error) {
