@@ -308,7 +308,12 @@ class mysqlstore {
 
 	 **********************************************************************************/
 
-		if (is_array($criteria)) {
+		if (!is_array($criteria)) {
+			$query_string=$this->sqlcompiler->compile("path ~= '$path%' and  $criteria ");
+			if ($this->sqlcompiler->error) {
+				$this->error=$this->sqlcompiler->error;
+			}
+		} else {
 			debug("find($path, [array], $limit, $offset)","store");
 			if (!$limit) {
 				$limit=100;
@@ -374,11 +379,6 @@ class mysqlstore {
 	          $query_string.=" and ( ( $where ) )";
 	        } 
 	        $query_string.=" order by $nodes_tbl.parent, $nodes_tbl.priority DESC, $nodes_tbl.path limit $offset,$limit";
-		} else {
-			$query_string=$this->sqlcompiler->compile("path ~= '$path%' and  $criteria ");
-			if ($this->sqlcompiler->error) {
-				$this->error=$this->sqlcompiler->error;
-			}
 		}
 		debug("find: query=$query_string","all");
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
