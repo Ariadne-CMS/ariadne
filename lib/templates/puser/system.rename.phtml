@@ -15,7 +15,7 @@
 					$newlogin=substr($target, strlen($newparent), -1);
 					$crit["login"]["value"]["="]="'".AddSlashes($newlogin)."'";
 					$result=$this->find("/system/users/",$crit,"system.get.id.phtml");
-					if ($result[0] != $this->id) {
+					if (count($result) && $result[0] != $this->id) {
 						$this->error=sprintf($ARnls["err:loginexists"],$newlogin);
 					}
 				}
