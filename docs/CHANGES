@@ -14,6 +14,7 @@ Bugs fixed:
 	  arguments.
 	- Fixed order of CheckLogin/CheckConfig and argument passing
 	  for some calendar templates
+	- Fixed a bug which caused customdata fields to be cleared.
 
 Changes in Ariadne since version 2.1.2
 
