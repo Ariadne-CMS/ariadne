@@ -12,17 +12,19 @@
 
 			}
 
+
 			while (list(,$file)=each($orig_files)) {
+				display("\n");
 				if ($new_filestore->exists($this->newObject->id, $file) &&
 					( $new_filestore->mtime($this->newObject->id, $file) >=
 						$orig_filestore->mtime($this->id, $file))) {
-							display("	file($file) no update\n");
+							display("	file($file) no update");
 				} else {
 					$tempname=tempnam($this->store->files."temp", "temp");
 					$orig_filestore->copy_from_store($tempname, $this->id, $file);
 					$new_filestore->copy_to_store($tempname, $this->newObject->id, $file);
 					@unlink($tempname);
-					display("	file($file) created\n");
+					display("	file($file) created");
 				}
 			}
 		 }

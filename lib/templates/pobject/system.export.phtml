@@ -103,7 +103,7 @@ global $AR;
 
 					display("processing($newpath)	");
 					if ($ARCurrent->options["without_data"]) {
-						display("no data for (".$object->path.")\n");
+						display("no data for (".$object->path.")");
 						/*
 						$temp_templates = $object->data->templates;
 						$temp_pinp = $object->data->pinp;
@@ -138,15 +138,15 @@ global $AR;
 												$ARCurrent->importStore->get($newpath)));
 
 								if (($object->lastchanged > $oldObject->lastchanged)) {
-									display("(updating)\n");
+									display("(updating)");
 									$save_obj = true;
 								} else {
 									$save_obj = false;
-									display("(ok)\n");
+									display("(ok)");
 									unset($oldObject);	// no update needed
 								}
 							} else {
-								display("(no overwrite)\n");
+								display("(no overwrite)");
 								$save_obj = false;
 							}
 						}
@@ -163,7 +163,7 @@ global $AR;
 											$ARCurrent->importStore->get($newpath));
 
 								} else {
-									display("(saving ".(($object->axflags) ? " (".$object->axflags.") " : "").")\n");
+									display("(saving ".(($object->axflags) ? " (".$object->axflags.") " : "").")");
 									$ARCurrent->importStore->save(
 											$newpath, 
 											$object->type,
@@ -193,10 +193,11 @@ global $AR;
 
 					} else {
 						if (!$ARCurrent->importStore->exists($newpath)) {
-							display("(linking)\n");
+							display("(linking)");
 							$ARCurrent->importStore->link($saved_object[$object->id], $newpath);
 						}
 					}
+					display("\n");
 				}
 				$offset+=sizeof($result);
 			}
@@ -233,6 +234,7 @@ global $AR;
 					}
 				}
 			}
+
 		}
 }
 ?>
