@@ -1,11 +1,7 @@
 <!--TOOLBAR_START--><!--TOOLBAR_EXEMPT--><!--TOOLBAR_END-->
 <!-- Copyright 2000 Microsoft Corporation. All rights reserved. -->
 <!-- Author: Steve Isaac, Microsoft Corporation -->
-<!--This demo shows how to host the DHTML Editing component on a Web page.
-
-    tbContentElement.focus();
-
--->
+<!--This demo shows how to host the DHTML Editing component on a Web page. -->
 <html>
 <head>
 <meta NAME="GENERATOR" CONTENT="Microsoft Visual Studio 6.0">
