@@ -425,11 +425,11 @@ class pinp {
 		  "xml_parser_create|xml_parse_into_struct|xml_parser_free|".
 		  "xml_parser_get_option|xml_parser_set_option";
 		$debug_funcs="debug|debugon|debugoff";
-		$loader_funcs="ldHeader|ldRedirect|ldSetContent|ldSetClientCache"; 
+		$loader_funcs="ldheader|ldredirect|ldsetcontent|ldsetclientcache|ldgetusercookie|ldsetusercookie"; 
 
 		$this->allowed_functions=array_flip(explode("|", "$array_funcs|$control_funcs|$datetime_funcs|$math_funcs|".
 		  "$misc_funcs|$net_funcs|$regex_funcs|$string_funcs|$var_funcs|$xml_funcs|".
-		  "$allowed_functions|$debug_funcs|$loader_funcs"));
+		  "$allowed_functions|$debug_funcs|$loader_funcs|"));
 
 	}
 
@@ -455,7 +455,6 @@ class pinp {
 		$this->scanner->init($template);
 		$this->tokens = Array();
 		$this->new_template = "";
-
 		$this->next_token();
 		while ($this->token != T_EOF) {
 			switch ($this->token) {
