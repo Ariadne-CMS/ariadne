@@ -15,9 +15,8 @@
 		$valid=time()-$ARCurrent->session->timeout;
 	}
 	if ($this->lastchanged < $valid) {
-		$arResult=false;
-	} else {
 		$arResult=true;
+	} else {
+		$arResult=false;
 	}
-	$arResult = true;
 ?>
