@@ -103,6 +103,7 @@ class mssqlstore {
 	 **********************************************************************************/ 
 
 		debug("call($template, ".serialize($args).", [list])", "store");
+		$result = Array();
 		$this->error = "";
 		$this->count = mssql_num_rows($objects["list"]);
 		debug("call: count=".$this->count,"all");

@@ -101,6 +101,7 @@ class mysqlstore {
 	 **********************************************************************************/ 
 
 		debug("call($template, ".serialize($args).", [list])","store");
+		$result = Array();
 		$this->error="";
 		$this->count=@mysql_num_rows($objects["list"]);
 		while ($row=@mysql_fetch_array($objects["list"])) {
