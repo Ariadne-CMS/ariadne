@@ -46,7 +46,7 @@ class pbookmark extends pobject { // class definition
 		$this->errorcode=0;
 		// first check the syntax
 		if ($url) {
-			if (eregi("([a-z]+://)?(([a-z0-9]+:)?([a-z0-9]+@)?)([a-z0-9.]+)(:[0-9]+)?(.*)", $url, $matches)) {
+			if (eregi("([a-z]+://)?(([a-z0-9]+:)?([a-z0-9]+@)?)([-_a-z0-9.]+)(:[0-9]+)?(.*)", $url, $matches)) {
 				$protocol=strtolower($matches[1]);
 				$user=$matches[3];
 				$password=$matches[4];
