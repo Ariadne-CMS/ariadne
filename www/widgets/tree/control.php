@@ -1,3 +1,6 @@
+<?php
+	$arUserPath = $HTTP_GET_VARS["arUserPath"];
+?>
 <html>
 <head>
 <link rel="stylesheet" type="text/css" href="../../styles/control.css">
