@@ -35,20 +35,23 @@
 		$properties["name"][]["value"]="'".AddSlashes($this->data->name)."'";
 		$properties["text"][]["value"]="'".AddSlashes($this->data->name)."'";
 		if ($this->arIsNewObject) {
-			$login=$this->getdata("arNewFilename","none");
-			if ($login) {
-				$criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
-				$result=$this->find("/system/users/",$criteria,"system.get.phtml");
-				if ($result) {
-					$this->error=sprintf($ARnls["err:loginexists"],$login);
+			if ($login=$this->getdata("arNewFilename","none")) {
+				if (strlen($login)>32) {
+					$this->error=$ARnls["err:logintoolong"];
 				} else {
-					if (ereg('\{.*\}',$login)) {
-						$this->error=$ARnls["err:donotuseid"];
+					$criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
+					$result=$this->find("/system/users/",$criteria,"system.get.phtml");
+					if ($result) {
+						$this->error=sprintf($ARnls["err:loginexists"],$login);
 					} else {
-						$this->data->login=$login;
-						$properties["login"][0]["value"]="'".AddSlashes($login)."'";
-						if (!$this->data->password) {
-							$this->error=$ARnls["err:validpassword"];
+						if (ereg('\{.*\}',$login)) {
+							$this->error=$ARnls["err:donotuseid"];
+						} else {
+							$this->data->login=$login;
+							$properties["login"][0]["value"]="'".AddSlashes($login)."'";
+							if (!$this->data->password) {
+								$this->error=$ARnls["err:validpassword"];
+							}
 						}
 					}
 				}

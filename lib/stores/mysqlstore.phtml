@@ -894,7 +894,7 @@ class mysqlstore {
 	}
 
 	function add_property($object, $property, $values) {
-		debug("add_property($object, $property, [values])","all");
+		debug("add_property($object, $property, ".serialize($values)." )","all");
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
@@ -909,6 +909,7 @@ class mysqlstore {
 			}
 			$query_string="insert into ".$this->tbl_prefix."prop_".AddSlashes($property)." ( ".
 										$query_names."object ) values ( ".$query_values."$object )";
+			debug($query_string, "all");
 			mysql_db_query($this->database,$query_string, $this->connect_id);
 			$result=mysql_affected_rows($this->connect_id);
 		}

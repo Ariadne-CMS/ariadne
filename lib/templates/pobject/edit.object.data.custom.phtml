@@ -61,18 +61,18 @@
 						echo "		dest[dest.length]=new Option('".AddSlashes($name)."','".AddSlashes($name)."');\n";
 						echo "		CustomList[CustomList.length]=new custom_node(\n";
 						echo "			'".AddSlashes($custom["type"])."',";
-						if ($custom["inherit"]=="true") {
-							echo "true";
+						if ($custom["inherit"] && ($custom["inherit"]!="false")) {
+							echo 1;
 						} else {
-							echo "false";
+							echo 0;
 						}
 						echo ",\n";
 						echo "			'".AddSlashes($name)."','".AddSlashes($custom["size"])."',\n";
 						echo "			'".AddSlashes($custom["grant"])."',";
-						if ($custom["nls"]=="true") {
-							echo "true";
+						if ($custom["nls"] && ($custom["nls"]!="false")) {
+							echo 1;
 						} else {
-							echo "false";
+							echo 0;
 						}
 						echo ",\n";
 						echo "			'".AddSlashes($custom["check"])."');\n";

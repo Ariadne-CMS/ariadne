@@ -165,6 +165,7 @@ class pobject extends object {
 			debug("pobject: save: new object","all");
 			$arNewParent=$this->make_path("..");
 			$arNewFilename=substr($this->path, strlen($arNewParent), -1);
+			$configcache=$ARConfig->cache[$arNewParent];
 			if (!eregi("\.\.",$arNewFilename)) {
 				if (eregi("^[a-z0-9_\{\}\.\:-]+$",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
 					if (!$this->exists($this->path)) { //arNewFilename)) {
@@ -176,20 +177,22 @@ class pobject extends object {
 							$customdata=$this->getdata("customdata","none");
 							@parse_str($customdata);
 							$this->data->customdata=$customdata;
-							/* 	FIXME! add properties in install.
-								$properties["time"][0]["ctime"]=$this->data->ctime;
-								$properties["time"][0]["mtime"]=$this->data->mtime;
-								$properties["owner"][0]["value"]=$this->data->owner;
-								$i=0;
-								while (list($nls, $cdata)=each($this->data->custom)) {
-									while (list($name, $value)=each($cdata)) {
-										// one index, this order (name, value, nls) ?
+							$properties["time"][0]["ctime"]=$this->data->ctime;
+							$properties["time"][0]["mtime"]=$this->data->mtime;
+							$properties["time"][0]["muser"]="'".AddSlashes($this->data->owner)."'";
+							$properties["owner"][0]["value"]="'".AddSlashes($this->data->owner)."'";
+							$i=0;
+							while (list($nls, $cdata)=each($this->data->customdata)) {
+								while (list($name, $value)=each($cdata)) {
+									// one index, this order (name, value, nls) ?
+									if ($configcache->custom[$name]['property']) {
 										$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
 										$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
 										$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
+										$i++;
 									}
 								}
-							*/
+							}
 							$this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority);
 							$this->id=$this->exists($this->path);
 							$result=$this->path;
@@ -207,13 +210,30 @@ class pobject extends object {
 			}
 		} else { // update an existing object
 			debug("pobject: save: existing object","all");
+			$configcache=$ARConfig->cache[$this->path];
 			if ($this->lock()) {
 				if ($this->exists($this->path)) { // prevent 'funny stuff'
 					$this->data->mtime=time();
-					// $properties["time"]["mtime"]=$this->data->mtime;
+					$properties["time"][0]["ctime"]=$this->data->ctime;
+					$properties["time"][0]["mtime"]=$this->data->mtime;
+					$properties["time"][0]["muser"]="'".AddSlashes($AR->user->data->login)."'";
 					$customdata=$this->getdata("customdata","none");
 					@parse_str($customdata);
 					$this->data->customdata=$customdata;
+					$i=0;
+					while (list($nls, $cdata)=each($this->data->customdata)) {
+						while (list($name, $value)=each($cdata)) {
+							if ($configcache->custom[$name]['property']) {
+								// one index, this order (name, value, nls) ?
+								$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
+								$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
+								$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
+								$i++;
+							} else {
+								echo "<!-- ".serialize($configcache->customconfig)." -->";	
+							}
+						}
+					}
 					$this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority);
 					$result=$this->path;
 					$this->ClearCache();

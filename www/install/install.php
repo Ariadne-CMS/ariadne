@@ -35,28 +35,6 @@
 		$store->add_type("ppage","pobject");
 		$store->add_type("ppage","ppage");
 
-		// install psite types and properties
-
-		$store->add_type("psite","pobject");
-		$store->add_type("psite","pdir");
-		$store->add_type("psite","psite");
-
-		$url["host"]["string"]=50;
-		$url["port"]["number"]=1;
-		$url["protocol"]["string"]=10;
-		$store->create_property("url", $url);
-
-
-		$store->add_type("pphoto","pobject");
-		$store->add_type("pphoto","pphoto");
-		$store->add_type("pphoto","pfile");
-		$store->add_type("pphoto","ppage");
-		$store->add_type("pphoto","pphoto");
-		$store->add_type("pphotobook","pobject");
-		$store->add_type("pphotobook","pdir");
-		$store->add_type("pphotobook","pphoto");
-		$store->add_type("pphotobook","pphotobook");
-
 		$name["value"]["string"]=50;
 		$name["nls"]["string"]=4;
 		$store->create_property("name", $name);
@@ -68,15 +46,31 @@
 		$ptext["nls"]["string"]=4;
 		$store->create_property("text",$ptext);
 
-		$locked["id"]["string"]=16;
+		$locked["id"]["string"]=32;
 		$locked["duration"]["number"]=1;
 		$store->create_property("locked", $locked);
 
-		$login["value"]["string"]=16;
+		$login["value"]["string"]=32;
 		$store->create_property("login", $login);
 
-		$members["login"]["string"]=16;
+		$members["login"]["string"]=32;
 		$store->create_property("members", $members);
+
+		$time["ctime"]["number"]=1;
+		$time["mtime"]["number"]=1;
+		$time["muser"]["string"]=32;
+		$time_index[0][0]="ctime";
+		$time_index[1][0]="mtime";
+		$time_index[2][0]="muser";
+		$store->create_property("time", $time, $time_index);
+
+		$owner["owner"]["string"]=32;
+		$store->create_property("owner",$owner);
+
+		$custom["name"]["string"]=32;
+		$custom["value"]["string"]=128;
+		$custom["nls"]["string"]=4;
+		$store->create_property("custom",$custom);
 
 		// now install all pcalendar and pcalitem objects.
 
@@ -129,6 +123,29 @@
 		$address["city"]["string"]=50;
 		$address["country"]["string"]=50;
 		$store->create_property("address", $address);
+
+		// install psite types and properties
+
+		$store->add_type("psite","pobject");
+		$store->add_type("psite","pdir");
+		$store->add_type("psite","psite");
+
+		$url["host"]["string"]=50;
+		$url["port"]["number"]=1;
+		$url["protocol"]["string"]=10;
+		$store->create_property("url", $url);
+
+		// install pphoto(book) types
+
+		$store->add_type("pphoto","pobject");
+		$store->add_type("pphoto","pphoto");
+		$store->add_type("pphoto","pfile");
+		$store->add_type("pphoto","ppage");
+		$store->add_type("pphoto","pphoto");
+		$store->add_type("pphotobook","pobject");
+		$store->add_type("pphotobook","pdir");
+		$store->add_type("pphotobook","pphoto");
+		$store->add_type("pphotobook","pphotobook");
 
 		echo "== importing ariadne.ax file\n\n";
 

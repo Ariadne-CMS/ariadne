@@ -274,4 +274,5 @@ $ARnls["err:invalidcontent"]="Error: Invalid content";
 $ARnls["force"]=		"Forced updates from file.";
 $ARnls["withoutgrants"]="Don't import grants";
 $ARnls["options"]=		"Options";
+$ARnls["err:logintoolong"]="Login is too long, maximum length is 32 characters.";
 ?>

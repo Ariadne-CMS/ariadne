@@ -26,20 +26,37 @@
 			if (is_array($this->data->customconfig)) {
 				reset($this->data->customconfig);
 				while (list($name, $custom)=each($this->data->customconfig)) {
+					if (!$custom['nls']) {
+						$custom['nls']=0;
+					} else {
+						$custom['nls']=1;
+					}
+					if (!$custom['inherit']) {
+						$custom['inherit']=0;
+					} else {
+						$custom['inherit']=1;
+					}
+					if (!$custom['property']) {
+						$custom['property']=0;
+					} else {
+						$custom['property']=1;
+					}
+						
 					echo "		dest[dest.length]=new Option('".AddSlashes($name)."','".AddSlashes($name)."');\n";
 					echo "		customlist[customlist.length]=new custom_node(\n";
 					echo "			'".AddSlashes($custom["type"])."',".AddSlashes($custom["inherit"]).",\n";
 					echo "			'".AddSlashes($name)."','".AddSlashes($custom["size"])."',\n";
 					echo "			'".AddSlashes($custom["grant"])."',".AddSlashes($custom["nls"]).",\n";
-					echo "			'".AddSlashes($custom["check"])."');\n";
+					echo "			'".AddSlashes($custom["check"])."',".AddSlashes($custom["property"]).");\n";
 				}
 			}
 		?>
-		if (dest.length>0) {
-			document.customform.fieldname.selectedIndex=dest.length-1;
-			document.customform.fieldname.focus();
-			show();
+		if (dest.length==0) {
+			add();	
 		}
+		document.customform.fieldname.selectedIndex=dest.length-1;
+		document.customform.fieldname.focus();
+		show();
 	}
 
 	function remove() {
@@ -75,6 +92,7 @@
 			form.cdcheck.value='.*';
 			form.cdinherit.checked=true;
 			form.cdnls.checked=true;
+			form.cdproperty.checked=false;
 		}
 	}
 	
@@ -100,6 +118,7 @@
 			savestring+='&customdata['+i+'][nls]='+escape(data.nls);
 			savestring+='&customdata['+i+'][grant]='+escape(data.grant);
 			savestring+='&customdata['+i+'][check]='+escape(data.check);
+			savestring+='&customdata['+i+'][property]='+escape(data.property);
 		}
 		document.customform.customdata.value=savestring;
 		return true;
@@ -122,10 +141,11 @@
 			form.cdcheck.value=fielddata.check;
 			form.cdinherit.checked=fielddata.inherit;
 			form.cdnls.checked=fielddata.nls;
+			form.cdproperty.checked=fielddata.property;
 		}
 	}
 
-	function custom_node(type, inherit, name, size, grant, nls, check) {
+	function custom_node(type, inherit, name, size, grant, nls, check, property) {
 		this.name=name;
 		this.type=type;
 		this.inherit=inherit;
@@ -133,6 +153,7 @@
 		this.grant=grant;
 		this.nls=nls;
 		this.check=check;
+		this.property=property;
 	}
 
 	function updateCustom(element) {
@@ -173,7 +194,12 @@
 				customlist[id].type=element.options[element.selectedIndex].value;
 				break;
 			case "cdinherit" :
-				customlist[id].inherit=element.checked;
+				if (element.checked) {
+					value=1;
+				} else {
+					value=0;
+				}
+				customlist[id].inherit=value;
 				break;
 			case "cdsize" :
 				customlist[id].size=element.value;
@@ -182,10 +208,23 @@
 				customlist[id].grant=element.value;
 				break;
 			case "cdnls" :
-				customlist[id].nls=element.checked;
+				if (element.checked) {
+					value=1;
+				} else {
+					value=0;
+				}
+				customlist[id].nls=value;
 				break;
 			case "cdcheck" :
 				customlist[id].check=element.value;
+				break;
+			case "cdproperty" :
+				if (element.checked) {
+					value=1;
+				} else {
+					value=0;
+				}
+				customlist[id].property=value;
 				break;
 		}
 	}
@@ -231,6 +270,7 @@ BODY, TD {
 			</tr><tr>
 				<td align="right"><?php echo $ARnls["size"]; ?></td>
 				<td><input type="text" name="cdsize" value="255" size="4" onBlur="updateCustom(this);" ></td>
+				<td><input type="checkbox" name="cdproperty" value="1" onClick="updateCustom(this);"> property</td>
 			</tr><tr>
 				<td align="right"><?php echo $ARnls["grant"]; ?></td>
 				<td><input class="text" type="text" name="cdgrant" value="" size="16" onBlur="updateCustom(this);" ></td>
