@@ -201,14 +201,14 @@
     if (this.status=="Closed") {
       plus='<img src="../../images/tree/plus'+variant+'.gif" border="0" width=18 height=18 border=0 align="left" hspace="0" vspace="0" alt="">';
       target.writeln('<A HREF="javascript:toggle('+this.id+');">'+plus+'</A>'
-                    +'<img src="../../images/icons/'+this.icon+'.gif" border="0" alt="" valign="middle">'
+                    +'<img src="../../images/icons/'+this.icon+'.gif" border="0" width=18 height=18 alt="" valign="middle">'
 		    +'<span class="node"><nobr><A HREF="javascript:View('+this.id+');"'
                     +' onMouseOver="window.status=\''+this.link+'\'; return true;" onMouseOut="window.status=\'\'; return true;">'
                     +this.pre+this.name+'</A></nobr></span></nobr><br clear="all">');
     } else {
       minus='<img src="../../images/tree/minus'+variant+'.gif" border="0" width=18 height=18 border=0 align="left" hspace="0" vspace="0" alt="">';
       target.writeln('<A HREF="javascript:toggle('+this.id+');">'+minus+'</A>'
-                    +'<img src="../../images/icons/'+this.icon+'.gif" border="0" alt="" valign="middle">'
+                    +'<img src="../../images/icons/'+this.icon+'.gif" border="0" width=18 height=18 alt="" valign="middle">'
 		    +'<span class="node"><nobr><A HREF="javascript:View('+this.id+');"'
                     +' onMouseOver="window.status=\''+this.link+'\'; return true;" onMouseOut="window.status=\'\'; return true;">'
                     +this.pre+this.name+'</A></nobr></span></nobr><br clear="all">');
