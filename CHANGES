@@ -1,4 +1,28 @@
-Ariadne 2.0b10
+Ariadne 2.0b11
+
+Changes in ariadne since version 2.0b10
+
+Ariadne 2.0b10 is mainly a bug-fix release.
+
+New features:
+	- Added an option to prefix the mysqlstore-tables. This will allow
+	ariadne to run both the normal- and sessionstore from the same database.
+	The prefix can be set in the session.phtml configuration file.
+	- Added the PINP interface method pobject::_checkgrant(<grant>).
+	This function is an interface to pobject::CheckSilent(<grant>).
+	- Added control structure 'foreach' to the allowed PINP functions. 
+	- Added the ax command 'axlist' to the bin directory. This util
+	will show you the contents of an ax-file. 
+
+Bugs fixed:
+	- Removed dependecies for the DelGrant.phtml include file. This
+	will fix the problems which users experienced while adding/configuring
+	new user objects.
+	- Fixed a problem which occured while removing ax tempory directories:
+	Directories could not be deleted when their name was "000" (zero), this
+	evaluated as false.
+	- Several minor problems.
+
 
 Changes in ariadne since version 2.0b9
 
