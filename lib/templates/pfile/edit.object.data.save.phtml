@@ -40,10 +40,10 @@
 			</table>
 		<?php
 	} else {
+		$arIsNewObject=$this->arIsNewObject;
 		if (!$arOverwrite || $arOverwrite="yes") { 
 			$this->call("system.save.data.phtml",$arCallArgs);
 		}
-		debugoff();
 		if ($this->error) {
 			?>
 				<font color="red" face="arial,helvetica,sans-serif" size=+1><?php echo $this->error; ?></font><p>
@@ -56,7 +56,17 @@
 						if (window.opener.objectadded) {
 							window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddSlashes($this->nlsdata->name); ?>','<?php echo $this->path; ?>'); 
 						}
-						window.close();
+						<?php
+							if (!$arIsNewObject) {
+						?>
+									window.close();
+						<?php
+							} else {
+						?>
+									window.location.href='object.new.select.phtml';
+						<?php
+							}
+						?>
 					} 
 				</script>
 			<?php

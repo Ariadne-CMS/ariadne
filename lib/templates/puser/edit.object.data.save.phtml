@@ -7,9 +7,7 @@
  
 	******************************************************************/
 
-	if ($this->arIsNewObject) {
-		$newlink=true;
-	}
+	$arIsNewObject=$this->arIsNewObject;
 	$this->call("system.save.data.phtml",$arCallArgs);
 	if ($this->error) {
 		?>
@@ -18,7 +16,7 @@
 	} else {
 		$folder=$this->call("system.get.folder.phtml");
 		$arReturnPath=$this->path;
-		$arReturnTemplate="js.window.objectadded.phtml";
+		$arReturnTemplate="js.window.objectadded.phtml?arIsNewObject=".RawUrlEncode($arIsNewObject);
 		if (($password=$this->getdata("newpass1","none")) && 
 				($this->data->login==$AR->user->data->login)) {
 			$arReturnPage=$this->store->root.$this->path."login.phtml?ARLogin=".RawUrlEncode($data->login).
@@ -31,7 +29,7 @@
 			<script> 
 				if (window.opener.top.tree) {
 					<?php
-						if ($newlink) {
+						if ($arIsNewObject) {
 							echo "  window.opener.top.tree.AddLinks('{$this->parent}','{$folder["icon"]}','".AddSlashes($folder["name"])."','{$folder["path"]}','".AddSlashes($folder["pre"])."');\n";
 						} else {
 							echo "  window.opener.top.tree.UpdateLinks('{$folder["icon"]}','".AddSlashes($folder["name"])."','{$folder["path"]}','".AddSlashes($folder["pre"])."');\n";

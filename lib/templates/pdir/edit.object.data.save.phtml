@@ -6,6 +6,7 @@
 	 no result.
  
 	******************************************************************/
+	$arIsNewObject=$this->arIsNewObject;
 	$this->call("system.save.data.phtml",$arCallArgs);
 	if ($this->error) {
 		?>
@@ -25,7 +26,17 @@
 				if (window.opener.objectadded) {
 					window.opener.objectadded('<?php echo $this->type; ?>','<?php echo $nlsdata->name; ?>','<?php echo $this->path; ?>'); 
 				}
-				window.close();
+				<?php
+					if (!$arIsNewObject) {
+				?>
+							window.close();
+				<?php
+					} else {
+				?>
+							window.location.href='object.new.select.phtml';
+				<?php
+					}
+				?>
 			</script>
 		<?php
 	}
