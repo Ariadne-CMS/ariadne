@@ -55,15 +55,15 @@
         } else { // it's part of an array
           $ARCurrent->seenit[$prefix]=true;
         }
-        $value = htmlentities($value);
+        $value = htmlspecialchars($value);
         echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
       } else 
       if (!$ARCurrent->seenit[$prefix] && !$toplevel) { // value part of array
-        $value = htmlentities($value);
+        $value = htmlspecialchars($value);
         echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
       } else
       if (!$ARCurrent->seenit[$prefix.$key.$postfix] && $toplevel) { // value not in array
-        $value = htmlentities($value);
+        $value = htmlspecialchars($value);
         echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
       }
     }
