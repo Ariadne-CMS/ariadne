@@ -23,5 +23,10 @@ class puser extends pdir { // definitie class
 		return false;
 	}
 
+	function copyto($target) {
+		$this->error=$ARnls["err:usercannotbecopied"];
+		return false;		
+	}
+
 } // end class puser
 ?>

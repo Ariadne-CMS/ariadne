@@ -90,7 +90,7 @@ class pobject {
 		return $this->store->call($function, $args, $this->store->parents($path));
 	}
 
-	function find($path, $criteria, $function="list.html", $args="", $limit="", $offset="") {
+	function find($path, $criteria, $function="list.html", $args="", $limit=100, $offset=0) {
 		debug("pobject: find($path, [crit], $function, $args)","object");
 		$path=$this->store->make_path($this->path, $path);
 		return $this->store->call($function, $args, $this->store->find($path, $criteria, $limit, $offset));
@@ -131,6 +131,45 @@ class pobject {
 	function implements($implements) {
 		debug("pobject: implements($implements)","object");
 		return $this->store->implements($this->type, $implements); 
+	}
+
+	function copyto($target) {
+		debug("pobject: copyto($target)","object");
+		$result=false;
+		// first check to see if the target is valid
+		$parent=$this->store->make_path($target, "..");
+		if ($this->exists($parent)) {
+/*
+			//FIXME: for the moment no grants are copied.
+			// need to check "add" and "config" grants
+			// in the target.
+			$searchpath["puser"]="/system/users/";
+			$searchpath["pgroup"]="/system/groups/";
+			// first check and copy grants to user/group objects
+			while (list($type, $idlist)=@each($this->data->grants)) {
+				while (list($id, $grants)=@each($idlist)) {
+					while (list($grant, $value)=@each($grants)) {
+						$this->find($searchpath[$type], 
+							Array("login" => Array ( "value" => Array ("=" => "'".AddSlashes($id)."'" ) ) ), 
+							"updategrant.phtml", 
+							"action=add&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($newgrant) 
+						);
+					}
+				}
+			}
+*/
+			unset($this->data->grants);
+			$target=$this->make_path($target);
+			if (!$this->exists($target)) {
+				$properties=$this->load_properties();
+				$result=$this->save($target, $this->type, $this->data, $this->properties, $this->vtype); 
+			} else {
+				$this->error=sprintf($ARnls["err:alreadyexists"],$target);
+			}
+		} else {
+			$this->error=sprintf($ARnls["err:wrongpath"],$parent);
+		}
+		return $result;
 	}
 
 	function getlocks() {
@@ -387,8 +426,9 @@ class pobject {
 	global $nocache, $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls;
 	
 		debug("pobject::CheckConfig($arCallFunction, $arCallArgs)","object");
-		if (!$ARBeenHere[$this->path][$arCallFunction]) { // protect against infinite loops
-			$ARBeenHere[$this->path][$arCallFunction]=1;
+		$MAX_LOOP_COUNT=10;
+		if ($ARBeenHere[$this->path][$arCallFunction]<$MAX_LOOP_COUNT) { // protect against infinite loops
+			$ARBeenHere[$this->path][$arCallFunction]+=1;
 			$ARConfig->arCallArgs=$arCallArgs;
 			$ARConfig->template=array();
 			$ARConfig->nls=$AR->nls;
@@ -567,7 +607,6 @@ class pobject {
 		$this->store->root=ldSetNls($nls);
 	}
 
-
 /********************************************************************
 
   "safe" functions.
@@ -614,7 +653,7 @@ class pobject {
 			$this->store->parents($this->path));
 	}
 
-	function _find($criteria, $function="list.html", $args="", $limit="", $offset="") {
+	function _find($criteria, $function="list.html", $args="", $limit=100, $offset=0) {
 		return $this->store->call($function, $args, 
 		$this->store->find($this->path, $criteria, $limit, $offset));
 	}
