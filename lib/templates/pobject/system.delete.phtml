@@ -31,6 +31,8 @@
 				$this->ClearCache();
 				// finally remove object itself
 				$this->delete();
+			} else {
+				$this->error=$ARnls["err:containsobj"];
 			}
 			$this->unlock();
 		}
