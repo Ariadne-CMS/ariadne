@@ -355,6 +355,33 @@ class axstore {
 		return $result;
 	}
 
+	function info($objects) {
+		if (is_array($objects["list"])) {
+			reset($objects["list"]);
+			while (list(,$node)=each($objects["list"])) {
+				$this->_load_object_data($node->object);
+				$parent=$this->make_path($node->path, "..");
+				if ($parent=="/") {
+					$parent="..";
+				}
+				$node->object->parent=$parent;
+				$row["path"] = $node->path;
+				$row["parent"] = $parent;
+				$row["priority"] = $node->priority;
+				$row["data"] = $node->object->data;
+				$row["id"] = $node->object->id;
+				$row["type"] = $node->object->type;
+				$row["vtype"] = $node->object->vtype;
+				$row["lastchanged"] = $node->object->lastchanged;
+
+				$result[] = $row;
+				$this->_free_object_data($node->object);
+			}
+		}
+
+		return $result;
+	}
+
 	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) {
 		include_once($this->code."objects/".$type.".phtml");
 		$object=new $type;
