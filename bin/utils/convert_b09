@@ -26,6 +26,7 @@
 	require_once($ariadne."/stores/axstore.phtml");
 	require_once("./utils/shared_functions.php");
 
+
 	if ($argc>2) {
 		$axfile=$argv[1];
 		$tempdir=tempnam($store_config["files"]."temp", "axconvert");
@@ -64,12 +65,16 @@
 						$ax_config["writeable"]=true;
 						$store=new axstore(".", $ax_config);
 
-
 						$files_store=$store->get_filestore("files");
 						$templates_store=$store->get_filestore("templates");
 
 						while (is_array($axdata->nodes) && (list($key, $id)=each($axdata->nodes))) {
 							if (!$objects[$id]) {
+								echo "processing $key\n";
+								if (!is_array($objects) && $key != "/") {
+									echo "fist adding dummy root node\n";
+									$store->save("/", "pdir", new object, "", "", 0, AX_DUMMY);
+								}
 								$objects[$id]=true; // object seen
 								$object=$axdata->objects[$id];
 								$store->save($key, $object["type"], $object["data"], $object["properties"], $object["vtype"]);
@@ -79,13 +84,14 @@
 									$newid=$newobject->id;
 
 									if (is_array($newobject->data->pinp)) {
+										reset($newobject->data->pinp);
 										while (list($type, $templates)=each($newobject->data->pinp)) {
 											while (list($template, $languages)=each($templates)) {
 												while (list($language, $file)=each($languages)) {
-													$newobject->data->pinp[$type][$template][$language]=$newid;
-													$newobject->data->templates[$type][$template][$language]=$newid;
-													//echo "copy_to_store($tempdir/templates".$file.".pinp, $newid,  $type.$template.$language)\n";
-													$templates_store->copy_to_store($tempdir."/templates".$file.".pinp", $newid,  "$type.$template.$language.pinp");
+														$newobject->data->pinp[$type][$template][$language]=$newid;
+														$newobject->data->templates[$type][$template][$language]=$newid;
+												//		echo "copy_to_store($tempdir/templates".$file.".pinp, $newid,  $type.$template.$language.pinp)\n";
+														$templates_store->copy_to_store($tempdir."/templates".$file.".pinp", $newid,  "$type.$template.$language.pinp");
 												}
 											}
 										}
@@ -110,7 +116,7 @@
 										}
 										closedir($dir);
 									}
-
+									$newobject->save();
 								} else {
 									echo "error: could not get saved object ($key)\n";
 								}
