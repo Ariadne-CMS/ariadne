@@ -55,9 +55,9 @@ class pinp {
 
   function compile($template) {
     // first remove any php code
-    $template=preg_replace("/<\?.*\?>/is","",$template);
-    $template=preg_replace("/<%.*%>/is","",$template);
-    $template=preg_replace("|<script[^>]*php[^>]*>.*</script>|is","",$template);
+    $template=preg_replace("/<\?.*\?>/isU","",$template);
+    $template=preg_replace("/<%.*%>/isU","",$template);
+    $template=preg_replace("|<script[^>]*php[^>]*>.*</script>|isU","",$template);
 
     // then remove /* .. */ comments, even in html code... for security
     // since php supports comment tags including ? > and < ?php the comments check must be made first. 
