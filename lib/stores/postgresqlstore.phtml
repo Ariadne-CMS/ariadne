@@ -69,7 +69,6 @@ class postgresqlstore {
 
 		/* Instantiate module postgresql_compiler */
 		include_once($this->code."stores/modules/postgresql_compiler.php");
-		$this->sqlcompiler	= new postgresql_compiler($this->tbl_prefix);
 
 		/* Instantiate module locking */
 		include_once($this->code."modules/mod_lock/postgresql.phtml");
@@ -263,13 +262,16 @@ class postgresqlstore {
 	 $path should always start and end with a '/'.
 
 	 **********************************************************************************/
-
 		if (! is_array($criteria) && ($criteria = trim($criteria))) {
-			$criteria		= " and $criteria ";
-			$query_string	= $this->sqlcompiler->compile("path ~= '$path%'$criteria", $limit, $offset);
-			if ($this->sqlcompiler->error) {
-				$this->error	= $this->sqlcompiler->error;
+			$criteria = " and $criteria ";
+			$sqlcompiler = new postgresql_compiler($this->tbl_prefix);
+			$query_raw = "path ~= '$path%'$criteria";
+			debug("raw query: $query_raw", "store");
+			$query_string = $sqlcompiler->compile($query_raw, $limit, $offset);
+			if ($sqlcompiler->error) {
+				$this->error	= $sqlcompiler->error;
 			}
+			unset($sqlcompiler);
 		} else {
 			$this->error		= "";
 			$count				= 0;
@@ -328,6 +330,8 @@ class postgresqlstore {
 	        if ($where) { 
 	          $query_string	.= " and ( ( $where ) )";
 	        } 
+			$query_string.=" order by $nodes_tbl.parent, $nodes_tbl.priority DESC, $nodes_tbl.path";
+
 			if ($limit) {
 				$query_string.=" limit $limit";
 				if ($offset) {
