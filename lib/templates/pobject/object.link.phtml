@@ -15,7 +15,16 @@
 </head>
 <body onLoad="init()">
 <table border="0" width="100%" cellspacing="0" cellpadding="2">
-<form action="object.link.save.phtml" name="linkform">
+<?php
+	$server_name=eregi_replace("^[htps:/]*/","",$AR->host);
+	global $HTTP_SERVER_VARS;
+	if ($HTTP_SERVER_VARS["SERVER_NAME"]==$server_name) {
+		$currentpath=$this->store->root.$this->path;
+	} else {
+		$currentpath=$this->make_url();
+	}
+?>
+<form action="<?php echo $currentpath; ?>object.link.save.phtml" name="linkform">
 <tr>
 	<td align="center" colspan="2">
 		<?php 

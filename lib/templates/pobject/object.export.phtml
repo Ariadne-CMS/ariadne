@@ -16,7 +16,16 @@
 </head>
 <body onLoad="init()">
 <table border="0" width="100%" cellspacing="0" cellpadding="2" height="100%">
-<form action="object.export.ax.phtml" name="exportform">
+<?php
+	$server_name=eregi_replace("^[htps:/]*/","",$AR->host);
+	global $HTTP_SERVER_VARS;
+	if ($HTTP_SERVER_VARS["SERVER_NAME"]==$server_name) {
+		$currentpath=$this->store->root.$this->path;
+	} else {
+		$currentpath=$this->make_url();
+	}
+?>
+<form action="<?php echo $currentpath; ?>object.export.ax.phtml" name="exportform">
 <tr>
 	<td colspan="2">&nbsp;</td>
 </tr><tr>
