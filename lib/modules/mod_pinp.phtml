@@ -537,12 +537,30 @@ class pinp {
 							$this->new_template.=$ident."(";
 						}
 					} else {
-						$this->new_template.=$ident;
-						/* 
-							as our 'lookahead' token is not a T_PAR_OPEN
-							we need to parse it again
-						*/
-						continue 2;
+						$ident_clean = strtolower(trim($ident));
+						switch ($ident_clean) {
+							case "new":
+							case "global":
+							case "return":
+							case "__file__":
+							case "include":
+							case "include_once":
+							case "require":
+							case "require_once":
+
+								$this->error = "error: illegal language construct ($ident_clean) at line: ".$this->scanner->YYLINE;
+
+							/* break out of the parser loop */
+							break 2;
+							default:
+								$this->new_template.=$ident;
+								/* 
+									as our 'lookahead' token is not a T_PAR_OPEN
+									we need to parse it again
+								*/
+								continue 3;
+							break;
+						}
 					}
 				break;
 				case T_PAR_OPEN:
