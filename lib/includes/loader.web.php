@@ -131,7 +131,8 @@
 		$curr=$store->files;
 		while ($dir) {
 			$curr.=$dir."/";
-			@mkdir($curr, 0755);
+			debug("ldMkDir: $curr","all");
+			mkdir($curr, 0755);
 			$dir=strtok("/");
 		}
 	}

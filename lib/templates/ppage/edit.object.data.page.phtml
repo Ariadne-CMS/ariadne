@@ -12,9 +12,6 @@
 <head>
 <script>
 <!--
-  function init() {
-    document.editform.htmltext.value=window.opener.GetHTML('<?php echo $name; ?>');
-  }
   function loadpage(root, path, file, name, language, type) {
     if (file) {
       document.location.href=root+path+file+'/edit.object.data.'+name+'.phtml?'+
@@ -29,7 +26,7 @@
 // -->
 </script>
 </head>
-<body bgcolor="white" onLoad="init()">
+<body bgcolor="white">
 <form name="editform" method="post" action="<?php echo $root.$path.$file."edit.".$name.".save.phtml"; ?>">
 <input name="ContentLanguage" type="hidden" value="<?php echo $language; ?>">
 <table width="100%" border="0" cellspacing="0"><tr>

@@ -83,23 +83,31 @@
 			(strpos($HTTP_PRAGMA,"no-cache") === false) &&
 			(($mtime=filemtime($cachedimage))>$timecheck) &&
 			($HTTP_SERVER_VARS["REQUEST_METHOD"]!="POST")) {
+
+			$ctime=filectime($cachedimage);
+			if ($HTTP_IF_MODIFIED_SINCE >= $ctime) {
+				// the mtime is used as expiration time, the ctime is the correct last modification time.
+				// as an object clears the cache upon a save.
+				ldHeader("HTTP/1.1 304 Not Modified");
+			} else {
 				// now send caching headers too, maximum 1 hour client cache.
 				// FIXME: make this configurable. per directory? as a fraction?
 				$freshness=$mtime-$timecheck;
-			if ($freshness>3600) { 
-				$cachetime=$timecheck+3600;
-			} else {
-				$cachetime=$mtime; 
-			}
-			ldSetClientCache(true, $cachetime);
-			if (file_exists($cachedheader)) {
-				$headers=file($cachedheader);
-				while (list($key, $header)=@each($headers)) {
-					ldHeader(chop($header));
+				if ($freshness>3600) { 
+					$cachetime=$timecheck+3600;
+				} else {
+					$cachetime=$mtime; 
 				}
+				ldSetClientCache(true, $cachetime);
+				if (file_exists($cachedheader)) {
+					$headers=file($cachedheader);
+					while (list($key, $header)=@each($headers)) {
+						ldHeader(chop($header));
+					}
+				}
+				readfile($cachedimage);
 			}
-			readfile($cachedimage);
-			
+
 		} else {
 
 			// FIX magic_quoted input

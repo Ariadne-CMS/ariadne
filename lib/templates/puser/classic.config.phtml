@@ -47,20 +47,35 @@
 				ksort($data->usergrants);
 				while (list($path, $usergrants)=each($data->usergrants)) {	
 					echo "<tr>";
-					echo "<td><a href=\"".$this->store->root.$path."classic.config.grants.save.phtml?delete=true&type=puser&id=".RawUrlEncode($data->login).
-				"&arReturnPage=".RawUrlEncode($ARCurrent->arReturnPage)."\"
-				onClick=\"return confirm('".sprintf($ARnls["q:removeallgrants"],$path)."?')\">
-										$path</a></td><td>"; 
+					echo "<td><a href=\"".$this->store->root.$path.
+						"classic.config.grants.save.phtml?delete=true&type=puser&id=".RawUrlEncode($data->login).
+						"&arReturnPage=".RawUrlEncode($ARCurrent->arReturnPage).
+						"\"onClick=\"return confirm('".sprintf($ARnls["q:removeallgrants"],$path).
+						"')\">$path</a></td><td>"; 
 					if ($usergrants && is_array($usergrants)) {
 						ksort($usergrants);
-						while (list($usergrant, $value)=each($usergrants)) {
-							if ($value) { 
-								echo "<a href=\"".$this->store->root.$path.
-									"classic.config.grants.save.phtml?delete=true&type=puser&id=".RawUrlEncode($data->login).
-									"&grant=".RawUrlEncode($usergrant).
-									"&arReturnPage=".RawUrlEncode($ARCurrent->arReturnPage).
-									"\"	onClick=\"return confirm('".sprintf($ARnls["q:removegrant"],$usergrant,$path).
-									"')\">$usergrant</a> "; 
+						while (list($usergrant, $modifiers)=each($usergrants)) {
+							if (!is_array($modifiers)) {
+								echo arGetGrantType($modifiers);
+							}
+							echo "<a href=\"".$this->store->root.$path.
+								"classic.config.grants.save.phtml?delete=true&type=".RawUrlEncode($this->type)."&id=".RawUrlEncode($data->login).
+								"&grant=".RawUrlEncode($usergrant).
+								"&arReturnPage=".RawUrlEncode($ARCurrent->arReturnPage).
+								"\"	onClick=\"return confirm('".sprintf($ARnls["q:removegrant"],$usergrant,$path).
+								"')\">$usergrant</a> "; 
+							if (is_array($modifiers)) {
+								echo "( ";
+								while (list($modifier, $value)=each($modifiers)) {
+									echo arGetGrantType($value);
+									echo "<a href=\"edit.object.grants.save.phtml?delete=true&type=".RawUrlEncode($this->type)."&id=".
+										RawUrlEncode($data->login)."&grant=".
+										RawUrlEncode($usergrant)."&modifier=".
+										RawUrlEncode($modifier)."&arReturnPage=".
+										RawUrlEncode($ARCurrent->arReturnPage).
+										"\" onClick=\"return confirm('".sprintf($ARnls["q:removegrant"],$usergrant."(".$modifier.")",$path)."')\">$modifier</a>\n"; 
+								}
+								echo ") ";
 							}
 						}
 					}

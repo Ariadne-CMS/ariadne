@@ -115,7 +115,7 @@
 									while (list($key, $value)=each($this->data->grants[$type][$regs[2]])) {
 										if (is_array($value)) {
 											$cloned.="$key ( ";
-											while (list($modifier, $mod_val)) {
+											while (list($modifier, $mod_val)=each($modifiers)) {
 												$cloned.=arGetGrantType($mod_val).$modifier." ";
 											}	
 											$cloned.=" ) ";

@@ -570,6 +570,9 @@ class pobject extends object {
 				// start output buffering...	
 				debug("CheckConfig: ob_start()","all");
 				ob_start();
+			} else {
+				debug("CheckConfig: caching disabled","all");
+				debug("             config->cache: ".$config->cache."; nocache: ".$nocache."; user: ".$AR->user->data->login."; os: ".$AR->OS,"all");
 			}
 			$nocache=true; // make sure no other parts are cached either;
 			if ($this->data->pinp[$this->type][$arCallFunction][$this->nls]) {

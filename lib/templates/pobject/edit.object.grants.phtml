@@ -85,7 +85,6 @@ TD {
 						echo "</td><td>";
 						if ($grants && is_array($grants)) {
 							ksort($grants);
-							echo "<!-- ".serialize($grants)." -->";
 							while (list($grant, $modifiers)=each($grants)) {
 								if (!is_array($modifiers)) {
 									echo arGetGrantType($modifiers);

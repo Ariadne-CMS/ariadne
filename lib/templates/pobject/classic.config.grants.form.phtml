@@ -1,5 +1,17 @@
 <?php
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
+
+		function arGetGrantType($value) {
+			if (($value & ARMASKLOCAL) && ($value & ARMASKCHILDREN)) { 
+				$result=""; 
+			} else if ($value & ARMASKLOCAL) {
+				$result="=";
+			} else {
+				$result="&gt;";
+			}
+			return $result;
+		}
+
 ?>
 <form name="grantsform" action="classic.config.grants.save.phtml">
 	<input type="hidden" name="arReturnPage" value="<?php echo $ARCurrent->arReturnPage; ?>">
@@ -18,14 +30,29 @@
 					echo "</td><td>";
 					if ($grants && is_array($grants)) {
 						ksort($grants);
-						while (list($grant, $value)=each($grants)) {
-							if ($value) { 
-								echo "<a href=\"classic.config.grants.save.phtml?delete=true&type=$type&id=".
-									RawUrlEncode($id)."&grant=".
-									RawUrlEncode($grant)."&arReturnPage=".
-									RawUrlEncode($ARCurrent->arReturnPage).
-									"\" onClick=\"return confirm('".sprintf($ARnls["q:removegrant"],$grant,$id).
-									"')\">$grant</a> "; 
+						while (list($grant, $modifiers)=each($grants)) {
+							if (!is_array($modifiers)) {
+								echo arGetGrantType($modifiers);
+							}
+
+							echo "<a href=\"classic.config.grants.save.phtml?delete=true&type=$type&id=".
+								RawUrlEncode($id)."&grant=".
+								RawUrlEncode($grant)."&arReturnPage=".
+								RawUrlEncode($ARCurrent->arReturnPage).
+								"\" onClick=\"return confirm('".sprintf($ARnls["q:removegrant"],$grant,$id).
+								"')\">$grant</a> "; 
+							if (is_array($modifiers)) {
+								echo "( ";
+								while (list($modifier, $value)=each($modifiers)) {
+									echo arGetGrantType($value);
+									echo "<a href=\"edit.object.grants.save.phtml?delete=true&type=$type&id=".
+										RawUrlEncode($id)."&grant=".
+										RawUrlEncode($grant)."&modifier=".
+										RawUrlEncode($modifier)."&arReturnPage=".
+										RawUrlEncode($ARCurrent->arReturnPage).
+										"\" onClick=\"return confirm('".sprintf($ARnls["q:removegrant"],$grant."(".$modifier.")",$id)."')\">$modifier</a>\n"; 
+								}
+								echo ") ";
 							} 
 						}
 					}
