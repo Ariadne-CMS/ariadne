@@ -818,15 +818,6 @@ class pobject extends object { // pobject class definition
 				ldHeader("Content-Type: text/html; charset=UTF-8");
 				$ARCurrent->arContentTypeSent = true;
 			}
-			if ($ARCurrent->acceptlang && !$ARCurrent->nls) {
-				if ($ARCurrent->acceptlang && is_array($this->data->nls->list)) {
-					$validlangs = array_intersect(array_keys($ARCurrent->acceptlang), array_keys($this->data->nls->list));
-				}
-				if ($validlangs) {
-					$reqnls=array_shift($validlangs);
-					$ARCurrent->nls = $reqnls;
-				}
-			}
 			// if this object isn't available in the requested language, show
 			// a language select dialog with all available languages for this object.
 			if (isset($this->data->nls) && !$this->data->name) {
