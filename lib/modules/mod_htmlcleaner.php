@@ -27,6 +27,7 @@
 define ('HTML_CLEANER_NODE_CLOSINGSTYLE_NORMAL',0);
 define ('HTML_CLEANER_NODE_CLOSINGSTYLE_NONE',1);
 define ('HTML_CLEANER_NODE_CLOSINGSTYLE_XHTMLSINGLE',2);
+define ('HTML_CLEANER_NODE_CLOSINGSTYLE_HTMLSINGLE',3);
 define ('HTML_CLEANER_NODE_NODETYPE_NODE',0);
 define ('HTML_CLEANER_NODE_NODETYPE_CLOSINGNODE',1);
 define ('HTML_CLEANER_NODE_NODETYPE_TEXT',2);
@@ -144,8 +145,8 @@ class htmlcleanertag {
 
 	function toString()
 	{
-		if ($this->nodeName == 'img' || $this->nodeName == 'br' || $this->nodeName == 'hr')
-			$this->closingStyle = HTML_CLEANER_NODE_CLOSINGSTYLE_XHTMLSINGLE;
+		if (($this->nodeName == 'img' || $this->nodeName == 'br' || $this->nodeName == 'hr') && $this->closingStyle != HTML_CLEANER_NODE_CLOSINGSTYLE_XHTMLSINGLE)
+			$this->closingStyle = HTML_CLEANER_NODE_CLOSINGSTYLE_HTMLSINGLE;
 		if ($this->nodeType == HTML_CLEANER_NODE_NODETYPE_TEXT || $this->nodeType == HTML_CLEANER_NODE_NODETYPE_SPECIAL) return $this->nodeValue;
 		if ($this->nodeType == HTML_CLEANER_NODE_NODETYPE_NODE)
 			$str = '<'.$this->nodeName;
@@ -233,7 +234,11 @@ class htmlcleaner
 										if (is_array($value_rules)) {
 											foreach ($value_rules as $value_rule=>$value) {
 												if (eregi($value_rule, $attrib_val)) {
-													$part->attributes[$attrib_key] = $value;
+													if ($value === false) {
+														unset($part->attributes[$attrib_key]);
+													} else {
+														$part->attributes[$attrib_key] = $value;
+													}
 												}
 											}
 										} else
