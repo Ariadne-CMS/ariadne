@@ -11,6 +11,7 @@ class pnewspaper extends pdir { // definitie class
 		debug("pnewspaper: get_articles($display, $max, $start, $end)","object");
 		if (!$start) { $start=time(); }
 		if (!$end) { $end=$start; }
+		$criteria["object"]["implements"]["="]="'particle'";
 		$criteria["article"]["start"]["<="]=$end;
 		$criteria["article"]["end"][">="]=$start;
 		$criteria["article"]["display"]["="]="'".AddSlashes($display)."'";
