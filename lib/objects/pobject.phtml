@@ -261,19 +261,14 @@ class pobject extends object { // pobject class definition
 							$wf_result = $wf_object->call("user.workflow.pre.html", Array("properties" => $properties));
 							$this->priority = $wf_object->priority;
 							$this->data->config = $config;
-							if (is_array($wf_result)) {
-								if (is_array($properties)) {
-									$properties += $wf_result;
-								}
-							}
 							$this->data->ctime=time();
 							$this->data->mtime=$this->data->ctime;
 							$this->data->muser=$AR->user->data->login;
-							if( !$this->data->owner ) {
-								if( !$this->data->owner_name) { 
-									$this->data->owner_name=$AR->user->data->name;
+							if( !$this->data->config->owner ) {
+								if( !$this->data->config->owner_name) { 
+									$this->data->config->owner_name=$AR->user->data->name;
 								}
-								$this->data->owner=$AR->user->data->login;
+								$this->data->config->owner=$AR->user->data->login;
 							}
 							$custom = $this->getdata("custom", "none");
 							@parse_str($custom);
@@ -294,7 +289,7 @@ class pobject extends object { // pobject class definition
 							$properties["time"][0]["ctime"]=$this->data->ctime;
 							$properties["time"][0]["mtime"]=$this->data->mtime;
 							$properties["time"][0]["muser"]="'".AddSlashes($this->data->muser)."'";
-							$properties["owner"][0]["value"]="'".AddSlashes($this->data->owner)."'";
+							$properties["owner"][0]["value"]="'".AddSlashes($this->data->config->owner)."'";
 							$i=0;
 							if (is_array($this->data->custom)) {
 								while (list($nls, $cdata)=each($this->data->custom)) {
@@ -318,6 +313,26 @@ class pobject extends object { // pobject class definition
 									}
 								}
 							}
+							/* merge workflow properties */
+							if (is_array($wf_result)) {
+								foreach ($wf_result as $wf_prop_name => $wf_prop) {
+									foreach ($wf_prop as $wf_prop_record) {
+										foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
+											switch (gettype($wf_prop_value)) {
+												case "integer":
+												case "boolean":
+												case "double":
+													$value = $wf_prop_value;
+												break;
+												default:
+													$value = "'".AddSlashes($wf_prop_value)."'";
+											}
+											$record[$wf_prop_field] = $value;
+										}
+										$properties[$wf_prop_name][] = $record;
+									}
+								}
+							}
 							if ($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)) {
 								unset($this->arIsNewObject);
 								$this->id=$this->exists($this->path);
@@ -326,12 +341,25 @@ class pobject extends object { // pobject class definition
 								$wf_result = $wf_object->call("user.workflow.post.html", Array("properties" => $properties));
 								$this->priority = $wf_object->priority;
 								$this->data->config = $config;
-								if ($wf_result) {
-									$wf_properties = Array();
-									if (is_array($wf_result)) {
-										$wf_properties = $wf_result;
+								if (is_array($wf_result)) {
+									foreach ($wf_result as $wf_prop_name => $wf_prop) {
+										foreach ($wf_prop as $wf_prop_record) {
+											foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
+												switch (gettype($wf_prop_value)) {
+													case "integer":
+													case "boolean":
+													case "double":
+														$value = $wf_prop_value;
+													break;
+													default:
+														$value = "'".AddSlashes($wf_prop_value)."'";
+												}
+												$record[$wf_prop_field] = $value;
+											}
+											$properties[$wf_prop_name][] = $record;
+										}
 									}
-									if (!$this->store->save($this->path, $this->type, $this->data, $wf_properties, $this->vtype, $this->priority)) {
+									if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) {
 										$this->error = $this->store->error;
 									}
 								}
@@ -365,11 +393,6 @@ class pobject extends object { // pobject class definition
 					$wf_result = $wf_object->call("user.workflow.pre.html", Array("properties" => $properties));
 					$this->priority = $wf_object->priority;
 					$this->data->config = $config;
-					if (is_array($wf_result)) {
-						if (is_array($properties)) {
-							$properties += $wf_result;
-						}
-					}
 					$this->data->mtime=time();
 					$this->data->muser=$AR->user->data->login;
 					$properties["time"][0]["ctime"]=$this->data->ctime;
@@ -412,18 +435,51 @@ class pobject extends object { // pobject class definition
 							}
 						}
 					}
+					/* merge workflow properties */
+					if (is_array($wf_result)) {
+						foreach ($wf_result as $wf_prop_name => $wf_prop) {
+							foreach ($wf_prop as $wf_prop_record) {
+								foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
+									switch (gettype($wf_prop_value)) {
+										case "integer":
+										case "boolean":
+										case "double":
+											$value = $wf_prop_value;
+										break;
+										default:
+											$value = "'".AddSlashes($wf_prop_value)."'";
+									}
+									$record[$wf_prop_field] = $value;
+								}
+								$properties[$wf_prop_name][] = $record;
+							}
+						}
+					}
 					if($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)){
 						$result=$this->path;
 						$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 						$wf_result = $wf_object->call("user.workflow.post.html", Array("properties" => $properties));
 						$this->priority = $wf_object->priority;
 						$this->data->config = $config;
-						if ($wf_result) {
-							$wf_properties = Array();
-							if (is_array($wf_result)) {
-								$wf_properties = $wf_result;
+						if (is_array($wf_result)) {
+							foreach ($wf_result as $wf_prop_name => $wf_prop) {
+								foreach ($wf_prop as $wf_prop_record) {
+									foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
+										switch (gettype($wf_prop_value)) {
+											case "integer":
+											case "boolean":
+											case "double":
+												$value = $wf_prop_value;
+											break;
+											default:
+												$value = "'".AddSlashes($wf_prop_value)."'";
+										}
+										$record[$wf_prop_field] = $value;
+									}
+									$properties[$wf_prop_name][] = $record;
+								}
 							}
-							if (!$this->store->save($this->path, $this->type, $this->data, $wf_properties, $this->vtype, $this->priority)) {
+							if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) {
 								$this->error = $this->store->error;
 							}
 						}
