@@ -205,7 +205,7 @@ class pobject extends object { // pobject class definition
 	  if this is a new object ($this->arIsNewObject) the path is checked and
 	  the object is saved under the new path.
 	***********************************************************************/
-	global $AR, $ARConfig;
+	global $AR, $ARConfig, $ARnls;
 		debug("pobject: save([properties], $vtype)","object");
 		debug("pobject: save: path=".$this->path,"object");
 		$result=false;
