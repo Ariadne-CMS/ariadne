@@ -13,7 +13,7 @@
 	
 	******************************************************************/
 	if ($this->CheckLogin("config")) {
-		$ARCurrent->returnpage=$this->store->root.$this->path."classic.config.phtml";
+		$ARCurrent->arReturnPage=$this->store->root.$this->path."classic.config.phtml";
 ?>
 <html>
 <head>
@@ -30,7 +30,7 @@
 <tr>
 	<form name="grantsform" action="classic.config.grants.save.phtml">
 	<td colspan="2">
-		<input type="hidden" name="returnpage" value="<?php echo $ARCurrent->returnpage; ?>">
+		<input type="hidden" name="arReturnPage" value="<?php echo $ARCurrent->arReturnPage; ?>">
 		<table border="0" width="100%" bgcolor="white" style="border: 2px inset;" cellspacing="0" cellpadding="2">
 		<?php
 			function DisplayGrants(&$grantslist, $type) {
@@ -41,7 +41,7 @@
 						echo "<tr><td>";
 						echo "<img src=\"".$AR->dir->images."icons/".$type.".gif\">";
 						echo "<a href=\"classic.config.grants.save.phtml?delete=true&type=$type&id=".RawUrlEncode($id).
-								 "&returnpage=".RawUrlEncode($ARCurrent->returnpage).
+								 "&arReturnPage=".RawUrlEncode($ARCurrent->arReturnPage).
 								 "\" onClick=\"return confirm('".sprintf($ARnls["q:removeallgrants"],$id)."')\">$id</a></td>";
 						echo "</td><td>";
 						if ($grants && is_array($grants)) {
@@ -50,8 +50,8 @@
 								if ($value) { 
 									echo "<a href=\"classic.config.grants.save.phtml?delete=true&type=$type&id=".
 										RawUrlEncode($id)."&grant=".
-										RawUrlEncode($grant)."&returnpage=".
-										RawUrlEncode($ARCurrent->returnpage).
+										RawUrlEncode($grant)."&arReturnPage=".
+										RawUrlEncode($ARCurrent->arReturnPage).
 										"\" onClick=\"return confirm('".sprintf($ARnls["q:removegrant"],$grant,$id).
 										"')\">$grant</a> "; 
 								} 

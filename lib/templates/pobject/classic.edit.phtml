@@ -16,7 +16,10 @@
 
 	******************************************************************/
 	$ARCurrent->allnls=1;
-
+	if (!$arReturnPage) {
+		$arReturnPage=$this->store->root.$this->path."classic.edit.phtml";
+		$arCallArgs.="&arReturnPage=".RawUrlEncode($arReturnPage);
+	}
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 		if ($arSubmit==$ARnls["save"]) { // save data
 			$this->call("classic.save.phtml",$arCallArgs);

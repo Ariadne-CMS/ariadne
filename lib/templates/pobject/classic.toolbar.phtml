@@ -193,7 +193,7 @@ BODY {
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/right5.gif" alt="" name="r4" width="5" height="20" border="0"></td>
 	<!-- TAB 5 -->
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/left5.gif" alt="" name="l5" width="5" height="20" border="0"></td>
-	<td align="center" valign="top"><a onClick="tofront(5); top.cacheTemplate='classic.edit.phtml';" href="classic.edit.phtml?returnpage=<?php
+	<td align="center" valign="top"><a onClick="tofront(5); top.cacheTemplate='classic.edit.phtml';" href="classic.edit.phtml?arReturnPage=<?php
 		echo RawUrlEncode($this->store->root.$this->path)."\"";
 		if (!$AR->user->grants["edit"] 
 				|| (is_array($AR->user->grants["edit"]) && !$AR->user->grants["edit"][$this->type])) {
