@@ -371,7 +371,7 @@ class pobject extends object { // pobject class definition
 		// make sure CheckConfig has run on the most fitting object to $path
 		$getConfigPath=$path;
 		while ($getConfigPath && !$this->exists($getConfigPath)) {
-			$getContigPath=$this->store->make_path($getConfigPath, "..");
+			$getConfigPath=$this->store->make_path($getConfigPath, "..");
 		}
 		// if the path was gibberish, at least start from the root
 		if (!$getConfigPath) {
