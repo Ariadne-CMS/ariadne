@@ -318,7 +318,8 @@ function Draw() {
 	}
 	// Draw the entire tree
 	target.document.open();
-    MenuDraw="<html>\n<head>\n<BASE HREF='"+document.location.href+"'>\n<link REL=STYLESHEET type='text/css' HREF='../../styles/tree.css'>\n";
+
+    MenuDraw="<html>\n<head>\n<BASE HREF='"+window.location+"'>\n<link REL=STYLESHEET type='text/css' HREF='../../styles/tree.css'>\n";
     MenuDraw=MenuDraw+"</head>\n<body>\n";
 	MenuDraw=MenuDraw+root.draw('',1);
 	MenuDraw=MenuDraw+"</body>\n</html>";
