@@ -18,6 +18,7 @@
     --without-grants         Don't import grant information.
     --without-templates      Don't import templates.
     --without-files          Don't import files.
+    --use-nls                This will update/import the specified nls data.
     --tar_nofail             Skip tar/gz errors.
     --force                  Overwrites existing objects.
     --convertToUTF8-[nls]=[source charset] 
@@ -46,7 +47,7 @@
 				}
 			}
 
-			//echo "switch($option_switch)($option)='$option_value'\n";
+//			echo "switch($option_switch)($option)='$option_value'\n";
 
 			switch ($option_switch) {
 				case 'with':
@@ -55,7 +56,13 @@
 				case 'without':
 					$ARCurrent->options["without_$option"]=true;
 				break;
-
+				case 'use':
+					switch($option) {
+						case 'nls':
+							$ARCurrent->options["nls"][$option_value] = $option_value;
+						break;
+					}
+				break;
 				case 'convertToUTF8':
 				case 'convert2UTF8':
 					if (!$option_value) {
