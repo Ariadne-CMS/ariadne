@@ -16,6 +16,9 @@
 
   if ($store->initialize()) {
 
+    $store->add_type("pobject","pobject");
+    $store->add_type("pdir","pobject");
+    $store->add_type("pdir","pdir");
     $store->add_type("pshortcut","pobject");
     $store->add_type("pshortcut","pshortcut");
     $store->add_type("puser","pobject");
@@ -23,7 +26,7 @@
     $store->add_type("puser","puser");
     $store->add_type("pgroup","pobject");
     $store->add_type("pgroup","pdir");
-	$store->add_type("pgroup","puser");
+    $store->add_type("pgroup","puser");
     $store->add_type("pgroup","pgroup");
     $store->add_type("pfile","pobject");
     $store->add_type("pfile","pfile");
@@ -36,10 +39,11 @@
     $store->add_type("pphoto","pphoto");
     $store->add_type("pphoto","pfile");
     $store->add_type("pphoto","ppage");
+    $store->add_type("pphoto","pphoto");
     $store->add_type("pphotobook","pobject");
-    $store->add_type("pphotobook","pphotobook");
     $store->add_type("pphotobook","pdir");
     $store->add_type("pphotobook","pphoto");
+    $store->add_type("pphotobook","pphotobook");
 
     $name["value"]["string"]=50;
     $store->create_property("name", $name);
