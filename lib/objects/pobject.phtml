@@ -411,7 +411,7 @@ class pobject {
 			// if this object isn't available in the requested language, show
 			// a language select dialog with all available languages for this object.
 			if (isset($this->data->nls)) {
-				if (!isset($this->data->$reqnls)) {
+				if (!isset($this->data->$reqnls) || !$config->nls->list[$reqnls]) {
 					if (!$ARCurrent->nolangcheck ) {
 						include($this->store->code."widgets/nls/languageselect.phtml");
 						return false;
@@ -444,9 +444,22 @@ class pobject {
 			$nocache=true; // make sure no other parts are cached either;
 			if ($this->data->pinp[$this->type][$arCallFunction][$this->nls]) {
 				$config->templates[$this->type][$arCallFunction][$this->nls]=$this->data->pinp[$this->type][$arCallFunction][$this->nls];
+			} else if ($this->data->pinp[$this->type][$arCallFunction]['*']) {
+				$config->templates[$this->type][$arCallFunction]['*']=$this->data->pinp[$this->type][$arCallFunction]['*'];
 			}
-			if ($config->templates[$this->type][$arCallFunction][$this->nls]) {
-				$arCallTemplate=$this->store->files."templates".$config->templates[$this->type][$arCallFunction][$this->nls];
+			$arType=get_class($this);
+			while ($arType && !$arCallTemplate) {
+				if ($config->templates[$arType][$arCallFunction][$this->nls]) {
+					$arCallTemplate=$config->templates[$arType][$arCallFunction][$this->nls];
+				} else if ($config->templates[$arType][$arCallFunction]['*']) {
+					$arCallTemplate=$config->templates[$arType][$arCallFunction]['*'];
+				} else {
+					$arTemp=new $arType();
+					$arType=get_parent_class($arTemp);
+				}
+			}
+			if ($arCallTemplate) {
+				$arCallTemplate=$this->store->files."templates".$arCallTemplate;
 				// check if template exists, if it doesn't exist, then continue the original template that called CheckConfig
 				if (file_exists($arCallTemplate)) { 
 					// check if the requested language exists, if not do not display anything, 
