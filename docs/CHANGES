@@ -13,7 +13,8 @@ Bugs fixed:
 	- Importing with --without-grants will nolonger destroy
 	  existing grants.
 	- The default start and endtime calculation in pcalendar::get_items()
-	  does now work correct.
+	  now works correct.
+	- Fixed a bug using getvar() in pinp on a variable set to 0.
 
 Changes in Ariadne since version 2.1.1
 
