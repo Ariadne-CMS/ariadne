@@ -10,7 +10,7 @@
 				$newparent=$this->store->make_path($target, "..");
 				$newlogin=substr($target, strlen($newparent), -1);
 				$crit["login"]["value"]["="]="'".AddSlashes($newlogin)."'";
-				$result=$this->find("/system/users/",$crit,"system.get.id.phtml");
+				$result=$this->find("/system/groups/",$crit,"system.get.id.phtml");
 				if (count($result) && $result[0] != $this->id) {
 					$this->error=sprintf($ARnls["err:loginexists"],$newlogin);
 				}
