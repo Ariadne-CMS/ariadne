@@ -1613,13 +1613,21 @@ class pobject extends object { // pobject class definition
 	function _putsessionvar($varname, $varvalue) {
 	global $ARCurrent;
 
-		$ARCurrent->session->put($varname, $varvalue);
+		if ($ARCurrent->session) {
+			return $ARCurrent->session->put($varname, $varvalue);
+		} else {
+			return false;
+		}
 	}
 
 	function _getsessionvar($varname) {
 	global $ARCurrent;
 
-		return $ARCurrent->session->get($varname);
+		if ($ARCurrent->session) {
+			return $ARCurrent->session->get($varname);
+		} else {
+			return false;
+		}
 	}
 
 	function _killsession() {
