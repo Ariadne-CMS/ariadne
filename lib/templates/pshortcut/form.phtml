@@ -60,7 +60,10 @@ include($this->store->code."widgets/formlock/js.html");
     <font face="helvetica, sans-serif"><b><?php echo $ARnls["path"]; ?>&nbsp;:</b></font>
   </td>
   <td>
-    <?php if (!$wgBrowsePath=$this->getdata("path","none")) {
+    <?php if (!$data->path) {
+            $data->path=$this->parent;
+          }
+          if (!$wgBrowsePath=$this->getdata("path","none")) {
             $wgBrowsePath=$data->path;
           }
           $wgBrowseName="path"; ?>
