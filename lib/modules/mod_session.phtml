@@ -23,7 +23,7 @@ class session {
 			$this->id=$id;
 			$this->save();
 		} else { // retrieve session
-			$result=$this->sessionstore->call("get.data.phtml","",$this->sessionstore->get("/$id/"));
+			$result=$this->sessionstore->call("system.get.data.phtml","",$this->sessionstore->get("/$id/"));
 			debug("session found ($result) in database");
 			$this->id=$id;
 			$this->data=$result[0];
