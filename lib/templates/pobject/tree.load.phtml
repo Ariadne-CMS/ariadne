@@ -19,7 +19,8 @@
 								node.add("<?php echo AddSlashes($folder["icon"]); ?>",
 										 "<?php echo AddSlashes($folder["name"]); ?>",
 										 "<?php echo AddSlashes($folder["path"]); ?>",
-										 "<?php echo AddSlashes($folder["pre"]); ?>");
+										 "<?php echo AddSlashes($folder["pre"]); ?>",
+										 "<?php echo AddSlashes($folder["shortcut"]); ?>");
 							<?php
 								echo "// ".time()."\n";	// please leave the timestamp and flush here
 								flush(); 				// it seems to improve PHP's performance... black voodoo magic.

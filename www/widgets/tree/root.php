@@ -27,6 +27,7 @@
 
   Nodes=new Array();
   Links=new Array();
+  ShortCuts=new Array();
   id=1;
   root=0;
   target=0;
@@ -34,21 +35,35 @@
   ShowInvis=false;
   NodeOpened=false;
 
-  function AddLinks(parent, icon, name, link, pre) {
+  function AddLinks(parent, icon, name, link, pre, shortcut) {
+    if (!shortcut) {
+      shortcut=0;
+    }
     if (Links[parent]) {
       for (i=0; i<Links[parent].length; i++) {
         if (Links[parent][i].status=="Open" || Links[parent][i].firstChild) {
-          Links[parent][i].add(icon, name, link, pre);
+          Links[parent][i].add(icon, name, link, pre, shortcut);
         }
       }
     }
+	if (ShortCuts[parent]) {
+      for (i=0; i<ShortCuts[parent].length; i++) {
+        if (ShortCuts[parent][i].status=="Open" || ShortCuts[parent][i].firstChild) {
+          ShortCuts[parent][i].add(icon, name, link, pre);
+        }
+      }
+    }
+        
     Draw();
   }
 
-  function UpdateLinks(icon, name, link, pre) {
+  function UpdateLinks(icon, name, link, pre, shortcut) {
+    if (!shortcut) {
+      shortcut=0;
+    }
     if (Links[link]) {
       for (i=0; i<Links[link].length; i++) {
-        Links[link][i].set(icon, name, link, pre);
+        Links[link][i].set(icon, name, link, pre, shortcut);
       }
     }
     Draw();
@@ -63,7 +78,7 @@
     }
   }
 
-  function Node(parent, prev, next, icon, name, link, pre) {
+  function Node(parent, prev, next, icon, name, link, pre, shortcut) {
     this.id=id++;
     this.parent=parent;
     this.prev=prev;
@@ -85,17 +100,42 @@
     this.draw=drawNode;
     this.order=orderNode;
     Nodes[this.id]=this;
+	if (shortcut) {
+      if (!ShortCuts[shortcut]) {
+        ShortCuts[shortcut]=new Array();
+      }
+      ShortCuts[shortcut][ShortCuts[shortcut].length]=this;
+	}
     if (!Links[this.link]) {
       Links[this.link]=new Array();
     }
     Links[this.link][Links[this.link].length]=this;
   }
 
-  function setNode(icon, name, link, pre) {
+  function setNode(icon, name, link, pre, shortcut) {
     this.icon=icon;
     this.name=name;
     this.link=link;
     this.pre=pre;
+    if (this.shortcut && (this.shortcut!=shortcut)) {
+      // first remove old shortcut entries
+      if (ShortCuts[this.shortcut]) {
+        ii=0;
+        newshortcuts=new Array();
+        for (i=0; i<ShortCuts[this.shortcut].length; i++) {
+          if (ShortCuts[this.shortcut][i].link!=this.link) {
+            newshortcuts[ii]=ShortCuts[this.shortcut][i];
+            ii++;
+          }
+        }
+        ShortCuts[this.shortcut]=newshortcuts;
+      }
+    }
+    if (shortcut && this.shortcut!=shortcut) {
+      // then add new entry
+      this.shortcut=shortcut;
+      ShortCuts[this.shortcut][ShortCuts[this.shortcut].length]=this;
+    }
     this.order();
   }
 
@@ -111,13 +151,16 @@
     // free memory someway?
   }
 
-  function addNode(icon, name, link, pre) {
+  function addNode(icon, name, link, pre, shortcut) {
+	if (!shortcut) {
+		shortcut=false;
+	}
     if (this.children[link]) { // this node already exists
       if (this.children[link].name!=name) { // name changed, so reorder.
         this.children[link].del(); // first remove
-        this.add(icon, name, link, pre); // then add again
+        this.add(icon, name, link, pre, shortcut); // then add again
       } else {
-        this.children[link].set(icon, name, link);
+        this.children[link].set(icon, name, link, shortcut);
       }   
     } else if (this.firstChild) {
       node=this.firstChild;
@@ -129,7 +172,7 @@
 	  // do nothing, node is exactly the same as existing
         } else {
           temp=node.prev
-          node.prev=new Node(node.parent, temp, node, icon, name, link, pre);
+          node.prev=new Node(node.parent, temp, node, icon, name, link, pre, shortcut);
           if (temp) {
             temp.next=node.prev;
           } else {
@@ -137,10 +180,10 @@
           }
         }
       } else { // new object last in list.
-        node.next=new Node(node.parent, node, 0, icon, name, link, pre);
+        node.next=new Node(node.parent, node, 0, icon, name, link, pre, shortcut);
       }
     } else { // first object, no need to compare         
-      this.firstChild=new Node(this, 0, 0, icon, name, link, pre);
+      this.firstChild=new Node(this, 0, 0, icon, name, link, pre, shortcut);
     }
   }
 
@@ -328,12 +371,16 @@ function Draw() {
     window.parent.Open(Nodes[id].link);
   }
 
-  function init(icon, name, path, pre) {
+  function init(icon, name, path, pre, shortcut) {
     Nodes=new Array();
     Links=new Array();
+    ShortCuts=new Array();
     id=1;
 
-    root=new Node(0, 0, 0, icon, name, path, pre);
+    if (!shortcut) {
+      shortcut=0;
+    }
+    root=new Node(0, 0, 0, icon, name, path, pre, shortcut);
   }
 
 // -->

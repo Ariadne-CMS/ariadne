@@ -17,7 +17,8 @@
 					window.parent.init("<?php echo AddSlashes($folder["icon"]); ?>",
 							"<?php echo AddSlashes($folder["name"]); ?>",
 							"<?php echo AddSlashes($folder["path"]); ?>",
-							"<?php echo AddSlashes($folder["pre"]); ?>");
+							"<?php echo AddSlashes($folder["pre"]); ?>",
+							"<?php echo AddSlashes($folder["shortcut"]); ?>");
 					node=window.parent.root;
 					node.status="Open";
 					<?php
@@ -29,7 +30,8 @@
 									node.add("<?php echo AddSlashes($folder["icon"]); ?>",
 											 "<?php echo AddSlashes($folder["name"]); ?>",
 											 "<?php echo AddSlashes($folder["path"]); ?>",
-											 "<?php echo AddSlashes($folder["pre"]); ?>");
+											 "<?php echo AddSlashes($folder["pre"]); ?>",
+											 "<?php echo AddSlashes($folder["shortcut"]); ?>");
 								<?php
 									time();
 									flush();
