@@ -40,13 +40,15 @@ class pcalitem extends pobject { // pcalitem class definition
 
 	function DelTimeframe($date) {
 		debug("pcalitem->DelTimeframe($date)","object");
-		@reset($this->data->timeframes);
-		while (list($index, $timeframe)=@each($this->data->timeframes)) {
-			if ($timeframe["start"]!=$date) {
-				$result[]=$timeframe;
-			} else {
-				$this->store->del_property($this->id, "timeframe", $timeframe);
-			} 
+		$result = array();
+		if(is_array($this->data->timeframes)){
+			foreach($this->data->timeframes as $timeframe){
+				if ($timeframe["start"]!=$date) {
+					$result[]=$timeframe;
+				} else {
+					$this->store->del_property($this->id, "timeframe", $timeframe);
+				} 
+			}
 		}
 		$this->data->timeframes=$result;
 		debug("pcalitem->DelTimeframe: end","all");

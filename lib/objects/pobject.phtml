@@ -281,10 +281,9 @@ class pobject extends object { // pobject class definition
 							@parse_str($custom);
 							if (is_array($custom)) {
 								reset($custom);
-								while (list($nls, $entries)=each($custom)) {
+								foreach($custom as $nls=>$entries){
 									if (is_array($entries)) {
-										reset($entries);
-										while (list($customkey, $customval)=each($entries)) {
+										foreach ( $entries as $customkey => $customval ){
 											$this->data->custom[$nls][$customkey] = $customval;
 										}
 									}
@@ -299,12 +298,12 @@ class pobject extends object { // pobject class definition
 							$properties["owner"][0]["value"]="'".AddSlashes($this->data->config->owner)."'";
 							$i=0;
 							if (is_array($this->data->custom)) {
-								while (list($nls, $cdata)=each($this->data->custom)) {
-									while (list($name, $value)=each($cdata)) {
+								foreach($this->data->custom as $nls => $cdata) {
+									foreach($cdata as $name => $value){
 										// one index, this order (name, value, nls) ?
 										if ($configcache->custom[$name]['property']) {
 											if (is_array($value)) {
-												while (list($valkey, $valvalue)=each($value)) {
+												foreach($value as $valkey -> $valvalue ){
 													$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
 													$properties["custom"][$i]["value"]="'".AddSlashes($valvalue)."'";
 													$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
@@ -415,11 +414,9 @@ class pobject extends object { // pobject class definition
 					@parse_str($custom);
 					// see comments above
 					if (is_array($custom)) {
-						reset($custom);
-						while (list($nls, $entries)=each($custom)) {
+						foreach($custom as $nls => $entries){
 							if (is_array($entries)) {
-								reset($entries);
-								while (list($customkey, $customval)=each($entries)) {
+								foreach($entries as $customkey => $customval ){
 									$this->data->custom[$nls][$customkey] = $customval;
 								}
 							}
@@ -427,12 +424,12 @@ class pobject extends object { // pobject class definition
 					}
 					$i=0;
 					if (is_array($this->data->custom)) {
-						while (list($nls, $cdata)=each($this->data->custom)) {
-							while (list($name, $value)=each($cdata)) {
+						foreach($this->data->custom as $nls => $cdata){
+							foreach($cdata as $name => $value ){
 								if ($configcache->custom[$name]['property']) {
 									// one index, this order (name, value, nls) ?
 									if (is_array($value)) {
-										while (list($valkey, $valvalue)=each($value)) {
+										foreach($value as $valkey => $valvalue){
 											$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
 											$properties["custom"][$i]["value"]="'".AddSlashes($valvalue)."'";
 											$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
@@ -742,8 +739,7 @@ class pobject extends object { // pobject class definition
 				if (!$AR->user->groups) {
 					$groups=$this->find("/system/groups/",$criteria, "system.get.phtml");
 					if (is_array($groups)) {
-						reset($groups);
-						while (list($key, $group) = each($groups)) {
+						foreach($groups as $group ){
 							if (is_object($group)) {
 								$AR->user->groups[$group->data->login] = $group;
 							}
@@ -763,14 +759,12 @@ class pobject extends object { // pobject class definition
 						}
 						$AR->user->groups["owner"]->data->config->usergrants = $AR->user->ownergrants;
 					}
-					reset($AR->user->groups);
-					while (list($key, $group)=each($AR->user->groups)) { 
+					foreach($AR->user->groups as $group){
 						$groupgrants=Array();
 						if (is_object($group)) {
 							$group->FindGrants($path, $groupgrants, $userpath);
 							if (is_array($grants)) {
-								reset($groupgrants);
-								while (list($gkey, $gval)=each($groupgrants)) {
+								foreach($groupgrants as $gkey => $gval ){
 									if (is_array($grants[$gkey]) && is_array($gval)) {
 										$grants[$gkey]=array_merge($gval, $grants[$gkey]);
 									} else 
@@ -1035,13 +1029,13 @@ class pobject extends object { // pobject class definition
 				}
 			}
 			if ($ARConfig->cache[$checkpath]->library) {
-				reset($ARConfig->cache[$checkpath]->library);
-				while (!$arTemplateId && (list($library, $path)=each($ARConfig->cache[$checkpath]->library))) {
+				foreach( $ARConfig->cache[$checkpath]->library as $library => $path ) {
 					$template = $this->getPinpTemplate($arCallFunction, $path);
 					if ($template["arTemplateId"]) {
 						extract($template);
 						$arLibrary = $library;
 						debug("CheckConfig: found $arCallFunction in library $arLibrary", "all");
+						break; // jump out of the foreach loop
 					}
 				}
 			}
@@ -1278,9 +1272,8 @@ class pobject extends object { // pobject class definition
 		$cache_types[] = "compressed";
 		$cache_types[] = "session";
 
-		while (list($key, $type)=each($cache_types)) {
-			reset($nlslist);
-			while (list($nls,$language)=each($nlslist)) {
+		foreach($cache_types as $type){
+			foreach($nlslist as $nls => $language){
 				$fpath=$this->store->get_config("files")."cache/$type/$nls".$path;
 				$hpath=$this->store->get_config("files")."cacheheaders/$type/$nls".$path;
 				if ($dir=@dir($fpath)) {
@@ -1312,8 +1305,10 @@ class pobject extends object { // pobject class definition
 			$pcache=$this->store->get_filestore("privatecache");
 			if ($recurse) {
 				$ids=$this->store->info($this->store->find($path, "" ,0));
-				while (list($key, $value)=@each($ids)) {
-					$pcache->purge($value["id"]);
+				if(is_array($ids)){
+					foreach($ids as $value) {
+						$pcache->purge($value["id"]);
+					}
 				}
 			} else {
 				$pcache->purge($this->id);
@@ -1629,13 +1624,12 @@ class pobject extends object { // pobject class definition
 		include_once($this->store->get_config("code")."modules/mod_unicode.php");
 
 		if (is_array($data)) {
-			reset($data);
-			while (list($key, $val)=each($data)) {
+			foreach($data as $key => $val){
 				$data[$key] = $this->convertToUTF8($val, $charset);
 			}
 		} else
 		if (is_object($data)) {
-			while (list($key, $val)=each($data)) {
+			foreach($data as $key => $val){
 				$data->$key = $this->convertToUTF8($val, $charset);
 			}
 		} else {

@@ -379,7 +379,7 @@ class pphoto extends pfile { // pphoto class definition
 			if( !$unknown && is_array($ARConfig->photoStack[$this->id])) {
 				$image="";
 				reset($ARConfig->photoStack[$this->id]);
-				while (list($key, $value)=each($ARConfig->photoStack[$this->id])) {
+				foreach($ARConfig->photoStack[$this->id] as $value){
 					$image.=$value;
 				}
 				$ARConfig->photoCommandStack[$this->id][] = $contextexecutable.$image;
@@ -414,7 +414,7 @@ class pphoto extends pfile { // pphoto class definition
 
 			if( is_array($ARConfig->photoTempFiles[$this->id]) && is_array($ARConfig->photoTempFilesID[$this->id])) {
 				reset($ARConfig->photoTempFiles[$this->id]);
-				while( list($key, $tempfile)  = each($ARConfig->photoTempFiles[$this->id])) {
+				foreach( $ARConfig->photoTempFiles[$this->id] as $key => $tempfile){
 					$f_store->copy_from_store($tempfile, $ARConfig->photoTempFilesID[$this->id][$key], "file");
 				}
 			}
@@ -424,11 +424,13 @@ class pphoto extends pfile { // pphoto class definition
 			if (chdir($this->store->get_config("files").'temp/')) {
 				if (is_array($ARConfig->photoCommandStack[$this->id])) {
 					$image="";
-					reset($ARConfig->photoCommandStack[$this->id]);
-					while (!$failed && (list($key, $exec_string)=each($ARConfig->photoCommandStack[$this->id]))) {
+					foreach( $ARConfig->photoCommandStack[$this->id] as $exec_string){
 						$exec_string = str_replace('{buildfile}', $tmpsrc, $exec_string);
 						$exec_string .= " ".$tmpsrc;
 						system($exec_string,$failed);
+						if($failed){
+							break;
+						}
 						debug("executing ($exec_string)");
 						// echo( $exec_string."<br>");
 					}
@@ -459,7 +461,7 @@ class pphoto extends pfile { // pphoto class definition
 		}
 		if( is_array($ARConfig->photoTempFiles[$this->id])) {
 			reset($ARConfig->photoTempFiles[$this->id]);
-			while( list($key, $tempfile)  = each($ARConfig->photoTempFiles[$this->id])) {
+			foreach($ARConfig->photoTempFiles[$this->id] as $tempfile){
 				@unlink($tempfile);
 			}
 		}
@@ -475,7 +477,7 @@ class pphoto extends pfile { // pphoto class definition
 	function cleanup() {
 		if (is_array($this->arClearList)) {
 			reset($this->arClearList);
-			while (list($key, $value)=each($this->arClearList)) {
+			foreach ( $this->arClearList as $value) {
 				if (!eregi("[^a-z0-9\._-]",$value)) {
 					@unlink($value);
 				}
