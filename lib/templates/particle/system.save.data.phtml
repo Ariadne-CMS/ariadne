@@ -112,6 +112,10 @@
 				if ($this->save($properties)) {
 					reset($AR->nls->list);
 					while (list($key, $value)=each($AR->nls->list)) {
+						/* Reset the loop check, when saving lots of languages it might cause a loopcount exceeded */
+						global $ARBeenHere;
+						$ARBeenHere=Array();
+
 						$page=$this->getdata("page",$key);
 						if ($page!==false) {
 							$this->call("system.save.page.phtml",Array("ContentLanguage" => $key, "page" => $page));
