@@ -24,6 +24,14 @@
   $store->add_type("psite","pobject");
   $store->add_type("psite","pdir");
   $store->add_type("psite","psite");
+  $store->add_type("pphoto","pobject");
+  $store->add_type("pphoto","pphoto");
+  $store->add_type("pphoto","pfile");
+  $store->add_type("pphoto","ppage");
+  $store->add_type("pphotobook","pobject");
+  $store->add_type("pphotobook","pphotobook");
+  $store->add_type("pphotobook","pdir");
+  $store->add_type("pphotobook","pphoto");
 
   $name["value"]["string"]=50;
   $store->create_property("name", $name);
