@@ -8,6 +8,9 @@
 				unset($ARCurrent->session);
 				?>
 					<h1>Goodbye <?php echo $data->name; ?>.</h1>
+					<form action="<?php echo $AR->dir->www; ?>">
+						<input type="submit" value="<?php echo $ARnls["login"]; ?>">
+					</form>
 				<?php
 			}
 		} else {
