@@ -1,7 +1,7 @@
 <?php
-	require("./ariadne.inc");
-	require($ariadne."/configs/ariadne.phtml");
-	require($ariadne."/configs/store.phtml");
+	require_once("./ariadne.inc");
+	require_once($ariadne."/configs/ariadne.phtml");
+	require_once($ariadne."/configs/store.phtml");
 	include_once($ariadne."/stores/mysqlstore.phtml");
 	include_once($ariadne."/modules/mod_session.phtml");
 
