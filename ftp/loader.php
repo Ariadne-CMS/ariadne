@@ -116,41 +116,48 @@
 		global $FTP;
 			// client issued 'pasv' command
 			// so lets try to bind a socket to a port
-			$socket=socket_create(AF_INET, SOCK_STREAM, 0);
-			if ($socket>=0) {
-				debug("ftp: open socket (pasv mode)");
-
-				// FIXME: make this configurable!
-				$bound=0;
-				$port=12000;
-				while (!$bound && $port<=12100) {
-					$bound=socket_bind($socket, $FTP->server_ip, $port);
-					debug("ftp::pasv socket_bind port $port ($bound)");
-					if (!$bound) {
-						$port++;
-					}
-				}
-
-				if ($bound) {
-					$ret=socket_listen($socket, 1);
-					if ($ret < 0) {
-						ftp_Tell(425, "Couldn't build data connection (rm: socket error:".strerror($socket).")");
-					} else {
-						$FTP->DC["mode"]="passive";
-						$FTP->DC["socket"]=$socket;
-						debug("ftp: listening on port $port");
-						$result=str_replace(".", ",", $FTP->server_ip);
-						$result.=",".(((int)$port) >> 8);
-						$result.=",".($port & 0x00FF);
-					}
-				} else {
-					ftp_Tell(425, "Couldn't build data connection:  couldn't bind to a socket");
-				}
-
+			if ($FTP->DC["socket_desc"]) {
+				// we alread got a socket open.. let's use it
+				$result = $FTP->DC["socket_desc"];
 			} else {
-				ftp_Tell(425, "Couldn't build data connection (rm: socket error:".strerror($socket).")");
-				$result=false;
+				$socket=socket_create(AF_INET, SOCK_STREAM, 0);
+				if ($socket>=0) {
+					debug("ftp: open socket ($socket) (pasv mode)");
+
+					// FIXME: make this configurable!
+					$bound=0;
+					$port=12000;
+					while (!$bound && $port<=12100) {
+						$bound=socket_bind($socket, $FTP->server_ip, $port);
+						debug("ftp::pasv socket_bind port $port ($bound)");
+						if (!$bound) {
+							$port++;
+						}
+					}
+
+					if ($bound) {
+						$ret=socket_listen($socket, 1);
+						if ($ret < 0) {
+							ftp_Tell(425, "Couldn't build data connection (rm: socket error:".strerror($socket).")");
+						} else {
+							$FTP->DC["mode"]="passive";
+							$FTP->DC["socket"]=$socket;
+							debug("ftp: listening on port $port");
+							$result=str_replace(".", ",", $FTP->server_ip);
+							$result.=",".(((int)$port) >> 8);
+							$result.=",".($port & 0x00FF);
+							//$FTP->DC["socket_desc"]=$result;
+						}
+					} else {
+						ftp_Tell(425, "Couldn't build data connection:  couldn't bind to a socket");
+					}
+
+				} else {
+					ftp_Tell(425, "Couldn't build data connection (rm: socket error:".strerror($socket).")");
+					$result=false;
+				}
 			}
+
 			return $result;
 		}
 
@@ -264,11 +271,20 @@
 				switch ($cmd) {
 					case 'QUIT':
 						ftp_Tell(221, "Goodbye.");
+						/* check if we have to close a 'passive' socket */
+						if ($FTP->DC["socket_desc"]) {
+							socket_close($FTP->DC["socket"]);
+						}
 						return 0;
 					break;
 					case 'PWD':
-						$dir="/#".$FTP->listMode."#".$FTP->cwd;
-						$dir=substr($dir,0,-1);
+						$dir=$FTP->cwd;
+						if ($FTP->listMode) {
+							$dir="/#".$FTP->listMode."#".$dir;
+						}
+						if (strlen($dir)>1) {
+							$dir=substr($dir,0,-1);
+						}
 						ftp_Tell(257, "\"$dir\" is current directory.");
 					break;
 					case 'HELP':
@@ -309,6 +325,7 @@
 						}
 
 						$path=$FTP->store->make_path($FTP->site.$FTP->cwd, $args);
+						debug("ftp: cwd absolute path is ($path)");
 						while (ereg('/#([^/]*)#/', $path, $regs) && $regs[1]) {
 							$FTP->listMode=$regs[1];
 							$path=str_replace("/#".$FTP->listMode."#/", "/", $path);
@@ -681,11 +698,12 @@
 					break;
 
 					case 'MKD':
-						$path=ereg_replace('/-[^/]*-/', "/", $args);
-						eregi('^([/][^/]+[/])?(.*)$', $path, $regs);
+						$path_requested = $args;
+						$path=ereg_replace('/#[^/]*#/', "/", $args);
+						eregi('^(.*[/])?(.*)$', $path, $regs);
 						$arNewFilename=eregi_replace('[^.a-z0-9_-]', '_', $regs[2]);
 
-						$path=$FTP->store->make_path($FTP->site.$FTP->cwd, $path);
+						$path=$FTP->site.$FTP->store->make_path($FTP->cwd, $path);
 						$parent=$FTP->store->make_path($path, "..");
 
 						debug("ftp: mkdir: name = '$arNewFilename' path = '$path' parent = '$parent'");
@@ -705,7 +723,7 @@
 							ftp_Tell(550, $ARCurrent->ftp_error);
 							unset($ARCurrent->ftp_error);
 						} else {
-							ftp_Tell(226, "Directory created (".$arNewFilename.")");
+							ftp_Tell(257, "\"$path_requested)\" - Directory successfully created.");
 						} 
 					break;
 
@@ -817,15 +835,16 @@
 
 		function ftp_Tell($code, $msg) {
 		global $FTP;
-			debug($code."=".$msg);
 			if (is_array($msg)) {
 				fputs($FTP->stdout, "$code-".$msg[0]."\n");
 				next($msg);
 				while (list(,$line)=each($msg)) {
 					fputs($FTP->stdout, $line."\n");
+					debug($line);
 				}
 			} else {
 				fputs($FTP->stdout, "$code $msg\n");
+				debug("$code $msg\n");
 			}
 			fflush($FTP->stdout);
 		}
