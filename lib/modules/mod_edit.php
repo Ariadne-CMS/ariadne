@@ -86,10 +86,9 @@
 			}
 		}
 		
-		function _showImageMapLink($path) {
+		function _showImageMapLink($path, $extra='') {
 			if (pinp_edit::_getEditMode()) {
-				echo "href='".$this->make_url($path).pinp_edit::_getEditTemplate()."'";
-			} else {
+				echo "href='".$this->make_url($path).pinp_edit::_getEditTemplate()."' $extra target='".pinp_edit::_getEditTarget()."'";			} else {
 				echo "<href='".$this->make_url($path)."'";
 			}
 		}
