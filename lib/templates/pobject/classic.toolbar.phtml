@@ -192,6 +192,7 @@ BODY {
 	?>><?php echo $ARnls["config"]; ?></a></td>
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/right5.gif" alt="" name="r4" width="5" height="20" border="0"></td>
 	<!-- TAB 5 -->
+	<!-- <?php echo $this->path; ?>-->
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/left5.gif" alt="" name="l5" width="5" height="20" border="0"></td>
 	<td align="center" valign="top"><a onClick="tofront(5); top.cacheTemplate='classic.edit.phtml';" href="classic.edit.phtml?arReturnPage=<?php
 		echo RawUrlEncode($this->store->root.$this->path)."\"";
@@ -211,7 +212,8 @@ BODY {
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/right5.gif" alt="" name="r6" width="5" height="20" border="0"></td>
 	<!-- TAB 7 -->
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/left5.gif" alt="" name="l7" width="5" height="20" border="0"></td>
-	<td align="center" valign="top"><a onClick="tofront(7); top.cacheTemplate='classic.new.phtml';" href="classic.new.phtml"<?php
+	<td align="center" valign="top"><a onClick="tofront(7); top.cacheTemplate='classic.new.phtml';" href="classic.new.phtml?arReturnPage=<?php
+		echo RawUrlEncode($this->store->root.$this->path)."\"";
 		if (!$AR->user->grants["add"]) {
 			echo "><font color=\"#666666\"";
 		}
