@@ -1017,7 +1017,7 @@ class pobject extends object {
 	}
 
 	function _getvar($var) {
-	global $HTTP_POST_VARS, $HTTP_GET_VARS, $ARCurrent, $ARConfig;
+	global $HTTP_POST_VARS, $HTTP_GET_VARS, $PHP_SELF, $ARCurrent, $ARConfig;
 
 		debug("pobject: getvar($var)","object");
 		if ($ARCurrent->arCallStack) {
