@@ -70,30 +70,30 @@ class pinp {
     $this->pre_comments='|/\*.*\*/|U';
   }
 
-  function compile($template) {
-
-	$clean_template="";
-	while (eregi('^(.*)(<\?|<%|<script[^>]*php[^>]*>)(.*)', $template, $start_regs) &&
-		$start_regs[2]) {
-		$clean_template.=$start_regs[1];
-		$clean_template.="<?php echo \"".AddCSlashes($start_regs[2], ARESCAPE)."\"; ?>";
-		$template=$start_regs[3];
-		unset($start_regs);	
-		if (eregi('^(.*)(\?>|%>|</script>)(.*)', $template, $start_regs) &&
-					$start_regs[2]) {
+  function compile($template, $recurse=false) {
+	if (!$recurse) {
+		$clean_template="";
+		while (eregi('^(.*)(<\?|<%|<script[^>]*php[^>]*>)(.*)', $template, $start_regs) &&
+			$start_regs[2]) {
 			$clean_template.=$start_regs[1];
 			$clean_template.="<?php echo \"".AddCSlashes($start_regs[2], ARESCAPE)."\"; ?>";
 			$template=$start_regs[3];
 			unset($start_regs);	
-		} else {
-			$clean_template.=$template;
+			if (eregi('^(.*)(\?>|%>|</script>)(.*)', $template, $start_regs) &&
+						$start_regs[2]) {
+				$clean_template.=$start_regs[1];
+				$clean_template.="<?php echo \"".AddCSlashes($start_regs[2], ARESCAPE)."\"; ?>";
+				$template=$start_regs[3];
+				unset($start_regs);	
+			} else {
+				$clean_template.=$template;
+			}
+		}
+
+		if ($clean_template!=="") {
+			$template=$clean_template;
 		}
 	}
-
-	if ($clean_template!=="") {
-		$template=$clean_template;
-	}
-
     // then remove /* .. */ comments, even in html code... for security
     // since php supports comment tags including ? > and < ?php the comments check must be made first. 
     $template=preg_replace($this->pre_comments,"",$template); // this does :)
@@ -109,7 +109,7 @@ class pinp {
       $template=substr($template, strpos($template, $matches[0])+strlen($matches[0]));
 
       // fix code, call compile on rest recursively
-      $result.=$matches[1].$this->fixcode("<"."?php ".$matches[2]." ?".">").$this->compile($template);      
+      $result.=$matches[1].$this->fixcode("<"."?php ".$matches[2]." ?".">").$this->compile($template, true);      
 
     } else { // no pinp code found
       $result=$template;
