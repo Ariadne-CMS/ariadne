@@ -175,8 +175,13 @@ class mysqlstore {
 
 	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) {
 		debug("newobject($path, $parent, $type, [data], $id, $lastchanged, $vtype, $size, $priority)","all");
-		include_once($this->code."objects/".$type.".phtml");
-		$object=new $type;
+		$class = $type;
+		if ($subcpos = strpos($type, '.')) {
+			$class = substr($type, 0, $subcpos);
+			$vtype = $class;
+		}
+		include_once($this->code."objects/".$class.".phtml");
+		$object=new $class;
 		$object->type=$type;
 		$object->parent=$parent;
 		$object->id=(int)$id;
@@ -553,7 +558,11 @@ class mysqlstore {
 			} else { // insert new
 				debug("save: new","all");
 				if ($vtype=="") { // if vtype is not set, it defaults to type for new objects
-					$vtype=$type; 
+					if ($subcpos = strpos($type, '.')) {
+						$vtype = substr($type, 0, $subcpos);
+					} else {
+						$vtype=$type; 
+					}
 				}
 				$evtype=AddSlashes($vtype);
 

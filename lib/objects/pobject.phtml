@@ -165,14 +165,23 @@ class pobject extends object { // pobject class definition
 			} else {
 				if (!($arSuper=$AR->superClass[$arType])) {
 					// no template found, no default.phtml found, try superclass.
-					if (!class_exists($arType)) {
-						// the given class was not yet loaded, so do that now
-						$this->store->newobject('','',$arType,new object);
-						// include_once($this->store->get_config("code")."objects/".$arType.".phtml");
+
+					if ($subcpos = strpos($arType, '.')) {
+						$arSuper = substr($arType, 0, $subcpos);
+						if (!class_exists($arType)) {
+							// the super class was not yet loaded, so do that now
+							$this->store->newobject('', '', $arSuper, new object);
+						}
+					} else {
+						if (!class_exists($arType)) {
+							// the given class was not yet loaded, so do that now
+							$this->store->newobject('','',$arType,new object);
+							// include_once($this->store->get_config("code")."objects/".$arType.".phtml");
 						
+						}
+						$arTemp=new $arType();
+						$arSuper=get_parent_class($arTemp);
 					}
-					$arTemp=new $arType();
-					$arSuper=get_parent_class($arTemp);
 					$AR->superClass[$arType]=$arSuper;
 				}
 				$arType=$arSuper;
@@ -1016,13 +1025,21 @@ class pobject extends object { // pobject class definition
 				} else {
 					if (!($arSuper=$AR->superClass[$arType])) {
 						// no template found, no default.phtml found, try superclass.
-						if (!class_exists($arType)) {
-							// the given class was not yet loaded, so do that now
-							$arTemp=$this->store->newobject('','',$arType,new object);
+						if ($subcpos = strpos($arType, '.')) {
+							$arSuper = substr($arType, 0, $subcpos);
+							$subclass = substr($arType, $subcpos+1);
+							if (!class_exists($arSuper)) {
+								$this->store->newobject('', '', $arSuper, new object);
+							}
 						} else {
-							$arTemp=new $arType();
+							if (!class_exists($arType)) {
+								// the given class was not yet loaded, so do that now
+								$arTemp=$this->store->newobject('','',$arType,new object);
+							} else {
+								$arTemp=new $arType();
+							}
+							$arSuper=get_parent_class($arTemp);
 						}
-						$arSuper=get_parent_class($arTemp);
 						$AR->superClass[$arType]=$arSuper;
 					}
 					$arType=$arSuper;

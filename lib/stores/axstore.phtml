@@ -73,12 +73,16 @@ class axstore {
 								}
 								$data=explode("&", $line);
 								if (sizeof($data)>=7) {
-									include_once($this->code."objects/".$data[1].".phtml");
+									$class = $data[1];
+									if ($subcpos = strpos($class, '.')) {
+										$class = substr($class, 0, $subcpos);
+									}
+									include_once($this->code."objects/".$class.".phtml");
 									// check if this is a link (does the object already exist?)
 
 									if (!$this->objects[$data[0]]) {
 
-										$object=new $data[1];
+										$object=new $class;
 										$object->id=(int)$data[0];
 										$object->type=$data[1];
 										$object->vtype=$data[2];
@@ -542,10 +546,18 @@ class axstore {
 
 		} else { // insert new
 			if ($vtype=="") { // if vtype is not set, it defaults to type for new objects
-				$vtype=$type; 
+				if ($subcpos = strpos($type, '.')) {
+					$vtype = substr($type, 0, $subcpos);
+				} else {
+					$vtype=$type; 
+				}
 			}
-			include_once($this->code."objects/".$type.".phtml");
-			$object=new $type;	
+			$class = $type;
+			if ($subcpos = strpos($type, '.')) {
+				$class = substr($type, 0, $subcpos);
+			}
+			include_once($this->code."objects/".$class.".phtml");
+			$object=new $class;	
 			$object->id=++$this->lastobjectid;
 			$object->refcount=1;
 
