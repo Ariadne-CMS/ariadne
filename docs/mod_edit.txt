@@ -75,7 +75,7 @@ view.html:
   </pinp>
   </ul>
   <pinp>
-    edit::showDiv( GetPage(), $nls.'[page']);
+    edit::showDiv( GetPage(), $nls.'[page]');
   </pinp>
 </body>
 </html>
