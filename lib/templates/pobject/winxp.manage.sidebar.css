@@ -46,13 +46,13 @@ A.unselected {
 }
 .sidebar_special_grouphead table{
 	background: url(<?php echo $AR->dir->images ?>winxp/SpecialGroupHead.png) no-repeat;
-	margin-top: 15px;
+	margin-top: 24px;
 	height: 21px;
 }
 .sidebar_special_grouphead td{
 	height: 21px;
 	color: #ffffff;
-	text-indent: 40px;
+	text-indent: 48px;
 	font-weight: bold;
 }
 .sidebar_special_grouphead a:hover{

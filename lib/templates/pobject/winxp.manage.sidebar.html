@@ -1,4 +1,5 @@
 <?php
+	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		global $QUERY_STRING, $invisibleSections;
 		if (!$arLanguage) {
@@ -127,7 +128,7 @@
 </head>
 <body onload="getInvisiblesCookie()">
 	<div class="sidebar">
-		<img width="32" height="32" src="<?php echo $AR->dir->images."icons/".$this->type; ?>_open.gif" id="icon" align="left">
+		<img src="<?php echo $AR->dir->images."icons/".$this->type; ?>_open.gif" id="icon" align="left">
 		<?php 
 			//tasks
 			$this->call("winxp.manage.sidebar.tasks.html", $arCallArgs);

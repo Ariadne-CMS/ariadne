@@ -17,7 +17,14 @@
 		$this->call("winxp.manage.sidebar.sectionstart.html", $arCallArgs);
 ?>
 	<div class="details">
-	<strong><?php echo $nlsdata->name ?></strong><br />
+<?php
+      $myName = $nlsdata->name;
+      if (strlen($myName) > 25) {
+                        $myName = "<span title=\"$sectionDisplayName\">".substr($myName, 0, 22)."..."."</span>";
+      }
+?>
+
+	<strong><?php echo $myName ?></strong><br />
 	<?php 
 		$myType = $this->get("/system/ariadne/types/".$this->type, "system.get.name.phtml");
 		echo $myType[0];
