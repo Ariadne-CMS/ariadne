@@ -41,6 +41,44 @@
     return ldSetSession($ARCurrent->session->id);
   }
 
+        function ldSetCache($file, $time, $image, $headers) {
+        global $store;
+
+                debug("ldSetCache($file, $time, [image], [headers)","object");
+                $time=time()+($time*3600);
+                if (!ereg("\.\.",$file)) {
+                        if ($image) {
+                                $path=substr($file, 1, strrpos($file, "/")-1);
+                                if (!file_exists($store->files."cache/".$path)) {
+                                        ldMkDir("cache/".$path);
+                                        ldMkDir("cacheheaders/".$path);
+                                }
+                                $fp=fopen($store->files."cache/".$file, "w");
+                                fwrite($fp, $image);
+                                fclose($fp);
+                                $fp=fopen($store->files."cacheheaders/".$file, "w");
+                                fwrite($fp, $headers);
+                                fclose($fp);
+                                if (!touch($store->files."cache/".$file, $time)) {
+                                        debug("ldSetCache: ERROR: couldn't touch image","object");
+                                }
+                        }
+                }
+	}
+
+        function ldMkDir($dir) {
+	global $store;
+
+                debug("ldMkDir($dir)","object");
+                $dir=strtok($dir, "/");
+                $curr=$store->files;
+                while ($dir) {
+                        $curr.=$dir."/";
+                        @mkdir($curr, 0755);
+                        $dir=strtok("/");
+                }
+        }
+
   function squisharray($name, $array) {
     while (list($key, $val)=each($array)) {
       if (is_array($val)) {
@@ -156,5 +194,16 @@
     if ($ARCurrent->session) {
       $ARCurrent->session->save();
     }
+	// now check for outputbuffering
+	if ($image=ob_get_contents()) {
+		if ($ARCurrent->headers) {
+			$headerlist=explode("\n",$headers);
+			while (list($key,$header)=@each($headerlist)) {
+				Header($header);
+			}
+		}
+		ob_end_flush();
+		ldSetCache($ARCurrent->filename, $ARCurrent->cachetime, $image, $ARCurrent->headers);
+	}
   }
 ?>

@@ -422,30 +422,19 @@ class pobject {
 				(!$nocache) && ($AR->user->data->login=="public") &&
 				(!$arCallArgs || $AR->OS=="UNIX")) {
 				// caching is on and enabled in loader and user is public.
-				// now get cache image:
-				$url=$AR->host.$AR->dir->www."nocache.php/$reqnls".$this->path.$arCallFunction."?".$arCallArgs;
-				$fp=fopen($url, "r");
-				while ($buffer=fread($fp, 10000)) {
-					$file.=$buffer;
-				}
-				fclose($fp);
+				$ARCurrent->headers=$this->call("system.get.headers.phtml");	
 				if ($ARCurrent->cachepage) {
-					$filename=$ARCurrent->cachepage."=".$arCallArgs;
+					$ARCurrent->filename=$ARCurrent->cachepage."=".$arCallArgs;
 				} else {
-					$filename=$this->path.$arCallFunction."=".$arCallArgs;
+					$ARCurrent->filename=$this->path.$arCallFunction."=".$arCallArgs;
 				}
 				if ($ARCurrent->nls) {
-					$filename="/".$ARCurrent->nls.$filename;
+					$ARCurrent->filename="/".$ARCurrent->nls.$ARCurrent->filename;
 				}
-				// now check for mimetype
-				$headers=$this->call("system.get.headers.phtml");
-				$this->SetCache($filename, $ARConfig->cache, $file, $headers);
-				$headerlist=explode("\n",$headers);
-				while (list($key, $header)=@each($headerlist)) {
-					Header($header);
-				}
-				echo $file;
-				return false;       
+				$ARCurrent->cachetime=$ARConfig->cache;
+				// start output buffering...	
+				ob_start();
+				return true;
 			} else {
 				$nocache=true; // make sure no other parts are cached either;
 				if ($this->data->pinp[$this->type][$arCallFunction][$this->nls]) {
@@ -493,38 +482,11 @@ class pobject {
 
 	function MkDir($dir) {
 		debug("pobject: MkDir($dir)","object");
-		$dir=strtok($dir, "/");
-		$curr=$this->store->files;
-		while ($dir) {
-			$curr.=$dir."/";
-			@mkdir($curr, 0755);
-			$dir=strtok("/");
-		}
+		return ldMkDir($dir);
 	}
 
 	function SetCache($file, $time, $image, $headers) {
-	global $AR;
-
-		debug("pobject: SetCache($file, $time, [image], [headers)","object");
-		$time=time()+($time*3600);
-		if (!ereg("\.\.",$file)) {
-			if ($image) {
-				$path=substr($file, 1, strrpos($file, "/")-1);
-				if (!file_exists($this->store->files."cache/".$path)) {
-					$this->MkDir("cache/".$path);
-					$this->MkDir("cacheheaders/".$path);
-				}
-				$fp=fopen($this->store->files."cache/".$file, "w");
-				fwrite($fp, $image);
-				fclose($fp);
-				$fp=fopen($this->store->files."cacheheaders/".$file, "w");
-				fwrite($fp, $headers);
-				fclose($fp);
-				if (!touch($this->store->files."cache/".$file, $time)) {
-					debug("pobject: SetCache: ERROR: couldn't touch image","object");
-				}
-			}
-		}
+		ldSetCache($file, $time, $image, $headers);
 	}
 
 	function ClearCache($path="") {
@@ -553,14 +515,6 @@ class pobject {
 				unlink(substr($hpath,0,-1)."=");
 			}
 		}
-	}
-
-	function getformdata($vars) {
-	// FIXME: obsolete function?
-		while (list($key, $value)=each($vars)) {
-			$result.="<input type=\"hidden\" name=\"$key\" value=\"".RawUrlEncode($value)."\">\n";
-		}
-		return $result;
 	}
 
 	function getdata($varname, $nls="none") {
