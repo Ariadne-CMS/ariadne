@@ -218,14 +218,37 @@ class htmlcleaner
 		return $parts;
 	}
 
+
 	// removes the worst mess from word.
 	function cleanup($body, $config)
 	{
 		$body = "<htmlcleaner>$body</htmlcleaner>";
 		$rewrite_rules = $config["rewrite"];
 		$return = '';
-		foreach (htmlcleaner::dessicate($body) as $part) {
-			if (is_array($rewrite_rules)) {
+		$parts = htmlcleaner::dessicate($body);
+
+		// flip emtied rules so we can use it as indexes
+		$config["delete_emptied"] = array_flip($config["delete_emptied"]);
+
+		$delete_stack = Array();
+
+		foreach ($parts as $part) {
+			if ($part->nodeType == HTML_CLEANER_NODE_CLOSINGSTYLE_NONE
+				&& isset($config["delete_emptied"][$part->nodeName])
+				&& count($delete_stack)) {
+				do {
+					$closed = array_pop($delete_stack);
+				} while ($closed["tag"] && $closed["tag"] != $part->nodeName);
+				if ($closed["delete"]) {
+					unset($part);
+				}
+			} else
+			if ($part->nodeType == HTML_CLEANER_NODE_NODETYPE_NODE
+				&& count($delete_stack)) {
+					array_push($delete_stack, Array("tag" => $part->nodeName));
+			}
+
+			if ($part && is_array($rewrite_rules)) {
 				foreach ($rewrite_rules as $tag_rule=>$attrib_rules) {
 					if (eregi($tag_rule, $part->nodeName)) {
 						if (is_array($attrib_rules) && is_array($part->attributes)) {
@@ -238,7 +261,13 @@ class htmlcleaner
 													if ($value === false) {
 														unset($part->attributes[$attrib_key]);
 														if (!count($part->attributes)) {
-															unset($part); break 3;
+															if (isset($config["delete_emptied"][$part->nodeName])) {
+																if (!count($delete_stack)) {
+																	array_push($delete_stack, Array("tag" => $part->nodeName, "delete" => true));
+																}
+																unset($part); 
+															}
+															break 3;
 														}
 													} else {
 														$part->attributes[$attrib_key] = $value;
@@ -249,7 +278,12 @@ class htmlcleaner
 										if ($value_rules === false) {
 											unset($part->attributes[$attrib_key]);
 											if (!count($part->attributes)) {
-												unset($part);
+												if (isset($config["delete_emptied"][$part->nodeName])) {
+													if (!count($delete_stack)) {
+														array_push($delete_stack, Array("tag" => $part->nodeName, "delete" => true));
+													}
+													unset($part); 
+												}
 												break 2;
 											}
 										} else {
