@@ -1,5 +1,5 @@
 <?php
-	if ($this->CheckLogin("layout")) {
+	if ($this->CheckLogin("edit")) {
 		// first make sure that the object is clean (data can only be set via 
 		// the defined interface: $arCallArgs)
 		$this->data=current($this->get(".","system.get.data.phtml"));
