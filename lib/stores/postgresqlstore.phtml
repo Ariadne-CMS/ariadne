@@ -1023,8 +1023,8 @@ class postgresqlstore {
 		$query_string	= "BEGIN WORK; LOCK TABLE ".$this->tbl_prefix."seq_id IN SHARE MODE";
 		if (pg_exec($this->connect_id, $query_string)) {
 			$query_string	= "select next_id from ".$this->tbl_prefix."seq_id where path='$epath'";
-			if (($exec = pg_exec($this->connect_id, $query_string)) && (pg_cmdtuples($exec)>0)) {
-				$row=pg_fetch_array($temp, 0);
+			if (($exec = pg_exec($this->connect_id, $query_string)) && (pg_numrows($exec)>0)) {
+				$row=pg_fetch_array($exec, 0);
 				$id=intval($row["next_id"]);
 			} else {
 				$id=1;
