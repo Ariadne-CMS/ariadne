@@ -25,6 +25,13 @@
     } else {
       $languagelist=$AR->user->data->languagelist;
     }
+    $configcache=$ARConfig->cache[$this->path];
+    $nlsconfig=$configcache->nls;
+    if (!$arLanguage || !$nlsconfig[$arLanguage]) {
+      // make sure the selected language makes sense
+      $arLanguage = $this->data->nls->default;
+      $ARCurrent->arLanguage=$arLanguage;
+    }
     if (!$languagelist[$arLanguage]) {
       // make sure the currently selected language is also available at all times
       $languagelist[$arLanguage]=$AR->nls->list[$arLanguage];
