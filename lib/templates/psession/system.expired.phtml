@@ -1,0 +1,22 @@
+<?php
+	/******************************************************************
+	 system.expired.phtml                                  Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: none
+	 Global variables: none
+
+	 This template returns true if this session has expired. false 
+	 otherwise.
+
+	******************************************************************/
+
+	if (!$valid) {
+		$valid=time()-$ARCurrent->session->timeout;
+	}
+	if ($this->lastchanged > $valid) {
+		$arResult=false;
+	} else {
+		$arResult=true;
+	}
+?>
