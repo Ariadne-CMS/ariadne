@@ -1163,12 +1163,12 @@ class pobject extends object {
 		return $config->site;
 	}
 
-	function _checkgrant($grant) {
+	function _checkgrant($grant, $modifier=ARTHISTYPE) {
 		// as this is called within a pinp template, 
 		// all the grants are already loaded, so
 		// checksilent will fullfill our needs
 
-		return $this->CheckSilent($grant);
+		return $this->CheckSilent($grant, $modifier);
 	}
 
 	function _getcharset() {
