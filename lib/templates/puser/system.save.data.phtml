@@ -10,7 +10,7 @@
 		if (!$this->arIsNewObject) {
 			// first make sure that the object is clean (data can only be set via 
 			// the defined interface: $arCallArgs)
-		    $this->data=@current($this->get(".","system.get.data.phtml"));
+		    $this->data=current($this->get(".","system.get.data.phtml"));
 		} else {
 			$this->data=new object;
 		}
@@ -76,7 +76,7 @@
 		if ($profile=$this->getdata("profile","none")) {
 			$this->data->profile=$profile;
 			if($this->arIsNewObject){
-				$pdata=@current($this->get($profile,'system.get.phtml'));
+				$pdata=current($this->get($profile,'system.get.phtml'));
 				/* 
 					now setting default values from the profile, 
 					guess it would be better to preload them directly in the templates

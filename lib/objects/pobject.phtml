@@ -490,7 +490,7 @@ class pobject extends object {
 			if ($continue) {
 				// check password
 				$criteria["login"]["value"]["="]="'".AddSlashes($ARLogin)."'";
-				$result=@current($this->find("/system/users/",$criteria,"system.get.phtml"));
+				$result=current($this->find("/system/users/",$criteria,"system.get.phtml"));
 				unset($criteria);	
 				if (!($AR->user=$result)) {
 					debug("pobject: CheckLogin: user in cookie not found","object");
@@ -551,7 +551,7 @@ class pobject extends object {
 									$continue = true;
 									$recheck = true;
 									$criteria["login"]["value"]["="]="'".AddSlashes($ARLogin)."'";
-									$result=@current($this->find("/system/users/",$criteria,"system.get.phtml"));
+									$result=current($this->find("/system/users/",$criteria,"system.get.phtml"));
 									$AR->user = $result;
 									unset($criteria);	
 									debug("respawning session($sessionid) for user ($ARLogin)");
@@ -606,7 +606,7 @@ class pobject extends object {
 		$result=false;
 		if (!$AR->public) {
 			$criteria["login"]["value"]["="]="'public'";
-			$AR->public=@current($this->find("/system/users/",$criteria,"system.get.phtml"));
+			$AR->public=current($this->find("/system/users/",$criteria,"system.get.phtml"));
 		}
 		if ($AR->public) {
 			$AR->private=$AR->user;

@@ -23,7 +23,7 @@
         } else {
 			// first make sure that the object is clean (data can only be set v
 			// the defined interface: $arCallArgs)
-			$this->data=@current($this->get(".","system.get.data.phtml"));
+			$this->data=current($this->get(".","system.get.data.phtml"));
 		}
 
 		if (!$this->getdata("name", $ARConfig->nls->default)) {

@@ -65,7 +65,7 @@
 				$ARCurrent->importStore=&$importStore;
 				$callArgs=Array("srcpath" => $srcpath,
 								"destpath" => $destpath);
-				$error=@current($this->store->call("system.export.phtml", $callArgs,
+				$error=current($this->store->call("system.export.phtml", $callArgs,
 					$this->store->get('/')));
 
 				$importStore->close();

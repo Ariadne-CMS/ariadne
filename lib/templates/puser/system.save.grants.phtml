@@ -69,13 +69,13 @@
 		if (!$this->error) {
 			// first make sure that the object is clean (data can only be set via 
 			// the defined interface: $arCallArgs)
-			$this->data=@current($this->get(".","system.get.data.phtml"));
+			$this->data=current($this->get(".","system.get.data.phtml"));
 
 			if (!$path) {
 				$searchpath["pgroup"]="/system/groups/";
 				$searchpath["puser"]="/system/users/";
 				$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
-				if ($temp=@current($this->find($searchpath[$type], $criteria, "system.get.phtml"))) {
+				if ($temp=current($this->find($searchpath[$type], $criteria, "system.get.phtml"))) {
 					$path=$temp->path;
 				} else {
 					$this->error=sprintf($ARnls["err:notfindusergroup"],$id);
@@ -87,7 +87,7 @@
 				if ($id==$this->data->login && $type==$this->type) {
 					arDelGrant($this->data->usergrants, $this->path, $grant, $modifier);
 				} else {
-					$result=@current($this->get($path, "system.save.grants.user.phtml", Array(
+					$result=current($this->get($path, "system.save.grants.user.phtml", Array(
 										"action"	=> "delete",
 										"path"		=> $this->path,
 										"grant"		=> $grant,
@@ -98,7 +98,7 @@
 					}			
 				}
 			} else if ($newgrants) {
-				if ($type=@current($this->get($path, "system.get.type.phtml"))) {
+				if ($type=current($this->get($path, "system.get.type.phtml"))) {
 					if ($this->store->implements($type, "pgroup")) { 
 						$type="pgroup";
 					} else if ($this->store->implements($type, "puser")) { 
@@ -108,7 +108,7 @@
 						// FROP $this->error="$path is not a user or group";
 					}
 					if (!$this->error) { 
-						if ($id=@current($this->get($path, "system.get.login.phtml"))) {
+						if ($id=current($this->get($path, "system.get.login.phtml"))) {
 
 							$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
 							$newgrants=ereg_replace('([\(\)])',' \\1 ',$newgrants);
@@ -116,7 +116,7 @@
 							$newgrants=ereg_replace("[[:space:]]"," ",$newgrants);
 							$newgrant=strtok($newgrants, " ");
 							if ($newgrant=="{}") {
-								if ($result=@current($this->get($path,"system.get.grants.phtml",Array("path" => $this->path)))) {
+								if ($result=current($this->get($path,"system.get.grants.phtml",Array("path" => $this->path)))) {
 									$current=implode(" ", array_keys($result));
 									$newgrants=ereg_replace(' ?\{\} ?',AddSlashes($current),$newgrants);		
 								}
@@ -162,7 +162,7 @@
 										if ($id==$this->data->login && $type==$this->type) {
 											arDelGrant($this->data->usergrants, $this->path, $delgrant, $modifier);
 										} else {
-											$result=@current($this->get($path, "system.save.grants.user.phtml", Array(
+											$result=current($this->get($path, "system.save.grants.user.phtml", Array(
 														"action"	=> "delete",
 														"path"		=> $this->path,
 														"grant"		=> $delgrant,
@@ -205,7 +205,7 @@
 											// they match, so make the changes here, otherwise they will be overwritten
 											$this->data->usergrants[$this->path][$newgrant]=$this->data->grants[$type][$id][$newgrant];
 										} else {
-											$result=@current($this->get($path, "system.save.grants.user.phtml", Array(
+											$result=current($this->get($path, "system.save.grants.user.phtml", Array(
 													"action"	=> "add",
 													"path"		=> $this->path,
 													"grant"		=> $newgrant,

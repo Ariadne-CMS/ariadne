@@ -28,13 +28,13 @@
 				}
 			} else {
 				// this is probably a link in a group
-				$parentobject=@current($this->get($this->parent, "system.get.phtml"));
+				$parentobject=current($this->get($this->parent, "system.get.phtml"));
 				if ($parentobject && $parentobject->implements("pgroup")) {
 					// so it is, so remove the user from the group
 					// which will by the way also delete the current object
 					// first get the original users path
 					$crit["login"]["value"]["="]="'".AddSlashes($this->data->login)."'";
-					$realuser=@current($this->find("/system/users/",$crit,"system.get.phtml"));
+					$realuser=current($this->find("/system/users/",$crit,"system.get.phtml"));
 					if ($realuser && $realuser->path) {
 						$realpath=$realuser->path;
 						$parentobject->call("system.set.user.phtml", Array("path" => $realpath, "action" => "delete"));

@@ -21,7 +21,7 @@
 					$target="{5:id}"; // can only happen if $source=="/" ?
 				}
 			}
-			$this->error=@current($this->get($source, "system.copyto.phtml", Array (
+			$this->error=current($this->get($source, "system.copyto.phtml", Array (
 						"target" 	=> $this->path.$target."/", 
 						"search"	=> $search,
 						"replace"	=> $replace,

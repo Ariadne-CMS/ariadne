@@ -117,7 +117,7 @@ class pphoto extends pfile { // definitie class
 		if (eregi('[^a-z0-9+]',$method)) {
 			$this->error=sprintf($ARnls["err:composeillegalmethod"],$method);
 		} else {
-			$targettype = @current($this->get($target, "system.get.type.phtml"));
+			$targettype = current($this->get($target, "system.get.type.phtml"));
 			if( $targettype == "pphoto" ) {
 				$compose .= " -compose ".$method;
 				if( $blend ) {
@@ -125,7 +125,7 @@ class pphoto extends pfile { // definitie class
 				}
 				$query = "object.path = '".$target."' and object.type='pphoto'";
 			
-				$targetid = @current($this->find("/",$query, "system.get.id.phtml"));
+				$targetid = current($this->find("/",$query, "system.get.id.phtml"));
 				if( $targetid ) {
 					$tmpsrc = tempnam($this->store->files."temp/", "photo");
 					$ARConfig->photoTempFiles[$this->id][] = $tmpsrc;
@@ -167,7 +167,7 @@ class pphoto extends pfile { // definitie class
 		if($font!="") {
 			$font_store=$this->store->get_filestore("files");
 			if($fontid=$this->exists($font)) {
-				$chkfontgrants = @current($this->get($font, "system.get.phtml"));
+				$chkfontgrants = current($this->get($font, "system.get.phtml"));
 				if($chkfontgrants->CheckLogin("read")) {
 					$tmpfont=$this->store->files."temp/".$fontid.".ttf";
 					$font_store->copy_from_store($tmpfont, $fontid, "file");

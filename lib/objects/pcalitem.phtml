@@ -24,7 +24,7 @@ class pcalitem extends pobject { // definitie class
 	function NewEndtime($endtime) {
 		debug("pcalitem->NewEndtime($endtime)","object");
 		@reset($this->data->timeframes);
-		$timeframe=@current($this->data->timeframes);
+		$timeframe=current($this->data->timeframes);
 		while ($timeframe && ($timeframe["start"]<$endtime)) {
 			$result[]=$timeframe;
 			$timeframe=next($this->data->timeframes);

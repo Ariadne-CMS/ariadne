@@ -4,7 +4,7 @@
 		$nls=$data->nls->default;
 		$flag="<image src=\"".$AR->dir->images."nls/small/$nls.gif\" border=\"0\" alt=\"\">";
 	}
-	if ($folder=@current($this->get($data->path, "system.get.folder.phtml"))) {
+	if ($folder=current($this->get($data->path, "system.get.folder.phtml"))) {
 		$icon=$folder["icon"];
 	} else {
 		$icon="pdir";

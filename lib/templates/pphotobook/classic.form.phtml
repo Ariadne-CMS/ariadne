@@ -28,7 +28,7 @@
 <html>
 <head>
 <title><?php 
-	$title=$ARnls["edit"]." ".@current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml")); 
+	$title=$ARnls["edit"]." ".current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml")); 
 	echo $title;
 ?></title>
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">

@@ -6,7 +6,7 @@
 		if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
 			if ($path && $this->store->exists($path)) {
 				$arCallArgs=array_merge($arCallArgs, Array("arShortCut" => $this->path));
-				$arResult=@current($this->get($path, $arCallFunction, $arCallArgs));
+				$arResult=current($this->get($path, $arCallFunction, $arCallArgs));
 			} else {
 				$arResult=false;
 				$this->error=sprintf($ARnls["err:shortcutnopath"],$this->path,$path);

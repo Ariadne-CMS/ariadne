@@ -364,7 +364,7 @@
 								ftp_TranslateTemplate($path, $template);
 								$getmode = "templates";
 								
-								$result = @current(
+								$result = current(
 											$FTP->store->call("ftp.template.exists.phtml", 
 																Array("arRequestedTemplate" => $template),
 																$FTP->store->get($path)));
@@ -475,14 +475,14 @@
 								ftp_TranslateTemplate($path, $template);
 								$getmode = "templates";
 								
-								$result = @current(
+								$result = current(
 											$FTP->store->call("ftp.template.exists.phtml", 
 																Array("arRequestedTemplate" => $template),
 																$FTP->store->get($path)));
 								$file_size = $result["size"];
 							break;
 							default:
-								$file_size = @current(
+								$file_size = current(
 											$FTP->store->call("ftp.files.size.phtml", "",
 																$FTP->store->get($path)));
 								$getmode = "files";
@@ -616,7 +616,7 @@
 						} else {
 							ftp_TranslateTemplate($path, $template);
 							debug("ftp::list maybe it's a template? ($path, $template)");
-							$result = @current($FTP->store->call("ftp.template.exists.phtml", 
+							$result = current($FTP->store->call("ftp.template.exists.phtml", 
 												Array("arRequestedTemplate" => $template),
 												$FTP->store->get($path)));
 

@@ -2,7 +2,7 @@
 	if ($this->CheckLogin("edit")) {
 		// first make sure that the object is clean (data can only be set via 
 		// the defined interface: $arCallArgs)
-	    $this->data=@current($this->get(".","system.get.data.phtml"));
+	    $this->data=current($this->get(".","system.get.data.phtml"));
 		$this->data->language=$this->getdata("language","none");
 		$this->data->interface=$this->getdata("interface","none");
 		$this->data->editor=$this->getdata("editor","none");

@@ -95,7 +95,7 @@
 			// parent exists, so copy current object under that parent
 			// get the filename to copy to, $subpath can be empty!
 			$filename=substr($newpath,strlen($newparent),-1);
-			$result=@current($this->get($newparent, "system.copy.phtml",
+			$result=current($this->get($newparent, "system.copy.phtml",
 				"target=".RawUrlEncode($filename)."&source=".RawUrlEncode($this->path).
 				"&search=".RawUrlEncode($source)."&replace=".RawUrlEncode($exacttarget)));
 			if ($result) {

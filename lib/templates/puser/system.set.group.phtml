@@ -13,7 +13,7 @@
 	if ($granted) {
 		// FIXME: check whether $path is a group?
 		// now make sure this->data is clean.
-		$this->data=@current($this->get($this->path, "system.get.data.phtml"));
+		$this->data=current($this->get($this->path, "system.get.data.phtml"));
 		if ($action=="add") {
 			$this->data->groups[$path]=$id;
 			$this->save();

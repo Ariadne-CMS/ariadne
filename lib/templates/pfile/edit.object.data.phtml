@@ -86,7 +86,7 @@
 			$ARCurrent->arLanguage=$arLanguage;
 		}
 		$HTTP_POST_VARS["arLanguage"]=$arLanguage;
-		$name=@current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml"));
+		$name=current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml"));
 		$wgWizTitle=$ARnls["edit"]." ".$name;		
 		include($this->store->code."widgets/wizard/classic.html");
 	}

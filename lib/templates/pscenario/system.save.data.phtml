@@ -4,7 +4,7 @@
 			$this->CheckConfig()) {
 
 		if (!$this->arIsNewObject) {
-		    $this->data=@current($this->get(".","system.get.data.phtml"));
+		    $this->data=current($this->get(".","system.get.data.phtml"));
 		} else {
 			$this->data=new object;
 		}
