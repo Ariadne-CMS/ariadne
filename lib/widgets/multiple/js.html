@@ -5,6 +5,9 @@
 		if (!$wgMultipleEditQuery) {
 			$wgMultipleEditQuery=$ARnls["enternewvalue"];
 		}
+		if (!$wgMultiplePrompt) {
+			$wgMultiplePrompt='prompt';
+		}
 	?>
 	<script language="javascript">
 	<!--
@@ -20,7 +23,7 @@
 
 
 		function add_new_item(dest) {
-			if (value=prompt('<?php echo $wgMultipleNewQuery; ?>','')) {
+			if (value=<?php echo $wgMultiplePrompt; ?>('<?php echo $wgMultipleNewQuery; ?>','')) {
 				dest.options[dest.options.length]=new Option(value,value);
 			}
 		}
@@ -34,7 +37,7 @@
 
 		function edit_item(src,dest) {
 			if (src.selectedIndex!=-1) {
-				value=prompt('<?php echo $wgMultipleEditQuery; ?>',src.options[src.selectedIndex].value);
+				value=<?php echo $wgMultiplePrompt; ?>('<?php echo $wgMultipleEditQuery; ?>',src.options[src.selectedIndex].value);
 				if (value) {
 					src.options[src.selectedIndex]=new Option(value,value);
 				} else if (value!=null) {
@@ -46,7 +49,7 @@
 	</script>
 	<style>
 	<!--
-		INPUT.mybutton { width: 6em; }
-		select.myselect { width: 11.5em }
+		.wgMultipleButton { width: 6em; }
+		.wgMultipleSelect { width: 11.5em }
 	-->
 	</style>

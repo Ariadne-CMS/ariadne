@@ -2,11 +2,19 @@
 		if (!$wgMultipleName) {
 			$wgMultipleName="multiple";
 		}
+        if (!$wgMultipleRows) {
+			$wgMultipleRows=5;
+		}
+		if (!$wgMultipleWidth) {
+			$wgMultipleWidth=168;
+		}
 	?>
 	<table border="0" cellpadding="0" cellspacing="1">
 	<tr>
 		<td valign="top"><font face="courier">
-			<select class="myselect" name="<?php echo $wgMultipleName."container"; ?>" size="5" width="168">
+			<select class="wgMultipleSelect" name="<?php echo $wgMultipleName."container"; ?>" 
+              size="<?php echo $wgMultipleRows; ?>"
+              width="<?php echo $wgMultipleWidth; ?>">
 			<?php
 				while (is_array($wgMultipleArray) && (list($key,$email)=each($wgMultipleArray))) {
 					if ($wgMultipleValue) { 
@@ -25,14 +33,14 @@
 		</td>
 		<td valign="top">
 			<input type="hidden" name="<?php echo $wgMultipleName; ?>" value="<?php echo $wgMultipleValue; ?>">
-			<input type="button" class="mybutton" width="80%" 
+			<input type="button" class="wgMultipleButton" width="80%" 
 				onClick="add_new_item(this.form.<?php echo $wgMultipleName."container"; ?>); 
 					collect_items(this.form.<?php echo $wgMultipleName."container"; ?>,this.form.<?php echo $wgMultipleName; ?>);" 
 				name="e_add" value="&nbsp;<?php echo $ARnls["new"]; ?>&nbsp;"><BR>
-			<input type="button" class="mybutton" width="80%" name="e_edit" value="&nbsp;<?php echo $ARnls["edit"]; ?>&nbsp;" 
+			<input type="button" class="wgMultipleButton" width="80%" name="e_edit" value="&nbsp;<?php echo $ARnls["edit"]; ?>&nbsp;" 
 				onClick="edit_item(this.form.<?php echo $wgMultipleName."container"; ?>);  
 					collect_items(this.form.<?php echo $wgMultipleName."container"; ?>,this.form.<?php echo $wgMultipleName; ?>);"><br>
-			<input type="button" class="mybutton" width="80%" name="e_remove" value="<?php echo $ARnls["remove"]; ?>" 
+			<input type="button" class="wgMultipleButton" width="80%" name="e_remove" value="<?php echo $ARnls["remove"]; ?>" 
 				onClick="remove_item(this.form.<?php echo $wgMultipleName."container"; ?>);  
 					collect_items(this.form.<?php echo $wgMultipleName."container"; ?>,this.form.<?php echo $wgMultipleName; ?>);">
 		</td>
