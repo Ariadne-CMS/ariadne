@@ -25,19 +25,19 @@
 class mysqllock {
 
 	function mysqllock($tbl_prefix="") {
-        debug("mysqllock::mysqllock($tbl_prefix)");
-		$this->tbl_prefix=$tbl_prefix;
-        debug("mysqllock::mysqllock end","all");
+		debug("mysqllock::mysqllock($tbl_prefix)");
+		  $this->tbl_prefix=$tbl_prefix;
+		  debug("mysqllock::mysqllock end","all");
 	}
 
 	function connect($host="localhost",$user="root",$password="") {
-        debug("mysqllock::connect($host, $user, [password])","store");
+		debug("mysqllock::connect($host, $user, [password])","store");
 		$this->mayClose=true;
-		$this->host=$host;
-		$this->user=$user;
-		$this->password=$password;
+//		$this->host=$host;
+//		$this->user=$user;
+//		$this->password=$password;
 		$this->connectid=mysql_pconnect($host,$user,$password);
-        debug("mysqllock::connect end","all");
+		debug("mysqllock::connect end","all");
 	}
 
 	function select_db($database="modules", $connectid=false) {
@@ -50,22 +50,22 @@ class mysqllock {
 	}
 
 	function get_locks($identity) {
-        debug("mysqllock:get_locks($identity)","store");
+		debug("mysqllock:get_locks($identity)","store");
 		$query_string="select path,release, type, identity from ".$this->tbl_prefix."locks where 
 		release >=".time()." and identity='".AddSlashes($identity)."'";
 		$query=@mysql_db_query($this->database, $query_string,$this->connectid);
 		while ($temp=@mysql_fetch_array($query)) {
 			$result[$temp["path"]]=$temp;
 		}
-        debug("mysqllock:get_locks end","all");
+		debug("mysqllock:get_locks end","all");
 		return $result;		
 	}
 
 	function lock($identity, $path, $type="O", $time=0) {
 	/**********************************************************************
 		This function locks an object/path
-	**********************************************************************/
-        debug("mysqllock:lock($identity,$path,$time,$type)","store");
+	 **********************************************************************/
+		debug("mysqllock:lock($identity,$path,$time,$type)","store");
 		if (!$time) {
 			$time=time()+$this->lock_duration;
  		}

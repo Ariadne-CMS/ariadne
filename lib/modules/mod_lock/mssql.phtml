@@ -25,43 +25,43 @@
 class mssqllock {
 
 	function mssqllock($tbl_prefix="") {
-        debug("mssqllock::mssqllock($tbl_prefix)");
+		debug("mssqllock::mssqllock($tbl_prefix)");
 		$this->tbl_prefix=$tbl_prefix;
-        debug("mssqllock::mssqllock end","all");
+		debug("mssqllock::mssqllock end","all");
 	}
 
 	function connect($host="",$user="sa",$password="",$database="") {
-        debug("mssqllock::connect($host, $user, [password], $database)", "store");
-		$this->mayClose		= true;
-		$this->host			= $host;
-		$this->user			= $user;
-		$this->password		= $password;
-		$this->database		= $database;
-		$this->connectid	= mssql_connect(($host ? $host : ""),$user,$password) or die("DATABASE FAILED TO CONNECT");
+		debug("mssqllock::connect($host, $user, [password], $database)", "store");
+		$this->mayClose = true;
+		$this->host = $host;
+		$this->user = $user;
+		$this->password = $password;
+		$this->database = $database;
+		$this->connectid = mssql_connect(($host ? $host : ""),$user,$password) or die("DATABASE FAILED TO CONNECT");
 		mssql_select_db($database) OR DIE ("Could not select MSSQL database ".$database);
-        debug("mssqllock::connect end","all");
+		debug("mssqllock::connect end","all");
 	}
 
 	function get_locks($identity) {
-        debug("mssqllock:get_locks($identity)","store");
-		$i				= 0;
-		$query_string	= "select path, release, type, [identity] from ".$this->tbl_prefix."locks where release >=".time()." and [identity]='".AddSlashes($identity)."'";
-		$exec			= mssql_query($query_string);
+		debug("mssqllock:get_locks($identity)","store");
+		$i = 0;
+		$query_string = "select path, release, type, [identity] from ".$this->tbl_prefix."locks where release >=".time()." and [identity]='".AddSlashes($identity)."'";
+		$exec = mssql_query($query_string);
 		for ($i = 0; $i < mssql_num_rows($exec); $i++) {
 			$temp = mssql_fetch_array($exec);
-			$result[$temp["path"]]	= $temp;
+			$result[$temp["path"]] = $temp;
 		}
-        debug("mssqllock:get_locks end","all");
+		debug("mssqllock:get_locks end","all");
 		return $result;		
 	}
 
 	function lock($identity, $path, $type="O", $time=0) {
 	/**********************************************************************
 		This function locks an object/path
-	**********************************************************************/
-        debug("mssqllock:lock($identity,$path,$type,$time)","store");
+	 **********************************************************************/
+		debug("mssqllock:lock($identity,$path,$type,$time)","store");
 		if (!$time) {
-			$time	= time() + $this->lock_duration;
+			$time = time() + $this->lock_duration;
  		}
 		// start transaction
 		// lock will be held until transaction has finished

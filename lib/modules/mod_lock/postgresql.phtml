@@ -25,45 +25,45 @@
 class postgresqllock {
 
 	function postgresqllock($tbl_prefix="") {
-        debug("postgresqllock::postgresqllock($tbl_prefix)");
+		debug("postgresqllock::postgresqllock($tbl_prefix)");
 		$this->tbl_prefix=$tbl_prefix;
-        debug("postgresqllock::postgresqllock end","all");
+		debug("postgresqllock::postgresqllock end","all");
 	}
 
 	function connect($host="",$user="root",$password="",$database="") {
-        debug("postgresqllock::connect($host, $user, [password], $database)", "store");
-		$this->mayClose		= true;
-		$this->host			= $host;
-		$this->user			= $user;
-		$this->password		= $password;
-		$this->database		= $database;
-		$this->connectid	= pg_connect(
+		debug("postgresqllock::connect($host, $user, [password], $database)", "store");
+		$this->mayClose = true;
+//		$this->host = $host;
+//		$this->user = $user;
+//		$this->password = $password;
+		$this->database = $database;
+		$this->connectid = pg_connect(
 				($host ? " host='$host'" : "").
 				" user='$user'".
 				" password='$password'".
 				" dbname='$database'") OR DIE ("Could not connect to PostgreSQL database ".$database);
-        debug("postgresqllock::connect end","all");
+		debug("postgresqllock::connect end","all");
 	}
 
 	function get_locks($identity) {
-        debug("postgresqllock:get_locks($identity)","store");
-		$i				= 0;
-		$query_string	= "select path, release, type, identity from ".$this->tbl_prefix."locks where release >=".time()." and identity='".AddSlashes($identity)."'";
-		$exec			= @pg_exec($this->connectid, $query_string);
+		debug("postgresqllock:get_locks($identity)","store");
+		$i = 0;
+		$query_string = "select path, release, type, identity from ".$this->tbl_prefix."locks where release >=".time()." and identity='".AddSlashes($identity)."'";
+		$exec = @pg_exec($this->connectid, $query_string);
 		while ($temp = @pg_fetch_array($exec, $i++)) {
-			$result[$temp["path"]]	= $temp;
+			$result[$temp["path"]] = $temp;
 		}
-        debug("postgresqllock:get_locks end","all");
-		return $result;		
+		debug("postgresqllock:get_locks end","all");
+		return $result;
 	}
 
 	function lock($identity, $path, $type="O", $time=0) {
 	/**********************************************************************
 		This function locks an object/path
 	**********************************************************************/
-        debug("postgresqllock:lock($identity,$path,$type,$time)","store");
+		debug("postgresqllock:lock($identity,$path,$type,$time)","store");
 		if (!$time) {
-			$time	= time() + $this->lock_duration;
+			$time = time() + $this->lock_duration;
  		}
 		// start transaction
 		// lock will be held until transaction has finished
