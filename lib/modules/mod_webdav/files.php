@@ -162,9 +162,9 @@
 		global $ARCurrent;
 			
 			//$filename = basename($params['path']);
-			$path = $this->store->make_path($params['path']);
+			$path = $this->make_path($params['path']);
 			$filename = basename($path);
-			$parent = $this->store->make_path($path, '..');
+			$parent = $this->make_path($path, '..');
 			$size = $params['content_length'];
 			$stream = $params['stream'];
 
