@@ -6,7 +6,7 @@
 	include_once($ariadne."/modules/mod_session.phtml");
 	include_once($ariadne."/includes/loader.web.php");
 
-	function fix_quotes(&$value, $key) {
+	function fix_quotes(&$value) {
 		if (is_array($value)) {
 			reset($value);
 			array_walk($value, 'fix_quotes');
@@ -116,8 +116,8 @@
 			set_magic_quotes_runtime(0);
 			if (get_magic_quotes_gpc()) {
 				// this fixes magic_quoted input
-				fix_quotes($HTTP_GET_VARS, "nokey");
-				fix_quotes($HTTP_POST_VARS, "nokey");
+				fix_quotes($HTTP_GET_VARS);
+				fix_quotes($HTTP_POST_VARS);
 				$ARCookie=stripslashes($ARCookie);
 			}
 			$args=array_merge($HTTP_GET_VARS,$HTTP_POST_VARS);
