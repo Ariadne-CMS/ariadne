@@ -80,6 +80,29 @@ class pphoto extends pfile { // pphoto class definition
 		return true;
 	}
 
+	function border($width, $height, $color=false) {
+		global $ARConfig;
+
+		$this->set_context("mogrify");
+
+		$width=(int)$width;
+		$height=(int)$height;
+		$ARConfig->photoStack[$this->id][]=" -border $width"."x".$height." ";
+		if ($color!==false) {
+			$ARConfig->photoStack[$this->id][]=" -bordercolor $color ";
+		}
+		return true;
+	}
+
+	function cut($x, $y) {
+		global $ARConfig;
+
+		$this->set_context("mogrify");
+
+		$ARConfig->photoStack[$this->id][]=" -chop ".((int)$x)."x".((int)$y);
+		return true;
+	}
+
 	function scaledown($x, $y, $fillcolor=false) {
 		global $ARConfig;
 
@@ -102,16 +125,23 @@ class pphoto extends pfile { // pphoto class definition
 		$this->arComposeStyles[$name]["resize"]=$resize;
 	} 
 
-	function compose( $target, $style="default", $blend = 0) {
+	function compose( $target, $style="default", $blend = 0, $params=false) {
 		global $ARConfig;
 
 		$this->set_context("composite");
 
 		$compose = "";
 
-		$method = "over";
+		$def = $this->arComposeStyles[$style];
+		if (is_array($params)) {
+			if (is_array($def)) {
+				$def = array_merge($def, $params);
+			} else {
+				$def = $params;
+			}
+		}
 
-		if( ($style!="") && ($def=$this->arComposeStyles[$style])) {
+		if( is_array($def) ) {
 			$method = $def["method"];
 			$width = $def["width"];
 			$height = $def["height"];
@@ -119,6 +149,7 @@ class pphoto extends pfile { // pphoto class definition
 			$yoffset = $def["yoffset"];
 			$percentage = $def["percentage"];
 			$resize = $def["resize"];
+			$gravity = $def["gravity"];
 		}
 
 		$geo = false;
@@ -160,26 +191,31 @@ class pphoto extends pfile { // pphoto class definition
 			$compose .= "\"";
 		}
 
-		if (eregi('[^a-z0-9+]',$method)) {
+		if ($method && eregi('[^a-z0-9+]',$method)) {
 			$this->error=sprintf($ARnls["err:composeillegalmethod"],$method);
 		} else {
-			$targettype = current($this->get($target, "system.get.type.phtml"));
-			if( $targettype == "pphoto" ) {
-				$compose .= " -compose ".$method;
+			$targetobj = current($this->get($target, "system.get.phtml"));
+			if( $targetobj->type == "pphoto" ) {
+				if ($method) {
+					$compose .= " -compose ".$method;
+				}
+				if ($gravity) {
+					$compose .= " -gravity $gravity ";
+				}
 				if( $blend ) {
 					$compose .= " -blend ".$blend;
 				}
-				$query = "object.path = '".$target."' and object.type='pphoto'";
 			
-				$targetid = current($this->find("/",$query, "system.get.id.phtml"));
+				$targetid = $targetobj->id;
 				if( $targetid ) {
 					$tmpsrc = tempnam($this->store->files."temp/", "photo");
 					if(  substr( strtolower($tmpsrc), -4, 4 ) == ".tmp" ) {
 						@unlink($tmpsrc);
 						$tmpsrc = substr($tmpsrc, 0, -4 );
 					}
+
 					$ARConfig->photoTempFiles[$this->id][] = $tmpsrc;
-					$ARConfig->photoTempFilesID[$this->id][] = $targetid;
+					$ARConfig->photoTempFilesID[$this->id][] = $this->id;
 
 					$tmpmysrc = tempnam($this->store->files."temp/", "photo");
 					if(  substr( strtolower($tmpmysrc), -4, 4 ) == ".tmp" ) {
@@ -188,9 +224,11 @@ class pphoto extends pfile { // pphoto class definition
 					}
 
 					$ARConfig->photoTempFiles[$this->id][] = $tmpmysrc;
-					$ARConfig->photoTempFilesID[$this->id][] = $this->id;
+					$ARConfig->photoTempFilesID[$this->id][] = $targetid;
 
-					$ARConfig->photoStack[$this->id][] = $compose." ".$tmpmysrc." ".$tmpsrc;
+					$execbuf = $compose." ".$tmpmysrc." {buildfile} ";
+					$ARConfig->photoStack[$this->id][] = $execbuf;
+					//echo "<script> alert('compose ($execbuf)'); </script>\n";
 					$this->set_context("build");
 				}
 			}
@@ -317,10 +355,11 @@ class pphoto extends pfile { // pphoto class definition
 					$image="";
 					reset($ARConfig->photoCommandStack[$this->id]);
 					while (!$failed && (list($key, $exec_string)=each($ARConfig->photoCommandStack[$this->id]))) {
+						$exec_string = str_replace('{buildfile}', $tmpsrc, $exec_string);
 						$exec_string .= " ".$tmpsrc;
 						system($exec_string,$failed);
 						debug("executing ($exec_string)");
-						// echo( $exec_string."<br>");
+						//echo( $exec_string."<br>");
 					}
 				}
 				if (!$failed) {
@@ -395,14 +434,21 @@ class pphoto extends pfile { // pphoto class definition
 		return $this->annotate($text, $x, $y, $style);
 	}
 
-        function _setComposeStyle($name, $method, $width, $height, $xoffset, $yoffset, $percentage, $resize) {
-        	return $this->setComposeStyle($name, $method, $width, $height, $xoffset, $yoffset, $percentage, $resize);
+	function _setComposeStyle($name, $method, $width, $height, $xoffset, $yoffset, $percentage, $resize) {
+		return $this->setComposeStyle($name, $method, $width, $height, $xoffset, $yoffset, $percentage, $resize);
 	}
 
-	function _compose( $target, $style="default", $blend = 0 ) {
-		return $this->compose( $target, $style, $blend );
+	function _compose( $target, $style="default", $blend = 0, $params = false ) {
+		return $this->compose( $target, $style, $blend, $params );
 	}
- 
+
+	function _border($width, $height, $color=false) { 
+		return $this->border($width, $height, $color);
+	}
+
+	function _cut($x, $y) {
+		return $this->cut($x, $y);
+	}
 	
 	function _build() {
 		return $this->build();
