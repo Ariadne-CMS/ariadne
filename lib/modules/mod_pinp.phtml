@@ -127,13 +127,12 @@ class scanner {
 
 					case '%':
 					case '?':
-						$firstchar = $yych;
+						$result = $yych;
 						$yych = $YYBUFFER[++$YYCURSOR];
 						if ($yych == '>') {
 							$result = "php tags found at line: ".$this->YYLINE;
 							return T_ERROR;
 						} else {
-							$result = "$firstchar$yych";
 							return T_UNPARSED;
 						}
 					break;
