@@ -616,6 +616,53 @@ function getContents(data_id) {
 	}
 }
 
+function getValue(data_name) {
+	var data="";
+	var value='';
+	if (data=tbContentElement.document.getElementById(data_name)) {
+		switch (data.type) {
+			case 'checkbox' :
+				if (data.checked) {
+					value=data.value;
+				}
+				break;
+			case 'radio' :
+				var radio=tbContentElement.document.all[data_name];
+				if (radio) { 
+					for (var i=0; i<radio.length; i++) {
+						if (radio[i].checked) {
+							value=radio[i].value;
+							break;
+						}
+					}
+				}
+				break;
+			case 'hidden' :
+			case 'password' :
+			case 'text' :
+				value=data.value;
+				break;
+			case 'select' :
+				value=data.options[data.selectedIndex].value;
+				break;
+			case 'select-multiple' :
+				value=new Array();
+				for (var i=0; i<data.length; i++) {
+					if (data.options[i].selected) {
+						value[value.length]=data.options[i].value;
+					}
+				}
+				break;
+			default :
+				value='';
+				break;
+		}
+		return value;
+	} else {
+		return '';
+	}
+}
+
 //-->
 </script>
 
@@ -638,33 +685,33 @@ return tbContentElement_ContextMenuAction(itemIndex)
 </SCRIPT>
 
 </head>
-<body onload="return window_onload()" unselectable='on'>
+<body onload="return window_onload()" unselectable='on' tabIndex='-1'>
 
 <!-- Toolbars -->
 <div class="tbToolbar" ID="StandardToolbar" unselectable='on'>
   <div class="tbButton" ID="SAVE" unselectable='on' TITLE="Save File" LANGUAGE="javascript" onclick="return SAVE_onclick()">
-    <img class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/save.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/save.gif" WIDTH="23" HEIGHT="22">
   </div>
   
   <div class="tbSeparator"></div>
 
   <div class="tbButton" unselectable='on' ID="DECMD_CUT" TITLE="Cut" LANGUAGE="javascript" onclick="return DECMD_CUT_onclick();">
-    <img class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/cut.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/cut.gif" WIDTH="23" HEIGHT="22">
   </div>
   <div class="tbButton" unselectable='on' ID="DECMD_COPY" TITLE="Copy" LANGUAGE="javascript" onclick="return DECMD_COPY_onclick();">
-    <img class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/copy.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/copy.gif" WIDTH="23" HEIGHT="22">
   </div>
   <div class="tbButton" unselectable='on' ID="DECMD_PASTE" TITLE="Paste" LANGUAGE="javascript" onclick="return DECMD_PASTE_onclick();">
-    <img class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/paste.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/paste.gif" WIDTH="23" HEIGHT="22">
   </div>
 
-  <div class="tbSeparator"></div>
+  <div class="tbSeparator" unselectable='on'></div>
 
   <div class="tbButton" unselectable='on' ID="DECMD_UNDO" TITLE="Undo" LANGUAGE="javascript" onclick="return DECMD_UNDO_onclick()">
-    <img class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/undo.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/undo.gif" WIDTH="23" HEIGHT="22">
   </div>
   <div class="tbButton" unselectable='on' ID="DECMD_REDO" TITLE="Redo" LANGUAGE="javascript" onclick="return DECMD_REDO_onclick()">
-    <img class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/redo.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/redo.gif" WIDTH="23" HEIGHT="22">
   </div>
 
 </div>
