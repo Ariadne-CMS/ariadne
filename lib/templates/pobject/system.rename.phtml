@@ -25,7 +25,8 @@
 			}
 			if (!$this->error) {
 				// FIXME: check add permission in $target
-				if ($this->store->move($this->path, $target)) {
+				$target = $this->store->move($this->path, $target);			
+				if ($target) {
 					$this->path=$target;
 					$this->parent=$parent;
 					$arResult=$target;
