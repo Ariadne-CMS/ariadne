@@ -26,7 +26,7 @@
 				</td>
 			</tr><tr>
 				<td colspan="2">
-					<input type="text" name="address" maxlength="50" size="32"
+					<input type="text" name="address" size="32"
 						value="<?php $this->showdata("address", "none"); ?>">
 				</td>
 			</tr><tr>
@@ -49,7 +49,9 @@
 				<td colspan="2">
 					<select name="country">
 					<?php
-						$this->ls("/system/addressbook/countries/","show.option.value.phtml","selected=".$this->getdata("country","none"));
+						// FIXME: country names must be added for all available languages, currently ordered by english value
+						$query="object.parent='/system/addressbook/countries/' and name.nls='en' order by name.value";
+						$this->find("/system/addressbook/countries/", $query, "show.option.value.phtml",Array( "selected" => $this->getdata("country","none")),0);
 					?>
 					</select>
 				</td>
