@@ -1,66 +1,75 @@
 <?php
-	if ($this->CheckLogin("config")) { 
+	/******************************************************************
+	 system.save.grants.phtml                              Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $delete, $type, $id, $newgrants
+	 Grant needed: config
+	 Global variables: none
+
+	 This template saves changes to grants defined at the current
+	 object. It then updates the changes at the user/group object too.
+	 
+	 no result
+
+	******************************************************************/
+	if ($this->CheckSilent("config") && $this->CheckConfig()) {
 		include_once($this->store->code."includes/DelGrant.phtml");
+
+		// first make sure that the object is clean (data can only be set via 
+		// the defined interface: $arCallArgs)
+		$this->data=@current($this->get(".","system.get.data.phtml"));
+
 		$searchpath["pgroup"]="/system/groups/";
 		$searchpath["puser"]="/system/users/";
 		$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
 		if ($delete) {
-			$data->grants[$type]=DelGrant($data->grants[$type], $id, $grant);
-			if ($id==$data->login && $type==$this->type) {
-				$data->usergrants=DelGrant($data->usergrants, $this->path, $grant);
+			$this->data->grants[$type]=DelGrant($this->data->grants[$type], $id, $grant);
+			if ($id==$this->data->login && $type==$this->type) {
+				$this->data->usergrants=DelGrant($this->data->usergrants, $this->path, $grant);
 			} else {
-				$this->find($searchpath[$type], $criteria, "updategrant.phtml", 
-							"action=delete&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($grant));
+				$this->find($searchpath[$type], $criteria, "system.save.grants.user.phtml", 
+								"action=delete&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($grant));
 			}
 		} else if ($newgrants) {
 			if ($type=@current($this->get($path, "system.get.type.phtml"))) {
-				if ($this->store->implements($type, "puser")) {
+				if ($this->store->implements($type, "puser")) {	
 					if ($id=@current($this->get($path, "system.get.id.phtml"))) {
 						$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
 						$newgrants=ereg_replace("[[:space:]]"," ",$newgrants);
 						$newgrant=strtok($newgrants, " ");
 						if ($newgrant==".") {
-							// first retrieve the current inherited grants, and replace "." with them
-							if ($result=@current($this->find($searchpath[$type],$criteria,"system.get.grants.phtml","path=".RawUrlEncode($this->path) ) ) ) {
+							if ($result=@current($this->find($searchpath[$type],$criteria,"system.get.grants.phtml","path=".RawUrlEncode($this->path)))) {
 								$current=implode(" ", array_keys($result));
 								$newgrants=ereg_replace(" ?\. ?",AddSlashes($current),$newgrants);		
 							}
-							// now get the next grant ("." is already processed)
 							$newgrant=strtok($newgrants, " ");
 						} else if (ereg("({(.*)})",$newgrant,$regs)) {
-							// first retrieve the grants from the specified user or group 
-							if ($data->grants[$type][$regs[2]]) {
-								while (list($grant,$value)=each($data->grants[$type][$regs[2]])) {
-									if ($value) {
-										$cloned.=$grant." ";
-									}
-								}
+							if ($this->data->grants[$type][$regs[2]]) {
+								$cloned=implode(" ",array_keys($this->data->grants[$type][$regs[2]]));
 							}
-							// replace the match with the cloned grants
 							$newgrants=ereg_replace(" ?".$regs[1]." ?",AddSlashes($cloned),$newgrants);
-							// now get the next grant
 							$newgrant=strtok($newgrants, " ");
 						}
 						while ($newgrant) {
 							if ($newgrant!=".") {
 								if (substr($newgrant,0,1)=="-") {
 									$delgrant=substr($newgrant,1);
-									$data->grants[$type]=DelGrant($data->grants[$type],$id,$delgrant);
-									if ($id==$data->login && $type==$this->type) {
-										$data->usergrants=DelGrant($data->usergrants, $this->path, $delgrant);
+									$this->data->grants[$type]=DelGrant($this->data->grants[$type],$id,$delgrant);
+									if ($id==$this->data->login && $type==$this->type) {
+										$this->data->usergrants=DelGrant($this->data->usergrants, $this->path, $delgrant);
 									} else {
-										$this->find($searchpath[$type], $criteria, "updategrant.phtml", 
+										$this->find($searchpath[$type], $criteria, "system.save.grants.user.phtml",  
 													"action=delete&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($delgrant));
 									}
 								} else {
 									if (substr($newgrant,0,1)=="+") {
 										$newgrant=substr($newgrant,1);
 									}
-									$data->grants[$type][$id][$newgrant]=1;
-									if ($id==$data->login && $type==$this->type) {
-										$data->usergrants[$this->path][$newgrant]=1;
+									$this->data->grants[$type][$id][$newgrant]=1;
+									if ($id==$this->data->login && $type==$this->type) {
+										$this->data->usergrants[$this->path][$newgrant]=1;
 									} else {
-										$this->find($searchpath[$type], $criteria, "updategrant.phtml", 
+										$this->find($searchpath[$type], $criteria, "system.save.grants.user.phtml",   
 												"action=add&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($newgrant));
 									}
 								}
@@ -70,11 +79,7 @@
 					}
 				}
 			}
+			$this->save($properties);
 		}
-		$this->save($this->path, $this->type, $data, $properties);
-		Header("Location: $returnpage");
-		?>
-			<a href="<?php echo $returnpage; ?>">Continue</a>
-		<?php
 	}
 ?>

@@ -7,7 +7,7 @@
   $this->call("system.save.data.phtml",$arCallArgs);
   if (!$this->error) {
     if (!$arReturnPage) {
-      $arReturnPage=$this->store->root.$parent;
+      $arReturnPage=$this->store->root.$this->path;
     }
     $folders=$this->call("system.get.folder.phtml");
     if ($arShortCut) {
@@ -18,9 +18,10 @@
     $url.="&name=".RawUrlEncode($folder["name"]);
     $url.="&path=".RawUrlEncode($folder["path"]);
     $url.="&pre=".RawUrlEncode($folder["pre"]);
-    $url.="&returnpage=".RawUrlEncode($returnpage);
+    $url.="&returnpage=".RawUrlEncode($arReturnPage);
     Header("Location: $url");
+	echo $url;
   } else {
     $this->call("show.error.phtml");
   }
-?>
+?>frop
