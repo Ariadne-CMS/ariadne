@@ -52,6 +52,8 @@ New Features:
 	  select list.
 
 Bugs Fixed:
+	- Changed .jpg template to .html in browse.nav.icons.show.phtml for pphoto.
+	  Thanks to Goran Topic
 	- Changed short php tags in puser/edit.object.data.form.phtml to long tags.
 	  Thanks to Goran Topic
 	- Fixed class::template calling within pinp to other pinp scripts which
