@@ -30,6 +30,10 @@ Bugs fixed:
 	'offset' statements instead of only the 'limit' statement.
 	- Fixed bug in make_url(); using the optional paramaters of make_url()
 	made it generate an invalid url. (Thanks to Johann Hanne)
+	- The admin login is nolonger case sensitive.
+	- The axstore now receives correct error messages from mod_tar.
+	- Passing the QUERY_STRING through user.login.html under IIS now
+	  works. See ldGetServerVar().
 
 
 Ariadne 2.1.1
