@@ -28,19 +28,30 @@
 <style>
   .list {
     BACKGROUND-COLOR: white;
+    WIDTH: 100%;
+    HEIGHT: 100%;
+  }
+<?php
+  $browser=$this->call("browsercheck.phtml");
+  if ($browser["id"]!="ns" || $browser["version"]!=4) {
+?>
+  .listcontainer {
     BORDER-STYLE: inset;
     BORDER-WIDTH: thin;
     WIDTH: 100%;
     HEIGHT: 100%;
     OVERFLOW: auto;
   }
+<?php
+  }
+?>
   .greyed {
     COLOR: #CCCCCC;
   }
 </style>
 <body bgcolor="white">
-<div class="list">
-<table width="100%" border="0"><tr>
+<div class="listcontainer">
+<table class="list" width="100%" border="0" cellspacing="0" cellpadding="4"><tr>
 <?php
     if ($AR->user->data->login=="admin") { // || $AR->user->grants["config"] ?
       $result=$this->ls("/system/ariadne/types/","system.get.phtml");
@@ -58,7 +69,6 @@
 	if ($result && is_array($result)) {
 		$col=1;
 		while (list($key, $object)=each($result)) {
-			echo "<!-- ".serialize($object)." -->\n";
 			$type=$object->data->value;
 			$name=$object->nlsdata->name;
 			if (!$this->CheckSilent("add",$type)) {
@@ -91,6 +101,7 @@
 		error("Something is wrong with your grants, please contact the system administrator.");
 	}
 ?>
+</tr>
 </TABLE>
 </div>
 </body>
