@@ -495,12 +495,21 @@ class pinp {
 						$this->new_template.="->";
 						$this->next_token();
 						if ($this->token == T_IDENT) {
-							$this->new_template.=$this->token_value;
+							$ident = $this->token_value;
 							$this->next_token();
+							if ($this->token == T_PAR_OPEN) {
+								$this->new_template.= "_$ident(";
+								$this->next_token();
+								/* continue parsing */
+								continue 3;
+							} else {
+								$this->new_template.=$ident;
+							}
 						} else {
 							break;
 						}
 					}
+
 					if ($this->token == T_PAR_OPEN) {
 						$this->error = "error: illegal function call at line: ".$this->scanner->YYLINE;
 						break 2;
