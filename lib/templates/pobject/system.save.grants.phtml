@@ -153,6 +153,11 @@
 										unset($this->data->config->grants[$type]);
 									}
 								}
+								$result=current($this->get($path, "system.save.grants.user.phtml", Array(
+												"action"	=> "set",
+												"path"		=> $this->path,
+												"grants"	=> $this->data->config->grants[$type][$id])));
+
 							} else {
 								$this->error = $g_comp->error;
 							}
