@@ -44,6 +44,8 @@ New Features:
 	- Added AcceptLanguage support
 
 Bugs Fixed:
+	- Fixed a bug in the filestore::read() function. In some cases the store 
+	  tried to read files with a buffer length of 0. Thanks to Florian Overkamp.
 	- Fixed logging in with another user on your own session.
 	- Fixed recursive calling of user.login.html after a session has been 
 	  timed out.
