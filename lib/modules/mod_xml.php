@@ -58,6 +58,32 @@
 			}
 		}
 
+		function _parse_curl($url) {
+			if (!eregi('^https?://', $url)) {
+				$this->error = "Not a valid URL ($url)";
+			} else {
+				$parser = xml_parser_create();
+				xml_set_object($parser, $this);
+				xml_set_element_handler($parser, "call_tag_open", "call_tag_close");
+				xml_set_character_data_handler($parser, "call_tag_data");
+
+				$ch = curl_init($url);
+
+				curl_setopt($ch, CURLOPT_HEADER, 0);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
+		
+				$string = curl_exec($ch);
+				curl_close($ch);
+				if (!xml_parse($parser, $string)) {
+					$this->error = sprintf("XML error: %s at line %d",
+					xml_error_string(xml_get_error_code($parser)),
+					xml_get_current_line_number($parser));
+				}
+
+			}
+		}
+
+
 		function call_tag_open($parser, $tag, $attributes) {
 		global $ARBeenHere;
 			$ARBeenHere = Array();
