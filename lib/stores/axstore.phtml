@@ -196,6 +196,24 @@ class axstore {
 		return $result;
 	}
 
+	function is_supported($feature) {
+	/**********************************************************************************
+		This function takes as argument a feature description and returns
+		true if this feature is supported and false otherwise
+
+		returns true for fulltext to enable the workaround with fulltext bugs
+	**********************************************************************************/
+		$result = false;
+		switch($feature) {
+			case 'fulltext':
+				$results = true;
+				break;
+			default:
+				$result = false;
+			break;
+		}
+		return $result;
+	}
 
 	/*
 		$node[path]->children[path]->children[path]

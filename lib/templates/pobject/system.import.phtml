@@ -41,6 +41,10 @@
 			unset($this->data->usergrants);
 		}
 
+		if(!$this->store->is_supported("fulltext")){
+			unset($this->properties['fulltext']);
+		}
+
 		$this->store->save(
 				$this->path,
 				$this->type,

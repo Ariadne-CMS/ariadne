@@ -41,6 +41,9 @@ Bugs Fixed:
 	- Fixed a bug in the offset/limit generation in the postgresql store
 	- Fixed the bug that the postgresql store used numeric and integer which
 	  didn't did well on join. We changed numeric to bigint or integer in the store.
+	- Placed a workaround around the not so suported fulltext property so that
+	  the import of a object with a fulltext property doesn't fail when
+	  importing it into a store which does not support it
 
 Changes in Ariadne since version 2.2
 
