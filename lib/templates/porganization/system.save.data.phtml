@@ -63,12 +63,17 @@
 			$this->data->fax=$this->getdata("fax","none");
 			$this->data->pobox=$this->getdata("pobox","none");
 			$this->data->url=$this->getdata("url","none");
-			$emails=explode(",",$this->getdata("emails","none"));
-			if ($emails[0]) {
+
+			$emails = $this->getdata("emails", "none");
+			if (!is_array($emails)) {
+				$emails=explode(",",$emails);
+				if ($emails[0]) {
 					$this->data->emails=$emails;
-			} else {
+				} else {
 					unset($this->data->emails);
+				}
 			}
+
 			$properties["address"][0]["street"]="'".AddSlashes($this->data->address)."'";
 			$properties["address"][0]["zipcode"]="'".AddSlashes($this->data->zipcode)."'";
 			$properties["address"][0]["city"]="'".AddSlashes($this->data->city)."'";
