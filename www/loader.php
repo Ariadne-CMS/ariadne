@@ -26,26 +26,27 @@
 
 		// needed for IIS.
 		$PHP_SELF=$HTTP_SERVER_VARS["SCRIPT_NAME"].$PATH_INFO;
-		if (ini_get("safe_mode")) {
-			error("Ariadne will not work correctly with safe_mode set to 'On'. Please edit your php.ini file and set it to 'Off'.");
-		}
 		if (Headers_sent()) {
 			error("The loader has detected that PHP has already sent the HTTP Headers. This error is usually caused by trailing white space or newlines in the configuration files. See the following error message for the exact file that is causing this:");
 			Header("Misc: this is a test header");
 		}
 		@ob_end_clean(); // just in case the output buffering is set on in php.ini, disable it here, as Ariadne's cache system gets confused otherwise. 
+
 		// go check for a sessionid
 		$root=$AR->root;
 		$inst_store = $store_config["dbms"]."store";
-		$store=new $inst_store($root,$store_config);
 		$re="^/-(.*)-/";
 		if (eregi($re,$PATH_INFO,$matches)) {
 			$session_id=$matches[1];
 			$PATH_INFO=substr($PATH_INFO,strlen($matches[0])-1);
-			ldStartSession($session_id);
+		} else {
+			$session_id=0;
 		}
 
+		// set the default user (public)
 		$AR->login="public";
+
+		// look for the template
 		$split=strrpos($PATH_INFO, "/");
 		$path=substr($PATH_INFO,0,$split+1);
 		$function=substr($PATH_INFO,$split+1);
@@ -71,11 +72,6 @@
 			ldSetNls($ARCurrent->nls);
 			$nls=$ARCurrent->nls;
 			$cachenls="/$nls";
-		}
-		require($ariadne."/nls/".$nls);
-		if (substr($function, -6)==".phtml") {
-			// system template: no language check
-			$ARCurrent->nolangcheck=1;
 		}
 		$cachedimage=$store_config["files"]."cache".$ldCacheFilename;
 		$cachedheader=$store_config["files"]."cacheheaders".$ldCacheFilename;
@@ -114,6 +110,15 @@
 
 		} else {
 
+			$store=new $inst_store($root,$store_config);
+			if ($session_id) {
+				ldStartSession($session_id);
+			}
+			require($ariadne."/nls/".$nls);
+			if (substr($function, -6)==".phtml") {
+				// system template: no language check
+				$ARCurrent->nolangcheck=1;
+			}
 			set_magic_quotes_runtime(0);
 			if (get_magic_quotes_gpc()) {
 				// this fixes magic_quoted input
