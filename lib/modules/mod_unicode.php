@@ -85,4 +85,21 @@
 			return $result;
 		}
 	}
+
+	class pinp_unicode extends unicode {
+		
+		function _utf8convert($string, $maxchar=0x7F, $entities=true) {
+			return pinp_unicode::utf8convert($string, $maxchar, $entities);
+		}
+
+		function _utf8toiso8859($string, $entities=true) {
+			return pinp_unicode::utf8toiso8859($string, $entities);
+		}
+
+		function _convertToUTF8($charset, $string) {
+			return pinp_unicode::convertToUTF8($charset, $string);
+		}
+
+	}
+
 ?>
