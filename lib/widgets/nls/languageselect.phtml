@@ -19,8 +19,11 @@
 			if (!$ARConfig->nls) {
 				$ARConfig->nls=$AR->nls;
 			}
-			if ($arCallArgs) {
-				$arCallArgs="?".$arCallArgs;
+			global $QUERY_STRING;
+			if ($QUERY_STRING) {
+				$query="?".$QUERY_STRING;
+			} else {
+				$query="";
 			}
 			reset($ARConfig->nls->list);
 			while (list($arnls, $arlanguage)=each($ARConfig->nls->list)) {
@@ -29,7 +32,7 @@
 				$image=$AR->dir->images.'nls/'.$arnls.'.gif';
 				if (isset($this->data->nls->list[$arnls])) {
 					ldSetNls($arnls);
-					echo "<td align=\"center\"><font face=\"arial, helvetica, sans-serif\"><a href=\"".$this->store->root.$this->path."$arCallFunction$arCallArgs\"><img alt=\"$arlanguage\" src=\"$image\"><br>$arlanguage</a></font></td>\n";
+					echo "<td align=\"center\"><font face=\"arial, helvetica, sans-serif\"><a href=\"".$this->store->root.$this->path."$arCallFunction$query\"><img alt=\"$arlanguage\" src=\"$image\"><br>$arlanguage</a></font></td>\n";
 				}
 			}
 		?>
