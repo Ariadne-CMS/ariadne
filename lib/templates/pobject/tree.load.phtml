@@ -21,6 +21,8 @@
 			$criteria["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
 			$criteria["object"]["implements"]["="]="'pdir'";
 			if ($folders=$this->find("",$criteria,"system.get.folder.phtml",$args)) {
+				echo " // timestamp: ".time()."\n";
+				flush();
 				while (list($key, $folder)=each($folders)) {
 					?>
 						node.add("<?php echo AddSlashes($folder["icon"]); ?>",
@@ -28,12 +30,16 @@
 								 "<?php echo AddSlashes($folder["path"]); ?>",
 								 "<?php echo AddSlashes($folder["pre"]); ?>");
 					<?php
+						echo "// ".time()."\n";	// please leave the timestamp and flush here
+						flush(); 				// it seems to improve PHP's performance... black voodoo magic.
 				}
 			}
 		?>
 		parent.Draw();
 	} 
 </script>
-<?php } ?>
+<?php 
+	}
+?>
 </body>
 </html>
