@@ -34,14 +34,17 @@
 	}
 	function LoadingDone() {
 	}
+	function objectadded() {
+		document.location.href=document.location.href;
+	}
 </script>
 </head>
-<body bgcolor="white" onLoad="top.LoadingDone();">
+<body scroll="no" bgcolor="white" onLoad="top.LoadingDone();">
 <?php
 
 	include($this->store->code."widgets/menu/menu.phtml");
 
-	$this->call("manage.html",'view=true');  //toggles the links in the listing- true means 'view.phtml' will get added.
+	$this->call("manage.html", $arCallArgs);
 ?>
 
 </body>
