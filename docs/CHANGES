@@ -13,6 +13,8 @@ New features:
 	- Introducing a new config option named "$AR->hideSessionIDfromURL" which 
 	disables the inclusion of the session id in the URL. 
 	(Thanks to Johann Hanne)
+	- Added the ldGetServerVar() loader function to interface with
+          HTTP_SERVER_VARS[] and dummy variants for the non-http loaders.
 
 
 Bugs fixed:
