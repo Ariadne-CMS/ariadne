@@ -2,7 +2,7 @@
 	include($this->store->code."widgets/menu/menuarray.phtml");
 
 	$bgcolor="buttonface";
-	$browser=$this->call("browsercheck.phtml");
+	$browser=$this->call("pobject::browsercheck.phtml");
 	if ($browser["id"]=="ns" && $browser["version"]=="4") {
 		$browser_string = "NS4";
 		$bgcolor="#bfbfbf";
