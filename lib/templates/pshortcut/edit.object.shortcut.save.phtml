@@ -16,6 +16,7 @@
 		?>
 			<script>
 				if (top.window.opener) {
+					if (top.window.opener.top.tree) {
 					<?php
 						if ($this->store->implements($vtype, 'pdir')) {
 							$folder=$this->call("system.get.folder.phtml");
@@ -26,6 +27,7 @@
 							}
 						}
 					?>
+					}
 					if (top.window.opener.objectadded) {
 						top.window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddCSlashes($nlsdata->name, ARESCAPE); ?>','<?php echo $this->path; ?>'); 
 					}
