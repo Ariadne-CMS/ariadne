@@ -122,6 +122,8 @@ Bugs Fixed:
 	- changed the default of mkdir in the ftp interface back to pdir
 	- fixed a system.save.date.phtml in pperson so that emailadreses are also
 	  stored when there given as a array.
+	- fixed a bug in edit.object.html.phtml with CheckLogin, now it get the
+	  right type instead of "ppage"
 
 Changes in Ariadne since version 2.2
 
