@@ -113,11 +113,19 @@
 
   /* command to untar the (%s) file *****************************************/
 
-  $AR->ax->cmd_untar        = "tar -zxf %s";
+  if ($AR->OS=="WIN32") {
+    $AR->ax->cmd_untar        = "tar -zxf %s";
+  } else {
+    $AR->ax->cmd_untar        = "tar -zxf %s 2> %s";
+  }
 
   /* command to tar the (second %s) file and create tar file (first %s) *****/
 
-  $AR->ax->cmd_tar          = "tar -zc %s -f %s";
+  if ($AR->OS=="WIN32") {
+    $AR->ax->cmd_tar          = "tar -zc %s -f %s";
+  } else {
+    $AR->ax->cmd_tar          = "tar -zc %s -f %s 2> %s";
+  }
 
   /* command to remove directory (%s) ***************************************/
 
