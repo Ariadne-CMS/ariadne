@@ -242,6 +242,7 @@
 	$ARnls["options"]						=	"Options";
 	$ARnls["orderedbrowsing"]				=	"Ordered browsing";
 	$ARnls["overwrite"]						=	"Overwrite";
+	$ARnls["owner"]							=	"Owner";
 	$ARnls["page"]							=	"Page";
 	$ARnls["password"]						=	"Password";
 	$ARnls["passwordincorrect"]				=	"Password incorrect, please try again.";
@@ -278,6 +279,7 @@
 	$ARnls["q:removetemplate"]				=	"Are you sure you want to remove template %s for %s?";
 	$ARnls["q:removethistemplate"]			=	"Are you sure you want to remove this template?";
 	$ARnls["q:removeuser"]					=	"Are you sure you want to remove this user?";
+	$ARnls["recursive"]						=	"Recursive";
 	$ARnls["refreshnow"]					=	"Refresh cache now!";
 	$ARnls["refreshonch."]					=	"Refresh cache on Change";
 	$ARnls["refreshonrq."]					=	"Refresh cache on Request";
@@ -292,6 +294,7 @@
 	$ARnls["search"]						=	"Search";
 	$ARnls["selectlanguage"]				=	"Select a different language:";
 	$ARnls["setasdefault"]					=	"Set as default?";
+	$ARnls["settingowner"]					=	"Setting owner";
 	$ARnls["short"]							=	"Short";
 	$ARnls["show"]							=	"Show";
 	$ARnls["size"]							=	"Size";
