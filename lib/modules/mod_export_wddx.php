@@ -75,11 +75,11 @@ class export_wddx {
 	}
 
 	function export_templates(&$object) {
-		if ($object->data->pinp) {
+		if ($object->data->config->pinp) {
 			echo "<var name=\"templates\">\n";
 			echo "<struct type=\"hash\">\n";
 			$templates=$object->store->get_filestore("templates");
-			while (list($type, $functions)=each($object->data->pinp)) {
+			while (list($type, $functions)=each($object->data->config->pinp)) {
 				echo "<var name=\"$type\">\n";
 				echo "<struct type=\"hash\" >\n";
 				while (list($function, $languages)=each($functions)) {
@@ -89,9 +89,10 @@ class export_wddx {
 						echo "<var name=\"$language\" >\n";
 						echo "<struct type=\"hash\" class=\"file\" >\n";
 						echo "<var name=\"template\">\n";
-						echo "<string><![CDATA[";
 						$file=$type.".".$function.".".$language.".pinp";
-						echo base64_encode($templates->read($object->id, $file));
+						$content = $templates->read($object->id, $file);
+						echo "<string><![CDATA[";
+						echo base64_encode($content);
 						echo "]]></string></var>\n";
 						echo "<var name=\"mtime\">\n";
 						echo "<number>".$templates->mtime($object->id, $file)."</number>\n";

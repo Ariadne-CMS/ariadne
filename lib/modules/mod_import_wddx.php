@@ -207,8 +207,8 @@ class import_wddx {
 				/*
 					do something about those templates
 				 */
-				if(is_Array($objdata['data']->config->templates)){
-					while(list($type,$tval) = each($objdata['data']->config->templates))
+				if(is_Array($objdata['templates'])){
+					while(list($type,$tval) = each($objdata['templates']))
 					{
 						if(is_array($tval))
 						{
@@ -219,7 +219,7 @@ class import_wddx {
 									while(list($language,$val) = each($nval))
 									{
 										$file = $type.".".$function.".".$language;
-										debug("templates: working on template $file",'all');
+										debug("templates: ".$object->id."working on template $file",'all');
 										$pinp=new pinp("header","this->", "\$this->_");
 
 										$template = base64_decode($val['template']);
@@ -234,7 +234,7 @@ class import_wddx {
 											{
 												debug('templates: overwrite existing template','all');
 												$templates->write($template, $object->id, $file.".pinp");
-												$templates->touch($object->id,$file."pinp",$val['mtime']);
+												$templates->touch($object->id,$file.".pinp",$val['mtime']);
 												$templates->write($compiled, $object->id, $file);
 												$templates->touch($object->id,$file,$val['mtime']);
 												$object->data->config->pinp[$type][$function][$language]=$object->id;
