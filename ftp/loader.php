@@ -61,13 +61,14 @@
 
 
 		function ftp_OpenDC() {
-		global $FTP;
+		global $FTP, $ftp_config;
 
 			$FTP->DC["transfered"]=0;
 			if ($FTP->DC["mode"]==="active") {
 				$socket=socket_create(AF_INET, SOCK_STREAM, 0);
 				if ($socket>=0) {
 					debug("ftp: opened socket");
+					@socket_bind($socket, $ftp_config['server_ip']);
 					$result=socket_connect($socket, $FTP->DC["address"], $FTP->DC["port"]);
 					if ($result < 0) {
 						ftp_Tell(425, "Couldn't build data connection (rm: connection error: ".strerror($result).")");
