@@ -195,6 +195,7 @@ $ARnls["type"]=			"Type";
 $ARnls["types"]=		"Types";
 $ARnls["typetree"]=		"Typeboom";
 $ARnls["update"]=		"Verander";
+$ARnls["uploadfile"]=   "Bestand Overzenden";
 $ARnls["url"]=			"URL";
 $ARnls["use"]=			"Gebruik";
 $ARnls["userdata"]=		"Gebruikersgegevens voor %s";
