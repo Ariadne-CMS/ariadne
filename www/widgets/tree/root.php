@@ -193,6 +193,8 @@ function drawNode(pre, level) {
 	imgminus='minus';
 	imgjoin='join';
 	img='';
+	currimg='';
+	plusminus='';
 	if (this.visible || ShowInvis) {
 		style='';
 		post='';
@@ -211,12 +213,12 @@ function drawNode(pre, level) {
 			prev=prev.prev;
 		}
 		if (next) {
-			addpre='<img src="../../images/tree/line.gif" alt="" width=18" height="18" align="left" valign="middle">'
+			addpre='<img src="../../images/tree/line.gif" alt="" width=20" height="20" align="left" valign="middle">'
 			if (!prev && pre=='') {
 				img+='top';
 			}
-		} else {
-			addpre='<img src="../../images/tree/blank.gif" alt="" width=18" height="18" align="left" valign="middle">'
+		} else if (this.parent) {
+			addpre='<img src="../../images/tree/blank.gif" alt="" width=20" height="20" align="left" valign="middle">'
 			if (!prev && pre=='') {
 				img+='only';
 			} else {
@@ -227,23 +229,25 @@ function drawNode(pre, level) {
 			style+='<span class="invisible">';
 			post+='</span>';
 		}
-		if (this.status=="Open") {
-			currimg='minus';
-			plusminus='<a href="javascript:parent.toggle(\''+this.id+'\');"><img src="../../images/tree/minus'+img+'.gif" alt="" width=18" height="18" border="0" align="left" valign="middle"></a>';
-		} else {
-			currimg='plus';
-			plusminus='<a href="javascript:parent.toggle(\''+this.id+'\');"><img src="../../images/tree/plus'+img+'.gif" alt="" width=18" height="18" border="0" align="left" valign="middle"></a>';
+		if (this.parent) {
+			if (this.status=="Open") {
+				currimg='minus';
+				plusminus='<a href="javascript:parent.toggle(\''+this.id+'\');"><img src="../../images/tree/minus'+img+'.gif" alt="" width=20" height="20" border="0" align="left" valign="middle"></a>';
+			} else {
+				currimg='plus';
+				plusminus='<a href="javascript:parent.toggle(\''+this.id+'\');"><img src="../../images/tree/plus'+img+'.gif" alt="" width=20" height="20" border="0" align="left" valign="middle"></a>';
+			}
 		}
 		if (this.icon) {
-			icon='<img src="../../images/icons/'+this.icon+'.gif" alt="" width="18" height="18" border="0" align="left" valign="middle">';
+			icon='<img class="icon" src="../../images/icons/'+this.icon+'.gif" alt="" width="20" height="20" border="0" align="left" valign="middle">';
 		} else {
 			icon='';
 		}
-		width=(level*18)+125;
+		width=(level*20)+125;
 		// Mozilla ignores <nobr> tags with image placement, so calculate a minimum width here
 		result='<div id="'+this.id+'" class="node"><div class="row" style="width: '+width+'px;"><nobr>'+
 			pre+plusminus+'<a href="javascript:parent.View(\''+this.id+'\');">'+
-            icon+'<span class="item">'+style+this.name+post+'</span></a></nobr></div>';
+            icon+'<span class="item">'+style+this.pre+this.name+post+'</span></a></nobr></div>';
 		if (this.firstChild && this.status=="Open" ) {
 			result=result+'<div name="sub" class="submenu" id="'+this.id+'_submenu">';
 			result=result+this.firstChild.draw(pre+addpre, level+1);

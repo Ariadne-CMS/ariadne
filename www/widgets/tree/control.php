@@ -7,7 +7,7 @@ INPUT {
 }
 </style>
 </head>
-<body>
+<body class="border">
 <table border="0" height="100%" cellspacing="0" width="100%" align="center">
 <tr>
   <form action="<?php echo $arUserPath; ?>logoff.phtml" target="_top">
