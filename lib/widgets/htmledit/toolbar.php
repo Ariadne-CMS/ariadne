@@ -162,7 +162,7 @@ function state_restoreSelection() {
 
 function init_cssStyle() {
   var inline = tbContentEditOptions['css']['inline'];
-  cssStyle.options[0] = new Option('Styles', '');
+  cssStyle.options[0] = new Option('Inline Style', '');
   cssStyle.options[1] = new Option('Clear', '');
   var i=0;
   for (var istyle in inline) {
@@ -728,6 +728,7 @@ function DECMD_BOLD_onclick() {
 
 function ParagraphStyle_onchange() {
   setFormat("FormatBlock", "<"+ParagraphStyle.value+">"); 
+  ParagraphStyle.selectedIndex=0;
 }
 
 function tbContentElement_DocumentComplete() {
@@ -754,7 +755,13 @@ function loadStyleSheet() {
 function getContents(data_id) {
 	var data="";
 	if (data=tbContentElement.document.getElementById(data_id)) {
-		return data.innerHTML;
+		// it seems that the editor logic in MSIE insists on adding
+		// full paths to hyperlinks, even if you just enter #something.
+		// so removing it again here.
+		var temp=new String(data.innerHTML);
+		var replaceurl=tbContentElement.location;
+		temp=temp.replace(replaceurl, '');
+		return temp;
 	} else {
 		return '';
 	}
@@ -871,6 +878,7 @@ return tbContentElement_ContextMenuAction(itemIndex)
 
 <div class="tbToolbar" unselectable='on' ID="FormatToolbar">
   <select ID="ParagraphStyle" class="tbGeneral" style="width:90" TITLE="Paragraph Format" LANGUAGE="javascript" onchange="return ParagraphStyle_onchange()">
+    <option value="">Block Style</option>
     <option value="P">Normal (P)</option>
     <option value="H1">Heading 1 (H1)</option>
     <option value="H2">Heading 2 (H2)</option>
