@@ -24,7 +24,6 @@
 
 	******************************************************************/
 	if ($this->CheckConfig()) {
-		ldSetCredentials($ARLogin, $ARPassword);
 		if (!$arPopup) {
 			ldRedirect($this->make_url($arReturnPath, '', true, false).$arReturnTemplate);
 			?>

@@ -113,6 +113,10 @@
 								debug("ldCheckLogin: wrong password in session (".$ARCurrent->session->id."); try again", "all");
 								$result = false;
 							}
+						} else
+						if (ldCheckCredentials($ARCurrent->session->get("ARLogin"), $ARCurrent->session->get("ARPassword", 1)))  {
+							debug("ldCheckLogin: user tries to login as another user", "all");
+							$result = ldAuthUser($login, $password);
 						} else {
 							debug("ldCheckLogin: could not login to private session (".$ARCurrent->session->id."): creating a new one", "all");
 							ldStartSession();

@@ -72,7 +72,7 @@
   <td valign="top" align="center"><img src="<?php echo $AR->dir->images; ?>ariadne.gif" alt="Ariadne - Web Application Server" vspace="5"></td>
 </tr><tr>
   <td valign="top" align="right">
-<form name="login" method="POST" target="arRootWindow" onSubmit="window.close()" action="<?php echo $this->make_url($arReturnPath, '', true, true).$arReturnTemplate; ?>">
+<form name="login" method="POST" action="<?php echo $this->make_url('', '', true, true); ?>login.phtml">
 <?php
 	global $PATH_INFO; 
 	if (!$arReturnPath) {
