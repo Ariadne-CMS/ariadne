@@ -8,13 +8,26 @@ function Browse(resultobject, path, name, title) {
     path=wgBrowseResult.value;
   }
   browsewindow=window.open(
-    '<?php 
-       echo $AR->dir->www; ?>widgets/browse/index.php?path='+escape(path)+'&loader=<?php 
-       echo RawUrlEncode($this->store->root); ?>&title='+
-       escape(title)+'&name='+escape(name), 'browsewindow',
-    'directories=no,height=300,width=200,location=no,menubar=no,status=no,toolbar=no,resizable=yes');
+    '<?php
+       if (!($path=$AR->user->path)) {
+         $path="/";
+       }
+       echo $this->store->root.$path; 
+     ?>browse.phtml?path='+escape(path)+'&title='+
+     escape(title)+'&name='+escape(name), 'browsewindow',
+    'directories=no,height=300,width=500,location=no,menubar=no,status=no,toolbar=no,resizable=yes');
   browsewindow.opener=this;
+  browsewindow.focus();
+  window.setfocusto=browsewindow;
 }
+
+function checkfocus() {
+  if (window.setfocusto) {
+    window.setfocusto.focus();
+  }
+}
+
+window.onfocus=checkfocus;
 
 // -->
 </script>
