@@ -1,5 +1,5 @@
 <?php
-	if ((($this->arIsNewObject && $this->CheckLogin("add")) ||
+	if ((($this->arIsNewObject && $this->CheckLogin("add", $this->type)) ||
 			(!$this->arIsNewObject && $this->CheckLogin("edit"))) && 
 			$this->CheckConfig()) {
 

@@ -1,6 +1,6 @@
 <?php
  if ($this->CheckConfig("read")) {
-	if ( ($this->newObject->arIsNewObject && $this->CheckLogin("add")) ||
+	if ( ($this->newObject->arIsNewObject && $this->CheckLogin("add", $this->newObject->type)) ||
 		(!$this->newObject->arIsNewObject && $this->CheckLogin("edit"))) {
 
 		 $orig_filestore=$this->store->get_filestore("templates");

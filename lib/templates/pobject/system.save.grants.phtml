@@ -1,8 +1,10 @@
 <?php
+
 	/******************************************************************
 	 system.save.grants.phtml                              Muze Ariadne
 	 ------------------------------------------------------------------
-	 Arguments: $delete, $type, $id, $newgrants
+	 Arguments: $path, $delete, $type, $id, $newgrants, $grant, 
+				$modifier
 	 Grant needed: config
 	 Global variables: none
 
@@ -20,6 +22,7 @@
 		$type=$this->getdata("type", "none");
 		$id=$this->getdata("id", "none");
 		$grant=$this->getdata("grant" , "none");
+		$modifier=$this->getdata("modifier", "none");
 		if ($delete) {
 			if (!$type || !$id || !$delete) {
 				$this->error="Missing parameters";
@@ -29,6 +32,38 @@
 				$this->error="Missing parameters";
 			}
 		}
+
+		function arGetGrantType($value) {
+			if (($value & ARGRANTGLOBAL)==ARGRANTGLOBAL) {
+				$result="+";
+			} else if ($value & ARGRANTLOCAL) {
+				$result="=";
+			} else {
+				$result=">";
+			}
+			return $result;
+		}
+
+		function arDelGrant(&$grants, $id, $grant='', $modifier='') {
+			// for those wondering why $id is needed: try unsetting a reference...
+			// unset($grants) will not remove the original data, only the reference to it
+			if (!$grant) {
+				unset($grants[$id]);
+			} else if ($grants[$id]) {
+				if (!$modifier) {
+					unset($grants[$id][$grant]);
+				} else {
+					unset($grants[$id][$grant][$modifier]);
+					if (!@count($grants[$id][$grant])) {
+						unset($grants[$id][$grant]);
+					}
+				}
+				if (!@count($grants[$id])) {
+					unset($grants[$id]);
+				}
+			}
+		}
+
 		if (!$this->error) {
 			// first make sure that the object is clean (data can only be set via 
 			// the defined interface: $arCallArgs)
@@ -45,19 +80,13 @@
 				}
 			}
 			if ($delete) {
-				if (!$grant) {
-					unset($this->data->grants[$type][$id]);
-				} else {
-					unset($this->data->grants[$type][$id][$grant]);
-					if (!@count($this->data->grants[$type][$id])) {
-						unset($this->data->grants[$type][$id]);
-					}
-				}
+				arDelGrant($this->data->grants[$type], $id, $grant, $modifier);
 				$result=@current($this->get($path, "system.save.grants.user.phtml", Array(
 								"action"	=> "delete",
 								"path"		=> $this->path,
-								"grant"		=> $grant)));
-				if ($result=="ok") {
+								"grant"		=> $grant,
+								"modifier"	=> $modifier)));
+				if ($result=="ok" || !$path) {
 					$this->save();
 				} else {
 					$this->error="Couldn't remove grant in $id ($path)";
@@ -66,52 +95,120 @@
 				if ($type=@current($this->get($path, "system.get.type.phtml"))) {
 					if ($this->store->implements($type, "puser")) {	
 						if ($id=@current($this->get($path, "system.get.login.phtml"))) {
+							
 							$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
+							$newgrants=ereg_replace('([\(\)])',' \\1 ',$newgrants);
+							$newgrants=str_replace(',',' ',$newgrants);
 							$newgrants=ereg_replace("[[:space:]]"," ",$newgrants);
-							$newgrant=strtok($newgrants, " ");
-							if ($newgrant==".") {
+							$firstgrant=strtok($newgrants, " ");
+							if ($firstgrant=="{}") {
 								if ($result=@current($this->get($path, "system.get.grants.phtml", Array("path" => $this->path)))) {
 									$current=implode(" ", array_keys($result));
-									$newgrants=ereg_replace(" ?\. ?",AddSlashes($current),$newgrants);		
+									$newgrants=ereg_replace(" ?\{\} ?",AddSlashes($current),$newgrants);		
 								}
-								$newgrant=strtok($newgrants, " ");
-							} else if (ereg("({(.*)})",$newgrant,$regs)) {
+							} else if (ereg("({(.*)})",$firstgrant,$regs)) {
+								$cloned="";
 								if ($this->data->grants[$type][$regs[2]]) {
-									$cloned=implode(" ",array_keys($this->data->grants[$type][$regs[2]]));
-								}
-								$newgrants=ereg_replace(" ?".$regs[1]." ?",AddSlashes($cloned),$newgrants);
-								$newgrant=strtok($newgrants, " ");
-							}
-							while ($newgrant && !$this->error) {
-								if ($newgrant!=".") {
-									if (substr($newgrant,0,1)=="-") {
-										$delgrant=substr($newgrant,1);
-										unset($this->data->grants[$type][$id][$delgrant]);
-										if (!@count($this->data->grants[$type][$id])) {
-											unset($this->data->grants[$type][$id]);
-										}
-										$result=@current($this->get($path, "system.save.grants.user.phtml", Array(
-													"action"	=> "delete",
-													"path"		=> $this->path,
-													"grant"		=> $delgrant )));
-										if ($result!="ok") {
-											$this->error="Couldn't save grant in $path";
-										}
-									} else {
-										if (substr($newgrant,0,1)=="+") {
-											$newgrant=substr($newgrant,1);
-										}
-										$this->data->grants[$type][$id][$newgrant]=true;
-										$result=@current($this->get($path, "system.save.grants.user.phtml", Array(
-													"action"	=> "add",
-													"path"		=> $this->path,
-													"grant"		=> $newgrant)));
-										if ($result!="ok") {
-											$this->error="Couldn't save grant in $path";
+									while (list($key, $value)=each($this->data->grants[$type][$regs[2]])) {
+										if (is_array($value)) {
+											$cloned.="$key ( ";
+											while (list($modifier, $mod_val)=each($value)) {
+												$cloned.=arGetGrantType($mod_val).$modifier." ";
+											}	
+											$cloned.=" ) ";
+										} else {
+											$cloned.=arGetGrantType($value).$key." ";
 										}
 									}
 								}
-								$newgrant=strtok(" ");
+								$newgrants=ereg_replace(" ?".$regs[1]." ?",AddSlashes($cloned),$newgrants);
+							}
+							$oldgrant='';
+							$oldgranttype=0;
+							$grantslist=explode(" ",$newgrants);
+							while ((list($key, $newgrant)=each($grantslist)) && !$this->error) {
+								$newgrant=trim($newgrant);
+								if ($newgrant) {
+									$modifier="";
+									if ($newgrant=="(") {
+										// remember for which grant these modifiers are set
+										// and set a signal that the next 'grants' are modifiers
+										$modifyfor=$oldgrant;
+										$modifygranttype=$oldgranttype;	
+									} else if ($newgrant==")") {
+										// stop modifying grant
+										$modifyfor="";
+									} else if ($newgrant!="{}") {
+										if (substr($newgrant,0,1)=="-") {
+											$delgrant=substr($newgrant,1);
+											if ($modifyfor) {
+												$modifier=$delgrant;
+												$delgrant=$modifyfor;
+											}
+											arDelGrant($this->data->grants[$type], $id, $delgrant, $modifier);
+											//unset($this->data->grants[$type][$id][$delgrant]);
+											//if (!@count($this->data->grants[$type][$id])) {
+											//	unset($this->data->grants[$type][$id]);
+											//}
+											
+											$result=@current($this->get($path, "system.save.grants.user.phtml", Array(
+														"action"	=> "delete",
+														"path"		=> $this->path,
+														"grant"		=> $delgrant,
+														"modifier"	=> $modifier )));
+											if ($result!="ok") {
+												$this->error="Couldn't save grant in $path";
+											}
+										} else {
+											switch(substr($newgrant,0,1)) {
+												case ">" :
+													//  echo ":: > $newgrant ";
+													$newgrant=substr($newgrant,1);
+													$granttype=ARGRANTCHILDREN;
+													break;
+												case "=" :
+													//  echo ":: = $newgrant ";
+													$newgrant=substr($newgrant,1);
+													$granttype=ARGRANTLOCAL;
+													break;
+												case "+" :
+													// echo ":: + $newgrant ";
+													$newgrant=substr($newgrant,1);
+													$granttype=ARGRANTGLOBAL;
+													break;
+												default :
+													// echo ":: $newgrant ";
+													if ($modifyfor && $modifygranttype) {
+														$granttype=$modifygranttype;
+													} else {
+														$granttype=ARGRANTGLOBAL;
+													}			
+													break;		
+											}
+											if ($modifyfor) {
+												$modifier=$newgrant;
+												$newgrant=$modifyfor;
+												if (!is_array($this->data->grants[$type][$id][$newgrant])) {
+													unset($this->data->grants[$type][$id][$newgrant]);
+												}
+												$this->data->grants[$type][$id][$newgrant][$modifier]=$granttype;
+											} else {
+												$this->data->grants[$type][$id][$newgrant]=$granttype;
+											}
+											$result=@current($this->get($path, "system.save.grants.user.phtml", Array(
+														"action"	=> "add",
+														"path"		=> $this->path,
+														"grant"		=> $newgrant,
+														"granttype"	=> $granttype,
+														"modifier"	=> $modifier )));
+											if ($result!="ok") {
+												$this->error="Couldn't save grant in $path";
+											}
+										}
+									}
+									$oldgrant=$newgrant;
+									$oldgranttype=$granttype;
+								}
 							}
 						} else {
 							$this->error="Couldn't get login/id from $path";

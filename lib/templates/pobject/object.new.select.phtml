@@ -9,7 +9,7 @@
 	 No result.
 
 	******************************************************************/
-	if ($this->CheckLogin("add") && $this->CheckConfig()) {
+	if ($this->CheckLogin("add", ARANYTYPE) && $this->CheckConfig()) {
 		if (!$arReturnTemplate) {
 			$arReturnTemplate="object.new.phtml";
 		}

@@ -33,19 +33,38 @@
 		$action=$this->getdata("action","none");
 		$path=$this->getdata("path","none");
 		$grant=$this->getdata("grant","none");
+		$granttype=$this->getdata("granttype","none");
+		$modifier=$this->getdata("modifier", "none");
+		if (!$granttype) {
+			$granttype=ARGRANTGLOBAL;
+		}
 		switch($action) {
 			case "delete" :
 				if (!$grant) {
 					unset($this->data->usergrants[$path]);
 				} else {
-					unset($this->data->usergrants[$path][$grant]);
+					if (!$modifier) {
+						unset($this->data->usergrants[$path][$grant]);
+					} else {
+						unset($this->data->usergrants[$path][$grant][$modifier]);
+						if (!@count($this->data->usergrants[$path][$grant])) {
+							unset($this->data->usergrants[$path][$grant]);
+						}
+					}
 					if (!@count($this->data->usergrants[$path])) {
 						unset($this->data->usergrants[$path]);
 					}
 				}
 				break;
 			case "add" :
-				$this->data->usergrants[$path][$grant]=1;
+				if ($modifier) {
+					if (!is_array($this->data->usergrants[$path][$grant])) {
+						unset($this->data->usergrants[$path][$grant]);
+					}
+					$this->data->usergrants[$path][$grant][$modifier]=$granttype;
+				} else {
+					$this->data->usergrants[$path][$grant]=$granttype;
+				}
 				break;
 		}
 		if ($this->save()) {

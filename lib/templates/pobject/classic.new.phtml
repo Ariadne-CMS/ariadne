@@ -25,7 +25,12 @@
 
 	******************************************************************/
 
-	if ($this->CheckLogin("add") && $this->CheckConfig()) {
+	if (!$arNewType) {
+		$check=ARANYTYPE;
+	} else {
+		$check=$arNewType;
+	}
+	if ($this->CheckLogin("add", $check) && $this->CheckConfig()) {
 		if (!$arNewType) { // first choose an objecttype
 ?>
 <html>

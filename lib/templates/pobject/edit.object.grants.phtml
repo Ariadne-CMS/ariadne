@@ -14,6 +14,17 @@
 	******************************************************************/
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
 		$ARCurrent->arReturnPage=$this->store->root.$this->path."edit.object.grants.phtml";
+
+		function arGetGrantType($value) {
+			if (($value & ARGRANTGLOBAL)==ARGRANTGLOBAL) { 
+				$result=""; 
+			} else if ($e & ARGRANTLOCAL) {
+				$result="=";
+			} else {
+				$result="&gt;";
+			}
+			return $result;
+		}
 ?>
 <html>
 <head>
@@ -74,14 +85,29 @@ TD {
 						echo "</td><td>";
 						if ($grants && is_array($grants)) {
 							ksort($grants);
-							while (list($grant, $value)=each($grants)) {
-								if ($value) { 
-									echo "<a href=\"edit.object.grants.save.phtml?delete=true&type=$type&id=".
-										RawUrlEncode($id)."&grant=".
-										RawUrlEncode($grant)."&arReturnPage=".
-										RawUrlEncode($ARCurrent->arReturnPage).
-										"\" onClick=\"return confirm('".sprintf($ARnls["q:removegrant"],$grant,$id)."')\">$grant</a> "; 
+							echo "<!-- ".serialize($grants)." -->";
+							while (list($grant, $modifiers)=each($grants)) {
+								if (!is_array($modifiers)) {
+									echo arGetGrantType($modifiers);
 								} 
+								echo "<a href=\"edit.object.grants.save.phtml?delete=true&type=$type&id=".
+									RawUrlEncode($id)."&grant=".
+									RawUrlEncode($grant)."&arReturnPage=".
+									RawUrlEncode($ARCurrent->arReturnPage).
+									"\" onClick=\"return confirm('".sprintf($ARnls["q:removegrant"],$grant,$id)."')\">$grant</a>\n"; 
+								if (is_array($modifiers)) {
+									echo "( ";
+									while (list($modifier, $value)=each($modifiers)) {
+										echo arGetGrantType($value);
+										echo "<a href=\"edit.object.grants.save.phtml?delete=true&type=$type&id=".
+											RawUrlEncode($id)."&grant=".
+											RawUrlEncode($grant)."&modifier=".
+											RawUrlEncode($modifier)."&arReturnPage=".
+											RawUrlEncode($ARCurrent->arReturnPage).
+											"\" onClick=\"return confirm('".sprintf($ARnls["q:removegrant"],$grant."(".$modifier.")",$id)."')\">$modifier</a>\n"; 
+									}
+									echo ") ";
+								}
 							}
 						}
 						echo "</td></tr>";

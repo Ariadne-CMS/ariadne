@@ -5,23 +5,26 @@
 	$disabled_open = "<font color='#959595'>";
 	$disabled_close = "</font>";
 $permcheck = array();
-$permcheck[] = "add";
 $permcheck[] = "edit";
 $permcheck[] = "config";
 $permcheck[] = "delete";
 $permcheck[] = "layout";
 
 foreach ($permcheck as $curgrant){
-		if($AR->user->grants[$this->path][$curgrant] || $AR->user->data->login == "admin") {
+		if($this->CheckSilent($curgrant)) {
 			${$curgrant} = array();
 			${$curgrant}[0]=1; ${$curgrant}[1]=''; ${$curgrant}[2]='';
-		}else {
+		} else {
 			${$curgrant} = array();
 			${$curgrant}[0]=false; ${$curgrant}[1]=$disabled_open;  ${$curgrant}[2]=$disabled_close;
 		}
 }
-
-if($this->implements("pshortcut")) {
+if ($this->CheckSilent("add",ARANYTYPE)) {
+	$add[0]=1; $add[1]=''; $add[2]='';
+} else {
+	$add[0]=false; $add[1]=$disabled_open; $add[2]=$disabled_close;
+}
+if($this->implements("pshortcut") && $this->CheckSilent("edit")) {
 	$shortcut[0]=true;$shortcut[1]='';$shortcut[2]='';
 }else {
 	$shortcut[0]=false;$shortcut[1]=$disabled_open;$shortcut[2]=$disabled_close;
@@ -89,7 +92,7 @@ HM_Array4 = [
 
 HM_Array2_1 = [
 [],
-["<?php echo $ARnls["m_data"]; ?>","javascript:arshow('edit_object_data','edit.object.data.phtml')",1,0,0],
+["<?php echo $edit[1].$ARnls["m_data"].$edit[2]; ?>","javascript:arshow('edit_object_data','edit.object.data.phtml')",1,0,0],
 ["<?php echo $shortcut[1].$ARnls["m_shortcut"].$shortcut[2]; ?>","<?php echo $shortcut[0]?"javascript:arshow('edit_object_shortcut','edit.object.shortcut.phtml')":''; ?>",1,0,0],
 ["<?php echo $edit[1].$ARnls["m_cache"].$edit[2]; ?>","javascript:arshow('edit_object_cache','edit.object.cache.phtml')",1,0,0],
 ["<?php echo $layout[1].$ARnls["m_layout"].$layout[2]; ?>","javascript:arshow('edit_object_layout','edit.object.layout.phtml')",1,0,0],

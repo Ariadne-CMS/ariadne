@@ -6,14 +6,14 @@
 	 No result.
 
 	******************************************************************/
-	if ($this->CheckLogin("add") && $this->CheckConfig()) {
+	$arNewType=$this->getdata("arNewType","none");
+	if (!$arNewType) {
+		error("arNewType not defined.");
+		$this->store->close();
+		exit();
+	}
+	if ($this->CheckLogin("add", $arNewType) && $this->CheckConfig()) {
 		include($this->store->code."widgets/wizard/code.php");
-		$arNewType=$this->getdata("arNewType","none");
-		if (!$arNewType) {
-			error("arNewType not defined.");
-			$this->store->close();
-			exit();
-		}
 		$arNewFilename=$this->getdata("arNewFilename","none");
 		$arNewData=new object;
 		$arNewPath=$this->make_path($arNewFilename);

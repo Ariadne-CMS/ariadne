@@ -261,4 +261,7 @@ $ARnls["locks"]=		"Locks";
 $ARnls["expires"]=		"Expires";
 $ARnls["openlocks"]=	"Open locks for %s:";
 $ARnls["unlock"]=		"Unlock";
+
+$ARnls["q:logoff"]=		"Are you sure you want to logoff?";
+$ARnls["logoff"]=		"Log off";
 ?>

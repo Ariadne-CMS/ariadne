@@ -261,4 +261,7 @@ $ARnls["expires"]=		"Verloopt";
 $ARnls["openlocks"]=	"Afschermingen voor %s:";
 $ARnls["unlock"]=		"Hef op";
 $ARnls["err:nolastnameentered"]=	"U dient een achternaam in te voeren";
+
+$ARnls["q:logoff"]=		"Weet U zeker dat U zich af wilt melden?";
+$ARnls["logoff"]=		"Meld af";
 ?>

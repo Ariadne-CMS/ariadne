@@ -4,6 +4,8 @@
 	}
 	global $nocache;
 	$nocache=true;
+	// make sure no language select dialog is shown.
+	$ARCurrent->nolangcheck=true;
 	// now make sure that the login template can use public resources:
 	// remember the failed login user
 	if ($ARCurrent->session) {
