@@ -58,7 +58,7 @@
       include($store->code."includes/export.phtml");
       if (!$error) {
 	if (file_exists($ax_file)) {
-		header("content-type: application/ariadne-export");
+		header("content-type: application/octet-stream");
 		readfile($ax_file);
 		unlink($ax_file);
 	} else
