@@ -20,5 +20,9 @@
 												"type"		=> $type,
 												"function"	=> $function,
 												"language"	=> $language ));
+		if ($this->error) {
+			$ARCurrent->ftp_error=$this->error;
+		}
+
 	}
 ?>
