@@ -3,6 +3,7 @@ Ariadne 2.3.2-dev
 Changes in Ariadne since version Ariadne 2.3.1-dev
 
 New Features:
+	- Add FTP MDTM command, thanks to Goran Topic.
 	- Added a 'change owner' dialog to the edit->config menu.
 	- Added a wrapper function for the store::is_supported() function.
 	- Added Portugese translation. Thanks to Marc R.J. Brevoort.
@@ -52,6 +53,8 @@ New Features:
 	  easier way to build your own wizards.
 
 Bugs Fixed:
+	- Fixed a bug in the FTP loader which made the loader not display templates
+	  with NLST. Thanks to Gorant Topic.
 	- Fixed a bug in store::make_path(), it should now always return a
 	  valid path, no matter what.
 	- Fixed a bug in the filestore::read() function. In some cases the store 
