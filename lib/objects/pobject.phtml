@@ -584,7 +584,7 @@ class pobject extends object {
 				}
 			} 
 			if ($this->data->customdata['none']) {
-				$this->customdata=&$this->customdata['none'];
+				$this->customdata=&$this->data->customdata['none'];
 			}
 			if ($this->data->customdata[$nls]) {
 				$this->customnlsdata=&$this->data->customdata[$nls];
