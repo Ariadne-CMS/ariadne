@@ -141,7 +141,8 @@ class pobject {
 				$path=substr($path, strlen($rootpath)-1);
 				$url=$config->root["value"].$this->store->rootoptions.$path;
 			} else {
-				$object_path=substr($object_path, 0, strrpos("/", substr($object_path, 0, -1)));
+				// jump to cache information of the parent of $rootpath
+				$object_path=substr($rootpath, 0, strrpos("/", substr($rootpath, 0, -1)));
 			}
 		}
 		return $url;			
@@ -409,10 +410,6 @@ class pobject {
 		$MAX_LOOP_COUNT=10;
 		if ($ARBeenHere[$this->path][$arCallFunction]<$MAX_LOOP_COUNT) { // protect against infinite loops
 			$ARBeenHere[$this->path][$arCallFunction]+=1;
-			//$ARConfig->arCallArgs=$arCallArgs;
-			//$ARConfig->template=array();
-			//$ARConfig->nls=$AR->nls;
-			//$this->parents($this->path, "GetConfig.phtml", "req_type=".$this->type."&req_function=".RawUrlEncode($arCallFunction));
             if (!$ARConfig->cache[$this->path]) {
 				$this->call("system.get.config.phtml");
 			}
@@ -458,6 +455,7 @@ class pobject {
 				}
 				$ARCurrent->cachetime=$config->cache;
 				// start output buffering...	
+				debug("CheckConfig: ob_start()","all");
 				ob_start();
 			}
 			$nocache=true; // make sure no other parts are cached either;
@@ -478,9 +476,11 @@ class pobject {
 				}
 			}
 			if ($arCallTemplate) {
+				debug("CheckConfig: arCallTemplate=$arCallTemplate","object");
 				$arCallTemplate=$this->store->files."templates".$arCallTemplate;
 				// check if template exists, if it doesn't exist, then continue the original template that called CheckConfig
 				if (file_exists($arCallTemplate)) { 
+					debug("CheckConfig: $arCallTemplate exists","object");
 					// check if the requested language exists, if not do not display anything, 
 					// unless otherwise indicated by $ARCurrent->allnls
 					// This triggers only for pinp templates called by other templates,
@@ -490,25 +490,25 @@ class pobject {
 					if (isset($this->data->$reqnls)) {
 						// the requested language is available.
 						$this->nlsdata=$this->data->$nls;
-						include($arCallTemplate);
 					} else if (!isset($this->data->nls)) {
 						debug("pobject: CheckConfig: no nls data ","all");
 						// the object has no language support
 						$this->nlsdata=&$this->data;
-						include($arCallTemplate);
 					} else if ($ARCurrent->allnls) {
 						debug("pobject: CheckConfig: no $reqnls, but allnls set","all");
 						// all objects must be displayed
 						// $this->reqnls=$this->nls; // set requested nls, for checks
 						$this->nls=$this->data->nls->default;
 						$this->nlsdata=$this->data->$nls;
-						include($arCallTemplate);
 					}
+					include($arCallTemplate);
 					array_pop($ARCurrent->arCallStack);
 					return false;
 				} else {
 					debug("pobject: CheckConfig: no such file: $arCallTemplate","all");
 				}
+			} else {
+				debug("CheckConfig: no arCallTemplate","object");
 			}
 		} else {
 			error("Max loop count exceeded in ".$this->path.$arCallFunction."?".$arCallArgs);
@@ -538,13 +538,23 @@ class pobject {
 		while (list($nls,$language)=each($nlslist)) {
 			$fpath=$this->store->files."cache/$nls/".$path;
 			$hpath=$this->store->files."cacheheaders/$nls/".$path;
+			$ppath=$this->store->files."privatecache/$nls/".$path;
+			if ($dir=@dir($ppath)) {
+				while ($entry=$dir->read()) {
+					if (filetype($ppath.$entry)!="dir") {
+						unlink($ppath.$entry);
+					} else if ($entry!="." && $entry!="..") {
+						$this->ClearCache($path.$entry."/");
+					}
+				}
+			}		
 			if ($dir=@dir($fpath)) {
 				while ($entry=$dir->read()) {
 					if ($entry!="." && $entry!="..") {
 						if (filetype($fpath.$entry)!="dir") {
 							unlink($fpath.$entry);
 							unlink($hpath.$entry);
-						} else {
+						} else if ($entry!="." && $entry!="..") {
 							$this->ClearCache($path.$entry."/");
 						}
 					}
@@ -554,6 +564,70 @@ class pobject {
 				unlink(substr($hpath,0,-1)."=");
 			}
 		}
+	}
+
+	function cached($name, $nls="") {
+		debug("cached($name)","object");
+		global $ARCurrent;
+		if ($name) {
+			$result=false;
+			if (!$nls) {
+				$nls=$this->nls;
+			}
+			$file="/".$nls.$this->path.$name."=";
+			if (file_exists($this->store->files."privatecache".$file)) {
+				debug("cached: $name exists, reading from cache.","all");
+				readfile($this->store->files."privatecache".$file);
+				$result=true;
+			} else {
+				debug("cached: $name not found, start new cache image.","all");
+				$ARCurrent->cache[]=$file;
+				debug("cached: ob_start()","all");
+				ob_start();
+				/* output buffering is recursive, so this won't interfere with
+				   normal page caching, unless you forget to call savecache()...
+				   so normal pagecache needs to check $ARCurrent->cache, if it's
+				   not empty, issue a warning and don't cache the outputbuffer...
+				   savecache() must then pop the stack. 
+				*/
+			}
+		} else {
+			error("cached() : no name given for cache.");
+		}
+		return $result;
+	}
+
+	function savecache($time="") {
+		debug("savecache($time)","object");
+		global $ARCurrent;
+		if (!$time) {
+			$time=2; // 'freshness' in hours.
+		}
+		if (($file=array_pop($ARCurrent->cache)) && $image=ob_get_contents()) {
+			$path=substr($file, 0, strrpos($file, "/"));
+			if (!file_exists($this->store->files."privatecache".$path)) {
+				ldMkDir("privatecache".$path);
+			}
+			$fp=fopen($this->store->files."privatecache".$file, "w");
+			fwrite($fp, $image);
+			fclose($fp);
+			$time=time()+($time*3600);
+			if (!touch($this->store->files."privatecache".$file, $time)) {
+				debug("savecache: ERROR: couldn't touch $file","object");
+			}
+			/* it seems that ob_end_flush doesn't really clean the output
+			   output buffer, ob_end_clean() does. With flush, the loader
+			   keeps thinking there is something to put in the cache while
+			   flush also doesn't echo the buffer out... 
+			   FIXME: test again in php 4.0.4 
+			*/
+			ob_end_clean();
+			echo $image;
+			debug("savecache: ob_end_flush()","all");
+		} else {
+			error("savecache: no file or image ...");
+		}
+		debug("savecache: end. ($file)","all");
 	}
 
 	function getdata($varname, $nls="none") {
@@ -784,6 +858,14 @@ class pobject {
 
 	function _make_url($path="") {
 		return $this->make_url($path);
+	}
+
+	function _cached($name) {
+		return $this->cached($name);
+	}
+
+	function _savecache($time="") {
+		return $this->savecache($time);
 	}
 } // end class pobject
 ?>
