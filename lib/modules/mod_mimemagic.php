@@ -1,6 +1,6 @@
 <?php 
-	// this file is created from the mime-magic file shipped with
-	// gnome-libs 1.2.13 
+  global $mimemagic_data;
+
 	$mimemagic_data[0][2]["\6\2"]="application/x-alan-adventure-game"; 
 	$mimemagic_data[0][4]["\124\101\104\123"]="application/x-tads-game"; 
 	$mimemagic_data[0][2]["\1\20"]="application/x-executable-file"; 
@@ -254,15 +254,15 @@
 	$mimemagic_data[0][4]["\177\105\114\106"]="application/x-executable-file"; 
 	$mimemagic_data[0][2]["\1\124"]="application/data"; 
 	$mimemagic_data[0][2]["\1\125"]="application/x-executable-file"; 
-	$mimemagic_data[70779960][2]["\357\123"]="application/x-linux-ext2fs"; 
+	$mimemagic_data[4424760][2]["\357\123"]="application/x-linux-ext2fs"; 
 	$mimemagic_data[0][4]["\366\366\366\366"]="application/x-pc-floppy"; 
 	$mimemagic_data[0774][2]["\332\276"]="application/data"; 
-	$mimemagic_data[68158480][2]["\23\177"]="application/x-filesystem"; 
-	$mimemagic_data[68158480][2]["\23\217"]="application/x-filesystem"; 
-	$mimemagic_data[68158480][2]["\44\150"]="application/x-filesystem"; 
-	$mimemagic_data[68158480][2]["\44\170"]="application/x-filesystem"; 
+	$mimemagic_data[4260880][2]["\23\177"]="application/x-filesystem"; 
+	$mimemagic_data[4260880][2]["\23\217"]="application/x-filesystem"; 
+	$mimemagic_data[4260880][2]["\44\150"]="application/x-filesystem"; 
+	$mimemagic_data[4260880][2]["\44\170"]="application/x-filesystem"; 
 	$mimemagic_data[0][9]["\55\162\157\155\61\146\163\55\60"]="application/x-filesystem"; 
-	$mimemagic_data[0][4]["\260\61\63\140"]="application/x-bootable"; 
+	$mimemagic_data[0][4]["\33\3\23\66"]="application/x-bootable"; 
 	$mimemagic_data[0][4]["\106\117\116\124"]="font/x-vfont"; 
 	$mimemagic_data[0][2]["\1\36"]="font/x-vfont"; 
 	$mimemagic_data[0][2]["\36\1"]="font/x-vfont"; 
@@ -380,6 +380,14 @@
 	$mimemagic_data[0][5]["\102\101\102\131\114"]="message/x-gnu-rmail"; 
 	$mimemagic_data[0][9]["\122\145\143\145\151\166\145\144\72"]="message/rfc822"; 
 	$mimemagic_data[0][2]["\115\132"]="application/x-ms-dos-executable"; 
+	$mimemagic_data[2080][27]["\115\151\143\162\157\163\157\146\164\40\127\157\162\144\40\66\56\60\40\104\157\143\165\155\145\156\164"]="text/vnd.ms-word"; 
+	$mimemagic_data[2080][26]["\104\157\143\165\155\145\156\164\157\40\115\151\143\162\157\163\157\146\164\40\127\157\162\144\40\66"]="text/vnd.ms-word"; 
+	$mimemagic_data[2112][9]["\115\123\127\157\162\144\104\157\143"]="text/vnd.ms-word"; 
+	$mimemagic_data[0][4]["\61\276\0\0"]="text/vnd.ms-word"; 
+	$mimemagic_data[0][5]["\120\117\136\121\140"]="text/vnd.ms-word"; 
+	$mimemagic_data[2080][29]["\115\151\143\162\157\163\157\146\164\40\105\170\143\145\154\40\65\56\60\40\127\157\162\153\163\150\145\145\164"]="application/vnd.ms-excel"; 
+	$mimemagic_data[2114][5]["\102\151\146\146\65"]="application/vnd.ms-excel"; 
+	$mimemagic_data[1][3]["\127\120\103"]="text/vnd.wordperfect"; 
 	$mimemagic_data[0][16]["\123\164\141\162\164\106\157\156\164\115\145\164\162\151\143\163"]="font/x-sunos-news"; 
 	$mimemagic_data[0][9]["\123\164\141\162\164\106\157\156\164"]="font/x-sunos-news"; 
 	$mimemagic_data[0][4]["\23\172\51\104"]="font/x-sunos-news"; 
