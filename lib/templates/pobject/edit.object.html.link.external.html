@@ -86,6 +86,7 @@ BODY 	{
 						$type="edit.object.html.link.external.html";
 						while (list($key, $value)=each($settings["hyperlink"])) {
 							echo "<option value=\"$value\"";
+							if ($value==$type) { echo " selected"; }
 							echo ">$key</option>";
 						}
 					?>
