@@ -38,10 +38,11 @@
 		$login = substr($login, strlen($this->store->make_path($login, "..")), -1);
 
 
-		$properties["value"][]["value"]="'".AddSlashes($value)."'";
 		$this->data->name=$this->getdata("name","none");
-		$properties["name"][]["value"]="'".AddSlashes($this->data->name)."'";
-		$properties["text"][]["value"]="'".AddSlashes($this->data->name)."'";
+		$properties["name"][0]["value"]="'".AddSlashes($this->data->name)."'";
+		$properties["name"][0]["nls"]="'none'";
+		$properties["text"][0]["value"]="'".AddSlashes($this->data->name)."'";
+		$properties["text"][0]["nls"]="'none'";
 		$this->data->email=$this->getdata("email","none");
 		$this->data->telephone=$this->getdata("telephone","none");
 		if ($this->arIsNewObject) {

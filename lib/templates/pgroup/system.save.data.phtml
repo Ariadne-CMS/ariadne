@@ -19,8 +19,10 @@
 		$properties = Array();
 
 		$this->data->name=$this->getdata("name","none");
-		$properties["name"][]["value"]="'".AddSlashes($this->data->name)."'";
-		$properties["text"][]["value"]="'".AddSlashes($this->data->name)."'";
+		$properties["name"][0]["value"]="'".AddSlashes($this->data->name)."'";
+		$properties["name"][0]["nls"]="'none'";
+		$properties["text"][0]["value"]="'".AddSlashes($this->data->name)."'";
+		$properties["text"][0]["nls"]="'none'";
 		$this->data->email=$this->getdata("email","none");
 		if ($this->arIsNewObject) {
 			$login=$this->getdata("arNewFilename","none");
