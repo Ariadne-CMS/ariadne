@@ -25,7 +25,13 @@ class mod_ax {
 				} else {
 					$slash="/";
 				}
-				$tempexpf=substr($this->exportfile,$pos=strrpos($this->exportfile,"$slash")+1);
+				$pos=strrpos($this->exportfile,"$slash");
+				if ($pos!==false) {
+					$tempexpf=substr($this->exportfile,$pos+1);
+				} else {
+					$tempexpf=$this->exportfile;
+				}
+
 				copy($this->exportfile,$this->tempdir."/$tempexpf");
 				$this->exportfile=$exportfile=$tempexpf;
 				// tar will (g)unzip and untar the file into tempdir 
