@@ -1,4 +1,65 @@
 <?php
-  if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-  }
+    /******************************************************************
+     manage.details.html                                   Muze Ariadne
+     ------------------------------------------------------------------
+     Author: Muze (info@muze.nl)
+     Date: 19 february 2003
+
+     Copyright 2003 Muze
+
+     This file is part of Ariadne.
+
+     Ariadne is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published 
+     by the Free Software Foundation; either version 2 of the License, 
+     or (at your option) any later version.
+ 
+     Ariadne is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with Ariadne; if not, write to the Free Software 
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
+     02111-1307  USA
+
+    -------------------------------------------------------------------
+
+     Description:
+
+	Shows a small overview of the object in the management interface
+
+    ******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+?>
+	<div id="details">
+		<table width="100%">
+			<tr><td valign="top"><?php echo $ARnls["address"]; ?>:</td>
+			<td valign="top" class="data" width="100%">
+<?php 
+	echo "<nobr>".$this->data->address;
+	echo "<br>";
+	echo $this->data->zipcode;
+	echo "&nbsp;&nbsp;";
+	echo $this->data->city;
+	echo "<br></nobr>";
+	$this->get("/system/addressbook/countries/".$this->data->country."show.name.phtml");
+ ?></td></tr>
+			<tr><td valign="top"><?php echo $ARnls["telephone"]; ?>:</td>
+			<td valign="top" class="data"><?php echo $this->data->telephone; ?></td></tr>
+			<tr><td valign="top"><?php echo $ARnls["mobile"]; ?>:</td>
+			<td valign="top" class="data"><?php echo $this->data->mobile; ?></td></tr>
+			<tr><td valign="top"><?php echo $ARnls["email"]; ?>:</td>
+			<td valign="top" class="data" width="100%"><?php
+				if( is_array($this->data->emails) ) {
+					while(list($key,$email)=each($this->data->emails)) {
+						echo "<a href=\"mailto:$email\">$email</a><br>";
+					}
+				} 
+			?></td></tr>
+		</table>
+	</div>
+<?php
+	}
 ?>
