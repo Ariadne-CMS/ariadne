@@ -15,7 +15,7 @@ if( $this->CheckConfig($arCallFunction, $arCallArgs) ) {
 		$what = $arRequestedTemplate;
 	} else {
 		$message = $ARnls["notfoundpath"];
-		$what = $arRequestedPath;
+		$what = substr($arRequestedPath, strlen($this->path));
 	}
 
 ?>
