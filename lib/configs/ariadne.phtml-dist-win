@@ -88,6 +88,15 @@
 
   $AR->OS                = 'WIN32';         // Windows 95/98/ME/NT/2000
 
+
+  /**************************************************************************/
+  /* Debug options: WEB, SYSLOG or BOTH                                     */
+  /**************************************************************************/
+
+  $AR->DEBUG = "WEB";
+
+
+
 /****************************************************************************/
 /* The rest of the configuration is automatic, only change this when it     */
 /* doesn't work for you and you know what you are doing                     */
