@@ -1,0 +1,36 @@
+<?php
+	if ($this->CheckLogin('read') && $this->CheckConfig()) {
+		$query="object.parent='".AddSlashes($this->path)."'";
+		$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
+		if ($filter=$this->getdata('filter')) {
+			$query.=" and object.implements='".AddSlashes($filter)."'";
+			$crit["object"]["implements"]["="]="'".AddSlashes($filter)."'";
+		}
+		if ($name=$this->getdata('name')) {
+			$query.=" and name.value ~= '%".AddSlashes($name)."%'";
+			$crit["name"]["value"]["like"]="'%".AddSlashes($name)."%'";
+		} else if ($letter=$this->getdata('letter')) {
+			$query.=" and name.value ~= '".AddSlashes($letter)."%'";
+			$crit["name"]["value"]["like"]="'".AddSlashes($letter)."%'";
+		}
+		if ($date=$this->getdata('date')) { 
+			$date=ereg_replace("[^0-9]*","",$date);
+			$crit["article"]["start"]["<="]=$date+86400;
+			$crit["article"]["end"][">="]=$date; 
+			$query.=" and timeframe.start <= ".($date+86400)." and timeframe.end >= ".$date;
+		}
+		if ($AR->user->data->orderedbrowsing) {
+			$query.=" and ( name.nls='".$nls."' or name.nls='' or name.nls='none') order by name.value";
+		}
+		if (!($limit=$this->getdata('limit'))) {
+			$limit=100;
+		}
+		if (!$template) {
+			$template='browse.nav.list.show.phtml';
+		}
+		$offset=$this->getdata('offset');
+		$total=$this->store->count($this->store->find("", $query, 0));
+		$this->find(".",$query, $template, "", $limit, $offset);
+		$this->call("browse.update.toolbar.phtml", Array("total" => $total, "offset" => $offset, "limit" => $limit));
+	}
+?>

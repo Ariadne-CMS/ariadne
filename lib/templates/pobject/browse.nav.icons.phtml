@@ -24,26 +24,7 @@
 <link type="text/css" rel="stylesheet" href="<?php echo $AR->dir->www; ?>styles/browse.icons.css">
 <body bgcolor="white">
 <?php
-	$query="object.parent='".AddSlashes($this->path)."'";
-	$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
-	if ($filter) {
-		$query.=" and object.implements='".AddSlashes($filter)."'";
-		$crit["object"]["implements"]["="]="'".AddSlashes($filter)."'";
-	}
-	if ($name) {
-		$query.=" and name.value ~= '%".AddSlashes($name)."%'";
-		$crit["name"]["value"]["like"]="'%".AddSlashes($name)."%'";
-	} else if ($letter) {
-		$query.=" and name.value ~= '".AddSlashes($letter)."%'";
-		$crit["name"]["value"]["like"]="'".AddSlashes($letter)."%'";
-	}
-	$query.=" and ( name.nls='".$nls."' or name.nls='' or name.nls='none') order by name.value";
-	if (!$limit) {
-		$limit=100;
-	}
-	$total=$this->store->count($this->store->find("", $query, 0));
-	$this->find(".",$query, "browse.nav.icons.show.phtml", "", $limit, $offset);
-	$this->call("browse.update.toolbar.phtml", Array("total" => $total, "offset" => $offset, "limit" => $limit));
+	$this->call('browse.list.phtml', Array('template' => 'browse.nav.icons.show.phtml'));
 ?>
 </body>
 <?php
