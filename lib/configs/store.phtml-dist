@@ -26,4 +26,7 @@
   /* This is where templates, cache images and uploaded files are stored */
   $store_config["files"]=$ariadne_root."files/";
 
+  /* duration of a lock on an object */
+
+  $store_config["lock_duration"]=60*5;
 ?>
