@@ -1,0 +1,5 @@
+<?php
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		$arResult=$this->ls($this->path, "ftp.objects.list.entry.phtml");
+	}
+?>

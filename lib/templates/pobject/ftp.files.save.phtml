@@ -1,0 +1,22 @@
+<?php
+	if ( ( $this->arIsNewObject && $this->CheckLogin("add") ) ||
+			 ( !$this->arIsNewObject && $this->CheckLogin("edit") ) ) {
+
+		$fileinfo=$this->getdata("file");
+
+		// new file uploaded -> save it to the standard ariadne tempdir
+		$file_artemp=tempnam($this->store->files."temp/","upload");
+
+		// now make the new values available for system.save.data.phtml
+		$arCallArgs["file"]=$fileinfo["name"];
+		$arCallArgs["file_temp"]=substr($fileinfo["tmp_name"],strlen($this->store->files."temp/"));
+		$arCallArgs["file_size"]=$fileinfo["size"];
+		$arCallArgs["file_type"]=$fileinfo["type"];
+		$arCallArgs["mimetype"]=$fileinfo["type"];
+		$this->call("ftp.files.save.data.phtml", $arCallArgs);
+
+		if ($this->error) {
+			$ARCurrent->ftp_error=$this->error;
+		}
+	}
+?>

@@ -1,0 +1,13 @@
+<?php
+	if ($this->CheckLogin("add") && $this->CheckConfig()) {
+
+		$arNewType="pdir";
+
+		$arNewPath=$this->make_path($arNewFilename);
+		$arNewData=new object;
+
+		$arNewObj=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewdata);
+		$arNewObj->arIsNewObject=true;
+		$result=$arNewObj->call("ftp.save.data.phtml", $arCallArgs);
+	}
+?>

@@ -1,0 +1,30 @@
+<?php
+  /******************************************************************
+   index.html					   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Arguments: none
+   Grant needed: read
+   Interface/Widget: all
+   Global variables: none
+
+   This displays a suitable overview of the object.
+
+   no result.
+
+  ******************************************************************/
+  $ARCurrent->nolangcheck=true;
+  if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		eregi('^(local[.])?([a-z_0-9]+)[.](.*)[.](.*)', $arRequestedTemplate, $regs);
+		$type=$regs[2];
+		$function=$regs[3];
+		$language=$regs[4];
+		if ($data->pinp[$type][$function][$language]) {
+			$template=$type.".".$function.".".$language.".pinp";
+			$templates=$this->store->get_filestore("templates");
+			if ($templates->exists($this->id, $template)) {
+				$file=$templates->read($this->id, $template);
+				echo $file;
+			}
+		}
+  }
+?>
