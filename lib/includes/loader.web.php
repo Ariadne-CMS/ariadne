@@ -304,9 +304,16 @@
 	}
 
 	function ldSetSession($session='') {
-	global $ARCurrent;
+	global $ARCookie, $AR, $ARCurrent;
 
 		$nls=$ARCurrent->nls;
+		if ($AR->hideSessionIDfromURL) {
+			$cookie = Array();
+			$cookie[$ARCurrent->session->id]['timestamp']=time();
+			$ARCookie=serialize($cookie);
+			debug("setting cookie ($ARCookie)");
+			setcookie("ARCookie",$ARCookie, 0, '/');			
+		}
 		ldSetRoot($session, $nls);
 	}
  
