@@ -1,3 +1,10 @@
 <?php
+	if ($arLanguage) {
+		$oldnls=$this->nls;
+		$this->setnls($arLanguage);
+	}
 	$this->call("manage.show.page.html", $arCallArgs);
+	if ($oldnls) {
+		$this->setnls($oldnls);
+	}
 ?>
