@@ -13,7 +13,33 @@
 				$table=$this->tbl_prefix.$node["table"];
 				$this->used_tables[$table]=$table;
 				$field=$node["field"];
-				$result=" $table"."."."$field ";
+				$result=" $table". "." ."$field ";
+			break;
+			case 'custom':
+				$table = $this->tbl_prefix."prop_custom";
+				$field = $node["field"];
+				$nls = $node["nls"];
+				/*
+					when we are compiling orderby properties we always want
+					to assign it to a new table alias
+				*/
+				if ($this->in_orderby) {
+					$this->custom_id++;
+				}
+				$this->custom_ref++;
+				$this->used_tables[$table." as $table".$this->custom_id] = $table.$this->custom_id;
+				$this->used_custom_fields[$field] = true;
+				$result = " $table".$this->custom_id.".AR_name = '$field' ";
+				if ($nls) {
+					$result = " $result and $table".$this->custom_id.".AR_nls = '$nls' ";
+				}
+
+				if (!$this->in_orderby) {
+					$result = " $result and $table".$this->custom_id.".AR_value ";
+				} else {
+					$this->where_s_ext = $result;
+					$result = " $table".$this->custom_id.".AR_value ";
+				}
 			break;
 			case 'string':
 			case 'float':
@@ -21,8 +47,17 @@
 				$result=" ".$node["value"]." ";
 			break;
 			case 'and':
+				$cr = $this->custom_ref;
 				$left=$this->compile_tree($node["left"]);
+				if ($this->custom_ref > $cr) {
+					$this->custom_id++;
+				}
+
 				$right=$this->compile_tree($node["right"]);
+				$cr = $this->custom_ref;
+				if ($this->custom_ref > $cr) {
+					$this->custom_id++;
+				}
 				$result=" $left and $right ";
 			break;
 			case 'or':
@@ -79,6 +114,7 @@
 			break;
 
 			case 'orderbyfield':
+				$this->in_orderby = true;
 				$left=$this->compile_tree($node["left"]);
 				$right=$this->compile_tree($node["right"]);
 				if ($left) {
@@ -108,6 +144,8 @@
 
 	// mysql specific compiler function
 	function priv_sql_compile($tree) {
+		$this->custom_ref = 0;
+		$this->custom_id = 0;
 		$this->used_tables="";
 		$this->compile_tree($tree);
 		$nodes=$this->tbl_prefix."nodes";
@@ -117,9 +155,9 @@
 		@reset($this->used_tables);
 		while (list($key, $val)=each($this->used_tables)) {
 			if ($tables) {
-				$tables.=", $val";
+				$tables.=", $key";
 			} else {
-				$tables="$val";
+				$tables="$key";
 			}
 			if (substr($val, 0, 5+strlen($this->tbl_prefix))==$this->tbl_prefix."prop_") {
 				$prop_dep.=" and $val.object=$objects.id ";
@@ -131,6 +169,9 @@
 		$query.=" from $tables where ";
 		$query.=" $nodes.object=$objects.id $prop_dep";
 		$query.=" and ( $this->where_s ) ";
+		if ($this->where_s_ext) {
+			$query .= " and ($this->where_s_ext) ";
+		}
 		if ($this->orderby_s) {
 			$query.= " order by $this->orderby_s, $nodes.priority DESC, $nodes.path ASC ";
 		} else {
