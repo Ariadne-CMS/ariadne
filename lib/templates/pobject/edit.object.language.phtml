@@ -25,7 +25,7 @@
 			<fieldset id="languages">
 			<legend><?php echo $ARnls["language"]; ?></legend>
 			<img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1"><br>
-			<table border="0"><tr><td>
+			<table border="0"><tr><td valign="top">
 			<?php
 				$arLanguage=$this->getdata("arLanguage","none");
 				if (!$arLanguage) {
@@ -43,7 +43,7 @@
 					$count++;
 					if ($count>$middle) { 
 						$count=0;
-						echo "</td><td>\n"; 
+						echo "</td><td valign=\"top\">\n"; 
 					}
 					if ($this->getdata("name",$arnls)) {
 						$image=$AR->dir->images.'nls/'.$arnls.'.gif';
