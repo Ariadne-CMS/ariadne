@@ -59,7 +59,13 @@
   /* If you do change it, leave out the entire block of code.               */
   /**************************************************************************/
 
-  $AR->host                 = "http://".$HTTP_SERVER_VARS["HTTP_HOST"];
+  if ($HTTP_SERVER_VARS["HTTPS"]=='on') {
+    $AR->host = "https://";
+  } else {
+    $AR->host = "http://";
+  }
+
+  $AR->host                 .= $HTTP_SERVER_VARS["HTTP_HOST"];
 
   if ($HTTP_SERVER_VARS["SERVER_PORT"]!=80) {
     $AR->host.=":".$HTTP_SERVER_VARS["SERVER_PORT"];
