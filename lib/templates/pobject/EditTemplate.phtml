@@ -29,7 +29,7 @@
       </select>
       <?php echo $ARnls["language"]; ?> :
       <select name="newlanguage">
-	  <option value="*"><?php echo $ARnls["any"]; ?></option>
+	  <option value="any"><?php echo $ARnls["any"]; ?></option>
       <?php
         while (list($key, $value)=each($AR->nls->list)) {
           if ($language==$key) {

@@ -43,6 +43,7 @@
       <input type="text" name="newfunction" value="<?php echo $function; ?>">
     </td><td>
       <select name="newlanguage">
+      <option value="any"><?php echo $ARnls["any"]; ?></option>
       <?php
         while (list($key, $value)=each($AR->nls->list)) {
           if ($language==$key) {

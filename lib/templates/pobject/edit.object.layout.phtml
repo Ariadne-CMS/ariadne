@@ -10,8 +10,9 @@
 </head>
 <body bgcolor="white">
 <table border="0" width="75%" align="center" cellspacing="4" vspace="10" hspace="10">
+<form action="edit.object.layout.form.phtml">
+<tr>
   <td colspan="2" align="center">
-    <form action="edit.object.layout.form.phtml">
     <fieldset id="templates">
     <table border="0" width="75%" cellspacing="4">
     <tr>
@@ -47,12 +48,12 @@
       ?>
     </table>    
     </fieldset>
-    <br><br>
-    <input type="hidden" name="type" value="<?php echo $this->type; ?>">
-    <input type="submit" name="action" value="<?php echo $ARnls["new"]; ?>">
-    </form>
   </td>
 </tr>
+    <tr><td><input type="button" name="action" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();"></td>
+        <td align="right"><input type="hidden" name="type" value="<?php echo $this->type; ?>">
+            <input type="submit" name="action" value="<?php echo $ARnls["new"]; ?>"></td></tr>
+    </form>
 </table>
 </body>
 <?php } ?>
