@@ -1057,9 +1057,9 @@ class pobject extends object { // pobject class definition
 		$nlslist=$AR->nls->list;
 		$nlslist["."]="default";
 		$cache_types[] = "normal";
-		if ($AR->output_compression) {
-			$cache_types[] = "compressed";
-		}
+		$cache_types[] = "compressed";
+		$cache_types[] = "session";
+
 		while (list($key, $type)=each($cache_types)) {
 			reset($nlslist);
 			while (list($nls,$language)=each($nlslist)) {

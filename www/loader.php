@@ -110,14 +110,27 @@
 		}
 
 
+		/*
+			do not active output compression if:
+				- it isnt enabled
+				- the client doesn't explicitly states that it supports it
+				- the gzcompress function isn't available
+				- there is a session id in the request
+		*/
 		if (!$AR->output_compression 
 				|| strpos($HTTP_SERVER_VARS["HTTP_ACCEPT_ENCODING"], "gzip")===false 
 				|| !function_exists("gzcompress")
+				|| $session_id
 			) {
 
 			$AR->output_compression = 0;
-			$cachedimage=$store_config["files"]."cache/normal".$ldCacheFilename;
-			$cachedheader=$store_config["files"]."cacheheaders/normal".$ldCacheFilename;
+			if (!$session_id) {
+				$cachedimage=$store_config["files"]."cache/normal".$ldCacheFilename;
+				$cachedheader=$store_config["files"]."cacheheaders/normal".$ldCacheFilename;
+			} else {
+				$cachedimage=$store_config["files"]."cache/session".$ldCacheFilename;
+				$cachedheader=$store_config["files"]."cacheheaders/session".$ldCacheFilename;
+			}
 		} else {
 			$cachedimage=$store_config["files"]."cache/compressed".$ldCacheFilename;
 			$cachedheader=$store_config["files"]."cacheheaders/compressed".$ldCacheFilename;
@@ -128,7 +141,7 @@
 		$logstats->log();
 		
 		$timecheck=time();
-		if (!$session_id && file_exists($cachedimage) && 
+		if (file_exists($cachedimage) && 
 			(strpos($HTTP_SERVER_VARS["ALL_HTTP"],"no-cache") === false) &&
 			(strpos($HTTP_PRAGMA,"no-cache") === false) &&
 			(($mtime=filemtime($cachedimage))>$timecheck) &&
@@ -157,7 +170,22 @@
 					}
 				}
 				ldSetClientCache(true, $cachetime, $ctime);
-				readfile($cachedimage);
+				if (!$session_id) {
+					readfile($cachedimage);
+				} else {
+					$tag = '{arSessionID}';
+					$tag_size = strlen($tag);
+					$data = "";
+					$fp = fopen($cachedimage, "r");
+					while (!feof($fp)) {
+						$data .= fread($fp, 4096);
+						$data = str_replace($tag, "-$session_id-", $data);
+						echo substr($data, 0, 4096-$tag_size);
+						$data = substr($data, 4096-$tag_size);
+					}
+					echo $data;
+					fclose($fp);
+				}
 			}
 
 		} else {
@@ -274,7 +302,12 @@
 					echo $image;
 				}
 			} else {
-				$ldCacheFilename = "/normal".$ldCacheFilename;
+				if ($ARCurrent->session && $ARCurrent->session->id) {
+					$ldCacheFilename = "/session".$ldCacheFilename;
+					$image = str_replace('-'.$ARCurrent->session->id.'-', '{arSessionID}', $image);
+				} else {
+					$ldCacheFilename = "/normal".$ldCacheFilename;
+				}
 			}
 
 			// because we have the full content, we can now also calculate the content length
