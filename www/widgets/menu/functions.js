@@ -34,6 +34,10 @@
 	function arshow(windowname, link, arguments) {
 		properties=windowprops[windowname];
 
+		// get the SessionID from the top so we can uniquely name windows
+		sessionid = top.Get("SessionID");
+		windowname = sessionid+windowname;
+
 		/* FIXME: doesn't work without frames on mozilla*/ 
 		windowsize=top.Get(windowname);
 		if (windowsize) {

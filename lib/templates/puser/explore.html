@@ -116,6 +116,10 @@ loader=0;
   }
 
   document.treestatus=new String('visible');
+
+// setting session ID for unique naming of windows within one ariadne session.
+  top.Set("SessionID","<?php echo $ARCurrent->session->id; ?>");
+
 //--></script>
 <style>
   FRAME, FRAMESET {
