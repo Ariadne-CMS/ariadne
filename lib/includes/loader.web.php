@@ -488,11 +488,8 @@
 		
 		$result = false;
 
-		if( $HTTP_COOKIE_VARS[$cookiename] && !($cookiename == "ARCookie")) {
-			$ARUserCookie = stripslashes($HTTP_COOKIE_VARS[$cookiename]);
-
+		if( $cookiename != "ARCookie") {
 			debug("ldSetUserCookie(".serialize($cookie).")","object");
-
 			$ARUserCookie=serialize($cookie);
 			$result = setcookie($cookiename,$ARUserCookie, $expire, $path, $domain, $secure);
 		}
