@@ -23,38 +23,41 @@
 		var inlist=-1;
 		var newname="";
 		
-		blist=document.browseform.BrowseNav.options;
-		for (i=0; i<blist.length; i++) {
-			if (blist[i].value==path) {
-				blist.selected=true;
-				inlist=i;
-			}
-		}
-		if (inlist==-1) {
+		if (document.browseform.BrowseNav) {
+			blist=document.browseform.BrowseNav.options;
 			for (i=0; i<blist.length; i++) {
-				newname+="   ";
+				if (blist[i].value==path) {
+					blist.selected=true;
+					inlist=i;
+				}
 			}
-			newname+=name;
-			blist[blist.length]=new Option(newname,path);
-			blist[blist.length-1].selected=true;
-		} else {
-			for (i=blist.length-1; i>inlist; i--) {
-				blist[i]=null;
+			if (inlist==-1) {
+				for (i=0; i<blist.length; i++) {
+					newname+="   ";
+				}
+				newname+=name;
+				blist[blist.length]=new Option(newname,path);
+				blist[blist.length-1].selected=true;
+			} else {
+				for (i=blist.length-1; i>inlist; i--) {
+					blist[i]=null;
+				}
+				blist[blist.length-1].selected=true;
 			}
-			blist[blist.length-1].selected=true;
 		}
 	}
 
 	function browseUp() {
-		blist=document.browseform.BrowseNav;
-		sIndex=blist.options.selectedIndex;
-		if (sIndex>0) {
-			top.View(blist.options[blist.options.selectedIndex-1].value);
+		if (blist=document.browseform.BrowseNav) {
+			sIndex=blist.options.selectedIndex;
+			if (sIndex>0) {
+				parent.View(blist.options[blist.options.selectedIndex-1].value);
+			}
 		}
 	}
 
 	function browseHome() {
-		top.View('<?php echo $AR->user->path; ?>');
+		parent.View('<?php echo $AR->user->path; ?>');
 	}
 
 	function ViewMode(mode) {
@@ -71,12 +74,15 @@
 			document.images["list"].src='<?php echo $AR->dir->images; ?>browse/list-pressed.gif';			
 			document.images["icons"].src='<?php echo $AR->dir->images; ?>browse/icons.gif';			
 		}
-		top.ViewMode(mode);
+		parent.ViewMode(mode);
 	}
 
 	function New() {
-		blist=document.browseform.BrowseNav;
-		startpath='<?php echo $this->store->root; ?>'+blist.options[blist.options.selectedIndex].value;
+		if (blist=document.browseform.BrowseNav) {
+			startpath='<?php echo $this->store->root; ?>'+blist.options[blist.options.selectedIndex].value;
+		} else {
+			startpath='<?php echo $this->store->root.$this->path; ?>';
+		}
 		if (document.all) {
 			args=new Array();
 			showModalDialog( startpath+"object.new.select.phtml",args,"font-family:Verdana; font-size:12; dialogWidth:38em; dialogHeight:26em; status:no; resizable: yes;");
@@ -89,22 +95,37 @@
 	}
 
 	function ObjectAdded() {
-		blist=document.browseform.BrowseNav;
-		top.View(blist.options[blist.options.selectedIndex].value);
+		if (blist=document.browseform.BrowseNav) {
+			parent.View(blist.options[blist.options.selectedIndex].value);
+		} else {
+			parent.View('<?php echo $this->store->root.$this->path; ?>');
+		}
 	}
 
 	function init() {
-		blist=document.browseform.BrowseNav;
-		if (blist.options[blist.options.selectedIndex].value=='/') {
-			document.images["up"].src='<?php echo $AR->dir->images; ?>browse/up-shaded.gif';
+		if (blist=document.browseform.BrowseNav) {
+			if (blist.options[blist.options.selectedIndex].value=='/') {
+				document.images["up"].src='<?php echo $AR->dir->images; ?>browse/up-shaded.gif';
+			}
 		}
-		if (top.CurrentViewMode=="list") {
+		if (parent.CurrentViewMode=="list" && document.images["list"]) {
 			document.images["list"].src='<?php echo $AR->dir->images; ?>browse/list-pressed.gif';
 		}
-		if (top.CurrentViewMode=="details") {
+		if (parent.CurrentViewMode=="icons" && document.images["icons"]) {
+			document.images["icons"].src='<?php echo $AR->dir->images; ?>browse/icons-pressed.gif';
+		}
+		if (parent.CurrentViewMode=="details" && document.images["details"]) {
 			document.images["details"].src='<?php echo $AR->dir->images; ?>browse/details-pressed.gif';
 		}
 		loaded=true;
+		parent.isLoaded['browsetop']=true;
+	}
+
+	function showPage(page) { 
+        parent.b_page=page;
+        parent.b_offset=parent.b_limit*page;
+		parent.browsemiddle.location.search='?filter=<?php echo RawUrlEncode($filter); ?>&offset='+escape(parent.b_offset)+'&limit='+escape(parent.b_limit);
+        return false;
 	}
 
 	loaded=false;
@@ -113,36 +134,66 @@
 </head>
 <body bgcolor="#CCCCCC" border="no" onLoad="init()">
 <form name="browseform">
-<table border="0" cellpadding="0" cellspacing="0">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
+	<?php
+		if (!$buttons['lookin']) {
+	?>
 	<td align="left" valign="middle">
 		<nobr>&nbsp;&nbsp;<?php echo $ARnls["lookin"]; ?>&nbsp;:</nobr>
 	</td><td align="left" valign="top">
-		<select name="BrowseNav" style="width: 150px; padding: 2px; margin: 2px;" onChange="top.View(this.options[this.options.selectedIndex].value);" class="minimal">
+		<select name="BrowseNav" style="width: 150px; padding: 2px; margin: 2px;" onChange="parent.View(this.options[this.options.selectedIndex].value);" class="minimal">
 		<?php
 			$this->parents(".","browse.show.option.phtml",Array("selected" => $this->path));
 		?>
 		</select>
 				</nobr>
-	</td><td align="left" valign="top">
+	</td>
+	<?php
+		}
+	?>
+	<td align="left" valign="top">
 		<nobr>
+			<?php
+				if (!$buttons['up']) { 
+			?>
 			<a href="#" onClick="browseUp(); return false;"><img name="up" src="<?php echo $AR->dir->images; ?>browse/up.gif" width="23" height="22" alt="<?php echo $ARnls["up"]; ?>" border="0" hspace="2" vspace="2"></a>
+			<?php
+				}
+				if (!$buttons['home']) {
+			?>
 			<a href="#" onClick="browseHome(); return false;"><img name="home" src="<?php echo $AR->dir->images; ?>browse/home.gif" width="23" height="22" alt="<?php echo $ARnls["home"]; ?>" border="0" hspace="2" vspace="2"></a>
 			<?php
-				if (!$this->CheckSilent("add")) {
+				}
+				if (!$buttons['new']) {
+					if (!$this->CheckSilent("add")) {
 			?>
 				<img name="new" src="<?php echo $AR->dir->images; ?>browse/new-shaded.gif" alt="" width="23" height="22" border="0" hspace="4" vspace="2">
 			<?php 
-				} else {
+					} else {
 			?>
 				<a href="#" onClick="New(); return false;"><img name="new" src="<?php echo $AR->dir->images; ?>browse/new.gif" alt="<?php echo $ARnls["new"]; ?>" width="23" height="22" border="0" hspace="4" vspace="2"></a> 
 			<?php
+					}
+				}
+				if (!$buttons['viewmode']) {
+			?>
+			<a href="#" onClick="ViewMode('list'); return false;"><img name="list" src="<?php echo $AR->dir->images; ?>browse/list.gif" alt="<?php echo $ARnls["list"]; ?>" width="23" height="22" border="0" hspace="0" vspace="2"></a><a 
+			href="#" onClick="ViewMode('icons'); return false;"><img name="icons" src="<?php echo $AR->dir->images; ?>browse/icons.gif" alt="<?php echo $ARnls["icons"]; ?>" width="23" height="22" border="0" hspace="0" vspace="2"></a><a 		
+			href="#" onClick="ViewMode('details'); return false;"><img name="details" src="<?php echo $AR->dir->images; ?>browse/details.gif" alt="<?php echo $ARnls["details"]; ?>" width="23" height="22" border="0" hspace="0" vspace="2"></a>
+			<?php
 				}
 			?>
-			<a href="#" onClick="ViewMode('icons'); return false;"><img name="icons" src="<?php echo $AR->dir->images; ?>browse/icons.gif" alt="<?php echo $ARnls["icons"]; ?>" width="23" height="22" border="0" hspace="0" vspace="2"></a><a 
-			href="#" onClick="ViewMode('list'); return false;"><img name="list" src="<?php echo $AR->dir->images; ?>browse/list.gif" alt="<?php echo $ARnls["list"]; ?>" width="23" height="22" border="0" hspace="0" vspace="2"></a><a 
-			href="#" onClick="ViewMode('details'); return false;"><img name="details" src="<?php echo $AR->dir->images; ?>browse/details.gif" alt="<?php echo $ARnls["details"]; ?>" width="23" height="22" border="0" hspace="0" vspace="2"></a>
-		<nobr>
+		</td><td align="right" valign="top" width="100%">
+			<?php
+				if (!$buttons['page']) {
+			?>
+				<select name="page" onChange="return showPage(this.options.selectedIndex);" style="margin: 2px; display: none;">
+				</select>
+			<?php
+				}
+			?>
+		</nobr>
 	</td>
 </tr>
 </table>
