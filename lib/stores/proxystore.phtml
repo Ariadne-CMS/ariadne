@@ -29,6 +29,7 @@ class proxystore {
 
 
 	function proxystore(&$key,&$config) {
+		global $AR;
 	/**********************************************************************************
 		
 	 This is the constructor routine for the store object. It takes some configuration 
@@ -44,7 +45,7 @@ class proxystore {
 		debug("proxystore($key)","store");
 		$this->key = &$key;
 		$this->code = &$config['code'];
-		
+		$this->root = &$AR->stores[$key]->root;
 		debug("proxystore: end","all");
 	}
 
@@ -260,6 +261,16 @@ class proxystore {
 		debug("proxypurge: end","all");
 		return $result;
 	}
+
+	function count($objects){
+		global $AR;
+		debug("proxyinfo($objects)","store");
+		$result = $AR->stores[$this->key]->count($objects);
+		$this->error = $AR->stores[$this->key]->error;
+		debug("proxyinfo: end","all");
+		return $result;
+	}
+		
 	
 	function info($objects){
 		global $AR;
