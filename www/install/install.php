@@ -32,9 +32,19 @@
 		$store->add_type("pfile","pfile");
 		$store->add_type("ppage","pobject");
 		$store->add_type("ppage","ppage");
+
+		// install psite types and properties
+
 		$store->add_type("psite","pobject");
 		$store->add_type("psite","pdir");
 		$store->add_type("psite","psite");
+
+		$url["host"]["string"]=50;
+		$url["port"]["number"]=1;
+		$url["protocol"]["string"]=10;
+		$store->create_property("url", $url);
+
+
 		$store->add_type("pphoto","pobject");
 		$store->add_type("pphoto","pphoto");
 		$store->add_type("pphoto","pfile");
