@@ -1,0 +1,88 @@
+.cm_menuFront {
+	position: absolute;
+    visibilty: hidden;
+    top: 0px;
+    left: 0px;
+  	color: MenuText;
+	background-color: menu;
+	border: 2px outset;
+  	margin: 1px;
+  	cursor: default;
+  	z-index: 11;
+	vertical-align: middle;
+	filter:	progid:DXImageTransform.Microsoft.Shadow(color="#777777", Direction=135, Strength=4);
+}
+
+.cm_item, .cm_itemHover, .cm_itemDisabled, .cm_itemDisabledHover {
+  	position: absolute;
+  	visibility: inherit;
+  	font: menu;
+	left: 1px;
+	height: 20px;
+	text-indent : 21px;	
+  	z-index: 11;
+	vertical-align : bottom;
+	padding-top: 2px;
+}
+.cm_item {
+	color: MenuText;
+  	background-color: menu;
+}
+.cm_itemHover {
+	color: highlighttext;
+  	background-color: highlight;
+}
+.cm_itemDisabled {
+	color: GrayText;
+	background-color: menu;
+}
+.cm_itemDisabledHover {
+	color: GrayText;
+	background-color: highlight;
+}
+.cm_itemHidden {
+	height: 0px;
+}
+.cm_itemSep {
+  	position: absolute;
+  	visibility: inherit;
+	font-size:      0pt;
+	border-top:         1px inset;
+	border-bottom:      1px inset;
+	border-left:        0px inset;
+	border-right:       0px inset;
+	height:         2px;
+	overflow:       hidden;
+	left: 1px;
+  	z-index: 11;
+ }
+
+.cm_sep {
+  	position: absolute;
+	background-color: inherit;
+  	color: #FFFFFF;
+  	width: 100%;
+  	height: 1px;
+  	z-index: 11;
+	margin-left: 2px;
+	margin-right: 2px;
+}
+
+.cm_arrow {
+	position: absolute;
+	background-color: inherit;
+    font-size: 8pt;
+	font-family: Webdings, Marlett;
+	height: 15px;
+	z-index: 11;
+	top: 0px;
+	margin-top: 0px;
+	padding-top: 0px;
+	margin-left: -15px; /* make up for the text-indent of an item */
+}
+.itemimage{
+	margin-left: -17px;
+	position: absolute;
+	left: 16px;
+	top: 0px;
+}
