@@ -24,3 +24,7 @@
 	border-bottom-color: buttonshadow;
 	border-right-color: buttonshadow;
 }
+.spacer {
+	width: 50px;
+	float: left;
+}
