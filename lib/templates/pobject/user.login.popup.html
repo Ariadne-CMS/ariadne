@@ -55,14 +55,6 @@
 				font: 8pt helvetica, sans-serif;
 	}
 </style>
-<script>
-	function doSubmit() {
-		window.opener.document.login.ARLogin.value = document.login.ARLogin.value;
-		window.opener.document.login.ARPassword.value = document.login.ARPassword.value;
-		window.opener.document.login.submit();
-		window.close();
-	}
-</script>
 </head>
 <body bgcolor="#BBBBBB" onLoad="init()">
 <table border="0" cellpadding="0" cellspacing="0" margin="0">
@@ -71,7 +63,7 @@
   <td valign="top" align="center"><img src="<?php echo $AR->dir->images; ?>ariadne.gif" alt="Ariadne - Web Application Server" vspace="5"></td>
 </tr><tr>
   <td valign="top" align="right">
-<form name="login" onSubmit="doSubmit(); return false;" method="POST" action="<?php echo $this->make_url(); ?>login.phtml">
+<form name="login" method="POST" action="<?php echo $this->make_url(); ?>login.phtml">
 <?php
 	global $PATH_INFO, $QUERY_STRING; 
 	if (!$arReturnPath) {
@@ -103,7 +95,7 @@
 			</table>
 	</td>
 </tr><tr>
-	<td colspan="2" align="right"><input type="submit" name="ok" onClick="doMagic(); return false;" value="&nbsp;<?php echo $ARnls["login"]; ?>&nbsp;"></td>
+	<td colspan="2" align="right"><input type="submit" name="ok" value="&nbsp;<?php echo $ARnls["login"]; ?>&nbsp;"></td>
 </tr>
 </table>
 </form>
