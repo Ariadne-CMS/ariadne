@@ -5,11 +5,23 @@ include_once($this->code."objects/pfile.phtml");
 
 class pphoto extends pfile { // definitie class
 
-	function convert($target, $image="") {
+    function init(&$store, &$path, &$data) {
+		pfile::init(&$store, &$path, &$data);
+		$this->setformat("jpg");
+	}
+
+	function convert($format="", $image="") {
 		global $AR;
-		if (eregi('^(GIF|PNG|JPG|BMP)$',$target)) {
+		$result=false;
+		
+		if (!$format) {
+			$format=$this->getformat();
+		}
+		if (eregi('[^a-z0-9+]',$format)) {
+			$this->error="Convert called with illegal format ($format)";
+		} else {
 			$tmpsrc=$this->store->files."temp/".$this->id;
-			$tmpdst=$tmpsrc.".".$target;
+			$tmpdst=$tmpsrc.".".$format;
 			if($image=="") {
 				$f_store=$this->store->get_filestore("files");
 				$f_store->copy_from_store($tmpsrc, $this->id, "file");
@@ -22,7 +34,7 @@ class pphoto extends pfile { // definitie class
 				}
 			}
 			if (chdir($this->store->files.'temp/')) {
-				system($AR->IM->convert.' '.$this->id.' '.$this->id.'.'.$target, $failed);
+				system($AR->IM->convert.' '.$this->id.' '.$this->id.'.'.$format, $failed);
 				if (!$failed) {
 					ob_start();
 					readfile($tmpdst);
@@ -32,12 +44,10 @@ class pphoto extends pfile { // definitie class
 					$this->error="Could not run ImageMagick convert program";
 				}
 				@unlink($this->id);
-				@unlink($this->id.$target);
+				@unlink($this->id.$format);
 			} else {
 				$this->error="Could not change dir to ".$this->store->files."temp/ ";
 			}
-		} else {
-			$this->error="Convert called with illegal target ($target), valid targets are: GIF, PNG, JPG or BMP";
 		}
 		return $result;
 	}
@@ -46,6 +56,7 @@ class pphoto extends pfile { // definitie class
 		global $AR;
 		$x=(int)$x;
 		$y=(int)$y;
+		$result=false;
 
 		$tmpsrc=$this->store->files."temp/".$this->id;
 		if($image=="") {
@@ -60,11 +71,12 @@ class pphoto extends pfile { // definitie class
 			}
 		}
 		if (chdir($this->store->files.'temp/')) {
-			$exec_string=$AR->IM->mogrify." -geometry ".$x."x".$y." -format jpg $this->id";
+			$format=$this->getformat();
+			$exec_string=$AR->IM->mogrify." -geometry ".$x."x".$y." -format ".$format." $this->id";
 			system($exec_string,$failed);
 			if (!$failed) {
 				ob_start();
-				readfile($tmpsrc.".jpg");
+				readfile($tmpsrc.".$format");
 				$result=ob_get_contents();
 				ob_end_clean();
 			} else {
@@ -72,18 +84,31 @@ class pphoto extends pfile { // definitie class
 				echo $this->error;
 			}
 			@unlink($tmpsrc);
-			@unlink($tmpsrc.".jpg");
+			@unlink($tmpsrc.".$format");
 		} else {
 			$this->error="Could not changedir to ".$this->store->files."temp/ ";
 			echo $this->error;
 		}
-
 		return $result;
 	}
 
+	function getformat() {
+		if (!$this->format || eregi('[^a-z0-9+]',$this->format)) {
+			$this->format="JPG";
+		}
+		return $this->format;
+	}
 
-	function _convert($target, $image="") {
-		return $this->convert($target, $image);
+	function setformat($format) {
+		if (eregi('[^a-z0-9+]',$format)) {
+			$this->error="setformat called with illegal format ($format)";
+		} else {
+			$this->format=$format;
+		}
+	}
+
+	function _convert($format="", $image="") {
+		return $this->convert($format, $image);
 	}
 
 	function _scale($x, $y, $fillcolor=false, $image="") {
@@ -166,11 +191,12 @@ class pphoto extends pfile { // definitie class
 		}
 
 		if (chdir($this->store->files.'temp/')) {
-			$exec_string=$AR->IM->mogrify.$fontconf." -pointsize $pointsize -fill $color -draw 'text $x,$y \"".addslashes($text)."\"' -format jpg $tmpsrc $tmpsrc.jpg";
+			$format=$this->getformat();
+			$exec_string=$AR->IM->mogrify.$fontconf." -pointsize $pointsize -fill $color -draw 'text $x,$y \"".addslashes($text)."\"' -format ".$format." $tmpsrc $tmpsrc.$format";
 			system($exec_string,$failed);
 			if (!$failed) {
 				ob_start();
-				readfile($tmpsrc.".jpg");
+				readfile($tmpsrc.".$format");
 				$result=ob_get_contents();
 				ob_end_clean();
 			} else {
@@ -178,7 +204,7 @@ class pphoto extends pfile { // definitie class
 				echo $this->error;
 			}
 			@unlink($tmpsrc);
-			@unlink($tmpsrc.".jpg");
+			@unlink($tmpsrc.".$format");
 			@unlink($tmpsrc.".ttf");
 		} else {
 			$this->error="Could not changedir to ".$this->store->files."temp/ ";
@@ -190,6 +216,14 @@ class pphoto extends pfile { // definitie class
 
 	function _annotate($text, $x, $y, $style="default", $image="") {
 		return $this->annotate($text, $x, $y, $style, $image);
+	}
+
+	function _setformat($format) {
+		return $this->setformat($format);
+	}
+
+	function _getformat() {
+		return $this->getformat();
 	}
 
 } // end class pphoto

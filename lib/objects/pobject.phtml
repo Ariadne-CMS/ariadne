@@ -256,7 +256,7 @@ class pobject extends object {
 					}
 					$this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority);
 					$result=$this->path;
-					$this->ClearCache();
+					//$this->ClearCache($this->path, true, false);
 					$this->unlock();
 				} else {
 					$this->error="Path is corrupt, won't save the object.";
@@ -747,7 +747,7 @@ class pobject extends object {
 		ldSetCache($file, $time, $image, $headers);
 	}
 
-	function ClearCache($path="",$private=true) {
+	function ClearCache($path="",$private=true, $recurse=false) {
 	global $AR;
  
 		debug("pobject: ClearCache($path)","object");
@@ -763,8 +763,8 @@ class pobject extends object {
 						if (filetype($fpath.$entry)!="dir") {
 							@unlink($fpath.$entry);
 							@unlink($hpath.$entry);
-						} else if ($entry!="." && $entry!="..") {
-							$this->ClearCache($path.$entry."/", false);
+						} else if ($entry!="." && $entry!=".." && $recurse) {
+							$this->ClearCache($path.$entry."/", false, true);
 						}
 					}
 				}
@@ -781,9 +781,13 @@ class pobject extends object {
 			//        remove recursively fast enough.
 	        //        this means a change in the filestore api. -> 2.5
 			$pcache=$this->store->get_filestore("privatecache");
-			$ids=$this->store->info($this->store->find($path, "" ,0));
-			while (list($key, $value)=@each($ids)) {
-				$pcache->purge($value["id"]);
+			if ($recurse) {
+				$ids=$this->store->info($this->store->find($path, "" ,0));
+				while (list($key, $value)=@each($ids)) {
+					$pcache->purge($value["id"]);
+				}
+			} else {
+				$pcache->purge($this->id);
 			}
 		}
 		debug("pobject: ClearCache: end","all");
