@@ -1,5 +1,6 @@
 <?php
-	if ($this->CheckSilent("read")) {
+	$ARCurrent->arLoginSilent=1;
+	if ($this->CheckLogin("read")) {
 		if ($AR->user->data->login==$data->login || $AR->user->data->login=="admin") {
 			if (!$checkedlocks) {
 				ldRedirect("lock.user.report.phtml?arReturnPage=logoff.phtml?checkedlocks=true");
@@ -20,7 +21,7 @@
 		}
 	} else { 
 		?>
-			<h1>Goodbye.</h1>
+			<h1>Goodbye...</h1>
 			<form action="<?php echo $AR->dir->www; ?>">
 				<input type="submit" value="<?php echo $ARnls["login"]; ?>">
 			</form>
