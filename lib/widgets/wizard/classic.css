@@ -35,6 +35,11 @@ BODY 	{
 	padding: 0px;
 	border: 0px;
 }
+.menucontainer {
+	border: 1px solid #404074;
+    background: url("<?php if (!$wgWizBackground) { $wgWizBackground=$AR->dir->images."clock.gif"; } echo $wgWizBackground; ?>") no-repeat top center;
+	background-color: #404074;
+}
 .current {
 	color: #FFFFFF;
 	font-weight: bold;

@@ -106,21 +106,10 @@
 ?>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr>
-  <td colspan="3" bgcolor="#404074"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
-  <td rowspan="4" valign="top" align="center" width="100%">
-    <?php
-      echo "<!-- template: ".$wgWizFlow[$wgWizNextStep]["template"]."; step: $wgWizNextStep; -->";
-      $checks=$wgWizCallObject->call($wgWizFlow[$wgWizNextStep]["template"], $wgWizCallArgs);
-      if (!$checks) { // object templates (pinp) cannot return values, use ARCurrent instead
-        $checks=$ARCurrent->wgWizChecks;
-      }
-    ?>
-  </td>
-</tr><tr>  
-  <td bgcolor="#404074" rowspan="2"><script>
-    document.write('<img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="'+(window.innerHeight-60)+'" alt="">');
-  </script></td>
-  <td valign="top" background="<?php echo $AR->dir->images; ?>clock.gif" rowspan="2"><table class="menu" cellspacing="0" cellpadding="2">
+  <td valign="top" class="menucontainer"><script>
+      document.write('<img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="'+(window.innerHeight-60)+'" alt="" align="left">');
+    </script>
+    <table class="menu" cellspacing="0" cellpadding="2">
     <tr><td>
     <?php
       if ($wgWizList && is_array($wgWizList)) {
@@ -163,16 +152,21 @@
       }
     ?>
     </td></tr>
-    </table></td>
-  <td bgcolor="#404074" rowspan="2"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
+    </table>
+  </td>
+  <td valign="top" align="center" width="100%">
+    <?php
+      echo "<!-- template: ".$wgWizFlow[$wgWizNextStep]["template"]."; step: $wgWizNextStep; -->";
+      $checks=$wgWizCallObject->call($wgWizFlow[$wgWizNextStep]["template"], $wgWizCallArgs);
+      if (!$checks) { // object templates (pinp) cannot return values, use ARCurrent instead
+        $checks=$ARCurrent->wgWizChecks;
+      }
+    ?>
+  </td>
+</tr><tr>  
+  <td colspan="2"><hr></td>
 </tr><tr>
-  <td valign="bottom"><?php echo $wgWizCaption; ?></td>
-</tr><tr>
-  <td colspan="3" bgcolor="#404074"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>  
-</tr><tr>
-  <td colspan="4"><hr></td>
-</tr><tr>
-  <td colspan="4">
+  <td colspan="2">
     <table width="100%" border="0">
       <script>
       function checksubmit() {
