@@ -434,6 +434,7 @@ function DECMD_IMAGE_onclick() {
       args['vspace'] = elIMG.vspace;
       args['align'] = elIMG.align;
       args['alt'] = elIMG.alt;
+      args['ar:type'] = elIMG['ar:type'];
     }
   } else {
     elIMG=false;
@@ -447,6 +448,7 @@ function DECMD_IMAGE_onclick() {
     args['border'] = "";
   }
   args['editOptions']=tbContentEditOptions;
+  args['stylesheet']=tbContentEditOptions['css']['stylesheet'];
   arr = showModalDialog( "<?php echo $this->store->root.$AR->user->path; 
 		?>edit.object.html.image.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:600px; dialogHeight:400px; status: no; resizable: yes;");
   if (arr != null){
@@ -458,6 +460,7 @@ function IMAGE_set(arr) {
   window.setfocusto=false;
   var el=window.el;
   if (arr != null) {
+
     src=new String(arr['src']);
     temp=new String('http://');
     if (src.substring(0,temp.length)!=temp) {
@@ -475,6 +478,8 @@ function IMAGE_set(arr) {
         elIMG.align=arr['align'];
       }
       elIMG.alt=arr['alt'];
+      elIMG['ar:type'] = arr['ar:type'];
+      elIMG['class'] = arr['class'];
     } else {
       el=window.el;
       if ((el.type=="None") || (el.type=="Text"))  {
@@ -494,6 +499,12 @@ function IMAGE_set(arr) {
         if (arr['alt']!='') {
           temp+=' ALT="'+arr['alt']+'"';
         }
+		if (arr['class']!='') {
+			temp+=' CLASS="'+arr['class']+'"';
+		}
+		if (arr['ar:type']!='') {
+			temp+=' ar:type="'+arr['ar:type']+'"';
+		}
         temp+='>';
         rg.pasteHTML(temp);
         rg.select();
