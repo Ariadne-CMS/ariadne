@@ -74,8 +74,17 @@
 			</td>
 		</tr></thead><tbody><?php
 			$filestore = $this->store->get_filestore("templates");
+			if (!function_exists("layout_sortfunc")) {
+				function layout_sortfunc($a, $b) {
+				   if ($a == $b) {
+				       return 0;
+				   }
+				   return ($a < $b) ? -1 : 1;
+				}
+			}
 			if (($data->pinp) && is_array($data->pinp)) {
 				while (list($type, $values)=each($data->pinp)) {
+					uksort($values, 'layout_sortfunc');	
 					while (list($function, $templatelist)=each($values)) {
 						ksort($templatelist);
 						reset($templatelist);
