@@ -228,7 +228,7 @@ class mysqlstore {
 		return $result;
 	}
 
-	function parents($path) {
+	function parents($path, $top="/") {
 	/**********************************************************************************
 
 	 This function takes as argument a path to an object in the store. It will return 
@@ -244,7 +244,9 @@ class mysqlstore {
 		debug("parents($path)","store");
 		$this->error="";
 		$epath=AddSlashes(strtoupper($path));
-		$query_string="select distinct(nodes.path), nodes.parent, nodes.priority, objects.id, objects.type, objects.object, UNIX_TIMESTAMP(objects.lastchanged) as lastchanged, objects.vtype from objects, nodes where objects.id=nodes.object and UPPER(nodes.path)=substring('$epath',1,length(path)) order by path";
+		$etop=AddSlashes(strtoupper($top));
+		$query_string="select distinct(nodes.path), nodes.parent, nodes.priority, objects.id, objects.type, objects.object, UNIX_TIMESTAMP(objects.lastchanged) as lastchanged, objects.vtype from objects, nodes where objects.id=nodes.object and UPPER(nodes.path)=substring('$epath',1,length(path)) and UPPER(nodes.path) LIKE '$etop%' order by path";
+		debug($query_string, "all");
 		$result["method"]="parents";
 		$result["path"]=$path;
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
