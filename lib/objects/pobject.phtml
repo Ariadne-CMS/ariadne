@@ -122,7 +122,7 @@ class pobject extends object { // pobject class definition
 			$customnlsdata=$this->data->custom[$nls];
 		}
 		debug("pobject: call: nls set to $nls","all"); 
-		
+		$arCallFunctionOrig = $arCallFunction;
 		if (strpos($arCallFunction,"::")!==false) {
 			// template of a specific class defined via call("class::template");
 			list($arType, $arCallFunction)=explode("::",$arCallFunction);
