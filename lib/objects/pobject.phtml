@@ -79,10 +79,9 @@ class pobject extends object { // pobject class definition
 
 		// callstack is needed for getvar()
 		$ARCurrent->arCallStack[]=&$arCallArgs;
-		// pass the context on to this object (is the calling template a php or pinp template?).
-		$this->arCallingContext=@end($AR->CallLevelStack);
 		// keep track of the context (php or pinp) in which the called template runs. call always sets it php, CheckConfig sets it to pinp if necessary.
-		$AR->CallLevelStack[]='php';
+		$this->pushContext(Array("scope" => "php"));
+
 		// convert the deprecated urlencoded arguments to an array
 		if (is_string($arCallArgs)) {
 			$ARCurrent->arTemp=$arCallArgs;
@@ -177,7 +176,7 @@ class pobject extends object { // pobject class definition
 			}
 		}
 		array_pop($ARCurrent->arCallStack);
-		array_pop($AR->CallLevelStack);
+		$this->popContext();
 		debug("pobject: call: end","all","all","OUT");
 		if (isset($ARCurrent->arResult)) {
 			// pinp templates can return results via putvar("arResult",$result);
@@ -777,8 +776,34 @@ class pobject extends object { // pobject class definition
 		return $grants;
 	}
 
+
+	function pushContext($context) {
+	global $AR;
+		if (!$AR->context) {
+			$AR->context = Array();
+		}
+		array_push($AR->context, $context);
+	}
+
+	function popContext() {
+	global $AR;
+		if (is_array($AR->context)) {
+			$result = array_pop($AR->context);
+		}
+		return $result;
+	}
+
+	function getContext() {
+	global $AR;
+		if (is_array($AR->context)) {
+			$result = &$AR->context[sizeof($AR->context)-1];
+		}
+		return $result;
+	}
+
 	function CheckLogin($grant, $modifier=ARTHISTYPE) {
 	global $AR,$ARnls,$ARConfig,$ARCurrent,$ARPassword,$ARCookie,$session_config;
+
 		debug("pobject: CheckLogin($grant)","object");
 		if ($modifier==ARTHISTYPE) {
 			$modifier=$this->type;
@@ -786,9 +811,8 @@ class pobject extends object { // pobject class definition
 
 		/* load config cache */
 		if (!$ARConfig->cache[$this->path]) {
-			$this->call("system.get.config.phtml");
+			$this->loadConfig();
 		}
-
 
 		if ($AR->user->data->login!="admin" && !$AR->user->grants[$this->path]) {
 			$AR->user->grants[$this->path]=$this->GetValidGrants();
@@ -849,7 +873,7 @@ class pobject extends object { // pobject class definition
 
 		/* load config cache */
 		if (!$ARConfig->cache[$this->path]) {
-			$this->call("system.get.config.phtml");
+			$this->loadConfig();
 		}
 
 		if ($AR->user->data->login=="admin") {
@@ -908,6 +932,28 @@ class pobject extends object { // pobject class definition
 		return $result;
 	}
 
+	function loadConfig() {
+	global $ARConfig;
+		if (!$ARConfig->cache[$this->path]) {
+			if (!$this->arIsNewObject) {
+				$this->pushContext(Array("scope" => "php"));
+					$this->get($this->path, "system.get.config.phtml");
+				$this->popContext();
+				$config=$ARConfig->cache[$this->path];
+			} else {
+				if (!$ARConfig->cache[$this->parent]) {
+					$this->pushContext(Array("scope" => "php"));
+						$this->get($this->parent, 'system.get.config.phtml');
+					$this->popContext();
+				}
+				$config=$ARConfig->cache[$this->parent];
+			}
+		} else {
+			$config=$ARConfig->cache[$this->path];
+		}
+		return $config;
+	}
+
 	function CheckConfig($arCallFunction="", $arCallArgs="") {
 	// returns true when cache isn't up to date and no other template is
 	// defined for $path/$function. Else it takes care of output to the
@@ -920,19 +966,9 @@ class pobject extends object { // pobject class definition
 
 		if (!$arCallFunction || $ARBeenHere[$this->path][$arCallFunction]<$MAX_LOOP_COUNT) { // protect against infinite loops
 			$ARBeenHere[$this->path][$arCallFunction]+=1;
-			if (!$ARConfig->cache[$this->path]) {
-				if (!$this->arIsNewObject) {
-					$this->get($this->path, "system.get.config.phtml");
-					$config=$ARConfig->cache[$this->path];
-				} else {
-					if (!$ARConfig->cache[$this->parent]) {
-						$this->get($this->parent, 'system.get.config.phtml');
-					}
-					$config=$ARConfig->cache[$this->parent];
-				}
-			} else {
-				$config=$ARConfig->cache[$this->path];
-			}
+
+			$config = $this->loadConfig();
+
 			$ARConfig->nls=$config->nls;
 			// if a default language is entered in a parent and no language is
 			// explicitly selected in the url, use that default. 
@@ -1075,7 +1111,7 @@ class pobject extends object { // pobject class definition
 					}
 					$ARCurrent->arCallStack[]=$arCallArgs;
 					// start running a pinp template
-					$AR->CallLevelStack[]='pinp';
+					$this->pushContext(Array("scope" => "pinp"));
 //					echo $this->path.$arCallFunction.":pinp\n"; // frop
 					if (isset($this->data->nls->list[$reqnls])) {
 						// the requested language is available.
@@ -1113,7 +1149,7 @@ class pobject extends object { // pobject class definition
 						
 					}
 					array_pop($ARCurrent->arCallStack);
-					array_pop($AR->CallLevelStack);
+					$this->popContext();
 //					echo $this->path.$arCallFunction."<<pinp\n"; // frop
 					return false;
 				} else {
