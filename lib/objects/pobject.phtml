@@ -546,11 +546,12 @@ class pobject extends object {
 								if (ldCheckCredentials($ARLogin,$ARPassword)) {
 
 									$criteria["login"]["value"]["="]="'".AddSlashes($ARLogin)."'";
-									$result=current($this->find("/system/users/",$criteria,"system.get.phtml"));
-									$AR->user = $result;
-									if ($AR->user->CheckPassword($ARPassword)) {
+									$AR->user=current($this->find("/system/users/",$criteria,"system.get.phtml"));
+									if (is_object($AR->user) && $AR->user->CheckPassword($ARPassword)) {
 										$continue = true;
 										$recheck = true;
+									} else {
+										unset($AR->user); //incorrect password, so don't keep this user
 									}
 									unset($criteria);	
 									debug("respawning session($sessionid) for user ($ARLogin)");
