@@ -17,7 +17,7 @@ class URL {
 	/* replaces the URLs with the {ar*[/nls]} markers */
 	function RAWtoAR($page, $nls="") {
 		global $ARCurrent, $AR;
-
+echo "<h3>PAGE:</h3>".$page;
 		$nls_match = "(/(?:".implode('|', array_keys($AR->nls->list))."))?";
 		// FIXME: make the rest of the code also use the $nls_match2 expression
 		// which doesn't match deel1/ as the nlsid 'de'
@@ -34,16 +34,16 @@ class URL {
 		if ($site && $site !== '/') {
 			$siteURL = $this->make_url($site, "");
 			$rootURL = $this->make_url("/", "");
-			if (substr($siteURL, 0, strlen($rootURL)) == $rootURL) {
-				/* use the rootURL to rebuild the site URL */
-				$find[] = "%\\Q$rootURL\\E".$nls_match2."\\Q".substr($site, 1)."\\E%e";
-			} else {
-				/* 
-					a site has been configured so we can directly place
-					the nls_match2 after the siteURL
-				*/
-				$find[] = "%\\Q$siteURL\\E".$nls_match2."%e";
-			}
+
+			/* use the rootURL to rebuild the site URL */
+			$find[] = "%\\Q$rootURL\\E".$nls_match2."\\Q".substr($site, 1)."\\E%e";
+			$repl[] = "(\"\${2}\") ? \"{arSite/\\2}\" : \"{arSite}\"";
+
+			/* 
+				a site has been configured so we can directly place
+				the nls_match2 after the siteURL
+			*/
+			$find[] = "%\\Q$siteURL\\E".$nls_match2."%e";
 			$repl[] = "(\"\${2}\") ? \"{arSite/\\2}\" : \"{arSite}\"";
 		}
 
