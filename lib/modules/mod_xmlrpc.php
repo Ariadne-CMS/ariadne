@@ -186,4 +186,12 @@
 			return $myResult;
 		}
 	}
+
+class pinp_XMLRPC extends XMLRPC {
+
+	function _call( $url="", $function="", $arguments=array() ) {
+		return $this->call( $url, $function, $arguments );
+	}
+}
+
 ?>

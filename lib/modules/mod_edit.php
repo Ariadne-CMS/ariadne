@@ -96,6 +96,14 @@
 				echo "href='".$this->make_url($path)."'";
 			}
 		}
+
+       function _showHref($path) {
+            if (pinp_edit::_getEditMode()) {
+                echo "href='".$this->make_url($path).pinp_edit::_getEditTemplate()."' target='".pinp_edit::_getEditTarget()."'";
+            } else {
+                echo "href='".$this->make_url($path)."'";
+            }
+        }
 	}
 
 ?>
