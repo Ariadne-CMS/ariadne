@@ -40,6 +40,7 @@
 	include_once($store_config['code']."includes/loader.web.php");
 	
 	include_once($store_config['code']."modules/mod_virusscan.php");
+	include_once($store_config['code']."modules/mod_stats.php");
 
 	function fix_quotes(&$value) {
 		if (is_array($value)) {
@@ -122,6 +123,9 @@
 			$cachedheader=$store_config["files"]."cacheheaders/compressed".$ldCacheFilename;
 		}
 
+		// mod_stats call
+		$logstats = new stats();
+		$logstats->log();
 		
 		$timecheck=time();
 		if (file_exists($cachedimage) && 
