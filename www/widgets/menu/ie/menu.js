@@ -482,8 +482,8 @@ function showWindowedObjects(show) {
 
 // default values for opening windows
 windowprops=new Array();
-windowprops['common']='directories=no,location=no,menubar=no,status=no,toolbar=no,resizable=yes';
-windowprops['full']='directories=no,location=yes,menubar=yes,status=yes,toolbar=yes,resizable=yes';
+windowprops['common']='resizable';
+windowprops['full']='directories,location,menubar,status,toolbar,resizable,scrollbars';
 windowprops['object_fs']=windowprops['common']+',height=100,width=400';
 windowprops['object_new']=windowprops['common']+',height=275,width=450';
 windowprops['edit_find']=windowprops['common']+',height=400,width=500';
