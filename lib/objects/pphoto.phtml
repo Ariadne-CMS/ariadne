@@ -77,7 +77,18 @@ class pphoto extends pfile { // pphoto class definition
 		$y=(int)$y;
 		$ARConfig->photoStack[$this->id][]=" -geometry ".$x."x".$y;
 
-		return true;
+		$info=$this->getimageinfo();
+		$aspectx=$x/$info[0];
+		$aspecty=$y/$info[1];
+		if ($aspectx>$aspecty) {
+			$aspect=$aspecty;
+		} else {
+			$aspect=$aspectx;
+		}
+		$newx=$aspect*$info[0];
+		$newy=$aspect*$info[1];
+
+		return Array("x" => $newx, "y" => $newy);
 	}
 
 	function rotate($degrees) {
@@ -114,6 +125,15 @@ class pphoto extends pfile { // pphoto class definition
 		return true;
 	}
 
+	function crop($width, $height, $x=0, $y=0) {
+		global $ARConfig;
+
+		$this->set_context("mogrify");
+
+		$ARConfig->photoStack[$this->id][]=" -crop ".((int)$width)."x".((int)$height)."+".((int)$x)."+".((int)$y);
+		return true;
+	} 
+
 	function scaledown($x, $y, $fillcolor=false) {
 		global $ARConfig;
 
@@ -123,7 +143,18 @@ class pphoto extends pfile { // pphoto class definition
 		$y=(int)$y;
 		$ARConfig->photoStack[$this->id][]=" -geometry '".$x."x".$y.">'";
 
-		return true;
+		$info=$this->getimageinfo();
+		$aspectx=$x/$info[0];
+		$aspecty=$y/$info[1];
+		if ($aspectx>$aspecty) {
+			$aspect=$aspecty;
+		} else {
+			$aspect=$aspectx;
+		}
+		$newx=$aspect*$info[0];
+		$newy=$aspect*$info[1];
+
+		return Array("x" => $newx, "y" => $newy);
 	}
 
 	function setComposeStyle($name, $method, $width, $height, $xoffset, $yoffset, $percentage, $resize) {
@@ -370,7 +401,7 @@ class pphoto extends pfile { // pphoto class definition
 						$exec_string .= " ".$tmpsrc;
 						system($exec_string,$failed);
 						debug("executing ($exec_string)");
-						//echo( $exec_string."<br>");
+						// echo( $exec_string."<br>");
 					}
 				}
 				if (!$failed) {
@@ -479,6 +510,10 @@ class pphoto extends pfile { // pphoto class definition
 		return $this->cut($x, $y);
 	}
 	
+	function _crop($width, $height, $x=0, $y=0) {
+		return $this->crop($width, $height, $x, $y);
+	}
+
 	function _build() {
 		return $this->build();
 	}
