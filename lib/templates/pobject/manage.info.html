@@ -37,11 +37,15 @@
 ?>
 	<div id="infobox">
 		<table width="100%">
+			<tr><td valign="top"><?php echo $ARnls["type"]; ?>:</td><td valign="top" class="data"><?php echo $this->type; ?></td></tr>
 			<tr><td valign="top"><?php echo $ARnls["user"]; ?>:</td><td valign="top" class="data"><?php echo $this->data->owner_name; ?></td></tr>
 			<tr><td valign="top"><?php echo $ARnls["date"]; ?>:</td><td valign="top" class="data"><?php echo strftime("%m-%d-%Y",$this->data->ctime); ?></td></tr>
 			<tr><td valign="top"><?php echo $ARnls["modified"]; ?>:</td><td valign="top" class="data"><?php echo strftime("%m-%d-%Y",$this->data->mtime); ?></td></tr>
 			<tr><td valign="top"><?php echo $ARnls["size"]; ?>:</td><td valign="top" class="data"><?php echo $this->make_filesize(); ?></td></tr>
-			<tr><td valign="top"><?php echo $ARnls["priority"]; ?>:</td><td valign="top" class="data"><?php echo $this->priority; ?></span></td></tr>
+			<tr><td valign="top"><?php echo $ARnls["priority"]; ?>:</td><td valign="top" class="data"><?php 
+				echo "<a href=\"javascript:arshow('edit_priority','edit.priority.phtml')\" title=\"".$ARnls['priority']." \">".$this->priority."</a>";
+				?>
+			</span></td></tr>
 			<?php
 				if (is_array($data->nls->list)) {
 			?>
@@ -56,6 +60,16 @@
 						echo "<a class='$class' href='".ldGetServerVar("PHP_SELF")."?".ldGetServerVar("QUERY_STRING")."&arLanguage=$key' onClick=\"top.Set('arLanguage','$key'); return true;\"><img src=\"".$AR->dir->images."nls/small/".$key.".gif\" border=\"0\" alt=\"".$AR->nls->list[$key]."\"></a> ";
 					}
 				?></td></tr>
+			<tr><td valign="top"><?php echo $ARnls["details"]; ?>:</td><td valign="top" class="data"><?php 
+				if (count($data->templates)) { 
+					echo "<a href=\"javascript:arshow('edit_object_layout','edit.object.layout.phtml')\" title=\"".$ARnls['template']."\">T</a>&nbsp;"; 
+				}; 
+				if (count($data->grants)) { 
+					echo "<a href=\"javascript:arshow('edit_object_grants','edit.object.grants.phtml')\" title=\"".$ARnls['grants']."\">G</a>&nbsp;"; 
+				}; 
+				?>
+				</span></td></tr>
+
 			<?php
 				}
 			?>
