@@ -44,20 +44,25 @@
 <body bgcolor="white">
 <img src="<?php echo $this->make_url(); ?>" alt="<?php echo $nlsdata->name; ?>" vspace="2" hspace="2">
 <?php
+	$query="object.parent='".AddSlashes($this->path)."'";
+	$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
 	if ($filter) {
+		$query.=" and object.implements='".AddSlashes($filter)."'";
 		$crit["object"]["implements"]["="]="'".AddSlashes($filter)."'";
 	}
 	if ($name) {
+		$query.=" and name.value ~= '%".AddSlashes($name)."%'";
 		$crit["name"]["value"]["like"]="'%".AddSlashes($name)."%'";
 	} else if ($letter) {
+		$query.=" and name.value ~= '".AddSlashes($letter)."%'";
 		$crit["name"]["value"]["like"]="'".AddSlashes($letter)."%'";
 	}
+	$query.=" and ( name.nls='".$nls."' or name.nls='' ) order by name.value";
 	if (!$limit) {
 		$limit=100;
 	}
-	$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
-	$total=$this->store->count($this->store->find("", $crit, 0));
-	$this->find(".",$crit, "browse.nav.list.show.phtml", "", $limit, $offset);
+	$total=$this->store->count($this->store->find("", $query, 0));
+	$this->find(".",$query, "browse.nav.list.show.phtml", "", $limit, $offset);
 	$this->call("browse.update.toolbar.phtml", Array("total" => $total, "offset" => $offset, "limit" => $limit));
 ?>
 </body>
