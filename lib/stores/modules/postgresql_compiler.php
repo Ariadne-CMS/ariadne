@@ -22,7 +22,7 @@
 						/*
 							if we are parsing 'orderby' properties we have to
 							join our tables for the whole query
-						*/							
+						*/
 						$this->select_tables[$table]=$table;
 						$result=" $table.$field ";
 					}
@@ -149,8 +149,14 @@
 				$right=$this->compile_tree($node["right"]);
 				if ($left) {
 					$result=" $left ,  $right ".$node["type"]." ";
+					if($node["left"]['id'] == 'property'){
+						$this->select_list[$node["left"]['table'].".".$node["left"]['field']] = $this->tbl_prefix.$node["left"]['table'].".".$node["left"]['field'];
+					}
 				} else {
 					$result=" $right ".$node["type"]." ";
+				}
+				if($node["right"]['id'] == 'property'){
+					$this->select_list[$node["right"]['table'].".".$node["right"]['field']] = $this->tbl_prefix.$node["right"]['table'].".".$node["right"]['field'];
 				}
 			break;
 
@@ -189,9 +195,19 @@
 				$prop_dep.=" and $val.object=$objects.id ";
 			}
 		}
+		if(is_array($this->select_list)){
+			@reset($this->select_list);
+			while (list($key, $val)=each($this->select_list)) {
+				$select .= ", $val ";
+			}
+		}
 
 		$query="select distinct($nodes.path), $nodes.parent, $nodes.priority, ";
 		$query.=" $objects.id, $objects.type, $objects.object, date_part('epoch', $objects.lastchanged) as lastchanged, $objects.vtype ";
+		if($select){
+			$query .= $select;
+		}
+
 		$query.=" from $tables where ";
 		$query.=" $nodes.object=$objects.id $prop_dep";
 		$query.=" and $nodes.path like '".AddSlashes($this->path)."%' ";
@@ -207,6 +223,7 @@
 			$query.= " order by $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
 		}
 		$query.=" $this->limit_s ";
+		debug("postgresql_compiler::priv_sql_compile($query)", "store");
 
 		return $query;
 	}

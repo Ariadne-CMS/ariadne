@@ -46,6 +46,8 @@ Bugs Fixed:
 	- Placed a workaround around the not so suported fulltext property so that
 	  the import of a object with a fulltext property doesn't fail when
 	  importing it into a store which does not support it
+	- Fixed a compiler bug  which created illigal query's for postgresql when
+	  using orderby on properties.
 
 Changes in Ariadne since version 2.2
 
