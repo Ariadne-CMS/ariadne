@@ -23,7 +23,6 @@
     <tr><td colspan="2">
       <?php echo $ARnls["type"]; ?> :
       <select name="newtype">
-	  <option value="*"><?php echo $ARnls["any"]; ?></option>
       <?php
         $this->ls("/system/ariadne/types/", "ShowOption.phtml","selected=$type");
       ?>
