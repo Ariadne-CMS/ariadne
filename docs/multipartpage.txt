@@ -3,26 +3,25 @@ Multi part pages
 
 Ppage now has a set of new methods to allow you to publish multi part pages, or multi page articles.
 
-function CountSections()
+  function CutPage($tag='h1', $withtags=true, $withtitles=true, $page=false)
 
-function CutPage($tag='h1', $withtags=true, $withtitles=true, $page=false)
+  function GetSections()
 
-function GetSection($section=0)
+  function GetSection($section=0)
 
-function GetSections() 
+  function CountSections()
 
-function GetTitle($section=0)
+  function GetTitle($section=0)
 
-function GetTitles() 
+  function GetTitles()
 
-function ShowSection($section=0, $template=null)
+  function ShowSection($section=0, $template="", $args="")
 
-function ShowSections($template=null)
+  function ShowSections($template="", $args="") 
 
-function ShowTitle($section=0, $template=null)
+  function ShowTitles($template="", $args="") 
 
-function ShowTitles($template=null)
-
+  function ShowTitle($section=0, $template="", $args="") 
 
 example:
 
@@ -99,9 +98,3 @@ ppage::view.html
 </div>
 </body>
 </html>
-
-
-Things to do:
-
-The intro / leader must be available. Also, if no titles are extracted, you might simply use the intro
-as the first page.
