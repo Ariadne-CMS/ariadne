@@ -172,7 +172,10 @@
 </script>
 <style>
 .nameselect {
-	width: 125px;
+	width: 100px;
+}
+.valueentry {
+	width: 280px;
 }
 </style>
 <input type="hidden" name="customdata">
@@ -183,12 +186,14 @@
 		<legend><?php echo $ARnls["customdata"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
 			<table border="0" width="100%" align="center" cellspacing="4" vspace="10" hspace="10">
 			<tr>
-				<td align="center" valign="top">
-					<select name="fieldname" size="10" width="16" class="nameselect" onChange="show();">
+				<td valign="top">
+					<img name="flagimage" src="<?php echo $any; ?>" alt="" align="right">
+					<select name="fieldname" width="16" class="nameselect" onChange="show();">
 					</select>
-				</td><td valign="top" style="width: 250px;">
-					<img name="flagimage" src="<?php echo $any; ?>" alt="" align="right"><br clear="all">
-					<textarea name="showcustomdata" rows="9" cols="20"></textarea>
+				</td>
+			</tr><tr>
+				<td valign="top">
+					<textarea name="showcustomdata" rows="9" cols="30" class="valueentry"></textarea>
     			</td>
 			</tr>
 		</table>
