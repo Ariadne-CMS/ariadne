@@ -1,6 +1,6 @@
 <?php
 	/******************************************************************
-	 edit.object.grants.phtml                              Muze Ariadne
+	 edit.object.grants.phtml															Muze Ariadne
 	 ------------------------------------------------------------------
 	 Arguments: none
 	 Grant needed: read
@@ -11,152 +11,305 @@
 	 
 	 no result
 
-	******************************************************************/
+	 	******************************************************************/
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
-		$ARCurrent->arReturnPage=$this->store->root.$this->path."edit.object.grants.phtml";
-
-		function arGetGrantType($value) {
-			if (($value & ARMASKLOCAL) && ($value & ARMASKCHILDREN)) { 
-				$result=""; 
-			} else if ($value & ARMASKLOCAL) {
-				$result="=";
-			} else {
-				$result="&gt;";
-			}
-			return $result;
-		}
 ?>
 <html>
 <head>
-<title><?php printf($ARnls["configure"],$nlsdata->name); echo " : ".$this->path; ?></title>
-<?php
-	include($this->store->code."widgets/wizard/classic.css");
-?>
 <style>
-TD {
-		FONT: 10pt sans-serif;
-}
-.list {
-		BACKGROUND-COLOR: white;
-		BORDER-STYLE: inset;
-		BORDER-WIDTH: thin;
-		HEIGHT: 100%;
-		WIDTH: 100%;
-		OVERFLOW: auto;
-}
-.listheading {
-		BACKGROUND-COLOR: #404074;
-		COLOR: #FFFFFF;
-		FONT-WEIGHT: bold;
-}
+	body, form {
+		border: 0px;
+		margin: 0px;
+		padding: 0px;
+		width: auto;
+		overflow: hidden;
+		background-color: threedface;
+	}
+	body {
+		padding: 5px;
+	}
+	form {
+		height: 100%;
+	}
+	body, form, td, input, select {
+		font: menu;
+	}
+	#grants_list {
+		height: 80%;
+		width: auto;
+		padding: 10px;
+	}
+	#grants_list_frame {
+		margin: 0px;
+		padding: 0px;
+		border: 0px;
+		height: 100%;
+		width: 100%;
+	}
+	#grants_grant {
+		height: 250px;
+		width: auto;
+		padding: 10px;
+	}
+	fieldset legend {
+		margin-bottom: 5px;
+	}
+	fieldset table {
+		width: 100%;
+		margin: 0px;
+	}
+	table#grants, td#grantstop, td#grantsbottom {
+		border: 0px;
+		background-color: threedface;
+		margin: 0px;
+		padding: 0px;
+		width: 100%;
+		height: 100%;
+	}
+	fieldset table {
+		padding: 0px;
+		width: 100%;
+		border-top: 1px solid buttonshadow;
+		border-left: 1px solid buttonshadow;
+		border-right: 1px solid buttonhighlight;
+		border-bottom: 1px solid buttonhighlight;
+	}
+	fieldset table table {
+		border: 0px;
+	}
+	table th {
+		background-color: buttonface;
+		BORDER-RIGHT: buttonshadow 1px solid; 
+		BORDER-TOP: buttonhighlight 1px solid; 
+		BORDER-LEFT: buttonhighlight 1px solid; 
+		CURSOR: default; 
+		BORDER-BOTTOM: buttonshadow 1px solid;
+		FONT: menu;
+	}
+	table tbody {
+		background-color: white;
+	}
+	table thead {
+		background-color: buttonface;
+	}
+	table td {
+		margin: 0px;
+		border: 0px;
+		PADDING-RIGHT: 5px; 
+		PADDING-LEFT: 5px; 
+		PADDING-BOTTOM: 2px; 
+		PADDING-TOP: 2px
+	}
+	table thead td {
+		BORDER-RIGHT: buttonshadow 1px solid; 
+		BORDER-TOP: buttonhighlight 1px solid; 
+		BORDER-LEFT: buttonhighlight 1px solid; 
+		CURSOR: default; 
+		BORDER-BOTTOM: buttonshadow 1px solid
+	}
+	table tbody tr.selected {
+		background-color: highlight;
+		color: highlighttext;
+	}
+	table tbody tr.selected A {
+		color: highlighttext;
+	}
+	table tbody tr.grey, table tbody tr.grey A {
+		color: #999999;
+	}
+	table td A:hover, table td A:active {
+		background-color: highlight;
+		color: highlighttext;
+	}
+	A {
+		text-decoration: none;
+		color: black;
+	}
+	.wgBrowseInput {
+		width: 125px;
+	}
+	.wgBrowseButton {
+		width: 80px;
+	}
+	A.hasgrants {
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	A.hasnogrants {
+		font-weight: normal;
+	}
 </style>
-</head>
-<body>
 <script>
-	if (document.all) {
-		window.innerHeight=document.body.clientHeight;
-		window.innerWidth=document.body.clientWidth;
-	}	
+
+	function selectTableRow(row, part) {
+		if (oldRow[part]) {
+			oldRow[part].className='';
+		}
+		row.className='selected';
+		oldRow[part]=row;
+		switch(part) {
+			case 'users' : 
+				document.getElementById('www_grants_user').style.display='block';
+				document.getElementById('www_grants_grant').style.display='none';
+				break;
+			case 'usergrants' :
+				document.getElementById('www_grants_grant').style.display='block';
+				break;
+		}
+	}
+
+	function selectUser(user) {
+//		document.getElementById('www_grants_user').style.display='block';
+//		document.getElementById('www_grants_grant').style.display='none';
+	}
+
+	function selectGrant(grant) {
+//		document.getElementById('www_grants_user').style.display='none';
+//		document.getElementById('www_grants_grant').style.display='block';
+	}
+
+	function showpath(path, url) {
+		var grantsframe=document.getElementById('grants_list_frame');
+		if (path=='<?php echo $this->path; ?>') {
+			grantsframe.src=url+'edit.object.grants.list.phtml';
+		} else {
+			grantsframe.src=url+'edit.object.grants.list.phtml?grey=true';
+		}
+	}
+
+	var frop=1;
+	function fixIESize() {
+		// silly hack to make IE6 respect sizes and padding of iframes in a fieldset.
+		if (frop==1) {
+			frop=2;
+			document.getElementById('grants_list_frame').style.height='100%';
+		} else {
+			frop=1;
+			document.getElementById('grants_list_frame').style.height=null;
+		}
+	}
+
 </script>
-<table border="0" width="100%" cellspacing="0">
+</head>
+<body onLoad="fixIESize();">
 <form name="grantsform" action="edit.object.grants.save.phtml">
 <input type="hidden" name="arReturnPage" value="<?php echo $ARCurrent->arReturnPage; ?>">
+<table id="grants" cellspacing="0" cellpadding="0" border="0" height="100%">
 <tr>
-	<td><script> document.write('<img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="'+(window.innerHeight-80)+'" alt="">'); </script></td>
-	<td valign="top">
-		<script> document.write('<div class="list" style="height: '+(window.innerHeight-80)+'">'); </script>
-		<table bgcolor="white" border="0" cellspacing="0" cellpadding="3" width="100%">
+  <td id="grantstop" height="100%">
+	<?php
+		$ARCurrent->arReturnPage=$this->store->root.$this->path."edit.object.grants.phtml";
+	?>
+	<fieldset id="grants_list">
+		<legend>Grants for <?php $this->parents($this->path, 'edit.object.grants.show.path.phtml','','/'); ?></legend>
+		<iframe id="grants_list_frame" src="<?php echo $this->make_url(); ?>edit.object.grants.list.phtml"></iframe>
+	</fieldset>
+  </td>
+</tr><tr>
+  <td id="grantsbottom" height="270">
+	<fieldset id="grants_grant">
+		<legend>Add or update grants</legend>
+		<div style="margin-bottom: 10px;">
+		<div style="float: right">
+			<input type="button" style="width: 80px;" name="explain" value="Explain">
+		</div>
+		User or group: <?php
+			$wgBrowsePath="/system/groups/";
+			$wgBrowseName="path";
+			$wgBrowseFilter="puser";
+			include($this->store->code."widgets/browse/js.html");
+			include($this->store->code."widgets/browse/form.html");
+		?>
+		</div>
+		<table cellspacing="0" cellpadding="0">
 		<tr>
-			<td class="listheading" width="18" height="18" unit="pixels">
-				<img src="<?php echo $AR->dir->images; ?>dot.gif" width="18" height="1">
-			</td><td class="listheading" width="30%">
-				<?php echo $ARnls["name"]; ?>
-			</td><td class="listheading" width="70%">
-				<?php echo $ARnls["grants"]; ?>
-			</td>
+			<th>grant</th>
+			<th colspan="2">modifiers</th>
 		</tr>
-		<?php
-			function DisplayGrants(&$grantslist, $type) {
-				global $AR, $ARCurrent, $ARnls;
-				if ($grantslist[$type] && is_array($grantslist[$type])) {
-					ksort($grantslist[$type]);
-					while (list($id, $grants)=each($grantslist[$type])) { // path was login en is weer login
-						echo "<tr valign=\"top\"><td>";
-						echo "<img src=\"".$AR->dir->images."icons/".$type.".gif\"></td><td>";
-						echo "<a href=\"edit.object.grants.save.phtml?delete=true&type=$type&id=".RawUrlEncode($id).
-								 "&arReturnPage=".RawUrlEncode($ARCurrent->arReturnPage).
-								 "\" onClick=\"return confirm('".sprintf($ARnls["q:removeallgrants"],$id)."')\">$id</a></td>";
-						echo "</td><td>";
-						if ($grants && is_array($grants)) {
-							ksort($grants);
-							while (list($grant, $modifiers)=each($grants)) {
-								if (!is_array($modifiers)) {
-									echo arGetGrantType($modifiers);
-								} 
-								echo "<a href=\"edit.object.grants.save.phtml?delete=true&type=$type&id=".
-									RawUrlEncode($id)."&grant=".
-									RawUrlEncode($grant)."&arReturnPage=".
-									RawUrlEncode($ARCurrent->arReturnPage).
-									"\" onClick=\"return confirm('".sprintf($ARnls["q:removegrant"],$grant,$id)."')\">$grant</a>\n"; 
-								if (is_array($modifiers)) {
-									echo "( ";
-									while (list($modifier, $value)=each($modifiers)) {
-										echo arGetGrantType($value);
-										echo "<a href=\"edit.object.grants.save.phtml?delete=true&type=$type&id=".
-											RawUrlEncode($id)."&grant=".
-											RawUrlEncode($grant)."&modifier=".
-											RawUrlEncode($modifier)."&arReturnPage=".
-											RawUrlEncode($ARCurrent->arReturnPage).
-											"\" onClick=\"return confirm('".sprintf($ARnls["q:removegrant"],$grant."(".$modifier.")",$id)."')\">$modifier</a>\n"; 
-									}
-									echo ") ";
-								}
+		<tr>
+			<td valign="top">
+				<div style="height: 100px; overflow: auto;">
+				<table cellspacing="0" height="100%" style="height: 100%; overflow: auto;">
+				<tr>
+					<td valign="top">
+					<?php
+						$grants=$this->find('/system/ariadne/grants/',"object.type='pobject'",'system.get.phtml');
+						if (is_array($grants)) {
+							$total=count($grants);
+							$half=ceil($total/2);
+							for ($i=0; $i<$half; $i++) {
+								echo '<input type="checkbox" name="grants[]" value="'.$grants[$i]->data->value.'">'.$grants[$i]->nlsdata->name.'<br>';
+							}
+							echo '</td><td valign="top">';
+							for ($i=$i; $i<$total; $i++) {
+								echo '<input type="checkbox" name="grants[]" value="'.$grants[$i]->data->value.'">'.$grants[$i]->nlsdata->name.'<br>';
 							}
 						}
-						echo "</td></tr>";
-					}
-				}
-			}
-
-
-			if ($data->grants && is_array($data->grants)) {
-				DisplayGrants($data->grants,"pgroup");
-				DisplayGrants($data->grants,"puser");
-			}
-		?>
-		<tr></tr>
-		</table>
-		</div>
-	</td>
-</tr><tr>
-	<td colspan="2">
-		<table width="100%" border="0">
-		<tr>
-			<td>&nbsp;</td>
-			<td><span class="required">User / Group</span></td>
-			<td><span class="required">Grants</span></td>
+					?>
+				</td>
+				</tr><tr>
+					<td colspan="2">
+						<input style="width: 140px;" type="text" name="grant_other"><br>
+					</td>
+				</tr>
+				</table>
+				</div>
+			</td>
+			<td valign="top" rowspan="3" style="padding: 0px;">
+				<div style="height: 150px; overflow: auto; width: 100%;">
+				<table cellspacing="0" height="100%" style="margin: 0px; border: 0px; width: 100%;">
+				<tr>
+					<td valign="top">
+					<input type="checkbox" name="modifiers[]" value="paddressbook">Addressbook<br>
+					<input type="checkbox" name="modifiers[]" value="particle">Article<br>
+					<input type="checkbox" name="modifiers[]" value="pcalendar">Calendar<br>
+					<input type="checkbox" name="modifiers[]" value="pcalitem">Calendar Item<br>
+					<input type="checkbox" name="modifiers[]" value="pdir">Directory<br>
+					<input type="checkbox" name="modifiers[]" value="pfile">File<br>
+					<input type="checkbox" name="modifiers[]" value="pgroup">Group<br>
+					<input type="checkbox" name="modifiers[]" value="pnewspaper">Newspaper<br>
+					<input type="checkbox" name="modifiers[]" value="pobject">Object<br>
+					<input type="checkbox" name="modifiers[]" value="porganization">Organization<br>
+					<input type="checkbox" name="modifiers[]" value="ppage">Page<br>
+				</td><td valign="top" rowspan="4" height:100%; overflow: auto;">	
+					<input type="checkbox" name="modifiers[]" value="pperson">Person<br>
+					<input type="checkbox" name="modifiers[]" value="pphoto">Photo<br>
+					<input type="checkbox" name="modifiers[]" value="pphotobook">Photobook<br>
+					<input type="checkbox" name="modifiers[]" value="pprofile">Profile<br>
+					<input type="checkbox" name="modifiers[]" value="pscenario">Scenario<br>
+					<input type="checkbox" name="modifiers[]" value="psearch">Search<br>
+					<input type="checkbox" name="modifiers[]" value="psection">Section<br>
+					<input type="checkbox" name="modifiers[]" value="pshortcut">Shortcut<br>
+					<input type="checkbox" name="modifiers[]" value="psite">Site<br>
+					<input type="checkbox" name="modifiers[]" value="puser">User<br>
+		 		</td>
+				</tr>
+				</table>
+				</div>
+			</td>
 		</tr><tr>
-			<td></td>
-			<td>
-			<?php
-				$wgBrowsePath="/system/groups/";
-				$wgBrowseName="path";
-				$wgBrowseFilter="puser";
-				include($this->store->code."widgets/browse/js.html");
-				include($this->store->code."widgets/browse/form.html");
-			?>
-			</td><td width="0">
-				<nobr>
-					<input type="text" name="newgrants" size="25">
-					<input type="submit" name="Add" value="<?php echo $ARnls["add"]; ?>">
-				</nobr>
+			<th valign="top" height="1%">valid for</th>
+		</tr><tr>
+			<td valign="top" height="100%">
+				<select name="type">
+					<option value="&gt;=">Default</option>
+					<option value="&gt;">Children only</option>
+					<option value="=">This object only</option>
+				</select>
 			</td>
 		</tr>
 		</table>
-	</td>
+		<div style="margin-top: 10px;">
+		<input type="button" name="remove" style="width: 80px;" value="Remove">
+		<input type="text" name="newgrants" size="25" style="margin-left: 10px; width: 277px;">
+		<input type="submit" name="Add" value="<?php echo $ARnls["add"]; ?>" style="width: 80px;">
+		</div>
+	</fieldset>
+
+  </td>
 </tr>
-</form>
 </table>
+</form>
 </body>
 </html>
 <?php 
