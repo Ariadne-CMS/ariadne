@@ -7,8 +7,16 @@
 		// only keep the body.innerHTML
 		$page=eregi_replace("^.*<body[^>]*>","",$page);
 		$page=eregi_replace("</body[^>]*>.*$","",$page);
-		// first decode unicode characters...
-		$page=utf8_decode($page);
+
+		if ($AR->nls->charsets[$ContentLanguage]) {
+			if ($AR->nls->charsets[$ContentLanguage] == "ISO-8859-1") {
+				$page=utf8_decode($page);
+			}
+		} else
+		if ($AR->nls->charsets["default"] == "ISO-8859-1") {
+			$page=utf8_decode($page);
+		}
+
 		// now change special characters to their html entity
 		$page=htmlentities($page);
 		// now change '<', '>', '"', '~' and '&' back.
