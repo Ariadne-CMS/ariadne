@@ -144,10 +144,20 @@
   TD > #wgWizSectionData {
     height: auto;
     position: fixed;
+<?php
+	if ($wgWizShowSections) {
+?>
     left: 120px;
-    top: 58px;
-    right: 0px;
+<?php
+	} else {
+?>
+	left: 0px;
+<?php
+	}
+?>
     bottom: 30px;
+    top: 58px;
+    right: 8px;
   }
   #wgWizSectionList > #wgWizSections {
     width: 100px;
