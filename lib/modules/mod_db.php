@@ -10,7 +10,6 @@ class pinp_DB {
 
 	function _connect($dsn, $options = false) {
 		global $AR;
-		include_once($this->store->code.'modules/mod_db.php');
 	 
 		$key=@count($AR->DB_list);
 		$AR->DB_list[$key]=DB::connect($dsn, $options);
