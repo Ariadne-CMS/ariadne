@@ -688,9 +688,8 @@ return tbContentElement_ContextMenuAction(itemIndex)
   if (!$wgHTMLEditTemplate) {
     $wgHTMLEditTemplate="user.edit.page.html";
   }
-  global $QUERY_STRING;
-  if ($QUERY_STRING && (strpos($wgHTMLEditTemplate,"?") === false) ) {
-    $wgHTMLEditTemplate.="?".$QUERY_STRING;
+  if (ldGetServerVar("QUERY_STRING") && (strpos($wgHTMLEditTemplate,"?") === false) ) {
+    $wgHTMLEditTemplate.="?".ldGetServerVar("QUERY_STRING");
   }
   echo "SRC=\"$wgHTMLEditTemplate\"";
 ?>></IFRAME>
