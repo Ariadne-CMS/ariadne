@@ -12,7 +12,7 @@
 	// FIXME: use nls text
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 	if ($data->mimetype=="text/html") {
-			$this->call("system.save.html.phtml", $arCallArgs);
+		$this->call("system.save.html.phtml", $arCallArgs);
 	} else {
 		$this->error="This is not an html file.";
 	}
@@ -23,6 +23,11 @@
 <?php
 		if (!$this->error) {
 			echo "File saved";
+			?>
+<script>
+  window.setTimeout('window.close()',500);
+</script>
+			<?php
 		} else {
 			echo "Error: $this->error";
 		}

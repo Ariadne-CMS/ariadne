@@ -41,7 +41,14 @@
 				</td>
 			</tr><tr>
 				<td colspan="2">
-					<textarea name="<?php echo $selectednls."[summary]"; ?>" cols="30" rows="4" wrap="soft"><?php 
+					<?php
+						if ($data->mimetype=="text/html") {
+							$rows=2;
+						} else {
+							$rows=4;
+						}
+					?>
+					<textarea name="<?php echo $selectednls."[summary]"; ?>" cols="30" rows="<?php echo $rows; ?>" wrap="soft"><?php 
 							echo ereg_replace("&","&amp;",$this->getdata("summary", $selectednls)); 
 					?></textarea>
 				</td>
@@ -56,9 +63,10 @@
 						if ($data->mimetype=="text/html") {
 							$wgHTMLEditName="html";
 							$wgHTMLEditPath=$this->parent;
-							$wgHTMLEditFile=$data->filename;
+							$wgHTMLEditFile=substr($this->path, strlen($this->parent), -1);
 							$wgHTMLEditLanguage="none";
 							$wgHTMLEditType="full";
+							$wgHTMLEditContent=$this->ParseFile($this->GetFile());
 							include($this->store->code."widgets/htmledit/js.html");
 							include($this->store->code."widgets/htmledit/form.html"); 
 						}

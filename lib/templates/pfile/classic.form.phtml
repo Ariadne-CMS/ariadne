@@ -67,7 +67,7 @@
 				$wgHTMLEditPath=$this->parent;
 				$wgHTMLEditFile=$data->filename;
 				$wgHTMLEditLanguage="none";
-				$wgHTMLEditContent=implode(" ",file($this->store->files."files".$this->parent.$data->filename));
+				$wgHTMLEditContent=$this->ParseFile($this->GetFile());
 				$wgHTMLEditType="full";
 				include($this->store->code."widgets/htmledit/js.html");
 				include($this->store->code."widgets/htmledit/form.html"); 
