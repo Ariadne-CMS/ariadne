@@ -10,9 +10,10 @@
 	require_once($ariadne."/configs/ariadne.phtml");
 	require_once($ariadne."/configs/store.phtml");
 	require_once($ariadne."/configs/axstore.phtml");
+	require_once($ariadne."/includes/loader.web.php");
 	require_once($ariadne."/stores/mysqlstore.phtml");
 	require_once($ariadne."/stores/axstore.phtml");
-	require_once("ax_util/shared_functions.php");
+	require_once("./utils/shared_functions.php");
 
 	if ($argc>2) {
 		$argv[1]=str_replace('\\', '/', $argv[1]);
@@ -41,21 +42,21 @@
 						rm_dir($tempdir);
 						unset($tempdir);
 
+/*
 						for ($i=1; $i<=2; $i++) {
-							if ($argv[$i]!="/") {
+							if (($argv[$i][0]!="/") && ($argv[$i][0]!='~')) {
 								// relative, so do a '../' postfix
 								$argv[$i]="../".$argv[$i];
 							}
 						}
-						chdir("ax_util");
+*/
 						if ($head=="O:6:\"object\"") {
 							echo "ariadne 2b09 version\n";
-							include("convert_b09");
+							include("./utils/convert_b09");
 						} else {
 							echo "ariadne cvs version\n";
-							include("convert_cvs");
+							include("./utils/convert_cvs");
 						}
-						chdir("..");
 					}
 			}
 		}
