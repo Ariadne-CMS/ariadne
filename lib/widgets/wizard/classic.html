@@ -58,6 +58,8 @@
   if (!$wgWizNextStep) {
     if ($wgWizControl && $wgWizCurrent) {
       $wgWizNextStep=$wgWizFlow[$wgWizCurrent][wgWizGetAction($wgWizControl)];
+    } else if ($wgWizList && is_array($wgWizList)) { 
+      $wgWizNextStep=$wgWizList[1];
     } else {
       $wgWizNextStep=1;
     }
@@ -119,18 +121,47 @@
     <table>
     <tr><td>
     <?php
-      if ($wgWizFlow && is_array($wgWizFlow)) {
-        for ($i=1; $i<sizeof($wgWizFlow); $i++) {
-          if ($i==$wgWizNextStep) {
-            echo "<span class=\"current\">$i&nbsp;".$wgWizFlow[$i]["title"]."</span><br>\n"; 
+      if ($wgWizList && is_array($wgWizList)) {
+        for ($i=1; $i<=sizeof($wgWizList); $i++) {
+		  $step=$wgWizList[$i];
+          $item="<nobr>$i&nbsp;".$wgWizFlow[$step]["title"]."</nobr>";
+          if ($wgWizListClickable>=$i) {
+            $head="<a href=\"javascript:gotostep('".AddSlashes($step)."');\"";
+            $tail="</a><BR>\n";
           } else {
-            echo "$i&nbsp;".$wgWizFlow[$i]["title"]."<br>\n";
+            $head="<span";
+            $tail="</span><BR>\n";
           }
+          if ($step==$wgWizNextStep) {
+            $item=$head.' class="current">'.$item.$tail; 
+          } else {
+            $item=$head.'>'.$item.$tail;
+          }
+          echo $item;
+        }
+      } else if ($wgWizFlow && is_array($wgWizFlow)) {
+        for ($i=1; $i<sizeof($wgWizFlow); $i++) {
+          $item="<nobr>$i&nbsp;".$wgWizFlow[$i]["title"]."</nobr>";
+          if ($wgWizListClickable>=$i) {
+            $head="<a href='javascript:gotostep($i);'";
+            $tail="</a><BR>\n";
+          } else {
+            $head="<span";
+            $tail="</span><BR>\n";
+          }
+          if ($i==$wgWizNextStep) {
+            $item=$head.' class="current">'.$item.$tail; 
+          } else {
+            $item=$head.'>'.$item.$tail;
+          }
+          echo $item;
         }
       } else {
         error("ERROR: No flow information");
       }
     ?>
+
+
     </td></tr>
     </table>
   </td>
