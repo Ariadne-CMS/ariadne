@@ -1,12 +1,16 @@
 #!/usr/local/bin/php -q
+<form><textarea style="width: 100%;" cols=80 rows=24>
 <?php
   require("../ariadne.inc");
   require($ariadne."/configs/ariadne.phtml");
   require($ariadne."/configs/store.phtml");
   include_once($ariadne."/stores/mysql_install.phtml");
+  $ERRMODE="text";
 
   $store=new mysqlstore_install(".",$store_config);
   
+  echo "== creating main Ariadne Object Store\n\n";
+
   $store->initialize();
 
   $store->add_type("pshortcut","pobject");
@@ -104,13 +108,13 @@
   $address["country"]["string"]=50;
   $store->create_property("address", $address);
 
-  // import ariadne content
-  echo "install: ".$AR->ax->cmd_untar."\n";
+  echo "== importing ariadne.ax file\n\n";
   $import_path="/"; $ax_file="ariadne.ax";
+//  printf("install: ".$AR->ax->cmd_untar."\n", $ax_file, "");
   include($ariadne."/includes/import.phtml");
 
   if ($error) {
-    echo $error."<br>\n";
+    error($error);
   }
 
   $store->close(); 
@@ -121,6 +125,8 @@
 
   $sessionstore=new mysqlstore_install(".",$session_config);
   
+  echo "== creating Ariadne Session Store\n\n";
+
   $sessionstore->initialize();
 
   $sessionstore->add_type("psession","pobject");
@@ -129,3 +135,4 @@
   $sessionstore->close();
   
 ?>
+</textarea></form>
