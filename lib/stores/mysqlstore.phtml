@@ -371,7 +371,7 @@ class mysqlstore {
 	}
 
 
-	function save($path, $type, $data, $properties="", $vtype="", $priority=0) {
+	function save($path, $type, $data, $properties="", $vtype="", $priority=false) {
 	/***************************************************************
 
 		This function takes as argument a path, type, objectdata and 
@@ -442,19 +442,21 @@ class mysqlstore {
 			if (!$errno) { // mysql_affected_rows doesn't always work
 				debug("save: query=$query_string","all");
 				$this->save_properties($properties, $id, $this); 
-				$query_string="update $nodes_tbl set priority=$epriority where path='$epath'";
-				mysql_db_query($this->database,$query_string, $this->connect_id);
-				$errno=mysql_errno($this->connect_id);
-				if (!$errno) {
-					debug("save: query=$query_string","all");
-					$result=$path;
-				} else {
-					$this->error="ERROR: Mysql: $errno: ".mysql_error($this->connect_id);
-					debug("save: query=$query_string","store");
-					debug("save: update object failed!","store");
-					debug("save: ".$this->error,"store");
-					$result=0;
-				}
+				if($priority !== false) {
+					$query_string="update $nodes_tbl set priority=$epriority where path='$epath'";
+					mysql_db_query($this->database,$query_string, $this->connect_id);
+					$errno=mysql_errno($this->connect_id);
+					if (!$errno) {
+						debug("save: query=$query_string","all");
+						$result=$path;
+					} else {
+						$this->error="ERROR: Mysql: $errno: ".mysql_error($this->connect_id);
+						debug("save: query=$query_string","store");
+						debug("save: update object failed!","store");
+						debug("save: ".$this->error,"store");
+						$result=0;
+					}
+				} 
 			} else {
 				$this->error="ERROR: Mysql: $errno: ".mysql_error($this->connect_id);
 				debug("save: query=$query_string","store");
@@ -468,6 +470,12 @@ class mysqlstore {
 				$vtype=$type; 
 			}
 			$evtype=AddSlashes($vtype);
+
+			if($priority === false){
+				// default priority == 0
+				$priority = 0;
+				$epriority=(int)$priority;
+			}
 
 			$mask = substr($path, strlen($parent));
 			if (ereg("^(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) { 

@@ -380,7 +380,7 @@ class postgresqlstore {
 		return (@pg_close($this->connect_id));
 	}
 
-	function save($path, $type, $data, $properties="", $vtype="", $priority=0) {
+	function save($path, $type, $data, $properties="", $vtype="", $priority=false) {
 	/***************************************************************
 
 		This function takes as argument a path, type, objectdata and 
@@ -465,18 +465,20 @@ class postgresqlstore {
 			if (! $err) {
 				debug("save: query=$query_string","all");
 				$this->save_properties($properties, $id, $this); 
-				$query_string	= "update $nodes_tbl set priority=$epriority where path='$epath'";
-				pg_exec($this->connect_id, $query_string);
-				$err			= pg_errormessage($this->connect_id);
-				if (! $err) {
-					debug("save: query=$query_string","all");
-					$result	= $path;
-				} else {
-					$this->error="ERROR: PostgreSQL: $err";
-					debug("save: query=$query_string","store");
-					debug("save: update object failed!","store");
-					debug("save: ".$this->error,"store");
-					$result	= 0;
+				if($priority !== false) {
+					$query_string	= "update $nodes_tbl set priority=$epriority where path='$epath'";
+					pg_exec($this->connect_id, $query_string);
+					$err			= pg_errormessage($this->connect_id);
+					if (! $err) {
+						debug("save: query=$query_string","all");
+						$result	= $path;
+					} else {
+						$this->error="ERROR: PostgreSQL: $err";
+						debug("save: query=$query_string","store");
+						debug("save: update object failed!","store");
+						debug("save: ".$this->error,"store");
+						$result	= 0;
+					}
 				}
 			} else {
 				$this->error="ERROR: PostgreSQL: $err";
@@ -491,6 +493,12 @@ class postgresqlstore {
 				$vtype	= $type; 
 			}
 			$evtype			= AddSlashes($vtype);
+
+			if($priority === false){
+				// default priority == 0
+				$priority = 0;
+				$epriority=(int)$priority;
+			}
 			$query_string	= "insert into $objects_tbl (type,object,vtype) values ('$etype','$edata','$evtype')";
 			debug("save: query=$query_string","all");
 			$exec	= pg_exec($this->connect_id, $query_string);
