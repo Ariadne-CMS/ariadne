@@ -94,9 +94,6 @@
 	table tbody tr.selected A {
 		color: highlighttext;
 	}
-	table tbody tr.grey, table tbody tr.grey A {
-		color: #999999;
-	}
 	table td A:hover, table td A:active {
 		background-color: highlight;
 		color: highlighttext;
@@ -117,6 +114,18 @@
 	}
 	A.hasnogrants {
 		font-weight: normal;
+	}
+	.odd {
+	}
+	.even {
+		background-color: #EEEEEE;
+	}
+	.even-grey, .even-grey A {
+		color: #666666;
+		background-color: #EEEEEE;
+	}
+	.odd-grey, .odd-grey A {
+		color: #999999;
 	}
 </style>
 <title>Explaining grants for <?php echo $user->data->name; ?></title>
@@ -163,14 +172,14 @@
 						echo arGetGrantType($value);
 						echo $modifier." "; 
 					}
-					echo ")";
+					echo ") ";
 				}
 			}
 		}
 	}
 
 	function explainUser($user, $path) {
-	global $AR;
+	global $AR, $ARCurrent;
 
 		debug("pobject: GetValidGrants()","object");
 		if ($user) { 	// login and retrieval of user object 
@@ -182,16 +191,26 @@
 					$temppath=$user->make_path($temppath."..");
 					$tempgrants=Array();
 					if ($user->GetGrants($temppath, $tempgrants)) {
-						echo '<tr class="grey"><td>'.$temppath.'</td><td>';
+						if ($ARCurrent->oddline=($ARCurrent->oddline+1)%2) {
+							$class='odd-grey';
+						} else {
+							$class='even-grey';
+						}
+						echo '<tr class="'.$class.'"><td>'.$temppath.'</td><td>';
 						echo "<img src=\"".$AR->dir->images."icons/puser.gif\"></td>";
 						echo '</td><td>'.$user->data->login.'</td><td>';
 						DisplayGrants($tempgrants);
 						echo '</td></tr>';
 					}
 				}
-				echo '<tr><td>'.$userpath.'</td><td>';
+				if ($ARCurrent->oddline=($ARCurrent->oddline+1)%2) {
+					$class='odd';
+				} else {
+					$class='even';
+				}
+				echo '<tr class="'.$class.'"><td valign="top">'.$userpath.'</td><td valign="top">';
 				echo "<img src=\"".$AR->dir->images."icons/puser.gif\"></td>";
-				echo '</td><td>'.$user->data->login.'</td><td>';
+				echo '</td><td valign="top">'.$user->data->login.'</td><td>';
 				DisplayGrants($grants);
 				echo '</td></tr>';
 
@@ -231,7 +250,7 @@
 	}
 
 	function explainGroup($group, $path, $userpath="", $showparents=false) {
-		global $AR;
+		global $AR, $ARCurrent;
 		$groupgrants=Array();
 		if (is_object($group)) {
 			$grouppath=$group->FindGrants($path, $groupgrants, $userpath);
@@ -241,7 +260,12 @@
 					$temppath=$group->make_path($temppath."..");
 					$tempgrants=Array();
 					if ($group->GetGrants($temppath, $tempgrants)) {
-						echo '<tr class="grey"><td>'.$temppath.'</td><td>';
+						if ($ARCurrent->oddline=($ARCurrent->oddline+1)%2) {
+							$class='odd-grey';
+						} else {
+							$class='even-grey';
+						}
+						echo '<tr class="'.$class.'"><td>'.$temppath.'</td><td>';
 						echo "<img src=\"".$AR->dir->images."icons/pgroup.gif\"></td>";
 						echo '</td><td>'.$group->data->login.'</td><td>';
 						DisplayGrants($tempgrants);
@@ -249,7 +273,12 @@
 					}
 				}
 			}
-			echo '<tr><td>'.$grouppath.'</td><td>';
+			if ($ARCurrent->oddline=($ARCurrent->oddline+1)%2) {
+				$class='odd';
+			} else {
+				$class='even';
+			}
+			echo '<tr class="'.$class.'"><td>'.$grouppath.'</td><td>';
 			echo "<img src=\"".$AR->dir->images."icons/pgroup.gif\"></td>";
 			echo '</td><td>'.$group->data->login.'</td><td>';
 			DisplayGrants($groupgrants);

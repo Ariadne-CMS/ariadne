@@ -76,8 +76,15 @@
 	table tbody tr.selected A {
 		color: highlighttext;
 	}
-	table tbody tr.grey, table tbody tr.grey A {
+	table tbody tr.even-grey, table tbody tr.even-grey A {
+		color: #666666;
+		background-color: #EEEEEE;
+	}
+	table tbody tr.odd-grey, table tbody tr.odd-grey A {
 		color: #999999;
+	}
+	.even {
+		background-color: #EEEEEE;
 	}
 	table td A:hover {
 		background-color: highlight;
@@ -203,24 +210,35 @@
 					while (list($id, $grants)=each($grantslist[$type])) { // path was login en is weer login
 						if (!$ARCurrent->donelist[$type][$id]) {
 							$ARCurrent->donelist[$type][$id]=true;
-							echo "<tr valign=\"middle\" id=\"grants-$type-$id\"";
-							if ($grey) {
-								echo " class=\"grey\"";
+ 				        	if ($ARCurrent->oddline=($ARCurrent->oddline+1)%2) {
+								$class='odd';
+								if ($grey) {
+									$class='odd-grey';
+								}
+							} else {
+								$class='even';
+								if ($grey) {
+									$class='even-grey';
+								}
 							}
-							echo "><td>";
+ 							echo "<tr class=\"$class\" valign=\"middle\" id=\"grants-$type-$id\"><td>";
 							echo "<img src=\"".$AR->dir->images."icons/".$type.".gif\"></td>";
 							echo "<td valign=\"middle\">";
 							echo "<a href=\"javascript:loadUser('$type', '$id');\">$id</a>";
 							echo "</td>";
 							echo "<td valign=\"middle\">";
 							if ($grants && is_array($grants)) {
+								// first check for similar grants (same modifiers)
 								$grants_check = $grants;
 								foreach ($grants as $grant => $grant_ar) {
+									// loop $grants for each entry in $grants_check (which is a copy)
 									array_shift($grants_check);
-									foreach ($grants_check as $grant_c => $grant_ar_c) {
-										if (array_compare($grant_ar, $grant_ar_c)) {
-											$grants_eq[$grant][] = $grant_c;
-											unset($grants[$grant_c]);
+									if (is_array($grant_ar)) {
+										foreach ($grants_check as $grant_c => $grant_ar_c) {
+											if (is_array($grant_ar_c) && array_compare($grant_ar, $grant_ar_c)) {
+												$grants_eq[$grant][] = $grant_c;
+												unset($grants[$grant_c]);
+											}
 										}
 									}
 								}
