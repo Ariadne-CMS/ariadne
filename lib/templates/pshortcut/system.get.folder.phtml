@@ -1,14 +1,14 @@
 <?php
 	require_once($this->store->code."modules/mod_unicode.php");
 	$name=unicode::utf8convert($nlsdata->name);
-	$path=$this->make_path($data->path);
+	$path=$this->store->make_path($this->parent, $data->path);
 	if ($AR->user && !$this->CheckSilent("read")) {
 		$arResult["pre"]="<font color='#CCCCCC'>$flag";
 	} else {
 		$arResult["pre"]=$flag;
 	}
 	if ($path!=$this->path) {
-		$folder=$this->get($data->path,"system.get.folder.phtml");
+		$folder=$this->get($path,"system.get.folder.phtml");
 		if ($folder && $folder[0]["icon"]) {
 			$arResult["icon"]=$folder[0]["icon"];
 		} else {

@@ -19,7 +19,7 @@
 
 
 		$this->data->path=$this->getdata("path","none");
-		$path=$this->make_path($this->data->path);
+		$path=$this->store->make_path($this->parent, $this->data->path);
 
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
 			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);

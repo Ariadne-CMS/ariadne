@@ -1,6 +1,7 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		if ($this->exists($data->path)) {
+    $shortcut=$this->store->make_path($this->parent, $data->path);
+	if ($this->exists($shortcut)) {
 ?>
 	<div id="details">
 		<div style="padding: 5px;">
@@ -8,7 +9,7 @@
 		</div>
 	</div>
 <?php
-			$this->get($data->path, "manage.details.html");
+			$this->get($shortcut, "manage.details.html", $arCallArgs);
 		} else {
 ?>
 	<div id="details">
