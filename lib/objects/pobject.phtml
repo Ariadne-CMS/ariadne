@@ -392,11 +392,14 @@ class pobject extends object {
 				debug("pobject: CheckLogin: use public","object");
 			} else {
 				if (!ldCheckCredentials($ARCurrent->session->get("ARLogin"), $ARCurrent->session->get("ARPassword"))) {
-					if (!$silent) {
+					$ARLogin="public"; $ARPassword="none";
+					// default fallback is 'public'.
+/*
+					} else if (!$silent) {
 						$arLoginMessage=$ARnls["accessdenied"].": ".$ARnls["q:cookiesenabled"];
 						$this->call("user.login.html",Array( "arLoginMessage" => $arLoginMessage));
 					}
-					$continue=false;
+*/					$continue=false;
 				} else {
 					$ARLogin=$ARCurrent->session->get("ARLogin");
 					$ARPassword=$ARCurrent->session->get("ARPassword");
