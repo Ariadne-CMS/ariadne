@@ -30,13 +30,13 @@
 						window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddSlashes($this->nlsdata->name); ?>','<?php echo $this->path; ?>'); 
 					}
 					<?php
-						if (!$arIsNewObject) {
+						if (!$arIsNewObject || $this->getdata("arCloseWindow", "none")) {
 					?>
 								window.close();
 					<?php
 						} else {
 					?>
-								window.location.href='object.new.select.phtml';
+							window.location.href='object.new.select.phtml';
 					<?php
 						}
 					?>
