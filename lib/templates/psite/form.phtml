@@ -43,7 +43,7 @@ include($this->store->code."widgets/formlock/js.html");
   <td bgcolor="#404074">
     <?php
       $wgNLSpretext="<font face=\"helvetica, sans-serif\" size=\"+1\" color=\"white\"><b>".
-        $ARnls["editnewspaper"].":</b></font><br>";
+        $ARnls["editsite"].":</b></font><br>";
       include($this->store->code."widgets/nls/form.phtml");
     ?>
   </td>
@@ -73,6 +73,23 @@ include($this->store->code."widgets/formlock/js.html");
       echo ereg_replace("&","&amp;",$this->getdata("summary",$nls)); 
     ?></textarea>
   </td>
+</tr><tr>
+  <td align="right">
+    <font face="helvetica, sans-serif"><?php echo $ARnls["page"]; ?>&nbsp;:</font>
+  </td>
+  <td colspan="2">
+  <?php
+    if (!$newtype) {
+      $wgHTMLEditName="page";
+      $wgHTMLEditLanguage=$nls;
+      $wgHTMLEditContent=$this->getdata("page",$nls);
+      include($this->store->code."widgets/htmledit/js.html");
+      include($this->store->code."widgets/htmledit/form.html");
+    } else {
+      echo "available when object is created";
+    }
+  ?>
+  </td>
 </tr> 
 </table>
 <br><br>
@@ -86,7 +103,7 @@ include($this->store->code."widgets/formlock/js.html");
     <?php } else { ?>
       <input type="submit" name="next" value="<?php echo $ARnls["cancel"]; ?>">
 <?php
-    $wgRecurseConfirm=$ARnls["q:removenewspaper"];
+    $wgRecurseConfirm=$ARnls["q:removesite"];
 	$wgRecurseAction="delete";
 	$wgRecurseTitle=$ARnls["delete"];
     include($this->store->code."widgets/recurse/form.js");
