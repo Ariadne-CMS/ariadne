@@ -151,7 +151,7 @@ class pobject extends object {
 	  if this is a new object ($this->arIsNewObject) the path is checked and
 	  the object is saved under the new path.
 	***********************************************************************/
-	global $AR;
+	global $AR, $ARConfig;
 		debug("pobject: save([properties], $vtype)","object");
 		$result=false;
 		if ($this->arIsNewObject) { // save a new object
@@ -160,8 +160,19 @@ class pobject extends object {
 			if (!eregi("\.\.",$arNewFilename)) {
 				if (eregi("^[a-z0-9_\{\}\.\:-]+$",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
 					if (!$this->exists($arNewFilename)) {
-						$this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype);
-						$result=$this->path;
+						if ($this->exists($arNewParent)) {
+							$this->data->ctime=time();
+							$this->data->mtime=$this->data->ctime;
+							$this->data->owner_name=$AR->user->data->name;
+							$this->data->owner=$AR->user->data->login;
+							// $properties["time"]["ctime"]=$this->data->ctime;
+							// $properties["time"]["mtime"]=$this->data->mtime;
+							// $properties["owner"]["value"]=$this->data->owner;
+							$this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype);
+							$result=$this->path;
+						} else {
+							$this->error="parent $arNewParent doesn't exist.";
+						}
 					} else {
 						$this->error="$arNewFilename already exists.";
 					}
@@ -174,6 +185,8 @@ class pobject extends object {
 		} else { // update an existing object
 			if (!($result=$this->lock(0,"O")) || ($result["locks"][$this->path]["identity"]==$AR->user->data->login)) {
 				if ($this->exists($this->path)) { // prevent 'funny stuff'
+					$this->data->mtime=time();
+					// $properties["time"]["mtime"]=$this->data->mtime;
 					$this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype);
 					$result=$this->path;
 					$this->ClearCache();
@@ -184,6 +197,11 @@ class pobject extends object {
 			} else {
 				$this->error="Object already locked.";
 			}
+		}
+		if ($this->data->nls->list[$this->nls]) {
+			$this->nlsdata=$this->data->{$this->nls};
+		} else {
+			$this->nlsdata=$this->data->{$this->data->nls->default};
 		}
 		debug("pobject: save: end","all");
 		return $result;
