@@ -28,7 +28,7 @@
   /* Ariadne Install Directory                                             */ 
   /*************************************************************************/
 
-  $ariadne_root               = "/usr/local/lib/ariadne.2.0b9/";
+  $ariadne_root               = "/usr/local/lib/ariadne/";
 
   /*************************************************************************/
   /* Ariadne Code Library (lib)                                            */
