@@ -1,43 +1,76 @@
 <?php
-	if ($this) $store=&$this->store;
-	global $AR;
-	require($store->code."modules/mod_ax.phtml");
+if ($this->CheckLogin("read")) {
+	global $AR, $options;
+	include($this->store->code."modules/mod_ax.phtml");
 
 	$mod=new mod_ax;
-	if (!$error=$mod->open($ax_file,$AR->ax,"",$store->files."temp/")) {
-		if (!$store->exists($export_path)) {
-			$error="err:exportpathdoesntexist";
-		} else {
-		   if ($mod->openObjectsData("w+")) {
-			$crit["object"]["implements"]["="]="'pobject'";
-			$offset=0;
-			while ($result=$store->call("object.export.phtml","",$store->find($export_path,$crit,100,$offset))) {
-				$name=substr($export_path,strrpos(substr($export_path,0,-1),"/"));
 
-				while (is_array($result) && (list($key,$object)=each($result))) {
-					$path=$name.substr($object->path,strlen($export_path));
-					$object->path=$path;
-					$mod->writeObject($object);
-				}
-
-				$offset+=sizeof($result);
-			}
-			$mod->closeObjectsData();
-
-			if ($export_path=="/") $export_path="/.";
-			if (!($error=$mod->exportfiles("templates",$store->files."templates".$export_path))) {
-				$error=$mod->exportfiles("files",$store->files."files".$export_path);
-			}
-			
-		   } else {
-			$error="err: can not open objects data file";
-		   }
-			if (($err=$mod->close()) && !$error) {
-				// only export an error when there wasn't a
-				// previous error
-				$error=$err;
+	if (!function_exists('display')) {
+		function display($str) {
+			global $options;
+			if ($options["verbose"]) {
+				echo $str;
 			}
 		}
 	}
 
+	if (!$error=$mod->open($options["axFile"],$AR->ax,"",$this->store->files."temp/")) {
+		if ($mod->openObjectsData("w+")) {
+
+			// some header information...
+			$header=new object;
+			$header->data=new object;
+			$header->data->options=$options;
+			$mod->writeObject($header);
+
+			while (is_array($path_array) && (list($aspath, $path)=each($path_array))) {
+
+				$criteria["object"]["implements"]["="]="'pobject'";
+				$offset=0;
+				while ($result=$this->store->call("system.export.phtml","",$this->store->find($path,$criteria,100,$offset))) {
+
+					while (is_array($result) && (list($key,$object)=each($result))) {
+						// chop $path from $object->path
+						$object->path="/$aspath/".substr($object->path, strlen($path));
+						if ($options["without_data"]) {
+							display("no data for (".$object->path.")\n");
+							unset($object->data);
+							unset($object->properties);
+						} else {
+							display("writing object(".$object->path.")\n");
+						}
+						$mod->writeObject($object);
+					}
+
+					$offset+=sizeof($result);
+				}
+
+				if (!$options["without_templates"]) {
+					display("templates ($path)\n");
+					$error=$mod->exportfiles("templates_$aspath", $this->store->files."templates".$path, ".");
+				}
+
+				if (!$error && !$options["without_files"]) {
+					display("files     ($path)\n");
+					$error=$mod->exportfiles("files_$aspath", $this->store->files."files".$path, ".");
+				}
+			
+			}
+			$mod->closeObjectsData();
+
+
+		} else {
+			$error="err: can not open objects data file";
+		}
+
+		if (($err=$mod->close()) && !$error) {
+			// only export an error when there wasn't a
+			// previous error
+			$error=$err;
+		}
+	
+	}
+
+	$arResult=$error;
+}
 ?>
