@@ -2,7 +2,7 @@
 
 debug("pobject: Load","object");
 
-class pobject { 
+class pobject extends object { 
 
 	var $store;	
 	var $path;
@@ -10,9 +10,9 @@ class pobject {
 
 	function init(&$store, &$path, &$data) {
 		debug("pobject: init([store], $path, [data])","object");
-		$this->store=$store;
-		$this->path=$path;
-		$this->data=$data;
+		$this->store=&$store;
+		$this->path=&$path;
+		$this->data=&$data;
 	}
 
 	function call($arCallFunction="view.html", $arCallArgs="") {
@@ -58,14 +58,28 @@ class pobject {
 			$data=&$this->data;
 		} 
 		debug("pobject: call: nls set to $nls","all"); 
-		$arCallTemplate=$this->store->code."templates/".$this->type."/".$arCallFunction;
-		if (!file_exists($arCallTemplate)) {
-			include($this->store->code."templates/".$this->type."/default.phtml");
+		
+		if (strpos($arCallFunction,"::")!==false) {
+			list($arType, $arCallFunction)=explode("::",$arCallFunction);
 		} else {
-			include($arCallTemplate);
+			$arType=$this->type;
+		}
+		while ($arType!="object") {
+			$arCallTemplate=$this->store->code."templates/".$arType."/".$arCallFunction;
+			if (file_exists($arCallTemplate)) {
+				include($arCallTemplate);
+				break;
+			} else if (file_exists($this->store->code."templates/".$arType."/default.phtml")) {
+				include($this->store->code."templates/".$arType."/default.phtml");
+				break;
+			} else {
+				$arTemp=new $arType();
+				$arType=get_parent_class($arTemp);
+			}
 		}
 		array_pop($ARCurrent->arCallStack);
 		debug("pobject: call: end","all");
+		debugoff();
 		if ($ARCurrent->arResult) {
 			$arResult=$ARCurrent->arResult;
 			$ARCurrent->arResult=false;
@@ -503,18 +517,23 @@ class pobject {
 					if (isset($this->data->$reqnls)) {
 						// the requested language is available.
 						$this->nlsdata=$this->data->$nls;
+						include($arCallTemplate);
 					} else if (!isset($this->data->nls)) {
 						debug("pobject: CheckConfig: no nls data ","all");
 						// the object has no language support
 						$this->nlsdata=&$this->data;
+						include($arCallTemplate);
 					} else if ($ARCurrent->allnls) {
 						debug("pobject: CheckConfig: no $reqnls, but allnls set","all");
 						// all objects must be displayed
 						// $this->reqnls=$this->nls; // set requested nls, for checks
 						$this->nls=$this->data->nls->default;
 						$this->nlsdata=$this->data->$nls;
+						include($arCallTemplate);
+					} else {
+						// requested language not available, allnls not set
+						// -> skip this object (do not run template but do return false)
 					}
-					include($arCallTemplate);
 					array_pop($ARCurrent->arCallStack);
 					return false;
 				} else {
@@ -726,7 +745,7 @@ class pobject {
 
 	function setnls($nls) {
 		debug("pobject: setnls($nls)","object");
-		$this->store->root=ldSetNls($nls);
+		ldSetNls($nls);
 	}
 
 /********************************************************************
@@ -851,7 +870,7 @@ class pobject {
 	}
 
 	function _startsession() {
-		return $this->store->root=ldStartSession(0);
+		return $this->store=ldStartSession(0);
 	}
 
 	function _putsessionvar($varname, $varvalue) {
