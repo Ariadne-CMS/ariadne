@@ -458,7 +458,7 @@
 		return $HTTP_SERVER_VARS[$server_var];
 	}
 
-        function ldGetClientVar($client_var) {
+	function ldGetClientVar($client_var) {
 		// not all environment variables should be disclosed
 		switch($client_var) {
 			case "REMOTE_ADDR": $result = getenv("REMOTE_ADDR"); break;
