@@ -139,6 +139,10 @@
 							}
 							$oldgrant='';
 							$oldgranttype=0;
+							// remove spaces after >,+,= and -
+							// "> read" -> ">read"
+							// else things go wrong after exploding :)
+							$newgrants = preg_replace("/([>+=-])[\ ]*/","\$1",$newgrants);
 							$grantslist=explode(" ",$newgrants);
 							while ((list($key, $newgrant)=each($grantslist)) && !$this->error) {
 								$newgrant=trim($newgrant);
