@@ -42,6 +42,18 @@
 		if ($ARCurrent->AXAction == "import") {
 			unset($this->data->config->grants);
 			unset($this->data->config->usergrants);
+			if ($ARCurrent->AXHeader['version'] > 1.3 && is_array($this->properties)) {
+				foreach ($this->properties as $property => $property_records) {
+					foreach ($property_records as $record_id => $record) {
+						foreach ($record as $column => $column_data) {
+							echo "properties[$property][$record_id][$column] = [$column_data] ";
+							$this->properties[$property][$record_id][$column] = AddSlashes($column_data);
+							echo "[".AddSlashes($column_data)."]<br>\n";
+						}
+					}
+				}
+
+			}
 		}
 
 		if(!$this->store->is_supported("fulltext")){
