@@ -1,0 +1,25 @@
+	SPAN.item { 
+		left: 5 px;
+		width: 60px;
+		height: 68px;
+		position: relative;
+		margin-top: 5px;
+		margin-right: 5px;
+		vertical-align: top;
+		text-align: center;
+		float: left;
+		font: 9pt Arial,Helvetica,sans-serif;
+		overflow: hidden;
+	}
+	BODY {
+		font: 9pt Arial,Helvetica,sans-serif;
+		margin: 0px;
+		padding: 0px;
+	}
+	A { 
+		text-decoration: none;
+		color: #000000
+	}
+	IMG {
+		padding-top: 0px
+	}
