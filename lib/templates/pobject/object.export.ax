@@ -1,4 +1,5 @@
 <?php
+	$ARCurrent->allnls=true;
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
 		$tempfile=$ARCurrent->session->get("tempname");
 		$forwardslash=strrpos($tempfile,'/');
