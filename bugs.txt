@@ -1,3 +1,5 @@
+KNOWN ISSUES
+
 - When renaming an object the grants set for users on that object are not
   updated. This means the grants on the user will break since they point to
   the old filename of the object. Workaround: Delete all grants pointing to
