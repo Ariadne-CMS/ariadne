@@ -52,6 +52,15 @@ New Features:
 	  select list.
 
 Bugs Fixed:
+	- Fixed class::template calling within pinp to other pinp scripts which
+	  override class templates.
+	- Added a workaround for a bug in htmltidy: some word documents produce an
+	  unclosed xml tag in the middle of the document which crashes tidy. The
+	  workaround is to remove these tags before we give it to htmltidy.
+	- Fixed cwd in the ftp loader for newer PHP configs who do not automatically
+	  chdir to the path of the script.
+	- Fixed recursive calling of user.login.html in the popup window when 
+	  entering an invalid username/password
 	- Special Characters now work in custom data fields. Thanks to Dino Termini
 	- The loader will now call user.login.html when somebody enters a wrong
 	login/password combo (instead of falling back to 'public').
