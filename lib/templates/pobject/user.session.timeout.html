@@ -4,7 +4,7 @@
 	// make sure no language select dialog is shown.	
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
-		if ($arDoPopup) {
+		if ($arPopup) {
 			$this->call("user.session.timeout.popup.html", $arCallArgs);
 		} else {
 			$this->call("user.session.timeout.form.html", $arCallArgs);
