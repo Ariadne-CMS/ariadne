@@ -145,4 +145,10 @@
     return md5($text);
   }
  
+  define("ARGRANTLOCAL", 1);
+  define("ARGRANTCHILDREN",2);
+  define("ARGRANTGLOBAL", 3);
+  define("ARTHISTYPE", 1); 
+  define("ARANYTYPE", 0);
+
 ?>
