@@ -27,10 +27,11 @@
 						$clearcache=true;					
 						$this->data->$key->url=$url;
 					}
-					if ($url) {
-						$this->data->url_list[$key] = $url;
-					}
 					eregi('^([a-z0-9]+)://([^/:]+)(:[0-9]+)?', $url, $regs);
+					if ($url) {
+						$this->data->url_list['nls'][$key] = $url;
+						$this->data->url_list['host'][$regs[2]] = $key;
+					}
 					$properties["url"][$count]["protocol"]=	"'".AddSlashes($regs[1])."'";
 					$properties["url"][$count]["host"]=		"'".AddSlashes($regs[2])."'";
 					if ($regs[3]) {

@@ -17,7 +17,14 @@
 
 	debug($this->type."/system.get.config.phtml ".$this->path,"class");
 	$this->call("pdir::system.get.config.phtml",$arCallArgs);
+	global $HTTP_SERVER_VARS;
+
 	$configcache=$ARConfig->cache[$this->path];
+	$host = $HTTP_SERVER_VARS["HTTP_HOST"];
+
+	if ($sitenls=$this->data->url_list["host"][$host]) {
+		$configcache->nls->default = $sitenls;
+	} else
 	if (!$url=$nlsdata->url) {
 		$url=$data->url;
 	}
