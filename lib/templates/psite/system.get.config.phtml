@@ -18,9 +18,12 @@
 	debug($this->type."/system.get.config.phtml ".$this->path,"class");
 	$this->call("pdir::system.get.config.phtml",$arCallArgs);
 	$configcache=$ARConfig->cache[$this->path];
-	if ($data->url) {
+	if (!$url=$nlsdata->url) {
+		$url=$data->url;
+	}
+	if ($url) {
 		$configcache->root["path"]=$this->path;
-		$configcache->root["value"]=$data->url;
+		$configcache->root["value"]=$url;
 	}
 	$configcache->site=$this->path;
 	$configcache->section=$this->path;

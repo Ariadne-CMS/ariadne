@@ -3,7 +3,17 @@
 ?>
 	<div id="details">
 		<div style="padding: 5px;">
-			<?php echo $ARnls["url"]; ?>: <span class="data"><?php echo $data->url; ?></span> 
+			<?php echo $ARnls["url"]; ?>: <span class="data"><?php 
+				if ($arLanguage) {
+					$url=$data->$arLanguage->url;
+				} else {
+					$url=$nlsdata->url;
+				}
+				if (!$url) {
+					$url=$data->url;
+				}
+				echo $url; 
+			?></span> 
 		</div>
 	</div>
 <?php

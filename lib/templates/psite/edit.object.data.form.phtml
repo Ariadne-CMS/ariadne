@@ -36,8 +36,15 @@
         </td>
       </tr><tr>
         <td colspan="2">
-          <input type="text" name="url" size="35" 
-            value="<?php $this->showdata("url", "none"); ?>">
+          <input type="text" name="<?php echo $selectednls."[url]"; ?>" size="35" 
+            value="<?php 
+				if (!$url=$this->getdata("url", $selectednls)) {
+					if (!$this->arIsNewObject && ($selectednls==$this->data->nls->default)) {
+ 						$url=$this->getdata("url", "none");
+					}
+				}
+				echo $url;
+			?>">
         </td>
       </tr><tr>
         <td>
