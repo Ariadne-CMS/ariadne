@@ -72,6 +72,10 @@ class ppage extends pobject { // ppage class definition
   }
 
   function RAWtoAR($page, $nls="") {
+    return $this->CompilePage($page, $nls); 
+  }
+ 
+  function CompilePage($page, $nls="") {
   global $ARCurrent, $AR;
 
 	/* find and replace the current page */
@@ -124,6 +128,160 @@ class ppage extends pobject { // ppage class definition
     }
   }
 
+  function CutPage($tag='h1', $withtags=true, $withtitles=true, $page=false) {
+    if ($withtitles) {
+      $regexp='/(<'.$tag.'[^>]*>(.*)<\/'.$tag.'[^>]*>)/Usi';
+    } else {
+      $regexp='/(<('.$tag.')[^>]*>)/Usi';
+    }
+    if (!$page) {
+      $page=$this->GetPage();
+    }
+    if ($matches=preg_split($regexp, " ".$page, -1, PREG_SPLIT_DELIM_CAPTURE)) {
+      $leader=trim($matches[0]);
+      $start=1;
+      $max=count($matches)-1;
+      for ($i=$start; $i<$max; $i+=3) {
+        $split=$matches[$i];
+        if ($withtitles) {
+          $this->section_titles[]=$matches[$i+1];
+        }
+		if ($withtags) {
+          $this->sections[]=$split.$matches[$i+2];          
+        } else {
+          $this->sections[]=$matches[$i+2];
+        }
+      }
+    } 
+    return $max-1;
+  }
+
+  function GetSections() {
+    if (!$this->sections) {
+      $this->CutPage();
+    } 
+    return $this->sections;
+  }
+
+  function GetSection($section=0) {
+    if (!$this->sections) {
+      $this->CutPage();
+    } 
+    return $this->sections[$section];
+  }
+
+  function CountSections() {
+	if (!$this->sections) {
+      $this->CutPage();
+    }
+    return count($this->sections);
+  }
+
+  function GetTitle($section=0) {
+    if (!$this->sections) {
+      $this->CutPage();
+    }
+    if ($this->section_titles) {
+      return $this->section_titles[$section];
+    } else {
+      return $section;
+    }
+  }
+
+  function GetTitles() {
+    if (!$this->sections) {
+      $this->CutPage();
+    }
+    if ($this->section_titles) {
+      return $this->section_titles;
+    } else {
+      for ($i=0; $i<count($this->sections); $i++) {
+        $titles[]=$i;
+      }
+      return $titles;
+    }
+  }
+
+  function ShowSection($section=0, $template="", $args="") {
+    if (!$template) {
+      echo $this->ParsePage($this->GetSection((int)$section));
+    } else {
+      $this->call($template, array_merge($args, Array('section' => (int) $section, 'section_content' => $this->ParsePage($this->GetSection($section)))));
+    }
+  } 
+
+  function ShowSections($template="", $args="") {
+    $max=$this->CountSections();
+    for ($i=0; $i<$max; $i++) {
+      if ($template) {
+        $this->call($template, array_merge($args, Array('section' => $i, 'section_content' => $this->ParsePage($this->GetSection($i)))));
+        $this->_resetloopcheck();
+      } else {
+        echo ParsePage($this->GetSection($i));
+      }
+    }      
+  }
+
+  function ShowTitles($template="", $args="") {
+    if (!$template) {
+      echo $this->GetTitle($section);
+    } else {
+      $max=$this->CountSections();
+      for ($i=0; $i<$max; $i++) {
+        $this->call($template, array_merge($args, Array('section' => $i, 'section_title' => $this->GetTitle($i))));
+        $this->_resetloopcheck();
+      }      
+    }    
+  }
+
+  function ShowTitle($section=0, $template="", $args="") {
+    if (!$template) {
+      echo $this->GetSection((int)$section);
+    } else {
+      $this->call($template, array_merge($args, Array('section' => (int)$section, 'section_title' => $this->GetTitle($ection))));
+    }
+  }
+
+  function _CutPage($tag, $withtags=true, $withtitles=true) {
+    return $this->CutPage($tag, $withtags, $withtitles);
+  }
+
+  function _GetSections() {
+    return $this->GetSections();
+  }
+
+  function _GetSection($section=0) {
+    return $this->GetSection($section);
+  }
+
+  function _CountSections() {
+    return $this->CountSections();
+  }
+
+  function _GetTitles() {
+    return $this->GetTitles();
+  }
+
+  function _GetTitle($section=0) {
+    return $this->GetTitle($section);
+  }
+
+  function _ShowSection($section=0, $template="", $args="") {
+    return $this->ShowSection($section, $template, $args);
+  }
+
+  function _ShowSections($template="", $args="") {
+    return $this->ShowSections($template);
+  }
+
+  function _ShowTitles($template="", $args="") {
+    return $this->ShowTitles($template);
+  }
+
+  function _ShowTitle($section=0, $template="", $args="") {
+    return $this->ShowTitle($section, $template);
+  }
+
   function ShowPage($nls="", $source=false, $full=false) {
     echo $this->GetPage($nls, $source, $full);
   }
@@ -152,8 +310,12 @@ class ppage extends pobject { // ppage class definition
     return $this->ParsePage($page, $full);
   }
 
-  function _RAWtoAR($page) {
-	return $this->RAWtoAR($page);
+  function _RAWtoAR($page, $nls="") {
+	return $this->RAWtoAR($page, $nls);
+  }
+
+  function _CompilePage($page, $nls="") {
+    return $this->CompilePage($page, $nls);
   }
 } // end of ppage class definition
 ?>
