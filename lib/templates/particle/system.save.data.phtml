@@ -17,9 +17,8 @@
 		}
 
 		$scenario=$this->getdata("newscenario","none");
-		$displays=@current($this->get($scenario, "system.get.phtml"));
+		$displays=@current($this->get($scenario, "system.get.displays.phtml"));
 		$this->data->priority=$displays->data->priority;
-		$displays=$displays->data->display; // we only need the display array
 
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
 			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
