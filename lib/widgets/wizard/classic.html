@@ -62,7 +62,7 @@
   if (!$wgWizCurrent) {
     $wgWizCurrent=$this->getdata("wgWizCurrent","none");
   }
-  if (!$wgWizNextStep) {
+  if (!$wgWizNextStep && !($wgWizNextStep=$ARCurrent->wgWizNextStep)) {
     if ($wgWizControl && $wgWizCurrent) {
       $wgWizNextStep=$wgWizFlow[$wgWizCurrent][wgWizGetAction($wgWizControl)];
     } else if ($wgWizList && is_array($wgWizList)) { 

@@ -40,7 +40,9 @@
 				$this->error=$ARnls["err:mustenterlogin"];
 			}
 		}
-		$this->save($properties);
-		$this->ClearCache();
+		if (!$this->error) {
+			$this->save($properties);
+			$this->ClearCache();
+		}
 	}
 ?>
