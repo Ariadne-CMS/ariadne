@@ -68,7 +68,7 @@ CREATE TABLE ".$this->tbl_prefix."types (
 		if (!$error) {
 			$return=true;
 			// initialize locking tables
-			$this->mod_lock->init();
+			$this->mod_lock->init($this->tbl_prefix);
 
 			echo "mysql store initialized.\n\n";
 		} else {

@@ -73,7 +73,7 @@ class mysqlstore {
 
 		/* Instantiate module locking */
 		include_once($this->code."modules/mod_lock/mysql.phtml");
-		$this->mod_lock=new mysqllock();
+		$this->mod_lock=new mysqllock($config["prefix"]);
 		$this->mod_lock->select_db($config["database"], $this->connect_id);
 		$this->mod_lock->lock_duration=$config["lock_duration"];
 		$config["password"]="";

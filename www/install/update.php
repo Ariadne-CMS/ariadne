@@ -34,7 +34,6 @@
 
 	echo "== importing ariadne.ax file\n\n";
 
-		global $options;
 		$ARCurrent->options["verbose"]=true;
 		// become admin
 		$AR->user=new object;

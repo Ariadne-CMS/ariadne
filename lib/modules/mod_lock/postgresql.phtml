@@ -24,8 +24,9 @@
 
 class postgresqllock {
 
-	function postgresqllock() {
-        debug("postgresqllock::postgresqllock()");
+	function postgresqllock($tbl_prefix="") {
+        debug("postgresqllock::postgresqllock($tbl_prefix)");
+		$this->tbl_prefix=$tbl_prefix;
         debug("postgresqllock::postgresqllock end","all");
 	}
 
@@ -47,7 +48,7 @@ class postgresqllock {
 	function get_locks($identity) {
         debug("postgresqllock:get_locks($identity)","store");
 		$i				= 0;
-		$query_string	= "select path, release, type, identity from locks where release >=".time()." and identity='".AddSlashes($identity)."'";
+		$query_string	= "select path, release, type, identity from ".$this->tbl_prefix."locks where release >=".time()." and identity='".AddSlashes($identity)."'";
 		$exec			= @pg_exec($this->connectid, $query_string);
 		while ($temp = @pg_fetch_array($exec, $i++)) {
 			$result[$temp["path"]]	= $temp;
@@ -66,7 +67,7 @@ class postgresqllock {
  		}
 		// start transaction
 		// lock will be held until transaction has finished
-		$query_string="BEGIN WORK; LOCK TABLE locks IN SHARE MODE;";
+		$query_string="BEGIN WORK; LOCK TABLE ".$this->tbl_prefix."locks IN SHARE MODE;";
 		debug($query_string, "store");
 		@pg_exec($this->connectid, $query_string);
 
@@ -102,12 +103,12 @@ class postgresqllock {
 		if (!$alreadylocked) {
 			// clear old lock entries
 			$query_string="
-				delete from locks where path='".AddSlashes($path)."'";
+				delete from ".$this->tbl_prefix."locks where path='".AddSlashes($path)."'";
 
 			pg_exec($this->connectid, $query_string);
 
 			$query_string="
-				insert into locks (path, release, type, identity) values (
+				insert into ".$this->tbl_prefix."locks (path, release, type, identity) values (
 				'".AddSlashes($path)."', $time, '".AddSlashes($type)."',
 				'".AddSlashes($identity)."')";
 
@@ -133,7 +134,7 @@ class postgresqllock {
 
 	function unlock($identity,$path="") {
 
-		$query_string="delete from locks where identity='".AddSlashes($identity)."'";
+		$query_string="delete from ".$this->tbl_prefix."locks where identity='".AddSlashes($identity)."'";
 		if ($path) {
 			$query_string.=" and path='".AddSlashes($path)."'";
 		}
@@ -149,7 +150,7 @@ class postgresqllock {
 
 	function init() {
 		$query_string="
-CREATE TABLE locks (
+CREATE TABLE ".$this->tbl_prefix."locks (
         release numeric(11) NOT NULL,
         type char(1) check (type in ('O','T')) NOT NULL,
         identity varchar(23) NOT NULL,

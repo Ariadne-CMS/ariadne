@@ -8,55 +8,50 @@ class postgresqlstore_install extends postgresqlstore {
 		echo "initializing PostgreSQL store.\n";
 		$queries[0]["msg"]="creating nodes table.";
 		$queries[0]["query_string"]="
-CREATE TABLE nodes (
+CREATE TABLE ".$this->tbl_prefix."nodes (
 	path varchar(127) DEFAULT '' NOT NULL PRIMARY KEY,
 	parent varchar(127) DEFAULT '' NOT NULL,
 	object numeric(11) DEFAULT '0' NOT NULL,
 	priority numeric(11) DEFAULT '0' NOT NULL
 );
-CREATE INDEX nodes_object ON nodes (object);
-CREATE INDEX nodes_parent ON nodes (parent);
-CREATE INDEX nodes_priority ON nodes (priority);
+CREATE INDEX ".$this->tbl_prefix."nodes_object ON ".$this->tbl_prefix."nodes (object);
+CREATE INDEX ".$this->tbl_prefix."nodes_parent ON ".$this->tbl_prefix."nodes (parent);
+CREATE INDEX ".$this->tbl_prefix."nodes_priority ON ".$this->tbl_prefix."nodes (priority);
 ";
 
 		$queries[1]["msg"]="creating objects table.";
 		$queries[1]["query_string"]="
-CREATE SEQUENCE objects_id_seq START 1;
-CREATE TABLE objects (
-	id integer DEFAULT nextval('objects_id_seq') PRIMARY KEY,
+CREATE SEQUENCE ".$this->tbl_prefix."objects_id_seq START 1;
+CREATE TABLE ".$this->tbl_prefix."objects (
+	id integer DEFAULT nextval('".$this->tbl_prefix."objects_id_seq') PRIMARY KEY,
 	type varchar(16) DEFAULT '' NOT NULL,
 	object text,
 	vtype varchar(16) DEFAULT '' NOT NULL,
 	lastchanged TIMESTAMP
 );
-CREATE INDEX objects_lastchanged ON objects (lastchanged);
+CREATE INDEX ".$this->tbl_prefix."objects_lastchanged ON ".$this->tbl_prefix."objects (lastchanged);
 ";
 		$queries[2]["msg"]="creating properties table.";
 		$queries[2]["query_string"]="
-CREATE TABLE properties (
+CREATE TABLE ".$this->tbl_prefix."properties (
 	name varchar(21) DEFAULT '' NOT NULL PRIMARY KEY
 )";
 
 		$queries[3]["msg"]="creating seq_id table.";
 		$queries[3]["query_string"]="
-CREATE TABLE seq_id (
+CREATE TABLE ".$this->tbl_prefix."seq_id (
 	path varchar(127) DEFAULT '' NOT NULL PRIMARY KEY,
 	next_id numeric(11) DEFAULT '0' NOT NULL
 )";
 		$queries[4]["msg"]="creating types table.";
 		$queries[4]["query_string"]="
-CREATE TABLE types (
-	type varchar(32) DEFAULT '' NOT NULL,
-	implements varchar(32) DEFAULT '' NOT NULL
+CREATE TABLE ".$this->tbl_prefix."types (
+	type varchar(16) DEFAULT '' NOT NULL,
+	implements varchar(16) DEFAULT '' NOT NULL
 );
-CREATE INDEX types_type ON types (type);
-CREATE INDEX types_implements ON TYPES (implements);
+CREATE INDEX ".$this->tbl_prefix."types_type ON ".$this->tbl_prefix."types (type);
+CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES (implements);
 ";
-		$queries[5]["msg"]="creating root dir.";
-		$queries[5]["query_string"]="INSERT INTO nodes (path, parent, object) VALUES ('/','..',1)";
-
-		$queries[6]["msg"]="";
-		$queries[6]["query_string"]="INSERT INTO objects (type, object, vtype) VALUES ('pdir','O:6:\"object\":2:{s:2:\"en\";O:6:\"object\":1:{s:4:\"name\";s:7:\"Ariadne\";}s:3:\"nls\";O:6:\"object\":1:{s:7:\"default\";s:2:\"en\";}}','pdir')";
 
 		while ((list($key, $query)=each($queries)) && (!$error)) {
 			if ($query["msg"]) {
@@ -72,13 +67,9 @@ CREATE INDEX types_implements ON TYPES (implements);
 
 
 		if (!$error) {
-			echo "creating default types.\n";
-			$this->add_type("pobject","pobject");
-			$this->add_type("pdir","pobject");
-			$this->add_type("pdir","pdir");
 			$return=true;
 			// initialize locking tables
-			$this->mod_lock->init();
+			$this->mod_lock->init($this->tbl_prefix);
 
 			echo "PostgreSQL store initialized.\n\n";
 		} else {
@@ -121,7 +112,7 @@ CREATE INDEX types_implements ON TYPES (implements);
 		$result=1;
 		$this->error="";
 		if (eregi("^[a-z][a-z0-9_-]*$",$property) && strlen($property)<=16) {
-			$tablename="prop_".AddSlashes($property);
+			$tablename=$this->tbl_prefix."prop_".AddSlashes($property);
 			$create_string="create table ".AddSlashes($tablename)." (\n";
 			while (list($name, $typedef)=each($definition)) {
 				if (!eregi("^[a-z][a-z0-9_-]*$",$name) || strlen($name)>16) {
@@ -135,17 +126,17 @@ CREATE INDEX types_implements ON TYPES (implements);
 					switch($type) {
 				case "string": 
 					if ($size>0 && $size<256) {
-						$create_string.="varchar(".$size.") not null,\n";
+						$create_string.="varchar(".$size.") DEFAULT '' not null,\n";
 					} else {
 						$result=0;
 						$this->error="Wrong format for typedefinition $name: incorrect size."; 
 					}
 					break;
 				case "number":
-					$create_string.="numeric(11) not null,\n";
+					$create_string.="numeric(11) DEFAULT 0 not null,\n";
 					break;
 				case "boolean":
-					$create_string.="bool not null,\n";
+					$create_string.="bool DEFAULT false not null,\n";
 					break;
 					}
 				}
@@ -186,7 +177,7 @@ CREATE INDEX types_implements ON TYPES (implements);
 					$exec=pg_exec($this->connect_id,$create_string);
 					$err=pg_errormessage($this->connect_id);
 					if (!$err) {
-						$query_string="insert into properties values ( '".AddSlashes($property)."' )";
+						$query_string="insert into ".$this->tbl_prefix."properties values ( '".AddSlashes($property)."' )";
 						$exec=pg_exec($this->connect_id,$query_string);
 						$err=pg_errormessage($this->connect_id);
 						if ($err) {
@@ -221,10 +212,10 @@ CREATE INDEX types_implements ON TYPES (implements);
 
 		$this->error="";
 		$eproperty=AddSlashes($property);
-		$remove_string="drop table prop_$eproperty";
+		$remove_string="drop ".$this->tbl_prefix."table prop_$eproperty";
 		debug($remove_string,"store");
 		pg_exec($this->connect_id,$remove_string);
-		$query_string="delete from properties where name='$eproperty'";
+		$query_string="delete from ".$this->tbl_prefix."properties where name='$eproperty'";
 		$exec=pg_exec($this->connect_id,$query_string);
 		$err=pg_errormessage($this->connect_id);
 		if ($err) {
@@ -246,10 +237,10 @@ CREATE INDEX types_implements ON TYPES (implements);
 	**********************************************************************/
 
 		$this->error="";
-		if ($type && $implements && (strlen($type)<256) && (strlen($implements)<256)) {
+		if ($type && $implements && (strlen($type)<17) && (strlen($implements)<17)) {
 			$etype=AddSlashes($type);
 			$eimplements=AddSlashes($implements);
-			$query_string="insert into types values ('$etype','$eimplements')";
+			$query_string="insert into ".$this->tbl_prefix."types values ('$etype','$eimplements')";
 			debug($query_string,"store");
 			pg_exec($this->connect_id,$query_string);
 			$err=pg_errormessage($this->connect_id);
@@ -278,10 +269,10 @@ CREATE INDEX types_implements ON TYPES (implements);
 		$this->error="";
 		$etype=AddSlashes($type);
 		if (!$implements) {
-			$query_string="delete from types where type='$etype' or implements='$etype'";
+			$query_string="delete from ".$this->tbl_prefix."types where type='$etype' or implements='$etype'";
 		} else {
 			$eimplements=AddSlashes($implements);
-			$query_string="delete from types where type='$etype' and implements='$etype'";
+			$query_string="delete from ".$this->tbl_prefix."types where type='$etype' and implements='$etype'";
 		}
 		debug($query_string,"store");
 		pg_exec($this->connect_id,$query_string);
