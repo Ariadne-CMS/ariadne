@@ -8,19 +8,24 @@ class pphoto extends pfile { // definitie class
 	function convert($target) {
 		global $AR;
 		if (eregi('^(GIF|PNG|JPG|BMP)$',$target)) {
-			$tmpsrc=$AR->dir->temp.$this->id;
+			$tmpsrc=$this->store->files."temp/".$this->id;
 			$tmpdst=$tmpsrc.".".$target;
 			$f_store=$this->store->get_filestore("files");
 			$f_store->copy_from_store($tmpsrc, $this->id, "file");
 			$f_store->close();
-			system($AR->IM->convert." $tmpsrc $tmpdst",$failed);
+			system('cd '.$this->store->file.'temp/', $failed);
 			if (!$failed) {
-				ob_start();
-				readfile($tmpdst);
-				$result=ob_get_contents();
-				ob_end_clean();
+				system($AR->IM->convert.' '.$this->id.' '.$this->id.'.'.$target, $failed);
+				if (!$failed) {
+					ob_start();
+					readfile($tmpdst);
+					$result=ob_get_contents();
+					ob_end_clean();
+				} else {
+					$this->error="Could not run ImageMagick convert program";
+				}
 			} else {
-				$this->error="Could not run ImageMagick convert program";
+				$this->error="Could not change dir to ".$this->store->files."temp/ ";
 			}
 		} else {
 			$this->error="Convert called with illegal target ($target), valid targets are: GIF, PNG, JPG or BMP";
@@ -32,20 +37,28 @@ class pphoto extends pfile { // definitie class
 		global $AR;
 		$x=(int)$x;
 		$y=(int)$y;
+
 		$tmpsrc=$this->store->files."temp/".$this->id;
 		$f_store=$this->store->get_filestore("files");
 		$f_store->copy_from_store($tmpsrc, $this->id, "file");
 		$f_store->close();
-		$exec_string=$AR->IM->mogrify." -geometry ".$x."x".$y." -format png $tmpsrc";
-		system($exec_string,$failed);
+
+		system('cd '.$this->store->files.'temp/', $failed);
 		if (!$failed) {
-			ob_start();
-			readfile($tmpsrc.".png");
-			$result=ob_get_contents();
-			ob_end_clean();
+			$exec_string=$AR->IM->mogrify." -geometry ".$x."x".$y." -format jpg $this->id";
+			system($exec_string,$failed);
+			if (!$failed) {
+				ob_start();
+				readfile($tmpsrc.".jpg");
+				$result=ob_get_contents();
+				ob_end_clean();
+			} else {
+				$this->error="Could not run ImageMagick scale program (mogrify)<br>\n(".$exec_string.")";
+			}
 		} else {
-			$this->error="Could not run ImageMagick scale program (mogrify)<br>\n(".$exec_string.")";
+			$this->error="Could not changedir to ".$this->store->files."temp/ ";
 		}
+
 		return $result;
 	}
 
