@@ -51,6 +51,9 @@
 							}
 						}
 					}
+					if (!$this->data->$defaultnls) {
+						$this->data->nls->default=$ARConfig->nls->default;
+					}
 					$properties=$this->load_properties();
 					$newpath=$this->save($target, $this->type, $this->data, $this->properties, $this->vtype); 
         
