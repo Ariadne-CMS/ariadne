@@ -11,6 +11,15 @@ define("T_PINP_START",		246);
 define("T_PINP_END",		245);
 define("T_ERROR",			244);
 define("T_PAR_OPEN",		243);
+define("T_NEW",				242);
+define("T_FUNCTION",		241);
+define("T_GLOBAL",			240);
+define("T_RETURN",			239);
+define("T_FILENAME",		238);
+define("T_INCLUDE",			237);
+define("T_INCLUDE_ONCE",	236);
+define("T_REQUIRE",			235);
+define("T_REQUIRE_ONCE",	234);
 
 define("YY_STATE_HTML",			1);
 define("YY_STATE_PINP",			2);
@@ -18,6 +27,21 @@ define("YY_STATE_PINP",			2);
 class scanner {
 
 	function scanner() {
+		/*
+			create lookup table for language constructs
+		*/
+		$this->YYLANG_CONSTRUCTS = Array(
+				"new" => T_NEW,
+				"function" => T_FUNCTION,
+				"global" => T_GLOBAL,
+				"return" => T_RETURN,
+				"__file__" => T_FILENAME,
+				"include" => T_INCLUDE,
+				"include_once" => T_INCLUDE_ONCE,
+				"require" => T_REQUIRE,
+				"require_once" => T_REQUIRE_ONCE
+				);
+
 		/*
 			create character classes
 		*/
@@ -271,7 +295,12 @@ class scanner {
 							$yych = $YYBUFFER[++$YYCURSOR];
 						}
 						$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
-						return T_IDENT;
+						$construct = $this->YYLANG_CONSTRUCTS[chop(strtolower($result))];
+						if ($construct) {
+							return $construct;
+						} else {
+							return T_IDENT;
+						}
 					break;
 					case ':':
 						$yych = $YYBUFFER[++$YYCURSOR];
@@ -475,15 +504,90 @@ class pinp {
 			$token = $this->scanner->scan($value);
 			if (is_array($value)) {
 				$this->tokens = $value;
-				$this->token = T_MULTIPART_STRING_START;
+				$token = T_MULTIPART_STRING_START;
 				array_push($this->tokens, Array( T_MULTIPART_STRING_END => 1 ));
 			} else {
-				$this->token = $token;
-				$this->token_value = $value;
+				$token = $token;
+				$token_value = $value;
 			}
 		} else {
-			list($this->token, $this->token_value) = each(array_shift($this->tokens));
+			list($token, $token_value) = each(array_shift($this->tokens));
 		}
+		if ($this->token_ahead) {
+			$this->token = $this->token_ahead;
+			$this->token_value = $this->token_ahead_value;
+		}
+		$this->token_ahead = $token;
+		$this->token_ahead_value = $token_value;
+	}
+
+	/*
+		parse_variable()
+		$foo			:	$this->foo
+		$foo->bar		:	$this->foo->bar
+		$foo->bar()		:	$this->foo->_bar()
+	*/
+	function parse_variable() {
+		$result = $this->var_prefix.$this->token_ahead_value;
+		$this->next_token();
+
+		if ($this->token_ahead == T_PAR_OPEN) {
+			$this->error = "illegal function call (\$".$this->token_value."()) at line ".$this->scanner->YYLINE;
+		}
+
+		while (!$this->error && $this->token_ahead == T_OBJECT_OPERATOR) {
+			$this->next_token();
+			$result .= "->";
+			if ($this->token_ahead != T_IDENT) {
+				$this->error = "expected variable name following ($result) at line ".$this->scanner->YYLINE;
+			} else {
+				$this->next_token();
+				if ($this->token_ahead == T_PAR_OPEN) {
+					$result .= "_".$this->token_value."(";
+					$this->next_token();
+				} else {
+					$result .= $this->token_value;
+				}
+			}
+		}
+
+		return $result;
+	}
+
+
+	/*
+		parse_ident()
+		foo			:	foo
+		foo::bar	:	pinp_foo::_bar
+		foo()		:	foo() else $this->_foo()
+	*/
+	function parse_ident() {
+		$this->next_token();
+		switch ($this->token_ahead) {
+			case T_PAR_OPEN:
+				if (!$this->allowed_functions[chop(strtolower($this->token_value))]) {
+					$result = $this->function_prefix.$this->token_value."(";
+				} else {
+					$result = $this->token_value."(";
+				}
+				$this->next_token();
+			break;
+			case T_CLASS_OPERATOR:
+				$result = "pinp_".$this->token_value."::";
+				$this->next_token();
+				if ($this->token_ahead != T_IDENT) {
+					$this->error = "execting an identifier following ($result) at line ".$this->scanner->YYLINE;
+				} else {
+					$this->next_token();
+					$result .= "_".$this->token_value;
+				}
+			break;
+			default:
+				$result = $this->token_value;
+			break;
+		}
+
+		return $result;
 	}
 
 	function compile($template) {
@@ -493,132 +597,71 @@ class pinp {
 		$this->new_template = "";
 		$this->in_pinp = false;
 		$this->next_token();
-		while ($this->token != T_EOF) {
-			switch ($this->token) {
+		while (!$this->error && $this->token_ahead != T_EOF) {
+			switch ($this->token_ahead) {
 				case T_PINP_START:
-					$this->new_template.=$this->token_value."<?php ";
+					$this->new_template .= $this->token_ahead_value."<?php ";
 					$this->in_pinp = true;
+					$this->next_token();
 				break;
 				case T_PINP_END:
-					$this->new_template.=" ?>";
+					$this->new_template .= " ?>";
 					$this->in_pinp = false;
+					$this->next_token();
 				break;
 				case T_VARIABLE:
-					$this->new_template.=$this->var_prefix.$this->token_value;
-					$this->next_token();
-					while ($this->token == T_OBJECT_OPERATOR) {
-						$this->new_template.="->";
-						$this->next_token();
-						if ($this->token == T_IDENT) {
-							$ident = $this->token_value;
-							$this->next_token();
-							if ($this->token == T_PAR_OPEN) {
-								$this->new_template.= "_$ident(";
-								$this->next_token();
-								/* continue parsing */
-								continue 3;
-							} else {
-								$this->new_template.=$ident;
-							}
-						} else {
-							break;
-						}
-					}
-
-					if ($this->token == T_PAR_OPEN) {
-						$this->error = "error: illegal function call at line: ".$this->scanner->YYLINE;
-						break 2;
-					} else {
-						/* continue parsing */
-						continue 2;
-					}
+					$this->new_template .= $this->parse_variable();
 				break;
 				case T_STRING:
-					$this->new_template.=$this->token_value;
+					$this->new_template .= $this->token_ahead_value;
+					$this->next_token();
 				break;
 				case T_MULTIPART_STRING_START:
 					$this->new_template.="\"";
 					$this->next_token();
 					do {
-						switch($this->token) {
+						switch($this->token_ahead) {
 							case T_SUBSTRING:
-								$this->new_template.=$this->token_value;
+								$this->new_template .= $this->token_ahead_value;
 							break;
 							case T_VARIABLE:
-								$this->new_template.=$this->var_prefix.$this->token_value;
+								$this->new_template .= $this->var_prefix.$this->token_ahead_value;
+							break;
+							case T_ERROR:
+								$this->error = $this->token_ahead_value;
 							break;
 							default:
 						}
 						$this->next_token();
-					} while ($this->token!=T_MULTIPART_STRING_END);
-					$this->new_template.="\"";
+					} while (!$this->error && $this->token_ahead!=T_MULTIPART_STRING_END);
+					$this->next_token();
+					$this->new_template .= "\"";
 				break;
 				case T_OBJECT_OPERATOR:
-					$this->new_template.="->";
+					$this->new_template .= "->";
+					$this->next_token();
 				break;
 				case T_UNPARSED:
-					$this->new_template.=$this->token_value;
+					$this->new_template .= $this->token_ahead_value;
+					$this->next_token();
 				break;
 				case T_IDENT:
-					$ident = $this->token_value;
-					$this->next_token();
-					if ($this->token == T_PAR_OPEN) {
-						if (!$this->allowed_functions[chop(strtolower($ident))]) {
-							$this->new_template.=$this->function_prefix.$ident."(";
-						} else {
-							$this->new_template.=$ident."(";
-						}
-					} else
-					if ($this->token == T_CLASS_OPERATOR) {
-						$this->next_token();
-						if ($this->token == T_IDENT) {
-							$this->new_template.="pinp_$ident::_".$this->token_value;
-						} else {
-							$this->error = "expecting an identifier following the class operator";
-							break 2;
-						}
-					} else {
-						$ident_clean = strtolower(trim($ident));
-						switch ($ident_clean) {
-							case "new":
-							case "global":
-							case "return":
-							case "__file__":
-							case "include":
-							case "include_once":
-							case "require":
-							case "require_once":
-
-								$this->error = "error: illegal language construct ($ident_clean) at line: ".$this->scanner->YYLINE;
-
-							/* break out of the parser loop */
-							break 2;
-							case "function":
-								$this->error = "error at line ".$this->scanner->YYLINE.": you can not declare functions in pinp";
-							break;
-							default:
-								$this->new_template.=$ident;
-								/* 
-									as our 'lookahead' token is not a T_PAR_OPEN
-									we need to parse it again
-								*/
-								continue 3;
-							break;
-						}
-					}
+					$this->new_template .= $this->parse_ident();
 				break;
 				case T_PAR_OPEN:
 					$this->new_template.="(";
+					$this->next_token();
 				break;
 				case T_ERROR:
-					$this->error = "error: ".$this->token_value;
-					break 2;
+					$this->error = $this->token_ahead_value." at line ".$this->scanner->YYLINE;
+				break;
+				default:
+					$this->error = "illegal or unkown construct (".$this->token_ahead_value.") at line ".$this->scanner->YYLINE;
 				break;
 			}
-			$this->next_token();
 		}
 
-		if ($this->in_pinp) {
+		if (!$this->error && $this->in_pinp) {
 			$this->error = "no closing pinp tag found";
 		}
 		return $this->new_template;
