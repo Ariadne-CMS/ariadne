@@ -1,7 +1,7 @@
 <?php
-  // show image select box with browse button 
-  global $PHP_SELF,$QUERY_STRING; 
-  echo "<!-- $PHP_SELF - $QUERY_STRING -->";
+  if ($this->CheckLogin("read") && $this->CheckConfig()) {
+    // show image select box with browse button 
+     global $PHP_SELF,$QUERY_STRING; 
 ?>
 <HTML>
 <HEAD>
@@ -138,3 +138,6 @@ function IsDigit()
 </table>
 </body>
 </html>
+<?php
+  }
+?>
