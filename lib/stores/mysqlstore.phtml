@@ -1045,7 +1045,7 @@ class mysqlstore {
 				$subid  = intval($row["id"]);
 			}
 			$subid=$subid+1;
-			$subid = str_pad((string)$subid, $substr_l-strlen($subid)+1, "0", STR_PAD_LEFT);
+			$subid = sprintf("%0".$substr_l."d", $subid);
 		}
 		return $subid;
 	}
