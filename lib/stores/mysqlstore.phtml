@@ -587,6 +587,10 @@ class mysqlstore {
 			$this->error="$destination already exists, cannot overwrite.";
 			debug("link: ERROR: ".$this->error,"store");
 			$result=false;
+		} else if (!$this->exists($parent)) {
+			$this->error="$parent does not exist, cannot link.";
+			debug("link: ERROR: ".$this->error,"store");
+			$result=false;
 		} else { 
 			if (ereg("\{([0-9]):id\}",$destination,$match)) {
 				$subid=$this->nextid($parent);
