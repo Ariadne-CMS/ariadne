@@ -213,7 +213,8 @@
 				}
 
 				if (!$skip_compression) {
-					ob_clean();
+					ob_end_clean();
+					ob_start();
 					$crc = crc32($image);
 					$size = strlen($image);
 					$image = gzcompress($image, $AR->output_compression);
