@@ -40,7 +40,7 @@
 			// alert('windowsize='+windowsize);
 			properties=properties+','+windowsize;
 		}
-		if (arguments==undefined) {
+		if (!arguments || arguments=='undefined') {
 			arguments='';
 		}
 		arguments=window.location.search+arguments;
