@@ -243,4 +243,7 @@ $ARnls["groups"]=		"Groups";
 $ARnls["profile"]=		"Profile";
 $ARnls["noprofile"]=	"No Profile";
 $ARnls["apply"]=		"Apply";
+$ARnls["thumbwidth"]=		"Width";
+$ARnls["thumbheight"]=		"Height";
+$ARnls["thumbcolor"]=		"Color";
 ?>

@@ -243,4 +243,7 @@ $ARnls["groups"]=		"Groepen";
 $ARnls["profile"]=		"Profiel";
 $ARnls["noprofile"]=	"Geen Profiel";
 $ARnls["apply"]=		"Toepassen";
+$ARnls["thumbwidth"]=		"Breedte";
+$ARnls["thumbheight"]=		"Hoogte";
+$ARnls["thumbcolor"]=		"Kleur";
 ?>
