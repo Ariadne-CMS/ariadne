@@ -76,8 +76,9 @@
 			}
 		}
 		$this->data->mimetype=$this->getdata("mimetype","none");
-		
-		if ($this->save($properties)) {
+		$this->save($properties);		
+
+		if (!$this->error) {
 			$this->ClearCache();
 			$fulltext = $properties['fulltext'];
 			unset($properties);
