@@ -58,6 +58,8 @@
 		default:
 		break;
 		case "2.2":
+		case "2.2.1":
+		case "2.2.2":
 			array_push($todo, Array(
 								"description" => "Installing grant names for the new grants dialog.",
 								"operation" => "2.2/upgrade.grants.php",
@@ -68,14 +70,14 @@
 			array_push($todo, Array(
 								"description" => "Moving configuration into data->config.",
 								"operation" => "2.4rc1/upgrade.configdata.php",
-								"newversion" => "2.4rc2.1"
+								"newversion" => "2.4"
 								));
 		case "2.4rc1.1":
 			if( $store_config["dbms"] == "postgresql") {
 				array_push($todo, Array(
 							"description" => "updating the postgresql store.",
 							"operation" => "2.4rc2/upgrade.postgresql.lowercase.php",
-							"newversion" => "2.4rc1.2"
+							"newversion" => "2.4"
 							));
 			}
 	}
