@@ -2,11 +2,13 @@
   /*************************************************************************/
   /* Path Information:                                                     */
   /* Fill in the location of the Ariadne code library and the files        */
+  /* - Use forward-slashes in directory names                              */
+  /* - Do not use volumenames!                                             */
   /*************************************************************************/
   /* Ariadne Install Directory                                             */ 
   /*************************************************************************/
 
-  $ariadne_root                       = "/usr/local/lib/ariadne/";
+  $ariadne_root                       = "/ariadne/";
 
   /*************************************************************************/
   /* Ariadne Code Library (lib)                                            */
@@ -18,13 +20,20 @@
   /* Ariadne Export temp directory                                         */
   /*************************************************************************/
 
-  $ax_config["temp"]                  = "/tmp/";
+  $ax_config["temp"]                  = "/temp/";
 
   /*************************************************************************/
   /* Tar configuration                                                     */
   /*************************************************************************/
 
-  $ax_config["tar_error_handler"]     = " 2> %s";
-  $ax_config["tar_tar"]               = "tar -zc -C %s %s -f %s %s";
-  $ax_config["tar_untar"]             = "tar -zx -C %s %s -f %s %s";
+  if ($AR->OS=="WIN32") {
+    $compress_cmd                       = "--use-compress-program=".$ariadne_root."bin/gzip";
+    $tar_cmd                            = $ariadne_root."bin/tar.exe ".$compress_cmd;
+    $ax_config["tar_error_handler"]     = "";
+  } else {
+    $tar_cmd                            = "tar";
+    $ax_config["tar_error_handler"]     = " 2> %s ";
+  }
+  $ax_config["tar_tar"]               = $tar_cmd." -c -C %s %s -f %s %s";
+  $ax_config["tar_untar"]             = $tar_cmd." -x -C %s %s -f  %s %s";
 ?>
