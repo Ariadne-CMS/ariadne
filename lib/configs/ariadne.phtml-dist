@@ -38,12 +38,14 @@
   /* ImageMagick information                                                */
   /* For the photobook Ariadne needs to know where to find the ImageMagick  */
   /* utilities. The default setting works for a debian potato linux install */
-  /* Don't forget to install ImageMagick.                                   */
+  /* Don't forget to install ImageMagick. Older versions of ImageMagick     */
+  /* refer to 'composite' as 'combine'.                                     */
   /**************************************************************************/
 
   $AR->IM->convert          = '/usr/bin/X11/convert';
   $AR->IM->mogrify          = '/usr/bin/X11/mogrify';
-
+  $AR->IM->composite        = '/usr/bin/X11/composite';
+  // $AR->IM->composite        = '/usr/bin/X11/combine';
 
   /*************************************************************************/
   /* Database Information:                                                 */
