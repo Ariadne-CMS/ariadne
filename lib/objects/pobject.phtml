@@ -1629,6 +1629,7 @@ class pobject extends object { // pobject class definition
 	}
 
 	function _import($class) {
+		// only allow access to modules in the modules directory.
 		$class=eregi_replace('[^a-z0-9\._]','',$class);
 		include_once($this->store->code."modules/".$class);
 	}
