@@ -122,6 +122,13 @@ A.unselected {
 	border-bottom-color: buttonshadow;
 	border-right-color: buttonshadow;
 }
+.tbutton_left_pressed {
+	float: left;
+	padding: 2px;
+	border: 1px solid buttonhighlight;
+	border-top-color: buttonshadow;
+	border-left-color: buttonshadow;
+}
 .tbutton_right {
 	float: right;
 	padding: 2px;
@@ -134,4 +141,15 @@ A.unselected {
 	border: 1px solid buttonhighlight;
 	border-bottom-color: buttonshadow;
 	border-right-color: buttonshadow;
+}
+.tbutton_right_pressed {
+	float: right;
+	padding: 2px;
+	border: 1px solid buttonhighlight;
+	border-top-color: buttonshadow;
+	border-left-color: buttonshadow;
+}
+.spacer {
+	width: 50px;
+	float: left;
 }
