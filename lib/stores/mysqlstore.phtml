@@ -432,9 +432,9 @@ class mysqlstore {
 			debug("save: updating","all");
 			if ($vtype) { // only change/save vtype if it is explicitly set
 				$evtype=AddSlashes($vtype);
-				$query_string="update $objects_tbl set object='$edata', vtype='$evtype' where id=$id"; 
+				$query_string="update $objects_tbl set object='$edata', vtype='$evtype', lastchanged=NULL where id=$id"; 
 			} else {
-				$query_string="update $objects_tbl set object='$edata' where id=$id"; 
+				$query_string="update $objects_tbl set object='$edata', lastchanged=NULL where id=$id"; 
 			}
 			debug("save: query=$query_string","all");
 			mysql_db_query($this->database,$query_string, $this->connect_id);
@@ -1036,15 +1036,17 @@ class mysqlstore {
 			$substr_l = intval(substr($matches[2], 0, 1));
 			$mask_post= $matches[3];
 			$query_string = 
-				"select max(substring(path, $substr_s, $substr_l)) as id
+				"select max(substring(path, $substr_s)) as id
 				from ".$this->tbl_prefix."nodes where 
-				path regexp '^".$path.$mask_pre."[0-9]\{".$substr_l."\}".$mask_post."'";
+				path regexp '^".$path.$mask_pre."[0-9]+".$mask_post."'";
 
 			//error($query_string);
 			$result = mysql_db_query($this->database, $query_string, $this->connect_id);
 			if ($result) {
 				$row = mysql_fetch_array($result);
-				$subid  = intval($row["id"]);
+				if (ereg('([0-9]+)', $row["id"], $matches)) {
+					$subid  = intval($matches[1]);
+				}
 			}
 			$subid=$subid+1;
 			$subid = sprintf("%0".$substr_l."d", $subid);
