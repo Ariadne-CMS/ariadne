@@ -24,6 +24,9 @@
 		if ($wgWizFlow[0]["error"]) {
 			$wgWizAlert=$wgWizFlow[0]["error"];
 		}
+		if ($wgWizFlow[0]["nextstep"]) {
+			$wgWizNextStep=$wgWizFlow[0]["nextstep"];
+		}
 		$result=$this->get("/system/ariadne/types/$arNewType/","system.get.name.phtml");
 		$wgWizTitle=$ARnls["new"]." ".$result[0];		
 		$wgWizHeader=$wgWizTitle.'<img src="'.$AR->dir->images.'icons/'.$arNewType.'_open.gif" alt="" hspace="4" align="absmiddle">';
