@@ -55,6 +55,8 @@
 				}
 				$this->custom_ref++;
 				$this->used_tables[$table." as $table".$this->custom_id] = $table.$this->custom_id;
+				$this->select_tables[$table." as $table".$this->custom_id] = 1;
+
 				$this->used_custom_fields[$field] = true;
 				$result = " $table".$this->custom_id.".AR_name = '$field' ";
 				if ($nls) {
