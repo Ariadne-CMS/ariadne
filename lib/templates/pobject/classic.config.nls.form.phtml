@@ -30,7 +30,6 @@
 				}
 				reset($AR->nls->list);
 				while (list($key, $value)=each($AR->nls->list)) {
-					$value=htmlentities($value);
 					if ($selected[$key]) {
 						echo "<option value=\"$key\" selected>$value</option>\n";
 					} else {
