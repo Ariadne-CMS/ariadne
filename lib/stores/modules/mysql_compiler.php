@@ -18,27 +18,22 @@
 				$field=$node["field"];
 				$record_id=$node["record_id"];
 				if (!$record_id) {
-					if (!$this->in_orderby && !$no_context_join) {
-						$result=" $table.object = ".$this->tbl_prefix."objects.id and $table.$field ";
-						$this->used_tables[$table]=$table;
+					if ($this->in_orderby && $node["nls"]) {
+						/* 
+							we do a left join so that we will also find non
+							matching objects
+						*/
+						$objects_table = $this->tbl_prefix."objects";
+						$this->nls_join[$table] = "left join $table as order_$table on $objects_table.id=order_$table.object and order_$table.AR_nls='".$node["nls"]."' ";
+						$result = " order_$table.$field ";
 					} else {
-						if ($this->in_orderby && $node["nls"]) {
-							/* 
-								we do a left join so that we will also find non
-								matching objects
-							*/
-							$objects_table = $this->tbl_prefix."objects";
-							$this->nls_join[$table] = "left join $table as order_$table on $objects_table.id=order_$table.object and order_$table.AR_nls='".$node["nls"]."' ";
-							$result = " order_$table.$field ";
-						} else {
-							/*
-								if we are parsing 'orderby' properties we have 
-								to join our tables for the whole query
-							*/							
-							$this->select_tables[$table]=$table;
-							$this->used_tables[$table]=$table;
-							$result=" $table.$field ";
-						}
+						/*
+							if we are parsing 'orderby' properties we have 
+							to join our tables for the whole query
+						*/							
+						$this->select_tables[$table]=$table;
+						$this->used_tables[$table]=$table;
+						$result=" $table.$field ";
 					}
 				} else {
 					$this->used_tables["$table as $table$record_id"] = $table.$record_id;
