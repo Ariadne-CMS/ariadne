@@ -87,6 +87,19 @@
 </style>
 </head>
 <body bgcolor="#BBBBBB">
+
+<b>You should now have a popup window with a login screen.</b><br>
+If this window is not there your browser is probably killing the
+popups.<br>
+Try this <a href="javascript:window.open('<?php
+        echo $this->make_url()."user.login.popup.html".
+                        "?arLoginMessage=".RawUrlEncode($arLoginMessage).
+                        "&arErrorMessage=".RawUrlEncode($arErrorMessage).
+                        "&ARLogin=".RawUrlEncode($ARLogin).
+                        "&arReturnPath=".RawUrlEncode($arReturnPath).
+"&arReturnTemplate=".RawUrlEncode($arReturnTemplate); ?>',
+'login','directories=no,location=no,menubar=no,status=no,toolbar=no,resizable=yes,height=275,width=500');">LINK</a>
+
 <noscript>
 <form name="login" method="POST" action="<?php echo $this->make_url(); ?>login.phtml">
 <input type="hidden" name="arReturnPath" value="<?php echo $arReturnPath; ?>">
