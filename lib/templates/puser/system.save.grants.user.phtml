@@ -2,39 +2,39 @@
 	/******************************************************************
 	 system.save.grants.user.phtml                         Muze Ariadne
 	 ------------------------------------------------------------------
-	 Arguments: $arAction, $arPath, $arGrant
+	 Arguments: $action, $path, $grant
 	 Grant needed: none
 	 Global variables: none 
 
 	 This template adds a grant to the user grants table of this user.
 	 First it checks whether the user who is applying the grant has 
-	 sufficient grants in the given path (arPath) to add/delete the
+	 sufficient grants in the given path (path) to add/delete the
 	 grant.
 
 	 The template checks whether a user is logged on, it can only be 
 	 called from another template which calls CheckLogin() first.
 
-	 $arAction: "add" or "delete"
-	 $arPath: path to the object on which the grant is added.
-	 $arGrant: name of the grant to apply.
+	 $action: "add" or "delete"
+	 $path: path to the object on which the grant is added.
+	 $grant: name of the grant to apply.
 
 	 no result.
 
 	******************************************************************/
 
 	// first check whether the user has the config grant on the given path
-	$grants=@current($this->get($arPath, "system.get.grants.phtml"));
+	$grants=@current($this->get($path, "system.get.grants.phtml"));
 	if ($AR->user && ($AR->user->data->login=="admin" || $grants["config"])) { // can not be called directly from loader
 		// first make sure that the object is clean (data can only be set via 
 		// the defined interface: $arCallArgs)
 		$this->data=@current($this->get(".","system.get.data.phtml"));
-		switch($arAction) {
+		switch($action) {
 			case "delete" :
 				include_once($this->store->code."includes/DelGrant.phtml");
-				$this->data->usergrants=DelGrant($this->data->usergrants, $arPath, $grant);
+				$this->data->usergrants=DelGrant($this->data->usergrants, $path, $grant);
 				break;
 			case "add" :
-				$this->data->usergrants[$arPath][$grant]=1;
+				$this->data->usergrants[$path][$grant]=1;
 				break;
 		}
 		$this->save();

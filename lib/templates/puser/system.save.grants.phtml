@@ -12,7 +12,7 @@
 	 no result
 
 	******************************************************************/
-	if ($this->CheckSilent("config") && $this->CheckConfig()) {
+	if ($this->CheckLogin("config") && $this->CheckConfig()) {
 		include_once($this->store->code."includes/DelGrant.phtml");
 
 		// first make sure that the object is clean (data can only be set via 
@@ -32,53 +32,58 @@
 			}
 		} else if ($newgrants) {
 			if ($type=@current($this->get($path, "system.get.type.phtml"))) {
-				if ($this->store->implements($type, "puser")) {	
-					if ($id=@current($this->get($path, "system.get.id.phtml"))) {
-						$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
-						$newgrants=ereg_replace("[[:space:]]"," ",$newgrants);
-						$newgrant=strtok($newgrants, " ");
-						if ($newgrant==".") {
-							if ($result=@current($this->find($searchpath[$type],$criteria,"system.get.grants.phtml","path=".RawUrlEncode($this->path)))) {
-								$current=implode(" ", array_keys($result));
-								$newgrants=ereg_replace(" ?\. ?",AddSlashes($current),$newgrants);		
-							}
-							$newgrant=strtok($newgrants, " ");
-						} else if (ereg("({(.*)})",$newgrant,$regs)) {
-							if ($this->data->grants[$type][$regs[2]]) {
-								$cloned=implode(" ",array_keys($this->data->grants[$type][$regs[2]]));
-							}
-							$newgrants=ereg_replace(" ?".$regs[1]." ?",AddSlashes($cloned),$newgrants);
-							$newgrant=strtok($newgrants, " ");
+				if ($this->store->implements($type, "puser") 
+					&& ($id=@current($this->get($path, "system.get.id.phtml")))) {
+					$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
+					$newgrants=ereg_replace("[[:space:]]"," ",$newgrants);
+					$newgrant=strtok($newgrants, " ");
+					if ($newgrant==".") {
+						if ($result=@current($this->find($searchpath[$type],$criteria,"system.get.grants.phtml","path=".RawUrlEncode($this->path)))) {
+							$current=implode(" ", array_keys($result));
+							$newgrants=ereg_replace(" ?\. ?",AddSlashes($current),$newgrants);		
 						}
-						while ($newgrant) {
-							if ($newgrant!=".") {
-								if (substr($newgrant,0,1)=="-") {
-									$delgrant=substr($newgrant,1);
-									$this->data->grants[$type]=DelGrant($this->data->grants[$type],$id,$delgrant);
-									if ($id==$this->data->login && $type==$this->type) {
-										$this->data->usergrants=DelGrant($this->data->usergrants, $this->path, $delgrant);
-									} else {
-										$this->find($searchpath[$type], $criteria, "system.save.grants.user.phtml",  
-													"action=delete&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($delgrant));
-									}
+						$newgrant=strtok($newgrants, " ");
+					} else if (ereg("({(.*)})",$newgrant,$regs)) {
+						if ($this->data->grants[$type][$regs[2]]) {
+							$cloned=implode(" ",array_keys($this->data->grants[$type][$regs[2]]));
+						}
+						$newgrants=ereg_replace(" ?".$regs[1]." ?",AddSlashes($cloned),$newgrants);
+						$newgrant=strtok($newgrants, " ");
+					}
+					while ($newgrant) {
+						if ($newgrant!=".") {
+							if (substr($newgrant,0,1)=="-") {
+								$delgrant=substr($newgrant,1);
+								$this->data->grants[$type]=DelGrant($this->data->grants[$type],$id,$delgrant);
+								if ($id==$this->data->login && $type==$this->type) {
+									$this->data->usergrants=DelGrant($this->data->usergrants, $this->path, $delgrant);
 								} else {
-									if (substr($newgrant,0,1)=="+") {
-										$newgrant=substr($newgrant,1);
-									}
-									$this->data->grants[$type][$id][$newgrant]=1;
-									if ($id==$this->data->login && $type==$this->type) {
-										$this->data->usergrants[$this->path][$newgrant]=1;
-									} else {
-										$this->find($searchpath[$type], $criteria, "system.save.grants.user.phtml",   
-												"action=add&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($newgrant));
-									}
+									$this->find($searchpath[$type], $criteria, "system.save.grants.user.phtml",  
+												"action=delete&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($delgrant));
+								}
+							} else {
+								if (substr($newgrant,0,1)=="+") {
+									$newgrant=substr($newgrant,1);
+								}
+								$this->data->grants[$type][$id][$newgrant]=1;
+								if ($id==$this->data->login && $type==$this->type) {
+									$this->data->usergrants[$this->path][$newgrant]=1;
+								} else {
+									$this->find($searchpath[$type], $criteria, "system.save.grants.user.phtml",   
+											"action=add&path=".RawUrlEncode($this->path)."&grant=".RawUrlEncode($newgrant));
 								}
 							}
-							$newgrant=strtok(" ");
 						}
+						$newgrant=strtok(" ");
 					}
+				} else {
+					$this->error="$path is not a user or group.";
 				}
+			} else {
+				$this->error="$path does not exist.";
 			}
+		}
+		if (!$this->error) {
 			$this->save($properties);
 		}
 	}
