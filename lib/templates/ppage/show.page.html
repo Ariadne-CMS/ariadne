@@ -1,0 +1,5 @@
+<?php
+	if ($this->CheckLogin('read') && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		$this->ShowPage($arLanguage, false, true);
+	}
+?>
