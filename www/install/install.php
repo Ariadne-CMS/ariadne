@@ -4,7 +4,9 @@
   require("../ariadne.inc");
   require($ariadne."/configs/ariadne.phtml");
   require($ariadne."/configs/store.phtml");
+  require($ariadne."/configs/axstore.phtml");
   include_once($ariadne."/includes/loader.web.php");
+  include_once($ariadne."/stores/axstore.phtml");
   include_once($ariadne."/stores/mysql_install.phtml");
   $ERRMODE="text";
 
@@ -112,25 +114,25 @@
 
     echo "== importing ariadne.ax file\n\n";
 
-	global $AR, $ARLogin, $options, $import_list; // ax options
-	$options["import_path"]="/";		// import ariadne root
-	$options["axFile"]="ariadne.ax";	// the export file to be imported
-	$options["verbose"]=true;			// show us what is happening
-	$options["grants"]=true;		// import grants also
-	$import_list[0]=".";				// import first object (root)
-
+	global $options;
+	$options["verbose"]=true;
 	// become admin
 	$AR->user=new object;
 	$AR->user->data=new object;
 	$AR->user->data->login=$ARLogin="admin";
 
-	$result=$store->call("system.import.phtml", "",
-		$store->get("/"));
-
-	if (!$result) {
-		$error="Failed to import ax file";
+	$config["writeable"]=false;
+	$config["database"]="./ariadne.ax";
+	$axstore=new axstore(".", $config);
+	if ($axstore) {
+		$ARCurrent->importStore=$store;
+		$args="srcpath=/&destpath=/";
+		$axstore->call("system.export.phtml", $args,
+			$axstore->get("/"));
+		$error=$axstore->error;
+		$axstore->close();
 	} else {
-		$error=@current($result);
+		$error="Could not instantiate axstore";
 	}
 
     if ($error) {
