@@ -15,8 +15,10 @@
 
 		if (get_class($ARCurrent->importStore) == "axstore") {
 			$ARCurrent->AXAction = "export";
+			$ARCurrent->AXHeader = &$ARCurrent->importStore->header;
 		} else {
 			$ARCurrent->AXAction = "import";
+			$ARCurrent->AXHeader = &$this->store->header;
 		}
 
 		/* create a dummy object for later use */
@@ -85,14 +87,16 @@
 
 		$offset=0;
 		if (!$ARCurrent->importStore->error) {
-			while (($result=$this->store->call("system.export.object.phtml","",$this->store->find($srcpath,$criteria,100,$offset)))) {
+			while (($result=$this->store->call("system.export.object.phtml",$arCallArgs,$this->store->find($srcpath,$criteria,100,$offset)))) {
 				if (is_array($checkpaths)) {
 					unset($newresult);
 					@reset($checkpaths);
 					while (list(,$path)=@each($checkpaths)) {
 						if (!$ARCurrent->importStore->exists($path)) {
+							$arguments = $arCallArgs;
+							$arguments["setDummyObject"] = true;
 							$temp_obj=current($this->store->call("system.export.object.phtml",
-													Array("setDummyObject" => true),
+													$arguments,
 													$this->store->get($path)));
 
 							$newresult[]=$temp_obj;
@@ -150,7 +154,7 @@
 								if (!($object->axflags & AX_DUMMY) && 
 									!($object->axflags & AX_WITHOUT_DATA)) {
 
-									$oldObject=current($ARCurrent->importStore->call("system.get.phtml", "",
+									$oldObject=current($ARCurrent->importStore->call("system.get.phtml", $arCallArgs,
 													$ARCurrent->importStore->get($newpath)));
 
 									if (($object->lastchanged > $oldObject->lastchanged)) {
@@ -173,9 +177,11 @@
 								$ARCurrent->saved_object[$object->id]=$newpath;
 
 									if ($ARCurrent->importStore->exists($newpath)) {
+										$arguments = $arCallArgs;
+										$arguments["newObject"] = $object;
 										$ARCurrent->importStore->call(
 												"system.export.update.phtml", 
-												Array("newObject" => $object),
+												$arguments,
 												$ARCurrent->importStore->get($newpath));
 
 									} else {
@@ -189,7 +195,7 @@
 											$impObject->parent = "..";
 										}
 										$impObject->store = &$ARCurrent->importStore;
-										$impObject->call("system.import.phtml");
+										$impObject->call("system.import.phtml", $arCallArgs);
 										if ($impObject->error) {
 											display("\n	ERROR (".$impObject->error.")\n");
 											$exclude_list[] = $impObject->path;
@@ -200,15 +206,15 @@
 
 							if (!($object->axflags & AX_DUMMY)) {
 									$object->newObject=current(
-										$ARCurrent->importStore->call("system.get.phtml","",
+										$ARCurrent->importStore->call("system.get.phtml", $arCallArgs,
 											$ARCurrent->importStore->get($newpath)));
 
 									if (!($object->axflags & AX_WITHOUT_TEMPLATES)) {
 										// (update or set templates and files)
-										$object->call("system.export.templates.phtml", "");
+										$object->call("system.export.templates.phtml", $arCallArgs);
 									}
 									if (!($object->axflags & AX_WITHOUT_FILES)) {
-										$object->call("system.export.files.phtml", "");
+										$object->call("system.export.files.phtml", $arCallArgs);
 									}
 							}
 
@@ -244,11 +250,11 @@
 							unset($criteria);
 							$criteria["login"]["value"]["="]="'$login'";
 							$criteria["object"]["type"]["="]="'pgroup'";
+							$arguments = $arCallArgs;
+							$arguments["importDestPath"] = $destpath;
+							$arguments["importRootPath"] = $rootpath;
 							$ARCurrent->importStore->call("system.import.groupgrants.phtml", 
-															array(
-																	"importDestPath" => $destpath,
-																	"importRootPath" => $rootpath
-															) ,
+															$arguments,
 															$result=$ARCurrent->importStore->find("/system/groups/", $criteria));
 						} 
 					}
@@ -262,7 +268,7 @@
 							unset($criteria);
 							$criteria["login"]["value"]["="]="'$login'";
 							$criteria["object"]["type"]["="]="'puser'";
-							$ARCurrent->importStore->call("system.import.usergrants.phtml", "",
+							$ARCurrent->importStore->call("system.import.usergrants.phtml", $arCallArgs,
 								$result=$ARCurrent->importStore->find("/system/users/", $criteria));
 						} 
 					}
