@@ -267,6 +267,14 @@ class pobject {
 		}
 	}
 	$grants=$this->GetValidGrants();
+	if ($AR->user->data->login!="public" && !Headers_sent()) {
+		// Don't remove this or MSIE users won't get uptodate pages...
+		Header("Pragma: no-cache");
+		Header("Cache-control: no-store, no-cache, must-revalidate, max-age=0");
+		Header("Expires: Mon, 26 Jul 1997 05:00:00 GMT");
+		Header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
+		Header("Cache-control: private");
+	}
 
 	$AR->user->grants=$grants;
 	if (!$grants[$grant] && $ARLogin!="admin") {
