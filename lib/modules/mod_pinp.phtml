@@ -10,6 +10,7 @@ define("T_MULTIPART_STRING_END",	247);
 define("T_PINP_START",		246);
 define("T_PINP_END",		245);
 define("T_ERROR",			244);
+define("T_PAR_OPEN",		243);
 
 define("YY_STATE_HTML",			1);
 define("YY_STATE_PINP",			2);
@@ -31,6 +32,8 @@ class scanner {
 		for ($c = ord('0'); $c <= ord('9'); $c++) {
 			$cclass_second[chr($c)] = 1;
 		}
+		$cclass_second["\n"] = 1;
+		$cclass_second[" "] = 1;
 		$this->YYCLASSES["ID_SECOND"] = $cclass_second;
 
 		$cclass['"'] = 1;
@@ -42,6 +45,7 @@ class scanner {
 		$cclass['<'] = 1;
 		$cclass['%'] = 1;
 		$cclass['?'] = 1;
+		$cclass['('] = 1;
 		$cclass[chr(0)] = 1;
 		$this->YYCLASSES["START_TRANSITION"] = $cclass;
 	}
@@ -361,6 +365,11 @@ class scanner {
 							return T_UNPARSED;
 						}
 					break;
+					case "(":
+						$result = "(";
+						++$YYCURSOR;
+						return T_PAR_OPEN;
+					break;
 					case "\0":
 						return T_EOF;
 					break;
@@ -487,7 +496,13 @@ class pinp {
 							break;
 						}
 					}
-					continue 2;
+					if ($this->token == T_PAR_OPEN) {
+						$this->error = "error: illegal function call\n";
+						break 2;
+					} else {
+						/* continue parsing */
+						continue 2;
+					}
 				break;
 				case T_STRING:
 					$this->new_template.=$this->token_value;
@@ -516,11 +531,14 @@ class pinp {
 					$this->new_template.=$this->token_value;
 				break;
 				case T_IDENT:
-					if (!$this->allowed_functions[strtolower($this->token_value)]) {
+					if (!$this->allowed_functions[chop(strtolower($this->token_value))]) {
 						$this->new_template.=$this->function_prefix.$this->token_value;
 					} else {
 						$this->new_template.=$this->token_value;
 					}
+				break;
+				case T_PAR_OPEN:
+					$this->new_template.="(";
 				break;
 				case T_ERROR:
 					$this->error = "error: ".$this->token_value;
