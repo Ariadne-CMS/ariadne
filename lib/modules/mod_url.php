@@ -15,16 +15,16 @@ class URL {
 	}
 
 	/* replaces the URLs with the {ar*[/nls]} markers */
-	function RAWtoAR($obj, $text, $nls="") {
+	function RAWtoAR($page, $nls="") {
 		global $ARCurrent, $AR;
 
 		$nls_match = "(/(?:".implode('|', array_keys($AR->nls->list))."))?";
 		/* find and replace the current page */
-		$find[] = "%\\Q".$obj->make_url($obj->path, "\\E{0}(".$nls_match.")\\Q")."\\E%"; $repl[] = "{arCurrentPage\\1}";
-		$find[] = "%".preg_replace("%^https?://%", "https?\\Q://", $AR->host).$AR->dir->www."loader.php\\E(?:/-".$ARCurrent->session->id."-)?".$nls_match."\\Q".$obj->path."\\E%"; $repl[] = "{arCurrentPage\\1}";
+		$find[] = "%\\Q".$this->make_url($this->path, "\\E{0}(".$nls_match.")\\Q")."\\E%"; $repl[] = "{arCurrentPage\\1}";
+		$find[] = "%".preg_replace("%^https?://%", "https?\\Q://", $AR->host).$AR->dir->www."loader.php\\E(?:/-".$ARCurrent->session->id."-)?".$nls_match."\\Q".$this->path."\\E%"; $repl[] = "{arCurrentPage\\1}";
 		// change hardcoded links and images to use a placeholder for the root
-		if ($obj->store->root) {
-			$root = $obj->store->root;
+		if ($this->store->root) {
+			$root = $this->store->root;
 			if (substr($root, -3) == "/$nls") {
 				$root = substr($root, 0, -3);
 			}
@@ -32,9 +32,9 @@ class URL {
 			$find[] = "%(http[s]?://)?\\Q".$root."\\E".$nls_match."%"; $repl[] = "{arBase\\1}";
 		}
 		// change the site links
-		$site = $obj->currentsite();
+		$site = $this->currentsite();
 		if ($site && $site !== '/') {
-			$find[] = "%\\Q".$obj->make_url($site, "\\E{0}(".$nls_match.")?\\Q")."\\E?%"; $repl[] = "{arBase\\1}".$site;
+			$find[] = "%\\Q".$this->make_url($site, "\\E{0}(".$nls_match.")?\\Q")."\\E?%"; $repl[] = "{arBase\\1}".$site;
 		}
 		// change hand pasted sources, which may or may not include session id's
 		$find[] = "%(https?://)?\\Q".$AR->host.$AR->dir->www."loader.php\\E(/-".$ARCurrent->session->id."-)?".$nls_match."%"; $repl[] = "{arBase\\1}";
@@ -42,34 +42,30 @@ class URL {
 			// check for other session id's:
 			$find[] = "%/-".$ARCurrent->session->id."-%"; $repl[] = "{arSession}";
 		}
-		return preg_replace($find, $repl, $text);
+		return preg_replace($find, $repl, $page);
 	}
 	
 	/* replaces the {ar*[/nls]} markers with valid URLs; if full is false, returns only the <body> content */
-	function ARtoRAW($obj, $text, $full=false) {
+	function ARtoRAW($page, $full=false) {
 		global $ARCurrent, $AR;
 		if ($ARCurrent->session && $ARCurrent->session->id) {
 			$session='/-'.$ARCurrent->session->id.'-';
 		} else {
 			$session='';
 		} 
-		$site = $obj->currentsite();
-		if (!$full) {
-			$find[] = '%^.*<BODY[^>]*>%is'; $repl[] = '';
-			$find[] = '%</BODY.*$%is'; $repl[] = '';
-		}
-		$root = $obj->store->root;
-		if (substr($root, -3) == "/$obj->nls") {
+		$site = $this->currentsite();
+		$root = $this->store->root;
+		if (substr($root, -3) == "/$this->nls") {
 			$root = substr($root, 0, -3);
 		}
 		if ($site && $site !== '/') {
-			$find[] = "%\\{(?:arRoot|arBase)(?:/([^}]+))?\\}\\Q".$site."\\E%e"; $repl[] = "\$obj->make_url('$site', '\\1')";
+			$find[] = "%\\{(?:arRoot|arBase)(?:/([^}]+))?\\}\\Q".$site."\\E%e"; $repl[] = "\$this->make_url('$site', '\\1')";
 		}
 		$find[] = "%\\{arBase(/(?:[^}]+))?\\}%"; $repl[] = $AR->host.$root."\\1";
-		$find[] = "%\\{arRoot(/(?:[^}]+))?\\}%"; $repl[] = $AR->host.$obj->store->root."\\1";
-		$find[] = "%\\{arCurrentPage(?:/([^}]+))?\\}%e"; $repl[] = "\$obj->make_url('', '\\1')";
+		$find[] = "%\\{arRoot(/(?:[^}]+))?\\}%"; $repl[] = $AR->host.$this->store->root."\\1";
+		$find[] = "%\\{arCurrentPage(?:/([^}]+))?\\}%e"; $repl[] = "\$this->make_url('', '\\1')";
 		$find[] = "%\\{arSession\\}%"; $repl[] = $session;
-		return preg_replace($find, $repl, $text);
+		return preg_replace($find, $repl, $page);
 	}
 	
 }
@@ -80,6 +76,13 @@ class pinp_URL {
 		return URL::arguments($args);
 	}
 
+	function _RAWtoAR($page, $nls='') {
+		return URL::RAWtoAR($page, $nls);
+	}
+
+	function _ARtoRAW($page, $full) {
+		return URL::ARtoRAW($page, $full);
+	}
 }
 
 ?>

@@ -40,7 +40,11 @@ include_once($this->code."modules/mod_url.php");
 class ppage extends pobject { // ppage class definition
 
 	function ParsePage($page, $full=false) {
-		return URL::ARtoRAW($this, $page, $full);
+		if (!$full) {
+			$page = eregi_replace('^.*<BODY[^>]*>','',
+								eregi_replace('</BODY.*$','',$page));
+		}
+		return URL::ARtoRAW($page);
 	}
 
 	function RAWtoAR($page, $nls="") {
@@ -48,7 +52,7 @@ class ppage extends pobject { // ppage class definition
 	}
 
 	function CompilePage($page, $nls="") {
-		return URL::RAWtoAR($this, $page, $nls);
+		return URL::RAWtoAR($page, $nls);
 	}
 
 	function GetReferences($page) {
