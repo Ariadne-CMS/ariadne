@@ -7,6 +7,7 @@ class import_wddx {
 	var $xml_parser;
 	var $store;
 	var $config;
+	var $linktable;
 
 	function print_verbose($message){
 		if($this->config['verbose']){
@@ -25,6 +26,7 @@ class import_wddx {
 		xml_set_element_handler($this->xml_parser, "startElement", "endElement");
 		xml_set_character_data_handler($this->xml_parser, "characterData");
 		$this->config = $options;
+		$this->linktable = array();
 	}
 
 	function startElement($parser, $name, $attribs) {
@@ -115,8 +117,26 @@ class import_wddx {
 		} else {
 			$path = $objdata['path'];
 		}
-		$this->print_verbose('Importing: '.$path.' ');
 
+		$this->print_verbose('Importing: '.$path.' ');
+		if($this->linktable[$objdata['id']]){
+			$this->linkObject($path,$this->linktable[$objdata['id']]);
+		} else {
+			$this->linktable[$objdata['id']] = $path;
+			$this->storeObject($path,&$objdata);
+		}
+	}
+
+	function linkObject($path,$linkpath){
+		$this->print_verbose(" ( linking ) \n");
+		$this->store->link($linkpath,$path);
+		if($object->error){
+			debug("WDDX link: error during save");
+			debug("WDDX link: ".$object->error);
+		}
+	}
+
+	function storeObject($path,&$objdata){
 		/*
 			step 1
 			if not skip data

@@ -31,6 +31,7 @@ Bugs Fixes:
 	- fixed some output in mod_wddx_import
 	- added the missing call to fclose
 	- replaced php://stdout in php://output, because stdout is the wrong stream
+	- added linking in wddx import, this was missing
 
 
 Ariadne 2.4
