@@ -33,6 +33,6 @@
 			$this->get($this->path.$arCallFunction."/","view.html",$arCallArgs);
 		}
 	} else if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		$this->call("user.notfound.html", Array("arMissingFunction" => $arCallFunction));	 
+		ldObjectNotFound($this->path, $arCallFunction);
 	}
 ?>

@@ -136,21 +136,6 @@
 				$cachenls="/$nls";
 			}
 
-			// instantiate the store
-			$inst_store = $store_config["dbms"]."store";
-			$store=new $inst_store($root,$store_config);
-			$store->rootoptions = $rootoptions;
-			if ($session_id) {
-				ldStartSession($session_id);
-			}
-
-			// load language file
-			require($ariadne."/nls/".$nls);
-			if (substr($function, -6)==".phtml") {
-				// system template: no language check
-				$ARCurrent->nolangcheck=1;
-			}
-
 			// find (and fix) arguments
 			set_magic_quotes_runtime(0);
 			if (get_magic_quotes_gpc()) {
@@ -160,24 +145,40 @@
 				$ARCookie=stripslashes($ARCookie);
 			}
 			$args=array_merge($HTTP_GET_VARS,$HTTP_POST_VARS);
+
+
+			// instantiate the store
+			$inst_store = $store_config["dbms"]."store";
+			$store=new $inst_store($root,$store_config);
+			$store->rootoptions = $rootoptions;
+
+			if ($session_id) {
+				ldStartSession($session_id);
+				if ($ARCurrent->session->get("ARSessionTimedout", 1)) {
+					if (!$ARCurrent->session->get("oldArCallArgs", 1)) {
+						$ARCurrent->session->put("oldArCallArgs", $args, 1);
+						$ARCurrent->session->save(0, true);
+					}
+				} else {
+					if ($ARCurrent->session->get("oldArCallArgs", 1)) {
+						$args = $ARCurrent->session->get("oldArCallArgs", 1);
+						$ARCurrent->session->put("oldArCallArgs", "", 1);
+					}
+				}
+			}
+
+			// load language file
+			require($ariadne."/nls/".$nls);
+			if (substr($function, -6)==".phtml") {
+				// system template: no language check
+				$ARCurrent->nolangcheck=1;
+			}
+
 			
 			// finally call the requested object
 			$store->call($function, $args, $store->get($path));
 			if (!$store->total) {
-				$requestedpath=$path;
-				while ($path!=$prevPath && !$store->exists($path)) {
-					$prevPath=$path;
-					$path=$store->make_path($path, "..");
-				}
-				if ($prevPath==$path) {
-					error("Database is not initialised, please run <a href=\"".$AR->host.$AR->dir->www."install/install.php\">the installer</a>");
-				} else {
-					// no results: page couldn't be found, show user definable 404 message
-					$store->call("user.notfound.html",
-						 Array(	"arRequestedPath" => $requestedpath,
-						 		"arRequestedTemplate" => $function ),
-						 $store->get($path));
-				}
+				ldObjectNotFound($path, $function);
 			}
 			$store->close();
 
