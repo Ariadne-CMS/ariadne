@@ -11,6 +11,7 @@ New features:
 	- The tree is now interface dependant. Thanks to Paul Meijers.
 	- IE only tab-key catching in the template editor. Thanks to
 	  Dieter Struik.
+	- The "Loading..." message in the tree now comes from the NLS.
 
 Bugs fixed:
 	- Importing with --without-grants will nolonger destroy
@@ -20,6 +21,7 @@ Bugs fixed:
 	- Fixed a bug using getvar() in pinp on a variable set to 0.
 	- Several small fixes in the WinXP interface. Thanks to Paul
 	  Meijers.
+	- get_nextid() was declared twice in axstore.phtml, removed one.
 
 Changes in Ariadne since version 2.1.1
 
