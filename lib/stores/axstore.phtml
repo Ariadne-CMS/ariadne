@@ -22,23 +22,27 @@ class axstore {
 		$this->database=$config["database"];
 		$this->writeable=$config["writeable"];
 		$this->temp=$config["temp"];
+		$this->files=$config["temp"];
 		$this->code=$config["code"];
 		$this->tar_error_handler=$config["tar_error_handler"];
 		$this->tar_tar=$config["tar_tar"];
 		$this->tar_untar=$config["tar_untar"];
 
-		// create tempdir
+		// create tempdir (and do some windows compat magic)
 		$this->tempdir=tempnam($this->temp, "axtemp");
-		if (file_exists($this->tempdir)) {
-			// when file exists, we have to delete it...
-			@unlink($this->tempdir);
+		$this->tempdir=str_replace('\\', '/', $this->tempdir);
+		$this->tempdir=str_replace('//', '/', $this->tempdir);
+		if ($this->tempdir[1]==':') {
+			$this->tempdir=substr($this->tempdir, 2);
 		}
+		@unlink($this->tempdir);
+
 		if (@mkdir($this->tempdir, 0750)) {
 			if (file_exists($this->database)) {
 				if ($this->_untar($this->database, " ", $this->tempdir)) {
 					if (file_exists($this->tempdir."/objects.data")) {
 						// now we have found our objects.data, lets make an index of it
-						$this->ofile=fopen($this->tempdir."/objects.data", "r");
+						$this->ofile=fopen($this->tempdir."/objects.data", "rb");
 						if ($this->ofile) {
 							$currentoffset=ftell($this->ofile);
 							while ($rline=fgets($this->ofile, 3000)) {
@@ -79,7 +83,7 @@ class axstore {
 							}
 
 							// read nodes data
-							$fp_nodes=fopen($this->tempdir."/nodes.data", "r");
+							$fp_nodes=fopen($this->tempdir."/nodes.data", "rb");
 							if ($fp_nodes) {
 								while ($data=fgets($fp_nodes, 3000)) {
 									$data=explode("&", $data);
@@ -647,12 +651,11 @@ class axstore {
 		if ($this->writeable) {
 			@ksort($this->nodes);
 			@reset($this->nodes);
-			if ($fp_objects=fopen($this->tempdir."/tempobjects.data", "w")) {
-				if ($fp_nodes=fopen($this->tempdir."/nodes.data", "w")) {
+			if ($fp_objects=fopen($this->tempdir."/tempobjects.data", "wb")) {
+				if ($fp_nodes=fopen($this->tempdir."/nodes.data", "wb")) {
 					while (list($path, $node)=each($this->nodes)) {
 						if (!$node->object->written_to_file) {
 							fseek($node->object->storage->fp, $node->object->storage->offset);
-
 							$temp_line=fgets($node->object->storage->fp, 3000);
 							$object_line=trim($temp_line);
 							while (strlen($temp_line)==3000-1) {

@@ -18,13 +18,13 @@
 	}
 
 	function untar($tarfile, $file, $dstdir) {
-		global $error, $config;
-		if ($config["tar_error_handler"]) {
+		global $error, $ax_config;
+		if ($ax_config["tar_error_handler"]) {
 			$errfile="./tar.errors";
-			$handler=sprintf($config["tar_error_handler"], $errfile);
+			$handler=sprintf($ax_config["tar_error_handler"], $errfile);
 		}
 
-		$command=sprintf($config["tar_untar"], $dstdir, $file, $tarfile, $handler );
+		$command=sprintf($ax_config["tar_untar"], $dstdir, $file, $tarfile, $handler );
 		echo " exec($command)\n";
 		system($command,$retVar);
 		if ($retVar!=0) {
@@ -42,13 +42,13 @@
 	}
 
 	function tar($tarfile, $file, $dstdir) {
-		global $error, $config;
-		if ($config["tar_error_handler"]) {
+		global $error, $ax_config;
+		if ($ax_config["tar_error_handler"]) {
 			$errfile="./tar.errors";
-			$handler=sprintf($config["tar_error_handler"], $errfile);
+			$handler=sprintf($ax_config["tar_error_handler"], $errfile);
 		}
 
-		$command=sprintf($config["tar_tar"], $dstdir, $file, $tarfile, $handler );
+		$command=sprintf($ax_config["tar_tar"], $dstdir, $file, $tarfile, $handler );
 		echo " exec($command)\n";
 		system($command,$retVar);
 		if ($retVar!=0) {

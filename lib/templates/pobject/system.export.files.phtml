@@ -10,7 +10,6 @@
 					display("	file($file) updating\n");
 		} else {
 			$tempname=tempnam($this->store->files."temp", "temp");
-			@unlink($tempname);
 			$orig_filestore->copy_from_store($tempname, $this->id, $file);
 			$new_filestore->copy_to_store($tempname, $this->newObject->id, $file);
 			@unlink($tempname);

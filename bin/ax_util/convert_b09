@@ -20,12 +20,12 @@
 	}
 
 	$ariadne="../../lib";
-	require($ariadne."/configs/ariadne.phtml");
-	require($ariadne."/configs/store.phtml");
-	require($ariadne."/configs/axstore.phtml");
-	require($ariadne."/stores/mysqlstore.phtml");
-	require($ariadne."/stores/axstore.phtml");
-	require("shared_functions.php");
+	require_once($ariadne."/configs/ariadne.phtml");
+	require_once($ariadne."/configs/store.phtml");
+	require_once($ariadne."/configs/axstore.phtml");
+	require_once($ariadne."/stores/mysqlstore.phtml");
+	require_once($ariadne."/stores/axstore.phtml");
+	require_once("shared_functions.php");
 
 	if ($argc>2) {
 		$axfile=$argv[1];
