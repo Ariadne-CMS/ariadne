@@ -18,10 +18,10 @@
 	debug($this->type."/system.get.config.phtml ".$this->path,"class");
 	$this->call("pdir::system.get.config.phtml",$arCallArgs);
 	$configcache=$ARConfig->cache[$this->path];
-	// this is the only
 	if ($data->url) {
 		$configcache->root["path"]=$this->path;
 		$configcache->root["value"]=$data->url;
 	}
+	$configcache->site=$this->path;
 	$ARConfig->cache[$this->path]=$configcache;
 ?>
