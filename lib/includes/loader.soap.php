@@ -53,12 +53,12 @@
 
 
 	function ldRegisterFile($field = "file", &$error) {
-	global $ARnls, $store, $arguments, $HTTP_POST_VARS;
+	global $ARnls, $store, $arguments;
 		debug("ldRegisterFile([$field], [error])");
 
 		require_once($store->code."modules/mod_mimemagic.php");
 
-		$result = false;
+		$result = Array();
 		$file_data = $arguments[$field];
 		if ($file_data) {
 			$file_data = base64_decode($file_data);
@@ -76,12 +76,11 @@
 
 					$file_type = get_mime_type($file_temp);
 
-					$HTTP_POST_VARS[$field] = $field;
-					$HTTP_POST_VARS[$field."_temp"] = substr($file_temp, strlen($store->files."temp/"));
-					$HTTP_POST_VARS[$field."_size"] = filesize($file_temp);
-					$HTTP_POST_VARS[$field."_type"] = $file_type;
-					debug(" http_post_vars (".serialize($HTTP_POST_VARS).")");
-					$result = true;
+					$result[$field] = $field;
+					$result[$field."_temp"] = substr($file_temp, strlen($store->files."temp/"));
+					$result[$field."_size"] = filesize($file_temp);
+					$result[$field."_type"] = $file_type;
+					debug(" http_post_vars (".serialize($result).")");
 				}
 			}
 		}
