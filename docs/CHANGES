@@ -86,6 +86,7 @@ New Features:
 	- Added the pbookmark extention to the default Ariadne distribution.
 	- added the proxy store class, which acts like a proxy between the objects
 	  and the real store, so that users can't view the store config with print_r
+	- Added some more verboseness to mod_import_wddx
 
 Bugs Fixed:
 	- Added $data->path of pshortcut to the references.path property.

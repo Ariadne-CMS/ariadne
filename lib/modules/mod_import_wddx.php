@@ -8,6 +8,12 @@ class import_wddx {
 	var $store;
 	var $config;
 
+	function print_verbose($message){
+		if($this->config['verbose']){
+			print $message;
+		}
+	}
+
 	function import_wddx($options){
 		$this->input = null;
 		$this->nestdeep = -4;
@@ -103,12 +109,13 @@ class import_wddx {
 			3) object grants
 			4) object files
 		 */
-		debug("working on ".$objdata['path'],'all');
+		debug("WDDX working on ".$objdata['path'],'all');
 		if($this->config['prefix']){
 			$path = $this->store->make_path($this->config['prefix'],".".$objdata['path']);
 		} else {
 			$path = $objdata['path'];
 		}
+		$this->print_verbose('Importing: '.$path.' ');
 
 		/*
 			step 1
@@ -123,10 +130,11 @@ class import_wddx {
 		 */
 		if(!($this->config['skipdata'] === true))
 		{
-			debug('work data','all');
+			debug('WDDX work data','all');
 			if($id = $this->store->exists($path))
 			{
-				debug("data: object exists",'all');
+				debug("WDDX data: object exists",'all');
+				$this->print_verbose(" ( updating ) \n");
 				$object = current(
 						$this->store->call("system.get.phtml",
 							array(),$this->store->get($path))
@@ -147,19 +155,28 @@ class import_wddx {
 					$object->size = $objdata['size'];
 					$object->priority = $objdata['priority'];
 					$object->type = $objdata['type'];
-					debug("data: calling save");
+					debug("WDDX data: calling save");
 					$object->save($objdata['properties']);
 				}
 			} else
 			{
-				debug("data: object doesn't exists",'all');
+				debug("WDDX data: object doesn't exists",'all');
+				$this->print_verbose(" ( saving ) \n");
+				$parent = $this->store->make_path($path,'..');
+				if($parent == $path){ $parent = '..'; }
 				$object = $this->store->newobject($path,
-						$this->store->make_path($path,'..'), $objdata['type'],
+						$parent, $objdata['type'],
 						$objdata['data'], 0, $objdata['lastchanged'],
 						$objdata['vtype'], $objdata['size'], $objdata['priority']);
 				$object->arIsNewObject = true;
-				debug("data: calling save");
+				debug("WDDX data: calling save");
 				$object->save($objdata['properties']);
+				if($object->error){
+					debug("WDDX data: error during save");
+					debug("WDDX data: ".$object->error);
+				}
+				debug("WDDX data: done save");
+
 			}
 			unset($object);
 		}
@@ -183,10 +200,10 @@ class import_wddx {
 		 */
 		if(!($this->config['skiptemplates'] === true))
 		{
-			debug('work templates','all');
+			debug('WDDX work templates','all');
 			if($id = $this->store->exists($path))
 			{
-				debug("templates: object exists",'all');
+				debug("WDDX templates: object exists",'all');
 				$object = current(
 						$this->store->call("system.get.phtml",
 							array(),$this->store->get($path))
@@ -208,6 +225,7 @@ class import_wddx {
 					do something about those templates
 				 */
 				if(is_Array($objdata['templates'])){
+					$this->print_verbose("   Templates:\n");
 					while(list($type,$tval) = each($objdata['templates']))
 					{
 						if(is_array($tval))
@@ -219,11 +237,13 @@ class import_wddx {
 									while(list($language,$val) = each($nval))
 									{
 										$file = $type.".".$function.".".$language;
-										debug("templates: ".$object->id."working on template $file",'all');
+										debug("WDDX templates: ".$object->id."working on template $file",'all');
 										$pinp=new pinp("header","this->", "\$this->_");
 
 										$template = base64_decode($val['template']);
 										$compiled=$pinp->compile(strtr($template,"\r",""));
+										$this->print_verbose('              ');
+										$this->print_verbose("[".$file."]: ");
 
 										if($templates->exists($object->id,$file))
 										{
@@ -232,7 +252,8 @@ class import_wddx {
 													($this->config['forcedata'] === true)
 											  )
 											{
-												debug('templates: overwrite existing template','all');
+												debug('WDDX templates: overwrite existing template','all');
+												$this->print_verbose(" saving\n");
 												$templates->write($template, $object->id, $file.".pinp");
 												$templates->touch($object->id,$file.".pinp",$val['mtime']);
 												$templates->write($compiled, $object->id, $file);
@@ -256,10 +277,12 @@ class import_wddx {
 													}
 												}
 
+											} else {
+												$this->print_verbose(" skipping\n");
 											}
 										}else
 										{
-											debug('templates: create template','all');
+											debug('WDDX templates: create template','all');
 											$templates->write($template, $object->id, $file.".pinp");
 											$templates->touch($object->id,$file."pinp",$val['mtime']);
 											$templates->write($compiled, $object->id, $file);
@@ -308,15 +331,16 @@ class import_wddx {
 		 */
 		if(!($this->config['skipgrants'] === true))
 		{
-			debug('work grants','all');
+			debug('WDDX work grants','all');
 			if($id = $this->store->exists($path))
 			{
-				debug('grants: yeah the path exists','all');
+				debug('WDDX grants: yeah the path exists','all');
 				$object = current(
 						$this->store->call("system.get.phtml",
 							array(),$this->store->get($path))
 						);
 				if(is_array($objdata['data']->config->grants)){
+					$this->print_verbose("   Grants: installing\n");
 					$object->data->config->grants = $objdata['data']->config->grants;
 					$object->save();
 				}
@@ -342,7 +366,7 @@ class import_wddx {
 		 */
 		if(!($this->config['skipfiles'] === true))
 		{
-			debug('work files','all');
+			debug('WDDX work files','all');
 			if($id = $this->store->exists($path))
 			{
 				$object = current(
@@ -351,12 +375,15 @@ class import_wddx {
 						);
 
 				$files=$object->store->get_filestore("files");
-				debug('files: yeah the path exists','all');
+				debug('WDDX files: yeah the path exists','all');
 
-				if(is_Array($objdata[files]))
+				if(is_Array($objdata[files]) && count($objdata[files]) > 0)
 				{
+					$this->print_verbose("       Files:\n");
 					while(list($key,$val) = each($objdata[files]))
 					{
+						$this->print_verbose('              ');
+						$this->print_verbose("[".$key."]: ");
 						if($files->exists($object->id,$key))
 						{
 							if(
@@ -364,15 +391,19 @@ class import_wddx {
 									($this->config['forcefiles'] === true)
 							  )
 							{
-								debug('files: overwrite existing file','all');
+								debug('WDDX files: overwrite existing file','all');
+								$this->print_verbose(" updating\n");
 								$files->write(base64_decode($val[file]), $object->id, $key);
 								$files->touch($object->id,$file,$val['mtime']);
+							} else {
+								$this->print_verbose(" skipping\n");
 							}
 						}else
 						{
-							debug('files: create template','all');
+							$this->print_verbose(" saving\n");
+							debug('WDDX files: create template','all');
 							$files->write(base64_decode($val[file]), $object->id, $key);
-							debug("files: touch $file with".$val['mtime'],'all');
+							debug("WDDX files: touch $file with".$val['mtime'],'all');
 							$files->touch($object->id,$file,$val['mtime']);
 						}
 					}
