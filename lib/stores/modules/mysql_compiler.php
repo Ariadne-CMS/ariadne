@@ -50,6 +50,10 @@
 				if ($node["left"]["id"]!=="implements") {
 					$left=$this->compile_tree($node["left"]);
 					$right=$this->compile_tree($node["right"]);
+					/* lastchanged == unixtimestamp -> lastchanged == 200201.. */
+					if ($node["left"]["field"]=="lastchanged") {
+						$right = date("YmdHis", $right);
+					}
 					$result=" $left $operator $right ";
 				} else {
 					$table=$this->tbl_prefix."types";

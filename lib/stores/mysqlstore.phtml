@@ -310,7 +310,8 @@ class mysqlstore {
 										$where.=" and $nodes_tbl.parent $ecompare $value ";
 										break;
 									case ("lastchanged") :
-										$where.=" and UNIX_TIMESTAMP($objects_tbl.lastchanged) $ecompare $value ";
+										$value = date("YmdHis", $value);
+										$where.=" and $objects_tbl.lastchanged $ecompare $value ";
 										break;
 								}
 								break;
