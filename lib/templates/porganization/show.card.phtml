@@ -10,7 +10,7 @@
 <table border="0" cellspacing="0">
 <tr>
 	<td align="left" valign="top" width="20">
-		<a href="<?php echo $AR->root.$this->path; ?>" onClick="if (top.View) { top.View('<?php echo $this->path; ?>'); return false; }">
+		<a href="<?php echo $this->make_url(); ?>" onClick="if (top.View) { top.View('<?php echo $this->path; ?>'); return false; }">
 		<img border="0" src="<?php echo $AR->dir->images."icons/".$this->type.".gif"; ?>"></a>
 	</td>
 	<td align="left">
