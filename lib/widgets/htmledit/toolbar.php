@@ -653,11 +653,14 @@ return tbContentElement_ContextMenuAction(itemIndex)
 </div>
 
 <IFRAME ID="tbContentElement" CLASS="tbContentElement" unselectable='on' oldstyle="border: 1px inset buttonhighlight; background-color: white; padding: 8px; overflow: scroll;" <?php
-  if ($wgHTMLEditTemplate) {
-    echo "SRC=\"$wgHTMLEditTemplate\"";
-  } else {
-    echo "SRC=\"user.edit.page.html\"";
+  if (!$wgHTMLEditTemplate) {
+    $wgHTMLEditTemplate="user.edit.page.html";
   }
+  global $QUERY_STRING;
+  if ($QUERY_STRING) {
+    $wgHTMLEditTemplate.="?".$QUERY_STRING;
+  }
+  echo "SRC=\"$wgHTMLEditTemplate\"";
 ?>></IFRAME>
 
 <!-- Toolbar Code File. Note: This must always be the last thing on the page -->
