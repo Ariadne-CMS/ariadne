@@ -505,6 +505,7 @@ class mysqlstore {
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
+		$nextid_tbl=$this->tbl_prefix."seq_id";
 
 		$object=$this->exists($path);
 		if ($object) {
@@ -516,6 +517,14 @@ class mysqlstore {
 			$this->del_property($object);
 			$query_string="delete from $objects_tbl where id=$object";
 			mysql_db_query($this->database,$query_string, $this->connect_id);
+			$paths=$this->list_paths($path);
+			if (is_array($paths)) {
+				while (list($key, $path)=each($paths)) {
+					$epath=AddSlashes(strtoupper($path));
+					$query_string="delete from $nextid_tbl where UPPER(path)='$epath'";
+					$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+				}
+			}
 		} else { // no such path, so purge already succeeded :)
 			$result=1;
 		}
@@ -541,8 +550,10 @@ class mysqlstore {
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
+		$nextid_tbl=$this->tbl_prefix."seq_id";
 
-		if ($paths) {
+
+		if (is_array($paths)) {
 			if (sizeof($paths)==1) { // only one path for this object
 				$result=$this->purge($path); // therefore purge the object.
 			} else { // only delete the given path
@@ -553,6 +564,9 @@ class mysqlstore {
 				} else {
 					$result=0;
 				}
+				$query_string="delete from $nextid_tbl where UPPER(path)='$epath'";
+				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+
 			}
 		}
 		debug("delete: end","all");
