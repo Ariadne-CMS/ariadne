@@ -99,6 +99,80 @@ class pldapconnection extends pconnector { // psearch class definition
 		}
 	}
 
+	function add_to_externalgroupmemberships(&$ldapdata, &$ldapgroups) {
+	global $AR;
+
+		// Different LDAP implementations have different attributes
+		// for group memberships; we try to support them all...
+		$groupattrs=array("groupmembership", "memberof");
+
+		foreach ($groupattrs as $groupattr) {
+			if (is_array($ldapdata[$groupattr])) {
+				for ($c=0;$c<$ldapdata[$groupattr]["count"];$c++) {
+					$ldapgroups[$ldapdata[$groupattr][$c]]=true;
+					list($groupname)=ldap_explode_dn($ldapdata[$groupattr][$c], 1);
+					array_push($AR->externalgroupmemberships, strtolower($groupname));
+				}
+			}
+		}
+	}
+
+	/* Recursively retrieve group memberships, because LDAP groups
+	   can be members of other LDAP groups! */
+	function get_nested_groupmemberships(&$ldapdata) {
+	global $AR;
+
+		// List of LDAP group memberships (CN only) which will be used
+		// later to virtually add the user to Ariadne groups with the
+		// same name
+		$AR->externalgroupmemberships=array();
+
+		// List of LDAP groups which have yet to be retrieved
+		// with the full DN stored as array key
+		$ldapgroups=array();
+
+		// Keep a list of already retrieved LDAP groups to
+		// avoid memberships loops (you never know...)
+		// with the full DN stored as array key
+		$retrievedldapgroups=array();
+
+		// Direct group memberships for that user
+		$this->add_to_externalgroupmemberships($ldapdata, $ldapgroups);
+
+		// TODO: Reuse the connection from get_ldap_data()
+
+		$ds=@ldap_connect($this->data->ldap_server);
+		if (!$ds) {
+			$this->error="Cannot connect to LDAP server";
+			return;
+		}
+
+		$r=@ldap_bind($ds, $this->data->ldap_username,
+		              $this->data->ldap_password);
+		if (!$r) {
+			ldap_close($ds);
+			$this->error="Cannot bind to LDAP server";
+			return;
+		}
+
+		// Now retrieve the nested group memberships
+		while (sizeof($ldapgroups)>0) {
+			foreach (array_keys($ldapgroups) as $ldapgroup) {
+				if (!isset($retrievedldapgroups[$ldapgroup])) {
+					$ldapresult=ldap_read($ds, $ldapgroup, "(objectclass=*)", array("*"));
+					// We use ldap_get_entries, because it converts the attribute names
+					// to lowercase, wheres ldap_get_attributes does not :-(
+					$ldapentries=ldap_get_entries($ds, $ldapresult);
+					$this->add_to_externalgroupmemberships($ldapentries[0], $ldapgroups);
+				}
+				unset($ldapgroups[$ldapgroup]);
+				$retrievedldapgroups[$ldapgroup]=true;
+			}
+		}
+
+		ldap_close($ds);
+	}
+
 	/* Reads the data from the LDAP server only if the query is
            different from the last query; this compensates the call
            to find() and count_find() in browse.list.phtml which would
