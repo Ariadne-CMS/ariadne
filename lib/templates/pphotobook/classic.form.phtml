@@ -27,18 +27,17 @@
 ?>
 <html>
 <head>
-<?php
-
-	if($this->call("lock.init.phtml")) {
-		$this->parents($this->path, "show.link.phtml","target=classic.edit.phtml");
-?>
 <title><?php 
 	$title=$ARnls["edit"]." ".@current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml")); 
 	echo $title;
 ?></title>
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
 
-<body bgcolor="white">
+<?php
+	if($this->call("lock.init.phtml")) {
+?>
+
+<body bgcolor="white" onUnLoad="releaseLock()">
 <form method="post">
 <!-- hidden form variables needed by new.phtml/save.phtml -->
 <input type="hidden" name="arNewType" value="<?php echo $arNewType; ?>">

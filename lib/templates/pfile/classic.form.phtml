@@ -12,7 +12,6 @@
 
 	******************************************************************/
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		if ($this->call("lock.init.phtml")) {
 ?>
 <html>
 <head>
@@ -21,6 +20,9 @@
 	echo $title;
 ?></title>
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
+<?php
+		if ($this->call("lock.init.phtml")) {
+?>
 </head>
 <body bgcolor="white" onUnLoad="releaseLock()">
 <form ENCTYPE="multipart/form-data" method="post">

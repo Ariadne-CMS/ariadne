@@ -21,8 +21,9 @@
 ?></title>
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
 <?php 
-	$this->call("lock.init.phtml");
-	include($this->store->code."widgets/multiple/js.html"); 
+		if ($this->call("lock.init.phtml")) {
+
+		include($this->store->code."widgets/multiple/js.html"); 
 ?>
 </head>
 <body bgcolor="white" onUnLoad="releaseLock()">
@@ -172,5 +173,6 @@
 </body>
 </html>
 <?php
+		}
 	}
 ?>
