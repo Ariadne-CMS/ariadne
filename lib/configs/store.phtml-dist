@@ -19,6 +19,7 @@
   $store_config["user"]          = "www";
   $store_config["password"]      = "secret";
 
+
   /*************************************************************************/
   /* Path Information:                                                     */
   /* Fill in the location of the Ariadne code library and the files        */

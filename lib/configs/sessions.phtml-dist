@@ -14,11 +14,18 @@
   /* the username and password with which to connect to it.                */
   /*************************************************************************/
 
-  $session_config["host"]     = "localhost";
-  $session_config["database"] = "ariadne_sessions";
+  $session_config["host"]       = "localhost";
+  $session_config["database"]   = "ariadne_sessions";
 
-  $session_config["user"]     = "www";
-  $session_config["password"] = "secret";
+  $session_config["user"]       = "www";
+  $session_config["password"]   = "secret";
+
+  /*************************************************************************/
+  /* A table prefix is used when you have to use the same Database as the  */
+  /* ObjectStore uses.                                                     */
+  /*************************************************************************/
+
+  $session_config["tbl_prefix"] = "session_";
 
   /*************************************************************************/
   /* Path Information:                                                     */
@@ -28,24 +35,24 @@
   /* Ariadne Install Directory                                             */ 
   /*************************************************************************/
 
-  $ariadne_root               = "/usr/local/lib/ariadne/";
+  $ariadne_root                 = "/usr/local/lib/ariadne/";
 
   /*************************************************************************/
   /* Ariadne Code Library (lib)                                            */
   /*************************************************************************/
 
-  $session_config["code"]     = $ariadne_root."lib/";
+  $session_config["code"]       = $ariadne_root."lib/";
 
   /*************************************************************************/
   /* Ariadne Files Repository (files)                                      */
   /*************************************************************************/
 
-  $session_config["files"]    = $ariadne_root."sessions/";
+  $session_config["files"]      = $ariadne_root."sessions/";
 
   /*************************************************************************/
   /* Ariadne Session Timeout                                               */
   /*************************************************************************/
 
-  $session_config["timeout"]  = 3600;
+  $session_config["timeout"]    = 3600;
 
 ?>

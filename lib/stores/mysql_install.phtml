@@ -8,7 +8,7 @@ class mysqlstore_install extends mysqlstore {
 		echo "initializing mysql store.\n";
 		$queries[0]["msg"]="creating nodes table.";
 		$queries[0]["query_string"]="
-CREATE TABLE nodes (
+CREATE TABLE ".$this->tbl_prefix."nodes (
 	path varchar(127) DEFAULT '' NOT NULL,
 	parent varchar(127) DEFAULT '' NOT NULL,
 	object int(11) DEFAULT '0' NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE nodes (
 
 		$queries[1]["msg"]="creating objects table.";
 		$queries[1]["query_string"]="
-CREATE TABLE objects (
+CREATE TABLE ".$this->tbl_prefix."objects (
 	id int(11) DEFAULT '0' NOT NULL auto_increment,
 	type varchar(16) DEFAULT '' NOT NULL,
 	object text,
@@ -32,20 +32,20 @@ CREATE TABLE objects (
 )";
 		$queries[2]["msg"]="creating properties table.";
 		$queries[2]["query_string"]="
-CREATE TABLE properties (
+CREATE TABLE ".$this->tbl_prefix."properties (
 	name varchar(21) DEFAULT '' NOT NULL,
 	PRIMARY KEY (name)
 )";
 		$queries[3]["msg"]="creating seq_id table.";
 		$queries[3]["query_string"]="
-CREATE TABLE seq_id (
+CREATE TABLE ".$this->tbl_prefix."seq_id (
 	path varchar(127) DEFAULT '' NOT NULL,
 	next_id int(11) DEFAULT '0' NOT NULL,
 	KEY path (path)
 )";
 		$queries[4]["msg"]="creating types table.";
 		$queries[4]["query_string"]="
-CREATE TABLE types (
+CREATE TABLE ".$this->tbl_prefix."types (
 	type varchar(16) DEFAULT '' NOT NULL,
 	implements varchar(16) DEFAULT '' NOT NULL,
 	KEY type (type),
@@ -111,7 +111,7 @@ CREATE TABLE types (
 		$result=1;
 		$this->error="";
 		if (eregi("^[a-z][a-z0-9_-]*$",$property) && strlen($property)<=16) {
-			$create_string="create table prop_".AddSlashes($property)." (\n";
+			$create_string="create table ".$this->tbl_prefix."prop_".AddSlashes($property)." (\n";
 			while (list($name, $typedef)=each($definition)) {
 				if (!eregi("^[a-z][a-z0-9_-]*$",$name) || strlen($name)>16) {
 					$result=0;
@@ -173,7 +173,7 @@ CREATE TABLE types (
 					// finally add the index on the object field and close the query.
 					$create_string.="index object(object) )\n";
 					$temp=mysql_db_query($this->database,$create_string, $this->connect_id);
-					$query_string="insert into properties values ( '".AddSlashes($property)."' )";
+					$query_string="insert into ".$this->tbl_prefix."properties values ( '".AddSlashes($property)."' )";
 					mysql_db_query($this->database,$query_string, $this->connect_id);
 					$errno=mysql_errno($this->connect_id);
 					if ($errno) {
@@ -204,10 +204,10 @@ CREATE TABLE types (
 
 		$this->error="";
 		$eproperty=AddSlashes($property);
-		$remove_string="drop table prop_$eproperty";
+		$remove_string="drop table ".$this->tbl_prefix."prop_$eproperty";
 		debug($remove_string,"store");
 		$temp=mysql_db_query($this->database,$remove_string, $this->connect_id);
-		$query_string="delete from properties where name='$eproperty'";
+		$query_string="delete from ".$this->tbl_prefix."properties where name='$eproperty'";
 		mysql_db_query($this->database,$query_string, $this->connect_id);
 		$errno=mysql_errno($this->connect_id);
 		if ($errno) {
@@ -232,7 +232,7 @@ CREATE TABLE types (
 		if ($type && $implements && (strlen($type)<17) && (strlen($implements)<17)) {
 			$etype=AddSlashes($type);
 			$eimplements=AddSlashes($implements);
-			$query_string="insert into types values ('$etype','$eimplements')";
+			$query_string="insert into ".$this->tbl_prefix."types values ('$etype','$eimplements')";
 			debug($query_string,"store");
 			mysql_db_query($this->database,$query_string, $this->connect_id);
 			$errno=mysql_errno($this->connect_id);
@@ -262,10 +262,10 @@ CREATE TABLE types (
 		$this->error="";
 		$etype=AddSlashes($type);
 		if (!$implements) {
-			$query_string="delete from types where type='$etype' or implements='$etype'";
+			$query_string="delete from ".$this->tbl_prefix."types where type='$etype' or implements='$etype'";
 		} else {
 			$eimplements=AddSlashes($implements);
-			$query_string="delete from types where type='$etype' and implements='$etype'";
+			$query_string="delete from ".$this->tbl_prefix."types where type='$etype' and implements='$etype'";
 		}
 		debug($query_string,"store");
 		mysql_db_query($this->database,$query_string, $this->connect_id);
