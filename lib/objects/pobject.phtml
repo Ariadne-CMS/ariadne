@@ -434,8 +434,8 @@ class pobject extends object {
 		if ($modifier==ARTHISTYPE) {
 			$modifier=$this->type;
 		}
+
 		// check for a sessionid
-		$silent=($AR->user) ? 1:0;
 		$continue=true;
 		if (!$AR->user) {
 			if (!$ARCurrent->session || !$ARCurrent->session->get("ARLogin")) {
@@ -459,17 +459,13 @@ class pobject extends object {
 				unset($criteria);	
 				if (!($AR->user=$result)) {
 					debug("pobject: CheckLogin: user in cookie not found","object");
-					if (!$silent) {
-						$arLoginMessage=$ARnls["accessdenied"].": ".sprintf($ARnls["userunknown"],$ARLogin);
-						$this->call("user.login.html",compact("arLoginMessage"));
-					}
+					$arLoginMessage=$ARnls["accessdenied"].": ".sprintf($ARnls["userunknown"],$ARLogin);
+					ldAccessDenied($this->path, $arLoginMessage);
 					$continue=false;
 				} else if (!$AR->user->CheckPassword($ARPassword)) {
 					debug("pobject: CheckLogin: wrong password in cookie","object");
-					if (!$silent) {
-						$arLoginMessage=$ARnls["accessdenied"].": ".$ARnls["passwordincorrect"];
-						$this->call("user.login.html",compact("arLoginMessage"));
-					}
+					$arLoginMessage=$ARnls["accessdenied"].": ".$ARnls["passwordincorrect"];
+					ldAccessDenied($this->path, $arLoginMessage);
 					$continue=false;
 				} else {
 					debug("pobject: CheckLogin: got user ".$result->data->name,"all");
@@ -490,14 +486,12 @@ class pobject extends object {
 					) && $ARLogin!="admin" ) {
 				// do login
 				debug("pobject: CheckLogin: insufficient grants ($ARLogin)","object");
-				if (!$silent) {
-					if ($ARLogin!="public") {
-						$args=Array( "arLoginMessage" => $ARnls["accessdenied"]);
-					} else if ($fallback) {
-						$args=Array( "arLoginMessage" => $ARnls["accessdenied"].": ".$ARnls["q:cookiesenabled"]);
-					}
-					$this->call("user.login.html", $args);
+				if ($ARLogin!="public") {
+					$arLoginMessage = $ARnls["accessdenied"];
+				} else if ($fallback) {
+					$arLoginMessage = $ARnls["accessdenied"].": ".$ARnls["q:cookiesenabled"];
 				}
+				ldAccessDenied($this->path, $arLoginMessage);
 				$continue=false;
 			}
 		}
@@ -509,6 +503,8 @@ class pobject extends object {
 			$result=false;
 			debug("pobject: CheckLogin: end (failed)","all");
 		}
+
+		$ARCurrent->arLoginSilent=1;
 		return $result;
 	}
 
