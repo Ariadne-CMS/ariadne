@@ -12,6 +12,9 @@
 				object.className='tbutton_'+align;	
 			}
 		}
+		function b_new() {
+			arshow('edit_object_data','object.new.select.phtml');
+		}
 	</script>
 	<div id="toolbar" style="background: buttonface; border: 2px groove buttonhighlight; border-bottom: 0px; width: 100%; height: 26px;">
 		<div id="b_first" class="tbutton_left" style="visibility: hidden;" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_first();"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/first.gif"></div>
@@ -24,6 +27,7 @@
 				</select>
 			</form>
 		</div>
+		<div id="b_new" class="tbutton_left" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_new();"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/new.gif"></div>
 		<script>
 			var buttons='';
 		<?php
