@@ -59,6 +59,22 @@
 			</tr>
 			</table>
 		</fieldset>
+		<fieldset>
+		<legend><?php echo $ARnls["contactinformation"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+			<table border="0" align="center">
+			<tr>
+				<td><?php echo $ARnls["email"]; ?></td>
+				<td>
+					<input type="text" name="email" value="<?php echo $this->getdata("email", "none"); ?>">	
+				</td>
+			</tr><tr>
+				<td><?php echo $ARnls["telephone"]; ?></td>
+				<td>
+					<input type="text" name="telephone" value="<?php echo $this->getdata("telephone", "none"); ?>">	
+				</td>
+			</tr>
+			</table>
+		</fieldset>
 	</td>
 </tr>
 </table>
