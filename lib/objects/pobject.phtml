@@ -1103,7 +1103,7 @@ class pobject extends object {
 		while ($redirecting && $tries < $maxtries) {
 			$tries++; 
 			// get host name and URI from URL, URI not needed though 
-			preg_match("/^([htps]*:\/\/)?([^\/]+)(.+)/i", $url, $matches); 
+			preg_match("/^([htps]*:\/\/)?([^\/]+)(.*)/i", $url, $matches); 
 			$host = $matches[2]; 
 			$uri = $matches[3]; 
 			if (!$matches[1]) {

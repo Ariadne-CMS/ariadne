@@ -65,6 +65,36 @@ class pfile extends pobject { // definitie class
 		$files->close();
 	}
 
+	function SaveVersion($version) {
+		$fstore = $this->store->get_filestore("files");
+		$fstore->copy($this->id, "file", $this->id, "file.".$version);
+		$fstore->close();
+	}
+	
+	function ListVersions() {
+		$fstore = $this->store->get_filestore("files");
+		$result = $fstore->ls($this->id);
+		$fstore->close();
+		return $result;
+	}
+	
+	function GetVersion($version) {
+		$fstore = $this->store->get_filestore("files");
+		if( $fstore->exists($this->id, "file.".$version) ) {
+			return $fstore->read($this->id, "file.".$version);
+		} else {
+			return false;	
+		}
+	}
+
+	function _ListVersions() {
+		return $this->ListVersions();
+	}
+
+	function _GetVersion($version) {
+		return $this->GetVersion($version);
+	}
+
 	function _ParseFile($file) {
 		return $this->ParseFile($file);
 	}
