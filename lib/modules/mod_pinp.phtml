@@ -32,9 +32,11 @@ class scanner {
 		for ($c = ord('0'); $c <= ord('9'); $c++) {
 			$cclass_second[chr($c)] = 1;
 		}
-		$cclass_second["\n"] = 1;
-		$cclass_second[" "] = 1;
 		$this->YYCLASSES["ID_SECOND"] = $cclass_second;
+
+		$cclass_trailing["\n"] = 1;
+		$cclass_trailing[" "] = 1;
+		$this->YYCLASSES["ID_TRAILING"] = $cclass_trailing;
 
 		$cclass['"'] = 1;
 		$cclass["'"] = 1;
@@ -94,7 +96,7 @@ class scanner {
 							return T_UNPARSED;
 						}
 					} else {
-						$result = $scanbuffer;
+						$result = $scan_buffer;
 						$YYBUFFER = chr(0);
 						$YYCURSOR = 0;
 						return T_UNPARSED;
@@ -108,6 +110,9 @@ class scanner {
 						if ($YYCLASSES["ID_FIRST"][$yych]) {
 							$yych = $YYBUFFER[++$YYCURSOR];
 							while ($YYCLASSES["ID_SECOND"][$yych]) {
+								$yych = $YYBUFFER[++$YYCURSOR];
+							}
+							while ($YYCLASSES["ID_TRAILING"][$yych]) {
 								$yych = $YYBUFFER[++$YYCURSOR];
 							}
 							$result = substr($YYBUFFER, $YYCURSOR_START+1, $YYCURSOR-$YYCURSOR_START-1);
@@ -256,6 +261,9 @@ class scanner {
 						while ($YYCLASSES["ID_SECOND"][$yych]) {
 							$yych = $YYBUFFER[++$YYCURSOR];
 						}
+						while ($YYCLASSES["ID_TRAILING"][$yych]) {
+							$yych = $YYBUFFER[++$YYCURSOR];
+						}
 						$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
 						return T_IDENT;
 					break;
@@ -284,6 +292,9 @@ class scanner {
 								if ($YYCLASSES["ID_FIRST"][$yych]) {
 									$yych = $YYBUFFER[++$YYCURSOR];
 									while ($YYCLASSES["ID_SECOND"][$yych]) {
+										$yych = $YYBUFFER[++$YYCURSOR];
+									}
+									while ($YYCLASSES["ID_TRAILING"][$yych]) {
 										$yych = $YYBUFFER[++$YYCURSOR];
 									}
 									$string=substr($YYBUFFER, $YYCURSOR_START+1, $YYCURSOR - $YYCURSOR_START -1);	
@@ -512,10 +523,21 @@ class pinp {
 					$this->new_template.=$this->token_value;
 				break;
 				case T_IDENT:
-					if (!$this->allowed_functions[chop(strtolower($this->token_value))]) {
-						$this->new_template.=$this->function_prefix.$this->token_value;
+					$ident = $this->token_value;
+					$this->next_token();
+					if ($this->token == T_PAR_OPEN) {
+						if (!$this->allowed_functions[chop(strtolower($ident))]) {
+							$this->new_template.=$this->function_prefix.$ident."(";
+						} else {
+							$this->new_template.=$ident."(";
+						}
 					} else {
-						$this->new_template.=$this->token_value;
+						$this->new_template.=$ident;
+						/* 
+							as our 'lookahead' token is not a T_PAR_OPEN
+							we need to parse it again
+						*/
+						continue 2;
 					}
 				break;
 				case T_PAR_OPEN:
