@@ -13,13 +13,14 @@
       dtop=window.screenY;
       dprops='height='+dheight+',width='+dwidth+',top='+dtop+',left='+dleft;
     }
-    if (top.window.opener) {
-	    if (top.window.opener.top.Set) {
-	      window.opener.top.Set(window.name, dprops);
-	    } else if (top.window.opener.top.window.opener.top.Set) {
-	      top.window.opener.top.window.opener.top.Set(window.name, dprops);
-	    }
+    if (top.window.opener && !top.window.opener.closed) {
+      if (top.window.opener.top.Set) {
+        window.opener.top.Set(window.name, dprops);
+      } else if (top.window.opener.top.window.opener && 
+                !top.window.opener.top.window.opener.closed &&
+                 top.window.opener.top.window.opener.top.Set) {
+        top.window.opener.top.window.opener.top.Set(window.name, dprops);
+      }
 	}
-//    alert('saving size for '+window.name+' to: '+dprops );
     return true;
   }
