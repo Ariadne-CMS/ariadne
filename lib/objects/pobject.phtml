@@ -346,36 +346,21 @@ class pobject extends object {
 				$path.=current($subpaths)."/";
 				$paths[]=$path;
 			}
-
-			// now check the parent paths for grants, starting at the last
-			// untill user grants are found.
-			$path=end($paths);
-			while (!($AR->user->GetGrants($path,$grants)) && $path) {
-				$path=prev($paths);
-			}
-			if ($grants) { // if grants are found, set the upperlimit
-				$userpath=$path;
-			}
-			debug("pobject: GetValidGrants: user grants defined at $userpath","all");
-
-			// if not already done, find all groups of which the user is a member
-			$criteria["members"]["login"]["="]="'".AddSlashes($AR->user->data->login)."'";
-			if ($AR->user->groups || ($AR->user->groups=$this->find("/system/groups/",$criteria, "system.get.phtml"))) {
-				reset($AR->user->groups);
-				while (list($key, $group)=each($AR->user->groups)) { 
-					// for each group ...
+			$grants=Array();
+			$userpath=$AR->user->FindGrants($this->path, $grants);
+			if (!$AR->user->grants[$this->path]) {
+				// if not already done, find all groups of which the user is a member
+				$criteria["members"]["login"]["="]="'".AddSlashes($AR->user->data->login)."'";
+				if ($AR->user->groups || ($AR->user->groups=$this->find("/system/groups/",$criteria, "system.get.phtml"))) {
 					$path=end($paths);
-					while ($path && $path!=$userpath && !$found) { 
-						// find and merge first grants set upto, not including, the upperlimit
-						if ($group->GetGrants($path, $grants)) {
-							debug("pobject: GetValidGrants: group grants for ".$group->data->name." defined at $path","all");
-							$found=true;
-						}
-						$path=prev($paths);
+					reset($AR->user->groups);
+					while (list($key, $group)=each($AR->user->groups)) { 
+						$group->FindGrants($path, $grants, $userpath);
 					}
-					$found=false;
 				}
+				$AR->user->grants[$this->path]=$grants;
 			}
+			$grants=$AR->user->grants[$this->path];	
 		}
 		debug("pobject: GetValidGrants: end ( ".serialize($grants)." )","all");
 		return $grants;
@@ -436,8 +421,8 @@ class pobject extends object {
 			}
 		}
 		if ($continue) {
-			if ($AR->user->data->login!="admin") {
-				$grants=$this->GetValidGrants();
+			if ($AR->user->data->login!="admin" && !$AR->user->grants[$this->path]) {
+				$AR->user->grants[$this->path]=$this->GetValidGrants();
 			}
 			if ($AR->user->data->login!="public" && !Headers_sent()) {
 				// Don't remove this or MSIE users won't get uptodate pages...
@@ -447,8 +432,7 @@ class pobject extends object {
 				Header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
 				Header("Cache-control: private");
 			}
-
-			$AR->user->grants=$grants;
+			$grants=$AR->user->grants[$this->path];
 			if (!$grants[$grant] && $ARLogin!="admin") {
 				// do login
 				debug("pobject: CheckLogin: insufficient grants ($ARLogin)","object");
