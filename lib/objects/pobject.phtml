@@ -433,7 +433,9 @@ class pobject extends object {
 			}
 		}
 		if ($continue) {
-			$grants=$this->GetValidGrants();
+			if ($AR->user->data->login!="admin") {
+				$grants=$this->GetValidGrants();
+			}
 			if ($AR->user->data->login!="public" && !Headers_sent()) {
 				// Don't remove this or MSIE users won't get uptodate pages...
 				Header("Pragma: no-cache");
