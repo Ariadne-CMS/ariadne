@@ -11,6 +11,8 @@ New features:
 Bugs fixed:
 	- Importing with --without-grants will nolonger destroy
 	  existing grants.
+	- The default start and endtime calculation in pcalendar::get_items()
+	  does now work correct.
 
 Changes in Ariadne since version 2.1.1
 
