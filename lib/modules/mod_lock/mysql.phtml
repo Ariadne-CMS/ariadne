@@ -67,7 +67,7 @@ class mysqllock {
 		$query_string="lock tables locks write";
 		@mysql_db_query($this->database, $query_string,$this->connectid);
 
-		// check if there is no parentlock :)
+		// check if there is no parentlock
 		$query_string="
 		select path, release, type, identity from locks where
 		(				
@@ -84,36 +84,37 @@ class mysqllock {
 			";
 		}
 
+		$locked=false;
 		// see if this lock is still alive
 		$query_string.="AND release>=".time();
-		$query=@mysql_db_query($this->database, $query_string,$this->connectid);
-		$result=@mysql_fetch_array($query);
+		$query=@mysql_db_query($this->database, $query_string, $this->connectid);
+		while ($result=@mysql_fetch_array($query)) {
+			$locks[]=$result;
+			if ($result["identity"]!=$identity) {
+				$locked=true;
+			}
+		}
 
-		if (!$result || ($result["identity"]==$identity)) {
-			if (!$result) {
-				$query_string="
+		if (!$locked) {
+			$query_string="
+				delete from locks where path='".AddSlashes($path)."'";
+
+			mysql_db_query($this->database, $query_string, $this->connectid);
+
+			$query_string="
 				insert into locks (path, release, type, identity) values (
 				'".AddSlashes($path)."', $time, '".AddSlashes($type)."',
 				'".AddSlashes($identity)."')";
-			} else {
-				$query_string="
-				update locks 
-				set release=$time,
-				type='".AddSlashes($type)."' where
-				path='".AddSlashes($path)."' and
-				identity='".AddSlashes($identity)."'";
-			}
 
-			unset($result);
-			mysql_db_query($this->database, $query_string,$this->connectid);
+			mysql_db_query($this->database, $query_string, $this->connectid);
 		}
 
-		$this->lastLock=$result;
+		$this->lastLockResult=$locks;
 
 		$query_string="unlock tables";
 		mysql_db_query($this->database,$query_string,$this->connectid);
 
-		return $result;
+		return (!$locked);
 	}
 
 	function unlock($identity,$path="") {
