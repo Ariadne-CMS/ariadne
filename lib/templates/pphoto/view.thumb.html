@@ -20,7 +20,9 @@
 		ldSetClientCache(true, time()+7200);
 		ldSetContent("image/jpeg");
 		if (!$this->cached("ar_thumb_".$thumbwidth."x".$thumbheight.$thumbcolor)) {
-			$result=$this->scale($thumbwidth, $thumbheight, $thumbcolor);
+			$this->convert("jpg");
+			$this->scale($thumbwidth, $thumbheight, $thumbcolor);
+			$result=$this->build();
 			if ($result) {
 				echo $result;
 				$this->savecache(999);
