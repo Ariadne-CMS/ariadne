@@ -1,0 +1,27 @@
+<?php
+	/******************************************************************
+	 edit.object.data.save.relogin.phtml                   Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $ARLogin, $ARPassword
+	 Grant needed: none
+	 Global variables: none
+
+	 This template sets the login cookie and adds the username and
+	 password to the session. If no session exists, or the session has
+	 a different username, a new session is started.
+
+	 $ARLogin must be a valid user id
+	 $ARPassword must be the password for that user
+
+	 no result
+
+	******************************************************************/
+	if ($this->CheckConfig()) {
+		ldSetCredentials($ARLogin, $ARPassword);
+		?>
+			<script> 
+					top.done(); 
+			</script>;
+		<?php
+	}
+?>

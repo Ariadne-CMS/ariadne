@@ -2,11 +2,20 @@
 	/******************************************************************
 	 edit.object.data.save.phtml				 Muze Ariadne v2.1
 	 ------------------------------------------------------------------
+	 Arguments: see system.save.data.phtml
+	 Grant needed: read
+	 Global variables: none
 
-	 no result.
- 
+	 This template is a wrapper around system.save.data.phtml. It is
+	 meant to be used as the last step in a wizard.
+
+	 If system.save.data.phtml doesn't return an error, it will call
+	 the javascript function 'objectadded(type, name, path)' in its
+	 opener document and then close the current window.
+	 
+	 no result
+
 	******************************************************************/
-
 	$arIsNewObject=$this->arIsNewObject;
 	$this->call("system.save.data.phtml",$arCallArgs);
 	if ($this->error) {
@@ -14,41 +23,46 @@
 			<font color="red" face="arial,helvetica,sans-serif" size=+1><?php echo $this->error; ?></font><p>
 		<?php
 	} else {
-		$folder=$this->call("system.get.folder.phtml");
-		$arReturnPath=$this->path;
-		$arReturnTemplate="js.window.objectadded.phtml?arIsNewObject=".RawUrlEncode($arIsNewObject);
-		if (($password=$this->getdata("newpass1","none")) &&    
-				($this->data->login==$AR->user->data->login)) {   
-					$arReturnPage=$this->store->root.$this->path."login.phtml?ARLogin=".RawUrlEncode($data->login).
-						"&ARPassword=".RawUrlEncode($password)."&arReturnPath=".RawUrlEncode($arReturnPath).
-						"&arReturnTemplate=".RawUrlEncode($arReturnTemplate);   
-		} else {
-			$arReturnPage=$this->store->root.$arReturnPath.$arReturnTemplate;
-		}
 		?>
 			<script> 
-				if (top.window.opener) {
-					if (top.window.opener.top.tree) {
+				function done() {
+					if (top.window.opener) {
+						if (top.window.opener.objectadded) {
+							top.window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddCSlashes($this->nlsdata->name, ARESCAPE); ?>','<?php echo $this->path; ?>'); 
+						}
 						<?php
-							if ($arIsNewObject) {
-								echo "  top.window.opener.top.tree.AddLinks('{$this->parent}','{$folder["icon"]}','".AddCSlashes($folder["name"], ARESCAPE)."','{$folder["path"]}','".AddCSlashes($folder["pre"], ARESCAPE)."');\n";
+							if (!$arIsNewObject || $this->getdata("arCloseWindow", "none")) {
+						?>
+								top.window.close();
+						<?php
 							} else {
-								echo "  top.window.opener.top.tree.UpdateLinks('{$folder["icon"]}','".AddCSlashes($folder["name"], ARESCAPE)."','{$folder["path"]}','".AddCSlashes($folder["pre"], ARESCAPE)."');\n";
+						?>
+								top.window.location.href='object.new.select.phtml';
+						<?php
 							}
 						?>
-						document.location='<?php echo $arReturnPage; ?>';
-					} else {
+					} else if (top.window.dialogArguments) {
+						arr=new Array();
+						arr['type']='<?php echo $this->type; ?>';
+						arr['name']='<?php echo AddCSlashes($this->nlsdata->name, ARESCAPE); ?>';
+						arr['path']='<?php echo $this->path; ?>';
+						top.window.returnValue=arr;
 						top.window.close();
 					}
-				} else if (top.window.dialogArguments) {
-					arr=new Array();
-					arr['type']='<?php echo $this->type; ?>';
-					arr['name']='<?php echo AddCSlashes($this->nlsdata->name, ARESCAPE); ?>';
-					arr['path']='<?php echo $this->path; ?>';
-					top.window.returnValue=arr;
-					top.window.close();
 				}
 			</script>
+			<?php
+				if (($password=$this->getdata("newpass1","none")) &&    
+					($this->data->login==$AR->user->data->login)) {   
+						$arIncludePage=$this->store->root.$this->path."edit.object.data.save.relogin.phtml?ARLogin=".
+							RawUrlEncode($data->login)."&ARPassword=".RawUrlEncode($password);
+				?>
+					<iframe style="width: 0px; height: 0px" src="<?php echo $arIncludePage; ?>"></iframe>
+				<?php
+				} else {
+					echo "<script> done(); </script>\n";
+				}
+			?>
 		<?php
 	}
 ?>
