@@ -16,7 +16,11 @@
 
 	$inst_store = $store_config["dbms"]."store_install";
 	$store=new $inst_store(".",$store_config);
-	
+
+		// add missing mimetype property table
+		$mimetype["type"]["string"] = 20;
+		$mimetype["subtype"]["string"] = 20;
+		$store->create_property("mimetype", $mimetype);
 
 		// install pprofile type
 		
