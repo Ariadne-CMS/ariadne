@@ -1,0 +1,94 @@
+<?php
+  /******************************************************************
+   new.phtml					   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Arguments: $newtype, $submit
+   Grant needed: add
+   Interface/Widget: all
+   Global variables: none
+
+   This template controls the flow of templates when creating a new
+   object. if $newtype is not set it will display a suitable list of
+   types, to be selected by the user, with a filename entry box. Else 
+   if $submit is not 'Save' the form template of the chosen type will
+   be displayed. Finally the save template of the chosen type will be
+   called.
+
+   No result.
+
+  ******************************************************************/
+
+  if ($this->CheckLogin("add") && $this->CheckConfig()) {
+?>
+<html>
+<title><?php echo $ARnls["selecttype"]; ?></title>
+<?php
+  include($this->store->code."widgets/wizard/classic.css");
+?>
+<style>
+  .list {
+    BACKGROUND-COLOR: white;
+    BORDER-STYLE: inset;
+    BORDER-WIDTH: thin;
+  }
+  .greyed {
+    COLOR: #CCCCCC;
+  }
+</style>
+<body bgcolor="white">
+<table hspace="5" vspace="5" width="100%" height="100%" class="list" cellpadding="2" cellspacing="0" border="0">
+<?php
+    if ($AR->user->data->login=="admin") { // || $AR->user->grants["config"] ?
+      $result=$this->ls("/system/ariadne/types/","system.get.phtml");
+    } else { // FIXME: normal -> change to config check on allowed types -> typetree
+      $this->parents("","GetConfig.phtml");
+      if ($ARConfig->typetree) {
+        $result=$this->ls($ARConfig->typetree."/".$this->type."/",
+          "system.get.phtml");
+      } else {
+        $result=$this->ls("/system/ariadne/typetree/normal/".$this->type."/",
+          "system.get.phtml");
+      }
+    }
+	$cols=4;
+	if ($result && is_array($result)) {
+		$col=1;
+		while (list($key, $object)=each($result)) {
+			echo "<!-- ".serialize($object)." -->\n";
+			$type=$object->data->value;
+			$name=$object->nlsdata->name;
+			if (!$this->CheckSilent("add",$type)) {
+				$class="class='greyed'";				
+			} else {
+				$class="";
+			}
+			if ($col>$cols) {
+				$col=1;
+				echo "</tr><tr valign='top'>";
+			}
+?>
+<td valign="top" align="center" width="<?php echo (100/$cols); ?>%">
+<a <?php echo $class; ?> href="object.new.phtml?arNewType=<?php echo RawUrlEncode($type); ?>">
+<img width="40" height="40" 
+     src="<?php echo $AR->dir->images."icons/".$type; ?>.gif" 
+     alt="<?php echo $type; ?>" border="0"><br>
+<?php
+  echo "$name</a>";
+?></a>
+</td>
+<?php
+			$col++;
+		}
+		while ($col<=$cols) {
+			echo "<td>&nbsp;</td>\n";
+			$col++;
+		}
+	} else {
+		error("Something is wrong with your grants, please contact the system administrator.");
+	}
+?>
+</TABLE>
+</body>
+<?php
+  }
+?>
