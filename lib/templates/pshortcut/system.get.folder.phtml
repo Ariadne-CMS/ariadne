@@ -1,4 +1,6 @@
 <?php
+	require_once($this->store->code."modules/mod_unicode.php");
+	$name=unicode::utf8convert($nlsdata->name);
 	$path=$this->make_path($data->path);
 	if ($AR->user && !$this->CheckSilent("read")) {
 		$arResult["pre"]="<font color='#CCCCCC'>$flag";
@@ -15,10 +17,8 @@
 		if (!strstr($arResult["icon"],"pshortcut/")) {
 			$arResult["icon"]="pshortcut/".$arResult["icon"];
 		}
-		$arResult["name"]=$nlsdata->name;
-		$arResult["path"]=$this->path;
-		$arResult["shortcut"]=$path;
-	} else {
-		error("illegal path $data->path");
 	}
+	$arResult["name"]=$name;
+	$arResult["path"]=$this->path;
+	$arResult["shortcut"]=$path;
 ?>

@@ -8,13 +8,8 @@
 				$arCallArgs=array_merge($arCallArgs, Array("arShortCut" => $this->path));
 				$arResult=@current($this->get($path, $arCallFunction, $arCallArgs));
 			} else {
-				?>
-					<html>
-					<body bgcolor="white">
-					<h1>Shortcut <?php echo $this->path; ?> points to nonexisting path: <?php echo $path; ?>.</h1>
-					</body>
-					</html>
-				<?php
+				$arResult=false;
+				$this->error="Error: Shortcut ".$this->path." points to nonexisting path: ".$path.".";
 			}
 		}
 	} else {

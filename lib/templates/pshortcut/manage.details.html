@@ -1,5 +1,6 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		if ($this->exists($data->path)) {
 ?>
 	<div id="details">
 		<div style="padding: 5px;">
@@ -7,6 +8,15 @@
 		</div>
 	</div>
 <?php
-		$this->get($data->path, "manage.details.html");
+			$this->get($data->path, "manage.details.html");
+		} else {
+?>
+	<div id="details">
+		<div style="padding: 5px;">
+			<?php echo $ARnls["path"]; ?>: <span class="data" style="color: red;"><?php echo $data->path; ?></span> 
+		</div>
+	</div>
+<?php
+		}
 	}
 ?>
