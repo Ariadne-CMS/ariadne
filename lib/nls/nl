@@ -194,6 +194,7 @@ $ARnls["tue"]=			"Din";
 $ARnls["type"]=			"Type";
 $ARnls["types"]=		"Types";
 $ARnls["typetree"]=		"Typeboom";
+$ARnls["up"]=			"Omhoog";
 $ARnls["update"]=		"Verander";
 $ARnls["uploadfile"]=   "Bestand Overzenden";
 $ARnls["url"]=			"URL";

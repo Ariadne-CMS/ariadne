@@ -195,6 +195,7 @@ $ARnls["tue"]=			"Tue";
 $ARnls["type"]=			"Type";
 $ARnls["types"]=		"Types";
 $ARnls["typetree"]=		"Typetree";
+$ARnls["up"]=			"Up";
 $ARnls["update"]=		"Update";
 $ARnls["uploadfile"]=   "Upload File";
 $ARnls["url"]=			"URL";
