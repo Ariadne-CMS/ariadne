@@ -5,14 +5,22 @@ include_once($this->code."objects/pfile.phtml");
 
 class pphoto extends pfile { // definitie class
 
-	function convert($target) {
+	function convert($target, $image="") {
 		global $AR;
 		if (eregi('^(GIF|PNG|JPG|BMP)$',$target)) {
 			$tmpsrc=$this->store->files."temp/".$this->id;
 			$tmpdst=$tmpsrc.".".$target;
-			$f_store=$this->store->get_filestore("files");
-			$f_store->copy_from_store($tmpsrc, $this->id, "file");
-			$f_store->close();
+			if($image=="") {
+				$f_store=$this->store->get_filestore("files");
+				$f_store->copy_from_store($tmpsrc, $this->id, "file");
+				$f_store->close();
+			} else {
+				// write image to file
+				if ($fp=fopen($tmpsrc, "wb")) {
+					$result=fwrite($fp, $image);
+					fclose($fp);
+				}
+			}
 			if (chdir($this->store->files.'temp/')) {
 				system($AR->IM->convert.' '.$this->id.' '.$this->id.'.'.$target, $failed);
 				if (!$failed) {
@@ -34,16 +42,23 @@ class pphoto extends pfile { // definitie class
 		return $result;
 	}
 
-	function scale($x, $y, $fillcolor=false) {
+	function scale($x, $y, $fillcolor=false, $image="") {
 		global $AR;
 		$x=(int)$x;
 		$y=(int)$y;
 
 		$tmpsrc=$this->store->files."temp/".$this->id;
-		$f_store=$this->store->get_filestore("files");
-		$f_store->copy_from_store($tmpsrc, $this->id, "file");
-		$f_store->close();
-
+		if($image=="") {
+			$f_store=$this->store->get_filestore("files");
+			$f_store->copy_from_store($tmpsrc, $this->id, "file");
+			$f_store->close();
+		} else {
+			// write image to file
+			if ($fp=fopen($tmpsrc, "wb")) {
+				$result=fwrite($fp, $image);
+				fclose($fp);
+			}
+		}
 		if (chdir($this->store->files.'temp/')) {
 			$exec_string=$AR->IM->mogrify." -geometry ".$x."x".$y." -format jpg $this->id";
 			system($exec_string,$failed);
@@ -66,12 +81,13 @@ class pphoto extends pfile { // definitie class
 		return $result;
 	}
 
-	function _convert($target) {
-		return $this->convert($target);
+
+	function _convert($target, $image="") {
+		return $this->convert($target, $image);
 	}
 
-	function _scale($x, $y, $fillcolor=false) {
-		return $this->scale($x, $y, $fillcolor);
+	function _scale($x, $y, $fillcolor=false, $image="") {
+		return $this->scale($x, $y, $fillcolor, $image);
 	}
 
 	function get_thumb_settings() {
@@ -81,6 +97,99 @@ class pphoto extends pfile { // definitie class
 
 	function _get_thumb_settings() {
 		return $this->get_thumb_settings();
+	}
+
+	function setfontstyle($name, $font, $pointsize, $color) {
+		global $ARCurrent;
+		$ARCurrent->arFontStyles[$name]["font"]=$font;
+		$ARCurrent->arFontStyles[$name]["pointsize"]=$pointsize;
+		$ARCurrent->arFontStyles[$name]["color"]=$color;
+	}
+
+	function _setfontstyle($name, $font, $pointsize, $color) {
+		return $this->setfontstyle($name, $font, $pointsize, $color);
+	}
+
+	function annotate($text, $x, $y, $style="default", $image="") {
+		global $AR;
+		global $ARCurrent;
+		global $ARConfig;
+		$x=(int)$x;
+		$y=(int)$y;
+
+		// Get defaults
+		$font = "";
+		$pointsize = 12;
+		$color = "blue";
+
+		if($style!="") {
+			// Get style
+			if($ARCurrent->arFontStyles[$style]["font"] != "")
+				$font = $ARCurrent->arFontStyles[$style]["font"];
+			if($ARCurrent->arFontStyles[$style]["pointsize"] != "")
+				$pointsize = $ARCurrent->arFontStyles[$style]["pointsize"];
+			if($ARCurrent->arFontStyles[$style]["color"] != "")
+				$color = $ARCurrent->arFontStyles[$style]["color"];
+		}
+
+		$tmpsrc=$this->store->files."temp/".$this->id;
+		if($image=="") {
+			$f_store=$this->store->get_filestore("files");
+			$f_store->copy_from_store($tmpsrc, $this->id, "file");
+			$f_store->close();
+		} else {
+			// write image to file
+			if ($fp=fopen($tmpsrc, "wb")) {
+				$result=fwrite($fp, $image);
+				fclose($fp);
+			}
+		}
+
+		if($font!="") {
+			$font_store=$this->store->get_filestore("files");
+			$fontid=$this->exists($font);
+			if($fontid!=0) {
+				$chkfontgrants = @current($this->get($font, "system.get.phtml"));
+				if($chkfontgrants->CheckLogin("read")) {
+					$tmpfont=$this->store->files."temp/".$this->id.".ttf";
+					$font_store->copy_from_store($tmpfont, $fontid, "file");
+					$fontconf = " -font ".$tmpfont;
+				} else {
+					$fontconf = " ";
+				}
+			} else {
+				$fontconf = " ";
+			}
+			$font_store->close();
+		} else {
+			$fontconf = " ";
+		}
+
+		if (chdir($this->store->files.'temp/')) {
+			$exec_string=$AR->IM->mogrify.$fontconf." -pointsize $pointsize -fill $color -draw \"text $x,$y $text\" -format jpg $tmpsrc $tmpsrc.jpg";
+			system($exec_string,$failed);
+			if (!$failed) {
+				ob_start();
+				readfile($tmpsrc.".jpg");
+				$result=ob_get_contents();
+				ob_end_clean();
+			} else {
+				$this->error="Could not run ImageMagick mogrify program (convert)<br>\n(".$exec_string.")";
+				echo $this->error;
+			}
+			@unlink($tmpsrc);
+			@unlink($tmpsrc.".jpg");
+			@unlink($tmpsrc.".ttf");
+		} else {
+			$this->error="Could not changedir to ".$this->store->files."temp/ ";
+			echo $this->error;
+		}
+
+		return $result;
+	}
+
+	function _annotate($text, $x, $y, $style="default", $image="") {
+		return $this->annotate($text, $x, $y, $style, $image);
 	}
 
 } // end class pphoto
