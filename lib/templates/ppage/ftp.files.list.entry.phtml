@@ -1,6 +1,6 @@
 <?php
 	$result["date"]=$this->lastchanged;
-	$result["size"]=$this->data->filesize;
+	$result["size"]=strlen($nlsdata->page);
 	$result["path"]=$this->path;
 	$result["type"]="file";
 
@@ -10,7 +10,7 @@
 		$grants["read"]=false;
 	}
 
-	if ($this->CheckLogin("add")) {
+	if ($this->CheckLogin("edit")) {
 		$grants["write"]=true;
 	} else {
 		$grants["write"]=false;
