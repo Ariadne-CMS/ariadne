@@ -55,12 +55,14 @@
 							</tr>
 						</table>
 				</div>
-				<div class="sidebar_<?php if ($specialSection) echo "special_"; ?>section" id="<?php echo $sectionName; ?>_body" style=" <?php
-					if (strstr(strtolower($invisibleSections), "$sectionName;"))
-						echo "visibility:hidden; height: 1px;";
-					else
-						echo "visible: visible; height: auto;";
-				?>"><div class="section_content">
+				<div class="sidebar_<?php if ($specialSection) echo "special_"; ?>section"
+					 id="<?php echo $sectionName; ?>_body" style="<?php
+						if (strstr(strtolower($invisibleSections), "$sectionName;"))
+							echo "visibility:hidden; height: 1px; overflow: hidden;";
+						else
+							echo "visible: visible; height: auto; overflow: visible";
+					?>">
+					<div class="section_content">
 	<?php
 		}
 	?>

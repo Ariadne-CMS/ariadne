@@ -90,6 +90,7 @@ A.unselected {
 	border: 0px;
 	padding: 0px;
 	width: 192px;
+	overflow: hidden;
 }
 .details
 {

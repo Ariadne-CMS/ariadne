@@ -59,10 +59,12 @@
 		if (document.getElementById(section + '_body').style.visibility == 'hidden'){
 			document.getElementById(section + '_body').style.visibility = 'visible';
 			document.getElementById(section + '_body').style.height='auto';
+			document.getElementById(section + '_body').style.overflow='visible';
 			removeFromCookie(section);
 		} else {
 			document.getElementById(section + '_body').style.visibility = 'hidden';
 			document.getElementById(section + '_body').style.height='1px';
+			document.getElementById(section + '_body').style.overflow='hidden';
 			addToCookie(section);
 		}
 		makeHotOrNot(document.getElementById(section + '_togglebutton'), section, normal, false);
