@@ -202,12 +202,14 @@
   $AR->nls->list['es']      = 'Espa&ntilde;ol';
   $AR->nls->list['de']      = 'Deutsch';
   $AR->nls->list['pl']      = 'Polski';
+  $AR->nls->list['fr']      = 'Fran&ccedil;ais';
 
   $AR->nls->locales['nl']   = 'nl_NL';
   $AR->nls->locales['en']   = 'en_US';
   $AR->nls->locales['es']   = 'es';
   $AR->nls->locales['de']   = 'de';
   $AR->nls->locales['pl']   = 'pl';
+  $AR->nls->locales['fr']   = 'fr_FR';
 
   $AR->nls->default         = 'en';
   /**************************************************************************/
