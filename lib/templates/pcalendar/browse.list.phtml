@@ -14,9 +14,9 @@
 			$date=ereg_replace("[^0-9]*","",$date);
 			$query.=" and timeframe.start <= ".($date+86400)." and timeframe.end >= ".$date;
 		}
-		if ($AR->user->data->orderedbrowsing) {
+//		if ($AR->user->data->orderedbrowsing) {
 			$query.=" order by name.$nls.value";
-		}
+//		}
 		if (!($limit=$this->getvar('limit'))) {
 			$limit=100;
 		}

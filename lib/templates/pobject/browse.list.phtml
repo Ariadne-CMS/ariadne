@@ -10,9 +10,9 @@
 		} else if ($letter=$this->getvar('letter')) {
 			$query.=" and name.value ~= '".AddSlashes($letter)."%'";
 		}
-		if ($AR->user->data->orderedbrowsing) {
+//		if ($AR->user->data->orderedbrowsing) {
 			$query.=" order by name.$nls.value";
-		}
+//		}
 		if (!($limit=$this->getvar('limit'))) {
 			$limit=100;
 		}
