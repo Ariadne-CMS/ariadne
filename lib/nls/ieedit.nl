@@ -5,95 +5,95 @@
 
 	// lib/widgets/htmledit/ie/edit.php
 
-	$ARnls["e_cut"]				=	"Cut";
-	$ARnls["e_copy"]			=	"Copy";
-	$ARnls["e_paste"]			=	"Paste";
-	$ARnls["e_delete"]			=	"Delete";
+	$ARnls["e_cut"]				=	"Knippen";
+	$ARnls["e_copy"]			=	"Kopieren";
+	$ARnls["e_paste"]			=	"Plakken";
+	$ARnls["e_delete"]			=	"Verwijderen";
 
-	$ARnls["e_insertrow"]			=	"Insert Row";
-	$ARnls["e_deleterows"]			=	"Delete Rows";
-	$ARnls["e_insertcol"]			=	"Insert Column";
-	$ARnls["e_deletecols"]			=	"Delete Columns";
-	$ARnls["e_insertcell"]			=	"Insert Cell";
-	$ARnls["e_deletecells"]			=	"Delete Cells";
-	$ARnls["e_mergecells"]			=	"Merge Cells";
-	$ARnls["e_splitcell"]			=	"Split Cell";
+	$ARnls["e_insertrow"]			=	"Rij invoegen";
+	$ARnls["e_deleterows"]			=	"Rij verwijderen";
+	$ARnls["e_insertcol"]			=	"Kolom invoegen";
+	$ARnls["e_deletecols"]			=	"Kolom verwijderen";
+	$ARnls["e_insertcell"]			=	"Cel invoegen";
+	$ARnls["e_deletecells"]			=	"Cel verwijderen";
+	$ARnls["e_mergecells"]			=	"Cellen samenvoegen";
+	$ARnls["e_splitcell"]			=	"Cel splitsen";
 
-	$ARnls["e_z_order"]			=	"Z Order";
-	$ARnls["e_send_to_back"]		=	"Send To Back";
-	$ARnls["e_bring_to_front"]		=	"Bring To Front";
-	$ARnls["e_send_backward"]		=	"Send Backward";
-	$ARnls["e_bring_forward"]		=	"Bring Forward";
-	$ARnls["e_send_below_text"]		=	"Send Below Text";
-	$ARnls["e_bring_above_text"]		=	"Bring Above Text";
-	$ARnls["e_visible_borders"]		=	"Visible Borders";
-	$ARnls["e_show_details"]		=	"Show Details";
-	$ARnls["e_make_absolute"]		=	"Make Absolute";
-	$ARnls["e_lock"]			=	"Lock";
-	$ARnls["e_snap_to_grid"]		=	"Snap to Grid";
+	$ARnls["e_z_order"]			=	"Z Volgorde";
+	$ARnls["e_send_to_back"]		=	"Maak achterste";
+	$ARnls["e_bring_to_front"]		=	"Maak voorste";
+	$ARnls["e_send_backward"]		=	"Stuur naar achteren";
+	$ARnls["e_bring_forward"]		=	"Breng naar voren";
+	$ARnls["e_send_below_text"]		=	"Zet Onder Tekst";
+	$ARnls["e_bring_above_text"]		=	"Zet Boven Tekst";
+	$ARnls["e_visible_borders"]		=	"Zichtbare Kaders";
+	$ARnls["e_show_details"]		=	"Laat Details Zien";
+	$ARnls["e_make_absolute"]		=	"Maak Absoluut";
+	$ARnls["e_lock"]			=	"Vergrendel";
+	$ARnls["e_snap_to_grid"]		=	"Pas Aan Raster";
 
-	$ARnls["e_file"]			=	"File";
-	$ARnls["e_save_file"]			=	"Save File";
+	$ARnls["e_file"]			=	"Bestand";
+	$ARnls["e_save_file"]			=	"Bestand Opslaan";
 
-	$ARnls["e_edit"]			=	"Edit";
-	$ARnls["e_undo"]			=	"Undo";
-	$ARnls["e_redo"]			=	"Redo";
-	$ARnls["e_select_all"]			=	"Select all";
-	$ARnls["e_find"]			=	"Find...";
+	$ARnls["e_edit"]			=	"Bewerk";
+	$ARnls["e_undo"]			=	"Ongedaan Maken";
+	$ARnls["e_redo"]			=	"Opnieuw doen";
+	$ARnls["e_select_all"]			=	"Alles Selecteren";
+	$ARnls["e_find"]			=	"Zoek...";
 
-	$ARnls["e_view"]			=	"View";
-	$ARnls["e_standard"]			=	"Standard";
-	$ARnls["e_toolbars"]			=	"Toolbars";
-	$ARnls["e_formatting"]			=	"Formatting";
-	$ARnls["e_absolute_positioning"]	=	"Absolute Positioning";
-	$ARnls["e_table"]			=	"Table";
+	$ARnls["e_view"]			=	"Beeld";
+	$ARnls["e_standard"]			=	"Standaard";
+	$ARnls["e_toolbars"]			=	"Taakbalken";
+	$ARnls["e_formatting"]			=	"Opmaak";
+	$ARnls["e_absolute_positioning"]	=	"Absolute Positionering";
+	$ARnls["e_table"]			=	"Tabel";
 
-	$ARnls["e_bold"]			=	"Bold";
-	$ARnls["e_italic"]			=	"Italic";
-	$ARnls["e_underline"]			=	"Underline";
+	$ARnls["e_bold"]			=	"Vet";
+	$ARnls["e_italic"]			=	"Schuin";
+	$ARnls["e_underline"]			=	"Onderstrepen";
 
-	$ARnls["e_set_foreground_color"]	=	"Set Foreground Color...";
-	$ARnls["e_set_background_color"]	=	"Set Background Color...";
-	$ARnls["e_foreground_color"]		=	"Foreground Color";
-	$ARnls["e_background_color"]		=	"Background Color";
+	$ARnls["e_set_foreground_color"]	=	"Zet Voorgrond Kleur...";
+	$ARnls["e_set_background_color"]	=	"Zet Achtergrond Kleur...";
+	$ARnls["e_foreground_color"]		=	"Voorgrond Kleur";
+	$ARnls["e_background_color"]		=	"Achtergrond Kleur";
 
-	$ARnls["e_align_left"]			=	"Align Left";
-	$ARnls["e_align_center"]		=	"Center";
-	$ARnls["e_align_right"]			=	"Align Right";
+	$ARnls["e_align_left"]			=	"Links Uitlijnen";
+	$ARnls["e_align_center"]		=	"Centreren";
+	$ARnls["e_align_right"]			=	"Rechts Uitlijnen";
 
-	$ARnls["e_numbered_list"]		=	"Numbered List";
-	$ARnls["e_bulleted_list"]		=	"Bulletted List";
+	$ARnls["e_numbered_list"]		=	"Genummerde Lijst";
+	$ARnls["e_bulleted_list"]		=	"Opsomming";
 
-	$ARnls["e_decrease_indent"]		=	"Decrease Indent";
-	$ARnls["e_increase_indent"]		=	"Increase Indent";
+	$ARnls["e_decrease_indent"]		=	"Verminder Indentatie";
+	$ARnls["e_increase_indent"]		=	"Vergroot Indentatie";
 
-	$ARnls["e_link"]			=	"Link";
-	$ARnls["e_insert_image"]		=	"Insert Image";
-	$ARnls["e_insert_table"]		=	"Insert Table";
+	$ARnls["e_link"]			=	"Koppeling";
+	$ARnls["e_insert_image"]		=	"Plaats Afbeelding";
+	$ARnls["e_insert_table"]		=	"Voeg Tabel In";
 
 	// lib/templates/pobject/edit.object.html.selectcolor.phtml
 
-	$ARnls["e_select_color"]		=	"Select Color";
-	$ARnls["e_color"]			=	"Color";
+	$ARnls["e_select_color"]		=	"Selecteer Kleur";
+	$ARnls["e_color"]			=	"Kleur";
 
 	// lib/templates/pobject/edit.object.html.image.phtml
 
-	$ARnls["e_picture"]			=	"Picture";
-	$ARnls["e_picture_source"]		=	"Picture&nbsp;Source";
-	$ARnls["e_alternate_text"]		=	"Alternate&nbsp;Text";
+	$ARnls["e_picture"]			=	"Afbeelding";
+	$ARnls["e_picture_source"]		=	"Bron&nbsp;van&nbsp;de&nbsp;Afbeelding";
+	$ARnls["e_alternate_text"]		=	"Alternatieve&nbsp;Tekst";
 	$ARnls["e_layout"]			=	"Layout";
-	$ARnls["e_alignment"]			=	"Alignment";
-	$ARnls["e_border_thickness"]		=	"Border&nbsp;Thickness";
-	$ARnls["e_spacing"]			=	"Spacing";
-	$ARnls["e_horizontal"]			=	"Horizontal";
-	$ARnls["e_vertical"]			=	"Vertical";
+	$ARnls["e_alignment"]			=	"Uitlijning";
+	$ARnls["e_border_thickness"]		=	"Kader&nbsp;Dikte";
+	$ARnls["e_spacing"]			=	"Spatiering";
+	$ARnls["e_horizontal"]			=	"Horizontaal";
+	$ARnls["e_vertical"]			=	"Vertikaal";
 
 	// lib/templates/pobject/edit.object.html.link*.phtml
 
 	$ARnls["e_hyperlink"]			=	"Hyperlink";
-	$ARnls["e_hyperlink_information"]	=	"Hyperlink&nbsp;Information";
+	$ARnls["e_hyperlink_information"]	=	"Hyperlink&nbsp;Informatie";
 	$ARnls["e_hyperlink_type"]		=	"Type";
-	$ARnls["e_hyperlink_path"]		=	"Path";
-	$ARnls["e_hyperlink_affiliate"]		=	"Affiliate";
+	$ARnls["e_hyperlink_path"]		=	"Pad";
+	$ARnls["e_hyperlink_affiliate"]		=	"Partner";
 
 ?>
