@@ -36,10 +36,17 @@
 		$disabledItems.= "normalCMdelete;normalCMrename;";
 	if(!$this->CheckSilent("read"))
 		$disabledItems.= "normalCMexplore;normalCMviewweb;normalCMcopy;normalCMlink;";
+
+	$server_name=eregi_replace("^[htps:/]*/","",$AR->host);
+        if ($HTTP_SERVER_VARS["HTTP_HOST"]!=$server_name) {
+                $fullObjectpath = $this->store->root.$this->path;
+        } else {
+                $fullObjectpath = $this->make_url();
+        }
 ?>
 
 <div class="object" align="center"><nobr><a contextmenu="normalContextMenu" disableditems="<?php echo $disabledItems; ?>"
-	href="#" class="unselectedItem" onClick="selectItem(this); return false;" onDblClick="top.View(this.getAttribute('path'))" path="<?php echo $this->path; ?>" fullPath="<?php echo $this->make_url($this->path); ?>"><img 
+	href="#" class="unselectedItem" onClick="selectItem(this); return false;" onDblClick="top.View(this.getAttribute('path'))" path="<?php echo $this->path; ?>" fullPath="<?php echo $fullObjectpath; ?>"><img 
 	width="40" height="40" src="<?php echo $AR->dir->images; ?>icons/<?php echo $this->type; ?>_open.gif" 
 	alt="<?php echo $this->path; ?>" border="0"><br /><?php
 		if (strlen($nlsdata->name)>32) {
