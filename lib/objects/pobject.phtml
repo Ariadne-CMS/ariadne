@@ -83,10 +83,16 @@ class pobject extends object { // pobject class definition
 		$this->arCallingContext=@end($AR->CallLevelStack);
 		// keep track of the context (php or pinp) in which the called template runs. call always sets it php, CheckConfig sets it to pinp if necessary.
 		$AR->CallLevelStack[]='php';
+		// convert the deprecated urlencoded arguments to an array
 		if (is_string($arCallArgs)) {
-			Parse_str($arCallArgs);
-		} else if (is_array($arCallArgs)) {
-			extract($arCallArgs);
+			$ARCurrent->arTemp=$arCallArgs;
+			$arCallArgs=Array();
+			Parse_str($ARCurrent->arTemp, $arCallArgs);
+		}
+		// import the arguments in the current scope, but don't overwrite existing
+		// variables.
+		if (is_array($arCallArgs)) {
+			extract($arCallArgs,EXTR_SKIP);
 		}
 		// now find the initial nls selection (CheckConfig is needed for per
 		// tree selected defaults)
