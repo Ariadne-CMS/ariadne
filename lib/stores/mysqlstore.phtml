@@ -56,7 +56,7 @@ class mysqlstore {
 		}
 		$this->error="";
 		$this->connect_id=mysql_connect($config["host"], $config["user"], $config["password"]) or die ("Could not connect to MySQL");
-		mysql_select_db($config["database"]) or die ("Could not access database '".$config["database"]."'.");
+		mysql_select_db($config["database"]) or die ("Could not access database '".$config["database"]."'. Please create this database manually.");
 		$this->root=$path;
 		$this->code=$config["code"];
 		$this->files=$config["files"];
@@ -808,7 +808,7 @@ class mysqlstore {
 			$path=substr($path, 0, -1);
 		}
 		if ($path) {
-			$splitpath=split("/", $path);
+			$splitpath=explode("/", $path);
 
 			while (list($key, $pathticle)=each($splitpath)) {
 				switch($pathticle) {

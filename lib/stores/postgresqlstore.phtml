@@ -61,7 +61,7 @@ class postgresqlstore {
 			" password='".$config["password"]."'".
 			" dbname='".$config["database"]."'";
 
-		$this->connect_id	= pg_connect($query_string) OR DIE ("Could not connect to PostgreSQL database ".$config["database"]);
+		$this->connect_id	= pg_connect($query_string) OR DIE ("Could not connect to PostgreSQL database ".$config["database"].". Please create this database manually." );
 		$this->root			= $path;
 		$this->code			= $config["code"];
 		$this->files		= $config["files"];
@@ -821,7 +821,7 @@ class postgresqlstore {
 			$path		= substr($path, 0, -1);
 		}
 		if ($path) {
-			$splitpath	= split("/", $path);
+			$splitpath	= explode("/", $path);
 
 			while (list($key, $pathticle) = each($splitpath)) {
 				switch($pathticle) {
