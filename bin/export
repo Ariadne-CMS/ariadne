@@ -98,6 +98,7 @@
 		if ($arg_c>2) {
 			$ax_config["database"]=$arg_v[2];
 			$srcpath=$arg_v[1];
+			$patharray = explode(",", $srcpath);
 		} else {
 			$ax_config["database"]=$arg_v[1];
 		}
@@ -108,12 +109,25 @@
 			$inst_store = $store_config["dbms"]."store";
 			$store=new $inst_store($root,$store_config);
 
-			$ARCurrent->importStore=&$importStore;
-			$callArgs=Array("srcpath" => $srcpath,
+			if (is_array($patharray) && count($patharray)>1) {
+				while (list(, $patharray_entry)=each($patharray)) {
+					$patharray_entry = explode("=>", $patharray_entry);
+					$srcpath = $patharray_entry[0];
+					$destpath = $patharray_entry[1];
+					echo "srcpath ($srcpath) destpath($destpath)\n";					
+					$ARCurrent->importStore=&$importStore;
+					$callArgs=Array("srcpath" => $srcpath,
 							"destpath" => $destpath);
-			$error=current($store->call("system.export.phtml", $callArgs,
-				$store->get("/")));
-
+					$error=current($store->call("system.export.phtml", $callArgs,
+						$store->get("/")));
+				}
+			} else {
+				$ARCurrent->importStore=&$importStore;
+				$callArgs=Array("srcpath" => $srcpath,
+								"destpath" => $destpath);
+				$error=current($store->call("system.export.phtml", $callArgs,
+					$store->get("/")));
+			}
 			$importStore->close();
 
 		} else {
