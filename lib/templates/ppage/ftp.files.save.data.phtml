@@ -1,0 +1,22 @@
+<?php
+	if ( ( $this->arIsNewObject && $this->CheckLogin("add") ) ||
+			 ( !$this->arIsNewObject && $this->CheckLogin("edit") ) ) {
+
+		$arCallArgs[$nls]["name"]=$this->getdata("file");
+
+		$tempfile = $this->getdata("file_temp", "none");
+		$tempfile = $this->store->files."temp/$tempfile";
+		$fp = @fopen($tempfile, "r");
+		if (!$fp) {
+			$this->error = "Could not open ($tempfile)";
+		} else {
+			$page = "";
+			while (!feof($fp)) {
+				$page .= fgets($fp, 4096);
+			}
+			fclose($fp);
+			$arCallArgs[$nls]["page"] = $page;
+			$this->call("system.save.data.phtml", $arCallArgs);
+		}
+	}
+?>
