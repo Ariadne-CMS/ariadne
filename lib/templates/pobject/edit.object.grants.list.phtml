@@ -257,13 +257,15 @@
 									if (!is_array($modifiers)) {
 										echo arGetGrantType($modifiers);
 									} 
+									$grant_display = $grant;
 									if (is_array($grants_eq[$grant])) {
 										foreach ($grants_eq[$grant] as $g_add) {
 											$grant .= ", $g_add";
 										}
+										$grant_display = "[$grant]";
 									}
 									if (!$grey) {
-										echo "<a href=\"javascript:editGrant('$type', '$id', '$grant');\">$grant";
+										echo "<a href=\"javascript:editGrant('$type', '$id', '$grant');\">$grant_display";
 									} else {
 										echo $grant;
 									} 

@@ -15,6 +15,8 @@
 
 	******************************************************************/
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
+		include_once($this->store->code."modules/mod_grant.php");
+
 		// some variable fetching stuff
 		$path=$this->getdata("path", "none");
 		$newgrants=$this->getdata("newgrants", "none");
@@ -137,98 +139,16 @@
 								}
 								$newgrants=ereg_replace(" ?".$regs[1]." ?",AddSlashes($cloned),$newgrants);
 							}
-							$oldgrant='';
-							$oldgranttype=0;
-							// remove spaces after >,+,= and -
-							// "> read" -> ">read"
-							// else things go wrong after exploding :)
-							$newgrants = preg_replace("/([>+=-])[\ ]*/","\$1",$newgrants);
-							$grantslist=explode(" ",$newgrants);
-							while ((list($key, $newgrant)=each($grantslist)) && !$this->error) {
-								$newgrant=trim($newgrant);
-								if ($newgrant) {
-									$modifier="";
-									if ($newgrant=="(") {
-										// remember for which grant these modifiers are set
-										// and set a signal that the next 'grants' are modifiers
-										$modifyfor=$oldgrant;
-										$modifygranttype=$oldgranttype;	
-									} else if ($newgrant==")") {
-										// stop modifying grant
-										$modifyfor="";
-									} else if ($newgrant!="{}") {
-										if (substr($newgrant,0,1)=="-") {
-											$delgrant=substr($newgrant,1);
-											if ($modifyfor) {
-												$modifier=$delgrant;
-												$delgrant=$modifyfor;
-											}
-											arDelGrant($this->data->grants[$type], $id, $delgrant, $modifier);
-											//unset($this->data->grants[$type][$id][$delgrant]);
-											//if (!@count($this->data->grants[$type][$id])) {
-											//	unset($this->data->grants[$type][$id]);
-											//}
-											
-											$result=current($this->get($path, "system.save.grants.user.phtml", Array(
-														"action"	=> "delete",
-														"path"		=> $this->path,
-														"grant"		=> $delgrant,
-														"modifier"	=> $modifier )));
-											if ($result!=$ARnls["ok"]) {
-												$this->error=sprintf($ARnls["err:notsavegrant"],$path);
-												// FROP $this->error="Couldn't save grant in $path";
-											}
-										} else {
-											switch(substr($newgrant,0,1)) {
-												case ">" :
-													//  echo ":: > $newgrant ";
-													$newgrant=substr($newgrant,1);
-													$granttype=ARGRANTCHILDREN;
-													break;
-												case "=" :
-													//  echo ":: = $newgrant ";
-													$newgrant=substr($newgrant,1);
-													$granttype=ARGRANTLOCAL;
-													break;
-												case "+" :
-													// echo ":: + $newgrant ";
-													$newgrant=substr($newgrant,1);
-													$granttype=ARGRANTGLOBAL;
-													break;
-												default :
-													// echo ":: $newgrant ";
-													if ($modifyfor && $modifygranttype) {
-														$granttype=$modifygranttype;
-													} else {
-														$granttype=ARGRANTGLOBAL;
-													}			
-													break;		
-											}
-											if ($modifyfor) {
-												$modifier=$newgrant;
-												$newgrant=$modifyfor;
-												if (!is_array($this->data->grants[$type][$id][$newgrant])) {
-													unset($this->data->grants[$type][$id][$newgrant]);
-												}
-												$this->data->grants[$type][$id][$newgrant][$modifier]=$granttype;
-											} else {
-												$this->data->grants[$type][$id][$newgrant]=$granttype;
-											}
-											$result=current($this->get($path, "system.save.grants.user.phtml", Array(
-														"action"	=> "add",
-														"path"		=> $this->path,
-														"grant"		=> $newgrant,
-														"granttype"	=> $granttype,
-														"modifier"	=> $modifier )));
-											if ($result!=$ARnls["ok"]) {
-												$this->error=sprintf($ARnls["err:notsavegrant"],$path);
-												// FROP $this->error="Couldn't save grant in $path";
-											}
-										}
-									}
-									$oldgrant=$newgrant;
-									$oldgranttype=$granttype;
-								}
+							$g_comp = new mod_grant;
+							$grants = $this->data->grants[$type][$id];
+							if (!is_array($grants)) {
+								$grants = Array();
+							}
+							$g_comp->compile($newgrants, $grants);
+							if (!$g_comp->error) {
+								$this->data->grants[$type][$id] = $grants;
+							} else {
+								$this->error = $g_comp->error;
 							}
 						} else {
 							$this->error=sprintf($ARnls["err:notgetlogin"],$path);
