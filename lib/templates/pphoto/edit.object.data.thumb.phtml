@@ -9,7 +9,7 @@
 <tr>
   <td>
     <fieldset id="filters">
-    <legend><?php echo $ARnls["thumbnail"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+    <legend><?php echo $ARnls["createthumb"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
       <table border="0" align="center">
       <tr>
         <td>
@@ -20,19 +20,11 @@
       </tr><tr>
         <td>
           <input type="text" size="4" maxlength="3" name="thumbwidth" value="<?php 
-            $width=$this->getdata("thumbwidth","none"); 
-            if (!$width) {
-              $width=40;
-            }
-            echo $width;
+            $this->showdata("thumbwidth","none"); 
           ?>">
         </td><td>
           <input type="text" size="4" maxlength="3" name="thumbheight" value="<?php 
-            $height=$this->getdata("thumbheight","none"); 
-            if (!$height) {
-              $height=40;
-            }
-            echo $height;
+            $this->showdata("thumbheight","none"); 
           ?>">
         </td>
       </tr><tr>
@@ -42,15 +34,25 @@
       </tr><tr>
         <td colspan="2">
           # <input type="text" size="15" name="thumbcolor" value="<?php
-            $color=$this->getdata("thumbcolor","none");
-            if (!$color) {
-              $color="CCCCCC";
-            }
-            echo $color;
+            $this->showdata("thumbcolor","none");
           ?>">
         </td>
       </tr>
       </table>
+    </fieldset>
+  </td>
+</tr>
+<tr>
+  <td>
+    <fieldset>
+    <legend><?php echo $ARnls["oruploadthumb"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+      <table border="0" align="center">
+      <tr>
+		<td><?php echo $ARnls["file"]; ?>&nbsp;:</td>
+		<td><input type="file" name="thumbfile"></td>
+      </tr>
+      </table>
+    </legend>
     </fieldset>
   </td>
 </tr>

@@ -84,6 +84,14 @@
 		}
 	}
 
+	// Check for thumbnail
+	if ($arFlow[0]["current"]==4) {
+		if ($arControl==$ARnls["next"]) {
+			// check whether the file has changed
+			$this->call("system.save.tempfile.phtml","form_field=thumbfile");
+		}
+	}
+
 	$arNewFilename=$this->getdata("arNewFilename","none");
 	if (!$arNewFilename) {
 		$file=$this->getdata("file","none");

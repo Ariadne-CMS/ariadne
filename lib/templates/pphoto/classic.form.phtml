@@ -107,7 +107,7 @@
 
 <tr bgcolor="#404074">
 	<td align="left" colspan="2">
-	<font face="arial,helvetica" color="white"><?php echo $ARnls["thumbnail"]; ?></font>
+	<font face="arial,helvetica" color="white"><?php echo $ARnls["createthumb"]; ?></font>
 	</td>
 </tr><tr>
 	<td align="right">
@@ -115,30 +115,29 @@
 	</td>
 	<td>
 		<input type="text" name="newthumbwidth" size="3" maxlength="3" value="<?php 
-			if ($this->getdata("thumbwidth","none")) {
 				$this->showdata("thumbwidth","none"); 
-			} else {
-				echo "40";
-			}
 		?>">
 
 		&nbsp;<font face="helvetica, sans-serif"><?php echo $ARnls["height"]; ?>&nbsp;:</b></font>
 		<input type="text" name="newthumbheight" size="3" maxlength="3" value="<?php 
-			if ($this->getdata("thumbheight","none")) {
 				$this->showdata("thumbheight","none"); 
-			} else {
-				echo "40";
-			}
 		?>">
 
 		&nbsp;<font face="helvetica, sans-serif"><?php echo $ARnls["color"]; ?>&nbsp;:</b></font>
 		<input type="text" name="newthumbcolor" size="6" maxlength="6" value="<?php 
-			if ($this->getdata("thumbcolor","none")) {
 				$this->showdata("thumbcolor","none"); 
-			} else {
-				echo "CCCCCC";
-			}
 		?>">
+	</td>
+</tr><tr bgcolor="#404074">
+	<td align="left" colspan="2">
+	<font face="arial,helvetica" color="white"><?php echo $ARnls["oruploadthumb"]; ?></font>
+	</td>
+</tr><tr>
+	<td align="right">
+		<font face="helvetica, sans-serif"><?php echo $ARnls["file"]; ?>&nbsp;:</b></font>
+	</td>
+	<td align="left">
+		<input type="file" name="thumbfile">
 	</td>
 </tr>
 </table>

@@ -16,6 +16,7 @@
 		$save="edit.object.data.save.phtml";
 	 
 		$wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
+
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["data"];
 		$wgWizFlow[$i]["template"]=$summary;
@@ -26,10 +27,11 @@
 			$wgWizFlow[$i]["save"]=$i+2;
 		}
 		$wgWizFlow[$i]["next"]=$i+1;
-		$i++
+
+		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["thumbnail"];
 		$wgWizFlow[$i]["template"]=$conversion;
-		$wgWizFlow[$i]["prev"]="summary";
+		$wgWizFlow[$i]["prev"]=$i-1;
 		if ($languageselect) {
 			$wgWizFlow[$i]["next"]=$i+1;			
 			$wgWizFlow[$i]["save"]=$i+2;
@@ -40,7 +42,7 @@
 			$wgWizFlow[$i]["prev"]=$i-2;
 			$wgWizFlow[$i]["save"]=$i+1;
 		} 
-		$i++
+		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["save"];
 		$wgWizFlow[$i]["template"]=$save;
 		$wgWizFlow[$i]["back"]=$i-1;
@@ -52,6 +54,15 @@
 				$this->call("system.save.tempfile.phtml");
 			}
 		}
+
+		// check for thumbnail
+		if ($wgWizFlow[0]["current"]==2) {
+			$arControl=$this->getdata("wgWizControl","none");
+			if (($arControl==$ARnls["next"]) || ($arControl==$ARnls["save"])) {
+				$this->call("system.save.tempfile.phtml", Array("form_field" => "thumbfile"));
+			}
+		}
+
 		$arLanguage=$this->getdata("arLanguage","none");
 		if ($languageselect && $wgWizFlow[0]["current"]==3) { // =edit.object.language.phtml
 			$arControl=$this->getdata("wgWizControl","none");
