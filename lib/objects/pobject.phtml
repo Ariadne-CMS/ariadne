@@ -74,6 +74,9 @@ class pobject extends object { // pobject class definition
 		if (!$arCallFunction) {
 			$arCallFunction="view.html";
 		}
+		
+		// clear previous results
+		unset($ARCurrent->arResult);
 
 		// callstack is needed for getvar()
 		$ARCurrent->arCallStack[]=&$arCallArgs;
