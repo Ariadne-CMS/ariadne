@@ -12,7 +12,7 @@
     if (!$newdata->nls) {
       $newdata->nls=new object;
     }
-    $newdata->nls->default=$this->nls;
+    $newdata->nls->default=$ARConfig->nls->default;
     reset($AR->nls->list);
     while (list($key, $value)=each($AR->nls->list)) {
       if (isset(${$key})) {

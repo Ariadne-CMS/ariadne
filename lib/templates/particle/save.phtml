@@ -9,7 +9,6 @@
     $newdata=$data;
     $publishpath=$this->parent;
   }
-//  $displays=$this->get("/system/newspaper/scenarios/$newscenario/","Get.phtml");
   $displays=$this->get($newscenario, "Get.phtml");
   $newdata->priority=$displays[0]->data->priority;
   $displays=$displays[0]->data->display; // we only need the display array
@@ -20,7 +19,7 @@
     if (!$newdata->nls) {
       $newdata->nls=new object;
     }
-    $newdata->nls->default=$this->nls;
+    $newdata->nls->default=$ARConfig->nls->default;
     reset($AR->nls->list);
     while (list($key, $value)=each($AR->nls->list)) {
       if (isset(${$key})) {
