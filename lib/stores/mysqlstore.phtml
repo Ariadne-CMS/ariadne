@@ -398,7 +398,8 @@ class mysqlstore {
 			$parent="..";
 		}
 		$eparent=AddSlashes($parent);
-		if (ereg("^(.*)\{([0-9]):id\}(.*)",$path,$matches)) { 
+		$mask = substr($path, strlen($parent));
+		if (ereg("^(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) { 
 			// if the last part of a path matches something like {2:id} this
 			// part will automatically create a new number, unique in this directory, and fill it in.
 			// before we proceed, we need to lock the 'nodes' and 'objects' table
@@ -407,25 +408,9 @@ class mysqlstore {
 			if (mysql_db_query($this->database, $query_string, $this->connect_id)) {
 				$needunlocking = true;
 
-				$subid = 0;
-				$mask_pre = $matches[1];
-				$substr_s = strlen($mask_pre)+1;
-				$substr_l = $matches[2];
-				$mask_post= $matches[3];
-				$query_string = 
-					"select max(substring(path, $substr_s, $substr_l)) as id
-					from ".$this->tbl_prefix."nodes where 
-					path regexp '^".$mask_pre."[0-9]\{".$substr_l."\}".$mask_post."'";
+				$subid=$this->get_nextid($parent, $mask);
 
-				$result = mysql_db_query($this->database, $query_string, $this->connect_id);
-				if ($result) {
-					$row = mysql_fetch_array($result);
-					$subid  = intval($row["id"]);
-				}
-				$subid=$subid+1;
-				$subid = str_pad((string)$subid, $substr_l-strlen($subid)+1, "0", STR_PAD_LEFT);
-
-				$path=ereg_replace("\{[0-9]:id\}",strval($subid),$path);
+				$path=ereg_replace("\{([0-9]:)?id\}",strval($subid),$path);
 				debug("save: new path: $path ($subid)","all");
 			} else {
 				error("PANIC: could not obtain write lock on nodes table!");
@@ -670,30 +655,13 @@ class mysqlstore {
 			debug("link: ERROR: ".$this->error,"store");
 			$result=false;
 		} else { 
-			if (ereg("(.*)\{([0-9]):id\}(.*)",$destination,$matches)) {
+			$mask = substr($destination, strlen($parent));
+			if (ereg("(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) {
 				$query_string="lock tables ".$this->tbl_prefix."nodes write";
 				if (mysql_db_query($this->database, $query_string, $this->connect_id)) {
 					$needunlocking = true;
-					$subid = 0;
-
-					$mask_pre = $matches[1];
-					$substr_s = strlen($mask_pre)+1;
-					$substr_l = $matches[2];
-					$mask_post= $matches[3];
-					$query_string = 
-						"select max(substring(path, $substr_s, $substr_l)) as id
-						from ".$this->tbl_prefix."nodes where 
-						path regexp '^".$mask_pre."[0-9]\{".$substr_l."\}".$mask_post."'";
-
-					$result = mysql_db_query($this->database, $query_string, $this->connect_id);
-					if ($result) {
-						$row = mysql_fetch_array($result);
-						$subid  = intval($row["id"]);
-					}
-					$subid=$subid+1;
-					$subid = str_pad((string)$subid, $substr_l-strlen($subid)+1, "0", STR_PAD_LEFT);
-
-					$destination=ereg_replace("\{[0-9]:id\}",strval($subid),$destination);
+					$subid = $this->get_nextid($parent, $mask);
+					$destination=ereg_replace("\{([0-9]:)?id\}",strval($subid),$destination);
 					$edestination=AddSlashes($destination);
 					debug("link: new destination: $destination ($subid)","all");
 				} else {
@@ -770,29 +738,13 @@ class mysqlstore {
 			debug("move: ERROR: ".$this->error,"store");
 			$result=false;
 		} else { 
-			if (ereg("(.*)\{([0-9]):id\}(.*)",$destination,$matches)) {
+			$mask = substr($destination, strlen($parent));
+			if (ereg("(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) {
 				$query_string="lock tables ".$this->tbl_prefix."nodes write";
 				if (mysql_db_query($this->database, $query_string, $this->connect_id)) {
-					$subid = 0;
-
-					$mask_pre = $matches[1];
-					$substr_s = strlen($mask_pre)+1;
-					$substr_l = $matches[2];
-					$mask_post= $matches[3];
-					$query_string = 
-						"select max(substring(path, $substr_s, $substr_l)) as id
-						from ".$this->tbl_prefix."nodes where 
-						path regexp '^".$mask_pre."[0-9]\{".$substr_l."\}".$mask_post."'";
-
-					$result = mysql_db_query($this->database, $query_string, $this->connect_id);
-					if ($result) {
-						$row = mysql_fetch_array($result);
-						$subid  = intval($row["id"]);
-					}
-					$subid=$subid+1;
-					$subid = str_pad((string)$subid, $substr_l-strlen($subid)+1, "0", STR_PAD_LEFT);
-
-					$destination=ereg_replace("\{[0-9]:id\}",strval($subid),$destination);
+					$needunlocking = true;
+					$subid = $this->get_nextid($parent, $mask);
+					$destination=ereg_replace("\{([0-9]:)?id\}",strval($subid),$destination);
 					$edestination=AddSlashes($destination);
 					debug("move: new destination: $destination ($subid)","all");
 				} else {
@@ -808,18 +760,11 @@ class mysqlstore {
 				$parentlength=strlen($parent);
 				// move the top path
 				$query_string="update $nodes_tbl set path='$edestination', parent='$eparent' where path='$esource'";
-				if ($result=$this->store_run_query($query_string)) {
-					// move the nextid path too
-					$query_string="update ".$this->tbl_prefix."seq_id set path='$edestination' where path='$esource'";
-					if ($result=$this->store_run_query($query_string)) {
-						// now move all the children
-						$query_string="update $nodes_tbl set path=CONCAT('$edestination', SUBSTRING(path, $sourcelength+1)), parent=CONCAT('$edestination', SUBSTRING(parent, $sourcelength+1)) where path like '$esource%'";
-						if ($result=$this->store_run_query($query_string)) {
-							// finally move the nextid's for the children
-							$query_string="update ".$this->tbl_prefix."seq_id set path=CONCAT('$edestination', SUBSTRING(path, $sourcelength+1)) where path like '$esource%'";
-							$result=$this->store_run_query($query_string);	
-						}
-					}
+				$result=$this->store_run_query($query_string);
+				if ($result) {
+					// now move all the children
+					$query_string="update $nodes_tbl set path=CONCAT('$edestination', SUBSTRING(path, $sourcelength+1)), parent=CONCAT('$edestination', SUBSTRING(parent, $sourcelength+1)) where path like '$esource%'";
+					$result=$this->store_run_query($query_string);
 				}
 				debug("move: end","all");
 			} else {
@@ -1074,41 +1019,35 @@ class mysqlstore {
 	function get_nextid($path, $mask="{5:id}") {
 	/**********************************************************************
 
-		'private' function of mysql store. Used for import/exporting nextid
-		information.
+		'private' function of mysql store. This will return the next
+		'autoid' for $path.
 
 	**********************************************************************/
 
-		$epath=AddSlashes($path);
 		$path=AddSlashes($path);
 
-		$nodes_tbl=$this->tbl_prefix."nodes";
-		$objects_tbl=$this->tbl_prefix."objects";
-		$types_tbl=$this->tbl_prefix."types";
-
-		$substr_s = strlen($path)+1;
-		if (ereg('^(.*)\{([0-9]):id\}(.*)$', $mask, $matches)) {
-
-			$id = 0;
-
+		$substr_s = strlen($path);
+		if (ereg("^(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) { 
+			$subid = 0;
 			$mask_pre = $matches[1];
-			$substr_s+= strlen($mask_pre);
-			$substr_l = $matches[2];
+			$substr_s += strlen($mask_pre)+1;
+			$substr_l = intval(substr($matches[2], 0, 1));
 			$mask_post= $matches[3];
 			$query_string = 
 				"select max(substring(path, $substr_s, $substr_l)) as id
 				from ".$this->tbl_prefix."nodes where 
 				path regexp '^".$path.$mask_pre."[0-9]\{".$substr_l."\}".$mask_post."'";
 
+			//error($query_string);
 			$result = mysql_db_query($this->database, $query_string, $this->connect_id);
 			if ($result) {
 				$row = mysql_fetch_array($result);
-				$id  = intval($row["id"]);
+				$subid  = intval($row["id"]);
 			}
-			$id++;
-			$id = str_pad((string)$id, $substr_l-strlen($id)+1, "0", STR_PAD_LEFT);
+			$subid=$subid+1;
+			$subid = str_pad((string)$subid, $substr_l-strlen($subid)+1, "0", STR_PAD_LEFT);
 		}
-		return $id;
+		return $subid;
 	}
 
 
