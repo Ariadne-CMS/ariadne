@@ -12,121 +12,8 @@
 ?>
 <html>
 <head>
-<style>
-
-BODY {
-	background-color : #F6EEE6;
-	margin: 0px;
-}
-
-TH,TD,LI,P,BODY {
-	font-size : 13px;
-	font-family : verdana,helvetica, arial, sans-serif;
-}
-
-H4 {
-	font-weight : bold;
-	font-size : 10pt;
-	font-family : verdana,helvetica, arial, sans-serif;
-	margin-bottom : 0px;
-}
-
-H3 {
-	font-weight : bold;
-	font-size : 11pt;
-	font-family : verdana,helvetica, arial, sans-serif;
-}
-
-H2 {
-	font-weight : bold;
-	font-size : 13pt;
-	font-family : arial,helvetica, sans-serif;
-	margin-top : 0px;
-	margin-bottom : 0px;
-}
-
-H1 {
-	font-weight : bold;
-	font-size : 18pt;
-	font-family : arial,helvetica,sans-serif;
-	margin-bottom : 2px;
-	margin-top : 15px;
-}
-
-.manage_info {
-	margin-top:5px;
-	margin-bottom:0px;
-	font-weight:normal;
-	font-size:20pt;
-}
-
-A	{
-	text-decoration: none;
-}
-A:link {
-	text-decoration: none;
-	color: #003FEB;
-}
-A:visited {
-	text-decoration: none;
-	color: #464399; 
-}
-A:hover {
-	text-decoration: none;
-	color: #FF8400; 
-}
-A.selected {
-	border: inset 1px;
-}
-A.unselected {
-	border: outset 1px;
-}
-.data {
-	width: 100%;
-	background-color: #F6EEE6;
-	padding: 0px 4px 0px 4px;
-}
-#details {
-	float: right;
-	border: dotted 1px black;
-	width: 200px;
-	padding: 5px;
-	margin-bottom: 5px;
-	background-color: white;
-}
-#summary {
-	height: 104px;
-	overflow: auto;
-	margin-bottom: 6px;
-}
-#sidebar {
-	width: 205px;
-	float: right;
-	text-align: left;
-	height: 100%;
-	margin: 5px;
-}
-#infobox {
-	border: dotted 1px black;
-	width: 200px;
-	padding: 5px;
-	float: right;
-	margin-bottom: 5px;
-	background-color: white;
-}
-#object {
-	padding-left: 50px;	
-}
-#icon {
-	position: absolute;
-	top: 4px;
-	left: 4px;
-}
-#topdiv {
-	height: 180px;
-}
-</style>
 <title>Ariadne - <?php echo $nlsdata->name; ?></title>
+<link href="<?php echo $AR->dir->styles; ?>manage.css" rel="StyleSheet" type="text/css">
 </head>
 <body>
 	<table width="100%" height="95%">
@@ -144,22 +31,22 @@ A.unselected {
 	</div>
 	</td></tr><tr><td valign="top" height="60%">
 	<div id="container">
+	<script src="<?php echo $AR->dir->www; ?>widgets/browse/toolbar.js"></script>
+	<?php $this->call("browse.toolbar.phtml"); ?>
 	<script>
-	    if (document.all) {
+		if (document.all) {
 			window.innerHeight=document.body.clientHeight;
 			window.innerWidth=document.body.clientWidth;
 		}
-		height=window.innerHeight-232;
-		viewmode=parent.Get('viewmode');
-		if (!viewmode) {
-			viewmode='list';
-		}
+		var height=window.innerHeight-254;
+		var query='<?php echo $QUERY_STRING; ?>';
 		<?php
 			$oldnls=$nls;
 			$this->setnls($arLanguage);
 			$url=$this->store->root.$this->make_path();
 		?>
-		document.write('<iframe id="archildren" height="'+height+'" width="100%" src="<?php echo $url; ?>browse.nav.'+viewmode+'.phtml?<?php echo $QUERY_STRING; ?>"></iframe>');
+		var path='<?php echo $url; ?>';
+		document.write('<iframe id="archildren" height="'+height+'" width="100%" src="'+path+'browse.nav.'+viewmode+'.phtml?'+query+'&limit='+b_limit+'"></iframe>');
 		<?php
 			$this->setnls($oldnls);
 		?>

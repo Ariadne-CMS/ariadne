@@ -1,0 +1,38 @@
+<script>
+	parent.b_setTotal(<?php echo $total; ?>);
+<?php
+	if ($total > $limit) {
+		if ($offset>0) {
+?>
+	parent.b_show('b_first');
+	parent.b_show('b_prev');
+<?php
+		} else {
+?>
+	parent.b_hide('b_first');
+	parent.b_hide('b_prev');
+<?php
+		}
+		if ($offset<($total-$limit)) {
+?>
+	parent.b_show('b_last');
+	parent.b_show('b_next');
+<?php
+		} else {
+?>
+	parent.b_hide('b_last');
+	parent.b_hide('b_next');
+<?php
+		}
+		if ($this->parent=='..') {
+?>
+	parent.b_hide('b_up');
+<?php
+		} else {
+?>
+	parent.b_show('b_up');
+<?php
+		}
+	}
+?>
+</script>
