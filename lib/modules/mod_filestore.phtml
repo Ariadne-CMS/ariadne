@@ -180,7 +180,7 @@
 			$result=false;
 			if ($name) {
 				$path=$this->make_path($id, $name);
-				if (!file_exists($target)) {
+				if (!file_exists($target) || !is_dir($target)) {
 					$result=@copy($path, $target);
 				} else if (is_dir($target)) {
 					if (substr($target, -1)!="/") {
