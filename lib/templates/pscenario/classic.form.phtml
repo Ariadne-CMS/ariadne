@@ -25,7 +25,19 @@
   ******************************************************************/
   if ($this->CheckLogin("read")) {
 ?>
-<body bgcolor="white">
+<html>
+<head>
+<?php
+	// lock this object first, if it succeeds, it will expose some js functions
+	if ($this->call("lock.init.phtml")) {
+?>
+<title><?php 
+	$title=$ARnls["edit"]." ".@current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml")); 
+	echo $title;
+?></title>
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
+</head>
+<body bgcolor="white" onUnload="releaseLock()">
 <?php
   $this->parents($this->path, "show.link.phtml","target=classic.edit.phtml");
 ?>
@@ -135,6 +147,10 @@
 </tr>
 </table>
 </form>
+<?php
+		$this->call("lock.form.phtml");
+	} // end lock-if-statement
+?>
 </body>
 <?php
   }
