@@ -203,9 +203,8 @@ class scanner {
 								while ($yych != "\n" && ord($yych)!==0) {
 									$yych = $YYBUFFER[++$YYCURSOR];
 								}
-
-								$result = "";
-								return T_UNPARSED;
+								/* character already eaten */
+								continue;
 							break;
 							case '*':
 								$result="";
@@ -497,8 +496,6 @@ class pinp {
 		  "$misc_funcs|$net_funcs|$regex_funcs|$string_funcs|$var_funcs|$xml_funcs|".
 		  "$allowed_functions|$debug_funcs|$loader_funcs|$ob_funcs|"));
 
-		$this->wrapper_functions = Array( "preg_replace" => 1 );
-
 	}
 
 	function next_token() {
@@ -568,13 +565,10 @@ class pinp {
 		$this->next_token();
 		switch ($this->token_ahead) {
 			case T_PAR_OPEN:
-				$lookup = chop(strtolower($this->token_value));
-				if ($this->allowed_functions[$lookup]) {
-					$result = $this->token_value."(";
-				} else if ($this->wrapper_functions[$lookup]) {
-					$result = "pinp_wrappers::_".$this->token_value."(";
-				} else {
+				if (!$this->allowed_functions[chop(strtolower($this->token_value))]) {
 					$result = $this->function_prefix.$this->token_value."(";
+				} else {
+					$result = $this->token_value."(";
 				}
 				$this->next_token();
 			break;
