@@ -34,3 +34,33 @@
 	.h_script {
 		color: blue;
 	}
+  .h_smartymarkers {
+    color: darkblue;
+  }
+  .h_smartykeywords1 {
+    color: darkblue;
+    font-weight:bold;
+  }
+  .h_smartykeywords2 {
+    color: darkblue;
+    font-weight:bold;
+  }
+  .h_smartykeywords3 {
+    color: black;
+    font-weight:bold;
+  }
+  .h_smartykeywords4 {
+    color: darkred;
+    font-weight:bold;
+  }
+  .h_smartytag {
+    background-color: #F0F0FF;
+  }
+  .h_phpkeywords1 {
+		color: purple;
+    font-weight:bold;
+  }
+  .h_phpkeywords2 {
+		color: purple;
+    font-weight:bold;
+  }

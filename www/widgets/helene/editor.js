@@ -30,6 +30,7 @@
 
     ******************************************************************/
 	var currentLine=1;
+	var previousLine=1;
 	var lastLine=0;
 	var screenWidth=0;
 	var lineHeight=16;
@@ -50,11 +51,27 @@
 	var adjustTop = 0;
 	var minInputWidth = 0;
 	var addedSpaces=0;
-	var userSelecting = false;
 	var keyBinding = new Array();
 	var keyBindings = new Array();
 	var cancelKey = false;
-
+	var autoIndent = true;
+	var startcoordinate = false;
+	/* Undo/Redo vars */
+	var undoBuffer = [];
+	var redoBuffer = [];
+	var startCursorPos = -1; // Cursor position before text alteration
+	var saveUndo = true;
+	var isMoz = false;
+	var checkPastedReturns = false;
+	/* Selection vars */
+	var userSelecting = false;
+	var selStart = true; // Is shift+arrows moving begin or end of selection
+	var selHighlightedLine = null; // Last hilighted line when selection active
+	var selStartLine = 0;
+	var selEndLine = 0;
+	var mouseMoveLC = 0; // Last call of mouseMoveHandler for IE trick
+	var selCursorPos = 0; 	// This is cursor position for selections
+	
 
 	/* keybindings */
 	keyBindings["default"] = new Array();			
@@ -76,6 +93,21 @@
 	keyBindings["default"]["s33"] = do_SelectPageUp;	// shift-page-up
 	keyBindings["default"]["36"] = do_Home;			// home
 	keyBindings["default"]["9"] = do_Tab;			// Tab
+	keyBindings["default"]["c86"] = do_Paste;		//	ctrl-v
+	keyBindings["default"]["c90"] = do_Undo;			// ctrl-z
+	keyBindings["default"]["c89"] = do_Redo;			// ctrl-y
+	keyBindings["default"]["cs90"] = do_Redo;			// ctrl-shift-z
+	// Do nothing (don't do default action)
+	keyBindings["default"]["s16"] = do_Nothing;			// shift
+	keyBindings["default"]["c17"] = do_Nothing;			// ctrl
+	keyBindings["default"]["a18"] = do_Nothing;			// alt
+	keyBindings["default"]["cs16"] = do_Nothing;			// ctrl+shift
+	keyBindings["default"]["cs17"] = do_Nothing;			// shift+ctrl
+	keyBindings["default"]["as16"] = do_Nothing;			// alt+shift
+	keyBindings["default"]["as18"] = do_Nothing;			// shift+alt
+	keyBindings["default"]["ac18"] = do_Nothing;			// ctrl+alt
+	keyBindings["default"]["ac17"] = do_Nothing;			// alt+ctrl
+	keyBindings["default"]["c67"] = do_Nothing;			// ctrl-c
 
 	/* joe bindings */
 	keyBindings["joe"] = new Array();			
@@ -84,6 +116,9 @@
 	keyBindings["joe"]["c88"] = do_skipCharsRight;		// ctrl-x
 	keyBindings["joe"]["c90"] = do_skipCharsLeft;		// ctrl-z
 	keyBindings["joe"]["c75"] = joe_Ctrlk;			// ctrl-k
+	keyBindings["joe"]["cs189"] = do_Undo;			// ctrl shift - (IE)
+	keyBindings["joe"]["cs109"] = do_Undo;			// ctrl shift - (MOZ)
+	keyBindings["joe"]["cs54"] = do_Redo;			// ctrl shift 6
 	keyBindings["joe"]["default"] = joe_Default;
 
 	/* joe ctrl-k bindings */
@@ -94,6 +129,9 @@
 
 	/* keybinding to use */
 	keyBinding = keyBindings["default"];
+	
+	/* undo buffer constants */
+	var undo = { CHANGE_TEXT: 1, LINE_AFTER: 2, DELETE_LINE: 3 };
 
 	function init() {
 		contentDiv=document.getElementById('content');	
@@ -106,11 +144,14 @@
 		inputLineEntry=document.getElementById('inputLineEntry');
 		if (parseInt(navigator.appVersion)>3) {
 			if (navigator.appName=="Netscape") {
+				isMoz = true;
 				winW = window.innerWidth-42;
 				winH = window.innerHeight-2;
 				minInputWidth = winW-16;
 				document.onkeypress=moz_onKeyPress;
 				document.onkeydown=keyDownHandler;
+				// only mozilla has a keyUpHandler
+				document.onkeyup = keyUpHandler;
 				init_mozilla_compat();
 				/* do some w3c dom magic to get the current font size */
 				var vw=document.defaultView;
@@ -126,6 +167,8 @@
 				var fontFamily=lines.currentStyle.fontFamily;
 				clickPosOffsetLeft = 44;
 				minInputWidth=winW-60;
+				// To handle clipboard paste
+				inputLineEntry.onpaste = pasteText;
 			} else {
 				document.onkeydown=keyDownHandler;
 				/* do some w3c dom magic to get the current font size */
@@ -169,8 +212,8 @@
 			}
 		}
 		lines.childNodes[0].innerHTML=templine;
-		document.onkeyup=KeyUpHandler;
 		document.onmousedown=mouseDownHandler;
+		document.onmousemove=mouseMoveHandler;
 		document.onmouseup=mouseUpHandler;
 		var _temp='';
 		for (var i=0; i<lines.childNodes.length; i++) {
@@ -188,7 +231,51 @@
 		if ((longestLine*letterWidth)>minInputWidth) {
 			inputLine.style.width=longestLine*letterWidth+4;
 		}
+
 		redrawInputLine();
+	}
+
+	function pasteText() {
+		var content = clipboardData.getData('text');
+		var re = /^([^\n\r]*)(\r\n|\r|\n)/;
+		var match;
+		var cur = currentLine;
+		if (document.selection) { // For IE only
+			var tr = document.selection.createRange();
+			tr.text = content;
+			content = inputLineEntry.value;
+		} else { // There is nothing to do in Mozilla
+			return;
+		}
+
+		match = re.exec(content);
+		if( match && match[1] != null ) {
+			inputLineEntry.value = match[1];
+			isDirty = true;
+			checkDirty();
+			updateLine(currentLine,match[1]);
+			content = content.substr(match[0].length);
+		} else {
+			isDirty = true;
+			checkDirty();
+			updateLine(currentLine,content);
+			content = false;
+		}
+		if(content != false) {
+			while( content != false ) {
+				var trans;
+				match = re.exec(content);
+				if( match && match[1] != null ) {
+					trans = match[1];
+					content = content.substr(match[0].length);
+				} else {
+					trans = content;
+					content = false;
+				}
+				insertLineAfter(cur++,trans);
+			}
+		}
+		event.returnValue=false;
 	}
 
 	function init_mozilla_compat() {
@@ -248,23 +335,21 @@
 	}
 
 	function moveDown(amount) {
-		//FIXME: start made with selections
-		//  change moveUp as well
-		//  and change textarea size back again in stopselect
-		if (userSelecting) {
-			if( (currentLine + offsetLine) < lastLine ) { // Don't select past the last line...
-				currInputHeight+=lineHeight;
-				inputLine.style.height=currInputHeight;
-				inputLineEntry.style.height=currInputHeight;
-				offsetLine++;
-				inputLineEntry.value+='\n'+getLineContent(currentLine+offsetLine);
-				return true;
-			} else {
-				return false;
-			}
+		if( userSelecting) {
+			stopSelect();
+			currentLine = Math.max(0,selEndLine+amount);
+			var selRange = document.selection.createRange();
+			var lineRange = selRange.duplicate();
+			lineRange.moveToElementText(lines.childNodes[selEndLine-1]);
+			lineRange.setEndPoint("EndToEnd",selRange);
+			var cursor = lineRange.text.length;
+			redrawInputLine(true);
+			setCursorPos(cursor);
+			return false;
 		} else {
 			checkDirty();
 			if (currentLine<lastLine) {
+				previousLine = currentLine;
 				currentLine+=amount;
 				if (currentLine>lastLine) {
 					currentLine=lastLine;
@@ -277,21 +362,20 @@
 
 	function moveUp(amount) {
 		if( userSelecting) {
-			if( offsetLine > 0 ) { // Don't select smaller than 1 line
-				currInputHeight-=lineHeight;
-				inputLine.style.height=currInputHeight;
-				inputLineEntry.style.height=currInputHeight;
-				offsetLine--;
-				var myValue = inputLineEntry.value;
-				myValue = myValue.replace(/(.*)\n(.*[\n]?)$/,"$1");
-				inputLineEntry.value = myValue;
-				return true;
-			} else {
-				return false;
-			}
+			stopSelect();
+			currentLine = Math.max(0,selStartLine-amount);
+			var selRange = document.selection.createRange();
+			var lineRange = selRange.duplicate();
+			lineRange.moveToElementText(lines.childNodes[selStartLine-1]);
+			lineRange.setEndPoint("EndToStart",selRange);
+			var cursor = lineRange.text.length;
+			redrawInputLine(true);
+			setCursorPos(cursor);
+			return false;
 		} else {
 			checkDirty();
 			if (currentLine>1) {
+				previousLine = currentLine;
 				currentLine-=amount;
 				if (currentLine<1) {
 					currentLine=1;
@@ -303,27 +387,43 @@
 	}
 
 	function redrawInputLine(dontfocus) {
+		var pos;
 		if (!dontfocus) {
-			var pos=getCursorPos();
-			if (pos>oldpos) {
-				oldpos=pos;
+			var oldline;
+			var counter;
+			pos = getCursorPos();
+			/*
+			 * we are gona calculate the real old pos by counting tabs for 8
+			 */
+			oldpos = pos
+			oldline = getLineContent(previousLine);
+			counter = 0;
+			while(counter < oldpos){
+				if(oldline.charAt(counter) == "\t"){
+					oldpos+=7;
+				}
+				counter++;
 			}
 		}
 		// mozilla sometimes jumps the lines offset around, so we need to get the
 		// offset of the content of the line, not the line itself 
 
-		var mytop=lines.childNodes[currentLine-1].firstChild.offsetTop+adjustTop;
-		inputLine.style.top=mytop;
 		var value=getLineContent(currentLine);
+		var mytop;
+		if( value != '' ) {
+			mytop=lines.childNodes[currentLine-1].firstChild.offsetTop+adjustTop;
+		} else {
+			mytop=lines.childNodes[currentLine-1].offsetTop+adjustTop;
+		}
+		inputLine.style.top=mytop;
 		inputLineEntry.value=value;
 		if (!dontfocus) {
-			if (oldpos>-1) {
-				pos=oldpos;
-			}
+			pos = oldpos;
 			setCursorPos(pos);
 //			I don't think this is needed anymore
 //			inputLineEntry.focus(); // scroll into view pls..
 		}
+		startCursorPos = -1;
 	}
 
 	function getCursorPos() {
@@ -348,11 +448,25 @@
 	}
 
 
-	function setCursorPos(cursorstart, cursorend, clicked) {
+	function setCursorPos(cursorstart, cursorend, clicked, ignoretab ) {
+		var counter;
 		var contents=new String(inputLineEntry.value);
 		if (cursorstart==-1) {
 			cursorstart=contents.length;
 		}
+
+		if( !ignoretab ) {
+			counter = cursorstart;
+			cursorstart = 0;
+			while(counter > 0){
+				if(contents.charAt(cursorstart) == "\t"){
+					counter -= 7;
+				}
+				cursorstart++;
+				counter--;
+			}
+		}
+
 		if (contents.length<cursorstart && !clicked) {
 			addedSpaces=cursorstart-contents.length+1;
 			for (i=0; i<addedSpaces; i++ ){
@@ -369,7 +483,7 @@
 		}
 		if (document.selection) {
 			var mtext=inputLineEntry.createTextRange();
-			mtext.collapse(true);
+			//~ mtext.collapse(true); // I think this is not needed
 			mtext.moveStart('character', cursorstart);
 			mtext.collapse(true);
 			if (cursorend) {
@@ -426,7 +540,7 @@
 	function getLineContent(lineNo) {
 		var myString = new String();
 		if(lines.childNodes[lineNo-1]){
-			if( lines.childNodes[lineNo-1].originalInnerText ) {
+			if( typeof(lines.childNodes[lineNo-1].originalInnerText)!="undefined" ) {
 				return lines.childNodes[lineNo-1].originalInnerText;
 			}
 			if (lines.childNodes[lineNo-1].innerText) {
@@ -459,7 +573,7 @@
 
 	function setContents(content) {
 		var myHead;
-		var re = /^([^\n]*)\n/;
+              var re = /^([^\n\r]*)(\r\n|\r|\n)/;
 		var match;
 		var originalArray = new Array();
 
@@ -469,7 +583,7 @@
 		if( match && match[1] != null ) {
 			updateLine(1,match[1]);
 			originalArray[lastLine] = match[1];
-			content = content.substr(match[1].length + 1);
+                      content = content.substr(match[0].length);
 		} else {
 			updateLine(1,content);
 			originalArray[lastLine] = content;
@@ -482,7 +596,7 @@
 				match = re.exec(content);
 				if( match && match[1] != null ) {
 					trans = match[1];
-					content = content.substr(match[1].length + 1);
+                                      content = content.substr(match[0].length);
 				} else {
 					trans = content;
 					content = false;
@@ -502,12 +616,8 @@
 		}
 		var _temp='';
 		for (var i=1; i<lines.childNodes.length; i++) {
-			// need to remove trailing ' ', which IE puts there.
 			lines.childNodes[i].originalInnerText = originalArray[i+1];
 			_temp=getLineContent(i+1);
-//			if (navigator.appName.indexOf("Microsoft")!=-1) {
-//				_temp=_temp.substr(0, _temp.length-1);
-//			}
 			if (_temp.length>longestLine) {
 				longestLine=_temp.length;
 			}
@@ -521,6 +631,8 @@
 		currentLine=1;
 		updateLineNumbers();
 		redrawInputLine();
+		undoBuffer = [];
+		redoBuffer = [];
 	}
 
 	function setKeyBinding(keybind) {
@@ -530,10 +642,61 @@
 	}
 
 
+	function setAutoIndent(indentvalue) {
+		if( indentvalue == "on" ) {
+			autoIndent = true;
+		} else {
+			autoIndent = false;
+		}
+	}
+
+	function keyUpHandler() {
+
+		// First we check for linebreaks that might have
+		// Been pasted in.
+		if( isMoz && checkPastedReturns ) {
+			fixPastedReturns();
+			checkPastedReturns = false;
+        }
+		
+	}
+
+
+	function fixPastedReturns() {
+		var re = /^([^\n\r]*)(\r\n|\r|\n)/;
+		var match;
+		var content = inputLineEntry.value;
+		var cur = currentLine;
+			match = re.exec(content);
+		if( match && match[1] != null ) {
+			inputLineEntry.value = match[1];
+			isDirty = true;
+			checkDirty();
+			updateLine(currentLine,match[1]);
+			content = content.substr(match[0].length);
+		} else {
+			content = false;
+		}
+		while( content != false ) {
+			var trans;
+			match = re.exec(content);
+			if( match && match[1] != null ) {
+				trans = match[1];
+				content = content.substr(match[0].length);
+			} else {
+				trans = content;
+				content = false;
+			}
+			insertLineAfter(cur++,trans);
+		}
+	}
+
+
 	function moz_onKeyPress(evt) {
 		// Mozilla has a lot of trouble canceling events
 		// an onkeydown event can not be cancelled
 		// so we cancel the onkeypress...
+
 		if( cancelKey ) {
 			cancelKey = false;
 			return false;
@@ -629,44 +792,269 @@
 		return false;
 	}
 
+	function do_Nothing(charString) {
+		return true;
+	}
+
+	function removeSelectedText() {
+		var firstPart = document.selection.createRange();
+		var secondPart = firstPart.duplicate();
+		firstPart.collapse(true);
+		secondPart.collapse(false);
+		var startLine = lines.childNodes[selStartLine-1];
+		var endLine = lines.childNodes[selEndLine-1];
+		var lineRange = firstPart.duplicate();
+		lineRange.moveToElementText(startLine);
+		firstPart.setEndPoint('StartToStart',lineRange);
+		var cursor = firstPart.text.length;
+		lineRange.moveToElementText(endLine);
+		secondPart.setEndPoint('EndToEnd',lineRange);
+		updateLine(selStartLine,firstPart.text+secondPart.text);
+		isDirty = true;
+		checkDirty();
+		for(var i=selStartLine+1;i<=selEndLine;i++)
+			deleteLine(i);
+		currentLine = selStartLine;
+		redrawInputLine(true);
+		setCursorPos(cursor);
+		isDirty = true;
+		return;
+	}
+
 	function do_Default(charString) {
+		if(userSelecting) {
+			stopSelect();
+			removeSelectedText();
+		}
 		removeAddedSpaces();
 		oldpos=-1;
 		isDirty=true;
+		if(startCursorPos<0) startCursorPos = getCursorPos();
 		return true;
 	}
 	
+	function selHighlightLine() {
+		if( !isMoz ) { // Mozilla has no 'smart' features like internet explorer.
+			var selRange = document.selection.createRange();
+			selRange.collapse(selStart);
+		}
+		var line = lines.childNodes[(selStart ? selStartLine : selEndLine)-1];
+		if(selHighlightedLine != null) {
+			selHighlightedLine.className = "";
+			selHighlightedLine = null;
+		}
+		if(line) {
+			line.className = "inputLine";
+			selHighlightedLine = line;
+		}
+	}
+	
+	function selPlaceInputLine(atStart) {
+		var cursor = selGetCursorPos(atStart);
+		var index = atStart ? selStartLine : selEndLine;
+		currentLine = index;
+		inputLineEntry.value = getLineContent(index);
+		redrawInputLine(true);
+		stopSelect();
+		setCursorPos(cursor);
+	}
+	
+	function selGetCursorPos(atStart) {
+		var selRange = document.selection.createRange();
+		var index = atStart ? selStartLine : selEndLine;
+		var line = lines.childNodes[index-1];
+		var lineRange = selRange.duplicate();
+		lineRange.moveToElementText(line);
+		lineRange.setEndPoint(atStart ? 'EndToStart':'EndToEnd',selRange);
+		return lineRange.text.length;
+	}
+	
 	function do_SelectUp() {
+		var startPos,startLine;
+		if(!userSelecting) { // Nothing selected before
+			startPos = getCursorPos();
+			startLine = currentLine;
+			}
 		startSelect();
-		return do_Up(true);
+		var selRange;
+		if( isMoz ) {
+			selRange = window.getSelection().getRangeAt(0);
+		} else {
+			selRange = document.selection.createRange();
+		}
+		if(typeof(startPos)!="undefined" && typeof(startLine)!="undefined") { // Nothing selected before  
+			selStart = true;
+			if(startLine <= 1) {
+				selRange.moveStart('character', - startPos);
+				selStartLine = selEndLine = startLine;
+			} else {
+				if( isMoz ) {
+					selRange.selectNodeContents(lines.childNodes[startLine-2]);
+					selRange.setStart(lines.childNodes[startLine-2], startPos );
+				} else {				
+					selRange.moveToElementText(lines.childNodes[startLine-2]);	// Getting previous line		
+					selRange.moveStart('character',Math.min(startPos,selRange.text.length)); // Moving to either cursor pos or length of the line
+					selRange.moveEnd('character',startPos);
+				}
+				selStartLine = startLine - 1;
+				selEndLine = startLine;
+			}
+			selCursorPos = startPos;
+		} else {
+			if(selCursorPos<0) {
+				selCursorPos = selGetCursorPos(true);
+			}
+			var line = lines.childNodes[(selStart ? selStartLine : selEndLine)-1]; 
+			var prevLine = line.previousSibling;
+			var lineRange = selRange.duplicate();
+			if(prevLine) { // We have the previous line
+				lineRange.moveToElementText(prevLine);
+				lineRange.moveStart('character', Math.min(lineRange.text.length, selCursorPos));
+				if(!selStart && selRange.compareEndPoints('StartToStart',lineRange)>0) {
+					selStart = !selStart;
+					selRange.collapse(selStart);
+					if(selStartLine==selEndLine) selStartLine --;
+				} else if(selStart) selStartLine --;
+				else selEndLine --;
+				selRange.setEndPoint(selStart ? 'StartToStart' : 'EndToStart',lineRange);
+			} else {
+				lineRange.moveToElementText(line);
+				selRange.setEndPoint('StartToStart',lineRange);
+			}
+			if(selRange.text.length==0) {
+				stopSelect();
+				selPlaceInputLine(selStart);
+				return;
+			}
+		}
+		selRange.select();
+		selHighlightLine();
+		return false;
 	}
 	
 	function do_SelectDown() {
+		var startPos,startLine;
+		if(!userSelecting) { // Nothing selected before
+			startPos = getCursorPos();
+			startLine = currentLine;
+			}
 		startSelect();
-		return do_Down(true);
+		var selRange;
+		if( isMoz ) {
+			selRange = window.getSelection().getRangeAt(0);
+		} else {
+			selRange = document.selection.createRange();
+		}
+		if(typeof(startPos)!="undefined" && typeof(startLine)!="undefined") { // Nothing selected before 
+			selCursorPos = startPos;
+			selStart = false;
+			if(startLine >= lines.childNodes.length) { // This is last line
+				selRange.moveStart('character', startPos - 1);
+				selStartLine = selEndLine = startLine;
+			} else { 
+				selRange.moveToElementText(lines.childNodes[startLine]); // Getting line after current
+				if(selRange.text.length > startPos) { // If it's length bigger than position 
+					selRange.collapse(true);	
+					selRange.moveEnd('character', startPos); // Setting end point to startPos
+				} // else selection finishes at end of line
+				var lineRange = selRange.duplicate();
+				lineRange.moveToElementText(lines.childNodes[startLine-1]); 
+				selRange.setEndPoint('StartToStart',lineRange); // Setting start of selection to currentLine
+				selRange.moveStart('character', startPos); // Moving start of selection to cursor position
+				selStartLine = startLine;
+				selEndLine = startLine+1;
+			}
+		} else {
+			if(selCursorPos<0) {
+				selCursorPos = selGetCursorPos(true);
+			}
+			var line = lines.childNodes[(selStart ? selStartLine : selEndLine)-1];
+			var lineRange = selRange.duplicate();
+			nextLine = line.nextSibling;
+			if(nextLine) { // if we have next line
+				lineRange.moveToElementText(nextLine);
+				lineRange.moveStart('character', Math.min(selCursorPos, lineRange.text.length));
+				if(selStart && selRange.compareEndPoints('EndToStart',lineRange)<0) {
+					selStart = !selStart;
+					selRange.collapse(selStart);
+					if(selStartLine==selEndLine) selStartLine ++;
+				} else if(selStart) selStartLine ++;
+				else selEndLine ++;
+				selRange.setEndPoint(selStart ? 'StartToStart' : 'EndToStart',lineRange);
+			} else { // selecting to the end of file
+				lineRange.moveToElementText(line);
+				selRange.setEndPoint('EndToEnd',lineRange);
+			}
+			if(selRange.text.length==0) {
+				stopSelect();
+				selPlaceInputLine(false);
+			}
+		}
+		selRange.select();
+		selHighlightLine();
+		return false;
 	}
 	
 	function do_Down(selecting) {
-		if( !selecting ) {
-			stopSelect();
-		}
 		return moveDown(1);
 	}
 	
 	function do_Up(selecting) {
-		if( !selecting ) {
-			stopSelect();
-		}
 		return moveUp(1);
 	}
 	
 	function do_SelectLeft() {
+		var startPos,startLine;
+		if(!userSelecting) { // Nothing selected before
+			startPos = getCursorPos();
+			startLine = currentLine;
+			if(startLine==1 && startPos==0) return;
+			}
 		startSelect();
-		return do_Left(true);
+		var selRange;
+		if( isMoz ) {
+			selRange = window.getSelection().getRangeAt(0);
+		} else {
+			selRange = document.selection.createRange();
+		}
+		if(typeof(startPos)!="undefined" && typeof(startLine)!="undefined") { // Noting selected before  
+			selStart = true;					// Selecting just a character before cursor
+			selRange.moveToElementText(lines.childNodes[startLine-1]);
+			selRange.moveStart('character',startPos);
+			selRange.collapse(true);
+			selRange.moveStart('character',-1);
+			selStartLine = startLine;
+			selEndLine = startLine;
+			if(startPos == 0) {
+				selStartLine --;
+			}
+		} else {
+			var lineRange = selRange.duplicate(); // Getting the text range of current line
+			lineRange.moveToElementText(lines.childNodes[(selStart ? selStartLine : selEndLine)-1]);
+			if(selRange.compareEndPoints(selStart ? 'StartToStart':'EndToStart',lineRange)==0) { // If first charancter of the line
+				if(selStart) selStartLine = Math.max(1,selStartLine-1); // Don't go before first line
+				else selEndLine = Math.max(1,selStartLine-1);
+			}
+			if(selStart) selRange.moveStart('character', -1);  // If either we moving start point
+			else selRange.moveEnd('character', -1);						 // or end point of selection
+		}
+		if(!selRange.text.length) {  // If nothing selected
+			selPlaceInputLine(false);  // show input line
+			return false;
+		}
+		selRange.select();
+		selHighlightLine();
+		selCursorPos = selGetCursorPos(selStart);
+		return false;
 	}
 
 	function do_Left(selecting) {
 		var result=true;
+		if(userSelecting) {
+			selPlaceInputLine(true);
+			return;
+		}
+		checkDirty();
 		if( !selecting ) {
 			stopSelect();
 		}
@@ -686,12 +1074,63 @@
 	}
 
 	function do_SelectRight() {
+		var startPos,startLine;
+		if(!userSelecting) {
+			startPos = getCursorPos();
+			startLine = currentLine;
+			}
 		startSelect();
-		return do_Right(true);
+		var selRange;
+		if( isMoz ) {
+			window.getSelection.getRangeAt(0);
+		} else {
+			selRange = document.selection.createRange();
+		}
+		if(startPos && startLine) {
+			selStart = false;
+			selStartLine = startLine;
+			selEndLine = startLine;
+			selRange.moveToElementText(lines.childNodes[startLine-1]);
+			if(startPos == selRange.text.length) {
+				selEndLine ++;
+			}
+			selRange.moveStart('character',startPos);
+			selRange.collapse(true);
+			selRange.moveEnd('character', 1);
+		} else {
+			var lineRange = selRange.duplicate();
+			if(!selStart) {
+				lineRange.moveToElementText(lines.childNodes[selEndLine-1]);				
+				if(selRange.compareEndPoints('EndToEnd',lineRange)==0) {
+					selEndLine = Math.min(selEndLine+1,lines.childNodes.length);
+				}
+			}
+			if(selStart) selRange.moveStart('character', 1);
+			else selRange.moveEnd('character', 1);
+			if(selStart) {
+				lineRange.moveToElementText(lines.childNodes[selStartLine]);				
+				if(selRange.compareEndPoints('StartToStart',lineRange)==0) {
+					selStartLine ++;
+				}
+			}				
+		}
+		if(!selRange.text.length) {
+			selPlaceInputLine(false);
+			return false;
+		}
+		selRange.select();
+		selHighlightLine();
+		selCursorPos = selGetCursorPos(selStart);
+		return false;
 	}
 
 	function do_Right(selecting) {
 		var result=true;
+		if(userSelecting) {
+			selPlaceInputLine(false);
+			return false;
+		}
+		checkDirty();
 		if( !selecting ) {
 			stopSelect();
 		}
@@ -725,6 +1164,11 @@
 	}
 
 	function do_Delete() {
+		if(userSelecting) {
+			stopSelect();
+			removeSelectedText();
+			return;
+		}
 		var result=true;
 		if (addedSpaces) {
 			removeAddedSpaces();
@@ -752,8 +1196,10 @@
 	}
 
 	function do_SelectPageDown() {
-		startSelect();
-		return do_PageDown();
+		for(var i=0;i<20;i++) {
+			do_SelectDown();
+		}
+		return false;
 	}
 
 	function do_PageDown() {
@@ -762,8 +1208,10 @@
 	}
 
 	function do_SelectPageUp() {
-		startSelect();
-		return do_PageUp();
+		for(var i=0;i<20;i++) {
+			do_SelectUp();
+		}
+		return false;
 	}
 
 	function do_PageUp() {
@@ -790,7 +1238,7 @@
 		var cursor = getCursorPos();
 		line = line.substr(0,cursor) + "\t" + line.substr(cursor);
 		inputLineEntry.value = line;
-		setCursorPos(cursor + 1 );
+		setCursorPos(cursor + 1, cursor + 1, false, true );
 		isDirty=true;
 		return false;
 	}
@@ -801,6 +1249,64 @@
 
 	function do_skipCharsLeft() {
 		return skipChars(-1);
+	}
+
+	function do_Paste() {
+		if( isMoz ) {
+			checkPastedReturns = true;
+		}
+		return true;
+	}
+	
+	function do_Undo() {
+		checkDirty();
+		if(undoBuffer.length<1) {
+			return false;
+		}
+		var u = undoBuffer.pop();
+		UndoIt(u,redoBuffer);
+		return false;
+	}
+	
+	function do_Redo() {
+		if(redoBuffer.length<1) {
+			return false;
+		}
+		var u = redoBuffer.pop();
+		UndoIt(u,undoBuffer);
+		return false;
+	}
+		
+	function UndoIt(u,redoBuffer) {
+		saveUndo = false;
+		switch(u.type) {
+			case undo.CHANGE_TEXT:
+				updateLine(u.line,u.text);
+				redoBuffer.push({ type: u.type, line: u.line, text: u.newText, newText: u.text, cursor: u.newCursor, newCursor: u.cursor });
+			  break;
+			case undo.LINE_AFTER:
+				deleteLine(u.line);
+				redoBuffer.push({ type: undo.DELETE_LINE, line: u.line, text: u.text, cursor: u.newCursor, newCursor: u.cursor });
+			  break;
+			case undo.DELETE_LINE:
+				insertLineAfter(u.line-1,u.text);
+				redoBuffer.push({ type: undo.LINE_AFTER, line: u.line, text: u.text, cursor: u.newCursor, newCursor: u.cursor });
+			  break;
+			default:
+				saveUndo = true;
+				return false;
+		}		
+		currentLine = u.line;
+		inputLineEntry.value = getLineContent(currentLine);
+		redrawInputLine();
+		setCursorPos(u.cursor);
+		saveUndo = true;
+		return true;
+	}
+	
+	function addUndo(ob) {
+		undoBuffer.push(ob);
+		redoBuffer = [];
 	}
 
 	function skipChars(dir) {
@@ -863,7 +1369,7 @@
 		var clickX = -1;
 		var clickY = -1;
 		if( target && target.nodeName!='HTML' && target.nodeName!='BODY' ) { // HTML(moz) and BODY(IE) means clicked outside of our code..
-			while (target.nodeName!='LI' && target.nodeName!='TEXTAREA' && target.nodeName!='DIV') {
+			while (target && target.nodeName!='LI' && target.nodeName!='TEXTAREA' && target.nodeName!='DIV') {
 				if( target.parentElement ) {
 					target=target.parentElement;
 				} else {
@@ -871,30 +1377,42 @@
 					target =  target.parentNode;
 				}
 			}
-			// get click position
-			if (evt.pageX) {
-				var offsetX=evt.pageX - ((target.offsetLeft) ? target.offsetLeft : target.left);
-				var offsetY=evt.pageY - ((target.offsetTop) ? target.offsetTop : target.top);				
-			} else if (evt.offsetX || evt.offsetY) {
-				var offsetX = evt.offsetX;
-				var offsetY = evt.offsetY;	
-			} else if (evt.clientX || evt.clientY) {
-				var offsetX = evt.clientX - ((target.offsetLeft) ? target.offsetLeft : 0);
-				var offsetY = evt.clientY - ((target.offsetTop) ? target.offsetTop : 0);
-			}
-			offsetX-=clickPosOffsetLeft;
-			var clickX=Math.round(offsetX/letterWidth);
-	
-			// find a known container of the mouseclick
-			if (target.nodeName=='LI') {
-				clickY=1;
-				while (target=target.previousSibling) {
-					clickY++;
+			if( target ) {
+				// get click position
+				if (evt.pageX) {
+					var offsetX=evt.pageX - ((target.offsetLeft) ? target.offsetLeft : target.left);
+					var offsetY=evt.pageY - ((target.offsetTop) ? target.offsetTop : target.top);				
+				} else if (evt.offsetX || evt.offsetY) {
+					var offsetX = evt.offsetX;
+					var offsetY = evt.offsetY;	
+				} else if (evt.clientX || evt.clientY) {
+					var offsetX = evt.clientX - ((target.offsetLeft) ? target.offsetLeft : 0);
+					var offsetY = evt.clientY - ((target.offsetTop) ? target.offsetTop : 0);
 				}
-			} else if (target.nodeName=='INPUT') {
-			} else if (target.nodeName=='TEXTAREA') {
-			} else {
-				clickY=Math.round(offsetY/lineHeight)+1;
+				offsetX-=clickPosOffsetLeft;
+				var clickX=Math.round(offsetX/letterWidth);
+				if(!isMoz) {
+					var tr = document.selection.createRange();
+					var lineRange = tr.duplicate();
+					lineRange.moveToElementText(target);
+					tr.moveToPoint(event.clientX,event.clientY);
+					tr.setEndPoint("StartToStart",lineRange);
+					clickX = tr.text.length;
+				}
+				// find a known container of the mouseclick
+				if (target.nodeName=='LI') {
+					//~ clickY=1;
+					//~ while (target=target.previousSibling) {
+						//~ clickY++;
+					//~ }
+					clickY = Math.floor(target.offsetTop/target.offsetHeight) + 1; // It is faster way to determine line number
+				} else if (target.nodeName=='INPUT') {
+				} else if (target.nodeName=='TEXTAREA') {
+					clickY = currentLine;
+				} else if (target.nodeName=='DIV') {
+				} else {
+					clickY=Math.round(offsetY/lineHeight)+1;
+				}
 			}
 		}
 		if (clickX>-1 && clickY>-1) {
@@ -905,7 +1423,6 @@
 	}
 
 
-	var startcoordinate = false;
 
 	function mouseUpHandler(evt) {
 		evt = (evt) ? evt : event;
@@ -926,47 +1443,152 @@
 					redrawInputLine(true);
 					setCursorPos(startcoordinate.x, coordinate.x, true);
 					oldpos=-1;
-					evt.cancelBubble=true;
+					evt.cancelBubble=true;					
+					startcoordinate = null;
 					return false;
 				} else {
 					// multi line selection
-					if (startcoordinate.y>coordinate.y) {
-						var _temp=coordinate;
-						coordinate=startcoordinate;
-						startcoordinate=_temp;
+					if(!userSelecting) {
+						startSelect();
+					} 
+					var c_begin;
+					var c_end;
+					if(coordinate.y > startcoordinate.y || coordinate.y == startcoordinate.y && coordinate.x > startcoordinate.x) {
+						c_begin = startcoordinate;
+						c_end = coordinate;
+						selStart = false;
+					} else {
+						c_end = startcoordinate;
+						c_begin = coordinate;
+						selStart = true;
 					}
-					
+					if( !isMoz ) { // Prevent 'Smart' Internet Explorer selecting, Mozilla doesn't need this.
+						var selRange = document.selection.createRange();
+						var startRow = selRange.duplicate();
+						var endRow = startRow.duplicate();
+						startRow.moveToElementText(lines.childNodes[c_begin.y-1]);
+						endRow.moveToElementText(lines.childNodes[c_end.y-1]);
+						selRange.setEndPoint('StartToStart',startRow);
+						if(c_end.x>endRow.text.length) {
+							selRange.setEndPoint('EndToEnd',endRow);
+						} else {
+							selRange.setEndPoint('EndToStart',endRow);
+							selRange.moveEnd('character',c_end.x);
+						}
+						if(c_begin.x>startRow.text.length) {
+							selRange.setEndPoint('StartToEnd',startRow);
+						} else {
+							selRange.moveStart('character',c_begin.x);
+						}
+						selRange.select();
+					}
+					selStartLine = c_begin.y;
+					selEndLine = c_end.y;
+					selHighlightLine();
 				}
 			} else {
 				// no selection
+				if(userSelecting) {
+					stopSelect();
+				}
 				currentLine=coordinate.y;
 				redrawInputLine(true);
 				setCursorPos(coordinate.x, 0, true);
 				oldpos=-1;
 				evt.cancelBubble=true;
+				startcoordinate = null;
 				return false;
 			}
 		}
+		startcoordinate = null;
 	}
 
 	function mouseDownHandler(evt) {
 		evt = (evt) ? evt : event;
 		startcoordinate=mouseGetCoordinates(evt);
+		startSelect();
+		selStartLine = startcoordinate.y;
+		selEndLine = startcoordinate.y;
+		selHighlightLine();
+		selCursorPos = -1;
+		evt.returnValue = false;
+	}
+	
+	function mouseMoveHandler(evt) {
+		if(!isMoz) { // A trick to improve perfomance in IE 
+			var tm = (new Date()).getTime();
+			if(tm - mouseMoveLC < 50) return;
+			mouseMoveLC = tm;
+		}
+		evt = (evt) ? evt : event;
+		evt.returnValue = false;
+		coordinate=mouseGetCoordinates(evt);
+		if(startcoordinate && (coordinate.x!=startcoordinate.x || coordinate.y!=startcoordinate.y)) {
+			if(!userSelecting) {
+				startSelect();
+			} 
+			var c_begin;
+			var c_end;
+			if(coordinate.y > startcoordinate.y || coordinate.y == startcoordinate.y && coordinate.x > startcoordinate.x) {
+				c_begin = startcoordinate;
+				c_end = coordinate;
+				selStart = false;
+			} else {
+				c_end = startcoordinate;
+				c_begin = coordinate;
+				selStart = true;
+			}
+			var selRange;
+			var startRow;
+			var endRow;
+
+			if( !isMoz) { // Prevent 'Smart' Selections of Internet Explorer, Mozilla doesn't require this code.
+				selRange = document.selection.createRange();
+				startRow = selRange.duplicate();
+				endRow = startRow.duplicate();
+				var line = lines.childNodes[c_begin.y-1];
+				if(!line) {
+					return;
+				}
+				startRow.moveToElementText(line);				
+				line = lines.childNodes[c_end.y-1];
+				if(!line) {
+					return;
+				}
+				endRow.moveToElementText(line);
+
+				selRange.setEndPoint('StartToStart',startRow);
+				if(c_end.x>endRow.text.length) {
+					selRange.setEndPoint('EndToEnd',endRow);
+				} else {
+					selRange.setEndPoint('EndToStart',endRow);
+					selRange.moveEnd('character',c_end.x);
+				}
+				if(c_begin.x>startRow.text.length) {
+					selRange.setEndPoint('StartToEnd',startRow);
+				} else {
+					selRange.moveStart('character',c_begin.x);
+				}
+				selRange.select();
+			}
+			selStartLine = c_begin.y;
+			selEndLine = c_end.y;
+			selHighlightLine();
+		}
 	}
 
 	function startSelect() {
+		checkDirty();
 		userSelecting=true;
+		inputLine.style.visibility = "hidden";
 	}
 
 	function stopSelect() {
 		userSelecting=false;
-		// Return the inputline to it's original size
-		inputLine.style.height=lineHeight;
-		inputLineEntry.style.height=lineHeight;
-		currInputHeight = lineHeight;
-		offsetLine=0;
-		// get selected contents, put them in a buffer or something
-		
+		if(selHighlightedLine!=null) {
+			selHighlightedLine.className = "";
+		}
+		inputLine.style.visibility = "visible";
 	}
 
 	function updateLine(lineNo, lineContent) {
@@ -989,6 +1611,7 @@
 	}
 
 	function insertLineAfter(lineNo, lineContent) {
+		var oldCursor = getCursorPos();
 		lines.childNodes[lineNo-1].insertAdjacentHTML("AfterEnd","<li>");
 		highlightAppendLine(lineNo-1, lineContent, false); // do not display this yet
 		currentLine=lineNo+1;
@@ -997,9 +1620,16 @@
 		redrawInputLine(true);
 		updateLineNumbers();
 		lastLine++;
+		if(saveUndo) {
+			undoBuffer.push({type: undo.LINE_AFTER, line: currentLine, text: lineContent, cursor: getCursorPos(), newCursor: oldCursor });
+		}
 	}
 
 	function deleteLine(lineNo) {
+		if(saveUndo) {
+			var content = getLineContent(lineNo);
+			undoBuffer.push({type: undo.DELETE_LINE, line: lineNo, text: content, cursor: getCursorPos() , newCursor: content.length });
+		}
 		lines.childNodes[lineNo-1].removeNode(true);
 		highlightDeleteLine(lineNo-1, applyHighlightedLine);
 		updateLineNumbers();
@@ -1015,6 +1645,8 @@
 		highlightReset();
 		updateLineNumbers();
 		lastLine=1;
+		undoBuffer = [];
+		redoBuffer = [];
 	}
 
 
@@ -1027,11 +1659,19 @@
 
 	function checkDirty() {
 		if (isDirty) {
-			var newContents=inputLineEntry.value;
-			updateLine(currentLine, newContents);
-			isDirty=false;
+			var newContents = inputLineEntry.value;
+			var oldContents = getLineContent(currentLine);
+			if(newContents != oldContents) {
+				undoBuffer.push({ type: undo.CHANGE_TEXT, line: currentLine, text: oldContents, newText: newContents,
+					cursor: startCursorPos, newCursor: getCursorPos() });
+				updateLine(currentLine, newContents);
+				isDirty=false;
+				startCursorPos = -1;
+				return true;
+			}
 		} else {
 		}
+		return false;
 	}
 
 	function getLineHead() {
@@ -1050,9 +1690,18 @@
 		checkDirty();
 		var head=getLineHead();
 		var tail=getLineTail();
+		var re = /([\t ]+)/;
+		var match = re.exec(head);
+		var newCursor = 0;
+		
+		if( autoIndent && match ) {
+			tail = match[1] + tail;
+			newCursor = match[1].length;
+		}
+		
 		insertLineAfter(currentLine, tail);
 		updateLine(currentLine-1, head);
-		setCursorPos(0);
+		setCursorPos(newCursor);
 		inputLineEntry.focus();
 	}
 
@@ -1078,3 +1727,13 @@
 			}
 		}
 	}
+
+	function jumpToLine(lineNo) {
+		if(lineNo<lastLine) {
+			currentLine=lineNo;
+			oldpos=-1;
+			redrawInputLine(true);
+			updateLineNumbers();
+		}
+	}
+	

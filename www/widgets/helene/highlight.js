@@ -28,11 +28,23 @@
      This file contains the syntax highlighting parser
 
     ******************************************************************/
+	// Parsing smarty tags http://smarty.php.net/
+	// Cofigure the smarty delimiters below ('{%' and '%}' by default)
+	// Unset this flag if you need to parse only PHP
+	var parseSmarty = true;
+
 	/* states */
 	var YY_STATE_HTML = 0;
 	var YY_STATE_PINP = 1;
 	var YY_STATE_DQSTRING = 2;
 	var YY_STATE_SQSTRING = 3;
+	var YY_STATE_SCRIPT = 4;
+	var YY_STATE_BLOCKCOMMENT = 5;
+
+	/* Smarty states */
+	var YYS_STATE_TAG = 101;
+	var YYS_STATE_PARAM = 102;
+	var YYS_STATE_QPARAM = 103;
 
 	/* tokens */
 	var T_VAR = 0;
@@ -58,14 +70,32 @@
 	var T_SCRIPT_END = 20;
 	var T_TAB = 21;
 
+	/*Smarty tokens*/
+	var TS_SMARTY_START = 101;
+	var TS_SMARTY_END = 102;
+	var TS_KEYWORD = 103;
+	var TS_ATTRIBUTE = 104;
+	var TS_ATTRVALUE = 105;
+	var TS_VAR = 106;
+	var TS_ENDTAG = 107;
+
 	var hLines = new Array();
 	var debug = 0;
 	var scannerPos = 0;
+	var hStyles = new Array();
+	var hStateStyles = new Array();
+
+	// May be there is the better place for it but now there
+	initStyleDefault();
+	// Keywords were moved to 'keywords.js' but we must define empty lists here
+	var hPHPKeywords = {};
+	var hSmartyKeywords = {};
 
 	function hLineToken(tokenType, tokenData) {
 		this.type = tokenType;
 		this.data = tokenData;
 		this.reallength = tokenData.length;
+		this.newState = -1;
 
 		switch (this.data) {
 			case '<':	
@@ -118,6 +148,29 @@
 			result = new hLineToken(T_TAB, match[1]);
 			return result;
 		}
+
+    /* Smarty tokens */
+    if(parseSmarty) {
+			re = /^\{%/;           // Matches $smarty->left_delimiter
+			match = re.exec(sData);
+			if(match) {
+				return new hLineToken(TS_SMARTY_START, match[0]);
+			}
+			
+			re = /^%\}/;           // Matches $smarty->right_delimiter
+			match = re.exec(sData);
+			if(match) {
+				return new hLineToken(TS_SMARTY_END, match[0]);
+			}
+			
+			re = /^\/[a-z0-9][a-z0-9_]*/i;
+			match = re.exec(sData);
+			if (match) {
+				result = new hLineToken(TS_ENDTAG, match[0]);
+				return result;
+			}		
+    }
+		/* end of smarty tokens */
 
 		/* variable or ident */
 		re = /^([$]|->)?([a-z0-9][a-z0-9_]*)/i;
@@ -179,8 +232,6 @@
 			return result;
 		}
 
-
-
 		re = /^([\-\+\.\*\/\=\%])/;
 		match = re.exec(sData);
 		if (match) {
@@ -190,7 +241,7 @@
 
 
 		/* pinp/php tags */
-		re = /^((<(\/)?pinp>)|(<[%?]php|<script[^>]+language[^>]*=[^>]*php[^>]*>))/i;
+		re = /^((<(\/)?pinp>)|(<[%?]php|<\?|<script[^>]+language[^>]*=[^>]*php[^>]*>))/i;
 		match = re.exec(sData);
 		if (match) {
 			if (match[3]) {
@@ -215,8 +266,7 @@
 			}
 			return result;
 		}
-
-
+				
 		return new hLineToken(T_UNKNOWN, sData.charAt(0));
 	}
 
@@ -232,41 +282,23 @@
 		}
 	}
 
-	function getElmSpan(token) {
-		var result = '';
-		switch (token.type) {
-			case T_VAR:
-				result = 'class="h_var"';
-			break;
-			case T_PINP_START:
-			case T_PINP_END:
-			case T_PHP_START:
-				result = 'class="h_pinp_block"';
-			break;
-			case T_SCRIPT_START:
-				result = 'class="h_script_block"';
-			break;
-			case T_IDENT:
-				result = 'class="h_ident"';
-			break;
-			case T_DQUOTE:
-				result = 'class="h_doublequote"';
-			break;
-			case T_SQUOTE:
-				result = 'class="h_singlequote"';
-			break;
-			case T_SPECIAL_CHAR:
-				result = 'class="h_special_char"';
-			break;
-			case T_OPERATOR:
-				result = 'class="h_operator"';
-			break;
-			case T_SINGLE_COMMENTS:
-				result = 'class="h_single_comments"';
-			break;
-			case T_BLOCKCOMMENT:
-				result = 'class="h_blockcomment"';
-			break;
+	function getElmSpan(token) { /// In the past styles were here
+		var result = '';							// UPDATE: it is better to produce whole span tag here
+		var cls = hStyles[token.type];
+		if(cls) {
+			result = '<span class="'+cls+'">';
+		}	else {
+			result = '<span>';
+		}
+		return result;
+	}
+	function getStateSpan(token) { /// Style span for states
+		var result = '';								// UPDATE: it is better to produce whole span tag here
+    var cls = hStateStyles[token.newState];
+    if(cls) {
+			result = '<span class="'+cls+'">';
+		}	else {
+			result = '<span>';
 		}
 		return result;
 	}
@@ -281,7 +313,7 @@
 		}
 		for (var i = 0; i<state.length; i++) {
 			if (!state[i].noMultiLine) {
-				result += '<span '+getElmSpan(state[i])+'>';
+				result += getStateSpan(state[i]);
 			}
 		}
 		if (this.tokens) {
@@ -289,26 +321,36 @@
 				var cState = 0;
 				var token = this.tokens[i];
 				if (state.length) {
-					cState = state[state.length-1].type;
+					cState = state[state.length-1].newState; 
+          status = cState;
 				}
 
-				switch (cState) {
-					case 0:
+				switch (cState) {         // In the past state was the type of opening token
+				case YY_STATE_HTML:     // It is a real state now
 						switch (token.type) {
-							case T_PHP_START:
-							case T_PINP_START:
-								if (i == 1 && this.tokens[i-1].type == T_SPACE) {
-									result = '<span '+getElmSpan(token)+'>' + result + '<span class="h_pinp">' + token.data + '</span>';
-								} else {
-									result += '<span '+getElmSpan(token)+'>' + '<span class="h_pinp">' + token.data + '</span>';
-								}
+							//Smarty highlighting
+							case TS_SMARTY_START:
+								token.newState = YYS_STATE_TAG;
+								result += getStateSpan(token) + getElmSpan(token) + token.data + '</span>';
 								state.push(token);
 							break;
-							case T_SCRIPT_START:
+							//End of smarty highlighting
+							case T_PHP_START:
+							case T_PINP_START:
+								token.newState = YY_STATE_PINP; // We fix the new state here
 								if (i == 1 && this.tokens[i-1].type == T_SPACE) {
-									result = '<span '+getElmSpan(token)+'>' + result + '<span class="h_script">' + token.data + '</span>';
+									result = getStateSpan(token) + result + getElmSpan(token) + token.data + '</span>';
 								} else {
-									result += '<span '+getElmSpan(token)+'>' + '<span class="h_script">' + token.data + '</span>';
+									result += getStateSpan(token) + getElmSpan(token) + token.data + '</span>';
+								}
+								state.push(token); // But we still saving opening token
+							break;
+							case T_SCRIPT_START:
+								token.newState = YY_STATE_SCRIPT;
+								if (i == 1 && this.tokens[i-1].type == T_SPACE) {
+									result = getStateSpan(token) + result + getElmSpan(token) + token.data + '</span>';
+								} else {
+									result += getStateSpan(token) + getElmSpan(token) + token.data + '</span>';
 								}
 								state.push(token);
 							break;
@@ -317,19 +359,20 @@
 							break;
 						}
 					break;
-					case T_SCRIPT_START:
+					case YY_STATE_SCRIPT:
 						switch (token.type) {
 							case T_PHP_START:
 							case T_PINP_START:
+								token.newState = YY_STATE_PINP;
 								if (i == 1 && this.tokens[i-1].type == T_SPACE) {
-									result = '<span '+getElmSpan(token)+'>' + result + '<span class="h_script">' + token.data + '</span>';
+									result = getStateSpan(token) + result + getElmSpan(token) + token.data + '</span>';
 								} else {
-									result += '<span '+getElmSpan(token)+'>' + '<span class="h_script">' + token.data + '</span>';
+									result += getStateSpan(token) + getElmSpan(token) + token.data + '</span>';
 								}
 								state.push(token);
 							break;
 							case T_SCRIPT_END:
-								result += '<span class="h_script">'+token.data+'</span>';
+								result += getElmSpan(token)+token.data+'</span>';
 								result += '</span>';
 								state.pop();
 							break;
@@ -338,28 +381,38 @@
 							break;
 						}
 					break;
-					case T_PHP_START:
-					case T_PINP_START:
+					case YY_STATE_PINP:
 						switch (token.type) {
+							case T_IDENT:
+								var t = hPHPKeywords[token.data];
+								if(typeof(t)!='undefined') {
+									result += '<span class="h_phpkeywords'+t+'">';
+								} else {
+									result += getElmSpan(token);
+								}
+								result += token.data + '</span>';
+							break;
 							case T_DQUOTE:
+								token.newState = YY_STATE_DQSTRING;
 							case T_SQUOTE:
+								if(token.newState<0) token.newState = YY_STATE_SQSTRING;
 							case T_BLOCKCOMMENT:
-								result += '<span '+getElmSpan(token)+'>';
+								if(token.newState<0) token.newState = YY_STATE_BLOCKCOMMENT;
+								result += getStateSpan(token);
 								result += token.data;
 								state.push(token);
 							break;
 							case T_PHP_END:
 							case T_PINP_END:
-								result += '<span class="h_pinp">'+token.data+'</span>';
+								result += getElmSpan(token)+token.data+'</span>';
 								result += '</span>';
 								state.pop();
 							break;
 							case T_VAR:
-							case T_IDENT:
 							case T_OPERATOR:
 							case T_SPECIAL_CHAR:
 							case T_SINGLE_COMMENTS:
-								result += '<span '+getElmSpan(token)+'>';
+								result += getElmSpan(token);
 								result += token.data;
 								result += '</span>';
 							break;
@@ -368,7 +421,7 @@
 							break;
 						}
 					break;
-					case T_BLOCKCOMMENT:
+					case YY_STATE_BLOCKCOMMENT:
 						switch (token.type) {
 							case T_BLOCKCOMMENT_END:
 								result += token.data+'</span>';
@@ -379,9 +432,9 @@
 							break;
 						}
 					break;
-					case T_DQUOTE:
+					case YY_STATE_DQSTRING:
 						switch (token.type) {
-							case cState:
+							case T_DQUOTE:
 								result += token.data+'</span>';
 								state.pop();
 							break;
@@ -391,7 +444,7 @@
 								result += token.data;
 							break;
 							case T_VAR:
-								result += '<span '+getElmSpan(token)+'>';
+								result += getElmSpan(token);
 								result += token.data;
 								result += '</span>';
 							break;
@@ -400,9 +453,9 @@
 							break;
 						}
 					break;
-					case T_SQUOTE:
+					case YY_STATE_SQSTRING:
 						switch (token.type) {
-							case cState:
+							case T_SQUOTE:
 								result += token.data+'</span>';
 								state.pop();
 							break;
@@ -415,6 +468,39 @@
 								result += token.data;
 							break;
 						}
+					break;
+					case YYS_STATE_TAG:
+						switch (token.type) {
+							case TS_SMARTY_END:
+								result += getElmSpan(token) + token.data + '</span></span>';
+								state.pop();
+							break;
+							case TS_ENDTAG:
+								var t = hSmartyKeywords[token.data.substr(1)];
+								if(t==1) {	// Only the first group has closing tags
+									result += '<span class="h_smartykeywords'+t+'">' + token.data + '</span>';
+								} else {
+									result += token.data;
+								}
+							break;
+							case T_VAR:
+								result += getElmSpan(token) + token.data + '</span>';
+							break;								
+							case T_IDENT:
+								var t = hSmartyKeywords[token.data];
+								if(typeof(t)!='undefined' && 
+									(t>3 || 																						// first three groups of keywords may appear
+										(i>0 && this.tokens[i-1].type==TS_SMARTY_START))	// immediately after TS_SMARTY_START token only
+										) {
+									result += '<span class="h_smartykeywords'+t+'">' + token.data + '</span>';
+								} else {
+									result += token.data;
+								}
+							break;
+							default:
+								result += token.data;
+							break;
+					}
 					break;
 					default:
 						result += token.data;
@@ -434,7 +520,7 @@
 				stateChanged = 1;
 			}
 			if (!state[i].noMultiLine) {
-				result += '</span '+getElmSpan(state[i])+'>';
+				result += getElmSpan(state[i]);
 			}
 		}
 
@@ -447,10 +533,15 @@
 			callback(this.lineNo, result);
 		}
 		this.setEndState(state);
-		if (stateChanged && this.lineNo < hLines.length-1) {
+		if (stateChanged) {
 			if (debug) alert('updating: '+this.lineNo+1); 
-			hLines[this.lineNo+1].doHighlight(callback);
+			/// This makes a stack overflow
+			/// so we are returning 'true' that means next line must be updated
+			//~ hLines[this.lineNo+1].doHighlight(callback);
+			return true;
 		}
+		/// Next line need not be updated
+		return false;
 	}
 
 	function hLineSetEndState(newEndState) {
@@ -512,7 +603,7 @@
 	function highlightUpdateLine(lineNo, lineContent, callback) {
 //		alert('update line: '+lineNo+'::'+lineContent);
 		hLines[lineNo].parseString(lineContent);
-		hLines[lineNo].doHighlight(callback);
+		while(hLines[lineNo].doHighlight(callback) && lineNo < hLines.length-1) lineNo++;
 	}
 
 	function highlightDeleteLine(lineNo, callback) {
@@ -520,7 +611,7 @@
 		line = hLines[lineNo];
 		line.remove();
 		if (hLines.length && (lineNo < hLines.length)) {
-			hLines[lineNo].doHighlight(callback);
+			while(hLines[lineNo].doHighlight(callback) && lineNo < hLines.length-1) lineNo++;
 		}
 	}
 
@@ -535,11 +626,45 @@
 		}
 //		alert('insert at: '+lineNo+'::'+lineContent);
 		line = new hLine(lineNo, lineContent);
-		line.doHighlight(callback);
+		while(line.doHighlight(callback) && lineNo < hLines.length-1) lineNo++;
 	}
 
 	function highlightAppendLine(lineNo, lineContent, callback) {
 //		alert('append at: '+(lineNo+1)+'::'+lineContent);
 		line = new hLine(lineNo+1, new String(lineContent));
-		hLines[lineNo].doHighlight(callback);
+		while(hLines[lineNo].doHighlight(callback) && lineNo < hLines.length-1) lineNo++;
+	}
+
+  function initStyleDefault() {
+		hStyles[T_PINP_START] =
+		hStyles[T_PINP_END] =
+		hStyles[T_PHP_END] =
+		hStyles[T_PHP_START] = 'h_pinp';
+		hStyles[T_SCRIPT_START] = 'h_script';
+		hStyles[T_IDENT] = 'h_ident';
+		hStyles[T_DQUOTE] = 'h_doublequote';
+		hStyles[T_SQUOTE] = 'h_singlequote';
+		hStyles[T_SPECIAL_CHAR] = 'h_special_char';
+		hStyles[T_OPERATOR] = 'h_operator';
+		hStyles[T_SINGLE_COMMENTS] = 'h_single_comments';
+		hStyles[T_BLOCKCOMMENT] = 'h_blockcomment';
+		hStyles[T_VAR] = 'h_var';
+		hStyles[TS_SMARTY_START] =
+		hStyles[TS_SMARTY_END] = 'h_smartymarkers';
+		hStateStyles[YY_STATE_HTML] = '';
+		hStateStyles[YY_STATE_PINP] = 'h_pinp_block';
+		hStateStyles[YY_STATE_DQSTRING] = 'h_doublequote';
+		hStateStyles[YY_STATE_SQSTRING] = 'h_singlequote';
+		hStateStyles[YY_STATE_BLOCKCOMMENT] = 'h_blockcomment';
+		hStateStyles[YY_STATE_SCRIPT] = 'h_scriptblock';
+		hStateStyles[YYS_STATE_TAG] = 'h_smartytag';
+	}
+	function cacheKeywords() {
+		var res = new Object();
+		for(var i=0;i<arguments.length;i++) {
+			var t = String(arguments[i]).split(" ");
+			for(var j=0;j<t.length;j++)
+				res[t[j]]=i+1;
+		}
+		return res;
 	}

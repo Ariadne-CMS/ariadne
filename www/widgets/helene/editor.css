@@ -21,7 +21,7 @@
 		width: auto;
 	}
 	BODY {
-		font-family: lucida console, courier, monospace;
+		font-family: 'Courier New',lucida console, courier, monospace;
 		font-size: 13px;
 		margin: 0px;
 	}
@@ -48,12 +48,12 @@
 		margin: 0px; 
 		padding: 0px;
 		background-color: yellow; 
-		font-family: courier, monospace; 
+		font-family: 'Courier New',courier, monospace; 
 	}
 	code, code li, pre {
 		word-break: keep-all;
 		white-space: no-wrap;
-		font-family: courier, monospace;
+		font-family: 'Courier New',courier, monospace;
 		font-size: 16px;
 	}
     #content {
@@ -74,4 +74,12 @@
 	}
 	#content ol {
 		margin-top: 0px;
+	}
+	.inputLine {
+		background-color: yellow; 
+	}
+	.inputLine SPAN {
+		color: black;
+		font-weight: normal;
+		background-color: yellow; 
 	}

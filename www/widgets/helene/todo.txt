@@ -22,6 +22,6 @@ TODO
     deleteLine and insertLine..
 - grow the input line when entering lines longer than the current size of the input line
 - create a menu bar, with text size, load, save, undo, redo, etc.
-- autoindent the next line when pressing enter (configurable)
-- support tabs, with different tabsizes configurable
-    
++ done: autoindent the next line when pressing enter (configurable)
++ done: support tabs
+- support different tabsizes configurable
