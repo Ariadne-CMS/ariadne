@@ -17,6 +17,11 @@ CREATE TABLE nodes (
   KEY parent (parent)
 )";
     mysql_db_query($this->database,$query_string, $this->connect_id);
+    $errno=mysql_errno($this->connect_id);
+    if ($errno) {
+      $error=mysql_error($this->connect_id);
+      error("ERROR: Mysql: $errno: $error");
+    }
     echo "creating objects table.\n";
     $query_string="
 CREATE TABLE objects (
@@ -29,6 +34,11 @@ CREATE TABLE objects (
   KEY lastchanged (lastchanged)
 )";
     mysql_db_query($this->database,$query_string, $this->connect_id);
+    $errno=mysql_errno($this->connect_id);
+    if ($errno) {
+      $error=mysql_error($this->connect_id);
+      error("ERROR: Mysql: $errno: $error");
+    }
     echo "creating properties table.\n";
     $query_string="
 CREATE TABLE properties (
@@ -36,6 +46,11 @@ CREATE TABLE properties (
   PRIMARY KEY (name)
 )";
     mysql_db_query($this->database,$query_string, $this->connect_id);
+    $errno=mysql_errno($this->connect_id);
+    if ($errno) {
+      $error=mysql_error($this->connect_id);
+      error("ERROR: Mysql: $errno: $error");
+    }
     echo "creating seq_id table.\n";
     $query_string="
 CREATE TABLE seq_id (
@@ -44,6 +59,11 @@ CREATE TABLE seq_id (
   KEY path (path)
 )";
     mysql_db_query($this->database,$query_string, $this->connect_id);
+    $errno=mysql_errno($this->connect_id);
+    if ($errno) {
+      $error=mysql_error($this->connect_id);
+      error("ERROR: Mysql: $errno: $error");
+    }
     echo "creating types table.\n";
     $query_string="
 CREATE TABLE types (
@@ -53,6 +73,11 @@ CREATE TABLE types (
   KEY implements (implements)
 )";
     mysql_db_query($this->database,$query_string, $this->connect_id);
+    $errno=mysql_errno($this->connect_id);
+    if ($errno) {
+      $error=mysql_error($this->connect_id);
+      error("ERROR: Mysql: $errno: $error");
+    }
     echo "creating default types.\n";
     $this->add_type("pobject","pobject");
     $this->add_type("pdir","pobject");
@@ -60,8 +85,18 @@ CREATE TABLE types (
     echo "creating root dir.\n";
     $query_string="INSERT INTO nodes (path, parent, object) VALUES ('/','..',1)";
     mysql_db_query($this->database,$query_string, $this->connect_id);
+    $errno=mysql_errno($this->connect_id);
+    if ($errno) {
+      $error=mysql_error($this->connect_id);
+      error("ERROR: Mysql: $errno: $error");
+    }
     $query_string="INSERT INTO objects (id, type, object, vtype) VALUES (0,'pdir','O:6:\"object\":2:{s:2:\"en\";O:6:\"object\":1:{s:4:\"name\";s:7:\"Ariadne\";}s:3:\"nls\";O:6:\"object\":1:{s:7:\"default\";s:2:\"en\";}}','pdir')";
     mysql_db_query($this->database,$query_string, $this->connect_id);
+    $errno=mysql_errno($this->connect_id);
+    if ($errno) {
+      $error=mysql_error($this->connect_id);
+      error("ERROR: Mysql: $errno: $error");
+    }
 
     // initialize locking tables
     $this->mod_lock->init();
@@ -167,6 +202,11 @@ CREATE TABLE types (
           $temp=mysql_db_query($this->database,$create_string, $this->connect_id);
           $query_string="insert into properties values ( '".AddSlashes($property)."' )";
           mysql_db_query($this->database,$query_string, $this->connect_id);
+          $errno=mysql_errno($this->connect_id);
+          if ($errno) {
+            $error=mysql_error($this->connect_id);
+            error("ERROR: Mysql: $errno: $error");
+          }
           //FIXME: check for succes first, how?
         }
       }
@@ -196,6 +236,11 @@ CREATE TABLE types (
     $temp=mysql_db_query($this->database,$remove_string, $this->connect_id);
     $query_string="delete from properties where name='$eproperty'";
     mysql_db_query($this->database,$query_string, $this->connect_id);
+    $errno=mysql_errno($this->connect_id);
+    if ($errno) {
+      $error=mysql_error($this->connect_id);
+      error("ERROR: Mysql: $errno: $error");
+    }
     //FIXME: check for succes first, check whether table no longer exists.
     return 1;
   }
@@ -217,7 +262,15 @@ CREATE TABLE types (
       $query_string="insert into types values ('$etype','$eimplements')";
       debug($query_string);
       mysql_db_query($this->database,$query_string, $this->connect_id);
-      $result=mysql_affected_rows($this->connect_id);  
+      $errno=mysql_errno($this->connect_id);
+      if ($errno) {
+        $error=mysql_error($this->connect_id);
+        $result=0;
+        error("ERROR: Mysql: $errno: $error");
+        $this->error="Mysql: $errno: $error";
+      } else {
+        $result=1;
+      }  
     } else {
       $this->error="Wrong format for type or implements";
     }
@@ -243,7 +296,15 @@ CREATE TABLE types (
     }
     debug($query_string);
     mysql_db_query($this->database,$query_string, $this->connect_id);
-    return mysql_affected_rows($this->connect_id);
+    $errno=mysql_errno($this->connect_id);
+    if ($errno) {
+      $error=mysql_error($this->connect_id);
+      error("ERROR: Mysql: $errno: $error");
+      $result=0;
+    } else {
+      $result=1;
+    }
+    return $result;
   }
 
 }
