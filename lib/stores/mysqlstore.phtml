@@ -252,6 +252,12 @@ class mysqlstore {
 	 **********************************************************************************/
 
 		debug("find($path, [array], $limit, $offset)","store");
+		if (!$limit) {
+			$limit=100;
+		}
+		if (!$offset) {
+			$offset=0;
+		}
 		$this->error="";
 		$count=0;
 		$result["method"]="find";
@@ -299,7 +305,12 @@ class mysqlstore {
 				$where.=" prop_$eproperty.object=objects.id)	";
 			}
 		}
-		$query_string="select distinct(nodes.path), nodes.parent, objects.id, objects.type, objects.object, UNIX_TIMESTAMP(objects.lastchanged) as lastchanged from nodes, objects $from $types where objects.id=nodes.object and UPPER(nodes.path) like '$epath%' and ( (".substr($where,4).") ) order by nodes.path limit $offset,$limit";
+		$query_string="select distinct(nodes.path), nodes.parent, objects.id, objects.type, objects.object, UNIX_TIMESTAMP(objects.lastchanged) as lastchanged from nodes, objects $from $types where objects.id=nodes.object and UPPER(nodes.path) like '$epath%'";
+        $where=substr($where,4);
+        if ($where) { 
+          $query_string.=" and ( ( $where ) )";
+        } 
+        $query_string.=" order by nodes.path limit $offset,$limit";
 		debug("find: query=$query_string","all");
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
 
