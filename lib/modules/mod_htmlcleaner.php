@@ -263,9 +263,9 @@ class htmlcleaner
 														unset($part->attributes[$attrib_key]);
 														if (!count($part->attributes)) {
 															if (isset($config["delete_emptied"][$part->nodeName])) {
-																if (!count($delete_stack)) {
-																	array_push($delete_stack, Array("tag" => $part->nodeName, "delete" => true));
-																}
+																// remove previous config
+																@array_pop($delete_stack);
+																array_push($delete_stack, Array("tag" => $part->nodeName, "delete" => true));
 																unset($part); 
 															}
 															break 3;
@@ -280,9 +280,9 @@ class htmlcleaner
 											unset($part->attributes[$attrib_key]);
 											if (!count($part->attributes)) {
 												if (isset($config["delete_emptied"][$part->nodeName])) {
-													if (!count($delete_stack)) {
-														array_push($delete_stack, Array("tag" => $part->nodeName, "delete" => true));
-													}
+													// remove previous config
+													@array_pop($delete_stack);
+													array_push($delete_stack, Array("tag" => $part->nodeName, "delete" => true));
 													unset($part); 
 												}
 												break 2;
