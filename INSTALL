@@ -1,5 +1,5 @@
-Installing Ariadne.					      Muze Ariadne 2.0b9
-================================================================================
+Installing Ariadne.                                         Muze Ariadne 2.0b10
+===============================================================================
 
   IMPORTANT: This version of Ariadne needs PHP4!
            
@@ -15,17 +15,18 @@ Installing Ariadne.					      Muze Ariadne 2.0b9
   php.ini setting track_vars set to 'On'.
 
 Windows
+=======
 
-  Well, it's finally here, our first release that also runs under Windows.
-  We've tested it under Windows NT, Windows 2000 Server and Windows 2000
+  We've tested Ariadne with Windows NT, Windows 2000 Server and Windows 2000
   Professional. Full Installation instructions can be found in the file
   'install.win.rtf'.
   
 Unix/Linux
+==========
 
 Requirements:
   Apache
-  PHP4 not running in safe mode
+  PHP4 (not running in safe mode)
   MySQL
 
 1) untar the Ariadne distribution. (since you're reading this, I guess
@@ -61,39 +62,37 @@ Requirements:
    sessions.phtml respectively and edit them to match your system.
    You need to at least enter your host name and check all paths.
 
-5) if you're using a shared mysql module with php, make sure you uncomment
-   the line 'dl("mysql.so");' in lib/stores/mysqlstore.phtml 
-
-6) copy the file www/ariadne.inc-dist to www/ariadne.inc and edit it to reflect 
+5) copy the file www/ariadne.inc-dist to www/ariadne.inc and edit it to reflect 
    the includepath to the Ariadne lib directory.
 
-7) run the file www/install/install.php. 
+6) run the file www/install/install.php. 
    You can do this from the browser or, if you have the cgi version of php 
    installed, from the command line.
 
-8) point your webbrowser to your installed Ariadne url. You'll be asked for a 
+7) point your webbrowser to your installed Ariadne url. You'll be asked for a 
    username and password. Use username 'admin' and password 'muze'.
    If everything is installed properly you should now see an explorer like
    interface with 'Administrator' in the top left corner.
    If you have trouble logging in, try running www/install/setadmin.php
    from a webbrowser. It allows you to set your admin password. Then try again.
 
-9) If everything works ok click on 'Administrator', then on 'edit' in the
+8) If everything works ok click on 'Administrator', then on 'edit' in the
    newly appeared tabdisplay on the right. Now change the administrator
    password. You will immediately be asked for authorization again.
 
-10) move the directory www/install and all it's contents somewhere safe,
-    meaning _not_ in your webserver's documentroot.
-    Really.
-	****IMPORTANT**** We've added a guest user in the ariadne database in this
-    release (2.0b9). It has login 'guest' and password 'guest'. You should
-    change the password immediately after installation, or remove the user. 
-    It is there only as an example.
+9) move the directory www/install and all it's contents somewhere safe,
+   meaning _not_ in your webserver's documentroot.
+   Really.
+   ****IMPORTANT**** 
+   We've added a guest user in the ariadne database since release 2.0b9.
+   It has login 'guest' and password 'guest'. You should change the 
+   password immediately after installation, or remove the user. 
+   It is there only as an example.
 
-11) Make sure you have the magic_quotes_gpc setting set to 'Off' and
+10) Make sure you have the magic_quotes_gpc setting set to 'Off' and
     track_vars to 'On'
 
-12) Schedule the cleanup script (bin/cleanup) to run daily. It removes
+11) Schedule the cleanup script (bin/cleanup) to run daily. It removes
     expired session data.
 
 more information on programming for/in Ariadne, user manuals, administrator

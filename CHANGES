@@ -1,8 +1,26 @@
-Ariadne 2.0b9
+Ariadne 2.0b10
+
+Changes in ariadne since version 2.0b9
+
+New Features
+- Object templates are automatically inherited to subclasses, just like
+  Class templates.
+- Easier configuration, the files are more readable and contain better
+  default values.
+- A new photobook. The photobook automatically generates thumbnails of
+  images and allows easy navigation.
+- The HTML Editor has a new image dialog, you can now select images from
+  the ariadne tree to insert into a page.
+- Private Cache. Page Caching can only be used
+
+Important Bugfixes
+- Cache, now uses output buffering and actually works.
+- HTMLEditor now displays the correct paragraph styles even in non-english 
+  browsers, thanks to Matt Finn, NETDesign Inc.
 
 Changes in ariadne since version 2.0b8
 
-- Add pinp functions:
+- Added pinp functions:
 	_get_addresses and _call_address
 
 - lib/modules/mod_ax.phtml

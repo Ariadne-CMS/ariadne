@@ -1,5 +1,5 @@
-Readme														  Muze Ariadne 2.0b8
-================================================================================
+Readme                                                      Muze Ariadne 2.0b10
+===============================================================================
 
 Ariadne is something between a web application server and an application
 framework. It is a lot like Zope, but not quite the same.
@@ -40,6 +40,6 @@ For more information or questions, point your mail client to
 'ariadne@muze.nl', or read the newsgroups at 'ariadne.muze.nl'.
 
 14-02-2000
-Updated 23-09-2000
+Updated 28-03-2001
 Auke van Slooten
 Muze
