@@ -35,15 +35,16 @@
         }        
         // remove files
         $dir=$this->store->files."files".$this->path;
-        $handle=opendir($dir);
-        while (false!==($file=readdir($handle))) {
-          if ($file!="." && $file!="..") {
-            // as recurse should have taken care of subdirectories, unlink should suffice.
-            unlink($dir.$file);
+        if ($handle=@opendir($dir)) {
+          while (false!==($file=readdir($handle))) {
+            if ($file!="." && $file!="..") {
+              // as recurse should have taken care of subdirectories, unlink should suffice.
+              unlink($dir.$file);
+            }
           }
+          closedir($handle);
+          rmdir($dir);
         }
-        closedir($handle);
-        rmdir($dir);
         // clear cache
         $this->ClearCache();
         // finally remove object itself
