@@ -96,6 +96,7 @@
   $AR->nls->list["nl"]      = "Nederlands";
   $AR->nls->list["en"]      = "English";
   $AR->nls->list["es"]      = "Español";
+  $AR->nls->list["de"]		= "Deutsch";
 
   $AR->nls->locales["nl"]   = "nl_NL";
   $AR->nls->locales["en"]   = "en_US";
