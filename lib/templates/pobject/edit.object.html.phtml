@@ -1,5 +1,7 @@
 <?php
-	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+	if ( ( 	($this->arIsNewObject && $this->CheckLogin("add")) ||
+			(!$this->arIsNewObject && $this->CheckLogin("edit")) )
+        && $this->CheckConfig()) {
 		global $HTTP_USER_AGENT;
 		if	(	eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
 				$regs[1] && 
