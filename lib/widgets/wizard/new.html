@@ -314,12 +314,16 @@
 
   function selectSection(section_id) {
     document.wgWizForm.wgWizNextStep.value=section_id;
-    document.wgWizForm.submit();
+    if (checksubmit()) {
+	    document.wgWizForm.submit();
+	}
   }
   
   function switchLanguage(nls) {
   	document.wgWizForm.arLanguage.value=nls;
-	document.wgWizForm.submit();  	
+    if (checksubmit()) {
+    	document.wgWizForm.submit();  	
+    }
   }
   
 </script>
@@ -412,10 +416,10 @@
                     echo " check=new String(document.wgWizForm['$name'].value);\n";
                     echo " if (!check.match('".$checklist["ereg"]."')) {\n";
                     if ($checklist["error"]) {
-                      echo "   alert('".ereg_replace("'","\\'",$checklist["error"])."');\n";
+                      echo "   alert('".str_replace("'","\\'",str_replace("\n","\\n",$checklist["error"]))."');\n";
                       echo "   return false;\n";
                     } else if ($checklist["confirm"]) {
-                      echo "   return confirm('".ereg_replace("'","\\'",$checklist["confirm"])."');\n";
+                      echo "   return confirm('".str_replace("'","\\'",str_replace("\n","\\n",$checklist["confirm"]))."');\n";
                     } 
                     echo " } ";
                   }
@@ -445,7 +449,7 @@
 ?>
 <script>
   function wgWizAlert() {
-    alert('<?php echo AddCSlashes($wgWizAlert, ARESCAPE); ?>');
+    alert('<?php echo AddCSlashes(str_replace("\n","\\n",$wgWizAlert), ARESCAPE); ?>');
     if (window.oldonload) {
       window.oldonload();
     }
