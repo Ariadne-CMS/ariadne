@@ -128,7 +128,7 @@
 		$logstats->log();
 		
 		$timecheck=time();
-		if (file_exists($cachedimage) && 
+		if (!$session_id && file_exists($cachedimage) && 
 			(strpos($HTTP_SERVER_VARS["ALL_HTTP"],"no-cache") === false) &&
 			(strpos($HTTP_PRAGMA,"no-cache") === false) &&
 			(($mtime=filemtime($cachedimage))>$timecheck) &&
