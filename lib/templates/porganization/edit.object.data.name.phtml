@@ -27,7 +27,7 @@
 				</td>
 			</tr><tr>
 				<td>
-					<input type="text" name="name" size="16" value="<?php $this->showdata("name","none"); ?>">
+					<input type="text" name="<?php echo $selectednls; ?>[name]" size="16" value="<?php $this->showdata("name",$selectednls); ?>">
 				</td>
 			</tr><tr>
 				<td colspan="2"><?php echo $ARnls["summary"]; ?></td>
@@ -46,11 +46,22 @@
 <script>
 	window.onload=init;
 	function init() {
-		document.wgWizForm["name"].focus();
+		document.wgWizForm["<?php echo $selectednls; ?>[name]"].focus();
 	}
 </script>
 <?php
-		$arResult["next"]["name"]["ereg"]=".+";
-		$arResult["next"]["name"]["error"]=$ARnls["err:nonameentered"];
+		if ($selectednls==$ARConfig->nls->default) {
+			$arResult["save"][$selectednls."[name]"]["ereg"]=".+";
+			$arResult["save"][$selectednls."[name]"]["error"]=sprintf($ARnls["err:nonameentered"],$selectedlanguage);
+			$arResult["next"]=$arResult["save"];
+		} else {
+			$arResult["next"][$selectednls."[name]"]["ereg"]=".+";
+			$arResult["next"][$selectednls."[name]"]["confirm"]=sprintf($ARnls["confirm:nonameentered"],$selectedlanguage);
+			if ($this->getdata("name",$ARConfig->nls->default)) {
+				$arResult["save"]=$arResult["next"];
+			} else {
+				$arResult["save"]=false;
+			}
+		}
 	}
 ?>
