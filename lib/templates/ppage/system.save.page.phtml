@@ -4,9 +4,12 @@
 	} else if (!$ARConfig->nls->list[$ContentLanguage]) {
 		$this->error="Unknown language selected... weird";
 	} else {
+		if (!$page) {
+			$page=$htmltext;
+		}
 		// only keep the body.innerHTML
-		$page=eregi_replace("^.*<body[^>]*>","",$page);
-		$page=eregi_replace("</body[^>]*>.*$","",$page);
+		// $page=eregi_replace("^.*<body[^>]*>","",$page);
+		// $page=eregi_replace("</body[^>]*>.*$","",$page);
 
 		$arCheckCharSet=$ContentLanguage;
 		if (!$AR->nls->charsets[$arCheckCharSet]) {
