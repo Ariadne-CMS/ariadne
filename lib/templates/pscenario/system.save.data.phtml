@@ -37,14 +37,9 @@
 			}
 		}
 
-		$this->data->priority=$priority;
+		$this->data->priority = $this->getdata("priority", "none");
 
-		if ($displays=$this->ls("/system/newspaper/displays/","system.get.value.phtml")) {
-			while (list($key,$val)=each($displays)) {
-				$this->data->display[$val]["start"]=${$val."_start"};
-				$this->data->display[$val]["end"]=${$val."_end"};
-			}
-		}
+		$this->data->display = $this->getdata("display", "none");
 
 		$this->save($properties);
 	}
