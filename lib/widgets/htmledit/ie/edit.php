@@ -689,6 +689,10 @@ function IMAGE_set(arr) {
 
 function DECMD_HYPERLINK_onclick() {
   tbContentElement.ExecCommand(DECMD_HYPERLINK,OLECMDEXECOPT_PROMPTUSER);
+  // The following line fixes a display bug in the MSHTML editor: when
+  // you add a link to an image, the image dissapears. The following line
+  // 'fixes' this.
+  tbContentElement.DocumentHTML=AR_GET_HTML();  
   tbContentElement.focus();
 }
 
