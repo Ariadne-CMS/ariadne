@@ -156,7 +156,7 @@
 
 		$root=$AR->root;
 		$rootoptions="";
-		if ($session) {
+		if ($session && !$AR->hideSessionIDfromURL) {
 			$rootoptions.="/-".$session."-";
 			$ARCurrent->session->id=$session;
 		}
@@ -269,7 +269,15 @@
 		/* now save our session */
 		$ARCurrent->session->save();
 
-		$cookie=unserialize($ARCookie);
+		if (!$AR->hideSessionIDfromURL) {
+			$cookie=unserialize($ARCookie);
+		} else {
+			// If we are hiding the session id from the URL,
+			// there can only be one user per cookie, so we
+			// throw the old stuff away
+			$cookie=array();
+		}
+
 		// FIXME: now clean up the cookie, remove old sessions
 		@reset($cookie);
 		while (list($sessionid, $data)=@each($cookie)) {

@@ -36,16 +36,20 @@
 
 		// go check for a sessionid
 		$root=$AR->root;
+		$session_id=0;
 		$re="^/-(.*)-/";
 		if (eregi($re,$PATH_INFO,$matches)) {
 			$session_id=$matches[1];
 			$PATH_INFO=substr($PATH_INFO,strlen($matches[0])-1);
-		} else {
-			$session_id=0;
+			$AR->hideSessionIDfromURL=false;
+		} elseif ($AR->hideSessionIDfromURL) {
+			global $HTTP_COOKIE_VARS;
+			$ARCookie=stripslashes($HTTP_COOKIE_VARS["ARCookie"]);
+			$cookie=@unserialize($ARCookie);
+			if (is_array($cookie)) {
+				$session_id=current(array_keys($cookie));
+			}
 		}
-
-
-
 
 		// set the default user (public)
 		$AR->login="public";
