@@ -32,7 +32,9 @@
 		} else {
 			?>
 			<script>
-				window.opener.location.href='<?php echo $this->make_url($arReturnPath, '', true, false).$arReturnTemplate; ?>';
+				if (window.opener && window.opener.location) {
+					window.opener.location.href='<?php echo $this->make_url($arReturnPath, '', true, false).$arReturnTemplate; ?>';
+				}
 				window.close();
 			</script>
 			<?php
