@@ -1,5 +1,12 @@
 <?php
 	if ($this->CheckLogin("add") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		include($this->store->code."widgets/htmledit/ie/toolbar.php");
+		if (!$arNewType) {
+			error($ARnls["err:nonewtype"]);
+		} else if (!$arNewFilename) {
+			error("no arNewFilename.");
+        } else {
+			$wgHTMLEditTemplate="user.add.page.html";
+			include($this->store->code."widgets/htmledit/ie/toolbar.php");
+		}
 	}
 ?>
