@@ -1,0 +1,26 @@
+<?php
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		$arResult=$this->call("ftp.objects.list.phtml");
+
+		if ($this->CheckSilent("layout")) {
+			$entry["grants"]["write"]=true;
+		}
+
+		if (($data->pinp) && is_array($data->pinp)) {
+			while (list($type, $values)=each($data->pinp)) {
+				while (list($function, $templatelist)=each($values)) {
+							ksort($templatelist);
+							reset($templatelist);
+							while (list($language, $template)=each($templatelist)) {
+									$entry["filename"]="$type.$function.$language";
+									$entry["date"]=$this->lastchanged;
+									$entry["type"]="template";
+									$entry["size"]=0;
+									$entry["grants"]["read"]=true;
+									$arResult[]=$entry;
+							}
+				}
+			}
+		}
+	}
+?>

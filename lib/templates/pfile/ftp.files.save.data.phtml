@@ -1,0 +1,12 @@
+<?php
+	if ( ( $this->arIsNewObject && $this->CheckLogin("add") ) ||
+			 ( !$this->arIsNewObject && $this->CheckLogin("edit") ) ) {
+
+		reset($ARConfig->nls->list);
+		while (list($key, $val)=each($ARConfig->nls->list)) {
+			$arCallArgs[$key]["name"]=$this->getdata("file");
+		}
+
+		$this->call("system.save.data.phtml", $arCallArgs);
+	}
+?>
