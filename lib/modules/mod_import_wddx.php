@@ -163,6 +163,7 @@ class import_wddx {
 						($object->lastchanged <= $objdata['lastchanged']) ||
 						($this->config['forcedata'] === true))
 				{
+
 					$tmpconfig = $object->data->config;
 					unset($object->data);
 					$object->data = $objdata['data'];
@@ -180,6 +181,7 @@ class import_wddx {
 				}
 			} else
 			{
+
 				debug("WDDX data: object doesn't exists",'all');
 				$this->print_verbose(" ( saving ) \n");
 				$parent = $this->store->make_path($path,'..');
@@ -188,7 +190,13 @@ class import_wddx {
 						$parent, $objdata['type'],
 						$objdata['data'], 0, $objdata['lastchanged'],
 						$objdata['vtype'], $objdata['size'], $objdata['priority']);
+
 				$object->arIsNewObject = true;
+
+				if(!$object->store->is_supported('fulltext')){
+					unset($objdata['properties']['fulltext']);
+				}
+
 				debug("WDDX data: calling save");
 				$object->save($objdata['properties']);
 				if($object->error){
