@@ -112,8 +112,17 @@
 								}
 							<?php
 						} else {
+							if ($locklist=$this->store->mod_lock->locklist) {
+								reset($locklist);
+								$lock=current($locklist);
+								while ($temp=next($locklist)) {
+									if ($temp["release"]>$lock["release"]) {
+										$lock=$temp;
+									}
+								}
+							}
 							?>
-								if (confirm('<?php printf(AddSlashes($ARnls["q:cannotlockretry"]),$this->path); ?>')) {
+								if (confirm('<?php printf(AddSlashes($ARnls["q:cannotlockretry"]),$lock["path"], $lock["identity"], strftime("%H:%M:%S",$lock["release"])); ?>')) {
 									document.location.href=document.location.href;
 								} else {
 									if (top.window) {

@@ -17,7 +17,7 @@
 	******************************************************************/
 	$ARCurrent->allnls=1;
 	if (!$arReturnPage) {
-		$arReturnPage=$this->store->root.$this->path."classic.edit.phtml";
+		$arReturnPage=$this->store->root.$this->path."view.html";
 		$arCallArgs.="&arReturnPage=".RawUrlEncode($arReturnPage);
 	}
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
