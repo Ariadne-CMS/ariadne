@@ -1,6 +1,6 @@
 <?php
 	$charset = "CP1252";
-	$table_start = 0x80;
+	$table_start = 0x0;
 	$table_end = 0xff;
 
 	echo "<?php\n";
