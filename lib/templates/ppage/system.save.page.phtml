@@ -27,7 +27,7 @@
 			// FIXME: add translations for other character sets. use libiconv()?
 		} 
 		// change hardcoded links and images to use a placeholder for the root
-		$page=ereg_replace("(http://[^/]*)?".$this->store->root,"{arRoot}",$page);
+		$page=ereg_replace("(http://)?".$this->store->root,"{arRoot}",$page);
 		// first make sure that the object is clean (data can only be set via 
 		// the defined interface: $arCallArgs)
 		$this->data=@current($this->get(".","system.get.data.phtml"));
