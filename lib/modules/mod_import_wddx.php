@@ -8,6 +8,7 @@ class import_wddx {
 	var $store;
 	var $config;
 	var $linktable;
+	var $seenconfig;
 
 	function print_verbose($message){
 		if($this->config['verbose']){
@@ -94,11 +95,20 @@ class import_wddx {
 			}
 
 			array_push($this->stack, $struct);
-		}
-		if($this->nestdeep == 0){
-			$object = array_pop($this->stack);
-			if(is_array($object) && is_array($object["data"])){
-				$this->saveObject($object["data"]);
+		} else if( $name == "struct"){
+			if(!$this->seenconfig){
+				// still waiting for the config
+				if($this->nestdeep == -2){ // -1 is the depth directly under <data>
+					$this->seenconfig = true;
+				}
+				// oke do something with the config data please ?
+			} else {
+				if($this->nestdeep == 0 ){ // this is below 
+					$object = array_pop($this->stack);
+					if(is_array($object) && is_array($object["data"])){
+						$this->saveObject($object["data"]);
+					}
+				}
 			}
 		}
 
@@ -468,6 +478,7 @@ class import_wddx {
 		require_once($store->get_config("code")."modules/mod_pinp.phtml");
 		$this->input = $in;
 		$this->store = $store;
+		$this->seenconfig = false;
 		while (!feof($this->input)){
 			$data = fgets($this->input, 65535);
 			if (!xml_parse($this->xml_parser, $data, feof($this->input))) {
