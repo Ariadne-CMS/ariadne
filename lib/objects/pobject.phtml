@@ -210,19 +210,19 @@ class pobject extends object {
 		return $result;
 	}
 
-	function link($from, $to) {
-		debug("pobject: link($from, $to)","object");
-		return $this->store->link($this->make_path($from), $this->make_path($to));
+	function link($to) {
+		debug("pobject: link({$this->path} => $to)","object");
+		return $this->store->link($this->path, $this->make_path($to));
 	}
 
-	function delete($path) {
-		debug("pobject: delete($path)","object");
-		return $this->store->delete($path);
+	function delete() {
+		debug("pobject: delete({$this->path})","object");
+		return $this->store->delete($this->path);
 	}
 
-	function purge($path) {
-		debug("pobject: purge($path)","object");
-		return $this->store->purge($path);
+	function purge() {
+		debug("pobject: purge({$this->path})","object");
+		return $this->store->purge($this->path);
 	}
 
 	function exists($path) {
