@@ -18,6 +18,7 @@ Bugs fixed:
 	  for some calendar templates
 	- Removed iconv from mod_unicode.php, it was too unreliable.
 	- Fixed a bug which caused customdata fields to be cleared.
+	- Various layout and consistency fixes
 
 Changes in Ariadne since version 2.1.2
 
