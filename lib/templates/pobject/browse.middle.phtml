@@ -18,10 +18,21 @@
 	******************************************************************/
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 ?>
+<html>
+<head>
+  <script>
+    function b_setTotal(total) {
+      parent.browsetop.b_setTotal(total);
+    }
+    function b_hide() { }
+    function b_show() { }
+  </script>
+</head>
 <frameset cols="150,*">
 	<frame name="leftnav" src="<?php echo $this->store->root.$this->path; ?>browse.nav.phtml">
 	<frame name="rightnav" src="<?php echo $this->store->root.$this->path; ?>browse.nav.list.phtml?filter=<?php echo $filter; ?>">
 </frameset>
+</html>
 <?php
 	}
 ?>

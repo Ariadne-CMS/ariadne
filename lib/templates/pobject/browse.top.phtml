@@ -120,11 +120,32 @@
 		loaded=true;
 	}
 
+	var b_offset=0;
+	var b_limit=100;
+	var b_total=0;
+	var b_page=0;
+
 	function showPage(page) { 
-        parent.b_page=page;
-        parent.b_offset=parent.b_limit*page;
-		parent.browsemiddle.location.search='?filter=<?php echo RawUrlEncode($filter); ?>&offset='+escape(parent.b_offset)+'&limit='+escape(parent.b_limit);
+        b_page=page;
+        b_offset=b_limit*page;
+		var filter=parent.CurrentFilter;
+		parent.browsemiddle.rightnav.location.search='?filter='+escape(filter)+'&offset='+escape(b_offset)+'&limit='+escape(b_limit);
         return false;
+	}
+
+	function b_setTotal(total) {
+		b_total=total;
+		if (b_total>b_limit) {
+			var pages=(b_total/b_limit);
+			pages_select=document.getElementById('b_goto_select');
+			for (i=0; i<pages; i++) {
+				pages_select.options[i]=new Option(i+1, i+1);
+			}
+			pages_select.options[b_page].selected=true;
+			document.getElementById('b_pages').style.visibility='inherit';
+		} else {
+			document.getElementById('b_pages').style.visibility='hidden';
+		}
 	}
 
 	loaded=false;
@@ -184,14 +205,10 @@
 				}
 			?>
 		</td><td align="right" valign="top" width="100%">
-			<?php
-				if (!$buttons['page']) {
-			?>
-				<select name="page" onChange="return showPage(this.options.selectedIndex);" style="margin: 2px; display: none;">
+			<div id='b_pages' style='visibility: hidden;'>
+				<select name="b_goto_select" onChange="return showPage(this.options.selectedIndex);" style="margin: 2px;">
 				</select>
-			<?php
-				}
-			?>
+			</div>
 		</nobr>
 	</td>
 </tr>
