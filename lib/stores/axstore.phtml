@@ -143,13 +143,13 @@ class axstore {
 
 					if (!$this->error && file_exists($this->tempdir."/templates.tgz")) {
 						if (!$this->tar->extract($this->tempdir."/templates.tgz", "", $this->tempdir)) {
-							$this->error="Could not untar templates archive";
+							$this->error="Could not untar templates archive: ".$this->tar->error;
 						}
 					}
 
 					if (!$this->error && file_exists($this->tempdir."/files.tgz")) {
 						if (!$this->tar->extract($this->tempdir."/files.tgz", "", $this->tempdir)) {
-							$this->error="Could not untar files archive";
+							$this->error="Could not untar files archive: ".$this->tar->error;
 						}
 					}
 
@@ -158,7 +158,7 @@ class axstore {
 						@mkdir($this->files."temp/", 0755);
 					}
 				} else {
-					$this->error="Could not extract database";
+					$this->error="Could not extract database: ".$this->tar->error;
 				}
 			} else 
 			if ($this->writeable) {
@@ -751,14 +751,14 @@ class axstore {
 						// filestores:
 						if (file_exists($this->tempdir."/templates")) {
 							if (!$this->tar->create($this->tempdir."/templates.tgz", "templates", $this->tempdir)) {
-								$this->error="Could not create templates archive";
+								$this->error="Could not create templates archive: ".$this->tar->error;
 							}
 							$this->rm_dir($this->tempdir."/templates");
 						}
 
 						if (file_exists($this->tempdir."/files")) {
 							if (!$this->tar->create($this->tempdir."/files.tgz", "files", $this->tempdir)) {
-								$this->error="Could not create files archive";
+								$this->error="Could not create files archive: ".$this->tar->error;
 							}
 							$this->rm_dir($this->tempdir."/files");
 						}
