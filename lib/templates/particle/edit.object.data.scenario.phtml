@@ -19,9 +19,9 @@
     <script>
       summary=new Array();
       <?php
-        $this->ls("/system/newspaper/scenarios/","system.get.summary.phtml");
-		while (list($key, $value)=each($ARCurrent->summary)) {
-          echo "summary['$key']='".AddSlashes($value)."';\n";
+        $summaries = $this->ls("/system/newspaper/scenarios/","system.get.summary.phtml");
+		while (list($key, $summary)=each($summaries)) {
+          echo "summary['".key($summary)."']='".AddSlashes(current($summary))."';\n";
         }
       ?>
       function updatedescription(form) {
