@@ -17,10 +17,25 @@ class pobject extends object {
 
 	function call($arCallFunction="view.html", $arCallArgs="") {
 	/***********************************************************************
-	  {function description}
+	  call tries to find the template ($arCallFunction) for the current
+	  object. If it is not defined there, call will search the superclasses
+	  until either it or the template 'default.phtml' is found.
+
+	  $arCallFunction must be the name of a class or object template.
+	    it can be prepended with "{classname}::". classname must be either
+	    a valid ariadne class (derived from pobject) or 'super'. call() 
+	    will then try to find the template starting at the given classname.
+	    In the case of 'super::', the classname will become the name of
+	    the superclass of the current object.
+		e.g.:
+		call("pobject::view.html") will show the view.html template of
+	      pobject, with the data of the current object.
+	    call("super::view.html") will show the view.html template of
+	      the superclass of this object, with the data of this object.
+
 	  variables available to templates:
-	  local: arCallFunction, arCallArgs, arCallTemplte, data
-	  global: AR, ARConfig, ARCurrent, ARBeenHere
+	  local: arCallFunction, arCallArgs, arCallTemplate, data
+	  global: AR, ARConfig, ARCurrent, ARBeenHere, ARnls
 	***********************************************************************/
 	global $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls;
 
@@ -60,26 +75,42 @@ class pobject extends object {
 		debug("pobject: call: nls set to $nls","all"); 
 		
 		if (strpos($arCallFunction,"::")!==false) {
+			// template of a specific class defined via call("class::template");
 			list($arType, $arCallFunction)=explode("::",$arCallFunction);
+			if ($arType=="super") {
+				// call("super::template") is a shortcut to call the
+				// superclass template.
+				$arType=get_parent_class($this);
+			}
 		} else {
 			$arType=$this->type;
 		}
 		while ($arType!="object") {
+			// search for the template, stop at the root class
+			// (this should not happen, as pobject must have a 'default.phtml')
 			$arCallTemplate=$this->store->code."templates/".$arType."/".$arCallFunction;
 			if (file_exists($arCallTemplate)) {
+				// template found
 				include($arCallTemplate);
 				break;
 			} else if (file_exists($this->store->code."templates/".$arType."/default.phtml")) {
+				// template not found, but we did find a 'default.phtml'
 				include($this->store->code."templates/".$arType."/default.phtml");
 				break;
 			} else {
+				// no template found, no default.phtml found, try superclass.
+				if (!class_exists($arType)) {
+					// the given class was not yet loaded, so do that now
+					include_once($this->store->code."objects/".$arType.".phtml");
+				}
 				$arTemp=new $arType();
 				$arType=get_parent_class($arTemp);
 			}
 		}
 		array_pop($ARCurrent->arCallStack);
 		debug("pobject: call: end","all");
-		if ($ARCurrent->arResult) {
+		if (isset($ARCurrent->arResult)) {
+			// pinp templates can return results via putvar("arResult",$result);
 			$arResult=$ARCurrent->arResult;
 			$ARCurrent->arResult=false;
 		}
@@ -340,6 +371,8 @@ class pobject extends object {
 				$ARLogin="public"; $ARPassword="none";
 				debug("pobject: CheckLogin: use public","object");
 			} else {
+				// FIXME: move the password from session: store it where it cannot be
+				// accessed from pinp. Restore it to the session at the end of the loader
 				// go check for cookie
 				if ($ARCookie!=($md=$ARCurrent->session->get("ARLogin")."{".md5(
 					$ARCurrent->session->get("ARPassword").
@@ -773,6 +806,7 @@ class pobject extends object {
 				}
 			}        
 		}
+		debug("getdata: end: result=$result","all");
 		return $result;
 	}
 
