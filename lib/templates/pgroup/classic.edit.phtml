@@ -23,7 +23,7 @@
 		} else if ($arSubmit==$ARnls["cancel"]) {
 			include($this->store->code."includes/cancel.phtml");
 		} else if ($arSubmit==$ARnls["add"]) { // add new user to this group
-			$this->call("system.set.user.phtml",$arCallArgs);
+			$this->call("classic.set.user.phtml",$arCallArgs);
 		} else {// edit it
 			$this->call("classic.form.phtml",$arCallArgs);	
 		}

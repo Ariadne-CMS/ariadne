@@ -1,5 +1,5 @@
 <?php
-	if ($this->CheckSilent("edit")) {
+	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 		// first make sure that the object is clean (data can only be set via 
 		// the defined interface: $arCallArgs)
 		$this->data=@current($this->get(".","system.get.data.phtml"));
@@ -11,13 +11,10 @@
 			if ($action=="add") {
 				$this->store->link($path, $this->path.$user->data->login."/");
 			} else {
-				//FIXME: check path
-				$this->store->delete($path);						
+				if (($login=$user->data->login) && $login!=".") {
+					$this->store->delete($this->path.$login."/");
+				}
 			}
-			// FIXME: update tree
-		}
-		if (!$arReturnPage) {
-			$arReturnPage=$this->store->root.$this->path."classic.edit.phtml";
 		}
 		//calculate and save new member properties
 		$members=$this->ls(".","system.get.id.phtml");

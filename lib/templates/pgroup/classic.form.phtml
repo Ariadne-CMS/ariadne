@@ -56,7 +56,7 @@
 			if ($result && is_array($result)) {
 				while (list($key, $user)=each($result)) {
 					echo "<img src=\"".$AR->dir->images."icons/puser.gif\">";
-					echo "<a href=\"system.set.user.phtml?action=delete&path=".
+					echo "<a href=\"classic.set.user.phtml?action=delete&path=".
 						RawUrlEncode($user->path)."\">".$user->data->name."</a> ( ".$user->data->login." )<br>\n";
 				}
 			}

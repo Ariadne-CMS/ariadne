@@ -1,0 +1,26 @@
+<?php
+	/******************************************************************
+	 classic.save.phtml                                    Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: see system.save.data.phtml, $arReturnPage
+	 Grant needed: add or edit
+	 Global variables: none
+
+	 This is a wrapper around system.save.data.phtml for the classic
+	 interface.	 
+
+	 no result.
+ 
+	******************************************************************/
+	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+		$this->call("system.set.user.phtml",$arCallArgs);
+		if (!$this->error) {
+			if (!$arReturnPage) {
+				$arReturnPage=$this->store->root.$this->path."classic.edit.phtml";
+			}
+			Header("Location: $arReturnPage");
+		} else {
+			$this->call("show.error.phtml");
+		}
+	}
+?>
