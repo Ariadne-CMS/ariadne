@@ -40,6 +40,7 @@ New Features:
 	  set by some pconnector object (e.g. pldapconnection) to
 	  include the user's group memberships set in an external
 	  database (e.g. LDAP).
+	- Added some documentation about the LDAP feature (docs/ldap.txt)
 
 Bugs Fixed:
 	- Fixed logging in with another user on your own session.
