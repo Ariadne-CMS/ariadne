@@ -16,6 +16,10 @@
 			}
 		}
 
+		function _Header($name, $type, $value=NULL, $mustunderstand=0, $actor = 'http://schemas.xmlsoap.org/soap/actor/next') {
+			return new SOAP_Header( $name, $type, $value, $mustunderstand, $actor );
+		}
+
 	}
 	
 	class pinp_SOAP_Client extends SOAP_Client {
@@ -26,6 +30,10 @@
                      		
 		function _call( $function, $arguments=false, $namespace=false, $soapAction=false ) {
 			return $this->call( $function, $arguments, $namespace, $soapAction );
+		}
+
+		function _addHeader($soap_value) {
+			return $this->addHeader($soap_value);
 		}
 
 		function _isError($value) {
