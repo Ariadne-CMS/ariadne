@@ -1,11 +1,20 @@
-Ariadne 2.1.4
+Ariadne 2.1.5
 
-Changes in Ariadne since version 2.1.3
+Changes in Ariadne since version 2.1.4
 
 IMPORTANT: 
     In Ariadne 2.1 the internal charset has been changed to UTF-8. 
     If you want to import older .ax files (for upgrades) you
     need to read the docs/upgrade.txt file first.
+
+New features:
+
+
+Bugs fixed:
+	- Fixed a bug which made it impossible to rename e.g. '/Test/' to
+	  '/test/'.
+
+Changes in Ariadne since version 2.1.3
 
 New features:
 	- pobject now has a convertToUTF8() function which can
