@@ -7,7 +7,6 @@
 	require($ariadne."/includes/loader.web.php");
 	require($ariadne."/stores/".$store_config["dbms"]."store.phtml");
 	include($ariadne."/stores/axstore.phtml");
-	global $options;
 
 	$HELP_INFO="import [--options] file.ax [source path] [destination path]
 	The import command will import the supplied .ax into the current
@@ -45,18 +44,18 @@
 
 			switch ($option_switch) {
 				case 'with':
-					$options[$option]=($option_value) ? $option_value : true;
+					$ARCurrent->options[$option]=($option_value) ? $option_value : true;
 				break;
 				case 'without':
-					$options["without_$option"]=true;
+					$ARCurrent->options["without_$option"]=true;
 				break;
 
 				case 'verbose':
-					$options["verbose"]=true;
+					$ARCurrent->options["verbose"]=true;
 				break;
 
 				case 'force':
-					$options["force"]=true;
+					$ARCurrent->options["force"]=true;
 				break;
 
 				case 'help':
