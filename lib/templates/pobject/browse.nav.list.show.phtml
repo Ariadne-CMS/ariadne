@@ -1,27 +1,16 @@
 <?php
-	if ($ARCurrent->CurrentListCol>=$ncols) {
-		echo "</tr><tr valign=\"top\">\n";
-		$ARCurrent->CurrentListCol=0;
-	}
-	$ARCurrent->CurrentListCol++;
-?>
-<td align="center" width="<?php echo (100/$ncols); ?>%">
-<?php
   $BrowseGrant=$this->CheckSilent("read");
-  $BrowseGrant=true;
+  echo "<div class='object'><nobr>";
   if ($BrowseGrant) {
-    echo "<a href=\"#\" onClick=\"top.View('".$this->path."'); return false;\">";
+    echo "<a href=\"javascript:top.View('".$this->path."');\">";
   }
 ?>
-<img width="40" height="40" src="<?php 
-  echo $AR->dir->images; ?>icons/<?php echo $this->type; ?>.gif" alt="[view]" border="0"></a><br>
+<img width="18" height="18" src="<?php 
+  echo $AR->dir->images; ?>icons/<?php echo $this->type; ?>.gif" alt="[view]" border="0" align="left">
 <?php
   if (!$BrowseGrant) {
-    echo "<font color=\"#CCCCCC\"><b>$nlsdata->name</b></font>";
+    echo "<font color=\"#CCCCCC\">$nlsdata->name</font>";
   } else {
-    echo "<a href=\"#\" onClick=\"top.View('".$this->path."'); return false;\">";
-    echo "<b>$nlsdata->name</b></a>";
+    echo "$nlsdata->name</a>";
   }
-
-?></a>
-</td>
+?></nobr></div>

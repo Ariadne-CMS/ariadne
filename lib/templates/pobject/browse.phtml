@@ -10,19 +10,23 @@
 <script language="javascript">
 <!--
 	CurrentPath='<?php echo $path; ?>';
-	CurrentViewMode="list";
+	CurrentViewMode='<?php echo $mode; ?>';
+	CurrentFilter='<?php echo $filter; ?>';
 
 	function View(path) {
 		CurrentPath=path;
 		top.browsemiddle.rightnav.location="<?php
-		echo $this->store->root; ?>"+path+"browse.nav."+CurrentViewMode+".phtml";
+		echo $this->store->root; ?>"+path+"browse.nav."+
+			CurrentViewMode+".phtml?filter="+escape(CurrentFilter);
 
 		top.browsemiddle.leftnav.location="<?php
 		echo $this->store->root; ?>"+path+"browse.nav.phtml";
 	}
 
 	function ViewLoaded(path,name) {
-		top.browsetop.View(path,name);
+		if (top.browsetop && top.browsetop.loaded) {
+			top.browsetop.View(path,name);
+		}
 	}
 
 	function ViewMode(mode) {
@@ -36,13 +40,26 @@
 		"<?php echo $this->store->root; ?>"+
 		CurrentPath+"browse.nav."+CurrentViewMode+".phtml";
 	}
+
+	function filter(type) {
+		CurrentFilter=type;
+		View(CurrentPath);
+	}
 //-->
 </script>
+<style>
+	FRAMESET, FRAME {
+		BORDER: 0;
+	}
+</style>
 </head>
-<frameset rows="40,*,40" border="0">
-	<frame name="browsetop" border="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" src="<?php echo $this->store->root.$path; ?>browse.top.phtml">
-	<frame name="browsemiddle" border="0" frameborder="0" src="<?php echo $this->store->root.$path; ?>browse.middle.phtml">
-	<frame name="browsebottom" border="0" frameborder="0" marginwidth="0" marginheight="0" border="0" scrolling="no" src="<?php echo $this->store->root.$path; ?>browse.bottom.phtml">
+<frameset rows="30,*,70" border="0">
+	<frame name="browsetop" border="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" 
+		src="<?php echo $this->store->root.$path; ?>browse.top.phtml">
+	<frame name="browsemiddle" border="0" frameborder="0" 
+		src="<?php echo $this->store->root.$path; ?>browse.middle.phtml?filter=<?php echo RawUrlEncode($filter); ?>">
+	<frame name="browsebottom" border="0" frameborder="0" marginwidth="0" marginheight="0" border="0" scrolling="no" 
+		src="<?php echo $this->store->root.$path; ?>browse.bottom.phtml?wgBrowseFilename=<?php echo RawUrlEncode($filename); ?>&wgBrowseFilter=<?php echo RawUrlEncode($filter); ?>">
 </frameset>
 <?php
   }

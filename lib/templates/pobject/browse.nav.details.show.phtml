@@ -1,23 +1,6 @@
 <tr>
-<td>
-<?php
-  $BrowseGrant=$this->CheckSilent("read");
-  $BrowseGrant=true;
-  if ($BrowseGrant) {
-    echo "<a href=\"#\" onClick=\"top.View('".$this->path."');\">";
-  }
-?>
-<img src="<?php 
-  echo $AR->dir->images; ?>icons/<?php echo $this->type; ?>.gif" alt="[view]" border="0"></a>
-</td>
-<td align="left">
-<?php
-  if (!$BrowseGrant) {
-    echo "<font color=\"#CCCCCC\"><b>$nlsdata->name</b></font>";
-  } else {
-    echo "<a href=\"#\" onClick=\"top.View('".$this->path."'); return false;\">";
-    echo "<b>$nlsdata->name</b></a>";
-  }
-?></a>
-</td>
+<td><?php $this->call("browse.nav.list.show.phtml"); ?></td>
+<td><?php echo $this->size; ?></td>
+<td><?php echo $this->type; ?></td>
+<td><?php echo strftime("%d/%m/%Y %H:%M", $this->lastchanged); ?></td>
 </tr>

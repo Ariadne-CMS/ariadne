@@ -4,17 +4,33 @@
 <script language="javascript">
 <!--
 	// announce ourselfs
-	top.ViewLoaded('<?php echo $this->path; ?>','<?php echo $nlsdata->name; ?>');
+	top.ViewLoaded('<?php echo $this->path; ?>','<?php echo AddSlashes($nlsdata->name); ?>');
 //-->
 </script>
+<style>
+	.object {
+		width: 100%;
+		overflow: hidden;
+	}
+	BODY {
+		margin: 0px;
+		padding: 2px;
+		border: 2px inset;
+		font: 10pt Arial,Helvetica,sans-serif;
+		line-height: 15pt;
+		height: 100%;
+	}
+	A {
+		text-decoration: none;
+		color: black;
+	}
+</style>
 <body bgcolor="white">
-<table>
-	<?php
-		$crit["object"]["implements"]["="]="'pdir'";
-		$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
-		$this->find(".",$crit,"browse.nav.option.phtml");
-	?>
-</table>
+<?php
+	$crit["object"]["implements"]["="]="'pdir'";
+	$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
+	$this->find(".",$crit,"browse.nav.list.show.phtml");
+?>
 </body>
 <?php
   }
