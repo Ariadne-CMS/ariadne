@@ -2,7 +2,7 @@
 TD {
 	FONT: 10pt sans-serif;
 }
-INPUT, TEXTAREA {
+INPUT[type=text], TEXTAREA {
 	width: 99%;
 }
 .wgHTMLEditButton, .wgBrowseButton, .wgBrowseInput {
