@@ -11,6 +11,7 @@ New Features:
 	- added a second argument to the store load_property and load_properties
 	  function. This argument is an array which you can use to select the
 	  properties you want to load (thanks to Goran Topic).
+	- made the German nls files up to date (thanks to Marcel Felix - FT EDV GmbH)
 
 Bugs Fixed:
 	- The public user will not inherit 'owner' grants anymore.
