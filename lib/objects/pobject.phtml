@@ -462,6 +462,7 @@ class pobject extends object {
 		// check for a sessionid
 		$continue=true;
 		if (!$AR->user) {
+			debug('no user');
 			if ($ARCurrent->session && $ARCurrent->session->get("ARSessionTimedout", 1)) {
 				debug("pobject: CheckLogin: session disabled","object");
 
@@ -539,16 +540,18 @@ class pobject extends object {
 							debug("checking sessionid($sessionid)");
 							ldStartSession($sessionid);
 							if ($ARCurrent->session->id == $sessionid) {
-								if (ldCheckCredentials($ARCurrent->session->get("ARLogin"),
-													$ARCurrent->session->get("ARPassword",1))) {
+								debug("session ok");
+								$ARLogin = $ARCurrent->session->get("ARLogin");
+								$ARPassword = $ARCurrent->session->get("ARPassword",1);
+								if (ldCheckCredentials($ARLogin,$ARPassword)) {
 
-									$ARLogin = $ARCurrent->session->get("ARLogin");
-									$ARPassword = $ARCurrent->session->get("ARPassword",1);
-									$continue = true;
-									$recheck = true;
 									$criteria["login"]["value"]["="]="'".AddSlashes($ARLogin)."'";
 									$result=current($this->find("/system/users/",$criteria,"system.get.phtml"));
 									$AR->user = $result;
+									if ($AR->user->CheckPassword($ARPassword)) {
+										$continue = true;
+										$recheck = true;
+									}
 									unset($criteria);	
 									debug("respawning session($sessionid) for user ($ARLogin)");
 								} else {
