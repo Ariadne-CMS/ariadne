@@ -589,6 +589,7 @@ class oraclestore {
 			if ($id=$this->exists($path)) { //update
 				// FIXME: do this in a transaction
 				debug("save: updating","all");
+				$result = $path;
 				if ($vtype) { // only change/save vtype if it is explicitly set
 					$evtype=AddSlashes($vtype);
 					$query_string="update $objects_tbl set vtype='$evtype', lastchanged=$lastchanged where id=$id"; 
@@ -614,7 +615,6 @@ class oraclestore {
 							$this->store_run_query($query_string);
 							if (!$this->errno) {
 								debug("save: query=$query_string","all");
-								$result=$path;
 							} else {
 								debug("save: query=$query_string","store");
 								debug("save: update nodes failed!","store");
