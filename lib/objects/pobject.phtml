@@ -1175,7 +1175,7 @@ class pobject extends object {
 				$contents=false;
 				$url = "";
 			}
-			fclose($connection); 
+			@fclose($connection); 
 		}
 		return $contents; 
 	} 
