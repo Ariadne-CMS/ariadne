@@ -1425,7 +1425,7 @@ class pobject extends object { // pobject class definition
 		return $this->implements($implements);
 	}
 
-	function _getvar($var) {
+	function getvar($var) {
 	global $HTTP_POST_VARS, $HTTP_GET_VARS, $PHP_SELF, $ARCurrent, $ARConfig;
 
 		debug("pobject: getvar($var)","object");
@@ -1449,12 +1449,20 @@ class pobject extends object { // pobject class definition
 		return $result;
 	}
 
-	function _putvar($var, $value) {
+	function _getvar($var) {
+		return $this->getvar($var);
+	}
+
+	function putvar($var, $value) {
 	global $ARCurrent;
 
 		debug("pobject: putvar($var, $value)","object");
 		$ARCurrent->$var=$value;
 	}  
+
+	function _putvar($var, $value) {
+		return $this->putvar($var, $value);
+	}
 
 	function _setnls($nls) {
 		$this->setnls($nls);
