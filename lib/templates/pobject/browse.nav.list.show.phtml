@@ -14,6 +14,8 @@
 
 	******************************************************************/
 
+	require_once($this->store->code."modules/mod_unicode.php");
+
 	if (!$arLanguage) {
 		$arLanguage=$nls;
 	}
@@ -25,8 +27,14 @@
 	href="javascript:top.View('<?php echo $this->path; ?>');"><img 
 	width="20" height="20" src="<?php echo $AR->dir->images; ?>icons/<?php echo $this->type; ?>.gif" 
 	alt="<?php echo $this->path; ?>" border="0"> <?php
-		if (strlen($nlsdata->name)>32) {
-			$name=substr($nlsdata->name,0, 32)."...";
+		$nlsname = unicode::utf8convert($nlsdata->name); 
+		if(substr($nlsname,0,1) == '&') {
+				$charbytes=6;
+		} else {
+				$charbytes=1;
+		}
+		if (strlen($nlsname)>(32*$charbytes) ) {
+			$name=substr($nlsname,0, 32*$charbytes)."...";
 		} else {
 			$name=$nlsdata->name;
 		}
