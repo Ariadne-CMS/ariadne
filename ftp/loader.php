@@ -452,6 +452,9 @@
 								$file_size = $result["size"];
 							break;
 							default:
+								$file_size = @current(
+											$FTP->store->call("system.get.filesize.phtml", "",
+																$FTP->store->get($path)));
 								$getmode = "files";
 							break;
 						}
@@ -723,7 +726,7 @@
 							ftp_Tell(550, $ARCurrent->ftp_error);
 							unset($ARCurrent->ftp_error);
 						} else {
-							ftp_Tell(257, "\"$path_requested)\" - Directory successfully created.");
+							ftp_Tell(257, "\"$path_requested\" - Directory successfully created.");
 						} 
 					break;
 
@@ -759,8 +762,6 @@
 					if ($cmd=="PASS") {
 						$password=$args;
 						debug("ftp: auth ($login, $password)");
-						// do authentication
-						// ftp_Tell(230, "User '$this->user' logged in.");
 						
 						$criteria="object.implements = 'puser'";
 						$criteria.=" and login.value = '".AddSlashes($login)."'";
