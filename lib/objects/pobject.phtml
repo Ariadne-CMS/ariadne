@@ -256,12 +256,14 @@ class pobject extends object { // pobject class definition
 				if (eregi("^[a-z0-9_\{\}\.\:-]+$",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
 					if (!$this->exists($this->path)) { //arNewFilename)) {
 						if ($this->exists($arNewParent)) {
+							$config = $this->data->config;
 							$wf_result = $this->call("user.workflow.pre.html", Array("properties" => $properties));
 							if (is_array($wf_result)) {
 								if (is_array($properties)) {
 									$properties += $wf_result;
 								}
 							}
+							$this->data->config = $config;
 							$this->data->ctime=time();
 							$this->data->mtime=$this->data->ctime;
 							$this->data->muser=$AR->user->data->login;
@@ -317,6 +319,7 @@ class pobject extends object { // pobject class definition
 							if ($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)) {
 								unset($this->arIsNewObject);
 								$this->id=$this->exists($this->path);
+								$config = $this->data->config;
 								$wf_result = $this->call("user.workflow.post.html", Array("properties" => $properties));
 								if ($wf_result) {
 									$wf_properties = Array();
@@ -327,6 +330,7 @@ class pobject extends object { // pobject class definition
 										$this->error = $this->store->error;
 									}
 								}
+								$this->data->config = $config;
 							} else {
 								$this->error=$this->store->error;
 							}
@@ -352,12 +356,14 @@ class pobject extends object { // pobject class definition
 			$configcache=$ARConfig->cache[$this->path];
 			if ($this->lock()) {
 				if ($this->exists($this->path)) { // prevent 'funny stuff'
+					$config = $this->data->config;
 					$wf_result = $this->call("user.workflow.pre.html", Array("properties" => $properties));
 					if (is_array($wf_result)) {
 						if (is_array($properties)) {
 							$properties += $wf_result;
 						}
 					}
+					$this->data->config = $config;
 					$this->data->mtime=time();
 					$this->data->muser=$AR->user->data->login;
 					$properties["time"][0]["ctime"]=$this->data->ctime;
@@ -402,6 +408,7 @@ class pobject extends object { // pobject class definition
 					}
 					if($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)){
 						$result=$this->path;
+						$config = $this->data->config;
 						$wf_result = $this->call("user.workflow.post.html", Array("properties" => $properties));
 						if ($wf_result) {
 							$wf_properties = Array();
@@ -412,6 +419,7 @@ class pobject extends object { // pobject class definition
 								$this->error = $this->store->error;
 							}
 						}
+						$this->data->config = $config;
 						//$this->ClearCache($this->path, true, false);
 					} else {
 						$this->error = $this->store->error;

@@ -35,6 +35,15 @@
 		$store->add_type("ppage","pobject");
 		$store->add_type("ppage","ppage");
 
+		$state["value"]["string"]=16;
+		$state["group"]["string"]=16;
+		$state["operator"]["string"]=128;
+		$state_index[0][0]="value";
+		$state_index[1][0]="group";
+		$state_index[2][0]="operator"; 
+
+		$store->create_property("state", $state, $state_index);
+
 		$name["value"]["string"]=128;
 		$name["nls"]["string"]=4;
 		$store->create_property("name", $name);
