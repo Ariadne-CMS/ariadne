@@ -92,6 +92,8 @@
 		$AR->user->data=new object;
 		$AR->user->data->login="admin";
 
+		$ARCurrent->allnls = true;
+		$ARCurrent->nolangcheck = true;
 		$ax_config["writeable"]=false;
 		$ax_config["database"]=$arg_v[1];
 		if ($arg_c>3) {
