@@ -7,7 +7,7 @@
 	include_once($store_config['code']."modules/mod_soap.phtml");
 	include_once($store_config['code']."includes/loader.soap.php");
 
-debugon();
+//debugon("pinp");
 
 	function fix_quotes(&$value) {
 		if (is_array($value)) {
@@ -114,16 +114,6 @@ debugon();
 			debug("loader starting unpackarraynames\n\n");
 			unpack_array_names($arguments, $arguments);
 		}
-		if ($arguments["SessionID"]) {
-			$SOAP_SessionID = $arguments["SessionID"];
-			unset($arguments["SessionID"]);
-			$session_id = substr($SOAP_SessionID, 0, 4);
-			ldStartSession($session_id);
-			debug("soap::loader starting session $session_id", "loader");
-		} else {
-			$SOAP_SessionID = false;
-			$session_id = 0;
-		}
 
 		debug("soap::request ($path) ('$function')", "loader");
 
@@ -136,7 +126,10 @@ debugon();
 		require($ariadne."/nls/".$nls);
 		$ARCurrent->nolangcheck=1;
 
-		
+		if (!ldCheckLogin($arguments["ARLogin"], $arguments["ARPassword"])) {
+			ldCheckLogin("public", "none");
+		}			
+
 		// finally call the requested object
 		$result = current($store->call($function, $arguments, $store->get($path)));
 		if (!$store->total) {

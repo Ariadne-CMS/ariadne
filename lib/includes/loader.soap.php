@@ -52,6 +52,50 @@
 	}
 
 
+	function ldCheckLogin($login, $password) {
+	global $ARLogin, $ARPassword, $store, $AR;
+		debug("soap::ldCheckLogin($login, [password])");
+		$criteria["object"]["implements"]["="]="'puser'";
+		$criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
+		$result = $store->call(
+						"system.authenticate.phtml",
+						Array(
+							"ARPassword" => $password
+						),
+						$store->find("/system/users/", $criteria)
+					);
+		
+		if (!count($result)) {
+			//echo "<script> alert('1'); </script>\n";
+			$user = current(
+					$store->call(
+						"system.authenticate.phtml",
+						Array(
+							"ARLogin" => $login,
+							"ARPassword" => $password
+						),
+						$store->get("/system/users/extern/")
+					));
+		} else {
+			$user = current($result);
+		}
+
+		if ($user) {
+//			if ($login !== "public") {
+//				/* welcome to Ariadne :) */
+//				ldSetCredentials($login, $password);
+//			}
+			$ARLogin = $login;
+			$ARPassword = 0;
+			$AR->user = $user;
+			$result = true;
+		} else {
+			debug("ldAuthUser: user('$user') could not authenticate", "all");
+		}
+		return $result;
+	}
+
+
 	function ldRegisterFile($field = "file", &$error) {
 	global $ARnls, $store, $arguments;
 		debug("ldRegisterFile([$field], [error])");
