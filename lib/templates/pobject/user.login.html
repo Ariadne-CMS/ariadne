@@ -79,7 +79,7 @@ function dopopup() {
 	echo $this->make_url()."user.login.popup.html".
 			"?arLoginMessage=".RawUrlEncode($arLoginMessage).
 			"&arErrorMessage=".RawUrlEncode($arErrorMessage).
-			"&ARLogin=".RawUrlEncode($ARLogin).
+			"&ARLoginFailed=".RawUrlEncode($ARLogin).
 			"&arReturnPath=".RawUrlEncode($arReturnPath).
 			"&arReturnTemplate=".RawUrlEncode($arReturnTemplate); ?>',
 	'popup_login',popup_properties);
