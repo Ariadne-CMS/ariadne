@@ -24,6 +24,8 @@ New features:
 	  to read certain 'loader variables'. Thanks to Florian Overkamp.
 	- Added a new image dialog to the WYSIWYG Editor
 	- Added debug streams: debugon(level,stream), debug(text,level,stream)
+	- Added new mod_debug, debugging can now be tuned differently per
+	  loader. Debugging is possible to loader, file and syslog.
 		
 Bugs fixed:
 	- Fixed a bug which made it impossible to rename e.g. '/Test/' to
