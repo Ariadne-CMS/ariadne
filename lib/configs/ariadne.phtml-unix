@@ -265,7 +265,7 @@
   $ARConfig->cache['..']=new object;           // do not change
   $ARConfig->cache['..']->nls=$AR->nls;        // do not change
   $ARConfig->cache['..']->root['path']='/';    /* must always start with a '/' */
-  $ARConfig->cache['..']->root['value']=$AR->root;  // do not change
+  $ARConfig->cache['..']->root['value']=$AR->host.$AR->root;  // do not change
   $ARConfig->cache['..']->site='/';            // do not change
   $ARConfig->cache['..']->thumb['width']=40;   // do not change
   $ARConfig->cache['..']->thumb['height']=40;   // do not change
