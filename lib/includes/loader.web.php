@@ -245,6 +245,31 @@
 		return $result;
 	}
 
+	function ldGetUserCookie() {
+	global $HTTP_COOKIE_VARS;
+		/* 
+			FIXME:
+			this is a hack: php 4.0.3pl1 (and up?) runs 'magic_quotes' on
+			cookies put in $HTTP_COOKIE_VARS which will cause unserialize
+			to not function correctly.
+		*/
+		$ARUserCookie = stripslashes($HTTP_COOKIE_VARS["ARUserCookie"]);
+		debug("ldGetUserCookie() = $ARUserCookie","object");
+		$cookie=unserialize($ARUserCookie);
+		return $cookie;
+	}
+
+	function ldSetUserCookie($cookie) {
+	global $HTTP_COOKIE_VARS;
+
+		$ARUserCookie = stripslashes($HTTP_COOKIE_VARS["ARUserCookie"]);
+
+		debug("ldSetUserCookie(".serialize($cookie).")","object");
+
+		$ARUserCookie=serialize($cookie);
+		setcookie("ARUserCookie",$ARUserCookie, 0, '/');
+	}
+
 	function ldRedirect($uri) {
 		return ldHeader("Location: $uri");
 	}
