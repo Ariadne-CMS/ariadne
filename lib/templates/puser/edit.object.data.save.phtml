@@ -20,7 +20,7 @@
 		$arReturnPage=$this->store->root.$arReturnPath.$arReturnTemplate;
 		?>
 			<script> 
-				if (window.opener.top.tree) {
+				if (window.opener && window.opener.top.tree) {
 					<?php
 						if ($arIsNewObject) {
 							echo "  window.opener.top.tree.AddLinks('{$this->parent}','{$folder["icon"]}','".AddCSlashes($folder["name"], ARESCAPE)."','{$folder["path"]}','".AddCSlashes($folder["pre"], ARESCAPE)."');\n";
@@ -29,6 +29,13 @@
 						}
 					?>
 					document.location='<?php echo $arReturnPage; ?>';
+				} else if (top.window.dialogArguments) {
+					arr=new Array();
+					arr['type']='<?php echo $this->type; ?>';
+					arr['name']='<?php echo AddCSlashes($this->nlsdata->name, ARESCAPE); ?>';
+					arr['path']='<?php echo $this->path; ?>';
+					top.window.returnValue=arr;
+					top.window.close();
 				}
 			</script>
 		<?php
