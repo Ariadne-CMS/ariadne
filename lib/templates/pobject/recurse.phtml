@@ -96,7 +96,7 @@
 									current+=1;
 									if (path=OrderedList[OrderedList.length-1]) {
 										OrderedList.length-=1;
-										set_info_location("<?php echo $this->store->root; ?>"+path+"recurse.delete.phtml?total="+escape(total)+"&current="+escape(current));
+										set_info_location("<?php echo $this->store->root; ?>"+path+"recurse.delete.phtml?total="+escape(total)+"&current="+escape(current)+"&rootpath=<?php echo RawUrlEncode($this->path); ?>");
 									} else {
 										if (top.window && top.window.opener) {
 											if (top.window.opener.wgRecurseDone) {
