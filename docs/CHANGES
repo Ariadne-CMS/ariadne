@@ -30,6 +30,9 @@ New Features:
 	  (thanks to Gerhard Hoogterp).
 	- Added xml exporting of an Ariadne tree, no import yet.
 	- Added option to add named hyperlinks and anchor tags in the WYSWYG editor. 
+	- Made the shortcut object behave more like the unix symlink. It will redirect
+	  child requests (via web) to it's target. It will also make templates defined
+	  on it (and it's parents) available to its target. 
 
 Bugs Fixed:
 	- Fixed the ftp server it's mimetype extension fallback.
