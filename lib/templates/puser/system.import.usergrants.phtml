@@ -1,20 +1,24 @@
 <?php
+	display("importing grants for user ".$this->data->login."\n");
 	$paths=$ARCurrent->grants_list["puser"][$this->data->login];
 	while (list($path, $grants)=each($paths)) {
-		display("	$path\n");
+		$newpath=$importDestPath.substr($path, strlen($importRootPath));
+		display("	$newpath\n");
 
-		
-		$ARCurrent->importGrants["puser"][$this->data->login]=&$grants;
-
-		$result=@current($this->get($path, "system.import.grants.phtml"));
+		$result=@current($this->get($newpath, "system.import.grants.phtml", 
+												Array(
+													"importDestPath" => $importDestPath,
+													"importRootPath" => $importRootPath,
+													"grants" => &$grants,
+													"type" 	=> "puser" ,
+													"id"	=> $this->data->login
+												)));
 		if ($result) {
 			@reset($grants);
 			while (list($grant,)=each($grants)) {
-				$this->data->usergrants[$path][$grant]=1;
+				$this->data->usergrants[$newpath][$grant]=1;
 			}
 		}
-
-		unset($ARCurrent->importGrants);
 	}
 	$this->save();
 ?>
