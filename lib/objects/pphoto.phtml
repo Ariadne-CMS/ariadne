@@ -74,7 +74,7 @@ class pphoto extends pfile { // pphoto class definition
 			$f_store=$this->store->get_filestore("files");
 			$f_store->copy_from_store($tmpsrc, $this->id, "file");
 			$result=@exif_read_data($tmpsrc,$sections,$arrays,$thumbnail);
-			unlink($tmpsrc);
+			@unlink($tmpsrc);
 			$f_store->close();
 		} else {
 			$result['ERROR']='EXIF not supported by PHP';
@@ -269,6 +269,7 @@ class pphoto extends pfile { // pphoto class definition
 						@unlink($tmpsrc);
 						$tmpsrc = substr($tmpsrc, 0, -4 );
 					}
+					$tmpsrc .= ".photo";
 
 					$ARConfig->photoTempFiles[$this->id][] = $tmpsrc;
 					$ARConfig->photoTempFilesID[$this->id][] = $this->id;
@@ -278,6 +279,7 @@ class pphoto extends pfile { // pphoto class definition
 						@unlink($tmpmysrc);
 						$tmpmysrc = substr($tmpmysrc, 0, -4 );
 					}
+					$tmpmysrc .= ".photo";
 
 					$ARConfig->photoTempFiles[$this->id][] = $tmpmysrc;
 					$ARConfig->photoTempFilesID[$this->id][] = $targetid;
@@ -393,7 +395,7 @@ class pphoto extends pfile { // pphoto class definition
                           @unlink($tmpsrc);
                           $tmpsrc = substr($tmpsrc, 0, -4 );
                         }
-
+			$tmpsrc .= ".photo";
 			$f_store=$this->store->get_filestore("files");
 			$f_store->copy_from_store($tmpsrc, $this->id, "file");
 
@@ -415,11 +417,14 @@ class pphoto extends pfile { // pphoto class definition
 						$exec_string .= " ".$tmpsrc;
 						system($exec_string,$failed);
 						debug("executing ($exec_string)");
-						//echo( $exec_string."<br>");
+						// echo( $exec_string."<br>");
 					}
 				}
 				if (!$failed) {
 					ob_start();
+					if( substr( strtolower($tmpsrc), -6, 6 ) == ".photo" ) {
+						$tmpsrc = substr( $tmpsrc, 0, -6 );
+					}
 					if ($this->targetformat && !eregi("[^0-9a-z\._-]",$this->targetformat)) {
 						$destsrc=$tmpsrc.".".$this->targetformat;
 					} else {
@@ -475,7 +480,7 @@ class pphoto extends pfile { // pphoto class definition
 		} else {
 			$result=getimagesize($tmpsrc);
 		}
-		unlink($tmpsrc);
+		@unlink($tmpsrc);
 		$f_store->close();
 		return $result;
 	}
