@@ -33,6 +33,9 @@ Bugs fixed:
 	- Fixed the postgresqlstore's nextid() function.
 	- Fixed the object not found errors when calling an object.delete,
 	  object.copy etc via $this->get($path,"object...);
+	- Fixed a problem with saving ppage (and deratives) objects over
+	  existing objects.
+	- Rename now unlocks() the renamed object.
 
 Changes in Ariadne since version 2.1.3
 
