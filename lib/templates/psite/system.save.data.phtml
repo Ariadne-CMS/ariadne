@@ -10,6 +10,7 @@
 			$this->CheckConfig()) {
 		$this->call("pdir::system.save.data.phtml",$arCallArgs);
 		if (!$this->error) {
+			$this->arIsNewObject=false;
 			$url=$this->getdata("url","none");
 			if ($this->data->url!=$url) {
 				$this->data->url=$url;
