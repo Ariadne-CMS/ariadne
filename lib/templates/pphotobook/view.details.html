@@ -39,6 +39,7 @@
 				$limit=20;
 			}
 			$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
+			$crit["object"]["implements"]["="]="'pphoto'";
 			$args["width"]=$width;
 			$args["height"]=$height;
 			if (!$srch_keywords && !$src_imgtype) {
