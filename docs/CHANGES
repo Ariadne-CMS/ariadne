@@ -17,6 +17,8 @@ New features:
 	- mkdir in FTP now creates a configurable object type.
 	- the FTP server now supports the 'REST' operation. This makes it possible
 	  to resume an upload or download.
+	- added an option to the FTP server configuration which you can use to
+      disable listmode symlinking.
 	- Changed the 'refresh cache on change' to be really permanent.
 	- added getcache() method in pobject, that returns the contents
 	  of a privatecache image.
