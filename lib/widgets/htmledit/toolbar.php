@@ -334,17 +334,80 @@ function tbContentElement_DisplayChanged() {
 	return true;
 }
 
-
 function SAVE_onclick(newurl) {
-	savewindow=window.open(wgSaveTmpl+'?arReturnPage='+escape(newurl), 'savewindow', 'directories=no,height=100,width=300,location=no,status=yes,toolbar=no,resizable=no');
-	top.wgTBIsDirty=false;
+	if (tbContentElement.contentWindow.SAVE_onclick) {
+		tbContentElement.contentWindow.SAVE_onclick(newurl);
+	} else {
+		savewindow=window.open(wgSaveTmpl+'?arReturnPage='+escape(newurl), 'savewindow', 'directories=no,height=100,width=300,location=no,status=yes,toolbar=no,resizable=no');
+		top.wgTBIsDirty=false;
+	}
 }
 
+function NEW_onclick() {
+	if (tbContentElement.contentWindow.NEW_onclick) {
+		tbContentElement.contentWindow.NEW_onclick();
+	} else {
+	    addwindow=window.open( "<?php echo $this->make_url($this->currentsite()); ?>object.new.select.phtml", 'addwindow',
+	        'directories=no,height=400,width=550,location=no,status=yes,toolbar=no,resizable=no');
+		addwindow.focus();
+	}
+}
 
+function DELETE_onclick() {
+	if (tbContentElement.contentWindow.DELETE_onclick) {
+		tbContentElement.contentWindow.DELETE_onclick();
+	} else {
+	    delwindow=window.open('<?php echo $this->make_url(); ?>object.delete.phtml', 'delwindow',
+	        'directories=no,height=100,width=300,location=no,status=yes,toolbar=no,resizable=no');
+		delwindow.focus();
+	}
+}
+
+function wgRecurseDone(action) {
+	if (tbContentElement.contentWindow.wgRecurseDone) {
+		tbContentElement.contentWindow.wgRecurseDone(action);
+	} else {
+	    window.location='<?php echo $this->make_url('..'); ?>user.edit.html';
+	}
+}
+
+function objectadded(type, name, path) {
+	if (tbContentElement.contentWindow.objectadded) {
+		tbContentElement.contentWindow.objectadded(type, name, path);
+    } else {
+		window.location='<?php echo $this->make_url(); ?>user.edit.html';
+	}
+}
+
+var exitClicked=false;
+
+function EXIT_onclick() {
+	exitClicked=true;
+	if (tbContentElement.contentWindow.EXIT_onclick) {
+		tbContentElement.contentWindow.EXIT_onclick();
+	} else {
+		if (isDirty() && doConfirmSave()) {
+			SAVE_onclick('<?php echo $this->make_url(); ?>');
+		} else {
+		    window.location='<?php echo $this->make_url(); ?>';
+		}
+	}
+}
+
+function doConfirmSave() {
+	return confirm("You have made changes to this page, do you wish to save these?");
+}
+
+function handleBeforeUnload() {
+	if (!exitClicked && isDirty()) {
+		event.returnValue="You have made changes to this page, if you leave these changes will not be saved.";
+	}
+}
+
+window.onbeforeunload=handleBeforeUnload;
 
 function DECMD_UNORDERLIST_onclick() {
 	setFormat("InsertUnorderedList");
-	
 }
 
 function DECMD_UNDO_onclick() {
@@ -888,6 +951,7 @@ function setValue(data_name, value) {
 var arFieldRegistry=new Array();
 var arObjectRegistry=new Array();
 var arChangeRegistry=new Array();
+var currentEditableField=false;
 
 function registerDataField(fieldId, fieldName, objectPath, objectId) {
 	arFieldRegistry[fieldId]=new dataField(fieldId, fieldName, objectPath, objectId);
@@ -932,6 +996,7 @@ function initEditable() {
 
 function checkChangeStart() {
 	this.startContent=getValue(this.id);
+	currentEditableField=this;
 }
 
 function checkChangeEnd() {
@@ -949,11 +1014,14 @@ function checkChangeEnd() {
 				setValue(fieldId, newValue);
 			}
 		}
-		
+		this.startContent=newValue;
 	}
 }
 
 function isDirty() {
+	if (currentEditableField) {
+		currentEditableField.onblur();
+	}
 	return arChangeRegistry.length;
 }
 
@@ -1013,8 +1081,16 @@ return tbContentElement_ContextMenuAction(itemIndex)
 </div>
 <!-- Toolbars -->
 <div class="tbToolbar" ID="StandardToolbar" unselectable='on' style="visibility: hidden;">
-	<div class="tbButton" ID="SAVE" unselectable='on' TITLE="Save File" LANGUAGE="javascript" onclick="return SAVE_onclick(0)">
+	<div class="tbButton" ID="SAVE" unselectable='on' TITLE="Save Page" LANGUAGE="javascript" onclick="return SAVE_onclick(0)">
 		<img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/save.gif" WIDTH="23" HEIGHT="22">
+	</div>
+	
+	<div class="tbButton" ID="NEW" unselectable='on' TITLE="New Page" LANGUAGE="javascript" onclick="return NEW_onclick(0)">
+		<img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/newdoc.gif" WIDTH="23" HEIGHT="22">
+	</div>
+	
+	<div class="tbButton" ID="DELETE" unselectable='on' TITLE="Delete Page" LANGUAGE="javascript" onclick="return DELETE_onclick(0)">
+		<img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/delete.gif" WIDTH="23" HEIGHT="22">
 	</div>
 	
 	<div class="tbSeparator"></div -->
@@ -1114,8 +1190,11 @@ return tbContentElement_ContextMenuAction(itemIndex)
 	<div class="tbButton" unselectable='on' ID="DECMD_IMAGE" TITLE="Insert Image" LANGUAGE="javascript" onclick="return DECMD_IMAGE_onclick()">
 		<img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/image.gif" WIDTH="23" HEIGHT="22">
 	</div>
-</div>
 
+</div>
+<div class="tbButton" unselectable='on' ID="DECMD_EXIT" TITLE="Close Editor" LANGUAGE="javascript" onclick="return EXIT_onclick()" style="position: absolute; right: 5px; top: 2px; cursor: hand;">
+	<img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/exit.gif" WIDTH="22" HEIGHT="22">
+</div>
 <IFRAME ID="tbContentElement" CLASS="tbContentElement" onLoad="initEditable()" unselectable='on' oldstyle="border: 0px; background-color: white; height: 100%; width: 100%; overflow: scroll;" <?php
 	if (!$wgHTMLEditTemplate) {
 		$wgHTMLEditTemplate="user.edit.page.html";
