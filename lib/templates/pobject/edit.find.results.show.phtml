@@ -1,5 +1,6 @@
 <tr>
 <td><?php $this->call("browse.nav.list.show.phtml"); ?></td>
+<td><?php $this->get($this->parent, "browse.nav.list.show.phtml"); ?></td>
 <td align="right"><?php
 		 	if ($this->size>1024) {
 				echo round(intval($this->size)/1024)."&nbsp;KB&nbsp;"; 
@@ -7,7 +8,6 @@
 				echo intval($this->size)."&nbsp;B&nbsp;";
 			}
 ?></td>
-<td align="right"><?php echo $this->type; ?>&nbsp;</td>
 <td><?php
   $date=getdate($this->lastchanged);
   $now=getdate(time());

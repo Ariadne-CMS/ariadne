@@ -1,0 +1,164 @@
+<?php
+	/******************************************************************
+	 edit.find.tabs.phtml                                  Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: read
+	 Global variables: none
+
+	 This template displays a set of tabs for the search window.
+
+	 No result.
+
+	******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		if ($arPath && $this->exists($arPath)) {
+?>
+<script>
+	top.location.href='<?php echo $this->store->root.$arPath; ?>edit.find.phtml';
+</script>
+<?php
+		} else {
+?>
+<HTML>
+<HEAD>
+<link rel="stylesheet" href="<?php echo $AR->dir->styles; ?>dialog.css" type="text/css">
+<style>
+	BODY {
+		background-color: #BFBFBF;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+		font-size: 13px;
+		font-family: helvetica, sans-serif;
+	}
+	A {
+		font-size: 13px;
+		text-decoration: none;
+	}
+</style>
+<script>
+<!--
+	infront=1;
+	lefty=0;
+	righty=2;
+
+	function tofront(num) {
+
+		if( document.images) {
+			
+			document.images ["lt"+infront].src="<?php echo $AR->dir->images; ?>tabs/left_top5.gif";
+			document.images ["t"+infront].src="<?php echo $AR->dir->images; ?>tabs/top5.gif";
+			document.images ["rt"+infront].src="<?php echo $AR->dir->images; ?>tabs/right_top5.gif";
+			document.images ["l"+infront].src="<?php echo $AR->dir->images; ?>tabs/left5.gif";
+			document.images ["r"+infront].src="<?php echo $AR->dir->images; ?>tabs/right5.gif";
+			document.images ["lb"+infront].src="<?php echo $AR->dir->images; ?>tabs/left_bottom5.gif";
+			document.images ["b"+infront].src="<?php echo $AR->dir->images; ?>tabs/bottom5.gif";
+			document.images ["rb"+infront].src="<?php echo $AR->dir->images; ?>tabs/right_bottom5.gif";
+			
+			if(lefty>0) {	
+				document.images ["rt"+lefty].src="<?php echo $AR->dir->images; ?>tabs/right_top5.gif";
+				document.images ["r"+lefty].src="<?php echo $AR->dir->images; ?>tabs/right5.gif";
+				document.images ["rb"+lefty].src="<?php echo $AR->dir->images; ?>tabs/right_bottom5.gif";
+			}
+
+			if( righty < 3 ) {
+				document.images ["l"+righty].src="<?php echo $AR->dir->images; ?>tabs/left5.gif";
+				document.images ["lt"+righty].src="<?php echo $AR->dir->images; ?>tabs/left_top5.gif";
+				document.images ["lb"+righty].src="<?php echo $AR->dir->images; ?>tabs/left_bottom5.gif";
+			}
+
+			lefty = num-1;
+			righty = num+1;
+
+			if(lefty>0) {
+				document.images ["rt"+lefty].src="<?php echo $AR->dir->images; ?>tabs/top5.gif";
+				document.images ["r"+lefty].src="<?php echo $AR->dir->images; ?>tabs/neighbour5.gif";
+				document.images ["rb"+lefty].src="<?php echo $AR->dir->images; ?>tabs/bottom5.gif";
+			}
+
+			if(righty<3) {
+				document.images ["lt"+righty].src="<?php echo $AR->dir->images; ?>tabs/top5.gif";
+				document.images ["l"+righty].src="<?php echo $AR->dir->images; ?>tabs/neighbour5.gif";
+				document.images ["lb"+righty].src="<?php echo $AR->dir->images; ?>tabs/bottom5.gif";
+			}
+
+
+			document.images ["lt"+num].src="<?php echo $AR->dir->images; ?>tabs/ontop_left_top5.gif";
+			document.images ["t"+num].src="<?php echo $AR->dir->images; ?>tabs/ontop_top5.gif";
+			document.images ["rt"+num].src="<?php echo $AR->dir->images; ?>tabs/ontop_right_top5.gif";
+			document.images ["lb"+num].src="<?php echo $AR->dir->images; ?>tabs/ontop_left_bottom5.gif";
+			document.images ["b"+num].src="<?php echo $AR->dir->images; ?>tabs/ontop_bottom5.gif";
+			document.images ["rb"+num].src="<?php echo $AR->dir->images; ?>tabs/ontop_right_bottom5.gif";
+
+		}
+
+		infront=num;
+		document.forms[0].arSelected.value=infront;
+	}
+
+	function load(page) {
+		top.searchframe.location.href=page;
+	}
+
+// -->
+</script>
+</HEAD>
+<BODY bgcolor="#BFBFBF" TEXT="#000000" LINK="#000000" ALINK="#000000" VLINK="#000000" onLoad="ClearLoader()">
+<div id="kill-scrollbars" style="position: relative">
+<form>
+<input type="hidden" name="arSelected" value="1">
+<table width="100%" border="0" cellpadding="0" cellspacing="0" vspace="0" hspace="0">
+<!-- Top row images -->
+<tr>
+	<!-- TAB 1 -->
+	<td><img src="<?php echo $AR->dir->images; ?>tabs/ontop_left_top5.gif" alt="" name="lt1" width="5" height="5" border="0"></td>
+	<td><img src="<?php echo $AR->dir->images; ?>tabs/ontop_top5.gif" alt="" name="t1" width="100%" height="5"></td>
+	<td><img src="<?php echo $AR->dir->images; ?>tabs/ontop_right_top5.gif" alt="" name="rt1" width="5"height="5" border="0"></td>
+	<!-- TAB 2 -->
+	<td><img src="<?php echo $AR->dir->images; ?>tabs/left_top5.gif" alt="" name="lt2" border="0" width="5" height="5"></td>
+	<td><img src="<?php echo $AR->dir->images; ?>tabs/top5.gif" alt="" name="t2" width="100%" height="5"></td>
+	<td><img src="<?php echo $AR->dir->images; ?>tabs/right_top5.gif" alt="" name="rt2" border="0" width="5" height="5"></td>
+	<!-- REST -->
+	<td rowspan="2" align="right" width="100%"><input type="text" name="arPath" size="40" style="width: 90%;" value="<?php echo $this->path; ?>"></td>
+</tr>
+
+<!-- Left & Right images and text of tabs -->
+<tr>
+	<!-- TAB 1 -->
+	<td><img src="<?php echo $AR->dir->images; ?>tabs/left5.gif" alt="" name="l1" width="5" height="20" border="0"></td>
+	<td align="center" valign="top"><a onClick="tofront(1);" class="category"
+		href="edit.find.context.phtml" target="searchframe"><?php echo $ARnls["contextsearch"]; ?></a><BR><img
+		src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="50" height="1" border="0"></td>
+	<td><img src="<?php echo $AR->dir->images; ?>tabs/right5.gif" alt="" name="r1" width="5" height="20" border="0"></td>
+	<!-- TAB 2 -->
+	<td><img src="<?php echo $AR->dir->images; ?>tabs/left5.gif" alt="" name="l2" width="5" height="20" border="0"></td>
+	<td align="center" valign="top"><a onClick="tofront(2);" 
+        href="edit.find.advanced.phtml" target="searchframe"><?php echo $ARnls["advancedsearch"]; ?></a><BR><img
+		src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="50" height="1" border="0"></td>
+	<td><img src="<?php echo $AR->dir->images; ?>tabs/right5.gif" alt="" name="r2" width="5" height="20" border="0"></td>
+	<!-- REST -->
+</tr>
+
+<!-- Bottom of Tabs --> 
+<tr> 
+	<!-- TAB 1 -->
+	<td><img src="<?php echo $AR->dir->images; ?>tabs/ontop_left_bottom5.gif" alt="" name="lb1" width="5" height="5" border="0"></td>
+	<td><img src="<?php echo $AR->dir->images; ?>tabs/ontop_bottom5.gif" alt="" name="b1" height="5" width="100%" border="0"></td>
+	<td><img src="<?php echo $AR->dir->images; ?>tabs/ontop_right_bottom5.gif" alt="" name="rb1" width="5" height="5"border="0"></td>
+	<!-- TAB 2 -->
+	<td><img src="<?php echo $AR->dir->images; ?>tabs/bottom5.gif" alt="" name="lb2" width="5" height="5" border="0"></td>
+	<td><img src="<?php echo $AR->dir->images; ?>tabs/bottom5.gif" alt="" name="b2" height="5" width="100%" border="0"></td>
+	<td><img src="<?php echo $AR->dir->images; ?>tabs/right_bottom5.gif" alt="" name="rb2" width="5" height="5" border="0"></td>
+	<!-- REST -->
+	<td><img src="<?php echo $AR->dir->images; ?>tabs/bottom5.gif" alt="" border="0" width="100%" height="5"></td>
+</tr>
+</table>
+</form>
+</div>
+</BODY>
+</HTML>
+<?php
+		}
+	}
+?>

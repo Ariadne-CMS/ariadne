@@ -1,0 +1,106 @@
+<?php
+	/******************************************************************
+	 edit.find.context.phtml                               Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: 
+	 Grant needed: read
+	 Global variables: none
+
+	 No result.
+
+	******************************************************************/
+
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+?>
+<html>
+<head>
+<title><?php echo $ARnls["contextsearch"]; ?></title>
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>dialog.css">
+<style>
+	body {
+		border: 2px outset;
+		border-top: 0px;
+		margin: 1px;
+		margin-top: 0px;
+	}
+	#kill-scrollbars {
+		margin: 0px;
+		padding: 0px;
+		border: 0px;
+		width: 100%;
+		height: 100%;
+		overflow: hidden;
+	}
+	body, td {
+		font-size: 10pt;
+	}
+</style>
+<script>
+	function makequery() {
+		query='';
+		if (name=document.queryform.name.value) {
+			query+="name.value ~= '%"+name+"%'";
+		}
+		if (text=document.queryform.text.value) {
+			if (query) {
+				query+=' and ';
+			}
+			query+=" text.value ~= '%"+text+"%'";
+		}
+		if (implements=document.queryform.implements.options[document.queryform.implements.selectedIndex].value) {
+			if (query) {
+				query+=' and ';
+			}
+			query+=" object.type='"+implements+"'";
+		}
+		document.queryform.query.value=query;
+		return true;
+	}
+</script>
+</head>
+<body bgcolor="#BBBBBB">
+<div id="kill-scrollbars" style="position: relative;">
+<form name="queryform" action="edit.find.results.phtml" target="results" onSubmit="return makequery();">
+<input type="hidden" name="query" value="">
+<table width="440">
+<tr>
+	<td align="right" width="150">
+		<?php echo $ARnls["name"]; ?> :
+	</td><td>
+		<input type="text" name="name" value="">
+	</td><td align="right">
+		<input type="submit" name="search" value="<?php echo $ARnls["search"]; ?>">
+	</td>
+
+</tr><tr>
+	<td align="right">
+		<?php echo $ARnls["text"]; ?> :
+	</td><td>
+		<input type="text" name="text" value="">
+	</td>
+</tr><tr>
+	<td align="right">
+		<?php echo $ARnls["type"]; ?> :
+	</td><td>
+		<select name="implements">
+		<?php
+			echo "<option value=''>".$ARnls["all"]."</option>\n";
+			if ($AR->user->data->login=="admin") {
+				$this->ls("/system/ariadne/types/","show.option.value.phtml");
+			}
+		?>
+		</select>
+	</td>
+</tr><tr>
+	<td align="right">
+		<br><br>
+	</td>
+</tr>
+</table>
+</form>
+</div>
+</body>
+</html>
+<?php
+	}
+?>

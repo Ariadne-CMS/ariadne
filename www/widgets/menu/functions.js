@@ -4,7 +4,7 @@
 	windowprops['full']='directories,location,menubar,status,toolbar,resizable,scrollbars';
 	windowprops['object_fs']=windowprops['common']+',height=100,width=400';
 	windowprops['object_new']=windowprops['common']+',height=275,width=450';
-	windowprops['edit_find']=windowprops['common']+',height=400,width=500';
+	windowprops['edit_find']=windowprops['common']+',height=400,width=600';
 	windowprops['edit_preferences']=windowprops['common']+',height=400,width=500';
 	windowprops['edit_object_data']=windowprops['common']+',height=275,width=450';
 	windowprops['edit_object_cache']=windowprops['common']+',height=250,width=250';

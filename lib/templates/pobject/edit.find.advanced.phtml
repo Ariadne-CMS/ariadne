@@ -1,0 +1,56 @@
+<?php
+	/******************************************************************
+	 edit.find.context.phtml                               Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: 
+	 Grant needed: read
+	 Global variables: none
+
+	 No result.
+
+	******************************************************************/
+
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+?>
+<html>
+<head>
+<title><?php echo $ARnls["advancedsearch"]; ?></title>
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>dialog.css">
+<style>
+  body {
+    border: 2px outset;
+    border-top: 0px;
+    margin: 1px;
+    margin-top: 0px;
+    padding: 5px;
+  }
+  #kill-scrollbars {
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+</style>
+</head>
+<body bgcolor="#BBBBBB">
+<div id="kill-scrollbars" style="position: relative;">
+<form action="edit.find.results.phtml" target="results">
+<table>
+<tr>
+  <td align="right">
+    <textarea name="query" cols="50" rows="6"></textarea>
+  </td>
+  <td valign="top" align="right">
+    <input type="submit" name="search" value="<?php echo $ARnls["search"]; ?>">
+  </td>
+</tr>
+</table>
+</form>
+</div>
+</body>
+</html>
+<?php
+	}
+?>
