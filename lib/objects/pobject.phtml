@@ -1256,6 +1256,10 @@ class pobject extends object {
 		return $this->store->exists($this->make_path($path));
 	}
 
+	function _implements($implements) {
+		return $this->implements($implements);
+	}
+
 	function _getvar($var) {
 	global $HTTP_POST_VARS, $HTTP_GET_VARS, $PHP_SELF, $ARCurrent, $ARConfig;
 
