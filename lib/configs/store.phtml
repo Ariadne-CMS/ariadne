@@ -38,13 +38,21 @@
   /* Ariadne Code Library (lib)                                            */
   /*************************************************************************/
 
-  $store_config['code']          = $AR->dir->install.'/lib/';
+  if( $AR->OS=='WIN32' ) {
+    $store_config['code']          = $AR->dir->install.'\lib\\';
+  } else {
+    $store_config['code']          = $AR->dir->install.'/lib/';
+  }
 
   /*************************************************************************/
   /* Ariadne Files Repository (files)                                      */
   /*************************************************************************/
 
-  $store_config['files']         = $AR->dir->install.'/files/';
+  if( $AR->OS=='WIN32' ) {
+    $store_config['files']         = $AR->dir->install.'\files\\';
+  } else {
+    $store_config['files']         = $AR->dir->install.'/files/';
+  }
 
   /*************************************************************************/
   /* Lock Duration                                                         */

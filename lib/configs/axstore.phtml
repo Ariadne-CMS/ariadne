@@ -18,13 +18,21 @@
   /* Ariadne Code Library (lib)                                            */
   /*************************************************************************/
 
-  $ax_config['code']                  = $AR->dir->install.'/lib/';
+  if( $AR->OS=='WIN32' ) {
+    $ax_config['code']                  = $AR->dir->install.'\lib\\';
+  } else {
+    $ax_config['code']                  = $AR->dir->install.'/lib/';
+  }
 
   /*************************************************************************/
   /* Ariadne Export temp directory                                         */
   /*************************************************************************/
 
-  $ax_config['temp']                  = $AR->dir->install.'/files/temp/';
+  if( $AR->OS=='WIN32' ) {
+    $ax_config['temp']                  = $AR->dir->install.'\files\temp\\';
+  } else {
+    $ax_config['temp']                  = $AR->dir->install.'/files/temp/';
+  }
 
   /*************************************************************************/
   /* Tar configuration                                                     */

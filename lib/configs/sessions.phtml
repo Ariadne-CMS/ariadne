@@ -39,15 +39,21 @@
   /* Ariadne Code Library (lib)                                            */
   /*************************************************************************/
 
-  $session_config['code']        = $AR->dir->install.'/lib/';
-
+  if( $AR->OS=='WIN32' ) {
+    $session_config['code']        = $AR->dir->install.'\lib\\';
+  } else {
+    $session_config['code']        = $AR->dir->install.'/lib/';
+  }
 
   /*************************************************************************/
   /* Ariadne Files Repository (files)                                      */
   /*************************************************************************/
 
-  $session_config['files']       = $AR->dir->install.'/sessions/';
-
+  if( $AR->OS=='WIN32' ) {
+    $session_config['files']       = $AR->dir->install.'\sessions\\';
+  } else {
+    $session_config['files']       = $AR->dir->install.'/sessions/';
+  }
 
   /*************************************************************************/
   /* Ariadne Session Timeout                                               */

@@ -59,6 +59,12 @@
   $AR->VS->scannername      = 'f-prot';		// f-prot is the only supported type right now
   $AR->VS->path             = '/usr/local/bin/';// where is your scanner binary
 
+  /**************************************************************************/
+  /* HTMLTidy information                                                   */
+  /**************************************************************************/
+
+  $AR->Tidy->path           = '/usr/bin/tidy'; 
+  $AR->Tidy->options		= '--tidy-mark no --show-warnings yes --output-encoding utf8 --force-output yes';
 
   /*************************************************************************/
   /* Database Information:                                                 */
@@ -90,7 +96,7 @@
   /* either 'WIN32' or 'UNIX'.                                              */
   /**************************************************************************/
 
-  $AR->OS                = 'WIN32';          // All unix/linux variants
+  $AR->OS                = 'WIN32';          // All win32 variants
 
 
   /**************************************************************************/
@@ -106,6 +112,16 @@
   /**************************************************************************/
 
   $AR->output_compression = 0;
+
+  /**************************************************************************/
+  /* Whether or not to hide the session id from the URL                     */
+  /* If enabled, Webalizer will make reasonable page hit statistics, but    */
+  /* users will no longer be able to use 2 or more sessions within the      */
+  /* same browser instance (they will have to start a new browser for each  */
+  /* different session)                                                     */
+  /**************************************************************************/
+
+  $AR->hideSessionIDfromURL = false;
 
 
   /* on Default we do not respawn sessions **********************************/
@@ -185,12 +201,13 @@
   $AR->nls->list['de']      = 'Deutsch';
   $AR->nls->list['pl']      = 'Polski';
   $AR->nls->list['fr']      = 'Fran&ccedil;ais';
-  $AR->nls->list['it']      = 'Italian';
+  $AR->nls->list['it']      = 'Italiana';
 
   $AR->nls->locales['nl']   = 'nl_NL';
   $AR->nls->locales['en']   = 'en_US';
   $AR->nls->locales['es']   = 'es';
   $AR->nls->locales['de']   = 'de';
+  $AR->nls->locales['pl']   = 'pl';
   $AR->nls->locales['fr']   = 'fr_FR';
   $AR->nls->locales['it']   = 'it_IT';
 
