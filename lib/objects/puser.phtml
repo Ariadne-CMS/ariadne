@@ -23,7 +23,7 @@ class puser extends pdir { // definitie class
 		return false;
 	}
 
-	function FindGrants($path, &$result, $top="") {
+	function FindGrants($path, &$result, $top="", $mask=ARGRANTLOCAL) {
 		global $ARConfig;
 		debug("puser: FindGrants($path, result)","object");
 		debug("(in $this->path)","object");
@@ -38,11 +38,27 @@ class puser extends pdir { // definitie class
 					$newpath="";
 				} else {
 					$newpath=$this->store->make_path($path, "..");
-					$newpath=$this->FindGrants($newpath, $result);
+					$newpath=$this->FindGrants($newpath, $result, $top, ARGRANTGLOBAL);
 				}
 				$ARConfig->GrantsCache[$this->path][$path]["grants"]=$result;
 				$ARConfig->GrantsCache[$this->path][$path]["setby"]=$newpath;
 			} 
+			if (is_array($result)) {
+				while (list($grant, $modifiers)=each($result)) {
+					if (is_array($modifiers)) {
+						while (list($modifier, $value)=each($modifiers)) { 
+							if (!($value & $mask)) {
+								unset($result[$grant][$modifier]);
+							}
+						}
+						if (!@count($result[$grant])) {
+							unset($result[$grant]);
+						}
+					} else if (!($modifiers & $mask)) {
+							unset($result[$grant]);
+					}
+				}
+			}
 		}
 		return $newpath;
 	}
