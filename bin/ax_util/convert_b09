@@ -70,7 +70,6 @@
 						$templates_store=$store->get_filestore("templates");
 
 						while (is_array($axdata->nodes) && (list($key, $id)=each($axdata->nodes))) {
-							echo "$key ($id)\n";
 							if (!$objects[$id]) {
 								$objects[$id]=true; // object seen
 								$object=$axdata->objects[$id];
@@ -95,7 +94,7 @@
 
 									$files_path="$tempdir/files".$key;
 									if (file_exists($files_path) && is_dir($files_path) ) {
-										$dir=opendir($file_path);
+										$dir=opendir($files_path);
 										while ($entry=readdir($dir)) {
 											if (!is_dir($files_path.$entry)) {
 												if ($entry=="view=") {
@@ -117,7 +116,6 @@
 									echo "error: could not get saved object ($key)\n";
 								}
 							}
-							echo "store tempdir=".$store->tempdir."\n";
 						}
 						$files_store->close();
 						$templates_store->close();

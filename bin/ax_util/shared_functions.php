@@ -1,7 +1,6 @@
 <?php
 
 	function rm_dir($path) {
-
 		$path=($path[strlen($path)-1]=="/") ? $path : $path."/";
 		if (file_exists($path)) {
 			$dir=opendir($path);
