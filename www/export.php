@@ -60,6 +60,7 @@
 	if (file_exists($ax_file)) {
 		header("Content-Disposition: attachment; filename=$filename");
 		header("Content-Type: application/octet-stream");
+		header("Accept-Ranges: bytes");
 		readfile($ax_file);
 		unlink($ax_file);
 	} else
