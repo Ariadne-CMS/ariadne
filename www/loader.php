@@ -55,7 +55,13 @@
 		$path=substr($PATH_INFO,0,$split+1);
 		$function=substr($PATH_INFO,$split+1);
 		if (!$function) {
-			$function="view.html";
+			if (!$arDefaultFunction) {
+				$arDefaultFunction="view.html";
+			}
+			$function=$arDefaultFunction;
+			if ($arFunctionPrefix) {
+				$function=$arFunctionPrefix.$function;
+			}
 			$PATH_INFO.=$function;
 		}
 		$ldCacheFilename=strtolower($PATH_INFO)."=";
@@ -185,7 +191,13 @@
 			if (!$store->total) {
 				ldObjectNotFound($path, $function);
 			}
+			$store->close();
 
+		}
+
+		// save session data
+		if ($ARCurrent->session) {
+			$ARCurrent->session->save();
 		}
 
 		// now check for outputbuffering (caching)
