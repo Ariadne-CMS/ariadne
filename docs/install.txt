@@ -31,35 +31,31 @@ Recommended:
    e.g.:
 
      cd /usr/local/lib/
-     tar xvzf ~/ariadne.2.0.tgz
+     tar xvzf ~/ariadne.2.1.tgz
      cd /var/www
-     ln -s /usr/local/lib/ariadne.2.0/www/ ariadne
-
-   To keep things simple, you might also want to link ariadne to ariadne.2.0:
-
-     ln -s /usr/local/lib/ariadne.2.0/ /usr/local/lib/ariadne/
+     ln -s /usr/local/lib/ariadne/www/ ariadne
 
 3) Make sure the files directory and the sessions directory are writable by the 
    webserver user.
    Ariadne needs to write cache images and templates and other files to
    disk. So check to see which user your webserver is running as (look in
-   httpd.conf) and (as root) do something like:
+   httpd.conf, we'll presume www-data here) and (as root) do something like:
 
-     cd /usr/local/lib/ariadne.2.0/files/
-     chown -R www:www * 
-     cd /usr/local/lib/ariadne.2.0/sessions/
-     chown -R www:www * 
+     cd /usr/local/lib/ariadne/files/
+     chown -R www-data:www-data * 
+     cd /usr/local/lib/ariadne/sessions/
+     chown -R www-data:www-data * 
 
 3) Create a database for Ariadne to use in MySQL.
    With MySQL do something like:
 
      mysqladmin create ariadne
 
-4) Copy the file ariadne.phtml-dist in lib/configs to ariadne.phtml. Edit this
+4) Copy the file ariadne.phtml-unix in lib/configs to ariadne.phtml. Edit this
    file and fill in your system specific details. You need to at least enter 
-   your host name and check all paths.
+   your host name, database name, database account and check all the paths.
 
-5) Copy the file www/ariadne.inc-dist to www/ariadne.inc and edit it to reflect 
+5) Copy the file www/ariadne.inc-unix to www/ariadne.inc and edit it to reflect 
    the includepath to the Ariadne lib directory.
 
 6) Run the file www/install/install.php. 
