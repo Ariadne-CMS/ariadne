@@ -6,12 +6,14 @@ define("AX_DUMMY", 1);
 define("AX_WITHOUT_DATA", 2);
 define("AX_WITHOUT_TEMPLATES", 4);
 define("AX_WITHOUT_FILES", 8);
+define("AX_VERSION", 1.2);
 
 class axstore {
 
 	var $nodes;
 	var $objects;
 	var $lastobjectid;
+	var $header;
 
 	/****************
 		axstore constructor
@@ -46,6 +48,17 @@ class axstore {
 			if (file_exists($this->database)) {
 				debug("extracting database (".$this->database.")", "store");
 				if ($this->tar->extract($this->database, " ", $this->tempdir)) {
+					if (!file_exists($this->tempdir."/header.data")) {
+						$this->header["version"] = 1;
+					} else {
+						$fp = fopen($this->tempdir."/header.data", "rb");
+						$header="";
+						while (!feof($fp)) {
+							$header.=fread($fp, 1000);
+						}
+						fclose($fp);
+						$this->header = unserialize($header);
+					}
 					if (file_exists($this->tempdir."/objects.data")) {
 						// now we have found our objects.data, lets make an index of it
 						debug("loading (".$this->tempdir."/objects.data)", "store");
@@ -715,6 +728,15 @@ class axstore {
 						fclose($this->ofile); 
 						@unlink($this->tempdir."/objects.data");
 					}
+
+					/* write header info back */
+					$this->header["version"] = AX_VERSION;
+					$header = serialize($this->header);
+					$fp = fopen($this->tempdir."/header.data", "wb");
+					if ($fp) {
+						fwrite($fp, $header);
+					}
+					fclose($fp);
 
 					if (file_exists($this->tempdir."/tempobjects.data")) {
 						rename($this->tempdir."/tempobjects.data", $this->tempdir."/objects.data");
