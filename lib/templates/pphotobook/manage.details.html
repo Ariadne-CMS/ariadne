@@ -3,10 +3,21 @@
 ?>
 	<div id="details">
 		<div style="padding: 5px;">
-			<img src="<?php echo $this->make_url(); ?>view.thumb.html"><br>
-			<div style="position: absolute; width: 180px; overflow: auto;"><?php 
-				echo $this->data->picture; 
-			?><br><br></div><br><br>
+			<?php echo $ARnls["cover"]; ?>:<br>
+<style>
+  .photo {
+     float: left;
+     margin: 4px;
+     background-color: #<?php echo $this->data->thumbcolor; ?>;
+     border: outset 2px;
+  }
+</style>
+<div class="photo"><table 
+  style="height: <?php echo $this->data->thumbheight; ?>px; width: <?php echo $this->data->thumbwidth; ?>px;"
+  cellpadding="0" cellspacing="0"><td 
+  valign="middle" align="center"><IMG 
+    SRC="<?php echo $this->make_url(); ?>view.thumb.html" border=0 HSPACE=2 VSPACE=2 
+      ALT="<?php echo $this->data->picture; ?>"></td></tr></table></div>
 		</div>
 	</div>
 <?php
