@@ -30,7 +30,7 @@
 						top.window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddCSlashes($nlsdata->name, ARESCAPE); ?>','<?php echo $this->path; ?>'); 
 					}
 					<?php
-						if (!$arIsNewObject) {
+						if (!$arIsNewObject || $this->getdata("arCloseWindow", "none")) {
 					?>
 							top.window.close();
 					<?php
