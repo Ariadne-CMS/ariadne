@@ -28,7 +28,8 @@
 								matching objects
 							*/
 							$objects_table = $this->tbl_prefix."objects";
-							$this->nls_join[$table] = "left join $table on $objects_table.id=$table.object and $table.AR_nls='".$node["nls"]."' ";
+							$this->nls_join[$table] = "left join $table as order_$table on $objects_table.id=order_$table.object and order_$table.AR_nls='".$node["nls"]."' ";
+							$result = " order_$table.$field ";
 						} else {
 							/*
 								if we are parsing 'orderby' properties we have 
@@ -36,8 +37,8 @@
 							*/							
 							$this->select_tables[$table]=$table;
 							$this->used_tables[$table]=$table;
+							$result=" $table.$field ";
 						}
-						$result=" $table.$field ";
 					}
 				} else {
 					$this->used_tables["$table as $table$record_id"] = $table.$record_id;
@@ -228,16 +229,13 @@
 		$this->used_tables[$objects]=$objects;
 		@reset($this->used_tables);
 		while (list($key, $val)=each($this->used_tables)) {
-			/* do not select tables if they are already joined */
-			if (!$this->nls_join[$key]) {
-				if ($tables) {
-					$tables.=", $key";
-				} else {
-					$tables="$key";
-				}
-				if ($this->select_tables[$key]) {
-					$prop_dep.=" and $val.object=$objects.id ";
-				}
+			if ($tables) {
+				$tables.=", $key";
+			} else {
+				$tables="$key";
+			}
+			if ($this->select_tables[$key]) {
+				$prop_dep.=" and $val.object=$objects.id ";
 			}
 		}
 		if (is_array($this->nls_join)) {
