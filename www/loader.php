@@ -22,21 +22,20 @@
 			$store->root=$root;
 			$store->rootoptions=$rootoptions;
 		}	
-		return $root;
 	}
 
 	function ldSetNls($nls) {
 	global $ARCurrent;
 
 		$session=$ARCurrent->session->id;
-		return ldSetRoot($session, $nls);
+		ldSetRoot($session, $nls);
 	}
 
 	function ldSetSession($session='') {
 	global $ARCurrent;
 
 		$nls=$ARCurrent->nls;
-		return ldSetRoot($session, $nls);
+		ldSetRoot($session, $nls);
 	}
  
 	function ldStartSession($sessionid='') {
@@ -44,7 +43,7 @@
 
 		require($ariadne."/configs/sessions.phtml");
 		$ARCurrent->session=new session($session_config,$sessionid);
-		return ldSetSession($ARCurrent->session->id);
+		ldSetSession($ARCurrent->session->id);
 	}
 
 	function ldSetCache($file, $time, $image, $headers) {
@@ -119,7 +118,7 @@
 		if (eregi($re,$PATH_INFO,$matches)) {
 			$session_id=$matches[1];
 			$PATH_INFO=substr($PATH_INFO,strlen($matches[0])-1);
-			$root=ldStartSession($session_id);
+			ldStartSession($session_id);
 		}
 
 		$AR->login="public";
@@ -139,7 +138,7 @@
 		} else {
 			// valid language
 			$path=substr($path, $split+1);
-			$root=ldSetNls($ARCurrent->nls);
+			ldSetNls($ARCurrent->nls);
 			$nls=$ARCurrent->nls;
 			$cachenls="/$nls";
 		}
