@@ -342,5 +342,12 @@
 	$ARnls["zipcode"]						=	"Postcode";
 	$ARnls["change_owner"]					=	"Wijzig eigenaar";
 	$ARnls["change_owner_recursive"]		=	"Wijzig eigenaar van alle kinderen";
-
+	$ARnls["grants_for"]					=	"Grants voor";
+	$ARnls["grants_add_update"]				=	"Bewerk of voeg grants toe op";
+	$ARnls["grants_user_group"]				=	"Gebruiker of groep";
+	$ARnls["grants_valid"]					=	"Geldig voor";
+	$ARnls["grants_global"]					=	"Alle objecten";
+	$ARnls["grants_children"]				=	"Alleen kinderen";
+	$ARnls["grants_local"]					=	"Alleen huidige object";
+	$ARnls["explain"]						=	"Leg uit";
 ?>

@@ -349,4 +349,12 @@
 	$ARnls["zipcode"]						=	"ZipCode";
 	$ARnls["change_owner"]					=	"Change owner";
 	$ARnls["change_owner_recursive"]		=	"Change owner on all children";
+	$ARnls["grants_for"]					=	"Grants for";
+	$ARnls["grants_add_update"]				=	"Add or update grants on";
+	$ARnls["grants_user_group"]				=	"User or Group";
+	$ARnls["grants_valid"]					=	"Valid for";
+	$ARnls["grants_global"]					=	"All objects";
+	$ARnls["grants_children"]				=	"Children only";
+	$ARnls["grants_local"]					=	"Current object only";
+	$ARnls["explain"]						=	"Explain";
 ?>
