@@ -3,7 +3,7 @@
 		This template saves the current object without changing anything except the mtime
 		and the mowner, which are set to the current user and current datetime.
 	*/
-	if (($this->CheckLogin("edit") || ($this->CheckLogin("touch")) && $this->CheckConfig()) {
+	if (($this->CheckLogin("edit") || $this->CheckLogin("touch")) && $this->CheckConfig()) {
 		$this->data = current($this->get($this->path, "system.get.data.phtml"));
 		$this->save();
 	}
