@@ -18,7 +18,7 @@ class import_wddx {
 		xml_parser_set_option($this->xml_parser, XML_OPTION_CASE_FOLDING, false);
 		xml_set_element_handler($this->xml_parser, "startElement", "endElement");
 		xml_set_character_data_handler($this->xml_parser, "characterData");
-		$config = $options;
+		$this->config = $options;
 	}
 
 	function startElement($parser, $name, $attribs) {
@@ -104,9 +104,8 @@ class import_wddx {
 			4) object files
 		 */
 		debug("working on ".$objdata['path'],'all');
-		if($config['prefix']){
-			$path = $config['prefix'].$objdata['path'];
-			$path = $this->store->make_path($path);
+		if($this->config['prefix']){
+			$path = $this->store->make_path($this->config['prefix'],".".$objdata['path']);
 		} else {
 			$path = $objdata['path'];
 		}

@@ -34,7 +34,9 @@
 	next($argv); // do not parse the filename
 	while (list(,$cmd)=each($argv)) {
 		if (strpos($cmd, "--") === 0) {
-			if (strpos(substr($cmd, 2),"-")===false) {
+			if (strpos(substr($cmd, 2),"-")===false || (
+				strpos(substr($cmd, 2),"-") >= strpos($cmd, "=")
+			)) {
 				$option_switch=substr($cmd, 2);
 				if (strpos($option_switch, "=")!==false) {
 					$option_value=substr($option_switch, strpos($option_switch, "=")+1);
@@ -42,6 +44,7 @@
 					$option_switch = $tmp;
 				}
 			} else {
+				
 
 				$option_switch=substr($cmd, 2, strpos(substr($cmd, 2),"-"));
 
