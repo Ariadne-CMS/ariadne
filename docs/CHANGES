@@ -8,12 +8,15 @@ IMPORTANT:
     need to read the docs/upgrade.txt file first.
 
 New features:
+	- pobject now has a convert2UTF8() function which can
+	  convert data from other charsets to UTF8.
 
 Bugs fixed:
 	- Fixed a warning when make_filesize() is called without
 	  arguments.
 	- Fixed order of CheckLogin/CheckConfig and argument passing
 	  for some calendar templates
+	- Removed iconv from mod_unicode.php, it was too unreliable.
 	- Fixed a bug which caused customdata fields to be cleared.
 
 Changes in Ariadne since version 2.1.2
