@@ -25,6 +25,15 @@
 
 
   /**************************************************************************/
+  /* Error Reporting                                                        */
+  /* =============                                                          */
+  /* Ariadne generates warnings when E_NOTICE is not disabled               */
+  /**************************************************************************/
+
+  error_reporting( E_ALL ^ E_NOTICE );
+
+
+  /**************************************************************************/
   /* Fill in the location of the root of the Ariadne install directory     */                                                             
   /* Leave out the last '/' or '\' of the pathname.                        */
   /*************************************************************************/
