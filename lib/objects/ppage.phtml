@@ -59,9 +59,10 @@ class ppage extends pobject { // ppage class definition
 			return str_replace("{arSession}", $session, 
 			str_replace("{arBase}",$AR->host.$root, 
 			str_replace("{arRoot}",$AR->host.$this->store->root, 
+			str_replace("{arBase}$site", $this->make_url($site),
 			str_replace("{arRoot}$site", $this->make_url($site),
 			str_replace("{arCurrentPage}", $this->make_url(),
-				$page)))));
+				$page))))));
 		} else {
 			return str_replace("{arSession}", $session, 
 			str_replace("{arBase}",$AR->host.$root, 
