@@ -22,24 +22,24 @@ it, and it can even contain other files.
 'List modes' are our solution to this problem. When you first login to the
 Ariadne FTP server you will be confronted with a normal listing of the 
 current directory. You will also notice that there are 3 shortcuts starting
-and ending with an '-' sign:
+and ending with an '#' sign:
 
-	-files-
-	-templates-
-	-objects-
+	#files#
+	#templates#
+	#objects#
 
 These shortcuts tell the ftp server to switch to that list mode, in effect 
 changing which part of each object the server shows. 
 
--files-
+#files#
 
-	The '-files-' listmode shows you all of the Ariadne file objects in
+	The '#files#' listmode shows you all of the Ariadne file objects in
 	the current directory as normal files while all other Ariadne objects will 
 	be shown as directories. 
 	When downloading a file the template 'ftp.view.html' will be called on the 
 	object and the output sent to the FTP client.
 
-	If you upload a file, while listmode is set to '-files-', the uploaded file 
+	If you upload a file, while listmode is set to '#files#', the uploaded file 
 	will be transformed into Ariadne object. The class of the object depends on
 	the mimetype of the file. For each uploaded file the mimetype is checked by
 	walking through a list of mimetype -> objecttype mappings. These mappings 
@@ -59,9 +59,9 @@ changing which part of each object the server shows.
 	class "pphoto".
 
 
--templates-
+#templates#
 
-	Within the '-templates-' listmode, all objects are accessable as
+	Within the '#templates#' listmode, all objects are accessable as
 	directories. This way you can browse to any object. 
 
 	The templates of the objects will be accessable as files under the
@@ -87,13 +87,13 @@ changing which part of each object the server shows.
 		This tells Ariadne which language this template uses (en, nl, any, ...)
 
 
-	Any file uploaded in -templates- mode will be saved as a pinp template in 
+	Any file uploaded in #templates# mode will be saved as a pinp template in 
 	the current object.
 	It won't pass through the mimetype check. So, if you upload an image in 
-	-templates- mode, Ariadne will not create a pphoto object for you, it will 
+	#templates# mode, Ariadne will not create a pphoto object for you, it will 
 	just store this file as a template, which is probably not what you want.
 
--objects-
+#objects#
 
 	This mode is currently not finished. In the future it will allow you to 
 	download the entire object in an as yet unknown format.
