@@ -216,7 +216,7 @@ include($this->store->code."widgets/date/form.html");
     <?php } else { ?>
       <input type="submit" name="next" value="<?php echo $ARnls["cancel"]; ?>">
 <?php
-    $wgRecurseConfirm=$ARnls["q:removeobject"];
+    $wgRecurseConfirm=$ARnls["q:removearticle"];
 	$wgRecurseAction="delete";
 	$wgRecurseTitle=$ARnls["delete"];
     include($this->store->code."widgets/recurse/form.js");
