@@ -168,6 +168,19 @@ class mysqlstore {
 		return $result;
 	}
 
+	function count($objects) {
+		return @mysql_num_rows($objects["list"]);
+	}
+
+	function info($objects) {
+		debug("call($template, $args, [list])","store");
+		while ($row=@mysql_fetch_array($objects["list"])) {
+			unset($row["object"]);
+			$result[]=$row;
+		}
+		return $result;
+	}
+
 	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) {
 		debug("newobject($path, $parent, $type, [data], $id, $lastchanged, $vtype, $size, $priority)","all");
 		include_once($this->code."objects/".$type.".phtml");
@@ -637,6 +650,63 @@ class mysqlstore {
 		return $result;
 	}
 
+	function move($source, $destination) {
+	/**********************************************************************
+
+	$destination should always start and end with a '/'.
+
+	**********************************************************************/
+
+		debug("move($source,$destination)","store");
+		$this->error="";
+		$edestination=AddSlashes($destination);
+		$esource=AddSlashes($source); 
+		$parent=$this->make_path($destination, "..");
+		$eparent=AddSlashes($parent);
+		if ($this->exists($destination)) {
+			$this->error="$destination already exists, cannot overwrite.";
+			debug("move: ERROR: ".$this->error,"store");
+			$result=false;
+		} else if (!$this->exists($parent)) {
+			$this->error="$parent does not exist, cannot move.";
+			debug("move: ERROR: ".$this->error,"store");
+			$result=false;
+		} else { 
+			if (ereg("\{([0-9]):id\}",$destination,$match)) {
+				$subid=$this->nextid($parent);
+				if ($match[1]) {
+					$subid=substr("000000000".$subid,-(intval($match[1])));
+				}
+				$destination=ereg_replace("\{[0-9]:id\}",strval($subid),$destination);
+				$edestination=AddSlashes($destination);
+				debug("move: new destination: $destination ($subid)","all");
+			}
+			$id=$this->exists($source);
+			if ($id) {
+				$destinationlength=strlen($destination);
+				$parentlength=strlen($parent);
+				$query_string="update nodes set path=CONCAT('$edestination', SUBSTRING(path, $destinationlength+1)), parent=CONCAT('$eparent', SUBSTRING(parent, $parenlength+1)) where path like '$esource%'";
+				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+				$errno=mysql_errno($this->connect_id);
+				$error=mysql_error($this->connect_id);
+				if ($errno) {				
+					$this->error="ERROR: Mysql: $errno: $error";
+					debug("move: update nodes failed!","store");
+					debug("move: ".$this->error,"store");
+					debug("move: query=$query_string","store");
+					$result=false;
+				}
+				debug("move: end","all");
+				$result=$destination;
+			} else {
+				$result=false;
+				debug("move: end (no $source)","store");
+			}
+		}
+		return $result;
+	}
+
+
 	function list_paths($path) {
 	/**********************************************************************
 
@@ -871,6 +941,7 @@ class mysqlstore {
 		}
 		return $this->filestores[$name];
 	}
+
 
 } // end class store
 
