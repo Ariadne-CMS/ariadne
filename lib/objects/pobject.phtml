@@ -163,15 +163,19 @@ class pobject extends object { // pobject class definition
 				include($this->store->get_config("code")."templates/".$arType."/default.phtml");
 				break;
 			} else {
-				// no template found, no default.phtml found, try superclass.
-				if (!class_exists($arType)) {
-					// the given class was not yet loaded, so do that now
-					$this->store->newobject('','',$arType,'');
-					// include_once($this->store->get_config("code")."objects/".$arType.".phtml");
-					
+				if (!($arSuper=$AR->superClass[$arType])) {
+					// no template found, no default.phtml found, try superclass.
+					if (!class_exists($arType)) {
+						// the given class was not yet loaded, so do that now
+						$this->store->newobject('','',$arType,new object);
+						// include_once($this->store->get_config("code")."objects/".$arType.".phtml");
+						
+					}
+					$arTemp=new $arType();
+					$arSuper=get_parent_class($arTemp);
+					$AR->superClass[$arType]=$arSuper;
 				}
-				$arTemp=new $arType();
-				$arType=get_parent_class($arTemp);
+				$arType=$arSuper;
 				debug("try superclass: $arType","object");
 			}
 		}
@@ -957,7 +961,7 @@ class pobject extends object { // pobject class definition
 	}
 
 	function getPinpTemplate($arCallFunction='view.html', $path=".") {
-	global $ARCurrent, $ARConfig;
+	global $ARCurrent, $ARConfig, $AR;
 		$result = Array();
 		if (strpos($arCallFunction,"::")!==false) {
 			// template of a specific class defined via call("class::template");
@@ -987,41 +991,24 @@ class pobject extends object { // pobject class definition
 			$arType=$arCallType;
 			while ($arType!='object' && !$arCallTemplate) {
 				if ($arTemplateId=$curr_templates[$arType][$arCallFunction][$this->reqnls]) {
-					if (is_array($arTemplateId)) {
-						// this is an entry from the cache, so make sure we copy the correct type and id
-						// see template caching comments
-						$arType=$arTemplateId['type'];
-						$arTemplateId=$arTemplateId['id'];
-					} else if ($arTemplateId==-1) {
-						// jump out of the while loop, the template can't be found anyway
-						$arTemplateId=0;
-						break 2;
-					}
 					$arCallTemplate=$arType.".".$arCallFunction.".".$this->reqnls;
 					$arTemplateNls=$this->reqnls;
 				} else if ($arTemplateId=$curr_templates[$arType][$arCallFunction]['any']) {
-					if (is_array($arTemplateId)) {
-						// this is an entry from the cache, so make sure we copy the correct type and id
-						// see template caching comments
-						$arType=$arTemplateId['type'];
-						$arTemplateId=$arTemplateId['id'];
-					} else if ($arTemplateId==-1) {
-						// jump out of the while loop, the template can't be found anyway
-						$arTemplateId=0;
-						break 2;
-					}
 					$arCallTemplate=$arType.".".$arCallFunction.".any";
-
 					$arTemplateNls="any";
-
 				} else {
-
-					if (!class_exists($arType)) {
-						$arTemp=$this->store->newobject('.', '.', $arType, new object);
-					} else {
-						$arTemp=new $arType();
+					if (!($arSuper=$AR->superClass[$arType])) {
+						// no template found, no default.phtml found, try superclass.
+						if (!class_exists($arType)) {
+							// the given class was not yet loaded, so do that now
+							$arTemp=$this->store->newobject('','',$arType,new object);
+						} else {
+							$arTemp=new $arType();
+						}
+						$arSuper=get_parent_class($arTemp);
+						$AR->superClass[$arType]=$arSuper;
 					}
-					$arType=get_parent_class($arTemp);
+					$arType=$arSuper;
 				}
 			}
 			if ($ARConfig->cache[$checkpath]->library) {
@@ -1177,7 +1164,7 @@ class pobject extends object { // pobject class definition
 						// This triggers only for pinp templates called by other templates,
 						// as the first template (in the url) will first trigger the language
 						// choice dialogue instead.
-						if (!is_string($arCallArgs)) {
+						if (is_array($arCallArgs)) {
 							$arCallArgs['arCallFunction'] = $arCallFunction;
 							$arCallArgs['arLibrary'] = $template["arLibrary"];
 						}
