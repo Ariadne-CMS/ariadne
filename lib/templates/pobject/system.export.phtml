@@ -99,6 +99,7 @@ global $AR;
 				while (is_array($result) && (list($key,$object)=each($result))) {
 					$newpath=$destpath.substr($object->path, strlen($rootpath));
 
+					$update_obj = false;
 					$save_obj = true;
 
 					display("processing($newpath)	");
@@ -130,7 +131,6 @@ global $AR;
 												$ARCurrent->importStore->get($newpath)));
 
 								if (($object->lastchanged > $oldObject->lastchanged)) {
-									display("(updating)\n");
 									$update_obj = true;
 								} else {
 									display("(ok)\n");
@@ -156,6 +156,14 @@ global $AR;
 											$object->vtype,
 											$object->priority,
 											$object->dummy_save);
+
+						} else
+						if ($update_obj) {
+								$ARCurrent->importStore->call(
+											"system.export.update.phtml", 
+											Array("newObject" => $object),
+											$ARCurrent->importStore->get($newpath));
+
 						}
 
 						// (update or set templates and files)

@@ -11,17 +11,13 @@
 	Returns true on success , false on an error.
   ******************************************************************/
   if ($this->CheckLogin("edit")) {
-	display("system.export.update.phtml (".$this->path.")\n");
+	$keep_templates = $this->data->templates;
+	$keep_pinp		= $this->data->pinp;
 
-	// get object grants.
-
-	$this->call("system.export.get.grants.phtml");
-
-	if ($this->error) {
-		$arResult=false;
-	} else {
-		$arResult=true;
-	}
+	$this->data=$newObject->data;
+	$this->data->templates=$keep_templates;
+	$this->priority=$newObject->priority;
+	$this->save();
 
   } else {
 	$arResult=false;
