@@ -35,6 +35,9 @@
 
 	$ERRMODE="htmljs"; // alternative: "text"/"html"/"js"
 
+	define('LD_ERR_ACCESS', -1);
+	define('LD_ERR_SESSION', -2);
+
 	include_once($store_config['code']."modules/mod_debug.php");
 	
 	function debug_print( $text ) {
@@ -85,6 +88,7 @@
 			$result = true;
 		} else {
 			debug("ldAuthUser: user('$user') could not authenticate", "all");
+			$result = LD_ERR_ACCESS;
 		}
 		return $result;
 	}
@@ -111,7 +115,7 @@
 								$result = ldAuthUser($login, $password);
 							} else {
 								debug("ldCheckLogin: wrong password in session (".$ARCurrent->session->id."); try again", "all");
-								$result = false;
+								$result = LD_ERR_ACCESS;
 							}
 						} else
 						if (ldCheckCredentials($ARCurrent->session->get("ARLogin"), $ARCurrent->session->get("ARPassword", 1)))  {
@@ -133,7 +137,7 @@
 			if ($ARCurrent->session) {
 				if ($ARCurrent->session->get("ARSessionTimedout", 1)) {
 					debug("ldCheckLogin: session has been timedout, forcing login", "all");
-					$result = false;
+					$result = LD_ERR_SESSION;
 				} else
 				if (!$ARCurrent->session->get("ARLogin")) {
 					debug("ldCheckLogin: logging in with public session (".$ARCurrent->session->id.")", "all");
@@ -151,11 +155,11 @@
 							debug("ldCheckLogin: could not login ($login) on private session (".$ARCurrent->session->id.") with credentials from cookie: removing cookie", "all");
 							unset($cookie[$ARCurrent->session->id]);
 							setcookie("ARCookie", serialize($cookie), 0, '/');
-							$result = false;
+							$result = LD_ERR_ACCESS;
 						}
 					} else {
 						debug("ldCheckLogin: user tried to hijack a session (".$ARCurrent->session->id.") ", "all");
-						$result = false;
+						$result = LD_ERR_ACCESS;
 					}
 				}
 			} else {

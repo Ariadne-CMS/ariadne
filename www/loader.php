@@ -254,8 +254,13 @@
 
 			register_shutdown_function("ldOnFinish");
 
-			if (!ldCheckLogin($args["ARLogin"], $args["ARPassword"])) {
-				$function = "user.login.html";
+			$result = ldCheckLogin($args["ARLogin"], $args["ARPassword"]);
+			if ($result!==true) {
+				if ($result == LD_ERR_ACCESS) {
+					$function = "user.login.html";
+				} else if ($result == LD_ERR_SESSION) {
+					$function = "user.session.timeout.html";
+				}
 			}
 			
 			// finally call the requested object
