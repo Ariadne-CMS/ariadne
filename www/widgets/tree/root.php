@@ -323,16 +323,32 @@ function Draw() {
 	target.document.writeln(MenuDraw);
 	target.document.close();
 	if (x || y) {
+		// alert('x: '+x+'; y: '+y);
 		if (x && NodeOpened) {
-			x+=75;
+			x+=25;
+		} else {
+			x-=25;
 		}
 		if (y && NodeOpened) {
-			y+=75;
+			y+=20;
+		} else {
+			y-=20;
 		}
 		NodeOpened=false;
-		target.scrollTo(x,y);
+		setTimeout("ScrollTree("+x+","+y+")", 50);
+//		target.scrollTo(x,y);
 	}
 	parent.LoadingDone();
+}
+
+function ScrollTree(x, y) {
+	target=window.treeview;
+	if (target.document && target.document.readystate) {
+		if (target.document.readystate!='loaded') {
+			setTimeout("ScrollTree", 10, target, x, y);
+		}
+	}
+	target.scrollTo(x,y);
 }
 
   function toggle(id) {
