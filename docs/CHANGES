@@ -46,6 +46,8 @@ New Features:
 	- Updated the windows XP look to work with large directories and work under mozilla.
 	- Added a PDF write module, which allows you to create PDF documents using pinp, and
 	  also convert simple html to pdf. Uses fpdf, which must be installed seperately.
+	- Added the option to add spans, divs and other html tags with or without classnames
+	  using the editor.
 
 Bugs Fixed:
 	- Added missing German WinXP NLS by Daniel Sepeur.
