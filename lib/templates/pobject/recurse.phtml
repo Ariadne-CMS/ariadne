@@ -99,7 +99,6 @@
 											if (top.window.opener.wgRecurseDone) {
 												top.window.opener.wgRecurseDone();
 											}
-											top.window.close();
 										} else if (window.opener) {
 											if (window.opener.top.View) {
 												window.opener.top.View('<?php echo $this->parent; ?>');
@@ -107,8 +106,8 @@
 											if (window.opener.wgRecurseDone) {
 												window.opener.wgRecurseDone();
 											}
-											window.close();
 										}
+										top.window.close();
 									}
 								}
 							<?php
