@@ -50,6 +50,8 @@ New Features:
 	  using the editor.
 
 Bugs Fixed:
+	- Fixed a bug which made it impossible to start a hidden session without
+	  logging in.
 	- Added missing German WinXP NLS by Daniel Sepeur.
 	- Fixed the ftp server it's mimetype extension fallback.
 	- Fixed a bug in the grant system: local grants did get inherited.
