@@ -151,16 +151,16 @@
 			return edit::showDiv($var, $name, $title);
 		}
 
-		function _showLink($path, $extra='') {
+		function _showLink($path='', $extra='') {
 			return edit::showLink($path, $extra);
 		}
 
-		function _showEditableLink($path, $extra='', $url=false) {
+		function _showEditableLink($path='', $extra='', $url=false) {
 			return edit::showEditableLink($path, $extra, $url);			
 		}
 		
-		function _showHref($path) {
-			return edit::showHref($path);
+		function _showHref($path='', $extra='') {
+			return edit::showHref($path, $extra);
 		}
 
 		function _isEmpty($var) {
