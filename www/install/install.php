@@ -174,7 +174,7 @@
 		echo "ax file (".$ax_config["database"].")\n";
 		set_time_limit(0);
 		$inst_store = $ax_config["dbms"]."store";
-		$axstore=new $inst_store(".", $ax_config);
+		$axstore=new $inst_store("", $ax_config);
 		if (!$axstore->error) {
 			$ARCurrent->importStore=&$store;
 			$args="srcpath=/&destpath=/";
