@@ -9,7 +9,9 @@
 ?>
 <HTML>
 <HEAD>
-<TITLE>Ariadne</TITLE>
+<TITLE>Ariadne<?php
+print ": ".$AR->user->data->name.'/'.$AR->user->data->login;
+?></TITLE>
 <script>
 <!--
 
