@@ -2,7 +2,7 @@
   $ARCurrent->nolangcheck=true;
   if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		eregi('^(local[.])?([a-z_0-9]+)[.](.*)[.](.*)', $source_template, $regs);
-		$default=$regs[1];
+		$default=! $regs[1];
 		$type=$regs[2];
 		$function=$regs[3];
 		$language=$regs[4];
@@ -13,21 +13,6 @@
 			$templates=$this->store->get_filestore("templates");
 			if ($templates->exists($this->id, $template)) {
 				$file=$templates->read($this->id, $template);
-				/* now we have to save our template */
-
-				eregi('^(local[.])?([a-z_0-9]+)[.](.*)[.](.*)', $target_template, $regs);
-				$tdefault	= (isset($regs[1])) ? $regs[1] : $default;
-				$ttype		= (isset($regs[2])) ? $regs[2] : $type;
-				$tfunction	= (isset($regs[3])) ? $regs[3] : $target_template;
-				$tlanguage	= (isset($regs[4])) ? $regs[4] : $language;
-				
-				$this->get($target, "system.save.layout.phtml", Array(
-														"template"	=> $file,
-														"default"	=> $tdefault,
-														"type"		=> $ttype,
-														"function"	=> $tfunction,
-														"language"	=> $tlanguage ));
-				if (!$this->error) {
 					$this->get($source, "system.delete.layout.phtml", 
 										Array(
 											"type"		=> $type,
@@ -35,7 +20,21 @@
 											"language"	=> $language 
 										));
 
-				}
+				/* now we have to save our template */
+
+				eregi('^(local[.])?([a-z_0-9]+)[.](.*)[.](.*)', $target_template, $regs);
+				$tdefault	= ! $regs[1];
+				$ttype		= (isset($regs[2])) ? $regs[2] : $type;
+				$tfunction	= (isset($regs[3])) ? $regs[3] : $target_template;
+				$tlanguage	= (isset($regs[4])) ? $regs[4] : $language;
+
+				debug("templates.rename to: $tdefault, $ttype, $tfunction, $tlanguage");				
+				$this->get($target, "system.save.layout.phtml", Array(
+														"template"	=> $file,
+														"default"	=> $tdefault,
+														"type"		=> $ttype,
+														"function"	=> $tfunction,
+														"language"	=> $tlanguage ));
 			}
 		}
 
