@@ -1,0 +1,39 @@
+<?php
+	/******************************************************************
+	 browse.nav.list.show.phtml                            Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: none
+	 Global variables: none
+
+	 This template displays the icon and name of an object. If the 
+	 user doesn't have read access to the object, the name is displayed
+	 in grey.
+	 
+	 no result
+
+	******************************************************************/
+
+	if (!$arLanguage) {
+		$arLanguage=$nls;
+	}
+	if ($data->$arLanguage) {
+		$nlsdata=$data->$arLanguage;
+	}
+	$folder=$this->call("system.get.folder.phtml");
+?>
+<div class='object'><nobr><a 
+	href="javascript:top.View('<?php echo $this->path; ?>');"><img 
+	width="20" height="20" src="<?php echo $AR->dir->images; ?>icons/<?php echo $folder['icon']; ?>.gif" 
+	alt="<?php echo $this->path; ?>" border="0"> <?php
+		if (strlen($nlsdata->name)>32) {
+			$name=substr($nlsdata->name,0, 32)."...";
+		} else {
+			$name=$nlsdata->name;
+		}
+		if (!$this->CheckSilent("read")) {
+			echo "<font color=\"#CCCCCC\">$name</font>";
+		} else {
+			echo "$name";
+		}
+	?></a></nobr></div>
