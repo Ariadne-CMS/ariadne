@@ -243,7 +243,7 @@
 					$this->limit_s=" limit ".(int)$node["offset"].", ".$node["limit"]." ";
 				} else
 				if ($node["offset"]) {
-					$this->limit_s=" limit ".(int)$node["offset"].", 0 ";
+					$this->limit_s=" limit ".(int)$node["offset"]." ";
 				} else {
 					if ($this->limit) {
 						$offset = (int)$this->offset;
