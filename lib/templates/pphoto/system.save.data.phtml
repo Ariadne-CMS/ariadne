@@ -10,6 +10,10 @@
 			$this->data->author=$AR->user->getdata("name", "none");
 			$this->data->authorpath=$AR->user->path;
 			$this->data->created=time();
+			$filename=$this->getdata("arNewFilename","none");
+			while (list($key,$value)=each($ARConfig->nls->list)) {
+				$this->data->$key->name=$filename;
+			}
 		}
 
 		$this->data->mimetype=$this->getdata("mimetype","none");
