@@ -25,6 +25,9 @@ class axstore {
 	*****************/
 
 	function axstore($path, $config) {
+		debug("axstore($path, $config)", "store");
+		include_once($config["code"]."modules/mod_tar.phtml");
+
 		$this->database=$config["database"];
 
 		$this->writeable=$config["writeable"];
@@ -32,20 +35,20 @@ class axstore {
 		$this->files=$config["temp"];
 		$this->code=$config["code"];
 
-		$this->tar_error_handler=$config["tar_error_handler"];
-		$this->tar_tar=$config["tar_tar"];
-		$this->tar_untar=$config["tar_untar"];
-		$this->tar_nofail=$config["tar_nofail"];
+		$this->tar = new mod_tar($config["tar"]);
 
 		// create tempdir (and do some windows compat magic)
 		$this->tempdir=tempnam($this->temp, "axtemp");
 		@unlink($this->tempdir);
 
+		debug("creating tempdir (".$this->tempdir.")", "store");
 		if (@mkdir($this->tempdir, 0777)) {
 			if (file_exists($this->database)) {
-				if ($this->_untar($this->database, " ", $this->tempdir)) {
+				debug("extracting database (".$this->database.")", "store");
+				if ($this->tar->extract($this->database, " ", $this->tempdir)) {
 					if (file_exists($this->tempdir."/objects.data")) {
 						// now we have found our objects.data, lets make an index of it
+						debug("loading (".$this->tempdir."/objects.data)", "store");
 						$this->ofile=fopen($this->tempdir."/objects.data", "rb");
 						if ($this->ofile) {
 							$currentoffset=ftell($this->ofile);
@@ -86,6 +89,7 @@ class axstore {
 								$currentoffset=ftell($this->ofile);
 							}
 
+							debug("loading (".$this->tempdir."/nodes.data", "store");
 							// read nodes data
 							$fp_nodes=fopen($this->tempdir."/nodes.data", "rb");
 							if ($fp_nodes) {
@@ -125,13 +129,13 @@ class axstore {
 					}
 
 					if (!$this->error && file_exists($this->tempdir."/templates.tgz")) {
-						if (!$this->_untar($this->tempdir."/templates.tgz", "", $this->tempdir)) {
+						if (!$this->tar->extract($this->tempdir."/templates.tgz", "", $this->tempdir)) {
 							$this->error="Could not untar templates archive";
 						}
 					}
 
 					if (!$this->error && file_exists($this->tempdir."/files.tgz")) {
-						if (!$this->_untar($this->tempdir."/files.tgz", "", $this->tempdir)) {
+						if (!$this->tar->extract($this->tempdir."/files.tgz", "", $this->tempdir)) {
 							$this->error="Could not untar files archive";
 						}
 					}
@@ -140,6 +144,8 @@ class axstore {
 						/* create a temporary 'temp' directory */
 						@mkdir($this->files."temp/", 0755);
 					}
+				} else {
+					$this->error="Could not extract database";
 				}
 			} else 
 			if ($this->writeable) {
@@ -152,6 +158,7 @@ class axstore {
 			$this->error="Could not create tempdir";
 		}
 
+		debug("axstore [end]", "store");
 		return $result;
 	}
 
@@ -650,95 +657,6 @@ class axstore {
 		return $result;
 	}
 
-	function _fix_tar_paths($path) {
-	global $AR;
-		if ($AR->OS=="WIN32") {
-			$path=str_replace('\\', '/', $path);
-			if (eregi('^([a-z]):', $path, $regs)) {
-				$path="//".$regs[1].substr($path,2);
-			}
-		}
-		// escape spaces
-		$path=ereg_replace('([^\])[ ]', '\1\ ', $path);
-		return $path;
-	}
-
-	function _untar($tarfile, $file, $dstdir) {
-		if ($this->tar_error_handler) {
-			$errfile=$this->tempdir."/tar.errors";
-			$errfile=$this->_fix_tar_paths($errfile);
-			$handler=sprintf($this->tar_error_handler, $errfile);
-		}
-		$dstdir=$this->_fix_tar_paths($dstdir);
-		$tarfile=$this->_fix_tar_paths($tarfile);
-
-		//$command=sprintf($this->tar_untar, $dstdir, $file, $tarfile, $handler );
-		$arguments = Array(
-						"%destdir%" => $dstdir,
-						"%contents%" => $file,
-						"%archive%" => $tarfile,
-						"%errorhandler%" => $handler
-					 );
-
-		$command = $this->tar_untar;
-		while (list($key, $val) = each($arguments)) {
-			$command = str_replace($key, $val, $command);
-		}
-
-		system($command,$retVar);
-		if (!$this->tar_nofail && ($retVar!=0 && $retVar!=259)) {
-			$this->error.="Error:\n	($command):\n	Can't untar $tarfile, untar failed in $dstdir with errorcode ($retVar)\n";
-			if ($errfile && file_exists($errfile)) {
-				$this->error.=implode("",file($errfile));						
-				unlink($errfile);
-				$this->error.="\n";
-			}
-			$result=0;
-		} else {
-			$result=1; // ok
-		}
-		return $result;
-	}
-
-	function _tar($tarfile, $file, $dstdir) {
-		if ($this->tar_error_handler) {
-			$errfile=$this->tempdir."/tar.errors";
-			$errfile=$this->_fix_tar_paths($errfile);
-			$handler=sprintf($this->tar_error_handler, $errfile);
-		}
-
-		$dstdir=$this->_fix_tar_paths($dstdir);
-		$tarfile=$this->_fix_tar_paths($tarfile);
-
-		//$command=sprintf($this->tar_tar, $dstdir, $file, $tarfile, $handler );
-		$arguments = Array(
-						"%destdir%" => $dstdir,
-						"%contents%" => $file,
-						"%archive%" => $tarfile,
-						"%errorhandler%" => $handler
-					 );
-
-		$command = $this->tar_tar;
-
-		while (list($key, $val) = each($arguments)) {
-			$command = str_replace($key, $val, $command);
-		}
-
-		system($command,$retVar);
-		if (!$this->tar_nofail && $retVar!=0) {
-			$this->error="Error: ($command):\n	Can't tar to $tarfile, tar failed in $dstdir with errorcode ($retVar)\n";
-			if ($errfile && file_exists($errfile)) {
-				$this->error.=implode("",file($errfile));						
-				unlink($errfile);
-				$this->error.="\n";
-			}
-			$result=0;
-		} else {
-			$result=1; // ok
-		}
-		return $result;
-	}
-
 	function rm_dir($path) {
 	debug("axstore::rm_dir($path)");
 		$path=($path[strlen($path)-1]=="/") ? $path : $path."/";
@@ -810,14 +728,14 @@ class axstore {
 
 						// filestores:
 						if (file_exists($this->tempdir."/templates")) {
-							if (!$this->_tar($this->tempdir."/templates.tgz", "templates", $this->tempdir)) {
+							if (!$this->tar->create($this->tempdir."/templates.tgz", "templates", $this->tempdir)) {
 								$this->error="Could not create templates archive";
 							}
 							$this->rm_dir($this->tempdir."/templates");
 						}
 
 						if (file_exists($this->tempdir."/files")) {
-							if (!$this->_tar($this->tempdir."/files.tgz", "files", $this->tempdir)) {
+							if (!$this->tar->create($this->tempdir."/files.tgz", "files", $this->tempdir)) {
 								$this->error="Could not create files archive";
 							}
 							$this->rm_dir($this->tempdir."/files");
@@ -827,7 +745,7 @@ class axstore {
 							$this->rm_dir($this->files."/temp");
 						}
 
-						if (!$this->_tar($this->database, " . ", $this->tempdir)) {
+						if (!$this->tar->create($this->database, " . ", $this->tempdir)) {
 							$this->error="Could not save the new export file $this->database\n";
 						} else {
 							$this->rm_dir($this->tempdir);
