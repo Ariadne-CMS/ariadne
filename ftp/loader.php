@@ -11,7 +11,7 @@
 		/* this function has been taken from the php manual		*/
 		
 		function ftp_ErrorHandler ($errno, $errmsg, $filename, $linenum, $vars) {
-			if ( $errno!=2 && $errno!=8 ) {
+			if ($errno!=8 ) {
 			    // timestamp for the error entry
 			    $dt = date("Y-m-d H:i:s (T)");
 
@@ -87,6 +87,18 @@
 				}
 			}
 
+			if ($result) {
+				if ($FTP->DC["ob_active"]) {
+					debug("error: OOPS, dc ob not closed!!");
+				} else {
+					$FTP->DC["ob_active"]=true;
+					if (ob_start("ftp_WriteDC")) {
+						debug("ftp_OpenDC:: opening ob");
+					} else {
+						debug("ftp_OpendDC:: could not open ob");
+					}
+				}
+			}
 			return $result;
 		}
 
@@ -120,6 +132,8 @@
 						$result.=",".(((int)$port) >> 8);
 						$result.=",".($port & 0x00FF);
 					}
+				} else {
+					ftp_Tell(425, "Couldn't build data connection:  couldn't bind to a socket");
 				}
 
 			} else {
@@ -130,14 +144,23 @@
 		}
 
 
-		function ftp_WriteDC($data, $len=0) {
+		function ftp_WriteDC($data) {
 		global $FTP;
-			if ($FTP->DC["type"]==="A") {
-				$data=str_replace("\n", "\r\n", $data);
+		// FIXME: use little chunks (copy!) while doing ASCII stuff so that
+		//			PHP will not copy the whole output buffer.
+		//			in case of a readfile, PHP has mmap'ed the file..
+
+			if (strlen($data)) {
+				if ($FTP->DC["type"]==="A") {
+					$data=str_replace("\n", "\r\n", $data);
+				}
+				$len=strlen($data);
+				debug("ftp_WriteDC:: writing len (".$len.")");
+				if (!write($FTP->DC["msgsocket"], $data, $len)) {
+					debug("ftp_WriteDC:: ERROR write $len bytes!");
+				}
+				$FTP->DC["transfered"]+=strlen($data);
 			}
-			$len=strlen($data);
-			write($FTP->DC["msgsocket"], $data, $len);
-			$FTP->DC["transfered"]+=strlen($data);
 		}
 
 		function ftp_ReadDC() {
@@ -157,6 +180,12 @@
 
 		function ftp_CloseDC() {
 		global $FTP;
+			if ($FTP->DC["ob_active"]) {
+				debug("ftp: closing output buffer");
+				ob_end_clean();
+				$FTP->DC["ob_active"]=false;
+			}
+
 			debug("ftp: closing connection");
 			$con=$FTP->DC["msgsocket"];
 			if ($con) {
@@ -179,9 +208,10 @@
 		}
 
 		function ftp_Run() {
-		global $FTP, $ARCurrent;
+		global $FTP, $ARCurrent, $ARBeenHere;
 
 			while (ftp_FetchCMD($cmd, $args)) {
+				$ARBeenHere=Array();		
 				switch ($cmd) {
 					case 'QUIT':
 						ftp_Tell(221, "Goodbye.");
@@ -271,14 +301,12 @@
 
 						if (ftp_OpenDC()!==false) {
 							if ($FTP->store->exists($path)) {
-								ob_start();
 
 								$FTP->store->call("ftp.$getmode.get.phtml", array("arRequestedTemplate" => $template),
 											$FTP->store->get($path));
 								$file_data=ob_get_contents();
 								ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ascii' : 'binary')." mode data connection for $args[0] (".strlen($file_data)." bytes)");
-								ftp_WriteDC($file_data);
-								ob_end_clean();
+
 								ftp_CloseDC();
 								ftp_Tell(226, "Transfer complete");
 							} else {
@@ -307,7 +335,7 @@
 									$mode["size"]=0;
 									$mode["grants"]["read"]=true;
 									$data=ftp_GenListEntry($mode);
-									ftp_WriteDC($data);
+									echo "$data";
 								}
 
 								if ($listMode!=="templates") {
@@ -318,7 +346,7 @@
 									$mode["size"]=0;
 									$mode["grants"]["read"]=true;
 									$data=ftp_GenListEntry($mode);
-									ftp_WriteDC($data);
+									echo "$data";
 								}
 
 								if ($listMode!=="objects") {
@@ -329,7 +357,7 @@
 									$mode["size"]=0;
 									$mode["grants"]["read"]=true;
 									$data=ftp_GenListEntry($mode);
-									ftp_WriteDC($data);
+									echo "$data";
 								}
 								$template="ftp.".$listMode.".list.phtml";
 								$result=current($FTP->store->call($template, "",
@@ -340,7 +368,7 @@
 								while (list($key, $entry)=@each($result)) {
 									debug("ftp: file path = (".$entry["path"].")");
 									$data=ftp_GenListEntry($entry);
-									ftp_WriteDC($data);
+									echo "$data";
 								}
 
 								ftp_CloseDC();
