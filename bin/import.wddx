@@ -3,58 +3,96 @@
 	$stack=array();
 	$in=fopen('php://stdin', 'r');
 
-	function process_v($data) {
-		if(strcmp($data, "NaN")) {
-		if($data>12500000) {
-			$data=sprintf(" NaN ");
-		}
-		if($data<0) {
-			$data=sprintf(" NaN ");
-		}
-	}
-		return $data;
-	}
-	
-	function startElement($parser, $name, $attrs) {
-		global $stack;
+	class object { };
+
+	function startElement($parser, $name, $attribs) {
+	global $stack;
 		switch($name) {
 			case "wddxPacket":
 			case "header":
 			case "comment":
 			case "version":
 			case "data":
-				break;
-			case "var":
+				array_push($stack, Array("type" => "top", "data" => Array()));
+			break;
 			case "struct":
+				switch($attribs["type"]) {
+					case "object":
+						$value = new object;
+					break;
+					default:
+						$value = Array();
+					break;
+				}
+				array_push($stack, Array("type" => $attribs["type"], "data" => $value));
+			break;
+			case "var":
+				array_push($stack, Array("type" => $name, "data" => $attribs["name"]));
+			break;
 			case "number":
 			case "string":
 			case "boolean":
-				array_push($GLOBALS['stack'], Array("type" => $name, "attr" => $attrs));
-				break;
+				array_push($stack, Array("type" => $name));
+			break;
 		}
 	}
 	
 	function endElement($parser, $name) {
-		$var=array_pop($GLOBALS['stack']);
+	global $stack;
+
+		$element = &$stack[count($stack)-1];
+		$element["locked"] = true;
+
 		switch($name) {
 			case "var":
-			case "struct":
-			case "number":
-			case "string":
-			case "boolean":
-				break;
+				$value = array_pop($stack);
+				if ($value["type"] == "var") {
+					/* we did get a key without a value */
+					$var = $value;
+				} else {
+					$var = array_pop($stack);
+				}
+				$struct = array_pop($stack);
+
+				$key = $var["data"];
+				if (is_object($struct["data"])) {
+					$struct["data"]->$key = $value["data"];
+				} else {
+					$struct["data"][$key] = $value["data"];
+				}
+				array_push($stack, $struct);
+			break;
+
+			case "data";
+				$object = array_pop($stack);
+				print_r($object["data"]);
+			break;
 		}
 		
 	}
 	
 	function characterData($parser, $data) {
-		global $stack;
-		$el=$stack[count($stack)-1];
-		switch($el) {
-			default:
+	global $stack;
+		$element = &$stack[count($stack)-1];
+		if (!$element["locked"]) {
+			switch ($element["type"]) {
+				case "number":
+					$element["data"] = (int)$data;
 				break;
+				case "boolean":
+					switch ($data) {
+						case "true":
+							$element["data"] = true;
+						break;
+						default:
+							$element["data"] = false;
+					}
+				break;
+				case "string":
+					$element["data"] .= $data;
+				break;
+			}
 		}
-//		print $data;
 	}
 	
 	$xml_parser = xml_parser_create();
