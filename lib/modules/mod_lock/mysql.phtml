@@ -26,6 +26,7 @@ class mysqllock {
 
 	function connect($host="localhost",$user="root",$password="") {
         debug("mysqllock::connect($host, $user, [password])","store");
+		$this->mayClose=true;
 		$this->host=$host;
 		$this->user=$user;
 		$this->password=$password;
@@ -134,7 +135,9 @@ class mysqllock {
 	}
 
 	function close() {
-		mysql_close($this->connectid);
+		if ($this->mayClose) {
+			mysql_close($this->connectid);
+		}
 	}
 
 	function init() {
