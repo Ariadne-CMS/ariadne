@@ -245,7 +245,7 @@
 				$modified=time();
 			}
 			ldHeader("Pragma: no-cache");
-			ldHeader("Cache-control: no-store, no-cache, must-revalidate, max-age=0, private");
+			ldHeader("Cache-control: no-cache, must-revalidate, max-age=0, private");
 			ldHeader("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$expires));
 			$result=ldHeader("Last-Modified: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$modified));
 		}
