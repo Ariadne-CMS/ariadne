@@ -23,7 +23,16 @@
 			$template=$type.".".$function.".".$language.".pinp";
 			$templates=$this->store->get_filestore("templates");
 			if ($templates->exists($this->id, $template)) {
-				$arResult = true;
+				if (!$this->data->templates[$type][$function]) {
+					$entry["filename"]="local.$type.$function.$language";
+				} else {
+					$entry["filename"]="$type.$function.$language";
+				}
+				$entry["date"]=$this->lastchanged;
+				$entry["type"]="template";
+				$entry["size"]=$templates->size($this->id, $template);
+				$entry["grants"]["read"]=true;
+				$arResult=$entry;
 			}
 		}
   }

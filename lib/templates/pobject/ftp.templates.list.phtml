@@ -6,6 +6,8 @@
 			$entry["grants"]["write"]=true;
 		}
 
+		$fstore=$this->store->get_filestore("templates");
+
 		if (($data->pinp) && is_array($data->pinp)) {
 			while (list($type, $values)=each($data->pinp)) {
 				while (list($function, $templatelist)=each($values)) {
@@ -19,7 +21,7 @@
 									}
 									$entry["date"]=$this->lastchanged;
 									$entry["type"]="template";
-									$entry["size"]=0;
+									$entry["size"]=$fstore->size($this->id, "$type.$function.$language.pinp");
 									$entry["grants"]["read"]=true;
 									$arResult[]=$entry;
 							}
