@@ -92,6 +92,7 @@
 				// the mtime is used as expiration time, the ctime is the correct last modification time.
 				// as an object clears the cache upon a save.
 				ldHeader("HTTP/1.1 304 Not Modified");
+				// echo "not modified\n";
 			} else {
 				// now send caching headers too, maximum 1 hour client cache.
 				// FIXME: make this configurable. per directory? as a fraction?
@@ -101,13 +102,13 @@
 				} else {
 					$cachetime=$mtime; 
 				}
-				ldSetClientCache(true, $cachetime);
 				if (file_exists($cachedheader)) {
 					$headers=file($cachedheader);
 					while (list($key, $header)=@each($headers)) {
 						ldHeader(chop($header));
 					}
 				}
+				ldSetClientCache(true, $cachetime, $ctime);
 				readfile($cachedimage);
 			}
 
@@ -146,9 +147,10 @@
 		}
 		// now check for outputbuffering
 		if ($image=ob_get_contents()) {
-			if (!$ARCurrent->arDontCache) {
-				ldSetClientCache(true, $ARCurrent->cachetime);
+			if (!$ARCurrent->arDontCache && $ARCurrent->cachetime) {
+				ldSetClientCache(true, time()+(($ARCurrent->cachetime * 3600)/2));
 			}
+			ldHeader("Content-Length: ".strlen($image));
 			ob_end_flush();
 			debug("loader: ob_end_flush()","all");
 			if (is_array($ARCurrent->cache) && ($file=array_pop($ARCurrent->cache))) {
