@@ -10,16 +10,16 @@
 		}
 	} else {
 		if ($this->exists($path)) {
-			$target = current($this->get($path, "system.get.phtml"));
-			if ($target->CheckLogin("edit", "ppage") && $this->CheckConfig()) {
+			$target_object = current($this->get($path, "system.get.phtml"));
+			if ($target_object->CheckLogin("edit", "ppage") && $this->CheckConfig()) {
 				$proceed = true;
 			}
 		} else {
-			$target = current($this->get(
+			$target_object = current($this->get(
 								$this->store->make_path($path, ".."),
 								"system.get.phtml"));
 
-			if ($target->CheckLogin("add", "ppage") && $this->CheckConfig()) {
+			if ($target_object->CheckLogin("add", "ppage") && $this->CheckConfig()) {
 				$proceed = true;
 			}
 		}
