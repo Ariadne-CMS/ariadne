@@ -8,6 +8,9 @@ IMPORTANT:
     need to read the docs/upgrade.txt file first.
 
 New features:
+	- Implemented Sophos AV support (tested on Un*x) Thanks to Goran Amadan.
+	- HTTP/HTTPS switching, and secure login (while keeping the rest of the
+	  site on standard HTTP) Thanks to Goran Amadan.
 	- Added Polish translation of the newspaper at login. Thanks to
 	  Lukasz Keler.
 	- Updated the logoff screen to new login layout. Thanks to Dino
@@ -49,6 +52,9 @@ New features:
 	  object to be called. Explicitly set another top to prevent this.
 		
 Bugs fixed:
+	- Added an error dialog to the pfile wizards, to inform the user about
+	  virus infection (the current behaviour was to ignore the error, resulting
+	  in an empty file, leaving the user wondering) Thanks to Goran Amadan.
 	- Fixed sessions cleanup in the bin/cleanup script. It now removes
 	  more than 100 expired sessions per run.
 	- Fixed a bug which made it impossible to rename e.g. '/Test/' to
