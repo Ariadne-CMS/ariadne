@@ -69,6 +69,7 @@ class scanner {
 		$yych = $YYBUFFER[$YYCURSOR];
 		switch ($YYSTATE) {
 			case YY_STATE_HTML:
+				//echo "HTML($yych)\n";
 				if (ord($yych) == 0) {
 					return T_EOF;
 				} else {
@@ -103,6 +104,7 @@ class scanner {
 				}
 			break;
 			case YY_STATE_PINP:
+				//echo "PINP($yych)\n";
 				switch($yych) {
 					case '$': 
 						$yych = $YYBUFFER[++$YYCURSOR];
@@ -199,6 +201,10 @@ class scanner {
 								}
 								$result = "unterminated comment, started at $start_line";
 								return T_ERROR;
+							break;
+							default:
+								$result = "/";
+								return T_UNPARSED;
 							break;
 						}
 					break;
@@ -358,7 +364,6 @@ class scanner {
 							return T_OBJECT_OPERATOR;
 						} else {
 							$result="-";
-							--$YYCURSOR;
 							return T_UNPARSED;
 						}
 					break;
