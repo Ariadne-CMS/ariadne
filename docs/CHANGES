@@ -10,7 +10,7 @@ New Features:
 	  it possible to have debugging and/or verbose enabled during the export.
 	  this also makes the usage of ob_ functions obsolete. this also reduces the
 	  usage of memory
-	- Updated mod_soap.php with SOAP_Header support.
+	- Updated mod_soap.php with SOAP_Header and SOAP_Parser support.
 	- Added a preference setting for the template editor, normal textarea or helene,
 	  the syntax highlighting editor.
 	- Pinp library support is now available, allowing you to have a library of templates
