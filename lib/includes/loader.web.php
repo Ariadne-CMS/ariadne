@@ -370,21 +370,12 @@
 
 		debug("ldSetCredentials($login, [password])","object");
 		if ($ARCurrent->session && 
-					(!$ARCurrent->session->get("ARSessionActivated",1) ||
-					!$ARCurrent->session->get("ARLogin"))) {
+					(!$ARCurrent->session->get("ARLogin"))) {
 			/* use the same sessionid if the user didn't login before */
 			ldStartSession($ARCurrent->session->id);
 			$ARCurrent->session->put("ARLogin",$login);
 			$ARCurrent->session->put("ARPassword",$password,1);
 			$ARCurrent->session->put("ARSessionActivated",false,1);
-		} else if (!$ARCurrent->session || 
-					(!$ARCurrent->session->get("ARSessionActivated",1)) || 
- 					($ARCurrent->session->get("ARLogin")!=$login)) {
-			// start a new session when there is no session yet, or
-			// when a user uses a new login. (su)
-			ldStartSession();
-			$ARCurrent->session->put("ARLogin",$login);
-			$ARCurrent->session->put("ARPassword",$password,1);
 		} else if ($ARCurrent->session->get("ARSessionTimedout", 1)  &&
 					ldCheckCredentials($login, $password) &&
 					$ARCurrent->session->get("ARLogin") === $login &&
