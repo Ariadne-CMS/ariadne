@@ -1,0 +1,27 @@
+<?php
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+?>
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>control.css">
+<style>
+  body {
+    border: 0px;
+    padding: 10px;
+  }
+</style>
+<script>
+  function onChange() {	
+    parent.CurrentPath=document.forms[0].URL.value;
+	parent.showPreview();
+  }
+</script>
+</head>
+<body onUnload="onChange();">
+<form>
+<?php echo $ARnls["url"]; ?>: <input type="text" onChange="onChange();" name="URL" value="<?php echo $url; ?>" style="width: 80%">
+</form>
+</body>
+<?php
+	}
+?>
