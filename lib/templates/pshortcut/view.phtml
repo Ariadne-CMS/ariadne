@@ -1,0 +1,39 @@
+<?php
+	/******************************************************************
+	 view.phtml                                            Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: read
+	 Global variables: none
+
+	 This template displays the management view of the object, with
+	 pulldown menu's etc.
+
+	 no result.
+
+	******************************************************************/
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+?>
+<html>
+<head>
+<title><?php echo $data->$nls->name; ?></title>
+<script>
+	tree=1;
+	function View(path) {
+		document.location.href='<?php echo $this->store->root; ?>'+path+'view.phtml';
+	}
+	function LoadingDone() {
+	}
+</script>
+</head>
+<body scroll="no" bgcolor="white" onLoad="top.LoadingDone();">
+<?php
+	include($this->store->code."widgets/menu/menu.phtml");
+	$this->call("manage.html");
+?>
+</div>
+</body>
+</html>
+<?php
+	}
+?>
