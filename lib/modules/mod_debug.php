@@ -50,7 +50,7 @@
 	global $DB;
 		$debugison = "";
 		if( $DB["method"]["file"] && $DB["file"] ) {
-			$DB["fp"]=fopen($DB["file"], "a+");
+			$DB["fp"]=@fopen($DB["file"], "a+");
 			if ($DB["fp"]) {
 				$debugison .= " [file ".$DB["file"]."]";
 			}
@@ -116,8 +116,8 @@
 			}
 
 			if( $DB["method"]["file"] && $DB["fp"] ) {
-				fwrite($DB["fp"], "(".$timestamping.")".$message."\n");
-				fflush($DB["fp"]);
+				@fwrite($DB["fp"], "(".$timestamping.")".$message."\n");
+				@fflush($DB["fp"]);
 			}
 			/* Check if we're debugging to the loader debug_print function and
 			   the loader is capable of debugging. 
