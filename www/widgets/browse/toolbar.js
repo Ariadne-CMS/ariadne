@@ -1,6 +1,6 @@
 	var viewmode=parent.Get('viewmode');
 	var b_offset=0;
-	var b_limit=50;
+	var b_limit=5;
 	var b_total=0;
 	var b_page=0;
 	if (!viewmode) {
@@ -92,5 +92,7 @@
 		} else {
 			archildren.location=newsrc;
 		}
-		document.b_pages.b_goto_select.options[document.b_page].selected=true;
+		if (document.b_pages.b_goto_select.options.size) {
+			document.b_pages.b_goto_select.options[b_page].selected=true;
+		}
 	}
