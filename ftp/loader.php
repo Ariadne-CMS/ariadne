@@ -679,7 +679,7 @@
 	$store=new mysqlstore(".", $store_config);
 
 	// fill in your own server ip number:
-	$FTP->server_ip = "212.120.113.74";
+	$FTP->server_ip = "your.ip.address";
 
 	$FTP->host = "muze.nl";
 	$FTP->store = &$store;
