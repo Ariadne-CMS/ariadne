@@ -21,14 +21,9 @@
           $target="{5:id}"; // can only happen if $source=="/" ?
         }
       }
-      $object=$this->get($source, "system.get.phtml");
-      if ($object && is_array($object)) {
-        $object=$object[0];
-        if (!$object->copyto($this->path.$target."/")) {
-          $this->error=$object->error;
-        }
-      } else {
-        $this->error=$ARnls["accessdenied"];
+      $result=$this->get($source, "system.copyto.phtml","target=".RawUrlEncode($this->path.$target."/"));
+      if ($resutl && is_array($result)) {
+        $this->error=$result[0];
       }
     }
   } else {
