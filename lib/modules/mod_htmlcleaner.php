@@ -244,6 +244,7 @@ class htmlcleaner
 				}
 			} else
 			if ($part->nodeType == HTML_CLEANER_NODE_NODETYPE_NODE
+				&& isset($config["delete_emptied"][$part->nodeName])
 				&& count($delete_stack)) {
 					array_push($delete_stack, Array("tag" => $part->nodeName));
 			}
