@@ -2,8 +2,6 @@
 
 if( $this->CheckLogin("config") ) {
 
-	ldHeader("Content-Type: text/xml");
-
 	require_once($this->store->get_config("code")."modules/mod_export_wddx.php");
 
 	$fp = $this->getvar('wddxfp','none');
@@ -13,6 +11,7 @@ if( $this->CheckLogin("config") ) {
 		unset($options['verbose']);
 		$this->putvar('wddxoptions',$options);
 		$this->putvar('wddxfp',$fp);
+		ldHeader("Content-Type: text/xml");
 	}
 	export_wddx::header($fp);
 	$query="";
