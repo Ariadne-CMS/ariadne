@@ -18,6 +18,9 @@ Bugs fixed:
 	us access to his postgresql installation).
 	- Fixed the postgresql find() function; it now uses the 'limit' and
 	'offset' statements instead of only the 'limit' statement.
+	- Fixed bug in make_url(); using the optional paramaters of make_url()
+	made it generate an invalid url. (Thanks to Johann Hanne)
+
 
 Ariadne 2.1.1
 Changes in Ariadne since version 2.1
