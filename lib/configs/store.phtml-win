@@ -1,17 +1,16 @@
 <?php
 
   /*************************************************************************/
-  /* Ariadne Session Store Configuration                                   */
+  /* Ariadne Object Store Configuration                                    */
   /* ==================================                                    */
-  /* This file contains configuration information for the Ariadne Session  */
+  /* This file contains configuration information for the Ariadne Object   */
   /* Store. E.g. which database on which host to connect to, the location  */
-  /* of the code library (as the session store is just another Ariadne     */
-  /* Object Store), etc.                                                   */
-  /* By default the session store uses the settings from the main          */
-  /* configuration file: ariadne.phtml                                     */ 
+  /* of the code library, etc.                                             */
+  /* By default the store uses the settings from the main configuration    */
+  /* file: ariadne.phtml                                                   */ 
   /*************************************************************************/
 
-  $session_config['prefix']      = 'session_';
+  $store_config['prefix']        = 'store_';
 
   /*************************************************************************/
   /* Database Information:                                                 */
@@ -22,11 +21,11 @@
   /* which uses just one database.                                         */
   /*************************************************************************/
 
-  $session_config['dbms']        = $AR->DB->dbms;
-  $session_config['host']        = $AR->DB->host;
-  $session_config['database']    = $AR->DB->database;
-  $session_config['user']        = $AR->DB->user;
-  $session_config['password']    = $AR->DB->password;
+  $store_config['dbms']          = $AR->DB->dbms;
+  $store_config['host']          = $AR->DB->host;
+  $store_config['database']      = $AR->DB->database;
+  $store_config['user']          = $AR->DB->user;
+  $store_config['password']      = $AR->DB->password;
 
 
   /*************************************************************************/
@@ -39,20 +38,18 @@
   /* Ariadne Code Library (lib)                                            */
   /*************************************************************************/
 
-  $session_config['code']        = $AR->dir->install.'\lib\\';
-
+  $store_config['code']          = $AR->dir->install.'\lib\\';
 
   /*************************************************************************/
   /* Ariadne Files Repository (files)                                      */
   /*************************************************************************/
 
-  $session_config['files']       = $AR->dir->install.'\sessions\\';
-
+  $store_config['files']         = $AR->dir->install.'\files\\';
 
   /*************************************************************************/
-  /* Ariadne Session Timeout                                               */
+  /* Lock Duration                                                         */
   /*************************************************************************/
 
-  $session_config['timeout']     = 3600;
+  $store_config['lock_duration'] = 3600;
 
 ?>
