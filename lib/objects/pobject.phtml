@@ -522,6 +522,13 @@ class pobject extends object { // pobject class definition
 				// if not already done, find all groups of which the user is a member
 				$criteria["members"]["login"]["="]="'".AddSlashes($AR->user->data->login)."'";
 				if ($AR->user->groups || ($AR->user->groups=$this->find("/system/groups/",$criteria, "system.get.phtml"))) {
+					/* check for owner grants (set by system.get.config.phtml) */
+					if (is_array($AR->user->ownergrants)) {
+						if (!$AR->user->groups["owner"]) {
+							$AR->user->groups["owner"] = @current($this->get("/system/groups/owner/", "system.get.phtml"));
+						}
+						$AR->user->groups["owner"]->data->usergrants = $AR->user->ownergrants;
+					}
 					reset($AR->user->groups);
 					while (list($key, $group)=each($AR->user->groups)) { 
 						$groupgrants=Array();
@@ -538,7 +545,7 @@ class pobject extends object { // pobject class definition
 	}
 
 	function CheckLogin($grant, $modifier=ARTHISTYPE) {
-	global $AR,$ARnls,$ARCurrent,$ARLogin,$ARPassword,$ARCookie,$session_config;
+	global $AR,$ARnls,$ARConfig,$ARCurrent,$ARLogin,$ARPassword,$ARCookie,$session_config;
 		debug("pobject: CheckLogin($grant)","object");
 		if ($modifier==ARTHISTYPE) {
 			$modifier=$this->type;
@@ -597,6 +604,12 @@ class pobject extends object { // pobject class definition
 		$recheck = true;
 		while ($continue && $recheck) {
 			$recheck = false;
+			/* load config cache */
+			if (!$ARConfig->cache[$this->path]) {
+				$this->call("system.get.config.phtml");
+			}
+
+
 			if ($AR->user->data->login!="admin" && !$AR->user->grants[$this->path]) {
 				$AR->user->grants[$this->path]=$this->GetValidGrants();
 				debug("usergrants: ".$AR->user->grants[$this->path]);

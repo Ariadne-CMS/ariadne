@@ -51,6 +51,22 @@
 		$configcache->nls=$data->nlsconfig;
 		debug("nls found");
 	}
+
+	if ($data->grants["pgroup"]["owner"]) {
+		$configcache->ownergrants = $data->grants["pgroup"]["owner"];
+	}
+	if (is_array($configcache->ownergrants)) {
+		if ($AR->user && $AR->user->data->login === $this->data->owner) {
+			$ownergrants = $configcache->ownergrants;
+			if (is_array($ownergrants)) {
+				reset($ownergrants);
+				while (list($grant, $val) = each($ownergrants)) {
+					$AR->user->ownergrants[$this->path][$grant] = $val;
+				}
+			}
+		}
+	}
+
 	if ($data->customconfig) {
 		$configcache->custom=array_merge($configcache->custom, $data->customconfig);
 	}
