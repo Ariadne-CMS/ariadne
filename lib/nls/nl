@@ -139,7 +139,7 @@
 	$ARnls["err:notremovegrant"]					=	"Kan recht niet verwijderen van %s (%s)";
 	$ARnls["err:notsavegrant"]					=	"Kon recht niet opslaan in %s";
 	$ARnls["err:nousergroup"]					=	"%s is geen gebruiker of groep";
-	$ARnls["err:objectalreadylocked"]				=	"Object is al afgeschermed.";
+	$ARnls["err:objectalreadylocked"]				=	"Object is al afgeschermd.";
 	$ARnls["err:savecachenofile"]					=	"savecache(): no bestand of foto ...";
 	$ARnls["err:scenerionotfound"]					=	"Scenario '%s' bestaat niet.";
 	$ARnls["err:shortcutloopexceed"]				=	"%s%s meer dan %s keer aangeroepens, recursieve snelkoppeling %s?";
