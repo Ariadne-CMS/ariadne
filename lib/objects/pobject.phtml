@@ -218,53 +218,54 @@ class pobject {
 	$silent=($AR->user) ? 1:0;
 	debug("CheckLogin started for ($grant)");
 	debug("sessionid is(".$ARCurrent->session->id.")");
-	if (!$ARCurrent->session) {
+	if (!$AR->user) {
+		if (!$ARCurrent->session) {
 			$ARLogin="public"; $ARPassword="none";
 			debug("CheckLogin -> do public");
-	} else {
-		// go check for cookie
-		debug("CHECKING FOR COOKIE AUTH ($ARCookie)");
-		if ($ARCookie!=($md=$ARCurrent->session->get("ARLogin")."{".md5(
-			$ARCurrent->session->get("ARPassword").
-			$ARCurrent->session->id))."}") {
-			debug("session ARLogin=".$ARCurrent->session->get("ARLogin"));
-			debug("session ARPassword=".$ARCurrent->session->get("ARPassword"));
-			debug("session session=".$ARCurrent->session->id);
-
-			debug("CheckLogin: error in cookie auth ($md -> $ARCookie)");
-			if (!$silent) {
-				$arLoginMessage=$ARnls["accessdenied"].": ".$ARnls["q:cookiesenabled"];
-				$this->call("user.login.html","arLoginMessage=".urlencode($ARLoginMessage));
-            }
-			return 0;
 		} else {
-			$ARLogin=$ARCurrent->session->get("ARLogin");
-			$ARPassword=$ARCurrent->session->get("ARPassword");
-			debug("restoring login cred. from session ($ARLogin,$ARPassword)");
+			// go check for cookie
+			debug("CHECKING FOR COOKIE AUTH ($ARCookie)");
+			if ($ARCookie!=($md=$ARCurrent->session->get("ARLogin")."{".md5(
+				$ARCurrent->session->get("ARPassword").
+				$ARCurrent->session->id))."}") {
+				debug("session ARLogin=".$ARCurrent->session->get("ARLogin"));
+				debug("session ARPassword=".$ARCurrent->session->get("ARPassword"));
+				debug("session session=".$ARCurrent->session->id);	
+
+				debug("CheckLogin: error in cookie auth ($md -> $ARCookie)");
+				if (!$silent) {
+					$arLoginMessage=$ARnls["accessdenied"].": ".$ARnls["q:cookiesenabled"];
+					$this->call("user.login.html","arLoginMessage=".urlencode($ARLoginMessage));
+				}
+				return 0;
+			} else {
+				$ARLogin=$ARCurrent->session->get("ARLogin");
+				$ARPassword=$ARCurrent->session->get("ARPassword");
+				debug("restoring login cred. from session ($ARLogin,$ARPassword)");
+			}
+		}
+
+		// check password
+		$criteria["login"]["value"]["="]="'".AddSlashes($ARLogin)."'";
+		$result=$this->find("/system/users/",$criteria,"Get.phtml");
+		unset($criteria);	
+		debug("CheckLogin got user ".$result[0]->data->name);
+		if (!($AR->user=$result[0])) {
+			debug("CheckLogin (after cookie check) -> no user found");
+			if (!$silent) {
+				$arLoginMessage=$ARnls["accessdenied"].": ".sprintf($ARnls["userunknown"],$ARLogin);
+				$this->call("user.login.html","arLoginMessage=".urlencode($arLoginMessage));
+			}
+			return 0;
+		} else if (!$AR->user->CheckPassword($ARPassword)) {
+			debug("CheckLogin (after cookie check -> wrong password");
+			if (!$silent) {
+				$arLoginMessage=$ARnls["accessdenied"].": ".$ARnls["passwordincorrect"];
+				$this->call("user.login.html","arLoginMessage=".urlencode($arLoginMessage));
+			}
+			return 0;
 		}
 	}
-
-	// check password
-	$criteria["login"]["value"]["="]="'".AddSlashes($ARLogin)."'";
-	$result=$this->find("/system/users/",$criteria,"Get.phtml");
-	unset($criteria);	
-	debug("CheckLogin got user ".$result[0]->data->name);
-	if (!($AR->user=$result[0])) {
-		debug("CheckLogin (after cookie check) -> no user found");
-		if (!$silent) {
-			$arLoginMessage=$ARnls["accessdenied"].": ".sprintf($ARnls["userunknown"],$ARLogin);
-			$this->call("user.login.html","arLoginMessage=".urlencode($arLoginMessage));
-		}
-		return 0;
-	} else if (!$AR->user->CheckPassword($ARPassword)) {
-		debug("CheckLogin (after cookie check -> wrong password");
-		if (!$silent) {
-			$arLoginMessage=$ARnls["accessdenied"].": ".$ARnls["passwordincorrect"];
-			$this->call("user.login.html","arLoginMessage=".urlencode($arLoginMessage));
-		}
-		return 0;
-	}
-
 	$grants=$this->GetValidGrants();
 
 	$AR->user->grants=$grants;
@@ -369,7 +370,8 @@ class pobject {
 
       $ARCurrent->nolangcheck=1;
       if (($ARConfig->cache && ($ARConfig->cache>0)) &&
-          (!$nocache) && ($AR->user->data->login=="public")) {
+          (!$nocache) && ($AR->user->data->login=="public") &&
+          (!$arCallArgs || $AR->OS=="UNIX")) {
         debug("caching ".$this->path);
         // caching is on and enabled in loader and user is public.
         // now get cache image:
@@ -381,21 +383,21 @@ class pobject {
         }
         fclose($fp);
         if ($ARCurrent->cachepage) {
-          $filename=$ARCurrent->cachepage."?".$arCallArgs;
+          $filename=$ARCurrent->cachepage."=".$arCallArgs;
         } else {
-          $filename=$this->path.$arCallFunction."?".$arCallArgs;
+          $filename=$this->path.$arCallFunction."=".$arCallArgs;
         }
         if ($ARCurrent->nls) {
           $filename="/".$ARCurrent->nls.$filename;
         }
   		// now check for mimetype
 		$headers=$this->call("system.get.headers.phtml");
-        $this->SetCache($filename, $ARConfig->cache, $file, $headers);
+        	$this->SetCache($filename, $ARConfig->cache, $file, $headers);
 		$headerlist=explode("\n",$headers);
 		while (list($key, $header)=@each($headerlist)) {
 			Header($header);
 		}
-        echo $file;
+        	echo $file;
         return false;       
       } else {
         debug("not caching ".$this->path.".".$arCallFunction.".".$this->nls);
@@ -497,9 +499,9 @@ class pobject {
             }
           }
         }
-      } else if (file_exists(substr($fpath,0,-1)."?")) {
-        unlink(substr($fpath,0,-1)."?");
-        unlink(substr($hpath,0,-1)."?");
+      } else if (file_exists(substr($fpath,0,-1)."=")) {
+        unlink(substr($fpath,0,-1)."=");
+        unlink(substr($hpath,0,-1)."=");
       }
     }
   }

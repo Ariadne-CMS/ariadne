@@ -1,4 +1,4 @@
-Installing Ariadne.											  Muze Ariadne 2.0b8
+Installing Ariadne.											  Muze Ariadne 2.0b9
 ================================================================================
 
   IMPORTANT: This version of Ariadne needs PHP4!
@@ -41,9 +41,9 @@ Requirements:
    e.g.:
 
      cd /usr/local/lib/
-     tar xvzf ~/ariadne.2.0b7.tgz
+     tar xvzf ~/ariadne.2.0b9.tgz
      cd /var/www
-     ln -s /usr/local/lib/ariadne.2.0b7/www/ ariadne
+     ln -s /usr/local/lib/ariadne.2.0b9/www/ ariadne
 
 3) Make sure the files directory and the sessions directory are writable by the 
    webserver user.
@@ -51,7 +51,7 @@ Requirements:
    disk. So check to see which user your webserver is running as (look in
    httpd.conf) and (as root) do something like:
 
-     cd /usr/local/lib/ariadne.2.0b7/files/
+     cd /usr/local/lib/ariadne.2.0b9/files/
      chown -R www:www * 
      cd /usr/local/lib/ariadne.2.0b7/sessions/
      chown -R www:www * 
@@ -92,7 +92,7 @@ Requirements:
     meaning _not_ in your webserver's documentroot.
     Really.
 	****IMPORTANT**** We've added a guest user in the ariadne database in this
-    release (2.0b7). It has login 'guest' and password 'guest'. You should
+    release (2.0b9). It has login 'guest' and password 'guest'. You should
     change the password immediately after installation, or remove the user. 
     It is there only as an example.
 

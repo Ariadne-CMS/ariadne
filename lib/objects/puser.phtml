@@ -21,7 +21,7 @@ function CheckPassword($password) {
       $salt=substr($this->data->password, 0, 2);
       debug("normal crypt");
     }  
-    $password=crypt($password, $salt);
+    $password=ARCrypt($password, $salt);
     debug($password." == ".$this->data->password." ?");
   }
   return $password==$this->data->password;

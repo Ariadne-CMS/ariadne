@@ -3,7 +3,7 @@
   function GetPassword($pass1, $pass2) {
     if ($pass1) {
       if ($pass1==$pass2) {
-        $password=crypt($pass1);
+        $password=ARCrypt($pass1);
       } else {
         debug("pass1!=pass2");
       }

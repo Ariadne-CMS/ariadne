@@ -90,8 +90,8 @@
   $store->create_property("address", $address);
 
   // import ariadne content
-
-  $import_path="/"; $ax_file="./ariadne.2.0b8.ax";
+  echo "install: ".$AR->ax->cmd_untar."\n";
+  $import_path="/"; $ax_file="/home/gijs/cvs/ariadne/www/install/ariadne.2.0b8.ax";
   include($ariadne."/includes/import.phtml");
 
   if ($error) {

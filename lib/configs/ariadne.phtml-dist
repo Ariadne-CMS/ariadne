@@ -6,6 +6,10 @@
 
   $AR=new object;
 
+  /* WIN32 or UNIX */
+  $AR->OS="WIN32";     /* Windows 95/98/ME/NT/2000   */
+  // $AR->OS="UNIX";   /* All unix/linux variants */
+
   /* Fill in the full hostname of your server below */
   /* e.g. "http://your.host.com" */
   $AR->host="http://your.host.com";
@@ -46,5 +50,29 @@
   $ARConfig=new object;
 
   $ARCurrent=new object;
-  
+ 
+/* configuration object for ariadne's import/export module */
+  $AR->ax=new object;
+
+  /* command to untar the (%s) file */
+  $AR->ax->cmd_untar="tar -zxf %s";
+
+  /* command to tar the (second %s) file and create tar file (first %s) */
+  $AR->ax->cmd_tar="tar -zc %s -f %s";
+
+  /* command to remove directory (%s) */
+  if( $AR->OS=="WIN32" ) $AR->ax->cmd_rmdir="rmdir /S /Q %s";
+  else $AR->ax->cmd_rmdir="rm -rf %s";  
+
+  $ARConfig=new object;
+
+  $ARCurrent=new object;
+
+  /* To crypt or not to crypt */
+  function ARCrypt($text, $salt="") {
+    global $AR;
+    if( $AR->OS=="WIN32" ) return $text;
+    else return crypt($text,$salt);
+  }
+ 
 ?>

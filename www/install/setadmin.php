@@ -7,8 +7,8 @@
 
     $store=new mysqlstore(".",$store_config);
   
-    $data=unserialize('o:5:{s:4:"name";s:13:"Administrator";s:5:"login";s:5:"admin";s:8:"password";s:13:"0vZxQzc/c2glI";s:6:"groups";a:1:{s:21:"/system/groups/admin/";s:5:"admin";}s:8:"loggedon";i:949605712;}');
-    $data->password=crypt($password);
+    $data=unserialize('O:6:"object":5:{s:4:"name";s:13:"Administrator";s:5:"login";s:5:"admin";s:8:"password";s:13:"0vZxQzc/c2glI";s:6:"groups";a:1:{s:21:"/system/groups/admin/";s:5:"admin";}s:8:"loggedon";i:949605712;}');
+    $data->password=ARCrypt($password);
     $store->save("/system/users/admin/","puser",$data);
     $store->close();
     echo "You should now be able to log on";
