@@ -7,15 +7,15 @@
     <?php 
       switch($do) {
         case "add" :
-          echo "    top.tree.AddLinks(link, '$icon','".AddSlashes($name)."','$path','".AddSlashes($pre)."');\n";
+          echo "    top.tree.AddLinks(link, '$icon','".AddCSlashes($name, ARESCAPE)."','$path','".AddCSlashes($pre, ARESCAPE)."');\n";
           if ($shortcut) {
-            echo "    top.tree.AddLinks('$shortcut','$icon','".AddSlashes($name)."','$path','".AddSlashes($pre)."');\n";
+            echo "    top.tree.AddLinks('$shortcut','$icon','".AddCSlashes($name, ARESCAPE)."','$path','".AddCSlashes($pre, ARESCAPE)."');\n";
           }
           echo "    document.location.href='$returnpage';\n";
           break;
 
         case "update" : 
-          echo "    top.tree.UpdateLinks('$icon','".AddSlashes($name)."', '$path','".AddSlashes($pre)."');\n";
+          echo "    top.tree.UpdateLinks('$icon','".AddCSlashes($name, ARESCAPE)."', '$path','".AddCSlashes($pre, ARESCAPE)."');\n";
           echo "    document.location.href='$returnpage';\n";
           break;
 
