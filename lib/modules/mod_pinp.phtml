@@ -48,7 +48,7 @@ class scanner {
 
 	function init($buffer) {
 		$this->YYBUFFER = $buffer."\0";
-		$this->YYLINE = 0;
+		$this->YYLINE = 1;
 		$this->YYSTATE = YY_STATE_HTML;
 		$YYCURSOR = 0;
 	}
@@ -104,8 +104,10 @@ class scanner {
 						return T_EOF;
 					break;
 					default:
-					//	$yych = $YYBUFFER[++$YYCURSOR];
 						while ($yych != '<' && ord($yych)!==0) {
+							if ($yych == "\n") {
+								$this->YYLINE++;
+							}
 							$yych = $YYBUFFER[++$YYCURSOR];
 						}
 						$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
@@ -323,7 +325,7 @@ class scanner {
 							$result = $multi_string;
 							return T_STRING;
 						} else {
-							$result = "unterminated quote, started at $start_line:$start_col";
+							$result = "unterminated quote, started at line $start_line";
 							return T_ERROR;
 						}
 					break;
@@ -345,7 +347,7 @@ class scanner {
 							$result=substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR - $YYCURSOR_START);
 							return T_UNPARSED;
 						} else {
-							$result = "unterminated quote, started at $start_line:$start_col";
+							$result = "unterminated quote, started at line: $start_line";
 							return T_ERROR;
 						}
 					break;
