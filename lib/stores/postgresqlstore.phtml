@@ -31,7 +31,6 @@ define(MAX_PATH_LENGTH, 128);
 define(MAX_PROPERTY_LENGTH, 128);
 
 // general objectstore functions
-
 class postgresqlstore {
 
 	var $connect_id;
@@ -40,6 +39,7 @@ class postgresqlstore {
 	var $code;
 
 	function postgresqlstore($path, $config) {
+		global $AR;
 	/**********************************************************************************
 		
 	 This is the constructor routine for the store object. It takes some configuration 
@@ -73,6 +73,8 @@ class postgresqlstore {
 
 		/* Instantiate module postgresql_compiler */
 		include_once($this->code."stores/modules/postgresql_compiler.php");
+		/* include proxystore */
+		include_once($this->code."stores/proxystore.phtml");
 
 		/* Instantiate module locking */
 		include_once($this->code."modules/mod_lock/postgresql.phtml");
@@ -82,6 +84,8 @@ class postgresqlstore {
 
 		$config["password"] = "";
 		debug("postgresqlstore: end", "all");
+
+		$this->proxystore = &proxystore::createproxy($this,$config);
 	}
 
 	function call($template, $args, $objects) {
@@ -168,7 +172,7 @@ class postgresqlstore {
 		debug("newobject($path, $parent, $type, [data], $id, $lastchanged, $vtype, $size, $priority)","all");
 		include_once($this->code."objects/".$type.".phtml");
 		$object = new $type;
-		$object->init($this, $path, $data);
+		$object->init($this->proxystore, $path, $data);
 		$object->type = $type;
 		$object->parent = $parent;
 		$object->id = (int)$id;

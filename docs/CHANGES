@@ -62,6 +62,8 @@ New Features:
 	  per default. A link is provided to switch from typetree to all
 	  objects.
 	- Added the pbookmark extention to the default Ariadne distribution.
+	- added the proxy store class, which acts like a proxy between the objects
+	  and the real store, so that users can't view the store config with print_r
 
 Bugs Fixed:
 	- Fixed a bug in the FTP loader which made the loader not display templates
