@@ -50,7 +50,7 @@
 				<td colspan="2">
 					<select name="country">
 					<?php
-							$this->ls("/system/addressbook/countries/","show.option.value.phtml","selected=".$data->country);
+							$this->ls("/system/addressbook/countries/","show.option.value.phtml",Array( "selected" => $this->getdata("country","none")));
 					?>
 					</select>
 				</td>
