@@ -1,0 +1,6 @@
+<?php
+	$this->call("system.delete.phtml");
+	if ($this->error) {
+		$ARCurrent->ftp_error=$this->error;
+	}
+?>
