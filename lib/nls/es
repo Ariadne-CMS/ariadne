@@ -1,4 +1,10 @@
 <?php
+/*****************************************************************************
+
+The Spanish nls files are contributed by: 
+	Andrés Marcos Bianciotto <abianciotto@e-volution.com>
+
+*****************************************************************************/
 debug("ARnls lib: es","all");
 $ARnls["accessdenied"]=                 "Acceso Denegado";  
 $ARnls["add"]=                          "Agregar";

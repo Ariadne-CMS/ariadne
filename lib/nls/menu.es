@@ -1,4 +1,10 @@
 <?PHP
+/*****************************************************************************
+
+The Spanish nls files are contributed by: 
+	Andrés Marcos Bianciotto <abianciotto@e-volution.com>
+
+*****************************************************************************/
 $ARnls["m_object"]=		"Objeto";
 $ARnls["m_edit"]=		"Editar";
 $ARnls["m_view"]=		"Ver";

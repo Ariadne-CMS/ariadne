@@ -1,4 +1,9 @@
 <?PHP
+/*****************************************************************************
+
+The German nls files are contributed by: Reini Urban <rurban@x-ray.at>
+
+*****************************************************************************/
 $ARnls["m_object"]=		"Objekt";
 $ARnls["m_edit"]=		"Bearbeiten";
 $ARnls["m_view"]=		"Ansicht";

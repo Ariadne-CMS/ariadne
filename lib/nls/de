@@ -1,4 +1,11 @@
 <?php
+/*****************************************************************************
+
+The German nls files are contributed by: Reini Urban <rurban@x-ray.at>
+
+*****************************************************************************/
+
+
 debug("ARnls lib: de","all");
 $ARnls["accessdenied"]=		"Zugang verweigert";
 $ARnls["add"]=			"Neu";
