@@ -158,8 +158,9 @@ BODY 	{
 			var type = form.imgstyle.options[form.imgstyle.selectedIndex].value;
 			if (tbContentEditOptions['image']['styles'][type]['template']) {
 				arr["src"] = CurrentPath+tbContentEditOptions['image']['styles'][type]['template'];
-			} else {
-				arr["src"] = CurrentPath.substr(0, CurrentPath.length-1);
+			} else {		    
+				arr["src"] = CurrentPath;
+				arr["src"] = (arr["src"].charAt(arr["src"]-1) == "//") ? arr["src"].slice(0,arr["src"].length-1) : arr["src"];
 			}
 			arr["class"] = tbContentEditOptions['image']['styles'][type]['class'];
 			if (CurrentPath) {
