@@ -1,1 +1,36 @@
-<body bgcolor='#404074'></body>
+<html>
+<head>
+<style>
+TD {
+	FONT: 13px sans-serif;
+}
+BODY 	{
+	FONT: 13px sans-serif;
+	BORDER: 0;
+  <?php
+    global $HTTP_USER_AGENT;
+    if (eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
+       $regs[1] && (intval($regs[1])>=4)) { //ie4+
+  ?>
+	BACKGROUND-COLOR: buttonface;
+  <?php
+    } else {
+  ?>
+	BACKGROUND-COLOR: #BBBBBB;
+  <?php
+    }
+  ?>
+}
+</style>
+</head>
+<body>
+<fieldset>
+<table width="100%">
+<tr>
+  <td valign="middle"></td>
+  <td align="right"><img align="right" src="images/tree/x.png" vspace="1"></td>
+</tr>
+</table>
+</fieldset>
+</body>
+</html>
