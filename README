@@ -1,0 +1,45 @@
+Readme														  Muze Ariadne 2.0b8
+================================================================================
+
+Ariadne is something between a web application server and an application
+framework. It is a lot like Zope, but not quite the same.
+
+Simply put, Ariadne stores and retrieves PHP objects from a database, MySQL 
+only in this release. Ariadne does this by simulating a file system in the
+database on which it defines operations like 'ls','find','link', and 'get'.
+Each object can be retrieved by another object or through an url. Objects can
+create, delete and modify other objects through these and other operations.
+
+Objects can have multiple views, or functions. These are different forms and
+layouts to represent and change the same underlying object. The object types 
+shipped with this release use a template system to represent these different
+functions. All functions are mapped to a template, which gets included
+inside an object and can therefor use all functionality the object and
+Ariadne itself provide. 
+
+The objects and templates shipped provide a rich management system for a
+website. But the real power of Ariadne lies not in the easy online management
+of a website, but in it's fast and powerfull object manipulation and
+retrieval. It's very easy to build a complex dynamic website with multiple
+interaction object types and complex views. As an example a pretty complex
+calendar application is shipped with Ariadne. But you could also build a
+threaded message board, a complex multi-site news system or even a clickable
+map of a country, with different selectable categories of information mapped
+on it. The last two have been done already :)
+
+Also built in is a complete user and rights (or grants) management system.
+You can create a new user, add it to different groups and change grants for
+users and groups on objects. 
+
+There are lots more possibilities but you'll have to see for yourself.
+
+Do read the installation instructions as Ariadne is very particular about
+it's installation. They are in the file INSTALL.
+
+For more information or questions, point your mail client to
+'ariadne@muze.nl', or read the newsgroups at 'ariadne.muze.nl'.
+
+14-02-2000
+Updated 23-09-2000
+Auke van Slooten
+Muze

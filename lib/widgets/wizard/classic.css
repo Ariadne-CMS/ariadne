@@ -1,0 +1,28 @@
+<style>
+TD {
+	FONT: 10pt sans-serif;
+}
+.required {
+	FONT-WEIGHT: bold
+}
+.current {
+	FONT-WEIGHT: bold
+}
+BODY 	{
+	FONT: 10pt sans-serif;
+	BORDER: 0;
+  <?php
+    global $HTTP_USER_AGENT;
+    if (eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
+       $regs[1] && (intval($regs[1])>=4)) { //ie4+
+  ?>
+	BACKGROUND-COLOR: buttonface;
+  <?php
+    } else {
+  ?>
+	BACKGROUND-COLOR: #BBBBBB;
+  <?php
+    }
+  ?>
+}
+</style>

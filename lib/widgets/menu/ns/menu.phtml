@@ -1,0 +1,99 @@
+<script>
+  imagedir='<?php echo $AR->dir->images; ?>';
+  path='<?php echo $this->path; ?>';
+</script>
+<script language="JavaScript1.2" type="text/javascript" src="<?php echo $AR->dir->www; ?>widgets/menu/ns/menu.js"></script>
+<LINK REL=stylesheet HREF="<?php echo $AR->dir->www; ?>widgets/menu/ns/menu.css" type="text/css">
+<script language="JavaScript1.2" type="text/javascript">
+<!--
+  Faded=true;
+  <?php
+    if ($AR->user->data->login != "admin") {
+      if (!$AR->user->grants["add"]) { $add=", Faded"; }
+      if (!$AR->user->grants["edit"]) { $edit=", Faded"; }
+      if (!$AR->user->grants["config"]) { $config=", Faded"; }
+      if (!$AR->user->grants["delete"]) { $delete=", Faded"; }
+      if (!$AR->user->grants["layout"]) { $layout=", Faded"; }
+    }
+    if (!$this->implements("pshortcut")) { 
+      $shortcut=", Faded";  
+      $shortcutlink="javascript:void(0)";
+    } else {
+      $shortcutlink="javascript:arshow(\\'edit_object_shortcut\\',\\'edit.object.shortcut.phtml\\')";
+    }
+  ?>
+  ARMenu = new appMenu();
+
+  ARMenu.addMenuItem('<Object', 'javascript:void(0)', 'SubObject');
+  ARMenu.addMenuItem('<Edit', 'javascript:void(0)', 'SubEdit');
+  ARMenu.addMenuItem('<View', 'javascript:void(0)', 'SubView');
+  ARMenu.addMenuItem('<Help', 'javascript:void(0)', 'SubHelp');
+
+  SubObject.addMenuItem('<New', 'javascript:void(0)', 'SubNew' <?php echo $add; ?>);
+  SubObject.addMenuItem('<Rename', 'javascript:arshow(\'object_fs\',\'object.rename.phtml\')', 0 <?php $delete; ?>);
+  SubObject.addMenuItem('<Copy', 'javascript:arshow(\'object_fs\',\'object.copy.phtml\')');
+  SubObject.addMenuItem('<Link', 'javascript:arshow(\'object_fs\',\'object.link.phtml\')');
+  SubObject.addSeparator();
+  SubObject.addMenuItem('<Import', 'javascript:arshow(\'object_import\',\'object.import.phtml\')', 0 <?php echo $add; ?>);
+  SubObject.addMenuItem('<Export', 'javascript:arshow(\'object_export\',\'object.export.phtml\')');
+  SubObject.addSeparator();
+  SubObject.addMenuItem('<Delete', 'javascript:arshow(\'object_fs\',\'object.delete.phtml\')', 0 <?php echo $delete; ?>);
+
+<?php
+  if ($AR->user->data->login=="admin") { // || $AR->user->grants["config"] ?
+    $list=$this->ls("/system/ariadne/types/","Get.phtml");
+  } else { 
+    if ($ARConfig->typetree) { // FIXME: change to typetree per user/group
+      $list=$this->ls($ARConfig->typetree."/".$this->type."/",
+        "Get.phtml");
+    } else {
+      $list=$this->ls("/system/ariadne/typetree/normal/".$this->type."/",
+        "Get.phtml");
+    }
+  }
+  while (list($key, $type)=each($list)) {
+    if ($type->data->$nls) {
+      $name=$type->data->$nls->name;
+    } else {
+      $name=$type->data->{$type->data->nls->default}->name;
+    }
+    echo "SubNew.addMenuItem('".ereg_replace(" ","&nbsp;",$name).
+       "', 'javascript:arshow(\\'object_new\\',\\'object.new.phtml?arNewType=".RawUrlEncode($type->data->value)."\\')', 0 $add);\n";
+  }
+?>
+
+  SubEdit.addMenuItem('Object', 'javascript:void(0)', 'SubEditObject');
+  SubEdit.addSeparator();
+  SubEdit.addMenuItem('Find', 'javascript:arshow(\'edit_find\', \'edit.find.phtml\')');
+  SubEdit.addSeparator();
+  SubEdit.addMenuItem('Preferences', 'javascript:arshow(\'edit_preferences\',\'edit.preferences.phtml\')');
+
+  SubEditObject.addMenuItem('Data','javascript:arshow(\'edit_object_data\', \'edit.object.data.phtml\')', 0 <?php echo $edit; ?>);
+  SubEditObject.addMenuItem('Shortcut','<?php echo $shortcutlink; ?>', 0 <?php echo $shortcut; ?>);
+  SubEditObject.addSeparator();
+  SubEditObject.addMenuItem('Cache','javascript:arshow(\'edit_object_cache\', \'edit.object.cache.phtml\')', 0 <?php echo $edit; ?>);
+  SubEditObject.addMenuItem('Layout','javascript:arshow(\'edit_object_layout\', \'edit.object.layout.phtml\')', 0 <?php echo $layout; ?>);
+  SubEditObject.addSeparator();
+  SubEditObject.addMenuItem('Grants','javascript:arshow(\'edit_object_grants\',\'edit.object.grants.phtml\')', 0 <?php echo $config; ?>);
+  SubEditObject.addMenuItem('Types','javascript:arshow(\'edit_object_types\',\'edit.object.types.phtml\')', 0 <?php echo $config; ?>);
+
+  SubView.addMenuItem('Fonts', 'javascript:arshow(\'view_fonts\',\'view.fonts.phtml\')');
+  SubView.addSeparator();
+  SubView.addMenuItem('List', 'javascript:setview(\'list\')');
+  SubView.addMenuItem('Details', 'javascript:setview(\'details\')');
+  SubView.addSeparator();
+  SubView.addMenuItem('Webpage', 'javascript:window.location.href=\'view.html\'');
+
+  SubHelp.addMenuItem('Index', 'javascript:arshow(\'help\',\'help.topics.phtml\')');
+  SubHelp.addMenuItem('Tutorials', 'javascript:arshow(\'help\',\'help.tutorials.phtml\')');
+  SubHelp.addMenuItem('Search', 'javascript:arshow(\'help\',\'help.search.phtml\')');
+  SubHelp.addSeparator();
+  SubHelp.addMenuItem('About', 'javascript:arshow(\'help_about\',\'help.about.phtml\')');
+
+  ARMenu.build();
+  ARMenu.init();
+
+//-->
+</script>
+&nbsp;<br>
+<div>

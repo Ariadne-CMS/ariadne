@@ -1,0 +1,171 @@
+<?php
+  /******************************************************************
+   classic.html					   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+
+   Classic windows look wizard widget. 
+
+   + wgWizFlow : array
+     wgWizFlow[0]["arCallArgs"]
+     wgWizFlow[i]["title"]=string
+     wgWizFlow[i]["template"]=string
+     $wgWizFlow or $ARCurrent->wgWizFlow
+   - wgWizNextStep : int, default 1
+   - wgWizButtons : hash, default "next" = true
+     wgWizButtons["next"] : bool
+       - "prev" : bool
+       - "save" : bool
+       - "back" : bool
+   - wgWizTitle : string, default "Wizard"
+   - wgWizCallObject : object, default $this
+
+   No result.
+
+  ******************************************************************/
+
+  if (!$wgWizCallObject) {
+    if ($wgWizNewType) {
+      if (!$wgWizNewfilename) {
+        $wgWizNewFilename="{5:id}";
+      }
+      if (!$wgWizNewData) {
+        $wgWizNewData=serialize(new object); 
+      }
+      $wgWizNewPath=$this->make_path($wgWizNewFilename);
+      $wgWizCallObject=$this->store->newobject($wgWizNewPath, $this->path, $wgWizNewType, $wgWizNewData);
+      $wgWizCallObject->newobject=true;
+    } else {
+      $wgWizCallObject=$this;
+    }
+  }
+  if (!$wgWizNextStep) {
+    $wgWizNextStep=1;
+  }
+  if (!$wgWizTitle) {
+    $wgWizTitle="Wizard"; //FIXME: nls value?
+  }  
+  if (!$wgWizFlow || !is_array($wgWizFlow)) {
+    $wgWizFlow=$ARCurrent->wgWizFlow;
+    if (!$wgWizFlow || !is_array($wgWizFlow)) {
+      error("wgWizFlow undefined or corrupt");
+    }
+  }
+  if (!$wgWizButtons) {
+    /*
+    // $wgWizButtons=$ARCurrent->wgWizButtons;
+    // echo "<!-- ".serialize($wgWizButtons)." -->";
+    if (!$wgWizButtons) {
+      $wgWizButtons["next"]=true;
+    }
+    */
+    $wgWizButtons=$wgWizFlow[$wgWizNextStep];
+  }
+?>
+<html>
+<head>
+<title><?php echo $wgWizTitle; ?></title>
+<?php
+  include($this->store->code."widgets/wizard/classic.css");
+?></head>
+<body bgcolor="#BBBBBB">
+<script>
+  if (document.all) {
+    window.innerHeight=document.body.clientHeight;
+    window.innerWidth=document.body.clientWidth;
+  }  
+</script>
+<form method="post" name="wgWizForm" 
+  onSubmit="return checksubmit();"
+  ENCTYPE="multipart/form-data">
+<?php
+  if (!$HTTP_GET_VARS) {
+    global $HTTP_GET_VARS;
+  }
+  if (!$HTTP_POST_VARS) {
+    global $HTTP_POST_VARS;
+  }
+  if (!$arStoreVars) {
+    $arStoreVars=$this->getdata("arStoreVars","none");
+  }
+  wgWizKeepVars($HTTP_GET_VARS);
+  wgWizKeepVars($arStoreVars, "arStoreVars");
+  wgWizKeepVars($HTTP_POST_VARS);
+?>
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
+<tr>
+  <td><script>
+    document.write('<img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="'+(window.innerHeight-70)+'" alt="">');
+  </script></td>
+  <td valign="top" align="center" width="100%">
+    <?php
+      $checks=$wgWizCallObject->call($wgWizFlow[$wgWizNextStep]["template"], $wgWizCallArgs);
+      if (!$checks) { // object templates (pinp) cannot return values, use ARCurrent instead
+        $checks=$ARCurrent->wgWizChecks;
+      }
+    ?>
+  </td>
+</tr><tr>
+  <td colspan="2"><hr></td>
+</tr><tr>
+  <td colspan="2">
+    <table width="100%" border="0">
+      <script>
+      function checksubmit() {
+        result=true; 
+        switch(document.action) {
+          <?php
+            if ($checks && is_array($checks)) {
+              while (list($action, $namelist)=each($checks)) {
+                echo " case '$action' :\n";
+                if ($namelist && is_array($namelist)) {
+                  while (list($name, $checklist)=each($namelist)) {
+                    echo " check=new String(document.wgWizForm['$name'].value);\n";
+                    echo " if (!check.match('".$checklist["ereg"]."')) {\n";
+                    if ($checklist["error"]) {
+                      echo "   alert('".ereg_replace("'","\\'",$checklist["error"])."');\n";
+                      echo "   return false;\n";
+                    } else if ($checklist["confirm"]) {
+                      echo "   return confirm('".ereg_replace("'","\\'",$checklist["confirm"])."');\n";
+                    } 
+                    echo " } ";
+                  }
+                  echo " break;\n";
+                } else {
+                  $wgWizButtons[$action]=false;
+                }
+              }
+            }
+          ?>
+          default: 
+            break;
+        }
+        return result;
+      }
+    </script>
+    <tr>
+      <td width="100" units="pixels">
+        <?php if ($wgWizButtons["back"]) { ?>
+          <input type="submit" name="wgWizControl" value="<?php echo $ARnls["back"]; ?>" onClick="document.action='back';">
+        <?php } ?>
+      </td><td>
+        <?php if ($wgWizButtons["prev"]) { ?>
+          <input type="submit" name="wgWizControl" value="<?php echo $ARnls["prev"]; ?>" onClick="document.action='prev';">
+        <?php } ?>
+      </td><td align="right">
+        <?php if ($wgWizButtons["next"]) { ?>
+          <input type="submit" name="wgWizControl" value="<?php echo $ARnls["next"]; ?>" onClick="document.action='next';">
+        <?php } ?>
+      </td><td align="right" width="100" units="pixels">
+        <?php if ($wgWizButtons["save"]) { ?>
+          <input type="submit" name="wgWizControl" value="<?php echo $ARnls["save"]; ?>" onClick="document.action='save';">
+        <?php } ?>
+      </td>
+    </tr>
+    </table>
+  </td>
+</tr>
+</table>
+<input type="hidden" name="wgWizCurrent" value="<?php echo $wgWizNextStep; ?>">
+</form>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<?php
+  if ($this->CheckConfig($arCallFunction, $arCallArgs) && $this->CheckLogin("edit")) {
+    if ($next==$ARnls["save"]) { // save it. 
+      include($this->store->code."templates/".$this->type."/save.phtml");
+    } else if ($next==$ARnls["delete"]) { // delete it.
+      include($this->store->code."templates/".$this->type."/delete.phtml");
+    } else if ($next==$ARnls["editoriginal"]) {
+      Header("Location: ".$this->store->root.$data->path."edit.phtml?returnpage=".RawUrlEncode($returnpage));
+    } else if ($next==$ARnls["cancel"]) {
+      debug("Cancel");
+      include($this->store->code."includes/cancel.phtml");
+      include($this->store->code."includes/unlock.phtml");
+    } else { // edit it.
+      include($this->store->code."includes/lock.phtml");
+      if (!$arResult) {
+        // object locked, show us by who
+        include($this->store->code."includes/viewlocks.phtml");
+      } else {
+        include($this->store->code."templates/".$this->type."/form.phtml");
+      }
+    }
+  } 
+?>

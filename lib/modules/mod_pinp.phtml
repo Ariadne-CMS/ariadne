@@ -1,0 +1,170 @@
+<?php
+
+class pinp {
+
+  function pinp($allowed_functions, $var_prefix, $function_prefix="") {
+    if (!$function_prefix) {
+      $function_prefix=$var_prefix;
+    }
+    $this->starttag="<pinp>";
+    $this->endtag="</pinp>";
+    $this->var_prefix=$var_prefix;
+    $this->function_prefix=$function_prefix;
+
+    if (is_array($allowed_functions)) {
+      $allowed_functions=implode("|",$allowed_functions);
+    }
+
+    $control_funcs="if|while|for|switch";
+    $array_funcs="array|array_count_values|array_flip|array_keys|array_merge|".
+      "array_pad|array_pop|array_push|array_reverse|array_shift|array_slice|".
+      "array_splice|array_unshift|array_values|array_walk|arsort|asort|".
+      "count|current|each|end|in_array|key|krsort|ksort|list|next|pos|prev|".
+      "range|reset|rsort|shuffle|sizeof|sort";
+    $string_funcs="AddSlashes|bin2hex|Chop|Chr|chunk_split|convert_cyr_string|".
+      "crypt|echo|explode|flush|get_html_translation_table|htmlentities|".
+      "htmlspecialchars|implode|join|ltrim|md5|Metaphone|nl2br|Ord|print|".
+      "printf|quoted_printable_decode|QuoteMeta|rawurldecode|rawurlencode|".
+      "setlocale|similar_text|soundex|sprintf|strcasecmp|strchar|strcmp|".
+      "strcspn|strip_tags|StripCSlashes|StripSlashes|stristr|strlen|strpos|".
+      "strrchr|str_repeat|strrev|strrpos|strspn|strstr|strtok|strtolower|".
+      "strtoupper|str_replace|strtr|substr|substr_replace|trim|ucfirst|ucwords";
+    $math_funcs="abs|acos|asin|atan|atan2|base_convert|bindec|ceil|cos|".
+      "decbin|dechex|decoct|exp|floor|getrandmax|hexdec|log|log10|max|min|".
+      "mt_rand|mt_srand|mt_getrandmax|number_format|octdec|pi|pow|rand|round|".
+      "sin|sqrt|srand|tan";
+    $var_funcs="doubleval|empty|gettype|intval|is_array|is_double|is_float|".
+      "is_int|is_integer|is_long|is_object|is_real|is_string|isset|settype|".
+      "strval|unset";
+    $time_funcs="checkdate|date|getdate|gettimeofday|gmdate|gmmktime|".
+      "gmstrftime|microtime|mktime|strftime|time|easter_days|easter_date";
+    $regex_funcs="ereg|ereg_replace|eregi|eregi_replace|split";
+    $debug_funcs="debug|debugon|debugoff";
+    $this->re_allowed="|$control_funcs|$array_funcs|$string_funcs|$math_funcs|$var_funcs|$time_funcs|$allowed_functions|$debug_funcs|";
+
+    // dont touch this unless you know what you are doing
+    $slash="\\\\";
+    $delimiter="'"; 
+    $this->re_string1="([^'\"]*)($delimiter([^$slash]|$slash.)*?$delimiter)";  
+    $delimiter='"';
+    $this->re_string2="([^'\"]*)($delimiter([^$slash]|$slash.)*?$delimiter)";  
+    $this->re_pinp=$this->starttag."([^'\"]*?|($this->re_string1|$this->re_string2)*?[^'\"]*?)".$this->endtag; 
+    $this->re_comments="/\\*([^\\*/]|\\*[^/]|[^\\*]/)*\\*/";
+     
+  }
+
+  function compile($template) {
+    // first remove any php code
+    $template=ereg_replace("<\?php.*\?>","",$template);
+
+    // then remove /* .. */ comments, even in html code... for security
+    // since php supports comment tags including ? > and < ?php the comments check must be made first. 
+    // $template=preg_replace("!/\\*.*?\\*/!m","",$template); // somehow this doesn't work...
+    $template=ereg_replace($this->re_comments,"",$template); // this does :)
+
+    // now find next <pinp> </pinp> block
+    if (preg_match("!^(.*?)".$this->re_pinp."!m",$template,$matches)) {
+
+      // pinp code block found, move 'head' to result
+      $result=substr($template, 0, strpos($template, $matches[0]));
+
+      // cut matched part from the template
+      $template=substr($template, strpos($template, $matches[0])+strlen($matches[0]));
+
+      // fix code, call compile on rest recursively
+      $result.=$matches[1].$this->fixcode("<"."?php\n ".$matches[2]." \n?".">").$this->compile($template);      
+
+    } else { // no pinp code found
+      $result=$template;
+    } 
+    return $result;
+  }
+
+  function fixcode($code) {
+    // remove comments ( // ... )
+    while (preg_match("!//.*$!m",$code, $matches)) {
+      $code=str_replace($matches[0],"",$code);
+    }
+
+    // find first occurance of a string
+    if (preg_match("!^(".$this->re_string1."|".$this->re_string2.")!m", $code, $matches)) {
+      
+      // string found, cut matched part from $code
+      $code=substr($code, strpos($code, $matches[0])+strlen($matches[0]));
+
+      // check which kind of string was found '' or "".
+      if ($matches[2]) { //single quoted string found
+
+        // $matches[2] is the part before the string, 
+        // $matches[3] is the string ('')
+        $result=$this->fixother($matches[2]).$this->fixstring($matches[3]).$this->fixcode($code);
+
+      } else { // double quoted string found
+
+        // $matches[5] is the part before the string
+        // $matches[6] is the string ("")
+        $result=$this->fixother($matches[5]).$this->fixstring($matches[6]).$this->fixcode($code);
+
+      }
+    } else {
+      $result=$this->fixother($code);
+    }
+    return $result;
+  }
+
+  function fixstring($string) {
+    // in a string only the variables need to be fixed
+    
+    $slash="\\\\";
+    return ereg_replace("([^$slash]($slash$slash)*\\\$)","\\1".$this->var_prefix,$string);
+  }
+
+  function fixother($other) {
+    // fix variables and functions  
+
+    // remove backticks
+    $other=ereg_replace("`","",$other);
+
+    $result=ereg_replace("\\\$","\$".$this->var_prefix,$other); // fixes variables
+    return $this->fixfunctions($result);
+  }
+
+  function fixfunctions($varfixed) {
+    // functions that are not in the allowed list must be prefixed
+
+    // prevent any attempt of creating a new object.
+    $varfixed=eregi_replace("([^a-z0-9_-])new([^a-z0-9_-])","\\1nonew\\2",$varfixed);
+    // find function names
+    while (eregi("([^a-z0-9_-])([a-z][a-z0-9_-]*)[[:space:]]*\(",$varfixed,$matches)) {
+      // function name found
+      $function=$matches[2];
+
+      // add 'head' to the result
+      $result.=substr($varfixed, 0, strpos($varfixed, $matches[0]));
+      $result.=$matches[1];
+
+      // cut matched part from $varfixed
+      $varfixed=substr($varfixed, strpos($varfixed, $matches[0])+strlen($matches[0])-1);
+
+      // check if function is allowed
+      if (!eregi("\|".$function."\|", $this->re_allowed)) {
+
+        // function not allowed, add prefix
+        $result.=$this->function_prefix.$function;
+
+      } else {
+
+        // function allowed, copy unchanged 
+        $result.=$function;
+      }
+    }
+
+    // add remainder to $result
+    $result.=$varfixed;
+
+    return $result;
+  }
+
+}
+
+?>

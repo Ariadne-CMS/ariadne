@@ -1,0 +1,18 @@
+<?php
+  global $ariadnewww;
+?>
+<script language="javascript">
+<!--
+TreeResult=0;
+
+function OpenTree(resultobject, path) {
+  TreeResult=resultobject;
+  treewindow=window.open(
+    '<?php echo $ariadnewww; ?>widgets/tree/index.php?path='+escape(path)+'&loader=<?php echo $this->store->root; ?>',
+    'TreeWindow',
+    'directories=no,height=300,width=300,location=no,menubar=no,status=no,toolbar=no');
+  treewindow.caller=this;
+}
+
+// -->
+</script>

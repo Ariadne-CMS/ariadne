@@ -1,0 +1,38 @@
+<?php
+  if (!$this->error) {
+    if ($arNewType=$this->getdata("arNewType","none")) { // save a new object
+      if ($this->CheckLogin("add")) {
+        $arNewFilename=$this->getdata("arNewFilename","none");
+        if (!eregi("\.\.",$arNewFilename)) {
+          if (eregi("^[a-z0-9_\{\}\.\:-]+$",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
+            if (!$this->exists($arNewFilename)) {
+              // FIXME: check whether $arNewFilename corresponds with
+              //  $this->path and whether $this->parent exists and corresponds with
+              //  $this->path
+              $this->path=$this->save($this->path, $this->type, $this->data, $properties, $vtype);
+              $parent=$this->parent;
+              $this->ClearCache();
+            } else {
+              $this->error="$arNewFilename already exists.";
+            }
+          } else {
+            $this->error="$arNewFilename is no valid filename, use only a-z, A-Z, 0-9 and _ or -.";          
+          }
+        } else {
+          $this->error="$arNewFilename is no valid filename, do not use '..' in filenames.";
+        }
+      }
+    } else { // edit an existing object
+      if ($this->CheckLogin("edit") && $this->CheckConfig("save.phtml","")) {
+        if (!($result=$this->lock(0,"O")) || ($result["locks"][$this->path]["identity"]==$AR->user->data->login)) {
+          $this->path=$this->save($this->path, $this->type, $this->data, $properties, $vtype);
+          $parent=$this->parent;
+          $this->ClearCache();
+	  $this->unlock();
+	} else {
+	  $this->error="Object already locked.";
+        }
+      }
+    }
+  }
+?>

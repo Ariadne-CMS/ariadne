@@ -1,0 +1,70 @@
+<?php
+  if ($newtype) {
+    $newdata=new object;
+    $newdata->filename=$newfilename;
+    $newdata->path=$this->path; // keep current path info, in case pfile is 
+                                // linked to from another path later on.
+    $newdata->author=$AR->user->name;
+    $newdata->authorpath=$AR->user->path;
+    $newdata->created=time();
+  } else { 
+    $newdata=$data;
+  }
+  $newdata->mimetype=$mimetype;
+  if (!isset(${$ARConfig->nls->default}) && !isset($newdata->{$ARConfig->nls->default})) { // default language for this path
+    $error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+  } else {
+    debug($this->nls.": ".serialize(${$this->nls}));
+    if (!$newdata->nls) {
+      $newdata->nls=new object;
+    }
+    $newdata->nls->default=$this->nls;
+    reset($AR->nls->list);
+    while (list($key, $value)=each($AR->nls->list)) {
+      if (isset(${$key})) {
+        $nlsformdata=$$key;
+        if (!isset($newdata->$key)) {
+          $newnlsdata=new object;
+        } else {
+          $newnlsdata=$newdata->$key;
+        }
+        if (!$nlsformdata["name"]) {
+          $error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
+        }
+        $newnlsdata->name=$nlsformdata["name"];
+        $newnlsdata->summary=$nlsformdata["summary"];
+        $properties["name"][]["value"]="'".AddSlashes($nlsformdata["name"])."'";
+        $newdata->$key=$newnlsdata;
+        $newdata->nls->list[$key]=$value;
+      }
+    }
+    if (!$error) {
+      if (!isset($file)) {
+        global $file, $file_name, $file_size, $file_type;
+      } else {
+        global $file_type;
+      }
+      if ($file && file_exists($file)) {
+        // a new file is uploaded via pfile/form.phtml 
+        if ($newtype) {
+          if ($this->CheckNewFile($this->path.$newfilename."/")) {
+            $this->MkDir("files".$this->path);
+          } else {
+            $error=$this->error;
+          }
+          $path=$this->store->files."files".$this->path.$newdata->filename;
+          $newdata->size=$file_size;
+          if (!$newdata->mimetype) {
+            $newdata->mimetype=$file_type;
+          }
+        } else {
+          $path=$this->store->files."files".$newdata->path.$newdata->filename;
+        }
+        if (!$error) {
+          copy($file,$path); 
+        }
+      }
+    }
+  }
+  include($this->store->code."includes/save.object.phtml");
+?>

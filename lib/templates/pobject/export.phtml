@@ -1,0 +1,18 @@
+<?php
+	$ax_file=tempnam($this->store->files."temp/",$this->id);
+	$export_path=$this->path;
+	include($this->store->code."includes/export.phtml");
+		
+	if (!$error) {
+		Header("content-type: application/ariadne-export");
+		debug($ax_file);
+		readfile($ax_file);
+		unlink($ax_file);
+	} else {
+?>
+<script language="javascript">
+	alert("<?php echo $error; ?>");
+</script>
+<?php
+	}
+?>

@@ -1,0 +1,29 @@
+<?php
+  if (!$timefunc) {
+    $timefunc="AddTime";
+  }
+  if (!$to) {
+    $to=mktime(0,0,0,12,31,2037);
+  }
+  if ($data->repeat!="none") {
+    $img="<img src=\"".$AR->dir->images."calendar/repeat.gif\" border=\"0\" alt=\"[repeating]\" width=\"16\" height=\"16\" align=\"right\">";
+  }
+  if ($data->timeframes) { // old pcalitems didn't set this
+    end($data->timeframes);
+    $timeframe=current($data->timeframes);
+    // first get in range $from-$to
+    while ($timeframe && ($timeframe["start"]>$to)) { // "end" is not reliable (no time entries)
+      $timeframe=prev($data->timeframes);
+    }
+    // then add all items until end of range.
+    while ($timeframe && ($timeframe["start"]>=$from)) {
+      $timefunc($timeframe["start"], $timeframe["end"], $data->priority,
+  	$this->store->root.$this->path, $img.$nlsdata->name, $nlsdata->summary);
+      $timeframe=prev($data->timeframes);
+    }
+  } else { // remove this in final version!
+    $timefunc($data->starttime, $data->endtime, $data->priority,
+  	$this->store->root.$this->path, $nlsdata->name, $nlsdata->summary);
+    
+  }
+?>

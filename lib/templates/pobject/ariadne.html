@@ -1,0 +1,7 @@
+<?php
+	if ($this->CheckLogin("read")) {
+		// username and session should now be available so:
+		$criteria["login"]["value"]["="]="'".AddSlashes($ARCurrent->session->get("ARLogin"))."'";
+		$this->find("/system/users/",$criteria,"explore.html");
+	}
+?>

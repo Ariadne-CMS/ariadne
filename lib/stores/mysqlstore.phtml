@@ -1,0 +1,775 @@
+<?php
+/******************************************************************************
+  Mysql Store 1.0						Ariadne 2.0
+
+  Copyright (C) 1998,1999  Muze 
+
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU General Public License
+  as published by the Free Software Foundation; either version 2
+  of the License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+  --------------------------------------------------------------------------
+
+  This is an implementation of the store class for MySQL. The store class is
+  an interface between Ariadne objects and a storage layer. It is used by all 
+  Ariadne objects to call templates in other objects or to manipulate
+  the location and contents of objects in the Ariadne system.
+
+*******************************************************************************/
+
+// debugging functions.
+
+function debug($text) {
+	global $_debug;
+	if ($_debug>0) {
+		echo "<b>$text</b><BR>\n";
+                flush();
+	}
+}
+
+function debugon() {
+	global $_debug;
+	$_debug++;
+	debug("Debugging on.");
+}
+
+function debugoff() {
+	global $_debug;
+	debug("Debugging off.");
+	$_debug--;
+}
+
+function error($text) {
+	echo "// <b>Error: $text</b><BR>\n<!--\nalert('Error: $text');\n// -->\n";
+}
+
+// general objectstore functions
+
+class mysqlstore {
+
+	var $connect_id;
+	var $error;
+	var $root;
+	var $code;
+
+	function mysqlstore($path, $config) {
+	/**********************************************************************************
+		
+	 This is the constructor routine for the store object. It takes some configuration 
+	 information as arguments and sets up the database connection.
+
+	 $path is the root path of the running script under the document root of				
+		the webserver.
+	 $config contains some database configuration values: "host", "user",
+		"password", "database" and the location of the class files for all the used
+		types.
+
+	 **********************************************************************************/
+//		dl("mysql.so");
+		$this->error="";
+		if ($this->connect_id=mysql_connect($config["host"], $config["user"], $config["password"])) {
+
+//		The mysql_select_db isn't necessary anymore due a bug-workaround
+//		see note at $this->database
+
+//			if (!$this->result=mysql_select_db($config["database"],$this->connect_id)) {
+//				mysql_close($this->connect_id);
+//				$this->connect_id=0;
+//			}
+
+		}
+		$this->root=$path;
+		$this->code=$config["code"];
+		$this->files=$config["files"];
+		// necessary to avoid the 'mysql_select_db' bug, it will select
+		// a database for all open connect_id's
+		// so we have to supply the database name where an query has to run
+		$this->database=$config["database"];
+		/* Instantiate module locking */
+		include_once($this->code."modules/mod_lock/mysql.phtml");
+		$this->mod_lock=new mysqllock($config["host"],$config["user"],$config["password"],$config["database"]);
+		$this->mod_lock->lock_duration=$config["lock_duration"];
+		$config["password"]="";
+	}
+
+	function call($template, $args, $objects) {
+	/**********************************************************************************
+	
+	 This function takes a list of objects, the function to be called in each of those
+	 objects and the arguments of that function as arguments. The list of objects is of
+	 unspecified type and may be different in other implementations of the store 
+	 interface.
+
+	 The function will retrieve and instantiate each object in the object list and call
+	 the objects call with $function and $args.
+
+	 store->call is aware of the possibility of objects being called as a substore, 
+	 meaning: If a requested object is not found in this store, it might be in a
+	 different store which is linked into this one via a substore. Each object can in
+	 principle double as a substore, as long as it declares the object->is_store 
+	 variable as TRUE. So if the requested object is not found, the search functions 
+	 (get, ls and find) will return the object with the longest matching path. It is up
+	 to store->call to check wether this object is the one referenced and if not, 
+	 wether it is a substore.
+	 **********************************************************************************/ 
+
+		debug("store->call: start");
+		$this->error="";
+		$this->count=@mysql_num_rows($objects["list"]);
+		while ($row=@mysql_fetch_array($objects["list"])) {
+			$object=$this->newobject($row["path"], $row["parent"], $row["type"], $row["object"], $row["id"], $row["lastchanged"], $row["vtype"]);
+			$result[]=$object->call($template, $args);
+		}
+
+		if (!$this->count) {
+			debug("store->call: end: no objects found whatsoever.");
+		} else {
+			debug("store->call: end: $this->count objects found");
+		}
+		$this->total+=$this->count;
+		return $result;
+	}
+
+	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="") {
+		include_once($this->code."objects/".$type.".phtml");
+		$object=new $type;
+		$object->init($this, $path, $data);
+		$object->type=$type;
+		$object->parent=$parent;
+		$object->id=$id; 
+		$object->lastchanged=$lastchanged;
+		return $object;
+	}
+
+	function get($path) {
+	/**********************************************************************************
+
+	 This function takes as argument a path to an object in the store and will retrieve
+	 all the necessary data and return this in the objectlist type needed for 
+	 store->call(). If the requested path does not exist, it will retrieve the object
+	 with the longest matching path.
+
+	 $path should always start and end with a '/'.
+
+	 **********************************************************************************/
+
+		debug("store->get: start ($path)");
+		$this->error="";
+		$result["method"]="get";
+		$result["path"]=$path;
+		$epath=AddSlashes($path);
+		$query_string="select nodes.path, nodes.parent, objects.id, objects.type, objects.object, objects.lastchanged from objects, nodes where objects.id=nodes.object and nodes.path='$epath'";
+		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
+		debug("store->get: end");
+		return $result;
+	}
+
+	function ls($path) {
+	/**********************************************************************************
+
+	 This function takes as argument a path to an object in the store and will retrieve
+	 all the objects and their data which have this object as their parent. It will 
+	 then return this in the objectlist type needed for store->call(). If the requested
+	 path does not exist, it will retrieve the object with the longest matching path.
+
+	 $path should always start and end with a '/'.
+
+	 **********************************************************************************/
+
+		debug("store->ls: ($path)");
+		$this->error="";
+		$epath=AddSlashes($path);
+		$query_string="select distinct(nodes.path), nodes.parent, objects.id, objects.type, objects.object, objects.lastchanged from objects, nodes where objects.id=nodes.object and nodes.parent='$epath' order by nodes.path";
+		$result["method"]="ls";
+		$result["path"]=$path;
+		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
+		debug($query_string);
+		debug("store->ls: end");
+		return $result;
+	}
+
+	function parents($path) {
+	/**********************************************************************************
+
+	 This function takes as argument a path to an object in the store. It will return 
+	 all objects with a path which is a substring of the given path. The resulsts are 
+	 ordered by path (length), shortest paths first.
+	 In effect all parents of an object in the tree are called, in order, starting at 
+	 the root.
+
+	 $path should always start and end with a '/'.
+
+	 **********************************************************************************/
+
+		debug("store->parents: ($path)");
+		$this->error="";
+		$epath=AddSlashes($path);
+		$query_string="select distinct(nodes.path), nodes.parent, objects.id, objects.type, objects.object, objects.lastchanged from objects, nodes where objects.id=nodes.object and nodes.path=substring('$epath',1,length(path)) order by path";
+		$result["method"]="parents";
+		$result["path"]=$path;
+		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
+		debug("store->parents: end");
+		return $result;
+	}
+
+	function find($path, $criteria, $limit=100, $offset=0) {
+	/**********************************************************************************
+
+	 This function takes as arguments a path to an object in the store and some search
+	 criteria. It will search for all matching objects under the given path. If the
+	 given path is not in this store but in a substore it will not automatically search
+	 that substore. 
+
+	 $criteria is of the form 
+
+	 $criteria ::= ({ $property_name => ({ $valuename => ({ $compare_function, $value }) }) }) 
+
+	 e.g.: $criteria["status"]["value"][">"]="'published'";
+
+	 $path should always start and end with a '/'.
+
+	 **********************************************************************************/
+
+		debug("store->find: ($path)");
+		$this->error="";
+		$count=0;
+		$result["method"]="find";
+		$result["path"]=$path;
+		$result["criteria"]=$criteria;
+		$epath=AddSlashes($path);
+		while (list($property, $values)=@each($criteria)) {
+			$eproperty=AddSlashes($property);
+			if ($property!="object") {
+				$from.=", prop_$eproperty";
+				$where.=" and (";
+			}
+			while (list($valuename, $compare)=each($values)) {
+				while (list($function, $value)=each($compare)) {
+					$ecompare=AddSlashes($function);
+					$evaluename=AddSlashes($valuename);
+					if ($value=="") { 
+						// empty strings as value generate strange results in SQL land
+						$value=0;
+					}
+					switch($property) {
+						case "object" :
+							switch($valuename) {
+								case ("type") : 
+									$where.=" and objects.type $ecompare $value ";
+								 	break;
+								case ("implements") : 
+									$types=", types";
+									$where.=" and ( types.implements $ecompare $value and objects.vtype=types.type ) ";
+									break;
+								case ("parent") :
+									$where.=" and nodes.parent $ecompare $value ";
+									break;
+								case ("lastchanged") :
+									$where.=" and objects.lastchanged $ecompare $value ";
+									break;
+							}
+							break;
+						default :
+							$where.="prop_$eproperty.AR_$evaluename $ecompare $value and "; 
+					}
+				}
+			}
+			if ($property!="object") {
+				$where.=" prop_$eproperty.object=objects.id)	";
+			}
+		}
+		$query_string="select distinct(nodes.path), nodes.parent, objects.id, objects.type, objects.object, objects.lastchanged from nodes, objects $from $types where objects.id=nodes.object and nodes.path like '$epath%' and ( (".substr($where,4).") ) order by nodes.path limit $offset,$limit";
+		debug("store->find: $query_string");
+		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
+
+
+		debug("store->find: end");
+		return $result;
+	}
+
+	function close() {
+	// This is the destructor function, nothing much to see :)
+
+		debug("store->close.");
+		return @mysql_close($this->connect_id);
+	}
+
+
+	function save($path, $type, $data, $properties="", $vtype="") {
+	/***************************************************************
+
+		This function takes as argument a path, type, objectdata and 
+		possibly a properties list and vtype (virtual type).
+		If there exists no object with the given path, a new object is 
+		saved with the given type, data, properties and vtype, and a
+		new path is saved pointing to it.
+		If there does exist an object with the given path, it's object
+		data is overwritten with the given data and if vtype is set the
+		current vtype is overwritten with the new one.
+		
+		$path must be an absolute path (containing no '..' and starting
+			with '/')
+		$type must be a valid type
+		$data can be any string (usually a serialized object.)
+		$properties is a multidimensional hash of the following form:
+			$properties[{property_name}][][{value_name}]={value}
+			{property_name} must be a valid property name
+			{value_name} must be a valid value name for this property
+			{value} can be a number, boolean or string. If it is a string
+				it must be enclosed in single qoutes. All other single 
+				quotes in the string must be escaped. e.g:
+				"'\'t is a String'"
+		example:
+			$properties["name"][0]["value"]="'A name'";
+			$properties["name"][1]["value"]="'A second name!'";
+		if $properties["name"]=1 then all properties for property name
+			will be removed.
+
+		$vtype must be a valid type.
+	 
+		if $properties or $vtype are not set or empty ("",0 or false)
+		they will be ignored. $vtype defaults to $type.
+		Only those properties listed in $properties will be updated.
+		Any other property set will remain as it was.
+
+	***************************************************************/
+
+		debug("store->save: ($path type=$type vtype=$vtype)");
+		$this->error="";
+		if ($path!="/") {
+			$parent=$this->make_path($path, "..");
+		} else {
+			$parent="..";
+		}
+		$epath=AddSlashes($path);
+		$eparent=AddSlashes($parent);
+		if (ereg("{([0-9]):id}",$path,$match)) { 
+			// if the last part of a path matches something like {2:id} this
+			// part will automatically create a new number, unique in this directory, and fill it in.
+			$subid=$this->nextid($parent);
+			if ($match[1]) { 
+				$subid=substr("000000000".$subid,-(intval($match[1])));
+			}
+			$path=ereg_replace("{[0-9]:id}",strval($subid),$path);
+			debug("store->save: new path: $path ($subid)");
+		}
+		$edata=AddSlashes(serialize($data));
+		$epath=AddSlashes($path);
+		$etype=AddSlashes($type);
+		if ($id=$this->exists($path)) { //update
+			debug("updating");
+			if ($vtype) { // only change/save vtype if it is explicitly set
+				$evtype=AddSlashes($vtype);
+				$query_string="update objects set object='$edata', vtype='$evtype' where id=$id"; 
+			} else {
+				$query_string="update objects set object='$edata' where id=$id"; 
+			}
+			debug("store->save: $query_string");
+			mysql_db_query($this->database,$query_string, $this->connect_id);
+			if (mysql_affected_rows($this->connect_id)) {
+				$this->save_properties($properties, $id, $this); 
+				$result=$path;
+			} else {
+				debug("update failed!");
+				$this->error="Update failed: $path";
+				$result=0;
+			}
+		} else { // insert new
+			debug("new");
+			if ($vtype=="") { // if vtype is not set, it defaults to type for new objects
+				$vtype=$type; 
+			}
+			$evtype=AddSlashes($vtype);
+			$query_string="insert into objects (id,type,object,vtype) values (0,'$etype','$edata','$evtype')";
+			debug($query_string);
+			$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+			if ($id=mysql_insert_id($this->connect_id)) {
+				$query_string="insert into nodes (path,parent,object) values ('$epath','$eparent',$id)";
+				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+				if (mysql_affected_rows($this->connect_id)) {				
+					$this->save_properties($properties, $id, $this);
+					$result=$path;
+					debug("ok");
+				} else {
+					$this->error="Insert failed: $query_string";
+					debug($this->error);
+					$result=0;
+				}
+			} else {
+				$this->error="Could not save object: $query_string";
+				debug($this->error);
+				$result=0;
+			}			
+		}
+		debug("store->save: end");
+		return $result;
+	}
+
+
+	function purge($path) {
+	/**********************************************************************
+	 
+		This function will delete the object pointed to by $path and all
+	other paths pointing to that object. It will then remove any property
+	for this object from all property tables.
+		The function returns the number of paths found and removed or 1 if
+	there was no path found (meaning that the object doesn't exist and 
+	therefor purge succeeded while doing nothing.)
+
+	 $path should always start and end with a '/'.
+
+	**********************************************************************/
+
+		debug("store->purge: ($path)");
+		$this->error="";
+		$epath=AddSlashes($path);
+		$object=$this->exists($path);
+		if ($object) {
+			$query_string="delete from nodes where object=$object";
+			$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+			if ($temp) {
+				$result=mysql_affected_rows($this->connect_id);
+			}
+			$this->del_property($object);
+			$query_string="delete from objects where id=$object";
+			mysql_db_query($this->database,$query_string, $this->connect_id);
+		} else { // no such path, so purge already succeeded :)
+			$result=1;
+		}
+		debug("store->purge: end");
+		return $result;
+	}
+
+	function delete($path) {
+	/**********************************************************************
+
+		This function deletes the path given. If this is the last path pointing
+	to an object, the object will be purged instead.
+
+	$path should always start and end with a '/'.
+
+	**********************************************************************/
+
+		debug("store->delete: ($path)");
+		$this->error="";
+		$epath=AddSlashes($path);
+		$paths=$this->list_paths($path);
+		if ($paths) {
+			if (sizeof($paths)==1) { // only one path for this object
+				$result=$this->purge($path); // therefore purge the object.
+			} else { // only delete the given path
+				$query_string="delete from nodes where path='$epath'";
+				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+				if (mysql_affected_rows($this->connect_id)) {
+					$result=1;
+				} else {
+					$result=0;
+				}
+			}
+		}
+		debug("store->delete: end");
+		return $result;
+	}
+
+	function exists($path) {
+	/**********************************************************************
+
+		This function checks the given path to see if it exists. If it does
+	it returns the id of the object to which it points. Otherwise it returns
+	0.
+
+	$path should always start and end with a '/'.
+
+	**********************************************************************/
+
+		debug("store->exists: ($path)");
+		$this->error="";
+		$epath=AddSlashes($path);
+		$query_string="select object from nodes where path='$epath'";
+		$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+		if ($temp && ($row=mysql_fetch_array($temp))) {
+			$object=intval($row["object"]);
+			debug("store->exists: end (yes)");
+		} else {
+			debug("store->exists: end (no)");
+		}
+		return $object;
+	}
+
+
+	function link($source, $destination) {
+	/**********************************************************************
+
+		Link adds an extra path to an already existing object. It has two
+	arguments: $source and $destination. $source is an existing path of
+	an object, $destination is the new path. $destination must not already
+	exist.
+
+	$destination should always start and end with a '/'.
+
+	**********************************************************************/
+
+		debug("store->link: ($destination from $source)");
+		$this->error="";
+		$edestination=AddSlashes($destination);
+		$esource=AddSlashes($source); 
+		$parent=$this->make_path($destination, "..");
+		$eparent=AddSlashes($parent);
+		if ($this->exists($destination)) {
+			$this->error="$destination already exists, cannot overwrite.";
+			$result=0;
+		} else { 
+			if (ereg("{([0-9]):id}",$destination,$match)) {
+				$subid=$this->nextid($parent);
+				if ($match[1]) {
+					$subid=substr("000000000".$subid,-(intval($match[1])));
+				}
+				$destination=ereg_replace("{[0-9]:id}",strval($subid),$destination);
+				$edestination=AddSlashes($destination);
+				debug("store->link: new destination: $destination ($subid)");
+			}
+			$id=$this->exists($source);
+			if ($id) {
+				$query_string="insert into nodes (path, parent, object ) values ('$edestination', '$eparent', $id)";
+				debug("store->link: $query_string");
+				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+				if (!mysql_affected_rows($this->connect_id)) {				
+					$this->error="Insert failed: $path";
+					$result=0;
+				}
+				debug("store->link: end");
+				$result=$destination;
+			}
+		}
+		debug("store->link: end (no $source)");
+		return $result;
+	}
+
+	function list_paths($path) {
+	/**********************************************************************
+
+		This function returns an array of all paths pointing to the same object 
+	as $path does.
+
+	**********************************************************************/
+
+		debug("store->list_paths: start");
+		$this->error="";
+		$object=$this->exists($path);
+		$query_string="select path from nodes where object=$object";
+		$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+		while ($row=@mysql_fetch_array($temp)) {
+			$result[]=$row["path"];
+		}
+		debug("store->list_paths: end");
+		return $result;
+	}
+
+	function implements($type, $implements) {
+	/**********************************************************************
+
+		This function returns 1 if the $type implements the type or
+	interface in $implements. Otherwise it returns 0.
+
+	**********************************************************************/
+
+		$query_string="select distinct type from types where implements='".AddSlashes($implements)."' and type='".AddSlashes($type)."'";
+		$this->error="";
+		$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+		if ($temp) {
+			$row=mysql_fetch_array($temp);
+		}
+		if ($row) {
+			$result=1;
+		}
+		return $result;
+	}
+	
+	function make_path($curr_dir, $path) {
+	/**********************************************************************
+ 
+		This function creates an absolute path from the given starting path
+	($curr_dir) and a relative (or absolute) path ($path). If $path starts
+	with a '/' $curr_dir is ignored. 
+	$path must be a string of substrings seperated by '/'. each of these 
+	substrings may consist of charachters and/or numbers. If a substring
+	is "..", it and the previuos substring will be removed. If a substring
+	is "." or "", it is removed. All other substrings are then concatenated
+	with a '/' between them and at the start and the end. This string is 
+	then returned.
+
+	**********************************************************************/
+
+		debug("store->make_path: ($path from $curr_dir)");		
+		$this->error="";
+		if (substr($path,0,1)=="/") {
+			$result="/";
+			$path=substr($path, 1);
+		} else {
+			$result=$curr_dir;
+		}
+		if (substr($path,-1)=="/") {
+			$path=substr($path, 0, -1);
+		}
+		if ($path) {
+			$splitpath=split("/", $path);
+
+			while (list($key, $pathticle)=each($splitpath)) {
+				switch($pathticle) {
+					case ".." : $result=substr($result, 0, strrpos(substr($result,0,-1), "/")+1);
+								break;
+					case "." : break;
+					case ""	 : break;
+					default	 : $result=$result.$pathticle."/";
+				}
+			}
+		}
+		debug("store->make_path: end");		
+		return $result;
+	}
+
+	function save_properties($properties, $id) {
+	/********************************************************************
+
+		'private' function of mysql.phtml. It updates all property tables
+		defined in $properties and sets the values to the values in
+		$properties.
+
+	********************************************************************/
+
+		if ($properties && (is_array($properties)) && (is_int($id))) {
+			while (list($property, $property_set)=each($properties)) {
+				$this->del_property($id, $property);
+				if (is_array($property_set)) {
+					while (list($key, $values)=each($property_set)) {
+						$this->add_property($id, $property, $values);
+					}
+				}
+			}
+		}
+	}
+
+
+	function load_properties($object) {
+		if ($object) {
+			$query_string="select name from properties";
+			$query=@mysql_db_query($this->database,$query_string,$this->connect_id);
+			while ($prop=@mysql_fetch_array($query)) {
+				if ($value=$this->load_property($object,$prop["name"])) {
+					$result[$prop["name"]]=$value;
+				}
+			}
+		}
+		return $result;
+	}
+
+	function load_property($object, $property) {
+		if ($object) {
+			$query_string="select * from prop_".AddSlashes($property)." where object=$object";
+			$query=@mysql_db_query($this->database,$query_string,$this->connect_id);
+			$currProp=0;
+			while ($prop=@mysql_fetch_array($query)) {
+				reset($prop);
+				while (is_array($prop) && (list($name,$val)=each($prop)) ) {
+					if (($name!="object")&&(!is_int($name))) {
+						if (is_string($val)) {
+							$result[$currProp][substr($name,3)]="'".AddSlashes($val)."'";
+						} else {
+							$result[$currProp][substr($name,3)]=$val;
+						}
+					}
+				}
+				$currProp++;
+			}
+		}
+		return $result;
+	}
+
+	function add_property($object, $property, $values) {
+		if ($object) {
+			while (list($name, $value)=each($values)) {
+				if ($value!="") {
+					$query_names.="AR_".AddSlashes($name).", ";
+					$query_values.="$value, ";
+				}
+			}
+			$query_string="insert into prop_".AddSlashes($property)." ( ".
+										$query_names."object ) values ( ".$query_values."$object )";
+			mysql_db_query($this->database,$query_string, $this->connect_id);
+			return mysql_affected_rows($this->connect_id);
+		}
+	}
+
+	function del_property($object, $property="", $values="") {
+		if (intval($object)) {
+			if (!$property) { // remove all properties for $object
+				$query_string="select name from properties";
+				$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
+				while ($row=mysql_fetch_array($temp)) {
+					$query_string="delete from prop_".$row["name"]." where object=$object";
+					mysql_db_query($this->database,$query_string, $this->connect_id);
+					$result+=mysql_affected_rows($this->connect_id);
+					debug($query_string);
+				}
+			} else {
+				$query_string="delete from prop_".AddSlashes($property)." where ";
+				if (is_array($values)) {
+					while (list($name, $value)=each($values)) {
+						$query_string.="AR_".AddSlashes($name)."=$value and ";
+					}
+				}
+				$query_string.="object=$object";
+				mysql_db_query($this->database,$query_string, $this->connect_id);
+				debug($query_string);				
+				$result=mysql_affected_rows($this->connect_id);
+			}
+		}
+		return $result;
+	}
+
+	function nextid($path) {
+	/**********************************************************************
+
+		'private' function of mysql store. Used by link and save.
+		This function calculates and returns the next unused id (number) for 
+	the given path. 
+
+	**********************************************************************/
+
+		$path=AddSlashes($path);
+		$query_string="lock tables seq_id write";
+		if ($temp=mysql_db_query($this->database,$query_string, $this->connect_id)) {
+			$query_string="select next_id from seq_id where path='$path'";
+			if (($temp=mysql_db_query($this->database,$query_string, $this->connect_id)) && (mysql_affected_rows($this->connect_id)>0)) {
+				$row=mysql_fetch_array($temp);
+				$id=intval($row["next_id"]);
+			} else {
+				$id=1;
+				$query_string="insert into seq_id values ('$path', 1 )";
+				mysql_db_query($this->database,$query_string, $this->connect_id);
+			}
+			$query_string="update seq_id set next_id=".($id+1)." where path='$path'";		
+			mysql_db_query($this->database,$query_string, $this->connect_id);
+			$query_string="unlock tables";
+			mysql_db_query($this->database,$query_string, $this->connect_id);
+		} else {
+			eror("no lock.");
+			$this->close();
+			exit;
+		}
+		return $id;
+	}
+
+} // end class store
+
+?>

@@ -1,0 +1,16 @@
+<?php
+  /******************************************************************
+   expired.phtml					   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Called by: mod_session
+   Arguments: none
+   Grant needed: none
+   Interface/Widget: all
+   Global variables: none
+
+   This template deletes the expired session.
+
+  ******************************************************************/
+
+  $this->store->purge($this->path);
+?>

@@ -1,0 +1,161 @@
+Module for object locking.
+
+The mod_lock class is designed to efficiently lock and unlock objects (files)
+or (whole) tree's.
+
+The class exists with currently 5 methods:
+
+	mod_lock($host,$user,$password,$database)
+
+	This is the constructor of the class. It will connect to the mysql
+	database located at host ($host) where the database ($database) resides
+	and it will logon to that database with the supplied logonname ($user)
+	and password ($password). 
+
+
+	lock($identity, $path, $type, $time)
+
+	This method will try to lock the object at $path. 
+	It can lock the mentioned object, but it can also lock the whole tree.
+	To lock it as an object, call it with $type="O", to lock the
+	whole tree, call it with $type="T".
+
+	When you want to lock an object you have also to supply an identity key
+	($identity). If there is a lock on $path
+	and this lock is owned by $identity, then $path will be locked,
+	otherwise it may not lock the object because it is locked by another
+	identity. 
+
+	By locking an object , you also have to supply a date ($time)
+	when the object has to be released. ($time is an Unix timestamp).
+
+
+	return:
+		false		object has been succesfully locked
+		Array		object is locked by someone else
+
+
+	check_lock($path,$type="O")
+
+	check_lock will check if an object isn't locked. This can be done in
+	2 modes: Check if $path is locked as an object, or locked as a tree (
+	read: can $path be locked as an object ($type="O") or can $path be
+	locked as a tree ($type="T"))
+
+	The default mode is set to check if it isn't locked as an object.
+	You normally don't need to check it with $type="T" (tree), this check
+	is done to see if his children are locked (see lock() ).
+
+	return:
+		see lock()
+
+
+	unlock($identity,$path="")
+
+	This function deletes locks on $path which are owned by $identity.
+	If you don't supply $path, it will delete all locks of identity.
+
+
+	close()
+
+	class destructor
+
+Some examples:
+
+	// open database connection
+	$lock=new mod_lock("localhost","root","","modules");
+
+	if (!($result=$lock->lock("1234","/test/","T",time()+60) || 
+	($result["locks"]["/test/"]["identity"]=="1234")) { //locked by me
+
+		echo "OK, we locked /test/ succesfully";
+		$lock->unlock("1234");
+		echo "unlocked all";
+
+	} else {
+
+		echo "Locked, by:";
+		while (list($path,$lock)=each($result["locks"])) {
+
+			echo $path." is locked by :";
+			echo $lock["identity"]." and it wil be released at:";
+			echo $lock["release"]."<br>\n";
+
+		}
+	}
+
+	$lock->close(); // close database connection
+
+
+
+Ariadne and mod_lock
+
+mod_lock for Ariadne will be instatiated at $AR->mod_lock. This will be done
+in file configs/ariadne.phtml.
+All functionality of mod_lock will be used by Ariadne. 
+
+pobject
+
+pobject has his own interfaces onto mod_lock. These are:
+
+	pobject->lock($time,$mode="O")
+	
+	Lock current object until $time (unix time stamp). When you don't
+	supply $mode, it will be locked as an object. When you call $mode with
+	"T", pobject will be locked as a tree.
+
+	(You don't have to supply an identity key; Ariadne will handle
+	this.)
+
+
+	pobject->checklock($type="O")
+	
+	check if pobject can be locked as an object. If you call it with
+	$type="T" , it will check if pobject can be locked as a tree.
+
+	
+	pobject->unlock()
+
+	unlock pobject.
+
+
+affected Ariadne files:
+
++configs/ariadne.phtml
+configure and instantiate mod_lock as $AR->mod_lock
+
++modules/mod_lock.phtml
+modlock class definition
+
++widgets/formlock/js.html
+this file will be included by form templates. It will relock
+the object every $AR->mod_lock->lock_duration-60 seconds.
+
++includes/lock.phtml
+locks calling object ($this->path), returns $arResult=false on failure,
+($ARCurrent->locks[$this->path] will be stored with mod_lock result)
+will return $arResult=true on success. 
+
++includes/unlock.phtml
+unlock calling object
+
++include/viewlocks.phtml
+Will generate a page with paths which locks calling object.
+
++include/delete.phtml
+Locks whole tree
+
++include/save.phtml
+Locks calling object
+
++templates/*/edit.phtml
+will lock objects. If this can't be done, it will call include/viewlocks.phtml
+
++templates/*/form.phtml
+includes widgets/formlock/js.html
+
++templates/*/UnLock.phtml
+includes include/unlock.phtml
+
++template/*/Lock.phtml
+includes include/lock.phtml

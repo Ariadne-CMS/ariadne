@@ -1,0 +1,34 @@
+	<table border="0" cellpadding="0" cellspacing="1">
+	<tr>
+		<td>
+			<input type="text" size="20" name="<?php echo $wgMultipleName."input"; ?>" value="">
+		</td><td width="50" units="pixels" valign="middle"><input 
+			type="button" class="mybutton" width="80%" onClick="add_new_item(document.forms[0].<?php echo $wgMultipleName."input"; ?>,document.forms[0].<?php echo $wgMultipleName."container"; ?>); collect_items(document.forms[0].<?php echo $wgMultipleName."container"; ?>,document.forms[0].<?php echo $wgMultipleName; ?>);" name="e_add" value="&nbsp;<?php echo $ARnls["add"]; ?>&nbsp;">
+		</td>
+	</tr>
+	<tr>
+		<td valign="top"><font face="courier">
+			<select class="myselect" name="<?php echo $wgMultipleName."container"; ?>" size="5" width="168">
+			<?php
+				while (is_array($wgMultipleArray) && (list($key,$email)=each($wgMultipleArray))) {
+					if ($wgMultipleValue) { 
+						$wgMultipleValue.=",";
+					}
+					$wgMultipleValue.=$email;
+					if (strlen($email)>18) {
+						$emailvis=substr($email,0,14)."...";
+					} else {
+						$emailvis=$email;
+					}
+					echo "<option value=\"$email\">$emailvis</option>\n";
+				}
+			?>
+			</select></font>
+		</td>
+		<td valign="top">
+			<input type="hidden" name="<?php echo $wgMultipleName; ?>" value="<?php echo $wgMultipleValue; ?>">
+			<input type="button" class="mybutton" width="80%" name="e_edit" value="&nbsp;<?php echo $ARnls["edit"]; ?>&nbsp;" onClick="edit_item(document.forms[0].<?php echo $wgMultipleName."container"; ?>, document.forms[0].<?php echo $wgMultipleName."input"; ?>);  collect_items(document.forms[0].<?php echo $wgMultipleName."container"; ?>,document.forms[0].<?php echo $wgMultipleName; ?>);"><br><input 
+				type="button" class="mybutton" width="80%" name="e_remove" value="<?php echo $ARnls["remove"]; ?>" onClick="remove_item(document.forms[0].<?php echo $wgMultipleName."container"; ?>);  collect_items(document.forms[0].<?php echo $wgMultipleName."container"; ?>,document.forms[0].<?php echo $wgMultipleName; ?>);">
+		</td>
+	</tr>
+	</table>

@@ -1,0 +1,66 @@
+<?php
+
+class session {
+
+	function session($session_config, $id=0) {
+		// init session store
+		$this->sessionstore=new mysqlstore($session_config["root"], $session_config);
+		debug("session store database = '".$this->sessionstore->database."'");
+
+		$this->timeout=$session_config["timeout"];
+
+		if ((!$id) || (!$this->sessionstore->exists("/$id/")))  { 
+			// generate new id
+			srand((double)microtime()*1000000);
+			do { 
+				// 3 bytes id
+				$genid=chr(rand(1,255)).chr(rand(1,255)).chr(rand(1,255));
+				// replace all slashes with "0" 
+				$id=str_replace("/","0",base64_encode($genid));
+			} while ($this->sessionstore->exists("/".$id."/"));
+			// save new session object
+			$this->data=new object;
+			$this->id=$id;
+			$this->save();
+		} else { // retrieve session
+			$result=$this->sessionstore->call("get.data.phtml","",$this->sessionstore->get("/$id/"));
+			debug("session found ($result) in database");
+			$this->id=$id;
+			$this->data=$result[0];
+		}
+		$this->put("ARSessionId",$this->id);
+	}
+
+	function put($varname, $value) {
+		debug("session->put($varname,$value)");
+		$this->data->$varname=$value;
+	}
+
+	function get($varname) {
+		return $this->data->$varname;
+	}
+
+	function save($id=0) {
+		if (!$id) { $id=$this->id; } else { $this->id=$id; }
+		// store session data
+		debug("session saving into ".$this->sessionstore->database."<br>");
+		$this->sessionstore->save("/$id/","psession",$this->data);
+	}
+
+
+	function suspend() {
+		$this->save();
+		$this->sessionstore->close();
+		$this->id=0;
+		return ldSetSession();      
+	}
+ 
+	function kill() {
+		// remove session data from store
+		$this->sessionstore->purge("/".$this->id."/");
+		$this->sessionstore->close();
+		$this->id=0;
+		return ldSetSession();
+	}
+}
+?>

@@ -1,0 +1,45 @@
+<?php
+  /******************************************************************
+   delete.phtml					   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Called by: edit.phtml
+   Arguments: none
+   Grant needed: delete
+   Interface/Widget: all
+   Global variables: none
+
+   This template deletes the current object.
+
+  ******************************************************************/
+  if ($this->CheckLogin("delete")) {
+    if (!$confirm) {
+      if (!$data->repeat || ($data->repeat=="None")) {
+        $confirm=$ARnls["current"];
+      } else {
+        $question=$ARnls["q:deleteall"];
+        $buttons[]=$ARnls["all"];
+        $buttons[]=$ARnls["current"];
+        include($this->store->code."includes/confirm.phtml");
+      }
+    }
+    if ($confirm) {
+      if ($confirm==$ARnls["all"]) {
+        debug("remove all");
+        $this->ls(".","remove.phtml","entry=$entry&confirm=All");
+        $data->timeframes=$this->NewEndtime($entry);
+      } else {
+        debug("remove current");
+        $data->timeframes=$this->DelTimeframe($entry);
+      }
+      if (@count($data->timeframes)) { // entries left
+        $this->save($this->path, $this->type, $data);
+      } else { // all entries gone, remove object
+        include($this->store->code."includes/delete.phtml");
+      }
+      if (!$returnpage) {
+        $returnpage=$this->store->root.$this->parent;
+      }
+      Header("Location: $returnpage");
+    }
+  }
+?>

@@ -1,0 +1,131 @@
+<?php
+  /******************************************************************
+   repeat.html                                     Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Called by 'edit.phtml'
+   Arguments: 
+   Grant needed: read
+   Interface/Widget: all
+   Global variables: none
+
+  ******************************************************************/
+  if ($this->CheckLogin("read")) {
+?>
+<body bgcolor="white">
+<form action="edit.phtml">
+<!-- hidden form variables needed by new.phtml/save.phtml -->
+<input type="hidden" name="returnpage" value="<?php echo $returnpage; ?>">
+<p>
+<table border="0" cellspacing="0" cellpadding="2" width="100%" vspace="10" hspace="10">
+<tr>
+  <td colspan="2">
+    <font face="helvetica, sans-serif" size="+1">Calendar Item</font>
+  </td>
+</tr><tr>
+  <td colspan="2" bgcolor="#404074">
+    <font face="helvetica, sans-serif" color="white"><b>Repeat</b></font>
+  </td>
+</tr><tr>
+  <td>Repeat by :</td>
+  <td>
+    <table>
+    <tr>
+<?php
+  if (!$repeat) {
+    $repeat=$data->repeat;
+  }
+  $list[]="None";
+  $list[]="Day";
+  $list[]="Week";
+  $list[]="Month";
+  $list[]="Year";
+  while (list($key, $item)=each($list)) {
+    if ($repeat==$item) {
+      echo "<td bgcolor=\"#404074\"><font color=\"white\">$item</font></td>\n";
+    } else {
+      echo "<td><a href=\"repeat.phtml?repeat=".RawUrlEncode($item)."\">$item</a></td>\n";
+    }
+  }
+  if (!$data->repeatn) {
+ 	$data->repeatn=1;
+  }
+?>
+    </tr>
+    </table>
+  </td>
+</tr><tr>
+<?php if ($repeat!="None") { ?>
+  <td>Every :</td>
+  <td><input type="text" name="repeatn" size="3" value="<?php echo $data->repeatn; ?>">
+      <?php echo $repeat; ?>(s).</td>
+</tr><tr>
+<?php
+  }
+  switch($repeat) {
+    case "None" :
+?>
+  <td></td>
+  <td>No repeat</td>
+<?php
+			break;
+    case "Day" :
+?>
+<?php
+			break;
+    case "Week" :
+?>
+<?php
+			break;
+    case "Month" :
+?>
+
+<?php
+			break;
+    case "Year" :
+?>
+
+<?php
+			break;
+  }
+  if ($repeat!="None") {
+	if (!$data->repeatn) {
+		$data->repeatn=1;
+	}
+?>
+</tr><tr>
+  <td>End on:</td>
+  <td><?php
+    if (!$data->repeatend) {
+      $data->repeatend=$data->starttime+mktime(0,0,0,0,0,1);
+    }
+    $wgDate=$data->repeatend;
+    $wgDateName="repeatend";
+    include($this->store->code."widgets/date/js.html");
+    include($this->store->code."widgets/date/form.html");
+  ?></td>
+<?php
+  }
+?>
+</tr><tr>
+  <td>&nbsp;</td><td>&nbsp;</td>
+</tr><tr>
+  <td colspan="2" bgcolor="#404074">
+    <table width="100%" cellpadding="0">
+    <tr>
+      <td>
+        <input type="hidden" name="next" value="Back">
+        <input type="submit" name="dummy" value="Cancel">
+      </td>
+      <td align="right">
+        <input type="submit" name="next" value="Save">  
+      </td>
+    </tr>
+    </table>
+  </td>
+</tr>
+</table>
+</form>
+</body>
+<?php
+  }
+?>

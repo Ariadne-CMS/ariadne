@@ -1,0 +1,43 @@
+<?php
+  /******************************************************************
+   edit.object.data.save.phtml			   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+
+   no result.
+ 
+  ******************************************************************/
+  $this->call("system.save.data.phtml",$arCallArgs);
+  if ($this->error) {
+?>
+  <font color="red" face="arial,helvetica,sans-serif" size=+1><?php
+    echo $this->error;
+  ?></font><p>
+<?php
+  } else {
+    $returnpage=$AR->dir->www."blue.html";
+    $folders=$this->get("", "GetFolder.phtml");
+    if ($folders && is_array($folders)) {
+      $folder=$folders[0];
+    }
+    if ($this->newobject) {
+      $url=$AR->dir->www."setlink.php?do=add";
+    } else {
+      $url=$AR->dir->www."setlink.php?do=update";
+    }
+    $url.="&link=".RawUrlEncode($this->parent);
+    $url.="&icon=".RawUrlEncode($folder["icon"]);
+    $url.="&name=".RawUrlEncode($folder["name"]);
+    $url.="&path=".RawUrlEncode($folder["path"]);
+    $url.="&pre=".RawUrlEncode($folder["pre"]);
+    $url.="&returnpage=".RawUrlEncode($returnpage);
+?>
+<script> 
+  if (window.opener.top.tree) {
+    window.opener.top.tree.treeload.location='<?php echo $url; ?>';
+  }
+  window.opener.objectadded('<?php echo $this->type; ?>','<?php echo $nlsdata->name; ?>','<?php echo $this->path; ?>'); 
+  window.close();
+</script>
+<?php
+  }
+?>

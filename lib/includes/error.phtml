@@ -1,0 +1,8 @@
+<?php
+    echo "<b>$error</b><br>\n";
+    echo "Click your browsers back button to fix this.";
+?>    
+  <script>
+    alert('<?php echo $error; ?>');
+    history.back();
+  </script>

@@ -1,0 +1,50 @@
+<?php
+  /* this file contains system wide variables and configuration information
+  */
+
+  class object { }
+
+  $AR=new object;
+
+  /* Fill in the full hostname of your server below */
+  /* e.g. "http://your.host.com" */
+  $AR->host="http://your.host.com";
+
+  $AR->dir=new object;
+  
+  /* Fill in the full path to the webservers document root below */
+  /* leave out the last '/' */
+  $AR->dir->docroot="/var/www";		// <- documentroot
+
+  /* Fill in the path from the document root to the ariadne www pages */
+  /* start with a '/' */
+  $AR->dir->www="/ariadne.2.0b8/";
+
+  /* If you installed ariadne in your own homedirectory, e.g. under ~user/, */
+  /* then change the following line to the full path of the ariadne www     */
+  /* directory. e.g.                                                        */
+  // $AR->dir->root="/home/user/public_html/ariadne.2.0b8/";
+  $AR->dir->root=$AR->dir->docroot.$AR->dir->www;
+
+  /* Only change this if you have made your own loader */
+  $AR->root=$AR->dir->www."loader.php";
+
+  /* Only change this if you have moved the images directory */
+  $AR->dir->images=$AR->dir->www."images/";
+
+  /* system wide nls configuration */
+
+  $AR->nls=new object;
+
+  /* list of all system wide available languages */
+  $AR->nls->list["nl"]="Nederlands";
+  $AR->nls->list["en"]="English";
+
+  /* default language */
+  $AR->nls->default="en";
+
+  $ARConfig=new object;
+
+  $ARCurrent=new object;
+  
+?>

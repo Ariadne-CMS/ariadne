@@ -1,0 +1,13 @@
+#!/usr/local/bin/php -q
+<?php
+  require("../lib/configs/ariadne.phtml");
+  require("../lib/configs/sessions.phtml");
+  require("../lib/stores/mysqlstore.phtml");
+  
+  $sessionstore=new mysqlstore(".",$session_config);
+  $criteria["object"]["lastchanged"]["<"]=strftime("%Y%m%d%H%M%S",time()-$session_config["timeout"]);
+  $criteria["object"]["implements"]["="]="'psession'";
+  $sessionstore->call("expired.phtml","",$sessionstore->find("/",$criteria));
+  echo $sessionstore->count." expired sessions removed.\n";
+  $sessionstore->close();
+?>

@@ -1,0 +1,29 @@
+CVS Server													  Muze Ariadne 2.0b7
+================================================================================
+
+From now on you can download the latest development version of Ariadne from
+our CVS server using a public read-only cvs account. We will still release
+'stable' snapshots from time to time, hopefully not too many untill the first
+non-beta release :)
+
+Our CVS server can be contacted via host 'ariadne.muze.nl', with login 'guest' 
+and password 'guest'. It runs on the default port '2401'.
+
+If you use the default cvs system for linux, you can access it using:
+
+	export CVSROOT=:pserver:guest@ariadne.muze.nl:/var/cvs
+	cvs login
+	cvs checkout ariadne
+
+If you later want to get a newer version of the code do:
+
+	cvs update -d ariadne
+
+in the same directory you initially did the checkout.
+
+If you have any questions you can contact us at info@muze.nl, or you can try
+to read the newsgroups at ariadne.muze.nl first.
+
+happy hacking,
+Auke van Slooten
+Muze

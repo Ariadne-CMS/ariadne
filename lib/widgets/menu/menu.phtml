@@ -1,0 +1,14 @@
+<?php
+  global $HTTP_USER_AGENT;
+  if (eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
+       $regs[1] && (intval($regs[1])>=4)) { //ie4+
+    include($this->store->code."widgets/menu/ie/menu.phtml");
+  } else {
+    include($this->store->code."widgets/menu/ns/menu.phtml");
+  }
+?>
+<script>
+  function objectadded() {
+    document.location=document.location;
+  }
+</script>

@@ -1,0 +1,16 @@
+#!/usr/local/bin/php -q
+<?php
+	$ariadne="../lib";
+	require($ariadne."/configs/ariadne.phtml");
+	require($ariadne."/configs/store.phtml");
+	require($ariadne."/stores/mysqlstore.phtml");
+
+	if (($export_path=$argv[1]) && ($ax_file=$argv[2])) {
+		$store=new mysqlstore($root,$store_config);
+		include($ariadne."/includes/export.phtml");
+		if ($error)
+		echo $error."\n";
+	} else {
+		echo "USAGE: export [export_path] [ax_file]\n";
+	}
+?>

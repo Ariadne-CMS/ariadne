@@ -1,0 +1,10 @@
+<?php
+  if ($AR->user && !$this->CheckSilent("read")) {
+    $arResult["pre"]="<font color='#CCCCCC'>";
+    $arResult["name"]=$data->name."</font>";
+  } else {
+    $arResult["name"]=$data->name;
+  }
+  $arResult["icon"]=$this->type;
+  $arResult["path"]=$this->path;
+?>

@@ -1,0 +1,27 @@
+<?php
+  include($this->store->code."includes/save.phtml");
+  if (!$error) {
+    if (!$returnpage) {
+      $returnpage=$this->store->root.$parent;
+    }
+    $folders=$this->get($newfilename, "GetFolder.phtml");
+    if ($folders && is_array($folders)) {
+      $folder=$folders[0];
+    }
+    if ($newtype) {
+      $url=$AR->dir->www."setlink.php?do=add";
+    } else {
+      $url=$AR->dir->www."setlink.php?do=update";
+    }
+    $url.="&link=".RawUrlEncode($parent);
+    $url.="&icon=".RawUrlEncode($folder["icon"]);
+    $url.="&name=".RawUrlEncode($folder["name"]);
+    $url.="&path=".RawUrlEncode($folder["path"]);
+    $url.="&pre=".RawUrlEncode($folder["pre"]);
+    $url.="&returnpage=".RawUrlEncode($returnpage);
+    Header("Location: $url");
+    echo $url;
+  } else {
+    include($this->store->code."includes/error.phtml");
+  }
+?>

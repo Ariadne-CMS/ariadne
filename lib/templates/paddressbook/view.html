@@ -1,0 +1,117 @@
+<?php
+  /******************************************************************
+   view.html					   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Arguments: none
+   Grant needed: read
+   Interface/Widget: all
+   Global variables: none
+
+   This displays a suitable overview of the object.
+
+   no result.
+ 
+  ******************************************************************/
+  if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs) ) {
+?>
+<html>
+<head>
+	<TITLE><?php echo $nlsdata->name; ?></TITLE>
+</head>
+<body bgcolor="white">
+
+<table border="0" width="100%" bgcolor="#404074" cellspacing="0">
+<tr>
+	<td align="left">
+	<font face="helvetica, sans-serif" size="3" color="white">
+	<b><?php echo $nlsdata->name; ?>.</b></font>
+	</td><td align="right">
+	<input type="hidden" name="newfilename" value="{4:id}">
+	</td>
+
+</tr>
+</table>
+<p>
+<form name="search">
+<center>
+<table border="0">
+<tr>
+	<td align="right">
+		<select name="search_property">
+		<option value="name"><?php echo $ARnls["name"]; ?></option>
+		<option value="street"><?php echo $ARnls["address"]; ?></option>
+		<option value="zipcode"><?php echo $ARnls["zipcode"]; ?></option>
+		<option value="city"><?php echo $ARnls["city"]; ?></option>
+		<option value="country"><?php echo $ARnls["country"]; ?></option>
+		</select>
+	</td><td align="center">
+		<input type="text" name="search_value" value="<?php echo $search_value; ?>">
+	</td><td align="left">
+		<input type="submit" name="do_search" value="<?php echo $ARnls["search"]; ?>">
+	</td>
+</tr>
+</form>
+<tr>
+<td colspan="3" align="center">
+<a href="?orderby=a">A</a>&nbsp;&nbsp;
+<a href="?orderby=b">B</a>&nbsp;&nbsp;
+<a href="?orderby=c">C</a>&nbsp;&nbsp;
+<a href="?orderby=d">D</a>&nbsp;&nbsp;
+<a href="?orderby=e">E</a>&nbsp;&nbsp;
+<a href="?orderby=f">F</a>&nbsp;&nbsp;
+<a href="?orderby=g">G</a>&nbsp;&nbsp;
+<a href="?orderby=h">H</a>&nbsp;&nbsp;
+<a href="?orderby=i">I</a>&nbsp;&nbsp;
+<a href="?orderby=j">J</a>&nbsp;&nbsp;
+<a href="?orderby=k">K</a>&nbsp;&nbsp;
+<a href="?orderby=l">L</a>&nbsp;&nbsp;
+<a href="?orderby=m">M</a>&nbsp;&nbsp;
+<a href="?orderby=n">N</a>&nbsp;&nbsp;
+<a href="?orderby=o">O</a>&nbsp;&nbsp;
+<a href="?orderby=p">P</a>&nbsp;&nbsp;
+<a href="?orderby=q">Q</a>&nbsp;&nbsp;
+<a href="?orderby=r">R</a>&nbsp;&nbsp;
+<a href="?orderby=s">S</a>&nbsp;&nbsp;
+<a href="?orderby=t">T</a>&nbsp;&nbsp;
+<a href="?orderby=u">U</a>&nbsp;&nbsp;
+<a href="?orderby=v">V</a>&nbsp;&nbsp;
+<a href="?orderby=w">W</a>&nbsp;&nbsp;
+<a href="?orderby=x">X</a>&nbsp;&nbsp;
+<a href="?orderby=y">Y</a>&nbsp;&nbsp;
+<a href="?orderby=z">Z</a>&nbsp;&nbsp;
+</td>
+</tr></table>
+</center>
+<P>
+<table border="0" width="100%">
+<tr valign="top">
+	<td>
+<?php
+	$criteria["object"]["implements"]["="]="'address'";
+	if (!$search_property) {
+		if (!$orderby) $orderby="a";
+		$criteria["name"]["value"]["LIKE"]="'".AddSlashes($orderby)."%'";
+	} else {
+		switch($search_property) {
+			case 'name':
+				$criteria["name"]["value"]["LIKE"]="'%".AddSlashes($search_value)."%'";
+				break;
+			default:
+				$criteria["address"][AddSlashes($search_property)]["LIKE"]="'%".AddSlashes($search_value)."%'";
+				break;
+		}		
+	}
+	$addresses=$this->get_addresses($criteria,"name");
+	while (is_array($addresses) && (list($key,$address)=each($addresses))) {	
+		$address->call("ShowCard.html");
+	}
+
+?>
+	</td>
+</tr>
+</table>
+</body>
+</html>
+<?php
+  }
+?>

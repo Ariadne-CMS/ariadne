@@ -1,0 +1,11 @@
+<?php
+  if ($this->CheckLogin("config")) {
+    $data->typetree=$typetree;
+    $this->save($this->path, $this->type, $data);
+?>
+<script>
+  window.close();
+</script>
+<?php
+  }
+?>

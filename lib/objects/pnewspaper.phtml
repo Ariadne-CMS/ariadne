@@ -1,0 +1,38 @@
+<?php
+
+//AR_IMPORT($im_dir,"pdir.phtml");
+include_once($this->code."objects/pdir.phtml");
+
+
+class pnewspaper extends pdir { // definitie class
+
+	function get_articles($display, $max="", $start="", $end="") {
+		global $ARCurrent;
+		if (!$start) { $start=time(); }
+                if (!$end) { $end=$start; }
+		$criteria["article"]["start"]["<="]=$start;
+		$criteria["article"]["end"][">="]=$end;
+		$criteria["article"]["display"]["="]="'".AddSlashes($display)."'";
+		$this->find(".",$criteria,"GetForDisplay.phtml","display=$display");
+		if (is_array($ARCurrent->priority)) {
+			arsort($ARCurrent->priority);
+			reset($ARCurrent->priority);
+			while ((!$max || ($i<$max)) && (list($key,$val)=each($ARCurrent->priority))) {
+				$articles[]=$ARCurrent->article[$key];
+				$i++;
+			}
+			return $articles;
+		}
+		return false;
+	}
+
+	function _get_articles($display,$max="",$start="",$end="") {
+		return $this->get_articles($display,$max,$start,$end);
+	}
+
+	function _call_article($article,$template="",$args="") {
+		return $article->call($template,$args);
+	}
+
+} // end class pnewspaper
+?>

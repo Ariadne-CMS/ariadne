@@ -1,0 +1,32 @@
+<?php
+  // show all 'readable' data 
+  if (!isset($nlsdata)) {
+    $nls=$data->nls->default;
+    $flag="<image src=\"".$AR->dir->images."nls/small/$nls.gif\" border=\"0\" alt=\"\">";
+  }
+  $folder=$this->get($data->path, "GetFolder.phtml");
+  if ($folder && $folder[0]["icon"]) {
+    $icon=$folder[0]["icon"];
+  } else {
+    $icon="pdir";
+  }
+  if (!strstr($icon,"pshortcut/")) {
+    $icon="pshortcut/".$icon;
+  }
+  if ($target) {
+    echo "<a href=\"".$this->store->root.$this->path.$target."\"".
+         " onClick=\"if (top.tree) { top.View('$this->path','$target'); return false; }\">";
+  } else {
+    echo "<a href=\"".$this->store->root.$this->path."\"".
+         " onClick=\"if (top.tree) { top.View('$this->path'); return false; }\">";
+  }
+?><img
+  src="<?php echo $AR->dir->images."icons/".$icon; ?>.gif" border="0" alt="">
+<?php
+  if ($flag) { echo $flag; }
+  if (!$this->CheckSilent("read")) {
+    echo " <font color=\"#CCCCCC\"><b>$nlsdata->name</b></font>";
+  } else {
+    echo " <b>$nlsdata->name</b>";
+  }
+?></a><br>

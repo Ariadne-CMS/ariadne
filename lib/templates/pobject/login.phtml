@@ -1,0 +1,17 @@
+<?php
+	if (!$ARCurrent->session || ($AR->user->data->login!=$ARlogin)) {
+        // start a new session when there is no session yet, or
+        // when a user uses a new login. (su)
+		$this->store->root=ldStartSession();
+		debug($this->store->root.$arReturnPage);
+	}
+	$ARCurrent->session->put("ARLogin",$ARLogin);
+	$ARCurrent->session->put("ARPassword",$ARPassword);
+	// FIXME: keep session also outside hash? for 'resume' option?
+    $nls=$ARCurrent->nls;
+    $this->setnls("");
+	setcookie("ARCookie",$ARLogin."{".md5($ARPassword.$ARCurrent->session->id)."}", 0, $this->store->root);
+    $this->setnls($nls);
+	Header("Location: ".$this->store->root.$arReturnPage);
+?>
+<a href="<?php echo $this->store->root.$arReturnPage; ?>">Continue</a>

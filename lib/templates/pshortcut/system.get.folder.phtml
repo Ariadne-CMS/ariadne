@@ -1,0 +1,24 @@
+<?php
+  $path=$this->make_path($data->path);
+  if ($AR->user && !$this->CheckSilent("read")) {
+    $arResult["pre"]="<font color='#CCCCCC'>$flag";
+  } else {
+    $arResult["pre"]=$flag;
+  }
+  if ($path!=$this->path) {
+    $folder=$this->get($data->path,"GetFolder.phtml");
+    if ($folder && $folder[0]["icon"]) {
+      $arResult["icon"]=$folder[0]["icon"];
+    } else {
+      $arResult["icon"]='pdir';
+    }
+    if (!strstr($arResult["icon"],"pshortcut/")) {
+      $arResult["icon"]="pshortcut/".$arResult["icon"];
+    }
+    $arResult["name"]=$nlsdata->name;
+    $arResult["path"]=$this->path;
+  } else {
+    error("illegal path $data->path");
+    debug(serialize($data));
+  }
+?>

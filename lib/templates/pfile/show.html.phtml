@@ -1,0 +1,14 @@
+<?php
+  if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+    if ($data->mimetype=="text/html") {
+      $file=$this->store->files."files".$this->parent.$data->filename;
+      if (file_exists($file)) {
+        readfile($file);
+      } else {
+        echo "file not available.";
+      } 
+    } else {
+      error("This is not an html file");
+    }
+  }
+?>

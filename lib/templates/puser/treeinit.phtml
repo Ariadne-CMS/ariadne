@@ -1,0 +1,44 @@
+<?php
+  if ($this->CheckLogin("read") && $this->CheckConfig()) {
+?>
+<body bgcolor="#404074" text="white">
+<?php
+  flush();
+  $folders=$this->get(".","GetFolder.phtml");
+  if ($folders) {
+    $folder=$folders[0];
+?>
+<script>
+  window.parent.init("<?php echo AddSlashes($folder["icon"]); ?>",
+              "<?php echo AddSlashes($folder["name"]); ?>",
+              "<?php echo AddSlashes($folder["path"]); ?>",
+              "<?php echo AddSlashes($folder["pre"]); ?>");
+  node=window.parent.root;
+  node.status="Open";
+<?php
+    $criteria["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
+    $criteria["object"]["implements"]["="]="'pdir'";
+    $folders=$this->find("",$criteria,"GetFolder.phtml",$args);
+    // en nu node.add doen voor elke folder.
+    if ($folders) {
+      while (list($key, $folder)=each($folders)) {
+        ?>
+        node.add("<?php echo AddSlashes($folder["icon"]); ?>",
+                 "<?php echo AddSlashes($folder["name"]); ?>",
+                 "<?php echo AddSlashes($folder["path"]); ?>",
+                 "<?php echo AddSlashes($folder["pre"]); ?>");
+        <?php
+      }
+    }
+?>
+  window.parent.Draw();
+</script>
+<?php
+  } else {
+    echo "Error initializing tree, contact system administrator.";
+  }
+?>
+</body>
+<?php   
+  } 
+?>

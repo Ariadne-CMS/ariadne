@@ -1,0 +1,8 @@
+  A.MenuePunkt:link        { text-decoration: none; color: #000000; font-family: "MS Sans Serif",Sans-Serif; font-size: 80%; }
+  A.MenuePunkt:active      { text-decoration: none; color: #000000; font-family: "MS Sans Serif",Sans-Serif; font-size: 80%; }
+  A.MenuePunktFaded:link        { text-decoration: none; color: #999999; font-family: "MS Sans Serif",Sans-Serif; font-size: 80%; }
+  A.MenuePunktFaded:active      { text-decoration: none; color: #999999; font-family: "MS Sans Serif",Sans-Serif; font-size: 80%; }
+  A.MenuePunktHover:link   { text-decoration: none; color: #FFFFFF; font-family: "MS Sans Serif",Sans-Serif; font-size: 80%; }
+  A.MenuePunktHover:active { text-decoration: none; color: #FFFFFF; font-family: "MS Sans Serif",Sans-Serif; font-size: 80%; }
+  A.MenuePunktHoverFaded:link   { text-decoration: none; color: #999999; font-family: "MS Sans Serif",Sans-Serif; font-size: 80%; }
+  A.MenuePunktHoverFaded:active { text-decoration: none; color: #999999; font-family: "MS Sans Serif",Sans-Serif; font-size: 80%; }

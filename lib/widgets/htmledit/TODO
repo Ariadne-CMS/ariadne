@@ -1,0 +1,24 @@
+IE4+
+  -> problem with new object, while you're creating a new object, it doesn't
+     exist yet, so saving via a call to a url won't work, you can only save in
+     the form. Create a special check for this?
+     -> remove from form, after save new object ask if the user wants to
+        enter the html for the object
+
+- onClose: check isDirty -> ask to save first
+- menu: file -> close
+- in source view: generate a <br> on return
+		  disable format and html menu options.
+- context menu: background color (body, table, cell)
+                title ?
+- differentiate between page and file object editing: file -> full html,
+  page -> only body.innerHTML.
+
+
+
+
+NS4+
+- use the netscape composer in some way.
+
+common:
+- what if the layout defines a different bgcolor, e.g. black?

@@ -1,0 +1,45 @@
+<?php
+
+// AR_IMPORT($im_dir, "pdir.phtml");
+include_once($this->code."objects/pdir.phtml");
+
+class puser extends pdir { // definitie class
+
+function CheckPassword($password) {
+  debug("CheckPassword");
+  $now=time();
+  if (!$this->data->loggedon) { 
+    // fail once for users who have logged off.
+    debug("failing once; user was logged off");
+    $this->data->loggedon=time();
+    $this->save($this->path, $this->type, $this->data);
+  } else {
+    if (ereg('\$[0-9]+\$[^\$]+\$',$this->data->password,$matches)) {
+      $salt=$matches[0];
+      debug("deluxe crypt: $salt");
+    } else { 
+      $salt=substr($this->data->password, 0, 2);
+      debug("normal crypt");
+    }  
+    $password=crypt($password, $salt);
+    debug($password." == ".$this->data->password." ?");
+  }
+  return $password==$this->data->password;
+}
+
+
+function GetGrants($path, &$result) {
+  debug("GetGrants: $path; ".$this->data->login);
+  if ($this->data->usergrants[$path]) {
+    reset($this->data->usergrants[$path]);
+    while (list($grant, $value)=each($this->data->usergrants[$path])) {
+      $result[$grant]=$value;
+      debug($grant);
+    }
+    return true;
+  }
+  return false;
+}
+
+} // end class puser
+?>

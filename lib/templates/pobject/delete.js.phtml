@@ -1,0 +1,30 @@
+<?php
+	// TODO: (sleep?)
+	// close window.
+
+	ignore_user_abort(0);
+	$this->ls($this->path,"delete.js.phtml");
+	$error=$ARCurrent->delete_error;
+
+	if (!$error) {
+		include($this->store->code."includes/delete.phtml");
+		if ($error) {
+			$ARCurrent->delete_error=$error;
+		}
+
+?>
+<script language="javascript">
+	<?php 
+	if ($error) {
+		echo "alert('$error');\n";
+	} else {
+
+		$dialog="<center>Deleting path ".$this->path."</center>";
+		echo "top.dialog.sbar('".$dialog."');\n";
+	}
+	?>
+</script>
+<?php
+	}
+	flush();
+?>

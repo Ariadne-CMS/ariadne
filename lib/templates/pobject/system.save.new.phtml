@@ -1,0 +1,24 @@
+<?php
+  <?php
+  /******************************************************************
+   system.save.new.phtml				   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+
+   No result.
+
+  ******************************************************************/
+
+  if ($this->CheckLogin("add") && $this->CheckConfig()) {
+    if (!$arNewFilename) {
+      $arNewFilename="{5:id}";
+    }
+    if (!$arNewType) { // first choose an objecttype
+      $this->error="No Type information given";
+    } else {
+      $arNewData=base64_decode($arNewData);
+      $arNewPath=$this->make_path($arNewFilename);
+      $arNewObject=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData)
+      $arNewObject->call("system.save.data.phtml", $arCallArgs);
+    }
+  }
+?>

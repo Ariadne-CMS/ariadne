@@ -1,0 +1,13 @@
+<?php
+  include($this->store->code."includes/delete.phtml");
+  if (!$error) {    
+    if (!$silent) {
+      if (!$returnpage) {
+        $returnpage=$this->store->root.$this->parent;
+      }
+      Header("Location: $returnpage");
+    }
+  } else {
+    include($this->store->code."includes/error.phtml");
+  }
+?>

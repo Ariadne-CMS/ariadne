@@ -1,0 +1,13 @@
+<?php
+
+// AR_IMPORT($im_dir,"puser.phtml");
+include_once($this->code."objects/puser.phtml");
+
+class pgroup extends puser { // definitie class
+
+  function CheckPassword($password) {
+    return 0;
+  }
+
+} // end class pgroup
+?>

@@ -1,0 +1,266 @@
+/* Copyright 1999 Microsoft Corporation. All rights reserved. */
+/* Author: Steve Isaac, Microsoft Corporation                 */
+/*                                                            */
+/*
+   This file (along with the companion toolbar.js file) implements full featured
+   toolbars completely in DHTML.
+  
+   See the accompanying readme.htm for full documentation on how to use DHTML Toolbars.
+ */
+/* ---------------------------------------------------------------------------------------------- */
+/* Public Toolbar classes                                                                                */
+/* ---------------------------------------------------------------------------------------------- */
+.tbContentElement
+{
+    POSITION: ABSOLUTE;
+    HEIGHT: 1px; 
+    LEFT: 0px; 
+    TOP: 0px; 
+    WIDTH: 1px; 
+}
+.tbToolbar
+{
+    POSITION: ABSOLUTE;
+    BACKGROUND-COLOR: buttonface; 
+    BORDER-BOTTOM: buttonshadow solid 1px; 
+    BORDER-LEFT: buttonhighlight solid 1px; 
+    BORDER-RIGHT: buttonshadow solid 1px; 
+    BORDER-TOP:  buttonhighlight solid 1px; 
+    HEIGHT: 27px; 
+    TOP:0;
+    LEFT:0;
+}
+.tbButton
+{
+    POSITION: ABSOLUTE;
+    BACKGROUND-COLOR: buttonface; 
+	BORDER-BOTTOM: buttonface solid 1px; 
+    BORDER-LEFT: buttonface solid 1px; 
+    BORDER-RIGHT: buttonface solid 1px; 
+    BORDER-TOP:  buttonface solid 1px; 
+    TOP: 1px;
+    HEIGHT: 23px; 
+    WIDTH: 23px;
+}
+.tbIcon
+{
+    POSITION: ABSOLUTE;
+	LEFT: -1;
+	TOP: -1
+}
+.tbSeparator
+{
+	POSITION: ABSOLUTE; 
+	BORDER-LEFT: buttonshadow solid 1px; 
+	BORDER-RIGHT: buttonhighlight solid 1px; 
+	FONT-SIZE: 0px; 
+    TOP: 1px;
+	HEIGHT: 22px; 
+	WIDTH: 1px; 
+}
+.tbMenu
+{
+    POSITION: ABSOLUTE;
+    CURSOR: default;
+    BACKGROUND-COLOR: buttonface; 
+	BORDER-BOTTOM: buttonface solid 1px; 
+    BORDER-LEFT: buttonface solid 1px; 
+    BORDER-RIGHT: buttonface solid 1px; 
+    BORDER-TOP:  buttonface solid 1px; 
+    PADDING-TOP: 4;
+    PADDING-BOTTOM: 2;
+    TOP: 1px;
+	WIDTH: 1px; 
+    FONT-FAMILY: MS Sans Serif; 
+    FONT-SIZE: 8px;
+}
+.tbMenuItem
+{
+    CURSOR: default;
+    FONT-FAMILY: MS Sans Serif; 
+    FONT-SIZE: 8px;
+    DISPLAY: none;    
+}
+.tbSubmenu 
+{
+    CURSOR: default;
+    FONT-FAMILY: MS Sans Serif; 
+    FONT-SIZE: 8px;    
+    DISPLAY: none;    
+} 
+.tbGeneral
+{
+    POSITION: ABSOLUTE;
+    HEIGHT: 22px; 
+    TOP:2;
+}
+/* ---------------------------------------------------------------------------------------------- */
+/* Private styles                                                                                 */
+/* ---------------------------------------------------------------------------------------------- */
+.tbHandleDiv
+{
+	POSITION: ABSOLUTE;
+    BACKGROUND-COLOR: buttonface; 
+	BORDER-LEFT: buttonhighlight solid 1px; 
+	BORDER-RIGHT: buttonshadow solid 1px;
+	BORDER-TOP: buttonhighlight solid 1px; 
+	FONT-SIZE: 1px;
+	TOP: 1px; 
+	HEIGHT: 22px; 
+	WIDTH: 3px;
+}
+.tbButtonMouseOverUp
+{
+    POSITION: ABSOLUTE;
+    BACKGROUND-COLOR: buttonface; 
+    BORDER-BOTTOM: buttonshadow solid 1px; 
+    BORDER-LEFT: buttonhighlight solid 1px; 
+    BORDER-RIGHT: buttonshadow solid 1px; 
+    BORDER-TOP:  buttonhighlight solid 1px; 
+    TOP: 1px;
+    HEIGHT: 23px; 
+    WIDTH: 24px;
+}
+.tbButtonMouseOverDown
+{
+    POSITION: ABSOLUTE;
+    BACKGROUND-COLOR: buttonface; 
+    BORDER-BOTTOM: buttonhighlight solid 1px; 
+    BORDER-LEFT: buttonshadow solid 1px; 
+    BORDER-RIGHT: buttonhighlight solid 1px; 
+    BORDER-TOP:  buttonshadow solid 1px; 
+    TOP: 1px;
+    HEIGHT: 23px; 
+    WIDTH: 24px;
+}
+.tbButtonDown
+{
+    POSITION: ABSOLUTE;
+    BACKGROUND-COLOR: gainsboro; 
+    BORDER-BOTTOM: buttonhighlight solid 1px; 
+    BORDER-LEFT: buttonshadow solid 1px; 
+    BORDER-RIGHT: buttonhighlight solid 1px; 
+    BORDER-TOP:  buttonshadow solid 1px; 
+    TOP: 1px;
+    HEIGHT: 23px; 
+    WIDTH: 24px;
+}
+.tbIconDown
+{
+    POSITION: ABSOLUTE;
+	LEFT: 0px;
+	TOP: 0px;
+}
+.tbIconDownPressed
+{
+    POSITION: ABSOLUTE;
+	LEFT: 1px;
+	TOP: 1px;
+}
+.tbMenuBodyOuterDiv
+{
+    CURSOR: default; 
+    BACKGROUND-COLOR: menu;
+	BORDER-BOTTOM: threeddarkshadow solid 1px; 
+    BORDER-LEFT: threedface solid 1px; 
+    BORDER-RIGHT: threeddarkshadow solid 1px; 
+    BORDER-TOP:  threedface solid 1px; 
+    POSITION: absolute;
+}
+.tbMenuBodyInnerDiv
+{
+    CURSOR: default; 
+	BORDER-BOTTOM: threedshadow solid 1px; 
+    BORDER-LEFT: threedhighlight solid 1px; 
+    BORDER-RIGHT: threedshadow solid 1px; 
+    BORDER-TOP:  threedhighlight solid 1px; 
+}
+.tbMenuBodyTable
+{
+    CURSOR: default; 
+	BORDER-BOTTOM: menu solid 1px; 
+    BORDER-LEFT: menu solid 1px; 
+    BORDER-RIGHT: menu solid 1px; 
+    BORDER-TOP:  menu solid 1px; 
+}
+.tbMenuSeparator
+{
+    DISPLAY: none;    
+}
+.tbMenuSeparatorTop
+{
+	POSITION: RELATIVE;
+	BORDER-BOTTOM: buttonshadow solid 1px; 
+	HEIGHT: 5px;
+	WIDTH: 94%;
+	FONT-SIZE: 0px;
+}
+.tbMenuSeparatorBottom
+{
+	POSITION: RELATIVE;
+	BORDER-TOP: buttonhighlight solid 1px; 
+	HEIGHT: 5px;
+	WIDTH: 94%;
+	FONT-SIZE: 0px;
+}
+.tbMenuBlankSpace
+{
+	WIDTH: 20; 
+}
+.tbSubmenuGlyph
+{
+	FONT-FAMILY: webdings; 
+	WIDTH: 20; 
+	TEXT-ALIGN: right;
+}
+.tbMenuItemChecked
+{
+	FONT-FAMILY: webdings; 
+	WIDTH: 20; 
+	TEXT-ALIGN: right;
+}
+.tbMenuIcon
+{
+    BACKGROUND-COLOR: buttonface; 
+    BORDER-BOTTOM: buttonface solid 1px; 
+    BORDER-LEFT: buttonface solid 1px; 
+    BORDER-RIGHT: buttonface solid 1px; 
+    BORDER-TOP:  buttonface solid 1px; 
+}
+.tbMenuIconChecked
+{
+    BACKGROUND-COLOR: threedlightshadow; 
+    BORDER-BOTTOM: buttonhighlight solid 1px; 
+    BORDER-LEFT: buttonshadow solid 1px; 
+    BORDER-RIGHT: buttonhighlight solid 1px; 
+    BORDER-TOP:  buttonshadow solid 1px; 
+}
+.tbMenuIconMouseOver
+{
+    BACKGROUND-COLOR: buttonface; 
+    BORDER-BOTTOM: buttonshadow solid 1px; 
+    BORDER-LEFT: buttonhighlight solid 1px; 
+    BORDER-RIGHT: buttonshadow solid 1px; 
+    BORDER-TOP:  buttonhighlight solid 1px; 
+}
+.tbMenuIconCheckedMouseOver
+{
+    BACKGROUND-COLOR: buttonface; 
+    BORDER-BOTTOM: buttonhighlight solid 1px; 
+    BORDER-LEFT: buttonshadow solid 1px; 
+    BORDER-RIGHT: buttonhighlight solid 1px; 
+    BORDER-TOP:  buttonshadow solid 1px; 
+}
+.tbScriptlet
+{
+    POSITION: ABSOLUTE;
+    CURSOR: default; 
+    VISIBILITY: hidden;
+}
+BODY
+{
+	MARGIN: 0;
+	BORDER: 0;
+	BACKGROUND-COLOR: buttonface;
+}
+

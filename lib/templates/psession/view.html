@@ -1,0 +1,39 @@
+<?php
+  /******************************************************************
+   index.html					   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Arguments: none
+   Grant needed: read
+   Interface/Widget: all
+   Global variables: none
+
+   This displays a suitable overview of the object.
+
+   no result.
+ 
+  ******************************************************************/
+  if ($this->exists("index.html/")) {
+    $this->get("index.html/","view.html");
+  } else {
+    if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs) ) {
+?>
+<html>
+<head>
+	<TITLE><?php echo $nlsdata->name; ?></TITLE>
+</head>
+<body scroll="no" bgcolor="white">
+<font face="helvetica, sans-serif" size="2">
+<h3><?php echo $nlsdata->name; ?>.</h3>
+<?php
+  echo $nlsdata->page;
+  echo "<p>";
+  $this->ls("","Show.phtml");
+?>
+</font>
+</div>
+</body>
+</html>
+<?php
+    }
+  }
+?>

@@ -1,0 +1,29 @@
+<?php
+  /* This file contains per store configuration information */
+  /* In future versions you will be able to have multiple stores
+     in one Ariadne instance. */
+
+  /* Fill in the hostname of the database server. You can use locally valid
+     names */
+  $store_config["host"]="localhost";
+
+  /* Fill in the user name with which Ariadne will connect to the database */
+  $store_config["user"]="www";
+
+  /* Fill in the password of this user (which is why this script should
+     never be placed in the document root!) */
+  $store_config["password"]="secret";
+
+  /* Fill in the name of the database to connect to */
+  $store_config["database"]="ariadne";
+
+  $ariadne_root="/usr/local/lib/ariadne.2.0b8/";
+
+  /* fill in the full path to the ariadne code library (lib) */
+  $store_config["code"]=$ariadne_root."lib/";
+
+  /* fill in the full path to the ariadne file store directory (files) */
+  /* This is where templates, cache images and uploaded files are stored */
+  $store_config["files"]=$ariadne_root."files/";
+
+?>

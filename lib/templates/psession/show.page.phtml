@@ -1,0 +1,10 @@
+<?php
+  if ($this->CheckLogin("read") && $this->CheckConfig()) {
+    if (!$language) {
+      $language=$nls;
+    }
+    if ($language!="none") {
+      echo $data->$language->page;
+    }       
+  }
+?>

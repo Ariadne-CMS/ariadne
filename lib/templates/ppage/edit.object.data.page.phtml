@@ -1,0 +1,53 @@
+<?php
+  global $HTTP_USER_AGENT;
+  if (eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
+       $regs[1] && (intval($regs[1])>=4)) { //ie4+
+    include($this->store->code."widgets/htmledit/ie/edit.php");
+  } else {
+    if ($file) {
+      $file.="/";
+    }
+?>
+<html>
+<head>
+<script>
+<!--
+  function init() {
+    document.editform.htmltext.value=window.opener.GetHTML('<?php echo $name; ?>');
+  }
+  function loadpage(root, path, file, name, language, type) {
+    if (file) {
+      document.location.href=root+path+file+'/edit.object.data.'+name+'.phtml?'+
+      'root='+escape(root)+'&path='+escape(path)+'&file='+escape(file)+
+      '&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type);
+    } else {
+      document.location.href=root+path+'edit.object.data.'+name+'.phtml?'+
+      'root='+escape(root)+'&path='+escape(path)+'&file='+escape(file)+
+      '&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type);
+    }
+  }
+// -->
+</script>
+</head>
+<body bgcolor="white" onLoad="init()">
+<form name="editform" method="post" action="<?php echo $root.$path.$file."edit.".$name.".save.phtml"; ?>">
+<input name="ContentLanguage" type="hidden" value="<?php echo $language; ?>">
+<table width="100%" border="0" cellspacing="0"><tr>
+  <td colspan="2">
+    <textarea name="htmltext" cols="75" rows="24" wrap="soft"><?php
+      $this->get($path.$file,"show.".$name.".phtml");
+    ?></textarea>
+  </td>
+</tr><tr bgcolor="#404074">
+  <td>&nbsp;</td>
+  <td align="right">
+    <input type="button" name="cancel" value="Cancel" onClick="window.close()">
+    <input type="submit" name="save" value="Save">
+  </td>
+</tr></table>
+</form>
+</body>
+</html>
+<?php
+  }
+?>

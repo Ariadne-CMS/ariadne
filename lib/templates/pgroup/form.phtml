@@ -1,0 +1,107 @@
+<?php
+  /******************************************************************
+   form.phtml                                      Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Called by 'edit.phtml' and 'new.phtml'
+   Arguments: newtype, newparent, newfilename
+   Grant needed: read
+   Interface/Widget: all
+   Global variables: none
+
+   This template displays the input form for this object. If $newtype
+   is set, the form is called to create a new object. This means that
+   $data points to the data of the object creating it!
+   $newtype, $newfilename and $newparent are saved in hidden input
+   fields for further processing by whatever template is called when
+   the form is processed.
+   The html form tag in a form template should always leave the action
+   property out.
+
+   This template must be available in every pobject derivative's
+   template directory.
+
+   no result.
+
+  ******************************************************************/
+  if ($this->CheckLogin("read")) {
+?>
+<body bgcolor="white">
+<?php
+  $this->parents($this->path, "ShowLink.phtml","target=edit.phtml");
+?>
+<form>
+<!-- hidden form variables needed by new.phtml/save.phtml -->
+<input type="hidden" name="newtype" value="<?php echo $newtype; ?>">
+<input type="hidden" name="newparent" value="<?php echo $this->path; ?>">
+<input type="hidden" name="newfilename" value="<?php echo $newfilename; ?>">
+<input type="hidden" name="returnpage" value="<?php echo $returnpage; ?>">
+<?php
+include($this->store->code."widgets/formlock/js.html");
+?>
+<table border="0" width="100%" cellspacing="0">
+<tr>
+  <td bgcolor="#404074" colspan="2">
+    <font face="helvetica, sans-serif" color="white"><b><?php echo $ARnls["groupdata"]; ?> 
+    <?php if (!$newtype) { echo $data->login; } else { echo $newfilename; } ?></b></font>
+  </td>
+</tr><tr>
+  <td align="right">
+    <font face="helvetica, sans-serif"><b><?php echo $ARnls["name"]; ?> :</b></font>
+  </td>
+  <td>
+    <input type="text" name="name" maxlength="50" value="<?php $this->showdata("name","none"); ?>">
+  </td>
+</tr><tr>
+  <?php if (!$newtype) { ?>
+  <td bgcolor="#404074" colspan="2">
+    <font face="helvetica, sans-serif" color="white"><b><?php echo $ARnls["membersofgroup"]; ?></b></font>
+  </td>
+</tr><tr>
+  <td colspan="2">
+    <?php
+      $criteria["object"]["parent"]["="]="'$this->path'";
+      $criteria["object"]["implements"]["="]="'puser'";
+      $result=$this->find("",$criteria,"Get.phtml");
+      if ($result && is_array($result)) {
+        while (list($key, $user)=each($result)) {
+          echo "<img src=\"".$AR->dir->images."icons/puser.gif\">";
+          echo "<a href=\"SetUser.phtml?action=delete&path=".
+            RawUrlEncode($user->path)."\">".$user->data->name."</a> ( ".$user->data->login." )<br>\n";
+        }
+      }
+    ?>
+<table width="110%"><tr bgcolor="#EEEEEE">
+      <td align="center">
+<?php
+  $wgBrowsePath="/system/users/";
+  $wgBrowseName="path";
+  include($this->store->code."widgets/browse/js.html");
+  include($this->store->code."widgets/browse/form.html");
+?>
+        <input type="hidden" name="action" value="add">
+        <input type="submit" name="next" value="<?php echo $ARnls["add"]; ?>">
+      </td>
+    </tr>
+</table>
+  </td>
+</tr><tr>
+  <?php } // end if (!$newtype) ?>
+  <td>
+    <?php if ($newtype) { ?>
+      <input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="history.back()">
+    <?php } else { ?>
+      <input type="submit" name="next" value="<?php echo $ARnls["cancel"]; ?>">
+      <input type="submit" name="next" value="<?php echo $ARnls["delete"]; ?>" 
+       onClick="return confirm('<?php echo $ARnls["q:removegroup"]; ?>');">
+    <?php } ?>
+  </td>
+  <td align="right">
+    <input type="submit" name="next" value="<?php echo $ARnls["save"]; ?>">  
+  </td>
+</tr>
+</table>
+</form>
+</body>
+<?php
+  }
+?>

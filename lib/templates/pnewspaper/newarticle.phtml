@@ -1,0 +1,21 @@
+<?php
+/*******************
+
+Newarticle
+
+*******************/
+if (!$newtype) {
+	$newtype="article";
+	$newfilename=$this->path."{5:id}/";
+}
+
+switch($next) {
+	case 'Save':
+		include($this->store->code."templates/".$newtype."/save.phtml");
+		break;
+	default:
+		include($this->store->code."templates/".$newtype."/form.phtml");
+		break;
+	
+}
+?>

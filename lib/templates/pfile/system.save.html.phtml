@@ -1,0 +1,15 @@
+<?php
+  if ($this->CheckLogin("edit") && $this->CheckConfig()) { 
+    $newdata=$data;
+    if (!file_exists($this->store->files."files".$newdata->path)) {
+      $this->MkDir("files".$newdata->path);
+    }
+    $fp=fopen($this->store->files."files".$newdata->path.$newdata->filename,"w");
+    fwrite($fp, RawUrlDecode($html));
+    fclose($fp);
+    include($this->store->code."includes/save.phtml");
+    if ($error) {
+      $this->error=$error;
+    }
+  }
+?>

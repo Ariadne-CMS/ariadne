@@ -1,0 +1,85 @@
+<?php
+  /******************************************************************
+   new.phtml					   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Arguments: $newtype, $submit
+   Grant needed: add
+   Interface/Widget: all
+   Global variables: none
+
+   This template controls the flow of templates when creating a new
+   object. if $newtype is not set it will display a suitable list of
+   types, to be selected by the user, with a filename entry box. Else 
+   if $submit is not 'Save' the form template of the chosen type will
+   be displayed. Finally the save template of the chosen type will be
+   called.
+
+   No result.
+
+  ******************************************************************/
+
+  if ($this->CheckLogin("add") && $this->CheckConfig()) {
+    $this->newtype=true; // status information for getdata()
+    if (!$newtype) { // first choose an objecttype
+?>
+<body bgcolor="white">
+<form>
+<table border="0" cellspacing="0">
+<tr>
+  <td colspan="2">
+    <font face="helvetica, sans-serif" size="+1"><b><?php echo $ARnls["addnewobject"]; ?>:</b></font>
+  </td>
+</tr><tr>
+  <td align="right">
+    <font face="helvetica, sans-serif"><b><?php echo $ARnls["type"]; ?> :</b></font>
+  </td>
+  <td>
+    <select name="newtype">
+<?php
+  if ($AR->user->data->login=="admin") { // || $AR->user->grants["config"] ?
+    $this->ls("/system/ariadne/types/","ShowOption.phtml");
+  } else { // FIXME: normal -> change to config check on allowed types -> typetree
+    $this->parents("","GetConfig.phtml");
+    if ($ARConfig->typetree) {
+      $this->ls($ARConfig->typetree."/".$this->type."/",
+        "ShowOption.phtml");
+    } else {
+      $this->ls("/system/ariadne/typetree/normal/".$this->type."/",
+        "ShowOption.phtml");
+    }
+  }
+?>
+    </select>
+  </td>
+</tr>
+<tr>
+  <td align="right">
+    <font face="helvetica, sans-serif"><b><?php echo $ARnls["filename"]; ?> :</b></font>
+  </td>
+  <td>
+    <input type="text" name="newfilename" size="16" maxlength="16">
+  </td>
+</tr>
+<tr>
+  <td colspan="2" align="right">
+    <input type="submit" value="<?php echo $ARnls["next"]; ?>">
+  </td>
+</tr>
+</table>
+</body>
+<?php
+    } else if ($next==$ARnls["save"]) { // now save it
+      include($this->store->code."templates/".$newtype."/save.phtml");
+    } else { // then fill in the data
+		if (!$newfilename) { 
+			$newfilename="{5:id}";
+		}
+		$arNewData=serialize(new object);
+		$arNewPath=$this->make_path($newfilename);
+		$arNewObject=$this->store->newobject($arNewPath, $this->path, $newtype, $arNewData);
+		$arNewObject->newobject=true;
+		$arNewObject->call("form.phtml",$arCallArgs);
+//      include($this->store->code."templates/".$newtype."/form.phtml");
+    }
+  }
+?>

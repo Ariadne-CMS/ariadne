@@ -1,0 +1,41 @@
+	<script language="javascript">
+	<!--
+		function collect_items(src,dest) {
+			dest.value="";
+				for (i=0; i<src.options.length; i++) {
+					if (dest.value)
+						dest.value+=","+src.options[i].value;
+					else
+						dest.value=src.options[i].value;
+				}
+		}
+
+
+		function add_new_item(src,dest) {
+			if (src.value) {
+				dest.options[dest.options.length]=new Option(src.value,src.value);
+				src.value="";
+			}
+		}
+
+		function remove_item(item) {
+			if (item.selectedIndex!=-1) {
+				item.options[item.selectedIndex]=null;
+			}
+		}
+
+
+		function edit_item(src,dest) {
+			if (src.selectedIndex!=-1) {
+				dest.value=src.options[src.selectedIndex].value;
+				src.options[src.selectedIndex]=null;
+			}
+		}
+	// -->
+	</script>
+	<style>
+	<!--
+		INPUT.mybutton { width: 6em; }
+		select.myselect { width: 11.5em }
+	-->
+	</style>

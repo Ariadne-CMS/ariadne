@@ -1,0 +1,87 @@
+<?php
+  /******************************************************************
+   save.phtml					   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Called by 'edit.phtml' and 'new.phtml'
+   Arguments: $newtype, $newfilename
+   Grant needed: add or edit
+   Interface/Widget: all
+   Global variables: none
+
+   This template checks the input from form.phtml, sets the 
+   corresponding values in a data object ($newdata), adds the proper
+   values to its properties and includes the common save code to save
+   this data as a new object or as an update of this object 
+   (depending on $newtype, if $newtype is set a new object will be 
+   saved.)
+
+   no result.
+ 
+  ******************************************************************/
+  if ($newtype) {
+    $newdata=new object;
+  } else {
+    $newdata=$data; 
+  }
+
+  if (!$firstname && !$lastname && !$middlename) {
+	$error=$ARnls["err:nonameentered"];
+  } else {
+	$newdata->name="$lastname, $middlename $firstname";
+	$newdata->firstname=$firstname;
+	$newdata->lastname=$lastname;
+	$newdata->middlename=$middlename;
+
+	$newdata->address=$address;
+	$newdata->zipcode=$zipcode;
+	$newdata->city=$city;
+	$newdata->country=$country;
+	$newdata->telephone=$telephone;
+	$newdata->mobile=$mobile;
+	$emails=explode(",",$emails);
+	if ($emails[0]) { 
+		$newdata->emails=$emails;
+	} else {
+		unset($newdata->emails);
+	}
+  }
+
+  if (!isset(${$ARConfig->nls->default}) && !isset($newdata->{$ARConfig->nls->default})) { // default language for this path
+    $error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+  } else {
+    if (!$newdata->nls) {
+      $newdata->nls=new object;
+    }
+    $newdata->nls->default=$this->nls;
+    reset($AR->nls->list);
+    while (list($key, $value)=each($AR->nls->list)) {
+      if (isset(${$key})) {
+        $nlsformdata=$$key;
+        if (!$newdata->$key) {
+          $newnlsdata=new object;
+        } else {
+          $newnlsdata=$newdata->$key;
+        }
+        $newnlsdata->summary=$nlsformdata["summary"];
+	    $newnlsdata->name=$newdata->name; // copy name into nls data for generic templates
+        $newdata->$key=$newnlsdata;
+        $newdata->nls->list[$key]=$value;
+      }
+    }
+  }
+
+
+
+
+  if (!$error) {
+	$properties["name"][0]["value"]="'".AddSlashes($newdata->name)."'";
+	$properties["address"][0]["street"]="'".AddSlashes($newdata->address)."'";
+	$properties["address"][0]["zipcode"]="'".AddSlashes($newdata->zipcode)."'";
+	$properties["address"][0]["city"]="'".AddSlashes($newdata->city)."'";
+	$properties["address"][0]["country"]="'".AddSlashes($newdata->country)."'";
+
+	include($this->store->code."includes/save.object.phtml");
+  } else {
+	include($this->store->code."includes/error.phtml");
+  }
+?>

@@ -1,0 +1,58 @@
+<?php
+  if ($this->CheckLogin("layout")) {
+?>
+<html>
+<head>
+<title><?php echo $ARnls["templates"]; ?></title>
+<?php
+  include($this->store->code."widgets/wizard/classic.css");
+?>
+</head>
+<body bgcolor="white">
+<table border="0" width="75%" align="center" cellspacing="4" vspace="10" hspace="10">
+  <td colspan="2" align="center">
+    <form action="edit.object.layout.form.phtml">
+    <fieldset id="templates">
+    <table border="0" width="75%" cellspacing="4">
+    <tr>
+      <td>
+        <span class="required"><?php echo $ARnls["type"]; ?></span>
+      </td><td>
+        <span class="required"><?php echo $ARnls["template"]; ?></span>
+      </td><td>
+        <span class="required"><?php echo $ARnls["language"]; ?></span>
+      </td>
+    </tr>
+      <?php
+        if (($data->pinp) && is_array($data->pinp)) {
+          while (list($type, $values)=each($data->pinp)) {
+            while (list($function, $templatelist)=each($values)) {
+            ?>
+    <tr>
+      <td><?php echo $type; ?>&nbsp;</td><td><?php echo $function; ?></td><td>
+            <?php
+              asort($templatelist);
+              while (list($language, $template)=each($templatelist)) {
+                $flag="<img src=\"".$AR->dir->images."nls/small/$language.gif\" alt=\"".$AR->nls->list[$language]."\" border=\"0\">";
+                echo "<a href=\"edit.object.layout.form.phtml?type=".$type."&function=".RawUrlEncode($function).
+                  "&language=".$language."\">$flag</a> ";
+              }
+            ?>
+      </td>
+    </tr>
+          <?php
+            }
+          }
+        }
+      ?>
+    </table>    
+    </fieldset>
+    <br><br>
+    <input type="hidden" name="type" value="<?php echo $this->type; ?>">
+    <input type="submit" name="action" value="<?php echo $ARnls["new"]; ?>">
+    </form>
+  </td>
+</tr>
+</table>
+</body>
+<?php } ?>

@@ -1,0 +1,140 @@
+This version of Ariadne has inbuilt support for multiple languages.
+Currently you can only choose between English and Dutch, as I am not fluent
+in other languages. For people interested in adding more languages, the file
+lib/nls/en contains all language strings you need to translate.
+
+
+
+How does it work?
+
+
+
+lib/configs/ariadne.phtml contains a list of available languages and the
+default language for the whole system.
+
+In your user edit form you can select your preferred language from this list. 
+When you login to Ariadne, the www/index.php script checks your language
+choice and adds it to all URL's (at least those referencing the loader) like this:
+
+language choice: English -> en
+URL: /ariadne/loader.php/en/
+
+  The loader cuts the first part (between the first and second '/') of the 
+PATH_INFO and checks whether it is a valid language code (en, nl, etc.)
+  If it is, it sets the store root ($store->root) to include this string.
+Therefor the root would become '/ariadne/loader.php/en'. This way the
+language choice will be included in all links. Then it will set the variable
+$ARCurrent->nls to this language code. 
+  If the first part is not a valid language code, the loader assumes it is part of the
+path of the requested object, and assumes the system default language
+choice, but does not add that to the store root. The root would become
+'/ariadne/loader.php'. 
+
+The loader next includes the language string file of the selected language
+(e.g.: nls/lib/en). If the requested template ends on '.phtml', and is
+therefor part of the management environment of Ariadne, it sets the
+variable $ARCurrent->nolangcheck to 1. This means that later on the user
+will not be presented with a language selection choice if the object does
+not have data for the selected language.
+
+The next step in the NLS system is in the call method of pobject. When a
+template is called, each object first checks which language is selected, if
+any. If $ARCurrent->nls is set, this means that the user has explicitly
+selected a language, via the url. $this->reqnls is set to the selected
+language, or the system default if none are.
+
+Then a check is made to see if the object actually has data in the requested
+language. If it has (or doesn't support multiple languages), $nls and
+$this->nls are set to $this->reqnls. Otherwise they will be set to the
+default language of the object itself, which is the default language with
+which it was first saved. 
+The next step is to create a few shortcuts to be used in templates (system
+and object) to get the correct data:
+
+  $data=&$this->data;
+  $nlsdata=&$this->data->$nls;
+  $this->nlsdata=&$this->data->$nls;
+
+Then the template is called. If the template includes a call to
+$this->CheckConfig, the saga continues. 
+
+
+
+CheckConfig():
+
+
+
+You can set the list of available languages and the default language per
+object. These changes will 'drip down' the object tree to all it's children
+via the CheckConfig() method. 
+
+First all parents of the object are called to get the configuration data.
+This now includes the language choices. If $ARCurrent->nls is not set (the
+language is not explicitly set in the URL) the default value for this part
+of the tree is assumed. (The root 'inherits' the system defaults.)
+$this->reqnls and $this->nls are again set.
+
+Next the object is checked to see if the requested template is available in
+that language. If it isn't (and $ARCurrent->nolangcheck is not true/set) a
+language selection dialogue with all available languages will be presented,
+$ARCurrent->nolangcheck is set to true and CheckConfig returns false.
+The reason that $ARCurrent->nolangcheck is set, is so that subsequent calls
+to CheckConfig, e.g. by object templates called by ls(), will not display a
+list of language checks. Only the first template called, which is the object
+referenced in the URL, can display a language choice dialog.
+
+Next CheckConfig checks for the availability of object templates. These
+templates now have a language associated with them. CheckConfig will only
+use the correct language version of these templates. If an object templates
+is found, CheckConfig will again set the shortcut $this->nlsdata, which can
+be used as $nlsdata in a <pinp> code block.
+If the object doesn't have data in the requested language, normally the
+template will simple be skipped and the object won't be visible. However if
+you do want to display all objects, even if they'll be in a different
+language, you can set $ARCurrent->allnls to true. In that case the object
+will display with it's default language instead of the requested one.
+
+
+
+Forms and save.phtml
+
+
+
+All forms have been changed to include a language selection. This is by
+means of a simple include of 'lib/widgets/nls/form.phtml'.
+This will display the currently selected language, and a list of clickable
+flags to change the language.
+Also every variable in the form which differs per language is displayed via
+the new methods $this->showdata() and $this->getdata():
+
+mixed getdata($varname, $languagecode);
+
+This function searches for the requested variable through $HTTP_POST_VARS,
+$HTTP_GET_VARS and the object data, in that order. It will try to find the 
+variable in the correct language. If you want to display a variable which is 
+language independant, you can use language code 'none'.
+
+void showdata($varname, $languagecode);
+
+This function takes the result of getdata and echoes it.
+
+Language specific data has a different input form name than usual:
+
+<input type="text" name="<?php echo $nls; ?>[name]" ...>
+
+This means that if $nls=="en" the data will be sent as 'en[name]', which php
+translates to $en["name"]. lib/widgets/nls/form.phtml makes sure that on a
+language switch this data is kept in hidden inputs in the form.
+
+save.phtml must then check all available languages whether data is entered
+in that language. The best way to see how that works is simply browse
+through the code.
+
+I hope this explains how the NLS system in Ariadne works. It's a bit
+complex, but I've tried to keep the complexity out of the templates as much
+as possible. 
+
+19-05-2000
+Updated 23-09-2000
+Auke van Slooten
+Muze

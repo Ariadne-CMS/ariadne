@@ -1,0 +1,46 @@
+<?php
+	if ($this) $store=&$this->store;
+
+	include_once($store->code."includes/system.functions.merge.phtml");
+
+	if (!$data) $data=new object;
+
+	include_once($store->code."modules/mod_ax.phtml");
+
+	$mod=new mod_ax;
+    if (!$store->exists($import_path)) {
+		$error="err:importpathdoesntexist";
+	} else if (!($error=$mod->open($ax_file,"unpack",$store->files."temp/"))) {
+		if (!$fp=fopen($mod->tempdir."/objects.data","r")) {
+			$error="err:noobjectdata";
+		} else {
+			$mod->data=unserialize($data=fread($fp,filesize($mod->tempdir."/objects.data")));
+			fclose($fp);
+			if (!isset($mod->data->nodes)) {
+				$error="err:corruptobjectdata";
+			} else {
+				ksort($mod->data->nodes);
+				while (is_array($mod->data->nodes) && (list($path,$object)=each($mod->data->nodes))) {
+					$obj=$mod->data->objects[$object];
+					$newfilename=$import_path.substr($path,1);
+					//echo "$newfilename ".date("d-m-Y G:i:s",$mod->data->objects[$object]["lastchanged"])."\n";
+					if ($store->exists($newfilename)) {
+						$old=$store->get($newfilenmame,"Get.phtml");
+						$old=$old[0];
+						if ($old->lastchanged<$obj["lastchanged"]) {
+						 	//ok, merge it
+							merge($old->data,$obj["data"]);
+							$obj["data"]=$old->data;
+						}
+					}
+					$store->save($newfilename, $obj["type"], $obj["data"], $obj["properties"], $obj["vtype"]);
+				}
+			}
+
+			if (!($error=$mod->importfiles("files",$store->files."files".$import_path))) {
+				$error=$mod->importfiles("templates",$store->files."templates".$import_path);
+			}
+			$mod->close();
+		}
+	}
+?>

@@ -1,0 +1,16 @@
+Addressbook<br>
+<?php
+	$criteria["object"]["parent"][">"]="'".$this->parent."'";
+	$criteria["object"]["implements"]["="]="'address'";
+	if ($search_property && $search_value) {
+		switch($search_property) {
+			case 'name':
+				$criteria["name"]["value"]["LIKE"]="'%".AddSlashes($search_value)."%'";
+				break;
+			default:
+				$criteria["address"][AddSlashes($search_property)]["LIKE"]="'%".AddSlashes($search_value)."%'";
+				break;
+		}
+		$this->find(".",$criteria,"ShowCard.html","search_property=".urlencode($search_property)."&search_value=".urlencode($search_value));
+	}
+?>

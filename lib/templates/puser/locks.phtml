@@ -1,0 +1,69 @@
+<?php
+	if ($locks) {
+		if (!$HTTP_POST_VARS) global $HTTP_POST_VARS;
+		reset($HTTP_POST_VARS);
+		while (list($key,$val)=each($HTTP_POST_VARS)) {
+			if (substr($key,0,6)=="unlock") {
+				$this->store->mod_lock->unlock($this->data->login,$path=substr($key,7));
+			}
+		}
+		if ($returnpage) {
+			header("location: $returnpage");
+			exit;
+		}
+
+	}
+
+	$locks=$this->store->mod_lock->get_locks($this->data->login);
+
+	if (!is_array($locks) && $returnpage) {
+		header("location: $returnpage");
+		exit;
+	}
+?>
+<html>
+<body bgcolor="white">
+<table bgcolor="#404074" width="100%">
+<tr>
+	<td align="left">
+	<font face="helevetica,sans-serif" color="white"><b>Locks for <?php echo $nlsdata->name; ?></b></font>
+	</td>
+</tr>
+</table>
+
+<p>
+<form method="post">
+<input type="hidden" name="returnpage" value="<?php echo $returnpage; ?>">
+
+<table cellspacing="0" width="100%">
+<tr bgcolor="#EEEEEE">
+	<td><font face="helvetica,sans-serif"><b>Path</b></font></td>
+	<td>&nbsp;&nbsp;</td>
+	<td><font face="helvetica,sans-serif"><b>Duration</b></font></td>
+	<td>&nbsp;&nbsp;</td>
+	<td align="center"><font face="helvetica,sans-serif"><b>Unlock</b></font></td>
+</tr>
+
+<?php
+	while (is_array($locks) && (list($path,$lock)=each($locks["locks"]))) {
+		echo "<tr><td align=\"left\"><font face=\"helvetica,sans-serif\">";
+		echo $path;
+		echo "</td><td></td><td align=\"left\">";
+		echo date("d-m-Y H:i:s",$lock["release"]);
+		echo "</td><td></td><td align=\"center\">";
+		echo "<input type=\"checkbox\" name=\"unlock_$path\">";
+		echo "</td></tr>";
+	}
+?>
+</table>
+<p>
+<table width="100%">
+<tr bgcolor="#404074"><td colspan="5" align="right">
+	<font face="helvetica,sans-serif" color="white">
+	<input type="submit" name="locks" value="  Ok  ">
+	</font>
+</td></tr>
+</table>
+</body>
+
+</html>

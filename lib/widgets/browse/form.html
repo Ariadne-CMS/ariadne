@@ -1,0 +1,19 @@
+<?php 
+  if (!$wgBrowsePath) { 
+    $wgBrowsePath=$this->path; 
+  }
+  if (!$wgBrowseName) {
+    $wgBrowseName="browsewindow";
+  }
+  if (!$wgBrowseTitle) {
+    $wgBrowseTitle="Browse...";
+  }
+  if (!$wgBrowseSize) {
+    $wgBrowseSize="16";
+  }
+?><input type="text" name="<?php echo $wgBrowseName; ?>" value="<?php 
+  echo $wgBrowsePath; 
+?>" size="<?php echo $wgBrowseSize; ?>"><input type="button" name="select" value="<?php echo $wgBrowseTitle; ?>" 
+onClick="Browse(this.form.<?php echo $wgBrowseName; ?>, '<?php 
+  echo $wgBrowsePath; 
+?>', '<?php echo $wgBrowseName; ?>', '<?php echo $wgBrowseTitle; ?>');">

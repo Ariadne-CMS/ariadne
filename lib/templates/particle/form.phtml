@@ -1,0 +1,231 @@
+<?php
+  /******************************************************************
+   form.phtml                                      Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Called by 'edit.phtml' and 'new.phtml'
+   Arguments: newtype, newfilename
+   Grant needed: read
+   Interface/Widget: all
+   Global variables: none
+
+   This template displays the input form for this object. If $newtype
+   is set, the form is called to create a new object. This means that
+   $data points to the data of the object creating it!
+   $newtype, $newfilename and $newparent are saved in hidden input
+   fields for further processing by whatever template is called when
+   the form is processed.
+   The html form tag in a form template should always leave the action
+   property out.
+
+   This template must be available in every pobject derivative's
+   template directory.
+
+   no result.
+
+  ******************************************************************/
+  if ($this->CheckLogin("read")) {
+	function input_time($name,$time) {
+		if (!$time) {
+			$date=getdate(time());
+			$hours=$date["hours"]; $mins=$date["minutes"];
+		} else {
+			$hours=floor($time/3600);
+			$mins=floor(($time-($hours*3600))/60);
+		}
+		$mins=floor($mins/5)*5;
+
+		echo "<nobr><select name=\"".$name."_hour\">\n";
+		for ($i=0; $i<=23; $i++) {
+			if (strlen($i)<2) $i="0".$i;
+			if ($i!=$hours)
+				echo "<option value=\"$i\">$i</option>\n";
+			else
+				echo "<option value=\"$i\" selected>$i</option>\n";
+		}
+
+		echo "</select><b>:</b>\n";
+		echo "<select name=\"".$name."_minute\">\n";
+		for ($i=0; $i<=59; $i=$i+5) {
+			if (strlen($i)<2) $i="0".$i;
+			if ($i!=$mins)
+				echo "<option value=\"$i\">$i</option>\n";
+			else
+				echo "<option value=\"$i\" selected>$i</option>\n";
+		}
+
+		echo "</select></nobr>\n";
+	}
+?>
+<head>
+</head>
+<body bgcolor="white">
+<?php
+  $this->parents($this->path, "ShowLink.phtml","target=edit.phtml");
+
+  if ($newtype && !$newfilename) $newfilename="{5:id}";
+?>
+<form method="post">
+<!-- hidden form variables needed by new.phtml/save.phtml -->
+<input type="hidden" name="newtype" value="<?php echo $newtype; ?>">
+<input type="hidden" name="newparent" value="<?php echo $this->path; ?>">
+<input type="hidden" name="newfilename" value="<?php echo $newfilename; ?>">
+<input type="hidden" name="returnpage" value="<?php echo $returnpage; ?>">
+<?php
+include($this->store->code."widgets/formlock/js.html");
+?>
+<table border="0" cellspacing="0" width="100%" > 
+<tr bgcolor="#404074">
+  <td colspan="2">
+    <font face="helvetica, sans-serif" size="+1" color="white"><b><?php echo $ARnls["editarticle"]; ?>:</b></font>
+  </td><td align="right" colspan="5">
+   <font face="helvetica, sans-serif">
+   <select name="newscenario">
+   <?php
+     $this->ls("/system/newspaper/scenarios/","select.html","selected=".RawUrlEncode($data->scenario));
+   ?>
+   </select>
+   </font>
+  </td>
+</tr>
+<tr>
+  <td align="left">
+   <font face="helvetica, sans-serif">
+   <b><?php echo $ARnls["start"]; ?>:</b>
+   </font>
+  </td><td align="left">
+   <font face="helvetica, sans-serif">
+   <?php echo $ARnls["date"]; ?>
+   </font>
+  </td><td align="left">
+   <font face="helvetica, sans-serif">
+   <?php echo $ARnls["time"]; ?>
+   </font>
+  </td><td align="left">
+   <font face="helvetica, sans-serif">
+   <b><?php echo $ARnls["end"]; ?>:</b>
+   </font>
+  </td><td align="left">
+   <font face="helvetica, sans-serif">
+   <?php echo $ARnls["date"]; ?>
+   </font>
+  </td><td align="left">
+   <font face="helvetica, sans-serif">
+   <?php echo $ARnls["time"]; ?>
+   </font>
+  </td>
+</tr><tr>
+  <td></td><td align="left">
+   <font face="helvetica, sans-serif">
+<?php
+$wgDateName="startdate";
+$wgDate=$data->startdate;
+echo "<!-- start:$wgDate -->";
+include($this->store->code."widgets/date/js.html");
+include($this->store->code."widgets/date/form.html");
+?>
+  </td><td align="left">
+<?php input_time("starttime",$data->starttime); ?>
+</td><td>
+</td><td align="left">
+   <font face="helvetica, sans-serif">
+<?php
+$wgDateName="enddate";
+$wgDate=$data->enddate;
+echo "<!-- end:$wgDate -->";
+include($this->store->code."widgets/date/form.html");
+?>
+   </font>
+  </td>
+  <td align="left">
+  <?php input_time("endtime",$data->endtime); ?>
+  </td>
+</tr>
+</table>
+
+<br>
+
+<table border="0"  width="100%" cellspacing="0">
+<tr>
+  <td bgcolor="#404074" colspan="2">
+    <?php include($this->store->code."widgets/nls/form.phtml"); ?>
+  </td>
+</tr>
+<tr valign="top">
+  <td align="right">
+    <font face="helvetica, sans-serif">
+    <b><?php echo $ARnls["title"]; ?></b>&nbsp;:
+    </font>
+  </td>
+   <td align="left">
+    <font face="helvetica, sans-serif">
+    <input type="text" size="40" maxlength="40" name="<?php echo $nls; ?>[name]" value="<?php 
+      $this->showdata("name",$nls); ?>">
+    </font>
+   </td>
+</tr>
+<tr valign="top">
+  <td align="right">
+    <font face="helvetica, sans-serif">
+    <?php echo $ARnls["summary"]; ?>&nbsp;:
+    </font>
+  </td>
+   <td align="left">
+    <font face="helvetica, sans-serif">
+    <textarea name="<?php echo $nls; ?>[summary]" cols="40" rows="8" wrap="soft"><?php 
+      echo ereg_replace("&","&amp;", $this->getdata("summary",$nls)); 
+    ?></textarea>
+    </font>
+   </td>
+</tr>
+<tr valign="top">
+  <td align="right">
+    <font face="helvetica, sans-serif">
+    <?php echo $ARnls["page"]; ?>:
+    </font>
+  </td>
+   <td align="left">
+    <font face="helvetica, sans-serif">
+
+<?php
+    if (!$newtype) {
+      $wgHTMLEditName="page";
+      $wgHTMLEditLanguage=$nls;
+      $wgHTMLEditContent=$this->getdata("page",$nls);
+      include($this->store->code."widgets/htmledit/js.html");
+      include($this->store->code."widgets/htmledit/form.html");
+    } else {
+      echo "available when object is created";
+    }
+?>
+
+    </font>
+   </td>
+</tr>
+
+
+</table>
+
+
+
+<p>
+<table width="100%" cellspacing="0" border="0">
+<tr bgcolor="#404074">
+  <td>
+    <?php if ($newtype) { ?>
+      <input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="history.back()">
+    <?php } else { ?>
+      <input type="submit" name="next" value="<?php echo $ARnls["cancel"]; ?>">
+      <input type="submit" name="next" value="<?php echo $ARnls["delete"]; ?>" 
+       onClick="return confirm('<?php echo $ARnls["q:removeobject"]; ?>');">
+    <?php } ?>
+  </td>
+  <td align="right">
+    <input type="submit" name="next" value="<?php echo $ARnls["save"]; ?>">  
+  </td>
+</tr>
+</table>
+</form>
+</body>
+<?php
+  }
+?>

@@ -1,0 +1,53 @@
+<?php
+  /******************************************************************
+   save.phtml					   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Called by 'edit.phtml' and 'new.phtml'
+   Arguments: $newtype, $newfilename
+   Grant needed: add or edit
+   Interface/Widget: all
+   Global variables: none
+
+   This template checks the input from form.phtml, sets the 
+   corresponding values in a data object ($newdata), adds the proper
+   values to its properties and includes the common save code to save
+   this data as a new object or as an update of this object 
+   (depending on $newtype, if $newtype is set a new object will be 
+   saved.)
+
+   no result.
+ 
+  ******************************************************************/
+  if ($newtype) {
+    $newdata=new object;
+  } else {
+    $newdata=$data; 
+  }
+
+
+  if (!$name) {
+	$error=$ARnls["err:nonameentered"];
+  } else {
+	$newdata->name=$name;
+	$newdata->address=$address;
+	$newdata->zipcode=$zipcode;
+	$newdata->pobox=$pobox;
+	$newdata->city=$city;
+	$newdata->country=$country;
+	$newdata->telephone=$telephone;
+	$newdata->fax=$fax;
+	$newdata->url=$url;
+	$emails=explode(",",$emails);
+	if ($emails) $newdata->emails=$emails;
+  }
+
+  if (!$error) {
+	$property["name"][0]["value"]="'".AddSlashes($newdata->name)."'";
+	$property["contact"][0]["address"]="'".AddSlashes($address)."'";
+	$property["contact"][0]["city"]="'".AddSlashes($city)."'";
+
+	include($this->store->code."includes/save.dir.phtml");
+  } else {
+	include($this->store->code."includes/error.phtml");
+  }
+?>

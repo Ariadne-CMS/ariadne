@@ -1,0 +1,19 @@
+<?php
+
+include_once($this->code."objects/pobject.phtml");
+
+class particle extends pobject { // definitie class
+
+	function parse_summary($templ="") {
+        if (eregi("<a>",$this->nlsdata->summary)) {
+            return eregi_replace("<a>","<a href=\"".$this->store->root.$this->path."\">",$this->nlsdata->summary);
+        }
+        return $this->nlsdata->summary;
+	}
+
+	function _parse_summary($templ="") {
+		return $this->parse_summary($templ);
+	}
+
+} // end class article
+?>

@@ -1,0 +1,20 @@
+<script language="javascript">
+<!--
+wgBrowseResult=0;
+
+function Browse(resultobject, path, name, title) {
+  wgBrowseResult=resultobject;
+  if (wgBrowseResult.value) {
+    path=wgBrowseResult.value;
+  }
+  browsewindow=window.open(
+    '<?php 
+       echo $AR->dir->www; ?>widgets/browse/index.php?path='+escape(path)+'&loader=<?php 
+       echo RawUrlEncode($this->store->root); ?>&title='+
+       escape(title)+'&name='+escape(name), 'browsewindow',
+    'directories=no,height=300,width=200,location=no,menubar=no,status=no,toolbar=no,resizable=yes');
+  browsewindow.opener=this;
+}
+
+// -->
+</script>

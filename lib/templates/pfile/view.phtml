@@ -1,0 +1,28 @@
+<?php
+  /******************************************************************
+   index.html					   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Arguments: none
+   Grant needed: read
+   Interface/Widget: all
+   Global variables: none
+
+   This displays a suitable overview of the object.
+
+   no result.
+
+  ******************************************************************/
+  if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+    $file=$this->store->files."files".$this->parent.$data->filename;
+?>
+<body scroll="no" bgcolor="white" onLoad="top.LoadingDone();">
+<?php
+    include($this->store->code."widgets/menu/menu.phtml");
+    if (!file_exists($file)) {
+      echo "file not available.";
+    }
+?>
+</body> 
+<?php
+  }
+?>

@@ -1,0 +1,90 @@
+<?php
+  /******************************************************************
+   form.phtml					   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Called by 'edit.phtml' and 'new.phtml'
+   Arguments: newtype, newparent, newfilename
+   Grant needed: read
+   Interface/Widget: all
+   Global variables: none
+
+   This template displays the input form for this object. If $newtype
+   is set, the form is called to create a new object. This means that
+   $data points to the data of the object creating it!
+   $newtype, $newfilename and $newparent are saved in hidden input
+   fields for further processing by whatever template is called when
+   the form is processed. 
+   The html form tag in a form template should always leave the action
+   property out.
+
+   This template must be available in every pobject derivative's
+   template directory.
+
+   no result.
+
+  ******************************************************************/
+  if ($this->CheckSilent("read")) {
+?>
+<table border="0" width="90%">
+<tr>
+  <td>
+    <?php 
+      $arLanguage=$this->getdata("arLanguage","none");
+      if (!$arLanguage) {
+       $arLanguage=$ARConfig->nls->default;
+      }
+      $selectednls=$arLanguage;
+      $selectedlanguage=$ARConfig->nls->list[$arLanguage];
+      $flag="<img src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\">";
+    ?>
+    <fieldset id="data">
+    <legend><?php echo $ARnls["data"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+      <table border="0" align="center">
+      <tr>
+        <td>
+          <span class="required"><?php echo $ARnls["name"]; ?></span>
+        </td><td align="right">
+          <?php echo $flag; ?>
+        </td>
+      </tr><tr>
+        <td colspan="2">
+          <input type="text" name="<?php echo $selectednls."[name]"; ?>" maxlength="50" 
+            value="<?php $this->showdata("name", $selectednls); ?>">
+        </td>
+      </tr><tr>
+        <td colspan="2">
+          <?php echo $ARnls["value"]; ?>
+        </td>
+      </tr><tr>
+        <td colspan="2">
+          <input type="text" name="value" maxlength="50" 
+            value="<?php $this->showdata("value","none"); ?>">
+        </td>
+      </tr>
+      </table>
+    </fieldset>
+  </td>
+</tr>
+</table>
+<script>
+  window.onload=init;
+  function init() {
+    document.wgWizForm["<?php echo $selectednls; ?>[name]"].focus();
+  }
+</script>
+<?php
+    if ($selectednls==$ARConfig->nls->default) {
+      $arResult["save"][$selectednls."[name]"]["ereg"]=".+";
+      $arResult["save"][$selectednls."[name]"]["error"]=sprintf($ARnls["err:nonameentered"],$selectedlanguage);
+      $arResult["next"]=$arResult["save"];
+    } else {
+      $arResult["next"][$selectednls."[name]"]["ereg"]=".+";
+      $arResult["next"][$selectednls."[name]"]["confirm"]=sprintf($ARnls["confirm:nonameentered"],$selectedlanguage);
+      if ($this->getdata("name",$ARConfig->nls->default)) {
+        $arResult["save"]=$arResult["next"];
+      } else {
+        $arResult["save"]=false;
+      }
+    }
+  }
+?>

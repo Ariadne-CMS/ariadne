@@ -1,0 +1,58 @@
+<?php
+  /******************************************************************
+   SetTemplates.phtml				   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Called by 'config.phtml'
+   Arguments: $newtype, $newfunction, $newtemplate
+   Grant needed: "config"
+   Interface/Widget: management
+   Global variables: none
+
+   This template is called by config.phtml. It lets you add or change 
+   a template by pointing the template ($newtemplate) to a specific
+   file ($newlocation) on the server.
+
+   $newtype is a valid type.
+   $newfunction is a valid string. Templates ending with 
+     '.phtml' are not accepted.
+   $newtemplate is either a:
+     filename: 	This must be an absolute path or a relative path 
+               	starting from the php include path.
+     'default': This will reset the template to it's default value
+                (as in, from this point on the normal template will
+                be called again).
+
+  No return value.
+
+  ******************************************************************/
+
+  if ($this->CheckLogin("config")) {
+    if (ereg(".phtml",$newfunction)) {
+      ?>
+      <body><script>
+        alert('<?php echo $ARnls["err:cannotedit.phtml"]; ?>');
+        history.back();
+      </script></body>
+      <?php
+    } else {
+      if ($newtemplate) {
+        $data->templates[$newtype][$newfunction][$newlanguage]=$newtemplate;
+      } else {
+        while (list($type, $values)=each($data->templates)) {
+          while (list($function, $templatelist)=each($values)) {
+            while (list($language, $template)=each($templatelist)) {
+              if (($type!=$newtype) && 
+                  ($function!=$newfunction) &&
+                  ($language!=$newlanguage)) {
+                $templates[$type][$function][$language]=$template;
+              }
+            }
+          }
+        }
+        $data->templates=$templates;
+      }
+      $this->save($this->path, $this->type, $data, "");
+      Header("Location:  ".$this->store->root.$this->path."config.phtml");
+    }
+  }
+?>

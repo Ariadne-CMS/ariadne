@@ -1,0 +1,7 @@
+<?php
+  if (!$wgFFConfirmMessage) {
+    $wgFFConfirmMessage=$ARnls["q:removeobject"];
+  }
+?>
+<input type="button" name="next" value="<?php echo $ARnls[$wgFFfunction]; ?>" 
+       onClick="if (confirm('<?php echo $wgFFConfirmMessage; ?>')) window.open('<?php echo $AR->dir->www; ?>widgets/fsfunctions/<?php echo $wgFFfunction.".php"; ?>?root=<?php echo $this->store->root; ?>&path=<?php echo $this->path; ?>&message=<?php echo urlencode($wgFFmessage); ?>','FF','WIDTH=400,HEIGHT=300,SCROLLBARS=YES');">

@@ -1,0 +1,243 @@
+Ariadne 2.0b8
+
+Changes in ariadne since version 2.0b7
+
+  This is mainly a bugfix release. 
+
+The following features were added:
+- Client-side cache headers are now sent (if caching is enabled). These 
+  default to an expiration time of one hour, unless the server side cache
+  expires earlier.
+- Shift-reload now refreshes a cache image on the server.
+- A few PINP functions were added:
+  startsession(), putsessionvar($varname, $varvalue), 
+  getsessionvar($varname), killsession() and sessionid()
+- objects now save the languages they are available in as:
+  $this->data->nls->list[$nls]=$language;
+  This can be accessed in object templates as:
+  <pinp> while (list($nls, $language)=each($data->nls->list)) { ... } </pinp>
+
+The following bugs were fixed:
+- Changing your password now automatically logs you in again under your new
+  password.
+- The recursive delete now asks for confirmation and actually seems to work.
+- import and export now give more meaningfull error messages.
+- Caching of objects in multiple languages works.
+- index.html objects in a directory can now be cached.
+- particle->parse_summary() is fixed.
+- Textarea's now also wrap in netscape
+- The WYSIWYG editor now works with particle.
+- pobject->setnls has been fixed.
+- Session ID's sometimes contained illegal characters, fixed.
+
+Changes in ariadne since version 2.0b6
+
+  Quite a lot has changed since the previous version. We've added session
+support, a new login system using sessions, a preview of the new user
+interface  which makes use of a new wizard widget and dropdown
+menu's (select 'new' as interface in your user's edit screen, there's
+currently no way to reset this but via this template, so it's best to
+remember the url :). 
+  The new interface has also led to a more defined naming
+scheme for class templates, if you look at the pobject templates you'll see
+the difference. For now the old interface and the old templates are still
+there, they will be removed though. 
+  Also the new interface currently only supports Internet Explorer 4 or 
+better or Netscape 4 or better. This is only required for users to use the 
+new management interface though.
+
+  Then there's the new WYSIWYG html editor (for Internet Explorer 4
+and up users only, sorry :), better support for object templates (new and
+improved PINP functions). We've also added a new addressbook application,
+which is looking a bit bland right now, but is fully functional.
+
+  If you look at the install script you'll see that it actually 'imports' a
+data file (ariadne.2.0b7.ax) which contains all the data, including
+templates and files, in the ariadne tree. In the bin/ directory you'll find 
+an import and export script with which you can create and import these files
+yourself. You will need to have php installed as an alternative shell
+though. In the next release this functionality will also be available
+through a webbrowser.
+  The new install script allowed us to create a 'richer' startup database.
+We will be using this to create an online help system, among other things.
+
+  We've started using CVS for Ariadne, so if you want a more complete list
+of changes, read the file CVS_ARIADNE on how to get public read access.
+
+Pre CVS changes:
+
+* Added import/export module, you can now import and export entire trees of
+  data.
+  Affected files:
+  lib/templates/pobject/
+    import.phtml
+    export.phtml
+    exportobject.phtml
+  lib/includes/
+    import.phtml
+    export.phtml
+  www/
+    export.phtml   
+
+lib/stores/mysql.phtml
+  fixed a bug in the mod_lock init, password was reset to "" before the call
+  to init.
+  fixed a bug in the save method, saving an object under root did set root
+  as parent of the object, parent is now "..". 
+
+lib/templates/particle/save.phtml
+lib/templates/particle/form.phtml
+lib/templates/pscenario/select.html
+  fixed a bug, if a scenario name was not the same as its filename articles
+  using it wouldn't save their start and endtimes.
+lib/templates/pscenario/form.phtml
+  fixed a bug, buttons were always in english, changed to correct nls calls.
+lib/templates/pcalitem/edit.phtml
+  fixed a bug, forgot to use $ARnls to check for pressed buttons.
+
+Changes in ariadne since version 2.0b5
+
+* Migrated to PHP4. PHP3 is no longer supported, this is because PHP3 was
+  really not suited to the complex jobs ariadne put it to. PHP4 is a lot
+  easier on memory and performance. Also a few bugs were impossible to fix in
+  PHP3.
+  - AR_IMPORT is now replaced by include_once
+  - all php files now have the extension .php
+
+lib/templates/pshortcut/default.phtml
+lib/templates/pshortcut/treeinit.phtml
+lib/templates/pshortcut/treeload.phtml
+  shortcut now supports relative paths. These paths are mapped to absoulte
+  paths starting at the parent of the shortcut! Thus adding a shortcut in
+  /system/users/admin/ to ../public/ will result in the computed path of
+  /system/users/public/
+
+
+* Added mod_lock , read lib/modules/mod_lock/README for more information
+  affected files:
+  configs/ariadne.phtml
+  - configure and instantiate mod_lock as $AR->mod_lock
+  modules/mod_lock.phtml
+  - modlock class definition
+  widgets/formlock/js.html
+  - this file will be included by form templates. It will relock
+    the object every $AR->mod_lock->lock_duration-60 seconds.
+  includes/lock.phtml
+  - locks calling object ($this->path), returns $arResult=false on failure,
+    ($ARCurrent->locks[$this->path] will be stored with mod_lock result)
+    will return $arResult=true on success.
+  includes/unlock.phtml
+  - unlock calling object
+  include/viewlocks.phtml
+  - Will generate a page with paths which locks calling object.
+  include/delete.phtml
+  - Locks whole tree
+  include/save.phtml
+  - Locks calling object
+  templates/*/edit.phtml
+  - will lock objects. If this can't be done, it will call
+    include/viewlocks.phtml
+  templates/*/form.phtml
+  - includes widgets/formlock/js.html
+  templates/*/UnLock.phtml
+  - includes include/unlock.phtml
+  template/*/Lock.phtml
+  - includes include/lock.phtml
+
+
+lib/objects/pobject.phtml
+  $this->nlsdata is now a copy of $this->data->$nls, otherwise the nls
+  changes in CheckConfig would not change $nlsdata in a template.
+  
+lib/templates/*/save.phtml
+  bug fixed: Check on default language was incorrect ($this->nls instead of
+  $ARconfig->nls->default)
+  bug fixed: Now resets $AR->nls->list before trying to loop through it...
+
+lib/widgets/nls/form.phtml
+  bug fixed. Special characters in language names prevented that language
+  from being selected in a form. This is now fixed. (Do not enter html
+  entity codes for special characters in the nls configuration!)
+
+lib/configs/ariadne.phtml
+  added $ARConfig->nls=$AR->nls to make sure that this is always set.
+  CheckConfig will still override this with local defaults.
+
+www/install/install.php
+  removed spurious ;'s in initialize(), some MySQL versions apparantly don't
+  like that.
+
+www/loader.php
+  removed <?php_track_vars?> as it is no longer supported...
+
+Changes in ariadne since version 2.0b4
+
+lib/widgets/nls/form.phtml
+  fixed a bug: now replaces all '"''s with &quot; in the hidden input field.
+lib/widgets/htmledit/form.html
+  changed the RawUrlEncode to change only " to &quot; in the hidden input
+  field.
+lib/widgets/htmledit/js.html
+  removed the escape/unescape part of Set and GetHTML.
+
+www/widgets/tree/root.phtml
+  fixed a bug: now UpdateLinks also adds the correct flag image and font to
+  each node.
+
+files:
+  added missing directory files/temp
+  fixed a typo in pfile/form.phtml and updated the layout
+  resized upload window to better fit the new pfile form.
+  fixed a bug in pfile/delete.phtml: used $data->name instead of $data->filename
+
+lib/templates/pobject/config.phtml
+  fixed a bug: title now displays the name from $nlsdata instead $data.
+
+Changes in ariadne since version 2.0b3
+
+important
+
+* Added support for multiple language sites. almost every object now has
+  inbuilt support for this. This has precipitated some big changes in code.
+  More information is in the file NLS.
+
+general
+
+  Changed IMPORT to AR_IMPORT. This solves the name conflict with php4.0b4+
+  FIXME: convert to the new IMPORT function, when this is stable in php4
+
+  Changed all scripts under www to extension .php3, as this is more common.
+
+lib/objects/pnewspaper.phtml
+  Changed the whole object (former object wasn't supposed to be released)
+  added extra argument $max in get_articles (also for PINP)
+
+lib/objects/particle.phtml
+  Changed the whole object (former object wasn't supposed to be released)
+
+lib/templates/pscenario/form.phtml
+  Priority is now a property of pscenario and not of the displays
+
+lib/objects/pobject.phtml
+  Changed call(). It's arguments are now passed by value, instead of by
+  reference. This solves the crash when using call with fixed strings.
+
+lib/objects/puser.phtml
+  Changed CheckPassword to add support for FreeBSD crypt. It now checks the
+  format of the encrypted password. See also:
+
+www/install/setadmin.php3
+  Added because the normal crypted password for admin in install.php3 cannot 
+  be used in the case of FreeBSD. After running install.php3, you need to run
+  setadmin.php3 in this case.
+
+lib/templates/pobject/EditTemplate.phtml
+  Changed form to method=Post, as IE has a rather low limit on URL size.
+
+lib/templates/pobject/RemoveTemplate.phtml
+  Fixed a bug that caused all templates of the same name to be deleted when
+  deleting one.
+
+www/loader.php3
+  Fixed a bug: arrays in forms with method=post wouldn't get passed to a
+  template. Now even PHP4's multiple dimension arrays are passed correctly.

@@ -1,0 +1,23 @@
+Known issues
+
+- NLS:
+  If you edit an object with multiple languages and remove all data from one
+  language and then switch to another language and back, all the old data is
+  back again... 
+  Reason: The problem is the getdata function which automatically
+  retrieves data from the object if there's no data of the same name in the
+  form variables...
+  Solution: keep the hidden form variables even if they're empty?
+
+- Import/export grants
+  When you export a tree of data, you will also get the grants set in these
+  objects. When this tree is imported in another system, these grants should
+  either be removed or also set in the corresponding user objects.. if these
+  exist.
+  Solution: make this an option when creating an exportfile, or when
+  importing an exportfile.
+
+- WYSIWYG Htmleditor breaks on 'broken' html
+  The Internet Explorer html editor cannot edit framesets or html files with
+  multiple body statemens. There should be a check on this and a 'backup' edit
+  possibility.

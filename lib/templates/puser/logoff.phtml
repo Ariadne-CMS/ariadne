@@ -1,0 +1,18 @@
+<?php
+  if ($this->CheckLogin("read")) {
+    if ($AR->user->data->login==$data->login || $AR->user->data->login=="admin") {
+        if (!$checkedlocks) {
+		header("location: locks.phtml?returnpage=logoff.phtml?checkedlocks=true");
+		exit;
+	}
+		$ARCurrent->session->kill();
+?>
+<h1>Goodbye <?php echo $data->name; ?>.</h1>
+<?php
+    } else {
+?>
+<h2>Sorry, you can only logoff yourself.</h2>
+<?php
+    }
+  }
+?>

@@ -1,0 +1,300 @@
+<!--TOOLBAR_START--><!--TOOLBAR_EXEMPT--><!--TOOLBAR_END-->
+<!--
+Copyright 2000 Microsoft Corporation. All rights reserved. 
+Author: Steve Isaac, Microsoft Corporation
+
+DHTML Toolbar Package: Pulldown Menus
+
+Include this file if use pulldown menus in your toolbars. See tutorial.htm in
+the Doc directory for detailed instructions on how to do so.
+-->
+<html>
+<head>
+<meta NAME="GENERATOR" Content="Microsoft Visual Studio 6.0">
+
+<!-- Styles -->
+<link REL="stylesheet" TYPE="text/css" HREF="toolbars.css">
+
+<! -- 
+   Overwrite the DISPLAY attribute that has been set on the elements in a menu body.
+   This is why the menu body elements are invisible on the user's page but show up 
+   inside the scriptlet
+-->
+<style>
+.tbMenuItem { DISPLAY: block; }
+.tbMenuSeparator { DISPLAY: block; }
+.tbSubmenu { DISPLAY: block; }
+</style>
+
+<script ID="clientEventHandlersJS" LANGUAGE="javascript">
+<!--
+//
+// Global variables
+//
+var opacityFilter; // Used to gray out menus. Passed in from toolbars.js.
+var myWidth;
+var myHeight;
+var mySubmenuX;
+var mySubmenuY;
+var currentMouseOverElement = null;
+var subMenuShowing = null;
+  
+// Hander that simply cancels an event
+function CancelEvent() {
+  event.returnValue=false;
+  event.cancelBubble=true;
+}
+
+// Set our title. The caller has set the title property to the title of the main
+// page. We need to do this to avoid the IE title bar changing when the user has
+// their mouse in the scriptlet.
+function public_put_titleProp(string) {
+  document.title = string;
+}
+
+// Set our opacityFilter. 
+function public_put_opacityFilter(string) {
+  opacityFilter = string;
+}
+
+// Display a menu
+function public_ShowMenu(id, menuBodyString) {
+  var table, i, j, position = 0, item;
+  
+  subMenuShowing = null;
+  currentMouseOverElement = null;
+    
+  // Insert the menu.
+  document.body.innerHTML = menuBodyString;
+  
+  // Do some fixups to the inserted menu. Get the menu's table.
+  table = document.body.all["TBMENUBODYTABLE"];
+  
+  // Remove extraneous stuff from each menu item and compute relative Y position
+  // of each row.
+  for (i=0; i<table.rows.length; i++) {
+    if (table.rows[i].className != "tbMenuSeparator") {
+      item = table.rows[i].children[1].children[0];
+      j=0; 
+      while (j<item.children.length) {
+        switch (item.children[j].className) {
+          case "tbIcon" :
+          case "tbMenuItem" :
+          case "tbMenuSeparator" :
+          case "tbSubmenu" :
+            item.children[j].outerHTML = "";
+          break;
+          
+          default:
+            j++;
+        }
+      }   
+    }
+    table.rows[i].TBYPOSITION = position;
+    position += table.rows[i].offsetHeight;
+  }
+  
+  // Hook up our event handlers
+  table.onmouseover = TBMenuBodyMouseEvent;
+  table.onmouseout = TBMenuBodyMouseEvent;
+  table.onmousedown = CancelEvent;
+  table.onmouseup = TBMenuBodyMouseEvent;
+  table.onmousemove = CancelEvent;
+  table.ondragstart = CancelEvent;
+  table.onselectstart = CancelEvent;
+
+  // Store our width and height for use on the outside.
+  myWidth = table.offsetWidth; 
+  myHeight = table.offsetHeight;
+  
+  // Set width and height so we don't have to relayout every time.
+  if (table.width == "" && table.offsetWidth != 0) { 
+    table.width = table.offsetWidth;
+    table.height = table.offsetHeight;
+    document.body.all[0].style.posWidth = myWidth;
+    document.body.all[0].style.posHeight = myHeight;
+  }
+}
+
+// Bring a menu down
+function public_HideMenu() {
+  currentMouseOverElement = null;
+  if (subMenuShowing) {
+    subMenuShowing.style.background = "";
+    subMenuShowing.style.color = "";
+    subMenuShowing = null;
+  }
+}
+
+function public_get_menuWidth() {
+  return myWidth;
+}
+
+function public_get_menuHeight() {
+  return myHeight;
+}
+
+function public_get_subMenuX() {
+  return mySubmenuX;
+}
+
+function public_get_subMenuY() {
+  return mySubmenuY;
+}
+
+// 
+// Private functions
+//
+
+// Handler for all mouse events from menus
+function TBMenuBodyMouseEvent() {
+  var row, tagName, element;
+
+  // Find the row that this event is for by walking up the parent tree.
+  row = event.srcElement; 
+  tagName = row.getAttribute("tagName");
+  while ((tagName != "TR")) {
+    row = row.parentElement;
+    if (row == null) {
+      return;
+    }
+    tagName = row.getAttribute("tagName");
+    if (tagName == null) {
+      return;
+    }
+  }
+  
+  // This element is pending from the previous menu and
+  // is now orphaned.
+  if (row.sourceIndex == -1) {
+    event.cancelBubble = true;
+    return;
+  }
+  
+  if (event.type == "mouseover") {
+    // Are we already over this element? 
+    if (row == currentMouseOverElement) {
+      event.cancelBubble=true;
+      return;  
+    }
+  } else {
+    // Are we really moving out of this element?
+    if (row.contains(event.toElement)) {
+      event.cancelBubble=true;
+      return;  
+    }
+  }
+  
+  // Are we on a separator? 
+  if (row.className == "tbMenuSeparator") {
+    event.cancelBubble=true;
+    return;  
+  }
+  
+  // Find the main div.
+  element = row.all[row.TBELEMENTID];
+      
+  if (element.TBSTATE == "gray") {
+    event.cancelBubble=true;
+    return;
+  }
+  
+  switch (event.type) {
+    case "mouseover" :
+      if (subMenuShowing && (subMenuShowing != row)) {
+        subMenuShowing.style.background = "";
+        subMenuShowing.style.color = "";
+        subMenuShowing = null;
+        window.external.raiseEvent("TBHideSubmenu", 0);          
+      }
+      if (row.children[0].children[0].tagName == "IMG") {
+        if (element.TBSTATE == "checked") {
+          row.children[0].children[0].className = "tbMenuIconCheckedMouseOver";
+        } else {
+          row.children[0].children[0].className = "tbMenuIconMouseOver";
+        }
+      }
+      row.style.background = "highlight";
+      row.style.color = "highlighttext";
+      currentMouseOverElement = row;
+      if (element.className == "tbSubmenu") {
+        mySubmenuX = row.clientWidth;
+        mySubmenuY = row.TBYPOSITION;
+        subMenuShowing = row;
+        window.external.raiseEvent("TBDisplaySubmenu", element.id);  
+      }
+    break;
+      
+    case "mouseout" :
+      if (!subMenuShowing) {
+        if (row.children[0].children[0].tagName == "IMG") {
+          if (element.TBSTATE == "checked") {
+          row.children[0].children[0].className = "tbMenuIconChecked";
+          } else {
+            row.children[0].children[0].className = "tbMenuIcon";
+          }
+        }
+        row.style.background = "";
+        row.style.color = "";
+        currentMouseOverElement = null;
+      }
+    break;
+      
+    case "mouseup" :
+      if (element.className == "tbSubmenu") {
+        event.cancelBubble=true;
+        return;
+      }
+      if (element.TBTYPE == "toggle" || element.TBTYPE == "radio") {
+        if (element.TBSTATE == "checked") {
+          if (row.children[0].children[0].tagName == "IMG") {
+            row.children[0].children[0].className = "tbMenuIcon";
+          } else {
+            row.children[0].innerHTML = '<span class="tbMenuBlankSpace">&nbsp;</span>';
+          }  
+          element.TBSTATE = "unchecked";
+        } else {
+          if (row.children[0].children[0].tagName == "IMG") {
+            row.children[0].children[0].className = "tbMenuIconChecked";
+          } else {
+            row.children[0].innerHTML = '<span class="tbMenuItemChecked">a</span>';
+          }   
+          element.TBSTATE = "checked";  
+        }
+      }
+
+      if (element.TBTYPE == "radio") {
+        table = row.parentElement;
+        for (i = 0; i<table.rows.length; i++) {
+          if (table.rows[i].className == "tbMenuSeparator") {
+            continue;
+          }
+          radioElement = table.rows[i].children[1].children[0];
+          if (radioElement.NAME == element.NAME && radioElement != element) {
+            if (table.rows[i].children[0].children[0].tagName == "IMG") {
+              table.rows[i].children[0].children[0].className = "tbMenuIcon";
+            } else {
+              table.rows[i].children[0].innerHTML = '<span class="tbMenuBlankSpace">&nbsp;</span>';
+            }
+          }
+        }   
+      }
+      row.style.background = "";
+      row.style.color = "";
+      currentMouseOverElement = null;
+      window.external.raiseEvent("TBMenuClick", element.id);  
+    break;
+  }
+  
+  event.cancelBubble=true;
+  return false;
+  
+} // TBMenuBodyMouseEvent
+
+//-->
+</script>
+
+</head>
+<body>
+</body>
+</html>

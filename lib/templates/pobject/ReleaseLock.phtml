@@ -1,0 +1,19 @@
+<?php
+  debug("ReleaseLock: $id");
+  $arResult=0;
+  if ($this->CheckSilent("edit") || $this->CheckSilent("delete")) {
+    if ($data->locked) {
+      debug("lock found");
+      if ($data->locked["id"]==$id) {
+        debug("and released");
+        $arResult=$data->locked;
+        unset($data->locked);
+        $properties["locked"]=1;
+        $this->save($this->path, $this->type, $data, $properties);
+      }
+    } else { // object wasn't locked anyway
+      debug("no lock found: released ok");
+      $arResult=1;
+    }
+  }
+?>

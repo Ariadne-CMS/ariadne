@@ -1,0 +1,10 @@
+<?php
+	if (!$ARLogin) {
+		$this->call("user.login.html");
+	} else {
+		$criteria["login"]["value"]["="]="'".AddSlashes($ARLogin)."'";
+		if (!$this->find("/system/users/",$criteria,"buildframes.html")) {
+			$this->call("user.login.html");
+		}
+	}
+?>

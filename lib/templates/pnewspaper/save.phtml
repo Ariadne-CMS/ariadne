@@ -1,0 +1,36 @@
+<?php
+  if ($newtype) {
+    $newdata=new object;
+  } else { 
+    $newdata=$data;
+  }
+  if (!isset(${$ARConfig->nls->default}) && !isset($newdata->{$ARConfig->nls->default})) { // default language for this path
+    $error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
+  } else {
+    if (!$newdata->nls) {
+      $newdata->nls=new object;
+    }
+    $newdata->nls->default=$this->nls;
+    reset($AR->nls->list);
+    while (list($key, $value)=each($AR->nls->list)) {
+      if (isset(${$key})) {
+        $nlsformdata=$$key;
+        if (!$newdata->$key) {
+          $newnlsdata=new object;
+        } else {
+          $newnlsdata=$newdata->$key;
+        }
+        if (!$nlsformdata["name"]) {
+          $error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
+        }
+        $newnlsdata->name=$nlsformdata["name"];
+        $newnlsdata->summary=$nlsformdata["summary"];
+        $newnlsdata->page=RawUrlDecode($nlsformdata["page"]);
+        $properties["name"][]["value"]="'".AddSlashes($nlsformdata["name"])."'";
+        $newdata->$key=$newnlsdata;
+        $newdata->nls->list[$key]=$value;
+      }
+    }
+  }
+  include($this->store->code."includes/save.dir.phtml");
+?>

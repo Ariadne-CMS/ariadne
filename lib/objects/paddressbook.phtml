@@ -1,0 +1,37 @@
+<?php
+
+include_once($this->code."objects/pdir.phtml");
+
+function sort_addresses($a,$b) {
+		global $addresses_sortby;
+		if ($a->data->$addresses_sortby == $b->data->$addresses_sortby) return 0;
+		return ($a->data->$addresses_sortby < $b->data->$addresses_sortby) ? -1 : 1;
+}
+
+
+class paddressbook extends pdir { // definitie class
+
+	function get_addresses($crit,$sortby="name") {
+		global $ARCurrent;
+
+		$criteria=$crit;
+		$criteria["object"]["implements"]["="]="'address'";
+		$this->find(".",$criteria,"populate.phtml","");
+
+		unset($criteria);
+		$criteria["object"]["implements"]["="]="'paddressbook'";
+		$criteria["object"]["type"]["="]="'pshortcut'";
+		$this->find(".",$criteria,"populate.phtml","crit=".urlencode(serialize($crit)));
+
+		if (($sortby!=-1) && is_array($ARCurrent->addresses)) {
+			global $addresses_sortby;
+			$addresses_sortby=$sortby;
+
+			uasort($ARCurrent->addresses,sort_addresses);
+		}
+
+		return $ARCurrent->addresses;
+	}
+
+} // end class paddressbook
+?>

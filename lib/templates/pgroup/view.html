@@ -1,0 +1,33 @@
+<?php
+  /******************************************************************
+   index.html					   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Arguments: none
+   Grant needed: read
+   Interface/Widget: all
+   Global variables: none
+
+   This displays a suitable overview of the object.
+
+   no result.
+
+  ******************************************************************/
+  if ($this->CheckConfig($arCallFunction, $arCallArgs) && $this->CheckLogin("read")) {
+    if ($this->exists("index.html/")) {
+      $this->get("index.html/","view.html");
+    } else {
+?>
+<html>
+<body bgcolor="white">
+<font face="helvetica, sans-serif" size="2">
+<h3><?php echo $data->name; ?>.</h3>
+<?php
+  $this->ls("","Show.phtml");
+?>
+</font>
+</body>
+</html>
+<?php
+    }
+  }
+?>

@@ -1,0 +1,25 @@
+<?php
+
+  if (isset($newtype) && $newtype!="") { // save a new object
+    // check for {id} type filename/login
+    $newdata=new object;
+    if (ereg("{.*}",$newfilename)) {
+      $error=$ARnls["err:{id}ingroupname"];
+    } else { // now check for existing login
+      $criteria["login"]["value"]["="]="'".AddSlashes($newfilename)."'";
+      $criteria["object"]["implements"]["="]="'pgroup'";
+      $result=$this->find("/system/groups/", $criteria, "Get.phtml");
+      if ($result && $result[0]) {
+        $error=$ARnls["err:groupidexists"];
+      } else {
+        $newdata->login=$newfilename;
+      }
+    }
+  } else {
+    $newdata=$data;
+  }
+  $properties["name"][0]["value"]="'".AddSlashes($name)."'";
+  $properties["login"][0]["value"]="'".AddSlashes($newdata->login)."'";
+  $newdata->name=$name;
+  include($this->store->code."includes/save.dir.phtml");
+?>

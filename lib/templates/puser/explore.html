@@ -1,0 +1,71 @@
+<?php
+  if ($this->CheckLogin("read")) {
+    if ($data->language) {
+      $nls=$data->language;
+	  $this->store->root=ldSetNls($nls);
+    }
+?>
+<HTML>
+<HEAD>
+<TITLE>Ariadne</TITLE>
+<script>
+<!--
+
+document.registry=new Array();
+
+function Set(name, value) {
+  document.registry[name]=new String(value);
+}
+
+function Get(name) {
+  if (document.registry[name]) {
+    result=document.registry[name];
+  } else {
+    result=0;
+  }
+  return result;
+}
+
+function View(link, template) {
+  if (template) {
+    target='?template='+escape(template);
+  } else {
+    target='';
+  }
+<?php if ($data->interface!="new") { ?>
+  window.view.location.href='<?php echo $AR->dir->www; ?>view.php/<?php echo "=".$ARCurrent->session->id."=/$nls"; ?>'+link+target;
+<?php } else { ?>
+  template='view.phtml';
+  window.view.location.href='<?php echo $AR->dir->www; ?>loader.php/<?php echo "=".$ARCurrent->session->id."=/$nls"; ?>'+link+template;
+<?php } ?>
+}
+
+function Loading() {
+  window.tree.treeload.location.href='<?php echo $AR->dir->www; ?>loading.html';
+}
+
+function LoadingDone() {
+  window.tree.treeload.location.href='<?php echo $AR->dir->www; ?>loadingdone.html';
+}
+
+function init() {
+  loader=window.tree.treeload;
+  treeview=window.tree.treeview;
+}
+
+loader=0;
+
+//-->
+</script>
+
+</HEAD>
+<FRAMESET COLS="200,*" onLoad="init();">
+  <FRAME NAME="tree" 
+    SRC="<?php echo $AR->dir->www; ?>widgets/tree/root.php?loader=<?php echo $this->store->root; ?>&path=<?php 
+    echo RawUrlEncode($AR->user->path); ?>" marginwidth="0" marginheight="0">
+  <FRAME NAME="view" SRC="<?php echo $this->store->root; ?>/system/ariadne/news/" marginwidth="0" marginheight="0">
+</FRAMESET>
+</HTML>
+<?php
+  }
+?>

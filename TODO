@@ -1,0 +1,61 @@
+Things still to do before the final (non beta) release
+(in semi random order)
+
++ Recursive file operations (move, copy, delete, etc.)
+  -> Gijsbert te Riet
+
+= Im-/Exporting parts of the ariadne database.
++ And the next step, full replication between ariadne systems.
+  -> Gijsbert te Riet
+
+= Check windows compatibility.
+  -> Auke van Slooten / Bart Roelofsma
+
++ Find a suitable full text indexer.
+  -> Wouter Commandeur
+
+- A way to have a certain path as root of a website. Currently all links
+  are displayed as full absolute paths from a certain ariadne root. For
+  multiple websites who use different parts of a single ariadne store, this
+  won't work.
+  e.g. root.ariadne.com -> /
+       ahost.ariadne.com -> /a/certain/object/
+  check to see if Apache's rewrite rules allow this to work.
+
+- Parents($path):
+  call all parents upto and including $path.
+
+- Scheduler
+  Needs to be able to start an action or template at a given time. Best is
+  probably to use the unix 'at' command. Don't know a windows equivalent.
+
+- Write support for more database stores.
+
+- Build a working substore
+  A simple SQL link object would probably be the best start.
+
+- Make it possible to somehow restrict which HTML tags are allowed in the
+  (WYSIWYG) html editor.
+
+- General code cleanup:
+  Identify inconsistent names, reduce includes, rethink object inheritance
+  tree, etc.
+
+- Implement search in the management interface.
+
+- Check all objects for further pinp functionality needed (pfile ->
+  show/read file, pcalendar, etc.)
+
+- Write more language files (lib/nls), specifically spanish, italian and
+  german... anybody?
+
+--------------------------------------------
+
+- change the object templates system: 
+  - object templates should also be inherited through the typetree, e.g.
+    if there is a template 'x' defined in pobject, in a certain directory,
+    it should also be available to 'pdir' etc.
+    or if it was defined for 'pdir' it should be available to 'pcalendar'
+    but not to 'ppage'.
+  problem: algortihm to search for templates will become a bit more
+           difficult.. as in, difficult to understand and follow.

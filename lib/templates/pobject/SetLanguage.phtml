@@ -1,0 +1,39 @@
+<?php
+  /******************************************************************
+   SetLanguage.phtml				   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Called by 'config.phtml'
+   Arguments: $inherit, $default, $available
+   Grant needed: "config"
+   Interface/Widget: management
+   Global variables: none
+
+   This template is called by config.phtml and saves the language (nls)
+   configuration. If the checkbox 'inherit' is checked in 
+   config.phtml it will remove all language configuration information 
+   in this object.
+ 
+   No return value.
+  
+  ******************************************************************/
+
+  if ($this->CheckLogin("config")) {
+    unset($data->nlsconfig);
+    if (!$inherit) {
+      if (!$default) {
+        $default=$AR->nls->default;
+      }
+      if (!$available) {
+        $available[]=$default;
+      }
+      $data->nlsconfig=new object;
+      $data->nlsconfig->default=$default;
+      reset($available);
+      while (list($key, $lang)=each($available)) {
+        $data->nlsconfig->list[$lang]=$AR->nls->list[$lang];
+      }
+    }
+    $this->save($this->path, $this->type, $data, "");
+    Header("Location:  ".$this->store->root.$this->path."config.phtml");
+  }
+?>

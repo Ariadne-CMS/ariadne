@@ -1,0 +1,40 @@
+<?php
+
+// AR_IMPORT($im_dir, "pobject.phtml");
+include_once($this->code."objects/pobject.phtml");
+
+class pcalitem extends pobject { // definitie class
+
+  function DelTimeframe($date) {
+    reset($this->data->timeframes);
+    while (list($index, $timeframe)=each($this->data->timeframes)) {
+      if ($timeframe["start"]!=$date) {
+        $result[]=$timeframe;
+      } else {
+        $this->store->del_property($this->id, "timeframe", $timeframe);
+      } 
+    }
+    $this->data->timeframes=$result;
+    return $result;
+  }
+
+  function NewEndtime($endtime) {
+    debug("NewEndtime: $endtime");
+    reset($this->data->timeframes);
+    $timeframe=current($this->data->timeframes);
+    while ($timeframe && ($timeframe["start"]<$endtime)) {
+      $result[]=$timeframe;
+      $timeframe=next($this->data->timeframes);
+      debug("keep ".$timeframe["start"]);
+    }
+    while ($timeframe) {
+      $this->store->del_property($this->id, "timeframe", $timeframe);
+      $timeframe=next($this->data->timeframes);
+      debug("remove ".$timeframe["start"]);
+    }
+    $this->data->timeframes=$result;
+    return $result;
+  }
+
+} // end class ptimeframe
+?>

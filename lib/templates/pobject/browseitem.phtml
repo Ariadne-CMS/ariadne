@@ -1,0 +1,30 @@
+<?php 
+  /******************************************************************
+   browseitem.phtml				   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Called by 'browselist.phtml'
+   Arguments: none
+   Grant needed: none (FIXME: should be "read")?
+   Interface/Widget: browse
+   Global variables: $AR->dir->www
+
+   Displays the browse information of an object, for use by the
+   browse widget.
+
+   No return value.
+
+  ******************************************************************/
+
+  if ($this->CheckSilent("read")) {
+?>
+<tr>
+  <td colspan="2"><img src="<?php echo $AR->dir->images; ?>browse/blank.gif"><img 
+    src="<?php echo $AR->dir->images; ?>icons/<?php echo $this->type; ?>.gif"></td>
+  <td valign="middle"><font face="verdana,helvetica,sans-serif" size="-1">
+    <a href="<?php echo $this->store->root.$this->path."browselist.phtml"; ?>"><?php 
+    echo $nlsdata->name; ?></a>
+  </font></td>
+</tr>
+<?php
+  }
+?>

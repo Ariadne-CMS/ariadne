@@ -1,0 +1,27 @@
+<?php
+  // pshortcut is eigenlijk al een substore, zie populate en fix dat ->
+  // populate moet automatisch shortcuts aflopen, net als elke andere find
+  // _wel_ checken op grant?!
+  $path=$this->store->make_path($this->parent, $data->path);
+  if (!$ARBeenhere[$arCallFunction][$path]) {
+    $ARBeenHere[$arCallFunction][$path]=1;
+    if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
+      if ($path && $this->store->exists($path)) {
+        $result=$this->get($path, $arCallFunction, $arCallArgs);
+        if ($result) {
+	  $arResult=$result[0];
+        }
+      } else {
+?>
+<html>
+<body bgcolor="white">
+<h1>Shortcut <?php echo $this->path; ?> points to nonexisting path: <?php echo $path; ?>.</h1>
+</body>
+</html>
+<?php
+      }
+    }
+  } else {
+    error("$data->path$arCallFunction called for the second time, recursive ShortCut?");
+  }
+?>

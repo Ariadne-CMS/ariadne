@@ -1,0 +1,62 @@
+<?php
+  /******************************************************************
+   object.new.phtml				   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+
+   No result.
+
+  ******************************************************************/
+
+  $start="object.new.filename.phtml";
+  $step1="edit.object.data.form.phtml";
+  $step2="edit.object.language.phtml";
+  $finish="edit.object.data.save.phtml";
+ 
+  $arFlow[0]["current"]=$this->getdata("arCurrent","none");
+  $arFlow[1]["title"]=$ARnls["filename"];
+  $arFlow[1]["template"]=$start;
+  $arFlow[1]["next"]=2; 
+
+  $arFlow[2]["title"]=$ARnls["data"];
+  $arFlow[2]["template"]=$step1;
+  $arFlow[2]["prev"]=1;
+  $arFlow[2]["next"]=3;
+  $arFlow[2]["save"]=4;
+
+  $arFlow[3]["title"]=$ARnls["language"];
+  $arFlow[3]["template"]=$step2;
+  $arFlow[3]["next"]=2;
+  $arFlow[3]["prev"]=2;
+  $arFlow[3]["save"]=4;
+
+  $arFlow[4]["title"]=$ARnls["save"];
+  $arFlow[4]["template"]=$finish;
+  $arFlow[4]["back"]=3;
+  
+
+  $arLanguage=$this->getdata("arLanguage","none");
+  if ($arFlow[0]["current"]==3) { // =edit.object.language.phtml
+    echo "<!-- last was language select -->";
+    $arControl=$this->getdata("arControl","none");
+    if ($arControl==$ARnls["prev"]) { // if previous selected, ignore the language select list.
+      echo "<!-- previous selected -->";
+      $arLanguage=$this->getdata("arPrevLanguage","none");
+      $ARCurrent->arLanguage=$arLanguage;
+      echo "<!-- goto language $arLanguage -->";
+    } else {
+      echo "<!-- $arControl -->";
+    }
+  } else {
+    echo "<!-- ".$arFlow[0]["current"]." -->";
+  }
+  if (!$arLanguage) { // language select hasn't been done yet, so start with default language
+    $arLanguage=$ARConfig->nls->default;
+    $ARCurrent->arLanguage=$arLanguage;
+  }
+  $arNewFilename=$this->getdata("arNewFilename","none");
+  if (!$arNewFilename) {
+    $arNewFilename="{5:id}";
+    $ARCurrent->arNewFilename=$arNewFilename;
+  }    
+  $arResult=$arFlow;
+?>

@@ -1,0 +1,24 @@
+<?php
+  /******************************************************************
+   index.html					   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Arguments: none
+   Grant needed: read
+   Interface/Widget: all
+   Global variables: none
+
+   This displays a suitable overview of the object.
+
+   no result.
+
+  ******************************************************************/
+  if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+    $file=$this->store->files."files".$this->parent.$data->filename;
+    if (file_exists($file)) {
+      Header("Content-type: ".$data->mimetype);
+      readfile($file);
+    } else {
+      echo "file not available.";
+    } 
+  }
+?>

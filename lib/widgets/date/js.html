@@ -1,0 +1,23 @@
+<script language="javascript">
+<!--
+
+function SelectDate(formobject, date, name, title, format) {
+  if (formobject.value) {
+    date=formobject.value;
+  }
+  datewindow=window.open(
+    '<?php echo $AR->dir->www; ?>widgets/date/index.php?date='+escape(date)+
+    '&title='+escape(title)+ 
+    '&format='+escape(format)+ 
+    '&name='+escape(name),
+    'datewindow', 'directories=no,height=250,width=300,location=no,menubar=no,status=no,toolbar=no,resizable=yes');
+  datewindow.opener=this;
+}
+
+  function SetDate(name, date, formatted) {
+    document.dform[name].value=date;
+    document.dform[name+'formatted'].value=formatted;
+  }
+
+// -->
+</script>

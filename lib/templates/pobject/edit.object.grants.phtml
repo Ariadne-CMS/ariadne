@@ -1,0 +1,97 @@
+<?php
+  /******************************************************************
+
+   No return value.
+  
+  ******************************************************************/
+  if ($this->CheckLogin("config")) {
+    $ARCurrent->returnpage=$this->store->root.$this->path."edit.object.grants.phtml";
+?>
+<html>
+<head>
+<title><?php printf($ARnls["configure"],$nlsdata->name); ?></title>
+<?php
+  include($this->store->code."widgets/wizard/classic.css");
+?>
+</head>
+<body>
+<script>
+  if (document.all) {
+    window.innerHeight=document.body.clientHeight;
+    window.innerWidth=document.body.clientWidth;
+  }  
+</script>
+<table border="0" width="100%" cellspacing="4">
+<form name="grantsform" action="edit.object.grants.save.phtml">
+<input type="hidden" name="returnpage" value="<?php echo $ARCurrent->returnpage; ?>">
+<tr>
+  <td><script> document.write('<img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="'+(window.innerHeight-80)+'" alt="">'); </script></td>
+  <td valign="top">
+    <table bgcolor="white" border="0" cellspacing="0" cellpadding="3" width="100%">
+<?php
+  function DisplayGrants(&$grantslist, $type) {
+    global $AR, $ARCurrent, $ARnls;
+    if ($grantslist[$type] && is_array($grantslist[$type])) {
+      ksort($grantslist[$type]);
+      while (list($id, $grants)=each($grantslist[$type])) { // path was login en is weer login
+        echo "<tr><td>";
+        echo "<img src=\"".$AR->dir->images."icons/".$type.".gif\">";
+        echo "<a href=\"savegrants.phtml?delete=true&type=$type&id=".RawUrlEncode($id).
+             "&returnpage=".RawUrlEncode($ARCurrent->returnpage).
+             "\" onClick=\"return confirm('".sprintf($ARnls["q:removeallgrants"],$id)."')\">$id</a></td>";
+        echo "</td><td>";
+        if ($grants && is_array($grants)) {
+          ksort($grants);
+          while (list($grant, $value)=each($grants)) {
+            if ($value) { 
+              echo "<a href=\"savegrants.phtml?delete=true&type=$type&id=".
+                RawUrlEncode($id)."&grant=".
+                RawUrlEncode($grant)."&returnpage=".
+                RawUrlEncode($ARCurrent->returnpage).
+                "\" onClick=\"return confirm('".sprintf($ARnls["q:removegrant"],$grant,$id)."')\">
+  		$grant</a> "; 
+            } 
+          }
+        }
+        echo "</td></tr>";
+      }
+    }
+  }
+
+
+  if ($data->grants && is_array($data->grants)) {
+    DisplayGrants($data->grants,"pgroup");
+    DisplayGrants($data->grants,"puser");
+  }
+?>
+    </table>
+  </td>
+</tr><tr>
+  <td colspan="2">
+    <table width="100%" border="0">
+    <tr>
+      <td>&nbsp;</td>
+      <td><span class="required">User / Group</span></td>
+      <td><span class="required">Grants</span></td>
+    </tr><tr>
+      <td></td>
+      <td align="right">
+<?php
+  $wgBrowsePath="/system/groups/";
+  $wgBrowseName="path";
+  include($this->store->code."widgets/browse/js.html");
+  include($this->store->code."widgets/browse/form.html");
+?>
+      </td><td align="right" width="0">
+        <nobr><input type="text" name="newgrants" size="25" maxlength="50"><input 
+          type="submit" name="Add" value="<?php echo $ARnls["add"]; ?>"></nobr>
+      </td>
+    </tr>
+    </table>
+  </td>
+    </form>
+</tr>
+</table>
+</body>
+</html>
+<?php } ?>

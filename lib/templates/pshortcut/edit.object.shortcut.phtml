@@ -1,0 +1,62 @@
+<?php
+  /******************************************************************
+   edit.object.data.phtml			   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+
+   No result.
+
+  ******************************************************************/
+
+  if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+    include($this->store->code."widgets/wizard/code.php");
+
+    $result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
+    $wgWizTitle=$ARnls["edit"]." ".$result[0];    
+
+    $start="edit.object.shortcut.form.phtml";
+    $step1="edit.object.shortcut.language.phtml";
+    $finish="edit.object.shortcut.save.phtml";
+   
+    $wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
+    $i++;
+    $wgWizFlow[$i]["title"]=$result[0];
+    $wgWizFlow[$i]["template"]=$start;
+    if (count($ARConfig->nls->list)>1) { // more than one language available
+      $wgWizFlow[$i]["next"]=$i+1;
+      $wgWizFlow[$i]["save"]=$i+2;
+      $i++;
+      $wgWizFlow[$i]["title"]=$ARnls["language"];
+      $wgWizFlow[$i]["template"]=$step1;
+      $wgWizFlow[$i]["next"]=$i-1;
+      $wgWizFlow[$i]["prev"]=$i-1;
+      $wgWizFlow[$i]["save"]=$i+1;
+    } else {
+      $wgWizFlow[$i]["save"]=$i+1;
+    }
+    $i++;
+    $wgWizFlow[$i]["title"]=$ARnls["save"];
+    $wgWizFlow[$i]["template"]=$finish;
+    $wgWizFlow[$i]["back"]=$i-1;
+    
+    $arLanguage=$this->getdata("arLanguage","none");
+    if ($wgWizFlow[0]["current"]==2) { // =edit.object.language.phtml
+      $arControl=$this->getdata("wgWizControl","none");
+      if ($arControl==$ARnls["prev"]) { // if previous selected, ignore the language select list.
+        $arLanguage=$this->getdata("arPrevLanguage","none");
+        $ARCurrent->arLanguage=$arLanguage;
+      }
+    }
+    if (!$arLanguage) { // language select hasn't been done yet, so start with default language
+      $arLanguage=$ARConfig->nls->default;
+      $ARCurrent->arLanguage=$arLanguage;
+    }
+
+    $wgWizControl=$this->getdata("wgWizControl","none");
+    $wgWizCurrent=$this->getdata("wgWizCurrent","none");
+    if ($wgWizControl && $wgWizCurrent) {
+      $wgWizNextStep=$wgWizFlow[$wgWizCurrent][wgWizGetAction($wgWizControl)];
+      $wgWizButtons=$wgWizFlow[$wgWizNextStep];
+    }
+    include($this->store->code."widgets/wizard/classic.html");
+  }
+?>

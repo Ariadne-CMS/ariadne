@@ -1,0 +1,92 @@
+<?php
+/***********************************************************************
+	Ariadne Export file manager
+
+	(We could use the Zlib module for php -compression module- but is
+	it also supported on the windows platform? Check it out.)
+
+************************************************************************/
+class mod_ax {
+
+	function open($exportfile,$mode="unpack",$tempdir="/tmp/") {
+		$this->tempdir=tempnam($tempdir,"export_");
+		$this->exportfile=$exportfile;
+
+		if (!file_exists($this->tempdir)) {
+			mkdir($this->tempdir,0777);
+		}
+		if ($mode=="unpack") {
+			// tar will (g)unzip and untar the file into tempdir 
+			$command="tar -zxf $exportfile -C ".$this->tempdir;
+			if (!@system($command,$retVar)) {
+				$result="err:cannotuntar";
+			}
+		}
+		
+		return $result;
+	}
+
+	function MkDir($path) {
+		$paths=explode("/",$path);
+		while (is_array($paths) && (list($key,$path)=each($paths))) {
+			$curr.="/".$path;
+			if (!file_exists($curr)) {
+				if (!@mkdir($curr,0755)) {
+					$result="err:cannotmakedir";
+					break;
+				}
+			}
+		}
+		return $result;
+	}
+
+
+	function importfiles($type,$path) {
+		if (!($result=$this->MkDir($path))) {
+			$command="tar -C $path -zxf ".$this->tempdir."/$type.tgz";
+			if (!system($command)) {
+				$result="err:cannotimport";
+			}
+		}
+		return $result;
+	}
+
+	function exportfiles($type,$path) {
+		if (!file_exists($path)) {
+			$result="err:cannotopenfile";
+		} else {
+			$path2=substr($path,$rpos=strrpos(substr($path,0,-1),"/")+1);
+			$path=substr($path,0,$rpos);
+			$command="tar -zc -C $path $path2 -f ".$this->tempdir."/$type.tgz";
+			if (!system($command)) {
+				$result="err:cannotexport";
+			}
+		}
+		return $result;
+	}
+
+	function close() {
+		if (!($dh=opendir($this->tempdir))) {
+			$result="err:cannotopentempdir";
+		} else {
+			while ($data=readdir($dh)) {
+				if (($data!='.') && ($data!='..')) 
+					$exp.=" $data ";
+			}
+			closedir($dh);
+
+			$command="tar -zc -C ".$this->tempdir." $exp  -f ".$this->exportfile;
+
+			if (!system($command,$retVar)) {
+				$result="err:cannotmakeax";
+			} else {
+				// FIXME: remove tempdir without using a
+				// system call
+				$command="rm -rf ".$this->tempdir;
+				system($command);
+			}
+		}
+		return $result;
+	}
+}
+?>

@@ -1,0 +1,125 @@
+<?php
+  /******************************************************************
+   toolbar.phtml				   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Called by '$DOCROOT/ariadne/view.phtml' 
+   Arguments: none
+   Grant needed: read
+   Interface/Widget: management
+   Global variables: none
+
+   This template displays a set of tabs with links to the relevant
+   templates for the management environment. Links to templates for 
+   which the user hasn't got the needed grants will be grayed out,
+   but still available. 
+   When this template is fully loaded it will remove the 'Loading' 
+   message in the management interface.   
+
+   No result.
+
+  ******************************************************************/
+  if ($this->CheckLogin("read")) {
+?>
+<HTML>
+<HEAD>
+<!-- link rel="stylesheet" href="includes/titelstyle.css" type="text/css" -->
+<script>
+<!--
+function ClearLoader() {
+  top.LoadingDone();
+}
+
+function tofront(num) {
+  if (document.images) {
+    for (i=1;i<max;i++) {
+      if (i>=num) {
+        document.images ["b"+i].src="<?php echo $AR->dir->images; ?>tabs/behind_b.gif";
+        document.images ["o"+i].src="<?php echo $AR->dir->images; ?>tabs/behind_o.gif";
+      } else {
+        document.images ["b"+i].src="<?php echo $AR->dir->images; ?>tabs/infront_b.gif";
+        document.images ["o"+i].src="<?php echo $AR->dir->images; ?>tabs/infront_o.gif";
+      }
+    }
+  }
+}
+max=6;
+// -->
+</script>
+</HEAD>
+<BODY bgcolor='#404074' TEXT="#000000" LINK="#000000" ALINK="#000000" VLINK="#000000" onLoad="ClearLoader()">
+<base target="object">
+<img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" vspace="1"><br>
+<table border="0" cellpadding="0" cellspacing="0" vspace="0" hspace="0" width="100%">
+<tr>
+<td><img src="<?php echo $AR->dir->images; ?>tabs/left_b.gif" alt="" width="10" height="1"></td>
+<!-- begin top tab , 1 pixel high -->
+<td bgcolor="#CCCCCC"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" border="0" alt=""></td>
+<td><img src="<?php echo $AR->dir->images; ?>tabs/behind_b.gif" name="b1" alt="" width="10" height="1"></td>
+<!-- end -->
+<!-- begin top tab -->
+<td bgcolor="#CCCCCC"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" border="0" alt=""></td>
+<td><img src="<?php echo $AR->dir->images; ?>tabs/behind_b.gif" name="b2" alt="" width="10" height="1"></td>
+<!-- end -->
+<!-- begin top tab  -->
+<td bgcolor="#CCCCCC"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" border="0" alt=""></td>
+<td><img src="<?php echo $AR->dir->images; ?>tabs/behind_b.gif" name="b3" alt="" width="10" height="1"></td>
+<!-- end -->
+<!-- begin top tab -->
+<td bgcolor="#CCCCCC"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" border="0" alt=""></td>
+<td><img src="<?php echo $AR->dir->images; ?>tabs/behind_b.gif" name="b4" alt="" width="10" height="1"></td>
+<!-- end -->
+<!-- begin top tab -->
+<td bgcolor="#CCCCCC"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" border="0" alt=""></td>
+<td><img src="<?php echo $AR->dir->images; ?>tabs/behind_b.gif" name="b5" alt="" width="10" height="1"></td>
+<!-- end -->
+<!-- begin top final! tab -->
+<td bgcolor="#CCCCCC"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" border="0" alt=""></td>
+<td><img src="<?php echo $AR->dir->images; ?>tabs/right_b.gif" alt="" width="10" height="1"></td>
+<!-- end -->
+<td rowspan="2" align="right" width="100%" valign="top"><font face="helvetica,sans-serif" color="white"><?php echo $this->path; ?></font></td>
+</tr>
+<tr>
+<td valign="top"><img src="<?php echo $AR->dir->images; ?>tabs/left_o.gif" width="10" height="63"></td>
+<!-- begin bottom tab  -->
+<td bgcolor="white" valign="top"><a onClick="tofront(1)" class="category"
+  href="view.html"><?php echo $ARnls["view"]; ?></a></td>
+<td valign="top"><img src="<?php echo $AR->dir->images; ?>tabs/behind_o.gif" width="10" height="63" name="o1"></td>
+<!-- begin bottom tab  -->
+<td bgcolor="white" valign="top"><a onClick="tofront(2)" 
+  href="search.phtml"><?php echo $ARnls["search"]; ?></a></td>
+<td valign="top"><img src="<?php echo $AR->dir->images; ?>tabs/behind_o.gif" width="10" height="63" name="o2"></td>
+<!-- begin bottom tab  -->
+<td bgcolor="white" valign="top"><a onClick="tofront(3)" href="config.phtml"<?php
+  if (!$AR->user->grants["config"]) {
+    echo "><font color=\"#CCCCCC\"";
+  }
+?>><?php echo $ARnls["config"]; ?></a></td>
+<td valign="top"><img src="<?php echo $AR->dir->images; ?>tabs/behind_o.gif" width="10" height="63" name="o3"></td>
+<!-- begin bottom tab  -->
+<td bgcolor="white" valign="top"><a onClick="tofront(4)" href="edit.phtml?returnpage=<?php
+  echo RawUrlEncode($this->store->root.$this->path)."\"";
+  if (!$AR->user->grants["edit"]) {
+    echo "><font color=\"#CCCCCC\""; 
+  }  
+?>><?php echo $ARnls["edit"]; ?></a></td>
+<td valign="top"><img src="<?php echo $AR->dir->images; ?>tabs/behind_o.gif" width="10" height="63" name="o4"></td>
+<!-- begin bottom tab  -->
+<td bgcolor="white" valign="top"><a onClick="tofront(5)" href="templates.phtml"<?php
+  if (!$AR->user->grants["layout"]) {
+    echo "><font color=\"#CCCCCC\""; 
+  }  
+?>><?php echo $ARnls["layout"]; ?></a></td>
+<td valign="top"><img src="<?php echo $AR->dir->images; ?>tabs/behind_o.gif" width="10" height="63" name="o5"></td>
+<!-- begin bottom tab final tab -->
+<td bgcolor="white" valign="top"><a onClick="tofront(6)" href="new.phtml"<?php
+  if (!$AR->user->grants["add"]) {
+    echo "><font color=\"#CCCCCC\"";
+  }
+?>><?php echo $ARnls["new"]; ?></a></td>
+<td valign="top"><img src="<?php echo $AR->dir->images; ?>tabs/right_o.gif" width="10" height="63"></td>
+</tr>
+</table>
+</BODY></HTML>
+<?php
+  }
+?>

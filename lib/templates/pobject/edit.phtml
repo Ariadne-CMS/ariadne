@@ -1,0 +1,51 @@
+<?php
+  /******************************************************************
+   edit.phtml					   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Arguments: $submit
+   Grant needed: edit
+   Interface/Widget: all
+   Global variables: none
+
+   This template controls the flow between the form and save or delete
+   templates. 
+   First the form template will be shown. This will set 
+   $submit to either 'Save' or 'Delete'. Then the corresponding 
+   template will be called (In the case of delete via a get, save.phtml 
+   will simply be included.)
+
+   $submit='Save' or 'Delete' or don't care
+
+   No result.
+
+  ******************************************************************/
+  $ARCurrent->allnls=1;
+
+
+  if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+    debug("returnpage: $returnpage");
+    if ($next==$ARnls["save"]) { // save data
+      // every object _must_ have a save.phtml, so:
+      debug("Save");
+      include($this->store->code."templates/".$this->type."/save.phtml");
+    } else if ($next==$ARnls["delete"]) { // delete this object
+      debug("Delete");
+      $this->get(".","delete.phtml",$arCallArgs);
+    } else if ($next==$ARnls["cancel"]) {
+      debug("Cancel");
+      include($this->store->code."includes/cancel.phtml");
+      include($this->store->code."includes/unlock.phtml");
+    } else {// edit it
+      debug("Default: Edit ($next;".$ARnls["save"].")");
+      include($this->store->code."includes/lock.phtml");
+      if (!$arResult) {
+	// object locked, show us by who
+	include($this->store->code."includes/viewlocks.phtml");
+      } else {
+        // every object _must_ also have a form.phtml:
+	include($this->store->code."templates/".$this->type."/form.phtml");    
+      }
+    }
+  
+  }
+?>

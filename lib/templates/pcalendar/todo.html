@@ -1,0 +1,120 @@
+<?php
+  /*
+    arguments: 
+      $date - unix time stamp, month set will be shown, highlights this day.
+  */
+  if ($this->CheckConfig($function, $args) && $this->CheckLogin("read")) {
+    setlocale("LC_TIME",$nls);
+    if (!$PHP_SELF) {
+      global $PHP_SELF;
+    }
+    if (!$date) {
+      $date=time();
+    }
+    if (!$lookahead) {
+      $lookahead=8;
+    }  
+    if (!$priority) {
+      $priority=$this->get("/system/calendar/priorities/todo/","GetValue.phtml");  
+      if ($priority) { $priority=$priority[0]; } else { $priority=0; }
+    }
+    // calculate first weekday of this month
+    $date_arr=getdate($date);
+    $starttime=0;
+    $endtime=mktime(0,0,0,$date_arr["mon"],$date_arr["mday"]+$lookahead,$date_arr["year"])-1;
+    
+    // now populate the month with all entries.
+
+    function AddTodo($from, $to, $priority, $path, $name, $summary) {
+      global $ARCurrent, $PHP_SELF;
+
+      $i=@count($ARCurrent->todolist[$from]);
+      $ARCurrent->todolist[$from][$i]["text"]="<a class=\"cal\" href=\"".
+        $path."edit.phtml?entry=$from&returnpage=".
+        RawUrlEncode($PHP_SELF."?date=".$ARCurrent->date)."\">$name</a>";
+      $ARCurrent->todolist[$from][$i]["to"]=$to;      
+    }
+
+    unset($ARBeenHere["populate"]);
+    $ARCurrent->date=$date;
+    $this->populate($starttime, $endtime, $priority, "AddTime.phtml","timefunc=AddTodo&from=$starttime&to=$endtime");
+    if ((!is_array($ARCurrent->todolist)) || (count($ARCurrent->todolist)==0)) {
+      $ARCurrent->todolist[0][0]["text"]=$ARnls["notodo"];
+      $ARCurrent->todolist[0][0]["to"]=-1;
+    }
+?>
+<style>
+<!--
+  A.cal { text-decoration:none; } -->
+</style>
+<table border="0" cellspacing="0" cellpadding="0" bgcolor="#404074" <?php if ($width) { echo "width=\"$width\""; } ?>>
+<tr>
+  <td rowspan="3"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
+  <td><a href="<?php echo $PHP_SELF; ?>?date=<?php
+      echo mktime(0,0,0,$date_arr["mon"],$date_arr["mday"]-1,$date_arr["year"]);
+      if ($width) { echo "&width=$width"; }
+    ?>"><img src="<?php echo $AR->dir->images; ?>calendar/prev.gif" alt="<" border="0"></a></td>
+  <td align="center"><font face="arial, helvetica" size="2"
+color="white"><b><?php echo $ARnls["todo"]; ?> : <?php
+      echo $date_arr["month"]." ".$date_arr["mday"].", ".$date_arr["year"];
+    ?></b></td>
+  <td align="right"><a href="<?php echo $PHP_SELF; ?>?date=<?php
+      echo mktime(0,0,0,$date_arr["mon"],$date_arr["mday"]+1,$date_arr["year"]);
+      if ($width) { echo "&width=$width"; }
+    ?>"><img src="<?php echo $AR->dir->images; ?>calendar/next.gif" alt=">" border="0"></a></td>
+  <td rowspan="3"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
+</tr><tr>
+  <td bgcolor="white" colspan="3">
+    <table border="0" cellspacing="0" cellpadding="0" vspace="2" hspace="2">
+    <tr><td><img src="<?php echo $AR->dir->images; ?>dot.gif" width="4" height="4"></td>
+        <td><!-- time --></td>
+        <td width="4"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="4" height="4"></td>
+        <td><!-- text --><img src="<?php echo $AR->dir->images; ?>dot.gif" width="255" height="4"></td>
+        <td width="4"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="4" height="4"></td>
+    </tr>
+<?php
+  @ksort($ARCurrent->todolist);
+  $open=0;
+  $dottedline="<tr><td colspan=\"3\" background=\"".$AR->dir->images."calendar/dots.gif\"><img src=\"".$AR->dir->images."dot.gif\" height=\"1\" width=\"1\"></td><td></td></tr>\n";
+  $lastday=0;
+  $days=24*60*60;
+  while (list($from,$items)=@each($ARCurrent->todolist)) {
+    $from_fmt=strftime("%H:%M",$from);
+    while (list($key, $item)=each($items)) {
+      $change=0;
+      $row="<tr><td rowspan=\"2\" valign=\"top\"></td>\n";
+      if ($from>($lastday+$days)) {
+        $row.="<td valign=\"bottom\" colspan=\"3\"><font face=\"helvetica\" size=\"2\">".strftime("%A %d %B",$from).
+              "</font></td><td></td></tr>$dottedline<tr><td rowspan=\"2\" valign=\"top\"></td>\n"; 
+        $from_arr=getdate($from);
+        $lastday=mktime(0,0,0,$from_arr["mon"],$from_arr["mday"],$from_arr["year"]);
+      } 
+      $row.="<td align=\"right\" valign=\"bottom\">";
+      // now display time
+      if ($from<=$item["to"]) { // notime items dont display the time
+        $row.="<font face=\"arial, helvetica\" size=\"2\">$from_fmt</font>";
+      }
+      $row.="</td><td><img src=\"".$AR->dir->images."dot.gif\" width=\"1\" height=\"17\"></td><td valign=\"bottom\">";
+      // now display text
+      $row.="<font face=\"arial, helvetica\" size=\"2\">";
+      $row.=$item["text"];
+      $row.="</font>";
+      $row.="</td>";
+      $row.="</tr>\n";
+      $row.=$dottedline;
+      echo $row;
+    }
+  }
+?>
+    <tr><td><img src="<?php echo $AR->dir->images; ?>dot.gif" width="4" height="4"></td>
+    </tr>
+    </table>
+  </td>
+</tr><tr>
+  <td colspan="3"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
+</tr>
+</table>
+
+<?php
+  } // end login check.
+?>

@@ -1,0 +1,20 @@
+<script language="javascript">
+<!--
+
+function Upload(formobject, name, title) {
+  uploadwindow=window.open('<?php echo $AR->dir->www; ?>widgets/upload/index.php'+
+  '?title='+escape(title)+
+  '&name='+escape(name)+
+  '&path=<?php echo RawUrlEncode($this->path); ?>'+
+  '&root=<?php echo RawUrlEncode($this->store->root); ?>',
+  'uploadwindow','directories=no,height=275,width=550,location=no,menubar=no,status=no,toolbar=no,resizable=yes');
+  uploadwindow.opener=this;
+}
+
+  function SetUpload(name, file, type) {
+    document.uform[name].value=file;
+    document.uform[name+'_type'].value=type;
+  }
+
+// -->
+</script>

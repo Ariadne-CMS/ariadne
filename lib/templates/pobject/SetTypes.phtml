@@ -1,0 +1,7 @@
+<?php
+  if ($this->CheckLogin("config")) {
+    $data->typetree=$typetree;
+    $this->save($this->path, $this->type, $data);
+    Header("Location:".$this->store->root.$this->path."config.phtml");
+  }
+?>

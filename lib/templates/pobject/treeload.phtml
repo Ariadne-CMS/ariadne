@@ -1,0 +1,33 @@
+<?php
+  $this->store->accessdenied="<body bgcolor=\"#404074\" text=\"white\"><font face=\"helvetica\"><b>Access Denied</b></font></body>";
+  if ($this->CheckLogin("read")) {
+?>
+<html>
+<body bgcolor='#404074' text="white" onLoad="load()"> 
+<font face="helvetica"><b>Loading..</b></font>
+<script>
+  function load() {
+    node=parent.Nodes[<?php echo $node; ?>];
+    <?php
+      flush();
+      $criteria["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
+      $criteria["object"]["implements"]["="]="'pdir'";
+      $folders=$this->find("",$criteria,"GetFolder.phtml",$args);
+      // en nu node.add doen voor elke folder.
+      if ($folders) {
+        while (list($key, $folder)=each($folders)) {
+          ?>
+            node.add("<?php echo AddSlashes($folder["icon"]); ?>",
+                     "<?php echo AddSlashes($folder["name"]); ?>",
+                     "<?php echo AddSlashes($folder["path"]); ?>",
+                     "<?php echo AddSlashes($folder["pre"]); ?>");
+          <?php
+        }
+      }
+    ?>
+    parent.Draw();
+  } 
+</script>
+</body>
+</html>
+<?php } ?>

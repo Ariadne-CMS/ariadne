@@ -1,0 +1,29 @@
+<?php
+  // $wgHTMLEditContent = initial content for the html editor
+  // $wgHTMLEditRoot = full root of ariadne, including http://host..
+  // $wgHTMLEditPath = full path to object if dir, parent if page or file
+  // $wgHTMLEditFile = filename of the page or file, or empty in case of dir
+  // $wgHTMLEditName = name of variable (via show.$name.phtml template)
+  // $wgHTMLEditLanguage = language (none for no language)
+  // $wgHTMLEditType = 'full'/'body' for full html page or only body.innerHTML  
+  if (!$wgHTMLEditRoot) {
+    $wgHTMLEditRoot=$AR->host.$this->store->root;
+  }
+  if (!$wgHTMLEditPath) {
+    $wgHTMLEditPath=$this->path;
+  }
+  if (!$wgHTMLEditName) {
+    $wgHTMLEditName="page";
+  }
+  if (!$wgHTMLEditLanguage) {
+    $wgHTMLEditLanguage="none";
+  }
+  if (!$wgHTMLEditType) {
+    $wgHTMLEditType="body";
+  }
+//  echo "<input type=\"hidden\" name=\"$wgHTMLEditName\" value=\"".
+//    ereg_replace('"','&quot;',$wgHTMLEditContent)."\">";
+  echo "<input type=\"button\" name=\"$wgHTMLEditName".
+       "_button\" value=\"Open Editor\"".
+       " onClick=\"HTMLEdit('$wgHTMLEditRoot','$wgHTMLEditPath','$wgHTMLEditFile','$wgHTMLEditName','$wgHTMLEditLanguage','$wgHTMLEditType');\">"; 
+?>

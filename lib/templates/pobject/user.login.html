@@ -1,0 +1,83 @@
+<?php
+  if (!$arLoginMessage) {
+    $arLoginMessage=$ARnls["loginrequired"];
+  }
+  if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
+?>
+<html>
+<head>
+<title>Ariadne - <?php echo $arLoginMessage; ?></title>
+<style>
+  .width100 { width: 100; }
+  .width200 { width: 200; }
+  .width300 { width: 300; }
+  H1    { FONT: 12pt sans-serif; FONT-WEIGHT: bold; }
+  TD        { FONT: 10pt sans-serif; }
+  BODY      { FONT: 10pt sans-serif;
+              BORDER: 0;
+  <?php
+    global $HTTP_USER_AGENT;
+    if (eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
+       $regs[1] && (intval($regs[1])>=4)) { //ie4+
+  ?>
+              BACKGROUND-COLOR: buttonface;
+  <?php
+    } else {
+  ?>
+              BACKGROUND-COLOR: #BBBBBB;
+  <?php
+    }
+  ?>
+            }
+</style>
+</head>
+<body bgcolor="#BBBBBB">
+<form name="login" method="POST" action="<?php echo $this->store->root.$this->path; ?>login.phtml">
+<?php
+	global $PATH_INFO, $QUERY_STRING; 
+	if (!$arReturnPage) {
+	    $split=strrpos($PATH_INFO, "/");
+    	$function=substr($PATH_INFO,$split+1);
+		$arReturnPage=$this->path.$function;
+		if ($QUERY_STRING) {
+			$arReturnPage.="?$QUERY_STRING";
+		}
+	}
+?>
+<input type="hidden" name="arReturnPage" value="<?php echo $arReturnPage; ?>">
+<table align="center" border="0" width="300">
+<tr>
+  <td align="center" colspan="2">
+    <h1><?php echo $arLoginMessage; ?></h1>
+  </td>
+</tr><tr>
+  <td colspan="2" align="center">
+    <fieldset><br>
+      <table width="50%" align="center">
+      <tr>
+        <td align="right"><?php echo $ARnls["login"]; ?>&nbsp;:</td>
+        <td><input type="text" name="ARLogin" size="16"></td>
+      </tr><tr>
+        <td align="right"><?php echo $ARnls["password"]; ?>&nbsp;:</td>
+        <td><input type="password" name="ARPassword" size="16"></td>
+      </tr>
+      </table>
+      <br>
+    </fieldset>
+  </td>
+</tr><tr>
+  <td colspan="2">&nbsp;</td>
+</tr><tr>
+  <td><input type="button" class="width100" name="cancel" value="<?php echo $ARnls["cancel"]; ?>" onClick="history.back();"></td>
+  <td align="right"><input type="submit" class="width100" name="ok" value="&nbsp;<?php echo $ARnls["ok"]; ?>&nbsp;"></td>
+</tr>
+</table>
+</form>
+<script>
+  document.login.ARLogin.focus();
+</script>
+</body>
+</html>
+<?php
+  }
+?>

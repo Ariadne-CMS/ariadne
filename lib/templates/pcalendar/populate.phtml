@@ -1,0 +1,7 @@
+<?php
+  if (!$ARBeenHere["populate"][$this->path]) {
+    $ARBeenHere["populate"][$this->path]=1;
+    debug("priority: $pop_priority");
+    $this->populate($pop_from, $pop_to, $pop_priority, $pop_template, $pop_args);
+  }
+?>

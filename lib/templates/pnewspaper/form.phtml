@@ -1,0 +1,134 @@
+<?php
+  /******************************************************************
+   form.phtml                                      Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Called by 'edit.phtml' and 'new.phtml'
+   Arguments: newtype, newfilename
+   Grant needed: read
+   Interface/Widget: all
+   Global variables: none
+
+   This template displays the input form for this object. If $newtype
+   is set, the form is called to create a new object. This means that
+   $data points to the data of the object creating it!
+   $newtype, $newfilename and $newparent are saved in hidden input
+   fields for further processing by whatever template is called when
+   the form is processed.
+   The html form tag in a form template should always leave the action
+   property out.
+
+   This template must be available in every pobject derivative's
+   template directory.
+
+   no result.
+
+  ******************************************************************/
+  if ($this->CheckLogin("read")) {
+?>
+<body bgcolor="white">
+<?php
+  $this->parents($this->path, "ShowLink.phtml","target=edit.phtml");
+?>
+<form method="post">
+<!-- hidden form variables needed by new.phtml/save.phtml -->
+<input type="hidden" name="newtype" value="<?php echo $newtype; ?>">
+<input type="hidden" name="newparent" value="<?php echo $this->path; ?>">
+<input type="hidden" name="newfilename" value="<?php echo $newfilename; ?>">
+<input type="hidden" name="returnpage" value="<?php echo $returnpage; ?>">
+<?php
+include($this->store->code."widgets/formlock/js.html");
+?>
+<table border="0" cellspacing="0" width="100%"> 
+<tr>
+  <td bgcolor="#404074">
+    <?php
+      $wgNLSpretext="<font face=\"helvetica, sans-serif\" size=\"+1\" color=\"white\"><b>".
+        $ARnls["editnewspaper"].":</b></font><br>";
+      include($this->store->code."widgets/nls/form.phtml");
+    ?>
+  </td>
+</tr>
+</table>
+<table border="0">
+<tr>
+  <td align="right">
+    <font face="helvetica, sans-serif"><b><?php echo $ARnls["name"]; ?>&nbsp;:</b></font>
+  </td>
+  <td>
+    <input type="text" name="<?php echo $nls; ?>[name]" maxlength="50" size="50" value="<?php $this->showdata("name",$nls); ?>">
+  </td>
+</tr> <tr>
+  <td align="right" valign="top">
+    <font face="helvetica, sans-serif"><?php echo $ARnls["summary"]; ?>&nbsp;:</font>
+  </td>
+  <td>
+    <textarea name="<?php echo $nls; ?>[summary]" cols="50" rows="4" wrap="soft"><?php 
+      echo ereg_replace("&","&amp;",$this->getdata("summary",$nls)); 
+    ?></textarea>
+  </td>
+</tr> 
+</table>
+<br><br>
+
+<p>
+<table width="100%" cellspacing="0" border="0">
+<tr bgcolor="#404074">
+  <td>
+    <?php if ($newtype) { ?>
+      <input type="button" name="Back" value="<?php echo $ARnls["back"]; ?>" onClick="history.back()">
+    <?php } else { ?>
+      <input type="submit" name="next" value="<?php echo $ARnls["cancel"]; ?>">
+      <input type="submit" name="next" value="<?php echo $ARnls["delete"]; ?>" 
+       onClick="return confirm('<?php echo $ARnls["q:removenewspaper"]; ?>');">
+    <?php } ?>
+  </td>
+  <td align="right">
+    <input type="submit" name="next" value="<?php echo $ARnls["save"]; ?>">  
+  </td>
+</tr>
+</table>
+</form>
+<form name="refresh" method="post">
+<table border="0" cellspacing="0">
+<tr>
+  <td align="left">
+  <font face="helvetica, sans-serif">
+  <b><?php echo $ARnls["start"]; ?></b>&nbsp;:&nbsp;
+  </td><td align="left">
+  <?php
+  $wgDateName="startdate";
+  $wgDate=($startdate) ? $startdate : $startdate=time()-(3600*24*7);
+  include($this->store->code."widgets/date/js.html");
+  include($this->store->code."widgets/date/form.html");
+  ?>
+  </td><td align="left">
+  <font face="helvetica, sans-serif">
+  <b><?php echo $ARnls["end"]; ?></b>&nbsp;:
+  </td><td align="left">
+  <?php
+  $wgDateName="enddate";
+  $wgDate=($enddate) ? $enddate : $enddate=time();
+  include($this->store->code."widgets/date/js.html");
+  include($this->store->code."widgets/date/form.html");
+  ?>
+  </td><td align="left">
+  <font face="helvetica, sans-serif">
+	<input type="submit" name="bla" value="<?php echo $ARnls["show"]; ?>">
+  </td>
+</tr>
+</table>
+<br>
+<font face="helvetica, sans-serif" size="2">
+<?php
+  $crit["object"]["implements"]["="]="'particle'";
+  $crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
+  $crit["published"]["value"][">="]=$startdate;
+  $crit["published"]["value"]["<="]=$enddate;
+  $this->find(".",$crit,"Show.phtml","target=edit.phtml&nls=$nls");
+?>
+</font>
+</form>
+</body>
+<?php
+  }
+?>

@@ -1,0 +1,184 @@
+object
+object.new.phtml
+	- type must be selected (&type=..)
+        -> open window (unique name per rootwindow!) and move to the front
+        -> if !$filename : type filename or select 'auto'
+	   -> load edit.object.data.form.phtml 
+              (and enlarge window -> keep sizes of windows per object type 
+               for edit.object.data.phtml: top.Get('formsize.'+type+'.x');
+	   -> load system.save.data.phtml
+           (  -> load common.error.phtml & -> edit.object.data.form.phtml
+              || window.close() )
+
+object.rename.phtml
+object.copy.phtml
+object.link.phtml
+object.import.phtml
+object.export.phtml
+object.delete.phtml
+
+edit
+edit.object.data.phtml
+edit.object.data.form.phtml
+edit.object.page.phtml -> htmledit -> ok == system.save.page.phtml (geen probleem meer met weg zijn van opener frame)
+(edit.object.shortcut.phtml)
+edit.object.cache.phtml
+edit.object.layout.phtml
+edit.object.grants.phtml
+edit.object.types.phtml
+edit.find.phtml
+edit.preferences.phtml -> user preferences for ariadne management environment
+
+view
+view.fonts.phtml
+view.html
+
+help
+help.topics.phtml
+help.tutorials.phtml
+help.search.phtml
+help.about.phtml
+
+common
+common.error.phtml
+
+system
+system.save.data.phtml
+system.save.grants.phtml
+system.save.page.phtml
+
+
+
+-------
+
+
+nieuw:
+  geen system.save.*.phtml, alleen een system.save.phtml die het huidige
+    object saved. (en checkt) en verder geen uitvoer geeft.
+
+  elk form template heeft zijn eigen check template die de form invoer
+    checkt en in het data object plaatst.
+
+  probleem: op deze manier kun je via de layout grant willekeurige data in
+    een object plaatsen, dus ook config data. 
+   
+  dus: alsnog een system.save.data.phtml, system.save.grants.phtml, etc.
+       daar kan gecheckt worden voor de juiste grant en daar kan dan het
+       object gesaved worden. Dit betekent dat hier ook de form invoer
+       meegegeven moet worden... en dus dat de opzet met meegeven van
+       objectdata in het form niet werkt.
+       Er is dus juist geen system.save.phtml die zomaar alles saved.
+
+  dus: alle data moet in hidden form variabelen meegestuurd worden.
+       maar dat betekent dat new en edit weer behoorlijk gaan verschillen
+  
+  oplossing: maak direct na new het object ook daadwerkelijk aan, met
+             tijdelijke naam? Eventueel een status veld op 'incomplete'
+             zetten. En vervolgens direct naar edit doorgaan.        
+
+  probleem: blijft dat tussentijdse saves naar een meegestuurd temp object dus 
+            niet gaan. Als je wilt dat layout recht niet meteen config/admin 
+            recht is.
+ 
+  oplossing: laatste template in een reeks is een template die uit het
+             meegestuurde object weer alle data haalt en weer in het form als hidden
+             vars neerzet?
+  
+opzet forms en save:
+
+object.new.phtml
+1) filename invullen / automatisch genereren
+2) check filename valid
+3) check filename not exists
+4) system.save.new.phtml (zet name in alle talen op filename, status op incomplete).
++-> edit.object.data.phtml
+    0) language select
+    1) edit.object.data.form.phtml
+    2) edit.object.data.check.phtml
+       -> error -> 1)
+       -> save  -> 3)
+       -> other language -> 0)
+    3) edit.object.data.save.phtml
+       -> assemble save argumenten (arCallArgs)
+          -> system.save.data.phtml
+of
++->edit.object.data.phtml
+   0) language select (of finish)
+   1) edit.object.data.form.phtml
+   2) edit.object.data.save.phtml
+      -> system.save.phtml
+      -> 0)
+
+   simpele mogelijkheid:
+   - tussenresultaten direct opslaan in het echte object.
+     nadeel? : cancel is onmogelijk, veranderingen worden direct bijgewerkt...
+     voordeel: tussen elke slag gewoon simpelweg de save functie aanroepen met
+               de meegeleverde gegevens.
+     voordeel!: niet dubbel checken (en dus synchronisatie problemen tussen code)
+     voordeel: wijzigingen verdwijnen niet per ongeluk
+     nadeel!: het is niet mogelijk om velden die van elkaar afhankelijk zijn
+             over meerdere templates te verdelen, dan is immers ook de
+             consistentie check niet mogelijk
+     nadeel: templates die alleen een keuze voorstellen, geen data bewerking
+             doen toch een save actie. Niet zo heel erg...
+
+deze optie beperkt de mogelijkheden van de wizard templates teveel
++-> dus de simpele oplossing niet
+
+ingewikkelde oplossing:
+- object.new.phtml maakt pas als alles is ingevuld het object aan.
+- tussentijdse checks saven naar tijdelijke object
+  en zijn dus niet zo heel belangrijk, kunnen dus evt. in js. en dus in de
+  templates zelf opgenomen worden.
+- pas op het eind wordt uit het tijdelijke object alle gegevens weer in
+  een argumenten lijst geplaatst.
+
+  probleem: wat te doen met de check op filename?
+            object bestaat al:
+            - overwrite (edit recht als gelijk type, ook delete recht als
+                         ander type)
+            - merge (alleen als gelijk type)
+            - new filename invoeren
+  oplossing: server side check aanhouden en object lock doen op
+             het nog niet bestaande object (tenzij {id} veld)
+  let op: locking refresh mechanisme dan dus netjes inbouwen in de wizard.
+          idee: een template maken voor het lock mechanisme wat een image
+                returned. Op die manier kan de lock ook in normale pagina's 
+                geupdate worden mbv js. Zelf aan te wijzen image, uit
+                standaard lijst.
+
+object.new.phtml
+1) filename invullen / 
+   automatisch genereren
+2) check filename valid
+   check filename not exists
+   if (!{id}) { 
+     lock object op path (bestaat nog niet, is niet erg)
+       als fail -> doen alsof filenaam al bestaat
+   }
+3) over naar control gegevens van edit
+   kan alleen als er een simpele datastructuur bedacht wordt om
+   de flow aan te geven, dan kan alleen die opgehaald worden.. hoe?
+   Dat gaat dus niet lukken, dus dan maar duplicatie van de control switch?
+   het kan wel op het moment dat we incomplete objecten saven... 
+   of: als de control template onafhankelijk van de template layout is
+       en er alleen een previous, current en next template naam uitkomt
+       waarbij als previous leeg is, de eigen ingevuld kan worden
+       als next leeg is idem -> of finish?
+       edoch, finish moet afgevangen worden -> window.close() mag niet door
+       de templates zelf aangeroepen worden. Dat moet dus door het
+       omvattende template gedaan worden.
+   
+
+    0) language select
+    1) edit.object.data.form.phtml
+    2) edit.object.data.check.phtml
+       -> error -> 1)
+       -> save  -> 3)
+       -> other language -> 0)
+    3) edit.object.data.save.phtml
+       -> assemble save argumenten (arCallArgs)
+          -> system.save.data.phtml
+
+
+
