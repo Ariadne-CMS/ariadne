@@ -22,6 +22,8 @@ New Features:
 	- Added the option to select a style for a selection in the WYSIWYG editor.
 	- Extended the WYSIWYG image dialog with a style setting. 
 	- Added a mod_html, which will allow easier access to a number of html related modules.
+	- You can now configure the specialchars surrounding the ftp list modes
+	  (thanks to Gerhard Hoogterp).
 
 Bugs Fixed:
 	- Removed some legacy code which made it impossible to 'renew' an expired
