@@ -246,7 +246,8 @@ function drawNode(pre, level) {
 		width=(level*20)+125;
 		// Mozilla ignores <nobr> tags with image placement, so calculate a minimum width here
 		result='<div id="'+this.id+'" class="node"><div class="row" style="width: '+width+'px;"><nobr>'+
-			pre+plusminus+'<a href="javascript:parent.View(\''+this.id+'\');">'+
+			pre+plusminus+'<a href="javascript:parent.View(\''+this.id+'\');" '+
+			'onMouseOver="window.status=\''+this.link+'\'; return true;" onMouseOut="window.status=\'\'; return true;">'+
             icon+'<span class="item">'+style+this.pre+this.name+post+'</span></a></nobr></div>';
 		if (this.firstChild && this.status=="Open" ) {
 			result=result+'<div name="sub" class="submenu" id="'+this.id+'_submenu">';
