@@ -76,8 +76,14 @@
 			$filestore = $this->store->get_filestore("templates");
 			if (($data->pinp) && is_array($data->pinp)) {
 				while (list($type, $values)=each($data->pinp)) {
-					while (list($function, $templatelist)=each($values)) {	
-						?><tr valign="middle">
+					while (list($function, $templatelist)=each($values)) {
+						ksort($templatelist);
+						reset($templatelist);
+						$language = key($templatelist);
+						$onclick = "document.location='edit.object.layout.form.phtml?type=".$type."&function=".RawUrlEncode($function)."&language=".$language."'";
+						
+						
+						?><tr valign="middle" onmouseover="style.backgroundColor='steelblue',style.color='white'" onmouseout="style.color='',style.backgroundColor='';" onclick="<?php echo $onclick; ?>">
 						       <td align="left" valign="middle" style="height:23px">
 								<img src="<?php echo $AR->dir->images. "icons/$type.gif"; ?>" width="20" height="20" align="absmiddle">
 								<?php echo $type; ?>&nbsp;</td>
