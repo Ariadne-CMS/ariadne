@@ -1,31 +1,8 @@
 <html>
 <head>
-<style>
-TD {
-	FONT: 13px sans-serif;
-}
-BODY 	{
-	FONT: 13px sans-serif;
-	BORDER: 0;
-    CURSOR: wait;
-  <?php
-    global $HTTP_USER_AGENT;
-    if (eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
-       $regs[1] && (intval($regs[1])>=4)) { //ie4+
-  ?>
-	BACKGROUND-COLOR: buttonface;
-  <?php
-    } else {
-  ?>
-	BACKGROUND-COLOR: #BBBBBB;
-  <?php
-    }
-  ?>
-}
-</style>
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>control.css">
 </head>
 <body onLoad="load()">
-<fieldset>
 <?php
   $this->store->accessdenied='<table width="100%"><tr><td valign="middle">Access Denied</td><td align="right"><img align="right" src="'.$AR->dir->images.'tree/x.gif" vspace="1"></td></tr></table>';
   if ($this->CheckLogin("read")) {
@@ -60,6 +37,5 @@ BODY 	{
   } 
 </script>
 <?php } ?>
-</fieldset>
 </body>
 </html>
