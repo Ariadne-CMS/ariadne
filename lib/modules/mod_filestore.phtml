@@ -33,6 +33,12 @@
 
     ls($id)
 
+	mtime($id, $name)
+
+	ctime($id, $name)
+
+	touch($id, $name, $time)
+
 	close()
 
 	**************************************************************************/
@@ -54,7 +60,9 @@
 			// for security reasons
 			$this->root=$root.$name;
 			if (!file_exists($this->root)) {
-				mkdir($this->root, DIRMODE);
+				if (!@mkdir($this->root, DIRMODE)) {
+					error("Failed opening filestore $name with root: $root");
+				}
 			}
 		}
 
@@ -206,7 +214,7 @@
 			return $result;
 		}
 
-		function remove($id, $name="") {
+		function remove($id, $name) {
 			$result=false;
 			$path=$this->make_path($id, $name);
 			if (file_exists($path)) {
@@ -222,7 +230,7 @@
 			if ($dir=@opendir($this->make_path($id))) {
 				while ($empty && ($file=readdir($dir))) {
 					if ($file!="." && $file!="..") {
-						$emtpy=false;
+						$empty=false;
 					}
 				}
 				closedir($dir);
@@ -232,7 +240,7 @@
 
 		function purge($id) {
 			$path=$this->make_path($id);
-			if ($dir=opendir($path)) {
+			if ($dir=@opendir($path)) {
 				while ($file=readdir($dir)) {
 					if ($file!="." && $file!="..") {
 						if (is_file($path.$file)) {
@@ -265,6 +273,36 @@
 			$path=$this->make_path($id, $name);
 			if (file_exists($path)) {
 				$result=filesize($path);
+			} else {
+				$result=false;
+			}
+			return $result;
+		}
+
+		function mtime($id, $name) {
+			$path=$this->make_path($id, $name);
+			if (file_exists($path)) {
+				$result=filemtime($path);
+			} else {
+				$result=false;
+			}
+			return $result;
+		}
+
+		function ctime($id, $name) {
+			$path=$this->make_path($id, $name);
+			if (file_exists($path)) {
+				$result=filectime($path);
+			} else {
+				$result=false;
+			}
+			return $result;
+		}
+
+		function touch($id, $name, $time) {
+			$path=$this->make_path($id, $name);
+			if (file_exists($path)) {
+				$result=touch($path, $time);
 			} else {
 				$result=false;
 			}
