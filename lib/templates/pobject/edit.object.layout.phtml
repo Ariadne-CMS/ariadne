@@ -40,12 +40,6 @@
 	input {
 		width: 75px;
 	}
-	.row0x td {
-		background-color: white;
-	}
-	.row1x td {
-		background-color: #EEEEEE;
-	}
 </style>
 <script src="<?php echo $AR->dir->www; ?>widgets/window/savesize.js"></script>
 <script src="<?php echo $AR->dir->www; ?>widgets/webfx/tablesort/tablesort.js"></script>
@@ -81,10 +75,9 @@
 		</tr></thead><tbody><?php
 			$filestore = $this->store->get_filestore("templates");
 			if (($data->pinp) && is_array($data->pinp)) {
-				$currcol=0;
 				while (list($type, $values)=each($data->pinp)) {
 					while (list($function, $templatelist)=each($values)) {	
-						?><tr valign="middle" class="row<?php echo $currcol; ?>">
+						?><tr valign="middle">
 						       <td align="left" valign="middle" style="height:23px">
 								<img src="<?php echo $AR->dir->images. "icons/$type.gif"; ?>" width="20" height="20" align="absmiddle">
 								<?php echo $type; ?>&nbsp;</td>
@@ -131,8 +124,6 @@
 							</td>
 
 						</tr><?php
-						$currcol++;
-						$currcol=$currcol%2;
 					}
 				}
 			}
