@@ -1,0 +1,11 @@
+BODY 	{
+	background-color : buttonface;
+	FONT: 13px helvetica, sans-serif;
+	BORDER: 0;
+	MARGIN: 0;
+}
+FORM {
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
+}
