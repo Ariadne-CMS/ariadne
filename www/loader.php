@@ -5,6 +5,8 @@
 	include_once($store_config['code']."stores/".$store_config["dbms"]."store.phtml");
 	include_once($store_config['code']."modules/mod_session.phtml");
 	include_once($store_config['code']."includes/loader.web.php");
+	
+	include_once($store_config['code']."modules/mod_virusscan.php");
 
 	function fix_quotes(&$value) {
 		if (is_array($value)) {

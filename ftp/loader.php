@@ -14,6 +14,8 @@
 	require($ariadne."/stores/".$store_config["dbms"]."store.phtml");
 	require($ariadne."/nls/en");
 	require($ariadne."/modules/mod_mimemagic.php");
+	
+	require($ariadne."/modules/mod_virusscan.php");
 
 		/* this function has been taken from the php manual		*/
 		
@@ -950,7 +952,7 @@
 
 
 	sleep(1);
-	//debugon("pinp");
+//	debugon("pinp");
 
 	// set PHP error handling
 	error_reporting(1);
