@@ -15,7 +15,7 @@
 
 	require_once($store->code."modules/mod_import_wddx.php");
 
-	debugon('all');
+	//debugon('all');
 
 	$import = new import_wddx();
 

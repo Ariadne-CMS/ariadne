@@ -46,13 +46,13 @@ class export_wddx {
 	function export_data($name, $value) {
 		if (!is_null($value)) {
 			echo "<var name=\"$name\">\n";
-			if (is_string($value) || ($value==="")) {
-				echo "<string><![CDATA[".export_wddx::strtoxmldata($value)."]]></string>\n";
-			} else if (is_bool($value)) {
+			if (is_bool($value)) {
 					$value = ($value) ? 'true' : 'false';
 				echo "<boolean>$value</boolean>\n";
 			} else if (is_int($value)||is_real($value)||is_float($value)) {
 				echo "<number>$value</number>\n";
+			} else if (is_string($value) || ($value==="")) {
+				echo "<string><![CDATA[".export_wddx::strtoxmldata($value)."]]></string>\n";
 			} else if (is_array($value) || is_object($value)) {
 				if (is_array($value)) {
 					echo "<struct type=\"hash\">\n";
@@ -77,20 +77,30 @@ class export_wddx {
 	function export_templates(&$object) {
 		if ($object->data->pinp) {
 			echo "<var name=\"templates\">\n";
-			echo "<struct>\n";
+			echo "<struct type=\"hash\">\n";
 			$templates=$object->store->get_filestore("templates");
 			while (list($type, $functions)=each($object->data->pinp)) {
 				echo "<var name=\"$type\">\n";
-				echo "<struct>\n";
+				echo "<struct type=\"hash\" >\n";
 				while (list($function, $languages)=each($functions)) {
 					echo "<var name=\"$function\">\n";
-					echo "<struct>\n";
+					echo "<struct type=\"hash\" >\n";
 					while (list($language, $ids)=each($languages)) {
-						echo "<var name=\"$language\">\n";
+						echo "<var name=\"$language\" >\n";
+						echo "<struct type=\"hash\" class=\"file\" >\n";
+						echo "<var name=\"template\">\n";
 						echo "<string><![CDATA[";
 						$file=$type.".".$function.".".$language.".pinp";
 						echo export_wddx::strtoxmldata($templates->read($object->id, $file));
 						echo "]]></string></var>\n";
+						echo "<var name=\"mtime\">\n";
+						echo "<number>".$templates->mtime($object->id, $file)."</number>\n";
+						echo "</var>\n";
+						echo "<var name=\"ctime\">\n";
+						echo "<number>".$templates->ctime($object->id, $file)."</number>\n";
+						echo "</var>\n";
+						echo "</struct>\n";
+						echo "</var>";
 					}
 					echo "</struct></var>\n";
 				}

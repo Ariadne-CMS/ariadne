@@ -28,7 +28,7 @@ class import_wddx {
 			case "version":
 			case "data":
 				array_push($this->stack, Array("type" => "top", "data" => array()));
-			break;
+				break;
 			case "struct":
 				if(($attribs["class"] == "object") && ($attribs["type"] == "object"))
 				{
@@ -38,78 +38,85 @@ class import_wddx {
 					$value = Array();
 				}
 				array_push($this->stack, Array("type" => $attribs["type"], "data" => $value));
-			break;
+				break;
 			case "var":
 				array_push($this->stack, Array("type" => $name, "data" => $attribs["name"]));
-			break;
+				break;
 			case "number":
 			case "string":
 			case "boolean":
 				array_push($this->stack, Array("type" => $name));
-			break;
+				break;
 		}
 	}
-	
+
 	function endElement($parser, $name) {
 		$this->nestdeep--;
 
 		$element = &$this->stack[count($this->stack)-1];
 		$element["locked"] = true;
 
-		switch($name) {
-			case "var":
-				$value = array_pop($this->stack);
-				if ($value["type"] == "var") {
-					/* we did get a key without a value */
-					$var = $value;
-				} else {
-					$var = array_pop($this->stack);
-				}
-				$struct = array_pop($this->stack);
+		if($name == "var")
+		{
+			$value = array_pop($this->stack);
+			if ($value["type"] == "var") {
+				/* we did get a key without a value */
+				$var = $value;
+			} else {
+				$var = array_pop($this->stack);
+			}
+			$struct = array_pop($this->stack);
 
-				$key = $var["data"];
-				if(is_object($struct["data"]))
-				{
-					$struct["data"]->$key = $value["data"];
-				} else
-				{
-					$struct["data"][$key] = $value["data"];
-				}
+			$key = $var["data"];
+			if(is_object($struct["data"]))
+			{
+				$struct["data"]->$key = $value["data"];
+			} else if(is_array($struct["data"]))
+			{
+				$struct["data"][$key] = $value["data"];
+			} else {
+				echo "what the fuck is this\n";
+				echo "#.#.#.#\n";
+				print_r($struct["data"]);
+				echo "#.#.#.#\n";
+				print_r($stack);
+				echo "#.#.#.#\n";
+			}
 
-				array_push($this->stack, $struct);
-			break;
+			array_push($this->stack, $struct);
 		}
 		if($this->nestdeep == 0){
-				$object = array_pop($this->stack);
-				if(is_array($object) && is_array($object["data"])){
-					$this->saveObject($object["data"]);
-				}
+			$object = array_pop($this->stack);
+			if(is_array($object) && is_array($object["data"])){
+				$this->saveObject($object["data"]);
+			}
 		}
-		
+
 	}
 
-	function saveObject($objdata){
+	function saveObject(&$objdata){
 		/*
 			1) object data
 			2) object templates
 			3) object grants
 			4) object files
-		*/
+		 */
 		debug("working on ".$objdata['path'],'all');
 		$path = $objdata['path'];
 
 		/*
 			step 1
 			if not skip data
-				load object if exists
-					copy data into object
-				else
-					create new object
-				fi
-				save
+			load object if exists
+			copy data into object
+			else
+			create new object
 			fi
-		*/
-		if(!($this->config['skipdata'] === true)){
+			save
+			fi
+		 */
+		if(!($this->config['skipdata'] === true))
+		{
 			unset($objdata['data']->pinp);
 			unset($objdata['data']->templates);
 			debug('work data','all');
@@ -117,11 +124,12 @@ class import_wddx {
 			{
 				debug("data: object exists",'all');
 				$object = current(
-					$this->store->call("system.get.phtml",
-						array(),$this->store->get($path))
-				);
-				if(($object->lastchanged < $objdata['lastchanged']) ||
-					($this->config['forcedata'] === true))
+						$this->store->call("system.get.phtml",
+							array(),$this->store->get($path))
+						);
+				if(
+						($object->lastchanged < $objdata['lastchanged']) ||
+						($this->config['forcedata'] === true))
 				{
 					$objdata['data']->pinp = $object->data->pinp;
 					$objdata['data']->templates = $object->data->templates;
@@ -138,73 +146,119 @@ class import_wddx {
 			{
 				debug("data: object doesn't exists",'all');
 				$object = $this->store->newobject($path,
-					$this->store->make_path($path,'..'), $objdata['type'],
-					$objdata['data'], 0, $objdata['lastchanged'],
-					$objdata['vtype'], $objdata['size'], $objdata['priority']);
+						$this->store->make_path($path,'..'), $objdata['type'],
+						$objdata['data'], 0, $objdata['lastchanged'],
+						$objdata['vtype'], $objdata['size'], $objdata['priority']);
 				$object->arIsNewObject = true;
 			}
-			$object->save($objdata['properties']);
+			//$object->save($objdata['properties']);
+			unset($object);
 		}
 
 		/*
 			step 2
 			if not skip templates
-				if removeold
-					remove old templates
-				fi
-				if update
-					if forced
-						save new templates
-					else
-						save new templates when newer
-					fi
-				else
-					save new templates
-				fi
+			if removeold
+			remove old templates
 			fi
-		*/
-		if(!($this->config['skiptemplates'] === true)){
+			if update
+			if forced
+			save new templates
+			else
+			save new templates when newer
+			fi
+			else
+			save new templates
+			fi
+			fi
+		 */
+		if(!($this->config['skiptemplates'] === true))
+		{
 			debug('work templates','all');
+			if($id = $this->store->exists($path))
+			{
+				debug("templates: object exists",'all');
+				$object = current(
+						$this->store->call("system.get.phtml",
+							array(),$this->store->get($path))
+						);
+				$templates=$object->store->get_filestore("templates");
+
+				/*
+					purge templates
+				 */
+				if(($this->config['dellalltemplates'] === true))
+				{
+					/* delete all current templates */
+					$templates->purge($object->id);
+				}
+
+				/*
+					do something about those templates
+				 */
+				if(is_Array($objdata['templates'])){
+					while(list($type,$tval) = each($objdata['templates']))
+					{
+						if(is_array($tval))
+						{
+							while(list($name,$nval) = each($tval))
+							{
+								if(is_array($nval))
+								{
+									while(list($nls,$val) = each($nval))
+									{
+										print_r("#".$type."#".$name."#".$nls."#\n");
+										print_r($val);
+										print_r("#");
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 
 		/*
 			step 3
 			if not skip grants
-				if removeold
-					remove old grants
-				fi
-				if exists
-					remove
-				fi
-				save grant
+			if removeold
+			remove old grants
 			fi
-		*/
-		if(!($this->config['skipgrants'] === true)){
+			if exists
+			remove
+			fi
+			save grant
+			fi
+		 */
+		if(!($this->config['skipgrants'] === true))
+		{
 			debug('work grants','all');
 		}
 
 		/*
 			step 4
 			if not skip files
-				if removeold
-					remove old files
-				fi
-				if update
-					if forced
-						save new files
-					else
-						save new files when newer
-					fi
-				else
-					save new files 
-				fi
+			if removeold
+			remove old files
 			fi
-		*/
-		if(!($this->config['skipfiles'] === true)){
+			if update
+			if forced
+			save new files
+			else
+			save new files when newer
+			fi
+			else
+			save new files 
+			fi
+			fi
+		 */
+		if(!($this->config['skipfiles'] === true))
+		{
 			debug('work files','all');
 		}
 	}
-	
+
 	function characterData($parser, $data) {
 		$element = &$this->stack[count($this->stack)-1];
 		if (!$element["locked"]) {
@@ -218,7 +272,7 @@ class import_wddx {
 							$element["data"] = true;
 						break;
 						default:
-							$element["data"] = false;
+						$element["data"] = false;
 					}
 				break;
 				case "string":
@@ -227,16 +281,16 @@ class import_wddx {
 			}
 		}
 	}
-	
+
 	function parse($in,$store) {
 		$this->input = $in;
 		$this->store = $store;
 		while ($data = fgets($this->input, 65535)) {
-				if (!xml_parse($this->xml_parser, $data, feof($this->input))) {
-					die(sprintf("XML error: %s at line %d",
-								xml_error_string(xml_get_error_code($this->xml_parser)),
-								xml_get_current_line_number($this->xml_parser)));
-				}
+			if (!xml_parse($this->xml_parser, $data, feof($this->input))) {
+				die(sprintf("XML error: %s at line %d",
+							xml_error_string(xml_get_error_code($this->xml_parser)),
+							xml_get_current_line_number($this->xml_parser)));
+			}
 		}
 		xml_parser_free($this->xml_parser);
 	}
