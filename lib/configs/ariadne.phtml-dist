@@ -65,6 +65,12 @@
   $AR->dir->images          = $AR->dir->www."images/";
 
   /**************************************************************************/
+  /* Only change this if you have moved the CSS styles directory            */
+  /**************************************************************************/
+
+  $AR->dir->styles          = $AR->dir->www."styles/";
+
+  /**************************************************************************/
   /* If you want you can change the default server name below. You should   */
   /* only do this if the default setting doesn't work. e.g.:                */
   /*   $AR->host="http://your.host.com";                                    */
@@ -91,8 +97,10 @@
   $AR->nls->list["en"]      = "English";
   $AR->nls->list["es"]      = "Español";
 
-  /* default language *******************************************************/
-
+  $AR->nls->locales["nl"]   = "nl_NL";
+  $AR->nls->locales["en"]   = "en_US";
+  $AR->nls->locales["es"]   = "es";
+ 
   $AR->nls->default         = "en";
 
   /**************************************************************************/
