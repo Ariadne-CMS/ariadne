@@ -16,10 +16,19 @@
 				// Changing the root url invalidates all cache images below this.
 				$this->ClearCache();
 			}
+
+			unset($properties);
+			eregi('^([a-z0-9]+)://([^/:]+)(:[0-9]+)?', $url, $regs);
+			$properties["url"][0]["protocol"]=	"'".AddSlashes($regs[1])."'";
+			$properties["url"][0]["host"]=		"'".AddSlashes($regs[2])."'";
+			if ($regs[3]) {
+				$properties["url"][0]["port"]=	$regs[3];
+			}
+
 			if (substr($this->data->url,-1)=="/") {
 				$this->data->url=substr($this->data->url,0,-1);
 			}
-			$this->save();
+			$this->save($properties);
 		}
 	}
 ?>

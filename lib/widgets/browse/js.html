@@ -3,17 +3,21 @@
 wgBrowseResult=0;
 
 function Browse(resultobject, path, name, title, mode, filter, filename) {
+window.alert('browsing');
   wgBrowseResult=resultobject;
   if (wgBrowseResult.value) {
     path=wgBrowseResult.value;
   }
   if (top.Get) {
-    dprops=top.Get('browsewindow');
+alert('ugh');
+    dprops=window.top.Get('browsewindow');
+alert('bug');
   } else if (top.window.opener.top.Get) {
     dprops=top.window.opener.top.Get('browsewindow');
   } else {
     dprops='';
   }
+window.alert('still browsing');
   browsewindow=window.open(
     '<?php
        if ($this->exists($this->path)) { // sometimes, even i do not exist

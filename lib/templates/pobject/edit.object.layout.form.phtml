@@ -25,15 +25,15 @@
 ?>
 </head>
 <body>
-<script>
+<script language="javascript">
 	if (document.all) {
 		window.innerHeight=document.body.clientHeight;
 		window.innerWidth=document.body.clientWidth;
 	}	
 	document.write('<style> .full { width: '+(window.innerWidth-25)+'px; height: '+(window.innerHeight-100)+'px; } </style>');
 </script>
-<table border="0" width="100%" cellspacing="0">
 <form action="edit.object.layout.save.phtml" method="post">
+<table border="0" width="100%" cellspacing="0">
 <tr>
 	<td colspan="2">
 		<input type="hidden" name="type" value="<?php echo $type; ?>">
@@ -107,8 +107,8 @@
 		</table>		
 	</td>
 </tr>
-</form>
 </table>
+</form>
 </body>
 <?php 
 	} 

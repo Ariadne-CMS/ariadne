@@ -16,7 +16,7 @@
 		flush();
 		if ($folder=$this->call("system.get.folder.phtml")) {
 			?>
-				<script>
+				<script language="javascript">
 					window.parent.init("<?php echo AddSlashes($folder["icon"]); ?>",
 							"<?php echo AddSlashes($folder["name"]); ?>",
 							"<?php echo AddSlashes($folder["path"]); ?>",

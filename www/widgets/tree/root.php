@@ -22,7 +22,7 @@
 <html>
 <head>
 <title>Tree: <?php echo $path; ?></title>
-<script>
+<script language="javascript">
 <!--
 
   Nodes=new Array();
@@ -254,7 +254,8 @@
   }
 
   function View(id) {
-    window.parent.Loading(); 
+	// this call will break-up konqueror
+	//    window.parent.Loading(); 
     window.parent.View(Nodes[id].link);
   }
 

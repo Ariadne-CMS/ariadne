@@ -21,6 +21,7 @@ function Set(name, value) {
 }
 
 function Get(name) {
+window.alert('get');
   if (document.registry[name]) {
     result=document.registry[name];
   } else {
@@ -33,6 +34,8 @@ function View(link, template) {
   if (link=="..") {
     link="/";
   }
+
+//  alert('Viewing ('+link+')');
 
   if (template) {
     target='?template='+escape(template);
