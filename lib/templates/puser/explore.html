@@ -33,10 +33,10 @@ function View(link, template) {
     target='';
   }
 <?php if ($data->interface!="new") { ?>
-  window.view.location.href='<?php echo $AR->dir->www; ?>view.php/<?php echo "=".$ARCurrent->session->id."=/$nls"; ?>'+link+target;
+  window.view.location.href='<?php echo $AR->dir->www; ?>view.php/<?php echo "-".$ARCurrent->session->id."-/$nls"; ?>'+link+target;
 <?php } else { ?>
   template='view.phtml';
-  window.view.location.href='<?php echo $AR->dir->www; ?>loader.php/<?php echo "=".$ARCurrent->session->id."=/$nls"; ?>'+link+template;
+  window.view.location.href='<?php echo $AR->dir->www; ?>loader.php/<?php echo "-".$ARCurrent->session->id."-/$nls"; ?>'+link+template;
 <?php } ?>
 }
 
