@@ -177,14 +177,6 @@ function window_onload() {
   loadpage(tbContentRoot, tbContentPath, tbContentFile, tbContentName, tbContentLanguage, tbContentType);
 }
 
-window.onfocus=checkfocus;
-
-function checkfocus() {
-  if (window.setfocusto) {
-    window.setfocusto.focus();
-  }
-  window.onfocus=checkfocus;
-}
 
 function loadpage(root, path, file, name, language, type) {
   // FIXME check isDirty and ask for save first.
