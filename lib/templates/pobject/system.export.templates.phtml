@@ -1,57 +1,63 @@
 <?php
- $orig_filestore=$this->store->get_filestore("templates");
- $orig_templates=$orig_filestore->ls($this->id);
- if (is_array($orig_templates)) {
-	$new_filestore=$this->newObject->store->get_filestore("templates");
-	while (list(,$template)=each($orig_templates)) {
-		if ($new_filestore->exists($this->newObject->id, $template) &&
-			( $new_filestore->mtime($this->newObject->id, $template) <
-				$orig_filestore->mtime($this->id, $template))) {
-					display("	template($template) updating\n");
-		} else {
-			$tempname=tempnam($this->store->files."temp", "temp");
-			if (!$orig_filestore->copy_from_store($tempname, $this->id, $template)) {
-				display("	error: could not copy $template from store !\n");
-			} else {
-				if (!$new_filestore->copy_to_store($tempname, $this->newObject->id, $template)) {
-					display("	error: could not copy $template to store\n");
+ if ($this->CheckConfig("read")) {
+	if ( ($this->newObject->arIsNewObject && $this->CheckLogin("add")) ||
+		(!$this->newObject->arIsNewObject && $this->CheckLogin("edit"))) {
+
+		 $orig_filestore=$this->store->get_filestore("templates");
+		 $orig_templates=$orig_filestore->ls($this->id);
+		 if (is_array($orig_templates)) {
+
+			$new_filestore=$this->newObject->store->get_filestore("templates");
+			while (list(,$template)=each($orig_templates)) {
+				if ($new_filestore->exists($this->newObject->id, $template) &&
+					( $new_filestore->mtime($this->newObject->id, $template) <
+						$orig_filestore->mtime($this->id, $template))) {
+							display("	template($template) updating\n");
 				} else {
-					display("	template($template) created\n");
+					$tempname=tempnam($this->store->files."temp", "temp");
+					if (!$orig_filestore->copy_from_store($tempname, $this->id, $template)) {
+						display("	error: could not copy $template from store !\n");
+					} else {
+						if (!$new_filestore->copy_to_store($tempname, $this->newObject->id, $template)) {
+							display("	error: could not copy $template to store\n");
+						} else {
+							display("	template($template) created\n");
+						}
+					}
+					@unlink($tempname);
 				}
 			}
-			@unlink($tempname);
-		}
-	}
 
-	if ($this->data->templates) {
-		$save=1;
-		$templates=$this->newObject->data->templates;
-		while (is_array($templates) && (list($type, $functions)=each($templates))) {
-			while (is_array($functions) && (list($function, $languages)=each($functions))) {
-				while (is_array($languages) && (list($language, $file)=each($languages))) {
-					//echo "		templates[$type][$function][$language]=".$this->newObject->id."\n";
-					$this->newObject->data->templates[$type][$function][$language]=$this->newObject->id;
+			if ($this->data->templates) {
+				$save=1;
+				$templates=$this->newObject->data->templates;
+				while (is_array($templates) && (list($type, $functions)=each($templates))) {
+					while (is_array($functions) && (list($function, $languages)=each($functions))) {
+						while (is_array($languages) && (list($language, $file)=each($languages))) {
+							//echo "		templates[$type][$function][$language]=".$this->newObject->id."\n";
+							$this->newObject->data->templates[$type][$function][$language]=$this->newObject->id;
+						}
+					}
 				}
 			}
-		}
-	}
-	if ($this->data->pinp) {
-		$save=1;
-		$pinp=$this->newObject->data->pinp;
-		while (is_array($pinp) && (list($type, $functions)=each($pinp))) {
-			while (is_array($functions) && (list($function, $languages)=each($functions))) {
-				while (is_array($languages) && (list($language, $file)=each($languages))) {
-					//echo "		pinp[$type][$function][$language]=".$this->newObject->id."\n";
-					$this->newObject->data->pinp[$type][$function][$language]=$this->newObject->id;
+			if ($this->data->pinp) {
+				$save=1;
+				$pinp=$this->newObject->data->pinp;
+				while (is_array($pinp) && (list($type, $functions)=each($pinp))) {
+					while (is_array($functions) && (list($function, $languages)=each($functions))) {
+						while (is_array($languages) && (list($language, $file)=each($languages))) {
+							//echo "		pinp[$type][$function][$language]=".$this->newObject->id."\n";
+							$this->newObject->data->pinp[$type][$function][$language]=$this->newObject->id;
+						}
+					}
 				}
 			}
-		}
-	}
 
-	if ($save) {
-		$this->newObject->save();
+			if ($save) {
+				$this->newObject->save();
+			}
+		 }
 	}
  }
-
 
 ?>

@@ -1,20 +1,25 @@
 <?php
- $orig_filestore=$this->store->get_filestore("files");
- $orig_files=$orig_filestore->ls($this->id);
- if (is_array($orig_files)) {
-	$new_filestore=$this->newObject->store->get_filestore("files");
-	while (list(,$file)=each($orig_files)) {
-		if ($new_filestore->exists($this->newObject->id, $file) &&
-			( $new_filestore->mtime($this->newObject->id, $file) <
-				$orig_filestore->mtime($this->id, $file))) {
-					display("	file($file) updating\n");
-		} else {
-			$tempname=tempnam($this->store->files."temp", "temp");
-			$orig_filestore->copy_from_store($tempname, $this->id, $file);
-			$new_filestore->copy_to_store($tempname, $this->newObject->id, $file);
-			@unlink($tempname);
-			display("	file($file) created\n");
-		}
+ if ($this->CheckConfig("read")) {
+	if ( ($this->newObject->arIsNewObject && $this->CheckLogin("add")) ||
+		(!$this->newObject->arIsNewObject && $this->CheckLogin("edit"))) {
+		 $orig_filestore=$this->store->get_filestore("files");
+		 $orig_files=$orig_filestore->ls($this->id);
+		 if (is_array($orig_files)) {
+			$new_filestore=$this->newObject->store->get_filestore("files");
+			while (list(,$file)=each($orig_files)) {
+				if ($new_filestore->exists($this->newObject->id, $file) &&
+					( $new_filestore->mtime($this->newObject->id, $file) <
+						$orig_filestore->mtime($this->id, $file))) {
+							display("	file($file) updating\n");
+				} else {
+					$tempname=tempnam($this->store->files."temp", "temp");
+					$orig_filestore->copy_from_store($tempname, $this->id, $file);
+					$new_filestore->copy_to_store($tempname, $this->newObject->id, $file);
+					@unlink($tempname);
+					display("	file($file) created\n");
+				}
+			}
+		 }
 	}
  }
 ?>
