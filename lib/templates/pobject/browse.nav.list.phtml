@@ -35,7 +35,6 @@
 		margin: 0px;
 		padding: 2px;
 		font: 10pt Arial,Helvetica,sans-serif;
-		height: 100%;
 	}
 	A {
 		text-decoration: none;
@@ -44,6 +43,9 @@
 </style>
 <body bgcolor="white">
 <?php
+	if ($this->parent!="..") {
+		$this->call("browse.nav.list.show.up.phtml");
+	}
 	if ($filter) {
 		$crit["object"]["implements"]["="]="'".AddSlashes($filter)."'";
 	}

@@ -33,13 +33,14 @@
 		document.location.href='<?php echo $this->store->root; ?>'+path+'view.phtml';
 	}
 	function LoadingDone() {
+		parent.LoadingDone();
 	}
 	function objectadded() {
 		document.location.href=document.location.href;
 	}
 </script>
 </head>
-<body scroll="no" bgcolor="white" onLoad="top.LoadingDone();">
+<body scroll="no" bgcolor="white" onLoad="parent.LoadingDone();">
 <?php
 
 	include($this->store->code."widgets/menu/menu.phtml");

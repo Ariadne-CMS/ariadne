@@ -27,7 +27,7 @@
 		}
 		re=/\/+/g
 		test=test.replace(re,'/');
-		top.View(test);
+		parent.View(test);
 		return false;
 	}
 
@@ -35,7 +35,7 @@
 		properties=windowprops[windowname];
 
 		/* FIXME: doesn't work without frames on mozilla
-		windowsize=top.Get(windowname);
+		windowsize=parent.Get(windowname);
 		if (windowsize) {
 			alert('windowsize='+windowsize);
 			properties=properties+','+windowsize;
@@ -48,7 +48,7 @@
 	function artoggleexplorerbar() {
 		if (document.all) {
 			expl_icon=document.all['explorerbar_icon'];
-			treestatus=top.toggletree();
+			treestatus=parent.toggletree();
 			if (treestatus=='hidden') {
 				expl_icon.className='unselectedOption';
 			} else {
@@ -57,8 +57,18 @@
 		}
 	}
 
-	function setViewit(type) {
-		alert(type);
+	function setView(type) {
+		parent.Set('viewmode',type);
+		if (!window.archildren) {
+			archildren=document.getElementById("archildren");
+		} else {
+			archildren=window.archildren;
+		}
+		if (archildren.src) {
+			archildren.src='browse.nav.'+type+'.phtml';
+		} else {
+			archildren.location.href='browse.nav.'+type+'.phtml';
+		}
 	}
 
 	function editobject() {

@@ -1,7 +1,11 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		$template="browse.nav.list.show.phtml";
-		$up="browse.nav.list.show.up.phtml";
+//		$template="browse.nav.list.show.phtml";
+//		$up="browse.nav.list.show.up.phtml";
+		$template="browse.nav.icons.show.phtml";
+		$up="browse.nav.icons.show.up.phtml";
+
+
 		if (!$arLanguage) {
 			$arLanguage=$nls;
 			if (is_array($arCallArgs)) {
@@ -67,6 +71,24 @@ H1 {
 	?>
 	padding-right: 8px;
 }
+SPAN.item { 
+	left: 5 px;
+	width: 60px;
+	height: 78px;
+	position: relative;
+	margin-top: 5px;
+	margin-right: 5px;
+	vertical-align: top;
+	text-align: center;
+	<?php
+		if ($browser["id"]!="msie" || $browser["version"]!=4) {
+	?>
+	float: left;
+	<?php
+		}
+	?>
+	overflow: hidden;
+}
 
 .manage_info {
 	margin-top:5px;
@@ -129,20 +151,13 @@ A.unselected {
 	margin-bottom: 5px;
 	background-color: white;
 }
-#children {
-	overflow: auto;
-	border: inset 2px;
-	height: 100%;
-	background-color: white;
-	padding: 4px;
-}
 #object {
 	padding-left: 50px;	
 }
 #icon {
 	position: absolute;
 }
-#top {
+#topdiv {
 	height: 180px;
 }
 </style>
@@ -151,7 +166,7 @@ A.unselected {
 <body>
 	<table width="100%" height="95%">
 	<tr><td valign="top" width="100%">
-	<div id="top">
+	<div id="topdiv">
 		<?php $this->call("manage.top.html", $arCallArgs); ?>
 	</div>
 	</td><td rowspan="2" valign="top">
@@ -162,22 +177,33 @@ A.unselected {
 			$this->call("manage.details.html", $arCallArgs); 
 		?>
 	</div>
-	</td></tr><tr><td valign="top" height="60%">
-	<div>
-		<script>
-		    if (document.all) {
-				window.innerHeight=document.body.clientHeight;
-				window.innerWidth=document.body.clientWidth;
-			}
-			height=window.innerHeight-232;
-			document.write('<div id="children" style="height: '+height+'px;">');
-		</script>
-				<?php
-					$this->call($up, $arCallArgs);
-					$this->ls($this->path, $template, $arCallArgs);
-				?>
-		</div>
+	</td></tr><tr><td valign="top" height="60%" id="frop2">
+	<div id="container">
+	<script>
+	    if (document.all) {
+			window.innerHeight=document.body.clientHeight;
+			window.innerWidth=document.body.clientWidth;
+		}
+		height=window.innerHeight-232;
+		viewmode=parent.Get('viewmode');
+		if (!viewmode) {
+			viewmode='list';
+		}
+		document.write('<iframe id="archildren" height="'+height+'" width="100%" src="browse.nav.'+viewmode+'.phtml"></iframe>');
+	</script>
 	</div>
+	<script>
+		if (container=document.getElementById('container')) {
+			topdiv=document.getElementById('topdiv');
+			width=topdiv.offsetWidth-10;
+			height=container.offsetHeight-30;
+			top=container.offsetTop;
+			container.style.position='absolute';
+			container.style.width=width;
+			container.style.height=height;
+			container.style.top=220;
+		}
+	</script>
 	</td></tr></table>
 </body>
 </html>
