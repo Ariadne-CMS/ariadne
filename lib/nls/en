@@ -99,7 +99,7 @@
 	$ARnls["err:filenameinvalidnoparent"]				=	"%s is invalid: %s does not exist.";
 	$ARnls["err:fileupload"]				=	"Something went wrong while uploading the file. Please try again.\nIf the problem persists, contact your system administrator.";
 	$ARnls["err:fileuploadphtml"]			=	"You cannot upload files with a .phtml extension.";
-	$ARnls["err:fileuploadvirus"]				=	"According to our virusscanner your file contained %s! Please check your system and then try again.\nIf the problem persists, contact your system administrator.";
+	$ARnls["err:fileuploadvirus"]			=	"The file contains the %s virus! Please check your system and then try again.\nIf the problem persists, contact your system administrator.";
 	$ARnls["err:ftpnorenameself"]					=	"can not rename template to itself";
 	$ARnls["err:ftpnotemplate"]					=	"no such template";
 	$ARnls["err:ftpnotemplatebadperm"]				=	"can not find template (bad disk permissions?)";
