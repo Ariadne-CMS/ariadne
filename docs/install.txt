@@ -18,7 +18,7 @@ Unix/Linux
 
 Requirements:
   Apache
-  PHP4 (not running in safe mode)
+  PHP4 (not running in safe mode and not installed as CGI but as an Apache module)
   MySQL
 
 Recommended:
