@@ -1,0 +1,35 @@
+<?php
+	/******************************************************************
+	 system.new.phtml                                      Muze Ariadne
+	 ------------------------------------------------------------------
+
+	 No result.
+
+	******************************************************************/
+	$tpath = $this->make_path($arNewFilename);
+	$tparent = $this->store->make_path($arNewFilename, "..");
+	if ($tparent != $this->path) {
+		$arResult = current($this->get($tparent, "soap.createobject.phtml", $arCallArgs));
+	} else {
+		$arNewType=$this->getdata("arNewType","none");
+		if (!$arNewType) {
+			error($ARnls["err:nonewtype"]);
+		} else if ($this->CheckLogin("add", $arNewType) && $this->CheckConfig()) {
+			include_once($this->store->code."widgets/wizard/code.php");
+
+			debug("soap.createobject.phtml: arNewFilename='$arNewFilename'");
+			$arNewFilename=$this->getdata("arNewFilename","none");
+			$arNewData=new object;
+			$arNewPath=$this->make_path($arNewFilename);
+			$arNewParent=$this->store->make_path($arNewFilename, "..");
+			$arNewCallObject=$this->store->newobject($arNewPath, $arNewParent, $arNewType, $arNewData);
+			$arNewCallObject->arIsNewObject=true;
+
+			$arNewCallObject->call("soap.save.data.phtml", $arCallArgs);
+			$arResult=$arNewCallObject->path;
+			if ($arNewCallObject->error) {
+				error($arNewCallObject->error);
+			}
+		}
+	}
+?>
