@@ -1,0 +1,53 @@
+<?php
+  	include_once($this->store->code."nls/winxp.".$this->reqnls);
+	
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		if (!$arLanguage) {
+			$arLanguage=$nls;
+		}
+		if ($data->$arLanguage) {
+			$nlsdata=$data->$arLanguage;
+		}
+
+		$arCallArgs["sectionName"] = "tasks";
+		$arCallArgs["sectionDisplayName"] = $nlsdata->name;
+		$arCallArgs["specialSection"] = true;
+		$this->call("winxp.manage.sidebar.sectionstart.html", $arCallArgs);
+
+		$myName = $nlsdata->name;
+		if (strlen($myName) > 25)
+			$myName = "<span title=\"$sectionDisplayName\">".substr($myName, 0, 22)."..."."</span>";
+
+		if ($this->CheckSilent("add",ARANYTYPE) && !$hideAdd)
+			echo "<a href=\"javascript:arshow('edit_object_data','object.new.select.phtml')\">"
+				."<img src=\"".$AR->dir->images."winxp/new.png\" border=\"0\" width=\"16\" height=\"16\" />&nbsp;&nbsp;"
+				.$ARnls["xp_new"]."</a><br />";
+		if ($this->CheckSilent("delete"))
+			echo "<a href=\"javascript:arshow('object_fs','object.rename.phtml')\">"
+				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/rename.png\" border=\"0\" width=\"16\" height=\"16\" />&nbsp;&nbsp;"
+				.$ARnls["xp_rename"].$myName."</a><br />";
+		echo "<a href=\"javascript:arshow('object_fs','object.copy.phtml')\">"
+			."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/copy.png\" border=\"0\" width=\"16\" height=\"16\" />&nbsp;&nbsp;"
+			.$ARnls["xp_copy"].$myName."</a><br />";
+		echo "<a href=\"javascript:arshow('object_fs','object.link.phtml')\">"
+			."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/link.png\" border=\"0\" width=\"16\" height=\"16\" />&nbsp;&nbsp;"
+			.$ARnls["xp_link"].$myName."</a><br />";
+		if ($this->CheckSilent("edit"))
+			echo "<a href=\"javascript:arshow('edit_object_data','edit.object.data.phtml')\">"
+				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/edit.png\" border=\"0\" width=\"16\" height=\"16\" />&nbsp;&nbsp;"
+				.$ARnls["xp_edit"].$myName."</a><br />";
+		if($this->implements("pshortcut") && $this->CheckSilent("edit"))
+			echo "<a href=\"javascript:arshow('edit_object_shortcut','edit.object.shortcut.phtml')\">"
+				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/edit.png\" border=\"0\" width=\"16\" height=\"16\" />&nbsp;&nbsp;"
+				.$ARnls["xp_shortcut"]."</a><br />";
+		if ($this->CheckSilent("delete"))
+			echo "<a href=\"javascript:arshow('object_fs','object.delete.phtml')\">"
+				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/delete.png\" border=\"0\" width=\"16\" height=\"16\" />&nbsp;&nbsp;"
+				.$ARnls["xp_delete"].$myName."</a><br />";
+		echo "<a href=\"javascript:arshow('_new','".$this->make_url()."view.html')\">"
+			."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/viewweb.png\" border=\"0\" width=\"16\" height=\"16\" />&nbsp;&nbsp;"
+			.$ARnls["xp_viewweb"]."</a><br />";
+
+		$this->call("winxp.manage.sidebar.sectionend.html", $arCallArgs);
+	}
+?>

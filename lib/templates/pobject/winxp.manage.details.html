@@ -1,0 +1,33 @@
+<?php
+  	include_once($this->store->code."nls/winxp.".$this->reqnls);
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		global $PHP_SELF, $QUERY_STRING;
+		if (!$arLanguage) {
+			$arLanguage=$nls;
+			if (is_array($arCallArgs)) {
+				$arCallArgs["arLanguage"]=$nls;
+			} else {
+				$arCallArgs.="&arLanguage=$nls";
+			}
+		}
+
+		$arCallArgs["sectionName"] = "details";
+		$arCallArgs["sectionDisplayName"] = $ARnls["xp_detailsH"];
+		$arCallArgs["specialSection"] = false;
+		$this->call("winxp.manage.sidebar.sectionstart.html", $arCallArgs);
+?>
+	<div class="details">
+		<base target="_parent" />
+		<?php 
+			global $HTTP_REFERER;
+			$oldPHP_SELF = $PHP_SELF;
+			$PHP_SELF = $HTTP_REFERER;
+			$this->Call("manage.details.html"); 
+			$PHP_SELF = $oldPHP_SELF;
+			?><br />
+		<base target="_self" />
+	</div>
+<?php
+	$this->call("winxp.manage.sidebar.sectionend.html", $arCallArgs);
+	}
+?>

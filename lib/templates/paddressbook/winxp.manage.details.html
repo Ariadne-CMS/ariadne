@@ -1,0 +1,64 @@
+<?php
+  	include_once($this->store->code."nls/winxp.".$this->reqnls);
+	if (!$hideAdd && $this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		global $HTTP_GET_VARS;
+		if (is_array($HTTP_GET_VARS)) {
+			while (list($key, $value)=each($HTTP_GET_VARS)) {
+				if ($key!='letter') {
+					$QUERY_STRING.=RawUrlEncode($key).'='.RawUrlEncode($value).'&';
+				}
+			}
+		}
+
+	$arCallArgs["sectionName"] = "browseby";
+	$arCallArgs["sectionDisplayName"] = $ARnls["xp_browsebyletter"];
+	$arCallArgs["specialSection"] = false;
+	$this->call("winxp.manage.sidebar.sectionstart.html", $arCallArgs);
+?>
+	<style>
+		.alfabet TD {
+			background: #F6EEE6;
+			text-align: center;
+			width: 22px;
+		}
+	</style>
+	<div id="details">
+		<div style="padding: 5px;">
+			<table class="alfabet" cellspacing="2" cellpadding="2">
+			<tr>
+				<td><a href="javascript: parent.updateChildren('letter=A');">A</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=B');">B</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=C');">C</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=D');">D</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=E');">E</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=F');">F</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=G');">G</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=H');">H</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=I');">I</a></td>
+			</tr><tr>
+				<td><a href="javascript: parent.updateChildren('letter=J');">J</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=K');">K</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=L');">L</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=M');">M</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=N');">N</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=O');">O</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=P');">P</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=Q');">Q</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=R');">R</a></td>
+			</tr><tr>
+				<td><a href="javascript: parent.updateChildren('letter=S');">S</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=T');">T</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=U');">U</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=V');">V</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=W');">W</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=X');">X</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=Y');">Y</a></td>
+				<td><a href="javascript: parent.updateChildren('letter=Z');">Z</a></td>
+			</tr>
+			</table>
+		</div>
+	</div>
+<?php
+	$this->call("winxp.manage.sidebar.sectionend.html", $arCallArgs);
+	}
+?>

@@ -1,0 +1,28 @@
+<?php
+  	include_once($this->store->code."nls/winxp.".$this->reqnls);
+	if (!$hideAdd && $this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+
+	$arCallArgs["sectionName"] = "browseby";
+	$arCallArgs["sectionDisplayName"] = $ARnls["xp_browsebydate"];
+	$arCallArgs["specialSection"] = false;
+	$this->call("winxp.manage.sidebar.sectionstart.html", $arCallArgs);
+?>
+<a name="details"></a>
+	<div id="details">
+		<div style="padding: 5px;">
+			<?php 
+				$this->call("winxp.manage.month.html", $arCallArgs);
+			?>
+		</div>
+	</div>
+	<div id="details">
+		<div style="padding: 5px;">
+			<?php
+				$this->call("winxp.manage.day.html", $arCallArgs);
+			?>		
+		</div>
+	</div>
+<?php
+	$this->call("winxp.manage.sidebar.sectionend.html", $arCallArgs);
+	}
+?>

@@ -1,0 +1,54 @@
+<?php
+  	include_once($this->store->code."nls/winxp.".$this->reqnls);
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		global $PHP_SELF, $QUERY_STRING;
+		if (!$arLanguage) {
+			$arLanguage=$nls;
+			if (is_array($arCallArgs)) {
+				$arCallArgs["arLanguage"]=$nls;
+			} else {
+				$arCallArgs.="&arLanguage=$nls";
+			}
+		}
+
+		$arCallArgs["sectionName"] = "info";
+		$arCallArgs["sectionDisplayName"] = 0;
+		$arCallArgs["specialSection"] = false;
+		$this->call("winxp.manage.sidebar.sectionstart.html", $arCallArgs);
+?>
+	<div class="details">
+	<strong><?php echo $nlsdata->name ?></strong><br />
+	<?php 
+		$myType = $this->get("/system/ariadne/types/".$this->type, "system.get.name.phtml");
+		echo $myType[0];
+	?>
+	<br />
+			<table width="100%" border="0" cellpadding="0" cellspacing="0">
+				<tr><td valign="top"><?php echo $ARnls["user"]; ?>:</td><td valign="top" class="data"><?php echo $this->data->owner_name; ?></td></tr>
+				<tr><td valign="top"><?php echo $ARnls["date"]; ?>:</td><td valign="top" class="data"><?php echo strftime("%m-%d-%Y",$this->data->ctime); ?></td></tr>
+				<tr><td valign="top"><?php echo $ARnls["modified"]; ?>:</td><td valign="top" class="data"><?php echo strftime("%m-%d-%Y",$this->data->mtime); ?></td></tr>
+				<tr><td valign="top"><?php echo $ARnls["size"]; ?>:</td><td valign="top" class="data"><?php echo $this->size; ?></td></tr>
+				<tr><td valign="top"><?php echo $ARnls["priority"]; ?>:</td><td valign="top" class="data"><?php echo $this->priority; ?></span></td></tr>
+				<?php
+					if (is_array($data->nls->list)) {
+				?>
+				<tr><td valign="top"><?php echo $ARnls["language"]; ?>:</td><td valign="middle" class="data"><?php 
+						reset($data->nls->list);
+						while (list($key, $nls)=each($data->nls->list)) {
+							if ($arLanguage==$key) {
+								$class="selected";
+							} else {
+								$class="unselected";
+							}
+							echo "<a class='$class' href='#' onClick=\"top.Set('arLanguage','$key'); parent.location=parent.location + '?$QUERY_STRING&arLanguage=$key'; return true;\"><img src=\"".$AR->dir->images."nls/small/".$key.".gif\" border=\"0\" alt=\"".$AR->nls->list[$key]."\"></a> ";
+						}
+					?></td></tr>
+				<?php
+					}
+				?>
+			</table>
+	</div>
+<?php
+	$this->call("winxp.manage.sidebar.sectionend.html", $arCallArgs);
+	}
+?>

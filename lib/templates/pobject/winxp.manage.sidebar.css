@@ -1,0 +1,116 @@
+
+BODY {
+	background-color : #FFFFFF;
+	margin: 0px;
+	background: url(<?php echo $AR->dir->images ?>winxp/ExplorerBarHeaderBackground.png) repeat-y;
+}
+
+TH,TD,LI,P,BODY,DIV {
+	font-size : 11px;
+	font-family : tahoma,verdana,helvetica, arial, sans-serif;
+}
+
+A	{
+	text-decoration: none;
+	color: #003FEB;
+}
+A:hover {
+	text-decoration: underline;
+	color: #428EFF; 
+}
+A.selected {
+	border: inset 1px;
+}
+A.unselected {
+	border: outset 1px;
+}
+.sidebar{
+	width: 210px;
+	padding: 5px;
+	color: #215DC6;
+	vertical-align : middle;
+}
+.sidebar_grouphead table{
+	background: url(<?php echo $AR->dir->images ?>winxp/NormalGroupHead.png) no-repeat;
+}
+.sidebar_grouphead td{
+	height: 21px;
+	text-indent : 5px;
+	font-weight: bold;
+}
+.sidebar_grouphead a:hover{
+	text-decoration: none;
+}
+.sidebar_grouphead a{
+	color: #215DC6;
+}
+.sidebar_special_grouphead table{
+	background: url(<?php echo $AR->dir->images ?>winxp/SpecialGroupHead.png) no-repeat;
+	margin-top: 15px;
+	height: 21px;
+}
+.sidebar_special_grouphead td{
+	height: 21px;
+	color: #ffffff;
+	text-indent: 40px;
+	font-weight: bold;
+}
+.sidebar_special_grouphead a:hover{
+	text-decoration: none;
+}
+.sidebar_special_grouphead a{
+	color: #ffffff;
+}
+
+.sidebar_section
+{
+	background: #D6DFF7;
+	border-bottom: #ffffff 1px solid;
+	border-left: #ffffff 1px solid;
+	border-right: #ffffff 1px solid;
+	border-top: #C5D2F0 1px solid;
+	<?php
+		//i REALLY don't understand why netscape doesn't fit the proper width,
+		// so let's just make it smaller
+		if (!$browser)
+			$browser=$this->call("browsercheck.phtml");
+		if ($browser["id"]=="ns")
+			echo "width: 192px;";
+		else
+			echo "width: 200px;";
+	?>
+	margin-bottom: 15px;
+	padding: 3px;
+	overflow: hidden;
+}
+.sidebar_special_section
+{
+	background: #EFF3FF;
+	border-bottom: #ffffff 1px solid;
+	border-left: #ffffff 1px solid;
+	border-right: #ffffff 1px solid;
+	border-top: #0C4EB7 1px solid;
+	<?php
+		//i REALLY don't understand why netscape doesn't fit the proper width,
+		// so let's just make it smaller
+		if ($browser["id"]=="ns")
+			echo "width: 192px;";
+		else
+			echo "width: 200px;";
+	?>
+	margin-bottom: 15px;
+	padding: 3px;
+	overflow: hidden;
+}
+.details
+{
+	color: #000000;
+	font-weight: normal;
+}
+#icon {
+	position: absolute;
+	top: 4px;
+	left: 6px;
+	z-position: 100;
+}
+

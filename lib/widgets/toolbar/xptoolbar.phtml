@@ -1,0 +1,296 @@
+<?php
+	$bgcolor="buttonface";
+	$browser=$this->call("browsercheck.phtml");
+	if ($browser["id"]=="ns" && $browser["version"]=="4") {
+		$browser_string = "NS4";
+		$bgcolor="#bfbfbf";
+	} else if($browser["version"]>=5) { 
+		$browser_string = "DOM";
+	} else {
+		$browser_string = "IE4";
+	}
+	?>
+<style>
+div.toolbar{
+	<?php
+	$bgcolor="buttonface";
+	if ($browser["id"]=="ns" && $browser["version"]=="4") {
+		$bgcolor="#bfbfbf";
+	}
+	echo "background: ".$bgcolor.";";
+	?>
+	height: 30px;
+	width: 99%;
+	padding-top: 1px;
+	padding-left: 5px;
+	text-align: left;
+	border-left: 0px solid;
+	border-right: 0px solid;
+	border-top: #ffffff solid 1px;
+	border-bottom: #D8D2BD solid 1px;
+}
+
+.toolbar table, td, a {
+	font-family: tahoma, verdana, arial;
+	font-size: 11px;
+}
+.toolbar a {
+	padding: 3px;
+}
+.seperator {
+	background: #D8D2BD;
+}
+</style>
+<script language="JavaScript">
+	function setXpView(type) {
+		top.Set('viewmode',type);
+		if (!window.archildren) {
+			archildren=document.getElementById("archildren");
+		} else {
+			archildren=window.archildren;
+		}
+		if (archildren.src) {
+			archildren.src='winxp.browse.nav.'+type+'.phtml?'+document.location.search;
+		} else {
+			archildren.location='winxp.browse.nav.'+type+'.phtml?'+document.location.search;
+		}
+	}
+	
+	function updateChildren(qs) {
+		if (!window.archildren)
+			archildren=document.getElementById("archildren");
+		else
+			archildren=window.archildren;
+		var viewtype=top.Get('viewmode');
+		if (!viewtype)
+			viewtype='list';
+		if (archildren.src) {
+			archildren.src='winxp.browse.nav.'+viewtype+'.phtml?'+qs+'&'+document.location.search;
+		} else {
+			archildren.location='winxp.browse.nav.'+viewtype+'.phtml?'+qs+'&'+document.location.search;
+		}
+	}
+
+	function makeHot(itm){
+		if (!itm.isDown){
+			var imgLeft = document.getElementById(itm.id + 'Left');
+			var imgRight = document.getElementById(itm.id + 'Right');
+			var imgTd = itm.parentNode;
+			imgLeft.src = '<?php echo $AR->dir->images ?>winxp/winxpbuttonLeft.png';
+			imgRight.src = '<?php echo $AR->dir->images ?>winxp/winxpbuttonRight.png';
+			imgTd.style.backgroundImage = 'url(<?php echo $AR->dir->images ?>winxp/winxpbuttonBg.png)';
+			imgTd.style.backgroundRepeat = 'repeat-x';
+		}
+	}
+	function makeNot(itm){
+		if (!itm.isDown){
+			var imgLeft = document.getElementById(itm.id + 'Left');
+			var imgRight = document.getElementById(itm.id + 'Right');
+			var imgTd = itm.parentNode;
+			imgLeft.src = '<?php echo $AR->dir->images ?>dot.gif';
+			imgLeft.width = 3;
+			imgRight.src = '<?php echo $AR->dir->images ?>dot.gif';
+			imgRight.width = 3;
+			imgTd.style.background = 'none';
+		}
+	}
+	function makeSelected(itm){
+		var imgLeft = document.getElementById(itm.id + 'Left');
+		var imgRight = document.getElementById(itm.id + 'Right');
+		var imgTd = itm.parentNode;
+		imgLeft.src = '<?php echo $AR->dir->images ?>winxp/winxpbuttonSelectedLeft.png';
+		imgRight.src = '<?php echo $AR->dir->images ?>winxp/winxpbuttonSelectedRight.png';
+		imgTd.style.background = 'url("<?php echo $AR->dir->images ?>winxp/winxpbuttonSelectedBg.png") repeat-x';
+		itm.isDown = true;
+	}
+	function toggleFolders(){
+		var itm=document.getElementById('folders');
+		top.toggletree();
+		if (top.gettreestatus() == 'visible'){
+			makeSelected(itm);
+			itm.isDown = true;
+		} else {
+			itm.isDown = false;
+			makeNot(itm);
+		}
+	}
+
+	function showViewMenu(ev)
+	{
+		if (!window.archildren)
+			archildren=document.getElementById("archildren");
+		else
+			archildren=window.archildren;
+		if (archildren.contentWindow)
+			archildren.contentWindow.cm_popupAtPos('iconviewContextmenu', 95, -2);
+		else
+			archildren.cm_popupAtPos('iconviewContextmenu', 95, -2);
+	}
+</script>
+	<div class="toolbar">
+	<table align="left" border="0" cellpadding="0" cellspacing="0">
+		<tr>
+			<td><img id="folderUpLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td>
+			<?php
+					if ($this->parent!="..") {?>
+					<a 
+						id="folderUp" href="JavaScript: top.View('<?php echo $this->parent; ?>');" 
+						onMouseOver="makeHot(this);" 
+						onMouseOut="makeNot(this);"
+						title="<?php echo $ARnls["xp_up"]; ?>"
+						><img align="absbottom" src="<?php echo $AR->dir->images ?>winxp/folderup.png"
+							width="16" height="16" border="0" alt="<?php echo $ARnls["xp_up"]; ?>"
+							vspace="0" hspace="0" /></a>
+			<?php
+				}else{?>
+					<img src="<?php echo $AR->dir->images ?>winxp/folderupDisabled.png"
+							width="16" height="16" border="0" alt="<?php echo $ARnls["xp_up"]; ?>"
+							vspace="0" hspace="0" />
+				<?php } ?>
+			</td>
+			<td><img id="folderUpRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td class="seperator"><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="2" height="28" vspace="0" hspace="0" /></td>
+			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td><img id="searchLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td valign="middle">
+					<a 
+						id="search" href="javascript:arshow('edit_find','edit.find.phtml');" 
+						onMouseOver="makeHot(this);" 
+						onMouseOut="makeNot(this);"
+						title="<?php echo $ARnls["xp_search"]; ?>"
+						>&nbsp;<img align="middle" src="<?php echo $AR->dir->images ?>winxp/search.png"
+							width="16" height="16" border="0" alt="<?php echo $ARnls["xp_search"]; ?>"
+							vspace="0" hspace="0" /> <?php echo $ARnls["xp_search"]; ?>&nbsp;</a>
+			</td>
+			<td><img id="searchRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td><img id="foldersLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td>
+					<a 
+						id="folders" href="javascript:toggleFolders()" 
+						onMouseOver="makeHot(this);" 
+						onMouseOut="makeNot(this);"
+						title="<?php echo $ARnls["xp_folders"]; ?>"
+						><img align="middle"  src="<?php echo $AR->dir->images ?>winxp/folders.png"
+							width="16" height="16" border="0" alt="<?php echo $ARnls["xp_folders"]; ?>"
+							vspace="0" hspace="0" /> <?php echo $ARnls["xp_folders"]; ?> </a>
+			</td>
+			<td><img id="foldersRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td class="seperator"><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="2" height="28" vspace="0" hspace="0" /></td>
+			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td><img id="importLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td valign="middle" align="center">
+					<?php 
+						if($this->CheckSilent("add")){?>
+					<a 
+						id="import" href="javascript:arshow('edit_object_data','object.import.phtml')" 
+						onMouseOver="makeHot(this);" 
+						onMouseOut="makeNot(this);"
+						title="<?php echo $ARnls["xp_import"]; ?>"
+						><img align="texttop" src="<?php echo $AR->dir->images ?>winxp/import.png"
+							width="17" height="16" border="0" alt="<?php echo $ARnls["xp_import"]; ?>"
+							vspace="0" hspace="0" /> <?php echo $ARnls["xp_import"]; ?>&nbsp;</a>
+					<?php
+						}else{?>
+						<img align="texttop" src="<?php echo $AR->dir->images ?>winxp/import_disabled.png"
+							width="17" height="16" border="0" alt="<?php echo $ARnls["xp_import"]; ?>"
+							vspace="0" hspace="0" /> <a href="javascript:;"><?php echo $ARnls["xp_import"]; ?>&nbsp;</a>
+					<?php
+						}?>
+						
+			</td>
+			<td><img id="importRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td><img id="exportLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td>
+					<a 
+						id="export" href="javascript:arshow('edit_object_data','object.export.phtml')" 
+						onMouseOver="makeHot(this);" 
+						onMouseOut="makeNot(this);"
+						title="<?php echo $ARnls["xp_export"]; ?>"
+						><img align="texttop" src="<?php echo $AR->dir->images ?>winxp/export.png"
+							width="17" height="16" border="0" alt="<?php echo $ARnls["xp_export"]; ?>"
+							vspace="0" hspace="0" /> <?php echo $ARnls["xp_export"]; ?>&nbsp;</a>
+			</td>
+			<td><img id="exportRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td class="seperator"><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="2" height="28" vspace="0" hspace="0" /></td>
+			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td><img id="folderViewLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td>
+					<a 
+						id="folderView" href="javascript:;" onClick="showViewMenu(event);"
+						onMouseOver="makeHot(this);"
+						onMouseOut="makeNot(this);popDown('xp_ViewArray');"
+						title="<?php echo $ARnls["xp_iconview"]; ?>"
+						><img align="middle" src="<?php echo $AR->dir->images ?>winxp/iconview.png"
+							width="21" height="16" border="0" alt="<?php echo $ARnls["xp_iconview"]; ?>"
+							vspace="0" hspace="0" /></a>
+			</td>
+			<td><img id="folderViewRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td class="seperator"><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="2" height="28" vspace="0" hspace="0" /></td>
+			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td><img id="prefsLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td>
+					<a 
+						id="prefs" href="javascript:arshow('edit_preferences','<?php echo $this->store->root.$AR->user->path; ; ?>edit.preferences.phtml')" 
+						onMouseOver="makeHot(this);" 
+						onMouseOut="makeNot(this);"
+						title="<?php echo $ARnls["xp_preferences"]; ?>"
+						><img align="texttop" src="<?php echo $AR->dir->images ?>winxp/preferences.png"
+							width="16" height="16" border="0" alt="<?php echo $ARnls["xp_preferences"]; ?>"
+							vspace="0" hspace="0" /> <?php echo $ARnls["xp_preferences"]; ?>&nbsp;</a>
+						
+			</td>
+			<td><img id="prefsRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td class="seperator"><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="2" height="28" vspace="0" hspace="0" /></td>
+			<td><img src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td><img id="helpLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td>
+					<a 
+						id="help" href="javascript:arshow('help','<?php echo $this->make_url('/system/ariadne/help/reference/'); ?>')" 
+						onMouseOver="makeHot(this);" 
+						onMouseOut="makeNot(this);"
+						title="<?php echo $ARnls["xp_help"]; ?>"
+						><img align="texttop" src="<?php echo $AR->dir->images ?>winxp/help.png"
+							width="16" height="16" border="0" alt="<?php echo $ARnls["xp_help"]; ?>"
+							vspace="0" hspace="0" /></a>
+						
+			</td>
+			<td><img id="helpRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td><img id="tutorLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td>
+					<a 
+						id="tutor" href="javascript:arshow('help','<?php echo $this->make_url('/system/ariadne/help/tutorials/'); ?>')" 
+						onMouseOver="makeHot(this);" 
+						onMouseOut="makeNot(this);"
+						title="<?php echo $ARnls["xp_tutorials"]; ?>"
+						><img align="texttop" src="<?php echo $AR->dir->images ?>winxp/tutorials.png"
+							width="16" height="16" border="0" alt="<?php echo $ARnls["xp_tutorials"]; ?>"
+							vspace="0" hspace="0" /></a>
+						
+			</td>
+			<td><img id="tutorRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td><img id="aboutLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+			<td>
+					<a 
+						id="about" href="javascript:arshow('help_about','help.about.phtml')" 
+						onMouseOver="makeHot(this);" 
+						onMouseOut="makeNot(this);"
+						title="<?php echo $ARnls["xp_about"]; ?>"
+						><img align="texttop" src="<?php echo $AR->dir->images ?>winxp/about.png"
+							width="16" height="16" border="0" alt="<?php echo $ARnls["xp_about"]; ?>"
+							vspace="0" hspace="0" /></a>
+						
+			</td>
+			<td><img id="aboutRight" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
+		</tr>
+	</table>
+	</div>
+	<script language="javascript">
+		if (top.gettreestatus() == 'visible')
+			makeSelected(document.getElementById('folders'));
+	</script>

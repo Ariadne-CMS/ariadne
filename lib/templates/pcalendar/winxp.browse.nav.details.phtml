@@ -1,0 +1,32 @@
+<?php 
+	/******************************************************************
+	 winxp.browse.nav.details.phtml                        Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $filter, $crit
+	 Grant needed: read
+	 Global variables: none
+
+
+	 This templates displays the short list of files in the browse
+	 files view. 
+	 
+	 $filter must be a valid argument for the object.implements search
+	 criteria.
+	 
+	 no result
+
+	******************************************************************/
+if ($this->CheckLogin("read") && $this->CheckConfig()) {
+
+	if ($date) {
+		$date=ereg_replace("[^0-9]*","",$date);
+		$crit["timeframe"]["start"]["<="]=$date+86400;
+		$crit["timeframe"]["end"][">="]=$date;
+	}
+
+	$arCallArgs["crit"] = $crit;
+	$arCallArgs["viewtype"] = "details";
+	
+	$this->call("winxp.browse.nav.phtml", $arCallArgs);
+}
+?>
