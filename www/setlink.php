@@ -7,7 +7,6 @@
     <?php 
       switch($do) {
         case "add" :
-          echo "    alert('add: $returnpage');\n";
           echo "    top.tree.AddLinks(link, '$icon','".AddSlashes($name)."','$path','".AddSlashes($pre)."');\n";
           if ($shortcut) {
             echo "    top.tree.AddLinks('$shortcut','$icon','".AddSlashes($name)."','$path','".AddSlashes($pre)."');\n";
@@ -16,13 +15,11 @@
           break;
 
         case "update" : 
-          echo "    alert('update: $returnpage');\n";
           echo "    top.tree.UpdateLinks('$icon','".AddSlashes($name)."', '$path','".AddSlashes($pre)."');\n";
           echo "    document.location.href='$returnpage';\n";
           break;
 
         case "delete" :
-          echo "    alert('delete: $returnpage');\n";
           echo "    top.tree.DelLinks('$path');\n";
           if (!$parent) {
             echo "    document.location.href='$returnpage;';\n";
