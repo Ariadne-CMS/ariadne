@@ -1,23 +1,23 @@
 Known issues
 
-- NLS:
-  If you edit an object with multiple languages and remove all data from one
-  language and then switch to another language and back, all the old data is
-  back again... 
-  Reason: The problem is the getdata function which automatically
-  retrieves data from the object if there's no data of the same name in the
-  form variables...
-  Solution: keep the hidden form variables even if they're empty?
-
-- Import/export grants
-  When you export a tree of data, you will also get the grants set in these
-  objects. When this tree is imported in another system, these grants should
-  either be removed or also set in the corresponding user objects.. if these
-  exist.
-  Solution: make this an option when creating an exportfile, or when
-  importing an exportfile.
-
 - WYSIWYG Htmleditor breaks on 'broken' html
   The Internet Explorer html editor cannot edit framesets or html files with
   multiple body statemens. There should be a check on this and a 'backup' edit
   possibility.
+
+---
+Currently known broken in CVS
+
+- pcalitem: calendar items don't get saved
+- pgroup: add users doesn't work yet.
+- puser: profile and group selection in wizard unfinished.
+- pobject,puser: grants in new interface are still broken.
+- files/templates: storage is broken conceptually, needs a new approach.
+- pobject: recurse.copy(to).phtml are broken (templates get copied wrong)
+- pperson,porganization: show.card.phtml forgets rootoptions in link
+- porganization: view.html broken
+- tree: new objects are not added to the tree
+- recurse: lock alert doesn't show who locked what
+- htmledit: button (form.html) in a new object doesn't work: save to form in that case
+- pobject: CheckSilent() is broken, only works after a CheckLogin, even if a cookie is available.
+
