@@ -76,10 +76,16 @@
 
 	function New() {
 		blist=document.browseform.BrowseNav;
-		newwindow=window.open('<?php echo $this->store->root; ?>'+blist.options[blist.options.selectedIndex].value+'object.new.select.phtml',
-			'newwindow',
-			'directories=no,height=300,width=500,location=no,menubar=no,status=no,toolbar=no,resizable=yes');
-		newwindow.focus();
+		startpath='<?php echo $this->store->root; ?>'+blist.options[blist.options.selectedIndex].value;
+		if (document.all) {
+			args=new Array();
+			showModalDialog( startpath+"object.new.select.phtml",args,"font-family:Verdana; font-size:12; dialogWidth:38em; dialogHeight:26em; status:no; resizable: yes;");
+			ObjectAdded();
+		} else {
+			newwindow=window.open( startpath+'object.new.select.phtml', 'newwindow',
+				'directories=no,height=300,width=500,location=no,menubar=no,status=no,toolbar=no,resizable=yes');
+			newwindow.focus();
+		}
 	}
 
 	function ObjectAdded() {

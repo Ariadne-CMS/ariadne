@@ -40,7 +40,14 @@
 					<?php
 						}
 					?>
-				} 
+				} else if (top.window.dialogArguments) {
+					arr=new Array();
+					arr['type']='<?php echo $this->type; ?>';
+					arr['name']='<?php echo AddCSlashes($this->nlsdata->name, ARESCAPE); ?>';
+					arr['path']='<?php echo $this->path; ?>';
+					top.window.returnValue=arr;
+					top.window.close();
+				}
 			</script>
 		<?php
 	}
