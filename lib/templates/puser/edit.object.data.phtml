@@ -54,12 +54,6 @@
 		$wgWizFlow[$i]["template"]=$finish;
 		$wgWizFlow[$i]["back"]=$i-1;
 		
-		$wgWizControl=$this->getdata("wgWizControl","none");
-		$wgWizCurrent=$this->getdata("wgWizCurrent","none");
-		if ($wgWizControl && $wgWizCurrent) {
-			$wgWizNextStep=$wgWizFlow[$wgWizCurrent][wgWizGetAction($wgWizControl)];
-			$wgWizButtons=$wgWizFlow[$wgWizNextStep];
-		}
 		$result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
 		$wgWizTitle=$ARnls["edit"]." ".$result[0];		
 		include($this->store->code."widgets/wizard/classic.html");

@@ -68,20 +68,16 @@
 	
 	$wgWizCurrent=$this->getdata("wgWizCurrent","none");
 	$wgWizControl=$this->getdata("wgWizControl","none");
-	if (($wgWizCurrent==1) && ($wgWizControl==$ARnls["next"])) {
+	if (($wgWizCurrent==1) && (wgWizGetAction($wgWizControl)=="next")) {
 		$arNewFilename=$this->getdata("arNewFilename","none");
 		if (!$arNewFilename) {
 			$arFlow[0]["error"]=$ARnls["err:mustenterlogin"];
-//			$ARCurrent->wgWizCurrent=0;
-//			$ARCurrent->wgWizControl=0;
 			$ARCurrent->wgWizNextStep=1;
 		} else {
 			$criteria["login"]["value"]["="]="'".AddSlashes($arNewFilename)."'";
 			$result=$this->find("/system/users/", $criteria, "system.get.phtml");
 			if ($result) {
 				$arFlow[0]["error"]=sprintf($ARnls["err:loginexists"],$newfilename);
-//				$ARCurrent->wgWizCurrent=0;
-//				$ARCurrent->wgWizControl=0;
 				$ARCurrent->wgWizNextStep=1;
 			}
 		}	
