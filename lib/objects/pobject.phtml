@@ -455,7 +455,6 @@ class pobject extends object {
 
 	function CheckLogin($grant, $modifier=ARTHISTYPE) {
 	global $AR,$ARnls,$ARCurrent,$ARLogin,$ARPassword,$ARCookie,$session_config;
-
 		debug("pobject: CheckLogin($grant)","object");
 		if ($modifier==ARTHISTYPE) {
 			$modifier=$this->type;
@@ -529,7 +528,7 @@ class pobject extends object {
 				} else if ($fallback) {
 					$arLoginMessage = $ARnls["accessdenied"].": ".$ARnls["q:cookiesenabled"];
 				} else
-				if (!$ARCurrent->session && !$ARCurrent->arNoSessionRespawn) {
+				if (!$ARCurrent->session && $AR->arSessionRespawn) {
 					$arLoginMessage = $ARnls["accessdenied"].": ".$ARnls["q:cookiesenabled"];
 					/* 
 						there is no session, public could not authorise, let's
@@ -592,7 +591,6 @@ class pobject extends object {
 		}
 
 		$ARCurrent->arLoginSilent=1;
-
 		return $result;
 	}
 

@@ -108,7 +108,10 @@
   $AR->output_compression = 0;
 
 
+  /* on Default we do not respawn sessions **********************************/
 
+  $AR->arSessionRespawn = false;
+ 
 /****************************************************************************/
 /* The rest of the configuration is automatic, only change this when it     */
 /* doesn't work for you and you know what you are doing                     */
@@ -223,10 +226,6 @@
 
   $ARCurrent=new object;                       // do not change
 
-  /* on Default we do not respawn sessions **********************************/
-
-  $ARCurrent->noSessionRespawn = true;
- 
   /* To crypt or not to crypt ***********************************************/
 
   function ARCrypt($text) {
