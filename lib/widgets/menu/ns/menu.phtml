@@ -49,7 +49,7 @@
   SubEdit.addSeparator();
   SubEdit.addMenuItem('<?php echo $ARnls["m_find"]; ?>', 'javascript:arshow(\'edit_find\', \'edit.find.phtml\')');
   SubEdit.addSeparator();
-  SubEdit.addMenuItem('<?php echo $ARnls["m_preferences"]; ?>', 'javascript:arshow(\'<?php echo $this->make_url($AR->user->path); ?>edit_preferences\',\'edit.preferences.phtml\')');
+  SubEdit.addMenuItem('<?php echo $ARnls["m_preferences"]; ?>', 'javascript:arshow(\'<?php echo $this->store->root.$AR->user->path; ?>edit_preferences\',\'edit.preferences.phtml\')');
 
   SubEditObject.addMenuItem('<?php echo $ARnls["m_data"]; ?>','javascript:arshow(\'edit_object_data\', \'edit.object.data.phtml\')', 0 <?php echo $edit; ?>);
   SubEditObject.addMenuItem('<?php echo $ARnls["m_shortcut"]; ?>','<?php echo $shortcutlink; ?>', 0 <?php echo $shortcut; ?>);
