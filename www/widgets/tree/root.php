@@ -32,10 +32,6 @@
   target=0;
   caller=0;
 
-  function frop() {
-    alert('frop');
-  }
-
   function AddLinks(parent, icon, name, link, pre) {
     if (Links[parent]) {
       for (i=0; i<Links[parent].length; i++) {

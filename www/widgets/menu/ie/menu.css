@@ -12,7 +12,9 @@ BODY			{margin: 0; border: 0}
 
 #menu TD		{font: menu; height: 20;}
 #menu .root		{border: 1 solid buttonface; padding: 1; padding-left: 7; padding-right: 7; margin: 6;}
-#menu .icon		{text-align: center;}
+#menu .icon		{text-align: center; font-family: webdings; }
+#menu .selectedOption		{text-align: center; font-family: webdings; }
+#menu .unselectedOption		{text-align: center; font-family: webdings; visibility: hidden;}
 
 #menu .disabled	{color: buttonshadow;}
 #menu .more		{font-family: webdings; width: 20; text-align: right;}

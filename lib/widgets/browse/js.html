@@ -7,10 +7,17 @@ function Browse(resultobject, path, name, title, mode, filter, filename) {
   if (wgBrowseResult.value) {
     path=wgBrowseResult.value;
   }
+  if (top.Get) {
+    dprops=top.Get('browsewindow');
+  } else if (top.window.opener.top.Get) {
+    dprops=top.window.opener.top.Get('browsewindow');
+  } else {
+    dprops='';
+  }
   browsewindow=window.open(
     '<?php
        if ($this->exists($this->path)) { // sometimes, even i do not exist
-	 $path=$this->path;
+         $path=$this->path;
        } else {
          $path=$this->parent;
        }	
@@ -18,7 +25,7 @@ function Browse(resultobject, path, name, title, mode, filter, filename) {
      ?>browse.phtml?path='+escape(path)+'&title='+escape(title)+
        '&name='+escape(name)+'&mode='+escape(mode)+'&filter='+escape(filter)+
        '&filename='+escape(filename), 'browsewindow',
-    'directories=no,height=300,width=500,location=no,menubar=no,status=no,toolbar=no,resizable=yes');
+       'directories=no,height=300,width=500,location=no,menubar=no,status=no,toolbar=no,resizable=yes,'+dprops);
   browsewindow.opener=this;
   browsewindow.focus();
   window.setfocusto=browsewindow;

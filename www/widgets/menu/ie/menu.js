@@ -514,8 +514,21 @@ windowprops['_new']=windowprops['full'];
   
   function arshow(windowname, link) {
     properties=windowprops[windowname];
+    if (windowsize=top.Get(windowname)) {
+      properties=properties+','+windowsize;
+    }
     workwindow=window.open(link, windowname, properties);
     workwindow.focus();
+  }
+
+  function artoggleexplorerbar() {
+    icon=document.all['explorerbar_icon'];
+    treestatus=top.toggletree();
+    if (treestatus=='hidden') {
+      icon.className='unselectedOption';
+    } else {
+      icon.className='selectedOption';
+    }
   }
 
   function setview(type) {

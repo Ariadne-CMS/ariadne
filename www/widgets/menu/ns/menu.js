@@ -694,6 +694,9 @@ function arshow(windowname, link) {
   // properties=top.Get('window.'+windowname);
   // if (!properties) {
     properties=windowprops[windowname];
+    if (windowsize=top.Get(windowname)) {
+      properties=properties+','+windowsize;
+    }
   // }
   workwindow=window.open(link, windowname, properties);
   ARMenu.HideSubMenues(); 

@@ -41,7 +41,7 @@ function View(link, template) {
     if (window.cacheTemplate) {
       target="?template="+window.cacheTemplate;
     } else {
-      target='?template=manage.html'; // set default template
+      target='?template=classic.manage.html'; // set default template
     }
   }
 <?php if ($data->interface!="new") { ?>
@@ -67,8 +67,42 @@ function init() {
 
 loader=0;
 
-//-->
-</script>
+  function toggletree() {
+    if (document.treestatus=='hidden') {
+      silent_showtree();
+    } else {
+      silent_hidetree();
+    }
+    return document.treestatus;
+  }
+
+  function silent_hidetree() {
+    if (document.all) {
+      document.body.cols="0,*";
+      document.treestatus=new String('hidden');
+    }
+  }
+
+  function silent_showtree() {
+    if (document.all) {
+      document.body.cols="200,*";
+      document.treestatus=new String('visible');
+    }
+  }
+
+  function hidetree() {
+    silent_hidetree();
+    if (document.all && (icon=window.view.document.all['explorerbar_icon'])) {
+      icon.className='unselectedOption';
+    }
+  }
+
+  function gettreestatus() {
+    return document.treestatus;
+  }
+
+  document.treestatus=new String('visible');
+//--></script>
 <style>
   FRAME, FRAMESET {
     BORDER: 0;
@@ -78,7 +112,7 @@ loader=0;
 <FRAMESET COLS="200,*" onLoad="init();">
   <FRAME NAME="tree" 
     SRC="<?php echo $AR->dir->www; ?>widgets/tree/root.php?loader=<?php echo $this->store->root; ?>&path=<?php 
-    echo RawUrlEncode($AR->user->path); ?>" marginwidth="0" marginheight="0">
+    echo RawUrlEncode($AR->user->path); ?>" marginwidth="0" marginheight="0" >
   <FRAME NAME="view" SRC="<?php echo $this->store->root; ?>/system/ariadne/news/" marginwidth="0" marginheight="0">
 </FRAMESET>
 </HTML>
