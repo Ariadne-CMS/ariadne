@@ -46,7 +46,8 @@ Bugs fixed:
 	- The ftp loader does now update objects while uploading files with
 	  the same name instead of deleting them first.
 	- Fixed a bug in the ftp loader which sometimes caused downloaded files
-      (in ASCII mode) to be corrupted.
+	  (in ASCII mode) to be corrupted.
+	- Added a missing CheckConfig() to system.save.data.phtml of pfile.
 
 Changes in Ariadne since version 2.1.3
 
