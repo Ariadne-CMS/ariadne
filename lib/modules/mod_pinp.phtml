@@ -203,8 +203,9 @@ class scanner {
 								while ($yych != "\n" && ord($yych)!==0) {
 									$yych = $YYBUFFER[++$YYCURSOR];
 								}
-								/* character already eaten */
-								continue;
+								--$YYCURSOR;
+								$result = "";
+								return T_UNPARSED;
 							break;
 							case '*':
 								$result="";
