@@ -390,7 +390,6 @@
 			$ARCurrent->session->put("ARPassword",$password,1);
 			$ARCurrent->session->put("ARSessionActivated",false,1);
 		} else if ($ARCurrent->session->get("ARSessionTimedout", 1)  &&
-					ldCheckCredentials($login, $password) &&
 					$ARCurrent->session->get("ARLogin") === $login &&
 					$ARCurrent->session->get("ARPassword",1) === $password ) {
 			/* cookie and login matches session */
