@@ -12,6 +12,8 @@ New features:
 Bugs fixed:
 	- Fixed a warning when make_filesize() is called without
 	  arguments.
+	- Fixed order of CheckLogin/CheckConfig and argument passing
+	  for some calendar templates
 
 Changes in Ariadne since version 2.1.2
 
