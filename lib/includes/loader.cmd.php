@@ -139,5 +139,9 @@
 		return false;
 	}
 
+        function ldGetClientVar($client_var) {
+		// dummy function
+		return false;
+	}
 
 ?>

@@ -142,6 +142,10 @@
 		return false;
 	}
 
+	function ldGetClientVar($client_var) {
+		// dummy function
+		return false;
+	}
 
 	/*	PHP-4.0.6 compat functions	*/
 

@@ -458,4 +458,16 @@
 		return $HTTP_SERVER_VARS[$server_var];
 	}
 
+        function ldGetClientVar($client_var) {
+		// not all environment variables should be disclosed
+		switch($client_var) {
+			case "REMOTE_ADDR": $result = getenv("REMOTE_ADDR"); break;
+			case "HTTP_USER_AGENT": $result = getenv("HTTP_USER_AGENT"); break;
+			case "HTTP_ACCEPT": $result = getenv("HTTP_ACCEPT"); break;
+			case "HTTP_ACCEPT_LANGUAGE": $result = getenv("HTTP_ACCEPT_LANGUAGE"); break;
+			default: $result = false; break;
+		}
+		return $result;
+	}
+
 ?>

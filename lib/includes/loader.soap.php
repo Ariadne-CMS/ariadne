@@ -284,4 +284,9 @@
 		return $HTTP_SERVER_VARS[$server_var];
 	}
 
+        function ldGetClientVar($client_var) {
+		// dummy function
+		return false;
+        }
+
 ?>
