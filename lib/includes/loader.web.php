@@ -468,7 +468,7 @@
 	
 		$cookie = false;
 	
-		if( $HTTP_COOKIE_VARS[$cookiename] ) {
+		if( $HTTP_COOKIE_VARS[$cookiename] && !($cookiename == "ARCookie")) {
 			
 			/* 
 				FIXME:
@@ -488,7 +488,7 @@
 		
 		$result = false;
 
-		if( $HTTP_COOKIE_VARS[$cookiename] ) {
+		if( $HTTP_COOKIE_VARS[$cookiename] && !($cookiename == "ARCookie")) {
 			$ARUserCookie = stripslashes($HTTP_COOKIE_VARS[$cookiename]);
 
 			debug("ldSetUserCookie(".serialize($cookie).")","object");
