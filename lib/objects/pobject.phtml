@@ -1800,48 +1800,36 @@ class pobject extends object { // pobject class definition
 		we have to intercept all preg_replace() calls and parse the
 		php code with the pinp parser.
 	*/
-	function _preg_replace($a, $b, $c, $limit=-1) {
-		$result = false;
-		if (!is_array($a)) {
-			$token = $a[0];
-			if (eregi('^['.$token.'][^'.$token.']*['.$token.'].*e.*$', $a)) {
-				include_once($this->store->code."modules/mod_pinp.phtml");
-				$pinp=new pinp("header", "this->", "\$this->_");
-				$b = "<pinp> $b </pinp>";
-				$compiled=$pinp->compile(strtr($b, "\r", ""));
-				if ($pinp->error) {
-					$this->error = $pinp->error;
-				} else {
-					$compiled = substr($compiled, strlen('<?php'), -strlen('?>'));
-					$result = preg_replace($a, $compiled, $c, $limit);
-				}
+
+
+	/*	this is a private function used by the _preg_replace wrapper */
+
+	function preg_replace_compile($pattern, $replacement) {
+		include_once($this->store->code."modules/mod_pinp.phtml");
+		ereg("^\s*(.)", $pattern, $regs);
+		$delim = $regs[1];
+		if (eregi($k="${delim}[^$delim]*e[^$delim]*".'$', $pattern)) {
+			$pinp = new pinp("header", 'this->', '$this->_');
+			return substr($pinp->compile("<pinp>$replacement</pinp>"), 5, -2);
+		} else {
+			return $replacement;
+		}
+	}
+ 
+	function _preg_replace($pattern, $replacement, $text, $limit = -1) {
+		if (is_array($pattern)) {
+			$newrepl = array();
+			reset($replacement);
+			foreach ($pattern as $i_pattern) {
+				list(, $i_replacement) = each($replacement);
+				$newrepl[] = $this->preg_replace_compile($i_pattern, $i_replacement);
 			}
 		} else {
-			reset($a);
-			reset($b);
-			while (!$this->error && (list($key, $regexp) = each($a))) {
-				$token = $regexp[0];
-				if (eregi('^['.$token.'][^'.$token.']*['.$token.'].*e.*$', $regexp)) {
-					include_once($this->store->code."modules/mod_pinp.phtml");
-					list($key, $code)=each($b);
-					$code = "<pinp> $code </pinp>";
-					$pinp=new pinp("header", "this->", "\$this->_");
-					$compiled=$pinp->compile(strtr($code, "\r", ""));
-					if ($pinp->error) {
-						$this->error = $pinp->error;
-					} else {
-						$b_compiled[] = substr($compiled, strlen('<?php'), -strlen('?>'));
-					}
-				} else {
-					$b_compiled[] = $b;
-				}
-			}
-			if (!$this->error) {
-				$result = preg_replace($a, $b_compiled, $c, $limit);
-			}
+			$newrepl = $this->preg_replace_compile($pattern, $replacement);
 		}
-		return $result;
+		return preg_replace($pattern, $newrepl, $text, $limit);
 	}
+
 
 } // end of pobject class definition
 ?>
