@@ -84,8 +84,8 @@
 												while (list($language, $file)=each($languages)) {
 													$newobject->data->pinp[$type][$template][$language]=$newid;
 													$newobject->data->templates[$type][$template][$language]=$newid;
-													//echo "copy_to_store($tempdir/templates".$file.", $newid,  $type.$template.$language)\n";
-													$templates_store->copy_to_store($tempdir."/templates".$file, $newid,  "$type.$template.$language");
+													//echo "copy_to_store($tempdir/templates".$file.".pinp, $newid,  $type.$template.$language)\n";
+													$templates_store->copy_to_store($tempdir."/templates".$file.".pinp", $newid,  "$type.$template.$language.pinp");
 												}
 											}
 										}
