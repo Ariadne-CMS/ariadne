@@ -20,6 +20,7 @@ New Features:
 	  by Lukasz Keler. 
 
 Bugs Fixes:
+	- the parentsection() function now works, instead of not :)
 	- De editor doesn't cut off the last char in an image link after editing anymore.
 	- Fixed the editor to not include the nls in the URL of images.
 	- The pinp variant of user.login.html does now have access to the
