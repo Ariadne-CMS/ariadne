@@ -3,44 +3,50 @@ debug("paddressbook: Load","object");
 include_once($this->code."objects/pdir.phtml");
 
 function sort_addresses($a,$b) {
-		global $addresses_sortby;
-		if ($a->data->$addresses_sortby == $b->data->$addresses_sortby) return 0;
-		return ($a->data->$addresses_sortby < $b->data->$addresses_sortby) ? -1 : 1;
+	global $addresses_sortby;
+
+	if ($a->data->$addresses_sortby == $b->data->$addresses_sortby) {
+		$result=0;
+	} else {
+		$result=($a->data->$addresses_sortby < $b->data->$addresses_sortby) ? -1 : 1;
+	}
+	return $result;
 }
 
+define("DONT_SORT", false);
 
 class paddressbook extends pdir { // definitie class
 
-	function get_addresses($crit="",$sortby="name") {
+	function get_addresses($search_criteria="",$sortby="name") {
 		global $ARCurrent;
 
 		debug("paddressbook: get_addresses([crit], $sortby)","object");
-		if (is_array($crit)) {
-			$criteria=$crit;
+		if (is_array($search_criteria)) {
+			$criteria=$search_criteria;
 		}
 		$criteria["object"]["implements"]["="]="'address'";
-		$this->find(".",$criteria,"populate.phtml","");
+		$this->find(".",$criteria,"populate.phtml");
 
 		unset($criteria);
 		$criteria["object"]["implements"]["="]="'paddressbook'";
 		$criteria["object"]["type"]["="]="'pshortcut'";
-		$this->find(".",$criteria,"populate.phtml","crit=".urlencode(serialize($crit)));
+		$this->find(".", $criteria, "populate.phtml", compact("search_criteria"));
 
-		if (($sortby!=-1) && is_array($ARCurrent->addresses)) {
+		if (($sortby!=DONT_SORT) && is_array($ARCurrent->addresses)) {
 			global $addresses_sortby;
 			$addresses_sortby=$sortby;
 
-			uasort($ARCurrent->addresses,sort_addresses);
+			uasort($ARCurrent->addresses, sort_addresses);
 		}
 		debug("paddressbook: get_addresses: end","all");
 		return $ARCurrent->addresses;
 	}
 
-	function _get_addresses($crit="",$sortby="") {
-		return $this->get_addresses($crit,$sortby);
+	function _get_addresses($search_criteria="", $sortby="name") {
+		return $this->get_addresses($search_criteria, $sortby);
 	}
 
-	function _call_address($address,$template="",$args="") {
+	function _call_address($address, $template="", $args="") {
 		return $address->call($template,$args);
 	}
 } // end class paddressbook

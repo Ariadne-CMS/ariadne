@@ -14,12 +14,12 @@ class pcalendar extends pdir { // definitie class
 		unset($criteria);
 		$criteria["object"]["implements"]["="]="'pcalendar'";
 		$criteria["object"]["type"]["="]="'pshortcut'";
-		$this->find(".",$criteria,"populate.phtml",
-			"pop_from=".RawUrlEncode($pop_from).
-			"&pop_to=".RawUrlEncode($pop_to).
-			"&pop_priority=".RawUrlEncode($pop_priority).
-			"&pop_template=".RawUrlEncode($pop_template).
-			"&pop_args=".RawUrlEncode($pop_args));
+		$this->find("",$criteria,"populate.phtml", Array(
+			"pop_from"		=> $pop_from,
+			"pop_to" 		=> $pop_to,
+			"pop_priority"	=> $pop_priority,
+			"pop_template"	=> $pop_template,
+			"pop_args"		=> $pop_args ) );
 		debug("pcalendar: populate: end","all");
 	}
 

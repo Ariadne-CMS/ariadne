@@ -38,7 +38,11 @@ class pobject extends object {
 		debug("pobject: call($arCallFunction, $arCallArgs)","object","IN");
 		// callstack is needed for getvar()
 		$ARCurrent->arCallStack[]=$arCallArgs;
-		Parse_str($arCallArgs);
+		if (is_string($arCallArgs)) {
+			Parse_str($arCallArgs);
+		} else if (is_array($arCallArgs)) {
+			extract($arCallArgs);
+		}
 		// now find the initial nls selection (CheckConfig is needed for per
 		// tree selected defaults)
 		if ($ARCurrent->nls) { 
@@ -46,7 +50,7 @@ class pobject extends object {
 		} else { 
 			$this->reqnls=$AR->nls->default; 
 		}
-		if (isset($this->data->{$this->reqnls}) || !isset($this->data->nls)) {  
+		if (isset($this->data->nls->list[$reqnls]) || !isset($this->data->nls)) {  
 			// the requested language is available
 			$this->nls=$this->reqnls;
 			$nls=&$this->nls;
@@ -78,7 +82,7 @@ class pobject extends object {
 		}
 		while ($arType!="object") {
 			debug("class: $arType","object");
-			// search for the template, stop at the root class
+			// search for the template, stop at the root class ('object')
 			// (this should not happen, as pobject must have a 'default.phtml')
 			$arCallTemplate=$this->store->code."templates/".$arType."/".$arCallFunction;
 			if (file_exists($arCallTemplate)) {
@@ -374,7 +378,7 @@ class pobject extends object {
 				if (!ldCheckCredentials($ARCurrent->session->get("ARLogin"), $ARCurrent->session->get("ARPassword"))) {
 					if (!$silent) {
 						$arLoginMessage=$ARnls["accessdenied"].": ".$ARnls["q:cookiesenabled"];
-						$this->call("user.login.html","arLoginMessage=".RawUrlEncode($arLoginMessage));
+						$this->call("user.login.html",Array( "arLoginMessage" => $arLoginMessage));
 					}
 					$continue=false;
 				} else {
@@ -392,18 +396,18 @@ class pobject extends object {
 					debug("pobject: CheckLogin: user in cookie not found","object");
 					if (!$silent) {
 						$arLoginMessage=$ARnls["accessdenied"].": ".sprintf($ARnls["userunknown"],$ARLogin);
-						$this->call("user.login.html","arLoginMessage=".urlencode($arLoginMessage));
+						$this->call("user.login.html",compact("arLoginMessage"));
 					}
 					$continue=false;
 				} else if (!$AR->user->CheckPassword($ARPassword)) {
 					debug("pobject: CheckLogin: wrong password in cookie","object");
 					if (!$silent) {
 						$arLoginMessage=$ARnls["accessdenied"].": ".$ARnls["passwordincorrect"];
-						$this->call("user.login.html","arLoginMessage=".urlencode($arLoginMessage));
+						$this->call("user.login.html",compact("arLoginMessage"));
 					}
 					$continue=false;
 				} else {
-					debug("pobject: CheckLogin: got user ".$result[0]->data->name,"all");
+					debug("pobject: CheckLogin: got user ".$result->data->name,"all");
 				}
 			}
 		}
@@ -421,7 +425,7 @@ class pobject extends object {
 				debug("pobject: CheckLogin: insufficient grants ($ARLogin)","object");
 				if (!$silent) {
 					if ($ARLogin!="public") {
-						$args="ARLoginMessage=".RawUrlEncode($ARnls["accessdenied"]);
+						$args=Array( "ARLoginMessage" => $ARnls["accessdenied"]);
 					}
 					$this->call("user.login.html", $args);
 				}
@@ -601,6 +605,9 @@ class pobject extends object {
 						// requested language not available, allnls not set
 						// -> skip this object (do not run template but do return false)
 					}
+					if ($arIncResult) {
+						$ARCurrent->arResult=$arIncResult;
+					}
 					array_pop($ARCurrent->arCallStack);
 					return false;
 				} else {
@@ -760,7 +767,12 @@ class pobject extends object {
 		$result=false;
 		if ($nls!="none") {
             if ($ARCurrent->arCallStack) {
-                Parse_Str(end($ARCurrent->arCallStack));
+				$arCallArgs=end($ARCurrent->arCallStack);
+				if (is_array($arCallArgs)) {
+					extract($arCallArgs);
+				} else if (is_string($arCallArgs)) {
+					Parse_Str($arCallArgs);
+				}
             }
             if (isset(${$nls}[$varname])) {
                 $result=${$nls}[$varname];
@@ -782,7 +794,12 @@ class pobject extends object {
 			}
 		} else { // language independant variable.
 			if ($ARCurrent->arCallStack) {
-				Parse_Str(end($ARCurrent->arCallStack));
+				$arCallArgs=end($ARCurrent->arCallStack);
+				if (is_array($arCallArgs)) {
+					extract($arCallArgs);
+				} else if (is_string($arCallArgs)) {
+					Parse_Str($arCallArgs);
+				}
 			}
 			if (isset($$varname)) {
 				$result=$$varname;
@@ -876,7 +893,11 @@ class pobject extends object {
 		debug("pobject: getvar($var)","object");
 		if ($ARCurrent->arCallStack) {
 			$arCallArgs=end($ARCurrent->arCallStack);
-			Parse_Str($arCallArgs);
+			if (is_array($arCallArgs)) {
+				extract($arCallArgs);
+			} else if (is_string($arCallArgs)) {
+				Parse_Str($arCallArgs);
+			}
 		}
 		if ($$var) {
 			$result=$$var;
@@ -909,7 +930,11 @@ class pobject extends object {
 		$arWidgetTemplate=ereg_replace("[^a-zA-Z0-9\.]","",$arWidgetTemplate);
 		if (file_exists($this->store->code."widgets/$arWidgetName")) {
 			if (file_exists($this->store->code."widgets/$arWidgetName/$arWidgetTemplate")) {
-				Parse_str($arWidgetArgs);
+				if (is_array($arWidgetArgs)) {
+					extract($arWidgetArgs);
+				} else if (is_string($arWidgetArgs)) {
+					Parse_str($arWidgetArgs);
+				}
 				include($this->store->code."widgets/$arWidgetName/$arWidgetTemplate");
 			} else {
 				error("Template $arWidgetTemplate for widget $arWidgetName not found.");
@@ -999,5 +1024,6 @@ class pobject extends object {
 		$config=$ARConfig->cache[$path];
 		return $config->site;
 	}
+
 } // end class pobject
 ?>
