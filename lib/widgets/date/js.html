@@ -1,7 +1,10 @@
 <script language="javascript">
 <!--
 
-function SelectDate(formobject, date, name, title, format) {
+function SelectDate(formobject, date, name, title, format, form) {
+  if (form) {
+	document.dform=form;
+  }
   if (formobject.value) {
     date=formobject.value;
   }
@@ -12,6 +15,7 @@ function SelectDate(formobject, date, name, title, format) {
     '&name='+escape(name),
     'datewindow', 'directories=no,height=250,width=300,location=no,menubar=no,status=no,toolbar=no,resizable=yes');
   datewindow.opener=this;
+  return false;
 }
 
   function SetDate(name, date, formatted) {
