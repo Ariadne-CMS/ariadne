@@ -7,7 +7,7 @@
 <script>
   function addFormElement(name, value) {
     eValue=new String(value);
-    eValue.replace('/"/','&quot;');
+    eValue=eValue.replace(/"/g,'&quot;');
   	document.forms[0].insertAdjacentHTML('BeforeEnd','<input type="hidden" name="'+name+'" value="'+eValue+'">');
   }
 
@@ -17,6 +17,7 @@
 			addFormElement('changes['+field.path+']'+field.name, field.value);
 		}
 	}
+    alert(document.forms[0].innerHtml);
     document.forms[0].submit();
   }
 </script>
