@@ -63,8 +63,9 @@
     }
 ?>
   var buttons_disabled=new Array();
-  tbContentEditOptions=new Array();
+  var tbContentEditOptions=new Array();
 <?php
+/*
 	if (is_array($options)) {
 		while (list($key, $value)=each($options)) {
 			if (is_string($key)) {
@@ -87,6 +88,7 @@
 			}
 		}
 	}
+*/
 ?>
   tbContentTarget="<?php echo $target; ?>";
   tbContentRoot="<?php echo $root; ?>";
@@ -241,14 +243,6 @@ function window_onload() {
 
   var f=new ActiveXObject("DEGetBlockFmtNamesParam.DEGetBlockFmtNamesParam");
 
-  tbContentElement.ExecCommand(DECMD_GETBLOCKFMTNAMES,OLECMDEXECOPT_DODEFAULT,f);
-
-  vbarr = new VBArray(f.Names);
-  arr = vbarr.toArray();
-
-  for (var i=0;i<arr.length;i++) {
-    ParagraphStyle.options[ParagraphStyle.options.length]=new Option(arr[i], arr[i]);
-  }
   tbContentElement.supportsXHTML = tbContentElement.DOM.documentElement && tbContentElement.DOM.childNodes != null;
 
   tbContentElement.getXHTML = function () {
@@ -271,7 +265,16 @@ function window_onload() {
     return sb.toString();
   }
 
-  loadpage(tbContentRoot, tbContentPath, tbContentFile, tbContentName, tbContentLanguage, tbContentType, tbContentValue, tbContentSave2Form, tbContentTarget, tbContentEditOptions);
+  loadpage(tbContentRoot, tbContentPath, tbContentFile, tbContentName, tbContentLanguage, tbContentType, tbContentValue, tbContentSave2Form, tbContentTarget, false);
+
+  tbContentElement.ExecCommand(DECMD_GETBLOCKFMTNAMES,OLECMDEXECOPT_DODEFAULT,f);
+
+  vbarr = new VBArray(f.Names);
+  arr = vbarr.toArray();
+
+  for (var i=0;i<arr.length;i++) {
+    ParagraphStyle.options[ParagraphStyle.options.length]=new Option(arr[i], arr[i]);
+  }
 }
 
 
@@ -290,7 +293,11 @@ function loadpage(root, path, file, name, language, type, value, save2form, targ
   tbContentLanguage=language;
   tbContentType=type;
   tbContentEditOptions=editoptions;
-
+  if (!editoptions) {
+    if (window.opener && window.opener.wgHTMLEditOptions) {
+      tbContentEditOptions=window.opener.wgHTMLEditOptions;
+    }
+  }
   var temp=tbContentEditOptions["disabled"].split(":");
   for (i=0; i<temp.length; i++) {
     if (temp[i]) {
