@@ -17,6 +17,32 @@ class export_wddx {
 		return str_replace("]]&amp;","]]&",str_replace("]]&gt;","]]>",$string));
 	}
 
+	function header($fp){
+		fwrite($fp,'<?xml version="1.0" encoding="UTF-8"?>'."\n");
+		fwrite($fp,
+			"<wddxPacket version=\"1.0\">\n".
+				"<header>\n".
+					"<comment>Ariadne Export File</comment>\n".
+				"</header>\n".
+				"<data>\n".
+					"<struct type=\"hash\">\n".
+						"<var name=\"version\">\n".
+							"<number>2</number>\n".
+						"</var>\n".
+					"</struct>\n".
+					"<struct type=\"hash\">\n"
+			);
+	}
+
+	function footer($fp){
+		fwrite($fp,
+					"</struct>\n".
+				"</data>\n".
+			"</wddxPacket>\n"
+		);
+	}
+
+
 	function export($fp,&$object) {
 		export_wddx::print_verbose('Exporting: '.$object->path."\n");
 		fwrite($fp,"<var name=\"object".$object->id."\">\n");
