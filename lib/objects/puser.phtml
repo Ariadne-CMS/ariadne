@@ -57,7 +57,6 @@ class puser extends pdir { // puser class definition
 	}
 
 	function FindGrants($path, &$result, $top="", $mask=ARMASKLOCAL) {
-		global $ARConfig;
 		// ARMASKLOCAL and ARMASKGLOBAL are needed for backwards
 		// compatability with pre 2.0RC1 versions of Ariadne.
 		// Grants there are either true or 1, both of which
@@ -68,9 +67,9 @@ class puser extends pdir { // puser class definition
 		if ($path==$top) {
 			$newpath="";
 		} else {
-			if (isset($ARConfig->GrantsCache[$this->path][$path])) {
-				$newpath=$ARConfig->GrantsCache[$this->path][$path]["setby"];
-				$result=$ARConfig->GrantsCache[$this->path][$path]["grants"];
+			if (isset($this->GrantsCache[$this->path][$path])) {
+				$newpath=$this->GrantsCache[$this->path][$path]["setby"];
+				$result=$this->GrantsCache[$this->path][$path]["grants"];
 			} else if ($path && !$this->GetGrants($path, $result)) {
 				if ($path=="/") {
 					$newpath="";
@@ -78,8 +77,8 @@ class puser extends pdir { // puser class definition
 					$newpath=$this->store->make_path($path, "..");
 					$newpath=$this->FindGrants($newpath, $result, $top, ARMASKCHILDREN);
 				}
-				$ARConfig->GrantsCache[$this->path][$path]["grants"]=$result;
-				$ARConfig->GrantsCache[$this->path][$path]["setby"]=$newpath;
+				$this->GrantsCache[$this->path][$path]["grants"]=$result;
+				$this->GrantsCache[$this->path][$path]["setby"]=$newpath;
 			} 
 			if (is_array($result)) {
 				while (list($grant, $modifiers)=each($result)) {
