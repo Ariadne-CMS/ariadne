@@ -122,6 +122,8 @@ Bugs Fixed:
 	  adding a new object.
 	- Fixed a bug in the stores in the save method
 		when a object was saved multiple times in 1 sessen the $this->path was currupted
+	- Fixed an Ancient Bug (tm), you can now use ' in custom data fields in
+	  the wizard.
 
 Changes in Ariadne since version Ariadne 2.3-dev
 
