@@ -15,9 +15,6 @@
 	while (window.opener.isDirty()) {
 		if (field = window.opener.getDirtyField()) {
 			addFormElement('changes['+field.path+']'+field.name, field.value);
-			alert('f:'+field.path+':'+field.name+':'+field.value);
-		} else {
-			alert('frop');
 		}
 	}
     document.forms[0].submit();
