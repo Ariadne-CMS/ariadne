@@ -3,8 +3,14 @@ Ariadne 2.3.2-dev
 Changes in Ariadne since version Ariadne 2.3.1-dev
 
 New Features:
+	- The GrantsCache is now local to the user (this makes it easier to switch
+	  users runtime).
+
 
 Bugs Fixed:
+	- The public user will not inherit 'owner' grants anymore.
+	- Changed the 'cancel' button in the rename wizard from 'submit' to a
+	  normal button so it won't rename your object(s) if you hit cancel.
 	- ldSetUserCookie() now has a more sane default value for the expire time.
 	  User Cookies will now expire when the session ends and not immediately.
 	- changed the postgresql store a bit so it could better handle errors when
