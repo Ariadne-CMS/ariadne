@@ -22,6 +22,8 @@
 			$arNewData=new object;
 			$arNewPath=$this->make_path($arNewFilename);
 			$arNewParent=$this->store->make_path($arNewFilename, "..");
+			debug("soap.createobject.phtml: arNewFilename($arNewFilename) arNewType($arNewType)");
+
 			$arNewCallObject=$this->store->newobject($arNewPath, $arNewParent, $arNewType, $arNewData);
 			$arNewCallObject->arIsNewObject=true;
 
