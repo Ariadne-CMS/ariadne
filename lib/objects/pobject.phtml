@@ -1661,7 +1661,11 @@ class pobject extends object { // pobject class definition
 
 	function _gettext($index) {
 	global $ARnls;
-		return $ARnls[$index];
+		$result = $this->ARnls[$index];
+		if (!$result) {
+			$result = $ARnls[$index];
+		}
+		return $result;		
 	}
 
 	function _loadtext($nls, $section="") {
