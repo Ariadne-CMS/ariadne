@@ -1,5 +1,5 @@
 <?php
-	if ($this->CheckLogin("add") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+	if ($this->CheckLogin("add", $arNewType) && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		if (!$arNewType) {
 			error($ARnls["err:nonewtype"]);
 		} else if (!$arNewFilename) {
