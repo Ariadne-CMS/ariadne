@@ -1,4 +1,37 @@
 <?php
+    /******************************************************************
+     loader.php                                            Muze Ariadne
+     ------------------------------------------------------------------
+     Author: Muze (info@muze.nl)
+     Date: 11 december 2002
+
+     Copyright 2002 Muze
+
+     This file is part of Ariadne.
+
+     Ariadne is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published 
+     by the Free Software Foundation; either version 2 of the License, 
+     or (at your option) any later version.
+ 
+     Ariadne is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+
+     You should have received a copy of the GNU General Public License
+     along with Ariadne; if not, write to the Free Software 
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
+     02111-1307  USA
+
+    -------------------------------------------------------------------
+
+     Description:
+
+	Loader for the Ariadne Web Interface.
+
+    ******************************************************************/
+
 	require_once("./ariadne.inc");
 	require_once($ariadne."/configs/ariadne.phtml");
 	require_once($ariadne."/configs/store.phtml");
@@ -28,6 +61,7 @@
 
 		// needed for IIS: it doesn't set the PHP_SELF variable.
 		$PHP_SELF=$HTTP_SERVER_VARS["SCRIPT_NAME"].$PATH_INFO;
+		$HTTP_SERVER_VARS["PHP_SELF"] = $PHP_SELF;
 		if (Headers_sent()) {
 			error("The loader has detected that PHP has already sent the HTTP Headers. This error is usually caused by trailing white space or newlines in the configuration files. See the following error message for the exact file that is causing this:");
 			Header("Misc: this is a test header");
@@ -70,8 +104,8 @@
 		}
 		$ldCacheFilename=strtolower($PATH_INFO)."=";
 		// yes, the extra '=' is needed, don't remove it. trust me.
-		if ($QUERY_STRING) {
-			$ldCacheFilename.=$QUERY_STRING;
+		if (ldGetServerVar("QUERY_STRING")) {
+			$ldCacheFilename.=ldGetServerVar("QUERY_STRING");
 		}
 
 
