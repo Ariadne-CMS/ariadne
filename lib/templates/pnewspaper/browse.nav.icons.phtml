@@ -43,7 +43,7 @@
 		$crit["article"]["end"][">="]=$date;
 		$query.=" and timeframe.start <= ".($date+86400)." and timeframe.end >= ".$date;
 	}
-	$query.=" and ( name.nls='".$nls."' or name.nls='' ) order by name.value";
+	$query.=" and ( name.nls='".$nls."' or name.nls='' or name.nls='none' ) order by name.value";
 	if (!$limit) {
 		$limit=100;
 	}

@@ -56,7 +56,7 @@
 		$query.=" and name.value ~= '".AddSlashes($letter)."%'";
 		$crit["name"]["value"]["like"]="'".AddSlashes($letter)."%'";
 	}
-	$query.=" and ( name.nls='".$nls."' or name.nls='' ) order by name.value";
+	$query.=" and ( name.nls='".$nls."' or name.nls='' or name.nls='none') order by name.value";
 	if (!$limit) {
 		$limit=100;
 	}
