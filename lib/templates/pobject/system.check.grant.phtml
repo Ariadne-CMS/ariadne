@@ -1,5 +1,6 @@
 <?php
-	if ($this->CheckSilent($grant)) {
+	if ($modifier && $this->CheckSilent($grant, $modifier) ||
+			$this->CheckSilent($grant)) {
 		$arResult=true;
 	} else {
 		$arResult=false;
