@@ -27,6 +27,7 @@
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
 			reset($AR->nls->list);
+			$count=0;
 			while (list($key, $value)=each($AR->nls->list)) {
 				
 				if ($name=$this->getdata("name",$key)) {
@@ -37,7 +38,15 @@
 						$newnlsdata=$this->data->$key;
 					}
 					$newnlsdata->name=$this->getdata("name",$key);
-					$properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
+					$properties["name"][$count]["value"]="'".AddSlashes($newnlsdata->name)."'";
+					$properties["name"][$count]["nls"]="'".$key."'";
+					$properties["text"][$count]["value"]="'".AddSlashes($newnlsdata->name)."'";
+					$properties["text"][$count]["nls"]="'".$key."'";
+					$count++;
+					$newnlsdata->summary=$this->getdata("summary",$key);
+					$properties["text"][$count]["value"]="'".AddSlashes($newnlsdata->summary)."'";
+					$properties["text"][$count]["nls"]="'".$key."'";
+
 					$this->data->$key=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
 				} else {
