@@ -69,10 +69,8 @@
   $ARCurrent=new object;
 
   /* To crypt or not to crypt */
-  function ARCrypt($text, $salt="") {
-    global $AR;
-    if( $AR->OS=="WIN32" ) return $text;
-    else return crypt($text,$salt);
+  function ARCrypt($text) {
+    return md5($text);
   }
  
 ?>
