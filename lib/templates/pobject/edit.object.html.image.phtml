@@ -156,7 +156,11 @@ BODY 	{
 			arr['ar:path'] = '';
 		} else {
 			var type = form.imgstyle.options[form.imgstyle.selectedIndex].value;
-			arr["src"] = CurrentPath+tbContentEditOptions['image']['styles'][type]['template'];
+			if (tbContentEditOptions['image']['styles'][type]['template']) {
+				arr["src"] = CurrentPath+tbContentEditOptions['image']['styles'][type]['template'];
+			} else {
+				arr["src"] = CurrentPath.substr(0, CurrentPath.length-1);
+			}
 			arr["class"] = tbContentEditOptions['image']['styles'][type]['class'];
 			if (CurrentPath) {
 				arr["ar:path"] = CurrentPath;
