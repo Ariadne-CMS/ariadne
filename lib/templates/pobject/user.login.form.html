@@ -85,7 +85,10 @@ function dopopup() {
 			"&arReturnTemplate=".RawUrlEncode($arReturnTemplate); ?>',
 	'popup_login',popup_properties);
   if (popup_focus) {
-    popup.focus();
+    // because of  popup blockes we added this check
+    if(popup){
+      popup.focus();
+    }
   }
 }
 </script>
