@@ -32,6 +32,10 @@
 				$this->error=$ARnls["err:validpassword"];
 			}
 		}
+		$login = $this->make_path($this->getdata("arNewFilename", "none"));
+		$login = substr($login, strlen($this->store->make_path($login, "..")), -1);
+
+
 		$properties["value"][]["value"]="'".AddSlashes($value)."'";
 		$this->data->name=$this->getdata("name","none");
 		$properties["name"][]["value"]="'".AddSlashes($this->data->name)."'";
@@ -39,7 +43,7 @@
 		$this->data->email=$this->getdata("email","none");
 		$this->data->telephone=$this->getdata("telephone","none");
 		if ($this->arIsNewObject) {
-			if ($login=$this->getdata("arNewFilename","none")) {
+			if ($login) {
 				if (strlen($login)>32) {
 					$this->error=$ARnls["err:logintoolong"];
 				} else {
