@@ -73,7 +73,7 @@
 	}
 
 	function ldObjectNotFound($requestedpath, $requestedtemplate) {
-	global $store;
+	global $store, $AR;
 
 		$path=$requestedpath;
 		while ($path!=$prevPath && !$store->exists($path)) {
