@@ -9,59 +9,56 @@
 	include_once($store->code."modules/mod_ax.phtml");
 
 	$mod=new mod_ax;
+
     if (!$store->exists($import_path)) {
 		$error="err:importpathdoesntexist";
-	} else if (!($error=$mod->open($ax_file,$AR->ax,"unpack",$store->files."temp/"))) {
-		if (!$fp=fopen($mod->tempdir."/objects.data","r")) {
+    } else
+      if (!($error=$mod->open($ax_file,$AR->ax,"unpack",$store->files."temp/"))) {
+		if (!$fp=$mod->openObjectsData("r")) {
 			$error="err:noobjectdata";
 		} else {
-			$mod->data=unserialize($data=fread($fp,filesize($mod->tempdir."/objects.data")));
-			fclose($fp);
-			if (!isset($mod->data->nodes)) {
-				$error="err:corruptobjectdata";
-			} else {
-				// collecting user and group grants
-				ksort($mod->data->nodes);
-				unset($savedObject);
-				while (is_array($mod->data->nodes) && (list($path,$object)=each($mod->data->nodes))) {
-					$newfilename=$import_path.substr($path,1);
+			unset($savedObject);
+			while ($object=$mod->getObject()) {
+				$path=$object->path;
+				$id=$object->id;
 
-					if (!$savedObject[$object]) {
-						$savedObject[$object]=$newfilename;
-						$obj=$mod->data->objects[$object];
-						if ($ARImportNoGrants) {
-							unset($obj["data"]->grants);
-							unset($obj["data"]->usergrants);
+				$newfilename=$import_path.substr($path,1);
+
+				if (!$savedObject[$id]) {
+					$savedObject[$id]=$newfilename;
+					$obj=$mod->data->objects[$object];
+					if ($ARImportNoGrants) {
+						unset($obj["data"]->grants);
+						unset($obj["data"]->usergrants);
+					}
+					
+					if ($store->exists($newfilename)) {
+						$old=$store->call("Get.phtml","",$store->get($newfilename));
+						$old=$old[0];
+						if ($old->lastchanged<$object->lastchanged) {
+						 	//ok, merge it
+							merge($old->data,$object->data);
+							$object->data=$old->data;
+						} else {
+							echo "not merging ($newfilename)\n";
 						}
-						
-						if ($store->exists($newfilename)) {
-							$old=$store->call("Get.phtml","",$store->get($newfilename));
-							$old=$old[0];
-							if ($old->lastchanged<$obj["lastchanged"]) {
-							 	//ok, merge it
-								merge($old->data,$obj["data"]);
-								$obj["data"]=$old->data;
-							} else {
-								echo "not merging ($newfilename)\n";
-							}
-						}
-						$result=$store->save($newfilename, $obj["type"], $obj["data"], $obj["properties"], $obj["vtype"]);
-						if (!$result) {
-							$error=$store->error;
-						}
-					} else {
-						$result=$store->link($savedObject[$object],$newfilename);
-						if (!$result) {
-							$error=$store->error;
-						}
+					}
+					$result=$store->save($newfilename, $object->type, $object->data, $object->properties, $object->vtype);
+					if (!$result) {
+						$error=$store->error;
+					}
+				} else {
+					$result=$store->link($savedObject[$id],$newfilename);
+					if (!$result) {
+						$error=$store->error;
 					}
 				}
 			}
-
-			if (!($error=$mod->importfiles("files",$store->files."files".$import_path))) {
-				$error=$mod->importfiles("templates",$store->files."templates".$import_path);
-			}
-			$mod->close();
 		}
-	}
+
+		if (!($error=$mod->importfiles("files",$store->files."files".$import_path))) {
+			$error=$mod->importfiles("templates",$store->files."templates".$import_path);
+		}
+		$mod->close();
+}
 ?>
