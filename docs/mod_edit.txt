@@ -48,6 +48,13 @@ methods:
 
 		replaces the href tag within an imagemap by echoing the
 		url or adding the edit template to the url in the echo.
+	
+	function showUrl($path)
+	
+		While in the edit mode user.edit.html is added to the url.
+		Outside the edit mode the regular url is displayed. This is for use
+		with forms and javascript. Mind that you set the target correctly, or else a new edit screen wil open
+		within the current one.	
 
 Missing:
 
