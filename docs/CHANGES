@@ -4,6 +4,10 @@ Changes in Ariadne since version Ariadne 2.3.1-dev
 
 New Features:
 
+	- The image dialog is more flexible, you can set it to start with
+	  a central photobook or with the current object.
+	- Ordered browsing is back and working.
+	- Added a brand new SOAP module, and made the XML-RPC module usable in PINP
 	- Added experimental support for Oracle.
 	- Moved all configuration data to data->config.
 	- Added German translation to the ariadne.ax files. Thanks to Stefan Schreinert.
@@ -22,9 +26,8 @@ New Features:
       mod_multipart only has the ShowSection and ShowSections methods
 	  but you can emulate ShowTitle(s) easily in your templates. The
 	  new version also supports nested sections.
-	- mod_edit (easy WYSIWYG editing of multiple objects) is working,
-      some minor features left to implement. See the docs/mod_edit.txt
-	  file for extra information on use.
+	- mod_edit (easy WYSIWYG editing of multiple objects) is complete. 
+	  See the docs/mod_edit.txt file for extra information on usage.
 	- Add FTP MDTM command, thanks to Goran Topic.
 	- Static skeleton support in profiles, just use the filename 'static' 
 	  immediately below a profile, and the contents will be copied when 
@@ -89,6 +92,10 @@ New Features:
 	- Added some more verboseness to mod_import_wddx
 
 Bugs Fixed:
+	- Fixed a few problems with SSL and file downloads under IE.
+	- Fixed a bug in the wizard flow for porganization.
+	- Fixed the grants dialog, when selecting a group or user, the checkboxes 
+	  for the grants are now set.
 	- Fixed a wrong nls match in mod_url.
 	- Added $data->path of pshortcut to the references.path property.
 	- Fixed a problem with workflow and the owner data, owner data doesn't 
