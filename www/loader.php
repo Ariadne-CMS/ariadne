@@ -50,7 +50,7 @@
 			$function="view.html";
 			$PATH_INFO.=$function;
 		}
-		$ldCacheFilename=$PATH_INFO."=";
+		$ldCacheFilename=strtolower($PATH_INFO)."=";
 		if ($QUERY_STRING) {
 			$ldCacheFilename.=$QUERY_STRING;
 		}
