@@ -730,8 +730,10 @@ class axstore {
 	}
 
 	function rm_dir($path) {
+	debug("axstore::rm_dir($path)");
 		$path=($path[strlen($path)-1]=="/") ? $path : $path."/";
 		if (file_exists($path)) {
+			debug("axstore::rm_dir removing ($path)", "store");
 			$dir=opendir($path);
 			while ($entry=readdir($dir)) {
 				if ($entry!="." && $entry!="..") {
@@ -745,6 +747,7 @@ class axstore {
 			closedir($dir);
 			@rmdir($path);
 		}
+	debug("axstore::rm_dir [end]");
 	}
 
 
