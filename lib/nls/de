@@ -298,18 +298,18 @@
 	$ARnls["zipcode"]						=	"PLZ";
 
 // EVERYTHING BELOW THIS LINE NEEDS TO BE TRANSLATED
-	$ARnls["err:headerssentnottext"]				=	"headers already sent and this is not a text file (%s)";
-	$ARnls["err:noparent"]						=	"parent %s doesn't exist.";
-	$ARnls["err:corruptpathnosave"]					=	"Path is corrupt, won't save the object.";
-	$ARnls["err:objectalreadylocked"]				=	"Object already locked.";
-	$ARnls["err:filenameinvalidnoparent"]				=	"%s is invalid: %s does not exist.";
-	$ARnls["err:chooseotherfilename"]				=	"%s already exists. Please choose another.";
-	$ARnls["err:startendslash"]					=	"A path must start and end with a '/'.";
-	$ARnls["err:maxloopexceed"]					=	"Max loop count exceeded in %s%s?%s";
-	$ARnls["err:nonamecache"]					=	"cached(): no name given for cache.";
-	$ARnls["err:savecachenofile"]					=	"savecache(): no file or image ...";
-	$ARnls["err:widgetnotfound"]					=	"Widget %snot found";
-	$ARnls["err:convillegalformat"]					=	"Convert called with illegal format (%s)";
+	$ARnls["err:headerssentnottext"]				=	"Headers werden bereits gesendet und dieses ist nicht ein textfile (%s)";
+	$ARnls["err:noparent"]						=	"Elternteil %s besteht nicht.";
+	$ARnls["err:corruptpathnosave"]					=	"Pfad ist korrupt, speichere nicht das Objekt.";
+	$ARnls["err:objectalreadylocked"]				=	"Objekt ist bereits verschlossen.";
+	$ARnls["err:filenameinvalidnoparent"]				=	"%s ist ungueltig: %s besteht nicht.";
+	$ARnls["err:chooseotherfilename"]				=	"%s besteht bereits, w&auml;hlen Sie bitte andere.";
+	$ARnls["err:startendslash"]					=	" Ein pfad muss mit '/' beginnen und beenden.";
+	$ARnls["err:maxloopexceed"]					=	"Maximaler loop count &Uuml;berstiegen im %s%s?%s";
+	$ARnls["err:nonamecache"]					=	"cached():  kein Name gegeben f&uuml;r cache.";
+	$ARnls["err:savecachenofile"]					=	"savecache(): keine File oder Bild ...";
+	$ARnls["err:widgetnotfound"]					=	"Widget %s nicht gefunden.";
+	$ARnls["err:convillegalformat"]					=	"Convert() angerufen mit ung&uuml;ltigem Format (%s)";
 	$ARnls["err:noimagemagick"]					=	"Could not run ImageMagick scale program (mogrify)<br>\n(%s)";
 	$ARnls["err:changetempdirfailed"]				=	"Could not changedir to %stemp/ ";
 	$ARnls["err:notascenario"]					=	"'%s' is not a pscenario.";
