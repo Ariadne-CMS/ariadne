@@ -241,7 +241,7 @@
   $AR->nls->list['fr']      = 'Fran&ccedil;ais';
   $AR->nls->list['it']      = 'Italiana';
   $AR->nls->list['sv']      = 'Svenska';
-  $AR->nls->list['hr']      = 'Croatian';
+  $AR->nls->list['hr']      = 'Hrvatski';
 
   $AR->nls->locales['nl']   = 'nl_NL';
   $AR->nls->locales['en']   = 'en_US';
