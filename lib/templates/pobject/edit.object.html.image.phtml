@@ -190,7 +190,7 @@ BODY 	{
 				}
 				if (tbContentEditOptions['browse']['hidePhotobook']) {
 					mnPhotobook.style.display='none';
-				} else if (!tbContentEditOptions['browse']['hideCurrent'] && tbContentEditOptions['photobook']['location']=='<?php echo $this->path; ?>') {
+				} else if (!tbContentEditOptions['browse']['hideCurrent'] && (tbContentEditOptions['photobook']['location']=='<?php echo $this->path; ?>' || tbContentEditOptions['photobook']['location']=='')) {
 					mnPhotobook.style.display='none';
 				}
 				if (tbContentEditOptions['browse']['hideHome']) {
