@@ -782,6 +782,7 @@ class axstore {
 				$this->error="Can not write intermediate objects.data file: aborting";
 			}
 		} else {
+			@fclose($this->ofile);
 			$this->rm_dir($this->tempdir);
 		}
 	}
