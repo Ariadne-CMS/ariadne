@@ -91,6 +91,7 @@
 	$ARnls["err:filenamedirup"]				=	"%s is no valid filename, do not use '..' in filenames.";
 	$ARnls["err:fileupload"]				=	"Something went wrong while uploading the file. Please try again.\nIf the problem persists, contact your system administrator.";
 	$ARnls["err:fileuploadphtml"]			=	"You cannot upload files with a .phtml extension.";
+	$ARnls["err:fileuploadvirus"]				=	"According to our virusscanner your file contained %s! Please check your system and then try again.\nIf the problem persists, contact your system administrator.";
 	$ARnls["err:groupidexists"]				=	"Group id %s already exists, select a different Group id.";
 	$ARnls["err:illegalchars"]				=	"The template name must consist of normal characters only: (a-z, A-Z, 0-9) and '-', '_' and '.'.";
 	$ARnls["err:invalidcontent"]			=	"Error: Invalid content";
