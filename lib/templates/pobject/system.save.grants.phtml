@@ -167,7 +167,7 @@
 														"path"		=> $this->path,
 														"grant"		=> $delgrant,
 														"modifier"	=> $modifier )));
-											if ($result!="ok") {
+											if ($result!=$ARnls["ok"]) {
 												$this->error=sprintf($ARnls["err:notsavegrant"],$path);
 												// FROP $this->error="Couldn't save grant in $path";
 											}
@@ -213,7 +213,7 @@
 														"grant"		=> $newgrant,
 														"granttype"	=> $granttype,
 														"modifier"	=> $modifier )));
-											if ($result!="ok") {
+											if ($result!=$ARnls["ok"]) {
 												$this->error=sprintf($ARnls["err:notsavegrant"],$path);
 												// FROP $this->error="Couldn't save grant in $path";
 											}
