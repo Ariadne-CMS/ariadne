@@ -290,11 +290,9 @@
 		}
 
 		/* 
-			only set a cookie when our session has not been timed out and
-			our session is not active already.
+			only set a cookie when our session has not been timed out.
 		*/
-		if (!$ARCurrent->session->get("ARSessionTimedout",1) &&
-				!$ARCurrent->session->get("ARSessionActivated", 1)) {
+		if (!$ARCurrent->session->get("ARSessionTimedout",1)) {
 			$cookie[$ARCurrent->session->id]['login']=$login;
 			$cookie[$ARCurrent->session->id]['timestamp']=time();
 			$cookie[$ARCurrent->session->id]['check']="{".ARCrypt($password.$ARCurrent->session->id)."}";
