@@ -170,7 +170,7 @@
 			// now send client side cache headers
 			// e.g. Expires: Thu, 01 Dec 1994 16:00:00 GMT
 			Header("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$cachetime));
-			Header("Cache-Control: must-revalidate, max-age=$cacheseconds, s-max-age=$cacheseconds");
+			Header("Cache-Control: max-age=$cacheseconds, s-max-age=$cacheseconds");
 			if (file_exists($cachedheader)) {
 				$headers=file($cachedheader);
 				while (list($key, $header)=@each($headers)) {
