@@ -119,7 +119,7 @@ if ($this->CheckLogin("read")) {
 								display("(created)\n");
 								saveObject($this->store, $object, $check_path);
 								$fl=sizeof($file_list);
-								$file_list[$fl]["path"]=".".$o_path."class=";
+								$file_list[$fl]["path"]=substr($o_path."class=", 1);
 								$file_list[$fl]["c_path"]=$c_path;
 							} else {
 								display("(exists)\n");
@@ -132,8 +132,7 @@ if ($this->CheckLogin("read")) {
 							saveObject($this->store, $object, $s_path);
 							if ($i_path == $o_path) {
 								$fl=sizeof($file_list);
-								$file_list[$fl]["path"]=".".$o_path;
-								echo "adding $o_path\n";
+								$file_list[$fl]["path"]=substr($o_path, 1);
 								$file_list[$fl]["c_path"]=$c_path;
 							}
 	
