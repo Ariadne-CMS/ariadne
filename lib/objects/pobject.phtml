@@ -171,7 +171,7 @@ class pobject extends object {
 							// $properties["time"]["ctime"]=$this->data->ctime;
 							// $properties["time"]["mtime"]=$this->data->mtime;
 							// $properties["owner"]["value"]=$this->data->owner;
-							$this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype);
+							$this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority);
 							$result=$this->path;
 						} else {
 							$this->error="parent $arNewParent doesn't exist.";
@@ -190,7 +190,7 @@ class pobject extends object {
 				if ($this->exists($this->path)) { // prevent 'funny stuff'
 					$this->data->mtime=time();
 					// $properties["time"]["mtime"]=$this->data->mtime;
-					$this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype);
+					$this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority);
 					$result=$this->path;
 					$this->ClearCache();
 					$this->unlock();
