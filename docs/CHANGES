@@ -61,6 +61,7 @@ Bugs Fixed:
 	- if Session IDs are hidden from URL, make_url with a nls does not show
 	  Session IDs any more
 	- in pobject::_killsession(), added a check to see if the session exists
+	- MS Word DOT files now correctly downloaded on Windows
 
 Changes in Ariadne since version Ariadne 2.3-dev
 

@@ -404,7 +404,7 @@
 	$mimetypes_data["spl"] = "application/futuresplash";
 	$mimetypes_data["hqx"] = "application/mac-binhex40";
 	$mimetypes_data["doc"] = "application/msword";
-	$mimetypes_data["dot"] = "application/msword";
+	$mimetypes_data["dot"] = "application/x-dot";
 	$mimetypes_data["bin"] = "application/octet-stream";
 	$mimetypes_data["oda"] = "application/oda";
 	$mimetypes_data["pdf"] = "application/pdf";
