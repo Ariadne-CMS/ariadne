@@ -319,7 +319,7 @@ class scanner {
 									continue;
 								} else {
 									$string=substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR - $YYCURSOR_START - 1);
-									$string.='\\$';										
+									$YYCURSOR--;
 									array_push($multi_string, Array(T_SUBSTRING => $string));
 									$YYCURSOR_START=$YYCURSOR;
 								}
