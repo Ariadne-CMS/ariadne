@@ -16,10 +16,13 @@
     if (top.window.opener && !top.window.opener.closed) {
       if (top.window.opener.top.Set) {
         window.opener.top.Set(window.name, dprops);
-      } else if (top.window.opener.top.window.opener && 
+      /*
+        FIXME: this somehow breaks in IE5.0, maybe others too 
+		} else if (top.window.opener.top.window.opener && 
                 !top.window.opener.top.window.opener.closed &&
                  top.window.opener.top.window.opener.top.Set) {
         top.window.opener.top.window.opener.top.Set(window.name, dprops);
+      */
       }
 	}
     return true;
