@@ -81,7 +81,7 @@
   /* either 'WIN32' or 'UNIX'.                                              */
   /**************************************************************************/
 
-  if (eregi("Win",$HTTP_ENV_VARS["OSTYPE"])) {
+  if ($HTTP_ENV_VARS["windir"]) {
      $AR->OS                = 'WIN32';         // Windows 95/98/ME/NT/2000
   } else {
      $AR->OS                = 'UNIX';          // All unix/linux variants
