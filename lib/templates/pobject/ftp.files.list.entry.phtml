@@ -2,7 +2,7 @@
 	$result["date"]=$this->lastchanged;
 	$result["size"]=0;
 	$result["path"]=$this->path;
-	$result["type"]="file";
+	$result["type"]="dir";
 
 	if ($this->CheckLogin("read")) {
 		$grants["read"]=true;
