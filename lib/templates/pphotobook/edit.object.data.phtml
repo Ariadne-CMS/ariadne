@@ -18,24 +18,25 @@
 				}
 			}
 		}
-//		if (count($ARConfig->nls->list)>1) { // more than one language available
-//			$languages=true;
-//		}
 		include($this->store->code."widgets/wizard/code.php");
 
 		$wgWizFlow=Array(
 			Array(
 				"current"	=> $this->getdata("wgWizCurrent","none"),
 				"cancel"	=> "edit.object.cancel.phtml",
-				"save"		=> "edit.object.data.save.phtml"),
+				"save"		=> "edit.object.data.save.phtml"
+				),
 			Array(
 				"title"		=> $ARnls["data"],
 				"image"		=> $AR->dir->images."wizard/data.png",
-				"template"	=> "edit.object.data.form.phtml"),
+				"template"	=> "edit.object.data.form.phtml"
+				),
 			Array(
 				"title"		=> $ARnls["thumbnail"],
 				"image"		=> $AR->dir->images."wizard/data.png",
-				"template"	=> "edit.object.data.thumb.phtml")
+				"template"	=> "edit.object.data.thumb.phtml",
+				"nolang"	=> true
+				)
 		);
 
 		if ($hascustomdata) {
@@ -43,13 +44,6 @@
 				"title"		=> $ARnls["customdata"],
 				"image"		=> $AR->dir->images."wizard/customdata.png",
 				"template"	=> "edit.object.data.custom.phtml");
-		}
-		
-		if ($languages) { // more than one language available			
-			$wgWizFlow[]=Array(
-				"title"		=> $ARnls["language"],
-				"image"		=> $AR->dir->images."wizard/languages.png",
-				"template"	=> "edit.object.language.phtml");
 		}
 		
 		$arLanguage=$this->getdata("arLanguage","none");

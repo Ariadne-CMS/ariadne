@@ -23,9 +23,6 @@
 				}
 			}
 		}
-//		if (count($ARConfig->nls->list)>1) { // more than one language available
-//			$languages=true;
-//		}
 
 		$custom="edit.object.shortcut.custom.phtml";
 
@@ -48,13 +45,6 @@
 			$wgWizFlow[$i]["title"]=$ARnls["customdata"];
 			$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/customdata.png";
 			$wgWizFlow[$i]["template"]=$custom;
-		}
-
-		if ($languages) { // more than one language available
-			$i++;
-			$wgWizFlow[$i]["title"]=$ARnls["language"];
-			$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/languages.png";
-			$wgWizFlow[$i]["template"]=$step2;
 		}
 
 		$arLanguage=$this->getdata("arLanguage","none");

@@ -20,9 +20,6 @@
 				}
 			}
 		}
-//		if (count($ARConfig->nls->list)>1) { // more than one language available
-//			$languages=true;
-//		}
 		$custom="edit.object.data.custom.phtml";
 
 		include($this->store->code."widgets/wizard/code.php");
@@ -47,19 +44,13 @@
 		$wgWizFlow[$i]["title"]=$ARnls["display"];
 		$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/data.png";
 		$wgWizFlow[$i]["template"]=$displays;
-
+		$wgWizFlow[$i]["nolang"]=true;
+		
 		if ($hascustomdata) {
 			$i++;
 			$wgWizFlow[$i]["title"]=$ARnls["customdata"];
 			$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/customdata.png";
 			$wgWizFlow[$i]["template"]=$custom;
-		}
-
-		if ($languages) { // more than one language available
-			$i++;
-			$wgWizFlow[$i]["title"]=$ARnls["language"];
-			$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/languages.png";
-			$wgWizFlow[$i]["template"]=$language;
 		}
 
 		$arLanguage=$this->getdata("arLanguage","none");

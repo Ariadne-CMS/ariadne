@@ -89,7 +89,7 @@
   if (!$wgWizHeader) {
     $wgWizHeader="&nbsp;";
   }
-  if (!$wgWizTabsTemplate && $wgWizTabsTemplate!==false) {
+  if (!$wgWizTabsTemplate && $wgWizTabsTemplate!==false && !$wgWizFlow[$wgWizNextStep]["nolang"]) {
     $wgWizTabsTemplate='edit.object.language.tabs.phtml';
   }
   if (!$wgWizCancelButton && $wgWizCancelButton!==false) {
@@ -340,6 +340,9 @@
   function selectSection(section_id) {
     document.wgWizForm.wgWizNextStep.value=section_id;
     if (checksubmit()) {
+		if (document.wgWizForm.onsubmit) {
+			document.wgWizForm.onsubmit();
+		}
 	    document.wgWizForm.submit();
 	}
   }

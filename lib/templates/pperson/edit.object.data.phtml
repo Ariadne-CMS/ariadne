@@ -20,9 +20,6 @@
 				}
 			}
 		}
-//		if (count($ARConfig->nls->list)>1) { // more than one language available
-//			$languages=true;
-//		}
 		$custom="edit.object.data.custom.phtml";
 
 		include($this->store->code."widgets/wizard/code.php");
@@ -37,7 +34,7 @@
 
 		$wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
 		$wgWizFlow[0]["cancel"] = $cancel;
-		$wgWizFlow[0]["finish"] = $cancel;
+		$wgWizFlow[0]["save"] = $finish;
 
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["name"];
@@ -48,24 +45,19 @@
 		$wgWizFlow[$i]["title"]=$ARnls["address"];
 		$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/address.png";
 		$wgWizFlow[$i]["template"]=$address;
-
+		$wgWizFlow[$i]["nolang"]=true;
+		
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["contactinformation"];
 		$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/contact.png";
 		$wgWizFlow[$i]["template"]=$contact;
+		$wgWizFlow[$i]["nolang"]=true;
 
 		if ($hascustomdata) {
 			$i++;
 			$wgWizFlow[$i]["title"]=$ARnls["customdata"];
 			$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/customdata.png";
 			$wgWizFlow[$i]["template"]=$custom;
-		}
-
-		if ($languages) { // more than one language available
-			$i++;
-			$wgWizFlow[$i]["title"]=$ARnls["language"];
-			$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/languages.png";
-			$wgWizFlow[$i]["template"]=$language;
 		}
 
 		$arLanguage=$this->getdata("arLanguage","none");

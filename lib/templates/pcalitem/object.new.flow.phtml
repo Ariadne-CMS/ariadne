@@ -18,9 +18,6 @@
 			}
 		}
 	}
-//	if (count($ARConfig->nls->list)>1) { // more than one language available
-//		$languages=true;
-//	}
 	$custom="edit.object.data.custom.phtml";
 
 	$start="object.new.filename.phtml";
@@ -39,7 +36,8 @@
 	$arFlow[$i]["title"]=$ARnls["filename"];
 	$arFlow[$i]["image"]=$AR->dir->images."wizard/info.png";
 	$arFlow[$i]["template"]=$start;
-
+	$arFlow[$i]["nolang"]=true;
+	
 	$i++;
 	$arFlow[$i]["title"]=$ARnls["item"];
 	$arFlow[$i]["image"]=$AR->dir->images."wizard/data.png";
@@ -49,24 +47,19 @@
 	$arFlow[$i]["title"]=$ARnls["date"];
 	$arFlow[$i]["image"]=$AR->dir->images."wizard/schedule.png";
 	$arFlow[$i]["template"]=$step2;
-
+	$arFlow[$i]["nolang"]=true;
+	
 	$i++;
 	$arFlow[$i]["title"]=$ARnls["repeat"];
 	$arFlow[$i]["image"]=$AR->dir->images."wizard/scenario.png";
 	$arFlow[$i]["template"]=$step3;
-
+	$arFlow[$i]["nolang"]=true;
+	
 	if ($hascustomdata) {
 		$i++;
 		$arFlow[$i]["title"]=$ARnls["customdata"];
 		$arFlow[$i]["image"]=$AR->dir->images."wizard/customdata.png";
 		$arFlow[$i]["template"]=$custom;
-	}
-
-	if ($languages) { // more than one language available
-		$i++;
-		$arFlow[$i]["title"]=$ARnls["language"];
-		$arFlow[$i]["image"]=$AR->dir->images."wizard/languages.png";
-		$arFlow[$i]["template"]=$step5;
 	}
 
 	$arLanguage=$this->getdata("arLanguage","none");
