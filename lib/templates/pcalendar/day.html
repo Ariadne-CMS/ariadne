@@ -54,7 +54,7 @@
 			if ($from>$to)	 { // 'no time' entry. pile at ARCurrent->timelist[0], no span, no start, no end time.
 				$i=@count($ARCurrent->timelist[0]);
 				if ($path) { $ARCurrent->timelist[0][$i]["text"]="<a class=\"cal\" href=\"".
-					$path."classic.edit.phtml?entry=$from&date=".$ARCurrent->date."&arReturnPage=".
+					$this->make_url($path)."classic.edit.phtml?entry=$from&date=".$ARCurrent->date."&arReturnPage=".
 					RawUrlEncode($PHP_SELF."?date=".$ARCurrent->date)."\">$name</a>";
 				}
 				$ARCurrent->timelist[0][$i]["summary"]=$summary;
@@ -73,7 +73,7 @@
 					//	 to the 'time marker'.									
 					if ($path) {
 						$ARCurrent->timelist[$from][$i]["text"]="<a class=\"cal\" href=\"".
-							$path."classic.edit.phtml?entry=$from&date=".$ARCurrent->date."&arReturnPage=".
+							$this->make_url($path)."classic.edit.phtml?entry=$from&date=".$ARCurrent->date."&arReturnPage=".
 							RawUrlEncode($PHP_SELF."?date=".$ARCurrent->date)."\">$name</a>";
 					}
 					$ARCurrent->timelist[$from][$i]["summary"]=$summary;
@@ -94,7 +94,7 @@
 				}
 				if ($path) {
 					$ARCurrent->timelist[$from][$i]["text"]="<a class=\"cal\" href=\"".
-						$path."classic.edit.phtml?entry=$from&date=".$ARCurrent->date."&arReturnPage=".
+						$this->make_url($path)."classic.edit.phtml?entry=$from&date=".$ARCurrent->date."&arReturnPage=".
 						RawUrlEncode($PHP_SELF."?date=".$ARCurrent->date)."\">$name</a>";
 				}
 				$ARCurrent->timelist[$from][$i]["summary"]=$summary;

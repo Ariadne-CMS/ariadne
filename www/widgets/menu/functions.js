@@ -31,7 +31,7 @@
 		return false;
 	}
 
-	function arshow(windowname, link) {
+	function arshow(windowname, link, arguments) {
 		properties=windowprops[windowname];
 
 		/* FIXME: doesn't work without frames on mozilla*/ 
@@ -40,7 +40,11 @@
 			// alert('windowsize='+windowsize);
 			properties=properties+','+windowsize;
 		}
-		workwindow=window.open(link, windowname, properties);
+		if (arguments==undefined) {
+			arguments='';
+		}
+		arguments=window.location.search+arguments;
+		workwindow=window.open(link+arguments, windowname, properties);
 		workwindow.focus();
 	}
 

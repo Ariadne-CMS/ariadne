@@ -51,13 +51,9 @@
 						while (list($key, $article)=@each($articles)) {
 							$from_fmt=strftime("%H:%M",$article->data->starttime);
 							$row="<tr><td align=\"right\" valign=\"top\">";
-							// now display time FIXME change link to edit wizard
-							$row.="<a class=\"cal\" href=\"".$this->store->root.$article->path."classic.edit.phtml?".
-										"arReturnPage=".RawUrlEncode($PHP_SELF."?".$QUERY_STRING."&date=$date").
-										"\">$from_fmt</a>";
+							$row.="$from_fmt";
 							$row.="</td><td></td><td valign=\"top\">";
-							// now display text FIXME: add link to wizard
-							$row.="<div class='text'>".$article->nlsdata->name."</div>";
+							$row.="<div class='text'><a class=\"cal\" href=\"javascript:arEdit('".$article->path."');\">".$article->nlsdata->name."</a></div>";
 							$row.="</td>";
 							$row.="</tr>\n";
 							$row.=$dottedline;

@@ -65,8 +65,8 @@
 
   function wgWizGetAction($wgWizButtonPressed) {
     global $ARnls;
-    $arReverseControl[$ARnls["next"]]="next";
-    $arReverseControl[$ARnls["prev"]]="prev";
+    $arReverseControl[$ARnls["next"]." >"]="next";
+    $arReverseControl["< ".$ARnls["prev"]]="prev";
     $arReverseControl[$ARnls["save"]]="save";
     $arReverseControl[$ARnls["back"]]="back";
     return $arReverseControl[$wgWizButtonPressed];

@@ -25,4 +25,7 @@ BODY 	{
     }
   ?>
 }
+.wgWizButton {
+	width: 90px;
+}
 </style>

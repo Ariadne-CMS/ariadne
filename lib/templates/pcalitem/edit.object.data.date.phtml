@@ -120,9 +120,9 @@
 		?>
 		<fieldset id="data">
 		<legend><?php echo $ARnls["date"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
-			<table border="0" align="center">
+			<table border="0" cellpadding="4" cellspacing="0" align="center" width="90%">
 			<tr>
-				<td colspan="2">
+				<td>
 				<?php 
 					$wgDateName="date";
 					$wgDate=$date;
@@ -130,13 +130,8 @@
 					include($this->store->code."widgets/date/form.html");
 				?>
 				</td>
-			</tr><tr>
-				<td colspan="2">
-				<br></td>
-			</tr><tr>
-				<td>
+				<td align="right">
 					<?php echo $ARnls["priority"]; ?>
-				</td><td align="right">
 					<select name="priority">
 						<?php
 							$priority=$this->getdata("priority", "none");
@@ -144,56 +139,54 @@
 						?>
 					</select>
 				</td>
-			</tr><tr>
-				<td colspan="2">
-				<br>
-				<fieldset id="data">
-				<legend><?php echo $ARnls["time"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
-				<br><table border=0 cellpadding=0 cellspacing=0>
-				<tr>
-					<td>&nbsp;</td>
-					<td>
-					<nobr><?php
-						function ShowList($start, $end, $step, $selected) {
-							$selected=round($selected / $step) * $step;
-							for ($i=$start; $i<=$end; $i+=$step) {
-								echo "<option value=\"$i\"";
-								if ($i==$selected) {
-									echo " selected"; 
-								}
-								echo ">$i\n";
-							}
-						}
-						echo $ARnls["start"]." : \n"; 
-						echo "<select name=\"starthour\" onChange=\"UpdateEndlists(this.form)\">\n";
-						$start=0; $end=23; $step=1;
-						ShowList($start,$end,$step,$starthour);
-						echo "</select>\n";
-						echo " : ";
-						echo "<select name=\"startminute\" onChange=\"UpdateEndlists(this.form)\">\n";
-						$start=0; $end=55; $step=5;
-						ShowList($start,$end,$step,$startminute); 
-						echo "</select>";
-
-					?></nobr></td><td>&nbsp;&nbsp;&nbsp;</td><td><nobr><?php
-
-						echo $ARnls["end"]." : \n";
-						echo "<select name=\"endhour\" onChange=\"UpdateEndtime(this.form)\">\n";
-						$start=0; $end=23; $step=1;
-						ShowList($start,$end,$step,$endhour);
-						echo "</select>\n";
-						echo " : ";
-						echo "<select name=\"endminute\" onChange=\"UpdateEndtime(this.form)\">\n";
-						$start=0; $end=55; $step=5;
-						ShowList($start,$end,$step,$endminute); 
-						echo "</select></nobr>\n"; 
-					?>
-					</td>
-					<td>&nbsp;</td>
-				</tr>
-				</table><br>
 			</tr>
 			</table>
+		</fieldset>
+		<fieldset id="data">
+		<legend><?php echo $ARnls["time"]; ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+		<table border=0 cellpadding=4 cellspacing=0 width="90%">
+		<tr>
+			<td>&nbsp;</td>
+			<td>
+			<nobr><?php
+				function ShowList($start, $end, $step, $selected) {
+					$selected=round($selected / $step) * $step;
+					for ($i=$start; $i<=$end; $i+=$step) {
+						echo "<option value=\"$i\"";
+						if ($i==$selected) {
+							echo " selected"; 
+						}
+						echo ">$i\n";
+					}
+				}
+				echo $ARnls["start"]." : \n"; 
+				echo "<select name=\"starthour\" onChange=\"UpdateEndlists(this.form)\">\n";
+				$start=0; $end=23; $step=1;
+				ShowList($start,$end,$step,$starthour);
+				echo "</select>\n";
+				echo " : ";
+				echo "<select name=\"startminute\" onChange=\"UpdateEndlists(this.form)\">\n";
+				$start=0; $end=55; $step=5;
+				ShowList($start,$end,$step,$startminute); 
+				echo "</select>";
+
+			?></nobr></td><td>&nbsp;&nbsp;&nbsp;</td><td><nobr><?php
+
+				echo $ARnls["end"]." : \n";
+				echo "<select name=\"endhour\" onChange=\"UpdateEndtime(this.form)\">\n";
+				$start=0; $end=23; $step=1;
+				ShowList($start,$end,$step,$endhour);
+				echo "</select>\n";
+				echo " : ";
+				echo "<select name=\"endminute\" onChange=\"UpdateEndtime(this.form)\">\n";
+				$start=0; $end=55; $step=5;
+				ShowList($start,$end,$step,$endminute); 
+				echo "</select></nobr>\n"; 
+			?>
+			</td>
+			<td>&nbsp;</td>
+		</tr>
+		</table>
 		</fieldset>
 	</td>
 </tr>

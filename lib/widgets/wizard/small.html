@@ -159,21 +159,30 @@
     <tr>
       <td width="100" units="pixels">
         <?php if ($wgWizButtons["back"]) { ?>
-          <input type="submit" name="wgWizControl" value="<?php echo $ARnls["back"]; ?>" onClick="document.action='back';">
+          <input type="submit" class="wgWizButton" name="wgWizControl" value="<?php echo $ARnls["back"]; ?>" onClick="document.action='back';">
         <?php } else { ?>
-          <input type="button" name="wgWizControl" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();">
+          <input type="button" class="wgWizButton"  name="wgWizControl" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();">
         <?php } ?>
-      </td><td>
-        <?php if ($wgWizButtons["prev"]) { ?>
-          <input type="submit" name="wgWizControl" value="<?php echo $ARnls["prev"]; ?>" onClick="document.action='prev';">
-        <?php } ?>
-      </td><td align="right">
-        <?php if ($wgWizButtons["next"]) { ?>
-          <input type="submit" name="wgWizControl" value="<?php echo $ARnls["next"]; ?>" onClick="document.action='next';">
-        <?php } ?>
+      </td><td align="center">
+        <?php 
+          if (($wgWizButtons["prev"]) || ($wgWizButtons["next"])) {
+            if ($wgWizButtons["prev"]) { ?>
+              <input type="submit" class="wgWizButton"  name="wgWizControl" value="&lt; <?php echo $ARnls["prev"]; ?>" onClick="document.action='prev';">
+            <?php } else { ?>
+              <input type="button" class="wgWizButton" disabled="true" value="&lt; <?php echo $ARnls["prev"]; ?>">
+            <?php } ?>
+            <?php if ($wgWizButtons["next"]) { ?>
+              <input type="submit" class="wgWizButton"  name="wgWizControl" value="<?php echo $ARnls["next"]; ?> &gt;" onClick="document.action='next';">
+            <?php } else { ?>
+              <input type="button" class="wgWizButton" disabled="true" value="<?php echo $ARnls["next"]; ?> &gt;">
+            <?php 
+            }
+          } ?>
       </td><td align="right" width="100" units="pixels">
         <?php if ($wgWizButtons["save"]) { ?>
-          <input type="submit" name="wgWizControl" value="<?php echo $ARnls["save"]; ?>" onClick="document.action='save';">
+          <input type="submit" class="wgWizButton"  name="wgWizControl" value="<?php echo $ARnls["save"]; ?>" onClick="document.action='save';">
+        <?php } else { ?>
+          <input type="button" class="wgWizButton" disabled="true" value="<?php echo $ARnls["save"]; ?>">
         <?php } ?>
       </td>
     </tr>

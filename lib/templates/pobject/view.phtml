@@ -38,6 +38,10 @@
 	function objectadded() {
 		document.location.href=document.location.href;
 	}
+
+	function arEdit(object, arguments) {
+		arshow('edit_object_data','<?php echo $this->store->root; ?>'+object+'edit.object.data.phtml', arguments);
+	}
 </script>
 <style>
 #icon {

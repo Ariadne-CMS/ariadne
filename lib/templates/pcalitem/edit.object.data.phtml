@@ -40,7 +40,6 @@
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["item"];
 		$wgWizFlow[$i]["template"]=$step1;
-		$wgWizFlow[$i]["prev"]=$i-1;
 		$wgWizFlow[$i]["next"]=$i+1; 
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["date"];
@@ -103,6 +102,9 @@
 		$wgWizFlow[$i]["title"]=$ARnls["save"];
 		$wgWizFlow[$i]["template"]=$finish;
 		$wgWizFlow[$i]["back"]=$i-1;
+		for ($ii=1; $ii<$i; $ii++) {
+			$wgWizFlow[$ii]["save"]=$i;
+		}
 		
 		$arLanguage=$this->getdata("arLanguage","none");
 		if ($wgWizFlow[0]["current"]==5) { // =edit.object.language.phtml

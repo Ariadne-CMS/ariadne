@@ -83,7 +83,9 @@
       $enddate=$this->getdata("enddate","none");
     }
     if (!$startdate) {
-      $startdate=time();
+      if (!($startdate=$this->getdata("date"))) {
+        $startdate=time();
+      }
     }
     if ($enddate<=$startdate) {
         $enddate = $startdate;

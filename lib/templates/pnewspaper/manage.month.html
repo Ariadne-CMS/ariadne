@@ -4,7 +4,7 @@
 			$date - unix time stamp, month set will be shown, highlights this day.
 	*/
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		global $PHP_SELF, $QUERY_STRING, $HTTP_GET_VARS;
+		global $PHP_SELF, $HTTP_GET_VARS;
 		if (!$date) {
 			$date=time();
 			debug("date not set"); 
@@ -157,6 +157,5 @@
 </tr>
 </table>
 <?php
-		$QUERY_STRING.="&date=".RawUrlEncode($date);
 	}
 ?>

@@ -9,6 +9,18 @@
 ?></td>
 <td align="right"><?php echo $this->type; ?>&nbsp;</td>
 <td><?php
-  echo strftime("&nbsp;%d/%m/%Y %H:%M", $this->lastchanged); 
+  $now=time();
+  if ($this->lastchanged>($now+86400)) {
+    echo strftime("&nbsp;%d/%m/%Y", $this->lastchanged); 
+  } else {
+    echo strftime("&nbsp;%H:%M", $this->lastchanged);
+  }
+?></td><td><?php
+  if (is_array($this->data->nls->list)) {
+    reset($this->data->nls->list);
+    while (list($key, $value)=each($this->data->nls->list)) {
+      echo "<img src=\"".$AR->dir->images."nls/small/".$key.".gif\" alt=\"$value\"> ";
+    }
+  }
 ?></td>
 </tr>

@@ -17,12 +17,10 @@
 		}
 		// then add all items until end of range.
 		while ($timeframe && ($timeframe["start"]>=$from)) {
-			$timefunc($timeframe["start"], $timeframe["end"], $data->priority,
-		$this->store->root.$this->path, $img.$nlsdata->name, $nlsdata->summary);
+			$timefunc($timeframe["start"], $timeframe["end"], $data->priority, $this->path, $img.$nlsdata->name, $nlsdata->summary);
 			$timeframe=prev($data->timeframes);
 		}
 	} else { // remove this in final version!
-		$timefunc($data->starttime, $data->endtime, $data->priority,
-		$this->store->root.$this->path, $nlsdata->name, $nlsdata->summary);		
+		$timefunc($data->starttime, $data->endtime, $data->priority, $this->path, $nlsdata->name, $nlsdata->summary);		
 	}
 ?>

@@ -34,7 +34,7 @@
 
 			$i=@count($ARCurrent->todolist[$from]);
 			$ARCurrent->todolist[$from][$i]["text"]="<a class=\"cal\" href=\"".
-				$path."classic.edit.phtml?entry=$from&arReturnPage=".
+				$this->make_url($path)."classic.edit.phtml?entry=$from&arReturnPage=".
 				RawUrlEncode($PHP_SELF."?date=".$ARCurrent->date)."\">$name</a>";
 			$ARCurrent->todolist[$from][$i]["to"]=$to;			
 		}

@@ -53,13 +53,12 @@
 				 else -> timespan, add item, add end timemarker, add span
 		*/
 		global $ARCurrent, $PHP_SELF, $QUERY_STRING;
-
 		debug("pcalendar/day.html:AddTime($from, $to, $path, $name, $summary)","class");
 			if ($from>$to)	 { // 'no time' entry. pile at ARCurrent->timelist[0], no span, no start, no end time.
 				$i=@count($ARCurrent->timelist[0]);
-				if ($path) { $ARCurrent->timelist[0][$i]["text"]="<a class=\"cal\" href=\"".
-					$path."classic.edit.phtml?entry=$from&date=".$ARCurrent->date."&arReturnPage=".
-					RawUrlEncode($PHP_SELF."?$QUERY_STRING&date=".$ARCurrent->date)."\">$name</a>";
+				if ($path) { 
+					$ARCurrent->timelist[0][$i]["text"]=$name;
+					$ARCurrent->timelist[0][$i]["path"]=$path;
 				}
 				$ARCurrent->timelist[0][$i]["summary"]=$summary;
 				$ARCurrent->timelist[0][$i]["priority"]=$priority;
@@ -76,9 +75,8 @@
 					// if $path then add at $i, in previous if statement $i already set
 					//	 to the 'time marker'.									
 					if ($path) {
-						$ARCurrent->timelist[$from][$i]["text"]="<a class=\"cal\" href=\"".
-							$path."classic.edit.phtml?entry=$from&date=".$ARCurrent->date."&arReturnPage=".
-							RawUrlEncode($PHP_SELF."?$QUERY_STRING&date=".$ARCurrent->date)."\">$name</a>";
+						$ARCurrent->timelist[$from][$i]["text"]=$name;
+						$ARCurrent->timelist[$from][$i]["path"]=$path;
 					}
 					$ARCurrent->timelist[$from][$i]["summary"]=$summary;
 					$ARCurrent->timelist[$from][$i]["priority"]=$priority;
@@ -97,9 +95,8 @@
 					$ARCurrent->timelist[$from][$i]["span"][$spannumber]="open";
 				}
 				if ($path) {
-					$ARCurrent->timelist[$from][$i]["text"]="<a class=\"cal\" href=\"".
-						$path."classic.edit.phtml?entry=$from&date=".$ARCurrent->date."&arReturnPage=".
-						RawUrlEncode($PHP_SELF."?$QUERY_STRING&date=".$ARCurrent->date)."\">$name</a>";
+					$ARCurrent->timelist[$from][$i]["text"]=$name;
+					$ARCurrent->timelist[$from][$i]["path"]=$path;
 				}
 				$ARCurrent->timelist[$from][$i]["summary"]=$summary;
 				$ARCurrent->timelist[$from][$i]["priority"]=$priority;
@@ -206,14 +203,11 @@
 					$row.="</td>\n<td align=\"right\" valign=\"top\">";
 					// now display time
 					if ($from) { // notime items dont display the time
-						$row.="<a class=\"cal\" href=\"".$this->store->root.$this->path."classic.new.phtml?arNewType=pcalitem&".
-									"arNewFilename={5:id}&starttime=$from&next=form&".
-									"arReturnPage=".RawUrlEncode($PHP_SELF."?$QUERY_STRING&date=$date").
-									"\">$from_fmt</a>";
+						$row.="$from_fmt";
 					}
 					$row.="</td><td></td><td valign=\"top\">";
 					// now display text
-					$row.="<div class='text'>".$item["text"]."</div>";
+					$row.="<div class='text'><a class=\"cal\" href=\"javascript:arEdit('".$item["path"]."','');\">".$item["text"]."</a></div>";
 					$row.="</td>";
 					$row.="</tr>\n";
 					$row.=$dottedline;

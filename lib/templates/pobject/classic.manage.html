@@ -1,10 +1,16 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		global $PHP_SELF, $QUERY_STRING;
 ?>
 <html>
 <head>
 <title><?php echo $ARnls["manage"]." ".$this->path; ?></title>
+<script>
+	function arEdit(object, arguments) {
+		document.location.href='<?php echo $this->store->root; ?>'+object+'classic.edit.phtml?'+arguments+'&arReturnPage=<?php echo RawUrlEncode($PHP_SELF."?".$QUERY_STRING); ?>'; 
+	}
+</script>
 </head>
 <body bgcolor="white">
 <?php
