@@ -55,7 +55,6 @@
     }
   }
 
-
   function Node(path, parent, name) {
     this.id=id++;
     this.parent=parent;
@@ -71,8 +70,13 @@
 <?php
   switch($action) {
     case "delete" :
-      if ($this->CheckSilent("delete")) {
-        if ($this->lock(0,"T")) {
+      if ($target && $this->exists($target)) {
+        // FIXME: this loses window.opener...
+        echo "  document.location.href='".$this->store->root.$target."recurse.phtml?action=delete';\n";
+        echo "</script>\n";
+      } else {
+        if ($this->CheckSilent("delete")) {
+          if (!($result=$this->lock(0,"T")) || (!$result["identity"])) {
 ?>
 
   function start() {
@@ -100,23 +104,43 @@
       }
     } else {
       if (top.window && top.window.opener) {
-        top.window.opener.top.View('<?php echo $this->parent; ?>');
+        if (top.window.opener.top.View) {
+          top.window.opener.top.View('<?php echo $this->parent; ?>');
+        }
+        if (top.window.opener.wgRecurseDone) {
+          top.window.opener.wgRecurseDone();
+        }
+        top.window.close();
       } else if (window.opener) {
-        window.opener.top.View('<?php echo $this->parent; ?>');
+        if (window.opener.top.View) {
+          window.opener.top.View('<?php echo $this->parent; ?>');
+        }
+        if (window.opener.wgRecurseDone) {
+          window.opener.wgRecurseDone();
+        }
+        window.close();
       }
-      window.close();
     }
   }
 <?php
-    } else {
+          } else {
 ?>
-  // popup error cannot lock, retry? -> refresh
+            if (confirm('<?php printf(AddSlashes($ARnls["q:cannotlockretry"]),$this->path); ?>')) {
+              document.location.href=document.location.href;
+            } else {
+              if (top.window) {
+                top.window.close(); 
+              } else {
+                window.close(); 
+              }
+            }
 <?php
-    }
+          }
 ?>
   </script>
   <title><?php printf($ARnls["deleting"],$this->path); ?></title>
 <?php
+        }
       }
       break;
     case "copy" :
@@ -142,7 +166,17 @@
         } else {
           // FIXME: call window.opener to notify it that the action is
           // complete and close the window.
-          alert('done');
+          if (top.window) {
+            if (top.window.opener && top.window.opener.wgRecurseDone) {
+              top.window.opener.wgRecurseDone();
+            }
+            top.window.close();
+          } else {
+            if (window.opener && window.opener.wgRecurseDone) {
+              window.opener.wgRecurseDone();
+            }
+            window.close();
+          }
         }
       }
   </script>

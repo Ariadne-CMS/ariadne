@@ -76,7 +76,7 @@
   ?>
   function reloadpage(args) {
     if (document.layers) {
-      document.layers.info.src=document.layers.info.src+args;
+      window.document.layers.info.src=window.document.layers.info.src+args;
     } else {
       document.location.href=document.location.href+args;
     }
@@ -140,14 +140,15 @@
 <?php
     } else {
       // confirm set, so first delete newpath
+      include($this->store->code."widgets/recurse/general.js");
 ?>
 <script>
   function nextnode() {
     // onload function, delete newpath in this case
-    alert('delete');
+    wgRecurse('<?php echo $newpath; ?>','delete');
   }
 
-  function recursedone() {
+  function wgRecurseDone() {
     // function called by recurse.phtml when task is done
     reloadpage();
   }

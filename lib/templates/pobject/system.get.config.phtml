@@ -33,6 +33,7 @@
    'default.phtml' is called (which it will).
 
   ******************************************************************/
+/*
   debug($this->type."/system.get.config.phtml (".$this->path.")","class");
   if ($data->templates[$req_type][$req_function]) { 
     unset($ARConfig->template);
@@ -60,4 +61,27 @@
   if ($data->nls->list) {
     $ARConfig->nls=$data->nls;
   }
+*/
+  debug($this->type."/system.get.config.phtml ".$this->path,"class");
+  require_once($this->store->code."includes/array.merge.clobber.phtml");
+  // first check whether parent config info is in cache
+  if (!$ARConfig->cache[$this->parent] && $this->parent!="..") {
+    $this->get($this->parent, "system.get.config.phtml");
+  }
+  // first inherit parent configuration data
+  $configcache=$ARConfig->cache[$this->parent];
+  // add/overwrite template information for this object.
+  $configcache->templates=array_merge_clobber($configcache->templates, $data->templates);
+  if ($data->cacheconfig) {
+    $configcache->cache=$data->cacheconfig;
+  }
+  if ($data->typetree && ($data->typetree!="inherit")) {
+    $configcache->typetree=$data->typetree;
+  }
+  if ($data->nlsconfig->list) {
+    $configcache->nls=$data->nlsconfig;
+    debug("nls found");
+  }
+  $ARConfig->cache[$this->path]=$configcache;
+
 ?>
