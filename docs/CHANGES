@@ -54,6 +54,8 @@ Bugs Fixed:
 	- Fixed a compiler bug  which created illigal query's for postgresql when
 	  using orderby on properties.
 	- Fixed pinp interface to ls() and find() in psearch.
+	- Fixed importing of users in group, when the users does already exists then link it under the group instead of complaining
+	- included nls data in import
 
 Changes in Ariadne since version 2.2
 

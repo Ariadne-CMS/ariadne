@@ -7,6 +7,7 @@
 	require($ariadne."/includes/loader.web.php");
 	require($ariadne."/stores/".$store_config["dbms"]."store.phtml");
 	include($ariadne."/stores/axstore.phtml");
+	include($ariadne."/nls/".$AR->nls->default);
 
 	$HELP_INFO="import [--options] file.ax [source path] [destination path]
   The import command will import the supplied .ax into the current
