@@ -24,6 +24,7 @@
 	$path 	= $HTTP_GET_VARS["path"];
 	$loader = $HTTP_GET_VARS["loader"];	
 	$wwwroot = $HTTP_GET_VARS["wwwroot"];
+	$interface = $HTTP_GET_VARS["interface"];
 ?>
 <html>
 <head>
@@ -295,7 +296,7 @@ function drawNode(pre, level) {
 			}
 		}
 		if (this.icon) {
-			icon='<img class="icon" src="<?php echo $wwwroot; ?>images/icons/'+this.icon+'.gif" alt="" width="20" height="20" border="0" align="left" valign="middle">';
+			icon='<img class="icon" src="<?php echo $wwwroot; ?>images/icons/'+this.icon+'.gif" alt="" width="20" height="20" border="0" align="left">';
 		} else {
 			icon='';
 		}
@@ -330,7 +331,7 @@ function Draw() {
 	// Draw the entire tree
 	target.document.open();
 
-    MenuDraw="<html>\n<head>\n<link REL=STYLESHEET type='text/css' HREF='<?php echo $wwwroot; ?>styles/tree.css'>\n";
+    MenuDraw="<html>\n<head>\n<link REL=STYLESHEET type='text/css' HREF='<?php echo $wwwroot; ?>styles/<?php echo $interface; ?>tree.css'>\n";
     MenuDraw=MenuDraw+"</head>\n<body>\n";
 	MenuDraw=MenuDraw+root.draw('',1);
 	MenuDraw=MenuDraw+"</body>\n</html>";
