@@ -151,7 +151,7 @@ class htmlcleanertag {
 		if ($this->nodeType == HTML_CLEANER_NODE_NODETYPE_NODE)
 			$str = '<'.$this->nodeName;
 		else if ($this->nodeType == HTML_CLEANER_NODE_NODETYPE_CLOSINGNODE)
-			return '</'.$this->nodeName.">\n";
+			return '</'.$this->nodeName.">";
 		foreach ($this->attributes as $attkey => $attvalue) {
 			$str .= ' '.$attkey."=\"".$attvalue."\"";
 		}
@@ -221,11 +221,10 @@ class htmlcleaner
 	// removes the worst mess from word.
 	function cleanup($body, $config)
 	{
+		$body = "<htmlcleaner>$body</htmlcleaner>";
 		$rewrite_rules = $config["rewrite"];
 		$return = '';
-		$node_count = 0;
 		foreach (htmlcleaner::dessicate($body) as $part) {
-			$node_count++;
 			if (is_array($rewrite_rules)) {
 				foreach ($rewrite_rules as $tag_rule=>$attrib_rules) {
 					if (eregi($tag_rule, $part->nodeName)) {
@@ -264,11 +263,7 @@ class htmlcleaner
 			if ($part && strstr($part->nodeValue,'<?xml:namespace')===false)
 				$return .= $part->toString();
 		}
-		if (!$node_count) {
-			// no nodes counted, just return $body
-			$return = "$body";
-		}
-		return $return;
+		return str_replace('<htmlcleaner>', '', str_replace('</htmlcleaner>', '', $return));
 	}
 }
 ?>
