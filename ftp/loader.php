@@ -645,8 +645,12 @@
 
 						ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ASCII' : 'BINARY')." mode data connection");
 						debug("ftp: client wants to store file ($target)");
+						if (eregi('.*[.]([^.]*)/', $target, $regs)) {
+							$ext = $regs[1];
+						}
 						if (ftp_OpenDC()) {
 							$tempfile=tempnam($FTP->store->files."temp/", "upload");
+							$tempfile.=".$ext";
 							$fp=fopen($tempfile, "wb");
 							if ($fp) {
 								debug("ftp: writing to $tempfile\n");
