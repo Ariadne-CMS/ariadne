@@ -18,7 +18,10 @@
 		require_once($this->store->code."modules/mod_unicode.php");
 		if ($AR->nls->charsets[$arCheckCharSet] == "ISO-8859-1") {
 			//$page=utf8_decode($page);
-			$page=unicode::utf8toiso8859($page);
+			if ($AR->user->data->editor!="text") {
+				// FIXME: apparantly the text editor is never in UTF-8 mode
+				$page=unicode::utf8toiso8859($page);
+			}
 			// now change special characters to their html entity
 			// $page=htmlentities($page);
 			// now change '<', '>', '"', '~' and '&' back.
