@@ -43,7 +43,7 @@
   /* list of all system wide available languages ...........................*/
   $AR->nls->list["nl"]="Nederlands";
   $AR->nls->list["en"]="English";
-  $AR->nls->list["es"]="Espag&ntilde;ol";
+  $AR->nls->list["es"]="Español";
 
   /* default language *******************************************************/
   $AR->nls->default="en";
