@@ -128,10 +128,10 @@ class pobject extends object {
 		return $this->store->call($function, $args, $this->store->get($path));
 	}
 
-	function parents($path, $function="list.html", $args="") {
+	function parents($path, $function="list.html", $args="", $top="/") {
 		debug("pobject: parents($path, $function, $args)","object");
 		$path=$this->store->make_path($this->path, $path);
-		return $this->store->call($function, $args, $this->store->parents($path));
+		return $this->store->call($function, $args, $this->store->parents($path, $top));
 	}
 
 	function find($path, $criteria, $function="list.html", $args="", $limit=100, $offset=0) {
@@ -854,10 +854,10 @@ class pobject extends object {
 			$this->store->ls($this->path));
 	}
 
-	function _parents($function="list.html", $args="") {
+	function _parents($function="list.html", $args="", $top="/") {
 		debug("pobject: parents($function, $args)","object");
 		return $this->store->call($function, $args, 
-			$this->store->parents($this->path));
+			$this->store->parents($this->path, $top));
 	}
 
 	function _find($criteria, $function="list.html", $args="", $limit=100, $offset=0) {
@@ -985,6 +985,19 @@ class pobject extends object {
 
 	function _savecache($time="") {
 		return $this->savecache($time);
+	}
+
+	function _currentsite() {
+		global $ARConfig;
+		$config=$ARConfig->cache[$this->path];
+		return $config->site;
+	}
+
+	function _parentsite($site) {
+		global $ARConfig;
+		$path=$this->store->make_path($site, "..");
+		$config=$ARConfig->cache[$path];
+		return $config->site;
 	}
 } // end class pobject
 ?>
