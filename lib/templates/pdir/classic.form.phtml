@@ -17,7 +17,7 @@
 <head>
 <?php
 		// lock this object first, if it succeeds, it will expose some js functions
-		if (!@current($this->call("lock.init.phtml"))) {
+		if ($this->call("lock.init.phtml")) {
 ?>
 <title><?php 
 	$title=$ARnls["edit"]." ".@current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml")); 
