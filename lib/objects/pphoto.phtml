@@ -81,6 +81,19 @@ class pphoto extends pfile { // pphoto class definition
 		}
 		return $result;
 	}
+
+	function identify( ) {
+		global $AR;
+		$tmpsrc = tempnam( $this->store->get_config("files")."temp/", "photo");
+		$f_store = $this->store->get_filestore("files");
+		$f_store->copy_from_store($tmpsrc, $this->id, "file");
+		$execstring = $AR->IM->identify." ".$tmpsrc; 
+		$myarray = Array();
+		$result = exec( $execstring, &$myarray );
+		@unlink( $tmpsrc );
+		$f_store->close();
+		return $myarray;
+	}
 	
 	function scale($x, $y, $fillcolor=false) {
 		global $ARConfig;
@@ -547,6 +560,10 @@ class pphoto extends pfile { // pphoto class definition
 		} else {
 			return $this->getimageinfo();
 		}
+	}
+	
+	function _identify( ) {
+		return $this->identify();
 	}
 	
 	function _getExif( $sections = false, $arrays = true, $thumbnail = true) {
