@@ -203,6 +203,7 @@
   $AR->nls->list['de']      = 'Deutsch';
   $AR->nls->list['pl']      = 'Polski';
   $AR->nls->list['fr']      = 'Fran&ccedil;ais';
+  $AR->nls->list['it']      = 'Italiana';
 
   $AR->nls->locales['nl']   = 'nl_NL';
   $AR->nls->locales['en']   = 'en_US';
@@ -210,6 +211,7 @@
   $AR->nls->locales['de']   = 'de';
   $AR->nls->locales['pl']   = 'pl';
   $AR->nls->locales['fr']   = 'fr_FR';
+  $AR->nls->locales['it']   = 'it_IT';
 
   $AR->nls->default         = 'en';
   /**************************************************************************/
