@@ -192,6 +192,7 @@ Bugs Fixed:
 			where
 				lower(a.path) = lower(b.path) and a.path  != b.path;"
 	- updated the postgresql_compiler so it accepts 'order by name.en.value' in find
+	- fixed the wddx exporting of pshortcut's 
 
 Changes in Ariadne since version Ariadne 2.3-dev
 
