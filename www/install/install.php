@@ -24,7 +24,7 @@
 		$store->add_type("pshortcut","pobject");
 		$store->add_type("pshortcut","pshortcut");
 		$store->add_type("puser","pobject");
-		$store->add_type("puser","pdir");
+		// $store->add_type("puser","pdir");
 		$store->add_type("puser","puser");
 		$store->add_type("pgroup","pobject");
 		$store->add_type("pgroup","pdir");
