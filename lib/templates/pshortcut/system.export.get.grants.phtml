@@ -1,24 +1,3 @@
 <?php
-  /*******************************************************************
-	system.export.get.grants.phtml					Muze Ariadne v2.0b
-	------------------------------------------------------------------
-	Arguments: none
-	Grant needed: read
-	Global variables: none
-
-	This template will add grants per object to the user/group 
-	grants-list which will update the user objects
-	when all objects are being imported.
-
-  *******************************************************************/
-  if ($this->CheckConfig("read")) {
-	while (list($type, $type_val)=@each($this->data->grants)) {
-		while (list($user,$grants)=@each($type_val)) {
-			while (list($grant, $value)=@each($grants)) {
-				//display("exporting grants [$type][$user][$this->path][$grant]\n");
-				$ARCurrent->grants_list[$type][$user][$this->path][$grant]=$value;
-			}
-		}
-	}
-  }
+	$arResult = $this->call("pobject::system.export.get.grants.phtml", $arCallArgs);
 ?>

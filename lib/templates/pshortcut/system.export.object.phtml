@@ -1,15 +1,3 @@
 <?php
-	if (!$setDummyObject) {
-		$this->properties=$this->load_properties();
-		if ($ARCurrent->options["without_grants"]) {
-			unset($this->data->grants);
-		} else {
-			$this->call("system.export.get.grants.phtml");
-		}
-	} else {
-		$this->axflags=AX_DUMMY;
-	}
-
-
-	$arResult=$this;
+	$arResult = $this->call("pobject::system.export.object.phtml", $arCallArgs);
 ?>
