@@ -41,6 +41,9 @@ New Features:
 	  store. Cleaned a lot of code, and made it more readable by replacing obfuscated
 	  code. Added Analyze after the store initialisation to increase the speed
 	  just after the install. 
+	- Updated the windows XP look to work with large directories and work under mozilla.
+	- Added a PDF write module, which allows you to create PDF documents using pinp, and
+	  also convert simple html to pdf. Uses fpdf, which must be installed seperately.
 
 Bugs Fixed:
 	- Added missing German WinXP NLS by Daniel Sepeur.
