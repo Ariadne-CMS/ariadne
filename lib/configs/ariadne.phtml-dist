@@ -111,13 +111,6 @@
 
   $AR->ax=new object;                          // do not change
 
-  /* command to untar the (%s) file *****************************************/
-
-  if ($AR->OS=="WIN32") {
-    $AR->ax->cmd_untar        = "tar -zxf %s";
-  } else {
-    $AR->ax->cmd_untar        = "tar -zxf %s 2> tar.errors";
-  }
 
   /* command to tar the (second %s) file and create tar file (first %s) *****/
 
@@ -128,7 +121,6 @@
   }
 
   $AR->ax->cmd_untar  = "tar -zx -C %s %s -f %s %s";
-
 
   $AR->ax->cmd_tar    = "tar -zc -C %s %s -f %s %s";
 
