@@ -51,8 +51,9 @@
 	if ($AR->user->data->login=="admin") {
 		$result=$this->ls("/system/ariadne/types/","system.get.phtml");
 	} else {
-		if ($ARConfig->typetree) {
-			$result=$this->ls($ARConfig->typetree."/".$this->type."/",
+		$configcache=$ARConfig->cache[$this->path];
+		if ($configcache->typetree) {
+			$result=$this->ls($configcache->typetree."/".$this->type."/",
 				"system.get.phtml");
 		} else {
 			$result=$this->ls("/system/ariadne/typetree/normal/".$this->type."/",
