@@ -41,7 +41,7 @@
 		$limit=100;
 	}
 	$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
-	$total=$this->store->count($this->store->find("", $crit));
+	$total=$this->store->count($this->store->find("", $crit, 0));
 	$this->find(".",$crit, "browse.nav.icons.show.phtml", "", $limit, $offset);
 	$this->call("browse.update.toolbar.phtml", Array("total" => $total, "offset" => $offset, "limit" => $limit));
 ?>
