@@ -36,6 +36,12 @@ class pobject extends object {
 	global $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls;
 
 		debug("pobject: ".$this->path.": call($arCallFunction, ".serialize($arCallArgs).")","object","IN");
+
+		// default to view.html
+		if (!$arCallFunction) {
+			$arCallFunction="view.html";
+		}
+
 		// callstack is needed for getvar()
 		$ARCurrent->arCallStack[]=$arCallArgs;
 		if (is_string($arCallArgs)) {
