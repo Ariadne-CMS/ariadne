@@ -8,13 +8,13 @@
 <title>Edit <?php echo $path.$file; ?></title>
 
 <!-- Styles -->
-<link REL="stylesheet" TYPE="text/css" HREF="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/Toolbars/toolbars.css">
+<link REL="stylesheet" TYPE="text/css" HREF="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/Toolbars/toolbars.css">
 
 <!-- Script Functions and Event Handlers -->
-<script LANGUAGE="JavaScript" SRC="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/Inc/dhtmled.js">
+<script LANGUAGE="JavaScript" SRC="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/Inc/dhtmled.js">
 </script>
 
-<script LANGUAGE="JavaScript" SRC="<?php echo $AR->host.$AR->dir->www; ?>widgets/compose/compose.js">
+<script LANGUAGE="JavaScript" SRC="<?php echo $AR->dir->www; ?>widgets/compose/compose.js">
 </script>
 
 <script ID="clientEventHandlersJS" LANGUAGE="javascript">
@@ -586,28 +586,28 @@ return tbContentElement_ContextMenuAction(itemIndex)
 <!-- Toolbars -->
 <div class="tbToolbar" ID="StandardToolbar" unselectable='on'>
   <!-- div class="tbButton" ID="MENU_FILE_SAVE" unselectable='on' TITLE="Save File" LANGUAGE="javascript" onclick="return MENU_FILE_SAVE_onclick()">
-    <img class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/save.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/save.gif" WIDTH="23" HEIGHT="22">
   </div>
   
   <div class="tbSeparator"></div -->
 
   <div class="tbButton" unselectable='on' ID="DECMD_CUT" TITLE="Cut" LANGUAGE="javascript" onclick="return DECMD_CUT_onclick();">
-    <img class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/cut.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/cut.gif" WIDTH="23" HEIGHT="22">
   </div>
   <div class="tbButton" unselectable='on' ID="DECMD_COPY" TITLE="Copy" LANGUAGE="javascript" onclick="return DECMD_COPY_onclick();">
-    <img class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/copy.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/copy.gif" WIDTH="23" HEIGHT="22">
   </div>
   <div class="tbButton" unselectable='on' ID="DECMD_PASTE" TITLE="Paste" LANGUAGE="javascript" onclick="return DECMD_PASTE_onclick();">
-    <img class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/paste.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/paste.gif" WIDTH="23" HEIGHT="22">
   </div>
 
   <div class="tbSeparator"></div>
 
   <div class="tbButton" unselectable='on' ID="DECMD_UNDO" TITLE="Undo" LANGUAGE="javascript" onclick="return DECMD_UNDO_onclick()">
-    <img class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/undo.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/undo.gif" WIDTH="23" HEIGHT="22">
   </div>
   <div class="tbButton" unselectable='on' ID="DECMD_REDO" TITLE="Redo" LANGUAGE="javascript" onclick="return DECMD_REDO_onclick()">
-    <img class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/redo.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/redo.gif" WIDTH="23" HEIGHT="22">
   </div>
 
 </div>
@@ -629,52 +629,52 @@ return tbContentElement_ContextMenuAction(itemIndex)
   <div class="tbSeparator" unselectable='on'></div>
 
   <div class="tbButton" unselectable='on' ID="DECMD_BOLD" TITLE="Bold" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_BOLD_onclick();">
-    <img class="tbIcon" unselectable='on' src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/bold.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/bold.gif" WIDTH="23" HEIGHT="22">
   </div>
   <div class="tbButton" unselectable='on' ID="DECMD_ITALIC" TITLE="Italic" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_ITALIC_onclick()">
-    <img class="tbIcon" unselectable='on' src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/italic.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/italic.gif" WIDTH="23" HEIGHT="22">
   </div>
   <div class="tbButton" unselectable='on' ID="DECMD_UNDERLINE" TITLE="Underline" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_UNDERLINE_onclick()">
-    <img class="tbIcon" unselectable='on' src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/under.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/under.gif" WIDTH="23" HEIGHT="22">
   </div>
   
   <div class="tbSeparator" unselectable='on'></div>
 
   <div class="tbButton" unselectable='on' ID="DECMD_JUSTIFYLEFT" TITLE="Align Left" TBTYPE="toggle" NAME="Justify" LANGUAGE="javascript" onclick="return DECMD_JUSTIFYLEFT_onclick()">
-    <img class="tbIcon" unselectable='on' src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/left.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/left.gif" WIDTH="23" HEIGHT="22">
   </div>
   <div class="tbButton" unselectable='on' ID="DECMD_JUSTIFYCENTER" TITLE="Center" TBTYPE="toggle" NAME="Justify" LANGUAGE="javascript" onclick="return DECMD_JUSTIFYCENTER_onclick()">
-    <img class="tbIcon" unselectable='on' src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/center.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/center.gif" WIDTH="23" HEIGHT="22">
   </div>
   <div class="tbButton" unselectable='on' ID="DECMD_JUSTIFYRIGHT" TITLE="Align Right" TBTYPE="toggle" NAME="Justify" LANGUAGE="javascript" onclick="return DECMD_JUSTIFYRIGHT_onclick()">
-    <img class="tbIcon" unselectable='on' src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/right.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/right.gif" WIDTH="23" HEIGHT="22">
   </div>
 
   <div class="tbSeparator" unselectable='on'></div>
 
   <div class="tbButton" unselectable='on' ID="DECMD_ORDERLIST" TITLE="Numbered List" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_ORDERLIST_onclick()">
-    <img class="tbIcon" unselectable='on' src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/numlist.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/numlist.gif" WIDTH="23" HEIGHT="22">
   </div>
   <div class="tbButton" unselectable='on' ID="DECMD_UNORDERLIST" TITLE="Bulletted List" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_UNORDERLIST_onclick()">
-    <img class="tbIcon" unselectable='on' src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/bullist.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/bullist.gif" WIDTH="23" HEIGHT="22">
   </div>
   
   <div class="tbSeparator" unselectable='on'></div>
 
   <div class="tbButton" unselectable='on' ID="DECMD_OUTDENT" TITLE="Decrease Indent" LANGUAGE="javascript" onclick="return DECMD_OUTDENT_onclick()">
-    <img class="tbIcon" unselectable='on' src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/deindent.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/deindent.gif" WIDTH="23" HEIGHT="22">
   </div>
   <div class="tbButton" unselectable='on' ID="DECMD_INDENT" TITLE="Increase Indent" LANGUAGE="javascript" onclick="return DECMD_INDENT_onclick()">
-    <img class="tbIcon" unselectable='on' src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/inindent.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/inindent.gif" WIDTH="23" HEIGHT="22">
   </div>
 
   <div class="tbSeparator" unselectable='on'></div>
 
   <div class="tbButton" unselectable='on' ID="DECMD_HYPERLINK" TITLE="Link" LANGUAGE="javascript" onclick="return DECMD_HYPERLINK_onclick()">
-    <img class="tbIcon" unselectable='on' src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/link.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/link.gif" WIDTH="23" HEIGHT="22">
   </div>
   <div class="tbButton" unselectable='on' ID="DECMD_IMAGE" TITLE="Insert Image" LANGUAGE="javascript" onclick="return DECMD_IMAGE_onclick()">
-    <img class="tbIcon" unselectable='on' src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/image.gif" WIDTH="23" HEIGHT="22">
+    <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/image.gif" WIDTH="23" HEIGHT="22">
   </div>
 </div>
 
@@ -689,12 +689,12 @@ return tbContentElement_ContextMenuAction(itemIndex)
 ?>></IFRAME>
 
 <!-- Toolbar Code File. Note: This must always be the last thing on the page -->
-<script LANGUAGE="Javascript" SRC="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/Toolbars/toolbars.js">
+<script LANGUAGE="Javascript" SRC="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/Toolbars/toolbars.js">
 </script>
 <script LANGUAGE="Javascript">
-  tbScriptletDefinitionFile = "<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/Toolbars/menubody.htm";
+  tbScriptletDefinitionFile = "<?php echo $AR->dir->www; ?>widgets/htmledit/ie/Toolbars/menubody.htm";
 </script>
-<script LANGUAGE="Javascript" SRC="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/Toolbars/tbmenus.js">
+<script LANGUAGE="Javascript" SRC="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/Toolbars/tbmenus.js">
 </script>
 
 </body>

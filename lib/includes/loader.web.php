@@ -151,7 +151,7 @@
 			$path=$store->make_path($path, "..");
 		}
 		if ($prevPath==$path) {
-			error("Database is not initialised, please run <a href=\"".$AR->host.$AR->dir->www."install/install.php\">the installer</a>");
+			error("Database is not initialised, please run <a href=\"".$AR->dir->www."install/install.php\">the installer</a>");
 		} else {
 			// no results: page couldn't be found, show user definable 404 message
 			$store->call("user.notfound.html",
