@@ -56,11 +56,12 @@
 	}	
 </script>
 <form action="edit.object.layout.form.phtml">
-<table border="0" width="100%" align="center" cellspacing="2" vspace="10" hspace="10">
+<table border="0" width="100%" height="100%" align="center" cellspacing="2" vspace="10" hspace="10">
 <tr>
-	<td colspan="2" bgcolor="white" style="border: 2px inset; padding: 0px;"><script> 
-			document.write('<div style="height:'+(window.innerHeight-50)+'px; overflow: auto; margin: 0px; border: 0px;">'); 
-		</script><table border="0" bgcolor="white" width="100%" cellspacing="0" cellpadding="0">
+	<td colspan="2" bgcolor="white" style="border: 2px inset; padding: 0px;" height="90%" valign="top">
+
+	<div style="height: 100%; overflow: auto; margin: 0px; border: 0px;">
+		<table border="0" bgcolor="white" width="100%" cellspacing="0" cellpadding="0">
 		<tr>
 			<td valign="top" class="required">
 				<div><?php echo $ARnls["type"]; ?></div>
@@ -100,7 +101,9 @@
 		?><tr>
 			<td></td>
 		</tr>
-		</table></div></td>
+		</table>
+	</div>
+	</td>
 </tr><tr>
 	<td valign="bottom"><input type="button" name="action" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();"></td>
 	<td align="right" valign="bottom"><input type="hidden" name="type" value="<?php echo $this->type; ?>">
