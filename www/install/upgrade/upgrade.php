@@ -67,13 +67,18 @@
 								));
 
 		case "2.4rc1":
+			if($store_config["dbms"] == "postgresql") {
+				$newversion = "2.4rc2.1";
+			} else {
+				$newversion = "2.4";
+			}
 			array_push($todo, Array(
 								"description" => "Moving configuration into data->config.",
 								"operation" => "2.4rc1/upgrade.configdata.php",
-								"newversion" => "2.4"
+								"newversion" => $newversion
 								));
-		case "2.4rc1.1":
-			if( $store_config["dbms"] == "postgresql") {
+		case "2.4rc2.1":
+			if($store_config["dbms"] == "postgresql") {
 				array_push($todo, Array(
 							"description" => "updating the postgresql store.",
 							"operation" => "2.4rc2/upgrade.postgresql.lowercase.php",
