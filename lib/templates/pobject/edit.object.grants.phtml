@@ -361,7 +361,7 @@
   <td id="grantstop" height="100%">
 	<fieldset id="grants_list">
 		<legend><?php echo $ARnls["grants_for"]." "; $this->parents($this->path, 'edit.object.grants.show.path.phtml','','/'); ?></legend>
-		<iframe name="grantslist" id="grants_list_frame" src="<?php echo $this->make_url(); ?>edit.object.grants.list.phtml"></iframe>
+		<iframe name="grantslist" id="grants_list_frame" src="<?php echo $this->store->root.$this->path; ?>edit.object.grants.list.phtml"></iframe>
 	</fieldset>
   </td>
 </tr><tr>
