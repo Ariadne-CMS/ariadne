@@ -22,12 +22,12 @@
 
 	function untar($tarfile, $file, $dstdir) {
 		global $error, $ax_config;
-		if ($ax_config["tar_error_handler"]) {
+		if ($ax_config["tar"]["error_handler"]) {
 			$errfile="./tar.errors";
-			$handler=sprintf($ax_config["tar_error_handler"], $errfile);
+			$handler=sprintf($ax_config["tar"]["error_handler"], $errfile);
 		}
 
-	//	$command=sprintf($ax_config["tar_untar"], $dstdir, $file, $tarfile, $handler );
+	//	$command=sprintf($ax_config["tar"]["untar"], $dstdir, $file, $tarfile, $handler );
 
 		$arguments = Array(
 						"%destdir%" => $dstdir,
@@ -36,7 +36,7 @@
 						"%errorhandler%" => $handler
 					 );
 
-		$command = $ax_config["tar_untar"];
+		$command = $ax_config["tar"]["untar"];
 		while (list($key, $val) = each($arguments)) {
 			$command = str_replace($key, $val, $command);
 		}
@@ -60,12 +60,12 @@
 
 	function tar($tarfile, $file, $dstdir) {
 		global $error, $ax_config;
-		if ($ax_config["tar_error_handler"]) {
+		if ($ax_config["tar"]["error_handler"]) {
 			$errfile="./tar.errors";
-			$handler=sprintf($ax_config["tar_error_handler"], $errfile);
+			$handler=sprintf($ax_config["tar"]["error_handler"], $errfile);
 		}
 
-		//$command=sprintf($ax_config["tar_tar"], $dstdir, $file, $tarfile, $handler );
+		//$command=sprintf($ax_config["tar"]["tar"], $dstdir, $file, $tarfile, $handler );
 
 		$arguments = Array(
 						"%destdir%" => $dstdir,
@@ -74,7 +74,7 @@
 						"%errorhandler%" => $handler
 					 );
 
-		$command = $ax_config["tar_tar"];
+		$command = $ax_config["tar"]["tar"];
 
 		while (list($key, $val) = each($arguments)) {
 			$command = str_replace($key, $val, $command);
