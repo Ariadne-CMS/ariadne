@@ -1,6 +1,3 @@
-@echo off
+set AR_PHP=C:\progra~1\OpenSA\Apache\modules\
+set AR_INSTALL=C:\progra~1\OpenSA\apache\htdocs\ariadne\install\
 
-	set AR_PHP=D:\progra~1\apache~1\php\
-	set AR_INSTALL=D:\progra~1\apache~1\apache\htdocs\ariadne\install\
-
-	

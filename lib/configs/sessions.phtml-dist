@@ -17,7 +17,8 @@
   /* Fill in the name of the database to connect to */
   $session_config["database"]="ariadne_sessions";
 
-  $ariadne_root="/usr/local/lib/ariadne.2.0b8/";
+  // $ariadne_root='C:/Progra~1/OpenSA/ariadne.2.0b9/';
+  $ariadne_root="/usr/local/lib/ariadne.2.0b9/";
 
   /* fill in the full path to the ariadne code library (lib) */
   $session_config["code"]=$ariadne_root."lib/";

@@ -18,16 +18,17 @@
   
   /* Fill in the full path to the webservers document root below */
   /* leave out the last '/' */
-  $AR->dir->docroot="/var/www";		// <- documentroot
+  // $AR->dir->docroot='C:/Progra~1/OpenSA/Apache/htdocs'; 
+  $AR->dir->docroot="/var/www";	                           
 
   /* Fill in the path from the document root to the ariadne www pages */
   /* start with a '/' */
-  $AR->dir->www="/ariadne.2.0b8/";
+  $AR->dir->www="/ariadne/";
 
   /* If you installed ariadne in your own homedirectory, e.g. under ~user/, */
   /* then change the following line to the full path of the ariadne www     */
   /* directory. e.g.                                                        */
-  // $AR->dir->root="/home/user/public_html/ariadne.2.0b8/";
+  // $AR->dir->root="/home/user/public_html/ariadne.2.0b9/";
   $AR->dir->root=$AR->dir->docroot.$AR->dir->www;
 
   /* Only change this if you have made your own loader */

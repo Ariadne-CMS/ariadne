@@ -1,1 +1,4 @@
-<?php $ariadne='/usr/local/lib/ariadne.2.0b8/lib'; ?>
+<?php 
+  // $ariadne='C:/Progra~1/OpenSA/ariadne.2.0b9/lib'; 
+  $ariadne='/usr/local/lib/ariadne.2.0b9/lib'; 
+?>
