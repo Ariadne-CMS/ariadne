@@ -20,15 +20,19 @@
 		$arReturnPage=$this->store->root.$arReturnPath.$arReturnTemplate;
 		?>
 			<script> 
-				if (top.window.opener && top.window.opener.top.tree) {
-					<?php
-						if ($arIsNewObject) {
-							echo "  top.window.opener.top.tree.AddLinks('{$this->parent}','{$folder["icon"]}','".AddCSlashes($folder["name"], ARESCAPE)."','{$folder["path"]}','".AddCSlashes($folder["pre"], ARESCAPE)."');\n";
-						} else {
-							echo "  top.window.opener.top.tree.UpdateLinks('{$folder["icon"]}','".AddCSlashes($folder["name"], ARESCAPE)."','{$folder["path"]}','".AddCSlashes($folder["pre"], ARESCAPE)."');\n";
-						}
-					?>
-					document.location='<?php echo $arReturnPage; ?>';
+				if (top.window.opener) {
+					if (top.window.opener.top.tree) {
+						<?php
+							if ($arIsNewObject) {
+								echo "  top.window.opener.top.tree.AddLinks('{$this->parent}','{$folder["icon"]}','".AddCSlashes($folder["name"], ARESCAPE)."','{$folder["path"]}','".AddCSlashes($folder["pre"], ARESCAPE)."');\n";
+							} else {
+								echo "  top.window.opener.top.tree.UpdateLinks('{$folder["icon"]}','".AddCSlashes($folder["name"], ARESCAPE)."','{$folder["path"]}','".AddCSlashes($folder["pre"], ARESCAPE)."');\n";
+							}
+						?>
+						document.location='<?php echo $arReturnPage; ?>';
+					} else {
+						top.window.close();
+					}
 				} else if (top.window.dialogArguments) {
 					arr=new Array();
 					arr['type']='<?php echo $this->type; ?>';
