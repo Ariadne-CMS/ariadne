@@ -1,7 +1,8 @@
 <?php
 	if ($this->CheckLogin("add") && $this->CheckConfig()) {
 
-		$arNewType="pdir";
+		$arNewType=$ARConfig->cache[$this->path]->FTP['mkdir']
+//		$arNewType="pdir";
 
 		$arNewPath=$this->make_path($arNewFilename);
 		$arNewData=new object;
