@@ -15,7 +15,7 @@
 			$query.=" and article.start <= ".($date+86400)." and article.end >= ".$date;
 		}
 //		if ($AR->user->data->orderedbrowsing) {
-			$query.=" order by name.$nls.value";
+			$query.=" order by name.$nls.value, name.none.value";
 //		}
 		if (!($limit=$this->getvar('limit'))) {
 			$limit=100;
