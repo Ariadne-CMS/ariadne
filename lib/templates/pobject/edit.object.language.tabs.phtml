@@ -28,9 +28,10 @@
       // make sure the currently selected language is also available at all times
       $languagelist[$arLanguage]=$AR->nls->list[$arLanguage];
     }
-	$languages=array_intersect($languagelist, array_merge($ARConfig->nls->list, $this->data->config->nls->list));
+	$languages=array_intersect(array_keys($languagelist), array_keys(array_merge($ARConfig->nls->list, $this->data->config->nls->list)));
 	$count=count($languages);
-	while (list($nlskey, $language)=each($languages)) {
+	while (list($key, $nlskey)=each($languages)) {
+		$language=$AR->nls->list[$nlskey];
 		if (($this->data->config->nls->list[$nlskey]) || ($this->getdata('name',$nlskey))) {
 			$image=$AR->dir->images."nls/small/".$nlskey.".gif";
 		} else {
