@@ -4,14 +4,14 @@
 	require($ariadne."/includes/loader.ftp.php");
 	require($ariadne."/configs/store.phtml");
 	require($ariadne."/configs/sessions.phtml");
-	require($ariadne."/stores/mysqlstore.phtml");
+	require($ariadne."/stores/".$store_config["dbms"]."store.phtml");
 	require($ariadne."/nls/en");
 	require($ariadne."/modules/mod_mimemagic.php");
 
 		/* this function has been taken from the php manual		*/
 		
 		function ftp_ErrorHandler ($errno, $errmsg, $filename, $linenum, $vars) {
-			if ($errno!=8 ) {
+			if ($errno!= 2 && $errno!=8 ) {
 			    // timestamp for the error entry
 			    $dt = date("Y-m-d H:i:s (T)");
 
@@ -80,7 +80,7 @@
 					$result=false;
 				} else {
 					debug("ftp: accept_connect returned $msgsocket");
-					//socket_set_blocking($msgsocket, TRUE);
+					socket_set_blocking($msgsocket, TRUE);
 					debug("ftp: connected ($msgsocket)");
 					$FTP->DC["msgsocket"]=$msgsocket;
 					$result=true;
@@ -200,7 +200,7 @@
 		global $FTP;
 			if ($FTP->DC["ob_active"]) {
 				debug("ftp::CloseDC:: closing output buffer");
-				ob_end_clean();
+				ob_end_flush();
 				debug("ftp::CLoseDC:: ok, ob closed");
 				$FTP->DC["ob_active"]=false;
 			}
@@ -346,7 +346,8 @@
 
 						debug("ftp: LIST path=$path, mode=$listMode");
 						if ($FTP->store->exists($path)) {
-							ftp_Tell(150, "Opening ascii mode data connection");
+
+							ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ascii' : 'binary')." mode data connection");
 							if (ftp_OpenDC()!==false) {
 
 								debug("ftp: listing ($path) ($listMode)");
@@ -441,8 +442,9 @@
 							ftp_Tell(250, "$template removed");
 						} else
 						if ($FTP->store->exists($target)) {
-								$FTP->store->call("ftp.delete.phtml", "",
-									$FTP->store->get($file));
+								debug("ftp::delete ($target) ftp.$listMode.delete.phtml");
+								$FTP->store->call("ftp.$listMode.delete.phtml", "",
+									$FTP->store->get($target));
 
 								if ($ARCurrent->ftp_error) {
 									ftp_Tell(550, $ARCurrent->ftp_error);
@@ -486,9 +488,14 @@
 											$FTP->store->get($path));
 								} else {
 									if ($FTP->store->exists($target)) {
-										$result=$FTP->store->call("ftp.$listMode.save.phtml", Array("file" => $fileinfo),
+										debug("ftp::store removing $target first");
+										// if $target already exists, we have to delete it first
+										$result=$FTP->store->call("ftp.$listMode.delete.phtml", Array(),
 											$FTP->store->get($target));
-									} else {
+									}
+
+									if (!$ARCurrent->ftp_error) {
+										debug("ftp::store storing $target");
 										$FTP->store->call("ftp.$listMode.save.new.phtml", Array("file" => $fileinfo),
 											$FTP->store->get($path));
 									}
@@ -748,7 +755,8 @@
 
 
 	$FTP = new object;
-	$store=new mysqlstore(".", $store_config);
+	$inst_store = $store_config["dbms"]."store";
+	$store=new $inst_store(".", $store_config);
 
 	// fill in your own server ip number:
 	$FTP->server_ip = "your.ip.number";
