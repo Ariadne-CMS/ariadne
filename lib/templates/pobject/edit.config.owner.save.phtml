@@ -1,0 +1,23 @@
+<?php
+	if ($this->CheckLogin('config')) {
+		if ($recursive) {
+			$this->call('recurse.phtml', $arCallArgs);
+		} else {
+			$this->call('system.save.owner.phtml', Array('owner' => $owner));
+			if ($this->error) {
+				?>
+				<script>
+					alert('<?php echo AddCSlashes($this->error, ARESCAPE); ?>');
+					history.back();
+				</script>
+				<?php
+			} else {
+				?>
+				<script>
+					window.close();
+				</script>
+				<?php
+			}
+		}
+	}
+?>

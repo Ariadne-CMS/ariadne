@@ -1,0 +1,62 @@
+<?php
+	if ($this->CheckLogin("config") && $this->CheckConfig()) {
+?>
+<html>
+<head>
+<title><?php echo $ARnls["owner"]; ?></title>
+<?php
+	include($this->store->code."widgets/wizard/classic.css");
+?>
+<script>
+	function init() {
+		document.ownerform.target.focus();
+	}
+</script>
+</head>
+<body onLoad="init()">
+<table border="0" width="100%" cellspacing="0" cellpadding="2">
+<?php
+	$server_name=eregi_replace("^[htps:/]*/","",$AR->host);
+	global $HTTP_SERVER_VARS;
+        if ($HTTP_SERVER_VARS["HTTP_HOST"]==$server_name) {
+		$currentpath=$this->store->root.$this->path;
+	} else {
+		$currentpath=$this->make_url();
+	}
+?>
+<form action="<?php echo $currentpath; ?>edit.config.owner.save.phtml" name="ownerform">
+<input type="hidden" name="action" value="setowner">
+<tr>
+	<td align="center" colspan="2">
+		<?php 
+			echo $ARnls["owner"].":&nbsp;";
+			$wgBrowseName="owner";
+			$query = "object.implements='puser' and login.value='".AddSlashes($this->data->owner)."'";
+			$wgBrowsePath = current($this->find('/system/users/', $query, 'system.get.path.phtml'));
+			if (!$wgBrowsePath) {
+				$wgBrowsePath = '/system/users/';
+			}
+			$wgBrowseFilter = 'puser';
+			$wgBrowseSize=10;
+			include($this->store->code."widgets/browse/js.html");
+			include($this->store->code."widgets/browse/form.html");
+		?><p>
+	</td>
+</tr><tr>
+	<td>
+		<input type="checkbox" name="recursive" value="true"><?php echo $ARnls["recursive"];  ?>
+	</td>
+</tr><tr>
+	<td align="left">
+		<input type="button" name="cancel" style="width: 100px" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();">
+	</td><td align="right">
+		<input type="submit" name="submit" style="width: 100px" value="<?php echo $ARnls["save"]; ?>">
+	</td>
+</tr>
+</form>
+</table>
+</body>
+</html>
+<?php
+	}
+?>
