@@ -115,6 +115,7 @@ class mysqlstore {
 		$this->root=$path;
 		$this->code=$config["code"];
 		$this->files=$config["files"];
+
 		// necessary to avoid the 'mysql_select_db' bug, it will select
 		// a database for all open connect_id's
 		// so we have to supply the database name wheenever a query is run
@@ -343,6 +344,11 @@ class mysqlstore {
 	function close() {
 		// This is the destructor function, nothing much to see :)
 		debug("close()","store");
+		if (is_array($this->filestores)) {
+			while (list($key, $filestore)=each($this->filestores)) {
+				$filestore->close();
+			}
+		}
 		return @mysql_close($this->connect_id);
 	}
 
@@ -857,6 +863,14 @@ class mysqlstore {
 			exit;
 		}
 		return $id;
+	}
+
+	function get_filestore($name) {
+		require_once($this->code."modules/mod_filestore.phtml");
+		if (!$this->filestores[$name]) {
+			$this->filestores[$name]=new filestore($name, $this->files);
+		}
+		return $this->filestores[$name];
 	}
 
 } // end class store
