@@ -129,7 +129,7 @@ class mysqlstore {
 		$this->error="";
 		$this->count=@mysql_num_rows($objects["list"]);
 		while ($row=@mysql_fetch_array($objects["list"])) {
-			$object=$this->newobject($row["path"], $row["parent"], $row["type"], $row["object"], $row["id"], $row["lastchanged"], $row["vtype"]);
+			$object=$this->newobject($row["path"], $row["parent"], $row["type"], unserialize($row["object"]), $row["id"], $row["lastchanged"], $row["vtype"]);
 			$result[]=$object->call($template, $args);
 		}
 
