@@ -61,6 +61,42 @@
 		}
 	}
 
+
+	function ldRegisterFile($field = "file", &$error) {
+	global $ARnls, $store, $HTTP_POST_FILES, $HTTP_POST_VARS;
+
+		require_once($store->code."modules/mod_mimemagic.php");
+
+		$result = false;
+
+		$file_temp=$HTTP_POST_FILES[$field]['tmp_name'];
+		$file=$HTTP_POST_FILES[$field]['name'];
+		if ($file && is_uploaded_file($file_temp)) {
+			list($inf, $inftp) = virusscan($file_temp);
+			if($inf) {
+				virusclean($file_temp);
+				// This is duplicate in some cases. Should be a bit cleaned up.
+				$error = sprintf($ARnls["err:fileuploadvirus"], $inftp);
+			} else {
+				// new file uploaded -> save it before PHP deletes it
+				$file_artemp=tempnam($store->files."temp","upload");
+				if (move_uploaded_file($file_temp, $file_artemp)) {
+					// now make the new values available to wgWizKeepVars()
+					$HTTP_POST_VARS[$field]=$file;
+					$HTTP_POST_VARS[$field."_temp"]=substr($file_artemp,strlen($store->files."temp"));
+					$HTTP_POST_VARS[$field."_size"]=$HTTP_POST_FILES[$field]['size'];
+					$type = get_mime_type($file_artemp);
+					if (!$type) {
+						$type = get_mime_type($file, MIME_EXT);
+					}
+					$HTTP_POST_VARS[$field."_type"]=$type;
+					$result = true;
+				}
+			}
+		}
+		return $result;
+	}
+
 	function ldOnFinish() {
 	global $ARCurrent, $store;
 

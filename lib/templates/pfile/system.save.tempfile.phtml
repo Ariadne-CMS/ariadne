@@ -1,37 +1,7 @@
 <?php
 	if ( ( $this->arIsNewObject && $this->CheckLogin("add", $this->type) ) ||
 			 ( !$this->arIsNewObject && $this->CheckLogin("edit") ) ) {
-		global $HTTP_POST_FILES, $HTTP_POST_VARS;
 
-		require_once($this->store->code."modules/mod_mimemagic.php");
-
-		$form_field="file";
-
-		$file_temp=$HTTP_POST_FILES[$form_field]['tmp_name'];
-		$file=$HTTP_POST_FILES[$form_field]['name'];
-		if ($file && is_uploaded_file($file_temp)) {
-		
-			list($inf, $inftp) = virusscan($file_temp);
-			if($inf) {
-				virusclean($file_temp);
-				// This is duplicate in some cases. Should be a bit cleaned up.
-				$this->error = sprintf($ARnls["err:fileuploadvirus"], $inftp);
-				error(sprintf($ARnls["err:fileuploadvirus"], $inftp));
-			}
-				
-			// new file uploaded -> save it before PHP deletes it
-			$file_artemp=tempnam($this->store->files."temp","upload");
-			if (move_uploaded_file($file_temp, $file_artemp)) {
-				// now make the new values available to wgWizKeepVars()
-				$HTTP_POST_VARS[$form_field]=$file;
-				$HTTP_POST_VARS[$form_field."_temp"]=substr($file_artemp,strlen($this->store->files."temp"));
-				$HTTP_POST_VARS[$form_field."_size"]=$HTTP_POST_FILES[$form_field]['size'];
-				$type = get_mime_type($file_artemp);
-				if (!$type) {
-					$type = get_mime_type($file, MIME_EXT);
-				}
-				$HTTP_POST_VARS[$form_field."_type"]=$type;
-			}
-		}
+		ldRegisterFile("file", $this->error);
 	}
 ?>
