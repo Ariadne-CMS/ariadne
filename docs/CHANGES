@@ -129,6 +129,10 @@ Bugs Fixed:
 	  the wizard.
 	- Copied the fix in the ftp loader to all the scripts in ./bin/ so
 	  compensate for changes in php behavour
+	- fixed the wddx export/import
+	  * export didn't know about the $data to $data->config changes
+	  * imports' templates code was wrong
+	- change the way templates are included, because it was a bit wrong
 
 Changes in Ariadne since version Ariadne 2.3-dev
 

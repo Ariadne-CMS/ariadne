@@ -133,13 +133,10 @@
 			if (file_exists($fsPath)) {
 				Parse_str($fsLocalVars);
 				if ($fsObject) {
-					$fsOldThis=&$this;
-					$this=&$fsObject;
+					$fsObject->ARinclude($fsPath);
+				} else {
+					include($fsPath);
 				}
-				include($fsPath);
-				if ($fsOldThis) {
-					$this=&$fsOldThis;
-				}					
 			} else {
 				$arResult=false;
 			}

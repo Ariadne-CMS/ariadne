@@ -1973,7 +1973,11 @@ class pobject extends object { // pobject class definition
 		unset($user->groups);
 		return $user;
 	}
-
+	
+	function ARinclude($file) {
+		debug('including file ['.$file.'] in the current scope','all');
+		include($file);
+	}
 
 	function _load($class) {
 		// only allow access to modules in the modules directory.
