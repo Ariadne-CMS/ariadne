@@ -22,6 +22,8 @@
   function View(path) {
     document.location.href='<?php echo $this->store->root; ?>'+path+'view.phtml';
   }
+  function LoadingDone() {
+  }
 </script>
 </head>
 <body scroll="no" bgcolor="white" onLoad="top.LoadingDone();">
