@@ -24,7 +24,7 @@ CREATE TABLE ".$this->tbl_prefix."nodes (
 CREATE TABLE ".$this->tbl_prefix."objects (
 	id int(11) DEFAULT '0' NOT NULL auto_increment,
 	type varchar(16) DEFAULT '' NOT NULL,
-	object text,
+	object mediumtext,
 	vtype varchar(16) DEFAULT '' NOT NULL,
 	lastchanged TIMESTAMP,
 	PRIMARY KEY (id),
