@@ -111,8 +111,6 @@
 			$callArgs["srcpath"]  = $srcpath;
 			$callArgs["destpath"] = $destpath;
 
-			print_r($callArgs);
-
 			$store->call("system.export.phtml", $callArgs,
 				$store->get("/"));
 			$error=$store->error;
