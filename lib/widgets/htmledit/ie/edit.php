@@ -338,6 +338,13 @@ function loadpage(root, path, file, name, language, type, value, save2form, targ
     tbContentElement.DocumentHTML=AR_FORMAT_HTML(tbContentValue);
   } else {
     tbContentElement.DocumentHTML=tbContentValue;
+    ToolbarFormatState = tbContentEditOptions["toolbars"]["FormatToolbar"] == 2 ? "dockedtop" : "hidden";
+    ToolbarFontFormatState = tbContentEditOptions["toolbars"]["FontFormatToolbar"] == 2 ? "dockedtop" : "hidden";
+    ToolbarStandardState = tbContentEditOptions["toolbars"]["StandardToolbar"] == 2 ? "dockedtop" : "hidden";
+    ToolbarAbsState = tbContentEditOptions["toolbars"]["AbsolutePositioningToolbar"] == 2 ? "dockedtop" : "hidden";
+    ToolbarTableState = tbContentEditOptions["toolbars"]["TableToolbar"] == 2 ? "dockedtop" : "hidden";
+    toolbars_init();
+    TBRebuildMenu(VIEW, true);
   }
   tbContentElement.BaseURL=root+path;
   tbContentElement.onkeypress=wgCompose_keypress;
@@ -562,8 +569,63 @@ function AR_FORMAT_HTML(code) {
   return sContents;
 }
 
+function toolbars_init() {
+
+  if (tbContentEditOptions["toolbars"]["FormatToolbar"]==0) {
+    TBSetState(ToolbarMenuFmt, "gray");
+    ToolbarFormatState='hidden';
+  } else if (ToolbarFormatState=="hidden") {
+    TBSetState(ToolbarMenuFmt, "unchecked");
+  } else {
+    TBSetState(ToolbarMenuFmt, "checked");
+  }
+  TBSetState(FormatToolbar, ToolbarFormatState);
+
+  if (tbContentEditOptions["toolbars"]["FontFormatToolbar"]==0) {
+    TBSetState(ToolbarMenuFontFmt, "gray");
+    ToolbarFontFormatState='hidden';
+  } else if (ToolbarFontFormatState=="hidden") {
+    TBSetState(ToolbarMenuFontFmt, "unchecked");
+  } else {
+    TBSetState(ToolbarMenuFontFmt, "checked");
+  }
+  TBSetState(FontFormatToolbar, ToolbarFontFormatState);
+
+  if (tbContentEditOptions["toolbars"]["AbsolutePositioningToolbar"]==0) {
+    TBSetState(ToolbarMenuAbs, "gray");
+    ToolbarAbsState='hidden';
+  } else if (ToolbarAbsState=="hidden") {
+    TBSetState(ToolbarMenuAbs, "unchecked");
+  } else {
+    TBSetState(ToolbarMenuAbs, "checked");
+  }
+  TBSetState(AbsolutePositioningToolbar, ToolbarAbsState);
+
+  if (tbContentEditOptions["toolbars"]["TableToolbar"]==0) {
+    TBSetState(ToolbarMenuTable, "gray");
+    ToolbarTableState='hidden';
+  } else if (ToolbarTableState=="hidden") {
+    TBSetState(ToolbarMenuTable, "unchecked");
+  } else {
+    TBSetState(ToolbarMenuTable, "checked");
+  }
+  TBSetState(TableToolbar, ToolbarTableState);
+
+  if (tbContentEditOptions["toolbars"]["StandardToolbar"]==0) {
+    TBSetState(ToolbarMenuStd, "gray");
+    ToolbarStandardState='hidden';
+  } else if (ToolbarStandardState=="hidden") {
+    TBSetState(ToolbarMenuStd, "unchecked");
+  } else {
+    TBSetState(ToolbarMenuStd, "checked");
+  }
+  TBSetState(StandardToolbar, ToolbarStandardState);
+
+}
+
 function VIEW_HTML_onclick() {
   if (ViewHTML.TBSTATE=="checked") {
+
     TBSetState(ViewHTML, "unchecked");
     if (tbContentEditOptions["xhtml"]) {
 	  var sContents=tbContentElement.getXHTML();
@@ -572,9 +634,13 @@ function VIEW_HTML_onclick() {
     }
     sContents=AR_FORMAT_HTML(sContents);
     tbContentElement.DocumentHTML=sContents;
+
     ToolbarFormatState=FormatToolbar.TBSTATE;
     TBSetState(FormatToolbar, "hidden");
     TBSetState(ToolbarMenuFmt, "gray");    
+    ToolbarFontFormatState=FontFormatToolbar.TBSTATE;
+    TBSetState(FontFormatToolbar, "hidden");
+    TBSetState(ToolbarMenuFontFmt, "gray");    
     ToolbarAbsState=AbsolutePositioningToolbar.TBSTATE;
     TBSetState(AbsolutePositioningToolbar, "hidden");
     TBSetState(ToolbarMenuAbs, "gray");
@@ -586,28 +652,15 @@ function VIEW_HTML_onclick() {
     tbContentElement.ShowDetails = false;
 
   } else if (ViewHTML.TBSTATE=="unchecked") {
+
     var sContents=tbContentElement.DOM.body.innerText;
     if (sContents.match(/<FRAME/i)) {
       alert('HTML contains a frameset\nWYSIWYG view disabled');
     } else {
-      TBSetState(FormatToolbar, ToolbarFormatState);
-      if (ToolbarFormatState=="hidden") {
-        TBSetState(ToolbarMenuFmt, "unchecked");
-      } else {
-        TBSetState(ToolbarMenuFmt, "checked");
-      }
-      TBSetState(AbsolutePositioningToolbar, ToolbarAbsState);
-      if (ToolbarAbsState=="hidden") {
-        TBSetState(ToolbarMenuAbs, "unchecked");
-      } else {
-        TBSetState(ToolbarMenuAbs, "checked");
-      }
-      TBSetState(TableToolbar, ToolbarTableState);
-      if (ToolbarTableState=="hidden") {
-        TBSetState(ToolbarMenuTable, "unchecked");
-      } else {
-        TBSetState(ToolbarMenuTable, "checked");
-      }
+
+/*
+*/
+      toolbars_init();
       tbContentElement.ShowDetails = tbDetailsSetting;
       TBSetState(ViewHTML, "checked");
       TBRebuildMenu(ViewHTML.parentElement, true);
@@ -1399,6 +1452,9 @@ return tbContentElement_ContextMenuAction(itemIndex)
       <div unselectable='on' class="tbMenuItem" id="ToolbarMenuFmt" TBTYPE="toggle" TBSTATE="checked" ID="TOOLBARS_FORMAT" TBTYPE="toggle" LANGUAGE="javascript" onclick="return TOOLBARS_onclick(FormatToolbar, ToolbarMenuFmt)">
         <?php echo $ARnls["e_formatting"]; ?>
       </div>
+      <div unselectable='on' class="tbMenuItem" id="ToolbarMenuFontFmt" TBTYPE="toggle" TBSTATE="unchecked" ID="TOOLBARS_FORMAT" TBTYPE="toggle" LANGUAGE="javascript" onclick="return TOOLBARS_onclick(FontFormatToolbar, ToolbarMenuFontFmt)">
+        <?php echo $ARnls["e_fontformat"]; ?>
+      </div>
       <div unselectable='on' class="tbMenuItem" id="ToolbarMenuAbs" TBTYPE="toggle" TBSTATE="unchecked" ID="TOOLBARS_ZORDER" TBTYPE="toggle" LANGUAGE="javascript" onclick="return TOOLBARS_onclick(AbsolutePositioningToolbar, ToolbarMenuAbs)">
         <?php echo $ARnls["e_absolute_positioning"]; ?>
       </div>
@@ -1558,9 +1614,9 @@ return tbContentElement_ContextMenuAction(itemIndex)
   </div>
 </div>
 
-<div unselectable='on' class="tbToolbar" ID="FormatToolbar">
-  <select ID="ParagraphStyle" class="tbGeneral" style="width:90" TITLE="Paragraph Format" LANGUAGE="javascript" onchange="return ParagraphStyle_onchange()">
-  </select>
+
+
+<div unselectable='on' class="tbToolbar" ID="FontFormatToolbar" TBSTATE='hidden'>
   <select ID="FontName" class="tbGeneral" style="width:140" TITLE="Font Name" LANGUAGE="javascript" onchange="return FontName_onchange()">
     <option value="Arial">Arial
     <option value="Tahoma">Tahoma
@@ -1577,6 +1633,21 @@ return tbContentElement_ContextMenuAction(itemIndex)
     <option value="6">6
     <option value="7">7
   </select>
+
+  <div unselectable='on' class="tbSeparator"></div>
+
+  <div unselectable='on' class="tbButton" ID="DECMD_SETFORECOLOR" TITLE="<?php echo $ARnls["e_foreground_color"]; ?>" LANGUAGE="javascript" onclick="return DECMD_SETFORECOLOR_onclick()">
+    <img unselectable='on' class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/fgcolor.gif" WIDTH="23" HEIGHT="22">
+  </div>
+  <div unselectable='on' class="tbButton" ID="DECMD_SETBACKCOLOR" TITLE="<?php echo $ARnls["e_background_color"]; ?>" LANGUAGE="javascript" onclick="return DECMD_SETBACKCOLOR_onclick()">
+    <img unselectable='on' class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/bgcolor.gif" WIDTH="23" HEIGHT="22">
+  </div>
+</div>  
+
+<div unselectable='on' class="tbToolbar" ID="FormatToolbar">
+  <select ID="ParagraphStyle" class="tbGeneral" style="width:90" TITLE="Paragraph Format" LANGUAGE="javascript" onchange="return ParagraphStyle_onchange()">
+  </select>
+
   <select ID="cssStyle" class="tbGeneral" style="width:90" TITLE="Style" LANGUAGE="javascript" onchange="return cssStyle_onChange(this)">  
   </select>
 
@@ -1590,15 +1661,6 @@ return tbContentElement_ContextMenuAction(itemIndex)
   </div>
   <div unselectable='on' class="tbButton" ID="DECMD_UNDERLINE" TITLE="<?php echo $ARnls["e_underline"]; ?>" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_UNDERLINE_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/under.gif" WIDTH="23" HEIGHT="22">
-  </div>
-  
-  <div unselectable='on' class="tbSeparator"></div>
-
-  <div unselectable='on' class="tbButton" ID="DECMD_SETFORECOLOR" TITLE="<?php echo $ARnls["e_foreground_color"]; ?>" LANGUAGE="javascript" onclick="return DECMD_SETFORECOLOR_onclick()">
-    <img unselectable='on' class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/fgcolor.gif" WIDTH="23" HEIGHT="22">
-  </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_SETBACKCOLOR" TITLE="<?php echo $ARnls["e_background_color"]; ?>" LANGUAGE="javascript" onclick="return DECMD_SETBACKCOLOR_onclick()">
-    <img unselectable='on' class="tbIcon" src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/bgcolor.gif" WIDTH="23" HEIGHT="22">
   </div>
   
   <div unselectable='on' class="tbSeparator"></div>
