@@ -44,7 +44,7 @@
 				with(Nodes[parent]) {
 					children[children.length]=path;
 				}
-				Nodes[path]=new Node(path, parent, name);		 
+				Nodes[path]=new Node(path, parent, unescape(name));		 
 				OrderedList[OrderedList.length]=path;
 			}
 		}
