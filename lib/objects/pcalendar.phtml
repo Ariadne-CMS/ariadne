@@ -62,10 +62,11 @@ class pcalendar extends pdir { // pcalendar class definition
 		unset($ARCurrent->arDateList);
 		$now=getdate(time());
 		if (!$start) {
-			$start=mktime(0,0,0,$now["month"],$now["mday"], $now["year"]);
+			$start=mktime(0,0,0,$now["mon"],$now["mday"], $now["year"]);
 		}
+		$tomorrow=getdate($start+(3600*24));
 		if (!$end) {
-			$start=mktime(0,0,0,$now["month"],$now["mday"]+1, $now["year"]);
+			$end=mktime(0,0,0,$tomorrow["mon"],$tomorrow["mday"]+1, $tomorrow["year"]);
 		}
 		$this->populate($start, $end, $priority, "system.get.item-by-time.phtml");
 		if (is_array($ARCurrent->arCalItems)) {
