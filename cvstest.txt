@@ -1,7 +1,0 @@
-This is a test file...
-1
-Testing mailer
-last test
-Last one
-really
-really
