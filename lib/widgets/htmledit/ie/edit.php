@@ -62,6 +62,7 @@
       }
     }
 ?>
+  var buttons_disabled=new Array();
   tbContentEditOptions=new Array();
 <?php
 	if (is_array($options)) {
@@ -289,11 +290,11 @@ function loadpage(root, path, file, name, language, type, value, save2form, targ
   tbContentLanguage=language;
   tbContentType=type;
   tbContentEditOptions=editoptions;
-  var buttons_off=tbContentEditOptions["disabled"].split(":");
-  tbContentEditOptions["buttons_off"]=new Array();
-  for (i=0; i<buttons_off.length; i++) {
-    if (buttons_off[i]) {
-      tbContentEditOptions["buttons_off"][buttons_off[i]]=1;
+
+  var temp=tbContentEditOptions["disabled"].split(":");
+  for (i=0; i<temp.length; i++) {
+    if (temp[i]) {
+      buttons_disabled[temp[i]]=1;
     }
   }
   if (window.opener && window.opener.wgHTMLEditContent) {
@@ -389,7 +390,7 @@ function tbContentElement_ShowContextMenu() {
   for (i=0; i<ContextMenu.length; i++) {
     menuStrings[i] = ContextMenu[i].string;
     if (menuStrings[i] != MENU_SEPARATOR) {
-      if (tbContentEditOptions["buttons_off"][ContextMenu[i].cmdId]) {
+      if (buttons_disabled[ContextMenu[i].cmdId]) {
         state = DECMDF_DISABLED;
       } else {
         state = tbContentElement.QueryStatus(ContextMenu[i].cmdId);
@@ -426,7 +427,7 @@ function tbContentElement_DisplayChanged() {
   var i, s;
 
   for (i=0; i<QueryStatusToolbarButtons.length; i++) {
-    if (tbContentEditOptions["buttons_off"][QueryStatusToolbarButtons[i].command]) {
+    if (buttons_disabled[QueryStatusToolbarButtons[i].command]) {
       s = DECMDF_DISABLED;
     } else {
       s = tbContentElement.QueryStatus(QueryStatusToolbarButtons[i].command);
@@ -440,7 +441,7 @@ function tbContentElement_DisplayChanged() {
     }
   }
 
-  if (tbContentEditOptions["buttons_off"] && tbContentEditOptions["buttons_off"][DECMD_SETBLOCKFMT]) {
+  if (buttons_disabled[DECMD_SETBLOCKFMT]) {
     s = DECMDF_DISABLED;
   } else {
     s = tbContentElement.QueryStatus(DECMD_GETBLOCKFMT);
@@ -451,7 +452,7 @@ function tbContentElement_DisplayChanged() {
     ParagraphStyle.disabled = false;
     ParagraphStyle.value = tbContentElement.ExecCommand(DECMD_GETBLOCKFMT, OLECMDEXECOPT_DODEFAULT);
   }
-  if (tbContentEditOptions["buttons_off"] && tbContentEditOptions["buttons_off"][DECMD_SETFONTNAME]) {
+  if (buttons_disabled[DECMD_SETFONTNAME]) {
     s = DECMDF_DISABLED;
   } else {
     s = tbContentElement.QueryStatus(DECMD_GETFONTNAME);
@@ -469,6 +470,7 @@ function tbContentElement_DisplayChanged() {
     FontSize.disabled = false;
     FontSize.value = tbContentElement.ExecCommand(DECMD_GETFONTSIZE, OLECMDEXECOPT_DODEFAULT);
   }
+
 }
 
 function MENU_FILE_SAVE_onclick() {
@@ -504,6 +506,7 @@ function MENU_FILE_SAVE_onclick() {
     savewindow.document.write("<html><body bgcolor=#CCCCCC><font face='Arial,helvetica,sans-serif'>");
     savewindow.document.write("<form method='POST' action='"+tbContentTarget+file+"edit."+tbContentName+".save.phtml'>");
     savewindow.document.write("<input type='hidden' name='"+tbContentName+"'>");
+    savewindow.document.write("<input type='hidden' name='ContentEditOptionsPath' value='"+tbContentEditOptions["editor.ini"]+"'>");
     savewindow.document.write("<input type='hidden' name='ContentLanguage'>");
     savewindow.document.write("</form><br>Saving "+tbContentName+"</font></body></html>");
     savewindow.document.close();
@@ -725,7 +728,6 @@ function DECMD_IMAGE_onclick() {
   if (tbContentEditOptions["photobook"] && tbContentEditOptions["photobook"]["location"]) {
     var photobook=tbContentEditOptions["photobook"]["location"];
   } else {
-    alert('frop'+tbContentEditOptions["photobook"]["location"]);
     var photobook='<?php echo $AR->user->path; ?>';
   }
   if (el.type=="Control") {
@@ -882,8 +884,8 @@ function DECMD_HYPERLINK_onclick() {
 	here popup your own dialog, pass the arg array to that, get what the user
 	entered there and come back here
 	*/ 
-	arr = showModalDialog( "<?php echo $this->store->root.$AR->user->path; 
-		?>edit.object.html.link.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:12em; status: no; resizable: yes;");
+	arr = showModalDialog( "<?php echo $this->store->root; ?>" + tbContentEditOptions["editor.ini"] + 
+		"edit.object.html.link.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:12em; status: no; resizable: yes;");
 	if (arr != null){
 	    if (oParent) {
 			if (arr['URL']) {
