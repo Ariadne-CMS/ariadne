@@ -573,7 +573,22 @@ class pobject extends object { // pobject class definition
 					while (list($key, $group)=each($AR->user->groups)) { 
 						$groupgrants=Array();
 						$group->FindGrants($path, $groupgrants, $userpath);
-						$grants=array_merge($groupgrants, $grants);
+						if (is_array($grants)) {
+							reset($groupgrants);
+							while (list($gkey, $gval)=each($groupgrants)) {
+								if (is_array($grants[$gkey]) && is_array($gval)) {
+									$grants[$gkey]=array_merge($gval, $grants[$gkey]);
+								} else 
+								if ($gval && !is_array($gval)) {
+									$grants[$gkey] = $gval;
+								} else
+								if ($gval && !$grants[$gkey]) {
+									$grants[$gkey] = $gval;
+								}
+							}
+						} else {
+							$grants = $groupgrants;
+						}
 					}
 				}
 				$AR->user->grants[$path]=$grants;
