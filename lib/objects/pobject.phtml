@@ -1794,5 +1794,54 @@ class pobject extends object { // pobject class definition
 		$object->arIsNewObject=true;
 		return $object;
 	}
+
+	/*
+		since the preg_replace() function is able to execute normal php code
+		we have to intercept all preg_replace() calls and parse the
+		php code with the pinp parser.
+	*/
+	function _preg_replace($a, $b, $c, $limit=-1) {
+		$result = false;
+		if (!is_array($a)) {
+			$token = $a[0];
+			if (eregi('^['.$token.'][^'.$token.']*['.$token.'].*e.*$', $a)) {
+				include_once($this->store->code."modules/mod_pinp.phtml");
+				$pinp=new pinp("header", "this->", "\$this->_");
+				$b = "<pinp> $b </pinp>";
+				$compiled=$pinp->compile(strtr($b, "\r", ""));
+				if ($pinp->error) {
+					$this->error = $pinp->error;
+				} else {
+					$compiled = substr($compiled, strlen('<?php'), -strlen('?>'));
+					$result = preg_replace($a, $compiled, $c, $limit);
+				}
+			}
+		} else {
+			reset($a);
+			reset($b);
+			while (!$this->error && (list($key, $regexp) = each($a))) {
+				$token = $regexp[0];
+				if (eregi('^['.$token.'][^'.$token.']*['.$token.'].*e.*$', $regexp)) {
+					include_once($this->store->code."modules/mod_pinp.phtml");
+					list($key, $code)=each($b);
+					$code = "<pinp> $code </pinp>";
+					$pinp=new pinp("header", "this->", "\$this->_");
+					$compiled=$pinp->compile(strtr($code, "\r", ""));
+					if ($pinp->error) {
+						$this->error = $pinp->error;
+					} else {
+						$b_compiled[] = substr($compiled, strlen('<?php'), -strlen('?>'));
+					}
+				} else {
+					$b_compiled[] = $b;
+				}
+			}
+			if (!$this->error) {
+				$result = preg_replace($a, $b_compiled, $c, $limit);
+			}
+		}
+		return $result;
+	}
+
 } // end of pobject class definition
 ?>
