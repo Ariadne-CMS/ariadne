@@ -242,9 +242,10 @@ class pphoto extends pfile { // definitie class
 				if (is_array($ARConfig->photoCommandStack[$this->id])) {
 					$image="";
 					reset($ARConfig->photoCommandStack[$this->id]);
-					while (list($key, $exec_string)=each($ARConfig->photoCommandStack[$this->id])) {
+					while (!$failed && (list($key, $exec_string)=each($ARConfig->photoCommandStack[$this->id]))) {
 						$exec_string .= " ".$tmpsrc;
 						system($exec_string,$failed);
+						debug("executing ($exec_string)");
 						// echo( $exec_string."<br>");
 					}
 				}
