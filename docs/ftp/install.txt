@@ -143,7 +143,10 @@ file under /etc/xinet.d/ for the Ariadne FTP service, we will name it ariadne_ft
 
 This file should contain something like:
 
-	service	2121 {
+	service	unlisted {
+		port		= 2121
+		type		= UNLISTED
+		protocol	= tcp
 		disable		= no
 		flags		= REUSE
 		socket_type = stream
@@ -155,7 +158,7 @@ This file should contain something like:
 
 Explanation:
 
-	- 'service 2121' this line contains the port number you want the
+	- 'port' this line contains the port number you want the
 	Ariadne FTP server to listen on. 
 
 	- The 'user' field contains the user that your webserver is running as.
