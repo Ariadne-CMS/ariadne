@@ -21,8 +21,8 @@
 			return $password;
 		}	
 
-		$pass1=$this->getdata("pass1","none");
-		$pass2=$this->getdata("pass2","none");
+		$pass1=$this->getdata("newpass1","none");
+		$pass2=$this->getdata("newpass2","none");
 		if ($pass1 || $pass2 ) {
 			if (!($this->data->password=GetPassword($pass1,$pass2))) {
 				$this->error=$ARnls["err:validpassword"];
