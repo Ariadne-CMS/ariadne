@@ -160,10 +160,14 @@ BODY 	{
 	function init() {
 		arr=window.dialogArguments;
 		CurrentPath=new String(arr['src']);
-		if (CurrentPath.substr(0, <?php echo strlen($store->root); ?>)=='<?php echo $store->root; ?>') {
+		if (CurrentPath.substr(0, <?php echo strlen($this->store->root); ?>)=='<?php echo $this->store->root; ?>') {
 			PreviewURL=false;
 		} else {
-			PreviewURL=true;
+			if( CurrentPath.substr(0,4) == 'http' ) {
+				PreviewURL=true;
+			} else {
+				PreviewURL=false;
+			}
 		}
 		PictureForm.alt.value=arr['alt'];
 		PictureForm.border.value=arr['border'];
@@ -219,13 +223,19 @@ BODY 	{
 		} else {
 			document.forms[0].imgstyle.disabled=true;
 		}
-		if( CurrentPath == '<?php echo $this->path; ?>' ) {
-			mnCurrent.className='menuButtonCurrent';
-			CurrentButton=mnCurrent;
-			View(CurrentPath, '<?php echo $this->call("system.get.name.phtml"); ?>', true);
+		if( !PreviewURL ) {
+			if( CurrentPath == '<?php echo $this->path; ?>' ) {
+				mnCurrent.className='menuButtonCurrent';
+				CurrentButton=mnCurrent;
+				View(CurrentPath, '<?php echo $this->call("system.get.name.phtml"); ?>', true);
+			} else {
+				View(CurrentPath, 'Selected Picture', true);
+			}
 		} else {
-			View(CurrentPath, 'Selected Picture', true);
+			KeepPath[3]=CurrentPath;
+			BrowseURL();
 		}
+		showPreview();
 	}
 
 	function View(path,name,top) {
