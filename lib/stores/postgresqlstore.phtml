@@ -335,10 +335,9 @@ class postgresqlstore {
 
 			if ($limit) {
 				$query_string.=" limit $limit";
-				if ($offset) {
-					$query_string.=",$offset";
-				}
-
+			}
+			if ($offset) {
+				$query_string.=" offset $offset";
 			}
 		}
 		debug("find: query=$query_string","all");
