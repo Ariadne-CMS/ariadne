@@ -59,7 +59,7 @@
 <div class='listcontainer'>
 <table class="list" width="100%" border="0" cellspacing="0" cellpadding="4"><tr>
 <?php
-	$currentpath=$this->make_url();
+	$currentpath=$this->store->root.$this->path;
 	if ($AR->user->data->login=="admin") {
 		$result=$this->ls("/system/ariadne/types/","system.get.phtml");
 	} else {
