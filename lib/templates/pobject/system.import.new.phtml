@@ -12,6 +12,7 @@
 		($this->error will be set with an error-message)
   *******************************************************************/
   if ($this->CheckLogin("add")) {
+	display("system.import.new.phtml (".$this->path.")\n");
 
 	// get object grants.
 	$this->call("system.import.get.grants.phtml");

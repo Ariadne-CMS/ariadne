@@ -19,6 +19,8 @@ if ($this->CheckLogin("read")) {
 											$axobject->lastchanged,
 											$axobject->vtype);
 
+			$object->properties=$axobject->properties;
+
 			$id=$axobject->id;
 
 			if (!$savedObject[$id]) {
