@@ -18,19 +18,22 @@ New features:
 	  can also be used in AND statements.
 	- Added the ability to match multiple records per property.
 	- Added "owner" group. The owner group is an alias for the object
-	  owner.
-	- Every Ariadne user is now runtime added to the group 'public'.
+	  owner. To change the owner of an object, use the 
+	  system.set.owner.phtml template.
+	- Every Ariadne user is now added to the group 'public' on runtime.
 	- Added function 'ldGetClientVar()' which can be used by PINP scripts
 	  to read certain 'loader variables'. Thanks to Florian Overkamp.
-	- Added a new image dialog to the WYSIWYG Editor
+	- Added a new userfriendly image dialog to the WYSIWYG Editor.
 	- Added debug streams: debugon(level,stream), debug(text,level,stream)
 	- Added new mod_debug, debugging can now be tuned differently per
 	  loader. Debugging is possible to loader, file and syslog.
-	- ParseSummary() of particle can now be called to not display the
-	  read more... link.
+	- ParseSummary() has a new (4th) argument; if false, it won't add a
+	  'read more...' link.
 	- Added Swedish translation by Niklas Koskela.
 		
 Bugs fixed:
+	- Fixed sessions cleanup in the bin/cleanup script. It now removes
+	  more than 100 expired sessions per run.
 	- Fixed a bug which made it impossible to rename e.g. '/Test/' to
 	  '/test/'.
 	- Fixed a bug causing the edit window not to close for pdir and
