@@ -853,7 +853,9 @@ class pobject extends object { // pobject class definition
 			$checkpath=$this->path;
 			$lastcheckedpath="";
 			$arCallClassTemplate = $ARCurrent->arCallClassTemplate;
+			$templatebeenhere = array();
 			while (!$arCallClassTemplate && !$arCallTemplate && $checkpath!=$lastcheckedpath) {
+				debug("CheckConfig: loop (".$arCallClassTemplate.")(".$arCallTemplate.")(".$checkpath.")!=(".$lastcheckedpath.")","all");
 				$arType=$arCallType;
 				while ($arType && !$arCallTemplate) {
 					if ($arTemplateId=$curr_templates[$arType][$arCallFunction][$this->reqnls]) {
@@ -866,13 +868,20 @@ class pobject extends object { // pobject class definition
 					}
 				}
 				$lastcheckedpath=$checkpath;
-				if ($ARConfig->cache[$checkpath]->templates_path) {
+				debug("CheckConfig: checkpath = (".$checkpath.")","all");
+				if ($ARConfig->cache[$checkpath]->templates_path && 
+						($templatebeenhere[$ARConfig->cache[$checkpath]->templates_path] != 1)
+					) {
 					$checkpath = $ARConfig->cache[$checkpath]->templates_path;
+					debug("CheckConfig: from cache = (".$checkpath.")","all");
 				} else {
 					$checkpath=$this->store->make_path($checkpath, "..");
+					debug("CheckConfig: after make_path  (".$checkpath.")","all");
 				}
 				$curr_templates=$ARConfig->cache[$checkpath]->templates;
+				$templatebeenhere[$lastcheckedpath] = 1;
 			}
+			debug("CheckConfig: while loop ended","all");
 
 			if ($arCallTemplate && $arTemplateId) {
 				debug("CheckConfig: arCallTemplate=$arCallTemplate, arTemplateId=$arTemplateId","object");
