@@ -18,7 +18,8 @@
 		$arNewCallObject=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData);
 		$arNewCallObject->arIsNewObject=true;
 
-		$arResult=$arNewCallObject->call("system.save.data.phtml", $arCallArgs);
+		$arNewCallObject->call("system.save.data.phtml", $arCallArgs);
+		$arResult=$arNewCallObject->path;
 		$this->error=$arNewCallObject->error;
 	}
 ?>
