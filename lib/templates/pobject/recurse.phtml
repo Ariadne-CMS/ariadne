@@ -98,18 +98,17 @@
 										set_info_location("<?php echo $this->store->root; ?>"+path+"recurse.delete.phtml?total="+escape(total)+"&current="+escape(current));
 									} else {
 										if (top.window && top.window.opener) {
-											if (top.window.opener.top.View) {
-												top.window.opener.top.View('<?php echo $this->parent; ?>');
-											}
 											if (top.window.opener.wgRecurseDone) {
 												top.window.opener.wgRecurseDone();
+											} else if (top.window.opener.top.View) {
+												top.window.opener.top.View('<?php echo $this->parent; ?>');
 											}
+											
 										} else if (window.opener) {
-											if (window.opener.top.View) {
-												window.opener.top.View('<?php echo $this->parent; ?>');
-											}
 											if (window.opener.wgRecurseDone) {
 												window.opener.wgRecurseDone();
+											} else if (window.opener.top.View) {
+												window.opener.top.View('<?php echo $this->parent; ?>');
 											}
 										}
 										top.window.close();
