@@ -22,21 +22,10 @@
 			$this->call("classic.save.phtml",$arCallArgs);
 		} else if ($arSubmit==$ARnls["cancel"]) {
 			include($this->store->code."includes/cancel.phtml");
-			$this->unlock();
 		} else if ($next==$ARnls["add"]) { // add new user to this group
-			if ($this->locked()) {
-				// object locked, show us by who
-				$this->call("show.locks.phtml");
-			} else {
-				$this->call("system.set.user.phtml",$arCallArgs);
-			}
+			$this->call("system.set.user.phtml",$arCallArgs);
 		} else {// edit it
-			if ($this->lock()) {
-				// object locked, show us by who
-				$this->call("show.locks.phtml");
-			} else {
-				$this->call("classic.form.phtml",$arCallArgs);	
-			}
+			$this->call("classic.form.phtml",$arCallArgs);	
 		}
 	}
 ?>

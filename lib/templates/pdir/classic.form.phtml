@@ -15,6 +15,10 @@
 ?>
 <html>
 <head>
+<?php
+	// lock this object first, if it succeeds, it will expose some js functions
+	$this->call("lock.init.phtml");
+?>
 <title><?php 
 	$title=$ARnls["edit"]." ".@current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml")); 
 	echo $title;
@@ -41,7 +45,7 @@
 	}
 </script>
 </head>
-<body bgcolor="white">
+<body bgcolor="white" onUnLoad="releaseLock();">
 <form method="post">
 <!-- hidden form variables needed by new.phtml/save.phtml -->
 <input type="hidden" name="arNewType" value="<?php echo $arNewType; ?>">
@@ -51,6 +55,7 @@
 <tr>
 	<td bgcolor="#404074">
 		<?php
+
 			$wgNLSpretext="<font face=\"helvetica, sans-serif\" size=\"+1\" color=\"white\"><b>".
 				$title.":</b></font><br>";
 			include($this->store->code."widgets/nls/form.phtml");
@@ -58,6 +63,7 @@
 	</td>
 </tr>
 </table>
+<?php	$this->call("lock.form.phtml"); ?>
 <table border="0">
 <tr>
 	<td align="right">

@@ -17,8 +17,6 @@
 
 	 No result.
 
-	 FIXME: move checks on locks to individual templates.
-
 	******************************************************************/
 
 	if ($this->CheckConfig($arCallFunction, $arCallArgs) && $this->CheckLogin("edit")) {
@@ -30,18 +28,12 @@
 			case $ARnls["delete"] : // delete this object
 				$this->call("classic.remove.phtml",$arCallArgs);
 				break;
-			case $ARnls["cancel"] :	// stop editing -> release locks 
+			case $ARnls["cancel"] :	// stop editing 
 				include($this->store->code."includes/cancel.phtml");
-				$this->unlock();
 				break;
 			default : 	// edit	
 				// every object _must_ also have a form.phtml:
-				if ($this->lock()) {
-					// object locked, show us by who
-					$this->call("show.locks.phtml");
-				} else {
-					$this->call("classic.form.phtml",$arCallArgs);
-				}
+				$this->call("classic.form.phtml",$arCallArgs);
 		}
 	}
 ?>

@@ -54,8 +54,11 @@
 	echo $title;
 ?></title>
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
+<?php
+	$this->call("lock.init.phtml");
+?>
 </head>
-<body bgcolor="white">
+<body bgcolor="white" onUnLoad="releaseLock()">
 <form>
 <input type="hidden" name="arReturnPage" value="<?php echo $arReturnPage; ?>">
 <input type="hidden" name="arNewType" value="<?php echo $arNewType; ?>">
@@ -511,6 +514,9 @@
 	 </td>
  </tr>
  </table>
+<?php
+	$this->call("lock.form.phtml");
+?>
  </form>
  </body>
  <?php

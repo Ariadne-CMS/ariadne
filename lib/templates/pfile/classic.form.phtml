@@ -20,8 +20,11 @@
 	echo $title;
 ?></title>
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
+<?php
+	$this->call("lock.init.phtml");
+?>
 </head>
-<body bgcolor="white">
+<body bgcolor="white" onUnLoad="releaseLock()">
 <?php
 	$this->parents($this->path, "ShowLink.phtml","target=edit.phtml");
 ?>
@@ -76,6 +79,9 @@
 	</td>
 </tr>
 </table>
+<?php
+	$this->call("lock.form.phtml");
+?>
 <table width="100%" cellspacing="0" border="0">
 <tr bgcolor="#404074">
 	<td>
