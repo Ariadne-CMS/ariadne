@@ -43,6 +43,8 @@ New Features:
 	- Added some documentation about the LDAP feature (docs/ldap.txt)
 	- Added AcceptLanguage support
 	- Added export.wddx 
+	- ldRegisterFile() was added to the allowed functions list to enable
+	  multiple file upload from a PINP context.
 
 Bugs Fixed:
 	- Fixed a bug in the filestore::read() function. In some cases the store 
