@@ -1,4 +1,4 @@
-Installing Ariadne.                                            Muze Ariadne 2.1
+Installing Ariadne.                                            Muze Ariadne 2.2
 ===============================================================================
 
   IMPORTANT: Ariadne needs PHP 4.0.6 or higher *
@@ -24,6 +24,9 @@ Requirements:
 Recommended:
   ImageMagick
 
+Note: If you are using Apache 2, make sure you set the 'AcceptPathInfo on' in the
+Apache configuration (httpd.conf).
+
 1) Untar the Ariadne distribution. (since you're reading this, I guess
    that's already taken care off...)
 2) Move the www, lib and files directories to their proper place. Preferably you
@@ -31,7 +34,7 @@ Recommended:
    e.g.:
 
      cd /usr/local/lib/
-     tar xvzf ~/ariadne.2.1.tgz
+     tar xvzf ~/ariadne.2.2.tgz
      cd /var/www
      ln -s /usr/local/lib/ariadne/www/ ariadne
 
