@@ -44,6 +44,9 @@ BODY 	{
 .url {
 	width: 225px;
 }
+.name {
+	width: 90px;
+}
 </style>
 <SCRIPT LANGUAGE=JavaScript>
 <!--
@@ -62,6 +65,9 @@ BODY 	{
 		switch( elem ) {
 			case "URL":
 				document.forms[0]['URL'].value = top.window.dialogArguments["URL"];
+				break;
+			case "name":
+				document.forms[0]['name'].value = top.window.dialogArguments["name"];
 				break;
 			case "ar_type":
 			case "ar:type":
@@ -93,20 +99,8 @@ BODY 	{
 						}
 					?>
 				</select></td>
-				<!-- td>Protocol:</td>
-				<td><select name="protocol" class="layout">
-					<?php
-						$list["http"]="http:";
-						$list["ftp"]="ftp:";
-						$list["mailto"]="mailto:";
-						$list["news"]="news:";
-						while (list($key, $value)=each($list)) {
-							echo "<option value=\"$key\"";
-							if ($key==$protocol) { echo " selected"; }
-							echo ">$value</option>";
-						}
-					?>
-				</select></td -->
+				<td><?php echo $ARnls["name"]; ?>:</td>
+				<td><input type="text" name="name" value="" class="name"></td>
 			</tr><tr>
 				<td>URL:</td>
 				<td colspan="3"><INPUT ID=URL TYPE=TEXT NAME=URL value="<?php echo $URL; ?>" class="url"></td>

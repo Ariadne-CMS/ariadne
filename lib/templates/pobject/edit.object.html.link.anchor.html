@@ -45,7 +45,7 @@ BODY 	{
 .url {
 	width: 225px;
 }
-.name {
+.anchor {
 	width: 90px;
 }
 .wgBrowseInput {
@@ -57,12 +57,27 @@ BODY 	{
 </style>
 <SCRIPT LANGUAGE=JavaScript>
 <!--
+	var url=new String();
+	function doFillAnchors(anchors) {
+		var i=1;
+		for (var elem in anchors) {
+			var name=anchors[elem];
+			document.forms[0]['anchor'].options[i]=new Option(name, name);
+			if (url==name) {
+				document.forms[0]['anchor'].selectedIndex=i;
+			}
+			i++;
+		}
+	}
 	function doSubmit(form) {
 		document.forms[0].submit();
 	}
-
 	function doChangeType(type) {
 		document.location.href=type;
+	}
+	function doChangeAnchor() {
+		var anchor=document.forms[0]['anchor'];
+		document.forms[0]["URL"].value=anchor.options[anchor.selectedIndex].value;
 	}
 // -->
 </SCRIPT>
@@ -70,12 +85,13 @@ BODY 	{
 <!--
 	for ( elem in top.window.dialogArguments ) {
 		switch( elem ) {
-			case "ar_path":
-			case "ar:path":
-				document.forms[0]['ar_path'].value = top.window.dialogArguments[elem];
-				break;
-			case "name":
-				document.forms[0]['name'].value = top.window.dialogArguments["name"];
+			case "URL":
+				url=new String(top.window.dialogArguments["URL"]);
+				var anchor=url.split("#");
+				if (anchor[1]) {
+					url="#"+anchor[1];
+				}
+				document.forms[0]['URL'].value = url;
 				break;
 			case "ar_type":
 			case "ar:type":
@@ -87,6 +103,9 @@ BODY 	{
 					}
 				}						
 				break;				
+			case "anchors":
+				doFillAnchors(top.window.dialogArguments['anchors']);
+				break;
 		}
 	}
 // -->
@@ -94,12 +113,12 @@ BODY 	{
 </HEAD>
 <BODY SCROLL=NO>
 <table class="fieldset" align="left">
-<form action="edit.object.html.link.internal.save.html">
+<form action="edit.object.html.link.anchor.save.html">
 	<tr>
 		<td><?php echo $ARnls["e_hyperlink_type"]; ?>:</td>
 		<td><select name="ar_type" class="layout" onChange="doChangeType(this.options[this.selectedIndex].value);">
 			<?php
-				$type="edit.object.html.link.internal.html";
+				$type="edit.object.html.link.anchor.html";
 				while (list($key, $value)=each($settings["hyperlink"])) {
 					echo "<option value=\"$value\"";
 					if ($value==$type) { echo " selected"; }
@@ -107,17 +126,15 @@ BODY 	{
 				}
 			?>
 		</select></td>
-		<td><?php echo $ARnls["name"]; ?>:</td>
-		<td><input type="text" name="name" value="" class="name"></td>
-	</tr><tr>
-		<td><?php echo $ARnls["e_hyperlink_path"]; ?>:</td>
-		<td colspan="3"><nobr><?php
-			$wgBrowseName="ar_path";
-			$wgBrowsePath=$src;
-			include($this->store->code."widgets/browse/js.html");
-			include($this->store->code."widgets/browse/form.html");
-		?></nobr>
+		<td>Anchors::</td>
+		<td>
+			<select name="anchor" onChange="doChangeAnchor();">
+			<option value="">Select Anchor</option>
+			</select>
 		</td>
+	</tr><tr>
+		<td>URL:</td>
+		<td colspan="3"><input type="text" name="URL" class="URL"</td>
 	</tr>
 </form>
 </table>

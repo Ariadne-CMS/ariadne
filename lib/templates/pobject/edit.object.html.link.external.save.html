@@ -13,7 +13,14 @@
 		var arr = new Array();
 		arr["attributes"]=new Array();
 		arr["attributes"][0] = new attribute('ar:type','external');
-		arr["URL"] = '<?php echo $URL; ?>';
+		var name = '<?php echo $name; ?>';
+		if (name) {
+			arr['name'] =  name;
+		}
+		var url = '<?php echo $URL; ?>';
+		if (url) {
+			arr["URL"] = url;
+		}
 		top.window.returnValue = arr;
 		top.window.close();
 	}

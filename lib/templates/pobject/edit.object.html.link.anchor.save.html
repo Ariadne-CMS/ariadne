@@ -12,13 +12,15 @@
 	function doSubmit() {
 		var arr = new Array();
 		arr["attributes"]=new Array();
-        arr["attributes"][0] = new attribute('ar:type','internal');
-        arr["attributes"][1] = new attribute('ar:path','<?php echo $ar_path; ?>');
+		arr["attributes"][0] = new attribute('ar:type','anchor');
 		var name = '<?php echo $name; ?>';
 		if (name) {
 			arr['name'] =  name;
 		}
-        arr["URL"] = '<?php echo $this->make_url($ar_path); ?>';
+		var url = '<?php echo $URL; ?>';
+		if (url) {
+			arr["URL"] = url;
+		}
 		top.window.returnValue = arr;
 		top.window.close();
 	}
