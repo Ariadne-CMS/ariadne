@@ -1,10 +1,20 @@
-Ariadne 2.0b11
-
 Ariadne 2.0RC1
 
 Changes in ariadne since version 2.0b11
 
 New features:
+    - All dialogs and menu options are available and should work
+      correctly. Copy, move, delete and link are fully implemented.
+      Import and export now work via the webbrowser too. Online help
+      is available although not yet complete.
+    - New layout of the default views, the manage templates and wizards. 
+      New icons (KDE) and New pull-down menu, using HierMenu, 
+      thanks to Gabriel Wicke.
+    - pphotobook and pphoto: switched to ImageMagick. Simply install 
+      the binaries and add the path to the programs in the ariadne.phtml 
+      config. This change instantly makes Ariadne compatible with most 
+      known image formats and allows for much better thumbnails. Thanks 
+      to Florian Overkamp for most of the testing and code.
 	- property text and name now have an nls value too. 
       Used as $criteria["name"]["nls"]["="]="'$nls'"; with find().
 	  *IMPORTANT* This requires a modification of existing Ariadne stores. 
@@ -13,10 +23,38 @@ New features:
 	  Alternatively with MySQL you can run the following SQL statements:
 		mysql> alter table prop_name add AR_nls varchar(4);
 		mysql> alter table prop_text add AR_nls varchar(4);
+    - Full support for either PostgreSQL or MySQL. Easily configured per 
+      store.
+    - Support for single database installation. If you have an account
+      with access to a single database (not database system), store and
+      session data can be stored in that database using different table
+      prefixes.
+    - Support for magic_quotes_gpc. If set, the loader will fix all input. 
+      This does cost performance though.
+    - new search query language for use with find(). You can now enter
+      search criteria as a string like "name.value ~= '%test%' and 
+      object.implements = 'particle'"
+    - added an ftp daemon written in PHP :) This allows you to up- or 
+      download into ariadne directly. Still experimental, but we've
+      been using it ourselves for some time now.
+    - added some default properties upon each save: owner.value and 
+      time.ctime, time.mtime and time.muser. Owner is the login of the
+      user that created the object, ctime is the creation time, mtime
+      the lastmodified time and muser the login of the user that made
+      the last change.
+    - added customdata: this allows you to add your own data fields to
+      classes starting from a point in the tree. You can access this data
+      via the $customdata and $customnlsdata arrays.
+    - many other minor changes.
 
-Bugs:
+Bugs fixed:
 	- make_url now uses the default ariadne root when CheckConfig()
 	  hasn't been run first.
+	- the wysiwyg htmleditor is fixed in numerous ways, but still
+      not completely. Images won't dissappear after adding a hyperlink
+      on them. Special characters won't dissappear after saving. Source 
+      view still sucks.
+    - and many more bugs.
 
 Changes in ariadne since version 2.0b10
 
