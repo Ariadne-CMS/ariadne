@@ -13,6 +13,8 @@ New Features:
 	- Pinp library support is now available, allowing you to have a library of templates
 	  in a seperate tree in Ariadne that can be used anywhere in your site through a config.ini
 	  template.
+	- Added a PINP XML wrapper module. The parse_curl() method was created
+	  by Lukasz Keler. 
 
 Bugs Fixes:
 	- helene (the syntax highlighting editor) now understands javascript in templates
