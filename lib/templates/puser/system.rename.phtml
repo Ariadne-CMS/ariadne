@@ -10,6 +10,7 @@
 				$this->error=$ARnls["err:cannotdelsystemusers"];
 			} else {
 				if (!$this->exists($target)) {
+					// FIXME: change grants in objects too
 					// new filename -> new login, so check if it is unique
 					$newparent=$this->store->make_path($target, "..");
 					$newlogin=substr($target, strlen($newparent), -1);
