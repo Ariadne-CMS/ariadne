@@ -37,7 +37,7 @@ class axstore {
 		}
 		@unlink($this->tempdir);
 
-		if (@mkdir($this->tempdir, 0750)) {
+		if (@mkdir($this->tempdir, 0777)) {
 			if (file_exists($this->database)) {
 				if ($this->_untar($this->database, " ", $this->tempdir)) {
 					if (file_exists($this->tempdir."/objects.data")) {
@@ -631,8 +631,8 @@ class axstore {
 	function rm_dir($path) {
 		$path=($path[strlen($path)-1]=="/") ? $path : $path."/";
 		if (file_exists($path)) {
-			$dir=dir($path);
-			while ($entry=$dir->read()) {
+			$dir=opendir($path);
+			while ($entry=readdir($dir)) {
 				if ($entry!="." && $entry!="..") {
 					if (is_dir($path.$entry)) {
 						$this->rm_dir($path.$entry);
@@ -641,6 +641,7 @@ class axstore {
 					}
 				}
 			}
+			closedir($dir);
 			@rmdir($path);
 		}
 	}
@@ -676,7 +677,9 @@ class axstore {
 					}
 					fclose($fp_nodes);
 					fclose($fp_objects);
+					fclose($this->ofile); 
 					if (file_exists($this->tempdir."/tempobjects.data")) {
+						unlink($this->tempdir."/objects.data");
 						rename($this->tempdir."/tempobjects.data", $this->tempdir."/objects.data");
 						if ($this->sfp) {
 							fclose($this->sfp);
