@@ -483,6 +483,7 @@ function showWindowedObjects(show) {
 // default values for opening windows
 windowprops=new Array();
 windowprops['common']='directories=no,location=no,menubar=no,status=no,toolbar=no,resizable=yes';
+windowprops['full']='directories=no,location=yes,menubar=yes,status=yes,toolbar=yes,resizable=yes';
 windowprops['object_fs']=windowprops['common']+',height=100,width=400';
 windowprops['object_new']=windowprops['common']+',height=275,width=450';
 windowprops['edit_find']=windowprops['common']+',height=400,width=500';
@@ -493,12 +494,12 @@ windowprops['edit_object_layout']=windowprops['common']+',height=400,width=700';
 windowprops['edit_object_shortcut']=windowprops['common']+',height=250,width=450';
 windowprops['edit_object_grants']=windowprops['common']+',height=300,width=550';
 windowprops['edit_object_types']=windowprops['common']+',height=150,width=250';
-windowprops['edit_object_nls']=windowprops['common']+',height=150,width=250';
+windowprops['edit_object_nls']=windowprops['common']+',height=250,width=400';
 windowprops['edit_priority']=windowprops['common']+',height=150,width=250';
 windowprops['view_fonts']=windowprops['common']+',height=300,width=450';
-windowprops['view']=windowprops['common']+',height=500,width=600';
 windowprops['help']=windowprops['common']+',height=350,width=450';
 windowprops['help_about']=windowprops['common']+',height=200,width=450';
+windowprops['_new']=windowprops['full'];
 
   function viewpath(path) {
     test=new String(path);
