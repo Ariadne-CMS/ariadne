@@ -9,15 +9,17 @@
 	global $store, $AR, $ARCurrent;
 	$root=$AR->root;
 	if ($session) {
-		$root.="/=$session=";
+		$rootoptions.="/=$session=";
 		$ARCurrent->session->id=$session;
 	}
 	if ($nls) {
-		$root.="/$nls";
+		$rootoptions.="/$nls";
 		$ARCurrent->nls=$nls;
 	}
+	$root.=$rootoptions;
 	if ($store) { // loader.php uses this function before the store is initialized.
 		$store->root=$root;
+		$store->rootoptions=$rootoptions;
 	}	
 	return $root;
   }
@@ -66,18 +68,18 @@
                 }
 	}
 
-        function ldMkDir($dir) {
+	function ldMkDir($dir) {
 	global $store;
 
-                debug("ldMkDir($dir)","object");
-                $dir=strtok($dir, "/");
-                $curr=$store->files;
-                while ($dir) {
-                        $curr.=$dir."/";
-                        @mkdir($curr, 0755);
-                        $dir=strtok("/");
-                }
-        }
+		debug("ldMkDir($dir)","object");
+		$dir=strtok($dir, "/");
+		$curr=$store->files;
+		while ($dir) {
+			$curr.=$dir."/";
+			@mkdir($curr, 0755);
+			$dir=strtok("/");
+		}
+	}
 
   function squisharray($name, $array) {
     while (list($key, $val)=each($array)) {
@@ -99,6 +101,7 @@
 
     // go check for a sessionid
     $root=$AR->root;
+    $store=new mysqlstore($root,$store_config);
     $re="^/=(.*)=/";
     if (eregi($re,$PATH_INFO,$matches)) {
 		$session_id=$matches[1];
@@ -127,7 +130,6 @@
       $nls=$ARCurrent->nls;
       $cachenls="/$nls";
     }
-
     require($ariadne."/nls/".$nls);
     if (substr($function, -6)==".phtml") {
       // system template: no language check
@@ -164,7 +166,6 @@
 		} 
 		readfile($cachedimage);
     } else {      
-      $store=new mysqlstore($root,$store_config);
 
       $args=$QUERY_STRING;
       if ($REQUEST_METHOD=="POST") {
