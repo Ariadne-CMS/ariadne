@@ -1,0 +1,13 @@
+<?php
+	if ($this->CheckLogin('read')) {
+		$info['displayname'] = $this->path;
+		$info['creationdate'] = $this->data->ctime;
+		$info['getlastmodified'] = $this->data->mtime;
+		$info['resourcetype'] = '';
+		$info['getcontenttype'] = 'text/html';
+		$info['getcontentlength'] = strlen($this->ParsePage($nlsdata->page));
+
+		$arResult['path'] = $this->path;
+		$arResult['props'] = $info;
+	}
+?>

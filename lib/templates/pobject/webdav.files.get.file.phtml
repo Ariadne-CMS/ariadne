@@ -1,0 +1,14 @@
+<?php
+	if ($this->CheckLogin('read') && $this->CheckConfig()) {
+		$arResult['type'] = 'data';
+		if ($this->implements('pfile')) {
+			$arResult['contents'] = $this->GetFile();
+		} else {
+			$arResult['contents'] = $nlsdata->page;
+		}
+		$arResult['props']['size'] = strlen($contents);
+		$arResult['props']['mtime'] = $this->data->mtime;
+		$arResult['props']['ctime'] = $this->data->ctime;
+		$arResult['props']['mimetype'] = 'application/data';
+	}
+?>

@@ -1,0 +1,9 @@
+<?php
+	$this->putvar('webdav.delete.check.error', false);
+	$query = "path~='$this->path%' order by path DESC";
+	$this->find('.', $query, "webdav.files.delete.check.phtml", 0, 0);
+	if (!$this->getvar('webdav.delete.check.error')) {
+		$this->find('.', $query, "system.delete.phtml");
+		$arResult = true;
+	}
+?>

@@ -1,0 +1,21 @@
+<?php
+	if (!$this->CheckLogin('add', 'pdir')) {
+		$arResult = "401 Access Denied";
+	} else {
+		$this->CheckConfig();
+
+		$newData = Array();
+		foreach ($ARConfig->nls->list as $key => $val) {
+			debug("collection nls: $key:$val");
+			$newData[$key]["name"] = $collection;
+		}
+		
+		$newData['arNewFilename'] = $collection;
+		$newData['arNewType'] = 'pdir';
+		debug("creating collection $this->path($collection)");
+		$this->call('system.new.phtml', $newData);
+
+		debug("collection error?: $this->error");
+		$arResult = "201 Created";
+	}
+?>

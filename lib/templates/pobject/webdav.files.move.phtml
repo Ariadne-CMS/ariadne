@@ -1,0 +1,9 @@
+<?php
+	$this->call('system.rename.phtml', Array('target' => $dest));
+	if ($this->error) {
+		// FIXME: find a better error description check
+		$arResult = "409 Conflict";
+	} else {
+		$arResult = "201 Created";
+	}
+?>

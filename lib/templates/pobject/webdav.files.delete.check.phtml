@@ -1,0 +1,5 @@
+<?php
+	if (!$this->CheckLogin('delete')) {
+		$this->putvar('webdav.delete.check.error', $this->path);
+	}
+?>

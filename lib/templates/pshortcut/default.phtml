@@ -4,18 +4,9 @@
 	if ($ARBeenhere[$arCallFunction][$path]<$MAXLOOPCOUNT) {
 		$ARBeenHere[$arCallFunction][$path]+=1;
 
-		if ($this->data->path) {
-			if (!$ARConfig->cache[$this->data->path]) {
-				$this->get($this->data->path, "system.get.config.phtml");
-			}
-			$configcache = $ARConfig->cache[$this->data->path];
-			$configcache->templates_path = $this->path;
-			$ARConfig->cache[$this->data->path] = $configcache;
-		}
 		if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
 			if ($path && $this->store->exists($path)) {
-				$arCallArgs=array_merge($arCallArgs, Array("arShortCut" => $this->path));
-
+				$arCallArgs["arShortCut"] = $this->path;
 				if (!is_array($ARCurrent->shortcut_redirect)) {
 					$ARCurrent->shortcut_redirect = Array();
 				}
