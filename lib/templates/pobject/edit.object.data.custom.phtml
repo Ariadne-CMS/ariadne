@@ -41,9 +41,10 @@
 				while (list($cdnls, $cdvalues)=each($custom)) {
 					echo "	CustomData['".AddCSlashes($cdnls, ARESCAPE)."']=new Array();\n";
 					while (list($cdname, $cdvalue)=each($cdvalues)) {
-					  // Note: cdvalue doesn't need a further "Ariadne level" backslashing
-					  //	echo "	CustomData['".AddCSlashes($cdnls, ARESCAPE)."']['".AddCSlashes($cdname, ARESCAPE)."']='".AddCSlashes($cdvalue, ARESCAPE)."';\n";
-						echo "	CustomData['".AddCSlashes($cdnls, ARESCAPE)."']['".AddCSlashes($cdname, ARESCAPE)."']='$cdvalue';\n";
+						// Note: cdvalue doesn't need a further "Ariadne level" backslashing                                
+						// However, EOF chars need to be turned in "\n" inside the string                                   
+						//    echo "  CustomData['".AddCSlashes($cdnls, ARESCAPE)."']['".AddCSlashes($cdname, ARESCAPE)."']='".AddCSlashes($cdvalue, ARESCAPE)."';\n";
+						echo "  CustomData['".AddCSlashes($cdnls, ARESCAPE)."']['".AddCSlashes($cdname, ARESCAPE)."']='".str_replace("\r\n", "\\n", $cdvalue)."';\n";
 					}
 				}
 			}
