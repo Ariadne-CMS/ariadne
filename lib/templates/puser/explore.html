@@ -37,7 +37,7 @@ function View(link, template) {
     if (window.cacheTemplate) {
       target="?template="+window.cacheTemplate;
     } else {
-      target='';
+      target='?template=manage.html'; // set default template
     }
   }
 <?php if ($data->interface!="new") { ?>

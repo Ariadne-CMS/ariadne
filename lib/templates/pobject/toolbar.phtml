@@ -27,6 +27,38 @@
 <!--
 function ClearLoader() {
   top.LoadingDone();
+  tofront(<?php
+    switch($template) {
+      case 'manage.html':
+        echo(1);
+      break;
+
+      case 'view.html':
+        echo(2);
+      break;
+
+      case 'search.phtml':
+        echo(3);
+      break;
+
+      case 'config.phtml':
+        echo(4);
+      break;
+
+      case 'edit.phtml':
+        echo(5);
+      break;
+
+      case 'templates.phtml':
+        echo(6);
+      break;
+
+      case 'new.phtml':
+        echo(7);
+      break;
+
+    }
+  ?>);
 }
 
 function tofront(num) {
@@ -42,7 +74,7 @@ function tofront(num) {
     }
   }
 }
-max=6;
+max=7;
 // -->
 </script>
 </HEAD>
@@ -93,18 +125,18 @@ max=6;
   href="view.html"><?php echo $ARnls["view"]; ?></a></td>
 <td valign="top"><img src="<?php echo $AR->dir->images; ?>tabs/behind_o.gif" width="10" height="63" name="o2"></td>
 <!-- begin bottom tab  -->
-<td bgcolor="white" valign="top"><a onClick="tofront(3)" 
+<td bgcolor="white" valign="top"><a onClick="tofront(3); top.cacheTemplate='search.phtml';" 
   href="search.phtml"><?php echo $ARnls["search"]; ?></a></td>
 <td valign="top"><img src="<?php echo $AR->dir->images; ?>tabs/behind_o.gif" width="10" height="63" name="o3"></td>
 <!-- begin bottom tab  -->
-<td bgcolor="white" valign="top"><a onClick="tofront(4)" href="config.phtml"<?php
+<td bgcolor="white" valign="top"><a onClick="tofront(4); top.cacheTemplate='config.phtml';" href="config.phtml"<?php
   if (!$AR->user->grants["config"]) {
     echo "><font color=\"#CCCCCC\"";
   }
 ?>><?php echo $ARnls["config"]; ?></a></td>
 <td valign="top"><img src="<?php echo $AR->dir->images; ?>tabs/behind_o.gif" width="10" height="63" name="o4"></td>
 <!-- begin bottom tab  -->
-<td bgcolor="white" valign="top"><a onClick="tofront(5)" href="edit.phtml?returnpage=<?php
+<td bgcolor="white" valign="top"><a onClick="tofront(5); top.cacheTemplate='edit.phtml';" href="edit.phtml?returnpage=<?php
   echo RawUrlEncode($this->store->root.$this->path)."\"";
   if (!$AR->user->grants["edit"] 
       || (is_array($AR->user->grants["edit"]) && !$AR->user->grants["edit"][$this->type])) {
@@ -113,14 +145,14 @@ max=6;
 ?>><?php echo $ARnls["edit"]; ?></a></td>
 <td valign="top"><img src="<?php echo $AR->dir->images; ?>tabs/behind_o.gif" width="10" height="63" name="o5"></td>
 <!-- begin bottom tab  -->
-<td bgcolor="white" valign="top"><a onClick="tofront(6)" href="templates.phtml"<?php
+<td bgcolor="white" valign="top"><a onClick="tofront(6); top.cacheTemplate='templates.phtml';" href="templates.phtml"<?php
   if (!$AR->user->grants["layout"]) {
     echo "><font color=\"#CCCCCC\""; 
   }  
 ?>><?php echo $ARnls["layout"]; ?></a></td>
 <td valign="top"><img src="<?php echo $AR->dir->images; ?>tabs/behind_o.gif" width="10" height="63" name="o6"></td>
 <!-- begin bottom tab final tab -->
-<td bgcolor="white" valign="top"><a onClick="tofront(7)" href="new.phtml"<?php
+<td bgcolor="white" valign="top"><a onClick="tofront(7); top.cacheTemplate='new.phtml';" href="new.phtml"<?php
   if (!$AR->user->grants["add"]) {
     echo "><font color=\"#CCCCCC\"";
   }
