@@ -519,6 +519,23 @@ class pobject extends object {
 		return $result;
 	}
 
+	function CheckPublic($grant, $modifier=ARTHISTYPE) {
+	global $AR;
+
+		$result=false;
+		if (!$AR->public) {
+			$criteria["login"]["value"]["="]="'public'";
+			$AR->public=@current($this->find("/system/users/",$criteria,"system.get.phtml"));
+		}
+		if ($AR->public) {
+			$AR->private=$AR->user;
+			$AR->user=$AR->public;
+			$result=$this->CheckSilent($grant, $modifier);
+			$AR->user=$AR->private;
+		}
+		return $result;			
+	}
+
 	function CheckSilent($grant, $modifier=ARTHISTYPE) {
 	global $AR;
 
@@ -636,10 +653,11 @@ class pobject extends object {
 			}
 			if (	(	$config->cache && ( $config->cache>0 )		) &&
 					( 	!$nocache 									) && 
-					( 	$AR->user->data->login=="public" 			) &&
 					(	$AR->OS=="UNIX" || 
 						( 	(count($HTTP_POST_VARS)==0) && 
-							(count($HTTP_GET_VARS)==0) 			) 	) 	) {
+							(count($HTTP_GET_VARS)==0) 			) 	) &&
+					( 	$AR->user->data->login=="public" )
+			   ) {
 				// caching is on and enabled in loader and user is public.
 				$ARCurrent->cachetime=$config->cache;
 				// start output buffering...	
@@ -1194,6 +1212,11 @@ class pobject extends object {
 		// checksilent will fullfill our needs
 
 		return $this->CheckSilent($grant, $modifier);
+	}
+
+	function _checkpublic($grant, $modifier=ARTHISTYPE) {
+
+		return $this->CheckPublic($grant, $modifier);
 	}
 
 	function _getcharset() {
