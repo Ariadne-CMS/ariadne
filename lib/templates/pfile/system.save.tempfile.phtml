@@ -9,6 +9,9 @@
 		$info = ldRegisterFile("file", $this->error);
 		if (!$this->error) {
 			$HTTP_POST_VARS = array_merge($HTTP_POST_VARS, $info);
+			if ($info['file_type']) {
+				$HTTP_POST_VARS['mimetype'] = $info['file_type'];
+			}
 		}
 		$arResult = $info;
 	}
