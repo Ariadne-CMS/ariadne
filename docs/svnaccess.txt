@@ -1,0 +1,22 @@
+SVN Server                                                      Muze Ariadne 2.0
+================================================================================
+
+You can download the latest development version of Ariadne from
+our CVS server using a public read-only svn account.
+
+Our SVN server can be contacted via host 'svn.muze.nl', 
+
+If you use the default cvs system for linux, you can access it using:
+	
+	svn co https://svn.muze.nl/svn/ariadne/trunk ariadne
+
+If you later want to get a newer version of the code do:
+
+	svn update ariadne
+
+in the same directory you initially did the checkout.
+
+If you have any questions you can contact us at info@muze.nl, but read the 
+newsgroups at news.muze.nl first.
+
+happy hacking,
