@@ -17,6 +17,8 @@
 
 	//debugon('all');
 
+	//TODO: commandline configuration
+
 	$import = new import_wddx();
 
 	$import->parse($in,$store);
