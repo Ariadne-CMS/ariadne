@@ -21,17 +21,17 @@ methods:
 
 		returns the target to use in links in editmode
 
-	function _showInput(&$object, $var, $name) 
+	function _showInputText($var, $name, $title='') 
 
 		show an editable element as an input line, if 
 		editMode is on, or simply echo it if not
 
-	function _showSpan(&$object, $var, $name) 
+	function _showSpan($var, $name, $title='') 
 
 		show an editable element as an editable span, if 
 		editMode is on, or simply echo it if not
 
-	function _showDiv(&$object, $var, $name) 
+	function _showDiv($var, $name, $title='') 
 
 		show an editable element as an editable div, if 
 		editMode is on, or simply echo it if not.
@@ -41,8 +41,9 @@ Missing:
 - workable user interface for adding new objects, without using 
   the wizards
 - better solution for presenting metadata
+- more error checking in the save routines
 
-The last two problems may have a single solution:
+The first two problems may have a single solution:
 
 How about we add a sidebar to the editor widget, which can enabled 
 or disabled by the user. If you click on an editable element, the
@@ -65,9 +66,9 @@ view.html:
 </pinp>
 <html>
 <body>
-  <h1><pinp> edit::showSpan($nlsdata->name, $nls.'[name]'); </pinp></h1>
+  <h1><pinp> edit::showSpan($nlsdata->name, "[$nls][name]"); </pinp></h1>
   <p><pinp>
-    edit::showDiv(ParsePage($nlsdata->summary), $nls.'[summary]');
+    edit::showDiv(ParsePage($nlsdata->summary), "[$nls][summary]");
   </pinp></p>
   <ul>
   <pinp>
@@ -75,7 +76,7 @@ view.html:
   </pinp>
   </ul>
   <pinp>
-    edit::showDiv( GetPage(), $nls.'[page]');
+    edit::showDiv( GetPage(), "[$nls][page]");
   </pinp>
 </body>
 </html>
@@ -85,7 +86,7 @@ show.subnav.html:
   import('mod_edit.php');
 </pinp>
 <li><pinp>
-  edit::showSpan($nlsdata->name, $nls.'[name]');
+  edit::showSpan($nlsdata->name, "[$nls][name]");
 </pinp></li>
 
 user.edit.page.html
@@ -97,7 +98,7 @@ user.edit.page.html
   call('view.html');  
 </pinp>
 
-where when the user via either a link in a page, or a bookmarklet button 
+when the user via either a link in a page, or a bookmarklet button 
 in the browser, opens the user.edit.html template, it shows a toolbar, and
 loads an iframe with the user.edit.page.html template, which only sets the
 editMode on and then loads the normal view.html template.
