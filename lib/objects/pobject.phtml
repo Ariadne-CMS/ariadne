@@ -50,7 +50,7 @@ class pobject extends object {
 		} else { 
 			$this->reqnls=$AR->nls->default; 
 		}
-		if (isset($this->data->nls->list[$reqnls]) || !isset($this->data->nls)) {  
+		if (isset($this->data->nls->list[$this->reqnls]) || !isset($this->data->nls)) {  
 			// the requested language is available
 			$this->nls=$this->reqnls;
 			$nls=&$this->nls;
