@@ -20,20 +20,26 @@
 				$error="err:corruptobjectdata";
 			} else {
 				ksort($mod->data->nodes);
+				unset($savedObject);
 				while (is_array($mod->data->nodes) && (list($path,$object)=each($mod->data->nodes))) {
-					$obj=$mod->data->objects[$object];
 					$newfilename=$import_path.substr($path,1);
-					//echo "$newfilename ".date("d-m-Y G:i:s",$mod->data->objects[$object]["lastchanged"])."\n";
-					if ($store->exists($newfilename)) {
-						$old=$store->get($newfilenmame,"Get.phtml");
-						$old=$old[0];
-						if ($old->lastchanged<$obj["lastchanged"]) {
-						 	//ok, merge it
-							merge($old->data,$obj["data"]);
-							$obj["data"]=$old->data;
+
+					if (!$savedObject[$object]) {
+						$savedObject[$object]=$newfilename;
+						$obj=$mod->data->objects[$object];
+						if ($store->exists($newfilename)) {
+							$old=$store->get($newfilenmame,"Get.phtml");
+							$old=$old[0];
+							if ($old->lastchanged<$obj["lastchanged"]) {
+							 	//ok, merge it
+								merge($old->data,$obj["data"]);
+								$obj["data"]=$old->data;
+							}
 						}
+						$store->save($newfilename, $obj["type"], $obj["data"], $obj["properties"], $obj["vtype"]);
+					} else {
+						$store->link($savedObject[$object],$newfilename);
 					}
-					$store->save($newfilename, $obj["type"], $obj["data"], $obj["properties"], $obj["vtype"]);
 				}
 			}
 
