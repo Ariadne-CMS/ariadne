@@ -844,14 +844,14 @@ class pobject extends object { // pobject class definition
 				$this->customnlsdata=$this->data->custom[$nls];
 			}
 			if (	(	$config->cache && ( $config->cache>0 )		) &&
-					( 	!$ARConfigChecked							) && 
+					(	$arCallFunction	&& !$ARConfigChecked		) && 
 					( 	!$nocache 									) && 
 					(	$AR->OS=="UNIX" || 
 						( 	(count($HTTP_POST_VARS)==0) && 
 							(count($HTTP_GET_VARS)==0) 			) 	) &&
 					( 	$AR->user->data->login=="public" )
 			   ) {
-				// caching is on and enabled in loader and user is public.
+				// caching is on and enabled in loader and user is public and template is not 'protected'.
 				$ARCurrent->cachetime=$config->cache;
 				// start output buffering...	
 				debug("CheckConfig: ob_start()","all");
