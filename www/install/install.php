@@ -20,13 +20,16 @@
 
 		$store->add_type("pobject","pobject");
 		$store->add_type("pdir","pobject");
+		$store->add_type("pdir","ppage");
 		$store->add_type("pdir","pdir");
 		$store->add_type("pshortcut","pobject");
 		$store->add_type("pshortcut","pshortcut");
 		$store->add_type("puser","pobject");
+		$store->add_type("puser","ppage");
 		// $store->add_type("puser","pdir");
 		$store->add_type("puser","puser");
 		$store->add_type("pgroup","pobject");
+		$store->add_type("pgroup","ppage");
 		$store->add_type("pgroup","pdir");
 		$store->add_type("pgroup","puser");
 		$store->add_type("pgroup","pgroup");
@@ -84,6 +87,7 @@
 		$store->add_type("pcalitem","pobject");
 		$store->add_type("pcalitem","pcalitem");
 		$store->add_type("pcalendar","pobject");
+		$store->add_type("pcalendar","ppage");
 		$store->add_type("pcalendar","pdir");
 		$store->add_type("pcalendar","pcalendar");
 
@@ -103,12 +107,14 @@
 		$store->add_type("particle","ppage");
 		$store->add_type("particle","particle");
 		$store->add_type("pnewspaper","pobject");
+		$store->add_type("pnewspaper","ppage");
 		$store->add_type("pnewspaper","pdir");
 		$store->add_type("pnewspaper","pnewspaper");
 
 		// Addressbook types and default objects
 
 		$store->add_type("paddressbook","pobject");
+		$store->add_type("paddressbook","ppage");
 		$store->add_type("paddressbook","pdir");
 		$store->add_type("paddressbook","paddressbook");
 		$store->add_type("pperson","pobject");
@@ -133,6 +139,7 @@
 		// install psite types and properties
 
 		$store->add_type("psite","pobject");
+		$store->add_type("psite","ppage");
 		$store->add_type("psite","pdir");
 		$store->add_type("psite","psite");
 
@@ -149,6 +156,7 @@
 		$store->add_type("pphoto","ppage");
 		$store->add_type("pphoto","pphoto");
 		$store->add_type("pphotobook","pobject");
+		$store->add_type("pphotobook","ppage");
 		$store->add_type("pphotobook","pdir");
 		$store->add_type("pphotobook","pphoto");
 		$store->add_type("pphotobook","pphotobook");
