@@ -5,11 +5,6 @@
 		<div id="b_first" class="tbutton_left" style="visibility: hidden;" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_first();"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/first.gif"></div>
 		<div id="b_prev" class="tbutton_left" style="visibility: hidden;" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_prev();"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/prev.gif"></div>
 		<div id="b_up" class="tbutton_left" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="top.View('<?php echo $this->parent; ?>');"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/up.gif"></div>
-		<div style="float: left; width: 50px;">&nbsp;</div>
-		<div id="b_large" class="tbutton_left" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_setView('icons');"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/large.gif"></div>
-		<div id="b_small" class="tbutton_left" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_setView('list');"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/small.gif"></div>
-		<div id="b_details" class="tbutton_left" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_setView('details');"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/details.gif"></div>
-		<div style="float: left; width: 50px;">&nbsp;</div>
 		<div id="b_pages_div" style="float: left;">
 			<form name="b_pages" style="visibility: hidden; float: left; margin-top: 2px; font: menu;" onSubmit="b_goto(this.goto.options.selectedIndex); return false;">
 				<div style="float:left; padding: 2px;"><?php echo $ARnls["page"]; ?> : </div>
@@ -17,6 +12,9 @@
 				</select>
 			</form>
 		</div>
+		<div id="b_large" class="tbutton_left" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_setView('icons');"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/large.gif"></div>
+		<div id="b_small" class="tbutton_left" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_setView('list');"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/small.gif"></div>
+		<div id="b_details" class="tbutton_left" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_setView('details');"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/details.gif"></div>
 		<div id="b_last" class="tbutton_right" style="visibility: hidden;" onMouseOver="this.className='tbutton_right_hover'" onMouseOut="this.className='tbutton_right'" onClick="b_last();"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/last.gif"></div>
 		<div id="b_next" class="tbutton_right" style="visibility: hidden;" onMouseOver="this.className='tbutton_right_hover'" onMouseOut="this.className='tbutton_right'" onClick="b_next();"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/next.gif"></div>
 	</div>
