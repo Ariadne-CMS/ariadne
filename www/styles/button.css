@@ -1,0 +1,26 @@
+.tbutton_left {
+	float: left;
+	padding: 2px;
+	border: 1px solid;
+	border-color: buttonface;
+}
+.tbutton_left_hover {
+	float: left;
+	padding: 2px;
+	border: 1px solid buttonhighlight;
+	border-bottom-color: buttonshadow;
+	border-right-color: buttonshadow;
+}
+.tbutton_right {
+	float: right;
+	padding: 2px;
+	border: 1px solid;
+	border-color: buttonface;
+}
+.tbutton_right_hover {
+	float: right;
+	padding: 2px;
+	border: 1px solid buttonhighlight;
+	border-bottom-color: buttonshadow;
+	border-right-color: buttonshadow;
+}

@@ -3,8 +3,9 @@ TD {
 }
 BODY    {
     FONT: 13px sans-serif;
-
     BORDER: 0;
+	BORDER-LEFT: 1px inset;
+	BORDER-RIGHT: 1px inset;
     BACKGROUND-COLOR: white;
 }
 .item {
