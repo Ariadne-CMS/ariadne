@@ -1066,13 +1066,10 @@ class oraclestore {
 		} else {
 			$result=$curr_dir;
 		}
-		if (substr($path,-1)=="/") {
-			$path=substr($path, 0, -1);
-		}
 		if ($path) {
 			$splitpath=explode("/", $path);
 
-			while (list($key, $pathticle)=each($splitpath)) {
+			foreach ($splitpath as $pathticle ) {
 				switch($pathticle) {
 					case ".." : $result=substr($result, 0, strrpos(substr($result,0,-1), "/")+1);
 								break;
