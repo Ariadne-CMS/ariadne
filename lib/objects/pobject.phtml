@@ -1522,9 +1522,9 @@ class pobject extends object { // pobject class definition
 			$result=$$var;
 		} else if (isset($ARCurrent->$var)) {
 			$result=$ARCurrent->$var;
-		} else if ($HTTP_POST_VARS[$var]) {
+		} else if (isset($HTTP_POST_VARS[$var])) {
 			$result=$HTTP_POST_VARS[$var];
-		} else if ($HTTP_GET_VARS[$var]) {
+		} else if (isset($HTTP_GET_VARS[$var])) {
 			$result=$HTTP_GET_VARS[$var];
 		} 
 		return $result;
