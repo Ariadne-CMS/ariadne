@@ -11,6 +11,13 @@
 			}
 		}
 
+
+		if (get_class($ARCurrent->importStore) == "axstore") {
+			$ARCurrent->AXAction = "export";
+		} else {
+			$ARCurrent->AXAction = "import";
+		}
+
 		/* create a dummy object for later use */
 		$dummy = new pobject;
 		$dummy->nls = new object;

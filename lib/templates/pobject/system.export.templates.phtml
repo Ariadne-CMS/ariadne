@@ -1,11 +1,11 @@
 <?php
+global $ARBeenHere;
+
   if ($this->CheckLogin("read") && !$ARCurrent->options["without_templates"]) {
 
 		if ( ($this->newObject->arIsNewObject && $this->newObject->CheckLogin("add", $this->newObject->type)) ||
 			(!$this->newObject->arIsNewObject && $this->newObject->CheckLogin("edit"))) {
 			 $orig_filestore=$this->store->get_filestore("templates");
-			 $orig_templates=$orig_filestore->ls($this->id);
-			 if (is_array($orig_templates)) {
 
 				$new_filestore=$this->newObject->store->get_filestore("templates");
 				/* 
@@ -19,52 +19,50 @@
 					$save=1;
 				}
 
-
-				while (list(,$template)=each($orig_templates)) {
-					display("\n");
-					if ($new_filestore->exists($this->newObject->id, $template) &&
-						( $new_filestore->mtime($this->newObject->id, $template) >
-							$orig_filestore->mtime($this->id, $template))) {
-								display("	".sprintf($ARnls["err:notmplupdate"],$template));
-								// FROP display("	template($template) no update");
-					} else {
-						$tempname=tempnam($this->store->files."temp", "temp");
-						if (!$orig_filestore->copy_from_store($tempname, $this->id, $template)) {
-							display("	".sprintf($ARnls["err:notemplatefromstore"],$template));
-							// FROP display("	error: could not copy $template from store !");
-						} else {
-							if (!$new_filestore->copy_to_store($tempname, $this->newObject->id, $template)) {
-								display("	".sprintf($ARnls["err:notemplatetostore"],$template));
-								// FROP display("	error: could not copy $template to store");
-							} else {
-								display("	".sprintf($ARnls["templatecreated"],$template));
-								// FROP display("	template($template) created");
-							}
-						}
-						@unlink($tempname);
-					}
-				}
-
-				if ($this->data->templates) {
-					$save=1;
-					$templates=$this->data->templates;
+				if ($this->data->pinp) {
+					$templates=$this->data->pinp;
+					reset($templates);
+					display("\n	exporting/importing templates\n");
 					while (is_array($templates) && (list($type, $functions)=each($templates))) {
 						while (is_array($functions) && (list($function, $languages)=each($functions))) {
 							while (is_array($languages) && (list($language, $file)=each($languages))) {
-								//echo "		templates[$type][$function][$language]=".$this->newObject->id."\n";
-								$this->newObject->data->templates[$type][$function][$language]=$this->newObject->id;
-							}
-						}
-					}
-				}
-				if ($this->data->pinp) {
-					$save=1;
-					$pinp=$this->data->pinp;
-					while (is_array($pinp) && (list($type, $functions)=each($pinp))) {
-						while (is_array($functions) && (list($function, $languages)=each($functions))) {
-							while (is_array($languages) && (list($language, $file)=each($languages))) {
-								//echo "		pinp[$type][$function][$language]=".$this->newObject->id."\n";
-								$this->newObject->data->pinp[$type][$function][$language]=$this->newObject->id;
+								display("	template [$type][$function][$language]\n");
+								$tdata = $orig_filestore->read($this->id, "$type.$function.$language.pinp");
+
+								if ($this->data->templates[$type][$function][$language]) {
+									$default = true;
+								} else {
+									$default = false;
+								}
+								if ($ARCurrent->AXAction == "import") {
+									unset($ARBeenHere[$this->newObject->path]);
+									$this->newObject->call("system.save.layout.phtml",
+												Array(
+													"type" => $type,
+													"function" => $function,
+													"language" => $language,
+													"template" => $tdata,
+													"default" => $default
+												));
+								}
+
+								if ($ARCurrent->AXAction != "import" ||
+										$this->newObject->error) {
+									/* we do not need to compile templates which
+									are being exported. We just copy them */
+
+									$save = 1;
+									$this->newObject->data->pinp[$type][$function][$language] = $this->newObject->id;
+									if ($default) {
+										$this->newObject->data->templates[$type][$function][$language] = $this->newObject->id;
+									}
+									$new_filestore->write($tdata, $this->newObject->id, "$type.$function.$language.pinp");
+								}
+
+								if ($this->newObject->error) {
+									display("	error: ".$this->newObject->error."(".$this->newObject->id.")\n");
+									$this->newObject->error = "";
+								}
 							}
 						}
 					}
@@ -80,7 +78,6 @@
 						$this->newObject->priority,
 						$this->newObject->axflags);
 				}
-			 }
 		}
  }
   
