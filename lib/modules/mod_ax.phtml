@@ -82,7 +82,16 @@ class mod_ax {
 	}
 
 	function getObject() {
-		$data=fgets($this->ofp, 64000);
+		$buffersize=4096;
+		$data="";
+		$read_data=fgets($this->ofp, $buffersize);
+		while (strlen($read_data)==$buffersize-1 && $read_data[$buffersize-2]!=="\n") {
+			$data.=$read_data;
+			$read_data=fgets($this->ofp, $buffersize);
+		}
+		$data.=$read_data;
+		$data=substr($data, 0, -1);
+
 		if ($data) {
 			$data=explode("&",$data);
 			if (sizeof($data)==7) {
