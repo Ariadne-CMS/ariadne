@@ -234,6 +234,9 @@ function window_onload() {
 	tbContentElement.onLoadHandler();
   }
 
+  document.getElementById("StandardToolbar").style.visibility = "visible";
+  document.getElementById("FormatToolbar").style.visibility = "visible";
+  document.getElementById("loadingdiv").style.visibility = "hidden";
 }
 
 function tbContentElement_Compose_press() {
@@ -846,9 +849,11 @@ return tbContentElement_ContextMenuAction(itemIndex)
 
 </head>
 <body onload="return window_onload()" unselectable='on' tabIndex='-1'>
-
+<div id="loadingdiv" style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100% background-color: #999999; color: black;">
+<?php echo $ARnls["loading"]; ?>
+</div>
 <!-- Toolbars -->
-<div class="tbToolbar" ID="StandardToolbar" unselectable='on'>
+<div class="tbToolbar" ID="StandardToolbar" unselectable='on' style="visibility: hidden;">
   <div class="tbButton" ID="SAVE" unselectable='on' TITLE="Save File" LANGUAGE="javascript" onclick="return SAVE_onclick(0)">
     <img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/save.gif" WIDTH="23" HEIGHT="22">
   </div>
@@ -876,7 +881,7 @@ return tbContentElement_ContextMenuAction(itemIndex)
 
 </div>
 
-<div class="tbToolbar" unselectable='on' ID="FormatToolbar">
+<div class="tbToolbar" unselectable='on' ID="FormatToolbar" style="visibility: hidden">
   <select ID="ParagraphStyle" class="tbGeneral" style="width:90" TITLE="Paragraph Format" LANGUAGE="javascript" onchange="return ParagraphStyle_onchange()">
     <option value="">Block Style</option>
     <option value="P">Normal (P)</option>
