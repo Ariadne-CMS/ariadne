@@ -18,6 +18,32 @@
 				$result=" $table"."."."$field ";
 			break;
 			case 'string':
+			    $result = "";
+				$strval = substr($node["value"], 1, -1);
+				$i = 0;
+				while ($i < strlen($strval)) {
+					if ($strval[$i] === '\\') {
+						if ($strval[$i+1] === "'") {
+							$result.="''";
+						} else {
+							$result.="\\".$strval[$i+1];
+						}
+						$i+=2;
+					} else
+					if ($strval[$i] === "'" && $strval[$i+1] === "'") {
+						if ($node["type"] === "double") {
+							$result.="''''";
+						} else {
+							$result.="''";
+						}
+						$i+=2;
+					} else {
+						$result.=$strval[$i];
+						$i++;
+					}
+				}
+				$result=" '$result' ";
+				break;
 			case 'float':
 			case 'int':
 				$result=" ".$node["value"]." ";
