@@ -47,6 +47,7 @@
 			</tr><tr>
 				<td colspan="2">
 					<select name="country">
+					<option value=''><?php echo $ARnls["none"]; ?></option>
 					<?php
 							// FIXME: country names must be added for all available languages, currently ordered by english value
 							$query="object.parent='/system/addressbook/countries/' and name.nls='en' order by name.value";
