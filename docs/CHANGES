@@ -12,6 +12,8 @@ New features:
 	  convert data from other charsets to UTF8.
 	- No more need for preconfigged .zip or .tgz packages for
 	  different OS types.
+	- Added support for logging through phpOpentracker via
+	  mod_stats. Other logging enginges can be added later on.
 
 Bugs fixed:
 	- Fixed a warning when make_filesize() is called without
