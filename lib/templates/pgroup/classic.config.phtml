@@ -12,7 +12,7 @@
    current object (cache, templates, grants).
 
    This template links (submit buttons) to the templates:
-     SetCache.phtml, SetTemplates.phtml, savegrants.phtml and 
+     SetCache.phtml, SetTemplates.phtml, classic.config.grants.save.phtml and 
      SetTypes.phtml 
 
    No return value.
@@ -33,7 +33,7 @@
   </td>
 </tr>
 <tr>
-    <form name="grantsform" action="savegrants.phtml">
+    <form name="grantsform" action="classic.config.grants.save.phtml">
   <td colspan="2">
     <input type="hidden" name="returnpage" value="<?php echo $returnpage; ?>">
     <table border="0" width="100%">
@@ -45,7 +45,7 @@
       while (list($id, $grants)=each($grantslist[$type])) { // path was login en is weer login
         echo "<tr><td>";
         echo "<img src=\"".$AR->dir->images."icons/".$type.".gif\">";
-        echo "<a href=\"savegrants.phtml?delete=true&type=$type&id=".RawUrlEncode($id).
+        echo "<a href=\"classic.config.grants.save.phtml?delete=true&type=$type&id=".RawUrlEncode($id).
              "&returnpage=".RawUrlEncode($returnpage).
              "\" onClick=\"return confirm('".sprintf($ARnls["q:removeallgrants"],$id)."')\">$id</a></td>";
         echo "</td><td>";
@@ -53,7 +53,7 @@
           ksort($grants);
           while (list($grant, $value)=each($grants)) {
             if ($value) { 
-              echo "<a href=\"savegrants.phtml?delete=true&type=$type&id=".
+              echo "<a href=\"classic.config.grants.save.phtml?delete=true&type=$type&id=".
                 RawUrlEncode($id)."&grant=".
                 RawUrlEncode($grant)."&returnpage=".
                 RawUrlEncode($returnpage).
@@ -103,7 +103,7 @@
     ksort($data->usergrants);
     while (list($path, $usergrants)=each($data->usergrants)) {  
       echo "<tr>";
-      echo "<td><a href=\"".$this->store->root.$path."savegrants.phtml?delete=true&type=puser&id=".RawUrlEncode($data->login).
+      echo "<td><a href=\"".$this->store->root.$path."classic.config.grants.save.phtml?delete=true&type=puser&id=".RawUrlEncode($data->login).
 		"&returnpage=".RawUrlEncode($this->store->root.$this->path."config.phtml")."\"
 		onClick=\"return confirm('".sprintf($ARnls["q:removeallgrants"],$path)."?')\">
                 $path</a></td><td>"; 
@@ -112,7 +112,7 @@
         while (list($usergrant, $value)=each($usergrants)) {
           if ($value) { 
             echo "<a 
-		href=\"".$this->store->root.$path."savegrants.phtml?delete=true&type=puser&id=".RawUrlEncode($data->login)."&grant=".RawUrlEncode($usergrant).
+		href=\"".$this->store->root.$path."classic.config.grants.save.phtml?delete=true&type=puser&id=".RawUrlEncode($data->login)."&grant=".RawUrlEncode($usergrant).
 		"&returnpage=".RawUrlEncode($this->store->root.$this->path."config.phtml")."\"
 		onClick=\"return confirm('".sprintf($ARnls["q:removegrant"],$usergrant,$path)."')\">
                 $usergrant</a> "; 
