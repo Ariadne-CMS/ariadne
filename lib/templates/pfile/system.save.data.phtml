@@ -9,7 +9,9 @@
 			 ( !$this->arIsNewObject && $this->CheckLogin("edit") ) ) {
 		if ($this->arIsNewObject) {
 			$filename=$this->getdata("arNewFilename","none");
-			$this->data->mimetype=$this->getdata("file_type","none");
+			if (!$this->data->mimetype=$this->getdata("mimetype","none")) {
+				$this->data->mimetype=$this->getdata("file_type","none");
+			}
 			$this->data->filesize=$this->getdata("file_size","none");
 			while (list($key,$value)=each($ARConfig->nls->list)) {
 				if (!$this->data->$key->name) {
@@ -21,7 +23,6 @@
 			// the defined interface: $arCallArgs)
 			$this->data=@current($this->get(".","system.get.data.phtml"));
 		}
-		$tempfile=$this->getdata("file_temp","none");
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
 			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
 		} else {
@@ -37,9 +38,6 @@
 						$newnlsdata=new object;
 					} else {
 						$newnlsdata=$this->data->$key;
-					}
-					if (!$this->getdata("name",$key)) {
-						$this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
 					}
 					$newnlsdata->name=$this->getdata("name",$key);
 					$properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
@@ -58,12 +56,14 @@
 				}
 			}
 		}
-
+		$this->data->mimetype=$this->getdata("mimetype","none");
 		
 		$this->save($properties);
+		unset($properties);
 
 		$this->arIsNewObject=false;
 
+		$tempfile=$this->getdata("file_temp","none");
 		// now check whether $file_temp is defined, if so, move it
 		if (!$this->error) {
 			if ($tempfile) {
@@ -74,7 +74,9 @@
 					$this->MkDir("files".$this->path);
 					copy($tempfile, $path."view=");
 					unlink($tempfile);
-					$this->data->mimetype=$this->getdata("file_type","none");
+					if (!$this->data->mimetype=$this->getdata("mimetype","none")) {
+						$this->data->mimetype=$this->getdata("file_type","none");
+					}
 					$this->data->filesize=$this->getdata("file_size","none"); 
 				} else {
 					$tempfile=false;

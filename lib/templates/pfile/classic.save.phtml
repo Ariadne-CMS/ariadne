@@ -18,7 +18,7 @@
 	// only then call system.save.data.phtml
 	$this->call("system.save.data.phtml",$arCallArgs);
 	if (!$this->error) {
-		if (!$arReturnPage) {
+		if (!$arReturnPage=$this->getdata("arReturnPage","none")) {
 			$arReturnPage=$this->store->root.$parent; 
 		}
 		ldRedirect($arReturnPage);

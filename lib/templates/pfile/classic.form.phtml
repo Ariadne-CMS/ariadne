@@ -12,6 +12,7 @@
 
 	******************************************************************/
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		if ($this->call("lock.init.phtml")) {
 ?>
 <html>
 <head>
@@ -20,9 +21,6 @@
 	echo $title;
 ?></title>
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
-<?php
-	$this->call("lock.init.phtml");
-?>
 </head>
 <body bgcolor="white" onUnLoad="releaseLock()">
 <form ENCTYPE="multipart/form-data" method="post">
@@ -44,7 +42,7 @@
 		<font face="helvetica, sans-serif"><b><?php echo $ARnls["name"]; ?>&nbsp;:</b></font>
 	</td>
 	<td>
-		<input type="text" name="<?php echo $nls; ?>[name]" size="16" maxlength="50" value="<?php $this->showdata("name",$nls); ?>">
+		<input type="text" name="<?php echo $selectednls; ?>[name]" size="16" maxlength="50" value="<?php $this->showdata("name",$selectednls); ?>">
 		&nbsp;<font face="helvetica, sans-serif"><b>Mimetype&nbsp;:</b></font>
 		<input type="text" name="mimetype" size="16" maxlength="50" value="<?php $this->showdata("mimetype","none"); ?>">
 	</td>
@@ -52,8 +50,8 @@
 	<td align="right" valign="top">
 		<font face="helvetica, sans-serif"><?php echo $ARnls["summary"]; ?>&nbsp;:</font>
 	</td><td>
-		<textarea cols=50 rows=3 wrap=soft name="<?php echo $nls; ?>[summary]"><?php 
-			echo ereg_replace('&','&amp;',$this->getdata("summary",$nls)); 
+		<textarea cols=50 rows=3 wrap=soft name="<?php echo $selectednls; ?>[summary]"><?php 
+			echo ereg_replace('&','&amp;',$this->getdata("summary",$selectednls)); 
 		?></textarea>
 	</td>
 </tr><tr>
@@ -103,5 +101,6 @@
 </form>
 </body>
 <?php
+		}
 	}
 ?>
