@@ -22,16 +22,8 @@
 <html>
 <head>
 <link type="text/css" rel="stylesheet" href="<?php echo $AR->dir->www; ?>styles/browse.icons.css">
-<script>
-	function init() {
-		if (top.document.forms[0] && top.document.forms[0].imgstyle) {
-			var style=top.document.forms[0].imgstyle;
-			image.src=image.src+style.options[style.selectedIndex].value;
-		}
-	}
-</script>
-<body bgcolor="white" onLoad="init();">
-<img id="image" src="<?php echo $this->make_url(); ?>" alt="<?php echo $nlsdata->name; ?>" vspace="4" hspace="4">
+<body bgcolor="white">
+<img id="image" src="<?php echo $this->make_url(); ?>view.thumb.html" alt="<?php echo $nlsdata->name; ?>" vspace="4" hspace="4">
 <?php
 	$this->call('browse.list.phtml',Array('template' => 'browse.nav.list.icons.phtml'));
 ?>
