@@ -1,9 +1,28 @@
 <?php
 
+include_once($ariadne."/stores/mysqlstore_install.phtml");
 include_once($ariadne."/stores/mysql4store.phtml");
 
 class mysql4store_install extends mysql4store {
+	function initialize() {
+		return mysqlstore_install::initialize();
+	}
 
+	function create_property($property, $definition, $indexes="") {
+		return mysqlstore_install::create_property($property, $definition, $indexes);
+	}
+
+	function remove_property($property) {
+		return mysqlstore_install::remove_property($property);
+	}
+
+	function add_type($type, $implements) {
+		return mysqlstore_install::add_type($type, $implements);
+	}
+
+	function del_type($type, $implements="") {
+		return mysqlstore_install::del_type($type, $implements);
+	}
 }
 
 ?>
