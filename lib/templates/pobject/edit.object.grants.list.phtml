@@ -1,0 +1,200 @@
+<?php
+		function arGetGrantType($value) {
+			if (($value & ARMASKLOCAL) && ($value & ARMASKCHILDREN)) { 
+				$result=""; 
+			} else if ($value & ARMASKLOCAL) {
+				$result="=";
+			} else {
+				$result="&gt;";
+			}
+			return $result;
+		}
+?>
+<html>
+<head>
+<style>
+	body {
+		margin: 0px;
+		padding: 0px;
+		border: 0px;
+	}
+	body, td {
+		font: menu;
+	}
+	#grants_list table {
+		height: 180px;
+	}
+	#grants_list > table {
+		height: 155px;
+	}
+	table {
+		padding: 0px;
+		width: 100%;
+		height: 100%;
+		border-top: 1px solid buttonshadow;
+		border-left: 1px solid buttonshadow;
+		border-right: 1px solid buttonhighlight;
+		border-bottom: 1px solid buttonhighlight;
+	}
+	table table {
+		border: 0px;
+	}
+	table th {
+		background-color: buttonface;
+		BORDER-RIGHT: buttonshadow 1px solid; 
+		BORDER-TOP: buttonhighlight 1px solid; 
+		BORDER-LEFT: buttonhighlight 1px solid; 
+		CURSOR: default; 
+		BORDER-BOTTOM: buttonshadow 1px solid;
+		FONT: menu;
+	}
+	table tbody {
+		background-color: white;
+	}
+	table thead {
+		background-color: buttonface;
+	}
+	table td {
+		margin: 0px;
+		border: 0px;
+		PADDING-RIGHT: 5px; 
+		PADDING-LEFT: 5px; 
+		PADDING-BOTTOM: 2px; 
+		PADDING-TOP: 2px
+	}
+	table thead td {
+		BORDER-RIGHT: buttonshadow 1px solid; 
+		BORDER-TOP: buttonhighlight 1px solid; 
+		BORDER-LEFT: buttonhighlight 1px solid; 
+		CURSOR: default; 
+		BORDER-BOTTOM: buttonshadow 1px solid
+	}
+	table tbody tr.selected {
+		background-color: highlight;
+		color: highlighttext;
+	}
+	table tbody tr.selected A {
+		color: highlighttext;
+	}
+	table tbody tr.grey, table tbody tr.grey A {
+		color: #999999;
+	}
+	table td A:hover {
+		background-color: highlight;
+		color: highlighttext;
+	}
+	A {
+		text-decoration: none;
+		color: black;
+	}
+	.wgBrowseInput {
+		width: 125px;
+	}
+	.wgBrowseButton {
+		width: 80px;
+	}
+	A.hasgrants {
+		font-weight: bold;
+		text-decoration: underline;
+	}
+	A.hasnogrants {
+		font-weight: normal;
+	}
+</style>
+</head>
+<body scroll="no" onLoad="parent.fixIESize();"> 
+		<table cellspacing="0">
+		<thead>
+		<tr>
+			<td>&nbsp;</td>
+			<td><?php echo $ARnls["name"]; ?></td>
+			<td><?php echo $ARnls["grants"]; ?></td>
+		</tr>
+		</thead>
+		<tbody>
+		<?php
+			function DisplayGrants(&$grantslist, $type, $grey=false) {
+				global $AR, $ARCurrent, $ARnls;
+				if ($grantslist[$type] && is_array($grantslist[$type])) {
+					ksort($grantslist[$type]);
+					while (list($id, $grants)=each($grantslist[$type])) { // path was login en is weer login
+						if (!$ARCurrent->donelist[$type][$id]) {
+							$ARCurrent->donelist[$type][$id]=true;
+							echo "<tr valign=\"middle\" id=\"grants-$type-$id\"";
+							if ($grey) {
+								echo " class=\"grey\"";
+							}
+							echo "><td>";
+							echo "<img src=\"".$AR->dir->images."icons/".$type.".gif\"></td>";
+							echo "<td valign=\"middle\">";
+							echo "<a href=\"javascript:selectUser('$id');\">$id</a>";
+							echo "</td>";
+							echo "<td valign=\"middle\">";
+							if ($grants && is_array($grants)) {
+								ksort($grants);
+								while (list($grant, $modifiers)=each($grants)) {
+									if (!is_array($modifiers)) {
+										echo arGetGrantType($modifiers);
+									} 
+									if (!$grey) {
+										echo "<a href=\"javascript:selectGrant('$grant');\">$grant";
+									} else {
+										echo $grant;
+									} 
+									if (is_array($modifiers)) {
+										echo "( ";
+										while (list($modifier, $value)=each($modifiers)) {
+											echo arGetGrantType($value);
+											echo $modifier." "; 
+										}
+										echo ")";
+									}
+									if (!$grey) {
+										echo "</a> ";
+									} else {
+										echo " ";
+									}
+								}
+							}
+							echo "</td></tr>";
+						}
+					}
+				}
+			}
+			if ($data->grants && is_array($data->grants)) {
+				DisplayGrants($data->grants,"pgroup");
+				DisplayGrants($data->grants,"puser");
+			}
+
+			// get a list of all previous defined grants
+			// skip the current object
+			if ($this->parent!='..') {
+				$grants=$this->parents($this->parent, 'system.get.grants.phtml','','/');
+			}
+			// then display them beginning with the current defined grants
+			if (is_array($grants)) {
+				while (list($key, $localgrants)=each($grants)) {
+					$list=Array('pgroup','puser');
+					while (list($key, $type)=each($list)) {
+						if (is_array($localgrants[$type])) {
+							while (list($gkey, $gval)=each($localgrants[$type])) {
+								if ($type=='pgroup' && is_array($prevgrants[$type][$gkey]) && is_array($gval)) {
+									$prevgrants[$type][$gkey]=array_merge($gval, $prevgrants[$type][$gkey]);
+								} else if ($gval && !is_array($gval)) {
+									$prevgrants[$type][$gkey] = $gval;
+								} else if ($gval) {
+									$prevgrants[$type][$gkey] = $gval;
+								}
+							}
+						}
+					}
+				}
+				DisplayGrants($prevgrants, "pgroup", true);
+				DisplayGrants($prevgrants, "puser", true);
+			} 
+		?>
+		<tr height="100%"><td colspan="3"></td></tr>
+		</tbody>
+		</table>
+</body>
+</html>
