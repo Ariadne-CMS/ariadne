@@ -1,0 +1,27 @@
+<?php
+	if ($ARCurrent->CurrentListCol>=$ncols) {
+		echo "</tr><tr valign=\"top\">\n";
+		$ARCurrent->CurrentListCol=0;
+	}
+	$ARCurrent->CurrentListCol++;
+?>
+<td align="center" width="<?php echo (100/$ncols); ?>%">
+<?php
+  $BrowseGrant=$this->CheckSilent("read");
+  $BrowseGrant=true;
+  if ($BrowseGrant) {
+    echo "<a href=\"#\" onClick=\"top.View('".$this->path."'); return false;\">";
+  }
+?>
+<img width="40" height="40" src="<?php 
+  echo $AR->dir->images; ?>icons/<?php echo $this->type; ?>.gif" alt="[view]" border="0"></a><br>
+<?php
+  if (!$BrowseGrant) {
+    echo "<font color=\"#CCCCCC\"><b>$nlsdata->name</b></font>";
+  } else {
+    echo "<a href=\"#\" onClick=\"top.View('".$this->path."'); return false;\">";
+    echo "<b>$nlsdata->name</b></a>";
+  }
+
+?></a>
+</td>

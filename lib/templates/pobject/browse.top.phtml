@@ -1,0 +1,91 @@
+<html>
+<head>
+<script language="javascript">
+<!--
+	LastPath='<?php echo $this->path; ?>';
+	function View(path,name) {
+		var inlist=-1;
+		var newname="";
+		
+		blist=document.browseform.BrowseNav.options;
+		for (i=0; i<blist.length; i++) {
+			if (blist[i].value==path) {
+				blist.selected=true;
+				inlist=i;
+			}
+		}
+		if (inlist==-1) {
+			for (i=0; i<blist.length; i++) {
+				newname+="   ";
+			}
+			newname+=name;
+			blist[blist.length]=new Option(newname,path);
+			blist[blist.length-1].selected=true;
+		} else {
+			for (i=blist.length-1; i>inlist; i--) {
+				blist[i]=null;
+			}
+			blist[blist.length-1].selected=true;
+		}
+	}
+
+	function browseUp() {
+		blist=document.browseform.BrowseNav;
+		sIndex=blist.options.selectedIndex;
+		if (sIndex>0) {
+			top.View(blist.options[blist.options.selectedIndex-1].value);
+		}
+	}
+//-->
+</script>
+</head>
+<body bgcolor="#CCCCCC">
+<form name="browseform">
+<table border="0" cellpadding="0" cellspacing="0" height="100%" width="100%">
+<tr valign="middle">
+	<td align="left">
+	<img src="<?php echo $AR->dir->www; ?>dot.gif" width="10" height="1" border="0">
+	</td>
+	<td align="left">
+	<table border="0" cellpadding="0" cellspacing="0" height="100%">
+	<tr valign="middle">
+		<td>
+			<input type="button" name="up" value="<?php echo $ARnls["up"]; ?>" onClick="browseUp()">
+		</td>
+		<td align="left">
+		<select name="BrowseNav" onChange="top.View(this.options[this.options.selectedIndex].value);">
+		<?php
+			$this->parents(".","browse.select.option.phtml","selected=".urlencode($this->path));
+		?>
+		</select>
+		</td>
+	</tr>
+	</table>
+	</td>
+	<td align="right" width="100%">
+	<table border="0" cellpadding="0" cellspacing="0">
+	<tr valign="middle">
+		<td align="right">
+		<input type="button" name="viewmode" value="New" onClick="top.New()">
+		</td>
+		<td align="right">
+			<img src="<?php echo $AR->dir->images; ?>dot.gif" width="5">
+		</td>
+		<td align="right">
+		<input type="button" name="viewmode" value="List" onClick="top.ViewMode('list');">
+		</td>
+		<td align="right">
+			<img src="<?php echo $AR->dir->images; ?>dot.gif" width="5">
+		</td>
+		<td align="right">
+		<input type="button" name="viewmode" value="Details" onClick="top.ViewMode('details');">
+		</td>
+	</tr>
+	</td>
+	</table>
+	</td>
+</tr>
+</table>
+</form>
+</body>
+</html>

@@ -1,0 +1,15 @@
+<script language="javascript">
+<!--
+	// announce ourselfs
+	top.ViewLoaded('<?php echo $this->path; ?>','<?php echo $nlsdata->name; ?>');
+//-->
+</script>
+<body bgcolor="white">
+<table>
+	<?php
+		$crit["object"]["implements"]["="]="'pdir'";
+		$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
+		$this->find(".",$crit,"browse.nav.option.phtml");
+	?>
+</table>
+</body>
