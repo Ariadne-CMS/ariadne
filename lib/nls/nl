@@ -295,6 +295,7 @@
 	$ARnls["templateonserver"]				=	"Template op Server";
 	$ARnls["templates"]						=	"Templates";
 	$ARnls["text"]							=	"Tekst";
+	$ARnls["thisobject"]						=	"Dit Object";
 	$ARnls["thu"]							=	"Don";
 	$ARnls["thumbcolor"]					=	"Kleur";
 	$ARnls["thumbheight"]					=	"Hoogte";

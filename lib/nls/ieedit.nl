@@ -87,6 +87,17 @@
 	$ARnls["e_spacing"]			=	"Spatiering";
 	$ARnls["e_horizontal"]			=	"Horizontaal";
 	$ARnls["e_vertical"]			=	"Vertikaal";
+	$ARnls["e_image_options"]		=	"Afbeelding Opties";
+	$ARnls["e_align_not_set"]		=	"Not Set";
+	$ARnls["e_align_left"]			=	"Left";
+	$ARnls["e_align_right"]			=	"Right";
+	$ARnls["e_align_texttop"]		=	"Texttop";
+	$ARnls["e_align_absmiddle"]		=	"Absmiddle";
+	$ARnls["e_align_baseline"]		=	"Baseline";
+	$ARnls["e_align_absbottom"]		=	"Absbottom";
+	$ARnls["e_align_bottom"]		=	"Bottom";
+	$ARnls["e_align_middle"]		=	"Middle";
+	$ARnls["e_align_top"]			=	"Top";
 
 	// lib/templates/pobject/edit.object.html.link*.phtml
 

@@ -87,6 +87,18 @@
 	$ARnls["e_spacing"]			=	"Spacing";
 	$ARnls["e_horizontal"]			=	"Horizontal";
 	$ARnls["e_vertical"]			=	"Vertical";
+	$ARnls["e_image_options"]		=	"Image Options";
+	$ARnls["e_align_not_set"]		=	"Not Set";
+	$ARnls["e_align_left"]			=	"Left";
+	$ARnls["e_align_right"]			=	"Right";
+	$ARnls["e_align_texttop"]		=	"Texttop";
+	$ARnls["e_align_absmiddle"]		=	"Absmiddle";
+	$ARnls["e_align_baseline"]		=	"Baseline";
+	$ARnls["e_align_absbottom"]		=	"Absbottom";
+	$ARnls["e_align_bottom"]		=	"Bottom";
+	$ARnls["e_align_middle"]		=	"Middle";
+	$ARnls["e_align_top"]			=	"Top";
+
 
 	// lib/templates/pobject/edit.object.html.link*.phtml
 

@@ -295,6 +295,7 @@
 	$ARnls["templateonserver"]				=	"Gabarit sur le serveur ";
 	$ARnls["templates"]						=	"Gabarits";
 	$ARnls["text"]							=	"Texte";
+	$ARnls["thisobject"]						=	"This Object";
 	$ARnls["thu"]							=	"Jeu";
 	$ARnls["thumbcolor"]					=	"Couleur";
 	$ARnls["thumbheight"]					=	"hauteur";
