@@ -1,8 +1,5 @@
 <?php 
 	$arNewFilename=$this->getdata("arNewFilename","none");
-	if (!$arNewFilename) {
-		$arNewFilename="{5:id}";
-	}
 ?>
 <table border="0">
 	<td>
@@ -22,6 +19,6 @@
 	window.onload=forminit;
 </script>
 <?php
-	$arResult["next"]["arNewFilename"]["ereg"]="^[a-zA-Z0-9_\{\}\.\:-]+\$";
+	$arResult["next"]["arNewFilename"]["ereg"]="^[a-zA-Z0-9_\{\}\.\:-]*\$";
 	$arResult["next"]["arNewFilename"]["error"]=AddSlashes(sprintf($ARnls["err:fileillegalchars"], ""));
 ?>
