@@ -39,7 +39,7 @@ include_once($this->code."objects/pobject.phtml");
 class ppage extends pobject { // ppage class definition
 
   function ParsePage($page, $full=false) {
-    global $ARCurrent;
+    global $ARCurrent, $AR;
     if ($ARCurrent->session && $ARCurrent->session->id) {
       $session='/-'.$ARCurrent->session->id.'-';
     } else {
