@@ -161,6 +161,7 @@
 	$ARnls["layouttempl"]					=	"Layout Vorlage f&uuml;r %s";
 	$ARnls["link"]							=	"Link";
 	$ARnls["list"]							=	"Liste";
+	$ARnls["loading"]						=	"Loading...";
 	$ARnls["location"]						=	"Ort"; // context?
 	$ARnls["locks"]							=	"Sperren";
 	$ARnls["login"]							=	"Anmelden";

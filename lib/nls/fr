@@ -193,6 +193,7 @@
 	$ARnls["layouttempl"]					=	"Gabarit de pr&eacute;senation  pour %s";
 	$ARnls["link"]							=	"Lien";
 	$ARnls["list"]							=	"Liste";
+	$ARnls["loading"]						=	"Loading...";
 	$ARnls["location"]						=	"Emplacement";
 	$ARnls["locks"]							=	"Locks";
 	$ARnls["login"]							=	"Login";

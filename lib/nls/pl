@@ -194,6 +194,7 @@
 	$ARnls["layouttempl"]					=	"Szablony dla %s";
 	$ARnls["link"]							=	"Link";
 	$ARnls["list"]							=	"Lista";
+	$ARnls["loading"]						=	"Loading...";
 	$ARnls["location"]						=	"Lokalizacja";
 	$ARnls["locks"]							=	"Blokady";
 	$ARnls["login"]							=	"Login";

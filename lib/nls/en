@@ -193,6 +193,7 @@
 	$ARnls["layouttempl"]					=	"Layout templates for %s";
 	$ARnls["link"]							=	"Link";
 	$ARnls["list"]							=	"List";
+	$ARnls["loading"]						=	"Loading...";
 	$ARnls["location"]						=	"Location";
 	$ARnls["locks"]							=	"Locks";
 	$ARnls["login"]							=	"Login";
