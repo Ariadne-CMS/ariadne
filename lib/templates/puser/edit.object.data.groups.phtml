@@ -1,0 +1,46 @@
+<?php
+  /******************************************************************
+  ******************************************************************/
+  if ($this->CheckSilent("config")) {
+    if (!$login=$this->data->login) {
+      $login=$this->getdata("arNewFilename");
+    }
+?>
+<table border="0" width="90%">
+<tr>
+  <td>
+    <fieldset id="data">
+    <legend><?php printf($ARnls["groupmembership"],$login); ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+      <table border="0" align="center" height="100%">
+      <tr>
+        <td>
+          <select multiple name="groups" size="10" style="width: 250px;">
+          <?php
+            $groups=$this->getdata("groups","none");
+            if (!$groups && $this->newobject && ($profile=$this->getdata("profile","none"))) {
+              $profile_user=$this->get($profile,"system.get.phtml");
+              $groups=$profile_user->data->groups;
+            }
+            while (list($path, $group)=@each($data->groups)) {
+              $selected.="&selected[]=".RawUrlEncode($path);
+            }
+            $criteria["object"]["implements"]["="]="'pgroup'";
+            $this->find("/system/groups/",$criteria,"show.option.multiple.phtml",$selected);
+          ?>
+          </select>
+        </td>
+      </tr>
+      </table>
+    </fieldset>
+  </td>
+</tr>
+</table>
+<script>
+  window.onload=init;
+  function init() {
+    document.wgWizForm["groups"].focus();
+  }
+</script>
+<?php
+  }
+?>

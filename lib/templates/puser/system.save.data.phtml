@@ -1,0 +1,54 @@
+<?php
+  /******************************************************************
+   system.save.data.phtml			   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+ 
+  ******************************************************************/
+
+  function GetPassword($pass1, $pass2) {
+    if ($pass1 && ($pass1==$pass2)) {
+      $password=ARCrypt($pass1);
+    }
+    return $password;
+  }  
+
+  $pass1=$this->getdata("pass1","none");
+  $pass2=$this->getdata("pass2","none");
+  if ($pass1 || $pass2 ) {
+    if (!($this->data->password=GetPassword($pass1,$pass2))) {
+      $this->error=$ARnls["err:validpassword"];
+    }
+  }
+  $properties["value"][]["value"]="'".AddSlashes($value)."'";
+  $this->data->name=$this->getdata("name","none");
+  $properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
+  if ($this->newobject) {
+    $login=$this->getdata("arNewFilename","none");
+    if ($login) {
+      $criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
+      $result=$this->find("/system/users/",$criteria,"system.get.phtml");
+      if ($result) {
+        $this->error=sprintf($ARnls["err:loginexists"],$login);
+      } else {
+        if (ereg('\{.*\}',$login)) {
+          $this->error=$ARnls["err:donotuseid"];
+        } else {
+          $this->data->login=$login;
+          $properties["login"][0]["value"]="'".AddSlashes($newdata->login)."'";
+          if (!$this->data->password) {
+            $this->error=$ARnls["err:validpassword"];
+          }
+        }
+      }
+    } else {
+      $this->error=$ARnls["err:mustenterlogin"];
+    }
+  }
+  include($this->store->code."includes/system.save.phtml");
+  if ($this->newobject && ($profile=$this->getdata("profile","none"))) {
+    // fill in values from the given profile
+  }
+  if ($groups=$this->getdata("groups","none")) {
+    // overrides data from profile
+  }
+?>

@@ -2,7 +2,7 @@
   if ($this->CheckLogin("read")) {
     if ($data->language) {
       $nls=$data->language;
-	  $this->store->root=ldSetNls($nls);
+	  ldSetNls($nls);
     }
 ?>
 <HTML>
