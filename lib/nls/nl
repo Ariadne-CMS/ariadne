@@ -22,6 +22,7 @@ $ARnls["city"]=			"Plaats";
 $ARnls["clickback"]=		"Druk op de terug knop van uw browser om dit te verhelpen.";
 $ARnls["collectinginfo"]=	"Informatie ophalen...";
 $ARnls["color"]=		"Kleur";
+$ARnls["comments"]=		"Commentaar";
 $ARnls["config"]=		"Configuratie";
 $ARnls["configuration"]=	"Configuratie";
 $ARnls["configure"]=		"Configureer %s";
