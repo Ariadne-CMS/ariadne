@@ -52,6 +52,7 @@ Bugs Fixed:
 	  importing it into a store which does not support it
 	- Fixed a compiler bug  which created illigal query's for postgresql when
 	  using orderby on properties.
+	- Fixed pinp interface to ls() and find() in psearch.
 
 Changes in Ariadne since version 2.2
 
