@@ -74,7 +74,7 @@
 			} else if ($newgrants) {
 				if ($type=@current($this->get($path, "system.get.type.phtml"))) {
 					if ($this->store->implements($type, "puser")) { 
-						if ($id=@current($this->get($path, "system.get.id.phtml"))) {
+						if ($id=@current($this->get($path, "system.get.login.phtml"))) {
 							$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
 							$newgrants=ereg_replace("[[:space:]]"," ",$newgrants);
 							$newgrant=strtok($newgrants, " ");
