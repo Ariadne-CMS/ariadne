@@ -1,9 +1,10 @@
 Ariadne 2.1.3
 Changes in Ariadne since version 2.1.2
 
-WARNING: Ariadne 2.1 its internal charset has been changed to UTF-8. 
-         If you want to import older .ax files (for upgrades) you
-         need to read the docs/upgrade.txt file first.
+IMPORTANT: 
+    In Ariadne 2.1 the internal charset has been changed to UTF-8. 
+    If you want to import older .ax files (for upgrades) you
+    need to read the docs/upgrade.txt file first.
 
 New features:
 	- Added french translation of the default Ariadne databases.
@@ -21,6 +22,7 @@ New features:
 	- Import can now also update selected languages instead of all.
 
 Bugs fixed:
+	- Fixed a security related bug.
 	- Importing with --without-grants will nolonger destroy
 	  existing grants.
 	- The default start and endtime calculation in pcalendar::get_items()
