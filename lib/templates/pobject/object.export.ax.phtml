@@ -26,7 +26,7 @@
 		$ax_config["writeable"]=true;
 		$ARCurrent->session->put("tempname",$ax_config["database"]);
 		if ($full_path) {
-			$destpath=$srcpath;
+			$destpath="";
 		} else {
 			if ($this->parent=="..") {
 				$destpath="/";
