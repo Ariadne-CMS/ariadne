@@ -156,10 +156,10 @@ CREATE TABLE ".$this->tbl_prefix."locks (
         identity varchar(32) NOT NULL,
         path varchar(127) NOT NULL
 );
-CREATE INDEX locks_release ON locks (release);
-CREATE INDEX locks_type ON locks (type);
-CREATE INDEX locks_identity ON locks (identity);
-CREATE INDEX locks_path ON locks (path);
+CREATE INDEX locks_release ON ".$this->tbl_prefix."locks (release);
+CREATE INDEX locks_type ON ".$this->tbl_prefix."locks (type);
+CREATE INDEX locks_identity ON ".$this->tbl_prefix."locks (identity);
+CREATE INDEX locks_path ON ".$this->tbl_prefix."locks (path);
 ";
 		pg_exec($this->connectid, $query_string);
 	}
