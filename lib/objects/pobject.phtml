@@ -392,7 +392,7 @@ class pobject extends object {
 		return $this->store->load_property($this->id,$property);
 	}
 
-	function GetValidGrants() {
+	function GetValidGrants($path="") {
 	/********************************************************************
 
 	  This function finds all grants in effect on this object for the
@@ -429,23 +429,25 @@ class pobject extends object {
 
 		debug("pobject: GetValidGrants()","object");
 		if ($AR->user) { 	// login and retrieval of user object 
-			if (!$AR->user->grants[$this->path]) {
+			if (!$path) {
+				$path=$this->path;
+			}
+			if (!$AR->user->grants[$path]) {
 				$grants=Array();
-				$userpath=$AR->user->FindGrants($this->path, $grants);
+				$userpath=$AR->user->FindGrants($path, $grants);
 				// if not already done, find all groups of which the user is a member
 				$criteria["members"]["login"]["="]="'".AddSlashes($AR->user->data->login)."'";
 				if ($AR->user->groups || ($AR->user->groups=$this->find("/system/groups/",$criteria, "system.get.phtml"))) {
-					// $path=end($paths);
 					reset($AR->user->groups);
 					while (list($key, $group)=each($AR->user->groups)) { 
 						$groupgrants=Array();
-						$group->FindGrants($this->path, $groupgrants, $userpath);
+						$group->FindGrants($path, $groupgrants, $userpath);
 						$grants=array_merge($groupgrants, $grants);
 					}
 				}
-				$AR->user->grants[$this->path]=$grants;
+				$AR->user->grants[$path]=$grants;
 			}
-			$grants=$AR->user->grants[$this->path];	
+			$grants=$AR->user->grants[$path];	
 		}
 		debug("pobject: GetValidGrants: end ( ".serialize($grants)." )","all");
 		return $grants;
