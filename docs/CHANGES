@@ -89,6 +89,7 @@ New Features:
 	- Added some more verboseness to mod_import_wddx
 
 Bugs Fixed:
+	- Fixed a wrong nls match in mod_url.
 	- Added $data->path of pshortcut to the references.path property.
 	- Fixed a problem with workflow and the owner data, owner data doesn't 
 	  disappear anymore.
