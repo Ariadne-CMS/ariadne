@@ -16,9 +16,9 @@
 		$ARCurrent->arReturnPage=$this->store->root.$this->path."edit.object.grants.phtml";
 
 		function arGetGrantType($value) {
-			if (($value & ARGRANTGLOBAL)==ARGRANTGLOBAL) { 
+			if (($value & ARMASKLOCAL) && ($value & ARMASKCHILDREN)) { 
 				$result=""; 
-			} else if ($e & ARGRANTLOCAL) {
+			} else if ($value & ARMASKLOCAL) {
 				$result="=";
 			} else {
 				$result="&gt;";

@@ -145,9 +145,13 @@
     return md5($text);
   }
  
-  define("ARGRANTLOCAL", 1);
-  define("ARGRANTCHILDREN",2);
-  define("ARGRANTGLOBAL", 3);
+  define("ARGRANTOLD", 1);
+  define("ARGRANTLOCAL", 2);
+  define("ARGRANTCHILDREN",4);
+  define("ARGRANTGLOBAL", 6);
+  define("ARMASKLOCAL", 3);
+  define("ARMASKCHILDREN", 5);
+  define("ARMASKGLOBAL", 7);
   define("ARTHISTYPE", 1); 
   define("ARANYTYPE", 0);
 

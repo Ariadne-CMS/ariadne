@@ -34,9 +34,9 @@
 		}
 
 		function arGetGrantType($value) {
-			if (($value & ARGRANTGLOBAL)==ARGRANTGLOBAL) {
+			if (($value & ARMASKLOCAL) && ($value & ARMASKCHILDREN)) {
 				$result="+";
-			} else if ($value & ARGRANTLOCAL) {
+			} else if ($value & ARMASKLOCAL) {
 				$result="=";
 			} else {
 				$result=">";
