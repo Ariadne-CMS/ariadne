@@ -5,7 +5,7 @@
 	require($ariadne."/configs/store.phtml");
 	require($ariadne."/configs/axstore.phtml");
 	require($ariadne."/includes/loader.web.php");
-	require($ariadne."/stores/mysqlstore.phtml");
+	require($ariadne."/stores/".$store_config["dbms"]."store.phtml");
 	include($ariadne."/stores/axstore.phtml");
 	global $options;
 
@@ -101,12 +101,13 @@
 		$ax_config["writeable"]=true;
 		$importStore=new axstore("", $ax_config);
 		if (!$importStore->error) {
-			$store=new mysqlstore($root,$store_config);
+			$inst_store = $store_config["dbms"]."store";
+			$store=new $inst_store($root,$store_config);
 
 			$ARCurrent->importStore=&$importStore;
 			$callArgs=Array("srcpath" => $srcpath,
 							"destpath" => $destpath);
-			$error=@current($store->call("system.export.phtml", $callArgs,
+			$error=current($store->call("system.export.phtml", $callArgs,
 				$store->get("/")));
 
 			$importStore->close();

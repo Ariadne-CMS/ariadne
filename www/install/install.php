@@ -6,11 +6,13 @@
 	require($ariadne."/configs/store.phtml");
 	require($ariadne."/configs/axstore.phtml");
 	include_once($ariadne."/includes/loader.web.php");
-	include_once($ariadne."/stores/axstore.phtml");
-	include_once($ariadne."/stores/mysql_install.phtml");
+	include_once($ariadne."/stores/".$ax_config["dbms"]."store.phtml");
+	include_once($ariadne."/stores/".$store_config["dbms"]."store_install.phtml");
 	$ERRMODE="text";
 
-	$store=new mysqlstore_install(".",$store_config);
+
+	$inst_store = $store_config["dbms"]."store_install";
+	$store=new $inst_store(".",$store_config);
 	
 	echo "== creating main Ariadne Object Store\n\n";
 
@@ -141,9 +143,10 @@
 		$ax_config["database"]="ariadne.ax";
 		echo "ax file (".$ax_config["database"].")\n";
 		set_time_limit(0);
-		$axstore=new axstore(".", $ax_config);
+		$inst_store = $ax_config["dbms"]."store";
+		$axstore=new $inst_store(".", $ax_config);
 		if (!$axstore->error) {
-			$ARCurrent->importStore=$store;
+			$ARCurrent->importStore=&$store;
 			$args="srcpath=/&destpath=/";
 			$axstore->call("system.export.phtml", $args,
 				$axstore->get("/"));
@@ -166,7 +169,8 @@
 
 	require($ariadne."/configs/sessions.phtml");
 
-	$sessionstore=new mysqlstore_install(".",$session_config);
+	$inst_store = $session_config["dbms"]."store_install";
+	$sessionstore=new $inst_store(".",$session_config);
 	
 	echo "== creating Ariadne Session Store\n\n";
 

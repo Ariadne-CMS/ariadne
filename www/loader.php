@@ -2,7 +2,7 @@
 	require_once("./ariadne.inc");
 	require_once($ariadne."/configs/ariadne.phtml");
 	require_once($ariadne."/configs/store.phtml");
-	include_once($ariadne."/stores/mysqlstore.phtml");
+	include_once($ariadne."/stores/".$store_config["dbms"]."store.phtml");
 	include_once($ariadne."/modules/mod_session.phtml");
 	include_once($ariadne."/includes/loader.web.php");
 
@@ -34,7 +34,8 @@
 		@ob_end_clean(); // just in case the output buffering is set on in php.ini, disable it here, as Ariadne's cache system gets confused otherwise. 
 		// go check for a sessionid
 		$root=$AR->root;
-		$store=new mysqlstore($root,$store_config);
+		$inst_store = $store_config["dbms"]."store";
+		$store=new $inst_store($root,$store_config);
 		$re="^/-(.*)-/";
 		if (eregi($re,$PATH_INFO,$matches)) {
 			$session_id=$matches[1];

@@ -1,11 +1,12 @@
 <?php
-
 class session {
 
 	function session($session_config, $id=0) {
         debug("session([array],$id)","store");
 		// init session store
-		$this->sessionstore=new mysqlstore($session_config["root"], $session_config);
+		$inst_store = $session_config["dbms"]."store";
+		include_once($session_config["code"]."stores/$inst_store.phtml");
+		$this->sessionstore=new $inst_store($session_config["root"], $session_config);
 
 		$this->timeout=$session_config["timeout"];
 

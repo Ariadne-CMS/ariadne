@@ -9,6 +9,12 @@
   /*************************************************************************/
 
   /*************************************************************************/
+  /* DBMS for this store                                                   */
+  /*************************************************************************/
+
+  $session_config["dbms"]         = "mysql";
+
+  /*************************************************************************/
   /* Database Information:                                                 */
   /* Fill in the Hostname, and database name of the database server, and   */
   /* the username and password with which to connect to it.                */
