@@ -12,7 +12,7 @@
   /* DBMS for this store                                                   */
   /*************************************************************************/
 
-  $session_config["dbms"]         = "mysql";
+  $session_config['dbms']         = 'mysql';
 
   /*************************************************************************/
   /* Database Information:                                                 */
@@ -23,13 +23,13 @@
   /* which uses just one database.                                         */
   /*************************************************************************/
 
-  $session_config["host"]       = "localhost";
-  $session_config["database"]   = "ariadne";
+  $session_config['host']       = 'localhost';
+  $session_config['database']   = 'ariadne';
 
-  $session_config["user"]       = "www";
-  $session_config["password"]   = "secret";
+  $session_config['user']       = 'www';
+  $session_config['password']   = 'secret';
 
-  $session_config["prefix"]     = "session_";
+  $session_config['prefix']     = 'session_';
 
   /*************************************************************************/
   /* Path Information:                                                     */
@@ -39,24 +39,24 @@
   /* Ariadne Install Directory                                             */ 
   /*************************************************************************/
 
-  $ariadne_root                 = "/usr/local/lib/ariadne/";
+  $ariadne_root                 = '/usr/local/lib/ariadne/';
 
   /*************************************************************************/
   /* Ariadne Code Library (lib)                                            */
   /*************************************************************************/
 
-  $session_config["code"]       = $ariadne_root."lib/";
+  $session_config['code']       = $ariadne_root.'lib/';
 
   /*************************************************************************/
   /* Ariadne Files Repository (files)                                      */
   /*************************************************************************/
 
-  $session_config["files"]      = $ariadne_root."sessions/";
+  $session_config['files']      = $ariadne_root.'sessions/';
 
   /*************************************************************************/
   /* Ariadne Session Timeout                                               */
   /*************************************************************************/
 
-  $session_config["timeout"]    = 3600;
+  $session_config['timeout']    = 3600;
 
 ?>

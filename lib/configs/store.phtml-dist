@@ -11,7 +11,7 @@
   /* DBMS for this store                                                   */
   /*************************************************************************/
 
-  $store_config["dbms"]         = "mysql";
+  $store_config['dbms']         = 'mysql';
 
   /*************************************************************************/
   /* Database Information:                                                 */
@@ -22,12 +22,12 @@
   /* which uses just one database.                                         */
   /*************************************************************************/
 
-  $store_config["host"]          = "localhost";
-  $store_config["database"]      = "ariadne";
-  $store_config["prefix"]        = "store_";
+  $store_config['host']          = 'localhost';
+  $store_config['database']      = 'ariadne';
+  $store_config['prefix']        = 'store_';
 
-  $store_config["user"]          = "www";
-  $store_config["password"]      = "secret";
+  $store_config['user']          = 'www';
+  $store_config['password']      = 'secret';
 
 
   /*************************************************************************/
@@ -38,24 +38,24 @@
   /* Ariadne Install Directory                                             */ 
   /*************************************************************************/
 
-  $ariadne_root                  = "/usr/local/lib/ariadne/";
+  $ariadne_root                  = '/usr/local/lib/ariadne/';
 
   /*************************************************************************/
   /* Ariadne Code Library (lib)                                            */
   /*************************************************************************/
 
-  $store_config["code"]          = $ariadne_root."lib/";
+  $store_config['code']          = $ariadne_root.'lib/';
 
   /*************************************************************************/
   /* Ariadne Files Repository (files)                                      */
   /*************************************************************************/
 
-  $store_config["files"]         = $ariadne_root."files/";
+  $store_config['files']         = $ariadne_root.'files/';
 
   /*************************************************************************/
   /* Ariadne Lock Duration                                                 */
   /*************************************************************************/
 
-  $store_config["lock_duration"] = 3600;
+  $store_config['lock_duration'] = 3600;
 
 ?>

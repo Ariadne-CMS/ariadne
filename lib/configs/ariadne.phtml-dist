@@ -14,11 +14,11 @@
   /* WIN32 or UNIX                                                          */
   /* =============                                                          */
   /* Which type of Operating System are you running Ariadne on? Fill in     */
-  /* either "WIN32" or "UNIX".                                              */
+  /* either 'WIN32' or 'UNIX'.                                              */
   /**************************************************************************/
 
-  // $AR->OS                = "WIN32";         // Windows 95/98/ME/NT/2000
-  $AR->OS                   = "UNIX";          // All unix/linux variants
+  // $AR->OS                = 'WIN32';         // Windows 95/98/ME/NT/2000
+  $AR->OS                   = 'UNIX';          // All unix/linux variants
 
   $AR->dir=new object;                         // do not change
   
@@ -34,19 +34,19 @@
   /*   $AR->dir->docroot='/var/www/';                                       */
   /**************************************************************************/
  
-  $AR->dir->docroot         = $HTTP_SERVER_VARS["DOCUMENT_ROOT"];
+  $AR->dir->docroot         = $HTTP_SERVER_VARS['DOCUMENT_ROOT'];
 
   /**************************************************************************/
   /* Fill in the path from the document root to the ariadne www pages       */
   /**************************************************************************/
 
-  $AR->dir->www             = "/ariadne/";
+  $AR->dir->www             = '/ariadne/';
 
   /**************************************************************************/
   /* If you installed ariadne in your own homedirectory, e.g. under ~user/, */
   /* then change the following line to the full path of the ariadne www     */
   /* directory. e.g. :                                                      */
-  /*   $AR->dir->root="/home/user/public_html/ariadne.2.0b9/";              */
+  /*   $AR->dir->root='/home/user/public_html/ariadne.2.0b9/';              */
   /* Otherwise, don't change the default.                                   */
   /**************************************************************************/
 
@@ -55,20 +55,20 @@
   /**************************************************************************/
   /* If you want you can change the default server name below. You should   */
   /* only do this if the default setting doesn't work. e.g.:                */
-  /*   $AR->host="http://your.host.com";                                    */
+  /*   $AR->host='http://your.host.com';                                    */
   /* If you do change it, leave out the entire block of code.               */
   /**************************************************************************/
 
-  if ($HTTP_SERVER_VARS["HTTPS"]=='on') {
-    $AR->host = "https://";
+  if ($HTTP_SERVER_VARS['HTTPS']=='on') {
+    $AR->host = 'https://';
   } else {
-    $AR->host = "http://";
+    $AR->host = 'http://';
   }
 
-  $AR->host                 .= $HTTP_SERVER_VARS["HTTP_HOST"];
+  $AR->host                 .= $HTTP_SERVER_VARS['HTTP_HOST'];
 
-  if ($HTTP_SERVER_VARS["SERVER_PORT"]!=80) {
-    $AR->host.=":".$HTTP_SERVER_VARS["SERVER_PORT"];
+  if ($HTTP_SERVER_VARS['SERVER_PORT']!=80) {
+    $AR->host.=':'.$HTTP_SERVER_VARS['SERVER_PORT'];
   }
 
   /**************************************************************************/
@@ -78,26 +78,26 @@
   /* Don't forget to install ImageMagick.                                   */
   /**************************************************************************/
 
-  $AR->IM->convert="/usr/bin/X11/convert";
-  $AR->IM->mogrify="/usr/bin/X11/mogrify";
+  $AR->IM->convert='/usr/bin/X11/convert';
+  $AR->IM->mogrify='/usr/bin/X11/mogrify';
 
   /**************************************************************************/
   /* Only change this if you have made your own loader                      */
   /**************************************************************************/
 
-  $AR->root                 = $AR->host.$AR->dir->www."loader.php";
+  $AR->root                 = $AR->host.$AR->dir->www.'loader.php';
 
   /**************************************************************************/
   /* Only change this if you have moved the images directory                */
   /**************************************************************************/
 
-  $AR->dir->images          = $AR->dir->www."images/";
+  $AR->dir->images          = $AR->dir->www.'images/';
 
   /**************************************************************************/
   /* Only change this if you have moved the CSS styles directory            */
   /**************************************************************************/
 
-  $AR->dir->styles          = $AR->dir->www."styles/";
+  $AR->dir->styles          = $AR->dir->www.'styles/';
 
   /**************************************************************************/
   /* NLS System                                                             */
@@ -109,21 +109,21 @@
 
   $AR->nls=new object;                         // do not change
 
-  $AR->nls->list["nl"]      = "Nederlands";
-  $AR->nls->list["en"]      = "English";
-  $AR->nls->list["es"]      = "Espa&ntilde;ol";
-  $AR->nls->list["de"]		= "Deutsch";
-  $AR->nls->list["pl"]		= "Polska";
+  $AR->nls->list['nl']      = 'Nederlands';
+  $AR->nls->list['en']      = 'English';
+  $AR->nls->list['es']      = 'Espa&ntilde;ol';
+  $AR->nls->list['de']		= 'Deutsch';
+  $AR->nls->list['pl']		= 'Polska';
 
-  $AR->nls->locales["nl"]   = "nl_NL";
-  $AR->nls->locales["en"]   = "en_US";
-  $AR->nls->locales["es"]   = "es";
-  $AR->nls->locales["de"]   = "de";
-  $AR->nls->locales["pl"]   = "pl";
+  $AR->nls->locales['nl']   = 'nl_NL';
+  $AR->nls->locales['en']   = 'en_US';
+  $AR->nls->locales['es']   = 'es';
+  $AR->nls->locales['de']   = 'de';
+  $AR->nls->locales['pl']   = 'pl';
 
-  $AR->nls->charsets["default"] = "UTF-8"; // or "ISO-8859-1";
+  $AR->nls->charsets['default'] = 'UTF-8'; // or 'ISO-8859-1';
  
-  $AR->nls->default         = "en";
+  $AR->nls->default         = 'en';
 
   /**************************************************************************/
   /* you shouldn't need to change anything below this line                  */
@@ -133,14 +133,14 @@
 
   /* make default nls available for the root ********************************/
 
-  $ARConfig->cache[".."]=new object;           // do not change
-  $ARConfig->cache[".."]->nls=$AR->nls;        // do not change
-  $ARConfig->cache[".."]->root["path"]="/";    /* must always start with a '/' */
-  $ARConfig->cache[".."]->root["value"]=$AR->root;  // do not change
-  $ARConfig->cache[".."]->site="/";            // do not change
-  $ARConfig->cache[".."]->thumb["width"]=40;   // do not change
-  $ARConfig->cache[".."]->thumb["height"]=40;   // do not change
-  $ARConfig->cache[".."]->thumb["color"]="EEEEEE";   // do not change
+  $ARConfig->cache['..']=new object;           // do not change
+  $ARConfig->cache['..']->nls=$AR->nls;        // do not change
+  $ARConfig->cache['..']->root['path']='/';    /* must always start with a '/' */
+  $ARConfig->cache['..']->root['value']=$AR->root;  // do not change
+  $ARConfig->cache['..']->site='/';            // do not change
+  $ARConfig->cache['..']->thumb['width']=40;   // do not change
+  $ARConfig->cache['..']->thumb['height']=40;   // do not change
+  $ARConfig->cache['..']->thumb['color']='EEEEEE';   // do not change
 
   $ARCurrent=new object;                       // do not change
  
@@ -150,14 +150,14 @@
     return md5($text);
   }
  
-  define("ARGRANTOLD", 1);
-  define("ARGRANTLOCAL", 2);
-  define("ARGRANTCHILDREN",4);
-  define("ARGRANTGLOBAL", 6);
-  define("ARMASKLOCAL", 3);
-  define("ARMASKCHILDREN", 5);
-  define("ARMASKGLOBAL", 7);
-  define("ARTHISTYPE", 1); 
-  define("ARANYTYPE", 0);
+  define('ARGRANTOLD', 1);
+  define('ARGRANTLOCAL', 2);
+  define('ARGRANTCHILDREN',4);
+  define('ARGRANTGLOBAL', 6);
+  define('ARMASKLOCAL', 3);
+  define('ARMASKCHILDREN', 5);
+  define('ARMASKGLOBAL', 7);
+  define('ARTHISTYPE', 1); 
+  define('ARANYTYPE', 0);
 
 ?>

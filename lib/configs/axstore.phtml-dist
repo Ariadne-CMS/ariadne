@@ -8,44 +8,44 @@
   /* Ariadne Install Directory                                             */ 
   /*************************************************************************/
 
-  $ariadne_root                       = "/usr/local/lib/ariadne/";
+  $ariadne_root                       = '/usr/local/lib/ariadne/';
 
   /*************************************************************************/
   /* DBMS for this store                                                   */
   /*************************************************************************/
 
-  $ax_config["dbms"]         = "ax";
+  $ax_config['dbms']         = 'ax';
 
   /*************************************************************************/
   /* Ariadne Code Library (lib)                                            */
   /*************************************************************************/
 
-  $ax_config["code"]                  = $ariadne_root."lib/";
+  $ax_config['code']                  = $ariadne_root.'lib/';
 
   /*************************************************************************/
   /* Ariadne Export temp directory                                         */
   /*************************************************************************/
 
-  $ax_config["temp"]                  = $ariadne_root."files/temp/";
+  $ax_config['temp']                  = $ariadne_root.'files/temp/';
 
   /*************************************************************************/
   /* Tar configuration                                                     */
   /*************************************************************************/
 
-  if ($AR->OS=="WIN32") {
-    $compress_cmd                       = "--use-compress-program=".$ariadne_root."bin/gzip";
-    $tar_cmd                            = $ariadne_root."bin/tar.exe ".$compress_cmd;
-    $ax_config["tar_error_handler"]     = "";
+  if ($AR->OS=='WIN32') {
+    $compress_cmd                       = '--use-compress-program='.$ariadne_root.'bin/gzip';
+    $tar_cmd                            = $ariadne_root.'bin/tar.exe '.$compress_cmd;
+    $ax_config['tar_error_handler']     = '';
   } else {
-    $tar_cmd                            = "tar -z ";
-    $ax_config["tar_error_handler"]     = " 2> %s ";
+    $tar_cmd                            = 'tar -z ';
+    $ax_config['tar_error_handler']     = ' 2> %s ';
   }
-  $ax_config["tar_tar"]               = $tar_cmd." -c -C %s %s -f %s %s";
-  $ax_config["tar_untar"]             = $tar_cmd." -x -C %s %s -f  %s %s";
+  $ax_config['tar_tar']               = $tar_cmd.' -c -C %s %s -f %s %s';
+  $ax_config['tar_untar']             = $tar_cmd.' -x -C %s %s -f  %s %s';
 
   // set this to true if you are really sure that tar throws errors which
   // do not occur.
 
-  $ax_config["tar_nofail"]            = false;
+  $ax_config['tar_nofail']            = false;
 
 ?>

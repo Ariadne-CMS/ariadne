@@ -10,27 +10,27 @@
  *    Fill in the ip number of your server                                *
  **************************************************************************/
 
-    $ftp_config["server_ip"]       = "127.0.0.1";
+    $ftp_config['server_ip']       = '127.0.0.1';
 
 
 /**************************************************************************
  *    Fill in the url of the site which has to be used as the ftp root    *
  **************************************************************************/
 
-    $ftp_config["site"]            = "muze.nl";
+    $ftp_config['site']            = 'muze.nl';
 
 
 /**************************************************************************
  *  The greeting displayed when a client connects                         *
  **************************************************************************/
 
-    $ftp_config["greeting"]        = "Ariadne FTP";
+    $ftp_config['greeting']        = 'Ariadne FTP';
 
 
 /**************************************************************************
  *  The ftp debug/log file                                                *
  **************************************************************************/
 
-    $ftp_config["debugfile"]       = $ariadne_root."files/temp/ftp_debug.txt";
+    $ftp_config['debugfile']       = $ariadne_root.'files/temp/ftp_debug.txt';
 
 ?>
