@@ -107,7 +107,7 @@
 			}
 		}
 
-		$query="select $nodes.path, $nodes.parent, $nodes.priority, ";
+		$query="select distinct($nodes.path), $nodes.parent, $nodes.priority, ";
 		$query.=" $objects.id, $objects.type, $objects.object, UNIX_TIMESTAMP($objects.lastchanged) as lastchanged, $objects.vtype ";
 		$query.=" from $tables where ";
 		$query.=" $nodes.object=$objects.id $prop_dep";

@@ -4,7 +4,7 @@
 
 		// parse identifier regs[1] (& regs[2] : field_id)
 		if ($type!=="const") {
-			$reg_id='^[[:space:]]*([a-z][a-z0-9]*([.][a-z][a-z0-9]*)?)';
+			$reg_id='^[[:space:]]*([a-z_][a-z0-9_]*([.][a-z_][a-z0-9_]*)?)';
 		}
 		if ($type!=="ident") {
 			if ($reg_id) {
@@ -116,7 +116,7 @@
 
 	function parse_and_expr(&$query) {
 		$result=$this->parse_group_expr($query);
-		while ($result && eregi('[[:space:]]*(and)', $query, $regs) && $regs[1]) {
+		while ($result && eregi('^[[:space:]]*(and)', $query, $regs) && $regs[1]) {
 			$query=substr($query, strlen($regs[0]));
 			$right=$this->parse_group_expr($query);
 			if ($right) {
