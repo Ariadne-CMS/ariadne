@@ -216,9 +216,10 @@
 			}
 		}
 
-		function ftp_TranslatePath(&$path, &$listMode) {
+		function ftp_TranslatePath(&$path, &$listMode, &$template) {
 		global $FTP;
 			$listMode="";
+			$template="";
 			$path=$FTP->site.$FTP->store->make_path($FTP->cwd, $path);
 			while (ereg('/-([^/]*)-/', $path, $regs) && $regs[1]) {
 				$listMode=$regs[1];
@@ -227,7 +228,14 @@
 			if (!$listMode) {
 				$listMode=$FTP->listMode;
 			}
-			//debug("ftp: Translate $debug_path:: (FTP->listMode = '$FTP->listMode', listMode = '$listMode')");
+			debug("ftp: Translate $debug_path:: (FTP->listMode = '$FTP->listMode', listMode = '$listMode', path = '$path', template = '$template')");
+		}
+
+		function ftp_TranslateTemplate(&$path, &$template) {
+		global $FTP;
+			$parent = $FTP->store->make_path($path, "..");
+			$template = substr($path, strlen($parent), -1);
+			$path = $parent;
 		}
 
 		function ftp_Run() {
@@ -235,6 +243,9 @@
 
 			while (ftp_FetchCMD($cmd, $args)) {
 				$ARBeenHere=Array();		
+				$ARCurrent->arLoginSilent = 0;
+				$ARCurrent->ftp_error = "";
+
 				switch ($cmd) {
 					case 'QUIT':
 						ftp_Tell(221, "Goodbye.");
@@ -305,14 +316,93 @@
 						}
 					break;
 
+					case 'RNFR':
+						$rename_src_path = $args[0];
+						ftp_TranslatePath($rename_src_path, $rename_src_listMode);
+						if ($listMode === "templates") {
+							ftp_TranslateTemplate($rename_src_path, $rename_src_template);
+							$result = $FTP->store->call(
+											"ftp.template.exists.phtml", 
+											Array(
+												"arRequestedTemplate" => $rename_src_template
+											),
+											$FTP->store->get($path));
+
+							if (is_array($result) && current($result)) {
+								ftp_Tell(350, "template exists, supply destination name.");
+							} else {
+								ftp_Tell(550, "template [".$rename_src_template."] does not exists.");
+								$rename_src_path = "";
+							}
+
+						} else 
+						if ($FTP->store->exists($rename_src_path)) {
+							ftp_Tell(350, "Object exists, supply destination name.");
+						} else {
+							ftp_Tell(550, "Object [".$rename_src_path."] does not exists.");
+							$rename_src_path = "";
+						}
+					break;
+
+					case 'RNTO':
+						if ($rename_src_path) {
+							$rename_dest_path = $args[0];
+							ftp_TranslatePath($rename_dest_path, $rename_dest_listMode);
+							if ($rename_dest_listMode === $rename_src_listMode) {
+								if ($rename_dest_listMode === "templates") {
+									$temp = $args[0];
+									if ($temp[strlen($temp)-1] === "/") {
+										$rename_dest_template = $rename_src_template;
+									} else {
+										ftp_TranslateTemplate($rename_dest_path, $rename_dest_template);
+									}
+									$do_move = $FTP->store->exists($rename_dest_path);
+								} else {
+									$temp = $args[0];
+									if ($FTP->store->exists($rename_dest_path)) {
+										$parent = $FTP->store->make_path($rename_src_path, "..");
+										$file = substr($rename_src_path, strlen($parent));
+										$rename_dest_path.=$file;
+									}
+									$do_move = !$FTP->store->exists($rename_dest_path);
+								}
+
+								if ($do_move) {
+									debug("ftp::RENAME ($rename_src_path, $rename_dest_path, ".$rename_src_listMode.", $rename_src_template, $rename_dest_template)");
+									$FTP->store->call("ftp.".$rename_src_listMode.".rename.phtml", 
+													Array(
+														"source" => $rename_src_path,
+														"target" => $rename_dest_path,
+														"source_template" => $rename_src_template,
+														"target_template" => $rename_dest_template 
+													),
+													$FTP->store->get($rename_src_path));
+
+									if ($ARCurrent->ftp_error) {
+										ftp_Tell(550, $ARCurrent->ftp_error);
+										unset($ARCurrent->ftp_error);
+									} else {
+										ftp_Tell(250, "Rename successfull.");								
+									}
+									$rename_src_path = "";
+								} else {
+									ftp_Tell(550, "Object [".$args[0]."] does already exist.");
+								}
+							} else {
+								ftp_Tell(550, "Moving objects between different modeses is not supported (yet).");
+							}
+						} else {
+							ftp_Tell(550, "Expected RNFR");
+						}
+					break;
+
 					case 'RETR':
 						$path=$args[0];
 						ftp_TranslatePath($path, $listMode);
 						switch ($listMode) {
 							case "templates":
 								$reqpath = $path;
-								$path = $FTP->store->make_path($path, "..");
-								$template = substr($reqpath, strlen($path), -1);
+								ftp_TranslateTemplate($path, $template);
 								$getmode = "templates";
 							break;
 							default:
@@ -328,7 +418,6 @@
 								ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ASCII' : 'BINARY')." mode data connection for $args[0] (".strlen($file_data)." bytes)");
 								$FTP->store->call("ftp.$getmode.get.phtml", array("arRequestedTemplate" => $template),
 											$FTP->store->get($path));
-								//$file_data=ob_get_contents();
 								debug("ftp::get::going to close dc");
 								ftp_CloseDC();
 								debug("ftp::get::dc closed");
@@ -429,6 +518,7 @@
 						}
 					break;
 
+					case 'RMDIR':
 					case 'DELE':
 						$target = $args[0];
 						ftp_TranslatePath($target, $listMode);
@@ -479,16 +569,17 @@
 								$fileinfo["tmp_name"]=$tempfile;
 								$fileinfo["type"]=get_mime_type($tempfile);
 								$fileinfo["size"]=filesize($tempfile);
-
-								$file=substr($target, strlen($path), -1);
-								$fileinfo["name"]=eregi_replace('[^.a-z0-9_-]', '_', $file);
-								debug("ftp: fileinfo: name = '".$fileinfo["name"]."'");
-
 								if ($listMode === "templates") {
-										debug("ftp: writing template to  ($path)");
-										$FTP->store->call("ftp.$listMode.save.phtml", Array("file" => $fileinfo),
-											$FTP->store->get($path));
+									ftp_TranslateTemplate($target, $template);
+									$fileinfo["name"]=eregi_replace('[^.a-z0-9_-]', '_', $template);
+									debug("ftp: writing template to  ($target$template)");
+									//debugon("all");
+									$FTP->store->call("ftp.templates.save.phtml", Array("file" => $fileinfo),
+										$FTP->store->get($target));
+									debugon();
 								} else {
+									$file=substr($target, strlen($path), -1);
+									$fileinfo["name"]=eregi_replace('[^.a-z0-9_-]', '_', $file);
 									if ($FTP->store->exists($target)) {
 										debug("ftp::store removing $target first");
 										// if $target already exists, we have to delete it first
@@ -610,7 +701,7 @@
 										$FTP->cwd="/";
 										$this->user=$login;
 									} else {
-										ftp_Tell(530, "Login incorrect: permission denied");
+										ftp_Tell(530, "Login incorrect: (site) permission denied");
 										unset($user);
 										unset($AR->user);
 									}
@@ -620,7 +711,7 @@
 										$FTP->cwd=$user->path;
 										$this->user=$login;
 									} else {
-										ftp_Tell(530, "Login incorrect: permission denied");
+										ftp_Tell(530, "Login incorrect: (user) permission denied");
 										unset($user);
 										unset($AR->user);
 									}
@@ -770,6 +861,7 @@
 	// default type is ASCII
 	$FTP->DC["type"] = "A";
 
+	ob_start("debug");
 	$FTP->stdin=fopen("php://stdin", "r");
 	if ($FTP->stdin) {
 		$FTP->stdout=fopen("php://stdout", "w");
@@ -803,6 +895,6 @@
 	} else {
 		$FTP->error="Could not open stdin";
 	}
-
+	ob_end_clean();
 	debugoff();
 ?>
