@@ -87,7 +87,7 @@
 					// now make the new values available to wgWizKeepVars()
 					$result[$field]=$file;
 					$result[$field."_temp"]=substr($file_artemp,strlen($store->files."temp"));
-					$result[$field."_size"]=$HTTP_POST_FILES[$field]['size'];
+					$result[$field."_size"]=(int)$HTTP_POST_FILES[$field]['size'];
 					$type = get_mime_type($file_artemp);
 					if (!$type) {
 						$type = get_mime_type($file, MIME_EXT);
