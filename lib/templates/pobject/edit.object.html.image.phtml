@@ -135,6 +135,8 @@ BODY 	{
 	var CurrentLimit=50;
 	var LastPath='<?php echo $this->path; ?>';
 
+	var PreviewStylesheet='';
+
     var b_offset=0;
     var b_limit=CurrentLimit;
     var b_total=0;
@@ -183,6 +185,7 @@ BODY 	{
 		PictureForm.border.value=arr['border'];
 		PictureForm.hspace.value=arr['hspace'];
 		PictureForm.vspace.value=arr['vspace'];
+		PreviewStylesheet = arr['stylesheet'];
 		for (i=0; i<PictureForm.align.options.length; i++) {
 			alignment=PictureForm.align.options[i];
 			if (alignment.value==arr['align']) {
@@ -410,7 +413,6 @@ BODY 	{
 
 	function showPreview() {
 		var type=document.forms[0].imgstyle.options[document.forms[0].imgstyle.selectedIndex].value;
-//		alert('styleIndex: '+styleIndex+' style: '+tbContentEditOptions['styles'][styleIndex]);
 		var style=tbContentEditOptions['image']['styles'][type]['template'];
 		var sclass=tbContentEditOptions['image']['styles'][type]['class'];
 		var border=document.forms[0].border.value;
@@ -427,6 +429,7 @@ BODY 	{
 		}
 		mnPreview.location="<?php echo $this->store->root.$this->path; ?>show.preview.html?style="+escape(style)+
 				"&sclass="+escape(sclass)+
+				"&stylesheet="+escape(PreviewStylesheet)+
 				"&border="+escape(border)+"&hspace="+escape(hspace)+"&vspace="+escape(vspace)+
 				"&align="+escape(align)+"&alt="+escape(alt)+"&url="+escape(url)+"&path="+escape(path);
 	}
