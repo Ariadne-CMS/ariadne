@@ -2,10 +2,25 @@
 
 require_once('DB.php'); // PEAR DB class
 
-class DB_wrapper {
+class pinp_DB {
 
-	function DB_wrapper($key) {
+	function pinp_DB($key) {
 		$this->key=$key;
+	}
+
+	function _connect($dsn, $options = false) {
+		global $AR;
+		include_once($this->store->code.'modules/mod_db.php');
+	 
+		$key=@count($AR->DB_list);
+		$AR->DB_list[$key]=DB::connect($dsn, $options);
+		if (DB::isError($AR->DB_list[$key])) {
+			$result=$AR->DB_list[$key];
+			array_pop($AR->DB_list);
+		} else {
+			$result=new pinp_DB($key);		
+		} 
+		return $result;
 	}
 
 	function _quoteString($string) {
@@ -49,7 +64,7 @@ class DB_wrapper {
 		if (is_object($result) && (get_class($result)=="db_result" || is_subclass_of($result, "db_result")) ) {
 			$key=@count($AR->DB_result_list);
 			$AR->DB_result_list[$key]=$result;
-			$result=new DB_result_wrapper($key);
+			$result=new pinp_DB_result($key);
 		}
 		return $result;
 	}
@@ -65,7 +80,7 @@ class DB_wrapper {
 		if (is_object($result) && (get_class($result)=="db_result" || is_subclass_of($result, "db_result")) ) {
 			$key=@count($AR->DB_result_list);
 			$AR->DB_result_list[$key]=$result;
-			$result=new DB_result_wrapper($key);
+			$result=new pinp_DB_result($key);
 		}
 		return $result;
 	}
@@ -76,7 +91,7 @@ class DB_wrapper {
 		if (is_object($result) && (get_class($result)=="db_result" || is_subclass_of($result, "db_result")) ) {
 			$key=@count($AR->DB_result_list);
 			$AR->DB_result_list[$key]=$result;
-			$result=new DB_result_wrapper($key);
+			$result=new pinp_DB_result($key);
 		}
 		return $result;
 	}
@@ -174,10 +189,10 @@ class DB_wrapper {
 	}
 }
 
-class DB_result_wrapper {
+class pinp_DB_result {
 	var $key;
 
-	function DB_result_wrapper($key) {
+	function pinp_DB_result($key) {
 		$this->key=$key;
 	}
 

@@ -179,8 +179,11 @@ class pobject extends object { // pobject class definition
 		return $this->store->call($function, $args, $this->store->get($path));
 	}
 
-	function parents($path, $function="list.html", $args="", $top="/") {
+	function parents($path, $function="list.html", $args="", $top="") {
 		debug("pobject: parents($path, $function, $args)","object");
+		if (!$top) {
+			$top=$this->currentsite();
+		}
 		$path=$this->store->make_path($this->path, $path);
 		return $this->store->call($function, $args, $this->store->parents($path, $top));
 	}
@@ -1386,7 +1389,7 @@ class pobject extends object { // pobject class definition
 			$this->store->ls($this->path));
 	}
 
-	function _parents($function="list.html", $args="", $top="/") {
+	function _parents($function="list.html", $args="", $top="") {
 		debug("pobject: parents($function, $args)","object");
 		// remove possible path information (greedy match)
 		eregi('(.*[/\\])?(.*)', $function, $regs);
@@ -1623,6 +1626,11 @@ class pobject extends object { // pobject class definition
 		unset($user->grants);
 		unset($user->groups);
 		return $user;
+	}
+
+	function _import($class) {
+		$class=eregi_replace('[^a-z0-9\._]','',$class);
+		include_once($this->store->code."modules/".$class);
 	}
 
 } // end of pobject class definition
