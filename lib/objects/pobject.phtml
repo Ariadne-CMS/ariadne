@@ -865,11 +865,17 @@ class pobject extends object {
 ********************************************************************/
 
 	function _call($function, $args="") {
+		// remove possible path information (greedy match)
+		eregi('(.*[/\\])?(.*)', $function, $regs);
+		$function=$regs[2];
 		return $this->call($function, $args);
 	}
 
 	function _get($path, $function="view.html", $args="") {
 		debug("pobject: get($path, $function, $args)","object");
+		// remove possible path information (greedy match)
+		eregi('(.*[/\\])?(.*)', $function, $regs);
+		$function=$regs[2];
 		return $this->store->call($function, $args, 
 			$this->store->get(
 				$this->make_path($path))); 
@@ -877,17 +883,26 @@ class pobject extends object {
 
 	function _ls($function="list.html", $args="") {
 		debug("pobject: ls($function, $args)","object");
+		// remove possible path information (greedy match)
+		eregi('(.*[/\\])?(.*)', $function, $regs);
+		$function=$regs[2];
 		return $this->store->call($function, $args, 
 			$this->store->ls($this->path));
 	}
 
 	function _parents($function="list.html", $args="", $top="/") {
 		debug("pobject: parents($function, $args)","object");
+		// remove possible path information (greedy match)
+		eregi('(.*[/\\])?(.*)', $function, $regs);
+		$function=$regs[2];
 		return $this->store->call($function, $args, 
 			$this->store->parents($this->path, $top));
 	}
 
 	function _find($criteria, $function="list.html", $args="", $limit=100, $offset=0) {
+		// remove possible path information (greedy match)
+		eregi('(.*[/\\])?(.*)', $function, $regs);
+		$function=$regs[2];
 		return $this->store->call($function, $args, 
 		$this->store->find($this->path, $criteria, $limit, $offset));
 	}
