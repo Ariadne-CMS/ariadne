@@ -259,10 +259,19 @@ class pobject extends object { // pobject class definition
 									while (list($name, $value)=each($cdata)) {
 										// one index, this order (name, value, nls) ?
 										if ($configcache->custom[$name]['property']) {
-											$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
-											$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
-											$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
-											$i++;
+											if (is_array($value)) {
+												while (list($valkey, $valvalue)=each($value)) {
+													$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
+													$properties["custom"][$i]["value"]="'".AddSlashes($valvalue)."'";
+													$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
+													$i++;													
+												}
+											} else {
+												$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
+												$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
+												$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
+												$i++;
+											}
 										}
 									}
 								}
@@ -317,10 +326,19 @@ class pobject extends object { // pobject class definition
 							while (list($name, $value)=each($cdata)) {
 								if ($configcache->custom[$name]['property']) {
 									// one index, this order (name, value, nls) ?
-									$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
-									$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
-									$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
-									$i++;
+									if (is_array($value)) {
+										while (list($valkey, $valvalue)=each($value)) {
+											$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
+											$properties["custom"][$i]["value"]="'".AddSlashes($valvalue)."'";
+											$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
+											$i++;													
+										}
+									} else {
+										$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
+										$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
+										$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
+										$i++;
+									}
 								}
 							}
 						}
