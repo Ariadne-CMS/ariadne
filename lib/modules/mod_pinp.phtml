@@ -40,7 +40,8 @@ class pinp {
       "gmstrftime|microtime|mktime|strftime|time|easter_days|easter_date";
     $regex_funcs="ereg|ereg_replace|eregi|eregi_replace|split";
     $debug_funcs="debug|debugon|debugoff";
-    $this->re_allowed="|$control_funcs|$array_funcs|$string_funcs|$math_funcs|$var_funcs|$time_funcs|$allowed_functions|$debug_funcs|$regex_funcs|";
+    $loader_funcs="ldHeader|ldRedirect|ldSetContent"; 
+	$this->re_allowed="|$control_funcs|$array_funcs|$string_funcs|$math_funcs|$var_funcs|$time_funcs|$allowed_functions|$debug_funcs|$regex_funcs|$loader_funcs|";
 
     // dont touch this unless you know what you are doing
     $slash="\\\\";
