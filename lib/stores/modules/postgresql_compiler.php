@@ -44,8 +44,12 @@
 					case '>':
 						$operator=$node["operator"];
 					break;
+					case '=~':
 					case '~=':
 						$operator="LIKE";
+					break;
+					case '!~':
+						$operator="NOT LIKE";
 					break;
 				}
 				if ($node["left"]["id"]!=="implements") {

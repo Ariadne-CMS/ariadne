@@ -79,7 +79,7 @@
 	function parse_cmp_expr(&$query) {
 		$result=$this->parse_term($query);
 		if ($result) {
-			$reg_cmp_op='^[[:space:]]*(~=|==?|\\!=|<=|>=|<|>)[[:space:]]*';
+			$reg_cmp_op='^[[:space:]]*(~=|==?|\\!=|<=|>=|<|>|=~|!~)[[:space:]]*';
 			if (eregi($reg_cmp_op, $query, $regs)) {
 					$node["id"]="cmp";
 					$node["operator"]=$regs[1];
