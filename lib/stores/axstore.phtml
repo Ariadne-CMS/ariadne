@@ -255,13 +255,13 @@ class axstore {
 					}
 					$this->_free_object_data($node->object);
 				}
-				if ($found && $offset--<=0 && $limit-->0) {
+				if ($found && $offset--<=0 && ($limit-->0 || $limit < 0)) {
 					$result[$node->path]=$this->nodes[$node->path];
 				}
 			}
 		}
 		if (is_array($node->children)) {
-			while (($limit>0) && (list(,$child)=each($node->children))) {
+			while (($limit>0 || $limit < 0) && (list(,$child)=each($node->children))) {
 				$this->_recurse_find($child, $result, $criteria, $limit, $offset);
 			}
 		}
@@ -270,6 +270,7 @@ class axstore {
 	function find($path, $criteria, $limit=100, $offset=0) {
 		//echo "axstore::find($path, [criteria], $limit, $offset)\n";
 		if ($this->nodes[$path]) {
+			if ( $limit == 0 ) { $limit = -1; }
 			$this->_recurse_find($this->nodes[$path], $result["list"], $criteria, $limit, $offset);
 		}
 		return $result;
