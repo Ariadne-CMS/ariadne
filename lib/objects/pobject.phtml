@@ -322,6 +322,7 @@ class pobject {
 			debug("pobject: CheckLogin: end","all");
 			$result=($grants || ($ARLogin=="admin"));
 		} else {
+			$result=false;
 			debug("pobject: CheckLogin: end (failed)","all");
 		}
 		return $result;
