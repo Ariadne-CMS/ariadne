@@ -1,6 +1,5 @@
 #!/usr/bin/php -q
 <?php
-	$in=fopen('php://stdin', 'r');
 	$ariadne = "../lib";
 	if (!@include_once($ariadne."/configs/ariadne.phtml")) {
 		chdir(substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')));
@@ -22,12 +21,110 @@
 	require_once($store->code."modules/mod_import_wddx.php");
 
 	//debugon('all');
+	$HELP_INFO = 
+"No help yet
+  --verbose     more output
+  --debug       enable debugging
+";
 
 	//TODO: commandline configuration
+	$arg_c=0;
+	$arg_v[$arg_c++]=$argv[0];
 
-	$import = new import_wddx();
+	next($argv); // do not parse the filename
+	while (list(,$cmd)=each($argv)) {
+		if (strpos($cmd, "--") === 0) {
+			if (strpos(substr($cmd, 2),"-")===false) {
+				$option_switch=substr($cmd, 2);
+				if (strpos($option_switch, "=")!==false) {
+					$option_value=substr($option_switch, strpos($option_switch, "=")+1);
+					$tmp = substr($option_switch,0,strpos($option_switch,"="));
+					$option_switch = $tmp;
+				}
+			} else {
 
-	$import->parse($in,$store);
+				$option_switch=substr($cmd, 2, strpos(substr($cmd, 2),"-"));
 
+				if (strpos($cmd, "=")!==false) {
+					$option_value=substr($cmd, strpos($cmd, "=")+1);
+					$option=substr($cmd, strlen($option_switch)+3, strpos($cmd, "=") - (strlen($option_switch)+3));
+				} else {
+					$option=substr($cmd, strlen($option_switch)+3);
+				}
+			}
+
+			switch ($option_switch) {
+				case 'help':
+					echo $HELP_INFO;
+					exit;
+				break;
+
+				case 'debug':
+					$options["debug"]=true;
+				break;
+
+				case 'verbose':
+					$options["verbose"]=true;
+				break;
+				
+				case 'skipdata':
+					$options["skipdata"]=true;
+				break;
+				case 'forcedata':
+					$options["forcedata"]=true;
+
+				break;
+				case 'skiptemplates':
+					$options["skiptemplates"]=true;
+				break;
+				case 'dellalltemplates':
+					$options["delalltemplates"]=true;
+				break;
+
+				case 'skipgrants':
+					$options["skipgrants"]=true;
+				break;
+
+				case 'skipfiles':
+					$options["skipfiles"]=true;
+				break;
+				case 'forcefiles':
+					$options["forcefiles"]=true;
+				break;
+
+
+				case 'prefix':
+					if($option_value) {
+						$options["prefix"] = $option_value;
+					}
+				break;
+
+				default:
+					echo "unknow option-switch ($option_switch)\n";
+			}
+		} else {
+			$arg_v[$arg_c++]=$cmd;
+		}
+	}
+
+if( isset($arg_v[1]) && $arg_v[0] != '-' ){
+	// open file
+	$in=fopen($arg_v[1], 'r');
+} else {
+	// open stdin
+	$in=fopen('php://stdin', 'r');
+}
+
+if($options["debug"]){
+	debugon('all');
+}
+set_time_limit(0);
+
+$import = new import_wddx($options);
+$import->parse($in,$store);
+
+if($options["debug"]){
+	debugoff();
+}
 
 ?>

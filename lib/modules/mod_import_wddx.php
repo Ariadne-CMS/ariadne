@@ -8,7 +8,7 @@ class import_wddx {
 	var $store;
 	var $config;
 
-	function import_wddx(){
+	function import_wddx($options){
 		$this->input = null;
 		$this->nestdeep = -4;
 		$this->stack = array();
@@ -18,6 +18,7 @@ class import_wddx {
 		xml_parser_set_option($this->xml_parser, XML_OPTION_CASE_FOLDING, false);
 		xml_set_element_handler($this->xml_parser, "startElement", "endElement");
 		xml_set_character_data_handler($this->xml_parser, "characterData");
+		$config = $options;
 	}
 
 	function startElement($parser, $name, $attribs) {
@@ -102,10 +103,13 @@ class import_wddx {
 			3) object grants
 			4) object files
 		 */
-		//debugon('all');
 		debug("working on ".$objdata['path'],'all');
-		$path = $objdata['path'];
-		//$path = '/test'.$path;
+		if($config['prefix']){
+			$path = $config['prefix'].$objdata['path'];
+			$path = $this->store->make_path($path);
+		} else {
+			$path = $objdata['path'];
+		}
 
 		/*
 			step 1
@@ -405,11 +409,13 @@ class import_wddx {
 		require_once($store->get_config("code")."modules/mod_pinp.phtml");
 		$this->input = $in;
 		$this->store = $store;
-		while ($data = fgets($this->input, 65535)) {
+		while (!feof($this->input)){
+			$data = fgets($this->input, 65535);
 			if (!xml_parse($this->xml_parser, $data, feof($this->input))) {
-				die(sprintf("XML error: %s at line %d",
+				die(sprintf("XML error: %s at line %d column %d \n",
 							xml_error_string(xml_get_error_code($this->xml_parser)),
-							xml_get_current_line_number($this->xml_parser)));
+							xml_get_current_line_number($this->xml_parser),
+							xml_get_current_column_number($this->xml_parser)));
 			}
 		}
 		xml_parser_free($this->xml_parser);
