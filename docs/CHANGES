@@ -20,6 +20,7 @@ New Features:
 	  the nls option: {arCurrentPage/en} expands to the english version, etc.
 	  
 Bugs Fixed:
+	- Fixed logging in with another user on your own session.
 	- Tidy is configured to accept documents that are UTF-8. Thanks to Jeroen van Gorkum.
 	- Fixed image dialog: it now correctly loads images with another URL root
 	  then $store->root.
