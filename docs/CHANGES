@@ -20,6 +20,8 @@ New Features:
 	  by Lukasz Keler. 
 
 Bugs Fixes:
+	- Fixed pphoto to work around the bug that causes ImageMagick to break on a . in the ariadne
+	  path. Thanks to Stefan Schreinert for reporting this.
 	- the parentsection() function now works, instead of not :)
 	- De editor doesn't cut off the last char in an image link after editing anymore.
 	- Fixed the editor to not include the nls in the URL of images.
