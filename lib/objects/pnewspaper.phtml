@@ -11,8 +11,8 @@ class pnewspaper extends pdir { // definitie class
 		debug("pnewspaper: get_articles($display, $max, $start, $end)","object");
 		if (!$start) { $start=time(); }
                 if (!$end) { $end=$start; }
-		$criteria["article"]["start"]["<="]=$start;
-		$criteria["article"]["end"][">="]=$end;
+		$criteria["article"]["start"]["<="]=$end;
+		$criteria["article"]["end"][">="]=$start;
 		$criteria["article"]["display"]["="]="'".AddSlashes($display)."'";
 		$this->find(".",$criteria,"system.get.article-by-priority.phtml","display=$display");
 		if (is_array($ARCurrent->priority)) {
