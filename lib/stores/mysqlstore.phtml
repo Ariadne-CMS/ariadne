@@ -41,14 +41,15 @@ $ERRMODE="htmljs"; // alternative: "text"/"html"/"js"
 
 function debug($text, $level="pinp", $indent="") {
 	global $DB, $DB_INDENT;
-	if ($indent=="IN") {
-		$DB_INDENT.="  ";
-	} else if ($indent=="OUT") {
-		$DB_INDENT=substr($DB_INDENT,0,-2);
-	}
-	if ($DB["level"]>=$DB[$level]) {
+ 	if ($DB["level"]>=$DB[$level]) {
+		if ($indent=="OUT") {
+			$DB_INDENT=substr($DB_INDENT,0,-2);
+		}
 		echo "$DB_INDENT<b>$level::$text</b><BR>\n";
 		flush();
+		if ($indent=="IN") {
+			$DB_INDENT.="  ";
+		}
 	}
 }
 
