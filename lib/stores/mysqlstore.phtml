@@ -27,62 +27,6 @@
 
 *******************************************************************************/
 
-// debugging functions.
-
-$DB["all"]=5;
-$DB["store"]=4;
-$DB["class"]=3;
-$DB["object"]=2;
-$DB["pinp"]=1;
-$DB["off"]=0;
-$DB["level"]=$DB["off"];
-
-$ERRMODE="htmljs"; // alternative: "text"/"html"/"js"
-
-function debug($text, $level="pinp", $indent="") {
-	global $DB, $DB_INDENT;
- 	if ($DB["level"]>=$DB[$level]) {
-		if ($indent=="OUT") {
-			$DB_INDENT=substr($DB_INDENT,0,-2);
-		}
-		echo "$DB_INDENT<b>$level::$text</b><BR>\n";
-		flush();
-		if ($indent=="IN") {
-			$DB_INDENT.="  ";
-		}
-	}
-}
-
-function debugon($level="pinp") {
-	global $DB;
-	$DB["level"]=$DB[$level];
-	debug("Debuglevel: $level");
-}
-
-function debugoff() {
-	global $DB;
-	debug("Debugging off.");
-	$DB["level"]=$DB["off"];
-}
-
-function error($text) {
-	global $ERRMODE;
-	switch ($ERRMODE) {
-		case "html" :
-			echo "<b><font color='red'>Error: $text</font></b><BR>\n";
-			break;
-		case "js" :
-			echo "\nalert('Error: $text');\n";
-			break;
-		case "text" :
-			echo "\nERROR: $text\n";
-			break;
-		case "htmljs" :
-		default: 
-			echo "// <b><font color='red'>Error: $text</font></b><BR>\n<!--\nalert('Error: $text');\n// -->\n";
-			break;
-	}
-}
 
 // general objectstore functions
 
