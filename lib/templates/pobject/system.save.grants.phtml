@@ -93,9 +93,15 @@
 				}
 			} else if ($newgrants) {
 				if ($type=@current($this->get($path, "system.get.type.phtml"))) {
-					if ($this->store->implements($type, "puser")) {	
+					if ($this->store->implements($type, "pgroup")) {
+						$type="pgroup";
+					} else if ($this->store->implements($type, "puser")) {
+						$type="puser";
+					} else {
+						$this->error="$path is not a user or group";
+					}						
+					if (!$this->error) {	
 						if ($id=@current($this->get($path, "system.get.login.phtml"))) {
-							
 							$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
 							$newgrants=ereg_replace('([\(\)])',' \\1 ',$newgrants);
 							$newgrants=str_replace(',',' ',$newgrants);
@@ -213,8 +219,6 @@
 						} else {
 							$this->error="Couldn't get login/id from $path";
 						}
-					} else {
-						$this->error="$path is not a user or group";
 					}
 				} else {
 					$this->error="Couldn't retrieve user/group $path";
