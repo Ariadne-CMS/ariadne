@@ -245,10 +245,12 @@
 	$ARnls["ok"]							=	"OK";
 	$ARnls["on"]							=	"Ein";
 	$ARnls["open"]							=	"Öffne";
+	$ARnls["openinnewwindow"]				=	"In neuem Fenster öffnen";
 	$ARnls["openlocks"]						=	"Entsperre %s:";
 	$ARnls["options"]						=	"Optionen";
 	$ARnls["orderedbrowsing"]				=	"!Ordered browsing";
 	$ARnls["overwrite"]						=	"Überschreiben";
+	$ARnls["owner"]							=	"Besitzer";
 	$ARnls["page"]							=	"Seite";
 	$ARnls["password"]						=	"Passwort";
 	$ARnls["passwordincorrect"]				=	"Passwort falsch, bitte probieren Sie noch einmal.";
@@ -285,6 +287,7 @@
 	$ARnls["q:removetemplate"]				=	"Wollen Sie die Vorlage %s für %s wirklich löschen?";
 	$ARnls["q:removethistemplate"]			=	"Wollen Sie diese Vorlage wirklich löschen?";
 	$ARnls["q:removeuser"]					=	"Wollen Sie diesen User wirklich entfernen?";
+	$ARnls["recursive"]						=	"rekursiv";
 	$ARnls["refreshnow"]					=	"Cache jetzt aktualisieren!";
 	$ARnls["refreshonch."]					=	"Bei Änderungen aktualisieren";
 	$ARnls["refreshonrq."]					=	"Bei Seitenaufruf aktualisieren";
@@ -299,6 +302,7 @@
 	$ARnls["search"]						=	"Suche";
 	$ARnls["selectlanguage"]				=	"Wählen sie eine andere Sprache:";
 	$ARnls["setasdefault"]					=	"Setze als Standard?";
+	$ARnls["settingowner"]					=	"Besitzer setzen";
 	$ARnls["short"]							=	"Kurz";
 	$ARnls["show"]							=	"Zeige";
 	$ARnls["size"]							=	"Größe";
