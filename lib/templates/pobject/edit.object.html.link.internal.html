@@ -49,7 +49,7 @@ BODY 	{
 	width: 90px;
 }
 .langselect {
-	width: 100px;
+	width: 75px;
 }
 .wgBrowseInput {
 		width: 140px;
@@ -133,18 +133,6 @@ BODY 	{
 				}
 			?>
 		</select></td>
-		<td><?php echo $ARnls["name"]; ?>:</td>
-		<td><input type="text" name="name" value="" class="name"></td>
-	</tr><tr>
-		<td><?php echo $ARnls["e_hyperlink_path"]; ?>:</td>
-		<td colspan="3"><nobr><?php
-			$wgBrowseName="ar_path";
-			$wgBrowsePath=$src;
-			include($this->store->code."widgets/browse/js.html");
-			include($this->store->code."widgets/browse/form.html");
-		?></nobr>
-		</td>
-	</tr><tr>
 		<td><?php echo $ARnls["language"]; ?>:</td>
 		<td colspan="3">
 			<select class="langselect" name="ar_nls">
@@ -157,6 +145,18 @@ BODY 	{
 			?>
 			</select>
 		</td>
+	</tr><tr>
+		<td><?php echo $ARnls["e_hyperlink_path"]; ?>:</td>
+		<td colspan="3"><nobr><?php
+			$wgBrowseName="ar_path";
+			$wgBrowsePath=$src;
+			include($this->store->code."widgets/browse/js.html");
+			include($this->store->code."widgets/browse/form.html");
+		?></nobr>
+		</td>
+	</tr><tr>
+		<td><?php echo $ARnls["name"]; ?>:</td>
+		<td colspan="3"><input type="text" name="name" value="" class="name"></td>
 	</tr>
 </form>
 </table>

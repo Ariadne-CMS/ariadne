@@ -54,6 +54,9 @@ BODY 	{
 .wgBrowseButton {
 		width: 75px;
 }
+.name {
+	width: 90px;
+}
 </style>
 <SCRIPT LANGUAGE=JavaScript>
 <!--
@@ -135,6 +138,9 @@ BODY 	{
 	</tr><tr>
 		<td>URL:</td>
 		<td colspan="3"><input type="text" name="URL" class="URL"</td>
+	</tr><tr>
+		<td><?php echo $ARnls["name"]; ?>:</td>
+		<td colspan="3"><input type="text" name="name" value="" class="name"></td>
 	</tr>
 </form>
 </table>

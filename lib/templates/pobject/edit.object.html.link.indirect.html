@@ -44,6 +44,9 @@ BODY 	{
 .url {
 	width: 225px;
 }
+.name {
+	width: 90px;
+}
 </style>
 <SCRIPT LANGUAGE=JavaScript>
 <!--
@@ -118,6 +121,9 @@ BODY 	{
 	</tr><tr>
 		<td>URL:</td>
 		<td colspan="3"><INPUT ID="ar_affiliate_URL" TYPE=TEXT NAME="ar_affiliate_URL" value="<?php echo $URL; ?>" class="url"></td>
+	</tr><tr>
+		<td><?php echo $ARnls["name"]; ?>:</td>
+		<td colspan="3"><input type="text" name="name" value="" class="name"></td>
 	</tr>
 </form>
 </table>

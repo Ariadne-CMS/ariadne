@@ -849,6 +849,7 @@ function DECMD_IMAGE_onclick() {
   args['stylesheet'] = tbContentEditOptions["css"]["stylesheet"];
   arr = showModalDialog( tbContentEditOptions["dialogpath"] + 
 	"edit.object.html.image.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:600px; dialogHeight:400px; status: no; resizable: yes;");
+//  window.open(tbContentEditOptions["dialogpath"] + "edit.object.html.image.phtml");
   if (arr != null){
 	IMAGE_set(arr);
   }
@@ -987,7 +988,7 @@ function DECMD_HYPERLINK_onclick()
     this path should always exist.
 	*/ 
 	arr = showModalDialog(tbContentEditOptions["dialogpath"] + 
-		"edit.object.html.link.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:15em; status: no; resizable: yes;");
+		"edit.object.html.link.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:13em; status: no; resizable: yes;");
 	if (arr != null){
 		var newLink='<a';
 		if (arr['URL']) {
