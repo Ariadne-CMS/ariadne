@@ -1,5 +1,4 @@
 <?php
- display("templates(".$this->path.")($this->id) -> (".$this->newObject->path.")(".$this->newObject->id.")\n");
  $orig_filestore=$this->store->get_filestore("templates");
  $orig_templates=$orig_filestore->ls($this->id);
  if (is_array($orig_templates)) {
