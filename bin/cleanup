@@ -5,16 +5,16 @@
 	require($ariadne."/configs/store.phtml");
 	require($ariadne."/configs/sessions.phtml");
 	require($ariadne."/includes/loader.cmd.php");
-	require($store_config['code']."stores/".$store_config["dbms"]."store.phtml");
+	require($store_config['code']."stores/".$session_config["dbms"]."store.phtml");
 
 
 	echo "Clearing old sessions...";
-	$inst_store = $store_config["dbms"]."store";
-	$sessionstore=new $inst_store($root,$store_config);
+	$inst_store = $session_config["dbms"]."store";
+	$sessionstore=new $inst_store($root,$session_config);
 	$criteria["object"]["lastchanged"]["<"]=strftime("%Y%m%d%H%M%S",time()-($session_config["timeout"]*4));
 	$criteria["object"]["implements"]["="]="'psession'";
 	$sessionstore->call("system.expire.phtml","",$sessionstore->find("/",$criteria, 0));
-	echo $sessionstore->count." expired sessions removed.\n";
+	echo $sessionstore->total." expired sessions removed.\n";
 	$sessionstore->close();
 	echo "done.\n";
 
