@@ -26,6 +26,7 @@
 		}
 		$result=$this->get("/system/ariadne/types/$arNewType/","system.get.name.phtml");
 		$wgWizTitle=$ARnls["new"]." ".$result[0];		
+		$wgWizHeader=$wgWizTitle.'<img src="'.$AR->dir->images.'icons/'.$arNewType.'_open.gif" alt="" hspace="4" align="absmiddle">';
 		$wgWizCallArgs=$arCallArgs.$wgWizFlow[0]["arCallArgs"];
 		include($this->store->code."widgets/wizard/new.html");
 	}

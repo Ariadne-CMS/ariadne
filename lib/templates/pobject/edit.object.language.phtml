@@ -15,16 +15,11 @@
 
 	if ($this->CheckSilent("read") && $this->CheckConfig()) {
 ?>
-	<table border="0" cellspacing="4" width="100%">
-	<tr>
-		<td align="center" valign="top">
-			<?php echo $ARnls["q:morelanguages"]; ?>
-		</td>
-	</tr><tr>
-		<td>
 			<fieldset id="languages">
 			<legend><?php echo $ARnls["language"]; ?></legend>
 			<img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1"><br>
+			<?php echo $ARnls["q:morelanguages"]; ?>
+			<hr>
 			<table border="0" width="90%"><tr><td valign="top">
 			<?php
 				$arLanguage=$this->getdata("arLanguage","none");
@@ -72,9 +67,6 @@
 			?>
 			</td></tr></table>
 			</fieldset>
-		</td>
-	</tr>
-	</table>
 	<script>
 		function selectnls(nls) {
 			nlslist=document.wgWizForm.arLanguage;

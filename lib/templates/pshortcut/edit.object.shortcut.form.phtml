@@ -24,66 +24,58 @@
 
 	******************************************************************/
 	if ($this->CheckSilent("read")) {
-?>
-<table border="0" width="90%">
-<tr>
-	<td>
-		<?php 
-			$arLanguage=$this->getdata("arLanguage","none");
-			if (!$arLanguage) {
-			 $arLanguage=$ARConfig->nls->default;
-			}
-			$selectednls=$arLanguage;
-			$selectedlanguage=$ARConfig->nls->list[$arLanguage];
-			$flag="<img src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\">";
-		?>
-		<fieldset id="shortcut">
-		<legend><?php $this->get("/system/ariadne/types/pshortcut/","show.name.phtml"); ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
-			<table border="0" align="center">
-			<tr>
-				<td>
-					<span class="required"><?php echo $ARnls["name"]; ?></span>
-				</td><td align="right">
-					<?php echo $flag; ?>
-				</td>
-			</tr><tr>
-				<td colspan="2">
-					<input type="text" name="<?php echo $selectednls."[name]"; ?>" maxlength="50" 
-						value="<?php $this->showdata("name", $selectednls); ?>">
-				</td>
-			</tr><tr>
-				<td>
-					<?php echo $ARnls["summary"]; ?>
-				</td><td align="right">
-					<?php echo $flag; ?>
-				</td>
-			</tr><tr>
-				<td colspan="2">
-					<textarea name="<?php echo $selectednls."[summary]"; ?>" cols="30" rows="2" wrap="soft"><?php 
-							echo ereg_replace("&","&amp;",$this->getdata("summary", $selectednls)); 
-					?></textarea>
-				</td>
-			</tr><tr>
-				<td colspan="2">
-					<span class="required"><?php echo $ARnls["path"]; ?></span>
-				</td>
-			</tr><tr>
-				<td colspan="2">
-					<?php 
-						if (!$wgBrowsePath=$this->getdata("path","none")) {
-							$wgBrowsePath=$this->parent;
-						}
-						$wgBrowseName="path";
-						include($this->store->code."widgets/browse/js.html");
-						include($this->store->code."widgets/browse/form.html"); 
-					?>
-				</td>
-			</tr>
-			</table>
-		</fieldset>
-	</td>
-</tr>
-</table>
+		$arLanguage=$this->getdata("arLanguage","none");
+		if (!$arLanguage) {
+			$arLanguage=$ARConfig->nls->default;
+		}
+		$selectednls=$arLanguage;
+		$selectedlanguage=$ARConfig->nls->list[$arLanguage];
+		$flag="<img src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\">";
+	?>
+<fieldset id="shortcut">
+<legend><?php $this->get("/system/ariadne/types/pshortcut/","show.name.phtml"); ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+	<table border="0" align="center">
+	<tr>
+		<td>
+			<span class="required"><?php echo $ARnls["name"]; ?></span>
+		</td><td align="right">
+			<?php echo $flag; ?>
+		</td>
+	</tr><tr>
+		<td colspan="2">
+			<input type="text" name="<?php echo $selectednls."[name]"; ?>" 
+				value="<?php $this->showdata("name", $selectednls); ?>" class="inputline">
+		</td>
+	</tr><tr>
+		<td>
+			<?php echo $ARnls["summary"]; ?>
+		</td><td align="right">
+			<?php echo $flag; ?>
+		</td>
+	</tr><tr>
+		<td colspan="2">
+			<textarea name="<?php echo $selectednls."[summary]"; ?>" cols="30" rows="2" wrap="soft" class="inputbox"><?php 
+					echo ereg_replace("&","&amp;",$this->getdata("summary", $selectednls)); 
+			?></textarea>
+		</td>
+	</tr><tr>
+		<td colspan="2">
+			<span class="required"><?php echo $ARnls["path"]; ?></span>
+		</td>
+	</tr><tr>
+		<td colspan="2">
+			<?php 
+				if (!$wgBrowsePath=$this->getdata("path","none")) {
+					$wgBrowsePath=$this->parent;
+				}
+				$wgBrowseName="path";
+				include($this->store->code."widgets/browse/js.html");
+				include($this->store->code."widgets/browse/form.html"); 
+			?>
+		</td>
+	</tr>
+	</table>
+</fieldset>
 <script>
 	window.onload=init;
 	function init() {

@@ -226,11 +226,78 @@
   #wgWizLeftBorder {
 	width: 8px;
   }
+
   #wgWizSectionData {
     margin-top: 0px;
     padding-top: 0px;
     border-top: 0px;
+    padding-left: 2px;
   }
+
+  #tabs {
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+  	padding-left: 4px;
+    width: 98%;
+  }
+
+  #tabsdata {
+    clear: both;
+    padding: 0px;
+    margin: 0px;
+  	margin-left: 4px;
+  	border-left: 1px solid threedhighlight;
+  	border-bottom: 1px solid threedshadow;
+  	border-right: 1px solid threedshadow;
+    width: 98%;
+  }
+
+  ul#tabnav {
+    list-style-type: none;
+    padding-bottom: 25px;
+    border-bottom: 1px solid threedhighlight;
+    margin: 0px;
+  }
+
+  ul#tabnav li {
+    float: left;
+    height: 21px;
+    background-color: threedface;
+    margin: 2px 0px 0 0px;
+    border-top: 1px solid threedhighlight;
+    border-left: 1px solid threedhighlight;
+    border-right: 1px solid threedshadow;
+    border-bottom: 1px solid threedface
+  }
+
+  ul#tabnav li.tab-selected {
+    border-bottom: 1px solid threedface;
+    margin: 0px;
+    height: 26px;
+  }
+
+  ul#tabnav > li.tab-selected {
+    height: 24px;
+  }
+
+  ul#tabnav li.tab-selected a {
+    color: #000;
+  }
+
+  #tabnav a {
+    float: left;
+    display: block;
+    color: #333;
+    text-decoration: none;
+    padding: 4px;
+  }
+
+  #tabnav li.tab a:hover {
+    background: #fff;
+  }
+
+
 </style>
 <script>
   var currentSection;
@@ -238,6 +305,11 @@
   function selectSection(section_id) {
     document.wgWizForm.wgWizNextStep.value=section_id;
     document.wgWizForm.submit();
+  }
+  
+  function switchLanguage(nls) {
+  	document.wgWizForm.arLanguage.value=nls;
+	document.wgWizForm.submit();  	
   }
   
 </script>
@@ -258,7 +330,6 @@
   wgWizKeepVars($arStoreVars, "arStoreVars");
   wgWizKeepVars($HTTP_GET_VARS);
 ?>
-<input type="hidden" name="arLanguage" value="<?php echo $arLanguage; ?>">
 <table id="wgWizTable" cellpadding="0" cellspacing="0" border="0">
 <tr>
 	<td colspan="4" valign="middle" align="right" id="wgWizHeader" height="48"><?php
@@ -290,16 +361,45 @@
     ?>
 		<img src="<?php echo $AR->dir->images; ?>dot.gif" id="wgWizSectionSpan" alt="">
 		</div>
-	</td><td colspan="2">
+	</td><td colspan="2" valign="top">
 <div id="wgWizSectionData">
-
-    <?php
-      $checks=$wgWizCallObject->call($wgWizTemplate, $wgWizCallArgs);
-      if (!$checks) { // object templates (pinp) cannot return values, use ARCurrent instead
-        $checks=$ARCurrent->wgWizChecks;
-      }
-    ?>
-
+	<div id="tabs">
+		<ul id="tabnav">
+<?php
+	$languages=array_merge($ARConfig->nls->list, $this->data->nls->list);
+	$count=count($languages);
+	while (list($nlskey, $language)=each($languages)) {
+		if (($this->data->nls->list[$nlskey]) || ($this->getdata('name',$nlskey))) {
+			$image=$AR->dir->images."nls/small/".$nlskey.".gif";
+		} else {
+			$image=$AR->dir->images."nls/small/faded/".$nlskey.".gif";
+		}
+		if ($nlskey==$arLanguage) {
+			$class="tab-selected";
+			$image=$AR->dir->images."nls/small/".$nlskey.".gif";
+		} else {
+			$class="tab";
+		}
+		echo "<li class=\"$class\"><a href=\"javascript:switchLanguage('$nlskey');\">";
+		echo "<img src=\"$image\" alt=\"$language\" border=\"0\">";
+		if (($count<10) && ($count>4)) {
+			echo "&nbsp;".$nlskey;
+		} else if ($count<=4) {
+			echo "&nbsp;".$language;
+		}
+		echo "</a>";
+	}
+?>
+		</ul>
+	</div>
+	<div id="tabsdata">
+	    <?php
+			$checks=$wgWizCallObject->call($wgWizTemplate, $wgWizCallArgs);
+			if (!$checks) { // object templates (pinp) cannot return values, use ARCurrent instead
+				$checks=$ARCurrent->wgWizChecks;
+			}
+		?>
+	</div>
 	<img src="<?php echo $AR->dir->images; ?>dot.gif" id="wgWizSectionDataSpan" alt="">
 </div>
 	</td>
@@ -348,7 +448,8 @@
       }
     </script>
 
-<input type="hidden" name="wgWizNextStep" value="0">
+<input type="hidden" name="wgWizNextStep" value="<?php echo $wgWizNextStep; ?>">
+<input type="hidden" name="arLanguage" value="<?php echo $arLanguage; ?>">
 <input type="hidden" name="wgWizAction" value="0">
 </form>
 <?php

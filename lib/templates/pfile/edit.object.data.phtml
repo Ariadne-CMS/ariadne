@@ -18,9 +18,9 @@
 				}
 			}
 		}
-		if (count($ARConfig->nls->list)>1) { // more than one language available
-			$languages=true;
-		}
+//		if (count($ARConfig->nls->list)>1) { // more than one language available
+//			$languages=true;
+//		}
 		$custom="edit.object.data.custom.phtml";
 
 		include($this->store->code."widgets/wizard/code.php");
@@ -86,6 +86,7 @@
 
 		$name=current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml"));
 		$wgWizTitle=$ARnls["edit"]." ".$name;		
+		$wgWizHeader=$wgWizTitle.'<img src="'.$AR->dir->images.'icons/'.$this->type.'_open.gif" alt="" hspace="4" align="absmiddle">';
 		include($this->store->code."widgets/wizard/new.html");
 	}
 ?>
