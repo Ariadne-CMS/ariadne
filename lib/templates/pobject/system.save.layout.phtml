@@ -42,26 +42,30 @@
 			$file=$type.".".$function.".".$language;
 			$pinp=new pinp("header","this->", "\$this->_");
 			$compiled=$pinp->compile(strtr($template,"\r",""));
-			$this->data->pinp[$type][$function][$language]=$this->id;
+			if ($pinp->error) {
+				$this->error = $pinp->error;
+			} else {
+				$this->data->pinp[$type][$function][$language]=$this->id;
 
-			$file=$type.".".$function.".".$language;
-			$templates->write($template, $this->id, $file.".pinp");
-			$templates->write($compiled, $this->id, $file);
-			if ($default) { // add pinp template from default templates list
-				$this->data->templates[$type][$function][$language]=$this->id;
-			} else { // remove pinp template from default templates list
-				if (isset($this->data->templates[$type][$function][$language])) {
-					unset($this->data->templates[$type][$function][$language]);
-					if (count($this->data->templates[$type][$function])==0) {
-						unset($this->data->templates[$type][$function]);
-						if (count($this->data->templates[$type])==0) {
-							unset($this->data->templates[$type]);
+				$file=$type.".".$function.".".$language;
+				$templates->write($template, $this->id, $file.".pinp");
+				$templates->write($compiled, $this->id, $file);
+				if ($default) { // add pinp template from default templates list
+					$this->data->templates[$type][$function][$language]=$this->id;
+				} else { // remove pinp template from default templates list
+					if (isset($this->data->templates[$type][$function][$language])) {
+						unset($this->data->templates[$type][$function][$language]);
+						if (count($this->data->templates[$type][$function])==0) {
+							unset($this->data->templates[$type][$function]);
+							if (count($this->data->templates[$type])==0) {
+								unset($this->data->templates[$type]);
+							}
 						}
 					}
 				}
+				$this->save();
+				$this->ClearCache($this->path, false, true);
 			}
-			$this->save();
-			$this->ClearCache($this->path, false, true);
 		}
 	}
 ?>
