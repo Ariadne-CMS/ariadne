@@ -40,8 +40,8 @@ $DB["level"]=$DB["off"];
 function debug($text, $level="pinp") {
 	global $DB;
 	if ($DB["level"]>=$DB[$level]) {
-		echo "<b>$text</b><BR>\n";
-                flush();
+		echo "<b>$level::$text</b><BR>\n";
+		flush();
 	}
 }
 
@@ -83,7 +83,7 @@ class mysqlstore {
 		types.
 
 	 **********************************************************************************/
-		debug("Store::mysqlstore($path, [array])","store");
+		debug("mysqlstore($path, [array])","store");
 //		dl("mysql.so");
 		$this->error="";
 		if ($this->connect_id=mysql_connect($config["host"], $config["user"], $config["password"])) {
@@ -109,7 +109,7 @@ class mysqlstore {
 		$this->mod_lock=new mysqllock($config["host"],$config["user"],$config["password"],$config["database"]);
 		$this->mod_lock->lock_duration=$config["lock_duration"];
 		$config["password"]="";
-		debug("Store::mysqlstore: end","all");
+		debug("mysqlstore: end","all");
 	}
 
 	function call($template, $args, $objects) {
@@ -133,7 +133,7 @@ class mysqlstore {
 	 wether it is a substore.
 	 **********************************************************************************/ 
 
-		debug("Store::call($template, $args, [list])","store");
+		debug("call($template, $args, [list])","store");
 		$this->error="";
 		$this->count=@mysql_num_rows($objects["list"]);
 		while ($row=@mysql_fetch_array($objects["list"])) {
@@ -142,16 +142,16 @@ class mysqlstore {
 		}
 
 		if (!$this->count) {
-			debug("Store::call: end: no objects found whatsoever.","all");
+			debug("call: end: no objects found whatsoever.","all");
 		} else {
-			debug("Store::call: end: $this->count objects found","all");
+			debug("call: end: $this->count objects found","all");
 		}
 		$this->total+=$this->count;
 		return $result;
 	}
 
 	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="") {
-		debug("Store::newobject($path, $parent, $type, [data], $id, $lastchanged, $vtype)","all");
+		debug("newobject($path, $parent, $type, [data], $id, $lastchanged, $vtype)","all");
 		include_once($this->code."objects/".$type.".phtml");
 		$object=new $type;
 		$object->init($this, $path, $data);
@@ -174,14 +174,14 @@ class mysqlstore {
 
 	 **********************************************************************************/
 
-		debug("Store::get($path)","store");
+		debug("get($path)","store");
 		$this->error="";
 		$result["method"]="get";
 		$result["path"]=$path;
 		$epath=AddSlashes($path);
 		$query_string="select nodes.path, nodes.parent, objects.id, objects.type, objects.object, objects.lastchanged from objects, nodes where objects.id=nodes.object and nodes.path='$epath'";
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
-		debug("Store::get: end","all");
+		debug("get: end","all");
 		return $result;
 	}
 
@@ -197,15 +197,15 @@ class mysqlstore {
 
 	 **********************************************************************************/
 
-		debug("Store::ls($path)","store");
+		debug("ls($path)","store");
 		$this->error="";
 		$epath=AddSlashes($path);
 		$query_string="select distinct(nodes.path), nodes.parent, objects.id, objects.type, objects.object, objects.lastchanged from objects, nodes where objects.id=nodes.object and nodes.parent='$epath' order by nodes.path";
 		$result["method"]="ls";
 		$result["path"]=$path;
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
-		debug("Store::ls: query=$query_string","all");
-		debug("Store::ls: end","all");
+		debug("ls: query=$query_string","all");
+		debug("ls: end","all");
 		return $result;
 	}
 
@@ -222,14 +222,14 @@ class mysqlstore {
 
 	 **********************************************************************************/
 
-		debug("Store::parents($path)","store");
+		debug("parents($path)","store");
 		$this->error="";
 		$epath=AddSlashes($path);
 		$query_string="select distinct(nodes.path), nodes.parent, objects.id, objects.type, objects.object, objects.lastchanged from objects, nodes where objects.id=nodes.object and nodes.path=substring('$epath',1,length(path)) order by path";
 		$result["method"]="parents";
 		$result["path"]=$path;
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
-		debug("Store::parents: end","all");
+		debug("parents: end","all");
 		return $result;
 	}
 
@@ -251,7 +251,7 @@ class mysqlstore {
 
 	 **********************************************************************************/
 
-		debug("Store::find($path, [array], $limit, $offset)","store");
+		debug("find($path, [array], $limit, $offset)","store");
 		$this->error="";
 		$count=0;
 		$result["method"]="find";
@@ -300,17 +300,17 @@ class mysqlstore {
 			}
 		}
 		$query_string="select distinct(nodes.path), nodes.parent, objects.id, objects.type, objects.object, objects.lastchanged from nodes, objects $from $types where objects.id=nodes.object and nodes.path like '$epath%' and ( (".substr($where,4).") ) order by nodes.path limit $offset,$limit";
-		debug("Store::find: query=$query_string","all");
+		debug("find: query=$query_string","all");
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
 
 
-		debug("Store::find: end","all");
+		debug("find: end","all");
 		return $result;
 	}
 
 	function close() {
 		// This is the destructor function, nothing much to see :)
-		debug("Store::close()","store");
+		debug("close()","store");
 		return @mysql_close($this->connect_id);
 	}
 
@@ -354,7 +354,7 @@ class mysqlstore {
 
 	***************************************************************/
 
-		debug("Store::save($path, $type, [data], [properties], $vtype)","store");
+		debug("save($path, $type, [data], [properties], $vtype)","store");
 		$this->error="";
 		if ($path!="/") {
 			$parent=$this->make_path($path, "..");
@@ -371,35 +371,35 @@ class mysqlstore {
 				$subid=substr("000000000".$subid,-(intval($match[1])));
 			}
 			$path=ereg_replace("{[0-9]:id}",strval($subid),$path);
-			debug("Store::save: new path: $path ($subid)","all");
+			debug("save: new path: $path ($subid)","all");
 		}
 		$edata=AddSlashes(serialize($data));
 		$epath=AddSlashes($path);
 		$etype=AddSlashes($type);
 		if ($id=$this->exists($path)) { //update
-			debug("Store::save: updating","all");
+			debug("save: updating","all");
 			if ($vtype) { // only change/save vtype if it is explicitly set
 				$evtype=AddSlashes($vtype);
 				$query_string="update objects set object='$edata', vtype='$evtype' where id=$id"; 
 			} else {
 				$query_string="update objects set object='$edata' where id=$id"; 
 			}
-			debug("Store::save: query=$query_string","all");
+			debug("save: query=$query_string","all");
 			mysql_db_query($this->database,$query_string, $this->connect_id);
 			$errno=mysql_errno();
 			if (!$errno) { // mysql_affected_rows doesn't always work
-				debug("Store::save: query=$query_string","all");
+				debug("save: query=$query_string","all");
 				$this->save_properties($properties, $id, $this); 
 				$result=$path;
 			} else {
 				$this->error="ERROR: Mysql: $errno: ".mysql_error();
-				debug("Store::save: query=$query_string","store");
-				debug("Store::save: update object failed!","store");
-				debug("Store::save: ".$this->error,"store");
+				debug("save: query=$query_string","store");
+				debug("save: update object failed!","store");
+				debug("save: ".$this->error,"store");
 				$result=0;
 			}
 		} else { // insert new
-			debug("Store::save: new","all");
+			debug("save: new","all");
 			if ($vtype=="") { // if vtype is not set, it defaults to type for new objects
 				$vtype=$type; 
 			}
@@ -416,23 +416,23 @@ class mysqlstore {
 				if (!$errno) {				
 					$this->save_properties($properties, $id, $this);
 					$result=$path;
-					debug("Store::save: query=$query_string","all");
+					debug("save: query=$query_string","all");
 				} else {
 					$this->error="ERROR: Mysql: $errno: $error";
-					debug("Store::save: query=$query_string","store");
-					debug("Store::save: insert node failed!","store");
-					debug("Store::save: ".$this->error,"store");
+					debug("save: query=$query_string","store");
+					debug("save: insert node failed!","store");
+					debug("save: ".$this->error,"store");
 					$result=0;
 				}
 			} else {
 				$this->error="ERROR: Mysql: $errno: $error";
-				debug("Store::save: query=$query_string","store");
-				debug("Store::save: insert object failed!","store");
-				debug("Store::save: ".$this->error,"store");
+				debug("save: query=$query_string","store");
+				debug("save: insert object failed!","store");
+				debug("save: ".$this->error,"store");
 				$result=0;
 			}			
 		}
-		debug("Store::save: end","all");
+		debug("save: end","all");
 		return $result;
 	}
 
@@ -451,7 +451,7 @@ class mysqlstore {
 
 	**********************************************************************/
 
-		debug("Store::purge($path)","store");
+		debug("purge($path)","store");
 		$this->error="";
 		$epath=AddSlashes($path);
 		$object=$this->exists($path);
@@ -467,7 +467,7 @@ class mysqlstore {
 		} else { // no such path, so purge already succeeded :)
 			$result=1;
 		}
-		debug("Store::purge: end","all");
+		debug("purge: end","all");
 		return $result;
 	}
 
@@ -481,7 +481,7 @@ class mysqlstore {
 
 	**********************************************************************/
 
-		debug("Store::delete($path)","store");
+		debug("delete($path)","store");
 		$this->error="";
 		$epath=AddSlashes($path);
 		$paths=$this->list_paths($path);
@@ -498,7 +498,7 @@ class mysqlstore {
 				}
 			}
 		}
-		debug("Store::delete: end","all");
+		debug("delete: end","all");
 		return $result;
 	}
 
@@ -513,16 +513,16 @@ class mysqlstore {
 
 	**********************************************************************/
 
-		debug("Store::exists($path)","store");
+		debug("exists($path)","store");
 		$this->error="";
 		$epath=AddSlashes($path);
 		$query_string="select object from nodes where path='$epath'";
 		$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
 		if ($temp && ($row=mysql_fetch_array($temp))) {
 			$object=intval($row["object"]);
-			debug("Store::exists: end (yes)","all");
+			debug("exists: end (yes)","all");
 		} else {
-			debug("Store::exists: end (no)","all");
+			debug("exists: end (no)","all");
 		}
 		return $object;
 	}
@@ -540,7 +540,7 @@ class mysqlstore {
 
 	**********************************************************************/
 
-		debug("Store::link($source,$destination)","store");
+		debug("link($source,$destination)","store");
 		$this->error="";
 		$edestination=AddSlashes($destination);
 		$esource=AddSlashes($source); 
@@ -548,7 +548,7 @@ class mysqlstore {
 		$eparent=AddSlashes($parent);
 		if ($this->exists($destination)) {
 			$this->error="$destination already exists, cannot overwrite.";
-			debug("Store::link: ERROR: ".$this->error,"store");
+			debug("link: ERROR: ".$this->error,"store");
 			$result=0;
 		} else { 
 			if (ereg("{([0-9]):id}",$destination,$match)) {
@@ -558,7 +558,7 @@ class mysqlstore {
 				}
 				$destination=ereg_replace("{[0-9]:id}",strval($subid),$destination);
 				$edestination=AddSlashes($destination);
-				debug("Store::link: new destination: $destination ($subid)","all");
+				debug("link: new destination: $destination ($subid)","all");
 			}
 			$id=$this->exists($source);
 			if ($id) {
@@ -568,16 +568,16 @@ class mysqlstore {
 				$error=mysql_error();
 				if ($errno) {				
 					$this->error="ERROR: Mysql: $errno: $error";
-					debug("Store::link: insert node failed!","store");
-					debug("Store::link: ".$this->error,"store");
-					debug("Store::link: query=$query_string","store");
+					debug("link: insert node failed!","store");
+					debug("link: ".$this->error,"store");
+					debug("link: query=$query_string","store");
 					$result=0;
 				}
-				debug("Store::link: end","all");
+				debug("link: end","all");
 				$result=$destination;
 			}
 		}
-		debug("Store::link: end (no $source)","store");
+		debug("link: end (no $source)","store");
 		return $result;
 	}
 
@@ -589,7 +589,7 @@ class mysqlstore {
 
 	**********************************************************************/
 
-		debug("Store::list_paths($path)","store");
+		debug("list_paths($path)","store");
 		$this->error="";
 		$object=$this->exists($path);
 		$query_string="select path from nodes where object=$object";
@@ -597,7 +597,7 @@ class mysqlstore {
 		while ($row=@mysql_fetch_array($temp)) {
 			$result[]=$row["path"];
 		}
-		debug("Store::list_paths: end","all");
+		debug("list_paths: end","all");
 		return $result;
 	}
 
@@ -609,7 +609,7 @@ class mysqlstore {
 
 	**********************************************************************/
 
-		debug("Store::implements($implements)","store");
+		debug("implements($implements)","store");
 		$query_string="select distinct type from types where implements='".AddSlashes($implements)."' and type='".AddSlashes($type)."'";
 		$this->error="";
 		$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
@@ -619,7 +619,7 @@ class mysqlstore {
 		if ($row) {
 			$result=1;
 		}
-		debug("Store::implements: end ($result)","all");
+		debug("implements: end ($result)","all");
 		return $result;
 	}
 	
@@ -638,7 +638,7 @@ class mysqlstore {
 
 	**********************************************************************/
 
-		debug("Store::make_path($curr_dir, $path)","all");		
+		debug("make_path($curr_dir, $path)","all");		
 		$this->error="";
 		if (substr($path,0,1)=="/") {
 			$result="/";
@@ -662,7 +662,7 @@ class mysqlstore {
 				}
 			}
 		}
-		debug("Store::make_path: end ($result)","all");		
+		debug("make_path: end ($result)","all");		
 		return $result;
 	}
 
@@ -675,7 +675,7 @@ class mysqlstore {
 
 	********************************************************************/
 
-		debug("Store::save_properties([properties], $id)","all");
+		debug("save_properties([properties], $id)","all");
 		if ($properties && (is_array($properties)) && (is_int($id))) {
 			while (list($property, $property_set)=each($properties)) {
 				$this->del_property($id, $property);
@@ -686,12 +686,12 @@ class mysqlstore {
 				}
 			}
 		}
-		debug("Store::save_properties: end","all");
+		debug("save_properties: end","all");
 	}
 
 
 	function load_properties($object) {
-		debug("Store::load_properties($object)","all");
+		debug("load_properties($object)","all");
 		if ($object) {
 			$query_string="select name from properties";
 			$query=@mysql_db_query($this->database,$query_string,$this->connect_id);
@@ -701,12 +701,12 @@ class mysqlstore {
 				}
 			}
 		}
-		debug("Store::load_properties: end","all");
+		debug("load_properties: end","all");
 		return $result;
 	}
 
 	function load_property($object, $property) {
-		debug("Store::load_property($object, $property)","all");
+		debug("load_property($object, $property)","all");
 		if ($object) {
 			$query_string="select * from prop_".AddSlashes($property)." where object=$object";
 			$query=@mysql_db_query($this->database,$query_string,$this->connect_id);
@@ -725,12 +725,12 @@ class mysqlstore {
 				$currProp++;
 			}
 		}
-		debug("Store::load_property: end","all");
+		debug("load_property: end","all");
 		return $result;
 	}
 
 	function add_property($object, $property, $values) {
-		debug("Store::add_property($object, $property, [values])","all");
+		debug("add_property($object, $property, [values])","all");
 		if ($object) {
 			while (list($name, $value)=each($values)) {
 				if ($value!="") {
@@ -743,12 +743,12 @@ class mysqlstore {
 			mysql_db_query($this->database,$query_string, $this->connect_id);
 			$result=mysql_affected_rows($this->connect_id);
 		}
-		debug("Store::add_property: end","all");
+		debug("add_property: end","all");
 		return $result;
 	}
 
 	function del_property($object, $property="", $values="") {
-		debug("Store::del_property($object, $property, [values])","all");
+		debug("del_property($object, $property, [values])","all");
 		if (intval($object)) {
 			if (!$property) { // remove all properties for $object
 				$query_string="select name from properties";
@@ -770,7 +770,7 @@ class mysqlstore {
 				$result=mysql_affected_rows($this->connect_id);
 			}
 		}
-		debug("Store::del_property: end","all");
+		debug("del_property: end","all");
 		return $result;
 	}
 
