@@ -183,7 +183,7 @@
 						} else {
 							debug("ftp_WriteDC:: chunk success");
 							//$offset+=strlen($chunk);
-							$offset = 4096;
+							$offset += 4096;
 							$FTP->DC["transfered"]+=strlen($data);
 							$chunk = substr($data, $offset, 4096);
 						}
