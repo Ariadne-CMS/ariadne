@@ -10,56 +10,45 @@
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 		global $HTTP_POST_VARS;
 
-		$customoffset=0;
 		$configcache=$ARConfig->cache[$this->path];
 		if ($configcache->custom) {
 			while (list($key, $definition)=each($configcache->custom)) {
 				if (($definition["type"]==$this->type) ||
 					($definition["inherit"] && ($this->implements($definition["type"])))) {
 					$hascustomdata=true;
-					$customoffset=1;
 					break;
 				}
 			}
 		}
-		$custom="edit.object.data.custom.phtml";
 
 		include($this->store->get_config("code")."widgets/wizard/code.php");
 
-		$name="edit.object.data.name.phtml";
-		$address="edit.object.data.address.phtml";
-		$contact="edit.object.data.contact.phtml"; 
-		$language="edit.object.language.phtml";
-		$finish="edit.object.data.save.phtml";
-		$lock="edit.object.lock.phtml";
-		$cancel="edit.object.cancel.phtml";
-
 		$wgWizFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
-		$wgWizFlow[0]["cancel"] = $cancel;
-		$wgWizFlow[0]["save"] = $save;
+		$wgWizFlow[0]["cancel"] = "edit.object.cancel.phtml";
+		$wgWizFlow[0]["save"] = "edit.object.data.save.phtml";
 
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["name"];
 		$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/data.png";
-		$wgWizFlow[$i]["template"]=$name;
+		$wgWizFlow[$i]["template"]="edit.object.data.name.phtml";
 
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["address"];
 		$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/address.png";
-		$wgWizFlow[$i]["template"]=$address;
+		$wgWizFlow[$i]["template"]="edit.object.data.address.phtml";
 		$wgWizFlow[$i]["nolang"]=true;
 		
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["contactinformation"];
 		$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/address.png";
-		$wgWizFlow[$i]["template"]=$contact;
+		$wgWizFlow[$i]["template"]="edit.object.data.contact.phtml"; 
 		$wgWizFlow[$i]["nolang"]=true;
 		
 		if ($hascustomdata) {
 			$i++;
 			$wgWizFlow[$i]["title"]=$ARnls["customdata"];
 			$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/customdata.png";
-			$wgWizFlow[$i]["template"]=$custom;
+			$wgWizFlow[$i]["template"]="edit.object.data.custom.phtml";
 		}
 
 		$arLanguage=$this->getdata("arLanguage","none");
