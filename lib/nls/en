@@ -276,6 +276,7 @@
 	$ARnls["week"]							=	"Week";
 	$ARnls["weeks"]							=	"Weeks";
 	$ARnls["width"]							=	"Width";
+	$ARnls["winxp"]							=	"Windows XP";
 	$ARnls["withoutdata"]					=	"Without data";
 	$ARnls["withoutfiles"]					=	"Without files";
 	$ARnls["withoutgrants"]					=	"Without grants";

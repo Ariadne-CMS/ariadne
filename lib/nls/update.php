@@ -1,7 +1,7 @@
-#!/usr/bin/php -q
+#!/usr/bin/php4 -q
 <?php
   include("../configs/ariadne.phtml");
-  include("../includes/loader.web.php");
+  include("../includes/loader.cmd.php");
   include("en");  
 
   $default=$ARnls;
@@ -15,9 +15,9 @@
     while (list($arkey, $arvalue)=each($default)) {
       $tabs=substr("								",(int)((strlen($arkey)+2)/4));
       if ($ARnls[$arkey]) {
-        echo "	\$ARnls[\"$arkey\"]$tabs=	\"".AddSlashes($ARnls[$arkey])."\";\n";
+        echo "	\$ARnls[\"$arkey\"]$tabs=	\"".AddCSlashes($ARnls[$arkey], ARESCAPE)."\";\n";
       } else {
-        echo "	\$ARnls[\"$arkey\"]$tabs=	\"!".AddSlashes($arvalue)."\";\n";
+        echo "	\$ARnls[\"$arkey\"]$tabs=	\"!".AddCSlashes($arvalue, ARESCAPE)."\";\n";
       }
     }
     unset($ARnls);
@@ -38,9 +38,9 @@
     while (list($arkey, $arvalue)=each($default)) {
       $tabs=substr("								",(int)((strlen($arkey)+2)/4));
       if ($ARnls[$arkey]) {
-        echo "	\$ARnls[\"$arkey\"]$tabs=	\"".AddSlashes($ARnls[$arkey])."\";\n";
+        echo "	\$ARnls[\"$arkey\"]$tabs=	\"".AddCSlashes($ARnls[$arkey], ARESCAPE)."\";\n";
       } else {
-        echo "	\$ARnls[\"$arkey\"]$tabs=	\"!".AddSlashes($arvalue)."\";\n";
+        echo "	\$ARnls[\"$arkey\"]$tabs=	\"!".AddCSlashes($arvalue, ARESCAPE)."\";\n";
       }
     }
     unset($ARnls);

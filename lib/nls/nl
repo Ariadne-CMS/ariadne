@@ -320,13 +320,14 @@
 	$ARnls["week"]							=	"Week";
 	$ARnls["weeks"]							=	"Weken";
 	$ARnls["width"]							=	"Breedte";
+	$ARnls["winxp"]							=	"Windows XP";
 	$ARnls["withoutdata"]					=	"Zonder data.";
 	$ARnls["withoutfiles"]					=	"Zonder bestanden.";
 	$ARnls["withoutgrants"]					=	"Zonder rechten.";
 	$ARnls["withouttemplates"]				=	"Zonder templates.";
 	$ARnls["wysiwyg"]						=	"WYSIWYG";
 	$ARnls["year"]							=	"Jaar";
-	$ARnls["years"]							=	"Jaren";
+	$ARnls["years"]							=	"Jaar";
 	$ARnls["yes"]							=	"Ja";
 	$ARnls["zipcode"]						=	"Postcode";
 

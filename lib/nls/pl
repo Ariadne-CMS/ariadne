@@ -322,6 +322,7 @@
 	$ARnls["week"]							=	"Tydzień";
 	$ARnls["weeks"]							=	"Tygodnie";
 	$ARnls["width"]							=	"Długość";
+	$ARnls["winxp"]							=	"Windows XP";
 	$ARnls["withoutdata"]					=	"Bez danych";
 	$ARnls["withoutfiles"]					=	"Bez plików";
 	$ARnls["withoutgrants"]					=	"Pomiń prawa";
