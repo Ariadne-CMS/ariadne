@@ -702,11 +702,7 @@ class pobject extends object {
 			$nls=&$this->nls;
 			$reqnls=&$this->reqnls;
 			if (!$ARCurrent->arContentTypeSent) {
-				if ($AR->nls->charsets[$nls]) {
-					ldHeader("Content-Type: text/html; charset=".$AR->nls->charsets[$nls]);
-				} else {
-					ldHeader("Content-Type: text/html; charset=".$AR->nls->charsets["default"]);
-				}
+				ldHeader("Content-Type: text/html; charset=UTF-8");
 				$ARCurrent->arContentTypeSent = true;
 			}
 			// if this object isn't available in the requested language, show
@@ -1078,11 +1074,7 @@ class pobject extends object {
 	}
 
 	function getcharset() {
-		global $AR;
-		if (!($charset=$AR->nls->charsets[$this->nls])) {
-			$charset=$AR->nls->charsets["default"];
-		}
-		return $charset;
+		return "UTF-8";
 	}
 
 	function HTTPRequest($method, $url, $postdata = "" ) { 
