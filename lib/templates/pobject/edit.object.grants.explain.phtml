@@ -243,7 +243,7 @@
 					if ($group->GetGrants($temppath, $tempgrants)) {
 						echo '<tr class="grey"><td>'.$temppath.'</td><td>';
 						echo "<img src=\"".$AR->dir->images."icons/pgroup.gif\"></td>";
-						echo '</td><td>'.$user->data->login.'</td><td>';
+						echo '</td><td>'.$group->data->login.'</td><td>';
 						DisplayGrants($tempgrants);
 						echo '</td></tr>';
 					}
