@@ -33,7 +33,7 @@
 					}
 					
 					if ($store->exists($newfilename)) {
-						$old=$store->call("Get.phtml","",$store->get($newfilename));
+						$old=$store->call("system.get.phtml","",$store->get($newfilename));
 						$old=$old[0];
 						if ($old->lastchanged<$object->lastchanged) {
 						 	//ok, merge it

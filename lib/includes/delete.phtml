@@ -3,7 +3,7 @@ if ($this->CheckLogin("delete")) {
   if (($result=$this->lock(0,"T")) && ($result["locks"][$this->path]["identity"]!=$AR->user->data->login)) {
     $error=$ARnls["err:cannotlockobject"];
   } else {
-    if ($this->ls(".","Get.phtml")) {
+    if ($this->ls(".","system.get.phtml")) {
       $error="Object contains other objects, remove these first.";
     } else {
       // remove grants for this object in all user objects.

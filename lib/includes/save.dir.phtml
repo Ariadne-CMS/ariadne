@@ -5,7 +5,7 @@
       if (!$returnpage) {
         $returnpage=$this->store->root.$parent;
       }
-      $folders=@current($this->get($newfilename, "GetFolder.phtml"));
+      $folders=@current($this->get($newfilename, "system.get.folder.phtml"));
       if ($newtype) {
         $url=$AR->dir->www."setlink.php?do=add";
       } else {
