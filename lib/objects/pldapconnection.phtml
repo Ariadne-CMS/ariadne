@@ -1,0 +1,419 @@
+<?php
+    /******************************************************************
+     pldapconnection.phtml                                 Muze Ariadne
+     ------------------------------------------------------------------
+     Author: Johann Hanne <jhml@gmx.net>
+     Date: March 25 2004
+
+     Copyright 2004 Muze
+
+    -------------------------------------------------------------------
+
+     Class inheritance: pobject > ppage > pdir > pconnector > pldapconnection
+     Description:
+
+       This is the class definition file of the pldapconnection class.
+
+       Heavily based on psearch.phtml
+
+    ******************************************************************/
+
+debug("pldapconnection: Load","object");
+include_once($this->code."objects/pconnector.phtml");
+
+class pldapconnection extends pconnector { // psearch class definition
+
+	function pldapconnection() {
+	global $store;
+		include_once($store->code."stores/modules/ldap_compiler.php");
+		$this->lastquery=false;
+		$this->ldapdata=array();
+		$this->mappings=false;
+	}
+
+	// Initializes the Ariadne search string to LDAP filter expression
+	// mappings
+	function initmappings() {
+		if ($this->mappings!==false) {
+			return;
+		}
+
+		$this->mappings=array();
+		foreach ($this->data->ldap_searchtranslations as $tr) {
+			list($ariadneexpr, $ldapexpr)=explode("||", $tr, 2);
+			$ariadneexpr=str_replace("\\|", "|", $ariadneexpr);
+			$ariadneexpr=trim($ariadneexpr);
+			$ldapexpr=trim($ldapexpr);
+
+			// $reg_cmp_op based on sql_compiler.php
+			$reg_cmp_op='(.*)[[:space:]]*(~=|==?|\\!=|<=|>=|<|>|=~|=~~|!~|!~~|=\\*|!\\*|=\\*\\*|!\\*\\*|=/|/==|!/|!//)[[:space:]]*(.*)';
+                        if (eregi($reg_cmp_op, $ariadneexpr, $regs)) {
+				// Ariadne search string has property name and value given
+				$ariadnename=trim($regs[1]);
+				$operator=$regs[2];
+				$ariadneval=trim($regs[3]);
+			} else {
+				// Ariadne search string has only property name given
+				$ariadnename=trim($ariadneexpr);
+				$operator=false;
+				$ariadneval=false;
+			}
+
+			if (strpos($ariadnename, ".")===false) {
+				// Ariadne property names always have two parts
+				// (table and field name), but this is not the case
+				// here
+				$this->error="Invalid property name '$ariadnename'";
+				return;
+			}
+
+			list($name1, $name2)=explode(".", $ariadnename, 2);
+
+			// The Ariadne SQL compilier *always* prefixes
+			// "prop_" to the table name and "AR_" to the field name,
+			// so we must do that here, too
+			$name1="prop_".trim($name1);
+			$name2="AR_".trim($name2);
+
+			// We are stripping quotes from strings in the
+			// LDAP SQL compiler, so do that here, too
+			if ($ariadneval) {
+				if ((substr($ariadneval, 0, 1)=='"' &&
+				     substr($ariadneval, -1)=='"') ||
+			            (substr($ariadneval, 0, 1)=="'" &&
+				     substr($ariadneval, -1)=="'")) {
+					$ariadneval=substr($ariadneval, 1, -1);
+				}
+			}
+
+			$ariadnename=$name1.".".$name2;
+
+			// If the LDAP filter expression is in brackets, remove them,
+			// as we already set the brackets
+			if (substr($ldapexpr, 0, 1)=="(" &&
+			    substr($ldapexpr, -1)==")") {
+				$ldapexpr=substr($ldapexpr, 1, -1);
+			}
+
+			$this->mappings[$ariadnename.$operator.$ariadneval]=$ldapexpr;
+		}
+	}
+
+	/* Reads the data from the LDAP server only if the query is
+           different from the last query; this compensates the call
+           to find() and count_find() in browse.list.phtml which would
+	   otherwise result in two LDAP queries */
+	function get_ldap_data($query, &$limit, &$offset) {
+		$this->initmappings();
+
+		$query_string="";
+		$sort=false;
+
+		if (is_array($query)) {
+
+			$ldapcrit=array();
+
+			if (is_array($this->lastquery) &&
+			    serialize($query)==serialize($this->lastquery)) {
+				// Matches last query, do nothing
+				return;
+			}
+
+			while (list($property, $values)=@each($query)) {
+				while (list($valuename, $compare)=each($values)) {
+					while (list($function, $value)=each($compare)) {
+						$not=false;
+						$joker=false;
+						switch(strtolower($function)) {
+							case '!~':
+							case 'not like':
+								$not=true;
+								// fall through
+							case '~=':
+							case '=~':
+							case 'like':
+								$joker=true;
+								$ecompare = '=';
+								break;
+							case '!=':
+								$not=true;
+								// fall through
+							case '=':
+							case '==':
+								$ecompare = '=';
+								break;
+							case '>':
+								$not=true;
+								// fall through
+							case '<=':
+								$ecompare = '<=';
+								break;
+							case '<':
+								$not=true;
+								// fall through
+							case '>=':
+								$ecompare = '>=';
+								break;
+						}
+
+						// The translation table has no quotes around strings,
+						// so also strip them here so that the translation
+						// actually works
+						if ($value) {
+							if ((substr($value, 0, 1)=='"' &&
+							     substr($value, -1)=='"') ||
+						            (substr($value, 0, 1)=="'" &&
+							     substr($value, -1)=="'")) {
+								$value=substr($value, 1, -1);
+							}
+						}
+
+						// Quote the characters that have a special meaning in LDAP filters
+						// as per RFC 2254
+						$ldapspecial=array("\\", "*", "(", ")", "\x00");
+						$ldapreplace=array("\\5c", "\\2a", "\\28", "\\29", "\\00");
+						$evalue=str_replace($ldapspecial, $ldapreplace, $value);
+
+						if ($joker) {
+							// Replace '%' with '*' for the LDAP filter
+							$evalue=str_replace('%', '*', $evalue);
+						}
+
+						$property="prop_".$property;
+						$valuename="AR_".$valuename;
+
+						$result="";
+						if (isset($this->mappings["$property.$valuename$function$value"])) {
+							// Complete translation (property name and value)
+							$result=$this->mappings["$property$valuename$function$value"];
+						} elseif (isset($this->mappings["$property.$valuename"])) {
+							// Only the property name should be translated
+							$result=$this->mappings["$property.$valuename"].$ecompare.$evalue;
+						} elseif ($property=="prop_ldap") {
+							// Literal ldap attribute name given
+							$result=substr($valuename, 3).$ecompare.$evalue;
+						} else {
+							// Hmm, unknown property, maybe we should throw
+							// an error here? (TODO)
+							$result="$property.$valuename$ecompare$evalue";
+						}
+
+						if ($not) {
+							$result="!($result)";
+						}
+
+						array_push($ldapcrit, "($result)");
+					}
+				}
+			}
+
+			if (sizeof($ldapcrit)==1) {
+				$query_string=$ldapcrit[0];
+			} else {
+				$query_string="(&".implode("", $ldapcrit).")";
+			}
+		} else {
+			if ($query===$this->lastquery) {
+				// Matches last query, do nothing
+				return;
+			}
+
+			if ($query!="") {
+				$compiler=new ldap_compiler($this, $this->mappings);
+				$query_string=$compiler->compile($this->path, $query, $limit, $offset);
+				if ($compiler->error) {
+					$this->error=$compiler->error;
+				}
+				$sort=$compiler->orderbyfield;
+				unset($compiler);
+			}
+		}
+
+		if ($query_string=="") {
+			$query_string="(objectclass=*)";
+		}
+
+		$generalfilter=$this->data->ldap_generalfilter;
+		if ($generalfilter) {
+			if (substr($generalfilter, 0, 1)!="(") {
+				$generalfilter="(".$generalfilter.")";
+			}
+			$query_string="(&$generalfilter$query_string)";
+		}
+
+		//print "<hr>$query_string<hr>$function<hr>\n";
+
+		$ds=@ldap_connect($this->data->ldap_server);
+		if (!$ds) {
+			$this->error="Cannot connect to LDAP server";
+			return;
+		}
+
+		$r=@ldap_bind($ds, $this->data->ldap_username,
+		              $this->data->ldap_password);
+		if (!$r) {
+			ldap_close($ds);
+			$this->error="Cannot bind to LDAP server";
+			return;
+		}
+
+		$search=@ldap_search($ds, $this->data->ldap_basedn,
+		                     $query_string, array("*"));
+		if (!$search) {
+			ldap_close($ds);
+			$this->error="LDAP search request failed";
+			return;
+		}
+
+		if (!$sort) {
+			$sort=$this->data->ldap_defsortattr;
+		}
+
+		if ($sort) {
+			ldap_sort($ds, $search, $sort);
+		}
+
+		$this->ldapdata=@ldap_get_entries($ds, $search);
+		if (!$this->ldapdata) {
+			ldap_close($ds);
+			$this->error="Reading LDAP search results failed";
+			return;
+		}
+		ldap_close($ds);
+
+		unset($this->ldapdata["count"]);
+
+		$this->lastquery=$query;
+	}
+
+	function ldap_count_find($criteria) {
+		$this->get_ldap_data($criteria, $limit, $offset);
+		return sizeof($this->ldapdata);
+	}
+
+	function ldap_count_ls() {
+		$this->get_ldap_data("", $limit, $offset);
+		return sizeof($this->ldapdata);
+	}
+
+	function ldap_find($criteria, $function, $args, $limit, $offset) {
+	global $AR;
+
+		$this->get_ldap_data($criteria, $limit, $offset);
+
+		$save_data=$this->data;
+		$save_type=$this->type;
+
+		if (substr($this->path, 0, 14)=="/system/users/") {
+			$this->type="puser";
+		} elseif (substr($this->path, 0, 15)=="/system/groups/") {
+			$this->type="pgroup";
+		} else {
+			$this->type="pobject";
+		}
+
+		$save_path=$this->path;
+		unset($this->path);
+
+		$nls=new object;
+		$nls->default='en';
+		$nls->list['en']=$AR->nls->list['en'];
+
+		$result=array();
+		foreach ($this->ldapdata as $entry) {
+			if ($offset-- > 0) {
+				continue;
+			}
+
+			// This part does the magic thing of mapping the
+			// LDAP data to Ariadne data
+			unset($this->data);
+			$this->data=new object;
+			$this->data->en=new object;
+			$this->data->nls=$nls;
+
+			//print "***".$entry["displayname"][0]."<br>\n";
+			$name=$entry[$save_data->ldap_nameattribute][0];
+			if (!$name) {
+				$name=$entry["cn"][0];
+			}
+			if ($save_data->ldap_useiso8859) {
+				$name=$this->convertToUTF8($name);
+			}
+			$this->data->en->name=$name;
+			array_push($result, $this->call($function));
+
+			if (--$limit==0) {
+				break;
+			}
+		}
+
+		$this->data=$save_data;
+		$this->type=$save_type;
+		$this->path=$save_path;
+
+		return $result;
+	}
+
+	function ls($path, $function="list.html", $args="") {
+		$path=$this->store->make_path($this->path, $path);
+		if( (substr($path, 0, strlen($this->path))==$this->path)) {
+			return $this->ldap_find("", $function, $args);
+		} else {
+			return pdir::ls($path, $function, $args);
+		}
+	}
+
+	function real_ls($path, $function="list.html", $args="") {
+		return pdir::ls($path, $function, $args);
+	}
+
+	function count_ls($path) {
+		$path=$this->store->make_path($this->path, $path);
+		if( (substr($path, 0, strlen($this->path))==$this->path)) {
+			return $this->ldap_count_ls();
+		} else {
+			return pdir::count_ls($path);
+		}
+	}
+
+	function real_count_ls($path) {
+		return pdir::count_ls($path);
+	}
+
+	function find($path, $criteria, $function="list.html", $args="", $limit=100, $offset=0) {
+		$path=$this->store->make_path($this->path, $path);
+		if( (substr($path, 0, strlen($this->path))==$this->path)) {
+			return $this->ldap_find($criteria, $function, $args, $limit, $offset);
+		} else {
+			return pdir::find($path, $criteria, $function, $args, $limit, $offset);
+		}
+	}
+
+	function real_find($path, $criteria, $function="list.html", $args="", $limit=100, $offset=0) {
+		return pdir::find($path, $criteria, $function, $args, $limit, $offset);
+	}
+
+	function count_find($path, $criteria) {
+		$path=$this->store->make_path($this->path, $path);
+		if( (substr($path, 0, strlen($this->path))==$this->path)) {
+			return $this->ldap_count_find($criteria);
+		} else {
+			return pdir::count_find($path, $criteria);
+		}
+	}
+
+	function real_count_find($path, $criteria) {
+		return pdir::count_find($path, $criteria);
+	}
+
+	function _ls($function='list.html', $args="") {
+		return $this->ls($this->path, $function, $args);
+	}
+
+	function _find($criteria, $function="list.html", $args="", $limit=100, $offset=0) {
+		return $this->find($this->path, $criteria, $function, $args, $limit, $offset);
+	}
+
+} // end of pldapconnection class definition
+?>

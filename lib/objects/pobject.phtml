@@ -222,6 +222,14 @@ class pobject extends object { // pobject class definition
 		return $result;
 	}
 
+	function count_find($path, $query) {
+		$path=$this->store->make_path($this->path, $path);
+		return $this->store->count($this->store->find($path, $query, 0));
+	}
+
+	function count_ls($path) {
+		return $this->store->count($this->store->ls($path));
+	}
 
 	function save($properties="", $vtype="") {
 	/***********************************************************************
@@ -1654,11 +1662,11 @@ class pobject extends object { // pobject class definition
 	}
 
 	function _count_find($query) {
-		return $this->store->count($this->store->find($this->path, $query, 0));
+		return $this->count_find($this->path, $query);
 	}
 
 	function _count_ls() {
-		return $this->store->count($this->store->ls($this->path));
+		return $this->count_ls($this->path);
 	}
 
 	function _HTTPRequest($method, $url, $postdata = "") {

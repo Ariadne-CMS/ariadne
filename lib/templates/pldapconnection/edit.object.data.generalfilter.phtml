@@ -1,0 +1,37 @@
+<?php
+	/******************************************************************
+
+	******************************************************************/
+	if ($this->CheckSilent("read")) {
+?>
+<table border="0" width="90%">
+<tr>
+	<td>
+		<?php 
+			$arLanguage=$this->getdata("arLanguage","none");
+			if (!$arLanguage) {
+			 $arLanguage=$ARConfig->nls->default;
+			}
+			$selectednls=$arLanguage;
+			$selectedlanguage=$ARConfig->nls->list[$arLanguage];
+			$flag="<img src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\">";
+		?>
+
+		<fieldset id="generalfilter">
+		<legend><?php echo "General filter"; //FIXME ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+			<table border="0" align="center" width="100%">
+			<tr>
+				<td><?php echo "LDAP filter to add to every query"; //FIXME ?>
+				<br>
+					<textarea name="ldap_generalfilter" cols="30" rows="3" wrap="virtual"><?php $this->showdata("ldap_generalfilter","none"); ?></textarea>
+				</td>
+			</tr>
+			</table>
+		</fieldset>
+
+	</td>
+</tr>
+</table>
+<?php
+	}
+?>

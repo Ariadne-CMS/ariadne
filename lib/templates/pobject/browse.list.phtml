@@ -23,8 +23,8 @@
 			$template='browse.nav.list.show.phtml';
 		}
 		$offset=$this->getvar('offset');
-		$total=$this->store->count($this->store->find("", $query, 0));
-		$this->find(".",$query, $template, "", $limit, $offset);
+		$this->find(".", $query, $template, "", $limit, $offset);
+		$total=$this->count_find(".", $query);
 		$this->call("browse.update.toolbar.phtml", Array("total" => $total, "offset" => $offset, "limit" => $limit));
 	}
 ?>

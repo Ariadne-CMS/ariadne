@@ -1,0 +1,69 @@
+<?php
+	/******************************************************************
+
+	******************************************************************/
+	if ($this->CheckSilent("read")) {
+?>
+<script language="javascript">
+
+function checkservername() {
+  if (document.wgWizForm.ldap_server.value=='') {
+    alert('You must enter a LDAP server name'); //FIXME
+    return false;
+  }
+
+  return true;
+}
+
+document.wgWizForm.wgWizSubmitHandler=checkservername;
+
+</script>
+<table border="0" width="90%">
+<tr>
+	<td>
+		<?php 
+			$arLanguage=$this->getdata("arLanguage","none");
+			if (!$arLanguage) {
+			 $arLanguage=$ARConfig->nls->default;
+			}
+			$selectednls=$arLanguage;
+			$selectedlanguage=$ARConfig->nls->list[$arLanguage];
+			$flag="<img src=\"".$AR->dir->images."nls/small/$selectednls.gif\" alt=\"$selectedlanguage\">";
+		?>
+
+		<fieldset id="conninfo">
+		<legend><?php echo "Connection information"; //FIXME ?></legend><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"><br>
+			<table border="0" align="center" width="100%">
+			<tr>
+				<td><span class="required"><?php echo "LDAP server hostname or IP address"; //FIXME ?></span>
+				<br>
+				<input type="text" name="ldap_server" maxlength="50" value="<?php $this->showdata("ldap_server","none"); ?>">
+				</td>
+			</tr>
+			<tr>
+				<td><?php echo "LDAP username"; //FIXME ?>
+				<br>
+				<input type="text" name="ldap_username" maxlength="50" value="<?php $this->showdata("ldap_username","none"); ?>">
+				</td>
+			</tr>
+			<tr>
+				<td><?php echo "LDAP password"; //FIXME ?></span>
+				<br>
+				<input type="text" name="ldap_password" maxlength="50" value="<?php $this->showdata("ldap_password","none"); ?>">
+				</td>
+			</tr>
+			<tr>
+				<td><?php echo "LDAP base DN"; ?>
+				<br>
+				<input type="text" name="ldap_basedn" maxlength="50" value="<?php $this->showdata("ldap_basedn","none"); ?>">
+				</td>
+			</tr>
+			</table>
+		</fieldset>
+
+	</td>
+</tr>
+</table>
+<?php
+	}
+?>
