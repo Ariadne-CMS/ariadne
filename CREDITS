@@ -22,6 +22,13 @@ Gabriel Wicke <2002 AT gabrielwicke DOT de>
 	Author of the image preview and file upload dialog for file and photo wizards.
 	Author of the original user profiles.
 
+Gerhard Hoogterp <gerhard AT frappe DOT xs4all DOT nl>
+	Author of various user interface patches.
+	Author of getExif() method in pphoto.
+
+Goran Topic <amadan AT mad DOT scientist DOT com>
+	Author of the mysql full text indexing.
+
 Johann Hanne <johann DOT hanne AT klinikum DOT ingolstadt DOT de>
 	Contributed a patch which made the WYSIWYG editor nls aware.
 	Author of the German and English NLS files for the WYSIWYG editor.
