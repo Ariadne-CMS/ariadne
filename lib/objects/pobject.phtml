@@ -1998,8 +1998,8 @@ class pobject extends object { // pobject class definition
 		return $this->count_ls($this->path);
 	}
 
-	function _HTTPRequest($method, $url, $postdata = "") {
-		return $this->HTTPRequest($method, $url, $postdata);
+	function _HTTPRequest($method, $url, $postdata = "", $port=80) {
+		return $this->HTTPRequest($method, $url, $postdata, $port);
 	}
 	
 	function _make_filesize( $size="" ) {
