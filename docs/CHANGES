@@ -14,6 +14,10 @@ Bugs Fixed:
 	  done for properties.
 	- made save() copy the $this->store->error to $this->error like when
 	  creating a new object, but now for updating a object
+	- system move, copy and delete templates now correctly handle the
+	  usergrants; move can no longer create an object without the add grant
+	  on the target
+	- make_url('','',true) does not generate empty session ids (--) any more
 
 Changes in Ariadne since version Ariadne 2.3-dev
 
