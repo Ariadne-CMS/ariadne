@@ -1,12 +1,18 @@
 TD {
-	FONT: 13px sans-serif;
+	font-size: 13px;
+	font-face:sans-serif,verdana,helvetica;
+
 }
 BODY 	{
-	FONT: 13px sans-serif;
-	BORDER: 0;
-	BACKGROUND-COLOR: #BBBBBB;
-	margin: 0px 0px 0px 0px;
-	padding: 2px 2px 2px 2px;
-	border: 2px groove;
+	margin: 0px;
+	padding: 0px;
+}
+TABLE	{
+ FONT: 13px sans-serif;
+	BACKGROUND-COLOR: #dfdfdf;
+	margin: 0px;
+	padding: 1px 1px 2px 2px;
+	border: 2px outset;
+	border-color:#CFCFCF;
 }
 @import: url(background.css);

@@ -1,12 +1,11 @@
 <?php
 	// FIXME: grey out items without read access
 	if ($this->CheckConfig()) {
-		$folder=$this->call("system.get.folder.phtml");
 ?>
 <span class="item">
 	<A HREF="<?php $url=$this->make_url(); echo $url; ?>manage.html"
 		 onClick="if (top.tree) { top.View('<?php echo $this->path; ?>'); return false; }"><IMG 
-		 SRC="<?php echo $AR->dir->images."icons/".$folder["icon"].".gif"; ?>" border=0 HSPACE=30 VSPACE=15 
+		 SRC="<?php echo $AR->dir->images."icons/".$this->type.".gif"; ?>" border=0 HSPACE=30 VSPACE=15 
 		 ALT="<?php echo $nlsdata->name; ?>" WIDTH="36" HEIGHT="36"></a>
 	<layer class="text" onMouseOver="AR_unclip(this)" onMouseOut="AR_clip(this)">
 		<center><A href="<?php echo $url; ?>" onClick="if (top.tree) { top.View('<?php echo $this->path; ?>'); return false; }"><?php echo $nlsdata->name; ?></A></center>

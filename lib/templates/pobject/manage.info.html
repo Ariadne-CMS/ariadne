@@ -1,36 +1,9 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 ?>
-<script>
-	windowproperties='directories=no,location=no,menubar=no,status=no,toolbar=no,resizable=yes,height=300,width=500'
 
-	function editobject() {
-		newwindow=window.open('edit.object.data.phtml', 'newwindow', windowproperties);
-		newwindow.focus();	
-		return false;
-	}
-
-	function objectadded() {
-		document.location.href=document.location.href;
-	}
-</script>
-<table border="0">
-<form>
-<tr>
-	<td align="left">
-	<img width="40" height="40" src="<?php echo $AR->dir->images."icons/".$this->type; ?>.gif">
-	<br><span class="name"><?php echo $nlsdata->name; ?></span>
-	</td>
-</tr>
-<tr>
-	<td align="left">
-	<br>
-	<?php echo $data->value; ?>
-	<br>&nbsp;
-	</td>
-</tr>
-</form>
-</table>
+	<h2 class=manage_info><img width="40" height="40" src="<?php echo $AR->dir->images."icons/".$this->type; ?>_open.gif">&nbsp;&nbsp;&nbsp;<?php echo $nlsdata->name; ?></h2>
+	<span>&nbsp;<?php echo $data->value; ?> </span>
 <?php
 	}
 ?>

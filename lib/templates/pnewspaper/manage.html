@@ -34,9 +34,13 @@
 </head>
 <body bgcolor="white">
 <font face="helvetica, sans-serif" size="2">
-<h3><?php echo $nlsdata->name; ?>.</h3>
-<p>
-<?php echo $nlsdata->summary; ?>
+<h2 class=manage_info><img width="40" height="40" src="<?php echo $AR->dir->images."icons/".$this->type; ?>_open.gif">&nbsp;&nbsp;&nbsp;<?php echo $nlsdata->name; ?></h2>
+		<br><br><?php echo $nlsdata->summary; ?><br>
+		<?if($this->path != $this->_currentsite()){
+			$this->call('manage.show.up.html','view='.$view);
+		}?><br><br>
+
+
 <form name="range" method="post">
 <table border="0" bgcolor="#DDDDDD" cellspacing="0" width="100%">
 <tr>

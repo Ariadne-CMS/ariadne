@@ -1,12 +1,10 @@
 <?php
 	// FIXME: grey out objects without read access
-	if ($this->CheckConfig()) {
-		$folder=$this->call("system.get.folder.phtml");
-?><SPAN class=item>
-	 <A HREF="<?php echo $this->make_url(); ?>manage.html" onClick="if (top.tree) { top.View('<?php echo $this->path; ?>'); return false; }"><IMG 
-		 SRC="<?php echo $AR->dir->images."icons/".$folder["icon"].".gif"; ?>" border=0 HSPACE=0 VSPACE=0 WIDTH="36" HEIGHT="36" ALT="<?php echo $nlsdata->name; ?>"><br>
-	 <?php echo $nlsdata->name; ?></A>
-</SPAN>
+	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
+?>
+<a href="<?php echo $this->make_url()."manage.html"; ?>" onClick="if (View) { View('<?php echo $this->path; ?>'); return false; }">
+<img src="<?php echo $AR->dir->images."icons/".$this->type.".gif"; ?>"  border=0 width="20" height="20" alt="<?php echo $nlsdata->name; ?>"><?php echo $nlsdata->name; ?></a>
+<br>
 <?php
 	}
 ?>
