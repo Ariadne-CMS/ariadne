@@ -37,11 +37,21 @@
 <tr>
 	<td align="right">
 		<select name="search_property">
-		<option value="name"><?php echo $ARnls["name"]; ?></option>
-		<option value="street"><?php echo $ARnls["address"]; ?></option>
-		<option value="zipcode"><?php echo $ARnls["zipcode"]; ?></option>
-		<option value="city"><?php echo $ARnls["city"]; ?></option>
-		<option value="country"><?php echo $ARnls["country"]; ?></option>
+        <?php
+          $list=Array(
+            "name" 		=> $ARnls["name"],
+            "street" 	=> $ARnls["address"],
+            "zipcode"	=> $ARnls["zipcode"],
+            "city"		=> $ARnls["city"],
+            "country"	=> $ARnls["country"] );
+          while (list($key, $value)=each($list)) {
+            echo "<option value=\"$key\"";
+            if ($key==$search_property) {
+              echo " selected";
+            }
+            echo ">$value</option>\n";
+          }
+        ?>
 		</select>
 	</td><td align="center">
 		<input type="text" name="search_value" value="<?php echo $search_value; ?>">
