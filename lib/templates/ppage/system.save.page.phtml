@@ -38,7 +38,23 @@
 			// the defined interface: $arCallArgs)
 			$this->data=current($this->get(".","system.get.data.phtml"));
 			$this->data->$ContentLanguage->page=$page;
-			$this->save();
+
+			// Find out all references to other objects
+			// (images, links) in this object, so we can
+			// warn the user if he tries to delete/rename
+			// an object which is still referenced somewhere
+			// Use Perl compatible regex for non-greedy matching
+			$refs=$this->GetReferences($page);
+
+			$count=0;
+			foreach ($refs as $ref) {
+				// Drop the template name
+				$ref=substr($ref, 0, strrpos($ref, "/")+1);
+				$properties["references"][$count]["path"]="'".AddSlashes($ref)."'";
+				$count++;
+			}
+
+			$this->save($properties);
 			$this->ClearCache();
 			$arResult=$page;
 		}

@@ -166,6 +166,18 @@
 		$store->add_type("pphotobook","pphoto");
 		$store->add_type("pphotobook","pphotobook");
 
+		// create fulltext property (if fulltext search is supported)
+		if ($store->is_supported("fulltext")) {
+			$fulltext["value"]["text"] = 1;
+			$fulltext["nls"]["string"] = 4;
+			$store->create_property("fulltext", $fulltext);
+		}
+
+
+		// create references property
+		$references["path"]["string"] = 128;
+		$store->create_property("references", $references);
+
 		// install pprofile type
 		
 		$store->add_type("pprofile","pobject");

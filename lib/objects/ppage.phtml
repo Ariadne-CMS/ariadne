@@ -90,6 +90,15 @@ class ppage extends pobject { // ppage class definition
 	return $page;
   }
 
+  function GetReferences($page) {
+	// Use Perl compatible regex for non-greedy matching
+	preg_match_all("/['\"](\{(arRoot|arCurrentPage)}.+?)['\"]/", $page, $matches);
+	$refs=str_replace(array("{arRoot}", "{arCurrentPage}"),
+						array("", $this->path),
+						$matches[1]);
+	return $refs;
+  }
+
   function GetPage($nls="", $source=false, $full=false) {
     if (!$nls) {
       $target=$this->nlsdata->page;
@@ -113,6 +122,10 @@ class ppage extends pobject { // ppage class definition
 
   function _GetFullPage($nls="", $source=false) {
     return $this->GetPage($nls, $source, true);
+  }
+
+  function _GetReferences($page) {
+	return $this->GetReferences($page);
   }
 
   function _ShowPage($nls="", $source=false, $full=false) {
