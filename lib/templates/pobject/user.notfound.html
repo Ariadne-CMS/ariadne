@@ -1,6 +1,7 @@
 <?php
   global $nocache;
   $nocache=true;
+  ldHeader("HTTP/1.0 404 Not Found");
   if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
 ?>
 <html>
