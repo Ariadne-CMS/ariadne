@@ -1,6 +1,9 @@
 <?php
 	Header("Content-Type: text/html; charset=UTF-8");
 	$arEditorSettings=$this->call("editor.ini");
+
+	include($this->store->code."nls/ieedit.".$this->reqnls);
+
 ?><!--TOOLBAR_START--><!--TOOLBAR_EXEMPT--><!--TOOLBAR_END-->
 <!-- Copyright 2000 Microsoft Corporation. All rights reserved. -->
 <!-- Author: Steve Isaac, Microsoft Corporation -->
@@ -186,29 +189,29 @@ function window_onload() {
   QueryStatusZOrderMenu[5] = new QueryStatusItem(DECMD_BRING_ABOVE_TEXT, document.body.all["ZORDER_ABOVETEXT"]);
   
   // Initialize the context menu arrays.
-  GeneralContextMenu[0] = new ContextMenuItem("Cut", DECMD_CUT);
-  GeneralContextMenu[1] = new ContextMenuItem("Copy", DECMD_COPY);
-  GeneralContextMenu[2] = new ContextMenuItem("Paste", DECMD_PASTE);
+  GeneralContextMenu[0] = new ContextMenuItem("<?php echo $ARnls["e_cut"]; ?>", DECMD_CUT);
+  GeneralContextMenu[1] = new ContextMenuItem("<?php echo $ARnls["e_copy"]; ?>", DECMD_COPY);
+  GeneralContextMenu[2] = new ContextMenuItem("<?php echo $ARnls["e_paste"]; ?>", DECMD_PASTE);
   TableContextMenu[0] = new ContextMenuItem(MENU_SEPARATOR, 0);
-  TableContextMenu[1] = new ContextMenuItem("Insert Row", DECMD_INSERTROW);
-  TableContextMenu[2] = new ContextMenuItem("Delete Rows", DECMD_DELETEROWS);
+  TableContextMenu[1] = new ContextMenuItem("<?php echo $ARnls["e_insertrow"]; ?>", DECMD_INSERTROW);
+  TableContextMenu[2] = new ContextMenuItem("<?php echo $ARnls["e_deleterows"]; ?>", DECMD_DELETEROWS);
   TableContextMenu[3] = new ContextMenuItem(MENU_SEPARATOR, 0);
-  TableContextMenu[4] = new ContextMenuItem("Insert Column", DECMD_INSERTCOL);
-  TableContextMenu[5] = new ContextMenuItem("Delete Columns", DECMD_DELETECOLS);
+  TableContextMenu[4] = new ContextMenuItem("<?php echo $ARnls["e_insertcol"]; ?>", DECMD_INSERTCOL);
+  TableContextMenu[5] = new ContextMenuItem("<?php echo $ARnls["e_deletecols"]; ?>", DECMD_DELETECOLS);
   TableContextMenu[6] = new ContextMenuItem(MENU_SEPARATOR, 0);
-  TableContextMenu[7] = new ContextMenuItem("Insert Cell", DECMD_INSERTCELL);
-  TableContextMenu[8] = new ContextMenuItem("Delete Cells", DECMD_DELETECELLS);
-  TableContextMenu[9] = new ContextMenuItem("Merge Cells", DECMD_MERGECELLS);
-  TableContextMenu[10] = new ContextMenuItem("Split Cell", DECMD_SPLITCELL);
+  TableContextMenu[7] = new ContextMenuItem("<?php echo $ARnls["e_insertcell"]; ?>", DECMD_INSERTCELL);
+  TableContextMenu[8] = new ContextMenuItem("<?php echo $ARnls["e_deletecells"]; ?>", DECMD_DELETECELLS);
+  TableContextMenu[9] = new ContextMenuItem("<?php echo $ARnls["e_mergecells"]; ?>", DECMD_MERGECELLS);
+  TableContextMenu[10] = new ContextMenuItem("<?php echo $ARnls["e_splitcell"]; ?>", DECMD_SPLITCELL);
   AbsPosContextMenu[0] = new ContextMenuItem(MENU_SEPARATOR, 0);
-  AbsPosContextMenu[1] = new ContextMenuItem("Send To Back", DECMD_SEND_TO_BACK);
-  AbsPosContextMenu[2] = new ContextMenuItem("Bring To Front", DECMD_BRING_TO_FRONT);
+  AbsPosContextMenu[1] = new ContextMenuItem("<?php echo $ARnls["e_send_to_back"]; ?>", DECMD_SEND_TO_BACK);
+  AbsPosContextMenu[2] = new ContextMenuItem("<?php echo $ARnls["e_bring_to_front"]; ?>", DECMD_BRING_TO_FRONT);
   AbsPosContextMenu[3] = new ContextMenuItem(MENU_SEPARATOR, 0);
-  AbsPosContextMenu[4] = new ContextMenuItem("Send Backward", DECMD_SEND_BACKWARD);
-  AbsPosContextMenu[5] = new ContextMenuItem("Bring Forward", DECMD_BRING_FORWARD);
+  AbsPosContextMenu[4] = new ContextMenuItem("<?php echo $ARnls["e_send_backward"]; ?>", DECMD_SEND_BACKWARD);
+  AbsPosContextMenu[5] = new ContextMenuItem("<?php echo $ARnls["e_bring_forward"]; ?>", DECMD_BRING_FORWARD);
   AbsPosContextMenu[6] = new ContextMenuItem(MENU_SEPARATOR, 0);
-  AbsPosContextMenu[7] = new ContextMenuItem("Send Below Text", DECMD_SEND_BELOW_TEXT);
-  AbsPosContextMenu[8] = new ContextMenuItem("Bring Above Text", DECMD_BRING_ABOVE_TEXT);
+  AbsPosContextMenu[7] = new ContextMenuItem("<?php echo $ARnls["e_send_below_text"]; ?>", DECMD_SEND_BELOW_TEXT);
+  AbsPosContextMenu[8] = new ContextMenuItem("<?php echo $ARnls["e_bring_above_text"]; ?>", DECMD_BRING_ABOVE_TEXT);
   docComplete = false;
 
   var f=new ActiveXObject("DEGetBlockFmtNamesParam.DEGetBlockFmtNamesParam");
@@ -583,7 +586,8 @@ function DECMD_SHOWDETAILS_onclick() {
 }
 
 function DECMD_SETFORECOLOR_onclick() {
-  var arr = showModalDialog( "<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/Inc/selcolor.htm",
+  var arr = showModalDialog( "<?php echo $this->store->root.$this->path;
+                ?>edit.object.html.selectcolor.phtml",
                              "",
                              "font-family:Verdana; font-size:12; dialogWidth:30em; dialogHeight:34em; status: no; resizable: yes;" );
 
@@ -593,7 +597,8 @@ function DECMD_SETFORECOLOR_onclick() {
 }
 
 function DECMD_SETBACKCOLOR_onclick() {
-  var arr = showModalDialog( "<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/Inc/selcolor.htm",
+  var arr = showModalDialog( "<?php echo $this->store->root.$this->path;
+                ?>edit.object.html.selectcolor.phtml",
                              "",
                              "font-family:Verdana; font-size:12; dialogWidth:30em; dialogHeight:34em; status: no; resizable: yes;" );
 
@@ -1119,72 +1124,72 @@ return tbContentElement_ContextMenuAction(itemIndex)
 <!-- Toolbars -->
 <div unselectable='on' class="tbToolbar" ID="MenuBar">
   <div unselectable='on' class="tbMenu" ID="FILE">
-    File
+    <?php echo $ARnls["e_file"]; ?>
     <div unselectable='on' class="tbMenuItem" ID="FILE_SAVE" LANGUAGE="javascript" onclick="return MENU_FILE_SAVE_onclick()">
-      Save File
+      <?php echo $ARnls["e_save_file"]; ?>
       <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/save.gif" WIDTH="23" HEIGHT="22">
     </div>
   </div> 
   
   <div unselectable='on' class="tbMenu" ID="EDIT" LANGUAGE="javascript" tbOnMenuShow="return OnMenuShow(QueryStatusEditMenu, EDIT)">
-    Edit
+    <?php echo $ARnls["e_edit"]; ?>
     <div unselectable='on' class="tbMenuItem" ID="EDIT_UNDO" LANGUAGE="javascript" onclick="return DECMD_UNDO_onclick()">
-      Undo
+      <?php echo $ARnls["e_undo"]; ?>
       <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/undo.gif" WIDTH="23" HEIGHT="22">
     </div>
     <div unselectable='on' class="tbMenuItem" ID="EDIT_REDO" LANGUAGE="javascript" onclick="return DECMD_REDO_onclick()">
-      Redo
+      <?php echo $ARnls["e_redo"]; ?>
       <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/redo.gif" WIDTH="23" HEIGHT="22">
     </div>
 
     <div unselectable='on' class="tbSeparator"></div>
 
     <div unselectable='on' class="tbMenuItem" ID="EDIT_CUT" LANGUAGE="javascript" onclick="return DECMD_CUT_onclick()">
-      Cut
+      <?php echo $ARnls["e_cut"]; ?>
       <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/cut.gif" WIDTH="23" HEIGHT="22">
     </div>
     <div unselectable='on' class="tbMenuItem" ID="EDIT_COPY" LANGUAGE="javascript" onclick="return DECMD_COPY_onclick()">
-      Copy
+      <?php echo $ARnls["e_copy"]; ?>
       <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/copy.gif" WIDTH="23" HEIGHT="22">
     </div>
     <div unselectable='on' class="tbMenuItem" ID="EDIT_PASTE" LANGUAGE="javascript" onclick="return DECMD_PASTE_onclick()">
-      Paste
+      <?php echo $ARnls["e_paste"]; ?>
       <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/paste.gif" WIDTH="23" HEIGHT="22">
     </div>
     <div unselectable='on' class="tbMenuItem" ID="EDIT_DELETE" LANGUAGE="javascript" onclick="return DECMD_DELETE_onclick()">
-      Delete
+      <?php echo $ARnls["e_delete"]; ?>
       <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/delete.gif" WIDTH="23" HEIGHT="22">
     </div>
 
     <div unselectable='on' class="tbSeparator"></div>
     
     <div unselectable='on' class="tbMenuItem" ID="EDIT_SELECTALL" LANGUAGE="javascript" onclick="return DECMD_SELECTALL_onclick()">
-      Select All
+      <?php echo $ARnls["e_select_all"]; ?>
     </div>
 
     <div unselectable='on' class="tbSeparator"></div>
 
     <div unselectable='on' class="tbMenuItem" ID="EDIT_FINDTEXT" TITLE="Find" LANGUAGE="javascript" onclick="return DECMD_FINDTEXT_onclick()">
-      Find...
+      <?php echo $ARnls["e_find"]; ?>
       <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/find.gif" WIDTH="23" HEIGHT="22">
     </div>
   </div>
   
   <div unselectable='on' class="tbMenu" ID="VIEW">
-    View
+    <?php echo $ARnls["e_view"]; ?>
     <div unselectable='on' class="tbSubmenu" TBTYPE="toggle" ID="VIEW_TOOLBARS">
-      Toolbars
+      <?php echo $ARnls["e_toolbars"]; ?>
       <div unselectable='on' class="tbMenuItem" id="ToolbarMenuStd" TBTYPE="toggle" TBSTATE="checked" ID="TOOLBARS_STANDARD" TBTYPE="toggle" LANGUAGE="javascript" onclick="return TOOLBARS_onclick(StandardToolbar, ToolbarMenuStd)">
-        Standard
+        <?php echo $ARnls["e_standard"]; ?>
       </div>
       <div unselectable='on' class="tbMenuItem" id="ToolbarMenuFmt" TBTYPE="toggle" TBSTATE="checked" ID="TOOLBARS_FORMAT" TBTYPE="toggle" LANGUAGE="javascript" onclick="return TOOLBARS_onclick(FormatToolbar, ToolbarMenuFmt)">
-        Formatting
+        <?php echo $ARnls["e_formatting"]; ?>
       </div>
       <div unselectable='on' class="tbMenuItem" id="ToolbarMenuAbs" TBTYPE="toggle" TBSTATE="unchecked" ID="TOOLBARS_ZORDER" TBTYPE="toggle" LANGUAGE="javascript" onclick="return TOOLBARS_onclick(AbsolutePositioningToolbar, ToolbarMenuAbs)">
-        Absolute Positioning
+        <?php echo $ARnls["e_absolute_positioning"]; ?>
       </div>
       <div unselectable='on' class="tbMenuItem" id="ToolbarMenuTable" TBTYPE="toggle" TBSTATE="unchecked" ID="TOOLBARS_TABLE" TBTYPE="toggle" LANGUAGE="javascript" onclick="return TOOLBARS_onclick(TableToolbar, ToolbarMenuTable)">
-        Table
+        <?php echo $ARnls["e_table"]; ?>
       </div>
     </div>
 
@@ -1307,34 +1312,34 @@ return tbContentElement_ContextMenuAction(itemIndex)
 </div>
 
 <div unselectable='on' class="tbToolbar" ID="StandardToolbar">
-  <div unselectable='on' class="tbButton" ID="MENU_FILE_SAVE" TITLE="Save File" LANGUAGE="javascript" onclick="return MENU_FILE_SAVE_onclick()">
+  <div unselectable='on' class="tbButton" ID="MENU_FILE_SAVE" TITLE="<?php echo $ARnls["e_save_file"]; ?>" LANGUAGE="javascript" onclick="return MENU_FILE_SAVE_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/save.gif" WIDTH="23" HEIGHT="22">
   </div>
   
   <div unselectable='on' class="tbSeparator"></div>
 
-  <div unselectable='on' class="tbButton" ID="DECMD_CUT" TITLE="Cut" LANGUAGE="javascript" onclick="return DECMD_CUT_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_CUT" TITLE="<?php echo $ARnls["e_cut"]; ?>" LANGUAGE="javascript" onclick="return DECMD_CUT_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/cut.gif" WIDTH="23" HEIGHT="22">
   </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_COPY" TITLE="Copy" LANGUAGE="javascript" onclick="return DECMD_COPY_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_COPY" TITLE="<?php echo $ARnls["e_copy"]; ?>" LANGUAGE="javascript" onclick="return DECMD_COPY_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/copy.gif" WIDTH="23" HEIGHT="22">
   </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_PASTE" TITLE="Paste" LANGUAGE="javascript" onclick="return DECMD_PASTE_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_PASTE" TITLE="<?php echo $ARnls["e_paste"]; ?>" LANGUAGE="javascript" onclick="return DECMD_PASTE_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/paste.gif" WIDTH="23" HEIGHT="22">
   </div>
 
   <div unselectable='on' class="tbSeparator"></div>
 
-  <div unselectable='on' class="tbButton" ID="DECMD_UNDO" TITLE="Undo" LANGUAGE="javascript" onclick="return DECMD_UNDO_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_UNDO" TITLE="<?php echo $ARnls["e_undo"]; ?>" LANGUAGE="javascript" onclick="return DECMD_UNDO_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/undo.gif" WIDTH="23" HEIGHT="22">
   </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_REDO" TITLE="Redo" LANGUAGE="javascript" onclick="return DECMD_REDO_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_REDO" TITLE="<?php echo $ARnls["e_redo"]; ?>" LANGUAGE="javascript" onclick="return DECMD_REDO_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/redo.gif" WIDTH="23" HEIGHT="22">
   </div>
 
   <div unselectable='on' class="tbSeparator"></div>
 
-  <div unselectable='on' class="tbButton" ID="DECMD_FINDTEXT" TITLE="Find" LANGUAGE="javascript" onclick="return DECMD_FINDTEXT_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_FINDTEXT" TITLE="<?php echo $ARnls["e_find"]; ?>" LANGUAGE="javascript" onclick="return DECMD_FINDTEXT_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/find.gif" WIDTH="23" HEIGHT="22">
   </div>
 </div>
@@ -1361,155 +1366,155 @@ return tbContentElement_ContextMenuAction(itemIndex)
   
   <div unselectable='on' class="tbSeparator"></div>
 
-  <div unselectable='on' class="tbButton" ID="DECMD_BOLD" TITLE="Bold" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_BOLD_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_BOLD" TITLE="<?php echo $ARnls["e_bold"]; ?>" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_BOLD_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/bold.gif" WIDTH="23" HEIGHT="22">
   </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_ITALIC" TITLE="Italic" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_ITALIC_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_ITALIC" TITLE="<?php echo $ARnls["e_italic"]; ?>" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_ITALIC_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/italic.gif" WIDTH="23" HEIGHT="22">
   </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_UNDERLINE" TITLE="Underline" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_UNDERLINE_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_UNDERLINE" TITLE="<?php echo $ARnls["e_underline"]; ?>" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_UNDERLINE_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/under.gif" WIDTH="23" HEIGHT="22">
   </div>
   
   <div unselectable='on' class="tbSeparator"></div>
 
-  <div unselectable='on' class="tbButton" ID="DECMD_SETFORECOLOR" TITLE="Foreground Color" LANGUAGE="javascript" onclick="return DECMD_SETFORECOLOR_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_SETFORECOLOR" TITLE="<?php echo $ARnls["e_foreground_color"]; ?>" LANGUAGE="javascript" onclick="return DECMD_SETFORECOLOR_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/fgcolor.gif" WIDTH="23" HEIGHT="22">
   </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_SETBACKCOLOR" TITLE="Background Color" LANGUAGE="javascript" onclick="return DECMD_SETBACKCOLOR_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_SETBACKCOLOR" TITLE="<?php echo $ARnls["e_background_color"]; ?>" LANGUAGE="javascript" onclick="return DECMD_SETBACKCOLOR_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/bgcolor.gif" WIDTH="23" HEIGHT="22">
   </div>
   
   <div unselectable='on' class="tbSeparator"></div>
 
-  <div unselectable='on' class="tbButton" ID="DECMD_JUSTIFYLEFT" TITLE="Align Left" TBTYPE="toggle" NAME="Justify" LANGUAGE="javascript" onclick="return DECMD_JUSTIFYLEFT_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_JUSTIFYLEFT" TITLE="<?php echo $ARnls["e_align_left"]; ?>" TBTYPE="toggle" NAME="Justify" LANGUAGE="javascript" onclick="return DECMD_JUSTIFYLEFT_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/left.gif" WIDTH="23" HEIGHT="22">
   </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_JUSTIFYCENTER" TITLE="Center" TBTYPE="toggle" NAME="Justify" LANGUAGE="javascript" onclick="return DECMD_JUSTIFYCENTER_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_JUSTIFYCENTER" TITLE="<?php echo $ARnls["e_align_center"]; ?>" TBTYPE="toggle" NAME="Justify" LANGUAGE="javascript" onclick="return DECMD_JUSTIFYCENTER_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/center.gif" WIDTH="23" HEIGHT="22">
   </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_JUSTIFYRIGHT" TITLE="Align Right" TBTYPE="toggle" NAME="Justify" LANGUAGE="javascript" onclick="return DECMD_JUSTIFYRIGHT_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_JUSTIFYRIGHT" TITLE="<?php echo $ARnls["e_align_right"]; ?>" TBTYPE="toggle" NAME="Justify" LANGUAGE="javascript" onclick="return DECMD_JUSTIFYRIGHT_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/right.gif" WIDTH="23" HEIGHT="22">
   </div>
 
   <div unselectable='on' class="tbSeparator"></div>
 
-  <div unselectable='on' class="tbButton" ID="DECMD_ORDERLIST" TITLE="Numbered List" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_ORDERLIST_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_ORDERLIST" TITLE="<?php echo $ARnls["e_numbered_list"]; ?>" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_ORDERLIST_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/numlist.gif" WIDTH="23" HEIGHT="22">
   </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_UNORDERLIST" TITLE="Bulletted List" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_UNORDERLIST_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_UNORDERLIST" TITLE="<?php echo $ARnls["e_bulleted_list"]; ?>" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_UNORDERLIST_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/bullist.gif" WIDTH="23" HEIGHT="22">
   </div>
   
   <div unselectable='on' class="tbSeparator"></div>
 
-  <div unselectable='on' class="tbButton" ID="DECMD_OUTDENT" TITLE="Decrease Indent" LANGUAGE="javascript" onclick="return DECMD_OUTDENT_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_OUTDENT" TITLE="<?php echo $ARnls["e_decrease_indent"]; ?>" LANGUAGE="javascript" onclick="return DECMD_OUTDENT_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/deindent.gif" WIDTH="23" HEIGHT="22">
   </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_INDENT" TITLE="Increase Indent" LANGUAGE="javascript" onclick="return DECMD_INDENT_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_INDENT" TITLE="<?php echo $ARnls["e_increase_indent"]; ?>" LANGUAGE="javascript" onclick="return DECMD_INDENT_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/inindent.gif" WIDTH="23" HEIGHT="22">
   </div>
 
   <div unselectable='on' class="tbSeparator"></div>
 
-  <div unselectable='on' class="tbButton" ID="DECMD_HYPERLINK" TITLE="Link" LANGUAGE="javascript" onclick="return DECMD_HYPERLINK_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_HYPERLINK" TITLE="<?php echo $ARnls["e_link"]; ?>" LANGUAGE="javascript" onclick="return DECMD_HYPERLINK_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/link.gif" WIDTH="23" HEIGHT="22">
   </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_IMAGE" TITLE="Insert Image" LANGUAGE="javascript" onclick="return DECMD_IMAGE_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_IMAGE" TITLE="<?php echo $ARnls["e_insert_image"]; ?>" LANGUAGE="javascript" onclick="return DECMD_IMAGE_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/image.gif" WIDTH="23" HEIGHT="22">
   </div>
 </div>
 
 
 <div unselectable='on' class="tbToolbar" ID="AbsolutePositioningToolbar" TBSTATE="hidden">
-  <div unselectable='on' class="tbButton" ID="DECMD_VISIBLEBORDERS" TITLE="Visible Borders" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_VISIBLEBORDERS_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_VISIBLEBORDERS" TITLE="<?php echo $ARnls["e_visible_borders"]; ?>" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_VISIBLEBORDERS_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/borders.gif" WIDTH="23" HEIGHT="22">
   </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_SHOWDETAILS" TITLE="Show Details" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_SHOWDETAILS_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_SHOWDETAILS" TITLE="<?php echo $ARnls["e_show_details"]; ?>" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_SHOWDETAILS_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/details.gif" WIDTH="23" HEIGHT="22">
   </div>
   
   <div unselectable='on' class="tbSeparator"></div>
 
-  <div unselectable='on' class="tbButton" ID="DECMD_MAKE_ABSOLUTE" TBTYPE="toggle" LANGUAGE="javascript" TITLE="Make Absolute" onclick="return DECMD_MAKE_ABSOLUTE_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_MAKE_ABSOLUTE" TBTYPE="toggle" LANGUAGE="javascript" TITLE="<?php echo $ARnls["e_make_absolute"]; ?>" onclick="return DECMD_MAKE_ABSOLUTE_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/abspos.gif" WIDTH="23" HEIGHT="22">
   </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_LOCK_ELEMENT" TBTYPE="toggle" LANGUAGE="javascript" TITLE="Lock" onclick="return DECMD_LOCK_ELEMENT_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_LOCK_ELEMENT" TBTYPE="toggle" LANGUAGE="javascript" TITLE="<?php echo $ARnls["e_lock"]; ?>" onclick="return DECMD_LOCK_ELEMENT_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/lock.gif" WIDTH="23" HEIGHT="22">
   </div>
   
   <div unselectable='on' class="tbSeparator"></div>
   
   <div unselectable='on' class="tbMenu" ID="ZORDER" LANGUAGE="javascript" tbOnMenuShow="return OnMenuShow(QueryStatusZOrderMenu, ZORDER)">
-  Z Order
+  <?php echo $ARnls["e_z_order"]; ?>
     <div unselectable='on' class="tbMenuItem" ID="ZORDER_BRINGFRONT" LANGUAGE="javascript" onclick="return ZORDER_BRINGFRONT_onclick()">
-      Bring to Front
+      <?php echo $ARnls["e_bring_to_front"]; ?>
     </div>
     <div unselectable='on' class="tbMenuItem" ID="ZORDER_SENDBACK" LANGUAGE="javascript" onclick="return ZORDER_SENDBACK_onclick()">
-      Send to Back
+      <?php echo $ARnls["e_send_to_back"]; ?>
     </div>
  
     <div unselectable='on' class="tbSeparator"></div>
 
     <div unselectable='on' class="tbMenuItem" ID="ZORDER_BRINGFORWARD" LANGUAGE="javascript" onclick="return ZORDER_BRINGFORWARD_onclick()">
-      Bring Forward
+      <?php echo $ARnls["e_bring_forward"]; ?>
     </div>
     <div unselectable='on' class="tbMenuItem" ID="ZORDER_SENDBACKWARD" LANGUAGE="javascript" onclick="return ZORDER_SENDBACKWARD_onclick()">
-      Send Backward
+      <?php echo $ARnls["e_send_backward"]; ?>
     </div>
  
     <div unselectable='on' class="tbSeparator"></div>
 
     <div unselectable='on' class="tbMenuItem" ID="ZORDER_BELOWTEXT" LANGUAGE="javascript" onclick="return ZORDER_BELOWTEXT_onclick()">
-      Below Text
+      <?php echo $ARnls["e_send_below_text"]; ?>
     </div>
     <div unselectable='on' class="tbMenuItem" ID="ZORDER_ABOVETEXT" LANGUAGE="javascript" onclick="return ZORDER_ABOVETEXT_onclick()">
-      Above Text
+      <?php echo $ARnls["e_bring_above_text"]; ?>
     </div>
   </div>
   
   <div unselectable='on' class="tbSeparator"></div>
   
-  <div unselectable='on' class="tbButton" ID="DECMD_SNAPTOGRID" TITLE="Snap to Grid" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_SNAPTOGRID_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_SNAPTOGRID" TITLE="<?php echo $ARnls["e_snap_to_grid"]; ?>" TBTYPE="toggle" LANGUAGE="javascript" onclick="return DECMD_SNAPTOGRID_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/snapgrid.gif" WIDTH="23" HEIGHT="22">
   </div>
 </div>
 
 <div unselectable='on' class="tbToolbar" ID="TableToolbar" TBSTATE="hidden">
-  <div unselectable='on' class="tbButton" ID="DECMD_INSERTTABLE" TITLE="Insert Table" LANGUAGE="javascript" onclick="return TABLE_INSERTTABLE_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_INSERTTABLE" TITLE="<?php echo $ARnls["e_insert_table"]; ?>" LANGUAGE="javascript" onclick="return TABLE_INSERTTABLE_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/instable.gif" WIDTH="23" HEIGHT="22">
   </div>
 
   <div unselectable='on' class="tbSeparator"></div>
 
-  <div unselectable='on' class="tbButton" ID="DECMD_INSERTROW" TITLE="Insert Row" LANGUAGE="javascript" onclick="return TABLE_INSERTROW_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_INSERTROW" TITLE="<?php echo $ARnls["e_insertrow"]; ?>" LANGUAGE="javascript" onclick="return TABLE_INSERTROW_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/insrow.gif" WIDTH="23" HEIGHT="22">
   </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_DELETEROWS" TITLE="Delete Rows" LANGUAGE="javascript" onclick="return TABLE_DELETEROW_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_DELETEROWS" TITLE="<?php echo $ARnls["e_deleterows"]; ?>" LANGUAGE="javascript" onclick="return TABLE_DELETEROW_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/delrow.gif" WIDTH="23" HEIGHT="22">
   </div>
  
   <div unselectable='on' class="tbSeparator"></div>
 
-  <div unselectable='on' class="tbButton" ID="DECMD_INSERTCOL" TITLE="Insert Column" LANGUAGE="javascript" onclick="return TABLE_INSERTCOL_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_INSERTCOL" TITLE="<?php echo $ARnls["e_insertcol"]; ?>" LANGUAGE="javascript" onclick="return TABLE_INSERTCOL_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/inscol.gif" WIDTH="23" HEIGHT="22">
   </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_DELETECOLS" TITLE="Delete Columns" LANGUAGE="javascript" onclick="return TABLE_DELETECOL_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_DELETECOLS" TITLE="<?php echo $ARnls["e_deletecols"]; ?>" LANGUAGE="javascript" onclick="return TABLE_DELETECOL_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/delcol.gif" WIDTH="23" HEIGHT="22">
   </div>
   
   <div unselectable='on' class="tbSeparator"></div>
 
-  <div unselectable='on' class="tbButton" ID="DECMD_INSERTCELL" TITLE="Insert Cell" LANGUAGE="javascript" onclick="return TABLE_INSERTCELL_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_INSERTCELL" TITLE="<?php echo $ARnls["e_insertcell"]; ?>" LANGUAGE="javascript" onclick="return TABLE_INSERTCELL_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/inscell.gif" WIDTH="23" HEIGHT="22">
   </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_DELETECELLS" TITLE="Delete Cells" LANGUAGE="javascript" onclick="return TABLE_DELETECELL_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_DELETECELLS" TITLE="<?php echo $ARnls["e_deletecells"]; ?>" LANGUAGE="javascript" onclick="return TABLE_DELETECELL_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/delcell.gif" WIDTH="23" HEIGHT="22">
   </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_MERGECELLS" TITLE="Merge Cells" LANGUAGE="javascript" onclick="return TABLE_MERGECELL_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_MERGECELLS" TITLE="<?php echo $ARnls["e_mergecells"]; ?>" LANGUAGE="javascript" onclick="return TABLE_MERGECELL_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/mrgcell.gif" WIDTH="23" HEIGHT="22">
   </div>
-  <div unselectable='on' class="tbButton" ID="DECMD_SPLITCELL" TITLE="Split Cells" LANGUAGE="javascript" onclick="return TABLE_SPLITCELL_onclick()">
+  <div unselectable='on' class="tbButton" ID="DECMD_SPLITCELL" TITLE="<?php echo $ARnls["e_splitcell"]; ?>" LANGUAGE="javascript" onclick="return TABLE_SPLITCELL_onclick()">
     <img unselectable='on' class="tbIcon" src="<?php echo $AR->host.$AR->dir->www; ?>widgets/htmledit/ie/images/spltcell.gif" WIDTH="23" HEIGHT="22">
   </div>
 </div>

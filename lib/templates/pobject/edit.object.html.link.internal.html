@@ -1,6 +1,9 @@
 <?php
 	if ($this->CheckLogin('read') && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		$settings=$this->call("editor.ini");
+
+		include($this->store->code."nls/ieedit.".$this->reqnls);
+
 ?>
 <html>
 <head>
@@ -85,7 +88,7 @@ BODY 	{
 <table class="fieldset" align="left">
 <form action="edit.object.html.link.internal.save.html">
 	<tr>
-		<td>Type:</td>
+		<td><?php echo $ARnls["e_hyperlink_type"]; ?>:</td>
 		<td><select name="ar_type" class="layout" onChange="doChangeType(this.options[this.selectedIndex].value);">
 			<?php
 				$type="edit.object.html.link.internal.html";
@@ -99,7 +102,7 @@ BODY 	{
 		<td></td>
 		<td></td>
 	</tr><tr>
-		<td>Path:</td>
+		<td><?php echo $ARnls["e_hyperlink_path"]; ?>:</td>
 		<td colspan="3"><nobr><?php
 			$wgBrowseName="ar_path";
 			$wgBrowsePath=$src;

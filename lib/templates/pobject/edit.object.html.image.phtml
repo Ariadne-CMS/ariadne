@@ -20,10 +20,13 @@
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		// show image select box with browse button 
 		 global $PHP_SELF,$QUERY_STRING; 
+
+		include($this->store->code."nls/ieedit.".$this->reqnls);
+
 ?>
 <HTML>
 <HEAD>
-<title>Picture</title>
+<title><?php echo $ARnls["e_picture"]; ?></title>
 <style>
 TD {
 	FONT: 8pt sans-serif;
@@ -107,26 +110,26 @@ function IsDigit()
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 <form method="post" name="PictureForm">
 <tr>
-	<td>Picture&nbsp;Source:</td>
+	<td><?php echo $ARnls["e_picture_source"]; ?>:</td>
 	<td><?php
 		$wgBrowseName="imgsrc";
 		$wgBrowsePath=$src;
 		include($this->store->code."widgets/browse/js.html");
 		include($this->store->code."widgets/browse/form.html");
 	?></td>
-	<td><input type="button" name="ok" value="OK" class="button" onClick="doSubmit(this.form);"></td>
+	<td><input type="button" name="ok" value="<?php echo $ARnls["ok"]; ?>" class="button" onClick="doSubmit(this.form);"></td>
 </tr><tr>
-	<td>Alternate&nbsp;Text:</td>
+	<td><?php echo $ARnls["e_alternate_text"]; ?>:</td>
 	<td><input id="alt" type="text" name="alt" value="<?php echo $alt; ?>" size="20" class="alternate"></td>
-	<td><input type="button" name="cancel" value="Cancel" onClick="window.close();" class="button"></td>
+	<td><input type="button" name="cancel" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();" class="button"></td>
 </tr><tr>
 	<td colspan="2">
 		<table><tr><td>
 		<fieldset id="layout">
-		<legend>Layout</legend>
+		<legend><?php echo $ARnls["e_layout"]; ?></legend>
 		<table class="fieldset" align="left">
 			<tr>
-				<td>Alignment:</td>
+				<td><?php echo $ARnls["e_alignment"]; ?>:</td>
 				<td><select name="align" class="layout">
 					<option value="" defaultSelected>Not Set</option>
 					<?php
@@ -147,20 +150,20 @@ function IsDigit()
 					?>
 				</select></td>
 			</tr><tr>
-				<td>Border&nbsp;Thickness:</td>
+				<td><?php echo $ARnls["e_border_thickness"]; ?>:</td>
 				<td><INPUT ID=border TYPE=TEXT SIZE=3 NAME=border ONKEYPRESS="event.returnValue=IsDigit();" value="<?php echo $border; ?>" class="layout"></td>
 			</tr>
 		</table>
 		</fieldset>
 		</td><td>
 		<fieldset id="spacing">
-		<legend>Spacing</legend>
+		<legend><?php echo $ARnls["e_spacing"]; ?></legend>
 		<table class="fieldset" align="left">
 			<tr>
-				<td>Horizontal:</td>
+				<td><?php echo $ARnls["e_horizontal"]; ?>:</td>
 				<td><INPUT ID=hspace TYPE=TEXT SIZE=3 NAME=hspace ONKEYPRESS="event.returnValue=IsDigit();" value="<?php echo $hspace; ?>"></td>
 			</tr><tr>
-				<td>Vertical:</td>
+				<td><?php echo $ARnls["e_vertical"]; ?>:</td>
 				<td><INPUT ID=vspace TYPE=TEXT SIZE=3 NAME=vspace ONKEYPRESS="event.returnValue=IsDigit();" value="<?php echo $vspace; ?>"></td>
 			</tr>
 		</table>

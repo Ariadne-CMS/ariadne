@@ -21,10 +21,13 @@
 		// show image select box with browse button 
 		global $PHP_SELF,$QUERY_STRING; 
 		$settings=$this->call("editor.ini");
+
+		include($this->store->code."nls/ieedit.".$this->reqnls);
+
 ?>
 <HTML>
 <HEAD>
-<title>Hyperlink</title>
+<title><?php echo $ARnls["e_hyperlink"]; ?></title>
 <style>
 TD {
 	FONT: 11px arial, helvetica, sans-serif;
@@ -103,13 +106,13 @@ function IsDigit()
 <tr>
 	<td>
 		<fieldset id="hyperlink">
-		<legend>Hyperlink Information</legend>
+		<legend><?php echo $ARnls["e_hyperlink_information"]; ?></legend>
 		<iframe name="realform" style="margin: 0px; padding: 0px; height: 70px; width: 270px;">
 		</iframe>
 		</fieldset>
 		</td><td>
-	<td valign="top"><input type="button" name="ok" value="OK" class="button" onClick="doSubmit(this.form);"><BR>
-        <input type="button" name="cancel" value="Cancel" onClick="window.close();" class="button"></td>
+	<td valign="top"><input type="button" name="ok" value="<?php echo $ARnls["ok"]; ?>" class="button" onClick="doSubmit(this.form);"><BR>
+        <input type="button" name="cancel" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();" class="button"></td>
 </tr>
 </form>
 </table>

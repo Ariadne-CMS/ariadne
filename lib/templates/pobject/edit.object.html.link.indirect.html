@@ -1,6 +1,9 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		$settings=$this->call('editor.ini');
+
+		include($this->store->code."nls/ieedit.".$this->reqnls);
+
 ?><html>
 <head>
 <style>
@@ -87,7 +90,7 @@ BODY 	{
 <table class="fieldset" align="left">
 <form action="edit.object.html.link.indirect.save.html">
 		<tr>
-		<td>Type:</td>
+		<td><?php echo $ARnls["e_hyperlink_type"]; ?>:</td>
 		<td><select name="ar_type" class="layout" onChange="doChangeType(this.options[this.selectedIndex].value);">
 			<?php
 				$type="edit.object.html.link.indirect.html";
@@ -98,7 +101,7 @@ BODY 	{
 				}
 			?>
 		</select></td>
-		<td>Affiliate:</td>
+		<td><?php echo $ARnls["e_hyperlink_affiliate"]; ?>:</td>
 		<td><select name="ar_affiliate_HOST" class="layout" onChange="doChangeURL(this.options[this.selectedIndex].value);">
 			<?php
 				while (list($key, $value)=each($settings["affiliates"])) {
