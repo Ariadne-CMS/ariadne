@@ -79,6 +79,8 @@
 			unset($wgWizFlow[$i]["save"]);
 		}
 
+		$wgWizFlow = $this->call("user.wizard.edit.html", Array("wgWizFlow" => $wgWizFlow));
+
 		$result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
 		$wgWizTitle=$ARnls["edit"]." ".$result[0];		
 		$wgWizHeader=$wgWizTitle.'<img src="'.$AR->dir->images.'icons/'.$this->type.'_open.gif" alt="" hspace="4" align="absmiddle">';

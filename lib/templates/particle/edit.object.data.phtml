@@ -67,6 +67,8 @@
 			$ARCurrent->arLanguage=$arLanguage;
 		}
 
+		$wgWizFlow = $this->call("user.wizard.edit.html", Array("wgWizFlow" => $wgWizFlow));
+
 		$wgWizControl=$this->getdata("wgWizControl","none");
 		$wgWizCurrent=$this->getdata("wgWizCurrent","none");
 		$result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");

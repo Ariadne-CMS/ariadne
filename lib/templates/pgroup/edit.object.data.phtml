@@ -47,6 +47,8 @@
 			$i = $wgWizFlow[0]["current"]+1;
 			$wgWizFlow[$i]["template"] = $lock;
 		}
+
+		$wgWizFlow = $this->call("user.wizard.edit.html", Array("wgWizFlow" => $wgWizFlow));
 		
 		$result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
 		$wgWizTitle=$ARnls["edit"]." ".$result[0];		
