@@ -1,4 +1,4 @@
-	var viewmode=parent.Get('viewmode');
+	var viewmode=top.Get('viewmode');
 	var b_offset=0;
 	var b_limit=50;
 	var b_total=0;
