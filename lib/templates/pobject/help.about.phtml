@@ -15,33 +15,52 @@
 <html>
 <head>
 <title><?php echo $ARnls["aboutariadne"]; ?></title>
-<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>control.css">
+<style>
+	H1		{ FONT: 12pt helvetica, sans-serif; FONT-WEIGHT: bold; }
+	TD		{ FONT: 10pt helvetica, sans-serif; }
+	BODY	{ FONT: 10pt helvetica, sans-serif;
+		  		BORDER: 0;
+				BACKGROUND-COLOR: #FFFFFF;
+				MARGIN: 0;
+				PADDING: 0;
+	}
+	IMG 	{
+				BORDER: 0;
+				MARGIN: 0;
+				PADDING: 0;
+	}
+	.small {
+			font: 8pt helvetica, sans-serif;
+			padding: 4px;
+	}
+</style>
 <script src="<?php echo $AR->dir->www; ?>widgets/window/savesize.js"></script>
 </head>
-<body>
-<table border="0" cellpadding="5" cellspacing="5" height="100%">
+<body bgcolor="#BBBBBB">
+<table border="0" cellpadding="0" cellspacing="0" margin="0">
 <tr>
-	<td valign="top" bgcolor="white" height="100%">
-		<a href="http://www.muze.nl/" target="_new"><img src="<?php echo $AR->dir->images; ?>muze_small.gif" alt="Muze" border="0"></a>
-		<p><nobr>
-		Muze<br>
-		Auke&nbsp;Vleerstraat&nbsp;1<br>
-		7521&nbsp;PE&nbsp;Enschede<br>
-		<?php echo $ARnls["netherlands"]; ?>
-		<p>
-		e-mail:&nbsp;<a href="mailto:info@muze.nl">info@muze.nl</a><br>
-		tel.:&nbsp;+3153-4894441</nobr>
-	</td><td valign="top">
-		<b>Ariadne
-			<p>
-			version 2.0RC1<br>
-			November 8, 2001<br>
-			Copyright &copy; 1998-2001 Muze<br>
-			Ariadne comes with ABSOLUTELY NO WARRANTY.<br>
-			Ariadne is released under the <a href="help.about.license.phtml" target="_new">Gnu General Public License, version 2</a>. 
-		</b>
-	</td>
-</tr>
+  <td rowspan="3"><img src="<?php echo $AR->dir->images; ?>clock.gif" alt="" align="left" border="0" hspace="0" vspace="0"></td>
+  <td valign="top" align="center"><img src="<?php echo $AR->dir->images; ?>ariadne.gif" alt="Ariadne - Web Application Server" vspace="5"></td>
+</tr><tr>
+  <td valign="top" align="center">
+     <table width="250" height="125">
+     <tr>
+       <td style="border: 2px inset; padding: 5px;" valign="top">
+         version 2.0RC1<br>
+         November 20, 2001<br>
+       </td>
+     </tr><tr>
+       <td align="right">
+         <input type="button" name="ok" value="<?php echo $ARnls["ok"]; ?>" onClick="window.close()" style="width: 75px;">
+       </td>
+     </tr>
+     </table>
+  </td>
+</tr><tr><td valign="bottom" align="center">
+  <span class="small">&copy; 1998 - 2001 <a href="http://www.muze.nl/" target="_blank">muze</a>. Ariadne comes with ABSOLUTELY NO WARRANTY. 
+  Ariadne is free software, you are welcome to redistribute it under certain <a href="help.about.license.phtml" target="_blank">conditions</a>.<br>&nbsp;
+  </span>
+</td></tr>
 </table>
 </body>
 </html>

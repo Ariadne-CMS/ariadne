@@ -16,7 +16,7 @@
 	windowprops['edit_priority']=windowprops['common']+',height=150,width=250';
 	windowprops['view_fonts']=windowprops['common']+',height=300,width=450';
 	windowprops['help']=windowprops['common']+',height=350,width=450';
-	windowprops['help_about']=windowprops['common']+',height=200,width=450';
+	windowprops['help_about']=windowprops['common']+',height=275,width=500';
 	windowprops['_new']=windowprops['full'];
 
 	function viewpath(path) {
@@ -46,12 +46,12 @@
 
 	function artoggleexplorerbar() {
 		if (document.all) {
-			icon=document.all['explorerbar_icon'];
+			expl_icon=document.all['explorerbar_icon'];
 			treestatus=top.toggletree();
 			if (treestatus=='hidden') {
-				icon.className='unselectedOption';
+				expl_icon.className='unselectedOption';
 			} else {
-				icon.className='selectedOption';
+				expl_icon.className='selectedOption';
 			}
 		}
 	}
