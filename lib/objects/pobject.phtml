@@ -766,16 +766,16 @@ class pobject extends object {
 		debug("pobject: getdata($varname, $nls)","object");
 		$result=false;
 		if ($nls!="none") {
-            if ($ARCurrent->arCallStack) {
+			if ($ARCurrent->arCallStack) {
 				$arCallArgs=end($ARCurrent->arCallStack);
 				if (is_array($arCallArgs)) {
 					extract($arCallArgs);
 				} else if (is_string($arCallArgs)) {
 					Parse_Str($arCallArgs);
 				}
-            }
-            if (isset(${$nls}[$varname])) {
-                $result=${$nls}[$varname];
+			}
+			if (isset(${$nls}[$varname])) {
+				$result=${$nls}[$varname];
 			} else if (isset($ARCurrent->$nls->$varname)) {
 				$result=$ARCurrent->$nls->$varname;
 			} else if (($values=$HTTP_POST_VARS[$nls]) && isset($values[$varname])) {
