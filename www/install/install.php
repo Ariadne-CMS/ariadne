@@ -4,6 +4,7 @@
   require("../ariadne.inc");
   require($ariadne."/configs/ariadne.phtml");
   require($ariadne."/configs/store.phtml");
+  include_once($ariadne."/includes/loader.web.php");
   include_once($ariadne."/stores/mysql_install.phtml");
   $ERRMODE="text";
 
@@ -110,6 +111,7 @@
     $store->create_property("address", $address);
 
     echo "== importing ariadne.ax file\n\n";
+
 	global $AR, $ARLogin, $options, $import_list; // ax options
 	$options["import_path"]="/";		// import ariadne root
 	$options["axFile"]="ariadne.ax";	// the export file to be imported
