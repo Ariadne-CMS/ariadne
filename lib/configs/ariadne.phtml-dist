@@ -18,7 +18,7 @@
   /* Leave out the last '/' or '\' of the pathname.                        */
   /*************************************************************************/
 
-  $AR->root                 = '/usr/local/lib/ariadne';
+  $AR->dir->install         = '/usr/local/lib/ariadne';
 
 
   /**************************************************************************/
@@ -57,8 +57,14 @@
   $AR->DB->user             = 'ariadne';
   $AR->DB->password         = 'secret';
 
+  /**************************************************************************/
+  /* If you want you can change the default server name below. You should   */
+  /* only do this if the default setting doesn't work. e.g.:                */
+  /*   $AR->host='your.host.com';                                           */
+  /* NOTE: don't add the protocol (http://) or slashes at the end.          */
+  /**************************************************************************/
 
-
+  $AR->host                 = $HTTP_SERVER_VARS['HTTP_HOST'];
 
 
 /****************************************************************************/
@@ -109,18 +115,10 @@
   /**************************************************************************/
 
   if ($HTTP_SERVER_VARS['HTTPS']=='on') {
-    $AR->host = 'https://';
+    $AR->host = 'https://'.$AR->host;
   } else {
-    $AR->host = 'http://';
+    $AR->host = 'http://'.$AR->host;
   }
-
-  /**************************************************************************/
-  /* If you want you can change the default server name below. You should   */
-  /* only do this if the default setting doesn't work. e.g.:                */
-  /*   $AR->host='your.host.com';                                           */
-  /**************************************************************************/
-
-  $AR->host                 .= $HTTP_SERVER_VARS['HTTP_HOST'];
 
   /**************************************************************************/
   /* Only change this if you have made your own loader                      */
