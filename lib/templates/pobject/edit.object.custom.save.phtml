@@ -10,7 +10,9 @@
 		} else {
 		?>
 			<script>
-				window.close();
+				if (window.opener) {
+					window.close();
+				}
 			</script>
 		<?php
 		}
