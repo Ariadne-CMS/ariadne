@@ -282,4 +282,6 @@ $ARnls["cover"]=		"Cover Image";
 $ARnls["editor"]=		"HTML Editor";
 $ARnls["wysiwyg"]=		"WYSIWYG";
 $ARnls["fullpath"]=		"Include full path";
+$ARnls["err:cannotdelsystemusers"]="You cannot delete or move the system users (admin and public)";
+$ARnls["err:invaliduserlocation"]="You cannot move users out of the /system/users/ tree.";
 ?>

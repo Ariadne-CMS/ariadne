@@ -282,4 +282,6 @@ $ARnls["cover"]=		"Omslag";
 $ARnls["editor"]=		"HTML Editor";
 $ARnls["wysiwyg"]=		"WYSIWYG";
 $ARnls["fullpath"]=		"Met volledig pad";
+$ARnls["err:cannotdelsystemusers"]="U kunt de systeem gebruikers (admin en public) niet verwijderen.";
+$ARnls["err:invaliduserlocation"]="U kunt gebruikers niet verplaatsen buiten de /system/users/ folder.";
 ?>
