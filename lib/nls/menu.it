@@ -1,4 +1,7 @@
-<?php
+<?PHP
+
+        // Traduzione italiana a cura di Dino Gerlando Termini
+        // M.B.I. S.r.l - dtermini@mbigroup.it
 
 	$ARnls["m_about"]						=	"Riguardo&nbsp;Ariadne";
 	$ARnls["m_cache"]						=	"Cache";
@@ -34,6 +37,6 @@
 	$ARnls["m_tutorials"]						=	"Manuali";
 	$ARnls["m_types"]						=	"Tipi";
 	$ARnls["m_view"]						=	"Vista";
-	$ARnls["m_web"]							=	"Pagina web";
+	$ARnls["m_web"]							=	"Web";
 	$ARnls["m_page"]						=	"Pagina";
 ?>

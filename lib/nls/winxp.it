@@ -1,20 +1,24 @@
 <?php
-	$ARnls["xp_new"]					=	"Aggiungi un oggetto";
+
+        // Traduzione italiana a cura di Dino Gerlando Termini
+        // M.B.I. S.r.l - dtermini@mbigroup.it
+
+	$ARnls["xp_new"]					=	"Nuovo oggetto";
 	$ARnls["xp_rename"]					=	"Rinomina ";
 	$ARnls["xp_copy"]					=	"Copia ";
 	$ARnls["xp_link"]					=	"Collega ";
 	$ARnls["xp_edit"]					=	"Modifica ";
-	$ARnls["xp_shortcut"]					=	"Modifica collegamento";
+	$ARnls["xp_shortcut"]					=	"Modifica link";
 	$ARnls["xp_delete"]					=	"Elimina ";
 	$ARnls["xp_cache"]					=	"Configura cache per ";
-	$ARnls["xp_templates"]					=	"Scegli i template per ";
+	$ARnls["xp_templates"]					=	"Elenco template per ";
 	$ARnls["xp_customfields"]				=	"Aggiungi un campo a ";
 	$ARnls["xp_language"]					=	"Scegli la lingua per ";
 	$ARnls["xp_grants"]					=	"Configura i diritti per ";
 	$ARnls["xp_types"]					=	"Scegli il typetree per ";
-	$ARnls["xp_priority"]					=	"Scegli la priorit&agrave; per ";
-	$ARnls["xp_viewweb"]					=	"Visualizza pagina web";
-	$ARnls["xp_view"]					=	"Visualizza oggetto";
+	$ARnls["xp_priority"]					=	"Decidi la priorit&agrave; per ";
+	$ARnls["xp_viewweb"]					=	"Vista web";
+	$ARnls["xp_view"]					=	"Vista";
 	$ARnls["xp_explore"]					=	"Esplora";
 	
 	//headers
@@ -31,7 +35,7 @@
 	$ARnls["xp_small"]					= 	"Lista";
 	$ARnls["xp_large"]					= 	"Icone";
 	$ARnls["xp_details"]					= 	"Dettagli";
-	$ARnls["xp_iconview"]					=	"Selezione una vista a icone";
+	$ARnls["xp_iconview"]					=	"Seleziona una vista";
 	$ARnls["xp_import"]					= 	"Importa";
 	$ARnls["xp_export"]					= 	"Esporta";
 	$ARnls["xp_preferences"]				= 	"Preferenze";
