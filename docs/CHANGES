@@ -18,7 +18,8 @@ Bugs fixed:
 	  existing grants.
 	- The default start and endtime calculation in pcalendar::get_items()
 	  now works correct.
-	- Fixed a bug using getvar() in pinp on a variable set to 0.
+	- Fixed a bug using getvar() in pinp on a variable set to 0. Thanks
+	  Karel-Henk Nijhuis.
 	- Several small fixes in the WinXP interface. Thanks to Paul
 	  Meijers.
 	- get_nextid() was declared twice in axstore.phtml, removed one.
