@@ -10,11 +10,16 @@
 	$inst_store = $store_config["dbms"]."store";
 	$store=new $inst_store($root,$store_config);
 
+	$ARLogin="admin";
+	$AR->user=current($store->call("system.get.phtml",array(),$store->get("/system/users/admin/")));
+
 	require_once($store->code."modules/mod_import_wddx.php");
 
-	$import = new import_wddx($in);
+	debugon('all');
 
-	$import->parse();
+	$import = new import_wddx();
+
+	$import->parse($in,$store);
 
 
 ?>

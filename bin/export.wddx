@@ -89,11 +89,18 @@ if ($arg_c>2) {
 
 	$outfile = fopen($dstfile,"w+");
 	if($outfile){
+		if($ARCurrent->options["verbose"]){
+			print "Starting Dump\n";
+		}
 		ob_start('ob_file');
 		$inst_store = $store_config["dbms"]."store";
 		$store=new $inst_store($root,$store_config);
 		$store->call("export.wddx.phtml", $callArgs,$store->get($srcpath));
 		ob_end_flush();
+		if($ARCurrent->options["verbose"]){
+			print "End Dump\n";
+		}
+		fclose($outfile);
 	} else {
 		$error = 'wddx: error on opening outfile';
 	}
@@ -101,5 +108,8 @@ if ($arg_c>2) {
 
 if ($error) {
 	echo $error."\n";
+}
+if($ARCurrent->options["verbose"]){
+	print "Done\n";
 }
 ?>

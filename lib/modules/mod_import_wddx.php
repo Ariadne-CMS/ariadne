@@ -1,14 +1,14 @@
 <?php
-
 class import_wddx {
 
 	var $stack;
 	var $nestdeep;
 	var $input;
 	var $xml_parser;
+	var $store;
 
-	function import_wddx($input){
-		$this->input = $input;
+	function import_wddx(){
+		$this->input = null;
 		$this->nestdeep = -4;
 		$this->stack = array();
 		$this->xml_parser = xml_parser_create();
@@ -27,10 +27,16 @@ class import_wddx {
 			case "comment":
 			case "version":
 			case "data":
-				array_push($this->stack, Array("type" => "top", "data" => Array()));
+				array_push($this->stack, Array("type" => "top", "data" => array()));
 			break;
 			case "struct":
-				$value = Array();
+				if(($attribs["class"] == "object") && ($attribs["type"] == "object"))
+				{
+					$value = new object();
+				} else
+				{
+					$value = Array();
+				}
 				array_push($this->stack, Array("type" => $attribs["type"], "data" => $value));
 			break;
 			case "var":
@@ -62,19 +68,141 @@ class import_wddx {
 				$struct = array_pop($this->stack);
 
 				$key = $var["data"];
-				$struct["data"][$key] = $value["data"];
+				if(is_object($struct["data"]))
+				{
+					$struct["data"]->$key = $value["data"];
+				} else
+				{
+					$struct["data"][$key] = $value["data"];
+				}
+
 				array_push($this->stack, $struct);
 			break;
 		}
 		if($this->nestdeep == 0){
 				$object = array_pop($this->stack);
 				if(is_array($object) && is_array($object["data"])){
-					echo "#\n";
-					print_r($object["data"]);
-					echo "#\n";
+					$this->saveObject($object["data"]);
 				}
 		}
 		
+	}
+
+	function saveObject($objdata){
+		/*
+			1) object data
+			2) object templates
+			3) object grants
+			4) object files
+		*/
+		debug("working on ".$objdata['path'],'all');
+		$path = $objdata['path'];
+
+		/*
+			step 1
+			if not skip data
+				load object if exists
+					copy data into object
+				else
+					create new object
+				fi
+				save
+			fi
+		*/
+		if(!($this->config['skipdata'] === true)){
+			unset($objdata['data']->pinp);
+			unset($objdata['data']->templates);
+			debug('work data','all');
+			if($id = $this->store->exists($path))
+			{
+				debug("data: object exists",'all');
+				$object = current(
+					$this->store->call("system.get.phtml",
+						array(),$this->store->get($path))
+				);
+				if(($object->lastchanged < $objdata['lastchanged']) ||
+					($this->config['forcedata'] === true))
+				{
+					$objdata['data']->pinp = $object->data->pinp;
+					$objdata['data']->templates = $object->data->templates;
+					unset($object->data);
+					$object->data = $objdata['data'];
+					$object->type = $objdata['type'];
+					$object->vtype = $objdata['vtype'];
+					$object->lastchanged = $objdata['lastchanged'];
+					$object->size = $objdata['size'];
+					$object->priority = $objdata['priority'];
+					$object->type = $objdata['type'];
+				}
+			} else
+			{
+				debug("data: object doesn't exists",'all');
+				$object = $this->store->newobject($path,
+					$this->store->make_path($path,'..'), $objdata['type'],
+					$objdata['data'], 0, $objdata['lastchanged'],
+					$objdata['vtype'], $objdata['size'], $objdata['priority']);
+				$object->arIsNewObject = true;
+			}
+			$object->save($objdata['properties']);
+		}
+
+		/*
+			step 2
+			if not skip templates
+				if removeold
+					remove old templates
+				fi
+				if update
+					if forced
+						save new templates
+					else
+						save new templates when newer
+					fi
+				else
+					save new templates
+				fi
+			fi
+		*/
+		if(!($this->config['skiptemplates'] === true)){
+			debug('work templates','all');
+		}
+
+		/*
+			step 3
+			if not skip grants
+				if removeold
+					remove old grants
+				fi
+				if exists
+					remove
+				fi
+				save grant
+			fi
+		*/
+		if(!($this->config['skipgrants'] === true)){
+			debug('work grants','all');
+		}
+
+		/*
+			step 4
+			if not skip files
+				if removeold
+					remove old files
+				fi
+				if update
+					if forced
+						save new files
+					else
+						save new files when newer
+					fi
+				else
+					save new files 
+				fi
+			fi
+		*/
+		if(!($this->config['skipfiles'] === true)){
+			debug('work files','all');
+		}
 	}
 	
 	function characterData($parser, $data) {
@@ -100,7 +228,9 @@ class import_wddx {
 		}
 	}
 	
-	function parse() {
+	function parse($in,$store) {
+		$this->input = $in;
+		$this->store = $store;
 		while ($data = fgets($this->input, 65535)) {
 				if (!xml_parse($this->xml_parser, $data, feof($this->input))) {
 					die(sprintf("XML error: %s at line %d",

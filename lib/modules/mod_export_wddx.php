@@ -21,6 +21,9 @@ class export_wddx {
 		echo "<var name=\"path\">\n";
 		echo "<string>".$object->path."</string>\n";
 		echo "</var>\n";
+		echo "<var name=\"type\">\n";
+		echo "<string>".$object->type."</string>\n";
+		echo "</var>\n";
 		echo "<var name=\"vtype\">\n";
 		echo "<string>".$object->vtype."</string>\n";
 		echo "</var>\n";
@@ -32,6 +35,7 @@ class export_wddx {
 		echo "</var>\n";
 
 		export_wddx::export_data("data", $object->data);
+		export_wddx::export_properties($object);
 		export_wddx::export_templates($object);
 		export_wddx::export_files($object);
 
@@ -63,6 +67,11 @@ class export_wddx {
 			echo "</var>\n";
 		}
 		flush();
+	}
+
+	function export_properties(&$object) {
+		$properties=$object->load_properties();
+		export_wddx::export_data("properties",$properties);
 	}
 
 	function export_templates(&$object) {
