@@ -39,13 +39,17 @@
 		document.location.href=document.location.href;
 	}
 </script>
+<style>
+#icon {
+	top: 35px ! important;
+}
+</style>
 </head>
 <body scroll="no" bgcolor="white" onLoad="parent.LoadingDone();">
 <div id="kill-scrollbars" style="position: relative;">
 <?php
 
 	include($this->store->code."widgets/menu/menu.phtml");
-
 	$this->call("manage.html", $arCallArgs);
 ?>
 </div>
