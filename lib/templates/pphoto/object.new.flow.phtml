@@ -1,0 +1,98 @@
+<?php
+  /******************************************************************
+   object.new.phtml				   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+
+   No result.
+
+  ******************************************************************/
+	global $HTTP_POST_VARS, $HTTP_POST_FILES;
+
+	$start="object.new.uploadfile.phtml";
+	$filename="object.new.filename.phtml";
+	$summary="edit.object.data.form.phtml";
+	$conversion="edit.object.data.thumb.phtml";
+	$language="edit.object.language.phtml";
+	$finish="edit.object.data.save.phtml";
+
+
+ 
+	$arFlow[0]["current"]=$this->getdata("wgWizCurrent","none");
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["uploadfile"];
+	$arFlow[$i]["template"]=$start;
+	$arFlow[$i]["next"]=$i+1; 
+
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["filename"];
+	$arFlow[$i]["template"]=$filename;
+	$arFlow[$i]["prev"]=$i-1;
+	$arFlow[$i]["next"]=$i+1; 
+
+	if (count($ARConfig->nls->list)>1) {
+		$languagestep=1;
+	} else {
+		$languagestep=0;
+	}
+
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["data"];
+	$arFlow[$i]["template"]=$summary;
+	$arFlow[$i]["prev"]=$i-1;
+	$arFlow[$i]["next"]=$i+1; 
+	$arFlow[$i]["save"]=$i+2+$languagestep;
+
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["thumbnail"];
+	$arFlow[$i]["template"]=$conversion;
+	$arFlow[$i]["prev"]=$i-1;
+	$arFlow[$i]["next"]=$i+1;
+	$arFlow[$i]["save"]=$i+1+$languagestep; 
+
+	if ($languagestep) {
+		$i++;
+		$arFlow[$i]["title"]=$ARnls["language"];
+		$arFlow[$i]["template"]=$language;
+		$arFlow[$i]["next"]=$i-2;
+		$arFlow[$i]["prev"]=$i-2;
+		$arFlow[$i]["save"]=$i+1;
+	}
+
+	$i++;
+	$arFlow[$i]["title"]=$ARnls["save"];
+	$arFlow[$i]["template"]=$finish;
+	$arFlow[$i]["back"]=$i-1;
+	$arFlow[$i]["save"]=$i;
+
+
+
+	$arControl=$this->getdata("wgWizControl","none");
+	if ($arFlow[0]["current"]==1) {
+		if ($arControl==$ARnls["next"]) {
+			// check whether the file has changed
+			$this->call("system.save.tempfile.phtml");
+		}
+	}
+
+	$arNewFilename=$this->getdata("arNewFilename","none");
+	if (!$arNewFilename) {
+		$file=$this->getdata("file","none");
+		if (($file=$this->getdata("file","none")) && ereg("[^\/\\]*\$",$file, $matches)) {
+			$arNewFilename=$matches[0];
+		} else {
+			$arNewFilename="{5:id}";
+		}
+		$ARCurrent->arNewFilename=$arNewFilename;
+	}		
+
+
+	if ($arFlow[0]["current"]==3) {
+		$wgOverwrite=$this->getdata("wgOverwrite","none");
+		if (!$wgOverwrite || $wgOverwrite=="no") {
+			$arFlow[0]["current"]=2;
+			$HTTP_POST_VARS["wgWizControl"]="";
+			$HTTP_POST_VARS["wgOverwrite"]="";
+		}
+	}
+	$arResult=$arFlow;
+?>

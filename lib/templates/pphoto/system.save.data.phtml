@@ -10,6 +10,7 @@
 			$this->data->author=$AR->user->getdata("name", "none");
 			$this->data->authorpath=$AR->user->path;
 			$this->data->created=time();
+
 			$filename=$this->getdata("arNewFilename","none");
 			while (list($key,$value)=each($ARConfig->nls->list)) {
 				$this->data->$key->name=$filename;
@@ -27,7 +28,7 @@
 			$this->data->nls->default=$ARConfig->nls->default;
 			reset($AR->nls->list);
 			while (list($key, $value)=each($AR->nls->list)) {
-				if (isset(${$key})) {
+				if ($this->getdata($key,"none")) {
 					if (!isset($this->data->$key)) {
 						$newnlsdata=new object;
 					} else {
@@ -52,44 +53,23 @@
 				}
 			}
 		}
+		$tempfile=$this->getdata("file_temp", "none");
+		// now check whether $file_temp is defined, if so, move it
 		if (!$this->error) {
-
-			global $HTTP_POST_FILES;
-
-			if ( ($HTTP_POST_FILES['file'] && 
-					is_uploaded_file($classic_temp=$HTTP_POST_FILES['file']['tmp_name']) ) 
-				||
-					($wizard_temp=$this->getdata("file_temp", "none")) ) {
-
-
-				$this->MkDir("files".$this->path);
-
-				$path=$this->store->files."files".$this->path.'/view=';
-
-				if ($classic_temp) {
-					// file uploaded via classic.form
-
-					$this->data->size=$HTTP_POST_FILES['file']['size'];
-					if (!$this->data->mimetype) {
-						$this->data->mimetype=$HTTP_POST_FILES['file']['type'];
-					}
-					if (!move_uploaded_file($classic_temp , $path)) {
-						$this->error="Couldn't move file to $path";
-					}
-
+			if ($tempfile) {
+				$tempfile=ereg_replace("[\\\/]","",$tempfile); // make sure nobody gets /etc/passwd			
+				$tempfile=$this->store->files."temp/".$tempfile;
+				if (file_exists($tempfile)) {	
+					$path=$this->store->files."files".$this->path;
+					$this->MkDir("files".$this->path);
+					copy($tempfile, $path."view=");
+					unlink($tempfile);
+					$this->data->mimetype=$this->getdata("file_type","none");
+					$this->data->filesize=$this->getdata("file_size","none"); 
 				} else {
-					// file uploaded via wizard interface
-
-					$this->data->size=$this->getdata("file_size", "none");
-					if (!$this->data->mimetype) {
-						$this->data->mimetype=$this->getdata("file_type", "none");
-					}
-
-					if (!rename($this->store->files."temp".$wizard_temp,$path)) {
-						$this->error="Couldn't move file to $path";
-					}
+					$tempfile=false;
 				}
-			}
+			} 
 		}
 
 		if (!$this->error) {
