@@ -952,7 +952,9 @@ class pobject extends object { // pobject class definition
 	}
 
 	function loadConfig($path='') {
-	global $ARConfig;
+	global $ARConfig, $ARConfigChecked;
+		$configChecked = $ARConfigChecked;
+
 		$path=$this->make_path($path);
 		$parent=$this->make_path($path.'../');
 		if (!$ARConfig->cache[$path]) {
@@ -972,6 +974,9 @@ class pobject extends object { // pobject class definition
 		} else {
 			$config=$ARConfig->cache[$path];
 		}
+
+		// restore old ARConfigChecked state
+		$ARConfigChecked = $configChecked;
 		//FIXME: in PHP5 make sure a clone is returned instead of a reference
 		return $config;
 	}
