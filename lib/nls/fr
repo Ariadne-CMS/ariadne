@@ -68,7 +68,7 @@
 	$ARnls["editfile"]						=	"Modifier Fichier";
 	$ARnls["editnewspaper"]					=	"Modifier Journal";
 	$ARnls["editobject"]					=	"Modifier Object";
-	$ARnls["editor"]						=	"Editeur HTML";
+	$ARnls["editor"]						=	"Editeur";
 	$ARnls["editorganization"]				=	"Modifier Organisation";
 	$ARnls["editoriginal"]					=	"Modifier originele";
 	$ARnls["editpage"]						=	"Modifier Page";

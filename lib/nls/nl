@@ -68,7 +68,7 @@
 	$ARnls["editfile"]						=	"Bewerk Bestand";
 	$ARnls["editnewspaper"]					=	"Bewerk Krant";
 	$ARnls["editobject"]					=	"Bewerk Object";
-	$ARnls["editor"]						=	"HTML Editor";
+	$ARnls["editor"]						=	"Editor";
 	$ARnls["editorganization"]				=	"Bewerk Organisatie";
 	$ARnls["editoriginal"]					=	"Bewerk origineel";
 	$ARnls["editpage"]						=	"Bewerk Pagina";

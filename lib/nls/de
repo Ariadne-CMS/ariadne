@@ -79,7 +79,7 @@
 	$ARnls["editfile"]						=	"Datei bearbeiten";
 	$ARnls["editnewspaper"]					=	"Neuigkeiten bearbeiten";
 	$ARnls["editobject"]					=	"Objekt bearbeiten";
-	$ARnls["editor"]						=	"HTML Editor";
+	$ARnls["editor"]						=	"Editor";
 	$ARnls["editorganization"]				=	"Organisation bearbeiten";
 	$ARnls["editoriginal"]					=	"Original bearbeiten";
 	$ARnls["editpage"]						=	"Seite bearbeiten";

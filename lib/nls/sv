@@ -76,7 +76,7 @@
 	$ARnls["editfile"]						=	"&Auml;ndra Fil";
 	$ARnls["editnewspaper"]					=	"&Auml;ndra Tidning";
 	$ARnls["editobject"]					=	"&Auml;ndra Objekt";
-	$ARnls["editor"]						=	"HTML Editor";
+	$ARnls["editor"]						=	"Editor";
 	$ARnls["editorganization"]				=	"&Auml;ndra Organisation";
 	$ARnls["editoriginal"]					=	"&Auml;ndra original";
 	$ARnls["editpage"]						=	"&Auml;ndra Sida";

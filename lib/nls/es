@@ -74,7 +74,7 @@
 	$ARnls["editfile"]						=	"Editar Archivo";
 	$ARnls["editnewspaper"]					=	"Editar Peri&oacute;dico";
 	$ARnls["editobject"]					=	"Editar Objeto; //FIXME: uit /system/ariadne/types/ ";
-	$ARnls["editor"]						=	"Editor HTML";
+	$ARnls["editor"]						=	"Editor";
 	$ARnls["editorganization"]				=	"Editar Organizaci&oacute;n";
 	$ARnls["editoriginal"]					=	"Editar original";
 	$ARnls["editpage"]						=	"Editar P&aacute;gina";
