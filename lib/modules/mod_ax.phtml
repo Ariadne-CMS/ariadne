@@ -15,9 +15,8 @@ class mod_ax {
 		}
 
 		$this->exportfile=$exportfile;
-
 		if ($mode=="unpack") {
-			if (!file_exists($this->exportfile=$exportfile)) {
+			if (!file_exists($this->exportfile)) {
 				$result="Error: Can't find .ax file ($exportfile)";
 			} else {
 				if (strpos($this->exportfile,"/")===false) {
@@ -36,21 +35,24 @@ class mod_ax {
 				$this->exportfile=$exportfile=$tempexpf;
 				// tar will (g)unzip and untar the file into tempdir 
 
-				if (($olddir=getcwd()) && chdir($this->tempdir)) {
+				if ($this->cmdlist->error_handler) {
 					$errfile=$this->tempdir."/tar.errors";
-					$command=sprintf($this->cmdlist->cmd_untar, $exportfile, $errfile);
-					system($command,$retVar);
-					chdir($olddir);
-					if ($retVar!=0) {
-						$result="Error: Can't untar $exportfile in ".$this->tempdir."\n";
-						if (file_exists($errfile)) {
-							$result.=implode("",file($errfile));						
-							unlink($errfile);
-							$result.="\n";
-						}
-					}
+					$error_handler=sprintf($this->cmdlist->error_handler, $errfile);
 				} else {
-					$result="Error: Can't chdir to ".$this->tempdir;
+					$error_handler="";
+				}
+
+				$command=sprintf($this->cmdlist->cmd_untar, $this->tempdir, "", $exportfile, $error_handler);
+
+				//echo "$command\n";
+				system($command,$retVar);
+				if ($retVar!=0) {
+					$result="Error: Can't untar $exportfile in ".$this->tempdir."\n";
+					if ($errfile && file_exists($errfile)) {
+						$result.=implode("",file($errfile));
+						unlink($errfile);
+						$result.="\n";
+					}
 				}
 			}
 		}
@@ -134,7 +136,7 @@ class mod_ax {
 	function RmDir($path) {
 		$command=sprintf($this->cmdlist->cmd_rmdir,$path);
 				
-		//system($command,$retVar);
+		system($command,$retVar);
 		if ($retVar!=0) {
 			$result="Error: Can't remove dir $path";
 		}
@@ -151,57 +153,82 @@ class mod_ax {
 		return $tmpdir;
 	}
 
-	function importfiles($type,$path) {
-		if (!($result=$this->MkDir($this->rmvolume($path)))) {
+	function importfiles($type, $root, $path) {
+		if (!($result=$this->MkDir($this->rmvolume($root.$path)))) {
 			if (file_exists($this->tempdir."/$type.tgz")) {
-				if (($olddir=getcwd()) && chdir($path)) {
-					// if we have a windows volume name...
-					// delete it, since we stay in the same
-					// partition
-					$tmpdir=$this->rmvolume($this->tempdir);
-					$errfile=$tmpdir."/tar.errors";
-					$command=sprintf($this->cmdlist->cmd_untar,$tmpdir."/$type.tgz",$errfile);
-					system($command,$retVar);
-					chdir($olddir);
-					if ($retVar!=0) {
-						$result="Error: Can't import $tmpdir/$type.tgz, untar failed in $path\n";
-						if (file_exists($errfile)) {
-							$result.=implode("",file($errfile));						
-							unlink($errfile);
-							$result.="\n";
+
+				$command=sprintf($this->cmdlist->cmd_list, $this->tempdir."/$type.tgz");
+				exec($command, $output, $retVal);
+				if ($retVal!=0) {
+					$result="Error: can not view archive contents!";
+				} else {
+
+					$found=false;
+					while (is_array($output) && (list(,$entry)=each($output)) && !$found) {
+						if ($path == substr($entry, 0, strlen($path))) {
+							$found=true;
 						}
 					}
-				} else {
-					$result="Error: Can't chdir to $path";
+
+					if ($found) {
+
+						$chdir=$this->rmvolume($root);
+
+						$tmpdir=$this->rmvolume($this->tempdir);
+
+						if ($this->cmdlist->error_handler) {
+							$errfile=$this->tempdir."/tar.errors";
+							$error_handler=sprintf($this->cmdlist->error_handler, $errfile);
+						} else {
+							$error_handler="";
+						}
+
+						$command=sprintf($this->cmdlist->cmd_untar, $chdir, $path, $tmpdir."/$type.tgz", $error_handler);
+						//echo "$command\n";
+						system($command,$retVar);
+						if ($retVar!=0) {
+							$result="Error: Can't import $tmpdir/$type.tgz, untar failed in $chdir with errorcode ($retVar)\n";
+							if ($errfile && file_exists($errfile)) {
+								$result.=implode("",file($errfile));						
+								unlink($errfile);
+								$result.="\n";
+							}
+						}
+					} else {
+						$result=1; // path not in archive
+						//echo "($path) not in archive!\n";
+					}
 				}
+					
+			} else {
+				//$result="Error: Can't chdir to $path";
 			}
 		}
 		return $result;
 	}
 
-	function exportfiles($type,$path) {
-		$path=$this->rmvolume($path);
-		if (file_exists($path)) {
-			$path2=substr($path,$rpos=strrpos(substr($path,0,-1),"/")+1);
-			$path=substr($path,0,$rpos);
+	function exportfiles($type, $root, $path) {
+		$root=$this->rmvolume($root);
+		$tmpdir=$this->rmvolume($this->tempdir);
+		if (file_exists($root.$path)) {
 
-			if (($olddir=getcwd()) && chdir($path)) {
-				//$command="tar -zc $path2 -f ".$this->tempdir."/$type.tgz";
-				$tmpdir=$this->rmvolume($this->tempdir);
-				$errfile=$tmpdir."/tar.errors";
-				$command=sprintf($this->cmdlist->cmd_tar,$this->rmvolume($path2),$tmpdir."/$type.tgz", $tmpdir."/tar.errors");
-				system($command,$retVar);
-				chdir($olddir);
-				if ($retVar!=0) {
-					$result="Error: Can't export, $command failed in $path.\n";
-					if (file_exists($errfile)) {
-						$result.=implode("",file($errfile));						
-						unlink($errfile);
-						$result.="\n";
-					}
-				}
+			if ($this->cmdlist->error_handler) {
+				$errfile=$this->tempdir."/tar.errors";
+				$error_handler=sprintf($this->cmdlist->error_handler, $errfile);
 			} else {
-				$result="Error: Can't chdir to $path";
+				$error_handler="";
+			}
+
+			$command=sprintf($this->cmdlist->cmd_tar,$root, $path, $tmpdir."/$type.tgz", $error_handler);
+			//echo "cmd: '$command' \n";
+			system($command,$retVar);
+			if ($retVar!=0) {
+				$result="Error: Can't export, $command failed in $path.\n";
+				if ($errfile && file_exists($errfile)) {
+					$result.=implode("",file($errfile));						
+					unlink($errfile);
+					$result.="\n";
+				}
 			}
 		}
 		return $result;
@@ -218,24 +245,27 @@ class mod_ax {
 				}
 				closedir($dh);
 
-				if (($olddir=getcwd()) && chdir($this->tempdir)) {
-					//$command="tar -zc $exp  -f ".$this->exportfile;
-					$errfile=$this->tempdir."/tar.errors";
-					$command=sprintf($this->cmdlist->cmd_tar,$exp,"export.ax",$errfile);
-					system($command,$retVar);
-					chdir($olddir);
-					copy($this->tempdir."/export.ax",$this->exportfile);
 
-					if ($retVar!=0) {
-						$result="Error: Can't make .ax export file ".$this->exportfile."\n";
-						if (file_exists($errfile)) {
-							$result.=implode("",file($errfile));						
-							unlink($errfile);
-							$result.="\n";
-						}
-					}
+				if ($this->cmdlist->error_handler) {
+					$errfile=$this->tempdir."/tar.errors";
+					$error_handler=sprintf($this->cmdlist->error_handler, $errfile);
 				} else {
-					$result="Error: Can't chdir to ".$this->tempdir;
+					$error_handler="";
+				}
+
+				$command=sprintf($this->cmdlist->cmd_tar,$this->tempdir, $exp, $this->tempdir."/export.ax", $error_handler);
+				system($command,$retVar);
+
+//				echo "copy: ".$this->tempdir."/export.ax to ".$this->exportfile."\n";
+				copy($this->tempdir."/export.ax",$this->exportfile);
+
+				if ($retVar!=0) {
+					$result="Error: Can't make .ax export file ".$this->exportfile."\n";
+					if (file_exists($errfile)) {
+						$result.=implode("",file($errfile));						
+						unlink($errfile);
+						$result.="\n";
+					}
 				}
 			}
 		}
