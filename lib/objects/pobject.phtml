@@ -417,6 +417,7 @@ class pobject {
             // This triggers only for pinp templates called by other templates,
             // as the first template (in the url) will first trigger the language
             // choice dialogue instead.
+            $ARCurrent->arCallStack[]=$arCallArgs;
             if (isset($this->data->$reqnls)) {
               // the requested language is available.
               debug("nls $nls available");
@@ -435,6 +436,7 @@ class pobject {
               $this->nlsdata=$this->data->$nls;
               include($arCallTemplate);
             }
+            array_pop($ARCurrent->arCallStack);
             return false;
           } else {
             debug("file doesn't exist: $arCallTemplate");
