@@ -117,10 +117,10 @@
 			if ($check==$saved) {
 				$result=true;
 			} else {
-				echo "<!-- check failed -->";
+//				echo "<!-- check failed -->";
 			}
 		} else {
-			echo "<!-- wrong login or no check -->";
+//			echo "<!-- wrong login or no check -->";
 		}			
 		return $result;
 	}

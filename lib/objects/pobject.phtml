@@ -398,12 +398,7 @@ class pobject extends object {
 				if (!ldCheckCredentials($ARCurrent->session->get("ARLogin"), $ARCurrent->session->get("ARPassword"))) {
 					$ARLogin="public"; $ARPassword="none";
 					// default fallback is 'public'.
-/*
-					} else if (!$silent) {
-						$arLoginMessage=$ARnls["accessdenied"].": ".$ARnls["q:cookiesenabled"];
-						$this->call("user.login.html",Array( "arLoginMessage" => $arLoginMessage));
-					}
-*/					$continue=false;
+					$fallback=true;
 				} else {
 					$ARLogin=$ARCurrent->session->get("ARLogin");
 					$ARPassword=$ARCurrent->session->get("ARPassword");
@@ -448,7 +443,9 @@ class pobject extends object {
 				debug("pobject: CheckLogin: insufficient grants ($ARLogin)","object");
 				if (!$silent) {
 					if ($ARLogin!="public") {
-						$args=Array( "ARLoginMessage" => $ARnls["accessdenied"]);
+						$args=Array( "arLoginMessage" => $ARnls["accessdenied"]);
+					} else if ($fallback) {
+						$args=Array( "arLoginMessage" => $ARnls["accessdenied"].": ".$ARnls["q:cookiesenabled"]);
 					}
 					$this->call("user.login.html", $args);
 				}
