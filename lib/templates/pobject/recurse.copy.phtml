@@ -18,26 +18,27 @@
 	*/
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		// sub path is the path from the source to the current object (no leading /)
+		$source=$this->store->make_path($this->parent, $source);
+		$target=$this->store->make_path($this->parent, $target);
 		$subpath=substr($this->path, strlen($source));
 		if ($this->path==$source) { 
 			// first object to be copied
 			if (!$this->exists($target)) { 
-				// if $target doesn't end on '/', copy this to $target
+				// if $target doesn't exist, copy this to $target
 				$newpath=$target;
 			} else {
-				// if $target does end on '/', copy this under $target (with the same filename)
+				// if $target does exist, copy this under $target (with the same filename)
 				$newpath=$target.substr($this->path,strlen($this->parent));
 
 				// now announce our rewritten target to recurse.phtml
 				?><script>top.newtarget="<?php echo rawurlencode($newpath); ?>";</script><?php
 			}
-			$exacttarget=$newpath;
 		} else {
 			// not the first object
 			// so the new path is target + subpath
 			$newpath=$target.$subpath;
-			$exacttarget=$newpath;
 		}
+		$exacttarget=$newpath;
 ?>
 <html>
 <head>
