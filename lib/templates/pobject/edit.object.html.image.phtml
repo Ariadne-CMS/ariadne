@@ -208,30 +208,30 @@ BODY 	{
 			}
 		}
 		tbContentEditOptions=arr['editOptions'];
-		if (tbContentEditOptions['browse']) {
-			if (tbContentEditOptions['browse']['hideMenu']) {
+		if (tbContentEditOptions['image']['browse']) {
+			if (tbContentEditOptions['image']['browse']['hideMenu']) {
 				mnMenu.style.display='none';
 			} else {
-				if (tbContentEditOptions['browse']['hideCurrent']) {
+				if (tbContentEditOptions['image']['browse']['hideCurrent']) {
 					mnCurrent.style.display='none';
 				}
-				if (tbContentEditOptions['browse']['hidePhotobook']) {
+				if (tbContentEditOptions['image']['browse']['hidePhotobook']) {
 					mnPhotobook.style.display='none';
-				} else if (!tbContentEditOptions['browse']['hideCurrent'] && (tbContentEditOptions['photobook']['location']=='<?php echo $this->path; ?>' || tbContentEditOptions['photobook']['location']=='')) {
+				} else if (!tbContentEditOptions['image']['browse']['hideCurrent'] && (tbContentEditOptions['photobook']['location']=='<?php echo $this->path; ?>' || tbContentEditOptions['photobook']['location']=='')) {
 					mnPhotobook.style.display='none';
 				}
-				if (tbContentEditOptions['browse']['hideHome']) {
+				if (tbContentEditOptions['image']['browse']['hideHome']) {
 					mnHome.style.display='none';
 				}
-				if (tbContentEditOptions['browse']['hideURL']) {
+				if (tbContentEditOptions['image']['browse']['hideURL']) {
 					mnURL.style.display='none';
 				}
 			}
-		} else if (!tbContentEditOptions['browse']['hideCurrent'] && tbContentEditOptions['photobook']['location']=='<?php echo $this->path; ?>') {
+		} else if (!tbContentEditOptions['image']['browse']['hideCurrent'] && tbContentEditOptions['photobook']['location']=='<?php echo $this->path; ?>') {
 			mnPhotobook.style.display='none';
 		}
-		if (tbContentEditOptions['browse']['top']) {
-			browseTop=escape(tbContentEditOptions['browse']['top']);
+		if (tbContentEditOptions['image']['browse']['top']) {
+			browseTop=escape(tbContentEditOptions['image']['browse']['top']);
 		}
 		if (tbContentEditOptions['image']['styles']) {
 			var imgstyle=document.forms[0].imgstyle;
