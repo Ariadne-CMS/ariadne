@@ -17,6 +17,5 @@
 	}
 	$NEWPATH_INFO.="/muze".$PATH_INFO;
 	$HTTP_SERVER_VARS["PATH_INFO"]=$NEWPATH_INFO;
-	$AR->root="/muze/muze-loader.php";
 	include("./loader.php");
 ?>
