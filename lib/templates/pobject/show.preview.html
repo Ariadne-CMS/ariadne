@@ -20,11 +20,11 @@
 Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam
 <?php
 	if (($url!==false) && ($url!=="false")) {
-?><img src="<?php echo $url; ?>" alt="<?php echo $alt; ?>" align="<?php echo $align; ?>" hspace="<?php echo $hspace; ?>" vspace="<?php echo $vspace; ?>" border="<?php echo $border; ?>">
+?><img src="<?php echo $url; ?>" class="<?php echo $sclass; ?>" alt="<?php echo $alt; ?>" align="<?php echo $align; ?>" hspace="<?php echo $hspace; ?>" vspace="<?php echo $vspace; ?>" border="<?php echo $border; ?>">
 <?php
 	} else if ($path && $this->exists($path)) {
 ?>
-<img src="<?php echo $this->store->root.$path.$style; ?>" alt="<?php echo $alt; ?>" align="<?php echo $align; ?>" hspace="<?php echo $hspace; ?>" vspace="<?php echo $vspace; ?>" border="<?php echo $border; ?>">
+<img src="<?php echo $this->store->root.$path.$style; ?>" class="<?php echo $sclass; ?>" alt="<?php echo $alt; ?>" align="<?php echo $align; ?>" hspace="<?php echo $hspace; ?>" vspace="<?php echo $vspace; ?>" border="<?php echo $border; ?>">
 <?php
 	}
 ?>nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat

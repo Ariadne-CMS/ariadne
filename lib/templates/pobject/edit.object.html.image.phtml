@@ -152,7 +152,10 @@ BODY 	{
 		if (PreviewURL) {
 			arr["src"] = CurrentPath;
 		} else {
-			arr["src"] = CurrentPath+form.imgstyle.options[form.imgstyle.selectedIndex].value;
+			var type = form.imgstyle.options[form.imgstyle.selectedIndex].value;
+			arr["src"] = CurrentPath+tbContentEditOptions['image']['styles'][type]['template'];
+			arr["class"] = tbContentEditOptions['image']['styles'][type]['class'];
+			arr["ar:type"] = type;
 		}
 		arr["alt"] = form.alt.value;
 		arr["border"] = form.border.value;
@@ -213,16 +216,17 @@ BODY 	{
 		if (tbContentEditOptions['browse']['top']) {
 			browseTop=escape(tbContentEditOptions['browse']['top']);
 		}
-		if (tbContentEditOptions['styles']) {
+		if (tbContentEditOptions['image']['styles']) {
 			var imgstyle=document.forms[0].imgstyle;
 			document.forms[0].imgstyle.disabled=false;
 			for (var i=imgstyle.length-1; i>=0; i--) {
 				imgstyle.options[i]=null;
 			}
-			for (var i in tbContentEditOptions['styles']) {
-				imgstyle.options[imgstyle.length]=new Option(i, tbContentEditOptions['styles'][i]);
-				var test=new String(tbContentEditOptions['styles'][i]);
-				if (CurrentPath.substr(CurrentPath.length-test.length, test.length)==test) {
+
+			for (var i in tbContentEditOptions['image']['styles']) {
+				imgstyle.options[imgstyle.length]=new Option(i, i);
+				if (arr['ar:type'] == i) {
+					var test=new String(tbContentEditOptions['image']['styles'][i]['template']);
 					imgstyle.options[imgstyle.length-1].selected=true;
 					CurrentPath=CurrentPath.substr(0, CurrentPath.length-test.length);
 				}
@@ -405,7 +409,10 @@ BODY 	{
 	function b_show() { }
 
 	function showPreview() {
-		var style=document.forms[0].imgstyle.options[document.forms[0].imgstyle.selectedIndex].value;
+		var type=document.forms[0].imgstyle.options[document.forms[0].imgstyle.selectedIndex].value;
+//		alert('styleIndex: '+styleIndex+' style: '+tbContentEditOptions['styles'][styleIndex]);
+		var style=tbContentEditOptions['image']['styles'][type]['template'];
+		var sclass=tbContentEditOptions['image']['styles'][type]['class'];
 		var border=document.forms[0].border.value;
 		var hspace=document.forms[0].hspace.value;
 		var vspace=document.forms[0].vspace.value;
@@ -419,6 +426,7 @@ BODY 	{
 			var path=CurrentPath;
 		}
 		mnPreview.location="<?php echo $this->store->root.$this->path; ?>show.preview.html?style="+escape(style)+
+				"&sclass="+escape(sclass)+
 				"&border="+escape(border)+"&hspace="+escape(hspace)+"&vspace="+escape(vspace)+
 				"&align="+escape(align)+"&alt="+escape(alt)+"&url="+escape(url)+"&path="+escape(path);
 	}
