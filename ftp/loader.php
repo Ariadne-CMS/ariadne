@@ -546,6 +546,7 @@
 								unset($mode);
 								debug("ftp: listing ($path) ($listMode)");
 
+								if ($FTP->symlinkListModes) {
 									if ($listMode!=="files") {
 										$mode["filename"]="#files#";
 										$mode["date"]=time();
@@ -612,7 +613,7 @@
 											echo $mode["filename"]."\n";
 										}
 									}
-
+								}
 								$template="ftp.".$listMode.".list.phtml";
 								$result=current($FTP->store->call($template, "",
 													$FTP->store->get($path)));
@@ -1029,6 +1030,7 @@
 	$FTP->store = &$store;
 	// default listMode ( files, objects or templates )
 	$FTP->defaultListMode = "files";
+	$FTP->symlinkListModes = $ftp_config["symlinkListModes"];
 
 	// default type is ASCII
 	$FTP->DC["type"] = "A";
