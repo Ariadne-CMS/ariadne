@@ -202,9 +202,34 @@
 			$ARCurrent->nls=substr($path, 1, $split);
 			if (!$AR->nls->list[$ARCurrent->nls]) {
 				// not a valid language
-				$ARCurrent->nls="";
-				$nls=$AR->nls->default;
-				$cachenls="";
+      if (!$AR->nls->list[$ARCurrent->nls]) {
+        // not a valid language
+        $ARCurrent->nls="";
+        $nls=$AR->nls->default;
+        $cachenls="";
+        // but we can find out if the user has any preferences
+        preg_match_all("%([a-zA-Z]{2}|\\*)[a-zA-Z-]*(?:;q=([0-9.]+))?%", $HTTP_SERVER_VARS["HTTP_ACCEPT_LANGUAGE"], $regs, PREG_SET_ORDER);
+        $ARCurrent->acceptlang=array();
+        $otherlangs=array();
+        $otherq=false;
+        foreach ($regs as $reg) {
+          if (!isset($reg[2])) {
+            $reg[2]=1;
+          }
+          if ($reg[1]=="*") {
+            $otherq=$reg[2];
+          } else if ($AR->nls->list[$reg[1]]) {
+            $otherlangs[]=$reg[1];
+            $ARCurrent->acceptlang[$reg[1]]=$reg[2];
+          }
+        }
+        if ($otherq !== false) {
+          $otherlangs=array_diff(array_keys($AR->nls->list), $otherlangs);
+          foreach ($otherlangs as $lang) {
+            $ARCurrent->acceptlang[$lang]=$otherq;
+          }
+        }
+        arsort($ARCurrent->acceptlang);
 			} else {
 				// valid language
 				$path=substr($path, $split+1);

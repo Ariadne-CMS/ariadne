@@ -41,6 +41,7 @@ New Features:
 	  include the user's group memberships set in an external
 	  database (e.g. LDAP).
 	- Added some documentation about the LDAP feature (docs/ldap.txt)
+	- Added AcceptLanguage support
 
 Bugs Fixed:
 	- Fixed logging in with another user on your own session.

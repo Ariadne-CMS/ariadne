@@ -92,6 +92,17 @@ class pobject extends object { // pobject class definition
 		// tree selected defaults)
 		if ($ARCurrent->nls) { 
 			$this->reqnls=$ARCurrent->nls; 
+    } else if ($ARCurrent->acceptlang) {
+      if ($ARCurrent->acceptlang) {
+        $validlangs = array_intersect(array_keys($ARCurrent->acceptlang), array_keys($AR->nls->list));
+      }
+      if ($validlangs) {
+        $ARCurrent->nls=$validlangs[0];
+        ldSetNls($ARCurrent->nls);
+        $this->reqnls=$ARCurrent->nls;
+      } else {
+        $this->reqnls=$AR->nls->default;
+      }
 		} else { 
 			$this->reqnls=$AR->nls->default; 
 		}
