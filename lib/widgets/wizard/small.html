@@ -89,7 +89,7 @@
 </script>
 <script src="<?php echo $AR->dir->www; ?>widgets/window/savesize.js"></script>
 <form method="post" name="wgWizForm" 
-  action="<?PHP echo $HTTP_SERVER_VARS["SCRIPT_NAME"].$HTTP_SERVER_VARS["PATH_INFO"]; ?>"
+  action="<?PHP echo $HTTP_SERVER_VARS["REQUEST_URI"]; ?>"
   onSubmit="return checksubmit();"
   ENCTYPE="multipart/form-data">
 <?php
