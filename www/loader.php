@@ -301,7 +301,9 @@
 					$image.= pack('V', $crc).pack('V', $size);
 					echo $image;
 				}
+				$image_len = strlen($image);
 			} else {
+				$image_len = strlen($image);
 				if (!$AR->hideSessionIDfromURL && $ARCurrent->session && $ARCurrent->session->id) {
 					$ldCacheFilename = "/session".$ldCacheFilename;
 					$image = str_replace('-'.$ARCurrent->session->id.'-', '{arSessionID}', $image);
@@ -311,7 +313,7 @@
 			}
 
 			// because we have the full content, we can now also calculate the content length
-			ldHeader("Content-Length: ".strlen($image));
+			ldHeader("Content-Length: ".$image_len);
 			// flush the buffer, this will send the contents to the browser
 			ob_end_flush();
 			debug("loader: ob_end_flush()","all");
