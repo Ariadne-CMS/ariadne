@@ -5,17 +5,33 @@ include_once($this->code."objects/pobject.phtml");
 
 class ppage extends pobject { // definitie class
 
-  function ShowPage($nls="", $source=false) {
+  function ParsePage($page) {
+    return str_replace("{arRoot}",$this->store->root,$page);
+  }
+
+  function GetPage($nls="", $source=false) {
     if (!$nls) {
       $target=$this->nlsdata->page;
     } else if ($this->data->$nls) {
       $target=$this->data->$nls->page;
     }
     if ($source) {
-      echo htmlspecialchars(str_replace("{arRoot}",$this->store->root,$target));
+      return htmlspecialchars($this->ParsePage($target));
     } else {
-      echo str_replace("{arRoot}",$this->store->root,$target);
+      return $this->ParsePage($target);
     }
+  }
+
+  function ShowPage($nls="", $source=false) {
+    echo $this->GetPage($nls, $source);
+  }
+
+  function _ParsePage($page) {
+    return $this->ParsePage($page);
+  }
+
+  function _GetPage($nls="", $source=false) {
+    return $this->GetPage($nls, $source);
   }
 
   function _ShowPage($nls="") {

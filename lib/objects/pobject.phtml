@@ -924,7 +924,7 @@ class pobject extends object {
 
 	function showdata($varname, $nls="none") {
 		debug("pobject: showdata($varname, $nls)","object");
-		echo $this->getdata($varname, $nls);
+		echo htmlspecialchars($this->getdata($varname, $nls));
 	}
 
 	function setnls($nls) {

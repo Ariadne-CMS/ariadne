@@ -5,6 +5,15 @@ include_once($this->code."objects/pobject.phtml");
 
 class pfile extends pobject { // definitie class
 
+	function GetFile() {
+		$files=$this->store->get_filestore("files");
+		return $files->read($this->id, "file");
+	}
+
+	function ParseFile($file) {
+		return str_replace("{arRoot}",$this->store->root, $file);
+	}
+
 	function ShowFile() {
 		$files=$this->store->get_filestore("files");
 		if (!ereg("^text/",$this->data->mimetype)) {
@@ -23,13 +32,21 @@ class pfile extends pobject { // definitie class
 				// assume html files to use charset UTF-8; this will always work correctly
 				// with the MSIE html editor, and won't corrupt 'normal' html.
 				ldHeader("Content-Type: text/html; charset=UTF-8");
-				echo str_replace("{arRoot}",$this->store->root,$files->read($this->id, "file"));
+				echo $this->ParseFile($this->GetFile());
 			} else {
 				$files->show($this->id, "file");
 			}
 		}
 	}
 
+	function _ParseFile($file) {
+		return $this->ParseFile($file);
+	}
+  
+	function _GetFile() {
+		return $this->GetFile();
+	}
+  
 	function _ShowFile() {
 		return $this->ShowFile();
 	}
