@@ -9,10 +9,14 @@ New features:
 	- Added a rotate() method to pphoto
 	- mkdir in FTP now creates a configurable object type.
 	- Changed the 'refresh cache on change' to be really permanent.
-
+	- added getcache() method in pobject, that returns the contents
+	  of a privatecache image.
+	
 Bugs Fixed:
 	- fixed a bug in the pfile wizard which broke the flow when using 
 	  custom fields.
+	- fixed a bug in view.thumb.html in pphotobook, you can now override
+	  this template.
 
 Changes in Ariadne since version 2.1.4
 
