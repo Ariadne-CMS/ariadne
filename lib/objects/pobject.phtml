@@ -317,6 +317,7 @@ class pobject extends object {
 		   that should be possible, just find the common root, and add ".."
 		   to it for each directory of the current object from that root, 
 		   then add the rest of the path of the image.
+		   FIXME: extra feature: nls as an argument to make_url
 		*/
 		global $ARConfig;
 		debug("pobject: make_url($path) (from: ".$this->path.")","object");
@@ -437,7 +438,9 @@ class pobject extends object {
 					// $path=end($paths);
 					reset($AR->user->groups);
 					while (list($key, $group)=each($AR->user->groups)) { 
-						$group->FindGrants($this->path, $grants, $userpath);
+						$groupgrants=Array();
+						$group->FindGrants($this->path, $groupgrants, $userpath);
+						$grants=array_merge($groupgrants, $grants);
 					}
 				}
 				$AR->user->grants[$this->path]=$grants;
@@ -796,7 +799,7 @@ class pobject extends object {
 						// the object has no language support
 						$this->nlsdata=&$this->data;
 						$continue=true;
-					} else if ($ARCurrent->allnls) {
+					} else if (($ARCurrent->allnls) || ($ARCurrent->nolangcheck)) {
 						debug("pobject: CheckConfig: no $reqnls, but allnls set","all");
 						// all objects must be displayed
 						// $this->reqnls=$this->nls; // set requested nls, for checks
@@ -1078,7 +1081,7 @@ class pobject extends object {
 		return $charset;
 	}
 
-	function HTTPrequest($method, $url, $postdata = "" ) { 
+	function HTTPRequest($method, $url, $postdata = "" ) { 
 		$maxtries = 5;
 		$tries = 0;
 		$redirecting = true;
@@ -1102,13 +1105,14 @@ class pobject extends object {
 			if (!$matches[1]) {
 				$url="http://".$url;
 			}
-			$connection = pfsockopen( $host, 80, $errno, $errstr, 120); 
+			$connection = fsockopen( $host, 80, $errno, $errstr, 120); 
 			if( $connection ) { 
 				if( strtoupper($method) == "GET" ) { 
-					$url .= "?" . $data; 
+					if ($data) {
+						$url .= "?" . $data; 
+					}
 					fputs( $connection, "GET $url HTTP/1.0\n"); 
-				} else 
-				if( strtoupper($method) == "POST" ) { 
+				} else if( strtoupper($method) == "POST" ) { 
 					fputs( $connection, "POST $url HTTP/1.0\n"); 
 				} 
 
@@ -1123,7 +1127,6 @@ class pobject extends object {
 					fputs( $connection, "Content-length: ".$strlength."\n\n"); 
 					fputs( $connection, $data."\n"); 
 				} 
-
 
 				fputs( $connection, "\n" , 1); 
 				$output = ""; 
@@ -1164,7 +1167,8 @@ class pobject extends object {
 					} 
 				} 
 			} else {
-				echo "$errstr ($errno)\n";
+				$this->error="$errstr ($errno)";
+				$contents=false;
 				$url = "";
 			}
 			fclose($connection); 
@@ -1426,8 +1430,8 @@ class pobject extends object {
 		return $this->store->count($this->store->ls($this->path));
 	}
 
-	function _HTTPrequest($method, $url, $postdata = "") {
-		$this->HTTPrequest($method, $url, $postdata);
+	function _HTTPRequest($method, $url, $postdata = "") {
+		return $this->HTTPRequest($method, $url, $postdata);
 	}
 } // end class pobject
 ?>
