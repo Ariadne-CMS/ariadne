@@ -68,7 +68,13 @@
 			if (!is_array($emails)) {
 				$emails=explode(",",$emails);
 				if ($emails[0]) {
-					$this->data->emails=$emails;
+					for ($i=0; $i<count($emails); $i++) {
+						$email=trim($emails[$i]);
+						if ($email) {
+							$newemails[]=$email;
+						}
+					}
+					$this->data->emails=$newemails;					
 				} else {
 					unset($this->data->emails);
 				}
