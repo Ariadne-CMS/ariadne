@@ -1,0 +1,8 @@
+<?php
+	debug("ftp::objects.rename to ($target)");
+	$this->call("system.rename.phtml", Array("target" => $target));
+	if ($this->error) {
+		debug("ERROR: ".$this->error);
+		$ARCurrent->ftp_error=$this->error;
+	}
+?>

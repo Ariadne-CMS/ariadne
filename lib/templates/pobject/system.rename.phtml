@@ -1,5 +1,6 @@
 <?php
 	if ($this->CheckLogin("delete") && $this->CheckConfig()) {
+		$target=$this->getdata("target");
 		$target=$this->store->make_path($this->parent, $this->getdata("target","none"));
 		if ($this->exists($target)) {
 			if (substr($target, 0, strlen($this->path))==$this->path) {
