@@ -22,7 +22,7 @@
   $properties["value"][]["value"]="'".AddSlashes($value)."'";
   $this->data->name=$this->getdata("name","none");
   $properties["name"][]["value"]="'".AddSlashes($newnlsdata->name)."'";
-  if ($this->newobject) {
+  if ($this->arIsNewObject) {
     $login=$this->getdata("arNewFilename","none");
     if ($login) {
       $criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
@@ -45,7 +45,7 @@
     }
   }
   include($this->store->code."includes/system.save.phtml");
-  if ($this->newobject && ($profile=$this->getdata("profile","none"))) {
+  if ($this->arIsNewObject && ($profile=$this->getdata("profile","none"))) {
     // fill in values from the given profile
   }
   if ($groups=$this->getdata("groups","none")) {

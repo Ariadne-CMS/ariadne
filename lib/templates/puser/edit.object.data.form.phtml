@@ -2,7 +2,7 @@
   /******************************************************************
   ******************************************************************/
   if ($this->CheckSilent("read")) {
-    if ($this->newobject) {
+    if ($this->arIsNewObject) {
       $login=$this->getdata("arNewFilename","none");
     } else {
       $login=$this->data->login;
@@ -42,7 +42,7 @@
             value="">
         </td>
       <?php
-        if ($this->newobject) {
+        if ($this->arIsNewObject) {
       ?>
         </tr><tr>
           <td colspan="2">

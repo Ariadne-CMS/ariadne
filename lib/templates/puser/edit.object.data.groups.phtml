@@ -17,7 +17,7 @@
           <select multiple name="groups" size="10" style="width: 250px;">
           <?php
             $groups=$this->getdata("groups","none");
-            if (!$groups && $this->newobject && ($profile=$this->getdata("profile","none"))) {
+            if (!$groups && $this->arIsNewObject && ($profile=$this->getdata("profile","none"))) {
               $profile_user=$this->get($profile,"system.get.phtml");
               $groups=$profile_user->data->groups;
             }

@@ -1,0 +1,33 @@
+<?php
+  /******************************************************************
+   system.get.grants.user.phml					   Muze Ariadne v2.0b
+   ------------------------------------------------------------------
+   Arguments: $path
+   Grant needed: none
+   Global variables: none
+
+   Finds and returns all grants associated with $path for this user.
+   Grants assigned to groups of which the user is a member are not 
+   returned.
+   
+   $path must be a valid path in Ariadne.
+   
+   returns an array with grants of the following form:
+     $arResult[$grant]=1;
+
+  ******************************************************************/
+	if (($data->usergrants) && is_array($data->usergrants)) {
+		$newpath=$path;
+		while (!$found && ($newpath!=$oldpath)) {
+			$oldpath=$newpath;
+			if ($data->usergrants[$oldpath]) {
+					$found=true;
+			} else {
+				$newpath=$this->store->make_path($oldpath, "..");
+			}
+		}
+		if ($oldpath) {
+			$arResult=$data->usergrants[$oldpath];
+		}
+	}
+?>
