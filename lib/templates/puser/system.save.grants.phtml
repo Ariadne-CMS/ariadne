@@ -49,7 +49,7 @@
 		if (!function_exists("arDelGrant")) {
 			function arDelGrant(&$grants, $id, $grant='', $modifier='') {
 				if ($grants[$id]) {
-					if (!$grant) {
+					if ($grant===false) {
 						unset($grants[$id]);
 					} else {
 						if (!$modifier) {

@@ -40,7 +40,7 @@
 		}
 		switch($action) {
 			case "delete" :
-				if (!$grant) {
+				if ($grant===false) {
 					unset($this->data->usergrants[$path]);
 				} else {
 					if (!$modifier) {
