@@ -293,6 +293,37 @@
 					$FTP->resume = 0;
 				}
 				switch ($cmd) {
+					case 'MDTM':
+						$path = $args;
+						ftp_TranslatePath($path, $listMode);
+						switch ($listMode) {
+							case 'templates':
+								ftp_TranslateTemplate($path, $template);
+								$getmode = "templates";
+								
+								$result = current(
+											$FTP->store->call("ftp.template.exists.phtml", 
+																Array("arRequestedTemplate" => $template),
+																$FTP->store->get($path)));
+								$file_date = $result["date"];
+								
+								if ($file_date) {
+									ftp_Tell(213, date("YmdHis", $file_date));
+								} else {
+									ftp_Tell(550, "No such file or directory");
+								}
+							break;
+							default:
+								if ($FTP->store->exists($path)) {
+									$file_date = date(); // TODO fix
+									ftp_Tell(213, date("YmdHis", $file_date));
+								} else {
+									ftp_Tell(550, "No such file or directory");
+								}
+							break;
+						}
+					break;
+
 					case 'REST':
 						$FTP->resume = (int)$args;
 						ftp_Tell(350, 'Restarting at '.$FTP->resume.'.');
@@ -631,7 +662,7 @@
 										echo "$data";
 									} else {
 										$parent = $FTP->store->make_path($entry["path"], "..");
-										$filename = substr($entry["path"], strlen($parent), -1);
+										$filename = $entry["path"] ? substr($entry["path"], strlen($parent), -1) : $entry["filename"];
 										debug("ftp::nlst	".$filename);
 										echo $filename."\n";
 									}
@@ -653,7 +684,14 @@
 							if (is_array($result)) {
 								ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ASCII' : 'BINARY')." mode data connection");
 								if (ftp_OpenDC()!==false) {
-									echo ftp_GenListEntry($result);								
+									if ($cmd!=="NLST") {
+										echo ftp_GenListEntry($result);
+									} else {
+										$parent = $FTP->store->make_path($result["path"], "..");
+										$filename = $result["path"] ? substr($result["path"], strlen($parent), -1) : $result["filename"];
+										debug("ftp::nlst	".$filename);
+										echo $filename."\n";
+									}
 									ftp_CloseDC();
 									ftp_Tell(226, "Transfer complete");
 								} else {
@@ -991,6 +1029,7 @@
 				$data.="-";
 			}
 			if ($grants["write"]) {
+				
 				$data.="w";
 			} else {
 				$data.="-";
