@@ -1,32 +1,51 @@
 <?php
-  /* This file contains per store configuration information */
-  /* In future versions you will be able to have multiple stores
-     in one Ariadne instance. */
+  /*************************************************************************/
+  /* Ariadne Session Store Configuration                                   */
+  /* ==================================                                    */
+  /* This file contains configuration information for the Ariadne Session  */
+  /* Store. E.g. which database on which host to connect to, the location  */
+  /* of the code library (as the session store is just another Ariadne     */
+  /* Object Store), etc.                                                   */
+  /*************************************************************************/
 
-  /* Fill in the hostname of the database server. You can use locally valid
-     names */
-  $session_config["host"]="localhost";
+  /*************************************************************************/
+  /* Database Information:                                                 */
+  /* Fill in the Hostname, and database name of the database server, and   */
+  /* the username and password with which to connect to it.                */
+  /*************************************************************************/
 
-  /* Fill in the user name with which Ariadne will connect to the database */
-  $session_config["user"]="www";
+  $session_config["host"]     = "localhost";
+  $session_config["database"] = "ariadne_sessions";
 
-  /* Fill in the password of this user (which is why this script should
-     never be placed in the document root!) */
-  $session_config["password"]="secret";
+  $session_config["user"]     = "www";
+  $session_config["password"] = "secret";
 
-  /* Fill in the name of the database to connect to */
-  $session_config["database"]="ariadne_sessions";
+  /*************************************************************************/
+  /* Path Information:                                                     */
+  /* Fill in the location of the Ariadne code library and the files        */
+  /* file repository (used for temporary files, caching, templates, etc.)  */
+  /*************************************************************************/
+  /* Ariadne Install Directory                                             */ 
+  /*************************************************************************/
 
-  // $ariadne_root='C:/Progra~1/OpenSA/ariadne.2.0b9/';
-  $ariadne_root="/usr/local/lib/ariadne.2.0b9/";
+  $ariadne_root               = "/usr/local/lib/ariadne.2.0b9/";
 
-  /* fill in the full path to the ariadne code library (lib) */
-  $session_config["code"]=$ariadne_root."lib/";
+  /*************************************************************************/
+  /* Ariadne Code Library (lib)                                            */
+  /*************************************************************************/
 
-  /* fill in the full path to the ariadne file store directory (files) */
-  /* This is where templates, cache images and uploaded files are stored */
-  $session_config["files"]=$ariadne_root."sessions/";
+  $session_config["code"]     = $ariadne_root."lib/";
 
-  /* default timeout on sessions of 60 minutes */
-  $session_config["timeout"]=3600;
+  /*************************************************************************/
+  /* Ariadne Files Repository (files)                                      */
+  /*************************************************************************/
+
+  $session_config["files"]    = $ariadne_root."sessions/";
+
+  /*************************************************************************/
+  /* Ariadne Session Timeout                                               */
+  /*************************************************************************/
+
+  $session_config["timeout"]  = 3600;
+
 ?>
