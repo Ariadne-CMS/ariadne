@@ -79,7 +79,7 @@
 	// lib/templates/pobject/edit.object.html.image.phtml
 
 	$ARnls["e_picture"]			=	"Afbeelding";
-	$ARnls["e_picture_source"]		=	"Bron&nbsp;van&nbsp;de&nbsp;Afbeelding";
+	$ARnls["e_picture_source"]		=	"Bron";
 	$ARnls["e_alternate_text"]		=	"Alternatieve&nbsp;Tekst";
 	$ARnls["e_layout"]			=	"Layout";
 	$ARnls["e_alignment"]			=	"Uitlijning";
