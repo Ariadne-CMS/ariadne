@@ -1,6 +1,9 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		if ($url) {
+			if (!preg_match('!^[htfps]+://!',$url)) {
+				$url='http://'.$url;
+			}
 			ldRedirect($url);
 		} else {
 			error("Missing url");
