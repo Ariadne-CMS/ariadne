@@ -16,6 +16,8 @@
   options are:
     --verbose                Display what we are doing.
     --without-grants         Don't import grant information.
+    --without-templates      Don't import templates.
+    --without-files          Don't import files.
     --tar_nofail             Skip tar/gz errors.
     --force                  Overwrites existing objects.
     --convertToUTF8-[nls]=[source charset] 
