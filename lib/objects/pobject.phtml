@@ -250,6 +250,9 @@ class pobject extends object {
 		$path=$this->make_path($path);
 		while ($object_path && !$url) {
 			$config=$ARConfig->cache[$object_path];
+			if (!$config) {
+				$config=$ARConfig->cache[".."];
+			}
 			$rootpath=$config->root["path"];
 			if (substr($path, 0, strlen($rootpath))==$rootpath) {
 				debug("make_url: root from '$rootpath' = ".$config->root["value"].$this->store->rootoptions,"all");
@@ -331,7 +334,8 @@ class pobject extends object {
 	     found are merged into one grants list. 
 	  3) If there are gropup grants, this means that there are group 
 	     grants set in a parent nearer to this object than the user grants
-	     and therefor only the groupgrants must be returned.
+	     and therefore the groupgrants must be merged with the
+	     usergrants.
 	
 	  this results in:
 	  1	/		user: read edit		group: none
@@ -339,11 +343,11 @@ class pobject extends object {
 	  3	/dir2/		user: none		group: read
 	  4	/dir/dir3/				group2: edit
 	  case 1: the user takes precedence over the group, grants are 'read edit'
-	  case 2: group takes precedence over the user, as its grants are set 
-	          in a 'nearer' parent (itself). grants are 'read'.
+	  case 2: groupgrants are merged with usergrants, as its grants are set 
+	          in a 'nearer' parent (itself). grants are 'read edit'.
 	  case 3: user takes precedence again. grants are 'none'.
-	  case 4: groups take precedence, but all group grants are merged!
-	          therefor the grants are 'read edit'.
+	  case 4: All group grants are merged with the usergrants.
+	          Therefore the grants are 'none read edit'.
 	********************************************************************/
 
 	global $AR;
@@ -527,7 +531,7 @@ class pobject extends object {
 		$MAX_LOOP_COUNT=10;
 		if ($ARBeenHere[$this->path][$arCallFunction]<$MAX_LOOP_COUNT) { // protect against infinite loops
 			$ARBeenHere[$this->path][$arCallFunction]+=1;
-            if (!$ARConfig->cache[$this->path]) {
+			if (!$ARConfig->cache[$this->path]) {
 				$this->call("system.get.config.phtml");
 			}
 			$config=$ARConfig->cache[$this->path];
