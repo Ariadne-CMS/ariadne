@@ -823,7 +823,7 @@ class pobject extends object { // pobject class definition
 			}
 			// if this object isn't available in the requested language, show
 			// a language select dialog with all available languages for this object.
-			if (isset($this->data->nls)) {
+			if (isset($this->data->nls) && !$this->data->name) {
 				if (!isset($this->data->nls->list[$reqnls]) || !$config->nls->list[$reqnls]) {
 					if (!$ARCurrent->nolangcheck ) {
 						$ARCurrent->nolangcheck=1;
