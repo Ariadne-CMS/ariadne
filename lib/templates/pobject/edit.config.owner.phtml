@@ -19,6 +19,9 @@
 		padding: 0px;
 		border: 0px;
 	}
+	input.wgBrowseInput {
+		width: 150px;
+	}
 </style>
 </head>
 <body onLoad="init()">
@@ -45,7 +48,7 @@
 				$wgBrowsePath = '/system/users/';
 			}
 			$wgBrowseFilter = 'puser';
-			$wgBrowseSize=30;
+			// $wgBrowseSize=30;
 			include($this->store->code."widgets/browse/js.html");
 			include($this->store->code."widgets/browse/form.html");
 		?>
