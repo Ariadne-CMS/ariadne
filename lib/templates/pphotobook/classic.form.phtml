@@ -92,7 +92,7 @@
     if (!$arNewType) {
       $wgHTMLEditName="page";
       $wgHTMLEditLanguage=$selectednls;
-      $wgHTMLEditContent=$this->ParsePage($this->getdata("page",$selectednls));
+      $wgHTMLEditContent=$this->ParsePage($this->getdata("page",$selectednls), true, true);
       include($this->store->code."widgets/htmledit/js.html"); 
       include($this->store->code."widgets/htmledit/form.html"); 
     } else {

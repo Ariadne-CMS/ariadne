@@ -47,7 +47,7 @@
 					echo "</tr><tr><td>";
 					$wgHTMLEditName="page";
 					$wgHTMLEditLanguage=$arLanguage;
-					$wgHTMLEditContent=$this->ParsePage($this->getdata("page",$arLanguage));
+					$wgHTMLEditContent=$this->ParsePage($this->getdata("page",$arLanguage), true, true);
 					include($this->store->code."widgets/htmledit/js.html"); 
 					include($this->store->code."widgets/htmledit/form.html"); 
 					echo "</td><td align=\"right\">$flag</td>";
