@@ -233,7 +233,7 @@ BODY 	{
 			if( CurrentPath == '<?php echo $this->path; ?>' ) {
 				mnCurrent.className='menuButtonCurrent';
 				CurrentButton=mnCurrent;
-				View(CurrentPath, '<?php echo $currentname; ?>', true);
+				View(CurrentPath, '<?php echo AddCSlashes($currentname, ARESCAPE); ?>', true);
 			} else {
 				View(CurrentPath, 'Selected Picture', true);
 			}
