@@ -7,6 +7,13 @@
       <?php switch($do) {
         case "add" : ?>
         top.tree.AddLinks(link, '<?php echo $icon ?>','<?php echo AddSlashes($name); ?>','<?php echo $path; ?>','<?php echo AddSlashes($pre); ?>');
+        <?php 
+          if ($shortcut) {
+        ?>
+        top.tree.AddLinks('<?php echo $shortcut; ?>','<?php echo $icon ?>','<?php echo AddSlashes($name); ?>','<?php echo $path; ?>','<?php echo AddSlashes($pre); ?>');
+        <?php 
+          }
+        ?>
         document.location.href='<?php echo $returnpage; ?>';
       <?php break;
         case "update" : ?>
