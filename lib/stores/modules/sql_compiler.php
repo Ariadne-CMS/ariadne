@@ -191,14 +191,14 @@
 	function parse_query(&$query) {
 		$result=$this->parse_or_expr($query);
 		if ($result) {
-			if (eregi('^[[:space:]]+order[[:space:]]*by[[:space:]]+', $query, $regs)) {
+			if (eregi('^[[:space:]]*order[[:space:]]*by[[:space:]]+', $query, $regs)) {
 				$query=substr($query, strlen($regs[0]));
 				$node["id"]="orderby";
 				$node["right"]=$this->parse_orderby($query);
 				$node["left"]=$result;
 				$result=$node;
 			}
-			if (eregi('^[[:space:]]+limit[[:space:]]+([0-9]+)[[:space:]]*([,][[:space:]]*([0-9]+))?', $query, $regs)) {
+			if (eregi('^[[:space:]]*limit[[:space:]]+([0-9]+)[[:space:]]*([,][[:space:]]*([0-9]+))?', $query, $regs)) {
 				$query=substr($query, strlen($regs[0]));
 				$limit_s["id"]="limit";
 				$limit_s["offset"]=$regs[1];
