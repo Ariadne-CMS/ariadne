@@ -1,7 +1,7 @@
 <script language="javascript">
 <!--
 
-function HTMLEdit(root, path, file, name, language, type) {
+function HTMLEdit(root, path, file, name, language, type, title) {
   editwindow=window.open('','editwindow', 'directories=no,height=450,width=640,location=no,menubar=no,status=no,toolbar=no,resizable=yes');
   if (editwindow.exists) {
     editwindow.loadpage(root, path, file, name, language, type); 
@@ -10,16 +10,12 @@ function HTMLEdit(root, path, file, name, language, type) {
     'root='+escape(root)+'&path='+escape(path)+'&file='+escape(file)+
     '&name='+escape(name)+'&language='+escape(language)+'&type='+escape(type);
   }
+  if (title) {
+    editwindow.document.title=title;
+  }
   editwindow.focus();
 }
 
-  function SetHTML(name, value) {
-    document.eform[name].value=value;
-  }
-
-  function GetHTML(name) {
-    return document.eform[name].value;
-  }
 
 // -->
 </script>

@@ -173,7 +173,6 @@ function loadpage(root, path, file, name, language, type) {
   if (ViewHTML.TBSTATE=="unchecked") {
     VIEW_HTML_onclick();
   }
-  window.document.title='Edit '+path+file+' ( '+name+': '+language+')';
   tbContentRoot=root;
   tbContentPath=path;
   tbContentFile=file;

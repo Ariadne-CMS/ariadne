@@ -21,9 +21,10 @@
   if (!$wgHTMLEditType) {
     $wgHTMLEditType="body";
   }
-//  echo "<input type=\"hidden\" name=\"$wgHTMLEditName\" value=\"".
-//    ereg_replace('"','&quot;',$wgHTMLEditContent)."\">";
+  if (!$wgHTMLEditTitle) {
+    $wgHTMLEditTitle=$nlsdata->name;
+  }
   echo "<input type=\"button\" name=\"$wgHTMLEditName".
        "_button\" value=\"Open Editor\"".
-       " onClick=\"HTMLEdit('$wgHTMLEditRoot','$wgHTMLEditPath','$wgHTMLEditFile','$wgHTMLEditName','$wgHTMLEditLanguage','$wgHTMLEditType');\">"; 
+       " onClick=\"HTMLEdit('$wgHTMLEditRoot','$wgHTMLEditPath','$wgHTMLEditFile','$wgHTMLEditName','$wgHTMLEditLanguage','$wgHTMLEditType','$wgHTMLEditTitle');\">"; 
 ?>
