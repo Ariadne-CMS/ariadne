@@ -1,12 +1,17 @@
-#!/usr/bin/php -q
+#!/usr/bin/php4 -q
 <?php
-	// location of the gnome-libs mime-magic file
+	// location of the mime-magic file
 	$magic_db="/etc/mime-magic";
+	$mimetypes_db="/etc/mime.types";
 
 	// start output buffering
 	ob_start();
 	echo "<?php \n"; // start php template
-
+	echo "	global \$mimemagic_data;\n";	
+	echo "	global \$mimetypes_data;\n";	
+	echo "\n";
+	echo "	define(\"MIME_EXT\",	1);\n";
+	echo "	define(\"MIME_DATA\",	2);\n";
 	$mfp=fopen($magic_db, "r");
 	if ($mfp) {
 		// offset:
@@ -115,33 +120,78 @@
 
 				// test if it is really a mimetype and not some sort of a vague file description
 				if (eregi('^[.a-z0-9_-]+/[.a-z0-9_-]+$', $mimetype, $regs)) {
-					echo "	\$mimemagic_data[$offset][$len][\"";
+					$data_index = "";
 					for ($i=0; $i<strlen($data); $i++) {
-						echo "\\".decoct(ord($data[$i]));
+						$data_index.="\\".decoct(ord($data[$i]));
 					}
-					echo "\"]=\"".AddSlashes($mimetype)."\"; \n";
+
+					$mimemagic_data[$offset][$len][$data_index] = $mimetype;
 				}
 				$len=0;
 			}
 		}
 		fclose($mfp);
 
-	?>
 
-	function get_mime_type($filename) {
-	global $mimemagic_data;
-		$result = false;
 		reset($mimemagic_data);
-		$fp = fopen($filename, "rb");
-		if ($fp) {
-			while (!$result && (list($offset, $odata)=each($mimemagic_data))) {
-				while (!$result && (list($length, $ldata)=each($odata))) {
-					fseek($fp, $offset, SEEK_SET);
-					$lookup=fread($fp, $length);
-					$result=$ldata[$lookup];
+		ksort($mimemagic_data);
+		while (list($offset, $len_array)=each($mimemagic_data)) {
+			reset($len_array);
+			ksort($len_array);
+			while (list($len, $data_array)=each($len_array)) {
+				reset($data_array);
+				ksort($data_array);
+				while (list($data, $mimetype)=each($data_array)) {
+					echo "	\$mimemagic_data[$offset][$len][\"".$data;
+					echo "\"]=\"".AddSlashes($mimetype)."\"; \n";
 				}
 			}
-			fclose($fp);
+		}
+
+
+		$mfp = fopen($mimetypes_db, "r");
+		if ($mfp) {
+			while ($line=fgets($mfp, 4000)) {
+				if (!eregi('^[[:space:]]*#', $line, $regs)) {
+					if (eregi('^([^[:space:]]*)(.*)$', $line, $regs)) {
+						$mimetype = $regs[1];
+						$extensions = trim(ereg_replace('[[:space:]]+', ' ', $regs[2]));
+						if ($extensions) {
+							$extensions = explode(' ', $extensions);
+							reset($extensions);
+							while (list(,$extension)=each($extensions)) {
+								echo "	\$mimetypes_data[\"$extension\"] = \"$mimetype\";\n";
+							}
+						}
+					}
+				}
+			}
+			fclose($mfp);
+		}
+	?>
+
+	function get_mime_type($filename, $flags = 3) {
+	global $mimemagic_data, $mimetypes_data;
+		$result = false;
+		if ($flags & MIME_DATA) {
+			reset($mimemagic_data);
+			$fp = fopen($filename, "rb");
+			if ($fp) {
+				while (!$result && (list($offset, $odata)=each($mimemagic_data))) {
+					while (!$result && (list($length, $ldata)=each($odata))) {
+						fseek($fp, $offset, SEEK_SET);
+						$lookup=fread($fp, $length);
+						$result=$ldata[$lookup];
+					}
+				}
+				fclose($fp);
+			}
+		}
+
+		if (($flags & MIME_EXT) && ( (($flags & MIME_DATA) && !$result) || !($flags & MIME_DATA) ) ) {
+			if (eregi('.*[.]([^.]*)', $filename, $regs)) {
+				$result = $mimetypes_data[$regs[1]];
+			}
 		}
 		return $result;
 	}
