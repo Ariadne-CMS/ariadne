@@ -64,7 +64,7 @@
 						if (is_array($oldusergrants)) {
 							reset($oldusergrants);
 							while (list($path, $grants) = each($oldusergrants)) {
-								if (substr($path, 0, strlen($oldpath)) == $path) {
+								if (substr($path, 0, strlen($oldpath)) == $oldpath) {
 									$path = $target.substr($path, strlen($oldpath));
 								}
 
