@@ -1,0 +1,105 @@
+#!/usr/bin/php -q
+<?php
+$ariadne="../lib";
+$outfile = false;
+require($ariadne."/configs/ariadne.phtml");
+require($ariadne."/configs/store.phtml");
+require($ariadne."/includes/loader.web.php");
+require($ariadne."/stores/".$store_config["dbms"]."store.phtml");
+
+
+$HELP_INFO="export.wddx [--options] [source path] [file.wddx]
+The export command will export objects from the current Ariadne database to
+the specified .wddx file. It will export all objects specified 
+by [source path] to your .wddx file.
+
+options are:
+--verbose                Display what we are doing
+--help                   This information\n\n";
+
+function file_put_contents($file,$content) {
+	$nr_of_bytes = 0;
+	if(($nr_of_bytes = fwrite($file,$content) === false)) {
+		return false;
+	}
+	return $nr_of_bytes;
+}
+
+function ob_file($buffer){
+	global $outfile;
+	file_put_contents($outfile,&$buffer);
+	return '';
+}
+
+$arg_c=0;
+$arg_v[$arg_c++]=$argv[0];
+
+next($argv); // do not parse the filename
+while (list(,$cmd)=each($argv)) {
+	if (strpos($cmd, "--") === 0) {
+		if (strpos(substr($cmd, 2),"-")===false) {
+			$option_switch=substr($cmd, 2);
+		} else {
+
+			$option_switch=substr($cmd, 2, strpos(substr($cmd, 2),"-"));
+
+			if (strpos($cmd, "=")!==false) {
+				$option_value=substr($cmd, strpos($cmd, "=")+1);
+				$option=substr($cmd, strlen($option_switch)+3, strpos($cmd, "=") - (strlen($option_switch)+3));
+			} else {
+				$option=substr($cmd, strlen($option_switch)+3);
+			}
+		}
+
+		//echo "switch($option_switch)($option)='$option_value'\n";
+
+		switch ($option_switch) {
+			case 'help':
+				echo $HELP_INFO;
+				exit;
+				break;
+
+			case 'verbose':
+				$ARCurrent->options["verbose"]=true;
+				break;
+
+			default:
+				echo "unknow option-switch ($option_switch)\n";
+		}
+	} else {
+		$arg_v[$arg_c++]=$cmd;
+	}
+}
+
+set_time_limit(0);
+
+if ($arg_c>2) {
+	$ARLogin="admin";
+	$AR->user=new object;
+	$AR->user->data=new object;
+	$AR->user->data->login="admin";
+
+	if ($arg_c=2) {
+		$srcpath=$arg_v[1];
+		$dstfile=$arg_v[2];
+	} else {
+		$srcpath='/';
+		$dstfile=$arg_v[1];
+	}
+
+	$outfile = fopen($dstfile,"w+");
+	if($outfile){
+		ob_start('ob_file');
+		$inst_store = $store_config["dbms"]."store";
+		$store=new $inst_store($root,$store_config);
+		$store->call("export.wddx.phtml", $callArgs,$store->get($srcpath));
+		ob_end_flush();
+	} else {
+		$error = 'wddx: error on opening outfile';
+	}
+}
+
+if ($error) {
+	echo $error."\n";
+}
+?>
