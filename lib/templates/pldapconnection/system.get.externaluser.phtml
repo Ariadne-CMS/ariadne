@@ -1,0 +1,26 @@
+<?php
+
+// This assumes that the Ariadne administrator has created a mapping
+// from the "login.value" property to the LDAP attribute which he
+// wishes to use as the login name for the pldapconnection object
+
+// If there is no user mapping, there is nothing we can do...
+if ($this->data->mappeduser) {
+
+	// Find out the distinguished name of the user who wants to log on
+	// because it's required for ldap_bind()
+	$criteria=Array();
+	$criteria["login"]["value"]["="]="'".AddSlashes($ARLogin)."'";
+	$this->get_ldap_data($criteria, $limit, $offset);
+
+	//print_r($this->ldapdata);
+
+	$arResult=current($this->store->call("system.get.phtml", "",
+	                             $this->store->get($this->data->mappeduser)));
+	// If you change the mapping of LDAP attributes to Ariadne data
+	// below, also change it in system.authenticate.externaluser.phtml
+	$arResult->data->name=$this->ldapdata[0]["displayname"][0];
+	$arResult->data->email=$this->ldapdata[0]["mail"][0];
+}
+
+?>
