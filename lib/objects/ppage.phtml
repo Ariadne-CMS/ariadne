@@ -49,11 +49,15 @@ class ppage extends pobject { // ppage class definition
   }
 
   function RAWtoAR($page) {
+  global $ARCurrent;
 	// change hardcoded links and images to use a placeholder for the root
 	if ($this->store->root) {
-		$page = ereg_replace("(http[s]?://)?".$this->store->root, "{arRoot}", $page);
+		if (substr($this->store->root, -3) !== "/$this->nls") {
+			$nls_reg = "(/$this->nls)?";
+		}
+		$page = ereg_replace("(http[s]?://)?".$this->store->root.$nls_reg, "{arRoot}", $page);
 	}
-	if ($ARCurrent->session->id) {
+	if ($ARCurrent->session && $ARCurrent->session->id) {
         // change hand pasted sources, which may or may not include session id's
 		$page = ereg_replace("(https?://)?".$AR->host.$AR->dir->www."loader.php(/-".$ARCurrent->session->id."-)?(/".$this->nls.")?", "{arRoot}", $page);
 		// check for other session id's:
