@@ -7,7 +7,7 @@
 		    $this->data=@current($this->get(".","system.get.data.phtml"));
 		}
 
-		if (!isset(${$ARConfig->nls->default}) && !isset($this->data->{$ARConfig->nls->default})) { // default language for this path
+		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
 			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
 		} else {
 			if (!$this->data->nls) {
