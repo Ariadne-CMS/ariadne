@@ -17,8 +17,7 @@ New features:
 	- mkdir in FTP now creates a configurable object type.
 	- the FTP server now supports the 'REST' operation. This makes it possible
 	  to resume an upload or download.
-	- added an option to the FTP server configuration which you can use to
-      disable listmode symlinking.
+	- added an option to the FTP server configuration which you can use to disable listmode symlinking.
 	- Changed the 'refresh cache on change' to be really permanent.
 	- added getcache() method in pobject, that returns the contents
 	  of a privatecache image.
@@ -49,8 +48,8 @@ New features:
 	- Moved authentication functionality from pobject::CheckLogin() to the loader.
 	- You can now login as a different user on your current session.
 	- Updated documentation in ariadne.ax
-	- Now using small nls flags for language selection in the wizard. Thanks
-      to Paul Meijers.
+	- Now using small nls flags for language selection in the wizard. Thank to Paul Meijers.
+	- Updated ldSetUserCookie and ldGetUserCookie to use more options from setcookie()
 		
 Bugs Fixed:
 	- Removed an extra character '7' from particle/system.save.data.phtml
