@@ -9,6 +9,17 @@
 	include($ariadne."/stores/axstore.phtml");
 	global $options;
 
+	$HELP_INFO="import [--options] file.ax [source path] [destination path]
+	The import command will import the supplied .ax into the current
+	Ariadne database. It will import all objects specified by [source path]
+	to your Ariadne database at [destination path].
+
+	options are:
+		--verbose		Display what we are doing
+		--without-grants	Don't export grant information
+		--tar_nofail		Suppres tar/gz errors
+		--help			This information\n\n";
+
 	$arg_c=0;
 	$arg_v[$arg_c++]=$argv[0];
 
@@ -43,6 +54,11 @@
 					$options["verbose"]=true;
 				break;
 
+				case 'help':
+					echo $HELP_INFO;
+					exit;
+				break;
+
 				case 'tar_nofail':
 					$ax_config["tar_nofail"]=true;
 				break;
@@ -60,7 +76,7 @@
 	}
 
 
-	if ($arg_c>=3) {
+	if ($arg_c>=2) {
 		$ARLogin="admin";
 		$AR->user=new object;
 		$AR->user->data=new object;
@@ -71,9 +87,9 @@
 		if ($arg_c>3) {
 			$destpath=$arg_v[3];
 			$srcpath=$arg_v[2];
-		} else {
-			$destpath=$arg_v[2];
-			$srcpath="/";
+		} else
+		if ($arg_c>2) {
+			$srcpath=$arg_v[2];
 		}
 
 		$store=new axstore("", $ax_config);
@@ -99,6 +115,6 @@
 			echo $error."\n";
 		}
 	} else {
-		echo "USAGE: import [ax_file] [ax_path] [import_path]\n";
+		echo $HELP_INFO;
 	}
 ?>

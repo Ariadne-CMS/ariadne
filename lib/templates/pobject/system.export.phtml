@@ -11,17 +11,24 @@ if ($this->CheckLogin("read")) {
 		}
 	}
 
+		if (!$srcpath) {
+			$srcpath="/";
+		}
 		display("export($srcpath) to ($destpath)\n");
 		if (!$destpath) {
 			if ($srcpath!="/") {
-				$checkpaths[]="/";
+				if (!$ARCurrent->importStore->exists("/")) {
+					$checkpaths[]="/";
+				}
 				$path_str="/";
 				$calc_path=substr($srcpath, 0, strrpos(substr($srcpath,0,-1),'/'));
 				$path_elements=explode("/", $calc_path);
 				while (list(,$element)=each($path_elements)) {
 					if ($element) {
 						$path_str.=$element."/";
-						$checkpaths[]=$path_str;
+						if (!$ARCurrent->importStore->exists($path_str)) {
+							$checkpaths[]=$path_str;
+						}
 					}
 				}
 				
@@ -109,7 +116,7 @@ if ($this->CheckLogin("read")) {
 			}
 			$offset+=sizeof($result);
 		}
-		if ($options["grants"]) {
+		if (!$options["without_grants"]) {
 			display("updating grants (groups)\n");
 			reset($ARCurrent->grants_list);
 			while (list($type, $type_logins)=each($ARCurrent->grants_list)) {
