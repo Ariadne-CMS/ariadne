@@ -39,7 +39,7 @@ class pinp_DB {
 
 	function _setFetchMode($fetchmode, $object_class = null) {
 		global $AR;
-		return $AR->DB_list[$this->key]->setFetchMode($fetchmode, $object_class = null);
+		return $AR->DB_list[$this->key]->setFetchMode($fetchmode, $object_class);
 	}
 
 	function _setOption($option, $value) {
@@ -59,7 +59,7 @@ class pinp_DB {
 
 	function _execute($stmt, $data = false) {
 		global $AR;
-		$result=$AR->DB_list[$this->key]->execute($stmt, $data = false);
+		$result=$AR->DB_list[$this->key]->execute($stmt, $data);
 		if (is_object($result) && (get_class($result)=="db_result" || is_subclass_of($result, "db_result")) ) {
 			$key=@count($AR->DB_result_list);
 			$AR->DB_result_list[$key]=$result;
@@ -70,12 +70,12 @@ class pinp_DB {
 
 	function _executeMultiple( $stmt, &$data ) {
 		global $AR;
-		return $AR->DB_list[$this->key]->executeMultiple( $stmt, &$data );
+		return $AR->DB_list[$this->key]->executeMultiple( $stmt, $data );
 	}
 
 	function &_query($query, $params = array()) {
 		global $AR;
-		$result = $AR->DB_list[$this->key]->query($query, $params = array());
+		$result = $AR->DB_list[$this->key]->query($query, $params);
 		if (is_object($result) && (get_class($result)=="db_result" || is_subclass_of($result, "db_result")) ) {
 			$key=@count($AR->DB_result_list);
 			$AR->DB_result_list[$key]=$result;
@@ -97,34 +97,33 @@ class pinp_DB {
 
 	function &_getOne($query, $params = array()) {
 		global $AR;
-		return $AR->DB_list[$this->key]->getOne($query, $params = array());
+		return $AR->DB_list[$this->key]->getOne($query, $params);
 	}
 
 	function &_getRow($query, $params = null, $fetchmode = DB_FETCHMODE_DEFAULT) {
 		global $AR;
-		return $AR->DB_list[$this->key]->getRow($query, $params = null, $fetchmode = DB_FETCHMODE_DEFAULT);
+		return $AR->DB_list[$this->key]->getRow($query, $params, $fetchmode);
 	}
 
 	function &_getCol($query, $col = 0, $params = array()) {
 		global $AR;
-		return $AR->DB_list[$this->key]->getCol($query, $col = 0, $params = array());
+		return $AR->DB_list[$this->key]->getCol($query, $col, $params);
 	}
 
 	function &_getAssoc($query, $force_array = false, $params = array(), 
 						$fetchmode = DB_FETCHMODE_ORDERED, $group = false) {
 		global $AR;
-		return $AR->DB_list[$this->key]->getAssoc($query, $force_array = false, $params = array(),
-											 $fetchmode = DB_FETCHMODE_ORDERED, $group = false);
+		return $AR->DB_list[$this->key]->getAssoc($query, $force_array, $params, $fetchmode, $group);
 	}
 
 	function &_getAll($query, $params = null, $fetchmode = DB_FETCHMODE_DEFAULT) {
 		global $AR;
-		return $AR->DB_list[$this->key]->getAll($query, $params = null, $fetchmode = DB_FETCHMODE_DEFAULT);
+		return $AR->DB_list[$this->key]->getAll($query, $params, $fetchmode);
 	}
 
 	function _autoCommit($onoff=false) {
 		global $AR;
-		return $AR->DB_list[$this->key]->autoCommit($onoff=false);
+		return $AR->DB_list[$this->key]->autoCommit($onoff);
 	}
 
 	function _commit() {
@@ -154,7 +153,7 @@ class pinp_DB {
 
 	function _nextId($seq_name, $ondemand = true) {
 		global $AR;
-		return $AR->DB_list[$this->key]->nextId($seq_name, $ondemand = true);
+		return $AR->DB_list[$this->key]->nextId($seq_name, $ondemand);
 	}
 
 	function _createSequence($seq_name) {
@@ -169,7 +168,7 @@ class pinp_DB {
 
 	function _tableInfo($result, $mode = null) {
 		global $AR;
-		return $AR->DB_list[$this->key]->tableInfo($result, $mode = null);
+		return $AR->DB_list[$this->key]->tableInfo($result, $mode);
 	}
 
 	function _getListOf($type) {
@@ -214,12 +213,12 @@ class pinp_DB_result {
 
 	function _fetchRow($fetchmode = DB_FETCHMODE_DEFAULT, $rownum=null) {
 		global $AR;
-		return $AR->DB_result_list[$this->key]->fetchRow($fetchmode = DB_FETCHMODE_DEFAULT, $rownum=null);
+		return $AR->DB_result_list[$this->key]->fetchRow($fetchmode, $rownum);
 	}
 
 	function _fetchInto(&$arr, $fetchmode = DB_FETCHMODE_DEFAULT, $rownum=null) {
 		global $AR;
-		return $AR->DB_result_list[$this->key]->fetchInto(&$arr, $fetchmode = DB_FETCHMODE_DEFAULT, $rownum=null);
+		return $AR->DB_result_list[$this->key]->fetchInto(&$arr, $fetchmode, $rownum);
 	}
 
 	function _numCols() {
