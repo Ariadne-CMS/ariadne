@@ -34,9 +34,6 @@
 						} else {
 							$this->data->login=$login;
 							$properties["login"][0]["value"]="'".AddSlashes($login)."'";
-							if (!$this->data->password) {
-								$this->error=$ARnls["err:validpassword"];
-							}
 						}
 					}
 				}
@@ -58,23 +55,24 @@
 			$this->ClearCache();
 			if (!$this->error) {
 				if (($groups=$this->getdata("groups","none")) && ($groups!=$this->data->groups)) {
-					// overrides data from profile
 					reset($groups);
 					while (list($key, $group)=each($groups)) {
 						if (!$this->data->groups[$group]) {
+							$id = @current($this->get($group, "system.get.login.phtml"));
 							$this->call( "system.set.group.phtml", Array(
 								"action" => "add",
 								"path" => $group,
-								"id" => $this->data->login));
+								"id" => $id));
 						}
 					}
 					@reset($this->data->groups);
 					while (list($group, $value)=@each($this->data->groups)) {
 						if (!in_array($group, $groups)) {
+							$id = @current($this->get($group, "system.get.login.phtml"));
 							$this->call("system.set.group.phtml", Array(
 								"action" => "delete",
 								"path" => $group,
-								"id" => $this->data->login));
+								"id" => $id));
 						}
 					}
 				} 
