@@ -28,6 +28,9 @@ Lukasz Keler <Lukasz.Keler AT ceti DOT pl>
 Pascal Hofstee / eMAXX <pascal AT emaxx DOT nl>
 	Author of the PostgreSQL store;
 
+Paul Meijers <meijers.p AT home DOT com>
+	Contributed a patch which made the tree interface dependant.
+
 Reini Urban <rurban AT x-ray DOT at>
 	Original author of the German NLS files.
 
