@@ -368,6 +368,25 @@ class pobject extends object { // pobject class definition
 		}
 		$object_path=$this->path;
 		$path=$this->make_path($path);
+		// make sure CheckConfig has run on the most fitting object to $path
+		$getConfigPath=$path;
+		while ($getConfigPath && !$this->exists($getConfigPath)) {
+			$getContigPath=$this->store->make_path($getConfigPath, "..");
+		}
+		// if the path was gibberish, at least start from the root
+		if (!$getConfigPath) {
+			$getConfigPath='/';
+		}
+		// now run CheckConfig and get the parentsite of the path found
+		if (!$temp_config=$ARConfig->cache[$getConfigPath]) {
+			$temp_site=current($this->get($getConfigPath, "system.get.site.phtml"));
+			$temp_config=$ARConfig->cache[$temp_site];
+		}
+		$url=$temp_config->root["value"].$rootoptions;
+		$url.=substr($path, strlen($temp_config->root["path"])-1);
+		debug("make_url: ".$temp_config->root["path"]." = $temp_site : $temp_url","all");
+/*
+
 		while ($object_path && !$url) {
 			$config=$ARConfig->cache[$object_path];
 			if (!$config) {
@@ -384,6 +403,7 @@ class pobject extends object { // pobject class definition
 			}
 		}
 		debug("url: $url",'all');
+*/
 		return $url;			
 	}
 
