@@ -254,4 +254,5 @@ $ARnls["scenario"]=		"Scenario";
 $ARnls["article"]=		"Artikel";
 $ARnls["link"]=			"Link";
 $ARnls["target"]=		"Doel";
+$ARnls["copy"]=			"Kopieer";
 ?>
