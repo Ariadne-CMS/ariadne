@@ -4,7 +4,13 @@ Changes in Ariadne since version Ariadne 2.3.1-dev
 
 New Features:
 	- Add FTP MDTM command, thanks to Goran Topic.
+	- Static skeleton support in profiles, just use the filename 'static' 
+	  immediately below a profile, and the contents will be copied when 
+	  creating a new user with that profile.
 	- Added a 'change owner' dialog to the edit->config menu.
+	  Also added an option to automatically set the owner of a user
+	  the that user when creating a new user. This includes any children
+	  that may be copied from a static skeleton.
 	- Added a wrapper function for the store::is_supported() function.
 	- Added Portugese translation. Thanks to Marc R.J. Brevoort.
 	- The web-loader does not save the user's supplied password in the session
