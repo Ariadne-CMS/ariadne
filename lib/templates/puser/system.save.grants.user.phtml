@@ -18,11 +18,12 @@
 	 $path: path to the object on which the grant is added.
 	 $grant: name of the grant to apply.
 
-	 no result.
+	 result: "ok" or an error message.
 
 	******************************************************************/
 
 	// first check whether the user has the config grant on the given path
+	debug("puser/system.save.grants.user.phtml: $this->path","class");
 	$grants=@current($this->get($path, "system.get.grants.phtml"));
 	if ($AR->user && ($AR->user->data->login=="admin" || $grants["config"])) { // can not be called directly from loader
 		// first make sure that the object is clean (data can only be set via 
@@ -37,6 +38,13 @@
 				$this->data->usergrants[$path][$grant]=1;
 				break;
 		}
-		$this->save();
+		if ($this->save()) {
+			$arResult="ok";
+		} else {
+			$arResult=$this->error;
+		}
+	} else {
+		$arResult="Access denied";
 	}
+	debug("res:".$arResult);
 ?>
