@@ -3,7 +3,7 @@
 ?>
 <span class="item" >
   <A HREF="<?php echo $this->store->root.$this->path; ?>"><IMG SRC=<?php
-     echo $AR->dir->images.$this->type; ?>.gif border=0 HSPACE=30 VSPACE=15
+     echo $AR->dir->images."icons/".$this->type; ?>.gif border=0 width=40 height=40 HSPACE=30 VSPACE=15
      ALT="<?php echo $nlsdata->name; ?>"></a>
   <layer class="text" onMouseOver="myunclip(this.id)" onMouseOut="myclip(this.id)">
     <A href="<?php echo $this->store->root.$this->path; ?>"><?php echo $nlsdata->name; ?></A>

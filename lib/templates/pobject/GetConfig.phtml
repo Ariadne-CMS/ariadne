@@ -1,63 +1,62 @@
 <?php
-  /******************************************************************
-   GetConfig.phtml				   Muze Ariadne v2.0b
-   ------------------------------------------------------------------
-   Called by 'pobject->CheckConfig()' (from file 'ariadne/pobject.phtml')
-   Arguments: $req_function
-   Grant needed: none
-   Interface/Widget: none
-   Global variables: $newtemplate, $cacheconfig
+	/******************************************************************
+	 GetConfig.phtml					 Muze Ariadne v2.0b
+	 ------------------------------------------------------------------
+	 Called by 'pobject->CheckConfig()' (from file 'ariadne/pobject.phtml')
+	 Arguments: $req_function
+	 Grant needed: none
+	 Interface/Widget: none
+	 Global variables: $newtemplate, $cacheconfig
 
-   This template is called from pobject itself, via CheckConfig().
-   It will set the global variables $ARConfig->template and 
-   $ARConfig->cache according to the values filled in via the 
-   config.phtml template.
+	 This template is called from pobject itself, via CheckConfig().
+	 It will set the global variables $ARConfig->template and 
+	 $ARConfig->cache according to the values filled in via the 
+	 config.phtml template.
 
-   It has one argument, $req_function, which stands for 'requested 
-   function'. It will check in it's list with template pointers 
-   ($data->templates) if the requested function has a new template
-   assigned to it and if so set the path to this template as the 
-   global variable $ARConfig->template.
+	 It has one argument, $req_function, which stands for 'requested 
+	 function'. It will check in it's list with template pointers 
+	 ($data->templates) if the requested function has a new template
+	 assigned to it and if so set the path to this template as the 
+	 global variable $ARConfig->template.
 
-   It will furthermore set the global variable $ARConfig->cache to 
-   it's own cache setting ($data->cacheconfig, also entered via 
-   config.phtml) if that cache setting is not 'inherit cache config'
-   (meaning: $data->cacheconfig is set and not 0).
+	 It will furthermore set the global variable $ARConfig->cache to 
+	 it's own cache setting ($data->cacheconfig, also entered via 
+	 config.phtml) if that cache setting is not 'inherit cache config'
+	 (meaning: $data->cacheconfig is set and not 0).
 
-   $req_function must be a valid string.
+	 $req_function must be a valid string.
 
-   No return value.  
+	 No return value.	
 
-   NOTE: This template _MUST_ be present in every template directory.
-   Failure to do this will probably result in infinite loops when
-   'default.phtml' is called (which it will).
+	 NOTE: This template _MUST_ be present in every template directory.
+	 Failure to do this will probably result in infinite loops when
+	 'default.phtml' is called (which it will).
 
-  ******************************************************************/
-  debug($this->type."/GetConfig.phtml (".$this->path.")","class");
-  if ($data->templates[$req_type][$req_function]) { 
-    unset($ARConfig->template);
-    $ARConfig->template[$req_type][$req_function]=
-      $data->templates[$req_type][$req_function];
-  } else if ($data->templates["*"]) {
-    if (@is_array($data->templates["*"])) {
-      if ($data->templates["*"][$req_function]) {
-	unset($ARConfig->template);
-        $ARConfig->template[$req_type][$req_function]=
-          ereg_replace("{type}",$req_type,$data->templates["*"][$req_function]);
-
-      } else if ($data->templates["*"]["*"]) {
-        $ARConfig->template=
-          ereg_replace("{type}",$req_type,$data->templates["*"]["*"]);
-      }
-    }
-  }
-  if ($data->cacheconfig) {
-    $ARConfig->cache=$data->cacheconfig;
-  }
-  if ($data->typetree && ($data->typetree!="inherit")) {
-    $ARConfig->typetree=$data->typetree;
-  }
-  if ($data->nlsconfig->list) {
-    $ARConfig->nls=$data->nlsconfig;
-  }
+	******************************************************************/
+	debug($this->path." ( ".serialize($ARConfig)." ) ");
+	if ($data->templates[$req_type][$req_function]) { 
+		unset($ARConfig->template);
+		$ARConfig->template[$req_type][$req_function]=
+			$data->templates[$req_type][$req_function];
+		debug($this->path." t: ".$ARConfig->template[$req_type][$req_function]);
+	} else if ($data->templates["*"]) {
+		if (@is_array($data->templates["*"])) {
+			if ($data->templates["*"][$req_function]) {
+				unset($ARConfig->template);
+				$ARConfig->template[$req_type][$req_function]=
+					$data->templates["*"][$req_function];
+				debug($this->path." t*: ".$ARConfig->template[$req_type][$req_function]);
+			}
+		}
+	}
+	if ($data->cacheconfig) {
+		$ARConfig->cache=$data->cacheconfig;
+	}
+	if ($data->typetree && ($data->typetree!="inherit")) {
+		$ARConfig->typetree=$data->typetree;
+	}
+	if ($data->nlsconfig->list) {
+		$ARConfig->nls=$data->nlsconfig;
+		debug("nls found");
+	}
 ?>

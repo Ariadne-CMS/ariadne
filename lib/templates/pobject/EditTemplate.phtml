@@ -23,12 +23,14 @@
     <tr><td colspan="2">
       <?php echo $ARnls["type"]; ?> :
       <select name="newtype">
+	  <option value="*"><?php echo $ARnls["any"]; ?></option>
       <?php
         $this->ls("/system/ariadne/types/", "ShowOption.phtml","selected=$type");
       ?>
       </select>
       <?php echo $ARnls["language"]; ?> :
       <select name="newlanguage">
+	  <option value="*"><?php echo $ARnls["any"]; ?></option>
       <?php
         while (list($key, $value)=each($AR->nls->list)) {
           if ($language==$key) {

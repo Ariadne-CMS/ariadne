@@ -1,3 +1,6 @@
+<?php
+  if ($this->CheckLogin("read") && $this->CheckConfig()) {
+?>
 <html>
 <head>
 	<?php
@@ -21,8 +24,8 @@ function MM_reloadPage(init) {  //reloads the window if Nav4 resized
 function myclip(id) {
   mylayer=document.layers[id];
   mylayer.bgColor="white";
-  mylayer.clip.height=16;
-  mylayer.clip.width=80;
+  mylayer.clip.height=25;
+  mylayer.clip.width=100;
 }
 
 function myunclip(id) {
@@ -40,11 +43,11 @@ MM_reloadPage(true);
 function init() {
   num=document.layers.length;
   for (i=0; i<num; i++) {
-    document.layers[i].clipheight=document.layers[i].clip.height-55;
+    document.layers[i].clipheight=document.layers[i].clip.height-65;
     document.layers[i].clipwidth=document.layers[i].clip.width;
-    document.layers[i].clip.top=55;
-    document.layers[i].clip.height=16;
-    document.layers[i].clip.width=80;
+    document.layers[i].clip.top=65;
+    document.layers[i].clip.height=25;
+    document.layers[i].clip.width=100;
   }
 }
 
@@ -54,11 +57,11 @@ window.onload=init;
 <style>
 .text {
   position: absolute;
-  top: 55px;
-  left: -85px;
+  top: 65px;
+  left: 30px;
   width: 100px;
   height: 25px;
-  padding: 1px 20px 1px 2px;
+  padding: 1px 2px 1px 2px;
 }
 BODY { font: 9pt sans-serif,Arial,Helvetica }
 A { text-decoration: none; color: #000000}
@@ -73,7 +76,7 @@ IMG { padding-top: 0px }
 <!--
 SPAN.item { left: 10 px; 
             width: 90px; 
-            height: 100px;
+            height: 70px;
             position: relative; 
             margin-top: 5px; 
             margin-right: 5px; 
@@ -108,7 +111,7 @@ IMG { padding-top: 0px }
 <td align="left" width="100%">
 	<?php 
 		$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
-        $this->find(".",$crit,$template,,50);
+        $this->find(".",$crit,$template,"",50);
 	?>
 </td>
 
@@ -116,3 +119,6 @@ IMG { padding-top: 0px }
 </table>
 </body>
 </html>
+<?php
+  }
+?>
