@@ -222,7 +222,11 @@ function HM_f_SetItemProperties(itemid,itemidsuffix) {
 	this.isLastItem  = (HM_CurrentMenu.itemCount == HM_CurrentMenu.maxItems);
 	this.array		 = HM_CurrentMenu.array[HM_CurrentMenu.itemCount];
 	this.dispText    = this.array[0];
-	this.linkText    = this.array[1];
+	if (this.dispText!='<hr>') {
+		this.linkText    = this.array[1];
+	} else {
+		this.linkText    = '';
+	}
 	this.permHilite  = HM_f_EvalParameters(this.array[3],false,"boolean");
 	this.hasRollover = (!this.permHilite && HM_f_EvalParameters(this.array[2],true,"boolean"));
 	this.hasMore	 = HM_f_EvalParameters(this.array[4],false,"boolean") && HM_f_ValidateArray(HM_ArrayIDPrefix + itemidsuffix);

@@ -25,14 +25,18 @@ function HM_f_PopDown(){return false};
 popUp = HM_f_PopUp;
 popDown = HM_f_PopDown;
 
-HM_GL_MenuWidth          = 150;
-HM_GL_FontFamily         = "Verdana,Helvetica,Arial,sans-serif";
-HM_GL_FontSize           = 10;
+HM_GL_MenuWidth          = 200;
+HM_GL_FontFamily         = "Helvetica,Arial,sans-serif";
+HM_GL_FontSize           = 9;
 HM_GL_FontBold           = false;
 HM_GL_FontItalic         = false;
 HM_GL_FontColor          = "black";
 HM_GL_FontColorOver      = "white";
-HM_GL_BGColor            = "#dfdfdf";
+if (HM_NS4) {
+	HM_GL_BGColor            = "#bfbfbf";
+} else {
+	HM_GL_BGColor            = "buttonface";
+}
 HM_GL_BGColorOver        = "#003F82";
 HM_GL_ItemPadding        = 2;
 
@@ -42,8 +46,8 @@ HM_GL_BorderStyle        = "outset";
 HM_GL_SeparatorSize      = 0;
 HM_GL_SeparatorColor     = "#D3D3D3";
 
-HM_GL_ImageSrc = "<?php echo $arDirWWW; ?>widgets/menu/HM_More_blue_right.gif";
-HM_GL_ImageSrcLeft = "<?php echo $arDirWWW; ?>widgets/menu/HM_More_blue_left.gif";
+HM_GL_ImageSrc = "<?php echo $arDirWWW; ?>widgets/menu/HM_More_black_right.gif";
+HM_GL_ImageSrcLeft = "<?php echo $arDirWWW; ?>widgets/menu/HM_More_black_left.gif";
 
 HM_GL_ImageSrcOver = "<?php echo $arDirWWW; ?>widgets/menu/HM_More_white_right.gif";
 HM_GL_ImageSrcLeftOver = "<?php echo $arDirWWW; ?>widgets/menu/HM_More_white_left.gif";
@@ -77,9 +81,9 @@ HM_ItemIDPrefix = "HM_Item";
 HM_ArrayIDPrefix = "HM_Array";
 
 HM_a_Parameters = [
-	["MenuWidth",          150,		"number"],
+	["MenuWidth",          200,		"number"],
 	["FontFamily",         "Arial,sans-serif"],
-	["FontSize",           10,		"number"],
+	["FontSize",           9,		"number"],
 	["FontBold",           false,	"boolean"],
 	["FontItalic",         false,	"boolean"],
 	["FontColor",          "black"],

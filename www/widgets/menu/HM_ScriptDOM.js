@@ -15,6 +15,7 @@ HM_NS6 = (navigator.vendor == ("Netscape6") || navigator.product == ("Gecko"));
 HM_IEpos = HM_IE || (HM_NS6 && parseInt(navigator.productSub)>=20010710);
 HM_IEDTD = (HM_IE && document.doctype) ? document.doctype.name.indexOf(".dtd")!=-1 : false;
 HM_IEnoDTD = HM_IE && !HM_IEDTD;
+HM_ItemPadding=20;
 
 function HM_f_AssignParameters(paramarray){
 	var ParamName = paramarray[0];
@@ -207,6 +208,13 @@ function HM_f_SetItemProperties(itemidsuffix) {
 	this.array		 = HM_CurrentMenu.array[HM_CurrentMenu.itemCount];
 	this.dispText    = this.array[0];
 	this.linkText    = this.array[1];
+	if (this.dispText=='<hr>') {
+		this.dispText=this.linkText;
+		this.linkText='';
+		this.hr=true;
+	} else {
+		this.hr=false;
+	}
 	this.permHilite  = HM_f_EvalParameters(this.array[3],false,"boolean");
 	this.hasRollover = (!this.permHilite && HM_f_EvalParameters(this.array[2],true,"boolean"));
 	this.hasMore	 = HM_f_EvalParameters(this.array[4],false,"boolean") && HM_f_ValidateArray(HM_ArrayIDPrefix + itemidsuffix);
@@ -369,8 +377,11 @@ function HM_f_MakeItemElement(menucount) {
 		ItemElement.imgLyr = ImageElement;
 	}
 	ItemElement.innerHTML = ItemElement.dispText;
-	if(ImageElement) ItemElement.insertBefore(ImageElement,ItemElement.firstChild);
 	ItemElement.setItemStyle();
+	if(ImageElement) ItemElement.insertBefore(ImageElement,ItemElement.firstChild);
+	if (!ItemElement.hr) {
+		ItemElement.style.paddingLeft="20px";
+	}
 	return ItemElement;
 }
 
