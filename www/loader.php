@@ -59,7 +59,6 @@
 
   } else {
 
-
     // go check for a sessionid
     $root=$AR->root;
     $re="^/=(.*)=/";
