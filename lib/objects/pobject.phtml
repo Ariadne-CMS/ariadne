@@ -974,6 +974,7 @@ class pobject extends object { // pobject class definition
 	global $AR;
 		debug("pobject: ClearCache($path)","object");
 		if (!$path) { $path=$this->path; }
+		$path=strtolower($path);
 		$nlslist=$AR->nls->list;
 		$nlslist["."]="default";
 		$cache_types[] = "normal";
