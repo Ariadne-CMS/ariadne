@@ -1,51 +1,55 @@
 <?php
+	$continue=true;
 	if ($locks) {
-		if (!$HTTP_POST_VARS) global $HTTP_POST_VARS;
+		if (!$HTTP_POST_VARS) {
+			global $HTTP_POST_VARS;
+		}
 		reset($HTTP_POST_VARS);
 		while (list($key,$val)=each($HTTP_POST_VARS)) {
 			if (substr($key,0,6)=="unlock") {
 				$this->store->mod_lock->unlock($this->data->login,$path=substr($key,7));
 			}
 		}
-		if ($returnpage) {
-			header("location: $returnpage");
-			exit;
+		if ($arReturnPage) {
+			ldRedirect($arReturnPage);
+			$continue=false;
 		}
-
 	}
+	if ($continue) {
+		$locks=$this->store->mod_lock->get_locks($this->data->login);
 
-	$locks=$this->store->mod_lock->get_locks($this->data->login);
-
-	if (!is_array($locks) && $returnpage) {
-		header("location: $returnpage");
-		exit;
+		if (!is_array($locks) && $arReturnPage) {
+			ldRedirect($arReturnPage);
+			$continue=false;
+		}
 	}
-?>
+	if ($continue) {
+	?>
 <html>
 <body bgcolor="white">
 <table bgcolor="#404074" width="100%">
 <tr>
 	<td align="left">
-	<font face="helevetica,sans-serif" color="white"><b>Locks for <?php echo $nlsdata->name; ?></b></font>
+	<font face="helevetica,sans-serif" color="white"><b><?php printf($ARnls["openlocks"],$nlsdata->name); ?></b></font>
 	</td>
 </tr>
 </table>
 
 <p>
 <form method="post">
-<input type="hidden" name="returnpage" value="<?php echo $returnpage; ?>">
+<input type="hidden" name="arReturnPage" value="<?php echo $arReturnPage; ?>">
 
 <table cellspacing="0" width="100%">
 <tr bgcolor="#EEEEEE">
-	<td><font face="helvetica,sans-serif"><b>Path</b></font></td>
+	<td><font face="helvetica,sans-serif"><b><?php echo $ARnls["path"]; ?></b></font></td>
 	<td>&nbsp;&nbsp;</td>
-	<td><font face="helvetica,sans-serif"><b>Duration</b></font></td>
+	<td><font face="helvetica,sans-serif"><b><?php echo $ARnls["expires"]; ?></b></font></td>
 	<td>&nbsp;&nbsp;</td>
-	<td align="center"><font face="helvetica,sans-serif"><b>Unlock</b></font></td>
+	<td align="center"><font face="helvetica,sans-serif"><b><?php echo $ARnls["unlock"]; ?></b></font></td>
 </tr>
 
 <?php
-	while (is_array($locks) && (list($path,$lock)=each($locks["locks"]))) {
+	while (list($path,$lock)=each($locks)) {
 		echo "<tr><td align=\"left\"><font face=\"helvetica,sans-serif\">";
 		echo $path;
 		echo "</td><td></td><td align=\"left\">";
@@ -60,10 +64,12 @@
 <table width="100%">
 <tr bgcolor="#404074"><td colspan="5" align="right">
 	<font face="helvetica,sans-serif" color="white">
-	<input type="submit" name="locks" value="  Ok  ">
+	<input type="submit" name="locks" value="<?php echo $ARnls["ok"]; ?>">
 	</font>
 </td></tr>
 </table>
 </body>
-
 </html>
+<?php
+	}
+?>
