@@ -7,6 +7,7 @@
 		$this->data->interface=$this->getdata("interface","none");
 		$this->data->editor=$this->getdata("editor","none");
 		$this->data->windowprefs=$this->getdata("windowprefs","none");
+		$this->data->orderedbrowsing=$this->getdata("orderedbrowsing", "none");
 		$this->save();
 	} else {
 		$this->error=$ARnls["accessdenied"];

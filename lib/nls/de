@@ -246,6 +246,7 @@
 	$ARnls["open"]							=	"&Ouml;ffne";
 	$ARnls["openlocks"]						=	"Entsperre %s:";
 	$ARnls["options"]						=	"Optionen";
+	$ARnls["orderedbrowsing"]				=	"!Ordered browsing";
 	$ARnls["overwrite"]						=	"&Uuml;berschreiben";
 	$ARnls["page"]							=	"Seite";
 	$ARnls["password"]						=	"Passwort";

@@ -20,7 +20,7 @@
 			$query.=" and timeframe.start <= ".($date+86400)." and timeframe.end >= ".$date;
 		}
 		if ($AR->user->data->orderedbrowsing) {
-			$query.=" and ( name.nls='".$nls."' or name.nls='' or name.nls='none') order by name.value";
+			$query.=" order by name.$nls.value";
 		}
 		if (!($limit=$this->getvar('limit'))) {
 			$limit=100;

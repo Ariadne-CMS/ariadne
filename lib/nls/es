@@ -242,6 +242,7 @@
 	$ARnls["open"]							=	"Abrir";
 	$ARnls["openlocks"]						=	"Abrir bloqueos para %s:";
 	$ARnls["options"]						=	"Opciones";
+	$ARnls["orderedbrowsing"]				=	"!Ordered browsing";
 	$ARnls["overwrite"]						=	"Sobreescribir";
 	$ARnls["page"]							=	"Pagina";
 	$ARnls["password"]						=	"Password";

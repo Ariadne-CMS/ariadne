@@ -240,6 +240,7 @@
 	$ARnls["open"]							=	"Open";
 	$ARnls["openlocks"]						=	"Open locks for %s:";
 	$ARnls["options"]						=	"Options";
+	$ARnls["orderedbrowsing"]				=	"Ordered browsing";
 	$ARnls["overwrite"]						=	"Overwrite";
 	$ARnls["page"]							=	"Page";
 	$ARnls["password"]						=	"Password";

@@ -14,7 +14,7 @@
 			$crit["name"]["value"]["like"]="'".AddSlashes($letter)."%'";
 		}
 		if ($AR->user->data->orderedbrowsing) {
-			$query.=" and ( name.nls='".$nls."' or name.nls='' or name.nls='none') order by name.value";
+			$query.=" order by name.$nls.value";
 		}
 		if (!($limit=$this->getvar('limit'))) {
 			$limit=100;

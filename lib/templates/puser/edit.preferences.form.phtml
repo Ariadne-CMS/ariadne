@@ -52,6 +52,16 @@
           </select>
         <td>
       </tr>
+      <tr>
+        <td>
+          <?php echo $ARnls["orderedbrowsing"]; ?>
+        </td><td>
+          <select name="orderedbrowsing" style="width: 100px;">
+              <option value="0"><?php echo $ARnls["no"]; ?></option>
+              <option value="1" <?php if ($data->orderedbrowsing) { echo "selected"; } ?>><?php echo $ARnls["yes"]; ?></option>
+          </select>
+        <td>
+      </tr>
       </table>
     </fieldset>
   </td>

@@ -244,6 +244,7 @@
 	$ARnls["open"]							=	"&Ouml;ppna";
 	$ARnls["openlocks"]						=	"&Ouml;ppna l&aring;sning f&ouml;r %s:";
 	$ARnls["options"]						=	"Alternativ";
+	$ARnls["orderedbrowsing"]				=	"!Ordered browsing";
 	$ARnls["overwrite"]						=	"Skriv &ouml;ver";
 	$ARnls["page"]							=	"Sida";
 	$ARnls["password"]						=	"L&ouml;senord";

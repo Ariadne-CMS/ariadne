@@ -236,6 +236,7 @@
 	$ARnls["open"]							=	"Otvori";
 	$ARnls["openlocks"]						=	"Otvori ključeve za %s:";
 	$ARnls["options"]						=	"Mogućnosti";
+	$ARnls["orderedbrowsing"]				=	"!Ordered browsing";
 	$ARnls["overwrite"]						=	"Prepisati";
 	$ARnls["page"]							=	"Stranica";
 	$ARnls["password"]						=	"Lozinka";
