@@ -223,7 +223,9 @@ class htmlcleaner
 	{
 		$rewrite_rules = $config["rewrite"];
 		$return = '';
+		$node_count = 0;
 		foreach (htmlcleaner::dessicate($body) as $part) {
+			$node_count++;
 			if (is_array($rewrite_rules)) {
 				foreach ($rewrite_rules as $tag_rule=>$attrib_rules) {
 					if (eregi($tag_rule, $part->nodeName)) {
@@ -261,6 +263,10 @@ class htmlcleaner
 			}
 			if ($part && strstr($part->nodeValue,'<?xml:namespace')===false)
 				$return .= $part->toString();
+		}
+		if (!$node_count) {
+			// no nodes counted, just return $body
+			$return = "$body";
 		}
 		return $return;
 	}
