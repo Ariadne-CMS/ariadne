@@ -1,4 +1,4 @@
-Installing Ariadne.											  Muze Ariadne 2.0b9
+Installing Ariadne.					      Muze Ariadne 2.0b9
 ================================================================================
 
   IMPORTANT: This version of Ariadne needs PHP4!
@@ -16,16 +16,10 @@ Installing Ariadne.											  Muze Ariadne 2.0b9
 
 Windows
 
-  Well, it looks like we finally found a way to get Ariadne to run under
-  windows. It still won't run with Microsoft IIS, as we are unable to get 
-  the PATH_INFO working, even after following Microsofts own rather barok 
-  advice from TechNet, involving buying a certain book and installing a
-  small program included on a CD in that book.. doh 
-  But we've gotten some good results with Apache, which is a better webserver 
-  anyway :) Unfortunately it's not entirely finished, as Ariadne needs quite
-  a lot of software not normally available under Windows. We're working on
-  creating a complete distribution for windows. Hold on a bit longer, it's
-  almost there :)
+  Well, it's finally here, our first release that also runs under Windows.
+  We've tested it under Windows NT, Windows 2000 Server and Windows 2000
+  Professional. Full Installation instructions can be found in the file
+  'install.win.rtf'.
   
 Unix/Linux
 
