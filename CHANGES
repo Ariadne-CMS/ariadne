@@ -1,8 +1,20 @@
 Ariadne 2.0b11
 
+Ariadne 2.0RC1pre1
+
+Changes in ariadne since version 2.0b11
+
+New features:
+	- property text and name now have an nls value too. 
+      Used as $criteria["name"]["nls"]["="]="'$nls'"; with find().
+
+Bugs:
+	- make_url now uses the default ariadne root when CheckConfig()
+	  hasn't been run first.
+
 Changes in ariadne since version 2.0b10
 
-Ariadne 2.0b10 is mainly a bug-fix release.
+Ariadne 2.0b11 is mainly a bug-fix release.
 
 New features:
 	- Added an option to prefix the mysqlstore-tables. This will allow
@@ -55,6 +67,10 @@ New Features
   - 'Classic' interface has also received a facelift.
   - Priority field per node allows custom ordering of nodes. You can now
     order your menu exactly the way you want without any extra code.
+  - We've added a new store layer for PostgreSQL. It requires PostgreSQL 7
+    or higher. If you want to use it, you will have to manually include it in
+    the loader and a few other places. Full instructions will appear on our
+    website shortly.
 
 
 - Templates:
