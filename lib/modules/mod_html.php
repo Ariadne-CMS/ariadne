@@ -1,6 +1,6 @@
-[B<?php
+<?php
     /******************************************************************
-     mod_tidy.php                                          Muze Ariadne
+     mod_html.php                                          Muze Ariadne
      ------------------------------------------------------------------
      Author: Muze (info@muze.nl)
      Date: 26 november 2002
@@ -28,60 +28,48 @@
 
      Description:
 
+	   This module includes a number of usefull HTML related tools,
+	   e.g. a method to use htmltidy to clean/rewrite HTML, a word clean
+	   method, etc.
 	   This module calls the html tidy executable with the given
 	   options and returns 'clean' html.
 
     ******************************************************************/
 
-	class tidy {
 
-		function tidy($config) 
-		{
-			$this->tidy=$config["path"];
-			$this->temp=$config["temp"];
-			$this->options=$config["options"];
-		}
+	class html {
 
-		function clean($html, $config=false) 
+
+		function tidy($html, $config) 
 		{
 			global $AR;
-			if (!$config) {
-				$config["path"]=$this->tidy;
-				$config["temp"]=$this->temp;
-				$config["option"]=$this->options;
-			}
-			if ($AR->OS=="WIN32") 
-			{
-				include_once($AR->dir->install."/lib/modules/mod_unicode.php");
-				$html=unicode::utf8convert($html);
-			}
-			$file = tempnam($config["temp"],'tidy-php-tmp');
-			$errfile = tempnam($config["temp"],'tidy-php-err');
+			require_once($AR->dir->install."/lib/modules/mod_tidy.php");
 
-			$fd = fopen($file,"w");
-			fwrite($fd,$html,strlen($html));
-			fclose($fd);
+			return tidy::clean($html, $config);
+		}
 
-			$pd = popen($config["path"]." -f ".$errfile." ".$config["options"]." ".$file,"r");
-			while (!feof($pd)) 
-			{
-				$outhtml .= fread($pd, 1024);
-			}
-			pclose($pd);
 
-			$fd = fopen($errfile,"r");
-			while (!feof($fd)) 
-			{
-				$errors .= fread($fd, 1024);
-			}
-			fclose($fd);
+		function clean($html, $rules) {
+			global $AR;
+			require_once($AR->dir->install."/lib/modules/mod_htmlcleaner.php");
 
-			unlink($file);
-			unlink($errfile);
-			$ret['html'] = $outhtml;
-			$ret['errors'] = $errors;
-			return $ret;
+			return htmlcleaner::clean($html, $rules);		
+		}
+
+		function cleanmsword($html) {
+			/*
+				rewrite : array with rewrite/remove rules
+				preserve : array with exeptions on the rewrite rules
+				rewrite : tag : attribute : value match = new value or false (remove)
+			*/
+			$rules['rewrite']['.*']['class']['mso.*']=false;	// class="msoNormal" etc
+			$rules['rewrite']['o:.*']=false;					// <o:p style=".."></o>
+			$rules['rewrite']['.*']['style']=false;				// style="..."
+			$rules['rewrite']['font']=false;					// font tags begone
+			$rules['rewrite']['.*']['v:.*']=false;				// v:shape="..."
+			return html::clean($html, $rules);	
 		}
 
 	}
+
 ?>
