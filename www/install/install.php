@@ -22,6 +22,11 @@
 		$store->add_type("puser","ppage");
 		// $store->add_type("puser","pdir");
 		$store->add_type("puser","puser");
+		$store->add_type("pshadowuser","pobject");
+		$store->add_type("pshadowuser","ppage");
+		// $store->add_type("pshadowuser","pdir");
+		$store->add_type("pshadowuser","puser");
+		$store->add_type("pshadowuser","pshadowuser");
 		$store->add_type("pgroup","pobject");
 		$store->add_type("pgroup","ppage");
 		$store->add_type("pgroup","pdir");
