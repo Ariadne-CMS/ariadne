@@ -933,6 +933,7 @@ class pobject extends object { // pobject class definition
 					// This triggers only for pinp templates called by other templates,
 					// as the first template (in the url) will first trigger the language
 					// choice dialogue instead.
+					$arCallArgs['arCallFunction'] = $arCallFunction;
 					$ARCurrent->arCallStack[]=$arCallArgs;
 					// start running a pinp template
 					$AR->CallLevelStack[]='pinp';
