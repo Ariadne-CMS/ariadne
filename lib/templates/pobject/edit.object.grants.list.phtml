@@ -101,6 +101,65 @@
 		font-weight: normal;
 	}
 </style>
+<script>
+  var ARMASKLOCAL = <?php echo ARMASKLOCAL; ?>;
+  var ARMASKCHILDREN = <?php echo ARMASKCHILDREN; ?>;
+  var ARMASKGLOBAL = <?php echo ARMASKGLOBAL; ?>;
+  var ARGRANTOLD = <?php echo ARGRANTOLD; ?>;
+  var ARGRANTLOCAL = <?php echo ARGRANTLOCAL; ?>;
+  var ARGRANTCHILDREN = <?php echo ARGRANTCHILDREN; ?>;
+  var ARGRANTGLOBAL = <?php echo ARGRANTGLOBAL; ?>;
+
+  var grants = new Array();
+  grants['puser'] = new Array();
+  grants['pgroup'] = new Array();
+
+  function editUserGrants(type, id) {
+	var userGrants = new Array;
+	// copy user grants
+    userGrants.concat(grants[type][id]);
+	parent.selectUser(type, id, grants[type][id]);
+  }
+
+  function editGrant(type, id, grant) {
+	var userGrants = new Array;
+	// copy user grants
+    userGrants.concat(grants[type][id]);
+	parent.selectGrant(type, id, grant, grants[type][id]);
+  }
+
+  id2path = new Array();
+<?php
+	foreach ($data->grants as $type => $grantslist) {
+		while (list($id, $grants)=each($grantslist)) {
+			switch ($type) {
+				case 'pgroup':
+					$path  = current($this->find('/system/groups/', 'login.value="'.$id.'"', 'system.get.path.phtml'));
+				break;
+				case 'puser':
+					$path  = current($this->find('/system/users/', 'login.value="'.$id.'"', 'system.get.path.phtml'));
+				break;
+			}
+			echo "  id2path['$id'] = '$path'; \n";
+			echo "  grants['$type']['$id'] = new Array();\n";
+			if ($grants && is_array($grants)) {
+				ksort($grants);
+				while (list($grant, $modifiers)=each($grants)) {
+					echo "  grants['$type']['$id']['$grant'] = new Array();\n";
+					if (!is_array($modifiers)) {
+						echo "  grants['$type']['$id']['$grant']['*'] = $modifiers; \n";
+					} else
+					if (is_array($modifiers)) {
+						while (list($modifier, $value)=each($modifiers)) {
+							echo "  grants['$type']['$id']['$grant']['$modifier'] = $value;\n";
+						}
+					}
+				}
+			}
+		}
+	}
+?>
+</script>
 </head>
 <body onLoad="parent.fixIESize();"> 
 		<table cellspacing="0">
@@ -127,7 +186,7 @@
 							echo "><td>";
 							echo "<img src=\"".$AR->dir->images."icons/".$type.".gif\"></td>";
 							echo "<td valign=\"middle\">";
-							echo "<a href=\"javascript:parent.selectUser('$id');\">$id</a>";
+							echo "$id";
 							echo "</td>";
 							echo "<td valign=\"middle\">";
 							if ($grants && is_array($grants)) {
@@ -137,7 +196,7 @@
 										echo arGetGrantType($modifiers);
 									} 
 									if (!$grey) {
-										echo "<a href=\"javascript:parent.selectGrant('$grant');\">$grant";
+										echo "<a href=\"javascript:editGrant('$type', '$id', '$grant');\">$grant";
 									} else {
 										echo $grant;
 									} 

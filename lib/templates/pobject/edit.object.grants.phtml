@@ -140,6 +140,10 @@
 	}
 </style>
 <script>
+	var selectedUserId = '';
+	var selectedUserType = '';
+	var selectedUserGrants = new Array;
+	var selectedUserGrant = '';
 
 	function selectTableRow(row, part) {
 		if (oldRow[part]) {
@@ -158,15 +162,95 @@
 		}
 	}
 
-	function selectUser(user) {
+	function selectUser(type, id, grants) {
 //		document.getElementById('www_grants_user').style.display='block';
 //		document.getElementById('www_grants_grant').style.display='none';
+		selectedUserType = type;
+		selectedUserId = id;
+		selectedUserGrants = grants;
+		setOptions();
 	}
 
-	function selectGrant(grant) {
-//		document.getElementById('www_grants_user').style.display='none';
-//		document.getElementById('www_grants_grant').style.display='block';
+	function selectGrant(type, id, grant, grants) {
+		var form = document.forms.grantsform;
+		form['path'].value = grantslist.id2path[id];
+		
+		selectedUserType = type;
+		selectedUserId = id;
+		selectedUserGrants = grants;
+		selectedUserGrant = grant;
+		setGrantOptions();
 	}
+
+	function setGrantOptions() {
+		var form = document.forms.grantsform;
+
+		for (var i = 0; i < form['modifiers[]'].lenght; i++) {
+			if (selectedUserGrants[selectedUserGrant][form['modifiers[]'][i].value]) {
+				form['modifiers[]'][i].checked = true;
+			} else {
+				form['modifiers[]'][i].checked = false;
+			}
+		}
+		for (var i = 0; i < form['grants[]'].length; i++) {
+			if (selectedUserGrant == form['grants[]'][i].value) {
+				form['grants[]'][i].checked = true;
+			} else {
+				form['grants[]'][i].checked = false;
+			}
+		}
+		var inher;
+		for (var i in selectedUserGrants[selectedUserGrant]) {
+			inher = selectedUserGrants[selectedUserGrant][i];
+			break;
+		}
+		for (var i = form['type'].length-1; i >= 0; i--) {
+			if (inher & form['type'].options[i].value) {
+				form['type'].options.selectedIndex = i;
+				break;
+			}
+		}
+
+		updateGrantsString();
+	}
+
+
+	function updateGrantsString() {
+		var form = document.forms.grantsform;
+		var gstring = new String();
+		var mstring = new String();
+		for (var i = 0; i < form['modifiers[]'].length; i++) {
+			if (form['modifiers[]'][i].checked) {
+				if (mstring.length) {
+					mstring += ', ';
+				}
+				mstring += form['modifiers[]'][i].value
+			}
+		}
+		for (var i = 0; i < form['grants[]'].length; i++) {
+			if (form['grants[]'][i].checked) {
+				if (gstring.length) {
+					gstring += ' ';
+				}
+				var arGrant = form['type'].options[form['type'].options.selectedIndex].value;
+
+				if (arGrant & <?php echo ARMASKLOCAL; ?> && arGrant & <?php echo ARMASKCHILDREN; ?>) {
+				} else
+				if (arGrant & <?php echo ARMASKLOCAL; ?>) {
+						gstring += '=';
+				} else {
+						gstring += '>';
+				}
+
+				gstring += form['grants[]'][i].value;
+				if (mstring.length) {
+					gstring += '('+mstring+')';
+				}
+			}
+		}
+		form.newgrants.value = gstring;
+	}
+
 
 	function showpath(path, url) {
 		var grantsframe=document.getElementById('grants_list_frame');
@@ -202,7 +286,7 @@
   <td id="grantstop" height="100%">
 	<fieldset id="grants_list">
 		<legend>Grants for <?php $this->parents($this->path, 'edit.object.grants.show.path.phtml','','/'); ?></legend>
-		<iframe id="grants_list_frame" src="<?php echo $this->make_url(); ?>edit.object.grants.list.phtml"></iframe>
+		<iframe name="grantslist" id="grants_list_frame" src="<?php echo $this->make_url(); ?>edit.object.grants.list.phtml"></iframe>
 	</fieldset>
   </td>
 </tr><tr>
@@ -238,15 +322,17 @@
 							$total=count($grants);
 							$half=ceil($total/2);
 							for ($i=0; $i<$half; $i++) {
-								echo '<input type="checkbox" name="grants[]" value="'.$grants[$i]->data->value.'">'.$grants[$i]->nlsdata->name.'<br>';
+								$grant = $grants[$i]->data->value;
+								echo '<input type="checkbox" name="grants[]" onchange="updateGrantsString()" value="'.$grant.'">'.$grants[$i]->nlsdata->name.'<br>';
 							}
 							echo '</td><td valign="top">';
 							for ($i=$i; $i<$total; $i++) {
-								echo '<input type="checkbox" name="grants[]" value="'.$grants[$i]->data->value.'">'.$grants[$i]->nlsdata->name.'<br>';
+								$grant = $grants[$i]->data->value;
+								echo '<input type="checkbox" name="grants[]" onchange="updateGrantsString()" value="'.$grant.'">'.$grants[$i]->nlsdata->name.'<br>';
 							}
 						}
 					?>
-				</td>
+					</td>
 				</tr><tr>
 					<td colspan="2">
 						<input style="width: 140px;" type="text" name="grant_other"><br>
@@ -260,28 +346,19 @@
 				<table cellspacing="0" height="100%" style="margin: 0px; border: 0px; width: 100%;">
 				<tr>
 					<td valign="top">
-					<input type="checkbox" name="modifiers[]" value="paddressbook">Addressbook<br>
-					<input type="checkbox" name="modifiers[]" value="particle">Article<br>
-					<input type="checkbox" name="modifiers[]" value="pcalendar">Calendar<br>
-					<input type="checkbox" name="modifiers[]" value="pcalitem">Calendar Item<br>
-					<input type="checkbox" name="modifiers[]" value="pdir">Directory<br>
-					<input type="checkbox" name="modifiers[]" value="pfile">File<br>
-					<input type="checkbox" name="modifiers[]" value="pgroup">Group<br>
-					<input type="checkbox" name="modifiers[]" value="pnewspaper">Newspaper<br>
-					<input type="checkbox" name="modifiers[]" value="pobject">Object<br>
-					<input type="checkbox" name="modifiers[]" value="porganization">Organization<br>
-					<input type="checkbox" name="modifiers[]" value="ppage">Page<br>
+					<?php
+						$types = $this->find("/system/ariadne/types/", "object.type='pobject' order by name.$nls.value", "system.get.phtml");
+						$count = count($types);
+						for ($i = 0; $i < $count/2; $i++) {
+							echo "<input type=\"checkbox\" name=\"modifiers[]\" onchange=\"updateGrantsString()\" value=\"".$types[$i]->data->value."\">".$types[$i]->nlsdata->name."<br>\n";
+						}
+					?>
 				</td><td valign="top" rowspan="4" height:100%; overflow: auto;">	
-					<input type="checkbox" name="modifiers[]" value="pperson">Person<br>
-					<input type="checkbox" name="modifiers[]" value="pphoto">Photo<br>
-					<input type="checkbox" name="modifiers[]" value="pphotobook">Photobook<br>
-					<input type="checkbox" name="modifiers[]" value="pprofile">Profile<br>
-					<input type="checkbox" name="modifiers[]" value="pscenario">Scenario<br>
-					<input type="checkbox" name="modifiers[]" value="psearch">Search<br>
-					<input type="checkbox" name="modifiers[]" value="psection">Section<br>
-					<input type="checkbox" name="modifiers[]" value="pshortcut">Shortcut<br>
-					<input type="checkbox" name="modifiers[]" value="psite">Site<br>
-					<input type="checkbox" name="modifiers[]" value="puser">User<br>
+					<?php
+						for ($j = $i; $j < $count; $j++) {
+							echo "<input type=\"checkbox\" name=\"modifiers[]\" onchange=\"updateGrantsString()\" value=\"".$types[$j]->data->value."\">".$types[$j]->nlsdata->name."<br>\n";
+						}
+					?>
 		 		</td>
 				</tr>
 				</table>
@@ -291,10 +368,10 @@
 			<th valign="top" height="1%">valid for</th>
 		</tr><tr>
 			<td valign="top" height="100%">
-				<select name="type">
-					<option value="&gt;=">Default</option>
-					<option value="&gt;">Children only</option>
-					<option value="=">This object only</option>
+				<select name="type" onchange="updateGrantsString()">
+					<option value="<?php echo ARMASKGLOBAL; ?>">Default</option>
+					<option value="<?php echo ARMASKCHILDREN; ?>">Children only</option>
+					<option value="<?php echo ARMASKLOCAL; ?>">This object only</option>
 				</select>
 			</td>
 		</tr>
