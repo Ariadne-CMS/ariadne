@@ -23,15 +23,11 @@ class pobject extends object {
 
 	  $arCallFunction must be the name of a class or object template.
 	    it can be prepended with "{classname}::". classname must be either
-	    a valid ariadne class (derived from pobject) or 'super'. call() 
+	    a valid ariadne class (derived from pobject). call() 
 	    will then try to find the template starting at the given classname.
-	    In the case of 'super::', the classname will become the name of
-	    the superclass of the current object.
 		e.g.:
 		call("pobject::view.html") will show the view.html template of
 	      pobject, with the data of the current object.
-	    call("super::view.html") will show the view.html template of
-	      the superclass of this object, with the data of this object.
 
 	  variables available to templates:
 	  local: arCallFunction, arCallArgs, arCallTemplate, data
@@ -39,7 +35,7 @@ class pobject extends object {
 	***********************************************************************/
 	global $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls;
 
-		debug("pobject: call($arCallFunction, $arCallArgs)","object");
+		debug("pobject: call($arCallFunction, $arCallArgs)","object","IN");
 		// callstack is needed for getvar()
 		$ARCurrent->arCallStack[]=$arCallArgs;
 		Parse_str($arCallArgs);
@@ -77,15 +73,11 @@ class pobject extends object {
 		if (strpos($arCallFunction,"::")!==false) {
 			// template of a specific class defined via call("class::template");
 			list($arType, $arCallFunction)=explode("::",$arCallFunction);
-			if ($arType=="super") {
-				// call("super::template") is a shortcut to call the
-				// superclass template.
-				$arType=get_parent_class($this);
-			}
 		} else {
 			$arType=$this->type;
 		}
 		while ($arType!="object") {
+			debug("class: $arType","object");
 			// search for the template, stop at the root class
 			// (this should not happen, as pobject must have a 'default.phtml')
 			$arCallTemplate=$this->store->code."templates/".$arType."/".$arCallFunction;
@@ -108,10 +100,11 @@ class pobject extends object {
 				}
 				$arTemp=new $arType();
 				$arType=get_parent_class($arTemp);
+				debug("try superclass: $arType","object");
 			}
 		}
 		array_pop($ARCurrent->arCallStack);
-		debug("pobject: call: end","all");
+		debug("pobject: call: end","all","OUT");
 		if (isset($ARCurrent->arResult)) {
 			// pinp templates can return results via putvar("arResult",$result);
 			$arResult=$ARCurrent->arResult;
