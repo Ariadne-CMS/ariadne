@@ -292,4 +292,49 @@
 	$ARnls["yes"]							=	"Si";
 	$ARnls["zipcode"]						=	"C&oacute;d. Postal";
 
+// EVERYTHING BELOW THIS LINE NEEDS TO BE TRANSLATED
+	$ARnls["err:headerssentnottext"]				=	"headers already sent and this is not a text file (%s)";
+	$ARnls["err:noparent"]						=	"parent %s doesn't exist.";
+	$ARnls["err:corruptpathnosave"]					=	"Path is corrupt, won't save the object.";
+	$ARnls["err:objectalreadylocked"]				=	"Object already locked.";
+	$ARnls["err:filenameinvalidnoparent"]				=	"%s is invalid: %s does not exist.";
+	$ARnls["err:chooseotherfilename"]				=	"%s already exists. Please choose another.";
+	$ARnls["err:startendslash"]					=	"A path must start and end with a '/'.";
+	$ARnls["err:maxloopexceed"]					=	"Max loop count exceeded in %s%s?%s";
+	$ARnls["err:nonamecache"]					=	"cached(): no name given for cache.";
+	$ARnls["err:savecachenofile"]					=	"savecache(): no file or image ...";
+	$ARnls["err:widgetnotfound"]					=	"Widget %snot found";
+	$ARnls["err:convillegalformat"]					=	"Convert called with illegal format (%s)";
+	$ARnls["err:noimagemagick"]					=	"Could not run ImageMagick scale program (mogrify)<br>\n(%s)";
+	$ARnls["err:changetempdirfailed"]				=	"Could not changedir to %stemp/ ";
+	$ARnls["err:notascenario"]					=	"'%s' is not a pscenario.";
+	$ARnls["err:scenerionotfound"]					=	"Scenario '%s' doesn't exist.";
+	$ARnls["err:nothtmlfile"]					=	"This is not an html file.";
+	$ARnls["filesaved"]						=	"File saved";
+	$ARnls["err:ftpnotemplatebadperm"]				=	"can not find template (bad disk permissions?)";
+	$ARnls["err:ftpnotemplate"]					=	"no such template";
+	$ARnls["err:ftpnorenameself"]					=	"can not rename template to itself";
+	$ARnls["err:noexportfile"]					=	"Export file is missing. It's not in %s%s.";
+	$ARnls["err:nonewtype"]						=	"arNewType not defined.";
+	$ARnls["err:wronggrants"]					=	"Something is wrong with your grants, please contact the system administrator.";
+	$ARnls["err:notarget"]						=	"no target specified";
+	$ARnls["axnorootnode"]						=	"ax file does not have a root node, we will create one\n";
+	$ARnls["err:noparentdefined"]					=	"No parent defined for %s";
+	$ARnls["err:notemplatefromstore"]				=	"error: could not copy %s from store";
+	$ARnls["err:notmplupdate"]					=	"template(%s) no update";
+	$ARnls["err:notemplatetostore"]					=	"error: could not copy %s to store";
+	$ARnls["templatecreated"]					=	"template(%s) created";
+	$ARnls["nopermimportnew"]					=	"No permission to import a new object";
+	$ARnls["err:nomovebelow"]					=	"You cannot move an object below itself.";
+	$ARnls["err:noparentcreatefirst"]				=	"%s doesn't exists, create it first.";
+	$ARnls["err:missingparam"]					=	"Missing parameters.";
+	$ARnls["err:notfindusergroup"]					=	"Couldn't find user/group %s";
+	$ARnls["err:notremovegrant"]					=	"Couldn't remove grant in %s (%s)";
+	$ARnls["err:nousergroup"]					=	"%s is not a user or group";
+	$ARnls["err:notsavegrant"]					=	"Couldn't save grant in %s";
+	$ARnls["err:notgetlogin"]					=	"Couldn't get login/id from %s";
+	$ARnls["err:couldnotopen"]					=	"Could not open (%s)";
+	$ARnls["err:shortcutnopath"]					=	"Error: Shortcut %s points to nonexisting path: %s.";
+	$ARnls["err:shortcutloopexceed"]				=	"%s%s called more than %s times, recursive ShortCut %s?";
+
 ?>
