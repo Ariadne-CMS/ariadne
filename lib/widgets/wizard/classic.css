@@ -10,19 +10,7 @@ BODY 	{
 	BORDER: 0;
 	margin: 0px;
 	padding: 4px;
-  <?php
-    global $HTTP_USER_AGENT;
-    if (eregi(".*msie ([0-9]+).*",$HTTP_USER_AGENT, $regs) &&
-       $regs[1] && (intval($regs[1])>=4)) { //ie4+
-  ?>
 	BACKGROUND-COLOR: buttonface;
-  <?php
-    } else {
-  ?>
-	BACKGROUND-COLOR: #BBBBBB;
-  <?php
-    }
-  ?>
 }
 .wgWizButton {
 	width: 90px;
