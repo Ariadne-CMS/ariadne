@@ -43,29 +43,29 @@
     return ldSetSession($ARCurrent->session->id);
   }
 
-        function ldSetCache($file, $time, $image, $headers) {
-        global $store;
+	function ldSetCache($file, $time, $image, $headers) {
+	global $store;
 
-                debug("ldSetCache($file, $time, [image], [headers)","object");
-                $time=time()+($time*3600);
-                if (!ereg("\.\.",$file)) {
-                        if ($image) {
-                                $path=substr($file, 1, strrpos($file, "/")-1);
-                                if (!file_exists($store->files."cache/".$path)) {
-                                        ldMkDir("cache/".$path);
-                                        ldMkDir("cacheheaders/".$path);
-                                }
-                                $fp=fopen($store->files."cache/".$file, "w");
-                                fwrite($fp, $image);
-                                fclose($fp);
-                                $fp=fopen($store->files."cacheheaders/".$file, "w");
-                                fwrite($fp, $headers);
-                                fclose($fp);
-                                if (!touch($store->files."cache/".$file, $time)) {
-                                        debug("ldSetCache: ERROR: couldn't touch image","object");
-                                }
-                        }
-                }
+		debug("ldSetCache($file, $time, [image], [headers])","object");
+		$time=time()+($time*3600);
+		if (!ereg("\.\.",$file)) {
+			if ($image) {
+				$path=substr($file, 1, strrpos($file, "/")-1);
+				if (!file_exists($store->files."cache/".$path)) {
+					ldMkDir("cache/".$path);
+					ldMkDir("cacheheaders/".$path);
+				}
+				$fp=fopen($store->files."cache/".$file, "w");
+				fwrite($fp, $image);
+				fclose($fp);
+				$fp=fopen($store->files."cacheheaders/".$file, "w");
+				fwrite($fp, $headers);
+				fclose($fp);
+				if (!touch($store->files."cache/".$file, $time)) {
+					debug("ldSetCache: ERROR: couldn't touch image","object");
+				}
+			}
+		}
 	}
 
 	function ldMkDir($dir) {
@@ -99,6 +99,7 @@
 
   } else {
 
+//    debugon("all");
     // go check for a sessionid
     $root=$AR->root;
     $store=new mysqlstore($root,$store_config);
@@ -135,9 +136,9 @@
       // system template: no language check
       $ARCurrent->nolangcheck=1;
     }
-    $cachedimage=$store_config["files"]."cache".$cachenls.$path.$function."?".$QUERY_STRING;
-    $cachedheader=$store_config["files"]."cacheheaders".$cachenls.$path.$function."?".$QUERY_STRING;
-    // yes, the extra '?' is needed, don't remove it. trust me.
+    $cachedimage=$store_config["files"]."cache".$cachenls.$path.$function."=".$QUERY_STRING;
+    $cachedheader=$store_config["files"]."cacheheaders".$cachenls.$path.$function."=".$QUERY_STRING;
+    // yes, the extra '=' is needed, don't remove it. trust me.
     
     $timecheck=time();
     if (file_exists($cachedimage) && 
@@ -204,7 +205,12 @@
 			}
 		}
 		ob_end_flush();
-		ldSetCache($ARCurrent->filename, $ARCurrent->cachetime, $image, $ARCurrent->headers);
+		debug("loader: ob_end_flush()","all");
+		if (is_array($ARCurrent->cache) && ($file=array_pop($ARCurrent->cache))) {
+			error("cached() opened but not closed with savecache()");
+		} else {
+			ldSetCache($ARCurrent->filename, $ARCurrent->cachetime, $image, $ARCurrent->headers);
+		}
 	}
   }
 ?>
