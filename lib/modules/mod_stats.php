@@ -101,14 +101,14 @@
 			// log the visitor
 			if($client_id != "") {
 				debug ("mod_stats::opentrackerlog: client_id = $client_id", "class");
-				phpOpenTracker::log( Array(
+				@phpOpenTracker::log( Array(
 					'document' => $logpath,
 					'referer' => $referer,
 					'client_id' => $client_id)
 				);
 			} else {
 				debug ("mod_stats::opentrackerlog: logging without client_id", "class");
-				phpOpenTracker::log( Array(
+				@phpOpenTracker::log( Array(
 					'document' => $logpath,
 					'referer' => $referer)
 				);
