@@ -31,7 +31,7 @@
 	$ARnls["xp_small"]						=	"Liste";
 	$ARnls["xp_templates"]					=	"R&eacute;gler les gabarits pour ";
 	$ARnls["xp_tutorials"]					=	"Tutoriaux";
-	$ARnls["xp_types"]						=	"R&eacute;gler le type d\'arborescence pour ";
+	$ARnls["xp_types"]						=	"R&eacute;gler le type d'arborescence pour ";
 	$ARnls["xp_up"]							=	"haut";
 	$ARnls["xp_view"]						=	"Voir";
 	$ARnls["xp_viewweb"]					=	"Voir la page web";

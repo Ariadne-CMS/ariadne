@@ -5,9 +5,10 @@
   include($ariadne."configs/store.phtml");
   include($ariadne."includes/loader.web.php");
 
-  $languages=Array('nl','de','es','pl','hr','it','fr','sv');
+  $languages=Array('nl','de','es','pl','hr','it','fr','sv', 'en');
   $modules=Array('','winxp.','ieedit.','menu.');
   $target='./new/';
+  define('NLSESCAPE', str_replace("'", "", ARESCAPE));
 
   ob_start();
 
@@ -31,9 +32,9 @@
       while (list($arkey, $arvalue)=each($default)) {
         $tabs=substr("								",(int)((strlen($arkey)+2)/4));
         if ($ARnls[$arkey]) {
-          echo "	\$ARnls[\"$arkey\"]$tabs=	\"".AddCSlashes($ARnls[$arkey], ARESCAPE)."\";\n";
+          echo "	\$ARnls[\"$arkey\"]$tabs=	\"".AddCSlashes(str_replace('\\\'', "'", $ARnls[$arkey]), NLSESCAPE)."\";\n";
         } else {
-          echo "	\$ARnls[\"$arkey\"]$tabs=	\"!".AddCSlashes($arvalue, ARESCAPE)."\";\n";
+          echo "	\$ARnls[\"$arkey\"]$tabs=	\"!".AddCSlashes(str_replace('\\\'', "'", $arvalue), NLSESCAPE)."\";\n";
         }
       }
       unset($ARnls);

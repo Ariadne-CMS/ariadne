@@ -80,7 +80,7 @@
 	$ARnls["e_standard"]					=	"Standard";
 	$ARnls["e_style"]						=	"!Style";
 	$ARnls["e_table"]						=	"Tableau";
-	$ARnls["e_toolbars"]					=	"Barres d\'outils";
+	$ARnls["e_toolbars"]					=	"Barres d'outils";
 	$ARnls["e_underline"]					=	"Soulign&eacute;";
 	$ARnls["e_undo"]						=	"D&eacute;faire";
 	$ARnls["e_vertical"]					=	"Verticale";

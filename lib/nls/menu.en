@@ -1,4 +1,4 @@
-<?PHP
+<?php
 
 	$ARnls["m_about"]						=	"About&nbsp;Ariadne";
 	$ARnls["m_cache"]						=	"Cache";
@@ -24,6 +24,7 @@
 	$ARnls["m_logoff"]						=	"Log&nbsp;off";
 	$ARnls["m_new"]							=	"New";
 	$ARnls["m_object"]						=	"Object";
+	$ARnls["m_page"]						=	"Page";
 	$ARnls["m_preferences"]					=	"Preferences";
 	$ARnls["m_priority"]					=	"Priority";
 	$ARnls["m_rename"]						=	"Rename";
@@ -35,5 +36,6 @@
 	$ARnls["m_types"]						=	"Types";
 	$ARnls["m_view"]						=	"View";
 	$ARnls["m_web"]							=	"Webpage";
-	$ARnls["m_page"]						=	"Page";
+
+
 ?>
