@@ -585,7 +585,6 @@ class pobject extends object {
 	// browser.
 	// All these templates must exist under a fixed directory, $AR->dir->templates
 	global $nocache, $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls, $HTTP_POST_VARS, $HTTP_GET_VARS;
-	static $arContentTypeSent = false;
 	
 		debug("pobject::CheckConfig($arCallFunction, $arCallArgs)","object");
 		$MAX_LOOP_COUNT=10;
@@ -642,13 +641,13 @@ class pobject extends object {
 				debug("             config->cache: ".$config->cache."; nocache: ".$nocache."; user: ".$AR->user->data->login."; os: ".$AR->OS,"all");
 			}
 			$nocache=true; // make sure no other parts are cached either;
-			if (!$arContentTypeSent) {
+			if (!$ARCurrent->arContentTypeSent) {
 				if ($AR->nls->charsets[$nls]) {
 					ldHeader("Content-Type: text/html; charset=".$AR->nls->charsets[$nls]);
 				} else {
 					ldHeader("Content-Type: text/html; charset=".$AR->nls->charsets["default"]);
 				}
-				$arContentTypeSent = true;
+				$ARCurrent->arContentTypeSent = true;
 			}
 
 			if ($this->data->pinp[$this->type][$arCallFunction][$this->nls]) {
