@@ -56,7 +56,7 @@
 					$table=$this->tbl_prefix."types";
 					$this->used_tables[$table]=$table;
 					$type=$this->compile_tree($node["right"]);
-					$result=" (".$this->tbl_prefix."types.implements $operator $type and ".$this->tbl_prefix."objects.type = ".$this->tbl_prefix."types.type ) ";
+					$result=" (".$this->tbl_prefix."types.implements $operator $type and ".$this->tbl_prefix."objects.vtype = ".$this->tbl_prefix."types.type ) ";
 				}
 			break;
 			case 'group':
