@@ -14,10 +14,10 @@
 
 
 /**************************************************************************
- *    Fill in the url of the site which has to be used as the ftp root    *
+ *    Fill in the path which has to be used as the ftp root               *
  **************************************************************************/
 
-    $ftp_config['site']            = 'muze.nl';
+    $ftp_config['root']            = '/';
 
 
 /**************************************************************************

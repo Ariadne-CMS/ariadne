@@ -1,13 +1,13 @@
 <?php
 	if ($argc > 1) {
-		$config=$argv[1];
+		$configfile=$argv[1];
 	} else {
-		$config="default";
+		$configfile="default.phtml";
 	}
 
 	include("../www/ariadne.inc");
 	require($ariadne."/configs/ariadne.phtml");
-    require($ariadne."/configs/ftp/$config.phtml");
+    require($ariadne."/configs/ftp/$configfile");
 	require($ariadne."/includes/loader.ftp.php");
 	require($ariadne."/configs/store.phtml");
 	require($ariadne."/configs/sessions.phtml");
@@ -729,7 +729,6 @@
 
 								if ($site) {
 									if ($AR->user->data->login==="admin" || $site->CheckLogin("ftp")) {
-										$FTP->site=substr($site->path,0,-1);
 										$FTP->cwd="/";
 										$this->user=$login;
 									} else {
@@ -739,7 +738,6 @@
 									}
 								} else {
 									if ($AR->user->data->login==="admin" || $AR->user->CheckLogin("ftp")) {
-										$FTP->site="";
 										$FTP->cwd="/";
 										$this->user=$login;
 									} else {
@@ -898,23 +896,9 @@
 		$FTP->stdout=fopen("php://stdout", "w");
 		if ($FTP->stdout) {
 
-			// find our ftp site
-			$criteria="object.implements = 'psite'";
-			$criteria.=" and url.host = '".AddSlashes($FTP->host)."'";
-			$result=$FTP->store->call("system.get.phtml", "",
-									$FTP->store->find("/", $criteria));
-
-
-			if (is_array($result)) {
-				$site=current($result);
-				$FTP->site=substr($site->path, 0, -1);
-				$FTP->cwd="/";
-				ftp_Tell(220, $ftp_config["greeting"]);
-			} else {
-				$FTP->site="";
-				$FTP->cwd="/";
-				ftp_Tell(220, $ftp_config["greeting"]);
-			}
+			$FTP->site=substr($ftp_config["root"],0, -1);
+			$FTP->cwd="/";
+			ftp_Tell(220, $ftp_config["greeting"]);
 
 			ftp_CheckLogin();
 			ftp_Run();
