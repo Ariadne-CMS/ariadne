@@ -181,6 +181,16 @@ Bugs Fixed:
 	  * imports' templates code was wrong
 	- change the way templates are included, because it was a bit wrong
 	- changed cleanup to ignore .svn directory's and the files below it, to keep svn trees working
+	- since a long long time ariadne is case insensitive. but only the
+	  mysqlstore did this also on store level. Added code and indexes which make
+	  the postgresql store case insensitive. This because the cache is also case
+	  insensitive and that could break with a case sensitive store.
+	  to check if your postgresql install is upgradeable run.
+	   select a.path as apath ,b.path as bpath 
+			from
+				store_nodes as a, store_nodes as b 
+			where
+				lower(a.path) = lower(b.path) and a.path  != b.path;"
 
 Changes in Ariadne since version Ariadne 2.3-dev
 

@@ -213,7 +213,7 @@ class postgresqlstore {
 		$objects_tbl = $this->tbl_prefix."objects";
 		$types_tbl = $this->tbl_prefix."types";
 
-		$query_string = "select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, date_part('epoch', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path='$epath'";
+		$query_string = "select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, date_part('epoch', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and lower($nodes_tbl.path)=lower('$epath')";
 		$result["list"] = $this->store_run_query($query_string);
 		debug("get: end","all");
 		return ($result);
@@ -233,7 +233,7 @@ class postgresqlstore {
 
 		if (is_string($id)) {
 			$epath = AddSlashes($id);
-			$query_string = "select $nodes_tbl.object from $nodes_tbl where $nodes_tbl.path = '$epath'";
+			$query_string = "select $nodes_tbl.object from $nodes_tbl where lower($nodes_tbl.path) = lower('$epath')";
 			$qresult = $this->store_run_query($query_string);
 			if ($qresult === false) {
 				debug("get: failed on query","store");
@@ -283,7 +283,7 @@ class postgresqlstore {
 		$objects_tbl = $this->tbl_prefix."objects";
 		$types_tbl = $this->tbl_prefix."types";
 
-		$query_string = "select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, date_part('epoch', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.parent='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
+		$query_string = "select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, date_part('epoch', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and lower($nodes_tbl.parent)=lower('$epath') order by $nodes_tbl.priority DESC, $nodes_tbl.path";
 		$result["method"] = "ls";
 		$result["path"] = $path;
 		$result["list"] = $this->store_run_query( $query_string);
@@ -314,7 +314,7 @@ class postgresqlstore {
 		$objects_tbl = $this->tbl_prefix."objects";
 		$types_tbl = $this->tbl_prefix."types";
 
-		$query_string = "select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, date_part('epoch', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path=substring('$epath',1,length(path)) and $nodes_tbl.path LIKE '$etop%' order by path";
+		$query_string = "select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, date_part('epoch', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and lower($nodes_tbl.path)=lower(substring('$epath',1,length(path))) and lower($nodes_tbl.path) LIKE lower('$etop%') order by path";
 		debug($query_string, "all");
 		$result["method"] = "parents";
 		$result["path"] = $path;
@@ -422,7 +422,7 @@ class postgresqlstore {
 					$where .= " ".$this->tbl_prefix."prop_$eproperty.object=$objects_tbl.id)	";
 				}
 			}
-			$query_string = "select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, date_part('epoch', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $nodes_tbl, $objects_tbl $from $types where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path like '$epath%'";
+			$query_string = "select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, date_part('epoch', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $nodes_tbl, $objects_tbl $from $types where $objects_tbl.id=$nodes_tbl.object and lower($nodes_tbl.path) like lower('$epath%')";
 	        $where = substr($where,4);
 	        if ($where) { 
 	          $query_string .= " and ( ( $where ) )";
@@ -741,7 +741,7 @@ class postgresqlstore {
 		$objects_tbl = $this->tbl_prefix."objects";
 		$types_tbl = $this->tbl_prefix."types";
 
-		$query_string = "select object from $nodes_tbl where path='$epath'";
+		$query_string = "select object from $nodes_tbl where lower(path)=lower('$epath')";
 		$exec = $this->store_run_query( $query_string);
 		if ($exec){
 			if( (pg_numrows($exec) > 0) && ($row = pg_fetch_array($exec, 0))) {

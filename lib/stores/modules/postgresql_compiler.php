@@ -8,6 +8,20 @@
 		$this->store=$store;
 	}
 
+	function test_for_lowercase(&$node){
+		$ret = false;
+		switch ((string)$node["id"]) {
+			case 'ident':
+				if ( $node["table"] == "nodes" ) {
+					if ( $node["field"] == "path" or $node["field"] == "parent" ) {
+						$ret = true;
+					}
+				}
+				break;
+		}
+		return $ret;
+	}
+	
 	function compile_tree(&$node) {
 		switch ((string)$node["id"]) {
 			case 'property':
@@ -130,7 +144,13 @@
 				if ($node["left"]["id"]!=="implements") {
 					$left=$this->compile_tree($node["left"]);
 					$right=$this->compile_tree($node["right"]);
-					$result=" $left $operator $right ";
+					if($this->test_for_lowercase($node["left"])){
+						// lowercase compile
+						$result=" lower($left) $operator lower($right) ";
+					} else {
+						// normal compile
+						$result=" $left $operator $right ";
+					}
 				} else {
 					$table=$this->tbl_prefix."types";
 					$type=$this->compile_tree($node["right"]);

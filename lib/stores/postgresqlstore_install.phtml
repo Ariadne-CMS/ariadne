@@ -20,6 +20,9 @@ CREATE TABLE ".$this->tbl_prefix."nodes (
 CREATE INDEX ".$this->tbl_prefix."nodes_object ON ".$this->tbl_prefix."nodes (object);
 CREATE INDEX ".$this->tbl_prefix."nodes_parent ON ".$this->tbl_prefix."nodes (parent);
 CREATE INDEX ".$this->tbl_prefix."nodes_priority ON ".$this->tbl_prefix."nodes (priority);
+CREATE UNIQUE INDEX ".$this->tbl_prefix."nodes_path_lower ON ".$this->tbl_prefix."nodes (lower(path));
+CREATE INDEX ".$this->tbl_prefix."nodes_parent_lower ON ".$this->tbl_prefix."nodes (lower(parent));
+
 ";
 
 		$queries[1]["msg"]="creating objects table.";

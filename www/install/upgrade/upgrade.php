@@ -41,8 +41,6 @@
 	include_once($store_config['code']."modules/mod_session.phtml");
 	include_once($store_config['code']."includes/loader.web.php");
 
-	$new_version = "2.4rc2";
-
 		// instantiate the store
 	$inst_store = $store_config["dbms"]."store";
 	$store=new $inst_store($root,$store_config);
@@ -70,8 +68,16 @@
 			array_push($todo, Array(
 								"description" => "Moving configuration into data->config.",
 								"operation" => "2.4rc1/upgrade.configdata.php",
-								"newversion" => $new_version
+								"newversion" => "2.4rc2.1"
 								));
+		case "2.4rc1.1":
+			if( $store_config["dbms"] == "postgresql") {
+				array_push($todo, Array(
+							"description" => "updating the postgresql store.",
+							"operation" => "2.4rc2/upgrade.postgresql.lowercase.php",
+							"newversion" => "2.4rc1.2"
+							));
+			}
 	}
 
 
@@ -83,6 +89,9 @@
 		if (!$error) {
 			echo "Ariadne database succesfully upgraded to: ".$task["newversion"]."<br>\n";
 			$store->call('system.save.data.phtml', Array('value' => $task["newversion"]), $store->get('/system/ariadne/version/'));
+		} else {
+			echo "Upgrade failed:<br>";
+			echo "$error";
 		}
 	}
 
