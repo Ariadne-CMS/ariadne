@@ -31,6 +31,15 @@ New Features:
 	  be derived from
 	- Added pldapconnection object which can be used to map LDAP objects
 	  into the Ariadne store as well as to authenticate users.
+	- Extended the user retrieval/authentication code to ask all 
+	  objects in /system/users/ implementing pconnector (e.g. 
+	  pldapconnection) to get/authenticate the user, if the user
+	  wasn't found in the internal Ariadne user database.
+	- Extended the group membership retrieval code to take
+	  external group memberships into account, which might have been
+	  set by some pconnector object (e.g. pldapconnection) to
+	  include the user's group memberships set in an external
+	  database (e.g. LDAP).
 
 Bugs Fixed:
 	- Fixed logging in with another user on your own session.
