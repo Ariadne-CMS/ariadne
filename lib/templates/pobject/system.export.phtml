@@ -66,13 +66,13 @@ if ($this->CheckLogin("read")) {
 				}
 
 				if (!$saved_object[$object->id]) {
-					if ($ARCurrent->importStore->exists($newpath)) {
+					if (!$options["force"] || $ARCurrent->importStore->exists($newpath)) {
 						$saved_object[$object->id]=$newpath;
 
 						$oldObject=current($ARCurrent->importStore->call("system.get.phtml", "",
 										$ARCurrent->importStore->get($newpath)));
 
-						if ($object->lastchanged > $oldObject->lastchanged) {
+						if (($object->lastchanged > $oldObject->lastchanged)) {
 							display("(updating)\n");
 							$object->oldObject=$oldObject;
 							$object->call("system.export.update.phtml");

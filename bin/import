@@ -18,6 +18,7 @@
 		--verbose		Display what we are doing
 		--without-grants	Don't export grant information
 		--tar_nofail		Suppres tar/gz errors
+		--force			Overwrites everything
 		--help			This information\n\n";
 
 	$arg_c=0;
@@ -52,6 +53,10 @@
 
 				case 'verbose':
 					$options["verbose"]=true;
+				break;
+
+				case 'force':
+					$options["force"]=true;
 				break;
 
 				case 'help':
