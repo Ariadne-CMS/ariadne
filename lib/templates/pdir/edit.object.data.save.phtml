@@ -8,36 +8,23 @@
   ******************************************************************/
   $this->call("system.save.data.phtml",$arCallArgs);
   if ($this->error) {
-?>
-  <font color="red" face="arial,helvetica,sans-serif" size=+1><?php
-    echo $this->error;
-  ?></font><p>
-<?php
+    ?>
+      <font color="red" face="arial,helvetica,sans-serif" size=+1><?php echo $this->error; ?></font><p>
+    <?php
   } else {
-    $returnpage=$AR->dir->www."blue.html";
-    $folders=$this->get("", "GetFolder.phtml");
-    if ($folders && is_array($folders)) {
-      $folder=$folders[0];
-    }
-    if ($this->newobject) {
-      $url=$AR->dir->www."setlink.php?do=add";
-    } else {
-      $url=$AR->dir->www."setlink.php?do=update";
-    }
-    $url.="&link=".RawUrlEncode($this->parent);
-    $url.="&icon=".RawUrlEncode($folder["icon"]);
-    $url.="&name=".RawUrlEncode($folder["name"]);
-    $url.="&path=".RawUrlEncode($folder["path"]);
-    $url.="&pre=".RawUrlEncode($folder["pre"]);
-    $url.="&returnpage=".RawUrlEncode($returnpage);
-?>
-<script> 
-  if (window.opener.top.tree) {
-    window.opener.top.tree.treeload.location='<?php echo $url; ?>';
-  }
-  window.opener.objectadded('<?php echo $this->type; ?>','<?php echo $nlsdata->name; ?>','<?php echo $this->path; ?>'); 
-  window.close();
-</script>
-<?php
+    $folder=$this->call("system.get.folder.phtml");
+    ?>
+      <script> 
+        <?php 
+          if ($this->newobject) { 
+            echo "  window.opener.top.tree.AddLinks('{$this->parent}','{$folder["icon"]}','".AddSlashes($folder["name"])."','{$folder["path"]}','".AddSlashes($folder["pre"])."');\n";
+          } else {
+            echo "  window.opener.top.tree.UpdateLinks('{$folder["icon"]}','".AddSlashes($folder["name"])."','{$folder["path"]}','".AddSlashes($folder["pre"])."');\n";
+          }
+        ?>
+        window.opener.objectadded('<?php echo $this->type; ?>','<?php echo $nlsdata->name; ?>','<?php echo $this->path; ?>'); 
+        window.close();
+      </script>
+    <?php
   }
 ?>
