@@ -95,6 +95,13 @@
 							"newversion" => "2.4"
 							));
 
+		case "2.4":
+				array_push($todo, Array(
+							"description" => "correcting nls names for es.",
+							"operation" => "2.4/upgrade.nls.es.php",
+							"newversion" => "2.4.0.1"
+							));
+
 	}
 
 
