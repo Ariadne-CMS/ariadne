@@ -3,16 +3,53 @@
 
   class postgresql_compiler extends sql_compiler {
 	function postgresql_compiler($tbl_prefix="") {
-		$this->tbl_prefix	= $tbl_prefix;
+		debug("postgresql_compiler($tbl_prefix)", "store");
+		$this->tbl_prefix=$tbl_prefix;
 	}
 
 	function compile_tree(&$node) {
 		switch ((string)$node["id"]) {
 			case 'ident':
 				$table=$this->tbl_prefix.$node["table"];
-				$this->used_tables[$table]=$table;
 				$field=$node["field"];
-				$result=" $table"."."."$field ";
+				$record_id=$node["record_id"];
+				if (!$record_id) {
+					$this->used_tables[$table]=$table;
+					if ($node["table"] == "objects" && $node["field"] == "lastchanged") {
+						$result = "lastchanged";
+					} else {
+						$result=" $table.$field ";
+					}
+				} else {
+					$this->used_tables["$table as $table$record_id"] = $table.$record_id;
+					$result = " $table$record_id.$field ";
+				}
+			break;
+			case 'custom':
+				$table = $this->tbl_prefix."prop_custom";
+				$field = $node["field"];
+				$nls = $node["nls"];
+				/*
+					when we are compiling orderby properties we always want
+					to assign it to a new table alias
+				*/
+				if ($this->in_orderby) {
+					$this->custom_id++;
+				}
+				$this->custom_ref++;
+				$this->used_tables[$table." as $table".$this->custom_id] = $table.$this->custom_id;
+				$this->used_custom_fields[$field] = true;
+				$result = " $table".$this->custom_id.".AR_name = '$field' ";
+				if ($nls) {
+					$result = " $result and $table".$this->custom_id.".AR_nls = '$nls' ";
+				}
+
+				if (!$this->in_orderby) {
+					$result = " $result and $table".$this->custom_id.".AR_value ";
+				} else {
+					$this->where_s_ext = $result;
+					$result = " $table".$this->custom_id.".AR_value ";
+				}
 			break;
 			case 'string':
 			case 'float':
@@ -20,8 +57,17 @@
 				$result=" ".$node["value"]." ";
 			break;
 			case 'and':
+				$cr = $this->custom_ref;
 				$left=$this->compile_tree($node["left"]);
+				if ($this->custom_ref > $cr) {
+					$this->custom_id++;
+				}
+
 				$right=$this->compile_tree($node["right"]);
+				$cr = $this->custom_ref;
+				if ($this->custom_ref > $cr) {
+					$this->custom_id++;
+				}
 				$result=" $left and $right ";
 			break;
 			case 'or':
@@ -42,8 +88,8 @@
 					case '>':
 						$operator=$node["operator"];
 					break;
+ 					case '~=':
 					case '=~':
-					case '~=':
 						$operator="LIKE";
 					break;
 					case '!~':
@@ -74,15 +120,9 @@
 			break;
 
 			case 'orderbyfield':
+				$this->in_orderby = true;
 				$left=$this->compile_tree($node["left"]);
 				$right=$this->compile_tree($node["right"]);
-				/*
-					all groupby fields must be present in the select list
-					because we use distinct()
-				*/
-				if (substr($node["right"]["table"], 0, 5)==="prop_") {
-					$this->select_list[$right] = "$right as ".$node["right"]["table"].$node["right"]["field"];
-				}
 				if ($left) {
 					$result=" $left ,  $right ".$node["type"]." ";
 				} else {
@@ -105,6 +145,8 @@
 
 	// postgresql specific compiler function
 	function priv_sql_compile($tree) {
+		$this->custom_ref = 0;
+		$this->custom_id = 0;
 		$this->used_tables="";
 		$this->compile_tree($tree);
 		$nodes=$this->tbl_prefix."nodes";
@@ -114,27 +156,23 @@
 		@reset($this->used_tables);
 		while (list($key, $val)=each($this->used_tables)) {
 			if ($tables) {
-				$tables.=", $val";
+				$tables.=", $key";
 			} else {
-				$tables="$val";
+				$tables="$key";
 			}
-			if (substr($val, 0, 5+strlen($this->tbl_prefix)) == $this->tbl_prefix."prop_") {
+			if (substr($val, 0, 5+strlen($this->tbl_prefix))==$this->tbl_prefix."prop_") {
 				$prop_dep.=" and $val.object=$objects.id ";
 			}
 		}
 
-		$select_list = "";
-		if (is_array($this->select_list)) {
-			while (list($key, $val)=each($this->select_list)) {
-				$select_list.=" , $val ";
-			}
-		}
 		$query="select distinct($nodes.path), $nodes.parent, $nodes.priority, ";
 		$query.=" $objects.id, $objects.type, $objects.object, date_part('epoch', $objects.lastchanged) as lastchanged, $objects.vtype ";
-		$query.=" $select_list ";
 		$query.=" from $tables where ";
 		$query.=" $nodes.object=$objects.id $prop_dep";
 		$query.=" and ( $this->where_s ) ";
+		if ($this->where_s_ext) {
+			$query .= " and ($this->where_s_ext) ";
+		}
 		if ($this->orderby_s) {
 			$query.= " order by $this->orderby_s, $nodes.priority DESC, $nodes.path ASC ";
 		} else {
@@ -142,7 +180,6 @@
 		}
 		$query.=" $this->limit_s ";
 
-		debug("compiled query: ($query)\n", "store");
 		return $query;
 	}
 
