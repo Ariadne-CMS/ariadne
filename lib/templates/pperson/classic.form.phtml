@@ -27,9 +27,7 @@
 </head>
 <body bgcolor="white" onUnLoad="releaseLock()">
 <form method="post">
-<!-- hidden form variables needed by new.phtml/save.phtml -->
 <input type="hidden" name="arNewType" value="<?php echo $arNewType; ?>">
-<input type="hidden" name="newparent" value="<?php echo $this->path; ?>">
 <input type="hidden" name="arNewFilename" value="<?php echo $arNewFilename; ?>">
 <input type="hidden" name="arReturnPage" value="<?php echo $arReturnPage; ?>">
 
@@ -98,7 +96,7 @@
 	</td><td colspan="2">
 	<select name="country">
 	<?php
-		$this->ls("/system/addressbook/countries/","ShowOption.phtml","selected=".$this->getdata("country","none"));
+		$this->ls("/system/addressbook/countries/","show.option.value.phtml","selected=".$this->getdata("country","none"));
 	?>
 	</select>
 	</td>
