@@ -10,6 +10,7 @@
 
 	******************************************************************/
 	if ($this->CheckLogin("delete")) {
+		$entry=getdata("entry", "none");
 		if (!$confirm=$this->getdata("confirm","none")) {
 			if (!$this->data->repeat || ($this->data->repeat=="none")) {
 				$confirm=$ARnls["current"];
