@@ -5,6 +5,9 @@ Changes in ariadne since version 2.0b9
 New Features
 - Object templates are automatically inherited to subclasses, just like
   Class templates.
+- default.phtml class template is no longer neccessary
+- You can call templates from other classes by prepending 'classname::' to
+  the template name. e.g. call('pobject::show.html');
 - Easier configuration, the files are more readable and contain better
   default values.
 - A new photobook. The photobook automatically generates thumbnails of
