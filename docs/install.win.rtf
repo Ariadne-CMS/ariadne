@@ -1,5 +1,5 @@
 {\rtf1\ansi\ansicpg1252\deff0\deflang1033\deflangfe1043\deftab708{\fonttbl{\f0\fswiss\fprq2\fcharset0 Arial;}{\f1\fmodern\fprq1\fcharset0 Courier New;}{\f2\fswiss\fprq2\fcharset0 Franklin Gothic Book;}}
-\viewkind4\uc1\pard\nowidctlpar\lang1043\b\f0\fs32 Ariadne installation instructions - Windows 2000/NT\par
+{\*\generator Msftedit 5.41.15.1507;}\viewkind4\uc1\pard\nowidctlpar\lang1043\b\f0\fs32 Ariadne installation instructions - Windows 2000/NT\par
 \b0\fs24\par
 \par
 \fs32 Using IIS\par
@@ -10,7 +10,7 @@
 \fs24\par
 Download the PHP 4 windows binaries from \b http://www.php.net/downloads.php\b0  or one of its mirrors. \par
 \par
-\pard Unzip PHP and install it somewhere (e.g.: \b C:\\PHP\\\b0 ).  Now download our patched version of the isapi dll from \f1 ftp://ftp.muze.nl/pub/ariadne/win/iis/php-4.1.0/php4isapi.dll\f0  and copy it over the original. (which you can find at \b C:\\PHP\\sapi\\php4isapi.dll\b0 )\par
+\pard Unzip PHP and install it somewhere (e.g.: \b C:\\PHP\\\b0 ).  Now download our patched version of the isapi dll from \f1 ftp://ftp.muze.nl/pub/ariadne/win/iis/php-4.3.6/php4isapi.dll\f0  and copy it over the original. (which you can find at \b C:\\PHP\\sapi\\php4isapi.dll\b0 )\par
 \pard\nowidctlpar\par
 This patch fixes a problem with IIS and PHP which prevents PHP from finding the correct script to execute if you add path info in the url. Ariadne will not run without this. \par
 \par
@@ -97,8 +97,8 @@ Common installation steps:\par
 \par
 1. Install MySQL\fs24\par
 \par
-Start by unzipping the file \b mysql-3.23.40- win.zip\b0 . If you use WinZip you can immediately press \b Install\b0 , otherwise you can unzip the files to a temporary directory and start \b setup.exe\b0 .\par
-\par
+\pard\sb100\sa100 Start by unzipping the file \b mysql-4.1.7-win.zip\b0 . If you use WinZip you can immediately press \b Install\b0 , otherwise you can unzip the files to a temporary directory and start \b setup.exe\b0 .\par
+\pard\nowidctlpar\par
 The installation wizard will guide you through the initial installation of MySQL. \par
 \par
 After the installation wizard finishes, start the program \b winmysqladmin.exe\b0  from the \b bin\b0  directory under the Mysql installation directory. This program will first ask you to enter a username and password. You can use these to connect to the MySQL database from now on. The program has placed itself in the system tray, so click on the 'traffic light' icon there and select '\b show me\b0 '. Now press the '\b my.ini Setup\b0 ' tab. Enter the correct values for the base directory and select '\b mysqld-nt\b0 '. Check the entries in the my.ini file and then press '\b Save Modification\b0 '.\par
@@ -107,7 +107,7 @@ Finally you need to create two databases for Ariadne to use later. Click on the 
 \par
 \fs32 2. Install Ariadne\par
 \fs24\par
-Start by unzipping the file \b ariadne.2.3.1-dev.zip\b0  to a suitable directory ( e.g. \b C:\\Program Files\\Ariadne\\\b0  ) . This directory should not be in your webservers document root! (That would allow hackers to read the programs source code via the web, which is a bad thing.)\par
+Start by unzipping the file \b ariadne.2.4.zip\b0  to a suitable directory ( e.g. \b C:\\Program Files\\Ariadne\\\b0  ) . This directory should not be in your webservers document root! (That would allow hackers to read the programs source code via the web, which is a bad thing.)\par
 \par
 Now you can either move the \b www\b0  directory from the ariadne installation directory to a new directory in the document root of the webserver, e.g. \b /ariadne/\b0 , or you can direct the webserver to an alternative directory. \par
 \par
