@@ -535,7 +535,7 @@ class pobject {
 			} else if (($arStoreVars=$HTTP_GET_VARS["arStoreVars"]) && isset($arStoreVars[$nls][$varname])) {
 				$result=$arStoreVars[$nls][$varname];
 			}
-			if (!$result) {
+			if (!isset($result)) {
 				$dummy=$this->data->$nls;
 				$result=$dummy->$varname;
 			}
