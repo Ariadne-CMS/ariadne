@@ -476,14 +476,17 @@ class pinp {
 		$this->scanner->init($template);
 		$this->tokens = Array();
 		$this->new_template = "";
+		$this->in_pinp = false;
 		$this->next_token();
 		while ($this->token != T_EOF) {
 			switch ($this->token) {
 				case T_PINP_START:
 					$this->new_template.=$this->token_value."<?php ";
+					$this->in_pinp = true;
 				break;
 				case T_PINP_END:
 					$this->new_template.=" ?>";
+					$this->in_pinp = false;
 				break;
 				case T_VARIABLE:
 					$this->new_template.=$this->var_prefix.$this->token_value;
@@ -580,6 +583,10 @@ class pinp {
 				break;
 			}
 			$this->next_token();
+		}
+
+		if ($this->in_pinp) {
+			$this->error = "no closing pinp tag found";
 		}
 		return $this->new_template;
 	}
