@@ -1,0 +1,301 @@
+<?php
+
+include_once($ariadne."/stores/postgresqlstore.phtml");
+
+class postgresqlstore_install extends postgresqlstore {
+
+	function initialize() {
+		echo "initializing PostgreSQL store.\n";
+		$queries[0]["msg"]="creating nodes table.";
+		$queries[0]["query_string"]="
+CREATE TABLE nodes (
+	path varchar(127) DEFAULT '' NOT NULL PRIMARY KEY,
+	parent varchar(127) DEFAULT '' NOT NULL,
+	object numeric(11) DEFAULT '0' NOT NULL,
+	priority numeric(11) DEFAULT '0' NOT NULL
+);
+CREATE INDEX nodes_object ON nodes (object);
+CREATE INDEX nodes_parent ON nodes (parent);
+CREATE INDEX nodes_priority ON nodes (priority);
+";
+
+		$queries[1]["msg"]="creating objects table.";
+		$queries[1]["query_string"]="
+CREATE SEQUENCE objects_id_seq START 1;
+CREATE TABLE objects (
+	id integer DEFAULT nextval('objects_id_seq') PRIMARY KEY,
+	type varchar(16) DEFAULT '' NOT NULL,
+	object text,
+	vtype varchar(16) DEFAULT '' NOT NULL,
+	lastchanged TIMESTAMP
+);
+CREATE INDEX objects_lastchanged ON objects (lastchanged);
+";
+		$queries[2]["msg"]="creating properties table.";
+		$queries[2]["query_string"]="
+CREATE TABLE properties (
+	name varchar(21) DEFAULT '' NOT NULL PRIMARY KEY
+)";
+
+		$queries[3]["msg"]="creating seq_id table.";
+		$queries[3]["query_string"]="
+CREATE TABLE seq_id (
+	path varchar(127) DEFAULT '' NOT NULL PRIMARY KEY,
+	next_id numeric(11) DEFAULT '0' NOT NULL
+)";
+		$queries[4]["msg"]="creating types table.";
+		$queries[4]["query_string"]="
+CREATE TABLE types (
+	type varchar(16) DEFAULT '' NOT NULL,
+	implements varchar(16) DEFAULT '' NOT NULL
+);
+CREATE INDEX types_type ON types (type);
+CREATE INDEX types_implements ON TYPES (implements);
+";
+		$queries[5]["msg"]="creating root dir.";
+		$queries[5]["query_string"]="INSERT INTO nodes (path, parent, object) VALUES ('/','..',1)";
+
+		$queries[6]["msg"]="";
+		$queries[6]["query_string"]="INSERT INTO objects (type, object, vtype) VALUES ('pdir','O:6:\"object\":2:{s:2:\"en\";O:6:\"object\":1:{s:4:\"name\";s:7:\"Ariadne\";}s:3:\"nls\";O:6:\"object\":1:{s:7:\"default\";s:2:\"en\";}}','pdir')";
+
+		while ((list($key, $query)=each($queries)) && (!$error)) {
+			if ($query["msg"]) {
+				echo $query["msg"]."\n";
+			}
+			$exec=pg_exec($this->connect_id,$query["query_string"]);
+			$err=pg_errormessage($this->connect_id);
+			if ($err) {
+				$error=$err;
+				error("PostgreSQL: $err");
+			}
+		}
+
+
+		if (!$error) {
+			echo "creating default types.\n";
+			$this->add_type("pobject","pobject");
+			$this->add_type("pdir","pobject");
+			$this->add_type("pdir","pdir");
+			$return=true;
+			// initialize locking tables
+			$this->mod_lock->init();
+
+			echo "PostgreSQL store initialized.\n\n";
+		} else {
+			$return=false;
+		}
+		return $return;
+	}
+
+	function create_property($property, $definition, $indexes="") {
+	/**********************************************************************
+
+		This function creates a new property type. This property can then be
+	used by objects to set special information on which to quickly search
+	using find.
+
+	$name must be a string of at most 16 characters from the set [a-zA-Z0-9_] 
+	or '-', starting with a letter (a-zA-Z).
+
+	$definition describes which name value pairs this property contains and
+	which type (and size) each value is.
+	$definition is defined as: $definition[{name}][{type}]={size}
+		{name} is defined like $name above
+		(type} can be 'number', 'string' or 'boolean'
+		{size} is only used for the string type and can not be more than 255. 
+	$indexes describes which indexes the storage layer should consider
+		for the property. Default behaviour is to create one index for the
+		complete set of name-value pairs. If you want you can create a smaller
+		index, or more than one index.
+	$indexes is defined as: $indexes[][]={name} || $indexes="none"
+		e.g. $indexes[0][0]="name1";
+	 $indexes[1][0]="name2"
+				 $indexes[1][1]="name3";
+		this would create two indexes, one on "name1" and one on "name2" and
+		"name3".
+		{name} is defined like $name above. 
+	if $indexes is set to "none", no user indexes will be created on this 
+	property. This is usually not a good thing to do. 
+	 
+	**********************************************************************/
+		$result=1;
+		$this->error="";
+		if (eregi("^[a-z][a-z0-9_-]*$",$property) && strlen($property)<=16) {
+			$tablename="prop_".AddSlashes($property);
+			$create_string="create table ".AddSlashes($tablename)." (\n";
+			while (list($name, $typedef)=each($definition)) {
+				if (!eregi("^[a-z][a-z0-9_-]*$",$name) || strlen($name)>16) {
+					$result=0;
+					$this->error="Wrong format for type: $name";
+					break;
+				}	 
+				$create_string.= "	AR_".$name."	";
+				$indexstring.="AR_$name,";
+				while (list($type,$size)=each($typedef)) {
+					switch($type) {
+				case "string": 
+					if ($size>0 && $size<256) {
+						$create_string.="varchar(".$size.") not null,\n";
+					} else {
+						$result=0;
+						$this->error="Wrong format for typedefinition $name: incorrect size."; 
+					}
+					break;
+				case "number":
+					$create_string.="numeric(11) not null,\n";
+					break;
+				case "boolean":
+					$create_string.="bool not null,\n";
+					break;
+					}
+				}
+			}
+			if ($result) {
+				// now add the 'object' field.
+				$create_string.="object numeric(11) not null);\n";
+				// now add the correct indexes.
+				if ($indexes=="none") {
+					$indexstring="";
+				} else {
+					if ($indexes && is_array($indexes)) {
+						$indexstring="";
+						while ((list($key, $values)=each($indexes)) && $result) {
+							$indexstring.="CREATE INDEX ".$tablename."_id".$key." ON ".$tablename." (";
+							$comma="";
+							while (list($key2, $name)=each($values)) {
+								if (eregi("^[a-z][a-z0-9_-]*$",$name) && strlen($name)<=16) {
+									$indexstring.=$comma."AR_".$name;
+								} else {
+									$result=0;
+									$this->error="Wrong format for index ".$key." in: ".$name;
+									break;
+								}
+								$comma=",";
+							}
+							$indexstring.=");\n";
+						}
+					} else {
+						$indexstring="CREATE INDEX ".$tablename."_id0 ON $tablename(".substr($indexstring,0,-1).");\n";
+					}
+				}
+				if ($result) {
+					// add the indexes to the create_string
+					$create_string.=$indexstring;
+					// finally add the index on the object field and close the query.
+					$create_string.="CREATE INDEX ".$tablename."_object ON $tablename (object);\n";
+					$exec=pg_exec($this->connect_id,$create_string);
+					$err=pg_errormessage($this->connect_id);
+					if (!$err) {
+						$query_string="insert into properties values ( '".AddSlashes($property)."' )";
+						$exec=pg_exec($this->connect_id,$query_string);
+						$err=pg_errormessage($this->connect_id);
+						if ($err) {
+							$this->error=$err;
+							error("ERROR: PostgreSQL: ".$this->error);
+						}
+					} else {
+						$this->error=$err;
+						error("ERROR: PostgreSQL: ".$this->error);
+					}
+					//FIXME: check for succes first, how?
+				}
+			}
+		} else {
+			$result=0;
+			$this->error="Wrong format for property name: $property";
+		}
+		debug("create_property: $create_string","store");
+		return $result;
+	}
+
+	function remove_property($property) {
+	/**********************************************************************
+
+		This function removes the property with the given name. It does not
+	check whether there are types left which use this property. It returns
+	true when the named property is succesfully removed. This means it also
+	returns true if the property didn't exist in the first place.
+	Otherwise it will return false.
+
+	**********************************************************************/
+
+		$this->error="";
+		$eproperty=AddSlashes($property);
+		$remove_string="drop table prop_$eproperty";
+		debug($remove_string,"store");
+		pg_exec($this->connect_id,$remove_string);
+		$query_string="delete from properties where name='$eproperty'";
+		$exec=pg_exec($this->connect_id,$query_string);
+		$err=pg_errormessage($this->connect_id);
+		if ($err) {
+			$this->error=$err;
+			error("ERROR: PostgreSQL: ".$this->error);
+		}
+		//FIXME: check for succes first, check whether table no longer exists.
+		return 1;
+	}
+	
+	function add_type($type, $implements) {
+	/**********************************************************************
+	
+		This function does not actually create a type, it only serves to
+	notify to the system that $type exists and that it implements the
+	type or interface given in $implements.
+	$type and $implements must be strings of at most 16 characters.
+
+	**********************************************************************/
+
+		$this->error="";
+		if ($type && $implements && (strlen($type)<256) && (strlen($implements)<256)) {
+			$etype=AddSlashes($type);
+			$eimplements=AddSlashes($implements);
+			$query_string="insert into types values ('$etype','$eimplements')";
+			debug($query_string,"store");
+			pg_exec($this->connect_id,$query_string);
+			$err=pg_errormessage($this->connect_id);
+			if ($err) {
+				$this->error=$err;
+				$result=0;
+				error("ERROR: PostgreSQL: ".$this->error);
+			} else {
+				$result=1;
+			}	
+		} else {
+			$this->error="Wrong format for type or implements";
+		}
+		return $result;
+	}
+
+	function del_type($type, $implements="") {
+	/**********************************************************************
+
+		This function notifies the system that either:
+	1) A type no longer implements a certain type or interface, or
+	2) a type no longer exists.
+
+	**********************************************************************/
+
+		$this->error="";
+		$etype=AddSlashes($type);
+		if (!$implements) {
+			$query_string="delete from types where type='$etype' or implements='$etype'";
+		} else {
+			$eimplements=AddSlashes($implements);
+			$query_string="delete from types where type='$etype' and implements='$etype'";
+		}
+		debug($query_string,"store");
+		pg_exec($this->connect_id,$query_string);
+		$err=pg_errormessage($this->connect_id);
+		if ($err) {
+			$this->$error=$err;
+			error("ERROR: PostgreSQL: ".$this->error);
+			$result=0;
+		} else {
+			$result=1;
+		}
+		return $result;
+	}
+
+}
+
+?>
