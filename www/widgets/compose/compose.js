@@ -3,6 +3,7 @@
 	var wgComposeKey=19;
 	var wgComposeBuffer='';
 	var wgComposeNumeric=false;
+	var wgComposeSymbolic=false;
 
 	wgComposeTable['i']=-1;
 	wgComposeTable['i!']="iexcl";
@@ -186,6 +187,8 @@
 
 	wgComposeTable['#']=-2;
 
+	wgComposeTable['&']=-3;
+
 	function wgCompose_check(e) {
 		var keycode = e.keyCode;
 		if (keycode==wgComposeKey) {
@@ -218,7 +221,10 @@
 			}
 			wgComposeBuffer+=key;
 			if (value=wgComposeTable[wgComposeBuffer]) {
-				if (value==-2) {
+				if (value==-3) {
+					wgComposeSymbolic=true;
+					window.status=window.status+'&';
+				} else if (value==-2) {
 					wgComposeNumeric=true;
 					window.status=window.status+'#';
 				} else if (value!=-1) {
@@ -227,6 +233,14 @@
 					wgCompose_stop();
 				} else {
 					window.status="Composing: "+wgComposeBuffer;
+				}
+			} else if (wgComposeSymbolic) {
+				if ((keycode==13) || (key==';')) {
+					wgComposeBuffer='&'+wgComposeBuffer.substr(1, wgComposeBuffer.length-2)+';';
+					wgCompose_show(wgComposeBuffer);
+					wgCompose_stop();
+				} else {
+					window.status=window.status+key;
 				}
 			} else if (wgComposeNumeric) {
 				if ((keycode>=48) && (keycode<=57)) {
