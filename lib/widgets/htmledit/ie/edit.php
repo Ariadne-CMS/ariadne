@@ -1,4 +1,4 @@
-\<!--TOOLBAR_START--><!--TOOLBAR_EXEMPT--><!--TOOLBAR_END-->
+<!--TOOLBAR_START--><!--TOOLBAR_EXEMPT--><!--TOOLBAR_END-->
 <!-- Copyright 2000 Microsoft Corporation. All rights reserved. -->
 <!-- Author: Steve Isaac, Microsoft Corporation -->
 <!-- Changes by Auke van Slooten, Muze V.O.F. to implement source view and add images from Ariadne. -->
@@ -23,13 +23,34 @@
 <script ID="clientEventHandlersJS" LANGUAGE="javascript">
 <!--
   window.exists=true; // do not reload editing environment if window still exists.
+  <?php
+    if (!$root) {
+      $root=$this->store->root;
+    }
+    if (!$path) {
+      $path=$this->path;
+    }
+    if (!$language) {
+      $language=$this->nls;
+    }
+    if (!$value && !$save2form && $this->implements('ppage')) {
+      $value=$this->GetPage($language, false, true);
+    }     
+    if (!$name) {
+      $name="page";
+    }
+  ?>
   tbContentRoot="<?php echo $root; ?>";
   tbContentPath="<?php echo $path; ?>";
   tbContentFile="<?php echo $file; ?>";
   tbContentName='<?php echo $name; ?>';  
   tbContentLanguage='<?php echo $language; ?>';
   tbContentType='<?php echo $type; ?>';
-  tbContentValue='<?php echo $value; ?>';
+  if (!window.opener || !window.opener.wgHTMLEditContent) {
+    tbContentValue=unescape('<?php echo RawUrlEncode($value); ?>');
+  } else {
+    tbContentValue='';
+  }
   tbContentSave2Form=<?php if ($save2form && $save2form!=='false') echo 'true'; else echo 'false'; ?>;
   tbDetailsSetting=false;
 //
@@ -191,7 +212,11 @@ function loadpage(root, path, file, name, language, type, value, save2form) {
   tbContentName=name;
   tbContentLanguage=language;
   tbContentType=type;
-  tbContentValue=new String(window.opener.wgHTMLEditContent.value);
+  if (window.opener && window.opener.wgHTMLEditContent) {
+    tbContentValue=new String(window.opener.wgHTMLEditContent.value);
+  } else if (value) {
+    tbContentValue=value;
+  }
   if (tbContentValue=='') {
     tbContentValue='<HTML>\n<HEAD>\n  <META content="text/html; charset=UTF-8" http-equiv="Content-Type">\n  <TITLE></TITLE>\n</HEAD>\n<BODY>\n<P>&nbsp;</P>\n</BODY>\n</HTML>\n';
   }
