@@ -24,7 +24,7 @@
 <link type="text/css" rel="stylesheet" href="<?php echo $AR->dir->www; ?>styles/browse.icons.css">
 <script>
 	function init() {
-		if (top.document.forms[0].imgstyle) {
+		if (top.document.forms[0] && top.document.forms[0].imgstyle) {
 			var style=top.document.forms[0].imgstyle;
 			image.src=image.src+style.options[style.selectedIndex].value;
 		}
