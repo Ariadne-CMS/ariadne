@@ -160,7 +160,7 @@
 		}
 		$cookie[$ARCurrent->session->id]['login']=$login;
 		$cookie[$ARCurrent->session->id]['timestamp']=time();
-		$cookie[$ARCurrent->session->id]['check']="{".md5($password.$ARCurrent->session->id)."}";
+		$cookie[$ARCurrent->session->id]['check']="{".ARCrypt($password.$ARCurrent->session->id)."}";
 		$ARCookie=serialize($cookie);
 		setcookie("ARCookie",$ARCookie, 0, '/');
 	}
