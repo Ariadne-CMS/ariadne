@@ -15,6 +15,12 @@
 		function b_new() {
 			arshow('edit_object_data','object.new.select.phtml');
 		}
+		function b_import() {
+			arshow('edit_object_data','object.import.phtml');
+		}
+		function b_export() {
+			arshow('edit_object_data','object.export.phtml');
+		}
 	</script>
 	<div id="toolbar" style="background: buttonface; border: 2px groove buttonhighlight; border-bottom: 0px; width: 100%; height: 26px;">
 		<div id="b_first" class="tbutton_left" style="visibility: hidden;" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_first();"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/first.gif"></div>
@@ -28,15 +34,25 @@
 			</form>
 		</div>
 		<div id="b_new" class="tbutton_left" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_new();"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/new.gif"></div>
+		<div style="margin: 2px; margin-left: 5px; margin-right: 5px; border-left: 1px solid buttonshadow; border-right: 1px solid buttonhighlight; height: 22px; float: left;"></div>
+		<div id="b_import" class="tbutton_left" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_import();"><img src="<?php echo $AR->dir->www; ?>images/winxp/import.png"></div>
+		<div id="b_export" class="tbutton_left" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_export();"><img src="<?php echo $AR->dir->www; ?>images/winxp/export.png"></div>
+		<div style="margin: 2px; margin-left: 5px; margin-right: 5px; border-left: 1px solid buttonshadow; border-right: 1px solid buttonhighlight; height: 22px; float: left;"></div>
 		<script>
 			var buttons='';
 		<?php
 			$list["web"]="web";
 			$list["page"]="page";
+			$list["1"]="spacer";
 			$list["icons"]="large";
 			$list["list"]="small";
 			$list["details"]="details";
 			while (list($key, $value)=each($list)) {
+				if ($value=="spacer") {
+					?>
+					buttons=buttons+'<div style="margin: 2px; margin-left: 5px; margin-right: 5px; border-left: 1px solid buttonshadow; border-right: 1px solid buttonhighlight; height: 22px; float: left;"></div>';
+					<?php
+				} else {
 				?>
 					if (viewmode=='<?php echo $key; ?>') {
 						var pressed='_pressed';
@@ -45,6 +61,7 @@
 					}
 					buttons=buttons+'<div title="<?php echo $ARnls["m_".$value]; ?>" id="b_<?php echo $key; ?>" class="tbutton_left'+pressed+'" onMouseOver="doHover(this, \'left\');" onMouseOut="undoHover(this,\'left\');" onClick="b_setView(\'<?php echo $key; ?>\');"><a href="<?php echo $this->make_url(); ?>" onClick="return false;"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/<?php echo $value; ?>.gif" border="0"></a></div>';
 				<?php
+				}
 			}
 		?>
 			document.write(buttons);
