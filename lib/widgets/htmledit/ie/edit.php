@@ -1,4 +1,4 @@
-<!--TOOLBAR_START--><!--TOOLBAR_EXEMPT--><!--TOOLBAR_END-->
+\<!--TOOLBAR_START--><!--TOOLBAR_EXEMPT--><!--TOOLBAR_END-->
 <!-- Copyright 2000 Microsoft Corporation. All rights reserved. -->
 <!-- Author: Steve Isaac, Microsoft Corporation -->
 <!-- Changes by Auke van Slooten, Muze V.O.F. to implement source view and add images from Ariadne. -->
@@ -379,19 +379,12 @@ function MENU_FILE_SAVE_onclick() {
 function AR_GET_HTML() {
   if (ViewHTML.TBSTATE=="checked") {
 
-    if (tbContentElement.DOM.body.innerHTML) {
-      var sContents=tbContentElement.FilterSourceCode(tbContentElement.DOM.body.innerHTML);
-    } else {
-      var sContents=new String();
-    }
+    var sContents=tbContentElement.DocumentHTML;
+
   } else {
-	// it's impossible to get the source back _with_ all 
-    // the original indentation, except by:
-    if (tbContentElement.DOM.body.innerText) {
-      var sContents=tbContentElement.FilterSourceCode(tbContentElement.DOM.body.innerText);
-    } else {
-      var sContents=new String();
-    }
+
+    var sContents=tbContentElement.DOM.body.innerText;
+
   }
   return sContents;
 }
@@ -408,17 +401,15 @@ function VIEW_HTML_onclick() {
     sContents=sContents.replace(/&/g,"&amp;");
     sContents=sContents.replace(/</g,"&lt;");
     sContents=sContents.replace(/>/g,"&gt;");  
-	sContents=sContents.replace(/\r/g,""); // KILL KILL KILL
-    sContents=new String("<html><head><style> p { margin: 0pt; } </style></head><BODY style=\"font:10pt courier, monospace\"><PRE>"+sContents+"</PRE></BODY></html>");
+    sContents=sContents.replace(/ /g,"&nbsp;");
+    sContents=new String("<html><head><style> p { margin: 0px;} </style></head><BODY style=\"font:10pt courier new, monospace\">"+sContents+"</BODY></html>");
+    var linebreak=sContents.lastIndexOf('\n');
+    while (linebreak!=-1) {
+      sContents=sContents.substr(0, linebreak-1)+'<P>'+sContents.substr(linebreak+1); 
+      linebreak=sContents.lastIndexOf('\n');
+    }
 	// now you can edit anything you want...
     tbContentElement.DocumentHTML=sContents;
-/*
-    if (tbContentElement.DOM.styleSheets.length==0) {
-      tbContentElement.DOM.createStyleSheet(tbContentRoot+tbContentPath+tbContentFile+'edit.css');
-    } else {
-      tbContentElement.DOM.styleSheets(0).href=tbContentRoot+tbContentPath+tbContentFile+'edit.css';
-    }
-*/
     ToolbarFormatState=FormatToolbar.TBSTATE;
     TBSetState(FormatToolbar, "hidden");
     TBSetState(ToolbarMenuFmt, "gray");    
@@ -448,14 +439,6 @@ function VIEW_HTML_onclick() {
       TBSetState(ToolbarMenuTable, "checked");
     }
     TBSetState(ViewHTML, "checked");
-
-/*
-    if (tbContentElement.DOM.styleSheets.length==0) {
-      tbContentElement.DOM.createStyleSheet(tbContentRoot+tbContentPath+tbContentFile+'style.css');
-    } else {
-      tbContentElement.DOM.styleSheets(0).href=tbContentRoot+tbContentPath+tbContentFile+'style.css';
-    }
-*/
     tbContentElement.DocumentHTML=sContents
     tbContentElement.BaseURL=tbContentRoot+tbContentPath;
   }
