@@ -1,11 +1,11 @@
 <?php
     /******************************************************************
-     psite.phtml                                           Muze Ariadne
+     psection.phtml                                           Muze Ariadne
      ------------------------------------------------------------------
      Author: Muze (info@muze.nl)
-     Date: 31 october 2002
+     Date: 11 october 2003
 
-     Copyright 2002 Muze
+     Copyright 2003 Muze
 
      This file is part of Ariadne.
 
@@ -26,17 +26,17 @@
 
     -------------------------------------------------------------------
 
-     Class inheritance: 	pobject > ppage > pdir > psection > psite
+     Class inheritance: 	pobject > ppage > pdir > psection
      Description:
 
        This is the class definition file of the psite class.
 
     ******************************************************************/
 
-debug("psite: Load","object");
-include_once($this->code."objects/psection.phtml");
+debug("psection: Load","object");
+include_once($this->code."objects/pdir.phtml");
 
-class psite extends psection {  // psite class definition
+class psection extends pdir {  // psection class definition
 
-} // end of psite class definition
+} // end of psection class definition
 ?>
