@@ -7,6 +7,8 @@
 	include_once($store_config['code']."modules/mod_soap.phtml");
 	include_once($store_config['code']."includes/loader.soap.php");
 
+debugon();
+
 	function fix_quotes(&$value) {
 		if (is_array($value)) {
 			reset($value);
@@ -106,7 +108,7 @@
 
 		$soapserver = new soap_server;
 		$arguments  = $soapserver->get_request($HTTP_RAW_POST_DATA);
-		$function   = "soap.".$soapserver->methodname.".phtml";
+		$function   = "soap.".strtolower($soapserver->methodname).".phtml";
 
 		if ($arguments["arUnpackArrayNames"]) {
 			debug("loader starting unpackarraynames\n\n");
