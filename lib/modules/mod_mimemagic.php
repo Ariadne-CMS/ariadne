@@ -567,6 +567,7 @@
 	$mimetypes_data["movie"] = "video/x-sgi-movie";
 	$mimetypes_data["vrm"] = "x-world/x-vrml";
 	$mimetypes_data["vrml"] = "x-world/x-vrml";
+	$mimetypes_data["wmv"] = "video/x-ms-wmv";
 	$mimetypes_data["wrl"] = "x-world/x-vrml";
 
 	function get_mime_type($filename, $flags = 3) {
