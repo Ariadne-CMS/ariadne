@@ -1,6 +1,6 @@
 <?php
 /******************************************************************************
-  Oracle Store 1.0						Ariadne 2.4
+  Oracle Store 1.0b						Ariadne 2.4
 
   Copyright (C) 1998-2004  Muze 
 
@@ -27,6 +27,7 @@
 
 *******************************************************************************/
 
+ini_set('magic_quotes_sybase', 'on');
 define(MAX_PATH_LENGTH, 128);
 
 // general objectstore functions
@@ -147,13 +148,6 @@ class oraclestore {
 			unset($row["object"]);
 			$result[]=$row;
 		}
-		return $result;
-	}
-
-	function get_config($field) {
-		debug("store::get_config($field)", "store");
-		$result = $this->$field;
-		debug("store::get_config: end", "all");
 		return $result;
 	}
 
@@ -908,14 +902,11 @@ class oraclestore {
 		/* private function, do not use this outside this class */
 		debug("query ($query)", "store");
 		$result = OCIParse($this->connect_id, $query);
-		ob_start();
-			OCIExecute($result);
-			$frop = ob_get_contents();
-		ob_end_clean();
+		OCIExecute($result);
 		$err = OCIError($this->connect_id);
 		$errno=$err['code'];
 		$error=$err['message'];
-		if ($errno || $frop) {				
+		if ($errno) {				
 			//print_r(debug_backtrace());
 			echo "<b>query: $query</b><br>\n";
 			$this->error="ERROR: Oracle: $errno: $error";
@@ -1199,6 +1190,8 @@ class oraclestore {
 										$query_names."object ) values ( ".$query_values."$object)";
 			debug($query_string, "all");
 			$this->store_run_query($query_string);
+			unset($this->error);
+			unset($this->errno);
 		}
 		debug("add_property: end","all");
 		return $result;
