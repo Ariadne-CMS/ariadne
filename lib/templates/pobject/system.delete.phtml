@@ -13,6 +13,7 @@
                    );
           }
         }
+        // remove templates
         if ($data->pinp) {
           while (list($type, $values)=each($data->pinp)) {
             while (list($function, $templatelist)=each($values)) {
@@ -28,9 +29,24 @@
                 }
               }
             }
+            // FIXME: typedirs will be renamed to $path/class=/$type/ because of possible name conflicts.
+            rmdir($this->store->files."templates".$this->path.$type."/");
           }
         }        
+        // remove files
+        $dir=$this->store->files."files".$this->path;
+        $handle=opendir($dir);
+        while (false!==($file=readdir($handle))) {
+          if ($file!="." && $file!="..") {
+            // as recurse should have taken care of subdirectories, unlink should suffice.
+            unlink($dir.$file);
+          }
+        }
+        closedir($handle);
+        rmdir($dir);
+        // clear cache
         $this->ClearCache();
+        // finally remove object itself
         $this->delete($this->path);
       }
       $this->unlock();
