@@ -24,7 +24,7 @@
 					if (count($this->data->pinp[$type])==0) {
 						unset($this->data->pinp[$type]);
 						unset($this->data->templates[$type]);
-						rmdir($this->store->files."templates".$template_dir;
+						rmdir($this->store->files."templates".$template_dir);
 						if (count($this->data->pinp)==0) {
 							rmdir($this->store->file."templates".$this->path."class=/");
 							rmdir($this->store->file."templates".$this->path);
