@@ -72,16 +72,26 @@ class pinp {
 
   function compile($template) {
 
+	$clean_template="";
 	while (eregi('^(.*)(<\?|<%|<script[^>]*php[^>]*>)(.*)', $template, $start_regs) &&
 		$start_regs[2]) {
-		$template=$start_regs[1].$start_regs[3];
+		$clean_template.=$start_regs[1];
+		$clean_template.="<?php echo \"".AddSlashes($start_regs[2])."\"; ?>";
+		$template=$start_regs[3];
 		unset($start_regs);	
 		if (eregi('^(.*)(\?>|%>|</script>)(.*)', $template, $start_regs) &&
 					$start_regs[2]) {
-			$template=$start_regs[1].$start_regs[3];
+			$clean_template.=$start_regs[1];
+			$clean_template.="<?php echo \"".AddSlashes($start_regs[2])."\"; ?>";
+			$template=$start_regs[3];
 			unset($start_regs);	
-
+		} else {
+			$clean_template.=$template;
 		}
+	}
+
+	if ($clean_template!=="") {
+		$template=$clean_template;
 	}
 
     // then remove /* .. */ comments, even in html code... for security
