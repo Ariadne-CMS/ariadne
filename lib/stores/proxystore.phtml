@@ -46,6 +46,7 @@ class proxystore {
 		$this->key = &$key;
 		$this->root = &$AR->stores[$key]->root;
 		$this->rootoptions=&$AR->stores[$key]->rootoptions;
+		$this->mod_lock=&$AR->stores[$key]->mod_lock;
 		debug("proxystore: end","all");
 	}
 
@@ -519,6 +520,21 @@ class proxystore {
 
 		$path=AddSlashes($path);
 		return $id;
+	}
+
+
+	function move($source, $destination) {
+	/**********************************************************************
+
+	$destination should always start and end with a '/'.
+
+	**********************************************************************/
+		global $AR;
+		debug("proxy_move($source, $destination)","all");
+		$result = $AR->stores[$this->key]->move($source,$destination);
+		$this->error = $AR->stores[$this->key]->error;
+		debug("proxy_move: end","all");
+		return $result;
 	}
 
 } // end class store
