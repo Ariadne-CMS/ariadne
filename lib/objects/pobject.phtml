@@ -68,7 +68,7 @@ class pobject extends object { // pobject class definition
 	***********************************************************************/
 	global $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls;
 
-		debug("pobject: ".$this->path.": call($arCallFunction, ".serialize($arCallArgs).")","object","IN");
+		debug("pobject: ".$this->path.": call($arCallFunction, ".serialize($arCallArgs).")","object","all","IN");
 
 		// default to view.html
 		if (!$arCallFunction) {
@@ -155,7 +155,7 @@ class pobject extends object { // pobject class definition
 			}
 		}
 		array_pop($ARCurrent->arCallStack);
-		debug("pobject: call: end","all","OUT");
+		debug("pobject: call: end","all","all","OUT");
 		if (isset($ARCurrent->arResult)) {
 			// pinp templates can return results via putvar("arResult",$result);
 			$arResult=$ARCurrent->arResult;
