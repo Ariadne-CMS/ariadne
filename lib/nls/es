@@ -34,7 +34,7 @@
 	$ARnls["check"]							=	"!Check";
 	$ARnls["city"]							=	"Ciudad";
 	$ARnls["classic"]						=	"Clásico";
-	$ARnls["clickback"]						=	"Haga click en el botón "Atrás" de su browser para corregirlo.";
+	$ARnls["clickback"]						=	"Haga click en el botón 'Atrás' de su browser para corregirlo.";
 	$ARnls["collectinginfo"]				=	"Recolectando Información...";
 	$ARnls["color"]							=	"Color";
 	$ARnls["comments"]						=	"!Comments";
