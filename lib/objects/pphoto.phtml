@@ -473,6 +473,7 @@ class pphoto extends pfile { // pphoto class definition
 	}
 
 	function cleanup() {
+	global $ARConfig;
 		if (is_array($this->arClearList)) {
 			foreach ( $this->arClearList as $value) {
 				if (!eregi("[^a-z0-9\._-]",$value)) {
