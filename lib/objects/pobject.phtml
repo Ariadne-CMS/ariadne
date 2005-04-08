@@ -984,7 +984,7 @@ class pobject extends object { // pobject class definition
 		return $config;
 	}
 
-	function getPinpTemplate($arCallFunction='view.html', $path=".") {
+	function getPinpTemplate($arCallFunction='view.html', $path=".", $inLibrary=false) {
 	global $ARCurrent, $ARConfig, $AR;
 		$result = Array();
 		if (strpos($arCallFunction,"::")!==false) {
@@ -1056,6 +1056,17 @@ class pobject extends object { // pobject class definition
 					}
 				}
 			}
+
+			if ($inLibrary) {
+				if ($ARConfig->cache[$checkpath]->type == 'psection') {
+					debug("CheckConfig: quiting library search as we have encountered our end point");
+					// break search operation when we have searched a 
+					// psection object
+					break;
+				}
+			}
+
+
 			$lastcheckedpath=$checkpath;
 			debug("CheckConfig: checkpath = (".$checkpath.")","all");
 			$checkpath=$this->store->make_path($checkpath, "..");
