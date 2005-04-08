@@ -1045,9 +1045,17 @@ class pobject extends object { // pobject class definition
 					$arType=$arSuper;
 				}
 			}
+			if ($inLibrary) {
+				if ($ARConfig->cache[$checkpath]->type == 'psection') {
+					debug("CheckConfig: quiting library search as we have encountered our end point");
+					// break search operation when we have searched a 
+					// psection object
+					break;
+				}
+			}
 			if ($ARConfig->cache[$checkpath]->library) {
 				foreach( $ARConfig->cache[$checkpath]->library as $library => $path ) {
-					$template = $this->getPinpTemplate($arCallFunction, $path);
+					$template = $this->getPinpTemplate($arCallFunction, $path, true);
 					if ($template["arTemplateId"]) {
 						extract($template);
 						$arLibrary = $library;
@@ -1057,14 +1065,6 @@ class pobject extends object { // pobject class definition
 				}
 			}
 
-			if ($inLibrary) {
-				if ($ARConfig->cache[$checkpath]->type == 'psection') {
-					debug("CheckConfig: quiting library search as we have encountered our end point");
-					// break search operation when we have searched a 
-					// psection object
-					break;
-				}
-			}
 
 
 			$lastcheckedpath=$checkpath;
@@ -1193,7 +1193,7 @@ class pobject extends object { // pobject class definition
 					debug("CheckConfig: search for lib: '$arLibrary'; '$arCallFunction'", "all");
 					if ($config->library[$arLibrary]) {
 						//echo $config->library[$library];
-						$template = $this->getPinpTemplate($arCallFunction, $config->library[$arLibrary]);
+						$template = $this->getPinpTemplate($arCallFunction, $config->library[$arLibrary], true);
 						//if (!$template["arLibrary"]) {
 							$template["arLibrary"] = $arLibrary;
 						//}
