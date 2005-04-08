@@ -803,6 +803,8 @@ class pobject extends object { // pobject class definition
 	global $AR;
 		if (!$AR->context) {
 			$AR->context = Array();
+		} else {
+			$context = array_merge(end($AR->context), $context);
 		}
 		array_push($AR->context, $context);
 	}
@@ -993,7 +995,7 @@ class pobject extends object { // pobject class definition
 		} else {
 			$arCallType=$this->type;
 		}
-		debug("CheckConfig: searching for template ($arCallType::$arCallFunction)", "all");
+		debug("CheckConfig: searching for template ($arCallType::$arCallFunction) on $path");
 		$path = $this->make_path($path);
 
 
@@ -1047,7 +1049,7 @@ class pobject extends object { // pobject class definition
 			}
 			if ($inLibrary) {
 				if ($ARConfig->cache[$checkpath]->type == 'psection') {
-					debug("CheckConfig: quiting library search as we have encountered our end point");
+					debug("CheckConfig: quiting library search as we have encountered our end point; $checkpath");
 					// break search operation when we have searched a 
 					// psection object
 					break;
@@ -1190,7 +1192,7 @@ class pobject extends object { // pobject class definition
 						$arLibrary = $context['arLibrary'];
 					}
 					$arCallFunction = substr($arCallFunction, $libpos+1);
-					debug("CheckConfig: search for lib: '$arLibrary'; '$arCallFunction'", "all");
+					debug("CheckConfig: searching for lib: '$arLibrary'; '$arCallFunction' from '".$this->path."'");
 					if ($config->library[$arLibrary]) {
 						//echo $config->library[$library];
 						$template = $this->getPinpTemplate($arCallFunction, $config->library[$arLibrary], true);
@@ -1201,7 +1203,7 @@ class pobject extends object { // pobject class definition
 				} else {
 					if (is_array($ARCurrent->shortcut_redirect)) {
 						$redir = end($ARCurrent->shortcut_redirect);
-						if (substr($this->path, 0, strlen($redir["dest"])) == $redir["dest"]) {
+						if ($redir["keepurl"] && (substr($this->path, 0, strlen($redir["dest"])) == $redir["dest"])) {
 							$template = $this->getPinpTemplate($arCallFunction, $this->make_path($redir["src"]));
 						}
 					}
