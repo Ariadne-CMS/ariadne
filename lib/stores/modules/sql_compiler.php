@@ -224,6 +224,12 @@
 		} else {
 			$no_selection = true;
 		}
+
+		if (eregi('^[[:space:]]*include[[:space:]]*target[[:space:]]*', $query, $regs)) {
+			$this->with_target_properties = true;
+			$query = substr($query, strlen($regs[0]));
+		}
+
 		if ($no_selection || eregi('^[[:space:]]*order[[:space:]]*by[[:space:]]+', $query, $regs)) {
 			$query=substr($query, strlen($regs[0]));
 			$node["id"]="orderby";

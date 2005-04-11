@@ -259,6 +259,7 @@
 		$this->compile_tree($tree);
 		$nodes=$this->tbl_prefix."nodes";
 		$objects=$this->tbl_prefix."objects";
+		$properties=$this->tbl_prefix."prop_";
 		$this->used_tables[$nodes]=$nodes;
 		$this->used_tables[$objects]=$objects;
 		@reset($this->used_tables);
@@ -269,15 +270,29 @@
 				$tables="$key";
 			}
 			if ($this->select_tables[$key]) {
-				$prop_dep.=" and $val.object=$objects.id ";
+				if ($this->with_target_properties) {
+					$prop_dep.=" and ($val.object=$objects.id or $val.object=target.object) ";
+				} else {
+					$prop_dep.=" and $val.object=$objects.id ";
+				}
 			}
 		}
+
 		if (is_array($this->nls_join)) {
 			reset($this->nls_join);
 			while (list($key, $value)=each($this->nls_join)) {
 				$join .= $value;
 			}
 		}
+
+
+		/* do target join */
+		if ($this->with_target_properties) {
+			$join .= " left join ".$properties."references as target_reference on
+				$objects.id = target_reference.object ";
+			$join .= " left join $nodes as target on target_reference.object
+						and target.path = target_reference.AR_path ";
+		}		
 
 		$query="select distinct($nodes.path), $nodes.parent, $nodes.priority, ";
 		$query.=" $objects.id, $objects.type, $objects.object, UNIX_TIMESTAMP($objects.lastchanged) as lastchanged, $objects.vtype ";
