@@ -1,0 +1,60 @@
+#!/usr/bin/php -q
+<?php
+	$ariadne = "../lib";
+	if (!@include_once($ariadne."/configs/ariadne.phtml")) {
+		chdir(substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')));
+		if(!include_once($ariadne."/configs/ariadne.phtml")){
+			echo "could not open ariadne.phtml";
+			exit(1);
+		}
+	}
+	require($ariadne."/configs/store.phtml");
+	require($ariadne."/includes/loader.cmd.php");
+	require($ariadne."/stores/".$store_config["dbms"]."store.phtml");
+	require($ariadne."/modules/mod_pinp.phtml");
+	include($ariadne."/nls/".$AR->nls->default);
+
+	$template = $argv[1];
+	$fp = @fopen($template, 'r');
+	if (!$fp) {
+		echo "Error: Could not open pinp template `$template'\n";
+		exit;
+	}
+	while (!feof($fp)) {
+		$tmpl.=fread($fp, 4096);
+	}
+	fclose($fp);
+
+
+	/* instantiate the store */
+	$inst_store = $store_config["dbms"]."store";
+	$store = new $inst_store($root,$store_config);
+
+
+	/* now load a user (admin in this case)*/
+	$login = "admin";
+	$query = "object.implements = 'puser' and login.value='$login'";
+	$AR->user = current($store->call('system.get.phtml', '', $store->find('/system/users/', $query)));
+
+
+	$path = $argv[2];
+	if (!$path) {
+		$path = "/";
+	}
+
+	$object = current($store->call('system.get.phtml', '', $store->get($path)));
+
+	// do some magic
+	$this = &$object;
+	$this->CheckConfig();	
+	$pinp = new pinp("header", "this->", "\$this->_");
+	$compiled = $pinp->compile(strtr($tmpl, "\r", ""));
+	eval("?>$compiled");
+
+
+	$store->close();
+
+	if ($this->error) {
+		echo "Error: ".$this->error."\n";
+	}
+?>
