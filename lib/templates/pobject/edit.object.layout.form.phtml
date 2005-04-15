@@ -207,9 +207,11 @@ function tabKey(evt,item){
 ?>
 </textarea>
 </td><td width="100%">
+<div style="height: 100%;">
 <textarea onkeydown="return tabKey(event,this);" cols="78" rows="20" name="template" id="template" wrap="off" class="templatefield" onscroll="event_templatescroll();"><?php
         echo $file;
 ?></textarea>
+</div>
 </td></tr></table>
 <?php
 	}
