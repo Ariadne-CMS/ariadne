@@ -353,4 +353,6 @@
 	$ARnls["grants_local"]					=	"Alleen huidige object";
 	$ARnls["grants_modifiers"]				=	"Toepassen op";
 	$ARnls["explain"]						=	"Leg uit";
+
+	$ARnls["tinymce"]						=	"tinyMCE";
 ?>

@@ -362,4 +362,5 @@
 	$ARnls["explain"]						=	"Explain";
 	$ARnls["selectexporttype"]						=	"Select your export type";
 
+	$ARnls["tinymce"]						=	"tinyMCE";
 ?>

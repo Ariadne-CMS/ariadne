@@ -341,5 +341,6 @@
 	$ARnls["yes"]							=	"Da";
 	$ARnls["zipcode"]						=	"Poštanski broj";
 
+	$ARnls["tinymce"]						=	"tinyMCE";
 
 ?>

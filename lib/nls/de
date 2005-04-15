@@ -364,4 +364,5 @@
 	$ARNls["grants_modifiers"]				=	"Modifikatoren";
 	$ARnls["explain"]						=	"Erklären";
 
+	$ARnls["tinymce"]						=	"tinyMCE";
 ?>

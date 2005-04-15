@@ -343,5 +343,6 @@
 	$ARnls["yes"]							=	"Tak";
 	$ARnls["zipcode"]						=	"Kod pocztowy";
 
+	$ARnls["tinymce"]						=	"tinyMCE";
 
 ?>

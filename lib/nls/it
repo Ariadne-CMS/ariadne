@@ -345,5 +345,6 @@
 	$ARnls["yes"]							=	"Si";
 	$ARnls["zipcode"]						=	"CAP";
 
+	$ARnls["tinymce"]						=	"tinyMCE";
 
 ?>
