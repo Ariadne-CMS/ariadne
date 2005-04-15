@@ -255,7 +255,7 @@ class pobject extends object { // pobject class definition
 	  if this is a new object ($this->arIsNewObject) the path is checked and
 	  the object is saved under the new path.
 	***********************************************************************/
-	global $AR, $ARConfig, $ARnls;
+	global $AR, $ARConfig, $ARnls, $ARCurrent;
 		debug("pobject: save([properties], $vtype)","object");
 		debug("pobject: save: path=".$this->path,"object");
 		$result=false;
@@ -273,7 +273,12 @@ class pobject extends object { // pobject class definition
 							}
 							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 							$wf_object->arIsNewObject=true;
-							$wf_result = $wf_object->call("user.workflow.pre.html", Array("properties" => $properties));
+							if ($ARCurrent->arCallStack) {
+								$arCallArgs=end($ARCurrent->arCallStack);
+							}
+							$arCallArgs['properties'] = $properties;
+							$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);
+							$this->error = $wf_object->error;
 							$this->priority = $wf_object->priority;
 							$this->data = $wf_object->data;
 							$this->data->config = $config;
@@ -356,7 +361,12 @@ class pobject extends object { // pobject class definition
 									$config=$this->data->config; // need to set it again, to copy owner config data
 									$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 									$wf_object->arIsNewObject = true;
-									$wf_result = $wf_object->call("user.workflow.post.html", Array("properties" => $properties));
+									if ($ARCurrent->arCallStack) {
+										$arCallArgs=end($ARCurrent->arCallStack);
+									}
+									$arCallArgs['properties'] = $properties;
+									$wf_result = $wf_object->call("user.workflow.post.html", $arCallArgs);
+									$this->error = $wf_object->error;
 									$this->priority = $wf_object->priority;
 									$this->data = $wf_object->data;
 									$this->data->config = $config;
@@ -410,7 +420,12 @@ class pobject extends object { // pobject class definition
 				if ($this->exists($this->path)) { // prevent 'funny stuff'
 					$config = $this->data->config;
 					$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
-					$wf_result = $wf_object->call("user.workflow.pre.html", Array("properties" => $properties));
+					if ($ARCurrent->arCallStack) {
+						$arCallArgs=end($ARCurrent->arCallStack);
+					}
+					$arCallArgs['properties'] = $properties;
+					$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);
+					$this->error = $wf_object->error;
 					$this->priority = $wf_object->priority;
 					$this->data = $wf_object->data;
 					$this->data->config = $config;
@@ -478,7 +493,12 @@ class pobject extends object { // pobject class definition
 						if($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)){
 							$result=$this->path;
 							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
-							$wf_result = $wf_object->call("user.workflow.post.html", Array("properties" => $properties));
+							if ($ARCurrent->arCallStack) {
+								$arCallArgs=end($ARCurrent->arCallStack);
+							}
+							$arCallArgs['properties'] = $properties;
+							$wf_result = $wf_object->call("user.workflow.post.html", $arCallArgs);
+							$this->error = $wf_object->error;
 							$this->priority = $wf_object->priority;
 							$this->data = $wf_object->data;
 							$this->data->config = $config;
@@ -1917,8 +1937,17 @@ class pobject extends object { // pobject class definition
 	}
 
 	function currentsite() {
-		global $ARConfig;
-		if (!$config=$ARConfig->cache[$this->path]) {
+		global $ARCurrent, $ARConfig;
+		if (@count($ARCurrent->shortcut_redirect)) {
+			$redir = end($ARCurrent->shortcut_redirect);
+			if ($redir["keepurl"] && substr($this->path, 0, strlen($redir["dest"])) == $redir["dest"]) {
+				// search currentsite from the reference
+				if (!$config = $ARConfig->cache[$redir['src']]) {
+					$config = $ARConfig->cache[$this->make_path($redir['src']."../")];
+				}
+			}
+		}
+		if (!$config && !$config=$ARConfig->cache[$this->path]) {
 			$config=$ARConfig->cache[$this->parent];
 		}
 		return $config->site;
@@ -2114,7 +2143,7 @@ class pobject extends object { // pobject class definition
 	}
 
 	function _newobject($filename, $type) {
-        $newpath=$this->make_path($filename);
+		$newpath=$this->make_path($filename);
 		$newparent=$this->store->make_path($newpath, "..");
 		$data=new object;
 		$object=$this->store->newobject($newpath, $newparent, $type, $data);
