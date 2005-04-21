@@ -184,11 +184,11 @@
 					// now calculate the timeframes properties.
 					$length=$this->data->endtime - $this->data->starttime;
 					switch($this->data->repeat) {
-						case "none":	// add one entry;
+						case "none": // add one entry;
 							$properties["timeframe"][0]["start"]=$this->data->starttime;
 							$properties["timeframe"][0]["end"]=$this->data->endtime;
 							break;
-						case "day":	// repeat ever $repeatn days untile $repeatend
+						case "day": // repeat ever $repeatn days untile $repeatend
 							$i=0;
 							$time=$this->data->starttime;
 							while (($time<=$this->data->repeatend) && ($i<100)) {
@@ -198,9 +198,9 @@
 								$i++;
 							}
 							break;
-						case "week":	// repeat every $repeatn weeks on given weekdays until $repeatend
-			 				$i=0;
-							$time=$this->data->starttime; 
+						case "week": // repeat every $repeatn weeks on given weekdays until $repeatend
+							$i=0;
+							$time=$this->data->starttime;
 							while ($time<=$this->data->repeatend) {
 								$time_arr=getdate($time);
 								$wday=$time_arr["wday"];
@@ -215,62 +215,52 @@
 										}
 									}
 								}
-								$time+=($this->data->repeatn*$weeks);	
+								$time+=($this->data->repeatn*$weeks);
 							}
 							break;
-						case "month":	// repeat every $repeatn months on ..
+							case "month": // repeat every $repeatn months on ..
+								$i=0;
+								$time=$this->data->starttime;
+								if ($this->data->repeat_by=="day") { // .. the nth weekday of the month or ..
+									while ($time <= $this->data->repeatend) {
+										$properties["timeframe"][$i]["start"]=$time;
+										$properties["timeframe"][$i]["end"]=$time+$length;
+										$i++;
+										// calculate $time for next loop
+										// ( ceil(date("d", $this->data->starttime)/7)-1 )*7+1 = 1 || 8 || 15 || 22 || 29
+										$temp_woche = mktime( 0, 0, 0, date("m", $time)+$this->data->repeatn, ( ceil(date("d", $this->data->starttime)/7)-1 )*7+1, date("Y", $time) );
+										$temp_diff = date ( "w", $this->data->starttime) - ( date("w", $temp_woche) );
+										if ($temp_diff<0) $temp_diff = $temp_diff + 7;
+										$temp_time = mktime( date("H", $time), date("i", $time), date("s", $time), date("m", $temp_woche), date("d", $temp_woche)+$temp_diff, date("Y", $temp_woche) );
+										// check if $time is in next month
+										while ( date("Ym", $temp_time) > date("Ym", mktime( 0, 0, 0, date("m", $time)+$this->data->repeatn, 1, date("Y", $time) ) ) ) {
+											$temp_time = mktime( date("H", $temp_time), date("i", $temp_time), date("s", $temp_time), date("m", $temp_time), date("d", $temp_time)-7, date("Y", $temp_time) );
+										}
+										$time = $temp_time;
+									}
+								} else { // .. this date until $repeatend
+									while ($time<=$this->data->repeatend) {
+										$properties["timeframe"][$i]["start"]=$time;
+										$properties["timeframe"][$i]["end"]=$time+$length;
+										$i++;
+										$time = mktime( date("H", $time), date("i", $time), 
+														date("s", $time), date("m", $time)+$this->data->repeatn, 
+														date("d", $time), date("Y", $time) 
+												);
+									}
+								}
+							break;
+						case "year": // repeat every $repeatn years on this date until $repeatend
 							$i=0;
-							$stime_arr=getdate($this->data->starttime);
 							$time=$this->data->starttime;
-							if ($this->data->repeat_by=="day") { // .. the nth weekday of the month or .. 
-								$week=floor($stime_arr["mday"] / 7); // get n (this simulates a 'div 7') 
-								while ($time<=$this->data->repeatend) {
-									$properties["timeframe"][$i]["start"]=$time;
-									$properties["timeframe"][$i]["end"]=$time+$length;
-									$i++;
-		 							// calculate mday of this weekday, this week of the next month
-		 							// first get the correct week
-		 							$check=getdate(mktime(0,0,0,$stime_arr["mon"]+$i, $week*7+1, $stime_arr["year"]));
-		 							// then get the first occurance of the weekday from there
-									// check_wday<=stime_wday -> mday=check_mday+(stime_wday-check_wday)
-									// check_wday
-		 							$temp=$stime_arr["wday"] - $check["wday"];
-									if ($temp<0) {
-										$mday=$check["mday"]+(7+$temp);
-									} else {
-										$mday=$check["mday"]+$temp;
-									}
-									$check=getdate(mktime(0,0,0,$stime_arr["mon"]+$i+1,-1,$stime_arr["year"]));
-									if ($mday>$check["mday"]) { // check that $mday isn't in the next month
-										$mday-=7; // then get the last wday of this month instead.
-									}
-			 						// now make the new time
-		 							$time=mktime($stime_arr["hours"], $stime_arr["minutes"],
-		 										$stime_arr["seconds"], $stime_arr["mon"]+$i,
-		 										$mday, $stime_arr["year"]);					
-								}
-							} else { // .. this date until $repeatend
-								while ($time<=$this->data->repeatend) {
-									$properties["timeframe"][$i]["start"]=$time;
-									$properties["timeframe"][$i]["end"]=$time+$length;
-									$i++;
-									$time=mktime($stime_arr["hours"], $stime_arr["minutes"],
-												$stime_arr["seconds"], $stime_arr["mon"]+$i,
-												$stime_arr["mday"], $stime_arr["year"]);
-								}
-							}
-							break;
-						case "year":	// repeat every $repeatn years on this date until $repeatend
-							$i=0;
-							$time=$this->data->starttime; 
-							$stime_arr=getdate($this->data->starttime);
 							while ($time<=$this->data->repeatend) {
 								$properties["timeframe"][$i]["start"]=$time;
 								$properties["timeframe"][$i]["end"]=$time+$length;
 								$i++;
-								$time=mktime($stime_arr["hours"], $stime_arr["minutes"],
-											$stime_arr["seconds"], $stime_arr["mon"],
-											$stime_arr["mday"], $stime_arr["year"]+$i);
+								$time = mktime( date("H", $time), date("i", $time), 
+												date("s", $time), date("m", $time), 
+												date("d", $time), date("Y", $time)+$this->data->repeatn 
+										);
 							}
 							break;
 					}
