@@ -1075,7 +1075,7 @@ class pobject extends object { // pobject class definition
 					break;
 				}
 			}
-			if ($ARConfig->cache[$checkpath]->library) {
+			if ($ARConfig->cache[$checkpath]->library && !$arTemplateId) {
 				foreach( $ARConfig->cache[$checkpath]->library as $library => $path ) {
 					$template = $this->getPinpTemplate($arCallFunction, $path, true);
 					if ($template["arTemplateId"]) {
@@ -2206,6 +2206,16 @@ class pobject extends object { // pobject class definition
 
 	function _loadConfig($path='') {
 		return $this->loadConfig($path);
+	}
+
+	function _getSetting($setting) {
+	global $AR;
+
+		switch ($setting) {
+			case 'www':
+			case 'dir:www':
+				return $AR->dir->www;
+		}
 	}
 
 } // end of pobject class definition
