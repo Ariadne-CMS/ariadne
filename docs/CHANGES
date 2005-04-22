@@ -3,6 +3,25 @@ Ariadne 2.5.0 ( Development branch )
 Changes in Ariadne since version Ariadne 2.4
 
 New Features:
+	- TinyMCE support by Stefan Schreinert. To use this you have to copy the
+	  contents of the tinyMCE packages (which you can download from their
+	  site) into ariadne/www/widget/htmledit/tinymce/.
+	- Added a webdav loader (which is still under development, but already
+	  pretty useful).
+	- Moved all the authentication code to lib/modules/mod_auth/ which is
+	  used in all the loaders. With this approach adding new authentication
+	  methods becomes very easy.
+	- The psite object can now be configured to have a URL for each language.
+	- Shortcut objects do allow you to browse further on the target nodes.
+	- Added a new option to pshortcut 'keep url' which, if set, will inherit
+	  the target templates from the shortcut and keeps the URL from where the
+	  shortcut is defined.
+	- Added a PINP interpreter to ariadne/bin/. You can use this to 
+	  execute PINP files written in the PINP language.
+	- Added an option to the sql syntax which lets you include shortcut's
+	  target property in the search. To use this you have to type the
+	  'include target' keywords at the end of the criteria (and before
+	  the limit, offset, etc keywords).
 	- The pphoto class now has an identify() function to detect multiple pages/layers.
 	- Stefan Schreinert updated some entries in the german translations.
 	- Andres Marcos Bianciotto updated the Spanish translations.
@@ -22,6 +41,16 @@ New Features:
 	- The 'open editor' button now has an adjustable text. 
 
 Bugs Fixes:
+	- Fixed some 'repeat by ...' bugs in the pcalitem object. Thanks to
+	  Fabian Steger.
+	- Added a fix for ftp clients which do expect \r\n as linebreaks. Thanks
+	  to Klaasjan Tukker.
+	- Fixed a couple of URL rewriting bugs when saving pages.
+	- Workflow templates are now able to set $error.	
+	- Fixed a bug in the respawn feature of the authentication module:
+	  it will now login as public if the session respawn failed.
+	- Fixed a bug in the store's sql compiler which made it impossible to
+	  order by multiple nls variants of the same property.
 	- Added missing wmv mimetype to mod_mimetype.php
 	- Fixed a small problem in the nls handling of the new wizards. Sometimes the tab
 	  and the actual language shown differed.
@@ -31,6 +60,8 @@ Bugs Fixes:
 	- Fixed pphoto to work around the bug that causes ImageMagick to break on a . in the ariadne
 	  path. Thanks to Stefan Schreinert for reporting this.
 	- the parentsection() function now works, instead of not :)
+	- Fixed bug 0000290: specifying 00:00 in the article's time fields, resets 
+	  the time to current time (Thanks to Christoph Lindemann)
 	- De editor doesn't cut off the last char in an image link after editing anymore.
 	- Fixed the editor to not include the nls in the URL of images.
 	- The pinp variant of user.login.html does now have access to the
