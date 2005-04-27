@@ -54,7 +54,8 @@ class pnewspaper extends pdir { // pnewspaper class definition
 			$query.=" and name.nls='".AddSlashes($nls)."'";
 		}
 		$query.=" limit 0"; //.(((int)$max)*2);
-		$this->find(".",$query,"system.get.article-by-priority.phtml","display=$display");
+		// FIXME: it appears that 'limit 0' is actually translated to 'limit 0, 100, 0', which works like 'limit 100'...
+		$this->find(".",$query,"system.get.article-by-priority.phtml","display=$display", 0, 0);
 		if (is_array($ARCurrent->priority)) {
 			$ARCurrent->priority=array_reverse($ARCurrent->priority, true);
 			arsort($ARCurrent->priority);
