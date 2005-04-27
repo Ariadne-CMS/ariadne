@@ -240,7 +240,7 @@ class pobject extends object { // pobject class definition
 		return $result;
 	}
 
-	function count_find($path, $query) {
+	function count_find($path='', $query='') {
 		$path=$this->store->make_path($this->path, $path);
 		return $this->store->count($this->store->find($path, $query, 0));
 	}
@@ -2089,7 +2089,7 @@ class pobject extends object { // pobject class definition
 		return $this->getcharset();
 	}
 
-	function _count_find($query) {
+	function _count_find($query='') {
 		return $this->count_find($this->path, $query);
 	}
 
