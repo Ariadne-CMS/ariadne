@@ -1112,7 +1112,7 @@ class mysqlstore extends store{
 			$result = mysql_db_query($this->database, $query_string, $this->connect_id);
 			if ($result) {
 				$row = mysql_fetch_array($result);
-				$subid  = intval($row["id"]);
+				$subid  = (int)$row["id"];
 			}
 			$subid=$subid+1;
 			$subid = sprintf("%0".$substr_l."d", $subid);

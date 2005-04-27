@@ -547,7 +547,7 @@ class postgresqlstore extends store {
 							$exec = $this->store_run_query( $query_string);
 							if ($exec !== false) {
 								$row = pg_fetch_array($exec, 0);
-								$id = $row["id"];
+								$id = (int)$row["id"];
 							}
 						}
 
@@ -1121,7 +1121,7 @@ class postgresqlstore extends store {
 			$result = $this->store_run_query( $query_string);
 			if ($result) {
 				$row = pg_fetch_array($result);
-				$subid = intval($row["id"]);
+				$subid = (int)$row["id"];
 			}
 			$subid=$subid+1;
 			$subid = sprintf("%0".$substr_l."d", $subid);
