@@ -7,9 +7,12 @@
 	 Global variables: none
 	 
 	******************************************************************/
+	if (!$date) {
+		$date=time();
+	}
 	if (isset($nlsdata)) {
 		if (!$ARCurrent->idlist[$this->id]) {
-			$ARCurrent->priority[$this->path]=$this->data->priority-(abs( ($this->data->startdate + $this->data->starttime)-time() )/60);
+			$ARCurrent->priority[$this->path]=$this->data->priority-(abs( ($this->data->startdate + $this->data->starttime)-$date )/60);
 			$ARCurrent->article[$this->path]=$this;
 			$ARCurrent->idlist[$this->id]=$this->path;
 		}

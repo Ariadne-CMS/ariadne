@@ -39,7 +39,7 @@ include_once($this->code."objects/pdir.phtml");
 
 class pnewspaper extends pdir { // pnewspaper class definition
 
-	function get_articles($display, $max="", $start="", $end="", $nls="") {
+	function get_articles($display, $max="", $start="", $end="", $nls="", $priority_date) {
 		global $ARCurrent;
 		debug("pnewspaper: get_articles($display, $max, $start, $end)","object");
 		if (!$start) { 
@@ -48,6 +48,9 @@ class pnewspaper extends pdir { // pnewspaper class definition
 		if (!$end) { 
 			$end=$start; 
 		}
+		if (!$priority_date) {
+			$priority_date=time();
+		}
 		$query="object.implements='particle' and article.start<=$end ".
 			"and article.end>=$start and article.display='".AddSlashes($display)."'";
 		if ($nls) {
@@ -55,7 +58,7 @@ class pnewspaper extends pdir { // pnewspaper class definition
 		}
 		$query.=" limit 0"; //.(((int)$max)*2);
 		// FIXME: it appears that 'limit 0' is actually translated to 'limit 0, 100, 0', which works like 'limit 100'...
-		$this->find(".",$query,"system.get.article-by-priority.phtml","display=$display", 0, 0);
+		$this->find(".",$query,"system.get.article-by-priority.phtml",Array("display" => $display, "date" => $priority_date), 0, 0);
 		if (is_array($ARCurrent->priority)) {
 			$ARCurrent->priority=array_reverse($ARCurrent->priority, true);
 			arsort($ARCurrent->priority);
@@ -69,8 +72,8 @@ class pnewspaper extends pdir { // pnewspaper class definition
 		return $articles;
 	}
 
-	function _get_articles($display,$max="",$start="",$end="",$nls="") {
-		return $this->get_articles($display,$max,$start,$end,$nls);
+	function _get_articles($display,$max="",$start="",$end="",$nls="",$priority_date="") {
+		return $this->get_articles($display,$max,$start,$end,$nls,$priority_date);
 	}
 
 	function _call_article($article,$template="",$args="") {
