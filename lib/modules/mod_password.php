@@ -199,4 +199,10 @@ class password {
 	}
 }
 
+class pinp_password extends password {
+	function _generate( $size=8, $pw_flags=3 ) {
+		return password::generate( $size, $pw_flags );
+	}
+}
+
 ?>
