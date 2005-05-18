@@ -597,6 +597,7 @@ class pobject extends object { // pobject class definition
 				$rootoptions .= '/'.$nls;
 			}
 		}
+
 		$object_path=$this->path;
 		$path=$this->make_path($path);
 //		if (!$keephost || (substr($path, 0, strlen($object_path))!=$object_path)) {
@@ -702,17 +703,22 @@ class pobject extends object { // pobject class definition
 	function make_local_url($path="", $nls=false, $session=true, $https=NULL) {
 		global $ARCurrent, $ARConfig, $AR;
 		$site=false;
+		$path=$this->make_path($path);
 		$newpath=$path;
 		do {
-			$config=$ARConfig->cache[$newpath];
+			if (!$config=$ARConfig->cache[$newpath]) {
+				$config=$this->loadConfig($newpath);
+			}
 			if (@count($ARCurrent->shortcut_redirect)) {
 				$redir = end($ARCurrent->shortcut_redirect);
 				if ($redir["keepurl"] && substr($newpath, 0, strlen($redir["dest"])) == $redir["dest"]) {
 					if (substr($config->site, 0, strlen($redir["dest"]))!=$redir["dest"]) {
 						// search currentsite from the reference
 						if (!$config = $ARConfig->cache[$redir['src']]) {
-							$config = $ARConfig->cache[$this->make_path($redir['src']."../")];
+							$config = $this->loadConfig($redir['src']);
 						}
+						$dest=$redir['dest'];
+						$src=$redir['src'];
 					}
 				}
 			}
@@ -722,20 +728,20 @@ class pobject extends object { // pobject class definition
 				}
 			}
 			$prevpath=$newpath;
-			$newpath=make_path($newpath, "..");			
-		} while ($prevpath!=$path && !$site);
+			$newpath=$this->make_path($newpath."../");			
+		} while ($prevpath!=$newpath && !$site);
 		if (!$site) {
 			$site='/';
 		}
 		$site_url=$this->make_url($site, $nls, $session, $https);
-		$rest=substr($path, strlen($site));
+		if ($dest) { // $dest is the destination of a shortcut redirection, with keepurl on
+			$rest=substr($src, strlen($site)).substr($path, strlen($dest));
+		} else {
+			$rest=substr($path, strlen($site));
+		}
 		return $site_url.$rest;
 	}
 
-	function _make_local_url($path="", $nls=false, $session=true, $https=NULL) {
-		return $this->make_local_url($path, $nls, $session, $https);
-	}
-	
 	function implements($implements) {
 		debug("pobject: implements($implements)","object");
 		return $this->store->implements($this->type, $implements); 
@@ -2033,7 +2039,7 @@ class pobject extends object { // pobject class definition
 				if (substr($config->site, 0, strlen($redir["dest"]))!=$redir["dest"]) {
 					// search currentsite from the reference
 					if (!$config = $ARConfig->cache[$redir['src']]) {
-						$config = $ARConfig->cache[$this->make_path($redir['src']."../")];
+						$config = $this->loadConfig($redir['src']); //$ARConfig->cache[$this->make_path($redir['src']."../")];
 					}
 				}
 			}
