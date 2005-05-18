@@ -1941,17 +1941,19 @@ class pobject extends object { // pobject class definition
 
 	function currentsite() {
 		global $ARCurrent, $ARConfig;
+		if (!$config && !$config=$ARConfig->cache[$this->path]) {
+			$config=$ARConfig->cache[$this->parent];
+		}
 		if (@count($ARCurrent->shortcut_redirect)) {
 			$redir = end($ARCurrent->shortcut_redirect);
 			if ($redir["keepurl"] && substr($this->path, 0, strlen($redir["dest"])) == $redir["dest"]) {
-				// search currentsite from the reference
-				if (!$config = $ARConfig->cache[$redir['src']]) {
-					$config = $ARConfig->cache[$this->make_path($redir['src']."../")];
+				if (substr($config->site, 0, strlen($redir["dest"]))!=$redir["dest"]) {
+					// search currentsite from the reference
+					if (!$config = $ARConfig->cache[$redir['src']]) {
+						$config = $ARConfig->cache[$this->make_path($redir['src']."../")];
+					}
 				}
 			}
-		}
-		if (!$config && !$config=$ARConfig->cache[$this->path]) {
-			$config=$ARConfig->cache[$this->parent];
 		}
 		return $config->site;
 	}
