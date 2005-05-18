@@ -578,16 +578,14 @@ class pobject extends object { // pobject class definition
 		return $this->store->make_path($this->path, $path);
 	}
 
+/*
+	// keephost version, broken
+
 	function make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=false) {
 		global $ARConfig, $AR, $ARCurrent;
+
+
 		debug("pobject: make_url($path) (from: ".$this->path.")","object");
-		if (@count($ARCurrent->shortcut_redirect)) {
-			$path = $this->make_path($path);
-			$redir = end($ARCurrent->shortcut_redirect);
-			if ($redir["keepurl"] && substr($path, 0, strlen($redir["dest"])) == $redir["dest"]) {
-				$path = $redir["src"] .= substr($path, strlen($redir["dest"]));
-			}
-		}
 		$rootoptions=$this->store->rootoptions;
 		if (!$session || ($nls !== false)) {
 			$rootoptions = "";
@@ -607,15 +605,18 @@ class pobject extends object { // pobject class definition
 //			$getConfigPath=$object_path;
 //			$keephost=true;
 //		}
+
 		// make sure CheckConfig has run on the most fitting object to $getConfigPath
 		while ($getConfigPath && !$this->exists($getConfigPath)) {
 			$getConfigPath=$this->store->make_path($getConfigPath, "..");
 		}
+
 		// now run CheckConfig and get the parentsite of the path found
 		if (!$temp_config=$ARConfig->cache[$getConfigPath]) {
 			$temp_site=current($this->get($getConfigPath, "system.get.site.phtml"));
 			$temp_config=$ARConfig->cache[$temp_site];
 		}
+
 //		if ($keephost) {
 //			// find the path to the site that is currently used
 //			while ($temp_site!='/' && strstr($temp_config->root["value"],'//'.$_SERVER['SERVER_NAME'])===false) {
@@ -625,6 +626,55 @@ class pobject extends object { // pobject class definition
 //				$temp_config=$ARConfig->cache[$temp_site];
 //			}
 //		}
+		if ($nls) {
+			$url=$temp_config->root["list"]["nls"][$nls];
+			if ($url) {
+				$url .= $rootoptions_nonls;
+			}
+		}
+		if (!$url) {
+			$url=$temp_config->root["value"].$rootoptions;
+		}
+		$url.=substr($path, strlen($temp_config->root["path"])-1);
+		debug("make_url: ".$temp_config->root["path"]." = $temp_site : $temp_url","all");
+
+		if (is_bool($https)) {
+			if ($https) {
+				if ($AR->https) {
+					$url = ereg_replace('^http:', 'https:', $url);
+				}
+			} else {
+				$url = ereg_replace('^https:', 'http:', $url);
+			}
+		}
+		return $url;			
+	}
+
+*/
+	function make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=false) {
+		global $ARConfig, $AR, $ARCurrent;
+		debug("pobject: make_url($path) (from: ".$this->path.")","object");
+
+		$rootoptions=$this->store->rootoptions;
+		if (!$session || ($nls !== false)) {
+			$rootoptions = "";
+			if ($session && $ARCurrent->session->id && !$AR->hideSessionIDfromURL) {
+				$rootoptions .= "/-".$ARCurrent->session->id."-";
+			}
+			if ($nls) {
+				$rootoptions_nonls = $rootoptions;
+				$rootoptions .= '/'.$nls;
+			}
+		}
+		$object_path=$this->path;
+		$path=$this->make_path($path);
+
+		// now run CheckConfig and get the parentsite of the path found
+		if (!$temp_config=$ARConfig->cache[$path]) {
+			$temp_site=current($this->get($path, "system.get.site.phtml"));
+			$temp_config=$ARConfig->cache[$temp_site];
+		}
+
 		if ($nls) {
 			$url=$temp_config->root["list"]["nls"][$nls];
 			if ($url) {
