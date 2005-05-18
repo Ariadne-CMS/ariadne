@@ -700,7 +700,40 @@ class pobject extends object { // pobject class definition
 	}
 
 	function make_local_url($path="", $nls=false, $session=true, $https=NULL) {
-		return $this->make_url($path, $nls, $session, $https, true);
+		global $ARCurrent, $ARConfig, $AR;
+		$site=false;
+		$newpath=$path;
+		do {
+			$config=$ARConfig->cache[$newpath];
+			if (@count($ARCurrent->shortcut_redirect)) {
+				$redir = end($ARCurrent->shortcut_redirect);
+				if ($redir["keepurl"] && substr($newpath, 0, strlen($redir["dest"])) == $redir["dest"]) {
+					if (substr($config->site, 0, strlen($redir["dest"]))!=$redir["dest"]) {
+						// search currentsite from the reference
+						if (!$config = $ARConfig->cache[$redir['src']]) {
+							$config = $ARConfig->cache[$this->make_path($redir['src']."../")];
+						}
+					}
+				}
+			}
+			if ($config) {
+				if ($config->root['value']==$AR->host) {
+					$site=$config->site;
+				}
+			}
+			$prevpath=$newpath;
+			$newpath=make_path($newpath, "..");			
+		} while ($prevpath!=$path && !$site);
+		if (!$site) {
+			$site='/';
+		}
+		$site_url=$this->make_url($site, $nls, $session, $https);
+		$rest=substr($path, strlen($site));
+		return $site_url.$rest;
+	}
+
+	function _make_local_url($path="", $nls=false, $session=true, $https=NULL) {
+		return $this->make_local_url($path, $nls, $session, $https);
 	}
 	
 	function implements($implements) {
