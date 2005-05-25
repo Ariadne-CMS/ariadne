@@ -1,0 +1,43 @@
+Subtypes support
+----------------
+
+Since Ariadne 2.4 HEAD, Ariadne has support to create new class names which
+extend default Ariadne classes. An example of such a classname name could be 
+ppage.email. This classname can then be used to register templates for, and
+behave different than the normal default class (in this case 'ppage').
+
+
+Registering subtypes
+--------------------
+
+To be able to use subtypes, you have to register them in the 
+/system/ariadne/types/ and the /system/ariadne/typetree/ directories (like
+you would do with normal php classes). An example: For registering the new
+subtype 'ppage.email', we would create an object (pobject) named 'email'
+under /system/ariadne/types/. The value of this object should be
+'ppage.email'. Now we also want this object to be addable under directories,
+which we do by linking the new created object under 
+/system/ariadne/typetree/normal/pdir/.
+
+
+Using subtypes
+--------------
+
+After having registered the subtype, we are now able to select this type 
+from the object->new menu and create an object of that type. 
+
+Creating templates for this subtype is as easy as adding a new template
+and selecting the subtype from the 'types' list in the pinp editor.
+
+
+Status
+------
+
+Subtype support is still in development and behaviour of it can change through
+time. 
+
+Known problems: 
+	- class icons are broken
+	- you can't find subtypes by querying them with "implements = 'type.subtype'",
+	use "type = 'type.subtype'" instead.
+
