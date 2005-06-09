@@ -39,7 +39,7 @@ include_once($this->code."objects/pdir.phtml");
 
 class pnewspaper extends pdir { // pnewspaper class definition
 
-	function get_articles($display, $max="", $start="", $end="", $nls="", $priority_date) {
+	function get_articles($display, $max="", $start="", $end="", $nls="", $priority_date="") {
 		global $ARCurrent;
 		debug("pnewspaper: get_articles($display, $max, $start, $end)","object");
 		if (!$start) { 

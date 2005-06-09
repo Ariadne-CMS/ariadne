@@ -995,23 +995,23 @@ class pobject extends object { // pobject class definition
 		return $result;			
 	}
 
-	function CheckSilent($grant, $modifier=ARTHISTYPE) {
+	function CheckSilent($grant, $modifier=ARTHISTYPE, $path=".") {
 	global $AR, $ARConfig;
-
-		debug("pobject: CheckSilent($grant)","object");
+		$path = $this->make_path($path);
+		debug("pobject: CheckSilent($grant, $modifier, $path)","object");
 		if ($modifier==ARTHISTYPE) {
 			$modifier=$this->type;
 		}
 		$result=false;
 
 		/* load config cache */
-		if (!$ARConfig->cache[$this->path]) {
-			$this->loadConfig();
+		if (!$ARConfig->cache[$path]) {
+			$this->loadConfig($path);
 		}
 
 		if ($AR->user->data->login=="admin") {
 			$result=1;
-		} else if ($grants=$AR->user->grants[$this->path]) {
+		} else if ($grants=$AR->user->grants[$path]) {
 			$result=$grants[$grant];
 		} else {
 			$grants=$this->GetValidGrants();
@@ -1838,8 +1838,12 @@ class pobject extends object { // pobject class definition
 	function _find($criteria, $function="list.html", $args="", $limit=100, $offset=0) {
 		// remove possible path information (greedy match)
 		$function=basename($function);
-		return $this->store->call($function, $args, 
-		$this->store->find($this->path, $criteria, $limit, $offset));
+		$result = $this->store->call($function, $args, 
+			$this->store->find($this->path, $criteria, $limit, $offset));
+		if ($this->store->error) {
+			$this->error = $store->store->error;
+		}
+		return $result;
 	}
 
 	function _exists($path) {
@@ -2161,12 +2165,12 @@ class pobject extends object { // pobject class definition
 		return $this->parentsection($section);
 	}
 
-	function _checkgrant($grant, $modifier=ARTHISTYPE) {
+	function _checkgrant($grant, $modifier=ARTHISTYPE, $path=".") {
 		// as this is called within a pinp template, 
 		// all the grants are already loaded, so
 		// checksilent will fullfill our needs
 		$this->pushContext(Array("scope" => "php"));
-			$result = $this->CheckSilent($grant, $modifier);
+			$result = $this->CheckSilent($grant, $modifier, $path);
 		$this->popContext();
 		return $result;
 	}
