@@ -51,7 +51,7 @@ class pphoto extends pfile { // pphoto class definition
 		return $ARConfig->cache[$this->path]->thumb;
 	}
 
-	function convert($format="jpg") {
+	function convert($format="jpg", $quality=75) {
 		global $ARConfig;
 
 		$this->set_context("mogrify");
@@ -59,10 +59,11 @@ class pphoto extends pfile { // pphoto class definition
 		$result=false;
 		if (eregi('[^a-z0-9+]',$format)) {
 			$this->error=sprintf($ARnls["err:convillegalformat"],$format);
-			// FROP $this->error="Convert called with illegal format ($format)";
 		} else {
 			$ARConfig->photoStack[$this->id][]=" -format $format";
 			$this->targetformat=$format;
+			$quality=(int)$quality;
+			$ARConfig->photoStack[$this->id][]=" -quality $quality";
 			$result=true;
 		}
 		return $result;		
@@ -498,8 +499,8 @@ class pphoto extends pfile { // pphoto class definition
 		return $result;
 	}
 
-	function _convert($format="") {
-		return $this->convert($format);
+	function _convert($format="", $quality=75) {
+		return $this->convert($format, $quality);
 	}
 
 	function _scale($x, $y, $fillcolor=false) {
