@@ -343,6 +343,7 @@
 	$ARnls["yes"]							=	"Ja";
 	$ARnls["zipcode"]						=	"Postcode";
 	$ARnls["change_owner"]					=	"Wijzig eigenaar";
+	$ARnls["owner"]							=	"Eigenaar";
 	$ARnls["change_owner_recursive"]		=	"Wijzig eigenaar van alle kinderen";
 	$ARnls["grants_for"]					=	"Grants voor";
 	$ARnls["grants_add_update"]				=	"Bewerk of voeg grants toe op";

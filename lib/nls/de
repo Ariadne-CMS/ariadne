@@ -353,6 +353,7 @@
 	$ARnls["yes"]							=	"Ja";
 	$ARnls["zipcode"]						=	"PLZ";
 	$ARnls["change_owner"]					=	"Besitzer setzen";
+	$ARnls["owner"]							=	"Besitzer";
 	$ARnls["change_owner_recursive"]		=	"Benutzer rekursiv setzen";
 	$ARnls["grants_for"]					=	"Zugriffsrechte für";
 	$ARnls["grants_add_update"]				=	"Zugriffsrechte hinzufügen oder ändern von";
