@@ -35,7 +35,7 @@
 		switch(true) {
 			case isset($next_apply) :
 				$arReturnPage="edit.object.layout.form.phtml?type=".RawUrlEncode($newtype).
-					"&function=".RawUrlEncode($newfunction)."&language=".RawUrlEncode($newlanguage);
+					"&function=".RawUrlEncode($newfunction)."&language=".RawUrlEncode($newlanguage)."&cursorpos=".RawUrlEncode($cursorpos);
 			case isset($next_save) :
 				$this->call("system.save.layout.phtml", Array( 
 					"type"		=> $newtype,
