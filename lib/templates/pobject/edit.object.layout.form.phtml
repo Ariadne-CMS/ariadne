@@ -46,6 +46,9 @@
 	 }
 	 if( !$mode || $mode == "edit" ) {
 		 echo "document.forms[0].template.focus();";
+		 if( $cursorpos ) {
+		 	echo "setCursorPos(".$cursorpos.");";
+		 }
 	 }
     ?>
   }
@@ -63,6 +66,48 @@ function mode_change() {
 	document.forms[0].submit();
 }
 
+function setCursorPos(positie) {
+	var template = document.forms[0].template;
+	if( positie > template.value.length ) {
+		return;
+	}
+	if( document.selection ) {
+		var mtext=template.createTextRange();
+		//~ mtext.collapse(true); // I think this is not needed
+		mtext.moveStart('character', positie);
+		mtext.collapse(true);
+		mtext.select();
+	} else {
+		// do something Mozilla style
+		template.focus();
+		template.setSelectionRange(positie, positie);
+	}
+}
+
+function getCursorPos() {
+	var template = document.forms[0].template;
+	if (document.selection) {
+		var mtext=document.selection.createRange();
+		var count=0;
+		var moved=0;
+		while (moved=mtext.moveStart('character', -100)) {
+			count-=moved;
+		}
+		return (count-70); // off by 70?! At least it's always off by 70 :) FIXME seems in order
+	} else {
+		var selection=window.getSelection();
+		if (selection.anchorNode) {
+			var len = template.selectionEnd;
+			return len;
+		}
+	}
+}
+
+function saveCursorPos() {
+	var positie = getCursorPos();
+	document.forms[0].cursorpos.value = positie;
+	return true;
+}
 
 /**
 * Insert a tab at the current text position in a textarea
@@ -129,6 +174,7 @@ function insertTab(event,obj) {
 <input type="hidden" name="type" value="<?php echo $type; ?>">
 <input type="hidden" name="function" value="<?php echo $function; ?>">
 <input type="hidden" name="language" value="<?php echo $language; ?>">
+<input type="hidden" name="cursorpos" value="<?php echo $cursorpos; ?>">
 <table border="0" width="100%" cellspacing="0" height="5%">
 	<tr>
 		<td>
@@ -256,7 +302,7 @@ function insertTab(event,obj) {
 		<input type="submit" name="next_delete" value="<?php echo $ARnls["delete"]; ?>" 
 		 onClick="return confirm('<?php echo $ARnls["q:removethistemplate"]; ?>');">
 	</td><td colspan="2" align="right" valign="top">
-		<input type="submit" name="next_apply" value="<?php echo $ARnls["apply"]; ?>">	
+		<input type="submit" name="next_apply" value="<?php echo $ARnls["apply"]; ?>" onclick="return saveCursorPos();" unselectable=on>	
 		<input type="submit" name="next_save" value="<?php echo $ARnls["save"]; ?>">	
 	</td>
 </tr>
