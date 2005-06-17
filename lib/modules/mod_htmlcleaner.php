@@ -102,21 +102,33 @@ class htmlcleanertag {
 				if (preg_match("/([a-zA-Z:]{1})/",$chr)) {
 					$_name .= $chr;
 				} else if ($chr == '=') {
+					$_state = 3;
+				} else {
 					$_state = 2;
 				}
-			} else if ($_state == 2) {	// state 2 : looking for quote
+			} else if ($_state == 2) { // state 2: looking for equal
+				if ($chr != ' ' && $chr != "\t" && $chr != "\n") {
+					if ($chr == '=') {
+						$_state = 3;
+					} else {
+						// end of attribute
+						$return[strtolower($_name)] = "";
+						$_state = -1;
+					}
+				}
+			} else if ($_state == 3) {	// state 3 : looking for quote
 				if (preg_match("/([\'\"]{1})/",$chr)) {
 					$_quote = $chr;
 					$_value = '';
-					$_state = 3;
+					$_state = 4;
 				} else if (preg_match("/\\s{1}/",$chr)) {
-					$_state = 2;
+					$_state = 3;
 				} else {
 					$_quote = '';
 					$_value = $chr;
-					$_state = 3;
+					$_state = 4;
 				}
-			} else if ($_state == 3) {	// state 3 : looking for endquote
+			} else if ($_state == 4) {	// state 4 : looking for endquote
 				if ($_quote != "") {
 					if ($chr == $_quote) {
 						// end of attribute
