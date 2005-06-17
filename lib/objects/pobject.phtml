@@ -744,7 +744,8 @@ class pobject extends object { // pobject class definition
 
 	function implements($implements) {
 		debug("pobject: implements($implements)","object");
-		return $this->store->implements($this->type, $implements); 
+		$type = current(explode(".",$this->type)); 
+		return $this->store->implements($type, $implements); 
 	}
 
 	function getlocks() {
