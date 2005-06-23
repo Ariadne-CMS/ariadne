@@ -131,12 +131,14 @@ function insertTab(event,obj) {
 		if (event.type == "keydown") {
 			if (obj.setSelectionRange) {
 				// mozilla
+				var scrollTop = obj.scrollTop;
 				var s = obj.selectionStart;
 				var e = obj.selectionEnd;
 				obj.value = obj.value.substring(0, s) + 
 					"\t" + obj.value.substr(e);
 				obj.setSelectionRange(s + 1, s + 1);
 				obj.focus();
+				obj.scrollTop=scrollTop;
 			} else if (obj.createTextRange) {
 				// ie
 				document.selection.createRange().text="\t"
