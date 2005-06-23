@@ -109,8 +109,9 @@
 			$result=$this->ls($configcache->typetree."/".$this->type."/",
 				"system.get.phtml");
 		} else {
-			$result=$this->ls("/system/ariadne/typetree/normal/".$this->type."/",
-				"system.get.phtml");
+//			$result=$this->ls("/system/ariadne/typetree/normal/".$this->type."/",
+//				"system.get.phtml");
+			$typetree=$this->call('typetree.ini');
 		}
 	} else {
 		$result=$this->ls("/system/ariadne/types/","system.get.phtml");
@@ -147,6 +148,39 @@
 			echo "<td>&nbsp;</td>\n";
 			$col++;
 		}
+	} else if ($typetree) {
+		$list=$typetree[$this->type];
+		$col=1;
+		while (list($type, $name)=each($list)) {
+			if (!$this->CheckSilent("add",$type)) {
+				$class="class='greyed'";				
+			} else {
+				$class="";
+			}
+			if ($col>$cols) {
+				$col=1;
+				echo "</tr><tr valign='top'>";
+			}
+			if ($ARCurrent->arTypeIcons[$type]) {
+				$icon=$ARCurrent->arTypeIcons[$type];
+			} else {
+				$icon=$AR->dir->images."icons/".$type.'_open.gif';
+			}
+			?>
+				<td valign="top" align="center" width="<?php echo (100/$cols); ?>%">
+					<a <?php echo $class; ?> href="#" onClick="return View('<?php echo $currentpath.$arReturnTemplate; ?>?arNewType=<?php echo RawUrlEncode($type)."&".ldGetServerVar("QUERY_STRING"); ?>');">
+					<img width="40" height="40" src="<?php echo $icon; ?>" alt="<?php echo $type; ?>" border="0"><br>
+					<?php
+						echo "$name</a>";
+					?></a>
+				</td>
+			<?php
+			$col++;
+		}
+		while ($col<=$cols) {
+			echo "<td>&nbsp;</td>\n";
+			$col++;
+		}		
 	} else {
 		error($ARnls["err:wronggrants"]);
 		// FROP error("Something is wrong with your grants, please contact the system administrator.");
