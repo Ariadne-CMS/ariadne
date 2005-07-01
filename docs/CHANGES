@@ -41,6 +41,7 @@ New Features:
 	- The 'open editor' button now has an adjustable text. 
 
 Bugs Fixes:
+	- fixed a bug in the ftp loader, it was giving the wrong time of templates
 	- Fixed some 'repeat by ...' bugs in the pcalitem object. Thanks to
 	  Fabian Steger.
 	- Added a fix for ftp clients which do expect \r\n as linebreaks. Thanks

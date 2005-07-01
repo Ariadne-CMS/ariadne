@@ -19,7 +19,10 @@
 									} else {
 										$entry["filename"]="$type.$function.$language";
 									}
-									$entry["date"]=$this->lastchanged;
+
+									$time = $fstore->mtime($this->id, $entry["filename"].".pinp");
+
+									$entry["date"]=$time;
 									$entry["type"]="template";
 									$entry["size"]=$fstore->size($this->id, "$type.$function.$language.pinp");
 									$entry["grants"]["read"]=true;
