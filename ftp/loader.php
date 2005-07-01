@@ -89,10 +89,17 @@
 			} else {
 				// do passive mode
 				debug("ftp::OpenDC waiting on socket accept"); 
-				$msgsocket=socket_accept($FTP->DC["socket"]);
+				$counter = 0;
+				$msgsocket = false;
+				while ( $counter < 300 && !is_resource($msgsocket) ) {
+					$counter++;
+					// wait for 0.1 secondes
+					usleep(100000);
+					$msgsocket=socket_accept($FTP->DC["socket"]);
+				}
 				debug("ftp::OpenDC socket accepted? (".$msgsocket.")");
-				if ($msgsocket < 0) {
-					ftp_Tell(425, "Couldn't build data connection (rm: socket error: ".strerror($socket).")");
+				if (!is_resource($msgsocket) ) {
+					ftp_Tell(425, "Couldn't build data connection");
 					$result=false;
 				} else {
 					debug("ftp: accept_connect returned $msgsocket");
@@ -144,6 +151,7 @@
 
 					if ($bound) {
 						$ret=socket_listen($socket, 1);
+						socket_set_nonblock($socket);
 						if ($ret < 0) {
 							ftp_Tell(425, "Couldn't build data connection (rm: socket error:".strerror($socket).")");
 						} else {
