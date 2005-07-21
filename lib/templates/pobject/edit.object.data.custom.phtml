@@ -48,7 +48,13 @@
 					}
 				}
 			}
-			$configcache=$ARConfig->cache[$this->path];
+
+			if( $this->arIsNewObject ) {
+				$configcache=$ARConfig->cache[$this->parent];
+			} else {
+				$configcache=$ARConfig->cache[$this->path];
+			}
+
 			if (is_array($configcache->custom)) {
 				while (list($name, $customvalue)=each($configcache->custom)) {
 					if (($customvalue["type"]==$this->type) ||
