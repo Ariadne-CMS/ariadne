@@ -216,13 +216,21 @@ class htmlcleaner
 				}
 			} else if ($_state == 1) {	// state 1 : in tag looking for >
 				$_buffer .= $chr;
-				if ($chr == '>') {
+				if ($chr == '"' || $chr == "'") {
+					$_quote = $chr;
+					$_state = 3;
+				} else if ($chr == '>') {
 					array_push($parts,new htmlcleanertag($_buffer));
 					$_state = -1;
 				}
 			} else if ($_state == 2) {	// state 2 : in comment looking for -->
 				if ($str[$i-2] == '-' && $str[$i-1] == '-' && $str[$i] == '>') {
 					$_state = -1;
+				}
+			} else if ($_state == 3) {
+				$_buffer .= $chr;
+				if ($chr == $_quote || $chr == '') {
+					$_state = 1;
 				}
 			}
 			$i++;
