@@ -22,9 +22,23 @@
 
 	//debugon('all');
 	$HELP_INFO = 
-"No help yet
+"improt.wddx [--options] [source path] [destination path] file.wddx
+The import command will import objects from the current Ariadne database to
+the specified .wddx file. It will import all objects from your .wddx file.
+
   --verbose     more output
   --debug       enable debugging
+  --skiptemplates          Don't import tempaltes
+  --forcetemplates         force import tempaltes
+  --dellalltemplates       Remove all template before import
+
+  --skipgrants             Don't import grants
+
+  --skipdata               Don't import object data
+  --forcedata              Force import object data
+
+  --skipfiles              Don't import files
+  --forcefiles             Force import files
 ";
 
 	//TODO: commandline configuration
@@ -95,7 +109,6 @@
 					$options["forcefiles"]=true;
 				break;
 
-
 				case 'prefix':
 					if($option_value) {
 						$options["prefix"] = $option_value;
@@ -110,24 +123,51 @@
 		}
 	}
 
-if( isset($arg_v[1]) && $arg_v[0] != '-' ){
-	// open file
-	$in=fopen($arg_v[1], 'r');
-} else {
-	// open stdin
-	$in=fopen('php://stdin', 'r');
-}
+	switch($arg_c){
+		case 4:
+			$srcpath=$arg_v[1];
+			$dstpath=$arg_v[2];
+			$srcfile=$arg_v[3];
+			break;
+		case 3:
+			$srcpath=$arg_v[1];
+			$dstpath=$srcpath;
+			$srcfile=$arg_v[2];
+			break;
+		case 2:
+			$srcpath='/';
+			$dstpath=$srcpath;
+			$srcfile=$arg_v[1];
+			break;
+		case 1:
+		default:
+			echo "verkeerde hoeveelheid argumenten ($arg_c)";
+			print_r($arg_v);
+			exit(0);
 
-if($options["debug"]){
-	debugon('all');
-}
-set_time_limit(0);
+	}
 
-$import = new import_wddx($options);
-$import->parse($in,$store);
+	$options["srcpath"]=$srcpath;
+	$options["dstpath"]=$dstpath;
 
-if($options["debug"]){
-	debugoff();
-}
+	if( $srcfile != '-' ){
+		// open file
+		$in=fopen($srcfile, 'r');
+	} else {
+		// open stdin
+		$in=fopen('php://stdin', 'r');
+	}
+
+	if($options["debug"]){
+		debugon('all');
+	}
+	set_time_limit(0);
+
+	$import = new import_wddx($options);
+	$import->parse($in,$store);
+
+	if($options["debug"]){
+		debugoff();
+	}
 
 ?>

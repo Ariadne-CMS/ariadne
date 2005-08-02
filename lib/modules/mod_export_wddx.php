@@ -46,14 +46,21 @@ class export_wddx {
 
 
 	function export($fp,&$object) {
-		export_wddx::print_verbose('Exporting: '.$object->path."\n");
+		global $ARCurrent;
+		if($ARCurrent->wddxoptions['srcpath'] != $ARCurrent->wddxoptions['dstpath']){
+			$exportpath = $ARCurrent->wddxoptions['dstpath'].substr($object->path,strlen($ARCurrent->wddxoptions['srcpath']));
+		} else {
+			$exportpath = $object->path;
+		}
+		export_wddx::print_verbose('Exporting: ['.$object->path.'] as ['.$exportpath."]\n");
+
 		fwrite($fp,"<var name=\"object".$object->id."\">\n");
 		fwrite($fp,"<struct type=\"object\" class=\"".$object->type."\">\n");
 		fwrite($fp,"<var name=\"id\">\n");
 		fwrite($fp,"<number>".$object->id."</number>\n");
 		fwrite($fp,"</var>\n");
 		fwrite($fp,"<var name=\"path\">\n");
-		fwrite($fp,"<string>".$object->path."</string>\n");
+		fwrite($fp,"<string>".$exportpath."</string>\n");
 		fwrite($fp,"</var>\n");
 		fwrite($fp,"<var name=\"type\">\n");
 		fwrite($fp,"<string>".$object->type."</string>\n");

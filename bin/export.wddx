@@ -14,14 +14,19 @@ require($ariadne."/includes/loader.web.php");
 require($ariadne."/stores/".$store_config["dbms"]."store.phtml");
 
 
-$HELP_INFO="export.wddx [--options] [source path] [file.wddx]
+$HELP_INFO="export.wddx [--options] [source path] [destination path] file.wddx
 The export command will export objects from the current Ariadne database to
 the specified .wddx file. It will export all objects specified 
 by [source path] to your .wddx file.
 
 options are:
 --verbose                Display what we are doing
---help                   This information\n\n";
+--help                   This information
+--skiptemplates          Don't export tempaltes
+--skipgrants             Don't export grants
+--skipdata               Don't export object data
+--skipfiles              Don't export files
+\n\n";
 
 $arg_c=0;
 $arg_v[$arg_c++]=$argv[0];
@@ -81,21 +86,40 @@ while (list(,$cmd)=each($argv)) {
 
 set_time_limit(0);
 
-if ($arg_c>2) {
+if ($arg_c>1) {
 	$ARLogin="admin";
 	$AR->user=new object;
 	$AR->user->data=new object;
 	$AR->user->data->login="admin";
 
-	if ($arg_c=2) {
-		$srcpath=$arg_v[1];
-		$dstfile=$arg_v[2];
-	} else {
-		$srcpath='/';
-		$dstfile=$arg_v[1];
+	switch($arg_c){
+		case 3:
+			$srcpath=$arg_v[1];
+			$dstpath=$srcpath;
+			$dstfile=$arg_v[2];
+			break;
+		case 2:
+			$srcpath='/';
+			$dstpath=$srcpath;
+			$dstfile=$arg_v[1];
+			break;
+		case 4:
+			$srcpath=$arg_v[1];
+			$dstpath=$arg_v[2];
+			$dstfile=$arg_v[3];
+			break;
+		default:
+			echo "Te weinig/veel argumenten";
+			exit(0);
 	}
+	$ARCurrent->wddxoptions["srcpath"]=$srcpath;
+	$ARCurrent->wddxoptions["dstpath"]=$dstpath;
 
-	$outfile = fopen($dstfile,"w");
+	if($dstfile != "-" ){
+		$outfile = fopen($dstfile,"w");
+	} else {
+		$outfile = fopen("php://stdout","w");
+	}
 	if($outfile){
 		$ARCurrent->wddxfp=$outfile;
 		$inst_store = $store_config["dbms"]."store";

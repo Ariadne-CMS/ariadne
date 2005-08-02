@@ -124,6 +124,10 @@ class import_wddx {
 		debug("WDDX working on ".$objdata['path'],'all');
 
 		$changed = false;
+
+		if($this->config['srcpath'] != $this->config['dstpath']){
+			$objdata['path'] = $this->config['dstpath'].substr($objdata['path'],strlen($this->config['srcpath']));
+		}
 	
 		if($this->config['prefix']){
 			$path = $this->store->make_path($this->config['prefix'],".".$objdata['path']);

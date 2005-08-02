@@ -7,14 +7,25 @@ if( $this->CheckLogin("config") ) {
 	$closefp = false;
 	set_time_limit(0);
 	$fp = $this->getvar('wddxfp','none');
+	$options = $this->getvar('wddxoptions','none');
+
 	if(!$fp){
+		$closefp = true;
 		$fp = fopen('php://output','w');
-		$options = $this->getvar('wddxoptions','none');
 		unset($options['verbose']);
-		$this->putvar('wddxoptions',$options);
+		unset($options['debug']);
 		$this->putvar('wddxfp',$fp);
 		ldHeader("Content-Type: text/xml");
 	}
+	if(!isset($options['srcpath']) ){
+		$options['srcpath'] = '/';
+		$options['dstpath'] = '/';
+	}
+	if(!isset($options['dstpath']) ){
+		$options['dstpath'] = $options['srcpath'];
+	}
+	
+	$this->putvar('wddxoptions',$options);
 	export_wddx::header($fp);
 	$query="";
 	$this->find($this->make_path($path), $query, "export.wddx.object.phtml", "", 0);
@@ -22,6 +33,5 @@ if( $this->CheckLogin("config") ) {
 	if($closefp){
 		fclose($fp);
 	}
-
 }
 ?>
