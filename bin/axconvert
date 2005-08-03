@@ -69,7 +69,7 @@
 							echo "ariadne 2b09 version\n";
 							include("./utils/convert_b09");
 						} else {
-							echo "ariadne cvs version\n";
+							echo "ariadne svn version\n";
 							include("./utils/convert_cvs");
 						}
 					}
