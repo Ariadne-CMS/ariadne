@@ -844,6 +844,9 @@ class pobject extends object
 			$url=$temp_config->root["list"]["nls"][$nls];
 			if ($url) 
 			{
+				if (substr($url, -1)=='/') {
+					$url=substr($url, 0, -1);
+				}
 				$url .= $rootoptions_nonls;
 			}
 		}
