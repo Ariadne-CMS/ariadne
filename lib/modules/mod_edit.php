@@ -147,7 +147,7 @@
         }
 
 		function isEmpty($var) {
-			return trim(ereg_replace('&nbsp;',' ',strip_tags($nlsdata->summary, '<img>'))); 
+			return (trim(ereg_replace('&nbsp;',' ',strip_tags($var, '<img>')))==""); 
 		}
 	}
 
