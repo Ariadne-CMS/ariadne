@@ -274,12 +274,13 @@
 
 			}
 			display("clearing cache.\n");
-			$ARCurrent->importStore->call("system.cache.clear.phtml", 
+			if ($ARCurrent->AXAction == "import") {
+				$ARCurrent->importStore->call("system.cache.clear.phtml", 
 						Array(
 							"private" => true,
 							"recurse" => true
 						) , $ARCurrent->importStore->get($destpath));
-
+			}
 		}
 	}
 ?>
