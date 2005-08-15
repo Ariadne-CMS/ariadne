@@ -1,7 +1,4 @@
 <?php
-
-	debug("pobject: Load","object");
-
     /******************************************************************
      pobject.phtml                                         Muze Ariadne
      ------------------------------------------------------------------
@@ -27,75 +24,54 @@
      Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
      02111-1307  USA
 
+    -------------------------------------------------------------------
+
+     Class inheritance: 	pobject 
+     Description:
+
+       This is the class definition file of the pobject class.
+
     ******************************************************************/
 
-/**
- *	The root class of Ariadnes persistent objects.
- */
-	 
-class pobject extends object
-{
-	/**
-	 * @var object $store reference to the global store object
-	 * @access private
-	 */
+debug("pobject: Load","object");
+
+class pobject extends object { // pobject class definition
+
 	var $store;	
-	/** 
-	 * @var string $path path of the object in the ariadne store
-	 * @access public
-	 */
 	var $path;
-	/**
-	 * @var object $data the stored data object
-	 * @access public
-	 */
 	var $data;  
 
-	/**
-	 * init is the default ariadne constructor for persisten objects.
-	 *
-	 * @param object $store reference to the global store object
-	 * @param string $path path of the object in the ariadne store
-	 * @param object $data the stored data object
-	 */
-	function init(&$store, &$path, &$data) 
-	{
+	function init(&$store, &$path, &$data) {
 		debug("pobject: init([store], $path, [data])","object");
 		$this->store=&$store;
 		$this->path=&$path;
 		$this->data=&$data;
 	}
 
-	/**
-	 * Finds and executes the template ($arCallFunction) on the current object.
-	 *
-	 * @param string $arCallFunction name of the template to run
-	 * @param array $arCallArgs list of arguments to the template
-	 *
-	 * If it is not defined there, call will search the superclasses
-	 * until either it or the template 'default.phtml' is found.
-	 *
-	 * $arCallFunction must be the name of a class or object template.
-	 *   it can be prepended with "{classname}::". classname must be either
-	 *   a valid ariadne class (derived from pobject). call() 
-	 *   will then try to find the template starting at the given classname.
-	 *	e.g.:
-	 *	call("pobject::view.html") will show the view.html template of
-	 *     pobject, with the data of the current object.
-	 *
-	 * variables available to templates:
-	 * local: arCallFunction, arCallArgs, arCallTemplate, data
-	 * global: AR, ARConfig, ARCurrent, ARBeenHere, ARnls
-	 */
-	function call($arCallFunction="view.html", $arCallArgs="") 
-	{
-		global $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls;
+	function call($arCallFunction="view.html", $arCallArgs="") {
+	/***********************************************************************
+	  call tries to find the template ($arCallFunction) for the current
+	  object. If it is not defined there, call will search the superclasses
+	  until either it or the template 'default.phtml' is found.
+
+	  $arCallFunction must be the name of a class or object template.
+	    it can be prepended with "{classname}::". classname must be either
+	    a valid ariadne class (derived from pobject). call() 
+	    will then try to find the template starting at the given classname.
+		e.g.:
+		call("pobject::view.html") will show the view.html template of
+	      pobject, with the data of the current object.
+
+	  variables available to templates:
+	  local: arCallFunction, arCallArgs, arCallTemplate, data
+	  global: AR, ARConfig, ARCurrent, ARBeenHere, ARnls
+	***********************************************************************/
+	global $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls;
 
 		debug("pobject: ".$this->path.": call($arCallFunction, ".serialize($arCallArgs).")","object","all","IN");
 
 		// default to view.html
-		if (!$arCallFunction) 
-		{
+		if (!$arCallFunction) {
 			$arCallFunction="view.html";
 		}
 		// clear previous results
@@ -103,137 +79,105 @@ class pobject extends object
 
 		// callstack is needed for getvar()
 		$ARCurrent->arCallStack[]=&$arCallArgs;
-		
 		// keep track of the context (php or pinp) in which the called template runs. call always sets it php, CheckConfig sets it to pinp if necessary.
 		$this->pushContext(Array("scope" => "php"));
 
 		// convert the deprecated urlencoded arguments to an array
-		if (is_string($arCallArgs)) 
-		{
+		if (is_string($arCallArgs)) {
 			$ARCurrent->arTemp=$arCallArgs;
 			$arCallArgs=Array();
 			Parse_str($ARCurrent->arTemp, $arCallArgs);
 		}
-		
 		// import the arguments in the current scope, but don't overwrite existing
 		// variables.
-		if (is_array($arCallArgs)) 
-		{
+		if (is_array($arCallArgs)) {
 			extract($arCallArgs,EXTR_SKIP);
 		}
-		
 		// now find the initial nls selection (CheckConfig is needed for per
 		// tree selected defaults)
-		if ($ARCurrent->nls) 
-		{ 
+		if ($ARCurrent->nls) { 
 			$this->reqnls=$ARCurrent->nls; 
-		} 
-		else 
-		{
+		} else {
 			$this->reqnls=$AR->nls->default; 
 		}
-		if (isset($this->data->nls->list[$this->reqnls]) || !isset($this->data->nls)) 
-		{  	
+		if (isset($this->data->nls->list[$this->reqnls]) || !isset($this->data->nls)) {  
 			// the requested language is available
 			$this->nls=$this->reqnls;
 			$nls=&$this->nls;
-		} 
-		else 
-		{
+		} else {
 			// the requested language is not available, use default of the
 			// current object instead.
 			$this->nls=$this->data->nls->default;
 			$nls=&$this->nls;
 			$flag=" <img class=\"flag\" src=\"".$AR->dir->images."nls/small/$nls.gif\" alt=\"\" border=\"0\"> ";
 		}
-		if ($this->data->$nls) 
-		{	
+		if ($this->data->$nls) {
 			// now set the data and nlsdata pointers
 			$this->nlsdata=$this->data->$nls;
 			$nlsdata=&$this->nlsdata;
 			$data=&$this->data;
-		} 
-		else 
-		{		
+		} else {
 			// this object doesn't support nls data
 			$this->nlsdata=$this->data;
 			$nlsdata=&$this->data;
 			$data=&$this->data;
 		} 
-		if ($this->data->custom['none']) 
-		{
+		if ($this->data->custom['none']) {
 			$customdata=$this->data->custom['none'];
 		}
-		if ($this->data->custom[$nls]) 
-		{
+		if ($this->data->custom[$nls]) {
 			$customnlsdata=$this->data->custom[$nls];
 		}
 		debug("pobject: call: nls set to $nls","all"); 
 		
 		$arCallFunctionOrig = $arCallFunction;
-		if (strpos($arCallFunction,"::")!==false) 
-		{
+		if (strpos($arCallFunction,"::")!==false) {
 			// template of a specific class defined via call("class::template");
 			list($arType, $arCallFunction)=explode("::",$arCallFunction);
-		} 
-		else 
-		{
+		} else {
 			$arType=$this->type;
 		}
 
-		if ($arCallFunction[0] === "#") 
-		{
+		if ($arCallFunction[0] === "#") {
 			$ARCurrent->arCallClassTemplate = true;
 			$arCallFunction = substr($arCallFunction, 1);
-		} 
-		else 
-		{
+		} else {
 			$ARCurrent->arCallClassTemplate = false;
 		}
 
-		while ($arType!="object") 
-		{
+		while ($arType!="object") {
 			debug("class: $arType","object");
-
 			// search for the template, stop at the root class ('object')
 			// (this should not happen, as pobject must have a 'default.phtml')
 			$arCallTemplate=$this->store->get_config("code")."templates/".$arType."/".$arCallFunction;
-			if (file_exists($arCallTemplate)) 
-			{
+			if (file_exists($arCallTemplate)) {
 				// template found
 				debug("pobject::call template($arCallTemplate)", "all");
 				$arCallFunction = $arCallFunctionOrig;
 				include($arCallTemplate);
 				debug("pobject::call end template", "all");
 				break;
-			}
-			else if (file_exists($this->store->get_config("code")."templates/".$arType."/default.phtml")) 
-			{
+			} else if (file_exists($this->store->get_config("code")."templates/".$arType."/default.phtml")) {
 				// template not found, but we did find a 'default.phtml'
 				debug("pobject::call $arType/default.phtml", "all");
 				include($this->store->get_config("code")."templates/".$arType."/default.phtml");
 				break;
-			} 
-			else 
-			{
-				if (!($arSuper=$AR->superClass[$arType])) 
-				{
+			} else {
+				if (!($arSuper=$AR->superClass[$arType])) {
 					// no template found, no default.phtml found, try superclass.
-					if ($subcpos = strpos($arType, '.')) 
-					{
+
+					if ($subcpos = strpos($arType, '.')) {
 						$arSuper = substr($arType, 0, $subcpos);
-						if (!class_exists($arType)) 
-						{
+						if (!class_exists($arType)) {
 							// the super class was not yet loaded, so do that now
 							$this->store->newobject('', '', $arSuper, new object);
 						}
-					} 
-					else 
-					{
-						if (!class_exists($arType)) 
-						{
+					} else {
+						if (!class_exists($arType)) {
 							// the given class was not yet loaded, so do that now
 							$this->store->newobject('','',$arType,new object);
+							// include_once($this->store->get_config("code")."objects/".$arType.".phtml");
+						
 						}
 						$arTemp=new $arType();
 						$arSuper=get_parent_class($arTemp);
@@ -247,158 +191,89 @@ class pobject extends object
 		array_pop($ARCurrent->arCallStack);
 		$this->popContext();
 		debug("pobject: call: end","all","all","OUT");
-		if (isset($ARCurrent->arResult)) 
-		{
+		if (isset($ARCurrent->arResult)) {
 			// pinp templates can return results via putvar("arResult",$result);
 			$arResult=$ARCurrent->arResult;
 			unset($ARCurrent->arResult);
 		}
-		if (isset($arResult)) 
-		{
+		if (isset($arResult)) {
 			// only do a return if we really have something to return
 			return $arResult;
 		}
 	}
 
-	/**
-	 * Calls each child of $path with the given template and arguments.
-	 * 
-	 * @param string $path path of the parent object 
-	 * @param string $function name of the template to run
-	 * @param array $args list of arguments to the template
-	 */
-	function ls($path="", $function="list.html", $args="") 
-	{
+	function ls($path="", $function="list.html", $args="") {
 		debug("pobject: ls($path, $function, $args)","object");
 		$path=$this->store->make_path($this->path, $path);
 		return $this->store->call($function, $args, $this->store->ls($path));
 	}
 
-	/**
-	 * Calls the given template on the given object
-	 *
-	 * @param string $path path of the object to call 
-	 * @param string $function name of the template to run
-	 * @param array $args list of arguments to the template
-	 */
-	function get($path, $function="view.html", $args="") 
-	{
+	function get($path, $function="view.html", $args="") {
 		debug("pobject: get($path, $function, $args)","object");
 		$path=$this->store->make_path($this->path, $path);
 		return $this->store->call($function, $args, $this->store->get($path));
 	}
 
-	/**
-	 * Calls each parent of the current object with the given template and arguments.
-	 * 
-	 * @param string $path path of the object to start with 
-	 * @param string $function name of the template to run
-	 * @param array $args list of arguments to the template
-	 */
-	function parents($path, $function="list.html", $args="", $top="") 
-	{
+	function parents($path, $function="list.html", $args="", $top="") {
 		debug("pobject: parents($path, $function, $args)","object");
-		if (!$top) 
-		{
+		if (!$top) {
 			debug('no top given');
 			$top=$this->currentsection();
 			debug('top: '.$top);
-		} 
-		else 
-		{
+		} else {
 			debug('top: '.$top);
 		}
 		$path=$this->store->make_path($this->path, $path);
 		return $this->store->call($function, $args, $this->store->parents($path, $top));
 	}
 
-	/**
-	 * Searches for all objects matching the criteria, and calls the template on them.
-	 *
-	 * @param string $path path of the object to start the search from 
-	 * @param string $criteria search query, using ariadne search format
-	 * @param string $function name of the template to run
-	 * @param array $args list of arguments to the template	 
-	 * @param int $limit maximum number of results to return
-	 * @param int $offset number of results to skip
-	 */
-	function find($path, $criteria, $function="list.html", $args="", $limit=100, $offset=0) 
-	{
+	function find($path, $criteria, $function="list.html", $args="", $limit=100, $offset=0) {
 		debug("pobject: find($path, [crit], $function, $args)","object");
 		$path=$this->store->make_path($this->path, $path);
 		$objects=$this->store->find($path, $criteria, $limit, $offset);
-		if (!$this->store->error) 
-		{
+		if (!$this->store->error) {
 			$result=$this->store->call($function, $args, $objects);
-		} 
-		else 
-		{
+		} else {
 			$this->error=$this->store->error;
 			$result=false;
 		}
 		return $result;
 	}
 
-	/**
-	 * Returns the number of results matching the query.
-	 *
-	 * @param string $path path to start the search from
-	 * @param string $query search query in ariadne query format
-	 */
-	function count_find($path='', $query='') 
-	{
+	function count_find($path='', $query='') {
 		$path=$this->store->make_path($this->path, $path);
 		return $this->store->count($this->store->find($path, $query, 0));
 	}
 
-	/**
-	 * Returns the number of children of the current object.
-	 * 
-	 * @param string $path path of the parent object
-	 */
-	function count_ls($path) 
-	{
+	function count_ls($path) {
 		return $this->store->count($this->store->ls($path));
 	}
 
-	/**
-	 * saves the current object.
-	 *
-	 * @param array $properties list of properties to save with the object
-	 * @param string $vtype optional virtual type
-	 *
-	 * if this is a new object ($this->arIsNewObject) the path is checked and
-	 * the object is saved under the new path.
-	 */
-	function save($properties="", $vtype="") 
-	{
-		global $AR, $ARConfig, $ARnls, $ARCurrent;
+	function save($properties="", $vtype="") {
+	/***********************************************************************
+	  save the current object.
+	  if this is a new object ($this->arIsNewObject) the path is checked and
+	  the object is saved under the new path.
+	***********************************************************************/
+	global $AR, $ARConfig, $ARnls, $ARCurrent;
 		debug("pobject: save([properties], $vtype)","object");
 		debug("pobject: save: path=".$this->path,"object");
 		$result=false;
-		if ($this->arIsNewObject) // save a new object
-		{
+		if ($this->arIsNewObject) { // save a new object
 			debug("pobject: save: new object","all");
 			$arNewParent=$this->make_path("..");
 			$arNewFilename=substr($this->path, strlen($arNewParent), -1);
 			$configcache=$ARConfig->cache[$arNewParent];
-			if (!eregi("\.\.",$arNewFilename)) 
-			{
-				if (eregi("^[a-z0-9_\{\}\.\:-]+$",$arNewFilename))
-				{ 
-					// no "/" allowed, these will void the 'add' grant check.
-					if (!$this->exists($this->path)) 
-					{ 
-						if ($this->exists($arNewParent)) 
-						{
-							if (!$config = $this->data->config) 
-							{
+			if (!eregi("\.\.",$arNewFilename)) {
+				if (eregi("^[a-z0-9_\{\}\.\:-]+$",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
+					if (!$this->exists($this->path)) { //arNewFilename)) {
+						if ($this->exists($arNewParent)) {
+							if (!$config = $this->data->config) {
 								$config=new object();
 							}
 							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 							$wf_object->arIsNewObject=true;
-							if ($ARCurrent->arCallStack) 
-							{
+							if ($ARCurrent->arCallStack) {
 								$arCallArgs=end($ARCurrent->arCallStack);
 							}
 							$arCallArgs['properties'] = $properties;
@@ -410,31 +285,24 @@ class pobject extends object
 							$this->data->ctime=time();
 							$this->data->mtime=$this->data->ctime;
 							$this->data->muser=$AR->user->data->login;
-							if( !$this->data->config->owner ) 
-							{
-								if( !$this->data->config->owner_name) 
-								{ 
+							if( !$this->data->config->owner ) {
+								if( !$this->data->config->owner_name) { 
 									$this->data->config->owner_name=$AR->user->data->name;
 								}
 								$this->data->config->owner=$AR->user->data->login;
 							}
 							$custom = $this->getdata("custom", "none");
 							@parse_str($custom);
-							if (is_array($custom)) 
-							{
+							if (is_array($custom)) {
 								reset($custom);
-								foreach ($custom as $nls=>$entries)
-								{
-									if (is_array($entries)) 
-									{
-										foreach ($entries as $customkey => $customval)
-										{
+								foreach($custom as $nls=>$entries){
+									if (is_array($entries)) {
+										foreach ( $entries as $customkey => $customval ){
 											$this->data->custom[$nls][$customkey] = $customval;
 										}
 									}
 								}
 							}
-
 							// the above works because either $custom comes from the form entry, and parse_str returns an 
 							// array with the name $custom, or $custom comes from the object and is an array and as such 
 							// parse_str fails miserably thus keeping the array $custom intact.
@@ -443,27 +311,19 @@ class pobject extends object
 							$properties["time"][0]["muser"]="'".AddSlashes($this->data->muser)."'";
 							$properties["owner"][0]["value"]="'".AddSlashes($this->data->config->owner)."'";
 							$i=0;
-							if (is_array($this->data->custom)) 
-							{
-								foreach ($this->data->custom as $nls => $cdata) 
-								{
-									foreach ($cdata as $name => $value)
-									{
+							if (is_array($this->data->custom)) {
+								foreach($this->data->custom as $nls => $cdata) {
+									foreach($cdata as $name => $value){
 										// one index, this order (name, value, nls) ?
-										if ($configcache->custom[$name]['property']) 
-										{
-											if (is_array($value)) 
-											{
-												foreach ($value as $valkey -> $valvalue)
-												{
+										if ($configcache->custom[$name]['property']) {
+											if (is_array($value)) {
+												foreach($value as $valkey -> $valvalue ){
 													$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
 													$properties["custom"][$i]["value"]="'".AddSlashes($valvalue)."'";
 													$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
 													$i++;													
 												}
-											} 
-											else 
-											{
+											} else {
 												$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
 												$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
 												$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
@@ -473,22 +333,14 @@ class pobject extends object
 									}
 								}
 							}
-
-							// merge workflow properties
-							if (is_array($wf_result)) 
-							{
-								foreach ($wf_result as $wf_prop_name => $wf_prop) 
-								{
-									foreach ($wf_prop as $wf_prop_record) 
-									{
-										foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) 
-										{
-											switch (gettype($wf_prop_value)) 
-											{
+							/* merge workflow properties */
+							if (is_array($wf_result)) {
+								foreach ($wf_result as $wf_prop_name => $wf_prop) {
+									foreach ($wf_prop as $wf_prop_record) {
+										foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
+											switch (gettype($wf_prop_value)) {
 												case "integer":
-													// FALLTRHOUGH
 												case "boolean":
-													// FALLTHROUGH
 												case "double":
 													$value = $wf_prop_value;
 												break;
@@ -501,18 +353,15 @@ class pobject extends object
 									}
 								}
 							}
-							if (!$this->error) 
-							{
-								if ($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)) 
-								{
+							if (!$this->error) {
+								if ($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)) {
 									unset($this->arIsNewObject);
 									$this->id=$this->exists($this->path);
 
 									$config=$this->data->config; // need to set it again, to copy owner config data
 									$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 									$wf_object->arIsNewObject = true;
-									if ($ARCurrent->arCallStack) 
-									{
+									if ($ARCurrent->arCallStack) {
 										$arCallArgs=end($ARCurrent->arCallStack);
 									}
 									$arCallArgs['properties'] = $properties;
@@ -521,20 +370,13 @@ class pobject extends object
 									$this->priority = $wf_object->priority;
 									$this->data = $wf_object->data;
 									$this->data->config = $config;
-									if (is_array($wf_result)) 
-									{
-										foreach ($wf_result as $wf_prop_name => $wf_prop) 
-										{
-											foreach ($wf_prop as $wf_prop_record) 
-											{
-												foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) 
-												{
-													switch (gettype($wf_prop_value)) 
-													{
+									if (is_array($wf_result)) {
+										foreach ($wf_result as $wf_prop_name => $wf_prop) {
+											foreach ($wf_prop as $wf_prop_record) {
+												foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
+													switch (gettype($wf_prop_value)) {
 														case "integer":
-															// FALLTHROUGH
 														case "boolean":
-															// FALLTHROUGH
 														case "double":
 															$value = $wf_prop_value;
 														break;
@@ -546,53 +388,39 @@ class pobject extends object
 												$properties[$wf_prop_name][] = $record;
 											}
 										}
-										if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) 
-										{
+										if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) {
 											$this->error = $this->store->error;
 										}
 									}
-								} 
-								else 
-								{
+								} else {
 									$this->error=$this->store->error;
 								}
 								$result=$this->path;
 							}
-						} 
-						else 
-						{
+						} else {
 							$this->error=sprintf($ARnls["err:noparent"],$arNewParent);
+							// FROP $this->error="parent $arNewParent doesn't exist.";
 						}
-					} 
-					else 
-					{
+					} else {
 						$this->error=sprintf($ARnls["err:alreadyexists"],$arNewFilename);
+						// FROP $this->error="$arNewFilename already exists.";
 					}
-				} 
-				else 
-				{
+				} else {
 					$this->error=sprintf($ARnls["err:fileillegalchars"],$arNewFilename);
+					// FROP $this->error="$arNewFilename is no valid filename, use only a-z, A-Z, 0-9 and _ or -.";					
 				}
-			} 
-			else 
-			{
+			} else {
 				$this->error=sprintf($ARnls["err:filenamedirup"],$arNewFilename);
+				// FROP $this->error="$arNewFilename is no valid filename, do not use '..' in filenames.";
 			}
-		} 
-		else 
-		{ 
-			// update an existing object
+		} else { // update an existing object
 			debug("pobject: save: existing object","all");
 			$configcache=$ARConfig->cache[$this->path];
-			if ($this->lock()) 
-			{
-				if ($this->exists($this->path)) 
-				{ 
-					// prevent 'funny stuff'
+			if ($this->lock()) {
+				if ($this->exists($this->path)) { // prevent 'funny stuff'
 					$config = $this->data->config;
 					$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
-					if ($ARCurrent->arCallStack) 
-					{
+					if ($ARCurrent->arCallStack) {
 						$arCallArgs=end($ARCurrent->arCallStack);
 					}
 					$arCallArgs['properties'] = $properties;
@@ -609,41 +437,29 @@ class pobject extends object
 					$custom = $this->getdata("custom","none");
 					@parse_str($custom);
 					// see comments above
-					if (is_array($custom)) 
-					{
-						foreach ($custom as $nls => $entries)
-						{
-							if (is_array($entries)) 
-							{
-								foreach ($entries as $customkey => $customval)
-								{
+					if (is_array($custom)) {
+						foreach($custom as $nls => $entries){
+							if (is_array($entries)) {
+								foreach($entries as $customkey => $customval ){
 									$this->data->custom[$nls][$customkey] = $customval;
 								}
 							}
 						}
 					}
 					$i=0;
-					if (is_array($this->data->custom)) 
-					{
-						foreach ($this->data->custom as $nls => $cdata)
-						{
-							foreach ($cdata as $name => $value )
-							{
-								if ($configcache->custom[$name]['property']) 
-								{
+					if (is_array($this->data->custom)) {
+						foreach($this->data->custom as $nls => $cdata){
+							foreach($cdata as $name => $value ){
+								if ($configcache->custom[$name]['property']) {
 									// one index, this order (name, value, nls) ?
-									if (is_array($value)) 
-									{
-										foreach ($value as $valkey => $valvalue)
-										{
+									if (is_array($value)) {
+										foreach($value as $valkey => $valvalue){
 											$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
 											$properties["custom"][$i]["value"]="'".AddSlashes($valvalue)."'";
 											$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
 											$i++;
 										}
-									} 
-									else 
-									{
+									} else {
 										$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
 										$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
 										$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
@@ -653,22 +469,14 @@ class pobject extends object
 							}
 						}
 					}
-
-					// merge workflow properties
-					if (is_array($wf_result)) 
-					{
-						foreach ($wf_result as $wf_prop_name => $wf_prop) 
-						{
-							foreach ($wf_prop as $wf_prop_record) 
-							{
-								foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) 
-								{
-									switch (gettype($wf_prop_value)) 
-									{
+					/* merge workflow properties */
+					if (is_array($wf_result)) {
+						foreach ($wf_result as $wf_prop_name => $wf_prop) {
+							foreach ($wf_prop as $wf_prop_record) {
+								foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
+									switch (gettype($wf_prop_value)) {
 										case "integer":
-											// FALLTHROUGH
 										case "boolean":
-											// FALLTHROUGH
 										case "double":
 											$value = $wf_prop_value;
 										break;
@@ -681,15 +489,11 @@ class pobject extends object
 							}
 						}
 					}
-
-					if (!$this->error) 
-					{
-						if ($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority))
-						{
+					if (!$this->error) {
+						if($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)){
 							$result=$this->path;
 							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
-							if ($ARCurrent->arCallStack) 
-							{
+							if ($ARCurrent->arCallStack) {
 								$arCallArgs=end($ARCurrent->arCallStack);
 							}
 							$arCallArgs['properties'] = $properties;
@@ -698,20 +502,13 @@ class pobject extends object
 							$this->priority = $wf_object->priority;
 							$this->data = $wf_object->data;
 							$this->data->config = $config;
-							if (is_array($wf_result)) 
-							{
-								foreach ($wf_result as $wf_prop_name => $wf_prop) 
-								{
-									foreach ($wf_prop as $wf_prop_record) 
-									{
-										foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) 
-										{
-											switch (gettype($wf_prop_value)) 
-											{
+							if (is_array($wf_result)) {
+								foreach ($wf_result as $wf_prop_name => $wf_prop) {
+									foreach ($wf_prop as $wf_prop_record) {
+										foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
+											switch (gettype($wf_prop_value)) {
 												case "integer":
-													// FALLTHROUGH
 												case "boolean":
-													// FALLTHROUGH
 												case "double":
 													$value = $wf_prop_value;
 												break;
@@ -723,108 +520,149 @@ class pobject extends object
 										$properties[$wf_prop_name][] = $record;
 									}
 								}
-								if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) 
-								{
+								if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) {
 									$this->error = $this->store->error;
 								}
 							}
 							$this->data->config = $config;
-						} 
-						else 
-						{
+							//$this->ClearCache($this->path, true, false);
+						} else {
 							$this->error = $this->store->error;
 							$result = false;
 						}
 					}
-				} 
-				else 
-				{
+				} else {
 					$this->error=$ARnls["err:corruptpathnosave"];
+					// FROP $this->error="Path is corrupt, won't save the object.";
 				}
 				$this->unlock();
-			} 
-			else 
-			{
+			} else {
 				$this->error=$ARnls["err:objectalreadylocked"];
+				// FROP $this->error="Object already locked.";
 			}
 		}
-		if ($this->data->nls->list[$this->nls]) 
-		{
+		if ($this->data->nls->list[$this->nls]) {
 			$this->nlsdata=$this->data->{$this->nls};
-		} 
-		else if ($this->data->nls->default) 
-		{
+		} else if ($this->data->nls->default) {
 			$this->nlsdata=$this->data->{$this->data->nls->default};
-		} 
-		else 
-		{
+		} else {
 			$this->nlsdata=$this->data;
 		}
 		debug("pobject: save: end","all");
 		return $result;
 	}
 
-	/**
-	 * Adds an extra path node for the current object in the store.
-	 *
-	 * @param string $to new path to add for the current object
-	 */
-	function link($to) 
-	{
+	function link($to) {
 		debug("pobject: link({$this->path} => $to)","object");
 		return $this->store->link($this->path, $this->make_path($to));
 	}
 
-	/**
-	 * Deletes the current node and purges the object if that was
-	 * the last node.
-	 */
-	function delete() 
-	{
+	function delete() {
 		debug("pobject: delete({$this->path})","object");
 		return $this->store->delete($this->path);
 	}
 
-	/**
-	 * Purges the current object, removes all nodes and object data.
-	 */
-	function purge() 
-	{
+	function purge() {
 		debug("pobject: purge({$this->path})","object");
 		return $this->store->purge($this->path);
 	}
 
-	/**
-	 * returns the id of the object with node $path if it exists, 0 otherwise.
-	 */
-	function exists($path) 
-	{
+	function exists($path) {
 		debug("pobject: exists($path)","object");
 		$path=$this->make_path($path);
 		return $this->store->exists($path);
 	}
 
-	function make_path($path="") 
-	{	
+	function make_path($path="") {
 		debug("pobject: make_path($path)","object");
 		return $this->store->make_path($this->path, $path);
 	}
 
-	function make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=false) 
-	{
+/*
+	// keephost version, broken
+
+	function make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=false) {
+		global $ARConfig, $AR, $ARCurrent;
+
+
+		debug("pobject: make_url($path) (from: ".$this->path.")","object");
+		$rootoptions=$this->store->rootoptions;
+		if (!$session || ($nls !== false)) {
+			$rootoptions = "";
+			if ($session && $ARCurrent->session->id && !$AR->hideSessionIDfromURL) {
+				$rootoptions .= "/-".$ARCurrent->session->id."-";
+			}
+			if ($nls) {
+				$rootoptions_nonls = $rootoptions;
+				$rootoptions .= '/'.$nls;
+			}
+		}
+
+		$object_path=$this->path;
+		$path=$this->make_path($path);
+//		if (!$keephost || (substr($path, 0, strlen($object_path))!=$object_path)) {
+			$getConfigPath=$path;
+//		} else {
+//			$getConfigPath=$object_path;
+//			$keephost=true;
+//		}
+
+		// make sure CheckConfig has run on the most fitting object to $getConfigPath
+		while ($getConfigPath && !$this->exists($getConfigPath)) {
+			$getConfigPath=$this->store->make_path($getConfigPath, "..");
+		}
+
+		// now run CheckConfig and get the parentsite of the path found
+		if (!$temp_config=$ARConfig->cache[$getConfigPath]) {
+			$temp_site=current($this->get($getConfigPath, "system.get.site.phtml"));
+			$temp_config=$ARConfig->cache[$temp_site];
+		}
+
+//		if ($keephost) {
+//			// find the path to the site that is currently used
+//			while ($temp_site!='/' && strstr($temp_config->root["value"],'//'.$_SERVER['SERVER_NAME'])===false) {
+//				echo "::$temp_site:".$temp_config->root["value"].":".$_SERVER['SERVER_NAME'].":;";
+//				flush();
+//				$temp_site=$this->parentsite($temp_site);
+//				$temp_config=$ARConfig->cache[$temp_site];
+//			}
+//		}
+		if ($nls) {
+			$url=$temp_config->root["list"]["nls"][$nls];
+			if ($url) {
+				$url .= $rootoptions_nonls;
+			}
+		}
+		if (!$url) {
+			$url=$temp_config->root["value"].$rootoptions;
+		}
+		$url.=substr($path, strlen($temp_config->root["path"])-1);
+		debug("make_url: ".$temp_config->root["path"]." = $temp_site : $temp_url","all");
+
+		if (is_bool($https)) {
+			if ($https) {
+				if ($AR->https) {
+					$url = ereg_replace('^http:', 'https:', $url);
+				}
+			} else {
+				$url = ereg_replace('^https:', 'http:', $url);
+			}
+		}
+		return $url;			
+	}
+
+*/
+	function make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=false) {
 		global $ARConfig, $AR, $ARCurrent;
 		debug("pobject: make_url($path) (from: ".$this->path.")","object");
 
 		$rootoptions=$this->store->rootoptions;
-		if (!$session || ($nls !== false)) 
-		{
+		if (!$session || ($nls !== false)) {
 			$rootoptions = "";
-			if ($session && $ARCurrent->session->id && !$AR->hideSessionIDfromURL) 
-			{
+			if ($session && $ARCurrent->session->id && !$AR->hideSessionIDfromURL) {
 				$rootoptions .= "/-".$ARCurrent->session->id."-";
 			}
-			if ($nls) 
-			{
+			if ($nls) {
 				$rootoptions_nonls = $rootoptions;
 				$rootoptions .= '/'.$nls;
 			}
@@ -833,69 +671,53 @@ class pobject extends object
 		$path=$this->make_path($path);
 
 		// now run CheckConfig and get the parentsite of the path found
-		if (!$temp_config=$ARConfig->cache[$path]) 
-		{
+		if (!$temp_config=$ARConfig->cache[$path]) {
 			$temp_site=current($this->get($path, "system.get.site.phtml"));
 			$temp_config=$ARConfig->cache[$temp_site];
 		}
 
-		if ($nls) 
-		{
+		if ($nls) {
 			$url=$temp_config->root["list"]["nls"][$nls];
-			if ($url) 
-			{
+			if ($url) {
 				if (substr($url, -1)=='/') {
 					$url=substr($url, 0, -1);
 				}
 				$url .= $rootoptions_nonls;
 			}
 		}
-		if (!$url) 
-		{
+		if (!$url) {
 			$url=$temp_config->root["value"].$rootoptions;
 		}
 		$url.=substr($path, strlen($temp_config->root["path"])-1);
 		debug("make_url: ".$temp_config->root["path"]." = $temp_site : $temp_url","all");
 
-		if (is_bool($https)) 
-		{
-			if ($https) 
-			{
-				if ($AR->https) 
-				{
+		if (is_bool($https)) {
+			if ($https) {
+				if ($AR->https) {
 					$url = ereg_replace('^http:', 'https:', $url);
 				}
-			} 
-			else 
-			{
+			} else {
 				$url = ereg_replace('^https:', 'http:', $url);
 			}
 		}
 		return $url;			
 	}
 
-	function make_local_url($path="", $nls=false, $session=true, $https=NULL) 
-	{
+	function make_local_url($path="", $nls=false, $session=true, $https=NULL) {
 		global $ARCurrent, $ARConfig, $AR;
 		$site=false;
 		$path=$this->make_path($path);
 		$newpath=$path;
-		do 
-		{
-			if (!$config=$ARConfig->cache[$newpath]) 
-			{
+		do {
+			if (!$config=$ARConfig->cache[$newpath]) {
 				$config=$this->loadConfig($newpath);
 			}
-			if (@count($ARCurrent->shortcut_redirect)) 
-			{
+			if (@count($ARCurrent->shortcut_redirect)) {
 				$redir = end($ARCurrent->shortcut_redirect);
-				if ($redir["keepurl"] && substr($newpath, 0, strlen($redir["dest"])) == $redir["dest"]) 
-				{
-					if (substr($config->site, 0, strlen($redir["dest"]))!=$redir["dest"]) 
-					{
+				if ($redir["keepurl"] && substr($newpath, 0, strlen($redir["dest"])) == $redir["dest"]) {
+					if (substr($config->site, 0, strlen($redir["dest"]))!=$redir["dest"]) {
 						// search currentsite from the reference
-						if (!$config = $ARConfig->cache[$redir['src']]) 
-						{
+						if (!$config = $ARConfig->cache[$redir['src']]) {
 							$config = $this->loadConfig($redir['src']);
 						}
 						$dest=$redir['dest'];
@@ -903,233 +725,179 @@ class pobject extends object
 					}
 				}
 			}
-			if ($config) 
-			{
-				if ($config->root['value']==$AR->host) 
-				{
+			if ($config) {
+				if ($config->root['value']==$AR->host) {
 					$site=$config->site;
 				}
 			}
 			$prevpath=$newpath;
 			$newpath=$this->make_path($newpath."../");			
-		} 
-		while ($prevpath!=$newpath && !$site);
-		if (!$site) 
-		{
+		} while ($prevpath!=$newpath && !$site);
+		if (!$site) {
 			$site='/';
 		}
 		$site_url=$this->make_url($site, $nls, $session, $https);
-		if ($dest) 
-		{
-			// $dest is the destination of a shortcut redirection, with keepurl on
+		if ($dest) { // $dest is the destination of a shortcut redirection, with keepurl on
 			$rest=substr($src, strlen($site)).substr($path, strlen($dest));
-		} 
-		else 
-		{
+		} else {
 			$rest=substr($path, strlen($site));
 		}
 		return $site_url.$rest;
 	}
 
-	function implements($implements) 
-	{
+	function implements($implements) {
 		debug("pobject: implements($implements)","object");
 		$type = current(explode(".",$this->type)); 
 		return $this->store->implements($type, $implements); 
 	}
 
-	function getlocks() 
-	{
+	function getlocks() {
 		global $AR;
 		debug("pobject: getlocks()","object");
-		if ($this->store->mod_lock) 
-		{
+		if ($this->store->mod_lock) {
 			$result=$this->store->mod_lock->getlocks($AR->user->data->login);
-		} 
-		else 
-		{
+		} else {
 			$result="";
 		}
 		return $result;
 	}
 
-	function lock($mode="O", $time=0) 
-	{
-		global $AR;
+	function lock($mode="O", $time=0) {
+	global $AR;
 		debug("pobject: lock($mode, $time)","object");
-		if ($this->store->mod_lock) 
-		{
+		if ($this->store->mod_lock) {
 			$result=$this->store->mod_lock->lock($AR->user->data->login,$this->path,$mode,$time);
-		} 
-		else 
-		{
+		} else {
 			$result=true; // no lock module, so lock is 'set'
 		}
 		return $result;
 	}
 
-	function unlock() 
-	{
-		global $AR;
+	function unlock() {
+	global $AR;
 		debug("pobject: unlock()","object");
-		if ($this->store->mod_lock) 
-		{
+		if ($this->store->mod_lock) {
 			$result=$this->store->mod_lock->unlock($AR->user->data->login,$this->path);
-		} 
-		else 
-		{
+		} else {
 			$result=true;
 		}
 		return $result;
 	}
 
-	function touch($id=0, $timestamp=-1) 
-	{
-		if (!$id) 
-		{
+	function touch($id=0, $timestamp=-1) {
+		if (!$id) {
 			$id = $this->id;
 		}
 		$result = $this->store->touch($id, $timestamp);
-		if ($this->store->error) 
-		{
+		if ($this->store->error) {
 			$this->error = $this->store->error;
 		}
 		return $result;
 	}
 
-	function load_properties() 
-	{
+	function load_properties() {
 		debug("pobject: load_properties()","object");
 		return $this->store->load_properties($this->id);
 	}
 
-	function load_property($property) 
-	{
+	function load_property($property) {
 		debug("pobject: load_property($property)","object");
 		return $this->store->load_property($this->id,$property);
 	}
 
-	/**
-	 * Finds all grants in effect on the given path for current user.
-	 *
-	 * @param string $path path to check for grants
-	 *
-	 * This function finds all grants in effect on this object for the
-	 * logged in user! $AR->user must already be set.
-	 *
-	 * Grants are checked in the following way:
-	 * 1) First all parents of this object are checked for grants for this
-	 *    specific user. The 'nearest' grants are valid, and the path of
-	 *    parent that set these grants will be the upper limit for the 
-	 *    checking of group grants.
-	 * 2) Now all groups of which the user is a member are checked for
-	 *    grants. Likewise, all parents are checked for group grants, upto 
-	 *    but not including the upperlimit as set in 1. All group grants 
-	 *    found are merged into one grants list. 
-	 * 3) If there are gropup grants, this means that there are group 
-	 *    grants set in a parent nearer to this object than the user grants
-	 *    and therefore the groupgrants must be merged with the
-	 *    usergrants.
-	 *
-	 * this results in:
-	 * 1	/		user: read edit		group: none
-	 * 2	/dir/					group: read
-	 * 3	/dir2/		user: none		group: read
-	 * 4	/dir/dir3/				group2: edit
-	 * case 1: the user takes precedence over the group, grants are 'read edit'
-	 * case 2: groupgrants are merged with usergrants, as its grants are set 
-	 *         in a 'nearer' parent (itself). grants are 'read edit'.
-	 * case 3: user takes precedence again. grants are 'none'.
-	 * case 4: All group grants are merged with the usergrants.
-	 *         Therefore the grants are 'none read edit'.
-	 */
-	function GetValidGrants($path="") 
-	{
-		global $AR;
+	function GetValidGrants($path="") {
+	/********************************************************************
+
+	  This function finds all grants in effect on this object for the
+	  logged in user! $AR->user must already be set.
+	
+	  Grants are checked in the following way:
+	  1) First all parents of this object are checked for grants for this
+	     specific user. The 'nearest' grants are valid, and the path of
+	     parent that set these grants will be the upper limit for the 
+	     checking of group grants.
+	  2) Now all groups of which the user is a member are checked for
+	     grants. Likewise, all parents are checked for group grants, upto 
+	     but not including the upperlimit as set in 1. All group grants 
+	     found are merged into one grants list. 
+	  3) If there are gropup grants, this means that there are group 
+	     grants set in a parent nearer to this object than the user grants
+	     and therefore the groupgrants must be merged with the
+	     usergrants.
+	
+	  this results in:
+	  1	/		user: read edit		group: none
+	  2	/dir/					group: read
+	  3	/dir2/		user: none		group: read
+	  4	/dir/dir3/				group2: edit
+	  case 1: the user takes precedence over the group, grants are 'read edit'
+	  case 2: groupgrants are merged with usergrants, as its grants are set 
+	          in a 'nearer' parent (itself). grants are 'read edit'.
+	  case 3: user takes precedence again. grants are 'none'.
+	  case 4: All group grants are merged with the usergrants.
+	          Therefore the grants are 'none read edit'.
+	********************************************************************/
+
+	global $AR;
 
 		debug("pobject: GetValidGrants()","object");
-		if ($AR->user) 
-		{ 	// login and retrieval of user object 
-			if (!$path) 
-			{
+		if ($AR->user) { 	// login and retrieval of user object 
+			if (!$path) {
 				$path=$this->path;
 			}
-			if (!$AR->user->grants[$path]) 
-			{
+			if (!$AR->user->grants[$path]) {
 				$grants=Array();
 				$userpath=$AR->user->FindGrants($path, $grants);
 				// if not already done, find all groups of which the user is a member
-				if (!is_array($AR->user->externalgroupmemberships) || sizeof($AR->user->externalgroupmemberships)==0) 
-				{
+				if (!is_array($AR->user->externalgroupmemberships) || sizeof($AR->user->externalgroupmemberships)==0) {
 					$criteria["members"]["login"]["="]="'".AddSlashes($AR->user->data->login)."'";
-				} 
-				else 
-				{
+				} else {
 					// Use the group memberships of external databases (e.g. LDAP)
 					$criteria="members.login='".AddSlashes($AR->user->data->login)."'";
-					foreach (array_keys($AR->user->externalgroupmemberships) as $group) 
-					{
+					foreach (array_keys($AR->user->externalgroupmemberships) as $group) {
 						$criteria.=" or login.value='".AddSlashes($group)."'";
 					}
 				}
-				if (!$AR->user->groups) 
-				{
+				if (!$AR->user->groups) {
 					$groups=$this->find("/system/groups/",$criteria, "system.get.phtml");
-					if (is_array($groups)) 
-					{
-						foreach ($groups as $group)
-						{
-							if (is_object($group)) 
-							{
+					if (is_array($groups)) {
+						foreach($groups as $group ){
+							if (is_object($group)) {
 								$AR->user->groups[$group->data->login] = $group;
 							}
 						}
 					}
-					if (!$AR->user->groups["public"]) 
-					{
-						if ($public=current($this->get("/system/groups/public/", "system.get.phtml"))) 
-						{
+					if (!$AR->user->groups["public"]) {
+						if ($public=current($this->get("/system/groups/public/", "system.get.phtml"))) {
 							$AR->user->groups["public"] = $public;
 						}
 					}
 				}
-				if ($AR->user->groups) 
-				{
-					// check for owner grants (set by system.get.config.phtml)
-					if (is_array($AR->user->ownergrants)) 
-					{
-						if (!$AR->user->groups["owner"]) 
-						{
+				if ($AR->user->groups) {
+					/* check for owner grants (set by system.get.config.phtml) */
+					if (is_array($AR->user->ownergrants)) {
+						if (!$AR->user->groups["owner"]) {
 							$AR->user->groups["owner"] = @current($this->get("/system/groups/owner/", "system.get.phtml"));
 						}
 						$AR->user->groups["owner"]->data->config->usergrants = $AR->user->ownergrants;
 					}
-					foreach ($AR->user->groups as $group)
-					{
+					foreach($AR->user->groups as $group){
 						$groupgrants=Array();
-						if (is_object($group)) 
-						{
+						if (is_object($group)) {
 							$group->FindGrants($path, $groupgrants, $userpath);
-							if (is_array($grants)) 
-							{
-								foreach ($groupgrants as $gkey => $gval)
-								{
-									if (is_array($grants[$gkey]) && is_array($gval)) 
-									{
+							if (is_array($grants)) {
+								foreach($groupgrants as $gkey => $gval ){
+									if (is_array($grants[$gkey]) && is_array($gval)) {
 										$grants[$gkey]=array_merge($gval, $grants[$gkey]);
-									} 
-									else if ($gval && !is_array($gval)) 
-									{
+									} else 
+									if ($gval && !is_array($gval)) {
 										$grants[$gkey] = $gval;
-									} 
-									else if ($gval && !$grants[$gkey]) 
-									{
+									} else
+									if ($gval && !$grants[$gkey]) {
 										$grants[$gkey] = $gval;
 									}
 								}
-							} 
-							else 
-							{
+							} else {
 								$grants = $groupgrants;
 							}
 						}
@@ -1144,70 +912,59 @@ class pobject extends object
 	}
 
 
-	function pushContext($context) 
-	{
-		global $AR;
-		if (!$AR->context) 
-		{
+	function pushContext($context) {
+	global $AR;
+		if (!$AR->context) {
 			$AR->context = Array();
-		} 
-		else 
-		{
+		} else {
 			$context = array_merge(end($AR->context), $context);
 		}
 		array_push($AR->context, $context);
 	}
 
-	function popContext() 
-	{
-		global $AR;
-		if (is_array($AR->context)) 
-		{
+	function popContext() {
+	global $AR;
+		if (is_array($AR->context)) {
 			$result = array_pop($AR->context);
 		}
 		return $result;
 	}
 
-	function getContext($level=0) 
-	{
-		global $AR;
+	function getContext($level=0) {
+	global $AR;
 		if (is_array($AR->context)) {
 			$result = $AR->context[sizeof($AR->context)-(1+$level)];
 		}
 		return $result;
 	}
 
-	function CheckLogin($grant, $modifier=ARTHISTYPE) 
-	{
-		global $AR,$ARnls,$ARConfig,$ARCurrent,$ARPassword,$ARCookie,$session_config;
+	function CheckLogin($grant, $modifier=ARTHISTYPE) {
+	global $AR,$ARnls,$ARConfig,$ARCurrent,$ARPassword,$ARCookie,$session_config;
 
 		debug("pobject: CheckLogin($grant)","object");
-		if ($modifier==ARTHISTYPE) 
-		{
+		if ($modifier==ARTHISTYPE) {
 			$modifier=$this->type;
 		}
 
-		// load config cache
-		if (!$ARConfig->cache[$this->path]) 
-		{
+		/* load config cache */
+		if (!$ARConfig->cache[$this->path]) {
 			$this->loadConfig();
 		}
 
-		if ($AR->user->data->login!="admin" && !$AR->user->grants[$this->path]) 
-		{
+		if ($AR->user->data->login!="admin" && !$AR->user->grants[$this->path]) {
 			$AR->user->grants[$this->path]=$this->GetValidGrants();
 			debug("usergrants: ".$AR->user->grants[$this->path]);
 		}
-		if ($AR->user->data->login!="public") 
-		{
+		if ($AR->user->data->login!="public") {
 			// Don't remove this or MSIE users won't get uptodate pages...
 			ldSetClientCache(false);
 		}
 
 		debug("checking grants for ".$this->path);
 		$grants=$AR->user->grants[$this->path];
-		if ( ( !$grants[$grant] || ( $modifier && is_array($grants[$grant]) && !$grants[$grant][$modifier] ) ) && $AR->user->data->login!="admin" ) 
-		{
+		if ( 	( !$grants[$grant] 
+					|| ( $modifier && is_array($grants[$grant]) && !$grants[$grant][$modifier] )
+				) && $AR->user->data->login!="admin" ) {
 			// do login
 			$continue=false;
 			debug("pobject: CheckLogin: insufficient grants (".$AR->user->data->login.")","object");
@@ -1215,9 +972,7 @@ class pobject extends object
 			ldAccessDenied($this->path, $arLoginMessage);
 			$result=false;
 			debug("pobject: CheckLogin: end (failed)","all");
-		} 
-		else 
-		{
+		} else {
 			debug("pobject: CheckLogin: end","all");
 			$result=($grants || ($AR->user->data->login=="admin"));
 		}
@@ -1227,18 +982,15 @@ class pobject extends object
 	}
 
 
-	function CheckPublic($grant, $modifier=ARTHISTYPE) 
-	{
-		global $AR;
+	function CheckPublic($grant, $modifier=ARTHISTYPE) {
+	global $AR;
 
 		$result=false;
-		if (!$AR->public) 
-		{
+		if (!$AR->public) {
 			$criteria["login"]["value"]["="]="'public'";
 			$AR->public=current($this->find("/system/users/",$criteria,"system.get.phtml"));
 		}
-		if ($AR->public) 
-		{
+		if ($AR->public) {
 			$AR->private=$AR->user;
 			$AR->user=$AR->public;
 			$result=$this->CheckSilent($grant, $modifier);
@@ -1247,38 +999,29 @@ class pobject extends object
 		return $result;			
 	}
 
-	function CheckSilent($grant, $modifier=ARTHISTYPE, $path=".") 
-	{
-		global $AR, $ARConfig;
+	function CheckSilent($grant, $modifier=ARTHISTYPE, $path=".") {
+	global $AR, $ARConfig;
 		$path = $this->make_path($path);
 		debug("pobject: CheckSilent($grant, $modifier, $path)","object");
-		if ($modifier==ARTHISTYPE) 
-		{
+		if ($modifier==ARTHISTYPE) {
 			$modifier=$this->type;
 		}
 		$result=false;
 
 		/* load config cache */
-		if (!$ARConfig->cache[$path]) 
-		{
+		if (!$ARConfig->cache[$path]) {
 			$this->loadConfig($path);
 		}
 
-		if ($AR->user->data->login=="admin") 
-		{
+		if ($AR->user->data->login=="admin") {
 			$result=1;
-		} 
-		else if ($grants=$AR->user->grants[$path]) 
-		{
+		} else if ($grants=$AR->user->grants[$path]) {
 			$result=$grants[$grant];
-		} 
-		else 
-		{
+		} else {
 			$grants=$this->GetValidGrants();
 			$result=$grants[$grant];
 		}
-		if ($modifier && is_array($result)) 
-		{
+		if ($modifier && is_array($result)) {
 			$result=$result[$modifier];
 		}
 		debug("pobject: CheckSilent: result: ".serialize($grants));
@@ -1286,119 +1029,95 @@ class pobject extends object
 		return $result;
 	}
 
-	/**
-	 * checks whether the filename is a valid Ariadne filename.
-	 *
-	 * @param string $filename filename to check
-	 *
-	 *  This function performs all the necessary checks on a path to see
-	 * whether it's a valid path for a new object. This consists of:
-	 * 1) checking for invalid characters, valid chars are "a-zA-Z0-9./_-"
-	 * 2) checking whether the path starts and ends with a "/".
-	 * 3) checking whether the path doesn't exist already.
-	 * 4) checking whether the parent exists.
-	 * 
-	 * if all this checks out, it returns 1. If not, $this->error is set to
-	 * the correct error message.
-	 *
-	 * FIXME: renamen naar IsValidFilename
-	 */
-	function CheckNewFile($newfilename) 
-	{
+	function CheckNewFile($newfilename) {
+	/**********************************************************************
+
+	  This function performs all the necessary checks on a path to see
+	whether it's a valid path for a new object. This consists of:
+	1) checking for invalid characters, valid chars are "a-zA-Z0-9./_-"
+	2) checking whether the path starts and ends with a "/".
+	3) checking whether the path doesn't exist already.
+	4) checking whether the parent exists.
+	
+	if all this checks out, it returns 1. If not, $this->error is set to
+	the correct error message.
+	
+	**********************************************************************/
 
 		debug("pobject: CheckNewFilename($newfilename)","object");
 		$this->error="";
-		if (eregi("^/[a-z0-9\./_-]*/$",$newfilename)) 
-		{
-			if (!$this->store->exists($newfilename)) 
-			{
+		if (eregi("^/[a-z0-9\./_-]*/$",$newfilename)) {
+			if (!$this->store->exists($newfilename)) {
 				$parent=$this->store->make_path($newfilename, "..");
-				if ($this->store->exists($parent)) 
-				{
+				if ($this->store->exists($parent)) {
 					$result=1;
-				} 
-				else 
-				{
+				} else {
 					$this->error=sprintf($ARnls["err:filenameinvalidnoparent"],$newfilename,$parent);
+					// FROP $this->error="$newfilename is invalid: $parent does not exist.";
 				}
-			} 
-			else 
-			{
+			} else {
 				$this->error=sprintf($ARnls["err:chooseotherfilename"],$newfilename);
+				// FROP $this->error="$newfilename already exists. Please choose another.";
 			}
-		} 
-		else 
-		{
+		} else {
 			$this->error=sprintf($ARnls["err:fileillegalchars"],$newfilename)." ".$ARnls["err:startendslash"];
+			// FROP $this->error="Filenames may consist of normal charachters ".
+			// FROP	"(a-z, A-Z, 0-9) and '-','_' or '/'. A path must start and end ".
+			// FROP	"with a '/'.";
 		}
 		debug("pobject: CheckNewFilename: end","all");
 		return $result;
 	}
 
-	function loadConfig($path='') 
-	{
-		global $ARConfig, $ARConfigChecked;
+	function loadConfig($path='') {
+	global $ARConfig, $ARConfigChecked;
 		$configChecked = $ARConfigChecked;
 
 		$path=$this->make_path($path);
 		$parent=$this->make_path($path.'../');
-		if (!$ARConfig->cache[$path]) 
-		{
-			if (!$this->arIsNewObject) 
-			{
+		if (!$ARConfig->cache[$path]) {
+			if (!$this->arIsNewObject) {
 				$this->pushContext(Array("scope" => "php"));
 				$this->get($path, "system.get.config.phtml");
 				$this->popContext();
 				$config=$ARConfig->cache[$path];
-			} 
-			else 
-			{
-				if (!$ARConfig->cache[$parent]) 
-				{
+			} else {
+				if (!$ARConfig->cache[$parent]) {
 					$this->pushContext(Array("scope" => "php"));
 					$this->get($parent, 'system.get.config.phtml');
 					$this->popContext();
 				}
 				$config=$ARConfig->cache[$parent];
 			}
-		} 
-		else 
-		{
+		} else {
 			$config=$ARConfig->cache[$path];
 		}
 
 		// restore old ARConfigChecked state
 		$ARConfigChecked = $configChecked;
-
 		//FIXME: in PHP5 make sure a clone is returned instead of a reference
 		return $config;
 	}
 
-	function getPinpTemplate($arCallFunction='view.html', $path=".", $inLibrary=false) 
-	{
-		global $ARCurrent, $ARConfig, $AR;
+	function getPinpTemplate($arCallFunction='view.html', $path=".", $inLibrary=false) {
+	global $ARCurrent, $ARConfig, $AR;
 		$result = Array();
-		if (strpos($arCallFunction,"::")!==false) 
-		{
+		if (strpos($arCallFunction,"::")!==false) {
 			// template of a specific class defined via call("class::template");
 			list($arCallType, $arCallFunction)=explode("::",$arCallFunction);
-		} 
-		else 
-		{
+		} else {
 			$arCallType=$this->type;
 		}
 		debug("CheckConfig: searching for template ($arCallType::$arCallFunction) on $path");
 		$path = $this->make_path($path);
 
-		// first check current templates
-		if ($this->path == $path) 
-		{
+
+
+		/* first check current templates */
+		if ($this->path == $path) {
 			$curr_templates=$this->data->config->pinp;
-		} 
-		else 
-		{
-			if (!$ARConfig->cache[$path]) 
-			{
+		} else {
+			if (!$ARConfig->cache[$path]) {
 				$this->get($path, "system.get.config.phtml");
 			}
 			$curr_templates=$ARConfig->cache[$path]->templates;
@@ -1408,45 +1127,30 @@ class pobject extends object
 		$lastcheckedpath="";
 		$arCallClassTemplate = $ARCurrent->arCallClassTemplate;
 
-		while (!$arCallClassTemplate && !$arCallTemplate && $checkpath!=$lastcheckedpath) 
-		{
+		while (!$arCallClassTemplate && !$arCallTemplate && $checkpath!=$lastcheckedpath) {
 			debug("CheckConfig: loop (".$arCallClassTemplate.")(".$arCallTemplate.")(".$checkpath.")!=(".$lastcheckedpath.")","all");
 			$arType=$arCallType;
-			while ($arType!='object' && !$arCallTemplate) 
-			{
-				if ($arTemplateId=$curr_templates[$arType][$arCallFunction][$this->reqnls]) 
-				{
+			while ($arType!='object' && !$arCallTemplate) {
+				if ($arTemplateId=$curr_templates[$arType][$arCallFunction][$this->reqnls]) {
 					$arCallTemplate=$arType.".".$arCallFunction.".".$this->reqnls;
 					$arTemplateNls=$this->reqnls;
-				} 
-				else if ($arTemplateId=$curr_templates[$arType][$arCallFunction]['any']) 
-				{
+				} else if ($arTemplateId=$curr_templates[$arType][$arCallFunction]['any']) {
 					$arCallTemplate=$arType.".".$arCallFunction.".any";
 					$arTemplateNls="any";
-				} 
-				else 
-				{
-					if (!($arSuper=$AR->superClass[$arType])) 
-					{
+				} else {
+					if (!($arSuper=$AR->superClass[$arType])) {
 						// no template found, no default.phtml found, try superclass.
-						if ($subcpos = strpos($arType, '.')) 
-						{
+						if ($subcpos = strpos($arType, '.')) {
 							$arSuper = substr($arType, 0, $subcpos);
 							$subclass = substr($arType, $subcpos+1);
-							if (!class_exists($arSuper)) 
-							{
+							if (!class_exists($arSuper)) {
 								$this->store->newobject('', '', $arSuper, new object);
 							}
-						} 
-						else 
-						{
-							if (!class_exists($arType)) 
-							{
+						} else {
+							if (!class_exists($arType)) {
 								// the given class was not yet loaded, so do that now
 								$arTemp=$this->store->newobject('','',$arType,new object);
-							} 
-							else 
-							{
+							} else {
 								$arTemp=new $arType();
 							}
 							$arSuper=get_parent_class($arTemp);
@@ -1456,23 +1160,18 @@ class pobject extends object
 					$arType=$arSuper;
 				}
 			}
-			if ($inLibrary) 
-			{
-				if ($ARConfig->cache[$checkpath]->type == 'psection') 
-				{
+			if ($inLibrary) {
+				if ($ARConfig->cache[$checkpath]->type == 'psection') {
 					debug("CheckConfig: quiting library search as we have encountered our end point; $checkpath");
 					// break search operation when we have searched a 
 					// psection object
 					break;
 				}
 			}
-			if ($ARConfig->cache[$checkpath]->library && !$arTemplateId) 
-			{
-				foreach( $ARConfig->cache[$checkpath]->library as $library => $path ) 
-				{
+			if ($ARConfig->cache[$checkpath]->library && !$arTemplateId) {
+				foreach( $ARConfig->cache[$checkpath]->library as $library => $path ) {
 					$template = $this->getPinpTemplate($arCallFunction, $path, true);
-					if ($template["arTemplateId"]) 
-					{
+					if ($template["arTemplateId"]) {
 						extract($template);
 						$arLibrary = $library;
 						$arLibraryPath = $path;
@@ -1481,6 +1180,8 @@ class pobject extends object
 					}
 				}
 			}
+
+
 
 			$lastcheckedpath=$checkpath;
 			debug("CheckConfig: checkpath = (".$checkpath.")","all");
@@ -1497,81 +1198,76 @@ class pobject extends object
 		return $result;
 	}
 
-	/**
-	 * checks configuration for pinp templates, languages, etc.
-	 * 
-	 * returns true when cache isn't up to date and no other template is
-	 * defined for $path/$function. Else it takes care of output to the
-	 * browser.
-	 * All these templates must exist under a fixed directory, $AR->dir->templates
-	 */
-	function CheckConfig($arCallFunction="", $arCallArgs="") 
-	{
-		global $nocache, $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls, $HTTP_POST_VARS, $HTTP_GET_VARS, $ARConfigChecked;
+	function CheckConfig($arCallFunction="", $arCallArgs="") {
+	// returns true when cache isn't up to date and no other template is
+	// defined for $path/$function. Else it takes care of output to the
+	// browser.
+	// All these templates must exist under a fixed directory, $AR->dir->templates
+	global $nocache, $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls, $HTTP_POST_VARS, $HTTP_GET_VARS, $ARConfigChecked;
 		debug("pobject::CheckConfig($arCallFunction, $arCallArgs)(".$this->path.")","object");
 		$MAX_LOOP_COUNT=10;
 
+
 		// system templates (.phtml) have $arCallFunction=='', so the first check in the next line is to
 		// make sure that loopcounts don't apply to those templates.
-		if ($arCallFunction && $ARBeenHere[$this->path][$arCallFunction]>$MAX_LOOP_COUNT) 
-		{ 
-			// protect against infinite loops
+		if ($arCallFunction && $ARBeenHere[$this->path][$arCallFunction]>$MAX_LOOP_COUNT) { // protect against infinite loops
 			error(sprintf($ARnls["err:maxloopexceed"],$this->path,$arCallFunction,$arCallArgs));
+			// FROP error("Max loop count exceeded in ".$this->path.$arCallFunction."?".$arCallArgs);
 			$this->store->close();
 			exit();
-		}
-		else 
-		{
+		} else {
 			$ARBeenHere[$this->path][$arCallFunction]+=1;
-			$config = $this->loadConfig();
-			$ARConfig->nls=$config->nls;
 
+			$config = $this->loadConfig();
+
+			$ARConfig->nls=$config->nls;
 			// if a default language is entered in a parent and no language is
 			// explicitly selected in the url, use that default. 
 			// The root starts with the system default (ariadne.phtml config file)
-			if ($config->nls->default && !$ARCurrent->nls) 
-			{
+			if ($config->nls->default && !$ARCurrent->nls) {
 				$this->reqnls=$config->nls->default;
 				$this->nls=$this->reqnls;
 			}
 			$nls=&$this->nls;
 			$reqnls=&$this->reqnls;
-			if (!$ARCurrent->arContentTypeSent) 
-			{
+			if (!$ARCurrent->arContentTypeSent) {
 				ldHeader("Content-Type: text/html; charset=UTF-8");
 				$ARCurrent->arContentTypeSent = true;
 			}
 
+/*			// FIXME: the acceptlang code works a bit too well.. it overrides psite configuration settings.
+
+			if ($ARCurrent->acceptlang && !$ARCurrent->nls) {
+				if ($ARCurrent->acceptlang && is_array($this->data->nls->list)) {
+					$validlangs = array_intersect(array_keys($ARCurrent->acceptlang), array_keys($this->data->nls->list));
+				}
+				if ($validlangs) {
+					$reqnls=array_shift($validlangs);
+					$ARCurrent->nls = $reqnls;
+				}
+			}
+*/
 			// if this object isn't available in the requested language, show
 			// a language select dialog with all available languages for this object.
-			if (isset($this->data->nls) && !$this->data->name) 
-			{
-				if (!isset($this->data->nls->list[$reqnls]) || !$config->nls->list[$reqnls]) 
-				{
-					if (!$ARCurrent->nolangcheck ) 
-					{
+			if (isset($this->data->nls) && !$this->data->name) {
+				if (!isset($this->data->nls->list[$reqnls]) || !$config->nls->list[$reqnls]) {
+					if (!$ARCurrent->nolangcheck ) {
 						$ARCurrent->nolangcheck=1;
 						$arCallArgs["arOriginalFunction"] = $arCallFunction;
 						$this->call("user.languageselect.html", $arCallArgs);
 						return false;
-					} 
-					else 
-					{
+					} else {
 						$this->nlsdata=$this->data->$nls;
 					}
-				} 
-				else 
-				{
+				} else {
 					$this->nlsdata=$this->data->$reqnls;
 				}
 			} 
 			$ARCurrent->nolangcheck=1;
-			if ($this->data->custom['none']) 
-			{
+			if ($this->data->custom['none']) {
 				$this->customdata=$this->data->custom['none'];
 			}
-			if ($this->data->custom[$nls]) 
-			{
+			if ($this->data->custom[$nls]) {
 				$this->customnlsdata=$this->data->custom[$nls];
 			}
 			if (	(	$config->cache && ($config->cache!=-1) ) &&
@@ -1581,38 +1277,31 @@ class pobject extends object
 						( 	(count($HTTP_POST_VARS)==0) && 
 							(count($HTTP_GET_VARS)==0) 			) 	) &&
 					( 	$AR->user->data->login=="public" )
-			   ) 
-			{
+			   ) {
 				// caching is on and enabled in loader and user is public and template is not 'protected'.
 				$ARCurrent->cachetime=$config->cache;
-
 				// start output buffering...	
 				debug("CheckConfig: ob_start()","all");
-
 				// if output compression is on, we don't want
 				// to start another output buffer
-				if (!$AR->output_compression) 
-				{
+				if (!$AR->output_compression) {
 					ob_start();
 				}
-			} 
-			else 
-			{
+			} else {
 				debug("CheckConfig: caching disabled","all");
 				debug("             config->cache: ".$config->cache."; nocache: ".$nocache."; user: ".$AR->user->data->login."; os: ".$AR->OS,"all");
 			}
 
-			//	Set ARConfigChecked to true to indicate that we have been here earlier.
+			/*
+				Set ARConfigChecked to true to indicate that we have been here
+				earlier.
+			*/
 			$ARConfigChecked = true;
-			if ($arCallFunction) 
-			{ 
-				// don't search for templates named ''
-				if (($libpos=strpos($arCallFunction,":"))!==false && $libpos!==strpos($arCallFunction, "::")) 
-				{
+			if ($arCallFunction) { // don't search for templates named ''
+				if (($libpos=strpos($arCallFunction,":"))!==false && $libpos!==strpos($arCallFunction, "::")) {
 					// template of a specific library defined via call("library:template");
 					$arLibrary = substr($arCallFunction, 0, $libpos);
-					if ($arLibrary == 'current') 
-					{
+					if ($arLibrary == 'current') {
 						// load the current arLibrary 
 						$context = $this->getContext(1);
 						$arLibrary = $context['arLibrary'];
@@ -1620,37 +1309,29 @@ class pobject extends object
 					}
 					$arCallFunction = substr($arCallFunction, $libpos+1);
 					debug("CheckConfig: searching for lib: '$arLibrary'; '$arCallFunction' from '".$this->path."'");
-					if ($config->library[$arLibrary]) 
-					{
+					if ($config->library[$arLibrary]) {
 						//echo $config->library[$library];
 						$template = $this->getPinpTemplate($arCallFunction, $config->library[$arLibrary], true);
 						$template["arLibrary"] = $arLibrary;
 						$template["arLibraryPath"] = $config->library[$arLibrary];
 					}
-				} 
-				else 
-				{
-					if (is_array($ARCurrent->shortcut_redirect)) 
-					{
+				} else {
+					if (is_array($ARCurrent->shortcut_redirect)) {
 						$redir = end($ARCurrent->shortcut_redirect);
-						if ($redir["keepurl"] && (substr($this->path, 0, strlen($redir["dest"])) == $redir["dest"])) 
-						{
+						if ($redir["keepurl"] && (substr($this->path, 0, strlen($redir["dest"])) == $redir["dest"])) {
 							$template = $this->getPinpTemplate($arCallFunction, $this->make_path($redir["src"]));
 						}
 					}
-					if (!$template["arTemplateId"]) 
-					{
+					if (!$template["arTemplateId"]) {
 						$template = $this->getPinpTemplate($arCallFunction);
 					}
 				}
-				if ($template["arCallTemplate"] && $template["arTemplateId"]) 
-				{
+				if ($template["arCallTemplate"] && $template["arTemplateId"]) {
 					debug("CheckConfig: arCallTemplate=".$template["arCallTemplate"].", arTemplateId=".$template["arTemplateId"],"object");
-
+					// $arCallTemplate=$this->store->get_config("files")."templates".$arCallTemplate;
 					// check if template exists, if it doesn't exist, then continue the original template that called CheckConfig
 					$arTemplates=$this->store->get_filestore("templates");
-					if ($arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"])) 
-					{ 
+					if ($arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"])) { 
 						debug("CheckConfig: ".$template["arCallTemplate"]." exists","object");
 						// check if the requested language exists, if not do not display anything, 
 						// unless otherwise indicated by $ARCurrent->allnls
@@ -1665,45 +1346,38 @@ class pobject extends object
 						$ARCurrent->arCallStack[]=$arCallArgs;
 						// start running a pinp template
 						$this->pushContext(Array("scope" => "pinp", "arLibrary" => $template['arLibrary'], "arLibraryPath" => $template['arLibraryPath']));
-						if (isset($this->data->nls->list[$reqnls])) 
-						{
+						if (isset($this->data->nls->list[$reqnls])) {
 							// the requested language is available.
 							$this->nlsdata=$this->data->$nls;
 							$continue=true;
-						} 
-						else if (!isset($this->data->nls)) 
-						{
+						} else if (!isset($this->data->nls)) {
 							debug("pobject: CheckConfig: no nls data ","all");
 							// the object has no language support
 							$this->nlsdata=&$this->data;
 							$continue=true;
-						} 
-						else if (($ARCurrent->allnls) || ($ARCurrent->nolangcheck)) 
-						{
+						} else if (($ARCurrent->allnls) || ($ARCurrent->nolangcheck)) {
 							debug("pobject: CheckConfig: no $reqnls, but allnls set","all");
 							// all objects must be displayed
 							// $this->reqnls=$this->nls; // set requested nls, for checks
 							$this->nls=$this->data->nls->default;
 							$this->nlsdata=$this->data->$nls;
 							$continue=true;
-						} 
-						else 
-						{
+						} else {
 							// requested language not available, allnls not set
 							// -> skip this object (do not run template but do return false)
 							$continue=false;
 						}
-						if ($continue) 
-						{
-							if ($ARCurrent->ARShowTemplateBorders) 
-							{
+						if ($continue) {
+							if ($ARCurrent->ARShowTemplateBorders) {
+								// echo "<fieldset style=\"float: left;\">";
+								// echo "<legend style=\"color: black; background-color: white;\">".$template["arCallTemplate"]."</legend>";
 								echo "<div style=\"float: left; border: 0px; padding: 0px; margin: 0px;\" title=\"(".$this->type.")".$this->path.":".$template["arCallTemplate"]."\"".
 										" onMouseOver=\"this.style.border='1px dotted black';\" onMouseOut=\"this.style.border='0px';\">";
 							}
 							$arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
 
-							if ($ARCurrent->ARShowTemplateBorders) 
-							{
+							if ($ARCurrent->ARShowTemplateBorders) {
+								// echo "</fieldset>";
 								echo "</div>";
 							}
 							
@@ -1711,14 +1385,10 @@ class pobject extends object
 						array_pop($ARCurrent->arCallStack);
 						$this->popContext();
 						return false;
-					} 
-					else
-					{
+					} else {
 						debug("pobject: CheckConfig: no such file: ".$template["arTemplateId"].$template["arCallTemplate"]."","all");
 					}
-				} 
-				else 
-				{
+				} else {
 					debug("CheckConfig: no arCallTemplate","object");
 				}
 
@@ -1738,7 +1408,7 @@ class pobject extends object
 	}
 
 	function ClearCache($path="",$private=true, $recurse=false) {
-		global $AR;
+	global $AR;
 		debug("pobject: ClearCache($path)","object");
 		if (!$path) { $path=$this->path; }
 		$path=strtolower($path);
@@ -1748,41 +1418,30 @@ class pobject extends object
 		$cache_types[] = "compressed";
 		$cache_types[] = "session";
 
-		foreach ($cache_types as $type)
-		{
-			foreach ($nlslist as $nls => $language)
-			{
+		foreach($cache_types as $type){
+			foreach($nlslist as $nls => $language){
 				$fpath=$this->store->get_config("files")."cache/$type/$nls".$path;
 				$hpath=$this->store->get_config("files")."cacheheaders/$type/$nls".$path;
-				if ($dir=@dir($fpath)) 
-				{
-					while ($entry=@$dir->read()) 
-					{
-						if ($entry!="." && $entry!="..") 
-						{
-							if (filetype($fpath.$entry)!="dir") 
-							{
+				if ($dir=@dir($fpath)) {
+					while ($entry=@$dir->read()) {
+						if ($entry!="." && $entry!="..") {
+							if (filetype($fpath.$entry)!="dir") {
 								@unlink($fpath.$entry);
 								@unlink($hpath.$entry);
-							} 
-							else if ($entry!="." && $entry!=".." && $recurse
-									&& !$recursed[$entry]) 
-							{
+							} else if ($entry!="." && $entry!=".." && $recurse
+									&& !$recursed[$entry]) {
 								$this->ClearCache($path.$entry."/", false, true);
 								$recursed[$entry]=true;
 							}
 						}
 					}
-				} 
-				else if (file_exists(substr($fpath,0,-1)."=")) 
-				{
+				} else if (file_exists(substr($fpath,0,-1)."=")) {
 					@unlink(substr($fpath,0,-1)."=");
 					@unlink(substr($hpath,0,-1)."=");
 				}
 			}
 		}
-		if ($private) 
-		{
+		if ($private) {
 			// now remove any private cache entries.
 			// FIXME: this doesn't scale very well.
 			//        only scalable solution is storage in a database
@@ -1790,50 +1449,39 @@ class pobject extends object
 			//        remove recursively fast enough.
 	        //        this means a change in the filestore api. -> 2.5
 			$pcache=$this->store->get_filestore("privatecache");
-			if ($recurse) 
-			{
+			if ($recurse) {
 				$ids=$this->store->info($this->store->find($path, "" ,0));
-				if (is_array($ids))
-				{
-					foreach ($ids as $value) 
-					{
+				if(is_array($ids)){
+					foreach($ids as $value) {
 						$pcache->purge($value["id"]);
 					}
 				}
-			} 
-			else 
-			{
+			} else {
 				$pcache->purge($this->id);
 			}
 		}
 		debug("pobject: ClearCache: end","all");
 	}
 
-	function getcache($name, $nls="") 
-	{
+	function getcache($name, $nls="") {
 		global $ARCurrent;
 		$result=false;
-		if ($name) 
-		{
+		if ($name) {
 			$result=false;
-			if (!$nls) 
-			{
+			if (!$nls) {
 				$nls=$this->nls;
 			}
 			$file=$nls.".".$name;
 			$pcache=$this->store->get_filestore("privatecache");
 			if ( $pcache->exists($this->id, $file) &&
-			     ($pcache->mtime($this->id, $file)>time()) ) 
-			{
+			     ($pcache->mtime($this->id, $file)>time()) ) {
 				debug("cached: $name exists, reading from cache.","all");
 				// FIXME!: should fix links, replace old session id's; use correct root, etc.
 				if ($ARCurrent->session) {
 					$session="/-".$ARCurrent->session->id."-";
 				}
 				$result=str_replace("{arSession}", $session, $pcache->read($this->id, $file));
-			} 
-			else 
-			{
+			} else {
 				$result=false;
 				debug("getcache: $name not found, start new cache image.","all");
 				$ARCurrent->cache[]=$file;
@@ -1846,36 +1494,28 @@ class pobject extends object
 				   savecache() must then pop the stack. 
 				*/
 			}
-		} 
-		else 
-		{
+		} else {
 			error($ARnls["err:nonamecache"]);
 		}
 		return $result;
 	}
 
-	function cached($name, $nls="") 
-	{
+	function cached($name, $nls="") {
 		debug("cached($name)","object");
 		global $ARCurrent;
-		if ($image=$this->getcache($name, $nls)) 
-		{
+		if ($image=$this->getcache($name, $nls)) {
 			echo $image;
 			$result=true;
-		} 
-		else 
-		{
+		} else {
 			$result=false;
 		}
 		return $result;
 	}
 
-	function savecache($time="") 
-	{
+	function savecache($time="") {
 		debug("savecache($time)","object");
 		global $ARCurrent;
-		if (!$time) 
-		{
+		if (!$time) {
 			$time=2; // 'freshness' in hours.
 		}
 		/* FIXME!: change links to current root with a placeholder.
@@ -1889,18 +1529,22 @@ class pobject extends object
            better fix: change this->store->root to {arRoot}, then change
            any remaining session id's to {arSession} ?
 		*/
-		if (($file=array_pop($ARCurrent->cache)) && $image=ob_get_contents()) 
-		{
-			if ($ARCurrent->session) 
-			{
+		if (($file=array_pop($ARCurrent->cache)) && $image=ob_get_contents()) {
+			if ($ARCurrent->session) {
 				$image=str_replace("/-".$ARCurrent->session->id."-","{arSession}",$image);
 				$session="/-".$ARCurrent->session->id."-";
 			}
+			//$path=substr($file, 0, strrpos($file, "/"));
+			//if (!file_exists($this->store->get_config("files")."privatecache".$path)) {
+			//	ldMkDir("privatecache".$path);
+			//}
+			//$fp=fopen($this->store->get_config("files")."privatecache".$file, "w");
+			//fwrite($fp, $image);
+			//fclose($fp);
 			$pcache=$this->store->get_filestore("privatecache");
 			$pcache->write($image, $this->id, $file);
 			$time=time()+($time*3600);
-			if (!$pcache->touch($this->id, $file, $time)) 
-			{
+			if (!$pcache->touch($this->id, $file, $time)) {
 				debug("savecache: ERROR: couldn't touch $file","object");
 			}
 			/* it seems that ob_end_flush doesn't really clean the output
@@ -1912,111 +1556,72 @@ class pobject extends object
 			ob_end_clean();
 			echo str_replace("{arSession}",$session,$image);
 			debug("savecache: ob_end_flush()","all");
-		} 
-		else 
-		{
+		} else {
 			error($ARnls["err:savecachenofile"]);
 			// FROP error("savecache: no file or image ...");
 		}
 		debug("savecache: end. ($file)","all");
 	}
 
-	function getdata($varname, $nls="none") 
-	{
-		global $ARCurrent, $HTTP_POST_VARS, $HTTP_GET_VARS;
+	function getdata($varname, $nls="none") {
+	// function to retrieve variables from $this->data, with the correct
+	// language version.
+	global $ARCurrent, $HTTP_POST_VARS, $HTTP_GET_VARS;
 
 		debug("pobject: getdata($varname, $nls)","object");
 		$result=false;
-		if ($nls!="none") 
-		{
-			if ($ARCurrent->arCallStack) 
-			{
+		if ($nls!="none") {
+			if ($ARCurrent->arCallStack) {
 				$arCallArgs=end($ARCurrent->arCallStack);
-				if (is_array($arCallArgs)) 
-				{
+				if (is_array($arCallArgs)) {
 					extract($arCallArgs);
-				} 
-				else if (is_string($arCallArgs)) 
-				{
+				} else if (is_string($arCallArgs)) {
 					Parse_Str($arCallArgs);
 				}
 			}
-			if (isset(${$nls}[$varname])) 
-			{
+			if (isset(${$nls}[$varname])) {
 				$result=${$nls}[$varname];
-			} 
-			else if (isset($ARCurrent->$nls->$varname)) 
-			{
+			} else if (isset($ARCurrent->$nls->$varname)) {
 				$result=$ARCurrent->$nls->$varname;
-			} 
-			else if (($values=$HTTP_POST_VARS[$nls]) && isset($values[$varname])) 
-			{
+			} else if (($values=$HTTP_POST_VARS[$nls]) && isset($values[$varname])) {
 				$result=$values[$varname];
-			} 
-			else if (($values=$HTTP_GET_VARS[$nls]) && isset($values[$varname])) 
-			{
+			} else if (($values=$HTTP_GET_VARS[$nls]) && isset($values[$varname])) {
 				$result=$values[$varname];
-			} 
-			else if (($arStoreVars=$HTTP_POST_VARS["arStoreVars"]) && isset($arStoreVars[$nls][$varname])) 
-			{
+			} else if (($arStoreVars=$HTTP_POST_VARS["arStoreVars"]) && isset($arStoreVars[$nls][$varname])) {
 				$result=$arStoreVars[$nls][$varname];
-			} 
-			else if (($arStoreVars=$HTTP_GET_VARS["arStoreVars"]) && isset($arStoreVars[$nls][$varname])) 
-			{
+			} else if (($arStoreVars=$HTTP_GET_VARS["arStoreVars"]) && isset($arStoreVars[$nls][$varname])) {
 				$result=$arStoreVars[$nls][$varname];
 			}
-			if ($result===false) 
-			{
-				if (isset($this->data->${nls}->${varname})) 
-				{
+			if ($result===false) {
+				if (isset($this->data->${nls}->${varname})) {
 					$result=$this->data->${nls}->${varname};
 				}
 			}
-		} 
-		else 
-		{
-			// language independant variable.
-			if ($ARCurrent->arCallStack) 
-			{
+		} else { // language independant variable.
+			if ($ARCurrent->arCallStack) {
 				$arCallArgs=end($ARCurrent->arCallStack);
-				if (is_array($arCallArgs)) 
-				{
+				if (is_array($arCallArgs)) {
 					extract($arCallArgs);
-				} 
-				else if (is_string($arCallArgs)) 
-				{
+				} else if (is_string($arCallArgs)) {
 					Parse_Str($arCallArgs);
 				}
 			}
-			if (isset($$varname)) 
-			{
+			if (isset($$varname)) {
 				$result=$$varname;
-			} 
-			else if (isset($ARCurrent->$varname)) 
-			{
+			} else if (isset($ARCurrent->$varname)) {
 				$result=$ARCurrent->$varname;
-			} 
-			else if (isset($HTTP_POST_VARS[$varname])) 
-			{
+			} else if (isset($HTTP_POST_VARS[$varname])) {
 				$result=$HTTP_POST_VARS[$varname];
-			} 
-			else if (isset($HTTP_GET_VARS[$varname])) 
-			{
+			} else if (isset($HTTP_GET_VARS[$varname])) {
 				$result=$HTTP_GET_VARS[$varname];
-			} 
-			else if (($arStoreVars=$HTTP_POST_VARS["arStoreVars"]) && isset($arStoreVars[$varname])) 
-			{
+			} else if (($arStoreVars=$HTTP_POST_VARS["arStoreVars"]) && isset($arStoreVars[$varname])) {
 				debug('POST[arStoreVars]','all');
 				$result=$arStoreVars[$varname];
-			} 
-			else if (($arStoreVars=$HTTP_GET_VARS["arStoreVars"]) && isset($arStoreVars[$varname])) 
-			{
+			} else if (($arStoreVars=$HTTP_GET_VARS["arStoreVars"]) && isset($arStoreVars[$varname])) {
 				$result=$arStoreVars[$varname];
 			}
-			if ($result===false) 
-			{
-				if (isset($this->data->$varname)) 
-				{
+			if ($result===false) {
+				if (isset($this->data->$varname)) {
 					$result=$this->data->$varname;
 				}
 			}        
@@ -2025,91 +1630,71 @@ class pobject extends object
 		return $result;
 	}
 
-	function showdata($varname, $nls="none") 
-	{
+	function showdata($varname, $nls="none") {
 		debug("pobject: showdata($varname, $nls)","object");
 		echo htmlspecialchars($this->getdata($varname, $nls));
 	}
 
-	function setnls($nls) 
-	{
+	function setnls($nls) {
 		debug("pobject: setnls($nls)","object");
 		ldSetNls($nls);
 	}
 
-	function getcharset() 
-	{
+	function getcharset() {
 		return "UTF-8";
 	}
 
-	function HTTPRequest($method, $url, $postdata = "", $port=80 ) 
-	{ 
+	function HTTPRequest($method, $url, $postdata = "", $port=80 ) { 
 		$maxtries = 5;
 		$tries = 0;
 		$redirecting = true;
 
-		if (is_array($postdata)) 
-		{ 
-			foreach ($postdata as $key=>$val) 
-			{ 
-				if (!is_integer($key)) 
-				{
+		if(is_array($postdata)) { 
+			foreach($postdata as $key=>$val) { 
+				if(!is_integer($key)) {
 					$data .= "$key=".urlencode($val)."&"; 
 				}
 			} 
-		} 
-		else 
-		{ 
+		} else { 
 			$data = $postdata; 
 		}
 
-		while ($redirecting && $tries < $maxtries) 
-		{
+		while ($redirecting && $tries < $maxtries) {
 			$tries++; 
-	
 			// get host name and URI from URL, URI not needed though 
 			preg_match("/^([htps]*:\/\/)?([^\/]+)(.*)/i", $url, $matches); 
 			$host = $matches[2]; 
 			$uri = $matches[3]; 
-			if (!$matches[1]) 
-			{
+			if (!$matches[1]) {
 				$url="http://".$url;
 			}
 			$connection = fsockopen( $host, $port, $errno, $errstr, 120); 
-			if ($connection) 
-			{ 
-				if ("GET" == strtoupper($method)) 
-				{ 
-					if ($data) 
-					{
+			if( $connection ) { 
+				if( strtoupper($method) == "GET" ) { 
+					if ($data) {
 						$url .= "?" . $data; 
 					}
-					fputs($connection, "GET $url HTTP/1.0\n"); 
-				} 
-				else if ("POST" == strtoupper($method)) 
-				{ 
-					fputs($connection, "POST $url HTTP/1.0\n"); 
-				} 
-				else 
-				{
-					fputs($connection, "$method $url HTTP/1.0\n");
+					fputs( $connection, "GET $url HTTP/1.0\n"); 
+				} else if( strtoupper($method) == "POST" ) { 
+					fputs( $connection, "POST $url HTTP/1.0\n"); 
+				} else {
+					fputs( $connection, "$method $url HTTP/1.0\n");
 				}
 
-				fputs($connection, "Host: $host\n");
-				fputs($connection, "Accept: */*\n"); 
-				fputs($connection, "Accept: image/gif\n"); 
-				fputs($connection, "Accept: image/x-xbitmap\n"); 
-				fputs($connection, "Accept: image/jpeg\n"); 
+				fputs( $connection, "Host: $host\n");
+				fputs( $connection, "Accept: */*\n"); 
+				fputs( $connection, "Accept: image/gif\n"); 
+				fputs( $connection, "Accept: image/x-xbitmap\n"); 
+				fputs( $connection, "Accept: image/jpeg\n"); 
 
-				if ("POST" == strtoupper($method)) 
-				{ 
-					$strlength = strlen($data); 
-					fputs($connection, "Content-type: application/x-www-form-urlencoded\n" ); 
-					fputs($connection, "Content-length: ".$strlength."\n\n"); 
-					fputs($connection, $data."\n"); 
+				if( strtoupper($method) == "POST" ) { 
+					$strlength = strlen( $data); 
+					fputs( $connection, "Content-type: application/x-www-form-urlencoded\n" ); 
+					fputs( $connection, "Content-length: ".$strlength."\n\n"); 
+					fputs( $connection, $data."\n"); 
 				} 
 
-				fputs($connection, "\n" , 1); 
+				fputs( $connection, "\n" , 1); 
 				$output = ""; 
 
 				$headerContents = '';
@@ -2117,43 +1702,29 @@ class pobject extends object
 				$headerEnd = 0; 
 				$redirecting = false; 
 
-				while (!feof($connection)) 
-				{ 
-					$currentLine = fgets($connection, 1024); 
-					if ($headerEnd && $redirecting) 
-					{ 
+				while (!feof($connection)) { 
+					$currentLine = fgets ($connection, 1024); 
+					if ($headerEnd && $redirecting) { 
 						break; 
-					} 
-					else if ($headerEnd && !$redirecting) 
-					{ 
+					} else if ($headerEnd && !$redirecting) { 
 						//this is the html from the page 
 						$contents = $contents . $currentLine; 
-					} 
-					else if (ereg("^HTTP", $currentLine)) 
-					{ 
+					} else if ( ereg("^HTTP", $currentLine) ) { 
 						//came to the start of the header 
 						$headerStart = 1; 
 						$headerContents = $currentLine;
-					} 
-					else if ($headerStart && preg_match('/^[\n\r\t ]*$/', $currentLine)) 
-					{ 
+					} else if ( $headerStart && preg_match('/^[\n\r\t ]*$/', $currentLine) ) { 
 						//came to the end of the header 
 						$headerEnd = 1; 
-					} 
-					else 
-					{ 
+					} else { 
 						//this is the header, if you want it... 
-						if (preg_match("/Location: (.+?)\n/is",$currentLine,$matches)) 
-						{ 
+						if (preg_match("/Location: (.+?)\n/is",$currentLine,$matches) ) { 
 							$headerContents .= $currentLine;
 							//redirects are sometimes relative 
 							$newurl = $matches[1]; 
-							if (!preg_match("/http:\/\//i", $newurl, $matches)) 
-							{ 
+							if (!preg_match("/http:\/\//i", $newurl, $matches) ) { 
 								$url .= $newurl; 
-							} 
-							else 
-							{ 
+							} else { 
 								$url = $newurl; 
 							} 
 							//extra \r's get picked up sometimes 
@@ -2161,72 +1732,53 @@ class pobject extends object
 							//this is a quick fix. 
 							$url = preg_replace("/\r/s","",$url); 
 							$redirecting = true; 
-						} 
-						else 
-						{
+						} else {
 							$headerContents.=$currentLine;
 						}
 					} 
 				} 
-			} 
-			else 
-			{
+			} else {
 				$this->error="$errstr ($errno)";
 				$contents=false;
 				$url = "";
 			}
 			@fclose($connection); 
 		}
-		if (("GET"!=$method) && ("POST"!=$method)) 
-		{
+		if (($method!="GET") && ($method!="POST")) {
 			$contents=$headerContents."\n".$contents;
 		}
 		return $contents; 
 	} 
 
-	function make_filesize($size="") 
-	{
+	function make_filesize( $size="" ) {
 		$result = "0";
-		if ($size === "") 
-		{
+		if( $size === "" ) {
 			$size = $this->size;
 		}
-		if ($size>1048576) 
-		{
+		if ($size>1048576) {
 			$result = round(intval($size)/1048576)." M";;
-		} 
-		else if ($size>1024) 
-		{
+		} elseif ($size>1024) {
 			$result = round(intval($size)/1024)." KB";
-		} 
-		else 
-		{
+		} else {
 			$result = intval($size)." B";
 		}
 		return $result;
 	}
 
-	function convertToUTF8($data, $charset = "CP1252") 
-	{
+	function convertToUTF8($data, $charset = "CP1252") {
 
 		include_once($this->store->get_config("code")."modules/mod_unicode.php");
 
-		if (is_array($data)) 
-		{
-			foreach ($data as $key => $val)
-			{
+		if (is_array($data)) {
+			foreach($data as $key => $val){
 				$data[$key] = $this->convertToUTF8($val, $charset);
 			}
-		} 
-		else if (is_object($data)) 
-		{
-			foreach ($data as $key => $val)
-			{
+		} else
+		if (is_object($data)) {
+			foreach($data as $key => $val){
 				$data->$key = $this->convertToUTF8($val, $charset);
 			}
-		} 
-		else 
-		{
+		} else {
 			$data = unicode::convertToUTF8($charset, $data);
 		}
 		return $data;
@@ -2253,15 +1805,13 @@ class pobject extends object
   
 ********************************************************************/
 
-	function _call($function, $args="") 
-	{
+	function _call($function, $args="") {
 		// remove possible path information (greedy match)
 		$function=basename($function);
 		return $this->call($function, $args);
 	}
 
-	function _get($path, $function="view.html", $args="") 
-	{
+	function _get($path, $function="view.html", $args="") {
 		debug("pobject: get($path, $function, $args)","object");
 		// remove possible path information (greedy match)
 		$function=basename($function);
@@ -2270,13 +1820,11 @@ class pobject extends object
 				$this->make_path($path))); 
 	}
 
-	function _call_object($object, $function, $args="") 
-	{
+	function _call_object($object, $function, $args="") {
 		return $object->call($function, $args);
 	}
 
-	function _ls($function="list.html", $args="") 
-	{
+	function _ls($function="list.html", $args="") {
 		debug("pobject: ls($function, $args)","object");
 		// remove possible path information (greedy match)
 		$function=basename($function);
@@ -2284,16 +1832,14 @@ class pobject extends object
 			$this->store->ls($this->path));
 	}
 
-	function _parents($function="list.html", $args="", $top="") 
-	{
+	function _parents($function="list.html", $args="", $top="") {
 		debug("pobject: parents($function, $args)","object");
 		// remove possible path information (greedy match)
 		$function=basename($function);
 		return $this->parents($this->path, $function, $args, $top);
 	}
 
-	function _find($criteria, $function="list.html", $args="", $limit=100, $offset=0) 
-	{
+	function _find($criteria, $function="list.html", $args="", $limit=100, $offset=0) {
 		// remove possible path information (greedy match)
 		$function=basename($function);
 		$result = $this->store->call($function, $args, 
@@ -2304,272 +1850,203 @@ class pobject extends object
 		return $result;
 	}
 
-	function _exists($path) 
-	{
+	function _exists($path) {
 		debug("pobject: exists($path)","object");
 		return $this->store->exists($this->make_path($path));
 	}
 
-	function _implements($implements) 
-	{
+	function _implements($implements) {
 		return $this->implements($implements);
 	}
 
-	function getvar($var) 
-	{
-		global $HTTP_POST_VARS, $HTTP_GET_VARS, $PHP_SELF, $ARCurrent, $ARConfig;
+	function getvar($var) {
+	global $HTTP_POST_VARS, $HTTP_GET_VARS, $PHP_SELF, $ARCurrent, $ARConfig;
 
 		debug("pobject: getvar($var)","object");
-		if ($ARCurrent->arCallStack) 
-		{
+		if ($ARCurrent->arCallStack) {
 			$arCallArgs=end($ARCurrent->arCallStack);
-			if (is_array($arCallArgs)) 
-			{
+			if (is_array($arCallArgs)) {
 				extract($arCallArgs);
-			} 
-			else if (is_string($arCallArgs)) 
-			{
+			} else if (is_string($arCallArgs)) {
 				Parse_Str($arCallArgs);
 			}
 		}
-		if (isset($$var)) 
-		{
+		if (isset($$var)) {
 			$result=$$var;
-		} 
-		else if (isset($ARCurrent->$var)) 
-		{
+		} else if (isset($ARCurrent->$var)) {
 			$result=$ARCurrent->$var;
-		} 
-		else if (isset($ARConfig->pinpcache[$this->path][$var])) 
-		{
+		} else if (isset($ARConfig->pinpcache[$this->path][$var])) {
 			$result=$ARConfig->pinpcache[$this->path][$var];
-		} 
-		else if (isset($HTTP_POST_VARS[$var])) 
-		{
+		} else if (isset($HTTP_POST_VARS[$var])) {
 			$result=$HTTP_POST_VARS[$var];
-		} 
-		else if (isset($HTTP_GET_VARS[$var])) 
-		{
+		} else if (isset($HTTP_GET_VARS[$var])) {
 			$result=$HTTP_GET_VARS[$var];
 		} 
 		return $result;
 	}
 
-	function _getvar($var) 
-	{
+	function _getvar($var) {
 		return $this->getvar($var);
 	}
 
-	function putvar($var, $value) 
-	{
-		global $ARCurrent;
+	function putvar($var, $value) {
+	global $ARCurrent;
 
 		debug("pobject: putvar($var, $value)","object");
 		$ARCurrent->$var=$value;
 	}  
 
-	function _putvar($var, $value) 
-	{
+	function _putvar($var, $value) {
 		return $this->putvar($var, $value);
 	}
 
-	function _setnls($nls) 
-	{
+	function _setnls($nls) {
 		$this->setnls($nls);
 	}
 
-	function _widget($arWidgetName, $arWidgetTemplate, $arWidgetArgs="", $arWidgetType="lib") 
-	{
-		global $AR, $ARConfig, $ARCurrent, $ARnls;
+	function _widget($arWidgetName, $arWidgetTemplate, $arWidgetArgs="", $arWidgetType="lib") {
+	global $AR, $ARConfig, $ARCurrent, $ARnls;
 
 		debug("pobject: widget($arWidgetName, $arWidgetTemplate, $arWidgetArgs)","object");
 		$arWidgetName=ereg_replace("[^a-zA-Z0-9\/]","",$arWidgetName);
 		$arWidgetTemplate=ereg_replace("[^a-zA-Z0-9\.]","",$arWidgetTemplate);
-		if ($arWidgetType=="www") 
-		{
+		if ($arWidgetType=="www") {
 			$coderoot=$AR->dir->www;
-		} 
-		else 
-		{
+		} else {
 			$coderoot=$this->store->get_config("code");
 		}
-		if (file_exists($coderoot."widgets/$arWidgetName")) 
-		{
-			if (file_exists($coderoot."widgets/$arWidgetName/$arWidgetTemplate")) 
-			{
-				if (is_array($arWidgetArgs)) 
-				{
+		if (file_exists($coderoot."widgets/$arWidgetName")) {
+			if (file_exists($coderoot."widgets/$arWidgetName/$arWidgetTemplate")) {
+				if (is_array($arWidgetArgs)) {
 					extract($arWidgetArgs);
-				} 
-				else if (is_string($arWidgetArgs)) 
-				{
+				} else if (is_string($arWidgetArgs)) {
 					Parse_str($arWidgetArgs);
 				}
 				include($coderoot."widgets/$arWidgetName/$arWidgetTemplate");
-			} 
-			else 
-			{
+			} else {
 				error("Template $arWidgetTemplate for widget $arWidgetName not found.");
 			}
-		} 
-		else 
-		{
+		} else {
 			error(sprintf($ARnls["err:widgetnotfound"],$wgName));
+			// FROP error("Widget $wgName not found");
 		}
-		if ($wgResult) 
-		{
+		if ($wgResult) {
 			return $wgResult;
 		}
 	}
 
-	function _getdata($varname, $nls="none") 
-	{ 
+	function _getdata($varname, $nls="none") { 
 		return $this->getdata($varname, $nls);
 	}
 
-	function _showdata($varname, $nls="none") 
-	{
+	function _showdata($varname, $nls="none") {
 		$this->showdata($varname, $nls);
 	}
 
-	function _gettext($index) 
-	{
-		global $ARnls;
+	function _gettext($index) {
+	global $ARnls;
 		$result = $this->ARnls[$index];
-		if (!$result) 
-		{
+		if (!$result) {
 			$result = $ARnls[$index];
 		}
 		return $result;		
 	}
 
-	function _loadtext($nls, $section="") 
-	{
+	function _loadtext($nls, $section="") {
 		$nls=eregi_replace('[^a-z]*','',$nls);
 		$section=eregi_replace('[^a-z\._-]*','',$section);
-		if (!$section) 
-		{
+		if (!$section) {
 			include($this->store->get_config("code")."nls/".$nls);
-		} 
-		else 
-		{
+		} else {
 			include($this->store->get_config("code")."nls/".$section.".".$nls);
 		}
 		$this->ARnls = $ARnls;
 	}
 
-	function _startsession() 
-	{
-		global $ARCurrent;
+	function _startsession() {
+	global $ARCurrent;
 		ldStartSession(0);
 		return $ARCurrent->session->id;
 	}
 
-	function _putsessionvar($varname, $varvalue) 
-	{
-		global $ARCurrent;
+	function _putsessionvar($varname, $varvalue) {
+	global $ARCurrent;
 
-		if ($ARCurrent->session) 
-		{
+		if ($ARCurrent->session) {
 			return $ARCurrent->session->put($varname, $varvalue);
-		} 
-		else 
-		{
+		} else {
 			return false;
 		}
 	}
 
-	function _getsessionvar($varname) 
-	{
-		global $ARCurrent;
+	function _getsessionvar($varname) {
+	global $ARCurrent;
 
-		if ($ARCurrent->session) 
-		{
+		if ($ARCurrent->session) {
 			return $ARCurrent->session->get($varname);
-		} 
-		else 
-		{
+		} else {
 			return false;
 		}
 	}
 
-	function _killsession() 
-	{
-		global $ARCurrent;
+	function _killsession() {
+	global $ARCurrent;
 
-		if ($ARCurrent->session) 
-		{
+		if ($ARCurrent->session) {
 			$ARCurrent->session->kill();
 			unset($ARCurrent->session);
 		}
 	}
 
-	function _sessionid() 
-	{
-		global $ARCurrent;
-		if ($ARCurrent->session) 
-		{
+	function _sessionid() {
+	global $ARCurrent;
+		if ($ARCurrent->session) {
 			return $ARCurrent->session->id;
-		} 
-		else 
-		{
+		} else {
 			return 0;
 		}
 	}
 
-	function _resetloopcheck() 
-	{
+	function _resetloopcheck() {
 		global $ARBeenHere;
 		$ARBeenHere=Array();
 	}
 
-	function _make_path($path="") 
-	{
+	function _make_path($path="") {
 		return $this->make_path($path);
 	}
 
-	function _make_url($path="", $nls=false, $session=true, $https=-1, $keephost=false) 
-	{
+	function _make_url($path="", $nls=false, $session=true, $https=-1, $keephost=false) {
 		return $this->make_url($path, $nls, $session, $https, $keephost);
 	}
 
-	function _make_local_url($path="", $nls="", $session=true, $https=-1) 
-	{
+	function _make_local_url($path="", $nls="", $session=true, $https=-1) {
 		return $this->make_local_url($path, $nls, $session, $https);
 	}
 
-	function _getcache($name, $nls='') 
-	{
+	function _getcache($name, $nls='') {
 		return $this->getcache($name, $nls);
 	}
 
-	function _cached($name, $nls='') 
-	{
+	function _cached($name, $nls='') {
 		return $this->cached($name, $nls);
 	}
 
-	function _savecache($time="") 
-	{
+	function _savecache($time="") {
 		return $this->savecache($time);
 	}
 
-	function currentsite() 
-	{
+	function currentsite() {
 		global $ARCurrent, $ARConfig;
-		if (!$config && !$config=$ARConfig->cache[$this->path]) 
-		{
+		if (!$config && !$config=$ARConfig->cache[$this->path]) {
 			$config=$ARConfig->cache[$this->parent];
 		}
-		if (@count($ARCurrent->shortcut_redirect)) 
-		{
+		if (@count($ARCurrent->shortcut_redirect)) {
 			$redir = end($ARCurrent->shortcut_redirect);
-			if ($redir["keepurl"] && substr($this->path, 0, strlen($redir["dest"])) == $redir["dest"]) 
-			{
-				if (substr($config->site, 0, strlen($redir["dest"]))!=$redir["dest"]) 
-				{
+			if ($redir["keepurl"] && substr($this->path, 0, strlen($redir["dest"])) == $redir["dest"]) {
+				if (substr($config->site, 0, strlen($redir["dest"]))!=$redir["dest"]) {
 					// search currentsite from the reference
-					if (!$config = $ARConfig->cache[$redir['src']]) 
-					{
+					if (!$config = $ARConfig->cache[$redir['src']]) {
 						$config = $this->loadConfig($redir['src']); //$ARConfig->cache[$this->make_path($redir['src']."../")];
 					}
 				}
@@ -2578,44 +2055,37 @@ class pobject extends object
 		return $config->site;
 	}
 
-	function parentsite($site) 
-	{
+	function parentsite($site) {
 		global $ARConfig;
 		$path=$this->store->make_path($site, "..");
 		$config=$ARConfig->cache[$path];
 		return $config->site;
 	}
 
-	function currentsection() 
-	{
+	function currentsection() {
 		global $ARConfig;
-		if (!$config=$ARConfig->cache[$this->path]) 
-		{
+		if (!$config=$ARConfig->cache[$this->path]) {
 			$config=$ARConfig->cache[$this->parent];
 		}
 		return $config->section;
 	}
 
-	function parentsection($section) 
-	{
+	function parentsection($section) {
 		global $ARConfig;
 		$path=$this->store->make_path($section, "..");
 		$config=$ARConfig->cache[$path];
 		return $config->section;
 	}
 
-	function getValue($name, $nls=false) 
-	{
-		global $ARCurrent;
-		switch ($nls) 
-		{
+	function getValue($name, $nls=false) {
+	global $ARCurrent;
+		switch ($nls) {
 			case "none":
 				$result = $this->data->$name;
 			break;
 			case false:
 				$nls = $ARCurrent->nls;
-				if (!isset($this->data->$nls) || !isset($this->data->$nls->$name)) 
-				{
+				if (!isset($this->data->$nls) || !isset($this->data->$nls->$name)) {
 					$result = $this->data->$name;
 					break;
 				}
@@ -2625,55 +2095,37 @@ class pobject extends object
 		return $result;
 	}
 
-	function setValue($name, $value, $nls=false) 
-	{
-		global $AR, $ARConfig;
-		if ($value == NULL) 
-		{
-			if ($nls && $nls!="none") 
-			{
+	function setValue($name, $value, $nls=false) {
+	global $AR, $ARConfig;
+		if ($value == NULL) {
+			if ($nls && $nls!="none") {
 				unset($this->data->$nls->$name);
-				if (!count(get_object_vars($this->data->$nls))) 
-				{
+				if (!count(get_object_vars($this->data->$nls))) {
 					unset($this->data->$nls);
 					unset($this->data->nls->list[$nls]);
-					if (!count($this->data->nls->list)) 
-					{
+					if (!count($this->data->nls->list)) {
 						unset($this->data->nls->list);
 						unset($this->data->nls);
-					} 
-					else 
-					{
-						if ($this->data->nls->default == $nls) 
-						{
-							if ($this->data->nls->list[$ARConfig->nls->default]) 
-							{
+					} else {
+						if ($this->data->nls->default == $nls) {
+							if ($this->data->nls->list[$ARConfig->nls->default]) {
 								$this->data->nls->default = $ARConfig->nls->default;
-							} 
-							else 
-							{
+							} else {
 								list($this->data->nls->default) = each($this->data->nls->list);
 							}								
 						}
 					}
 				}
-			} 
-			else 
-			{
+			} else {
 				unset($this->data->$name);
 			}
-		} 
-		else if (!$nls) 
-		{
+		} else
+		if (!$nls) {
 			$this->data->$name = $value;
-		} 
-		else 
-		{
-			if (!$this->data->$nls) 
-			{
+		} else {
+			if (!$this->data->$nls) {
 				$this->data->$nls = new object;
-				if (!$this->data->nls) 
-				{
+				if (!$this->data->nls) {
 					$this->data->nls = new object;
 					$this->data->nls->default = $nls;
 				}
@@ -2683,96 +2135,80 @@ class pobject extends object
 		}
 	}
 
-	function showValue($name, $nls=false) 
-	{
+	function showValue($name, $nls=false) {
 		$result = $this->getValue($name, $nls);
 		echo $result;
 		return $result;
 	}
 
-	function _getValue($name, $nls=false) 
-	{
+	function _getValue($name, $nls=false) {
 		return $this->getValue($name, $nls);
 	}
 
-	function _setValue($name, $value, $nls=false) 
-	{
+	function _setValue($name, $value, $nls=false) {
 		return $this->setValue($name, $value, $nls);
 	}
 
-	function _showValue($name, $nls=false) 
-	{
+	function _showValue($name, $nls=false) {
 		return $this->showValue($name, $nls);
 	}
 
-	function _currentsite() 
-	{
+	function _currentsite() {
 		return $this->currentsite();
 	}
 
-	function _parentsite($site) 
-	{
+	function _parentsite($site) {
 		return $this->parentsite($site);
 	}
 
-	function _currentsection() 
-	{
+	function _currentsection() {
 		return $this->currentsection();
 	}
 
-	function _parentsection($section) 
-	{
+	function _parentsection($section) {
 		return $this->parentsection($section);
 	}
 
-	function _checkgrant($grant, $modifier=ARTHISTYPE, $path=".") 
-	{
+	function _checkgrant($grant, $modifier=ARTHISTYPE, $path=".") {
 		// as this is called within a pinp template, 
 		// all the grants are already loaded, so
 		// checksilent will fullfill our needs
 		$this->pushContext(Array("scope" => "php"));
-		$result = $this->CheckSilent($grant, $modifier, $path);
+			$result = $this->CheckSilent($grant, $modifier, $path);
 		$this->popContext();
 		return $result;
 	}
 
-	function _checkpublic($grant, $modifier=ARTHISTYPE) 
-	{
+	function _checkpublic($grant, $modifier=ARTHISTYPE) {
+
 		return $this->CheckPublic($grant, $modifier);
 	}
 
-	function _getcharset() 
-	{
+	function _getcharset() {
 		return $this->getcharset();
 	}
 
-	function _count_find($query='') 
-	{
+	function _count_find($query='') {
 		return $this->count_find($this->path, $query);
 	}
 
-	function _count_ls() 
-	{
+	function _count_ls() {
 		return $this->count_ls($this->path);
 	}
 
-	function _HTTPRequest($method, $url, $postdata = "", $port=80) 
-	{
+	function _HTTPRequest($method, $url, $postdata = "", $port=80) {
 		return $this->HTTPRequest($method, $url, $postdata, $port);
 	}
 	
-	function _make_filesize( $size="" ) 
-	{
+	function _make_filesize( $size="" ) {
 		return $this->make_filesize( $size );
 	}
 
-	function _convertToUTF8($data, $charset = "CP1252") 
-	{
+	function _convertToUTF8($data, $charset = "CP1252") {
 		return $this->convertToUTF8($data,$charset);
 	}
 
-	function _getuser() 
-	{
+	function _getuser() {
 		global $AR;
 		$user=$AR->user;
 		unset($user->grants);
@@ -2780,27 +2216,23 @@ class pobject extends object
 		return $user;
 	}
 	
-	function ARinclude($file) 
-	{
+	function ARinclude($file) {
 		debug('including file ['.$file.'] in the current scope','all');
 		include($file);
 	}
 
-	function _load($class) 
-	{
+	function _load($class) {
 		// only allow access to modules in the modules directory.
 		$class=eregi_replace('[^a-z0-9\._]','',$class);
 		include_once($this->store->get_config("code")."modules/".$class);
 	}
 
-	function _import($class) 
-	{
+	function _import($class) {
 		// deprecated
 		return $this->_load($class);
 	}
 
-	function html_to_text($text) 
-	{
+	function html_to_text($text) {
 		$trans = array_flip(get_html_translation_table(HTML_ENTITIES));
 		//strip nonbreaking space, strip script and style blocks, strip html tags, convert html entites, strip extra white space
 		$search_clean = array("%&nbsp;%i", "%<(script|style)[^>]*>.*?<\/(script|style)[^>]*>%si", "%<[\/]*[^<>]*>%Usi", "%(\&[a-zA-Z0-9\#]+;)%es", "%\s+%");
@@ -2808,13 +2240,11 @@ class pobject extends object
 		return preg_replace($search_clean, $replace_clean, $text);
 	}
 
-	function _html_to_text($text) 
-	{
+	function _html_to_text($text) {
 		return $this->html_to_text($text);
 	}
 
-	function _newobject($filename, $type) 
-	{
+	function _newobject($filename, $type) {
 		$newpath=$this->make_path($filename);
 		$newparent=$this->store->make_path($newpath, "..");
 		$data=new object;
@@ -2823,23 +2253,18 @@ class pobject extends object
 		return $object;
 	}
 
-	function _save($properties="", $vtype="") 
-	{
-		if ($this->arIsNewObject && $this->CheckSilent('add', $this->type)) 
-		{
+	function _save($properties="", $vtype="") {
+		if ($this->arIsNewObject && $this->CheckSilent('add', $this->type)) {
 			unset($this->data->config);
 			$result = $this->save($properties, $vtype);
-		}
-		else if (!$this->arIsNewObject && $this->CheckSilent('edit', $this->type)) 
-		{
+		} else if (!$this->arIsNewObject && $this->CheckSilent('edit', $this->type)) {
 			$this->data->config = current($this->get('.', 'system.get.data.config.phtml'));
 			$result = $this->save($properties, $vtype);
 		}
 		return $result;
 	}
 
-	function _is_supported($feature) 
-	{
+	function _is_supported($feature) {
 		return $this->store->is_supported($feature);
 	}
 
@@ -2849,60 +2274,48 @@ class pobject extends object
 		php code with the pinp parser.
 	*/
 
+
 	/*	this is a private function used by the _preg_replace wrapper */
 
-	function preg_replace_compile($pattern, $replacement) 
-	{
+	function preg_replace_compile($pattern, $replacement) {
 		include_once($this->store->get_config("code")."modules/mod_pinp.phtml");
 		ereg("^\s*(.)", $pattern, $regs);
 		$delim = $regs[1];
-		if (eregi($k="${delim}[^$delim]*e[^$delim]*".'$', $pattern)) 
-		{
+		if (eregi($k="${delim}[^$delim]*e[^$delim]*".'$', $pattern)) {
 			$pinp = new pinp("header", 'this->', '$this->_');
 			return substr($pinp->compile("<pinp>$replacement</pinp>"), 5, -2);
-		} 
-		else 
-		{
+		} else {
 			return $replacement;
 		}
 	}
  
-	function _preg_replace($pattern, $replacement, $text, $limit = -1) 
-	{
-		if (is_array($pattern)) 
-		{
+	function _preg_replace($pattern, $replacement, $text, $limit = -1) {
+		if (is_array($pattern)) {
 			$newrepl = array();
 			reset($replacement);
-			foreach ($pattern as $i_pattern) 
-			{
+			foreach ($pattern as $i_pattern) {
 				list(, $i_replacement) = each($replacement);
 				$newrepl[] = $this->preg_replace_compile($i_pattern, $i_replacement);
 			}
-		} 
-		else 
-		{
+		} else {
 			$newrepl = $this->preg_replace_compile($pattern, $replacement);
 		}
 		return preg_replace($pattern, $newrepl, $text, $limit);
 	}
 
-	function _loadConfig($path='') 
-	{
+	function _loadConfig($path='') {
 		return $this->loadConfig($path);
 	}
 
-	function _getSetting($setting) 
-	{
-		global $AR;
+	function _getSetting($setting) {
+	global $AR;
 
-		switch ($setting) 
-		{
+		switch ($setting) {
 			case 'www':
-				// FALLTHROUGH
 			case 'dir:www':
 				return $AR->dir->www;
 		}
 	}
 
-}
+} // end of pobject class definition
 ?>
