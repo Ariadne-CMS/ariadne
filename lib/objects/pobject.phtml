@@ -906,6 +906,7 @@ class pobject extends object { // pobject class definition
 				$AR->user->grants[$path]=$grants;
 			}
 			$grants=$AR->user->grants[$path];	
+
 		}
 		debug("pobject: GetValidGrants: end ( ".serialize($grants)." )","all");
 		return $grants;
@@ -1108,7 +1109,7 @@ class pobject extends object { // pobject class definition
 		} else {
 			$arCallType=$this->type;
 		}
-		debug("CheckConfig: searching for template ($arCallType::$arCallFunction) on $path");
+		debug("getPinpTemplate: searching for template ($arCallType::$arCallFunction) on $path");
 		$path = $this->make_path($path);
 
 
@@ -1168,15 +1169,17 @@ class pobject extends object { // pobject class definition
 					break;
 				}
 			}
-			if ($ARConfig->cache[$checkpath]->library && !$arTemplateId) {
-				foreach( $ARConfig->cache[$checkpath]->library as $library => $path ) {
-					$template = $this->getPinpTemplate($arCallFunction, $path, true);
-					if ($template["arTemplateId"]) {
-						extract($template);
-						$arLibrary = $library;
-						$arLibraryPath = $path;
-						debug("CheckConfig: found $arCallFunction in library $arLibrary", "all");
-						break; // jump out of the foreach loop
+			if ($ARConfig->libraries[$checkpath] && !$arTemplateId) {
+				foreach ($ARConfig->libraries[$checkpath] as $library => $path) {
+					if (is_int($library)) {
+						$template = $this->getPinpTemplate($arCallFunction, $path, true);
+						if ($template["arTemplateId"]) {
+							extract($template);
+							$arLibrary = $library;
+							$arLibraryPath = $path;
+							debug("CheckConfig: found $arCallFunction in library $arLibrary", "all");
+							break; // jump out of the foreach loop
+						}
 					}
 				}
 			}
@@ -1309,11 +1312,13 @@ class pobject extends object { // pobject class definition
 					}
 					$arCallFunction = substr($arCallFunction, $libpos+1);
 					debug("CheckConfig: searching for lib: '$arLibrary'; '$arCallFunction' from '".$this->path."'");
-					if ($config->library[$arLibrary]) {
-						//echo $config->library[$library];
-						$template = $this->getPinpTemplate($arCallFunction, $config->library[$arLibrary], true);
+					if ($config->libraries[$arLibrary]) {
+						//echo $config->libraries[$library];
+						$template = $this->getPinpTemplate($arCallFunction, $config->libraries[$arLibrary], true);
 						$template["arLibrary"] = $arLibrary;
-						$template["arLibraryPath"] = $config->library[$arLibrary];
+						$template["arLibraryPath"] = $config->libraries[$arLibrary];
+					} else {
+						debug("CheckConfig: library '$arLibrary' not in config");
 					}
 				} else {
 					if (is_array($ARCurrent->shortcut_redirect)) {
