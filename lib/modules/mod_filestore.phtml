@@ -115,7 +115,7 @@
 			$path=$this->make_path($id);
 			if ($dir=@opendir($path)) {
 				$result=array();
-				while (false != ($file=readdir($dir))) {
+				while (false !== ($file=readdir($dir))) {
 					if (is_file($path.$file)) {
 						$result[]=$this->get_filename($file);
 					}
