@@ -115,7 +115,7 @@
 			$path=$this->make_path($id);
 			if ($dir=@opendir($path)) {
 				$result=array();
-				while ($file=readdir($dir)) {
+				while (false != ($file=readdir($dir))) {
 					if (is_file($path.$file)) {
 						$result[]=$this->get_filename($file);
 					}
@@ -153,7 +153,7 @@
 					// copy all files, result is number of files
 					$count=0;
 					if ($dir=opendir($file)) {
-						while ($temp=readdir($dir)) {
+						while (false !== ($temp=readdir($dir))) {
 							if (is_file($file.$temp)) {
 								$target=$this->make_path($id, $temp);
 								if ($result=copy($file.$temp, $target)) {
@@ -225,9 +225,10 @@
 		}
 
 		function is_empty($id) {
-			$empty=true;
+			$empty=false;
 			if ($dir=@opendir($this->make_path($id))) {
-				while ($empty && ($file=readdir($dir))) {
+				$empty=true;
+				while ($empty && (false !== ($file=readdir($dir)))) {
 					if ($file!="." && $file!="..") {
 						$empty=false;
 					}
@@ -240,15 +241,22 @@
 		function purge($id) {
 			$path=$this->make_path($id);
 			if ($dir=@opendir($path)) {
-				while ($file=readdir($dir)) {
+				$empty=true;
+				while (false !== ($file=readdir($dir))) {
 					if ($file!="." && $file!="..") {
 						if (is_file($path.$file)) {
-							unlink($path.$file);
+							if (!unlink($path.$file)) {
+								$empty=false;
+							}
+						} else {
+							$empty=false;
 						}
 					}
 				}
 				closedir($dir);
-				$this->rmdir($id);
+				if ($empty) {
+					$this->rmdir($id);
+				}
 			}
 		}
 
