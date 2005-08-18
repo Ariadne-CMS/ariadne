@@ -21,6 +21,9 @@
 <script LANGUAGE="JavaScript" SRC="<?php echo $AR->dir->www; ?>widgets/compose/compose.js">
 </script>
 
+<script LANGUAGE="JavaScript" SRC="<?php echo $AR->dir->www; ?>widgets/htmledit/tableEditor.js">
+</script>
+
 <script ID="editorSettings" LANGUAGE="JavaScript">
 	var buttons_disabled=new Array();
 	var tbContentEditOptions=new Array();
@@ -77,6 +80,7 @@ var CommandCrossReference = new Array();
 var ContextMenu = new Array();
 var GeneralContextMenu = new Array();
 var tbContentElement;
+var tEdit=null;
 
 //
 // Utility functions
@@ -177,6 +181,38 @@ var KeepState;
 //
 // Event handlers
 //
+function tableEdit_onMouseMove() {
+  // fixme: add even handlers to table edit class instead of this
+  if (tEdit) {
+    tEdit.changePos();
+    tEdit.resizeCell();
+  }
+}
+
+function tableEdit_onKeyUp() {
+  var startInTable=showTableOptions;
+  tbContentElement_DisplayChanged();
+  if (tEdit && (showTableOptions || startInTable)) {
+    tEdit.setTableElements();
+    tEdit.repositionArrows();
+  }
+}
+
+function tableEdit_onMouseUp() {
+  var startInTable=showTableOptions;
+  tbContentElement_DisplayChanged();
+  if (tEdit && (showTableOptions || startInTable)) {
+    tEdit.setTableElements();
+    tEdit.stopCellResize(false);
+  }
+}
+
+function tableEdit_onScroll() {
+  if (tEdit) {
+    tEdit.repositionArrows();
+  }
+}
+
 function window_onload() {
 	tbContentElement=document.getElementById('tbContentElement');
 	if (navigator.appName.indexOf("Microsoft")!=-1) {
@@ -222,15 +258,20 @@ function window_onload() {
 		docComplete = false;
 		KeepState=new StateObject();
 
+		tEdit = new tableEditor(tbContentElement.contentWindow);
+
 		// init the cssStyle select box
 		init_cssStyle();
 
 		tbContentElement.contentWindow.document.body.onBlur=KeepState.SaveSelection;
-		tbContentElement.contentWindow.document.body.onkeyup=tbContentElement_DisplayChanged;
-		tbContentElement.contentWindow.document.body.onmouseup=tbContentElement_DisplayChanged;
+		tbContentElement.contentWindow.document.body.onkeyup=tableEdit_onKeyUp;
+		tbContentElement.contentWindow.document.body.onmouseup=tableEdit_onMouseUp;
+		tbContentElement.contentWindow.document.body.onmousemove=tableEdit_onMouseMove;
 		tbContentElement.contentWindow.document.body.DocumentComplete=tbContentElement_DocumentComplete;
 		tbContentElement.contentWindow.document.body.onkeypress=tbContentElement_Compose_press;
 		tbContentElement.contentWindow.document.body.onkeydown=tbContentElement_Compose_down;
+		tbContentElement.onscroll = tableEdit_onScroll;
+
 
 		if (tbContentElement.onLoadHandler) {
 			tbContentElement.onLoadHandler();
@@ -313,6 +354,9 @@ function tbContentElement_ContextMenuAction(itemIndex) {
 	}
 }
 
+var showTableOptions=false;
+var previousParent=null;
+
 // DisplayChanged handler. Very time-critical routine; this is called
 // every time a character is typed. QueryStatus those toolbar buttons that need
 // to be in synch with the current state of the document and update. 
@@ -331,8 +375,53 @@ function tbContentElement_DisplayChanged() {
 			 TBSetState(QueryStatusToolbarButtons[i].element, "checked");
 		}
 	}
+
+	var parent=false;
+	var sel=KeepState.GetSelection();
+	var tableOptions=false;
+	if (sel) {
+		if (sel.type=="Control") {
+			parent=sel.item(0);
+		} else {
+			parent=sel.parentElement();
+		}
+		if (parent==previousParent) {
+			return true;
+		} else {
+			previousParent=parent;
+		}
+		while (parent && parent.className!='editable' && parent.parentElement) {
+			if (!tableOptions && parent.tagName=='TABLE') {
+				tableOptions=true;
+				tableStackIndex=vdHtmlContextStack.length;
+			}
+			parent=parent.parentElement;
+		}
+	}
+	showTableOptions=tableOptions;
 	return true;
 }
+
+function showTableBorders(element) {
+	// Now show borders for tables as well.	
+    var aTables = element.getElementsByTagName("TABLE");
+    for (i=0;i<aTables.length;i++){
+		var tds = aTables[i].getElementsByTagName("td");
+		for (var j = 0; j < tds.length; ++j) {
+			if (showBorders && (aTables[i].border == 0)) {
+				tds[j].runtimeStyle.border = '1 dotted #BCBCBC';
+			} else {
+				tds[j].runtimeStyle.cssText = '';
+			}
+//            aTables[i].runtimeStyle.borderCollapse = "collapse";
+        }
+    }
+	if (tEdit) {
+		tEdit.repositionArrows();
+	}
+}
+
+
 
 function SAVE_onclick(newurl) {
 	if (tbContentElement.contentWindow.SAVE_onclick) {
@@ -1144,6 +1233,86 @@ function getRequired() {
 	} else {
 		
 	}
+}
+
+function TABLE_onclick() {
+  var args = new Array();
+  var arr = null;
+  var tablestr='';
+
+  // Display table information dialog
+  args["NumRows"] = 3;
+  args["NumCols"] = 3;
+  args["TableAttrs"] = '';
+  args["CellAttrs"] = '';
+  args["Caption"] = '';
+  
+  arr = null;
+
+  arr = showModalDialog( "<?php echo $AR->dir->www; ?>widgets/htmledit/ie/Inc/instable.htm",
+                             args,
+                             "font-family:Verdana; font-size:12; dialogWidth:36em; dialogHeight:25em; status: no; resizable: yes;");
+  if (arr != null) {
+    // Initialize table object
+    var tablestr="<table";
+    if (arr["TableAttrs"]) {
+      tablestr+=" "+arr["TableAttrs"];
+    }
+    tablestr+=">";
+    if (arr["Caption"]) {
+      tablestr+="<caption>"+arr["Caption"]+"</caption>";
+    }
+    for (var i=0; i<arr["NumRows"]; i++) {
+      tablestr+="<tr>";
+      for (var ii=0; ii<arr["NumCols"]; ii++) {
+        tablestr+="<td";
+        if (arr["CellAttrs"]) {
+          tablestr+=" "+arr["CellAttrs"];
+        }
+        tablestr+="></td>";
+      }
+      tablestr+="</tr>";
+    }
+    tablestr+="</table>";
+	el=tgContentElement.contentWindow.document.selection;
+	if ((el.type=="None") || (el.type=="Text"))	{
+		var rg=el.createRange();
+		rg.pasteHTML(tablestr);
+		rg.select();
+	}
+  }
+}
+
+function DECMD_SPLTCELL_onclick() {
+	return tEdit.splitCell();
+}
+
+function DECMD_MRGCELL_onclick() {
+	return tEdit.mergeRight();
+}
+
+function DECMD_INSCELL_onclick() {
+	return tEdit.addCell();
+}
+
+function DECMD_INSROW_onclick() {
+	return tEdit.processRow('add');
+}
+
+function DECMD_INSCOL_onclick() {
+	return tEdit.processColumn('add');
+}
+
+function DECMD_DELCELL_onclick() {
+	return tEdit.removeCell();
+}
+
+function DECMD_DELROW_onclick() {
+	return tEdit.processRow('remove');
+}
+
+function DECMD_DELCOL_onclick() {
+	return tEdit.processColumn('remove');
 }
 
 //-->
