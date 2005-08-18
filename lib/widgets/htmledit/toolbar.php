@@ -393,7 +393,6 @@ function tbContentElement_DisplayChanged() {
 		while (parent && parent.className!='editable' && parent.parentElement) {
 			if (!tableOptions && parent.tagName=='TABLE') {
 				tableOptions=true;
-				tableStackIndex=vdHtmlContextStack.length;
 			}
 			parent=parent.parentElement;
 		}
@@ -1201,9 +1200,11 @@ function DECMD_DETAILS_onclick() {
 	if (mydoc.styleSheets[0]) {
 		var myRules=mydoc.styleSheets[0].rules;
 		for (var i=0; i<myRules.length; i++) {
-			if (myRules[i].selectorText=='.editable') {
+			if (myRules[i].selectorText.match(/.*\.editable.*/)) {
 				if (myRules[i].style.borderWidth=="1px") {
 					myRules[i].style.borderWidth='0px';
+					myRules[i].style.borderColor='';
+					myRules[i].style.borderStyle='';
 				} else {
 					myRules[i].style.borderWidth='1px';
 					myRules[i].style.borderColor='black';
@@ -1274,7 +1275,7 @@ function DECMD_TABLE_onclick() {
       tablestr+="</tr>";
     }
     tablestr+="</table>";
-	el=tgContentElement.contentWindow.document.selection;
+	el=tbContentElement.contentWindow.document.selection;
 	if ((el.type=="None") || (el.type=="Text"))	{
 		var rg=el.createRange();
 		rg.pasteHTML(tablestr);
