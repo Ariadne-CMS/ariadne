@@ -1235,7 +1235,7 @@ function getRequired() {
 	}
 }
 
-function TABLE_onclick() {
+function DECMD_TABLE_onclick() {
   var args = new Array();
   var arr = null;
   var tablestr='';
@@ -1451,6 +1451,9 @@ return tbContentElement_ContextMenuAction(itemIndex)
 	</div>
 	<div class="tbButton" unselectable='on' ID="DECMD_IMAGE" TITLE="Insert Image" LANGUAGE="javascript" onclick="return DECMD_IMAGE_onclick()">
 		<img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/image.gif" WIDTH="23" HEIGHT="22">
+	</div>
+	<div class="tbButton" unselectable='on' ID="DECMD_TABLE" TITLE="Insert Table" LANGUAGE="javascript" onclick="return DECMD_TABLE_onclick()">
+		<img class="tbIcon" unselectable='on' src="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/images/instable.gif" WIDTH="23" HEIGHT="22">
 	</div>
 
 </div>
