@@ -87,6 +87,12 @@
 
 		$offset=0;
 		if (!$ARCurrent->importStore->error) {
+			if($ARCurrent->options['without_children'] == true){
+				if($criteria){
+					$criteria .= ' and ';
+				}
+				$criteria .=" path = '$srcpath' ";
+			}
 			while (($result=$this->store->call("system.export.object.phtml",$arCallArgs,$this->store->find($srcpath,$criteria,100,$offset)))) {
 				if (is_array($checkpaths)) {
 					unset($newresult);

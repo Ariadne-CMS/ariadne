@@ -25,6 +25,7 @@
     --verbose                Display what we are doing
     --force                  Force saving of objects
     --without-grants         Don't export grant information
+    --without-children       Don't export children of the path
     --without-templates      Don't export templates
     --without-files          Don't export files
     --tar_nofail             Skip tar/gz errors
