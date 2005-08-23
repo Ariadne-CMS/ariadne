@@ -1,0 +1,138 @@
+editor.js index
+
+(string)	editor.urls.save
+(string)	editor.urls.exit
+(string)	editor.urls.new
+(string)	editor.urls.delete
+(string)	editor.urls.hyperlink
+(string)	editor.urls.image
+(string)	editor.urls.transparantImage
+
+(string)	editor.alerts.dirtyExit
+(string)	editor.alerts.saveChanges
+
+(string)	editor.dialogs.options.hyperlink
+(string)	editor.dialogs.options.image
+(string)	editor.dialogs.options.table
+(string)	editor.dialogs.options.save
+(string)	editor.dialogs.options.delete
+(string)	editor.dialogs.options.new
+
+(function)	editor.dialogs.hyperlink
+(function)	editor.dialogs.image
+(function)	editor.dialogs.table
+(function)	editor.dialogs.save
+(function)	editor.dialogs.delete
+(function)	editor.dialogs.new
+(function)	editor.exit
+
+// ------------------------------------------------------------------------------------------------------------------------------------
+
+(object)	editor.selection.current
+(function)	editor.selection.set
+(function)	editor.selection.get
+(function)	editor.selection.save
+(function)	editor.selection.restore
+
+(function)	editor.setFormat
+(function)	editor.getBlock
+(function)	editor.getAnchors
+(function)	editor.isDiry
+
+(function)	editor.getEditableField
+(function)	editor.popDirtyField
+(function)	editor.getRequired
+(function)	editor.toggleBorders
+
+(function)	editor.undo
+(function)	editor.redo
+
+(function)	editor.copy
+(function)	editor.cut
+(function)	editor.paste
+(function)	editor.delete
+(function)	editor.selectall
+(function)	editor.unselect
+
+(function)	editor.format.block
+(function)	editor.format.bold
+(function)	editor.format.bookmark
+(function)	editor.format.button
+(function)	editor.format.custom
+(function)	editor.format.fieldset
+(function)	editor.format.form
+(function)	editor.format.hr
+(function)	editor.format.hyperlink
+(function)	editor.format.image
+(function)	editor.format.indent
+(function)	editor.format.input.button
+(function)	editor.format.input.button
+(function)	editor.format.input.checkbox
+(function)	editor.format.input.fileupload
+(function)	editor.format.input.hidden
+(function)	editor.format.input.password
+(function)	editor.format.input.radio
+(function)	editor.format.input.reset
+(function)	editor.format.input.submit
+(function)	editor.format.input.text
+(function)	editor.format.input.select
+(function)	editor.format.input.multiple
+(function)	editor.format.input.textarea
+(function)	editor.format.italic
+(function)	editor.format.justifycenter
+(function)	editor.format.justifyfull
+(function)	editor.format.justifyleft
+(function)	editor.format.justifyright
+(function)	editor.format.link
+(function)	editor.format.outdent
+(function)	editor.format.orderedlist
+(function)	editor.format.strikethrough
+(function)	editor.format.subscript
+(function)	editor.format.superscript
+(function)	editor.format.unbookmark
+(function)	editor.format.underline
+(function)	editor.format.unlink
+(function)	editor.format.unorderedlist
+(function)	editor.format.remove
+
+(array)		editor.objects.registry
+
+(array)		editor.changes.registry
+(function)	editor.changes.register
+(function)	editor.changes.checkStart
+(function)	editor.changes.checkEnd
+(function)	editor.changes.clear
+
+(function)	editor.fields.value.get
+(function)	editor.fields.value.set
+
+(array)		editor.fields.registry
+(array)		editor.fields.list
+(object)	editor.fields.current
+(array)		editor.fields.required
+
+(function)	editor.fields.new
+(function)	editor.fields.register
+(function)	editor.fields.require
+(function)	editor.fields.getRequired
+(function)	editor.fields.get
+(function)	editor.fields.initialize
+
+(function)	editor.events.initialize
+(function)	editor.events.onBeforeUnload
+(function)	editor.events.onChange
+(function)	editor.events.onKeyPress
+(function)	editor.events.onKeyDown
+(function)	editor.events.onDirtyExit
+
+(bool)		editor.compose.busy
+(int)		editor.compose.key
+(bool)		editor.compose.numeric
+(bool)		editor.compose.symbolic
+(array)		editor.compose.table
+
+(function)	editor.compose.check
+(function)	editor.compose.keydown
+(function)	editor.compose.keypress
+(function)	editor.compose.stop
+(function)	editor.compose.show
