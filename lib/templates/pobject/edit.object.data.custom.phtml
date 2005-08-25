@@ -105,13 +105,11 @@
 			for (nls in CustomData) {
 				arData=CustomData[nls];
 				for (arName in arData) {
-				  // Some characters has to be replaced by its encoding
-				  // Plus (+) char
-				  arData[arName] = arData[arName].replace(/\+/g, "%2B");
-
-				  // savestring+='&custom['+escape(nls)+']['+escape(arName)+']='+escape(arData[arName]);
-					savestring+='&custom['+escape(nls)+']['+escape(arName)+']='+arData[arName];
-
+					var value = escape(arData[arName]);
+					// Some characters has to be replaced by its encoding
+					// Plus (+) char (which escape() doesn't do)
+					value = value.replace(/\+/g, "%2B");
+					savestring+='&custom['+escape(nls)+']['+escape(arName)+']='+value;
 				}
 
 			}
