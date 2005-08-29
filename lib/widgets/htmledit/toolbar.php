@@ -1,4 +1,5 @@
 <?php
+	include($this->store->get_config('code').'nls/ieedit.'.$nls);
 	if (!$wgHTMLEditSaveTemplate) {
 		$wgHTMLEditSaveTemplate="user.edit.save.html";
 	}
@@ -22,6 +23,9 @@
 </script>
 
 <script LANGUAGE="JavaScript" SRC="<?php echo $AR->dir->www; ?>widgets/htmledit/tableEditor.js">
+</script>
+
+<script LANGUAGE="JavaScript" SRC="<?php echo $AR->dir->www; ?>widgets/htmledit/contextMenu.js">
 </script>
 
 <script ID="editorSettings" LANGUAGE="JavaScript">
@@ -77,20 +81,12 @@ var initialDocComplete = false;
 
 var QueryStatusToolbarButtons = new Array();
 var CommandCrossReference = new Array();
-var ContextMenu = new Array();
-var GeneralContextMenu = new Array();
 var tbContentElement;
 var tEdit=null;
 
 //
 // Utility functions
 //
-
-// Constructor for custom object that represents an item on the context menu
-function ContextMenuItem(string, cmdId) {
-	this.string = string;
-	this.cmdId = cmdId;
-}
 
 // Constructor for custom object that represents a QueryStatus command and 
 // corresponding toolbar element.
@@ -252,9 +248,22 @@ function window_onload() {
 		CommandCrossReference["InsertUnorderedList"] 	= DECMD_UNORDERLIST;
 		
 		// Initialize the context menu arrays.
-		GeneralContextMenu[0] = new ContextMenuItem("Cut", DECMD_CUT);
-		GeneralContextMenu[1] = new ContextMenuItem("Copy", DECMD_COPY);
-		GeneralContextMenu[2] = new ContextMenuItem("Paste", DECMD_PASTE);
+		GeneralContextMenu[0] = new ContextMenuItem("<?php echo $ARnls["e_cut"]; ?>", DECMD_CUT);
+		GeneralContextMenu[1] = new ContextMenuItem("<?php echo $ARnls["e_copy"]; ?>", DECMD_COPY);
+		GeneralContextMenu[2] = new ContextMenuItem("<?php echo $ARnls["e_paste"]; ?>", DECMD_PASTE);
+
+		TableContextMenu[0] = new ContextMenuItem(MENU_SEPARATOR, 0);
+		TableContextMenu[1] = new ContextMenuItem("<?php echo $ARnls["e_insertrow"]; ?>", DECMD_INSROW_onclick);
+		TableContextMenu[2] = new ContextMenuItem("<?php echo $ARnls["e_deleterows"]; ?>", DECMD_DELROW_onclick);
+		TableContextMenu[3] = new ContextMenuItem(MENU_SEPARATOR, 0);
+		TableContextMenu[4] = new ContextMenuItem("<?php echo $ARnls["e_insertcol"]; ?>", DECMD_INSCOL_onclick);
+		TableContextMenu[5] = new ContextMenuItem("<?php echo $ARnls["e_deletecols"]; ?>", DECMD_DELCOL_onclick);
+		TableContextMenu[6] = new ContextMenuItem(MENU_SEPARATOR, 0);
+		TableContextMenu[7] = new ContextMenuItem("<?php echo $ARnls["e_insertcell"]; ?>", DECMD_INSCELL_onclick);
+		TableContextMenu[8] = new ContextMenuItem("<?php echo $ARnls["e_deletecells"]; ?>", DECMD_DELCELL_onclick);
+		TableContextMenu[9] = new ContextMenuItem("<?php echo $ARnls["e_mergecells"]; ?>", DECMD_MRGCELL_onclick);
+		TableContextMenu[10] = new ContextMenuItem("<?php echo $ARnls["e_splitcell"]; ?>", DECMD_SPLTCELL_onclick);
+
 		docComplete = false;
 		KeepState=new StateObject();
 
@@ -270,8 +279,8 @@ function window_onload() {
 		tbContentElement.contentWindow.document.body.DocumentComplete=tbContentElement_DocumentComplete;
 		tbContentElement.contentWindow.document.body.onkeypress=tbContentElement_Compose_press;
 		tbContentElement.contentWindow.document.body.onkeydown=tbContentElement_Compose_down;
+		tbContentElement.contentWindow.document.body.oncontextmenu=showContextMenu;
 		tbContentElement.onscroll = tableEdit_onScroll;
-
 
 		if (tbContentElement.onLoadHandler) {
 			tbContentElement.onLoadHandler();
@@ -309,53 +318,16 @@ function tbContentElement_Compose_down() {
 	return true;
 }
 
-function tbContentElement_ShowContextMenu() {
-	var menuStrings = new Array();
-	var menuStates = new Array();
-	var state;
-	var i
-	var idx = 0;
-
-	// Rebuild the context menu. 
-	ContextMenu.length = 0;
-
-	// Always show general menu
-	for (i=0; i<GeneralContextMenu.length; i++) {
-		ContextMenu[idx++] = GeneralContextMenu[i];
-	}
-
-	// Set up the actual arrays that get passed to SetContextMenu
-	for (i=0; i<ContextMenu.length; i++) {
-		menuStrings[i] = ContextMenu[i].string;
-		if (menuStrings[i] != MENU_SEPARATOR) {
-			state = tbContentElement.contentWindow.document.queryCommandState(ContextMenu[i].cmdId);
-		} else {
-			state = DECMDF_ENABLED;
-		}
-		if (state == DECMDF_DISABLED || state == DECMDF_NOTSUPPORTED) {
-			menuStates[i] = OLE_TRISTATE_GRAY;
-		} else if (state == DECMDF_ENABLED || state == DECMDF_NINCHED) {
-			menuStates[i] = OLE_TRISTATE_UNCHECKED;
-		} else { // DECMDF_LATCHED
-			menuStates[i] = OLE_TRISTATE_CHECKED;
-		}
-	}
-	
-	// Set the context menu
-	tbContentElement.SetContextMenu(menuStrings, menuStates);
-}
-
-function tbContentElement_ContextMenuAction(itemIndex) {
-	
-	if (ContextMenu[itemIndex].cmdId == DECMD_INSERTTABLE) {
-		InsertTable();
-	} else {
-		setFormat(ContextMenu[itemIndex].cmdId);
-	}
-}
-
 var showTableOptions=false;
 var previousParent=null;
+
+/*
+	if (showTableOptions) {
+		for (i=0; i<TableContextMenu.length; i++) {
+			ContextMenu[idx++] = TableContextMenu[i];
+		}
+	}
+*/
 
 // DisplayChanged handler. Very time-critical routine; this is called
 // every time a character is typed. QueryStatus those toolbar buttons that need
@@ -1316,18 +1288,6 @@ function DECMD_DELCOL_onclick() {
 	return tEdit.processColumn('remove');
 }
 
-//-->
-</script>
-
-<script LANGUAGE="javascript" FOR="tbContentElement" EVENT="ShowContextMenu">
-<!--
-return tbContentElement_ShowContextMenu()
-//-->
-</script>
-
-<script LANGUAGE="javascript" FOR="tbContentElement" EVENT="ContextMenuAction(itemIndex)">
-<!--
-return tbContentElement_ContextMenuAction(itemIndex)
 //-->
 </script>
 
