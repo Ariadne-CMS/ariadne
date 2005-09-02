@@ -983,9 +983,22 @@ function DECMD_HYPERLINK_onclick()
 	if (sType=="Control") {
 		oElement=oRange.item(0);
 	} else {
+		// check if the range is partly over an existing tag
+		// fail in that case
+		if (oRange.htmlText.substr(oRange.htmlText.length-4, 4)=='<BR>') {
+			// BR included in selection as last element, remove it, it has
+			// dangerous effects on the hyperlink command in IE
+			oRange.moveEnd('character',-1);
+			oRange.select();
+		}
+		if (oRange.htmlText.substr(0,4)=='<BR>') {
+			// idem when its the first character
+			oRange.moveStart('character',1);
+			oRange.select();
+		}
 		oElement=oRange;
 	}
-
+	
 	oParent=oElement.parentElement();
 
 	// Loop through the parent elements until we get the
@@ -1040,12 +1053,25 @@ function DECMD_HYPERLINK_onclick()
 			} else {
 				
 				// first let the dhtmledit component set the link, since it is better in it.
-				tbContentElement.ExecCommand(DECMD_HYPERLINK, OLECMDEXECOPT_DONTPROMPTUSER, 'http://www.example.com/');
+				// but to find it back, we need a unique identifier
+				var linkIdentifier=Math.floor(Math.random()*10000);
+				tbContentElement.ExecCommand(DECMD_HYPERLINK, OLECMDEXECOPT_DONTPROMPTUSER, '#'+linkIdentifier);
 				// now collapse the range, so even if the range overlaps a link partly, the parent
 				// element will become the link. trust me.... 
 				oRange.collapse();
 				// now set the ATag object, so it can be 'fixed' with the extra attributes later
 				oATag=oRange.parentElement();
+				if (oATag.tagName!='A' || oATag.href!='#'+linkIdentifier) {
+					// ok, the link doesn't line up with the range, apparantly, so try to find the link
+					oATag=null;
+					var allATags=tbContentElement.DOM.getElementsByTagName('A');
+					for (var i=0; i<allATags.length; i++) {
+						if (allATags[i].href=='#'+linkIdentifier) {
+							oATag=allATags[i];
+							break;
+						}
+					}
+				}
 			}
 		}
 		if (oATag && (arr['URL'] || arr['name'])) {
