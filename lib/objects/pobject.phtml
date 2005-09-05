@@ -271,7 +271,7 @@ class pobject extends object { // pobject class definition
 							if (!$config = $this->data->config) {
 								$config=new object();
 							}
-							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 							$wf_object->arIsNewObject=true;
 							if ($ARCurrent->arCallStack) {
 								$arCallArgs=end($ARCurrent->arCallStack);
@@ -359,7 +359,7 @@ class pobject extends object { // pobject class definition
 									$this->id=$this->exists($this->path);
 
 									$config=$this->data->config; // need to set it again, to copy owner config data
-									$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+									$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 									$wf_object->arIsNewObject = true;
 									if ($ARCurrent->arCallStack) {
 										$arCallArgs=end($ARCurrent->arCallStack);
@@ -419,7 +419,7 @@ class pobject extends object { // pobject class definition
 			if ($this->lock()) {
 				if ($this->exists($this->path)) { // prevent 'funny stuff'
 					$config = $this->data->config;
-					$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+					$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 					if ($ARCurrent->arCallStack) {
 						$arCallArgs=end($ARCurrent->arCallStack);
 					}
@@ -492,7 +492,7 @@ class pobject extends object { // pobject class definition
 					if (!$this->error) {
 						if($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)){
 							$result=$this->path;
-							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, &$this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 							if ($ARCurrent->arCallStack) {
 								$arCallArgs=end($ARCurrent->arCallStack);
 							}
