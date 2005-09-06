@@ -105,8 +105,12 @@
 			}
 			$PATH_INFO.=$function;
 		}
-		$ldCacheFilename=strtolower($PATH_INFO)."=";
 		// yes, the extra '=' is needed, don't remove it. trust me.
+		$ldCacheFilename=strtolower($PATH_INFO)."=";
+		// for the new multiple domains per site option (per language), we need this
+		// since the nls isn't literaly in the url anymore.
+		$ldCacheFilename.=str_replace(':','=',str_replace('/','',$AR->host)).'=';
+		
 		if (ldGetServerVar("QUERY_STRING")) {
 			$ldCacheFilename.=ldGetServerVar("QUERY_STRING");
 		}
@@ -353,7 +357,6 @@
 					$ldCacheFilename = "/normal".$ldCacheFilename;
 				}
 			}
-
 			// because we have the full content, we can now also calculate the content length
 			ldHeader("Content-Length: ".$image_len);
 			// flush the buffer, this will send the contents to the browser
