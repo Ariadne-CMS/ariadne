@@ -27,8 +27,8 @@
 			if (!top.arFieldRegistry[wgDateForm[name].id]) {
 				top.registerDataField(wgDateForm[name].id,name,'<?php echo $this->path; ?>',<?php echo $this->id; ?>);
 			}
-			top.registerChange(wgDateForm[name].id);
 			top.arFieldRegistry[wgDateForm[name].id].value=date;
+			top.registerChange(wgDateForm[name].id);
 		}
 	}
 

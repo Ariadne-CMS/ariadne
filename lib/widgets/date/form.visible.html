@@ -21,7 +21,7 @@
 ?>
 <input type="text" name="<?php echo $wgDateName; ?>formatted" id="<?php echo $wgDateName;?>formatted" value="<?php 
   echo strftime($wgDateFormat, $wgDate); 
-?>" size="<?php echo $wgDateSize; ?>"<?php
+?>" size="<?php echo $wgDateSize; ?>" class="editable_border"<?php
   if ($wgDateTitle) {
     echo " onFocus=\"this.blur();\">\n<input type=\"button\" name=\"wgDateButton\" value=\"$wgDateTitle\"".
          " onClick=\"SelectDate(this.form['".
