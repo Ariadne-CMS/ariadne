@@ -49,11 +49,19 @@ class pfile extends pobject { // pfile class definition
 	}
 
 	function ShowFile() {
-		global $AR;
+		global $AR, $ARCurrent;
+		if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
+			if ($ARCurrent->cachetime==0 && !$AR->output_compression) {
+debug("showfile: starting ob");
+				ob_start(); // start the cache
+			}
+			$ARCurrent->cachetime=-2; // set cache to onchange
+		}
 		$template = $this->getvar("arCallFunction");
 		if (!$template || $template == "view.html") {
 			$filename = basename($this->path);
 		}
+debug("showfile: filename: $filename");
 		$files=$this->store->get_filestore("files");
 		if (!ereg("^text/",$this->data->mimetype)) {
 			$size=$files->size($this->id, "file");
@@ -87,6 +95,7 @@ class pfile extends pobject { // pfile class definition
 				if (ldGetServerVar('HTTPS')) {
 					ldHeader('Pragma: cache');
 				}
+debug("showfile: show; ".$this->id);
 				$files->show($this->id, "file");
 			}
 		}
@@ -94,13 +103,20 @@ class pfile extends pobject { // pfile class definition
 	}
 
 	function DownloadFile() {
+		global $AR, $ARCurrent;
+		if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
+			if ($ARCurrent->cachetime==0 && !$AR->output_compression) {
+				ob_start(); // start the cache
+			}
+			$ARCurrent->cachetime=-2; // set cache to onchange
+		}
 		$files=$this->store->get_filestore("files");
 		if (!ereg("^text/",$this->data->mimetype)) {
 			$size=$files->size($this->id, "file");
 		}
 		$filename=substr($this->path, strlen($this->parent), -1);
 		ldHeader('Cache-Control: no-cache, must-revalidate');
-        // set pragma: cache; bug workaround for internet explorer and https
+		// set pragma: cache; bug workaround for internet explorer and https
 		if (ldGetServerVar('HTTPS')) {
 			ldHeader('Pragma: cache');
 		} else {
