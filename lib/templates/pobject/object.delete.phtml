@@ -1,5 +1,7 @@
 <?php
+	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("delete") && $this->CheckConfig()) {
+		include($this->store->get_config('code').'nls/'.$this->reqnls);
 ?>
 <html>
 <head>
