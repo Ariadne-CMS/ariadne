@@ -23,9 +23,11 @@ class URL {
 		$nls_match2 = "((".implode('|', array_keys($AR->nls->list)).")/)?";
 
 		/* find and replace the current page */
-		$find[] = "%\\Q".$this->make_url($this->path, "\\E{0}(".$nls_match.")\\Q")."\\E%"; 
+		$find[] = "%\\Q".$this->make_url($this->path, "\\E{0}(".$nls_match.")\\Q")."\\E(user.edit.page.html|view.html)?%"; 
 		$repl[] = "{arCurrentPage\\1}";
-		$find[] = "%".preg_replace("%^https?://%", "https?\\Q://", $AR->host).$AR->dir->www."loader.php\\E(?:/-".$ARCurrent->session->id."-)?".$nls_match."\\Q".$this->path."\\E%"; 
+		$find[] = "%\\Q".$this->make_local_url($this->path, "\\E{0}(".$nls_match.")\\Q")."\\E(user.edit.page.html|view.html)?%"; 
+		$repl[] = "{arCurrentPage\\1}";
+		$find[] = "%".preg_replace("%^https?://%", "https?\\Q://", $AR->host).$AR->dir->www."loader.php\\E(?:/-".$ARCurrent->session->id."-)?".$nls_match."\\Q".$this->path."\\E(user.edit.page.html|view.html)?%"; 
 		$repl[] = "{arCurrentPage\\1}";
 
 		// change the site links
