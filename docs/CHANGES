@@ -1,17 +1,28 @@
-Ariadne 2.5.0 ( Development branch )
+Ariadne 2.4.1
 
 Changes in Ariadne since version Ariadne 2.4
 
 New Features:
+	- files and images (pphoto's) are now automatically cached if they are
+	  publicly readable, that also goes for generated images, through pphoto::build()
+	- added support for 'subclasses', which you can define yourself and add
+	  to the typetree via a typetree.ini template. You can define templates
+	  for a specific subclass and you can add your own wizard pages to the 
+	  normal set. Beware, this code is very fresh.
+	- Numerous fixes and extensions (e.g. table editing, required fields) in 
+	  the mod_edit editor (toolbar.php). Check the context menu when editing
+	  tables.
+	- much enhanced WDDX export support, with converter from ax to wddx format
 	- TinyMCE support by Stefan Schreinert. To use this you have to copy the
 	  contents of the tinyMCE packages (which you can download from their
 	  site) into ariadne/www/widget/htmledit/tinymce/.
 	- Added a webdav loader (which is still under development, but already
 	  pretty useful).
+	- added a rss module to help get and parse RSS feeds
 	- Moved all the authentication code to lib/modules/mod_auth/ which is
 	  used in all the loaders. With this approach adding new authentication
 	  methods becomes very easy.
-	- The psite object can now be configured to have a URL for each language.
+	- The psite object can now be configured to have a different URL for each language.
 	- Shortcut objects do allow you to browse further on the target nodes.
 	- Added a new option to pshortcut 'keep url' which, if set, will inherit
 	  the target templates from the shortcut and keeps the URL from where the
@@ -39,8 +50,25 @@ New Features:
 	- Added a PINP XML wrapper module. The parse_curl() method was created
 	  by Lukasz Keler.
 	- The 'open editor' button now has an adjustable text. 
-
+	- Added a profiler, which can be used in pinp templates as well: pfTime, pfReset, pfPrint
+	- Added a number of performance improvements to speed up finding the correct template to
+	  use.
+	- path and query are now optional arguments to count_find
+	- added a make_local_url method, which tries to stay within the current site/host, even
+	  when referencing a page below another psite.
+	- added a quality setting to pphoto::convert(), which allows you to set the jpeg quality.
+	- pressing apply in the template editor will now restore the cursor position.
+	- added basename and dirname to the pinp allowed function list. These are now the officially
+	  sanctified methods to get parent path (dirname) and filename (basename)
+	- added $ARCurrent->forcenls (putvar('forcenls',true)) option, to make sure that any object
+	  / template called after it uses the requested nls, whether or not any data for that
+	  language is available in the object. 
 Bugs Fixes:
+	- fixed problems with setting hyperlink over linebreaks or accross block
+	  elements in the editor, no more www.example.com.
+	- fixed default values for $path arguments in mod_edit
+	- a number of templates where fixed to work with any language independant
+	  of the languages of the object. Mostly dialogs, but also workflow stuff.
 	- fixed a bug in the ftp loader, it was giving the wrong time of templates
 	- Fixed some 'repeat by ...' bugs in the pcalitem object. Thanks to
 	  Fabian Steger.
@@ -63,7 +91,7 @@ Bugs Fixes:
 	- the parentsection() function now works, instead of not :)
 	- Fixed bug 0000290: specifying 00:00 in the article's time fields, resets 
 	  the time to current time (Thanks to Christoph Lindemann)
-	- De editor doesn't cut off the last char in an image link after editing anymore.
+	- The editor doesn't cut off the last char in an image link after editing anymore.
 	- Fixed the editor to not include the nls in the URL of images.
 	- The pinp variant of user.login.html does now have access to the
 	  arReturnPath and arReturnTemplate variables.
@@ -75,7 +103,6 @@ Bugs Fixes:
 	  character.
 	- helene (the syntax highlighting editor) now understands javascript in templates
 	- user.workflow.* didn't set $ARCurrent->nolangcheck, now they do ;-)
-	- toolbar.php new objects were made in the currentsite, changed to current path.
 	- added a upgrade script which fixes the es nls name in objects which still
 	  have the latin1 encoding.
 	- The pinp call for HTTPRequest in pobject is now equal to the php one.
@@ -85,7 +112,9 @@ Bugs Fixes:
 	- added the missing call to fclose
 	- replaced php://stdout in php://output, because stdout is the wrong stream
 	- added linking in wddx import, this was missing
-
+	- the image dialog now works with images with special characters (quotes) in the name
+	- fixed problems with special characters and custom fields
+	- fixed a problem in the filestore, it can now handle directories with the name '0'.
 
 Ariadne 2.4
 

@@ -10,7 +10,13 @@
 \fs24\par
 Download the PHP 4 windows binaries from \b http://www.php.net/downloads.php\b0  or one of its mirrors. \par
 \par
-\pard Unzip PHP and install it somewhere (e.g.: \b C:\\PHP\\\b0 ).  Now download our patched version of the isapi dll from \f1 ftp://ftp.muze.nl/pub/ariadne/win/iis/php-4.3.6/php4isapi.dll\f0  and copy it over the original. (which you can find at \b C:\\PHP\\sapi\\php4isapi.dll\b0 )\par
+Please use PHP 4.3.11 or later, since it fixes an important issue with IIS.\par
+\par
+If you have to use an older version, use one of the patched versions of the PHP isapi dll from our ftp server, e.g.\par
+\par
+\pard\f1 ftp://ftp.muze.nl/pub/ariadne/win/iis/php-4.3.6/php4isapi.dll\f0  \par
+\par
+and copy it over the original. (usually at \b C:\\PHP\\sapi\\php4isapi.dll\b0 )\par
 \pard\nowidctlpar\par
 This patch fixes a problem with IIS and PHP which prevents PHP from finding the correct script to execute if you add path info in the url. Ariadne will not run without this. \par
 \par
@@ -97,7 +103,7 @@ Common installation steps:\par
 \par
 1. Install MySQL\fs24\par
 \par
-\pard\sb100\sa100 Start by unzipping the file \b mysql-4.1.7-win.zip\b0 . If you use WinZip you can immediately press \b Install\b0 , otherwise you can unzip the files to a temporary directory and start \b setup.exe\b0 .\par
+\pard\sb100\sa100 Start by unzipping the file \b mysql-4.1.7-win.zip\b0  (or a higher version). If you use WinZip you can immediately press \b Install\b0 , otherwise you can unzip the files to a temporary directory and start \b setup.exe\b0 .\par
 \pard\nowidctlpar\par
 The installation wizard will guide you through the initial installation of MySQL. \par
 \par
@@ -107,7 +113,7 @@ Finally you need to create two databases for Ariadne to use later. Click on the 
 \par
 \fs32 2. Install Ariadne\par
 \fs24\par
-Start by unzipping the file \b ariadne.2.4.zip\b0  to a suitable directory ( e.g. \b C:\\Program Files\\Ariadne\\\b0  ) . This directory should not be in your webservers document root! (That would allow hackers to read the programs source code via the web, which is a bad thing.)\par
+Start by unzipping the file \b ariadne.2.4.1.zip\b0  to a suitable directory ( e.g. \b C:\\Program Files\\Ariadne\\\b0  ) . This directory should not be in your webservers document root! (That would allow hackers to read the programs source code via the web, which is a bad thing.)\par
 \par
 Now you can either move the \b www\b0  directory from the ariadne installation directory to a new directory in the document root of the webserver, e.g. \b /ariadne/\b0 , or you can direct the webserver to an alternative directory. \par
 \par

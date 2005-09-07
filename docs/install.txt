@@ -1,4 +1,4 @@
-Installing Ariadne.                                            Muze Ariadne 2.4
+Installing Ariadne.                                          Muze Ariadne 2.4.1
 ===============================================================================
 
   IMPORTANT: Ariadne needs PHP 4.0.6 or higher, PHP 5 is not yet supported *
