@@ -8,7 +8,7 @@
 <script>
   function addFormElement(name, value) {
     eValue=new String(value);
-    eValue=eValue.replace(/"/g,'&quot;');
+    eValue=eValue.replace(/&/g, '&amp;').replace(/"/g,'&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   	document.forms[0].insertAdjacentHTML('BeforeEnd','<input type="hidden" name="'+name+'" value="'+eValue+'">');
   }
 
