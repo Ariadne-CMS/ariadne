@@ -1,10 +1,11 @@
 <?php
 	$ARCurrent->nolangcheck=true;
-// FIXME: add error checking and html cleanup stuff
+	// FIXME: add error checking and html cleanup stuff
 	if ($this->CheckLogin('edit') && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		if (is_array($changes)) {
+//			echo "<pre>"; print_r($changes); echo "</pre>";
 			while (list($path, $fields)=each($changes)) {
-				$this->get($path, 'system.save.data.phtml', $fields);
+				$this->get($path, 'system.save.current.phtml', $fields);
 			}
 		}
 	}
