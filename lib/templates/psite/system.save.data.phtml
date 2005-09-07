@@ -23,6 +23,9 @@
             while (list($key, $value)=each($AR->nls->list)) {
                 if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
 					$url=$this->getdata("url",$key);
+					if (substr($url, -1, 1)=='/') {
+						$url=substr($url, 0, -1);
+					}
 					if ($url!=$this->data->$key->url) {
 						$clearcache=true;					
 						$this->data->$key->url=$url;
@@ -38,10 +41,6 @@
 						$properties["url"][$count]["port"]=	$regs[3];
 					}
 					$count++;
-
-					if (substr($this->data->$key->url,-1)=="/") {
-						$this->data->$key->url=substr($this->data->$key->url,0,-1);
-					}
                 }
 			}
 			if ($clearcache) {
