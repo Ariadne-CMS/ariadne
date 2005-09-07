@@ -942,7 +942,7 @@ class pobject extends object { // pobject class definition
 	function CheckLogin($grant, $modifier=ARTHISTYPE) {
 	global $AR,$ARnls,$ARConfig,$ARCurrent,$ARPassword,$ARCookie,$session_config;
 
-		debug("pobject: CheckLogin($grant)","object");
+		debug("pobject: CheckLogin($grant) on ".$this->path,"object");
 		if ($modifier==ARTHISTYPE) {
 			$modifier=$this->type;
 		}
@@ -1253,7 +1253,7 @@ class pobject extends object { // pobject class definition
 			// if this object isn't available in the requested language, show
 			// a language select dialog with all available languages for this object.
 			if (isset($this->data->nls) && !$this->data->name) {
-				if (!isset($this->data->nls->list[$reqnls]) || !$config->nls->list[$reqnls]) {
+				if (!$ARCurrent->forcenls && (!isset($this->data->nls->list[$reqnls]) || !$config->nls->list[$reqnls])) {
 					if (!$ARCurrent->nolangcheck ) {
 						$ARCurrent->nolangcheck=1;
 						$arCallArgs["arOriginalFunction"] = $arCallFunction;
@@ -1351,9 +1351,10 @@ class pobject extends object { // pobject class definition
 						$ARCurrent->arCallStack[]=$arCallArgs;
 						// start running a pinp template
 						$this->pushContext(Array("scope" => "pinp", "arLibrary" => $template['arLibrary'], "arLibraryPath" => $template['arLibraryPath']));
-						if (isset($this->data->nls->list[$reqnls])) {
+						if ($ARCurrent->forcenls || isset($this->data->nls->list[$reqnls])) {
 							// the requested language is available.
-							$this->nlsdata=$this->data->$nls;
+							$this->nlsdata=$this->data->$reqnls;
+							$this->nls=$reqnls;
 							$continue=true;
 						} else if (!isset($this->data->nls)) {
 							debug("pobject: CheckConfig: no nls data ","all");
