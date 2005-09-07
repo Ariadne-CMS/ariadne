@@ -3,6 +3,7 @@
 	if ($this->CheckLogin('read') && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		$settings=$this->call("editor.ini");
 
+		include($this->store->get_config("code")."nls/".$this->reqnls);
 		include($this->store->get_config("code")."nls/ieedit.".$this->reqnls);
 
 ?>
