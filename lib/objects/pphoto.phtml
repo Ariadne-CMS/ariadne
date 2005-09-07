@@ -396,8 +396,13 @@ class pphoto extends pfile { // pphoto class definition
 
 
 	function build() {
-		global $AR, $ARConfig;
-
+		global $AR, $ARConfig, $ARCurrent;
+		if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
+			if ($ARCurrent->cachetime==0 && !$AR->output_compression) {
+				ob_start();	// start the cache
+			}
+			$ARCurrent->cachetime=-2; // set cache to onchange
+		}
 		$this->set_context("build");
  
 		$result=false;
@@ -452,11 +457,9 @@ class pphoto extends pfile { // pphoto class definition
 					@unlink($destsrc);
 				} else {
 					$this->error=sprintf($ARnls["err:noimagemagick"],$exec_string);
-					// FROP $this->error="Could not run ImageMagick scale program (mogrify)<br>\n(".$exec_string.")";
 				}
 			} else {
 				$this->error=sprintf($ARnls["err:changetempdirfailed"],$this->store->get_config("files"));
-				// FROP $this->error="Could not changedir to ".$this->store->get_config("files")."temp/ ";
 			}
 		}
 		if( is_array($ARConfig->photoTempFiles[$this->id])) {
