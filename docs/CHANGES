@@ -63,6 +63,9 @@ New Features:
 	- added $ARCurrent->forcenls (putvar('forcenls',true)) option, to make sure that any object
 	  / template called after it uses the requested nls, whether or not any data for that
 	  language is available in the object. 
+	- changed the way templates are included, so now you can do a 'return true' in pinp
+	  templates, and it works as you'd expect.
+
 Bugs Fixes:
 	- fixed problems with setting hyperlink over linebreaks or accross block
 	  elements in the editor, no more www.example.com.
