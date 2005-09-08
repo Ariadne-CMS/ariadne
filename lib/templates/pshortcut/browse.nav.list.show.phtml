@@ -20,11 +20,11 @@
 	if ($data->$arLanguage) {
 		$nlsdata=$data->$arLanguage;
 	}
-	$folder=$this->call("system.get.folder.phtml");
+	$icon=$this->call('system.get.icon.small.phtml');
 ?>
 <div class='object'><nobr><a 
 	href="javascript:top.View('<?php echo $this->path; ?>','<?php echo AddCSlashes($nlsdata->name,ARESCAPE); ?>');"><img 
-	width="20" height="20" src="<?php echo $AR->dir->images; ?>icons/<?php echo $folder['icon']; ?>.gif" 
+	width="20" height="20" src="<?php echo $icon; ?>" 
 	alt="<?php echo $this->path; ?>" border="0"> <?php
 		if (strlen($nlsdata->name)>32) {
 			$name=substr($nlsdata->name,0, 32)."...";

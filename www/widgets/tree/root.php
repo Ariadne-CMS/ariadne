@@ -292,7 +292,8 @@ function drawNode(pre, level) {
 			}
 		}
 		if (this.icon) {
-			icon='<img class="icon" src="<?php echo $wwwroot; ?>images/icons/'+this.icon+'.gif" alt="" width="20" height="20" border="0" align="left">';
+//			icon='<img class="icon" src="<?php echo $wwwroot; ?>images/icons/'+this.icon+'.gif" alt="" width="20" height="20" border="0" align="left">';
+			icon='<img class="icon" src="'+this.icon+'" alt="" width="20" height="20" border="0" align="left">';
 		} else {
 			icon='';
 		}

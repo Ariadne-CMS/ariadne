@@ -6,8 +6,9 @@
 		if ($data->$arLanguage) {
 			$nlsdata=$data->$arLanguage;
 		}
+		$icon=$this->call('system.get.icon.phtml');
 ?>
-<img width="40" height="40" src="<?php echo $AR->dir->images."icons/".$this->type; ?>_open.gif" id="icon" align="left">
+<img width="40" height="40" src="<?php echo $icon; ?>" id="icon" align="left">
 <div id="object">
 	<h1><?php echo $nlsdata->name; ?></h1>
 	<div id="summary">

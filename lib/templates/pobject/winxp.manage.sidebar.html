@@ -167,8 +167,10 @@
 </head>
 <body onload="getInvisiblesCookie()">
 	<div class="sidebar">
-		<img src="<?php echo $AR->dir->images."icons/".$this->type; ?>_open.gif" id="icon" align="left">
 		<?php 
+			$icon=$this->call('system.get.icon.phtml');
+			echo "<img src=\"$icon\" id=\"icon\" align=\"left\">";
+					
 			//tasks
 			$this->call("winxp.manage.sidebar.tasks.html", $arCallArgs);
 			$this->call("winxp.manage.sidebar.settings.html", $arCallArgs);

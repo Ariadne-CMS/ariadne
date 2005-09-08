@@ -1,0 +1,25 @@
+<?php
+	if ($this->CheckLogin('read') && $this->CheckConfig()) {
+		if (!$ARCurrent->arTypeIconsSmall[$this->type]) {
+			// FIXME: for performance the check above is necessary, but
+			// it does make it possible to get the wrong icon...
+			
+			// get typetree to get the correct icon
+			$this->call('typetree.ini');
+		}
+		$icon=$ARCurrent->arTypeIcons[$this->type]['small'];
+		if (!$icon) {
+			$dotPos=strpos($this->type, '.');
+			if (false!==$dotPos) {
+				$realtype=substr($this->type, 0, $dotPos);
+				$icon=$ARCurrent->arTypeIcons[$realtype]['small'];
+			} else { 
+				$realtype=$this->type;
+			}
+			if (!$icon) {
+				$icon=$AR->dir->images."icons/".$realtype.".gif";
+			}
+		}
+		$arResult=$icon;
+	}
+?>

@@ -36,12 +36,12 @@
 		$disabledItems.= "normalCMdelete;normalCMrename;";
 	if(!$this->CheckSilent("read"))
 		$disabledItems.= "normalCMexplore;normalCMviewweb;normalCMcopy;normalCMlink;";
-	$folder=$this->call("system.get.folder.phtml");
+	$icon=$this->call("system.get.icon.phtml");
 ?>
 
 <div class="object" align="center"><nobr><a contextmenu="normalContextMenu" disableditems="<?php echo $disabledItems; ?>"
 	href="#" class="unselectedItem" onClick="selectItem(this);" onDblClick="top.View(this.getAttribute('path'))" path="<?php echo $this->path; ?>" fullPath="<?php echo $this->make_url($this->path); ?>"><img 
-	width="40" height="40" src="<?php echo $AR->dir->images."icons/".$folder['icon']."_open.gif"; ?>" 
+	width="40" height="40" src="<?php echo $icon; ?>" 
 	alt="<?php echo $this->path; ?>" border="0"><br /><?php
 		if (strlen($nlsdata->name)>32) {
 			$name=substr($nlsdata->name,0, 32)."...";

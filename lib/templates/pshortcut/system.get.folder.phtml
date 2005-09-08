@@ -9,6 +9,8 @@
 	}
 	if ($path!=$this->path) {
 		$folder=$this->get($path,"system.get.folder.phtml");
+		$arResult["icon"]=$this->call('system.get.icon.small.phtml');
+/*
 		if ($folder && $folder[0]["icon"]) {
 			$arResult["icon"]=$folder[0]["icon"];
 		} else {
@@ -17,6 +19,7 @@
 		if (!strstr($arResult["icon"],"pshortcut/")) {
 			$arResult["icon"]="pshortcut/".$arResult["icon"];
 		}
+*/
 	}
 	$arResult["name"]=$name;
 	$arResult["path"]=$this->path;

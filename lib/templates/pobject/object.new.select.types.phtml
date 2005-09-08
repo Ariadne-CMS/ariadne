@@ -131,12 +131,6 @@
 				$col=1;
 				echo "</tr><tr valign='top'>";
 			}
-			$dotPos=strpos($type, '.');
-			if (false!==$dotPos) {
-				$realtype=substr($type, 0, $dotPos);
-			} else {
-				$realtype=$type;
-			}
 			$icon=$AR->dir->images."icons/".$realtype.'_open.gif';
 ?>
 				<td valign="top" align="center" width="<?php echo (100/$cols); ?>%">
@@ -172,12 +166,18 @@
 			} else {
 				$realtype=$type;
 			}
-			if ($ARCurrent->arTypeIcons[$type]) {
-				$icon=$ARCurrent->arTypeIcons[$type];
-			} else if ($ARCurrent->arTypeIcons[$realtype]) {
-				$icon=$ARCurrent->arTypeIcons[$realtype];
-			} else {
-				$icon=$AR->dir->images."icons/".$realtype.'_open.gif';
+			$icon=$ARCurrent->arTypeIcons[$type]['default'];
+			if (!$icon) {
+				$dotPos=strpos($type, '.');
+				if (false!==$dotPos) {
+					$realtype=substr($type, 0, $dotPos);
+				} else {
+					$realtype=$type;
+				}
+				$icon=$ARCurrent->arTypeIcons[$realtype]['default'];
+				if (!$icon) {
+					$icon=$AR->dir->images."icons/".$realtype.'_open.gif';
+				}
 			}
 			?>
 				<td valign="top" align="center" width="<?php echo (100/$cols); ?>%">
