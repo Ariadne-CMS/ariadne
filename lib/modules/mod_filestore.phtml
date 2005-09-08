@@ -129,20 +129,23 @@
 			
 
 		function import($fsId, $fsName, $fsLocalVars="", &$fsObject) {
-			$fsPath=$this->make_path($fsId, $fsName);
-			if (file_exists($fsPath)) {
-				Parse_str($fsLocalVars);
-				if ($fsObject) {
-					$fsObject->ARinclude($fsPath);
-				} else {
-					include($fsPath);
-				}
-			} else {
-				$arResult=false;
+			// this looks scary, and maybe it is...
+			// first check the cached templates
+			global $ARCurrent;
+			if (!$ARCurrent->fsFunctions[$fsId][$fsName]) {
+				// template isn't in the cache, so define it... as a new function
+				$ARCurrent->fsFunctions[$fsId][$fsName]=create_function('&$this',
+					' ?'.'>'.
+					$this->read($fsId, $fsName).
+					'<'.'?php ');
+				// explanation: the new function must 'think' that it is part of the object, so it sets $this to $fsObject
+				// the new function parses the local variables, which the template expects to have available
+				// then it reads in the template and parses it
+				// at the end it checks for $arResult or $this->arResult and returns it if set.
 			}
-			if (isset($arResult)) {
-				return $arResult;
-			}
+			// now call the function...
+			$fsFunc=&$ARCurrent->fsFunctions[$fsId][$fsName];
+			return $fsFunc($fsObject, $fsLocalVars);
 		}
 
 		function copy_to_store($file, $id, $name="") {

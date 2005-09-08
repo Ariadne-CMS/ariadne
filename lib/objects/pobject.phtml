@@ -1380,8 +1380,10 @@ class pobject extends object { // pobject class definition
 								echo "<div style=\"float: left; border: 0px; padding: 0px; margin: 0px;\" title=\"(".$this->type.")".$this->path.":".$template["arCallTemplate"]."\"".
 										" onMouseOver=\"this.style.border='1px dotted black';\" onMouseOut=\"this.style.border='0px';\">";
 							}
-							$arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
-
+							$arResult=$arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
+							if (isset($arResult)) {
+								$ARCurrent->arResult=$arResult;
+							}
 							if ($ARCurrent->ARShowTemplateBorders) {
 								// echo "</fieldset>";
 								echo "</div>";
