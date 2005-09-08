@@ -131,12 +131,17 @@
 				$col=1;
 				echo "</tr><tr valign='top'>";
 			}
-			?>
+			$dotPos=strpos($type, '.');
+			if (false!==$dotPos) {
+				$realtype=substr($type, 0, $dotPos);
+			} else {
+				$realtype=$type;
+			}
+			$icon=$AR->dir->images."icons/".$realtype.'_open.gif';
+?>
 				<td valign="top" align="center" width="<?php echo (100/$cols); ?>%">
 					<a <?php echo $class; ?> href="#" onClick="return View('<?php echo $currentpath.$arReturnTemplate; ?>?arNewType=<?php echo RawUrlEncode($type)."&".ldGetServerVar("QUERY_STRING"); ?>');">
-					<img width="40" height="40" 
-						 src="<?php echo $AR->dir->images."icons/".$type; ?>_open.gif" 
-						 alt="<?php echo $type; ?>" border="0"><br>
+					<img width="40" height="40" src="<?php echo $icon; ?>" alt="<?php echo $type; ?>" border="0"><br>
 					<?php
 						echo "$name</a>";
 					?></a>
@@ -161,10 +166,18 @@
 				$col=1;
 				echo "</tr><tr valign='top'>";
 			}
+			$dotPos=strpos($type, '.');
+			if (false!==$dotPos) {
+				$realtype=substr($type, 0, $dotPos);
+			} else {
+				$realtype=$type;
+			}
 			if ($ARCurrent->arTypeIcons[$type]) {
 				$icon=$ARCurrent->arTypeIcons[$type];
+			} else if ($ARCurrent->arTypeIcons[$realtype]) {
+				$icon=$ARCurrent->arTypeIcons[$realtype];
 			} else {
-				$icon=$AR->dir->images."icons/".$type.'_open.gif';
+				$icon=$AR->dir->images."icons/".$realtype.'_open.gif';
 			}
 			?>
 				<td valign="top" align="center" width="<?php echo (100/$cols); ?>%">
