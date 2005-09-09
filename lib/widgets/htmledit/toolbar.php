@@ -163,11 +163,18 @@ function state_restoreSelection() {
 
 function init_cssStyle() {
 	var inline = tbContentEditOptions['css']['inline'];
-	cssStyle.options[0] = new Option('Inline Style', '');
-	cssStyle.options[1] = new Option('Clear', '');
 	var i=0;
 	for (var istyle in inline) {
-		cssStyle.options[i+2] = new Option(inline[istyle], istyle);
+		cssStyle.options[i] = new Option(inline[istyle], istyle);
+		i++;
+	}
+}
+
+function init_ParagraphStyle() {
+	var block = tbContentEditOptions['css']['block'];
+	var i=0;
+	for (var istyle in block) {
+		ParagraphStyle.options[i] = new Option(block[istyle], istyle);
 		i++;
 	}
 }
@@ -271,6 +278,7 @@ function window_onload() {
 
 		// init the cssStyle select box
 		init_cssStyle();
+		init_ParagraphStyle();
 
 		tbContentElement.contentWindow.document.body.onBlur=KeepState.SaveSelection;
 		tbContentElement.contentWindow.document.body.onkeyup=tableEdit_onKeyUp;
@@ -680,6 +688,11 @@ function cssStyle_onChange(command)
 	var oTextRange = oSelection.createRange() ;
 
 	var sTag = new String(command.value);
+	if (sTag=='0' || !command.value) {
+		var clear=true;
+	} else {
+		var clear=false;
+	}
 	var aTagAndClass = sTag.split('.');
 	if (aTagAndClass[0]) {
 		sTag = aTagAndClass[0];
@@ -706,7 +719,7 @@ function cssStyle_onChange(command)
 				|| oFirstChild.tagName == "P"
 				|| oFirstChild.tagName == "DIV"))
 		{
-			if (!command.value) // clear span/class
+			if (clear) // clear span/class
 			{
 				if (oFirstChild.tagName=="SPAN") 
 				{
@@ -722,7 +735,7 @@ function cssStyle_onChange(command)
 		}
 		else
 		{
-			if (!command.value) 
+			if (clear) 
 			{
 				var text = oSpan.innerText;
 				oTextRange.pasteHTML(text);
@@ -1371,16 +1384,6 @@ function DECMD_DELCOL_onclick() {
 
 <div class="tbToolbar" unselectable='on' ID="StyleToolbar" style="visibility: hidden">
 	<select ID="ParagraphStyle" class="tbGeneral" style="width:90" TITLE="Paragraph Format" LANGUAGE="javascript" onchange="return ParagraphStyle_onchange()">
-		<option value="">Block Style</option>
-		<option value="P">Normal (P)</option>
-		<option value="H1">Heading 1 (H1)</option>
-		<option value="H2">Heading 2 (H2)</option>
-		<option value="H3">Heading 3 (H3)</option>
-		<option value="H4">Heading 4 (H4)</option>
-		<option value="H5">Heading 5 (H5)</option>
-		<option value="H6">Heading 6 (H6)</option>
-		<option value="H7">Heading 7 (H7)</option>
-		<option value="PRE">Preformatted (PRE)</option>
 	</select>
 
 	<select ID="cssStyle" class="tbGeneral" style="width:90" TITLE="Style" LANGUAGE="javascript" onchange="return cssStyle_onChange(this)">
