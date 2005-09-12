@@ -34,7 +34,7 @@ Apache configuration (httpd.conf).
    e.g.:
 
      cd /usr/local/lib/
-     tar xvzf ~/ariadne.2.4.tgz
+     tar xvzf ~/ariadne.2.4.1.tgz
      cd /var/www
      ln -s /usr/local/lib/ariadne/www/ ariadne
 
@@ -88,7 +88,7 @@ manuals, etc. can be found at http://ariadne.muze.nl/
 
 Notes:
   If you happen to use a Postgresql database then the install procedure is
-  exact the same except for the database creation and configuration:
+  exactly the same except for the database creation and configuration:
 
     1) create a database (e.g. ariadne)
     2) add a postgres user who is able to:
