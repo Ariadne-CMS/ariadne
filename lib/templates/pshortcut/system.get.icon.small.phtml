@@ -1,0 +1,11 @@
+<?php
+	if ($this->CheckLogin('read') && $this->CheckConfig()) {
+		$dotPos=strpos($this->vtype, '.');
+		if (false!==$dotPos) {
+			$realtype=substr($this->vtype, 0, $dotPos);
+		} else { 
+			$realtype=$this->vtype;
+		}
+		$arResult=$AR->dir->images."icons/pshortcut/".$realtype.".gif";
+	}
+?>
