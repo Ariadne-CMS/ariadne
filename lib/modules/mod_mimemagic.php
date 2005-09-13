@@ -198,7 +198,7 @@
 	$mimemagic_data[0][4]["\17\12\16\10"]="application/data"; 
 	$mimemagic_data[0][4]["\1\130\41\246"]="application/core"; 
 	$mimemagic_data[0][4]["\1\146\143\160"]="font/x-pcf"; 
-	$mimemagic_data[0][4]["\211\120\116\107"]="image/x-png"; 
+	$mimemagic_data[0][4]["\211\120\116\107"]="image/png"; 
 	$mimemagic_data[0][4]["\23\127\232\316"]="application/x-gdbm"; 
 	$mimemagic_data[0][4]["\23\172\51\104"]="font/x-sunos-news"; 
 	$mimemagic_data[0][4]["\23\172\51\107"]="font/x-sunos-news"; 
@@ -334,7 +334,7 @@
 	$mimemagic_data[0][2]["\6\1"]="application/x-executable-file"; 
 	$mimemagic_data[0][2]["\6\2"]="application/x-alan-adventure-game"; 
 	$mimemagic_data[0][2]["\7\1"]="application/x-executable-file"; 
-	$mimemagic_data[1][3]["\120\116\107"]="image/x-png"; 
+	$mimemagic_data[1][3]["\120\116\107"]="image/png"; 
 	$mimemagic_data[1][3]["\127\120\103"]="text/vnd.wordperfect"; 
 	$mimemagic_data[2][6]["\55\154\150\64\60\55"]="application/x-lha"; 
 	$mimemagic_data[2][5]["\55\154\150\144\55"]="application/x-lha"; 
