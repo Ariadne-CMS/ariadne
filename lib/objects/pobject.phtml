@@ -1344,7 +1344,7 @@ class pobject extends object { // pobject class definition
 		ldSetCache($file, $time, $image, $headers);
 	}
 
-	function ClearCache($path="",$private=true, $recurse=false) {
+	function ClearCache($path="", $private=true, $recurse=false) {
 	global $AR;
 		debug("pobject: ClearCache($path)","object");
 		if (!$path) { $path=$this->path; }
@@ -1377,6 +1377,12 @@ class pobject extends object { // pobject class definition
 					@unlink(substr($hpath,0,-1)."=");
 				}
 			}
+		}
+		// now clear all parents untill the current site
+		$site=$this->currentsite();
+		if ($path!=$site) {
+			$parent=$this->make_path($path.'../');
+			$this->ClearCache($parent, $private, false);
 		}
 		if ($private) {
 			// now remove any private cache entries.
