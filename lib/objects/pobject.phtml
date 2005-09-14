@@ -1348,6 +1348,7 @@ class pobject extends object { // pobject class definition
 	global $AR;
 		debug("pobject: ClearCache($path)","object");
 		if (!$path) { $path=$this->path; }
+		$recursed = array();
 		$path=strtolower($path);
 		$nlslist=$AR->nls->list;
 		$nlslist["."]="default";
@@ -1357,21 +1358,28 @@ class pobject extends object { // pobject class definition
 
 		foreach($cache_types as $type){
 			foreach($nlslist as $nls => $language){
-				$fpath=$this->store->get_config("files")."cache/$type/$nls".$path;
-				$hpath=$this->store->get_config("files")."cacheheaders/$type/$nls".$path;
+				$filestore = $this->store->get_config("files");
+				// break away if nls doesn't exists
+				// is dir is cached, so it should not cost more that it add's in speed
+				if(!is_dir($filestore."cache/$type/$nls")){
+					continue; 
+				}
+				
+				$fpath=$filestore."cache/$type/$nls".$path;
+				$hpath=$filestore."cacheheaders/$type/$nls".$path;
 				if ($dir=@dir($fpath)) {
-					while ($entry=@$dir->read()) {
+					while (false !== ($entry = $dir->read())) {
 						if ($entry!="." && $entry!="..") {
 							if (filetype($fpath.$entry)!="dir") {
 								@unlink($fpath.$entry);
 								@unlink($hpath.$entry);
-							} else if ($entry!="." && $entry!=".." && $recurse
-									&& !$recursed[$entry]) {
+							} else if ( $recurse && !$recursed[$entry]) {
 								$this->ClearCache($path.$entry."/", false, true);
 								$recursed[$entry]=true;
 							}
 						}
 					}
+					$dir->close();
 				} else if (file_exists(substr($fpath,0,-1)."=")) {
 					@unlink(substr($fpath,0,-1)."=");
 					@unlink(substr($hpath,0,-1)."=");
