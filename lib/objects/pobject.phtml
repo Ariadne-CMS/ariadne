@@ -1347,26 +1347,32 @@ class pobject extends object { // pobject class definition
 	function ClearCache($path="", $private=true, $recurse=false) {
 	global $AR;
 		debug("pobject: ClearCache($path)","object");
-		if (!$path) { $path=$this->path; }
+		if (!$path) { 
+			$path=$this->path; 
+		}
 		$recursed = array();
-		$path=strtolower($path);
+
+		// filesystem cache image filenames are always lower case, so
+		// use special path for that. Remember 'real' path name for
+		// recursion and stuff
+		$fs_path=strtolower($path);
 		$nlslist=$AR->nls->list;
 		$nlslist["."]="default";
 		$cache_types[] = "normal";
 		$cache_types[] = "compressed";
 		$cache_types[] = "session";
 
+		$filestore = $this->store->get_config("files");
 		foreach($cache_types as $type){
 			foreach($nlslist as $nls => $language){
-				$filestore = $this->store->get_config("files");
 				// break away if nls doesn't exists
 				// is dir is cached, so it should not cost more that it add's in speed
 				if(!is_dir($filestore."cache/$type/$nls")){
 					continue; 
 				}
 				
-				$fpath=$filestore."cache/$type/$nls".$path;
-				$hpath=$filestore."cacheheaders/$type/$nls".$path;
+				$fpath=$filestore."cache/$type/$nls".$fs_path;
+				$hpath=$filestore."cacheheaders/$type/$nls".$fs_path;
 				if ($dir=@dir($fpath)) {
 					while (false !== ($entry = $dir->read())) {
 						if ($entry!="." && $entry!="..") {
@@ -1387,8 +1393,8 @@ class pobject extends object { // pobject class definition
 			}
 		}
 		// now clear all parents untill the current site
-		$site=$this->currentsite();
-		if ($path!=$site) {
+		$site=$this->currentsite($path);
+		if ($path!=$site && $path!='/') {
 			$parent=$this->make_path($path.'../');
 			$this->ClearCache($parent, $private, false);
 		}
@@ -1987,19 +1993,18 @@ class pobject extends object { // pobject class definition
 		return $this->savecache($time);
 	}
 
-	function currentsite() {
-		global $ARCurrent, $ARConfig;
-		if (!$config && !$config=$ARConfig->cache[$this->path]) {
-			$config=$ARConfig->cache[$this->parent];
+	function currentsite($path="") {
+		global $ARCurrent;
+		if (!$path) {
+			$path=$this->path;
 		}
+		$config=$this->loadConfig($path);
 		if (@count($ARCurrent->shortcut_redirect)) {
 			$redir = end($ARCurrent->shortcut_redirect);
-			if ($redir["keepurl"] && substr($this->path, 0, strlen($redir["dest"])) == $redir["dest"]) {
+			if ($redir["keepurl"] && substr($path, 0, strlen($redir["dest"])) == $redir["dest"]) {
 				if (substr($config->site, 0, strlen($redir["dest"]))!=$redir["dest"]) {
 					// search currentsite from the reference
-					if (!$config = $ARConfig->cache[$redir['src']]) {
-						$config = $this->loadConfig($redir['src']); //$ARConfig->cache[$this->make_path($redir['src']."../")];
-					}
+					$config = $this->loadConfig($redir['src']);
 				}
 			}
 		}
@@ -2007,24 +2012,22 @@ class pobject extends object { // pobject class definition
 	}
 
 	function parentsite($site) {
-		global $ARConfig;
 		$path=$this->store->make_path($site, "..");
-		$config=$ARConfig->cache[$path];
+		$config=$this->loadConfig($path);
 		return $config->site;
 	}
 
-	function currentsection() {
-		global $ARConfig;
-		if (!$config=$ARConfig->cache[$this->path]) {
-			$config=$ARConfig->cache[$this->parent];
+	function currentsection($path="") {
+		if (!$path) {
+			$path=$this->path;
 		}
+		$config=$this->loadConfig($path);
 		return $config->section;
 	}
 
 	function parentsection($section) {
-		global $ARConfig;
 		$path=$this->store->make_path($section, "..");
-		$config=$ARConfig->cache[$path];
+		$config=$this->loadConfig($path); 
 		return $config->section;
 	}
 
