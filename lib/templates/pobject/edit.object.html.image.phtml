@@ -246,6 +246,15 @@ BODY 	{
 		if (tbContentEditOptions['image']['browse']['top']) {
 			browseTop=escape(tbContentEditOptions['image']['browse']['top']);
 		}
+/*
+		if (tbContentEditOptions['image']['browse']['hideButtons']) {
+			for (var i in tbContentEditOptions['image']['browse']['hideButtons']) {
+				if (tbContentEditOptions['image']['browse']['hideButtons'][i]) {
+					document.getElementById('button_'+i).style.display='none';
+				}
+			}
+		}
+*/
 		if (tbContentEditOptions['image']['styles']) {
 			var imgstyle=document.forms[0].imgstyle;
 			document.forms[0].imgstyle.disabled=false;
@@ -401,6 +410,37 @@ BODY 	{
 		}
 	}
 
+	function Delete() {
+		if (blist=document.forms[0].BrowseNav) {
+			var startpath='<?php echo $this->store->root; ?>'+blist.options[blist.options.selectedIndex].value;
+			var path=blist.options[blist.options.selectedIndex].value;
+		} else {
+			var startpath='<?php echo $this->store->root.$this->path; ?>';
+			var path='<?php echo $this->path; ?>';
+		}
+		if (document.all) {
+			if (confirm("<?php echo AddCSlashes($ARnls["q:removeobject"], ARESCAPE); ?>\n( "+path+" )")) {
+				args=new Array();
+				showModalDialog( startpath+"recurse.phtml?action=delete",args,"font-family:Verdana; font-size:12; dialogWidth:45em; dialogHeight:20em; status:no; resizable: yes;");
+				wgRecurseDone();
+			}
+		} else {
+			delwindow=window.open(startpath+'object.delete.phtml', 'delwindow', 'directories=no,height=150,width=400,location=no,menubar=no,status=no,toolbar=no,resizable=yes');
+			delwindow.focus();
+		}
+	}
+
+	function wgRecurseDone() {
+		if (blist=document.forms[0].BrowseNav) {
+			if (blist.options.selectedIndex>0) {
+				var path=blist.options[blist.options.selectedIndex-1].value;
+			} else {
+				var path='<?php echo $this->store->root.$this->parent; ?>';
+			}
+		}		
+		View(path);		
+	}
+	
 	function ObjectAdded() {
 		if (blist=document.forms[0].BrowseNav) {
 			View(blist.options[blist.options.selectedIndex].value);
@@ -509,18 +549,24 @@ BODY 	{
 				</td>
 				<td align="left" valign="top">
 					<nobr>
-						<a href="#" onClick="browseUp(); return false;"><img name="up" src="<?php echo $AR->dir->images; ?>browse/up.gif" width="23" height="22" alt="<?php echo $ARnls["up"]; ?>" border="0" hspace="2" vspace="2"></a>
+						<a id="button_up" href="#" onClick="browseUp(); return false;"><img name="up" src="<?php echo $AR->dir->images; ?>browse/up.gif" width="23" height="22" alt="<?php echo $ARnls["up"]; ?>" border="0" hspace="2" vspace="2"></a>
 						<?php
 								if (!$this->CheckSilent("add")) {
 						?>
-							<img name="new" src="<?php echo $AR->dir->images; ?>browse/new-shaded.gif" alt="" width="23" height="22" border="0" hspace="4" vspace="2">
+							<img id="button_new" name="new" src="<?php echo $AR->dir->images; ?>browse/new-shaded.gif" alt="" width="23" height="22" border="0" hspace="4" vspace="2">
 						<?php 
 								} else {
 						?>
-							<a href="#" onClick="New(); return false;"><img name="new" src="<?php echo $AR->dir->images; ?>browse/new.gif" alt="<?php echo $ARnls["new"]; ?>" width="23" height="22" border="0" hspace="4" vspace="2"></a> 
+							<a href="#" onClick="New(); return false;" id="button_new"><img name="new" src="<?php echo $AR->dir->images; ?>browse/new.gif" alt="<?php echo $ARnls["new"]; ?>" width="23" height="22" border="0" hspace="4" vspace="2"></a> 
 						<?php
 							}
 						?>
+						<a id="button_delete" href="#" onClick="Delete(); return false;"><img name="delete" src="<?php echo $AR->dir->images; ?>browse/delete.gif" alt="<?php echo $ARnls["delete"]; ?>" width="23" height="22" border="0" hspace="4" vspace="2"></a>
+						<!-- div id="button_viewmode">
+							<a href="#" onClick="Viewmode('list')"><img name="delete" src="<?php echo $AR->dir->images; ?>browse/list.gif" alt="<?php echo $ARnls["list"]; ?>" width="23" height="22" border="0" hspace="4" vspace="2"></a>
+							<a href="#" onClick="Viewmode('icons')"><img name="delete" src="<?php echo $AR->dir->images; ?>browse/icons.gif" alt="<?php echo $ARnls["icons"]; ?>" width="23" height="22" border="0" hspace="4" vspace="2"></a>
+							<a href="#" onClick="Viewmode('details')"><img name="delete" src="<?php echo $AR->dir->images; ?>browse/details.gif" alt="<?php echo $ARnls["details"]; ?>" width="23" height="22" border="0" hspace="4" vspace="2"></a>
+						</div -->
 					</td><td align="right" valign="top" width="100%">
 						<select name="page" onChange="return showPage(this.options.selectedIndex);" style="margin: 2px; padding: 4px; display: none; width: auto;">
 						</select>
