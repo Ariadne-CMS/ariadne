@@ -20,9 +20,11 @@
 	global $HTTP_SERVER_VARS;
 
 	$configcache=$ARConfig->cache[$this->path];
-	$host = $HTTP_SERVER_VARS["HTTP_HOST"];
-
-	if ($sitenls=$this->data->url_list["host"][$host]) {
+	$hostsubwww = $host = $HTTP_SERVER_VARS["HTTP_HOST"];
+	if (substr($host, 0, 4) == 'www.') {
+		$hostsubwww = substr($host, 4);
+	}
+	if (($sitenls=$this->data->url_list["host"][$host]) || (($sitenls=$this->data->url_list["host"]["www.$hostsubwww"]))) {
 		$configcache->nls->default = $sitenls;
 		$url = $this->data->url_list["nls"][$sitenls];
 	}
