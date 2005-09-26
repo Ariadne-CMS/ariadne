@@ -42,7 +42,7 @@ class proxystore {
 		types.
 
 	 **********************************************************************************/
-		debug("proxystore($key)","store");
+		// disabled debug("proxystore($key)","store");
 		$this->key = &$key;
 		$this->root = &$AR->stores[$key]->root;
 		$this->rootoptions=&$AR->stores[$key]->rootoptions;
@@ -55,7 +55,7 @@ class proxystore {
 
 		// we don't want to leak information
 		unset($this->code);
-		debug("proxystore: end","all");
+		// disabled debug("proxystore: end","all");
 	}
 
 	function createproxy(&$store,&$config){
@@ -74,9 +74,9 @@ class proxystore {
 
 	function get_config($field) {
 	global $AR;
-		debug("proxy::get_config($field)", "store");
+		// disabled debug("proxy::get_config($field)", "store");
 		$result = $AR->stores[$this->key]->get_config($field);
-		debug("proxy::get_config: end", "all");
+		// disabled debug("proxy::get_config: end", "all");
 		return $result;
 	}
 
@@ -102,37 +102,37 @@ class proxystore {
 	 **********************************************************************************/ 
 
 		global $AR;
-		debug("proxycall($template, $args, [list])","store");
+		// disabled debug("proxycall($template, $args, [list])","store");
 		$result = &$AR->stores[$this->key]->call($template, $args, $objects);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxycall: end","all");
+		// disabled debug("proxycall: end","all");
 		return $result;
 	}
 
 	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) {
 		global $AR;
-		debug("proxynewobject($path, $parent, $type, [data], $id, $lastchanged, $vtype,$size, $priority)","all");
+		// disabled debug("proxynewobject($path, $parent, $type, [data], $id, $lastchanged, $vtype,$size, $priority)","all");
 		$result= &$AR->stores[$this->key]->newobject($path, $parent, $type, $data, $id, $lastchanged, $vtype, $size, $priority);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxynewobject: end","all");
+		// disabled debug("proxynewobject: end","all");
 		return $result;
 	}
 
 	function is_supported($feature) {
 		global $AR;
-		debug("proxy::is_supported($feature)", "all");
+		// disabled debug("proxy::is_supported($feature)", "all");
 		$result= &$AR->stores[$this->key]->is_supported($feature);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxy::is_supported: $result: end","all");
+		// disabled debug("proxy::is_supported: $result: end","all");
 		return $result;
 	}
 
 	function format_for_fti($text) {
 		global $AR;
-		debug("proxy::format_for_fti([text])", "all");
+		// disabled debug("proxy::format_for_fti([text])", "all");
 		$result= &$AR->stores[$this->key]->format_for_fti($text);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxy::format_for_fti: end","all");
+		// disabled debug("proxy::format_for_fti: end","all");
 		return $result;
 	}
 
@@ -149,19 +149,19 @@ class proxystore {
 
 	 **********************************************************************************/
 		global $AR;
-		debug("proxyget($path)","store");
+		// disabled debug("proxyget($path)","store");
 		$result= &$AR->stores[$this->key]->get($path);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxyget: end","all");
+		// disabled debug("proxyget: end","all");
 		return $result;
 	}
 
 	function touch($id, $timestamp = -1) {
 		global $AR;
-		debug("proxy touch($path)","store");
+		// disabled debug("proxy touch($path)","store");
 		$result = &$AR->stores[$this->key]->touch($id, $timestamp);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxy touch: end","all");
+		// disabled debug("proxy touch: end","all");
 		return $result;
 	}
 	
@@ -178,10 +178,10 @@ class proxystore {
 
 	 **********************************************************************************/
 		global $AR;
-		debug("proxy ls($path)","store");
+		// disabled debug("proxy ls($path)","store");
 		$result = &$AR->stores[$this->key]->ls($path);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxy ls: end","all");
+		// disabled debug("proxy ls: end","all");
 		return $result;
 	}
 
@@ -198,10 +198,10 @@ class proxystore {
 
 	 **********************************************************************************/
 		global $AR;
-		debug("proxy parents($path)","store");
+		// disabled debug("proxy parents($path)","store");
 		$result = &$AR->stores[$this->key]->parents($path,$top);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxy parents: end","all");
+		// disabled debug("proxy parents: end","all");
 		return $result;
 	}
 
@@ -223,16 +223,16 @@ class proxystore {
 
 	 **********************************************************************************/
 		global $AR;
-		debug("proxyfind($path, [array], $limit, $offset)","store");
+		// disabled debug("proxyfind($path, [array], $limit, $offset)","store");
 		$result = &$AR->stores[$this->key]->find($path, $criteria, $limit, $offset);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxyfind: end","all");
+		// disabled debug("proxyfind: end","all");
 		return $result;
 	}
 
 	function close() {
 		// This is the destructor function, nothing much to see :)
-		debug("proxyclose()","store");
+		// disabled debug("proxyclose()","store");
 		$result = &$AR->stores[$this->key]->close();
 		$this->error = $AR->stores[$this->key]->error;
 		return $result;
@@ -278,12 +278,10 @@ class proxystore {
 
 	***************************************************************/
 		global $AR;
-		//debugon('all');
-		debug("proxysave($path, $type, [data], [properties], $vtype)","store");
+		// disabled debug("proxysave($path, $type, [data], [properties], $vtype)","store");
 		$result = $AR->stores[$this->key]->save($path, $type, $data, $properties, $vtype,$priority);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxysave: end, results=".$result."","all");
-		//debugoff();
+		// disabled debug("proxysave: end, results=".$result."","all");
 		return $result;
 	}
 
@@ -303,29 +301,29 @@ class proxystore {
 	**********************************************************************/
 
 		global $AR;
-		debug("proxypurge($path)","store");
+		// disabled debug("proxypurge($path)","store");
 		$result = $AR->stores[$this->key]->purge($path);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxypurge: end","all");
+		// disabled debug("proxypurge: end","all");
 		return $result;
 	}
 
 	function count($objects) {
 		global $AR;
-		debug("proxyinfo($objects)","store");
+		// disabled debug("proxyinfo($objects)","store");
 		$result = $AR->stores[$this->key]->count($objects);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxyinfo: end","all");
+		// disabled debug("proxyinfo: end","all");
 		return $result;
 	}
 		
 	
 	function info($objects) {
 		global $AR;
-		debug("proxyinfo($objects)","store");
+		// disabled debug("proxyinfo($objects)","store");
 		$result = $AR->stores[$this->key]->info($objects);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxyinfo: end","all");
+		// disabled debug("proxyinfo: end","all");
 		return $result;
 	}
 
@@ -340,10 +338,10 @@ class proxystore {
 	**********************************************************************/
 
 		global $AR;
-		debug("proxydelete($path)","store");
+		// disabled debug("proxydelete($path)","store");
 		$result = $AR->stores[$this->key]->delete($path);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxydelete: end","all");
+		// disabled debug("proxydelete: end","all");
 		return $result;
 	}
 
@@ -359,7 +357,7 @@ class proxystore {
 	**********************************************************************/
 
 		global $AR;
-		debug("proxyexists($path)","store");
+		// disabled debug("proxyexists($path)","store");
 		$this->error="";
 		$result = $AR->stores[$this->key]->exists($path);
 		$this->error = $AR->stores[$this->key]->error;
@@ -380,7 +378,7 @@ class proxystore {
 	**********************************************************************/
 
 		global $AR;
-		debug("proxylink($source,$destination)","store");
+		// disabled debug("proxylink($source,$destination)","store");
 		$result = $AR->stores[$this->key]->link($source, $destination);
 		$this->error = $AR->stores[$this->key]->error;
 		return $result;
@@ -395,10 +393,10 @@ class proxystore {
 	**********************************************************************/
 
 		global $AR;
-		debug("proxylist_paths($path)","store");
+		// disabled debug("proxylist_paths($path)","store");
 		$result = $AR->stores[$this->key]->list_paths($path);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxylist_paths: end","all");
+		// disabled debug("proxylist_paths: end","all");
 		return $result;
 	}
 
@@ -412,10 +410,10 @@ class proxystore {
 
 
 		global $AR;
-		debug("proxyimplements($implements)","store");
+		// disabled debug("proxyimplements($implements)","store");
 		$result = $AR->stores[$this->key]->implements($type, $implements);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxyimplements: end ($result)","all");
+		// disabled debug("proxyimplements: end ($result)","all");
 		return $result;
 	}
 	
@@ -435,10 +433,10 @@ class proxystore {
 	**********************************************************************/
 
 		global $AR;
-		debug("proxymake_path($curr_dir, $path)","all");
+		// disabled debug("proxymake_path($curr_dir, $path)","all");
 		$result = $AR->stores[$this->key]->make_path($curr_dir, $path);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxymake_path: end ($result)","all");
+		// disabled debug("proxymake_path: end ($result)","all");
 		return $result;
 	}
 
@@ -452,47 +450,47 @@ class proxystore {
 	********************************************************************/
 
 		global $AR;
-		debug("proxysave_properties([properties], $id)","all");
+		// disabled debug("proxysave_properties([properties], $id)","all");
 		$result = $AR->stores[$this->key]->save_properties($properties, $id);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxysave_properties: end","all");
+		// disabled debug("proxysave_properties: end","all");
 		return $result;
 	}
 
 
 	function load_properties($object, $values="") {
 		global $AR;
-		debug("proxyload_properties($object)","all");
+		// disabled debug("proxyload_properties($object)","all");
 		$result = $AR->stores[$this->key]->load_properties($object,$values);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxyload_properties: end","all");
+		// disabled debug("proxyload_properties: end","all");
 		return $result;
 	}
 
 	function load_property($object, $property, $values="") {
 		global $AR;
-		debug("proxyload_property($object, $property)","all");
+		// disabled debug("proxyload_property($object, $property)","all");
 		$result = $AR->stores[$this->key]->load_property($object, $property,$values);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxyload_property: end","all");
+		// disabled debug("proxyload_property: end","all");
 		return $result;
 	}
 
 	function add_property($object, $property, $values) {
 		global $AR;
-		debug("proxyadd_property($object, $property, [values])","all");
+		// disabled debug("proxyadd_property($object, $property, [values])","all");
 		$result = $AR->stores[$this->key]->add_property($object, $property, $values);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxyadd_property: end","all");
+		// disabled debug("proxyadd_property: end","all");
 		return $result;
 	}
 
 	function del_property($object, $property="", $values="") {
 		global $AR;
-		debug("proxydel_property($object, $property, [values])","all");
+		// disabled debug("proxydel_property($object, $property, [values])","all");
 		$result = $AR->stores[$this->key]->del_property($object, $property, $values);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxydel_property: end","all");
+		// disabled debug("proxydel_property: end","all");
 		return $result;
 	}
 
@@ -504,10 +502,10 @@ class proxystore {
 
 	function get_nextid($path, $mask="{5:id}") {
 		global $AR;
-		debug("proxy::get_nextid($path, $mask)","all");
+		// disabled debug("proxy::get_nextid($path, $mask)","all");
 		$result = $AR->stores[$this->key]->get_nextid($path, $mask);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxy::get_nextid: end","all");
+		// disabled debug("proxy::get_nextid: end","all");
 		return $result;
 	}
 
@@ -520,10 +518,10 @@ class proxystore {
 
 	**********************************************************************/
 		global $AR;
-		debug("proxyset_nextid($path, $newid)","all");
+		// disabled debug("proxyset_nextid($path, $newid)","all");
 		$result = $AR->stores[$this->key]->set_nextid($path,$newid);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxyset_nextid: end","all");
+		// disabled debug("proxyset_nextid: end","all");
 		return $result;
 	}
 
@@ -538,10 +536,10 @@ class proxystore {
 
 		
 		global $AR;
-		debug("proxynextid($path)","all");
+		// disabled debug("proxynextid($path)","all");
 		$result = $AR->stores[$this->key]->nextid($path);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxynextid: end","all");
+		// disabled debug("proxynextid: end","all");
 		return $result;
 	}
 
@@ -553,10 +551,10 @@ class proxystore {
 
 	**********************************************************************/
 		global $AR;
-		debug("proxy_move($source, $destination)","all");
+		// disabled debug("proxy_move($source, $destination)","all");
 		$result = $AR->stores[$this->key]->move($source,$destination);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxy_move: end","all");
+		// disabled debug("proxy_move: end","all");
 		return $result;
 	}
 
@@ -567,10 +565,10 @@ class proxystore {
 
 	**********************************************************************/
 		global $AR;
-		debug("proxy_store_run_query($query)","all");
+		// disabled debug("proxy_store_run_query($query)","all");
 		$result = $AR->stores[$this->key]->store_run_query($query);
 		$this->error = $AR->stores[$this->key]->error;
-		debug("proxy_store_run_query: end","all");
+		// disabled debug("proxy_store_run_query: end","all");
 		return $result;
 	}
 
