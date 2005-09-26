@@ -627,7 +627,7 @@ class pobject extends object { // pobject class definition
 				}
 			}
 		} else {
-			$url=$AR->root.$rootoptions.$path;
+			$url=$AR->host.$AR->root.$rootoptions.$path;
 		}
 		return $url;			
 	}
@@ -1376,7 +1376,7 @@ class pobject extends object { // pobject class definition
 				if ($dir=@dir($fpath)) {
 					while (false !== ($entry = $dir->read())) {
 						if ($entry!="." && $entry!="..") {
-							if (filetype($fpath.$entry)!="dir") {
+							if (is_file($fpath.$entry)) {
 								@unlink($fpath.$entry);
 								@unlink($hpath.$entry);
 							} else if ( $recurse && !$recursed[$entry]) {
