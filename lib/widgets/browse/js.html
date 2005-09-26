@@ -11,13 +11,13 @@ function Browse(resultobject, path, name, title, mode, filter, filename) {
     filter='';
   }
   if (top.Get) {
-    dprops=top.Get('browsewindow');
+    var dprops=top.Get('browsewindow');
   } else if (top.window.opener && top.window.opener.top.Get) {
-    dprops=top.window.opener.top.Get('browsewindow');
+    var dprops=top.window.opener.top.Get('browsewindow');
   } else {
-    dprops='';
+    var dprops='';
   }
-  startpath='<?php
+  var startpath='<?php
        if ($this->exists($this->path)) { // sometimes, even i do not exist
          $path=$this->path;
        } else {
@@ -38,7 +38,7 @@ function Browse(resultobject, path, name, title, mode, filter, filename) {
       wgBrowseResult.value=arr['path'];
     }
   } else {
-    browsewindow=window.open(
+    var browsewindow=window.open(
       '<?php
          if ($this->exists($this->path)) { // sometimes, even i do not exist
            $path=$this->path;
