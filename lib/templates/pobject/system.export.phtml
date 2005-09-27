@@ -279,8 +279,8 @@
 				}
 
 			}
-			display("clearing cache.\n");
 			if ($ARCurrent->AXAction == "import") {
+				display("clearing cache.\n");
 				$ARCurrent->importStore->call("system.cache.clear.phtml", 
 						Array(
 							"private" => true,
