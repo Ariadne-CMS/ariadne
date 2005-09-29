@@ -131,7 +131,7 @@
 				$col=1;
 				echo "</tr><tr valign='top'>";
 			}
-			$icon=$AR->dir->images."icons/".$realtype.'_open.gif';
+			$icon=$AR->dir->images."icons/".$type.'_open.gif';
 ?>
 				<td valign="top" align="center" width="<?php echo (100/$cols); ?>%">
 					<a <?php echo $class; ?> href="#" onClick="return View('<?php echo $currentpath.$arReturnTemplate; ?>?arNewType=<?php echo RawUrlEncode($type)."&".ldGetServerVar("QUERY_STRING"); ?>');">
