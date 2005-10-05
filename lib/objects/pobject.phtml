@@ -1625,7 +1625,7 @@ class pobject extends object { // pobject class definition
 			if (!$matches[1]) {
 				$url="http://".$url;
 			}
-			$connection = fsockopen( $host, $port, $errno, $errstr, 120); 
+			$connection = @fsockopen( $host, $port, $errno, $errstr, 120); 
 			if( $connection ) { 
 				if( strtoupper($method) == "GET" ) { 
 					if ($data) {
