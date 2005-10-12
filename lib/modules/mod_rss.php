@@ -137,6 +137,7 @@
 				case 'item':
 				case 'rss':
 				case 'channel':
+				case 'image':
 				break;
 				default:
 					if (!$element) {
