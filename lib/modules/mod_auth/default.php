@@ -150,6 +150,9 @@
 					debug("checkLogin: starting new session", "all");
 					ldStartSession();
 					$result = $this->authUser($login, $password);
+					if ($result !== true) {
+						$this->getUser('public');
+					}
 				}
 			} else {
 				if ($ARCurrent->session) {
