@@ -127,6 +127,9 @@
 							$ARCurrent->session->get("ARLogin") == "public") {
 						debug("checkLogin: logging into a public session (".$ARCurrent->session->id.")", "all");
 						$result = $this->authUser($login, $password);
+						if ($result !== true) {
+							$this->getUser('public');
+						}
 					} else {
 						if (ldCheckCredentials($login)) {
 							debug("checkLogin: succesfully logged into private session (".$ARCurrent->session->id.")", "all");
