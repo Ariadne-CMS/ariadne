@@ -193,7 +193,17 @@ function insertTab(event,obj) {
 		<td>
 			<select name="newtype">
 			<?php
-				$this->ls("/system/ariadne/types/", "show.option.value.phtml","selected=$type");
+				//$this->ls("/system/ariadne/types/", "show.option.value.phtml","selected=$type");
+				$this->call('typetree.ini');
+				asort($ARCurrent->arTypeNames);
+				foreach ($ARCurrent->arTypeNames as $typeValue => $typeName) {
+					if ($type == $typeValue) {
+						$selected = " selected";
+					} else {
+						$selected = "";
+					}
+					echo "<option value=\"$typeValue\"$selected>$typeName</option>\n";
+				}
 			?>
 			</select>
 		</td><td>
