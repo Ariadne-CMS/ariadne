@@ -290,8 +290,8 @@ function window_onload() {
 		tbContentElement.contentWindow.document.body.oncontextmenu=showContextMenu;
 		tbContentElement.onscroll = tableEdit_onScroll;
 
-		if (tbContentElement.onLoadHandler) {
-			tbContentElement.onLoadHandler();
+		if (tbContentElement.contentWindow.onLoadHandler) {
+			tbContentElement.contentWindow.onLoadHandler();
 		}
 
 		document.getElementById("StandardToolbar").style.visibility = "visible";
