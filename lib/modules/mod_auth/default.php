@@ -168,6 +168,8 @@
 					} else
 					if ($ARCurrent->session->get("ARSessionTimedout", 1)) {
 						debug("checkLogin: session has been timedout, forcing login", "all");
+						// become public
+						$this->getUser('public');
 						$result = LD_ERR_SESSION;
 					} else {
 						$cookie = ldGetCredentials();
@@ -213,7 +215,6 @@
 					}
 				}
 			}
-
 			return $result;
 		}
 	}
