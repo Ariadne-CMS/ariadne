@@ -22,6 +22,13 @@
 		$properties = Array();
 
 		$scenario=$this->getdata("scenario","none");
+		if( !$scenario ){
+			$scenarioObj = $this->get("/system/newspaper/scenarios/news/", "system.get.phtml");
+			if( $scenarioObj ){
+				$scenario = "/system/newspaper/scenarios/news/";
+			}
+		}
+
 		if ($scenario && $this->exists($scenario)) {
 			if ($displays=current($this->get($scenario, "system.get.displays.phtml"))) {
 				$this->data->priority=$displays->data->priority;
