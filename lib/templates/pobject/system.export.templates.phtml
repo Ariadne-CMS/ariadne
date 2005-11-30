@@ -30,6 +30,7 @@ global $ARBeenHere;
 						while (is_array($functions) && (list($function, $languages)=each($functions))) {
 							while (is_array($languages) && (list($language, $file)=each($languages))) {
 								display("	template [$type][$function][$language]\n");
+								$tmtime = $orig_filestore->mtime($this->id, "$type.$function.$language.pinp");
 								$tdata = $orig_filestore->read($this->id, "$type.$function.$language.pinp");
 
 								if ($this->data->config->templates[$type][$function][$language]) {
@@ -45,7 +46,8 @@ global $ARBeenHere;
 													"function" => $function,
 													"language" => $language,
 													"template" => $tdata,
-													"default" => $default
+													"default" => $default,
+													"mtime" => $tmtime
 												));
 								}
 
@@ -60,6 +62,7 @@ global $ARBeenHere;
 										$this->newObject->data->config->templates[$type][$function][$language] = $this->newObject->id;
 									}
 									$new_filestore->write($tdata, $this->newObject->id, "$type.$function.$language.pinp");
+									$new_filestore->touch($this->newObject->id, "$type.$function.$language.pinp", $tmtime);
 								}
 
 								if ($this->newObject->error) {
