@@ -7,7 +7,9 @@
 		$this->data = current($this->get($this->path, "system.get.data.phtml"));
 		$this->data->config->owner = $user->data->login;
 		$this->data->config->owner_name = $user->data->name;
-		$this->save();
+		$properties = Array();
+		$properties['owner'][0]['value'] = "'".AddSlashes($user->data->login)."'";
+		$this->save($properties);
 	}
   }
 ?>
