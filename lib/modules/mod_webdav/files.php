@@ -7,10 +7,57 @@
 			$this->store = $webdav->store;
 		}
 
+		function path_escape_callback($char) {
+			// Replaces characters in the path with their number. 
+			// Quite similar to " " -> "%20" for HTML escape, but we use _ instead of %
+			// This function is to be used as a callback for preg_replace_callback
+			if ($char[0]) {
+				if ($char[0] == '_') {
+					return '__';
+				} else {
+					return '_'.dechex(ord($char[0]));
+				}
+			}
+		}
+
+		function path_escape($path) {
+			// This function will return an escaped path. All the characters not supported by Ariadne will be encoded.
+			// See also path_escape_callback
+
+			// Returns an empty string if no path, or an empty path was given.
+			$result = "";
+			if ($path) {
+				debug("webdav:files unescaped path: $path");
+				$result = preg_replace_callback(
+					'/[^\/A-Za-z0-9.-]/', 
+					create_function(
+						// Replaces characters in the path with their number. 
+						// Quite similar to " " -> "%20" for HTML escape, but we use _ instead of %
+						// This function is to be used as a callback for preg_replace_callback
+						'$char',
+						'if ($char[0]) {'.
+						'	if ($char[0]=="_") {'.
+						'		return "__"; '.
+						'	} else {'.
+						'		return "_".dechex(ord($char[0]));'.
+						'	}'.
+						'}'
+					),
+					$path
+				);
+			}
+			debug("webdav:files escaped path: $result");
+			return $result;
+		}
+
 		function make_path($curr_dir, $path) {
 			debug("webdav:files:make_path($curr_dir, $path)");
+			$curr_dir = urldecode($curr_dir);
+			$path = urldecode($path);
 			$path = $this->store->make_path($curr_dir, $path);
-			$result = eregi_replace('[^.a-z0-9/_-]', '_', $path);
+			// $result = eregi_replace('[^.a-z0-9/_-]', '_', $path);
+
+			$result = WebDAV_files::path_escape($path);
 			debug("webdav:files:make_path [$result]");
 			return $result;
 		}
@@ -136,10 +183,11 @@
 
 
 		function move($options) {
+			debug("webdav:move: source(".$options['path'].") dest(".$options['dest'].")");
 			$path = $this->make_path($options['path']);
 			$parent = $this->make_path($options['path'], '..');
 			$dest = $this->make_path($options['dest']);
-			$dparent = $this->store->make_path($dest, '..');
+			$dparent = $this->store->make_path($options['dest'], '..');
 			debug("webdav:files:move ($path to $dest)");
 
 			if (isset($options['dest_url'])) {

@@ -17,6 +17,54 @@
 			debug("webdav: init done");
 		}
 
+		function path_unescape($path) {
+			$result = "";
+			if ($path) {
+				debug("webdav: escaped path: $path");
+				$result = preg_replace_callback(
+					'/(_[0-9a-fA-F][0-9a-fA-F]|__)/', 
+					create_function(
+						'$matches', 
+						// Two types of escaped characters can be here, the
+						// underscore or other characters. Check for the
+						// underscore first.
+
+						'$char = $matches[0];'.
+						'if ($char[1] == "_") {'.
+						// It is the underscore, return it as a character.
+						'	return "_";'.
+						'}'.
+
+						// Assume it is an escaped character here. Find the
+						// numbers in hex, turn them back to decimal, get
+						// the corresponding character and return it.
+			
+						'return chr(hexdec(substr($char, 1, 2)));'			
+					),
+					$path
+				);
+			}
+			debug("webdav: unescaped path: $result");
+			return $result;
+		}
+
+		function path_unescape_callback($char) {
+			// Two types of escaped characters can be here, the
+			// underscore or other characters. Check for the
+			// underscore first.
+
+			if ($char[1] == "_") {
+				// It is the underscore, return it as a character.
+				return "_";
+			}
+
+			// Assume it is an escaped character here. Find the
+			// numbers in hex, turn them back to decimal, get
+			// the corresponding character and return it.
+
+			return chr(hexdec(substr($char, 1, 2)));			
+		}
+
 		function check_auth($type, $user, $pass) {
 		global $AR, $ARCurrent, $auth_config;
 			debug("webdav:check_auth  $type:$user:$pass;");
@@ -65,10 +113,16 @@
 			$props = $list['props'];
 			if (is_array($props)) {
 				foreach ($props as $name => $val) {
+					debug("webdav:get_info $name:$val");
+					if ($name == 'displayname') {
+						$val = Ariadne_WebDAV_Server::path_unescape($val);
+						debug("webdav:get_info unescaped $val");
+					}
 					$result['props'][] = $this->mkprop($name, $val);
 				}
 			}
-			$result['path'] = $list['path'];
+			$result['path'] = Ariadne_WebDAV_Server::path_unescape($list['path']);
+		//	$result['path'] = $list['path'];
 			return $result;
 		}
 
