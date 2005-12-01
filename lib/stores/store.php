@@ -294,6 +294,13 @@ class store {
 		true if this feature is supported and false otherwise
 	**********************************************************************************/
 		switch($feature) {
+			case 'fulltext_boolean':
+				if ($this->config["fulltext_boolean"]) {
+					$result = true;
+				} else {
+					$result = false;
+				}
+			break;
 			case 'fulltext':
 				if ($this->config["fulltext"]) {
 					$result = true;
