@@ -22,7 +22,7 @@
 
 	function SetDate(name, date, formatted) {
 		wgDateForm[name].value=date;
-		wgDateForm[name+'formatted'].value=formatted;
+		wgDateForm['formatted'+name].value=formatted;
 		if (top.registerChange) {
 			if (!top.arFieldRegistry[wgDateForm[name].id]) {
 				top.registerDataField(wgDateForm[name].id,name,'<?php echo $this->path; ?>',<?php echo $this->id; ?>);

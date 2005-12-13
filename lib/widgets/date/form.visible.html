@@ -19,7 +19,7 @@
     $wgDateSize=10;
   }
 ?>
-<input type="text" name="<?php echo $wgDateName; ?>formatted" id="<?php echo $wgDateName;?>formatted" value="<?php 
+<input type="text" name="formatted<?php echo $wgDateName; ?>" id="formatted<?php echo $wgDateName;?>" value="<?php 
   echo strftime($wgDateFormat, $wgDate); 
 ?>" size="<?php echo $wgDateSize; ?>" class="editable_border"<?php
   if ($wgDateTitle) {
