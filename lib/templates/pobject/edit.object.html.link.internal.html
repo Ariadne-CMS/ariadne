@@ -58,6 +58,9 @@ BODY 	{
 .wgBrowseButton {
 		width: 75px;
 }
+.checkbox {
+	width: auto;
+}
 </style>
 <SCRIPT LANGUAGE=JavaScript>
 <!--
@@ -104,6 +107,13 @@ BODY 	{
 			case "name":
 				document.forms[0]['name'].value = top.window.dialogArguments["name"];
 				break;
+			case "target":
+				if (document.forms[0]['target'].value == top.window.dialogArguments["target"]) {
+					document.forms[0]['target'].checked=true;
+				} else {
+					document.forms[0]['target'].checked=false;
+				}
+				break;
 			case "ar_type":
 			case "ar:type":
 				var ar_type = top.window.dialogArguments[elem];
@@ -135,7 +145,7 @@ BODY 	{
 			?>
 		</select></td>
 		<td><?php echo $ARnls["language"]; ?>:</td>
-		<td colspan="3">
+		<td>
 			<select class="langselect" name="ar_nls">
 			<option value="none"><?php echo $ARnls["none"]; ?></option>
 			<?php
@@ -157,7 +167,8 @@ BODY 	{
 		</td>
 	</tr><tr>
 		<td><?php echo $ARnls["name"]; ?>:</td>
-		<td colspan="3"><input type="text" name="name" value="" class="name"></td>
+		<td><input type="text" name="name" value="" class="name"></td>
+		<td colspan="2" style="width: 140px;"><input type="checkbox" name="target" value="_blank" class="checkbox"><?php echo $ARnls["openinpopup"]; ?></td>
 	</tr>
 </form>
 </table>

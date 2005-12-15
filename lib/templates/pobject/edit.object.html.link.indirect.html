@@ -47,6 +47,9 @@ BODY 	{
 .name {
 	width: 90px;
 }
+.checkbox {
+	width: auto;
+}
 </style>
 <SCRIPT LANGUAGE=JavaScript>
 <!--
@@ -82,6 +85,13 @@ BODY 	{
 					}
 				}						
 				break;				
+			case "target":
+				if (document.forms[0]['target'].value == top.window.dialogArguments["target"]) {
+					document.forms[0]['target'].checked=true;
+				} else {
+					document.forms[0]['target'].checked=false;
+				}
+				break;
 			case "ar_affiliate_HOST":
 			case "ar:affiliateHOST":
 				document.forms[0]['ar_affiliate_HOST'].value = top.window.dialogArguments[elem];
@@ -123,7 +133,8 @@ BODY 	{
 		<td colspan="3"><INPUT ID="ar_affiliate_URL" TYPE=TEXT NAME="ar_affiliate_URL" value="<?php echo $URL; ?>" class="url"></td>
 	</tr><tr>
 		<td><?php echo $ARnls["name"]; ?>:</td>
-		<td colspan="3"><input type="text" name="name" value="" class="name"></td>
+		<td><input type="text" name="name" value="" class="name"></td>
+		<td colspan="2" style="width: 140px;"><input type="checkbox" name="target" value="_blank" class="checkbox"><?php echo $ARnls["openinpopup"]; ?></td>
 	</tr>
 </form>
 </table>

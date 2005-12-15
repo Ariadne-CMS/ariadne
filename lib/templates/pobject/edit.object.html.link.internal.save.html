@@ -12,12 +12,16 @@
 	function doSubmit() {
 		var arr = new Array();
 		arr["attributes"]=new Array();
-        arr["attributes"][0] = new attribute('ar:type','internal');
-        arr["attributes"][1] = new attribute('ar:path','<?php echo $ar_path; ?>');
+		arr["attributes"][0] = new attribute('ar:type','internal');
+		arr["attributes"][1] = new attribute('ar:path','<?php echo $ar_path; ?>');
 		arr["attributes"][2] = new attribute('ar:nls','<?php echo $ar_nls; ?>');
 		var name = '<?php echo $name; ?>';
 		if (name) {
 			arr['name'] =  name;
+		}
+		var target = '<?php echo $target; ?>';
+		if (target) {
+			arr['attributes'][3]=new attribute('target',target);
 		}
 		<?php
 			if ($ar_nls == 'none') {

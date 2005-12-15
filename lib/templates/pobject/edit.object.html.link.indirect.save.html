@@ -18,6 +18,10 @@
 		arr["attributes"][1] = new attribute('ar:affiliateHOST','<?php echo $ar_affiliate_HOST; ?>');
 		arr["attributes"][2] = new attribute('ar:affiliateURL','<?php echo $ar_affiliate_URL; ?>');
 		arr["URL"] = '<?php echo $settings["affiliate_prefix"].RawUrlEncode($ar_affiliate_URL); ?>';
+		var target = '<?php echo $target; ?>';
+		if (target) {
+			arr['attributes'][3]=new attribute('target',target);
+		}
 		top.window.returnValue = arr;
 		top.window.close();
 	}

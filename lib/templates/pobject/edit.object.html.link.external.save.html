@@ -17,6 +17,10 @@
 		if (name) {
 			arr['name'] =  name;
 		}
+		var target = '<?php echo $target; ?>';
+		if (target) {
+			arr['attributes'][1]=new attribute('target',target);
+		}
 		var url = '<?php echo $URL; ?>';
 		if (url) {
 			arr["URL"] = url;
