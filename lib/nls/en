@@ -360,7 +360,7 @@
 	$ARnls["grants_local"]					=	"Current object only";
 	$ARNls["grants_modifiers"]				=	"Modifiers";
 	$ARnls["explain"]						=	"Explain";
-	$ARnls["selectexporttype"]						=	"Select your export type";
-
+	$ARnls["selectexporttype"]				=	"Select your export type";
+	$ARnls["openinpopup"]					=	"Open in Popup";
 	$ARnls["tinymce"]						=	"tinyMCE";
 ?>
