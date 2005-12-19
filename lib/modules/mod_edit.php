@@ -77,6 +77,7 @@
 							echo " selected";
 						}
 					} else {
+						echo " value=\"$value\"";
 						if ($value==$var) {
 							echo " selected";
 						}
