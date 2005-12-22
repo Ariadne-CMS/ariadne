@@ -75,7 +75,9 @@
   }
   if ($wgWizAction=="save") {
     $wgWizTemplate=$wgWizFlow[0]['save'];
-    $wgWizSaveButton=false;
+//	Don't disable the save button, even in save mode, because sometimes you
+//  need to display a confirm message, like pcalitem.
+//    $wgWizSaveButton=false;
   } else if ($wgWizAction=="cancel") {
     $wgWizTemplate=$wgWizFlow[0]['cancel'];
   } else if ($wgWizShowSections) {
