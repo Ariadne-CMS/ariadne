@@ -101,11 +101,22 @@ BODY 	{
 				<td><?php echo $ARnls["e_hyperlink_type"]; ?>:</td>
 				<td><select name="ar_type" class="layout" onChange="doChangeType(this.options[this.selectedIndex].value);">
 					<?php
-						$type="edit.object.html.link.external.html";
-						while (list($key, $value)=each($settings["hyperlink"])) {
-							echo "<option value=\"$value\"";
-							if ($value==$type) { echo " selected"; }
-							echo ">$key</option>";
+						if (is_array($settings["hyperlink_names"])) {
+							$type="external";
+							reset($settings["hyperlink_names"]);
+							while (list($key, $value)=each($settings["hyperlink_names"])) {
+								echo "<option value=\"".$settings["hyperlink"][$key]."\"";
+								if ($key==$type) { echo " selected"; }
+								echo ">$value</option>";
+							}
+						} else {
+							$type="edit.object.html.link.external.html";
+							reset($settings["hyperlink"]);
+							while (list($key, $value)=each($settings["hyperlink"])) {
+								echo "<option value=\"$value\"";
+								if ($value==$type) { echo " selected"; }
+								echo ">$key</option>";
+							}
 						}
 					?>
 				</select></td>
