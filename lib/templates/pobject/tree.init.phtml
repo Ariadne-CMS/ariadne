@@ -26,7 +26,7 @@
 					<?php
 						// also show links below a profile user object if a profile is set
 						if($profile=$this->getdata("profile","none")){
-							$pquery=" OR object.parent = '".addslashes($profile)."'";
+							$pquery=" OR ( object.parent = '".addslashes($profile)."' and object.path != '".addslashes($profile."static/")."' ) ";
 						}
 						$criteria="(object.parent = '".addslashes($this->path)."'".$pquery.") and (object.implements =  'pdir' OR object.type = 'pshortcut')";
 						if ($folders=$this->find("/",$criteria,"system.get.folder.phtml",$args)) {
