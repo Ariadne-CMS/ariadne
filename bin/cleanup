@@ -24,7 +24,7 @@
 
 	/* purge all expired sessions */
 	while (count($sessionstore->call("system.expire.phtml","",
-				$sessionstore->find("/", $query))) >= 100);
+				$sessionstore->find("/", $query,0))) >= 100);
 
 	echo $sessionstore->total." expired sessions removed.\n";
 	$sessionstore->close();
