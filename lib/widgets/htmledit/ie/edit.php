@@ -1031,7 +1031,7 @@ function DECMD_HYPERLINK_onclick()
     this path should always exist.
 	*/ 
 	arr = showModalDialog(tbContentEditOptions["dialogpath"] + 
-		"edit.object.html.link.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:13em; status: no; resizable: yes;");
+		"edit.object.html.link.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:16em; status: no; resizable: yes;");
 	if (arr != null){
 		var newLink='<a';
 		if (arr['URL']) {

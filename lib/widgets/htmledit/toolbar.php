@@ -829,7 +829,7 @@ function DECMD_HYPERLINK_onclick() {
 	here popup your own dialog, pass the arg array to that, get what the user
 	entered there and come back here
 	*/ 
-	arr = showModalDialog( "edit.object.html.link.phtml", args,	"font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:13em; status: no; resizable: yes;");
+	arr = showModalDialog( "edit.object.html.link.phtml", args,	"font-family:Verdana; font-size:12; dialogWidth:32em; dialogHeight:16em; status: no; resizable: yes;");
 	if (arr != null){
 		// register change in the editable field, since the focus was already lost through the dialog
 		var editField=getEditableField();
