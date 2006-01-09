@@ -382,6 +382,7 @@ class store {
 				switch($pathticle) {
 					case ".." : $result=dirname($result);
 								$result .= ($result{1})?'/':'';
+								$result{0} = '/'; //windows related fix
 								break;
 					case "." : break;
 					case ""	 : break;
