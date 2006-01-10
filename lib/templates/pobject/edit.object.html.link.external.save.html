@@ -21,7 +21,7 @@
 		if (target) {
 			arr['attributes'][1]=new attribute('target',target);
 		}
-		var url = '<?php echo $URL; ?>';
+		var url = '<?php echo AddCSlashes($URL,ARESCAPE); ?>';
 		if (url) {
 			arr["URL"] = url;
 		}
