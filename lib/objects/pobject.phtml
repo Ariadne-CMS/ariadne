@@ -600,12 +600,15 @@ class pobject extends object { // pobject class definition
 		$object_path=$this->path;
 		$path=$this->make_path($path);
 
+		// now run CheckConfig and get the parentsite of the path found
+		if (!$temp_config=$ARConfig->cache[$path]) {
+			$temp_site=current($this->get($path, "system.get.site.phtml"));
+			$temp_config=$ARConfig->cache[$temp_site];
+		}
+		if ($AR->host == $temp_config->root["value"]) {
+			$keephost = false;
+		}
 		if (!$keephost) {
-			// now run CheckConfig and get the parentsite of the path found
-			if (!$temp_config=$ARConfig->cache[$path]) {
-				$temp_site=current($this->get($path, "system.get.site.phtml"));
-				$temp_config=$ARConfig->cache[$temp_site];
-			}
 			if ($nls) {
 				$url=$temp_config->root["list"]["nls"][$nls];
 				if ($url) {
@@ -1033,8 +1036,11 @@ class pobject extends object { // pobject class definition
 		return $config;
 	}
 
-	function getPinpTemplate($arCallFunction='view.html', $path=".", $inLibrary=false) {
+	function getPinpTemplate($arCallFunction='view.html', $path=".", $top="", $inLibrary=false) {
 	global $ARCurrent, $ARConfig, $AR;
+		if (!$top) {
+			$top = '/';
+		}
 		$result = Array();
 		if (strpos($arCallFunction,"::")!==false) {
 			// template of a specific class defined via call("class::template");
@@ -1105,7 +1111,7 @@ class pobject extends object { // pobject class definition
 			if ($ARConfig->libraries[$checkpath] && !$arTemplateId) {
 				foreach ($ARConfig->libraries[$checkpath] as $library => $path) {
 					if (is_int($library)) {
-						$template = $this->getPinpTemplate($arCallFunction, $path, true);
+						$template = $this->getPinpTemplate($arCallFunction, $path, '', true);
 						if ($template["arTemplateId"]) {
 							extract($template);
 							$arLibrary = $library;
@@ -1121,6 +1127,9 @@ class pobject extends object { // pobject class definition
 
 			$lastcheckedpath=$checkpath;
 			debug("CheckConfig: checkpath = (".$checkpath.")","all");
+			if ($checkpath == $top) {
+				break;
+			}
 			$checkpath=$this->store->make_path($checkpath, "..");
 			debug("CheckConfig: after make_path  (".$checkpath.")","all");
 			$curr_templates=$ARConfig->cache[$checkpath]->templates;
@@ -1247,7 +1256,7 @@ class pobject extends object { // pobject class definition
 					debug("CheckConfig: searching for lib: '$arLibrary'; '$arCallFunction' from '".$this->path."'");
 					if ($config->libraries[$arLibrary]) {
 						//echo $config->libraries[$library];
-						$template = $this->getPinpTemplate($arCallFunction, $config->libraries[$arLibrary], true);
+						$template = $this->getPinpTemplate($arCallFunction, $config->libraries[$arLibrary], '', true);
 						$template["arLibrary"] = $arLibrary;
 						$template["arLibraryPath"] = $config->libraries[$arLibrary];
 					} else {
@@ -1257,7 +1266,10 @@ class pobject extends object { // pobject class definition
 					if (is_array($ARCurrent->shortcut_redirect)) {
 						$redir = end($ARCurrent->shortcut_redirect);
 						if ($redir["keepurl"] && (substr($this->path, 0, strlen($redir["dest"])) == $redir["dest"])) {
-							$template = $this->getPinpTemplate($arCallFunction, $this->make_path($redir["src"]));
+							$template = $this->getPinpTemplate($arCallFunction, $this->path, $redir["dest"]);
+							if (!$template["arTemplateId"]) {
+								$template = $this->getPinpTemplate($arCallFunction, $this->make_path($redir["src"]));
+							}
 						}
 					}
 					if (!$template["arTemplateId"]) {
