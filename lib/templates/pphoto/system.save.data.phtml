@@ -97,9 +97,43 @@
 				$tempfile=$this->store->get_config("files")."temp/".$tempfile;
 				if (file_exists($tempfile)) {	
 					$f_store=$this->store->get_filestore("files");
-					$f_store->copy_to_store($tempfile, $this->id, "file");
+					// check image size
+					$checksize=getimagesize($tempfile);
+					if ($checksize) {
+						$pixelsize=$checksize[0]*$checksize[1];
+						if ($AR->IM->hardLimit && ($pixelsize>$AR->IM->hardLimit)) {
+							// FIXME: generate error: picture too large
+							// problem: error message displays back button, but object is already saved,
+							// next save action will trigger 'object already exists'.
+							// $this->error=sprintf($ARnls["err:imagetoolarge"],$AR->IM->hardLimit.' Pixels');
+							$this->data->toolarge=true;
+						} else if ($AR->IM->softLimit && ($pixelsize>$AR->IM->softLimit)) {
+							$this->data->toolarge=false;
+							// generate smaller version, use that as default
+							$resizeFactor=sqrt($AR->IM->softLimit/($checksize[0]*$checksize[1]));
+							$newx=floor($resizeFactor*$checksize[0]);
+							$newy=floor($resizeFactor*$checksize[1]);
+							system($AR->IM->convert." -size ".$newx."x".$newy." ".$tempfile." -resize ".$newx."x".$newy." ".$tempfile.".scaled");
+							$originalfile=$tempfile;
+							$tempfile=$tempfile.'.scaled';
+							$f_store->copy_to_store($originalfile, $this->id, "file.original");
+						} else {
+							$this->data->toolarge=false;
+						}
+					} else {
+						// FIXME: if getimagesize fails, check filesize
+						if ($AR->IM->hardLimitBytes && filesize($tempfile)>$AR->IM->hardLimitBytes) {
+							// $this->error=sprintf($ARnls["err:imagetoolarge"],$AR->IM->hardLimitBytes.' Bytes');
+							$this->data->toolarge=true;
+						} else {
+							$this->data->toolarge=false;
+						}
+					}
+					if ($tempfile) {
+						$f_store->copy_to_store($tempfile, $this->id, "file");
+						@unlink($tempfile);
+					}
 					$f_store->close();
-					@unlink($tempfile);
 					if (!$this->data->mimetype=$this->getdata("mimetype","none")) {
 						$this->data->mimetype=$this->getdata("file_type","none");
 					}
