@@ -397,79 +397,84 @@ class pphoto extends pfile { // pphoto class definition
 
 	function build() {
 		global $AR, $ARConfig, $ARCurrent;
-		if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
-			if ($ARCurrent->cachetime==0 && !$AR->output_compression) {
-				ob_start();	// start the cache
-			}
-			$ARCurrent->cachetime=-2; // set cache to onchange
-		}
-		$this->set_context("build");
- 
-		$result=false;
-		$failed=false;
-		if (!$this->error) {
-			$tmpsrc = tempnam($this->store->get_config("files")."temp", "photo");
-                        if(  substr( strtolower($tmpsrc), -4, 4 ) == ".tmp" ) {
-                          @unlink($tmpsrc);
-                          $tmpsrc = substr($tmpsrc, 0, -4 );
-                        }
-			$tmpsrc .= ".photo";
-			$f_store=$this->store->get_filestore("files");
-			$f_store->copy_from_store($tmpsrc, $this->id, "file");
-
-			if( is_array($ARConfig->photoTempFiles[$this->id]) && is_array($ARConfig->photoTempFilesID[$this->id])) {
-				reset($ARConfig->photoTempFiles[$this->id]);
-				foreach( $ARConfig->photoTempFiles[$this->id] as $key => $tempfile){
-					$f_store->copy_from_store($tempfile, $ARConfig->photoTempFilesID[$this->id][$key], "file");
+		if (!$this->data->toolarge) {
+			if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
+				if ($ARCurrent->cachetime==0 && !$AR->output_compression) {
+					ob_start();	// start the cache
 				}
+				$ARCurrent->cachetime=-2; // set cache to onchange
 			}
+			$this->set_context("build");
+	 
+			$result=false;
+			$failed=false;
+			if (!$this->error) {
+				$tmpsrc = tempnam($this->store->get_config("files")."temp", "photo");
+							if(  substr( strtolower($tmpsrc), -4, 4 ) == ".tmp" ) {
+							  @unlink($tmpsrc);
+							  $tmpsrc = substr($tmpsrc, 0, -4 );
+							}
+				$tmpsrc .= ".photo";
+				$f_store=$this->store->get_filestore("files");
+				$f_store->copy_from_store($tmpsrc, $this->id, "file");
 
-			$f_store->close();
+				if( is_array($ARConfig->photoTempFiles[$this->id]) && is_array($ARConfig->photoTempFilesID[$this->id])) {
+					reset($ARConfig->photoTempFiles[$this->id]);
+					foreach( $ARConfig->photoTempFiles[$this->id] as $key => $tempfile){
+						$f_store->copy_from_store($tempfile, $ARConfig->photoTempFilesID[$this->id][$key], "file");
+					}
+				}
 
-			if (chdir($this->store->get_config("files").'temp/')) {
-				if (is_array($ARConfig->photoCommandStack[$this->id])) {
-					$image="";
-					foreach( $ARConfig->photoCommandStack[$this->id] as $exec_string){
-						$exec_string = str_replace('{buildfile}', $tmpsrc, $exec_string);
-						$exec_string .= " ".$tmpsrc;
-						system($exec_string,$failed);
-						if($failed){
-							break;
+				$f_store->close();
+
+				if (chdir($this->store->get_config("files").'temp/')) {
+					if (is_array($ARConfig->photoCommandStack[$this->id])) {
+						$image="";
+						foreach( $ARConfig->photoCommandStack[$this->id] as $exec_string){
+							$exec_string = str_replace('{buildfile}', $tmpsrc, $exec_string);
+							$exec_string .= " ".$tmpsrc;
+							system($exec_string,$failed);
+							if($failed){
+								break;
+							}
+							debug("executing ($exec_string)");
+							// echo( $exec_string."<br>");
 						}
-						debug("executing ($exec_string)");
-						// echo( $exec_string."<br>");
 					}
-				}
-				if (!$failed) {
-					ob_start();
-					if( substr( strtolower($tmpsrc), -6, 6 ) == ".photo" ) {
-						$tmpsrc = substr( $tmpsrc, 0, -6 );
-					}
-					if ($this->targetformat && !eregi("[^0-9a-z\._-]",$this->targetformat)) {
-						$destsrc=$tmpsrc.".".$this->targetformat;
+					if (!$failed) {
+						ob_start();
+						if( substr( strtolower($tmpsrc), -6, 6 ) == ".photo" ) {
+							$tmpsrc = substr( $tmpsrc, 0, -6 );
+						}
+						if ($this->targetformat && !eregi("[^0-9a-z\._-]",$this->targetformat)) {
+							$destsrc=$tmpsrc.".".$this->targetformat;
+						} else {
+							$destsrc=$tmpsrc;
+						}
+						readfile($destsrc);
+						$result=ob_get_contents();
+						ob_end_clean();
+						@unlink($tmpsrc);
+						@unlink($destsrc);
 					} else {
-						$destsrc=$tmpsrc;
+						$this->error=sprintf($ARnls["err:noimagemagick"],$exec_string);
 					}
-					readfile($destsrc);
-					$result=ob_get_contents();
-					ob_end_clean();
-					@unlink($tmpsrc);
-					@unlink($destsrc);
 				} else {
-					$this->error=sprintf($ARnls["err:noimagemagick"],$exec_string);
+					$this->error=sprintf($ARnls["err:changetempdirfailed"],$this->store->get_config("files"));
 				}
-			} else {
-				$this->error=sprintf($ARnls["err:changetempdirfailed"],$this->store->get_config("files"));
 			}
-		}
-		if( is_array($ARConfig->photoTempFiles[$this->id])) {
-			foreach($ARConfig->photoTempFiles[$this->id] as $tempfile){
-				@unlink($tempfile);
+			if( is_array($ARConfig->photoTempFiles[$this->id])) {
+				foreach($ARConfig->photoTempFiles[$this->id] as $tempfile){
+					@unlink($tempfile);
+				}
 			}
+			unset( $ARConfig->photoTempFiles[$this->id] );
+			unset( $ARConfig->photoTempFilesID[$this->id] );
+			unset( $ARConfig->photoCommandStack[$this->id] );
+		} else {
+			$this->error='Picture is too large to handle.';
+			$result=false;
 		}
-		unset( $ARConfig->photoTempFiles[$this->id] );
-		unset( $ARConfig->photoTempFilesID[$this->id] );
-		unset( $ARConfig->photoCommandStack[$this->id] );
 		if ($this->error) {
 			echo $this->error;
 		}
