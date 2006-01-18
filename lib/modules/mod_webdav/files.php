@@ -4,6 +4,7 @@
 		function WebDAV_files(&$webdav) {
 			debug("webdav:files:init()");
 			$this->webdav = $webdav;
+			$this->root = $webdav->root;
 			$this->store = $webdav->store;
 		}
 
@@ -55,10 +56,10 @@
 			$curr_dir = urldecode($curr_dir);
 			$path = urldecode($path);
 			$path = $this->store->make_path($curr_dir, $path);
-			// $result = eregi_replace('[^.a-z0-9/_-]', '_', $path);
-
+			if($this->root != substr($path,0,strlen($this->root))){
+				$path = substr($this->root, 0, -1).$path;
+			}
 			$result = WebDAV_files::path_escape($path);
-			debug("webdav:files:make_path [$result]");
 			return $result;
 		}
 
@@ -68,6 +69,9 @@
 			$path = $this->make_path($options['path']);
 			$parent = $this->make_path($options['path'], '..');
 			$options['path'] = $path;
+			// chop root
+			$options['path'] = substr($options['path'], strlen($this->root)-1);
+
 
 			if (!$this->store->exists($path)) {
 				debug("webdav:files:propfind $path does not exist");
@@ -81,10 +85,12 @@
 				}
 			}
 			debug("webdav:files:propfind properties");
+			/*
 			ob_start();
 				print_r($files);
 				debug(ob_get_contents());
 			ob_end_clean();
+			*/
 
 			debug("webdav:files:propfind [end]");
 			return true;
@@ -101,6 +107,9 @@
 			} else {
 				$info = current($this->store->call('webdav.files.get.info.phtml', '',
 						$this->store->get($path)));
+
+				// chop root
+				$info['path'] = substr($info['path'], strlen($this->root)-1);
 
 				ldHeader("Last-Modified: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT", $info['props']['getlastmodified']));
 				ldHeader("Content-Length: ".(int)$info['props']['getcontentlength']);
@@ -143,7 +152,7 @@
 
 		function mkcol($options) {
 			$path = $this->make_path($options['path']);
-			$parent = $this->make_path($path, '..');
+			$parent = $this->make_path($options['path'], '..');
 			$collection = substr($path, strlen($parent), -1);
 			debug("webdav:files:mkcol (($parent)/$collection)");
 
@@ -161,7 +170,7 @@
 		}
 
 		function get(&$options) {
-			$path = $this->store->make_path('/', $options['path']);
+			$path = $this->make_path('/', $options['path']);
 			debug("webdav:files:get ($path)");
 			$options['path'] = $path;
 
@@ -212,7 +221,7 @@
 			//$filename = basename($params['path']);
 			$path = $this->make_path($params['path']);
 			$filename = basename($path);
-			$parent = $this->make_path($path, '..');
+			$parent = $this->make_path($params['path'], '..');
 			$size = $params['content_length'];
 			$stream = $params['stream'];
 

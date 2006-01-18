@@ -34,6 +34,7 @@
 
 	require_once("./ariadne.inc");
 	require_once($ariadne."/configs/ariadne.phtml");
+	require_once($ariadne."/configs/webdav/default.phtml");
 	require_once($ariadne."/configs/authentication.phtml");
 	require_once($ariadne."/configs/store.phtml");
 	include_once($store_config['code']."stores/".$store_config["dbms"]."store.phtml");
@@ -53,7 +54,6 @@
 		}
 	}
 
-//debugon('pinp');
 	$PATH_INFO=$HTTP_SERVER_VARS["PATH_INFO"];
 	if (!$PATH_INFO) {
 		$PATH_INFO = '/';
@@ -123,11 +123,9 @@
 
 	register_shutdown_function("ldOnFinish");
 
-
-	$webdavserver = new Ariadne_WebDAV_Server($store);
+	$webdavserver = new Ariadne_WebDAV_Server($store,$webdav_config);
 	$webdavserver->ServeRequest();
 	
-//debugoff();
 	/* Finish execution */
 	exit;
 ?>

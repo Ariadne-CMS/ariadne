@@ -3,11 +3,13 @@
 
 	class Ariadne_WebDAV_Server extends HTTP_WebDAV_Server {
 
-		function Ariadne_WebDAV_Server( &$store ) {
+		function Ariadne_WebDAV_Server( &$store, $config ) {
 		global $ariadne;
 			debug("webdav: initting server");
 			$this->HTTP_WebDAV_Server();
 			$this->store = $store;
+			$this->config = $config;
+			$this->root = $config['root'];
 			debug("webdav: loading modules");
 
 			$this->modules = Array();
@@ -121,8 +123,7 @@
 					$result['props'][] = $this->mkprop($name, $val);
 				}
 			}
-			$result['path'] = Ariadne_WebDAV_Server::path_unescape($list['path']);
-		//	$result['path'] = $list['path'];
+			$result['path'] = Ariadne_WebDAV_Server::path_unescape(substr($list['path'], strlen($this->root)-1));
 			return $result;
 		}
 
