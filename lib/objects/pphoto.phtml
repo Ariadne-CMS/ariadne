@@ -103,7 +103,7 @@ class pphoto extends pfile { // pphoto class definition
 
 		$x=(int)$x;
 		$y=(int)$y;
-		$ARConfig->photoStack[$this->id][]=" -geometry ".$x."x".$y;
+		$ARConfig->photoStack[$this->id][]=" -size ".$x."x".$y." -geometry ".$x."x".$y;
 
 		$info=$this->getimageinfo();
 		$aspectx=$x/$info[0];
@@ -169,7 +169,7 @@ class pphoto extends pfile { // pphoto class definition
 
 		$x=(int)$x;
 		$y=(int)$y;
-		$ARConfig->photoStack[$this->id][]=" -geometry '".$x."x".$y.">'";
+		$ARConfig->photoStack[$this->id][]=" -size ".$x."x".$y." -geometry '".$x."x".$y.">'";
 
 		$info=$this->getimageinfo();
 		$aspectx=$x/$info[0];
