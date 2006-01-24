@@ -196,7 +196,7 @@
 			$path = $this->make_path($options['path']);
 			$parent = $this->make_path($options['path'], '..');
 			$dest = $this->make_path($options['dest']);
-			$dparent = $this->store->make_path($options['dest'], '..');
+			$dparent = $this->make_path($options['dest'], '..');
 			debug("webdav:files:move ($path to $dest)");
 
 			if (isset($options['dest_url'])) {
