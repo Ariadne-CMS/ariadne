@@ -122,7 +122,7 @@ debug("showfile: show; ".$this->id);
 		} else {
 			ldHeader('Pragma: no-cache');
 		}
-		if (!ldHeader("Content-type: application/x-ariadne-download")) {{
+		if (!ldHeader("Content-type: application/x-ariadne-download")) {
 			ldHeader("Content-Disposition: inline; filename=\"".$filename."\"");
 			ldHeader("Content-length:".(string)$size);
 			error( sprintf( $ARnls["err:headerssentnottext"], $this->path ) );
