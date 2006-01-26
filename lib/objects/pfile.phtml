@@ -123,11 +123,11 @@ debug("showfile: show; ".$this->id);
 			ldHeader('Pragma: no-cache');
 		}
 		if (!ldHeader("Content-type: application/x-ariadne-download")) {
-			ldHeader("Content-Disposition: inline; filename=\"".$filename."\"");
-			ldHeader("Content-length:".(string)$size);
 			error( sprintf( $ARnls["err:headerssentnottext"], $this->path ) );
 			// FROP error("headers already sent and this is not a text file (".$this->path.")");
 		} else {
+			ldHeader("Content-Disposition: inline; filename=\"".$filename."\"");
+			ldHeader("Content-length:".(string)$size);
 			$files->show($this->id, "file");
 		}
 		$files->close();
