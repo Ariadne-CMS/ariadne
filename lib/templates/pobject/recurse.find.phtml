@@ -25,18 +25,18 @@
 		if ($browser["id"]!="ns" || $browser["version"]!=4) {
 			?>
 				function addobject(path, parent, name) {
-					top.addobject(path, parent, name);
+					window.parent.addobject(path, parent, name);
 				}
 			<?php
 		}
 		$result=$this->find(".","","recurse.info.phtml","",$limit,$offset);
 		if ($result && count($result)==$limit) { // more to find
 			?>
-				window.setTimeout("top.findmore(<?php echo $offset+$limit; ?>)",500);
+				window.setTimeout("window.parent.findmore(<?php echo $offset+$limit; ?>)",500);
 			<?php
 		} else { // all done
 			?>
-				window.setTimeout("top.start();",500);
+				window.setTimeout("window.parent.start();",500);
 			<?php
 		}
 	?>
