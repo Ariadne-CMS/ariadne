@@ -139,6 +139,18 @@
 			if (!$ARCurrent->fsFunctions[$fsId][$fsName]) {
 				// template isn't in the cache, so define it... as a new function
 				$ARCurrent->fsFunctions[$fsId][$fsName]=create_function('&$this',
+					' $local = new object(); '.
+					' $local->data = &$this->data; '.
+					' $local->nlsdata = &$this->nlsdata; '.
+					' $local->path = $this->path; '.
+					' $local->parent = $this->parent; '.
+					' $local->type = $this->type; '.
+					' $local->vtype = $this->vtype; '.
+					' $local->priority = $this->priority; '.
+					' $local->id = $this->id; '.
+					' $local->lastchanged = $this->lastchanged; '.
+					' $local->size = $this->size; '.
+					' $local->this = &$this; '.
 					' ?'.'>'.
 					$this->read($fsId, $fsName).
 					'<'.'?php ');
