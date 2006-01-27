@@ -41,7 +41,7 @@
 		if ($browser["id"]!="ns" || $browser["version"]!=4) {
 			?>
 				function deletenode() {
-					top.deletenode();
+					window.parent.deletenode();
 				}
 
 			<?php
