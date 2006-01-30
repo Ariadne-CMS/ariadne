@@ -97,6 +97,12 @@ function LoadingDone() {
 function init() {
   loader=window.tree.treeload;
   treeview=window.tree.treeview;
+  <?php 
+	  $startpath = $this->getdata('path');
+	  if ($startpath) {
+		  echo 'View("'.$startpath.'");';
+	  }
+  ?>
 }
 
 loader=0;
