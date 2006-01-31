@@ -24,6 +24,7 @@
 	$ARnls["m_logoff"]						=	"Log&nbsp;uit";
 	$ARnls["m_new"]							=	"Nieuw";
 	$ARnls["m_object"]						=	"Object";
+	$ARnls["m_owner"]						=	"Eigenaar";
 	$ARnls["m_page"]						=	"Pagina";
 	$ARnls["m_preferences"]					=	"Instellingen";
 	$ARnls["m_priority"]					=	"Prioriteit";
