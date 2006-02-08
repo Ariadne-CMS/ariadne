@@ -4,7 +4,6 @@
 	 ------------------------------------------------------------------
  
 	******************************************************************/
-
 	if ((($this->arIsNewObject &&
 			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
 			$parentobj->CheckLogin("add", $this->type)) ||
@@ -28,6 +27,13 @@
 				$this->data->nls=new object;
 			}
 			$this->data->nls->default=$ARConfig->nls->default;
+
+			if ($ContentEditOptionsPath) {
+				$arEditorSettings=current($this->get($ContentEditOptionsPath, "editor.ini"));
+			} else {
+				$arEditorSettings=$this->call("editor.ini");
+			}
+
 			reset($AR->nls->list);
 			$count=0;
 			while (list($key, $value)=each($AR->nls->list)) {
@@ -48,11 +54,6 @@
 					$properties["text"][$count]["nls"]="'$key'";
 					$count++;
 					$newnlsdata->summary=$this->getdata("summary",$key);
-					if ($ContentEditOptionsPath) {
-						$arEditorSettings=current($this->get($ContentEditOptionsPath, "editor.ini"));
-					} else {
-						$arEditorSettings=$this->call("editor.ini");
-					}
 					if ($arEditorSettings) {
 						if ($arEditorSettings["htmltidy"]["enabled"]) {
 							include_once($this->store->get_config("code")."modules/mod_tidy.php");
