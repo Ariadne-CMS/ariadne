@@ -65,6 +65,20 @@
 			}
 		}
 
+		function showCheckbox($var, $name, $title, $extra='' ) {
+			if(edit::getEditMode() && $this->CheckSilent('edit')) {
+				$id=edit::registerDataField($name);
+				edit::ShowInput(0, $name, $title, 'hidden');
+				$checked = "";
+				if( $var ) {
+					$checked = "checked";
+				}
+				echo "<input name='$name' type='checkbox' class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title' value=\"1\" $extra $checked>";
+			} else if( !edit::isEmpty($var)) {
+				echo $var;
+			}
+		}
+
 		function showSelect($var, $name, $title, $list, $bykey=false, $extra='') {
 			if (edit::getEditMode() && $this->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
@@ -184,6 +198,10 @@
 
 		function _showInput($var, $name, $title, $type='text', $extra='') {
 			return edit::showInput($var, $name, $title, $type, $extra);
+		}
+
+		function _showCheckbox($var, $name, $title, $extra='' ) {
+			return edit::showCheckbox($var, $name, $title, $extra);
 		}
 
 		function _showSelect($var, $name, $title, $list, $bykey=false, $extra='') {
