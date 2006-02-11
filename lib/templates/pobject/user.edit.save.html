@@ -31,28 +31,24 @@
 		top.window.close();
 	} else {
 		var donelist=new Array();
-		var fields=top.window.opener.arFieldList;
-		if (fields && fields.length) {
-			// FIXME: this is a temporary 'fix' to make sure everything is
-			// saved. The change registry is unreliable.
-			for (var i=0; i<fields.length; i++) {
-				if (!donelist[fields[i].path+':'+fields[i].name]) {
-					donelist[fields[i].path+':'+fields[i].name]=true;
-					addFormElement('changes['+fields[i].path+']'+fields[i].name, top.window.opener.getValue(fields[i].fieldId));
-				}
-			}
-			top.window.opener.clearDirty();
-		} else {
-			if (!top.window.opener.isDirty()) {
-				alert('No changes found, page is not saved.');
-			} else {
-				while (top.window.opener.isDirty()) {
-					if (field = top.window.opener.getDirtyField()) {
-						addFormElement('changes['+field.path+']'+field.name, field.value);
+		if (!top.window.opener.isDirty()) {
+			var fields=top.window.opener.arFieldList;
+			if (fields && fields.length && confirm('No changes found, continue to save every editable field?')) {
+				for (var i=0; i<fields.length; i++) {
+					if (!donelist[fields[i].path+':'+fields[i].name]) {
+						donelist[fields[i].path+':'+fields[i].name]=true;
+						addFormElement('changes['+fields[i].path+']'+fields[i].name, top.window.opener.getValue(fields[i].fieldId));
 					}
 				}
 			}
+		} else {
+			while (top.window.opener.isDirty()) {
+				if (field = top.window.opener.getDirtyField()) {
+					addFormElement('changes['+field.path+']'+field.name, field.value);
+				}
+			}
 		}
+		top.window.opener.clearDirty();
 		document.forms[0].submit();
 	}
   }
