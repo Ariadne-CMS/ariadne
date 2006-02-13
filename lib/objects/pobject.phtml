@@ -1723,18 +1723,22 @@ class pobject extends object { // pobject class definition
 		return $contents; 
 	} 
 
-	function make_filesize( $size="" ) {
+	function make_filesize( $size="" ,$precision=0) {
 		$result = "0";
+		$suffixes = array('B','KB','MB','GB','TB','PB','EB','ZB','YB');
+
 		if( $size === "" ) {
 			$size = $this->size;
 		}
-		if ($size>1048576) {
-			$result = round(intval($size)/1048576)." M";;
-		} elseif ($size>1024) {
-			$result = round(intval($size)/1024)." KB";
-		} else {
-			$result = intval($size)." B";
+		while ( (count($suffixes) > 1) && ($size > 1024) ){
+			$size = $size / 1024;
+			array_shift($suffixes);
 		}
+		$size = round($size,$precision);
+		if($precision==0){ // compatible with the old make_filesize
+			$size = intval($size);
+		}
+		$result = $size." ".array_shift($suffixes);
 		return $result;
 	}
 
