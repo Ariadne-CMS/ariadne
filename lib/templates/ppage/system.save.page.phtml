@@ -9,9 +9,17 @@
 				$page=$htmltext;
 			}
 			if ($ContentEditOptionsPath) {
-				$arEditorSettings=current($this->get($ContentEditOptionsPath, "editor.ini"));
+				$arEditorSettings=$ARCurrent->editorSettings[$ContentEditOptionsPath];
+				if (!$arEditorSettings) {
+					$arEditorSettings=current($this->get($ContentEditOptionsPath, "editor.ini"));
+					$ARCurrent->editorSettings[$ContentEditOptionsPath]=$arEditorSettings;
+				}
 			} else {
-				$arEditorSettings=$this->call("editor.ini");
+				$arEditorSettings=$ARCurrent->editorSettings[$this->path];
+				if (!$arEditorSettings) {
+					$arEditorSettings=$this->call("editor.ini");
+					$ARCurrent->editorSettings[$this->path]=$arEditorSettings;
+				}
 			}
 			if ($arEditorSettings) {
 				if ($arEditorSettings["htmlcleaner"]["enabled"]) {

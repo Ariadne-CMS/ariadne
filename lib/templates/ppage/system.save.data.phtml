@@ -29,9 +29,17 @@
 			$this->data->nls->default=$ARConfig->nls->default;
 
 			if ($ContentEditOptionsPath) {
-				$arEditorSettings=current($this->get($ContentEditOptionsPath, "editor.ini"));
+				$arEditorSettings=$ARCurrent->editorSettings[$ContentEditOptionsPath];
+				if (!$arEditorSettings) {
+					$arEditorSettings=current($this->get($ContentEditOptionsPath, "editor.ini"));
+					$ARCurrent->editorSettings[$ContentEditOptionsPath]=$arEditorSettings;
+				}
 			} else {
-				$arEditorSettings=$this->call("editor.ini");
+				$arEditorSettings=$ARCurrent->editorSettings[$this->path];
+				if (!$arEditorSettings) {
+					$arEditorSettings=$this->call("editor.ini");
+					$ARCurrent->editorSettings[$this->path]=$arEditorSettings;
+				}
 			}
 
 			reset($AR->nls->list);
@@ -101,11 +109,13 @@
 					$ARBeenHere=Array();
 					                
 					$page=$this->getdata("page",$key);
-					if ($page!==false) {
+					if ($page!==false) { // && $AR->user->data->login!='admin') {
 						$this->call("system.save.page.phtml",Array("ContentLanguage" => $key, "page" => $page));
 					}
 				}
-				$this->ClearCache();
+//				if ($AR->user->data->login!='admin') {
+					$this->ClearCache();
+//				}
 			}
 		}
 	}
