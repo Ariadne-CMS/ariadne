@@ -815,7 +815,7 @@ function DECMD_HYPERLINK_onclick() {
 	//set a default value for your link button
 	args["URL"] = "http:/"+"/";
 	args["anchors"] = HYPERLINK_getAnchors();
-	while (oParent.tagName && oParent.tagName != 'A') {
+	while (oParent.tagName && !oParent.className.match(/\beditable\b/) && oParent.tagName != 'A') {
 		oParent = oParent.parentNode;
 	}
 	if (oParent.tagName=="A") {
