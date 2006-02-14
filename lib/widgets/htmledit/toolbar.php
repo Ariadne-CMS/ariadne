@@ -815,7 +815,10 @@ function DECMD_HYPERLINK_onclick() {
 	//set a default value for your link button
 	args["URL"] = "http:/"+"/";
 	args["anchors"] = HYPERLINK_getAnchors();
-		if (oParent.tagName=="A") {
+	while (oParent.tagName && oParent.tagName != 'A') {
+		oParent = oParent.parentNode;
+	}
+	if (oParent.tagName=="A") {
 		oATag=oParent;
 		args["URL"] = oParent.href;
 		for (var i=0; i<oParent.attributes.length; i++) {
