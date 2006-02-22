@@ -352,4 +352,5 @@
   /**************************************************************************/
   define('ARESCAPE', "'\"\\\n\r");
   define('ARCALLINGCONTEXT', 1);
+  define('ARUNNAMED',null);
 ?>
