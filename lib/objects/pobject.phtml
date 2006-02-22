@@ -859,6 +859,13 @@ class pobject extends object { // pobject class definition
 		array_push($AR->context, $context);
 	}
 
+	function setContext($context, $level=0) {
+	global $AR;
+		if (is_array($AR->context)) {
+			$AR->context[sizeof($AR->context)-(1+$level)]=$context;
+		}
+	}
+
 	function popContext() {
 	global $AR;
 		if (is_array($AR->context)) {
@@ -1036,6 +1043,34 @@ class pobject extends object { // pobject class definition
 		return $config;
 	}
 
+	function loadLibrary($name, $path) {
+		global $ARConfig;
+		$path=$this->make_path($path);
+		if ($name===ARUNNAMED) {
+			if (strstr($path, $this->path)===0) {
+				error('You cannot load an unnamed library from a child object.');
+			} else {
+				if (!$ARConfig->libraries[$this->path]) {
+					$ARConfig->libraries[$this->path]=array();
+				}
+				if (!$ARConfig->cache[$this->path]) {
+					$ARConfig->cache[$this->path]=new object();
+				}
+				if (!$ARConfig->cache[$this->path]->libraries) {
+					$ARConfig->cache[$this->path]->libraries=array();
+				}
+				array_unshift($ARConfig->libraries[$this->path],$path);
+				array_unshift($ARConfig->cache[$this->path]->libraries,$path);
+			}
+		} else if ($name && is_string($name)) {
+			$ARConfig->libraries[$this->path][$name]=$path;
+			$ARConfig->cache[$this->path]->libraries[$name]=$path;
+		} else {
+			error('Illegal library name: '.$name);
+		}
+	}
+
+
 	function getPinpTemplate($arCallFunction='view.html', $path=".", $top="", $inLibrary=false) {
 	global $ARCurrent, $ARConfig, $AR;
 		if (!$top) {
@@ -1109,21 +1144,33 @@ class pobject extends object { // pobject class definition
 				}
 			}
 			if ($ARConfig->libraries[$checkpath] && !$arTemplateId) {
+				// create a new context which will get destroyed after the
+				// end of the foreach loop
+				// this context will contain the walked-through paths so we can
+				// check if it is an endless recursion, and if so, bail out
+				// safely
+				$this->pushContext(array());
 				foreach ($ARConfig->libraries[$checkpath] as $library => $path) {
-					if (is_int($library)) {
-						$template = $this->getPinpTemplate($arCallFunction, $path, '', true);
-						if ($template["arTemplateId"]) {
-							extract($template);
-							$arLibrary = $library;
-							$arLibraryPath = $path;
-							debug("CheckConfig: found $arCallFunction in library $arLibrary", "all");
-							break; // jump out of the foreach loop
+					$context=$this->getContext();
+					if (!$context['seenLibraries'][$path]) {
+						$context['seenLibraries'][$path]=true;
+						$this->setContext($context);
+						if (is_int($library)) {
+							$template = $this->getPinpTemplate($arCallFunction, $path, '', true);
+							if ($template["arTemplateId"]) {
+								extract($template);
+								$arLibrary = $library;
+								$arLibraryPath = $path;
+								debug("CheckConfig: found $arCallFunction in library $arLibrary", "all");
+								break; // jump out of the foreach loop
+							}
 						}
+					} else {
+						debug("checkLibraries: skipping $path - recurse fault", "all");
 					}
 				}
+				$this->popContext();
 			}
-
-
 
 			$lastcheckedpath=$checkpath;
 			debug("CheckConfig: checkpath = (".$checkpath.")","all");
@@ -2279,6 +2326,10 @@ class pobject extends object { // pobject class definition
 
 	function _loadConfig($path='') {
 		return $this->loadConfig($path);
+	}
+
+	function _loadLibrary($name, $path) {
+		return $this->loadLibrary($name, $path);
 	}
 
 	function _getSetting($setting) {
