@@ -141,7 +141,9 @@
 				$ARCurrent->fsFunctions[$fsId][$fsName]=create_function('&$this',
 					' $local = new object(); '.
 					' $local->data = &$this->data; '.
+					' $local->customdata = &$this->customdata; '.
 					' $local->nlsdata = &$this->nlsdata; '.
+					' $local->customnlsdata = &$this->customnlsdata; '.
 					' $local->path = $this->path; '.
 					' $local->parent = $this->parent; '.
 					' $local->type = $this->type; '.
