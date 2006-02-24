@@ -28,9 +28,9 @@ the specified .wddx file. It will import all objects from your .wddx file.
 
   --verbose     more output
   --debug       enable debugging
-  --skiptemplates          Don't import tempaltes
-  --forcetemplates         force import tempaltes
-  --dellalltemplates       Remove all template before import
+  --skiptemplates          Don't import templates
+  --forcetemplates         Force import templates
+  --dellalltemplates       Remove all templates before import
 
   --skipgrants             Don't import grants
 
@@ -39,6 +39,8 @@ the specified .wddx file. It will import all objects from your .wddx file.
 
   --skipfiles              Don't import files
   --forcefiles             Force import files
+
+  --prefix                 Prefixes all objects with the given path
 ";
 
 	//TODO: commandline configuration
