@@ -100,8 +100,15 @@ class import_wddx {
 				// still waiting for the config
 				if($this->nestdeep == -2){ // -1 is the depth directly under <data>
 					$this->seenconfig = true;
+					$config = (array_pop($this->stack));
+					// oke do something with the config data please ?
+					foreach ($config[data][options] as  $key => $value){
+						if(!isset($this->config[$key])){
+							print "Taking config from wddx: $key => $value \n";
+							$this->config[$key] = $value;
+						}
+					}
 				}
-				// oke do something with the config data please ?
 			} else {
 				if($this->nestdeep == 0 ){ // this is below 
 					$object = array_pop($this->stack);
@@ -125,15 +132,21 @@ class import_wddx {
 
 		$changed = false;
 
-		if($this->config['srcpath'] != $this->config['dstpath']){
-			$objdata['path'] = $this->config['dstpath'].substr($objdata['path'],strlen($this->config['srcpath']));
+		if($this->config['srcpath'] != $this->config['dstpath'] ){
+			if(
+				strstr( substr($objdata['path'],strlen($this->config['srcpath'])), $this->config['srcpath'])
+			){
+				$objdata['path'] = $this->config['dstpath'].substr($objdata['path'],strlen($this->config['srcpath']));
+			}
 		}
 	
 		if($this->config['prefix']){
 			$path = $this->store->make_path($this->config['prefix'],"./".$objdata['path']);
 		} else {
+			print "prefixless: ".$this->config['srcpath'].":".$objdata['path']."\n";
 			$path = $this->store->make_path($this->config['srcpath'], $objdata['path']);
 		}
+
 
 		$this->print_verbose('Importing: '.$path.' ');
 		if($this->linktable[$objdata['id']]){
