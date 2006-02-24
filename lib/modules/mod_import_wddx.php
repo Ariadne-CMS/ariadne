@@ -130,9 +130,9 @@ class import_wddx {
 		}
 	
 		if($this->config['prefix']){
-			$path = $this->store->make_path($this->config['prefix'],".".$objdata['path']);
+			$path = $this->store->make_path($this->config['prefix'],"./".$objdata['path']);
 		} else {
-			$path = $objdata['path'];
+			$path = $this->store->make_path($this->config['srcpath'], $objdata['path']);
 		}
 
 		$this->print_verbose('Importing: '.$path.' ');
