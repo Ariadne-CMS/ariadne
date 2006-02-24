@@ -18,8 +18,8 @@ if( $this->CheckLogin("config") ) {
 		ldHeader("Content-Type: text/xml");
 	}
 	if(!isset($options['srcpath']) ){
-		$options['srcpath'] = '/';
-		$options['dstpath'] = '/';
+		$options['srcpath'] = $this->parent; // '/';
+		$options['dstpath'] = './'; // '/';
 	}
 	if(!isset($options['dstpath']) ){
 		$options['dstpath'] = $options['srcpath'];

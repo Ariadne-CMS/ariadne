@@ -1,5 +1,5 @@
 <?php
-	if ($this->CheckLogin("config") && $this->CheckConfig()) {
+	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 		set_time_limit(0);
 		$ARCurrent->wddxoptions = array('verbose' => true);
 		if ($without_grants=$this->getdata("without_grants","none")) {
@@ -38,7 +38,7 @@
 <pre style="background-color: white; border: 2px inset buttonhighlight; font-size: 12px; margin: 4px; padding: 2px;"><?php
 			echo "Exporting $srcpath \n";
 			$this->call("export.wddx.phtml",array());
-			fclose($fp);
+			fclose($ARCurrent->wddxfp);
 			if ($error) {
 				echo $error."\n";
 			}
