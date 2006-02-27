@@ -118,6 +118,10 @@
 				}
 
 				while (is_array($result) && (list($key,$object)=each($result))) {
+					if ($object->parent != '..' && !$object->exists($object->parent)) {
+						display("Found orphaned node '".$object->path."' (skipping)\n");
+						continue;
+					}
 					$newpath=$destpath.substr($object->path, strlen($rootpath));
 					$oldpath=$object->path;
 
