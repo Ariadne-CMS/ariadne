@@ -33,19 +33,19 @@
 			// get typetree to get the correct icon
 			$this->call('typetree.ini');
 		}
-		$icon=$ARCurrent->arTypeIcons[$arNewType]['large'];
+		$icon=$ARCurrent->arTypeIcons[$arNewType]['default'];
 		if (!$icon) {
 			$dotPos=strpos($arNewType, '.');
 			if (false!==$dotPos) {
 				$realtype=substr($arNewType, 0, $dotPos);
-				$icon=$ARCurrent->arTypeIcons[$realtype]['small'];
+				$icon=$ARCurrent->arTypeIcons[$realtype]['default'];
 			} else { 
 				$realtype=$arNewType;
 			}
 			if (!$icon) {
 				$icon=$AR->dir->images."icons/".$realtype.".gif";
 			}
-			$name=$ARCurrent->arTypeNames[$realtype];
+			$name=$ARCurrent->arTypeNames[$arNewType];
 		} else {
 			$name=$ARCurrent->arTypeNames[$arNewType];
 		}
