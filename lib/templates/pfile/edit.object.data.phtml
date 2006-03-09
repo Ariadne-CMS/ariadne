@@ -76,9 +76,32 @@
 
 		$wgWizFlow = $this->call("user.wizard.edit.html", Array("wgWizFlow" => $wgWizFlow));
 
-		$name=current($this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml"));
+		if (!$ARCurrent->arTypeIconsSmall[$this->type]) {
+			// FIXME: for performance the check above is necessary, but
+			// it does make it possible to get the wrong icon...
+			// get typetree to get the correct icon
+			$this->call('typetree.ini');
+		}
+		$icon=$ARCurrent->arTypeIcons[$this->type]['default'];
+		if (!$icon) {
+			$dotPos=strpos($this->type, '.');
+			if (false!==$dotPos) {
+				$realtype=substr($this->type, 0, $dotPos);
+				$icon=$ARCurrent->arTypeIcons[$realtype]['default'];
+			} else { 
+				$realtype=$this->type;
+			}
+			if (!$icon) {
+				$icon=$AR->dir->images."icons/".$realtype.".gif";
+			}
+			$name=$ARCurrent->arTypeNames[$this->type];
+		} else {
+			$name=$ARCurrent->arTypeNames[$this->type];
+		}
+		$arResult=$icon;
+
 		$wgWizTitle=$ARnls["edit"]." ".$name;		
-		$wgWizHeader=$wgWizTitle.'<img src="'.$AR->dir->images.'icons/'.$this->type.'_open.gif" alt="" hspace="4" align="absmiddle">';
+		$wgWizHeader=$wgWizTitle.'<img src="'.$icon.'" alt="" hspace="4" align="absmiddle">';
 		include($this->store->get_config("code")."widgets/wizard/new.html");
 	}
 ?>
