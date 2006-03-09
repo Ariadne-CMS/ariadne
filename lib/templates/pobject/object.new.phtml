@@ -27,9 +27,36 @@
 		if ($wgWizFlow[0]["nextstep"]) {
 			$wgWizNextStep=$wgWizFlow[0]["nextstep"];
 		}
-		$result=$this->get("/system/ariadne/types/$arNewType/","system.get.name.phtml");
-		$wgWizTitle=$ARnls["new"]." ".$result[0];		
-		$wgWizHeader=$wgWizTitle.'<img src="'.$AR->dir->images.'icons/'.$arNewType.'_open.gif" alt="" hspace="4" align="absmiddle">';
+		if (!$ARCurrent->arTypeIconsSmall[$arNewType]) {
+			// FIXME: for performance the check above is necessary, but
+			// it does make it possible to get the wrong icon...
+			// get typetree to get the correct icon
+			$this->call('typetree.ini');
+		}
+		$icon=$ARCurrent->arTypeIcons[$arNewType]['large'];
+		if (!$icon) {
+			$dotPos=strpos($arNewType, '.');
+			if (false!==$dotPos) {
+				$realtype=substr($arNewType, 0, $dotPos);
+				$icon=$ARCurrent->arTypeIcons[$realtype]['small'];
+			} else { 
+				$realtype=$arNewType;
+			}
+			if (!$icon) {
+				$icon=$AR->dir->images."icons/".$realtype.".gif";
+			}
+			$name=$ARCurrent->arTypeNames[$realtype];
+		} else {
+			$name=$ARCurrent->arTypeNames[$arNewType];
+		}
+		$arResult=$icon;
+
+
+//		$result=$this->get("/system/ariadne/types/$arNewType/","system.get.name.phtml");
+//		$wgWizTitle=$ARnls["new"]." ".$result[0];		
+//		$wgWizHeader=$wgWizTitle.'<img src="'.$AR->dir->images.'icons/'.$arNewType.'_open.gif" alt="" hspace="4" align="absmiddle">';
+		$wgWizTitle=$ARnls["new"]." ".$name;		
+		$wgWizHeader=$wgWizTitle.'<img src="'.$icon.'" alt="" hspace="4" align="absmiddle">';
 		$wgWizCallArgs=$arCallArgs.$wgWizFlow[0]["arCallArgs"];
 		include($this->store->get_config("code")."widgets/wizard/new.html");
 	}
