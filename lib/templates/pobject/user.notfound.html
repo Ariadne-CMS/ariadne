@@ -4,7 +4,7 @@
 
 
 	$fullpage = false;
-	if( !$ARConfigChecked ) {
+	if( !headers_sent() ) {
 		$fullpage = true;
 	}
 
