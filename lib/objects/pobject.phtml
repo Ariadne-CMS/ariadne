@@ -1978,11 +1978,19 @@ class pobject extends object { // pobject class definition
 
 	function _loadtext($nls, $section="") {
 		$nls=eregi_replace('[^a-z]*','',$nls);
-		$section=eregi_replace('[^a-z\._-]*','',$section);
+		$section=eregi_replace('[^a-z\._:-]*','',$section);
 		if (!$section) {
 			include($this->store->get_config("code")."nls/".$nls);
 		} else {
-			include($this->store->get_config("code")."nls/".$section.".".$nls);
+			$nlsfile = $this->store->get_config("code")."nls/".$section.".".$nls;
+			if(strpos($nlsfile, ':') === false && file_exists($nlsfile)) {
+				include($nlsfile);
+			} else {
+				$this->pushContext(Array());
+					$this->CheckConfig($section, Array('nls' => $nls));
+				$this->popContext();
+				$ARnls = $this->getvar('ARnls');
+			}
 		}
 		$this->ARnls = $ARnls;
 	}
