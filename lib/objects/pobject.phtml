@@ -673,6 +673,9 @@ class pobject extends object { // pobject class definition
 			$site='/';
 		}
 		$site_url=$this->make_url($site, $nls, $session, $https, true);
+		if (substr($site_url, 0, strlen($AR->host))!=$AR->host) {
+			$site_url=$this->make_url($site, $nls, $session, $https, true);
+		}
 		if ($dest) { // $dest is the destination of a shortcut redirection, with keepurl on
 			$rest=substr($src, strlen($site)).substr($path, strlen($dest));
 		} else {
@@ -884,8 +887,11 @@ class pobject extends object { // pobject class definition
 
 	function CheckLogin($grant, $modifier=ARTHISTYPE) {
 	global $AR,$ARnls,$ARConfig,$ARCurrent,$ARPassword,$ARCookie,$session_config;
-
 		debug("pobject: CheckLogin($grant) on ".$this->path,"object");
+		if (!$this->store->is_supported("grants")) {
+			debug("pobject: store doesn't support grants");
+			return true;
+		}
 		if ($modifier==ARTHISTYPE) {
 			$modifier=$this->type;
 		}
@@ -1449,6 +1455,9 @@ class pobject extends object { // pobject class definition
 						}
 					}
 					$dir->close();
+					// remove empty directory entry's, hide errors about directory entry's with content
+					@rmdir($fpath);
+					@rmdir($hpath);
 				} else if (file_exists(substr($fpath,0,-1)."=")) {
 					@unlink(substr($fpath,0,-1)."=");
 					@unlink(substr($hpath,0,-1)."=");
@@ -1694,27 +1703,27 @@ class pobject extends object { // pobject class definition
 					if ($data) {
 						$url .= "?" . $data; 
 					}
-					fputs( $connection, "GET $url HTTP/1.0\n"); 
+					fputs( $connection, "GET $url HTTP/1.0\r\n"); 
 				} else if( strtoupper($method) == "POST" ) { 
-					fputs( $connection, "POST $url HTTP/1.0\n"); 
+					fputs( $connection, "POST $url HTTP/1.0\r\n"); 
 				} else {
-					fputs( $connection, "$method $url HTTP/1.0\n");
+					fputs( $connection, "$method $url HTTP/1.0\r\n");
 				}
 
-				fputs( $connection, "Host: $host\n");
-				fputs( $connection, "Accept: */*\n"); 
-				fputs( $connection, "Accept: image/gif\n"); 
-				fputs( $connection, "Accept: image/x-xbitmap\n"); 
-				fputs( $connection, "Accept: image/jpeg\n"); 
+				fputs( $connection, "Host: $host\r\n");
+				fputs( $connection, "Accept: */*\r\n"); 
+				fputs( $connection, "Accept: image/gif\r\n"); 
+				fputs( $connection, "Accept: image/x-xbitmap\r\n"); 
+				fputs( $connection, "Accept: image/jpeg\r\n"); 
 
 				if( strtoupper($method) == "POST" ) { 
 					$strlength = strlen( $data); 
-					fputs( $connection, "Content-type: application/x-www-form-urlencoded\n" ); 
-					fputs( $connection, "Content-length: ".$strlength."\n\n"); 
-					fputs( $connection, $data."\n"); 
+					fputs( $connection, "Content-type: application/x-www-form-urlencoded\r\n" ); 
+					fputs( $connection, "Content-length: ".$strlength."\r\n\r\n"); 
+					fputs( $connection, $data."\r\n"); 
 				} 
 
-				fputs( $connection, "\n" , 1); 
+				fputs( $connection, "\r\n" , 2); 
 				$output = ""; 
 
 				$headerContents = '';
@@ -1981,18 +1990,18 @@ class pobject extends object { // pobject class definition
 		$section=eregi_replace('[^a-z\._:-]*','',$section);
 		if (!$section) {
 			include($this->store->get_config("code")."nls/".$nls);
+			$this->ARnls = $ARnls;
 		} else {
 			$nlsfile = $this->store->get_config("code")."nls/".$section.".".$nls;
 			if(strpos($nlsfile, ':') === false && file_exists($nlsfile)) {
 				include($nlsfile);
+				$this->ARnls = $ARnls;
 			} else {
 				$this->pushContext(Array());
 					$this->CheckConfig($section, Array('nls' => $nls));
 				$this->popContext();
-				$ARnls = $this->getvar('ARnls');
 			}
 		}
-		$this->ARnls = $ARnls;
 	}
 
 	function _startsession() {
