@@ -308,6 +308,7 @@ class store {
 					$result = false;
 				}
 			break;
+			case 'grants':
 			case 'regexp':
 				$result = true;
 			break;
