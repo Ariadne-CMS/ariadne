@@ -1,0 +1,10 @@
+<?php
+	if ($this->CheckLogin('read') && $this->CheckConfig()) {
+		$path = $this->make_path($path);
+		if ($path != $this->path) {
+			$arResult = current($this->get($path, 'soap.call.phtml', $arCallArgs));
+		} else {
+			$arResult = $this->call($template, $args);
+		}
+	}
+?>
