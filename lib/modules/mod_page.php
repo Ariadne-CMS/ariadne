@@ -32,27 +32,27 @@ class page {
 				$arEditorSettings = $ARCurrent->arEditorSettings;
 			}
 		}
-    	if ($arEditorSettings) {
-        	if ($arEditorSettings["htmlcleaner"]["enabled"]) {
-            	include_once($this->store->get_config("code")."modules/mod_htmlcleaner.php");
-                $config = $arEditorSettings["htmlcleaner"];
-                $var = htmlcleaner::cleanup($var, $config);
-        	}
-            if ($arEditorSettings["htmltidy"]["enabled"]) {
-                include_once($this->store->get_config("code")."modules/mod_tidy.php");
-                $config=$arEditorSettings["htmltidy"];
-                $config["temp"]=$this->store->get_config("files")."temp/";
-                $config["path"]=$AR->Tidy->path;
-                $tidy=new tidy($config);
-                $result=$tidy->clean($var);
-                if ($result["html"]) {
-                    $var=$result["html"];
-                }
-            }
-            if ($arEditorSettings[$tags]) {
-                $var=strip_tags($var, $arEditorSettings[$tags]);
-        	}
-    	}
+		if ($arEditorSettings) {
+			if ($arEditorSettings["htmlcleaner"]["enabled"]) {
+				include_once($this->store->get_config("code")."modules/mod_htmlcleaner.php");
+				$config = $arEditorSettings["htmlcleaner"];
+				$var = htmlcleaner::cleanup($var, $config);
+			}
+			if ($arEditorSettings["htmltidy"]["enabled"]) {
+				include_once($this->store->get_config("code")."modules/mod_tidy.php");
+				$config=$arEditorSettings["htmltidy"];
+				$config["temp"]=$this->store->get_config("files")."temp/";
+				$config["path"]=$AR->Tidy->path;
+				$tidy=new tidy($config);
+				$result=$tidy->clean($var);
+				if ($result["html"]) {
+					$var=$result["html"];
+				}
+			}
+			if ($arEditorSettings[$tags]) {
+				$var=strip_tags($var, $arEditorSettings[$tags]);
+			}
+		}
 		//contentlanguage stuff
 		$var = $this->RAWtoAR($var, $contentLanguage);
 		
@@ -71,19 +71,19 @@ class page {
 
 class pinp_page {
 
-    function _getBody($page) {
-        return page::getBody($page);
-    }
+	function _getBody($page) {
+		return page::getBody($page);
+	}
 
-    function _parse($page, $full=false) {
-        return page::parse($page, $full);
-    }
+	function _parse($page, $full=false) {
+		return page::parse($page, $full);
+	}
 
-    function _isEmpty($page, $full=false) {
-        return page::isEmpty($page);
-    }
-    
-    function _cleanHtml($var, $tags, $arEditorSettings, $config) {
+	function _isEmpty($page, $full=false) {
+		return page::isEmpty($page);
+	}
+
+	function _cleanHtml($var, $tags, $arEditorSettings, $config) {
 		return page::cleanHtml($var, $tags, $arEditorSettings, $config);
 	}
 }
