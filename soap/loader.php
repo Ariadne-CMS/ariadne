@@ -107,7 +107,7 @@
 		$soapserver = new soap_server;
 		debug($HTTP_RAW_POST_DATA);
 		$arguments  = $soapserver->get_request($HTTP_RAW_POST_DATA);
-		$function   = "soap.".strtolower($soapserver->methodname).".phtml";
+		$function   = strtolower($soapserver->methodname);
 
 
 		ob_start();
@@ -137,7 +137,22 @@
 		}			
 
 		// finally call the requested object
-		$result = current($store->call($function, $arguments, $store->get($path)));
+//		unset($arguments["ARPassword"]);
+
+		if ($arguments["ARPath"]) {
+			$path = $store->make_path($path, $arguments["ARPath"]);
+		}
+		$result = current(
+					$store->call(
+						'soap.call.phtml', 
+						Array(
+							'function' => $function,
+							'arguments' => $arguments
+						), 
+						$store->get($path)
+					)
+		);
+
 		if (!$store->total) {
 			ldObjectNotFound($path, $soapserver->methodname);
 		} else {
