@@ -17,9 +17,15 @@
 				$this->data->mimetype=$this->getdata("file_type","none");
 			}
 			$this->data->filesize=$this->getdata("file_size","none");
+			
+			$displayname = $this->getdata("name", "none");
+			if(!$displayname) {
+				$displayname = $filename;
+			}
+			
 			while (list($key,$value)=each($ARConfig->nls->list)) {
 				if (!$this->data->$key->name) {
-					$this->data->$key->name=$filename;
+					$this->data->$key->name=$displayname;
 				}
 			}
 		} else {
