@@ -15,8 +15,9 @@
   $ARCurrent->nolangcheck=true;
   $arResult = false;
   if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		eregi('^(local[.])?([a-z_0-9]+)[.](.*)[.](.*)', $arRequestedTemplate, $regs);
-		$type=$regs[2];
+		eregi('^(local[.])?([a-z_0-9-]+)[.](.*)[.](.*)', $arRequestedTemplate, $regs);
+		$dtype=$regs[2];
+		$type = str_replace('-', '.', $dtype);
 		$function=$regs[3];
 		$language=$regs[4];
 		if ($data->config->pinp[$type][$function][$language]) {
@@ -24,9 +25,9 @@
 			$templates=$this->store->get_filestore("templates");
 			if ($templates->exists($this->id, $template)) {
 				if (!$this->data->config->templates[$type][$function]) {
-					$entry["filename"]="local.$type.$function.$language";
+					$entry["filename"]="local.$dtype.$function.$language";
 				} else {
-					$entry["filename"]="$type.$function.$language";
+					$entry["filename"]="$dtype.$function.$language";
 				}
 				$entry["date"]=$this->lastchanged;
 				$entry["type"]="template";

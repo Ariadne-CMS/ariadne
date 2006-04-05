@@ -6,9 +6,10 @@
 			$template = ob_get_contents();
 		ob_end_clean();
 
-		eregi('^(local[.])?([a-z_0-9]+)[.](.*)[.](.*)', $file["name"], $regs);
+		eregi('^(local[.])?([a-z_0-9-]+)[.](.*)[.](.*)', $file["name"], $regs);
 		$default	= ! $regs[1];
 		$type		= ($regs[2]) ? $regs[2] : "pobject";
+		$type		= str_replace('-', '.', $type);
 		$function	= ($regs[3]) ? $regs[3] : $file["name"];
 		$language	= ($regs[4]) ? $regs[4] : "any";
 

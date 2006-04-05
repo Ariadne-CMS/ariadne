@@ -14,10 +14,11 @@
 							ksort($templatelist);
 							reset($templatelist);
 							while (list($language, $template)=each($templatelist)) {
+									$dtype = str_replace('.', '-', $type);
 									if (!$this->data->config->templates[$type][$function]) {
-										$entry["filename"]="local.$type.$function.$language";
+										$entry["filename"]="local.$dtype.$function.$language";
 									} else {
-										$entry["filename"]="$type.$function.$language";
+										$entry["filename"]="$dtype.$function.$language";
 									}
 
 									$time = $fstore->mtime($this->id, $entry["filename"].".pinp");
