@@ -578,8 +578,11 @@
 
 					case 'NLST':
 					case 'LIST':
-						$args=ereg_replace('-[^[:space:]]+[[:space:]]*', '', chop($args));
-						$path=$args;
+						$args = chop($args);
+						// only use the last word (some clients issue LIST -l [filename])
+						eregi('([^[:space:]]+)$', $args, $matches);
+						$args = $matches[1];
+						$path = $args;
 						ftp_TranslatePath($path, $listMode);
 						debug("ftp: LIST path=$path, mode=$listMode");
 						if ($FTP->store->exists($path)) {

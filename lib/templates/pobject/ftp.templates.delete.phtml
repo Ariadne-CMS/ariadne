@@ -1,9 +1,10 @@
 <?php
 	if ($this->CheckConfig("layout") && $this->CheckConfig()) {
 
-		eregi('^(local[.])?([a-z_0-9]+)[.](.*)[.](.*)', $template, $regs);
+		eregi('^(local[.])?([a-z_0-9-]+)[.](.*)[.](.*)', $template, $regs);
 		$default	= ! $regs[1];
-		$type		= $regs[2];
+		$dtype		= $regs[2];
+		$type		= str_replace('-', '.', $dtype);
 		$function	= $regs[3];
 		$language	= $regs[4];
 
