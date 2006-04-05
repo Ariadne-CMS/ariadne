@@ -580,8 +580,8 @@
 					case 'LIST':
 						$args = chop($args);
 						// only use the last word (some clients issue LIST -l [filename])
-						eregi('([^[:space:]]+)$', $args, $matches);
-						$args = $matches[1];
+						$args=ereg_replace('(-[^[:space:]]+)?[[:space:]]*([^[:space:]]*)$', '\2', $args);
+						debug("LIST ARGS($args)");
 						$path = $args;
 						ftp_TranslatePath($path, $listMode);
 						debug("ftp: LIST path=$path, mode=$listMode");
