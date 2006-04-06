@@ -28,6 +28,13 @@
 
 
 /**************************************************************************
+ *  Default listmode, options are (files, templates, objects)             *
+ **************************************************************************/
+
+    $ftp_config['defaultListMode']  = 'files';
+
+
+/**************************************************************************
  *    Set this setting to false if you don't want the ftp server to       *
  *    generate a symlink to every listmode in every directory (advisable  *
  *    if you want to use a client which goes in an endless recursion)     *

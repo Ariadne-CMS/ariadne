@@ -1096,7 +1096,11 @@
 	$FTP->host = $ftp_config["site"];
 	$FTP->store = &$store;
 	// default listMode ( files, objects or templates )
-	$FTP->defaultListMode = "files";
+	$listMode = $ftp_config["defaultListMode"];
+	if (!$listMode) {
+		$listMode = "files";
+	}
+	$FTP->defaultListMode = $listMode;
 	$FTP->symlinkListModes = $ftp_config["symlinkListModes"];
 
 	// default type is ASCII
