@@ -456,16 +456,21 @@
 				<tr>
 					<td valign="top">
 					<?php
-						$types = $this->find("/system/ariadne/types/", "object.type='pobject' order by name.$nls.value", "system.get.phtml");
+						//$types = $this->find("/system/ariadne/types/", "object.type='pobject' order by name.$nls.value", "system.get.phtml");
+						$this->call('typetree.ini');
+						asort($ARCurrent->arTypeNames);
+						$types = $ARCurrent->arTypeNames;
 						$count = count($types);
 						for ($i = 0; $i < $count/2; $i++) {
-							echo "<input type=\"checkbox\" name=\"modifiers[]\" onClick=\"updateGrantsString()\" value=\"".$types[$i]->data->value."\">".$types[$i]->nlsdata->name."<br>\n";
+							list($value, $name) = each($types);
+							echo "<input type=\"checkbox\" name=\"modifiers[]\" onClick=\"updateGrantsString()\" value=\"".$value."\">".$name."<br>\n";
 						}
 					?>
 				</td><td valign="top" rowspan="4" height:100%; overflow: auto;">	
 					<?php
 						for ($j = $i; $j < $count; $j++) {
-							echo "<input type=\"checkbox\" name=\"modifiers[]\" onClick=\"updateGrantsString()\" value=\"".$types[$j]->data->value."\">".$types[$j]->nlsdata->name."<br>\n";
+							list($value, $name) = each($types);
+							echo "<input type=\"checkbox\" name=\"modifiers[]\" onClick=\"updateGrantsString()\" value=\"".$value."\">".$name."<br>\n";
 						}
 					?>
 		 		</td>
