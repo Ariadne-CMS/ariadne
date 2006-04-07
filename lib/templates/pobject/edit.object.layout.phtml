@@ -22,6 +22,11 @@
 			$mode="edit"; // textarea
 			$editor="edit.object.layout.form.phtml";
 		}
+
+		$this->call('typetree.ini');
+		$icons = $ARCurrent->arTypeIcons;
+		$names = $ARCurrent->arTypeNames;
+
 ?>
 <html>
 <head>
@@ -98,11 +103,10 @@
 						reset($templatelist);
 						$language = key($templatelist);
 						$onclick = "document.location='".$editor."?mode=".$mode."&type=".$type."&function=".RawUrlEncode($function)."&language=".$language."'";
-						
-						
+						$icon_src = $icons[$type]['small'];						
 						?><tr valign="middle" onmouseover="style.backgroundColor='steelblue',style.color='white'" onmouseout="style.color='',style.backgroundColor='';" onclick="<?php echo $onclick; ?>">
 						       <td align="left" valign="middle" style="height:23px">
-								<img src="<?php echo $AR->dir->images. "icons/$type.gif"; ?>" width="20" height="20" align="absmiddle">
+								<img src="<?php echo $icon_src; ?>" width="20" height="20" align="absmiddle">
 								<?php echo $type; ?>&nbsp;</td>
 							<td align="left"><div style="display:none;"><?php echo $function; ?></div><?php  
 								if (!$data->config->templates[$type][$function]) {
@@ -114,6 +118,7 @@
 								ksort($templatelist);
 								reset($templatelist);
 								while (list($language, $template)=each($templatelist)) {
+									
 									$flag="<img src=\"".$AR->dir->images."nls/small/$language.gif\" alt=\"".$AR->nls->list[$language]."\" border=\"0\">";
 									echo "<a class=\"button\" href=\"".$editor."?mode=".$mode."&type=".$type."&function=".RawUrlEncode($function).
 										"&language=".$language."\">$flag</a> ";
