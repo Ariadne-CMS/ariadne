@@ -602,7 +602,7 @@ class pobject extends object { // pobject class definition
 
 		// now run CheckConfig and get the parentsite of the path found
 		if (!$temp_config=$ARConfig->cache[$path]) {
-			$temp_site=current($this->get($path, "system.get.site.phtml"));
+			$temp_site = $this->currentsite();
 			$temp_config=$ARConfig->cache[$temp_site];
 		}
 		if ($AR->host == $temp_config->root["value"]) {
