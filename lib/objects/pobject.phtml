@@ -608,7 +608,9 @@ class pobject extends object { // pobject class definition
 			}
 			$temp_config=$ARConfig->cache[$temp_site];
 		}
-		if ($AR->host == $temp_config->root["value"]) {
+
+		if (!$nls && ($AR->host == $temp_config->root["value"]) ||
+			($nls && $AR->host == $temp_config->root['list']['nls'][$nls])) {
 			$keephost = false;
 		}
 		if (!$keephost) {
