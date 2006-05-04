@@ -71,7 +71,7 @@
 		function is_callback($callback) {
 			// lambda functions do begin with a null character
 			// maybe there is a better check, but this will do it for now
-			$result =  ($callback[0] === "\000");
+			$result =  ($callback[0] === "\000" && substr($callback, 1, strlen('lambda_')) == 'lambda_');
 			return $result;
 		}
 
@@ -103,9 +103,7 @@
 
 		function _usort(&$array, $callback) {
 			$result = false;
-			// lambda functions do begin with a null character
-			// maybe there is a better check, but this will do it for now
-			if ($callback[0] === "\000") {
+			if (pinp_util::is_callback($callback)) {
 				$result =  usort($array, $callback);
 			} else {
 				$this->error = "'$callback' is not a valid callback function";
