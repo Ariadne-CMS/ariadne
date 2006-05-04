@@ -68,12 +68,37 @@
 
 	class pinp_util extends util {
 
+		function is_callback($callback) {
+			// lambda functions do begin with a null character
+			// maybe there is a better check, but this will do it for now
+			$result =  ($callback[0] === "\000");
+			return $result;
+		}
+
+
 		function _create_function($args, $code) {
 			$pinp = new pinp("header", 'var_', '$this->_');
 			$safe_args = substr($pinp->compile("<pinp>$args</pinp>"), 5, -2);
 			$pinp = new pinp("header", 'var_', '$this->_');
 			$safe_code = substr($pinp->compile("<pinp>$code</pinp>"), 5, -2);
 			return create_function($safe_args, $safe_code);
+		}
+
+		function _call_function($callback, $a=null, $b=null, $c=null, $d=null, $e=null) {
+			$result = null;
+			if (pinp_util::is_callback($callback)) {
+				switch (true) {
+					case $a === NULL: $result = $callback(); break;
+					case $b === NULL: $result = $callback($a); break;
+					case $c === NULL: $result = $callback($a, $b); break;
+					case $d === NULL: $result = $callback($a, $b, $c); break;
+					case $e === NULL: $result = $callback($a, $b, $c, $d); break;
+					default:          $result = $callback($a, $b, $c, $d, $e); break;
+				}
+			} else {
+				$this->error = "'$callback' is not a callback function";
+			}
+			return $result;
 		}
 
 		function _usort(&$array, $callback) {

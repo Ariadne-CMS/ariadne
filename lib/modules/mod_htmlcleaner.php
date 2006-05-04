@@ -99,7 +99,7 @@ class htmlcleanertag {
 					$_state = 1;
 				}
 			} else if ($_state == 1) {	// state 1 : looking for equal
-				if (preg_match("/([a-zA-Z:]{1})/",$chr)) {
+				if (preg_match("/([a-zA-Z0-9_:]{1})/",$chr)) {
 					$_name .= $chr;
 				} else if ($chr == '=') {
 					$_state = 3;
@@ -153,6 +153,10 @@ class htmlcleanertag {
 			$return[strtolower($_name)] = $_value;
 		}
 		return $return;
+	}
+
+	function _toString() {
+		return $this->toString();
 	}
 
 	function toString()
@@ -330,5 +334,16 @@ class htmlcleaner
 		// close any broken tag properly (add quotes and a '>')
 		return str_replace('<htmlcleaner>', '', str_replace('</htmlcleaner>', '', $return));
 	}
+}
+
+class pinp_htmlcleaner extends htmlcleaner {
+
+	function _dessicate($str) {
+		return parent::dessicate($str);
+	}
+	function _cleanup($str) {
+		return parent::cleanup($str);
+	}
+
 }
 ?>
