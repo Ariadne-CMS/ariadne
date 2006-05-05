@@ -9,7 +9,7 @@
 			$this->HTTP_WebDAV_Server();
 			$this->store = $store;
 			$this->config = $config;
-			$this->root = $config['root'];
+			$this->root = &$config['root'];
 			debug("webdav: loading modules");
 
 			$this->modules = Array();
@@ -120,10 +120,10 @@
 						$val = Ariadne_WebDAV_Server::path_unescape($val);
 						debug("webdav:get_info unescaped $val");
 					}
-					$result['props'][] = $this->mkprop($name, $val);
+					$result['props'][] = $this->mkprop($name, htmlspecialchars($val));
 				}
 			}
-			$result['path'] = Ariadne_WebDAV_Server::path_unescape(substr($list['path'], strlen($this->root)-1));
+			$result['path'] = htmlspecialchars(Ariadne_WebDAV_Server::path_unescape(substr($list['path'], strlen($this->root)-1)));
 			return $result;
 		}
 

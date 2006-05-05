@@ -4,8 +4,8 @@
 		function WebDAV_files(&$webdav) {
 			debug("webdav:files:init()");
 			$this->webdav = $webdav;
-			$this->root = $webdav->root;
-			$this->store = $webdav->store;
+			$this->root = &$webdav->root;
+			$this->store = &$webdav->store;
 		}
 
 		function path_escape_callback($char) {
