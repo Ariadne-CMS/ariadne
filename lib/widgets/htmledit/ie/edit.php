@@ -21,6 +21,9 @@
 <script LANGUAGE="JavaScript" SRC="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/Inc/dhtmled.js">
 </script>
 
+<script LANGUAGE="JavaScript" SRC="<?php echo $AR->dir->www; ?>widgets/htmledit/ie/eolas_patent_workaround.js">
+</script>
+
 <script LANGUAGE="JavaScript" SRC="<?php echo $AR->dir->www; ?>widgets/compose/compose.js">
 </script>
 
@@ -1455,29 +1458,6 @@ function tbContentElement_DocumentComplete() {
 //-->
 </script>
 
-<script LANGUAGE="javascript" FOR="tbContentElement" EVENT="DisplayChanged">
-<!--
-return tbContentElement_DisplayChanged()
-//-->
-</script>
-
-<script LANGUAGE="javascript" FOR="tbContentElement" EVENT="ShowContextMenu">
-<!--
-return tbContentElement_ShowContextMenu()
-//-->
-</script>
-
-<script LANGUAGE="javascript" FOR="tbContentElement" EVENT="ContextMenuAction(itemIndex)">
-<!--
-return tbContentElement_ContextMenuAction(itemIndex)
-//-->
-</script>
-
-<SCRIPT LANGUAGE=javascript FOR=tbContentElement EVENT=DocumentComplete>
-<!--
- tbContentElement_DocumentComplete()
-//-->
-</SCRIPT>
 </head>
 <body LANGUAGE="javascript" onload="return window_onload()" unselectable='on'>
 
@@ -1890,6 +1870,22 @@ return tbContentElement_ContextMenuAction(itemIndex)
   </div>
 </div>
 
+<div id="dhtmled">
+</div>
+<!-- DEInsertTableParam Object -->
+<object ID="ObjTableInfo" CLASSID="clsid:47B0DFC7-B7A3-11D1-ADC5-006008A5848C" VIEWASTEXT width="1" height="1" style="display: none;">
+</object>
+
+<!-- DEGetBlockFmtNamesParam Object -->
+<object ID="ObjBlockFormatInfo" CLASSID="clsid:8D91090E-B955-11D1-ADC5-006008A5848C" VIEWASTEXT width="1" height="1" style="display: none;">
+</object>
+
+<script LANGUAGE="Javascript">
+	CreateControl( "dhtmled",
+                    "clsid:2D360201-FFF5-11D1-8D03-00A0C959BC0A",
+                    "tbContentElement", "tbContentElement", { 'Scrollbars' : true, 'SourceCodePreservation' : 1 });
+</script>
+
 <SCRIPT LANGUAGE=JavaScript FOR=tbContentElement EVENT=onkeypress>
     myevent=tbContentElement.DOM.parentWindow.event;
     if (!wgCompose_keypress(myevent)) {
@@ -1906,21 +1902,29 @@ return tbContentElement_ContextMenuAction(itemIndex)
     }
 </script>
 
-<!-- DHTML Editing control Object. This will be the body object for the toolbars. -->
-<object ID="tbContentElement" CLASS="tbContentElement" 
-  CLASSID="clsid:2D360201-FFF5-11D1-8D03-00A0C959BC0A" VIEWASTEXT>
-  <param name="Scrollbars" value=true>
-  <param name="SourceCodePreservation" value="1">
-</object>
-<!-- unsafe CLASSID="clsid:2D360200-FFF5-11D1-8D03-00A0C959BC0A" -->
-<!-- DEInsertTableParam Object -->
-<object ID="ObjTableInfo" CLASSID="clsid:47B0DFC7-B7A3-11D1-ADC5-006008A5848C" VIEWASTEXT>
-</object>
+<script LANGUAGE="javascript" FOR="tbContentElement" EVENT="DisplayChanged">
+<!--
+return tbContentElement_DisplayChanged()
+//-->
+</script>
 
-<!-- DEGetBlockFmtNamesParam Object -->
-<object ID="ObjBlockFormatInfo" CLASSID="clsid:8D91090E-B955-11D1-ADC5-006008A5848C" VIEWASTEXT>
-</object>
+<script LANGUAGE="javascript" FOR="tbContentElement" EVENT="ShowContextMenu">
+<!--
+return tbContentElement_ShowContextMenu()
+//-->
+</script>
 
+<script LANGUAGE="javascript" FOR="tbContentElement" EVENT="ContextMenuAction(itemIndex)">
+<!--
+return tbContentElement_ContextMenuAction(itemIndex)
+//-->
+</script>
+
+<SCRIPT LANGUAGE=javascript FOR=tbContentElement EVENT=DocumentComplete>
+<!--
+ tbContentElement_DocumentComplete()
+//-->
+</SCRIPT>
 <!-- Toolbar Code File. Note: This must always be the last thing on the page -->
 
 <script LANGUAGE="Javascript">
