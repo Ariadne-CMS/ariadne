@@ -675,26 +675,28 @@ class pinp {
 	function syntax_test(){
 
 		ob_start();
-		$func = create_function('','?'.'>'.$this->new_template.'<'.'?php');
+		$func = create_function('',' ?'.'>'.$this->new_template.'<'.'?php ');
 		$result = ob_get_contents();
 		ob_end_clean();
 
-		$result = strip_tags($result);
+		if(empty($func)){
+			$result = strip_tags($result);
 
-		$result = trim($result);
-		$first = strpos($result,':');
-		$last = strrpos($result,':');
+			$result = trim($result);
+			$first = strpos($result,':');
+			$last = strrpos($result,':');
 
-		$error = trim(substr($result,0,$first));
-		$reason = trim(substr($result,$first+2,$last-($first+2)));
-		
-		$where = trim(substr($result,$last+2));
+			$error = trim(substr($result,0,$first));
+			$reason = trim(substr($result,$first+2,$last-($first+2)));
+			
+			$where = trim(substr($result,$last+2));
 
-		$linenr = substr($where,strrpos($where,' ')+1);
-		// '^(.+) in /'
-		ereg('^(.+) in /',$reason,$matches);
+			$linenr = substr($where,strrpos($where,' ')+1);
+			// '^(.+) in /'
+			ereg('^(.+) in /',$reason,$matches);
 
-		$this->error = $error . ' : ' . $matches[1] . ' on line ' . $linenr;
+			$this->error = $error . ' : ' . $matches[1] . ' on line ' . $linenr;
+		}
 
 	}
 
