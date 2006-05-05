@@ -665,7 +665,38 @@ class pinp {
 		if (!$this->error && $this->in_pinp) {
 			$this->error = "no closing pinp tag found";
 		}
+		if(!$this->error){
+			$this->syntax_test();
+		}
+
 		return $this->new_template;
 	}
+
+	function syntax_test(){
+
+		ob_start();
+		$func = create_function('','?'.'>'.$this->new_template.'<'.'?php');
+		$result = ob_get_contents();
+		ob_end_clean();
+
+		$result = strip_tags($result);
+
+		$result = trim($result);
+		$first = strpos($result,':');
+		$last = strrpos($result,':');
+
+		$error = trim(substr($result,0,$first));
+		$reason = trim(substr($result,$first+2,$last-($first+2)));
+		
+		$where = trim(substr($result,$last+2));
+
+		$linenr = substr($where,strrpos($where,' ')+1);
+		// '^(.+) in /'
+		ereg('^(.+) in /',$reason,$matches);
+
+		$this->error = $error . ' : ' . $matches[1] . ' on line ' . $linenr;
+
+	}
+
 }
 ?>
