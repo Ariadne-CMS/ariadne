@@ -639,9 +639,14 @@ class pobject extends object { // pobject class definition
 				}
 			}
 		} else {
-			$url=$AR->host.$AR->root.$rootoptions.$path;
+			if ($AR->host == $temp_config->root["value"]) {
+				$url=$temp_config->root["value"].$rootoptions;
+				$url.=substr($path, strlen($temp_config->root["path"])-1);
+			} else {
+				$url=$AR->host.$AR->root.$rootoptions.$path;
+			}
 		}
-		return $url;			
+		return $url;
 	}
 
 	function make_local_url($path="", $nls=false, $session=true, $https=NULL) {
@@ -1986,6 +1991,9 @@ class pobject extends object { // pobject class definition
 		$result = $this->ARnls[$index];
 		if (!$result) {
 			$result = $ARnls[$index];
+			if (!$result) {
+				$result= "{".$index."}";
+			}
 		}
 		return $result;		
 	}
