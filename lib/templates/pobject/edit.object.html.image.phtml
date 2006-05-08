@@ -156,13 +156,18 @@ BODY 	{
 			arr['ar:path'] = '';
 		} else {
 			var type = form.imgstyle.options[form.imgstyle.selectedIndex].value;
-			if (tbContentEditOptions['image']['styles'][type]['template']) {
-				arr["src"] = CurrentPath+tbContentEditOptions['image']['styles'][type]['template'];
-			} else {		    
+			if (tbContentEditOptions['image']['styles'][type]) {
+				if (tbContentEditOptions['image']['styles'][type]['template']) {
+					arr["src"] = CurrentPath+tbContentEditOptions['image']['styles'][type]['template'];
+				} else {		    
+					arr["src"] = CurrentPath;
+					arr["src"] = (arr["src"].charAt(arr["src"]-1) == "//") ? arr["src"].slice(0,arr["src"].length-1) : arr["src"];
+				}
+				arr["class"] = tbContentEditOptions['image']['styles'][type]['class'];
+			} else {
 				arr["src"] = CurrentPath;
-				arr["src"] = (arr["src"].charAt(arr["src"]-1) == "//") ? arr["src"].slice(0,arr["src"].length-1) : arr["src"];
+				arr["class"] = "";
 			}
-			arr["class"] = tbContentEditOptions['image']['styles'][type]['class'];
 			if (CurrentPath) {
 				arr["ar:path"] = CurrentPath;
 			}
@@ -183,6 +188,12 @@ BODY 	{
 		tbContentEditOptions=arr['editOptions'];
 		ViewPhotobook=false;
 		PreviewURL=false;
+		if (arr['ar:type']) {
+			var type=new String(arr['ar:type']).replace("\n",'').replace("\r",'');
+			if (type!=arr['ar:type']) {
+				arr['ar:type']=type;
+			}
+		}
 		if (arr['src']) {
 			/* existing image selected */
 			CurrentPath=new String(arr['src']);
@@ -190,8 +201,8 @@ BODY 	{
 				CurrentPath=CurrentPath.substr(<?php echo strlen($AR->host.$this->store->root); ?>);
 			} else if (arr['ar:path']) {
 				CurrentPath = arr['ar:path'];
-				if (arr['ar:type']) {
-					CurrentPath += arr['editOptions']['image']['styles'][arr['ar:type']]['template'];
+				if (arr['ar:type'] && tbContentEditOptions['image']['styles'][arr['ar:type']] ) {
+					CurrentPath += tbContentEditOptions['image']['styles'][arr['ar:type']]['template'];
 				}
 			} else if (CurrentPath.substr(0,4) == 'http') {
 				PreviewURL=true;
@@ -482,8 +493,10 @@ BODY 	{
 
 	function showPreview() {
 		var type=document.forms[0].imgstyle.options[document.forms[0].imgstyle.selectedIndex].value;
-		var style=tbContentEditOptions['image']['styles'][type]['template'];
-		var sclass=tbContentEditOptions['image']['styles'][type]['class'];
+		if (tbContentEditOptions['image']['styles'][type]) {
+			var style=tbContentEditOptions['image']['styles'][type]['template'];
+			var sclass=tbContentEditOptions['image']['styles'][type]['class'];
+		}
 		var border=document.forms[0].border.value;
 		var hspace=document.forms[0].hspace.value;
 		var vspace=document.forms[0].vspace.value;
