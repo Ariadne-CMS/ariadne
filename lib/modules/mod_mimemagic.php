@@ -412,7 +412,7 @@
 	$mimetypes_data["ps"] = "application/postscript";
 	$mimetypes_data["ai"] = "application/postscript";
 	$mimetypes_data["eps"] = "application/postscript";
-	$mimetypes_data["ppt"] = "application/powerpoint";
+	$mimetypes_data["ppt"] = "application/vnd.ms-powerpoint";
 	$mimetypes_data["rtf"] = "application/rtf";
 	$mimetypes_data["wp5"] = "application/wordperfect5.1";
 	$mimetypes_data["zip"] = "application/zip";
