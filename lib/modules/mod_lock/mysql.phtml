@@ -108,7 +108,7 @@ class mysqllock {
 			mysql_db_query($this->database, $query_string, $this->connectid);
 
 			$query_string="
-				insert into ".$this->tbl_prefix."locks (path, release, type, identity) values (
+				insert into ".$this->tbl_prefix."locks (`path`, `release`, `type`, `identity`) values (
 				'".AddSlashes($path)."', $time, '".AddSlashes($type)."',
 				'".AddSlashes($identity)."')";
 
