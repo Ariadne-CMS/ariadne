@@ -77,12 +77,7 @@
 			$this->ns = Array();
 			$this->elements = Array();
 			$this->rss_items = Array();
-			$this->parser = xml_parser_create();
 
-			xml_set_object($this->parser, $this);
-			xml_set_element_handler($this->parser, "startElement", "endElement");
-			xml_set_character_data_handler($this->parser, "characterData");
-			xml_parser_set_option($this->parser, XML_OPTION_CASE_FOLDING, false);
 
 			if ($this->rss_fp) {
 				fclose($this->rss_fp);
@@ -97,6 +92,44 @@
 					}
 				}
 			}
+
+			// Finding the RSS feed source encoding - thanks to the pointers on
+			// http://minutillo.com/steve/weblog/2004/6/17/php-xml-and-character-encodings-a-tale-of-sadness-rage-and-data-loss
+			//
+			// Read the first part of the RSS feed to find the encoding.
+
+
+			// FIXME: We kunnen niet terugseeken dus dit werkt niet.
+			$this->xmldata = fread($this->rss_fp, 4096);
+
+			// Prepare a regexp to find the source encoding, and match it. If we find it, use that - otherwise assume UTF-8 as the default XML encoding.
+			$encoding_regexp = '/<?xml.*encoding=[\'"](.*?)[\'"].*?>/m';
+
+//			$encoding_regexp = '/.*encoding=[\'"]/m';
+
+			if (preg_match($encoding_regexp, $this->xmldata, $matches)) {
+				$this->encoding = strtoupper($matches[1]);
+			} else {
+				$this->encoding = "UTF-8";
+			}
+
+			// The RSS library only understands UTF-8, US-ASCII and ISO-8859-1, so only give it this. For other encodings we'll default to UTF-8.
+
+			if($this->encoding == "UTF-8" || $this->encoding == "US-ASCII" || $this->encoding == "ISO-8859-1") {
+				$this->parser = xml_parser_create($this->encoding);
+			} else {
+
+				$this->parser = xml_parser_create("UTF-8");
+			}
+
+
+			//$this->parser = xml_parser_create();
+			xml_set_object($this->parser, $this);
+			xml_set_element_handler($this->parser, "startElement", "endElement");
+			xml_set_character_data_handler($this->parser, "characterData");
+			xml_parser_set_option($this->parser, XML_OPTION_CASE_FOLDING, false);
+			xml_parser_set_option($this->parser, XML_OPTION_TARGET_ENCODING, "UTF-8");
+
 		}
 
 		function startElement($parser, $name, $attribs) {
@@ -138,6 +171,11 @@
 				case 'rss':
 				case 'channel':
 				case 'image':
+				case 'rdf:RDF':
+				case 'rdf:Seq':
+				case 'rdf:li':
+				case 'items':
+
 				break;
 				default:
 					if (!$element) {
@@ -158,10 +196,25 @@
 			if (count($this->rss_items)) {
 				array_shift($this->rss_items);
 			}
-			if (!count($this->rss_items) && $this->rss_fp && !feof($this->rss_fp)) {
+			if (!count($this->rss_items) && $this->rss_fp && ($this->xmldata || !feof($this->rss_fp))) {
 				do {
-					$rss_data = fread($this->rss_fp, 4096);
+					// The first read has already been done in the reset() function!
+					if ($this->xmldata) {
+						$rss_data = $this->xmldata;
+						$this->xmldata = false;
+					} else {
+						$rss_data = fread($this->rss_fp, 4096);
+					}
+
 					$eof = feof($this->rss_fp);
+/*
+					if(function_exists('mb_convert_encoding')) {
+						$encoded_source = @mb_convert_encoding($rss_data, "UTF-8", $this->encoding);
+					}
+					if($encoded_source != NULL) {
+						$rss_data = str_replace ( $this->xml_enc,'<?xml version="1.0" encoding="utf-8"?>', $encoded_source);
+					}
+*/
 					if (!xml_parse($this->parser, $rss_data, $eof)) {
 						$this->error = sprintf("XML error: %s at line %d",
 							xml_error_string(xml_get_error_code($this->parser)),
