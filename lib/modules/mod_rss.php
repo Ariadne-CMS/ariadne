@@ -25,8 +25,11 @@
 			return $rss;
 		}
 
-		function loadFromString($rss) {
-		/* parse rss feed and initialize and return an rssFeed object */
+		function loadFromString($string) {
+			/* parse rss feed and initialize and return an rssFeed object */
+			$rss = new rssFeed($this);
+			$rss->setFeedString($string);
+			return $rss;
 		}
 
 	}
@@ -49,7 +52,8 @@
 		}
 
 		function setFeedString($feed) {
-
+			$this->feedstring = $feed;
+			$this->reset();
 		}
 
 		function _reset() {
@@ -100,8 +104,11 @@
 
 
 			// FIXME: We kunnen niet terugseeken dus dit werkt niet.
-			$this->xmldata = fread($this->rss_fp, 4096);
-
+			if ($this->rss_fp) {
+				$this->xmldata = fread($this->rss_fp, 4096);
+			} else if ($this->feedstring) {
+				$this->xmldata = $this->feedstring;
+			}
 			// Prepare a regexp to find the source encoding, and match it. If we find it, use that - otherwise assume UTF-8 as the default XML encoding.
 			$encoding_regexp = '/<?xml.*encoding=[\'"](.*?)[\'"].*?>/m';
 
@@ -196,17 +203,18 @@
 			if (count($this->rss_items)) {
 				array_shift($this->rss_items);
 			}
-			if (!count($this->rss_items) && $this->rss_fp && ($this->xmldata || !feof($this->rss_fp))) {
+			if (!count($this->rss_items) && ($this->xmldata || ($this->rss_fp && !feof($this->rss_fp)))) {
+				$eof = true;
 				do {
 					// The first read has already been done in the reset() function!
 					if ($this->xmldata) {
 						$rss_data = $this->xmldata;
 						$this->xmldata = false;
-					} else {
+					} else if ($this->rss_fp) {
 						$rss_data = fread($this->rss_fp, 4096);
+						$eof = feof($this->rss_fp);
 					}
 
-					$eof = feof($this->rss_fp);
 /*
 					if(function_exists('mb_convert_encoding')) {
 						$encoded_source = @mb_convert_encoding($rss_data, "UTF-8", $this->encoding);
