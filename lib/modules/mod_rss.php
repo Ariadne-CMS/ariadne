@@ -196,6 +196,10 @@
 
 		function next() {
 			// this is needed 
+			if (!$this->parser) {
+				return false;
+			}
+
 			xml_set_object($this->parser, $this);
 
 			/* remove the last item from the queue */
