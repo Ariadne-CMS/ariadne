@@ -198,18 +198,19 @@
 			// this is needed 
 			xml_set_object($this->parser, $this);
 
-			$eof = true;
 			/* remove the last item from the queue */
 			if (count($this->rss_items)) {
 				array_shift($this->rss_items);
 			}
 			if (!count($this->rss_items) && ($this->xmldata || ($this->rss_fp && !feof($this->rss_fp)))) {
-				$eof = true;
 				do {
 					// The first read has already been done in the reset() function!
 					if ($this->xmldata) {
 						$rss_data = $this->xmldata;
 						$this->xmldata = false;
+						if (!($this->rss_fp)) {
+							$eof = true;
+						}
 					} else if ($this->rss_fp) {
 						$rss_data = fread($this->rss_fp, 4096);
 						$eof = feof($this->rss_fp);
