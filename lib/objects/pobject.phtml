@@ -134,6 +134,12 @@ class pobject extends object { // pobject class definition
 		if (strpos($arCallFunction,"::")!==false) {
 			// template of a specific class defined via call("class::template");
 			list($arType, $arCallFunction)=explode("::",$arCallFunction);
+			$temp = explode(":", $arType );
+			if( count($temp) > 1 ) {
+				$libname = $temp[0];
+				$arType = $temp[1];
+				$arCallFunction = $libname.":".$arCallFunction;
+			}
 		} else {
 			$arType=$this->type;
 		}
@@ -1077,10 +1083,12 @@ class pobject extends object { // pobject class definition
 				}
 				array_unshift($ARConfig->libraries[$this->path],$path);
 				array_unshift($ARConfig->cache[$this->path]->libraries,$path);
+				array_unshift($ARConfig->pinpcache[$this->path]["library"],$path);
 			}
 		} else if ($name && is_string($name)) {
 			$ARConfig->libraries[$this->path][$name]=$path;
 			$ARConfig->cache[$this->path]->libraries[$name]=$path;
+			$ARConfig->pinpcache[$this->path]["library"][$name] = $path;
 		} else {
 			error('Illegal library name: '.$name);
 		}
