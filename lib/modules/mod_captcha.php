@@ -10,11 +10,15 @@
 			hn_captcha_X1::hn_captcha_X1($config);
 		}
 		
-		function get_filename_url($public="") {
+		function get_filename_url($public="", $url='') {
 			if ($public == "") {
 				$public = $this->public_key;
 			}
-			return $this->config['url'].$this->config['template']."?show=$public";
+			if (!$url) {
+				return $this->config['url'].$this->config['template']."?show=$public";
+			} else {
+				return $url."?show=$public";
+			}
 		}
 
 	}
@@ -117,11 +121,11 @@
 			readfile($filename);
 		}
 
-		function getImgSrc() {
+		function getImgSrc($url='') {
 			$context = $this->getContext();
 			$captcha = $context['captcha'];
 			$captcha->make_captcha();
-			return $captcha->get_filename_url();
+			return $captcha->get_filename_url('', $url);
 		}
 
 		function getFormField() {
@@ -146,8 +150,8 @@
 			return captcha::showImg($captchaImg);
 		}
 
-		function _getImgSrc() {
-			return captcha::getImgSrc();
+		function _getImgSrc($url='') {
+			return captcha::getImgSrc($url);
 		}
 
 		function _getFormField() {
