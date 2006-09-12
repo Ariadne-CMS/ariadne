@@ -1079,6 +1079,7 @@ var arFieldRegistry=new Array();
 var arFieldList=new Array(); // simple array to keep all editable fields
 var arObjectRegistry=new Array();
 var arChangeRegistry=new Array();
+var arGroupRegistry=new Array();
 var currentEditableField=false;
 var arRequiredFieldRegistry=new Array();
 
@@ -1119,7 +1120,15 @@ function dataField(fieldid, name, path, id) {
 	this.id=id;
 }
 
-function registerChange(fieldId) {
+function registerGroup(group, fieldId) {
+	if (!arGroupRegistry[group]) {
+		arGroupRegistry[group]=new Array();
+	}
+	arGroupRegistry[group].push(fieldId);
+	arFieldRegistry[fieldId].group=group;
+}
+
+function registerChange(fieldId, stoprecurse) {
 	if (arFieldRegistry[fieldId]) {
 		var objectId=arFieldRegistry[fieldId].id;
 		var fieldName=arFieldRegistry[fieldId].name;
@@ -1127,6 +1136,14 @@ function registerChange(fieldId) {
 			var index=arChangeRegistry.length;
 			arChangeRegistry[index]=arFieldRegistry[fieldId];
 			arChangeRegistry[new String(fieldName+objectId)]=index;
+		}
+	}
+	if (!stoprecurse && arFieldRegistry[fieldId].group) {
+		groupList=arGroupRegistry[arFieldRegistry[fieldId].group];
+		if (groupList) {
+			for (var i=0; i<groupList.length; i++) {
+				registerChange(groupList[i], true);
+			}
 		}
 	}
 }
