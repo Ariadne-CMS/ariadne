@@ -65,10 +65,17 @@
 			}
 		}
 
-		function showCheckbox($var, $name, $title, $extra='' ) {
+		function registerGroup($name, $id) {
+			/* private method - adds $id to group $name, a change in any member of the group, forces dirty on all members */
+			echo "<script> parent.registerGroup('$name', 'editable_$id'); </script>\n";
+		}
+
+		function showCheckbox($var, $name, $title, $extra='', $group='' ) {
 			if(edit::getEditMode() && $this->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
-				edit::ShowInput(0, $name, $title, 'hidden');
+				if ($group) {
+					edit::registerGroup($group, $id);
+				}
 				$checked = "";
 				if( $var ) {
 					$checked = "checked";
@@ -200,8 +207,8 @@
 			return edit::showInput($var, $name, $title, $type, $extra);
 		}
 
-		function _showCheckbox($var, $name, $title, $extra='' ) {
-			return edit::showCheckbox($var, $name, $title, $extra);
+		function _showCheckbox($var, $name, $title, $extra='', $group='' ) {
+			return edit::showCheckbox($var, $name, $title, $extra, $group);
 		}
 
 		function _showSelect($var, $name, $title, $list, $bykey=false, $extra='') {
