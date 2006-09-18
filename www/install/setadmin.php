@@ -1,5 +1,5 @@
 <?php
-  $password = $HTTP_GET_VARS["password"];
+  $password = $_REQUEST["password"];
   if ($password) {
     include("../ariadne.inc");
     include($ariadne."/configs/ariadne.phtml");
@@ -26,8 +26,8 @@
     echo "You should now be able to log on";
   } else {
 ?>
-<form>
-admin password <input type="text" name="password">
+<form method="post">
+	admin password <input type="password" name="password">
 </form>
 <p>
 Please remember to remove this script and the entire 'install' directory, or
