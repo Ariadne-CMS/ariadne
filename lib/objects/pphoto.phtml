@@ -96,25 +96,31 @@ class pphoto extends pfile { // pphoto class definition
 		return $myarray;
 	}
 	
-	function scale($x, $y, $fillcolor=false) {
+	function scale($x, $y, $fillcolor=false, $keepaspect=true) {
 		global $ARConfig;
 
 		$this->set_context("mogrify");
 
 		$x=(int)$x;
 		$y=(int)$y;
-		$ARConfig->photoStack[$this->id][]=" -size ".$x."x".$y." -geometry ".$x."x".$y;
-
-		$info=$this->getimageinfo();
-		$aspectx=$x/$info[0];
-		$aspecty=$y/$info[1];
-		if ($aspectx>$aspecty) {
-			$aspect=$aspecty;
+		if( $keepaspect ) {
+			$ARConfig->photoStack[$this->id][]=" -size ".$x."x".$y." -geometry ".$x."x".$y;
+			$info=$this->getimageinfo();
+			$aspectx=$x/$info[0];
+			$aspecty=$y/$info[1];
+			if ($aspectx>$aspecty) {
+				$aspect=$aspecty;
+			} else {
+				$aspect=$aspectx;
+			}
+			$newx=$aspect*$info[0];
+			$newy=$aspect*$info[1];
 		} else {
-			$aspect=$aspectx;
+			$ARConfig->photoStack[$this->id][]=" -size ".$x."x".$y."! -geometry ".$x."x".$y."!";
+			$newx=$x;
+			$newy=$y;
 		}
-		$newx=$aspect*$info[0];
-		$newy=$aspect*$info[1];
+
 
 		return Array("x" => $newx, "y" => $newy);
 	}
@@ -511,8 +517,8 @@ class pphoto extends pfile { // pphoto class definition
 		return $this->convert($format, $quality);
 	}
 
-	function _scale($x, $y, $fillcolor=false) {
-		return $this->scale($x, $y, $fillcolor);
+	function _scale($x, $y, $fillcolor=false, $keepaspect=true) {
+		return $this->scale($x, $y, $fillcolor, $keepaspect);
 	}
 
 	function _rotate($degrees) {
