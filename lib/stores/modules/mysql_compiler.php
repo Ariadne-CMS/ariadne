@@ -39,8 +39,15 @@
 				} else {
 					$this->used_tables["$table as $table$record_id"] = $table.$record_id;
 					if (!$this->in_orderby && !$no_context_join) {
-						$result=" $table$record_id.object = ".$this->tbl_prefix."objects.id and $table$record_id.$field ";
+						if ($this->join_target_properties[$node["table"]]) {
+							$result=" $table$record_id.object = target.object and $table$record_id.$field "; 
+						} else {
+							$result=" $table$record_id.object = ".$this->tbl_prefix."objects.id and $table$record_id.$field ";
+						}
 					} else {
+						if ($this->join_target_properties[$node["table"]]) {
+							$this->join_target_properties["$table as $table$record_id"] = $table.$record_id;
+						}
 						$this->select_tables["$table as $table$record_id"] = $table.$record_id;
 						$result=" $table$record_id.$field ";
 					}
@@ -262,6 +269,10 @@
 		$properties=$this->tbl_prefix."prop_";
 		$this->used_tables[$nodes]=$nodes;
 		$this->used_tables[$objects]=$objects;
+		if ($this->join_target_properties) {
+			$this->used_tables[$properties."references as target_reference"] = $properties."references as target_reference";
+			$this->used_tables["$nodes as target"] = "$nodes as target";
+		}		
 		@reset($this->used_tables);
 		while (list($key, $val)=each($this->used_tables)) {
 			if ($tables) {
@@ -270,8 +281,8 @@
 				$tables="$key";
 			}
 			if ($this->select_tables[$key]) {
-				if ($this->with_target_properties) {
-					$prop_dep.=" and ($val.object=$objects.id or $val.object=target.object) ";
+				if ($this->join_target_properties[$key]) {
+					$prop_dep.=" and $val.object=target.object ";
 				} else {
 					$prop_dep.=" and $val.object=$objects.id ";
 				}
@@ -286,14 +297,6 @@
 		}
 
 
-		/* do target join */
-		if ($this->with_target_properties) {
-			$join .= " left join ".$properties."references as target_reference on
-				$objects.id = target_reference.object ";
-			$join .= " left join $nodes as target on target_reference.object
-						and target.path = target_reference.AR_path ";
-		}		
-
 		$query="select distinct($nodes.path), $nodes.parent, $nodes.priority, ";
 		$query.=" $objects.id, $objects.type, $objects.object, UNIX_TIMESTAMP($objects.lastchanged) as lastchanged, $objects.vtype ";
 		$query.=" from $tables $join";
@@ -305,6 +308,12 @@
 		if ($this->where_s_ext) {
 			$query .= " and ($this->where_s_ext) ";
 		}
+		/* do target join */
+		if ($this->join_target_properties) {
+			$query .= " and $objects.id = target_reference.object ";
+			$query .= " and target.path = target_reference.AR_path ";
+		}		
+
 		if ($this->orderby_s) {
 			$query.= " order by $this->orderby_s, $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
 		} else {

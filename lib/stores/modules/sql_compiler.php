@@ -218,6 +218,23 @@
 		return $result;
 	}
 
+
+	function parse_join_target_properties(&$query) {
+		do {
+			if (!eregi('^([a-z_][a-z0-9_]*)(:[a-z]+)?', $query, $regs)) {
+				$this->error = "expected property name at '$query'";
+				return false;
+			}
+			$this->join_target_properties["prop_".$regs[1]][$regs[2]] = true;
+			$query = substr($query, strlen($regs[0]));
+
+			if (!ereg('^[[:space:]]*,[[:space:]]*', $query, $regs)) {
+				return true;
+			}
+			$query = substr($query, strlen($regs[0]));
+		} while(1);
+	}
+
 	function parse_query(&$query) {
 		if (!eregi('^[[:space:]]*order[[:space:]]*by[[:space:]]+', $query, $regs)) {
 			$result=$this->parse_or_expr($query);
@@ -225,9 +242,10 @@
 			$no_selection = true;
 		}
 
-		if (eregi('^[[:space:]]*include[[:space:]]*target[[:space:]]*', $query, $regs)) {
-			$this->with_target_properties = true;
+		if (eregi('^[[:space:]]*join[[:space:]]*target[[:space:]]*on[[:space:]]*', $query, $regs)) {
+			$this->join_target_properties = Array();
 			$query = substr($query, strlen($regs[0]));
+			$this->parse_join_target_properties($query);
 		}
 
 		if ($no_selection || eregi('^[[:space:]]*order[[:space:]]*by[[:space:]]+', $query, $regs)) {
