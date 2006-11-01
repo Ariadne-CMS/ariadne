@@ -183,5 +183,50 @@ debug("showfile: show; ".$this->id);
 		return $this->GetPlainText();
 	}
   
+	function SaveFile($contents, $mimetype=false, $name='file') {  
+		global $AR;
+		$result="";
+		$name=ereg_replace("[\\\/]","",$name); // make sure nobody gets /etc/passwd			
+		if ($name) {
+			if (!$this->arIsNewObject && $this->CheckSilent('edit')) {
+				$files=$this->store->get_filestore("files");
+				return $files->write($contents, $this->id, $name);
+			} else if ($this->arIsNewObject && $this->CheckSilent('add','pfile')) {
+				// new pfile, so it has no id yet, use the tempfile
+				global $HTTP_POST_VARS;
+				require_once($this->store->get_config('code')."modules/mod_mimemagic.php");
+				$result = Array();
+
+				// fake an uploaded file, put it in the normal temp dir
+				$file_artemp=tempnam($this->store->get_config("files")."temp","upload");
+				if ($fp=fopen($file_artemp, "wb")) {
+					$result=fwrite($fp, $contents);
+					fclose($fp);
+				}
+
+				// now make the new values available to system.save.data.phtml
+				$info[$name]=$this->data->name;
+				$info[$name."_temp"]=substr($file_artemp,strlen($this->store->get_config("files")."temp"));
+				$info[$name."_size"]=strlen($contents);
+				if (!$mimetype) {
+					$type = get_mime_type($file_artemp);
+				} else {
+					$type = $mimetype;
+				}
+                $info[$name."_type"]=$type;
+                $info['mimetype']=$type;
+				$HTTP_POST_VARS = array_merge($HTTP_POST_VARS, $info);
+
+				return true;
+			}
+		} else {
+			return false;
+		}
+	}
+	
+	function _SaveFile($contents, $mimetype=false, $name='file') {
+		return $this->SaveFile($contents, $mimetype, $name);
+	}
+  
 } // end of pfile class definition
 ?>
