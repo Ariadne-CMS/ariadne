@@ -28,8 +28,19 @@
 	}
 	.object {
 		background: transparent;
+<?php
+	if ($viewtype!='details') {
+?>
 		width: 150px;
 		overflow: hidden;
+<?php
+	} else {
+?>
+		width: 100%;
+		overflow: hidden;
+<?php
+	}
+?>
 		<?php
 			if (($browser["version"]!=4)) {
 		?>
@@ -179,6 +190,7 @@
 <?php if ($viewtype == "details") {?>
 
 <table width="100%" cellspacing="0" cellpadding="0" border="0">
+<col style="width: 45%; overflow: hidden;">
 <tr>
 	<td align="left"><div class="heading">&nbsp;<?php echo $ARnls["name"]; ?></div></td>
 	<td align="right"><div class="heading"><?php echo $ARnls["size"]; ?>&nbsp;</div></td>

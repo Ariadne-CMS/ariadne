@@ -1,5 +1,5 @@
 <tr>
-<td><?php $this->call("winxp.browse.nav.list.show.phtml"); ?></td>
+<td><?php $this->call("winxp.browse.nav.list.show.phtml", Array('details' => true)); ?></td>
 <td align="right"><?php
  	if ($this->size>1024) {
 		echo round(intval($this->size)/1024)."&nbsp;KB&nbsp;"; 
