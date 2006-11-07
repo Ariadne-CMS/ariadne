@@ -23,7 +23,21 @@ class page {
 		return trim(str_replace('&nbsp;',' ',strip_tags($page, '<img>')))=='';
 	}
 
-	function cleanHtml($var, $tags, $arEditorSettings='') {
+	function getReferences($page) {
+		// Use Perl compatible regex for non-greedy matching
+		preg_match_all("/['\"](\{(arSite|arRoot|arBase|arCurrentPage)(\/[a-z][a-z])?}.*?)['\"]/", $page, $matches);
+		$refs=preg_replace(array("|{arSite(/[a-z][a-z])?}|","|{arRoot(/[a-z][a-z])?}|","|{arBase(/[a-z][a-z])?}|", "|{arCurrentPage(/[a-z][a-z])?}|"),
+			array($this->currentsite(), "", "", $this->path), $matches[1]);
+		foreach ($refs as $ref) { 
+			if ( substr($ref, -1) != '/' && !$this->exists($ref)) {
+				$ref = substr($ref, 0, strrpos($ref, "/")+1);
+			}
+			$result[] = $ref;
+		}
+		return $result;
+	}
+
+	function cleanHtml($var, $tags="_full", $arEditorSettings='') {
 		global $ARCurrent;
 		if( !$arEditorSettings ) {
 			if (!$ARCurrent->arEditorSettings) {
@@ -38,6 +52,7 @@ class page {
 				$config = $arEditorSettings["htmlcleaner"];
 				$var = htmlcleaner::cleanup($var, $config);
 			}
+
 			if ($arEditorSettings["htmltidy"]["enabled"]) {
 				include_once($this->store->get_config("code")."modules/mod_tidy.php");
 				$config=$arEditorSettings["htmltidy"];
@@ -52,20 +67,11 @@ class page {
 			if ($arEditorSettings[$tags]) {
 				$var=strip_tags($var, $arEditorSettings[$tags]);
 			}
+
 		}
 		//contentlanguage stuff
-		$var = $this->RAWtoAR($var, $contentLanguage);
-		
-		$refs = $this->GetReferences($var);
-		$count = 0;
-		foreach ($refs as $ref) { 
-			if ( substr($ref, -1) != '/' && !$this->exists($ref)) {
-				$ref = substr($ref, 0, strrpos($ref, "/")+1);
-			}
-			$properties["references"][$coun]["path"] = "'".AddSlashes($ref)."'";
-			$count++;
-		}
-    	return $var;
+		$var = url::RAWtoAR($var, $contentLanguage);
+	    	return $var;
 	}
 }
 
@@ -83,8 +89,12 @@ class pinp_page {
 		return page::isEmpty($page);
 	}
 
-	function _cleanHtml($var, $tags, $arEditorSettings, $config) {
-		return page::cleanHtml($var, $tags, $arEditorSettings, $config);
+	function _getReferences($page) {
+		return page::getReferences($page);
+	}
+	
+	function _cleanHtml($var, $tags="_full", $arEditorSettings='') {
+		return page::cleanHtml($var, $tags, $arEditorSettings);
 	}
 }
 
