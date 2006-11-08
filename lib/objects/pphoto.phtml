@@ -267,7 +267,7 @@ class pphoto extends pfile { // pphoto class definition
 			$compose .= "\"";
 		}
 
-		if ($method && eregi('[^a-z0-9+]',$method)) {
+		if ($method && eregi('[^a-z0-9+\-]',$method)) {
 			$this->error=sprintf($ARnls["err:composeillegalmethod"],$method);
 		} else {
 			$targetobj = current($this->get($target, "system.get.phtml"));
