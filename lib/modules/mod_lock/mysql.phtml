@@ -148,14 +148,14 @@ class mysqllock {
 	function init() {
 		$query_string="
 CREATE TABLE ".$this->tbl_prefix."locks (
-        release int NOT NULL,
-        type enum('O','T') NOT NULL,
-        identity varchar(32) NOT NULL,
-        path varchar(127) NOT NULL,
-  key (release),
-  key (type),
-  key (identity),
-  key (path)
+        `release` int NOT NULL,
+        `type` enum('O','T') NOT NULL,
+        `identity` varchar(32) NOT NULL,
+        `path` varchar(127) NOT NULL,
+  key (`release`),
+  key (`type`),
+  key (`identity`),
+  key (`path`)
 )";
 		mysql_db_query($this->database, $query_string, $this->connectid);
 	}
