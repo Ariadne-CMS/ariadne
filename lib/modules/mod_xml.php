@@ -36,8 +36,10 @@
 		function _get_array($string, $MULTI_TAGS = Array()) {
 			$parser = xml_parser_create();
             $this->elements = Array();
-			$this->MULTI_TAGS = $MULTI_TAGS;
-
+			$this->MULTI_TAGS = Array();
+			foreach ($MULTI_TAGS as $tag) {
+				$this->MULTI_TAGS[] = strtoupper($tag);
+			}
 			xml_set_object($parser, $this);
 			xml_set_element_handler($parser, "startElement", "endElement");
 			xml_set_character_data_handler($parser, "characterData");
