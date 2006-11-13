@@ -33,6 +33,23 @@
 			}
 		}
 
+		function _get_array($string, $MULTI_TAGS = Array()) {
+			$parser = xml_parser_create();
+            $this->elements = Array();
+			$this->MULTI_TAGS = $MULTI_TAGS;
+
+			xml_set_object($parser, $this);
+			xml_set_element_handler($parser, "startElement", "endElement");
+			xml_set_character_data_handler($parser, "characterData");
+			if (!xml_parse($parser, $string)) {
+				$this->error = sprintf("XML error: %s at line %d",
+					xml_error_string(xml_get_error_code($parser)),
+						xml_get_current_line_number($parser));
+			}
+
+			return $this->elements;
+		}
+
 		function _parse_url($url) {
 			if (!eregi('^https?://', $url)) {
 				$this->error = "Not a valid URL ($url)";
@@ -83,9 +100,8 @@
 			}
 		}
 
-
 		function call_tag_open($parser, $tag, $attributes) {
-		global $ARBeenHere;
+			global $ARBeenHere;
 			$ARBeenHere = Array();
 			if ($this->tag_open_template) {
 				$this->object->call($this->tag_open_template, Array("tag" => $tag, "attributes" => $attributes));
@@ -93,7 +109,7 @@
 		}
 
 		function call_tag_close($parser, $tag) {
-		global $ARBeenHere;
+			global $ARBeenHere;
 			$ARBeenHere = Array();
 			if ($this->tag_close_template) {
 				$this->object->call($this->tag_close_template, Array("tag" => $tag));
@@ -101,12 +117,70 @@
 		}
 
 		function call_tag_data($parser, $data) {
-		global $ARBeenHere;
+			global $ARBeenHere;
 			$ARBeenHere = Array();
 			if ($this->tag_data_template) {
 				$this->object->call($this->tag_data_template, Array("tag_data" => $data));
 			}
 		}
 
+
+		function startElement($parser, $name, $attribs) {
+		//global $MULTI_TAGS;
+			$newElement = Array();
+			$element = &$this->elements;
+			foreach ($this->ns as $n) {
+				$parentElement = $element;
+				$element = &$element[$n];
+			}
+			$this->ns[] = $name;
+			$newElement[':attribs'] = $attribs;
+			if (!in_array($name, $this->MULTI_TAGS)) {
+				$element[$name] = $newElement;
+			} else {
+				$element[$name][] = $newElement;
+				$this->ns[] = sizeof($element[$name])-1;
+			}
+		}
+
+		function endElement($parser, $name) {
+		//global $MULTI_TAGS;
+			$element = &$this->elements;
+			foreach ($this->ns as $n) {
+				$parentElement = $element;
+				$element = &$element[$n];
+			}
+			switch ($name) {
+				case 'item':
+					$this->rss_items[] = $element;
+					unset($parentElement[$name]);
+				break;
+			}
+			$parent = $this->ns[sizeof($this->ns)-2];
+			if (in_array($parent, $this->MULTI_TAGS) && $parent === $name) {
+				array_pop($this->ns);
+			}
+			array_pop($this->ns);
+		}
+
+		function characterData($parser, $data) {
+			$element = &$this->elements;
+			$name = "";
+			foreach ($this->ns as $n) {
+				$name .= ":$n";
+				$element = &$element[$n];
+			}
+			switch ($n) {
+				// do not put anything else above this line
+				// or else '0' values will trigger it.
+				case 0:
+				default:
+					if (!$element) {
+						$element = Array();
+					}
+					$element[':data'] .= $data;
+				break;
+			}
+		}
 	}
 ?>
