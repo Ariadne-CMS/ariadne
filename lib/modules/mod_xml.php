@@ -4,6 +4,19 @@
 			$parser = new xml_parser($this);
 			return $parser;
 		}
+	
+		function _escape($text) {
+			$search	= Array('&','"',"'",'<','>');
+			$replace= Array('&amp;','&quot;','&apos;','&lt;','&gt;');
+			return str_replace($search, $replace, $text);
+		}
+		
+		function _unescape($text) {
+			$search= Array('&quot;','&apos;','&lt;','&gt;','&amp;');
+			$replace= Array('"',"'",'<','>','&');
+			return str_replace($search, $replace, $text);
+		}
+
 	};
 
 	class xml_parser {
