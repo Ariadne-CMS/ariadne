@@ -44,7 +44,7 @@
 		} else {
 			while (top.window.opener.isDirty()) {
 				if (field = top.window.opener.getDirtyField()) {
-					addFormElement('changes['+field.path+']'+field.name, field.value);
+					addFormElement('changes['+field.path+']'+field.name, top.window.opener.getValue(field.fieldId));
 				}
 			}
 		}
