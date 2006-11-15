@@ -1,5 +1,5 @@
 <?php
-	include($this->store->get_config('code').'nls/ieedit.'.$nls);
+	include($this->store->get_config('code').'nls/ieedit.'.$this->nls);
 	if (!$wgHTMLEditSaveTemplate) {
 		$wgHTMLEditSaveTemplate="user.edit.save.html";
 	}
@@ -44,8 +44,7 @@
 			while (list($key, $value)=each($option)) {
 				make_ini_options($name."[\"$key\"]", $value);
 			}
-		} else
-		if (is_string($option)) {
+		} else if (is_string($option)) {
 			echo "	$name = \"".AddCSlashes($option, ARESCAPE)."\";\n";
 		} else {
 			echo "	$name = ".(int)$option.";\n";
@@ -765,7 +764,10 @@ function cssStyle_onChange(command)
 			oControl.className = sClass ;
 		}
 	}
-
+	var editField=getEditableField();
+	if (editField) {
+		registerChange(editField.id);
+	}
 	command.selectedIndex = 0 ;	
 	tbContentElement.focus();
 }
