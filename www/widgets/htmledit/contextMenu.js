@@ -104,7 +104,18 @@
 			   decide what you want to do based on the
 			   id passed from event.srcElement.item */
 			oPopup.hide();
-			ContextMenu[event.srcElement.item].cmd();
+//			ContextMenu[event.srcElement.item].cmd();
+			switch (ContextMenu[event.srcElement.item].cmd) {
+				case DECMD_PASTE:
+					DECMD_PASTE_onclick();
+				break;
+				case DECMD_CUT:
+					DECMD_CUT_onclick();
+				break;
+				case DECMD_COPY:
+					DECMD_COPY_onclick();
+				break;
+			}
 /*
 			switch (ContextMenu[event.srcElement.item].cmdId) {
 				case "addImage":
