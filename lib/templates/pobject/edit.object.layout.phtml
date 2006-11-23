@@ -64,10 +64,10 @@
 		window.innerWidth=document.body.clientWidth;
 	}	
 </script>
-<form action="<?php echo $editor.'?'.$mode; ?>" style="height: 95%">
+<div style="height: 95%;">
 <table border="0" width="100%" height="100%" align="center" cellspacing="2" vspace="10" hspace="10">
 <tr>
-	<td colspan="2" bgcolor="white" style="border: 2px inset; padding: 0px;" height="90%" valign="top">
+	<td colspan="3" bgcolor="white" style="border: 2px inset; padding: 0px;" height="90%" valign="top">
 
 	<div style="height: 100%; width: 100%; overflow: auto; margin: 0px; border: 0px;">
 		<table border="0" background="<?php echo $AR->dir->www; ?>widgets/webfx/tablesort/tablebackground.jpg" bgcolor="white" width="100%" cellspacing="0" cellpadding="0" onclick="sortColumn(event)">
@@ -161,11 +161,20 @@
 	</td>
 </tr><tr>
 	<td valign="bottom"><input type="button" name="action" value="<?php echo $ARnls["cancel"]; ?>" onClick="window.close();"></td>
-	<td align="right" valign="bottom"><input type="hidden" name="type" value="<?php echo $this->type; ?>">
-		<input type="submit" name="action" value="<?php echo $ARnls["new"]; ?>"></td>
+	<td align="left" valign="bottom"><?php
+		if ($AR->Grep->path) {
+			?>
+		<form action="edit.object.layout.grep.phtml"><input type="text" name="search" value="<?php echo $search; ?>" style="width: 200px;"><input type="submit" name="grep" value="Grep"></form>
+			<?php
+		}
+	?>
+	</td>
+	<td align="right" valign="bottom"><form action="<?php echo $editor.'?'.$mode; ?>">
+		<input type="hidden" name="type" value="<?php echo $this->type; ?>">
+		<input type="submit" name="action" value="<?php echo $ARnls["new"]; ?>"></form></td>
 </tr>
 </table>
-</form>
+</div>
 </body>
 <?php
 	}

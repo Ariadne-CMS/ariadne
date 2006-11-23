@@ -1,0 +1,126 @@
+<?php
+	/******************************************************************
+	 edit.object.layout.grep.phtml                              Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: layout
+	 Global variables: none
+
+	 no result
+
+	******************************************************************/
+	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		if (!$search || !$AR->Grep->path) {
+			$this->call('edit.object.layout.phtml', $arCallArgs);
+		} else {
+			if ($AR->user->data->template_editor=='helene') {
+				$mode="highlight"; // helene
+				$editor="edit.object.layout.highlight.phtml";
+			} else {
+				$mode="edit"; // textarea
+				$editor="edit.object.layout.form.phtml";
+			}
+?>
+<html>
+<head>
+<title><?php echo $ARnls["templates"] . ' ' . $this->path; ?></title>
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>form.css">
+<style>
+	.required {
+		background-color: buttonface;
+		border: 2px outset;
+		padding: 2px;
+		font-weight: bold;
+	}	
+	.required div {
+		width: 100%;
+	}
+	td.type {
+		width: 22px;
+		padding-left: 2px;
+	}
+	a.button {
+		border: 1px outset;
+	}
+	input {
+		width: 75px;
+	}
+</style>
+<script src="<?php echo $AR->dir->www; ?>widgets/window/savesize.js"></script>
+</head>
+<body bgcolor="white">
+<script>
+	if (document.all) {
+		window.innerHeight=document.body.clientHeight;
+		window.innerWidth=document.body.clientWidth;
+	}	
+</script>
+<div style="height: 95%">
+<table border="0" width="100%" height="100%" align="center" cellspacing="2" vspace="10" hspace="10">
+<tr>
+	<td colspan="3" bgcolor="white" style="border: 2px inset; padding: 0px;" height="90%" valign="top">
+
+	<div style="height: 100%; width: 100%; overflow: auto; margin: 0px; border: 0px;">
+		<table border="0" background="<?php echo $AR->dir->www; ?>widgets/webfx/tablesort/tablebackground.jpg" bgcolor="white" width="100%" cellspacing="0" cellpadding="0">
+		<thead>
+		<tr>    
+			<td valign="top" class="required" style="width: 100px;">
+				<?php echo $ARnls["type"]; ?>
+			</td><td valign="top" class="required">
+				<?php echo $ARnls["template"]; ?>
+			</td><td valign="top" class="required">
+				<?php echo $ARnls["language"]; ?>
+			</td><td valign="top" class="required">
+				line
+			</td><td class="required">&nbsp;</td>
+		</tr></thead><tbody><?php
+			$filestore = $this->store->get_filestore("templates");
+			$templates_path = $filestore->make_path($this->id);
+
+			$esc_search = escapeshellarg($search);
+			$greps = Array();
+			$result = exec($AR->Grep->path." ".$AR->Grep->options." $esc_search $templates_path*.pinp", $greps);
+			if ($greps) {
+				foreach ($greps as $grep) {
+//					echo $grep."<br>\n";
+					list($file, $linenr, $line)=split(":", $grep);
+					$file=substr($file, strrpos($file, '/'));
+					$type=substr($file, 2, strpos($file, '.')-2);
+					$file=substr($file, strpos($file, '.')+1);
+					$file=substr($file, 0, strrpos($file, '.'));
+					$nls=substr($file, strrpos($file, '.')+1);
+					$file=substr($file, 0, strrpos($file, '.'));
+					?>
+					<tr valign="middle" onmouseover="style.backgroundColor='steelblue',style.color='white'" onmouseout="style.color='',style.backgroundColor='';" 
+						onclick="document.location='edit.object.layout.form.phtml?mode=edit&type=<?php echo $type; ?>&function=<?php echo $file; ?>&language=<?php echo $nls; ?>';">
+						<td align="left" valign="middle" style="height:23px; width: 100px; overflow: hidden; "><img 
+							src="<?php echo $AR->dir->images. "icons/$type.gif"; ?>" width="20" height="20" align="absmiddle">&nbsp;<?php echo $type; ?>&nbsp;</td>
+						<td align="left"><?php echo $file; ?></td>
+						<td><?php
+								echo "<img src=\"".$AR->dir->images."nls/small/$nls.gif\" alt=\"".$AR->nls->list[$nls]."\" border=\"0\">";
+							?></td>
+						<td align="right" style="padding: 0px 1em;"><code><?php echo $linenr; ?></code></td>
+						<td><code style="padding-top: 2px; height: 21px; width: 100%; overflow: hidden;"><?php echo htmlspecialchars($line); ?></code></td>
+					</tr><?php
+				}
+			}
+		?></tbody>
+		</table>
+	</div>
+	</td>
+</tr><tr>
+	<td valign="bottom"><input type="button" name="action" value="<?php echo $ARnls["cancel"]; ?>" onClick="document.location='<?php echo $this->make_url(); ?>edit.object.layout.phtml';"></td>
+	<td align="left" valign="bottom">
+		<form><input type="text" name="search" value="<?php echo $search; ?>" style="width: 200px;"><input type="submit" name="grep" value="Grep"></form>
+	</td>
+	<td align="right" valign="bottom"><form action="<?php echo $editor.'?'.$mode; ?>">
+		<input type="hidden" name="type" value="<?php echo $this->type; ?>">
+		<input type="submit" name="action" value="<?php echo $ARnls["new"]; ?>"></form></td>
+</tr>
+</table>
+</div>
+</body>
+<?php
+		}
+	}
+?>
