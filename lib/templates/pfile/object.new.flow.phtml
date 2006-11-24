@@ -75,6 +75,10 @@
 		while (list($key, $value)=each($configcache->nls->list)) {
 			$HTTP_POST_VARS[$key]["name"]=$arNewFilename;
 		}
+	} else if (!$this->getdata("name", $nls)) {
+		while (list($key, $value)=each($configcache->nls->list)) {
+			$HTTP_POST_VARS[$key]["name"]=$arNewFilename;
+		}
 	}
 	$arResult = $this->call("user.wizard.new.html", Array("wgWizFlow" => $arFlow));
 ?>
