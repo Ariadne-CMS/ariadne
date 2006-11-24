@@ -76,8 +76,11 @@
 			$HTTP_POST_VARS[$key]["name"]=$arNewFilename;
 		}
 	} else if (!$this->getdata("name", $nls)) {
+		if (($file=$this->getdata("file","none")) && ereg("[^\/\\]*\$",$file, $matches)) {
+			$name=eregi_replace("[^a-z0-9\./_-]","_",$matches[0]);
+		}
 		while (list($key, $value)=each($configcache->nls->list)) {
-			$HTTP_POST_VARS[$key]["name"]=$arNewFilename;
+			$HTTP_POST_VARS[$key]["name"]=$name;
 		}
 	}
 	$arResult = $this->call("user.wizard.new.html", Array("wgWizFlow" => $arFlow));
