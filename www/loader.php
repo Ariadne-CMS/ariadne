@@ -74,7 +74,7 @@
 		// go check for a sessionid
 		$root=$AR->root;
 		$session_id=0;
-		$re="^/-(.*)-/";
+		$re="^/-(.{4})-/";
 		if (eregi($re,$PATH_INFO,$matches)) {
 			$session_id=$matches[1];
 			$PATH_INFO=substr($PATH_INFO,strlen($matches[0])-1);
