@@ -271,7 +271,7 @@ class pphoto extends pfile { // pphoto class definition
 			$this->error=sprintf($ARnls["err:composeillegalmethod"],$method);
 		} else {
 			$targetobj = current($this->get($target, "system.get.phtml"));
-			if( $targetobj->type == "pphoto" ) {
+			if( $targetobj->implements("pphoto") ) {
 				if ($method) {
 					$compose .= " -compose ".$method;
 				}
