@@ -1,7 +1,7 @@
 <?php
 	$arResult = false;
 	if ($this->CheckSilent('layout')) {
-		if ($data->pinp[$type][$function][$language]) {
+		if ($data->config->pinp[$type][$function][$language]) {
 			$template=$type.".".$function.".".$language.".pinp";
 			$templates=$this->store->get_filestore("templates");
 			if ($templates->exists($this->id, $template)) {
