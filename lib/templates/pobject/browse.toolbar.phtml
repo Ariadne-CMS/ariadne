@@ -41,7 +41,7 @@
 		<div id="b_prev" class="tbutton_left" style="visibility: hidden;" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="b_prev();"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/prev.gif"></div>
 		<div id="b_up" class="tbutton_left" onMouseOver="this.className='tbutton_left_hover'" onMouseOut="this.className='tbutton_left'" onClick="top.View('<?php echo $this->parent; ?>');"><img src="<?php echo $AR->dir->www; ?>images/browse/toolbar/up.gif"></div>
 		<div id="b_pages_div" style="float: left;">
-			<form name="b_pages" style="visibility: hidden; float: left; margin-top: 2px; font: menu;" onSubmit="b_goto(this.goto.options.selectedIndex); return false;">
+			<form id="b_pages" name="b_pages" style="visibility: hidden; float: left; margin-top: 2px; font: menu;" onSubmit="b_goto(this.goto.options.selectedIndex); return false;">
 				<div style="float:left; padding: 2px;"><?php echo $ARnls["page"]; ?> : </div>
 				<select id="b_goto_select" name="b_goto_select" onChange="return b_goto(this.options.selectedIndex);">
 				</select>
