@@ -52,6 +52,7 @@
 			} else if (!edit::isEmpty($var)) {
 				echo $var;
 			}
+			return $id;
 		}
 
 		function showInput($var, $name, $title, $type='text', $extra='') {
@@ -63,6 +64,7 @@
 			} else if (!edit::isEmpty($var)) {
 				echo $var;
 			}
+			return $id;
 		}
 
 		function registerGroup($name, $id) {
@@ -84,6 +86,7 @@
 			} else if( !edit::isEmpty($var)) {
 				echo $var;
 			}
+			return $id;
 		}
 
 		function showSelect($var, $name, $title, $list, $bykey=false, $extra='') {
@@ -109,6 +112,7 @@
 			} else if (!edit::isEmpty($var)) {
 				echo $var;
 			}
+			return $id;
 		}
 
 		function showSpan($var, $name, $title='', $extra='') {
@@ -120,6 +124,7 @@
 			} else if (!edit::isEmpty($var)) {
 				echo $var;
 			}
+			return $id;
 		}
 
 		function showDiv($var, $name, $title='', $extra='') {
@@ -131,6 +136,7 @@
 			} else if (!edit::isEmpty($var)) {
 				echo $var;
 			}
+			return $id;
 		}
 
 		function showLink($path='', $extra='') {
@@ -193,6 +199,10 @@
 
 		function _registerDataField($name) {
 			return edit::registerDataField($name);
+		}
+
+		function _registerGroup($name, $id) {
+			return edit::registerGroup($name, $id);
 		}
 
 		function _requireDataField($name, $title) {
