@@ -388,6 +388,7 @@ class pphoto extends pfile { // pphoto class definition
 				foreach($ARConfig->photoStack[$this->id] as $value){
 					$image.=$value;
 				}
+
 				$ARConfig->photoCommandStack[$this->id][] = $contextexecutable.$image;
 				unset($ARConfig->photoStack[$this->id]);
 				if( $context == "build" ) {
@@ -439,11 +440,22 @@ class pphoto extends pfile { // pphoto class definition
 						foreach( $ARConfig->photoCommandStack[$this->id] as $exec_string){
 							$exec_string = str_replace('{buildfile}', $tmpsrc, $exec_string);
 							$exec_string .= " ".$tmpsrc;
+
+							// Split the total command line to the command and the args so we can escape the args.
+							$cmd_array = explode(" ", $exec_string, 2);
+
+							// Backwards compatibility quirk: this is needed to keep things working for users that used escaped colors
+							$cmd_array[1] = preg_replace("|\\\#|", "#", $cmd_array[1]);
+
+							// Escaped shell command line here.
+							$exec_string = $cmd_array[0] . " " . escapeshellcmd($cmd_array[1]);
+
+							debug("executing ($exec_string)");
 							system($exec_string,$failed);
 							if($failed){
+								debug("exec failed: $failed");
 								break;
 							}
-							debug("executing ($exec_string)");
 							// echo( $exec_string."<br>");
 						}
 					}
