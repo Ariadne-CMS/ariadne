@@ -175,7 +175,7 @@ class pphoto extends pfile { // pphoto class definition
 
 		$x=(int)$x;
 		$y=(int)$y;
-		$ARConfig->photoStack[$this->id][]=" -size ".$x."x".$y." -geometry '".$x."x".$y.">'";
+		$ARConfig->photoStack[$this->id][]=" -size ".$x."x".$y." -geometry ".$x."x".$y.">";
 
 		$info=$this->getimageinfo();
 		$aspectx=$x/$info[0];
@@ -233,13 +233,13 @@ class pphoto extends pfile { // pphoto class definition
 		if( isset( $width ) && isset( $height ) ) {
 			$width=(int)abs($width);
 			$height=(int)abs($height);
-			$compose .= " -geometry \"".$width."x".$height;
+			$compose .= " -geometry ".$width."x".$height;
 			$geo = true;
 
 		}
 		if( isset( $xoffset ) && isset( $yoffset ) ) {
 			if( !$geo ) {
-				$compose .= " -geometry \"";
+				$compose .= " -geometry ";
 				$geo = true;
 			}
 			$xoffset=(int)$xoffset;
@@ -263,10 +263,6 @@ class pphoto extends pfile { // pphoto class definition
 			$compose .= $resize;
 		}
 		
-		if( $geo ) {
-			$compose .= "\"";
-		}
-
 		if ($method && eregi('[^a-z0-9+\-]',$method)) {
 			$this->error=sprintf($ARnls["err:composeillegalmethod"],$method);
 		} else {
@@ -362,7 +358,7 @@ class pphoto extends pfile { // pphoto class definition
 		if($rotate!=0) {
 		  $rotcmd = "-rotate $rotate";
 		}
-		$ARConfig->photoStack[$this->id][]=" -pointsize $pointsize -fill $color $gravcmd $rotcmd -draw \"text $x,$y '".addcslashes($text,ARESCAPE)."'\"";
+		$ARConfig->photoStack[$this->id][]=" -pointsize $pointsize -fill $color $gravcmd $rotcmd -draw \"text $x,$y ".addcslashes($text,ARESCAPE)."\"";
 		return true;
 	}
 
