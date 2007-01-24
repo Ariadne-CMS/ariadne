@@ -39,16 +39,16 @@ include_once($this->code."modules/mod_url.php");
 
 class pfile extends pobject { // pfile class definition
 
-	function GetFile() {
+	function GetFile($file='file') {
 		$files=$this->store->get_filestore("files");
-		return $files->read($this->id, "file");
+		return $files->read($this->id, $file);
 	}
 
 	function ParseFile($file) {
 		return URL::ARtoRAW($file, true);
 	}
 
-	function ShowFile() {
+	function ShowFile($file='file') {
 		global $AR, $ARCurrent;
 		if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
 			if ($ARCurrent->cachetime==0 && !$AR->output_compression) {
@@ -64,7 +64,7 @@ debug("showfile: starting ob");
 debug("showfile: filename: $filename");
 		$files=$this->store->get_filestore("files");
 		if (!ereg("^text/",$this->data->mimetype)) {
-			$size=$files->size($this->id, "file");
+			$size=$files->size($this->id, $file);
 		}
 		if (ldSetContent($this->data->mimetype, $size)) {
 			$cacheseconds=1800; // 1/2 hour
@@ -89,20 +89,20 @@ debug("showfile: filename: $filename");
 				// assume html files to use charset UTF-8; this will always work correctly
 				// with the MSIE html editor, and won't corrupt 'normal' html.
 				ldHeader("Content-Type: text/html; charset=UTF-8");
-				echo $this->ParseFile($this->GetFile());
+				echo $this->ParseFile($this->GetFile($file));
 			} else {
 				// set pragma: cache; bug workaround for internet explorer and https
 				if (ldGetServerVar('HTTPS')) {
 					ldHeader('Pragma: cache');
 				}
 debug("showfile: show; ".$this->id);
-				$files->show($this->id, "file");
+				$files->show($this->id, $file);
 			}
 		}
 		$files->close();
 	}
 
-	function DownloadFile() {
+	function DownloadFile($file='file') {
 		global $AR, $ARCurrent;
 		if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
 			if ($ARCurrent->cachetime==0 && !$AR->output_compression) {
@@ -112,7 +112,7 @@ debug("showfile: show; ".$this->id);
 		}
 		$files=$this->store->get_filestore("files");
 		if (!ereg("^text/",$this->data->mimetype)) {
-			$size=$files->size($this->id, "file");
+			$size=$files->size($this->id, $file);
 		}
 		$filename=substr($this->path, strlen($this->parent), -1);
 		ldHeader('Cache-Control: no-cache, must-revalidate');
@@ -128,7 +128,7 @@ debug("showfile: show; ".$this->id);
 		} else {
 			ldHeader("Content-Disposition: inline; filename=\"".$filename."\"");
 			ldHeader("Content-length:".(string)$size);
-			$files->show($this->id, "file");
+			$files->show($this->id, $file);
 		}
 		$files->close();
 	}
@@ -137,19 +137,19 @@ debug("showfile: show; ".$this->id);
 		return $this->ParseFile($file);
 	}
   
-	function _GetFile() {
-		return $this->GetFile();
+	function _GetFile($file='file') {
+		return $this->GetFile($file);
 	}
   
-	function _ShowFile() {
-		return $this->ShowFile();
+	function _ShowFile($file='file') {
+		return $this->ShowFile($file);
 	}
 
-	function _DownloadFile() {
-		return $this->DownloadFile();
+	function _DownloadFile($file='file') {
+		return $this->DownloadFile($file);
 	}
 
-	function GetPlainText() {  
+	function GetPlainText($file='file') {  
 		global $AR;
 		$result="";
 		$files=$this->store->get_filestore("files");
@@ -157,7 +157,7 @@ debug("showfile: show; ".$this->id);
 		
 		$mimetype=$this->data->mimetype=$this->getdata("mimetype","none");
 		if (eregi("^text/", $mimetype)) {
-			$result=$this->GetFile();
+			$result=$this->GetFile($file);
 			if ($mimetype=="text/html") {
 				$result=$this->html_to_text($result);
 			}
@@ -179,8 +179,8 @@ debug("showfile: show; ".$this->id);
 		return $result;
 	}
 	
-	function _GetPlainText() {
-		return $this->GetPlainText();
+	function _GetPlainText($file='file') {
+		return $this->GetPlainText($file);
 	}
   
 	function SaveFile($contents, $mimetype=false, $name='file') {  
