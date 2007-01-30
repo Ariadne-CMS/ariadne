@@ -47,7 +47,7 @@
 	if($webdav_config['debugfile']) {
 		$DB["file"] = $webdav_config['debugfile'];
 	} else {
-		$DB["file"} = '/tmp/webdav.log';
+		$DB["file"] = '/tmp/webdav.log';
 	}
 
 	function debug_print( $text ) {
