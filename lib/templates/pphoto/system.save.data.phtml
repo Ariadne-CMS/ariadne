@@ -12,17 +12,26 @@
 			$this->CheckConfig()) {
 		if ($this->arIsNewObject) {
 			$this->data=new object;
-			$filename=$this->getdata("arNewFilename","none");
-			if (!$this->data->mimetype=$this->getdata("mimetype","none")) {
-				$this->data->mimetype=$this->getdata("file_type","none");
-			}
-			$this->data->filesize=$this->getdata("file_size","none");
-			while (list($key,$value)=each($ARConfig->nls->list)) {
-				if (!$this->data->$key->name) {
-					$this->data->$key->name=$filename;
-				}
-			}
-        	} else {
+
+         $defaultnls=$ARConfig->nls->default;
+         $filename=$this->getdata("name", $defaultnls);
+         if (!$filename) {
+            $filename=$this->getdata("arNewFilename","none");
+         }
+         if (!$this->data->mimetype=$this->getdata("mimetype","none")) {
+            $this->data->mimetype=$this->getdata("file_type","none");
+         }
+         $this->data->filesize=$this->getdata("file_size","none");
+
+         while (list($key,$value)=each($ARConfig->nls->list)) {
+            if (!$this->data->$key->name) {
+               $name=$this->getdata("name", $key);
+               if (!$name) {
+                  $this->data->$key->name=$filename;
+               }
+            }
+         }
+     	} else {
 			// first make sure that the object is clean (data can only be set v
 			// the defined interface: $arCallArgs)
 			$this->data=current($this->get(".","system.get.data.phtml"));

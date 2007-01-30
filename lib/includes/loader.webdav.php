@@ -43,7 +43,12 @@
 
 	$DB["method"]["loader"] = false;
 	$DB["method"]["file"] = true;
-	$DB["file"] = "/tmp/webdav.log";
+
+	if($webdav_config['debugfile']) {
+		$DB["file"] = $webdav_config['debugfile'];
+	} else {
+		$DB["file"} = '/tmp/webdav.log';
+	}
 
 	function debug_print( $text ) {
 		echo "<b>".$text."</b><br>";

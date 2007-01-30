@@ -1,9 +1,9 @@
 <?php
 	if (!$this->exists($file['name'])) {
 		debug("putting new file");
-		$this->call('ftp.files.save.new.phtml', $arCallArgs);
+		$this->call('webdav.files.save.new.phtml', $arCallArgs);
 	} else {
 		debug("putting existing file ".$file['name']);
-		$this->get($file['name'], 'ftp.files.save.phtml', $arCallArgs);
+		$this->get($file['name'], 'webdav.files.save.phtml', $arCallArgs);
 	}
 ?>
