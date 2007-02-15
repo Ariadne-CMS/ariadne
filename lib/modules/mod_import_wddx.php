@@ -90,7 +90,7 @@ class import_wddx {
 				echo "#.#.#.#\n";
 				print_r($struct["data"]);
 				echo "#.#.#.#\n";
-				print_r($stack);
+				print_r($this->stack);
 				echo "#.#.#.#\n";
 			}
 
@@ -129,8 +129,6 @@ class import_wddx {
 			4) object files
 		 */
 		debug("WDDX working on ".$objdata['path'],'all');
-
-		$changed = false;
 
 		if($this->config['srcpath'] != $this->config['dstpath'] ){
 			if(
