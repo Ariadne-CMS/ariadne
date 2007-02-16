@@ -11,8 +11,9 @@
 		// Make sure the login is lower case. Because of the
 		// numerous checks on "admin".
 		$login = strtolower( $login );
-
-		$ARCookie = stripslashes($HTTP_COOKIE_VARS["ARCookie"]);
+	
+		// this line is not needed
+		//$ARCookie = stripslashes($HTTP_COOKIE_VARS["ARCookie"]);
 
 		debug("ldSetCredentials($login)","object");
 
@@ -37,6 +38,8 @@
 		$cookie=array();
 
 		// FIXME: now clean up the cookie, remove old sessions
+		// FIXME: cleaning up a empty array looks a bit silly ?
+		/*
 		@reset($cookie);
 		while (list($sessionid, $data)=@each($cookie)) {
 			if (!$ARCurrent->session->sessionstore->exists("/$sessionid/")) {
@@ -47,6 +50,7 @@
 				}
 			} 
 		}
+		 */
 
 		$cookie[$ARCurrent->session->id]['login']=$login;
 		$cookie[$ARCurrent->session->id]['timestamp']=time();
