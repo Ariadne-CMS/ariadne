@@ -50,22 +50,22 @@
 											'Trebuchet_MS_Bold.ttf'
 					),
 
-		            'chars'          => 5,       // integer: number of chars to use for ID
-		            'minsize'        => 20,      // integer: minimal size of chars
-		            'maxsize'        => 30,      // integer: maximal size of chars
-		            'maxrotation'    => 25,      // integer: define the maximal angle for char-rotation, good results are between 0 and 30
+					'chars'          => 5,       // integer: number of chars to use for ID
+					'minsize'        => 20,      // integer: minimal size of chars
+					'maxsize'        => 30,      // integer: maximal size of chars
+					'maxrotation'    => 25,      // integer: define the maximal angle for char-rotation, good results are between 0 and 30
 
-		            'noise'          => FALSE,    // boolean: TRUE = noisy chars | FALSE = grid
-		            'websafecolors'  => FALSE,   // boolean
-		            'refreshlink'    => TRUE,    // boolean
-		            'lang'           => 'en',    // string:  ['en'|'de']
-		            'maxtry'         => 3,       // integer: [1-9]
+					'noise'          => FALSE,    // boolean: TRUE = noisy chars | FALSE = grid
+					'websafecolors'  => FALSE,   // boolean
+					'refreshlink'    => TRUE,    // boolean
+					'lang'           => 'en',    // string:  ['en'|'de']
+					'maxtry'         => 3,       // integer: [1-9]
 
-		            'badguys_url'    => '/',     // string: URL
-		            'secretstring'   => 'A very, very secret string which is used to generate a md5-key!',
-		            'secretposition' => 15,      // integer: [1-32]
+					'badguys_url'    => '/',     // string: URL
+					'secretstring'   => 'A very, very secret string which is used to generate a md5-key!',
+					'secretposition' => 15,      // integer: [1-32]
 
-		            'debug'          => FALSE
+					'debug'          => FALSE
 			);
 
 			foreach ($aconfig as $akey => $aval) {
@@ -113,7 +113,7 @@
 			return $captchaCase;
 		}
 
-		function showImg($captchaImg) {
+		function showImg() {
 			$captchaImg = $this->getvar('show');
 			$captchaImg = ereg_replace("[\\\/]", "", $captchaImg);
 			$filename = $this->store->get_config('files').'temp/hn_captcha_'.$captchaImg.'.jpg';
@@ -142,12 +142,11 @@
 
 	class pinp_captcha {
 		function _process($config='') {
-			return captcha::process($template, $config);
+			return captcha::process($config);
 		}
 
 		function _showImg() {
-			$captchaImg = $this->getvar('show');
-			return captcha::showImg($captchaImg);
+			return captcha::showImg();
 		}
 
 		function _getImgSrc($url='') {
