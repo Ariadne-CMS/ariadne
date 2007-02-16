@@ -53,8 +53,8 @@
 				$client_id = $HTTP_SERVER_VARS[$AR->Stats->clientvar];
 				$referer =  $HTTP_SERVER_VARS['HTTP_REFERER'];
 
-				$cookie=ldGetCredentials();
-				$username = $cookie[$ARCurrent->session->id]['login'];
+				//$cookie=ldGetCredentials();
+				//$username = $cookie[$ARCurrent->session->id]['login'];
 
 				// log the entry if there is a CLIENT_ID
 				if((isset($client_id)) || (!$AR->Stats->logdefault)) {

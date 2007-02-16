@@ -143,7 +143,6 @@
 			$newElement = Array();
 			$element = &$this->elements;
 			foreach ($this->ns as $n) {
-				$parentElement = $element;
 				$element = &$element[$n];
 			}
 			$this->ns[] = $name;
