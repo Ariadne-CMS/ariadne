@@ -114,7 +114,6 @@ class page {
 				"", 
 				$this->path), 
 			$matches[1]);
-		$count	= 0;
 		foreach ($refs as $ref) {
 			if (substr($ref, -1) != '/' && !$this->exists($ref)) {
 				// Drop the template name
