@@ -81,7 +81,7 @@ class scanner {
 		$this->YYBUFFER = $buffer."\0";
 		$this->YYLINE = 1;
 		$this->YYSTATE = YY_STATE_HTML;
-		$YYCURSOR = 0;
+		$this->YYCURSOR = 0;
 	}
 
 	function scan(&$result) {
