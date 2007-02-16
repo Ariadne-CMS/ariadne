@@ -108,6 +108,7 @@
 			} else {
 				$this->error = "'$callback' is not a valid callback function";
 			}
+			return $result;
 		}
 
 		function _path_escape($path) {
