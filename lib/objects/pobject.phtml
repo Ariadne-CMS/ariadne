@@ -1721,13 +1721,13 @@ class pobject extends object { // pobject class definition
 			if( $connection ) { 
 				if( strtoupper($method) == "GET" ) { 
 					if ($data) {
-						$url .= "?" . $data; 
+						$uri .= "?" . $data; 
 					}
-					fputs( $connection, "GET $url HTTP/1.0\r\n"); 
+					fputs( $connection, "GET $uri HTTP/1.0\r\n"); 
 				} else if( strtoupper($method) == "POST" ) { 
-					fputs( $connection, "POST $url HTTP/1.0\r\n"); 
+					fputs( $connection, "POST $uri HTTP/1.0\r\n"); 
 				} else {
-					fputs( $connection, "$method $url HTTP/1.0\r\n");
+					fputs( $connection, "$method $uri HTTP/1.0\r\n");
 				}
 
 				fputs( $connection, "Host: $host\r\n");
@@ -1767,7 +1767,7 @@ class pobject extends object { // pobject class definition
 						$headerEnd = 1; 
 					} else { 
 						//this is the header, if you want it... 
-						if (preg_match("/Location: (.+?)\n/is",$currentLine,$matches) ) { 
+						if (preg_match("/^Location: (.+?)\n/is",$currentLine,$matches) ) { 
 							$headerContents .= $currentLine;
 							//redirects are sometimes relative 
 							$newurl = $matches[1]; 
