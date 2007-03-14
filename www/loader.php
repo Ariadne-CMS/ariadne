@@ -276,7 +276,14 @@
 			}
 
 			// load language file
-			require($ariadne."/nls/".$nls);
+			if (file_exists($ariadne.'/nls/'.$nls)) {
+				require($ariadne.'/nls/'.$nls);
+			} else if (file_exists($ariadne.'/nls/'.$AR->nls->default)) {
+				require($ariadne.'/nls/'.$AR->nls->default);
+			} else {
+				require($ariadne.'/nls/' . 'en');
+			}
+
 			if (substr($function, -6)==".phtml") {
 				// system template: no language check
 				$ARCurrent->nolangcheck=1;
