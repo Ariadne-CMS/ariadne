@@ -320,7 +320,7 @@
 	$ARnls["unlock"]						=	"Hef op";
 	$ARnls["up"]							=	"Omhoog";
 	$ARnls["update"]						=	"Verander";
-	$ARnls["uploadfile"]					=	"Bestand Overzenden";
+	$ARnls["uploadfile"]					=	"Upload Bestand";
 	$ARnls["url"]							=	"URL";
 	$ARnls["use"]							=	"Gebruik";
 	$ARnls["user"]							=	"Gebruiker";
