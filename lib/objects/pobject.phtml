@@ -659,34 +659,36 @@ class pobject extends object { // pobject class definition
 
 	function make_local_url($path="", $nls=false, $session=true, $https=NULL) {
 		global $ARCurrent, $ARConfig, $AR;
-		$site=false;
-		$path=$this->make_path($path);
-		$newpath=$path;
-		do {
-			if (!$config=$ARConfig->cache[$newpath]) {
-				$config=$this->loadConfig($newpath);
+		$site = false;
+		$path = $this->make_path($path);
+		$checkpath = $path;
+
+		$redirects = $ARCurrent->shortcut_redirect;
+		if (is_array($redirects)) {
+			$newpath = $checkpath;
+			$c_redirects = count($redirects);
+			$c_redirects_done = 0;
+			while (count($redirects) && ($redir = array_pop($redirects)) && substr($newpath, 0, strlen($redir['dest'])) == $redir['dest']) {
+				$c_redirects_done++;
+				$newpath = $redir['src'].substr($newpath, strlen($redir['dest']));
 			}
-			if (@count($ARCurrent->shortcut_redirect)) {
-				$redir = end($ARCurrent->shortcut_redirect);
-				if ($redir["keepurl"] && substr($newpath, 0, strlen($redir["dest"])) == $redir["dest"]) {
-					if (substr($config->site, 0, strlen($redir["dest"]))!=$redir["dest"]) {
-						// search currentsite from the reference
-						if (!$config = $ARConfig->cache[$redir['src']]) {
-							$config = $this->loadConfig($redir['src']);
-						}
-						$dest=$redir['dest'];
-						$src=$redir['src'];
-					}
-				}
+			if ($c_redirects_done == $c_redirects) {
+				$checkpath = $redir['src'];
+			}
+		}
+
+		do {
+			if (!$config=$ARConfig->cache[$checkpath]) {
+				$config=$this->loadConfig($checkpath);
 			}
 			if ($config) {
 				if ($config->root['value']==$AR->host) {
 					$site=$config->site;
 				}
 			}
-			$prevpath=$newpath;
-			$newpath=$this->make_path($newpath."../");			
-		} while ($prevpath!=$newpath && !$site);
+			$prevpath=$checkpath;
+			$checkpath=$this->make_path($checkpath."../");			
+		} while ($prevpath!=$checkpath && !$site);
 		if (!$site) {
 			$site='/';
 		}
@@ -694,8 +696,8 @@ class pobject extends object { // pobject class definition
 		if (substr($site_url, 0, strlen($AR->host))!=$AR->host) {
 			$site_url=$this->make_url($site, $nls, $session, $https, true);
 		}
-		if ($dest) { // $dest is the destination of a shortcut redirection, with keepurl on
-			$rest=substr($src, strlen($site)).substr($path, strlen($dest));
+		if ($newpath) { // $newpath is the destination of a shortcut redirection, with keepurl on
+			$rest=substr($newpath, strlen($site));
 		} else {
 			$rest=substr($path, strlen($site));
 		}
@@ -1336,13 +1338,19 @@ class pobject extends object { // pobject class definition
 						debug("CheckConfig: library '$arLibrary' not in config");
 					}
 				} else {
-					if (is_array($ARCurrent->shortcut_redirect)) {
-						$redir = end($ARCurrent->shortcut_redirect);
-						if ($redir["keepurl"] && (substr($this->path, 0, strlen($redir["dest"])) == $redir["dest"])) {
-							$template = $this->getPinpTemplate($arCallFunction, $this->path, $redir["dest"]);
-							if (!$template["arTemplateId"]) {
-								$template = $this->getPinpTemplate($arCallFunction, $this->make_path($redir["src"]));
-							}
+					$redirects = $ARCurrent->shortcut_redirect;
+					if (is_array($redirects)) {
+						$redirpath = $this->path;
+						while (!$template['arTemplateId'] && 
+									($redir = array_pop($redirects)) &&
+										$redir["keepurl"] && 
+											(substr($redirpath, 0, strlen($redir["dest"])) == $redir["dest"])							
+						) {
+							$template = $this->getPinpTemplate($arCallFunction, $redirpath, $redir["dest"]);
+							$redirpath = $redir['src'];
+						}
+						if (!$template["arTemplateId"] && $redir['keepurl']) {
+							$template = $this->getPinpTemplate($arCallFunction, $this->make_path($redir["src"]));
 						}
 					}
 					if (!$template["arTemplateId"]) {
