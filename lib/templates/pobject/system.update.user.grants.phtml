@@ -1,51 +1,51 @@
 <?php
 	debug("pobject/system.update.user.grants.phtml: $this->path","class");
 	
-	if ($this->arCallingContext=='php') {
-		$action=$this->getdata("action");
-		if (!$action) $action="add";
-		
-		if ($action=="delete" || $this->getdata("config")) { // the grants need to be updated
-			$args=array("action"=>$action, "path"=>$this->path);
-			$searchpath=array("pgroup"=>"/system/groups/", "puser"=>"/system/users/");
-			$types=array("puser", "pgroup");
-			$criteria=array();
+	$action=$this->getdata("action");
+	if (!$action) $action="add";
+	
+	if ($action=="delete" || $this->getdata("config")) { // the grants need to be updated
+		debug("grants need to be updated");
+		$args=array("action"=>$action, "path"=>$this->path);
+		$searchpath=array("pgroup"=>"/system/groups/", "puser"=>"/system/users/");
+		$types=array("puser", "pgroup");
+		$criteria=array();
 
-			$realgrants=$AR->user->grants[$this->path];
-			$AR->user->grants[$this->path]['config']=6;
-			$AR->user->grants[$this->path]['read']=6;
-	
-			foreach ($types as $type) {
-				if ($typegrants=$this->data->config->grants[$type]) {
-					foreach ($typegrants as $id=>$grants) {
-						$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
-						if ($temp=current($this->find($searchpath[$type], $criteria, "system.get.phtml"))) {
-							$path=$temp->path;
-	
-							foreach ($grants as $grant=>$granttype) {
-								$args["grant"]=$grant;
-								if (is_array($value)) {
-									foreach ($granttype as $modifier=>$value) {
-										$args["modifier"]=$modifier;
-										$args["granttype"]=$value;
-										$this->get($path, "system.save.grants.user.phtml", $args);
-									}
-								} else {
-									$args["modifier"]="";
-									$args["granttype"]=$granttype;
+		$realgrants=$AR->user->grants[$this->path];
+		$AR->user->grants[$this->path]['config']=6;
+		$AR->user->grants[$this->path]['read']=6;
+
+		foreach ($types as $type) {
+			if ($typegrants=$this->data->config->grants[$type]) {
+				foreach ($typegrants as $id=>$grants) {
+					$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
+					if ($temp=current($this->find($searchpath[$type], $criteria, "system.get.phtml"))) {
+						$path=$temp->path;
+
+						foreach ($grants as $grant=>$granttype) {
+							$args["grant"]=$grant;
+							if (is_array($value)) {
+								foreach ($granttype as $modifier=>$value) {
+									$args["modifier"]=$modifier;
+									$args["granttype"]=$value;
 									$this->get($path, "system.save.grants.user.phtml", $args);
 								}
+							} else {
+								$args["modifier"]="";
+								$args["granttype"]=$granttype;
+								$this->get($path, "system.save.grants.user.phtml", $args);
 							}
 						}
 					}
 				}
 			}
-			
-			$AR->user->grants[$this->path]=$realgrants;
-			
-		} else { // the grants need to be removed (no config grant on the target)
-			unset($this->data->config->grants);
-			$this->save();
 		}
+		
+		$AR->user->grants[$this->path]=$realgrants;
+		
+	} else { // the grants need to be removed (no config grant on the target)
+		debug("grants need to be removed (no config grant on the target)");
+		unset($this->data->config->grants);
+		$this->save();
 	}
 ?>
