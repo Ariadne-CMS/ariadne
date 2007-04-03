@@ -4,13 +4,19 @@
 		function _make_path($path=".") {
 		global $ARCurrent;
 			$path = $this->make_path($path);
-			if (@count($ARCurrent->shortcut_redirect)) {
-				$redir = end($ARCurrent->shortcut_redirect);
-				if ($redir["keepurl"] && substr($path, 0, strlen($redir["dest"])) == $redir["dest"]) {
-					$path = $redir["src"] .= substr($path, strlen($redir["dest"]));
+
+			$redirects = $ARCurrent->shortcut_redirect;
+			if (is_array($redirects)) {
+				$newpath = $path;
+				$c_redirects = count($redirects);
+				$c_redirects_done = 0;
+				while (count($redirects) && ($redir = array_pop($redirects)) && substr($newpath, 0, strlen($redir['dest'])) == $redir['dest']) {
+					$c_redirects_done++;
+					$newpath = $redir['src'].substr($newpath, strlen($redir['dest']));
 				}
 			}
-			return $path;
+
+			return $newpath;
 		}
 
 		function _currentsection($path=".") {
