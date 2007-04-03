@@ -2116,12 +2116,10 @@ class pobject extends object { // pobject class definition
 		}
 		$config=$this->loadConfig($path);
 		if (@count($ARCurrent->shortcut_redirect)) {
-			$redir = end($ARCurrent->shortcut_redirect);
-			if ($redir["keepurl"] && substr($path, 0, strlen($redir["dest"])) == $redir["dest"]) {
-				if (substr($config->site, 0, strlen($redir["dest"]))!=$redir["dest"]) {
-					// search currentsite from the reference
-					$config = $this->loadConfig($redir['src']);
-				}
+			$redir = reset($ARCurrent->shortcut_redirect);
+			if ($redir["keepurl"]) {
+				// search currentsite from the reference
+				$config = $this->loadConfig($redir['src']);
 			}
 		}
 		return $config->site;
