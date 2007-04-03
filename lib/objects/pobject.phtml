@@ -1349,8 +1349,9 @@ class pobject extends object { // pobject class definition
 							$template = $this->getPinpTemplate($arCallFunction, $redirpath, $redir["dest"]);
 							$redirpath = $redir['src'];
 						}
-						if (!$template["arTemplateId"] && $redir['keepurl']) {
-							$template = $this->getPinpTemplate($arCallFunction, $this->make_path($redir["src"]));
+
+						if (!$template["arTemplateId"] && $redirpath) {
+							$template = $this->getPinpTemplate($arCallFunction, $this->make_path($redirpath));
 						}
 					}
 					if (!$template["arTemplateId"]) {
