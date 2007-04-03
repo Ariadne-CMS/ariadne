@@ -34,6 +34,18 @@
 
 		function _get($rpath, $template, $args='') {
 		global $ARCurrent;
+			// for now we have to remove all current redirects
+			$old_redirects = $ARCurrent->shortcut_redirect;
+			$ARCurrent->shortcut_redirect = Array();
+				$result = pinp_keepurl::getWorker($rpath, $template, $args);
+			// restore redirects
+			$ARCurrent->shortcut_redirect = $old_redirects;
+			return $result;
+		}
+
+		function getWorker($rpath, $template, $args='') {
+		global $ARCurrent;
+
 			$rpath = $this->make_path($rpath);
 			$path = $rpath;
 			while ($path != $prevPath && !$this->exists($path)) {
@@ -48,16 +60,19 @@
 					if (!is_array($ARCurrent->shortcut_redirect)) {
 						$ARCurrent->shortcut_redirect = Array();
 					}
+					$subpath = substr($rpath, strlen($path));
 					array_push($ARCurrent->shortcut_redirect, Array("src" => $path, "dest" => $shortcut->data->path, "keepurl" => $shortcut->data->keepurl));
-						$npath = $shortcut->data->path.substr($rpath, strlen($path));
-						$result = $this->get($npath, $template, $args);
+						if ($this->exists($shortcut->data->path.$subpath)) {
+							$result = $this->get($shortcut->data->path.$subpath, $template, $args);
+						} else {
+							$result = pinp_keepurl::getWorker($shortcut->data->path.$subpath, $template, $args);
+						}
 					array_pop($ARCurrent->shortcut_redirect);
 				}
 
 			} else {
 				$result = $this->get($path, $template, $args);
 			}
-
 			return $result;
 		}
 
