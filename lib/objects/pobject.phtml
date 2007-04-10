@@ -1653,6 +1653,8 @@ class pobject extends object { // pobject class definition
 			if ($result===false) {
 				if (isset($this->data->${nls}->${varname})) {
 					$result=$this->data->${nls}->${varname};
+				} else {
+					debug("$varname not found in this->data->$nls", "all");
 				}
 			}
 		} else { // language independant variable.
@@ -1681,6 +1683,8 @@ class pobject extends object { // pobject class definition
 			if ($result===false) {
 				if (isset($this->data->$varname)) {
 					$result=$this->data->$varname;
+				} else {
+					debug("$varname not found in this->data", "all");
 				}
 			}        
 		}
