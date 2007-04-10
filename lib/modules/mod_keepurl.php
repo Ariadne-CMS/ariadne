@@ -1,13 +1,13 @@
 <?php
+
 	class pinp_keepurl {
 
 		function _make_path($path=".") {
 		global $ARCurrent;
 			$path = $this->make_path($path);
-
+			$newpath = $path;
 			$redirects = $ARCurrent->shortcut_redirect;
 			if (is_array($redirects)) {
-				$newpath = $path;
 				$c_redirects = count($redirects);
 				$c_redirects_done = 0;
 				while (count($redirects) && ($redir = array_pop($redirects)) && substr($newpath, 0, strlen($redir['dest'])) == $redir['dest']) {
