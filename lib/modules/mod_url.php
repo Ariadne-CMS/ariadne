@@ -54,10 +54,10 @@ class URL {
 			if (substr($root, -3) == "/$nls") {
 				$root = substr($root, 0, -3);
 			}
-			$find[] = "%(http[s]?://)?\\Q".$AR->host.$root."\\E".$nls_match."%"; 
-			$repl[] = "{arBase\\1}";
-			$find[] = "%(http[s]?://)?\\Q".$root."\\E".$nls_match."%"; 
-			$repl[] = "{arBase\\1}";
+			$find[] = "%(http[s]?://)?\\Q".$AR->host.$root."\\E".$nls_match."(/)%"; 
+			$repl[] = "{arBase\\2}\\3";
+			$find[] = "%(http[s]?://)?\\Q".$root."\\E".$nls_match."(?)%"; 
+			$repl[] = "{arBase\\2}\\3";
 		}
 
 		// change hand pasted sources, which may or may not include session id's
