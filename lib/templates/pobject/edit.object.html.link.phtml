@@ -104,6 +104,19 @@ function IsDigit()
 		}
 		document.all['realform'].src=arType;
 	}
+
+	function arCloseWindow() {
+		window.close();
+	}
+
+	function arGetAttributes() {
+		return window.dialogArguments;
+	}
+
+	function arSetReturnVal(returnval) {
+		window.returnValue = returnval;
+	}
+
 // -->
 </SCRIPT>
 </HEAD>

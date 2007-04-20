@@ -22,8 +22,8 @@
 		if (target) {
 			arr['attributes'][3]=new attribute('target',target);
 		}
-		top.window.returnValue = arr;
-		top.window.close();
+		top.arSetReturnVal(arr);
+                top.arCloseWindow();
 	}
 
 	doSubmit();

@@ -25,8 +25,8 @@
 		if (url) {
 			arr["URL"] = url;
 		}
-		top.window.returnValue = arr;
-		top.window.close();
+		top.arSetReturnVal(arr);
+                top.arCloseWindow();
 	}
 
 	doSubmit();

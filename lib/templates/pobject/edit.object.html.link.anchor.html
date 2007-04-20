@@ -84,12 +84,15 @@ BODY 	{
 	}
 // -->
 </SCRIPT>
-<SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
+<SCRIPT LANGUAGE=JavaScript>
 <!--
-	for ( elem in top.window.dialogArguments ) {
+function arInit() {
+	var attributes = top.arGetAttributes();
+
+	for ( elem in attributes ) {
 		switch( elem ) {
 			case "URL":
-				url=new String(top.window.dialogArguments["URL"]);
+				url=new String(attributes["URL"]);
 				var anchor=url.split("#");
 				if (anchor[1]) {
 					url="#"+anchor[1];
@@ -98,7 +101,7 @@ BODY 	{
 				break;
 			case "ar_type":
 			case "ar:type":
-				var ar_type = top.window.dialogArguments[elem];
+				var ar_type = attributes[elem];
 				for (i=0; i<document.forms[0]['ar_type'].options.length; i++) {
 					if (document.forms[0]['ar_type'].options[i].value==ar_type) {
 						document.forms[0]['ar_type'].selectedIndex=i;
@@ -107,14 +110,15 @@ BODY 	{
 				}						
 				break;				
 			case "anchors":
-				doFillAnchors(top.window.dialogArguments['anchors']);
+				doFillAnchors(attributes['anchors']);
 				break;
 		}
 	}
+}
 // -->
 </script>
 </HEAD>
-<BODY SCROLL=NO>
+<BODY SCROLL=NO onload="arInit();">
 <table class="fieldset" align="left">
 <form action="edit.object.html.link.anchor.save.html">
 	<tr>

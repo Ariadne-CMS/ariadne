@@ -29,8 +29,8 @@
 			}
 		?>
 		arr["URL"] = '<?php echo $this->make_url($ar_path, $ar_nls); ?>';
-		top.window.returnValue = arr;
-		top.window.close();
+		top.arSetReturnVal(arr);
+		top.arCloseWindow();
 	}
 
 	doSubmit();

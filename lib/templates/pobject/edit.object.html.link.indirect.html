@@ -67,17 +67,20 @@ BODY 	{
 
 // -->
 </SCRIPT>
-<SCRIPT LANGUAGE=JavaScript FOR=window EVENT=onload>
+<SCRIPT LANGUAGE=JavaScript>
 <!--
-    for ( elem in top.window.dialogArguments ) {
+function arInit() {
+    var attributes = top.arGetAttributes();
+
+    for ( elem in attributes ) {
         switch( elem ) {
             case "ar_affiliate_URL":
             case "ar:affiliateURL":
-                document.forms[0]['ar_affiliate_URL'].value = top.window.dialogArguments[elem];
+                document.forms[0]['ar_affiliate_URL'].value = attributes[elem];
                 break;
 			case "ar_type":
 			case "ar:type":
-				var ar_type = top.window.dialogArguments[elem];
+				var ar_type = attributes[elem];
 				for (i=0; i<document.forms[0]['ar_type'].options.length; i++) {
 					if (document.forms[0]['ar_type'].options[i].value==ar_type) {
 						document.forms[0]['ar_type'].selectedIndex=i;
@@ -86,7 +89,7 @@ BODY 	{
 				}						
 				break;				
 			case "target":
-				if (document.forms[0]['target'].value == top.window.dialogArguments["target"]) {
+				if (document.forms[0]['target'].value == attributes["target"]) {
 					document.forms[0]['target'].checked=true;
 				} else {
 					document.forms[0]['target'].checked=false;
@@ -94,16 +97,16 @@ BODY 	{
 				break;
 			case "ar_affiliate_HOST":
 			case "ar:affiliateHOST":
-				document.forms[0]['ar_affiliate_HOST'].value = top.window.dialogArguments[elem];
+				document.forms[0]['ar_affiliate_HOST'].value = attributes[elem];
 				break;
         }
     }
 
-
+}
 // -->
 </script>
 </HEAD>
-<BODY SCROLL=NO>
+<BODY SCROLL=NO onload="arInit();">
 <table class="fieldset" align="left">
 <form action="edit.object.html.link.indirect.save.html">
 		<tr>
