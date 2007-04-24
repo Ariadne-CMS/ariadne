@@ -35,7 +35,7 @@
 						$config=$ARConfig->cache[$this->parent];
 						reset($config->nls->list);
 						while (list($key, $value)=each($config->nls->list)) {
-							echo $value."<br>";
+							echo "[$key] " . $value."<br>";
 						}
 					?>
 					</div>
@@ -51,9 +51,9 @@
 					reset($AR->nls->list);
 					while (list($key, $value)=each($AR->nls->list)) {
 						if ($selected[$key]) {
-							echo "<option value=\"$key\" selected>$value</option>\n";
+							echo "<option value=\"$key\" selected>[$key] $value</option>\n";
 						} else {
-							echo "<option value=\"$key\">$value</option>\n";
+							echo "<option value=\"$key\">[$key] $value</option>\n";
 						}
 					}				
 				?> 
@@ -64,7 +64,7 @@
 					<?php echo $ARnls["default"]; ?><br>
 					<div align="left" style="width: 150px; border: inset 2px; padding: 0px; margin: 0px;">
 						<div style="margin: 1px; margin-left: 3px; padding: 0px; border: 0px;">
-						<?php echo $config->nls->list[$config->nls->default]; ?>
+						<?php echo "[" . $config->nls->default . "] " . $config->nls->list[$config->nls->default]; ?>
 						</div>
 					</div>
 				</td>
@@ -82,9 +82,9 @@
 					}
 					while (list($key, $value)=each($AR->nls->list)) {
 						if ($selected==$key) {
-							echo "<option value=\"$key\" selected>$value</option>\n";
+							echo "<option value=\"$key\" selected>[$key] $value</option>\n";
 						} else {
-							echo "<option value=\"$key\">$value</option>\n";
+							echo "<option value=\"$key\">[$key] $value</option>\n";
 						}
 					}				
 				?>
