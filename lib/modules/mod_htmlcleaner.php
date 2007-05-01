@@ -138,6 +138,15 @@ class htmlcleanertag {
 						$_value .= $chr;
 					}
 				} else {
+					// Unquoted attributes end when there is a space char.
+					if (preg_match("/\\s{1}/", $chr) {
+						$return[strtolower($_name)] = $_value;
+						$_state = =-1;
+					} else {
+						$_value .= $chr;
+					}
+
+/*
 					if (preg_match("/([a-zA-Z0-9\.\,\_\-\/\#\@\%]{1})/",$chr)) {
 						$_value .= $chr;
 					} else {
@@ -145,6 +154,7 @@ class htmlcleanertag {
 						$return[strtolower($_name)] = $_value;
 						$_state = -1;
 					}
+*/
 				}
 			}
 			$i++;
