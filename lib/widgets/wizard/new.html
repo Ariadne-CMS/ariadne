@@ -355,6 +355,9 @@
   function switchLanguage(nls) {
   	document.wgWizForm.arLanguage.value=nls;
     if (checksubmit()) {
+		if (document.wgWizForm.onsubmit) {
+			document.wgWizForm.onsubmit();
+		}
     	document.wgWizForm.submit();  	
     }
   }
