@@ -65,22 +65,19 @@
 		exit;
 	}
 
-	$arNewFilename=$this->getdata("arNewFilename","none");
-	if (!$arNewFilename) {
-		if (($file=$this->getdata("file","none")) && ereg("[^\/\\]*\$",$file, $matches)) {
-			$arNewFilename=eregi_replace("[^a-z0-9\./_-]","_",$matches[0]);
-			$HTTP_POST_VARS['arNewFilename'] = $arNewFilename;
-			$this->path = $this->store->make_path($this->parent, $arNewFilename);
-		}
-		while (list($key, $value)=each($configcache->nls->list)) {
-			$HTTP_POST_VARS[$key]["name"]=$arNewFilename;
-		}
-	} else if (!$this->getdata("name", $nls)) {
-		if (($file=$this->getdata("file","none")) && ereg("[^\/\\]*\$",$file, $matches)) {
-			$name=eregi_replace("[^a-z0-9\./_-]","_",$matches[0]);
-		}
-		while (list($key, $value)=each($configcache->nls->list)) {
-			$HTTP_POST_VARS[$key]["name"]=$name;
+	foreach ($AR->nls->list as $language => $language_name) {
+		$arNewFilename = $this->getdata("arNewFilename","none");
+		if (!$arNewFilename || !$this->getdata("name", $language)) {
+			if (($file=$this->getdata("file", $language)) && ereg("[^\/\\]*\$", $file, $matches)) {
+				$arFilename = eregi_replace("[^a-z0-9\./_-]", "_", $matches[0]);
+				if (!$arNewFilename) {
+					$HTTP_POST_VARS['arNewFilename'] = $arFilename;
+					$this->path = $this->store->make_path($this->parent, $arNewFilename);
+				}
+				if (!$this->getdata("name", $language)) {
+					$HTTP_POST_VARS[$language]["name"] = $arFilename;
+				}
+			}
 		}
 	}
 	$arResult = $this->call("user.wizard.new.html", Array("wgWizFlow" => $arFlow));

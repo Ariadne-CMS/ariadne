@@ -6,13 +6,40 @@
 
 		global $HTTP_POST_VARS;
 
+		$arLanguage=$this->getdata("arLanguage","none");
+		if (!$arLanguage) {
+			$arLanguage = $ARConfig->nls->default;
+		}
+
+		// for backwards compatibility we will first try to
+		// register the file without nls
 		$info = ldRegisterFile("file", $this->error);
-		if (!$this->error) {
+		if ($this->error) {
+			return Array();
+		}
+
+		if (count($info)) {
 			$HTTP_POST_VARS = array_merge($HTTP_POST_VARS, $info);
 			if ($info['file_type']) {
 				$HTTP_POST_VARS['mimetype'] = $info['file_type'];
 			}
+		} else {
+			// no file without nls found, try the nls specific one
+			foreach ($AR->nls->list as $language => $language_name) {
+				$info = ldRegisterFile($language."[file]", $this->error);
+				if (!$this->error && count($info)) {
+					if (!is_array($HTTP_POST_VARS[$language])) {
+						$HTTP_POST_VARS[$language] = Array();
+					}
+					$HTTP_POST_VARS[$language] = array_merge($HTTP_POST_VARS[$language], $info);
+					if ($info['file_type']) {
+						$HTTP_POST_VARS[$language]['mimetype'] = $info['file_type'];
+					}
+					break; // only accept one file
+				}
+			}
 		}
+
 		$arResult = $info;
 	}
 ?>

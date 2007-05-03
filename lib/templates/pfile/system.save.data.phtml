@@ -12,25 +12,6 @@
 			$this->CheckConfig()) {
 		if ($this->arIsNewObject) {
 			$this->data=new object;
-
-			$defaultnls=$ARConfig->nls->default;
-			$filename=$this->getdata("name", $defaultnls);
-			if (!$filename) {
-				$filename=$this->getdata("arNewFilename","none");
-			}
-			if (!$this->data->mimetype=$this->getdata("mimetype","none")) {
-				$this->data->mimetype=$this->getdata("file_type","none");
-			}
-			$this->data->filesize=$this->getdata("file_size","none");
-			
-			while (list($key,$value)=each($ARConfig->nls->list)) {
-				if (!$this->data->$key->name) {
-					$name=$this->getdata("name", $key);
-					if (!$name) {
-						$this->data->$key->name=$filename;
-					}
-				}
-			}
 		} else {
 			// first make sure that the object is clean (data can only be set via 
 			// the defined interface: $arCallArgs)
@@ -49,8 +30,9 @@
 			$this->data->nls->default=$ARConfig->nls->default;
 			reset($AR->nls->list);
 			$count=0;
+			$nlslist = Array("none");
 			while (list($key, $value)=each($AR->nls->list)) {
-				
+				array_push($nlslist, $key);
 				if ($this->getdata("name",$key)) {
 					if (!$this->data->$key) {
 						$newnlsdata=new object;
@@ -85,49 +67,78 @@
 			}
 		}
 		$this->data->mimetype=$this->getdata("mimetype","none");
-		$this->save($properties);		
+		$this->save($properties);
 
 		if (!$this->error) {
 			$this->ClearCache();
-			$fulltext = $properties['fulltext'];
 			unset($properties);
 
-			$this->arIsNewObject=false;
-
-			$tempfile=$this->getdata("file_temp","none");
-			// now check whether $file_temp is defined, if so, move it
-			if (!$this->error) {
-				if ($tempfile) {
-					$tempfile=ereg_replace("[\\\/]","",$tempfile); // make sure nobody gets /etc/passwd			
-					$tempfile=$this->store->get_config("files")."temp/".$tempfile;
-
-					if (file_exists($tempfile)) {	
-						$files=$this->store->get_filestore("files");
-						$files->copy_to_store($tempfile, $this->id, "file");
-						unlink($tempfile);
-						if (!$this->data->mimetype=$this->getdata("mimetype","none")) {
-							$this->data->mimetype=$this->getdata("file_type","none");
-						}
-						$this->data->filesize=$this->getdata("file_size","none"); 
-
-					} else {
-						$tempfile=false;
-					}
-				} 
-				if ($this->store->is_supported("fulltext")) {
-					$filetext = $this->GetPlainText();
-					if ($filetext) {
-						$count++;
-						$properties["fulltext"] = $fulltext;
-						$properties["fulltext"][$count]["value"]="'".AddSlashes($this->store->format_for_fti(
-								$filetext
-								))."'";
-					}
+			$this->arIsNewObject = false;
+			$isDefaultSet = false;
+			foreach ($nlslist as $nlskey) {
+				$fulltext = $properties['fulltext'];
+				$tempfile = $this->getdata("file_temp", $nlskey);
+				$mimetype = $this->getdata("file_type", $nlskey);
+				if (!$mimetype) {
+					$mimetype = $this->getdata("mimetype", $nlskey);
 				}
+				// now check whether $file_temp is defined, if so, move it
+				if (!$this->error) {
+					if ($tempfile) {
+						$tempfile=ereg_replace("[\\\/]","",$tempfile); // make sure nobody gets /etc/passwd			
+						$tempfile=$this->store->get_config("files")."temp/".$tempfile;
 
-				$this->save($properties);
-			} else {
-				debug("err: $this->error");
+						if (file_exists($tempfile)) {	
+							$files = $this->store->get_filestore("files");
+							if (!$isDefaultSet) {
+								// keep the 'none' key for backwards compatibility
+								if ($nlskey == "none" || $nlskey == $ARConfig->nls->default) {
+									$files->copy_to_store($tempfile, $this->id, "file");
+									$isDefaultSet = true;
+								}
+							}
+							$armime = explode("/", $mimetype);
+							if ($nlskey != "none") {
+								$files->copy_to_store($tempfile, $this->id, $nlskey."_file");
+								$this->data->$nlskey->filesize = $this->getdata("file_size", $nlskey); 
+								$this->data->$nlskey->mimetype = $mimetype;
+								$this->data->mime["type"] = $armime[0];
+								$this->data->mime["subtype"] = $armime[1];
+							} else {
+								$this->data->filesize = $this->getdata("file_size", "none"); 
+								$this->data->mimetype = $mimetype;
+								$this->data->mime["type"] = $armime[0];
+								$this->data->mime["subtype"] = $armime[1];
+							}
+							$properties["mimetype"][] = Array(
+								"type"		=> "'".AddSlashes($this->data->mime["type"])."'",
+								"subtype"	=> "'".AddSlashes($this->data->mime["subtype"])."'"
+							);
+							unlink($tempfile);
+
+						} else {
+							$tempfile=false;
+						}
+					} 
+					if ($this->store->is_supported("fulltext")) {
+						$filetext = $this->GetPlainText("file", $nlskey);
+						if ($filetext) {
+							$count++;
+							$properties["fulltext"] = $fulltext;
+							$properties["fulltext"][$count][$nlskey]="'".AddSlashes($nlskey)."'";
+							$properties["fulltext"][$count]["value"]="'".AddSlashes($this->store->format_for_fti(
+									$filetext
+									))."'";
+						}
+					}
+
+				} else {
+					debug("err: $this->error");
+					break;
+				}
+			}
+			if (!$this->error) {
+					$this->save($properties);
 			}
 		}
 	}

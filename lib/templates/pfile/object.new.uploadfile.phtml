@@ -1,3 +1,11 @@
+	<?php
+			$arLanguage=$this->getdata("arLanguage","none");
+			if (!$arLanguage) {
+			 $arLanguage=$ARConfig->nls->default;
+			}
+			$selectednls=$arLanguage;
+
+	?>
 	<table border="0">
 	<tr>
 		<td>
@@ -5,7 +13,11 @@
 		</td>
 	</tr><tr>
 		<td valign="top">
-			<input type="file" name="file">
+			<input type="file" name="<?php echo $selectednls; ?>[file]" <?php
+				if ($this->implements("pphoto")) {
+					echo "onMouseDown=\"preview(true);\"";
+				}
+			?>>
 		</td>
 	</tr><tr>
 		<td align="center">
@@ -16,6 +28,20 @@
 	</tr>
 	</table>
 	<script>
+		var oldValue=document.wgWizForm.file.value;
+		function preview(first) {
+			if (first) {
+				oldValue=document.wgWizForm.file.value;
+			}
+			var newValue=document.wgWizForm.file.value;
+			if (newValue==oldValue) {
+				setTimeout(preview, 500, false);
+			} else {
+				document.images["thumb"].src = 'file://'+newValue;
+				oldValue=newValue;
+			}
+		}
+
 		function forminit() { 
 			document.wgWizForm.file.focus();
 		}

@@ -74,6 +74,16 @@
 			unset($wgWizFlow[$i]["save"]);
 		}
 
+		foreach ($AR->nls->list as $language => $language_name) {
+			if (!$this->getdata("name", $language)) {
+				if (($file=$this->getdata("file", $language)) && ereg("[^\/\\]*\$", $file, $matches)) {
+					$arFilename = eregi_replace("[^a-z0-9\./_-]", "_", $matches[0]);
+					$HTTP_POST_VARS[$language]["name"] = $arFilename;
+				}
+			}
+		}
+
+
 		$wgWizFlow = $this->call("user.wizard.edit.html", Array("wgWizFlow" => $wgWizFlow));
 
 		if (!$ARCurrent->arTypeIconsSmall[$this->type]) {

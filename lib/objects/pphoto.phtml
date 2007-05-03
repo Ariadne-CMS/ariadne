@@ -69,12 +69,19 @@ class pphoto extends pfile { // pphoto class definition
 		return $result;		
 	}
 
-	function getExif( $sections = false, $arrays = true, $thumbnail = false) {
+	function getExif( $sections = false, $arrays = true, $thumbnail = false, $nls = '') {
+		if (!$nls) {
+			$nls = $this->reqnls;
+		}
+		$f_store = $this->store->get_filestore("files");
+		$file = "file";
+		if ($f_store->exists($this->id, $nls."_$file")) {
+			$file = $nls."_$file";
+		}
 		if (function_exists('exif_read_data')) {
 			$tmpsrc = tempnam($this->store->get_config("files")."temp/", "photo");
-			$f_store=$this->store->get_filestore("files");
-			$f_store->copy_from_store($tmpsrc, $this->id, "file");
-			$result=@exif_read_data($tmpsrc,$sections,$arrays,$thumbnail);
+			$f_store->copy_from_store($tmpsrc, $this->id, $file);
+			$result=@exif_read_data($tmpsrc, $sections, $arrays, $thumbnail);
 			@unlink($tmpsrc);
 			$f_store->close();
 		} else {
@@ -83,11 +90,18 @@ class pphoto extends pfile { // pphoto class definition
 		return $result;
 	}
 
-	function identify( ) {
+	function identify($nls = '') {
 		global $AR;
-		$tmpsrc = tempnam( $this->store->get_config("files")."temp/", "photo");
+		if (!$nls) {
+			$nls = $this->reqnls;
+		}
 		$f_store = $this->store->get_filestore("files");
-		$f_store->copy_from_store($tmpsrc, $this->id, "file");
+		$file = "file";
+		if ($f_store->exists($this->id, $nls."_$file")) {
+			$file = $nls."_$file";
+		}
+		$tmpsrc = tempnam( $this->store->get_config("files")."temp/", "photo");
+		$f_store->copy_from_store($tmpsrc, $this->id, $file);
 		$execstring = $AR->IM->identify." ".$tmpsrc; 
 		$myarray = Array();
 		$result = exec( $execstring, &$myarray );
@@ -201,7 +215,7 @@ class pphoto extends pfile { // pphoto class definition
 		$this->arComposeStyles[$name]["resize"]=$resize;
 	} 
 
-	function compose( $target, $style="default", $blend = 0, $params=false) {
+	function compose( $target, $style="default", $blend = 0, $params=false, $nls = '') {
 		global $ARConfig;
 
 		$this->set_context("composite");
@@ -280,6 +294,16 @@ class pphoto extends pfile { // pphoto class definition
 			
 				$targetid = $targetobj->id;
 				if( $targetid ) {
+					if (!$nls) {
+						$nls = $targetobj->reqnls;
+					}
+					$f_store = $this->store->get_filestore("files");
+					$file = "file";
+					if ($f_store->exists($targetid, $nls."_$file")) {
+						$file = $nls."_$file";
+					}
+
+
 					$tmpsrc = tempnam($this->store->get_config("files")."temp/", "photo");
 					if(  substr( strtolower($tmpsrc), -4, 4 ) == ".tmp" ) {
 						@unlink($tmpsrc);
@@ -289,6 +313,7 @@ class pphoto extends pfile { // pphoto class definition
 
 					$ARConfig->photoTempFiles[$this->id][] = $tmpsrc;
 					$ARConfig->photoTempFilesID[$this->id][] = $this->id;
+					$ARConfig->photoTempFilesName[$this->id][] = $file;
 
 					$tmpmysrc = tempnam($this->store->get_config("files")."temp/", "photo");
 					if(  substr( strtolower($tmpmysrc), -4, 4 ) == ".tmp" ) {
@@ -299,6 +324,7 @@ class pphoto extends pfile { // pphoto class definition
 
 					$ARConfig->photoTempFiles[$this->id][] = $tmpmysrc;
 					$ARConfig->photoTempFilesID[$this->id][] = $targetid;
+					$ARConfig->photoTempFilesName[$this->id][] = $file;
 
 					$execbuf = $compose." ".$tmpmysrc." {buildfile} ";
 					$ARConfig->photoStack[$this->id][] = $execbuf;
@@ -398,8 +424,16 @@ class pphoto extends pfile { // pphoto class definition
 	}
 
 
-	function build() {
+	function build($nls = '') {
 		global $AR, $ARConfig, $ARCurrent;
+		if (!$nls) {
+			$nls = $this->reqnls;
+		}
+		$f_store = $this->store->get_filestore("files");
+		$file = "file";
+		if ($f_store->exists($this->id, $nls."_$file")) {
+			$file = $nls."_$file";
+		}
 		if (!$this->data->toolarge) {
 			if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
 				if ($ARCurrent->cachetime==0 && !$AR->output_compression) {
@@ -418,13 +452,12 @@ class pphoto extends pfile { // pphoto class definition
 							  $tmpsrc = substr($tmpsrc, 0, -4 );
 							}
 				$tmpsrc .= ".photo";
-				$f_store=$this->store->get_filestore("files");
-				$f_store->copy_from_store($tmpsrc, $this->id, "file");
+				$f_store->copy_from_store($tmpsrc, $this->id, $file);
 
 				if( is_array($ARConfig->photoTempFiles[$this->id]) && is_array($ARConfig->photoTempFilesID[$this->id])) {
-					reset($ARConfig->photoTempFiles[$this->id]);
 					foreach( $ARConfig->photoTempFiles[$this->id] as $key => $tempfile){
-						$f_store->copy_from_store($tempfile, $ARConfig->photoTempFilesID[$this->id][$key], "file");
+						debug("Copying ".$ARConfig->photoTempFilesName[$this->id][$key]." to $tempfile");
+						$f_store->copy_from_store($tempfile, $ARConfig->photoTempFilesID[$this->id][$key], $ARConfig->photoTempFilesName[$this->id][$key]);
 					}
 				}
 
@@ -484,6 +517,7 @@ class pphoto extends pfile { // pphoto class definition
 			}
 			unset( $ARConfig->photoTempFiles[$this->id] );
 			unset( $ARConfig->photoTempFilesID[$this->id] );
+			unset( $ARConfig->photoTempFilesName[$this->id] );
 			unset( $ARConfig->photoCommandStack[$this->id] );
 		} else {
 			$this->error='Picture is too large to handle.';
@@ -507,10 +541,17 @@ class pphoto extends pfile { // pphoto class definition
 		unset($ARConfig->photoStack[$this->id]);
 	}
 
-	function getimageinfo($extrainfo=false) {
+	function getimageinfo($extrainfo=false, $nls = '') {
 		$tmpsrc = tempnam($this->store->get_config("files")."temp/", "photo");
-		$f_store=$this->store->get_filestore("files");
-		$f_store->copy_from_store($tmpsrc, $this->id, "file");
+		if (!$nls) {
+			$nls = $this->reqnls;
+		}
+		$f_store = $this->store->get_filestore("files");
+		$file = "file";
+		if ($f_store->exists($this->id, $nls."_$file")) {
+			$file = $nls."_$file";
+		}
+		$f_store->copy_from_store($tmpsrc, $this->id, $file);
 		if ($extrainfo!==false) {
 			$result=getimagesize($tmpsrc, &$extrainfo);
 		} else {
@@ -553,8 +594,8 @@ class pphoto extends pfile { // pphoto class definition
 		return $this->setComposeStyle($name, $method, $width, $height, $xoffset, $yoffset, $percentage, $resize);
 	}
 
-	function _compose( $target, $style="default", $blend = 0, $params = false ) {
-		return $this->compose( $target, $style, $blend, $params );
+	function _compose( $target, $style="default", $blend = 0, $params = false, $nls = '' ) {
+		return $this->compose( $target, $style, $blend, $params, $nls );
 	}
 
 	function _border($width, $height, $color=false) { 
@@ -569,28 +610,28 @@ class pphoto extends pfile { // pphoto class definition
 		return $this->crop($width, $height, $x, $y);
 	}
 
-	function _build() {
-		return $this->build();
+	function _build($nls = '') {
+		return $this->build($nls);
 	}
 
 	function _cleanup() {
 		return $this->cleanup();
 	}
 
-	function _getimageinfo($extrainfo=false) {
+	function _getimageinfo($extrainfo=false, $nls='') {
 		if ($extrainfo!==false) {
-			return $this->getimageinfo(&$extrainfo);
+			return $this->getimageinfo(&$extrainfo, $nls);
 		} else {
-			return $this->getimageinfo();
+			return $this->getimageinfo(null, $nls);
 		}
 	}
 	
-	function _identify( ) {
-		return $this->identify();
+	function _identify($nls = '') {
+		return $this->identify($nls);
 	}
 	
-	function _getExif( $sections = false, $arrays = true, $thumbnail = true) {
-		return $this->getExif( $sections, $arrays, $thumbnail);
+	function _getExif( $sections = false, $arrays = true, $thumbnail = true, $nls = '') {
+		return $this->getExif( $sections, $arrays, $thumbnail, $nls);
 	}
 	
 } // end of pphoto class definition

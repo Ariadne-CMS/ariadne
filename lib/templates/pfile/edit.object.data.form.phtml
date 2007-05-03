@@ -31,7 +31,7 @@
 						value="<?php $this->showdata("name", $selectednls); ?>">
 				</td><td>
 					<input type="text" size="16" name="mimetype" maxlength="50" 
-						value="<?php $this->showdata("mimetype", "none"); ?>">
+						value="<?php $this->showdata("mimetype", $arLanguage); ?>">
 				</td>
 			</tr><tr>
 				<td>
@@ -42,7 +42,7 @@
 			</tr><tr>
 				<td colspan="2">
 					<?php
-						if ($data->mimetype=="text/html") {
+						if ($this->getdata("mimetype", $arLanguage) == "text/html") {
 							$rows=2;
 						} else {
 							$rows=4;
@@ -58,15 +58,15 @@
 				</td>
 			</tr><tr>
 				<td colspan="2">
-					<input type="file" name="file">
+					<input type="file" name="<?php echo $selectednls; ?>[file]">
 					<?php
 						if ($data->mimetype=="text/html") {
 							$wgHTMLEditName="html";
 							$wgHTMLEditPath=$this->parent;
 							$wgHTMLEditFile=substr($this->path, strlen($this->parent), -1);
-							$wgHTMLEditLanguage="none";
+							$wgHTMLEditLanguage=$selectednls;
 							$wgHTMLEditType="full";
-							$wgHTMLEditContent=$this->ParseFile($this->GetFile());
+							$wgHTMLEditContent=$this->ParseFile($this->GetFile("file", $selectednls));
 							include($this->store->get_config("code")."widgets/htmledit/js.html");
 							include($this->store->get_config("code")."widgets/htmledit/form.html"); 
 						}
