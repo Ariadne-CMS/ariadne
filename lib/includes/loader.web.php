@@ -69,11 +69,23 @@
 	global $ARnls, $store, $HTTP_POST_FILES, $HTTP_POST_VARS;
 
 		require_once($store->code."modules/mod_mimemagic.php");
-
 		$result = Array();
-
-		$file_temp=$HTTP_POST_FILES[$field]['tmp_name'];
-		$file=$HTTP_POST_FILES[$field]['name'];
+		$http_post_file = Array('name' => '', 'type' => '', 'tmp_name' => '', 'error' => '', 'size' => '');
+		$subfields = explode('[', $field);
+		$field = array_shift($subfields);
+		foreach ($http_post_file as $key => $value) {
+			$value = &$HTTP_POST_FILES[$field][$key];
+				foreach ($subfields as $subfield) {
+					$subfield = substr($subfield, 0, -1);
+					$value = &$value[$subfield];
+				}
+			$http_post_file[$key] = $value;
+		}
+		if ($subfield) {
+			$field = $subfield;
+		}
+		$file_temp = $http_post_file['tmp_name'];
+		$file = $http_post_file['name'];
 		if ($file && is_uploaded_file($file_temp)) {
 			list($inf, $inftp) = virusscan($file_temp);
 			if($inf) {
@@ -87,7 +99,7 @@
 					// now make the new values available to wgWizKeepVars()
 					$result[$field]=$file;
 					$result[$field."_temp"]=substr($file_artemp,strlen($store->get_config("files")."temp"));
-					$result[$field."_size"]=(int)$HTTP_POST_FILES[$field]['size'];
+					$result[$field."_size"]=(int)$http_post_file['size'];
 					$type = get_mime_type($file_artemp);
 					if (!$type) {
 						$type = get_mime_type($file, MIME_EXT);
