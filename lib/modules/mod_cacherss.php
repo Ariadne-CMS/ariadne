@@ -1,8 +1,6 @@
 <?php
 
-
 class cacherss {
-
 	function cacherss( $httphelper ) {
 		$this->httphelper = $httphelper;
 	}
@@ -17,31 +15,11 @@ class cacherss {
 		return $result;
 	}
 
-	function titlelink( $url ) {
-		$data = $this->httphelper->load( $url, "", time() - (30*60) );
-		$this->xmldata = $data["data"];
-
-		$title = false;
-		$link = false;
-
-		$pattern = '@<title>(.*)</title>@i';
-		$result = preg_match( $pattern, $this->xmldata, $matches);
-		if( $result ) {
-			$title = $matches[1];
-		}
-
-		$pattern = '@<link>(.*)</link>@i';
-		$result = preg_match( $pattern, $this->xmldata, $matches);
-		if( $result ) {
-			$link = $matches[1];
-		}
-		
-
-		return array( "title" => $title, "link" => $link );
-
+	function titlelink($url) {
+		$rssfeed->parseString( $this->xmldata);
+		$rss_channel = $rssfeed->info();
+		return Array("title" => $rss_channel['title'], "link" => $rss_channel['link']);
 	}	
-	
-	
 }
 
 
@@ -61,21 +39,17 @@ class pinp_cacherss {
 		$rss = new cacherss( $httphelper );
 		return $rss->titlelink( $url );
 	}
-	
 }
 
 
 class cacherssfeed {
-	
-	
 	function parseString( $xmldata ) {
 		// reset namestack
 		$this->xmldata = $xmldata;
 		$this->ns = Array();
 		$this->elements = Array();
 		$this->rss_items = Array();
-
-
+		$this->rss_channel = Array();
 
 		// Finding the RSS feed source encoding - thanks to the pointers on
 		// http://minutillo.com/steve/weblog/2004/6/17/php-xml-and-character-encodings-a-tale-of-sadness-rage-and-data-loss
@@ -103,13 +77,12 @@ class cacherssfeed {
 			$this->encoding = "UTF-8";
 		}
 
-        // Check if we have valid xml
-        $parsetest = xml_parse(xml_parser_create($this->encoding), $xmldata);
-        if (!$parsetest) {
+		// Check if we have valid xml
+		$parsetest = xml_parse(xml_parser_create($this->encoding), $xmldata);
+		if (!$parsetest) {
 			//echo "XML doesn't parse\n";
-            return false;
-        }
-
+			return false;
+		}
 
 		//$this->parser = xml_parser_create();
 		xml_set_object($this->parser, $this);
@@ -153,6 +126,9 @@ class cacherssfeed {
 				$this->rss_items[] = $element;
 				unset($parentElement[$name]);
 			break;
+			case 'channel':
+				$this->rss_channel = $element;
+			break;
 		}
 		array_pop($this->ns);
 	}
@@ -184,6 +160,10 @@ class cacherssfeed {
 
 	function current() {
 		return $this->rss_items[0];
+	}
+
+	function info() {
+		return $this->rss_channel;
 	}
 
 	function next() {
