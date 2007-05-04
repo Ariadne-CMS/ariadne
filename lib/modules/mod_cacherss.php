@@ -16,6 +16,11 @@ class cacherss {
 	}
 
 	function titlelink($url) {
+		$data = $this->httphelper->load( $url, "", time() - (30*60) );
+		$this->xmldata = $data["data"];
+
+		$rssfeed = new cacherssfeed(); // load from string
+
 		$rssfeed->parseString( $this->xmldata);
 		$rss_channel = $rssfeed->info();
 		return Array("title" => $rss_channel['title'], "link" => $rss_channel['link']);
