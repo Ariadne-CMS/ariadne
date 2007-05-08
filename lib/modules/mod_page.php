@@ -1,6 +1,8 @@
 <?php
 
 include_once($this->store->get_config('code')."modules/mod_url.php");
+include_once($this->store->get_config('code')."modules/mod_htmlparser.php");
+
 //include_once($this->store->get_config('code')."modules/mod_debug.php");
 
 class pinp_page {
@@ -35,6 +37,36 @@ class page {
 
 	function getBody($page) {
 		return eregi_replace('^.*<BODY[^>]*>', '', eregi_replace('</BODY.*$', '', $page));
+	}
+
+	function compileWorker(&$node) {
+		if (substr($node['attribs']['ar:type'], 1, -1) == "template") {
+				$path = substr($node['attribs']['ar:path'], 1, -1);
+				$template = substr($node['attribs']['ar:name'], 1, -1);
+				$argsarr = Array();
+				if (is_array($node['attribs'])) {
+					foreach ($node['attribs'] as $key => $value) {
+						if (substr($key, 0, strlen('arargs:')) == 'arargs:') {
+							$name = substr($key, strlen('arargs:'));
+							$argsarr[$name] = $name."=".substr($value, 1, -1);
+						}
+					}
+				}
+				$args = implode('&', $argsarr);
+
+				$node['children'] = Array();
+				$node['children'][] = Array(
+					"type" => "text",
+					"html" => "{arCall:$path$template?$args}"
+				);
+				// return from worker function
+				return;
+		}
+		if (is_array($node['children'])) {
+			foreach ($node['children'] as $key => $child) {
+				page::compileWorker(&$node['children'][$key]);
+			}
+		}
 	}
 
 	function parse($page, $full=false) {
@@ -91,8 +123,14 @@ class page {
 		return $page;
 	}
 
-	function compile($page) {
-		return URL::RAWtoAR($page, $this->nls);
+	function compile($page, $language='') {
+		if (!$language) {
+			$language = $this->nls;
+		}
+		$page = URL::RAWtoAR($page, $language);
+		$nodes = htmlparser::parse($page);
+		page::compileWorker(&$nodes[0]);
+		return htmlparser::compile($nodes);
 	}
 
 	function getReferences($page) {

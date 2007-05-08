@@ -75,6 +75,9 @@ class URL {
 	/* replaces the {ar*[/nls]} markers with valid URLs; if full is false, returns only the <body> content */
 	function ARtoRAW($page, $full=false) {
 		global $ARCurrent, $AR;
+
+		$settings = $this->call('editor.ini');
+
 		if ($ARCurrent->session && $ARCurrent->session->id) {
 			$session='/-'.$ARCurrent->session->id.'-';
 		} else {
@@ -93,7 +96,49 @@ class URL {
 		$find[] = "%\\{arRoot(/(?:[^}]+))?\\}%"; $repl[] = $AR->host.$this->store->root."\\1";
 		$find[] = "%\\{arCurrentPage(?:/([^}]+))?\\}%e"; $repl[] = "\$this->make_url('', '\\1')";
 		$find[] = "%\\{arSession\\}%"; $repl[] = $session;
-		return preg_replace($find, $repl, $page);
+
+		$page = preg_replace($find, $repl, $page);
+
+		// parse {arCall:/path/to/object/template.phtml?a=1&b=2}
+		$regExp = '\{arCall:(/(.*/)*)([^?]+)[?]([^}]*)\}';
+		while (eregi($regExp, $page, $matches)) {
+			ob_start();
+				$path = $this->make_path($matches[1]);
+				$template = $matches[3];
+				$args = $matches[4];
+				if (is_array($settings['arCall'][$template])) {
+					$cpaths = $settings['arCall'][$template]['paths'];
+					if (is_array($cpaths)) {
+						$mayCall = false;
+						foreach ($cpaths as $cpath) {
+							if (substr($cpath, -1) == '*') {
+								$cpath = substr($cpath, 0, -1);
+								if (substr($path, 0, strlen($cpath)) == $cpath) {
+									$mayCall = true;
+									break;
+								}
+							} else
+							if ($path === $cpath) {
+								$mayCall = true;
+								break;
+							}
+						}
+						if (!$mayCall) {
+							error("no permission to call '$template' on '$path'");
+						} else {
+							$this->get($path, $template, $args);
+						}
+					} else {
+						error("no paths were listed for '$template'");
+					}
+				} else {
+					error("template '$template' is not in white list");
+				}
+				$output = ob_get_contents();
+			ob_end_clean();
+			$page = str_replace($matches[0], $output, $page);
+		}
+		return $page;
 	}
 	
 }
