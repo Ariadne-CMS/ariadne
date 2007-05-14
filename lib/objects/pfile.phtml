@@ -104,7 +104,7 @@ class pfile extends pobject { // pfile class definition
 		}
 		if( !$stop ) {
 			if ($filename) {
-				ldHeader("Content-Disposition: filename=$filename");
+				ldHeader("Content-Disposition: inline; filename=$filename");
 			}
 			if ($mimetype=="text/html") { // parse {arRoot}
 				// assume html files to use charset UTF-8; this will always work correctly
@@ -160,7 +160,7 @@ class pfile extends pobject { // pfile class definition
 			error( sprintf( $ARnls["err:headerssentnottext"], $this->path ) );
 			// FROP error("headers already sent and this is not a text file (".$this->path.")");
 		} else {
-			ldHeader("Content-Disposition: inline; filename=\"".$filename."\"");
+			ldHeader("Content-Disposition: attachment; filename=\"".$filename."\"");
 			ldHeader("Content-length:".(string)$size);
 			$files->show($this->id, $file);
 		}
