@@ -213,15 +213,15 @@
 			return edit::showInputText($var, $name, $title, $extra);
 		}
 
-		function _showInput($var, $name, $title, $type='text', $extra='') {
+		function _showInput($var, $name, $title='', $type='text', $extra='') {
 			return edit::showInput($var, $name, $title, $type, $extra);
 		}
 
-		function _showCheckbox($var, $name, $title, $extra='', $group='' ) {
+		function _showCheckbox($var, $name, $title='', $extra='', $group='' ) {
 			return edit::showCheckbox($var, $name, $title, $extra, $group);
 		}
 
-		function _showSelect($var, $name, $title, $list, $bykey=false, $extra='') {
+		function _showSelect($var, $name, $title='', $list, $bykey=false, $extra='') {
 			return edit::showSelect($var, $name, $title, $list, $bykey, $extra);
 		}
 
