@@ -72,7 +72,7 @@
 				$arFilename = eregi_replace("[^a-z0-9\./_-]", "_", $matches[0]);
 				if (!$arNewFilename) {
 					$HTTP_POST_VARS['arNewFilename'] = $arFilename;
-					$this->path = $this->store->make_path($this->parent, $arNewFilename);
+					$this->path = $this->store->make_path($this->parent, $arFilename);
 				}
 				if (!$this->getdata("name", $language)) {
 					$HTTP_POST_VARS[$language]["name"] = $arFilename;
