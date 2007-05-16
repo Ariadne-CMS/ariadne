@@ -97,6 +97,10 @@ class URL {
 		$find[] = "%\\{arCurrentPage(?:/([^}]+))?\\}%e"; $repl[] = "\$this->make_url('', '\\1')";
 		$find[] = "%\\{arSession\\}%"; $repl[] = $session;
 
+		if (class_exists('edit') && edit::getEditMode()) {
+			$find[] = "%ar:editable=([^ ]+)%";	$repl[] = "contentEditable=\\1";
+		}
+
 		$page = preg_replace($find, $repl, $page);
 
 		// parse {arCall:/path/to/object/template.phtml?a=1&b=2}

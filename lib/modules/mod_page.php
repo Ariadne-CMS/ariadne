@@ -40,6 +40,10 @@ class page {
 	}
 
 	function compileWorker(&$node) {
+		if (isset($node['attribs']['contenteditable'])) {
+			$node['attribs']['ar:editable'] = (substr($node['attribs']['contenteditable'], 1, -1) == "true") ? "\"true\"" : "\"false\"";
+			unset($node['attribs']['contenteditable']);
+		}
 		if (substr($node['attribs']['ar:type'], 1, -1) == "template") {
 				$path = substr($node['attribs']['ar:path'], 1, -1);
 				$template = substr($node['attribs']['ar:name'], 1, -1);
