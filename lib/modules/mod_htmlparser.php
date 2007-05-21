@@ -75,11 +75,13 @@
 						while ($yych !== "\000" && $yych !== $quote) {
 							if ($yych == "\\") {
 								$yych = $yych = $YYBUFFER[++$YYCURSOR];
+								if ($yych !== $quote) {
+									$value .= "\\";
+								}
 							}
 							$value .= $yych;
 							$yych = $yych = $YYBUFFER[++$YYCURSOR];
 						}
-						$value = $quote.$value.$quote;
 						$yych = $YYBUFFER[++$YYCURSOR];
 						return T_ATTRIB_VAL;
 					break;
@@ -250,34 +252,41 @@
 			return $result;
 		}
 
-		function compile($nodes) {
+		function compile_Attribs(&$node) {
 			$result = "";
-			if (is_array($nodes)) {
-				foreach ($nodes as $node) {
-					if ($node['type'] == 'tag' || $node['type'] == 'tagSingle') {
-						if ($node['tagName']) {
-							$result .= "<".$node['tagName'];
-							if (is_array($node['attribs'])) {
-								foreach ($node['attribs'] as $key => $value) {
-									$result .= " $key";
-									if ($value !== false) {
-										$result .= "=$value";
-									}
-								}
-							}
-							if ($node['type'] == 'tagSingle') {
-								$result .= "/";
-							}
-							$result .= ">";
-						}
-						if ($node['type'] !== 'tagSingle') {
-							$result .= htmlparser::compile($node['children']);
-							$result .= "</".$node['tagName'].">";
-						}
-					} else {
-						$result .= $node['html'];
+			if (is_array($node['attribs'])) {
+				foreach ($node['attribs'] as $key => $value) {
+					$result .= " $key";
+					if ($value !== false) {
+						$result .= "=\"".str_replace('"', '\"', $value)."\"";
 					}
 				}
+			}
+			return $result;
+		}
+
+		function compile($node) {
+			$result = "";
+			switch ($node['type']) {
+				case 'tag':
+				case 'tagSingle':
+					if ($node['tagName']) {
+						$result .= "<".$node['tagName'];
+						$result .= htmlparser::compile_Attribs($node);
+						$result .= ">";
+					}
+				case 'root':
+					foreach ($node['children'] as $key => $child) {
+						$result .= htmlparser::compile($child);
+					}
+
+					if ($node['type'] == 'tag') {
+						$result .= "</".$node['tagName'].">";
+					}
+				break;
+				default:
+					$result .= $node['html'];
+				break;
 			}
 			return $result;
 		}
@@ -288,7 +297,10 @@
 			$parser['scanner'] = &$scanner;
 			$stack = Array();
 			htmlparser::nextToken($parser);
-			$result = htmlparser::parse_Node($parser, $stack);
+			$result = Array(
+				'type' => 'root',
+				'children' => htmlparser::parse_Node($parser, $stack)
+			);
 			return $result;
 		}
 	}

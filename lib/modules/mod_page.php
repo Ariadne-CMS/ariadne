@@ -40,19 +40,25 @@ class page {
 	}
 
 	function compileWorker(&$node) {
+		$contentEditable = "";
 		if (isset($node['attribs']['contenteditable'])) {
-			$node['attribs']['ar:editable'] = (substr($node['attribs']['contenteditable'], 1, -1) == "true") ? "\"true\"" : "\"false\"";
-			unset($node['attribs']['contenteditable']);
+			$contentEditable = "contenteditable";
+		} else if (isset($node['attribs']['contentEditable'])) {
+			$contentEditable = "contentEditable";
 		}
-		if (substr($node['attribs']['ar:type'], 1, -1) == "template") {
-				$path = substr($node['attribs']['ar:path'], 1, -1);
-				$template = substr($node['attribs']['ar:name'], 1, -1);
-				$argsarr = Array();
+		if ($contentEditable) {
+			$node['attribs']['ar:editable'] = $node['attribs'][$contentEditable];
+			unset($node['attribs'][$contentEditable]);
+		}
+		if ($node['attribs']['ar:type'] == "template") {
+				$path		= $this->make_path($node['attribs']['ar:path']);
+				$template	= $node['attribs']['ar:name'];
+				$argsarr	= Array();
 				if (is_array($node['attribs'])) {
 					foreach ($node['attribs'] as $key => $value) {
 						if (substr($key, 0, strlen('arargs:')) == 'arargs:') {
 							$name = substr($key, strlen('arargs:'));
-							$argsarr[$name] = $name."=".substr($value, 1, -1);
+							$argsarr[$name] = $name."=".$value;
 						}
 					}
 				}
@@ -133,7 +139,7 @@ class page {
 		}
 		$page = URL::RAWtoAR($page, $language);
 		$nodes = htmlparser::parse($page);
-		page::compileWorker(&$nodes[0]);
+		page::compileWorker(&$nodes);
 		return htmlparser::compile($nodes);
 	}
 
