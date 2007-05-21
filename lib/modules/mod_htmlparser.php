@@ -314,7 +314,6 @@
 		}
 
 		function parse($document) {
-echo "Document: $document<br>\n";
 			$parser = Array();
 			$scanner = htmlparser::scanner($document);
 			$parser['scanner'] = &$scanner;
