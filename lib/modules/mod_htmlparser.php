@@ -17,6 +17,7 @@
 	define(STATE_OPEN_TAG, 2);
 	define(STATE_CLOSE_TAG, 3);
 	define(STATE_ATTRIB, 4);
+	define(STATE_COMMENT, 5);
 
 	class htmlparser {
 
@@ -93,6 +94,16 @@
 					case $yych === $scanner['class_whitespace'][$yych] && (($YYSTATE == STATE_OPEN_TAG) || ($YYSTATE == STATE_CLOSE_TAG)):
 						$yych = $YYBUFFER[++$YYCURSOR]; continue;
 					break;
+					case $yych === '-' && ($YYSTATE == STATE_COMMENT):
+						if (substr($YYBUFFER, $YYCURSOR, 3) == '-->') {
+							$YYSTATE = STATE_TEXT;
+							$value = "-->"; $YYCURSOR+=3;
+							return T_TEXT;
+						}
+						$value = '-';
+						$YYBUFFER[++$YYCURSOR];
+						return T_TEXT;
+					break;
 					case $yych === '<' && ($YYSTATE == STATE_TEXT):
 						$value = $yych;
 						$yych = $YYBUFFER[++$YYCURSOR];
@@ -100,6 +111,10 @@
 							$next_state = STATE_CLOSE_TAG;
 							$tag = T_CLOSE_TAG;
 							$yych = $YYBUFFER[++$YYCURSOR];
+						} else if ($yych == '!' && substr($YYBUFFER, $YYCURSOR, 3)=== '!--') {
+							$value = "<!--"; $YYCURSOR+=3;
+							$YYSTATE = STATE_COMMENT;
+							return T_TEXT;
 						} else {
 							while ($scanner['class_whitespace'][$yych] == $yych) {
 								$yych = $YYBUFFER[++$YYCURSOR];
@@ -189,7 +204,7 @@
 		function parse_Tag_Open(&$parser) {
 			$singles = Array(
 				'br', 'img', 'area', 'link', 'param', 'hr', 'base', 'meta',
-				'input'
+				'input', 'coll'
 			);
 
 			$result = Array('type' => 'tag');
@@ -243,6 +258,13 @@
 						}
 					break;
 					case T_CLOSE_TAG:
+						$closeTag = $parser["token_ahead_value"];
+						if ($tagName != strtolower($closeTag)) {
+							// continue parsing because closing tag does not match current tag
+							// FIXME: create a better check
+							htmlparser::nextToken($parser);
+							continue;
+						}
 						htmlparser::nextToken($parser);
 						return $result;
 					default:
@@ -292,6 +314,7 @@
 		}
 
 		function parse($document) {
+echo "Document: $document<br>\n";
 			$parser = Array();
 			$scanner = htmlparser::scanner($document);
 			$parser['scanner'] = &$scanner;
