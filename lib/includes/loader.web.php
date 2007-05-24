@@ -339,7 +339,7 @@
 				$modified=$now;
 			}
 			ldHeader("Pragma: cache");
-			ldHeader("Cache-control: cache");
+			ldHeader("Cache-control: public");
 			ldHeader("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$expires));
 			$result=ldHeader("Last-Modified: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$modified));
 		} else {
