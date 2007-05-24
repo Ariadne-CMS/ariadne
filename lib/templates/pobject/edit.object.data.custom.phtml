@@ -57,34 +57,36 @@
 
 			if (is_array($configcache->custom)) {
 				while (list($name, $customvalue)=each($configcache->custom)) {
-					if (($customvalue["type"]==$this->type) ||
-							($customvalue["inherit"] &&
+					if (!$customvalue["grant"] || ($this->CheckSilent($customvalue["grant"]))) {
+						if (($customvalue["type"]==$this->type) ||
+								($customvalue["inherit"] &&
 								($this->implements($customvalue["type"]))
-							)
-						) {
-						if ($customvalue["nls"]=="true") {
-							$showdata=$custom[$selectednls][$name];
-						} else {
-							$showdata=$custom['none'][$name];
+								)
+							) {
+							if ($customvalue["nls"]=="true") {
+								$showdata=$custom[$selectednls][$name];
+							} else {
+								$showdata=$custom['none'][$name];
+							}
+							echo "		dest[dest.length]=new Option('".AddCSlashes($name, ARESCAPE)."','".AddCSlashes($name, ARESCAPE)."');\n";
+							echo "		CustomList[CustomList.length]=new custom_node(\n";
+							echo "			'".AddCSlashes($customvalue["type"], ARESCAPE)."',";
+							if ($customvalue["inherit"] && ($customvalue["inherit"]!="false")) {
+								echo 1;
+							} else {
+								echo 0;
+							}
+							echo ",\n";
+							echo "			'".AddCSlashes($name, ARESCAPE)."','".AddCSlashes($customvalue["size"], ARESCAPE)."',\n";
+							echo "			'".AddCSlashes($customvalue["grant"], ARESCAPE)."',";
+							if ($customvalue["nls"] && ($customvalue["nls"]!="false")) {
+								echo 1;
+							} else {
+								echo 0;
+							}
+							echo ",\n";
+							echo "			'".AddCSlashes($customvalue["check"], ARESCAPE)."');\n";
 						}
-						echo "		dest[dest.length]=new Option('".AddCSlashes($name, ARESCAPE)."','".AddCSlashes($name, ARESCAPE)."');\n";
-						echo "		CustomList[CustomList.length]=new custom_node(\n";
-						echo "			'".AddCSlashes($customvalue["type"], ARESCAPE)."',";
-						if ($customvalue["inherit"] && ($customvalue["inherit"]!="false")) {
-							echo 1;
-						} else {
-							echo 0;
-						}
-						echo ",\n";
-						echo "			'".AddCSlashes($name, ARESCAPE)."','".AddCSlashes($customvalue["size"], ARESCAPE)."',\n";
-						echo "			'".AddCSlashes($customvalue["grant"], ARESCAPE)."',";
-						if ($customvalue["nls"] && ($customvalue["nls"]!="false")) {
-							echo 1;
-						} else {
-							echo 0;
-						}
-						echo ",\n";
-						echo "			'".AddCSlashes($customvalue["check"], ARESCAPE)."');\n";
 					}
 				}
 			}
