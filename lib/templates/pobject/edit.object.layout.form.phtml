@@ -123,6 +123,7 @@ function saveCursorPos() {
 */
 function insertTab(event,obj) {
 	var tabKeyCode = 9;
+	var escapeKeyCode = 27;
 	if (event.which) // mozilla
 		var keycode = event.which;
 	else // ie
@@ -147,6 +148,12 @@ function insertTab(event,obj) {
 				// unsupported browsers
 			}
 		}
+		if (event.returnValue) // ie ?
+			event.returnValue = false;
+		if (event.preventDefault) // dom
+			event.preventDefault();
+		return false; // should work in all browsers
+	} else if (keycode == escapeKeyCode) {
 		if (event.returnValue) // ie ?
 			event.returnValue = false;
 		if (event.preventDefault) // dom
