@@ -40,6 +40,7 @@ class page {
 	}
 
 	function compileWorker(&$node) {
+		$result = false;
 		$contentEditable = "";
 		if (isset($node['attribs']['contenteditable'])) {
 			$contentEditable = "contenteditable";
@@ -49,6 +50,7 @@ class page {
 		if ($contentEditable) {
 			$node['attribs']['ar:editable'] = $node['attribs'][$contentEditable];
 			unset($node['attribs'][$contentEditable]);
+			$result = true;
 		}
 		if ($node['attribs']['ar:type'] == "template") {
 				$path		= $this->make_path($node['attribs']['ar:path']);
@@ -70,13 +72,16 @@ class page {
 					"html" => "{arCall:$path$template?$args}"
 				);
 				// return from worker function
-				return;
+				return true;
 		}
 		if (is_array($node['children'])) {
 			foreach ($node['children'] as $key => $child) {
-				page::compileWorker(&$node['children'][$key]);
+				// single | makes the following line always run the compileworker
+				// method, while any return true in that method makes $result true
+				$result = $result | page::compileWorker(&$node['children'][$key]);
 			}
 		}
+		return $result;
 	}
 
 	function parse($page, $full=false) {
@@ -139,8 +144,16 @@ class page {
 		}
 		$page = URL::RAWtoAR($page, $language);
 		$nodes = htmlparser::parse($page);
-		page::compileWorker(&$nodes);
-		return htmlparser::compile($nodes);
+		// FIXME: the isChanged check is paranoia mode on. New code ahead.
+		// will only use the new compile method when it is needed (htmlblocks)
+		// otherwise just return the $page, so 99.9% of the sites don't walk
+		// into bugs. 21-05-2007
+		$isChanged = page::compileWorker(&$nodes);
+		if ($isChanged) {
+			return htmlparser::compile($nodes);
+		} else {
+			return $page;
+		}
 	}
 
 	function getReferences($page) {
