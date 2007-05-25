@@ -246,6 +246,9 @@
 					case T_OPEN_TAG:
 						$nextTag = strtolower($parser["token_ahead_value"]);
 						if ($nextTag == $tagName && in_array($tagName, $siblings)) {
+							if ($parser['options']['noTagResolving']) {
+								$parentNode['htmlTagClose'] = "";
+							}
 							return $result;
 						}
 
