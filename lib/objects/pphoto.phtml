@@ -384,7 +384,7 @@ class pphoto extends pfile { // pphoto class definition
 		if($rotate!=0) {
 		  $rotcmd = "-rotate $rotate";
 		}
-		$ARConfig->photoStack[$this->id][]=" -pointsize $pointsize -fill $color $gravcmd $rotcmd -draw \"text $x,$y ".addcslashes($text,ARESCAPE)."\"";
+		$ARConfig->photoStack[$this->id][]=" -pointsize $pointsize -fill $color $gravcmd $rotcmd -draw \"text $x,$y \xb6".addcslashes($text,ARESCAPE)."\xb6\"";
 		return true;
 	}
 
@@ -464,7 +464,9 @@ class pphoto extends pfile { // pphoto class definition
 				$f_store->close();
 
 				if (chdir($this->store->get_config("files").'temp/')) {
+				debug("build: 1");
 					if (is_array($ARConfig->photoCommandStack[$this->id])) {
+					debug("build: 2");
 						$image="";
 						foreach( $ARConfig->photoCommandStack[$this->id] as $exec_string){
 							$exec_string = str_replace('{buildfile}', $tmpsrc, $exec_string);
@@ -478,7 +480,8 @@ class pphoto extends pfile { // pphoto class definition
 
 							// Escaped shell command line here.
 							$exec_string = $cmd_array[0] . " " . escapeshellcmd($cmd_array[1]);
-
+							$exec_string = str_replace("\xb6", "'", $exec_string);
+							
 							debug("executing ($exec_string)");
 							system($exec_string,$failed);
 							if($failed){
