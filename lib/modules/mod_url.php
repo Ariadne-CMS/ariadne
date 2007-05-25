@@ -104,12 +104,19 @@ class URL {
 		$page = preg_replace($find, $repl, $page);
 
 		// parse {arCall:/path/to/object/template.phtml?a=1&b=2}
-		$regExp = '\{arCall:(/(.*/)*)([^?]+)[?]([^}]*)\}';
-		while (eregi($regExp, $page, $matches)) {
+//		$regExp = '|\{arCall:(/(.*/)*)([^?]+)[?]([^}]*?)}|i';
+		$regExp = '|\{arCall:(.*?)\}|i';
+
+		while (preg_match($regExp, $page, $matches)) {
 			ob_start();
-				$path = $this->make_path($matches[1]);
-				$template = $matches[3];
-				$args = $matches[4];
+				$parts	= explode("?", substr($matches[0], strlen('{arCall:'), -1), 2);
+				$args	= $parts[1];
+				$rest	= $parts[0];
+				$template = "";
+				if (substr($rest, -1) !== '/') {
+					$template = basename($rest);
+				}
+				$path = substr($rest, 0, -(strlen($template)));
 				if (is_array($settings['arCall'][$template])) {
 					$cpaths = $settings['arCall'][$template]['paths'];
 					if (is_array($cpaths)) {
