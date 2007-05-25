@@ -40,6 +40,9 @@ class page {
 	}
 
 	function compileWorker(&$node) {
+		if ($node['tagName']) {
+			echo "parsing ".$node['tagName']."<br>\n";
+		}
 		$result = false;
 		$contentEditable = "";
 		if (isset($node['attribs']['contenteditable'])) {
@@ -143,7 +146,8 @@ class page {
 			$language = $this->nls;
 		}
 		$page = URL::RAWtoAR($page, $language);
-		$nodes = htmlparser::parse($page);
+		$newpage = $page;
+		$nodes = htmlparser::parse($newpage, Array('noTagResolving' => true));
 		// FIXME: the isChanged check is paranoia mode on. New code ahead.
 		// will only use the new compile method when it is needed (htmlblocks)
 		// otherwise just return the $page, so 99.9% of the sites don't walk

@@ -204,7 +204,7 @@
 		function parse_Tag_Open(&$parser) {
 			$singles = Array(
 				'br', 'img', 'area', 'link', 'param', 'hr', 'base', 'meta',
-				'input', 'coll'
+				'input', 'col'
 			);
 
 			$result = Array('type' => 'tag');
@@ -231,7 +231,10 @@
 		function parse_Node(&$parser, &$stack) {
 			$siblings = Array('table', 'tr', 'td', 'li', 'ul');
 
-			$tagName = strtolower(end($stack));
+			if (count($stack)) {
+				$parentNode	= &$stack[count($stack)-1];
+				$tagName	= strtolower($parentNode['tagName']);
+			}
 			$result = Array();
 			while ($parser["token_ahead"] != T_EOF) {
 				switch ($parser["token_ahead"]) {
@@ -249,7 +252,8 @@
 						$node = htmlparser::parse_Tag_Open($parser);
 						if ($node) {
 							if ($node['type'] !== 'tagSingle') {
-								array_push($stack, $node['tagName']);
+								$openTag = $node['tagName'];
+								array_push($stack, &$node);
 									$node['children'] = htmlparser::parse_Node($parser, $stack);
 								array_pop($stack);
 								$current = end($stack);
@@ -263,13 +267,29 @@
 							// continue parsing because closing tag does not match current tag
 							// FIXME: create a better check
 							htmlparser::nextToken($parser);
+
+							// if we do not resolve tags, we have to add this one as text
+							if ($parser['options']['noTagResolving']) {
+								$node = Array('type' => 'text');
+								$node['html'] = "</".$parser["token_value"].">";
+								$result[] = $node;
+							}
 							continue;
 						}
+
+						// if we do not resolve tags, we have to add this one as text
+						if ($parser['options']['noTagResolving']) {
+							$parentNode['htmlTagClose'] = "</".$parser['token_ahead_value'].">";
+						}
+
 						htmlparser::nextToken($parser);
 						return $result;
 					default:
 						htmlparser::nextToken($parser);
 				}
+			}
+			if ($parser['options']['noTagResolving']) {
+				$parentNode['htmlTagClose'] = "";
 			}
 			return $result;
 		}
@@ -298,12 +318,17 @@
 						$result .= ">";
 					}
 				case 'root':
-					foreach ($node['children'] as $key => $child) {
-						$result .= htmlparser::compile($child);
+					if (is_array($node['children'])) {
+						foreach ($node['children'] as $key => $child) {
+							$result .= htmlparser::compile($child);
+						}
 					}
-
 					if ($node['type'] == 'tag') {
-						$result .= "</".$node['tagName'].">";
+						if (isset($node['htmlTagClose'])) {
+							$result .= $node['htmlTagClose'];
+						} else {
+							$result .= "</".$node['tagName'].">";
+						}
 					}
 				break;
 				default:
@@ -313,8 +338,11 @@
 			return $result;
 		}
 
-		function parse($document) {
-			$parser = Array();
+		function parse($document, $options = false) {
+			if (!$options) {
+				$options = Array();
+			}
+			$parser = Array('options' => $options);
 			$scanner = htmlparser::scanner($document);
 			$parser['scanner'] = &$scanner;
 			$stack = Array();
