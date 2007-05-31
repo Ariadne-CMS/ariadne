@@ -40,9 +40,6 @@ class page {
 	}
 
 	function compileWorker(&$node) {
-		if ($node['tagName']) {
-			echo "parsing ".$node['tagName']."<br>\n";
-		}
 		$result = false;
 		$contentEditable = "";
 		if (isset($node['attribs']['contenteditable'])) {
