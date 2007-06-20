@@ -150,12 +150,12 @@
 						}
 					}
 				} else {
-					debug("checkLogin: starting new session", "all");
-					ldStartSession();
+					debug("checkLogin: trying to log on", "all");
 					$result = $this->authUser($login, $password);
 					if ($result !== true) {
 						$this->getUser('public');
 					}
+
 				}
 			} else {
 				if ($ARCurrent->session) {
