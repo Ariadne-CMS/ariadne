@@ -55,7 +55,13 @@ class pfile extends pobject { // pfile class definition
 			$nls = $this->reqnls;
 		}
 		$files = $this->store->get_filestore("files");
-		return $files->exists($this->id, $nls."_$file");
+
+		$result = $files->exists($this->id, $nls."_$file");		
+		if( $result ){
+			return $result;
+		} else {
+			return $files->exists($this->id, $file);
+		}
 	}
 
 	function ParseFile($file, $nls='') {
