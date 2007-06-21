@@ -5,6 +5,8 @@
  
 	******************************************************************/
 
+	require_once($this->store->get_config('code')."modules/mod_page.php");
+
 	if ((($this->arIsNewObject &&
 			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
 			$parentobj->CheckLogin("add", $this->type)) ||
@@ -45,7 +47,7 @@
 					$properties["text"][$count]["value"]="'".AddSlashes($newnlsdata->name)."'";
 					$properties["text"][$count]["nls"]="'$key'";
  					$count++;
-					$newnlsdata->summary=$this->getdata("summary",$key);
+					$newnlsdata->summary=page::compile($this->getdata("summary",$key), $key);
 					$properties["text"][$count]["value"]="'".AddSlashes(substr($newnlsdata->summary,0,255))."'";
 					$properties["text"][$count]["nls"]="'$key'";
 					$count++;

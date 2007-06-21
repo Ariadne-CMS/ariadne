@@ -32,6 +32,8 @@
 
 	******************************************************************/
 
+	require_once($this->store->get_config('code')."modules/mod_page.php");
+
 	if ((($this->arIsNewObject && $this->CheckLogin("add", $this->type)) ||
 			(!$this->arIsNewObject && $this->CheckLogin("edit"))) && 
 			$this->CheckConfig()) {
@@ -76,7 +78,7 @@
 						$properties["text"][$count]["value"]="'".AddSlashes($newnlsdata->name)."'";
 						$properties["text"][$count]["nls"]="'$key'";
 						$count++;
-						$newnlsdata->summary=$this->getdata("summary", $key);
+						$newnlsdata->summary=page::compile($this->getdata("summary",$key), $key);
 						$properties["text"][$count]["value"]="'".AddSlashes($newnlsdata->summary)."'";
 						$properties["text"][$count]["nls"]="'$key'";
 						$count++;
