@@ -65,10 +65,12 @@ class URL {
 		$repl[] = "{arBase\\1}";
 		if ($ARCurrent->session && $ARCurrent->session->id) {
 			// check for other session id's:
-			$find[] = "%/-".$ARCurrent->session->id."-%"; 
+			$find[] = "%/-[^-]{4}-%";
 			$repl[] = "{arSession}";
+			//$find[] = "%/-".$ARCurrent->session->id."-%"; 
+			//$repl[] = "{arSession}";
 		}
-
+		
 		return preg_replace($find, $repl, $page);
 	}
 	
