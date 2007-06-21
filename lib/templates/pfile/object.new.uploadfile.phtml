@@ -13,7 +13,7 @@
 		</td>
 	</tr><tr>
 		<td valign="top">
-			<input type="file" name="<?php echo $selectednls; ?>[file]" <?php
+			<input type="file" id="file" name="<?php echo $selectednls; ?>[file]" <?php
 				if ($this->implements("pphoto")) {
 					echo "onMouseDown=\"preview(true);\"";
 				}
@@ -28,13 +28,13 @@
 	</tr>
 	</table>
 	<script>
-		var oldValue=document.wgWizForm.file.value;
+		var oldValue=document.getElementById("file").value;
 		function preview(first) {
 			return false;
 			if (first) {
-				oldValue=document.wgWizForm.file.value;
+				oldValue=document.getElementById("file").value;
 			}
-			var newValue=document.wgWizForm.file.value;
+			var newValue=document.getElementById("file").value;
 			if (newValue==oldValue) {
 				setTimeout(preview, 500, false);
 			} else {
