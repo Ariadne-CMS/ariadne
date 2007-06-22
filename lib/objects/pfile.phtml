@@ -75,19 +75,23 @@ class pfile extends pobject { // pfile class definition
 		return URL::ARtoRAW($file, true);
 	}
 
-	function ShowFile($file='file', $nls='') {
+	function ShowFile($file='file', $nls='', $mimetype='') {
 		global $AR, $ARCurrent;
 		if (!$nls) {
 			$nls = $this->reqnls;
 		}
 		$files = $this->store->get_filestore("files");
 
-		$mimetype = $this->data->mimetype;
+		if (!$mimetype) {
+			$mimetype = $this->data->mimetype;
+		}
 		if ($files->exists($this->id, $nls."_$file")) {
 			$file = $nls."_$file";
-			$mimetype = $this->data->$nls->mimetype;
+			if (!$mimetype) {
+				$mimetype = $this->data->$nls->mimetype;
+			}
 		}
-
+		
 		if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
 			if ($ARCurrent->cachetime==0 && !$AR->output_compression) {
 				ob_start(); // start the cache
@@ -101,7 +105,7 @@ class pfile extends pobject { // pfile class definition
 		if (!ereg("^text/", $mimetype)) {
 			$size = $files->size($this->id, $file);
 		}
-		if (ldSetContent($this->data->mimetype, $size)) {
+		if (ldSetContent($mimetype, $size)) {
 			$cacheseconds=1800; // 1/2 hour
 			$expires=time()+$cacheseconds;
 			if ($AR->user->data->login=="public" || $this->CheckPublic("read")) {
@@ -144,10 +148,8 @@ class pfile extends pobject { // pfile class definition
 		}
 		$files = $this->store->get_filestore("files");
 
-		$mimetype = $this->data->mimetype;
 		if ($files->exists($this->id, $nls."_$file")) {
 			$file = $nls."_$file";
-			$mimetype = $this->data->$nls->mimetype;
 		}
 
 		if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
@@ -193,7 +195,7 @@ class pfile extends pobject { // pfile class definition
 		return $this->GetFile($file, $nls);
 	}
   
-	function _ShowFile($file='file', $nls='') {
+	function _ShowFile($file='file', $nls='', $mimetype='') {
 		return $this->ShowFile($file, $nls);
 	}
 
