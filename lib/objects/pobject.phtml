@@ -1180,11 +1180,12 @@ class pobject extends object { // pobject class definition
 				$this->pushContext(array());
 				foreach ($ARConfig->libraries[$checkpath] as $library => $path) {
 					$context=$this->getContext();
-					if (!$context['seenLibraries'][$path]) {
+					if (is_int($library) && !$context['seenLibraries'][$path]) {
 						$context['seenLibraries'][$path]=true;
 						$this->setContext($context);
-						if (is_int($library) && $arCallFunction != 'config.ini') {
-							$template = $this->getPinpTemplate($arCallFunction, $path, '', true);
+						if ($arCallFunction != 'config.ini') {
+							debug("CheckConfig: going to search in UNNAMED library '$library' => '$path' for ($arCallType::)$arCallFunction");
+							$template = $this->getPinpTemplate("$arCallType::$arCallFunction", $path, '', true);
 							if ($template["arTemplateId"]) {
 								extract($template);
 								$arLibrary = $library;
