@@ -82,14 +82,14 @@ class pfile extends pobject { // pfile class definition
 		}
 		$files = $this->store->get_filestore("files");
 
-		if (!$mimetype) {
-			$mimetype = $this->data->mimetype;
-		}
 		if ($files->exists($this->id, $nls."_$file")) {
 			$file = $nls."_$file";
 			if (!$mimetype) {
 				$mimetype = $this->data->$nls->mimetype;
 			}
+		}
+		if (!$mimetype) {
+			$mimetype = $this->data->mimetype;
 		}
 		
 		if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
@@ -105,6 +105,7 @@ class pfile extends pobject { // pfile class definition
 		if (!ereg("^text/", $mimetype)) {
 			$size = $files->size($this->id, $file);
 		}
+
 		if (ldSetContent($mimetype, $size)) {
 			$cacheseconds=1800; // 1/2 hour
 			$expires=time()+$cacheseconds;
@@ -127,10 +128,10 @@ class pfile extends pobject { // pfile class definition
 			if ($mimetype=="text/html") { // parse {arRoot}
 				// assume html files to use charset UTF-8; this will always work correctly
 				// with the MSIE html editor, and won't corrupt 'normal' html.
-				ldHeader("Content-Type: text/html; charset=UTF-8");
+				// ldHeader("Content-Type: text/html; charset=UTF-8");
 				echo $this->ParseFile($this->GetFile($file));
 			} else {
-				ldHeader("Content-Type: $mimetype");
+				// ldHeader("Content-Type: $mimetype");
 				// set pragma: cache; bug workaround for internet explorer and https
 				if (ldGetServerVar('HTTPS')) {
 					ldHeader('Pragma: cache');
@@ -196,7 +197,7 @@ class pfile extends pobject { // pfile class definition
 	}
   
 	function _ShowFile($file='file', $nls='', $mimetype='') {
-		return $this->ShowFile($file, $nls);
+		return $this->ShowFile($file, $nls, $mimetype);
 	}
 
 	function _DownloadFile($file='file', $nls='') {
