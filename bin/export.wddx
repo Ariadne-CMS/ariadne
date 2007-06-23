@@ -26,6 +26,7 @@ options are:
 --skipgrants             Don't export grants
 --skipdata               Don't export object data
 --skipfiles              Don't export files
+--query=query            Use specified query
 \n\n";
 
 $arg_c=0;
@@ -74,6 +75,10 @@ while (list(,$cmd)=each($argv)) {
 
 			case 'skipfiles':
 				$ARCurrent->wddxoptions["export_skipfiles"] = true;
+				break;
+
+			case 'query':
+				$ARCurrent->wddxoptions["export_skipfiles"] = $option_value;
 				break;
 
 			default:

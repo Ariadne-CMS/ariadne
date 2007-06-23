@@ -27,8 +27,14 @@ if( $this->CheckLogin("config") ) {
 	
 	$this->putvar('wddxoptions',$options);
 	export_wddx::header($fp);
+
 	$query="";
+	if(isset($options['query']) ){
+		$query = $options['query'];
+	} 
+
 	$this->find($this->make_path($path), $query, "export.wddx.object.phtml", "", 0);
+
 	export_wddx::footer($fp);
 	if($closefp){
 		fclose($fp);
