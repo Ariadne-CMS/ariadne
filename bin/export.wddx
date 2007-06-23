@@ -36,7 +36,12 @@ next($argv); // do not parse the filename
 while (list(,$cmd)=each($argv)) {
 	if (strpos($cmd, "--") === 0) {
 		if (strpos(substr($cmd, 2),"-")===false) {
-			$option_switch=substr($cmd, 2);
+			if (strpos($cmd, "=")!==false) {
+				$option_switch=substr($cmd, 2, strpos($cmd, "=") - 2);
+				$option_value=substr($cmd, strpos($cmd, "=")+1);
+			} else {
+				$option_switch=substr($cmd, 2);
+			}
 		} else {
 
 			$option_switch=substr($cmd, 2, strpos(substr($cmd, 2),"-"));
@@ -78,7 +83,7 @@ while (list(,$cmd)=each($argv)) {
 				break;
 
 			case 'query':
-				$ARCurrent->wddxoptions["export_skipfiles"] = $option_value;
+				$ARCurrent->wddxoptions["query"] = $option_value;
 				break;
 
 			default:
