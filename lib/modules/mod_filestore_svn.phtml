@@ -15,16 +15,33 @@
 	connect($id, $repository, $username, $password); -> returns $svn.
 
 	svn_add($svn, $name)
+	svn_blame($svn, $name)
 	svn_checkout($svn, $revision)
 	svn_commit($svn, $comment, $fileinfo)
 	svn_delete($svn, $name, $comment)
 	svn_diff($svn, $name)
+	svn_export($svn, $revision)
 	svn_info($svn, $name)
-	svn_list($svn);
-	svn_resolved($svn, $name);		
+	svn_list($svn)
+	svn_log($svn, $name)
+	svn_propdel($svn, $propkey, $name)
+	svn_propget($svn, $propkey, $name)
+	svn_proplist($svn, $name)
+	svn_propset($svn, $propkey, $propvalue, $name)
+	svn_resolved($svn, $name)
 	svn_revert($svn, $name)
 	svn_status($svn, $name)
 	svn_update($svn, $name)
+
+
+	The following functions have not yet been implemented:
+	svn_cleanup
+	svn_copy
+	svn_import
+	svn_merge
+	svn_mkdir
+	svn_move
+	svn_switch
 
 	Copyright Muze 2007;
 	Written by Yvo Brevoort
@@ -56,12 +73,19 @@
 
 			$svn_instance = VersionControl_SVN::factory(array(
 				"add",
+				"blame",
 				"checkout", 
 				"commit", 
 				"delete", 
 				"diff",
+				"export",
 				"info", 
 				"list", 
+				"log",
+				"propdel",
+				"propget",
+				"proplist",
+				"propset",
 				"resolved",
 				"revert",
 				"status", 
@@ -101,7 +125,7 @@
 				as the file.
 			*/
 
-//			$this->touch($svn['object_id'], $name . ".meta", 0);
+			$this->touch($svn['object_id'], $name . ".meta", 0);
 
 			$args = array(
 				$this->get_path($svn, $name),
@@ -109,6 +133,21 @@
 			);
 			$result = $svn['instance']->add->run($args, $svn['switches']);
 			return $result;
+		}
+
+		function svn_blame($svn, $name='') {
+			$args = array(
+				$this->get_path($svn, $name)
+			);
+			$result = $svn['instance']->blame->run($args, $svn['switches']);
+			return $result;
+		}
+
+		function svn_cat($svn, $name='') {
+			$args = array(
+				$this->get_path($svn, $name)
+			);
+			$result = $svn['instance']->cat->run($args, $svn['switches']);
 		}
 
 		function svn_checkout($svn, $revision='HEAD') {
@@ -132,9 +171,12 @@
 
 		function svn_commit($svn, $comment='', $fileinfo='') {
 			/* 
-				Fileinformation is used to record the meta information
-				needed in Ariadne. This part is needed because Ariadne does
-				not store the meta information in the filenames (correctly).
+				File information is used to record the meta
+				information needed in Ariadne. The
+				properties are saved in SVN properties. This
+				part is needed because Ariadne does not
+				store the meta information in the filenames
+				(correctly).
 
 				Information structure is as follows
 				[name]
@@ -148,21 +190,16 @@
 			
 			if ($fileinfo) {
 				foreach ($fileinfo as $filename => $file) {
-					$metainfo = '';
 					foreach ($file as $key => $value) {
-						$metainfo .= "$key:$value\n";
+						$this->svn_propset($svn, $key, $value, $filename);
 					}
-					$this->write($metainfo, $svn['object_id'], $filename . ".meta");
-
 					$args[] = $this->get_path($svn, $filename);
-					$args[] = $this->get_path($svn, $filename) . ".meta";
 				}
 			} else {
 				$args[] = $this->get_path($svn, '');
 			}
 
 			$svn['switches']['message'] = $comment;
-
 			$result = $svn['instance']->commit->run($args, $svn['switches']);
 			unset($svn['switches']['message']);
 			return $result;
@@ -175,7 +212,6 @@
 				$repo . "_" . $name,
 				$repo . "_" . $name . ".meta"
 			);
-
 			$result = $svn['instance']->delete->run($args, $svn['switches']);
 			unset($svn['switches']['message']);
 			return $result;
@@ -185,8 +221,20 @@
 			$args = array(
 				$this->get_path($svn, $name)
 			);
-
 			$result = $svn['instance']->diff->run($args, $svn['switches']);
+			return $result;
+		}
+
+		function svn_export($svn, $revision='HEAD') {
+			$args = array(
+				$svn['repository'],
+				$this->get_path($svn, '')
+			);
+			
+			$switches = $svn['switches'];
+			$switches['non-recursive'] = true;
+	
+			$result = $svn['instance']->export->run($args, $switches);
 			return $result;
 		}
 
@@ -198,11 +246,55 @@
 			return $result;
 		}
 
+		function svn_log($svn, $name='') {
+			$args = array(
+				$this->get_path($svn, $name)
+			);
+			$result = $svn['instance']->log->run($args, $svn['switches']);
+			return $result;
+		}
+
 		function svn_info($svn, $name='') {
 			$args = array(
 				$this->get_path($svn, $name)
 			);
 			$result = $svn['instance']->info->run($args, $svn['switches']);
+			return $result;
+		}
+
+		function svn_propdel($svn, $propkey, $name='') {
+			$args = array(
+				$propkey,
+				$this->get_path($svn, $name)
+			);
+			$result = $svn['instance']->propdel->run($args, $svn['switches']);
+			return $result;
+		}
+
+		function svn_propget($svn, $propkey, $name='') {
+			$args = array(
+				$propkey,
+				$this->get_path($svn, $name)
+			);
+			$result = $svn['instance']->propget->run($args, $svn['switches']);
+			return $result;
+		}
+
+		function svn_proplist($svn, $name='') {
+			$args = array(
+				$this->get_path($svn, $name)
+			);
+			$result = $svn['instance']->proplist->run($args, $svn['switches']);
+			return $result;
+		}
+
+		function svn_propset($svn, $propkey, $propvalue, $name='') {
+			$args = array(
+				$propkey,
+				$propvalue,
+				$this->get_path($svn, $name)
+			);
+			$result = $svn['instance']->propset->run($args, $svn['switches']);
 			return $result;
 		}
 
@@ -236,7 +328,6 @@
 			
 				$result[$filename] = $value;
 			}
-
 			return $result;
 		}
 
