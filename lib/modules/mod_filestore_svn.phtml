@@ -20,7 +20,8 @@
 	svn_delete($svn, $name, $comment)
 	svn_diff($svn, $name)
 	svn_info($svn, $name)
-	svn_list($svn); 			// php does not allow 'list'
+	svn_list($svn);
+	svn_resolved($svn, $name);		
 	svn_revert($svn, $name)
 	svn_status($svn, $name)
 	svn_update($svn, $name)
@@ -61,6 +62,7 @@
 				"diff",
 				"info", 
 				"list", 
+				"resolved",
 				"revert",
 				"status", 
 				"update"
@@ -201,6 +203,14 @@
 				$this->get_path($svn, $name)
 			);
 			$result = $svn['instance']->info->run($args, $svn['switches']);
+			return $result;
+		}
+
+		function svn_resolved($svn, $name='') {
+			$args = array(
+				$this->get_path($svn, $name)
+			);
+			$result = $svn['instance']->resolved->run($args, $svn['switches']);
 			return $result;
 		}
 
