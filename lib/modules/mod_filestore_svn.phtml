@@ -1,0 +1,241 @@
+<?PHP
+	/**************************************************************************
+	File Store Module - SVN extension
+	---------------------------------------------------------------------------
+
+	This module is used to add SVN support to the filestore. Since the
+	filestore handles all the nodes and the directory structure, directory
+	support is disabled. If needed, recursion into directories should be
+	done from within Ariadne, not using default SVN functionality.
+
+	All SVN commands are prepended with "svn_" to prevent collisions with
+	mod_filestore and php.
+
+	svn commands:
+	connect($id, $repository, $username, $password); -> returns $svn.
+
+	svn_add($svn, $name)
+	svn_checkout($svn, $revision)
+	svn_commit($svn, $comment, $fileinfo)
+	svn_delete($svn, $name, $comment)
+	svn_diff($svn, $name)
+	svn_info($svn, $name)
+	svn_list($svn); 			// php does not allow 'list'
+	svn_revert($svn, $name)
+	svn_status($svn, $name)
+	svn_update($svn, $name)
+
+	Copyright Muze 2007;
+	Written by Yvo Brevoort
+
+	**************************************************************************/
+
+	require_once 'VersionControl/SVN.php';
+	require_once 'mod_filestore.phtml';
+
+	class filestore_svn extends filestore {
+
+		/* public */
+
+		function filestore_svn($name, $root) {
+			filestore::filestore($name, $root);
+
+			// Setup error handling -- always a good idea!
+			$this->svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
+
+			// Set up runtime options. 
+			$this->svn_options = array('fetchmode' => VERSIONCONTROL_SVN_FETCHMODE_ARRAY, 'svn_path' => '/usr/bin/svn');
+		}
+
+		function connect($id, $repository, $username='', $password='') {
+			/* Makes the connection between a filestore ID and a
+			   SVN repository. Other SVN commands will run using
+			   the result of this function.
+			*/
+
+			$svn_instance = VersionControl_SVN::factory(array(
+				"add",
+				"checkout", 
+				"commit", 
+				"delete", 
+				"diff",
+				"info", 
+				"list", 
+				"revert",
+				"status", 
+				"update"
+			), $this->svn_options);
+
+
+			$svn_switches = array();
+			if ($username) {
+				$svn_switches['username'] = $username;
+			}
+			if ($password) {
+				$svn_switches['password'] = $password;
+			}
+
+			$svn = array(
+				'instance' 		=> $svn_instance,
+				'switches' 		=> $svn_switches,
+				'object_id'		=> $id,
+				'repository' 	=> $repository
+			);
+
+			return $svn;
+		}
+
+		function get_path($svn, $name) {
+			$path = $this->make_path($svn['object_id'], $name);
+			return $path;
+		}
+
+		/* Start of the SVN functions. */
+		function svn_add($svn, $name) {
+			/*	SVN add wrapper
+				This function also creates the meta file by touching it. The
+				contents of the file will be added when commited, but this
+				allows the meta file to be added to the SVN at the same time
+				as the file.
+			*/
+
+//			$this->touch($svn['object_id'], $name . ".meta", 0);
+
+			$args = array(
+				$this->get_path($svn, $name),
+				$this->get_path($svn, $name . ".meta")
+			);
+			$result = $svn['instance']->add->run($args, $svn['switches']);
+			return $result;
+		}
+
+		function svn_checkout($svn, $revision='HEAD') {
+			/* Checkout given SVN. 
+			   Since we only handle flat SVN, the checkout is
+			   done only for files, and does not recurse into
+			   directories.
+			*/
+
+			$args = array(
+				$svn['repository'],
+				$this->get_path($svn, '')
+			);
+			
+			$switches = $svn['switches'];
+			$switches['non-recursive'] = true;
+	
+			$result = $svn['instance']->checkout->run($args, $switches);
+			return $result;
+		}
+
+		function svn_commit($svn, $comment='', $fileinfo='') {
+			/* 
+				Fileinformation is used to record the meta information
+				needed in Ariadne. This part is needed because Ariadne does
+				not store the meta information in the filenames (correctly).
+
+				Information structure is as follows
+				[name]
+						[function]	 (usually the same as name)
+						[type]
+						[language]
+						[default]
+			*/
+
+			$args = array();
+			
+			if ($fileinfo) {
+				foreach ($fileinfo as $filename => $file) {
+					$metainfo = '';
+					foreach ($file as $key => $value) {
+						$metainfo .= "$key:$value\n";
+					}
+					$this->write($metainfo, $svn['object_id'], $filename . ".meta");
+
+					$args[] = $this->get_path($svn, $filename);
+					$args[] = $this->get_path($svn, $filename) . ".meta";
+				}
+			} else {
+				$args[] = $this->get_path($svn, '');
+			}
+
+			$svn['switches']['message'] = $comment;
+
+			$result = $svn['instance']->commit->run($args, $svn['switches']);
+			unset($svn['switches']['message']);
+			return $result;
+		}
+
+		function svn_delete($svn, $name, $comment='') {
+			$repo = $svn['repository'];
+			$svn['switches']['message'] = $comment;
+			$args = array(
+				$repo . "_" . $name,
+				$repo . "_" . $name . ".meta"
+			);
+
+			$result = $svn['instance']->delete->run($args, $svn['switches']);
+			unset($svn['switches']['message']);
+			return $result;
+		}
+
+		function svn_diff($svn, $name='') {
+			$args = array(
+				$this->get_path($svn, $name)
+			);
+
+			$result = $svn['instance']->diff->run($args, $svn['switches']);
+			return $result;
+		}
+
+		function svn_list($svn) {
+			$args = array(
+				$this->get_path($svn, '')
+			);
+			$result = $svn['instance']->list->run($args, $svn['switches']);
+			return $result;
+		}
+
+		function svn_info($svn, $name='') {
+			$args = array(
+				$this->get_path($svn, $name)
+			);
+			$result = $svn['instance']->info->run($args, $svn['switches']);
+			return $result;
+		}
+
+		function svn_revert($svn, $name='') {
+			$args = array(
+				$this->get_path($svn, $name)
+			);
+			$result = $svn['instance']->revert->run($args, $svn['switches']);
+			return $result;
+		}
+
+		function svn_status($svn, $name='') {
+			$args = array(
+				$this->get_path($svn, $name)
+			);
+			$tempresult = $svn['instance']->status->run($args, $svn['switches']);
+
+			// Since we have a flat structure, remove the path and use only the names.
+			$result = array();
+			foreach ($tempresult as $key=>$value) {
+				$filename = basename($key);
+				$filename = substr($filename, 1);
+			
+				$result[$filename] = $value;
+			}
+
+			return $result;
+		}
+
+		function svn_update($svn, $name='') {
+			$args = array(
+				$this->get_path($svn, $name)
+			);
+			$result = $svn['instance']->update->run($args, $svn['switches']);
+			return $result;
+		}
+	}
+?>
