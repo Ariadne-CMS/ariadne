@@ -110,7 +110,7 @@
 				$svn_switches['password'] = $password;
 			}
 
-			$svn_switches['store-passwords'] = "no";
+			$svn_switches['non-recursive'] = true;
 
 			$svn = array(
 				'instance' 		=> $svn_instance,
@@ -170,10 +170,7 @@
 				$this->get_path($svn, '')
 			);
 			
-			$switches = $svn['switches'];
-			$switches['non-recursive'] = true;
-	
-			$result = $svn['instance']->checkout->run($args, $switches);
+			$result = $svn['instance']->checkout->run($args, $svn['switches']);
 			return $result;
 		}
 
