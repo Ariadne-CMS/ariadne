@@ -67,12 +67,11 @@
 				'svn_path'		=> '/usr/bin/svn'
 			);
 
-			if (file_exists($AR->dir->install . "/lib/configs/svn/")) {
-				$this->svn_options['config_dir'] = $AR->dir->install . "/lib/configs/svn";
-			}
 		}
 
 		function connect($id, $repository, $username='', $password='') {
+			global $AR;
+
 			/* Makes the connection between a filestore ID and a
 			   SVN repository. Other SVN commands will run using
 			   the result of this function.
@@ -109,8 +108,13 @@
 			if ($password) {
 				$svn_switches['password'] = $password;
 			}
+			if (file_exists($AR->dir->install . "/lib/configs/svn/")) {
+				$svn_switches['config_dir'] = $AR->dir->install . "/lib/configs/svn";
+			}
 
 			$svn_switches['non-recursive'] = true;
+
+			print_r($svn_switches);
 
 			$svn = array(
 				'instance' 		=> $svn_instance,
