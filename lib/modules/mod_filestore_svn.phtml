@@ -62,7 +62,14 @@
 			$this->svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
 
 			// Set up runtime options. 
-			$this->svn_options = array('fetchmode' => VERSIONCONTROL_SVN_FETCHMODE_ARRAY, 'svn_path' => '/usr/bin/svn');
+			$this->svn_options = array(
+				'fetchmode'		=> VERSIONCONTROL_SVN_FETCHMODE_ARRAY, 
+				'svn_path'		=> '/usr/bin/svn'
+			);
+
+			if (file_exists($AR->dir->install . "/lib/configs/svn/")) {
+				$this->svn_options['config_dir'] = $AR->dir->install . "/lib/configs/svn";
+			}
 		}
 
 		function connect($id, $repository, $username='', $password='') {
@@ -102,6 +109,8 @@
 			if ($password) {
 				$svn_switches['password'] = $password;
 			}
+
+			$svn_switches['store-passwords'] = "no";
 
 			$svn = array(
 				'instance' 		=> $svn_instance,
