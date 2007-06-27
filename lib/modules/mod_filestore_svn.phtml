@@ -17,10 +17,12 @@
 	svn_add($svn, $name)
 	svn_blame($svn, $name)
 	svn_checkout($svn, $revision)
+	svn_cleanup($svn)
 	svn_commit($svn, $comment, $fileinfo)
 	svn_delete($svn, $name, $comment)
 	svn_diff($svn, $name)
 	svn_export($svn, $revision)
+	svn_import($svn)
 	svn_info($svn, $name)
 	svn_list($svn)
 	svn_log($svn, $name)
@@ -35,9 +37,7 @@
 
 
 	The following functions have not yet been implemented:
-	svn_cleanup
 	svn_copy
-	svn_import
 	svn_merge
 	svn_mkdir
 	svn_move
@@ -75,10 +75,12 @@
 				"add",
 				"blame",
 				"checkout", 
+				"cleanup",
 				"commit", 
 				"delete", 
 				"diff",
 				"export",
+				"import",
 				"info", 
 				"list", 
 				"log",
@@ -125,11 +127,8 @@
 				as the file.
 			*/
 
-			$this->touch($svn['object_id'], $name . ".meta", 0);
-
 			$args = array(
 				$this->get_path($svn, $name),
-				$this->get_path($svn, $name . ".meta")
 			);
 			$result = $svn['instance']->add->run($args, $svn['switches']);
 			return $result;
@@ -166,6 +165,14 @@
 			$switches['non-recursive'] = true;
 	
 			$result = $svn['instance']->checkout->run($args, $switches);
+			return $result;
+		}
+
+		function svn_cleanup($svn) {
+			$args = array(
+				$this->get_path($svn, '')
+			);
+			$result = $svn['instance']->cleanup->run($argns, $svn['switches']);
 			return $result;
 		}
 
@@ -216,7 +223,6 @@
 			$svn['switches']['message'] = $comment;
 			$args = array(
 				$repo . "_" . $name,
-				$repo . "_" . $name . ".meta"
 			);
 			$result = $svn['instance']->delete->run($args, $svn['switches']);
 			unset($svn['switches']['message']);
@@ -257,6 +263,15 @@
 				$this->get_path($svn, $name)
 			);
 			$result = $svn['instance']->log->run($args, $svn['switches']);
+			return $result;
+		}
+
+		function svn_import($svn) {
+			$args = array(
+				$this->get_path($svn),
+				$svn['repository']
+			);
+			$result = $svn['instance']->import->run($argns, $svn['switches']);
 			return $result;
 		}
 
