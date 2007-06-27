@@ -178,12 +178,18 @@
 				store the meta information in the filenames
 				(correctly).
 
+				SVN properties that are used for Ariadne
+				should be prepended with "ar:" to prevent
+				collision with properties that someone else
+				is using.
+
+
 				Information structure is as follows
 				[name]
-						[function]	 (usually the same as name)
-						[type]
-						[language]
-						[default]
+						[ar:function]	 (usually the same as name)
+						[ar:type]
+						[ar:language]
+						[ar:default]
 			*/
 
 			$args = array();
