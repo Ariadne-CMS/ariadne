@@ -22,7 +22,7 @@
 	svn_delete($svn, $name, $comment)
 	svn_diff($svn, $name)
 	svn_export($svn, $revision)
-	svn_import($svn)
+	svn_import($svn, $comment)
 	svn_info($svn, $name)
 	svn_list($svn)
 	svn_log($svn, $name)
@@ -250,6 +250,25 @@
 			return $result;
 		}
 
+		function svn_import($svn, $comment='') {
+			$args = array(
+				$this->get_path($svn, ''),
+				$svn['repository']
+			);
+			$svn['switches']['message'] = $comment;
+			$result = $svn['instance']->import->run($args, $svn['switches']);
+			unset($svn['switches']['message']);
+			return $result;
+		}
+
+		function svn_info($svn, $name='') {
+			$args = array(
+				$this->get_path($svn, $name)
+			);
+			$result = $svn['instance']->info->run($args, $svn['switches']);
+			return $result;
+		}
+
 		function svn_list($svn) {
 			$args = array(
 				$this->get_path($svn, '')
@@ -263,23 +282,6 @@
 				$this->get_path($svn, $name)
 			);
 			$result = $svn['instance']->log->run($args, $svn['switches']);
-			return $result;
-		}
-
-		function svn_import($svn) {
-			$args = array(
-				$this->get_path($svn),
-				$svn['repository']
-			);
-			$result = $svn['instance']->import->run($argns, $svn['switches']);
-			return $result;
-		}
-
-		function svn_info($svn, $name='') {
-			$args = array(
-				$this->get_path($svn, $name)
-			);
-			$result = $svn['instance']->info->run($args, $svn['switches']);
 			return $result;
 		}
 
