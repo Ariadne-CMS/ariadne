@@ -35,6 +35,8 @@
 	svn_status($svn, $name)
 	svn_update($svn, $name)
 
+	Custom commands:
+	svn_mkdirs($svn)
 
 	The following functions have not yet been implemented:
 	svn_copy
@@ -369,5 +371,42 @@
 			$result = $svn['instance']->update->run($args, $svn['switches']);
 			return $result;
 		}
+
+		// Start of customized SVN functions, these are not actually SVN commands but are very handy.
+		function svn_mkdirs($svn) {
+			/* Create all subdirectories needed where needed, including all
+			   the need parent directories. This works by creating an empty
+			   directory and importing it into the SVN.
+
+			   The reason import is used instead of mkdir is because import
+			   creates the parent directories as well.
+			*/
+
+			global $AR;
+			$listargs = array(
+				$svn['repository']
+			);
+			echo "Testing repository directory - error is normal\n";
+			$svnlist = @$svn['instance']->list->run($listargs, $svn['switches']);
+			if ($svnlist) {
+				return false;
+			} else {
+				echo "\nRepository dir does not exist - creating...\n";
+				$tempdir = tempnam($AR->dir->install . "/files/temp/", "svntemp");
+				unlink($tempdir);
+				mkdir($tempdir);
+				$args = array(
+					$tempdir,
+					$svn['repository']
+				);
+				$svn['switches']['message'] = "Repository creation";
+				$result = $svn['instance']->import->run($args, $svn['switches']);
+				unset($svn['switches']['message']);
+				rmdir($tempdir);
+			}
+			return true;
+		}
+
+
 	}
 ?>
