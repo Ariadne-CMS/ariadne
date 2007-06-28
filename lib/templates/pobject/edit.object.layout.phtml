@@ -85,7 +85,22 @@
 				<?php echo $ARnls["modified"]; ?>
 			</td>
 		</tr></thead><tbody><?php
-			$filestore = $this->store->get_filestore("templates");
+			$svn_enabled = false;
+			$repository = $this->data->custom['none']['svn'];
+
+			if (isset($repository)) {
+				$svn_enabled = true;
+				$filestore = $this->store->get_filestore_svn("templates");
+
+				$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
+				$svn = $filestore->connect($this->id, $repository, "", "");
+				$svn_status = $filestore->svn_status($svn);
+			} else {
+				$filestore = $this->store->get_filestore("templates");
+			}
+
+
+			//$filestore = $this->store->get_filestore("templates");
 			if (!function_exists("layout_sortfunc")) {
 				function layout_sortfunc($a, $b) {
 				   if ($a == $b) {
@@ -94,6 +109,8 @@
 				   return ($a < $b) ? -1 : 1;
 				}
 			}
+
+
 			$pinp = $data->config->pinp;
 			if (($pinp) && is_array($pinp)) {
 				while (list($type, $values)=each($pinp)) {
@@ -107,6 +124,41 @@
 						?><tr valign="middle" onmouseover="style.backgroundColor='steelblue',style.color='white'" onmouseout="style.color='',style.backgroundColor='';" onclick="<?php echo $onclick; ?>">
 						       <td align="left" valign="middle" style="height:23px">
 								<img src="<?php echo $icon_src; ?>" width="20" height="20" align="absmiddle">
+								
+								<?php
+									if ($svn_enabled) {
+										$filename = $type . "." . $function . "." . $language . ".pinp";
+										if ($svn_status) {
+											switch($svn_status[$filename]) {
+												// Fixme: find out the codes for "locked", "read only" and add them.
+
+												case "C":
+													$svn_img = "ConflictIcon.png";
+													break;
+												case "M":
+													$svn_img = "ModifiedIcon.png";
+													break;
+												case "?":
+													$svn_img = '';
+													break;
+												case "A":
+													$svn_img = "AddedIcon.png";
+													break;
+												case "D":
+													$svn_img = "DeletedIcon.png";
+												default:
+													$svn_img = "InSubVersionIcon.png";
+													break;
+											}
+										}
+
+										if ($svn_img) {
+											$svn_img_src = $AR->dir->images . "/svn/$svn_img";
+											?><img width=12 height=12 style="position: relative; top: 4px;" src="<?php echo $svn_img_src;?>"><?php
+										}
+									}
+								?>
+
 								<?php echo $type; ?>&nbsp;</td>
 							<td align="left"><div style="display:none;"><?php echo $function; ?></div><?php  
 								if (!$data->config->templates[$type][$function]) {
@@ -167,12 +219,31 @@
 		<form action="edit.object.layout.grep.phtml"><input type="text" name="search" value="<?php echo $search; ?>" style="width: 200px;"><input type="submit" name="grep" value="Grep"></form>
 			<?php
 		}
-	?>
+			?>
+		</td>
 	</td>
 	<td align="right" valign="bottom"><form action="<?php echo $editor.'?'.$mode; ?>">
 		<input type="hidden" name="type" value="<?php echo $this->type; ?>">
 		<input type="submit" name="action" value="<?php echo $ARnls["new"]; ?>"></form></td>
 </tr>
+	<?php
+		if ($svn_enabled) {
+	?>
+<tr>
+<td colspan="3">
+	<form style="float: left; margin-right: 5px;" action="svn.checkout.html"><input type="submit" name="svn_update" value="Checkout"></form>
+	<form style="float: left; margin-right: 5px;" action="svn.commit_all.html"><input type="submit" name="svn_commit" value="Commit"></form>
+	<form style="float: left; margin-right: 5px;" action="svn.update.html"><input type="submit" name="svn_update" value="Update"></form>
+	<form style="float: left; margin-right: 5px;" action="svn.diff.html"><input type="submit" name="svn_diff" value="Diff"></form>
+	<form style="float: left; margin-right: 5px;" action="svn.import.html"><input type="submit" name="svn_import" value="Import"></form>
+	<form style="float: left; margin-right: 5px;" action="svn.revert_all.html"><input type="submit" name="svn_revert" value="Revert"></form>
+</td>
+</tr>
+	<?php
+		}
+	?>
+
+
 </table>
 </div>
 </body>
