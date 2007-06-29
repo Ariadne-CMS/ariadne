@@ -354,14 +354,18 @@
 			$tempresult = $svn['instance']->status->run($args, $svn['switches']);
 
 			// Since we have a flat structure, remove the path and use only the names.
-			$result = array();
-			foreach ($tempresult as $key=>$value) {
-				$filename = basename($key);
-				$filename = substr($filename, 1);
+			if ($tempresult) {
+				$result = array();
+				foreach ($tempresult as $key=>$value) {
+					$filename = basename($key);
+					$filename = substr($filename, 1);
 			
-				$result[$filename] = $value;
+					$result[$filename] = $value;
+				}
+				return $result;
+			} else {
+				return false;
 			}
-			return $result;
 		}
 
 		function svn_update($svn, $name='') {
@@ -407,6 +411,16 @@
 			return true;
 		}
 
+		function svn_accept_cert($svn) {
+			$listargs = array(
+				$svn['repository']
+			);
+
+			$svn['switches']['non-interactive'] = false;
+
+			$result = $svn['instance']->list->run_interactive($listargs, $svn['switches']);
+			return $result;
+		}
 
 	}
 ?>
