@@ -426,6 +426,14 @@ class store {
 		return $this->filestores[$name];
 	}
 
+	function get_filestore_svn($name) {
+		require_once($this->code."modules/mod_filestore_svn.phtml");
+		if (!$this->filestores["svn_" . $name]) {
+			$this->filestores["svn_" . $name] = new filestore_svn($name, $this->files);
+		}
+		return $this->filestores["svn_" . $name];
+	}
+
 
 } // end class store
 

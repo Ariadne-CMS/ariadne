@@ -500,6 +500,12 @@ class proxystore {
 		return $filestore;
 	}
 
+	function get_filestore_svn($name) {
+		global $AR;
+			$filestore = &$AR->stores[$this->key]->get_filestore_svn($name);
+		return $filestore;
+	}
+
 	function get_nextid($path, $mask="{5:id}") {
 		global $AR;
 		// disabled debug("proxy::get_nextid($path, $mask)","all");
