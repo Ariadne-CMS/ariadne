@@ -241,6 +241,17 @@
 </td>
 </tr>
 	<?php
+		} else {
+			if ($this->data->custom['none']['svn']) {
+	?>
+<tr>
+<td colspan="3">
+	<form style="float: left; margin-right: 5px;" action="svn.config.html"><input type="submit" name="svn_config" value="Config"></form>
+</td>
+</tr>
+	
+	<?php
+			}
 		}
 	?>
 
