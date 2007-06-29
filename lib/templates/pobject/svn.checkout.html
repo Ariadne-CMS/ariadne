@@ -1,7 +1,7 @@
 <pre>
 <?php
         if ($this->CheckLogin("layout") && $this->CheckConfig()) {
-		$repository = $this->data->custom['none']['svn'];
+		$repository = $this->data->svn;
 
 		$username = $_POST['username'];
 		$password = $_POST['password'];
@@ -87,3 +87,6 @@
 }
 ?>
 </pre>
+		<form method="post" action="edit.object.layout.phtml">
+			<input type="submit" value="back">
+		</form>

@@ -1,6 +1,6 @@
 <pre>
 <?php
-	$repository = $this->data->custom['none']['svn'];
+	$repository = $this->data->svn;
 
 	if (isset($repository)) {
 /*		$username = $_POST['username'];
@@ -70,3 +70,6 @@
 	}
 ?>
 </pre>
+		<form method="post" action="edit.object.layout.phtml">
+			<input type="submit" value="back">
+		</form>

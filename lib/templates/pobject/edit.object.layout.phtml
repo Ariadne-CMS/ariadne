@@ -86,7 +86,7 @@
 			</td>
 		</tr></thead><tbody><?php
 			$svn_enabled = false;
-			$repository = $this->data->custom['none']['svn'];
+			$repository = $this->data->svn;
 
 			if (isset($repository)) {
 				$svn_enabled = true;
@@ -237,6 +237,7 @@
 	<form style="float: left; margin-right: 5px;" action="svn.diff.html"><input type="submit" name="svn_diff" value="Diff"></form>
 	<form style="float: left; margin-right: 5px;" action="svn.import.html"><input type="submit" name="svn_import" value="Import"></form>
 	<form style="float: left; margin-right: 5px;" action="svn.revert_all.html"><input type="submit" name="svn_revert" value="Revert"></form>
+	<form style="float: left; margin-right: 5px;" action="svn.config.html"><input type="submit" name="svn_config" value="Config"></form>
 </td>
 </tr>
 	<?php
