@@ -1,71 +1,74 @@
 <pre>
 <?php
-	$repository = $this->data->custom['none']['svn'];
+        if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 
-	$username = $_POST['username'];
-	$password = $_POST['password'];
+		$repository = $this->data->custom['none']['svn'];
 
-	if (! (isset($username) && isset($password)) ) {
-		?>
-			<form method="post">
-				<input type="text" name="username">
-				<input type="password" name="password">
-				<input type="submit" value="checkout">
-			</form>
-		<?php
-	} else {
+		$username = $_POST['username'];
+		$password = $_POST['password'];
 
-		if (isset($repository)) {
-			$fstore	= $this->store->get_filestore_svn("templates");
-			$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
-			$svn	= $fstore->connect($this->id, $repository, $username, $password);
+		if (! (isset($username) && isset($password)) ) {
+			?>
+				<form method="post">
+					<input type="text" name="username">
+					<input type="password" name="password">
+					<input type="submit" value="checkout">
+				</form>
+			<?php
+		} else {
 
-			$result = $fstore->svn_update($svn);
+			if (isset($repository)) {
+				$fstore	= $this->store->get_filestore_svn("templates");
+				$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
+				$svn	= $fstore->connect($this->id, $repository, $username, $password);
 
-			print_r($result);
+				$result = $fstore->svn_update($svn);
 
-			if ($result) {
-				foreach ($result as $item) {
-				    // _pobject.print_r.html.any.pinp
-					$filename = basename($item['name']);
-					$filename = substr($filename, 1);
+				print_r($result);
 
-					echo "Fetched $filename\n";
-				
-					ob_start();
-						@readfile($item['name']);
-						$template = ob_get_contents();
-					ob_end_clean();
+				if ($result) {
+					foreach ($result as $item) {
+					    // _pobject.print_r.html.any.pinp
+						$filename = basename($item['name']);
+						$filename = substr($filename, 1);
 
-					$meta = array();
-					$meta['ar:default']		= $fstore->svn_propget($svn, "ar:default", $filename);
-					$meta['ar:type']		= $fstore->svn_propget($svn, "ar:type", $filename);
-					$meta['ar:function']	= $fstore->svn_propget($svn, "ar:function", $filename);
-					$meta['ar:language']	= $fstore->svn_propget($svn, "ar:language", $filename);
-
-					if($meta['default'] == '1') {
-						$meta['default'] = 1;
-					}
+						echo "Fetched $filename\n";
 					
-					echo "Meta information:\n";
-					echo "ar:default [" . $meta[ar:'default'] . "]\n";
-					echo "ar:type [" . $meta['ar:type'] . "]\n";
-					echo "ar:function [" . $meta['ar:function'] . "]\n";
-					echo "ar:language [" . $meta['ar:language'] . "]\n";
+						ob_start();
+							@readfile($item['name']);
+							$template = ob_get_contents();
+						ob_end_clean();
+
+						$meta = array();
+						$meta['ar:default']		= $fstore->svn_propget($svn, "ar:default", $filename);
+						$meta['ar:type']		= $fstore->svn_propget($svn, "ar:type", $filename);
+						$meta['ar:function']	= $fstore->svn_propget($svn, "ar:function", $filename);
+						$meta['ar:language']	= $fstore->svn_propget($svn, "ar:language", $filename);
+
+						if($meta['default'] == '1') {
+							$meta['default'] = 1;
+						}
+						
+						echo "Meta information:\n";
+						echo "ar:default [" . $meta[ar:'default'] . "]\n";
+						echo "ar:type [" . $meta['ar:type'] . "]\n";
+						echo "ar:function [" . $meta['ar:function'] . "]\n";
+						echo "ar:language [" . $meta['ar:language'] . "]\n";
 
 
-					$this->call("system.save.layout.phtml", Array(
-						"template" 	=> $template,
-						"default"	=> $meta['ar:default'],
-						"type"		=> $meta['ar:type'],
-						"function"	=> $meta['ar:function'],
-						"language"	=> $meta['ar:language']
-					));
+						$this->call("system.save.layout.phtml", Array(
+							"template" 	=> $template,
+							"default"	=> $meta['ar:default'],
+							"type"		=> $meta['ar:type'],
+							"function"	=> $meta['ar:function'],
+							"language"	=> $meta['ar:language']
+						));
 
-					if ($this->error) {
-						echo "Error saving template\n";
-						print_r($this->error);
-						// FIXME: do something useful with errors.
+						if ($this->error) {
+							echo "Error saving template\n";
+							print_r($this->error);
+							// FIXME: do something useful with errors.
+						}
 					}
 				}
 			}

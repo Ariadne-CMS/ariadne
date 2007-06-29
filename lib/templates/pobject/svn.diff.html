@@ -1,28 +1,30 @@
 <pre>
 <?php
-	$repository = $this->data->custom['none']['svn'];
+        if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		$repository = $this->data->custom['none']['svn'];
 
-/*	$username = $_POST['username'];
-	$password = $_POST['password'];
+	/*	$username = $_POST['username'];
+		$password = $_POST['password'];
 
-	if (! (isset($username) && isset($password)) ) {
-		?>
-			<form method="post">
-				<input type="text" name="username">
-				<input type="password" name="password">
-				<input type="submit" value="checkout">
-			</form>
-		<?php
-	} else {
-*/
-		if (isset($repository)) {
-			$fstore	= $this->store->get_filestore_svn("templates");
-			$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
-			$svn	= $fstore->connect($this->id, $repository, $username, $password);
+		if (! (isset($username) && isset($password)) ) {
+			?>
+				<form method="post">
+					<input type="text" name="username">
+					<input type="password" name="password">
+					<input type="submit" value="checkout">
+				</form>
+			<?php
+		} else {
+	*/
+			if (isset($repository)) {
+				$fstore	= $this->store->get_filestore_svn("templates");
+				$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
+				$svn	= $fstore->connect($this->id, $repository, $username, $password);
 
-			$status = $fstore->svn_diff($svn);
-			print_r($status);
-		}
-//	}
+				$status = $fstore->svn_diff($svn);
+				print_r($status);
+			}
+	//	}
+	}
 ?>
 </pre>
