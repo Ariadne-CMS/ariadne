@@ -112,6 +112,7 @@
 
 
 			$pinp = $data->config->pinp;
+			$templates = $data->config->templates;
 
 			if ($svn_enabled) {
 				if ($svn_status) {
@@ -125,6 +126,7 @@
 							$file_meta['ar:language'] = $filestore->svn_propget($svn, "ar:language", $filename);
 
 							$pinp[$file_meta['ar:type']][$file_meta['ar:function']][$file_meta['ar:language']] = $this->id;
+							$templates[$file_meta['ar:type']][$file_meta['ar:function']] = $file_meta['ar:default'];
 						}
 					}
 				}
@@ -189,7 +191,7 @@
 
 								<?php echo $type; ?>&nbsp;</td>
 							<td style="<?php echo $svn_style;?>" align="left"><div style="display:none;"><?php echo $function; ?></div><?php  
-								if (!$data->config->templates[$type][$function]) {
+								if (!$templates[$type][$function]) {
 									echo "<img src='{$AR->dir->images}local.gif' alt='local' height='12' width='11'>";	
 								}
 							?>
