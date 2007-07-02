@@ -112,6 +112,22 @@
 
 
 			$pinp = $data->config->pinp;
+
+			if ($svn_enabled) {
+				foreach ($svn_status as $filename=>$file_status) {
+					if ($file_status == "!") {
+						// Template is deleted here, but not in the SVN.
+						$file_meta = array();
+						$file_meta['ar:default'] = $filestore->svn_propget($svn, "ar:default", $filename);
+						$file_meta['ar:type'] = $filestore->svn_propget($svn, "ar:type", $filename);
+						$file_meta['ar:function'] = $filestore->svn_propget($svn, "ar:function", $filename);
+						$file_meta['ar:language'] = $filestore->svn_propget($svn, "ar:language", $filename);
+
+						$pinp[$file_meta['ar:type']][$file_meta['ar:function']][$file_meta['ar:language']] = $this->id;
+					}
+				}
+			}
+
 			if (($pinp) && is_array($pinp)) {
 				while (list($type, $values)=each($pinp)) {
 					uksort($values, 'layout_sortfunc');	
@@ -119,39 +135,47 @@
 						ksort($templatelist);
 						reset($templatelist);
 						$language = key($templatelist);
+
+						if ($svn_enabled) {
+							$filename = $type . "." . $function . "." . $language . ".pinp";
+							if ($svn_status) {
+								$svn_style = "";
+								$svn_img = "";
+
+								switch($svn_status[$filename]) {
+									// Fixme: find out the codes for "locked", "read only" and add them.
+
+									case "C":
+										$svn_img = "ConflictIcon.png";
+										break;
+									case "M":
+										$svn_img = "ModifiedIcon.png";
+										break;
+									case "?":
+										break;
+									case "A":
+										$svn_img = "AddedIcon.png";
+										break;
+									case "D":
+										$svn_img = "DeletedIcon.png";
+									case "!":
+										$svn_style = "opacity: 0.3; filter: alpha(opacity=30);";
+										break;
+									default:
+										$svn_img = "InSubVersionIcon.png";
+										break;
+								}
+							}
+						}
+
 						$onclick = "document.location='".$editor."?mode=".$mode."&type=".$type."&function=".RawUrlEncode($function)."&language=".$language."'";
 						$icon_src = $icons[$type]['small'];						
-						?><tr valign="middle" onmouseover="style.backgroundColor='steelblue',style.color='white'" onmouseout="style.color='',style.backgroundColor='';" onclick="<?php echo $onclick; ?>">
+						?><tr style="<?php echo $svn_style;?>" valign="middle" onmouseover="style.backgroundColor='steelblue',style.color='white'" onmouseout="style.color='',style.backgroundColor='';" onclick="<?php echo $onclick; ?>">
 						       <td align="left" valign="middle" style="height:23px">
 								<img src="<?php echo $icon_src; ?>" width="20" height="20" align="absmiddle">
 								
 								<?php
 									if ($svn_enabled) {
-										$filename = $type . "." . $function . "." . $language . ".pinp";
-										if ($svn_status) {
-											switch($svn_status[$filename]) {
-												// Fixme: find out the codes for "locked", "read only" and add them.
-
-												case "C":
-													$svn_img = "ConflictIcon.png";
-													break;
-												case "M":
-													$svn_img = "ModifiedIcon.png";
-													break;
-												case "?":
-													$svn_img = '';
-													break;
-												case "A":
-													$svn_img = "AddedIcon.png";
-													break;
-												case "D":
-													$svn_img = "DeletedIcon.png";
-												default:
-													$svn_img = "InSubVersionIcon.png";
-													break;
-											}
-										}
-
 										if ($svn_img) {
 											$svn_img_src = $AR->dir->images . "/svn/$svn_img";
 											?><img width=12 height=12 style="position: relative; top: 4px;" src="<?php echo $svn_img_src;?>"><?php
