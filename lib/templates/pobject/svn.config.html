@@ -8,16 +8,13 @@
 
 			$fstore = $this->store->get_filestore_svn("templates");
 			$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
-			$svn    = $fstore->connect($this->id, $repository, $username, $password);
+			$svn    = $fstore->connect($this->id, $newrepo, $username, $password);
 
 			$result = $fstore->svn_accept_cert($svn);
-			print_r($result);
 
-			if ($result) {
-				$this->data->svn = $newrepo;
-				$this->save();
-				echo "SVN settings saved\n";
-			}
+			$this->data->svn = $newrepo;
+			$this->save();
+			echo "SVN settings saved\n";
 		}
 
 		$repository = $this->data->svn;
