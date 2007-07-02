@@ -51,8 +51,8 @@ class mysqllock {
 
 	function get_locks($identity) {
 		debug("mysqllock:get_locks($identity)","store");
-		$query_string="select path,release, type, identity from ".$this->tbl_prefix."locks where 
-		release >=".time()." and identity='".AddSlashes($identity)."'";
+		$query_string="select `path`,`release`, `type`, `identity` from ".$this->tbl_prefix."locks where 
+		`release` >=".time()." and `identity`='".AddSlashes($identity)."'";
 		$query=@mysql_db_query($this->database, $query_string,$this->connectid);
 		while ($temp=@mysql_fetch_array($query)) {
 			$result[$temp["path"]]=$temp;
@@ -75,21 +75,21 @@ class mysqllock {
 
 		// check if the path is not already locked by a parent
 		$query_string="
-			select path, release, type, identity 
+			select `path`, `release`, `type`, `identity` 
 			  from ".$this->tbl_prefix."locks 
 			 where ( ( path=substring('".AddSlashes($path)."',1,length(path)) 
-				       AND type='T' ) 
-				     OR ( path='".AddSlashes($path)."' )";
+				       AND `type`='T' ) 
+				     OR ( `path`='".AddSlashes($path)."' )";
 
 		// if we are locking a whole tree we must also check if no
 		// child has been locked already
 		if ($type=="T") {
-			$query_string.=" OR ( path like '".AddSlashes($path)."%' ) ";
+			$query_string.=" OR ( `path` like '".AddSlashes($path)."%' ) ";
 		}
 
 		$alreadylocked=false;
 		// see if this lock is still alive
-		$query_string.=") AND release>=".time();
+		$query_string.=") AND `release`>=".time();
 		$query=@mysql_db_query($this->database, $query_string, $this->connectid);
 		while ($lock=@mysql_fetch_array($query)) {
 			if ($lock["identity"]!=$identity) {
@@ -103,7 +103,7 @@ class mysqllock {
 		if (!$alreadylocked) {
 			// clear old lock entries
 			$query_string="
-				delete from ".$this->tbl_prefix."locks where path='".AddSlashes($path)."'";
+				delete from ".$this->tbl_prefix."locks where `path`='".AddSlashes($path)."'";
 
 			mysql_db_query($this->database, $query_string, $this->connectid);
 
@@ -131,9 +131,9 @@ class mysqllock {
 
 	function unlock($identity,$path="") {
 
-		$query_string="delete from ".$this->tbl_prefix."locks where identity='".AddSlashes($identity)."'";
+		$query_string="delete from ".$this->tbl_prefix."locks where `identity`='".AddSlashes($identity)."'";
 		if ($path) {
-			$query_string.=" and path='".AddSlashes($path)."'";
+			$query_string.=" and `path`='".AddSlashes($path)."'";
 		}
 		mysql_db_query($this->database, $query_string, $this->connectid);
 
