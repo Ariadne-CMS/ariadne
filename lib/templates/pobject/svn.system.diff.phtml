@@ -1,0 +1,10 @@
+<?php
+	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		$fstore	= $this->store->get_filestore_svn("templates");
+		$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
+		$svn	= $fstore->connect($this->id, $repository, $username, $password);
+
+		$status = $fstore->svn_diff($svn);
+		print_r($status);
+	}
+?>

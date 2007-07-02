@@ -1,33 +1,23 @@
-<pre>
 <?php
-	$repository = $this->data->svn;
-
-	if (isset($repository)) {
-/*		$username = $_POST['username'];
-		$password = $_POST['password'];
-
-		if (! (isset($username) && isset($password)) ) {
-			?>
-				<form method="post">
-					SVN user: <input type="text" name="username">
-					SVN pass: <input type="password" name="password">
-					<input type="submit" value="revert">
-				</form>
-			<?php
-		} else {
-*/			$fstore	= $this->store->get_filestore_svn("templates");
+	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+			$fstore	= $this->store->get_filestore_svn("templates");
 			$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
 			$svn	= $fstore->connect($this->id, $repository, $username, $password);
 
-			$status = $fstore->svn_status($svn);
-			foreach($status as $key => $value) {
-				if ($value != "?") {
-					print_r($fstore->svn_revert($svn, $key));
-					echo "\n";
-					$filename = $key;
+			$result = $fstore->svn_update($svn);
 
+			print_r($result);
+
+			if ($result) {
+				foreach ($result as $item) {
+				    // _pobject.print_r.html.any.pinp
+					$filename = basename($item['name']);
+					$filename = substr($filename, 1);
+
+					echo "Fetched $filename\n";
+				
 					ob_start();
-						@readfile($fstore->get_path($svn, $key));
+						@readfile($item['name']);
 						$template = ob_get_contents();
 					ob_end_clean();
 
@@ -61,15 +51,8 @@
 						print_r($this->error);
 						// FIXME: do something useful with errors.
 					}
-
 				}
 			}
-//		}
-	} else {
-		echo "No SVN repository information set.";
+		}
 	}
 ?>
-</pre>
-		<form method="post" action="edit.object.layout.phtml">
-			<input type="submit" value="back">
-		</form>

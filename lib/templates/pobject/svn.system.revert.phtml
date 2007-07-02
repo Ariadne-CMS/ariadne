@@ -1,0 +1,53 @@
+<?php
+	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		$fstore	= $this->store->get_filestore_svn("templates");
+		$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
+		$svn	= $fstore->connect($this->id, $repository, $username, $password);
+
+		$status = $fstore->svn_status($svn);
+		foreach($status as $key => $value) {
+			if ($value != "?") {
+				print_r($fstore->svn_revert($svn, $key));
+				echo "\n";
+				$filename = $key;
+
+				ob_start();
+					@readfile($fstore->get_path($svn, $key));
+					$template = ob_get_contents();
+				ob_end_clean();
+
+				$meta = array();
+				$meta['ar:default']		= $fstore->svn_propget($svn, "ar:default", $filename);
+				$meta['ar:type']		= $fstore->svn_propget($svn, "ar:type", $filename);
+				$meta['ar:function']	= $fstore->svn_propget($svn, "ar:function", $filename);
+				$meta['ar:language']	= $fstore->svn_propget($svn, "ar:language", $filename);
+
+				if($meta['default'] == '1') {
+					$meta['default'] = 1;
+				}
+				
+				echo "Meta information:\n";
+				echo "ar:default [" . $meta['ar:default'] . "]\n";
+				echo "ar:type [" . $meta['ar:type'] . "]\n";
+				echo "ar:function [" . $meta['ar:function'] . "]\n";
+				echo "ar:language [" . $meta['ar:language'] . "]\n";
+
+
+				$this->call("system.save.layout.phtml", Array(
+					"template" 	=> $template,
+					"default"	=> $meta['ar:default'],
+					"type"		=> $meta['ar:type'],
+					"function"	=> $meta['ar:function'],
+					"language"	=> $meta['ar:language']
+				));
+
+				if ($this->error) {
+					echo "Error saving template\n";
+					print_r($this->error);
+					// FIXME: do something useful with errors.
+				}
+
+			}
+		}
+	}
+?>

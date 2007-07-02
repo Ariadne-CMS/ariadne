@@ -1,19 +1,11 @@
 <pre>
 <?php
         if ($this->CheckLogin("layout") && $this->CheckConfig()) {
-		$newrepo = $_POST['svn_repo'];
-		if (isset($newrepo)) {
-
+		$svn_repo = $_POST['svn_repo'];
+		if (isset($svn_repo)) {
+			$arCallArgs['svn_repo'] = $svn_repo;
 			echo "Testing repository and fetching certificate\n";
-
-			$fstore = $this->store->get_filestore_svn("templates");
-			$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
-			$svn    = $fstore->connect($this->id, $newrepo, $username, $password);
-
-			$result = $fstore->svn_accept_cert($svn);
-
-			$this->data->svn = $newrepo;
-			$this->save();
+			$this->call('svn.system.config.phtml', $arCallArgs);
 			echo "SVN settings saved\n";
 		}
 
