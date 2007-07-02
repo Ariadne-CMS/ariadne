@@ -142,6 +142,7 @@
 							$filename = $type . "." . $function . "." . $language . ".pinp";
 							if ($svn_status) {
 								$svn_style = "";
+								$svn_style_hide = "";
 								$svn_img = "";
 
 								switch($svn_status[$filename]) {
@@ -161,7 +162,8 @@
 									case "D":
 										$svn_img = "DeletedIcon.png";
 									case "!":
-										$svn_style = "opacity: 0.3; filter: alpha(opacity=30);";
+										$svn_style = "filter: alpha(opacity=30); opacity: 0.3;";
+										$svn_style_hide = "filter: alpha(opacity=0); opacity: 0;";
 										break;
 									default:
 										$svn_img = "InSubVersionIcon.png";
@@ -172,27 +174,27 @@
 
 						$onclick = "document.location='".$editor."?mode=".$mode."&type=".$type."&function=".RawUrlEncode($function)."&language=".$language."'";
 						$icon_src = $icons[$type]['small'];						
-						?><tr style="<?php echo $svn_style;?>" valign="middle" onmouseover="style.backgroundColor='steelblue',style.color='white'" onmouseout="style.color='',style.backgroundColor='';" onclick="<?php echo $onclick; ?>">
-						       <td align="left" valign="middle" style="height:23px">
-								<img src="<?php echo $icon_src; ?>" width="20" height="20" align="absmiddle">
+						?><tr valign="middle" onmouseover="style.backgroundColor='steelblue',style.color='white'" onmouseout="style.color='',style.backgroundColor='';" onclick="<?php echo $onclick; ?>">
+						       <td align="left" valign="middle" style="height:23px; <?php echo $svn_style;?>">
 								
 								<?php
 									if ($svn_enabled) {
 										if ($svn_img) {
 											$svn_img_src = $AR->dir->images . "/svn/$svn_img";
-											?><img width=12 height=12 style="position: relative; top: 4px;" src="<?php echo $svn_img_src;?>"><?php
+											?><img width=12 height=12 style="position: relative; top: 4px; left: 2px;" src="<?php echo $svn_img_src;?>"><?php
 										}
 									}
 								?>
+								<img src="<?php echo $icon_src; ?>" width="20" height="20" align="absmiddle">
 
 								<?php echo $type; ?>&nbsp;</td>
-							<td align="left"><div style="display:none;"><?php echo $function; ?></div><?php  
+							<td style="<?php echo $svn_style;?>" align="left"><div style="display:none;"><?php echo $function; ?></div><?php  
 								if (!$data->config->templates[$type][$function]) {
 									echo "<img src='{$AR->dir->images}local.gif' alt='local' height='12' width='11'>";	
 								}
 							?>
 							<?php echo $function; ?></td>
-							<td><?php
+							<td style="<?php echo $svn_style;?>"><?php
 								ksort($templatelist);
 								reset($templatelist);
 								while (list($language, $template)=each($templatelist)) {
@@ -220,10 +222,10 @@
 									}
 
 								?>
-							<td>
+							<td style="<?php echo $svn_style_hide;?>">
 								<div style="display:none;"><?php printf("%010d", $msize); ?></div><?php echo $this->make_filesize($msize); ?>&nbsp;
 							</td>
-							<td>
+							<td style="<?php echo $svn_style_hide;?>">
 								<div style="display:none;"><?php print $mtime; ?></div>
 								<?php echo strftime("%H:%M", $mtime); ?>&nbsp;&nbsp;
 								<?php echo strftime("%d %b %Y", $mtime); ?>&nbsp;
