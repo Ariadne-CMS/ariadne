@@ -117,16 +117,18 @@
 			if ($svn_enabled) {
 				if ($svn_status) {
 					foreach ($svn_status as $filename=>$file_status) {
-						if ($file_status == "!") {
-							// Template is deleted here, but not in the SVN.
-							$file_meta = array();
-							$file_meta['ar:default'] = $filestore->svn_propget($svn, "ar:default", $filename);
-							$file_meta['ar:type'] = $filestore->svn_propget($svn, "ar:type", $filename);
-							$file_meta['ar:function'] = $filestore->svn_propget($svn, "ar:function", $filename);
-							$file_meta['ar:language'] = $filestore->svn_propget($svn, "ar:language", $filename);
+						if ($filename) {
+							if ($file_status == "!") {
+								// Template is deleted here, but not in the SVN.
+								$file_meta = array();
+								$file_meta['ar:default'] = $filestore->svn_propget($svn, "ar:default", $filename);
+								$file_meta['ar:type'] = $filestore->svn_propget($svn, "ar:type", $filename);
+								$file_meta['ar:function'] = $filestore->svn_propget($svn, "ar:function", $filename);
+								$file_meta['ar:language'] = $filestore->svn_propget($svn, "ar:language", $filename);
 
-							$pinp[$file_meta['ar:type']][$file_meta['ar:function']][$file_meta['ar:language']] = $this->id;
-							$templates[$file_meta['ar:type']][$file_meta['ar:function']] = $file_meta['ar:default'];
+								$pinp[$file_meta['ar:type']][$file_meta['ar:function']][$file_meta['ar:language']] = $this->id;
+								$templates[$file_meta['ar:type']][$file_meta['ar:function']] = $file_meta['ar:default'];
+							}
 						}
 					}
 				}
