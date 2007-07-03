@@ -539,12 +539,10 @@ class pobject extends object { // pobject class definition
 					}
 				} else {
 					$this->error=$ARnls["err:corruptpathnosave"];
-					// NLSME $this->error="Path is corrupt, won't save the object.";
 				}
 				$this->unlock();
 			} else {
 				$this->error=$ARnls["err:objectalreadylocked"];
-				// NLSME $this->error="Object already locked.";
 			}
 		}
 		if ($this->data->nls->list[$this->nls]) {
@@ -1019,17 +1017,12 @@ class pobject extends object { // pobject class definition
 					$result=1;
 				} else {
 					$this->error=sprintf($ARnls["err:filenameinvalidnoparent"],$newfilename,$parent);
-					// NLSME $this->error="$newfilename is invalid: $parent does not exist.";
 				}
 			} else {
 				$this->error=sprintf($ARnls["err:chooseotherfilename"],$newfilename);
-				// NLSME $this->error="$newfilename already exists. Please choose another.";
 			}
 		} else {
 			$this->error=sprintf($ARnls["err:fileillegalchars"],$newfilename)." ".$ARnls["err:startendslash"];
-			// NLSME $this->error="Filenames may consist of normal charachters ".
-			// NLSME	"(a-z, A-Z, 0-9) and '-','_' or '/'. A path must start and end ".
-			// NLSME	"with a '/'.";
 		}
 		debug("pobject: CheckNewFilename: end","all");
 		return $result;
@@ -1229,7 +1222,6 @@ class pobject extends object { // pobject class definition
 		// make sure that loopcounts don't apply to those templates.
 		if ($arCallFunction && $ARBeenHere[$this->path][$arCallFunction]>$MAX_LOOP_COUNT) { // protect against infinite loops
 			error(sprintf($ARnls["err:maxloopexceed"],$this->path,$arCallFunction,$arCallArgs));
-			// NLSME error("Max loop count exceeded in ".$this->path.$arCallFunction."?".$arCallArgs);
 			$this->store->close();
 			exit();
 		} else {
@@ -1613,7 +1605,6 @@ class pobject extends object { // pobject class definition
 			debug("savecache: ob_end_flush()","all");
 		} else {
 			error($ARnls["err:savecachenofile"]);
-			// NLSME error("savecache: no file or image ...");
 		}
 		debug("savecache: end. ($file)","all");
 	}
@@ -1991,7 +1982,6 @@ class pobject extends object { // pobject class definition
 			}
 		} else {
 			error(sprintf($ARnls["err:widgetnotfound"],$wgName));
-			// NLSME error("Widget $wgName not found");
 		}
 		if ($wgResult) {
 			return $wgResult;
