@@ -407,19 +407,19 @@ class pobject extends object { // pobject class definition
 							}
 						} else {
 							$this->error=sprintf($ARnls["err:noparent"],$arNewParent);
-							// FROP $this->error="parent $arNewParent doesn't exist.";
+							//  $this->error="parent $arNewParent doesn't exist.";
 						}
 					} else {
 						$this->error=sprintf($ARnls["err:alreadyexists"],$arNewFilename);
-						// FROP $this->error="$arNewFilename already exists.";
+						//  $this->error="$arNewFilename already exists.";
 					}
 				} else {
 					$this->error=sprintf($ARnls["err:fileillegalchars"],$arNewFilename);
-					// FROP $this->error="$arNewFilename is no valid filename, use only a-z, A-Z, 0-9 and _ or -.";					
+					//  $this->error="$arNewFilename is no valid filename, use only a-z, A-Z, 0-9 and _ or -.";					
 				}
 			} else {
 				$this->error=sprintf($ARnls["err:filenamedirup"],$arNewFilename);
-				// FROP $this->error="$arNewFilename is no valid filename, do not use '..' in filenames.";
+				//  $this->error="$arNewFilename is no valid filename, do not use '..' in filenames.";
 			}
 		} else { // update an existing object
 			debug("pobject: save: existing object","all");
@@ -543,12 +543,12 @@ class pobject extends object { // pobject class definition
 					}
 				} else {
 					$this->error=$ARnls["err:corruptpathnosave"];
-					// FROP $this->error="Path is corrupt, won't save the object.";
+					//  $this->error="Path is corrupt, won't save the object.";
 				}
 				$this->unlock();
 			} else {
 				$this->error=$ARnls["err:objectalreadylocked"];
-				// FROP $this->error="Object already locked.";
+				//  $this->error="Object already locked.";
 			}
 		}
 		if ($this->data->nls->list[$this->nls]) {
@@ -1023,17 +1023,17 @@ class pobject extends object { // pobject class definition
 					$result=1;
 				} else {
 					$this->error=sprintf($ARnls["err:filenameinvalidnoparent"],$newfilename,$parent);
-					// FROP $this->error="$newfilename is invalid: $parent does not exist.";
+					//  $this->error="$newfilename is invalid: $parent does not exist.";
 				}
 			} else {
 				$this->error=sprintf($ARnls["err:chooseotherfilename"],$newfilename);
-				// FROP $this->error="$newfilename already exists. Please choose another.";
+				//  $this->error="$newfilename already exists. Please choose another.";
 			}
 		} else {
 			$this->error=sprintf($ARnls["err:fileillegalchars"],$newfilename)." ".$ARnls["err:startendslash"];
-			// FROP $this->error="Filenames may consist of normal charachters ".
-			// FROP	"(a-z, A-Z, 0-9) and '-','_' or '/'. A path must start and end ".
-			// FROP	"with a '/'.";
+			//  $this->error="Filenames may consist of normal charachters ".
+			// 	"(a-z, A-Z, 0-9) and '-','_' or '/'. A path must start and end ".
+			// 	"with a '/'.";
 		}
 		debug("pobject: CheckNewFilename: end","all");
 		return $result;
@@ -1233,7 +1233,7 @@ class pobject extends object { // pobject class definition
 		// make sure that loopcounts don't apply to those templates.
 		if ($arCallFunction && $ARBeenHere[$this->path][$arCallFunction]>$MAX_LOOP_COUNT) { // protect against infinite loops
 			error(sprintf($ARnls["err:maxloopexceed"],$this->path,$arCallFunction,$arCallArgs));
-			// FROP error("Max loop count exceeded in ".$this->path.$arCallFunction."?".$arCallArgs);
+			//  error("Max loop count exceeded in ".$this->path.$arCallFunction."?".$arCallArgs);
 			$this->store->close();
 			exit();
 		} else {
@@ -1617,7 +1617,7 @@ class pobject extends object { // pobject class definition
 			debug("savecache: ob_end_flush()","all");
 		} else {
 			error($ARnls["err:savecachenofile"]);
-			// FROP error("savecache: no file or image ...");
+			//  error("savecache: no file or image ...");
 		}
 		debug("savecache: end. ($file)","all");
 	}
@@ -1995,7 +1995,7 @@ class pobject extends object { // pobject class definition
 			}
 		} else {
 			error(sprintf($ARnls["err:widgetnotfound"],$wgName));
-			// FROP error("Widget $wgName not found");
+			//  error("Widget $wgName not found");
 		}
 		if ($wgResult) {
 			return $wgResult;
