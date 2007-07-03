@@ -71,13 +71,11 @@
 		}
 		if ($this->save()) {
 			$arResult=$ARnls["ok"];
-			//  $arResult="ok";
 		} else {
 			$arResult=$this->error;
 		}
 	} else {
 		$arResult=$ARnls["accessdenied"];
-		//  $arResult="Access denied";
 	}
 	debug("res:".$arResult);
 ?>

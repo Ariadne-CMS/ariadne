@@ -48,15 +48,12 @@
 
 				} else {
 					$this->error=$ARnls["err:ftpnotemplatebadperm"];
-					//  $this->error="can not find template (bad disk permissions?)";
 				}
 			} else {
 				$this->error=$ARnls["err:ftpnotemplate"];
-				//  $this->error="no such template";
 			}
 		} else {
 			$this->error=$ARnls["err:ftpnorenameself"];
-			//  $this->error="can not rename template to itself";
 		}
 	$ARCurrent->ftp_error = $this->error;
   }

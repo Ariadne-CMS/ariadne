@@ -15,7 +15,6 @@
 		$this->call("system.save.html.phtml", $arCallArgs);
 	} else {
 		$this->error=$ARnls["err:nothtmlfile"];
-		//  $this->error="This is not an html file.";
 	}
 ?>
 <hmtl>
@@ -24,7 +23,6 @@
 <?php
 		if (!$this->error) {
 			echo $ARnls["filesaved"];
-			//  echo "File saved";
 			?>
 <script>
   window.setTimeout('window.close()',500);

@@ -9,7 +9,6 @@
 	$arNewType=$this->getdata("arNewType","none");
 	if (!$arNewType) {
 		error($ARnls["err:nonewtype"]);
-		//  error("arNewType not defined.");
 		$this->store->close();
 		exit();
 	}

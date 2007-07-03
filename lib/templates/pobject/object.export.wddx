@@ -20,7 +20,6 @@
 				$tempfile=$testdir.$tempfilename;
 			} else {
 				$error=sprintf($ARnls["err:noexportfile"],$testdir,$tempfilename);
-				//  $error="Export file is missing. It's not in ".$testdir.$tempfilename.".";
 			}
 		}
 		if (!$error) {

@@ -118,7 +118,6 @@ class pfile extends pobject { // pfile class definition
 			}
 		} else if(!ereg("^text/", $mimetype)) {
 			error( sprintf( $ARnls["err:headerssentnottext"], $this->path ) );
-			//  error("headers already sent and this is not a text file (".$this->path.")");
 			$stop=true;
 		}
 		if( !$stop ) {
@@ -175,7 +174,6 @@ class pfile extends pobject { // pfile class definition
 		}
 		if (!ldHeader("Content-type: application/x-ariadne-download")) {
 			error( sprintf( $ARnls["err:headerssentnottext"], $this->path ) );
-			//  error("headers already sent and this is not a text file (".$this->path.")");
 		} else {
 			ldHeader("Content-Disposition: attachment; filename=\"".$filename."\"");
 			ldHeader("Content-length:".(string)$size);

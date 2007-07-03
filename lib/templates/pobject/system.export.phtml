@@ -66,7 +66,6 @@
 				if (!$ARCurrent->importStore->exists($parent)) {
 					if ($parent=="/") {
 						display($ARnls["axnorootnode"]);
-						//  display("ax file does not have a root node, we will create one\n");
 
 						$ARCurrent->importStore->save(
 								"/", 
@@ -78,7 +77,6 @@
 								AX_DUMMY);
 					} else {
 						$ARCurrent->importStore->error=sprintf($ARnls["err:noparentdefined"],$destpath);
-						//  $ARCurrent->importStore->error="No parent defined for $destpath";
 					}
 				}
 			}

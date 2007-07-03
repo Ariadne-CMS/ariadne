@@ -11,7 +11,6 @@
 						$parent = $this->parent;
 					} else {
 						$this->error=$ARnls["err:nomovebelow"];
-						//  $this->error="You cannot move an object below itself.";
 					}
 				} else {
 					$parent=$target;
@@ -21,15 +20,12 @@
 				$parent=$this->store->make_path($target, '..');
 				if (!$this->exists($parent)) {
 					$this->error=sprintf($ARnls["err:noparentcreatefirst"],$parent);
-					//  $this->error="$parent doesn't exists, create it first.";
 				} else if (substr($parent, 0, strlen($this->path))==$this->path) {
 					$this->error=$ARnls["err:nomovebelow"];
-					//  $this->error="You cannot move an object below itself.";
 				}
 			}
 			if (!eregi("^[a-z0-9_\{\}\.\:/-]+$",$target)) { 
 				$this->error=sprintf($ARnls["err:fileillegalchars"],$target);
-				//  $this->error="Illegal characters in filename: $target";
 			}
 
 			$this->unlock();
@@ -49,7 +45,6 @@
 					}
 				} else {
 					$this->error=$ARnls["accessdenied"];
-					//  $this->error="Access denied";
 				}
 			}
 		}
