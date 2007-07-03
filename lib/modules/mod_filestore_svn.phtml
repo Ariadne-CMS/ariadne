@@ -356,7 +356,13 @@
 
 			// Since we have a flat structure, remove the path and use only the names.
 			if ($tempresult) {
-				if (sizeof($tempresult) == 1 && isset($tempresult[$args[0]])) {
+				if (isset($tempresult[$args[0]])) {
+					echo "1";
+				}
+
+				if ((sizeof($tempresult) == 1) && (isset($tempresult[$args[0]]))) {
+					return false;
+				} else {
 					$result = array();
 					foreach ($tempresult as $key=>$value) {
 						$filename = basename($key);
@@ -365,8 +371,6 @@
 						$result[$filename] = $value;
 					}
 					return $result;
-				} else {
-					return false;
 				}
 			} else {
 				return false;
