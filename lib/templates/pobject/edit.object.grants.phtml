@@ -364,14 +364,14 @@
 		var explainwindow=window.open('edit.object.grants.explain.phtml?path='+escape(obpath),'explainwindow','width=400,height=300');
 	}
 
-	var frop=1;
+	var fixIESizeMagic=1;
 	function fixIESize() {
 		// silly hack to make IE6 respect sizes and padding of iframes in a fieldset.
-		if (frop==1) {
-			frop=2;
+		if (fixIESizeMagic==1) {
+			fixIESizeMagic=2;
 			document.getElementById('grants_list_frame').style.height='100%';
 		} else {
-			frop=1;
+			fixIESizeMagic=1;
 			document.getElementById('grants_list_frame').style.height=null;
 		}
 	}
