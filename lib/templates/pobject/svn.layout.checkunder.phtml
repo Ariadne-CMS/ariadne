@@ -1,0 +1,28 @@
+<div style="width: 100%; height: 90%; overflow: auto">
+<pre>
+<?php
+        if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		$repository = $this->data->svn;
+
+		$username = $_POST['username'];
+		$password = $_POST['password'];
+
+		if (! (isset($username) && isset($password)) ) {
+			?>
+				<form method="post">
+					<input type="text" name="username">
+					<input type="password" name="password">
+					<input type="submit" value="checkout">
+				</form>
+			<?php
+		} else {
+			$arCallArgs['repository'] = $repository;
+			$this->call("svn.system.checkunder.phtml", $arCallArgs);
+		}
+	}
+?>
+</pre>
+</div>
+<form method="post" action="edit.object.layout.phtml">
+	<input type="submit" value="back">
+</form>
