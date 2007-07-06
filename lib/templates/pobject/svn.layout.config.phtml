@@ -12,14 +12,14 @@
 
 		$repository = $this->data->svn;
 		?>
-</pre>
-</div>
 		<form method="post">
 			Repository: <input type="text" name="svn_repo" size=50 value="<?php echo $repository;?>">
 			SVN user: <input type="text" name="username">
 			SVN pass: <input type="password" name="password">
 			<input type="submit" value="save">
 		</form>
+</pre>
+</div>
 
 		<form method="post" action="edit.object.layout.phtml">
 			<input type="submit" value="back">
