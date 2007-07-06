@@ -24,7 +24,7 @@
 				$arCallArgs['username'] = $username;
 				$arCallArgs['password'] = $password;
 				$arCallArgs['message'] = $message;
-				$this->call("svn.system.commit.phtml", $arCallArgs);
+				$this->call("svn.system.file.commit.phtml", $arCallArgs);
 			}
 		} else {
 			echo "No repository set";
@@ -33,6 +33,10 @@
 ?>
 </pre>
 </div>
- 		<form method="post" action="edit.object.layout.phtml">
+ 		<form method="post" action="edit.object.layout.form.phtml">
 			<input type="submit" value="back">
+			<input type="hidden" name="mode" value="edit">
+			<input type="hidden" name="type" value="<?php echo $type;?>">
+			<input type="hidden" name="language" value="<?php echo $language;?>">
+			<input type="hidden" name="function" value="<?php echo $function;?>">
 		</form>

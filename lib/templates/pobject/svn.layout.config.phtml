@@ -1,3 +1,4 @@
+<div style="width: 100%; height: 90%; overflow: auto">
 <pre>
 <?php
         if ($this->CheckLogin("layout") && $this->CheckConfig()) {
@@ -11,6 +12,8 @@
 
 		$repository = $this->data->svn;
 		?>
+</pre>
+</div>
 		<form method="post">
 			Repository: <input type="text" name="svn_repo" size=50 value="<?php echo $repository;?>">
 			SVN user: <input type="text" name="username">

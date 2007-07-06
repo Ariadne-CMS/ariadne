@@ -178,6 +178,21 @@ function insertTab(event,obj) {
 	if( $newlanguage ) {
 		$language = $newlanguage;
 	}
+
+	$svn_enabled = false;
+	$repository = $this->data->svn;
+
+	if (isset($repository)) {
+		$svn_enabled = true;
+		$filestore = $this->store->get_filestore_svn("templates");
+
+		$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
+		$svn = $filestore->connect($this->id, $repository, "", "");
+		$svn_status = $filestore->svn_status($svn);
+	} else {
+		$filestore = $this->store->get_filestore("templates");
+	}
+
 ?>
 <form action="edit.object.layout.save.phtml" method="post" style="height: 100%;">
 <input type="hidden" name="type" value="<?php echo $type; ?>">
@@ -214,7 +229,7 @@ function insertTab(event,obj) {
 			?>
 			</select>
 		</td><td>
-			<input type="text" name="newfunction" value="<?php echo $function; ?>">
+<input type="text" name="newfunction" value="<?php echo $function; ?>">
 		</td><td>
 			<select name="newlanguage">
 			<option value="any"><?php echo $ARnls["any"]; ?></option>
@@ -327,6 +342,77 @@ function insertTab(event,obj) {
 </tr>
 </table>
 </form>
+
+	<?php
+		if ($svn_enabled) {
+	?>
+<div style="position: absolute; bottom: 25px;">
+	<?php 
+	if ($svn_enabled) {
+		$filename = $type . "." . $function . "." . $language . ".pinp";
+		if ($svn_status) {
+			$svn_img = "";
+			
+			switch($svn_status[$filename]) {
+				case "C":
+					$svn_img = "ConflictIcon.png";
+					break;
+				case "M":
+					$svn_img = "ModifiedIcon.png";
+					break;
+				case "?":
+					break;
+				case "A":
+					$svn_img = "AddedIcon.png";
+					break;
+				case "D":
+					$svn_img = "DeletedIcon.png";
+				case "!":
+					break;
+				default:
+					$svn_img = "InSubVersionIcon.png";
+					break;
+			}
+		}
+		if ($svn_img) {
+			$svn_img_src = $AR->dir->images . "/svn/$svn_img";
+		?><img style="position: relative; top: 6px; float: left; margin-right: 5px;" width=12 height=12 src="<?php echo $svn_img_src;?>"><?php
+		}
+	}
+	?>
+	<form style="float: left; margin-right: 5px;" action="svn.layout.file.diff.phtml">
+		<input type="hidden" name="language" value="<?php echo $language;?>">
+		<input type="hidden" name="type" value="<?php echo $type;?>">
+		<input type="hidden" name="function" value="<?php echo $function;?>">
+		<input type="submit" name="svn_file_diff" value="Diff">
+	</form>
+
+	<form style="float: left; margin-right: 5px;" action="svn.layout.file.revert.phtml">
+		<input type="hidden" name="language" value="<?php echo $language;?>">
+		<input type="hidden" name="type" value="<?php echo $type;?>">
+		<input type="hidden" name="function" value="<?php echo $function;?>">
+		<input type="submit" name="svn_file_revert" value="Revert">
+	</form>
+
+	<form style="float: left; margin-right: 5px;" action="svn.layout.file.commit.phtml">
+		<input type="hidden" name="language" value="<?php echo $language;?>">
+		<input type="hidden" name="type" value="<?php echo $type;?>">
+		<input type="hidden" name="function" value="<?php echo $function;?>">
+		<input type="submit" name="svn_file_commit" value="Commit">
+	</form>
+
+	<form style="float: left; margin-right: 5px;" action="svn.layout.file.update.phtml">
+		<input type="hidden" name="language" value="<?php echo $language;?>">
+		<input type="hidden" name="type" value="<?php echo $type;?>">
+		<input type="hidden" name="function" value="<?php echo $function;?>">
+		<input type="submit" name="svn_file_update" value="Update">
+	</form>
+
+</div>
+	<?php
+		}
+	?>
+
 </body>
 <?php 
 	} 

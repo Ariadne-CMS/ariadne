@@ -4,8 +4,9 @@
 		$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
 		$svn	= $fstore->connect($this->id, $repository, $username, $password);
 
-		$status = $fstore->svn_diff($svn);
-
+		$filename = $type . "." . $function . "." . $language . ".pinp";
+		
+		$status = $fstore->svn_diff($svn, $filename);
 		echo(htmlspecialchars($status));
 	}
 ?>
