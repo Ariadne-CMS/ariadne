@@ -13,6 +13,8 @@
       dtop=top.window.screenY;
       dprops='height='+dheight+',width='+dwidth+',top='+dtop+',left='+dleft;
     }
+	try {
+
     if (top.window.opener && !top.window.opener.closed) {
       if (top.window.opener.top.Set) {
         top.window.opener.top.Set(top.window.name, dprops);
@@ -24,6 +26,9 @@
         top.window.opener.top.window.opener.top.Set(window.name, dprops);
       */
       }
+	}
+
+	} catch(e) {
 	}
     return true;
   }
