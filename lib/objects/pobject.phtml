@@ -1203,6 +1203,8 @@ class pobject extends object { // pobject class definition
 								extract($template);
 								$arLibrary = $library;
 								$arLibraryPath = $path;
+								$arType = $arCallTemplateType;
+								$checkpath = $arCallTemplatePath;
 								debug("CheckConfig: found $arCallFunction in library $arLibrary", "all");
 								break; // jump out of the foreach loop
 							}
@@ -1221,7 +1223,8 @@ class pobject extends object { // pobject class definition
 			}
 			$checkpath=$this->store->make_path($checkpath, "..");
 			debug("CheckConfig: after make_path  (".$checkpath.")","all");
-			$curr_templates=$ARConfig->cache[$checkpath]->templates;
+			$config = $this->loadConfig($checkpath);
+			$curr_templates = $config->templates;
 			$arSetType = $arCallType;
 		}
 		debug("CheckConfig: while loop ended","all");
@@ -1896,17 +1899,18 @@ class pobject extends object { // pobject class definition
 		$arSuper=get_parent_class($arTemp);
 		$arSuperPath = $context['arCallTemplatePath'];
 		if ($arSuper == 'object') {
-			$arSuper = '';
+			$arSuper = $arCallType;
 			if ($arSuperPath == '/') {
 				return null;
 			}
 			$arSuperPath = $this->store->make_path($arSuperPath, '..');
 		}
-		if ($context['arLibrary']) {
+		if ($context['arLibraryPath']) {
 			$library = $context['arLibrary'];
 			$temp = explode(':', $arCallFunction);
 			$arCallFunction = $temp[1];
 			debug("call_super(in library '$library'): (function:$arCallFunction; superpath: $arSuperPath; superclass: $arSuper)");
+
 			$template = $this->getPinpTemplate($arCallFunction, $arSuperPath, '', true, $arSuper);
 			$template['arLibrary'] = $library;
 			$template['arLibraryPath'] = $template['arCallTemplatePath'];
