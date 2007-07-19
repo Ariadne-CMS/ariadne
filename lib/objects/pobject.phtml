@@ -564,8 +564,22 @@ class pobject extends object { // pobject class definition
 	}
 
 	function delete() {
+	global $ARCurrent;
 		debug("pobject: delete({$this->path})","object");
-		return $this->store->delete($this->path);
+		$result	= false;
+		if ($ARCurrent->arCallStack) {
+			$arCallArgs=end($ARCurrent->arCallStack);
+		}
+		$this->call("user.workflow.delete.pre.html", $arCallArgs);
+		if (!$this->error) {
+			if ($this->store->delete($this->path)) {
+				$this->call("user.workflow.delete.post.html", $arCallArgs);
+				if (!$this->error) {
+					$result = true;
+				}
+			}
+		}
+		return $result;
 	}
 
 	function purge() {

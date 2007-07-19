@@ -4,40 +4,50 @@
 			$this->error=$ARnls["err:cannotlockobject"];
 		} else {
 			if (!$this->ls(".","system.get.phtml")) {
-				// remove grants for this object in all user objects.
-				if ($data->config->grants && is_array($data->config->grants)) {
-					while (list($login, $grants)=each($data->config->grants)) {		
-						$criteria["login"]["value"]["="]="'".$login."'";
-						$this->find("/system/users/", $criteria, "system.update.grants.phtml", Array(
-									"action" => "delete",
-									"path" => $this->path) );
-					}
-				}
-				/*
-					do not remove templates if we have links to this object
-				*/
-				if (count($this->store->list_paths($this->path)) == 1) {
-					// remove templates
-					if ($data->config->pinp) {
-						$templates=$this->store->get_filestore("templates");
-						while (list($type, $values)=each($data->config->pinp)) {
-							while (list($function, $templatelist)=each($values)) {
-								while (list($language, $template)=each($templatelist)) {
-									$file=$type.".".$function.".".$language;
-									$templates->remove($this->id, $file);
-									$file.=".pinp";
-									$templates->remove($this->id, $file);
+				// copy $this so we'll be able to remove grants and templates _after_ the object has been deleted.
+				$clone = $this;
+
+				// remove object itself
+				if ($this->delete() && !$this->error) {
+					// remove grants for this object in all user objects.
+					if ($clone->data->config->grants && is_array($clone->data->config->grants)) {
+						foreach ($clone->data->config->grants as $type => $grantdata) {
+							foreach ($grantdata as $login => $grants) {								
+								$query = "object.implements = '$type' and login.value = '$login'";
+								if ($clone->store->implements($type, 'pgroup')) {
+									$qpath = "/system/groups/";
+								} else {
+									$qpath = "/system/users/";
 								}
+								$clone->find($qpath, $query, "system.update.grants.phtml", Array(
+										"action" => "delete",
+										"path" => $clone->path
+								));
 							}
 						}
-					}				
+					}
+					/*
+						do not remove templates if we have links to this object
+					*/
+					if (!count($clone->store->list_paths($clone->path))) {
+						// remove templates
+						if ($clone->data->config->pinp) {
+							$templates = $clone->store->get_filestore("templates");
+							while (list($type, $values)=each($clone->data->config->pinp)) {
+								while (list($function, $templatelist)=each($values)) {
+									while (list($language, $template)=each($templatelist)) {
+										$file=$type.".".$function.".".$language;
+										$templates->remove($clone->id, $file);
+										$file.=".pinp";
+										$templates->remove($clone->id, $file);
+									}
+								}
+							}
+						}				
+					}
+					// clear cache
+					$clone->ClearCache();
 				}
-				// clean up the user grants
-				$this->find($this->path, "", "system.update.user.grants.phtml", array("action"=>"delete"));
-				// clear cache
-				$this->ClearCache();
-				// finally remove object itself
-				$this->delete();
 			} else {
 				$this->error=$ARnls["err:containsobj"];
 			}
