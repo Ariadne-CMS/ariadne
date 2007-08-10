@@ -1874,6 +1874,10 @@ class pobject extends object { // pobject class definition
 		return $data;
 	}
 
+	function resetloopcheck() {
+		global $ARBeenHere;
+		$ARBeenHere=Array();
+	}
 
 /********************************************************************
 
@@ -2172,8 +2176,7 @@ class pobject extends object { // pobject class definition
 	}
 
 	function _resetloopcheck() {
-		global $ARBeenHere;
-		$ARBeenHere=Array();
+		return $this->resetloopcheck();
 	}
 
 	function _make_path($path="") {

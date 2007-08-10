@@ -2,6 +2,7 @@
 	echo "SSCR: " . $this->path . "<br>";
 
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) 
+		$this->resetloopcheck();
 
 		$this->parents($path,"svn.system.getrepo.phtml");
 

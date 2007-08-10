@@ -1,5 +1,6 @@
 <?php
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		$this->resetloopcheck();
 		$this->parents($path,"svn.system.getrepo.phtml");
 		$repository = $this->getvar("repository");
 		if (isset($repository)) {
