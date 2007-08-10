@@ -50,7 +50,7 @@
 	}
 
 	if ($AR->SVN->enabled) {
-		$this->parents($path, "svn.system.getrepo.phtml");
+		$this->parents($path, "svn.system.getrepo.phtml", '', '/');
 		$repository = $this->getvar("repository");
 		if (isset($repository)) {
 			$repository = rtrim($repository, "/");

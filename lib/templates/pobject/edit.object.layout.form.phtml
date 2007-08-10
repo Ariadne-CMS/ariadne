@@ -181,7 +181,7 @@ function insertTab(event,obj) {
 
 	$svn_enabled = $AR->SVN->enabled;
 	if ($svn_enabled) {
-		$this->parents($path,"svn.system.getrepo.phtml");
+		$this->parents($path,"svn.system.getrepo.phtml", '', '/');
 		$repository = $this->getvar("repository");
 	}
 
