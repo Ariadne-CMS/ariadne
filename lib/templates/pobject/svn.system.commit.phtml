@@ -1,33 +1,45 @@
 <?php
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
-		$fstore	= $this->store->get_filestore_svn("templates");
-		$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
-		$svn	= $fstore->connect($this->id, $repository, $username, $password);
+		$this->parents($path,"svn.system.getrepo.phtml");
+		$repository = $this->getvar("repository");
 
+		if (isset($repository)) {
+			$repository = rtrim($repository, "/");
+			$repoPath = $this->getvar("repoPath");
+			$repository = $repository . "/" . substr($this->path, strlen($repoPath));
 
-		$fileinfo = array();
+			$fstore	= $this->store->get_filestore_svn("templates");
+			$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
+			$svn	= $fstore->connect($this->id, $repository, $username, $password);
 
-		$pinp = $this->data->config->pinp;
-		while(list($type, $values) = each($pinp)) {
-			while(list($function, $templatelist) = each($values)) {
-				$language = key($templatelist);
-				$pinp_filename = $type . "." . $function . "." . $language . ".pinp";
-				if ($this->data->config->templates[$type][$function]) {
-					$default = 1;
-				} else {
-					$default = 0;
+			$fileinfo = array();
+			$fileinfo[''] = array();
+			$fileinfo['']['ar:type'] = $this->type;
+			$fileinfo['']['ar:name'] = $this->nlsdata->name;
+
+			$pinp = $this->data->config->pinp;
+			while(list($type, $values) = each($pinp)) {
+				while(list($function, $templatelist) = each($values)) {
+					$language = key($templatelist);
+					$pinp_filename = $type . "." . $function . "." . $language . ".pinp";
+					if ($this->data->config->templates[$type][$function]) {
+						$default = 1;
+					} else {
+						$default = 0;
+					}
+
+					$fileinfo[$pinp_filename] = array();
+					$fileinfo[$pinp_filename]['ar:function'] = $function;
+					$fileinfo[$pinp_filename]['ar:type'] = $type;
+					$fileinfo[$pinp_filename]['ar:language'] = $language;
+					$fileinfo[$pinp_filename]['ar:default'] = $default;										
+					$fstore->svn_add($svn, $pinp_filename);
 				}
-
-				$fileinfo[$pinp_filename] = array();
-				$fileinfo[$pinp_filename]['ar:function'] = $function;
-				$fileinfo[$pinp_filename]['ar:type'] = $type;
-				$fileinfo[$pinp_filename]['ar:language'] = $language;
-				$fileinfo[$pinp_filename]['ar:default'] = $default;										
-				$fstore->svn_add($svn, $pinp_filename);
 			}
-		}
 
-		$result = $fstore->svn_commit($svn, $message, $fileinfo);
-		print_r($result);
+			$result = $fstore->svn_commit($svn, $message, $fileinfo);
+			print_r($result);
+			flush();
+		}
 	}
 ?>

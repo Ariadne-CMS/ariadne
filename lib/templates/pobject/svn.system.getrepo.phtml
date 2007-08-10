@@ -1,0 +1,10 @@
+<?php
+	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		if ($this->data->svn) {
+			$repository = $this->data->svn;
+			$repoPath = $this->path;
+			$this->putvar("repository" , $repository);
+			$this->putvar("repoPath" , $repoPath);
+		}
+	}
+?>

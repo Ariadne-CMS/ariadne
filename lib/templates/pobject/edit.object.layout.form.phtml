@@ -179,11 +179,16 @@ function insertTab(event,obj) {
 		$language = $newlanguage;
 	}
 
-	$svn_enabled = false;
-	$repository = $this->data->svn;
+	$svn_enabled = $AR->SVN->enabled;
+	if ($svn_enabled) {
+		$this->parents($path,"svn.system.getrepo.phtml");
+		$repository = $this->getvar("repository");
+	}
 
 	if (isset($repository)) {
-		$svn_enabled = true;
+		$repository = rtrim($repository, "/");
+		$repoPath = $this->getvar("repoPath");
+		$repository = $repository . "/" . substr($this->path, strlen($repoPath));
 		$filestore = $this->store->get_filestore_svn("templates");
 
 		$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');

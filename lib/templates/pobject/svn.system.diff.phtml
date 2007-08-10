@@ -1,11 +1,20 @@
 <?php
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
-		$fstore	= $this->store->get_filestore_svn("templates");
-		$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
-		$svn	= $fstore->connect($this->id, $repository, $username, $password);
+		$this->parents($path,"svn.system.getrepo.phtml");
+		$repository = $this->getvar("repository");
 
-		$status = $fstore->svn_diff($svn);
+		if (isset($repository)) {
+			$repository = rtrim($repository, "/");
+			$repoPath = $this->getvar("repoPath");
+			$repository = $repository . "/" . substr($this->path, strlen($repoPath));
 
-		echo(htmlspecialchars($status));
+			$fstore	= $this->store->get_filestore_svn("templates");
+			$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
+			$svn	= $fstore->connect($this->id, $repository, $username, $password);
+
+			$status = $fstore->svn_diff($svn);
+
+			echo(htmlspecialchars($status));
+		}
 	}
 ?>

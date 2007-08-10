@@ -48,11 +48,55 @@
 	} else {
 		$icon=$AR->dir->images."icons/".$this->type.".gif";
 	}
+
+	if ($AR->SVN->enabled) {
+		$this->parents($path, "svn.system.getrepo.phtml");
+		$repository = $this->getvar("repository");
+		if (isset($repository)) {
+			$repository = rtrim($repository, "/");
+			$repoPath = $this->getvar("repoPath");
+			$repository = $repository . "/" . substr($this->path, strlen($repoPath));
+
+			$filestore = $this->store->get_filestore_svn("templates");
+
+			$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
+			$svn = $filestore->connect($this->id, $repository, "", "");
+			ob_start();
+			$svn_status = $filestore->svn_status($svn);
+			ob_end_clean();
+
+			if ($svn_status) {
+				foreach ($svn_status as $key => $value) {
+					if (substr($key, -5) == ".pinp") {
+					} else {
+						unset($svn_status[$key]);
+					}
+				} 
+				if (sizeof($svn_status)) {
+					$svnicon = $AR->dir->images.'svn/ModifiedIcon.png';
+				} else {
+					$svnicon = $AR->dir->images.'svn/InSubVersionIcon.png';
+				}
+			}
+		}
+	}
+
 ?>
 <div class='object'><nobr>
 <a contextmenu="normalContextMenu" disableditems="<?php echo $disabledItems; ?>" title="<?php echo $nlsdata->name; ?>"
 href="#" class="unselectedItem" onClick="selectItem(this); return false;" onDblClick="top.View(this.getAttribute('path'))" path="<?php echo $this->path; ?>" fullPath="<?php echo $fullObjectpath; ?>">
 <img width="20" height="20" src="<?php echo $icon; ?>"	alt="<?php echo $this->path; ?>" border="0">
+
+<?php
+	if ($svnicon) {
+?>
+		<img width="16" height="16" src="<?php echo $svnicon; ?>"  alt="<?php 
+			foreach ($svn_status as $key => $value) {
+				echo "$value  $key\n";
+			}?>" border="0">  
+<?php
+	}
+?>
 &nbsp;<?php	 
 		if (!$details && strlen($nlsdata->name)>32) {
 			$name=substr($nlsdata->name,0, 32)."...";

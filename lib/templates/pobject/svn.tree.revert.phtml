@@ -1,0 +1,9 @@
+<div style="width: 100%; height: 90%; overflow: auto">
+<pre>
+<?php
+	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		$this->find($this->path, '', "svn.system.revert.phtml", $arCallArgs);
+	}
+?>
+</pre>
+</div>

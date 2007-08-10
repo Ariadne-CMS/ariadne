@@ -1,0 +1,28 @@
+<div style="width: 100%; height: 90%; overflow: auto">
+<pre>
+<?php
+        if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+
+		$username 	= $_POST['username'];
+		$password 	= $_POST['password'];
+		$message 	= $_POST['message'];
+
+		if (! (isset($username) && isset($password)) ) {
+			?>
+				<form method="post">
+					SVN user: <input type="text" name="username">
+					SVN pass: <input type="password" name="password">
+					Commit message: <input type="text" name="message">
+					<input type="submit" value="commit">
+				</form>
+			<?php
+		} else {
+			$arCallArgs['username'] = $username;
+			$arCallArgs['password'] = $password;
+			$arCallArgs['message'] = $message;
+			$this->find($this->path, '', "svn.system.commit.phtml", $arCallArgs);
+		}
+	}
+?>
+</pre>
+</div>

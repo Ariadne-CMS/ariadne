@@ -174,6 +174,9 @@
 			//tasks
 			$this->call("winxp.manage.sidebar.tasks.html", $arCallArgs);
 			$this->call("winxp.manage.sidebar.settings.html", $arCallArgs);
+			if ($AR->SVN->enabled) {
+				$this->call("winxp.manage.sidebar.svn.html", $arCallArgs);
+			}
 			$this->call("winxp.manage.sidebar.info.html", $arCallArgs); 
 			$this->call("winxp.manage.details.html", $arCallArgs); 
 		?>

@@ -356,9 +356,9 @@
 
 			// Since we have a flat structure, remove the path and use only the names.
 			if ($tempresult) {
-				if (isset($tempresult[$args[0]])) {
-					echo "1";
-				}
+				//if (isset($tempresult[$args[0]])) {
+				//	echo "1";
+				//}
 
 				if ((sizeof($tempresult) == 1) && (isset($tempresult[$args[0]]))) {
 					return false;
@@ -428,6 +428,23 @@
 			$svn['switches']['non-interactive'] = false;
 
 			$result = $svn['instance']->list->run_interactive($listargs, $svn['switches']);
+			return $result;
+		}
+
+		function svn_rpropget($svn, $propkey, $name='') {
+			$args = array(
+				$propkey,
+				$svn['repository'] . $name
+			);
+			$result = $svn['instance']->propget->run($args, $svn['switches']);
+			return $result;
+		}
+
+		function svn_rinfo($svn, $name='') {
+			$args = array(
+				$svn['repository'] . $name
+			);
+			$result = $svn['instance']->info->run($args, $svn['switches']);
 			return $result;
 		}
 
