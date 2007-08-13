@@ -10,7 +10,7 @@
 			echo "SVN settings saved\n";
 		}
 
-		$this->parents($path,"svn.system.getrepo.phtml");
+		$this->parents('',"svn.system.getrepo.phtml", '', '/');
 		$repository = $this->getvar("repository");
 
 		if (isset($this->data->svn)) {

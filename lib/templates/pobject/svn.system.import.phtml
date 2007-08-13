@@ -1,7 +1,7 @@
 <?php
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		$this->resetloopcheck();
-		$this->parents($path,"svn.system.getrepo.phtml");
+		$this->parents('',"svn.system.getrepo.phtml", '', '/');
 		$repository = $this->getvar("repository");
 		if (isset($repository)) {
 			$repository = rtrim($repository, "/");
@@ -18,7 +18,7 @@
 				flush();
 			} else {
 				echo "Repository already exists - use checkout and add instead\n";
-				exit;
+				return;
 			}
 
 			$fstore->svn_checkout($svn);

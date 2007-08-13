@@ -33,7 +33,7 @@
 		if (strlen($myName) > 12)
 			$myName = "<span title=\"".$myName."\">".substr($myName, 0, 9)."..."."</span>";
 
-		$this->parents($path,"svn.system.getrepo.phtml", '', '/');
+		$this->parents('',"svn.system.getrepo.phtml", '', '/');
 		$repository = $this->getvar("repository");
 
 		if (isset($repository)) {
