@@ -20,6 +20,7 @@
 			$arCallArgs['username'] = $username;
 			$arCallArgs['password'] = $password;
 			$arCallArgs['message'] = $message;
+			set_time_limit(0);
 			$this->find($this->path, '', "svn.system.commit.phtml", $arCallArgs);
 		}
 	}

@@ -16,6 +16,7 @@
 			<?php
 		} else {
 			echo "Doing recursive checkout...";
+			set_time_limit(0);
 			$this->call("svn.system.checkout.recursive.phtml", $arCallArgs);
 		}
 	}

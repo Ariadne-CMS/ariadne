@@ -1,8 +1,7 @@
 <div style="width: 100%; height: 90%; overflow: auto">
 <pre>
 <?php
-        if ($this->CheckLogin("layout") && $this->CheckConfig()) {
-		$repository = $this->data->svn;
+	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 
 		$username = $_POST['username'];
 		$password = $_POST['password'];
@@ -16,7 +15,6 @@
 				</form>
 			<?php
 		} else {
-			$arCallArgs['repository'] = $repository;
 			$this->call("svn.system.checkunder.phtml", $arCallArgs);
 		}
 	}

@@ -33,22 +33,23 @@
 			if ($pinp) {
 				while(list($type, $values) = each($pinp)) {
 					while(list($function, $templatelist) = each($values)) {
-						$language = key($templatelist);
-						$compiled_filename = $type . "." . $function . "." . $language;
+						foreach($templatelist as $language => $node) {
+							$compiled_filename = $type . "." . $function . "." . $language;
 
-						$pinp_filename = $type . "." . $function . "." . $language . ".pinp";
-						if ($this->data->config->templates[$type][$function]) {
-							$default = 1;
-						} else {
-							$default = 0;
+							$pinp_filename = $type . "." . $function . "." . $language . ".pinp";
+							if ($this->data->config->templates[$type][$function]) {
+								$default = 1;
+							} else {
+								$default = 0;
+							}
+
+							$fileinfo[$pinp_filename] = array();
+							$fileinfo[$pinp_filename]['ar:function'] = $function;
+							$fileinfo[$pinp_filename]['ar:type'] = $type;
+							$fileinfo[$pinp_filename]['ar:language'] = $language;
+							$fileinfo[$pinp_filename]['ar:default'] = $default;
+							$fstore->svn_add($svn, $pinp_filename);
 						}
-
-						$fileinfo[$pinp_filename] = array();
-						$fileinfo[$pinp_filename]['ar:function'] = $function;
-						$fileinfo[$pinp_filename]['ar:type'] = $type;
-						$fileinfo[$pinp_filename]['ar:language'] = $language;
-						$fileinfo[$pinp_filename]['ar:default'] = $default;										
-						$fstore->svn_add($svn, $pinp_filename);
 					}
 				}
 			}

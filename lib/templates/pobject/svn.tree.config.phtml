@@ -13,12 +13,6 @@
 		$this->parents('',"svn.system.getrepo.phtml", '', '/');
 		$repository = $this->getvar("repository");
 
-		if (isset($this->data->svn)) {
-			$disabled = "";
-		} else {
-			$disabled = " disabled";
-		}
-
 		if (isset($repository)) {
 			$repository = rtrim($repository, "/");
 			$repoPath = $this->getvar("repoPath");

@@ -2,6 +2,7 @@
 <pre>
 <?php
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		set_time_limit(0);
 		$this->find($this->path, '', "svn.system.diff.phtml", $arCallArgs);
 	}
 ?>

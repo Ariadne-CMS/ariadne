@@ -2,14 +2,7 @@
 <pre>
 <?php
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
-		$repository = $this->data->svn;
-
-		if (isset($repository)) {
-			$arCallArgs['repository'] = $repository;
-			$this->call("svn.system.revert.phtml", $arCallArgs);
-		} else {
-			echo "No SVN repository information set.";
-		}
+		$this->call("svn.system.revert.phtml", $arCallArgs);
 	}
 ?>
 </pre>

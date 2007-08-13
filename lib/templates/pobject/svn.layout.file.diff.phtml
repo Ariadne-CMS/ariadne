@@ -1,12 +1,8 @@
 <div style="width: 100%; height: 90%; overflow: auto">
 <pre>
 <?php
-        if ($this->CheckLogin("layout") && $this->CheckConfig()) {
-		$repository = $this->data->svn;
-		if (isset($repository)) {
-			$arCallArgs['repository'] = $repository;
-			$this->call("svn.system.file.diff.phtml", $arCallArgs);
-		}
+	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		$this->call("svn.system.file.diff.phtml", $arCallArgs);
 	}
 ?>
 </pre>

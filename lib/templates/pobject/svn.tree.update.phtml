@@ -17,6 +17,7 @@
 		} else {
 			$arCallArgs['username'] = $username;
 			$arCallArgs['password'] = $password;
+			set_time_limit(0);
 			$this->find($this->path, '', "svn.system.update.phtml", $arCallArgs);
 		}
 	}
