@@ -61,6 +61,8 @@
 
 			$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
 			$svn = $filestore->connect($this->id, $repository, "", "");
+
+			$svn_info = $filestore->svn_info($svn);
 			ob_start();
 			$svn_status = $filestore->svn_status($svn);
 			ob_end_clean();
@@ -77,6 +79,8 @@
 				} else {
 					$svnicon = $AR->dir->images.'svn/InSubVersionIcon.png';
 				}
+			} else if ($svn_info) {
+				$svnicon = $AR->dir->images.'svn/InSubVersionIcon.png';
 			}
 		}
 	}
