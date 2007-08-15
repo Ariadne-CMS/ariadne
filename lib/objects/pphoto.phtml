@@ -493,10 +493,10 @@ class pphoto extends pfile { // pphoto class definition
 					}
 					if (!$failed) {
 						ob_start();
-						if( substr( strtolower($tmpsrc), -6, 6 ) == ".photo" ) {
-							$tmpsrc = substr( $tmpsrc, 0, -6 );
-						}
 						if ($this->targetformat && !eregi("[^0-9a-z\._-]",$this->targetformat)) {
+							if( substr( strtolower($tmpsrc), -6, 6 ) == ".photo" ) {
+								$tmpsrc = substr( $tmpsrc, 0, -6 );
+							}
 							$destsrc=$tmpsrc.".".$this->targetformat;
 						} else {
 							$destsrc=$tmpsrc;

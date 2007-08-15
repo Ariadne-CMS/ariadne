@@ -313,6 +313,7 @@
 
 	function ldHeader($header) {
 	global $ARCurrent;
+		debug("ldHeader:: $header");
 
 		$result=false;
 		if (!Headers_sent()) {
@@ -355,7 +356,9 @@
 	}
 
 	function ldSetContent($mimetype, $size=0) {
+		global $ARCurrent;
 		$result=ldHeader("Content-Type: ".$mimetype);
+		$ARCurrent->arContentTypeSent = true;
 		if ($size) {
 			$result=ldHeader("Content-Length: ".$size);
 		}
