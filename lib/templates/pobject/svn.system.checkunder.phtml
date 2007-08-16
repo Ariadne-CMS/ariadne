@@ -6,7 +6,7 @@
                 if (isset($repository)) {
                         $fstore = $this->store->get_filestore_svn("templates");
                         $svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
-                        $svn    = $fstore->connect($this->id, $repository, $username, $password);
+                        $svn    = $fstore->connect($this->id, $username, $password);
 
 			$tempdir = tempnam($AR->dir->install . "/files/temp/", "svntemp");
 			unlink($tempdir);

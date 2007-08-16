@@ -3,14 +3,16 @@
 <?php
         if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 
+		$repository = $_POST['repository'];
 		$username = $_POST['username'];
 		$password = $_POST['password'];
 
-		if (! (isset($username) && isset($password)) ) {
+		if (! (isset($repository) && isset($username) && isset($password)) ) {
 			?>
 				<form method="post">
-					<input type="text" name="username">
-					<input type="password" name="password">
+					SVN repo: <input type="text" name="repository">
+					SVN user: <input type="text" name="username">
+					SVN pass: <input type="password" name="password">
 					<input type="submit" value="checkout recursive">
 				</form>
 			<?php

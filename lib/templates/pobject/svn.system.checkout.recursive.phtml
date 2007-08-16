@@ -1,157 +1,135 @@
 <?php
 	echo "SSCR: " . $this->path . "<br>";
 
-	if ($this->CheckLogin("layout") && $this->CheckConfig()) 
+	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		$this->resetloopcheck();
 
-		$this->parents($path,"svn.system.getrepo.phtml",'','/');
-
-		$repository = $this->getvar("repository");
-
-		//$repository = $this->data->svn;
 		if (isset($repository)) {
-			$repository = rtrim($repository, "/");
-			$repoPath = $this->getvar("repoPath");
-			$repository = $repository . "/" . substr($this->path, strlen($repoPath));
-			echo "Using repo: $repository<br>";
-
 			$fstore	= $this->store->get_filestore_svn("templates");
 			$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
-			$svn	= $fstore->connect($this->id, $repository, $username, $password);
+			$svn	= $fstore->connect($this->id, $username, $password);
 
-		/*	if ($output = $svn['instance']->list->run(array('https://svn.muze.nl/svn/ariadne/trunk/lib/modules'), array())) {
+			echo "<br>";
+			echo "Checkout for " . $this->path . "<br>";
+
+			if ($repoPath) {
+				$repo_subpath = substr($this->path, strlen($repoPath));
 			} else {
-				echo "Errors: <br>";
+				// This is also the first loop!
+				$fstore->svn_accept_cert($svn, $repository);
+				$repo_subpath = '';
+			}
 
-		    if (count($errs = $svnstack->getErrors())) { 
-		        foreach ($errs as $err) {
-		            echo '<br />'.$err['message']."<br />\n";
-		            echo "Command used: " . $err['params']['cmd'];
-		        }
-		    }
-		}
-		*/
+			$repository = rtrim($repository, "/") . "/" . $repo_subpath;
+			echo "Using repo: $repository<br>";
 
-		echo "<br>";
-		echo "Checkout for " . $this->path . "<br>";
+			// Checkout the templates.
+			$templates = $fstore->svn_checkout($svn, $repository);
+			print_r($templates);
 
-		// Checkout the templates.
-		$templates = $fstore->svn_checkout($svn);
-		print_r($templates);
+			if ($templates) {
+				foreach ($templates as $item) {
+				    // _pobject.print_r.html.any.pinp
+					$filename = basename($item['name']);
 
-		if ($templates) {
-			foreach ($templates as $item) {
-			    // _pobject.print_r.html.any.pinp
-				$filename = basename($item['name']);
+					$underscore = substr($filename, 0, 1);
+					$pinp = substr($filename, -5);
 
-				$underscore = substr($filename, 0, 1);
-				$pinp = substr($filename, -5);
+					echo "[$underscore][$pinp]";
+					if ($underscore != "_" || $pinp != ".pinp") {
+						echo "not a template, skipping";
+						continue;
+					}
+					$filename = substr($filename, 1);
 
-				echo "[$underscore][$pinp]";
-				if ($underscore != "_" || $pinp != ".pinp") {
-					echo "not a template, skipping";
-					continue;
-				}
-				$filename = substr($filename, 1);
-
-				echo "Fetched $filename\n";
-				
-				ob_start();
-					@readfile($item['name']);
-					$template = ob_get_contents();
-				ob_end_clean();
-
-				$meta = array();
-				$meta['ar:default']		= $fstore->svn_propget($svn, "ar:default", $filename);
-				$meta['ar:type']		= $fstore->svn_propget($svn, "ar:type", $filename);
-				$meta['ar:function']	= $fstore->svn_propget($svn, "ar:function", $filename);
-				$meta['ar:language']	= $fstore->svn_propget($svn, "ar:language", $filename);
-
-				if($meta['default'] == '1') {
-					$meta['default'] = 1;
-				}
+					echo "Fetched $filename\n";
 					
-				//echo "Meta information:\n";
-				//echo "ar:default [" . $meta['ar:default'] . "]\n";
-				//echo "ar:type [" . $meta['ar:type'] . "]\n";
-				//echo "ar:function [" . $meta['ar:function'] . "]\n";
-				//echo "ar:language [" . $meta['ar:language'] . "]\n";
+					ob_start();
+						@readfile($item['name']);
+						$template = ob_get_contents();
+					ob_end_clean();
 
-				$this->call("system.save.layout.phtml", Array(
-					"template" 	=> $template,
-					"default"	=> $meta['ar:default'],
-					"type"		=> $meta['ar:type'],
-					"function"	=> $meta['ar:function'],
-					"language"	=> $meta['ar:language']
-				));
+					$meta = array();
+					$meta['ar:default']		= $fstore->svn_propget($svn, "ar:default", $filename);
+					$meta['ar:type']		= $fstore->svn_propget($svn, "ar:type", $filename);
+					$meta['ar:function']	= $fstore->svn_propget($svn, "ar:function", $filename);
+					$meta['ar:language']	= $fstore->svn_propget($svn, "ar:language", $filename);
 
-				if ($this->error) {
-					echo "Error saving template\n";
-					print_r($this->error);
-					// FIXME: do something useful with errors.
+					if($meta['default'] == '1') {
+						$meta['default'] = 1;
+					}
+						
+					//echo "Meta information:\n";
+					//echo "ar:default [" . $meta['ar:default'] . "]\n";
+					//echo "ar:type [" . $meta['ar:type'] . "]\n";
+					//echo "ar:function [" . $meta['ar:function'] . "]\n";
+					//echo "ar:language [" . $meta['ar:language'] . "]\n";
+
+					$this->call("system.save.layout.phtml", Array(
+						"template" 	=> $template,
+						"default"	=> $meta['ar:default'],
+						"type"		=> $meta['ar:type'],
+						"function"	=> $meta['ar:function'],
+						"language"	=> $meta['ar:language']
+					));
+
+					if ($this->error) {
+						echo "Error saving template\n";
+						print_r($this->error);
+						// FIXME: do something useful with errors.
+					}
 				}
 			}
-		}
 
-		// Create the dirs.
-		$dirlist = $fstore->svn_list($svn);
-		if ($dirlist) {
-			foreach ($dirlist as $item) {
-				if ($item['type'] == "D") {
-					echo "found dir: " . $item['name'] . "<br>";
+			// Create the dirs.
+			$dirlist = $fstore->svn_list($svn);
+			if ($dirlist) {
+				foreach ($dirlist as $item) {
+					if ($item['type'] == "D") {
+						echo "found dir: " . $item['name'] . "<br>";
 
-					$dirinfo = array();
-					$dirinfo['ar:path'] = basename($item['name']);
+						$dirinfo = array();
+						$dirinfo['ar:path'] = basename($item['name']);
 
-					$svn_type = $fstore->svn_rpropget($svn, "ar:type", $dirinfo['ar:path']);
-					if ($svn_type != "") {
-						echo "SVN type: [$svn_type]<br>";
-						$dirinfo['ar:type'] = $svn_type;
-					} else {
-						echo "SVN type not found, default to psection<br>";
-						$dirinfo['ar:type'] = "psection";
-					}
-
-					$svn_name = $fstore->svn_rpropget($svn, "ar:name", $dirinfo['ar:path']);
-					if ($svn_name != "") {
-						$dirinfo['ar:name'] = $svn_name;
-					} else {
-						$dirinfo['ar:name'] = $dirinfo['ar:path'];
-					}
-
-	/*				$svn_prio = $fstore->svn_propget($svn, "ar:priority", $dirinfo['ar:path']);
-					if ($svn_prio) {
-						$dirinfo['ar:priority'] = $svn_prio;
-					} else {
-						$dirinfo['ar:priority'] = 0;
-					}
-	*/
-
-					// Check if the dir exists - if not, create the object in Ariadne.
-					$dirpath = $this->path . $dirinfo['ar:path'] . "/";
-
-					if (!$this->exists($dirpath)) {
-						echo $dirinfo['ar:path'] . " does not exist, creating...<br>";
-						$newData = array();
-						$newData['arNewFilename'] 	= $dirinfo['ar:path'];
-						$newData['arNewType'] 		= $dirinfo['ar:type'];
-						$newData[$ARConfig->nls->default]['name']	= $dirinfo['ar:name'];
-
-						$this->call("system.new.phtml", $newData);
-						if ($this->error) {
-							echo "Error: " . $this->error . "<br>";
+						$svn_type = $fstore->svn_rpropget($svn, $repository, "ar:type", $dirinfo['ar:path']);
+						if ($svn_type != "") {
+							echo "SVN type: [$svn_type]<br>";
+							$dirinfo['ar:type'] = $svn_type;
+						} else {
+							echo "SVN type not found, default to psection<br>";
+							$dirinfo['ar:type'] = "psection";
 						}
 
-						// FIXME: Would be nice to also get and set other data for this object, like page, summary, priority etc.
-						//	$dirinfo['ar:priority']
-					}
+						$svn_name = $fstore->svn_rpropget($svn, $repository, "ar:name", $dirinfo['ar:path']);
+						if ($svn_name != "") {
+							$dirinfo['ar:name'] = $svn_name;
+						} else {
+							$dirinfo['ar:name'] = $dirinfo['ar:path'];
+						}
 
+						// Check if the dir exists - if not, create the object in Ariadne.
+						$dirpath = $this->path . $dirinfo['ar:path'] . "/";
+
+						if (!$this->exists($dirpath)) {
+							echo $dirinfo['ar:path'] . " does not exist, creating...<br>";
+							$newData = array();
+							$newData['arNewFilename'] 	= $dirinfo['ar:path'];
+							$newData['arNewType'] 		= $dirinfo['ar:type'];
+							$newData[$ARConfig->nls->default]['name']	= $dirinfo['ar:name'];
+
+							$this->call("system.new.phtml", $newData);
+							if ($this->error) {
+								echo "Error: " . $this->error . "<br>";
+							}
+						}
+					}
 				}
 			}
-		}
-		flush();
+			flush();
 
-		// Run checkout on the subdirs.
-		$this->ls($this->path, "svn.system.checkout.recursive.phtml", $arCallArgs);
+			// Run checkout on the subdirs.
+			$arCallArgs['repoPath'] = $this->path;
+			$this->ls($this->path, "svn.system.checkout.recursive.phtml", $arCallArgs);
+		}
 	}
 ?>

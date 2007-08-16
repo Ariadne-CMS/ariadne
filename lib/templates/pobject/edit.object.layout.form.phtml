@@ -181,18 +181,9 @@ function insertTab(event,obj) {
 
 	$svn_enabled = $AR->SVN->enabled;
 	if ($svn_enabled) {
-		$this->parents($path,"svn.system.getrepo.phtml", '', '/');
-		$repository = $this->getvar("repository");
-	}
-
-	if (isset($repository)) {
-		$repository = rtrim($repository, "/");
-		$repoPath = $this->getvar("repoPath");
-		$repository = $repository . "/" . substr($this->path, strlen($repoPath));
 		$filestore = $this->store->get_filestore_svn("templates");
-
 		$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
-		$svn = $filestore->connect($this->id, $repository, "", "");
+		$svn = $filestore->connect($this->id);
 		$svn_status = $filestore->svn_status($svn);
 	} else {
 		$filestore = $this->store->get_filestore("templates");

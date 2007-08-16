@@ -1,28 +1,30 @@
 <?php
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		$this->resetloopcheck();
-		$this->parents($path,"svn.system.getrepo.phtml",'','/');
 
-		$repository = $this->getvar("repository");
-
-		//$repository = $this->data->svn;
 		if (isset($repository)) {
-			$repository = rtrim($repository, "/");
-			$repoPath = $this->getvar("repoPath");
-			$repository = $repository . "/" . substr($this->path, strlen($repoPath));
-
 			$fstore	= $this->store->get_filestore_svn("templates");
 			$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
-			$svn	= $fstore->connect($this->id, $repository, $username, $password);
+			$svn	= $fstore->connect($this->id, $username, $password);
+			$fstore->svn_accept_cert($svn, $repository);
 
-
-			$result = $fstore->svn_checkout($svn);
+			$result = $fstore->svn_checkout($svn, $repository);
 			print_r($result);
 
 			if ($result) {
 				foreach ($result as $item) {
 					// _pobject.print_r.html.any.pinp
 					$filename = basename($item['name']);
+
+					$underscore = substr($filename, 0, 1);
+					$pinp = substr($filename, -5);
+
+					echo "[$underscore][$pinp]";
+					if ($underscore != "_" || $pinp != ".pinp") {
+						echo "not a template, skipping";
+						continue;
+					}
+
 					$filename = substr($filename, 1);
 
 					echo "Fetched $filename\n";
@@ -33,8 +35,8 @@
 					ob_end_clean();
 
 					$meta = array();
-					$meta['ar:default']		= $fstore->svn_propget($svn, "ar:default", $filename);
-					$meta['ar:type']		= $fstore->svn_propget($svn, "ar:type", $filename);
+					$meta['ar:default']	= $fstore->svn_propget($svn, "ar:default", $filename);
+					$meta['ar:type']	= $fstore->svn_propget($svn, "ar:type", $filename);
 					$meta['ar:function']	= $fstore->svn_propget($svn, "ar:function", $filename);
 					$meta['ar:language']	= $fstore->svn_propget($svn, "ar:language", $filename);
 

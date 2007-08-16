@@ -3,11 +3,8 @@
 		$this->resetloopcheck();
 		$fstore = $this->store->get_filestore_svn("templates");
 		$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
-		$svn    = $fstore->connect($this->id, $svn_repo, $username, $password);
+		$svn    = $fstore->connect($this->id, $username, $password);
 
-		$result = $fstore->svn_accept_cert($svn);
-
-		$this->data->svn = $svn_repo;
-		$this->save();
+		$result = $fstore->svn_accept_cert($svn, $repository);
 	}
 ?>

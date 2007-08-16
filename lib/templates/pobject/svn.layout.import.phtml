@@ -5,11 +5,13 @@
 
 		$username = $_POST['username'];
 		$password = $_POST['password'];
+		$repository = $_POST['repository'];
 		$message  = $_POST['message'];
 
-		if (! (isset($username) && isset($password)) ) {
+		if (! (isset($repository) && isset($username) && isset($password)) ) {
 			?>
 				<form method="post">
+					SVN repo: <input type="text" name="repository">
 					SVN user: <input type="text" name="username">
 					SVN pass: <input type="password" name="password">
 					Message: <input type="text" name="message">
@@ -17,9 +19,6 @@
 				</form>
 			<?php
 		} else {
-			$arCallArgs['username'] = $username;
-			$arCallArgs['password'] = $password;
-			$arCallArgs['message'] = $message;
 			$this->call("svn.system.import.phtml", $arCallArgs);
 		}
 	}

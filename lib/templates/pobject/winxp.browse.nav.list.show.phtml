@@ -50,38 +50,29 @@
 	}
 
 	if ($AR->SVN->enabled) {
-		$this->parents($path, "svn.system.getrepo.phtml", '', '/');
-		$repository = $this->getvar("repository");
-		if (isset($repository)) {
-			$repository = rtrim($repository, "/");
-			$repoPath = $this->getvar("repoPath");
-			$repository = $repository . "/" . substr($this->path, strlen($repoPath));
+		$filestore = $this->store->get_filestore_svn("templates");
+		$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
+		$svn = $filestore->connect($this->id);
 
-			$filestore = $this->store->get_filestore_svn("templates");
+		$svn_info = $svn['info'];
+		ob_start();
+		$svn_status = $filestore->svn_status($svn);
+		ob_end_clean();
 
-			$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
-			$svn = $filestore->connect($this->id, $repository, "", "");
-
-			$svn_info = $filestore->svn_info($svn);
-			ob_start();
-			$svn_status = $filestore->svn_status($svn);
-			ob_end_clean();
-
-			if ($svn_status) {
-				foreach ($svn_status as $key => $value) {
-					if (substr($key, -5) == ".pinp") {
-					} else {
-						unset($svn_status[$key]);
-					}
-				} 
-				if (sizeof($svn_status)) {
-					$svnicon = $AR->dir->images.'svn/ModifiedIcon.png';
+		if ($svn_status) {
+			foreach ($svn_status as $key => $value) {
+				if (substr($key, -5) == ".pinp") {
 				} else {
-					$svnicon = $AR->dir->images.'svn/InSubVersionIcon.png';
+					unset($svn_status[$key]);
 				}
-			} else if ($svn_info) {
+			} 
+			if (sizeof($svn_status)) {
+				$svnicon = $AR->dir->images.'svn/ModifiedIcon.png';
+			} else {
 				$svnicon = $AR->dir->images.'svn/InSubVersionIcon.png';
 			}
+		} else if ($svn_info) {
+			$svnicon = $AR->dir->images.'svn/InSubVersionIcon.png';
 		}
 	}
 

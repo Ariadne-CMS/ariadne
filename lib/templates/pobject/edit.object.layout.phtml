@@ -88,19 +88,10 @@
 			$svn_enabled = $AR->SVN->enabled;
 
 			if ($svn_enabled) {
-				$this->parents($path,"svn.system.getrepo.phtml", '', '/');
-				$repository = $this->getvar("repository");
-			}
-	
-			if (isset($repository)) {
-				$repository = rtrim($repository, "/");
-				$repoPath = $this->getvar("repoPath");
-				$repository = $repository . "/" . substr($this->path, strlen($repoPath));
-
 				$filestore = $this->store->get_filestore_svn("templates");
 
 				$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
-				$svn = $filestore->connect($this->id, $repository, "", "");
+				$svn = $filestore->connect($this->id);
 				$svn_status = $filestore->svn_status($svn);
 			} else {
 				$filestore = $this->store->get_filestore("templates");
@@ -266,10 +257,13 @@
 		<input type="submit" name="action" value="<?php echo $ARnls["new"]; ?>"></form></td>
 </tr>
 	<?php
-		if (isset($repository)) {
+		if ($svn_enabled) {
 	?>
 <tr>
 <td colspan="3">
+		<?php
+			if ($svn['info']['Revision']) {
+		?>
 	<form style="float: left; margin-right: 5px;" action="svn.layout.checkout.phtml"><input type="submit" name="svn_checkout" value="Checkout"></form>
 	<form style="float: left; margin-right: 5px;" action="svn.layout.checkunder.phtml"><input type="submit" name="svn_checkunder" value="Checkunder"></form>
 	<form style="float: left; margin-right: 5px;" action="svn.layout.commit.phtml"><input type="submit" name="svn_commit" value="Commit"></form>
@@ -277,25 +271,21 @@
 	<form style="float: left; margin-right: 5px;" action="svn.layout.diff.phtml"><input type="submit" name="svn_diff" value="Diff"></form>
 	<form style="float: left; margin-right: 5px;" action="svn.layout.import.phtml"><input type="submit" name="svn_import" value="Import"></form>
 	<form style="float: left; margin-right: 5px;" action="svn.layout.revert.phtml"><input type="submit" name="svn_revert" value="Revert"></form>
-	<form style="float: left; margin-right: 5px;" action="svn.layout.config.phtml"><input type="submit" name="svn_config" value="Config"></form>
 	<form style="float: left; margin-right: 5px;" action="svn.layout.unsvn.phtml"><input type="submit" name="svn_unsvn" value="UnSVN"></form>
-</td>
-</tr>
-	<?php
-		} else {
-			if ($svn_enabled) {
-	?>
-<tr>
-<td colspan="3">
-	<form style="float: left; margin-right: 5px;" action="svn.layout.config.phtml"><input type="submit" name="svn_config" value="Config"></form>
-</td>
-</tr>
-	
-	<?php
+		<?php 
+			} else {
+		?>
+	<form style="float: left; margin-right: 5px;" action="svn.layout.checkout.phtml"><input type="submit" name="svn_checkout" value="Checkout"></form>
+	<form style="float: left; margin-right: 5px;" action="svn.layout.checkunder.phtml"><input type="submit" name="svn_checkunder" value="Checkunder"></form>
+	<form style="float: left; margin-right: 5px;" action="svn.layout.import.phtml"><input type="submit" name="svn_import" value="Import"></form>
+		<?php
 			}
+		?>
+</td>
+</tr>
+	<?php
 		}
 	?>
-
 
 </table>
 </div>

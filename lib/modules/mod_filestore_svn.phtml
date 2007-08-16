@@ -72,7 +72,7 @@
 
 		}
 
-		function connect($id, $repository, $username='', $password='') {
+		function connect($id, $username='', $password='') {
 			global $AR;
 
 			/* Makes the connection between a filestore ID and a
@@ -117,11 +117,16 @@
 
 			$svn_switches['non-recursive'] = true;
 
+			$svn_info = $svn_instance->info->run(
+				array($this->make_path($id, '')), 
+				$svn_swithces
+			);
+
 			$svn = array(
 				'instance' 		=> $svn_instance,
 				'switches' 		=> $svn_switches,
 				'object_id'		=> $id,
-				'repository' 	=> $repository
+				'info'			=> $svn_info 
 			);
 
 			return $svn;
@@ -163,7 +168,7 @@
 			$result = $svn['instance']->cat->run($args, $svn['switches']);
 		}
 
-		function svn_checkout($svn, $revision='HEAD') {
+		function svn_checkout($svn, $repository, $revision='HEAD') {
 			/* Checkout given SVN. 
 			   Since we only handle flat SVN, the checkout is
 			   done only for files, and does not recurse into
@@ -171,7 +176,7 @@
 			*/
 
 			$args = array(
-				$svn['repository'],
+				$repository,
 				$this->get_path($svn, '')
 			);
 			
@@ -229,7 +234,7 @@
 			return $result;
 		}
 
-		function svn_delete($svn, $name, $comment='') {
+/*		function svn_delete($svn, $name, $comment='') {
 			$repo = $svn['repository'];
 			$svn['switches']['message'] = $comment;
 			$args = array(
@@ -239,6 +244,7 @@
 			unset($svn['switches']['message']);
 			return $result;
 		}
+*/
 
 		function svn_diff($svn, $name='') {
 			$args = array(
@@ -248,9 +254,9 @@
 			return $result;
 		}
 
-		function svn_export($svn, $revision='HEAD') {
+		function svn_export($svn, $repository, $revision='HEAD') {
 			$args = array(
-				$svn['repository'],
+				$repository,
 				$this->get_path($svn, '')
 			);
 			
@@ -261,10 +267,10 @@
 			return $result;
 		}
 
-		function svn_import($svn, $comment='') {
+		function svn_import($svn, $repository, $comment='') {
 			$args = array(
 				$this->get_path($svn, ''),
-				$svn['repository']
+				$repository
 			);
 			$svn['switches']['message'] = $comment;
 			$result = $svn['instance']->import->run($args, $svn['switches']);
@@ -386,7 +392,7 @@
 		}
 
 		// Start of customized SVN functions, these are not actually SVN commands but are very handy.
-		function svn_mkdirs($svn) {
+		function svn_mkdirs($svn, $repository) {
 			/* Create all subdirectories needed where needed, including all
 			   the need parent directories. This works by creating an empty
 			   directory and importing it into the SVN.
@@ -397,7 +403,7 @@
 
 			global $AR;
 			$listargs = array(
-				$svn['repository']
+				$repository
 			);
 			echo "Testing repository directory - error is normal\n";
 			$svnlist = @$svn['instance']->list->run($listargs, $svn['switches']);
@@ -410,7 +416,7 @@
 				mkdir($tempdir);
 				$args = array(
 					$tempdir,
-					$svn['repository']
+					$repository
 				);
 				$svn['switches']['message'] = "Repository creation";
 				$result = $svn['instance']->import->run($args, $svn['switches']);
@@ -420,9 +426,9 @@
 			return true;
 		}
 
-		function svn_accept_cert($svn) {
+		function svn_accept_cert($svn, $repository) {
 			$listargs = array(
-				$svn['repository']
+				$repository
 			);
 
 			$svn['switches']['non-interactive'] = false;
@@ -431,18 +437,18 @@
 			return $result;
 		}
 
-		function svn_rpropget($svn, $propkey, $name='') {
+		function svn_rpropget($svn, $repository, $propkey, $name='') {
 			$args = array(
 				$propkey,
-				$svn['repository'] . $name
+				$repository . $name
 			);
 			$result = $svn['instance']->propget->run($args, $svn['switches']);
 			return $result;
 		}
 
-		function svn_rinfo($svn, $name='') {
+		function svn_rinfo($svn, $repository, $name='') {
 			$args = array(
-				$svn['repository'] . $name
+				$repository . $name
 			);
 			$result = $svn['instance']->info->run($args, $svn['switches']);
 			return $result;

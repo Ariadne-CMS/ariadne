@@ -3,13 +3,15 @@
 <?php
 if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 
+	$repository = $_POST['repository'];
 	$username = $_POST['username'];
 	$password = $_POST['password'];
 	$message  = $_POST['message'];
 
-	if (! (isset($username) && isset($password)) ) {
+	if (! (isset($repository) && isset($username) && isset($password)) ) {
 		?>
 			<form method="post">
+			SVN repository: <input type="text" name="repository">
 			SVN user: <input type="text" name="username">
 			SVN pass: <input type="password" name="password">
 			Message: <input type="text" name="message">
@@ -18,9 +20,6 @@ if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 			<?php
 	} else {
 		set_time_limit(0);
-		$arCallArgs['username'] = $username;
-		$arCallArgs['password'] = $password;
-		$arCallArgs['message'] = $message;
 		$this->find($this->path, 'order by path', "svn.system.import.phtml", $arCallArgs);
 	}
 }

@@ -9,8 +9,8 @@
 		if (! (isset($username) && isset($password)) ) {
 			?>
 				<form method="post">
-					<input type="text" name="username">
-					<input type="password" name="password">
+					SVN user: <input type="text" name="username">
+					SVN pass: <input type="password" name="password">
 					<input type="submit" value="checkout">
 				</form>
 			<?php
@@ -18,7 +18,7 @@
 			$arCallArgs['username'] = $username;
 			$arCallArgs['password'] = $password;
 			set_time_limit(0);
-			$this->find($this->path, '', "svn.system.update.phtml", $arCallArgs);
+			$this->find($this->path, '', "svn.system.update.recursive.phtml", $arCallArgs);
 		}
 	}
 ?>
