@@ -1645,6 +1645,37 @@ class pobject extends object { // pobject class definition
 		debug("savecache: end. ($file)","all");
 	}
 
+	function getdatacache($name) {
+		$result=false;
+		if ($name) {
+			$pcache=$this->store->get_filestore("privatecache");
+			if ( $pcache->exists($this->id, $name) &&
+			     ($pcache->mtime($this->id, $name)>time()) ) {
+				debug("getdatacache: $name exists, reading from cache.","all");
+				$result=unserialize($pcache->read($this->id, $name));
+			} else {
+				debug("getdatacache: $name doesn't exists, returning false.","all");
+			}
+		} else {
+			error($ARnls["err:nonamecache"]);
+		}
+		return $result;
+	}
+
+	function savedatacache($name,$data,$time="") {
+		debug("savedatacache($time)","object");
+		if (!$time) {
+			$time=2; // 'freshness' in hours.
+		}
+		$pcache=$this->store->get_filestore("privatecache");
+		$pcache->write(serialize($data), $this->id, $name);
+		$time=time()+($time*3600);
+		if (!$pcache->touch($this->id, $name, $time)) {
+			debug("savecache: ERROR: couldn't touch $file","object");
+		}
+		debug("savedatacache: end. ($file)","all");
+	}
+
 	function getdata($varname, $nls="none") {
 	// function to retrieve variables from $this->data, with the correct
 	// language version.
@@ -2201,6 +2232,15 @@ class pobject extends object { // pobject class definition
 
 	function _savecache($time="") {
 		return $this->savecache($time);
+	}
+
+	function _getdatacache($name) {
+		return $this->getdatacache($name);
+	}
+
+	function _savedatacache($name,$data,$time)
+	{
+		return $this->savedatacache($name,$data,$time);
 	}
 
 	function currentsite($path="") {
