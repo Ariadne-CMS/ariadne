@@ -1,30 +1,24 @@
 <?php
-	echo "SSCR: " . $this->path . "<br>";
+	echo "SSUR: " . $this->path . "<br>";
 
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		$this->resetloopcheck();
 
+		$fstore	= $this->store->get_filestore_svn("templates");
+		$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
+		$svn	= $fstore->connect($this->id, $username, $password);
+
+		$repository = $svn['info']['URL'];
+
 		if (isset($repository)) {
-			$fstore	= $this->store->get_filestore_svn("templates");
-			$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
-			$svn	= $fstore->connect($this->id, $username, $password);
-
 			echo "<br>";
-			echo "Checkout for " . $this->path . "<br>";
-
-			if ($repoPath) {
-				$repo_subpath = substr($this->path, strlen($repoPath));
-			} else {
-				// This is also the first loop!
-				$fstore->svn_accept_cert($svn, $repository);
-				$repo_subpath = '';
-			}
+			echo "Update for " . $this->path . "<br>";
 
 			$repository = rtrim($repository, "/") . "/" . $repo_subpath;
 			echo "Using repo: $repository<br>";
 
-			// Checkout the templates.
-			$result = $fstore->svn_checkout($svn, $repository);
+			// Update the templates.
+			$result = $fstore->svn_update($svn);
 			print_r($result);
 
 			if ($result) {
@@ -40,8 +34,12 @@
 						'fstore'	=> $fstore,
 						'svn'		=> $svn
 					)
+
 				);
 			}
+
+			// Run update on the subdirs.
+			$this->ls($this->path, "svn.system.update.recursive.phtml", $arCallArgs);
 
 			// Create the dirs.
 			$dirlist = $fstore->svn_list($svn);
@@ -82,16 +80,17 @@
 							$this->call("system.new.phtml", $newData);
 							if ($this->error) {
 								echo "Error: " . $this->error . "<br>";
+							} else {
+								echo "Running recursive checkout on $dirpath<br>";
+								$arCallArgs['repoPath'] = $this->path;
+								$arCallArgs['repository'] = $repository;
+								$this->get($dirpath, "svn.system.checkout.recursive.phtml", $arCallArgs);
 							}
 						}
 					}
 				}
 			}
 			flush();
-
-			// Run checkout on the subdirs.
-			$arCallArgs['repoPath'] = $this->path;
-			$this->ls($this->path, "svn.system.checkout.recursive.phtml", $arCallArgs);
 		}
 	}
 ?>

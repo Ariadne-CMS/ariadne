@@ -6,8 +6,9 @@
 		$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
 		$svn	= $fstore->connect($this->id, $username, $password);
 
-		$status = $fstore->svn_unsvn($svn);
-
+		if ($svn['info']['Revision']) {
+			$status = $fstore->svn_unsvn($svn);
+		}
 		print_r($status);
 	}
 ?>
