@@ -183,7 +183,7 @@
 			$args = array(
 				$this->get_path($svn, '')
 			);
-			$result = $svn['instance']->cleanup->run($argns, $svn['switches']);
+			$result = $svn['instance']->cleanup->run($args, $svn['switches']);
 			return $result;
 		}
 
@@ -448,5 +448,31 @@
 			return $result;
 		}
 
+		function rmdir_rf($path) {
+			$dirhandle = opendir($path);
+			while ($file = readdir($dirhandle)) {
+				if ($file == "." || $file == "..") {
+					continue;
+				}
+
+ 				if (is_dir($path . $file)) {
+					echo "Dir: $file<br>";
+					$this->rmdir_rf($path .  $file . "/");	
+				} else {
+					echo "Unlink $file<br>";
+					unlink($path . $file);
+				} 		
+			}
+			echo "rmdir $path<br>";
+			rmdir($path);
+			closedir($dirhandle);			
+		}
+
+
+
+		function svn_unsvn($svn) {
+			$path = $this->get_path($svn, '') . ".svn/";
+			$this->rmdir_rf($path);
+		}
 	}
 ?>
