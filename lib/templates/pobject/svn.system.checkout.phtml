@@ -3,9 +3,16 @@
 		$this->resetloopcheck();
 
 		if (isset($repository)) {
+			$repository = rtrim($repository, "/") . "/";
 			$fstore = $this->store->get_filestore_svn("templates");
 			$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
 			$svn	= $fstore->connect($this->id, $username, $password);
+
+			if ($svn['info']['Revision']) {
+				echo $this->path . " is already under version control - update instead<br>";
+				return;
+			}
+
 			$fstore->svn_accept_cert($svn, $repository);
 
 			$result = $fstore->svn_checkout($svn, $repository);
