@@ -2,11 +2,6 @@
 <pre>
 <?php
         if ($this->CheckLogin("layout") && $this->CheckConfig()) {
-
-		$username 	= $_POST['username'];
-		$password 	= $_POST['password'];
-		$message 	= $_POST['message'];
-
 		if (! (isset($username) && isset($password)) ) {
 			?>
 				<form method="post">
@@ -17,9 +12,6 @@
 				</form>
 			<?php
 		} else {
-			$arCallArgs['username'] = $username;
-			$arCallArgs['password'] = $password;
-			$arCallArgs['message'] = $message;
 			set_time_limit(0);
 			$this->find($this->path, '', "svn.system.commit.phtml", $arCallArgs);
 		}

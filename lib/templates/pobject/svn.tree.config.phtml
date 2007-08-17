@@ -2,7 +2,6 @@
 <pre>
 <?php
         if ($this->CheckLogin("layout") && $this->CheckConfig()) {
-		$svn_repo = $_POST['svn_repo'];
 		if (isset($svn_repo)) {
 			$arCallArgs['svn_repo'] = $svn_repo;
 			echo "Testing repository and fetching certificate\n";

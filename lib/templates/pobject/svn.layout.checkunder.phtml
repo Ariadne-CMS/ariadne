@@ -2,11 +2,6 @@
 <pre>
 <?php
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
-
-		$repository = $_POST['repository'];
-		$username = $_POST['username'];
-		$password = $_POST['password'];
-
 		if (! (isset($repository) && isset($username) && isset($password)) ) {
 			?>
 				<form method="post">
