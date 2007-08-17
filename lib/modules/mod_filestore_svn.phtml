@@ -37,10 +37,11 @@
 	svn_update($svn, $name, $revision)
 
 	Custom commands:
-	svn_mkdirs($svn, $repository)
 	svn_accept_cert($svn, $repository)
-	svn_rpropget($svn, $repository, $propkey, $name)
+	svn_checkunder($svn, $repository, $revision)
+	svn_mkdirs($svn, $repository)
 	svn_rinfo($svn, $repository, $name)
+	svn_rpropget($svn, $repository, $propkey, $name)
 	
 	The following functions have not yet been implemented:
 	svn_copy
@@ -203,7 +204,13 @@
 				$this->get_path($svn, '')
 			);
 			
-			$result = $svn['instance']->checkout->run($args, $svn['switches']);
+			$switches = $svn['switches'];
+
+			if ($revision != '') {
+				$switches['revision'] = $revision;
+			}
+
+			$result = $svn['instance']->checkout->run($args, $switches);
 			return $result;
 		}
 
@@ -283,7 +290,9 @@
 			);
 			
 			$switches = $svn['switches'];
-			$switches['non-recursive'] = true;
+			if ($revision != '') {
+				$switches['revision'] = $revision;
+			}
 	
 			$result = $svn['instance']->export->run($args, $switches);
 			return $result;
@@ -410,13 +419,74 @@
 				$this->get_path($svn, $name)
 			);
 			$switches = $svn['switches'];
-			$switches['revision'] = $revision;
+
+			if ($revision != '') {
+				$switches['revision'] = $revision;
+			}
 
 			$result = $svn['instance']->update->run($args, $switches);
 			return $result;
 		}
 
 		// Start of customized SVN functions, these are not actually SVN commands but are very handy.
+		function svn_accept_cert($svn, $repository) {
+			$listargs = array(
+				$repository
+			);
+
+			$svn['switches']['non-interactive'] = false;
+
+			$result = $svn['instance']->list->run_interactive($listargs, $svn['switches']);
+			return $result;
+		}
+
+		function svn_checkunder($svn, $repository, $revision='HEAD') {
+			// This function is designed mainly to be able to
+			// sync up SVN versions and non-SVN versions,
+			// without messing up existing files. It does this
+			// by moving the templates to a safe location,
+			// checkout the SVN, then move the original
+			// templates back over the SVN version.
+
+			// Move the templates to a safe location.
+			$tempdir = tempnam($AR->dir->install . "/files/temp/", "svntemp");
+			unlink($tempdir);
+			mkdir($tempdir);
+
+			$tempdir .= "/";
+
+			echo "Tempdir: $tempdir\n";
+			$dir = $this->get_path($svn, '');
+			echo "Dir: $dir\n";
+
+			$dirhandle = opendir($dir);
+			while (false !== ($file = readdir($dirhandle))) {
+				if(is_file($dir . $file)) {
+					rename($dir . $file, $tempdir . $file);
+					echo "Moved $file\n";
+				}
+			}
+			closedir($dirhandle);
+			
+			echo "Checkout revision $revision<br>";
+			$this->svn_checkout($svn, $repository, $revision);
+
+			// Move the templates back to the original location
+			$dirhandle = opendir($tempdir);
+			while (false !== ($file = readdir($dirhandle))) {
+				if (is_file($tempdir . $file)) {
+					rename($tempdir . $file, $dir . $file);
+					touch($dir.$file);
+					echo "Replaced $file\n";
+				}
+			}
+			closedir($dirhandle);
+
+			echo "Removed $tempdir\n";
+			rmdir($tempdir);
+			
+		}
+			
 		function svn_mkdirs($svn, $repository) {
 			/* Create all subdirectories needed where needed, including all
 			   the need parent directories. This works by creating an empty
@@ -451,14 +521,11 @@
 			return true;
 		}
 
-		function svn_accept_cert($svn, $repository) {
-			$listargs = array(
-				$repository
+		function svn_rinfo($svn, $repository, $name='') {
+			$args = array(
+				$repository . $name
 			);
-
-			$svn['switches']['non-interactive'] = false;
-
-			$result = $svn['instance']->list->run_interactive($listargs, $svn['switches']);
+			$result = $svn['instance']->info->run($args, $svn['switches']);
 			return $result;
 		}
 
@@ -468,14 +535,6 @@
 				$repository . $name
 			);
 			$result = $svn['instance']->propget->run($args, $svn['switches']);
-			return $result;
-		}
-
-		function svn_rinfo($svn, $repository, $name='') {
-			$args = array(
-				$repository . $name
-			);
-			$result = $svn['instance']->info->run($args, $svn['switches']);
 			return $result;
 		}
 
