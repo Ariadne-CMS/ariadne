@@ -23,5 +23,15 @@
 		$fstore->svn_add($svn, $pinp_filename);
 		$result = $fstore->svn_commit($svn, $message, $fileinfo);
 		print_r($result);
+
+		if ($result === false) {
+			echo "Commit failed.<br>";
+			if (count($errs = $svnstack->getErrors())) {
+				foreach ($errs as $err) {
+					echo $err['message']."<br>\n";
+				}
+			}
+		}
+		flush();
 	}
 ?>

@@ -1,17 +1,18 @@
 <?php
   	include_once($this->store->get_config("code")."nls/winxp.".$this->reqnls);
 	
-	$ARnls['svn_checkout']		= "Checkout ";
-	$ARnls['svn_commit']		= "Commit ";
-	$ARnls['svn_config']	 	= "Configure ";
-	$ARnls['svn_diff']		= "Diff ";
-	$ARnls['svn_import']		= "Import ";
+	$ARnls['svn_checkunder']	= "Checkunder";
+	$ARnls['svn_checkout']		= "Checkout";
+	$ARnls['svn_commit']		= "Commit";
+	$ARnls['svn_config']	 	= "Configure";
+	$ARnls['svn_diff']		= "Diff";
+	$ARnls['svn_import']		= "Import";
 	$ARnls['svn_info']		= "SVN Info";
 	$ARnls['svn_notworkingcopy'] 	= "Not a working copy";
-	$ARnls['svn_revert']		= "Revert ";
+	$ARnls['svn_revert']		= "Revert";
 	$ARnls['svn_revision']		= "SVN Revision";
 	$ARnls['svn_unsvn']		= "Remove version control for ";
-	$ARnls['svn_update']		= "Update ";
+	$ARnls['svn_update']		= "Update";
 	$ARnls['xp_svn']		= "SVN Settings";
 
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
@@ -57,43 +58,45 @@
 
 		if ($this->CheckSilent("layout")) {
 			$skipsection=false;
-			if ($svn_revision)
-			echo "<a href=\"javascript:arshow('svn_diff','svn.tree.info.phtml')\">"
-				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/viewweb.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
-				.$ARnls["svn_info"]."</a><br />";
 
-			if ($svn_revision)
-			echo "<a href=\"javascript:arshow('svn_diff','svn.tree.diff.phtml')\">"
-				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/copy.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
-				.$ARnls["svn_diff"].$myName."</a><br />";
+			if ($svn_revision) {
+				echo "<a href=\"javascript:arshow('svn_diff','svn.tree.info.phtml')\">"
+					."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/viewweb.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
+					.$ARnls["svn_info"]."</a><br />";
 
-			echo "<a href=\"javascript:arshow('svn_checkout','svn.tree.checkout.phtml')\">"
-				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/import.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
-				.$ARnls["svn_checkout"].$myName."</a><br />";
+				echo "<a href=\"javascript:arshow('svn_diff','svn.tree.diff.phtml')\">"
+					."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/copy.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
+					.$ARnls["svn_diff"]." $myName</a><br />";
 
-			if ($svn_revision)
-			echo "<a href=\"javascript:arshow('svn_commit','svn.tree.commit.phtml')\">"
-				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/link.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
-				.$ARnls["svn_commit"].$myName."</a><br />";
+				echo "<a href=\"javascript:arshow('svn_commit','svn.tree.commit.phtml')\">"
+					."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/link.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
+					.$ARnls["svn_commit"]." $myName</a><br />";
 
-			echo "<a href=\"javascript:arshow('svn_import','svn.tree.import.phtml')\">"
-				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/export.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
-				.$ARnls["svn_import"].$myName."</a><br />";
+				echo "<a href=\"javascript:arshow('svn_revert','svn.tree.revert.phtml')\">"
+					."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/priority.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
+					.$ARnls["svn_revert"]." $myName</a><br />";
 
-			if ($svn_revision)
-			echo "<a href=\"javascript:arshow('svn_revert','svn.tree.revert.phtml')\">"
-				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/priority.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
-				.$ARnls["svn_revert"].$myName."</a><br />";
+				echo "<a href=\"javascript:arshow('svn_update','svn.tree.update.phtml')\">"
+					."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/new.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
+					.$ARnls["svn_update"]." $myName</a><br />";
 
-			if ($svn_revision)
-			echo "<a href=\"javascript:arshow('svn_update','svn.tree.update.phtml')\">"
-				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/new.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
-				.$ARnls["svn_update"].$myName."</a><br />";
+				echo "<a href=\"javascript:arshow('svn_unsvn','svn.tree.unsvn.phtml')\">"
+					."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/delete.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
+					.$ARnls["svn_unsvn"]." $myName</a><br />";
+			} else {
+				echo "<a href=\"javascript:arshow('svn_checkout','svn.tree.checkout.phtml')\">"
+					."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/import.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
+					.$ARnls["svn_checkout"]." $myName</a><br />";
 
-			if ($svn_revision)
-			echo "<a href=\"javascript:arshow('svn_unsvn','svn.tree.unsvn.phtml')\">"
-				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/delete.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
-				.$ARnls["svn_unsvn"].$myName."</a><br />";
+				echo "<a href=\"javascript:arshow('svn_import','svn.tree.import.phtml')\">"
+					."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/export.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
+					.$ARnls["svn_import"]." $myName</a><br />";
+
+				echo "<a href=\"javascript:arshow('svn_checkunder','svn.tree.checkunder.phtml')\">"
+					."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/import.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
+					.$ARnls["svn_checkunder"]." $myName</a><br />";
+
+			}
 
 		}
 

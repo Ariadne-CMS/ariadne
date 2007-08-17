@@ -5,9 +5,10 @@
 		if (! (isset($username) && isset($password)) ) {
 			?>
 				<form method="post">
-					<input type="text" name="username">
-					<input type="password" name="password">
-					<input type="submit" value="checkout">
+					SVN user: <input type="text" name="username">
+					SVN pass: <input type="password" name="password">
+					SVN revision: <input type="text" name="revision">
+					<input type="submit" value="update">
 				</form>
 			<?php
 		} else {

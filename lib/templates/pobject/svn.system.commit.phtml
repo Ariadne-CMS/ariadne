@@ -35,16 +35,15 @@
 		}
 
 		$result = $fstore->svn_commit($svn, $message, $fileinfo);
-		if ($result) {
-			print_r($result);
-/*		} else {
+		print_r($result);
+		if ($result === false) {
 			echo "Commit failed.<br>";
 			if (count($errs = $svnstack->getErrors())) {
 				foreach ($errs as $err) {
 					echo $err['message']."<br>\n";
 				}
 			}
-*/		}
+		}
 		flush();
 	}
 ?>

@@ -1,49 +1,21 @@
 <?php
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		$this->resetloopcheck();
-		// move the files to a safe location
 
-                if (isset($repository)) {
-                        $fstore = $this->store->get_filestore_svn("templates");
-                        $svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
-                        $svn    = $fstore->connect($this->id, $username, $password);
+		if (isset($repository)) {
+			$repository = rtrim($repository, "/") . "/";
+			$fstore = $this->store->get_filestore_svn("templates");
+			$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
+			$svn	= $fstore->connect($this->id, $username, $password);
 
-			$tempdir = tempnam($AR->dir->install . "/files/temp/", "svntemp");
-			unlink($tempdir);
-			mkdir($tempdir);
-
-			$tempdir .= "/";
-
-			echo "Tempdir: $tempdir\n";
-			$dir = $fstore->get_path($svn, '');
-			echo "Dir: $dir\n";
-
-			$dirhandle = opendir($dir);
-			while (false !== ($file = readdir($dirhandle))) {
-				if(is_file($dir . $file)) {
-					rename($dir . $file, $tempdir . $file);
-					echo "Moved $file\n";
-				}
+			if ($svn['info']['Revision']) {
+				echo $this->path . " is already under version control.<br>";
+				return;
 			}
-			closedir($dirhandle);
 
-			// Check out at the given location
-			$this->call("svn.system.checkout.phtml", $arCallArgs);
-
-			// move them back over the checked out version.
-			
-			$dirhandle = opendir($tempdir);
-			while (false !== ($file = readdir($dirhandle))) {
-				if (is_file($tempdir . $file)) {
-					rename($tempdir . $file, $dir . $file);
-					touch($dir.$file);
-					echo "Replaced $file\n";
-				}
-			}
-			closedir($dirhandle);
-
-			echo "Removed $tempdir\n";
-			rmdir($tempdir);
+			$fstore->svn_accept_cert($svn, $repository);
+			$result = $fstore->svn_checkunder($svn, $repository, $revision);
+			print_r($result);
 		}
 	}
 ?>

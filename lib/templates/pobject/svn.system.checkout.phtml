@@ -15,7 +15,7 @@
 
 			$fstore->svn_accept_cert($svn, $repository);
 
-			$result = $fstore->svn_checkout($svn, $repository);
+			$result = $fstore->svn_checkout($svn, $repository, $revision);
 			print_r($result);
 
 			if ($result) {

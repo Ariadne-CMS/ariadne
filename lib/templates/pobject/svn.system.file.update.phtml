@@ -8,7 +8,7 @@
 
 		$filename = $type . "." . $function . "." . $language . ".pinp";
 
-		$result = $fstore->svn_update($svn, $filename);
+		$result = $fstore->svn_update($svn, $filename, $revision);
 
 		print_r($result);
 
@@ -28,13 +28,14 @@
 					'svn'		=> $svn
 				)
 			);
-/*		} else {
+		}
+		if ($result === false) {
 			echo "Update failed.<br>";
 			if (count($errs = $svnstack->getErrors())) {
 				foreach ($errs as $err) {
 					echo $err['message']."<br>\n";
 				}
 			}
-*/		}
+		}
 	}
 ?>

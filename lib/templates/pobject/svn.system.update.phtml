@@ -6,7 +6,8 @@
 		$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
 		$svn	= $fstore->connect($this->id, $username, $password);
 
-		$result = $fstore->svn_update($svn);
+		echo "Revision: [$revision]<br>";
+		$result = $fstore->svn_update($svn, '', $revision);
 
 		print_r($result);
 
@@ -26,13 +27,14 @@
 					'svn'		=> $svn
 				)
 			);
-/*		} else {
+		}
+		if ($result === false) {
 			echo "Update failed.<br>";
 			if (count($errs = $svnstack->getErrors())) {
 				foreach ($errs as $err) {
 					echo $err['message']."<br>\n";
 				}
 			}
-*/		}
+		}
 	}
 ?>
