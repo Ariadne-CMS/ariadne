@@ -48,6 +48,7 @@
 				$arCallArgs['dirlist'] = $dirlist;
 				$arCallArgs['svn'] = $svn;
 				$arCallArgs['fstore'] = $fstore;
+				$arCallArgs['repository'] = $repository;
 				$this->call("svn.system.checkout.dirs.phtml", $arCallArgs);
 			}
 			flush();

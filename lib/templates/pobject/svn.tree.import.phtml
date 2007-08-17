@@ -14,7 +14,7 @@ if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 			<?php
 	} else {
 		set_time_limit(0);
-		$this->find($this->path, 'order by path', "svn.system.import.phtml", $arCallArgs);
+		$this->call("svn.system.import.recursive.phtml", $arCallArgs);
 	}
 }
 ?>
