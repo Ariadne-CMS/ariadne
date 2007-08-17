@@ -1,0 +1,14 @@
+<?php
+	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		$this->resetloopcheck();
+
+		$fstore	= $this->store->get_filestore_svn("templates");
+		$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
+		$svn	= $fstore->connect($this->id, $username, $password);
+
+		$filename = $type . "." . $function . "." . $language . ".pinp";
+			
+		$status = $fstore->svn_resolved($svn, $filename);
+		print_r($status);
+	}
+?>

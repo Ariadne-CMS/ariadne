@@ -13,7 +13,9 @@
 		if ($result) {
 			$templates = array();
 			foreach ($result as $item) {
-				$templates[] = $item['name'];
+				if ($item['status'] != "C") {
+					$templates[] = $item['name'];
+				}
 			}
 
 			$this->call(
@@ -24,6 +26,13 @@
 					'svn'		=> $svn
 				)
 			);
-		}
+/*		} else {
+			echo "Update failed.<br>";
+			if (count($errs = $svnstack->getErrors())) {
+				foreach ($errs as $err) {
+					echo $err['message']."<br>\n";
+				}
+			}
+*/		}
 	}
 ?>

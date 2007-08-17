@@ -1,0 +1,16 @@
+<div style="width: 100%; height: 90%; overflow: auto">
+<pre>
+<?php
+	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		$this->call("svn.system.file.resolved.phtml", $arCallArgs);
+	}
+?>
+</pre>
+</div>
+<form method="post" action="edit.object.layout.form.phtml">
+	<input type="submit" value="back">
+	<input type="hidden" name="mode" value="edit">
+	<input type="hidden" name="type" value="<?php echo $type;?>">
+	<input type="hidden" name="language" value="<?php echo $language;?>">
+	<input type="hidden" name="function" value="<?php echo $function;?>">
+</form>

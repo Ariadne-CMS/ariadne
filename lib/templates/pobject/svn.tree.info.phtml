@@ -1,0 +1,11 @@
+<div style="width: 100%; height: 90%; overflow: auto">
+<pre>
+<?php
+	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		set_time_limit(0);
+		//$this->call($this->path, "svn.system.info.phtml", $arCallArgs);
+		$this->call("svn.system.info.phtml", $arCallArgs);
+	}
+?>
+</pre>
+</div>
