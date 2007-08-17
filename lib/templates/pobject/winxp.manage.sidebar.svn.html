@@ -6,7 +6,7 @@
 	$ARnls['svn_config']	 	= "Configure ";
 	$ARnls['svn_diff']		= "Diff ";
 	$ARnls['svn_import']		= "Import ";
-	$ARnls['svn_info']		= "SVN Info for ";
+	$ARnls['svn_info']		= "SVN Info";
 	$ARnls['svn_notworkingcopy'] 	= "Not a working copy";
 	$ARnls['svn_revert']		= "Revert ";
 	$ARnls['svn_revision']		= "SVN Revision";
@@ -60,7 +60,7 @@
 			if ($svn_revision)
 			echo "<a href=\"javascript:arshow('svn_diff','svn.tree.info.phtml')\">"
 				."<img align=\"bottom\" src=\"".$AR->dir->images."winxp/viewweb.png\" border=\"0\" width=\"16\" height=\"16\" vspace=\"1\"/>&nbsp;&nbsp;"
-				.$ARnls["svn_info"].$myName."</a><br />";
+				.$ARnls["svn_info"]."</a><br />";
 
 			if ($svn_revision)
 			echo "<a href=\"javascript:arshow('svn_diff','svn.tree.diff.phtml')\">"
