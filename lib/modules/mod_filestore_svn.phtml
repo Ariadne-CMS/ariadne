@@ -16,13 +16,14 @@
 
 	svn_add($svn, $name)
 	svn_blame($svn, $name)
-	svn_checkout($svn, $revision)
+	svn_cat($svn, $name)
+	svn_checkout($svn, $repository, $revision)
 	svn_cleanup($svn)
 	svn_commit($svn, $comment, $fileinfo)
 	svn_delete($svn, $name, $comment)
 	svn_diff($svn, $name)
-	svn_export($svn, $revision)
-	svn_import($svn, $comment)
+	svn_export($svn, $repository, $revision)
+	svn_import($svn, $repository, $comment)
 	svn_info($svn, $name)
 	svn_list($svn)
 	svn_log($svn, $name)
@@ -33,12 +34,14 @@
 	svn_resolved($svn, $name)
 	svn_revert($svn, $name)
 	svn_status($svn, $name)
-	svn_update($svn, $name)
+	svn_update($svn, $name, $revision)
 
 	Custom commands:
-	svn_mkdirs($svn)
-	svn_accept_cert($svn)
-
+	svn_mkdirs($svn, $repository)
+	svn_accept_cert($svn, $repository)
+	svn_rpropget($svn, $repository, $propkey, $name)
+	svn_rinfo($svn, $repository, $name)
+	
 	The following functions have not yet been implemented:
 	svn_copy
 	svn_merge
@@ -119,7 +122,7 @@
 
 			$svn_info = $svn_instance->info->run(
 				array($this->make_path($id, '')), 
-				$svn_swithces
+				$svn_switches
 			);
 
 			$svn = array(
@@ -135,6 +138,26 @@
 		function get_path($svn, $name) {
 			$path = $this->make_path($svn['object_id'], $name);
 			return $path;
+		}
+
+		function rmdir_rf($path) {
+			$dirhandle = opendir($path);
+			while ($file = readdir($dirhandle)) {
+				if ($file == "." || $file == "..") {
+					continue;
+				}
+
+ 				if (is_dir($path . $file)) {
+					echo "Dir: $file<br>";
+					$this->rmdir_rf($path .  $file . "/");	
+				} else {
+					echo "Unlink $file<br>";
+					unlink($path . $file);
+				} 		
+			}
+			echo "rmdir $path<br>";
+			rmdir($path);
+			closedir($dirhandle);			
 		}
 
 		/* Start of the SVN functions. */
@@ -234,7 +257,7 @@
 			return $result;
 		}
 
-/*		function svn_delete($svn, $name, $comment='') {
+		function svn_delete($svn, $name, $comment='') {
 			$repo = $svn['repository'];
 			$svn['switches']['message'] = $comment;
 			$args = array(
@@ -244,7 +267,6 @@
 			unset($svn['switches']['message']);
 			return $result;
 		}
-*/
 
 		function svn_diff($svn, $name='') {
 			$args = array(
@@ -383,11 +405,14 @@
 			}
 		}
 
-		function svn_update($svn, $name='') {
+		function svn_update($svn, $name='', $revision='HEAD') {
 			$args = array(
 				$this->get_path($svn, $name)
 			);
-			$result = $svn['instance']->update->run($args, $svn['switches']);
+			$switches = $svn['switches'];
+			$switches['revision'] = $revision;
+
+			$result = $svn['instance']->update->run($args, $switches);
 			return $result;
 		}
 
@@ -453,28 +478,6 @@
 			$result = $svn['instance']->info->run($args, $svn['switches']);
 			return $result;
 		}
-
-		function rmdir_rf($path) {
-			$dirhandle = opendir($path);
-			while ($file = readdir($dirhandle)) {
-				if ($file == "." || $file == "..") {
-					continue;
-				}
-
- 				if (is_dir($path . $file)) {
-					echo "Dir: $file<br>";
-					$this->rmdir_rf($path .  $file . "/");	
-				} else {
-					echo "Unlink $file<br>";
-					unlink($path . $file);
-				} 		
-			}
-			echo "rmdir $path<br>";
-			rmdir($path);
-			closedir($dirhandle);			
-		}
-
-
 
 		function svn_unsvn($svn) {
 			$path = $this->get_path($svn, '') . ".svn/";
