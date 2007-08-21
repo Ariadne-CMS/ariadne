@@ -5,7 +5,11 @@
 		$fstore	= $this->store->get_filestore_svn("templates");
 		$svn	= $fstore->connect($this->id, $repository, $username, $password);
 
-		$status = $fstore->svn_diff($svn);
+		if ($type && $function && $language) {
+			$filename = $type . "." . $function . "." . $language . ".pinp";
+		}
+
+		$status = $fstore->svn_diff($svn, $filename);
 
 		echo(htmlspecialchars($status));
 	}
