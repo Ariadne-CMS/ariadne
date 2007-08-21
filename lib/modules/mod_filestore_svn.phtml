@@ -63,15 +63,20 @@
 		/* public */
 
 		function filestore_svn($name, $root) {
+			global $AR;
 			filestore::filestore($name, $root);
 
 			// Setup error handling -- always a good idea!
 			$this->svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
 
+			if (!isset($AR->SVN->path)) {
+				$AR->SVN->path = '/usr/bin/svn';
+			}
+
 			// Set up runtime options. 
 			$this->svn_options = array(
 				'fetchmode'		=> VERSIONCONTROL_SVN_FETCHMODE_ARRAY, 
-				'svn_path'		=> '/usr/bin/svn'
+				'svn_path'		=> $AR->SVN->path
 			);
 
 		}
@@ -258,23 +263,23 @@
 				$args[] = $this->get_path($svn, '');
 			}
 
-			$svn['switches']['message'] = $comment;
-			$result = $svn['instance']->commit->run($args, $svn['switches']);
-			unset($svn['switches']['message']);
+			$switches = $svn['switches'];
+			$switches['message'] = $comment;
+			$result = $svn['instance']->commit->run($args, $switches);
 			return $result;
 		}
 
-		function svn_delete($svn, $name, $comment='') {
+/*		function svn_delete($svn, $name, $comment='') {
 			$repo = $svn['repository'];
-			$svn['switches']['message'] = $comment;
 			$args = array(
 				$repo . "_" . $name,
 			);
-			$result = $svn['instance']->delete->run($args, $svn['switches']);
-			unset($svn['switches']['message']);
+			$switches = $svn['switches'];
+			$switches['message'] = $comment;
+			$result = $svn['instance']->delete->run($args, $switches);
 			return $result;
 		}
-
+*/
 		function svn_diff($svn, $name='') {
 			$args = array(
 				$this->get_path($svn, $name)
@@ -303,9 +308,9 @@
 				$this->get_path($svn, ''),
 				$repository
 			);
-			$svn['switches']['message'] = $comment;
-			$result = $svn['instance']->import->run($args, $svn['switches']);
-			unset($svn['switches']['message']);
+			$switches = $svn['switches'];
+			$switches['message'] = $comment;
+			$result = $svn['instance']->import->run($args, $switches);
 			return $result;
 		}
 
@@ -434,9 +439,10 @@
 				$repository
 			);
 
-			$svn['switches']['non-interactive'] = false;
+			$switches = $svn['switches'];
+			$switches['non-interactive'] = false;
 
-			$result = $svn['instance']->list->run_interactive($listargs, $svn['switches']);
+			$result = $svn['instance']->list->run_interactive($listargs, $switches);
 			return $result;
 		}
 
@@ -513,9 +519,9 @@
 					$tempdir,
 					$repository
 				);
-				$svn['switches']['message'] = "Repository creation";
-				$result = $svn['instance']->import->run($args, $svn['switches']);
-				unset($svn['switches']['message']);
+				$switches = $svn['switches'];
+				$switches['message'] = "Repository creation";
+				$result = $svn['instance']->import->run($args, $switches);
 				rmdir($tempdir);
 			}
 			return true;
