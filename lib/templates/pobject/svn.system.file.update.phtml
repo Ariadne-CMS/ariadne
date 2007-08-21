@@ -3,7 +3,6 @@
 		$this->resetloopcheck();
 
 		$fstore	= $this->store->get_filestore_svn("templates");
-		$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
 		$svn	= $fstore->connect($this->id, $username, $password);
 
 		$filename = $type . "." . $function . "." . $language . ".pinp";
@@ -31,7 +30,7 @@
 		}
 		if ($result === false) {
 			echo "Update failed.<br>";
-			if (count($errs = $svnstack->getErrors())) {
+			if (count($errs = $fstore->svnstack->getErrors())) {
 				foreach ($errs as $err) {
 					echo $err['message']."<br>\n";
 				}
