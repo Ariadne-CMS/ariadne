@@ -1049,7 +1049,7 @@ class pobject extends object { // pobject class definition
 		$path=$this->make_path($path);
 		$parent=$this->make_path($path.'../');
 		if (!$ARConfig->cache[$path]) {
-			if ($this->exists($path)) {
+			if (($this->path == $path && !$this->arIsNewObject) || $this->exists($path)) {
 				$this->pushContext(Array("scope" => "php"));
 				$this->get($path, "system.get.config.phtml");
 				$this->popContext();
