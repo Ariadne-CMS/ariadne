@@ -39,6 +39,8 @@
 
 			// Run update on the existing subdirs.
 			$arCallArgs['repoPath'] = $this->path;
+			$arCallArgs['repository'] = $repository;
+			
 			$this->ls($this->path, "svn.system.update.recursive.phtml", $arCallArgs);
 
 			// Create the dirs, restore them if needed.

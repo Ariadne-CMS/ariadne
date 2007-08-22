@@ -49,6 +49,7 @@
 
 			// Run checkout on the existing subdirs.
 			$arCallArgs['repoPath'] = $this->path;
+			$arCallArgs['repository'] = $repository;
 			$this->ls($this->path, "svn.system.checkout.recursive.phtml", $arCallArgs);
 
 			// Create the dirs and checkout them if needed.
@@ -57,7 +58,6 @@
 				$arCallArgs['dirlist'] = $dirlist;
 				$arCallArgs['svn'] = $svn;
 				$arCallArgs['fstore'] = $fstore;
-				$arCallArgs['repository'] = $repository;
 				$this->call("svn.system.checkout.dirs.phtml", $arCallArgs);
 			}
 			flush();
