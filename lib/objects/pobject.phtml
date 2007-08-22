@@ -1049,7 +1049,7 @@ class pobject extends object { // pobject class definition
 		$path=$this->make_path($path);
 		$parent=$this->make_path($path.'../');
 		if (!$ARConfig->cache[$path]) {
-			if (!$this->arIsNewObject) {
+			if ($this->exists($path)) {
 				$this->pushContext(Array("scope" => "php"));
 				$this->get($path, "system.get.config.phtml");
 				$this->popContext();
@@ -1119,10 +1119,11 @@ class pobject extends object { // pobject class definition
 				$arLibraryPath = $context['arLibraryPath'];
 			}
 			$arCallFunction = substr($arCallFunction, $libpos+1);
-			debug("CheckConfig: searching for lib: '$arLibrary'; '$arCallFunction' from '".$this->path."'");
+			debug("getPinpTemplate: searching for lib: '$arLibrary'; '$arCallFunction' from '".$this->path."'");
 			$config = $this->loadConfig();
 			if ($config->libraries[$arLibrary]) {
 				//echo $config->libraries[$library];
+				debug("getPinpTemplate: found library '$arLibrary'. Searching for $arCallFunction on '".$config->libraries[$arLibrary]."' up to '$top'");
 				$result = $this->getPinpTemplate($arCallFunction, $config->libraries[$arLibrary], $top, true);
 				$result["arLibrary"] = $arLibrary;
 				$result["arLibraryPath"] = $config->libraries[$arLibrary];
@@ -1137,8 +1138,8 @@ class pobject extends object { // pobject class definition
 		} else {
 			$arCallType=$this->type;
 		}
-		debug("getPinpTemplate: searching for template ($arCallType::$arCallFunction) on $path, start with $arStartType; ");
 		$path = $this->make_path($path);
+		debug("getPinpTemplate: searching for template ($arCallType::$arCallFunction) on $path, start with $arStartType; ");
 
 
 
@@ -1147,6 +1148,7 @@ class pobject extends object { // pobject class definition
 			$curr_templates = $this->data->config->pinp;
 		} else {
 			$config = $this->loadConfig($path);
+			debug("getPinpTemplate: config for '$path' loaded' (inLibrary: $inLibrary)");
 			$curr_templates = $config->templates;
 		}
 
@@ -1191,6 +1193,7 @@ class pobject extends object { // pobject class definition
 				}
 			}
 			if ($inLibrary) {
+				debug("hmm? path: $checkpath; type: ".$ARConfig->cache[$checkpath]->type.";");
 				if ($ARConfig->cache[$checkpath]->type == 'psection') {
 					debug("CheckConfig: quiting library search as we have encountered our end point; $checkpath");
 					// break search operation when we have searched a 
@@ -1448,7 +1451,7 @@ class pobject extends object { // pobject class definition
 						debug("pobject: CheckConfig: no such file: ".$template["arTemplateId"].$template["arCallTemplate"]."","all");
 					}
 				} else {
-					debug("CheckConfig: no arCallTemplate","object");
+					debug("CheckConfig: no arCallTemplate ($arCallFunction from '$this->path')","object");
 				}
 
 			}
