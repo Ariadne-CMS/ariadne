@@ -111,6 +111,16 @@
 			return $result;
 		}
 
+		function _uasort(&$array, $callback) {
+			$result = false;
+			if (pinp_util::is_callback($callback)) {
+				$result =  uasort($array, $callback);
+			} else {
+				$this->error = "'$callback' is not a valid callback function";
+			}
+			return $result;
+		}
+
 		function _path_escape($path) {
 			return parent::path_escape($path);
 		}
