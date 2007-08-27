@@ -16,14 +16,17 @@
 	******************************************************************/
 
 	debug($this->type."/system.get.config.phtml ".$this->path,"class");
-	$this->call("pdir::system.get.config.phtml",$arCallArgs);
-	$configcache=$ARConfig->cache[$this->path];
-	if ($data->thumbwidth || $data->thumbheight) {
-		$configcache->thumb["width"]=$data->thumbwidth;
-		$configcache->thumb["height"]=$data->thumbheight;
+	$context = $this->getContext(ARCALLINGCONTEXT);
+	if (!$ARConfig->cache[$this->path] && $context["scope"] != "pinp") {
+		$this->call("pdir::system.get.config.phtml",$arCallArgs);
+		$configcache=$ARConfig->cache[$this->path];
+		if ($data->thumbwidth || $data->thumbheight) {
+			$configcache->thumb["width"]=$data->thumbwidth;
+			$configcache->thumb["height"]=$data->thumbheight;
+		}
+		if ($data->thumbcolor) {
+			$configcache->thumb["color"]=$data->thumbcolor;
+		}
+		$ARConfig->cache[$this->path]=$configcache;
 	}
-	if ($data->thumbcolor) {
-		$configcache->thumb["color"]=$data->thumbcolor;
-	}
-	$ARConfig->cache[$this->path]=$configcache;
 ?>
