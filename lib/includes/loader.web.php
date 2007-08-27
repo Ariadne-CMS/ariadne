@@ -365,7 +365,7 @@
 		return $result;
 	}
 
-	function ldGetServerVar($server_var) {
+	function ldGetServerVar($server_var = "") {
 		global $HTTP_SERVER_VARS;
 		if (!$server_var) {
 			return $HTTP_SERVER_VARS;
