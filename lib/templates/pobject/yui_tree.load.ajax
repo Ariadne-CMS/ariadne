@@ -1,0 +1,45 @@
+<?php
+	function js_serialize($nodes) {
+		$node_info = array(
+			"path", 
+			"icon", 
+			"pre", 
+			"shortcut", 
+			"name"
+		);
+
+		$result = "{'Nodes':[";
+		if (is_array($nodes)) {
+			while (list($key, $node)=each($nodes)) {
+				$result .= "{";
+				foreach ($node_info as $key) {
+					$result .= "'$key': '" . AddCSlashes($node[$key], ARESCAPE) . "',";
+				}
+				$result = substr($result, 0, -1);
+
+				$result .= "},";
+				$comma_to_strip = 1;
+			}
+
+			// Strip the last comma and newline.
+			if ($comma_to_strip) {
+				$result = substr($result, 0, -1);
+			}
+		}
+		$result .= "]}";
+
+		return $result;
+	}
+
+	$this->store->accessdenied='Access Denied';
+	$ARCurrent->nolangcheck = true;
+
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		flush();
+		$criteria["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
+		$criteria["object"]["implements"]["="]="'pdir'";
+
+		$folders=$this->find("",$criteria,"system.get.folder.phtml",$args);
+		echo js_serialize($folders);
+	}
+?>
