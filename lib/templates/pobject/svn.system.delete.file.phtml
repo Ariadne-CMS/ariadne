@@ -1,0 +1,40 @@
+<?php
+	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+		$this->resetloopcheck();
+
+		$fstore	= $this->store->get_filestore_svn("templates");
+		$svn	= $fstore->connect($this->id, $repository, $username, $password);
+
+		if ($type && $function && $language) {
+			$filename = $type . "." . $function . "." . $language . ".pinp";
+
+			$result = $fstore->svn_delete($svn, $filename);
+
+			if ($result) {
+				print_r($result);
+				$this->call("system.delete.layout.phtml", Array(
+							"type"		=> $type,
+							"function"	=> $function,
+							"language"	=> $language
+							));
+
+				if ($this->error) {
+					echo "Error deleting template\n";
+					print_r($this->error);
+					// FIXME: do something useful with errors.
+				}
+			}
+			if ($result === false) {
+				echo "SVN delete failed.<br>";
+				if (count($errs = $fstore->svnstack->getErrors())) {
+					foreach ($errs as $err) {
+						echo $err['message']."<br>\n";
+					}
+				}
+			}
+			flush();
+
+			echo(htmlspecialchars($result));
+		}
+	}
+?>
