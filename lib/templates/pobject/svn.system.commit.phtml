@@ -42,6 +42,18 @@
 					echo $err['message']."<br>\n";
 				}
 			}
+		} elseif ( $pinp ) {
+			foreach( $pinp as $type => $values ) {
+				foreach( $values as $function => $templatelist ) {
+					foreach( $templatelist as $language => $node ) {
+						$pinp_filename = $type . "." . $function . "." . $language . ".pinp";
+						if( !$fstore->exists($this->id, $pinp_filename ) ) {
+							$this->resetloopcheck();
+							$this->call( "system.delete.layout.phtml", array( "type" => $type, "language" => $language, "function" => $function ) );
+						}
+					}
+				}
+			}
 		}
 		flush();
 	}

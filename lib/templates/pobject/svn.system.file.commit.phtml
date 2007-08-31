@@ -30,6 +30,10 @@
 					echo $err['message']."<br>\n";
 				}
 			}
+		} else { // succes checken of dit bestnad nog bestaat op disk
+			if( !$fstore->exists($this->id, $pinp_filename) ) {
+				$this->call( "system.delete.layout.phtml", array( "type" => $type, "language" => $language, "function" => $function ) );
+			}
 		}
 		flush();
 	}
