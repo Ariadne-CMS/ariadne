@@ -269,17 +269,15 @@
 			return $result;
 		}
 
-/*		function svn_delete($svn, $name, $comment='') {
-			$repo = $svn['repository'];
+		function svn_delete($svn, $name='') {
 			$args = array(
-				$repo . "_" . $name,
-			);
+				$this->get_path($svn, $name);
+			};
 			$switches = $svn['switches'];
-			$switches['message'] = $comment;
 			$result = $svn['instance']->delete->run($args, $switches);
 			return $result;
 		}
-*/
+
 		function svn_diff($svn, $name='') {
 			$args = array(
 				$this->get_path($svn, $name)
