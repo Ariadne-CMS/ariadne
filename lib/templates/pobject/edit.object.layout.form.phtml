@@ -390,6 +390,13 @@ function insertTab(event,obj) {
 		<input type="submit" name="svn_file_revert" value="Revert">
 	</form>
 
+	<form style="float: left; margin-right: 5px;" action="svn.layout.file.delete.phtml">
+		<input type="hidden" name="language" value="<?php echo $language;?>">
+		<input type="hidden" name="type" value="<?php echo $type;?>">
+		<input type="hidden" name="function" value="<?php echo $function;?>">
+		<input type="submit" name="svn_file_delete" value="Delete">
+	</form>
+
 	<form style="float: left; margin-right: 5px;" action="svn.layout.file.commit.phtml">
 		<input type="hidden" name="language" value="<?php echo $language;?>">
 		<input type="hidden" name="type" value="<?php echo $type;?>">
