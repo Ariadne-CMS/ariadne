@@ -767,6 +767,11 @@ class pobject extends object { // pobject class definition
 		return $this->store->load_properties($this->id);
 	}
 
+	function _load_properties() {
+		debug("pobject: load_properties()","object");
+		return $this->store->load_properties($this->id);
+	}
+
 	function load_property($property) {
 		debug("pobject: load_property($property)","object");
 		return $this->store->load_property($this->id,$property);
@@ -1072,6 +1077,23 @@ class pobject extends object { // pobject class definition
 		return $config;
 	}
 
+
+	// TODO: look for a way to merge loadConfig and loadUserConfig into one function
+
+	function loadUserConfig($path='') {
+	global $ARConfig;
+		$path = $this->make_path($path);
+		$parent = $this->make_path($path.'../');
+
+		$this->loadConfig($path);
+		if (!$ARConfig->pinpcache[$path]) {
+			$config = $ARConfig->pinpcache[$parent];
+		} else {
+			$config = $ARConfig->pinpcache[$path];
+		}
+		return $config;
+	}
+
 	function loadLibrary($name, $path) {
 		global $ARConfig;
 		$path=$this->make_path($path);
@@ -1117,16 +1139,18 @@ class pobject extends object { // pobject class definition
 				$context = $this->getContext(1);
 				$arLibrary = $context['arLibrary'];
 				$arLibraryPath = $context['arLibraryPath'];
+			} else {
+				$config = $this->loadConfig();
+				$arLibraryPath = $config->libraries[$arLibrary];
 			}
 			$arCallFunction = substr($arCallFunction, $libpos+1);
 			debug("getPinpTemplate: searching for lib: '$arLibrary'; '$arCallFunction' from '".$this->path."'");
-			$config = $this->loadConfig();
-			if ($config->libraries[$arLibrary]) {
+			if ($arLibraryPath) {
 				//echo $config->libraries[$library];
 				debug("getPinpTemplate: found library '$arLibrary'. Searching for $arCallFunction on '".$config->libraries[$arLibrary]."' up to '$top'");
-				$result = $this->getPinpTemplate($arCallFunction, $config->libraries[$arLibrary], $top, true, &$arSuperContext);
+				$result = $this->getPinpTemplate($arCallFunction, $arLibraryPath, $top, true, &$arSuperContext);
 				$result["arLibrary"] = $arLibrary;
-				$result["arLibraryPath"] = $config->libraries[$arLibrary];
+				$result["arLibraryPath"] = $arLibraryPath;
 			} else {
 				debug("CheckConfig: library '$arLibrary' not in config");
 			}
@@ -1228,7 +1252,7 @@ class pobject extends object { // pobject class definition
 								$arLibraryPath = $path;
 								$arType = $arCallTemplateType;
 								$lastcheckedpath = $checkpath = $arCallTemplatePath;
-								debug("CheckConfig: found $arCallFunction in library $arLibrary", "all");
+								debug("CheckConfig: found $arCallFunction in library $arLibrary (arCallTemplatePath: ".serialize($arCallTemplatePath).")", "all");
 								break; // jump out of the foreach loop
 							}
 						}
@@ -2511,6 +2535,10 @@ class pobject extends object { // pobject class definition
 
 	function _loadConfig($path='') {
 		return $this->loadConfig($path);
+	}
+
+	function _loadUserConfig($path='') {
+		return $this->loadUserConfig($path);
 	}
 
 	function _loadLibrary($name, $path) {
