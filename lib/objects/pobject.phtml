@@ -1047,6 +1047,20 @@ class pobject extends object { // pobject class definition
 		return $result;
 	}
 
+	function resetConfig($path='') {
+	global $ARConfig;
+		$path = $this->make_path($path);
+		debug("resetConfig: $path");
+		if ($ARConfig->cache[$path]) {
+			foreach ($ARConfig->cache as $cachepath => $cache) {
+				if (strpos($cachepath, $path) === 0) {
+					debug("resetConfig: removing configcache from $cachepath");
+					unset($ARConfig->cache[$cachepath]);
+				}
+			}
+		}
+	}
+
 	function loadConfig($path='') {
 	global $ARConfig, $ARConfigChecked;
 		$configChecked = $ARConfigChecked;
