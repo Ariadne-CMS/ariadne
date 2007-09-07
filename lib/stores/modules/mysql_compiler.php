@@ -88,6 +88,12 @@
 				}
 			break;
 			case 'string':
+				$result = $node["value"];
+				if ($escape_chars) {
+					$result = ereg_replace('([^\\])_', '\\1\_', $result);
+				}
+				return $result;
+			break;
 			case 'float':
 			case 'int':
 				$result=$node["value"];
@@ -131,6 +137,7 @@
  					case '~=':
 					case '=~':
 					case '=~~':
+						$likeOp = true;
 						$operator=$not."LIKE";
 						/* double tildes indicate case-sensitive */
 						if (strlen($operator)==3) {
@@ -180,7 +187,11 @@
 				}
 				if ($node["left"]["id"]!=="implements") {
 					$left=$this->compile_tree($node["left"]);
-					$right=$this->compile_tree($node["right"]);
+					if ($likeOp) {
+						$right=$this->compile_tree($node["right"], Array('escape_chars' => true));
+					} else {
+						$right=$this->compile_tree($node["right"]);
+					}
 					/* lastchanged == unixtimestamp -> lastchanged == 200201.. */
 					if ($node["left"]["field"]=="lastchanged") {
 						$right = date("YmdHis", $right);
