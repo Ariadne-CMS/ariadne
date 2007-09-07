@@ -1,5 +1,5 @@
 <?php
-	DEFINE(CAPTCHA_TTF_FOLDER, '/var/lib/defoma/x-ttcidfont-conf.d/dirs/TrueType/');
+	DEFINE(CAPTCHA_TTF_FOLDER, $this->store->get_config('files').'/fonts/');
 
 	require_once($this->store->get_config('code')."modules/mod_captcha/hn_captcha.class.x1.php");
 
@@ -42,12 +42,16 @@
 					'TTF_folder'     => CAPTCHA_TTF_FOLDER, 
 		                                // mixed (array or string): basename(s) of TrueType-Fontfiles
 					'TTF_RANGE'      => Array(
-											'Arial_Bold.ttf',
-											'Courier_New_Bold.ttf',
-											'Comic_Sans_MS_Bold.ttf',
-											'Georgia_Bold.ttf',
-											'Times_New_Roman_Bold.ttf',
-											'Trebuchet_MS_Bold.ttf'
+											'andalemo.ttf',
+											'arial.ttf',
+											'ariblk.ttf',
+											'comic.ttf',
+											'cour.ttf',
+											'georgia.ttf',
+											'impact.ttf',
+											'times.ttf',
+											'trebuc.ttf',
+											'verdana.ttf',
 					),
 
 					'chars'          => 5,       // integer: number of chars to use for ID
