@@ -1138,7 +1138,7 @@ class pobject extends object { // pobject class definition
 	}
 
 
-	function getPinpTemplate($arCallFunction='view.html', $path=".", $top="", $inLibrary=false, $arSuperContext="") {
+	function getPinpTemplate($arCallFunction='view.html', $path=".", $top="", $inLibrary = null, $arSuperContext="") {
 	global $ARCurrent, $ARConfig, $AR;
 		debug("getPinpTemplate: function: $arCallFunction; path: $path; top: $top; inLib: $inLibrary; startType: $arStartType");
 		$result = Array();
@@ -1162,11 +1162,12 @@ class pobject extends object { // pobject class definition
 			if ($arLibraryPath) {
 				//echo $config->libraries[$library];
 				debug("getPinpTemplate: found library '$arLibrary'. Searching for $arCallFunction on '".$config->libraries[$arLibrary]."' up to '$top'");
-				$result = $this->getPinpTemplate($arCallFunction, $arLibraryPath, $top, true, &$arSuperContext);
+				$inLibrary[$arLibraryPath] = true;
+				$result = $this->getPinpTemplate($arCallFunction, $arLibraryPath, $top, &$inLibrary, &$arSuperContext);
 				$result["arLibrary"] = $arLibrary;
 				$result["arLibraryPath"] = $arLibraryPath;
 			} else {
-				debug("CheckConfig: library '$arLibrary' not in config");
+				debug("getPinpTemplate: library '$arLibrary' not in config");
 			}
 			return $result;
 		}
@@ -1195,7 +1196,7 @@ class pobject extends object { // pobject class definition
 		$arCallClassTemplate = $ARCurrent->arCallClassTemplate;
 		$arSetType = $arCallType;
 		while (!$arCallClassTemplate && !$arCallTemplate && $checkpath!=$lastcheckedpath) {
-			debug("CheckConfig: loop (".$arCallClassTemplate.")(".$arCallTemplate.")(".$checkpath.")!=(".$lastcheckedpath.")","all");
+			debug("getPinpTemplate: loop (".$arCallClassTemplate.")(".$arCallTemplate.")(".$checkpath.")!=(".$lastcheckedpath.")","all");
 			$lastcheckedpath = $checkpath;
 			$arType = $arSetType;
 			while ($arType!='object' && !$arCallTemplate) {
@@ -1237,57 +1238,48 @@ class pobject extends object { // pobject class definition
 				}
 			}
 			if ($inLibrary) {
-				debug("hmm? path: $checkpath; type: ".$ARConfig->cache[$checkpath]->type.";");
+				debug("gePinpTemplate: checking for library endpoint;  path: $checkpath; type: ".$ARConfig->cache[$checkpath]->type.";");
 				if ($ARConfig->cache[$checkpath]->type == 'psection') {
-					debug("CheckConfig: quiting library search as we have encountered our end point; $checkpath");
+					debug("getPinpTemplate: quiting library search as we have encountered our end point; $checkpath");
 					// break search operation when we have searched a 
 					// psection object
 					break;
 				}
 			}
 			if ($ARConfig->libraries[$checkpath] && !$arTemplateId) {
-				// create a new context which will get destroyed after the
-				// end of the foreach loop
-				// this context will contain the walked-through paths so we can
-				// check if it is an endless recursion, and if so, bail out
-				// safely
-				$this->pushContext(array());
 				foreach ($ARConfig->libraries[$checkpath] as $library => $path) {
-					$context=$this->getContext();
-					if (is_int($library) && !$context['seenLibraries'][$path]) {
-						$context['seenLibraries'][$path]=true;
-						$this->setContext($context);
+					if (is_int($library) && !$inLibrary[$path]) {
+						$inLibrary[$path] = true;
 						if ($arCallFunction != 'config.ini') {
-							debug("CheckConfig: going to search in UNNAMED library '$library' => '$path' for ($arCallType::)$arCallFunction");
-							$template = $this->getPinpTemplate("$arCallType::$arCallFunction", $path, '', true, &$arSuperContext);
+							debug("getPinpTemplate: going to search in UNNAMED library '$library' => '$path' for ($arCallType::)$arCallFunction");
+							$template = $this->getPinpTemplate("$arCallType::$arCallFunction", $path, '', &$inLibrary, &$arSuperContext);
 							if ($template["arTemplateId"]) {
 								extract($template);
 								$arLibrary = $library;
 								$arLibraryPath = $path;
 								$arType = $arCallTemplateType;
 								$lastcheckedpath = $checkpath = $arCallTemplatePath;
-								debug("CheckConfig: found $arCallFunction in library $arLibrary (arCallTemplatePath: ".serialize($arCallTemplatePath).")", "all");
+								debug("getPinpTemplate: found $arCallFunction in library $arLibrary (arCallTemplatePath: ".serialize($arCallTemplatePath).")", "all");
 								break; // jump out of the foreach loop
 							}
 						}
 					} else {
-						debug("checkLibraries: skipping $path - recurse fault", "all");
+						debug("getPinpTemplate: skipping $path - recurse fault", "all");
 					}
 				}
-				$this->popContext();
 			}
 
-			debug("CheckConfig: checkpath = (".$checkpath.")","all");
+			debug("getPinpTemplate: checkpath = (".$checkpath.")","all");
 			if ($checkpath == $top) {
 				break;
 			}
 			$checkpath=$this->store->make_path($checkpath, "..");
-			debug("CheckConfig: after make_path  (".$checkpath.")","all");
+			debug("getPinpTemplate: after make_path  (".$checkpath.")","all");
 			$config = $this->loadConfig($checkpath);
 			$curr_templates = $config->templates;
 			$arSetType = $arCallType;
 		}
-		debug("CheckConfig: while loop ended","all");
+		debug("getPinpTemplate: while loop ended","all");
 
 		$result["arTemplateId"] = $arTemplateId;
 		$result["arCallTemplate"] = $arCallTemplate;
