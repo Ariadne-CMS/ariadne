@@ -2333,7 +2333,7 @@ class pobject extends object { // pobject class definition
 
 	function setValue($name, $value, $nls=false) {
 	global $AR, $ARConfig;
-		if ($value == NULL) {
+		if ($value === NULL) {
 			if ($nls && $nls!="none") {
 				unset($this->data->$nls->$name);
 				if (!count(get_object_vars($this->data->$nls))) {
