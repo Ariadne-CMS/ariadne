@@ -970,8 +970,9 @@ class pobject extends object { // pobject class definition
 
 		$result=false;
 		if (!$AR->public) {
-			$criteria["login"]["value"]["="]="'public'";
-			$AR->public=current($this->find("/system/users/",$criteria,"system.get.phtml"));
+			$this->pushContext(Array("scope" => "php"));
+				$AR->public=current($this->get("/system/users/public/", "system.get.phtml"));
+			$this->popContext();
 		}
 		if ($AR->public) {
 			$AR->private=$AR->user;
