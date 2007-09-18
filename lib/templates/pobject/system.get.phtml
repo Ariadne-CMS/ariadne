@@ -19,7 +19,7 @@
   ******************************************************************/
   if (($context=$this->getContext(ARCALLINGCONTEXT)) 
   		&& $context["scope"]=="pinp") {
-    if ($this->CheckLogin('read')) {
+    if ($this->CheckSilent('read')) {
       $arResult=$this;
     }
   } else {
