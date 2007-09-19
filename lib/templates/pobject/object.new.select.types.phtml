@@ -107,7 +107,7 @@
 	$result = array();
 	if (!$showall) {
 		$configcache = $ARConfig->cache[$this->path];
-		if ($configcache->typetree) {
+		if (0 && $configcache->typetree) {
 			$configtypes = $this->ls($configcache->typetree . "/" . $this->type . "/", "system.get.phtml");
 			foreach($configtypes as $object) {
 				$type = $object->data->value;

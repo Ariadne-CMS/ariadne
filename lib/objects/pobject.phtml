@@ -1130,6 +1130,7 @@ class pobject extends object { // pobject class definition
 				array_unshift($ARConfig->pinpcache[$this->path]["library"],$path);
 			}
 		} else if ($name && is_string($name)) {
+			$this->loadConfig($this->path);
 			$ARConfig->libraries[$this->path][$name]=$path;
 			$ARConfig->cache[$this->path]->libraries[$name]=$path;
 			$ARConfig->pinpcache[$this->path]["library"][$name] = $path;
