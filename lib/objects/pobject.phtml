@@ -1110,7 +1110,7 @@ class pobject extends object { // pobject class definition
 	}
 
 	function loadLibrary($name, $path) {
-		global $ARConfig;
+	global $ARConfig;
 		$path=$this->make_path($path);
 		if ($name===ARUNNAMED) {
 			if (strstr($path, $this->path)===0) {
@@ -1129,7 +1129,7 @@ class pobject extends object { // pobject class definition
 				array_unshift($ARConfig->cache[$this->path]->libraries,$path);
 				array_unshift($ARConfig->pinpcache[$this->path]["library"],$path);
 			}
-		} else if ($name && is_string($name)) {
+		} else if ($name && is_string($name) || is_int($name)) {
 			$this->loadConfig($this->path);
 			$ARConfig->libraries[$this->path][$name]=$path;
 			$ARConfig->cache[$this->path]->libraries[$name]=$path;
