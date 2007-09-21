@@ -138,14 +138,23 @@
 							if ($ARCurrent->session->get("ARLogin") == $login) {
 								debug("checkLogin: user ($login) tries to login to his session without a cookie set", "all");
 								$result = $this->authUser($login, $password);
+								if ($result !== true) {
+									$this->getUser('public');
+								}
 							} else
 							if (ldCheckCredentials($ARCurrent->session->get("ARLogin")))  {
 								debug("checkLogin: user tries to login as another user", "all");
 								$result = $this->authUser($login, $password);
+								if ($result !== true) {
+									$this->getUser('public');
+								}
 							} else {
 								debug("checkLogin: could not login to private session (".$ARCurrent->session->id."): creating a new one", "all");
 								ldStartSession();
 								$result = $this->authUser($login, $password);
+								if ($result !== true) {
+									$this->getUser('public');
+								}
 							}
 						}
 					}
