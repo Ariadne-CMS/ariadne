@@ -34,15 +34,6 @@
 
 	include_once("XML/RPC.php");
 
-
-	class pinp_XMLRPC {
-		
-		function _call( $url="",$function="",$arguments=array() ) {
-			return XMLRPC::call($url, $function, $arguments);
-		}
-
-	}
-
 	class XMLRPC {
 		
 		/* parse the given array and return a valid xmlrpc encoded array */
