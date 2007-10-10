@@ -20,53 +20,53 @@
 		}
 		include($this->store->get_config("code")."widgets/wizard/code.php");
 
-		$wgWizFlow[] = Array {
+		$wgWizFlow[] = Array (
 			"current"	=> $this->getdata("wgWizCurrent","none"),
 			"cancel"	=> "edit.object.cancel.phtml",
 			"save"		=> "edit.object.data.save.phtml"
-		};
+		);
 
 
-		$wgWizFlow[] = Array {
+		$wgWizFlow[] = Array (
 			"title"		=> $ARnls["data"],
 			"template"	=> "edit.object.data.form.phtml",
 			"image"		=> $AR->dir->images."wizard/data.png"
-		};
+		);
 		
-		$wgWizFlow[] = Array {
+		$wgWizFlow[] = Array (
 			"title"		=> "Connection", //FIXME use NLS
 			"template"	=> "edit.object.data.conninfo.phtml",
 			"image"     => $AR->dir->images."wizard/data.png",
 			"nolang"	=> true
-		};
+		);
 
-		$wgWizFlow[] = Array {
+		$wgWizFlow[] = Array (
 			"title"		=> "General filter", //FIXME use NLS
 			"template"	=> "edit.object.data.generalfilter.phtml",
 			"image"     => $AR->dir->images."wizard/data.png",
 			"nolang"	=> true
-		}
+		);
 	
-		$wgWizFlow[] = Array {
+		$wgWizFlow[] = Array (
 			"title"		=> "Search translation", //FIXME use NLS
 			"template"	=> "edit.object.data.searchtranslation.phtml",
 			"image"     => $AR->dir->images."wizard/data.png",
 			"nolang"	=> true
-		}
+		);
 
-		$wgWizFlow[] = Array {
+		$wgWizFlow[] = Array (
 			"title"		=> "Other paramaters", //FIXME use NLS
 			"template"	=> "edit.object.data.otherparams.phtml",
 			"image"     => $AR->dir->images."wizard/data.png",
 			"nolang"	=> true
-		}
+		);
 
-		$wgWizFlow[] = Array {
+		$wgWizFlow[] = Array (
 			"title"		=> "User mapping", //FIXME use NLS
 			"template"	=> "edit.object.data.usermapping.phtml",
 			"image"     => $AR->dir->images."wizard/data.png",
 			"nolang"	=> true
-		}
+		);
 
 		if ($hascustomdata) {
 			$wgWizFlow[]=Array(
