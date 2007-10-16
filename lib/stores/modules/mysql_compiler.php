@@ -39,7 +39,7 @@
 				} else {
 					$this->used_tables["$table as $table$record_id"] = $table.$record_id;
 					if (!$this->in_orderby && !$no_context_join) {
-						if ($this->join_target_properties[$node["table"]]) {
+						if ($this->join_target_properties[$node["table"]][":$record_id"]) {
 							$result=" $table$record_id.object = target.object and $table$record_id.$field "; 
 						} else {
 							$result=" $table$record_id.object = ".$this->tbl_prefix."objects.id and $table$record_id.$field ";
@@ -63,6 +63,7 @@
 				$table = $this->tbl_prefix."prop_custom";
 				$field = $node["field"];
 				$nls = $node["nls"];
+				$record_id = $node["record_id"];
 				/*
 					when we are compiling orderby properties we always want
 					to assign it to a new table alias
@@ -71,20 +72,40 @@
 					$this->custom_id++;
 				}
 				$this->custom_ref++;
-				$this->used_tables[$table." as $table".$this->custom_id] = $table.$this->custom_id;
-				$this->select_tables[$table." as $table".$this->custom_id] = 1;
+				if (!$record_id) {
+					$this->used_tables[$table." as $table".$this->custom_id] = $table.$this->custom_id;
+					$this->select_tables[$table." as $table".$this->custom_id] = 1;
 
-				$this->used_custom_fields[$field] = true;
-				$result = " $table".$this->custom_id.".AR_name = '$field' ";
-				if ($nls) {
-					$result = " $result and $table".$this->custom_id.".AR_nls = '$nls' ";
-				}
+					$this->used_custom_fields[$field] = true;
+					$result = " $table".$this->custom_id.".AR_name = '$field' ";
+					if ($nls) {
+						$result = " $result and $table".$this->custom_id.".AR_nls = '$nls' ";
+					}
 
-				if (!$this->in_orderby) {
-					$result = " $result and $table".$this->custom_id.".AR_value ";
+					if (!$this->in_orderby) {
+						$result = " $result and $table".$this->custom_id.".AR_value ";
+					} else {
+						$this->where_s_ext = $result;
+						$result = " $table".$this->custom_id.".AR_value ";
+					}
 				} else {
-					$this->where_s_ext = $result;
-					$result = " $table".$this->custom_id.".AR_value ";
+					$this->used_tables["$table as $table$record_id"] = $table.$record_id;
+			//		$this->select_tables[$table." as $table$record_id"] = 1;
+
+					$result = " $table$record_id.AR_name = '$field' ";
+					if (!$this->in_orderby && !$no_context_join) {
+						if ($this->join_target_properties["prop_my"][":$record_id"]) {
+							$result=" $result and $table$record_id.object = target.object and $table$record_id.AR_value "; 
+						} else {
+							$result=" $table$record_id.object = ".$this->tbl_prefix."objects.id and $table$record_id.AR_value ";
+						}
+					} else {
+						if ($this->join_target_properties[$node["table"]]) {
+							$this->join_target_properties["$table as $table$record_id"] = $table.$record_id;
+						}
+						$this->select_tables["$table as $table$record_id"] = $table.$record_id;
+						$result=" $table$record_id.AR_value ";
+					}
 				}
 			break;
 			case 'string':
@@ -323,7 +344,7 @@
 		if ($this->join_target_properties) {
 			$query .= " and $objects.id = target_reference.object ";
 			$query .= " and target.path = target_reference.AR_path ";
-		}		
+		}
 
 		if ($this->orderby_s) {
 			$query.= " order by $this->orderby_s, $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";

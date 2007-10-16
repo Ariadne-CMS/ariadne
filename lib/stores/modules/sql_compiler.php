@@ -89,6 +89,7 @@
 					$field = $match_3;
 				}
 				$node["field"] = $field;
+				$node["record_id"] = $record_id;
 			} else {
 				$node["id"]="property";
 				if ($match_3) {
