@@ -365,29 +365,33 @@ class store {
 	then returned.
 	**********************************************************************/
 		debug("make_path($curr_dir, $path)","all");
-		$this->error="";
-		if(!$path){
+		$this->error = "";
+		if (!$path) {
 			$path = $curr_dir;
 			$curr_dir = '/';
 		}
-		if (substr($path,0,1)=="/") {
-			$result="/";
-			$path=substr($path, 1);
+		if ($path[1] === "/") {
+			$result = "/";
+			$path = substr($path, 1);
 		} else {
-			$result=$curr_dir;
+			$result = $curr_dir;
 		}
 		if ($path) {
 			$splitpath=explode("/", $path);
-
-			foreach ($splitpath as $pathticle ) {
+			foreach ($splitpath as $pathticle) {
 				switch($pathticle) {
-					case ".." : $result=dirname($result);
-								$result .= ($result{1})?'/':'';
-								$result{0} = '/'; //windows related fix
-								break;
+					case ".." :
+						$result = dirname($result);
+						// if second char of $result is not set, then current result is the rootNode
+						if (isset($result[1])) {
+							$result .= "/";
+						}
+					break;
 					case "." : break;
 					case ""	 : break;
-					default	 : $result.=$pathticle."/";
+					default:
+						$result .= $pathticle."/";
+					break;
 				}
 			}
 		}
