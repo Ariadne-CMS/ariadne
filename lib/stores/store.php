@@ -370,7 +370,7 @@ class store {
 			$path = $curr_dir;
 			$curr_dir = '/';
 		}
-		if ($path[1] === "/") {
+		if ($path[0] === "/") {
 			$result = "/";
 			$path = substr($path, 1);
 		} else {
