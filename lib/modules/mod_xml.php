@@ -144,9 +144,13 @@
 		//global $MULTI_TAGS;
 			$newElement = Array();
 			$element = &$this->elements;
-			foreach ($this->ns as $n) {
-				$element = &$element[$n];
+
+			if (is_array($this->ns)) {
+				foreach ($this->ns as $n) {
+					$element = &$element[$n];
+				}
 			}
+
 			$this->ns[] = $name;
 			$newElement[':attribs'] = $attribs;
 			if (!in_array($name, $this->MULTI_TAGS)) {
