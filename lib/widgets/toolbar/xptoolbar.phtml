@@ -181,7 +181,7 @@ body {
 			<td><img id="prefsLeft" src="<?php echo $AR->dir->images ?>dot.gif" border="0" alt="" width="3" height="28" vspace="0" hspace="0" /></td>
 			<td>
 					<a 
-						id="prefs" href="javascript:arshow('edit_preferences','<?php echo $this->store->root.$AR->user->path; ; ?>edit.preferences.phtml')" 
+						id="prefs" href="javascript:arshow('edit_preferences','<?php echo $this->store->get_config("root").$AR->user->path; ; ?>edit.preferences.phtml')" 
 						onMouseOver="makeHot(this);" 
 						onMouseOut="makeNot(this);"
 						title="<?php echo $ARnls["xp_preferences"]; ?>"

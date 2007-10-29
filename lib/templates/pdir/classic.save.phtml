@@ -23,7 +23,7 @@
 	$this->call("system.save.data.phtml",$arCallArgs);
 	if (!$this->error) {
 		if (!$arReturnPage=$this->getdata("arReturnPage","none")) {
-			$arReturnPage=$this->store->root.$this->parent;
+			$arReturnPage=$this->store->get_config("root").$this->parent;
 		}
 		$folder=$this->call("system.get.folder.phtml");
 		if ($arShortCut) {

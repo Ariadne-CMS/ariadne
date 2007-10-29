@@ -16,7 +16,7 @@
 		$this->call("system.set.user.phtml",$arCallArgs);
 		if (!$this->error) {
 			if (!$arReturnPage) {
-				$arReturnPage=$this->store->root.$this->path."classic.edit.phtml";
+				$arReturnPage=$this->store->get_config("root").$this->path."classic.edit.phtml";
 			}
 			ldRedirect($arReturnPage);
 		} else {

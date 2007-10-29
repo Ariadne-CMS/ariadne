@@ -21,7 +21,7 @@
 				$url=$AR->dir->www."setlink.php?do=update";
 			}
 			if (!$arReturnPage) {
-				$arReturnPage=$this->store->root.$parent;
+				$arReturnPage=$this->store->get_config("root").$parent;
 			}
 			$folder=$this->call("system.get.folder.phtml");
 			if ($arShortCut) {

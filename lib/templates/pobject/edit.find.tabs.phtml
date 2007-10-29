@@ -15,7 +15,7 @@
 		if ($arPath && $this->exists($arPath)) {
 ?>
 <script>
-	top.location.href='<?php echo $this->store->root.$arPath; ?>edit.find.phtml';
+	top.location.href='<?php echo $this->store->get_config("root").$arPath; ?>edit.find.phtml';
 </script>
 <?php
 		} else {

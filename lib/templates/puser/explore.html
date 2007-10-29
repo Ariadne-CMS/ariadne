@@ -155,9 +155,9 @@ loader=0;
 </HEAD>
 <FRAMESET COLS="200,*" onLoad="init();">
   <FRAME NAME="tree" 
-    SRC="<?php echo $AR->dir->www; ?>widgets/tree/root.php?wwwroot=<?php echo $AR->dir->www; ?>&loader=<?php echo $this->store->root; ?>&path=<?php 
+    SRC="<?php echo $AR->dir->www; ?>widgets/tree/root.php?wwwroot=<?php echo $AR->dir->www; ?>&loader=<?php echo $this->store->get_config("root"); ?>&path=<?php 
     echo RawUrlEncode($AR->user->path); ?>&interface=<?php echo $data->interface; ?>" marginwidth="0" marginheight="0" >
-  <FRAME NAME="view" SRC="<?php echo $this->store->root; ?>/system/ariadne/news/" marginwidth="0" marginheight="0">
+  <FRAME NAME="view" SRC="<?php echo $this->store->get_config("root"); ?>/system/ariadne/news/" marginwidth="0" marginheight="0">
 </FRAMESET>
 </HTML>
 <?php

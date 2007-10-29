@@ -561,11 +561,11 @@ function DECMD_IMAGE_onclick() {
 		window.elIMG=elIMG;
 		if (elIMG) {
 			src=new String(elIMG.src);
-			root=new String('<?php echo $this->store->root; ?>');
+			root=new String('<?php echo $this->store->get_config("root"); ?>');
 			if (src.substring(0,root.length)==root) {
 				src=src.substring(root.length);
 			} else { // htmledit component automatically adds http://
-				temp=new String('<?php echo $this->store->root; ?>');
+				temp=new String('<?php echo $this->store->get_config("root"); ?>');
 				if (src.substring(0,temp.length)==temp) {
 					src=src.substring(temp.length);
 				} else {
@@ -617,7 +617,7 @@ function IMAGE_set(arr) {
 		src=new String(arr['src']);
 		temp=new String('http://');
 		if (src.substring(0,temp.length)!=temp) {
-			src='<?php echo $this->store->root; ?>'+src;
+			src='<?php echo $this->store->get_config("root"); ?>'+src;
 		}
 		if (window.elIMG) { // insert a new img
 			elIMG=window.elIMG;
@@ -1159,7 +1159,7 @@ function initEditable() {
 			editable.onfocus=checkChangeStart;
 			editable.onblur=checkChangeEnd;
 			editable.contentEditable=true;
-			editable.style.backgroundImage="url('<?php echo $this->store->root; ?>images/dot.gif')";
+			editable.style.backgroundImage="url('<?php echo $this->store->get_config("root"); ?>images/dot.gif')";
 		}
 	}
 }

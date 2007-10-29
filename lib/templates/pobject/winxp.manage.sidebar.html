@@ -60,7 +60,7 @@
 	var invisibleSections;
 	
 	function View(path) {
-		document.location.href='<?php echo $this->store->root; ?>'+path+'view.phtml';
+		document.location.href='<?php echo $this->store->get_config("root"); ?>'+path+'view.phtml';
 	}
 	function LoadingDone() {
 		parent.LoadingDone();
@@ -75,7 +75,7 @@
 	}
 
 	function arEdit(object, arguments) {
-		arshow('edit_object_data','<?php echo $this->store->root; ?>'+object+'edit.object.data.phtml', arguments);
+		arshow('edit_object_data','<?php echo $this->store->get_config("root"); ?>'+object+'edit.object.data.phtml', arguments);
 	}
 	
 	function isCollapsed(section) {

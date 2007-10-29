@@ -41,7 +41,7 @@
 <script src="<?php echo $AR->dir->www; ?>widgets/menu/functions.js"></script>
 <script>
 	function arEdit(object, arguments) {
-		document.location.href='<?php echo $this->store->root; ?>'+object+'classic.edit.phtml?'+arguments+'&arReturnPage=<?php echo RawUrlEncode(ldGetServerVar("PHP_SELF")."?".ldGetServerVar("QUERY_STRING")); ?>'; 
+		document.location.href='<?php echo $this->store->get_config("root"); ?>'+object+'classic.edit.phtml?'+arguments+'&arReturnPage=<?php echo RawUrlEncode(ldGetServerVar("PHP_SELF")."?".ldGetServerVar("QUERY_STRING")); ?>'; 
 	}
 </script>
 </head>

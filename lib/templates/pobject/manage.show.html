@@ -7,7 +7,7 @@
 		if ($data->$arLanguage) {
 			$nlsdata=$data->$arLanguage;
 		}
-?><nobr><a href="<?php echo $this->store->root.$path."manage.html"; ?>" onClick="if (top.View) { top.View('<?php echo $this->path; ?>'); return false; }">
+?><nobr><a href="<?php echo $this->store->get_config("root").$path."manage.html"; ?>" onClick="if (top.View) { top.View('<?php echo $this->path; ?>'); return false; }">
 <img src="<?php echo $AR->dir->images."icons/".$this->type.".gif"; ?>"  border=0 width="20" height="20" alt="<?php echo $nlsdata->name; ?>">
 <?php echo $nlsdata->name; ?></a></nobr><br>
 <?php

@@ -25,8 +25,8 @@
 <?php
 	if ($locklist=$this->store->mod_lock->locklist) {
 		while ((list($key, $lock)=each($locklist))) {
-			echo "<tr><td bgcolor=\"#EEEEEE\"><a href=\"".$this->store->root.$lock["path"].
-				"classic.edit.phtml?returnpage=".RawUrlEncode($this->store->root.$this->path).
+			echo "<tr><td bgcolor=\"#EEEEEE\"><a href=\"".$this->store->get_config("root").$lock["path"].
+				"classic.edit.phtml?returnpage=".RawUrlEncode($this->store->get_config("root").$this->path).
 				"classic.edit.phtml\">".$lock["path"]."</a></td>";
 			echo "<td bgcolor=\"#EEEEEE\">".$lock["identity"]."</td>";
 			echo "<td bgcolor=\"#EEEEEE\">".strftime("%d-%m %H:%M:%S",$lock["release"])."</td></tr>\n";

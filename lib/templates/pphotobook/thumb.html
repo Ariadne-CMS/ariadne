@@ -15,9 +15,9 @@
   if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 ?>
 <body bgcolor="white">
-<a href="<?php echo $this->store->root.$this->path; ?>">
+<a href="<?php echo $this->store->get_config("root").$this->path; ?>">
 <img alt="<?php echo $nlsdata->name; ?>" src="<?php
-	echo $this->store->root.$this->path; ?>view.thumb.html" width="40" height="40" border="0"></a>
+	echo $this->store->get_config("root").$this->path; ?>view.thumb.html" width="40" height="40" border="0"></a>
 <br>
 <?php
   echo $nlsdata->summary;

@@ -50,7 +50,7 @@
 		}
 		if (!$this->error) {
 			if (!$arReturnPage) {
-				$arReturnPage=$this->store->root.$this->path."edit.object.layout.phtml";
+				$arReturnPage=$this->store->get_config("root").$this->path."edit.object.layout.phtml";
 			}
 			ldRedirect($arReturnPage);
 		} else { 

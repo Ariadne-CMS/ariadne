@@ -23,7 +23,7 @@ function Browse(resultobject, path, name, title, mode, filter, filename) {
        } else {
          $path=$this->parent;
        }	
-       echo $this->store->root.$path; 
+       echo $this->store->get_config("root").$path; 
      ?>';
   if (document.all) {
     var args=new Array();
@@ -45,7 +45,7 @@ function Browse(resultobject, path, name, title, mode, filter, filename) {
          } else {
            $path=$this->parent;
          }	
-         echo $this->store->root.$path; 
+         echo $this->store->get_config("root").$path; 
        ?>browse.phtml?path='+escape(path)+'&title='+escape(title)+
          '&name='+escape(name)+'&mode='+escape(mode)+'&filter='+escape(filter)+
          '&filename='+escape(filename), 'browsewindow',

@@ -57,7 +57,7 @@
 			$arCallArgs["confirm"]=$confirm;
 			$this->call("system.save.data.phtml",$arCallArgs);
 			if (!$arReturnPage=$this->getdata("arReturnPage","none")) {
-				$arReturnPage=$this->store->root.$this->parent;
+				$arReturnPage=$this->store->get_config("root").$this->parent;
 			}
 			ldRedirect($arReturnPage);
 		}

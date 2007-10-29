@@ -88,7 +88,7 @@
 
 
 		function View(link, template) { 
-			viewwindow=window.open('<?php echo $this->store->root; ?>'+link, 'viewwindow');
+			viewwindow=window.open('<?php echo $this->store->get_config("root"); ?>'+link, 'viewwindow');
 		}
 
 		if (document.all) {
@@ -105,7 +105,7 @@
 		<?php
 			$oldnls=$nls;
 			$this->setnls($arLanguage);
-			$url=$this->store->root.$this->make_path();
+			$url=$this->store->get_config("root").$this->make_path();
 		?>
 		var path='<?php echo $url; ?>';
 		document.write('<iframe id="archildren" height="'+height+'" width="100%" src="'+path+'browse.nav.'+viewmode+'.phtml?'+query+'&limit='+b_limit+'"></iframe>');

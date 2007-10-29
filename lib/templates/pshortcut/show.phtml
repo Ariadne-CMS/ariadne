@@ -13,10 +13,10 @@
 		$icon="pshortcut/".$icon;
 	}
 	if ($target) {
-		echo "<a href=\"".$this->store->root.$this->path.$target."\"".
+		echo "<a href=\"".$this->store->get_config("root").$this->path.$target."\"".
 				 " onClick=\"if (top.tree) { top.View('$this->path','$target'); return false; }\">";
 	} else {
-		echo "<a href=\"".$this->store->root.$this->path."\"".
+		echo "<a href=\"".$this->store->get_config("root").$this->path."\"".
 				 " onClick=\"if (top.tree) { top.View('$this->path'); return false; }\">";
 	}
 	echo '<img src="'.$AR->dir->images.'icons/'.$icon.'.gif" border="0" alt="">';

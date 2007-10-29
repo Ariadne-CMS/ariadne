@@ -29,7 +29,7 @@
 	<?php
 		} else {
 	?>
-				top.window.location.href='<?php echo $this->store->root.$this->parent; ?>object.new.select.phtml';
+				top.window.location.href='<?php echo $this->store->get_config("root").$this->parent; ?>object.new.select.phtml';
 	<?php
 		}
 	?>

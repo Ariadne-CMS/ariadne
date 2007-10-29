@@ -206,7 +206,7 @@
 					// now display time
 					if ($from) { // notime items dont display the time
 						$row.="<font face=\"arial, helvetica\" size=\"2\">";
-						$row.="<a class=\"cal\" href=\"".$this->store->root.$this->path."classic.new.phtml?arNewType=pcalitem&".
+						$row.="<a class=\"cal\" href=\"".$this->store->get_config("root").$this->path."classic.new.phtml?arNewType=pcalitem&".
 									"arNewFilename={5:id}&starttime=$from&next=form&".
 									"arReturnPage=".RawUrlEncode($PHP_SELF."?date=$date").
 									"\">$from_fmt</a>";

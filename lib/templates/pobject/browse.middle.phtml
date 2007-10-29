@@ -29,8 +29,8 @@
   </script>
 </head>
 <frameset cols="150,*">
-	<frame name="leftnav" src="<?php echo $this->store->root.$this->path; ?>browse.nav.phtml">
-	<frame name="rightnav" src="<?php echo $this->store->root.$this->path; ?>browse.nav.list.phtml?filter=<?php echo $filter; ?>">
+	<frame name="leftnav" src="<?php echo $this->store->get_config("root").$this->path; ?>browse.nav.phtml">
+	<frame name="rightnav" src="<?php echo $this->store->get_config("root").$this->path; ?>browse.nav.list.phtml?filter=<?php echo $filter; ?>">
 </frameset>
 </html>
 <?php

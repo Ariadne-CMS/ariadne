@@ -13,7 +13,7 @@
 	
 	******************************************************************/
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
-		$ARCurrent->arReturnPage=$this->store->root.$this->path."classic.config.phtml";
+		$ARCurrent->arReturnPage=$this->store->get_config("root").$this->path."classic.config.phtml";
 ?>
 <html>
 <head>

@@ -49,8 +49,8 @@ class URL {
 		}
 
 		// change hardcoded links and images to use a placeholder for the root
-		if ($this->store->root) {
-			$root = $this->store->root;
+		if ($this->store->get_config("root")) {
+			$root = $this->store->get_config("root");
 			if (substr($root, -3) == "/$nls") {
 				$root = substr($root, 0, -3);
 			}
@@ -86,7 +86,7 @@ class URL {
 			$session='';
 		} 
 		$site = $this->currentsite();
-		$root = $this->store->root;
+		$root = $this->store->get_config("root");
 		if (substr($root, -3) == "/$this->nls") {
 			$root = substr($root, 0, -3);
 		}
@@ -95,7 +95,7 @@ class URL {
 			$find[] = "%\\{(?:arRoot|arBase)(?:/([^}]+))?\\}\\Q".$site."\\E%e"; $repl[] = "\$this->make_url('$site', '\\1')";
 		}
 		$find[] = "%\\{arBase(/(?:[^}]+))?\\}%"; $repl[] = $AR->host.$root."\\1";
-		$find[] = "%\\{arRoot(/(?:[^}]+))?\\}%"; $repl[] = $AR->host.$this->store->root."\\1";
+		$find[] = "%\\{arRoot(/(?:[^}]+))?\\}%"; $repl[] = $AR->host.$this->store->get_config("root")."\\1";
 		$find[] = "%\\{arCurrentPage(?:/([^}]+))?\\}%e"; $repl[] = "\$this->make_url('', '\\1')";
 		$find[] = "%\\{arSession\\}%"; $repl[] = $session;
 

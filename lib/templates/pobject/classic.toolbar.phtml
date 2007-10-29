@@ -207,7 +207,7 @@
 	<!-- <?php echo $this->path; ?>-->
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/left5.gif" alt="" name="l5" width="5" height="20" border="0"></td>
 	<td align="center" valign="top"><a onClick="tofront(5); top.cacheTemplate='classic.edit.phtml';" href="classic.edit.phtml?arReturnPage=<?php
-		echo RawUrlEncode($this->store->root.$this->path)."\"";
+		echo RawUrlEncode($this->store->get_config("root").$this->path)."\"";
 		if (!$AR->user->grants[$this->path]["edit"] 
 				|| (is_array($AR->user->grants["edit"]) && !$AR->user->grants["edit"][$this->type])) {
 			echo "><font color=\"#666666\""; 
@@ -227,7 +227,7 @@
 	<!-- TAB 7 -->
 	<td><img src="<?php echo $AR->dir->images; ?>tabs/left5.gif" alt="" name="l7" width="5" height="20" border="0"></td>
 	<td align="center" valign="top"><a onClick="tofront(7); top.cacheTemplate='classic.new.phtml';" href="classic.new.phtml?arReturnPage=<?php
-		echo RawUrlEncode($this->store->root.$this->path)."\"";
+		echo RawUrlEncode($this->store->get_config("root").$this->path)."\"";
 		if (!$AR->user->grants[$this->path]["add"]) {
 			echo "><font color=\"#666666\"";
 		}

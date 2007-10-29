@@ -131,7 +131,7 @@ body {
 		<?php
 			$oldnls=$nls;
 			$this->setnls($arLanguage);
-			$url=$this->store->root.$this->make_path();
+			$url=$this->store->get_config("root").$this->make_path();
 		?>
 		var query='<?php echo ldGetServerVar("QUERY_STRING"); ?>';
 		document.write('<iframe frameborder="0" id="archildren" height="100%" width="100%" src="<?php echo $url; ?>winxp.browse.nav.'+viewmode+'.phtml?'+query+'"></iframe>');
@@ -146,7 +146,7 @@ body {
 				var path = itm.path;
 			else
 				var path = itm.getAttribute("path");
-			document.getElementById('sidebarFrame').src = '<?php echo $this->store->root; ?>'+path+'winxp.manage.sidebar.html?hideAdd=' + hideAdd;
+			document.getElementById('sidebarFrame').src = '<?php echo $this->store->get_config("root"); ?>'+path+'winxp.manage.sidebar.html?hideAdd=' + hideAdd;
 		}
 	</script>
 	</div>

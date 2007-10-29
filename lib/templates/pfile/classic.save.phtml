@@ -23,7 +23,7 @@
 	$this->call("system.save.data.phtml",$arCallArgs);
 	if (!$this->error) {
 		if (!$arReturnPage=$this->getdata("arReturnPage","none")) {
-			$arReturnPage=$this->store->root.$parent; 
+			$arReturnPage=$this->store->get_config("root").$parent; 
 		}
 		ldRedirect($arReturnPage);
 	} else {

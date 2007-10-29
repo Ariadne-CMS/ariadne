@@ -13,7 +13,7 @@
 	
 	******************************************************************/
 	if ($this->CheckLogin("config")) {
-		$ARCurrent->arReturnPage=$this->store->root.$this->path."classic.config.phtml";
+		$ARCurrent->arReturnPage=$this->store->get_config("root").$this->path."classic.config.phtml";
 ?>
 <html>
 <head>
@@ -47,7 +47,7 @@
 				ksort($data->config->usergrants);
 				while (list($path, $usergrants)=each($data->config->usergrants)) {	
 					echo "<tr>";
-					echo "<td><a href=\"".$this->store->root.$path.
+					echo "<td><a href=\"".$this->store->get_config("root").$path.
 						"classic.config.grants.save.phtml?delete=true&type=puser&id=".RawUrlEncode($data->login).
 						"&arReturnPage=".RawUrlEncode($ARCurrent->arReturnPage).
 						"\"onClick=\"return confirm('".sprintf($ARnls["q:removeallgrants"],$path).
@@ -58,7 +58,7 @@
 							if (!is_array($modifiers)) {
 								echo arGetGrantType($modifiers);
 							}
-							echo "<a href=\"".$this->store->root.$path.
+							echo "<a href=\"".$this->store->get_config("root").$path.
 								"classic.config.grants.save.phtml?delete=true&type=".RawUrlEncode($this->type)."&id=".RawUrlEncode($data->login).
 								"&grant=".RawUrlEncode($usergrant).
 								"&arReturnPage=".RawUrlEncode($ARCurrent->arReturnPage).
@@ -96,7 +96,7 @@
 		<table><tr>
 		<?php
 			while (list($path, $group)=@each($data->groups)) {
-				echo "<td><a href=\"".$this->store->root.$path."classic.edit.phtml\"><img src=\"".
+				echo "<td><a href=\"".$this->store->get_config("root").$path."classic.edit.phtml\"><img src=\"".
 					$AR->dir->images."icons/pgroup.gif\" border=\"0\"> $group</a></td>";
 			}
 		?></tr></table>		

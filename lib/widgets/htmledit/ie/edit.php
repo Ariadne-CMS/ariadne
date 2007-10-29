@@ -38,7 +38,7 @@
   window.exists=true; // do not reload editing environment if window still exists.
   <?php
     if (!$root) {
-      $root=$this->store->root;
+      $root=$this->store->get_config("root");
     }
     if (!$path) {
       $path=$this->path;
@@ -706,7 +706,7 @@ function DECMD_SHOWDETAILS_onclick() {
 }
 
 function DECMD_SETFORECOLOR_onclick() {
-  var arr = showModalDialog( "<?php echo $this->store->root.$this->path;
+  var arr = showModalDialog( "<?php echo $this->store->get_config("root").$this->path;
                 ?>edit.object.html.selectcolor.phtml",
                              "",
                              "font-family:Verdana; font-size:12; dialogWidth:30em; dialogHeight:34em; status: no; resizable: yes;" );
@@ -717,7 +717,7 @@ function DECMD_SETFORECOLOR_onclick() {
 }
 
 function DECMD_SETBACKCOLOR_onclick() {
-  var arr = showModalDialog( "<?php echo $this->store->root.$this->path;
+  var arr = showModalDialog( "<?php echo $this->store->get_config("root").$this->path;
                 ?>edit.object.html.selectcolor.phtml",
                              "",
                              "font-family:Verdana; font-size:12; dialogWidth:30em; dialogHeight:34em; status: no; resizable: yes;" );
@@ -816,11 +816,11 @@ function DECMD_IMAGE_onclick() {
     window.elIMG=elIMG;
     if (elIMG) {
       src=new String(elIMG.src);
-      root=new String('<?php echo $this->store->root; ?>');
+      root=new String('<?php echo $this->store->get_config("root"); ?>');
       if (src.substring(0,root.length)==root) {
         src=src.substring(root.length);
       } else { // htmledit component automatically adds http://
-        temp=new String('<?php echo $this->store->root; ?>');
+        temp=new String('<?php echo $this->store->get_config("root"); ?>');
         if (src.substring(0,temp.length)==temp) {
           src=src.substring(temp.length);
         } else {
@@ -873,15 +873,15 @@ function IMAGE_set(arr) {
           remove the nls part from the store->root var so it won't get
           saved in the image URL
         */
-        $root = $this->store->root;
-        $rootoptions = $this->store->rootoptions;
+        $root = $this->store->get_config("root");
+        $rootoptions = $this->store->get_config("rootoptions");
         if ($ARCurrent->session && $ARCurrent->session->id) {
           ldSetRoot($ARCurrent->session->id);
         } else {
           ldSetRoot();
         }
       ?>
-      src='<?php echo $AR->host.$this->store->root; ?>'+src;
+      src='<?php echo $AR->host.$this->store->get_config("root"); ?>'+src;
       <?php
         $this->store->root = $root;
         $this->store->rootoptions = $rootoptions;

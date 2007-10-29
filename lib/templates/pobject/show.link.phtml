@@ -1,10 +1,10 @@
 <?php
 	// show all 'readable' data 
 	if ($target) { 
-		echo "$flag<a href=\"".$this->store->root.$this->path.$target."\"".
+		echo "$flag<a href=\"".$this->store->get_config("root").$this->path.$target."\"".
 				 " onClick=\"if (top.tree) { top.View('$this->path','$target'); return false; }\">";	
 	} else {
-		echo "$flag<a href=\"".$this->store->root.$this->path."\"".
+		echo "$flag<a href=\"".$this->store->get_config("root").$this->path."\"".
 				 " onClick=\"if (top.tree) { top.View('$this->path'); return false; }\">";
 	}
 	if (!$this->CheckSilent("read")) {

@@ -21,7 +21,7 @@
 
 	if ($this->CheckConfig($arCallFunction, $arCallArgs) && $this->CheckLogin("edit")) {
 		if (!$arReturnPage) {
-			$arReturnPage=$this->store->root.$this->parent;
+			$arReturnPage=$this->store->get_config("root").$this->parent;
 		}
 		switch($arSubmit) {
 			case $ARnls["save"] :	// save data

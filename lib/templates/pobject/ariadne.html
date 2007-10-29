@@ -2,6 +2,6 @@
 	$AR->arSessionRespawn = false;
 	if ($this->CheckLogin("read")) {
 		// AR->user should now be available so:
-		ldRedirect($this->store->root.$AR->user->path."explore.html");
+		ldRedirect($this->store->get_config("root").$AR->user->path."explore.html");
 	}
 ?>

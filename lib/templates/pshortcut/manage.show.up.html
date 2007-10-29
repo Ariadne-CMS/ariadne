@@ -7,7 +7,7 @@
 			$template="manage.html";
 		}
 ?>
-<a href="<?php echo $this->store->root.$this->parent.$template; ?>" onClick="if (top.tree) { top.Viewit('<?php echo $this->parent; ?>'); return false; }"><img src="<?php echo $AR->dir->images."icons/pdir.gif"; ?>" border="0" width="20" height="20" alt="<?php echo $ARnls["up"]; ?>"><b>..</b></a>
+<a href="<?php echo $this->store->get_config("root").$this->parent.$template; ?>" onClick="if (top.tree) { top.Viewit('<?php echo $this->parent; ?>'); return false; }"><img src="<?php echo $AR->dir->images."icons/pdir.gif"; ?>" border="0" width="20" height="20" alt="<?php echo $ARnls["up"]; ?>"><b>..</b></a>
 <?php
 	}
 ?>

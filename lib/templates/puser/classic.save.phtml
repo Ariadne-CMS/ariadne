@@ -7,7 +7,7 @@
 	$this->call("system.save.data.phtml",$arCallArgs);
 	if (!$this->error) {
 		if (!$arReturnPage) {
-			$arReturnPage=$this->store->root.$this->path;
+			$arReturnPage=$this->store->get_config("root").$this->path;
 		}
 		$folder=$this->call("system.get.folder.phtml");
 		if ($arShortCut) {

@@ -36,10 +36,10 @@
 	function View(path) {
 		CurrentPath=path;
 		top.browsemiddle.rightnav.location="<?php
-		echo $this->store->root; ?>"+path+"browse.nav."+
+		echo $this->store->get_config("root"); ?>"+path+"browse.nav."+
 			CurrentViewMode+".phtml?filter="+escape(CurrentFilter);
 		top.browsemiddle.leftnav.location="<?php
-		echo $this->store->root; ?>"+path+"browse.nav.phtml";
+		echo $this->store->get_config("root"); ?>"+path+"browse.nav.phtml";
 		top.browsebottom.document.selectform.filename.value=path;
 		top.browsebottom.showFilename();
 	}
@@ -57,8 +57,8 @@
 
 	function New() {
 		top.browsemiddle.rightnav.location="<?php
-		echo $this->store->root; ?>"+CurrentPath+"classic.new.phtml?arReturnPage="+
-		"<?php echo $this->store->root; ?>"+
+		echo $this->store->get_config("root"); ?>"+CurrentPath+"classic.new.phtml?arReturnPage="+
+		"<?php echo $this->store->get_config("root"); ?>"+
 		CurrentPath+"browse.nav."+CurrentViewMode+".phtml";
 	}
 
@@ -78,11 +78,11 @@
 </head>
 <frameset rows="30,*,70" border="0">
 	<frame name="browsetop" border="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" 
-		src="<?php echo $this->store->root.$path; ?>browse.top.phtml?filter=<?php echo RawUrlEncode($filter); ?>">
+		src="<?php echo $this->store->get_config("root").$path; ?>browse.top.phtml?filter=<?php echo RawUrlEncode($filter); ?>">
 	<frame name="browsemiddle" border="0" frameborder="0" 
-		src="<?php echo $this->store->root.$path; ?>browse.middle.phtml?filter=<?php echo RawUrlEncode($filter); ?>">
+		src="<?php echo $this->store->get_config("root").$path; ?>browse.middle.phtml?filter=<?php echo RawUrlEncode($filter); ?>">
 	<frame name="browsebottom" border="0" frameborder="0" marginwidth="0" marginheight="0" border="0" scrolling="no" 
-		src="<?php echo $this->store->root.$path; ?>browse.bottom.phtml?filename=<?php echo RawUrlEncode($filename); ?>&filter=<?php echo RawUrlEncode($filter); ?>">
+		src="<?php echo $this->store->get_config("root").$path; ?>browse.bottom.phtml?filename=<?php echo RawUrlEncode($filename); ?>&filter=<?php echo RawUrlEncode($filter); ?>">
 </frameset>
 <?php
 	}

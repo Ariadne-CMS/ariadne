@@ -17,7 +17,7 @@
 	******************************************************************/
 	$ARCurrent->allnls=1;
 	if (!$this->getdata("arReturnPage","none")) {
-		$ARCurrent->arReturnPage=$this->store->root.$this->path."view.html";
+		$ARCurrent->arReturnPage=$this->store->get_config("root").$this->path."view.html";
 	}
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 		if ($arSubmit==$ARnls["save"]) { // save data

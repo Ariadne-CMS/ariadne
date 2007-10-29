@@ -19,7 +19,7 @@
 
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 		if (!$arReturnPage) {
-			$arReturnPage=$this->store->root.$this->parent;
+			$arReturnPage=$this->store->get_config("root").$this->parent;
 		}
 		if ($arSubmit==$ARnls["save"]) { // save data
 			$this->call("classic.save.phtml",$arCallArgs);

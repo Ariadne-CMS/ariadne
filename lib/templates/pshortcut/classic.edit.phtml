@@ -17,7 +17,7 @@
 	******************************************************************/
 	$ARCurrent->allnls=1;
 	if (!$arReturnPage=$this->getdata("arReturnPage","none")) {
-		$ARCurrent->arReturnPage=$this->store->root.$this->path."classic.edit.phtml";
+		$ARCurrent->arReturnPage=$this->store->get_config("root").$this->path."classic.edit.phtml";
 	}
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 		if ($arSubmit==$ARnls["save"]) { // save data
@@ -25,7 +25,7 @@
 		} else if ($arSubmit==$ARnls["cancel"]) {
 			ldRedirect($arReturnPage);
 		} else if ($arSubmit==$ARnls["editoriginal"]) {
-			ldRedirect($this->store->root.$data->path."classic.edit.phtml?arReturnPage=".RawUrlEncode($arReturnPage));
+			ldRedirect($this->store->get_config("root").$data->path."classic.edit.phtml?arReturnPage=".RawUrlEncode($arReturnPage));
 		} else {// edit it
 			$this->call("classic.form.phtml",$arCallArgs);	
 		}

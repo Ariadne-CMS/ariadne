@@ -4,7 +4,7 @@
 			$nls=$data->nls->default;
 			$flag="<img src=\"".$AR->dir->images."nls/small/$nls.gif\" border=\"0\" alt=\"\">";
 		}
-		echo "<a href=\"".$this->store->root.$this->path."\">";
+		echo "<a href=\"".$this->store->get_config("root").$this->path."\">";
 ?>
 <img src="<?php 
 	echo $AR->dir->images; ?>icons/<?php echo $this->type; ?>.gif" alt="[view]"

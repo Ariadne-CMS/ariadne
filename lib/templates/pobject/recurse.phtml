@@ -71,7 +71,7 @@
 			case "delete" :
 				if ($target && $this->exists($target)) {
 					// FIXME: this loses window.opener...
-					echo "	document.location.href='".$this->store->root.$target."recurse.phtml?action=delete';\n";
+					echo "	document.location.href='".$this->store->get_config("root").$target."recurse.phtml?action=delete';\n";
 					echo "</script>\n";
 				} else {
 					if ($this->CheckSilent("delete")) {
@@ -96,7 +96,7 @@
 									current+=1;
 									if (path=OrderedList[OrderedList.length-1]) {
 										OrderedList.length-=1;
-										set_info_location("<?php echo $this->store->root; ?>"+path+"recurse.delete.phtml?total="+escape(total)+"&current="+escape(current)+"&rootpath=<?php echo RawUrlEncode($this->path); ?>");
+										set_info_location("<?php echo $this->store->get_config("root"); ?>"+path+"recurse.delete.phtml?total="+escape(total)+"&current="+escape(current)+"&rootpath=<?php echo RawUrlEncode($this->path); ?>");
 									} else {
 										if (top.window && top.window.opener) {
 											if (top.window.opener.wgRecurseDone) {
@@ -172,7 +172,7 @@
 								} else {
 									target="<?php echo RawUrlEncode($target); ?>";
 								}
-								set_info_location("<?php echo $this->store->root; ?>"+path+"recurse.copy.phtml?target="+target+"&source=<?php echo RawUrlEncode($this->path); ?>");
+								set_info_location("<?php echo $this->store->get_config("root"); ?>"+path+"recurse.copy.phtml?target="+target+"&source=<?php echo RawUrlEncode($this->path); ?>");
 							} else {
 								if (top.window) {
 									if (top.window.opener && top.window.opener.wgRecurseDone) {
@@ -202,7 +202,7 @@
 						function setownernode() {
 							if (path=OrderedList[OrderedList.length-1]) {
 								OrderedList.length-=1;
-								set_info_location("<?php echo $this->store->root; ?>"+path+"recurse.setowner.phtml?owner=<?php echo RawUrlEncode($owner); ?>");
+								set_info_location("<?php echo $this->store->get_config("root"); ?>"+path+"recurse.setowner.phtml?owner=<?php echo RawUrlEncode($owner); ?>");
 							} else {
 								if (top.window) {
 									if (top.window.opener && top.window.opener.wgRecurseDone) {

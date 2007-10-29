@@ -79,9 +79,9 @@
 
 	function New() {
 		if (blist=document.browseform.BrowseNav) {
-			startpath='<?php echo $this->store->root; ?>'+blist.options[blist.options.selectedIndex].value;
+			startpath='<?php echo $this->store->get_config("root"); ?>'+blist.options[blist.options.selectedIndex].value;
 		} else {
-			startpath='<?php echo $this->store->root.$this->path; ?>';
+			startpath='<?php echo $this->store->get_config("root").$this->path; ?>';
 		}
 		if (document.all) {
 			args=new Array();
@@ -98,7 +98,7 @@
 		if (blist=document.browseform.BrowseNav) {
 			parent.View(blist.options[blist.options.selectedIndex].value);
 		} else {
-			parent.View('<?php echo $this->store->root.$this->path; ?>');
+			parent.View('<?php echo $this->store->get_config("root").$this->path; ?>');
 		}
 	}
 

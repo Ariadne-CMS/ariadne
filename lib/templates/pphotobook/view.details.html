@@ -20,7 +20,7 @@
 <table border="0" width="100%">
 <tr>
 	<td align="left" width="100%">
-	<h1><img src="<?php echo $this->store->root.$data->picture; ?>view.thumb.html"> <?php echo $nlsdata->name; ?></h1>
+	<h1><img src="<?php echo $this->store->get_config("root").$data->picture; ?>view.thumb.html"> <?php echo $nlsdata->name; ?></h1>
 	</td>
 	<td align="left" bgcolor="#EEEEEE">
 		<font face="helvetica" size="2"><?php echo $ARnls["search"]; ?> :<br>

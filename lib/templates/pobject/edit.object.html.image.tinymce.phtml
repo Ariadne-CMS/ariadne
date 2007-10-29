@@ -280,8 +280,8 @@ tinyMCEPopup.init();
 		if (arr['src']) {
 			/* existing image selected */
 			CurrentPath=new String(arr['src']);
-			if (CurrentPath.substr(0, <?php echo strlen($AR->host.$this->store->root); ?>)=='<?php echo $AR->host.$this->store->root; ?>') {
-				CurrentPath=CurrentPath.substr(<?php echo strlen($AR->host.$this->store->root); ?>);
+			if (CurrentPath.substr(0, <?php echo strlen($AR->host.$this->store->get_config("root")); ?>)=='<?php echo $AR->host.$this->store->get_config("root"); ?>') {
+				CurrentPath=CurrentPath.substr(<?php echo strlen($AR->host.$this->store->get_config("root")); ?>);
 			} else if (arr['ar:path']) {
 				CurrentPath = arr['ar:path'];
 				if (arr['ar:type'] && tbContentEditOptions['image']['styles'][arr['ar:type']] ) {
@@ -419,7 +419,7 @@ tinyMCEPopup.init();
 		}
 		CurrentPath=path;
 		mnBrowse.location="<?php
-			echo $this->store->root; ?>"+path+"browse.nav."+
+			echo $this->store->get_config("root"); ?>"+path+"browse.nav."+
 			ViewMode+".phtml?filter="+escape(CurrentFilter);
 		showPreview();
 	}
@@ -489,9 +489,9 @@ tinyMCEPopup.init();
 
 	function New() {
 		if (blist=document.forms[0].BrowseNav) {
-			startpath='<?php echo $this->store->root; ?>'+blist.options[blist.options.selectedIndex].value;
+			startpath='<?php echo $this->store->get_config("root"); ?>'+blist.options[blist.options.selectedIndex].value;
 		} else {
-			startpath='<?php echo $this->store->root.$this->path; ?>';
+			startpath='<?php echo $this->store->get_config("root").$this->path; ?>';
 		}
 		if (document.all) {
 			args=new Array();
@@ -506,10 +506,10 @@ tinyMCEPopup.init();
 
 	function Delete() {
 		if (blist=document.forms[0].BrowseNav) {
-			var startpath='<?php echo $this->store->root; ?>'+blist.options[blist.options.selectedIndex].value;
+			var startpath='<?php echo $this->store->get_config("root"); ?>'+blist.options[blist.options.selectedIndex].value;
 			var path=blist.options[blist.options.selectedIndex].value;
 		} else {
-			var startpath='<?php echo $this->store->root.$this->path; ?>';
+			var startpath='<?php echo $this->store->get_config("root").$this->path; ?>';
 			var path='<?php echo $this->path; ?>';
 		}
 		if (document.all) {
@@ -529,7 +529,7 @@ tinyMCEPopup.init();
 			if (blist.options.selectedIndex>0) {
 				var path=blist.options[blist.options.selectedIndex-1].value;
 			} else {
-				var path='<?php echo $this->store->root.$this->parent; ?>';
+				var path='<?php echo $this->store->get_config("root").$this->parent; ?>';
 			}
 		}		
 		View(path);		
@@ -539,7 +539,7 @@ tinyMCEPopup.init();
 		if (blist=document.forms[0].BrowseNav) {
 			View(blist.options[blist.options.selectedIndex].value);
 		} else {
-			View('<?php echo $this->store->root.$this->path; ?>');
+			View('<?php echo $this->store->get_config("root").$this->path; ?>');
 		}
 	}
 
@@ -592,7 +592,7 @@ tinyMCEPopup.init();
 			var url=false;
 			var path=CurrentPath;
 		}
-		mnPreview.location="<?php echo $this->store->root.$this->path; ?>show.preview.html?style="+escape(style)+
+		mnPreview.location="<?php echo $this->store->get_config("root").$this->path; ?>show.preview.html?style="+escape(style)+
 				"&sclass="+escape(sclass)+
 				"&stylesheet="+escape(PreviewStylesheet)+
 				"&border="+escape(border)+"&hspace="+escape(hspace)+"&vspace="+escape(vspace)+

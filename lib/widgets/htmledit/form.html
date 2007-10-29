@@ -8,7 +8,7 @@
   // $wgHTMLEditValue = text displayed on the open editor button
   // $wgHTMLEditType = 'full'/'body' for full html page or only body.innerHTML  
   if (!$wgHTMLEditRoot) {
-    $wgHTMLEditRoot=$this->store->root;
+    $wgHTMLEditRoot=$this->store->get_config("root");
   }
   if (!$wgHTMLEditPath) {
     $wgHTMLEditPath=$this->path;
