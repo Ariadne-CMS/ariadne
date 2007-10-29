@@ -49,7 +49,7 @@
 		}
 
 		$wgWizFlow = $this->call("user.wizard.edit.html", Array("wgWizFlow" => $wgWizFlow));
-		
+
 		if (!$ARCurrent->arTypeIconsSmall[$this->type]) {
 			// FIXME: for performance the check above is necessary, but
 			// it does make it possible to get the wrong icon...
@@ -74,7 +74,7 @@
 		}
 		$arResult=$icon;
 
-		$wgWizTitle=$ARnls["edit"]." ".$name;		
+		$wgWizTitle=$ARnls["edit"]." ".$name;
 		$wgWizHeader=$wgWizTitle.'<img src="'.$icon.'" alt="" hspace="4" align="absmiddle">';
 		include($this->store->get_config("code")."widgets/wizard/new.html");
 	}

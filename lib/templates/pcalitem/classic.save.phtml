@@ -21,7 +21,7 @@
 			if ($entry=$this->getdata("entry","none")) {
 				$entry_arr=getdate($entry);
 			}
-			$repeat=$this->getdata("repeat","none");			
+			$repeat=$this->getdata("repeat","none");
 			$repeatend=$this->getdata("repeatend","none");
 			$repeatn=$this->getdata("repeatn","none");
 			$repeat_on=$this->getdata("repeat_on","none");
@@ -52,7 +52,7 @@
 				$this->call("classic.confirm.phtml",$arCallArgs);
 			}
 		} 
-		if ($confirm) {		
+		if ($confirm) {
 			$arCallArgs["repeat"]=$repeat;
 			$arCallArgs["confirm"]=$confirm;
 			$this->call("system.save.data.phtml",$arCallArgs);

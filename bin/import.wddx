@@ -60,7 +60,7 @@ the specified .wddx file. It will import all objects from your .wddx file.
 					$option_switch = $tmp;
 				}
 			} else {
-				
+
 
 				$option_switch=substr($cmd, 2, strpos(substr($cmd, 2),"-"));
 
@@ -85,7 +85,7 @@ the specified .wddx file. It will import all objects from your .wddx file.
 				case 'verbose':
 					$options["verbose"]=true;
 				break;
-				
+
 				case 'skipdata':
 					$options["skipdata"]=true;
 				break;

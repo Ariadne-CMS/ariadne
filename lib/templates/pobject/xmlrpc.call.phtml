@@ -33,7 +33,7 @@
     ******************************************************************/
 
 	if( $this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs) ) {
-		
+
 		require_once($this->store->get_config("code")."modules/mod_xmlrpc.php");
 
 		$result = XMLRPC::call( $xmlrpcUrl, $xmlrpcFunction, $xmlrpcArgs );

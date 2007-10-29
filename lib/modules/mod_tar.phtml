@@ -93,7 +93,7 @@
 			if (!$this->tar_nofail && ($retVar!=0 && $retVar!=259)) {
 				$this->error.="Error:\n	($command):\n	Can't untar $tarfile, untar failed in $dstdir with errorcode ($retVar)\n";
 				if ($errfile && file_exists($errfile)) {
-					$this->error.=implode("",file($errfile));						
+					$this->error.=implode("",file($errfile));
 					@unlink($errfile);
 					$this->error.="\n";
 				}
@@ -132,7 +132,7 @@
 			if (!$this->tar_nofail && $retVar!=0) {
 				$this->error="Error: ($command):\n	Can't tar to $tarfile, tar failed in $dstdir with errorcode ($retVar)\n";
 				if ($errfile && file_exists($errfile)) {
-					$this->error.=implode("",file($errfile));						
+					$this->error.=implode("",file($errfile));
 					unlink($errfile);
 					$this->error.="\n";
 				}

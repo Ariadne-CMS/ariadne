@@ -42,7 +42,7 @@
 			}
 		}
 
-		if ($createnew && !$this->error) {		
+		if ($createnew && !$this->error) {
 			$arNewData=new object;
 			$arNewObj=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData);
 			$arNewObj->arIsNewObject=true;

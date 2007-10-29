@@ -32,7 +32,7 @@
 			"template"	=> "edit.object.data.form.phtml",
 			"image"		=> $AR->dir->images."wizard/data.png"
 		);
-		
+
 		$wgWizFlow[] = Array (
 			"title"		=> "Connection", //FIXME use NLS
 			"template"	=> "edit.object.data.conninfo.phtml",
@@ -74,7 +74,7 @@
 				"image"		=> $AR->dir->images."wizard/customdata.png",
 				"template"	=> "edit.object.data.custom.phtml");
 		}
-		
+
 		$arLanguage=$this->getdata("arLanguage","none");
 		$arControl=wgWizGetAction($this->getdata("wgWizControl","none"));
 		if ($wgWizFlow[0]["current"]=="language") { // =edit.object.language.phtml
@@ -125,7 +125,7 @@
 		}
 		$arResult=$icon;
 
-		$wgWizTitle=$ARnls["edit"]." ".$name;		
+		$wgWizTitle=$ARnls["edit"]." ".$name;
 		$wgWizHeader=$wgWizTitle.'<img src="'.$icon.'" alt="" hspace="4" align="absmiddle">';
 		include($this->store->get_config("code")."widgets/wizard/new.html");
 

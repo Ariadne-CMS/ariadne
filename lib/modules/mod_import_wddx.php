@@ -348,7 +348,7 @@ class import_wddx {
 											$templates->touch($object->id,$file."pinp",$val['mtime']);
 											$templates->write($compiled, $object->id, $file);
 											$templates->touch($object->id,$file,$val['mtime']);
-											
+
 											$object->data->config->pinp[$type][$function][$language]=$object->id;
 											/* is it a default template ? */
 											if( $objdata['data']->config->templates[$type][$function][$language] === $objdata['id'])

@@ -101,7 +101,7 @@ class ppage extends pobject { // ppage class definition
 					$this->section_titles[]=$matches[$i+1];
 				}
 		if ($withtags) {
-					$this->sections[]=$split.$matches[$i+2];					
+					$this->sections[]=$split.$matches[$i+2];
 				} else {
 					$this->sections[]=$matches[$i+2];
 				}
@@ -173,7 +173,7 @@ class ppage extends pobject { // ppage class definition
 			} else {
 				echo ParsePage($this->GetSection($i));
 			}
-		}			
+		}
 	}
 
 	function ShowTitles($template="", $args="") {
@@ -184,8 +184,8 @@ class ppage extends pobject { // ppage class definition
 			for ($i=0; $i<$max; $i++) {
 				$this->call($template, array_merge($args, Array('section' => $i, 'section_title' => $this->GetTitle($i))));
 				$this->_resetloopcheck();
-			}			
-		}		
+			}
+		}
 	}
 
 	function ShowTitle($section=0, $template="", $args="") {

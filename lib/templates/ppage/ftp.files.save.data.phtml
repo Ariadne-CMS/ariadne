@@ -4,7 +4,7 @@
 			$parentobj->CheckLogin("add")) ||
 			(!$this->arIsNewObject && $this->CheckLogin("edit"))) &&
 			$this->CheckConfig()) {
-				
+
 				$nls=$ARConfig->nls->default;
 
 		$tempfile = $this->getdata("file_temp", "none");
@@ -20,7 +20,7 @@
 				$page .= fgets($fp, 4096);
 			}
 			fclose($fp);
-		
+
 
 
 			/* rewrite relative img src's to abs. Ariadne paths */

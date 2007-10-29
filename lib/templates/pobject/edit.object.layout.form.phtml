@@ -236,7 +236,7 @@ function insertTab(event,obj) {
 					} else {
 						echo "<option value=\"$key\">$value</option>\n";
 					}
-				}				
+				}
 			?>
 			</select>
 		</td><td>
@@ -271,7 +271,7 @@ function insertTab(event,obj) {
 	if( $mode == "highlight" ) {
 
 		$hfile = $file;
-		
+
 ?>
 <table border="0" width="100%" cellspacing="0" class="full">
 <input type="hidden" name="template" value="<?php echo str_replace('"', "&quot;", $file); ?>">
@@ -348,7 +348,7 @@ function insertTab(event,obj) {
 		$filename = $type . "." . $function . "." . $language . ".pinp";
 		if ($svn_status) {
 			$svn_img = "";
-			
+
 			switch($svn_status[$filename]) {
 				case "C":
 					$svn_img = "ConflictIcon.png";

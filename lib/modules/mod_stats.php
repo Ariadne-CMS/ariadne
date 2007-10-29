@@ -47,7 +47,7 @@
 			// all info is gathered from the php/webserver environment
 			global $AR, $StatsSupportedTools;
 			global $HTTP_SERVER_VARS, $path;
-			
+
 			if($AR->Stats->makestats && (stristr($StatsSupportedTools, $AR->Stats->tool)!=false)) {
 				// Go Go Go
 				$client_id = $HTTP_SERVER_VARS[$AR->Stats->clientvar];
@@ -59,7 +59,7 @@
 				// log the entry if there is a CLIENT_ID
 				if((isset($client_id)) || (!$AR->Stats->logdefault)) {
 					// Take logdefault if there is no CLIENT_ID
-					
+
 					// Mangle the path (adjust to your own taste)
 					$logpath = $path;
 					$proceed = true;

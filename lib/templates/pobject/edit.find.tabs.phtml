@@ -45,7 +45,7 @@
 	function tofront(num) {
 
 		if( document.images) {
-			
+
 			document.images ["lt"+infront].src="<?php echo $AR->dir->images; ?>tabs/left_top5.gif";
 			document.images ["t"+infront].src="<?php echo $AR->dir->images; ?>tabs/top5.gif";
 			document.images ["rt"+infront].src="<?php echo $AR->dir->images; ?>tabs/right_top5.gif";
@@ -54,7 +54,7 @@
 			document.images ["lb"+infront].src="<?php echo $AR->dir->images; ?>tabs/left_bottom5.gif";
 			document.images ["b"+infront].src="<?php echo $AR->dir->images; ?>tabs/bottom5.gif";
 			document.images ["rb"+infront].src="<?php echo $AR->dir->images; ?>tabs/right_bottom5.gif";
-			
+
 			if(lefty>0) {	
 				document.images ["rt"+lefty].src="<?php echo $AR->dir->images; ?>tabs/right_top5.gif";
 				document.images ["r"+lefty].src="<?php echo $AR->dir->images; ?>tabs/right5.gif";

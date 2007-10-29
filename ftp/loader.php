@@ -20,9 +20,9 @@
 	
 	require($ariadne."/modules/mod_virusscan.php");
 
-		
+
 		/* this function has been taken from the php manual		*/
-		
+
 		function ftp_ErrorHandler ($errno, $errmsg, $filename, $linenum, $vars) {
 			if ($errno!= 2 && $errno!=8 ) {
 			    // timestamp for the error entry
@@ -213,7 +213,7 @@
 							$chunk = substr($data, $offset, 4096);
 						}
 					}
-					
+
 				} else {
 					$len=strlen($data);
 					debug("ftp_WriteDC:: writing len (".$len.")");
@@ -272,7 +272,7 @@
 				$listMode=$regs[1];
 				$path=str_replace("/".SPCHL.$listMode.SPCHR."/", "/", $path);
 			}
-			if (!$listMode) {				
+			if (!$listMode) {
 				if (!$absolute && $FTP->listMode) {
 					$listMode=$FTP->listMode;
 				} else {
@@ -293,7 +293,7 @@
 		global $FTP, $ARCurrent, $ARBeenHere;
 
 			while (ftp_FetchCMD($cmd, $args)) {
-				$ARBeenHere=Array();		
+				$ARBeenHere=Array();
 				$ARCurrent->arLoginSilent = 0;
 				$ARCurrent->ftp_error = "";
 
@@ -308,13 +308,13 @@
 							case 'templates':
 								ftp_TranslateTemplate($path, $template);
 								$getmode = "templates";
-								
+
 								$result = current(
 											$FTP->store->call("ftp.template.exists.phtml", 
 																Array("arRequestedTemplate" => $template),
 																$FTP->store->get($path)));
 								$file_date = $result["date"];
-								
+
 								if ($file_date) {
 									ftp_Tell(213, date("YmdHis", $file_date));
 								} else {
@@ -430,7 +430,7 @@
 							case 'templates':
 								ftp_TranslateTemplate($path, $template);
 								$getmode = "templates";
-								
+
 								$result = current(
 											$FTP->store->call("ftp.template.exists.phtml", 
 																Array("arRequestedTemplate" => $template),
@@ -519,7 +519,7 @@
 										ftp_Tell(550, $ARCurrent->ftp_error);
 										unset($ARCurrent->ftp_error);
 									} else {
-										ftp_Tell(250, "Rename successfull.");								
+										ftp_Tell(250, "Rename successfull.");
 									}
 									$rename_src_path = "";
 								} else {
@@ -541,7 +541,7 @@
 								$reqpath = $path;
 								ftp_TranslateTemplate($path, $template);
 								$getmode = "templates";
-								
+
 								$result = current(
 											$FTP->store->call("ftp.template.exists.phtml", 
 																Array("arRequestedTemplate" => $template),
@@ -897,7 +897,7 @@
 
 					case 'NOOP':
 						ftp_Tell(200, "NOOP command successful");
-					break;					
+					break;
 
 					case 'USER':
 					case 'PASS':
@@ -924,7 +924,7 @@
 					if ($cmd=="PASS") {
 						$password=$args;
 						debug("ftp: auth ($login, $password)");
-						
+
 						$criteria="object.implements = 'puser'";
 						$criteria.=" and login.value = '".AddSlashes($login)."'";
 						$user=$FTP->store->call("system.get.phtml", "",
@@ -1040,7 +1040,7 @@
 				$data.="-";
 			}
 			if ($grants["write"]) {
-				
+
 				$data.="w";
 			} else {
 				$data.="-";
@@ -1060,7 +1060,7 @@
 
 			$user = substr($user, 0, 9);
 			$userentry = $user.substr("         ", strlen($user));
-			$data.=$userentry.$userentry;			
+			$data.=$userentry.$userentry;
 
 			$size = substr($entry["size"], 0, 8);
 			$sizeentry = substr("        ", strlen($size)).$size;
@@ -1072,7 +1072,7 @@
 
 			$data.=" ".$file;
 
-			$data.="\n";			
+			$data.="\n";
 			debug($data);
 			return $data;
 		}

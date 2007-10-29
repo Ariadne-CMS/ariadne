@@ -60,7 +60,7 @@
 				$id=edit::registerDataField($name);
 				echo "<input name='$name' type='$type' class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title' value=\"";
 				echo htmlspecialchars($var);
-				echo "\" $extra>";			
+				echo "\" $extra>";
 			} else if (!edit::isEmpty($var)) {
 				echo $var;
 			}
@@ -143,7 +143,7 @@
 			if (edit::getEditMode()) {
 				echo "<a href='".$this->make_url($path).edit::getEditTemplate()."' $extra target='".edit::getEditTarget()."'>";
 			} else {
-				echo "<a href='".$this->make_url($path)."' $extra>";				
+				echo "<a href='".$this->make_url($path)."' $extra>";
 			}
 		}
 
@@ -154,10 +154,10 @@
 				if (!$url) {
 					$url=$this->make_url($path);
 				}
-				echo "<a href='".$url."' $extra>";				
+				echo "<a href='".$url."' $extra>";
 			}
 		}
-		
+
 		function showHref($path='', $extra='') {
 			if (edit::getEditMode()) {
 				echo "href='".$this->make_url($path).edit::getEditTemplate()."' $extra target='".edit::getEditTarget()."'";
@@ -238,9 +238,9 @@
 		}
 
 		function _showEditableLink($path='', $extra='', $url=false) {
-			return edit::showEditableLink($path, $extra, $url);			
+			return edit::showEditableLink($path, $extra, $url);
 		}
-		
+
 		function _showHref($path='') {
 			return edit::showHref($path);
 		}

@@ -16,7 +16,7 @@
 		$configcache=$ARConfig->cache[$this->path];
 		$thumbwidth=$configcache->thumb["width"];
 		$thumbheight=$configcache->thumb["height"];
-		$thumbcolor=$configcache->thumb["color"];		
+		$thumbcolor=$configcache->thumb["color"];
 		if ($AR->user->data->login=="public" || $this->CheckPublic("read")) {
 			// always set the client cache for thumbnails, even when caching
 			// is turned off. Otherwise the server might grind to a halt.

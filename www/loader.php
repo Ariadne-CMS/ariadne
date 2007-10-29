@@ -110,7 +110,7 @@
 		// for the new multiple domains per site option (per language), we need this
 		// since the nls isn't literaly in the url anymore.
 		$ldCacheFilename.=str_replace(':','=',str_replace('/','',$AR->host)).'=';
-		
+
 		if (ldGetServerVar("QUERY_STRING")) {
 			$ldCacheFilename.=ldGetServerVar("QUERY_STRING");
 		}
@@ -145,7 +145,7 @@
 		// mod_stats call
 		$logstats = new stats();
 		$logstats->log();
-		
+
 		$timecheck=time();
 		if (file_exists($cachedimage) && 
 			(strpos($HTTP_SERVER_VARS["ALL_HTTP"],"no-cache") === false) &&
@@ -303,7 +303,7 @@
 					$function = "user.session.timeout.html";
 				}
 			}
-			
+
 			// finally call the requested object
 			unset($store->total);
 			$store->call($function, $args, $store->get($path));

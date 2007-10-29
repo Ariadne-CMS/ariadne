@@ -70,7 +70,7 @@ class URL {
 			//$find[] = "%/-".$ARCurrent->session->id."-%"; 
 			//$repl[] = "{arSession}";
 		}
-		
+
 		return preg_replace($find, $repl, $page);
 	}
 	

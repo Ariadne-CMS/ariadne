@@ -28,7 +28,7 @@
 				if ($templates->exists($this->id, $template)) {
 					$file=$templates->read($this->id, $template);
 					/* now we have to save our template */
-					debug("templates.rename to: $tdefault, $ttype, $tfunction, $tlanguage");				
+					debug("templates.rename to: $tdefault, $ttype, $tfunction, $tlanguage");
 					$this->get($target, "system.save.layout.phtml", Array(
 														"template"	=> $file,
 														"default"	=> $tdefault,

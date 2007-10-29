@@ -34,7 +34,7 @@
 				if (current($this->get($parent, "system.check.grant.phtml", array("grant"=>"add", "modifier"=>$this->type)))) {
 					$this->find($this->path, "", "system.update.user.grants.phtml", array("action"=>"delete"));
 					$target = $this->store->move($this->path, $target);
-					
+
 					if ($target) {
 						$this->path=$target;
 						$this->parent=$parent;

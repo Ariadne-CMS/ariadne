@@ -90,7 +90,7 @@
 					}
 				}
 			}
-			
+
 
 
 			if ($profile=$this->getdata("profile","none")) {
@@ -171,7 +171,7 @@
 					if ($this->data->profile && $this->exists($skeletonpath)) {
 						$this->find($skeletonpath,"object.path!='".$skeletonpath."'",'system.copy.multiple.phtml',
 							Array('source'=>$skeletonpath, 
-								'target'=>$newpath));						
+								'target'=>$newpath));
 					}
 					/* check whether the owner of the user (and skeleton) should be set to the new user */
 					if ($this->getdata('setowner')) {

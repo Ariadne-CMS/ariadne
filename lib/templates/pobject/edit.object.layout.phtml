@@ -175,10 +175,10 @@
 						}
 
 						$onclick = "document.location='".$editor."?mode=".$mode."&type=".$type."&function=".RawUrlEncode($function)."&language=".$language."'";
-						$icon_src = $icons[$type]['small'];						
+						$icon_src = $icons[$type]['small'];
 						?><tr valign="middle" onmouseover="style.backgroundColor='steelblue',style.color='white'" onmouseout="style.color='',style.backgroundColor='';" onclick="<?php echo $onclick; ?>">
 						       <td align="left" valign="middle" style="height:23px; <?php echo $svn_style;?>">
-								
+
 								<?php
 									if ($svn_enabled) {
 										if ($svn_img) {
@@ -200,7 +200,7 @@
 								ksort($templatelist);
 								reset($templatelist);
 								while (list($language, $template)=each($templatelist)) {
-									
+
 									$flag="<img src=\"".$AR->dir->images."nls/small/$language.gif\" alt=\"".$AR->nls->list[$language]."\" border=\"0\">";
 									echo "<a class=\"button\" href=\"".$editor."?mode=".$mode."&type=".$type."&function=".RawUrlEncode($function).
 										"&language=".$language."\">$flag</a> ";

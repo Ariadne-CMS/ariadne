@@ -173,7 +173,7 @@ class export_wddx {
 			export_wddx::print_verbose("       Files:\n");
 			fwrite($fp,"<var name=\"files\">\n");
 			fwrite($fp,"<struct type=\"hash\">\n");
-			
+
 			foreach( $filearray as $file){
 				export_wddx::print_verbose('              ');
 				export_wddx::print_verbose("[".$file."]: ");
@@ -194,8 +194,8 @@ class export_wddx {
 				fwrite($fp,"</var>\n");
 				export_wddx::print_verbose("stored\n");
 			}
-			
-			
+
+
 			fwrite($fp,"</struct>\n");
 			fwrite($fp,"</var>\n");
 		}

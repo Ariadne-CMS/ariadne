@@ -104,7 +104,7 @@
 						$type="puser";
 					} else {
 						$this->error=sprintf($ARnls["err:nousergroup"],$path);
-					}						
+					}
 					if (!$this->error) {	
 						if ($id=current($this->get($path, "system.get.login.phtml"))) {
 							$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
@@ -115,7 +115,7 @@
 							if ($firstgrant=="{}") {
 								if ($result=current($this->get($path, "system.get.grants.phtml", Array("path" => $this->path)))) {
 									$current=implode(" ", array_keys($result));
-									$newgrants=ereg_replace(' ?\{\} ?',AddSlashes($current),$newgrants);		
+									$newgrants=ereg_replace(' ?\{\} ?',AddSlashes($current),$newgrants);
 								}
 							} else if (ereg('(\{(.*)\})',$firstgrant,$regs)) {
 								$cloned="";

@@ -59,7 +59,7 @@
 			window.opener.wgHTMLEditContent.value=document.editform.htmltext.value;
 			window.close();
 			return false;
-		} else {			
+		} else {
 			return true;
 		}
 	}

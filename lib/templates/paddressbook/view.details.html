@@ -102,7 +102,7 @@
 			default:
 				$criteria["address"][AddSlashes($search_property)]["LIKE"]="'%".AddSlashes($search_value)."%'";
 				break;
-		}		
+		}
 	}
 	$addresses=$this->get_addresses($criteria,"name");
 	while (is_array($addresses) && (list($key,$address)=each($addresses))) {	

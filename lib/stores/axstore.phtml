@@ -97,7 +97,7 @@ class axstore {
 									if ($this->lastobjectid < $object->id) {
 										$this->lastobjectid=$object->id;
 									}
-									
+
 
 								} else {
 									print_r($data);
@@ -167,7 +167,7 @@ class axstore {
 			} else 
 			if ($this->writeable) {
 				// create new database...
-			
+
 			} else {
 				$this->error="Could not find database (".$this->database.")";
 			}
@@ -312,7 +312,7 @@ class axstore {
 						$refcount=0;
 						unset($this->objects[$id]);	// eliminate
 					}
-					
+
 				}
 			}
 			$result=1;

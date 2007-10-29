@@ -145,7 +145,7 @@
 		$col=1;
 		while (list($type, $name) = each($result)) {
 			if (!$this->CheckSilent("add",$type)) {
-				$class="class='greyed'";				
+				$class="class='greyed'";
 			} else {
 				$class="";
 			}
@@ -186,7 +186,7 @@
 		while ($col<=$cols) {
 			echo "<td>&nbsp;</td>\n";
 			$col++;
-		}		
+		}
 	} else {
 		error($ARnls["err:wronggrants"]);
 	}

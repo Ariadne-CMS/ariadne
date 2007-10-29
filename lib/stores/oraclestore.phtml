@@ -43,11 +43,11 @@ class oraclestore extends store{
 
 	function oraclestore($path, $config) {
 	/**********************************************************************************
-		
+
 	 This is the constructor routine for the store object. It takes some configuration 
 	 information as arguments and sets up the database connection.
 
-	 $path is the root path of the running script under the document root of				
+	 $path is the root path of the running script under the document root of
 		the webserver.
 	 $config contains some database configuration values: "host", "user",
 		"password", "database" and the location of the class files for all the used
@@ -145,7 +145,7 @@ class oraclestore extends store{
 
 	function info($objects) {
 		debug("info([list])","store");
-		
+
 		while (OCIFetchInto($objects["list"], $row = Array(), OCI_ASSOC)) {
 			unset($row["object"]);
 			$result[]=$row;
@@ -495,7 +495,7 @@ class oraclestore extends store{
 		If there does exist an object with the given path, it's object
 		data is overwritten with the given data and if vtype is set the
 		current vtype is overwritten with the new one.
-		
+
 		$path must be an absolute path (containing no '..' and starting
 			with '/')
 		$type must be a valid type
@@ -643,7 +643,7 @@ class oraclestore extends store{
 							$query_string="insert into $nodes_tbl (path, parent, object, priority) values ('$epath', '$eparent', ".$this->tbl_prefix."ObjectID.CurrVal, $epriority)";
 							debug("save: query=$query_string","all");
 							$this->store_run_query($query_string);
-							if (!$this->errno) {				
+							if (!$this->errno) {
 								$this->save_properties($properties, $this->tbl_prefix.'ObjectID.CurrVal', $this);
 								$result=$path;
 							} else {
@@ -660,7 +660,7 @@ class oraclestore extends store{
 						debug("save: insert object failed!","store");
 						debug("save: ".$this->error,"store");
 						$result=0;
-					}			
+					}
 				}
 			}
 		} else {
@@ -835,7 +835,7 @@ class oraclestore extends store{
 			if ($id) {
 				$query_string="insert into $nodes_tbl (path, parent, object ) values ('$edestination', '$eparent', $id)";
 				$temp = $this->store_run_query($query_string);
-				if ($this->errno) {				
+				if ($this->errno) {
 					$this->error="ERROR: Oracle: ".$this->errno.": ".$this->error;
 					debug("link: insert node failed!","store");
 					debug("link: ".$this->error,"store");
@@ -874,7 +874,7 @@ class oraclestore extends store{
 		$err = OCIError($this->connect_id);
 		$errno=$err['code'];
 		$error=$err['message'];
-		if ($errno) {				
+		if ($errno) {
 			//print_r(debug_backtrace());
 			echo "<b>query: $query</b><br>\n";
 			$this->error="ERROR: Oracle: $errno: $error";

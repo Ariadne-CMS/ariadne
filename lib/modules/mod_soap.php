@@ -45,7 +45,7 @@
 			return new pinp_SOAP_Parser( $xml, $encoding, $attachments );
 		}
 
-		
+
 		function _Value($name, $type, $value, $namespaces=false) {
 			if( $namespaces===false ) {
 				return new SOAP_Value( $name, $type, $value);
@@ -108,7 +108,7 @@
 		function pinp_SOAP_Client($endpoint, $wsdl = false, $portName = false, $proxy_params=array()) {
 			parent::SOAP_Client( $endpoint, $wsdl, $portName, $proxy_params );
         }
-                     		
+
 		function _call( $function, $arguments=false, $namespace=false, $soapAction=false ) {
 			return $this->call( $function, $arguments, $namespace, $soapAction );
 		}

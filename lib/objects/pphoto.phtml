@@ -66,7 +66,7 @@ class pphoto extends pfile { // pphoto class definition
 			$ARConfig->photoStack[$this->id][]=" -quality $quality";
 			$result=true;
 		}
-		return $result;		
+		return $result;
 	}
 
 	function getExif( $sections = false, $arrays = true, $thumbnail = false, $nls = '') {
@@ -276,7 +276,7 @@ class pphoto extends pfile { // pphoto class definition
 		if( $resize == ">" || $resize == "<" ) {
 			$compose .= $resize;
 		}
-		
+
 		if ($method && eregi('[^a-z0-9+\-]',$method)) {
 			$this->error=sprintf($ARnls["err:composeillegalmethod"],$method);
 		} else {
@@ -291,7 +291,7 @@ class pphoto extends pfile { // pphoto class definition
 				if( $blend ) {
 					$compose .= " -blend ".$blend;
 				}
-			
+
 				$targetid = $targetobj->id;
 				if( $targetid ) {
 					if (!$nls) {
@@ -395,7 +395,7 @@ class pphoto extends pfile { // pphoto class definition
 
 		if( !$ARConfig->photoContext[$this->id] ) {
 			$ARConfig->photoContext[$this->id] = $context;
-		}		
+		}
 
 		if( $ARConfig->photoContext[$this->id] != $context ) {
 			if( $ARConfig->photoContext[$this->id] == "mogrify" ) {
@@ -481,7 +481,7 @@ class pphoto extends pfile { // pphoto class definition
 							// Escaped shell command line here.
 							$exec_string = $cmd_array[0] . " " . escapeshellcmd($cmd_array[1]);
 							$exec_string = str_replace("\xb6", "'", $exec_string);
-							
+
 							debug("executing ($exec_string)");
 							system($exec_string,$failed);
 							if($failed){

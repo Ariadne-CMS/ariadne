@@ -61,7 +61,7 @@ class mod_ax {
 
 
 	function openObjectsData($mode="r") {
-		return $this->ofp=fopen($this->tempdir."/objects.data",$mode);		
+		return $this->ofp=fopen($this->tempdir."/objects.data",$mode);
 	}
 
 	function writeObject($object) {
@@ -121,7 +121,7 @@ class mod_ax {
 		$nr=0; if ($dir[strlen($dir)-1]!="/") $dir.="/";
 		while (file_exists($dir.$prefix.($nr))) {
 			$nr++;
-		}				
+		}
 
 		return ($dir.$prefix.($nr));
 	}
@@ -144,7 +144,7 @@ class mod_ax {
 	// remove directories with content
 	function RmDir($path) {
 		$command=sprintf($this->cmdlist->cmd_rmdir,$path);
-				
+
 		system($command,$retVar);
 		if ($retVar!=0) {
 			$result="Error: Can't remove dir $path";
@@ -198,7 +198,7 @@ class mod_ax {
 						if ($retVar!=0) {
 							$result="Error: Can't import $tmpdir/$type.tgz, untar failed in $chdir with errorcode ($retVar)\n";
 							if ($errfile && file_exists($errfile)) {
-								$result.=implode("",file($errfile));						
+								$result.=implode("",file($errfile));
 								unlink($errfile);
 								$result.="\n";
 							}
@@ -208,7 +208,7 @@ class mod_ax {
 						//echo "($path) not in archive!\n";
 					}
 				}
-					
+
 			} else {
 				//$result="Error: Can't chdir to $path";
 			}
@@ -234,7 +234,7 @@ class mod_ax {
 			if ($retVar!=0) {
 				$result="Error: Can't export, $command failed in $path.\n";
 				if ($errfile && file_exists($errfile)) {
-					$result.=implode("",file($errfile));						
+					$result.=implode("",file($errfile));
 					unlink($errfile);
 					$result.="\n";
 				}
@@ -271,7 +271,7 @@ class mod_ax {
 				if ($retVar!=0) {
 					$result="Error: Can't make .ax export file ".$this->exportfile."\n";
 					if (file_exists($errfile)) {
-						$result.=implode("",file($errfile));						
+						$result.=implode("",file($errfile));
 						unlink($errfile);
 						$result.="\n";
 					}

@@ -39,7 +39,7 @@ class pgsqllock {
 				$result["release"]=$temp["release"];
 			}
 		}
-		return $result;		
+		return $result;
 	}
 
 	function lock($identity,$path,$time=0,$type="O") {
@@ -56,7 +56,7 @@ class pgsqllock {
 		// check if there is no parentlock :)
 		$query_string="
 		select path, release, type, identity from locks where
-		(				
+		(
 			( path=substring('".AddSlashes($path)."',1,char_length(path)) AND
 			  type='T' ) OR
 			( path='".AddSlashes($path)."' )

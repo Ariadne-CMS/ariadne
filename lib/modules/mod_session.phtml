@@ -40,7 +40,7 @@ class session {
 			if ($this->lastchanged < (time()-$this->timeout)) {
 				debug("session: ".$this->id." ARSessionTimedout", "all");
 				$this->system->ARSessionTimedout = true;
-			}			
+			}
 			$this->data=$result->data;
 		}
 

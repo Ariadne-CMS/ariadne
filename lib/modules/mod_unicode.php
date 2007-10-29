@@ -5,7 +5,7 @@
 	class unicode {
 
 		function utf8convert($string, $maxchar=0x7F, $entities=true) {
-			
+
 			$returns = "";
 			$UTF8len = array(	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 								1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 
@@ -13,7 +13,7 @@
 								2, 2, 3, 3, 3, 3, 4, 4, 5, 6);
 			$pos = 0;
 			$total = strlen($string);
-			
+
 			do { 
 				$c = ord($string[$pos]);
 				$len = $UTF8len[($c >> 2) & 0x3F];
@@ -87,7 +87,7 @@
 	}
 
 	class pinp_unicode extends unicode {
-		
+
 		function _utf8convert($string, $maxchar=0x7F, $entities=true) {
 			return pinp_unicode::utf8convert($string, $maxchar, $entities);
 		}

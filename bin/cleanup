@@ -7,7 +7,7 @@
 			echo "could not open ariadne.phtml";
 			exit(1);
 		}
-		
+
 	}
 	require($ariadne."/configs/store.phtml");
 	require($ariadne."/configs/sessions.phtml");

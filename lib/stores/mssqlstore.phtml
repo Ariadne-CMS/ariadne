@@ -38,11 +38,11 @@ class mssqlstore {
 
 	function mssqlstore($path, $config) {
 	/**********************************************************************************
-		
+
 	 This is the constructor routine for the store object. It takes some configuration 
 	 information as arguments and sets up the database connection.
 
-	 $path is the root path of the running script under the document root of				
+	 $path is the root path of the running script under the document root of
 		the webserver.
 	 $config contains some database configuration values: "host", "user",
 		"password", "database" and the location of the class files for all the used
@@ -66,7 +66,7 @@ class mssqlstore {
 		$this->code			= $config["code"];
 		$this->files		= $config["files"];
 		$this->tbl_prefix	= $config["prefix"];
-		
+
 		mssql_query("SET TEXTSIZE 536870912");
 
 		/* Instantiate module mssql_compiler */
@@ -373,13 +373,13 @@ class mssqlstore {
 					$where	.= " ".$this->tbl_prefix."prop_$eproperty.object=$objects_tbl.id)	";
 				}
 			}
-			
+
 			$query_string = "SELECT ";
 			if ($limit) {
 				$query_string .=" TOP ".($limit + $offset);
 			}
 			$query_string .= " ($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, datediff(ss, '1970-01-01 00:00:00.000', $objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype FROM $nodes_tbl, $objects_tbl WHERE $objects_tbl.id=$nodes_tbl.object AND $nodes_tbl.path IN (SELECT DISTINCT $nodes_tbl.path FROM $nodes_tbl, $objects_tbl $from $types WHERE $objects_tbl.id=$nodes_tbl.object AND $nodes_tbl.path LIKE '$epath%'";
-			
+
 			$where = substr($where,4);
 			if ($where) {
 				$query_string .= " and ( ( $where ) )";
@@ -421,7 +421,7 @@ class mssqlstore {
 		If there does exist an object with the given path, it's object
 		data is overwritten with the given data and if vtype is set the
 		current vtype is overwritten with the new one.
-		
+
 		$path must be an absolute path (containing no '..' and starting
 			with '/')
 		$type must be a valid type
@@ -539,7 +539,7 @@ class mssqlstore {
 				$exec			= mssql_query($query_string);
 				$err = mssql_query("select @@ERROR");
 				$e = mssql_fetch_array($err);
-				if (!$e[0]) {				
+				if (!$e[0]) {
 					$this->save_properties($properties, $id, $this);
 					$result=$path;
 				} else {
@@ -553,7 +553,7 @@ class mssqlstore {
 				debug("save: insert object failed!","store");
 				debug("save: ".$this->error,"store");
 				$result=0;
-			}			
+			}
 		}
 		debug("save: end","all");
 		return $result;
@@ -710,7 +710,7 @@ class mssqlstore {
 				$exec			= mssql_query($query_string);
 				$err = mssql_query("select @@ERROR");
 				$e = mssql_fetch_array($err);
-				if ($e[0]) {				
+				if ($e[0]) {
 					$this->error	= "ERROR: msSQL: $e[0]";
 					debug("link: insert node failed!","store");
 					debug("link: ".$this->error,"store");
@@ -773,7 +773,7 @@ class mssqlstore {
 				$exec				= mssql_query($query_string);
 				$err = mssql_query("select @@ERROR");
 				$e = mssql_fetch_array($err);
-				if ($e[0]) {				
+				if ($e[0]) {
 					$this->error	= "ERROR: msSQL: $e[0]";
 					debug("move: update nodes failed!","store");
 					debug("move: ".$this->error,"store");
@@ -785,7 +785,7 @@ class mssqlstore {
 					$exec			= mssql_query($query_string);
 					$err = mssql_query("select @@ERROR");
 					$e = mssql_fetch_array($e[0]);
-					if ($e[0]) {				
+					if ($e[0]) {
 						$this->error	= "ERROR: msSQL: $e[0]";
 						debug("move: update nodes failed!","store");
 						debug("move: ".$this->error,"store");
@@ -872,7 +872,7 @@ class mssqlstore {
 
 	**********************************************************************/
 
-		debug("make_path($curr_dir, $path)","all");		
+		debug("make_path($curr_dir, $path)","all");
 		$this->error	= "";
 		if (substr($path,0,1) == "/") {
 			$result		= "/";
@@ -897,7 +897,7 @@ class mssqlstore {
 				}
 			}
 		}
-		debug("make_path: end ($result)","all");		
+		debug("make_path: end ($result)","all");
 		return ($result);
 	}
 
@@ -1072,7 +1072,7 @@ class mssqlstore {
 				$query_string="insert into ".$this->tbl_prefix."seq_id values ('$path', 1 )";
 				mssql_query($query_string);
 			}
-			$query_string="update ".$this->tbl_prefix."seq_id set next_id=".($id+1)." where path='$epath'";		
+			$query_string="update ".$this->tbl_prefix."seq_id set next_id=".($id+1)." where path='$epath'";
 			mssql_query($query_string);
 			// finish transaction
 			$query_string="COMMIT";

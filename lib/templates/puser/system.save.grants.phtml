@@ -94,7 +94,7 @@
 										"modifier"	=> $modifier)));
 					if ($result!=$ARnls["ok"]) {
 						$this->error=sprintf($ARnls["err:notremovegrant"],$id,$path);
-					}			
+					}
 				}
 			} else if ($newgrants) {
 				if ($type=current($this->get($path, "system.get.type.phtml"))) {
@@ -116,7 +116,7 @@
 							if ($newgrant=="{}") {
 								if ($result=current($this->get($path,"system.get.grants.phtml",Array("path" => $this->path)))) {
 									$current=implode(" ", array_keys($result));
-									$newgrants=ereg_replace(' ?\{\} ?',AddSlashes($current),$newgrants);		
+									$newgrants=ereg_replace(' ?\{\} ?',AddSlashes($current),$newgrants);
 								}
 								$newgrant=strtok($newgrants, " ");
 							} else if (ereg('(\{(.*)\})',$newgrant,$regs)) {
@@ -183,7 +183,7 @@
 												$newgrant=substr($newgrant,1);
 											default :
 												$granttype=ARGRANTGLOBAL;
-												break;		
+												break;
 										}
 										if ($modifyfor) {
 											$modifier=$newgrant;

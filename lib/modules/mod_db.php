@@ -17,7 +17,7 @@ class pinp_DB {
 			$result=$AR->DB_list[$key];
 			array_pop($AR->DB_list);
 		} else {
-			$result=new pinp_DB($key);		
+			$result=new pinp_DB($key);
 		} 
 		return $result;
 	}

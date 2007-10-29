@@ -375,7 +375,7 @@ tinyMCEPopup.init();
 			} else if (!ViewPhotobook) {
 				View(CurrentPath, 'Selected Picture', true);
 			} else {
-				View(CurrentPath, '<?php echo $ARnls['photobook']; ?>', true);			
+				View(CurrentPath, '<?php echo $ARnls['photobook']; ?>', true);
 			}
 		} else {
 			KeepPath[3]=CurrentPath;
@@ -387,7 +387,7 @@ tinyMCEPopup.init();
 	function View(path,name,top) {
 		var inlist=-1;
 		var newname="";
-		
+
 		if (document.forms[0].BrowseNav) {
 			blist=document.forms[0].BrowseNav.options;
 			if (top) { //item is the new top
@@ -428,7 +428,7 @@ tinyMCEPopup.init();
 		PreviewURL=false;
 		document.forms[0].imgstyle.disabled=false;
 		mnToolbar.style.display='block';
-		CurrentPath=path;		
+		CurrentPath=path;
 		ViewMode=mnBrowse.CurrentViewMode;
 		if (!ViewMode) {
 			ViewMode='icons';
@@ -471,17 +471,17 @@ tinyMCEPopup.init();
 
 	function ViewMode(mode) {
 		if (mode=='details') {
-			document.images["details"].src='<?php echo $AR->dir->images; ?>browse/details-pressed.gif';			
-			document.images["list"].src='<?php echo $AR->dir->images; ?>browse/list.gif';			
-			document.images["icons"].src='<?php echo $AR->dir->images; ?>browse/icons.gif';			
+			document.images["details"].src='<?php echo $AR->dir->images; ?>browse/details-pressed.gif';
+			document.images["list"].src='<?php echo $AR->dir->images; ?>browse/list.gif';
+			document.images["icons"].src='<?php echo $AR->dir->images; ?>browse/icons.gif';
 		} else if (mode=='icons') {
-			document.images["details"].src='<?php echo $AR->dir->images; ?>browse/details.gif';			
-			document.images["list"].src='<?php echo $AR->dir->images; ?>browse/list.gif';			
-			document.images["icons"].src='<?php echo $AR->dir->images; ?>browse/icons-pressed.gif';			
+			document.images["details"].src='<?php echo $AR->dir->images; ?>browse/details.gif';
+			document.images["list"].src='<?php echo $AR->dir->images; ?>browse/list.gif';
+			document.images["icons"].src='<?php echo $AR->dir->images; ?>browse/icons-pressed.gif';
 		} else {
 			document.images["details"].src='<?php echo $AR->dir->images; ?>browse/details.gif';
-			document.images["list"].src='<?php echo $AR->dir->images; ?>browse/list-pressed.gif';			
-			document.images["icons"].src='<?php echo $AR->dir->images; ?>browse/icons.gif';			
+			document.images["list"].src='<?php echo $AR->dir->images; ?>browse/list-pressed.gif';
+			document.images["icons"].src='<?php echo $AR->dir->images; ?>browse/icons.gif';
 		}
 		CurrentViewMode=mode;
 		View(CurrentPath);
@@ -531,8 +531,8 @@ tinyMCEPopup.init();
 			} else {
 				var path='<?php echo $this->store->get_config("root").$this->parent; ?>';
 			}
-		}		
-		View(path);		
+		}
+		View(path);
 	}
 	
 	function ObjectAdded() {
@@ -688,9 +688,9 @@ tinyMCEPopup.init();
 
 	<div class="tab-page" id="tabPage2">
 		<h2 class="tab"><?php echo $ARnls["e_image_options"]; ?></h2>
-		
+
 		<script type="text/javascript">tp1.addTabPage( document.getElementById( "tabPage2" ) );</script>
-		
+
 <table height="100%" width="100%">
 <tr>
 	<td align="left" colspan="2">
@@ -754,7 +754,7 @@ tinyMCEPopup.init();
 	</td>
 </tr>
 </table>
-		
+
 	</div>
 
 </div>

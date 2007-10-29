@@ -7,7 +7,7 @@
 			echo "could not open ariadne.phtml";
 			exit(1);
 		}
-		
+
 	}
 	require($ariadne."/configs/store.phtml");
 	require($ariadne."/configs/axstore.phtml");
@@ -138,7 +138,7 @@
 					$patharray_entry = explode("=>", $patharray_entry);
 					$srcpath = $patharray_entry[0];
 					$destpath = $patharray_entry[1];
-					echo "srcpath ($srcpath) destpath($destpath)\n";					
+					echo "srcpath ($srcpath) destpath($destpath)\n";
 					$ARCurrent->importStore=&$importStore;
 					$callArgs["srcpath"] = $srcpath;
 					$callArgs["destpath"] = $destpath;

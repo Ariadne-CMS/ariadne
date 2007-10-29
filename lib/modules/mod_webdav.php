@@ -40,8 +40,8 @@
 						// Assume it is an escaped character here. Find the
 						// numbers in hex, turn them back to decimal, get
 						// the corresponding character and return it.
-			
-						'return chr(hexdec(substr($char, 1, 2)));'			
+
+						'return chr(hexdec(substr($char, 1, 2)));'
 					),
 					$path
 				);
@@ -64,7 +64,7 @@
 			// numbers in hex, turn them back to decimal, get
 			// the corresponding character and return it.
 
-			return chr(hexdec(substr($char, 1, 2)));			
+			return chr(hexdec(substr($char, 1, 2)));
 		}
 
 		function check_auth($type, $user, $pass) {

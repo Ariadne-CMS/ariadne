@@ -24,7 +24,7 @@
 			ldStartSession($ARCurrent->session->id);
 		}
 		$ARCurrent->session->put("ARLogin", $login);
-		
+
 		/* create the session key */
 		srand((double)microtime()*1000000);
 		$session_key = ARCrypt(uniqid(rand(), true));
@@ -91,7 +91,7 @@
 			}
 		} else {
 			debug("wrong login or corrupted cookie","all");
-		}			
+		}
 		return $result;
 	}
 ?>

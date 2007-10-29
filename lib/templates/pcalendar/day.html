@@ -36,7 +36,7 @@
 		 	$ARCurrent->totalspan=$i;
 			}
 			$i++;
-		}		
+		}
 		return $spannumber;
 	}
 
@@ -70,7 +70,7 @@
 					// if !$i then add regardless wether there's no text
 					//	 no path means this item is a time marker only.
 					// if $path then add at $i, in previous if statement $i already set
-					//	 to the 'time marker'.									
+					//	 to the 'time marker'.
 					if ($path) {
 						$ARCurrent->timelist[$from][$i]["text"]="<a class=\"cal\" href=\"".
 							$ARCurrent->parent->make_url($path)."classic.edit.phtml?entry=$from&date=".$ARCurrent->date."&arReturnPage=".
@@ -123,7 +123,7 @@
 	// prepopulate ARCurrent->timelist with all hours from 8:00 to 18:00
 	for ($i=8; $i<19; $i++) {
 		$hour=mktime($i,0,0,$date_arr["mon"],$date_arr["mday"],$date_arr["year"]);
-		AddTime($hour, $hour, 0);		
+		AddTime($hour, $hour, 0);
 	}
 
 	// if no_time is set, endtime is starttime - 1 second. if starttime is 0:0h

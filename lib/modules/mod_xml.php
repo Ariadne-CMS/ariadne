@@ -10,7 +10,7 @@
 			$replace= Array('&amp;','&quot;','&apos;','&lt;','&gt;');
 			return str_replace($search, $replace, $text);
 		}
-		
+
 		function _unescape($text) {
 			$search= Array('&quot;','&apos;','&lt;','&gt;','&amp;');
 			$replace= Array('"',"'",'<','>','&');
@@ -103,7 +103,7 @@
 
 				curl_setopt($ch, CURLOPT_HEADER, 0);
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);
-		
+
 				$string = curl_exec($ch);
 				curl_close($ch);
 				if (!xml_parse($parser, $string)) {

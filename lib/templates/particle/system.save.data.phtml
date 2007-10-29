@@ -19,7 +19,7 @@
 		} else {
 			$this->data=new object;
 		}
-		
+
 		// unset the properties array, so no properties can be passed to this template.
 		$properties = Array();
 
@@ -98,12 +98,12 @@
 										+($this->getdata("starttime_minute","none")*60);
 				$this->data->endtime=($this->getdata("endtime_hour","none")*3600)
 										+($this->getdata("endtime_minute","none")*60);
-										
+
 				if( ( !$this->data->endtime ) && ( !$this->data->enddate ) ) {
 					$this->data->endtime = $this->data->starttime;
 					$this->data->enddate = $this->data->startdate;
 				}
-										
+
 				if (!$this->data->published) {
 					$this->data->published=time();
 				}

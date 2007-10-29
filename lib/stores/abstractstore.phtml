@@ -29,11 +29,11 @@ class store {
 
 	function store($path, $config) {
 	/**********************************************************************************
-		
+
 	 This is the constructor routine for the store object. It takes some configuration 
 	 information as arguments and sets up the database connection.
 
-	 $path is the root path of the running script under the document root of				
+	 $path is the root path of the running script under the document root of
 		the webserver.
 	 $config contains some database configuration values: "host", "user",
 		"password", "database" and the location of the class files for all the used
@@ -233,7 +233,7 @@ class store {
 		If there does exist an object with the given path, it's object
 		data is overwritten with the given data and if vtype is set the
 		current vtype is overwritten with the new one.
-		
+
 		$path must be an absolute path (containing no '..' and starting
 			with '/')
 		$type must be a valid type
@@ -455,7 +455,7 @@ class store {
 
 	**********************************************************************/
 
-		debug("make_path($curr_dir, $path)","all");		
+		debug("make_path($curr_dir, $path)","all");
 		$this->error="";
 		if (substr($path,0,1)=="/") {
 			$result="/";
@@ -476,7 +476,7 @@ class store {
 				}
 			}
 		}
-		debug("make_path: end ($result)","all");		
+		debug("make_path: end ($result)","all");
 		return $result;
 	}
 

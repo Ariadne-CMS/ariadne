@@ -46,12 +46,12 @@
 		$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/schedule.png";
 		$wgWizFlow[$i]["template"]=$step2;
 		$wgWizFlow[$i]["nolang"]=true;
-		
+
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["repeat"];
 		$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/scenario.png";
 		$wgWizFlow[$i]["template"]=$step3;
-		$wgWizFlow[$i]["nolang"]=true;		
+		$wgWizFlow[$i]["nolang"]=true;
 
 		if ($hascustomdata) {
 			$i++;
@@ -98,7 +98,7 @@
 		}
 		$arResult=$icon;
 
-		$wgWizTitle=$ARnls["edit"]." ".$name;		
+		$wgWizTitle=$ARnls["edit"]." ".$name;
 		$wgWizHeader=$wgWizTitle.'<img src="'.$icon.'" alt="" hspace="4" align="absmiddle">';
 		include($this->store->get_config("code")."widgets/wizard/new.html");
 	}

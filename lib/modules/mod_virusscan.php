@@ -5,15 +5,15 @@
 	function virusscan($filename) {
 		global $AR, $VSsupportedscanners;
 
-		$scanner = strtolower($AR->VS->scannername);		
+		$scanner = strtolower($AR->VS->scannername);
 		// Do they want us to scan ?
 		if($AR->VS->performscan && (stristr($VSsupportedscanners, $scanner)!=false)) {
-			// Yes they do.		
-			
+			// Yes they do.
+
 			$infected = true;	// We're paranoid; always assume it's infected unless proven otherwise.
 			$infectiontype = "an unknown virus infection";
 			$path =  $AR->VS->path;
-			
+
 			switch($scanner) {
 				case "f-prot": $cmd = $path."f-prot";
 						exec("$cmd $filename", $output, $ret);
@@ -81,10 +81,10 @@
 		// Do they want us to scan ?
 		if($AR->VS->performscan && (stristr($VSsupportedscanners, $scanner)!=false)) {
 			// Yes they do
-			
+
 			$cleaned = false;	// We're paranoid; always assume it failed unless proven otherwise.
 			$path =  $AR->VS->path;
-			
+
 			switch($scanner) {
 				case "f-prot": $cmd = $path."f-prot -disinf -auto";
 						exec("$cmd $filename", $output, $ret);

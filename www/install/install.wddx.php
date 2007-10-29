@@ -188,35 +188,35 @@
 		$store->create_property("references", $references);
 
 		// install pprofile type
-		
+
 		$store->add_type("pprofile","pobject");
 		$store->add_type("pprofile","ppage");
 		$store->add_type("pprofile","pdir");
 		$store->add_type("pprofile","pprofile");
 
 		// install psearch type
-		
+
 		$store->add_type("psearch","pobject");
 		$store->add_type("psearch","ppage");
 		$store->add_type("psearch","pdir");
 		$store->add_type("psearch","psearch");
-		
+
 		// install psection type
-		
+
 		$store->add_type("psection", "pobject");
 		$store->add_type("psection", "ppage");
 		$store->add_type("psection", "pdir");
 		$store->add_type("psection", "psection");
 
 		// install pconnector type
-		
+
 		$store->add_type("pconnector", "pobject");
 		$store->add_type("pconnector", "ppage");
 		$store->add_type("pconnector", "pdir");
 		$store->add_type("pconnector", "pconnector");
 
 		// install pldapconnection type
-		
+
 		$store->add_type("pldapconnection", "pobject");
 		$store->add_type("pldapconnection", "ppage");
 		$store->add_type("pldapconnection", "pdir");
@@ -224,10 +224,10 @@
 		$store->add_type("pldapconnection", "pldapconnection");
 
 		// install pbookmark type
-		
+
 		$store->add_type("pbookmark", "pobject");
 		$store->add_type("pbookmark", "pbookmark");
-		
+
 
 		echo "== importing ariadne.wddx file\n\n";
 

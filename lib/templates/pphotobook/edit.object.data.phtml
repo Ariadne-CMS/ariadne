@@ -45,7 +45,7 @@
 				"image"		=> $AR->dir->images."wizard/customdata.png",
 				"template"	=> "edit.object.data.custom.phtml");
 		}
-		
+
 		$arLanguage=$this->getdata("arLanguage","none");
 		if (!$arLanguage) { // language select hasn't been done yet, so start with default language
 			$arLanguage=$ARConfig->nls->default;
@@ -83,7 +83,7 @@
 		}
 		$arResult=$icon;
 
-		$wgWizTitle=$ARnls["edit"]." ".$name;		
+		$wgWizTitle=$ARnls["edit"]." ".$name;
 		$wgWizHeader=$wgWizTitle.'<img src="'.$icon.'" alt="" hspace="4" align="absmiddle">';
 		include($this->store->get_config("code")."widgets/wizard/new.html");
 	}

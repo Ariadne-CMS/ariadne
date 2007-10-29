@@ -9,7 +9,7 @@
 			$this->config = $config;
 			hn_captcha_X1::hn_captcha_X1($config);
 		}
-		
+
 		function get_filename_url($public="", $url='') {
 			if ($public == "") {
 				$public = $this->public_key;

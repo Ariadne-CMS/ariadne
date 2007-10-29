@@ -117,17 +117,17 @@ class password {
 			$should_be = 0;
 			$first = 1;
 			$result = "";
-		
+
 			$feature_flags = $pw_flags;
-		
+
 			$should_be = (rand(0,1) ? $VOWEL : $CONSONANT);
-		
+
 			while( $c < $size ) {
 				$i = rand( 0, ($NUM_ELEMENTS - 1 ) );
 				$str = $elements[$i][0];
 				$len = strlen($str);
 				$flags = $elements[$i][1];
-		
+
 				/* Filter on the basic type of the next element */
 				if (($flags & $should_be) == 0)
 					continue;
@@ -145,9 +145,9 @@ class password {
 				 * OK, we found an element which matches our criteria,
 				 * let's do it!
 				 */
-				
+
 				$result = $result.$str;
-		
+
 				/* Handle $PW_ONE_CASE */
 				if ($feature_flags & $PW_ONE_CASE) {
 					if (($first || $flags & $CONSONANT) &&
@@ -156,13 +156,13 @@ class password {
 						$feature_flags &= ~$PW_ONE_CASE;
 					}
 				}
-				
+
 				$c += $len;
-				
+
 				/* Time to stop? */
 				if ($c >= $size)
 					break;
-				
+
 				/*
 				 * Handle PW_ONE_NUMBER
 				 */
@@ -177,7 +177,7 @@ class password {
 						continue;
 					}
 				}
-						
+
 				/*
 				 * OK, figure out what the next element should be
 				 */
@@ -192,7 +192,7 @@ class password {
 						$should_be = $VOWEL;
 				}
 				$prev = $flags;
-				$first = 0;		
+				$first = 0;
 			}
 		} while ($feature_flags & ($PW_ONE_CASE | $PW_ONE_NUMBER));
 			return $result;

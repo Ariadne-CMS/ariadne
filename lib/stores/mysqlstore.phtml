@@ -41,11 +41,11 @@ class mysqlstore extends store{
 
 	function mysqlstore($path, $config) {
 	/**********************************************************************************
-		
+
 	 This is the constructor routine for the store object. It takes some configuration 
 	 information as arguments and sets up the database connection.
 
-	 $path is the root path of the running script under the document root of				
+	 $path is the root path of the running script under the document root of
 		the webserver.
 	 $config contains some database configuration values: "host", "user",
 		"password", "database" and the location of the class files for all the used
@@ -413,7 +413,7 @@ class mysqlstore extends store{
 		If there does exist an object with the given path, it's object
 		data is overwritten with the given data and if vtype is set the
 		current vtype is overwritten with the new one.
-		
+
 		$path must be an absolute path (containing no '..' and starting
 			with '/')
 		$type must be a valid type
@@ -549,7 +549,7 @@ class mysqlstore extends store{
 						$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
 						$errno=mysql_errno($this->connect_id);
 						$error=mysql_error($this->connect_id);
-						if (!$errno) {				
+						if (!$errno) {
 							if ($needunlocking) {
 								$query_string = "unlock tables";
 								mysql_db_query($this->database,$query_string, $this->connect_id);
@@ -568,7 +568,7 @@ class mysqlstore extends store{
 						debug("save: insert object failed!","store");
 						debug("save: ".$this->error,"store");
 						$result=0;
-					}			
+					}
 				}
 				if ($needunlocking) {
 					$query_string = "unlock tables";
@@ -729,7 +729,7 @@ class mysqlstore extends store{
 		$parent=$this->make_path($destination, "..");
 		$filename=substr($destination, strlen($parent));
 		$eparent = AddSlashes($parent);
-		
+
 		$query_string = "select path from $nodes_tbl where path = '$eparent'";
 		$qresult = mysql_db_query($this->database, $query_string, $this->connect_id);
 		if ($qresult && ($row = mysql_fetch_array($qresult))) {
@@ -767,7 +767,7 @@ class mysqlstore extends store{
 					$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
 					$errno=mysql_errno($this->connect_id);
 					$error=mysql_error($this->connect_id);
-					if ($errno) {				
+					if ($errno) {
 						$this->error="ERROR: Mysql: $errno: $error";
 						debug("link: insert node failed!","store");
 						debug("link: ".$this->error,"store");
@@ -798,7 +798,7 @@ class mysqlstore extends store{
 		$result=mysql_db_query($this->database, $query, $this->connect_id);
 		$errno=mysql_errno($this->connect_id);
 		$error=mysql_error($this->connect_id);
-		if ($errno) {				
+		if ($errno) {
 			$this->error="ERROR: Mysql: $errno: $error";
 			debug("run_query: ".$this->error,"store");
 			debug("run_query: query=$query_string","store");
@@ -827,7 +827,7 @@ class mysqlstore extends store{
 		$parent=$this->make_path($destination, "..");
 		$filename=substr($destination, strlen($parent));
 		$eparent = AddSlashes($parent);
-		
+
 		$query_string = "select path from $nodes_tbl where path = '$eparent'";
 		$qresult = mysql_db_query($this->database, $query_string, $this->connect_id);
 		if ($qresult && ($row = mysql_fetch_array($qresult))) {

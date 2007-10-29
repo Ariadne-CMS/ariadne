@@ -142,7 +142,7 @@ class store {
 		If there does exist an object with the given path, it's object
 		data is overwritten with the given data and if vtype is set the
 		current vtype is overwritten with the new one.
-		
+
 		$path must be an absolute path (containing no '..' and starting
 			with '/')
 		$type must be a valid type
@@ -395,7 +395,7 @@ class store {
 				}
 			}
 		}
-		
+
 		debug("make_path: end ($result)","all");
 		return $result;
 	}
@@ -406,7 +406,7 @@ class store {
 		defined in $properties and sets the values to the values in
 		$properties.
 	********************************************************************/
-		
+
 		debug("save_properties([properties], $id)","all");
 		if ($properties && (is_array($properties)) && (is_int($id))) {
 			while (list($property, $property_set)=each($properties)) {

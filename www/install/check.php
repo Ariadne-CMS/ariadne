@@ -127,7 +127,7 @@ function display_perms( $mode )
 
 	function cdebug( $text ) {
 		global $DEBUGON;
-		
+
 		if( $DEBUGON ) {
 			echo "[CHECK] ".$text."\n";
 		}

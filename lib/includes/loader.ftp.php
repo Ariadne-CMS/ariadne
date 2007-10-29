@@ -128,7 +128,7 @@
 		function socket_bind($arg1, $arg2, $arg3) {
 			return !bind($arg1, $arg2, $arg3);
 		}
-		
+
 		function socket_listen($arg1, $arg2) {
 			return listen($arg1, $arg2);
 		}

@@ -6,7 +6,7 @@
 			if (!$this->real_ls(".","system.get.phtml")) {
 				// remove grants for this object in all user objects.
 				if ($data->config->grants && is_array($data->config->grants)) {
-					while (list($login, $grants)=each($data->config->grants)) {		
+					while (list($login, $grants)=each($data->config->grants)) {
 						$criteria["login"]["value"]["="]="'".$login."'";
 						$this->find("/system/users/", $criteria, "system.update.grants.phtml", Array(
 									"action" => "delete",
@@ -30,7 +30,7 @@
 								}
 							}
 						}
-					}				
+					}
 				}
 				// clear cache
 				$this->ClearCache();

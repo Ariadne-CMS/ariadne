@@ -75,7 +75,7 @@
 		function _ls($template, $args='') {
 			return $this->ls($template, $args);
 		}
-		
+
 		function reset() {
 			// reset namestack
 			$this->ns = Array();

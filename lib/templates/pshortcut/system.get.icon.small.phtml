@@ -2,11 +2,11 @@
 	if ($this->CheckLogin('read') && $this->CheckConfig()) {
 		if($data->path && $this->exists($data->path)) {
 			$mytype = current($this->get($data->path, 'system.get.type.phtml'));
-			
+
 		} else {
 			$mytype = $this->vtype;
 		}
-		
+
 		$dotPos=strpos($mytype, '.');
 		if (false!==$dotPos) {
 			$realtype=substr($mytype, 0, $dotPos);

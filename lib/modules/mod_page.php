@@ -94,7 +94,7 @@ class page {
 	function isEmpty($page) {
 		if (!$full) {
 			$page = page::getBody($page);
-		}		
+		}
 		return trim(str_replace('&nbsp;',' ',strip_tags($page, '<img>')))=='';
 	}
 

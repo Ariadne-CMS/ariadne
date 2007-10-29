@@ -35,11 +35,11 @@
 	include_once("XML/RPC.php");
 
 	class XMLRPC {
-		
+
 		/* parse the given array and return a valid xmlrpc encoded array */
 
 		function array_encode( $arguments=array(), $in_struct = 0 ) {
-			
+
 			$result = array();
 
 			if( is_array( $arguments ) && (sizeof($arguments) > 0) ) {
@@ -134,7 +134,7 @@
 
 		function call( $url="",$function="",$arguments=array() ) {
 		$arguments = XMLRPC::array_encode($arguments);
-			
+
 			$myResult = XMLRPC::call_raw($url,$function,$arguments);
 
 			if( !$myResult ) {

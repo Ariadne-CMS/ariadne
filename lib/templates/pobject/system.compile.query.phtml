@@ -142,7 +142,7 @@
 				//echo "search for ".$node["token"]."<br>";
 				//$criteria["text"]["value"]["LIKE"]="'%".AddSlashes($node["token"])."%'";
 				//$criteria["object"]["implements"]["="]="'particle'";
-				//$result=$object->find(".", $criteria, "system.get.path.phtml");				
+				//$result=$object->find(".", $criteria, "system.get.path.phtml");
 
 				$result = "text.value~='%".AddSlashes($node["token"])."%'";
 			break;

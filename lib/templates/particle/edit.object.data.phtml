@@ -42,7 +42,7 @@
 		$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/scenario.png";
 		$wgWizFlow[$i]["template"]=$scenario;
 		$wgWizFlow[$i]["nolang"]=true;
-		
+
 		$i++;
 		$wgWizFlow[$i]["title"]=$ARnls["date"]."&nbsp;/&nbsp;".$ARnls["time"];
 		$wgWizFlow[$i]["image"]=$AR->dir->images."wizard/schedule.png";
@@ -96,7 +96,7 @@
 		}
 		$arResult=$icon;
 
-		$wgWizTitle=$ARnls["edit"]." ".$name;		
+		$wgWizTitle=$ARnls["edit"]." ".$name;
 		$wgWizHeader=$wgWizTitle.'<img src="'.$icon.'" alt="" hspace="4" align="absmiddle">';
 		include($this->store->get_config("code")."widgets/wizard/new.html");
 	}

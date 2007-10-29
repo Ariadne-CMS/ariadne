@@ -19,10 +19,10 @@
 		} else {
 			$this->data=new object;
 		}
-		
+
 		// unset the properties array, so no properties can be passed to this template.
 		$properties = Array();
-		
+
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
 			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
 		} else {
@@ -33,7 +33,7 @@
 			reset($AR->nls->list);
 			$count=0;
 			while (list($key, $value)=each($AR->nls->list)) {
-				
+
 				if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
 					if (!$this->data->$key) {
 						debug("$key not yet set","all");

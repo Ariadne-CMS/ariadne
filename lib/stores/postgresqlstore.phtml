@@ -42,7 +42,7 @@ class postgresqlstore extends store {
 	function postgresqlstore($path, $config) {
 		global $AR;
 	/**********************************************************************************
-		
+
 	 This is the constructor routine for the store object. It takes some configuration 
 	 information as arguments and sets up the database connection.
 
@@ -429,7 +429,7 @@ class postgresqlstore extends store {
 		If there does exist an object with the given path, it's object
 		data is overwritten with the given data and if vtype is set the
 		current vtype is overwritten with the new one.
-		
+
 		$path must be an absolute path (containing no '..' and starting
 			with '/')
 		$type must be a valid type

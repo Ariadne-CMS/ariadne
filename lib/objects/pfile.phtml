@@ -56,7 +56,7 @@ class pfile extends pobject { // pfile class definition
 		}
 		$files = $this->store->get_filestore("files");
 
-		$result = $files->exists($this->id, $nls."_$file");		
+		$result = $files->exists($this->id, $nls."_$file");
 		if( $result ){
 			return $result;
 		} else {
@@ -91,7 +91,7 @@ class pfile extends pobject { // pfile class definition
 		if (!$mimetype) {
 			$mimetype = $this->data->mimetype;
 		}
-		
+
 		if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
 			if ($ARCurrent->cachetime==0 && !$AR->output_compression) {
 				ob_start(); // start the cache
@@ -206,7 +206,7 @@ class pfile extends pobject { // pfile class definition
 		global $AR;
 		$result="";
 		$files=$this->store->get_filestore("files");
-		
+
 		if (!$nls) {
 			$nls = $this->reqnls;
 		}
@@ -217,7 +217,7 @@ class pfile extends pobject { // pfile class definition
 			$file = $nls."_$file";
 			$mimetype = $this->data->$nls->mimetype;
 		}
-		
+
 		if (eregi("^text/", $mimetype)) {
 			$result=$this->GetFile($file);
 			if ($mimetype=="text/html") {
@@ -248,7 +248,7 @@ class pfile extends pobject { // pfile class definition
 	function SaveFile($contents, $mimetype=false, $name='file') {  
 		global $AR;
 		$result="";
-		$name=ereg_replace("[\\\/]","",$name); // make sure nobody gets /etc/passwd			
+		$name=ereg_replace("[\\\/]","",$name); // make sure nobody gets /etc/passwd
 		if ($name) {
 			if (!$this->arIsNewObject && $this->CheckSilent('edit')) {
 				$files=$this->store->get_filestore("files");

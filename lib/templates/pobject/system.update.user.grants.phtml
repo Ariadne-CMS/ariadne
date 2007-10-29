@@ -40,9 +40,9 @@
 				}
 			}
 		}
-		
+
 		$AR->user->grants[$this->path]=$realgrants;
-		
+
 	} else { // the grants need to be removed (no config grant on the target)
 		debug("grants need to be removed (no config grant on the target)");
 		unset($this->data->config->grants);

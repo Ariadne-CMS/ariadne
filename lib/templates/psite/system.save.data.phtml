@@ -11,10 +11,10 @@
 			(!$this->arIsNewObject && $this->CheckLogin("edit"))) &&
 			$this->CheckConfig()) {
 		$this->call("pdir::system.save.data.phtml",$arCallArgs);
-		
+
 		// unset the properties array, so no properties can be passed to this template.
 		$properties = Array();
-		$this->data->url_list = Array();		
+		$this->data->url_list = Array();
 		if (!$this->error) {
 			$this->arIsNewObject=false;
             reset($AR->nls->list);
@@ -27,7 +27,7 @@
 						$url=substr($url, 0, -1);
 					}
 					if ($url!=$this->data->$key->url) {
-						$clearcache=true;					
+						$clearcache=true;
 						$this->data->$key->url=$url;
 					}
 					eregi('^([a-z0-9]+)://([^/:]+)(:[0-9]+)?', $url, $regs);

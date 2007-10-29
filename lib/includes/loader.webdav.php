@@ -200,7 +200,7 @@
 			$cookie[$ARCurrent->session->id]['timestamp']=time();
 			$ARCookie=serialize($cookie);
 			debug("setting cookie ($ARCookie)");
-			setcookie("ARCookie",$ARCookie, 0, '/');			
+			setcookie("ARCookie",$ARCookie, 0, '/');
 		}
 		ldSetRoot($session, $nls);
 	}
@@ -266,7 +266,7 @@
 		$cookie = false;
 	
 		if( $HTTP_COOKIE_VARS[$cookiename] && !($cookiename == "ARCookie")) {
-			
+
 			/* 
 				FIXME:
 				this is a hack: php 4.0.3pl1 (and up?) runs 'magic_quotes' on
@@ -282,7 +282,7 @@
 
 	function ldSetUserCookie($cookie, $cookiename="ARUserCookie", $expire=null, $path="/", $domain="", $secure=0) {
 	global $HTTP_COOKIE_VARS;
-		
+
 		$result = false;
 
 		if( $cookiename != "ARCookie") {
@@ -290,7 +290,7 @@
 			$ARUserCookie=serialize($cookie);
 			$result = setcookie($cookiename,$ARUserCookie, $expire, $path, $domain, $secure);
 		}
-		
+
 		return $result;
 	}
 

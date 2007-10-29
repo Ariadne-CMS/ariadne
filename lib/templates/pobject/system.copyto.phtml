@@ -35,7 +35,7 @@
 											$templates->copy($this->id, $template.".pinp", $ARCurrent->newid, $template.".pinp");
 											$templates->copy($this->id, $template, $ARCurrent->newid, $template);
 											$this->data->config->pinp[$type][$function][$language]=$ARCurrent->newid;
-		
+
 											if ($this->data->config->templates[$type][$function][$language]) {
 												$this->data->config->templates[$type][$function][$language]=$ARCurrent->newid;
 											}

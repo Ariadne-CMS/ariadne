@@ -124,7 +124,7 @@
 			$path = $this->make_path($options['path']);
 			debug("webdav:files:delete (path='$path')");
 			$object = current($this->store->call('system.get.phtml', '', 
-								$this->store->get($path)));			
+								$this->store->get($path)));
 			if (!$object) {
 				debug("webdav:files:delete: $path not found or not readable");
 				$status = "404 Not Found";
@@ -179,7 +179,7 @@
 			} else {
 				$info = current($this->store->call('webdav.files.get.file.phtml', '',
 							$this->store->get($path)));
-							
+
 				foreach ($info['props'] as $key => $value) {
 					$options[$key] = $value;
 				}
@@ -217,7 +217,7 @@
 
 		function put(&$params) {
 		global $ARCurrent;
-			
+
 			//$filename = basename($params['path']);
 			$path = $this->make_path($params['path']);
 			$filename = basename($path);

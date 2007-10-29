@@ -195,7 +195,7 @@ class scanner {
 							break;
 						}
 						return T_UNPARSED;
-					break;					
+					break;
 					case '/':
 						$yych = $YYBUFFER[++$YYCURSOR];
 						switch ($yych) {
@@ -316,7 +316,7 @@ class scanner {
 								return T_UNPARSED;
 							break;
 						}
-						
+
 					break;
 					case '`':
 						$result = "backtick encounterd at line ".$this->YYLINE;
@@ -692,7 +692,7 @@ class pinp {
 
 			$error = trim(substr($result,0,$first));
 			$reason = trim(substr($result,$first+2,$last-($first+2)));
-			
+
 			$where = trim(substr($result,$last+2));
 
 			$linenr = substr($where,strrpos($where,' ')+1);

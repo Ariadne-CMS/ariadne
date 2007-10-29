@@ -112,7 +112,7 @@
 						)
 					";
 				}
-				
+
 
 				$result = "$table_alias.$field";
 			break;

@@ -2,7 +2,7 @@
 <?php
 	if (!$store->exists("/system/ariadne/types/pbookmark/")) {
 		echo "Installing pbookmark\n";
-		
+
 		$store->add_type("pbookmark", "pobject");
 		$store->add_type("pbookmark", "pbookmark");
 	}
@@ -10,7 +10,7 @@
 	if (!$store->exists("/system/ariadne/types/pldapconnection/")) {
 		echo "Installing pldapconnection\n";
 		// install pconnector type
-		
+
 		$store->add_type("pconnector", "pobject");
 		$store->add_type("pconnector", "ppage");
 		$store->add_type("pconnector", "pdir");
@@ -25,7 +25,7 @@
 
 	if (!$store->exists("/system/ariadne/types/psearch/")) {
 		echo "Installing psearch\n";
-		
+
 		$store->add_type("psearch","pobject");
 		$store->add_type("psearch","ppage");
 		$store->add_type("psearch","pdir");

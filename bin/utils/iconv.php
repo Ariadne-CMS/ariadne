@@ -10,7 +10,7 @@
 	for ($c = $table_start; $c <= $table_end; $c++) {
 		$tstr = iconv($charset, "UTF-8", chr($c));
 		echo "	\$table[$c] = \"";
-		for ($i = 0; $i < strlen($tstr); $i++) {			
+		for ($i = 0; $i < strlen($tstr); $i++) {
 			echo  "\\x".dechex(ord($tstr[$i]));
 		}
 		echo "\";\n";

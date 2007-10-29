@@ -64,7 +64,7 @@
 						),
 						$store->find("/system/users/", $criteria)
 					);
-		
+
 		if (!count($result)) {
 			//echo "<script> alert('1'); </script>\n";
 			$user = current(

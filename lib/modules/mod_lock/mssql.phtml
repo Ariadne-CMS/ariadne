@@ -52,7 +52,7 @@ class mssqllock {
 			$result[$temp["path"]] = $temp;
 		}
 		debug("mssqllock:get_locks end","all");
-		return $result;		
+		return $result;
 	}
 
 	function lock($identity, $path, $type="O", $time=0) {

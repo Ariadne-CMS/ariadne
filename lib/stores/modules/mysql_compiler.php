@@ -31,7 +31,7 @@
 						/*
 							if we are parsing 'orderby' properties we have 
 							to join our tables for the whole query
-						*/							
+						*/
 						$this->select_tables[$table]=$table;
 						$this->used_tables[$table]=$table;
 						$result=" $table.$field ";
@@ -304,7 +304,7 @@
 		if ($this->join_target_properties) {
 			$this->used_tables[$properties."references as target_reference"] = $properties."references as target_reference";
 			$this->used_tables["$nodes as target"] = "$nodes as target";
-		}		
+		}
 		@reset($this->used_tables);
 		while (list($key, $val)=each($this->used_tables)) {
 			if ($tables) {

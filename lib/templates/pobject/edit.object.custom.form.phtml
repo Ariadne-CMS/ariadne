@@ -41,7 +41,7 @@
 					} else {
 						$custom['property']=1;
 					}
-						
+
 					echo "		dest[dest.length]=new Option('".AddCSlashes($name, ARESCAPE)."','".AddCSlashes($name, ARESCAPE)."');\n";
 					echo "		customlist[customlist.length]=new custom_node(\n";
 					echo "			'".AddCSlashes($custom["type"], ARESCAPE)."',".AddCSlashes($custom["inherit"], ARESCAPE).",\n";
@@ -69,7 +69,7 @@
 			if (i!=id) {
 				newlist[ii]=customlist[i];
 				ii++;
-			}				
+			}
 		}
 		customlist=newlist;
 		if (!dest.options[id]) {

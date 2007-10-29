@@ -1054,7 +1054,7 @@ function DECMD_HYPERLINK_onclick()
 			if (sType=='Control') {
 				oElement.outerHTML=newLink+oElement.outerHTML+"</A>";
 			} else {
-				
+
 				// first let the dhtmledit component set the link, since it is better in it.
 				// but to find it back, we need a unique identifier
 				var linkIdentifier=Math.floor(Math.random()*10000);
@@ -1346,7 +1346,7 @@ function cssStyle_onChange(command)
 	{
 		var oSpan = document.createElement("SPAN") ;
 		oSpan.innerHTML = oTextRange.htmlText ;
-		
+
 		var oParent = oTextRange.parentElement() ;
 		var oFirstChild = oSpan.firstChild ;
 

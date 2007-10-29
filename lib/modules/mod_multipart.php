@@ -42,7 +42,7 @@ class multipart {
 					$sections[$count]['title']=$matches[$i+1];
 				}
 				if ($withtags) {
-					$sections[$count]['content']=$split.$matches[$i+2];					
+					$sections[$count]['content']=$split.$matches[$i+2];
 				} else {
 					$sections[$count]['content']=$matches[$i+2];
 				}
@@ -72,7 +72,7 @@ class multipart {
 				multipart::ShowSection($sections[$i], $template, $args, $recurse, $level);
 				$this->_resetloopcheck();
 			}
-		}			
+		}
 	}
 
 }

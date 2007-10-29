@@ -21,7 +21,7 @@
 					$ARCurrent->options["without_files"]=true;
 				}
 				if ($force=$this->getdata("force","none")) {
-					$ARCurrent->options["force"]=true;		
+					$ARCurrent->options["force"]=true;
 				}
 				$source = $this->store->get_config("files")."temp/".$file["source_temp"];
 				$ax_config["writeable"]=false;

@@ -3,13 +3,13 @@
 		This template is called in a single find to copy multiple objects in one go.
 		It is not meant to be used on large selections of objects, since you
 		could run into memory or time limit problems.
-		
+
 		arguments:
 			$source: 	source of the tree to copy
 			$target:	target root of the copied tree.
 
 		This template should be called on the source objects, with the parents
-		called before any children are called.			
+		called before any children are called.
 	*/
 	if (!$source || !$this->exists($source)) {
 		$this->error=sprintf($ARnls["err:wrongpath"],$source);

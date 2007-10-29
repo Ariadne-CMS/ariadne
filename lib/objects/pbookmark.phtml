@@ -71,7 +71,7 @@ class pbookmark extends pobject { // class definition
 							if (!$port) {
 								$port=80;
 							}
-							$result=$this->HTTPRequest("HEAD", $url,'',$port);						
+							$result=$this->HTTPRequest("HEAD", $url,'',$port);
 							if (!$result) {
 								$this->errorcode=5;
 								$this->errorseverity=5;
@@ -96,7 +96,7 @@ class pbookmark extends pobject { // class definition
 									case 304:
 									case 305:
 									case 306:
-										
+
 										break;
 									// update link
 									case 301:
@@ -178,8 +178,8 @@ class pbookmark extends pobject { // class definition
 			} else {
 				$this->errorcode=2;
 				$this->errorseverity=1;
-				$this->errormessage="Warning: unrecognized URL syntax.";				
-			}			
+				$this->errormessage="Warning: unrecognized URL syntax.";
+			}
 		} else {
 			$this->errorcode=1;
 			$this->errorseverity=1;

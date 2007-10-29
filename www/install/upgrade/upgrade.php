@@ -124,7 +124,7 @@
 		echo "<ul>\n";
 		foreach ($todo as $task) {
 			echo "<li>".$task["description"]." => ".$task["newversion"]."<br>";
-			
+
 		}
 		echo "</ul>\n";
 		echo "<p>Next: <a href=\"upgrade.php?upgrade=true\">".$todo[0]["description"]."</a></p>";

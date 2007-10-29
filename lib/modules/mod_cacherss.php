@@ -8,10 +8,10 @@ class cacherss {
 	function load( $url ) {
 		$data = $this->httphelper->load( $url, "", time() - (30*60) );
 		$this->xmldata = $data["data"];
-		
+
 		$rssfeed = new cacherssfeed(); // load from string
 		$result = $rssfeed->parseString( $this->xmldata );
-		
+
 		return $result;
 	}
 
@@ -98,7 +98,7 @@ class cacherssfeed {
 
 		// return the array
 		return $this->getArray();
-		
+
 	}
 
 	function startElement($parser, $name, $attribs) {
@@ -115,7 +115,7 @@ class cacherssfeed {
 					foreach ($attribs as $key => $value) {
 						$element[$name . ":" . $key] = $value;
 					}
-				}		
+				}
 				$element[$name] = $newElement;
 		}
 	}
@@ -202,7 +202,7 @@ class cacherssfeed {
 			$result[]=$this->current();
 		} while ($this->next());
 		return $result;
-	}		
+	}
 }
 
 class httphelper {
@@ -216,7 +216,7 @@ class httphelper {
 		if( !$result && $maxage >= 0 ) {
 			$data = $this->HTTPRequest("GET", $url);
 			if( $data != "" ) {
-				$result = $this->cache->save($url, $data, $meta, $user);					
+				$result = $this->cache->save($url, $data, $meta, $user);
 			}
 		} 
 		return $result;
@@ -348,12 +348,12 @@ class cache {
 		$tag = $this->escape( $tag );
 	
 		$result = false;
-		
-		
+
+
 		if( $user != "" ) {
 			$user = $user."/";
 		}
-		
+
 		$path = $this->path. $user. $tag;
 		if (file_exists($path) && filectime($path) >= $maxage) {
 			$fp = fopen( $path, "rb" );
@@ -369,7 +369,7 @@ class cache {
 			}
 			$result = array( "data" => unserialize($data), "meta" => unserialize($meta), "timestamp" => $timestamp );
 		}
-		
+
 		return $result;
 	}
 
@@ -402,7 +402,7 @@ class cache {
 			}
 		}
 		$path = $this->path.$user.$tag;
-		
+
 		$fp = fopen( $path, "wb");
 		$result=fwrite($fp, $data);
 		fclose($fp);
@@ -419,10 +419,10 @@ class cache {
 	}
 	
 	function clear( $tag, $user = "" ) {
-		
+
 		if( !$tag ) {
 			return false;
-		}		
+		}
 		$tag = $this->escape( $tag );
 
 		$user = $this->escape( $user );
@@ -491,8 +491,8 @@ class cache {
 					// Assume it is an escaped character here. Find the
 					// numbers in hex, turn them back to decimal, get
 					// the corresponding character and return it.
-		
-					'return chr(hexdec(substr($char, 1, 2)));'			
+
+					'return chr(hexdec(substr($char, 1, 2)));'
 				),
 				$path
 			);

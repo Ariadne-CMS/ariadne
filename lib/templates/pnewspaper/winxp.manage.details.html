@@ -40,7 +40,7 @@
 
   	include_once($this->store->get_config("code")."nls/winxp.".$this->reqnls);
 	if (!$hideAdd && $this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		
+
 		$arCallArgs["sectionName"] = "browseby";
 		$arCallArgs["sectionDisplayName"] = $ARnls["xp_browsebydate"];
 		$arCallArgs["specialSection"] = false;
@@ -71,7 +71,7 @@
 				}
 			}
 
-			
+
 			// calculate first weekday of this month
 			$date_arr=getdate($date);
 			$starttime=mktime(0,0,0,$date_arr["mon"],1,$date_arr["year"]);
@@ -80,7 +80,7 @@
 			$endtime=mktime(0,0,0,$date_arr["mon"]+1,1,$date_arr["year"])-1;
 			$monthend=getdate($endtime);
 			$monthsize=$monthend["mday"];
-			
+
 			// is startdate in the current month -> highlight today.
 			$today=getdate();
 			if ($today["year"]==$date_arr["year"] && $today["mon"]==$date_arr["mon"]) {

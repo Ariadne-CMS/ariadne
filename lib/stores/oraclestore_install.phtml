@@ -202,7 +202,7 @@ class oraclestore_install extends oraclestore {
 		} else {
 			$indexes = Array();
 		}
-		
+
 		if (eregi("^[a-z][a-z0-9_-]*$", $property) && strlen($property)<=16) {
 			$create_string="create table ".$this->tbl_prefix."prop_".AddSlashes($property)." (\n";
 			while (list($name, $typedef)=each($definition)) {
@@ -256,7 +256,7 @@ class oraclestore_install extends oraclestore {
 				$queries[$i]["msg"] = "Registering property table";
 				$queries[$i]["query_string"] = "insert into ".$this->tbl_prefix."properties values ('".AddSlashes($property)."')";
 				$i++;
-				
+
 				if ($cindexes != 'none' && $indexes && is_array($indexes)) {
 					foreach ($indexes as $ikey => $index) {
 						$icolumns = '';

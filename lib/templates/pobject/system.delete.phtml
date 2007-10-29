@@ -12,7 +12,7 @@
 					// remove grants for this object in all user objects.
 					if ($clone->data->config->grants && is_array($clone->data->config->grants)) {
 						foreach ($clone->data->config->grants as $type => $grantdata) {
-							foreach ($grantdata as $login => $grants) {								
+							foreach ($grantdata as $login => $grants) {
 								$query = "object.implements = '$type' and login.value = '$login'";
 								if ($clone->store->implements($type, 'pgroup')) {
 									$qpath = "/system/groups/";
@@ -43,7 +43,7 @@
 									}
 								}
 							}
-						}				
+						}
 					}
 					// clear cache
 					$clone->ClearCache();

@@ -45,7 +45,7 @@
 		} else {
 			debug("date: $date");
 		}
-		
+
 		// clear old date arguments from the query string.
 		if (is_array($HTTP_GET_VARS)) {
 			$QUERY_STRING='';
@@ -65,7 +65,7 @@
 		$endtime=mktime(0,0,0,$date_arr["mon"]+1,1,$date_arr["year"])-1;
 		$monthend=getdate($endtime);
 		$monthsize=$monthend["mday"];
-		
+
 		// is startdate in the current month -> highlight today.
 		$today=getdate();
 		if ($today["year"]==$date_arr["year"] && $today["mon"]==$date_arr["mon"]) {

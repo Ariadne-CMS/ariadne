@@ -84,7 +84,7 @@
 		diffh=form.starthour.options[form.starthour.selectedIndex].value - starthour;
 		diffm=form.startminute.options[form.startminute.selectedIndex].value - startminute;
 		endhour=endhour+diffh;
-		endminute=endminute+diffm;		
+		endminute=endminute+diffm;
 		starthour=starthour+diffh;
 		startminute=startminute+diffm;
 		RedrawEndlists(form);
@@ -103,7 +103,7 @@
 			if (list.options[i].value==value) {
 				list.options[i].selected=true;
 				break;
-			}			
+			}
 		}
 	}
 
@@ -460,7 +460,7 @@
 							} else {
 						?>
 						<table border="0"><tr>
-							<input type="hidden" name="alarm" value="<?php echo $ARnls["off"]; ?>">			
+							<input type="hidden" name="alarm" value="<?php echo $ARnls["off"]; ?>">
 							<td><input type="submit" name="alarm" value="<?php echo $ARnls["on"]; ?>"></td>
 							<td bgcolor="#404074"><font color="white">&nbsp;<?php echo $ARnls["off"]; ?>&nbsp;</font></td>
 						</tr></table>

@@ -129,7 +129,7 @@ class pobject extends object { // pobject class definition
 			$customnlsdata=$this->data->custom[$nls];
 		}
 		debug("pobject: call: nls set to $nls","all"); 
-		
+
 		$arCallFunctionOrig = $arCallFunction;
 		if (strpos($arCallFunction,"::")!==false) {
 			// template of a specific class defined via call("class::template");
@@ -183,7 +183,7 @@ class pobject extends object { // pobject class definition
 							// the given class was not yet loaded, so do that now
 							$this->store->newobject('','',$arType,new object);
 							// include_once($this->store->get_config("code")."objects/".$arType.".phtml");
-						
+
 						}
 						$arTemp=new $arType();
 						$arSuper=get_parent_class($arTemp);
@@ -327,7 +327,7 @@ class pobject extends object { // pobject class definition
 													$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
 													$properties["custom"][$i]["value"]="'".AddSlashes($valvalue)."'";
 													$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
-													$i++;													
+													$i++;
 												}
 											} else {
 												$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
@@ -695,7 +695,7 @@ class pobject extends object { // pobject class definition
 				}
 			}
 			$prevpath=$checkpath;
-			$checkpath=$this->make_path($checkpath."../");			
+			$checkpath=$this->make_path($checkpath."../");
 		} while ($prevpath!=$checkpath && !$site);
 		if (!$site) {
 			$site='/';
@@ -980,7 +980,7 @@ class pobject extends object { // pobject class definition
 			$result=$this->CheckSilent($grant, $modifier);
 			$AR->user=$AR->private;
 		}
-		return $result;			
+		return $result;
 	}
 
 	function CheckSilent($grant, $modifier=ARTHISTYPE, $path=".") {
@@ -1405,7 +1405,7 @@ class pobject extends object { // pobject class definition
 					while (!$template['arTemplateId'] && 
 								($redir = array_pop($redirects)) &&
 									$redir["keepurl"] && 
-										(substr($redirpath, 0, strlen($redir["dest"])) == $redir["dest"])							
+										(substr($redirpath, 0, strlen($redir["dest"])) == $redir["dest"])
 					) {
 						$template = $this->getPinpTemplate($arCallFunction, $redirpath, $redir["dest"]);
 						$redirpath = $redir['src'];
@@ -1486,7 +1486,7 @@ class pobject extends object { // pobject class definition
 								// echo "</fieldset>";
 								echo "</div>";
 							}
-							
+
 						}
 						array_pop($ARCurrent->arCallStack);
 						$this->popContext();
@@ -1541,7 +1541,7 @@ class pobject extends object { // pobject class definition
 				if(!is_dir($filestore."cache/$type/$nls")){
 					continue; 
 				}
-				
+
 				$fpath=$filestore."cache/$type/$nls".$fs_path;
 				$hpath=$filestore."cacheheaders/$type/$nls".$fs_path;
 				if ($dir=@dir($fpath)) {
@@ -2031,7 +2031,7 @@ class pobject extends object { // pobject class definition
 				$this->popContext();
 			}
 		} else {
-			debug("call_super: no success finding $arCallType::$arCallFunction");		
+			debug("call_super: no success finding $arCallType::$arCallFunction");
 		}
 
 		return $ARCurrent->arResult;
@@ -2177,7 +2177,7 @@ class pobject extends object { // pobject class definition
 				$result= "{".$index."}";
 			}
 		}
-		return $result;		
+		return $result;
 	}
 
 	function _loadtext($nls, $section="") {
@@ -2353,7 +2353,7 @@ class pobject extends object { // pobject class definition
 								$this->data->nls->default = $ARConfig->nls->default;
 							} else {
 								list($this->data->nls->default) = each($this->data->nls->list);
-							}								
+							}
 						}
 					}
 				}

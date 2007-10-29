@@ -53,7 +53,7 @@
 			global $AR;
 			require_once($AR->dir->install."/lib/modules/mod_htmlcleaner.php");
 
-			return htmlcleaner::clean($html, $rules);		
+			return htmlcleaner::clean($html, $rules);
 		}
 
 		function cleanmsword($html) {

@@ -26,7 +26,7 @@
 		$date_arr=getdate($date);
 		$starttime=0;
 		$endtime=mktime(0,0,0,$date_arr["mon"],$date_arr["mday"]+$lookahead,$date_arr["year"])-1;
-		
+
 		// now populate the month with all entries.
 
 		function AddTodo($from, $to, $priority, $path, $name, $summary) {
@@ -36,7 +36,7 @@
 			$ARCurrent->todolist[$from][$i]["text"]="<a class=\"cal\" href=\"".
 				$ARCurrent->parent->make_url($path)."classic.edit.phtml?entry=$from&arReturnPage=".
 				RawUrlEncode($PHP_SELF."?date=".$ARCurrent->date)."\">$name</a>";
-			$ARCurrent->todolist[$from][$i]["to"]=$to;			
+			$ARCurrent->todolist[$from][$i]["to"]=$to;
 		}
 
 		unset($ARBeenHere["populate"]);

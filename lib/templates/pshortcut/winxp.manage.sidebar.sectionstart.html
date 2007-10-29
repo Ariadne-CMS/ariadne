@@ -19,7 +19,7 @@
 		}
 		if (!$sectionDisplayName)
 			$sectionDisplayName = $ARnls["xp_$sectionName"];
-		
+
 		if (strlen($sectionDisplayName) > $maxheadlength)
 			$sectionDisplayName = "<span title=\"$sectionDisplayName\">".substr($sectionDisplayName, 0, $maxheadlength-3)."..."."</span>";
 		if (strlen($sectionDisplayName) < 11){

@@ -33,7 +33,7 @@
 			debug("path_unescape: unescaped path: $result");
 			return $result;
 		}
-		
+
 
 		function path_escape($path) {
 			// This function will return an escaped path. All the characters not supported by Ariadne will be encoded.

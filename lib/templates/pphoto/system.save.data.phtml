@@ -98,7 +98,7 @@
 				// now check whether $file_temp is defined, if so, move it
 				if (!$this->error) {
 					if ($tempfile) {
-						$tempfile=ereg_replace("[\\\/]","",$tempfile); // make sure nobody gets /etc/passwd			
+						$tempfile=ereg_replace("[\\\/]","",$tempfile); // make sure nobody gets /etc/passwd
 						$tempfile=$this->store->get_config("files")."temp/".$tempfile;
 
 						if (file_exists($tempfile)) {	

@@ -47,7 +47,7 @@
 		if ($retVar!=0) {
 			$error="Error: Can't untar $tarfile, untar failed in $dstdir with errorcode ($retVar)\n";
 			if ($errfile && file_exists($errfile)) {
-				$error.=implode("",file($errfile));						
+				$error.=implode("",file($errfile));
 				unlink($errfile);
 				$error.="\n";
 			}
@@ -86,7 +86,7 @@
 		if ($retVar!=0) {
 			$error="Error: ($command): Can't tar to $tarfile, tar failed in $dstdir with errorcode ($retVar)\n";
 			if ($errfile && file_exists($errfile)) {
-				$error.=implode("",file($errfile));						
+				$error.=implode("",file($errfile));
 				unlink($errfile);
 				$error.="\n";
 			}

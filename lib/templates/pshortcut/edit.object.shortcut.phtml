@@ -11,7 +11,7 @@
 		include($this->store->get_config("code")."widgets/wizard/code.php");
 
 		$result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
-		$wgWizTitle=$ARnls["edit"]." ".$result[0];		
+		$wgWizTitle=$ARnls["edit"]." ".$result[0];
 
 		$configcache=$ARConfig->cache[$this->path];
 		if ($configcache->custom) {
@@ -52,9 +52,9 @@
 			$arLanguage=$ARConfig->nls->default;
 			$ARCurrent->arLanguage=$arLanguage;
 		}
-		
+
 		$result=$this->get("/system/ariadne/types/".$this->type."/","system.get.name.phtml");
-		$wgWizTitle=$ARnls["edit"]." ".$result[0];		
+		$wgWizTitle=$ARnls["edit"]." ".$result[0];
 		$wgWizHeader=$wgWizTitle.'<img src="'.$AR->dir->images.'icons/'.$this->type.'_open.gif" alt="" hspace="4" align="absmiddle">';
 		include($this->store->get_config("code")."widgets/wizard/new.html");
 	}

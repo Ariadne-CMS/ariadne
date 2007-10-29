@@ -252,7 +252,7 @@ function window_onload() {
 		CommandCrossReference["Underline"] 			= DECMD_UNDERLINE;
 		CommandCrossReference["Undo"] 				= DECMD_UNDO;
 		CommandCrossReference["InsertUnorderedList"] 	= DECMD_UNORDERLIST;
-		
+
 		// Initialize the context menu arrays.
 		GeneralContextMenu[0] = new ContextMenuItem("<?php echo $ARnls["e_cut"]; ?>", DECMD_CUT);
 		GeneralContextMenu[1] = new ContextMenuItem("<?php echo $ARnls["e_copy"]; ?>", DECMD_COPY);
@@ -708,10 +708,10 @@ function cssStyle_onChange(command)
 	{
 		var oSpan = document.createElement("SPAN") ;
 		oSpan.innerHTML = oTextRange.htmlText ;
-		
+
 		var oParent = oTextRange.parentElement() ;
 		var oFirstChild = oSpan.firstChild ;
-		
+
 		if (sTag=='' && oFirstChild.nodeType == 1 && oFirstChild.outerHTML == oSpan.innerHTML && 
 				(oFirstChild.tagName == "SPAN"
 				|| oFirstChild.tagName == "FONT"
@@ -859,7 +859,7 @@ function DECMD_HYPERLINK_onclick() {
 			if (sType=='Control') {
 				oElement.outerHTML=newLink+oElement.outerHTML+"</A>";
 			} else {
-				
+
 				// first let the dhtmledit component set the link, since it is better in it.
 				// but to find it back, we need a unique identifier
 				var linkIdentifier=Math.floor(Math.random()*10000);
@@ -1263,7 +1263,7 @@ function getRequired() {
 		} while (i--);
 	    return required;
 	} else {
-		
+
 	}
 }
 

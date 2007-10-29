@@ -47,7 +47,7 @@
 			reset($AR->nls->list);
 			$count=0;
 			while (list($key, $value)=each($AR->nls->list)) {
-				
+
 				if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
 					if (!$this->data->$key) {
 						debug("$key not yet set","all");

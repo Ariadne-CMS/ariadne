@@ -85,7 +85,7 @@
 
 		$ax_config["database"]=$arg_v[1];
 		$list_path=$arg_v[2];
-		
+
 		$store=new axstore(".", $ax_config);
 		if (!$store->error) {
 			$list_path=$store->make_path("/", $list_path);

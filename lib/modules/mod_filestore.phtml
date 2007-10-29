@@ -106,7 +106,7 @@
 			$result=false;
 			$path=$this->make_path($id, $name);
 			if (file_exists($path))	{
-				$result=readfile($path);				
+				$result=readfile($path);
 			}
 			return $result;
 		}
@@ -130,7 +130,7 @@
 			}
 			return $result;
 		}
-			
+
 
 		function import($fsId, $fsName, $fsLocalVars="", &$fsObject) {
 			// this looks scary, and maybe it is...
@@ -235,7 +235,7 @@
 					}
 					$result=$count;
 				}
-			}			
+			}
 			return $result;
 		}
 
@@ -246,7 +246,7 @@
 				unlink($path);
 				if ($this->is_empty($id)) {
 					$this->rmdir($id);
-				}		
+				}
 			}
 		}
 
@@ -360,12 +360,12 @@
 				if (!file_exists($path) && $write) {
 					mkdir($path, DIRMODE);
 				}
-				$id=$next;				
+				$id=$next;
 			}
 			$path.="/";
 			if ($name) {
 				$path.="_$name";
-			}			
+			}
 			return $path;
 		}
 

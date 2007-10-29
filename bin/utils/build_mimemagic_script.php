@@ -35,7 +35,7 @@
 				} else {
 					$offset=$regs[1];
 				}
-				$data=$regs[4];						
+				$data=$regs[4];
 				$mimetype=chop($regs[6]);
 				switch($regs[3]) {
 					case 'string':
