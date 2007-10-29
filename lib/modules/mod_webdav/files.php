@@ -243,7 +243,7 @@
 				}
 				fclose($fp);
 
-				include_once($this->store->code."modules/mod_mimemagic.php");
+				include_once($this->store->get_config("code")."modules/mod_mimemagic.php");
 				$mime_type = get_mime_type($temp, MIME_DATA);
 				if (!$mime_type) {
 					$mime_type = get_mime_type($filename, MIME_EXT);
