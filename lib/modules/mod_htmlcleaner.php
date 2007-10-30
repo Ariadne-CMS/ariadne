@@ -333,6 +333,7 @@ class htmlcleaner
 						} else {
 							$part->nodeName = $attrib_rules;
 						}
+						break; // tag matched, so skip next rules.
 					}
 				}
 			}
