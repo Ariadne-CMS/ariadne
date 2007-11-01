@@ -1074,7 +1074,7 @@ class pobject extends object { // pobject class definition
 				$this->get($path, "system.get.config.phtml");
 				$this->popContext();
 				$config=$ARConfig->cache[$path];
-			} if ( $path == '/' ) {
+			} else if ($path === '/') {
 				// special case: / doesn't exists in the store
 				$config=$ARConfig->cache['..'];
 			} else {
