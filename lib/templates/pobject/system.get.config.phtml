@@ -12,15 +12,6 @@
 	$ARCurrent->arConfig = &$ARConfig->pinpcache[$this->path];
 
 	/* calling config.ini directly for each system.get.config.phtml call */
-	// clear unnamed libraries in the library section of arConfig
-	// prevents strange behaviour when overriding library templates
-	if (is_array($ARCurrent->arConfig['library'])) {
-		foreach ($ARCurrent->arConfig['library'] as $key => $value) {
-			if (is_int($key)) {
-				unset($ARCurrent->arConfig['library'][$key]);
-			}
-		}
-	}
 	if (!$this->CheckConfig('config.ini', $arCallArgs)) {
 		if (is_array($ARCurrent->arConfig['library'])) {
 			if (!$ARConfig->libraries[$this->path]) {

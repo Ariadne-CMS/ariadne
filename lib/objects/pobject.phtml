@@ -1122,21 +1122,19 @@ class pobject extends object { // pobject class definition
 				if (!$ARConfig->libraries[$this->path]) {
 					$ARConfig->libraries[$this->path]=array();
 				}
-				if (!$ARConfig->cache[$this->path]) {
-					$ARConfig->cache[$this->path]=new object();
-				}
-				if (!$ARConfig->cache[$this->path]->libraries) {
-					$ARConfig->cache[$this->path]->libraries=array();
-				}
 				array_unshift($ARConfig->libraries[$this->path],$path);
-				array_unshift($ARConfig->cache[$this->path]->libraries,$path);
-				array_unshift($ARConfig->pinpcache[$this->path]["library"],$path);
 			}
-		} else if ($name && is_string($name) || is_int($name)) {
+		} else if ($name && is_string($name)) {
 			$this->loadConfig($this->path);
 			$ARConfig->libraries[$this->path][$name]=$path;
 			$ARConfig->cache[$this->path]->libraries[$name]=$path;
 			$ARConfig->pinpcache[$this->path]["library"][$name] = $path;
+		} else if (is_int($name)) {
+			$this->loadConfig($this->path);
+			$ARConfig->libraries[$this->path][$name]=$path;
+			// make sure that unnamed libraries don't get added to the configcache
+			unset($ARConfig->cache[$this->path]->libraries[$name]);
+			unset($ARConfig->pinpcache[$this->path]["library"][$name]);
 		} else {
 			error('Illegal library name: '.$name);
 		}
@@ -1431,9 +1429,16 @@ class pobject extends object { // pobject class definition
 						// This triggers only for pinp templates called by other templates,
 						// as the first template (in the url) will first trigger the language
 						// choice dialogue instead.
+						$arLibrary = $template['arLibrary'];
+						if (is_int($arLibrary)) {
+							// set the library name for unnamed libraries to 'current'
+							// so that calls using getvar('arLibrary') will keep on working
+							$arLibrary = "current";
+						}
+
 						if (!is_string($arCallArgs)) {
 							$arCallArgs['arCallFunction'] = $arCallFunction;
-							$arCallArgs['arLibrary'] = $template["arLibrary"];
+							$arCallArgs['arLibrary'] = $arLibrary;
 							$arCallArgs['arLibraryPath'] = $template["arLibraryPath"];
 						}
 						$ARCurrent->arCallStack[]=$arCallArgs;
@@ -1441,7 +1446,7 @@ class pobject extends object { // pobject class definition
 						$this->pushContext(
 							Array(
 								"scope" => "pinp",
-								"arLibrary" => $template['arLibrary'],
+								"arLibrary" => $arLibrary,
 								"arLibraryPath" => $template['arLibraryPath'],
 								"arCallFunction" => $arCallFunction,
 								"arCallType" => $template['arCallType'],
@@ -1987,7 +1992,6 @@ class pobject extends object { // pobject class definition
 	function _call_super($arCallArgs="") {
 	global $ARCurrent;
 		$context = $this->getContext();
-//print_r($context);
 		if (!$arCallArgs) {
 			$arCallArgs = current($ARCurrent->arCallStack);
 		}
@@ -2006,16 +2010,22 @@ class pobject extends object { // pobject class definition
 			$arTemplates=$this->store->get_filestore("templates");
 			if ($arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"])) { 
 				debug("call_super: ".$template["arCallTemplate"]." exists");
+				$arLibrary = $template['arLibrary'];
+				if (is_int($arLibrary)) {
+					// set the library name for unnamed libraries to 'current'
+					// so that calls using getvar('arLibrary') will keep on working
+					$arLibrary = "current";
+				}
 				if (!is_string($arCallArgs)) {
 					$arCallArgs['arCallFunction'] = $arCallFunction;
-					$arCallArgs['arLibrary'] = $template["arLibrary"];
+					$arCallArgs['arLibrary'] = $arLibrary;
 					$arCallArgs['arLibraryPath'] = $template["arLibraryPath"];
 				}
 				$ARCurrent->arCallStack[]=$arCallArgs;
 				$this->pushContext(
 					Array(
 						"scope" => "pinp",
-						"arLibrary" => $template['arLibrary'],
+						"arLibrary" => $arLibrary,
 						"arLibraryPath" => $template['arLibraryPath'],
 						"arCallFunction" => $arCallFunction,
 						"arCallType" => $template['arCallType'],
@@ -2023,10 +2033,8 @@ class pobject extends object { // pobject class definition
 						"arCallTemplatePath" => $template['arCallTemplatePath']
 					)
 				);
-				$arResult=$arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
-				if (isset($arResult)) {
-					$ARCurrent->arResult=$arResult;
-				}
+				$arResult = $arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
+
 				array_pop($ARCurrent->arCallStack);
 				$this->popContext();
 			}
@@ -2034,7 +2042,7 @@ class pobject extends object { // pobject class definition
 			debug("call_super: no success finding $arCallType::$arCallFunction");
 		}
 
-		return $ARCurrent->arResult;
+		return $arResult;
 	}
 
 	function _get($path, $function="view.html", $args="") {
