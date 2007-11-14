@@ -127,7 +127,7 @@
 						if ($filetext) {
 							$count++;
 							$properties["fulltext"] = $fulltext;
-							$properties["fulltext"][$count][$nlskey]="'".AddSlashes($nlskey)."'";
+							$properties["fulltext"][$count]["nls"]="'".AddSlashes($nlskey)."'";
 							$properties["fulltext"][$count]["value"]="'".AddSlashes($this->store->format_for_fti(
 									$filetext
 									))."'";
