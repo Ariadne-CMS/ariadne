@@ -96,12 +96,14 @@
 								// keep the 'none' key for backwards compatibility
 								if ($nlskey == "none" || $nlskey == $ARConfig->nls->default) {
 									$files->copy_to_store($tempfile, $this->id, "file");
+									$files->remove($this->id, "file_plaintext");
 									$isDefaultSet = true;
 								}
 							}
 							$armime = explode("/", $mimetype);
 							if ($nlskey != "none") {
 								$files->copy_to_store($tempfile, $this->id, $nlskey."_file");
+								$files->remove($this->id, $nlskey."_file_plaintext");
 								$this->data->$nlskey->filesize = $this->getdata("file_size", $nlskey); 
 								$this->data->$nlskey->mimetype = $mimetype;
 								$this->data->mime["type"] = $armime[0];
