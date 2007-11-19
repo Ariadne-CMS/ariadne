@@ -234,7 +234,7 @@ class pfile extends pobject { // pfile class definition
 					$temp_file = tempnam($this->store->get_config('files').'temp/', 'totext');
 					@unlink($temp_file);
 	
-					$files->copy_from_store($temp_file, $this->id, 'file');
+					$files->copy_from_store($temp_file, $this->id, $file);
 					exec(ereg_replace('FILE', $temp_file, $textualizer), $result, $ret);
 	
 					@unlink($temp_file);
