@@ -1157,11 +1157,11 @@ class pobject extends object { // pobject class definition
 				$arLibrary = $context['arLibrary'];
 				$arLibraryPath = $context['arLibraryPath'];
 			} else {
-				$config = $this->loadConfig();
+				$config = $this->loadConfig($path);
 				$arLibraryPath = $config->libraries[$arLibrary];
 			}
 			$arCallFunction = substr($arCallFunction, $libpos+1);
-			debug("getPinpTemplate: searching for lib: '$arLibrary'; '$arCallFunction' from '".$this->path."'");
+			debug("getPinpTemplate: searching for lib: '$arLibrary'; '$arCallFunction' from '$path'");
 			if ($arLibraryPath) {
 				//echo $config->libraries[$library];
 				debug("getPinpTemplate: found library '$arLibrary'. Searching for $arCallFunction on '".$config->libraries[$arLibrary]."' up to '$top'");
@@ -1410,7 +1410,7 @@ class pobject extends object { // pobject class definition
 					}
 
 					if (!$template["arTemplateId"] && $redirpath) {
-						$template = $this->getPinpTemplate($arCallFunction, $this->make_path($redirpath));
+						$template = $this->getPinpTemplate($arCallFunction, $redirpath);
 					}
 				}
 				if (!$template["arTemplateId"]) {
