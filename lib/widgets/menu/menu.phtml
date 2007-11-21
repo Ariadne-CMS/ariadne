@@ -53,6 +53,17 @@
 					onMouseOver="popUp('HM_Menu4',event)"
 					onMouseOut="popDown('HM_Menu4')"><?php echo $ARnls["m_help"]; ?>&nbsp;&nbsp;&nbsp;</a>
 			</td>
+<?php
+	if ($AR->SVN->enabled) {
+?>
+			<td width="60">
+				<a HREF="javascript:;"
+					onMouseOver="popUp('HM_Menu5',event)"
+					onMouseOut="popDown('HM_Menu5')"><?php echo "SVN"; ?>&nbsp;&nbsp;&nbsp;</a>
+			</td>
+<?php
+	}
+?>
 		</tr>
 		</table></td>
 	<td align="right" width="100%">
