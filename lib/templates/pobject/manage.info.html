@@ -78,6 +78,25 @@
 				}; 
 				?>
 				</span></td></tr>
+			<?php
+				if ($AR->SVN->enabled) {
+					$fstore = $this->store->get_filestore_svn("templates");
+					$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
+                			$svn    = $fstore->connect($this->id);
+                			$svn_revision = $svn['info']['Revision'];
+					if ($svn_revision) {
+			?>
+			<tr><td valign="top"><?php echo $ARnls['svn_revision']; ?>:</td><td valign="top" class="data"><?php echo $svn_revision; ?></td></tr>
+
+			<?php
+					} else {
+			?>
+			<tr><td valign="top"><?php echo $ARnls['svn_revision']; ?>:</td><td valign="top" class="data"><?php echo $ARnls['svn_notworkingcopy']; ?></td></tr>
+			<?php
+					}
+				}
+			?>
+
 		</table>
 	</div>
 <?php
