@@ -1,0 +1,46 @@
+How to get SVN support going in Ariadne
+Version 0.1, 21 Nov 2007
+
+It's quite easy actually..
+
+Step 1: the VersionControl pear module.
+=========================
+Use Muze's version of this module, because several additions have been made
+to the module that are not yet in the pear module.
+
+Under debian the pear code should
+go under
+
+/usr/share/php
+
+so use  "svn co https://svn.muze.nl/svn/muze/pear/VersionControl
+/usr/share/php/VersionControl"
+
+to checkout the neccesary support code.
+
+
+Step 2: Turning it on in the lib/configs/ariadne.phtml
+==================================
+Search in the lib/configs/ariadne.phtml for a line
+
+$AR->SVN->enabled = true | false
+
+and make sure it's true.
+
+
+Step 3: log into Ariadne backend and enjoy.
+============================
+Login through http://yoursite.nl/ariadne
+
+You should see svn commands on three levels:
+	- meta elvel where you can do thing recursive all the way down.
+	- object template level where you can handle all the templates on
+that object
+	- tempate level where you can work on the specific template
+
+
+reminder
+======
+The svn command buttons use the SVN terminology. So import means "import
+into svn"..
+
