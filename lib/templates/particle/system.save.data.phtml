@@ -94,6 +94,11 @@
 
 				$this->data->startdate=$this->getdata("startdate","none");
 				$this->data->enddate=$this->getdata("enddate","none");
+				$this->data->starttime_hour = $this->getdata("starttime_hour");
+				$this->data->starttime_minute = $this->getdata("starttime_minute");
+				$this->data->endtime_hour = $this->getdata("endtime_hour");
+				$this->data->endtime_minute = $this->getdata("endtime_minute");
+
 				$this->data->starttime=($this->getdata("starttime_hour","none")*3600)
 										+($this->getdata("starttime_minute","none")*60);
 				$this->data->endtime=($this->getdata("endtime_hour","none")*3600)
