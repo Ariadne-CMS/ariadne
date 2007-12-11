@@ -41,7 +41,7 @@
 				$settings = Array();
 			}
 			foreach ($default as $key => $value) {
-				if (!isset($settings[$key])) {
+				if (!isset($settings[$key]) || $settings[$key] === "" ) {
 					$settings[$key] = $value;
 				}
 			}
