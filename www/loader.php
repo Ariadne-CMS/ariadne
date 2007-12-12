@@ -158,6 +158,15 @@
 				// the mtime is used as expiration time, the ctime is the correct last modification time.
 				// as an object clears the cache upon a save.
 				ldHeader("HTTP/1.1 304 Not Modified");
+				// The HTTP spec also requires a new Expirs header to be sent, if the value differs from the
+				// the previous 200 response. Since you don't want browsers to repeatedly send the if-modified-since
+				// request, but like them to back off a suitable time, we need to resend a new expires header here.
+				// The back off time is 30 minutes, for no good reason.
+				$expires = $timecheck + 1800;
+				if ($mtime!=0 && $expires>$mtime) {
+					$expires = $mtime;
+				}
+				ldHeader("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$expires));
 			} else {
 				// now send caching headers too, maximum 1 hour client cache.
 				// FIXME: make this configurable. per directory? as a fraction?
