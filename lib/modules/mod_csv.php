@@ -109,6 +109,19 @@
 						$result = Array();
 					} else {
 						$result = fgetcsv($this->fp, $this->config['bufferLength'], $this->config['seperator'], $this->config['quotation']);
+						if (strtolower($this->config['charset']) != "utf-8") {
+							if (!function_exists("iconv")) {
+								global $store;
+								include_once($store->get_config("code")."modules/mod_unicode.php");
+								foreach ($result as $item => $resultItem) {
+									$result[$item] = unicode::convertToUTF8($this->config["charset"], $result[$item]);
+								}
+							} else {
+								foreach ($result as $item => $resultItem) {
+									$result[$item] = iconv($this->config["charset"], "utf-8", $result[$item]);
+								}
+							}
+						}
 					}
 				break;
 			}
