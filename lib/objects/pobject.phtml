@@ -353,6 +353,11 @@ class pobject extends object { // pobject class definition
 												break;
 												default:
 													$value = "'".AddSlashes($wf_prop_value)."'";
+													if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
+														&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
+															$value = $wf_prop_value;
+													}
+													
 											}
 											$record[$wf_prop_field] = $value;
 										}
@@ -390,6 +395,10 @@ class pobject extends object { // pobject class definition
 														break;
 														default:
 															$value = "'".AddSlashes($wf_prop_value)."'";
+															if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
+																&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
+																	$value = $wf_prop_value;
+															}
 													}
 													$record[$wf_prop_field] = $value;
 												}
@@ -487,6 +496,10 @@ class pobject extends object { // pobject class definition
 										break;
 										default:
 											$value = "'".AddSlashes($wf_prop_value)."'";
+											if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
+												&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
+													$value = $wf_prop_value;
+											}
 									}
 									$record[$wf_prop_field] = $value;
 								}
@@ -520,6 +533,10 @@ class pobject extends object { // pobject class definition
 												break;
 												default:
 													$value = "'".AddSlashes($wf_prop_value)."'";
+													if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
+														&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
+															$value = $wf_prop_value;
+													}
 											}
 											$record[$wf_prop_field] = $value;
 										}
@@ -774,6 +791,11 @@ class pobject extends object { // pobject class definition
 
 	function load_property($property) {
 		debug("pobject: load_property($property)","object");
+		return $this->store->load_property($this->id,$property);
+	}
+
+	function _load_property($property) {
+		debug("pobject: _load_property($property)","object");
 		return $this->store->load_property($this->id,$property);
 	}
 
