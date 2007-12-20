@@ -1236,7 +1236,7 @@ class pobject extends object { // pobject class definition
 							&& $arSuperContext['function'] == $arCallFunction
 								&& $arSuperContext['type'] == $arType
 					) {
-							debug("getPinpTemplate: arSuperContext template found: path: $checkpath; function: $arCallFunction; type: $arType");
+							debug("getPinpTemplate: arSuperContext template found, toggling: path: $checkpath; function: $arCallFunction; type: $arType");
 							$arSuperContext = "";
 					}
 
@@ -1313,6 +1313,7 @@ class pobject extends object { // pobject class definition
 		$result["arCallTemplatePath"] = $lastcheckedpath;
 		$result["arLibrary"] = $arLibrary;
 		$result["arLibraryPath"] = $arLibraryPath;
+		$result["arLibrariesSeen"] = $librariesSeen;
 
 //		echo "getPinpTemplateResult:\n";
 //		print_r($result);
@@ -1473,7 +1474,8 @@ class pobject extends object { // pobject class definition
 								"arCallFunction" => $arCallFunction,
 								"arCallType" => $template['arCallType'],
 								"arCallTemplateType" => $template['arCallTemplateType'],
-								"arCallTemplatePath" => $template['arCallTemplatePath']
+								"arCallTemplatePath" => $template['arCallTemplatePath'],
+								"arLibrariesSeen" => $template['arLibrariesSeen']
 							)
 						);
 						if ($ARCurrent->forcenls || isset($this->data->nls->list[$reqnls])) {
@@ -2020,13 +2022,15 @@ class pobject extends object { // pobject class definition
 		$arCallFunction = $context['arCallFunction'];
 		$arCallType = $context['arCallTemplateType'];
 		$arSuperPath = $context['arCallTemplatePath'];
+		$arLibrariesSeen = $context['arLibrariesSeen'];
+		$arLibrariesSeen[$arSuperPath] = true;
 		$arSuperContext = Array(
 			'path' => $arSuperPath,
 			'type' => $arCallType,
 			'function' => $arCallFunction
 		);
 		debug("call_super: searching for the template following (path: $arSuperPath; type: $arCallType; function: $arCallFunction) from $this->path");
-		$template = $this->getPinpTemplate($arCallFunction, $this->path, '', false, null, &$arSuperContext);
+		$template = $this->getPinpTemplate($arCallFunction, $this->path, '', false, $arLibrariesSeen, &$arSuperContext);
 		if ($template["arCallTemplate"] && $template["arTemplateId"]) {
 			debug("call_super: template $arCallType::$arCallFunction found and calling it");
 			$arTemplates=$this->store->get_filestore("templates");
