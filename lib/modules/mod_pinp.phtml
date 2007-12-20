@@ -1,35 +1,35 @@
 <?php
-define("T_VARIABLE",		254);
-define("T_STRING",			253);
-define("T_SUBSTRING",		252);
-define("T_IDENT",			251);
-define("T_UNPARSED",		250);
-define("T_EOF",				249);
-define("T_MULTIPART_STRING_START",	248);
-define("T_MULTIPART_STRING_END",	247);
-define("T_PINP_START",		246);
-define("T_PINP_END",		245);
-define("T_ERROR",			244);
-define("T_PAR_OPEN",		243);
-define("T_NEW",				242);
-define("T_FUNCTION",		241);
-define("T_GLOBAL",			240);
-define("T_RETURN",			239);
-define("T_FILENAME",		238);
-define("T_INCLUDE",			237);
-define("T_INCLUDE_ONCE",	236);
-define("T_REQUIRE",			235);
-define("T_REQUIRE_ONCE",	234);
-define("T_PAR_CLOSE",		233);
-define("T_COMMA",			232);
-define("T_BRACKET_OPEN",	231);
-define("T_BRACKET_CLOSE",	230);
-define("T_VAR_REFERENCE",	229);
-define("T_DQ_STRING",		228);
-define("T_CBRACE_OPEN",		227);
-define("T_CBRACE_CLOSE",	226);
-define("T_NUMBER",			225);
-define("T_END_STMT",		224);
+define("PT_VARIABLE",		254);
+define("PT_STRING",			253);
+define("PT_SUBSTRING",		252);
+define("PT_IDENT",			251);
+define("PT_UNPARSED",		250);
+define("PT_EOF",				249);
+define("PT_MULTIPART_STRING_START",	248);
+define("PT_MULTIPART_STRING_END",	247);
+define("PT_PINP_START",		246);
+define("PT_PINP_END",		245);
+define("PT_ERROR",			244);
+define("PT_PAR_OPEN",		243);
+define("PT_NEW",				242);
+define("PT_FUNCTION",		241);
+define("PT_GLOBAL",			240);
+define("PT_RETURN",			239);
+define("PT_FILENAME",		238);
+define("PT_INCLUDE",			237);
+define("PT_INCLUDE_ONCE",	236);
+define("PT_REQUIRE",			235);
+define("PT_REQUIRE_ONCE",	234);
+define("PT_PAR_CLOSE",		233);
+define("PT_COMMA",			232);
+define("PT_BRACKET_OPEN",	231);
+define("PT_BRACKET_CLOSE",	230);
+define("PT_VAR_REFERENCE",	229);
+define("PT_DQ_STRING",		228);
+define("PT_CBRACE_OPEN",		227);
+define("PT_CBRACE_CLOSE",	226);
+define("PT_NUMBER",			225);
+define("PT_END_STMT",		224);
 
 define("YY_STATE_HTML",			1);
 define("YY_STATE_PINP",			2);
@@ -41,15 +41,15 @@ class scanner {
 			create lookup table for language constructs
 		*/
 		$this->YYLANG_CONSTRUCTS = Array(
-				"new" => T_NEW,
-				"function" => T_FUNCTION,
-				"global" => T_GLOBAL,
-				"return" => T_RETURN,
-				"__file__" => T_FILENAME,
-				"include" => T_INCLUDE,
-				"include_once" => T_INCLUDE_ONCE,
-				"require" => T_REQUIRE,
-				"require_once" => T_REQUIRE_ONCE
+				"new" => PT_NEW,
+				"function" => PT_FUNCTION,
+				"global" => PT_GLOBAL,
+				"return" => PT_RETURN,
+				"__file__" => PT_FILENAME,
+				"include" => PT_INCLUDE,
+				"include_once" => PT_INCLUDE_ONCE,
+				"require" => PT_REQUIRE,
+				"require_once" => PT_REQUIRE_ONCE
 				);
 
 
@@ -127,7 +127,7 @@ class scanner {
 			switch ($YYSTATE) {
 				case YY_STATE_HTML:
 					if (ord($yych) == 0) {
-						return T_EOF;
+						return PT_EOF;
 					} else {
 						$matches='';
 						$scan_buffer = substr($YYBUFFER, $YYCURSOR, -1);
@@ -140,23 +140,23 @@ class scanner {
 									$result = $matches[1];
 									$YYCURSOR+=strlen($matches[0]);
 									$YYSTATE = YY_STATE_PINP;
-									return T_PINP_START;
+									return PT_PINP_START;
 								} else {
 									/* php start tag found */
 									$result = $matches[1];
 									$YYCURSOR+=strlen($matches[0]);
 									$result .= "<?php echo \"".str_replace('$', '\\$', AddCSlashes($matches[2], ARESCAPE))."\"; ?>";
-									return T_UNPARSED;
+									return PT_UNPARSED;
 								}
 							} else {
 								$result = $matches[1];
 								$YYCURSOR+=strlen($matches[0]);
-								return T_UNPARSED;
+								return PT_UNPARSED;
 							}
 						} else {
 							$result = $scan_buffer;
 							$YYCURSOR = strlen($YYBUFFER);
-							return T_UNPARSED;
+							return PT_UNPARSED;
 						}
 					}
 				break;
@@ -165,14 +165,14 @@ class scanner {
 						/*
 							Single characters directly beneath here
 						*/
-						case ';': ($token || $token = T_END_STMT);
-						case '{': ($token || $token = T_CBRACE_OPEN);
-						case '}': ($token || $token = T_CBRACE_CLOSE);
-						case ',': ($token || $token = T_COMMA);
-						case '(': ($token || $token = T_PAR_OPEN);
-						case ')': ($token || $token = T_PAR_CLOSE);
-						case '[': ($token || $token = T_BRACKET_OPEN);
-						case ']': ($token || $token = T_BRACKET_CLOSE);
+						case ';': ($token || $token = PT_END_STMT);
+						case '{': ($token || $token = PT_CBRACE_OPEN);
+						case '}': ($token || $token = PT_CBRACE_CLOSE);
+						case ',': ($token || $token = PT_COMMA);
+						case '(': ($token || $token = PT_PAR_OPEN);
+						case ')': ($token || $token = PT_PAR_CLOSE);
+						case '[': ($token || $token = PT_BRACKET_OPEN);
+						case ']': ($token || $token = PT_BRACKET_CLOSE);
 							$yych = $YYBUFFER[++$YYCURSOR];
 							while ($YYCLASSES["NOISE"][$yych]) {
 								if ($yych == "\n") {
@@ -186,17 +186,17 @@ class scanner {
 
 						case '$': 
 							$result = Array();
-							array_push($result, Array(T_VAR_REFERENCE => $yych));
+							array_push($result, Array(PT_VAR_REFERENCE => $yych));
 							$YYCINC = 1;
 
 							$yych = $YYBUFFER[++$YYCURSOR];
 							if ($yych == '{') {
-								array_push($result, Array(T_CBRACE_OPEN => $yych));
+								array_push($result, Array(PT_CBRACE_OPEN => $yych));
 								return ++$YYCURSOR;
 							} else {
 								if ($yych == '$') {
 									$YYCINC++;
-									array_push($result, Array(T_VAR_REFERENCE => $yych));
+									array_push($result, Array(PT_VAR_REFERENCE => $yych));
 									$yych = $YYBUFFER[++$YYCURSOR];
 								}
 								if ($YYCLASSES["ID_FIRST"][$yych]) {
@@ -211,12 +211,12 @@ class scanner {
 										$yych = $YYBUFFER[++$YYCURSOR];
 									}
 									$ident = substr($YYBUFFER, $YYCURSOR_START+$YYCINC, $YYCURSOR-$YYCURSOR_START-$YYCINC);
-									array_push($result, Array(T_IDENT => $ident));
+									array_push($result, Array(PT_IDENT => $ident));
 
-									return T_VARIABLE;
+									return PT_VARIABLE;
 								} else {
 									$result = "single dollar sign";
-									return T_ERROR;
+									return PT_ERROR;
 								}
 							}
 						break;
@@ -227,17 +227,17 @@ class scanner {
 							$yych = $YYBUFFER[++$YYCURSOR];
 							if ($yych == '>') {
 								$result = "php tags found at line: ".$this->YYLINE;
-								return T_ERROR;
+								return PT_ERROR;
 							} else {
-								return T_UNPARSED;
+								return PT_UNPARSED;
 							}
 						break;
 
 						case '=':
 							$yych	= $YYBUFFER[++$YYCURSOR];
-							$token	= T_ASSIGN_OP;
+							$token	= PT_ASSIGN_OP;
 							if ($yych === '>') {
-								$token	= T_ARRAY_OP;
+								$token	= PT_ARRAY_OP;
 								$yych	= $YYBUFFER[++$YYCURSOR];
 							}
 							while ($YYCLASSES["NOISE"][$yych]) {
@@ -273,17 +273,17 @@ class scanner {
 									if ($tag_element == "pinp") {
 										$result="";
 										$YYSTATE = YY_STATE_HTML;
-										return T_PINP_END;
+										return PT_PINP_END;
 									} else {
 										$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
-										return T_UNPARSED;
+										return PT_UNPARSED;
 									}
 								break;
 								default:
 									$result = "<";
 								break;
 							}
-							return T_UNPARSED;
+							return PT_UNPARSED;
 						break;					
 						case '/':
 							$yych = $YYBUFFER[++$YYCURSOR];
@@ -294,7 +294,7 @@ class scanner {
 										$yych = $YYBUFFER[++$YYCURSOR];
 									}
 									$result = "";
-									return T_UNPARSED;
+									return PT_UNPARSED;
 								break;
 								case '*':
 									$result="";
@@ -308,18 +308,18 @@ class scanner {
 										if ($yych == '*') {
 											if  (($yych = $YYBUFFER[++$YYCURSOR]) == '/') {
 												++$YYCURSOR;
-												return T_UNPARSED;
+												return PT_UNPARSED;
 											}
 										} else {
 											$yych = $YYBUFFER[++$YYCURSOR];
 										}
 									}
 									$result = "unterminated comment, started at $start_line";
-									return T_ERROR;
+									return PT_ERROR;
 								break;
 								default:
 									$result = "/";
-									return T_UNPARSED;
+									return PT_UNPARSED;
 								break;
 							}
 						break;
@@ -351,7 +351,7 @@ class scanner {
 								$yych = $YYBUFFER[++$YYCURSOR];
 							}
 							$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
-							return T_NUMBER;
+							return PT_NUMBER;
 						break;
 
 						case $this->YYCLASSES["ID_FIRST"][$yych]:
@@ -371,7 +371,7 @@ class scanner {
 							if ($construct) {
 								return $construct;
 							} else {
-								return T_IDENT;
+								return PT_IDENT;
 							}
 						break;
 						case ':':
@@ -380,18 +380,18 @@ class scanner {
 								case ':':
 									$yych = $YYBUFFER[++$YYCURSOR];
 									$result = "::";
-									return T_CLASS_OPERATOR;
+									return PT_CLASS_OPERATOR;
 								break;
 								default:
 									$result = ":";
-									return T_UNPARSED;
+									return PT_UNPARSED;
 								break;
 							}
 							
 						break;
 						case '`':
 							$result = "backtick encounterd at line ".$this->YYLINE;
-							return T_ERROR;
+							return PT_ERROR;
 						break;
 						case '"':
 							$start_line = $this->YYLINE;
@@ -412,7 +412,7 @@ class scanner {
 									*/
 									if ($YYCURSOR_START != $YYCURSOR) {
 										$string=substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR - $YYCURSOR_START);
-										array_push($multi_string, Array(T_SUBSTRING => $string));
+										array_push($multi_string, Array(PT_SUBSTRING => $string));
 										$YYCURSOR_START = $YYCURSOR;
 									}
 									$yych = $YYBUFFER[++$YYCURSOR];
@@ -428,7 +428,7 @@ class scanner {
 											$yych = $YYBUFFER[++$YYCURSOR];
 										}
 										$string=substr($YYBUFFER, $YYCURSOR_START+1, $YYCURSOR - $YYCURSOR_START -1);	
-										array_push($multi_string, Array(T_VARIABLE => $string));
+										array_push($multi_string, Array(PT_VARIABLE => $string));
 										$YYCURSOR_START = $YYCURSOR;
 										/* 
 											token already read, so continue 'while'
@@ -438,7 +438,7 @@ class scanner {
 									} else {
 										$string=substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR - $YYCURSOR_START - 1);
 										$YYCURSOR--;
-										array_push($multi_string, Array(T_SUBSTRING => $string));
+										array_push($multi_string, Array(PT_SUBSTRING => $string));
 										$YYCURSOR_START=$YYCURSOR;
 									}
 								}
@@ -448,14 +448,14 @@ class scanner {
 								$YYCURSOR++;
 								$string=substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR - $YYCURSOR_START - 1);
 
-								array_push($multi_string, Array(T_SUBSTRING => $string));
-								array_unshift($multi_string, Array(T_MULTIPART_STRING_START => 1));
-								array_push($multi_string, Array(T_MULTIPART_STRING_END => 1));
+								array_push($multi_string, Array(PT_SUBSTRING => $string));
+								array_unshift($multi_string, Array(PT_MULTIPART_STRING_START => 1));
+								array_push($multi_string, Array(PT_MULTIPART_STRING_END => 1));
 								$result = $multi_string;
-								return T_DQ_STRING;
+								return PT_DQ_STRING;
 							} else {
 								$result = "unterminated quote, started at line $start_line";
-								return T_ERROR;
+								return PT_ERROR;
 							}
 						break;
 						case "'":
@@ -479,18 +479,18 @@ class scanner {
 									//$yych = $YYBUFFER[++$YYCURSOR];
 								}
 								$result=substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR - $YYCURSOR_START);
-								return T_STRING;
+								return PT_STRING;
 							} else {
 								$result = "unterminated quote, started at line: $start_line";
-								return T_ERROR;
+								return PT_ERROR;
 							}
 						break;
 						case "-":
 							if (($yych=$YYBUFFER[++$YYCURSOR])=='>') {
-								$token = T_OBJECT_OPERATOR;
+								$token = PT_OBJECT_OPERATOR;
 								$yych = $YYBUFFER[++$YYCURSOR];
 							} else {
-								$token = T_UNPARSED;
+								$token = PT_UNPARSED;
 							}
 							while ($YYCLASSES["NOISE"][$yych]) {
 								if ($yych == "\n") {
@@ -502,13 +502,13 @@ class scanner {
 							return $token;
 						break;
 						case "\0":
-							return T_EOF;
+							return PT_EOF;
 						break;
 						case $YYCLASSES["START_TRANSITION"][$yych]:
 							// unhandled start_transition
 							++$YYCURSOR;
 							$result = $yych;
-							return T_UNPARSED;
+							return PT_UNPARSED;
 						break;
 						default:
 							while (!$YYCLASSES["START_TRANSITION"][$yych] && ord($yych) !== 0) {
@@ -518,7 +518,7 @@ class scanner {
 								$yych = $YYBUFFER[++$YYCURSOR];
 							}
 							$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR-$YYCURSOR_START);
-							return T_UNPARSED;
+							return PT_UNPARSED;
 						break;
 					}
 				break;
@@ -638,29 +638,29 @@ class pinp {
 	function parse_func_call_args() {
 		do {
 			// T_PAR_OPEN or T_COMMA 
-			if ($this->token !== T_END_STMT) {
+			if ($this->token !== PT_END_STMT) {
 				$this->next_token();
 				$result .= $this->token_value;
 			}
-			if ($this->token_ahead == T_COMMA) {
+			if ($this->token_ahead == PT_COMMA) {
 				// also accept an empty argument
 				continue;
 			}
 			$result .= $this->parse_statement();
-		} while (!$this->error && ($this->token_ahead == T_COMMA || $this->token == T_END_STMT));
+		} while (!$this->error && ($this->token_ahead == PT_COMMA || $this->token == PT_END_STMT));
 		return $result;
 	}
 
 	function parse_var_index($var_prefix, $func_prefix) {
 		$result = "";
-		if ($this->token_ahead == T_IDENT) {
+		if ($this->token_ahead == PT_IDENT) {
 			$this->next_token();
 			$ident			= $this->token_value;
 			$array_index	= $this->parse_array_operator();
 			if ($this->error) {
 				return false;
 			}
-			if ($this->token_ahead == T_PAR_OPEN) {
+			if ($this->token_ahead == PT_PAR_OPEN) {
 				if ($array_index) {
 					$this->error = "Can't call functions from an array at line: ".$this->scanner->YYLINE;
 					return false;
@@ -669,7 +669,7 @@ class pinp {
 				if ($this->error) {
 					return false;
 				}
-				if ($this->token_ahead != T_PAR_CLOSE) {
+				if ($this->token_ahead != PT_PAR_CLOSE) {
 					$this->error = "Expected ')' at line: ".$this->scanner->YYLINE;
 					return false;
 				}
@@ -680,20 +680,20 @@ class pinp {
 			} else {
 				$result = $var_prefix.$ident.$array_index;			
 			}
-		} else if ($this->token_ahead == T_CBRACE_OPEN || $this->token_ahead == T_VAR_REFERENCE) {
+		} else if ($this->token_ahead == PT_CBRACE_OPEN || $this->token_ahead == PT_VAR_REFERENCE) {
 			$this->next_token();
-			if ($this->token == T_CBRACE_OPEN) {
+			if ($this->token == PT_CBRACE_OPEN) {
 				$index = "(".$this->parse_statement().")";
 				if ($this->error) {
 					return false;
 				}
-				if ($this->token_ahead != T_CBRACE_CLOSE) {
+				if ($this->token_ahead != PT_CBRACE_CLOSE) {
 					$this->error = "Expected '}' at line: ".$this->scanner->YYLINE;
 					return false;			
 				}
 				$this->next_token();
 			} else {
-				if ($this->token_ahead != T_IDENT) {
+				if ($this->token_ahead != PT_IDENT) {
 					$this->error = "Expected an identifier insteaf of '".$this->token_ahead_value."' at line: ".$this->scanner->YYLINE;
 					return false;
 				}
@@ -704,7 +704,7 @@ class pinp {
 			if ($this->error) {
 				return false;
 			}
-			if ($this->token_ahead == T_PAR_OPEN) {
+			if ($this->token_ahead == PT_PAR_OPEN) {
 				if ($array_index) {
 					$this->error = "Can't call functions from an array at line: ".$this->scanner->YYLINE;
 					return false;
@@ -713,7 +713,7 @@ class pinp {
 				if ($this->error) {
 					return false;
 				}
-				if ($this->token_ahead != T_PAR_CLOSE) {
+				if ($this->token_ahead != PT_PAR_CLOSE) {
 					$this->error = "Expected ')' at line: ".$this->scanner->YYLINE;
 					return false;
 				}
@@ -733,15 +733,15 @@ class pinp {
 
 	function parse_array_operator() {
 		$result = "";
-		while (!$this->error && ( $this->token_ahead == T_BRACKET_OPEN ||
-					$this->token_ahead == T_CBRACE_OPEN ) ) {
+		while (!$this->error && ( $this->token_ahead == PT_BRACKET_OPEN ||
+					$this->token_ahead == PT_CBRACE_OPEN ) ) {
 
 			$this->next_token();
-			if ($this->token == T_BRACKET_OPEN) {
-					$token_close = T_BRACKET_CLOSE;
+			if ($this->token == PT_BRACKET_OPEN) {
+					$token_close = PT_BRACKET_CLOSE;
 					$token_close_value = "]";
 			} else {
-					$token_close = T_CBRACE_CLOSE;
+					$token_close = PT_CBRACE_CLOSE;
 					$token_close_value = "]";
 			}
 
@@ -766,10 +766,10 @@ class pinp {
 
 
 	function parse_object_operator() {
-		while (!$this->error && $this->token_ahead == T_OBJECT_OPERATOR) {
+		while (!$this->error && $this->token_ahead == PT_OBJECT_OPERATOR) {
 			$this->next_token();
 			$result .= $this->token_value.$this->parse_var_index("", "_");
-			if ($this->token == T_PAR_CLOSE) {
+			if ($this->token == PT_PAR_CLOSE) {
 				break;
 			}
 		}
@@ -790,29 +790,29 @@ class pinp {
 		$result = "";
 		switch ($this->token_ahead) {
 
-			case T_VAR_REFERENCE:
+			case PT_VAR_REFERENCE:
 				$result = $this->parse_variable_reference();
 				if ($this->error) {
 					return false;
 				}
-				if ($this->token == T_PAR_CLOSE) {
+				if ($this->token == PT_PAR_CLOSE) {
 					$parseReturnValues = true;
-				} else if ($this->token_ahead == T_OBJECT_OPERATOR) {
+				} else if ($this->token_ahead == PT_OBJECT_OPERATOR) {
 					$result .= $this->parse_object_operator();
 				}
-				if ($this->token == T_PAR_CLOSE) {
+				if ($this->token == PT_PAR_CLOSE) {
 					$parseReturnValues = true;
 				}
 			break;
 
-			case T_IDENT:
+			case PT_IDENT:
 				$identSet = false;
 				$iname = chop(strtolower($this->token_ahead_value));
 				$this->next_token();
-				if ($this->token_ahead == T_CLASS_OPERATOR) {
+				if ($this->token_ahead == PT_CLASS_OPERATOR) {
 					$result = "pinp_".$this->token_value."::";
 					$this->next_token();
-					if ($this->token_ahead != T_IDENT) {
+					if ($this->token_ahead != PT_IDENT) {
 						$this->error = "Expecting an identifier following ($result) at line ".$this->scanner->YYLINE;
 						return false;
 					} else {
@@ -821,7 +821,7 @@ class pinp {
 					}
 					$identSet = true;
 				}
-				if ($this->token_ahead == T_PAR_OPEN) {
+				if ($this->token_ahead == PT_PAR_OPEN) {
 					// we don't have to prefix the function identifier if we already have done that.
 					if (!$identSet) {
 						if (!$this->allowed_functions[$iname]) {
@@ -834,7 +834,7 @@ class pinp {
 					if ($this->error) {
 						return false;
 					}
-					if ($this->token_ahead != T_PAR_CLOSE) {
+					if ($this->token_ahead != PT_PAR_CLOSE) {
 						$this->error = "Expected ')' instead of '".$this->token_ahead_value."' at line ".$this->scanner->YYLINE;
 						return false;
 					}
@@ -849,14 +849,14 @@ class pinp {
 				}
 			break;
 
-			case T_PAR_OPEN:
+			case PT_PAR_OPEN:
 				$result = $this->token_ahead_value;
 				$this->next_token();
 				// parse casting, e.g. (int) (float)
-				if ($this->token_ahead == T_IDENT && $this->language_types[strtolower(trim($this->token_ahead_value))]) {
+				if ($this->token_ahead == PT_IDENT && $this->language_types[strtolower(trim($this->token_ahead_value))]) {
 					$this->next_token();
 					$result .= $this->token_value;
-					if ($this->token_ahead != T_PAR_CLOSE) {
+					if ($this->token_ahead != PT_PAR_CLOSE) {
 						$this->error = "Expected ')' for casting to '".$this->token_value."' at line: ".$this->scanner->YYLINE;
 					} else {
 						$this->next_token();
@@ -864,7 +864,7 @@ class pinp {
 					}
 				} else {
 					$result .= $this->parse_statement();
-					if ($this->token_ahead != T_PAR_CLOSE) {
+					if ($this->token_ahead != PT_PAR_CLOSE) {
 						$this->error = "Expected ')' at line ".$this->scanner->YYLINE;
 					} else {
 						$this->next_token();
@@ -878,20 +878,20 @@ class pinp {
 		if ($parseReturnValues) {
 				$i = 0;
 				while (!$this->error &&	
-							($this->token_ahead == T_OBJECT_OPERATOR 
-								|| $this->token_ahead == T_BRACKET_OPEN
-								|| $this->token_ahead == T_PAR_OPEN)) {
-					while (!$this->error && $this->token_ahead == T_BRACKET_OPEN) {
+							($this->token_ahead == PT_OBJECT_OPERATOR 
+								|| $this->token_ahead == PT_BRACKET_OPEN
+								|| $this->token_ahead == PT_PAR_OPEN)) {
+					while (!$this->error && $this->token_ahead == PT_BRACKET_OPEN) {
 						$result = "(!is_array(\$res$i = $result)) ? error('Not an array on line: '.__LINE__.' in file: '.__FILE__) : \$res$i".$this->parse_array_operator();
 						$i++;
 					}
-					while (!$this->error && $this->token_ahead == T_OBJECT_OPERATOR) {
+					while (!$this->error && $this->token_ahead == PT_OBJECT_OPERATOR) {
 						$result = "(!is_object(\$res$i = $result)) ? error('Not an object on line: '.__LINE__.' in file: '.__FILE__) : \$res$i".$this->parse_object_operator();
 						$i++;
 					}
-					while (!$this->error && $this->token_ahead == T_PAR_OPEN) {
+					while (!$this->error && $this->token_ahead == PT_PAR_OPEN) {
 						$result = "((\$res$i = $result) && false) ? error('Not a function on line: '.__LINE__.' in file: '.__FILE__) : \$this->{'_'.(\$res$i)}".$this->parse_func_call_args().$this->token_ahead_value;
-						if ($this->token_ahead != T_PAR_CLOSE) {
+						if ($this->token_ahead != PT_PAR_CLOSE) {
 							$this->error = "Expected ')' at line: ".$this->scanner->YYLINE;
 							return false;
 						}
@@ -909,39 +909,39 @@ class pinp {
 		$this->next_token();
 		do {
 			switch($this->token_ahead) {
-				case T_SUBSTRING:
+				case PT_SUBSTRING:
 					$result .= $this->token_ahead_value;
 				break;
-				case T_VARIABLE:
+				case PT_VARIABLE:
 					$result .= $this->var_prefix.$this->token_ahead_value;
 				break;
-				case T_ERROR:
+				case PT_ERROR:
 					$this->error = $this->token_ahead_value;
 				break;
 				default:
 			}
 			$this->next_token();
-		} while (!$this->error && $this->token_ahead!=T_MULTIPART_STRING_END);
+		} while (!$this->error && $this->token_ahead!=PT_MULTIPART_STRING_END);
 		$this->next_token();
 		$result .= "\"";
 		return $result;
 	}
 
 	function is_constant() {
-		return ($this->token_ahead == T_MULTIPART_STRING_START 
-					|| $this->token_ahead == T_STRING || $this->token_ahead == T_NUMBER
-						|| $this->token_ahead == T_IDENT);
+		return ($this->token_ahead == PT_MULTIPART_STRING_START 
+					|| $this->token_ahead == PT_STRING || $this->token_ahead == PT_NUMBER
+						|| $this->token_ahead == PT_IDENT);
 	}
 
 	function parse_constant() {
 		$result = "";
 		switch ($this->token_ahead) {
-			case T_MULTIPART_STRING_START:
+			case PT_MULTIPART_STRING_START:
 				$result = $this->parse_multipart_string();
 			break;
-			case T_IDENT:
-			case T_NUMBER:
-			case T_STRING:
+			case PT_IDENT:
+			case PT_NUMBER:
+			case PT_STRING:
 				$result = $this->token_ahead_value;
 				$this->next_token();
 			break;
@@ -954,7 +954,7 @@ class pinp {
 
 	function parse_statement() {
 		$result = '';
-		while (!$this->error && $this->token_ahead != T_EOF) {
+		while (!$this->error && $this->token_ahead != PT_EOF) {
 			switch ($this->token_ahead) {
 				default:
 					$expression = $this->parse_expression();
@@ -964,34 +964,34 @@ class pinp {
 						$result .= $expression;
 					}
 				break;
-				case T_STRING:
+				case PT_STRING:
 					$result .= $this->token_ahead_value;
 					$this->next_token();
 				break;
-				case T_ARRAY_OP:
+				case PT_ARRAY_OP:
 					$result .= $this->token_ahead_value;
 					$this->next_token();
 				break;
-				case T_MULTIPART_STRING_START:
+				case PT_MULTIPART_STRING_START:
 					$result .= $this->parse_multipart_string();
 				break;
-				case T_OBJECT_OPERATOR:
+				case PT_OBJECT_OPERATOR:
 					$result .= "->";
 					$this->next_token();
 				break;
-				case T_NUMBER:
-				case T_ASSIGN_OP:
-				case T_UNPARSED:
+				case PT_NUMBER:
+				case PT_ASSIGN_OP:
+				case PT_UNPARSED:
 					$result .= $this->token_ahead_value;
 					$this->next_token();
 				break;
-				case T_END_STMT:
+				case PT_END_STMT:
 					$result .= $this->token_ahead_value;
 					$this->next_token();
 					return $result;
 				break;
-				case T_COMMA:
-				case T_PAR_CLOSE:
+				case PT_COMMA:
+				case PT_PAR_CLOSE:
 					return $result;
 				break;
 			}
@@ -1001,36 +1001,36 @@ class pinp {
 
 	function parse_statement_list() {
 		$result = "";
-		while (!$this->error && $this->token_ahead != T_EOF) {
+		while (!$this->error && $this->token_ahead != PT_EOF) {
 			switch ($this->token_ahead) {
-				case T_CBRACE_CLOSE:
+				case PT_CBRACE_CLOSE:
 					return $result;
 				break;
-				case T_CBRACE_OPEN:
+				case PT_CBRACE_OPEN:
 					$result .= $this->token_ahead_value;
 					$this->next_token();
 					$result .= $this->parse_statement_list();
 					$result .= $this->token_ahead_value;
 					$this->next_token();
 				break;
-				case T_PINP_START:
+				case PT_PINP_START:
 					$result .= $this->token_ahead_value."<?php ";
 					$this->in_pinp = true;
 					$this->next_token();
 				break;
-				case T_PINP_END:
+				case PT_PINP_END:
 					$result .= " ?>";
 					$this->in_pinp = false;
 					$this->next_token();
 				break;
-				case T_RETURN:
+				case PT_RETURN:
 					$ret_result = $this->token_ahead_value;
 					$this->next_token();
 					$ret_result .= $this->parse_statement();
 					$result .= "{ $ret_result }";
 					//NOTE(ORIGINAL): $result .= $ret_result;
 				break;
-				case T_ERROR:
+				case PT_ERROR:
 					$this->error = $this->token_ahead_value." at line ".$this->scanner->YYLINE;
 				break;
 				default:
