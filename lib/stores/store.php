@@ -386,6 +386,7 @@ class store {
 						if (isset($result[1])) {
 							$result .= "/";
 						}
+						$result[0] = "/"; // make sure that even under windows, slashes are always forward slashes.
 					break;
 					case "." : break;
 					case ""	 : break;
