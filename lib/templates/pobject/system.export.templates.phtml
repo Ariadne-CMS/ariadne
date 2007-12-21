@@ -38,32 +38,29 @@ global $ARBeenHere;
 								} else {
 									$default = false;
 								}
+								$save = 1;
+								$this->newObject->data->config->pinp[$type][$function][$language] = $this->newObject->id;
+								if ($default) {
+									$this->newObject->data->config->templates[$type][$function][$language] = $this->newObject->id;
+								}
+								$new_filestore->write($tdata, $this->newObject->id, "$type.$function.$language.pinp");
+								$new_filestore->touch($this->newObject->id, "$type.$function.$language.pinp", $tmtime);
+
 								if ($ARCurrent->AXAction == "import") {
 									unset($ARBeenHere[$this->newObject->path]);
-									$this->newObject->call("system.save.layout.phtml",
-												Array(
-													"type" => $type,
-													"function" => $function,
-													"language" => $language,
-													"template" => $tdata,
-													"default" => $default,
-													"mtime" => $tmtime
-												));
-								}
 
-								if ($ARCurrent->AXAction != "import" ||
-										$this->newObject->error) {
-									/* we do not need to compile templates which
-									are being exported. We just copy them */
+									include_once($this->store->get_config("code")."modules/mod_pinp.phtml");
 
-									$save = 1;
-									$this->newObject->data->config->pinp[$type][$function][$language] = $this->newObject->id;
-									if ($default) {
-										$this->newObject->data->config->templates[$type][$function][$language] = $this->newObject->id;
+									$pinp = new pinp("header","local->", "\$this->_");
+									$compiled = $pinp->compile(strtr($tdata,"\r",""));
+									if ($pinp->error) {
+										$this->newObject->error = $pinp->error;
+									} else {
+										$new_filestore->write($compiled, $this->newObject->id, "$type.$function.$language");
+										$new_filestore->touch($this->newObject->id, "$type.$function.$language", $tmtime);
 									}
-									$new_filestore->write($tdata, $this->newObject->id, "$type.$function.$language.pinp");
-									$new_filestore->touch($this->newObject->id, "$type.$function.$language.pinp", $tmtime);
 								}
+
 
 								if ($this->newObject->error) {
 									display("	error: ".$this->newObject->error."(".$this->newObject->id.")\n");
