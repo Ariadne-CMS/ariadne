@@ -94,6 +94,18 @@
   // $AR->IM->hardLimit			= 10000000; // 10 megapixel
   // $AR->IM->hardLimitBytes	= 2000000;  // 2 MB
 
+
+  /**************************************************************************/
+  /* SVN Configuration                                                      */
+  /* To enable SVN support for templates set $AR->SVN->enabled to 'true'    */
+  /* and point $AR->SVN->path to your svn binary on disk.                   */
+  /* Use the SVN feature from within the Ariadne browser or, for per        */
+  /* template options, from within the template browser.                    */
+  /**************************************************************************/
+  $AR->SVN->enabled			= true;
+  $AR->SVN->path			= '/usr/bin/svn';
+
+
   /**************************************************************************/
   /* VirusScanner information                                               */
   /* For your security Ariadne can use an installed virusscanner to ensure  */
