@@ -73,7 +73,8 @@
 
 		if (!$this->error) {
 			$this->ClearCache();
-			unset($properties);
+			// keep only the fulltext properties.
+			$properties = Array('fulltext' => $properties['fulltext']);
 
 			$this->arIsNewObject = false;
 			$isDefaultSet = false;
