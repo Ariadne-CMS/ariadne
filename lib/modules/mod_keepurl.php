@@ -61,11 +61,12 @@
 						$ARCurrent->shortcut_redirect = Array();
 					}
 					$subpath = substr($rpath, strlen($path));
-					array_push($ARCurrent->shortcut_redirect, Array("src" => $path, "dest" => $shortcut->data->path, "keepurl" => $shortcut->data->keepurl));
-						if ($this->exists($shortcut->data->path.$subpath)) {
-							$result = $this->get($shortcut->data->path.$subpath, $template, $args);
+					$target = $shortcut->call('system.get.target.phtml');
+					array_push($ARCurrent->shortcut_redirect, Array("src" => $path, "dest" => $target, "keepurl" => $shortcut->data->keepurl));
+						if ($this->exists($target.$subpath)) {
+							$result = $this->get($target.$subpath, $template, $args);
 						} else {
-							$result = pinp_keepurl::getWorker($shortcut->data->path.$subpath, $template, $args);
+							$result = pinp_keepurl::getWorker($target.$subpath, $template, $args);
 						}
 					array_pop($ARCurrent->shortcut_redirect);
 				}
