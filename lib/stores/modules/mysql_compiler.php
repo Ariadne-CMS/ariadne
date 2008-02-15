@@ -229,18 +229,14 @@
 									$types_tbl.implements = $type";
 							$qresult = $this->store->store_run_query($query);
 							while ($iresult = mysql_fetch_array($qresult)) {
-								if (!$ilist) {
-									$ilist = " '".$iresult['type']."' ";
-								} else {
-									$ilist .= ", '".$iresult['type']."' ";
-								}
+								$ilist .= ", '".$iresult['type']."' ";
 							}
-							$result = " (".$this->tbl_prefix."objects.type not in ($ilist)) ";
+							$result = " (".$this->tbl_prefix."objects.type not in ($type $ilist)) ";
 						break;
 						default:
 							$table=$this->tbl_prefix."types";
 							$this->used_tables[$table]=$table;
-							$result=" (".$this->tbl_prefix."types.implements $operator $type and ".$this->tbl_prefix."objects.vtype = ".$this->tbl_prefix."types.type ) ";
+							$result=" ( ".$this->tbl_prefix."objects.type $operator $type OR (".$this->tbl_prefix."types.implements $operator $type and ".$this->tbl_prefix."objects.vtype = ".$this->tbl_prefix."types.type )) ";
 						break;
 					}
 				}
