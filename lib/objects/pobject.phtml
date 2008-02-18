@@ -693,7 +693,7 @@ class pobject extends object { // pobject class definition
 			$newpath = $checkpath;
 			$c_redirects = count($redirects);
 			$c_redirects_done = 0;
-			while (count($redirects) && ($redir = array_pop($redirects)) && substr($newpath, 0, strlen($redir['dest'])) == $redir['dest']) {
+			while (count($redirects) && ($redir = array_pop($redirects)) && $redir['keepurl'] && substr($newpath, 0, strlen($redir['dest'])) == $redir['dest']) {
 				$c_redirects_done++;
 				$newpath = $redir['src'].substr($newpath, strlen($redir['dest']));
 			}
