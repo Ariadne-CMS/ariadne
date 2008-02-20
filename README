@@ -1,10 +1,5 @@
-Readme 2.4.1                                                       Muze Ariadne 
+Readme 2.6.0                                                       Muze Ariadne 
 ===============================================================================
-
-WARNING: The way configuration data is stored in Ariadne 2.4 is different from
-         Ariadne 2.2. There is an upgrade.php script in the install directory
-         which will convert your existing database and adds a few new objects.
-         See the file docs/upgrade.txt for more information.
 
 Ariadne is a web application server and a content management system. It is a 
 lot like Zope, but not quite the same.
@@ -50,7 +45,7 @@ For more information or questions, point your mail client to
 'ariadne@muze.nl', or read the newsgroups at 'news.muze.nl'.
 
 14-02-2000
-Last Updated 19-11-2004
+Last Updated 20-02-2008
 
 Auke van Slooten
 Muze
