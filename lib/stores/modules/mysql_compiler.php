@@ -219,7 +219,7 @@
 					}
 					$result=" $left $operator $right ";
 				} else {
-					$type=$this->compile_tree($node["right"]);
+					$type	= $this->compile_tree($node["right"]);
 					switch ($operator) {
 						case '!=':
 							/* retrieve an implements list */
@@ -229,14 +229,18 @@
 									$types_tbl.implements = $type";
 							$qresult = $this->store->store_run_query($query);
 							while ($iresult = mysql_fetch_array($qresult)) {
-								$ilist .= ", '".$iresult['type']."' ";
+								if (!$ilist) {
+									$ilist = " '".$iresult['type']."' ";
+								} else {
+									$ilist .= ", '".$iresult['type']."' ";
+								}
 							}
-							$result = " (".$this->tbl_prefix."objects.type not in ($type $ilist)) ";
+							$result = " (".$this->tbl_prefix."objects.type not in ($ilist)) ";
 						break;
 						default:
 							$table=$this->tbl_prefix."types";
 							$this->used_tables[$table]=$table;
-							$result=" ( ".$this->tbl_prefix."objects.type $operator $type OR (".$this->tbl_prefix."types.implements $operator $type and ".$this->tbl_prefix."objects.vtype = ".$this->tbl_prefix."types.type )) ";
+							$result=" (".$this->tbl_prefix."types.implements $operator $type and ".$this->tbl_prefix."objects.vtype = ".$this->tbl_prefix."types.type ) ";
 						break;
 					}
 				}
