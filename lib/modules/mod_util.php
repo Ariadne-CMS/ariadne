@@ -78,7 +78,7 @@
 
 		function _create_function($args, $code) {
 			$pinp = new pinp("header", 'var_', '$this->_');
-			$safe_args = substr($pinp->compile("<pinp>$args</pinp>"), 5, -2);
+			$safe_args = $pinp->compileFuncCallArgs("$args", "funcCallArgs");
 			$pinp = new pinp("header", 'var_', '$this->_');
 			$safe_code = substr($pinp->compile("<pinp>$code</pinp>"), 5, -2);
 			return create_function($safe_args, $safe_code);

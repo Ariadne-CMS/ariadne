@@ -108,10 +108,18 @@ class scanner {
 		$this->YYCLASSES["START_TRANSITION"] = $cclass;
 	}
 
-	function init($buffer) {
+	function init($buffer, $state = "html") {
 		$this->YYBUFFER = $buffer."\0";
 		$this->YYLINE = 1;
-		$this->YYSTATE = YY_STATE_HTML;
+		switch ($state) {
+			case "pinp":
+				$this->YYSTATE = YY_STATE_PINP;
+			break;
+			case "html":
+			default:
+				$this->YYSTATE = YY_STATE_HTML;
+			break;
+		}
 		$YYCURSOR = 0;
 	}
 
@@ -647,6 +655,7 @@ class pinp {
 				continue;
 			}
 			$result .= $this->parse_statement();
+
 		} while (!$this->error && ($this->token_ahead == PT_COMMA || $this->token == PT_END_STMT));
 		return $result;
 	}
@@ -1046,6 +1055,19 @@ class pinp {
 		return $result;
 	}
 
+	function compileFuncCallArgs($template) {
+		$this->scanner = new scanner();
+		$this->scanner->init($template, "pinp");
+		$this->tokens = Array();
+		$this->new_template = "";
+		$this->in_pinp = true;
+		$this->new_template = $this->parse_func_call_args();
+		if (!$this->error) {
+			$this->syntax_test("<"."?php function test(".$this->new_template.") { } ?>");
+		}
+		return $this->new_template;
+	}
+
 	function compile($template) {
 		$this->scanner = new scanner();
 		$this->scanner->init($template);
@@ -1063,12 +1085,15 @@ class pinp {
 		return $this->new_template;
 	}
 
-	function syntax_test() {
+	function syntax_test($template = "") {
+		if (!$template) {
+			$template = $this->new_template;
+		}
 		$display_errors = ini_get("display_errors");
 		ini_set("display_errors",1);
 		$error_reporting = error_reporting(E_ERROR | E_PARSE);
 		ob_start();
-			$func = create_function('',' ?'.'>'.$this->new_template.'<'.'?php ');
+			$func = create_function('',' ?'.'>'.$template.'<'.'?php ');
 			$result = ob_get_contents();
 		ob_end_clean();
 		error_reporting($error_reporting);
