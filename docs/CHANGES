@@ -1,3 +1,80 @@
+Ariadne 2.6
+
+Changes in Ariadne since version Ariadne 2.4.1
+
+New Features:
+	- Added "read from string" to the rss module for more flexible parsing.
+	- Webdav loader will rename the object's dataname to the filename on move
+	- Webdav loader can now support any given filename character (use mod_util.php to unescape them)
+	- PPhoto now allows spaces in 'annotate'
+	- Added NLS enabled debug statements
+	- Added a whole new bunch of NLS flags in various versions.
+	- Added NLS support for +/- 200 languages.
+	- Added a NLS tag for every language to the dialogs, making it easier to select foreign languages.
+	- TinyMCE support has been patched and fixed against tinyMCE (revision 253 in TinyMCE SVN);
+	  Images and links are instered in Ariadne style, so should now offer the same options as
+	  the regular wysiwyg editor.
+	- Added a caching version of mod_rss. This version caches RSS feed information, so inserting an
+	  RSS feed in a site won't clobber the RSS feed supplier.
+	- A modified version of the filestore was added to allow SVN support for templates in Ariadne;
+	  Linux versions of Ariadne can now be extended to have SVN support for templates;
+	  SVN support is available in the Windows XP and New interface;
+	- Added mod_json to allow better integration between php/pinp and javascript;
+	  this should help with building more spiffy ajax applications.
+	  http://pear.php.net/pepr/pepr-proposal-show.php?id=198
+	- Added mod_htmlparser: Custom made module which parses, fixes and recompiles (broken) HTML.
+	- Added mod_html2ps: This module integrates html2ps and makes it possible to generate PDF documents
+	  from templates or content in Ariadne.
+	  Just dowload html2ps from http://www.tufat.com/script19.htm and copy the contents of the
+	  public_html directory to lib/modules/mod_html2ps/.
+	- Added mod_util: utility functions to escape/unescape filenames containing
+	  problematic characters like spaces; PINP function creating and call utility;
+	- Added mod_csv: A configurable CSV parser module.
+	- Added "join target on" statement to the query compiler. 
+	- Added mod_html2text to convert a string containing HTML to text.
+	- Added the MS Core Fonts (in files/fonts/).
+	- Added the 'loadLibrary()' function. You can use this function in both php and pinp
+	  templates to register a library like you would in config.ini. This library will only work from
+	  the current path (and from within config.ini itself).
+	- Shortcuts can now follow other shortcuts.
+	- Added call_super(): this function allows to run a same-named template further in the library
+	  chain. This makes it possible to chain several templates with the same name and execute
+	  whatever combination of those templates is configured.
+	- Added getdatacache() and savedatacache(): makes it possible to keep a cache of
+	  data (instead of only the output of a template); This way it is possible
+	  to calculate some heavy dataset, and output the result several times
+	  from different templates.
+	- Full variable dereferencing support in PINP.
+	- Full PINP syntax test before template save.
+	- Added configfile and chroot() support for the WebDAV loader
+
+	Check http://svn.muze.nl/trunk/ for more.	
+
+Bugs Fixed:
+	- Some better checks and typetree.ini integration for the 'New Object' dialog.
+	- Added checks for different character encodings in mod_rss;
+	  better support for different types of feeds;
+	  target encoding is now UTF-8.
+	- Fixed shell command escaping in pphoto, fixing a possible security issue.
+	- Fixed the known bug that when objects are moved, the grants are not updated correctly for the user.	
+	- Many keepurl fixes.
+	- Fixed parsing of unquoted attributes in the htmlcleaner.
+	- Speedup fix for get_nextid (for large sites).
+	- More aggressive session replacement in mod_url.
+	- More error checking added to mod_xml.
+	- Many mod_rss fixes, such as basic image-tag parsing.
+	- Many shortcut fixes: Ariadne will now correctly recognise shortcuts pointing to shortcuts etc.		
+	- Property values, returned by workflow templates when they are simply passed on, will
+	  automatically get unescaped.
+	- Fixed customdata properties when saving an array.
+	- ClearCahce() fixes: clearing upward is now correct, it will stop at the currentsite
+	  of the given path. ClearCache also recurses through the correct path, instead of the
+	  lowercased path, which broke because loadConfig stores the cache on the real path.
+	- Fixed cache clearing when the currentsite is '/'.
+	- Fixed currentsite() and currentsection() to accept a path.
+	- Fixed currentsite/parentsite/currentsection/parentsection to use loadConfig.
+
+
 Ariadne 2.4.1
 
 Changes in Ariadne since version Ariadne 2.4
@@ -66,7 +143,7 @@ New Features:
 	- changed the way templates are included, so now you can do a 'return true' in pinp
 	  templates, and it works as you'd expect.
 
-Bugs Fixes:
+Bugs Fixed:
 	- fixed problems with setting hyperlink over linebreaks or accross block
 	  elements in the editor, no more www.example.com.
 	- fixed default values for $path arguments in mod_edit
