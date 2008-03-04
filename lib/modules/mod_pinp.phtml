@@ -30,6 +30,7 @@ define("PT_CBRACE_OPEN",		227);
 define("PT_CBRACE_CLOSE",	226);
 define("PT_NUMBER",			225);
 define("PT_END_STMT",		224);
+define("PT_FOR_STMT",		223);
 
 define("YY_STATE_HTML",			1);
 define("YY_STATE_PINP",			2);
@@ -49,7 +50,8 @@ class scanner {
 				"include" => PT_INCLUDE,
 				"include_once" => PT_INCLUDE_ONCE,
 				"require" => PT_REQUIRE,
-				"require_once" => PT_REQUIRE_ONCE
+				"require_once" => PT_REQUIRE_ONCE,
+				"for" => PT_FOR_STMT
 				);
 
 
@@ -646,17 +648,15 @@ class pinp {
 	function parse_func_call_args() {
 		do {
 			// T_PAR_OPEN or T_COMMA 
-			if ($this->token !== PT_END_STMT) {
-				$this->next_token();
-				$result .= $this->token_value;
-			}
+			$this->next_token();
+			$result .= $this->token_value;
 			if ($this->token_ahead == PT_COMMA) {
 				// also accept an empty argument
 				continue;
 			}
 			$result .= $this->parse_statement();
 
-		} while (!$this->error && ($this->token_ahead == PT_COMMA || $this->token == PT_END_STMT));
+		} while (!$this->error && ($this->token_ahead == PT_COMMA));
 		return $result;
 	}
 
@@ -758,6 +758,7 @@ class pinp {
 
 			$stmt	= $this->parse_statement();
 			if (trim($stmt)) {
+				// NOTE: $result .= "($stmt)";
 				$result .= "($stmt)";
 			} else {
 				$result .= $stmt;
@@ -999,6 +1000,28 @@ class pinp {
 					$this->next_token();
 					return $result;
 				break;
+				case PT_FOR_STMT:
+					$result .= $this->token_ahead_value;
+					$this->next_token();
+					if ($this->token_ahead != PT_PAR_OPEN) {
+						$this->error = "Expected '(' instead of '$this->token_ahead_value' at line ".$this->scanner->YYLINE;
+						return false;
+					} else {
+						$result .= $this->token_ahead_value;
+						$this->next_token();
+						$result .= $this->parse_statement_list();
+						if (!$this->error) {
+							if ($this->token_ahead != PT_PAR_CLOSE) {
+								$this->error = "Expected ')' instead of '$this->token_ahead_value' at line ".$this->scanner->YYLINE;
+								return false;
+							} else {
+								$result .= $this->token_ahead_value;
+								$this->next_token();
+								return $result;
+							}
+						}
+					}
+				break;
 				case PT_COMMA:
 				case PT_PAR_CLOSE:
 					return $result;
@@ -1012,6 +1035,7 @@ class pinp {
 		$result = "";
 		while (!$this->error && $this->token_ahead != PT_EOF) {
 			switch ($this->token_ahead) {
+				case PT_PAR_CLOSE:
 				case PT_CBRACE_CLOSE:
 					return $result;
 				break;
@@ -1077,7 +1101,11 @@ class pinp {
 		$this->next_token();
 		$this->new_template = $this->parse_statement_list();
 		if (!$this->error && $this->in_pinp) {
-			$this->error = "no closing pinp tag found";
+			if ($this->token_ahead == PT_EOF) {
+				$this->error = "No closing PINP tag found at line ".$this->scanner->YYLINE;
+			} else {
+				$this->error = "Unexpected '".$this->token_ahead_value."' at line ".$this->scanner->YYLINE; //no closing pinp tag found";
+			}
 		}
 		if (!$this->error) {
 			$this->syntax_test();
