@@ -24,7 +24,7 @@
 	function recompile($path) {
 		$php_version = (int)substr(phpversion(), 0, 1);
 		$dh = opendir($path);
-		while ($file = readdir($dh)) {
+		while ( false !== ($file = readdir($dh))) {
 			if ($file != "." && $file != "..") {
 				$f = $path.$file;
 				if (substr($file, -strlen(".pinp")) == ".pinp" && is_file($f)) {
@@ -45,7 +45,7 @@
 					$compiler = new pinp("head", "local->", $objectContext);
 					$pinp_code_compiled_new = $compiler->compile(strtr($pinp_code, "\r", ""));
 					if ($compiler->error) {
-						showCompilerSettings($compiler, $file);
+						showCompilerError($compiler, $file);
 					} else {
 						$fp = fopen($file_compiled, "w");
 						fwrite($fp, $pinp_code_compiled_new);
