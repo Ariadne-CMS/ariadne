@@ -110,7 +110,7 @@ class geo {
 class pinp_geo extends geo {
 
 	function _init($config) {
-		$geo = new geo();
+		$geo = new pinp_geo();
 		$result = $geo->init($config);
 		if (!error::isError($result)) {
 			return $geo;
