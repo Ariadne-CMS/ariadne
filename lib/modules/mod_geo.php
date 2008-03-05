@@ -15,19 +15,24 @@ require_once($this->store->get_config('code')."/modules/mod_error.php");
  * This is the Google Maps geo helper/getter class
  */
 class geo_gmap {
-	function getRawData($address, $output) {
+	function getRawData($address, $output='php') {
 		$address	= urlencode($address);
-		$url="http://maps.google.com/maps/geo?q=".$address."&output=".$output."&key=".$key;
+		if ($output=='php') {
+			$send_output = 'json';
+		} else {
+			$send_output = $output;
+		}
+		$url="http://maps.google.com/maps/geo?q=".$address."&output=".$send_output."&key=".$key;
 		$res = file_get_contents($url);
-		if ($output=='json') {
+		if ($output=='php') {
 			return JSON::decode($res);
 		} else {
 			return $res;
 		}
 	}
 	
-	function getLatLong($address,$output) {
-		$data=$this->getRawData($address);
+	function getLatLong($address) {
+		$data=$this->getRawData($address, 'json');
 		if ($data->Status->code!=200) {
 			return error::raiseError('MOD_GEO: connection to Google Maps failed: '.$data->Status->code, 'geo_4');
 		} else {
@@ -56,7 +61,7 @@ class geo {
 			}
 			$this->output = $config['OUTPUT'];
 			if (!$this->output) {
-				$this->output = 'json';
+				$this->output = 'php';
 			}
 			$this->getter = new geo_gmap();
 			return true;
@@ -69,7 +74,7 @@ class geo {
 	*  getRawData returns full address data for a given address, as returned by Google Maps
 	*	
 	* returns the data for the address $address in the format specified by $output.
-	* default is json. Other options area xml, kml and cvs.
+	* default is php. Other options area xml, kml, json and cvs.
 	* 
 	* @param	string	$address	street address, format is 'streetname  housenumber, zipcode, state,  country'. You may skip values if unknown or not applicable. 
 	* @param	string	$output	type of output to return, possible values are 'xml','kml','cvs' and 'json'. Default is 'json'. In the case of 'json' the result will automatically be converted to PHP arrays
