@@ -4,7 +4,7 @@
  * 
  * mod_geo needs a Google Maps key to function. Set it once using init()
  * 
- * @author Gerhard Hoogterp
+ * @author Gerhard Hoogterp <gerhard@frappe.xs4all.nl>
  * @author Auke van Slooten <auke@muze.nl>
 */
 
@@ -66,7 +66,7 @@ class geo {
 	}
 
 	/**
-	*  getData returns full address data for a given address, as returned by Google Maps
+	*  getRawData returns full address data for a given address, as returned by Google Maps
 	*	
 	* returns the data for the address $address in the format specified by $output.
 	* default is json. Other options area xml, kml and cvs.
@@ -74,14 +74,14 @@ class geo {
 	* @param	string	$address	street address, format is 'streetname  housenumber, zipcode, state,  country'. You may skip values if unknown or not applicable. 
 	* @param	string	$output	type of output to return, possible values are 'xml','kml','cvs' and 'json'. Default is 'json'. In the case of 'json' the result will automatically be converted to PHP arrays
 	*/
-	function getData($address, $output = null) {
+	function getRawData($address, $output = null) {
 		if (!$output) {
 			$output = $this->output;
 		}
 		if (!$address) {
-			return error::raiseError('MOD_GEO: No address given to getData', 'geo_1');
+			return error::raiseError('MOD_GEO: No address given to getRawData', 'geo_1');
 		} else if ($this->getter) {
-			return $this->getter->getData($address, $output);
+			return $this->getter->getRawData($address, $output);
 		} else {
 			return error::raiseError('MOD_GEO: GEO module not initialized, call init method first', 'geo_2');
 		}
@@ -110,11 +110,17 @@ class geo {
 class pinp_geo extends geo {
 
 	function _init($config) {
-		return parent::init($config);
+		$geo = new geo();
+		$result = $geo->init($config);
+		if (!error::isError($result)) {
+			return $geo;
+		} else {
+			return $result;
+		}
 	}
 
-	function _getData($address, $output = null) {
-		return parent::getData($address, $output);
+	function _getRawData($address, $output = null) {
+		return parent::getRawData($address, $output);
 	}
 
 	function _getLatLong($address) {
