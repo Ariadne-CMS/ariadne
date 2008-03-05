@@ -1,44 +1,115 @@
 #!/usr/bin/php -q
 <?php
-	$ariadne = "../lib";
-	if (!@include_once($ariadne."/configs/ariadne.phtml")) {
-		chdir(substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')));
-		if(!include_once($ariadne."/configs/ariadne.phtml")){
-			echo "could not open ariadne.phtml";
-			exit(1);
+
+/*
+	Added by Gerhard Hoogterp (gerhard@frappe.xs4all.nl)
+	date: 30 nov 2006
+
+	procFile is called with a filename as only parameter. In this case it
+	checks the age of the file and files older than a day
+	are removed. The same is attempted for directories, but unless they
+	are empty this should fail.
+
+*/
+
+define('MINUTE',60);
+define('HOUR',3600);
+define('DAY',86400);
+
+$skipentries = array('.','..','.svn','CVS');
+
+function procFile($filename) {
+	if (strpos($filename,'.svn')) { return; }
+
+	$ctime=filectime($filename);
+	$age=time()-$ctime;
+	$perms=fileperms($filename);
+
+	if ($age>DAY) {
+
+		if (is_dir($filename)) {
+			$res=@rmdir($filename);
+		} else {
+			$res=@unlink($filename);
 		}
 
+		print $res?" - ":" ! ";
+		printf("%18s %5s %o %s\n",
+			strftime('%d %b %Y %H:%M',$ctime),
+			$age,
+			$perms,
+			$filename);
 	}
-	require($ariadne."/configs/store.phtml");
-	require($ariadne."/configs/sessions.phtml");
-	require($ariadne."/includes/loader.cmd.php");
-	require($store_config['code']."stores/".$session_config["dbms"]."store.phtml");
+}
 
-	set_time_limit(0);
+function recurse($func, $dir=".") {
+	global $skipentries;
+	if (is_callable($func)) {
 
-	echo "Clearing old sessions...";
-	$inst_store = $session_config["dbms"]."store";
-	$sessionstore=new $inst_store($root, $session_config);
-
-	$query = "object.implements='psession' and object.lastchanged < ".(time() - $session_config["timeout"]*4);
-
-	/* purge all expired sessions */
-	while (count($sessionstore->call("system.expire.phtml","",
-				$sessionstore->find("/", $query,0))) >= 100);
-
-	echo $sessionstore->total." expired sessions removed.\n";
-	$sessionstore->close();
-	echo "done.\n";
-
-	// clean up store temp directories
-	if ($AR->OS=="UNIX") {
-		echo "Clearing temporary files...";
-		$tempdir=$store_config["files"]."temp/";
-		if (file_exists($tempdir)) {
-			system("find $tempdir -ctime +1 -a -mindepth 1 -name .svn -prune -o -exec rm -r {} ';'");
+		$d = dir($dir);
+		while (false !== ($entry = $d->read())) {
+			if(!in_array($entry,$skipentries)) {
+				if (is_dir($dir.'/'.$entry)) {
+					recurse($func,$dir.'/'.$entry);
+				}
+				$func($dir.'/'.$entry);
+			}
 		}
-		echo "done.\n";
-	} else {
-		// FIXME: so... how do you do this under windows?
+		$d->close();
 	}
+}
+
+/*----------------------------- The original script --------------------------*/
+
+$ariadne = "../lib";
+if (!@include_once($ariadne."/configs/ariadne.phtml")) {
+	chdir(substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')));
+	if(!include_once($ariadne."/configs/ariadne.phtml")){
+		echo "could not open ariadne.phtml";
+		exit(1);
+	}
+
+}
+require($ariadne."/configs/store.phtml");
+require($ariadne."/configs/sessions.phtml");
+require($ariadne."/includes/loader.cmd.php");
+require($store_config['code']."stores/".$session_config["dbms"]."store.phtml");
+
+set_time_limit(0);
+
+echo " . Clearing old sessions...\n";
+$inst_store = $session_config["dbms"]."store";
+$sessionstore=new $inst_store($root, $session_config);
+
+$query = "object.implements='psession' and object.lastchanged < ".(time() - $session_config["timeout"]*4);
+
+/* purge all expired sessions */
+while (count($sessionstore->call("system.expire.phtml","",
+	$sessionstore->find("/", $query,0))) >= 100);
+
+echo $sessionstore->total." expired sessions removed.\n";
+$sessionstore->close();
+echo "done.\n";
+
+// clean up store temp directories
+if ($AR->OS=="UNIX") {
+	echo " . Clearing temporary files...\n";
+	$tempdir=$store_config["files"]."temp/";
+	if (file_exists($tempdir)) {
+		recurse(procFile,$tempdir);
+	}
+	echo " . done.\n";
+
+} else {
+	echo "Windows support needs testing\n";
+/* Needs to be tested
+	echo " . Clearing temporary files...\n";
+	$tempdir=$store_config["files"]."temp\";
+	if (file_exists($tempdir)) {
+		recurse(procFile,$tempdir);
+	}
+	echo " . done.\n";
+ */
+}
 ?>
+
