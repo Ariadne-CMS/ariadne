@@ -37,7 +37,7 @@ class geo_gmap {
 			return error::raiseError('MOD_GEO: connection to Google Maps failed: '.$data->Status->code, 'geo_4');
 		} else {
 			$coordinates = $data->Placemark[0]->Point->coordinates;
-			return new Array('lat' => $coordinates[0], 'long' => $coordinates[1], 'alt' => $coordinates[2]);
+			return array('lat' => $coordinates[0], 'long' => $coordinates[1], 'alt' => $coordinates[2]);
 		}
 	}
 }
