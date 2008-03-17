@@ -32,7 +32,7 @@ class geo_gmap {
 	}
 	
 	function getLatLong($address) {
-		$data=$this->getRawData($address, 'json');
+		$data=$this->getRawData($address, 'php');
 		if ($data->Status->code!=200) {
 			return error::raiseError('MOD_GEO: connection to Google Maps failed: '.$data->Status->code, 'geo_4');
 		} else {
