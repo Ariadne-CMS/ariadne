@@ -4,6 +4,10 @@
 		function mod_auth_default($config="") {
 		}
 
+		function authExternalUser($login, $password) {
+			return false;
+		}
+
 		function authUser($login, $password) {
 		global $store, $AR;
 			$criteria["object"]["implements"]["="]="'puser'";
@@ -16,6 +20,11 @@
 							),
 							$store->find("/system/users/", $criteria)
 						));
+
+			if (!$user) {
+				$user = $this->authExternalUser($login, $password);
+			}
+
 
 			if (!$user) {
 				// User was not found in the internal Ariadne user
