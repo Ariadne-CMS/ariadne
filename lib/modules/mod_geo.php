@@ -22,7 +22,7 @@ class geo_gmap {
 		} else {
 			$send_output = $output;
 		}
-		$url="http://maps.google.com/maps/geo?q=".$address."&output=".$send_output."&key=".$key;
+		$url="http://maps.google.com/maps/geo?q=".$address."&output=".$send_output."&key=".$this->api_key;
 		$res = file_get_contents($url);
 		if ($output=='php') {
 			return JSON::decode($res);
@@ -64,6 +64,7 @@ class geo {
 				$this->output = 'php';
 			}
 			$this->getter = new geo_gmap();
+			$this->getter->api_key = $this->api_key;
 			return true;
 		} else {
 			return error::raiseError('MOD_GEO: API "'.$config['API'].'" not supported', 'geo_0');
