@@ -1549,6 +1549,8 @@ class pobject extends object { // pobject class definition
 		debug("pobject: ClearCache($path)","object");
 		if (!$path) { 
 			$path=$this->path; 
+		} else {
+			$path = current($this->get($path, "system.get.path.phtml"));
 		}
 		$recursed = array();
 
