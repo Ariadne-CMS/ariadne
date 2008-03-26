@@ -56,8 +56,15 @@ class URL {
 			}
 			$find[] = "%(http[s]?://)?\\Q".$AR->host.$root."\\E".$nls_match."(/)%"; 
 			$repl[] = "{arBase\\2}\\3";
-			$find[] = "%(http[s]?://)?\\Q".$root."\\E".$nls_match."(?)%"; 
-			$repl[] = "{arBase\\2}\\3";
+
+			// This regexp triggers problems if there is no session
+			// available (either because the user is not logged in, or the
+			// site in configured with hideSessionFromUrl, so the check is
+			// added to prevent random /ariadne/loader.php's to be replaced;
+			if (!empty($ARCurrent->session->id) && strpos($root, "-" . $ARCurrent->session->id . "-") !== false) {
+				$find[] = "%(http[s]?://)?\\Q".$root."\\E".$nls_match."(?)%"; 
+				$repl[] = "{arBase\\2}\\3";
+			}
 		}
 
 		// change hand pasted sources, which may or may not include session id's
