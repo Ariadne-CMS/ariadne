@@ -1547,10 +1547,16 @@ class pobject extends object { // pobject class definition
 	function ClearCache($path="", $private=true, $recurse=false) {
 	global $AR;
 		debug("pobject: ClearCache($path)","object");
+		$norealnode = false;
 		if (!$path) { 
 			$path=$this->path; 
 		} else {
-			$path = current($this->get($path, "system.get.path.phtml"));
+			$realpath = current($this->get($path, "system.get.path.phtml"));
+			if($realpath != false) {
+				$path = $realpath;
+			} else {
+				$norealnode = true;
+			}
 		}
 		$recursed = array();
 
@@ -1596,6 +1602,18 @@ class pobject extends object { // pobject class definition
 					@unlink(substr($hpath,0,-1)."=");
 				}
 			}
+		}
+		if($norealnode === true) {
+			/*
+				we don't want to recurse to the currentsite, because the path
+				doesn't exists in the database, so it doesn't have a currentsite
+				
+				the privatecache should be emptied by delete, or by the cleanup
+				cronjob. The current path doesn't exists in the database, so a
+				object id which is needed to find the node in the cache, isn't
+				available
+			*/
+			return; 
 		}
 		// now clear all parents untill the current site
 		$site=$this->currentsite($path);
