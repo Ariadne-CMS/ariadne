@@ -216,6 +216,7 @@
 				$cookie[$ARCurrent->session->id]['timestamp']=time();
 				$ARCookie=serialize($cookie);
 				debug("setting cookie ($ARCookie)");
+				header('P3P: CP="NOI CUR OUR"');
 				setcookie("ARCookie",$ARCookie, 0, '/');
 			}
 		}
@@ -301,6 +302,7 @@
 		if( $cookiename != "ARCookie") {
 			debug("ldSetUserCookie(".serialize($cookie).")","object");
 			$ARUserCookie=serialize($cookie);
+			header('P3P: CP="NOI CUR OUR"');
 			$result = setcookie($cookiename,$ARUserCookie, $expire, $path, $domain, $secure);
 		}
 

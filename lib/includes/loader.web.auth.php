@@ -55,6 +55,7 @@
 		$cookie[$ARCurrent->session->id]['check']="{".ARCrypt($login.$session_key)."}";
 		$ARCookie=serialize($cookie);
 		debug("setting cookie ($ARCookie)");
+		header('P3P: CP="NOI CUR OUR"');
 		setcookie("ARCookie",$ARCookie, 0, '/');
 	}
 
