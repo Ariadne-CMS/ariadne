@@ -35,8 +35,13 @@
     if (!$languagelist[$arLanguage]) {
       // make sure the currently selected language is also available at all times
       $languagelist[$arLanguage]=$AR->nls->list[$arLanguage];
-    }
-	$languages=array_intersect(array_keys($languagelist), array_keys(array_merge($ARConfig->nls->list, $this->data->config->nls->list)));
+	 }
+	if(is_array($this->data->config->nls->list)){
+		$nlslist = array_merge($ARConfig->nls->list, $this->data->config->nls->list);
+	} else {
+		$nlslist = $ARConfig->nls->list;
+	}
+	$languages=array_intersect(array_keys($languagelist), array_keys($nlslist));
 	$count=count($languages);
 	while (list($key, $nlskey)=each($languages)) {
 		$language=$AR->nls->list[$nlskey];

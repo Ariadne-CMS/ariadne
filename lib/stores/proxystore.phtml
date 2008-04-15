@@ -223,7 +223,6 @@ class proxystore {
 
 	 **********************************************************************************/
 		global $AR;
-		// disabled debug("proxyfind($path, [array], $limit, $offset)","store");
 		$result = &$AR->stores[$this->key]->find($path, $criteria, $limit, $offset);
 		$this->error = $AR->stores[$this->key]->error;
 		// disabled debug("proxyfind: end","all");
@@ -400,7 +399,7 @@ class proxystore {
 		return $result;
 	}
 
-	function implements($type, $implements) {
+	function AR_implements($type, $implements) {
 	/**********************************************************************
 
 		This function returns 1 if the $type implements the type or
@@ -411,7 +410,7 @@ class proxystore {
 
 		global $AR;
 		// disabled debug("proxyimplements($implements)","store");
-		$result = $AR->stores[$this->key]->implements($type, $implements);
+		$result = $AR->stores[$this->key]->AR_implements($type, $implements);
 		$this->error = $AR->stores[$this->key]->error;
 		// disabled debug("proxyimplements: end ($result)","all");
 		return $result;

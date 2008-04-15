@@ -47,7 +47,7 @@
 			}
 			query+=" text.value ~= '%"+text+"%'";
 		}
-		if (arImplements=document.queryform.arimplements.options[document.queryform.arimplements.selectedIndex].value) {
+		if (arImplements=document.queryform.AR_implements.options[document.queryform.AR_implements.selectedIndex].value) {
 			if (query) {
 				query+=' and ';
 			}
@@ -87,7 +87,7 @@
 	<td align="right">
 		<?php echo $ARnls["type"]; ?> :
 	</td><td>
-		<select name="arimplements">
+		<select name="AR_implements">
 		<?php
 			echo "<option value=''>".$ARnls["all"]."</option>\n";
 			if ($AR->user->data->login=="admin") {

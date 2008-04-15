@@ -77,7 +77,7 @@
 			$object=$this->get($picture,"system.get.phtml");
 			if ($object && $object[0]) {
 				$object=$object[0];
-				if (!$object->implements('pphoto')) {
+				if (!$object->AR_implements('pphoto')) {
 					$picture='/system/photo/nothumb/';
 				}
 			}	

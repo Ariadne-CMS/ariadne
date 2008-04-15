@@ -3,7 +3,7 @@
 		if (!$this->lock("T")) {
 			$this->error=$ARnls["err:cannotlockobject"];
 		} else {
-			if ($this->implements("pgroup")) {
+			if ($this->AR_implements("pgroup")) {
 				$systempath = "/system/groups/";
 			} else {
 				$systempath = "/system/users/";
@@ -29,7 +29,7 @@
 			} else {
 				// this is probably a link in a group
 				$parentobject=current($this->get($this->parent, "system.get.phtml"));
-				if ($parentobject && $parentobject->implements("pgroup")) {
+				if ($parentobject && $parentobject->AR_implements("pgroup")) {
 					// so it is, so remove the user from the group
 					// which will by the way also delete the current object
 					// first get the original users path

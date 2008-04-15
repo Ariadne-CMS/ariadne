@@ -15,11 +15,17 @@
 	class csv {
 
 		function init($settings = "") {
-			return new csvFeed($this, $settings);
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+
+			return new csvFeed($me, $settings);
 		}
 
 		function load($fileName = "file", $fileNameNls = "", $settings = "") {
-			$csv = new csvFeed($this, $settings);
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+
+			$csv = new csvFeed($me, $settings);
 			$csv->load($fileName, $fileNameNls);
 			return $csv;
 		}
@@ -28,7 +34,7 @@
 
 	class csvFeed {
 
-		function csvFeed(&$object, $settings) {
+		function csvFeed($object, $settings) {
 			$default = Array(
 				"seperator"		=> ",",
 				"quotation"		=> "\"",
@@ -54,7 +60,7 @@
 		}
 
 		function load($fileName = "file", $fileNameNls = "") {
-			$object = &$this->object;
+			$object = $this->object;
 
 			$files	= $object->store->get_filestore("files");
 			if (!$fileName) {

@@ -7,7 +7,7 @@
 			}
 			$path=substr($path, 0, strrpos($path,'/')+1);
 			$pathobject = current( $this->get($path, "system.get.phtml") );
-			if( $pathobject && !($pathobject->implements("pphoto")) ) {
+			if( $pathobject && !($pathobject->AR_implements("pphoto")) ) {
 				$path = false;
 			}
 		}

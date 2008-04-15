@@ -119,7 +119,7 @@ class axstore {
 									/* axflags */
 									$node->axflags=chop($data[4]);
 									$this->nodes[$node->path]=$node;
-									$this->nodes[$node->path]->object=&$this->objects[$data[1]];
+									$this->nodes[$node->path]->object=$this->objects[$data[1]];
 
 									// create references under parents to their
 									// children
@@ -130,7 +130,7 @@ class axstore {
 										// leave local scope (even when there is an
 										// refcount > 1) we have to address our
 										// objects and nodes via $this->...
-										$this->nodes[$parent]->children[$node->path]=&$this->nodes[$node->path];
+										$this->nodes[$parent]->children[$node->path]=$this->nodes[$node->path];
 									}
 								}
 								fclose($fp_nodes);
@@ -181,7 +181,7 @@ class axstore {
 
 
 	function get($path) {
-		$node = &$this->nodes[$path];
+		$node = $this->nodes[$path];
 		if ($node) {
 			$result["list"][0]=$node;
 		}
@@ -194,7 +194,7 @@ class axstore {
 	}
 
 	/* FIXME: implement this */
-	function implements($type, $implements) {
+	function AR_implements($type, $implements) {
 		if ($type == $implements) {
 			$result = 1;
 		} else {
@@ -260,11 +260,12 @@ class axstore {
 					$this->_free_object_data($node->object);
 				}
 				if ($found && $offset--<=0 && ($limit-->0 || $limit < 0)) {
-					$result[$node->path]=$this->nodes[$node->path];
+					$result[$node->path] = $this->nodes[$node->path];
 				}
 			}
 		}
 		if (is_array($node->children)) {
+			reset($node->children);
 			while (($limit>0 || $limit < 0) && (list(,$child)=each($node->children))) {
 				$this->_recurse_find($child, $result, $criteria, $limit, $offset);
 			}
@@ -272,7 +273,6 @@ class axstore {
 	}
 
 	function find($path, $criteria, $limit=100, $offset=0) {
-		//echo "axstore::find($path, [criteria], $limit, $offset)\n";
 		if ($this->nodes[$path]) {
 			if ( $limit == 0 ) { $limit = -1; }
 			$this->_recurse_find($this->nodes[$path], $result["list"], $criteria, $limit, $offset);
@@ -360,9 +360,9 @@ class axstore {
 			if ($id) {
 				$node=new object;
 				$node->path=$destination;
-				$node->object=&$this->objects[$id];
+				$node->object=$this->objects[$id];
 				$this->nodes[$destination]=$node;
-				$this->nodes[$parent]->children[$destination]=&$this->nodes[$destination];
+				$this->nodes[$parent]->children[$destination]=$this->nodes[$destination];
 				debug("link: end","all");
 				$result=$destination;
 			} else {
@@ -528,7 +528,7 @@ class axstore {
 */
 		if ($id=$this->exists($path)) { //update
 			$this->_load_object_data($this->objects[$id]);
-			$object=&$this->objects[$id];
+			$object=$this->objects[$id];
 			$object->type=$type;
 			if ($vtype) { // only change/save vtype if it is explicitly set
 				$object->vtype=$vtype;
@@ -575,12 +575,12 @@ class axstore {
 			$node->axflags=$axflags;
 
 			$this->nodes[$path]=$node;
-			$this->nodes[$path]->object=&$this->objects[$object->id];
+			$this->nodes[$path]->object=$this->objects[$object->id];
 
 			ksort($this->nodes);	// resort nodes array
 
 			if ($this->nodes[$parent]) {
-				$this->nodes[$parent]->children[$path]=&$this->nodes[$path];
+				$this->nodes[$parent]->children[$path]=$this->nodes[$path];
 				ksort($this->nodes[$parent]->children); // sort list
 			}
 
@@ -594,7 +594,7 @@ class axstore {
 	// private function which will set $properties to the given $object
 	// it assumes that the original properties are already loaded into
 	// the object
-	function _set_object_properties($properties, &$object) {
+	function _set_object_properties($properties, $object) {
 		if (is_array($properties) && ($object)) {
 			while (list($property, $property_set)=each($properties)) {
 				unset($object->properties[$property]);
@@ -703,7 +703,7 @@ class axstore {
 	}
 
 
-	function _save_object($path, &$object) {
+	function _save_object($path, $object) {
 		if (!$this->sfp) {
 			$this->sfp=fopen($this->tempdir."/objects.save", "wb+");
 			if (!$this->sfp) {
@@ -733,7 +733,7 @@ class axstore {
 	}
 
 	// private function which loads $object->data and $object->properties
-	function _load_object_data(&$object) {
+	function _load_object_data($object) {
 		if ($object && !$object->data) {
 			fseek($object->storage->fp, $object->storage->offset);
 			$rline=fgets($object->storage->fp, 3000);
@@ -752,7 +752,7 @@ class axstore {
 		return $result;
 	}
 
-	function _free_object_data(&$object) {
+	function _free_object_data($object) {
 		if ($object && ( $object->runtime_ref <=0 )) {
 			unset($object->data);
 			unset($object->properties);

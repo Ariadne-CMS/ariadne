@@ -3,7 +3,7 @@
 include_once($this->store->get_config('code')."modules/mod_url.php");
 include_once($this->store->get_config('code')."modules/mod_htmlparser.php");
 
-//include_once($this->store->get_config('code')."modules/mod_debug.php");
+//include_once($me->store->get_config('code')."modules/mod_debug.php");
 
 class pinp_page {
 
@@ -53,7 +53,7 @@ class page {
 			$result = true;
 		}
 		if ($node['attribs']['ar:type'] == "template") {
-				$path		= $this->make_path($node['attribs']['ar:path']);
+				$path		= $me->make_path($node['attribs']['ar:path']);
 				$template	= $node['attribs']['ar:name'];
 				$argsarr	= Array();
 				if (is_array($node['attribs'])) {
@@ -101,30 +101,32 @@ class page {
 	function clean($page, $settings=false) {
 		global $AR;
 		global $ARCurrent;
+		$context = pobject::getContext();
+		$me = $context["arCurrentObject"];
 
 		if( !$settings ) {
 			if (!$ARCurrent->arEditorSettings) {
-				$settings = $this->call("editor.ini");
+				$settings = $me->call("editor.ini");
 			} else {
 				$settings = $ARCurrent->arEditorSettings;
 			}
 		}
 
 		if ($settings["htmlcleaner"]["enabled"] || $settings["htmlcleaner"]===true) {
-			include_once($this->store->get_config("code")."modules/mod_htmlcleaner.php");
+			include_once($me->store->get_config("code")."modules/mod_htmlcleaner.php");
 			$config	= $settings["htmlcleaner"];
 			$page 	= htmlcleaner::cleanup($page, $config);
 		}
 
 		if ($settings["htmltidy"]["enabled"] || $settings["htmltidy"]===true) {
-			include_once($this->store->get_config("code")."modules/mod_tidy.php");
+			include_once($me->store->get_config("code")."modules/mod_tidy.php");
 			if ($settings["htmltidy"]===true) {
 				$config	= array();
 				$config["options"] = $AR->Tidy->options;
 			} else {
 				$config = $settings["htmltidy"];
 			}
-			$config["temp"]	= $this->store->get_config("files")."temp/";
+			$config["temp"]	= $me->store->get_config("files")."temp/";
 			$config["path"]	= $AR->Tidy->path;
 			$tidy			= new tidy($config);
 			$result			= $tidy->clean($page);
@@ -139,8 +141,10 @@ class page {
 	}
 
 	function compile($page, $language='') {
+		$context = pobject::getContext();
+		$me = $context["arCurrentObject"];
 		if (!$language) {
-			$language = $this->nls;
+			$language = $me->nls;
 		}
 		$page = URL::RAWtoAR($page, $language);
 		$newpage = $page;
@@ -158,6 +162,8 @@ class page {
 	}
 
 	function getReferences($page) {
+		$context = pobject::getContext();
+		$me = $context["arCurrentObject"];
 		// Find out all references to other objects
 		// (images, links) in this object, so we can
 		// warn the user if he tries to delete/rename
@@ -171,13 +177,13 @@ class page {
 				"|{arBase(/[a-z][a-z])?}|", 
 				"|{arCurrentPage(/[a-z][a-z])?}|" ),
 			array(
-				$this->currentsite(), 
+				$me->currentsite(), 
 				"", 
 				"", 
-				$this->path), 
+				$me->path), 
 			$matches[1]);
 		foreach ($refs as $ref) {
-			if (substr($ref, -1) != '/' && !$this->exists($ref)) {
+			if (substr($ref, -1) != '/' && !$me->exists($ref)) {
 				// Drop the template name
 				$ref	= substr($ref, 0, strrpos($ref, "/")+1);
 			}

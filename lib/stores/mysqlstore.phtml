@@ -83,7 +83,7 @@ class mysqlstore extends store{
 		$this->mod_lock->lock_duration=$config["lock_duration"];
 		$config["password"]="";
 
-		$this->proxystore = &proxystore::createproxy($this,$config);
+		$this->proxystore = proxystore::createproxy($this,$config);
 		debug("mysqlstore: end","all");
 	}
 
@@ -921,7 +921,7 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	function implements($type, $implements) {
+	function AR_implements($type, $implements) {
 	/**********************************************************************
 
 		This function returns 1 if the $type implements the type or

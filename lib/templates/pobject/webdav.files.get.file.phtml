@@ -1,7 +1,7 @@
 <?php
 	if ($this->CheckLogin('read') && $this->CheckConfig()) {
 		$arResult['type'] = 'data';
-		if ($this->implements('pfile')) {
+		if ($this->AR_implements('pfile')) {
 			$arResult['contents'] = $this->GetFile();
 		} else {
 			$arResult['contents'] = $nlsdata->page;

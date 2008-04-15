@@ -26,18 +26,20 @@
 	class captcha {
 
 		function process($aconfig='') {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
 			// ConfigArray
-			$context = $this->getContext();
-			$template = $this->getvar('arCallFunction');
+			$context = $me->getContext();
+			$template = $me->getvar('arCallFunction');
 
 			if (!is_array($aconfig)) {
 				$aconfig = Array();
 			}
 
-			$temp = $this->store->get_config('files').'temp/';
+			$temp = $me->store->get_config('files').'temp/';
 			$config = Array(
 					'template'		 => $template,
-					'url'			 => $this->make_url(),
+					'url'			 => $me->make_url(),
 		            'tempfolder'     => $temp,      
 					'TTF_folder'     => CAPTCHA_TTF_FOLDER, 
 		                                // mixed (array or string): basename(s) of TrueType-Fontfiles
@@ -92,7 +94,7 @@
 			}
 
 			$captcha		= new mod_captcha($config);
-			if ($this->getvar('show')) {
+			if ($me->getvar('show')) {
 				$captchaCase = 'show';
 			} else {
 				$case			= $captcha->validate_submit();
@@ -113,27 +115,33 @@
 			}
 
 			$context['captcha'] = $captcha;
-			$this->setContext($context);
+			$me->setContext($context);
 			return $captchaCase;
 		}
 
 		function showImg() {
-			$captchaImg = $this->getvar('show');
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			$captchaImg = $me->getvar('show');
 			$captchaImg = ereg_replace("[\\\/]", "", $captchaImg);
-			$filename = $this->store->get_config('files').'temp/hn_captcha_'.$captchaImg.'.jpg';
+			$filename = $me->store->get_config('files').'temp/hn_captcha_'.$captchaImg.'.jpg';
 //			ldSetContent('image/jpg');
 			readfile($filename);
 		}
 
 		function getImgSrc($url='') {
-			$context = $this->getContext();
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			$context = $me->getContext();
 			$captcha = $context['captcha'];
 			$captcha->make_captcha();
 			return $captcha->get_filename_url('', $url);
 		}
 
 		function getFormField() {
-			$context = $this->getContext();
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			$context = $me->getContext();
 			$captcha = $context['captcha'];
 			$captcha->make_captcha();
 			$elements  = $captcha->public_key_input();

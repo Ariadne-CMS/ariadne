@@ -18,7 +18,7 @@
 				if (top.window.opener) {
 					if (top.window.opener.top.tree) {
 					<?php
-						if ($this->store->implements($vtype, 'pdir')) {
+						if ($this->store->AR_implements($vtype, 'pdir')) {
 							$folder=$this->call("system.get.folder.phtml");
 							if ($arIsNewObject) {
 								echo "	top.window.opener.top.tree.AddLinks('{$this->parent}','{$folder["icon"]}','".AddCSlashes($folder["name"], ARESCAPE)."','{$folder["path"]}','".AddCSlashes($folder["pre"], ARESCAPE)."');\n";

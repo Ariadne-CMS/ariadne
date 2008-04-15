@@ -1,5 +1,5 @@
 <?php
-	DEFINE("HTML2PS_LOCATION", $this->store->get_config('code')."modules/mod_html2ps/");
+	DEFINE("HTML2PS_LOCATION", $me->store->get_config('code')."modules/mod_html2ps/");
 
 	class html2ps {
 		function generate($config) {
@@ -49,6 +49,9 @@
 			global $g_line_height;
 //			global $base_font_size;
 
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+
 			require_once(HTML2PS_LOCATION.'pipeline.factory.class.php');
 			// Works only with safe mode off; in safe mode it generates a warning message
 			@set_time_limit(600);
@@ -58,7 +61,7 @@
 			$g_baseurl = trim($config['URL']);
 
 			if ($g_baseurl === "") {
-				$this->error = "Please specify URL to process!";
+				$me->error = "Please specify URL to process!";
 				return false;
 			}
 
@@ -109,7 +112,7 @@
 
 			// validate input data
 			if ($g_config['pagewidth'] == 0) {
-				$this->error = "Please specify non-zero value for the pixel width!";
+				$me->error = "Please specify non-zero value for the pixel width!";
 				return false;
 			};
 
@@ -203,17 +206,17 @@
 			$pipeline->destination = new DestinationBrowser($g_baseurl);
 			$dest_filename = $pipeline->destination->filename_escape($pipeline->destination->get_filename());
 			ldSetContent("application/pdf");
-			if (!$this->cached("html2ps_".md5($dest_filename))) {
+			if (!$me->cached("html2ps_".md5($dest_filename))) {
 				// Start the conversion
 
 				$status = $pipeline->process($g_baseurl, $g_media);
 				if ($status == null) {
 					ldSetContent("text/html");
-					$this->error = "Error in conversion pipeline: ".$pipeline->error_message();
-					$this->savecache(0);
+					$me->error = "Error in conversion pipeline: ".$pipeline->error_message();
+					$me->savecache(0);
 					return false;
 				} else {
-					$this->savecache(999);
+					$me->savecache(999);
 				}
 			}
 			return true;

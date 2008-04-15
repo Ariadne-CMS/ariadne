@@ -60,7 +60,7 @@
 					if (!$customvalue["grant"] || ($this->CheckSilent($customvalue["grant"]))) {
 						if (($customvalue["type"]==$this->type) ||
 								($customvalue["inherit"] &&
-								($this->implements($customvalue["type"]))
+								($this->AR_implements($customvalue["type"]))
 								)
 							) {
 							if ($customvalue["nls"]=="true") {

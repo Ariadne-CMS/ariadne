@@ -14,7 +14,7 @@
 	******************************************************************/
 	$this->call("system.save.shortcut.phtml",$arCallArgs);
 	if (!$this->error) {
-		if ($this->store->implements($this->vtype, "pdir")) {
+		if ($this->store->AR_implements($this->vtype, "pdir")) {
 			if ($this->arIsNewObject) {
 				$url=$AR->dir->www."setlink.php?do=add";
 			} else {

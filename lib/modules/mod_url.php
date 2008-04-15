@@ -3,12 +3,14 @@
 class URL {
 
 	function arguments($args, $prefix='') {
+		$context = pobject::getContext();
+		$me = $context["arCurrentObject"];
 		if (!is_array($args)) return '';
 		$str = '';
 		foreach ($args as $key => $value) {
 			if ($str !== '') $str.='&';
 			$fullkey = ($prefix === '') ? $key : $prefix.'['.$key.']';
-			$str .= is_array($value) ? $this->_query_str($value, $fullkey) : $fullkey.'='.rawurlencode($value);
+			$str .= is_array($value) ? $me->_query_str($value, $fullkey) : $fullkey.'='.rawurlencode($value);
 		}
 		if ($prefix == '' && $str !== '') $str = '?' . $str;
 		return $str;
@@ -17,24 +19,26 @@ class URL {
 	/* replaces the URLs with the {ar*[/nls]} markers */
 	function RAWtoAR($page, $nls="") {
 		global $ARCurrent, $AR;
+		$context = pobject::getContext();
+		$me = $context["arCurrentObject"];
 		$nls_match = "(/(?:".implode('|', array_keys($AR->nls->list))."))?";
 		// FIXME: make the rest of the code also use the $nls_match2 expression
 		// which doesn't match deel1/ as the nlsid 'de'
 		$nls_match2 = "((".implode('|', array_keys($AR->nls->list)).")/)?";
 
 		/* find and replace the current page */
-		$find[] = "%\\Q".$this->make_url($this->path, "\\E{0}(".$nls_match.")\\Q")."\\E(user.edit.page.html|view.html)?%"; 
+		$find[] = "%\\Q".$me->make_url($me->path, "\\E{0}(".$nls_match.")\\Q")."\\E(user.edit.page.html|view.html)?%"; 
 		$repl[] = "{arCurrentPage\\1}";
-		$find[] = "%".preg_replace("%^https?://%", "https?\\Q://", $AR->host).$AR->dir->www."loader.php\\E(?:/-".$ARCurrent->session->id."-)?".$nls_match."\\Q".$this->path."\\E(user.edit.page.html|view.html)?%"; 
+		$find[] = "%".preg_replace("%^https?://%", "https?\\Q://", $AR->host).$AR->dir->www."loader.php\\E(?:/-".$ARCurrent->session->id."-)?".$nls_match."\\Q".$me->path."\\E(user.edit.page.html|view.html)?%"; 
 		$repl[] = "{arCurrentPage\\1}";
-		$find[] = "%\\Q".$this->make_local_url($this->path, "\\E{0}(".$nls_match.")\\Q")."\\E(user.edit.page.html|view.html)?%"; 
+		$find[] = "%\\Q".$me->make_local_url($me->path, "\\E{0}(".$nls_match.")\\Q")."\\E(user.edit.page.html|view.html)?%"; 
 		$repl[] = "{arCurrentPage\\1}";
 
 		// change the site links
-		$site = $this->currentsite();
+		$site = $me->currentsite();
 		if ($site && $site !== '/') {
-			$siteURL = $this->make_url($site, "");
-			$rootURL = $this->make_url("/", "");
+			$siteURL = $me->make_url($site, "");
+			$rootURL = $me->make_url("/", "");
 
 			/* use the rootURL to rebuild the site URL */
 			$find[] = "%\\Q$rootURL\\E".$nls_match2."\\Q".substr($site, 1)."\\E%e";
@@ -49,8 +53,8 @@ class URL {
 		}
 
 		// change hardcoded links and images to use a placeholder for the root
-		if ($this->store->get_config("root")) {
-			$root = $this->store->get_config("root");
+		if ($me->store->get_config("root")) {
+			$root = $me->store->get_config("root");
 			if (substr($root, -3) == "/$nls") {
 				$root = substr($root, 0, -3);
 			}
@@ -84,26 +88,27 @@ class URL {
 	/* replaces the {ar*[/nls]} markers with valid URLs; if full is false, returns only the <body> content */
 	function ARtoRAW($page, $full=false) {
 		global $ARCurrent, $AR;
+		$context = pobject::getContext();
+		$me = $context["arCurrentObject"];
 
-		$settings = $this->call('editor.ini');
-
+		$settings = $me->call('editor.ini');
 		if ($ARCurrent->session && $ARCurrent->session->id) {
 			$session='/-'.$ARCurrent->session->id.'-';
 		} else {
 			$session='';
 		} 
-		$site = $this->currentsite();
-		$root = $this->store->get_config("root");
-		if (substr($root, -3) == "/$this->nls") {
+		$site = $me->currentsite();
+		$root = $me->store->get_config("root");
+		if (substr($root, -3) == "/$me->nls") {
 			$root = substr($root, 0, -3);
 		}
 		if ($site && $site !== '/') {
-			$find[] = "%\\{(?:arSite)(?:/([^}]+))?\\}\\Q\\E%e"; $repl[] = "\$this->make_url('$site', '\\1')";
-			$find[] = "%\\{(?:arRoot|arBase)(?:/([^}]+))?\\}\\Q".$site."\\E%e"; $repl[] = "\$this->make_url('$site', '\\1')";
+			$find[] = "%\\{(?:arSite)(?:/([^}]+))?\\}\\Q\\E%e"; $repl[] = "\$me->make_url('$site', '\\1')";
+			$find[] = "%\\{(?:arRoot|arBase)(?:/([^}]+))?\\}\\Q".$site."\\E%e"; $repl[] = "\$me->make_url('$site', '\\1')";
 		}
 		$find[] = "%\\{arBase(/(?:[^}]+))?\\}%"; $repl[] = $AR->host.$root."\\1";
-		$find[] = "%\\{arRoot(/(?:[^}]+))?\\}%"; $repl[] = $AR->host.$this->store->get_config("root")."\\1";
-		$find[] = "%\\{arCurrentPage(?:/([^}]+))?\\}%e"; $repl[] = "\$this->make_url('', '\\1')";
+		$find[] = "%\\{arRoot(/(?:[^}]+))?\\}%"; $repl[] = $AR->host.$me->store->get_config("root")."\\1";
+		$find[] = "%\\{arCurrentPage(?:/([^}]+))?\\}%e"; $repl[] = "\$me->make_url('', '\\1')";
 		$find[] = "%\\{arSession\\}%"; $repl[] = $session;
 
 		if (class_exists('edit') && edit::getEditMode()) {
@@ -146,7 +151,7 @@ class URL {
 						if (!$mayCall) {
 							error("no permission to call '$template' on '$path'");
 						} else {
-							$this->get($path, $template, $args);
+							$me->get($path, $template, $args);
 						}
 					} else {
 						error("no paths were listed for '$template'");

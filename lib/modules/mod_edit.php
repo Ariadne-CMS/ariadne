@@ -32,21 +32,27 @@
 		function registerDataField($name) {
 			/* private method */
 			global $mod_edit_data;
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
 			$id=++$mod_edit_data['id'];
-			echo "<script> parent.registerDataField('editable_$id','".AddCSlashes($name, ARESCAPE)."','".$this->path."',".$this->id."); </script>\n";
+			echo "<script> parent.registerDataField('editable_$id','".AddCSlashes($name, ARESCAPE)."','".$me->path."',".$me->id."); </script>\n";
 			return $id;
 		}
 
 		function requireDataField($name, $title) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
 			if (edit::getEditMode()) {
-				echo "<script> parent.requireDataField('".AddCSlashes($name, ARESCAPE)."',".$this->id.",'".AddCSlashes($title, ARESCAPE)."'); </script>\n";
+				echo "<script> parent.requireDataField('".AddCSlashes($name, ARESCAPE)."',".$me->id.",'".AddCSlashes($title, ARESCAPE)."'); </script>\n";
 			}
 		}
 
 		function showInputText($var, $name, $title='', $extra='') {
-			if (edit::getEditMode() && $this->CheckSilent('edit')) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			if (edit::getEditMode() && $me->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
-				echo "<input type='text' class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title' value=\"";
+				echo "<input type='text' class='editable' id='editable_$id' ar:path='".$me->path."' ar:id='".$me->id."' title='$title' value=\"";
 				echo htmlspecialchars($var);
 				echo "\" $extra>";
 			} else if (!edit::isEmpty($var)) {
@@ -56,9 +62,11 @@
 		}
 
 		function showInput($var, $name, $title, $type='text', $extra='') {
-			if (edit::getEditMode() && $this->CheckSilent('edit')) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			if (edit::getEditMode() && $me->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
-				echo "<input name='$name' type='$type' class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title' value=\"";
+				echo "<input name='$name' type='$type' class='editable' id='editable_$id' ar:path='".$me->path."' ar:id='".$me->id."' title='$title' value=\"";
 				echo htmlspecialchars($var);
 				echo "\" $extra>";
 			} else if (!edit::isEmpty($var)) {
@@ -73,7 +81,9 @@
 		}
 
 		function showCheckbox($var, $name, $title, $extra='', $group='' ) {
-			if(edit::getEditMode() && $this->CheckSilent('edit')) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			if(edit::getEditMode() && $me->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
 				if ($group) {
 					edit::registerGroup($group, $id);
@@ -82,7 +92,7 @@
 				if( $var ) {
 					$checked = "checked";
 				}
-				echo "<input name='$name' type='checkbox' class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title' value=\"1\" $extra $checked>";
+				echo "<input name='$name' type='checkbox' class='editable' id='editable_$id' ar:path='".$me->path."' ar:id='".$me->id."' title='$title' value=\"1\" $extra $checked>";
 			} else if( !edit::isEmpty($var)) {
 				echo $var;
 			}
@@ -90,9 +100,11 @@
 		}
 
 		function showSelect($var, $name, $title, $list, $bykey=false, $extra='') {
-			if (edit::getEditMode() && $this->CheckSilent('edit')) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			if (edit::getEditMode() && $me->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
-				echo "<select class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title'>";
+				echo "<select class='editable' id='editable_$id' ar:path='".$me->path."' ar:id='".$me->id."' title='$title'>";
 				foreach ($list as $key => $value) {
 					echo "<option";
 					if ($bykey) {
@@ -116,9 +128,11 @@
 		}
 
 		function showSpan($var, $name, $title='', $extra='') {
-			if (edit::getEditMode() && $this->CheckSilent('edit')) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			if (edit::getEditMode() && $me->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
-				echo "<span class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title' $extra>";
+				echo "<span class='editable' id='editable_$id' ar:path='".$me->path."' ar:id='".$me->id."' title='$title' $extra>";
 				echo $var;
 				echo "</span>";
 			} else if (!edit::isEmpty($var)) {
@@ -128,9 +142,11 @@
 		}
 
 		function showDiv($var, $name, $title='', $extra='') {
-			if (edit::getEditMode() && $this->CheckSilent('edit')) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			if (edit::getEditMode() && $me->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
-				echo "<div class='editable' id='editable_$id' ar:path='".$this->path."' ar:id='".$this->id."' title='$title' $extra>";
+				echo "<div class='editable' id='editable_$id' ar:path='".$me->path."' ar:id='".$me->id."' title='$title' $extra>";
 				echo $var;
 				echo "</div>";
 			} else if (!edit::isEmpty($var)) {
@@ -140,37 +156,45 @@
 		}
 
 		function showLink($path='', $extra='') {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
 			if (edit::getEditMode()) {
-				echo "<a href='".$this->make_url($path).edit::getEditTemplate()."' $extra target='".edit::getEditTarget()."'>";
+				echo "<a href='".$me->make_url($path).edit::getEditTemplate()."' $extra target='".edit::getEditTarget()."'>";
 			} else {
-				echo "<a href='".$this->make_url($path)."' $extra>";
+				echo "<a href='".$me->make_url($path)."' $extra>";
 			}
 		}
 
 		function showEditableLink($path='', $extra='', $url=false) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
 			if (edit::getEditMode()) {
-				echo "<a onClick=\"event.cancelBubble=true\" onDblClick=\"top.location='".$this->make_url($path).edit::getEditTemplate()."'\" $extra>";
+				echo "<a onClick=\"event.cancelBubble=true\" onDblClick=\"top.location='".$me->make_url($path).edit::getEditTemplate()."'\" $extra>";
 			} else {
 				if (!$url) {
-					$url=$this->make_url($path);
+					$url=$me->make_url($path);
 				}
 				echo "<a href='".$url."' $extra>";
 			}
 		}
 
 		function showHref($path='', $extra='') {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
 			if (edit::getEditMode()) {
-				echo "href='".$this->make_url($path).edit::getEditTemplate()."' $extra target='".edit::getEditTarget()."'";
+				echo "href='".$me->make_url($path).edit::getEditTemplate()."' $extra target='".edit::getEditTarget()."'";
 			} else {
-				echo "href='".$this->make_url($path)."'";
+				echo "href='".$me->make_url($path)."'";
 			}
 		}
 
         function showUrl($path='') {
+				$context = pobject::getContext();
+				$me = $context["arCurrentObject"];
             if (edit::getEditMode()) {
-                echo $this->make_url($path).edit::getEditTemplate();
+                echo $me->make_url($path).edit::getEditTemplate();
             } else {
-                echo $this->make_url($path);
+                echo $me->make_url($path);
             }
         }
 

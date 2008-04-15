@@ -35,7 +35,7 @@
 *******************************************************************************/
 
 
-class store {
+abstract class store {
 
 	var $error;
 	var $root;
@@ -53,19 +53,13 @@ class store {
 		 need implementation in your implementation of this store
 	*/
 
-	function call($template, $args, $objects) {
-		store::abstractfunction();
-	}
+	abstract function call($template, $args, $objects);
 
-	function count($objects) {
-		store::abstractfunction();
-	}
+	abstract function count($objects);
 
-	function info($objects) {
-		store::abstractfunction();
-	}
+	abstract function info($objects);
 
-	function get($path) {
+	abstract function get($path);
 	/**********************************************************************************
 	 This function takes as argument a path to an object in the store and will retrieve
 	 all the necessary data and return this in the objectlist type needed for 
@@ -74,20 +68,16 @@ class store {
 
 	 $path should always start and end with a '/'.
 	 **********************************************************************************/
-		$this->abstractfunction();
-	}
 
-	function touch($id, $timestamp = -1) {
+	abstract function touch($id, $timestamp = -1);
 	/**********************************************************************************
 	 This function takes as argument a path to an object (or id of an object)
      in the store and will set the timestamp to $timestamp.
 
 	 $path should always start and end with a '/'.
 	 **********************************************************************************/
-		$this->abstractfunction();
-	}
 
-	function ls($path) {
+	abstract function ls($path);
 	/**********************************************************************************
 	 This function takes as argument a path to an object in the store and will retrieve
 	 all the objects and their data which have this object as their parent. It will 
@@ -96,10 +86,8 @@ class store {
 
 	 $path should always start and end with a '/'.
 	 **********************************************************************************/
-	 $this->abstractfunction();
-	}
 
-	function parents($path, $top="/") {
+	abstract function parents($path, $top="/");
 	/**********************************************************************************
 	 This function takes as argument a path to an object in the store. It will return 
 	 all objects with a path which is a substring of the given path. The resulsts are 
@@ -109,10 +97,8 @@ class store {
 
 	 $path should always start and end with a '/'.
 	 **********************************************************************************/
-	 $this->abstractfunction();
-	}
 
-	function find($path, $criteria, $limit=100, $offset=0) {
+	abstract function find($path, $criteria, $limit=100, $offset=0);
 	/**********************************************************************************
 	 This function takes as arguments a path to an object in the store and some search
 	 criteria. It will search for all matching objects under the given path. If the
@@ -128,11 +114,9 @@ class store {
 	 $path should always start and end with a '/'.
 
 	 **********************************************************************************/
-	 $this->abstractfunction();
-	}
 
 
-	function save($path, $type, $data, $properties="", $vtype="", $priority=false) {
+	abstract function save($path, $type, $data, $properties="", $vtype="", $priority=false);
 	/***************************************************************
 		This function takes as argument a path, type, objectdata and 
 		possibly a properties list and vtype (virtual type).
@@ -168,11 +152,9 @@ class store {
 		Only those properties listed in $properties will be updated.
 		Any other property set will remain as it was.
 	***************************************************************/
-	 $this->abstractfunction();
-	}
 
 
-	function purge($path) {
+	abstract function purge($path);
 	/**********************************************************************
 		This function will delete the object pointed to by $path and all
 	other paths pointing to that object. It will then remove any property
@@ -183,21 +165,16 @@ class store {
 
 	 $path should always start and end with a '/'.
 	**********************************************************************/
-	 $this->abstractfunction();
-	}
 
-	function delete($path) {
+	abstract function delete($path);
 	/**********************************************************************
 		This function deletes the path given. If this is the last path pointing
 	to an object, the object will be purged instead.
 
 	$path should always start and end with a '/'.
 	**********************************************************************/
-	 $this->abstractfunction();
 
-	}
-
-	function exists($path) {
+	abstract function exists($path);
 	/**********************************************************************
 		This function checks the given path to see if it exists. If it does
 	it returns the id of the object to which it points. Otherwise it returns
@@ -205,11 +182,9 @@ class store {
 
 	$path should always start and end with a '/'.
 	**********************************************************************/
-	 $this->abstractfunction();
-	}
 
 
-	function link($source, $destination) {
+	abstract function link($source, $destination);
 	/**********************************************************************
 		Link adds an extra path to an already existing object. It has two
 	arguments: $source and $destination. $source is an existing path of
@@ -218,58 +193,38 @@ class store {
 
 	$destination should always start and end with a '/'.
 	**********************************************************************/
-	 $this->abstractfunction();
-	}
 
-	function move($source, $destination) {
+	abstract function move($source, $destination);
 	/**********************************************************************
 	$destination should always start and end with a '/'.
 	**********************************************************************/
-	 $this->abstractfunction();
-
-	}
 
 
-	function list_paths($path) {
+	abstract function list_paths($path);
 	/**********************************************************************
 		This function returns an array of all paths pointing to the same object 
 	as $path does.
 	**********************************************************************/
-	 $this->abstractfunction();
-	}
 
-	function AR_implements($type, $implements) {
+	abstract function AR_implements($type, $implements);
 	/**********************************************************************
 		This function returns 1 if the $type implements the type or
 	interface in $implements. Otherwise it returns 0.
 	**********************************************************************/
-	 $this->abstractfunction();
-	}
 
+	abstract function load_properties($object, $values="");
 
-	function load_properties($object, $values="") {
-	 $this->abstractfunction();
-	}
+	abstract function load_property($object, $property, $values="");
 
-	function load_property($object, $property, $values="") {
-	 $this->abstractfunction();
-	}
+	abstract function add_property($object, $property, $values);
 
-	function add_property($object, $property, $values) {
-	 $this->abstractfunction();
-	}
+	abstract function del_property($object, $property="", $values="");
 
-	function del_property($object, $property="", $values="") {
-	 $this->abstractfunction();
-	}
-
-	function get_nextid($path, $mask="{5:id}") {
+	abstract function get_nextid($path, $mask="{5:id}");
 	/**********************************************************************
 		'private' function of mysql store. This will return the next
 		'autoid' for $path.
 	**********************************************************************/
-	 $this->abstractfunction();
-	}
 
 	
 
@@ -439,6 +394,18 @@ class store {
 		return $this->filestores["svn_" . $name];
 	}
 
+ 
+	function __call($name,$arguments)
+	{
+		switch($name)
+		{
+		case "implements":
+				return $this->AR_implements($arguments[0],$arguments[1]);
+				break;
+			default:
+				return false;
+		}
+	}
 
 } // end class store
 

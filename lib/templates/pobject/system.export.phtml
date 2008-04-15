@@ -91,7 +91,7 @@
 				}
 				$criteria .=" path = '$srcpath' ";
 			}
-			while (($result=$this->store->call("system.export.object.phtml",$arCallArgs,$this->store->find($srcpath,$criteria,100,$offset)))) {
+			while (count($result=$this->store->call("system.export.object.phtml",$arCallArgs,$this->store->find($srcpath,$criteria,100,$offset)))) {
 				if (is_array($checkpaths)) {
 					unset($newresult);
 					@reset($checkpaths);
@@ -191,7 +191,7 @@
 												$ARCurrent->importStore->get($newpath));
 
 									} else {
-										$impObject = $object;
+										$impObject = clone $object ;
 										display("(saving ".(($impObject->axflags) ? " (".$object->axflags.") " : "").")");
 										$impObject->arIsNewObject = true;
 										$impObject->path = $newpath;
@@ -200,7 +200,7 @@
 										} else {
 											$impObject->parent = "..";
 										}
-										$impObject->store = &$ARCurrent->importStore;
+										$impObject->store = $ARCurrent->importStore;
 										$impObject->call("system.import.phtml", $arCallArgs);
 										if ($impObject->error) {
 											display("\n	ERROR (".$impObject->error.")\n");

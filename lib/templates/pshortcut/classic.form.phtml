@@ -81,7 +81,7 @@
 		reset($configcache->custom);
 		while (list($key, $definition)=each($configcache->custom)) {
 			if (($definition["type"]==$this->type) ||
-				($definition["inherit"] && ($this->implements($definition["type"])))) {
+				($definition["inherit"] && ($this->AR_implements($definition["type"])))) {
 				$hascustomdata=true;
 				break;
 			}

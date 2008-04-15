@@ -14,7 +14,7 @@
 						foreach ($clone->data->config->grants as $type => $grantdata) {
 							foreach ($grantdata as $login => $grants) {
 								$query = "object.implements = '$type' and login.value = '$login'";
-								if ($clone->store->implements($type, 'pgroup')) {
+								if ($clone->store->AR_implements($type, 'pgroup')) {
 									$qpath = "/system/groups/";
 								} else {
 									$qpath = "/system/users/";

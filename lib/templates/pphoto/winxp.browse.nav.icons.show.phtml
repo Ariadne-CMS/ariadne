@@ -28,7 +28,7 @@
 	$permcheck[] = "layout";
 	
 	$disabledItems="";
-	if(!$this->implements("pshortcut") || !$this->CheckSilent("edit"))
+	if(!$this->AR_implements("pshortcut") || !$this->CheckSilent("edit"))
 		$disabledItems.= "normalCMshortcut;";
 	if(!$this->CheckSilent("edit"))
 		$disabledItems.= "normalCMedit;";

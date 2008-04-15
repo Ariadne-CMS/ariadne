@@ -19,6 +19,8 @@ class pinp_multipart {
 class multipart {
 
 	function CutPage($tag='h1', $withtags=true, $withtitles=true, $page=false) {
+		$context = pobject::getContext();
+		$me = $context["arCurrentObject"];
 		$sections=Array();
 		if ($withtitles) {
 			$regexp='/(<'.$tag.'[^>]*>(.*)<\/'.$tag.'[^>]*>)/Usi';
@@ -26,7 +28,7 @@ class multipart {
 			$regexp='/(<('.$tag.')[^>]*>)/Usi';
 		}
 		if (!$page) {
-			$page=$this->GetPage();
+			$page=$me->GetPage();
 		}
 		if ($matches=preg_split($regexp, " ".$page, -1, PREG_SPLIT_DELIM_CAPTURE)) {
 			$leader=trim($matches[0]);
@@ -53,6 +55,8 @@ class multipart {
 	}
 
 	function ShowSection($section, $template="", $args="", $recurse=false, $level=0) {
+		$context = pobject::getContext();
+		$me = $context["arCurrentObject"];
 		if ($recurse && is_array($section['content'])) {
 			multipart::ShowSections($section['content'], $template, $args, $recurse, $level++);
 		} else {
@@ -60,17 +64,19 @@ class multipart {
 				echo "<div class='section'><div class='title'>".$section['title']."</div>";
 				echo $section['content']."</div>";
 			} else {
-				$this->call($template, array_merge($args, Array('level' => $level, 'section_title' => $section['title'], 'section_content' => $section['content'])));
+				$me->call($template, array_merge($args, Array('level' => $level, 'section_title' => $section['title'], 'section_content' => $section['content'])));
 			}
 		}
 	} 
 
 	function ShowSections($sections, $template="", $args="", $recurse=false, $level=0) {
+		$context = pobject::getContext();
+		$me = $context["arCurrentObject"];
 		if (is_array($sections)) {
 			$max=count($sections);
 			for ($i=0; $i<$max; $i++) {
 				multipart::ShowSection($sections[$i], $template, $args, $recurse, $level);
-				$this->_resetloopcheck();
+				$me->_resetloopcheck();
 			}
 		}
 	}

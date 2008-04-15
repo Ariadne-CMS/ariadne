@@ -46,7 +46,7 @@
     if (!$language) {
       $language=$this->nls;
     }
-    if (!$value && !$save2form && $this->implements('ppage')) {
+    if (!$value && !$save2form && $this->AR_implements('ppage')) {
       $htmlvalue=$this->GetPage($language, false, true);
     }     
     if (!$name) {

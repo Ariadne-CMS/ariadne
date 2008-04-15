@@ -77,14 +77,16 @@
 
 
 		function _create_function($args, $code) {
-			$pinp = new pinp("header", 'var_', '$this->_');
+			$pinp = new pinp("header", 'var_', '$AR_this->_');
 			$safe_args = $pinp->compileFuncCallArgs("$args", "funcCallArgs");
-			$pinp = new pinp("header", 'var_', '$this->_');
+			$pinp = new pinp("header", 'var_', '$AR_this->_');
 			$safe_code = substr($pinp->compile("<pinp>$code</pinp>"), 5, -2);
 			return create_function($safe_args, $safe_code);
 		}
 
 		function _call_function($callback, $a=null, $b=null, $c=null, $d=null, $e=null) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
 			$result = null;
 			if (pinp_util::is_callback($callback)) {
 				switch (true) {
@@ -96,27 +98,31 @@
 					default:          $result = $callback($a, $b, $c, $d, $e); break;
 				}
 			} else {
-				$this->error = "'$callback' is not a callback function";
+				$me->error = "'$callback' is not a callback function";
 			}
 			return $result;
 		}
 
 		function _usort(&$array, $callback) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
 			$result = false;
 			if (pinp_util::is_callback($callback)) {
 				$result =  usort($array, $callback);
 			} else {
-				$this->error = "'$callback' is not a valid callback function";
+				$me->error = "'$callback' is not a valid callback function";
 			}
 			return $result;
 		}
 
 		function _uasort(&$array, $callback) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
 			$result = false;
 			if (pinp_util::is_callback($callback)) {
 				$result =  uasort($array, $callback);
 			} else {
-				$this->error = "'$callback' is not a valid callback function";
+				$me->error = "'$callback' is not a valid callback function";
 			}
 			return $result;
 		}

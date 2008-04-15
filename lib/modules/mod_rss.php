@@ -26,8 +26,10 @@
 		}
 
 		function loadFromString($string) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
 			/* parse rss feed and initialize and return an rssFeed object */
-			$rss = new rssFeed($this);
+			$rss = new rssFeed($me);
 			$rss->setFeedString($string);
 			return $rss;
 		}

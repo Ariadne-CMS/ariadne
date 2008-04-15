@@ -17,9 +17,9 @@
 		$mode='invalid';
 		if ($path && $this->exists($path)) {
 			$user=@current($this->get($path, 'system.get.phtml'));
-			if ($user->implements('pgroup')) {
+			if ($user->AR_implements('pgroup')) {
 				$mode='group';
-			} else if ($user->implements('puser')) {
+			} else if ($user->AR_implements('puser')) {
 				$mode='user';
 			}
 		}

@@ -41,11 +41,11 @@ class pobject extends object { // pobject class definition
 	var $path;
 	var $data;  
 
-	function init(&$store, &$path, &$data) {
+	function init($store, $path, $data) {
 		debug("pobject: init([store], $path, [data])","object");
-		$this->store=&$store;
-		$this->path=&$path;
-		$this->data=&$data;
+		$this->store=$store;
+		$this->path=$path;
+		$this->data=$data;
 	}
 
 	function call($arCallFunction="view.html", $arCallArgs="") {
@@ -80,7 +80,7 @@ class pobject extends object { // pobject class definition
 		// callstack is needed for getvar()
 		$ARCurrent->arCallStack[]=&$arCallArgs;
 		// keep track of the context (php or pinp) in which the called template runs. call always sets it php, CheckConfig sets it to pinp if necessary.
-		$this->pushContext(Array("scope" => "php"));
+		$this->pushContext(Array("arCurrentObject" => $this,"scope" => "php"));
 
 		// convert the deprecated urlencoded arguments to an array
 		if (is_string($arCallArgs)) {
@@ -111,7 +111,7 @@ class pobject extends object { // pobject class definition
 			$nls=&$this->nls;
 			$flag=" <img class=\"flag\" src=\"".$AR->dir->images."nls/small/$nls.gif\" alt=\"\" border=\"0\"> ";
 		}
-		if ($this->data->$nls) {
+		if ($nls && $this->data->$nls) {
 			// now set the data and nlsdata pointers
 			$this->nlsdata=$this->data->$nls;
 			$nlsdata=&$this->nlsdata;
@@ -729,10 +729,10 @@ class pobject extends object { // pobject class definition
 		return $site_url.$rest;
 	}
 
-	function implements($implements) {
+	function AR_implements($implements) {
 		debug("pobject: implements($implements)","object");
 		$type = current(explode(".",$this->type)); 
-		return $this->store->implements($type, $implements); 
+		return $this->store->AR_implements($type, $implements); 
 	}
 
 	function getlocks() {
@@ -1114,7 +1114,7 @@ class pobject extends object { // pobject class definition
 		// restore old ARConfigChecked state
 		$ARConfigChecked = $configChecked;
 		//FIXME: in PHP5 make sure a clone is returned instead of a reference
-		return $config;
+		return clone $config;
 	}
 
 
@@ -1472,6 +1472,7 @@ class pobject extends object { // pobject class definition
 								"arLibrary" => $arLibrary,
 								"arLibraryPath" => $template['arLibraryPath'],
 								"arCallFunction" => $arCallFunction,
+								"arCurrentObject" => $this,
 								"arCallType" => $template['arCallType'],
 								"arCallTemplateType" => $template['arCallTemplateType'],
 								"arCallTemplatePath" => $template['arCallTemplatePath'],
@@ -2143,7 +2144,7 @@ class pobject extends object { // pobject class definition
 	}
 
 	function _implements($implements) {
-		return $this->implements($implements);
+		return $this->AR_implements($implements);
 	}
 
 	function getvar($var) {
@@ -2587,7 +2588,7 @@ class pobject extends object { // pobject class definition
 		ereg("^\s*(.)", $pattern, $regs);
 		$delim = $regs[1];
 		if (eregi($k="${delim}[^$delim]*e[^$delim]*".'$', $pattern)) {
-			$pinp = new pinp("header", 'this->', '$this->_');
+			$pinp = new pinp("header", 'local->', '$AR_this->_');
 			return substr($pinp->compile("<pinp>$replacement</pinp>"), 5, -2);
 		} else {
 			return $replacement;
@@ -2609,7 +2610,7 @@ class pobject extends object { // pobject class definition
 	}
 
 	function _loadConfig($path='') {
-		return $this->loadConfig($path);
+		return clone $this->loadConfig($path);
 	}
 
 	function _loadUserConfig($path='') {
@@ -2627,6 +2628,18 @@ class pobject extends object { // pobject class definition
 			case 'www':
 			case 'dir:www':
 				return $AR->dir->www;
+		}
+	}
+
+	function __call($name,$arguments)
+	{
+		switch($name)
+		{
+		case "implements":
+				return $this->AR_implements($arguments[0]);
+				break;
+			default:
+				return false;
 		}
 	}
 

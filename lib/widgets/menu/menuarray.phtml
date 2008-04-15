@@ -38,7 +38,7 @@ if ($this->CheckSilent("add",ARANYTYPE)) {
 } else {
 	$add[0]=false; $add[1]=$disabled_open; $add[2]=$disabled_close;
 }
-if($this->implements("pshortcut") && $this->CheckSilent("edit")) {
+if($this->AR_implements("pshortcut") && $this->CheckSilent("edit")) {
 	$shortcut[0]=true;$shortcut[1]='';$shortcut[2]='';
 }else {
 	$shortcut[0]=false;$shortcut[1]=$disabled_open;$shortcut[2]=$disabled_close;

@@ -33,7 +33,7 @@
 	$context = $this->getContext(ARCALLINGCONTEXT);
 	if (!$ARConfig->cache[$this->path] && $context["scope"] != "pinp") {
 		// first inherit parent configuration data
-		$configcache=$ARConfig->cache[$this->parent];
+		$configcache= clone $ARConfig->cache[$this->parent];
 
 		// cache default templates
 		$configcache->templates=$data->config->templates;
@@ -49,7 +49,7 @@
 			$configcache->typetree=$data->config->typetree;
 		}
 		if ($data->config->nlsconfig->list) {
-			$configcache->nls=$data->config->nlsconfig;
+			$configcache->nls = clone $data->config->nlsconfig;
 			debug("nls found");
 		}
 
@@ -68,8 +68,8 @@
 			}
 		}
 
-		if ($data->config->customconfig) {
-			$configcache->custom=array_merge($configcache->custom, $data->config->customconfig);
+		if (is_array($data->config->customconfig)) {
+			$configcache->custom=array_merge(is_array($configcache->custom)?$configcache->custom:array(), $data->config->customconfig);
 		}
 		$ARConfig->cache[$this->path]=$configcache;
 
