@@ -23,6 +23,9 @@
 	function custom_init() {
 		dest=document.customform.fieldname.options;
 		<?php
+			$this->call('typetree.ini');
+			$typelist = $ARCurrent->arTypeNames;
+
 			if (is_array($this->data->config->customconfig)) {
 				reset($this->data->config->customconfig);
 				while (list($name, $custom)=each($this->data->config->customconfig)) {
@@ -48,6 +51,11 @@
 					echo "			'".AddCSlashes($name, ARESCAPE)."','".AddCSlashes($custom["size"], ARESCAPE)."',\n";
 					echo "			'".AddCSlashes($custom["grant"], ARESCAPE)."',".AddCSlashes($custom["nls"], ARESCAPE).",\n";
 					echo "			'".AddCSlashes($custom["check"], ARESCAPE)."',".AddCSlashes($custom["property"], ARESCAPE).");\n";
+
+					if (!$typelist[$custom["type"]]) {
+						// If the type is not in the list, add it.
+						$typelist[$custom["type"]] = $custom["type"];
+					}
 				}
 			}
 		?>
@@ -263,15 +271,9 @@ BODY, TD {
 				<td align="right"><?php echo $ARnls["type"]; ?></td>
 				<td><select class="typeselect" name="cdtype" onChange="updateCustom(this);" ><?php 
 
-				$this->call('typetree.ini');
-				asort($ARCurrent->arTypeNames);
-				foreach ($ARCurrent->arTypeNames as $typeValue => $typeName) {
-					if ($type == $typeValue) {
-						$selected = " selected";
-					} else {
-						$selected = "";
-					}
-					echo "<option value=\"$typeValue\"$selected>$typeName</option>\n";
+				asort($typelist);
+				foreach ($typelist as $typeValue => $typeName) {
+					echo "<option value=\"$typeValue\">$typeName</option>\n";
 				}
 
 				?></select></td>

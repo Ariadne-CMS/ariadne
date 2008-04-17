@@ -90,13 +90,15 @@
 
 				$templates = $data->config->templates;
 				$templatelist = Array();
-				foreach ($templates as $type=>$names) {
-					foreach ($names as $name=>$languages) {
-						foreach ($languages as $language=>$number) {
-							$templatelist[$type . "." . $name . "." . $language] = Array();
-							$templatelist[$type . "." . $name . "." . $language]['type'] = $type;
-							$templatelist[$type . "." . $name . "." . $language]['name'] = $name;
-							$templatelist[$type . "." . $name . "." . $language]['language'] = $language;
+				if (is_array($templates)) {
+					foreach ($templates as $type=>$names) {
+						foreach ($names as $name=>$languages) {
+							foreach ($languages as $language=>$number) {
+								$templatelist[$type . "." . $name . "." . $language] = Array();
+								$templatelist[$type . "." . $name . "." . $language]['type'] = $type;
+								$templatelist[$type . "." . $name . "." . $language]['name'] = $name;
+								$templatelist[$type . "." . $name . "." . $language]['language'] = $language;
+							}
 						}
 					}
 				}

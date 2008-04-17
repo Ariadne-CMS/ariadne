@@ -217,10 +217,15 @@ function insertTab(event,obj) {
 				foreach ($ARCurrent->arTypeNames as $typeValue => $typeName) {
 					if ($type == $typeValue) {
 						$selected = " selected";
+						$haveselected = true;
 					} else {
 						$selected = "";
 					}
 					echo "<option value=\"$typeValue\"$selected>$typeName</option>\n";
+				}
+				if (!$haveselected) {
+					// The template is not in the typetree anymore. This makes it available in the list.
+					echo "<option value=\"$type\" selected>$type</option>\n";
 				}
 			?>
 			</select>
