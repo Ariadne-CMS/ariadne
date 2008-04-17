@@ -80,16 +80,40 @@
 			$esc_search = escapeshellarg($search);
 			$greps = Array();
 			$result = exec($AR->Grep->path." ".$AR->Grep->options." $esc_search $templates_path*.pinp", $greps);
+
+
 			if ($greps) {
+				// Prepare the template list for comparison;
+				// FIXME: template names can still be
+				// duplicate and this will return the wrong
+				// value sometimes.
+
+				$templates = $data->config->templates;
+				$templatelist = Array();
+				foreach ($templates as $type=>$names) {
+					foreach ($names as $name=>$languages) {
+						foreach ($languages as $language=>$number) {
+							$templatelist[$type . "." . $name . "." . $language] = Array();
+							$templatelist[$type . "." . $name . "." . $language]['type'] = $type;
+							$templatelist[$type . "." . $name . "." . $language]['name'] = $name;
+							$templatelist[$type . "." . $name . "." . $language]['language'] = $language;
+						}
+					}
+				}
+
 				foreach ($greps as $grep) {
-//					echo $grep."<br>\n";
 					list($file, $linenr, $line)=split(":", $grep);
 					$file=substr($file, strrpos($file, '/'));
-					$type=substr($file, 2, strpos($file, '.')-2);
-					$file=substr($file, strpos($file, '.')+1);
-					$file=substr($file, 0, strrpos($file, '.'));
-					$nls=substr($file, strrpos($file, '.')+1);
-					$file=substr($file, 0, strrpos($file, '.'));
+					$file=substr($file, 2);
+					$file = substr($file, 0, strrpos($file, '.'));
+
+					$type = $templatelist[$file]['type'];
+					$nls = $templatelist[$file]['language'];
+					$file = $templatelist[$file]['name'];
+
+//					$file=substr($file, 0, strrpos($file, '.'));
+
+					
 					?>
 					<tr valign="middle" onmouseover="style.backgroundColor='steelblue',style.color='white'" onmouseout="style.color='',style.backgroundColor='';" 
 						onclick="document.location='edit.object.layout.form.phtml?mode=edit&type=<?php echo $type; ?>&function=<?php echo $file; ?>&language=<?php echo $nls; ?>';">
