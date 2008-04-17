@@ -261,7 +261,20 @@ BODY, TD {
 			<table border="0" width="100%">
 			<tr>
 				<td align="right"><?php echo $ARnls["type"]; ?></td>
-				<td><select class="typeselect" name="cdtype" onChange="updateCustom(this);" ><?php $this->ls('/system/ariadne/types/','show.option.value.phtml'); ?></select></td>
+				<td><select class="typeselect" name="cdtype" onChange="updateCustom(this);" ><?php 
+
+				$this->call('typetree.ini');
+				asort($ARCurrent->arTypeNames);
+				foreach ($ARCurrent->arTypeNames as $typeValue => $typeName) {
+					if ($type == $typeValue) {
+						$selected = " selected";
+					} else {
+						$selected = "";
+					}
+					echo "<option value=\"$typeValue\"$selected>$typeName</option>\n";
+				}
+
+				?></select></td>
 				<td><input type="checkbox" name="cdinherit" value="1" onClick="updateCustom(this);" checked> <?php echo $ARnls["inherit"]; ?></td>
 			</tr><tr>
 				<td align="right"><?php echo $ARnls["name"]; ?></td>
