@@ -473,7 +473,7 @@
 			closedir($dirhandle);
 			
 			echo "Checkout revision $revision<br>";
-			$this->svn_checkout($svn, $repository, $revision);
+			$checkout_result = $this->svn_checkout($svn, $repository, $revision);
 
 			// Move the templates back to the original location
 			$dirhandle = opendir($tempdir);
@@ -488,7 +488,7 @@
 
 			echo "Removed $tempdir\n";
 			rmdir($tempdir);
-			
+			return $checkout_result;			
 		}
 			
 		function svn_mkdirs($svn, $repository) {
