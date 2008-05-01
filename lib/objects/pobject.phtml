@@ -2506,8 +2506,8 @@ class pobject extends object { // pobject class definition
 		return $this->HTTPRequest($method, $url, $postdata, $port);
 	}
 	
-	function _make_filesize( $size="" ) {
-		return $this->make_filesize( $size );
+	function _make_filesize( $size="" ,$precision) {
+		return $this->make_filesize( $size ,$precision);
 	}
 
 	function _convertToUTF8($data, $charset = "CP1252") {
