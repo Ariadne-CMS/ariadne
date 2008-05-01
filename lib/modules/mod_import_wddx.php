@@ -298,7 +298,7 @@ class import_wddx {
 									{
 										$file = $type.".".$function.".".$language;
 										debug("WDDX templates: ".$object->id."working on template $file",'all');
-										$pinp=new pinp("header","this->", "\$this->_");
+										$pinp=new pinp("header","local->", "\$AR_this->_");
 
 										$template = base64_decode($val['template']);
 										$compiled=$pinp->compile(strtr($template,"\r",""));
