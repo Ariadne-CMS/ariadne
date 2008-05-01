@@ -2250,12 +2250,12 @@ class pobject extends object { // pobject class definition
 		$section=eregi_replace('[^a-z\._:-]*','',$section);
 		if (!$section) {
 			include($this->store->get_config("code")."nls/".$nls);
-			$this->ARnls = array_merge($this->ARnls, $ARnls);
+			$this->ARnls = array_merge((array)$this->ARnls, $ARnls);
 		} else {
 			$nlsfile = $this->store->get_config("code")."nls/".$section.".".$nls;
 			if(strpos($nlsfile, ':') === false && file_exists($nlsfile)) {
 				include($nlsfile);
-				$this->ARnls = array_merge($this->ARnls, $ARnls);
+				$this->ARnls = array_merge((array)$this->ARnls, $ARnls);
 			} else {
 				$this->pushContext(Array());
 					$this->CheckConfig($section, Array('nls' => $nls));
