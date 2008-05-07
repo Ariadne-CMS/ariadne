@@ -1508,7 +1508,9 @@ class pobject extends object { // pobject class definition
 								echo "<div style=\"float: left; border: 0px; padding: 0px; margin: 0px;\" title=\"(".$this->type.")".$this->path.":".$template["arCallTemplate"]."\"".
 										" onMouseOver=\"this.style.border='1px dotted black';\" onMouseOut=\"this.style.border='0px';\">";
 							}
+							set_error_handler(array('pobject','pinpErrorHandler'),error_reporting());
 							$arResult=$arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
+							restore_error_handler();
 							if (isset($arResult)) {
 								$ARCurrent->arResult=$arResult;
 							}
@@ -2641,6 +2643,25 @@ class pobject extends object { // pobject class definition
 			default:
 				return false;
 		}
+	}
+
+	function pinpErrorHandler($errno,$errstr,$errfile,$errline,$errcontext   )
+	{
+		global $AR,$nocache,$ARCurrent;
+		if( ($errno & error_reporting()) == 0 ) return true;
+
+		$nocache = true;
+		$item = end($ARCurrent->arCallStack);
+		if($item["arLibraryPath"]  != NULL)
+		{
+			echo "Error on line $errline in ".$item['arCallFunction'] ." in library ".$item["arLibraryPath"] ."\n<br>";
+			echo $errstr."\n<br>";
+		} else {
+			echo "Error on line $errline in ".$item['arCallFunction'] ." on object ".$errcontext['AR_this']->path."\n<br>";
+			echo $errstr."\n<br>";
+		}
+
+		return true;
 	}
 
 } // end of pobject class definition
