@@ -32,7 +32,8 @@
       </tr><tr>
         <td colspan="2">
           <input type="password" name="newpass1" maxlength="50" 
-            value="">
+            value=""><?php if ($auth_config['expiry'] && $this->data->password_expiry) {
+              echo "&nbsp;&nbsp;(" . $ARnls['expires'] . " " . date("d M Y, G:i", $this->data->password_expiry) .")"; } ?>
         </td>
       </tr><tr>
         <td colspan="2">
@@ -45,7 +46,7 @@
         </td>
       </tr>
       <?php
-        if($auth_config["expiry"] ) {
+        if($auth_config["expiry"] && $this->CheckSilent("config")) {
           if ($this->data->password_expiry) {
              $checked = "";
           } else {
@@ -54,12 +55,13 @@
       ?>
       <tr>
         <td colspan="2">
-          <input type="checkbox" name="neverexpires" value="1" <?php echo $checked; ?>><?php echo $ARnls["neverexpires"]; ?>
+          <input type="checkbox" name="neverexpires" value="1" <?php echo $checked; ?>><?php echo $ARnls["neverexpires"];?>
         </td>
       </tr>
       <?php
-        }
+         }
       ?>
+
       <?php
         // profile support
         if($this->CheckSilent("config")) {

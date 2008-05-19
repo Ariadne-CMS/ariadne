@@ -38,6 +38,13 @@
 		if ($pass1 || $pass2 ) {
 			if (!($this->data->password=GetPassword($pass1,$pass2))) {
 				$this->error=$ARnls["err:validpassword"];
+			} else {
+				// Password is set; Set expiry time here -
+				// if the checkbox for 'never expires' is set,
+				// it will be unset before the final save.  if
+				if ($auth_config["expiry"]) {
+					$this->data->password_expiry = time() + $auth_config['expiry'];
+				}
 			}
 		}
 		$login = $this->make_path($this->getdata("arNewFilename", "none"));
@@ -52,7 +59,8 @@
 		$this->data->email=$this->getdata("email","none");
 		$this->data->telephone=$this->getdata("telephone","none");
 
-		if ($auth_config["expiry"]) {
+		// Password expiry flag can only be changed with config grants.
+		if ($auth_config["expiry"] && $this->CheckSilent("config")) {
 			$password_never_expires = $this->getdata("neverexpires",0);
 			if ($password_never_expires) {
 				unset($this->data->password_expiry);

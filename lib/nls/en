@@ -367,4 +367,5 @@
 	$ARnls["err:samepassword"]				= "New password must not match old password.";
 	$ARnls["err:weakpassword"]				= "Your new password is too weak.";
 	$ARnls["neverexpires"]					= "Password never expires";
+	$ARnls["expires"]					= "Expires";
 ?>
