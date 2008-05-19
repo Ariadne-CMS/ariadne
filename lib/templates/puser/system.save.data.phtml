@@ -4,6 +4,8 @@
 	 ------------------------------------------------------------------
  
 	******************************************************************/
+	require($this->store->get_config("code")."/configs/authentication.phtml");
+
 	if ((($this->arIsNewObject &&
 			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
 			$parentobj->CheckLogin("add", $this->type)) ||
@@ -49,6 +51,19 @@
 		$properties["text"][0]["nls"]="'none'";
 		$this->data->email=$this->getdata("email","none");
 		$this->data->telephone=$this->getdata("telephone","none");
+
+		if ($auth_config["expiry"]) {
+			$password_never_expires = $this->getdata("neverexpires",0);
+			if ($password_never_expires) {
+				unset($this->data->password_expiry);
+			} else {
+				// Set expiry if it was not set before.
+				if (!$this->data_password_expiry) {
+					$this->data->password_expiry = time() + $auth_config['expiry'];
+				}
+			}
+		}
+
 		if ($this->arIsNewObject) {
 			if ($login) {
 				if (strlen($login)>32) {

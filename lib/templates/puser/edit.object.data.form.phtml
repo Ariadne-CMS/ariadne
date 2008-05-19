@@ -7,6 +7,8 @@
     } else {
       $login=$this->data->login;
     }
+
+    require($this->store->get_config("code")."/configs/authentication.phtml");
 ?>
 <table border="0" width="90%">
 <tr>
@@ -42,7 +44,22 @@
             value="">
         </td>
       </tr>
-
+      <?php
+        if($auth_config["expiry"] ) {
+          if ($this->data->password_expiry) {
+             $checked = "";
+          } else {
+             $checked = "checked";
+          }
+      ?>
+      <tr>
+        <td colspan="2">
+          <input type="checkbox" name="neverexpires" value="1" <?php echo $checked; ?>><?php echo $ARnls["neverexpires"]; ?>
+        </td>
+      </tr>
+      <?php
+        }
+      ?>
       <?php
         // profile support
         if($this->CheckSilent("config")) {
