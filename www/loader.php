@@ -310,6 +310,8 @@
 					$function = "user.login.html";
 				} else if ($result == LD_ERR_SESSION) {
 					$function = "user.session.timeout.html";
+				} else if ($result == LD_ERR_EXPIRED) {
+					$function = "user.password.expired.html";
 				}
 			}
 

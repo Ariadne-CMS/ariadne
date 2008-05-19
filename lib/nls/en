@@ -363,4 +363,5 @@
 	$ARnls["selectexporttype"]				=	"Select your export type";
 	$ARnls["openinpopup"]					=	"Open in Popup";
 	$ARnls["tinymce"]						=	"tinyMCE";
+	$ARnls["passwordexpired"]				= "Your password has expired";
 ?>

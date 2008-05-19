@@ -356,4 +356,6 @@
 	$ARnls["explain"]						=	"Leg uit";
 	$ARnls["tinymce"]						=	"tinyMCE";
 	$ARnls["openinpopup"]					=	"Open in Popup";
+	$ARnls["passwordexpired"]				= "Uw wachtwoord is verlopen";
+
 ?>
