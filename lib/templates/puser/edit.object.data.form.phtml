@@ -8,7 +8,7 @@
       $login=$this->data->login;
     }
 
-    require($this->store->get_config("code")."/configs/authentication.phtml");
+    global($auth_config);
 ?>
 <table border="0" width="90%">
 <tr>

@@ -4,7 +4,7 @@
 	 ------------------------------------------------------------------
  
 	******************************************************************/
-	require($this->store->get_config("code")."/configs/authentication.phtml");
+	global($auth_config);
 
 	if ((($this->arIsNewObject &&
 			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
