@@ -357,5 +357,6 @@
 	$ARnls["tinymce"]						=	"tinyMCE";
 	$ARnls["openinpopup"]					=	"Open in Popup";
 	$ARnls["passwordexpired"]				= "Uw wachtwoord is verlopen";
-
+	$ARnls["err:samepassword"]                              = "Het nieuwe watchwoord mag niet gelijk zijn aan het oude.";
+	$ARnls["err:weakpassword"]                              = "Het nieuwe wachtwoord is te zwak.";
 ?>
