@@ -157,7 +157,7 @@
 		}
 
 		function _getFileFromFTP($url, $fileName) {
-			return parent::getFileFromFTP($url, $filename);
+			return parent::getFileFromFTP($url, $fileName);
 		}
 
 	}
