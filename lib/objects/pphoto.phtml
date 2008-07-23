@@ -478,9 +478,14 @@ class pphoto extends pfile { // pphoto class definition
 							// Backwards compatibility quirk: this is needed to keep things working for users that used escaped colors
 							$cmd_array[1] = preg_replace("|\\\#|", "#", $cmd_array[1]);
 
+							preg_match("|\xb6(.*?)\xb6|", $cmd_array[1], $matches);
+							$text = $matches[1];
+							$cmd_array[1] = preg_replace("|\xb6.*?\xb6|", "\xb6\xb6", $cmd_array[1]);
+
 							// Escaped shell command line here.
 							$exec_string = $cmd_array[0] . " " . escapeshellcmd($cmd_array[1]);
-							$exec_string = str_replace("\xb6", "'", $exec_string);
+//							$exec_string = str_replace("\xb6", "'", $exec_string);
+							$exec_string = preg_replace("|\xb6.*?\xb6|", "'" . $text . "'", $exec_string);
 
 							debug("executing ($exec_string)");
 							system($exec_string,$failed);
