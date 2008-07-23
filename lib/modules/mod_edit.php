@@ -241,7 +241,7 @@
 			return edit::showInput($var, $name, $title, $type, $extra);
 		}
 
-		function _showCheckbox($var, $name, $title='', $extra='', $group='' ) {
+		function _showCheckbox($var, $name, $title='', $extra='', $group='', $value='1') {
 			return edit::showCheckbox($var, $name, $title, $extra, $group);
 		}
 
