@@ -1,5 +1,7 @@
 <?php
 
+define("DIRMODE", 0770);
+
 class cacherss {
 	function cacherss( $httphelper ) {
 		$this->httphelper = $httphelper;
@@ -30,7 +32,8 @@ class cacherss {
 
 class pinp_cacherss {
 	function _load( $url ) {
-		$cachelocation = "/opt/muze-enschede/files/rsscache/";
+		global $AR;
+		$cachelocation = $AR->dir->install . "/files/cache/rss/";
 		$cache = new cache( $cachelocation );
 		$httphelper = new httphelper( $cache);
 		$rss = new cacherss( $httphelper );
@@ -38,7 +41,7 @@ class pinp_cacherss {
 	}
 
 	function _titlelink( $url ) {
-		$cachelocation = "/opt/muze-enschede/files/rsscache/";
+		$cachelocation = $AR->dir->install . "/files/cache/rss/";
 		$cache = new cache( $cachelocation );
 		$httphelper = new httphelper( $cache);
 		$rss = new cacherss( $httphelper );
@@ -335,6 +338,11 @@ class cache {
 
 	function cache( $path ) {
 		// FIXME: forceer $path eindigen op een / en security.
+
+		if (!is_dir($path) && !file_exists($path)) {
+			mkdir($path, DIRMODE);
+		}
+
 		$this->path = $path;
 	}
 
