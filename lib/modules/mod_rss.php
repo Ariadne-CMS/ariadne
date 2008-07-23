@@ -78,6 +78,10 @@
 			return $this->ls($template, $args);
 		}
 
+		function _getArray($limit=100, $offset=0) {
+			return $this->getArray($limit, $offset);
+		}
+		
 		function reset() {
 			// reset namestack
 			$this->ns = Array();
