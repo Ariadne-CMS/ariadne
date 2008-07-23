@@ -2,6 +2,27 @@
 	require_once($this->store->get_config('code').'modules/mod_pinp.phtml');
 
 	class util {
+		function getFileFromFTP($url, $fileName) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			require_once($me->store->get_config("code")."modules/mod_mimemagic.php");
+			if (!$filename) {
+				$filename = basename($url);
+			}
+
+			$result = false;
+			eregi('([^:]+):([^@]+)@([^/]+).*$', $url,$matches);
+
+			$file_artemp =tempnam($me->store->get_config("files")."temp","upload");
+
+			$ftpId = ftp_connect($matches[3]);
+			ftp_login($ftpId, $matches[1], $matches[2]);
+			ftp_get($ftpId, $file_artemp, $fileName, FTP_BINARY);
+
+			readfile($file_artemp);
+
+			return $result;
+		} 
 
 		function path_unescape($path) {
 			$result = "";
@@ -133,6 +154,10 @@
 
 		function _path_unescape($path) {
 			return parent::path_unescape($path);
+		}
+
+		function _getFileFromFTP($url, $fileName) {
+			return parent::getFileFromFTP($url, $filename);
 		}
 
 	}
