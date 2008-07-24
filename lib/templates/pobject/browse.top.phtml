@@ -57,7 +57,13 @@
 	}
 
 	function browseHome() {
-		parent.View('<?php echo $AR->user->path; ?>');
+		parent.View('<?php 
+			if ($root) {
+				echo $root;
+			} else {
+				echo $AR->user->path;
+			}
+		?>');
 	}
 
 	function ViewMode(mode) {
@@ -165,7 +171,10 @@
 	</td><td align="left" valign="top">
 		<select name="BrowseNav" style="width: 150px; padding: 2px; margin: 2px;" onChange="parent.View(this.options[this.options.selectedIndex].value);" class="minimal">
 		<?php
-			$this->parents(".","browse.show.option.phtml",Array("selected" => $this->path), "/");
+			if (!$root) {
+				$root = "/";
+			}
+			$this->parents(".","browse.show.option.phtml",Array("selected" => $this->path), $root);
 		?>
 		</select>
 				</nobr>

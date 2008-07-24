@@ -2,6 +2,14 @@
   if (!$wgBrowsePath) { 
     $wgBrowsePath=$this->path; 
   }
+  if ($wgRoot) {
+    if (substr($wgBrowsePath, 0, strlen($wgRoot)) == $wgRoot) {
+      $wgBrowsePath = substr($wgBrowsePath, strlen($wgRoot));
+    } else {
+      $wgBrowsePath = "";
+    }
+  }
+
   if (!$wgBrowseName) {
     $wgBrowseName="browsewindow";
   }
@@ -22,4 +30,4 @@
          onClick="Browse(this.form['<?php echo $wgBrowseName; ?>'], '<?php echo $wgBrowsePath; ?>', 
                     '<?php echo $wgBrowseName; ?>', '<?php echo $wgBrowseTitle; ?>',
                     '<?php echo $wgBrowseMode; ?>', '<?php echo $wgBrowseFilter; ?>',
-                    '<?php echo $wgBrowseFilename; ?>');">
+                    '<?php echo $wgBrowseFilename; ?>', '<?php echo $wgRoot; ?>');">

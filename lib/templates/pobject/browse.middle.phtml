@@ -22,15 +22,17 @@
 <head>
   <script>
     function b_setTotal(total) {
-      parent.browsetop.b_setTotal(total);
+		if( parent && parent.browsetop && parent.browsetop.b_setTotal ) {
+			parent.browsetop.b_setTotal(total);
+		}
     }
     function b_hide() { }
     function b_show() { }
   </script>
 </head>
 <frameset cols="150,*">
-	<frame name="leftnav" src="<?php echo $this->store->get_config("root").$this->path; ?>browse.nav.phtml">
-	<frame name="rightnav" src="<?php echo $this->store->get_config("root").$this->path; ?>browse.nav.list.phtml?filter=<?php echo $filter; ?>">
+	<frame name="leftnav" src="<?php echo $this->store->get_config("root").$this->path; ?>browse.nav.phtml?root=<?php echo RawUrlEncode($root); ?>">
+	<frame name="rightnav" src="<?php echo $this->store->get_config("root").$this->path; ?>browse.nav.list.phtml?root=<?php echo RawUrlEncode($root); ?>&filter=<?php echo $filter; ?>">
 </frameset>
 </html>
 <?php

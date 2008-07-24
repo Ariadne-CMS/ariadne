@@ -38,12 +38,12 @@
 </style>
 <body bgcolor="white">
 <?php
-	if ($this->parent!="..") {
+	if ($this->parent!=".." && (!$root || substr($this->parent, 0, strlen($root)) == $root)) {
 		?>
 <div class='object'><nobr><a 
 	href="javascript:top.View('<?php echo $this->parent; ?>');"><img 
 	src="<?php echo $AR->dir->images; ?>icons/pdir.gif" 
-	alt="[view]" border="0"> ..</a></nobr></div>
+	alt="[view]<?php echo $root; ?>" border="0"> ..</a></nobr></div>
 		<?php
 	}
 	$crit["object"]["implements"]["="]="'pdir'";

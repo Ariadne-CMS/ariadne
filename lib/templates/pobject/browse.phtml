@@ -20,6 +20,9 @@
 
 	******************************************************************/
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		if ($root) {
+			$path = $root.$path;
+		}
 		$path=$this->make_path($path);
 		if (!$path || !$this->exists($path)) {
 			$path=$this->path;
@@ -29,6 +32,7 @@
 <title><?php echo $title; ?></title>
 <script language="javascript">
 <!--
+	CurrentRoot='<?php echo $root; ?>';
 	CurrentPath='<?php echo $path; ?>';
 	CurrentViewMode='<?php echo $mode; ?>';
 	CurrentFilter='<?php echo $filter; ?>';
@@ -37,9 +41,18 @@
 		CurrentPath=path;
 		top.browsemiddle.rightnav.location="<?php
 		echo $this->store->get_config("root"); ?>"+path+"browse.nav."+
-			CurrentViewMode+".phtml?filter="+escape(CurrentFilter);
+			CurrentViewMode+".phtml?filter="+escape(CurrentFilter)+"&root="+CurrentRoot;
 		top.browsemiddle.leftnav.location="<?php
-		echo $this->store->get_config("root"); ?>"+path+"browse.nav.phtml";
+		echo $this->store->get_config("root"); ?>"+path+"browse.nav.phtml?root="+CurrentRoot;
+		if (CurrentRoot && path) {
+			var rootFilter = new RegExp(CurrentRoot+"(.*)", "");
+			var rootFilterMatches = rootFilter.exec(path);			
+			if (rootFilterMatches) {
+				path = rootFilterMatches[1];
+			} else {
+				path = "";
+			}
+		}
 		top.browsebottom.document.selectform.filename.value=path;
 		top.browsebottom.showFilename();
 	}
@@ -78,11 +91,11 @@
 </head>
 <frameset rows="30,*,70" border="0">
 	<frame name="browsetop" border="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" 
-		src="<?php echo $this->store->get_config("root").$path; ?>browse.top.phtml?filter=<?php echo RawUrlEncode($filter); ?>">
+		src="<?php echo $this->store->get_config("root").$path; ?>browse.top.phtml?root=<?php echo RawUrlEncode($root); ?>&filter=<?php echo RawUrlEncode($filter); ?>">
 	<frame name="browsemiddle" border="0" frameborder="0" 
-		src="<?php echo $this->store->get_config("root").$path; ?>browse.middle.phtml?filter=<?php echo RawUrlEncode($filter); ?>">
+		src="<?php echo $this->store->get_config("root").$path; ?>browse.middle.phtml?root=<?php echo RawUrlEncode($root); ?>&filter=<?php echo RawUrlEncode($filter); ?>">
 	<frame name="browsebottom" border="0" frameborder="0" marginwidth="0" marginheight="0" border="0" scrolling="no" 
-		src="<?php echo $this->store->get_config("root").$path; ?>browse.bottom.phtml?filename=<?php echo RawUrlEncode($filename); ?>&filter=<?php echo RawUrlEncode($filter); ?>">
+		src="<?php echo $this->store->get_config("root").$path; ?>browse.bottom.phtml?root=<?php echo RawUrlEncode($root); ?>&filename=<?php echo RawUrlEncode($filename); ?>&filter=<?php echo RawUrlEncode($filter); ?>">
 </frameset>
 <?php
 	}

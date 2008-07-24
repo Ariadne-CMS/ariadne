@@ -2,7 +2,7 @@
 <!--
 wgBrowseResult=0;
 
-function Browse(resultobject, path, name, title, mode, filter, filename) {
+function Browse(resultobject, path, name, title, mode, filter, filename, root) {
   wgBrowseResult=resultobject;
   if (wgBrowseResult.value) {
     path=wgBrowseResult.value;
@@ -25,7 +25,7 @@ function Browse(resultobject, path, name, title, mode, filter, filename) {
        }	
        echo $this->store->get_config("root").$path; 
      ?>';
-  if (document.all) {
+  if (0 && document.all) {
     var args=new Array();
     args['path']=path;
     args['title']=title;
@@ -33,6 +33,7 @@ function Browse(resultobject, path, name, title, mode, filter, filename) {
     args['mode']=mode;
     args['filter']=filter;
     args['filename']=filename;
+    args['root']=root;
     arr = showModalDialog( startpath+"browse.dialog.phtml", args,  "font-family:Verdana; font-size:12; dialogWidth:40em; dialogHeight:30em");
     if (arr!=null) {
       wgBrowseResult.value=arr['path'];
@@ -48,7 +49,7 @@ function Browse(resultobject, path, name, title, mode, filter, filename) {
          echo $this->store->get_config("root").$path; 
        ?>browse.phtml?path='+escape(path)+'&title='+escape(title)+
          '&name='+escape(name)+'&mode='+escape(mode)+'&filter='+escape(filter)+
-         '&filename='+escape(filename), 'browsewindow',
+         '&filename='+escape(filename)+'&root='+root, 'browsewindow',
          'directories=no,height=300,width=500,location=no,menubar=no,status=no,toolbar=no,resizable=yes,'+dprops);
     browsewindow.opener=this;
     browsewindow.focus();

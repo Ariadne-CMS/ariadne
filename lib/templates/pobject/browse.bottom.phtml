@@ -13,6 +13,15 @@
 
 	******************************************************************/
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+
+		$path = $this->make_path();
+		if ($root) {
+			if (substr($path, 0, strlen($root)) == $root) {
+				$path = substr($path, strlen($root));
+			} else {
+				$path = "";
+			}
+		}
 ?>
 <html>
 <head>
@@ -30,7 +39,7 @@
 	<td>
 		<?php echo $ARnls["filename"]; ?> :
 	</td><td>
-		<input type="text" name="filename" style="width: 200;" value="<?php echo $this->path; ?>">
+		<input type="text" name="filename" style="width: 200;" value="<?php echo $path; ?>">
 	</td><td>
 		&nbsp;&nbsp;<input type="button" name="open" style="width: 75px" value="<?php echo $ARnls["open"]; ?>" onClick="if (top.doSubmit) { top.doSubmit(this.form.filename.value); } else { top.opener.wgBrowseResult.value=this.form.filename.value; top.close(); }">
 	</td>
