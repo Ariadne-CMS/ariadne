@@ -40,6 +40,8 @@ class page {
 	}
 
 	function compileWorker(&$node) {
+		$context = pobject::getContext();
+		$me = $context["arCurrentObject"];
 		$result = false;
 		$contentEditable = "";
 		if (isset($node['attribs']['contenteditable'])) {
