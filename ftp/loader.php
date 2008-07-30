@@ -901,7 +901,7 @@
 
 					case 'USER':
 					case 'PASS':
-						ftp_Tell(530, "User '$this->user' already logged in");
+						ftp_Tell(530, "User '$FTP->user' already logged in");
 					break;
 
 					default:
@@ -947,7 +947,7 @@
 
 								if ($AR->user->data->login==="admin" || $siteroot->CheckLogin("ftp")) {
 									$FTP->cwd="/";
-									$this->user=$login;
+									$FTP->user=$login;
 								} else {
 									ftp_Tell(530, "Login incorrect: (site) permission denied");
 									unset($user);
@@ -967,7 +967,7 @@
 					ftp_Tell(530, "Please login with USER and PASS.");
 				}
 			}
-			ftp_Tell(230, "User '".$this->user."' logged in at $FTP->cwd ");
+			ftp_Tell(230, "User '".$FTP->user."' logged in at $FTP->cwd ");
 		}
 
 		function ftp_FetchCMD(&$cmd, &$args) {
