@@ -33,8 +33,8 @@
 					eregi('^([a-z0-9]+)://([^/:]+)(:[0-9]+)?', $url, $regs);
 					if ($url) {
 						$this->data->url_list['nls'][$key] = $url;
-						if (!$this->data->url_list['host'][$regs[2]]) {
-							$this->data->url_list['host'][$regs[2]] = $key;
+						if (!$this->data->url_list['host'][$regs[2].$regs[3]]) {
+							$this->data->url_list['host'][$regs[2].$regs[3]] = $key;
 						} else {
 							$this->error = "Please fill in distinctive hostnames; they should not be the same for different languages.";
 						}
@@ -42,7 +42,7 @@
 					$properties["url"][$count]["protocol"]=	"'".AddSlashes($regs[1])."'";
 					$properties["url"][$count]["host"]=		"'".AddSlashes($regs[2])."'";
 					if ($regs[3]) {
-						$properties["url"][$count]["port"]=	$regs[3];
+						$properties["url"][$count]["port"]=	"'".substr(AddSlashes($regs[3]), 1)."'";
 					}
 					$count++;
                 }
