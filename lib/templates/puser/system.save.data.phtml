@@ -72,6 +72,10 @@
 			}
 		}
 
+		if (isset($disabled)) {
+			$this->call("system.save.access.phtml", Array("disabled" => $disabled));
+		}
+
 		if ($this->arIsNewObject) {
 			if ($login) {
 				if (strlen($login)>32) {

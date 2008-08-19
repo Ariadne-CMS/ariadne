@@ -1087,7 +1087,7 @@ class pobject extends object { // pobject class definition
 	function loadConfig($path='') {
 	global $ARConfig, $ARConfigChecked;
 		$configChecked = $ARConfigChecked;
-
+		$result=false;
 		$path=$this->make_path($path);
 		$parent=$this->make_path($path.'../');
 		if (!$ARConfig->cache[$path]) {
@@ -1113,8 +1113,10 @@ class pobject extends object { // pobject class definition
 
 		// restore old ARConfigChecked state
 		$ARConfigChecked = $configChecked;
-		//FIXME: in PHP5 make sure a clone is returned instead of a reference
-		return clone $config;
+		if (is_object($config)) {
+			$result = clone($config);
+		}
+		return $result;
 	}
 
 
@@ -2182,7 +2184,7 @@ class pobject extends object { // pobject class definition
 	function putvar($var, $value) {
 	global $ARCurrent;
 
-		debug("pobject: putvar($var, $value)","object");
+		debug("pobject: putvar($var, ".serialize($value).")","object");
 		$ARCurrent->$var=$value;
 	}  
 
@@ -2521,7 +2523,7 @@ class pobject extends object { // pobject class definition
 		$user=$AR->user;
 		unset($user->grants);
 		unset($user->groups);
-		return $user;
+		return clone($user);
 	}
 	
 	function ARinclude($file) {
@@ -2633,27 +2635,25 @@ class pobject extends object { // pobject class definition
 		}
 	}
 
-	function __call($name,$arguments)
-	{
-		switch($name)
-		{
-		case "implements":
+	function __call($name,$arguments) {
+		switch($name) {
+			case "implements":
 				return $this->AR_implements($arguments[0]);
-				break;
+			break;
 			default:
 				return false;
 		}
 	}
 
-	function pinpErrorHandler($errno,$errstr,$errfile,$errline,$errcontext   )
-	{
+	function pinpErrorHandler($errno, $errstr, $errfile, $errline, $errcontext) {
 		global $AR,$nocache,$ARCurrent;
-		if( ($errno & error_reporting()) == 0 ) return true;
+		if (($errno & error_reporting()) == 0) {
+			return true;
+		}
 
 		$nocache = true;
 		$item = end($ARCurrent->arCallStack);
-		if($item["arLibraryPath"]  != NULL)
-		{
+		if ($item["arLibraryPath"]) { //  != NULL) {
 			echo "Error on line $errline in ".$item['arCallFunction'] ." in library ".$item["arLibraryPath"] ."\n<br>";
 			echo $errstr."\n<br>";
 		} else {

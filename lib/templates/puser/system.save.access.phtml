@@ -1,0 +1,25 @@
+<?php
+	/******************************************************************
+	 system.save.access.phtml                              Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: $disabled (boolean: true/false)
+	 Grant needed: config
+	 Global variables: none
+
+     This template enables/disables the account of a user.
+     Set $disabled to 'true' to disable the account and to 'false'
+     to enable it (again).
+	 
+	 no result
+
+	******************************************************************/
+	if ($this->CheckSilent("config") && $this->CheckConfig()) {
+		if (in_array($this->data->login, Array("admin", "public"))) {
+			$this->error = $ARnls["err:cannotdisablesystemusers"];
+		} else {
+			$this->data = current($this->get($this->path, "system.get.data.phtml"));
+			$this->data->config->disabled = $disabled;
+			$this->save();
+		}
+	}
+?>

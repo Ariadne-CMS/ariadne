@@ -54,6 +54,7 @@
 	$ARnls["delete"]						=	"Verwijder";
 	$ARnls["deleting"]						=	"Bezig met verwijderen van";
 	$ARnls["details"]						=	"Details";
+	$ARnls["disableuser"]					=	"Toegang afsluiten";
 	$ARnls["display"]						=	"Weergave";
 	$ARnls["donotcache"]					=	"Niet cachen";
 	$ARnls["donotoverwrite"]				=	"Niet overschrijven";
@@ -85,6 +86,7 @@
 	$ARnls["enternewvalue"]					=	"Vul nieuwe waarde in";
 	$ARnls["err:alreadyexists"]				=	"%s bestaat al.";
 	$ARnls["err:cannotdelsystemusers"]		=	"U kunt de systeem gebruikers (admin en public) niet verwijderen.";
+	$ARnls["err:cannotdisablesystemusers"]	=	"U kunt de systeem gebruikers (admin en public) geen toegang wijgeren.";
 	$ARnls["err:cannotedit.phtml"]			=	"U kunt geen templates bewerken met extensie .phtml";
 	$ARnls["err:cannotlockobject"]			=	"Kan object %s niet afschermen";
 	$ARnls["err:changetempdirfailed"]		=	"Kan niet van directory veranderen naar %stemp/ ";

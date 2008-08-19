@@ -17,6 +17,7 @@
 
 	******************************************************************/
 	$arIsNewObject=$this->arIsNewObject;
+	$arCallArgs["disabled"]	= $this->getdata("disabled", "none");
 	$this->call("system.save.data.phtml",$arCallArgs);
 	if ($this->error) {
 		?>

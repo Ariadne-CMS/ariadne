@@ -59,16 +59,21 @@
 			}
 
 			if ($user) {
-				if ($login !== "public") {
-					/* welcome to Ariadne :) */
-					ldSetCredentials($login);
+				if ($user->data->config && !$user->data->config->disabled) {
+					if ($login !== "public") {
+						/* welcome to Ariadne :) */
+						ldSetCredentials($login);
+					}
+					$ARLogin = $user->data->login;
+					$ARPassword = 0;
+					$AR->user = $user;
+					$result = true;
+				} else {
+					debug("getUser: user('$login') has been disabled", "all");
+					$result = LD_ERR_ACCESS;
 				}
-				$ARLogin = $user->data->login;
-				$ARPassword = 0;
-				$AR->user = $user;
-				$result = true;
 			} else {
-				debug("authUser: user('$user') could not authenticate", "all");
+				debug("authUser: user('$login') could not authenticate", "all");
 				$result = LD_ERR_ACCESS;
 			}
 			return $result;
@@ -117,10 +122,15 @@
 			}
 
 			if ($user) {
-				$AR->user = $user;
-				$result = true;
+				if ($user->data->config && !$user->data->config->disabled) {
+					$AR->user = $user;
+					$result = true;
+				} else {
+					debug("getUser: user('$login') has been disabled", "all");
+					$result = LD_ERR_ACCESS;
+				}
 			} else {
-				debug("getUser: user('$user') not found", "all");
+				debug("getUser: user('$login') not found", "all");
 				$result = LD_ERR_ACCESS;
 			}
 			return $result;

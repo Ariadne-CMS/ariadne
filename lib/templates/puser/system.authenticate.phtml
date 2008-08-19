@@ -1,5 +1,5 @@
 <?php
-	if ($this->CheckPassword($ARPassword)) {
+	if (($this->data->config && !$this->data->config->disabled) && $this->CheckPassword($ARPassword)) {
 		$arResult = $this;
 	}
 ?>

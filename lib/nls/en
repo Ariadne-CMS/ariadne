@@ -58,6 +58,7 @@
 	$ARnls["delete"]						=	"Delete";
 	$ARnls["deleting"]						=	"Deleting";
 	$ARnls["details"]						=	"Details";
+	$ARnls["disableuser"]					=	"Disable user";
 	$ARnls["display"]						=	"Display";
 	$ARnls["donotcache"]					=	"Do not cache";
 	$ARnls["donotoverwrite"]				=	"Do not overwrite";
@@ -89,6 +90,7 @@
 	$ARnls["enternewvalue"]					=	"Enter new value";
 	$ARnls["err:alreadyexists"]				=	"%s already exists.";
 	$ARnls["err:cannotdelsystemusers"]		=	"You cannot delete or move the system users (admin and public)";
+	$ARnls["err:cannotdisablesystemusers"]	=	"You cannot disable the system users (admin and public)";
 	$ARnls["err:cannotedit.phtml"]			=	"You cannot edit templates ending with '.phtml'";
 	$ARnls["err:cannotlockobject"]			=	"Can't lock object %s";
 	$ARnls["err:changetempdirfailed"]		=	"Could not changedir to %stemp/ ";

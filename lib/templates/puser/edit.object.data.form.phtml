@@ -63,7 +63,7 @@
       ?>
 
       <?php
-        // profile support
+        // profile & account enable/disable support
         if($this->CheckSilent("config")) {
       ?>
       <tr>
@@ -83,6 +83,18 @@
         </td>
       </tr>
       <?php
+        if (!in_array($this->data->login, Array("admin", "public"))) {
+      ?>
+      <tr>
+        <td>
+          <?php echo $ARnls["disableuser"]; ?>&nbsp;:
+        </td><td>
+          <input type="hidden" name="disabled" value="0">
+          <input type="checkbox" name="disabled"<?php if ($this->data->config->disabled) echo " checked"; ?> value="1">
+		</td>
+      </tr>
+      <?php
+        }
         if ($this->arIsNewObject) {
           // show set owner option
       ?>
