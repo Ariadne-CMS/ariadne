@@ -56,7 +56,7 @@
 			}
 
 			if (is_array($configcache->custom)) {
-				while (list($name, $customvalue)=each($configcache->custom)) {
+				foreach($configcache->custom as $name => $customvalue) {
 					if (!$customvalue["grant"] || ($this->CheckSilent($customvalue["grant"]))) {
 						if (($customvalue["type"]==$this->type) ||
 								($customvalue["inherit"] &&
