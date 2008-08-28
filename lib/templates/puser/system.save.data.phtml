@@ -182,6 +182,13 @@
 					}
 				}
 
+				if (is_object($pdata)) {
+					// Make sure that permission to add this user to the groups set in the loaded profile
+					// will be granted.
+					$this->pushContext(Array("addProfileSettings" => true));
+				}
+
+
 				if (is_array($groups)) {
 					reset($groups);
 					while (list($key, $val)=each($groups)) {
@@ -207,6 +214,10 @@
 						/* again the skeleton shouldn't be too big, so this is allowed: */ 
 						$this->find($newpath, '', 'system.save.owner.phtml', Array('owner' => $this->path));
 					}
+				}
+
+				if (is_object($pdata)) {
+					$this->popContext();
 				}
 			}
 		}

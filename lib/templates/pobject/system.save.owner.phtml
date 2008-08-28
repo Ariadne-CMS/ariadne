@@ -1,15 +1,16 @@
 <?php
-  if ($this->CheckLogin("config") && $this->CheckConfig()) {
-	$user = current($this->get($owner, "system.get.phtml"));
-	if (!$user) {
-		$this->error = sprintf($ARnls["err:notfindusergroup"], $owner);
-	} else {
-		$this->data = current($this->get($this->path, "system.get.data.phtml"));
-		$this->data->config->owner = $user->data->login;
-		$this->data->config->owner_name = $user->data->name;
-		$properties = Array();
-		$properties['owner'][0]['value'] = "'".AddSlashes($user->data->login)."'";
-		$this->save($properties);
+	$context    = $this->getContext(ARCALLINGCONTEXT);
+	if (($context["addProfileSettings"] || $this->CheckSilent("edit")) && $this->CheckConfig()) {
+		$user = current($this->get($owner, "system.get.phtml"));
+		if (!$user) {
+			$this->error = sprintf($ARnls["err:notfindusergroup"], $owner);
+		} else {
+			$this->data = current($this->get($this->path, "system.get.data.phtml"));
+			$this->data->config->owner = $user->data->login;
+			$this->data->config->owner_name = $user->data->name;
+			$properties = Array();
+			$properties['owner'][0]['value'] = "'".AddSlashes($user->data->login)."'";
+			$this->save($properties);
+		}
 	}
-  }
 ?>
