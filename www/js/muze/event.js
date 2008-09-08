@@ -36,7 +36,8 @@
 	mixed attach(object obj, string event, object handler, bool useCapture)
 		This method attaches an event handler to an event on an object. It makes sure the event
 		gets cleaned on unload, so you won't get memory leaks. It makes sure that 'this' points
-		to the object the event is defined on.
+		to the object the event is defined on. Important: Returns the handler required for detaching
+		the event. This is not the same handler as passed to the attach function!
 		arguments:
 			obj		DOM object on which to catch the event
 			event		name of the event to catch, e.g. 'load', 'click', etc.
@@ -45,8 +46,24 @@
 		examples:
 
 			...
-			muze.event.attach(document.body, 'load', function() { alert(this.innerHTML); });
+			var detachHandler = muze.event.attach(document.body, 'load', function() { alert(this.innerHTML); });
 			...
+
+	bool detach(object obj, string event, object, handler, bool useCapture)
+		This method detaches an event handler from an event on an object.
+		arguments:
+			obj		DOM objeect on which the event handler was attached
+			event		name of the event to remove, e.g. 'load', 'click', etc.
+			handler		handler to detach.
+			useCapture	Mozilla's useCapture option to addEventListener
+		examples:
+		
+			...
+			var detachHandler = muze.event.attach(document.body, 'click', function() { alert('we have a click'); });
+			...
+			muze.event.detach(document.body, 'click', detachHandler);
+			...
+
 
 	void clean() 
 		This method cleans/removes all attached event handlers. It is automatically run on unload of document
@@ -111,9 +128,10 @@ muze.event = function() {
 				cache[cache.length]={ event:event, object:ob, handler:handler };
 				if (ob.addEventListener){
 					ob.addEventListener(event, handler, useCapture);
-					return true;
+					return handler;
 				} else if (ob.attachEvent){
-					return ob.attachEvent("on"+event, handler);
+					ob.attachEvent("on"+event, handler);
+					return handler;
 				} else {
 					//FIXME: don't do alerts like this
 					alert("Handler could not be attached");
@@ -121,6 +139,24 @@ muze.event = function() {
 			} else {
 				//FIXME: don't do alerts like this
 				alert('Object not found');
+			}
+		},
+
+		detach:function(ob, event, fp, useCapture) {
+			if (ob) {
+				var item=null;
+				for( var i=cache.length-1; i>=0; i--) {
+					item = cache[i];
+					if( item.object == ob && item.event == event && item.handler == fp ) {
+						if (item.object.removeEventListener) {
+							item.object.removeEventListener(item.event, item.handler, item.useCapture);
+						} else if (item.object.detachEvent) {
+							item.object.detachEvent("on" + item.event, item.handler);
+						}
+						cache[i]=null;
+						return;	
+					}
+				}
 			}
 		},
 
