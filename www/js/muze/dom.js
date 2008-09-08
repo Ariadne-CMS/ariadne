@@ -25,6 +25,9 @@
 					
 				
 */
+
+muze.namespace('muze.dom');
+
 muze.dom = function() {
 
 	var _leafElems = ["IMG", "HR", "BR", "INPUT"];
