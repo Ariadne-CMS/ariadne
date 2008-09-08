@@ -1,3 +1,30 @@
+/*
+		javascript dom library for muze modules
+
+		string getInnerHTML(object node)
+			This method returns the inner HTML of a node cross browser.
+
+			examples: 
+					<div id="mynode">Hello world!</div>
+
+					--------- javascript code ---------
+					var myInnerHTML = muze.dom.getInnerHTML(document.getElementById("mynode"));
+					------------ returns: ---------
+					Hello world!
+					
+		string getOuterHTML(object node)
+			This method returns the outer HTML of a node cross browser. 
+
+			examples:
+					<div id="mynode">Hello world!</div>
+
+					--------- javascript code ---------
+					var myOuterHTML = muze.dom.getOuterHTML(document.getElementById("mynode"));
+					------------ returns: ---------
+					<div id="mynode">Hello world!</div>
+					
+				
+*/
 muze.dom = function() {
 
 	var _leafElems = ["IMG", "HR", "BR", "INPUT"];
