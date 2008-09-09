@@ -125,7 +125,7 @@ muze.event = function() {
 					return o.myFunc;
 				}
 				var handler=createHandlerFunction(ob, fp);
-				cache[cache.length]={ event:event, object:ob, handler:handler };
+				cache[cache.length]={ event:event, object:ob, handler:handler, useCapture:useCapture };
 				if (ob.addEventListener){
 					ob.addEventListener(event, handler, useCapture);
 					return handler;
@@ -147,7 +147,7 @@ muze.event = function() {
 				var item=null;
 				for( var i=cache.length-1; i>=0; i--) {
 					item = cache[i];
-					if( item.object == ob && item.event == event && item.handler == fp ) {
+					if( item && item.object == ob && item.event == event && item.handler == fp && item.useCapture == useCapture) {
 						if (item.object.removeEventListener) {
 							item.object.removeEventListener(item.event, item.handler, item.useCapture);
 						} else if (item.object.detachEvent) {
@@ -164,13 +164,15 @@ muze.event = function() {
 			var item=null;
 			for (var i=cache.length-1; i>=0; i--) {
 				item=cache[i];
-				item.object['on'+item.event]=null;
-				if (item.object.removeEventListener) {
-					item.object.removeEventListener(item.event, item.handler, item.useCapture);
-				} else if (item.object.detachEvent) {
-					item.object.detachEvent("on" + item.event, item.handler);
+				if (item) {
+					item.object['on'+item.event]=null;
+					if (item.object.removeEventListener) {
+						item.object.removeEventListener(item.event, item.handler, item.useCapture);
+					} else if (item.object.detachEvent) {
+						item.object.detachEvent("on" + item.event, item.handler);
+					}
+					cache[i]=null;
 				}
-				cache[i]=null;
 			}
 			item=null;
 		}
