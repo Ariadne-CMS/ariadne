@@ -109,7 +109,9 @@ class cacherssfeed {
 		$element = &$this->elements;
 		foreach ($this->ns as $n) {
 			$parentElement = $element;
-			$element = &$element[$n];
+			if (is_array($element) && isset($element[$n])) {
+				$element = &$element[$n];
+			}
 		}
 		$this->ns[] = $name;
 		switch ($name) {
@@ -127,7 +129,9 @@ class cacherssfeed {
 		$element = &$this->elements;
 		foreach ($this->ns as $n) {
 			$parentElement = $element;
-			$element = &$element[$n];
+			if (is_array($element) && isset($element[$n])) {
+				$element = &$element[$n];
+			}
 		}
 		switch ($name) {
 			case 'item':
@@ -144,7 +148,9 @@ class cacherssfeed {
 	function characterData($parser, $data) {
 		$element = &$this->elements;
 		foreach ($this->ns as $n) {
-			$element = &$element[$n];
+			if (is_array($element) && isset($element[$n])) {
+				$element = &$element[$n];
+			}
 		}
 		switch ($n) {
 			case 'textinput':
