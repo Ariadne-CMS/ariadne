@@ -97,6 +97,8 @@ class pobject extends object { // pobject class definition
 		// tree selected defaults)
 		if ($ARCurrent->nls) { 
 			$this->reqnls=$ARCurrent->nls; 
+		} else if ($ARConfig->cache[$this->path] && $ARConfig->cache[$this->path]->nls->default) {
+			$this->reqnls = $ARConfig->cache[$this->path]->nls->default;
 		} else {
 			$this->reqnls=$AR->nls->default; 
 		}
