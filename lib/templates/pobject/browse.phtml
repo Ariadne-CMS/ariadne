@@ -20,8 +20,10 @@
 
 	******************************************************************/
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		if ($root) {
+		if ($root && $root!='undefined' && $this->exists($root)) {
 			$path = $root.$path;
+		} else {
+			$root = '';
 		}
 		$path=$this->make_path($path);
 		if (!$path || !$this->exists($path)) {
