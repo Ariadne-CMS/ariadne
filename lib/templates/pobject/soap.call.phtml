@@ -4,6 +4,7 @@
 		if ($this->CheckConfig($newFunction, $arguments)) {
 			$newFunction = "soap.$function.phtml";
 			$arResult = $this->call($template, $arguments);
+			return $arResult;
 		}
 	}
 ?>

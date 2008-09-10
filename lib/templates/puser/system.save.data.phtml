@@ -121,25 +121,29 @@
 			}
 
 
-
+			$pdata = "";
 			if ($profile=$this->getdata("profile","none")) {
 				$this->data->profile=$profile;
 				if ($this->arIsNewObject && !$this->getdata("arProfileLoaded")){
 					$pdata=current($this->get($profile,'system.get.phtml'));
-					/* 
-						now setting default values from the profile, 
-						guess it would be better to preload them directly in the templates
-						(direct feedback & the possibility to override 
-					*/
-					$this->data->language=$pdata->data->language;
-					$this->data->languagelist=$pdata->data->languagelist;
-					$this->data->interface=$pdata->data->interface;
-					$this->data->editor=$pdata->data->editor;
-					$this->data->template_editor=$pdata->data->template_editor;
-					if(!$customgrants) {
-						$groups=$pdata->data->groups;
+					if ($pdata->CheckSilent("read")) {
+						/* 
+							now setting default values from the profile, 
+							guess it would be better to preload them directly in the templates
+							(direct feedback & the possibility to override 
+						*/
+						$this->data->language=$pdata->data->language;
+						$this->data->languagelist=$pdata->data->languagelist;
+						$this->data->interface=$pdata->data->interface;
+						$this->data->editor=$pdata->data->editor;
+						$this->data->template_editor=$pdata->data->template_editor;
+						if(!$customgrants) {
+							$groups=$pdata->data->groups;
+						}
+					} else {
+						$this->error = sprintf($ARnls["err:nopermissionread"], $pdata->path);
+						unset($pdata);
 					}
-	       
 				}    
 			} else {
 				unset($this->data->profile);
@@ -171,6 +175,7 @@
 				/* warning: do not save this object again, since system.set.user.phtml updates the object also.. */
 				$oldgroups = $this->data->groups;
 
+
 				if (is_array($oldgroups)) {
 					reset($oldgroups);
 					while (list($key, $val)=each($oldgroups)) {
@@ -189,6 +194,12 @@
 				}
 
 
+				if (is_object($pdata)) {
+					// Make sure that permission to add this user to the groups set in the loaded profile
+					// will be granted.
+					$this->pushContext(Array("addGroupFromProfile" => true));
+				}
+
 				if (is_array($groups)) {
 					reset($groups);
 					while (list($key, $val)=each($groups)) {
@@ -199,6 +210,10 @@
 						}
 					}
 
+				}
+
+				if (is_object($pdata)) {
+					$this->popContext();
 				}
 
 				if ($arIsNewObject) {
