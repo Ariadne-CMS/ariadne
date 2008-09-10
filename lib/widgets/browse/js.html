@@ -49,7 +49,7 @@ function Browse(resultobject, path, name, title, mode, filter, filename, root) {
          echo $this->store->get_config("root").$path; 
        ?>browse.phtml?path='+escape(path)+'&title='+escape(title)+
          '&name='+escape(name)+'&mode='+escape(mode)+'&filter='+escape(filter)+
-         '&filename='+escape(filename)+'&root='+root, 'browsewindow',
+         '&filename='+escape(filename)+'&root='+escape(root), 'browsewindow',
          'directories=no,height=300,width=500,location=no,menubar=no,status=no,toolbar=no,resizable=yes,'+dprops);
     browsewindow.opener=this;
     browsewindow.focus();
