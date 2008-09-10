@@ -442,7 +442,6 @@ class pphoto extends pfile { // pphoto class definition
 				$ARCurrent->cachetime=-2; // set cache to onchange
 			}
 			$this->set_context("build");
-	 
 			$result=false;
 			$failed=false;
 			if (!$this->error) {
@@ -464,9 +463,7 @@ class pphoto extends pfile { // pphoto class definition
 				$f_store->close();
 
 				if (chdir($this->store->get_config("files").'temp/')) {
-				debug("build: 1");
 					if (is_array($ARConfig->photoCommandStack[$this->id])) {
-					debug("build: 2");
 						$image="";
 						foreach( $ARConfig->photoCommandStack[$this->id] as $exec_string){
 							$exec_string = str_replace('{buildfile}', $tmpsrc, $exec_string);
