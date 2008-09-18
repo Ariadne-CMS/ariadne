@@ -307,19 +307,24 @@
 			$result = $mod_auth->checkLogin($args["ARLogin"], $args["ARPassword"]);
 			if ($result!==true) {
 				if ($result == LD_ERR_ACCESS) {
-					$function = "user.login.html";
+					ldAccessDenied($path, $ARnls["accessdenied"]);
+					$function = false;
 				} else if ($result == LD_ERR_SESSION) {
-					$function = "user.session.timeout.html";
+					ldAccessTimeout($path, $ARnls["sessiontimeout"]);
+					$function = false;
 				} else if ($result == LD_ERR_EXPIRED) {
-					$function = "user.password.expired.html";
+					ldAcessPasswordExpired($path, $ARnls["sessionpasswordexpired"]);
+					$function = false;
 				}
 			}
 
-			// finally call the requested object
-			unset($store->total);
-			$store->call($function, $args, $store->get($path));
-			if (!$store->total) {
-				ldObjectNotFound($path, $function);
+			if ($function!==false) {
+				// finally call the requested object
+				unset($store->total);
+				$store->call($function, $args, $store->get($path));
+				if (!$store->total) {
+					ldObjectNotFound($path, $function);
+				}
 			}
 		}
 
