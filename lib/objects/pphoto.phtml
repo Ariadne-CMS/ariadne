@@ -182,6 +182,16 @@ class pphoto extends pfile { // pphoto class definition
 		return true;
 	} 
 
+	function strip() {
+		global $ARConfig;
+
+		$this->set_context("mogrify");
+
+		$ARConfig->photoStack[$this->id][]=" -strip ";
+		return true;
+	}
+
+
 	function scaledown($x, $y, $fillcolor=false) {
 		global $ARConfig;
 
@@ -613,6 +623,10 @@ class pphoto extends pfile { // pphoto class definition
 	
 	function _crop($width, $height, $x=0, $y=0) {
 		return $this->crop($width, $height, $x, $y);
+	}
+
+	function _strip() {
+		return $this->strip();
 	}
 
 	function _build($nls = '') {
