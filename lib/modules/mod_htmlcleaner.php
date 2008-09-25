@@ -262,8 +262,9 @@ class htmlcleaner
 		$parts = htmlcleaner::dessicate($body);
 
 		// flip emtied rules so we can use it as indexes
-		$config["delete_emptied"] = array_flip($config["delete_emptied"]);
-
+		if (is_array($config["delete_emptied"])) {
+			$config["delete_emptied"] = array_flip($config["delete_emptied"]);
+		}
 		$delete_stack = Array();
 
 		foreach ($parts as $part) {
@@ -352,8 +353,8 @@ class pinp_htmlcleaner extends htmlcleaner {
 	function _dessicate($str) {
 		return parent::dessicate($str);
 	}
-	function _cleanup($str) {
-		return parent::cleanup($str);
+	function _cleanup($str,$config) {
+		return parent::cleanup($str,$config);
 	}
 
 }
