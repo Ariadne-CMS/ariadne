@@ -398,6 +398,7 @@
 				$args = array(
 					$path
 				);
+
 				$tempresult = $svn['instance']->status->run($args, $svn['switches']);
 
 				// Since we have a flat structure, remove the path and use only the names.
@@ -451,6 +452,22 @@
 
 			$result = $svn['instance']->list->run_interactive($listargs, $switches);
 			return $result;
+		}
+
+		function svn_get_ariadne_props($svn, $name='') {
+			if( substr($name, 0, 1) != "/" ) {
+				$name = $this->get_path($svn, $name);
+			}
+			// accepts a filename within the svn store and returns an array containing the ar: properties of the file
+			$proplist = explode("\n", $svn['instance']->proplist->run(array($name), $svn['switches']));
+			$result = array();
+			foreach( $proplist as $value ) {
+				$value = ltrim($value);
+				if( substr($value, 0, 3) == "ar:" ) {
+					$result[$value] = $svn['instance']->propget->run(array($value, $name), $svn['switches']);
+				}
+			}
+			return $result;			
 		}
 
 		function svn_checkunder($svn, $repository, $revision='HEAD') {
