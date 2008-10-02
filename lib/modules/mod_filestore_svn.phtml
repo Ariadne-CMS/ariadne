@@ -485,20 +485,20 @@
 
 			$tempdir .= "/";
 
-			echo "Tempdir: $tempdir\n";
+			// echo "Tempdir: $tempdir\n";
 			$dir = $this->get_path($svn, '');
-			echo "Dir: $dir\n";
+			// echo "Dir: $dir\n";
 
 			$dirhandle = opendir($dir);
 			while (false !== ($file = readdir($dirhandle))) {
 				if(is_file($dir . $file)) {
 					rename($dir . $file, $tempdir . $file);
-					echo "Moved $file\n";
+					// echo "Moved $file\n";
 				}
 			}
 			closedir($dirhandle);
 			
-			echo "Checkout revision $revision<br>";
+			// echo "Checkout revision $revision<br>";
 			$checkout_result = $this->svn_checkout($svn, $repository, $revision);
 
 			// Move the templates back to the original location
@@ -507,12 +507,12 @@
 				if (is_file($tempdir . $file)) {
 					rename($tempdir . $file, $dir . $file);
 					touch($dir.$file);
-					echo "Replaced $file\n";
+					// echo "Replaced $file\n";
 				}
 			}
 			closedir($dirhandle);
 
-			echo "Removed $tempdir\n";
+			// echo "Removed $tempdir\n";
 			rmdir($tempdir);
 			return $checkout_result;			
 		}
