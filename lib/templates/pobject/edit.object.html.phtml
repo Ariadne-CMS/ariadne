@@ -30,6 +30,9 @@
 		global $HTTP_SERVER_VARS;
 		if ( $AR->user->data->editor == "tinymce" ) {
 			include($this->store->get_config("code")."widgets/htmledit/tinymce/edit.php");
+		} elseif ( $AR->user->data->editor == "toolbar") {
+			$wgHTMLEditTemplate="edit.object.html.page.phtml";
+			include($this->store->get_config("code")."widgets/htmledit/toolbar.php");
 		} elseif (	eregi(".*msie ([0-9]+).*",$HTTP_SERVER_VARS["HTTP_USER_AGENT"], $regs) &&
 				$regs[1] && 
 				(intval($regs[1])>=4) && 
