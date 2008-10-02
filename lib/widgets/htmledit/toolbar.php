@@ -456,6 +456,8 @@ function EXIT_onclick() {
 		var temp=isDirty();
 		if (temp && doConfirmSave()) {
 			SAVE_onclick('<?php echo $this->make_url(); ?>');
+		} else if (window.opener) {
+			window.close();
 		} else {
 		    window.location='<?php echo $this->make_url(); ?>';
 		}
