@@ -329,7 +329,7 @@ function Draw() {
 	target.document.open();
 
     MenuDraw="<html>\n<head>\n<link REL=STYLESHEET type='text/css' HREF='<?php echo $wwwroot; ?>styles/<?php echo $interface; ?>tree.css'>\n";
-    MenuDraw=MenuDraw+"</head>\n<body scroll='no'><div id='nodes'>\n";
+    MenuDraw=MenuDraw+"</head>\n<body scroll='auto'><div id='nodes'>\n";
 	MenuDraw=MenuDraw+root.draw('',1);
 	MenuDraw=MenuDraw+"</div></body>\n</html>";
 	target.document.writeln(MenuDraw);
