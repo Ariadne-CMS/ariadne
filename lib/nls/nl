@@ -109,6 +109,7 @@
 	$ARnls["err:groupidexists"]				=	"Groep id %s bestaat al, kies een ander id.";
 	$ARnls["err:headerssentnottext"]		=	"headers zijn al verstuurd en dit is geen text file (%s)";
 	$ARnls["err:illegalchars"]				=	"De template naam mag alleen bestaan uit normale tekens: (a-z, A-Z, 0-9) en '-', '_' en '.'.";
+	$ARnls["err:imagetoolarge"]				=	"Afbeelding is te groot, maximum grootte is %s.";
 	$ARnls["err:invalidcontent"]			=	"Fout: Ongeldige inhoud";
 	$ARnls["err:invaliduserlocation"]		=	"U kunt gebruikers niet verplaatsen buiten de /system/users/ folder.";
 	$ARnls["err:loginexists"]				=	"Login %s bestaat al, kies een andere";
@@ -364,5 +365,6 @@
 	$ARnls["err:weakpassword"]                              = "Het nieuwe wachtwoord is te zwak.";
 	$ARnls["neverexpires"]					= "Wachtwoord verloopt nooit";
 	$ARnls["expires"]					= "Verloopt";
+	$ARnls["toolbar_editor"]				= "Toolbar Editor";
 	$ARnls["sessiontimeout"]				= "Sessie verlopen";
 ?>

@@ -366,4 +366,5 @@
 	$ARnls["explain"]						=	"Erklären";
 
 	$ARnls["tinymce"]						=	"tinyMCE";
+    $ARnls["toolbar_editor"]                = "Toolbar Editor";
 ?>

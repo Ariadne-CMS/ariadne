@@ -115,6 +115,7 @@
 	$ARnls["err:illegalchars"]				=	"The template name must consist of normal characters only: (a-z, A-Z, 0-9) and '-', '_' and '.'.";
 	$ARnls["err:invalidcontent"]			=	"Error: Invalid content";
 	$ARnls["err:invaliduserlocation"]		=	"You cannot move users out of the /system/users/ tree.";
+	$ARnls["err:imagetoolarge"]				=	"Image is too large, maximum size is %s.";
 	$ARnls["err:loginexists"]				=	"Login %s already exists, choose another login";
 	$ARnls["err:logintoolong"]				=	"Login is too long, maximum length is 32 characters.";
 	$ARnls["err:logoffyourself"]			=	"Sorry, you can only logoff yourself";
@@ -370,6 +371,7 @@
 	$ARnls["err:samepassword"]				= "New password must not match old password.";
 	$ARnls["err:weakpassword"]				= "Your new password is too weak.";
 	$ARnls["neverexpires"]					= "Password never expires";
-	$ARnls["expires"]					= "Expires";
+	$ARnls["expires"]						= "Expires";
+	$ARnls["toolbar_editor"]				= "Toolbar Editor";
 	$ARnls["sessiontimeout"]				= "Session Timed Out";
 ?>

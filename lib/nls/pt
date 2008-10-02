@@ -346,5 +346,6 @@
 	$ARnls["zipcode"]						=	"C.Postal";
 
 	$ARnls["tinymce"]						=	"tinyMCE";
+    $ARnls["toolbar_editor"]                = "Toolbar Editor";
 
 ?>
