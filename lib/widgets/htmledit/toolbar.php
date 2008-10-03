@@ -402,6 +402,13 @@ function showTableBorders(element) {
 
 
 function SAVE_onclick(newurl) {
+	if (window.opener && !window.opener.closed && window.opener.wgHTMLEditContent) {
+	// always update the form if it is available.
+		sContents = getValue('[<?php echo $nls; ?>][page]');
+		sContents = getValue("editable_1"); // FIXME: hoe is de link naar [$nls][page] ?
+		window.opener.wgHTMLEditContent.value=sContents; // FIXME: sContents ophalen uit de content. Hoe?
+	}
+
 	if (tbContentElement.contentWindow.SAVE_onclick) {
 		tbContentElement.contentWindow.SAVE_onclick(newurl);
 	} else {

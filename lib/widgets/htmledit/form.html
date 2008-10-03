@@ -41,10 +41,17 @@
   } else {
     $wgHTMLEditSave2Form="false";
   }
+
+  global $AR;
+  if ( $AR->user->data->editor == "toolbar" && $this->arIsNewObject) {
+	// Toolbar editor can't handle open editor on new objects. disable the button.
+	$wgButtonState = "disabled";
+  }
+
     echo "<input type=\"hidden\" name=\"$wgHTMLEditContentName\" value=\"".htmlspecialchars($wgHTMLEditContent)."\">\n";
     echo "<input type=\"button\" name=\"$wgHTMLEditName".
        "_button\" value=\"".htmlspecialchars($wgHTMLEditValue)."\" class=\"$wgHTMLEditClass\"".
-       " onClick=\"HTMLEdit('$wgHTMLEditRoot','$wgHTMLEditPath','$wgHTMLEditFile','$wgHTMLEditName','$wgHTMLEditLanguage','$wgHTMLEditType','".
+       $wgButtonState . " onClick=\"HTMLEdit('$wgHTMLEditRoot','$wgHTMLEditPath','$wgHTMLEditFile','$wgHTMLEditName','$wgHTMLEditLanguage','$wgHTMLEditType','".
        str_replace("'","\\'",HTMLSpecialChars($wgHTMLEditTitle))."', this.form['$wgHTMLEditContentName'], ".$wgHTMLEditSave2Form.");\">"; 
 /*
   } else {
