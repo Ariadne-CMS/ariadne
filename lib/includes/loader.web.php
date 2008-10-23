@@ -98,7 +98,7 @@
 				if (move_uploaded_file($file_temp, $file_artemp)) {
 					// now make the new values available to wgWizKeepVars()
 					$result[$field]=$file;
-					$result[$field."_temp"]=substr($file_artemp,strlen($store->get_config("files")."temp"));
+					$result[$field."_temp"]=basename($file_artemp);
 					$result[$field."_size"]=(int)$http_post_file['size'];
 					$type = get_mime_type($file_artemp);
 					if (!$type) {
