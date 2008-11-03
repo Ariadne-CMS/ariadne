@@ -5,7 +5,7 @@
 	
 	*/
 
-	include_once($this->store->get_config("code")."modules/mod_htmlcleaner.php");
+	include_once($this->store->get_config("code")."modules/mod_page.php");
 
 	class edit {
 
@@ -47,17 +47,6 @@
 			if (edit::getEditMode()) {
 				echo "<script> parent.requireDataField('".AddCSlashes($name, ARESCAPE)."',".$me->id.",'".AddCSlashes($title, ARESCAPE)."'); </script>\n";
 			}
-		}
-
-		function stripARNameSpace($var) {
-			$cleanAR = array(
-				'rewrite' => array(
-					'^(A|IMG)$' => array(
-						'ar:*' =>false
-					)
-				)
-			);
-			return htmlcleaner::cleanup($var,$cleanAR);
 		}
 
 		function showInputText($var, $name, $title='', $extra='') {
@@ -149,7 +138,7 @@
 				echo $var;
 				echo "</span>";
 			} else if (!edit::isEmpty($var)) {
-				echo edit::stripARNameSpace($var);
+				echo page::stripARNameSpace($var);
 			}
 			return $id;
 		}
@@ -163,7 +152,7 @@
 				echo $var;
 				echo "</div>";
 			} else if (!edit::isEmpty($var)) {
-				echo edit::stripARNameSpace($var);
+				echo page::stripARNameSpace($var);
 			}
 			return $id;
 		}
