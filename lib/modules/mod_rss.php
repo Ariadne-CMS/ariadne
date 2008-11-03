@@ -74,8 +74,8 @@
 			return $this->current();
 		}
 
-		function _ls($template, $args='') {
-			return $this->ls($template, $args);
+		function _ls($template, $args='', $limit=100, $offset=0) {
+			return $this->ls($template, $args, $limit, $offset);
 		}
 
 		function _getArray($limit=100, $offset=0) {
@@ -249,6 +249,9 @@
 
 		function call($template, $args=Array()) {
 			$current = $this->current();
+			if (!$current) { // feed is either not yet initialized or ended, in both cases the following line has the correct result
+				$current = $this->next();
+			}
 			if ($current) {
 				$args['item'] = $current;
 				$result = $this->object->call($template, $args);
