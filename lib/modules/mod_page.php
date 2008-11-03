@@ -43,7 +43,9 @@ class page {
 	}
 
 	function parse($page, $full=false) {
-		include_once($this->store->get_config('code')."modules/mod_url.php");
+		$context = pobject::getContext();
+		$me = $context["arCurrentObject"];
+		include_once($me->store->get_config('code')."modules/mod_url.php");
 		if (!$full) {
 			$page = page::getBody($page);
 		}
@@ -100,10 +102,10 @@ class page {
 	}
 
 	function compile($page, $language='') {
-		include_once($this->store->get_config('code')."modules/mod_url.php");
-		include_once($this->store->get_config('code')."modules/mod_htmlparser.php");
 		$context = pobject::getContext();
 		$me = $context["arCurrentObject"];
+		include_once($me->store->get_config('code')."modules/mod_url.php");
+		include_once($me->store->get_config('code')."modules/mod_htmlparser.php");
 		if (!$language) {
 			$language = $me->nls;
 		}
@@ -201,7 +203,9 @@ class page {
 	}
 
 	function stripARNameSpace($page) {
-		include_once($this->store->get_config('code')."modules/mod_htmlcleaner.php");
+		$context = pobject::getContext();
+		$me = $context["arCurrentObject"];
+		include_once($me->store->get_config('code')."modules/mod_htmlcleaner.php");
 		$cleanAR = array(
 			'rewrite' => array(
 				'^(A|IMG)$' => array(
