@@ -1,6 +1,5 @@
 <?php
 
-include_once($this->store->get_config('code')."modules/mod_url.php");
 include_once($this->store->get_config('code')."modules/mod_htmlparser.php");
 
 //include_once($me->store->get_config('code')."modules/mod_debug.php");
@@ -31,6 +30,10 @@ class pinp_page {
 		return page::getReferences($page);
 	}
 
+	function _stripARNameSpace($page) {
+		return page::stripARNameSpace($page);
+	}
+
 }
 	
 class page {
@@ -39,54 +42,8 @@ class page {
 		return eregi_replace('^.*<BODY[^>]*>', '', eregi_replace('</BODY.*$', '', $page));
 	}
 
-	function compileWorker(&$node) {
-		$context = pobject::getContext();
-		$me = $context["arCurrentObject"];
-		$result = false;
-		$contentEditable = "";
-		if (isset($node['attribs']['contenteditable'])) {
-			$contentEditable = "contenteditable";
-		} else if (isset($node['attribs']['contentEditable'])) {
-			$contentEditable = "contentEditable";
-		}
-		if ($contentEditable) {
-			$node['attribs']['ar:editable'] = $node['attribs'][$contentEditable];
-			unset($node['attribs'][$contentEditable]);
-			$result = true;
-		}
-		if ($node['attribs']['ar:type'] == "template") {
-				$path		= $me->make_path($node['attribs']['ar:path']);
-				$template	= $node['attribs']['ar:name'];
-				$argsarr	= Array();
-				if (is_array($node['attribs'])) {
-					foreach ($node['attribs'] as $key => $value) {
-						if (substr($key, 0, strlen('arargs:')) == 'arargs:') {
-							$name = substr($key, strlen('arargs:'));
-							$argsarr[$name] = $name."=".$value;
-						}
-					}
-				}
-				$args = implode('&', $argsarr);
-
-				$node['children'] = Array();
-				$node['children'][] = Array(
-					"type" => "text",
-					"html" => "{arCall:$path$template?$args}"
-				);
-				// return from worker function
-				return true;
-		}
-		if (is_array($node['children'])) {
-			foreach ($node['children'] as $key => $child) {
-				// single | makes the following line always run the compileworker
-				// method, while any return true in that method makes $result true
-				$result = $result | page::compileWorker(&$node['children'][$key]);
-			}
-		}
-		return $result;
-	}
-
 	function parse($page, $full=false) {
+		include_once($this->store->get_config('code')."modules/mod_url.php");
 		if (!$full) {
 			$page = page::getBody($page);
 		}
@@ -143,6 +100,8 @@ class page {
 	}
 
 	function compile($page, $language='') {
+		include_once($this->store->get_config('code')."modules/mod_url.php");
+		include_once($this->store->get_config('code')."modules/mod_htmlparser.php");
 		$context = pobject::getContext();
 		$me = $context["arCurrentObject"];
 		if (!$language) {
@@ -161,6 +120,53 @@ class page {
 		} else {
 			return $page;
 		}
+	}
+
+	function compileWorker(&$node) {
+		$context = pobject::getContext();
+		$me = $context["arCurrentObject"];
+		$result = false;
+		$contentEditable = "";
+		if (isset($node['attribs']['contenteditable'])) {
+			$contentEditable = "contenteditable";
+		} else if (isset($node['attribs']['contentEditable'])) {
+			$contentEditable = "contentEditable";
+		}
+		if ($contentEditable) {
+			$node['attribs']['ar:editable'] = $node['attribs'][$contentEditable];
+			unset($node['attribs'][$contentEditable]);
+			$result = true;
+		}
+		if ($node['attribs']['ar:type'] == "template") {
+				$path		= $me->make_path($node['attribs']['ar:path']);
+				$template	= $node['attribs']['ar:name'];
+				$argsarr	= Array();
+				if (is_array($node['attribs'])) {
+					foreach ($node['attribs'] as $key => $value) {
+						if (substr($key, 0, strlen('arargs:')) == 'arargs:') {
+							$name = substr($key, strlen('arargs:'));
+							$argsarr[$name] = $name."=".$value;
+						}
+					}
+				}
+				$args = implode('&', $argsarr);
+
+				$node['children'] = Array();
+				$node['children'][] = Array(
+					"type" => "text",
+					"html" => "{arCall:$path$template?$args}"
+				);
+				// return from worker function
+				return true;
+		}
+		if (is_array($node['children'])) {
+			foreach ($node['children'] as $key => $child) {
+				// single | makes the following line always run the compileworker
+				// method, while any return true in that method makes $result true
+				$result = $result | page::compileWorker(&$node['children'][$key]);
+			}
+		}
+		return $result;
 	}
 
 	function getReferences($page) {
@@ -192,6 +198,18 @@ class page {
 			$result[]	= $ref;
 		}
 		return $result;
+	}
+
+	function stripARNameSpace($page) {
+		include_once($this->store->get_config('code')."modules/mod_htmlcleaner.php");
+		$cleanAR = array(
+			'rewrite' => array(
+				'^(A|IMG)$' => array(
+					'ar:*' =>false
+				)
+			)
+		);
+		return htmlcleaner::cleanup( $page, $cleanAR );
 	}
 
 }
