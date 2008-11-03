@@ -5,6 +5,8 @@
 	
 	*/
 
+	include_once($this->store->get_config("code")."modules/mod_htmlcleaner.php");
+
 	class edit {
 
 		function setEditMode($mode=false, $template='user.edit.html', $target='_top') {
@@ -45,6 +47,17 @@
 			if (edit::getEditMode()) {
 				echo "<script> parent.requireDataField('".AddCSlashes($name, ARESCAPE)."',".$me->id.",'".AddCSlashes($title, ARESCAPE)."'); </script>\n";
 			}
+		}
+
+		function stripARNameSpace($var) {
+			$cleanAR = array(
+				'rewrite' => array(
+					'^(A|IMG)$' => array(
+						'ar:*' =>false
+					)
+				)
+			);
+			return htmlcleaner::cleanup($var,$cleanAR);
 		}
 
 		function showInputText($var, $name, $title='', $extra='') {
@@ -136,7 +149,7 @@
 				echo $var;
 				echo "</span>";
 			} else if (!edit::isEmpty($var)) {
-				echo $var;
+				echo edit::stripARNameSpace($var);
 			}
 			return $id;
 		}
@@ -150,7 +163,7 @@
 				echo $var;
 				echo "</div>";
 			} else if (!edit::isEmpty($var)) {
-				echo $var;
+				echo edit::stripARNameSpace($var);
 			}
 			return $id;
 		}
@@ -188,15 +201,15 @@
 			}
 		}
 
-        function showUrl($path='') {
-				$context = pobject::getContext();
-				$me = $context["arCurrentObject"];
-            if (edit::getEditMode()) {
-                echo $me->make_url($path).edit::getEditTemplate();
-            } else {
-                echo $me->make_url($path);
-            }
-        }
+		function showUrl($path='') {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			if (edit::getEditMode()) {
+				echo $me->make_url($path).edit::getEditTemplate();
+			} else {
+				echo $me->make_url($path);
+			}
+		}
 
 		function isEmpty($var) {
 			return (trim(ereg_replace('&nbsp;',' ',strip_tags($var, '<img>')))==""); 
