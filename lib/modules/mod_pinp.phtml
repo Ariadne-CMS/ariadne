@@ -413,7 +413,6 @@ class scanner {
 								} else
 								if ($yych == "\n") {
 									$this->YYLINE++;
-									++$YYCURSOR;
 								} else
 								if ($yych == '$') {
 									/*	
@@ -464,7 +463,7 @@ class scanner {
 								$result = $multi_string;
 								return PT_DQ_STRING;
 							} else {
-								$result = "unterminated quote, started at line $start_line";
+								$result = "unterminated double quote, started at line $start_line";
 								return PT_ERROR;
 							}
 						break;
@@ -477,7 +476,6 @@ class scanner {
 								} else
 								if ($yych == "\n") {
 									$this->YYLINE++;
-									++$YYCURSOR;
 								}
 								$yych = $YYBUFFER[++$YYCURSOR];
 							}
@@ -491,7 +489,7 @@ class scanner {
 								$result=substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR - $YYCURSOR_START);
 								return PT_STRING;
 							} else {
-								$result = "unterminated quote, started at line: $start_line";
+								$result = "unterminated single quote, started at line: $start_line";
 								return PT_ERROR;
 							}
 						break;
