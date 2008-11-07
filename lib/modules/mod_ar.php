@@ -52,7 +52,7 @@
 
 	class arFind {
 
-		var $limit = 100;
+		var $limit = 0;
 		var $offset = 0;
 		var $order = '';
 		var $query = '';
@@ -74,18 +74,21 @@
 		}
 
 		function limit($limit) {
-			$this->limit = $limit;
-			return $this;
+			$clone = clone $this;
+			$clone->limit = $limit;
+			return $clone;
 		}
 
 		function offset($offset) {
-			$this->offset = $offset;
-			return $this;
+			$clone = clone $this;
+			$clone->offset = $offset;
+			return $clone;
 		}
 	
 		function order($order) {
-			$this->order = $order;
-			return $this;
+			$clone = clone $this;
+			$clone->order = $order;
+			return $clone;
 		}
 
 		function _call($template, $args=null) {
@@ -145,6 +148,10 @@
 			return $this->find($query);
 		}
 
+		function _ls() {
+			return $this->ls();
+		}
+		
 		function _call($template, $args=null) {
 			return $this->call($template, $args);
 		}
