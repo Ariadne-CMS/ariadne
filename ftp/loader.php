@@ -9,16 +9,17 @@
 		chdir(substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')));
 		include("../www/ariadne.inc");
 	}
-	require($ariadne."/configs/ariadne.phtml");
-    require($ariadne."/configs/ftp/$configfile");
-	require($ariadne."/configs/store.phtml");
-	require($ariadne."/includes/loader.ftp.php");
-	require($ariadne."/configs/sessions.phtml");
-	require($ariadne."/stores/".$store_config["dbms"]."store.phtml");
+	require_once($ariadne."/configs/ariadne.phtml");
+    require_once($ariadne."/configs/ftp/$configfile");
+	require_once($ariadne."/configs/store.phtml");
+	require_once($ariadne."/includes/loader.ftp.php");
+	require_once($ariadne."/configs/sessions.phtml");
+	require_once($ariadne."/stores/".$store_config["dbms"]."store.phtml");
 	require($ariadne."/nls/en");
-	require($ariadne."/modules/mod_mimemagic.php");
+	require_once($ariadne."/modules/mod_mimemagic.php");
 	
-	require($ariadne."/modules/mod_virusscan.php");
+	require_once($ariadne."/modules/mod_virusscan.php");
+	include_once($ariadne."/modules/mod_ar.php");
 
 
 		/* this function has been taken from the php manual		*/

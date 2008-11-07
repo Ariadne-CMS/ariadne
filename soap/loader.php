@@ -6,6 +6,7 @@
 	include_once($store_config['code']."modules/mod_session.phtml");
 	include_once($store_config['code']."includes/loader.soap.server.php");
 	include_once($store_config['code']."includes/loader.soap.php");
+	include_once($store_config['code']."modules/mod_ar.php");
 
 	function fix_quotes(&$value) {
 		if (is_array($value)) {
