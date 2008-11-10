@@ -41,6 +41,7 @@ class pinp_cacherss {
 	}
 
 	function _titlelink( $url ) {
+		global $AR;
 		$cachelocation = $AR->dir->install . "/files/cache/rss/";
 		$cache = new cache( $cachelocation );
 		$httphelper = new httphelper( $cache);
