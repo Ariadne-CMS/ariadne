@@ -258,31 +258,33 @@ class httphelper {
 			}
 			$connection = @fsockopen( $host, $port, $errno, $errstr, 120); 
 			if( $connection ) { 
+				$requeststring = "";
 				if( strtoupper($method) == "GET" ) { 
 					if ($data) {
 						$url .= "?" . $data; 
 					}
-					fputs( $connection, "GET $uri HTTP/1.0\r\n"); 
+					$requeststring .= "GET $uri HTTP/1.0\r\n"; 
 				} else if( strtoupper($method) == "POST" ) { 
-					fputs( $connection, "POST $uri HTTP/1.0\r\n"); 
+					$requeststring .= "POST $uri HTTP/1.0\r\n"; 
 				} else {
-					fputs( $connection, "$method $uri HTTP/1.0\r\n");
+					$requeststring .= "$method $uri HTTP/1.0\r\n";
 				}
 
-				fputs( $connection, "Host: $host\r\n");
-				fputs( $connection, "Accept: */*\r\n"); 
-				fputs( $connection, "Accept: image/gif\r\n"); 
-				fputs( $connection, "Accept: image/x-xbitmap\r\n"); 
-				fputs( $connection, "Accept: image/jpeg\r\n"); 
+				$requeststring .= "Host: $host\r\n";
+				$requeststring .= "Accept: */*\r\n"; 
+				$requeststring .= "Accept: image/gif\r\n"; 
+				$requeststring .= "Accept: image/x-xbitmap\r\n"; 
+				$requeststring .= "Accept: image/jpeg\r\n"; 
 
 				if( strtoupper($method) == "POST" ) { 
 					$strlength = strlen( $data); 
-					fputs( $connection, "Content-type: application/x-www-form-urlencoded\r\n" ); 
-					fputs( $connection, "Content-length: ".$strlength."\r\n\r\n"); 
-					fputs( $connection, $data."\r\n"); 
+					$requeststring .= "Content-type: application/x-www-form-urlencoded\r\n" ; 
+					$requeststring .= "Content-length: ".$strlength."\r\n\r\n"; 
+					$requeststring .= $data."\r\n"; 
 				} 
 
-				fputs( $connection, "\r\n" , 2); 
+				$requeststring .= "\r\n" ; 
+				fwrite($connection,$requeststring,strlen($requeststring));
 				$output = ""; 
 
 				$headerContents = '';
