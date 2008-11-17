@@ -314,7 +314,7 @@
 					ldAccessTimeout($path, $ARnls["sessiontimeout"]);
 					$function = false;
 				} else if ($result == LD_ERR_EXPIRED) {
-					ldAcessPasswordExpired($path, $ARnls["sessionpasswordexpired"]);
+					ldAccessPasswordExpired($path, $ARnls["sessionpasswordexpired"]);
 					$function = false;
 				}
 			}
