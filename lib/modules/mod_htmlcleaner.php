@@ -306,7 +306,7 @@ class htmlcleaner
 															break 3;
 														}
 													} else {
-														$part->attributes[$attrib_key] = $value;
+														$part->attributes[$attrib_key] = eregi_replace('^'.$value_rule.'$', $value, $part->attributes[$attrib_key]);
 													}
 												}
 											}
@@ -323,7 +323,8 @@ class htmlcleaner
 												break 2;
 											}
 										} else {
-											$part->attributes[$attrib_key] = $value_rules;
+											$part->attributes[eregi_replace('^'.$attrib_rule.'$', $value_rules, $attrib_key)] = $part->attributes[$attrib_key];
+											unset($part->attributes[$attrib_key]);
 										}
 									}
 								}
