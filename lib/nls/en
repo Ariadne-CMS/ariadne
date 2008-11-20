@@ -371,6 +371,9 @@
 	$ARnls["err:samepassword"]				= "New password must not match old password.";
 	$ARnls["err:weakpassword"]				= "Your new password is too weak.";
 	$ARnls["neverexpires"]					= "Password never expires";
+	$ARnls["new_password"]					= "New password";
+	$ARnls["new_password_repeat"]				= "Repeat your new password";
+
 	$ARnls["expires"]						= "Expires";
 	$ARnls["toolbar_editor"]				= "Toolbar Editor";
 	$ARnls["sessiontimeout"]				= "Session Timed Out";

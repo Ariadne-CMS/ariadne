@@ -364,6 +364,8 @@
 	$ARnls["err:samepassword"]                              = "Het nieuwe watchwoord mag niet gelijk zijn aan het oude.";
 	$ARnls["err:weakpassword"]                              = "Het nieuwe wachtwoord is te zwak.";
 	$ARnls["neverexpires"]					= "Wachtwoord verloopt nooit";
+	$ARnls["new_password"]					= "Kies een nieuw wachtwoord";
+	$ARnls["new_password_repeat"]				= "Typ nogmaals uw nieuwe wachtwoord";
 	$ARnls["expires"]					= "Verloopt";
 	$ARnls["toolbar_editor"]				= "Toolbar Editor";
 	$ARnls["sessiontimeout"]				= "Sessie verlopen";
