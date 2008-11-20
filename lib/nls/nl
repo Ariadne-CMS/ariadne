@@ -359,7 +359,7 @@
 	$ARnls["explain"]						=	"Leg uit";
 	$ARnls["tinymce"]						=	"tinyMCE";
 	$ARnls["openinpopup"]					=	"Open in Popup";
-	$ARnls["sessionpasswordexpired"]        = "Wachtwoord verlopen.";
+	$ARnls["sessionpasswordexpired"]        = "Uw wachtwoord is verlopen.";
 	$ARnls["passwordexpired"]				= "Uw wachtwoord is verlopen. Vul een nieuw wachtwoord in.";
 	$ARnls["err:samepassword"]                              = "Het nieuwe watchwoord mag niet gelijk zijn aan het oude.";
 	$ARnls["err:weakpassword"]                              = "Het nieuwe wachtwoord is te zwak.";
