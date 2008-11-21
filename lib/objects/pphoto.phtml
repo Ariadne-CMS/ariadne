@@ -215,7 +215,7 @@ class pphoto extends pfile { // pphoto class definition
 		return Array("x" => $newx, "y" => $newy);
 	}
 
-	function setComposeStyle($name, $method, $width, $height, $xoffset, $yoffset, $percentage, $resize) {
+	function setComposeStyle($name, $method, $width, $height, $xoffset, $yoffset, $percentage, $resize, $gravity=false) {
 		$this->arComposeStyles[$name]["method"]=$method;
 		$this->arComposeStyles[$name]["width"]=$width;
 		$this->arComposeStyles[$name]["height"]=$height;
@@ -223,6 +223,7 @@ class pphoto extends pfile { // pphoto class definition
 		$this->arComposeStyles[$name]["yoffset"]=$yoffset;
 		$this->arComposeStyles[$name]["percentage"]=$percentage;
 		$this->arComposeStyles[$name]["resize"]=$resize;
+		$this->arComposeStyles[$name]["gravity"]=$gravity;
 	} 
 
 	function compose( $target, $style="default", $blend = 0, $params=false, $nls = '') {
