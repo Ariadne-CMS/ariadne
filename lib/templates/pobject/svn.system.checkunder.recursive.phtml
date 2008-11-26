@@ -31,6 +31,22 @@
 			$result = $fstore->svn_checkunder($svn, $repository);
 			print_r($result);
 
+			if ($result) {
+				$templates = array();
+				foreach ($result as $item) {
+					$templates[] = $item['name'];
+				}
+
+				$this->call(
+					"svn.system.compile.templates.phtml",
+					array(
+						'templates' 	=> $templates,
+						'fstore'	=> $fstore,
+						'svn'		=> $svn
+					)
+				);
+			}
+
 			// Run checkunder on the existing subdirs.
 			$arCallArgs['repoPath'] = $this->path;
 			$arCallArgs['repository'] = $repository;
