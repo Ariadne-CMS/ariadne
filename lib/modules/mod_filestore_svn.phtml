@@ -204,6 +204,7 @@
 			   directories.
 			*/
 
+			$repository = trim($repository); // Make sure no spaces on the start or end, this will break stuff.
 			$args = array(
 				$repository,
 				$this->get_path($svn, '')
@@ -287,6 +288,8 @@
 		}
 
 		function svn_export($svn, $repository, $revision='HEAD') {
+			$repository = trim($repository);
+
 			$args = array(
 				$repository,
 				$this->get_path($svn, '')
@@ -302,6 +305,7 @@
 		}
 
 		function svn_import($svn, $repository, $comment='') {
+			$repository = trim($repository);
 			$args = array(
 				$this->get_path($svn, ''),
 				$repository
@@ -443,6 +447,7 @@
 
 		// Start of customized SVN functions, these are not actually SVN commands but are very handy.
 		function svn_accept_cert($svn, $repository) {
+			$repository = trim($repository);
 			$listargs = array(
 				$repository
 			);
@@ -478,42 +483,51 @@
 			// checkout the SVN, then move the original
 			// templates back over the SVN version.
 
-			// Move the templates to a safe location.
-			$tempdir = tempnam($AR->dir->install . "/files/temp/", "svntemp");
-			unlink($tempdir);
-			mkdir($tempdir);
-
-			$tempdir .= "/";
-
-			// echo "Tempdir: $tempdir\n";
+			$repository = trim($repository);
 			$dir = $this->get_path($svn, '');
-			// echo "Dir: $dir\n";
+			$tempdir = tempnam($AR->dir->install . "/files/temp/", "svntemp");
 
-			$dirhandle = opendir($dir);
-			while (false !== ($file = readdir($dirhandle))) {
-				if(is_file($dir . $file)) {
-					rename($dir . $file, $tempdir . $file);
-					// echo "Moved $file\n";
+			if (exists($dir)) {
+				// $dir only exists if templates are defined on this object.
+				// Move the templates to a safe location.
+				unlink($tempdir);
+				mkdir($tempdir);
+
+				$tempdir .= "/";
+
+				// echo "Tempdir: $tempdir\n";
+				// echo "Dir: $dir\n";
+
+				$dirhandle = opendir($dir);
+				while (false !== ($file = readdir($dirhandle))) {
+					if(is_file($dir . $file)) {
+						rename($dir . $file, $tempdir . $file);
+						// echo "Moved $file\n";
+					}
 				}
+				closedir($dirhandle);
 			}
-			closedir($dirhandle);
 			
 			// echo "Checkout revision $revision<br>";
 			$checkout_result = $this->svn_checkout($svn, $repository, $revision);
 
-			// Move the templates back to the original location
-			$dirhandle = opendir($tempdir);
-			while (false !== ($file = readdir($dirhandle))) {
-				if (is_file($tempdir . $file)) {
-					rename($tempdir . $file, $dir . $file);
-					touch($dir.$file);
-					// echo "Replaced $file\n";
+			if (exists($tempdir)) {
+				// Tempdir only exists if we moved any templtes.
+				// Move the templates back to the original location
+		
+				$dirhandle = opendir($tempdir);
+				while (false !== ($file = readdir($dirhandle))) {
+					if (is_file($tempdir . $file)) {
+						rename($tempdir . $file, $dir . $file);
+						touch($dir.$file);
+						// echo "Replaced $file\n";
+					}
 				}
-			}
-			closedir($dirhandle);
+				closedir($dirhandle);
 
-			// echo "Removed $tempdir\n";
-			rmdir($tempdir);
+				// echo "Removed $tempdir\n";
+				rmdir($tempdir);
+			}
 			return $checkout_result;			
 		}
 			
@@ -525,7 +539,7 @@
 			   The reason import is used instead of mkdir is because import
 			   creates the parent directories as well.
 			*/
-
+			$repository = trim($repository);
 			global $AR;
 			$listargs = array(
 				$repository
@@ -552,6 +566,7 @@
 		}
 
 		function svn_rinfo($svn, $repository, $name='') {
+			$repository = trim($repository);
 			$args = array(
 				$repository . $name
 			);
@@ -560,6 +575,7 @@
 		}
 
 		function svn_rpropget($svn, $repository, $propkey, $name='') {
+			$repository = trim($repository);
 			$args = array(
 				$propkey,
 				$repository . $name
