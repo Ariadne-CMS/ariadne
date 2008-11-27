@@ -1491,7 +1491,7 @@ class pobject extends object { // pobject class definition
 						} else if (!isset($this->data->nls)) {
 							debug("pobject: CheckConfig: no nls data ","all");
 							// the object has no language support
-							$this->nlsdata=&$this->data;
+							$this->nlsdata=$this->data;
 							$continue=true;
 						} else if (($ARCurrent->allnls) || ($ARCurrent->nolangcheck)) {
 							debug("pobject: CheckConfig: no $reqnls, but allnls set","all");
