@@ -2263,9 +2263,13 @@ class pobject extends object { // pobject class definition
 				include($nlsfile);
 				$this->ARnls = array_merge((array)$this->ARnls, $ARnls);
 			} else {
+				// current result;
+				$arResult = $ARCurrent->arResult;
 				$this->pushContext(Array());
 					$this->CheckConfig($section, Array('nls' => $nls));
 				$this->popContext();
+				// reset current result (CheckConfig may have changed it when it should not have).
+				$ARCurrent->arResult = $arResult;
 			}
 		}
 	}
