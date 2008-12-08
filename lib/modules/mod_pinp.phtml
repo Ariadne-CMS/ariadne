@@ -31,6 +31,13 @@ define("PT_CBRACE_CLOSE",	226);
 define("PT_NUMBER",			225);
 define("PT_END_STMT",		224);
 define("PT_FOR_STMT",		223);
+define("PT_NAMESPACE",		222);
+define("PT_NAMESPACE_SEPERATOR", 221);
+define("PT_USE",			220);
+define("PT_AS",				219);
+define("PT_THROW",			218);
+define("PT_TRY",			217);
+define("PT_CATCH",			216);
 
 define("YY_STATE_HTML",			1);
 define("YY_STATE_PINP",			2);
@@ -51,7 +58,13 @@ class scanner {
 				"include_once" => PT_INCLUDE_ONCE,
 				"require" => PT_REQUIRE,
 				"require_once" => PT_REQUIRE_ONCE,
-				"for" => PT_FOR_STMT
+				"for" => PT_FOR_STMT,
+				"namespace" => PT_NAMESPACE,
+				"use"	=> PT_USE,
+				"as"	=> PT_AS,
+				"throw" => PT_THROW,
+				"try"	=> PT_TRY,
+				"catch"	=> PT_CATCH
 				);
 
 
@@ -183,6 +196,7 @@ class scanner {
 						case ')': ($token || $token = PT_PAR_CLOSE);
 						case '[': ($token || $token = PT_BRACKET_OPEN);
 						case ']': ($token || $token = PT_BRACKET_CLOSE);
+						case '\\':($token || $token = PT_NAMESPACE_SEPERATOR);
 							$yych = $YYBUFFER[++$YYCURSOR];
 							while ($YYCLASSES["NOISE"][$yych]) {
 								if ($yych == "\n") {
@@ -565,7 +579,7 @@ class pinp {
 	      "mt_rand|mt_srand|mt_getrandmax|number_format|octdec|pi|pow|rad2deg|rand|round|".
 	      "sin|sinh|sqrt|srand|tan|tanh|bcadd|bccomp|bcdiv|bcmod|bcmul|bcpow|bcscale|bcsqrt|".
 		  "bcsub|gmp_[a-z_]+";
-		$misc_funcs="mail|highligh_string|pack|get_browser|get_class|uniqid";
+		$misc_funcs="mail|highligh_string|pack|get_browser|get_class|uniqid|clone";
 		$net_funcs="checkdnsrr|gethostbyaddr|gethostbyname|gethostbynamel|getmxrr|".
 		  "getservbyport|getservbyname|ip2long|long2ip";
 		$regex_funcs="ereg|ereg_replace|eregi|eregi_replace|split|spliti|preg_match|".
@@ -683,6 +697,8 @@ class pinp {
 				$this->next_token();
 				$call_args .= $this->token_value;
 
+				// remove all leading underscores.
+				$ident = ltrim($ident, '_');
 				$result = $func_prefix.$ident.$call_args;
 			} else {
 				$result = $var_prefix.$ident.$array_index;			
@@ -727,7 +743,7 @@ class pinp {
 				$this->next_token();
 				$call_args .= $this->token_value;
 
-				$result = "{'".$func_prefix."'.".$index."}".$call_args;
+				$result = "{'".$func_prefix."'.ltrim(".$index.", '_')}".$call_args;
 			} else {
 				$result = "$var_prefix"."{".$index."}".$array_index;
 			}
@@ -833,7 +849,7 @@ class pinp {
 					// we don't have to prefix the function identifier if we already have done that.
 					if (!$identSet) {
 						if (!$this->allowed_functions[$iname]) {
-								$result = $this->function_prefix.$this->token_value;
+								$result = $this->function_prefix.ltrim($this->token_value, '_');
 						} else {
 								$result = $this->token_value;
 						}
@@ -971,6 +987,19 @@ class pinp {
 					} else {
 						$result .= $expression;
 					}
+				break;
+				case PT_THROW:
+				case PT_TRY:
+				case PT_CATCH:
+					$this->error = "Exceptions are not supported yet. Error at line: ".$this->scanner->YYLINE;
+				break;
+				case PT_USE:
+				case PT_AS:
+					$this->error = "Aliasing/Importing is not supported yet. Error at line: ".$this->scanner->YYLINE;
+				break;
+				case PT_NAMESPACE:
+				case PT_NAMESPACE_SEPERATOR:
+					$this->error = "Namespaces are not supported yet. Error at line: ".$this->scanner->YYLINE;
 				break;
 				case PT_STRING:
 					$result .= $this->token_ahead_value;
