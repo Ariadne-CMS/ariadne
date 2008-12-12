@@ -732,16 +732,17 @@ class pinp {
 		return $result;
 	}
 
-	function parse_var_index($var_prefix, $func_prefix, $noFunctionCalls = false) {
+	function parse_var_index($var_prefix, $func_prefix, $inDQString = false) {
 		$result = "";
+		$noise = "";
 		if ($this->token_ahead == PT_IDENT) {
 			$this->next_token();
 			$ident			= $this->token_value;
-			$array_index	= $this->parse_array_operator();
+			$array_index	= $this->parse_array_operator($inDQString);
 			if ($this->error) {
 				return false;
 			}
-			if (!$noFunctionCalls && $this->token_ahead == PT_PAR_OPEN) {
+			if (!$inDQString && $this->token_ahead == PT_PAR_OPEN) {
 				if ($array_index) {
 					$this->error = "Can't call functions from an array at line: ".$this->scanner->YYLINE;
 					return false;
@@ -766,6 +767,7 @@ class pinp {
 		} else if ($this->token_ahead == PT_CBRACE_OPEN || $this->token_ahead == PT_VAR_REFERENCE) {
 			$this->next_token();
 			if ($this->token == PT_CBRACE_OPEN) {
+				$noise .= substr($this->token_value, 1);
 				$index = "(".$this->parse_statement().")";
 				if ($this->error) {
 					return false;
@@ -775,6 +777,7 @@ class pinp {
 					return false;			
 				}
 				$this->next_token();
+				$noise .= substr($this->token_value, 1);
 			} else {
 				if ($this->token_ahead != PT_IDENT) {
 					$this->error = "Expected an identifier instead of '".$this->token_ahead_value."' at line: ".$this->scanner->YYLINE;
@@ -783,11 +786,11 @@ class pinp {
 				$this->next_token();
 				$index = $this->var_prefix.$this->token_value;
 			}
-			$array_index = $this->parse_array_operator();
+			$array_index = $this->parse_array_operator($inDQString);
 			if ($this->error) {
 				return false;
 			}
-			if (!$noFunctionCalls && $this->token_ahead == PT_PAR_OPEN) {
+			if (!$inDQString && $this->token_ahead == PT_PAR_OPEN) {
 				if ($array_index) {
 					$this->error = "Can't call functions from an array at line: ".$this->scanner->YYLINE;
 					return false;
@@ -805,7 +808,7 @@ class pinp {
 
 				$result = "{'".$func_prefix."'.ltrim(".$index.", '_')}".$call_args;
 			} else {
-				$result = "$var_prefix"."{".$index."}".$array_index;
+				$result = "$var_prefix"."{".$index."}".$array_index."$noise";
 			}
 		} else {
 			$this->error = "Unexpected '".$this->token_ahead_value."' following '".$this->token_value."' at line: ".$this->scanner->YYLINE;
@@ -814,10 +817,10 @@ class pinp {
 	}
 
 
-	function parse_array_operator() {
+	function parse_array_operator($inDQString = false) {
 		$result = "";
 		while (!$this->error && ( $this->token_ahead == PT_BRACKET_OPEN ||
-					$this->token_ahead == PT_CBRACE_OPEN ) ) {
+					(!$inDQString && $this->token_ahead == PT_CBRACE_OPEN) ) ) {
 
 			$this->next_token();
 			if ($this->token == PT_BRACKET_OPEN) {
@@ -851,10 +854,10 @@ class pinp {
 	}
 
 
-	function parse_object_operator($noFunctionCalls = false) {
+	function parse_object_operator($inDQString = false) {
 		while (!$this->error && $this->token_ahead == PT_OBJECT_OPERATOR) {
 			$this->next_token();
-			$result .= $this->token_value.$this->parse_var_index("", "_", $noFunctionCalls);
+			$result .= $this->token_value.$this->parse_var_index("", "_", $inDQString);
 			if ($this->token == PT_PAR_CLOSE) {
 				break;
 			}
@@ -863,9 +866,9 @@ class pinp {
 	}
 
 
-	function parse_variable_reference($noFunctionCalls = false) {
+	function parse_variable_reference($inDQString = false) {
 		$this->next_token(); // eat $ sign;
-		$result = $this->var_prefix.$this->parse_var_index("", "_", $noFunctionCalls);
+		$result = $this->var_prefix.$this->parse_var_index("", "_", $inDQString);
 		if ($this->error) {
 			return false;
 		}
@@ -873,19 +876,19 @@ class pinp {
 	}
 
 
-	function parse_expression($noFunctionCalls = false) {
+	function parse_expression($inDQString = false) {
 		$result = "";
 		switch ($this->token_ahead) {
 
 			case PT_VAR_REFERENCE:
-				$result = $this->parse_variable_reference($noFunctionCalls);
+				$result = $this->parse_variable_reference($inDQString);
 				if ($this->error) {
 					return false;
 				}
 				if ($this->token == PT_PAR_CLOSE) {
 					$parseReturnValues = true;
 				} else if ($this->token_ahead == PT_OBJECT_OPERATOR) {
-					$result .= $this->parse_object_operator($noFunctionCalls);
+					$result .= $this->parse_object_operator($inDQString);
 				}
 				if ($this->token == PT_PAR_CLOSE) {
 					$parseReturnValues = true;
@@ -908,7 +911,7 @@ class pinp {
 					}
 					$identSet = true;
 				}
-				if (!$noFunctionCalls && $this->token_ahead == PT_PAR_OPEN) {
+				if (!$inDQString && $this->token_ahead == PT_PAR_OPEN) {
 					// we don't have to prefix the function identifier if we already have done that.
 					if (!$identSet) {
 						if (!$this->allowed_functions[$iname]) {
@@ -967,16 +970,16 @@ class pinp {
 				while (!$this->error &&	
 							($this->token_ahead == PT_OBJECT_OPERATOR 
 								|| $this->token_ahead == PT_BRACKET_OPEN
-								|| ($this->token_ahead == PT_PAR_OPEN && !$noFunctionCalls))) {
+								|| ($this->token_ahead == PT_PAR_OPEN && !$inDQString))) {
 					while (!$this->error && $this->token_ahead == PT_BRACKET_OPEN) {
-						$result = "(!is_array(\$res$i = $result)) ? error('Not an array on line: '.__LINE__.' in file: '.__FILE__) : \$res$i".$this->parse_array_operator();
+						$result = "(!is_array(\$res$i = $result)) ? error('Not an array on line: '.__LINE__.' in file: '.__FILE__) : \$res$i".$this->parse_array_operator($inDQString);
 						$i++;
 					}
 					while (!$this->error && $this->token_ahead == PT_OBJECT_OPERATOR) {
-						$result = "(!is_object(\$res$i = $result)) ? error('Not an object on line: '.__LINE__.' in file: '.__FILE__) : \$res$i".$this->parse_object_operator($noFunctionCalls);
+						$result = "(!is_object(\$res$i = $result)) ? error('Not an object on line: '.__LINE__.' in file: '.__FILE__) : \$res$i".$this->parse_object_operator($inDQString);
 						$i++;
 					}
-					while (!$noFunctionCalls && !$this->error && $this->token_ahead == PT_PAR_OPEN) {
+					while (!$inDQString && !$this->error && $this->token_ahead == PT_PAR_OPEN) {
 						$result = "((\$res$i = $result) && false) ? error('Not a function on line: '.__LINE__.' in file: '.__FILE__) : ".substr($this->function_prefix, 0, -1)."{'_'.ltrim((\$res$i), '_')}".$this->parse_func_call_args().$this->token_ahead_value;
 						if ($this->token_ahead != PT_PAR_CLOSE) {
 							$this->error = "Expected ')' at line: ".$this->scanner->YYLINE;
