@@ -2,12 +2,24 @@
 	$code		= $store->config["code"];
 	$templates 	= $store->config["files"]."templates/";
 	require_once($code."modules/mod_pinp.phtml");
+
+	function showWithLineNumber($text) {
+		$textarray = explode("\n",$text);
+		$i=1;
+		$result = '';
+
+		foreach($textarray as $line){
+			$result .= sprintf("%4d: %s\n",$i++,$line);
+		}
+
+		return $result;
+	}
 	
 	function showCompilerError($compiler, $pinp_template) {
 		echo "\n------------------\n";
 		echo "Error in '$pinp_template': ".$compiler->error."\n";
 		echo "------------------\n\n\n";
-		echo $compiler->new_template."\n\n\n";
+		echo showWithLineNumber($compiler->scanner->YYBUFFER)."\n\n\n";
 		echo "------------------\n";
 		echo "in_pinp:           ".$compiler->in_pinp."\n";
 		echo "token_ahead:       ".$compiler->token_ahead."\n";
@@ -45,7 +57,7 @@
 					$compiler = new pinp("head", "local->", $objectContext);
 					$pinp_code_compiled_new = $compiler->compile(strtr($pinp_code, "\r", ""));
 					if ($compiler->error) {
-						showCompilerError($compiler, $file);
+						showCompilerError($compiler, $path.$file);
 					} else {
 						$fp = fopen($file_compiled, "w");
 						fwrite($fp, $pinp_code_compiled_new);
