@@ -1,10 +1,7 @@
-Installing Ariadne.                                          Muze Ariadne 2.6
+Installing Ariadne.                                          Muze Ariadne 2.6.1
 ===============================================================================
 
-  IMPORTANT: Ariadne needs PHP 4.0.6 or higher, PHP 5 is not yet supported *
-
-  * If you don't need the FTP daemon, PHP 4.0.3pl1 is the minimum
-           
+  IMPORTANT: Ariadne 2.6.1 needs PHP 5 or higher.
 
 Windows
 =======
@@ -18,7 +15,7 @@ Unix/Linux
 
 Requirements:
   Apache
-  PHP4 (not running in safe mode and not installed as CGI but as an Apache module)
+  PHP5 (not running in safe mode and not installed as CGI but as an Apache module)
   MySQL or PostgreSQL
 
 Recommended:
@@ -34,7 +31,7 @@ Apache configuration (httpd.conf).
    e.g.:
 
      cd /usr/local/lib/
-     tar xvzf ~/ariadne.2.6.tgz
+     tar xvzf ~/ariadne.2.6.1.tgz
      cd /var/www
      ln -s /usr/local/lib/ariadne/www/ ariadne
 

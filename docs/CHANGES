@@ -1,3 +1,80 @@
+Ariadne 2.6.1
+
+Changes in Ariadne since version Ariadne 2.6
+
+New Features:
+	- Made Ariadne PHP 5 compatible.
+	- Added a new and improved cleanup script (written by Gerhard Hoogterp) (r4042)
+	- Added a slightly modified version of Gerhard Hoogterps' geotag module. (r4043)
+	- Changed customdata- and template-editor to allow editting in types that do not exist in the typetree
+	  anymore. (r4063)
+	- Added mod_auth expiry so user passwords can expire. Users will be prompted to enter a new password
+	  when this happens. (r4068)
+	- Added getFileFromFTP() function to mod_util for PHP and PINP. (r4079)
+	- Added a script to the bin directory which you can use to recompile all existing pinp templates. The
+	  script is named 'recompile-templates.php'. (r4081)
+	- Added extra 'value' param to mod_edit::showCheckbox(). Patch by Gerhard Hoogterp. (r4085)
+	- Added password generation templates (needed to let users, without 'edit' permissions, request a 
+	  new password). (r4088)
+	- Added a new authentication module for Ariadne to let users authenticate against SMB. (r4089)
+	- Added a "disable user-account" option.
+	- Added a loader template (ariadne.load.js) to ease loading of ariadne's javascript files (r4115)
+	- Added a basic javascript system, including basic dom compatibility functions and events
+	  compatibility layer (r4100)
+	- Added json javascript library to accompany the mod_json.php in the lib/modules folder. (r4103)
+	- Added strip() method to pphoto which will strip EXIF data comments and other profile data. (r4341)
+	- Added support to mod_filestore_svn to retrieve ariadne properties from a file. (r4343)
+	- Added the toolbar editor as supported editor in the user-preferences dialog. (r4369)
+	- Added stripARNameSpace() to mod_page that strips the ar: namespace stuff when not in the editor.
+	  This removes an obstacle to making the html w3c compliant. (r4380)
+	- Added mod_ar, Ariadne 3 style store interface. (r4386)
+	- Made the htmlcleaner's rewriterules use eregi_replace for replacements, so you can also /add/
+	  values to matches. (r4390)
+	- Added gravity option to setComposeStyle() in pphoto. (r4398)
+	- The getvar() method now also scans the arStoreVars array for possible values. This way you can
+	  avoid using getdata in wizards where you only want to retrieve 'current' values. (r4410)
+	- Added the following changes to PINP in order to work correctly under PHP 5 (r4182):
+		- Added 'clone' to the safe functions list.
+		- Gives an error on 'throw, try and catch' as exceptions are not supported yet.
+		- Occurances of 'use', 'namespace' and '\' will also give an error as they neither are supported yet.
+		- Removes all leading underscores (_) from function-calls, eg: _foo(); will be rewritten as foo();
+		  This is done so scripts will not be able to call special php functions (methods) like __call().
+
+
+	Check http://svn.muze.nl/trunk/ for more.	
+
+Bugs Fixed:
+	- Made pobject::ClearCache() use the path from the db, instead of the pathname on disk. (r4052)
+	- Added a check in mod_url::RAWtoAR() to prevent random /ariadne/loader.php's to be replaced. (r4054)
+	- Added P3P headers to allow IE to set (authentication) cookies in iframes. (r4057)
+	- Fixed pobject::loadtext() and pobject::gettext: PINP templates will nolonger be overwritten when
+	  another loadtext loads nls values from disk. (r4059)
+	- Added subtype support in the template-editor's grep function. (r4061)
+	- Many SVN fixes:
+		- 'checkunder' will now recompile the new templates. (r4065)
+		- Improved the readability of the svn-info information. (r4129)
+		- HTML ouput validates as strict now, and consistent crossbrowser display (r4146)
+		- Added a performance improvement to make svn-status faster. (r4264)
+	- Fixed wddx import to compile templates in the 'local->' scope instead of the old 'this->' scope.
+	- Fixed saving of pfile and pphoto when defaultlanguage wasn't set. It will now result in an error. (r4083)
+	- Added many Ariadne-backend CSS fixes by Gerhard Hoogterp (r4098 to r4112)
+	- Made the web-loader use the proper ldAccess* functions for: access denied, session timeout
+	  and password expired. (r4274)
+	- Fixed the htmlcleaner's PINP cleanup() method to also accept the $config parameter. Patch
+	  by Gerhard Hoogterp. (r4342)
+	- Fixed scrolling of the backend-browse-tree under IE7. Patch by Gerhard Hoogterp. (r4365)
+	- Fixed pfile and pphoto to use the defaultnls name for all languages which are not set yet (r4379)
+	- Fixed mod_rss off-by-one error in ls() for the offset argument and added limit, offset
+	  argumentents to the pinp ls interface. (r4382)
+	- HTTPRequest() will now send all headers in one go (this will workaround some messy
+	  firewalls that will drop all packets following the first one). (r4388).
+	- Fixed mod_htmlcleaner attribute-level replacements (r4390)
+	- Removed an old soapclient class from the SOAP loader (r4402)
+	- Fixed a very nasty (almost not reproducable) data to nlsdata reference error. (r4403)
+	- Fixed the pinp loadText() function to restore the previous return value. (r4406)
+	- Fixed mod_pinp double-quoted string parsing and added handling for HereDoc (r4183)
+
+
 Ariadne 2.6
 
 Changes in Ariadne since version Ariadne 2.4.1
