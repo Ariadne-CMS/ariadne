@@ -104,4 +104,8 @@
 		return false;
 	}
 
+	function ldObjectNotFound($requestedpath, $requestedtemplate) {
+		echo "NOT FOUND: [".$requestedpath."][".$requestedtemplate."]";
+	}
+
 ?>

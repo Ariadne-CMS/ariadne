@@ -17,5 +17,12 @@
    so will result in a large performance penalty.
 
   ******************************************************************/
-	$arResult = $this->call("pobject::system.get.phtml", $arCallArgs);
+  if (($context=$this->getContext(ARCALLINGCONTEXT)) 
+  		&& $context["scope"]=="pinp") {
+	if ($this->CheckSilent('read')) {
+		$arResult = clone($this);
+    }
+  } else {
+	$arResult = clone($this);
+  }
 ?>

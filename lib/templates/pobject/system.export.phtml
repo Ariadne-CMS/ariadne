@@ -162,7 +162,7 @@
 								if (!($object->axflags & AX_DUMMY) && 
 									!($object->axflags & AX_WITHOUT_DATA)) {
 
-									$oldObject=current($ARCurrent->importStore->call("system.get.phtml", $arCallArgs,
+									$oldObject=current($ARCurrent->importStore->call("system.get.clone.phtml", $arCallArgs,
 													$ARCurrent->importStore->get($newpath)));
 
 									if (($object->lastchanged > $oldObject->lastchanged)) {
@@ -212,7 +212,7 @@
 
 							if (!($object->axflags & AX_DUMMY)) {
 									$object->newObject=current(
-										$ARCurrent->importStore->call("system.get.phtml", $arCallArgs,
+										$ARCurrent->importStore->call("system.get.clone.phtml", $arCallArgs,
 											$ARCurrent->importStore->get($newpath)));
 
 									if (!($object->axflags & AX_WITHOUT_TEMPLATES)) {
