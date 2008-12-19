@@ -77,9 +77,9 @@
 
 			//$command=sprintf($this->tar_untar, $dstdir, $file, $tarfile, $handler );
 			$arguments = Array(
-							"%destdir%" => $dstdir,
+							"%destdir%" => '"'.$dstdir.'"',
 							"%contents%" => $file,
-							"%archive%" => $tarfile,
+							"%archive%" => '"'.$tarfile.'"',
 							"%errorhandler%" => $handler
 						 );
 
@@ -116,9 +116,9 @@
 
 			//$command=sprintf($this->tar_tar, $dstdir, $file, $tarfile, $handler );
 			$arguments = Array(
-							"%destdir%" => $dstdir,
+							"%destdir%" => '"'.$dstdir.'"',
 							"%contents%" => $file,
-							"%archive%" => $tarfile,
+							"%archive%" => '"'.$tarfile.'"',
 							"%errorhandler%" => $handler
 						 );
 
@@ -150,9 +150,10 @@
 				if (eregi('^([a-z]):', $path, $regs)) {
 					$path="//".$regs[1].substr($path,2);
 				}
+			} else {
+				// escape spaces (for other OS's than WIN32)
+				$path=ereg_replace('([^\])[ ]', '\1\ ', $path);
 			}
-			// escape spaces
-			$path=ereg_replace('([^\])[ ]', '\1\ ', $path);
 			return $path;
 		}
 

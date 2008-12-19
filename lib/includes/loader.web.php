@@ -136,8 +136,8 @@
 			if(count($ARCurrent->arCallStack) == 0) {
 				$arCallArgs = $args;
 			} else {
-				$arCallArgs = array_pop($ARCurrent->arCallStack);
-				array_push($ARCurrent->arCallStack, $arCallArgs);
+				$arCallArgs = @array_pop($ARCurrent->arCallStack);
+				@array_push($ARCurrent->arCallStack, $arCallArgs);
 			}
 			if ($prevPath==$path) {
 				error("Database is not initialised, please run <a href=\"".$AR->dir->www."install/install.php\">the installer</a>");
@@ -161,8 +161,8 @@
 			the arCallArgs variable.
 		*/
 
-		$arCallArgs = array_pop($ARCurrent->arCallStack);
-		array_push($ARCurrent->arCallStack, $arCallArgs);
+		$arCallArgs = @array_pop($ARCurrent->arCallStack);
+		@array_push($ARCurrent->arCallStack, $arCallArgs);
 
 		if (!$arCallArgs || is_array($arCallArgs)) {
 			$arCallArgs["arLoginMessage"] = $message;
@@ -185,8 +185,8 @@
 			the arCallArgs variable.
 		*/
 
-		$arCallArgs = array_pop($ARCurrent->arCallStack);
-		array_push($ARCurrent->arCallStack, $arCallArgs);
+		$arCallArgs = @array_pop($ARCurrent->arCallStack);
+		@array_push($ARCurrent->arCallStack, $arCallArgs);
 
 		if (!$arCallArgs || is_array($arCallArgs)) {
 			$arCallArgs["arLoginMessage"] = $message;
@@ -209,8 +209,8 @@
 			the arCallArgs variable.
 		*/
 
-		$arCallArgs = array_pop($ARCurrent->arCallStack);
-		array_push($ARCurrent->arCallStack, $arCallArgs);
+		$arCallArgs = @array_pop($ARCurrent->arCallStack);
+		@array_push($ARCurrent->arCallStack, $arCallArgs);
 
 		if (!$arCallArgs || is_array($arCallArgs)) {
 			$arCallArgs["arLoginMessage"] = $message;
