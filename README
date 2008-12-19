@@ -18,6 +18,8 @@ Things you don't have to worry about anymore include:
 * caching
 * templating
 * site management
+* natural language support (or i18n and l10n)
+
 
 In addition Ariadne is also a CMS. Out of the box you can create sites with
 multiple sections, newspapers, calendars, photo galleries, etc. You do need
