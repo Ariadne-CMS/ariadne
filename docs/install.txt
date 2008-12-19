@@ -24,6 +24,11 @@ Recommended:
 Note: If you are using Apache 2, make sure you set the 'AcceptPathInfo on' in the
 Apache configuration (httpd.conf).
 
+Note: Make sure the that you have the following options set in your php.ini
+	register_long_arrays = On
+	zend.ze1_compatibility_mode = Off
+
+
 1) Untar the Ariadne distribution. (since you're reading this, I guess
    that's already taken care off...)
 2) Move the www, lib and files directories to their proper place. Preferably you
