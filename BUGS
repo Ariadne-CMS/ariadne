@@ -1,7 +1,0 @@
-KNOWN ISSUES
-
-- Accessing Ariadne, containing a valid sessionid from another host, will not load
-  a user. This will lead to a Fatal Error (Fatal error: Call to undefined
-  function: findgrants() in ...) when a custom login template has been made
-  that call()s subsequent templates. Workaround: do not call templates within
-  your custom login template.
