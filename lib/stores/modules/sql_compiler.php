@@ -1,7 +1,14 @@
 <?php
-  class sql_compiler {
+abstract class sql_compiler {
+	protected $store;
+	public  $error;
+	protected $join_target_properties;
+	protected $offset;
+	protected $limit;
+	protected $cache;
+	protected $path;
 
-	function parse_const(&$query) {
+	protected function parse_const(&$query) {
 		/* integer or float regs[1] (& regs[2] : indicates float) */
 		$reg_id.='(-?[0-9]+([.][0-9]+)?)';
 
@@ -42,7 +49,7 @@
 		return $node;
 	}
 
-	function parse_ident(&$query) {
+	protected function parse_ident(&$query) {
 		/* parse identifier regs 1,2 and 3
 
 			reg[1]: tablename
@@ -107,7 +114,7 @@
 		return $node;
 	}
 
-	function parse_cmp_expr(&$query) {
+	protected function parse_cmp_expr(&$query) {
 		$result=$this->parse_ident($query);
 		if ($result) {
 			$reg_cmp_op='^[[:space:]]*(~=|==?|\\!=|<=|>=|<|>|=~|=~~|!~|!~~|=\\*|!\\*|=\\*\\*|!\\*\\*|=/|/==|!/|!//)[[:space:]]*';
@@ -128,7 +135,7 @@
 		return $result;
 	}
 
-	function parse_group_expr(&$query) {
+	protected function parse_group_expr(&$query) {
 		if (eregi('^[[:space:]]*([(])[[:space:]]*', $query, $regs)) {
 			$query=substr($query, strlen($regs[0]));
 			$result=$this->parse_or_expr($query);
@@ -147,7 +154,7 @@
 		return $result;
 	}
 
-	function parse_and_expr(&$query) {
+	protected function parse_and_expr(&$query) {
 		$result=$this->parse_group_expr($query);
 		while ($result && eregi('^[[:space:]]*(and)', $query, $regs) && $regs[1]) {
 			$query=substr($query, strlen($regs[0]));
@@ -165,7 +172,7 @@
 		return $result;
 	}
 
-	function parse_or_expr(&$query) {
+	protected function parse_or_expr(&$query) {
 		$result=$this->parse_and_expr($query);
 		while ($result && eregi('^[[:space:]]+(or)[[:space:]]+', $query, $regs)) {
 			$query=substr($query, strlen($regs[0]));
@@ -184,7 +191,7 @@
 		return $result;
 	}
 
-	function parse_orderby(&$query) {
+	protected function parse_orderby(&$query) {
 		$field=$this->parse_ident($query);
 		$reg_sort_type='^[[:space:]]*(ASC|DESC)';
 		if (eregi($reg_sort_type, $query, $regs)) {
@@ -220,7 +227,7 @@
 	}
 
 
-	function parse_join_target_properties(&$query) {
+	protected function parse_join_target_properties(&$query) {
 		do {
 			if (!eregi('^([a-z_][a-z0-9_]*)(:[a-z]+)?', $query, $regs)) {
 				$this->error = "expected property name at '$query'";
@@ -236,7 +243,7 @@
 		} while(1);
 	}
 
-	function parse_query(&$query) {
+	protected function parse_query(&$query) {
 		if (!eregi('^[[:space:]]*order[[:space:]]*by[[:space:]]+', $query, $regs)) {
 			$result=$this->parse_or_expr($query);
 		} else {
@@ -273,10 +280,9 @@
 	}
 
 	// virtual (&private) method. To be implemented in the sql specific compiler
-	function priv_sql_compile($node) {
-	}
+	protected abstract function priv_sql_compile($node) ;
 
-	function compile($path, $query, $limit=100, $offset=0) {
+	public function compile($path, $query, $limit=100, $offset=0) {
 		debug("sql_compiler::compile ($path, $query, $limit, $offset)", "store");
 		$this->error="";
 		$this->path = $path;

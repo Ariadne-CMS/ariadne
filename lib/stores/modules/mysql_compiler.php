@@ -1,14 +1,30 @@
 <?php
   include_once($this->code."stores/modules/sql_compiler.php");
 
-  class mysql_compiler extends sql_compiler {
-	function mysql_compiler(&$store, $tbl_prefix="") {
+class mysql_compiler extends sql_compiler {
+	protected $tbl_prefix;
+	protected $store;
+	protected $in_orderby;
+	protected $nls_join;
+	protected $select_tables;
+	protected $used_tables;
+	protected $custom_id;
+	protected $custom_ref;
+	protected $used_custom_fields;
+	protected $where_s_ext;
+	protected $fulltext_expr;
+	protected $where_s;
+	protected $limit_s;
+	protected $orderby_s;
+
+
+	public function __construct (&$store, $tbl_prefix="") {
 		debug("mysql_compiler($tbl_prefix)", "store");
 		$this->tbl_prefix=$tbl_prefix;
 		$this->store=$store;
 	}
 
-	function compile_tree(&$node, $arguments=null) {
+	protected function compile_tree(&$node, $arguments=null) {
 		if ($arguments) {
 			extract($arguments);
 		}
@@ -291,7 +307,7 @@
 	}
 
 	// mysql specific compiler function
-	function priv_sql_compile($tree) {
+	protected function priv_sql_compile($tree) {
 		$this->custom_ref = 0;
 		$this->custom_id = 0;
 		$this->used_tables="";

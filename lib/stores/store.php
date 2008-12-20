@@ -22,7 +22,7 @@
 
   This Is a Generic implementation of the store, all generic functions are defined here
 
-  de implemented functions are
+  the implemented functions are
 
 	function get_config($field) 
 	function is_supported($feature) 
@@ -37,14 +37,17 @@
 
 abstract class store {
 
-	var $error;
-	var $root;
-	var $code;
-	var $proxystore;
-	var $files;
+	public $error;
+	protected $root;
+	protected $code;
+	protected $proxystore;
+	protected $files;
+	protected $filestores;
+	protected $config;
 
 
-	function store($path, $config) {
+
+	public function __construct($path, $config) {
 		echo "You have not configured the store properly. Please check your configuration files.";
 		exit();
 	}
@@ -53,13 +56,13 @@ abstract class store {
 		 need implementation in your implementation of this store
 	*/
 
-	abstract function call($template, $args, $objects);
+	public abstract function call($template, $args, $objects);
 
-	abstract function count($objects);
+	public abstract function count($objects);
 
-	abstract function info($objects);
+	public abstract function info($objects);
 
-	abstract function get($path);
+	public abstract function get($path);
 	/**********************************************************************************
 	 This function takes as argument a path to an object in the store and will retrieve
 	 all the necessary data and return this in the objectlist type needed for 
@@ -69,7 +72,7 @@ abstract class store {
 	 $path should always start and end with a '/'.
 	 **********************************************************************************/
 
-	abstract function touch($id, $timestamp = -1);
+	public abstract function touch($id, $timestamp = -1);
 	/**********************************************************************************
 	 This function takes as argument a path to an object (or id of an object)
      in the store and will set the timestamp to $timestamp.
@@ -77,7 +80,7 @@ abstract class store {
 	 $path should always start and end with a '/'.
 	 **********************************************************************************/
 
-	abstract function ls($path);
+	public abstract function ls($path);
 	/**********************************************************************************
 	 This function takes as argument a path to an object in the store and will retrieve
 	 all the objects and their data which have this object as their parent. It will 
@@ -87,7 +90,7 @@ abstract class store {
 	 $path should always start and end with a '/'.
 	 **********************************************************************************/
 
-	abstract function parents($path, $top="/");
+	public abstract function parents($path, $top="/");
 	/**********************************************************************************
 	 This function takes as argument a path to an object in the store. It will return 
 	 all objects with a path which is a substring of the given path. The resulsts are 
@@ -98,7 +101,7 @@ abstract class store {
 	 $path should always start and end with a '/'.
 	 **********************************************************************************/
 
-	abstract function find($path, $criteria, $limit=100, $offset=0);
+	public abstract function find($path, $criteria, $limit=100, $offset=0);
 	/**********************************************************************************
 	 This function takes as arguments a path to an object in the store and some search
 	 criteria. It will search for all matching objects under the given path. If the
@@ -116,7 +119,7 @@ abstract class store {
 	 **********************************************************************************/
 
 
-	abstract function save($path, $type, $data, $properties="", $vtype="", $priority=false);
+	public abstract function save($path, $type, $data, $properties="", $vtype="", $priority=false);
 	/***************************************************************
 		This function takes as argument a path, type, objectdata and 
 		possibly a properties list and vtype (virtual type).
@@ -154,7 +157,7 @@ abstract class store {
 	***************************************************************/
 
 
-	abstract function purge($path);
+	public abstract function purge($path);
 	/**********************************************************************
 		This function will delete the object pointed to by $path and all
 	other paths pointing to that object. It will then remove any property
@@ -166,7 +169,7 @@ abstract class store {
 	 $path should always start and end with a '/'.
 	**********************************************************************/
 
-	abstract function delete($path);
+	public abstract function delete($path);
 	/**********************************************************************
 		This function deletes the path given. If this is the last path pointing
 	to an object, the object will be purged instead.
@@ -184,7 +187,7 @@ abstract class store {
 	**********************************************************************/
 
 
-	abstract function link($source, $destination);
+	public abstract function link($source, $destination);
 	/**********************************************************************
 		Link adds an extra path to an already existing object. It has two
 	arguments: $source and $destination. $source is an existing path of
@@ -194,33 +197,33 @@ abstract class store {
 	$destination should always start and end with a '/'.
 	**********************************************************************/
 
-	abstract function move($source, $destination);
+	public abstract function move($source, $destination);
 	/**********************************************************************
 	$destination should always start and end with a '/'.
 	**********************************************************************/
 
 
-	abstract function list_paths($path);
+	public abstract function list_paths($path);
 	/**********************************************************************
 		This function returns an array of all paths pointing to the same object 
 	as $path does.
 	**********************************************************************/
 
-	abstract function AR_implements($type, $implements);
+	public abstract function AR_implements($type, $implements);
 	/**********************************************************************
 		This function returns 1 if the $type implements the type or
 	interface in $implements. Otherwise it returns 0.
 	**********************************************************************/
 
-	abstract function load_properties($object, $values="");
+	public abstract function load_properties($object, $values="");
 
-	abstract function load_property($object, $property, $values="");
+	public abstract function load_property($object, $property, $values="");
 
-	abstract function add_property($object, $property, $values);
+	public abstract function add_property($object, $property, $values);
 
-	abstract function del_property($object, $property="", $values="");
+	public abstract function del_property($object, $property="", $values="");
 
-	abstract function get_nextid($path, $mask="{5:id}");
+	protected abstract function get_nextid($path, $mask="{5:id}");
 	/**********************************************************************
 		'private' function of mysql store. This will return the next
 		'autoid' for $path.
@@ -232,18 +235,25 @@ abstract class store {
 		Implemented functions
 	*/
 
-	function get_config($field) {
+	public function get_config($field) {
 		debug("store::get_config($field)", "store");
 		switch ($field) {
-			default:
+			case 'code':
+			case 'files':
+			case 'root':
+			case 'rootoptions':
 				$result = $this->$field;
-			break;
+				break;
+			default:
+				$result =  null;
+				debug("store::get_config: undefined field $field requested","store");
+				break;
 		}
 		debug("store::get_config: end", "store");
 		return $result;
 	}
 
-	function is_supported($feature) {
+	public function is_supported($feature) {
 	/**********************************************************************************
 		This function takes as argument a feature description and returns
 		true if this feature is supported and false otherwise
@@ -277,7 +287,7 @@ abstract class store {
 	/**********************************************************************************
 		This functions creates a new ariadne object
 	**********************************************************************************/
-	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) {
+	public function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) {
 		debug("newobject($path, $parent, $type, [data], $id, $lastchanged, $vtype, $size, $priority)","all");
 		$class = $type;
 		if ($subcpos = strpos($type, '.')) {
@@ -297,7 +307,7 @@ abstract class store {
 		return $object;
 	}
 
-	function close() {
+	public function close() {
 		// This is the destructor function, nothing much to see :)
 		debug("close()","store");
 		if (is_array($this->filestores)) {
@@ -306,8 +316,12 @@ abstract class store {
 			}
 		}
 	}
+
+	public function __destruct() {
+		$this->close();
+	}
 	
-	function make_path($curr_dir, $path) {
+	public function make_path($curr_dir, $path) {
 	/**********************************************************************
 		This function creates an absolute path from the given starting path
 	($curr_dir) and a relative (or absolute) path ($path). If $path starts
@@ -356,7 +370,7 @@ abstract class store {
 		return $result;
 	}
 
-	function save_properties($properties, $id) {
+	public function save_properties($properties, $id) {
 	/********************************************************************
 		'private' function of mysql.phtml. It updates all property tables
 		defined in $properties and sets the values to the values in
@@ -378,7 +392,7 @@ abstract class store {
 	}
 
 
-	function get_filestore($name) {
+	public function get_filestore($name) {
 		require_once($this->code."modules/mod_filestore.phtml");
 		if (!$this->filestores[$name]) {
 			$this->filestores[$name]=new filestore($name, $this->files);
@@ -386,7 +400,7 @@ abstract class store {
 		return $this->filestores[$name];
 	}
 
-	function get_filestore_svn($name) {
+	public function get_filestore_svn($name) {
 		require_once($this->code."modules/mod_filestore_svn.phtml");
 		if (!$this->filestores["svn_" . $name]) {
 			$this->filestores["svn_" . $name] = new filestore_svn($name, $this->files);
@@ -395,7 +409,7 @@ abstract class store {
 	}
 
  
-	function __call($name,$arguments)
+	public function __call($name,$arguments)
 	{
 		switch($name)
 		{

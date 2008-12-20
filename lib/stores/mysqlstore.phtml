@@ -34,12 +34,13 @@ require_once('store.php');
 
 class mysqlstore extends store{
 
-	var $connect_id;
-	var $tbl_prefix;
-	var $database;
-	
+	protected $connect_id;
+	protected $tbl_prefix;
+	protected $database;
+	protected $mod_lock;
+	public $total;
 
-	function mysqlstore($path, $config) {
+	public function __construct($path, $config) {
 	/**********************************************************************************
 
 	 This is the constructor routine for the store object. It takes some configuration 
@@ -74,7 +75,7 @@ class mysqlstore extends store{
 		/* Include module mysql_compiler */
 		include_once($this->code."stores/modules/mysql_compiler.php");
 		/* include proxystore */
-		include_once($this->code."stores/proxystore.phtml");
+		//include_once($this->code."stores/proxystore.phtml");
 
 		/* Instantiate module locking */
 		include_once($this->code."modules/mod_lock/mysql.phtml");
@@ -83,11 +84,12 @@ class mysqlstore extends store{
 		$this->mod_lock->lock_duration=$config["lock_duration"];
 		$config["password"]="";
 
-		$this->proxystore = proxystore::createproxy($this,$config);
+		//$this->proxystore = proxystore::createproxy($this,$config);
+		$this->proxystore = $this;
 		debug("mysqlstore: end","all");
 	}
 
-	function call($template, $args, $objects) {
+	public function call($template, $args, $objects) {
 	/**********************************************************************************
 	
 	 This function takes a list of objects, the function to be called in each of those
@@ -140,7 +142,7 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	function get($path) {
+	public function get($path) {
 	/**********************************************************************************
 
 	 This function takes as argument a path to an object in the store and will retrieve
@@ -168,7 +170,7 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	function touch($id, $timestamp = -1) {
+	public function touch($id, $timestamp = -1) {
 	/**********************************************************************************
 
 	 This function takes as argument a path to an object (or id of an object)
@@ -213,7 +215,7 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	function ls($path) {
+	public function ls($path) {
 	/**********************************************************************************
 
 	 This function takes as argument a path to an object in the store and will retrieve
@@ -242,7 +244,7 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	function parents($path, $top="/") {
+	public function parents($path, $top="/") {
 	/**********************************************************************************
 
 	 This function takes as argument a path to an object in the store. It will return 
@@ -273,7 +275,7 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	function find($path, $criteria, $limit=100, $offset=0) {
+	public function find($path, $criteria, $limit=100, $offset=0) {
 	/**********************************************************************************
 
 	 This function takes as arguments a path to an object in the store and some search
@@ -396,13 +398,13 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	function close() {
+	public function close() {
 		parent::close();
 		return @mysql_close($this->connect_id);
 	}
 
 
-	function save($path, $type, $data, $properties="", $vtype="", $priority=false) {
+	public function save($path, $type, $data, $properties="", $vtype="", $priority=false) {
 	/***************************************************************
 
 		This function takes as argument a path, type, objectdata and 
@@ -585,7 +587,7 @@ class mysqlstore extends store{
 	}
 
 
-	function purge($path) {
+	public function purge($path) {
 	/**********************************************************************
 	 
 		This function will delete the object pointed to by $path and all
@@ -632,7 +634,7 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	function delete($path) {
+	public function delete($path) {
 	/**********************************************************************
 
 		This function deletes the path given. If this is the last path pointing
@@ -673,7 +675,7 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	function exists($path) {
+	public function exists($path) {
 	/**********************************************************************
 
 		This function checks the given path to see if it exists. If it does
@@ -704,7 +706,7 @@ class mysqlstore extends store{
 	}
 
 
-	function link($source, $destination) {
+	public function link($source, $destination) {
 	/**********************************************************************
 
 		Link adds an extra path to an already existing object. It has two
@@ -793,7 +795,7 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	function store_run_query($query) {
+	private function store_run_query($query) {
 		/* private function, do not use this outside this class */
 		$result=mysql_db_query($this->database, $query, $this->connect_id);
 		$errno=mysql_errno($this->connect_id);
@@ -809,7 +811,7 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	function move($source, $destination) {
+	public function move($source, $destination) {
 	/**********************************************************************
 
 	$destination should always start and end with a '/'.
@@ -896,7 +898,7 @@ class mysqlstore extends store{
 	}
 
 
-	function list_paths($path) {
+	public function list_paths($path) {
 	/**********************************************************************
 
 		This function returns an array of all paths pointing to the same object 
@@ -921,7 +923,7 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	function AR_implements($type, $implements) {
+	public function AR_implements($type, $implements) {
 	/**********************************************************************
 
 		This function returns 1 if the $type implements the type or
@@ -949,7 +951,7 @@ class mysqlstore extends store{
 	}
 	
 
-	function format_for_fti($text) {
+	public function format_for_fti($text) {
 	/**********************************************************************
  
 		This function prepares the passed string to be interpreted properly
@@ -968,7 +970,7 @@ class mysqlstore extends store{
 	}
 
 
-	function load_properties($object, $values="") {
+	public function load_properties($object, $values="") {
 		debug("load_properties($object, [values])","all");
 		if ($object) {
 			$query_string="select name from ".$this->tbl_prefix."properties";
@@ -983,7 +985,7 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	function load_property($object, $property, $values="") {
+	public function load_property($object, $property, $values="") {
 		debug("load_property($object, $property, [values])","all");
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
@@ -1018,7 +1020,7 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	function add_property($object, $property, $values) {
+	public function add_property($object, $property, $values) {
 		debug("add_property($object, $property, ".serialize($values)." )","all");
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
@@ -1042,7 +1044,7 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	function del_property($object, $property="", $values="") {
+	public function del_property($object, $property="", $values="") {
 		debug("del_property($object, $property, [values])","all");
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
@@ -1074,7 +1076,7 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	function set_nextid($path, $newid) {
+	protected function set_nextid($path, $newid) {
 	/**********************************************************************
 
 		'private' function of mysql store. 
@@ -1085,7 +1087,7 @@ class mysqlstore extends store{
 	}
 
 
-	function get_nextid($path, $mask="{5:id}") {
+	protected function get_nextid($path, $mask="{5:id}") {
 	/**********************************************************************
 
 		'private' function of mysql store. This will return the next

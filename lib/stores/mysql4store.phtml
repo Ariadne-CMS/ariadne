@@ -34,23 +34,23 @@ include_once($ariadne."/stores/mysqlstore.phtml");
 
 class mysql4store extends mysqlstore {
 
-	function mysql4store($path, $config) {
-		mysqlstore::mysqlstore($path, $config);
+	public function __construct($path, $config) {
+		parent::__construct($path, $config);
 		/* Include module mysql4_compiler */
 		include_once($this->code."stores/modules/mysql4_compiler.php");
 	}
 
-	function is_supported($feature) {
+	public function is_supported($feature) {
 	/**********************************************************************************
 		This function takes as argument a feature description and returns
 		true if this feature is supported and false otherwise
 	**********************************************************************************/
 		switch	($feature) {
 			case "fulltext_boolean":
-				$result = mysqlstore::is_supported("fulltext");
+				$result = parent::is_supported("fulltext");
 			break;
 			default:
-				$result = mysqlstore::is_supported($feature);
+				$result = parent::is_supported($feature);
 			break;
 		}
 		return $result;

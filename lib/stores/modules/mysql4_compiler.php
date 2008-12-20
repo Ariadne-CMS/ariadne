@@ -1,14 +1,14 @@
 <?php
   include_once($this->code."stores/modules/mysql_compiler.php");
 
-  class mysql4_compiler extends sql_compiler {
-	function mysql4_compiler(&$store, $tbl_prefix="") {
+  class mysql4_compiler extends mysql_compiler {
+	public function __construct(&$store, $tbl_prefix="") {
 		debug("mysql4_compiler($tbl_prefix)", "store");
 		$this->tbl_prefix=$tbl_prefix;
 		$this->store=$store;
 	}
 
-	function compile_tree(&$node) {
+	protected function compile_tree(&$node) {
 		switch ((string)$node["id"]) {
 			case 'cmp':
 				if ($node["left"]["id"] == "implements" && $node["operator"] == "!=") {
@@ -24,18 +24,18 @@
 						break;
 					}
 				} else {
-					$result = mysql_compiler::compile_tree($node);
+					$result = parent::compile_tree($node);
 				}
 			break;
 			default:
-				$result = mysql_compiler::compile_tree($node);
+				$result = parent::compile_tree($node);
 			break;
 		}
 		return $result;
 	}
 
-	function priv_sql_compile($tree) {
-		$result = mysql_compiler::priv_sql_compile($tree);
+	protected function priv_sql_compile($tree) {
+		$result = parent::priv_sql_compile($tree);
 		return $result;
 	}
   }
