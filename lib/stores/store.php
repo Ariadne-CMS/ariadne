@@ -38,7 +38,10 @@
 abstract class store {
 
 	public $error;
-	protected $root;
+	public $root;
+	public $rootoptions;
+	public $mod_lock;
+	public $total;
 	protected $code;
 	protected $proxystore;
 	protected $files;
