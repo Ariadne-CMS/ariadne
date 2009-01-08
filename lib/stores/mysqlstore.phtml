@@ -799,7 +799,7 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	private function store_run_query($query) {
+	protected function store_run_query($query) {
 		/* private function, do not use this outside this class */
 		$result=mysql_db_query($this->database, $query, $this->connect_id);
 		$errno=mysql_errno($this->connect_id);
