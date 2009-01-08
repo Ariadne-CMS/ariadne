@@ -74,7 +74,9 @@ class mysqlstore extends store{
 		include_once($this->code."stores/modules/mysql_compiler.php");
 		/* include proxystore */
 		//include_once($this->code."stores/proxystore.phtml");
-
+		include_once($this->code."stores/modules/mysqlstore_iterator.php");
+		include_once($this->code."modules/mod_selector.php");
+		
 		/* Instantiate module locking */
 		include_once($this->code."modules/mod_lock/mysql.phtml");
 		$this->mod_lock=new mysqllock($config["prefix"]);
@@ -85,6 +87,10 @@ class mysqlstore extends store{
 		//$this->proxystore = proxystore::createproxy($this,$config);
 		$this->proxystore = $this;
 		debug("mysqlstore: end","all");
+	}
+
+	public function getIterator($selector, $definitions, $objects) {
+		return new mysqlstoreIterator($selector, $definitions, $this, $objects);
 	}
 
 	public function call($template, $args, $objects) {

@@ -20,10 +20,10 @@
 			return new arGet($me->path, $path);			
 		}
 
-		function parents() {
+		function parents($path = ".") {
 			$context = pobject::getContext();
             $me = $context["arCurrentObject"];
-			return new arParents($me->path);
+			return new arParents($me->make_path($path));
 		}
 
 	}
@@ -68,6 +68,21 @@
 			return $store->call($template, $args, $store->find($this->path, $this->query, $this->limit, $this->offset)); 
 		}
 
+		function iterate($selection, $definitions = Array()) {
+			global $store;
+			$result = Array();
+			$iterator = $this->getIterator($selection, $definitions, $store->find($this->path, $this->query, $this->limit, $this->offset)); 
+			foreach ($iterator as $key => $value) {
+				$result[$key] = $value;
+			}
+			return $result;
+		}
+
+		function getIterator($selection, $definitions = Array()) {
+			global $store;
+			return $store->getIterator(new selector($selection), $definitions, $store->find($this->path, $this->query, $this->limit, $this->offset));
+		}
+
 		function count() {
 			global $store;
 			return $store->count($store->find($this->path, $this->query, $this->limit, $this->ofset));
@@ -95,6 +110,14 @@
 			return $this->call($template, $args);
 		}
 
+		function _iterate($selection, $definitions = Array()) {
+			return $this->iterate($selection, $definitions);
+		}
+
+		function _getIterator($selection, $definitions = Array()) {
+			return $this->getIterator($selection, $definitions);
+		}
+
 		function _count() {
 			return $this->count();
 		}
@@ -117,8 +140,7 @@
 
 		function __construct($path) {
 			global $store;
-			$parent = $store->make_path($path, '../');
-			parent::__construct($path, "object.parent = '".$parent."'");
+			parent::__construct($path, "object.parent = '".$path."'");
 		}
 
 	}
@@ -160,18 +182,56 @@
 
 	class arParents {
 
-		function __construct($path) {
-			$this->path = $path;
+		function __construct($path = ".") {
+			$this->path	= $path;
+			$this->top	= "/";
 		}
 
 		function call($template, $args=null) {
 			global $store;
-			return $store->call($template, $args, $store->parents($this->path));
+			return $store->call($template, $args, $store->parents($this->path, $this->top));
+		}
+
+		function iterate($selection, $definitions = Array()) {
+			global $store;
+			$result = Array();
+			$iterator = $this->getIterator($selection, $definitions, $store->parents($this->path, $this->top)); 
+			foreach ($iterator as $key => $value) {
+				$result[$key] = $value;
+			}
+			return $result;
+		}
+
+		function getIterator($selection, $definitions = Array()) {
+			global $store;
+			return $store->getIterator(new selector($selection), $definitions, $store->parents($this->path, $this->top));
 		}
 
 		function count() {
 			global $store;
-			return $store->count($store->parents($this->path));
+			return $store->count($store->parents($this->path, $this->top));
+		}
+
+		function top($top = "/") {
+			$clone = clone $this;
+			$clone->top = $top;
+			return $clone;
+		}
+
+		function _call($template, $args=null) {
+			return $this->call($template, $args);
+		}
+
+		function _iterate($selection, $definitions = Array()) {
+			return $this->iterate($selection, $definitions);
+		}
+
+		function _count() {
+			return $this->count();
+		}
+
+		function _top($top = "/") {
+			return $this->top($top);
 		}
 
 	}
