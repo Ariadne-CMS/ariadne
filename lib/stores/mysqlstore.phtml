@@ -799,7 +799,7 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	public function store_run_query($query) {
+	private function store_run_query($query) {
 		/* private function, do not use this outside this class */
 		$result=mysql_db_query($this->database, $query, $this->connect_id);
 		$errno=mysql_errno($this->connect_id);
@@ -1124,6 +1124,30 @@ class mysqlstore extends store{
 			$subid = sprintf("%0".$substr_l."d", $subid);
 		}
 		return $subid;
+	}
+
+
+	public function priv_get_implements($type) {
+	/**********************************************************************
+
+		helper function for the query compiler.
+		returns an array of alle types implementing the given type.
+
+	**********************************************************************/
+		/* retrieve an implements list */
+		$etype = AddSlashes($type);
+		$types_tbl=$this->tbl_prefix."types";
+
+		$query = "select type from $types_tbl where $types_tbl.implements = $etype";
+		$qresult = $this->store_run_query($query);
+
+		while ($iresult = mysql_fetch_array($qresult)) {
+			$returnValue[] = $iresult['type'];
+		}
+
+		mysql_free_result($qresult);
+
+		return $returnValue;
 	}
 
 

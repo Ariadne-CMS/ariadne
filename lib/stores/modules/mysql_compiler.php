@@ -239,16 +239,13 @@ class mysql_compiler extends sql_compiler {
 					switch ($operator) {
 						case '!=':
 							/* retrieve an implements list */
-							$types_tbl=$this->tbl_prefix."types";
-							$query = "
-									select type from $types_tbl where
-									$types_tbl.implements = $type";
-							$qresult = $this->store->store_run_query($query);
-							while ($iresult = mysql_fetch_array($qresult)) {
+							$types = $this->store->priv_get_implements($type);
+					
+							foreach ( $types as $itype ){
 								if (!$ilist) {
-									$ilist = " '".$iresult['type']."' ";
+									$ilist = " '".$itype."' ";
 								} else {
-									$ilist .= ", '".$iresult['type']."' ";
+									$ilist .= ", '".$itype."' ";
 								}
 							}
 							$result = " (".$this->tbl_prefix."objects.type not in ($ilist)) ";
