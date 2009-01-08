@@ -41,7 +41,7 @@
 			// for now we have to remove all current redirects
 			$old_redirects = $ARCurrent->shortcut_redirect;
 			$ARCurrent->shortcut_redirect = Array();
-				$result = pinp_keepurl::getWorker($rpath, $template, $args);
+			$result = pinp_keepurl::getWorker($rpath, $template, $args);
 			// restore redirects
 			$ARCurrent->shortcut_redirect = $old_redirects;
 			return $result;
@@ -69,11 +69,11 @@
 					$subpath = substr($rpath, strlen($path));
 					$target = $shortcut->call('system.get.target.phtml');
 					array_push($ARCurrent->shortcut_redirect, Array("src" => $path, "dest" => $target, "keepurl" => $shortcut->data->keepurl));
-						if ($me->exists($target.$subpath)) {
-							$result = $me->get($target.$subpath, $template, $args);
-						} else {
-							$result = pinp_keepurl::getWorker($target.$subpath, $template, $args);
-						}
+					if ($me->exists($target.$subpath)) {
+						$result = $me->get($target.$subpath, $template, $args);
+					} else {
+						$result = pinp_keepurl::getWorker($target.$subpath, $template, $args);
+					}
 					array_pop($ARCurrent->shortcut_redirect);
 				}
 
