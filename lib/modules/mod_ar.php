@@ -4,25 +4,25 @@
 
 		function ls() {
 			$context = pobject::getContext();
-            $me = $context["arCurrentObject"];
+			$me = $context["arCurrentObject"];
 			return new arList($me->path);
 		}
 
 		function find($query="") {
 			$context = pobject::getContext();
-            $me = $context["arCurrentObject"];
+			$me = $context["arCurrentObject"];
 			return new arFind($me->path, $query);
 		}
 
 		function get($path="") {
 			$context = pobject::getContext();
-            $me = $context["arCurrentObject"];
-			return new arGet($me->path, $path);			
+			$me = $context["arCurrentObject"];
+			return new arGet($me->path, $path);
 		}
 
 		function parents($path = ".") {
 			$context = pobject::getContext();
-            $me = $context["arCurrentObject"];
+			$me = $context["arCurrentObject"];
 			return new arParents($me->make_path($path));
 		}
 
@@ -99,7 +99,7 @@
 			$clone->offset = $offset;
 			return $clone;
 		}
-	
+
 		function order($order) {
 			$clone = clone $this;
 			$clone->order = $order;
@@ -139,7 +139,6 @@
 	class arList extends arFind {
 
 		function __construct($path) {
-			global $store;
 			parent::__construct($path, "object.parent = '".$path."'");
 		}
 
@@ -147,7 +146,7 @@
 
 
 	class arGet {
-		
+
 		function __construct($current, $path) {
 			global $store;
 			$this->path = $store->make_path($current, $path);
@@ -173,7 +172,7 @@
 		function _ls() {
 			return $this->ls();
 		}
-		
+
 		function _call($template, $args=null) {
 			return $this->call($template, $args);
 		}
