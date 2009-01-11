@@ -1134,11 +1134,11 @@ class mysqlstore extends store{
 		returns an array of alle types implementing the given type.
 
 	**********************************************************************/
+		$returnValue = array();
 		/* retrieve an implements list */
-		$etype = AddSlashes($type);
 		$types_tbl=$this->tbl_prefix."types";
 
-		$query = "select type from $types_tbl where $types_tbl.implements = $etype";
+		$query = "select type from $types_tbl where $types_tbl.implements = $type";
 		$qresult = $this->store_run_query($query);
 
 		while ($iresult = mysql_fetch_array($qresult)) {
