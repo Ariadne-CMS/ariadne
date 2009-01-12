@@ -59,7 +59,7 @@
 			}
 
 			if ($user) {
-				if ($user->data->config && !$user->data->config->disabled) {
+				if ((!$user->data->config || !$user->data->config->disabled)) {
 					if ($login !== "public") {
 						/* welcome to Ariadne :) */
 						ldSetCredentials($login);
@@ -122,13 +122,14 @@
 			}
 
 			if ($user) {
-				if ($user->data->config && !$user->data->config->disabled) {
+				if ((!$user->data->config || !$user->data->config->disabled)) {
 					$AR->user = $user;
 					$result = true;
 				} else {
 					debug("getUser: user('$login') has been disabled", "all");
 					$result = LD_ERR_ACCESS;
 				}
+
 			} else {
 				debug("getUser: user('$login') not found", "all");
 				$result = LD_ERR_ACCESS;
