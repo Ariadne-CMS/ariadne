@@ -1,6 +1,6 @@
 <?php
-	$code		= $store->config["code"];
-	$templates 	= $store->config["files"]."templates/";
+	$code		= $store->get_config("code");
+	$templates 	= $store->get_config("files")."templates/";
 	require_once($code."modules/mod_pinp.phtml");
 
 	function showWithLineNumber($text) {
