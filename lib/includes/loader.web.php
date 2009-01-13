@@ -68,7 +68,7 @@
 	function ldRegisterFile($field = "file", &$error) {
 	global $ARnls, $store, $HTTP_POST_FILES, $HTTP_POST_VARS;
 
-		require_once($store->code."modules/mod_mimemagic.php");
+		require_once($store->get_config("code")."modules/mod_mimemagic.php");
 		$result = Array();
 		$http_post_file = Array('name' => '', 'type' => '', 'tmp_name' => '', 'error' => '', 'size' => '');
 		$subfields = explode('[', $field);
@@ -124,7 +124,6 @@
 
 	function ldObjectNotFound($requestedpath, $requestedtemplate) {
 	global $store, $AR, $ARCurrent,$args;
-
 		$path=$requestedpath;
 		if (!$path) {
 			error("Empty path requested with template: $requestedtemplate");
@@ -143,6 +142,9 @@
 				error("Database is not initialised, please run <a href=\"".$AR->dir->www."install/install.php\">the installer</a>");
 			} else {
 				// no results: page couldn't be found, show user definable 404 message
+				if (!is_array($arCallArgs)) {
+					$arCallArgs = Array();
+				}
 				$myarCallArgs = array_merge($arCallArgs, 
 				Array(	"arRequestedPath" => $requestedpath,
 					 		"arRequestedTemplate" => $requestedtemplate 
