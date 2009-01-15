@@ -411,6 +411,16 @@ abstract class store {
 		return $this->filestores["svn_" . $name];
 	}
 
+	protected function compilerFactory(){
+		switch($this->config["dbms"]){
+			case 'axstore':
+				return false;
+			default:
+				$compiler = $this->config["dbms"].'_compiler';
+				return new $compiler($this,$this->tbl_prefix);
+		}
+	}
+
  
 	public function __call($name,$arguments)
 	{
