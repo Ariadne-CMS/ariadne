@@ -14,6 +14,8 @@
 				if ($node["left"]["id"] == "implements" && $node["operator"] == "!=") {
 					$table=$this->tbl_prefix."types";
 					$type=$this->compile_tree($node["right"]);
+					$operator=$node["operator"];
+
 					switch ($operator) {
 						case '!=':
 							$result=" (".$this->tbl_prefix."objects.type not in (select type from ".$this->tbl_prefix."types where implements = $type )) ";
