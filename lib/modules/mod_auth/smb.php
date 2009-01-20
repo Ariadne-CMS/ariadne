@@ -19,7 +19,7 @@
 	 		$user = $this->getUser($login);
 	 		if ($user !== true) {
 				$user_dir		= $this->config["import_user_directory"];
-				$user_profile	= $this->config["import_user_profile"];
+				$user_profile		= $this->config["import_user_profile"];
 				$user_type		= $this->config["import_user_type"];
 				if (!$user_type) {
 					$user_type = "puser";
@@ -39,8 +39,12 @@
 
 	 			$user->arIsNewObject = true;
 	 			$user->call('system.save.data.phtml', $data);
-	 		}
-	 		return $user;
+
+				return $user;
+	 		} else {
+				// $AR->user was set by getUser and contains the correct user now.
+				return $AR->user;
+			}
 	 	}
 
 	 	function authExternalUser($login, $password) {
