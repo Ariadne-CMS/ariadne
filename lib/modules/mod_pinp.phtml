@@ -214,6 +214,9 @@ class scanner {
 								++$YYCURSOR;
 								return PT_VAR_CBRACE_OPEN;
 							}
+							if ($yych == '"') {
+								return PT_SUBSTRING;
+							}
 							// reset cursor
 							--$YYCURSOR;
 							return PT_VAR_REFERENCE;
