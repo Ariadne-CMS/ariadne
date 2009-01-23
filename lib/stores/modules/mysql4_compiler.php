@@ -11,7 +11,7 @@
 	protected function compile_tree(&$node) {
 		switch ((string)$node["id"]) {
 			case 'cmp':
-				if ($node["left"]["id"] == "implements" && $node["operator"] == "!=") {
+				if ($node["left"]["id"] == "implements" && in_array($node["operator"], Array("!=", "=", "==")) ) {
 					$table=$this->tbl_prefix."types";
 					$type=$this->compile_tree($node["right"]);
 					$operator=$node["operator"];
@@ -20,9 +20,10 @@
 						case '!=':
 							$result=" (".$this->tbl_prefix."objects.type not in (select type from ".$this->tbl_prefix."types where implements = $type )) ";
 						break;
+						case '==':
+							$operator = '=';
 						default:
-							$this->used_tables[$table]=$table;
-							$result=" (".$this->tbl_prefix."types.implements $operator $type and ".$this->tbl_prefix."objects.vtype = ".$this->tbl_prefix."types.type ) ";
+							$result=" (".$this->tbl_prefix."objects.vtype in (select type from ".$this->tbl_prefix."types where implements $operator $type )) ";
 						break;
 					}
 				} else {
