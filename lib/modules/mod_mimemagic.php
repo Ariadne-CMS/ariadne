@@ -569,6 +569,7 @@
 	$mimetypes_data["vrml"] = "x-world/x-vrml";
 	$mimetypes_data["wmv"] = "video/x-ms-wmv";
 	$mimetypes_data["wrl"] = "x-world/x-vrml";
+	$mimetypes_data["pps"] = "application/vnd.ms-powerpoint";
 
 	function get_mime_type($filename, $flags = 3) {
 	global $mimemagic_data, $mimetypes_data;
