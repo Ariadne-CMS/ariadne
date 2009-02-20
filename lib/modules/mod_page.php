@@ -56,7 +56,7 @@ class page {
 		if (!$full) {
 			$page = page::getBody($page);
 		}
-		return trim(str_replace('&nbsp;',' ',strip_tags($page, '<img>')))=='';
+		return trim(str_replace('&nbsp;',' ',strip_tags($page, '<img><object><embed><iframe>')))=='';
 	}
 
 	function clean($page, $settings=false) {
