@@ -570,6 +570,8 @@
 	$mimetypes_data["wmv"] = "video/x-ms-wmv";
 	$mimetypes_data["wrl"] = "x-world/x-vrml";
 	$mimetypes_data["pps"] = "application/vnd.ms-powerpoint";
+	$mimetypes_data["kml"] = "application/vnd.google-earth.kml+xml";
+	$mimetypes_data["kmz"] = "application/vnd.google-earth.kmz"; 
 
 	function get_mime_type($filename, $flags = 3) {
 	global $mimemagic_data, $mimetypes_data;
