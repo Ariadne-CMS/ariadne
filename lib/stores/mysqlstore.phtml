@@ -1091,7 +1091,7 @@ class mysqlstore extends store{
 	}
 
 
-	protected function get_nextid($path, $mask="{5:id}") {
+	public function get_nextid($path, $mask="{5:id}") {
 	/**********************************************************************
 
 		'private' function of mysql store. This will return the next
