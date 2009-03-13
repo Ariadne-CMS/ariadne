@@ -1,5 +1,5 @@
 <?php
-	DEFINE("HTML2PS_LOCATION", $me->store->get_config('code')."modules/mod_html2ps/");
+	DEFINE("HTML2PS_LOCATION", $this->store->get_config('code')."modules/mod_html2ps/");
 
 	class html2ps {
 		function generate($config) {
