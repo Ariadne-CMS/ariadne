@@ -1,0 +1,4 @@
+The HTML2ps files are located at:
+https://svn.muze.nl/svn/muze/pear/mod_html2ps
+
+Install these into lib/modules/mod_html2ps
