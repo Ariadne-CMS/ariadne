@@ -373,6 +373,8 @@
 	$ARnls["neverexpires"]					= "Password never expires";
 	$ARnls["new_password"]					= "New password";
 	$ARnls["new_password_repeat"]				= "Repeat your new password";
+	$ARnls["err:activationincorrect"]		= "Password Activation Code is incorrect";
+	$ARnls["err:activationexpired"]			= "Password Activation Code has expired";
 
 	$ARnls["expires"]						= "Expires";
 	$ARnls["toolbar_editor"]				= "Toolbar Editor";

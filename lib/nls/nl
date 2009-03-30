@@ -361,12 +361,15 @@
 	$ARnls["openinpopup"]					=	"Open in Popup";
 	$ARnls["sessionpasswordexpired"]        = "Uw wachtwoord is verlopen.";
 	$ARnls["passwordexpired"]				= "Uw wachtwoord is verlopen. Vul een nieuw wachtwoord in.";
-	$ARnls["err:samepassword"]                              = "Het nieuwe watchwoord mag niet gelijk zijn aan het oude.";
-	$ARnls["err:weakpassword"]                              = "Het nieuwe wachtwoord is te zwak.";
+	$ARnls["err:samepassword"]				= "Het nieuwe watchwoord mag niet gelijk zijn aan het oude.";
+	$ARnls["err:weakpassword"]				= "Het nieuwe wachtwoord is te zwak.";
 	$ARnls["neverexpires"]					= "Wachtwoord verloopt nooit";
 	$ARnls["new_password"]					= "Kies <b>nieuw</b> wachtwoord";
-	$ARnls["new_password_repeat"]				= "Typ nogmaals uw <b>nieuwe</b> wachtwoord";
-	$ARnls["expires"]					= "Verloopt";
+	$ARnls["new_password_repeat"]			= "Typ nogmaals uw <b>nieuwe</b> wachtwoord";
+	$ARnls["err:activationincorrect"]		= "Wachtwoord Activatie Code is incorrect";
+	$ARnls["err:activationexpired"]			= "Wachtwoord Activatie Code is verlopen";
+
+	$ARnls["expires"]						= "Verloopt";
 	$ARnls["toolbar_editor"]				= "Toolbar Editor";
 	$ARnls["sessiontimeout"]				= "Sessie verlopen";
 ?>
