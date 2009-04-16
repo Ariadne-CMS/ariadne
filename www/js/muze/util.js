@@ -62,12 +62,17 @@ muze.util = function() {
 		},
 		getScrollOffset : function(object) {
 			if (!object) {
-				object = document.body;
+				var iebody = (document.compatMode && document.compatMode!='BackCompat') ? document.documentElement : document.body;
+				return {
+					x : document.all? iebody.scrollLeft : window.pageXOffset,
+					y : document.all? iebody.scrollTop: window.pageYOffset
+				}
+			} else {
+				return {
+					x : object.scrollLeft,
+					y : object.scrollTop
+				}
 			}
-			return {
-				x : object.scrollLeft,
-				y : object.scrollTop
-			}			
 		},
 		getPageSize : function() {
 			var scrollSize = muze.util.getScrollSize();
