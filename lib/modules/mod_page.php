@@ -209,7 +209,7 @@ class page {
 		$cleanAR = array(
 			'rewrite' => array(
 				'^(A|IMG)$' => array(
-					'ar:*' =>false
+					'^ar:.*' =>false
 				)
 			)
 		);
