@@ -105,19 +105,13 @@
 			return create_function($safe_args, $safe_code);
 		}
 
-		function _call_function($callback, $a=null, $b=null, $c=null, $d=null, $e=null) {
+		function _call_function($callback) {
+			$args = func_get_args();
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			$result = null;
 			if (pinp_util::is_callback($callback)) {
-				switch (true) {
-					case $a === NULL: $result = $callback(); break;
-					case $b === NULL: $result = $callback($a); break;
-					case $c === NULL: $result = $callback($a, $b); break;
-					case $d === NULL: $result = $callback($a, $b, $c); break;
-					case $e === NULL: $result = $callback($a, $b, $c, $d); break;
-					default:          $result = $callback($a, $b, $c, $d, $e); break;
-				}
+				$result = call_user_func_array($callback, $args);
 			} else {
 				$me->error = "'$callback' is not a callback function";
 			}
