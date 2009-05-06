@@ -2653,6 +2653,7 @@ class pobject extends object { // pobject class definition
 				return $this->AR_implements($arguments[0]);
 			break;
 			default:
+				trigger_error(sprintf('Call to undefined function: %s::%s().', get_class($this), $name), E_USER_ERROR);
 				return false;
 		}
 	}
