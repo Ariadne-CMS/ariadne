@@ -8,6 +8,7 @@
 	define(T_ATTRIB, 245);
 	define(T_NUMBER, 244);
 	define(T_ATTRIB_VAL, 243);
+	define(T_DOCTYPE, 242);
 
 	define(T_EOF, 0);
 	define(T_TEXT, -1);
@@ -19,6 +20,7 @@
 	define(STATE_ATTRIB, 4);
 	define(STATE_COMMENT, 5);
 	define(STATE_SCRIPT, 6);
+	define(STATE_DOCTYPE, 7);
  
 	define(CONTEXT_NORMAL, 1);
 	define(CONTEXT_SCRIPT, 2);
@@ -72,6 +74,23 @@
 
 			do {
 				switch (true) {
+					case $yych === $scanner['class_attrib_start'][$yych] && ($YYSTATE == STATE_DOCTYPE):
+						$value = $yych;
+						while ($scanner['class_attrib_next'][$yych = $YYBUFFER[++$YYCURSOR]] == $yych) {
+							$value .= $yych;
+						}
+						return T_ATTRIB_VAL;
+					break;
+					case $yych === '"' && ($YYSTATE == STATE_DOCTYPE):
+						$yych = $yych = $YYBUFFER[++$YYCURSOR];
+						while ($yych !== "\000" && $yych !== '"') {
+							$value .= $yych;
+							$yych = $yych = $YYBUFFER[++$YYCURSOR];
+						}
+						$value = '"'.$value.'"';
+						$yych = $YYBUFFER[++$YYCURSOR];
+						return T_ATTRIB_VAL;
+					break;
 					case $yych === '"' && ($YYSTATE == STATE_ATTRIB):
 					case $yych === "'" && ($YYSTATE == STATE_ATTRIB):
 						$YYSTATE = STATE_OPEN_TAG;
@@ -96,7 +115,7 @@
 						$YYSTATE = STATE_ATTRIB;
 						contine;
 					break;
-					case $yych === $scanner['class_whitespace'][$yych] && (($YYSTATE == STATE_OPEN_TAG) || ($YYSTATE == STATE_CLOSE_TAG)):
+					case $yych === $scanner['class_whitespace'][$yych] && (($YYSTATE == STATE_OPEN_TAG) || ($YYSTATE == STATE_CLOSE_TAG) || ($YYSTATE == STATE_DOCTYPE)):
 						$yych = $YYBUFFER[++$YYCURSOR]; continue;
 					break;
 					case $yych === '-' && ($YYSTATE == STATE_COMMENT):
@@ -126,6 +145,12 @@
 						}
 						return T_CLOSE_TAG;
 					break;
+					case strtolower(substr($YYBUFFER, $YYCURSOR, strlen('<!doctype'))) == '<!doctype' && ($YYSTATE == STATE_TEXT):
+						$YYSTATE	= STATE_DOCTYPE;
+						$value		= substr($YYBUFFER, $YYCURSOR, strlen('<!doctype'));
+						$YYCURSOR	+= strlen('<!doctype');
+						return T_DOCTYPE;
+					break;
 					case $yych == '<' && ($YYSTATE == STATE_TEXT):
 						$YYSTATE	= STATE_OPEN_TAG;
 						$value		= "";
@@ -151,7 +176,7 @@
 						}
 						return T_NUMBER;
 					break;
-					case $yych === '>' && (($YYSTATE == STATE_OPEN_TAG) || ($YYSTATE == STATE_CLOSE_TAG)):
+					case $yych === '>' && (($YYSTATE == STATE_OPEN_TAG) || ($YYSTATE == STATE_CLOSE_TAG) || ($YYSTATE == STATE_DOCTYPE)):
 						if ($YYCONTEXT == CONTEXT_SCRIPT) {
 							$YYSTATE = STATE_SCRIPT;
 						} else {
@@ -159,7 +184,7 @@
 						}
 						$yych = $YYBUFFER[++$YYCURSOR]; continue;
 					break;
-					case $yych === "\000":
+					case ord($yych) === 0:
 						$value = $yych;
 						return T_EOF;
 					break;
@@ -252,6 +277,16 @@
 						$node['html'] = htmlparser::parse_Text($parser);
 						$result[] = $node;
 					break;
+					case T_DOCTYPE:
+						$node = Array('type' => 'doctype');
+						htmlparser::nextToken($parser);
+						while ($parser["token_ahead"] == T_ATTRIB_VAL) {
+							htmlparser::nextToken($parser);
+							$attrib_value = $parser["token_value"];
+							$node['attribs'][] = $attrib_value;
+						}
+						$result[] = $node;
+					break;
 					case T_OPEN_TAG:
 						$nextTag = strtolower($parser["token_ahead_value"]);
 						if ($nextTag == $tagName && in_array($tagName, $siblings)) {
@@ -342,6 +377,13 @@
 							$result .= "</".$node['tagName'].">";
 						}
 					}
+				break;
+				case 'doctype':
+					$result .= "<!DOCTYPE";
+					foreach ($node['attribs'] as $attrib) {
+						$result .= " $attrib";
+					}
+					$result .= ">";
 				break;
 				default:
 					$result .= $node['html'];
