@@ -18,6 +18,10 @@
 	define(STATE_CLOSE_TAG, 3);
 	define(STATE_ATTRIB, 4);
 	define(STATE_COMMENT, 5);
+	define(STATE_SCRIPT, 6);
+ 
+	define(CONTEXT_NORMAL, 1);
+	define(CONTEXT_SCRIPT, 2);
 
 	class htmlparser {
 
@@ -26,7 +30,7 @@
 			$scanner['YYLINE'] = 0;
 			$scanner['YYCURSOR'] = 0;
 			$scanner['YYSTATE'] = STATE_TEXT;
-
+			$scanner['YYCONTEXT'] = CONTEXT_NORMAL;
 
 			$class_ident_start = Array();
 			for ($i = ord('a'); $i <= ord('z'); $i++) {
@@ -64,6 +68,7 @@
 			$YYBUFFER = &$scanner["YYBUFFER"];
 			$yych = $YYBUFFER[$YYCURSOR];
 			$YYSTATE = &$scanner["YYSTATE"];
+			$YYCONTEXT = &$scanner["YYCONTEXT"];
 
 			do {
 				switch (true) {
@@ -104,33 +109,33 @@
 						$YYBUFFER[++$YYCURSOR];
 						return T_TEXT;
 					break;
-					case $yych === '<' && ($YYSTATE == STATE_TEXT):
-						$value = $yych;
-						$yych = $YYBUFFER[++$YYCURSOR];
-						if ($yych == '/') {
-							$next_state = STATE_CLOSE_TAG;
-							$tag = T_CLOSE_TAG;
-							$yych = $YYBUFFER[++$YYCURSOR];
-						} else if ($yych == '!' && substr($YYBUFFER, $YYCURSOR, 3)=== '!--') {
-							$value = "<!--"; $YYCURSOR+=3;
-							$YYSTATE = STATE_COMMENT;
-							return T_TEXT;
-						} else {
-							while ($scanner['class_whitespace'][$yych] == $yych) {
-								$yych = $YYBUFFER[++$YYCURSOR];
-							}
-							$next_state = STATE_OPEN_TAG;
-							$tag = T_OPEN_TAG;
+					case (strtolower(substr($YYBUFFER, $YYCURSOR, strlen('<!--'))) == '<!--') && ($YYSTATE == STATE_TEXT):
+							$value		= "<!--"; $YYCURSOR+=3;
+							$YYSTATE	= STATE_COMMENT;
+							return	T_TEXT;
+					break;
+					case strtolower(substr($YYBUFFER, $YYCURSOR, strlen('</script>'))) == '</script>' && ($YYSTATE == STATE_SCRIPT):
+						$YYCONTEXT = CONTEXT_NORMAL;
+						// fallthrough
+					case substr($YYBUFFER, $YYCURSOR, 2) == '</' && ($YYSTATE == STATE_TEXT):
+						$YYSTATE	= STATE_CLOSE_TAG;
+						$YYCURSOR	+= 1;
+						$value		= "";
+						while ($scanner['class_ident_next'][$yych = $YYBUFFER[++$YYCURSOR]] == $yych) {
+							$value .= $yych;
 						}
-						if ($scanner['class_ident_start'][$yych] == $yych) {
-							$value = $yych;
-							while ($scanner['class_ident_next'][$yych = $YYBUFFER[++$YYCURSOR]] == $yych) {
-								$value .= $yych;
-							}
-							$YYSTATE = $next_state;
-							return $tag;
+						return T_CLOSE_TAG;
+					break;
+					case $yych == '<' && ($YYSTATE == STATE_TEXT):
+						$YYSTATE	= STATE_OPEN_TAG;
+						$value		= "";
+						while ($scanner['class_ident_next'][$yych = $YYBUFFER[++$YYCURSOR]] == $yych) {
+							$value .= $yych;
 						}
-						return T_TEXT;
+						if (strtolower($value) == 'script') {
+							$YYCONTEXT = CONTEXT_SCRIPT;
+						}
+						return T_OPEN_TAG;
 					break;
 					case $yych === $scanner['class_attrib_start'][$yych] && ($YYSTATE == STATE_OPEN_TAG):
 						$value = $yych;
@@ -147,7 +152,11 @@
 						return T_NUMBER;
 					break;
 					case $yych === '>' && (($YYSTATE == STATE_OPEN_TAG) || ($YYSTATE == STATE_CLOSE_TAG)):
-						$YYSTATE = STATE_TEXT;
+						if ($YYCONTEXT == CONTEXT_SCRIPT) {
+							$YYSTATE = STATE_SCRIPT;
+						} else {
+							$YYSTATE = STATE_TEXT;
+						}
 						$yych = $YYBUFFER[++$YYCURSOR]; continue;
 					break;
 					case $yych === "\000":
