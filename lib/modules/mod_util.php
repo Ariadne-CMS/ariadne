@@ -106,7 +106,7 @@
 		}
 
 		function _call_function($callback) {
-			$args = func_get_args();
+			$args = array_slice(func_get_args(), 1);
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			$result = null;
