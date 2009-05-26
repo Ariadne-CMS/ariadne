@@ -328,8 +328,14 @@
 				return error::raiseError('mod_csv: quoteValues: values argument is not an array', 2);
 			}
 			$result = '';
-			foreach ($values as $value) {
-				$result .= $this->quoteValue($value, $settings) . $settings['seperator'];
+			if ($settings['keySelection']) {
+				foreach($settings['keySelection'] as $key) {
+					$result .= $this->quoteValue($values[$key], $settings) . $settings['seperator'];
+				}
+			} else {
+				foreach ($values as $value) {
+					$result .= $this->quoteValue($value, $settings) . $settings['seperator'];
+				}
 			}
 			$result = substr($result, 0, -strlen($settings['seperator'])) . $settings['lineEnd'];
 
