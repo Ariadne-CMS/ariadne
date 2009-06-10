@@ -134,7 +134,7 @@
 			if (!is_array($field)) {
 				$field	= array();
 			}
-			$field = $this->getField( new ar_object( array_merge( $field, array(
+			$field = $this->getField( new arObject( array_merge( $field, array(
 				'type'	=> $type,
 				'name'	=> $name,
 				'label'	=> $label
@@ -174,7 +174,7 @@
 			if (!isset($value)) {
 				$value	= $name;
 			}
-			$button = $this->getButton( new ar_object( array_merge( $button, array(
+			$button = $this->getButton( new arObject( array_merge( $button, array(
 				'type'	=> $type,
 				'name'	=> $name,
 				'value'	=> $value
