@@ -83,7 +83,7 @@
 			}
 		}
 
-		private function sendRequest($method, $uri) {
+		private function sendRequest($method, $host, $uri) {
 			if( strtoupper($method) == "GET" ) { 
 				if ($this->requestData) {
 					$uri .= "?" . $this->requestData; 
@@ -113,7 +113,7 @@
 			} 
 			
 			$this->requestString .= "\r\n";
-			fwrite($this->connection, $this->requestString);
+			fwrite($this->connection, $this->requestString, strlen($this->requestString));
 		}
 
 		private function sendRequestHeaders() {
@@ -144,6 +144,9 @@
 			if ($port) {
 				$urlComponents['port'] = $port;
 			}
+			if (!$urlComponents['port']) {
+				$urlComponents['port'] = 80;
+			}
 			if ($urlComponents['scheme']!='http') {
 				return ar::error('Bad Request', 400);
 			} else {
@@ -156,9 +159,9 @@
 				while ($redirecting && $tries < $maxtries) {
 					$tries++; 
 
-					$this->connection = @fsockopen( $urlComponents['host'], $urlComponents['port'], $errno, $errstr, 120); 
+					$this->connection = fsockopen( $urlComponents['host'], $urlComponents['port'], $errno, $errstr, 120); 
 					if( $this->connection ) { 
-						$this->sendRequest($method, $uri);
+						$this->sendRequest($method, $urlComponents['host'], $urlComponents['path']);
 						$output = ""; 
 
 						$headerStart = false; 
@@ -172,14 +175,14 @@
 							if ($headerEnd && $redirecting) { 
 								break; 
 							} else if ($headerEnd && !$redirecting) { 
-								$this->resultContents .= $currentLine; 
+								$this->resultContent .= $currentLine; 
 							} else if ( ereg("^HTTP", $currentLine) ) { 
 								$headerStart = true; 
 								$this->resultHeaders[] = $currentLine;
 							} else if ( $headerStart && preg_match('/^[\n\r\t ]*$/', $currentLine) ) { 
 								$headerEnd = true; 
 							} else { 
-								if ($newurl = $this->parseLocation($currentLine)) {
+								if ($newurl = $this->parseLocation($currentLine, $url)) {
 									$url = $newurl;
 									$redirecting = true; 
 								} else {
