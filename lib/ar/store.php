@@ -1,6 +1,6 @@
 <?php
 
-	class ar_store extends ar_base {
+	class ar_store extends arBase {
 
 		public static function ls() {
 			$context = pobject::getContext();
@@ -28,7 +28,7 @@
 
 	}
 
-	class ar_storeFind {
+	class ar_storeFind extends arBase {
 
 		var $limit = 0;
 		var $offset = 0;
@@ -84,34 +84,6 @@
 			return $clone;
 		}
 
-		function _call($template, $args=null) {
-			return $this->call($template, $args);
-		}
-
-		function _iterate($selection, $definitions = Array()) {
-			return $this->iterate($selection, $definitions);
-		}
-
-		function _getIterator($selection, $definitions = Array()) {
-			return $this->getIterator($selection, $definitions);
-		}
-
-		function _count() {
-			return $this->count();
-		}
-
-		function _limit($limit) {
-			return $this->limit($limit);
-		}
-
-		function _offset($offset) {
-			return $this->offset($offset);
-		}
-
-		function _order($order) {
-			return $this->order($order);
-		}
-
 	}
 
 	class ar_storeList extends ar_storeFind {
@@ -123,7 +95,7 @@
 	}
 
 
-	class ar_storeGet {
+	class ar_storeGet extends arBase {
 
 		function __construct($current, $path) {
 			global $store;
@@ -143,21 +115,9 @@
 			return $store->call($template, $args, $store->get($this->path));
 		}
 
-		function _find($query) {
-			return $this->find($query);
-		}
-
-		function _ls() {
-			return $this->ls();
-		}
-
-		function _call($template, $args=null) {
-			return $this->call($template, $args);
-		}
-
 	}
 
-	class ar_storeParents {
+	class ar_storeParents extends arBase {
 
 		function __construct($path = ".") {
 			$this->path	= $path;
@@ -193,22 +153,6 @@
 			$clone = clone $this;
 			$clone->top = $top;
 			return $clone;
-		}
-
-		function _call($template, $args=null) {
-			return $this->call($template, $args);
-		}
-
-		function _iterate($selection, $definitions = Array()) {
-			return $this->iterate($selection, $definitions);
-		}
-
-		function _count() {
-			return $this->count();
-		}
-
-		function _top($top = "/") {
-			return $this->top($top);
 		}
 
 	}

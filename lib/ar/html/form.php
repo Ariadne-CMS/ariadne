@@ -1,5 +1,5 @@
 <?php
-	class ar_html_form extends ar_base {
+	class ar_html_form extends arBase {
 		// todo: check, getdata, gettext methods, required fields, regular expression checks, related fields
 		// custom fields api, custom validation api, file upload field, captcha
 		protected $fields, $buttons, $action, $method;

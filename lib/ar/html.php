@@ -1,5 +1,5 @@
 <?php
-	class ar_html extends ar_base {
+	class ar_html extends arBase {
 	
 		public static function name($name) {
 			return preg_replace('/[^a-z0-9:]*/', '', strtolower($name));
