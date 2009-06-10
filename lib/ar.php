@@ -64,6 +64,34 @@
 		}
 	}
 	
+	class ar_object {
+		public function __construct( $vars = '' ) {
+			if ( is_array($vars) ) {
+				foreach ( $vars as $key => $var ) {
+					if ( !is_numeric($key) ) {
+						$this->{$key} = $var;
+					}
+				}
+			}
+		}
+	}
+	
+	abstract class ar_base {
+		public function __call($name, $arguments) {
+			if (($name[0]==='_')) {
+				$realName = substr($name, 1);
+				$method = new ReflectionMethod(get_class($this), $realName);
+				if ($method->isPublic()) {
+					return call_user_func_array(array($this, $realName), $arguments);
+				} else {
+					trigger_error("Method $realName not found in class ".get_class($this), E_USER_ERROR);
+				}
+			} else {
+				trigger_error("Method $realName not found in class ".get_class($this), E_USER_ERROR);
+			}
+		}
+	}
+	
 	class pinp_ar extends ar {
 		public static function __callStatic($name, $arguments) {
 			return self::load(substr($name, 1), $arguments);
@@ -96,33 +124,4 @@
 	}
 
 	spl_autoload_register('ar::autoload');
-	
-	class ar_object {
-		function __construct( $vars = '' ) {
-			if ( is_array($vars) ) {
-				foreach ( $vars as $key => $var ) {
-					if ( !is_numeric($key) ) {
-						$this->{$key} = $var;
-					}
-				}
-			}
-		}
-	}
-	
-	class ar_base {
-
-		function __call($name, $arguments) {
-			if (($name[0]==='_')) {
-				$realName = substr($name, 1);
-				$method = new ReflectionMethod(get_class($this), $realName);
-				if ($method->isPublic()) {
-					return call_user_func_array(array($this, $realName), $arguments);
-				} else {
-					trigger_error("Method $realName not found in class ".get_class($this), E_USER_ERROR);
-				}
-			} else {
-				trigger_error("Method $realName not found in class ".get_class($this), E_USER_ERROR);
-			}
-		}
-	}
 ?>
