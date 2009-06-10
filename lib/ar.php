@@ -110,12 +110,18 @@
 	}
 	
 	class ar_base {
+
 		function __call($name, $arguments) {
 			if (($name[0]==='_')) {
 				$realName = substr($name, 1);
-				return call_user_func_array(array($this, $realName), $arguments);
+				$method = new ReflectionMethod(get_class($this), $realName);
+				if ($method->isPublic()) {
+					return call_user_func_array(array($this, $realName), $arguments);
+				} else {
+					trigger_error("Method $realName not found in class ".get_class($this), E_USER_ERROR);
+				}
 			} else {
-				trigger_error("Method $name not found in class ".get_class($this), E_USER_ERROR);
+				trigger_error("Method $realName not found in class ".get_class($this), E_USER_ERROR);
 			}
 		}
 	}
