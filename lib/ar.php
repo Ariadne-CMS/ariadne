@@ -96,7 +96,7 @@
 			}
 		}
 		
-		public static _pinp_is_allowed($method) {
+		public static function _pinp_is_allowed($method) {
 			return in_array(self::$_pinp_export, $method);
 		}
 		
