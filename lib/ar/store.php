@@ -1,9 +1,9 @@
 <?php
 
 	class ar_store extends arBase {
-		protected static $_pinp_export = array(
-			'ls', 'find', 'get', 'parents'
-		);
+//		protected $_pinp_export = array(
+//			'ls', 'find', 'get', 'parents'
+//		);
 
 		public static function ls() {
 			$context = pobject::getContext();
@@ -32,9 +32,9 @@
 	}
 
 	class ar_storeFind extends arBase {
-		protected static $_pinp_export = array(
-			'call', 'iterate', 'getIterator', 'count', 'limit', 'offset', 'order'
-		);
+//		protected $_pinp_export = array(
+//			'call', 'iterate', 'getIterator', 'count', 'limit', 'offset', 'order'
+//		);
 
 		var $limit = 0;
 		var $offset = 0;
@@ -102,9 +102,9 @@
 
 
 	class ar_storeGet extends arBase {
-		protected static $_pinp_export = array(
-			'ls', 'find', 'call'
-		);
+//		protected $_pinp_export = array(
+//			'ls', 'find', 'call'
+//		);
 
 		public function __construct($current, $path) {
 			global $store;
@@ -127,9 +127,9 @@
 	}
 
 	class ar_storeParents extends arBase {
-		protected static $_pinp_export = array(
-			'call', 'iterate', 'getIterator', 'count', 'top'
-		);
+//		protected $_pinp_export = array(
+//			'call', 'iterate', 'getIterator', 'count', 'top'
+//		);
 
 		public function __construct($path = ".") {
 			$this->path	= $path;

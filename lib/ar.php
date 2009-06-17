@@ -81,12 +81,14 @@
 	}
 	
 	abstract class arBase {
-		protected static $_pinp_export = array();
+//		protected $_pinp_export = array( );
+//		protected static $instance;
 		
 		public function __call($name, $arguments) { // FIXME; remove this method after pinp compiler is patched
 			if (($name[0]==='_')) {
 				$realName = substr($name, 1);
-				if (self::_pinp_is_allowed($realName)) {
+				$method = new ReflectionMethod(get_class($this), $realName);
+				if ($method->isPublic()) { 
 					return call_user_func_array(array($this, $realName), $arguments);
 				} else {
 					trigger_error("Method $realName not found in class ".get_class($this), E_USER_ERROR);
@@ -96,11 +98,20 @@
 			}
 		}
 		
-		public static function _pinp_is_allowed($method) {
-			return in_array(self::$_pinp_export, $method);
-		}
+/*
+		public function _pinp_is_allowed($method) {
+			$me = self::getInstance();
+			return in_array($method, $me->_pinp_export);
+		}		
 		
-
+		public function getInstance() {
+			if ( null == self::$instance ) {
+				self::$instance = new self;
+				return self::$instance;
+			}
+			return self::$instance;
+		}
+*/
 	}
 
 	class arError extends arBase {

@@ -1,9 +1,9 @@
 <?php
 	class ar_html extends arBase {
-		protected static $_pinp_export = array(
-			'name', 'value', 'attribute', 'attributes', 'tag', 'nodes', 'form'
-		);
-		
+//		protected $_pinp_export = array(
+//			'name', 'value', 'attribute', 'attributes', 'tag', 'nodes', 'form'
+//		);
+
 		public static function name($name) {
 			return preg_replace('/[^a-z0-9:]*/', '', strtolower($name));
 		}
