@@ -1,6 +1,9 @@
 <?php
 	class ar_http_headers extends arBase {
-	
+		protected static $_pinp_export = array(
+			'add', 'sent', 'cache', 'disableCache', 'content', 'redirect', 'getStatusMessage'
+		);
+		
 		private $statusCodes = array(
 			100 => 'Continue',
 			101 => 'Switching Protocols',

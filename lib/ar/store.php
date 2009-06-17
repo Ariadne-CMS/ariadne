@@ -1,6 +1,9 @@
 <?php
 
 	class ar_store extends arBase {
+		protected static $_pinp_export = array(
+			'ls', 'find', 'get', 'parents'
+		);
 
 		public static function ls() {
 			$context = pobject::getContext();
@@ -29,6 +32,9 @@
 	}
 
 	class ar_storeFind extends arBase {
+		protected static $_pinp_export = array(
+			'call', 'iterate', 'getIterator', 'count', 'limit', 'offset', 'order'
+		);
 
 		var $limit = 0;
 		var $offset = 0;
@@ -36,17 +42,17 @@
 		var $query = '';
 		var $path = '/';
 
-		function __construct($path='/', $query='') {
+		public function __construct($path='/', $query='') {
 			$this->path = $path;
 			$this->query = $query;
 		}
 
-		function call($template, $args=null) {
+		public function call($template, $args=null) {
 			global $store;
 			return $store->call($template, $args, $store->find($this->path, $this->query, $this->limit, $this->offset)); 
 		}
 
-		function iterate($selection, $definitions = Array()) {
+		public function iterate($selection, $definitions = Array()) {
 			global $store;
 			$result = Array();
 			$iterator = $this->getIterator($selection, $definitions, $store->find($this->path, $this->query, $this->limit, $this->offset)); 
@@ -56,29 +62,29 @@
 			return $result;
 		}
 
-		function getIterator($selection, $definitions = Array()) {
+		public function getIterator($selection, $definitions = Array()) {
 			global $store;
 			return $store->getIterator(new selector($selection), $definitions, $store->find($this->path, $this->query, $this->limit, $this->offset));
 		}
 
-		function count() {
+		public function count() {
 			global $store;
 			return $store->count($store->find($this->path, $this->query, $this->limit, $this->ofset));
 		}
 
-		function limit($limit) {
+		public function limit($limit) {
 			$clone = clone $this;
 			$clone->limit = $limit;
 			return $clone;
 		}
 
-		function offset($offset) {
+		public function offset($offset) {
 			$clone = clone $this;
 			$clone->offset = $offset;
 			return $clone;
 		}
 
-		function order($order) {
+		public function order($order) {
 			$clone = clone $this;
 			$clone->order = $order;
 			return $clone;
@@ -88,7 +94,7 @@
 
 	class ar_storeList extends ar_storeFind {
 
-		function __construct($path) {
+		public function __construct($path) {
 			parent::__construct($path, "object.parent = '".$path."'");
 		}
 
@@ -96,21 +102,24 @@
 
 
 	class ar_storeGet extends arBase {
+		protected static $_pinp_export = array(
+			'ls', 'find', 'call'
+		);
 
-		function __construct($current, $path) {
+		public function __construct($current, $path) {
 			global $store;
 			$this->path = $store->make_path($current, $path);
 		}
 
-		function find($query) {
+		public function find($query) {
 			return new arFind($this->path, $query);
 		}
 
-		function ls() {
+		public function ls() {
 			return new arList($this->path);
 		}
 
-		function call($template, $args=null) {
+		public function call($template, $args=null) {
 			global $store;
 			return $store->call($template, $args, $store->get($this->path));
 		}
@@ -118,18 +127,21 @@
 	}
 
 	class ar_storeParents extends arBase {
+		protected static $_pinp_export = array(
+			'call', 'iterate', 'getIterator', 'count', 'top'
+		);
 
-		function __construct($path = ".") {
+		public function __construct($path = ".") {
 			$this->path	= $path;
 			$this->top	= "/";
 		}
 
-		function call($template, $args=null) {
+		public function call($template, $args=null) {
 			global $store;
 			return $store->call($template, $args, $store->parents($this->path, $this->top));
 		}
 
-		function iterate($selection, $definitions = Array()) {
+		public function iterate($selection, $definitions = Array()) {
 			global $store;
 			$result = Array();
 			$iterator = $this->getIterator($selection, $definitions, $store->parents($this->path, $this->top)); 
@@ -139,17 +151,17 @@
 			return $result;
 		}
 
-		function getIterator($selection, $definitions = Array()) {
+		public function getIterator($selection, $definitions = Array()) {
 			global $store;
 			return $store->getIterator(new selector($selection), $definitions, $store->parents($this->path, $this->top));
 		}
 
-		function count() {
+		public function count() {
 			global $store;
 			return $store->count($store->parents($this->path, $this->top));
 		}
 
-		function top($top = "/") {
+		public function top($top = "/") {
 			$clone = clone $this;
 			$clone->top = $top;
 			return $clone;

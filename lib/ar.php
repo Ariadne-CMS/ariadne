@@ -62,9 +62,13 @@
 		public static function parents($path = ".") {
 			return ar_store::parents($path);
 		}
+		
+		public static function error($message, $code) {
+			return new arError($message, $code);
+		}
 	}
 	
-	class ar_object {
+	class arObject {
 		public function __construct( $vars = '' ) {
 			if ( is_array($vars) ) {
 				foreach ( $vars as $key => $var ) {
@@ -76,12 +80,13 @@
 		}
 	}
 	
-	abstract class ar_base {
-		public function __call($name, $arguments) {
+	abstract class arBase {
+		protected static $_pinp_export = array();
+		
+		public function __call($name, $arguments) { // FIXME; remove this method after pinp compiler is patched
 			if (($name[0]==='_')) {
 				$realName = substr($name, 1);
-				$method = new ReflectionMethod(get_class($this), $realName);
-				if ($method->isPublic()) {
+				if (self::_pinp_is_allowed($realName)) {
 					return call_user_func_array(array($this, $realName), $arguments);
 				} else {
 					trigger_error("Method $realName not found in class ".get_class($this), E_USER_ERROR);
@@ -89,6 +94,38 @@
 			} else {
 				trigger_error("Method $realName not found in class ".get_class($this), E_USER_ERROR);
 			}
+		}
+		
+		public static _pinp_is_allowed($method) {
+			return in_array(self::$_pinp_export, $method);
+		}
+		
+
+	}
+
+	class arError extends arBase {
+		var $message;
+		var $code;
+
+		public function error($message, $code) {
+			$this->message=$message;
+			$this->code=$code;
+		}
+
+		public function isError($ob) {
+			return (is_a($ob, 'arError') || is_a($ob, 'error') || is_a($ob, 'PEAR_Error'));
+		}
+
+		public function raiseError($message, $code) {
+			return new error($message, $code);
+		}
+
+		public function getMessage() {
+			return $this->message;
+		}
+
+		public function getCode() {
+			return $this->code;
 		}
 	}
 	

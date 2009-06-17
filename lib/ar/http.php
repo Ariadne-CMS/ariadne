@@ -1,5 +1,8 @@
 <?php
 	class ar_http extends arBase {
+		protected static $_pinp_export = array(
+			'getvar', 'request'
+		);
 		private static $_GET, $_POST, $_REQUEST;  //needed to make __get() work
 		
 		public function __get($var) {
@@ -38,6 +41,9 @@
 	}
 	
 	class ar_httpRequest extends arBase {
+		protected static $_pinp_export = array(
+			'getHeaders', 'addHeader', 'get', 'post', 'send'
+		);
 		private $resultContent = '';
 		private $resultHeaders = array();
 		private $requestHeaders = array();
