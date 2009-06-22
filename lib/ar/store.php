@@ -1,10 +1,21 @@
 <?php
+	ar_pinp::allow('ar_store', array(
+		'ls', 'find', 'get', 'parents'
+	));
+
+	ar_pinp::allow('ar_storeFind', array(
+		'call', 'iterate', 'getIterator', 'count', 'limit', 'offset', 'order'
+	)); 
+
+	ar_pinp::allow('ar_storeGet', array(
+		'ls', 'find', 'call'
+	));
+
+	ar_pinp::allow('ar_storeParents', array(
+		'call', 'iterate', 'getIterator', 'count', 'top'
+	));
 
 	class ar_store extends arBase {
-//		protected $_pinp_export = array(
-//			'ls', 'find', 'get', 'parents'
-//		);
-
 		public static function ls() {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
@@ -32,9 +43,6 @@
 	}
 
 	class ar_storeFind extends arBase {
-//		protected $_pinp_export = array(
-//			'call', 'iterate', 'getIterator', 'count', 'limit', 'offset', 'order'
-//		);
 
 		var $limit = 0;
 		var $offset = 0;
@@ -100,11 +108,7 @@
 
 	}
 
-
 	class ar_storeGet extends arBase {
-//		protected $_pinp_export = array(
-//			'ls', 'find', 'call'
-//		);
 
 		public function __construct($current, $path) {
 			global $store;
@@ -127,9 +131,6 @@
 	}
 
 	class ar_storeParents extends arBase {
-//		protected $_pinp_export = array(
-//			'call', 'iterate', 'getIterator', 'count', 'top'
-//		);
 
 		public function __construct($path = ".") {
 			$this->path	= $path;

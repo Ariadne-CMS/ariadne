@@ -1,5 +1,9 @@
 <?php
 	define(arBaseDir, $AR->dir->install.'/lib/ar/');
+	require_once(arBaseDir.'pinp.php');
+
+	ar_pinp::allow('ar', array('load', 'ls', 'get', 'find', 'parents', 'error'));
+	ar_pinp::allow('arError', array('error'));
 
 	class ar {
 		protected static $instances;
@@ -36,6 +40,9 @@
 		}
 		
 		public static function autoload($className) {
+			if (strpos($className, 'pinp_ar_')===0) {
+				$className = substr($className, 5);
+			}
 			if (strpos($className, 'ar_')===0) {
 				$fileName = substr($className, 3);
 				$fileName = preg_replace('/[^a-z0-9_\-\.]/i', '', $fileName);
@@ -67,7 +74,7 @@
 			return new arError($message, $code);
 		}
 	}
-	
+
 	class arObject {
 		public function __construct( $vars = '' ) {
 			if ( is_array($vars) ) {
@@ -79,16 +86,12 @@
 			}
 		}
 	}
-	
-	abstract class arBase {
-//		protected $_pinp_export = array( );
-//		protected static $instance;
-		
-		public function __call($name, $arguments) { // FIXME; remove this method after pinp compiler is patched
+
+	class arBase {		
+		public function __call($name, $arguments) {
 			if (($name[0]==='_')) {
 				$realName = substr($name, 1);
-				$method = new ReflectionMethod(get_class($this), $realName);
-				if ($method->isPublic()) { 
+				if (ar_pinp::isAllowed($this, $realName)) {
 					return call_user_func_array(array($this, $realName), $arguments);
 				} else {
 					trigger_error("Method $realName not found in class ".get_class($this), E_USER_ERROR);
@@ -97,21 +100,6 @@
 				trigger_error("Method $realName not found in class ".get_class($this), E_USER_ERROR);
 			}
 		}
-		
-/*
-		public function _pinp_is_allowed($method) {
-			$me = self::getInstance();
-			return in_array($method, $me->_pinp_export);
-		}		
-		
-		public function getInstance() {
-			if ( null == self::$instance ) {
-				self::$instance = new self;
-				return self::$instance;
-			}
-			return self::$instance;
-		}
-*/
 	}
 
 	class arError extends arBase {
@@ -139,7 +127,8 @@
 			return $this->code;
 		}
 	}
-	
+
+	// FIXME: remove pinp_ar after pinp compiler has no need for it anymore
 	class pinp_ar extends ar {
 		public static function __callStatic($name, $arguments) {
 			return self::load(substr($name, 1), $arguments);
@@ -168,6 +157,8 @@
 	}
 	
 	function ar($name=null) {
+		// this function works as an alternative to statically calling the namespaced class
+		// this is a fallback untill namespaces work in php 5.3
 		return ar::load($name);
 	}
 

@@ -1,9 +1,9 @@
 <?php
-	class ar_http_cookie extends arBase {
-//		protected $_pinp_export = array(
-//			'get', 'set'
-//		);
+	ar_pinp::alow('ar_http_cookie', array(
+		'get', 'set'
+	));
 		
+	class ar_http_cookie extends arBase {
 		public static function set($cookie, $cookiename="ARUserCookie", $expire=null, $path="/", $domain="", $secure=0) {
 			return ldSetUserCookie($cookie, $cookiename, $expire, $path, $domain, $secure);
 		}
