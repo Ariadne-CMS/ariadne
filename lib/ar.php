@@ -1,6 +1,6 @@
 <?php
-	define(arBaseDir, $AR->dir->install.'/lib/ar/');
-	require_once(arBaseDir.'pinp.php');
+	define('ARBaseDir', $AR->dir->install.'/lib/ar/');
+	require_once(ARBaseDir.'pinp.php');
 
 	ar_pinp::allow('ar', array('load', 'ls', 'get', 'find', 'parents', 'error'));
 	ar_pinp::allow('arError', array('error'));
@@ -20,7 +20,27 @@
 		public function __get($name) {
 			return $this->load($name);
 		}
+
+		private static function _parseClassName($className) {
+			$fileName = '';
+			if (strpos($className, 'ar_')===0) {
+				$fileName = substr($className, 3);
+				$fileName = preg_replace('/[^a-z0-9_\.\\\\\/]/i', '', $fileName);
+				$fileName = str_replace(array('_','\\'), '/', $fileName);
+				$fileName = str_replace('../', '', $fileName);
+			}
+			return $fileName;
+		}
 		
+		private static function _compileClassName($className) {
+			if (strpos($className, 'ar_')!==0) {
+				$className = 'ar_'.$className;
+			}
+			$className = str_replace(array('/','\\'), '_', $className);
+			$className = preg_replace('/[^a-z0-9_]/i', '', $className);
+			return $className;
+		}
+
 		public static function load($name=null) {
 			if (!$name) {
 				if (!self::$ar) {
@@ -28,9 +48,10 @@
 				}
 				return self::$ar;
 			} else {
-				$fullName = 'ar_'.$name;
+				$fullName = self::_compileClassName($name);
 				if (!class_exists($fullName)) {
-					require_once('./'.$name.'.php');
+					$fileName = self::_parseClassName($fullName);
+					require_once(ARBaseDir.$fileName.'.php');
 				}
 				if (!self::$instances[$name]) {
 					self::$instances[$name] = new $fullName();
@@ -44,12 +65,9 @@
 				$className = substr($className, 5);
 			}
 			if (strpos($className, 'ar_')===0) {
-				$fileName = substr($className, 3);
-				$fileName = preg_replace('/[^a-z0-9_\-\.]/i', '', $fileName);
-				$fileName = str_replace('_', '/', $fileName);
-				$fileName = str_replace('../', '', $fileName);
-				if (file_exists(arBaseDir.$fileName.'.php')) {
-					require_once(arBaseDir.$fileName.'.php');
+				$fileName = self::_parseClassName($className);
+				if (file_exists(ARBaseDir.$fileName.'.php')) {
+					require_once(ARBaseDir.$fileName.'.php');
 				}
 			}
 		}
