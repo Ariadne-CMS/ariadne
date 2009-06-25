@@ -51,10 +51,10 @@ class pphoto extends pfile { // pphoto class definition
 		return $ARConfig->cache[$this->path]->thumb;
 	}
 
-	function convert($format="jpg", $quality=75) {
+	function convert($format="jpg", $quality=75, $background="white") {
 		global $ARConfig;
 
-		$this->set_context("mogrify");
+		$this->set_context("convert");
 
 		$result=false;
 		if (eregi('[^a-z0-9+]',$format)) {
@@ -64,6 +64,9 @@ class pphoto extends pfile { // pphoto class definition
 			$this->targetformat=$format;
 			$quality=(int)$quality;
 			$ARConfig->photoStack[$this->id][]=" -quality $quality";
+			$ARConfig->photoStack[$this->id][]=" -background $background";
+			$ARConfig->photoStack[$this->id][]=" -flatten";
+			$ARConfig->photoStack[$this->id][]=" {buildfile} {targetfile}";
 			$result=true;
 		}
 		return $result;
@@ -102,7 +105,7 @@ class pphoto extends pfile { // pphoto class definition
 		}
 		$tmpsrc = tempnam( $this->store->get_config("files")."temp/", "photo");
 		$f_store->copy_from_store($tmpsrc, $this->id, $file);
-		$execstring = $AR->IM->identify." ".$tmpsrc; 
+		$execstring = $AR->IM->identify." ".$tmpsrc;
 		$myarray = Array();
 		$result = exec( $execstring, &$myarray );
 		@unlink( $tmpsrc );
@@ -413,6 +416,8 @@ class pphoto extends pfile { // pphoto class definition
 				$contextexecutable = $AR->IM->mogrify;
 			} elseif( $ARConfig->photoContext[$this->id] == "composite" ) {
 				$contextexecutable = $AR->IM->composite;
+			} elseif( $ARConfig->photoContext[$this->id] == "convert" ) {
+				$contextexecutable = $AR->IM->convert;
 			} else {
 				$unknown = true; // This should NOT happen
 			}
@@ -474,11 +479,21 @@ class pphoto extends pfile { // pphoto class definition
 				$f_store->close();
 
 				if (chdir($this->store->get_config("files").'temp/')) {
+				debug("build: 1");
 					if (is_array($ARConfig->photoCommandStack[$this->id])) {
+					debug("build: 2");
 						$image="";
 						foreach( $ARConfig->photoCommandStack[$this->id] as $exec_string){
+							debug("exec_string: $exec_string");
 							$exec_string = str_replace('{buildfile}', $tmpsrc, $exec_string);
-							$exec_string .= " ".$tmpsrc;
+
+							if (strpos($exec_string, "{targetfile}")) {
+								$target = str_replace(".photo", '.' . $this->targetformat, $tmpsrc);
+								$exec_string = str_replace('{targetfile}', $target, $exec_string);
+								$tmpsrc = $target;
+							} else {
+								$exec_string .= " ".$tmpsrc;
+							}
 
 							// Split the total command line to the command and the args so we can escape the args.
 							$cmd_array = explode(" ", $exec_string, 2);
@@ -505,15 +520,10 @@ class pphoto extends pfile { // pphoto class definition
 						}
 					}
 					if (!$failed) {
+						$destsrc = $tmpsrc;
+
 						ob_start();
-						if ($this->targetformat && !eregi("[^0-9a-z\._-]",$this->targetformat)) {
-							if( substr( strtolower($tmpsrc), -6, 6 ) == ".photo" ) {
-								$tmpsrc = substr( $tmpsrc, 0, -6 );
-							}
-							$destsrc=$tmpsrc.".".$this->targetformat;
-						} else {
-							$destsrc=$tmpsrc;
-						}
+						debug("pphoto: destination file is $destsrc");
 						readfile($destsrc);
 						$result=ob_get_contents();
 						ob_end_clean();
