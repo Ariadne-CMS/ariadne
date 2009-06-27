@@ -154,14 +154,14 @@
 				}
 
  				if (is_dir($path . $file)) {
-					echo "Dir: $file<br>";
+					// echo "Dir: $file<br>";
 					$this->rmdir_rf($path .  $file . "/");	
 				} else {
-					echo "Unlink $file<br>";
+					// echo "Unlink $file<br>";
 					unlink($path . $file);
 				} 		
 			}
-			echo "rmdir $path<br>";
+			// echo "rmdir $path<br>";
 			rmdir($path);
 			closedir($dirhandle);			
 		}
