@@ -11,7 +11,12 @@
 				}
 			}
 		}
-
+		if (!function_exists('progress')) {
+			function progress($current, $total) {
+				$progress = (int)(100*($current)/$total);
+				display("progress: $current / $total ($progress %)\n");
+			}
+		}
 
 		if (get_class($ARCurrent->importStore) == "axstore") {
 			$ARCurrent->AXAction = "export";
@@ -91,6 +96,10 @@
 				}
 				$criteria .=" path = '$srcpath' ";
 			}
+			$processed_items = 0;
+
+			$items_to_process = count($this->store->nodes);
+			progress(0, $items_to_process);
 			while (count($result=$this->store->call("system.export.object.phtml",$arCallArgs,$this->store->find($srcpath,$criteria,100,$offset)))) {
 				if (is_array($checkpaths)) {
 					unset($newresult);
@@ -244,6 +253,8 @@
 					} else {
 						display("	skipping ($newpath)\n");
 					}
+					$items_processed++;
+					progress($items_processed, $items_to_process);
 				}
 				$offset+=100;
 			}
