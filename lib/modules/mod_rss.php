@@ -20,7 +20,9 @@
 
 		function loadFromUrl($url, $username='', $password='') {
 			/* Loads an rss feed from a url */
-			$rss = new rssFeed($this);
+			$context = pobject::getContext();
+			$me = $context['arCurrentObject'];
+			$rss = new rssFeed($me);
 			$rss->setFeedUrl($url, $username, $password);
 			return $rss;
 		}
