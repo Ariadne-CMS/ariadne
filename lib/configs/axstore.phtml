@@ -48,8 +48,8 @@
       }
       $tar_path=ereg_replace('([^\])[ ]', '\1\ ', $tar_path);
   
-      $compress_cmd                     = '--use-compress-program="'.($tar_path).'/bin/gzip.exe"';
-      $tar_cmd                          = '"' . $AR->dir->install.'\bin\tar.exe" '.$compress_cmd;
+      $compress_cmd                     = '--use-compress-program='.($tar_path).'/bin/gzip.exe';
+      $tar_cmd                          = $AR->dir->install.'\bin\tar.exe '.$compress_cmd;
       $ax_config["tar"]["error_handler"]   = '';
     } else {
       $tar_cmd                          = 'tar -z ';
