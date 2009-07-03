@@ -758,7 +758,7 @@
 						eregi('^/(.*/)?[^./]*[.]([^./]+)/$', $target, $regs);
 						$ext = $regs[2];
 						if (ftp_OpenDC()) {
-							$tempfile=tempnam($FTP->store->files."temp/", "upload");
+							$tempfile=tempnam($FTP->store->get_config('files')."temp/", "upload");
 							debug("tempfile: '$tempfile' ext: '$ext'");
 							$tempfile.=$ext;
 							$fp=fopen($tempfile, "wb");
