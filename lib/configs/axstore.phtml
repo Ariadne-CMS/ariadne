@@ -38,7 +38,11 @@
   /* Tar configuration                                                     */
   /*************************************************************************/
 
-  $ax_config["tar"]["mode"] = "system";
+  if ( $AR->OS=='WIN32' ) {
+    $ax_config["tar"]["mode"] = "pear";
+  } else {
+    $ax_config["tar"]["mode"] = "system";
+  }
 
   if ($ax_config["tar"]["mode"] == "system") {
     if ($AR->OS=='WIN32') {
