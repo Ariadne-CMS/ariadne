@@ -184,10 +184,7 @@
 				$rightRest		= $rightCount % $matchSize;
 				$minRep			= $minRep - $rightRep;
 				if ($offset < $rightCount - $rightRest) {
-					$rightResult = $this->left->run($matchSize, $offset % $matchSize);
-					if (is_string($rightResult)) {
-						return $rightResult;
-					}
+					return $this->left->run($matchSize, $offset % $matchSize);
 				} else {
 					$offset		= $offset - ($rightCount - $rightRest);
 					$rightCount	= $rightRest;
