@@ -3,43 +3,19 @@
 			'name', 'value', 'attribute', 'attributes', 'tag', 'nodes', 'form'
 	));
 
-	class ar_html extends arBase {
+	class ar_html extends ar_xml {
 
-		public static function name($name) {
-			return preg_replace('/[^a-z0-9:]*/', '', strtolower($name));
-		}
+		private static $xhtml = false;
 
-		public static function value($value) {
-			if (is_array($value)) {
-				$content = '';
-				foreach($value as $subvalue) {
-					$content .= ' '.self::value($subvalue);
-				}
-				$content = substr($content, 1);
-			} else if (is_bool($value)) {
-				$content = $value ? 'true' : 'false';
-			} else {
-				$content = htmlspecialchars($value);
+		public static function configure($option, $value) {
+			switch ($option) {
+				case 'xhtml' : 
+					self::$xhtml = (bool)$value;
+					break;
+				default:
+					parent::configure($option, $value);
+					break;
 			}
-			return $content;
-		}
-		
-		public static function attribute($name, $value) {
-			if (is_numeric($name)) {					
-				return ' '.self::name($value);
-			} else {
-				return ' '.self::name($name).'="'.self::value($value).'"';
-			}
-		}
-		
-		public static function attributes($attributes) {
-			$content = '';
-			if (is_array($attributes)) {
-				foreach($attributes as $key => $value) {
-					$content .= self::attribute($key, $value);
-				}
-			}
-			return $content;
 		}
 
 		private static function _mustClose($name) {
@@ -63,18 +39,10 @@
 				}
 			}
 			$name = self::name($name);
-			if ((isset($content) && $content!=='') || self::_mustClose($name)) {
+			if (!self::$xhtml || (isset($content) && $content!=='') || self::_mustClose($name)) {
 				return '<'.$name.self::attributes($attributes).'>'.self::indent($content).'</'.$name.'>'."\n";
 			} else {
 				return '<'.$name.self::attributes($attributes).' />'."\n";
-			}
-		}
-		
-		private static function indent($content) { // disable this for production code
-			if (strpos($content, '<')!==false) {
-				return "\n".preg_replace("|<([^/])|","\t<$1",$content);
-			} else {
-				return $content;
 			}
 		}
 		
@@ -89,27 +57,7 @@
 		}
 	}
 
-	class ar_htmlNodes extends ArrayObject {
-		public static function mergeArguments(){
-			$args = func_get_args();
-			$nodes = array();
-			foreach ($args as $input) {
-				if (is_array($input) || is_a($input, 'ar_htmlNodes')) {
-					$nodes = array_merge($nodes, (array)$input);
-				} else {
-					$nodes[] = $input;
-				}
-			}
-			return $nodes;
-		}
-		public function __construct() {
-			$args = func_get_args();
-			$nodes = call_user_func_array(array('ar_htmlNodes', 'mergeArguments'), $args);
-			parent::__construct($nodes);
-		}
-		public function __toString() {
-			return join('', (array)$this);
-		}
+	class ar_htmlNodes extends ar_xmlNodes {
 	}
 	
 ?>
