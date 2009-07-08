@@ -18,7 +18,7 @@
 						$this->data=current($this->get(".","system.get.data.phtml"));
 
 						// now save the object to get its new id.
-						if (!$this->data->$defaultnls) {
+						if ($defaultnls && !$this->data->$defaultnls) {
 							$this->data->nls->default=$ARConfig->nls->default;
 						}
 						$properties=$this->load_properties();
