@@ -33,7 +33,6 @@ class URL {
 		$repl[] = "{arCurrentPage\\1}";
 		$find[] = "%\\Q".$me->make_local_url($me->path, "\\E{0}(".$nls_match.")\\Q")."\\E(user.edit.page.html|view.html)?%"; 
 		$repl[] = "{arCurrentPage\\1}";
-
 		// change the site links
 		$site = $me->currentsite();
 		if ($site && $site !== '/') {
@@ -72,8 +71,8 @@ class URL {
 		}
 
 		// change hand pasted sources, which may or may not include session id's
-		$find[] = "%(https?://)?\\Q".$AR->host.$AR->dir->www."loader.php\\E(/-".$ARCurrent->session->id."-)?".$nls_match."%"; 
-		$repl[] = "{arBase\\1}";
+		$find[] = "%(https?://)?\\Q".$AR->host.$AR->dir->www."loader.php\\E(/-".$ARCurrent->session->id."-)?(".$nls_match.")?/%"; 
+		$repl[] = "{arBase\\3}/";
 		if ($ARCurrent->session && $ARCurrent->session->id) {
 			// check for other session id's:
 			$find[] = "%/-[^-]{4}-%";
