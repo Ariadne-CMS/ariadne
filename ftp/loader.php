@@ -436,9 +436,13 @@
 											$FTP->store->call("ftp.template.exists.phtml", 
 																Array("arRequestedTemplate" => $template),
 																$FTP->store->get($path)));
-								$file_size = $result["size"];
+								if (is_array($result)) {
+									$file_size = $result["size"];
+									ftp_Tell(213, (int)$file_size);
+								} else {
+									ftp_Tell(550, "No such file or directory");
+								}
 
-								ftp_Tell(213, (int)$file_size);
 							break;
 							default:
 								if ($FTP->store->exists($path)) {
