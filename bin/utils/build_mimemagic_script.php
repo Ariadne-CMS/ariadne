@@ -1,7 +1,7 @@
-#!/usr/bin/php4 -q
+#!/usr/bin/php -q
 <?php
 	// location of the mime-magic file
-	$magic_db="/etc/mime-magic";
+	$magic_db="/usr/share/file/magic.mime";
 	$mimetypes_db="/etc/mime.types";
 
 	// start output buffering
