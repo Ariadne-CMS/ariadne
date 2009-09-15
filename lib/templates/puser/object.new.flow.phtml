@@ -74,24 +74,23 @@
 			}
 		}	
 	} else if ( $wgWizCurrent == 2 ) {
-		global $HTTP_POST_VARS;
 
 		$profile = $this->getdata("profile", "none");
 		if ($profile && $this->getdata("arProfileLoaded", "none") != $profile) {
 			$pdata = current($this->get($profile,'system.get.data.phtml'));
 			if (is_object($pdata)) {
-				$HTTP_POST_VARS["language"] = $pdata->language;
-				$HTTP_POST_VARS["interface"] = $pdata->interface;
-				$HTTP_POST_VARS["editor"] = $pdata->editor;
-				$HTTP_POST_VARS["email"] = $pdata->email;
-				$HTTP_POST_VARS["telephone"] = $pdata->telephone;
+				$_POST["language"] = $pdata->language;
+				$_POST["interface"] = $pdata->interface;
+				$_POST["editor"] = $pdata->editor;
+				$_POST["email"] = $pdata->email;
+				$_POST["telephone"] = $pdata->telephone;
 				if (is_array($pdata->groups)) {
 					reset($pdata->groups);
 					while (list($key, $val)=each($pdata->groups)) {
-						$HTTP_POST_VARS["groups"][$key] = $val;
+						$_POST["groups"][$key] = $val;
 					}
 				}
-				$HTTP_POST_VARS["arProfileLoaded"] = $profile;
+				$_POST["arProfileLoaded"] = $profile;
 			}
 		}
 	}

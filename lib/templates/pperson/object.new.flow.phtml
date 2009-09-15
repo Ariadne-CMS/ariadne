@@ -7,8 +7,6 @@
 
 	******************************************************************/
 
-	global $HTTP_POST_VARS;
-
 	$saveoffset=0;
 	$configcache=$ARConfig->cache[$this->parent];
 	if ($configcache->custom) {
@@ -72,7 +70,7 @@
 		$ARCurrent->arLanguage=$arLanguage;
 	}
 	if (($arFlow[0]["current"]==2) && ($arControl=="next")) {
-		$HTTP_POST_VARS[$arLanguage]["name"]=$this->getdata("lastname");
+		$_POST[$arLanguage]["name"]=$this->getdata("lastname");
 	}
 	$arNewFilename=$this->getdata("arNewFilename","none");
 	if (!$arNewFilename) {

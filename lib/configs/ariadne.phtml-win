@@ -160,10 +160,10 @@
   /* NOTE: don't add the protocol (http://) or slashes at the end.          */
   /**************************************************************************/
 
-  if ($HTTP_SERVER_VARS['HTTP_X_FORWARDED_HOST']) {
-    $AR->host                 = $HTTP_SERVER_VARS['HTTP_X_FORWARDED_HOST'];
+  if ($_SERVER['HTTP_X_FORWARDED_HOST']) {
+    $AR->host                 = $_SERVER['HTTP_X_FORWARDED_HOST'];
   } else {
-    $AR->host                 = $HTTP_SERVER_VARS['HTTP_HOST'];
+    $AR->host                 = $_SERVER['HTTP_HOST'];
   }
 
   /**************************************************************************/
@@ -222,7 +222,7 @@
   /*   $AR->dir->docroot='/var/www/';                                       */
   /**************************************************************************/
  
-  $AR->dir->docroot         = $HTTP_SERVER_VARS['DOCUMENT_ROOT'];
+  $AR->dir->docroot         = $_SERVER['DOCUMENT_ROOT'];
 
   $AR->dir->www.='/';  // do not change
 
@@ -242,7 +242,7 @@
   /* its protocol. Don't change this.                                       */
   /**************************************************************************/
 
-  if ($HTTP_SERVER_VARS['HTTPS']=='on') {
+  if ($_SERVER['HTTPS']=='on') {
     $AR->host = 'https://'.$AR->host;
   } else {
     $AR->host = 'http://'.$AR->host;

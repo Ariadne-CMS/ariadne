@@ -1329,7 +1329,7 @@ class pobject extends object { // pobject class definition
 	// defined for $path/$function. Else it takes care of output to the
 	// browser.
 	// All these templates must exist under a fixed directory, $AR->dir->templates
-	global $nocache, $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls, $HTTP_POST_VARS, $HTTP_GET_VARS, $ARConfigChecked;
+	global $nocache, $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls, $ARConfigChecked;
 		debug("pobject::CheckConfig($arCallFunction, $arCallArgs)(".$this->path.")","object");
 		$MAX_LOOP_COUNT=10;
 
@@ -1399,8 +1399,8 @@ class pobject extends object { // pobject class definition
 					(	$arCallFunction	&& !$ARConfigChecked		) && 
 					( 	!$nocache 									) && 
 					(	$AR->OS=="UNIX" || 
-						( 	(count($HTTP_POST_VARS)==0) && 
-							(count($HTTP_GET_VARS)==0) 			) 	) &&
+						( 	(count($_POST)==0) && 
+							(count($_GET)==0) 			) 	) &&
 					( 	$AR->user->data->login=="public" )
 			   ) {
 				// caching is on and enabled in loader and user is public and template is not 'protected'.
@@ -1783,7 +1783,7 @@ class pobject extends object { // pobject class definition
 	function getdata($varname, $nls="none") {
 	// function to retrieve variables from $this->data, with the correct
 	// language version.
-	global $ARCurrent, $HTTP_POST_VARS, $HTTP_GET_VARS;
+	global $ARCurrent;
 
 		debug("pobject: getdata($varname, $nls)","object");
 		$result=false;
@@ -1800,13 +1800,13 @@ class pobject extends object { // pobject class definition
 				$result=${$nls}[$varname];
 			} else if (isset($ARCurrent->$nls->$varname)) {
 				$result=$ARCurrent->$nls->$varname;
-			} else if (($values=$HTTP_POST_VARS[$nls]) && isset($values[$varname])) {
+			} else if (($values=$_POST[$nls]) && isset($values[$varname])) {
 				$result=$values[$varname];
-			} else if (($values=$HTTP_GET_VARS[$nls]) && isset($values[$varname])) {
+			} else if (($values=$_GET[$nls]) && isset($values[$varname])) {
 				$result=$values[$varname];
-			} else if (($arStoreVars=$HTTP_POST_VARS["arStoreVars"]) && isset($arStoreVars[$nls][$varname])) {
+			} else if (($arStoreVars=$_POST["arStoreVars"]) && isset($arStoreVars[$nls][$varname])) {
 				$result=$arStoreVars[$nls][$varname];
-			} else if (($arStoreVars=$HTTP_GET_VARS["arStoreVars"]) && isset($arStoreVars[$nls][$varname])) {
+			} else if (($arStoreVars=$_GET["arStoreVars"]) && isset($arStoreVars[$nls][$varname])) {
 				$result=$arStoreVars[$nls][$varname];
 			}
 			if ($result===false) {
@@ -1829,14 +1829,14 @@ class pobject extends object { // pobject class definition
 				$result=$$varname;
 			} else if (isset($ARCurrent->$varname)) {
 				$result=$ARCurrent->$varname;
-			} else if (isset($HTTP_POST_VARS[$varname])) {
-				$result=$HTTP_POST_VARS[$varname];
-			} else if (isset($HTTP_GET_VARS[$varname])) {
-				$result=$HTTP_GET_VARS[$varname];
-			} else if (($arStoreVars=$HTTP_POST_VARS["arStoreVars"]) && isset($arStoreVars[$varname])) {
+			} else if (isset($_POST[$varname])) {
+				$result=$_POST[$varname];
+			} else if (isset($_GET[$varname])) {
+				$result=$_GET[$varname];
+			} else if (($arStoreVars=$_POST["arStoreVars"]) && isset($arStoreVars[$varname])) {
 				debug('POST[arStoreVars]','all');
 				$result=$arStoreVars[$varname];
-			} else if (($arStoreVars=$HTTP_GET_VARS["arStoreVars"]) && isset($arStoreVars[$varname])) {
+			} else if (($arStoreVars=$_GET["arStoreVars"]) && isset($arStoreVars[$varname])) {
 				$result=$arStoreVars[$varname];
 			}
 			if ($result===false) {
@@ -2154,7 +2154,7 @@ class pobject extends object { // pobject class definition
 	}
 
 	function getvar($var) {
-	global $HTTP_POST_VARS, $HTTP_GET_VARS, $PHP_SELF, $ARCurrent, $ARConfig;
+	global $ARCurrent, $ARConfig;
 
 		debug("pobject: getvar($var)","object");
 		if ($ARCurrent->arCallStack) {
@@ -2171,13 +2171,13 @@ class pobject extends object { // pobject class definition
 			$result=$ARCurrent->$var;
 		} else if (isset($ARConfig->pinpcache[$this->path][$var])) {
 			$result=$ARConfig->pinpcache[$this->path][$var];
-		} else if (isset($HTTP_POST_VARS[$var])) {
-			$result=$HTTP_POST_VARS[$var];
-		} else if (isset($HTTP_GET_VARS[$var])) {
-			$result=$HTTP_GET_VARS[$var];
-		} else if (($arStoreVars=$HTTP_POST_VARS["arStoreVars"]) && isset($arStoreVars[$var])) {
+		} else if (isset($_POST[$var])) {
+			$result=$_POST[$var];
+		} else if (isset($_GET[$var])) {
+			$result=$_GET[$var];
+		} else if (($arStoreVars=$_POST["arStoreVars"]) && isset($arStoreVars[$var])) {
 			$result=$arStoreVars[$var];
-		} else if (($arStoreVars=$HTTP_GET_VARS["arStoreVars"]) && isset($arStoreVars[$var])) {
+		} else if (($arStoreVars=$_GET["arStoreVars"]) && isset($arStoreVars[$var])) {
 			$result=$arStoreVars[$var];
 		} 
 		return $result;

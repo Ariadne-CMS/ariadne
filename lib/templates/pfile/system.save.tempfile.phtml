@@ -4,8 +4,6 @@
 			$parentobj->CheckLogin("add", $this->type)) ||
 			(!$this->arIsNewObject && $this->CheckLogin("edit"))) {
 
-		global $HTTP_POST_VARS;
-
 		$arLanguage=$this->getdata("arLanguage","none");
 		if (!$arLanguage) {
 			$arLanguage = $ARConfig->nls->default;
@@ -19,21 +17,21 @@
 		}
 
 		if (count($info)) {
-			$HTTP_POST_VARS = array_merge($HTTP_POST_VARS, $info);
+			$_POST = array_merge($_POST, $info);
 			if ($info['file_type']) {
-				$HTTP_POST_VARS['mimetype'] = $info['file_type'];
+				$_POST['mimetype'] = $info['file_type'];
 			}
 		} else {
 			// no file without nls found, try the nls specific one
 			foreach ($AR->nls->list as $language => $language_name) {
 				$info = ldRegisterFile($language."[file]", $this->error);
 				if (!$this->error && count($info)) {
-					if (!is_array($HTTP_POST_VARS[$language])) {
-						$HTTP_POST_VARS[$language] = Array();
+					if (!is_array($_POST[$language])) {
+						$_POST[$language] = Array();
 					}
-					$HTTP_POST_VARS[$language] = array_merge($HTTP_POST_VARS[$language], $info);
+					$_POST[$language] = array_merge($_POST[$language], $info);
 					if ($info['file_type']) {
-						$HTTP_POST_VARS[$language]['mimetype'] = $info['file_type'];
+						$_POST[$language]['mimetype'] = $info['file_type'];
 					}
 					break; // only accept one file
 				}

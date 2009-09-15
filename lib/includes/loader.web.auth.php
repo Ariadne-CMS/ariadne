@@ -1,13 +1,13 @@
 <?php
 
 	function ldSetCredentials($login) {
-	global $ARCurrent, $AR, $HTTP_COOKIE_VARS;
+	global $ARCurrent, $AR;
 
 		// Make sure the login is lower case. Because of the
 		// numerous checks on "admin".
 		$login = strtolower( $login );
 
-		$ARCookie = stripslashes($HTTP_COOKIE_VARS["ARCookie"]);
+		$ARCookie = stripslashes($_COOKIE["ARCookie"]);
 
 		debug("ldSetCredentials($login)","object");
 
@@ -60,14 +60,13 @@
 	}
 
 	function ldGetCredentials() {
-	global $HTTP_COOKIE_VARS;
 		/* 
 			FIXME:
 			this is a hack: php 4.0.3pl1 (and up?) runs 'magic_quotes' on
-			cookies put in $HTTP_COOKIE_VARS which will cause unserialize
+			cookies put in $_COOKIE which will cause unserialize
 			to not function correctly.
 		*/
-		$ARCookie = stripslashes($HTTP_COOKIE_VARS["ARCookie"]);
+		$ARCookie = stripslashes($_COOKIE["ARCookie"]);
 		debug("ldGetCredentials()","object");
 		$cookie=unserialize($ARCookie);
 		return $cookie;

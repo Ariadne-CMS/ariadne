@@ -6,7 +6,6 @@
 	 No result.
 
 	******************************************************************/
-	global $HTTP_POST_VARS;
 
 	$configcache=$ARConfig->cache[$this->parent];
 	if ($configcache->custom) {
@@ -70,11 +69,11 @@
 	if ($file && ereg("[^\/\\]*\$", $file, $matches)) {
 		$arFilename = eregi_replace("[^a-z0-9\./_-]", "_", $matches[0]);
 		if (!$arNewFilename) {
-			$HTTP_POST_VARS['arNewFilename'] = $arFilename;
+			$_POST['arNewFilename'] = $arFilename;
 			$this->path = $this->store->make_path($this->parent, $arFilename);
 		}
 		if (!$this->getdata("name", $nls)) {
-			$HTTP_POST_VARS[$nls]["name"] = $arFilename;
+			$_POST[$nls]["name"] = $arFilename;
 		}
 	}
 
@@ -84,11 +83,11 @@
 			if (($file=$this->getdata("file", $language)) && ereg("[^\/\\]*\$", $file, $matches)) {
 				$arFilename = eregi_replace("[^a-z0-9\./_-]", "_", $matches[0]);
 				if (!$arNewFilename) {
-					$HTTP_POST_VARS['arNewFilename'] = $arFilename;
+					$_POST['arNewFilename'] = $arFilename;
 					$this->path = $this->store->make_path($this->parent, $arFilename);
 				}
 				if (!$this->getdata("name", $language)) {
-					$HTTP_POST_VARS[$language]["name"] = $arFilename;
+					$_POST[$language]["name"] = $arFilename;
 				}
 			}
 		}

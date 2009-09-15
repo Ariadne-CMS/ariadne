@@ -1,7 +1,6 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		global $PHP_SELF;
-		$url=$PHP_SELF."?".$arCallArgs;
+		$url=$_SERVER['PHP_SELF']."?".$arCallArgs;
 ?>
 <html>
 <body bgcolor="white">

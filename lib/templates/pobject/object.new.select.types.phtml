@@ -86,9 +86,8 @@
 <table class="list" width="100%" border="0" cellspacing="0" cellpadding="4"><tr>
 <?php
     $server_name=eregi_replace("^[htps:/]*/","",$AR->host);
-	global $HTTP_SERVER_VARS;	
 
-	if ($HTTP_SERVER_VARS["HTTP_HOST"]==$server_name) {
+	if ($_SERVER["HTTP_HOST"]==$server_name) {
 		$currentpath=$this->store->get_config("root").$this->path;
   	} else {
 		$currentpath=$this->make_url();

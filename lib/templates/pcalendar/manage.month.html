@@ -38,7 +38,6 @@
     ******************************************************************/
 
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		global $HTTP_GET_VARS;
 		if (!$date) {
 			$date=time();
 			debug("date not set"); 
@@ -47,10 +46,10 @@
 		}
 
 		// clear old date arguments from the query string.
-		if (is_array($HTTP_GET_VARS)) {
+		if (is_array($_GET)) {
 			$QUERY_STRING='';
-			reset($HTTP_GET_VARS);
-			while (list($key, $value)=each($HTTP_GET_VARS)) {
+			reset($_GET);
+			while (list($key, $value)=each($_GET)) {
 				if ($key!='date') {
 					$QUERY_STRING.="&".RawUrlEncode($key)."=".RawUrlEncode($value);
 				}

@@ -66,7 +66,7 @@
 	}
 
 	function ldRegisterFile($field = "file", &$error) {
-	global $ARnls, $store, $HTTP_POST_FILES, $HTTP_POST_VARS;
+	global $ARnls, $store;
 
 		require_once($store->get_config("code")."modules/mod_mimemagic.php");
 		$result = Array();
@@ -74,7 +74,7 @@
 		$subfields = explode('[', $field);
 		$field = array_shift($subfields);
 		foreach ($http_post_file as $key => $value) {
-			$value = &$HTTP_POST_FILES[$field][$key];
+			$value = &$_FILES[$field][$key];
 				foreach ($subfields as $subfield) {
 					$subfield = substr($subfield, 0, -1);
 					$value = &$value[$subfield];
@@ -325,19 +325,17 @@
 	}
 
 	function ldGetUserCookie($cookiename="ARUserCookie") {
-	global $HTTP_COOKIE_VARS;
-	
 		$cookie = false;
 	
-		if( $HTTP_COOKIE_VARS[$cookiename] && !($cookiename == "ARCookie")) {
+		if( $_COOKIE[$cookiename] && !($cookiename == "ARCookie")) {
 
 			/* 
 				FIXME:
 				this is a hack: php 4.0.3pl1 (and up?) runs 'magic_quotes' on
-				cookies put in $HTTP_COOKIE_VARS which will cause unserialize
+				cookies put in $_COOKIE which will cause unserialize
 				to not function correctly.
 			*/
-			$ARUserCookie = stripslashes($HTTP_COOKIE_VARS[$cookiename]);
+			$ARUserCookie = stripslashes($_COOKIE[$cookiename]);
 			debug("ldGetUserCookie() = $ARUserCookie","object");
 			$cookie=unserialize($ARUserCookie);
 		}
@@ -345,8 +343,6 @@
 	}
 
 	function ldSetUserCookie($cookie, $cookiename="ARUserCookie", $expire=null, $path="/", $domain="", $secure=0) {
-	global $HTTP_COOKIE_VARS;
-
 		$result = false;
 
 		if( $cookiename != "ARCookie") {
@@ -418,11 +414,10 @@
 	}
 
 	function ldGetServerVar($server_var = "") {
-		global $HTTP_SERVER_VARS;
 		if (!$server_var) {
-			return $HTTP_SERVER_VARS;
+			return $_SERVER;
 		}
-		return $HTTP_SERVER_VARS[$server_var];
+		return $_SERVER[$server_var];
 	}
 
 	function ldGetClientVar($client_var) {

@@ -111,8 +111,8 @@ the new methods $this->showdata() and $this->getdata():
 
 mixed getdata($varname, $languagecode);
 
-This function searches for the requested variable through $HTTP_POST_VARS,
-$HTTP_GET_VARS and the object data, in that order. It will try to find the 
+This function searches for the requested variable through $_POST,
+$_GET and the object data, in that order. It will try to find the 
 variable in the correct language. If you want to display a variable which is 
 language independant, you can use language code 'none'.
 

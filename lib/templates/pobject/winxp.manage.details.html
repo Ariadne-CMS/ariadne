@@ -1,7 +1,6 @@
 <?php
   	include_once($this->store->get_config("code")."nls/winxp.".$this->reqnls);
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		global $PHP_SELF, $QUERY_STRING;
 		if (!$arLanguage) {
 			$arLanguage=$nls;
 			if (is_array($arCallArgs)) {
@@ -22,16 +21,15 @@
 	<div class="details">
 		<base target="_parent" />
 		<?php 
-			global $HTTP_REFERER;
-			$oldPHP_SELF = $PHP_SELF;
-			$PHP_SELF = $HTTP_REFERER;
+			$oldPHP_SELF = $_SERVER['PHP_SELF'];
+			$_SERVER['PHP_SELF'] = $_SERVER['HTTP_REFERER'];
 			ob_start();
 			$this->Call("manage.details.html"); 
 			if ($contents=ob_get_contents()) {
 				$skipsection=false;
 			}
 			ob_end_flush();
-			$PHP_SELF = $oldPHP_SELF;
+			$_SERVER['PHP_SELF'] = $oldPHP_SELF;
 			?><br />
 		<base target="_self" />
 	</div>

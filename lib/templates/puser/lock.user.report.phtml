@@ -1,11 +1,8 @@
 <?php
 	$continue=true;
 	if ($locks) {
-		if (!$HTTP_POST_VARS) {
-			global $HTTP_POST_VARS;
-		}
-		reset($HTTP_POST_VARS);
-		while (list($key,$val)=each($HTTP_POST_VARS)) {
+		reset($_POST);
+		while (list($key,$val)=each($_POST)) {
 			if (substr($key,0,6)=="unlock") {
 				$this->store->mod_lock->unlock($this->data->login,$path=substr($key,7));
 			}

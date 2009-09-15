@@ -20,11 +20,10 @@
   ******************************************************/
 
 	/* retrieve HTTP GET variables */
-	global $HTTP_GET_VARS;
-	$path 	= $HTTP_GET_VARS["path"];
-	$loader = $HTTP_GET_VARS["loader"];	
-	$wwwroot = $HTTP_GET_VARS["wwwroot"];
-	$interface = $HTTP_GET_VARS["interface"];
+	$path 	= $_GET["path"];
+	$loader = $_GET["loader"];	
+	$wwwroot = $_GET["wwwroot"];
+	$interface = $_GET["interface"];
 ?>
 <html>
 <head>

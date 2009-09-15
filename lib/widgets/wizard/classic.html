@@ -23,15 +23,6 @@
    No result.
 
   ******************************************************************/
-  if (!isset($HTTP_GET_VARS)) {
-    global $HTTP_GET_VARS;
-  }
-  if (!isset($HTTP_POST_VARS)) {
-    global $HTTP_POST_VARS;
-  }
-  if (!isset($HTTP_SERVER_VARS)) {
-    global $HTTP_SERVER_VARS;
-  }
   if (!$wgWizCallObject) {
     if ($wgWizNewType) {
       if (!$wgWizNewfilename) {
@@ -91,7 +82,7 @@
 </script>
 <script src="<?php echo $AR->dir->www; ?>widgets/window/savesize.js"></script>
 <form method="post" name="wgWizForm" 
-  action="<?php echo $HTTP_SERVER_VARS["REQUEST_URI"]; ?>"
+  action="<?php echo $_SERVER["REQUEST_URI"]; ?>"
   onSubmit="return checksubmit();"
   ENCTYPE="multipart/form-data">
 <?php
@@ -99,10 +90,10 @@
     $arStoreVars=$this->getdata("arStoreVars","none");
   }
   $ARCurrent->override=true; // POST vars always get included in the hidden arStoreVars list
-  wgWizKeepVars($HTTP_POST_VARS);
+  wgWizKeepVars($_POST);
   $ARCurrent->override=false;
   wgWizKeepVars($arStoreVars, "arStoreVars");
-  wgWizKeepVars($HTTP_GET_VARS);
+  wgWizKeepVars($_GET);
 ?>
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
 <tr>

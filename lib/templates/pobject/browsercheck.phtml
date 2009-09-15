@@ -19,18 +19,17 @@
 	 major version of the browser.
 
 	******************************************************************/
-	global $HTTP_SERVER_VARS;
-	if (eregi('.*Opera ([0-9]+)(\.([0-9]+))?.*',   $HTTP_SERVER_VARS["HTTP_USER_AGENT"], $regs) &&
+	if (eregi('.*Opera ([0-9]+)(\.([0-9]+))?.*',   $_SERVER["HTTP_USER_AGENT"], $regs) &&
 			$regs[1]) {
 		$arResult["id"]="opera";
 		$arResult["version"]=intval($regs[1]);
 		$arResult["minor"]=intval($regs[3]);
-	} else if (eregi(".*msie ([0-9]+)(\.([0-9]+))?.*", $HTTP_SERVER_VARS["HTTP_USER_AGENT"], $regs) && 
+	} else if (eregi(".*msie ([0-9]+)(\.([0-9]+))?.*", $_SERVER["HTTP_USER_AGENT"], $regs) && 
 			 $regs[1]) {
 		$arResult["id"]="msie";
 		$arResult["version"]=intval($regs[1]);
 		$arResult["minor"]=intval($regs[3]);
-	} else if (eregi(".*Mozilla/([0-9]+)(\.([0-9]+))?.*",  $HTTP_SERVER_VARS["HTTP_USER_AGENT"], $regs) &&
+	} else if (eregi(".*Mozilla/([0-9]+)(\.([0-9]+))?.*",  $_SERVER["HTTP_USER_AGENT"], $regs) &&
 			 $regs[1]) {
 		$arResult["id"]="ns";
 		$arResult["version"]=intval($regs[1]);

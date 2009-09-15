@@ -1,8 +1,7 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		global $HTTP_GET_VARS;
-		if (is_array($HTTP_GET_VARS)) {
-			while (list($key, $value)=each($HTTP_GET_VARS)) {
+		if (is_array($_GET)) {
+			while (list($key, $value)=each($_GET)) {
 				if ($key!='letter') {
 					$QUERY_STRING.=RawUrlEncode($key).'='.RawUrlEncode($value).'&';
 				}
@@ -20,34 +19,34 @@
 		<div style="padding: 5px;">
 			<table class="alfabet" cellspacing="2" cellpadding="2">
 			<tr>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=A">A</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=B">B</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=C">C</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=D">D</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=E">E</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=F">F</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=G">G</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=H">H</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=I">I</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=A">A</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=B">B</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=C">C</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=D">D</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=E">E</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=F">F</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=G">G</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=H">H</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=I">I</a></td>
 			</tr><tr>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=J">J</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=K">K</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=L">L</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=M">M</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=N">N</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=O">O</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=P">P</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=Q">Q</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=R">R</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=J">J</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=K">K</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=L">L</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=M">M</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=N">N</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=O">O</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=P">P</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=Q">Q</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=R">R</a></td>
 			</tr><tr>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=S">S</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=T">T</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=U">U</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=V">V</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=W">W</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=X">X</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=Y">Y</a></td>
-				<td><a href="<?php echo $PHP_SELF.'?'.$QUERY_STRING; ?>&letter=Z">Z</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=S">S</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=T">T</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=U">U</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=V">V</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=W">W</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=X">X</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=Y">Y</a></td>
+				<td><a href="<?php echo $_SERVER['PHP_SELF'].'?'.$QUERY_STRING; ?>&letter=Z">Z</a></td>
 			</tr>
 			</table>
 		</div>

@@ -7,13 +7,12 @@
   ******************************************************/
 
 	/* retrieve HTTP GET variables */
-	global $HTTP_GET_VARS;
-	$path 	= $HTTP_GET_VARS["path"];
-	$name 	= $HTTP_GET_VARS["name"];
-	$icon	= $HTTP_GET_VARS["icon"];
-	$loader = $HTTP_GET_VARS["loader"];	
-	$wwwroot = $HTTP_GET_VARS["wwwroot"];
-	$interface = $HTTP_GET_VARS["interface"];
+	$path 	= $_GET["path"];
+	$name 	= $_GET["name"];
+	$icon	= $_GET["icon"];
+	$loader = $_GET["loader"];	
+	$wwwroot = $_GET["wwwroot"];
+	$interface = $_GET["interface"];
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>

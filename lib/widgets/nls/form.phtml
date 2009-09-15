@@ -3,16 +3,14 @@
      representing each available language, and the currently selected
      language. */
 
-  global $HTTP_POST_VARS, $HTTP_GET_VARS;
-
   $this->nlson=true; // set nls mode on for getdata
 
   // first find the selected language (if any)
   $config=$ARConfig->cache[$this->path];
   reset($config->nls->list);
   while (list($arnls, $arlanguage)=each($config->nls->list)) {
-    if ($HTTP_POST_VARS[$arlanguage."_x"] ||
-        $HTTP_GET_VARS[$arlanguage."_x"]) {
+    if ($_POST[$arlanguage."_x"] ||
+        $_GET[$arlanguage."_x"]) {
       $selectednls=$arnls;
       break;
     }

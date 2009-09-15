@@ -46,12 +46,12 @@
 		function log() {
 			// all info is gathered from the php/webserver environment
 			global $AR, $StatsSupportedTools;
-			global $HTTP_SERVER_VARS, $path;
+			global $path;
 
 			if($AR->Stats->makestats && (stristr($StatsSupportedTools, $AR->Stats->tool)!=false)) {
 				// Go Go Go
-				$client_id = $HTTP_SERVER_VARS[$AR->Stats->clientvar];
-				$referer =  $HTTP_SERVER_VARS['HTTP_REFERER'];
+				$client_id = $_SERVER[$AR->Stats->clientvar];
+				$referer =  $_SERVER['HTTP_REFERER'];
 
 				//$cookie=ldGetCredentials();
 				//$username = $cookie[$ARCurrent->session->id]['login'];

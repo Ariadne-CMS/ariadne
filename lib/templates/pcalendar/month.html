@@ -4,9 +4,6 @@
 			$date - unix time stamp, month set will be shown, highlights this day.
 	*/
 	if ( $this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		if (!$PHP_SELF) {
-			global $PHP_SELF;
-		}
 		if (!$date) {
 			$date=time();
 		}
@@ -56,13 +53,13 @@
 <table border="0" cellspacing="0" cellpadding="0" bgcolor="#404074">
 <tr>
 	<td rowspan="3"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
-	<td><a href="<?php echo $PHP_SELF; ?>?date=<?php 
+	<td><a href="<?php echo $_SERVER['PHP_SELF']; ?>?date=<?php 
 			echo mktime(0,0,0,$date_arr["mon"]-1,$date_arr["mday"],$date_arr["year"]); 
 		?>"><img src="<?php echo $AR->dir->images; ?>calendar/prev.gif" alt="<" border="0"></a></td>
 	<td align="center"><font face="arial, helvetica" size="2" color="white"><b><?php 
 			echo $date_arr["year"]." ".$date_arr["month"]; 
 		?></b></td>
-	<td align="right"><a href="<?php echo $PHP_SELF; ?>?date=<?php 
+	<td align="right"><a href="<?php echo $_SERVER['PHP_SELF']; ?>?date=<?php 
 			echo mktime(0,0,0,$date_arr["mon"]+1,$date_arr["mday"],$date_arr["year"]); 
 		?>"><img src="<?php echo $AR->dir->images; ?>calendar/next.gif" alt=">" border="0"></a></td>
 	<td rowspan="3"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
@@ -87,7 +84,7 @@
 		</tr><tr>
 		<?php
 			for ($i=$firstweekday; $i; $i--) {
-				echo "<td align=\"center\" valign=\"middle\"><a href=\"$PHP_SELF?date=".
+				echo "<td align=\"center\" valign=\"middle\"><a href=\"".$_SERVER['PHP_SELF']."?date=".
 					mktime(0,0,0,$date_arr["mon"],(-$i+1),$date_arr["year"]).
 					"\"><img src=\"".$AR->dir->images."dot.gif\" width=\"32\" height=\"20\" border=\"0\" alt=\"-$i\"></a></td>";
 			}
@@ -101,9 +98,9 @@
 				echo "<img src=\"".$AR->dir->images."calendar/calmon".$ARCurrent->daylist[$i][0].$ARCurrent->daylist[$i][1].".gif\" align=\"right\">";
 				echo "<font face=\"arial, helvetica\" size=\"2\">";
 				if ($i==$current) {
-					echo "<u><a class=\"current\" href=\"$PHP_SELF?date=$idate\">$i</a></u>";
+					echo "<u><a class=\"current\" href=\"".$_SERVER['PHP_SELF']."?date=$idate\">$i</a></u>";
 				} else {
-					echo "<a class=\"cal\" href=\"$PHP_SELF?date=$idate\">$i</a>";
+					echo "<a class=\"cal\" href=\"".$_SERVER['PHP_SELF']."?date=$idate\">$i</a>";
 				}
 				echo "</font></td>\n";
 				if ((($i+$firstweekday)%7)==0) { // end of the week, next row
@@ -117,7 +114,7 @@
 			$firstweekday=$date_arr["wday"]; // first week day of next month
 			if ($firstweekday) { // if first weekday is sunday, then don't display empty line
 				for ($i=1; $i<(8-$firstweekday); $i++) {
-					echo "<td align=\"center\" valign=\"middle\"><a href=\"$PHP_SELF?date=".
+					echo "<td align=\"center\" valign=\"middle\"><a href=\"".$_SERVER['PHP_SELF']."?date=".
 						mktime(0,0,0,$date_arr["mon"],$i,$date_arr["year"]).
 						"\"><img src=\"".$AR->dir->images."dot.gif\" width=\"32\" height=\"20\" border=\"0\" alt=\"$i\"></a></td>";
 				}

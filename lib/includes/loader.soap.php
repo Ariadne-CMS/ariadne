@@ -287,9 +287,7 @@
 	}
 
 	function ldGetServerVar($server_var) {
-		global $HTTP_SERVER_VARS;
-
-		return $HTTP_SERVER_VARS[$server_var];
+		return $_SERVER[$server_var];
 	}
 
 	function ldGetClientVar($client_var) {

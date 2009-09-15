@@ -1952,7 +1952,7 @@ class soap_server extends nusoap_base {
         <br><br>
         <div class='title'>".$this->wsdl->serviceName."</div>
         <div class='nav'>
-        <p>View the <a href='$PHP_SELF?wsdl'>WSDL</a> for the service.
+        <p>View the <a href='".$_SERVER['PHP_SELF']."?wsdl'>WSDL</a> for the service.
         Click on an operation name to view it's details.</p>
         <ul>
         ";

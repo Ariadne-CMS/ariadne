@@ -55,17 +55,18 @@
 	}
 
 
-	$PATH_INFO=$HTTP_SERVER_VARS["PATH_INFO"];
-	if (!$PATH_INFO) {
+	$_SERVER['PATH_INFO']=$_SERVER["PATH_INFO"];
+	if (!$_SERVER['PATH_INFO']) {
 
-		ldRedirect($HTTP_SERVER_VARS["PHP_SELF"]."/");
+		ldRedirect($_SERVER["PHP_SELF"]."/");
 		exit;
 
 	} else {
 
 		// needed for IIS: it doesn't set the PHP_SELF variable.
-		$PHP_SELF=$HTTP_SERVER_VARS["SCRIPT_NAME"].$PATH_INFO;
-		$HTTP_SERVER_VARS["PHP_SELF"] = $PHP_SELF;
+		if(!isset( $_SERVER["PHP_SELF"])){
+			$_SERVER['PHP_SELF']=$_SERVER["SCRIPT_NAME"].$_SERVER['PATH_INFO'];
+		}
 		if (Headers_sent()) {
 			error("The loader has detected that PHP has already sent the HTTP Headers. This error is usually caused by trailing white space or newlines in the configuration files. See the following error message for the exact file that is causing this:");
 			Header("Misc: this is a test header");
@@ -76,13 +77,12 @@
 		$root=$AR->root;
 		$session_id=0;
 		$re="^/-(.{4})-/";
-		if (eregi($re,$PATH_INFO,$matches)) {
+		if (eregi($re,$_SERVER['PATH_INFO'],$matches)) {
 			$session_id=$matches[1];
-			$PATH_INFO=substr($PATH_INFO,strlen($matches[0])-1);
+			$_SERVER['PATH_INFO']=substr($_SERVER['PATH_INFO'],strlen($matches[0])-1);
 			$AR->hideSessionIDfromURL=false;
 		} elseif ($AR->hideSessionIDfromURL) {
-			global $HTTP_COOKIE_VARS;
-			$ARCookie=stripslashes($HTTP_COOKIE_VARS["ARCookie"]);
+			$ARCookie=stripslashes($_COOKIE["ARCookie"]);
 			$cookie=@unserialize($ARCookie);
 			if (is_array($cookie)) {
 				$session_id=current(array_keys($cookie));
@@ -93,9 +93,9 @@
 		$AR->login="public";
 
 		// look for the template
-		$split=strrpos($PATH_INFO, "/");
-		$path=substr($PATH_INFO,0,$split+1);
-		$function=substr($PATH_INFO,$split+1);
+		$split=strrpos($_SERVER['PATH_INFO'], "/");
+		$path=substr($_SERVER['PATH_INFO'],0,$split+1);
+		$function=substr($_SERVER['PATH_INFO'],$split+1);
 		if (!$function) {
 			if (!$arDefaultFunction) {
 				$arDefaultFunction="view.html";
@@ -104,10 +104,10 @@
 			if ($arFunctionPrefix) {
 				$function=$arFunctionPrefix.$function;
 			}
-			$PATH_INFO.=$function;
+			$_SERVER['PATH_INFO'].=$function;
 		}
 		// yes, the extra '=' is needed, don't remove it. trust me.
-		$ldCacheFilename=strtolower($PATH_INFO)."=";
+		$ldCacheFilename=strtolower($_SERVER['PATH_INFO'])."=";
 		// for the new multiple domains per site option (per language), we need this
 		// since the nls isn't literaly in the url anymore.
 		$ldCacheFilename.=str_replace(':','=',str_replace('/','',$AR->host)).'=';
@@ -125,7 +125,7 @@
 				- there is a session id in the request
 		*/
 		if (!$AR->output_compression 
-				|| strpos($HTTP_SERVER_VARS["HTTP_ACCEPT_ENCODING"], "gzip")===false 
+				|| strpos($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip")===false 
 				|| !function_exists("gzcompress")
 				|| $session_id
 			) {
@@ -149,10 +149,10 @@
 
 		$timecheck=time();
 		if (file_exists($cachedimage) && 
-			(strpos($HTTP_SERVER_VARS["ALL_HTTP"],"no-cache") === false) &&
-			(strpos($HTTP_PRAGMA,"no-cache") === false) &&
+			(strpos($_SERVER["ALL_HTTP"],"no-cache") === false) &&
+			(strpos($_SERVER['HTTP_PRAGMA'],"no-cache") === false) &&
 			((($mtime=filemtime($cachedimage))>$timecheck) || ($mtime==0)) &&
-			($HTTP_SERVER_VARS["REQUEST_METHOD"]!="POST")) {
+			($_SERVER["REQUEST_METHOD"]!="POST")) {
 
 			$ctime=filectime($cachedimage);
 			if ($_SERVER['HTTP_IF_MODIFIED_SINCE'] && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $ctime) {
@@ -214,7 +214,7 @@
 			}
 
 			// look for the language
-			$split=strpos(substr($PATH_INFO, 1), "/");
+			$split=strpos(substr($_SERVER['PATH_INFO'], 1), "/");
 			$ARCurrent->nls=substr($path, 1, $split);
 			if (!$AR->nls->list[$ARCurrent->nls]) {
 				// not a valid language
@@ -222,7 +222,7 @@
 				$nls=$AR->nls->default;
 				$cachenls="";
 				// but we can find out if the user has any preferences
-				preg_match_all("%([a-zA-Z]{2}|\\*)[a-zA-Z-]*(?:;q=([0-9.]+))?%", $HTTP_SERVER_VARS["HTTP_ACCEPT_LANGUAGE"], $regs, PREG_SET_ORDER);
+				preg_match_all("%([a-zA-Z]{2}|\\*)[a-zA-Z-]*(?:;q=([0-9.]+))?%", $_SERVER["HTTP_ACCEPT_LANGUAGE"], $regs, PREG_SET_ORDER);
 				$ARCurrent->acceptlang=array();
 				$otherlangs=array();
 				$otherq=false;
@@ -256,11 +256,11 @@
 			set_magic_quotes_runtime(0);
 			if (get_magic_quotes_gpc()) {
 				// this fixes magic_quoted input
-				fix_quotes($HTTP_GET_VARS);
-				fix_quotes($HTTP_POST_VARS);
+				fix_quotes($_GET);
+				fix_quotes($_POST);
 				$ARCookie=stripslashes($ARCookie);
 			}
-			$args=array_merge($HTTP_GET_VARS,$HTTP_POST_VARS);
+			$args=array_merge($_GET,$_POST);
 
 
 			// instantiate the store

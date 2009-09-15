@@ -1,8 +1,5 @@
 <?php
 	if ( $this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		if (!$PHP_SELF) {
-			global $PHP_SELF;
-		}
 
 	function AddSpan($from, $to) {
 		global $ARCurrent;
@@ -48,14 +45,14 @@
 				 if $from==$to -> no timespan, just a reminder or something, don't add a span
 				 else -> timespan, add item, add end timemarker, add span
 		*/
-		global $ARCurrent, $PHP_SELF;
+		global $ARCurrent;
 
 		debug("pcalendar/day.html:AddTime($from, $to, $path, $name, $summary)","class");
 			if ($from>$to)	 { // 'no time' entry. pile at ARCurrent->timelist[0], no span, no start, no end time.
 				$i=@count($ARCurrent->timelist[0]);
 				if ($path) { $ARCurrent->timelist[0][$i]["text"]="<a class=\"cal\" href=\"".
 					$ARCurrent->parent->make_url($path)."classic.edit.phtml?entry=$from&date=".$ARCurrent->date."&arReturnPage=".
-					RawUrlEncode($PHP_SELF."?date=".$ARCurrent->date)."\">$name</a>";
+					RawUrlEncode($_SERVER['PHP_SELF']."?date=".$ARCurrent->date)."\">$name</a>";
 				}
 				$ARCurrent->timelist[0][$i]["summary"]=$summary;
 				$ARCurrent->timelist[0][$i]["priority"]=$priority;
@@ -74,7 +71,7 @@
 					if ($path) {
 						$ARCurrent->timelist[$from][$i]["text"]="<a class=\"cal\" href=\"".
 							$ARCurrent->parent->make_url($path)."classic.edit.phtml?entry=$from&date=".$ARCurrent->date."&arReturnPage=".
-							RawUrlEncode($PHP_SELF."?date=".$ARCurrent->date)."\">$name</a>";
+							RawUrlEncode($_SERVER['PHP_SELF']."?date=".$ARCurrent->date)."\">$name</a>";
 					}
 					$ARCurrent->timelist[$from][$i]["summary"]=$summary;
 					$ARCurrent->timelist[$from][$i]["priority"]=$priority;
@@ -95,7 +92,7 @@
 				if ($path) {
 					$ARCurrent->timelist[$from][$i]["text"]="<a class=\"cal\" href=\"".
 						$ARCurrent->parent->make_url($path)."classic.edit.phtml?entry=$from&date=".$ARCurrent->date."&arReturnPage=".
-						RawUrlEncode($PHP_SELF."?date=".$ARCurrent->date)."\">$name</a>";
+						RawUrlEncode($_SERVER['PHP_SELF']."?date=".$ARCurrent->date)."\">$name</a>";
 				}
 				$ARCurrent->timelist[$from][$i]["summary"]=$summary;
 				$ARCurrent->timelist[$from][$i]["priority"]=$priority;
@@ -139,14 +136,14 @@
 <table border="0" cellspacing="0" cellpadding="0" bgcolor="#404074" <?php if ($width) { echo "width=\"$width\""; } ?>>
 <tr>
 	<td rowspan="3"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
-	<td><a href="<?php echo $PHP_SELF; ?>?date=<?php
+	<td><a href="<?php echo $_SERVER['PHP_SELF']; ?>?date=<?php
 			echo mktime(0,0,0,$date_arr["mon"],$date_arr["mday"]-1,$date_arr["year"]);
 			if ($width) { echo "&width=$width"; }
 		?>"><img src="<?php echo $AR->dir->images; ?>calendar/prev.gif" alt="<" border="0"></a></td>
 	<td align="center"><font face="arial, helvetica" size="2" color="white"><b><?php
 			echo $date_arr["month"]." ".$date_arr["mday"].", ".$date_arr["year"];
 		?></b></td>
-	<td align="right"><a href="<?php echo $PHP_SELF; ?>?date=<?php
+	<td align="right"><a href="<?php echo $_SERVER['PHP_SELF']; ?>?date=<?php
 			echo mktime(0,0,0,$date_arr["mon"],$date_arr["mday"]+1,$date_arr["year"]);
 			if ($width) { echo "&width=$width"; }
 		?>"><img src="<?php echo $AR->dir->images; ?>calendar/next.gif" alt=">" border="0"></a></td>
@@ -208,7 +205,7 @@
 						$row.="<font face=\"arial, helvetica\" size=\"2\">";
 						$row.="<a class=\"cal\" href=\"".$this->store->get_config("root").$this->path."classic.new.phtml?arNewType=pcalitem&".
 									"arNewFilename={5:id}&starttime=$from&next=form&".
-									"arReturnPage=".RawUrlEncode($PHP_SELF."?date=$date").
+									"arReturnPage=".RawUrlEncode($_SERVER['PHP_SELF']."?date=$date").
 									"\">$from_fmt</a>";
 						$row.="</font>";
 					}

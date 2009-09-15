@@ -55,15 +55,16 @@
 		}
 	}
 
-	$PATH_INFO=$HTTP_SERVER_VARS["PATH_INFO"];
+	$PATH_INFO=$_SERVER["PATH_INFO"];
 	if (!$PATH_INFO) {
 		$PATH_INFO = '/';
 	}
 
 
 	// needed for IIS: it doesn't set the PHP_SELF variable.
-	$PHP_SELF=$HTTP_SERVER_VARS["SCRIPT_NAME"].$PATH_INFO;
-	$HTTP_SERVER_VARS["PHP_SELF"] = $PHP_SELF;
+	if(!isset($_SERVER["PHP_SELF"])) {
+		$_SERVER["PHP_SELF"]=$_SERVER["SCRIPT_NAME"].$PATH_INFO;
+	}
 	if (Headers_sent()) {
 		error("The loader has detected that PHP has already sent the HTTP Headers. This error is usually caused by trailing white space or newlines in the configuration files. See the following error message for the exact file that is causing this:");
 		Header("Misc: this is a test header");
@@ -73,8 +74,7 @@
 	$root=$AR->root;
 	$session_id=0;
 
-	global $HTTP_COOKIE_VARS;
-	$ARCookie=stripslashes($HTTP_COOKIE_VARS["ARCookie"]);
+	$ARCookie=stripslashes($_COOKIE["ARCookie"]);
 	$cookie=@unserialize($ARCookie);
 	if (is_array($cookie)) {
 		$session_id=current(array_keys($cookie));
@@ -84,11 +84,11 @@
 	set_magic_quotes_runtime(0);
 	if (get_magic_quotes_gpc()) {
 		// this fixes magic_quoted input
-		fix_quotes($HTTP_GET_VARS);
-		fix_quotes($HTTP_POST_VARS);
+		fix_quotes($_GET);
+		fix_quotes($_POST);
 		$ARCookie=stripslashes($ARCookie);
 	}
-	$args=array_merge($HTTP_GET_VARS, $HTTP_POST_VARS);
+	$args=array_merge($_GET, $_POST);
 
 
 	$nls=$AR->nls->default;

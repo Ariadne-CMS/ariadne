@@ -8,7 +8,6 @@
 	******************************************************************/
 
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
-		global $HTTP_POST_VARS;
 
 		$configcache=$ARConfig->cache[$this->path];
 		if ($configcache->custom) {

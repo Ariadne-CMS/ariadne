@@ -75,14 +75,14 @@
 	}
 
 	function ldRegisterFile($field = "file", &$error) {
-	global $ARnls, $store, $HTTP_POST_FILES, $HTTP_POST_VARS;
+	global $ARnls, $store;
 
 		require_once($store->code."modules/mod_mimemagic.php");
 
 		$result = Array();
 
-		$file_temp=$HTTP_POST_FILES[$field]['tmp_name'];
-		$file=$HTTP_POST_FILES[$field]['name'];
+		$file_temp=$_FILES[$field]['tmp_name'];
+		$file=$_FILES[$field]['name'];
 		if ($file && is_uploaded_file($file_temp)) {
 			list($inf, $inftp) = virusscan($file_temp);
 			if($inf) {
@@ -96,7 +96,7 @@
 					// now make the new values available to wgWizKeepVars()
 					$result[$field]=$file;
 					$result[$field."_temp"]=substr($file_artemp,strlen($store->get_config("files")."temp"));
-					$result[$field."_size"]=(int)$HTTP_POST_FILES[$field]['size'];
+					$result[$field."_size"]=(int)$_FILES[$field]['size'];
 					$type = get_mime_type($file_artemp);
 					if (!$type) {
 						$type = get_mime_type($file, MIME_EXT);
@@ -261,19 +261,18 @@
 	}
 
 	function ldGetUserCookie($cookiename="ARUserCookie") {
-	global $HTTP_COOKIE_VARS;
 	
 		$cookie = false;
 	
-		if( $HTTP_COOKIE_VARS[$cookiename] && !($cookiename == "ARCookie")) {
+		if( $_COOKIE[$cookiename] && !($cookiename == "ARCookie")) {
 
 			/* 
 				FIXME:
 				this is a hack: php 4.0.3pl1 (and up?) runs 'magic_quotes' on
-				cookies put in $HTTP_COOKIE_VARS which will cause unserialize
+				cookies put in $_COOKIE which will cause unserialize
 				to not function correctly.
 			*/
-			$ARUserCookie = stripslashes($HTTP_COOKIE_VARS[$cookiename]);
+			$ARUserCookie = stripslashes($_COOKIE[$cookiename]);
 			debug("ldGetUserCookie() = $ARUserCookie","object");
 			$cookie=unserialize($ARUserCookie);
 		}
@@ -281,7 +280,6 @@
 	}
 
 	function ldSetUserCookie($cookie, $cookiename="ARUserCookie", $expire=null, $path="/", $domain="", $secure=0) {
-	global $HTTP_COOKIE_VARS;
 
 		$result = false;
 
@@ -354,9 +352,8 @@
 	}
 
 	function ldGetServerVar($server_var) {
-		global $HTTP_SERVER_VARS;
 
-		return $HTTP_SERVER_VARS[$server_var];
+		return $_SERVER[$server_var];
 	}
 
 	function ldGetClientVar($client_var) {

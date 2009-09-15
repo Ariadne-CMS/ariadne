@@ -125,9 +125,8 @@ HM_Array3 = [
 		$oldnls=$this->reqnls;
 		$this->setnls($arLanguage);
 	}
-	global $HTTP_SERVER_VARS;
 
-	if (eregi("^(http[s]?://)?".$HTTP_SERVER_VARS["HTTP_HOST"], $this->make_url())) {
+	if (eregi("^(http[s]?://)?".$_SERVER["HTTP_HOST"], $this->make_url())) {
 		echo $this->make_url();
 	} else {
 		echo $this->make_url('.', '', false);

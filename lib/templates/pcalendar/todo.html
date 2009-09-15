@@ -5,9 +5,6 @@
 	*/
 	if ( $this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		setlocale(LC_TIME,$AR->nls->locales[$nls]);
-		if (!$PHP_SELF) {
-			global $PHP_SELF;
-		}
 		if (!$date) {
 			$date=time();
 		}
@@ -30,12 +27,12 @@
 		// now populate the month with all entries.
 
 		function AddTodo($from, $to, $priority, $path, $name, $summary) {
-			global $ARCurrent, $PHP_SELF;
+			global $ARCurrent
 
 			$i=@count($ARCurrent->todolist[$from]);
 			$ARCurrent->todolist[$from][$i]["text"]="<a class=\"cal\" href=\"".
 				$ARCurrent->parent->make_url($path)."classic.edit.phtml?entry=$from&arReturnPage=".
-				RawUrlEncode($PHP_SELF."?date=".$ARCurrent->date)."\">$name</a>";
+				RawUrlEncode($_SERVER['PHP_SELF']."?date=".$ARCurrent->date)."\">$name</a>";
 			$ARCurrent->todolist[$from][$i]["to"]=$to;
 		}
 
@@ -55,7 +52,7 @@
 <table border="0" cellspacing="0" cellpadding="0" bgcolor="#404074" <?php if ($width) { echo "width=\"$width\""; } ?>>
 <tr>
 	<td rowspan="3"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
-	<td><a href="<?php echo $PHP_SELF; ?>?date=<?php
+	<td><a href="<?php echo $_SERVER['PHP_SELF']; ?>?date=<?php
 			echo mktime(0,0,0,$date_arr["mon"],$date_arr["mday"]-1,$date_arr["year"]);
 			if ($width) { echo "&width=$width"; }
 		?>"><img src="<?php echo $AR->dir->images; ?>calendar/prev.gif" alt="<" border="0"></a></td>
@@ -63,7 +60,7 @@
 		color="white"><b><?php echo $ARnls["todo"]; ?> : <?php
 			echo $date_arr["month"]." ".$date_arr["mday"].", ".$date_arr["year"];
 		?></b></td>
-	<td align="right"><a href="<?php echo $PHP_SELF; ?>?date=<?php
+	<td align="right"><a href="<?php echo $_SERVER['PHP_SELF']; ?>?date=<?php
 			echo mktime(0,0,0,$date_arr["mon"],$date_arr["mday"]+1,$date_arr["year"]);
 			if ($width) { echo "&width=$width"; }
 		?>"><img src="<?php echo $AR->dir->images; ?>calendar/next.gif" alt=">" border="0"></a></td>

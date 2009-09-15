@@ -1,6 +1,6 @@
 <?php
-	$arUserPath = $HTTP_GET_VARS["arUserPath"];
-	$interface = $HTTP_GET_VARS["interface"];
+	$arUserPath = $_GET["arUserPath"];
+	$interface = $_GET["interface"];
 ?>
 <html>
 <head>

@@ -2,19 +2,19 @@
   require("../../ariadne.inc");
   require($ariadne."/configs/ariadne.phtml");
 
-  $date = $HTTP_GET_VARS["date"];
+  $date = $_GET["date"];
   if (!$date) {
     $date=time();
   }
-  $format = $HTTP_GET_VARS["format"];
+  $format = $_GET["format"];
   if (!$format) {
     $format="%m-%d-%Y";  
   }
-  $title = $HTTP_GET_VARS["title"];
+  $title = $_GET["title"];
   if (!$title) {
     $title="Select Date";
   }
-  $name = $HTTP_GET_VARS["name"];
+  $name = $_GET["name"];
   if (!$name) {
     $name="date";
   }
@@ -89,7 +89,7 @@ A.cal { text-decoration:none; }
 <table border="0" cellspacing="0" cellpadding="0" class="table1">
   <tr> 
     <td rowspan="3"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
-    <td><a href="<?php echo $PHP_SELF; ?>?date=<?php 
+    <td><a href="<?php echo $_SERVER['PHP_SELF']; ?>?date=<?php 
 
 			$mday = $date_arr["mday"];
 			$newtime = mktime( 0, 0, 0, $date_arr["mon"]-1, $date_arr["mday"], $date_arr["year"]);
@@ -104,7 +104,7 @@ A.cal { text-decoration:none; }
       <?php 
       echo $date_arr["month"]; 
     ?>
-      &nbsp;</font><a href="<?php echo $PHP_SELF; ?>?date=<?php 
+      &nbsp;</font><a href="<?php echo $_SERVER['PHP_SELF']; ?>?date=<?php 
 
 			$mday = $date_arr["mday"];
 			$newtime = mktime( 0, 0, 0, $date_arr["mon"]+1, $date_arr["mday"], $date_arr["year"]);
@@ -117,14 +117,14 @@ A.cal { text-decoration:none; }
     ?>"><img src="<?php echo $AR->dir->images; ?>calendar/xp.next.gif" alt=">" border="0"></a> 
     </td>
     <td align="center">&nbsp;</td>
-    <td align="right"><a href="<?php echo $PHP_SELF; ?>?date=<?php 
+    <td align="right"><a href="<?php echo $_SERVER['PHP_SELF']; ?>?date=<?php 
       echo mktime(0,0,0,$date_arr["mon"],$date_arr["mday"],$date_arr["year"]-1).$args; 
     ?>"><img src="<?php echo $AR->dir->images; ?>calendar/xp.prev.gif" alt="<" border="0"></a> 
       <font class="date">&nbsp; 
       <?php 
       echo $date_arr["year"]; 
     ?>
-      &nbsp;</font><a href="<?php echo $PHP_SELF; ?>?date=<?php 
+      &nbsp;</font><a href="<?php echo $_SERVER['PHP_SELF']; ?>?date=<?php 
       echo mktime(0,0,0,$date_arr["mon"],$date_arr["mday"],$date_arr["year"]+1).$args; 
     ?>"><img src="<?php echo $AR->dir->images; ?>calendar/xp.next.gif" alt=">" border="0"></a></td>
     <td rowspan="3" class="trday"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
@@ -151,7 +151,7 @@ A.cal { text-decoration:none; }
         <tr> 
           <?php
       for ($i=$firstweekday; $i; $i--) {
-        echo "<td align=\"center\" valign=\"middle\"><a href=\"$PHP_SELF?date=".
+        echo "<td align=\"center\" valign=\"middle\"><a href=\"".$_SERVER['PHP_SELF']."?date=".
           mktime(0,0,0,$date_arr["mon"],(-$i+1),$date_arr["year"]).$args.
           "\"><img src=\"".$AR->dir->images."dot.gif\" width=\"32\" height=\"20\" border=\"0\" alt=\"-$i\"></a></td>";
       }
@@ -182,7 +182,7 @@ A.cal { text-decoration:none; }
       $firstweekday=$date_arr["wday"]; // first week day of next month
       if ($firstweekday) { // skip if first weekday of next month is sunday
         for ($i=1; $i<(8-$firstweekday); $i++) {
-          echo "<td align=\"center\" valign=\"middle\"><a href=\"$PHP_SELF?date=".
+          echo "<td align=\"center\" valign=\"middle\"><a href=\"".$_SERVER['PHP_SELF']."?date=".
             mktime(0,0,0,$date_arr["mon"],$i,$date_arr["year"]).$args.
             "\"><img src=\"".$AR->dir->images."dot.gif\" width=\"32\" height=\"20\" border=\"0\" alt=\"$i\"></a></td>";
         }

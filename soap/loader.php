@@ -63,10 +63,10 @@
 	}
 
 
-	$PATH_INFO=$HTTP_SERVER_VARS["PATH_INFO"];
+	$PATH_INFO=$_SERVER["PATH_INFO"];
 	if (!$PATH_INFO) {
 
-		ldRedirect($HTTP_SERVER_VARS["PHP_SELF"]."/");
+		ldRedirect($_SERVER["PHP_SELF"]."/");
 		exit;
 
 	} else {

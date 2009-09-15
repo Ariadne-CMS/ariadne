@@ -39,7 +39,7 @@
 	$icon=$this->call("system.get.icon.small.phtml");
 
 	$server_name=eregi_replace("^[htps:/]*/","",$AR->host);
-        if ($HTTP_SERVER_VARS["HTTP_HOST"]!=$server_name) {
+        if ($_SERVER["HTTP_HOST"]!=$server_name) {
                 $fullObjectpath = $this->store->get_config("root").$this->path;
         } else {
                 $fullObjectpath = $this->make_url();
