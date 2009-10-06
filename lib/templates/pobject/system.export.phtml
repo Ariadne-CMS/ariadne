@@ -13,10 +13,10 @@
 		}
 		if (!function_exists('progress')) {
 			function progress($current, $total) {
-				if ($total > 0) {
+			//	if ($total > 0) {
 					$progress = (int)(100*($current)/$total);
 					display("progress: $current / $total ($progress %)\n");
-				}
+			//	}
 			}
 		}
 
@@ -100,7 +100,12 @@
 			}
 			$processed_items = 0;
 
-			$items_to_process = count($this->store->nodes);
+	                if (get_class($this->store) == "axstore") {
+				$items_to_process = count($this->store->nodes); // FIXME: This works for import, but not for export.
+			} else {
+				$query = "object.path =~ '" . $srcpath . "%' order by path ASC";
+				$items_to_process = $this->count_find($srcpath, $query);
+			}
 			progress(0, $items_to_process);
 			while (count($result=$this->store->call("system.export.object.phtml",$arCallArgs,$this->store->find($srcpath,$criteria,100,$offset)))) {
 				if (is_array($checkpaths)) {
