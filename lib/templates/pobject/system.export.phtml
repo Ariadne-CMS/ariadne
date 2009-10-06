@@ -13,8 +13,10 @@
 		}
 		if (!function_exists('progress')) {
 			function progress($current, $total) {
-				$progress = (int)(100*($current)/$total);
-				display("progress: $current / $total ($progress %)\n");
+				if ($total > 0) {
+					$progress = (int)(100*($current)/$total);
+					display("progress: $current / $total ($progress %)\n");
+				}
 			}
 		}
 
