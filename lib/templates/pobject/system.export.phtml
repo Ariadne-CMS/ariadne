@@ -100,7 +100,7 @@
 			}
 			$processed_items = 0;
 
-	                if (get_class($this->store) == "axstore") {
+            if (get_class($this->store) == "axstore") {
 				$items_to_process = count($this->store->nodes); // FIXME: This works for import, but not for export.
 			} else {
 				$query = "object.path =~ '" . $srcpath . "%' order by path ASC";
