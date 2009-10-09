@@ -227,7 +227,7 @@
 
 			debug("webdav:files:put ($path, [size:$size])");
 
-			$temp = tempnam($this->store->files."temp/", "webdav");
+			$temp = tempnam($this->store->get_config('files')."temp/", "webdav");
 			@unlink($temp);
 
 			debug("webdav:files:put using tempfile; $temp");
