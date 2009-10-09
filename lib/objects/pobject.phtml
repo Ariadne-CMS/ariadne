@@ -1507,10 +1507,8 @@ class pobject extends object { // pobject class definition
 						}
 						if ($continue) {
 							if ($ARCurrent->ARShowTemplateBorders) {
-								// echo "<fieldset style=\"float: left;\">";
-								// echo "<legend style=\"color: black; background-color: white;\">".$template["arCallTemplate"]."</legend>";
-								echo "<div style=\"float: left; border: 0px; padding: 0px; margin: 0px;\" title=\"(".$this->type.")".$this->path.":".$template["arCallTemplate"]."\"".
-										" onMouseOver=\"this.style.border='1px dotted black';\" onMouseOut=\"this.style.border='0px';\">";
+								echo "<!-- arTemplateStart\nData: ".$this->type." ".$this->path." \nTemplate: ".$template["arCallTemplatePath"]." ".$template["arCallTemplate"]." \nLibrary:".$template["arLibrary"]." -->";
+
 							}
 							set_error_handler(array('pobject','pinpErrorHandler'),error_reporting());
 							$arResult=$arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
@@ -1519,8 +1517,7 @@ class pobject extends object { // pobject class definition
 								$ARCurrent->arResult=$arResult;
 							}
 							if ($ARCurrent->ARShowTemplateBorders) {
-								// echo "</fieldset>";
-								echo "</div>";
+								echo "<!-- arTemplateEnd -->";
 							}
 
 						}
@@ -2093,7 +2090,9 @@ class pobject extends object { // pobject class definition
 						"arCallTemplatePath" => $template['arCallTemplatePath']
 					)
 				);
+				set_error_handler(array('pobject','pinpErrorHandler'),error_reporting());
 				$arResult = $arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
+				restore_error_handler();
 
 				array_pop($ARCurrent->arCallStack);
 				$this->popContext();
@@ -2240,15 +2239,20 @@ class pobject extends object { // pobject class definition
 		$this->showdata($varname, $nls);
 	}
 
-	function _gettext($index) {
+	function _gettext($index=false) {
 	global $ARnls, $ARCurrent;
-		$result = $this->ARnls[$index];
-		if (!$result) {
-			$result = $ARCurrent->ARnls[$index];
+		if (!$index) {
+			
+			$result = array_merge($ARnls, $ARCurrent->ARnls ? $ARCurrent->ARnls : array(), $this->ARnls ? $this->ARnls : array());
+		} else {
+			$result = $this->ARnls[$index];
 			if (!$result) {
-				$result = $ARnls[$index];
+				$result = $ARCurrent->ARnls[$index];
 				if (!$result) {
-					$result= "{".$index."}";
+					$result = $ARnls[$index];
+					if (!$result) {
+						$result= "{".$index."}";
+					}
 				}
 			}
 		}
@@ -2665,7 +2669,7 @@ class pobject extends object { // pobject class definition
 		}
 
 		$nocache = true;
-		$item = end($ARCurrent->arCallStack);
+		$item = pobject::getContext();
 		if ($item["arLibraryPath"]) { //  != NULL) {
 			echo "Error on line $errline in ".$item['arCallFunction'] ." in library ".$item["arLibraryPath"] ."\n<br>";
 			echo $errstr."\n<br>";
