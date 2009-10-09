@@ -943,7 +943,7 @@ class pobject extends object { // pobject class definition
 	}
 
 	function CheckLogin($grant, $modifier=ARTHISTYPE) {
-	global $AR,$ARnls,$ARConfig,$ARCurrent,$ARPassword,$ARCookie,$session_config;
+	global $AR,$ARnls,$ARConfig,$ARCurrent,$ARPassword,$ARCookie,$session_config,$ARConfigChecked;
 		debug("pobject: CheckLogin($grant) on ".$this->path,"object");
 		if (!$this->store->is_supported("grants")) {
 			debug("pobject: store doesn't support grants");
@@ -955,7 +955,12 @@ class pobject extends object { // pobject class definition
 
 		/* load config cache */
 		if (!$ARConfig->cache[$this->path]) {
+			// since this is usually run before CheckConfig, make sure
+			// it doesn't set cache time
+			$realConfigChecked = $ARConfigChecked;
+			$ARConfigChecked = true;
 			$this->loadConfig();
+			$ARConfigChecked = $realConfigChecked;
 		}
 
 		if ($AR->user->data->login!="admin" && !$AR->user->grants[$this->path]) {
@@ -1343,7 +1348,11 @@ class pobject extends object { // pobject class definition
 		} else {
 			$ARBeenHere[$this->path][$arCallFunction]+=1;
 
+			// this will prevent the parents from setting the cache time
+			$realConfigChecked = $ARConfigChecked;
+			$ARConfigChecked = true;
 			$config = $this->loadConfig();
+			$ARConfigChecked = $realConfigChecked;
 
 			$ARConfig->nls=$config->nls;
 			// if a default language is entered in a parent and no language is
