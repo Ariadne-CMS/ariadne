@@ -1349,10 +1349,10 @@ class pobject extends object { // pobject class definition
 			$ARBeenHere[$this->path][$arCallFunction]+=1;
 
 			// this will prevent the parents from setting the cache time
-			$realConfigChecked = $ARConfigChecked;
+			$initialConfigChecked = $ARConfigChecked;
 			$ARConfigChecked = true;
 			$config = $this->loadConfig();
-			$ARConfigChecked = $realConfigChecked;
+			$ARConfigChecked = $initialConfigChecked;
 
 			$ARConfig->nls=$config->nls;
 			// if a default language is entered in a parent and no language is
@@ -1361,6 +1361,9 @@ class pobject extends object { // pobject class definition
 			if ($config->nls->default && !$ARCurrent->nls) {
 				$this->reqnls=$config->nls->default;
 				$this->nls=$this->reqnls;
+				if (!$initialConfigChecked) {
+					$ARCurrent->nls = $this->nls;
+				}
 			}
 			$nls=&$this->nls;
 			$reqnls=&$this->reqnls;
@@ -1502,7 +1505,7 @@ class pobject extends object { // pobject class definition
 							// the object has no language support
 							$this->nlsdata=$this->data;
 							$continue=true;
-						} else if (($ARCurrent->allnls) || ($ARCurrent->nolangcheck)) {
+						} else if (($ARCurrent->allnls) || (!$initialConfigChecked && $ARCurrent->nolangcheck)) {
 							debug("pobject: CheckConfig: no $reqnls, but allnls set","all");
 							// all objects must be displayed
 							// $this->reqnls=$this->nls; // set requested nls, for checks
@@ -2217,7 +2220,7 @@ class pobject extends object { // pobject class definition
 		$arWidgetName=ereg_replace("[^a-zA-Z0-9\/]","",$arWidgetName);
 		$arWidgetTemplate=ereg_replace("[^a-zA-Z0-9\.]","",$arWidgetTemplate);
 		if ($arWidgetType=="www") {
-			$coderoot=$AR->dir->www;
+			$coderoot=$AR->dir->root;
 		} else {
 			$coderoot=$this->store->get_config("code");
 		}
