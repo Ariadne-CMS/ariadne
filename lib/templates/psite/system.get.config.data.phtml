@@ -23,8 +23,8 @@
 	if (substr($host, 0, 4) == 'www.') {
 		$hostsubwww = substr($host, 4);
 	}
-	if (($sitenls=$this->data->url_list["host"][$host]) 
-		|| (($sitenls=$this->data->url_list["host"]["$hostsubwww"]))) {
+	if (($sitenls=$this->data->url_list["host"][$hostsubwww]) 
+		|| (($sitenls=$this->data->url_list["host"]["www.".$hostsubwww]))) {
 
 		$url = $this->data->url_list["nls"][$sitenls];
 	}
