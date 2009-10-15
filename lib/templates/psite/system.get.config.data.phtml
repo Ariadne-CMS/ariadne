@@ -23,8 +23,9 @@
 	if (substr($host, 0, 4) == 'www.') {
 		$hostsubwww = substr($host, 4);
 	}
-	if (($sitenls=$this->data->url_list["host"][$host]) || (($sitenls=$this->data->url_list["host"]["www.$hostsubwww"]))) {
-		$configcache->nls->default = $sitenls;
+	if (($sitenls=$this->data->url_list["host"][$host]) 
+		|| (($sitenls=$this->data->url_list["host"]["$hostsubwww"]))) {
+
 		$url = $this->data->url_list["nls"][$sitenls];
 	}
 	if (!$url) {
@@ -34,8 +35,10 @@
 		$configcache->root["path"]=$this->path;
 		$configcache->root["value"]=$url;
 		$configcache->root["list"]=$this->data->url_list;
+		if ($sitenls) {
+			$configcache->root["nls"] = $sitenls;
+		}
 	}
-
 
 	$configcache->site=$this->path;
 	$configcache->section=$this->path;

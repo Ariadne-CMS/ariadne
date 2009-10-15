@@ -40,7 +40,21 @@
             value="<?php 
 				if (!$url=$this->getdata("url", $selectednls)) {
 					if (!$this->arIsNewObject && ($selectednls==$this->data->nls->default)) {
- 						$url=$this->getdata("url", "none");
+						// backwards compatibility: if you ever set a url on a psite before
+						// language specific urls were possible, it should re-use that for
+						// the default language, but if there is an url for another language
+						// it probably shouldn't
+						// so check that no other language has a url
+						$nlsurl = false;
+						foreach ($this->data->nls->list as $key => $language) {
+							$nlsurl = $this->getdata("url", $key);
+							if ($nlsurl) {
+								break;
+							}
+						}
+						if (!$nlsurl) {
+	 						$url=$this->getdata("url", "none");
+						}
 					}
 				}
 				echo $url;

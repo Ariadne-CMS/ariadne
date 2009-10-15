@@ -1358,6 +1358,9 @@ class pobject extends object { // pobject class definition
 			// if a default language is entered in a parent and no language is
 			// explicitly selected in the url, use that default. 
 			// The root starts with the system default (ariadne.phtml config file)
+			if (!$ARCurrent->nls && $config->root['nls']) {
+				$ARCurrent->nls = $config->root['nls'];
+			}
 			if ($config->nls->default && !$ARCurrent->nls) {
 				$this->reqnls=$config->nls->default;
 				$this->nls=$this->reqnls;
