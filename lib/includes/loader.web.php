@@ -297,12 +297,25 @@
 					ldMkDir("cache/".$path);
 					ldMkDir("cacheheaders/".$path);
 				}
-				$fp=fopen($store->get_config("files")."cache".$file, "wb");
-				fwrite($fp, $image);
-				fclose($fp);
-				$fp=fopen($store->get_config("files")."cacheheaders".$file, "wb");
-				fwrite($fp, $headers);
-				fclose($fp);
+				$fileimage   = $store->get_config("files")."cache".$file;
+				$fileheaders = $store->get_config("files")."cacheheaders".$file;
+				$fpi=@fopen($fileimage, "wb");
+				$fph=@fopen($fileheaders, "wb");
+				if($fpi && $fph) {
+					fwrite($fpi, $image);
+					fclose($fpi);
+					fwrite($fph, $headers);
+					fclose($fph);
+				} else {
+					if($fpi) {
+						fclose($fpi);
+						unlink($fileimage);
+					}
+					if($fph) {
+						fclose($fph);
+						unlink($fileheaders);
+					}
+				}
 				if (!touch($store->get_config("files")."cache".$file, $time)) {
 					debug("ldSetCache: ERROR: couldn't touch image","object");
 				}
