@@ -1,11 +1,12 @@
 <?php
 	if ($this->CheckLogin('read')) {
+		$nls = $this->data->nls->default;
 		$info['displayname'] = $this->path;
 		$info['creationdate'] = $this->data->ctime;
 		$info['getlastmodified'] = $this->data->mtime;
 		$info['resourcetype'] = '';
-		$info['getcontenttype'] = $this->data->mimetype;
-		$info['getcontentlength'] = $this->data->filesize;
+		$info['getcontenttype'] = $this->data->$nls->mimetype;
+		$info['getcontentlength'] = $this->data->$nls->filesize;
 		$arResult['path'] = $this->path;
 		$arResult['props'] = $info;
 	}
