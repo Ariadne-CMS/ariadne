@@ -40,7 +40,7 @@
 			$config = Array(
 					'template'		 => $template,
 					'url'			 => $me->make_url(),
-		            'tempfolder'     => $temp,      
+					'tempfolder'     => $temp,      
 					'TTF_folder'     => CAPTCHA_TTF_FOLDER, 
 		                                // mixed (array or string): basename(s) of TrueType-Fontfiles
 					'TTF_RANGE'      => Array(
