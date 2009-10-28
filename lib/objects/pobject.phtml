@@ -2259,21 +2259,18 @@ class pobject extends object { // pobject class definition
 	function _gettext($index=false) {
 	global $ARnls, $ARCurrent;
 		if (!$index) {
-			
-			$result = array_merge($ARnls, $ARCurrent->ARnls ? $ARCurrent->ARnls : array(), $this->ARnls ? $this->ARnls : array());
+			return array_merge($ARnls, $ARCurrent->ARnls ? $ARCurrent->ARnls : array(), $this->ARnls ? $this->ARnls : array());
 		} else {
-			$result = $this->ARnls[$index];
-			if (!$result) {
-				$result = $ARCurrent->ARnls[$index];
-				if (!$result) {
-					$result = $ARnls[$index];
-					if (!$result) {
-						$result= "{".$index."}";
-					}
-				}
+			if (isset($this->ARnls[$index])) {
+				return $this->ARnls[$index];
+			} else if (isset($ARCurrent->ARnls[$index])) {
+				return $ARCurrent->ARnls[$index];
+			} else if (isset($ARnls[$index])) {
+				return $ARnls[$index];
+			} else {
+				return "{" . $index . "}";
 			}
 		}
-		return $result;
 	}
 
 	function _loadtext($nls, $section="") {
