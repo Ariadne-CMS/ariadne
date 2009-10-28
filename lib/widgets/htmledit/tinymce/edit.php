@@ -69,7 +69,7 @@
 	}
 
 	function getImageInfo() {
-		var imageurl = "<?php echo $this->make_url("/") . $this->currentsite() . "edit.object.html.image.tinymce.phtml";?>";
+		var imageurl = "<?php echo $this->make_url($this->currentsite()) . "edit.object.html.image.tinymce.phtml";?>";
 
 		var result = Array();
 		result['imageurl'] = imageurl;
@@ -153,7 +153,7 @@
 
 				var template = new Array();
 
-				template['file'] = '<?php echo $this->make_url("/") . $this->currentsite() . "edit.object.html.link.tinymce.phtml";?>';
+				template['file'] = '<?php echo $this->make_url($this->currentsite()) . "edit.object.html.link.tinymce.phtml";?>';
 				//template['file'] = 'link.htm';
 				template['width'] = 640;
 				template['height'] = 200;
@@ -251,7 +251,7 @@
 				var template = new Array();
 
 				//template['file'] = 'image.htm?src={$src}';
-				template['file'] = '<?php echo $this->make_url("/") . $this->currentsite() . "edit.object.html.image.tinymce.phtml";?>';
+				template['file'] = '<?php echo $this->make_url($this->currentsite()) . "edit.object.html.image.tinymce.phtml";?>';
 				template['width'] = 640;
 				template['height'] = 480 + (tinyMCE.isMSIE ? 25 : 0);
 
