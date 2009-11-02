@@ -240,7 +240,7 @@ tinyMCEPopup.init();
 			}
 			arr["ar:type"] = type;
 		}
-		arr["src"] = "<?php echo $this->make_url("/"); ?>" + arr["src"];
+		arr["src"] = "<?php echo $this->make_url("/"); ?>" + arr["src"].replace(/^\//, '');
 		arr["alt"] = form.alt.value;
 		arr["border"] = form.border.value;
 		arr["align"] = form.align.options[form.align.selectedIndex].value;
