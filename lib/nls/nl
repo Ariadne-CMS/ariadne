@@ -158,6 +158,7 @@
 	$ARnls["err:wronggrants"]				=	"Er is iets mis met uw rechten, neem contact op met de systeem beheerder.";
 	$ARnls["err:wrongpath"]					=	"%s bestaat niet";
 	$ARnls["err:{id}ingroupname"]			=	"Gebruik geen {id} in groep namen.";
+	$ARnls["err:prioritynotnumber"]					=	"Ingevoerde prioriteit is geen nummer";
 	$ARnls["every"]							=	"Elke";
 	$ARnls["expires"]						=	"Verloopt";
 	$ARnls["fax"]							=	"Fax";

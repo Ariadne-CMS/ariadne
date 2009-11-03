@@ -162,6 +162,7 @@
 	$ARnls["err:wronggrants"]				=	"Something is wrong with your grants, please contact the system administrator.";
 	$ARnls["err:wrongpath"]					=	"%s doesn't exist";
 	$ARnls["err:{id}ingroupname"]			=	"Do not use '{id}' in group names";
+	$ARnls["err:prioritynotnumber"]					=	"Entered priority is not a number";
 	$ARnls["every"]							=	"Every";
 	$ARnls["expires"]						=	"Expires";
 	$ARnls["fax"]							=	"Fax";
