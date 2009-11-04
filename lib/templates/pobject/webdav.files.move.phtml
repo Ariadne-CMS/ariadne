@@ -14,8 +14,8 @@
 		foreach($this->data->nls->list as $nls => $value) {
 			$this->setValue("name", $filename, $nls);
 			$properties["name"][]=Array(
-				"value" => $filename,
-				"nls"   => $nls
+				"value" => "'".AddSlashes($filename)."'",
+				"nls"   => "'".AddSlashes($nls)."'"
 			);
 		}
 		$this->save($properties);
