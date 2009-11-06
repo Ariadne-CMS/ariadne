@@ -184,7 +184,6 @@
 	$mimemagic_data[0][2]["\73\73"]="text/plain"; 
 	$mimemagic_data[0][1]["\1"]="video/x-unknown"; 
 	$mimemagic_data[0][1]["\2"]="video/x-unknown"; 
-	$mimemagic_data[0][0]["\133\103\143\135\157\156\163\164\141\156\164\133\133\72\163\160\141\143\145\72\135\135\53\133\123\163\135\164\157\162\171"]="text/x-inform"; 
 	$mimemagic_data[2][30]["\55\55\55\102\105\107\111\116\40\120\107\120\40\120\125\102\114\111\103\40\113\105\131\40\102\114\117\103\113\55"]="application/pgp-keys"; 
 	$mimemagic_data[2][2]["\0\21"]="application/x-tex-tfm"; 
 	$mimemagic_data[2][2]["\0\22"]="application/x-tex-tfm"; 

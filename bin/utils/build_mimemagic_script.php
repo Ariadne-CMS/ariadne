@@ -127,7 +127,9 @@
 
 		//			echo "	\$mimemagic_data[$offset][$len][\"".$data_index;
 		//			echo "\"]=\"".AddSlashes($mimetype)."\"; \n";
-					$mimemagic_data[$offset][$len][$data_index] = $mimetype;
+					if ($len > 0) {
+						$mimemagic_data[$offset][$len][$data_index] = $mimetype;
+					}
 				}
 				$len=0;
 			}
