@@ -1,0 +1,17 @@
+<?php
+
+	// This template makes sure that when a language is not available on the
+	// shortcut the template is called on the target. The target can then
+	// determine if they want to throw a language select dialog.
+	// This is specifically the case for disktemplates not ending in
+	// '.phtml'. .phtml templates are blanketed by the loader.....
+
+	if (($pinp = $this->getPinpTemplate($arOriginalFunction)) && $pinp["arTemplateId"]) {
+		if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
+			$this->call("pobject::$arCallFunction", $arCallArgs);
+		}
+	} else {
+		$ARCurrent->nolangcheck = false;
+		$arResult = current($this->get($data->path, $arOriginalFunction, $arCallArgs));
+	}
+?>
