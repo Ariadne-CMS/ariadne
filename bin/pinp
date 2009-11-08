@@ -45,17 +45,15 @@
 
 	$object = current($store->call('system.get.phtml', '', $store->get($path)));
 
-	// do some magic
-	$this = &$object;
-	$this->CheckConfig();	
-	$pinp = new pinp("header", "this->", "\$this->_");
+	$object->CheckConfig();	
+	$pinp = new pinp("header", "object->", "\$object->_");
 	$compiled = $pinp->compile(strtr($tmpl, "\r", ""));
 	eval("?>$compiled");
 
 
 	$store->close();
 
-	if ($this->error) {
-		echo "Error: ".$this->error."\n";
+	if ($object->error) {
+		echo "Error: ".$object->error."\n";
 	}
 ?>
