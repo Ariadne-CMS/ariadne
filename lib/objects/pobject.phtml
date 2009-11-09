@@ -344,26 +344,30 @@ class pobject extends object { // pobject class definition
 							/* merge workflow properties */
 							if (is_array($wf_result)) {
 								foreach ($wf_result as $wf_prop_name => $wf_prop) {
-									foreach ($wf_prop as $wf_prop_record) {
-										$record = Array();
-										foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
-											switch (gettype($wf_prop_value)) {
-												case "integer":
-												case "boolean":
-												case "double":
-													$value = $wf_prop_value;
-												break;
-												default:
-													$value = "'".AddSlashes($wf_prop_value)."'";
-													if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
-														&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
-															$value = $wf_prop_value;
-													}
-													
+									foreach ($wf_prop as $wf_prop_index => $wf_prop_record) {
+										if (!isset($wf_prop_record)) {
+											unset($properties[$wf_prop_name][$wf_prop_index]);
+										} else {
+											$record = Array();
+											foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
+												switch (gettype($wf_prop_value)) {
+													case "integer":
+													case "boolean":
+													case "double":
+														$value = $wf_prop_value;
+													break;
+													default:
+														$value = "'".AddSlashes($wf_prop_value)."'";
+														if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
+															&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
+																$value = $wf_prop_value;
+														}
+														
+												}
+												$record[$wf_prop_field] = $value;
 											}
-											$record[$wf_prop_field] = $value;
+											$properties[$wf_prop_name][] = $record;
 										}
-										$properties[$wf_prop_name][] = $record;
 									}
 								}
 							}
@@ -386,25 +390,29 @@ class pobject extends object { // pobject class definition
 									$this->data->config = $config;
 									if (is_array($wf_result)) {
 										foreach ($wf_result as $wf_prop_name => $wf_prop) {
-											foreach ($wf_prop as $wf_prop_record) {
-												$record = Array();
-												foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
-													switch (gettype($wf_prop_value)) {
-														case "integer":
-														case "boolean":
-														case "double":
-															$value = $wf_prop_value;
-														break;
-														default:
-															$value = "'".AddSlashes($wf_prop_value)."'";
-															if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
-																&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
-																	$value = $wf_prop_value;
-															}
+											foreach ($wf_prop as $wf_prop_index => $wf_prop_record) {
+												if (!isset($wf_prop_record)) {
+													unset($properties[$wf_prop_name][$wf_prop_index]);
+												} else {
+													$record = Array();
+													foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
+														switch (gettype($wf_prop_value)) {
+															case "integer":
+															case "boolean":
+															case "double":
+																$value = $wf_prop_value;
+															break;
+															default:
+																$value = "'".AddSlashes($wf_prop_value)."'";
+																if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
+																	&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
+																		$value = $wf_prop_value;
+																}
+														}
+														$record[$wf_prop_field] = $value;
 													}
-													$record[$wf_prop_field] = $value;
+													$properties[$wf_prop_name][] = $record;
 												}
-												$properties[$wf_prop_name][] = $record;
 											}
 										}
 										if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) {
@@ -487,25 +495,29 @@ class pobject extends object { // pobject class definition
 					/* merge workflow properties */
 					if (is_array($wf_result)) {
 						foreach ($wf_result as $wf_prop_name => $wf_prop) {
-							foreach ($wf_prop as $wf_prop_record) {
-								$record = Array();
-								foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
-									switch (gettype($wf_prop_value)) {
-										case "integer":
-										case "boolean":
-										case "double":
-											$value = $wf_prop_value;
-										break;
-										default:
-											$value = "'".AddSlashes($wf_prop_value)."'";
-											if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
-												&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
-													$value = $wf_prop_value;
-											}
+							foreach ($wf_prop as $wf_prop_index => $wf_prop_record) {
+								if (!isset($wf_prop_record)) {
+									unset($properties[$wf_prop_name][$wf_prop_index]);
+								} else {
+									$record = Array();
+									foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
+										switch (gettype($wf_prop_value)) {
+											case "integer":
+											case "boolean":
+											case "double":
+												$value = $wf_prop_value;
+											break;
+											default:
+												$value = "'".AddSlashes($wf_prop_value)."'";
+												if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
+													&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
+														$value = $wf_prop_value;
+												}
+										}
+										$record[$wf_prop_field] = $value;
 									}
-									$record[$wf_prop_field] = $value;
+									$properties[$wf_prop_name][] = $record;
 								}
-								$properties[$wf_prop_name][] = $record;
 							}
 						}
 					}
@@ -524,25 +536,29 @@ class pobject extends object { // pobject class definition
 							$this->data->config = $config;
 							if (is_array($wf_result)) {
 								foreach ($wf_result as $wf_prop_name => $wf_prop) {
-									foreach ($wf_prop as $wf_prop_record) {
-										$record = Array();
-										foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
-											switch (gettype($wf_prop_value)) {
-												case "integer":
-												case "boolean":
-												case "double":
-													$value = $wf_prop_value;
-												break;
-												default:
-													$value = "'".AddSlashes($wf_prop_value)."'";
-													if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
-														&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
-															$value = $wf_prop_value;
-													}
+									foreach ($wf_prop as $wf_prop_index => $wf_prop_record) {
+										if (!isset($wf_prop_record)) {
+											unset($properties[$wf_prop_name][$wf_prop_index]);
+										} else {
+											$record = Array();
+											foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
+												switch (gettype($wf_prop_value)) {
+													case "integer":
+													case "boolean":
+													case "double":
+														$value = $wf_prop_value;
+													break;
+													default:
+														$value = "'".AddSlashes($wf_prop_value)."'";
+														if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
+															&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
+																$value = $wf_prop_value;
+														}
+												}
+												$record[$wf_prop_field] = $value;
 											}
-											$record[$wf_prop_field] = $value;
+											$properties[$wf_prop_name][] = $record;
 										}
-										$properties[$wf_prop_name][] = $record;
 									}
 								}
 								if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) {
@@ -1812,7 +1828,7 @@ class pobject extends object { // pobject class definition
 			}
 			if (isset(${$nls}[$varname])) {
 				$result=${$nls}[$varname];
-			} else if (isset($ARCurrent->$nls->$varname)) {
+			} else if (isset($ARCurrent->$nls) && isset($ARCurrent->$nls->$varname)) {
 				$result=$ARCurrent->$nls->$varname;
 			} else if (($values=$_POST[$nls]) && isset($values[$varname])) {
 				$result=$values[$varname];
@@ -1824,7 +1840,7 @@ class pobject extends object { // pobject class definition
 				$result=$arStoreVars[$nls][$varname];
 			}
 			if ($result===false) {
-				if (isset($this->data->${nls}->${varname})) {
+				if (isset($this->data->${nls}) && isset($this->data->${nls}->${varname})) {
 					$result=$this->data->${nls}->${varname};
 				} else {
 					debug("$varname not found in this->data->$nls", "all");
