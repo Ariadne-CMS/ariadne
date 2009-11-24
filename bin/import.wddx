@@ -18,7 +18,7 @@
 	$ARLogin="admin";
 	$AR->user=current($store->call("system.get.phtml",array(),$store->get("/system/users/admin/")));
 
-	require_once($store->code."modules/mod_import_wddx.php");
+	require_once($store->get_config("code")."modules/mod_import_wddx.php");
 
 	//debugon('all');
 	$HELP_INFO = 
