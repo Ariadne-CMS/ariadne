@@ -59,6 +59,79 @@
 		setcookie("ARCookie",$ARCookie, 0, '/');
 	}
 
+	function ldAccessTimeout($path, $message) {
+	global $ARCurrent, $store;
+		/* 
+			since there is no 'peek' function, we need to pop and push
+			the arCallArgs variable.
+		*/
+
+		$arCallArgs = @array_pop($ARCurrent->arCallStack);
+		@array_push($ARCurrent->arCallStack, $arCallArgs);
+
+		if (!$arCallArgs || is_array($arCallArgs)) {
+			$arCallArgs["arLoginMessage"] = $message;
+		} else {
+			$arCallArgs.="&arLoginMessage=".urlencode($message);
+		}
+		if (!$ARCurrent->arLoginSilent) {
+			$ARCurrent->arLoginSilent = true;
+			$store->call("user.session.timeout.html", 
+								$arCallArgs,
+								$store->get($path) );
+		}
+
+	}
+
+	function ldAccessDenied($path, $message) {
+	global $ARCurrent, $store;
+		/* 
+			since there is no 'peek' function, we need to pop and push
+			the arCallArgs variable.
+		*/
+
+		$arCallArgs = @array_pop($ARCurrent->arCallStack);
+		@array_push($ARCurrent->arCallStack, $arCallArgs);
+
+		if (!$arCallArgs || is_array($arCallArgs)) {
+			$arCallArgs["arLoginMessage"] = $message;
+		} else {
+			$arCallArgs.="&arLoginMessage=".urlencode($message);
+		}
+		if (!$ARCurrent->arLoginSilent) {
+			$ARCurrent->arLoginSilent = true;
+			$store->call("user.login.html", 
+								$arCallArgs,
+								$store->get($path) );
+		}
+
+	}
+
+	function ldAccessPasswordExpired($path, $message) {
+	global $ARCurrent, $store;
+		/* 
+			since there is no 'peek' function, we need to pop and push
+			the arCallArgs variable.
+		*/
+
+		$arCallArgs = @array_pop($ARCurrent->arCallStack);
+		@array_push($ARCurrent->arCallStack, $arCallArgs);
+
+		if (!$arCallArgs || is_array($arCallArgs)) {
+			$arCallArgs["arLoginMessage"] = $message;
+		} else {
+			$arCallArgs.="&arLoginMessage=".urlencode($message);
+		}
+		if (!$ARCurrent->arLoginSilent) {
+			$ARCurrent->arLoginSilent = true;
+			$store->call("user.password.expired.html", 
+								$arCallArgs,
+								$store->get($path) );
+		}
+
+	}
+
+
 	function ldGetCredentials() {
 		/* 
 			FIXME:
