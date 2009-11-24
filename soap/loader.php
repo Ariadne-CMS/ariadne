@@ -62,9 +62,8 @@
 
 	}
 
-
-	$PATH_INFO=$_SERVER["PATH_INFO"];
-	if (!$PATH_INFO) {
+	$AR_PATH_INFO=$_SERVER["PATH_INFO"];
+	if (!$AR_PATH_INFO) {
 
 		ldRedirect($_SERVER["PHP_SELF"]."/");
 		exit;
@@ -80,17 +79,17 @@
 		$AR->login="public";
 
 		// look for the template
-		$split=strrpos($PATH_INFO, "/");
-		$path=substr($PATH_INFO,0,$split+1);
+		$split=strrpos($AR_PATH_INFO, "/");
+		$path=substr($AR_PATH_INFO,0,$split+1);
 
 
 		/* remove template from PATH_INFO */
-		if (substr($PATH_INFO,$split+1)) {
-			$PATH_INFO=substr($PATH_INFO, 0, $split);
+		if (substr($AR_PATH_INFO,$split+1)) {
+			$AR_PATH_INFO=substr($AR_PATH_INFO, 0, $split);
 		}
 
 		// look for the language
-		$split=strpos(substr($PATH_INFO, 1), "/");
+		$split=strpos(substr($AR_PATH_INFO, 1), "/");
 		$ARCurrent->nls=substr($path, 1, $split);
 		if (!$AR->nls->list[$ARCurrent->nls]) {
 			// not a valid language

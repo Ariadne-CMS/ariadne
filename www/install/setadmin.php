@@ -1,6 +1,5 @@
 <?php
-  $password = $_REQUEST["password"];
-  if ($password) {
+  $password = "muze";
     include("../ariadne.inc");
     include($ariadne."/configs/ariadne.phtml");
     include($ariadne."/configs/store.phtml");
@@ -24,14 +23,4 @@
 					), $store->get("/system/users/admin/"));
     $store->close();
     echo "You should now be able to log on";
-  } else {
-?>
-<form method="post">
-	admin password <input type="password" name="password">
-</form>
-<p>
-Please remember to remove this script and the entire 'install' directory, or
-anyone will be able to reinstall your database, which isn't a good thing.
-<?php
-  }
 ?>

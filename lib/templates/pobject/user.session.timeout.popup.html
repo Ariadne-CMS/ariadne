@@ -34,7 +34,7 @@
 	if (!$arLoginMessage) {
 		$arLoginMessage=$ARnls["loginrequired"];
 	}
-	global $nocache;
+	global $nocache, $AR_PATH_INFO;
 	$nocache=true;
 	// make sure no language select dialog is shown.
 	$ARCurrent->nolangcheck=true;
@@ -75,8 +75,8 @@
 <form name="login" method="POST" action="<?php echo $this->make_url('', '', true, true); ?>login.phtml">
 <?php
 	if (!$arReturnPath) {
-		$split=strrpos($_SERVER['PATH_INFO'], "/");
-		$function=substr($_SERVER['PATH_INFO'],$split+1);
+		$split=strrpos($AR_PATH_INFO, "/");
+		$function=substr($AR_PATH_INFO,$split+1);
 		$arReturnPath=$this->path;
 	}
 	if (!$arReturnTemplate) {

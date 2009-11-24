@@ -2,7 +2,7 @@
   require("./ariadne.inc");
   require($ariadne."/configs/ariadne.phtml");
 
-  $PATH_INFO = $_SERVER["PATH_INFO"];
+  $AR_PATH_INFO = $_SERVER["PATH_INFO"];
 ?>
 <html>
 <head>

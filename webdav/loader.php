@@ -55,15 +55,15 @@
 		}
 	}
 
-	$PATH_INFO=$_SERVER["PATH_INFO"];
-	if (!$PATH_INFO) {
-		$PATH_INFO = '/';
+	$AR_PATH_INFO=$_SERVER["PATH_INFO"];
+	if (!$AR_PATH_INFO) {
+		$AR_PATH_INFO = '/';
 	}
 
 
 	// needed for IIS: it doesn't set the PHP_SELF variable.
 	if(!isset($_SERVER["PHP_SELF"])) {
-		$_SERVER["PHP_SELF"]=$_SERVER["SCRIPT_NAME"].$PATH_INFO;
+		$_SERVER["PHP_SELF"]=$_SERVER["SCRIPT_NAME"].$AR_PATH_INFO;
 	}
 	if (Headers_sent()) {
 		error("The loader has detected that PHP has already sent the HTTP Headers. This error is usually caused by trailing white space or newlines in the configuration files. See the following error message for the exact file that is causing this:");

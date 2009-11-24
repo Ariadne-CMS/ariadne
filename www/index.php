@@ -4,7 +4,7 @@
   Header("Cache-control: no-cache");
   Header("Expires: ".GMDate("D, d M Y H:i:s")." GMT");
   // load /system/login.html which will do the job
-  $_SERVER["PATH_INFO"]="/system/ariadne.html";
+  $AR_PATH_INFO="/system/ariadne.html";
   $HTTP_SERVER_VARS["PATH_INFO"]="/system/ariadne.html"; // backwards compatible for old loaders, just to be sure
   include("./loader.php");
 ?>

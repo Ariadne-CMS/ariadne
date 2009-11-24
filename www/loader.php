@@ -55,8 +55,10 @@
 	}
 
 
-	$_SERVER['PATH_INFO']=$_SERVER["PATH_INFO"];
-	if (!$_SERVER['PATH_INFO']) {
+	if(!isset($AR_PATH_INFO)){
+		$AR_PATH_INFO=$_SERVER["PATH_INFO"];
+	}
+	if (!$AR_PATH_INFO) {
 
 		ldRedirect($_SERVER["PHP_SELF"]."/");
 		exit;
@@ -65,7 +67,7 @@
 
 		// needed for IIS: it doesn't set the PHP_SELF variable.
 		if(!isset( $_SERVER["PHP_SELF"])){
-			$_SERVER['PHP_SELF']=$_SERVER["SCRIPT_NAME"].$_SERVER['PATH_INFO'];
+			$_SERVER['PHP_SELF']=$_SERVER["SCRIPT_NAME"].$AR_PATH_INFO;
 		}
 		if (Headers_sent()) {
 			error("The loader has detected that PHP has already sent the HTTP Headers. This error is usually caused by trailing white space or newlines in the configuration files. See the following error message for the exact file that is causing this:");
@@ -77,9 +79,9 @@
 		$root=$AR->root;
 		$session_id=0;
 		$re="^/-(.{4})-/";
-		if (eregi($re,$_SERVER['PATH_INFO'],$matches)) {
+		if (eregi($re,$AR_PATH_INFO,$matches)) {
 			$session_id=$matches[1];
-			$_SERVER['PATH_INFO']=substr($_SERVER['PATH_INFO'],strlen($matches[0])-1);
+			$AR_PATH_INFO=substr($AR_PATH_INFO,strlen($matches[0])-1);
 			$AR->hideSessionIDfromURL=false;
 		} elseif ($AR->hideSessionIDfromURL) {
 			$ARCookie=stripslashes($_COOKIE["ARCookie"]);
@@ -93,9 +95,9 @@
 		$AR->login="public";
 
 		// look for the template
-		$split=strrpos($_SERVER['PATH_INFO'], "/");
-		$path=substr($_SERVER['PATH_INFO'],0,$split+1);
-		$function=substr($_SERVER['PATH_INFO'],$split+1);
+		$split=strrpos($AR_PATH_INFO, "/");
+		$path=substr($AR_PATH_INFO,0,$split+1);
+		$function=substr($AR_PATH_INFO,$split+1);
 		if (!$function) {
 			if (!$arDefaultFunction) {
 				$arDefaultFunction="view.html";
@@ -104,10 +106,10 @@
 			if ($arFunctionPrefix) {
 				$function=$arFunctionPrefix.$function;
 			}
-			$_SERVER['PATH_INFO'].=$function;
+			$AR_PATH_INFO.=$function;
 		}
 		// yes, the extra '=' is needed, don't remove it. trust me.
-		$ldCacheFilename=strtolower($_SERVER['PATH_INFO'])."=";
+		$ldCacheFilename=strtolower($AR_PATH_INFO)."=";
 		// for the new multiple domains per site option (per language), we need this
 		// since the nls isn't literaly in the url anymore.
 		$ldCacheFilename.=str_replace(':','=',str_replace('/','',$AR->host)).'=';
@@ -214,7 +216,7 @@
 			}
 
 			// look for the language
-			$split=strpos(substr($_SERVER['PATH_INFO'], 1), "/");
+			$split=strpos(substr($AR_PATH_INFO, 1), "/");
 			$ARCurrent->nls=substr($path, 1, $split);
 			if (!$AR->nls->list[$ARCurrent->nls]) {
 				// not a valid language

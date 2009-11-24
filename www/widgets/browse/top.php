@@ -1,7 +1,10 @@
+<?php
+	global $AR_PATH_INFO;
+?>
 <head>
 <script language="javascript">
 <!--
-current=new String('<?php echo $_SERVER['PATH_INFO']; ?>');
+current=new String('<?php echo $AR_PATH_INFO; ?>');
 
 function SetPath(path) {
 
@@ -22,6 +25,6 @@ function GotoPath() {
 <body bgcolor="#EEEEEE">
 <font face="helvetica,sans-serif" size="-1">
 <form onSubmit='return GotoPath();'>
-<nobr><input type="button" name="up" value="Up" onClick="top.listpaths.GoUp()"><input type="text" name="path" value="<?php echo $_SERVER['PATH_INFO']; ?>"></nobr>
+<nobr><input type="button" name="up" value="Up" onClick="top.listpaths.GoUp()"><input type="text" name="path" value="<?php echo $AR_PATH_INFO; ?>"></nobr>
 </form>
 </body>
