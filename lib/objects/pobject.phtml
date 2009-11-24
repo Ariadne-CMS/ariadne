@@ -1156,7 +1156,7 @@ class pobject extends object { // pobject class definition
 		} else {
 			$config = $ARConfig->pinpcache[$path];
 		}
-		return $config;
+		return (array)$config;
 	}
 
 	function loadLibrary($name, $path) {
