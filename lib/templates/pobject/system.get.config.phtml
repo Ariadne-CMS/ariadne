@@ -5,8 +5,8 @@
 
 	$this->call('system.get.config.data.phtml', $arCallArgs);
 	/* load pinp configuration data via config.ini */
-	$nolangcheck = $ARCurrent->nolangcheck;	
-	$ARCurrent->nolangcheck = true;
+	$allnls = $ARCurrent->allnls;
+	$ARCurrent->allnls = true;
 	
 	$ARConfig->pinpcache[$this->path] = $ARConfig->pinpcache[$this->parent];
 	$ARCurrent->arConfig = &$ARConfig->pinpcache[$this->path];
@@ -24,6 +24,6 @@
 	}
 	// remove pinpcache reference
 	unset($ARCurrent->arConfig);
-	$ARCurrent->nolangcheck = $nolangcheck;
+	$ARCurrent->allnls = $allnls;
 
 ?>
