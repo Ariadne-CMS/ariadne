@@ -1,5 +1,8 @@
 <?php
+	$allnls = $ARCurrent->allnls;
+	$ARCurrent->allnls = true;
 	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
-		return $this->call('pobject::user.workflow.pre.html',$arCallArgs);
+		$arResult = $this->call('pobject::user.workflow.pre.html',$arCallArgs);
 	}
+	$ARCurrent->allnls = $allnls;
 ?>

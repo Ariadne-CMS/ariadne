@@ -1,5 +1,8 @@
 <?php
+	$nolang = $ARCurrent->allnls;
+	$ARCurrent->allnls = true;
 	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
-		return $this->call('pobject::user.workflow.delete.post.html',$arCallArgs);
+		$arResult = $this->call('pobject::user.workflow.delete.post.html',$arCallArgs);
 	}
+	$ARCurrent->allnls = $nolang;
 ?>

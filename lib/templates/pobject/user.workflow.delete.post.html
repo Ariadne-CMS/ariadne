@@ -2,11 +2,10 @@
 	global $ARBeenHere;
 	$ARBeenHere=Array();
 
-	$oldvalue = $ARCurrent->nolangcheck;
-	$ARCurrent->nolangcheck = true;
+	$oldvalue = $ARCurrent->allnls;
+	$ARCurrent->allnls = true;
 	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
-		$ARCurrent->nolangcheck = $oldvalue;
-		return false;
+		$arResult = false; 
 	}
-	$ARCurrent->nolangcheck = $oldvalue;
+	$ARCurrent->allnls = $oldvalue;
 ?>
