@@ -445,7 +445,7 @@ class soap_fault extends nusoap_base {
 	}
 }
 
-?><?
+?><?php
 /*
 
 NuSOAP - Web Services Toolkit for PHP
@@ -1597,8 +1597,6 @@ class soap_server extends nusoap_base {
 
 
 	function send_returnvalue($method_response) {
-		debug("soapserver::send_returnvalue ($method_response)", "loader");
-        $this->debug("done calling method: $this->methodname, received $method_response of type".gettype($method_response));
         // if we got nothing back. this might be ok (echoVoid)
         if(isset($method_response) && $method_response != "" || is_bool($method_response)) {
                 // if fault
@@ -2009,7 +2007,7 @@ class soap_server extends nusoap_base {
 }
 
 ?>
-<?
+<?php
 /*
 
 NuSOAP - Web Services Toolkit for PHP
@@ -2647,7 +2645,7 @@ class wsdl extends XMLSchema {
 }
 
 ?>
-<?
+<?php
 /*
 
 NuSOAP - Web Services Toolkit for PHP

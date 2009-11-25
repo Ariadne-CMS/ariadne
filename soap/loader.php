@@ -64,7 +64,6 @@
 
 	$AR_PATH_INFO=$_SERVER["PATH_INFO"];
 	if (!$AR_PATH_INFO) {
-
 		ldRedirect($_SERVER["PHP_SELF"]."/");
 		exit;
 
@@ -108,7 +107,6 @@
 		debug($HTTP_RAW_POST_DATA);
 		$arguments  = $soapserver->get_request($HTTP_RAW_POST_DATA);
 		$function   = strtolower($soapserver->methodname);
-
 
 		ob_start();
 			echo "Arguments: \n";
@@ -162,7 +160,6 @@
 			}
 		}
 		if ($SOAP_Fault) {
-			debug("soap::fault (".$SOAP_Fault.")", "loader");
 			$soapserver->send_returnvalue($SOAP_Fault);
 		}
 		$store->close();
