@@ -155,7 +155,6 @@
 			ldObjectNotFound($path, $soapserver->methodname);
 		} else {
 			if (!$SOAP_Fault) {
-				debug("soap::returnvalue ($result)", "loader");
 				$soapserver->send_returnvalue($result);
 			}
 		}
