@@ -116,11 +116,11 @@
 		}
 
 		public function find($query) {
-			return new arFind($this->path, $query);
+			return new ar_storeFind($this->path, $query);
 		}
 
 		public function ls() {
-			return new arList($this->path);
+			return new ar_storeList($this->path);
 		}
 
 		public function call($template, $args=null) {
