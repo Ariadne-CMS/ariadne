@@ -917,10 +917,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					}
 				}
 				
-				if( is_array($AR->suGrants[$path]) ) {
-					$sugrants = $AR->suGrants[$path];
+				if( is_array($AR->sgGrants[$path]) ) {
+					$sggrants = $AR->sgGrants[$path];
 					if (is_array($grants)) {
-						foreach($sugrants as $gkey => $gval ){
+						foreach($sggrants as $gkey => $gval ){
 							if (is_array($grants[$gkey]) && is_array($gval)) {
 								$grants[$gkey]=array_merge($gval, $grants[$gkey]);
 							} else 
@@ -932,7 +932,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 							}
 						}
 					} else {
-						$grants = $sugrants;
+						$grants = $sggrants;
 					}
 				}			
 				$AR->user->grants[$path]=$grants;
@@ -2254,7 +2254,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 	
 	// not exposed to pinp for obvious reasons
-	function suKey($grants) {
+	function sgKey($grants) {
 		global $AR;
 		if( !$AR->suSalt || !$this->CheckSilent("config") ) {
 			return false;
@@ -2265,10 +2265,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$grantsarray = array();
 		$mg->compile($grants, $grantsarray);
 		$grants = serialize($grantsarray);
-		return sha1( $AR->suSalt . $grants . $this->path);
+		return sha1( $AR->sgSalt . $grants . $this->path);
 	}
 	
-	function suBegin($grants, $key) {
+	function sgBegin($grants, $key) {
 		global $AR;
 		$result = false;
 
@@ -2278,43 +2278,43 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$grantsarray = array();
 		$mg->compile($grants, $grantsarray);
 		$checkgrants = serialize($grantsarray);
-		$check = ( $AR->suSalt ? sha1( $AR->suSalt . $checkgrants . $this->path) : false ); // not using suKey because that checks for config grant
+		$check = ( $AR->sgSalt ? sha1( $AR->suSalt . $checkgrants . $this->path) : false ); // not using suKey because that checks for config grant
 		if( $check !== false && $check === $key ) {
 			unset($AR->user->grants[$this->path]); // this makes sure GetValidGrants is called again upon a grant check
-			$grantsarray = (array)$AR->suGrants[$this->path];
+			$grantsarray = (array)$AR->sgGrants[$this->path];
 			$mg->compile($grants, $grantsarray);
-			$AR->suGrants[$this->path] = $grantsarray;
+			$AR->sgGrants[$this->path] = $grantsarray;
 			$result = true;
 		}
 		return $result;
 	}
 	
-	function suEnd() {
+	function sgEnd() {
 		global $AR;
 		unset($AR->user->grants[$this->path]); // this makes sure GetValidGrants is called again upon a grant check
-		unset($AR->suGrants[$this->path]);
+		unset($AR->sgGrants[$this->path]);
 		return true; // temp return true;
 	}
 	
-	function suCall($grants, $key, $function="view.html", $args="") {
+	function sgCall($grants, $key, $function="view.html", $args="") {
 		$result = false;
-		if( $this->suBegin($grants, $key ) ) {
+		if( $this->sgBegin($grants, $key ) ) {
 			$result = $this->call($function, $args);
-			$this->suEnd();
+			$this->sgEnd();
 		}
 		return $result;
 	}
 	
-	function _suBegin($grants, $key) {
-		return $this->suBegin($grants, $key);
+	function _sgBegin($grants, $key) {
+		return $this->sgBegin($grants, $key);
 	}
 	
-	function _suEnd() {
-		return $this->suEnd();
+	function _sgEnd() {
+		return $this->sgEnd();
 	}
 	
-	function _suCall($grants, $key, $function="view.html", $args="") {
-		return $this->suCall($grants, $key, $function, $args);
+	function _sgCall($grants, $key, $function="view.html", $args="") {
+		return $this->sgCall($grants, $key, $function, $args);
 	}
 
 	function _widget($arWidgetName, $arWidgetTemplate, $arWidgetArgs="", $arWidgetType="lib") {
