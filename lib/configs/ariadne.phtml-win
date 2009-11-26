@@ -66,6 +66,13 @@
   $AR->DB->user             = 'ariadne';
   $AR->DB->password         = 'secret';
 
+  /**************************************************************************/
+  /* suSalt:                                                                */
+  /* Set this key to a random string if you want to use the su* functions   */
+  /**************************************************************************/
+
+  $AR->suSalt = false;
+
 
   /**************************************************************************/
   /* ImageMagick information                                                */

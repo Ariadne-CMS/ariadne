@@ -122,6 +122,12 @@
 			$this->input = $input;
 			$this->get_token();
 			while (!$this->error && $this->parse_stmt($grants));
+			ksort($grants);
+			foreach( $grants as $key => $value ) {
+				if( is_array($value) ) {
+					ksort($grants[$key]);
+				}
+			}
 		}
 	}
 ?>

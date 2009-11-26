@@ -285,6 +285,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 								$arCallArgs=end($ARCurrent->arCallStack);
 							}
 							$arCallArgs['properties'] = $properties;
+
 							$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);
 							$this->error = $wf_object->error;
 							$this->priority = $wf_object->priority;
@@ -915,6 +916,25 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						}
 					}
 				}
+				
+				if( is_array($AR->suGrants[$path]) ) {
+					$sugrants = $AR->suGrants[$path];
+					if (is_array($grants)) {
+						foreach($sugrants as $gkey => $gval ){
+							if (is_array($grants[$gkey]) && is_array($gval)) {
+								$grants[$gkey]=array_merge($gval, $grants[$gkey]);
+							} else 
+							if ($gval && !is_array($gval)) {
+								$grants[$gkey] = $gval;
+							} else
+							if ($gval && !$grants[$gkey]) {
+								$grants[$gkey] = $gval;
+							}
+						}
+					} else {
+						$grants = $sugrants;
+					}
+				}			
 				$AR->user->grants[$path]=$grants;
 			}
 			$grants=$AR->user->grants[$path];	
@@ -1041,7 +1061,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if (!$ARConfig->cache[$path]) {
 			$this->loadConfig($path);
 		}
-
 		if ($AR->user->data->login=="admin") {
 			$result=1;
 		} else if ($grants=$AR->user->grants[$path]) {
@@ -2220,7 +2239,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 
 	function putvar($var, $value) {
-	global $ARCurrent;
+		global $ARCurrent;
 
 		debug("pobject: putvar($var, ".serialize($value).")","object");
 		$ARCurrent->$var=$value;
@@ -2232,6 +2251,70 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	function _setnls($nls) {
 		$this->setnls($nls);
+	}
+	
+	// not exposed to pinp for obvious reasons
+	function suKey($grants) {
+		global $AR;
+		if( !$AR->suSalt || !$this->CheckSilent("config") ) {
+			return false;
+		}
+		// serialize the grants so the order does not matter, mod_grant takes care of the sorting for us
+		$this->_load("mod_grant.php");
+		$mg = new mod_grant();
+		$grantsarray = array();
+		$mg->compile($grants, $grantsarray);
+		$grants = serialize($grantsarray);
+		return sha1( $AR->suSalt . $grants . $this->path);
+	}
+	
+	function suBegin($grants, $key) {
+		global $AR;
+		$result = false;
+
+		// serialize the grants so the order does not matter, mod_grant takes care of the sorting for us
+		$this->_load("mod_grant.php");
+		$mg = new mod_grant();
+		$grantsarray = array();
+		$mg->compile($grants, $grantsarray);
+		$checkgrants = serialize($grantsarray);
+		$check = ( $AR->suSalt ? sha1( $AR->suSalt . $checkgrants . $this->path) : false ); // not using suKey because that checks for config grant
+		if( $check !== false && $check === $key ) {
+			unset($AR->user->grants[$this->path]); // this makes sure GetValidGrants is called again upon a grant check
+			$grantsarray = (array)$AR->suGrants[$this->path];
+			$mg->compile($grants, $grantsarray);
+			$AR->suGrants[$this->path] = $grantsarray;
+			$result = true;
+		}
+		return $result;
+	}
+	
+	function suEnd() {
+		global $AR;
+		unset($AR->user->grants[$this->path]); // this makes sure GetValidGrants is called again upon a grant check
+		unset($AR->suGrants[$this->path]);
+		return true; // temp return true;
+	}
+	
+	function suCall($grants, $key, $function, $args) {
+		$result = false;
+		if( $this->suBegin($grants, $key ) ) {
+			$result = $this->call($function, $args);
+			$this->suEnd();
+		}
+		return $result;
+	}
+	
+	function _suBegin($grants, $key) {
+		return $this->suBegin($grants, $key);
+	}
+	
+	function _suEnd() {
+		return $this->suEnd();
+	}
+	
+	function _suCall($grants, $key, $function, $args) {
+		return $this->suCall($grants, $key, $function, $args);
 	}
 
 	function _widget($arWidgetName, $arWidgetTemplate, $arWidgetArgs="", $arWidgetType="lib") {
