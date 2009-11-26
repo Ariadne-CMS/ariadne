@@ -2256,7 +2256,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	// not exposed to pinp for obvious reasons
 	function sgKey($grants) {
 		global $AR;
-		if( !$AR->suSalt || !$this->CheckSilent("config") ) {
+		if( !$AR->sgSalt || !$this->CheckSilent("config") ) {
 			return false;
 		}
 		// serialize the grants so the order does not matter, mod_grant takes care of the sorting for us
