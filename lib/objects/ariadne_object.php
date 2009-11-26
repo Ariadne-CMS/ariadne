@@ -2296,7 +2296,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return true; // temp return true;
 	}
 	
-	function suCall($grants, $key, $function, $args) {
+	function suCall($grants, $key, $function="view.html", $args="") {
 		$result = false;
 		if( $this->suBegin($grants, $key ) ) {
 			$result = $this->call($function, $args);
@@ -2313,7 +2313,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $this->suEnd();
 	}
 	
-	function _suCall($grants, $key, $function, $args) {
+	function _suCall($grants, $key, $function="view.html", $args="") {
 		return $this->suCall($grants, $key, $function, $args);
 	}
 
