@@ -2278,7 +2278,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$grantsarray = array();
 		$mg->compile($grants, $grantsarray);
 		$checkgrants = serialize($grantsarray);
-		$check = ( $AR->sgSalt ? sha1( $AR->suSalt . $checkgrants . $this->path) : false ); // not using suKey because that checks for config grant
+		$check = ( $AR->sgSalt ? sha1( $AR->sgSalt . $checkgrants . $this->path) : false ); // not using suKey because that checks for config grant
 		if( $check !== false && $check === $key ) {
 			unset($AR->user->grants[$this->path]); // this makes sure GetValidGrants is called again upon a grant check
 			$grantsarray = (array)$AR->sgGrants[$this->path];
