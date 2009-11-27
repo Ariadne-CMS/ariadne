@@ -67,11 +67,11 @@
   $AR->DB->password         = 'secret';
 
   /**************************************************************************/
-  /* suSalt:                                                                */
-  /* Set this key to a random string if you want to use the su* functions   */
+  /* sgSalt:                                                                */
+  /* Set this key to a random string if you want to use the sg* functions   */
   /**************************************************************************/
 
-  $AR->suSalt = false;
+  $AR->sgSalt = false;
 
 
   /**************************************************************************/
