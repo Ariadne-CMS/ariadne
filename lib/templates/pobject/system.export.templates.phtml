@@ -1,5 +1,5 @@
 <?php
-global $ARBeenHere;
+global $ARBeenHere, $AR;
 
   if ($this->CheckLogin("read") && !$ARCurrent->options["without_templates"]) {
 
@@ -51,7 +51,7 @@ global $ARBeenHere;
 
 									include_once($this->store->get_config("code")."modules/mod_pinp.phtml");
 
-									$pinp=new pinp("header","local->", "\$AR_this->_");
+									$pinp=new pinp($AR->PINP_Functions, "local->", "\$AR_this->_");
 									$compiled = $pinp->compile(strtr($tdata,"\r",""));
 									if ($pinp->error) {
 										$this->newObject->error = $pinp->error;

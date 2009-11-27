@@ -2717,11 +2717,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	/*	this is a private function used by the _preg_replace wrapper */
 
 	function preg_replace_compile($pattern, $replacement) {
+	global $AR;
 		include_once($this->store->get_config("code")."modules/mod_pinp.phtml");
 		ereg("^\s*(.)", $pattern, $regs);
 		$delim = $regs[1];
 		if (eregi($k="${delim}[^$delim]*e[^$delim]*".'$', $pattern)) {
-			$pinp = new pinp("header", 'local->', '$AR_this->_');
+			$pinp = new pinp($AR->PINP_Functions, 'local->', '$AR_this->_');
 			return substr($pinp->compile("<pinp>$replacement</pinp>"), 5, -2);
 		} else {
 			return $replacement;
