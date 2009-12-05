@@ -2100,12 +2100,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$arSuperPath = $context['arCallTemplatePath'];
 		$arLibrariesSeen = $context['arLibrariesSeen'];
 
-		// remove current library path from the arLibrarieSeen array so that
+		// remove current library path from the arLibrariesSeen array so that
 		// Ariadne will be able to re-enter the library and toggle the arSuperContext boolean there.
-		// 
-		// FIXME(!!): We probably should remember the whole library-entry tree (in case we entered a library
-		// from within anothor library) so that we can also 'unlock' all the previous libraries.
-		//
 		unset($arLibrariesSeen[$arSuperPath]);
 		$arSuperContext = Array(
 			'path' => $arSuperPath,
