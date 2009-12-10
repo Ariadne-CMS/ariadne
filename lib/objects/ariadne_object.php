@@ -1276,7 +1276,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					$arCallTemplate=$arType.".".$arCallFunction.".any";
 					$arTemplateNls="any";
 				} else {
-					if ($arSuperContext['path'] == $checkpath 
+					if ( $arSuperContext['path'] == $checkpath 
 							&& $arSuperContext['function'] == $arCallFunction
 								&& $arSuperContext['type'] == $arType
 					) {
@@ -1306,9 +1306,18 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					$arType=$arSuper;
 				}
 			}
-			if ($inLibrary) {
+			if ($inLibrary && !$arTemplateId) {
 				debug("gePinpTemplate: checking for library endpoint;  path: $checkpath; type: ".$ARConfig->cache[$checkpath]->type.";");
-				if ($ARConfig->cache[$checkpath]->type == 'psection') {
+				if ($ARConfig->cache[$checkpath]->type == 'pshortcut' && $ARConfig->cache[$checkpath]->target) {
+					debug("getPinpTemplate: following shortcut ($checkpath) to (".$ARConfig->cache[$checkpath]->target.") for $arCallFunction");
+					$template = $this->getPinpTemplate($arCallFunction, $ARConfig->cache[$checkpath]->target, '', true, &$librariesSeen, &$arSuperContext);
+					debug("getPinpTemplate: returned from shortcut($checkpath)");
+					if ($template["arTemplateId"]) {
+						extract($template);
+						$arType = $arCallTemplateType;
+						$lastcheckedpath = $checkpath = $arCallTemplatePath;
+					}
+				} else if ($ARConfig->cache[$checkpath]->type == 'psection') {
 					debug("getPinpTemplate: quiting library search as we have encountered our end point; $checkpath");
 					// break search operation when we have searched a 
 					// psection object
@@ -1527,6 +1536,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 								"scope" => "pinp",
 								"arLibrary" => $arLibrary,
 								"arLibraryPath" => $template['arLibraryPath'],
+								"arTemplateId" => $template['arTemplateId'],
 								"arCallFunction" => $arCallFunction,
 								"arCurrentObject" => $this,
 								"arCallType" => $template['arCallType'],
@@ -2095,21 +2105,23 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if (!$arCallArgs) {
 			$arCallArgs = current($ARCurrent->arCallStack);
 		}
-		$arCallFunction = $context['arCallFunction'];
+		$arLibrary	= $context['arLibrary'];
+		$arCallFunction = $arSuperFunction = $context['arCallFunction'];
+		if ($arLibrary) {
+			$arSuperFunction = str_replace($arLibrary.':', '', $arCallFunction);
+		}
+		$arTemplateId = $context['arTemplateId'];
 		$arCallType = $context['arCallTemplateType'];
 		$arSuperPath = $context['arCallTemplatePath'];
 		$arLibrariesSeen = $context['arLibrariesSeen'];
 
-		// remove current library path from the arLibrariesSeen array so that
-		// Ariadne will be able to re-enter the library and toggle the arSuperContext boolean there.
-		unset($arLibrariesSeen[$arSuperPath]);
 		$arSuperContext = Array(
 			'path' => $arSuperPath,
 			'type' => $arCallType,
-			'function' => $arCallFunction
+			'function' => $arSuperFunction
 		);
 		debug("call_super: searching for the template following (path: $arSuperPath; type: $arCallType; function: $arCallFunction) from $this->path");
-		$template = $this->getPinpTemplate($arCallFunction, $this->path, '', false, $arLibrariesSeen, &$arSuperContext);
+		$template = $this->getPinpTemplate($arCallFunction, $this->path, '', false, $arLibrariesSeen = Array(), &$arSuperContext);
 		if ($template["arCallTemplate"] && $template["arTemplateId"]) {
 			debug("call_super: template $arCallType::$arCallFunction found and calling it");
 			$arTemplates=$this->store->get_filestore("templates");
@@ -2132,6 +2144,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						"scope" => "pinp",
 						"arLibrary" => $arLibrary,
 						"arLibraryPath" => $template['arLibraryPath'],
+						"arTemplateId" => $template['arTemplateId'],
 						"arCallFunction" => $arCallFunction,
 						"arCallType" => $template['arCallType'],
 						"arCallTemplateType" => $template['arCallTemplateType'],
