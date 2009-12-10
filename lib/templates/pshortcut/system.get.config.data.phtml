@@ -1,3 +1,6 @@
 <?php
 	$this->call("pobject::system.get.config.data.phtml");
+	$configcache = $ARConfig->cache[$this->path];
+	$configcache->target = $data->path;
+	$ARConfig->cache[$this->path] = $configcache;
 ?>
