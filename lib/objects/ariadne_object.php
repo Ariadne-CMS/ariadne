@@ -2095,10 +2095,15 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if (!$arCallArgs) {
 			$arCallArgs = current($ARCurrent->arCallStack);
 		}
-		$arCallFunction = $context['arCallFunction'];
-		$arCallType = $context['arCallTemplateType'];
-		$arSuperPath = $context['arCallTemplatePath'];
+		$arLibrary		= $context['arLibrary'];
+		$arCallFunction	= $context['arCallFunction'];
+		$arCallType		= $context['arCallTemplateType'];
+		$arSuperPath	= $context['arCallTemplatePath'];
 		$arLibrariesSeen = $context['arLibrariesSeen'];
+		$arCallFunction = $arSuperFunction = $context['arCallFunction'];
+		if ($arLibrary) {
+			$arSuperFunction = str_replace($arLibrary.':', '', $arCallFunction);
+		}
 
 		// remove current library path from the arLibrariesSeen array so that
 		// Ariadne will be able to re-enter the library and toggle the arSuperContext boolean there.
@@ -2106,7 +2111,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$arSuperContext = Array(
 			'path' => $arSuperPath,
 			'type' => $arCallType,
-			'function' => $arCallFunction
+			'function' => $arSuperFunction
 		);
 		debug("call_super: searching for the template following (path: $arSuperPath; type: $arCallType; function: $arCallFunction) from $this->path");
 		$template = $this->getPinpTemplate($arCallFunction, $this->path, '', false, $arLibrariesSeen, &$arSuperContext);
