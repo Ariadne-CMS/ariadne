@@ -1426,21 +1426,23 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 */
 			// if this object isn't available in the requested language, show
 			// a language select dialog with all available languages for this object.
-			if (isset($this->data->nls) && !$this->data->name) {
-				if (!$ARCurrent->forcenls && (!isset($this->data->nls->list[$reqnls]) || !$config->nls->list[$reqnls])) {
-					if (!$ARCurrent->nolangcheck ) {
-						$ARCurrent->nolangcheck=1;
-						$arCallArgs["arOriginalFunction"] = $arCallFunction;
-						$this->call("user.languageselect.html", $arCallArgs);
-						return false;
+			if (!$ARConfigChecked) {
+				if (isset($this->data->nls) && !$this->data->name) {
+					if (!$ARCurrent->forcenls && (!isset($this->data->nls->list[$reqnls]) || !$config->nls->list[$reqnls])) {
+						if (!$ARCurrent->nolangcheck ) {
+							$ARCurrent->nolangcheck=1;
+							$arCallArgs["arOriginalFunction"] = $arCallFunction;
+							$this->call("user.languageselect.html", $arCallArgs);
+							return false;
+						} else {
+							$this->nlsdata=$this->data->$nls;
+						}
 					} else {
-						$this->nlsdata=$this->data->$nls;
+						$this->nlsdata=$this->data->$reqnls;
 					}
-				} else {
-					$this->nlsdata=$this->data->$reqnls;
-				}
-			} 
-			$ARCurrent->nolangcheck=1;
+				} 
+				$ARCurrent->nolangcheck=1;
+			}
 			if ($this->data->custom['none']) {
 				$this->customdata=$this->data->custom['none'];
 			}
