@@ -5,7 +5,10 @@
 		$this->data=current($this->get(".","system.get.data.phtml"));
 
 		unset($this->data->config->customconfig);
-		parse_str($this->getdata("customfields","none"));
+		$customfields = $this->getdata("customfields","none");
+		if (is_string($customfields)) {
+			parse_str($customfields);
+		}
 		if (is_array($customfields)) {
 			while (list($key, $value)=each($customfields)) {
 				$this->data->config->customconfig[$value["name"]]["type"]=$value["type"];
