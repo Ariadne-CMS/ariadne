@@ -2392,7 +2392,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				// current result;
 				$arResult = $ARCurrent->arResult;
 				$this->pushContext(Array());
+					$oldnls = $this->reqnls;
+					$this->reqnls = $nls;
 					$this->CheckConfig($section, Array('nls' => $nls));
+					$this->reqnls = $oldnls;
 				$this->popContext();
 				// reset current result (CheckConfig may have changed it when it should not have).
 				$ARCurrent->arResult = $arResult;
