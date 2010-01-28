@@ -2098,6 +2098,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$arCallArgs = current($ARCurrent->arCallStack);
 		}
 		$arLibrary		= $context['arLibrary'];
+		$arLibraryPath	= $context['arLibraryPath'];
 		$arCallFunction	= $context['arCallFunction'];
 		$arCallType		= $context['arCallTemplateType'];
 		$arSuperPath	= $context['arCallTemplatePath'];
@@ -2109,7 +2110,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 		// remove current library path from the arLibrariesSeen array so that
 		// Ariadne will be able to re-enter the library and toggle the arSuperContext boolean there.
-		unset($arLibrariesSeen[$arSuperPath]);
+		unset($arLibrariesSeen[$arLibraryPath]);
 		$arSuperContext = Array(
 			'path' => $arSuperPath,
 			'type' => $arCallType,
