@@ -114,6 +114,7 @@ class htmlcleanertag {
 						// end of attribute
 						$return[strtolower($_name)] = "";
 						$_state = -1;
+						continue; // Don't up the counter, this char is the first char for the next attribute.
 					}
 				}
 			} else if ($_state == 3) {	// state 3 : looking for quote
