@@ -19,11 +19,28 @@
 	}
 	$arCallArgs['arReturnPath'] = $arReturnPath;
 	$arCallArgs['arReturnTemplate'] = $arReturnTemplate;
+	$arCallArgs['arLoginMessage'] = $arLoginMessage;
+
+	ldHeader("X-Ariadne-401: ".$arLoginMessage);
+
 	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
-		if (!$arPopup) {
-			$this->call("user.login.form.html", $arCallArgs);
-		} else {
-			$this->call("user.login.popup.html", $arCallArgs);
-		}
+?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> 
+<html>
+	<head>
+		<title>Ariadne - <?php echo $arLoginMessage; ?></title>
+		<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>login.css">
+		<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+		<script type="text/javascript">
+			window.onload = function() { document.getElementById("ARLogin").focus(); }			
+		</script>
+	</head>
+<body id="login_panel">
+<?php
+	$this->call("user.login.form.html", $arCallArgs);
+?>
+</body>
+</html>
+<?php
 	}
 ?>

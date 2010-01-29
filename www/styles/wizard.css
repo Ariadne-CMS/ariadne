@@ -1,0 +1,360 @@
+/*
+	FIXME: Checkbox/radio labels beter uitlijnen
+*/
+html, body {
+	height: 100%;
+	width: 100%;
+	padding: 0px;
+	margin: 0px;
+	background-color: #C1CAE2;
+	font-size : 11px;
+	font-family : verdana;
+}
+
+TH,TD,LI,P,BODY,DIV {
+	font-size : 11px;
+	font-family : verdana;
+	line-height: 13px;
+}
+
+a img {
+	border: 0px;
+}
+
+#header {
+	height: 32px;
+	width: 100%;
+	background:url("../images/sprite.png") repeat-x 0 0;
+	border-bottom: 1px solid #808080;	
+	text-align: right;
+	vertical-align: middle;
+	line-height: 24px;
+	font-weight: bold;
+	overflow: hidden;
+}
+
+#header .text {
+	margin-right: 50px;
+}
+
+#header .typeicon {
+	position: fixed;
+	top: 6px;
+	right: 10px;
+}
+
+#header .logo {
+	width: 220px;
+	float: left;
+	text-align: left;
+	color: black;
+	text-decoration: none;
+}
+
+#header .logo img {
+	margin-top: 4px;
+	margin-left: 11px;
+	border: 0px;
+}
+#header .ariadne {
+	font-weight: bold;
+	font-family: arial, verdana;
+	font-size: 14px;
+	position: absolute;
+	top: 5px;
+	left: 42px;
+}
+
+#header .ariadne_sub {
+	font-weight: normal;
+	font-size: 10px;
+	font-family: verdana;
+	position: absolute;
+	top: 17px;
+	left: 50px;
+}
+
+#sections {
+	position: fixed;
+	top: 32px;
+	bottom: 0px;
+	left: 0px;
+	width: 120px;
+	z-index: 5;
+}
+#sections.tabs {
+	top: 62px;
+}
+
+#sections a {
+	display: block;
+	border: 1px solid #808080;
+	background-color: #D0DCF7;
+	margin-left: 10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	height: auto;
+	width: 100px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	text-align: center;
+	color: black;
+	text-decoration: none;
+}
+
+#sections a:hover, #sections a.current:hover {
+	border: 1px solid #4A6799;
+	background-color: #EFF3FF;
+}
+
+#sections a.current {
+	border: 1px solid #808080;
+	background-color: #EFF3FF;
+	font-weight: bold;
+	padding-right: 9px;
+	border-right: 1px solid #EFF3FF;
+}
+#sections a.current:hover {
+	border-right: 1px solid #EFF3FF;
+}
+
+#sections a img {
+	border: 0px;
+}
+#sections span.title {
+	display: block;
+}
+
+#tabsdata {
+        background-color: #EFF3FF;
+	padding: 10px;
+	border: 1px solid #808080;
+	position: fixed;
+	left: 120px;
+	right: 10px;
+	bottom: 40px;
+	top: 42px;
+	overflow: auto;
+}
+
+
+.tabs #tabsdata {
+	top: 70px;
+}
+
+.nosections #tabsdata {
+	left: 10px;
+}
+
+#tabsdata fieldset {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+#tabsdata label {
+	display: block;
+	width: 100%;
+	margin-top: 10px;
+}
+#tabsdata .button,
+div.buttons input { 
+	background:url("../images/sprite.png") repeat-x 0 0;
+	border: 1px solid #808080;
+}
+#tabsdata fieldset.browse {
+	padding-right: 105px;
+}
+#tabsdata fieldset.browse input {
+	float: left;
+	margin-right: 10px;
+}
+
+#tabsdata fieldset.browse .button {
+	width: 70px;
+	position: absolute;
+	right: -95px;
+}
+#tabsdata fieldset.browse .checkbox label {
+	line-height: 18px;
+}
+
+div.buttons div.right {
+	position: fixed;
+	bottom: 10px;
+	right: 10px;
+	text-align: right;
+}
+div.buttons div.left {
+	position: fixed;
+	bottom: 10px;
+	left: 10px;
+	text-align: left;
+}
+div.buttons div.center {
+	position: fixed;
+	bottom: 10px;
+	left: 0px;
+	width: 100%;
+	text-align: center;
+}
+
+
+#sectiondata {
+	position: fixed;
+	top: 43px;
+	left: 120px;
+	right: 10px;
+	bottom: 40px;
+}
+
+#sectiondata.nosections {
+	left: 10px;
+}
+
+#tabnav a img {
+	border: 0px;
+}
+
+#tabnav {
+	position: absolute;
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+	height: 30px;
+	width: 100%;
+	border-left: 1px solid #808080;
+	z-index: 5;
+}
+#tabnav li {
+	margin: 0px;
+	float: left;
+	padding: 0px;
+}
+
+#tabnav a {
+        background:url("../images/sprite.png") repeat-x scroll 0px 0px;
+	height: 16px;
+	padding: 5px;
+	background-color: #D0DCF7;
+	border-right: 1px solid #808080;
+	border-top: 1px solid #808080;
+	border-bottom: 1px solid #808080;
+	display: block;
+	text-decoration: none;
+	color: black;
+}
+#tabnav a:hover {
+        background:url("../images/sprite.png") repeat-x scroll 0px -1700px;
+	background-color: #EFF3FF;
+	border-bottom: 1px solid #EFF3FF;
+}
+
+#tabnav .tab-selected a {
+	background-color: #EFF3FF;
+	border-bottom: 1px solid #EFF3FF;
+	background:url("../images/sprite.png") repeat-x scroll 0px -1700px;
+}
+
+#tabsdata .field {
+	width: 100%;
+	height: auto;
+	position: relative;
+	margin-bottom: 10px;
+}
+
+#tabsdata input {
+	display: block;
+}
+
+#tabsdata input.inputline {
+	width: 100%;
+}
+#tabsdata .inputbox {
+	width: 100%;
+}
+#tabsdata select.selectline {
+	width: 100%;
+}
+#tabsdata textarea {
+	height: 6em;
+}
+.flag {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+}
+
+#tabsdata .radio input,
+#tabsdata .checkbox input,
+#tabsdata .inputradio  {
+	display: inline;
+}
+
+#tabsdata .radio label,
+#tabsdata .checkbox label,
+#tabsdata .inputradio label {
+	display: inline;
+}
+
+#tabsdata div.keepimage {
+	margin-left: 25px;
+	width: auto;
+}
+#tabsdata div.keepimage input {
+	display: inline;
+}
+
+#tabsdata div.left,
+#tabsdata div.right {
+	width: 50%;
+	float: left;
+}
+#tabsdata label.ontop {
+	display: block;
+}
+#tabsdata .multiselect {
+	height: 5em;
+}
+
+#tabsdata div.left div.field, #tabsdata div.right div.field {
+	margin-right: 10px;
+	width: auto;
+}
+
+#tabsdata div.left select, #tabsdata div.right select {
+	width: 100%;
+}
+
+#progressbar {
+	height: 30px;
+	position: fixed;
+	left: 20px;
+	right: 20px;
+	border: 1px solid #808080;
+	background : url("../images/sprite.png") repeat-x scroll 0px -100px;
+	margin-top: 20px;
+}
+#progress {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 0%;
+	background : url("../images/sprite.png") repeat-x scroll 0px -1400px;
+}
+#progress_text {
+	color: white;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 100%;
+	width: 100%;
+	text-align: center;
+	vertical-align: middle;
+	line-height: 30px;
+}
+.clear {
+	clear: both;
+}

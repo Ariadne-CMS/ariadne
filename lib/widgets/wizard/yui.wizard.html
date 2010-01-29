@@ -1,0 +1,245 @@
+<?php
+  /******************************************************************
+   yui.html					   Muze Ariadne v2.6
+   ------------------------------------------------------------------
+
+   New YUI-style looks for the wizards.
+  
+  ******************************************************************/
+
+	include("wizardlogic.php");
+
+?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+	<title><?php echo $wgWizTitle; ?></title>
+	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+<?php
+	if( !$wgWizNoDefaultStyle ) {
+?>
+	<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>wizard.css">
+<?php
+	} // end of no default style
+
+	if( is_array( $wgWizStyleSheets )) {
+		foreach( $wgWizStyleSheets as $sheet ) {
+			echo "<link rel=\"stylesheet\" type=\"text/css\" href=\"$sheet\">\n";
+		}
+	}
+?>
+	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/muze/ariadne/wizard.js"></script>
+	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/yui/yahoo-dom-event/yahoo-dom-event.js"></script>
+	<script type="text/javascript">
+		function checksubmit() {
+			result=true;
+			var wgWizForm = document.getElementById("wgWizForm");
+			if (wgWizForm.wgWizSubmitHandler) {
+				result=wgWizForm.wgWizSubmitHandler();
+			}
+			if( !result ) {
+				wgWizForm.wgWizAction.value = '';
+			}
+			return result;
+		}
+		
+		function init() {
+			// scroll to selected section icon
+			var sElm;
+			if (document.getElementById) {
+				sElm = document.getElementById('link_<?php echo $wgWizNextStep; ?>');
+				if (sElm) {
+					var parentEl = sElm.parentNode;
+					var styles = null;
+					if (document.defaultView && document.defaultView.getComputedStyle) {
+						styles = document.defaultView.getComputedStyle(parentEl, "");
+					} else if (parentEl.currentStyle) {
+						styles = parentEl.currentStyle;
+					} else {
+						styles = parentEl.style;
+					}
+					if (styles['overflow'] == 'auto' || styles['overflow'] == 'scroll') {
+						// FIXME: better to correctly calculate scroll offset, since
+						// scrollIntoView affects too much elements, will even scroll 
+						// objects outside an iframe if it is in it.
+						if (sElm && sElm.scrollIntoView) {
+							sElm.scrollIntoView(true);
+						}
+					}
+				}
+			}
+			// find wgWizAutoFocus and wgWizAutoSelect classes on inputs
+			// document.wgWizForm['name'].select()
+			// document.wgWizForm['name'].focus()
+			var autoselects = YAHOO.util.Dom.getElementsByClassName('wgWizAutoSelect');
+			if( autoselects[0] ) {
+				autoselects[0].select();
+			}
+			var autofocuses = YAHOO.util.Dom.getElementsByClassName('wgWizAutoFocus');
+			if( autofocuses[0] ) {
+				autofocuses[0].focus();
+			}
+			
+			<?php
+				if( $wgWizAlert )  {
+					echo "alert('".AddCSlashes(str_replace("\n","\\n",$wgWizAlert), ARESCAPE)."');";
+				}
+			?>
+
+		}
+		YAHOO.util.Event.onDOMReady(init);		
+	</script>
+	<?php
+		if( is_array( $wgWizScripts )) {
+			foreach( $wgWizScripts as $script ) {
+				echo "<script type=\"text/javascript\" src=\"$script\"></script>\n";
+			}
+		}
+		if( isset( $wgWizHeadExtra ) ) {
+				echo $wgWizHeadExtra;
+		} 
+	?>
+</head>
+<body class="yui-skin-sam">
+<form method="post" name="wgWizForm" id="wgWizForm"
+	action="<?php echo htmlentities($_SERVER["REQUEST_URI"]); ?>"
+	onSubmit="return checksubmit();"
+	ENCTYPE="multipart/form-data">
+<div class="storevars">
+<?php
+	if (!$arStoreVars) {
+		$arStoreVars=$this->getdata("arStoreVars","none");
+	}
+	$ARCurrent->override=true; // POST vars always get included in the hidden arStoreVars list
+	wgWizKeepVars($_POST);
+	$ARCurrent->override=false;
+	wgWizKeepVars($arStoreVars, "arStoreVars");
+	wgWizKeepVars($_GET);
+?>
+</div>
+<div class="wizardstatus">
+	<input type="hidden" name="wgWizCurrent" value="<?php echo $wgWizNextStep; ?>">
+	<input type="hidden" name="wgWizNextStep" value="<?php echo $wgWizNextStep; ?>">
+	<input type="hidden" name="arLanguage" value="<?php echo $arLanguage; ?>">
+	<input type="hidden" name="wgWizAction" value="">
+</div>
+<div id="header">
+	<div class="logo">
+<?php
+	if( !$wgWizNoDefaultStyle && !$wgWizHeaderLogo) {
+?>
+		<img src="<?php echo $AR->dir->www;?>images/tree/logo2.gif" alt="Ariadne Web Application Server">
+		<span class="ariadne">Ariadne</span>
+		<span class="ariadne_sub">Web Application Server</span>
+<?php
+	}
+	if( $wgWizHeaderLogo ) {
+		echo $wgWizHeaderLogo;
+	}
+?>
+	</div>
+	<span class="text"><?php echo htmlspecialchars($wgWizHeader); ?></span>
+	<?php
+		if( $wgWizHeaderIcon ) {
+	?><img class="typeicon" src="<?php echo $wgWizHeaderIcon; ?>" alt="<?php echo htmlspecialchars($wgWizTitle); ?>">
+	<?php
+		}
+	?>
+</div>
+
+<?php
+	if ($wgWizShowSections) {
+?>
+		<div id="sections"<?php if ($wgWizTabsTemplate) {echo ' class="tabs"';}?>>
+<?php
+			for ($i=1; $i<sizeof($wgWizFlow); $i++) {
+				if ($wgWizFlow[$i]['title']) {
+					$image = $wgWizFlow[$i]['image'];
+					$title = $wgWizFlow[$i]['title'];
+					$link_id = "link_" . $i;
+					$current = '';
+					if ($i == $wgWizNextStep && !$wgWizAction) {
+						$current = " current";
+					}
+?>
+					<a href="javascript:selectSection('<?php echo htmlspecialchars($i); ?>');" id="<?php echo htmlspecialchars($link_id); ?>" class="section<?php echo htmlspecialchars($current); ?>">
+						<img alt="<?php echo strip_tags($title); ?>" title="<?php echo strip_tags($title); ?>" src="<?php echo htmlspecialchars($image); ?>">
+						<span class="title"><?php echo $title; ?></span>
+					</a>
+<?php
+				}
+			}
+		?>
+		</div>
+<?php
+	}
+	
+	
+	$sectionClass = "";
+	if( $wgWizTabsTemplate ) {
+		$sectionClass .= "tabs ";
+	}
+	if( !$wgWizShowSections ) {
+		$sectionClass .= "nosections ";
+	}
+	$sectionClass = rtrim($sectionClass);
+	
+?>	
+<div id="sectiondata"<?php if ($sectionClass) {
+	echo ' class="'.$sectionClass.'"';
+}?>>
+	<div id="tabs">
+<?php
+	if ($wgWizTabsTemplate) {
+		$wgWizCallObject->call($wgWizTabsTemplate, $wgWizCallArgs);
+	}
+?>
+	</div>
+	<div id="tabsdata">
+			<?php
+				$wgWizCallObject->call($wgWizTemplate, $wgWizCallArgs);
+			?>
+	</div>
+</div>
+<div class="buttons" unselectable="on">
+<?php
+		if( !is_array($wgWizButtons) )  {
+			// defaulting
+			$wgWizButtons = array(
+				"cancel" => array(
+					"value" => $ARnls["cancel"]
+				),
+				"save" => array(
+					"value" => $ARnls["save"]
+				)
+			);
+		}
+		$left = "";
+		$center = "";
+		$right = "";
+		foreach( $wgWizButtons as $action => $button ) {
+			$b = "<input unselectable=\"on\" type=\"submit\" name=\"wgWizControl\" class=\"wgWizControl".($button["class"] ? " ".$button["class"] : "")."\" onClick=\"document.wgWizForm.wgWizAction.value='".$action."';\" value=\"".$button["value"]."\">\n";
+			if( $button["location"] == "left" ) {
+				$left .= $b;
+			} else if( $button["location"] == "center" ) {
+				$center .= $b;
+			} else {
+				$right .= $b;
+			}			
+		}
+		// Hidden input to pick up the default button - does nothing except return to the current state;
+		echo "<input tabindex='-1' style='position: absolute; left: -1000px; width: 0px; height: 0px;' unselectable=\"on\" type=\"submit\" name=\"wgWizControl\" class=\"wgWizControl".($button["class"] ? " ".$button["class"] : "")."\" value=\"current\">\n";
+		if( $center != "" ) { // center first because it has width 100%
+			echo "<div class=\"center\" unselectable=\"on\">\n".$center."</div>\n";
+		}
+		if( $left != "" ) {
+			echo "<div class=\"left\" unselectable=\"on\">\n".$left."</div>\n";
+		}
+		if( $right != "" ) {
+			echo "<div class=\"right\" unselectable=\"on\">\n".$right."</div>\n";
+		}
+?>
+</div>
+</form>
+</body>
+</html>

@@ -1,207 +1,82 @@
 <?php
-  require("../../ariadne.inc");
-  require($ariadne."/configs/ariadne.phtml");
-
-  $date = $_GET["date"];
-  if (!$date) {
-    $date=time();
-  }
-  $format = $_GET["format"];
-  if (!$format) {
-    $format="%m-%d-%Y";  
-  }
-  $title = $_GET["title"];
-  if (!$title) {
-    $title="Select Date";
-  }
-  $name = $_GET["name"];
-  if (!$name) {
-    $name="date";
-  }
-  $args="&format=".RawUrlEncode($format)."&title=".RawUrlEncode($title)."&name=".RawUrlEncode($name);
-
+	$name = $_GET["name"];
+	$date = $_GET["date"];
+	$title = $_GET["title"];
+	$format = $_GET["format"];
 ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head>
-<title> 
-<?php echo $title; ?>
-</title>
-<?php
-  /*
-    arguments: 
-      $date - unix time stamp, month set will be shown, highlights this day.
-  */
-  // calculate first weekday of this month
-  $date_arr=getdate($date);
-  $starttime=mktime(0,0,0,$date_arr["mon"],1,$date_arr["year"]);
-  $monthstart=getdate($starttime);
-  $firstweekday=$monthstart["wday"];
-  $endtime=mktime(0,0,0,$date_arr["mon"]+1,1,$date_arr["year"])-1;
-  $monthend=getdate($endtime);
-  $monthsize=$monthend["mday"];
-  
-  // is startdate in the current month -> highlight today.
-  $today=getdate();
-  if ($today["year"]==$date_arr["year"] && $today["mon"]==$date_arr["mon"]) {
-    $current=$today["mday"];
-  }
-  $highlight=$date_arr["mday"];
 
-?>
 
-<style>
-<!--
-* {font-family:tahoma,arial,verdana;font-size: 11px;color:#666666}
-.date {color:white ; font-weight:bold}
-.day {background-color:#D6DFF7}
-.table1{background-color:#215DC6}
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<title><?php echo htmlspecialchars($title); ?></title>
 
-A	{
-	text-decoration: none;
-	color: #003FEB;
+<style type="text/css">
+/*margin and padding on body element
+  can introduce errors in determining
+  element position and are not recommended;
+  we turn them off as a foundation for YUI
+  CSS treatments. */
+body {
+	margin:0;
+	padding:0;
 }
-A:hover {
-	text-decoration: none;
-	color: #428EFF; 
+#cal1Container {
+	margin-top: 20px;
+	margin-left: 46px;
 }
-A.selected {
-	border: inset 1px;
-}
-A.unselected {
-	border: outset 1px;
-}
-A.cal { text-decoration:none; } 
 
--->
 </style>
-<script>
-<!--
-  function SetDate(date, formatted) {
-    window.opener.SetDate('<?php echo $name; ?>', date, formatted);
-    window.close();
-  }
-//-->
-</script>
+
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.0r4/build/fonts/fonts-min.css" />
+<link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.0r4/build/calendar/assets/skins/sam/calendar.css" />
+<script type="text/javascript" src="http://yui.yahooapis.com/2.8.0r4/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+<script type="text/javascript" src="http://yui.yahooapis.com/2.8.0r4/build/calendar/calendar-min.js"></script>
+
+<!--there is no custom header content for this example-->
 
 </head>
-<body bgcolor="white">
 
-<table border="0" cellspacing="0" cellpadding="0" class="table1">
-  <tr> 
-    <td rowspan="3"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
-    <td><a href="<?php echo $_SERVER['PHP_SELF']; ?>?date=<?php 
+<body class="yui-skin-sam">
+<div id="cal1Container"></div>
+<script type="text/javascript">
+	function zeroFill( number, width ) {
+		width -= number.toString().length;
+		if ( width > 0 )  {
+			return new Array( width + (/\./.test( number ) ? 2 : 1) ).join( '0' ) + number;
+		}
+		return number;
+	}
 
-			$mday = $date_arr["mday"];
-			$newtime = mktime( 0, 0, 0, $date_arr["mon"]-1, $date_arr["mday"], $date_arr["year"]);
-			$newtime_arr = getdate($newtime);
-			if ($newtime_arr["mday"] < $mday) {
-				$mday -= $newtime_arr["mday"];
+	function formatDate(date, format) {
+		result = format;
+		result = result.replace("%m", zeroFill(date.getMonth() + 1, 2));
+		result = result.replace("%d", zeroFill(date.getDate(), 2));
+		result = result.replace("%Y", date.getFullYear());
+		return result;
+	}
+
+	YAHOO.util.Event.onDOMReady(function() {
+		var calendar = new YAHOO.widget.Calendar("cal1", "cal1Container");
+		var selectDate = new Date(<?php echo htmlspecialchars($date); ?> * 1000);
+		calendar.select(selectDate);
+		calendar.setMonth(selectDate.getMonth());
+		calendar.setYear(selectDate.getFullYear());
+		calendar.render();
+		calendar.selectEvent.subscribe(function() {
+			if (calendar.getSelectedDates().length > 0) {
+				var selDate = calendar.getSelectedDates()[0];
+				var date = selDate.getTime() / 1000;
+				var formatted = formatDate(selDate, '<?php echo htmlspecialchars($format); ?>');
+				window.opener.SetDate('<?php echo htmlspecialchars($name); ?>', date, formatted);
+				window.close();
 			}
-			echo mktime( 0, 0, 0, $date_arr["mon"]-1, $mday, $date_arr["year"]); 
-			echo $args;
-    ?>"><img src="<?php echo $AR->dir->images; ?>calendar/xp.prev.gif" alt="<" border="0"></a> 
-      <font class="date">&nbsp; 
-      <?php 
-      echo $date_arr["month"]; 
-    ?>
-      &nbsp;</font><a href="<?php echo $_SERVER['PHP_SELF']; ?>?date=<?php 
+		}, calendar, true);
+	});
+</script>
 
-			$mday = $date_arr["mday"];
-			$newtime = mktime( 0, 0, 0, $date_arr["mon"]+1, $date_arr["mday"], $date_arr["year"]);
-			$newtime_arr = getdate($newtime);
-			if ($newtime_arr["mday"] < $mday) {
-				$mday = $mday - $newtime_arr["mday"];
-			}
-			echo mktime( 0, 0, 0, $date_arr["mon"]+1, $mday, $date_arr["year"]); 
-			echo $args;
-    ?>"><img src="<?php echo $AR->dir->images; ?>calendar/xp.next.gif" alt=">" border="0"></a> 
-    </td>
-    <td align="center">&nbsp;</td>
-    <td align="right"><a href="<?php echo $_SERVER['PHP_SELF']; ?>?date=<?php 
-      echo mktime(0,0,0,$date_arr["mon"],$date_arr["mday"],$date_arr["year"]-1).$args; 
-    ?>"><img src="<?php echo $AR->dir->images; ?>calendar/xp.prev.gif" alt="<" border="0"></a> 
-      <font class="date">&nbsp; 
-      <?php 
-      echo $date_arr["year"]; 
-    ?>
-      &nbsp;</font><a href="<?php echo $_SERVER['PHP_SELF']; ?>?date=<?php 
-      echo mktime(0,0,0,$date_arr["mon"],$date_arr["mday"],$date_arr["year"]+1).$args; 
-    ?>"><img src="<?php echo $AR->dir->images; ?>calendar/xp.next.gif" alt=">" border="0"></a></td>
-    <td rowspan="3" class="trday"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
-  </tr>
-  <tr> 
-    <td bgcolor="white" colspan="3"> 
-      <table border="0" cellspacing="2" cellpadding="2">
-        <tr> 
-          <td align="center" class="day"><font class="date">Sun</font><br>
-            <img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
-          <td class="day" align="center"><font class="date">Mon</font><br>
-            <img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
-          <td class="day" align="center"><font class="date">Tue</font><br>
-            <img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
-          <td class="day" align="center"><font class="date">Wed</font><br>
-            <img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
-          <td class="day" align="center"><font class="date">Thu</font><br>
-            <img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
-          <td class="day" align="center"><font class="date">Fri</font><br>
-            <img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
-          <td class="day" align="center"><font class="date">Sat</font><br>
-            <img src="<?php echo $AR->dir->images; ?>dot.gif" width="32" height="1"></td>
-        </tr>
-        <tr> 
-          <?php
-      for ($i=$firstweekday; $i; $i--) {
-        echo "<td align=\"center\" valign=\"middle\"><a href=\"".$_SERVER['PHP_SELF']."?date=".
-          mktime(0,0,0,$date_arr["mon"],(-$i+1),$date_arr["year"]).$args.
-          "\"><img src=\"".$AR->dir->images."dot.gif\" width=\"32\" height=\"20\" border=\"0\" alt=\"-$i\"></a></td>";
-      }
-      for ($i=1; $i<=$monthsize; $i++) {
-	if ($i==$highlight) {
-          echo "  <td bgcolor=\"#CCCCCC\">";
-        } else {
-          echo "  <td bgcolor=\"#EEEEEE\">";
-        }
-        
-	$idate=mktime(0,0,0,$date_arr["mon"],$i,$date_arr["year"]);
-        if ($i==$current) {
-          echo "<u><a class=\"current\" href=\"javascript:SetDate($idate,'".
-            strftime($format, $idate)."');\">$i</a></u>";
-        } else {
-          echo "<a class=\"cal\" href=\"javascript:SetDate($idate,'".
-            strftime($format, $idate)."');\">$i</a>";
-        }
-        echo "</td>\n";
-        if ((($i+$firstweekday)%7)==0) { // end of the week, next row
-          echo "</tr>";
-          if ($i<$monthsize) { // only start a new row if there are more days
-            echo "<tr>\n";
-          }
-        }
-      }
-      $date_arr=getdate(mktime(0,0,0,$date_arr["mon"]+1,1,$date_arr["year"]));
-      $firstweekday=$date_arr["wday"]; // first week day of next month
-      if ($firstweekday) { // skip if first weekday of next month is sunday
-        for ($i=1; $i<(8-$firstweekday); $i++) {
-          echo "<td align=\"center\" valign=\"middle\"><a href=\"".$_SERVER['PHP_SELF']."?date=".
-            mktime(0,0,0,$date_arr["mon"],$i,$date_arr["year"]).$args.
-            "\"><img src=\"".$AR->dir->images."dot.gif\" width=\"32\" height=\"20\" border=\"0\" alt=\"$i\"></a></td>";
-        }
-      }
-    ?>
-        </tr>
-      </table>
-    </td>
-  </tr>
-  <tr> 
-    <td colspan="3"><img src="<?php echo $AR->dir->images; ?>dot.gif" width="1" height="1" alt=""></td>
-  </tr>
-</table>
-<form>
-  <table width="100%" border="0">
-  <tr><td align="center">
-    <input type="button" value="Cancel" onClick="window.close();">
-  </td></tr>
-  </table>
-</form>
+<div style="clear:both" ></div>
+
 </body>
 </html>

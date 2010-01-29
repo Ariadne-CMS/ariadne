@@ -1,0 +1,202 @@
+input {
+	width: 75px;
+}
+input.text {
+	width: 200px;
+}
+
+#templatesDiv, .controlDiv {
+	margin-top: 10px;
+}
+
+.controlDiv {
+	display: none;
+	height: 30px;
+}
+.controlDiv form {
+	display: inline;
+	margin-right: 5px;
+}
+.yui-dt table {
+	width: 100%;
+}
+
+.yui-dt table td {
+	vertical-align: top;
+}
+
+.yui-dt table th.yui-dt-last, 
+.yui-dt table td.yui-dt-last, 
+.yui-dt table thead {
+	border-right: 0px;
+}
+
+.highlight td {
+	background-color: #D0DCF7 !important;
+}
+
+#basicmenu {
+	height: 24px;
+	visibility: visible;
+}
+
+#basicmenu .yuimenubaritemlabel {
+	padding-top: 6px;
+	height: 20px;
+	border: 0px;
+}
+
+.yuimenubaritem.close {
+	float: right;
+}
+
+.searchdiv input {
+	mmargin-left: 10px;
+}
+
+.searchdiv {
+	font-size: 11px;
+	position: absolute;
+	right: 20px;
+	top: 14px;
+	text-align: right;
+}
+.searchdiv a, .searchdiv img {
+	border: 0px;
+	width: 16px;
+	height: 16px;
+}
+
+.searchdiv div {
+	display: inline;
+	text-align: left;
+}
+
+#tabsdata .searchdiv input {
+	border: 1px solid #808080;
+	padding-left: 2px;
+	line-height: 14px;
+	height: 14px;
+	display: inline;
+}
+#tabsdata #searchbutton {
+	height: 18px;
+}
+
+.svn_icon {
+	height: 12px;
+	width: 12px;
+}
+.yuimenubaritemlabel .svn_icon {
+	margin-right: 4px;
+	vertical-align: middle;
+	margin-bottom: 4px;
+}
+.local {
+	height: 12px;
+	width: 11px;
+}
+.type_icon {
+	vertical-align: middle;
+}
+a.button img {
+	border: 0px;
+}
+
+#tabsdata #template_options {
+	width: 100%;
+	height: 55px;
+	margin: 5px 0px 0px 0px;
+	position: relative;
+	background-color: #EFF3FF;
+}
+
+#tabsdata .template_option {
+	float: left;
+	margin-right: 10px;
+}
+
+#tabsdata .wide_template_option {
+	width: 240px;
+}
+
+#tabsdata label.ontop {
+	margin-top: 0px;
+	margin-bottom: 5px;
+}
+
+
+#tabsdata #template_editor {
+	padding: 0px;
+	position: fixed;
+	top: 125px;
+	bottom: 71px;
+	left: 60px;
+	right: 20px;
+	border: 1px solid #808080;
+}
+
+#tabsdata #template_linenumbers {
+	padding: 0px;
+	position: fixed;
+	top: 125px;
+	bottom: 71px;
+	left: 20px;
+	width: 39px;
+	border: 1px solid #808080;
+	border-right: 1px solid #cccccc;
+}
+
+#tabsdata #template_editor #template {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	border: 0px;
+	padding: 0px;
+	margin: 0px;
+}
+
+#tabsdata #linenumbers {
+	text-align: right;
+	position: absolute;
+	width: 37px;
+	height: 100%;
+	overflow: hidden;
+	border: 0px;
+	background-color: #dddddd;
+	color: black;
+	padding: 0px;
+	margin: 0px;
+	padding-right: 2px;
+}
+
+#tabsdata #template_status {
+	padding: 0px;
+	position: fixed;
+	bottom: 50px;
+	height: 16px;
+	padding-top: 2px;
+	left: 20px;
+	right: 18px;	
+}
+
+#template_row, #template_col, #template_char {
+	float: left;
+}
+
+
+#searchbutton {
+	background:transparent url(../images/sprite.png) repeat-x scroll 0 0;
+	border:1px solid #808080;
+}
+.button {
+	position: relative;
+}
+
+.flag_svn_icon {
+	height: 8px;
+	width: 8px;
+	position: absolute;
+	top: 0px;
+	left: 10px;
+}

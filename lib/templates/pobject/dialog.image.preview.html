@@ -1,0 +1,30 @@
+<?php
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		$arEditorSettings = $this->call("editor.ini");
+
+		$path 		= $this->getvar("target");
+		$imgstyle 	= $this->getvar("style");
+		$alttext	= $this->getvar("alttext");
+		$align		= $this->getvar("align"); // FIXME: Align is deprecated in HTML strict;
+
+		if ($this->exists($path)) {
+			$img_ob = current($this->get($path, "system.get.phtml"));
+			if ($img_ob->AR_implements('pphoto')) {
+				$src = $this->make_local_url($path);
+			}
+		}
+		if (!$src) {
+			$src = $this->make_local_url("/system/photo/nothumb/");
+		}
+
+		if ($arEditorSettings['image']['styles'][$imgstyle]) {
+			$class = 'class="' . $arEditorSettings['image']['styles'][$imgstyle]['class'] . '"';
+			$template = $arEditorSettings['image']['styles'][$imgstyle]['template'];
+			$src = $src . $template;
+		}
+			
+?>
+	<img id="preview_image" align="<?php echo htmlspecialchars($align); ?>" alt="<?php echo htmlspecialchars($alttext); ?>" title="<?php echo htmlspecialchars($alttext); ?>" src="<?php echo htmlspecialchars($src); ?>" <?php echo $class; ?>>
+<?php
+	}
+?>
