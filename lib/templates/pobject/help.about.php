@@ -19,9 +19,9 @@
 			<div id="tabsdata">
 				<div id="data">
 					<div id="version">
-						Version 2.6.2<br>
-						Nov 19, 2009<br><br>
-						&copy; 1998 - 2009 <a href="http://www.muze.nl/" target="_blank">Muze</a>
+						Version 2.7.0<br>
+						Jan 29, 2010<br><br>
+						&copy; 1998 - 2010 <a href="http://www.muze.nl/" target="_blank">Muze</a>
 					</div>
 					<form action="">
 						<div>
