@@ -1,7 +1,7 @@
-Installing Ariadne.                                          Muze Ariadne 2.6.1
+Installing Ariadne.                                          Muze Ariadne 2.7.0
 ===============================================================================
 
-  IMPORTANT: Ariadne 2.6.1 needs PHP 5 or higher.
+  IMPORTANT: Ariadne 2.7.0 needs PHP 5 or higher.
 
 Windows
 =======
@@ -36,7 +36,7 @@ Note: Make sure the that you have the following options set in your php.ini
    e.g.:
 
      cd /usr/local/lib/
-     tar xvzf ~/ariadne.2.6.1.tgz
+     tar xvzf ~/ariadne.2.7.0.tgz
      cd /var/www
      ln -s /usr/local/lib/ariadne/www/ ariadne
 
