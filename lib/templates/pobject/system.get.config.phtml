@@ -12,6 +12,7 @@
 	$ARCurrent->arConfig = &$ARConfig->pinpcache[$this->path];
 
 	/* calling config.ini directly for each system.get.config.phtml call */
+	$loginSilent = $ARCurrent->arLoginSilent;
 	if (!$this->CheckConfig('config.ini', $arCallArgs)) {
 		if (is_array($ARCurrent->arConfig['library'])) {
 			if (!$ARConfig->libraries[$this->path]) {
@@ -22,6 +23,8 @@
 			}
 		}
 	}
+	$ARCurrent->arLoginSilent = $loginSilent;
+
 	// remove pinpcache reference
 	unset($ARCurrent->arConfig);
 	$ARCurrent->allnls = $allnls;
