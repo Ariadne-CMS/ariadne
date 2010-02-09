@@ -916,23 +916,29 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						}
 					}
 				}
-				
-				if( is_array($AR->sgGrants[$path]) ) {
-					$sggrants = $AR->sgGrants[$path];
-					if (is_array($grants)) {
-						foreach($sggrants as $gkey => $gval ){
-							if (is_array($grants[$gkey]) && is_array($gval)) {
-								$grants[$gkey]=array_merge($gval, $grants[$gkey]);
-							} else 
-							if ($gval && !is_array($gval)) {
-								$grants[$gkey] = $gval;
-							} else
-							if ($gval && !$grants[$gkey]) {
-								$grants[$gkey] = $gval;
+				debug('pobject: GetValidGrants() sgGrant('.serialize($AR->sgGrants).')');
+				if( is_array($AR->sgGrants) ) {
+					ksort($AR->sgGrants);
+					$ppath = $this->make_path($path);
+					foreach( $AR->sgGrants as $sgpath => $sggrants) {
+						$sgpath = $this->make_path($sgpath);
+						if( substr($ppath, 0, strlen($sgpath)) == $sgpath ) { // sgpath is parent of ppath or equal to ppath
+							if (is_array($grants)) {
+								foreach($sggrants as $gkey => $gval ){
+									if (is_array($grants[$gkey]) && is_array($gval)) {
+										$grants[$gkey]=array_merge($gval, $grants[$gkey]);
+									} else 
+									if ($gval && !is_array($gval)) {
+										$grants[$gkey] = $gval;
+									} else
+									if ($gval && !$grants[$gkey]) {
+										$grants[$gkey] = $gval;
+									}
+								}
+							} else {
+								$grants = $sggrants;
 							}
 						}
-					} else {
-						$grants = $sggrants;
 					}
 				}			
 				$AR->user->grants[$path]=$grants;
@@ -2284,7 +2290,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$checkgrants = serialize($grantsarray);
 		$check = ( $AR->sgSalt ? sha1( $AR->sgSalt . $checkgrants . $this->path) : false ); // not using suKey because that checks for config grant
 		if( $check !== false && $check === $key ) {
-			unset($AR->user->grants[$this->path]); // this makes sure GetValidGrants is called again upon a grant check
+			$AR->user->grants = array(); // unset all grants for the current user, this makes sure GetValidGrants gets called again for this path and all childs
 			$grantsarray = (array)$AR->sgGrants[$this->path];
 			$mg->compile($grants, $grantsarray);
 			$AR->sgGrants[$this->path] = $grantsarray;
@@ -2295,7 +2301,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	
 	function sgEnd() {
 		global $AR;
-		unset($AR->user->grants[$this->path]); // this makes sure GetValidGrants is called again upon a grant check
+		$ar->user->grants = array(); // unset all grants for the current user, this makes sure GetValidGrants gets called again for this path and all childs
 		unset($AR->sgGrants[$this->path]);
 		return true; // temp return true;
 	}
@@ -2799,7 +2805,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			echo $errstr."\n<br>";
 		}
 
-		return true;
+		return false;
 	}
 
 } // end of ariadne_object class definition
