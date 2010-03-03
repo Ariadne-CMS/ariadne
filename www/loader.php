@@ -333,6 +333,9 @@
 
 		// now check for outputbuffering (caching)
 		if ($image=ob_get_contents()) {
+			if ($_SERVER['REQUEST_METHOD']!='GET') {
+				$nocache = true;
+			}
 			// first set clientside cache headers
 			if (!$ARCurrent->arDontCache && !$nocache && ($cachetime=$ARCurrent->cachetime)) {
 				if ($cachetime==-2) {
