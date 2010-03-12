@@ -217,8 +217,6 @@ class scanner {
 							if ($yych == '"') {
 								return PT_SUBSTRING;
 							}
-							// reset cursor
-							--$YYCURSOR;
 							return PT_VAR_REFERENCE;
 						break;
 						case '"':
