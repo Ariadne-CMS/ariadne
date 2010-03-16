@@ -217,7 +217,6 @@ class scanner {
 							if ($yych == '"') {
 								return PT_SUBSTRING;
 							}
-							// reset cursor
 							--$YYCURSOR;
 							return PT_VAR_REFERENCE;
 						break;
@@ -1052,7 +1051,8 @@ class pinp {
 				case PT_VAR_REFERENCE:
 					$this->scanner->YYSTATE = YY_STATE_PINP;
 					$this->next_token();
-						$varRes = $this->parse_expression(true);
+					$varRes = $this->parse_expression(true);
+					if ($varRes) {
 						if ($this->error) {
 							break;
 						}
@@ -1063,7 +1063,10 @@ class pinp {
 							$result .= '${"hereDocResult".substr($hereDocResult = ('.$varResWithoutNoise.'), 0, 0)}';
 						}
 						$result .= substr($varRes, strlen($varResWithoutNoise));
-					$this->push_back_token();
+						$this->push_back_token();
+					} else {
+						$result .= '\$';
+					}
 					$this->scanner->YYSTATE = YY_STATE_DQ;
 					$this->next_token();
 				break;
