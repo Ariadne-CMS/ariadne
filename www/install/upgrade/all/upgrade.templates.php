@@ -1,6 +1,7 @@
 <?php
 	$code		= $store->get_config("code");
 	$templates 	= $store->get_config("files")."templates/";
+
 	require_once($code."modules/mod_pinp.phtml");
 
 	function showWithLineNumber($text) {
@@ -54,7 +55,7 @@
 					} else {
 						$objectContext = "\$this->_";
 					}
-					$compiler = new pinp("head", "local->", $objectContext);
+					$compiler = new pinp($AR->PINP_Functions, "local->", $objectContext);
 					$pinp_code_compiled_new = $compiler->compile(strtr($pinp_code, "\r", ""));
 					if ($compiler->error) {
 						showCompilerError($compiler, $path.$file);
