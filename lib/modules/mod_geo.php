@@ -108,6 +108,36 @@ class geo {
 			return error::raiseError('MOD_GEO: GEO module not initialized, call init method first', 'geo_2');
 		}
 	}
+	
+	/**
+	*   returns an array with a lat and a long as calculated from the exif GPS info.
+	*
+	* @param	array	$exif	An exif block as returned by exif_read_data() and pphoto::getExif(). Make sure the GPS part is included. 
+	*/
+	
+	function exifToLatLong($exif) {
+		if ($exif['GPS']) {
+			eval('$degree = (float) '.$exif["GPS"]["GPSLatitude"][0].';');
+			eval('$mins   = (float) '.$exif["GPS"]["GPSLatitude"][1].';');
+			eval('$secs   = (float) '.$exif["GPS"]["GPSLatitude"][2].';');
+			$result['lat'] = $degree + ( $mins / 60 ) + ( $secs / 3600 );
+			if( $exif['GPS']['GPSLatitudeRef'] == 'S' ) {
+				  $result['lat'] = (-1) * $result['lat'];
+			}
+  
+			eval('$degree = (float) '.$exif["GPS"]["GPSLongitude"][0].';');
+			eval('$mins   = (float) '.$exif["GPS"]["GPSLongitude"][1].';');
+			eval('$secs   = (float) '.$exif["GPS"]["GPSLongitude"][2].';');
+			$result['lng'] = $degree + ( $mins / 60 ) + ( $secs / 3600 );
+			if( $exif['GPS']['GPSLongitudeRef'] == 'W' ) {
+				$result['lng'] = (-1) * $result['lng'];
+			}
+			return $result;
+		} else {
+			return error::raiseError('MOD_GEO: No EXIF block given', 'geo_6');
+		}
+	}
+	
 }
 
 /**
@@ -131,6 +161,10 @@ class pinp_geo extends geo {
 
 	function _getLatLong($address) {
 		return parent::getLatLong($address);
+	}
+
+	function _exifToLatLong($exif) {
+		return parent::exifToLatLong($exif);
 	}
 	
 }
