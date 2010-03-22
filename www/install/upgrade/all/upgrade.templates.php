@@ -35,6 +35,7 @@
 
 
 	function recompile($path) {
+		global $AR;
 		$php_version = (int)substr(phpversion(), 0, 1);
 		$dh = opendir($path);
 		while ( false !== ($file = readdir($dh))) {
