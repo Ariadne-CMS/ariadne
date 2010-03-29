@@ -33,7 +33,7 @@
 			} else {
 				$standalone = '';
 			}
-			return '<?xml version="' . $version . '" encoding="' . $encoding . '"' . $standalone . ' ?>';
+			return '<?xml version="' . self::value($version) . '" encoding="' . self::value($encoding) . '"' . $standalone . ' ?>';
 		}
 
 		public static function name( $name ) {
@@ -50,7 +50,11 @@
 			} else if ( is_bool( $value ) ) {
 				$content = $value ? 'true' : 'false';
 			} else {
-				$content = htmlspecialchars( $value );
+				if ( preg_match( '/^\s*<!\[CDATA\[/', $content ) ) {
+					$content = $value;
+				} else {
+					$content = htmlspecialchars( $value );
+				}
 			}
 			return $content;
 		}
@@ -73,6 +77,10 @@
 			return $content;
 		}
 
+		public static function cdata( $value ) {
+			return '<![CDATA[' . str_replace( ']]>', ']]&gt;', $value ) . ']]>';
+		}
+		
 		public static function tag() {
 			$args = func_get_args();
 			$name = $args[0];
