@@ -1,7 +1,5 @@
 <?php
-	ar_pinp::allow('ar_xml', array(
-			'configure', 'head', 'name', 'value', 'attribute', 'attributes', 'tag', 'nodes'
-	));
+	ar_pinp::allow( 'ar_xml' );
 
 	class ar_xml extends arBase {
 
@@ -94,7 +92,7 @@
 			}
 		}
 		
-		private static function indent($content) {
+		protected static function indent($content) {
 			if (self::$indenting && strpos($content, '<')!==false) {
 				return "\n".preg_replace("|<([^/])|","\t<$1",$content);
 			} else {

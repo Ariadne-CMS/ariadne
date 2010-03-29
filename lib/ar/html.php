@@ -1,7 +1,5 @@
 <?php
-	ar_pinp::allow('ar_html', array(
-			'name', 'value', 'attribute', 'attributes', 'tag', 'nodes', 'form'
-	));
+	ar_pinp::allow( 'ar_html' );
 
 	class ar_html extends ar_xml {
 
