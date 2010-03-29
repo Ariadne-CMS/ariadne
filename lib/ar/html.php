@@ -16,24 +16,32 @@
 			}
 		}
 
-		public static function doctype( $version = '4.01', $type = 'strict', $quirksmode = false ) {
+		public static function doctype( $type = 'strict', $quirksmode = false ) {
 			if ($type) {
 				$type = strtolower( $type );
-				$versionType = '';
+				$version = '';
 				switch ( $type ) {
 					case 'transitional' :
 					case 'frameset' :
-						$versionType = ucfirst( $type );
+						$version = ucfirst( $type );
 					case 'strict' :
-						$type = '"http://www.w3.org/TR/html' . ( (int) $version ) . '/' . $type . '.dtd"';
+						if (self::$xhtml) {
+							$version = ucfirst( $type );
+							$type = '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-' . $type . '.dtd"';						} else {
+							$type = '"http://www.w3.org/TR/html4/' . $type . '.dtd"';
+						}
 					break;
 				}
-				if ($versionType) {
-					$versionType = ' ' . $versionType;
+				if ($version) {
+					$version = ' ' . $version;
 				}
 			}
-			$doctype = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML ' . $version . $versionType . '//EN"';
-			if ( !$quirksmode ) {
+			if (self::$xhtml) {
+				$doctype = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0' . $version . '//EN"';
+			} else {
+				$doctype = '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01' . $version . '//EN"';
+			}
+			if ( !$quirksmode || self::$xhtml) {
 				$doctype .= ' ' . $type;
 			}
 			$doctype .= ">\n";
@@ -68,7 +76,7 @@
 				return '<' . $name . self::attributes( $attributes ) . '/>';
 			}
 		}
-		
+			
 		public static function nodes() {
 			$args  = func_get_args();
 			$nodes = call_user_func_array( array( 'ar_htmlNodes', 'mergeArguments' ), $args );
