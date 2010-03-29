@@ -33,7 +33,7 @@
 			} else {
 				$standalone = '';
 			}
-			return '<?xml version="' . self::value($version) . '" encoding="' . self::value($encoding) . '"' . $standalone . ' ?>';
+			return '<?xml version="' . self::value($version) . '" encoding="' . self::value($encoding) . '"' . $standalone . " ?>\n";
 		}
 
 		public static function name( $name ) {
