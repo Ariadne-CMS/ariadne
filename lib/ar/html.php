@@ -54,17 +54,20 @@
 		
 		public static function tag() {
 			$args = func_get_args();
-			$name = $args[0];
-			if ( isset($args[1]) ) {
-				if ( is_array( $args[1] ) && !is_a( $args[1], 'ar_htmlNodes' ) ) { //attributes
-					$attributes = $args[1];
-					if (isset($args[2])) {
-						$content = $args[2];
-					}
-				} else { //args[1] is the content
-					$content = $args[1];
-					if (isset($args[2])) {
-						$attributes = $args[2];
+			$name = array_shift($args);
+			if ( self::$xhtml ) {
+				$name = strtolower( $name );
+			}
+			$attributes = array();
+			$content = '';
+			foreach ($args as $arg) {
+				if ( is_array( $arg ) && !is_a( $arg, 'ar_htmlNodes' ) ) {
+					$attributes = array_merge($attributes, $arg);
+				} else {
+					if ( $content ) {
+						$content .= "\n" . $arg;
+					} else {
+						$content = $arg;
 					}
 				}
 			}
