@@ -72,6 +72,10 @@
 
 		if (!$this->error) {
 			$this->data->mimetype=$this->getdata("mimetype","none");
+			if (!$this->data->mimetype) {
+				$this->data->mimetype = $this->getdata("mimetype", $ARConfig->nls->default);
+			}
+
 			$temp=explode("/",$this->data->mimetype);
 			$this->data->mime["type"]=$temp[0];
 			$this->data->mime["subtype"]=$temp[1];
@@ -154,7 +158,8 @@
 									$this->data->$nlskey->mimetype = $mimetype;
 									$this->data->mime["type"] = $armime[0];
 									$this->data->mime["subtype"] = $armime[1];
-								} else {
+								}
+								if ($nlskey == "none" || $nlskey == $ARConfig->nls->default) {
 									$this->data->filesize = $this->getdata("file_size", "none"); 
 									$this->data->mimetype = $mimetype;
 									$this->data->mime["type"] = $armime[0];
