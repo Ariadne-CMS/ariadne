@@ -59,7 +59,9 @@
 								))."'";
 						$properties["fulltext"][$count]["nls"]="'$key'";
 					}
-					$this->data->$key=$newnlsdata;
+					$this->data->$key->name = $newnlsdata->name;
+					$this->data->$key->summary = $newnlsdata->summary;
+
 					$this->data->nls->list[$key]=$value;
 				} else {
 					if ($this->data->$key) {
@@ -71,9 +73,20 @@
 		}
 
 		if (!$this->error) {
-			$this->data->mimetype=$this->getdata("mimetype","none");
-			if (!$this->data->mimetype) {
-				$this->data->mimetype = $this->getdata("mimetype", $ARConfig->nls->default);
+			$defaultnls = $ARConfig->nls->default;
+			$nonls_mimetype = $this->getdata("mimetype","none");
+			$defaultnls_mimetype = $this->getdata("mimetype", $defaultnls);
+
+			if ($nonls_mimetype) {
+				$this->data->mimetype = $nonls_mimetype;
+			} else if ($defaultnls_mimetype) {
+				$this->data->mimetype = $defaultnls_mimetype;
+			}
+
+			if ($defaultnls_mimetype) {
+				$this->data->$defaultnls->mimetype = $defaultnls_mimetype;
+			} else if ($nonls_mimetype) {
+				$this->data->$defaultnls->mimetype = $nonls_mimetype;
 			}
 
 			$temp=explode("/",$this->data->mimetype);
@@ -100,6 +113,14 @@
 					if (!$mimetype) {
 						$mimetype = $this->getdata("mimetype", $nlskey);
 					}
+
+					if ($mimetype) {
+						$armime = explode("/", $mimetype);
+						$this->data->$nlskey->mimetype = $mimetype;
+						$this->data->$nlskey->mime["type"] = $armime[0];
+						$this->data->$nlskey->mime["subtype"] = $armime[1];
+					}
+					
 					// now check whether $file_temp is defined, if so, move it
 					if (!$this->error) {
 						if ($tempfile) {
@@ -155,9 +176,11 @@
 								if ($nlskey != "none") {
 									$files->copy_to_store($tempfile, $this->id, $nlskey."_file");
 									$this->data->$nlskey->filesize = $this->getdata("file_size", $nlskey); 
-									$this->data->$nlskey->mimetype = $mimetype;
-									$this->data->mime["type"] = $armime[0];
-									$this->data->mime["subtype"] = $armime[1];
+									if ($mimetype) {
+										$this->data->$nlskey->mimetype = $mimetype;
+										$this->data->$nlskey->mime["type"] = $armime[0];
+										$this->data->$nlskey->mime["subtype"] = $armime[1];
+									}
 								}
 								if ($nlskey == "none" || $nlskey == $ARConfig->nls->default) {
 									$this->data->filesize = $this->getdata("file_size", "none"); 
