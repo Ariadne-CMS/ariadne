@@ -3,7 +3,7 @@
 	require_once(ARBaseDir.'pinp.php');
 
 	ar_pinp::allow('ar', array('load', 'ls', 'get', 'find', 'parents', 'error'));
-	ar_pinp::allow('arError', array('error'));
+	ar_pinp::allow('ar_error');
 
 	class ar {
 		protected static $instances;
@@ -91,6 +91,7 @@
 		public static function error($message, $code) {
 			return new arError($message, $code);
 		}
+		
 	}
 
 	class arObject {
@@ -120,21 +121,21 @@
 		}
 	}
 
-	class arError extends arBase {
+	class ar_error extends arBase {
 		var $message;
 		var $code;
 
-		public function error($message, $code) {
-			$this->message=$message;
-			$this->code=$code;
+		public function __construct($message, $code) {
+			$this->message = $message;
+			$this->code    = $code;
 		}
 
-		public function isError($ob) {
-			return (is_a($ob, 'arError') || is_a($ob, 'error') || is_a($ob, 'PEAR_Error'));
+		public static function isError($ob) {
+			return (is_a($ob, 'ar_error') || is_a($ob, 'error') || is_a($ob, 'PEAR_Error'));
 		}
 
-		public function raiseError($message, $code) {
-			return new error($message, $code);
+		public static function raiseError($message, $code) {
+			return new ar_error($message, $code);
 		}
 
 		public function getMessage() {
@@ -171,6 +172,10 @@
 
 		public static function _parents($path = ".") {
 			return ar_store::parents($path);
+		}
+
+		public static function _error($message, $code) {
+			return ar::error($message, $code);
 		}
 	}
 	
