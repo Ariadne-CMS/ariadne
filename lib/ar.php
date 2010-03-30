@@ -92,6 +92,11 @@
 			return new arError($message, $code);
 		}
 		
+		public static function call( $template, $params = null ) {
+			$context = pobject::getContext();
+			$me = $context['arCurrentObject'];
+			return $me->call( $template, $params );
+		}
 	}
 
 	class arObject {
@@ -176,6 +181,10 @@
 
 		public static function _error($message, $code) {
 			return ar::error($message, $code);
+		}
+		
+		public static function _call($template, $params = null) {
+			return ar::call($template, $params);
 		}
 	}
 	
