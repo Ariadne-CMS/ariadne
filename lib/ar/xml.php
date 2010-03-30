@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 	ar_pinp::allow( 'ar_xml' );
 
 	class ar_xml extends arBase {
@@ -37,7 +37,9 @@
 		}
 
 		public static function name( $name ) {
-			return preg_replace( '/[^a-zA-Z0-9:]*/', '', $name );
+			$name = mb_eregi_replace( '[^-.0-9:a-z_]', '', $name);
+			$name = mb_eregi_replace( '^[^:a-z_]*', '', $name);
+			return $name;
 		}
 
 		public static function value( $value ) {
