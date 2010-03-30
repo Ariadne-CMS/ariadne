@@ -3,7 +3,7 @@
 
 	class ar_xml extends arBase {
 
-		private static $indenting = false;
+		private static $indenting = true;
 	
 		public static $indent = "\t";
 		

@@ -132,8 +132,8 @@
 				'content' => $request
 			), $options );
 			$context = stream_context_create( array( 'http' => $options ) );
-			$result = file_get_contents( $url, false, $context );
-			$this->responseHeaders = $http_response_header;
+			$result = @file_get_contents( $url, false, $context );
+			$this->responseHeaders = $http_response_header; //magic php variable set by file_get_contents.
 			return $result;
 		}
 

@@ -42,8 +42,12 @@
 			} while ($current = get_parent_class($current));
 			return false;
 		}
+		
+		public static function getCallBack( $method ) {
+			return create_function('', '$args = func_get_args(); return call_user_func_array( array( "ar", "call" ), array( "'.$method.'", $args ) );');
+		}
 	}
 
-	ar_pinp::allow('ar_pinp', array('isAllowed'));
+	ar_pinp::allow('ar_pinp', array('isAllowed', 'getCallBack'));
 	
 ?>

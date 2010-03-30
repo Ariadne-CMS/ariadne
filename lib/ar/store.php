@@ -34,10 +34,15 @@
 			return new ar_storeGet($me->path, $path);
 		}
 
-		public static function parents($path = ".") {
+		public static function parents() {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
-			return new ar_storeParents($me->make_path($path));
+			return new ar_storeParents($me->path);
+		}
+		
+		public static function exists($path = ".") {
+			global $store;
+			return $store->exists($path);
 		}
 
 	}
@@ -126,6 +131,10 @@
 		public function call($template, $args=null) {
 			global $store;
 			return $store->call($template, $args, $store->get($this->path));
+		}
+
+		public function parents() {
+			return new ar_storeParents($this->path);
 		}
 
 	}
