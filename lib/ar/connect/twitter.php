@@ -99,7 +99,7 @@ class ar_connect_twitterWrapper extends arBase {
 			try {
 				$result = call_user_func_array(array($this->wrapped, $realName), $arguments);
 			} catch(Services_Twitter_Exception $e) {
-				return new arError('Error in ar\connect\twitter calling '.$e->getCall(), 1);
+				return new ar_error('Error in ar\connect\twitter calling '.$e->getCall(), 1);
 			}
 			if (is_object($result)) {
 				return new ar_connect_twitterWrapper($result);
