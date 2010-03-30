@@ -20,28 +20,33 @@
 				case '_REQUEST' : 
 					return $this->getvar();
 				break;
+				case '_SERVER' :
+					return $this->getvar( null, 'SERVER');
+				break;
+				case '_COOKIE' :
+					return $this->getvar( null, 'COOKIE');
+				break;
 			}
 		}
 
 		public static function getvar( $name = null, $method = null) {
-			if (!isset($name)) {
-				switch($method) {
-					case 'GET' : 
-						return $_GET;
-					break;
-					case 'POST' : 
-						return $_POST;
-					break;
-					default : 
-						return $_REQUEST;
-					break;
-				}
-			} else if ( $method != 'GET' && isset($_POST[$name]) ) {
-				return $_POST[$name];
-			} else if ( $method != 'POST' && isset($_GET[$name]) ) {
-				return $_GET[$name];
-			} else {
-				return null;
+			switch($method) {
+				case 'GET' : 
+					return isset($name) ? $_GET[$name] : $_GET;
+				break;
+				case 'POST' : 
+					return isset($name) ? $_POST[$name] : $_POST;
+				break;
+				case 'COOKIE' :
+					return isset($name) ? $_COOKIE[$name] : $_COOKIE;
+				break;
+				case 'SERVER' :
+					return isset($name) ? $_SERVER[$name] : $_SERVER;
+				break;
+				default : 
+					return !isset($name) ? $_REQUEST : 
+						( isset($_POST[$name]) ? $_POST[$name] : $_GET[$name] );
+				break;
 			}
 		}
 
