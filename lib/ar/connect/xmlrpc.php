@@ -18,15 +18,23 @@ class ar_connect_xmlrpc extends arBase {
 	}
 
 	public static function client($url, $options = null) {
-		return new ar_connect_xmlrpcClientWrapper( ripcord::client($url, $options) );
+		try {
+			return new ar_connect_xmlrpcClientWrapper( ripcord::client($url, $options) );
+		} catch( Ripcord_Exception $e ) {
+			return new ar_error($e->getMessage(), $e->getCode() );
+		}
 	}
 	
 	public static function server($methods, $options = null, $documentation = false) {
-		return new ar_connect_xmlrpcServerWrapper( ripcord::server(
-			self::services( $methods ),
-			$options, 
-			$documentation ? new ar_connect_xmlrpcDocumentor( $options, $documentation ) : false
-		) );
+		try {
+			return new ar_connect_xmlrpcServerWrapper( ripcord::server(
+				self::services( $methods ),
+				$options, 
+				$documentation ? new ar_connect_xmlrpcDocumentor( $options, $documentation ) : false
+			) );
+		} catch( Ripcord_Exception $e ) {
+			return new ar_error($e->getMessage(), $e->getCode() );
+		}
 	}
 
 	public static function base64($binary) {
@@ -34,7 +42,11 @@ class ar_connect_xmlrpc extends arBase {
 	}
 	
 	public static function binary($base64) {
-		return ripcord::binary( $base64 );
+		try {
+			return ripcord::binary( $base64 );
+		} catch( Ripcord_Exception $e ) {
+			return new ar_error($e->getMessage(), $e->getCode() );
+		}
 	}
 	
 	public static function datetime($timestamp) {
@@ -42,7 +54,11 @@ class ar_connect_xmlrpc extends arBase {
 	}
 	
 	public static function timestamp($datetime) {
-		return ripcord::timestamp($datetime);
+		try {
+			return ripcord::timestamp($datetime);
+		} catch( Ripcord_Exception $e ) {
+			return new ar_error($e->getMessage(), $e->getCode() );
+		}
 	}
 	
 	public static function fault($code, $message) {
@@ -80,10 +96,14 @@ class ar_connect_xmlrpcClientWrapper extends arBase {
 	}
 	
 	public function __call($method, $params) {
-		if ($method[0]=='_') {
-			$method = substr($method, 1);
+		try {
+			if ($method[0]=='_') {
+				$method = substr($method, 1);
+			}
+			return $this->wrapped->__call($method, $params);
+		} catch( Ripcord_Exception $e ) {
+			return new ar_error($e->getMessage(), $e->getCode() );
 		}
-		return $this->wrapped->__call($method, $params);
 	}
 	
 	public function __set($name, $value) {
