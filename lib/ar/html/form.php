@@ -246,20 +246,25 @@
 			return count( $valid ) == 0;
 		}
 		
-		public function isSubmitted() {
+		public function isSubmitted( $name = null ) {
 			// check if any of the submit buttons is available, if no submit buttons are set, check if any of the input values are
-			if ( is_array( $this->buttons ) ) {
-				foreach ( $this->buttons as $button ) {
-					if ( $button->type=='submit' || $button->type=='image' ) {
-						if ( ar('http')->getvar($button->name) == $button->value ) {
-							return true;
+			if ( isset($name) ) {
+				$value = ar('http')->getvar($name);
+				return isset( $value );
+			} else {
+				if ( is_array( $this->buttons ) ) {
+					foreach ( $this->buttons as $button ) {
+						if ( $button->type=='submit' || $button->type=='image' ) {
+							if ( ar('http')->getvar($button->name) == $button->value ) {
+								return true;
+							}
 						}
 					}
 				}
-			}
-			foreach ( $this->fields as $field ) {
-				if ( ar('http')->getvar($field->name) !== null ) {
-					return true;
+				foreach ( $this->fields as $field ) {
+					if ( ar('http')->getvar($field->name) !== null ) {
+						return true;
+					}
 				}
 			}
 			return false;
