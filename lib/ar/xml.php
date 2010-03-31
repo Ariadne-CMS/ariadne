@@ -108,9 +108,8 @@
 		}
 		
 		protected static function indent( $content ) {
-			if ( self::$indenting && strpos( $content, '<' ) !== false ) {
+			if ( self::$indenting && preg_match( '/^(\s*)</', $content) ) {
 				return "\n" . preg_replace( '/^(\s*)</m', self::$indent . '$1<', $content ) . "\n"; 
-//				return "\n" . preg_replace( "|<([^/])|", "\t<$1", $content );
 			} else {
 				return $content;
 			}

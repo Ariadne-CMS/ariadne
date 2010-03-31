@@ -1,31 +1,51 @@
 <?php
+
+	ar_pinp::allow('ar_html_form', array(
+		'addField', 'addButton', 'setValue', 'getValue', 'getValues', 'isValid', 'isSubmitted', 'validate', 'registerInputType', 'registerValidateCheck'
+	) );
+	
 	class ar_html_form extends arBase {
-		// todo: check, getdata, gettext methods, required fields, regular expression checks, related fields
-		// custom fields api, custom validation api, file upload field, captcha
-		protected $fields, $buttons, $action, $method;
+		// todo: file upload field, captcha
+		static public $customTypes;
 		
-		function __construct($fields, $buttons=null, $action=null, $method="POST") {
-			$this->fields = $this->parseFields($fields);
-			if (!isset($buttons)) {
+		static public $checks = array(
+			'alpha'        => '/^[[:alpha:]]+$/i',
+			'alphanumeric' => '/^[[:alnum:]]+$/i',
+			'abs_int'      => '/^\d+$/i',
+			'int'          => '/^[+-]?\d+$/i',
+			'abs_number'   => '/^([0-9]+\.?[0-9]*|\.[0-9]+)$/',
+			'number'       => '/^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$/',
+			'abs_money_us' => '/^(\d{1,3}(\,\d{3})*|(\d+))(\.\d{2})?$/',
+			'money_us'     => '/^[+-]?(\d{1,3}(\,\d{3})*|(\d+))(\.\d{2})?$/',
+			'abs_money'    => '/^(\d{1,3}(\.\d{3})*|(\d+))(\,\d{2})?$/',
+			'money'        => '/^[+-]?(\d{1,3}(\.\d{3})*|(\d+))(\,\d{2})?$/',
+			'email'        => '/^[[:alnum:]](([#+_\.\-]?[[:alnum:]]+)*)@([[:alnum:]]+)(([\.\-]?[[:alnum:]]+)*)\.([[:alpha:]]{2,})$/',
+			'domain_name'  => '/^([[:alnum:]]([a-zA-Z0-9\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,}$/',
+			'url'          => '/^(http|https|ftp)\://[a-zA-Z0-9\-\.]+\.[[:alpha:]]{2,3}(:[[:alnum:]]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*$/',
+			'credit_card'  => '/^(\d{4}-){3}\d{4}$|^(\d{4} ){3}\d{4}$|^\d{16}$/',
+			'date'         => '/^(\d{1,2}[.-/]\d{1,2}[.-/](\d{2}|\d{4})$/',
+			'time'         => '/^(\d{1,2}[:]\d{2}([:]\d{2})?$/'	
+		);
+		
+		protected $fields = array();
+		protected $buttons = array();
+		
+		public    $action, $method, $name, $class, $id, $requiredLabel;
+		
+		function __construct($fields=null, $buttons=null, $action=null, $method="POST", $requiredLabel=null) {
+			if ( isset($fields) ) {
+				$this->fields = $this->parseFields($fields);
+			}
+			if ( !isset($buttons)) {
 				$buttons = array('Ok', 'Cancel');
 			}
 			$this->buttons	= $this->parseButtons($buttons);
 			$this->action	= $action;
 			$this->method	= $method;
+			$this->requiredLabel = isset($requiredLabel) ? $requiredLabel : 
+				ar_html::tag('span', array('title' => 'Required', 'class' => 'formRequired'), '*');
 		}
-
-		public function setName($name) {
-			$this->name	= $name;
-		}
-		
-		public function setClassName($className) {
-			$this->class = $className;
-		}
-		
-		public function setId($id) {
-			$this->id = $id;
-		}
-		
+	
 		public function addField($value) {
 			$this->fields[] = $this->parseField(0, $value);
 		}
@@ -60,16 +80,18 @@
 			if (isset($this->method)) {
 				$attributes['method'] = $this->method;
 			}
+			$content = ar_html::nodes();
 			if (is_array($this->fields)) {
 				foreach ($this->fields as $key => $field) {
-					$content .= $field;
+					$content[] = $field;
 				}
 			}
 			if ($this->buttons) {
+				$buttonContent = ar_html::nodes();
 				foreach ($this->buttons as $key => $button) {
-					$buttonContent .= $button;
+					$buttonContent[] = $button;
 				}
-				$content .= ar_html::tag('div', $buttonContent, array('class' => 'formButtons'));
+				$content[] = ar_html::tag('div', $buttonContent, array('class' => 'formButtons'));
 			}
 			return (string)ar_html::tag('form', $content, $attributes);
 		}
@@ -203,7 +225,6 @@
 		
 		protected function getField($field) {
 			$class	= 'ar_html_formInput'.ucfirst($field->type);
-		
 			if (class_exists($class)) {
 				return new $class($field, $this);
 			} else {
@@ -211,9 +232,96 @@
 			}
 		}
 		
+		public function validate( $inputs = null ) {
+			$valid = array();
+			foreach ( $this->fields as $key => $field ) {
+				$result = $field->validate( $inputs );
+				$valid  = array_merge( $valid, $result );
+			}
+			return $valid;			
+		}
+		
+		public function isValid() {
+			$valid = $this->validate();
+			return count( $valid ) == 0;
+		}
+		
+		public function isSubmitted() {
+			// check if any of the submit buttons is available, if no submit buttons are set, check if any of the input values are
+			if ( is_array( $this->buttons ) ) {
+				foreach ( $this->buttons as $button ) {
+					if ( $button->type=='submit' || $button->type=='image' ) {
+						if ( ar('http')->getvar($button->name) == $button->value ) {
+							return true;
+						}
+					}
+				}
+			}
+			foreach ( $this->fields as $field ) {
+				if ( ar('http')->getvar($field->name) !== null ) {
+					return true;
+				}
+			}
+			return false;
+		}
+		
+		public static function registerInputType( $type, $getInput, $getValue = null, $getLabel = null, $getField = null ) {
+			self::$customTypes[ $type ] = array(
+				'getInput' => $getInput,
+				'getValue' => $getValue,
+				'getLabel' => $getLabel,
+				'getField' => $getField
+			);
+			foreach( self::$customTypes[ $type ] as $name => $method ) {
+				if ( isset( $method ) && $method ) {
+					if ( !is_callable($method) ) {
+						if ( is_string($method) ) {
+							$method = ar_pinp::getCallBack($method);
+						} else {
+							$method = null;
+						}
+					}
+				} else {
+					$method = null;
+				}
+				self::$customTypes[ $type ][ $name ] = $method;
+			}
+		}
+		
+		public static function registerValidateCheck( $name, $check, $message ) {
+			if ( !is_string( $check ) || ( $check[0] != '/' && !is_callable( $check ) ) ) {
+				$check = ar_pinp::getCallBack( $check );
+			}
+			self::$checks[ $name ] = array(
+				'check' => $check,
+				'message' => $message,
+			);
+		}
+		
+		public function __set($name, $value) {
+			if ($name[0] == '_') {
+				$name = substr($name, 1);
+			}
+			if ( in_array( $name, array('action', 'method', 'name', 'class', 'id', 'requiredLabel') ) ) {
+				$this->{$name} = $value;
+			}
+		}
+		
+		public function __get($name) {
+			if ($name[0] == '_') {
+				$name = substr($name, 1);
+			}
+			if ( in_array( $name, array('action', 'method', 'name', 'class', 'id', 'requiredLabel') ) ) {
+				return $this->{$name};
+			}
+		}
 	}
 	
 	class ar_html_formButton {
+		
+		protected $form;
+		public $type, $name, $value, $class, $id;
+		
 		public function __construct($button, $form) {
 			$this->form 	= $form;
 			$this->type	= isset($button->type) ? $button->type : null;
@@ -222,6 +330,7 @@
 			$this->class	= isset($button->class) ? $button->class : null;
 			$this->id	= isset($button->id) ? $button->id : null;
 		}
+		
 		public function getButton($type=null, $name=null, $value=null, $class=null, $id=null, $extra=null) {
 			$attributes = array();
 			if (!isset($type)) {
@@ -260,7 +369,8 @@
 	}
 
 	class ar_html_formButtonImage extends ar_html_formButton {
-
+		public $src;
+		
 		public function __construct($button, $form) {
 			parent::__construct($button, $form);
 			$this->src = isset($button->src) ? $button->src : null;
@@ -276,6 +386,9 @@
 	
 	class ar_html_formInput {
 
+		protected $form;
+		public    $type, $name, $class, $id, $label, $disabled, $default, $required, $related, $checks, $value;
+	
 		public function __construct($field, $form) {
 			$this->form	= $form;
 			$this->type	= isset($field->type) ? $field->type : null;
@@ -285,6 +398,12 @@
 			$this->label	= isset($field->label) ? $field->label : null;
 			$this->disabled	= isset($field->disabled) ? $field->disabled : false;
 			$this->default	= isset($field->default) ? $field->default : null; 
+			$this->required = isset($field->required) ? $field->required : false;
+			$this->checks   = isset($field->checks) ? $field->checks : array();
+			
+			if ( isset($this->checks) && !is_array($this->checks) ) {
+				$this->checks = array( $this->checks );
+			}
 			if (isset($field->value)) {
 				$this->value = $field->value;
 			} else {
@@ -305,6 +424,9 @@
 			}
 			if (!isset($label)) {
 				$label = $this->label;
+			}
+			if ($this->required) {
+				$label .= $this->form->requiredLabel;
 			}
 			if ($id) {
 				$attributes['for'] = $id;
@@ -356,7 +478,7 @@
 			return array( $this->name => $this->getValue() );
 		}
 		
-		public function getField($content=null) {
+		public function getField( $content = null ) {
 			if (!isset($content)) {
 				$content = ar_html::nodes($this->getLabel(), $this->getInput());
 			}
@@ -371,6 +493,45 @@
 			return ar_html::tag('div', $content, $attributes);
 		}
 		
+		public function validate() {
+			$result = array();
+			$value  = $this->getValue();
+			if ( $this->required && !isset($value) ) {
+				$result[ $this->label ] = ar::error( 'Required input missing', 'required' );
+			} else if ( is_array( $this->checks ) ) {
+				foreach( $this->checks as $check ) {
+					$regex = false;
+					if ( isset(ar_html_form::$checks[$check]) ) {
+						if ( is_array(ar_html_form::$checks[$check]) 
+							&& isset(ar_html_form::$checks[$check]['check']) ) {
+							$checkMethod = ar_html_form::$checks[$check]['check'];
+							$message     = ar_html_form::$checks[$check]['message'];
+							if ( is_callable( $checkMethod ) ) {
+								if ( !$checkMethod( $value() ) ) {
+									$result[$this->label] = ar::error(
+										sprintf( $message, $value ),
+										$check
+									);
+								}
+							} else if ( is_string($checkMethod) && $checkMethod[0]=='/' ) {
+								$regex = $checkMethod;
+							}
+						} else {
+							$regex   = ar_html_form::$checks[$check];
+							$message = 'Failed to match expected input: '.$check;
+						}
+					} else {
+						$regex   = $check;
+						$message = 'Failed to match expected input';
+					}
+					if ( $regex && !preg_match( $regex, $value ) ) {
+						$result[$this->label] = ar::error( sprintf( $message, $value ), $check );
+					}
+				}
+			}
+			return $result;
+		}
+		
 		public function __toString() {
 			return (string)$this->getField();
 		}
@@ -379,8 +540,44 @@
 	
 	class ar_html_formInputMissing extends ar_html_formInput {
 
-		public function __toString() {
-			return (string)$this->getField("<strong>Erro: Field type ".$this->type." doesn not exist.</strong>");
+		public function getField( $content = null ) {
+			if ( isset(ar_html_form::$customTypes[ $this->type ]) ) {
+				$getField = ar_html_form::$customTypes[ $this->type ]['getField'];
+				if ( isset( $getField) ) {
+					return $getField($this, $content);
+				}
+			}
+			return (string)parent::getField( 
+				ar_html::nodes( $this->getLabel(), $this->getInput() )
+			);
+		}
+		
+		public function getLabel() {		
+			if ( isset(ar_html_form::$customTypes[ $this->type ]) ) {
+				$getLabel = ar_html_form::$customTypes[ $this->type ]['getLabel'];
+				if ( isset( $getLabel ) ) {
+					return $getLabel($this, $content);
+				}
+			}
+			return parent::getLabel();
+		}
+
+		public function getInput() {		
+			if ( isset(ar_html_form::$customTypes[ $this->type ]) ) {
+				$getInput = ar_html_form::$customTypes[ $this->type ]['getInput'];
+				return $getInput($this, $content);
+			}
+			return ar_html::tag('strong', 'Error: Field type ' . $this->type . ' does not exist.');
+		}
+		
+		public function getValue() {
+			if ( isset(ar_html_form::$customTypes[ $this->type ]) ) {
+				$getValue = ar_html_form::$customTypes[ $this->type ]['getValue'];
+				if ( isset($getValue) ) {
+					return $getValue($this);
+				}
+			}
+			return parent::getValue();
 		}
 		
 	}
@@ -440,7 +637,7 @@
 		}
 		
 		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, 
-						$options=null, $selectedValue=null) {
+						$options=null) {
 			if (!isset($name)) {
 				$name = $this->name;
 			}
@@ -462,7 +659,7 @@
 				$attributes['disabled'] = true;
 				$content[] = ar_html::tag('input', array('name' => $name, 'type' => 'hidden', 'value' => $selectedValue));
 			}
-			$content[] = ar_html::tag('select', $this->getOptions($options, $selectedValue), $attributes);
+			$content[] = ar_html::tag('select', $this->getOptions($options, $value), $attributes);
 			return $content;
 		}
 
@@ -491,7 +688,7 @@
 			$attributes = array(
 				'value' => $value
 			);
-			if ($selectValue!==false && $selectedValue == $value) {
+			if ($selectedValue!==false && $selectedValue == $value) {
 				$attributes[] = 'selected';
 			}
 			return ar_html::tag('option', $name, $attributes);
@@ -566,7 +763,7 @@
 		}
 		
 		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, 
-						$options=null, $selectedValue=null) {
+						$options=null) {
 			if (!isset($name)) {
 				$name = $this->name;
 			}
@@ -582,7 +779,7 @@
 			$attributes = array(
 				'class' => 'radioButtons'
 			);
-			$content[] = ar_html::tag('div', $this->getRadioButtons($name, $options, $selectedValue), $attributes);
+			$content[] = ar_html::tag('div', $this->getRadioButtons($name, $options, $value), $attributes);
 			return $content;
 		}
 
@@ -605,16 +802,22 @@
 					if (!isset($option['value'])) {
 						$option['value'] = $key;
 					}
-					$content[] = $this->getRadioButton($name, $option['value'], $option['name'],
-								$selectedValue, $option['disabled'], 'radioButton', $name.'_'.$count);
+					$content[] = $this->getRadioButton(
+						$name, 
+						$option['value'], 
+						$option['name'],
+						$selectedValue, 
+						$option['disabled'], 
+						'radioButton', 
+						$name.'_'.$count
+					);
 					$count++;
 				}
 			}
 			return $content;
 		}
 		
-		protected function getRadioButton($name, $value='', $label=null, $selectedValue=false, $disabled=null, 
-							$class=null, $id=null) {
+		protected function getRadioButton( $name, $value='', $label=null, $selectedValue=false, $disabled=null, $class=null, $id=null ) {
 			if (isset($class)) {
 				$class = array('class' => $class);
 			}
@@ -624,7 +827,7 @@
 				'name'	=> $name,
 				'id'	=> $id
 			);
-			if ($selectValue!==false && $selectedValue == $value) {
+			if ($selectedValue!==false && $selectedValue == $value) {
 				$attributes[] = 'checked';
 			}
 			if ($disabled) {

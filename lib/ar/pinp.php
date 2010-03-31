@@ -44,7 +44,11 @@
 		}
 		
 		public static function getCallBack( $method ) {
-			return create_function('', '$args = func_get_args(); return call_user_func_array( array( "ar", "call" ), array( "'.$method.'", $args ) );');
+			if (is_string($method)) {
+				return create_function('', '$context = pobject::getContext(); $me = $context["arCurrentObject"]; $me->resetloopcheck(); $args = func_get_args(); return call_user_func_array( array( "ar", "call" ), array( "'.$method.'", $args ) );');
+			} else {
+				return false;
+			}
 		}
 	}
 

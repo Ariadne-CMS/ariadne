@@ -89,7 +89,7 @@
 		}
 		
 		public static function error($message, $code) {
-			return new arError($message, $code);
+			return new ar_error($message, $code);
 		}
 		
 		public static function call( $template, $params = null ) {
