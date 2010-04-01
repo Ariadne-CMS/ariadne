@@ -35,6 +35,10 @@
 			}
 			return '<?xml version="' . self::value($version) . '" encoding="' . self::value($encoding) . '"' . $standalone . " ?>\n";
 		}
+		
+		public static function comment( $comment ) {
+			return '<!-- '.self::value( $comment ).' -->';
+		}
 
 		public static function name( $name ) {
 			$name = mb_eregi_replace( '[^-.0-9:a-z_]', '', $name);

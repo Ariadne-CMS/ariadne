@@ -48,8 +48,9 @@
 			return $doctype;
 		}
 		
-		private static function _mustClose( $name ) {
-			return in_array( $name, array( 'script', 'div' ) );
+		private static function _canHaveContent( $name ) {
+			return !in_array( $name, array( 'input', 'br', 'hr', 'img', 'link', 'meta', 
+				'base', 'basefont', 'isindex', 'area', 'param', 'col', 'frame' ) );
 		}
 		
 		public static function tag() {
@@ -72,11 +73,15 @@
 				}
 			}
 			$name = self::name( $name );
-			if ( !self::$xhtml || ( isset($content) && $content!=='' ) || self::_mustClose( $name ) ) {
-				return '<' . $name . self::attributes( $attributes ) . '>' 
-					. self::indent( $content ) . '</' . $name . '>';
+			if ( !self::$xhtml || self::_canHaveContent( $name ) ) {
+				if ( self::_canHaveContent( $name ) ) {
+					return '<' . $name . self::attributes( $attributes ) . '>' 
+						. self::indent( $content ) . '</' . $name . '>';
+				} else {
+					return '<' . $name . self::attributes( $attributes ) . '>';
+				}
 			} else {
-				return '<' . $name . self::attributes( $attributes ) . '/>';
+				return '<' . $name . self::attributes( $attributes ) . ' />';
 			}
 		}
 			
