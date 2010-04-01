@@ -4,7 +4,8 @@
 	class ar_xml extends arBase {
 
 		private static $indenting = true;
-	
+		private static $comments = true;
+		
 		public static $indent = "\t";
 		
 		public static function configure( $option, $value ) {
@@ -18,6 +19,9 @@
 					} else if (!$value) {
 						self::$indenting = false;
 					}
+				break;
+				case 'comments' :
+					self::$comments = (bool)$value;
 				break;
 			}			
 		}
@@ -37,7 +41,7 @@
 		}
 		
 		public static function comment( $comment ) {
-			return '<!-- '.self::value( $comment ).' -->';
+			return ( self::$comments ? '<!-- '.self::value( $comment ).' -->' : '' );
 		}
 
 		public static function name( $name ) {

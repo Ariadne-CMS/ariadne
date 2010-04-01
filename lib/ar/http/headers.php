@@ -5,6 +5,8 @@
 		
 	class ar_http_headers extends arBase {
 
+		public static $headers;
+	
 		private $statusCodes = array(
 			100 => 'Continue',
 			101 => 'Switching Protocols',
@@ -61,10 +63,17 @@
 			510 => 'Not Extended'
 		);
 			
-		public function add($header) {
-			return ldHeader($header);
+		public static function header( $header ) {
+			if ( headers_sent() ) {
+				return new ar_error('PHP has already sent the headers. This error can be caused by trailing white space or newlines in the configuration files.', ar_exceptions_configError::HEADERS_SENT);
+			}
+			if ( is_array($header) ) {
+				$header = implode( '\n', $header );
+			}
+			ldHeader( $header );
+			self::$headers[] = $header;
 		}
-		
+
 		public function sent() {
 			return Headers_sent();
 		}

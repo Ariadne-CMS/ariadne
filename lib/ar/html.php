@@ -9,10 +9,10 @@
 			switch ($option) {
 				case 'xhtml' : 
 					self::$xhtml = (bool)$value;
-					break;
+				break;
 				default:
 					parent::configure($option, $value);
-					break;
+				break;
 			}
 		}
 
@@ -91,7 +91,7 @@
 			return new ar_htmlNodes( $nodes );
 		}
 
-		public static function form( $fields, $buttons=null, $action=null, $method='POST' ) {
+		public static function form( $fields, $buttons=null, $action='', $method='POST' ) {
 			return new ar_html_form( $fields, $buttons, $action, $method );
 		}
 	}

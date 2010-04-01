@@ -6,8 +6,7 @@
 	class ar_http extends arBase {
 	
 		private static $_GET, $_POST, $_REQUEST;  //needed to make __get() work
-		
-		public static $headers = array();
+		private static $tainting = true;
 		
 		public function __get($var) {
 			switch ($var) {
@@ -30,24 +29,26 @@
 		}
 
 		public static function getvar( $name = null, $method = null) {
+			$result = null;
 			switch($method) {
 				case 'GET' : 
-					return isset($name) ? $_GET[$name] : $_GET;
+					$result = isset($name) ? $_GET[$name] : $_GET;
 				break;
 				case 'POST' : 
-					return isset($name) ? $_POST[$name] : $_POST;
+					$result = isset($name) ? $_POST[$name] : $_POST;
 				break;
 				case 'COOKIE' :
-					return isset($name) ? $_COOKIE[$name] : $_COOKIE;
+					$result = isset($name) ? $_COOKIE[$name] : $_COOKIE;
 				break;
 				case 'SERVER' :
-					return isset($name) ? $_SERVER[$name] : $_SERVER;
+					$result = isset($name) ? $_SERVER[$name] : $_SERVER;
 				break;
 				default : 
-					return !isset($name) ? $_REQUEST : 
+					$result = !isset($name) ? $_REQUEST : 
 						( isset($_POST[$name]) ? $_POST[$name] : $_GET[$name] );
 				break;
 			}
+			return ( isset($result) ? ( self::$tainting ? self::taint( $result ) : $result ) : null );
 		}
 
 		public static function request( $method = null, $url = null, $postdata = null, $options = array() ) {
@@ -59,19 +60,50 @@
 			return new ar_httpClientStream( $options );
 		}
 		
-		public static function redirect( $uri ) {
-			self::header( 'Location: $uri' );
+		public static function configure( $option, $value ) {
+			switch ( $option ) {
+				case 'tainting' :
+					self::$tainting = $value;
+				break;
+			}
+		}
+		
+		public static function taint(&$value) {
+			if ( is_numeric($value) ) {
+				return;
+			} else if ( is_array($value) ) {
+				array_walk_recursive( $value, array( self, 'taint' ) );
+			} else if ( is_string($value) ) {
+				$value = new ar_httpTaint($value);
+			}
 		}
 
-		public static function header( $header ) {
-			if ( headers_sent() ) {
-				return new ar_error('PHP has already sent the headers. This error can be caused by trailing white space or newlines in the configuration files.', ar_exceptions_configError::HEADERS_SENT);
+		public static function untaint(&$value, $filter = FILTER_SANITIZE_SPECIAL_CHARS, $flags = null) {
+			if ( $value instanceof ar_httpTaint ) {
+				$value = filter_var($value->value, $filter, $flags);
+			} else if ( is_array($value) ) {
+				array_walk_recursive( $value, array( self, 'untaintArrayItem'), array( 
+					'filter' => $filter,
+					'flags' => $flags
+				) );
 			}
-			if ( is_array($header) ) {
-				$header = implode( '\n', $header );
-			}
-			header( $header );
-			self::$headers[] = $header;
+		}
+		
+		protected static function untaintArrayItem(&$value, $key, $options) {
+			self::untaint( $value, $options['filter'], $options['flags'] );
+		}
+		
+	}
+	
+	class ar_httpTaint {
+		public $value = null;
+
+		public function __construct($value) {
+			$this->value = $value;
+		}
+
+		public function __toString() {
+			return filter_var($this->value, FILTER_SANITIZE_SPECIAL_CHARS);
 		}
 	}
 	

@@ -32,7 +32,7 @@
 		
 		public    $action, $method, $name, $class, $id, $requiredLabel;
 		
-		function __construct($fields=null, $buttons=null, $action=null, $method="POST", $requiredLabel=null) {
+		function __construct($fields=null, $buttons=null, $action='', $method="POST", $requiredLabel=null) {
 			if ( isset($fields) ) {
 				$this->fields = $this->parseFields($fields);
 			}
