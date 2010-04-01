@@ -34,6 +34,7 @@
 
 
 	function recompile($path) {
+		global $AR;
 		$php_version = (int)substr(phpversion(), 0, 1);
 		$dh = opendir($path);
 		while ( false !== ($file = readdir($dh))) {
@@ -54,7 +55,7 @@
 					} else {
 						$objectContext = "\$this->_";
 					}
-					$compiler = new pinp("head", "local->", $objectContext);
+					$compiler = new pinp($AR->PINP_Functions, "local->", $objectContext);
 					$pinp_code_compiled_new = $compiler->compile(strtr($pinp_code, "\r", ""));
 					if ($compiler->error) {
 						showCompilerError($compiler, $path.$file);
