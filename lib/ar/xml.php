@@ -45,14 +45,14 @@
 		}
 
 		public static function name( $name ) {
-			ar('http')->untaint($name, FILTER_UNSAFE_RAW);
+			ar::untaint($name, FILTER_UNSAFE_RAW);
 			$name = mb_eregi_replace( '[^-.0-9:a-z_]', '', $name);
 			$name = mb_eregi_replace( '^[^:a-z_]*', '', $name);
 			return $name;
 		}
 
 		public static function value( $value ) {
-			ar('http')->untaint( $value, FILTER_UNSAFE_RAW );
+			ar::untaint( $value, FILTER_UNSAFE_RAW );
 			if ( is_array( $value ) ) {
 				$content = '';
 				foreach( $value as $subvalue ) {
@@ -90,7 +90,7 @@
 		}
 
 		public static function cdata( $value ) {
-			ar('http')->untaint( $value, FILTER_UNSAFE_RAW );
+			ar::untaint( $value, FILTER_UNSAFE_RAW );
 			return '<![CDATA[' . str_replace( ']]>', ']]&gt;', $value ) . ']]>';
 		}
 		

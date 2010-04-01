@@ -49,7 +49,7 @@
 				break;
 			}
 			if (self::$tainting) {
-				self::taint( $result );
+				ar::taint( $result );
 			}
 			return $result;
 		}
@@ -71,43 +71,6 @@
 			}
 		}
 		
-		public static function taint(&$value) {
-			if ( is_numeric($value) ) {
-				return;
-			} else if ( is_array($value) ) {
-				array_walk_recursive( $value, array( self, 'taint' ) );
-			} else if ( is_string($value) ) {
-				$value = new ar_httpTaint($value);
-			}
-		}
-
-		public static function untaint(&$value, $filter = FILTER_SANITIZE_SPECIAL_CHARS, $flags = null) {
-			if ( $value instanceof ar_httpTaint ) {
-				$value = filter_var($value->value, $filter, $flags);
-			} else if ( is_array($value) ) {
-				array_walk_recursive( $value, array( self, 'untaintArrayItem'), array( 
-					'filter' => $filter,
-					'flags' => $flags
-				) );
-			}
-		}
-		
-		protected static function untaintArrayItem(&$value, $key, $options) {
-			self::untaint( $value, $options['filter'], $options['flags'] );
-		}
-		
-	}
-	
-	class ar_httpTaint {
-		public $value = null;
-
-		public function __construct($value) {
-			$this->value = $value;
-		}
-
-		public function __toString() {
-			return filter_var($this->value, FILTER_SANITIZE_SPECIAL_CHARS);
-		}
 	}
 	
 	interface ar_httpClient {

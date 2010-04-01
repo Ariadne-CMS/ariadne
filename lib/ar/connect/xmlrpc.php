@@ -12,7 +12,14 @@ class ar_connect_xmlrpc extends arBase {
 	private static function services( $methods ) {
 		$result = array();
 		foreach ($methods as $methodName => $method) {
-			$result[$methodName] = ar_pinp::getCallback($method);
+			$params = array();
+			if (is_array($method)) {
+				$template = array_shift($method);
+				$params   = $method;
+			} else {
+				$template = $method;
+			}
+			$result[$methodName] = ar_pinp::getCallback($template, $params);
 		}
 		return $result;
 	}

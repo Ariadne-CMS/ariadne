@@ -43,9 +43,29 @@
 			return false;
 		}
 		
-		public static function getCallBack( $method ) {
+		public static function getCallBack( $method, $params = array() ) {
 			if (is_string($method)) {
-				return create_function('', '$context = pobject::getContext(); $me = $context["arCurrentObject"]; $me->resetloopcheck(); $args = func_get_args(); return call_user_func_array( array( "ar", "call" ), array( "'.$method.'", $args ) );');
+				if (is_array($params) && count($params)) {
+					$paramsString = '"'.join('","', $params).'"';
+				} else {
+					$paramsString = '';
+				}
+				return create_function( '', '
+					$context = pobject::getContext(); 
+					$me = $context["arCurrentObject"]; 
+					$me->resetloopcheck(); 
+					$args_in = func_get_args();
+					$params = array( '.$paramsString.' );
+					if (count($params)) {
+						$args = array();
+						foreach($params as $key => $arg) {
+							$args[$arg] = $args_in[$key];
+						}
+					} else {
+						$args = $args_in;
+					}
+					return call_user_func_array( array( "ar", "call" ), array( "'.$method.'", $args ) );'
+				);
 			} else {
 				return false;
 			}

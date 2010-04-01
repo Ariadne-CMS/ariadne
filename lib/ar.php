@@ -97,7 +97,46 @@
 			$me = $context['arCurrentObject'];
 			return $me->call( $template, $params );
 		}
+		
+		public static function taint(&$value) {
+			if ( is_numeric($value) ) {
+				return;
+			} else if ( is_array($value) ) {
+				array_walk_recursive( $value, array( self, 'taint' ) );
+			} else if ( is_string($value) ) {
+				$value = new arTainted($value);
+			}
+		}
+
+		public static function untaint(&$value, $filter = FILTER_SANITIZE_SPECIAL_CHARS, $flags = null) {
+			if ( $value instanceof arTainted ) {
+				$value = filter_var($value->value, $filter, $flags);
+			} else if ( is_array($value) ) {
+				array_walk_recursive( $value, array( self, 'untaintArrayItem'), array( 
+					'filter' => $filter,
+					'flags' => $flags
+				) );
+			}
+		}
+		
+		protected static function untaintArrayItem(&$value, $key, $options) {
+			self::untaint( $value, $options['filter'], $options['flags'] );
+		}
+
 	}
+	
+	class arTainted {
+		public $value = null;
+
+		public function __construct($value) {
+			$this->value = $value;
+		}
+
+		public function __toString() {
+			return filter_var($this->value, FILTER_SANITIZE_SPECIAL_CHARS);
+		}
+	}
+	
 
 	class arObject {
 		public function __construct( $vars = '' ) {
@@ -185,6 +224,14 @@
 		
 		public static function _call($template, $params = null) {
 			return ar::call($template, $params);
+		}
+		
+		public static function _taint(&$value) {
+			ar::taint($value);
+		}
+		
+		public static function _untaint(&$value, $filter = FILTER_SANITIZE_SPECIAL_CHARS, $flags = null) {
+			ar::untaint($value, $filter, $flags);
 		}
 	}
 	
