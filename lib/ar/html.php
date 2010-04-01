@@ -56,9 +56,6 @@
 		public static function tag() {
 			$args = func_get_args();
 			$name = array_shift($args);
-			if ( self::$xhtml ) {
-				$name = strtolower( $name );
-			}
 			$attributes = array();
 			$content = '';
 			foreach ($args as $arg) {
@@ -73,6 +70,9 @@
 				}
 			}
 			$name = self::name( $name );
+			if ( self::$xhtml ) {
+				$name = strtolower( $name );
+			}
 			if ( !self::$xhtml || self::_canHaveContent( $name ) ) {
 				if ( self::_canHaveContent( $name ) ) {
 					return '<' . $name . self::attributes( $attributes ) . '>' 

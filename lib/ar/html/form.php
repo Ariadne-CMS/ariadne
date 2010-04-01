@@ -30,14 +30,14 @@
 		protected $fields = array();
 		protected $buttons = array();
 		
-		public    $action, $method, $name, $class, $id, $requiredLabel;
+		public    $action, $method, $name, $class, $id, $requiredLabel, $encType;
 		
 		function __construct($fields=null, $buttons=null, $action='', $method="POST", $requiredLabel=null) {
 			if ( isset($fields) ) {
 				$this->fields = $this->parseFields($fields);
 			}
 			if ( !isset($buttons)) {
-				$buttons = array('Ok', 'Cancel');
+				$buttons = array('Ok');
 			}
 			$this->buttons	= $this->parseButtons($buttons);
 			$this->action	= $action;
@@ -79,6 +79,9 @@
 			}
 			if (isset($this->method)) {
 				$attributes['method'] = $this->method;
+			}
+			if (isset($this->encType) ) {
+				$attributes['enctype'] = $this->encType;
 			}
 			$content = ar_html::nodes();
 			if (is_array($this->fields)) {
@@ -334,9 +337,10 @@
 			$this->value	= isset($button->value) ? $button->value : null;
 			$this->class	= isset($button->class) ? $button->class : null;
 			$this->id	= isset($button->id) ? $button->id : null;
+			$this->title    = isset($button->title) ? $button->title : null;
 		}
 		
-		public function getButton($type=null, $name=null, $value=null, $class=null, $id=null, $extra=null) {
+		public function getButton($type=null, $name=null, $value=null, $class=null, $id=null, $title=null, $extra=null) {
 			$attributes = array();
 			if (!isset($type)) {
 				$type = $this->type;
@@ -353,6 +357,9 @@
 			if (!isset($id)) {
 				$id = $this->id;
 			}
+			if (!isset($title)) {
+				$title = $this->title;
+			}
 			$attributes = array(
 				'type'	=> $type,
 				'name'	=> $name,
@@ -361,7 +368,12 @@
 			if (isset($class)) {
 				$attributes['class'] = $class;
 			}
-			$attributes['id'] = $id;
+			if (isset($title)) {
+				$attributes['title'] = $title;
+			}
+			if (isset($id)) {
+				$attributes['id'] = $id;
+			}
 			if ($extra) {
 				$attributes = array_merge($attributes, $extra);
 			}
@@ -379,13 +391,17 @@
 		public function __construct($button, $form) {
 			parent::__construct($button, $form);
 			$this->src = isset($button->src) ? $button->src : null;
+			$this->alt = isset($button->alt) ? $button->alt : null;
 		}
 		
-		public function getButton($type=null, $name=null, $value=null, $class=null, $id=null, $src=null, $extra=null) {
+		public function getButton($type=null, $name=null, $value=null, $class=null, $id=null, $title=null, $src=null, $alt=null, $extra=null) {
 			if (!isset($src)) {
 				$src = $this->src;
 			}
-			return parent::getButton($type, $name, $value, $class, $id, array_merge($extra, array('src' => $src)));
+			if (!isset($alt)) {
+				$alt = $this->alt;
+			}
+			return parent::getButton($type, $name, $value, $class, $id, $title, array_merge($extra, array('src' => $src, 'alt' => $alt )));
 		}	
 	}
 	
@@ -405,6 +421,7 @@
 			$this->default	= isset($field->default) ? $field->default : null; 
 			$this->required = isset($field->required) ? $field->required : false;
 			$this->checks   = isset($field->checks) ? $field->checks : array();
+			$this->title    = isset($field->title) ? $field->title : null;
 			
 			if ( isset($this->checks) && !is_array($this->checks) ) {
 				$this->checks = array( $this->checks );
@@ -439,7 +456,7 @@
 			return ar_html::tag('label', $label, $attributes);
 		}
 
-		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null) {
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null ) {
 			if (!isset($type)) {
 				$type = $this->type;
 			}
@@ -455,12 +472,18 @@
 			if (!isset($disabled)) {
 				$disabled = $this->disabled;
 			}
+			if (!isset($title)) {
+				$title = $this->title;
+			}
 			$attributes = array(
 				'type'	=> $type,
 				'name'	=> $name,
 				'id'	=> $id,
 				'value'	=> $value
 			);
+			if ($title) {
+				$attributes['title'] = $title;
+			}
 			$content = ar_html::nodes();
 			if ($disabled) {
 				$attributes['disabled'] = true;
@@ -561,7 +584,7 @@
 			if ( isset(ar_html_form::$customTypes[ $this->type ]) ) {
 				$getLabel = ar_html_form::$customTypes[ $this->type ]['getLabel'];
 				if ( isset( $getLabel ) ) {
-					return $getLabel($this, $content);
+					return $getLabel($this);
 				}
 			}
 			return parent::getLabel();
@@ -570,7 +593,7 @@
 		public function getInput() {		
 			if ( isset(ar_html_form::$customTypes[ $this->type ]) ) {
 				$getInput = ar_html_form::$customTypes[ $this->type ]['getInput'];
-				return $getInput($this, $content);
+				return $getInput($this);
 			}
 			return ar_html::tag('strong', 'Error: Field type ' . $this->type . ' does not exist.');
 		}
@@ -609,7 +632,7 @@
 	
 	class ar_html_formInputTextarea extends ar_html_formInputText {
 
-		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null) {
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null) {
 			if (!isset($name)) {
 				$name = $this->name;
 			}
@@ -626,6 +649,12 @@
 				'name'	=> $name,
 				'id'	=> $id
 			);
+			if (!isset($title)) {
+				$title = $this->title;
+			}
+			if ($title) {
+				$attributes['title'] = $title;
+			}
 			if ($disabled) {
 				$attributes['disabled'] = true;
 			}
@@ -639,10 +668,11 @@
 		public function __construct($field, $form) {
 			parent::__construct($field, $form);
 			$this->options	= isset($field->options) ? $field->options : array();
+			$this->multiple = isset($field->multiple) ? $field->multiple : false;
 		}
 		
-		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, 
-						$options=null) {
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null,
+						$options=null, $multiple=null) {
 			if (!isset($name)) {
 				$name = $this->name;
 			}
@@ -652,6 +682,9 @@
 			if (!isset($id)) {
 				$id = $name; 
 			}
+			if (!isset($multiple)) {
+				$multiple = $this->multiple;
+			}
 			if (!isset($disabled)) {
 				$disabled = $this->disabled;
 			}
@@ -659,10 +692,22 @@
 				'name'	=> $name,
 				'id'	=> $id
 			);
-			$content = ar_html::nodes();
+			if (!isset($title)) {
+				$title = $this->title;
+			}
+			if ($title) {
+				$attributes['title'] = $title;
+			}
+			
+/*			FIXME: need to allow an array of values in $value and generate multiple hidden input tags when disabled and
+			automatically add the '[]' to the name, if not already set.
+			if ($multiple) {
+				$attributes['multiple'] = "multiple";
+			}
+*/			$content = ar_html::nodes();
 			if ($disabled) {
 				$attributes['disabled'] = true;
-				$content[] = ar_html::tag('input', array('name' => $name, 'type' => 'hidden', 'value' => $selectedValue));
+				$content[] = ar_html::tag('input', array('name' => $name, 'type' => 'hidden', 'value' => $value));
 			}
 			$content[] = ar_html::tag('select', $this->getOptions($options, $value), $attributes);
 			return $content;

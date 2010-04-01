@@ -48,7 +48,10 @@
 						( isset($_POST[$name]) ? $_POST[$name] : $_GET[$name] );
 				break;
 			}
-			return ( isset($result) ? ( self::$tainting ? self::taint( $result ) : $result ) : null );
+			if (self::$tainting) {
+				self::taint( $result );
+			}
+			return $result;
 		}
 
 		public static function request( $method = null, $url = null, $postdata = null, $options = array() ) {
