@@ -107,9 +107,12 @@
 			}
 		}
 		
-		public static function indent( $content ) {
-			if ( self::$indenting && preg_match( '/^(\s*)</', $content) ) {
-				return "\n" . preg_replace( '/^(\s*)</m', self::$indent . '$1<', $content ) . "\n"; 
+		public static function indent( $content, $indent=null ) {
+			if ( ( isset($indent) || self::$indenting ) && preg_match( '/^(\s*)</', $content) ) {
+				if ( !isset($indent) ) {
+					$indent = self::$indent;
+				}
+				return "\n" . preg_replace( '/^(\s*)</m', $indent . '$1<', $content ) . "\n"; 
 			} else {
 				return $content;
 			}
