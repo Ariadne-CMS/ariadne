@@ -43,7 +43,7 @@
 			return false;
 		}
 		
-		public static function getCallBack( $method, $params = array() ) {
+		public static function getCallback( $method, $params = array() ) {
 			if (is_string($method)) {
 				if (is_array($params) && count($params)) {
 					$paramsString = '"'.join('","', $params).'"';
