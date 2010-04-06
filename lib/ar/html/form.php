@@ -310,7 +310,7 @@
 			if ($name[0] == '_') {
 				$name = substr($name, 1);
 			}
-			if ( in_array( $name, array('action', 'method', 'name', 'class', 'id', 'requiredLabel', 'type', 'name', 'value', 'default', 'checkedValue', 'uncheckedValue', 'options', 'children', 'disabled', 'title', 'multiple') ) ) {
+			if ( in_array( $name, array('action', 'method', 'name', 'class', 'id', 'requiredLabel' ) ) ) {
 				$this->{$name} = $value;
 			}
 		}
@@ -319,7 +319,7 @@
 			if ($name[0] == '_') {
 				$name = substr($name, 1);
 			}
-			if ( in_array( $name, array('action', 'method', 'name', 'class', 'id', 'requiredLabel', 'type', 'name', 'value', 'default', 'checkedValue', 'uncheckedValue', 'options', 'children', 'disabled', 'title', 'multiple') ) ) {
+			if ( in_array( $name, array('action', 'method', 'name', 'class', 'id', 'requiredLabel') ) ) {
 				return $this->{$name};
 			}
 		}
@@ -606,6 +606,20 @@
 				}
 			}
 			return parent::getValue();
+		}
+		
+		public function __set($name, $value) {
+			if ($name[0] == '_') {
+				$name = substr($name, 1);
+			}
+			$this->{$name} = $value;
+		}
+		
+		public function __get($name) {
+			if ($name[0] == '_') {
+				$name = substr($name, 1);
+			}
+			return $this->{$name};
 		}
 		
 	}
