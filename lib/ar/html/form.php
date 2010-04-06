@@ -284,7 +284,7 @@
 				if ( isset( $method ) && $method ) {
 					if ( !is_callable($method) ) {
 						if ( is_string($method) ) {
-							$method = ar_pinp::getCallBack($method);
+							$method = ar_pinp::getCallBack($method, array('field') );
 						} else {
 							$method = null;
 						}
@@ -298,7 +298,7 @@
 		
 		public static function registerValidateCheck( $name, $check, $message ) {
 			if ( !is_string( $check ) || ( $check[0] != '/' && !is_callable( $check ) ) ) {
-				$check = ar_pinp::getCallBack( $check );
+				$check = ar_pinp::getCallBack( $check, array( 'value' ) );
 			}
 			self::$checks[ $name ] = array(
 				'check' => $check,
@@ -310,7 +310,7 @@
 			if ($name[0] == '_') {
 				$name = substr($name, 1);
 			}
-			if ( in_array( $name, array('action', 'method', 'name', 'class', 'id', 'requiredLabel') ) ) {
+			if ( in_array( $name, array('action', 'method', 'name', 'class', 'id', 'requiredLabel', 'type', 'name', 'value', 'default', 'checkedValue', 'uncheckedValue', 'options', 'children', 'disabled', 'title', 'multiple') ) ) {
 				$this->{$name} = $value;
 			}
 		}
@@ -319,7 +319,7 @@
 			if ($name[0] == '_') {
 				$name = substr($name, 1);
 			}
-			if ( in_array( $name, array('action', 'method', 'name', 'class', 'id', 'requiredLabel') ) ) {
+			if ( in_array( $name, array('action', 'method', 'name', 'class', 'id', 'requiredLabel', 'type', 'name', 'value', 'default', 'checkedValue', 'uncheckedValue', 'options', 'children', 'disabled', 'title', 'multiple') ) ) {
 				return $this->{$name};
 			}
 		}
