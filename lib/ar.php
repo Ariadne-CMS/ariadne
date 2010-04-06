@@ -2,7 +2,7 @@
 	define('ARBaseDir', $AR->dir->install.'/lib/ar/');
 	require_once(ARBaseDir.'pinp.php');
 
-	ar_pinp::allow('ar', array('load', 'ls', 'get', 'find', 'parents', 'error'));
+	ar_pinp::allow('ar', array('load', 'ls', 'get', 'find', 'parents', 'error', 'getvar', 'call', 'taint', 'untaint'));
 	ar_pinp::allow('ar_error');
 
 	class ar {
@@ -123,6 +123,9 @@
 			self::untaint( $value, $options['filter'], $options['flags'] );
 		}
 
+		public static function getvar( $name ) {
+			return ar_loader::getvar( $name );
+		}
 	}
 	
 	class arTainted {
@@ -232,6 +235,10 @@
 		
 		public static function _untaint(&$value, $filter = FILTER_SANITIZE_SPECIAL_CHARS, $flags = null) {
 			ar::untaint($value, $filter, $flags);
+		}
+		
+		public static function _getvar( $name ) {
+			return ar::getvar( $name );
 		}
 	}
 	
