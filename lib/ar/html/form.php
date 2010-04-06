@@ -535,7 +535,7 @@
 							$checkMethod = ar_html_form::$checks[$check]['check'];
 							$message     = ar_html_form::$checks[$check]['message'];
 							if ( is_callable( $checkMethod ) ) {
-								if ( !$checkMethod( $value() ) ) {
+								if ( !$checkMethod( $value ) ) {
 									$result[$this->label] = ar::error(
 										sprintf( $message, $value ),
 										$check
