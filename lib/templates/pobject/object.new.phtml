@@ -56,7 +56,11 @@
 //		$wgWizHeader=$wgWizTitle.'<img src="'.$AR->dir->images.'icons/'.$arNewType.'_open.gif" alt="" hspace="4" align="absmiddle">';
 		$wgWizTitle=$ARnls["new"]." ".$name;
 		$wgWizHeader=$wgWizTitle.'<img src="'.$icon.'" alt="" hspace="4" align="absmiddle">';
-		$wgWizCallArgs=$arCallArgs.$wgWizFlow[0]["arCallArgs"];
+		if (is_array($arCallArgs)) {
+				$wgWizCallArgs = array_merge($arCallArgs, (array)$wgWizFlow[0]['arCallArgs']);
+		} else {
+			$wgWizCallArgs=$arCallArgs.$wgWizFlow[0]["arCallArgs"];
+		}
 		include($this->store->get_config("code")."widgets/wizard/new.html");
 	}
 ?>
