@@ -9,22 +9,22 @@
 		static public $customTypes;
 		
 		static public $checks = array(
-			'alpha'        => '/^[[:alpha:]]+$/i',
-			'alphanumeric' => '/^[[:alnum:]]+$/i',
-			'abs_int'      => '/^\d+$/i',
-			'int'          => '/^[+-]?\d+$/i',
-			'abs_number'   => '/^([0-9]+\.?[0-9]*|\.[0-9]+)$/',
-			'number'       => '/^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$/',
-			'abs_money_us' => '/^(\d{1,3}(\,\d{3})*|(\d+))(\.\d{2})?$/',
-			'money_us'     => '/^[+-]?(\d{1,3}(\,\d{3})*|(\d+))(\.\d{2})?$/',
-			'abs_money'    => '/^(\d{1,3}(\.\d{3})*|(\d+))(\,\d{2})?$/',
-			'money'        => '/^[+-]?(\d{1,3}(\.\d{3})*|(\d+))(\,\d{2})?$/',
-			'email'        => '/^[[:alnum:]](([#+_\.\-]?[[:alnum:]]+)*)@([[:alnum:]]+)(([\.\-]?[[:alnum:]]+)*)\.([[:alpha:]]{2,})$/',
-			'domain_name'  => '/^([[:alnum:]]([a-zA-Z0-9\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,}$/',
-			'url'          => '/^(http|https|ftp)\://[a-zA-Z0-9\-\.]+\.[[:alpha:]]{2,3}(:[[:alnum:]]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*$/',
-			'credit_card'  => '/^(\d{4}-){3}\d{4}$|^(\d{4} ){3}\d{4}$|^\d{16}$/',
-			'date'         => '/^(\d{1,2}[.-/]\d{1,2}[.-/](\d{2}|\d{4})$/',
-			'time'         => '/^(\d{1,2}[:]\d{2}([:]\d{2})?$/'	
+			'alpha'        => '/^[[:alpha:]]+$/iD',
+			'alphanumeric' => '/^[[:alnum:]]+$/iD',
+			'abs_int'      => '/^\d+$/iD',
+			'int'          => '/^[+-]?\d+$/iD',
+			'abs_number'   => '/^([0-9]+\.?[0-9]*|\.[0-9]+)$/D',
+			'number'       => '/^[+-]?([0-9]+\.?[0-9]*|\.[0-9]+)$/D',
+			'abs_money_us' => '/^(\d{1,3}(\,\d{3})*|(\d+))(\.\d{2})?$/D',
+			'money_us'     => '/^[+-]?(\d{1,3}(\,\d{3})*|(\d+))(\.\d{2})?$/D',
+			'abs_money'    => '/^(\d{1,3}(\.\d{3})*|(\d+))(\,\d{2})?$/D',
+			'money'        => '/^[+-]?(\d{1,3}(\.\d{3})*|(\d+))(\,\d{2})?$/D',
+			'email'        => '/^[\w!#$%&\'*+\/=?^`{|}~.-]+@(?:[a-z\d][a-z\d-]*(?:\.[a-z\d][a-z\d-]*)?)+\.(?:[a-z][a-z\d-]+)$/iD',
+			'domain_name'  => '/^([[:alnum:]]([a-zA-Z0-9\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,}$/D',
+			'url'          => '/^(http|https|ftp)\://[a-zA-Z0-9\-\.]+\.[[:alpha:]]{2,3}(:[[:alnum:]]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*$/D',
+			'credit_card'  => '/^(\d{4}-){3}\d{4}$|^(\d{4} ){3}\d{4}$|^\d{16}$/D',
+			'date'         => '/^(\d{1,2}[.-/]\d{1,2}[.-/](\d{2}|\d{4})$/D',
+			'time'         => '/^(\d{1,2}[:]\d{2}([:]\d{2})?$/D'	
 		);
 		
 		protected $fields = array();
@@ -433,7 +433,7 @@
 				if (isset($value)) {
 					$this->value = $value;
 				} else if (isset($this->default)) {
-					$this->value = $this->default;					
+					$this->value = $this->default;
 				} else {
 					$this->value = null;
 				}
@@ -510,7 +510,7 @@
 			if (!isset($content)) {
 				$content = ar_html::nodes($this->getLabel(), $this->getInput());
 			}
-			$class = array('field', $this->type);
+			$class = array('formField', 'form'.ucfirst($this->type) );
 			if ($this->class) {
 				$class[] = $this->class;
 			}
@@ -685,8 +685,7 @@
 			$this->multiple = isset($field->multiple) ? $field->multiple : false;
 		}
 		
-		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null,
-						$options=null, $multiple=null) {
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $options=null, $multiple=null) {
 			if (!isset($name)) {
 				$name = $this->name;
 			}
@@ -826,8 +825,7 @@
 			$this->options	= isset($field->options) ? $field->options : array();
 		}
 		
-		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, 
-						$options=null) {
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $options=null) {
 			if (!isset($name)) {
 				$name = $this->name;
 			}
@@ -841,7 +839,7 @@
 				$disabled = $this->disabled;
 			}
 			$attributes = array(
-				'class' => 'radioButtons'
+				'class' => 'formRadioButtons'
 			);
 			$content[] = ar_html::tag('div', $this->getRadioButtons($name, $options, $value), $attributes);
 			return $content;
@@ -935,7 +933,7 @@
 				$content = $this->children;
 			}
 			$content = ar_html::nodes($legend, $content);
-			$class = array('field', $this->type);
+			$class = array('formField', 'form' . ucfirst($this->type) );
 			if ($this->class) {
 				$class[] = $this->class;
 			}
