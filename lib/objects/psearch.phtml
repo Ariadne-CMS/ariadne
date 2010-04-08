@@ -48,8 +48,7 @@ class psearch extends pdir { // psearch class definition
 	}
 
 	function real_count_find($path='', $query='') {
-		$path=$this->store->make_path($this->path, $path);
-		return $this->store->count($this->store->real_find($path, $query, 0));
+		return pdir::count_find($path, $query);
 	}
 
 	function _ls($function='list.html', $args="") {
