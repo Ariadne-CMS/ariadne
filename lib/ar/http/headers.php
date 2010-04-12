@@ -6,6 +6,7 @@
 	class ar_http_headers extends arBase {
 
 		public static $headers;
+		public static $enabled = true;
 	
 		private $statusCodes = array(
 			100 => 'Continue',
@@ -70,35 +71,55 @@
 			if ( is_array($header) ) {
 				$header = implode( '\n', $header );
 			}
-			ldHeader( $header );
-			self::$headers[] = $header;
+			if ( self::$enabled ) {
+				self::$headers[] = $header;
+				return ldHeader( $header );
+			} else {
+				return false;
+			}
 		}
 
 		public function sent() {
 			return Headers_sent();
 		}
 		
-		public function cache($expires=0, $modified=0) {
-			return ldSetClientCache(true, $expires, $modified);
+		public function cache( $expires = null, $modified = null ) {
+			if ( self::$enabled ) {
+				return ldSetClientCache(true, $expires, $modified);
+			} else {
+				return false;
+			}
 		}
 		
 		public function disableCache() {
-			return ldSetClientCache(false);
+			if ( self::$enabled ) {
+				return ldSetClientCache(false);
+			} else {
+				return false;
+			}
 		}
 		
 		public function content($mimetype, $size=0) {
-			return ldSetContent($mimetype, $size);
+			if ( self::$enabled ) {
+				return ldSetContent($mimetype, $size);
+			} else {
+				return false;
+			}
 		}
 		
 		public function redirect($URI, $statusCode=0) {
 			if ($statusCode && is_numeric($statusCode)) {
-				self::add('HTTP/1.1 '.$statusCode.' '.self::getStatusMessage($statusCode));
+				self::header('HTTP/1.1 '.$statusCode.' '.self::getStatusMessage($statusCode));
 			}
-			self::add('Location: '.$URI);
+			return self::header('Location: '.$URI);
 		}
 		
 		public function getStatusMessage($statusCode) {
 			return self::$statusCodes[$statusCode];
+		}
+		
+		public function setStatusMessage($statusCode, $statusMessage) {
+			self::$statusCodes[$statusCode] = $statusMessage;
 		}
 	}
 ?>
