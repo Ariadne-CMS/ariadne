@@ -273,18 +273,6 @@
 			if ($session_id) {
 				//debugon("all");
 				ldStartSession($session_id);
-
-				if ($ARCurrent->session->get("ARSessionTimedout", 1)) {
-					if (!$ARCurrent->session->get("oldArCallArgs", 1)) {
-						$ARCurrent->session->put("oldArCallArgs", $args, 1);
-						$ARCurrent->session->save(0, true);
-					}
-				} else {
-					if ($ARCurrent->session->get("oldArCallArgs", 1)) {
-						$args = $ARCurrent->session->get("oldArCallArgs", 1);
-						$ARCurrent->session->put("oldArCallArgs", "", 1);
-					}
-				}
 			}
 
 			// load language file
@@ -320,6 +308,27 @@
 					$function = false;
 				}
 			}
+
+			if( $session_id ) {
+				if ($ARCurrent->session->get("ARSessionTimedout", 1)) {
+					if (!$ARCurrent->session->get("oldArCallArgs", 1)) {
+						$ARCurrent->session->put("oldGET", $_GET, 1);
+						$ARCurrent->session->put("oldPOST", $_POST, 1);
+						$ARCurrent->session->put("oldArCallArgs", $args, 1);
+						$ARCurrent->session->save(0, true);
+					}
+				} else {
+					if ($ARCurrent->session->get("oldArCallArgs", 1)) {
+						$args = $ARCurrent->session->get("oldArCallArgs", 1);
+						$_GET = array_merge( $_GET, (array)$ARCurrent->session->get("oldGET", 1) );
+						$_POST = array_merge( $_POST, (array)$ARCurrent->session->get("oldPOST", 1) );
+						$ARCurrent->session->put("oldArCallArgs", "", 1);
+						$ARCurrent->session->put("oldGET", "", 1);
+						$ARCurrent->session->put("oldPOST", "", 1);
+					}
+				}
+			}
+
 
 			if ($function!==false) {
 				// finally call the requested object
