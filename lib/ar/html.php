@@ -94,6 +94,10 @@
 		public static function form( $fields, $buttons=null, $action='', $method='POST' ) {
 			return new ar_html_form( $fields, $buttons, $action, $method );
 		}
+		
+		public static function table( $rows, $header = null, $rowHeader = null, $foot = null ) {
+			return new ar_html_table( $rows, $header, $rowHeader, $foot);
+		}
 	}
 
 	class ar_htmlNodes extends ar_xmlNodes {

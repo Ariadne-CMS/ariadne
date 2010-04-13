@@ -56,9 +56,9 @@
 			if ( is_array( $value ) ) {
 				$content = '';
 				foreach( $value as $subvalue ) {
-					$content .= ' ' . self::value( $subvalue );
+					$content = trim($content) . ' ' . trim( self::value( $subvalue ) );
 				}
-				$content = substr( $content, 1 );
+				$content = trim( $content );
 			} else if ( is_bool( $value ) ) {
 				$content = $value ? 'true' : 'false';
 			} else {
@@ -157,8 +157,12 @@
 			parent::__construct($nodes);
 		}
 
+		private static function removeEmptyNodes( $var ) {
+			return (!trim($var)=='');
+		}
+		
 		public function __toString() {
-			return join( "\n", (array) $this );
+			return join( "\n", array_filter( (array) $this, array( self, 'removeEmptyNodes' ) ) );
 		}
 	}
 	

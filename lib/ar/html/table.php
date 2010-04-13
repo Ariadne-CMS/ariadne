@@ -1,4 +1,5 @@
 <?php
+	ar_pinp::allow('ar_html_table');
 
 	class ar_html_table extends arBase {
 		protected $attributes;
@@ -11,25 +12,26 @@
 		}
 		
 		public function body( $content ) {
-			$h = ar('html');
-			if (is_array($content)) {
-				$content = $this->getRows($content);
-			} else if (is_string($content)) {
-				$content = $h->tag('tr', $h->tag('td', $content ) );
+			if (!is_array($content) ) {
+				$content = array( $content );
 			}
-			$this->body = $h->tag('tbody', $content);
+			$content = $this->getRows($content, array( 'body' => true ) );
+			$this->body = $this->decorate( array(
+				'name'    => 'tbody',
+				'content' => $content
+			) );
 			return $this;
 		}
 
 		private function getRows( $list, $flags = array(), $attributes = array() ) {
-			$nodes   = ar('html')->nodes();
+			$nodes   = ar_html::nodes();
 			$total   = count($list);
 			$current = 1;
 			foreach ( $list as $key => $content ) {
 				$firstRow = ( 1 == $current );
 				$lastRow  = ( $total == $current );
 				$oddRow   = ( $current % 2 );
-				$currentFlags = array_merge( $flags, array(
+				$currentFlags = array_merge( (array) $flags, array(
 					'currentRow' => $current,
 					'firstRow'   => $firstRow,
 					'lastRow'    => $lastRow,
@@ -43,8 +45,8 @@
 					$header = $this->decorate( array(
 						'name'       => 'th',
 						'attributes' => array_merge( 
-							$currentAttributes, 
-							$this->rowHeaderAttributes, 
+							(array) $currentAttributes, 
+							(array) $this->rowHeaderAttributes, 
 							array( 'scope' => 'row' ) 
 						),
 						'content'    => $this->rowHeaders[$key],
@@ -54,8 +56,11 @@
 					$header = '';
 				}
 				$content = $this->getCells( $content, $currentFlags, 'td', $currentAttributes);
-				$currentAttributes['class'] = array_merge( $attributes['class'], array(
-					( $firstRow ? 'tableFirst' : $lastRow ? 'tableLast' : is_numeric($key) ? '' : 'tableRow'.$key ),
+				$currentAttributes['class'] = array_merge( (array) $attributes['class'], array(
+					( $firstRow ? 'tableFirst' : 
+						( $lastRow ? 'tableLast' : '' )
+					),
+					( is_numeric($key) ? '' : 'tableRow_'.$key ),
 					( $oddRow ? 'tableOdd' : 'tableEven' )
 				) );
 				$nodes[] = $this->decorate( array(
@@ -70,22 +75,24 @@
 		}
 		
 		private function getCells( $list, $flags = array(), $tag, $attributes = array() ) {
-			$nodes   = ar('html')->nodes();
+			$nodes   = ar_html::nodes();
 			$total   = count($list);
 			$current = 1;
 			foreach ($list as $key => $content ) {
 				$firstCell = (1==$current);
 				$lastCell  = ($total==$current);
 				$oddCell   = ($current % 2);
-				$currentFlags = array_merge( $flags, array(
+				$currentFlags = array_merge( (array) $flags, array(
 					'currentColumn' => $current,
 					'firstCell'     => $firstCell,
 					'lastCell'      => $lastCell,
 					'oddCell'       => $oddCell
 				) );
 				$currentAttributes = $attributes;
-				$currentAttributes['class'] = array_merge( $attributes['class'], array(
-					( $firstCell ? 'tableFirst' : $lastCell ? 'tableLast' : '' ),
+				$currentAttributes['class'] = array_merge( (array) $attributes['class'], array(
+					( $firstCell ? 'tableFirst' : 
+						( $lastCell ? 'tableLast' : '' ) 
+					),
 					( $oddCell ? 'tableOdd' : 'tableEven' )
 				) );
 				$nodes[] = $this->decorate( array(
@@ -124,13 +131,21 @@
 		
 		protected function decorate( $tag ) {
 			if ( isset( $this->decorator ) && is_callable( $this->decorator ) ) {
-				return $this->decorator( $tag );
+				$decorator = $this->decorator;
+				return $decorator( $tag );
 			} else {
-				return ar('html')->tag( $tag['name'], $tag['attributes'], $tag['content'] );
+				return ar_html::tag( $tag['name'], $tag['attributes'], $tag['content'] );
 			}
 		}
 		
 		public function setDecorator( $callback ) {
+			if ( !is_callable( $callback ) ) {
+				if ( is_string( $callback ) ) {
+					$callback = ar_pinp::getCallback( $callback, array( 'tag' ) );
+				} else {
+					return $this;
+				}
+			}				
 			$this->decorator = $callback;
 			return $this;
 		}
@@ -146,7 +161,7 @@
 				);
 				$nodes = $this->getCells( $list, $flags, 'td' );
 				$this->foot = $this->decorate( array(
-					'name'       => 'tfoo',
+					'name'       => 'tfoot',
 					'attributes' => $attributes,
 					'content'    => $this->decorate( array(
 						'name'       => 'tr',
@@ -178,14 +193,13 @@
 		}
 		
 		public function __toString() {
-			$h = ar('html');
 			if (!isset($this->body)) {
 				$this->body( $this->content );
 			}
 			return $this->decorate( array(
 				'name'       => 'table',
-				'attributes' => $attributes,
-				'content'    => ar('html')->nodes(
+				'attributes' => $this->attributes,
+				'content'    => ar_html::nodes(
 					$this->caption, 
 					$this->cols, 
 					$this->head, 
@@ -194,8 +208,5 @@
 				)
 			) );
 		}
-
-		
-		
 	}
 ?>

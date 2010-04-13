@@ -72,6 +72,6 @@
 		}
 	}
 
-	ar_pinp::allow('ar_pinp', array('isAllowed', 'getCallBack'));
+	ar_pinp::allow('ar_pinp', array('isAllowed', 'getCallback'));
 	
 ?>
