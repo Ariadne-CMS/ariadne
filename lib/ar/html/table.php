@@ -132,7 +132,7 @@
 		protected function decorate( $tag ) {
 			if ( isset( $this->decorator ) && is_callable( $this->decorator ) ) {
 				$decorator = $this->decorator;
-				return $decorator( $tag );
+				return $decorator( $tag['name'], $tag['attributes'], $tag['content'], $tag['flags'] );
 			} else {
 				return ar_html::tag( $tag['name'], $tag['attributes'], $tag['content'] );
 			}
@@ -141,7 +141,7 @@
 		public function setDecorator( $callback ) {
 			if ( !is_callable( $callback ) ) {
 				if ( is_string( $callback ) ) {
-					$callback = ar_pinp::getCallback( $callback, array( 'tag' ) );
+					$callback = ar_pinp::getCallback( $callback, array( 'tag', 'attributes', 'content', 'flags' ) );
 				} else {
 					return $this;
 				}
@@ -200,11 +200,11 @@
 				'name'       => 'table',
 				'attributes' => $this->attributes,
 				'content'    => ar_html::nodes(
-					$this->caption, 
+					$this->caption,
 					$this->cols, 
 					$this->head, 
-					$this->body, 
-					$this->foot 
+					$this->foot, 
+					$this->body
 				)
 			) );
 		}
