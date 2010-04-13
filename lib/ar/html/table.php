@@ -15,10 +15,14 @@
 			if (!is_array($content) ) {
 				$content = array( $content );
 			}
+			$originalContent = $content;
 			$content = $this->getRows($content, array( 'body' => true ) );
 			$this->body = $this->decorate( array(
 				'name'    => 'tbody',
-				'content' => $content
+				'content' => $content,
+				'flags'   => array(
+					'content' => $originalContent
+				)
 			) );
 			return $this;
 		}
@@ -35,7 +39,8 @@
 					'currentRow' => $current,
 					'firstRow'   => $firstRow,
 					'lastRow'    => $lastRow,
-					'oddRow'     => $oddRow
+					'oddRow'     => $oddRow,
+					'content'    => $list
 				) );
 				$currentAttributes = $attributes;
 				if ( !is_array($content) ) {
@@ -86,7 +91,8 @@
 					'currentColumn' => $current,
 					'firstCell'     => $firstCell,
 					'lastCell'      => $lastCell,
-					'oddCell'       => $oddCell
+					'oddCell'       => $oddCell,
+					'content'       => $list
 				) );
 				$currentAttributes = $attributes;
 				$currentAttributes['class'] = array_merge( (array) $attributes['class'], array(
@@ -123,7 +129,10 @@
 						'name'        => 'tr',
 						'content'     => $nodes,
 						'flags'       => $flags
-					) ) 
+					) ),
+					'flags'      => array(
+						'content'     => $list
+					) 
 				) );
 			}
 			return $this;
@@ -167,7 +176,10 @@
 						'name'       => 'tr',
 						'content'    => $nodes,
 						'flags'      => $flags
-					) )
+					) ),
+					'flags'      => array(
+						'content'    => $list
+					)
 				) );
 			}
 			return $this;
@@ -185,10 +197,13 @@
 			return $this;
 		}
 		
-		public function caption() {
+		public function caption($content, $attributes = null) {
 			$args = func_get_args();
-			array_unshift($args, 'caption');
-			$this->caption = call_user_func_array( array('ar_html', 'tag'), $args );
+			$this->caption = $this->decorate( array(
+				'name'       => 'caption',
+				'content'    => $content,
+				'attributes' => $attributes
+			) );
 			return $this;
 		}
 		
@@ -205,6 +220,9 @@
 					$this->head, 
 					$this->foot, 
 					$this->body
+				),
+				'flags'      => array(
+					'content' => $this->content
 				)
 			) );
 		}
