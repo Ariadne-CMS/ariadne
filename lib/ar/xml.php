@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 	ar_pinp::allow( 'ar_xml' );
 
 	class ar_xml extends arBase {
