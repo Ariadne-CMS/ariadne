@@ -90,7 +90,7 @@ class postgresqlstore extends store {
 
 	}
 
-	function call($template, $args, $objects) {
+	function call($template, $args, $objects, $options = array() ) {
 	/**********************************************************************************
 	
 	 This function takes a list of objects, the function to be called in each of those
@@ -101,14 +101,6 @@ class postgresqlstore extends store {
 	 The function will retrieve and instantiate each object in the object list and call
 	 the objects call with $function and $args.
 
-	 store->call is aware of the possibility of objects being called as a substore, 
-	 meaning: If a requested object is not found in this store, it might be in a
-	 different store which is linked into this one via a substore. Each object can in
-	 principle double as a substore, as long as it declares the object->is_store 
-	 variable as TRUE. So if the requested object is not found, the search functions 
-	 (get, ls and find) will return the object with the longest matching path. It is up
-	 to store->call to check wether this object is the one referenced and if not, 
-	 wether it is a substore.
 	 **********************************************************************************/ 
 
 		debug("call($template, ".serialize($args).", [list])", "store");
@@ -127,7 +119,11 @@ class postgresqlstore extends store {
 					strlen($row["object"]),
 					$row["priority"]);
 
- 			$result[]=$object->call($template, $args);
+			if ( isset($options['usePathAsKey']) && $options['usePathAsKey'] ) {
+				$result[$row['path']] = $object->call($template, $args);
+			} else {
+				$result[] = $object->call($template, $args);
+			}
 		}
 
 		if (! $this->count) {

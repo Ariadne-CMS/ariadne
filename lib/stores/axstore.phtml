@@ -403,7 +403,7 @@ class axstore {
 	}
 
 
-	function call($template, $args, $objects) {
+	function call($template, $args, $objects, $options = array() ) {
 		$result = Array();
 		if (is_array($objects["list"])) {
 			reset($objects["list"]);
@@ -418,7 +418,11 @@ class axstore {
 				$node->object->parent=$parent;
 				$node->object->axflags=$node->axflags;
 				$node->object->priority=$node->priority;
-				$result[]=$node->object->call($template, $args);
+				if ( isset($options['usePathAsKey']) && $options['usePathAsKey'] ) {
+					$result[$node->path] = $node->object->call($template, $args);
+				} else {
+					$result[] = $node->object->call($template, $args);
+				}
 				$node->object->runtime_ref--;
 				$this->_free_object_data($node->object);
 			}

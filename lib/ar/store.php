@@ -62,7 +62,8 @@
 
 		public function call($template, $args=null) {
 			global $store;
-			return $store->call($template, $args, $store->find($this->path, $this->query, $this->limit, $this->offset)); 
+			$result = $store->call($template, $args, $store->find($this->path, $this->query, $this->limit, $this->offset), array( 'usePathAsKey' => true ) );
+			return $result;
 		}
 
 		public function iterate($selection, $definitions = Array()) {
@@ -120,7 +121,7 @@
 			$this->path = $store->make_path($current, $path);
 		}
 
-		public function find($query) {
+		public function find( $query = "" ) {
 			return new ar_storeFind($this->path, $query);
 		}
 

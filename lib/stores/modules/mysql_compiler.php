@@ -343,7 +343,7 @@ class mysql_compiler extends sql_compiler {
 
 
 		$query="select distinct($nodes.path), $nodes.parent, $nodes.priority, ";
-		$query.=" $objects.id, $objects.type, $objects.object, UNIX_TIMESTAMP($objects.lastchanged) as lastchanged, $objects.vtype ";
+		$query.=" $objects.id, $objects.type, $objects.vtype ";
 		$query.=" from $tables $join";
 		$query.=" where $nodes.object=$objects.id $prop_dep";
 		$query.=" and $nodes.path like '".AddSlashes($this->path)."%' ";
@@ -360,12 +360,17 @@ class mysql_compiler extends sql_compiler {
 		}
 
 		if ($this->orderby_s) {
-			$query.= " order by $this->orderby_s, $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
+			$orderby = " order by $this->orderby_s, $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
 		} else {
-			$query.= " order by $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
+			$orderby = " order by $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
 		}
-		$query.=" $this->limit_s ";
-		return $query;
+		$query .= $orderby . " $this->limit_s ";
+
+		$oquery =	"select results.path, results.parent, results.priority, results.id, results.type, ".
+					" $objects.object, UNIX_TIMESTAMP($objects.lastchanged) as lastchanged, $objects.vtype ".
+					"from ( $query ) as results, $objects ". //using(id), $join" . $orderby;
+					"where results.id = $objects.id "; // order by results.mc";
+		return $oquery;
 	}
 
   }
