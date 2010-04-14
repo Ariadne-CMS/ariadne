@@ -131,7 +131,7 @@
 
 		public function call($template, $args=null) {
 			global $store;
-			return $store->call($template, $args, $store->get($this->path));
+			return $store->call($template, $args, $store->get($this->path), array( 'usePathAsKey' => true ) );
 		}
 
 		public function parents() {
@@ -149,7 +149,7 @@
 
 		public function call($template, $args=null) {
 			global $store;
-			return $store->call($template, $args, $store->parents($this->path, $this->top));
+			return $store->call($template, $args, $store->parents($this->path, $this->top), array( 'usePathAsKey' => true ) );
 		}
 
 		public function iterate($selection, $definitions = Array()) {
