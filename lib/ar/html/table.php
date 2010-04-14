@@ -84,22 +84,22 @@
 			$total   = count($list);
 			$current = 1;
 			foreach ($list as $key => $content ) {
-				$firstCell = (1==$current);
-				$lastCell  = ($total==$current);
-				$oddCell   = ($current % 2);
+				$firstColumn = (1==$current);
+				$lastColumn  = ($total==$current);
+				$oddColumn   = ($current % 2);
 				$currentFlags = array_merge( (array) $flags, array(
 					'currentColumn' => $current,
-					'firstCell'     => $firstCell,
-					'lastCell'      => $lastCell,
-					'oddCell'       => $oddCell,
+					'firstColumn'   => $firstColumn,
+					'lastColumn'    => $lastColumn,
+					'oddColumn'     => $oddColumn,
 					'content'       => $list
 				) );
 				$currentAttributes = $attributes;
 				$currentAttributes['class'] = array_merge( (array) $attributes['class'], array(
-					( $firstCell ? 'tableFirst' : 
-						( $lastCell ? 'tableLast' : '' ) 
+					( $firstColumn ? 'tableFirst' : 
+						( $lastColumn ? 'tableLast' : '' ) 
 					),
-					( $oddCell ? 'tableOdd' : 'tableEven' )
+					( $oddColumn ? 'tableOdd' : 'tableEven' )
 				) );
 				$nodes[] = $this->decorate( array(
 					'name'       => $tag,

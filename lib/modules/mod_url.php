@@ -2,6 +2,7 @@
 
 class URL {
 
+/*
 	function arguments($args, $prefix='') {
 		$context = pobject::getContext();
 		$me = $context["arCurrentObject"];
@@ -15,6 +16,7 @@ class URL {
 		if ($prefix == '' && $str !== '') $str = '?' . $str;
 		return $str;
 	}
+*/
 
 	/* replaces the URLs with the {ar*[/nls]} markers */
 	function RAWtoAR($page, $nls="") {

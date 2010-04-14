@@ -56,7 +56,7 @@
 			if ( is_array( $value ) ) {
 				$content = '';
 				foreach( $value as $subvalue ) {
-					$content = trim($content) . ' ' . trim( self::value( $subvalue ) );
+					$content = rtrim($content) . ' ' . ltrim( self::value( $subvalue ) );
 				}
 				$content = trim( $content );
 			} else if ( is_bool( $value ) ) {
