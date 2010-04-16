@@ -1,5 +1,7 @@
 <?php
 	ar_pinp::allow( 'ar_html' );
+	ar_pinp::allow( 'ar_htmlElement' );
+	ar_pinp::allow( 'ar_htmlNodes' );
 
 	class ar_html extends ar_xml {
 
@@ -70,7 +72,7 @@
 			if ( !count( $childNodes ) ) {
 				$childNodes = null;
 			}
-			return new ar_htmlTag($name, $attributes, $childNodes);
+			return new ar_htmlElement($name, $attributes, $childNodes);
 		}
 			
 		public static function nodes() {
@@ -100,11 +102,11 @@
 		
 	}
 	
-	class ar_htmlTag extends ar_xmlTag {
+	class ar_htmlElement extends ar_xmlElement {
 	
 		public function __toString( $indent = '', $current = 0 ) {
 			$indent = ar_html::$indenting ? $indent : '';
-			$result = "\n" . $indent . '<' . ar_html::name( $this->name );
+			$result = "\n" . $indent . '<' . ar_html::name( $this->tagName );
 			if ( is_array($this->attributes) ) {
 				foreach ( $this->attributes as $name => $value ) {
 					$result .= ar_html::attribute($name, $value, $current);
@@ -112,7 +114,7 @@
 			} else if ( is_string($this->attributes) ) {
 				$result .= ltrim(' '.$this->attributes);
 			}
-			if ( !ar_html::$xhtml || ar_html::canHaveContent( $this->name ) ) {
+			if ( !ar_html::$xhtml || ar_html::canHaveContent( $this->tagName ) ) {
 				$result .= '>';
 				if ( ar_html::canHaveContent( $this->name ) ) {
 					if ( isset($this->childNodes) && count($this->childNodes) ) {
@@ -121,7 +123,7 @@
 							$result .= "\n" . $indent;
 						}
 					}
-					$result .= '</' . ar_html::name( $this->name ) . '>';
+					$result .= '</' . ar_html::name( $this->tagName ) . '>';
 				}
 			} else {
 				$result .= ' />';
