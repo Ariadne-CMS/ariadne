@@ -123,8 +123,8 @@
 					if ( substr($result, -1) == ">") {
 						$result .= "\n" . $indent;
 					}
+					$result .= '</' . ar_html::name( $this->name ) . '>';
 				}
-				$result .= '</' . ar_html::name( $this->name ) . '>';
 			} else {
 				$result .= ' />';
 			}			
