@@ -292,28 +292,66 @@
 		}
 		
 		function getPreviousSibling( $el ) {
-			foreach ( $this as $pos => $node ) {
-				if ( $node === $el ) {
-					if ( $pos > 0 ) {
-						return $this[ $pos - 1 ];
-					} else {
-						return null;
-					}
-				}
+			$pos = $this->getPosition( $el );
+			if ( $pos > 0 ) {
+				return $this[ $pos - 1 ];
+			} else {
+				return null;
 			}
 		}
 		
 		function getNextSibling( $el ) {
+			$pos = $this->getPosition( $el );
+			if ( $pos < count( $this ) ) {
+				return $this[ $pos + 1 ];
+			} else {
+				return null;
+			}
+		}
+		
+		function getPosition( $el ) {
 			foreach ( $this as $pos => $node ) {
 				if ( $node === $el ) {
-					if ( $pos < count( $this ) ) {
-						return $this[ $pos + 1 ];
-					} else {
-						return null;
-					}
+					return $pos;
 				}
 			}
 		}
+		
+		function appendChild( $el ) {
+			$this[] = $el;
+		}
+		
+		function insertBefore( $el, $referenceEl = null ) {
+			if ( !isset($referenceEl) ) {
+				$this->appendChild( $el );
+			} else {
+				$pos = $this->getPosition( $referenceEl );
+				if ( isset($pos) ) {
+					parent::__construct( 
+						array_splice( $this, $pos, 0, array( $el ) ) 
+					);
+				} else {
+					$this->appendChild( $el );
+				}
+			}
+		}
+		
+		function replaceChild( $el, $referenceEl ) {
+			$pos = $this->getPosition( $referenceEl );
+			if ( isset($pos) ) {
+				$this[$pos] = $el;
+			}
+		}	
+
+		function removeChild( $el ) {
+			$pos = $this->getPosition( $referenceEl );
+			if ( isset($pos) ) {
+				parent::__construct(
+					array_slice( (array) $this, $pos, 1)
+				);
+			}
+		}
+		
 	}
 	
 	class ar_xmlNode extends arBase {
@@ -355,6 +393,9 @@
 		function __construct($name, $attributes, $childNodes, $parentNode = null) {
 			$this->tagName    = $name;
 			$this->attributes = $attributes;
+			if (!isset($childNodes)) {
+				$childNodes = $this->getNodeList();
+			}
 			$this->childNodes = $childNodes;
 			$this->childNodes->setParentNode( $this );
 			$this->parentNode = $parentNode;
@@ -412,6 +453,11 @@
 			}			
 			return $result;
 		}
+
+		public function getNodeList() {
+			$params = func_get_args();
+			return call_user_func_array( array( 'ar_xml', 'nodes'), $params );
+		}
 		
 		function __get( $name ) {
 			switch( $name ) {
@@ -461,6 +507,23 @@
 			}
 		}
 		
+		function appendChild( $el ) {
+			$this->childNodes->appendChild( $el );
+		}
+		
+		function insertBefore( $el, $referenceEl = null ) {
+			$this->childNodes->insertBefore( $el, $referenceEl );
+		}
+		
+		function replaceChild( $el, $referenceEl ) {
+			$this->childNodes->replaceChild( $el, $referenceEl );
+		}	
+
+		function removeChild( $el ) {
+			$this->childNodes->removeChild( $el );
+		}
+
+
 	}
 	
 ?>
