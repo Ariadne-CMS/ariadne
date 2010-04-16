@@ -57,20 +57,20 @@
 			$args = func_get_args();
 			$name = array_shift($args);
 			$attributes = array();
-			$content = ar_xml::nodes();
+			$childNodes = ar_xml::nodes();
 			foreach ($args as $arg) {
 				if ( is_array( $arg ) && !is_a( $arg, 'ar_xmlNodes' ) ) {
 					$attributes = array_merge($attributes, $arg);
 				} else if ($arg instanceof ar_xmlNodes) {
-					$content = ar_html::nodes($content, $arg);
+					$childNodes = ar_html::nodes($childNodes, $arg);
 				} else {
-					$content[] = $arg;
+					$childNodes[] = $arg;
 				}
 			}
-			if ( !count( $content ) ) {
-				$content = null;
+			if ( !count( $childNodes ) ) {
+				$childNodes = null;
 			}
-			return new ar_htmlTag($name, $attributes, $content);
+			return new ar_htmlTag($name, $attributes, $childNodes);
 		}
 			
 		public static function nodes() {
@@ -91,8 +91,10 @@
 
 	class ar_htmlNodes extends ar_xmlNodes {
 	
-		public function __toString() {
-			$indent = ar_html::$indenting ? ar_html::$indent : '';
+		public function __toString( $indentWith = null ) {
+			$indent = isset($indentWith) ? $indentWith : ( 
+				ar_html::$indenting ? ar_html::$indent : ''
+			);
 			return parent::__toString( $indent );
 		}
 		
@@ -100,12 +102,12 @@
 	
 	class ar_htmlTag extends ar_xmlTag {
 	
-		public function __toString( $indent = '' ) {
+		public function __toString( $indent = '', $current = 0 ) {
 			$indent = ar_html::$indenting ? $indent : '';
 			$result = "\n" . $indent . '<' . ar_html::name( $this->name );
 			if ( is_array($this->attributes) ) {
 				foreach ( $this->attributes as $name => $value ) {
-					$result .= ar_html::attribute($name, $value);
+					$result .= ar_html::attribute($name, $value, $current);
 				}
 			} else if ( is_string($this->attributes) ) {
 				$result .= ltrim(' '.$this->attributes);
@@ -113,15 +115,11 @@
 			if ( !ar_html::$xhtml || ar_html::canHaveContent( $this->name ) ) {
 				$result .= '>';
 				if ( ar_html::canHaveContent( $this->name ) ) {
-					foreach ( $this->content as $node ) {
-						if ($node instanceof ar_xmlTag) {
-							$result .= ($node->__toString(ar_html::$indent . $indent));
-						} else {
-							$result .= ar_html::indent($node, ar_html::$indent . $indent);
+					if ( isset($this->childNodes) && count($this->childNodes) ) {
+						$result .= $this->childNodes->__toString( ar_html::$indent . $indent );
+						if ( substr($result, -1) == ">") {
+							$result .= "\n" . $indent;
 						}
-					}
-					if ( substr($result, -1) == ">") {
-						$result .= "\n" . $indent;
 					}
 					$result .= '</' . ar_html::name( $this->name ) . '>';
 				}

@@ -126,6 +126,16 @@
 		public static function getvar( $name ) {
 			return ar_loader::getvar( $name );
 		}
+		
+		public static function listExpression( $list ) {
+			return new ar_listExpression( $list );
+		}
+		
+		public static function listPattern() {
+			self::autoload('ar_listExpression');
+			$params = func_get_args();
+			return new ar_listExpression_Pattern( $params );
+		}
 	}
 	
 	class arTainted {
@@ -239,6 +249,15 @@
 		
 		public static function _getvar( $name ) {
 			return ar::getvar( $name );
+		}
+		
+		public static function _listExpression( $list ) {
+			return ar::listExpression( $list );
+		}
+		
+		public static function _listPattern() {
+			$params = func_get_args();
+			return call_user_func_array( array( 'ar', 'listPattern'), $params);
 		}
 	}
 	

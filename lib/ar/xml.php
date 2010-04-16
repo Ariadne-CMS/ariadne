@@ -1,5 +1,8 @@
 <?php
 	ar_pinp::allow( 'ar_xml' );
+	ar_pinp::allow( 'ar_xmlElement' );
+	ar_pinp::allow( 'ar_xmlNode' );
+	ar_pinp::allow( 'ar_xmlNodes' );
 
 	class ar_xml extends arBase {
 
@@ -51,16 +54,18 @@
 			return $name;
 		}
 
-		public static function value( $value ) {
+		public static function value( $value, $current = 0 ) {
 			ar::untaint( $value, FILTER_UNSAFE_RAW );
 			if ( is_array( $value ) ) {
 				$content = '';
 				foreach( $value as $subvalue ) {
-					$content = rtrim($content) . ' ' . ltrim( self::value( $subvalue ) );
+					$content = rtrim($content) . ' ' . ltrim( self::value( $subvalue, $current ) );
 				}
 				$content = trim( $content );
 			} else if ( is_bool( $value ) ) {
 				$content = $value ? 'true' : 'false';
+			} else if ( $value instanceof ar_listExpression ) {
+				$content = self::value( $value->item( $current ) );
 			} else {
 				if ( preg_match( '/^\s*<!\[CDATA\[/', $content ) ) {
 					$content = $value;
@@ -71,11 +76,11 @@
 			return $content;
 		}
 		
-		public static function attribute( $name, $value ) {
+		public static function attribute( $name, $value, $current = 0 ) {
 			if ( is_numeric( $name ) ) {					
 				return ' ' . self::name( $value );
 			} else {
-				return ' ' . self::name( $name ) . '="' . self::value( $value ) . '"';
+				return ' ' . self::name( $name ) . '="' . self::value( $value, $current ) . '"';
 			}
 		}
 		
@@ -111,7 +116,7 @@
 			if ( !count( $content ) ) {
 				$content = null;
 			}
-			return new ar_xmlTag($name, $attributes, $content);
+			return new ar_xmlElement($name, $attributes, $content);
 		}
 		
 		public static function indent( $content, $indent=null ) {
@@ -134,6 +139,8 @@
 
 	class ar_xmlNodes extends ArrayObject {
 
+		private $parentNode = null;
+	
 		public static function mergeArguments(){
 			$args  = func_get_args();
 			$nodes = array();
@@ -150,76 +157,310 @@
 		public function __construct() {
 			$args  = func_get_args();
 			$nodes = call_user_func_array( array( 'ar_xmlNodes', 'mergeArguments' ), $args );
+			foreach( $nodes as $key => $node) {
+				if (!$node instanceof ar_xmlNode) {
+					$nodes[$key] = new ar_xmlNode( $node );
+				}
+			}
 			parent::__construct($nodes);
 		}
 
+		public function offsetSet($offset, $value) {
+			if (!$value instanceof ar_xmlNode) {
+				$value = new ar_xmlNode( $value );
+			}
+			parent::offsetSet($offset, $value);
+		}
+		
 		private static function removeEmptyNodes( $var ) {
 			return (!trim($var)=='');
 		}
 		
 		public function __toString( $indentWith = null) {		
+			$result = '';
 			$indent = isset($indentWith) ? $indentWith : (ar_xml::$indenting ? ar_xml::$indent : '');
-			return join( "\n".$indent, array_filter( (array) $this, array( self, 'removeEmptyNodes' ) ) );
+			$list   = array_filter( (array) $this, array( self, 'removeEmptyNodes' ) );
+			$count  = 0;
+			$total  = count($this);
+			foreach ( $list as $node) {
+				if ( $node instanceof ar_xmlElement) {
+					$result .= ($node->__toString($indentWith, $count, $total));
+				} else {
+					$result .= ar_xml::indent( (string) $node, $indentWith);
+				}
+				++$count;
+			}
+			return $result;
 		}
 		
 		public function setAttributes( array $attributes ) {
+			foreach ($attributes as $name => $value) {
+				$this->setAttribute( $name, $value );
+			}
+		}
+
+		private function _runPatterns( $value ) {
+			if ($value instanceof ar_listExpression_Pattern) {
+				$value = ar::listExpression( (array) $this )->pattern( $value->patterns );
+			} else if ( is_array( $value ) ) {
+				foreach ($value as $key => $subvalue ) {
+					$value[$key] = $this->_runPatterns( $subvalue );
+				}
+			}
+			return $value;
+		}
+		
+		public function setAttribute( $name, $value ) {
+			$value = $this->_runPatterns($value);
 			foreach ( $this as $key => $node ) {
-				if ($node instanceof ar_xmlTag) {
-					$node->setAttributes( $attributes );
+				if ($node instanceof ar_xmlElement) {
+					$node->setAttribute( $name, $value );
 				}
 			}
 		}
 		
-	}
-
-	class ar_xmlTag extends arBase {
-		public $name       = null;
-		public $attributes = array();
-		public $content    = null;
+		public function __get( $name ) {
+			switch ( $name ) {
+				case 'parentNode' :
+					return $this->parentNode;
+				break;
+				default :
+					if (isset($this[0]) && is_object($this[0]) ) {
+						$el = $this[0];
+						return $el->{$name};
+					} else {
+						return null;
+					}
+				break;
+			}
+		}
 		
-		function __construct($name, $attributes, $content) {
-			$this->name       = $name;
+		public function __set( $name, $value ) {
+			switch( $name ) {
+				case 'parentNode' :
+					$this->setParentNode($value);
+				break;
+				default :
+					if (isset($this[0]) && is_object($this[0]) ) {
+						$el = $this[0];
+						$el->{$name} = $value;
+					} else if ($value instanceof ar_xmlElement) {
+						$this[] = $value;
+					} else {
+						$this[] = ar_xml::tag($name, (string)$value);
+					}
+				break;
+			}
+		}
+		
+		public function __call( $name, $params ) {
+			if (($name[0]==='_')) {
+				$realName = substr($name, 1);
+				if (ar_pinp::isAllowed($this, $realName)) {
+					return call_user_func_array(array($this, $realName), $params);
+				} else {
+					trigger_error("Method $realName not found in class ".get_class($this), E_USER_ERROR);
+				}
+			} else if (isset($this[0]) && is_object($this[0]) ) {
+				$el = $this[0];
+				return call_user_func_array( array( $el, $name ), $params );
+			} else {
+				return null;
+			}
+		}
+		
+		function getElementsByTagName( $name ) {
+			$nodeList = ar_xml::nodes();
+			foreach ($this as $node) {
+				if ( $node instanceof ar_xmlElement ) {				
+					if ( $node->tagName == $name) {
+						$nodeList[] = $node;
+					}
+					$nodeList = ar_xml::nodes( $nodeList, $node->getElementsByTagName( $name ) );
+				}
+			}
+			return $nodeList;			
+		}
+		
+		function setParentNode( $el ) {
+			$this->parentNode = $el;
+			foreach ($this as $node) {
+				if ($node instanceof ar_xmlElement) {
+					$node->parentNode = $el;
+				}
+			}
+		}
+		
+		function getPreviousSibling( $el ) {
+			foreach ( $this as $pos => $node ) {
+				if ( $node === $el ) {
+					if ( $pos > 0 ) {
+						return $this[ $pos - 1 ];
+					} else {
+						return null;
+					}
+				}
+			}
+		}
+		
+		function getNextSibling( $el ) {
+			foreach ( $this as $pos => $node ) {
+				if ( $node === $el ) {
+					if ( $pos < count( $this ) ) {
+						return $this[ $pos + 1 ];
+					} else {
+						return null;
+					}
+				}
+			}
+		}
+	}
+	
+	class ar_xmlNode extends arBase {
+		public $parentNode = null;
+		public $nodeValue = '';
+		
+		function __construct($value, $parentNode = null) {
+			$this->nodeValue = $value;
+			$this->parentNode = $parentNode;
+		}
+		
+		function __toString() {
+			return (string) $this->nodeValue;
+		}
+		
+		function __get( $name ) {
+			switch( $name ) {
+				case 'previousSibling' :
+					if (isset($this->parentNode)) {
+						return $this->parentNode->childNodes->getPreviousSibling($this);
+					}
+				break;
+				case 'nextSibling' :
+					if (isset($this->parentNode)) {
+						return $this->parentNode->childNodes->getNextSibling($this);
+					}
+				break;
+			}
+		}
+	}
+	
+	class ar_xmlElement extends ar_xmlNode {
+		public $tagName    = null;
+		public $attributes = array();
+		public $childNodes = null;
+		public $parentNode = null;
+		private $idCache = array();
+		
+		function __construct($name, $attributes, $childNodes, $parentNode = null) {
+			$this->tagName    = $name;
 			$this->attributes = $attributes;
-			$this->content    = $content;
+			$this->childNodes = $childNodes;
+			$this->childNodes->setParentNode( $this );
+			$this->parentNode = $parentNode;
+		}
+		
+		public function __updateIdCache($id, $el) {
+			$this->idCache[$id] = $el;
+			if (isset($this->parentNode)) {
+				$this->parentNode->__updateIdCache($id, $el);
+			}
 		}
 		
 		function setAttributes( array $attributes ) {
+			$oldId = null;
+			if (isset($this->attributes['id'])) {
+				$oldId = $this->attributes['id'];
+			}
 			$this->attributes = $attributes + $this->attributes;
+			$newId = null;
+			if (isset($this->attributes['id'])) {
+				$newId = $this->attributes['id'];
+			}
+			if ($newId !== $oldId) {
+				$this->__updateIdCache($newId, $this);
+			}
 		}
 
-		function setAttribute( $name, $value, $lpe = null ) {
-		
+		function setAttribute( $name, $value ) {
+			$this->attributes[$name] = $value;
+			if ($name=='id') {
+				$this->__updateIdCache($value, $this);
+			}
 		}
 		
-		function __toString( $indent = '' ) {
+		function __toString( $indent = '', $current = 0 ) {
 			//var_dump($this);
 			$indent = ar_xml::$indenting ? $indent : '';
-			$result = "\n" . $indent . '<' . ar_xml::name( $this->name );
+			$result = "\n" . $indent . '<' . ar_xml::name( $this->tagName );
 			if ( is_array($this->attributes) ) {
 				foreach ( $this->attributes as $name => $value ) {
-					$result .= ar_xml::attribute($name, $value);
+					$result .= ar_xml::attribute($name, $value, $current);
 				}
 			} else if ( is_string($this->attributes) ) {
 				$result .= ltrim(' '.$this->attributes);
 			}
-			if ( $this->content instanceof ar_xmlNodes && count($this->content) ) {
+			if ( $this->childNodes instanceof ar_xmlNodes && count($this->childNodes) ) {
 				$result .= '>';
-				foreach ( $this->content as $node ) {
-					if ($node instanceof ar_xmlTag) {
-						$result .= ($node->__toString(ar_xml::$indent . $indent));
-					} else {
-						$result .= ar_xml::indent($node, ar_xml::$indent . $indent);
-					}
-				}
+				$result .= $this->childNodes->__toString( ar_xml::$indent . $indent );
 				if ( substr($result, -1) == ">") {
 					$result .= "\n" . $indent;
 				}
-				$result .= '</' . ar_xml::name( $this->name ) . '>';
+				$result .= '</' . ar_xml::name( $this->tagName ) . '>';
 			} else {
 				$result .= ' />';
 			}			
 			return $result;
 		}
+		
+		function __get( $name ) {
+			switch( $name ) {
+				case 'previousSibling' :
+					if (isset($this->parentNode)) {
+						return $this->parentNode->childNodes->getPreviousSibling($this);
+					}
+				break;
+				case 'nextSibling' :
+					if (isset($this->parentNode)) {
+						return $this->parentNode->childNodes->getNextSibling($this);
+					}
+				break;
+				case 'firstChild' :
+					if (isset($this->childNodes) && count($this->childNodes)) {
+						return $this->childNodes[0];
+					}
+				break;
+				case 'lastChild' :
+					if (isset($this->childNodes) && count($this->childNodes)) {
+						return $this->childNodes[count($this->childNodes)-1];
+					}
+				break;
+			}
+			return $this->getElementsByTagName( $name );
+		}
+		
+		function __set( $name, $value ) {
+			$nodeList = $this->__get( $name );
+			if (isset($nodeList[0])) {
+				$node = $nodeList[0];
+				$node->tagName = $value->tagName;
+				$node->attributes = $value->attributes;
+				$node->childNodes = $value->childNodes;
+			}
+		}
+		
+		function getElementsByTagName( $name ) {
+			if ( isset( $this->childNodes ) ) {
+				return $this->childNodes->getElementsByTagName( $name );
+			}
+		}
+		
+		function getElementById( $id ) {
+			if (isset($this->idCache[$id])) {
+				return $this->idCache[$id];
+			}
+		}
+		
 	}
 	
 ?>
