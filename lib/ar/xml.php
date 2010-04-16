@@ -3,7 +3,7 @@
 
 	class ar_xml extends arBase {
 
-		private static $indenting = true;
+		public static $indenting = true;
 		private static $comments = true;
 		
 		public static $indent = "\t";
@@ -37,7 +37,7 @@
 			} else {
 				$standalone = '';
 			}
-			return '<?xml version="' . self::value($version) . '" encoding="' . self::value($encoding) . '"' . $standalone . " ?>\n";
+			return '<?xml version="' . self::value($version) . '" encoding="' . self::value($encoding) . '"' . $standalone . " ?>";
 		}
 		
 		public static function comment( $comment ) {
@@ -98,24 +98,20 @@
 			$args = func_get_args();
 			$name = array_shift($args);
 			$attributes = array();
-			$content = '';
+			$content = ar_xml::nodes();
 			foreach ($args as $arg) {
 				if ( is_array( $arg ) && !is_a( $arg, 'ar_xmlNodes' ) ) {
 					$attributes = array_merge($attributes, $arg);
+				} else if ($arg instanceof ar_xmlNodes) {
+					$content = ar_xml::nodes($content, $arg);
 				} else {
-					if ( $content ) {
-						$content .= "\n" . $arg;
-					} else {
-						$content = $arg;
-					}
+					$content[] = $arg;
 				}
 			}
-			$name = self::name( $name );
-			if ( ( isset($content) && $content!=='' ) ) {
-				return '<' . $name . self::attributes( $attributes ) . '>' . self::indent( $content ) . '</' . $name . '>';
-			} else {
-				return '<' . $name . self::attributes( $attributes ) . ' />';
+			if ( !count( $content ) ) {
+				$content = null;
 			}
+			return new ar_xmlTag($name, $attributes, $content);
 		}
 		
 		public static function indent( $content, $indent=null ) {
@@ -123,7 +119,7 @@
 				if ( !isset($indent) ) {
 					$indent = self::$indent;
 				}
-				return "\n" . preg_replace( '/^(\s*)</m', $indent . '$1<', $content ) . "\n"; 
+				return "\n" . preg_replace( '/^(\s*)</m', $indent . '$1<', $content ); 
 			} else {
 				return $content;
 			}
@@ -161,8 +157,68 @@
 			return (!trim($var)=='');
 		}
 		
-		public function __toString() {
-			return join( "\n", array_filter( (array) $this, array( self, 'removeEmptyNodes' ) ) );
+		public function __toString( $indentWith = null) {		
+			$indent = isset($indentWith) ? $indentWith : (ar_xml::$indenting ? ar_xml::$indent : '');
+			return join( "\n".$indent, array_filter( (array) $this, array( self, 'removeEmptyNodes' ) ) );
+		}
+		
+		public function setAttributes( array $attributes ) {
+			foreach ( $this as $key => $node ) {
+				if ($node instanceof ar_xmlTag) {
+					$node->setAttributes( $attributes );
+				}
+			}
+		}
+		
+	}
+
+	class ar_xmlTag extends arBase {
+		public $name       = null;
+		public $attributes = array();
+		public $content    = null;
+		
+		function __construct($name, $attributes, $content) {
+			$this->name       = $name;
+			$this->attributes = $attributes;
+			$this->content    = $content;
+		}
+		
+		function setAttributes( array $attributes ) {
+			$this->attributes = $attributes + $this->attributes;
+		}
+
+		function setAttribute( $name, $value, $lpe = null ) {
+		
+		}
+		
+		function __toString( $indent = '' ) {
+			//var_dump($this);
+			$indent = ar_xml::$indenting ? $indent : '';
+			$result = "\n" . $indent . '<' . ar_xml::name( $this->name );
+			if ( is_array($this->attributes) ) {
+				foreach ( $this->attributes as $name => $value ) {
+					$result .= ar_xml::attribute($name, $value);
+				}
+			} else if ( is_string($this->attributes) ) {
+				$result .= ltrim(' '.$this->attributes);
+			}
+			if ( $this->content instanceof ar_xmlNodes && count($this->content) ) {
+				$result .= '>';
+				foreach ( $this->content as $node ) {
+					if ($node instanceof ar_xmlTag) {
+						$result .= ($node->__toString(ar_xml::$indent . $indent));
+					} else {
+						$result .= ar_xml::indent($node, ar_xml::$indent . $indent);
+					}
+				}
+				if ( substr($result, -1) == ">") {
+					$result .= "\n" . $indent;
+				}
+				$result .= '</' . ar_xml::name( $this->name ) . '>';
+			} else {
+				$result .= ' />';
+			}			
+			return $result;
 		}
 	}
 	

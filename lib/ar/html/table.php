@@ -211,7 +211,7 @@
 			if (!isset($this->body)) {
 				$this->body( $this->content );
 			}
-			return $this->decorate( array(
+			return ''.$this->decorate( array(
 				'name'       => 'table',
 				'attributes' => $this->attributes,
 				'content'    => ar_html::nodes(

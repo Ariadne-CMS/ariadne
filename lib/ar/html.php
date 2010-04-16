@@ -3,7 +3,7 @@
 
 	class ar_html extends ar_xml {
 
-		private static $xhtml = false;
+		public static $xhtml = false;
 
 		public static function configure( $option, $value ) {
 			switch ($option) {
@@ -48,7 +48,7 @@
 			return $doctype;
 		}
 		
-		private static function _canHaveContent( $name ) {
+		public static function canHaveContent( $name ) {
 			return !in_array( $name, array( 'input', 'br', 'hr', 'img', 'link', 'meta', 
 				'base', 'basefont', 'isindex', 'area', 'param', 'col', 'frame' ) );
 		}
@@ -57,32 +57,20 @@
 			$args = func_get_args();
 			$name = array_shift($args);
 			$attributes = array();
-			$content = '';
+			$content = ar_xml::nodes();
 			foreach ($args as $arg) {
-				if ( is_array( $arg ) && !is_a( $arg, 'ar_htmlNodes' ) ) {
+				if ( is_array( $arg ) && !is_a( $arg, 'ar_xmlNodes' ) ) {
 					$attributes = array_merge($attributes, $arg);
+				} else if ($arg instanceof ar_xmlNodes) {
+					$content = ar_html::nodes($content, $arg);
 				} else {
-					if ( $content ) {
-						$content .= "\n" . $arg;
-					} else {
-						$content = $arg;
-					}
+					$content[] = $arg;
 				}
 			}
-			$name = self::name( $name );
-			if ( self::$xhtml ) {
-				$name = strtolower( $name );
+			if ( !count( $content ) ) {
+				$content = null;
 			}
-			if ( !self::$xhtml || self::_canHaveContent( $name ) ) {
-				if ( self::_canHaveContent( $name ) ) {
-					return '<' . $name . self::attributes( $attributes ) . '>' 
-						. self::indent( $content ) . '</' . $name . '>';
-				} else {
-					return '<' . $name . self::attributes( $attributes ) . '>';
-				}
-			} else {
-				return '<' . $name . self::attributes( $attributes ) . ' />';
-			}
+			return new ar_htmlTag($name, $attributes, $content);
 		}
 			
 		public static function nodes() {
@@ -98,9 +86,49 @@
 		public static function table( $rows, $header = null, $rowHeader = null, $foot = null ) {
 			return new ar_html_table( $rows, $header, $rowHeader, $foot);
 		}
+		
 	}
 
 	class ar_htmlNodes extends ar_xmlNodes {
+	
+		public function __toString() {
+			$indent = ar_html::$indenting ? ar_html::$indent : '';
+			return parent::__toString( $indent );
+		}
+		
 	}
 	
+	class ar_htmlTag extends ar_xmlTag {
+	
+		public function __toString( $indent = '' ) {
+			$indent = ar_html::$indenting ? $indent : '';
+			$result = "\n" . $indent . '<' . ar_html::name( $this->name );
+			if ( is_array($this->attributes) ) {
+				foreach ( $this->attributes as $name => $value ) {
+					$result .= ar_html::attribute($name, $value);
+				}
+			} else if ( is_string($this->attributes) ) {
+				$result .= ltrim(' '.$this->attributes);
+			}
+			if ( !ar_html::$xhtml || ar_html::canHaveContent( $this->name ) ) {
+				$result .= '>';
+				if ( ar_html::canHaveContent( $this->name ) ) {
+					foreach ( $this->content as $node ) {
+						if ($node instanceof ar_xmlTag) {
+							$result .= ($node->__toString(ar_html::$indent . $indent));
+						} else {
+							$result .= ar_html::indent($node, ar_html::$indent . $indent);
+						}
+					}
+					if ( substr($result, -1) == ">") {
+						$result .= "\n" . $indent;
+					}
+				}
+				$result .= '</' . ar_html::name( $this->name ) . '>';
+			} else {
+				$result .= ' />';
+			}			
+			return $result;
+		}
+	}
 ?>
