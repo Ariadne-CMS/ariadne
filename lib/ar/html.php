@@ -116,7 +116,7 @@
 			}
 			if ( !ar_html::$xhtml || ar_html::canHaveContent( $this->tagName ) ) {
 				$result .= '>';
-				if ( ar_html::canHaveContent( $this->name ) ) {
+				if ( ar_html::canHaveContent( $this->tagName ) ) {
 					if ( isset($this->childNodes) && count($this->childNodes) ) {
 						$result .= $this->childNodes->__toString( ar_html::$indent . $indent );
 						if ( substr($result, -1) == ">") {
