@@ -431,13 +431,11 @@
 				if (!$nodeLeft || ($nodeRight && $nodeRight->min > $nodeLeft->min)) {
 					$this->min		= ($nodeLeft) ? $nodeLeft->min : 0;
 					$this->max		= (!$nodeRight->max || $nodeRight->max > $nodeLeft->max) ? $nodeRight->max : $nodeLeft->max;
-					$this->size		= ($nodeRight->size > $nodeLeft->size) ? $nodeRight->size : $nodeLeft->size;
 					$this->left		= $nodeRight;
 					$this->right	= $nodeLeft;
 				} else if (!$nodeRight || ($nodeLeft && $nodeLeft->min >= $nodeRight->min)) {
 					$this->min		= ($nodeRight) ? $nodeRight->min : 0;
 					$this->max		= (!$nodeLeft->max || $nodeLeft->max > $nodeRight->max) ? $nodeLeft->max : $nodeRight->max;
-					$this->size		= ($nodeLeft->size > $nodeRight->size) ? $nodeLeft->size : $nodeRight->size;
 					$this->left		= $nodeLeft;
 					$this->right	= $nodeRight;
 				}
@@ -459,7 +457,6 @@
 
 		function __construct($data) {
 			$nodeLeft = $data['nodeLeft']; $nodeRight = $data['nodeRight'];
-			$this->size			= $nodeLeft->size + $nodeRight->size;
 			$this->req			= $nodeLeft->req | $nodeRight->req;
 			$this->min			= 0;
 			if ($nodeLeft->req) {
@@ -484,6 +481,10 @@
 			if ($this->left->req) {
 				$rightCount -= $this->left->min;
 				$leftCount	+= $this->left->min;
+			}
+			if ($this->right->max && $rightCount > $this->right->max) {
+				$leftCount  += ($rightCount - $this->right->max);
+				$rightCount = $this->right->max;
 			}
 			if ($rightCount >= $this->right->min) {
 				$rightResult = $this->right->run($rightCount, $offset);
@@ -514,7 +515,6 @@
 			$this->req			= true;
 			$this->min			= 1;
 			$this->max			= 1;
-			$this->size			= 1;
 		}
 
 		function run($count, $offset) {
@@ -534,7 +534,6 @@
 			$this->req			= $data['req'];
 			$this->min			= $data['min'];
 			$this->max			= $data['max'];
-			$this->size			= $data['size'];
 			$this->minRep		= $data['minRep'];
 			$this->maxRep		= $data['maxRep'];
 			$this->left			= $nodeLeft;
