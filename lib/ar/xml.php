@@ -137,9 +137,19 @@
 		}
 	}
 
+	/*
+		This class is used for generic nodelists as well as childNodes
+		The difference is in whether or not parentNode is set. As a
+		generic nodelist the child nodes can have any parentNode, so the
+		list is an in memory reference to a set of nodes. As a childNodes
+		list the child nodes must have the same parentNode as the list.
+		If you set the parentNode of the nodes list, it will also set the
+		parentNode of all the childNodes and remove them from any other parent
+	*/
 	class ar_xmlNodes extends ArrayObject {
 
 		private $parentNode = null;
+		public $attributes  = array();
 	
 		public static function mergeArguments(){
 			$args  = func_get_args();
@@ -175,8 +185,18 @@
 		private static function removeEmptyNodes( $var ) {
 			return (!trim($var)=='');
 		}
-		
-		public function __toString( $indentWith = null) {		
+
+		public function __toString( $indentWith = null) {
+			foreach ( $this->attributes as $name => $value ) {
+				$count = 0;
+				foreach ( $this as $key => $node ) {
+					if ($node instanceof ar_xmlElement) {
+						$appliedValue = $this->_applyValues($value, $count);
+						$node->setAttribute( $name, $appliedValue );
+					}
+					$count++;
+				}
+			}
 			$result = '';
 			$indent = isset($indentWith) ? $indentWith : (ar_xml::$indenting ? ar_xml::$indent : '');
 			$list   = array_filter( (array) $this, array( self, 'removeEmptyNodes' ) );
@@ -193,29 +213,61 @@
 			return $result;
 		}
 		
-		public function setAttributes( array $attributes ) {
+		public function setAttributes( array $attributes, $dynamic = true ) {
 			foreach ($attributes as $name => $value) {
-				$this->setAttribute( $name, $value );
+				$this->setAttribute( $name, $value, $dynamic );
 			}
 		}
 
 		private function _runPatterns( $value ) {
 			if ($value instanceof ar_listExpression_Pattern) {
-				$value = ar::listExpression( (array) $this )->pattern( $value->patterns );
+				$value = ar::listExpression( $this )->pattern( $value->patterns );
 			} else if ( is_array( $value ) ) {
+				$newvalue = array();
 				foreach ($value as $key => $subvalue ) {
-					$value[$key] = $this->_runPatterns( $subvalue );
+					$newsub = $this->_runPatterns( $subvalue );
+					if (is_array($newsub)) {
+						$newvalue += $newsub;
+					} else {
+						$newvalue[] = $newsub;
+					}
 				}
+				$value = $newvalue;
 			}
 			return $value;
 		}
+
+		private function _applyValues( $value, $position = 0 ) {
+			if ($value instanceof ar_listExpression) {
+				$result = $value->item( $position );
+			} else if ( is_array($value) ) {
+				$result = array();
+				foreach( $value as $subvalue ) {
+					$newvalue = $this->_applyValues( $subvalue, $position );
+					if (is_array($newvalue)) {
+						$result = array_merge($result, $newvalue);
+					} else {
+						$result[] = $newvalue;
+					}
+				}
+			} else {
+				$result = $value;
+			}
+			return $result;
+		}
 		
-		public function setAttribute( $name, $value ) {
+		public function setAttribute( $name, $value, $dynamic = true ) {
 			$value = $this->_runPatterns($value);
+			if ($dynamic) {
+				$this->attributes[$name] = $value;
+			}
+			$count = 0;
 			foreach ( $this as $key => $node ) {
 				if ($node instanceof ar_xmlElement) {
-					$node->setAttribute( $name, $value );
+					$appliedValue = $this->_applyValues($value, $count);
+					$node->setAttribute( $name, $appliedValue );
 				}
+				$count++;
 			}
 		}
 		
@@ -269,24 +321,54 @@
 			}
 		}
 		
-		function getElementsByTagName( $name ) {
-			$nodeList = ar_xml::nodes();
+		public function cloneNode( $recurse = false ) {
+			if (!$recurse) {
+				$result = $this->getNodeList();
+			} else {
+				$result = clone $this;
+				$result->parentNode = null;
+				foreach ( $result as $pos => $el ) {
+					$result[$pos] = $el->cloneNode($recurse);
+				}
+			}
+			return $result;
+		}
+		
+		public function getNodeList() {
+			$params = func_get_args();
+			return call_user_func_array( array( 'ar_xml', 'nodes'), $params );
+		}
+		
+		function getElementsByTagName( $name, $recurse = true ) {
+			$nodeList = $this->getNodeList();
 			foreach ($this as $node) {
 				if ( $node instanceof ar_xmlElement ) {				
 					if ( $node->tagName == $name) {
 						$nodeList[] = $node;
 					}
-					$nodeList = ar_xml::nodes( $nodeList, $node->getElementsByTagName( $name ) );
+					if ($recurse) {
+						$nodeList = $this->getNodeList( $nodeList, $node->getElementsByTagName( $name ) );
+					}
 				}
 			}
-			return $nodeList;			
+			return $nodeList;
+		}
+		
+		function __clearAllNodes() {
+			parent::__construct();
 		}
 		
 		function setParentNode( $el ) {
 			$this->parentNode = $el;
 			foreach ($this as $node) {
 				if ($node instanceof ar_xmlElement) {
-					$node->parentNode = $el;
+					if ( isset($node->parentNode) ) {
+						if ( $node->parentNode !== $el ) {
+							$node->parentNode->removeChild($node);
+						}
+					} else {
+						$node->parentNode = $el;
+					}
 				}
 			}
 		}
@@ -317,39 +399,114 @@
 			}
 		}
 		
-		function appendChild( $el ) {
-			$this[] = $el;
-		}
-		
-		function insertBefore( $el, $referenceEl = null ) {
-			if ( !isset($referenceEl) ) {
-				$this->appendChild( $el );
-			} else {
-				$pos = $this->getPosition( $referenceEl );
-				if ( isset($pos) ) {
-					parent::__construct( 
-						array_splice( $this, $pos, 0, array( $el ) ) 
-					);
+		private function _removeChildNodes( $el ) {
+			if ( isset( $this->parentNode ) ) {
+				if ( is_array( $el ) ) {
+					foreach ( $el as $subEl ) {
+						if ( isset($subEl->parentNode) ) {
+							$subEl->parentNode->removeChild( $subEl );
+						}
+					}
 				} else {
-					$this->appendChild( $el );
+					if ( isset($el->parentNode) ) {
+						$el->parentNode->removeChild( $el );
+					}
 				}
 			}
 		}
 		
-		function replaceChild( $el, $referenceEl ) {
-			$pos = $this->getPosition( $referenceEl );
-			if ( isset($pos) ) {
-				$this[$pos] = $el;
+		private function _setParentNodes( $el ) {
+			if ( isset( $this->parentNode ) ) {
+				if ( is_array( $el ) ) {
+					foreach ( $el as $subEl ) {
+						$subEl->parentNode = $this->parentNode;
+					}
+				} else {
+					$el->parentNode = $this->parentNode;
+				}
+			}		
+		}
+		
+		function appendChild( $el ) {
+			$this->_removeChildNodes( $el );
+			return $this->_appendChild( $el );
+		}
+		
+		private function _appendChild( $el ) {
+			$this->_setParentNodes( $el );
+			if ( !is_array( $el ) ) {
+				$list = array( $el );
+			} else {
+				$list = (array) $el;
 			}
+			parent::__construct( array_merge( (array) $this, $list ) );
+			return $el;
+		}
+
+		function insertBefore( $el, $referenceEl = null ) {
+			$this->_removeChildNodes( $el );
+			if ( !isset($referenceEl) ) {
+				return $this->_appendChild( $el );
+			} else {
+				$pos = $this->getPosition( $referenceEl );
+				if ( !isset($pos) ) {
+					$this->_appendChild( $el );
+				} else {
+					$this->_setParentNodes( $el );
+					if ( !is_array( $el ) ) {
+						$list = array( $el );
+					} else {
+						$list = (array) $el;
+					}
+					$arr = (array) $this;
+					array_splice( $arr, $pos, 0, $list );
+					parent::__construct( $arr );
+				}
+			}
+			return $el;
+		}
+		
+		function replaceChild( $el, $referenceEl ) {
+			$this->_removeChildNodes( $el );
+			$pos = $this->getPosition( $referenceEl );
+			if ( !isset($pos) ) { 
+				return null;
+			} else {
+				$this->_setParentNodes( $el );
+				if ( !is_array( $el ) ) {
+					$list = array( $el );
+				} else {
+					$list = (array) $el;
+				}
+				$arr = (array) $this;
+				array_splice( $arr, $pos, 1, $list ); 
+				parent::__construct( $arr );
+				$referenceEl->parentNode = null;
+			}
+			return $referenceEl;
 		}	
 
 		function removeChild( $el ) {
-			$pos = $this->getPosition( $referenceEl );
-			if ( isset($pos) ) {
-				parent::__construct(
-					array_slice( (array) $this, $pos, 1)
-				);
+			// Warning: must never ever call _removeChildNodes, can be circular.
+			if ( is_array( $el ) ) {
+				foreach( $el as $subEl ) {
+					$this->removeChild( $subEl );
+				}
+			} else {
+				$pos = $this->getPosition( $el );
+				if ( isset($pos) ) {
+					$oldEl = $this[$pos];
+					$arr = (array) $this;
+					array_splice( $arr, $pos, 1);
+					parent::__construct( $arr );
+					if ( isset($this->parentNode) ) {
+						$oldEl->parentNode = null;
+					}
+				} else {
+					return null;
+				}
 			}
+			return $el;
 		}
 		
 	}
@@ -359,7 +516,7 @@
 		public $nodeValue = '';
 		
 		function __construct($value, $parentNode = null) {
-			$this->nodeValue = $value;
+			$this->nodeValue  = $value;
 			$this->parentNode = $parentNode;
 		}
 		
@@ -381,14 +538,36 @@
 				break;
 			}
 		}
+		
+		function __set( $name, $value ) {
+			switch ($name) {
+				case 'previousSibling' :
+				case 'nextSibling' :
+					return false;
+				break;
+			}
+		}
+		
+		function __isset( $name ) {
+			$value = $this->__get($name);
+			return isset($value);
+		}
+		
+		function __clone() {
+			$this->parentNode = null;
+		}
+		
+		function cloneNode( $recurse = false ) {
+			return clone $this;
+		}
 	}
 	
 	class ar_xmlElement extends ar_xmlNode {
-		public $tagName    = null;
-		public $attributes = array();
-		public $childNodes = null;
+		public $tagName     = null;
+		public $attributes  = array();
+		private $childNodes = null;
 		public $parentNode = null;
-		private $idCache = array();
+		private $idCache    = array();
 		
 		function __construct($name, $attributes, $childNodes, $parentNode = null) {
 			$this->tagName    = $name;
@@ -460,17 +639,11 @@
 		}
 		
 		function __get( $name ) {
+			$result = parent::__get( $name );
+			if ( isset($result) ) {
+				return $result;
+			}
 			switch( $name ) {
-				case 'previousSibling' :
-					if (isset($this->parentNode)) {
-						return $this->parentNode->childNodes->getPreviousSibling($this);
-					}
-				break;
-				case 'nextSibling' :
-					if (isset($this->parentNode)) {
-						return $this->parentNode->childNodes->getNextSibling($this);
-					}
-				break;
 				case 'firstChild' :
 					if (isset($this->childNodes) && count($this->childNodes)) {
 						return $this->childNodes[0];
@@ -481,18 +654,51 @@
 						return $this->childNodes[count($this->childNodes)-1];
 					}
 				break;
+				case 'childNodes' :
+					return $this->childNodes;
+				break;
 			}
-			return $this->getElementsByTagName( $name );
+			return $this->getElementsByTagName( $name, false );
 		}
 		
 		function __set( $name, $value ) {
-			$nodeList = $this->__get( $name );
-			if (isset($nodeList[0])) {
-				$node = $nodeList[0];
-				$node->tagName = $value->tagName;
-				$node->attributes = $value->attributes;
-				$node->childNodes = $value->childNodes;
+			$result = parent::__set($name, $value);
+			if (isset($result)) {
+				return $result;
 			}
+			switch ($name ) {
+				case 'childNodes' :
+					if ( !isset($value) ) {
+						$value = $this->getNodeList();
+					} else if ( !($value instanceof ar_xmlNodes) ) {
+						$value = $this->getNodeList($value);
+					}
+					$this->childNodes->setParentNode( null );
+					$this->childNodes = $value;
+					$this->childNodes->setParentNode( $this );
+				break;
+				default:
+					$nodeList = $this->__get( $name );
+					if (isset($nodeList[0])) {
+						$node = $nodeList[0];
+						$node->tagName = $value->tagName;
+						$node->attributes = $value->attributes;
+						$node->childNodes = $value->childNodes;
+					}
+				break;
+			}
+		}
+		
+		function __clone() {
+			parent::__clone();
+			$this->childNodes = $this->getNodeList();
+		}
+		
+		function cloneNode( $recurse = false ) {
+			$childNodes = $this->childNodes->cloneNode( $recurse );
+			$result = parent::cloneNode( $recurse );
+			$result->childNodes = $childNodes;
+			return $result;
 		}
 		
 		function getElementsByTagName( $name ) {
@@ -508,21 +714,20 @@
 		}
 		
 		function appendChild( $el ) {
-			$this->childNodes->appendChild( $el );
+			return $this->childNodes->appendChild( $el );
 		}
 		
 		function insertBefore( $el, $referenceEl = null ) {
-			$this->childNodes->insertBefore( $el, $referenceEl );
+			return $this->childNodes->insertBefore( $el, $referenceEl );
 		}
 		
 		function replaceChild( $el, $referenceEl ) {
-			$this->childNodes->replaceChild( $el, $referenceEl );
+			return $this->childNodes->replaceChild( $el, $referenceEl );
 		}	
 
 		function removeChild( $el ) {
-			$this->childNodes->removeChild( $el );
+			return $this->childNodes->removeChild( $el );
 		}
-
 
 	}
 	

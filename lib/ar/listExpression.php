@@ -12,7 +12,7 @@
 	
 	class ar_listExpression extends arBase implements Iterator, Countable, ArrayAccess {
 		
-		private $list      = null;
+		private $rootlist  = null;
 		private $current   = 0;
 		private $patterns  = array();
 		private $nodeLists = array();
@@ -28,7 +28,7 @@
 		const T_REP_ZERO_MORE  = 10;
 		const T_REP_ONE_MORE   = 11;
 		const T_REP_ZERO_ONE   = 12;
-		const T_NUMER          = 13;
+		const T_NUMBER          = 13;
 		const T_EOF            = 14;
 		
 		const N_OR             = 100;
@@ -37,10 +37,10 @@
 		const N_REPEAT         = 103;
 		
 		public function __construct( $list ) {
-			if (is_array($list)) {
-				$this->list   = $list;
-			} else if ( is_numeric( $list ) ) {
-				$this->length = $list;
+			if ( is_numeric( $list ) ) {
+				$this->length   = $list;
+			} else {
+				$this->rootlist = $list;
 			}
 		}
 		
@@ -60,8 +60,8 @@
 		
 		public function item( $position ) {
 			$result = array();
-			if ( isset($this->list) ) {
-				$length = count($this->list);
+			if ( isset($this->rootlist) ) {
+				$length = count($this->rootlist);
 			} else {
 				$length = $this->length;
 			}
@@ -78,11 +78,11 @@
 		}
 		
 		function offsetExists($offset) {
-			return (exists($this->list[$offset]));
+			return (exists($this->rootlist[$offset]));
 		}
 		
 		function offsetGet($offset) {
-			$position = array_search( $offset, array_keys($this->list) );
+			$position = array_search( $offset, array_keys($this->rootlist) );
 			if (isset($position)) {
 				return $this->item( $position );
 			} else {
@@ -115,11 +115,11 @@
 		}
 		
 		function valid() {
-			return ( $this->current < count($this->list) );
+			return ( $this->current < count($this->rootlist) );
 		}
 		
 		function count() {
-			return (isset($this->list) ? count($this->list): $this->length);
+			return (isset($this->rootlist) ? count($this->rootlist): $this->length);
 		}
 		
 		public static function createNode($type, $data = array()) {

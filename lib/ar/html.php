@@ -100,6 +100,11 @@
 			return parent::__toString( $indent );
 		}
 		
+		public function getNodeList() {
+			$params = func_get_args();
+			return call_user_func_array( array( 'ar_html', 'nodes'), $params );
+		}
+		
 	}
 	
 	class ar_htmlElement extends ar_xmlElement {
@@ -129,6 +134,11 @@
 				$result .= ' />';
 			}			
 			return $result;
+		}
+		
+		public function getNodeList() {
+			$params = func_get_args();
+			return call_user_func_array( array( 'ar_html', 'nodes'), $params );
 		}
 	}
 ?>
