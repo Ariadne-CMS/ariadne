@@ -18,23 +18,27 @@
 		private $nodeLists = array();
 		private $length    = 0;
 		
-		const T_IDENT          = 3;
-		const T_OR             = 4;
-		const T_REP_OPEN       = 5;
-		const T_REP_CLOSE      = 6;
-		const T_COMMA          = 7;
-		const T_PAR_OPEN       = 8;
-		const T_PAR_CLOSE      = 9;
-		const T_REP_ZERO_MORE  = 10;
-		const T_REP_ONE_MORE   = 11;
-		const T_REP_ZERO_ONE   = 12;
-		const T_NUMBER          = 13;
-		const T_EOF            = 14;
+		const T_IDENT            = 3;
+		const T_OR               = 4;
+		const T_REP_OPEN         = 5;
+		const T_REP_CLOSE        = 6;
+		const T_COMMA            = 7;
+		const T_PAR_OPEN         = 8;
+		const T_PAR_CLOSE        = 9;
+		const T_REP_ZERO_MORE    = 10;
+		const T_REP_ONE_MORE     = 11;
+		const T_REP_ZERO_ONE     = 12;
+		const T_NUMBER           = 13;
+		const T_EOF              = 14;
+		const T_MODIFIERS_OPEN   = 15;
+		const T_MODIFIERS_CLOSE  = 16;
+		const T_ASSIGN           = 17;
+		const T_LIST_SEP         = 18;
 		
-		const N_OR             = 100;
-		const N_AND            = 101;
-		const N_IDENT          = 102;
-		const N_REPEAT         = 103;
+		const N_OR               = 100;
+		const N_AND              = 101;
+		const N_IDENT            = 102;
+		const N_REPEAT           = 103;
 		
 		public function __construct( $list ) {
 			if ( is_numeric( $list ) ) {
@@ -222,22 +226,30 @@
 					case ')' === $yych: ($token || $token = ar_listExpression::T_PAR_CLOSE);
 					case '*' === $yych: ($token || $token = ar_listExpression::T_REP_ZERO_MORE);
 					case '+' === $yych: ($token || $token = ar_listExpression::T_REP_ONE_MORE);
+					case '?' === $yych: ($token || $token = ar_listExpression::T_REP_ZERO_ONE);
+					case '[' === $yych: ($token || $token = ar_listExpression::T_MODIFIERS_OPEN);
+					case ']' === $yych: ($token || $token = ar_listExpression::T_MODIFIERS_CLOSE);
+					case ':' === $yych: ($token || $token = ar_listExpression::T_ASSIGN);
+					case ';' === $yych: ($token || $token = ar_listExpression::T_LIST_SEP);
 						$value = $yych; $yych = $YYBUFFER[++$YYCURSOR];
 						return $token;
 					break;
 					case $this->class_whitespace[$yych] === $yych:
 						$yych = $YYBUFFER[++$YYCURSOR]; continue;
 					break;
-					case '?' === $yych:
-						$value = $yych;
-						$yych = $YYBUFFER[++$YYCURSOR];						
-						return ar_listExpression::T_REP_ZERO_ONE;
-					break;
 					case $this->class_number[$yych] === $yych:
 						$value = "";
 						while ($this->class_number[$yych] == $yych && ($yych != "\000")) {
 							$value .= $yych;
 							$yych = $YYBUFFER[++$YYCURSOR];
+						}
+						if ($yych == '.') {
+							$value .= $yych;
+							$yych = $YYBUFFER[++$YYCURSOR];
+							while ($this->class_number[$yych] == $yych && ($yych != "\000")) {
+								$value .= $yych;
+								$yych = $YYBUFFER[++$YYCURSOR];
+							}
 						}
 						return ar_listExpression::T_NUMBER;
 					break;
@@ -276,7 +288,7 @@
 		}
 
 		private function parseOr() {
-			$node = $this->parseAnd();
+			$node    = $this->parseAnd();
 			while ($this->scanner->token_ahead == ar_listExpression::T_OR) {
 				$this->scanner->next();
 				$node = ar_listExpression::createNode(
@@ -294,18 +306,43 @@
 			$prevNode = null;
 			while ($node = $this->parseIdent()) {
 					$node = $this->parseRepeat($node);
+					$node->setModifiers($this->parseModifiers());
 					if ($prevNode) {
 						$node = ar_listExpression::createNode(
 									ar_listExpression::N_AND,
 									Array(
-										'nodeLeft'	=> $node,
-										'nodeRight'	=> $prevNode
+										'nodeLeft'  => $node,
+										'nodeRight' => $prevNode
 									)
 						);
 					}
 					$prevNode = $node;
 			}
 			return $prevNode;
+		}
+
+		private function parseModifiers() {
+			if ($this->scanner->token_ahead == ar_listExpression::T_MODIFIERS_OPEN) {
+				$this->scanner->next();
+				while (!in_array($this->scanner->token_ahead, Array(ar_listExpression::T_MODIFIERS_CLOSE, ar_listExpression::T_EOF))) {
+					$modifierName = $this->scanner->token_ahead_value;
+					$modifierValue = true;
+					$this->scanner->next();
+					if ($this->scanner->token_ahead == ar_listExpression::T_ASSIGN) {
+						$this->scanner->next();
+						$modifierValue = $this->scanner->token_ahead_value;
+						$this->scanner->next();
+					}
+					while ($this->scanner->token_ahead == ar_listExpression::T_LIST_SEP) {
+						$this->scanner->next();
+					}
+					$modifiers[$modifierName] = $modifierValue;
+				}
+				if ($this->scanner->token_ahead == ar_listExpression::T_MODIFIERS_CLOSE) {
+					$this->scanner->next();
+				}
+			}
+			return $modifiers;
 		}
 
 		private function parseIdent() {
@@ -315,7 +352,7 @@
 						$node = ar_listExpression::createNode(
 									ar_listExpression::N_IDENT,
 									Array(
-										'value'		=> $this->scanner->token_value
+										'value'   => $this->scanner->token_value
 									)
 						);
 					break;
@@ -409,13 +446,24 @@
 
 	}
 
-	interface ar_listExpressionNode {
+	abstract class ar_listExpressionNode {
 
-		function run($count, $offset); 
+		abstract protected function run($count, $offset, $modifiers = Array());
 
+		public function setModifiers($modifiers) {
+			$this->modifiers = $modifiers;
+		}
+
+		public function getModifiers($modifiers = Array()) {
+			if (isset($this->modifiers['flow'])) {
+				$modifiers['flow'] = $this->modifiers['flow'];
+			}
+			$modifiers['share'] = $this->modifiers['share'];
+			return $modifiers;
+		}
 	}
 
-	class ar_listExpressionNodeOr implements ar_listExpressionNode {
+	class ar_listExpressionNodeOr extends ar_listExpressionNode {
 
 		function __construct($data) {
 			$nodeLeft = $data['nodeLeft']; $nodeRight = $data['nodeRight'];
@@ -443,17 +491,17 @@
 
 		}
 
-		function run($count, $offset) {
+		function run($count, $offset, $modifiers = Array()) {
 			if ($this->left->min <= $count) {
-				return $this->left->run($count, $offset);
+				return $this->left->run($count, $offset, $modifiers);
 			} else {
-				return $this->right->run($count, $offset);
+				return $this->right->run($count, $offset, $modifiers);
 			}
 		}
 
 	}
 
-	class ar_listExpressionNodeAnd implements ar_listExpressionNode {
+	class ar_listExpressionNodeAnd extends ar_listExpressionNode {
 
 		function __construct($data) {
 			$nodeLeft = $data['nodeLeft']; $nodeRight = $data['nodeRight'];
@@ -470,24 +518,57 @@
 			$this->right		= $nodeRight;
 		}
 
-		function run($count, $offset) {
+		function run($count, $offset, $modifiers = Array()) {
 			$require = (($this->right->req) ? $this->right->min : 0) + (($this->left->req) ? $this->left->min : 0);
 			if ($count < $require) {
 				return $count;
 			}
+			$modifiers = $this->getModifiers($modifiers);
 
-			$rightCount = $count;
-			$leftCount	= 0;
-			if ($this->left->req) {
-				$rightCount -= $this->left->min;
-				$leftCount	+= $this->left->min;
-			}
-			if ($this->right->max && $rightCount > $this->right->max) {
-				$leftCount  += ($rightCount - $this->right->max);
-				$rightCount = $this->right->max;
+			// FIXME: code duplication which we should be able to reduce by parameterizing 'left' and 'right'
+			if ($modifiers['flow'] == 'rl') {
+				if ($this->left->modifiers['share']) {
+					$rightCount = (int)($count * (float)$this->left->modifiers['share']);
+					$leftCount  = $count - $rightCount;
+					if ($this->right->req && $rightCount < $this->right->min) {
+						$leftCount -= $this->right->min - $rightCount;
+						$rightCount = $this->right->min;
+					}
+				} else {
+					$leftCount  = $count;
+					$rightCount = 0;
+					if ($this->right->req) {
+						$rightCount += $this->right->min;
+						$leftCount  -= $this->right->min;
+					}
+				}
+				if ($this->left->max && $leftCount > $this->left->max) {
+					$rightCount += ($leftCount - $this->left->max);
+					$leftCount  = $this->left->max;
+				}
+			} else {
+				if ($this->left->modifiers['share']) {
+					$leftCount = (int)($count * (float)$this->left->modifiers['share']);
+					$rightCount  = $count - $leftCount;
+					if ($this->left->req && $leftCount < $this->left->min) {
+						$rightCount-= $this->left->min - $leftCount;
+						$leftCount  = $this->left->min;
+					}
+				} else {
+					$rightCount = $count;
+					$leftCount	= 0;
+					if ($this->left->req) {
+						$rightCount -= $this->left->min;
+						$leftCount	+= $this->left->min;
+					}
+				}
+				if ($this->right->max && $rightCount > $this->right->max) {
+					$leftCount  += ($rightCount - $this->right->max);
+					$rightCount = $this->right->max;
+				}
 			}
 			if ($rightCount >= $this->right->min) {
-				$rightResult = $this->right->run($rightCount, $offset);
+				$rightResult = $this->right->run($rightCount, $offset, $modifiers);
 				if (is_string($rightResult)) {
 					return $rightResult;
 				}
@@ -500,7 +581,7 @@
 				$rightCount	= 0;
 			}
 			if ($leftCount >= $this->left->min) {
-				return $this->left->run($leftCount, $offset - $rightCount);
+				return $this->left->run($leftCount, $offset - $rightCount, $modifiers);
 			} else {
 				return $leftCount;
 			}
@@ -508,7 +589,7 @@
 
 	}
 
-	class ar_listExpressionNodeIdent implements ar_listExpressionNode {
+	class ar_listExpressionNodeIdent extends ar_listExpressionNode {
 
 		function __construct($data) {
 			$this->value		= $data['value'];
@@ -517,7 +598,7 @@
 			$this->max			= 1;
 		}
 
-		function run($count, $offset) {
+		function run($count, $offset, $modifiers = Array()) {
 			if ($offset == 0) {
 				return $this->value;
 			} else {
@@ -527,7 +608,7 @@
 
 	}
 
-	class ar_listExpressionNodeRepeat implements ar_listExpressionNode {
+	class ar_listExpressionNodeRepeat extends ar_listExpressionNode {
 
 		function __construct($data) {
 			$nodeLeft			= $data['nodeLeft'];
@@ -539,7 +620,7 @@
 			$this->left			= $nodeLeft;
 		}
 
-		function run($count, $offset) {
+		function run($count, $offset, $modifiers = Array()) {
 			if ($count < $this->minRep * $this->left->min) {
 				return $count;
 			}
@@ -547,12 +628,13 @@
 				return $count - $this->max;
 			}
 
-			$rightCount		= $count;
-			$minRep			= $this->minRep;
+			$modifiers  = $this->getModifiers($modifiers);
+			$rightCount = $count;
+			$minRep     = $this->minRep;
 			do {
 				$minRepSize		= ($minRep > 0) ? (($minRep - 1) * $this->left->min) : 0;
 
-				$rightResult	= $this->left->run($rightCount - $minRepSize, $offset);
+				$rightResult	= $this->left->run($rightCount - $minRepSize, $offset, $modifiers);
 				if (is_string($rightResult)) {
 					return $rightResult;
 				}
@@ -561,7 +643,7 @@
 				$rightRest		= $rightCount % $matchSize;
 				$minRep			= $minRep - $rightRep;
 				if ($offset < $rightCount - $rightRest) {
-					return $this->left->run($matchSize, $offset % $matchSize);
+					return $this->left->run($matchSize, $offset % $matchSize, $modifiers);
 				} else {
 					$offset		= $offset - ($rightCount - $rightRest);
 					$rightCount	= $rightRest;
