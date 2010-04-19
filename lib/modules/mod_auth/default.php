@@ -212,10 +212,12 @@
 								debug("checkLogin: could not login ($login) on private session (".$ARCurrent->session->id.") with credentials from cookie: removing cookie", "all");
 								unset($cookie[$ARCurrent->session->id]);
 								setcookie("ARCookie", serialize($cookie), 0, '/');
+								$this->getUser('public');
 								$result = LD_ERR_ACCESS;
 							}
 						} else {
 							debug("checkLogin: user tried to hijack a session (".$ARCurrent->session->id.") ", "all");
+							$this->getUser('public');
 							$result = LD_ERR_ACCESS;
 						}
 					}
