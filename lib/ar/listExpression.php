@@ -76,7 +76,9 @@
 			}
 			foreach ( $this->nodeLists as $i => $nodeList ) {
 				$item = $nodeList->run($length, $position);
-				if ($item !== '.') {
+				// FIXME: $item kan nu een getal zijn en dat betekent dan 'nog zoveel nodig'
+				// maar ik wil ook getallen uit een pattern kunnen laten komen...
+				if ( ( $item !== '.') && ( !is_numeric( $item ) ) ) {
 					$result[$i] = $item;
 				}
 			}
@@ -231,7 +233,7 @@
 					case '?' === $yych: ($token || $token = ar_listExpression::T_REP_ZERO_ONE);
 					case '[' === $yych: ($token || $token = ar_listExpression::T_MODIFIERS_OPEN);
 					case ']' === $yych: ($token || $token = ar_listExpression::T_MODIFIERS_CLOSE);
-					case ':' === $yych: ($token || $token = ar_listExpression::T_ASSIGN);
+					case '=' === $yych: ($token || $token = ar_listExpression::T_ASSIGN);
 					case ';' === $yych: ($token || $token = ar_listExpression::T_LIST_SEP);
 						$value = $yych; $yych = $YYBUFFER[++$YYCURSOR];
 						return $token;
@@ -457,10 +459,10 @@
 		}
 
 		public function getModifiers($modifiers = Array()) {
-			if (isset($this->modifiers['flow'])) {
-				$modifiers['flow'] = $this->modifiers['flow'];
+			if (isset($this->modifiers['dir'])) {
+				$modifiers['dir'] = $this->modifiers['dir'];
 			}
-			$modifiers['share'] = $this->modifiers['share'];
+			$modifiers['limit'] = $this->modifiers['limit'];
 			return $modifiers;
 		}
 	}
@@ -528,9 +530,9 @@
 			$modifiers = $this->getModifiers($modifiers);
 
 			// FIXME: code duplication which we should be able to reduce by parameterizing 'left' and 'right'
-			if ($modifiers['flow'] == 'rl') {
-				if ($this->left->modifiers['share']) {
-					$rightCount = (int)($count * (float)$this->left->modifiers['share']);
+			if ($modifiers['dir'] == 'rtl') {
+				if ($this->left->modifiers['limit']) {
+					$rightCount = (int)($count * (float)$this->left->modifiers['limit']);
 					$leftCount  = $count - $rightCount;
 					if ($this->right->req && $rightCount < $this->right->min) {
 						$leftCount -= $this->right->min - $rightCount;
@@ -549,8 +551,8 @@
 					$leftCount  = $this->left->max;
 				}
 			} else {
-				if ($this->left->modifiers['share']) {
-					$leftCount = (int)($count * (float)$this->left->modifiers['share']);
+				if ($this->left->modifiers['limit']) {
+					$leftCount = (int)($count * (float)$this->left->modifiers['limit']);
 					$rightCount  = $count - $leftCount;
 					if ($this->left->req && $leftCount < $this->left->min) {
 						$rightCount-= $this->left->min - $leftCount;

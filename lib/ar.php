@@ -173,7 +173,7 @@
 					trigger_error("Method $realName not found in class ".get_class($this), E_USER_ERROR);
 				}
 			} else {
-				trigger_error("Method $realName not found in class ".get_class($this), E_USER_ERROR);
+				trigger_error("Method $name not found in class ".get_class($this), E_USER_ERROR);
 			}
 		}
 	}

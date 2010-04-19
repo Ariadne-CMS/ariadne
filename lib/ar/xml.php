@@ -11,7 +11,6 @@
 
 		public static $indenting = true;
 		private static $comments = true;
-		
 		public static $indent = "\t";
 		
 		public static function configure( $option, $value ) {
@@ -153,7 +152,8 @@
 
 		private $parentNode = null;
 		public $attributes  = array();
-	
+		public $isDocumentFragment = true;
+		
 		public static function mergeArguments(){
 			$args  = func_get_args();
 			$nodes = array();
@@ -189,7 +189,7 @@
 			return (!trim($var)=='');
 		}
 
-		public function __toString( $indentWith = null) {
+		public function __toString( $indentWith = null ) {
 			foreach ( $this->attributes as $name => $value ) {
 				$count = 0;
 				foreach ( $this as $key => $node ) {
@@ -202,13 +202,17 @@
 			}
 			$result = '';
 			$indent = isset($indentWith) ? $indentWith : (ar_xml::$indenting ? ar_xml::$indent : '');
-			$list   = array_filter( (array) $this, array( self, 'removeEmptyNodes' ) );
+			
 			$count  = 0;
 			$total  = count($this);
-			foreach ( $list as $node) {
+			foreach ( $this as $node) {
 				if ( $node instanceof ar_xmlElement) {
-					$result .= ($node->__toString($indentWith, $count, $total));
-				} else {
+					$result .= $node->__toString($indentWith, $count, $total);
+				} else if ( $node instanceof ar_xmlNode) {
+					if ( trim($node->nodeValue) ) {
+						$result .= $node;
+					}
+				} else if ( is_string($node) && ($node = trim($node) ) ) {
 					$result .= ar_xml::indent( (string) $node, $indentWith);
 				}
 				++$count;
@@ -228,12 +232,7 @@
 			} else if ( is_array( $value ) ) {
 				$newvalue = array();
 				foreach ($value as $key => $subvalue ) {
-					$newsub = $this->_runPatterns( $subvalue );
-					if (is_array($newsub)) {
-						$newvalue += $newsub;
-					} else {
-						$newvalue[] = $newsub;
-					}
+					$newvalue[$key] = $this->_runPatterns( $subvalue );
 				}
 				$value = $newvalue;
 			}
@@ -245,13 +244,8 @@
 				$result = $value->item( $position );
 			} else if ( is_array($value) ) {
 				$result = array();
-				foreach( $value as $subvalue ) {
-					$newvalue = $this->_applyValues( $subvalue, $position );
-					if (is_array($newvalue)) {
-						$result = array_merge($result, $newvalue);
-					} else {
-						$result[] = $newvalue;
-					}
+				foreach( $value as $key => $subvalue ) {
+					$result[$key] = $this->_applyValues( $subvalue, $position );
 				}
 			} else {
 				$result = $value;
@@ -262,7 +256,15 @@
 		public function setAttribute( $name, $value, $dynamic = true ) {
 			$value = $this->_runPatterns($value);
 			if ($dynamic) {
-				$this->attributes[$name] = $value;
+				//FIXME: misschien echt pas op __toString runnen? dus een else doen...
+				if ( isset($this->attributes[$name]) && is_array($value) && !isset($value[0]) ) {
+					if (!is_array($this->attributes[$name])) {
+						$this->attributes[$name] = array( $this->attributes[$name] );
+					}
+					$this->attributes[$name] = array_merge( (array) $this->attributes[$name], $value );
+				} else {
+					$this->attributes[$name] = $value;
+				}
 			}
 			$count = 0;
 			foreach ( $this as $key => $node ) {
@@ -280,11 +282,17 @@
 					return $this->parentNode;
 				break;
 				default :
-					if (isset($this[0]) && is_object($this[0]) ) {
-						$el = $this[0];
-						return $el->{$name};
+					if (!isset($this->parentNode) && !$this->isDocumentFragment ) {
+						$result = array();
+						foreach ($this as $node) {
+							$temp = $node->getElementsByTagName( $name, false );
+							$result = array_merge( $result, (array) $temp);
+						}
+						$result = $this->getNodeList( $result );
+						$result->isDocumentFragment = false;
+						return $result;
 					} else {
-						return null;
+						return $this->getElementsByTagName( $name, false );
 					}
 				break;
 			}
@@ -337,24 +345,26 @@
 			return $result;
 		}
 		
-		public function getNodeList() {
+		protected function getNodeList() {
 			$params = func_get_args();
 			return call_user_func_array( array( 'ar_xml', 'nodes'), $params );
 		}
 		
 		function getElementsByTagName( $name, $recurse = true ) {
-			$nodeList = $this->getNodeList();
+			$nodeList = array(); 
 			foreach ($this as $node) {
 				if ( $node instanceof ar_xmlElement ) {				
-					if ( $node->tagName == $name) {
+					if ( $name == '*' || $node->tagName == $name) {
 						$nodeList[] = $node;
 					}
 					if ($recurse) {
-						$nodeList = $this->getNodeList( $nodeList, $node->getElementsByTagName( $name ) );
+						$nodeList = array_merge( $nodeList, (array) $node->getElementsByTagName( $name ) );
 					}
 				}
 			}
-			return $nodeList;
+			$result = $this->getNodeList( $nodeList );
+			$result->isDocumentFragment = false;
+			return $result;
 		}
 		
 		function __clearAllNodes() {
@@ -374,6 +384,7 @@
 					}
 				}
 			}
+			$this->isDocumentFragment = false;
 		}
 		
 		function getPreviousSibling( $el ) {
@@ -422,10 +433,14 @@
 			if ( isset( $this->parentNode ) ) {
 				if ( is_array( $el ) ) {
 					foreach ( $el as $subEl ) {
+						$subEl->__clearParentIdCache();
 						$subEl->parentNode = $this->parentNode;
+						$subEl->__restoreParentIdCache();
 					}
 				} else {
+					$el->__clearParentIdCache();
 					$el->parentNode = $this->parentNode;
+					$el->__restoreParentIdCache();
 				}
 			}		
 		}
@@ -484,6 +499,7 @@
 				$arr = (array) $this;
 				array_splice( $arr, $pos, 1, $list ); 
 				parent::__construct( $arr );
+				$referenceEl->__clearParentIdCache();
 				$referenceEl->parentNode = null;
 			}
 			return $referenceEl;
@@ -503,6 +519,7 @@
 					array_splice( $arr, $pos, 1);
 					parent::__construct( $arr );
 					if ( isset($this->parentNode) ) {
+						$oldEl->__clearParentIdCache();
 						$oldEl->parentNode = null;
 					}
 				} else {
@@ -511,7 +528,7 @@
 			}
 			return $el;
 		}
-		
+			
 	}
 	
 	class ar_xmlNode extends arBase {
@@ -561,15 +578,22 @@
 		}
 		
 		function cloneNode( $recurse = false ) {
-			return clone $this;
+			return clone($this);
 		}
+		
+		public function __clearParentIdCache() {
+		}
+		
+		public function __restoreParentIdCache() {
+		}
+
 	}
 	
 	class ar_xmlElement extends ar_xmlNode {
 		public $tagName     = null;
 		public $attributes  = array();
 		private $childNodes = null;
-		public $parentNode = null;
+		public $parentNode  = null;
 		private $idCache    = array();
 		
 		function __construct($name, $attributes, $childNodes, $parentNode = null) {
@@ -583,37 +607,70 @@
 			$this->parentNode = $parentNode;
 		}
 		
-		public function __updateIdCache($id, $el) {
-			$this->idCache[$id] = $el;
+		public function __clearParentIdCache() {
+			if ( isset($this->parentNode) && count( $this->idCache ) ) {
+				foreach( $this->idCache as $id => $value ) {
+					$this->parentNode->__updateIdCache($id, null, $value);
+				}
+			}
+		}
+		
+		public function __restoreParentIdCache() {
+			if ( isset($this->parentNode) && count( $this->idCache ) ) {
+				foreach( $this->idCache as $id => $value ) {
+					$this->parentNode->__updateIdCache($id, $value);
+				}
+			}
+		}
+
+		public function __updateIdCache($id, $el, $oldEl = null) {
+			if ( !isset($el) ) {
+				// remove id cache entry
+				if ( isset($this->idCache[$id]) && ($this->idCache[$id]===$oldEl) ) {
+					// only remove id cache pointers to the correct element
+					unset($this->idCache[$id]);
+				}
+			} else {
+				$this->idCache[$id] = $el;
+			}
 			if (isset($this->parentNode)) {
-				$this->parentNode->__updateIdCache($id, $el);
+				$this->parentNode->__updateIdCache($id, $el, $oldEl);
 			}
 		}
 		
 		function setAttributes( array $attributes ) {
-			$oldId = null;
-			if (isset($this->attributes['id'])) {
-				$oldId = $this->attributes['id'];
-			}
-			$this->attributes = $attributes + $this->attributes;
-			$newId = null;
-			if (isset($this->attributes['id'])) {
-				$newId = $this->attributes['id'];
-			}
-			if ($newId !== $oldId) {
-				$this->__updateIdCache($newId, $this);
+			foreach ( $attributes as $name => $value ) {
+				$this->setAttribute( $name, $value );
 			}
 		}
 
 		function setAttribute( $name, $value ) {
-			$this->attributes[$name] = $value;
+			if ( $name == 'id' ) {
+				$oldId = null;
+				if (isset($this->attributes['id'])) {
+					$oldId = $this->attributes['id'];
+				}
+			}
+			if ( is_array($value) && !isset($value[0]) ) {
+				// this bit of magic allows ar_xmlNodes->setAttribute to override only
+				// specific attribute values, leaving others alone, by specifying a
+				// non-number key.
+				if ( !is_array($this->attributes[$name]) ) {
+					$this->attributes[$name] = array( $this->attributes[$name] );
+				}
+				$this->attributes[$name] = array_merge( $this->attributes[$name], $value );
+			} else {
+				$this->attributes[$name] = $value;
+			}
 			if ($name=='id') {
+				if ( isset($oldId) ) {
+					$this->__updateIdCache( $oldId, null, $this );
+				}
 				$this->__updateIdCache($value, $this);
 			}
 		}
 		
 		function __toString( $indent = '', $current = 0 ) {
-			//var_dump($this);
 			$indent = ar_xml::$indenting ? $indent : '';
 			$result = "\n" . $indent . '<' . ar_xml::name( $this->tagName );
 			if ( is_array($this->attributes) ) {
@@ -704,9 +761,9 @@
 			return $result;
 		}
 		
-		function getElementsByTagName( $name ) {
+		function getElementsByTagName( $name , $recurse = true ) {
 			if ( isset( $this->childNodes ) ) {
-				return $this->childNodes->getElementsByTagName( $name );
+				return $this->childNodes->getElementsByTagName( $name, $recurse );
 			}
 		}
 		
