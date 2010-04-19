@@ -1,4 +1,7 @@
 <?php
+	require_once(dirname(__FILE__).'/../ar.php');
+	
+
 	ar_pinp::allow( 'ar_xml' );
 	ar_pinp::allow( 'ar_xmlElement' );
 	ar_pinp::allow( 'ar_xmlNode' );

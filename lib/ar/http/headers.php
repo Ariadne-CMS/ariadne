@@ -1,4 +1,6 @@
 <?php
+	require_once(dirname(__FILE__).'/../../ar.php');
+
 	ar_pinp::allow('ar_http_headers', array(
 		'add', 'sent', 'cache', 'disableCache', 'content', 'redirect', 'getStatusMessage'
 	));

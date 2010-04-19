@@ -11,6 +11,8 @@ Last update: 24 Jun 2009
 
 require_once("Services/Twitter.php");
 
+require_once(dirname(__FILE__).'/../../ar.php');
+
 ar_pinp::allow('ar_connect_twitter', array('init'));
 ar_pinp::allow('ar_connect_twitterService', array('sendRequest', 'setOption', 'setOptions'));
 ar_pinp::allow('ar_connect_twitterWrapper', array());

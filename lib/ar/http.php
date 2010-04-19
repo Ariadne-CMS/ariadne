@@ -1,4 +1,7 @@
 <?php
+	require_once(dirname(__FILE__).'/xml.php');
+	
+
 	ar_pinp::allow( 'ar_http');
 
 	ar_pinp::allow( 'ar_httpClientStream' );

@@ -1,5 +1,7 @@
 <?php
 
+	require_once(dirname(__FILE__).'/../ar.php');
+
 	class ar_pinp extends arBase {
 		private static $allowed;
 		

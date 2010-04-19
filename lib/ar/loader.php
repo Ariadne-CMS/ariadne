@@ -1,4 +1,7 @@
 <?php
+	require_once(dirname(__FILE__).'/../ar.php');
+	    
+
 	ar_pinp::allow('ar_loader');
 
 	class ar_loader extends arBase {

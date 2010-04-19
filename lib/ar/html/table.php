@@ -1,4 +1,6 @@
 <?php
+	require_once(dirname(__FILE__).'/../html.php');
+
 	ar_pinp::allow('ar_html_table');
 
 	class ar_html_table extends arBase {

@@ -1,4 +1,7 @@
 <?php
+
+	require_once(dirname(__FILE__).'/../../ar.php');
+	
 	ar_pinp::alow('ar_http_cookie', array(
 		'get', 'set'
 	));

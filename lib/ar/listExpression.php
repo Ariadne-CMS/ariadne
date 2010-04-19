@@ -1,5 +1,7 @@
 <?php
 
+	require_once(dirname(__FILE__).'/../ar.php');
+
 	ar_pinp::allow('ar_listExpression', array('pattern', 'item') );
 	
 	class ar_listExpression_Pattern {
