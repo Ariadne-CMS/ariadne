@@ -290,6 +290,9 @@
 				case 'lastChild' :
 					return $this[count($this)-1];
 				break;
+				case 'childNodes' :
+					return $this;
+				break;
 				default :
 					if (!isset($this->parentNode) && !$this->isDocumentFragment ) {
 						$result = array();
@@ -415,8 +418,8 @@
 		}
 		
 		function getPosition( $el ) {
-			if ($el instanceof ar_xmlNodes) {
-				return $this->getPosition( $el[0] );
+			if ( is_array($el) ) {
+				return $this->getPosition( reset($el) );
 			} else {
 				foreach ( $this as $pos => $node ) {
 					if ( $node === $el ) {
