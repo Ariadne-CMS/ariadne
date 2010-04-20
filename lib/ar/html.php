@@ -1,5 +1,6 @@
 <?php
 	ar_pinp::allow( 'ar_html' );
+	ar_pinp::allow( 'ar_htmlNode' );
 	ar_pinp::allow( 'ar_htmlElement' );
 	ar_pinp::allow( 'ar_htmlNodes' );
 
@@ -47,7 +48,7 @@
 				$doctype .= ' ' . $type;
 			}
 			$doctype .= ">\n";
-			return $doctype;
+			return new ar_htmlNode($doctype);
 		}
 		
 		public static function canHaveContent( $name ) {
@@ -105,6 +106,10 @@
 			return call_user_func_array( array( 'ar_html', 'nodes'), $params );
 		}
 		
+	}
+
+	class ar_htmlNode extends ar_xmlNode {
+	
 	}
 	
 	class ar_htmlElement extends ar_xmlElement {

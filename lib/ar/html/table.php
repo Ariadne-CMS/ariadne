@@ -3,191 +3,117 @@
 
 	ar_pinp::allow('ar_html_table');
 
-	class ar_html_table extends arBase {
-		protected $attributes;
-		protected $content;
-		protected $caption = '';
+	class ar_html_table extends ar_htmlElement {
+	
+		private $data = array();
+		private $rowHeaderAttributes = null;
+		private $rowHeaders = null;
 		
-		public function __construct( $content, $attributes = null ) {
-			$this->attributes = $attributes;
-			$this->content    = $content;
+		public function __construct( $data= null, $attributes = null, $childNodes = null, $parentNode = null ) {
+			parent::__construct( 'table', $attributes , $childNodes, $parentNode );
+			if ( isset($data) ) {
+				$this->body( $data );
+			}
 		}
 		
-		public function body( $content ) {
-			if (!is_array($content) ) {
-				$content = array( $content );
+		public function body( $data ) {
+			if (!is_array($data) ) {
+				$data = array( $data );
 			}
-			$originalContent = $content;
-			$content = $this->getRows($content, array( 'body' => true ) );
-			$this->body = $this->decorate( array(
-				'name'    => 'tbody',
-				'content' => $content,
-				'flags'   => array(
-					'content' => $originalContent
-				)
+			$rows =	$this->getRows($data)->setAttribute( 'class', array(
+				'tableFirstLast' => ar::listPattern( 'tableFirst .*', '.* tableLast'),
+				'tableOddEven'   => ar::listPattern( '(tableOdd tableEven?)*' )
 			) );
+			$this->appendChild( 
+				ar_html::tag( 
+					'tbody', $rows
+				) 
+			);
 			return $this;
 		}
 
-		private function getRows( $list, $flags = array(), $attributes = array() ) {
+		private function getRows( $list ) {
 			$nodes   = ar_html::nodes();
-			$total   = count($list);
-			$current = 1;
 			foreach ( $list as $key => $content ) {
-				$firstRow = ( 1 == $current );
-				$lastRow  = ( $total == $current );
-				$oddRow   = ( $current % 2 );
-				$currentFlags = array_merge( (array) $flags, array(
-					'currentRow' => $current,
-					'firstRow'   => $firstRow,
-					'lastRow'    => $lastRow,
-					'oddRow'     => $oddRow,
-					'content'    => $list
-				) );
-				$currentAttributes = $attributes;
-				if ( !is_array($content) ) {
-					$content = array($content);
+				if ( !is_array( $content ) ) {
+					$content = array( $content );
 				}
-				if ( isset($this->rowHeaders) ) {
-					$header = $this->decorate( array(
-						'name'       => 'th',
-						'attributes' => array_merge( 
-							(array) $currentAttributes, 
-							(array) $this->rowHeaderAttributes, 
-							array( 'scope' => 'row' ) 
-						),
-						'content'    => $this->rowHeaders[$key],
-						'flags'      => $currentFlags
-					) );
-				} else {
-					$header = '';
-				}
-				$content = $this->getCells( $content, $currentFlags, 'td', $currentAttributes);
-				$currentAttributes['class'] = array_merge( (array) $attributes['class'], array(
-					( $firstRow ? 'tableFirst' : 
-						( $lastRow ? 'tableLast' : '' )
-					),
-					( is_numeric($key) ? '' : 'tableRow_'.$key ),
-					( $oddRow ? 'tableOdd' : 'tableEven' )
+				$cells = $this->getCells( $content, 'td')->setAttribute('class', array(
+					'tableOddEven'   => ar::listPattern( '(tableOdd tableEven?)*' ),
+					'tableFirstLast' => ar::listPattern( 'tableFirst .*', '.* tableLast')
 				) );
-				$nodes[] = $this->decorate( array(
-					'name'       => 'tr',
-					'attributes' => $currentAttributes,
-					'content'    => ar('html')->nodes($header, $content),
-					'flags'      => $currentFlags
-				) );
-				$current++;
+				$nodes[] = ar_html::tag( 'tr', ar_html::nodes( $header, $cells ) );
 			}
 			return $nodes;
 		}
 		
-		private function getCells( $list, $flags = array(), $tag, $attributes = array() ) {
+		private function getCells( $list, $tag = 'td') {
 			$nodes   = ar_html::nodes();
-			$total   = count($list);
-			$current = 1;
 			foreach ($list as $key => $content ) {
-				$firstColumn = (1==$current);
-				$lastColumn  = ($total==$current);
-				$oddColumn   = ($current % 2);
-				$currentFlags = array_merge( (array) $flags, array(
-					'currentColumn' => $current,
-					'firstColumn'   => $firstColumn,
-					'lastColumn'    => $lastColumn,
-					'oddColumn'     => $oddColumn,
-					'content'       => $list
-				) );
-				$currentAttributes = $attributes;
-				$currentAttributes['class'] = array_merge( (array) $attributes['class'], array(
-					( $firstColumn ? 'tableFirst' : 
-						( $lastColumn ? 'tableLast' : '' ) 
-					),
-					( $oddColumn ? 'tableOdd' : 'tableEven' )
-				) );
-				$nodes[] = $this->decorate( array(
-					'name'       => $tag,
-					'attributes' => $currentAttributes,
-					'content'    => $content,
-					'flags'      => $currentFlags
-				) );
-				$current++;
+				$nodes[] = ar_html::tag($tag, $content);
 			}
 			return $nodes;
 		}
 		
 		public function head( $list, $attributes = null ) {
 			if ( is_array($list) ) {
-				$flags = array(
-					'firstRow'   => true,
-					'lastRow'    => true,
-					'oddRow'     => false,
-					'head'       => true,
-					'currentRow' => 1
-				);
-				$nodes = $this->getCells( $list, $flags, 'th' );
-				$this->head = $this->decorate( array(
-					'name'       => 'thead', 
-					'attributes' => $attributes,
-					'content'    => $this->decorate( array(
-						'name'        => 'tr',
-						'content'     => $nodes,
-						'flags'       => $flags
-					) ),
-					'flags'      => array(
-						'content'     => $list
-					) 
-				) );
-			}
-			return $this;
-		}
-		
-		protected function decorate( $tag ) {
-			if ( isset( $this->decorator ) && is_callable( $this->decorator ) ) {
-				$decorator = $this->decorator;
-				return $decorator( $tag['name'], $tag['attributes'], $tag['content'], $tag['flags'] );
-			} else {
-				return ar_html::tag( $tag['name'], $tag['attributes'], $tag['content'] );
-			}
-		}
-		
-		public function setDecorator( $callback ) {
-			if ( !is_callable( $callback ) ) {
-				if ( is_string( $callback ) ) {
-					$callback = ar_pinp::getCallback( $callback, array( 'tag', 'attributes', 'content', 'flags' ) );
-				} else {
-					return $this;
+				$nodes = $this->getCells( $list, 'th' );
+				$head = $this->thead->firstChild; //current( $this->getElementsByTagName('thead') );
+				if ( !isset($head) ) {
+					$head = ar_html::tag( 'thead', $attributes );
+					if ( $foot = $this->tfoot->firstChild ) {
+						$this->insertBefore( $head, $foot );
+					} else if ( $body = $this->tbody->firstChild ) {
+						$this->insertBefore( $head, $body );
+					} else {
+						$this->appendChild( $head );
+					}
+				} else if (isset($attributes)) {
+					$head->setAttributes( $attributes );
 				}
-			}				
-			$this->decorator = $callback;
+				$head->appendChild( ar_html::tag( 'tr', $nodes ) );
+			}
 			return $this;
 		}
 		
 		public function foot( $list, $attributes = null ) {
 			if ( is_array( $list ) ) {
-				$flags = array(
-					'firstRow'   => true,
-					'lastRow'    => true,
-					'oddRow'     => true,
-					'foot'       => true,
-					'currentRow' => 1
-				);
-				$nodes = $this->getCells( $list, $flags, 'td' );
-				$this->foot = $this->decorate( array(
-					'name'       => 'tfoot',
-					'attributes' => $attributes,
-					'content'    => $this->decorate( array(
-						'name'       => 'tr',
-						'content'    => $nodes,
-						'flags'      => $flags
-					) ),
-					'flags'      => array(
-						'content'    => $list
-					)
-				) );
+				$nodes = $this->getCells( $list, 'td' );
+				$foot = $this->tfoot->lastChild;
+				if ( !isset($foot) ) {
+					$foot = ar_html::tag( 'tfoot', $attributes );
+					if ( $head = $this->thead->lastChild ) {
+						$this->insertBefore( $foot, $head->nextSibling );
+					} else if ( $body = $this->tbody->firstChild ) {
+						$this->insertBefore( $foot, $body );
+					} else {
+						$this->appendChild( $foot );
+					}
+				} else if (isset( $attributes ) ) {
+					$foot->setAttributes( $attributes );
+				}
+				$foot->appendChild( ar_html::tag( 'tr', $nodes ) );
 			}
 			return $this;
 		}
 		
 		public function rowHeaders( $list, $attributes = array() ) {
+			foreach ( $list as $key => $value ) {
+				if ( ! ($value instanceof ar_htmlNode ) || $value->tagName != 'th' ) {
+					$list[$key] = ar_html::tag( 'th',
+						array_merge( 
+							(array) $attributes, 
+							array( 'scope' => 'row' ) 
+						),
+						$value
+					);
+				}
+			}
+			reset($list);
+			foreach( $this->tbody->lastChild->childNodes as $row ) {
+				$row->insertBefore( current($list), $row->firstChild );
+				next($list);
+			}
 			$this->rowHeaders = $list;
 			$this->rowHeaderAttributes = $attributes;
 			return $this;
@@ -195,38 +121,21 @@
 			
 		public function cols() {
 			$args = func_get_args();
-			$this->cols = call_user_func_array( array('ar_html', 'nodes'), $args );
+			$cols = call_user_func_array( array('ar_html', 'nodes'), $args );
+			$this->removeChild( $this->colgroup );
+			$this->removeChild( $this->col );
+			$this->insertBefore( $cols, $this->firstChild );
 			return $this;
 		}
 		
 		public function caption($content, $attributes = null) {
-			$args = func_get_args();
-			$this->caption = $this->decorate( array(
-				'name'       => 'caption',
-				'content'    => $content,
-				'attributes' => $attributes
-			) );
-			return $this;
-		}
-		
-		public function __toString() {
-			if (!isset($this->body)) {
-				$this->body( $this->content );
+			$newCaption = ar_html::tag( 'caption', $content, $attributes );
+			if ( $caption = $this->caption->firstChild ) {
+				$this->replaceChild( $newCaption, $caption );
+			} else {
+				$this->insertBefore( $newCaption, $this->firstChild );
 			}
-			return ''.$this->decorate( array(
-				'name'       => 'table',
-				'attributes' => $this->attributes,
-				'content'    => ar_html::nodes(
-					$this->caption,
-					$this->cols, 
-					$this->head, 
-					$this->foot, 
-					$this->body
-				),
-				'flags'      => array(
-					'content' => $this->content
-				)
-			) );
+			return $this;
 		}
 	}
 ?>
