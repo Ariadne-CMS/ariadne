@@ -2386,7 +2386,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		global $ARCurrent;
 
 		$nls=eregi_replace('[^a-z]*','',$nls);
-		$section=eregi_replace('[^a-z\._:-]*','',$section);
+		$section=eregi_replace('[^a-z0-9\._:-]*','',$section);
 		if (!$section) {
 			include($this->store->get_config("code")."nls/".$nls);
 			$this->ARnls = array_merge((array)$this->ARnls, $ARnls);
