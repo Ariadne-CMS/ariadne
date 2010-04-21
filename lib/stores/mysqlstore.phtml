@@ -87,7 +87,7 @@ class mysqlstore extends store{
 
 		//$this->proxystore = proxystore::createproxy($this,$config);
 		$this->proxystore = $this;
-		debug("mysqlstore: end","all");
+		debug("mysqlstore: end","store");
 	}
 
 	public function getIterator($selector, $definitions, $objects) {
@@ -107,28 +107,56 @@ class mysqlstore extends store{
 
 	 **********************************************************************************/ 
 
-		debug("call($template, ".serialize($args).", [list])","store");
+		if (debuglevel('store')) {
+			debug("call(".var_export($template, true).", ".var_export($args, true).", [list])","store");
+		}
 
 		$result = Array();
 		$this->error="";
 		$count = @mysql_num_rows($objects["list"]);
 		while ( $row = @mysql_fetch_array($objects["list"]) ) {
+			$multiCall = false;
 			$object = $this->newobject( 
 				$row["path"], $row["parent"], $row["type"], 
 				unserialize($row["object"]), $row["id"], $row["lastchanged"], 
 				$row["vtype"], strlen($row["object"]), $row["priority"]
 			);
-			if ( isset($options['usePathAsKey']) && $options['usePathAsKey'] ) {
-				$result[$row['path']] = $object->call( $template, $args );
+			if ($template instanceof ar_listExpression) { // optimization, prevents extra item() call
+				// insert logic to allow templates and arguments from a list expression.
+				$callInfo = $template->current();
+				$template->next();
+			} else if ( is_array( $template) ) { // array of templates given
+				$callInfo = current($template);
+				next($template);
 			} else {
-				$result[] = $object->call( $template, $args );
+				$callInfo = array( $template );
+			}
+			if ( is_array( $callInfo ) ) {
+				foreach( $callInfo as $singleCall ) {
+					$templateArgs = $args;
+					if ( ( is_array( $singleCall ) || $singleCall instanceof ArrayAccess) && $singleCall['template'] ) {
+						$templateName = $singleCall['template'];
+						if ( is_array( $singleCall['params'] ) ) {
+							$templateArgs = array_merge( (array) $templateArgs, $singleCall['params'] );
+						}
+					} else {
+						$templateName = (string) $singleCall;
+					}
+					if ( isset($options['usePathAsKey']) && $options['usePathAsKey'] ) {
+						$result[$row['path']] = $object->call( $templateName, $templateArgs );
+					} else {
+						$result[] = $object->call( $templateName, $templateArgs );
+					}
+				}
 			}
 		}
 
-		if (!$count) {
-			debug("call: end($template): no objects found whatsoever.","all");
-		} else {
-			debug("call: end($template): $count objects found","all");
+		if (debuglevel('store')) {
+			if (!$count) {
+				debug("call: end: no objects found whatsoever.","store");
+			} else {
+				debug("call: end: $count objects found","store");
+			}
 		}
 		$this->total += $count;
 		return $result;
@@ -139,7 +167,7 @@ class mysqlstore extends store{
 	}
 
 	function info($objects) {
-		debug("call($template, $args, [list])","store");
+		//debug("call($template, $args, [list])","store");
 		while ($row=@mysql_fetch_array($objects["list"])) {
 			unset($row["object"]);
 			$result[]=$row;
@@ -171,7 +199,48 @@ class mysqlstore extends store{
 
 		$query_string="select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path='$epath'";
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
-		debug("get: end","all");
+		debug("get: end","store");
+		return $result;
+	}
+	
+	public function mogrify($id, $type, $vtype = null) {
+		debug("mogrify($id,$type,$vtype)","store");
+		$this->error="";
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$types_tbl=$this->tbl_prefix."types";
+		if ( ( strlen( $type ) > 32 ) || (strlen( $vtype ) > 32 ) ) {
+			$this->error = "Type names are too long, maximum is 32 characters ( $type, $vtype )";
+		} else if ( !$type ) {
+			$this->error = "No type to mogrify to given.";
+		}
+		if (!$this->error && is_string($id)) {
+			$epath = AddSlashes($id);
+			$query_string = "select $nodes_tbl.object from $nodes_tbl where $nodes_tbl.path = '$epath'";
+			$qresult = mysql_db_query($this->database, $query_string, $this->connect_id);
+			if (!$qresult) {
+				$this->error = "Could not fetch object id";
+			} else {
+				$temp = mysql_fetch_array($qresult);
+				$id = $temp["object"];
+			}
+		}
+		if (!$this->error && $id) {
+			$eid = AddSlashes($id);
+			$etype = AddSlashes($type);
+			if (!$vtype) {
+				$vtype = $type;
+			}
+			$evtype = AddSlashes($vtype);
+			$query_string = "update $objects_tbl set type='$etype', vtype='$evtype' where id = $eid";
+			$result = mysql_db_query($this->database, $query_string, $this->connect_id);
+			if (!$result) {
+				$errno = mysql_errno( $this->connect_id );
+				$this->error = "ERROR: Mysql: $errno: ".mysql_error($this->connect_id);
+			}
+		}
+		debug("mogrify: end","store");
 		return $result;
 	}
 
@@ -185,7 +254,7 @@ class mysqlstore extends store{
 
 	 **********************************************************************************/
 
-		debug("touch($path, $timestamp)","store");
+		debug("touch($id, $timestamp)","store");
 		$this->error="";
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
@@ -216,7 +285,7 @@ class mysqlstore extends store{
 			$qresult = mysql_db_query($this->database, $query_string, $this->connect_id);
 			$result = mysql_affected_rows($this->connect_id);
 		}
-		debug("touch: end","all");
+		debug("touch: end","store");
 		return $result;
 	}
 
@@ -244,8 +313,8 @@ class mysqlstore extends store{
 		$result["method"]="ls";
 		$result["path"]=$path;
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
-		debug("ls: query=$query_string","all");
-		debug("ls: end","all");
+		debug("ls: query=$query_string","store");
+		debug("ls: end","store");
 		return $result;
 	}
 
@@ -272,11 +341,11 @@ class mysqlstore extends store{
 		$types_tbl=$this->tbl_prefix."types";
 
 		$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path=substring('$epath',1,length(path)) and $nodes_tbl.path LIKE '$etop%' order by path";
-		debug($query_string, "all");
+		debug($query_string, "store");
 		$result["method"]="parents";
 		$result["path"]=$path;
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
-		debug("parents: end","all");
+		debug("parents: end","store");
 		return $result;
 	}
 
@@ -395,10 +464,10 @@ class mysqlstore extends store{
 				$query_string.="$limit";
 			}
 		}
-		debug("find: query=$query_string","all");
+		debug("find: query=$query_string","store");
 		$result["list"]=mysql_db_query($this->database,$query_string, $this->connect_id);
 		if ($result["list"]) {
-			debug("find: end (".mysql_num_rows($result["list"]).")","all");
+			debug("find: end (".mysql_num_rows($result["list"]).")","store");
 		}
 		return $result;
 	}
@@ -468,7 +537,7 @@ class mysqlstore extends store{
 
 		if (strlen($path)<MAX_PATH_LENGTH) { // initial check
 			if ($id=$this->exists($path)) { //update
-				debug("save: updating","all");
+				debug("save: updating","store");
 				$result = $path;
 				if ($vtype) { // only change/save vtype if it is explicitly set
 					$evtype=AddSlashes($vtype);
@@ -476,18 +545,18 @@ class mysqlstore extends store{
 				} else {
 					$query_string="update $objects_tbl set object='$edata', lastchanged=NULL where id=$id"; 
 				}
-				debug("save: query=$query_string","all");
+				debug("save: query=$query_string","store");
 				mysql_db_query($this->database,$query_string, $this->connect_id);
 				$errno=mysql_errno($this->connect_id);
 				if (!$errno) { // mysql_affected_rows doesn't always work
-					debug("save: query=$query_string","all");
+					debug("save: query=$query_string","store");
 					$this->save_properties($properties, $id, $this); 
 					if($priority !== false) {
 						$query_string="update $nodes_tbl set priority=$epriority where path='$epath'";
 						mysql_db_query($this->database,$query_string, $this->connect_id);
 						$errno=mysql_errno($this->connect_id);
 						if (!$errno) {
-							debug("save: query=$query_string","all");
+							debug("save: query=$query_string","store");
 						} else {
 							$this->error="ERROR: Mysql: $errno: ".mysql_error($this->connect_id);
 							debug("save: query=$query_string","store");
@@ -504,7 +573,7 @@ class mysqlstore extends store{
 					$result=0;
 				}
 			} else { // insert new
-				debug("save: new","all");
+				debug("save: new","store");
 				if ($vtype=="") { // if vtype is not set, it defaults to type for new objects
 					if ($subcpos = strpos($type, '.')) {
 						$vtype = substr($type, 0, $subcpos);
@@ -532,7 +601,7 @@ class mysqlstore extends store{
 						$subid=$this->get_nextid($parent, $mask);
 						$path=ereg_replace("\{([0-9]:)?id\}",strval($subid),$path);
 						$epath=AddSlashes($path);
-						debug("save: new path: $path ($subid)","all");
+						debug("save: new path: $path ($subid)","store");
 					} else {
 						error("PANIC: could not obtain write lock on nodes table!");
 						$this->close();
@@ -546,13 +615,13 @@ class mysqlstore extends store{
 					$result=false;
 				} else {
 					$query_string="insert into $objects_tbl (id,type,object,vtype) values (0,'$etype','$edata','$evtype')";
-					debug("save: query=$query_string","all");
+					debug("save: query=$query_string","store");
 					$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
 					$errno=mysql_errno($this->connect_id);
 					$error=mysql_error($this->connect_id);
 					if (!$errno && $id=mysql_insert_id($this->connect_id)) {
 						$query_string="insert into $nodes_tbl (path,parent,object,priority) values ('$epath','$eparent',$id,$epriority)";
-						debug("save: query=$query_string","all");
+						debug("save: query=$query_string","store");
 						$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
 						$errno=mysql_errno($this->connect_id);
 						$error=mysql_error($this->connect_id);
@@ -587,7 +656,7 @@ class mysqlstore extends store{
 			$this->error="ERROR: Maximum path length (".MAX_PATH_LENGTH." characters) exceeded. Please shorten your filenames.";
 			$result=false;
 		}
-		debug("save: end","all");
+		debug("save: end","store");
 		return $result;
 	}
 
@@ -635,7 +704,7 @@ class mysqlstore extends store{
 		} else { // no such path, so purge already succeeded :)
 			$result=1;
 		}
-		debug("purge: end","all");
+		debug("purge: end","store");
 		return $result;
 	}
 
@@ -676,7 +745,7 @@ class mysqlstore extends store{
 
 			}
 		}
-		debug("delete: end","all");
+		debug("delete: end","store");
 		return $result;
 	}
 
@@ -703,9 +772,9 @@ class mysqlstore extends store{
 		$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
 		if ($temp && ($row=mysql_fetch_array($temp))) {
 			$object=intval($row["object"]);
-			debug("exists: end (yes)","all");
+			debug("exists: end (yes)","store");
 		} else {
-			debug("exists: end (no)","all");
+			debug("exists: end (no)","store");
 		}
 		return $object;
 	}
@@ -761,7 +830,7 @@ class mysqlstore extends store{
 						$subid = $this->get_nextid($parent, $mask);
 						$destination=ereg_replace("\{([0-9]:)?id\}",strval($subid),$destination);
 						$edestination=AddSlashes($destination);
-						debug("link: new destination: $destination ($subid)","all");
+						debug("link: new destination: $destination ($subid)","store");
 					} else {
 						error("PANIC: could not obtain write lock on nodes table!");
 						$this->close();
@@ -781,7 +850,7 @@ class mysqlstore extends store{
 						debug("link: query=$query_string","store");
 						$result=false;
 					}
-					debug("link: end","all");
+					debug("link: end","store");
 					$result=$destination;
 				} else {
 					$result=false;
@@ -862,7 +931,7 @@ class mysqlstore extends store{
 						$subid = $this->get_nextid($parent, $mask);
 						$destination=ereg_replace("\{([0-9]:)?id\}",strval($subid),$destination);
 						$edestination=AddSlashes($destination);
-						debug("move: new destination: $destination ($subid)","all");
+						debug("move: new destination: $destination ($subid)","store");
 					} else {
 						error("PANIC: could not obtain write lock on nodes table!");
 						$this->close();
@@ -882,7 +951,7 @@ class mysqlstore extends store{
 						$query_string="update $nodes_tbl set path=CONCAT('$edestination', SUBSTRING(path, $sourcelength+1)), parent=CONCAT('$edestination', SUBSTRING(parent, $sourcelength+1)) where parent like '$esource%'";
 						$result=$this->store_run_query($query_string);
 					}
-					debug("move: end","all");
+					debug("move: end","store");
 				} else {
 					$result=false;
 					debug("move: end (no $source)","store");
@@ -924,7 +993,7 @@ class mysqlstore extends store{
 		while ($row=@mysql_fetch_array($temp)) {
 			$result[]=$row["path"];
 		}
-		debug("list_paths: end","all");
+		debug("list_paths: end","store");
 		return $result;
 	}
 
@@ -951,7 +1020,7 @@ class mysqlstore extends store{
 		if ($row) {
 			$result=1;
 		}
-		debug("implements: end ($result)","all");
+		debug("implements: end ($result)","store");
 		return $result;
 	}
 	
@@ -967,7 +1036,7 @@ class mysqlstore extends store{
 
 	**********************************************************************/
 
-		debug("format_for_fti($text)","all");
+		debug("format_for_fti($text)","store");
 		$allowedchars="_'-";
 		$search = array("%[\\x80-\\xFF$allowedchars]%es", "%\\s+%s");
 		$replace = array("'_'.dechex(ord('\\0'))", " ");
@@ -976,7 +1045,7 @@ class mysqlstore extends store{
 
 
 	public function load_properties($object, $values="") {
-		debug("load_properties($object, [values])","all");
+		debug("load_properties($object, [values])","store");
 		if ($object) {
 			$query_string="select name from ".$this->tbl_prefix."properties";
 			$query=@mysql_db_query($this->database,$query_string,$this->connect_id);
@@ -986,12 +1055,12 @@ class mysqlstore extends store{
 				}
 			}
 		}
-		debug("load_properties: end","all");
+		debug("load_properties: end","store");
 		return $result;
 	}
 
 	public function load_property($object, $property, $values="") {
-		debug("load_property($object, $property, [values])","all");
+		debug("load_property($object, $property, [values])","store");
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
@@ -1021,12 +1090,12 @@ class mysqlstore extends store{
 				$currProp++;
 			}
 		}
-		debug("load_property: end","all");
+		debug("load_property: end","store");
 		return $result;
 	}
 
 	public function add_property($object, $property, $values) {
-		debug("add_property($object, $property, ".serialize($values)." )","all");
+		debug("add_property($object, $property, ".serialize($values)." )","store");
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
@@ -1041,16 +1110,16 @@ class mysqlstore extends store{
 			}
 			$query_string="insert into ".$this->tbl_prefix."prop_".AddSlashes($property)." ( ".
 										$query_names."object ) values ( ".$query_values."$object )";
-			debug($query_string, "all");
+			debug($query_string, "store");
 			mysql_db_query($this->database,$query_string, $this->connect_id);
 			$result=mysql_affected_rows($this->connect_id);
 		}
-		debug("add_property: end","all");
+		debug("add_property: end","store");
 		return $result;
 	}
 
 	public function del_property($object, $property="", $values="") {
-		debug("del_property($object, $property, [values])","all");
+		debug("del_property($object, $property, [values])","store");
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
@@ -1077,7 +1146,7 @@ class mysqlstore extends store{
 				$result=mysql_affected_rows($this->connect_id);
 			}
 		}
-		debug("del_property: end","all");
+		debug("del_property: end","store");
 		return $result;
 	}
 

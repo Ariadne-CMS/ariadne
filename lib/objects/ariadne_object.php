@@ -69,7 +69,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	global $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls;
 
 		debug("pobject: ".$this->path.": call($arCallFunction, ".serialize($arCallArgs).")","object","all","IN");
-
+		
 		// default to view.html
 		if (!$arCallFunction) {
 			$arCallFunction="view.html";
@@ -792,6 +792,17 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$id = $this->id;
 		}
 		$result = $this->store->touch($id, $timestamp);
+		if ($this->store->error) {
+			$this->error = $this->store->error;
+		}
+		return $result;
+	}
+	
+	function mogrify($id=0, $type, $vtype=null) {
+		if (!$id) {
+			$id = $this->id;
+		}
+		$result = $this->store->mogrify($id, $type, $vtype);
 		if ($this->store->error) {
 			$this->error = $this->store->error;
 		}

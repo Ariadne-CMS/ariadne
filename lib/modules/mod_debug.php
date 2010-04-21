@@ -98,8 +98,10 @@
 		return true;
 	}
 
-
-
+	function debuglevel($level) {
+		global $DB;
+		return ($DB["level"] >= $DB[$level]);
+	}
 
 	function debug($text, $level="pinp", $stream="all", $indent="") {
 	global $DB, $DB_INDENT;

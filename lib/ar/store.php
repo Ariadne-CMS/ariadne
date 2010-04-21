@@ -65,11 +65,14 @@
 
 		public function call($template, $args=null) {
 			global $store;
+			if ($template instanceof ar_listExpression_Pattern ) {
+				$template = ar::listExpression( $this->count() )->pattern( $template );
+			}
 			$result = $store->call($template, $args, $store->find($this->path, $this->query, $this->limit, $this->offset), array( 'usePathAsKey' => true ) );
 			return $result;
 		}
 
-		public function iterate($selection, $definitions = Array()) {
+		/*public function iterate($selection, $definitions = Array()) {
 			global $store;
 			$result = Array();
 			$iterator = $this->getIterator($selection, $definitions, $store->find($this->path, $this->query, $this->limit, $this->offset)); 
@@ -83,10 +86,11 @@
 			global $store;
 			return $store->getIterator(new selector($selection), $definitions, $store->find($this->path, $this->query, $this->limit, $this->offset));
 		}
+		*/
 
 		public function count() {
 			global $store;
-			return $store->count($store->find($this->path, $this->query, $this->limit, $this->ofset));
+			return $store->count($store->find($this->path, $this->query, $this->limit, $this->offset));
 		}
 
 		public function limit($limit) {
@@ -134,6 +138,9 @@
 
 		public function call($template, $args=null) {
 			global $store;
+			if ($template instanceof ar_listExpression_Pattern ) {
+				$template = ar::listExpression( 1 )->pattern( $template );
+			}
 			return $store->call($template, $args, $store->get($this->path), array( 'usePathAsKey' => true ) );
 		}
 
@@ -152,9 +159,13 @@
 
 		public function call($template, $args=null) {
 			global $store;
+			if ($template instanceof ar_listExpression_Pattern ) {
+				$template = ar::listExpression( $this->count() )->pattern( $template );
+			}
 			return $store->call($template, $args, $store->parents($this->path, $this->top), array( 'usePathAsKey' => true ) );
 		}
 
+		/*
 		public function iterate($selection, $definitions = Array()) {
 			global $store;
 			$result = Array();
@@ -169,6 +180,7 @@
 			global $store;
 			return $store->getIterator(new selector($selection), $definitions, $store->parents($this->path, $this->top));
 		}
+		*/
 
 		public function count() {
 			global $store;

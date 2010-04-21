@@ -1,15 +1,26 @@
 <?php
-
+	//TODO: __toString method in listexpression, with a builtin counter.
 	require_once(dirname(__FILE__).'/../ar.php');
 
-	ar_pinp::allow('ar_listExpression', array('pattern', 'item') );
+	ar_pinp::allow('ar_listExpression', array('pattern', 'item', 'define', 'getStringIterator', 'setToStringCallback') );
+	ar_pinp::allow('ar_listExpression_Pattern', array('define') );
 	
-	class ar_listExpression_Pattern {
+	class ar_listExpression_Pattern extends arBase {
 		public $patterns = array();
+		public $definitions = array( '.' => false );
 		
 		public function __construct( $patterns ) {
 			$this->patterns = $patterns;
-		}		
+		}
+		
+		public function define( $name, $value = null ) {
+			if ( is_array($name) ) {
+				$this->definitions = array_merge( $this->definitions, $name );
+			} else {
+				$this->definitions[$name] = $value;
+			}
+			return $this;
+		}
 	}
 	
 	class ar_listExpression extends arBase implements Iterator, Countable, ArrayAccess {
@@ -19,6 +30,9 @@
 		private $patterns  = array();
 		private $nodeLists = array();
 		private $length    = 0;
+		public  $joinWith  = ' ';
+		public  $isStringIterator = false;
+		public  $definitions = array( '.' => false );
 		
 		const T_IDENT            = 3;
 		const T_OR               = 4;
@@ -53,7 +67,10 @@
 		public function pattern() {
 			$params = func_get_args();
 			foreach( $params as $pattern ) {
-				if ( is_array( $pattern ) ) {
+				if ( $pattern instanceof ar_listExpression_Pattern ) {
+					call_user_func_array( array( $this, 'pattern' ), $pattern->patterns );
+					call_user_func( array( $this, 'define' ), $pattern->definitions );
+				} else if ( is_array( $pattern ) ) {
 					call_user_func_array( array( $this, 'pattern' ), $pattern );
 				} else {
 					$this->patterns[] = $pattern;
@@ -63,6 +80,15 @@
 			}
 			return $this;
 		}
+		
+		public function define( $name, $value = false ) {
+			if ( is_array($name) ) {
+				$this->definitions = array_merge( $this->definitions, $name );
+			} else {
+				$this->definitions[$name] = $value;
+			}
+			return $this;
+		}		
 		
 		public function item( $position ) {
 			$result = array();
@@ -76,21 +102,81 @@
 			}
 			foreach ( $this->nodeLists as $i => $nodeList ) {
 				$item = $nodeList->run($length, $position);
-				// FIXME: $item kan nu een getal zijn en dat betekent dan 'nog zoveel nodig'
-				// maar ik wil ook getallen uit een pattern kunnen laten komen...
-				if ( ( $item !== '.') && ( !is_numeric( $item ) ) ) {
-					$result[$i] = $item;
+				if ( is_string( $item) ) {
+					$definition = $this->definitions[ $item ];
+					if ( isset($definition) ) {
+						if ( false !== $definition ) {
+							$result[$i] = $definition;
+						}
+					} else {
+						$result[$i] = $item;
+					}
 				}
 			}
 			return $result;
 		}
 		
+		public function setToStringCallback( $callback ) {
+			if ( is_callable( $callback ) ) {
+				$this->toStringCallback = $callback;
+			} else {
+				$this->toStringCallback = null;
+			}
+		}
+		
+		private function joinr( $joinWith, $list ) {
+			if ( !is_array($list) ) {
+				return (string) $list;
+			} else {
+				$current = reset($list);
+				if ( isset($current) ) {
+					$result = $this->joinr( $joinWith, $current);
+					while ( $current = next($list) ) {
+						$result .= $joinWith . $this->joinr( $joinWith, $current );
+					}
+					return $result;
+				} else {
+					return '';
+				}
+			}
+		}
+		
+		private function defaultToString() {
+			$items = $this->current();
+			if ($this->isStringIterator) {
+				$this->next();
+			}
+			return $this->joinr( $this->joinWith, $items );
+		}		
+				
+		function __toString() {
+			if ( isset($this->toStringCallback) ) {
+				return call_user_func($this->toStringCallback, $this->joinWith); 
+			} else {
+				return $this->defaultToString();
+			}
+		}
+		
+		function getStringIterator() {
+			$iterator = clone $this;
+			$iterator->isStringIterator = true;
+			return $iterator;
+		}
+		
 		function offsetExists($offset) {
-			return (exists($this->rootlist[$offset]));
+			if (isset( $this->rootlist) ) {
+				return (exists($this->rootlist[$offset]));
+			} else {
+				return $offset<$this->length;
+			}
 		}
 		
 		function offsetGet($offset) {
-			$position = array_search( $offset, array_keys($this->rootlist) );
+			if ( isset($this->rootlist) ) {
+				$position = array_search( $offset, array_keys($this->rootlist) );
+			} else if ($offset<$this->length) {
+				$position = $offset;
+			}
 			if (isset($position)) {
 				return $this->item( $position );
 			} else {
@@ -123,7 +209,7 @@
 		}
 		
 		function valid() {
-			return ( $this->current < count($this->rootlist) );
+			return $this->offsetExists($this->current);
 		}
 		
 		function count() {
