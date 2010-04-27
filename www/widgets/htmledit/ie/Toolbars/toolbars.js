@@ -408,7 +408,11 @@ function TBButtonMouseUp() {
   tbOnClickInProcess = true;
   tbMouseOutWhileInOnClick = false;
   if (element.TBUSERONCLICK) {
-    eval(element.TBUSERONCLICK + "anonymous()");
+//	if (new String(element.TBUSERONCLICK).search(/anonymous/)>=0) {
+//	    eval(element.TBUSERONCLICK + "anonymous()");
+//	} else {
+		eval('('+ element.TBUSERONCLICK + ")()");
+//	}
   }
   tbOnClickInProcess = false;
   
