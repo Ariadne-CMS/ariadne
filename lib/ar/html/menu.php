@@ -11,6 +11,7 @@
 		private $root    = '';
 		private $rooturl = '';
 		private $filled  = false;
+		private $options = array();
 		public $itemTag  = 'li';
 		public $listTag  = 'ul';
 		public $viewmode = 'list';
@@ -177,14 +178,42 @@
 			}
 		}
 		
-		public function fill( $list, $options = null ) {
+		public function fill( $list, $options = array() ) {
+			$options += array(
+				'menuStriping'         => ar::listPattern( 'menuFirst .*', '(menuOdd menuEven?)*', '.* menuLast' ),
+				'menuStripingContinue' => false
+			);
 			if ( ($list instanceof ar_storeFind) || ($list instanceof ar_storeParents) ) {
 				$list = $list->call( $this->template, array( 'current' => $this->current, 'root' => $this->root ) );
 			}
 			if ( is_array($list) ) {
 				$this->_fillFromArray( $list );
 			}
+			$this->options = $options;
+			$this->stripe();
 			$this->filled = true;
+			return $this;
+		}
+		
+		public function stripe( $options = array() ) {
+			$options += $this->options;
+			if ( $options['menuStriping'] ) {
+				if ( $options['menuStripingContinue'] ) {
+					$this->getElementsByTagName('li')->setAttribute('class', array(
+						'menuStriping' => $options['menuStriping']
+					) );
+				} else {
+					$this->childNodes->setAttribute( 'class', array(
+						'menuStriping' => $options['menuStriping']
+					) );
+					$uls = $this->getElementsByTagName('ul');
+					foreach( $uls as $ul ) {
+						$ul->childNodes->setAttribute( 'class', array(
+							'menuStriping' => $options['menuStriping']
+						) );
+					}
+				}
+			}
 			return $this;
 		}
 		
@@ -233,7 +262,7 @@
 			if ($query) {
 				$query = " and ( " . substr($query, 0, -4) . " )";
 			}
-			$this->fill( ar::get($top)->find("object.implements = 'pdir' and object.priority>=0".$query) );
+			$this->fill( ar::get($top)->find("object.implements = 'pdir' and object.priority>=0".$query), $options );
 			return $this;
 		}
 		
@@ -249,7 +278,7 @@
 				$top = $this->root;
 			}
 			$query = ar::get( $top )->find( "object.implements='pdir' and object.priority>=0 and object.parent = '$top'" );
-			$this->fill($query);
+			$this->fill( $query, $options);
 			return $this;
 		}
 		
@@ -263,7 +292,7 @@
 				$top = $this->root;
 			}
 			$query = ar::get( $top )->find( "object.implements='pdir' and object.priority>=0" );
-			$this->fill($query);
+			$this->fill( $query, $options );
 			return $this;
 		}
 		
@@ -271,7 +300,8 @@
 			$this->viewmode = 'crumbs';
 			$options += array(
 				'current' => $this->root,
-				'top'     => $this->root
+				'top'     => $this->root,
+				'menuStripingContinue' => true
 			);
 			$top     = $options['top'];
 			$current = $options['current'];
@@ -279,7 +309,7 @@
 				$top = $this->root;
 			}
 			$query = ar::get( $current )->parents()->top( $top );
-			$this->fill($query);
+			$this->fill( $query, $options );
 			return $this;
 		}
 		
