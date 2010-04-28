@@ -88,6 +88,10 @@
 			return ar_store::parents($path);
 		}
 		
+		public static function exists($path = '.') {
+			return ar_store::exists($path);
+		}
+		
 		public static function error($message, $code) {
 			return new ar_error($message, $code);
 		}
@@ -231,6 +235,10 @@
 			return ar_store::parents($path);
 		}
 
+		public static function _exists($path = '.') {
+			return ar_store::exists($path);
+		}
+		
 		public static function _error($message, $code) {
 			return ar::error($message, $code);
 		}

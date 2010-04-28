@@ -45,7 +45,9 @@
 		
 		public static function exists($path = ".") {
 			global $store;
-			return $store->exists($path);
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			return $store->exists($store->make_path($me->path, $path));
 		}
 
 	}
