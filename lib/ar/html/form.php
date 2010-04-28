@@ -383,7 +383,7 @@
 		}
 		
 		public function __toString() {
-			return ''.$this->getButton();
+			return (string) $this->getButton();
 		}
 	}
 

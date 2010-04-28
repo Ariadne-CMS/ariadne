@@ -149,7 +149,9 @@
 		If you set the parentNode of the nodes list, it will also set the
 		parentNode of all the childNodes and remove them from any other parent
 	*/
-	class ar_xmlNodes extends ArrayObject {
+	interface ar_xmlNodeInterface {	}
+	
+	class ar_xmlNodes extends ArrayObject implements ar_xmlNodeInterface {
 
 		private $parentNode = null;
 		public $attributes  = array();
@@ -383,7 +385,7 @@
 			parent::__construct();
 		}
 		
-		function setParentNode( $el ) {
+		function setParentNode( ar_xmlElement $el ) {
 			$this->parentNode = $el;
 			foreach ($this as $node) {
 				if ($node instanceof ar_xmlElement) {
@@ -399,7 +401,7 @@
 			$this->isDocumentFragment = false;
 		}
 		
-		function getPreviousSibling( $el ) {
+		function getPreviousSibling( ar_xmlNode $el ) {
 			$pos = $this->getPosition( $el );
 			if ( $pos > 0 ) {
 				return $this[ $pos - 1 ];
@@ -408,7 +410,7 @@
 			}
 		}
 		
-		function getNextSibling( $el ) {
+		function getNextSibling( ar_xmlNode $el ) {
 			$pos = $this->getPosition( $el );
 			if ( $pos < count( $this ) ) {
 				return $this[ $pos + 1 ];
@@ -418,7 +420,7 @@
 		}
 		
 		function getPosition( $el ) {
-			if ( is_array($el) ) {
+			if ( is_array($el) || $el instanceof Traversable ) {
 				return $this->getPosition( reset($el) );
 			} else {
 				foreach ( $this as $pos => $node ) {
@@ -447,7 +449,7 @@
 		
 		private function _setParentNodes( $el ) {
 			if ( isset( $this->parentNode ) ) {
-				if ( is_array( $el ) ) {
+				if ( is_array( $el ) || $el instanceof Traversable ) {
 					foreach ( $el as $subEl ) {
 						$subEl->__clearParentIdCache();
 						$subEl->parentNode = $this->parentNode;
@@ -461,9 +463,10 @@
 			}		
 		}
 		
-		function appendChild( $el ) {
+		function appendChild( ar_xmlNodeInterface $el ) {
 			$this->_removeChildNodes( $el );
-			return $this->_appendChild( $el );
+			$result = $this->_appendChild( $el );
+			return $result;
 		}
 		
 		private function _appendChild( $el ) {
@@ -477,7 +480,7 @@
 			return $el;
 		}
 
-		function insertBefore( $el, $referenceEl = null ) {
+		function insertBefore( ar_xmlNodeInterface $el, ar_xmlNodeInterface $referenceEl = null ) {
 			$this->_removeChildNodes( $el );
 			if ( !isset($referenceEl) ) {
 				return $this->_appendChild( $el );
@@ -500,7 +503,7 @@
 			return $el;
 		}
 		
-		function replaceChild( $el, $referenceEl ) {
+		function replaceChild( ar_xmlNodeInterface $el, ar_xmlNodeInterface $referenceEl ) {
 			$this->_removeChildNodes( $el );
 			$pos = $this->getPosition( $referenceEl );
 			if ( !isset($pos) ) { 
@@ -519,7 +522,7 @@
 			}
 		}	
 
-		function removeChild( $el ) {
+		function removeChild( ar_xmlNodeInterface $el ) {
 			// Warning: must never ever call _removeChildNodes, can be circular.
 			if ( is_array( $el ) ) {
 				foreach( $el as $subEl ) {
@@ -545,7 +548,7 @@
 			
 	}
 	
-	class ar_xmlNode extends arBase {
+	class ar_xmlNode extends arBase implements ar_xmlNodeInterface {
 		public $parentNode = null;
 		public $nodeValue = '';
 		public $cdata = false;
@@ -609,7 +612,7 @@
 
 	}
 	
-	class ar_xmlElement extends ar_xmlNode {
+	class ar_xmlElement extends ar_xmlNode implements ar_xmlNodeInterface {
 		public $tagName     = null;
 		public $attributes  = array();
 		private $childNodes = null;
