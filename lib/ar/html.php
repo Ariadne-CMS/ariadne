@@ -90,6 +90,10 @@
 			return new ar_html_table( $rows, $header, $rowHeader, $foot);
 		}
 		
+		public static function menu( $attributes = null, $list = null ) {
+			return new ar_html_menu( $attributes, $list );
+		}
+		
 	}
 
 	class ar_htmlNodes extends ar_xmlNodes {
