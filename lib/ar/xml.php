@@ -194,31 +194,31 @@
 
 		public function __toString( $indentWith = null ) {
 			foreach ( $this->attributes as $name => $value ) {
-				$count = 0;
+				$position = 0;
 				foreach ( $this as $key => $node ) {
 					if ($node instanceof ar_xmlElement) {
-						$appliedValue = $this->_applyValues($value, $count);
+						$appliedValue = $this->_applyValues($value, $position);
 						$node->setAttribute( $name, $appliedValue );
+						$position++;
 					}
-					$count++;
 				}
 			}
 			$result = '';
 			$indent = isset($indentWith) ? $indentWith : (ar_xml::$indenting ? ar_xml::$indent : '');
 			
-			$count  = 0;
-			$total  = count($this);
+			$position = 0;
 			foreach ( $this as $node) {
 				if ( $node instanceof ar_xmlElement) {
-					$result .= $node->__toString($indentWith, $count, $total);
+					$result .= $node->__toString($indentWith, $position);
+					$position++;
 				} else if ( $node instanceof ar_xmlNode) {
 					if ( trim($node->nodeValue) ) {
 						$result .= $node;
 					}
+					
 				} else if ( is_string($node) && ($node = trim($node) ) ) {
 					$result .= ar_xml::indent( (string) $node, $indentWith);
 				}
-				++$count;
 			}
 			return $result;
 		}
@@ -232,7 +232,13 @@
 
 		private function _runPatterns( $value ) {
 			if ($value instanceof ar_listExpression_Pattern) {
-				$value = ar::listExpression( $this )->pattern( $value->patterns );
+				$count = 0;
+				foreach ( $this as $key => $node ) {
+					if ($node instanceof ar_xmlElement) {
+						$count++;
+					}
+				}
+				$value = ar::listExpression( $count )->pattern( $value->patterns );
 			} else if ( is_array( $value ) ) {
 				$newvalue = array();
 				foreach ($value as $key => $subvalue ) {
@@ -270,13 +276,13 @@
 					$this->attributes[$name] = $value;
 				}
 			}
-			$count = 0;
+			$position = 0;
 			foreach ( $this as $key => $node ) {
 				if ($node instanceof ar_xmlElement) {
-					$appliedValue = $this->_applyValues($value, $count);
+					$appliedValue = $this->_applyValues($value, $position);
 					$node->setAttribute( $name, $appliedValue );
+					$position++;
 				}
-				$count++;
 			}
 			return $this;
 		}
