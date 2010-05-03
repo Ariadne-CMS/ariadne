@@ -7,6 +7,10 @@
 	class ar_html extends ar_xml {
 
 		public static $xhtml = false;
+		private static $emptyTags = array(
+			'input' => 1, 'br'       => 1, 'hr'      => 1, 'img'  => 1, 'link'  => 1, 'meta' => 1, 'frame' => 1, 
+			'base'  => 1, 'basefont' => 1, 'isindex' => 1, 'area' => 1, 'param' => 1, 'col'  => 1, 'embed' => 1
+		);
 
 		public static function configure( $option, $value ) {
 			switch ($option) {
@@ -53,8 +57,7 @@
 		}
 		
 		public static function canHaveContent( $name ) {
-			return !in_array( $name, array( 'input', 'br', 'hr', 'img', 'link', 'meta', 
-				'base', 'basefont', 'isindex', 'area', 'param', 'col', 'frame', 'embed' ) );
+			return !isset( self::$emptyTags[$name] );
 		}
 		
 		public static function tag() {
