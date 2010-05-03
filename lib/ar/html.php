@@ -30,7 +30,8 @@
 					case 'strict' :
 						if (self::$xhtml) {
 							$version = ucfirst( $type );
-							$type = '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-' . $type . '.dtd"';						} else {
+							$type = '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-' . $type . '.dtd"';
+						} else {
 							$type = '"http://www.w3.org/TR/html4/' . $type . '.dtd"';
 						}
 					break;
@@ -53,7 +54,7 @@
 		
 		public static function canHaveContent( $name ) {
 			return !in_array( $name, array( 'input', 'br', 'hr', 'img', 'link', 'meta', 
-				'base', 'basefont', 'isindex', 'area', 'param', 'col', 'frame' ) );
+				'base', 'basefont', 'isindex', 'area', 'param', 'col', 'frame', 'embed' ) );
 		}
 		
 		public static function tag() {
@@ -141,7 +142,7 @@
 				}
 			} else {
 				$result .= ' />';
-			}			
+			}
 			return $result;
 		}
 		
