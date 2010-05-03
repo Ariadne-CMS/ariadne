@@ -57,7 +57,7 @@
 		}
 		
 		public static function canHaveContent( $name ) {
-			return !isset( self::$emptyTags[$name] );
+			return !isset( self::$emptyTags[strtolower($name)] );
 		}
 		
 		public static function tag() {
