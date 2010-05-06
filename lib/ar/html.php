@@ -98,6 +98,10 @@
 			return new ar_html_menu( $attributes, $list );
 		}
 		
+		public static function zen( $string ) {
+			return new ar_html_zen( $string );
+		}
+		
 	}
 
 	class ar_htmlNodes extends ar_xmlNodes {
