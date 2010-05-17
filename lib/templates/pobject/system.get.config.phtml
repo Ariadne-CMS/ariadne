@@ -9,19 +9,31 @@
 	$ARCurrent->allnls = true;
 	
 	$ARConfig->pinpcache[$this->path] = $ARConfig->pinpcache[$this->parent];
-	$ARCurrent->arConfig = &$ARConfig->pinpcache[$this->path];
+	// backwards compatibility when calling templates from config.ini
+	if (!isset($ARCurrent->arConfig)) {
+		$ARCurrent->arConfig = $ARConfig->pinpcache[$this->path];
+	}
+
+	$arCallArgs['arConfig'] = $ARConfig->pinpcache[$this->path];
 
 	/* calling config.ini directly for each system.get.config.phtml call */
 	$loginSilent = $ARCurrent->arLoginSilent;
 	if (!$this->CheckConfig('config.ini', $arCallArgs)) {
-		if (is_array($ARCurrent->arConfig['library'])) {
+		$arConfig = $ARCurrent->arResult;
+		if (!isset($arConfig)) {
+			$arConfig = $ARCurrent->arConfig;
+		}
+		unset($ARCurrent->arResult);
+		if (is_array($arConfig['library'])) {
 			if (!$ARConfig->libraries[$this->path]) {
 				$ARConfig->libraries[$this->path] = Array();
 			}
-			foreach ($ARCurrent->arConfig['library'] as $libName => $libPath) {
+			foreach ($arConfig['library'] as $libName => $libPath) {
 				$this->loadLibrary($libName, $libPath);
 			}
+			unset($arConfig['library']);
 		}
+		$ARConfig->pinpcache[$this->path] = (array) $arConfig;
 	}
 	$ARCurrent->arLoginSilent = $loginSilent;
 
