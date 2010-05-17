@@ -2226,7 +2226,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 
 	function getvar($var) {
-	global $ARCurrent, $ARConfig;
+	global $ARCurrent, $ARConfig; // Warning: if you add other variables here, make sure you cannot get at it through $$var.
 
 		debug("pobject: getvar($var)","object");
 		if ($ARCurrent->arCallStack) {
@@ -2237,7 +2237,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				Parse_Str($arCallArgs);
 			}
 		}
-		if (isset($$var)) {
+		if (isset($$var) && ($var!='ARConfig')) {
 			$result=$$var;
 		} else if (isset($ARCurrent->$var)) {
 			$result=$ARCurrent->$var;
