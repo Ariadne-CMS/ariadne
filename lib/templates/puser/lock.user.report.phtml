@@ -60,6 +60,15 @@
 		window.innerHeight=document.body.clientHeight;
 		window.innerWidth=document.body.clientWidth;
 	}	
+	function toggleAll() {
+		var boxes = document.getElementsByClassName('checkbox');
+		if (boxes.length) {
+			var check = !boxes[0].checked;
+			for (var i = 0; i < boxes.length; i++) {
+				boxes[i].checked = check;
+			}
+		}
+	}
 </script>
 
 <form method="post" style="height: 95%">
@@ -77,8 +86,11 @@
 				<div><?php echo $ARnls["path"]; ?></div>
 			</td><td valign="top" colspan="2" class="required">
 				<div><?php echo $ARnls["expires"]; ?></div>
-			</td><td valign="top" class="required">
-				<div><?php echo $ARnls["unlock"]; ?></div>
+			</td><td valign="top" class="required" style="width: 150px;">
+				<div>
+					<?php echo $ARnls["unlock"]; ?>
+					<span style="float: right; padding-right: 40px; text-decoration: underline;"><a href="#" onclick="toggleAll(); return false;"><?php echo $ARnls["all"]; ?></span>
+				</div>
 			</td>
 		</tr>
 <?php
@@ -90,7 +102,7 @@
 			echo "</td><td></td><td align=\"left\">";
 			echo date("d-m-Y H:i:s",$lock["release"]);
 			echo "</td><td></td><td align=\"center\">";
-			echo "<input type=\"checkbox\" name=\"unlock_$path\">";
+			echo "<input class=\"checkbox\" type=\"checkbox\" name=\"unlock_$path\">";
 			echo "</td></tr>";
 			$currcol++;
 			$currcol=$currcol%2;
