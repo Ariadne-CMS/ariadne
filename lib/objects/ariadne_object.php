@@ -271,7 +271,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			debug("pobject: save: new object","all");
 			$arNewParent=$this->make_path("..");
 			$arNewFilename=substr($this->path, strlen($arNewParent), -1);
-			$configcache=$ARConfig->cache[$arNewParent];
+			$configcache=$this->loadConfig();
 			if (!eregi("\.\.",$arNewFilename)) {
 				if (eregi("^[a-z0-9_\{\}\.\:-]+$",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
 					if (!$this->exists($this->path)) { //arNewFilename)) {
@@ -324,6 +324,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 								foreach($this->data->custom as $nls => $cdata) {
 									foreach($cdata as $name => $value){
 										// one index, this order (name, value, nls) ?
+										if ($configcache->custom[$name]['containsHTML']) {
+											$this->_load('mod_url.php');
+											$value = URL::RAWtoAR($value, $nls);
+											$this->data->custom[$nls][$name] = $value;
+										}
 										if ($configcache->custom[$name]['property']) {
 											if (is_array($value)) {
 												foreach($value as $valkey => $valvalue ) {
@@ -439,7 +444,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			}
 		} else { // update an existing object
 			debug("pobject: save: existing object","all");
-			$configcache=$ARConfig->cache[$this->path];
+			$configcache=$this->loadConfig();
 			if ($this->lock()) {
 				if ($this->exists($this->path)) { // prevent 'funny stuff'
 					$config = $this->data->config;
@@ -474,6 +479,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					if (is_array($this->data->custom)) {
 						foreach($this->data->custom as $nls => $cdata){
 							foreach($cdata as $name => $value ){
+								if ($configcache->custom[$name]['containsHTML']) {
+									$this->_load('mod_url.php');
+									$value = URL::RAWtoAR($value, $nls);
+									$this->data->custom[$nls][$name] = $value;
+								}
 								if ($configcache->custom[$name]['property']) {
 									// one index, this order (name, value, nls) ?
 									if (is_array($value)) {
