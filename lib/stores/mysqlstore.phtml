@@ -1177,6 +1177,9 @@ class mysqlstore extends store{
 			$mask_pre = $matches[1];
 			$substr_s += strlen($mask_pre)+1;
 			$substr_l = intval(substr($matches[2], 0, 1));
+			if (!$substr_l) {
+				$substr_l = 5; // default length is 5
+			}
 			$mask_post= $matches[3];
 			$query_string = 
 				"select max(substring(path, $substr_s, $substr_l)) as id
