@@ -147,6 +147,7 @@ class scanner {
 	}
 	
 	function push_back($string) {
+		$this->YYLINE -= substr_count($string, "\n");
 		$this->YYCURSOR = $this->YYCURSOR - strlen($string);
 	}
 
