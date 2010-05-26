@@ -4,6 +4,7 @@
 
 	// TODO: bar() must also specify option to fill() to generate 1 ul with many li's, not nested
 	// independent of path/url.
+	// - add hasChildNodes and hasNoChildNodes classes to li items through extra method call
 	
 	class ar_html_menu extends ar_htmlElement {
 
@@ -144,6 +145,9 @@
 				if ( isset($item['class']) ) {
 					$linkAttributes['class'] = $item['class'];
 				}
+				if ( isset($item['id']) ) {
+					$linkAttributes['id'] = $item['id'];
+				}
 				$item['node'] = ar_html::tag( $item['tagName'], $item['attributes'], 
 					ar_html::tag( 'a', $linkAttributes, $item['name'])
 				);
@@ -179,10 +183,6 @@
 		}
 		
 		public function fill( $list, $options = array() ) {
-			$options += array(
-				'menuStriping'         => ar::listPattern( 'menuFirst .*', '(menuOdd menuEven?)*', '.* menuLast' ),
-				'menuStripingContinue' => false
-			);
 			if ( ($list instanceof ar_storeFind) || ($list instanceof ar_storeParents) ) {
 				$list = $list->call( $this->template, array( 'current' => $this->current, 'root' => $this->root ) );
 			}
@@ -190,13 +190,15 @@
 				$this->_fillFromArray( $list );
 			}
 			$this->options = $options;
-			$this->stripe();
 			$this->filled = true;
 			return $this;
 		}
 		
 		public function stripe( $options = array() ) {
-			$options += $this->options;
+			$options += array(
+				'menuStriping'         => ar::listPattern( 'menuFirst .*', '(menuOdd menuEven?)*', '.* menuLast' ),
+				'menuStripingContinue' => false
+			);
 			if ( $options['menuStriping'] ) {
 				if ( $options['menuStripingContinue'] ) {
 					$this->getElementsByTagName('li')->setAttribute('class', array(
@@ -233,6 +235,32 @@
 				foreach( $root as $element ) {
 					$element->childNodes->setAttribute( 'class', array( 'menuLevels' => 'menuLevel-'.$start ) );
 					$this->levels( $depth-1, $start+1, $element->li->ul );
+				}
+			}
+			return $this;
+		}
+		
+		public function autoID( $root = null, $element = null ) {
+			// create unique id's per list item
+			if (!isset($root)) {
+				$root = 'menu';
+			}
+			if (!isset($element) ) {
+				$element = $this;
+			}
+			if (!$element->attributes['id']) {
+				$element->setAttribute( 'id', $root.'-ul' );
+			}
+			$list    = $element->li;
+			$counter = 0;
+			foreach ($list as $li) {
+				$id = $root.'-'.$counter++;
+				if ( !$li->attributes['id'] ) {
+					$li->setAttribute( 'id', $id );
+				}
+				$ul = $li->ul;
+				if (count($ul)) {
+					$this->autoID( $id, $ul[0] );
 				}
 			}
 			return $this;
