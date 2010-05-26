@@ -1,7 +1,18 @@
 <?php
   if ($this->CheckLogin("read") && $this->CheckConfig()) {
 	$target = $this->make_path($target);
-	if (substr($target, 0, strlen("/system/users/")) != "/system/users/") {
+	$authconfig = current($this->get($target, "auth.ini"));
+
+	// Check if target is valid according to auth.ini
+	$validpath = false;
+	foreach ($authconfig['userdirs'] as $userdirpath) {
+		if (substr($target, 0, strlen($userdirpath)) == $userdirpath) {
+			$validpath = true;
+			break;
+		}
+	}
+
+	if (!$validpath) {
 		$arResult = $ARnls["err:invaliduserlocation"];
 	} else {
 		$newpath = $target;
@@ -10,9 +21,18 @@
 		if (ereg('\{.*\}', $newlogin)) {
 			$arResult = $ARnls["err:donotuseid"];
 		} else {
+			// Check if user exists in any of the paths in auth.ini
+			$userexists = false;
 			$criteria["login"]["value"]["="]="'".AddSlashes($newlogin)."'";
-			$result=$this->find("/system/users/",$criteria,"system.get.phtml");
-			if (count($result)) {
+			foreach ($authconfig['userdirs'] as $userdirpath) {
+				$result=$this->find($userdirpath,$criteria,"system.get.phtml");
+				if (count($result)) {
+					$userexists = true;
+					break;
+				}
+			}
+
+			if ($userexists) {
 				$arResult = sprintf($ARnls["err:loginexists"], $newlogin);
 			} else {
 				unset($this->data->config->usergrants);

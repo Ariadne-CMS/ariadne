@@ -67,9 +67,17 @@
 	if ($wgWizCurrent==1) {
 		$arNewFilename=$this->getdata("arNewFilename","none");
 		if ($arNewFilename) {
+			$authconfig = $this->call("auth.ini");
 			$criteria["login"]["value"]["="]="'".AddSlashes($arNewFilename)."'";
-			$result=$this->find("/system/users/", $criteria, "system.get.phtml");
-			if ($result) {
+			$loginexists = false;
+			foreach ($authconfig['userdirs'] as $userdirpath) {
+				$result=$this->find("/system/users/", $criteria, "system.get.phtml");
+				if ($result) {
+					$loginexists = true;
+					break;
+				}
+			}
+			if ($loginexists) {
 				$arFlow[0]["error"]=sprintf($ARnls["err:loginexists"],$newfilename);
 			}
 		}	

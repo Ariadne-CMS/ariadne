@@ -4,6 +4,8 @@
 			$this->error=$ARnls["err:cannotlockobject"];
 		} else {
 			if (!$this->ls(".","system.get.phtml")) {
+				$authconfig = $this->call("auth.ini");
+
 				// copy $this so we'll be able to remove grants and templates _after_ the object has been deleted.
 				$clone = $this;
 
@@ -15,14 +17,20 @@
 							foreach ($grantdata as $login => $grants) {
 								$query = "object.implements = '$type' and login.value = '$login'";
 								if ($clone->store->AR_implements($type, 'pgroup')) {
-									$qpath = "/system/groups/";
+									foreach ($authconfig['groupdirs'] as $groupdirpath) {
+										$clone->find($groupdirpath, $query, "system.update.grants.phtml", Array(
+											"action" => "delete",
+											"path" => $clone->path
+										));
+									}
 								} else {
-									$qpath = "/system/users/";
+									foreach ($authconfig['userdirs'] as $userdirpath) {
+										$clone->find($userdirpath, $query, "system.update.grants.phtml", Array(
+											"action" => "delete",
+											"path" => $clone->path
+										));
+									}
 								}
-								$clone->find($qpath, $query, "system.update.grants.phtml", Array(
-										"action" => "delete",
-										"path" => $clone->path
-								));
 							}
 						}
 					}

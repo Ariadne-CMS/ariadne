@@ -294,8 +294,9 @@
 
 
 			$auth_class = "mod_auth_".$auth_config["method"];
-			$mod_auth = new $auth_class($auth_config);
+			$mod_auth = new $auth_class($auth_config, $path);
 			$result = $mod_auth->checkLogin($args["ARLogin"], $args["ARPassword"]);
+
 			if ($result!==true) {
 				if ($result == LD_ERR_ACCESS) {
 					ldAccessDenied($path, $ARnls["accessdenied"]);

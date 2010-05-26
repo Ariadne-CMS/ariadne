@@ -1,6 +1,6 @@
 <?php
 
-	function ldSetCredentials($login) {
+	function ldSetCredentials($login, $ARUserDir="/system/users/") {
 	global $ARCurrent, $AR;
 
 		// Make sure the login is lower case. Because of the
@@ -18,6 +18,7 @@
 			ldStartSession($ARCurrent->session->id);
 		}
 		$ARCurrent->session->put("ARLogin", $login);
+		$ARCurrent->session->put("ARUserDir", $ARUserDir, true);
 
 		/* create the session key */
 		srand((double)microtime()*1000000);
@@ -52,7 +53,7 @@
 
 		$cookie[$ARCurrent->session->id]['login']=$login;
 		$cookie[$ARCurrent->session->id]['timestamp']=time();
-		$cookie[$ARCurrent->session->id]['check']="{".ARCrypt($login.$session_key)."}";
+		$cookie[$ARCurrent->session->id]['check']="{".ARCrypt($login.$ARUserDir.$session_key)."}";
 		$ARCookie=serialize($cookie);
 		debug("setting cookie ($ARCookie)");
 		header('P3P: CP="NOI CUR OUR"');
@@ -150,10 +151,11 @@
 		debug("ldCheckCredentials()","object");
 		$result=false;
 		$session_key = $ARCurrent->session->get('ARSessionKey', true);
+		$ARUserDir = $ARCurrent->session->get('ARUserDir', true);
 		$cookie=ldGetCredentials();
 		if ($session_key && $login==$cookie[$ARCurrent->session->id]['login']
 			&& ($saved=$cookie[$ARCurrent->session->id]['check'])) {
-			$check="{".ARCrypt($login.$session_key)."}";
+			$check="{".ARCrypt($login.$ARUserDir.$session_key)."}";
 			if ($check==$saved && !$ARCurrent->session->get('ARSessionTimedout', 1)) {
 				$result=true;
 			} else {

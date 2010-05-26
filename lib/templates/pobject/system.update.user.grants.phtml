@@ -10,6 +10,7 @@
 		$searchpath=array("pgroup"=>"/system/groups/", "puser"=>"/system/users/");
 		$types=array("puser", "pgroup");
 		$criteria=array();
+		$authconfig = $this->call("auth.ini");
 
 		$realgrants=$AR->user->grants[$this->path];
 		$AR->user->grants[$this->path]['config']=6;
@@ -19,8 +20,14 @@
 			if ($typegrants=$this->data->config->grants[$type]) {
 				foreach ($typegrants as $id=>$grants) {
 					$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
-					if ($temp=current($this->find($searchpath[$type], $criteria, "system.get.phtml"))) {
-						$path=$temp->path;
+					foreach ($authconfig['userdirs'] as $userdirpath) {
+						$user_ob = current($this->find($userdirpath, $criteria, "system.get.phtml"));
+						if ($user_ob) {
+							break;
+						}
+					}
+					if ($user_ob) {
+						$path=$user_ob->path;
 
 						foreach ($grants as $grant=>$granttype) {
 							$args["grant"]=$grant;

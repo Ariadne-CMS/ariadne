@@ -6,8 +6,10 @@
 	******************************************************************/
 	global $auth_config;
 
+	$parentobj = current($this->get($this->parent, "system.get.phtml"));
+
 	if ((($this->arIsNewObject &&
-			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
+			$parentobj &&
 			$parentobj->CheckLogin("add", $this->type)) ||
 			(!$this->arIsNewObject && $this->CheckLogin("edit"))) && 
 			$this->CheckConfig()) {
@@ -20,6 +22,8 @@
 			$this->data=new object;
 			$arIsNewObject=true;
 		}
+
+		$authconfig = $parentobj->call("auth.ini");
 
 		// unset the properties array, so no properties can be passed to this template.
 		$properties = Array();
@@ -84,8 +88,16 @@
 					$this->error=$ARnls["err:logintoolong"];
 				} else {
 					$criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
-					$result=$this->find("/system/users/",$criteria,"system.get.phtml");
-					if ($result) {
+					$loginexists = false;
+					foreach ($authconfig['userdirs'] as $userdirpath) {
+						$result=$this->find($userdirpath,$criteria,"system.get.phtml");
+						if ($result) {
+							$loginexists = true;
+							break;
+						}
+					}
+
+					if ($loginexists) {
 						$this->error=sprintf($ARnls["err:loginexists"],$login);
 					} else {
 						if (ereg('\{.*\}',$login)) {

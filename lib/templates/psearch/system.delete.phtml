@@ -5,12 +5,16 @@
 		} else {
 			if (!$this->real_ls(".","system.get.phtml")) {
 				// remove grants for this object in all user objects.
+				$authconfig = $this->call("auth.ini");
+
 				if ($data->config->grants && is_array($data->config->grants)) {
 					while (list($login, $grants)=each($data->config->grants)) {
 						$criteria["login"]["value"]["="]="'".$login."'";
-						$this->find("/system/users/", $criteria, "system.update.grants.phtml", Array(
-									"action" => "delete",
-									"path" => $this->path) );
+						foreach ($authconfig['userdirs'] as $userdirpath) {
+							$this->find($userdirpath, $criteria, "system.update.grants.phtml", Array(
+								"action" => "delete",
+								"path" => $this->path) );
+						}
 					}
 				}
 				/*
