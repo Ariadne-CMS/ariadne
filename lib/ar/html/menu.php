@@ -225,13 +225,13 @@
 			if (!isset($root)) {
 				$root = $this;
 			}
-			$root->setAttribute( 'class', array('menuLevels' => 'menuLevel-'.$start) );
 			if ( $root instanceof ar_htmlElement ) {
-				$root->childNodes->setAttribute( 'class', array('menuLevels' => 'menuLevel-'.$start) );
-				$this->levels( $depth-1, $start+1, $root->li->ul );
-			} else if ($root instanceof ar_htmlNodes) {
-				$root->li->setAttribute( 'class', array( 'menuLevels' => 'menuLevel-'.$start ) );
+				$root = ar_html::nodes( $root );
+			}
+			if ($root instanceof ar_htmlNodes && count($root) ) {
+				$root->setAttribute( 'class', array('menuLevels' => 'menuLevel-'.$start) );
 				foreach( $root as $element ) {
+					$element->childNodes->setAttribute( 'class', array( 'menuLevels' => 'menuLevel-'.$start ) );
 					$this->levels( $depth-1, $start+1, $element->li->ul );
 				}
 			}
