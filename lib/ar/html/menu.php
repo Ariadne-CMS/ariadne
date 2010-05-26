@@ -217,6 +217,27 @@
 			return $this;
 		}
 		
+		public function levels( $depth, $start = 0, $root = null ) {
+			// add level classes to the ul/li tags, level-0, level-1, etc.
+			if ( $depth == 0 ) {
+				return $this;
+			}
+			if (!isset($root)) {
+				$root = $this;
+			}
+			$root->setAttribute( 'class', array('menuLevels' => 'menuLevel-'.$start) );
+			if ( $root instanceof ar_htmlElement ) {
+				$root->childNodes->setAttribute( 'class', array('menuLevels' => 'menuLevel-'.$start) );
+				$this->levels( $depth-1, $start+1, $root->li->ul );
+			} else if ($root instanceof ar_htmlNodes) {
+				$root->li->setAttribute( 'class', array( 'menuLevels' => 'menuLevel-'.$start ) );
+				foreach( $root as $element ) {
+					$this->levels( $depth-1, $start+1, $element->li->ul );
+				}
+			}
+			return $this;
+		}
+		
 		public function current( $path ) {
 			$this->current = $path;
 			return $this;
