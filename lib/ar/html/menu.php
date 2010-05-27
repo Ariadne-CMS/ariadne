@@ -2,10 +2,6 @@
 
 	ar_pinp::allow('ar_html_menu');
 
-	// TODO: bar() must also specify option to fill() to generate 1 ul with many li's, not nested
-	// independent of path/url.
-	// - add hasChildNodes and hasNoChildNodes classes to li items through extra method call
-	
 	class ar_html_menu extends ar_htmlElement {
 
 		private $items   = null;
@@ -262,6 +258,14 @@
 				if (count($ul)) {
 					$this->autoID( $id, $ul[0] );
 				}
+			}
+			return $this;
+		}
+		
+		public function childIndicators() {
+			$list = $this->getElementsByTagName('ul');
+			foreach( $list as $ul) {
+				$ul->parentNode->setAttribute('class', array('menuChildIndicator' => 'menuHasChildren'));
 			}
 			return $this;
 		}
