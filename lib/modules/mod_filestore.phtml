@@ -91,16 +91,19 @@
 			$path=$this->make_path($id, $name);
 			if (file_exists($path))	{
 				if (!$limit) {
-					$limit=filesize($path)-$offset;
-				}
-				if (!$limit) {
-					$result = '';
-				} else if ($fp=fopen($path, "rb")) {
-					if ($offset) {
-						fseek($fp, $offset);
-					}
-					$result=fread($fp, $limit);
-					fclose($fp);
+					/*  because of the following note in the php documention
+					    we only give limit as argument when it is not zero
+						 ---
+						 Note: The default value of maxlen is not actually -1;
+						 rather, it is an internal PHP value which means to copy the
+						 entire stream until end-of-file is reached. The only way to
+						 specify this default value is to leave it out of the
+						 parameter list. 
+						 --
+					*/
+					$result=file_get_contents($path,false,null,$offset);
+				} else {
+					$result=file_get_contents($path,false,null,$offset,$limit);
 				}
 			}
 			return $result;
