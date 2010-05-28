@@ -1,7 +1,10 @@
 <?php
 
 	function ldSetCredentials($login, $ARUserDir="/system/users/") {
-	global $ARCurrent, $AR;
+		global $ARCurrent, $AR;
+		if (!$ARUserDir || $ARUserDir == "") {
+			$ARUserDir = "/system/users/";
+		}
 
 		// Make sure the login is lower case. Because of the
 		// numerous checks on "admin".

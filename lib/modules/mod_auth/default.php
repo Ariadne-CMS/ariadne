@@ -65,7 +65,10 @@
 		}
 
 		function getUser($login, $ARUserDir="/system/users/") {
-		global $store, $AR;
+			global $store, $AR;
+			if (!$ARUserDir || $ARUserDir == "") {
+				$ARUserDir = "/system/users/";
+			}
 
 			$criteria["object"]["implements"]["="]="'puser'";
 			$criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
@@ -101,6 +104,9 @@
 				debug("checkLogin: initiating new login ($login)", "all");
 				if ($ARCurrent->session) {
 					$ARUserDir = $ARCurrent->session->get("ARUserDir", true);
+					if (!$ARUserDir || $ARUserDir == "") {
+						$ARUserDir = "/system/users/";
+					}
 
 					if (!$ARCurrent->session->get("ARLogin") ||
 							$ARCurrent->session->get("ARLogin") == "public") {
@@ -148,6 +154,10 @@
 			} else {
 				if ($ARCurrent->session) {
 					$ARUserDir = $ARCurrent->session->get("ARUserDir", true);
+					if (!$ARUserDir || $ARUserDir == "") {
+						$ARUserDir = "/system/users/";
+					}
+
 					if (!$ARCurrent->session->get("ARLogin")) {
 						if ($ARCurrent->session->get("ARSessionTimedout", 1)) {
 							$ARCurrent->session->put("ARSessionTimedout", 0, 1);
@@ -194,6 +204,10 @@
 								debug("checkLogin: trying to respawn session ($sid) for user ($login)", "all");
 								if (ldCheckCredentials($login)) {
 									$ARUserDir = $ARCurrent->session->get("ARUserDir", true);
+									if (!$ARUserDir || $ARUserDir == "") {
+										$ARUserDir = "/system/users/";
+									}
+
 									debug("checkLogin: credentials matched, loading user", "all");
 									$result = $this->getUser($login, $ARUserDir);
 								} else {
