@@ -74,9 +74,13 @@
 			$result=false;
 			if ($name) {
 				$path=$this->make_path($id, $name, WRITE);
-				if ($fp=fopen($path, "wb")) {
+				$tempfile = tempnam($this->make_path($id),$name.'_temp_');
+				if ($fp=fopen($tempfile, "wb")) {
 					$result=fwrite($fp, $contents);
 					fclose($fp);
+					if($result !== false) {
+						rename($tempfile,$path);
+					}
 				}
 			}
 			return $result;
