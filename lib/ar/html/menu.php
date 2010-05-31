@@ -182,10 +182,10 @@
 			if ( ($list instanceof ar_storeFind) || ($list instanceof ar_storeParents) ) {
 				$list = $list->call( $this->template, array( 'current' => $this->current, 'root' => $this->root ) );
 			}
+			$this->options = $options;
 			if ( is_array($list) ) {
 				$this->_fillFromArray( $list );
 			}
-			$this->options = $options;
 			$this->filled = true;
 			return $this;
 		}
@@ -236,11 +236,8 @@
 			return $this;
 		}
 		
-		public function autoID( $root = null, $element = null ) {
+		public function autoID( $root = 'menu', $element = null ) {
 			// create unique id's per list item
-			if (!isset($root)) {
-				$root = 'menu';
-			}
 			if (!isset($element) ) {
 				$element = $this;
 			}
