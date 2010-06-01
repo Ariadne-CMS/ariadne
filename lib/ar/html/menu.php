@@ -6,15 +6,21 @@
 
 		private $items   = null;
 		private $root    = '';
+		private $current = '';
 		private $rooturl = '';
 		private $filled  = false;
 		private $options = array();
+		private $prefix = '';
 		public $itemTag  = 'li';
 		public $listTag  = 'ul';
 		public $viewmode = 'list';
 		public $template = 'system.get.name.phtml';
+		public $css = null;
 		
 		public function __construct( $attributes = array(), $list = null ) {
+			if (!$attributes['class'] && !$attributes['id']) {
+				$attributes['class'] = 'menu';
+			}
 			parent::__construct( 'ul', $attributes, null );
 			$this->items['[root]'] = $this;
 			//FIXME: remove getContext stuff by adding make_url to ar::something
@@ -30,12 +36,108 @@
 				$this->root    = '/';
 				$this->rooturl = '/';
 			}
+			$this->current = $this->root;
 			if ( isset($list) ) {
 				$this->fill( $list );
 			}
+			if ($this->attributes['id']) {
+				$prefix = '#'.$this->attributes['id'];
+			} else {
+				$prefix = 'ul.'.$this->attributes['class'];
+			}
+			$this->prefix = $prefix;
+			$this->css = ar_css::stylesheet()
+			->bind('menuColor', 'black')
+			->import("
+				$prefix, $prefix ul {
+					list-style: none;
+					margin: 0px;
+					padding: 0px;
+				}
+
+				$prefix li {
+					margin: 0px;
+					padding: 0px;
+					padding-left: 20px;
+				}
+
+				$prefix li a {
+					text-decoration: none;
+					color: var(menuColor);
+				}
+			");
+		}
+
+		public function style( $type = '' ) {
+			switch ($type) {
+				case 'bar' :
+					$this->css
+						->bind('menuBackgroundColor', '#EEEEEE')
+						->add($this->prefix.' li', array( 
+							'float'            => 'left'
+						) )
+						->add($this->prefix, array( 
+							'overflow'         => 'hidden',
+							'padding-right'    => '20px',
+							'background-color' => 'var(menuBackgroundColor)'
+						) );
+				break;
+				case 'tree' :
+					$this->css
+						->add($this->prefix.' li', array( 'padding' => '0px' ) )
+						->add($this->prefix.' li a', array( 'padding-left' => '20px') )
+						->add($this->prefix.' li li a', array( 'padding-left' => '40px') )
+						->add($this->prefix.' li li li a', array( 'padding-left' => '60px') )
+						->add($this->prefix.' li li li li a', array( 'padding-left' => '80px') );
+				break;
+				case 'crumbs' :
+					$this->css->add( $this->prefix.' ul', array( 
+							'display'      => 'inline' 
+						) )
+						->add( $this->prefix.' li', array( 
+							'padding-left' => '0px',
+							'list-style'   => 'none',
+							'display'      => 'inline'
+						) )
+						->add( $this->prefix.' li li:before', array( 
+							'content'      => '"\0020 \00BB \0020"'  // >> or &raquo; character
+						) );
+				break;
+				case 'dropdown' :
+				break;
+				case 'tabs' :
+					$this->css
+						->bind('menuBgColor',           'transparent')
+						->bind('menuItemBgColor',       '#E4E4E4')
+						->bind('menuActiveItemBgColor', 'white')
+						->bind('menuItemBorderColor',   'black')
+						->add($this->prefix.' li', array( 
+							'float'            => 'left',
+							'background-color' => 'var(menuItemBgColor)',
+							'border'           => '1px solid var(menuItemBorderColor)',
+							'margin'           => '0px 5px -1px 5px',
+							'padding'          => '0px 5px',
+							'height'           => '1.5em'
+						) )
+						->add($this->prefix.' li.menuCurrent', array(
+							'background-color' => 'var(menuActiveItemBgColor)',
+							'border-bottom'    => '1px solid var(menuActiveItemBgColor)'
+						) )
+						->add($this->prefix, array( 
+							'height'           => '1.5em',
+							'padding'          => '0px 20px 1px 0px',
+							'background-color' => 'var(menuBgColor)',
+							'border-bottom'    => '1px solid var(menuItemBorderColor)'
+						) );
+				break;
+			}
+			return $this->css;
 		}
 		
 		public function root( $url, $path='/' ) {
+			if ($this->root == $this->current) {
+				$this->current = $path;
+			}
 			$this->rooturl = $url;
 			$this->root    = $path;
 		}
@@ -50,6 +152,7 @@
 				// do a default menu.
 				$this->bar();
 			}
+			
 			return parent::__toString( $indent, $current );
 		}
 		
@@ -115,7 +218,7 @@
 			return $url;
 		}
 
-		private function _getItemInfo( $item, $key, $parent ) {
+		private function _getItemInfo( $item, $key, $parent, $current ) {
 			if (!is_array($item)) {
 				$item = array( 'name' => $item );
 			}
@@ -139,10 +242,17 @@
 					$linkAttributes['title'] = $item['title'];
 				}
 				if ( isset($item['class']) ) {
-					$linkAttributes['class'] = $item['class'];
+					$linkAttributes['class'][] = $item['class'];
 				}
 				if ( isset($item['id']) ) {
 					$linkAttributes['id'] = $item['id'];
+				}
+				if ( ($item['path']==$current) || ($item['url'] == $current) ) {
+					$linkAttributes['class']['menuCurrent'] = 'menuCurrent';
+					if (!is_array($item['attributes']['class'])) {
+						$item['attributes']['class'] = array( $item['attributes']['class'] );
+					}
+					$item['attributes']['class']['menuCurrent'] = 'menuCurrent';
 				}
 				$item['node'] = ar_html::tag( $item['tagName'], $item['attributes'], 
 					ar_html::tag( 'a', $linkAttributes, $item['name'])
@@ -151,12 +261,12 @@
 			return $item;
 		}
 		
-		private function _fillFromArray( $list, $parent = '[root]' ) {
+		private function _fillFromArray( $list, $current, $parent = '[root]' ) {
 			foreach ( $list as $key => $item ) {
-				$itemInfo = $this->_getItemInfo( $item, $key, $parent );
+				$itemInfo = $this->_getItemInfo( $item, $key, $parent, $current );
 				$itemNode = $itemInfo['node'];
 				if ($itemInfo['children']) {
-					$this->_fillFromArray( $itemInfo['children'], $itemInfo['url'] );
+					$this->_fillFromArray( $itemInfo['children'], $current, $itemInfo['url'] );
 				}
 				if ( $parent == '[root]' ) {
 					$newparent = dirname( $itemInfo['url'] ).'/';
@@ -179,12 +289,14 @@
 		}
 		
 		public function fill( $list, $options = array() ) {
+			$current = $options['current'] ? $options['current'] : $this->current;
+			$root = $options['root'] ? $options['root'] : $this->root;
 			if ( ($list instanceof ar_storeFind) || ($list instanceof ar_storeParents) ) {
-				$list = $list->call( $this->template, array( 'current' => $this->current, 'root' => $this->root ) );
+				$list = $list->call( $this->template, array( 'current' => $current, 'root' => $root ) );
 			}
 			$this->options = $options;
 			if ( is_array($list) ) {
-				$this->_fillFromArray( $list );
+				$this->_fillFromArray( $list, $current );
 			}
 			$this->filled = true;
 			return $this;
@@ -278,7 +390,7 @@
 				'siblings' => true,
 				'children' => true,
 				'top'      => $this->root,
-				'current'  => $this->root,
+				'current'  => $this->current,
 				'skipTop'  => false
 			);
 			$current = $options['current'];
@@ -320,9 +432,8 @@
 			$this->viewmode = 'list';
 			$options += array(
 				'top'     => $this->root,
-				'current' => $this->root
+				'current' => $this->current
 			);
-			$current = $options['current'];
 			$top     = $options['top'];
 			if ( !isset($top) ) {
 				$top = $this->root;
@@ -349,7 +460,7 @@
 		public function crumbs( $options = array() ) {
 			$this->viewmode = 'crumbs';
 			$options += array(
-				'current' => $this->root,
+				'current' => $this->current,
 				'top'     => $this->root,
 				'menuStripingContinue' => true
 			);

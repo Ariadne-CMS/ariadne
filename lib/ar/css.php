@@ -68,16 +68,17 @@
 		public function import( $cssText ) {
 			// ignore comments /* */ but keep them in
 			$ruleRE  = '/([^{]*)\{(.*)\}/isU';
-			$styleRE = '/([^:]*):(.*)(;|$)/isU';
-			while ( preg_match( $cssText, $ruleRe, $matches ) ) {
+			$styleRE = '/([^:]+)\:(.+)(;|$)/isU';
+			while ( preg_match( $ruleRE, $cssText, $matches ) ) {
 				$rule       = $matches[1];
 				$stylesText = $matches[2];
-				while ( preg_match( $stylesText, $styleRE, $styleMatches ) ) {
+				while ( preg_match( $styleRE, $stylesText, $styleMatches ) ) {
 					$styles[ $styleMatches[1] ] = $styleMatches[2];
-					str_replace( $stylesText, $styleMatches[0], '' );
+					$stylesText = str_replace( $styleMatches[0], '', $stylesText );
 				}
 				$this->add( $rule, $styles );
-				str_replace( $cssText, $matches[0], '');
+				$styles = array();
+				$cssText = str_replace( $matches[0], '', $cssText);
 			}
 			return $this;
 		}
@@ -211,10 +212,9 @@
 				if ( $value ) {
 					while ( preg_match('/\b(var\((.*)\))/', $value, $matches) ) {
 						$var   = $this->getVariable( $matches[2] );
-						if ( !isset($var) ) {
-							return ar::error( 'variable '.$matches[2].' not specified', 666);
+						if ( isset($var) ) {
+							$value = str_replace( $matches[1], $var, $value );
 						}
-						$value = str_replace( $value, $matches[1], $var );
 					}
 					$result .= "  " . trim($style) . ": " . trim($value) . ";\n";
 				}
