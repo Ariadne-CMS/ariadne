@@ -17,10 +17,10 @@
 		private $cssText   = '';
 		private $variables = array();
 		public  $rules     = null;
-		public  $type      = 'text/css';
 		
 		public function __construct($tagName, $attributes, $childNodes = null, $parentNode = null) {
 			$this->rules   = new ar_cssRules( $this );
+			$attributes['type'] = 'text/css';
 			parent::__construct( $tagName, $attributes, null, $parentNode );
 		}
 		
@@ -102,7 +102,7 @@
 		}
 		
 		public function __toString() {
-			return (string) ar_html::tag( 'style', array('type' => $this->type), (string) $this->rules );
+			return (string) ar_html::tag( 'style', $this->attributes, (string) $this->rules );
 		}
 	}
 	
@@ -216,7 +216,7 @@
 							$value = str_replace( $matches[1], $var, $value );
 						}
 					}
-					$result .= "  " . trim($style) . ": " . trim($value) . ";\n";
+					$result .= "\t" . trim($style) . ": " . trim($value) . ";\n";
 				}
 			}
 			return $result;

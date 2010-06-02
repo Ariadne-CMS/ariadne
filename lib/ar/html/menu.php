@@ -47,7 +47,6 @@
 			}
 			$this->prefix = $prefix;
 			$this->css = ar_css::stylesheet()
-			->bind('menuColor', 'black')
 			->import("
 				$prefix, $prefix ul {
 					list-style: none;
@@ -58,28 +57,73 @@
 				$prefix li {
 					margin: 0px;
 					padding: 0px;
-					padding-left: 20px;
 				}
 
 				$prefix li a {
 					text-decoration: none;
-					color: var(menuColor);
 				}
 			");
 		}
 
+		public function script( $type = '', $matches = array() ) {
+			$script = '';
+			switch ($type) {
+				case 'dropdown' :					
+					$script = <<<EOF
+function arMenuHover( list ) {
+	if ( list ) {
+		if ( list[0]=='#' ) {
+			var lis = document.getElementById( list.substring(1) ).getElementsByTagName("LI");
+		} else {
+			if ( list[0] == '.') {
+				list = list.substring(1);
+			}
+			var uls = document.getElementsByTagName( 'UL' );
+			var lis = [];
+			var re = new RegExp('\\\\b' + list + '\\\\b' );
+			for ( var i = uls.length-1; i>=0; i-- ) {
+				if ( re.test(uls[i].className) ) {
+					var newlis = uls[i].getElementsByTagName( 'LI' );
+					for (var ii=newlis.length-1; ii>=0; ii--) {
+						lis = lis.concat( newlis[ii] );
+					}
+				}
+			}
+		}
+		for (var i=lis.length-1; i>=0; i--) {
+			lis[i].onmouseover = function() {
+				this.className += " menuHover";
+			}
+			lis[i].onmouseout = function() {
+				this.className = this.className.replace(/ menuHover\b/, '');
+			}
+		}
+	}
+}
+
+EOF;
+				if ( is_array($matches) && count($matches) ) {
+					$script .= "if (window.attachEvent && ( !document.documentMode || document.documentMode<8) ) {\n";
+					foreach ( $matches as $match ) {
+						$script .= " arMenuHover( '$match' );\n";
+					}
+					$script .= "}\n";
+				}
+				break;
+			}
+			return $script;
+		}
+		
 		public function style( $type = '' ) {
 			switch ($type) {
 				case 'bar' :
 					$this->css
-						->bind('menuBackgroundColor', '#EEEEEE')
 						->add($this->prefix.' li', array( 
 							'float'            => 'left'
 						) )
 						->add($this->prefix, array( 
 							'overflow'         => 'hidden',
 							'padding-right'    => '20px',
-							'background-color' => 'var(menuBackgroundColor)'
 						) );
 				break;
 				case 'tree' :
@@ -104,6 +148,59 @@
 						) );
 				break;
 				case 'dropdown' :
+					$this->css
+						->bind('menuItemWidth', '10em')
+						->add( $this->prefix, array(
+							'line-height'  => '1'
+						) )
+						->add( $this->prefix.' li', array(
+							'width'        => 'var(menuItemWidth)',
+							'float'        => 'left',
+							'position'     => 'relative'
+						) )
+						->add( $this->prefix.' li a', array(
+							'width'        => 'var(menuItemWidth)'
+						) )
+						->add( $this->prefix.' li ul', array(
+							'width'        => 'var(menuItemWidth)',
+							'position'     => 'absolute',
+							'left'         => '-999em'
+						) )
+						->add( $this->prefix.' li:hover ul', array(
+							'left'         => 'auto'
+						) )
+						->add( $this->prefix.' li.menuHover ul', array(
+							'left'         => '0px',
+							'top'          => '1em'
+						) )
+						->add( $this->prefix.' li ul ul', array(
+							'margin'       => '-1em 0 0 var(menuItemWidth)'
+						) )
+						->add( $this->prefix.' li:hover ul ul', array(
+							'left'         => '-999em'
+						) )
+						->add( $this->prefix.' li.menuHover ul ul', array(
+							'left'         => '-999em'
+						) )
+						->add( $this->prefix.' li li:hover ul', array(
+							'left'         => 'auto'
+						) )
+						->add( $this->prefix.' li li.menuHover ul', array(
+							'left'         => 'var(menuItemWidth)',
+							'top'          => '0px'
+						) )
+						->add( $this->prefix.' li:hover ul ul ul', array(
+							'left'         => '-999em'
+						) )
+						->add( $this->prefix.' li.menuHover ul ul ul', array(
+							'left'         => '-999em'
+						) )
+						->add( $this->prefix.' li li li:hover ul', array(
+							'left'         => 'auto'
+						) )
+						->add( $this->prefix.' li li li.menuHover ul', array(
+							'left'         => 'auto'
+						) );
 				break;
 				case 'tabs' :
 					$this->css
@@ -446,14 +543,18 @@
 		public function sitemap( $options = array() ) {
 			$this->viewmode = 'sitemap';
 			$options += array(
-				'top'     => $this->root
+				'top'     => $this->root,
+				'skipTop' => true
 			);
 			$top     = $options['top'];
 			if ( !isset($top) ) {
 				$top = $this->root;
 			}
-			$query = ar::get( $top )->find( "object.implements='pdir' and object.priority>=0" );
-			$this->fill( $query, $options );
+			$query = "object.implements='pdir' and object.priority>=0";
+			if ($options['skipTop']) {
+				$query .= " and object.path != '".$top."'";
+			}
+			$this->fill( ar::get( $top )->find( $query ), $options );
 			return $this;
 		}
 		
