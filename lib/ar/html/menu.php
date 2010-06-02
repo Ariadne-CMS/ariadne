@@ -102,6 +102,9 @@ function arMenuHover( list ) {
 }
 
 EOF;
+				if ( is_string($matches) ) {
+					$matches = array( $matches );
+				}
 				if ( is_array($matches) && count($matches) ) {
 					$script .= "if (window.attachEvent && ( !document.documentMode || document.documentMode<8) ) {\n";
 					foreach ( $matches as $match ) {
@@ -149,22 +152,45 @@ EOF;
 				break;
 				case 'dropdown' :
 					$this->css
-						->bind('menuItemWidth', '10em')
+						->bind('menuItemWidth', 'auto')
+						->bind('menuSubItemWidth', '10em')
+						->bind('menuHoverItemBgColor', '#E4E4E4')
+						->bind('menuItemBgColor', 'transparent')
+						->bind('menuSubItemBgColor', 'white')
+						->bind('menuBorderColor', 'transparent')
 						->add( $this->prefix, array(
 							'line-height'  => '1'
 						) )
 						->add( $this->prefix.' li', array(
-							'width'        => 'var(menuItemWidth)',
-							'float'        => 'left',
-							'position'     => 'relative'
+							'width'            => 'var(menuItemWidth)',
+							'float'            => 'left',
+							'position'         => 'relative',
+							'background-color' => 'var(menuItemBgColor)'
 						) )
 						->add( $this->prefix.' li a', array(
-							'width'        => 'var(menuItemWidth)'
+							'width'            => 'var(menuItemWidth)',
+							'padding'          => '0px 10px 0px 0px'
+						) )
+						->add( $this->prefix.' li li a', array(
+							'width'            => 'var(menuSubItemWidth)',
+							'display'          => 'block'
+						) )
+						->add( $this->prefix.' li:hover a', array(
+							'background-color' => 'var(menuHoverItemBgColor)'
+						) )
+						->add( $this->prefix.' li.menuHover a', array(
+							'background-color' => 'var(menuHoverItemBgColor)'
 						) )
 						->add( $this->prefix.' li ul', array(
-							'width'        => 'var(menuItemWidth)',
-							'position'     => 'absolute',
-							'left'         => '-999em'
+							'width'            => 'var(menuSubItemWidth)',
+							'position'         => 'absolute',
+							'left'             => '-999em',
+							'background-color' => 'var(menuSubItemBgColor)',
+							'border'           => '1px solid var(menuBorderColor)'
+						) )
+						->add( $this->prefix.' li li a', array(
+							'width'        => 'var(menuSubItemWidth)',
+							'padding'      => '0px'
 						) )
 						->add( $this->prefix.' li:hover ul', array(
 							'left'         => 'auto'
@@ -174,7 +200,7 @@ EOF;
 							'top'          => '1em'
 						) )
 						->add( $this->prefix.' li ul ul', array(
-							'margin'       => '-1em 0 0 var(menuItemWidth)'
+							'margin'       => '-1em 0 0 var(menuSubItemWidth)'
 						) )
 						->add( $this->prefix.' li:hover ul ul', array(
 							'left'         => '-999em'
@@ -186,7 +212,7 @@ EOF;
 							'left'         => 'auto'
 						) )
 						->add( $this->prefix.' li li.menuHover ul', array(
-							'left'         => 'var(menuItemWidth)',
+							'left'         => 'var(menuSubItemWidth)',
 							'top'          => '0px'
 						) )
 						->add( $this->prefix.' li:hover ul ul ul', array(
@@ -207,11 +233,11 @@ EOF;
 						->bind('menuBgColor',           'transparent')
 						->bind('menuItemBgColor',       '#E4E4E4')
 						->bind('menuActiveItemBgColor', 'white')
-						->bind('menuItemBorderColor',   'black')
+						->bind('menuBorderColor',       'black')
 						->add($this->prefix.' li', array( 
 							'float'            => 'left',
 							'background-color' => 'var(menuItemBgColor)',
-							'border'           => '1px solid var(menuItemBorderColor)',
+							'border'           => '1px solid var(menuBorderColor)',
 							'margin'           => '0px 5px -1px 5px',
 							'padding'          => '0px 5px',
 							'height'           => '1.5em'
@@ -223,8 +249,7 @@ EOF;
 						->add($this->prefix, array( 
 							'height'           => '1.5em',
 							'padding'          => '0px 20px 1px 0px',
-							'background-color' => 'var(menuBgColor)',
-							'border-bottom'    => '1px solid var(menuItemBorderColor)'
+							'border-bottom'    => '1px solid var(menuBorderColor)'
 						) );
 				break;
 			}
