@@ -1,6 +1,7 @@
 <?php
 	define('ARBaseDir', $AR->dir->install.'/lib/ar/');
 	require_once(ARBaseDir.'pinp.php');
+	require_once(ARBaseDir.'core/exception.php');
 
 	ar_pinp::allow('ar', array('load', 'ls', 'get', 'find', 'parents', 'error', 'getvar', 'call', 'taint', 'untaint'));
 	ar_pinp::allow('ar_error');
@@ -93,7 +94,7 @@
 		}
 		
 		public static function error($message, $code) {
-			return new ar_error($message, $code);
+			return ar_error::raiseError($message, $code);
 		}
 		
 		public static function call( $template, $params = null ) {
@@ -223,6 +224,7 @@
 	class ar_error extends arBase {
 		var $message;
 		var $code;
+		static $throwExceptions = false;
 
 		public function __construct($message = null, $code = null) {
 			$this->message = $message;
@@ -234,9 +236,21 @@
 		}
 
 		public static function raiseError($message, $code) {
-			return new ar_error($message, $code);
+			if (self::$throwExceptions) {
+				throw new ar_exceptionDefault($message, $code);
+			} else {
+				return new ar_error($message, $code);
+			}
 		}
 
+		public static function configure( $option, $value ) {
+			switch ($option) {
+				case 'throwExceptions' : 
+					self::$throwExceptions = $value;
+				break;
+			}
+		}
+		
 		public function getMessage() {
 			return $this->message;
 		}
