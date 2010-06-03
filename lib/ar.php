@@ -167,7 +167,8 @@
 		}
 	}
 
-	class arBase {		
+	class arBase {
+		
 		public function __call($name, $arguments) {
 			if (($name[0]==='_')) {
 				$realName = substr($name, 1);
@@ -182,11 +183,48 @@
 		}
 	}
 
+	class arWrapper {
+	
+		protected $wrapped = null;
+		protected $__class = 'arWrapper';
+		
+		public function __construct( $wrapped ) {
+			$this->wrapped = $wrapped;
+		}
+		
+		public function __call($name, $arguments) {
+			if (($name[0]==='_')) {
+				$realName = substr($name, 1);
+				if (ar_pinp::isAllowed($this, $realName)) {
+					try {
+						return $this->__wrap( call_user_func_array(array($this->wrapped, $realName), $arguments) );
+					} catch( Exception $e ) {
+						return ar::error( $e->getMessage(), $e->getCode() );
+					}
+				} else {
+					trigger_error("Method $realName not found in class ".get_class($this), E_USER_ERROR);
+				}
+			} else {
+				trigger_error("Method $name not found in class ".get_class($this), E_USER_ERROR);
+			}
+		}
+		
+		public function __wrap( $result ) {
+			if (is_object($result)) {
+				$class = $this->__class;
+				return new $class($result);
+			} else {
+				return $result;
+			}
+		}		
+	}
+
+	
 	class ar_error extends arBase {
 		var $message;
 		var $code;
 
-		public function __construct($message, $code) {
+		public function __construct($message = null, $code = null) {
 			$this->message = $message;
 			$this->code    = $code;
 		}
