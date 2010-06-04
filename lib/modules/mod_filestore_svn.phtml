@@ -127,11 +127,6 @@
 
 			$svn_switches['non-recursive'] = true;
 
-			$svn_info = $svn_instance->info->run(
-				array($this->make_path($id, '')), 
-				$svn_switches
-			);
-
 			$svn = array(
 				'instance' 		=> $svn_instance,
 				'switches' 		=> $svn_switches,
