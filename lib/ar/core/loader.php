@@ -24,11 +24,11 @@
 	}
 
 	interface ar_core_loaderInterface {
-		public function __construct($options, $ariadne, $auth);
+		public function __construct($options = null, $ariadne = null, $session = null, $nls = null);
 		public function getRequest();
-		public function handleRequest();
+		public function handleRequest( $request=null );
 		public function run();
-		public function handleException();
+		public function handleException( $exception );
 		public function isCacheable();
 	}
 

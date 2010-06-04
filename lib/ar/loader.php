@@ -11,35 +11,45 @@
 			if ($AR->request && isset($AR->request['loader'])) {
 				return $AR->request['loader'];
 			} else {
-				return new ar_http(); // FIXME: change to ar_core_loader_http when implemented
+				return new ar_core_loader_http();
 			}
 		}
 		
 		public static function header( $header ) {
-			return ldHeader( $header );
+			$loader = self::getLoader();
+			return $loader->header( $header );
 		}
 
 		public static function redirect( $url ) {
-			return ldRedirect( $url );
+			$loader = self::getLoader();
+			return $loader->redirect( $url );
 		}
 
 		public static function content( $contentType, $size = 0 ) {
-			return ldSetContent( $contentType, $size );
+			$loader = self::getLoader();
+			return $loader->content( $contentType, $size );
 		}
 
-		public static function cache($expires = 0, $modified = 0 ) {
-			return ldSetClientCache( true, $expires, $modified );
+		public static function cache($expires = 0, $modified = false ) {
+			$loader = self::getLoader();
+			return $loader->cache( $expires, $modified );
 		}
 		
 		public static function disableCache() {
-			return ldSetClientCache( false );
+			$loader = self::getLoader();
+			return $loader->disableCache();
 		}
 		
-		public static function getvar( $name ) {
+		public static function getvar( $name = null, $method = null ) {
 			$loader = self::getLoader();
-			return $loader->getvar( $name );
+			return $loader->getvar( $name, $method );
 		}
 
+		public static function makeURL( $path = '', $nls = '', $session = true, $https = false ) {
+			$loader = self::getLoader();
+			return $loader->makeURL( $path, $nls, $session, $https );
+		}
+		
 	}
 	
 ?>

@@ -1,4 +1,5 @@
 <?php
+	require_once(ARBaseDir.'core/loader.php');
 
 	class ar_core_loader_http implements ar_core_loaderInterface {
 		private $options = null;
@@ -8,7 +9,7 @@
 		private $nls     = null;
 		private $hideSessionIDFromURL = false;
 		
-		public function __construct($options, $ariadne, $session, $nls) {
+		public function __construct($options = null, $ariadne = null, $session = null, $nls = null) {
 			$this->ariadne = $ariadne;
 			$this->options = $options;
 			$this->session = $session;
@@ -46,7 +47,7 @@
 			$nls->nls = $nls->default;
 			if (preg_match($re, $pathInfo, $matches)) {
 				$nls->requested = $matches[1];
-				if ( isset($nls->available[$matches[1]) ) {
+				if ( isset($nls->available[$matches[1]]) ) {
 					$nls->nls = $matches[1];
 					$pathInfo = substr($pathInfo, strlen($matches[0])-1);
 				}
@@ -135,7 +136,8 @@
 		}
 		
 		public function handleException($exception) {
-			switch $exception->getCode() {
+			$code = $exception->getCode();
+			switch ($code) {
 				case ar_exceptions::NO_PATH_INFO :
 					$this->redirect($_SERVER['PHP_SELF'].'/');
 				break;
@@ -205,7 +207,7 @@
 				&& ( !isset($_SERVER['HTTP_PRAGMA'])
 					|| ( strpos( $_SERVER['HTTP_PRAGMA'], 'no-cache' ) === false ) 
 				)
-				&& ( $_SERVER['REQUEST_METHOD'] == 'GET' ) );
+				&& ( $_SERVER['REQUEST_METHOD'] == 'GET' );
 			if ( $isCacheable ) {
 				$result = array( 'cacheable' => true );
 				if ( isset($_SERVER['HTTP_CACHE_CONTROL']) ) {
@@ -233,12 +235,37 @@
 			}
 		}
 		
-		public function redirect($url) {
-			return ar_http::redirect($url);
+		public function redirect( $url ) {
+			return ar_http::redirect( $url );
 		}
 		
-		public function header($header) {
-			return ar_http::header($header);
+		public function header( $header ) {
+			return ar_http::header( $header );
+		}
+		
+		public function getvar( $name = null, $method = null ) {
+			return ar_http::getvar( $name, $method );
+		}
+		
+		public function cache( $expires = 0, $modified = false ) {
+			return ar_http::cache( $expires, $modified);
+		}
+		
+		public function disableCache() {
+			return ar_http::disableCache();		
+		}
+		
+		public function content( $contentType, $size = 0 ) {
+			return ar_http::content( $contentType, $size );
+		}
+		
+		public function isCacheable() {
+		}
+		
+		public function makeURL( $path = '', $nls = '', $session = true, $https = false ) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			return $me->make_url( $path, $nls, $session, $https );
 		}
 	}
 	

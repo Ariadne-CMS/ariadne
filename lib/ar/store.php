@@ -2,21 +2,13 @@
 	
 	require_once(dirname(__FILE__).'/../ar.php');
 
-	ar_pinp::allow('ar_store', array(
-		'ls', 'find', 'get', 'parents'
-	));
+	ar_pinp::allow('ar_store');
 
-	ar_pinp::allow('ar_storeFind', array(
-		'call', 'iterate', 'getIterator', 'count', 'limit', 'offset', 'order'
-	)); 
+	ar_pinp::allow('ar_storeFind'); 
 
-	ar_pinp::allow('ar_storeGet', array(
-		'ls', 'find', 'call'
-	));
+	ar_pinp::allow('ar_storeGet');
 
-	ar_pinp::allow('ar_storeParents', array(
-		'call', 'iterate', 'getIterator', 'count', 'top'
-	));
+	ar_pinp::allow('ar_storeParents');
 
 	class ar_store extends arBase {
 		public static function ls() {
@@ -50,6 +42,37 @@
 			return $store->exists($store->make_path($me->path, $path));
 		}
 
+		public static function currentSite() {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			return $me->currentsite();
+		}
+		
+		public static function parentSite( $site ) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			return $me->parentsite( $site );		
+		}
+		
+		public static function currentSection() {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			return $me->currentsection();		
+		}
+
+		public static function parentSection( $section ) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			return $me->parentsection( $section );		
+		}
+
+		public static function makePath( $path = '' ) {
+			global $store;
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			return $store->make_path($me->path, $path);
+		}
+
 	}
 
 	class ar_storeFind extends arBase {
@@ -73,22 +96,6 @@
 			$result = $store->call($template, $args, $store->find($this->path, $this->query, $this->limit, $this->offset), array( 'usePathAsKey' => true ) );
 			return $result;
 		}
-
-		/*public function iterate($selection, $definitions = Array()) {
-			global $store;
-			$result = Array();
-			$iterator = $this->getIterator($selection, $definitions, $store->find($this->path, $this->query, $this->limit, $this->offset)); 
-			foreach ($iterator as $key => $value) {
-				$result[$key] = $value;
-			}
-			return $result;
-		}
-
-		public function getIterator($selection, $definitions = Array()) {
-			global $store;
-			return $store->getIterator(new selector($selection), $definitions, $store->find($this->path, $this->query, $this->limit, $this->offset));
-		}
-		*/
 
 		public function count() {
 			global $store;
@@ -166,23 +173,6 @@
 			}
 			return $store->call($template, $args, $store->parents($this->path, $this->top), array( 'usePathAsKey' => true ) );
 		}
-
-		/*
-		public function iterate($selection, $definitions = Array()) {
-			global $store;
-			$result = Array();
-			$iterator = $this->getIterator($selection, $definitions, $store->parents($this->path, $this->top)); 
-			foreach ($iterator as $key => $value) {
-				$result[$key] = $value;
-			}
-			return $result;
-		}
-
-		public function getIterator($selection, $definitions = Array()) {
-			global $store;
-			return $store->getIterator(new selector($selection), $definitions, $store->parents($this->path, $this->top));
-		}
-		*/
 
 		public function count() {
 			global $store;

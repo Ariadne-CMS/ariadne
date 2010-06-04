@@ -129,7 +129,29 @@
 		}
 
 		public static function getvar( $name ) {
+			global $ARCurrent, $ARConfig;
+			
+			if ($ARCurrent->arCallStack) {
+				$arCallArgs=end($ARCurrent->arCallStack);
+				if ( isset($arCallArgs[$name]) ) {
+					return $arCallArgs[$name];
+				}
+			}
+			$context = pobject::getContext();
+			if ( is_array($context) ) {
+				$me = $context["arCurrentObject"];
+			}
+			if ( isset($ARCurrent->$name) ) {
+				return $ARCurrent->$name;
+			} else if ( isset($me) && isset($ARConfig->pinpcache[$me->path][$name])) {
+				return $ARConfig->pinpcache[$me->path][$name];
+			}
 			return ar_loader::getvar( $name );
+		}
+		
+		public static function putvar( $name, $value ) {
+			global $ARCurrent;
+			$ARCurrent->$name = $value;
 		}
 		
 		public static function listExpression( $list ) {
@@ -309,6 +331,10 @@
 		
 		public static function _getvar( $name ) {
 			return ar::getvar( $name );
+		}
+		
+		public static function _putvar( $name, $value ) {
+			return ar::putvar( $name, $value );
 		}
 		
 		public static function _listExpression( $list ) {
