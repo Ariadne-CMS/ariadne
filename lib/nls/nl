@@ -187,7 +187,7 @@
 	$ARnls["importobject"]					=	"Importeer Objecten";
 	$ARnls["inherit"]						=	"Overnemen";
 	$ARnls["inheritcache"]					=	"Neem cache configuratie over.";
-	$ARnls["interface"]						=	"Gebruiksomgeving";
+	$ARnls["interface"]						= "Vensters";
 	$ARnls["item"]							=	"Item";
 	$ARnls["keepimage"]						=	"Bewaar cache";
 	$ARnls["keepshortcuturl"]				=	"Behoud shortcut URL";
@@ -240,7 +240,7 @@
 	$ARnls["on"]							=	"Aan";
 	$ARnls["open"]							=	"Open";
 	$ARnls["openlocks"]						=	"Afschermingen voor %s:";
-	$ARnls["openinnewwindow"]						=	"Open in een nieuw scherm";
+	$ARnls["openinnewwindow"]						=	"Open in een nieuw venster";
 	$ARnls["options"]						=	"Opties";
 	$ARnls["orderedbrowsing"]				=	"!Ordered browsing";
 	$ARnls["overwrite"]						=	"Overschrijven";
