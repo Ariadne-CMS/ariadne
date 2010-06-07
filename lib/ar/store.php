@@ -11,6 +11,16 @@
 	ar_pinp::allow('ar_storeParents');
 
 	class ar_store extends arBase {
+		static public $rememberShortcuts = true;
+		
+		public static function configure( $option, $value ) {
+			switch ($option) {
+				case 'rememberShortcuts' :
+					self::$rememberShortcuts = $value;
+				break;
+			}
+		}
+				
 		public static function ls() {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
@@ -26,51 +36,108 @@
 		public static function get($path="") {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
-			return new ar_storeGet($me->path, $path);
+			if (self::$rememberShortcuts) {
+				$me->_load('mod_keepurl.php');
+				//self::$rememberShortcuts = false;
+				//$path = self::makePath( $path );
+				//self::$rememberShortcuts = true;
+				$path = pinp_keepurl::_make_path( $path );
+			} else {
+				$path = $me->make_path( $path );
+			}
+			return new ar_storeGet($path);
 		}
 
 		public static function parents() {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
-			return new ar_storeParents($me->path);
+			$path = $me->path;
+			if (self::$rememberShortcuts) {
+				$me->_load('mod_keepurl.php');
+				$path = pinp_keepurl::_make_path( $path );
+			}
+			return new ar_storeParents($path);
 		}
 		
 		public static function exists($path = ".") {
 			global $store;
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
-			return $store->exists($store->make_path($me->path, $path));
+			if (self::$rememberShortcuts) {
+				$me->_load('mod_keepurl.php');
+				$path = pinp_keepurl::_make_real_path( $path );
+			} else {
+				$path = $store->make_path($me->path, $path);
+			}
+			return $store->exists($path);
 		}
 
 		public static function currentSite() {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
-			return $me->currentsite();
+			if (self::$rememberShortcuts) {
+				$me->_load('mod_keepurl.php');
+				$path = pinp_keepurl::_currentsite( $path );
+			} else {
+				$path = $me->currentsite( $path );
+			}
+			return $path;
 		}
 		
 		public static function parentSite( $site ) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
-			return $me->parentsite( $site );		
+			if (self::$rememberShortcuts) {
+				$me->_load('mod_keepurl.php');
+				$path = pinp_keepurl::_currentsite( $path.'../' );
+			} else {
+				$path = $me->parentsite( $path );
+			}
+			return $path;
 		}
 		
-		public static function currentSection() {
+		public static function currentSection( $path = '' ) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
-			return $me->currentsection();		
+			if (self::$rememberShortcuts) {
+				$me->_load('mod_keepurl.php');
+				$path = pinp_keepurl::_currentsection( $path );
+			} else {
+				$path = $me->currentsection( $path );
+			}
+			return $path;
 		}
 
-		public static function parentSection( $section ) {
+		public static function parentSection( $path = '' ) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
-			return $me->parentsection( $section );		
+			if (self::$rememberShortcuts) {
+				$me->_load('mod_keepurl.php');
+				$path = pinp_keepurl::_currentsection( $path.'../' );
+			} else {
+				$path = $me->parentsection( $path );
+			}
+			return $path;
 		}
 
 		public static function makePath( $path = '' ) {
-			global $store;
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
-			return $store->make_path($me->path, $path);
+			if (self::$rememberShortcuts) {
+				$me->_load('mod_keepurl.php');
+				$path = pinp_keepurl::_make_path( $path );
+			} else {
+				$path = $me->make_path( $path );
+			}
+			return $path;
+		}
+		
+		public static function makeRealPath( $path = '' ) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			$me->_load('mod_keepurl.php');
+			$path = pinp_keepurl::_make_real_path( $path );
+			return $path;
 		}
 
 	}
@@ -93,7 +160,12 @@
 			if ($template instanceof ar_listExpression_Pattern ) {
 				$template = ar::listExpression( $this->count() )->pattern( $template );
 			}
-			$result = $store->call($template, $args, $store->find($this->path, $this->query, $this->limit, $this->offset), array( 'usePathAsKey' => true ) );
+			if (ar_store::$rememberShortcuts) {
+				$path = ar_store::makeRealPath( $this->path );
+			} else {
+				$path = $this->path;
+			}
+			$result = $store->call($template, $args, $store->find($path, $this->query, $this->limit, $this->offset), array( 'usePathAsKey' => true ) );
 			return $result;
 		}
 
@@ -132,9 +204,9 @@
 
 	class ar_storeGet extends arBase {
 
-		public function __construct($current, $path) {
+		public function __construct($path) {
 			global $store;
-			$this->path = $store->make_path($current, $path);
+			$this->path = $path;
 		}
 
 		public function find( $query = "" ) {
@@ -150,7 +222,12 @@
 			if ($template instanceof ar_listExpression_Pattern ) {
 				$template = ar::listExpression( 1 )->pattern( $template );
 			}
-			return $store->call($template, $args, $store->get($this->path), array( 'usePathAsKey' => true ) );
+			if (ar_store::$rememberShortcuts) {
+				$path = ar_store::makeRealPath( $this->path );
+			} else {
+				$path = $this->path;
+			}
+			return $store->call($template, $args, $store->get($path), array( 'usePathAsKey' => true ) );
 		}
 
 		public function parents() {
@@ -170,6 +247,29 @@
 			global $store;
 			if ($template instanceof ar_listExpression_Pattern ) {
 				$template = ar::listExpression( $this->count() )->pattern( $template );
+			}
+			if (ar_store::$rememberShortcuts) {
+				$path     = ar_store::makePath($this->path);
+				$realpath = ar_store::makeRealPath($this->path);
+				if ($realpath != $path ) {
+					// must do a call for each seperate path.
+					$list   = array();
+					$parent = $path;
+					while ( $realpath != $this->top && $parent != $this->top && end($list) != $realpath ) {
+						$list[$parent]   = $realpath;
+						$parent   = ar_store::makePath($parent.'../');
+						$realpath = ar_store::makeRealPath($parent);
+					}
+					if ( ($realpath == $this->top) || ($parent == $this->top) ) {
+						$list[$parent] = $realpath;
+					}
+					$list = array_reverse($list);
+					$result = array();
+					foreach ($list as $virtualpath => $path ) {
+						$result[$virtualpath] = current($store->call($template, $args, $store->get($path), array( 'usePathAsKey' => true ) ) );
+					}
+					return $result;
+				}
 			}
 			return $store->call($template, $args, $store->parents($this->path, $this->top), array( 'usePathAsKey' => true ) );
 		}

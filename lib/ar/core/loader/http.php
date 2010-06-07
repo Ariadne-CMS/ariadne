@@ -262,10 +262,10 @@
 		public function isCacheable() {
 		}
 		
-		public function makeURL( $path = '', $nls = '', $session = true, $https = false ) {
+		public function makeURL( $path = '', $nls = '', $session = true, $https = false, $keephost = false ) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
-			return $me->make_url( $path, $nls, $session, $https );
+			return $me->make_url( $path, $nls, $session, $https, $keephost );
 		}
 	}
 	

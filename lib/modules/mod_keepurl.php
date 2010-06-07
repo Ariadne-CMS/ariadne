@@ -21,8 +21,8 @@
 			return $newpath;
 		}
 
-		function _currentsection($path=".") {
-		global $ARCurrent;
+		function _loadConfig($path='.') {
+			global $ARCurrent;
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			$path = $me->make_path($path);
@@ -32,53 +32,70 @@
 					$path = $redir["src"];
 				}
 			}
-			$config=$me->loadConfig($path);
+			$config=$me->loadConfig($path);	
+			return $config;
+		}
+		
+		function _currentsection($path=".") {
+			$config = self::_loadConfig($path);
 			return $config->section;
 		}
 
-		function _get($rpath, $template, $args='') {
+		function _currentsite($path=".") {
+			$config = self::_loadConfig($path);
+			return $config->site;
+		}
+
+		function _get($path, $template, $args='') {
 		global $ARCurrent;
 			// for now we have to remove all current redirects
 			$old_redirects = $ARCurrent->shortcut_redirect;
 			$ARCurrent->shortcut_redirect = Array();
-			$result = pinp_keepurl::getWorker($rpath, $template, $args);
+			$realpath = self::_make_real_path($path);
+			if ($realpath) {
+				$context = pobject::getContext();
+				$me = $context["arCurrentObject"];
+				$result = $me->get( $realpath, $template, $args );
+			} else {
+				$result = Array();
+			}
 			// restore redirects
 			$ARCurrent->shortcut_redirect = $old_redirects;
 			return $result;
 		}
 
-		function getWorker($rpath, $template, $args='') {
-		global $ARCurrent;
+		function _make_real_path($path) {
+			global $ARCurrent;
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 
-			$rpath = $me->make_path($rpath);
-			$path = $rpath;
+			$path = $me->make_path($path);
+			$originalPath = $path;
 			while ($path != $prevPath && !$me->exists($path)) {
 				$prevPath = $path;
-				$path = $me->store->make_path($path, '..');
+				$path = $me->make_path($path.'../');
 			}
-			if ($path != $rpath) {
+			if ($path != $originalPath) {
 				$shortcut = current($me->get($path, 'system.get.phtml'));
 				if (!$shortcut->AR_implements('pshortcut')) {
-					$result = Array();
+					$result = false;
 				} else {
 					if (!is_array($ARCurrent->shortcut_redirect)) {
 						$ARCurrent->shortcut_redirect = Array();
 					}
-					$subpath = substr($rpath, strlen($path));
+					$subpath = substr($originalPath, strlen($path));
 					$target = $shortcut->call('system.get.target.phtml');
 					array_push($ARCurrent->shortcut_redirect, Array("src" => $path, "dest" => $target, "keepurl" => $shortcut->data->keepurl));
 					if ($me->exists($target.$subpath)) {
-						$result = $me->get($target.$subpath, $template, $args);
+						$result = $target.$subpath;
 					} else {
-						$result = pinp_keepurl::getWorker($target.$subpath, $template, $args);
+						$result = self::_make_real_path($target.$subpath);
 					}
 					array_pop($ARCurrent->shortcut_redirect);
 				}
 
 			} else {
-				$result = $me->get($path, $template, $args);
+				$result = $path;
 			}
 			return $result;
 		}

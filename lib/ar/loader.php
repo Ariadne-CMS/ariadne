@@ -6,6 +6,16 @@
 
 	class ar_loader extends arBase {
 
+		static public $makeLocalURL = false;
+		
+		public static function configure( $option, $value ) {
+			switch ($option) {
+				case 'makeLocalURL' :
+					self::$makeLocalURL = $value;
+				break;
+			}
+		}
+		
 		private static function getLoader() {
 			global $AR;
 			if ($AR->request && isset($AR->request['loader'])) {
@@ -47,7 +57,7 @@
 
 		public static function makeURL( $path = '', $nls = '', $session = true, $https = false ) {
 			$loader = self::getLoader();
-			return $loader->makeURL( $path, $nls, $session, $https );
+			return $loader->makeURL( $path, $nls, $session, $https, self::$makeLocalURL );
 		}
 		
 	}
