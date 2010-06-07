@@ -55,7 +55,7 @@
 			return $loader->getvar( $name, $method );
 		}
 
-		public static function makeURL( $path = '', $nls = '', $session = true, $https = false ) {
+		public static function makeURL( $path = '', $nls = '', $session = true, $https = null ) {
 			$loader = self::getLoader();
 			return $loader->makeURL( $path, $nls, $session, $https, self::$makeLocalURL );
 		}
