@@ -45,8 +45,6 @@ class puser extends pdir { // puser class definition
 	}
 
 	function GetGrants($path, &$result) {
-		debug("puser: GetGrants($path, result)","object");
-		debug("$path; ".$this->path."; ".serialize($this->data->config->usergrants[$path]));
 		if ($this->data->config->usergrants[$path]) {
 			foreach ($this->data->config->usergrants[$path] as $grant => $value) {
 				$result[$grant]=$value;
@@ -61,8 +59,6 @@ class puser extends pdir { // puser class definition
 		// compatability with pre 2.0RC1 versions of Ariadne.
 		// Grants there are either true or 1, both of which
 		// are byte(1) and should match global and local grants.
-		debug("puser: FindGrants($path, result)","object");
-		debug("(in $this->path)","object");
 		$newpath=$path;
 		if ($path==$top) {
 			$newpath="";
