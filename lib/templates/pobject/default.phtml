@@ -22,6 +22,8 @@
 	******************************************************************/
 
 	debug("default.phtml: ($arCallFunction)", "object");
+	global $ARConfigChecked;
+	$isARConfigChecked = $ARConfigChecked;
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunctionOrig, $arCallArgs)) {
 		if ($this->exists($this->path.$arCallFunction."/")) {
 			// first check if it's a pdir, if so, change the location
@@ -32,6 +34,7 @@
 				// any cache image must be saved under the current url,
 				// not the rewritten one, ergo:
 				$ARCurrent->cachepage=$this->path.$arCallFunction;
+				$ARConfigChecked = $isARConfigChecked;
 				$this->get($this->path.$arCallFunction."/","view.html",$arCallArgs);
 			}
 		} else {
