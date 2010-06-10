@@ -1095,7 +1095,7 @@ class mysqlstore extends store{
 	}
 
 	public function add_property($object, $property, $values) {
-		debug("add_property($object, $property, ".serialize($values)." )","store");
+		debug("add_property($object, $property, ".debug_serialize($values)." )","store");
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";

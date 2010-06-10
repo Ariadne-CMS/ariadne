@@ -134,6 +134,14 @@
 			}
 		}
 	}
+	
+	function debug_serialize( $var, $level="pinp", $stream="all" ) {
+		global $DB;
+		if( $DB["level"] >= $DB[$level] && (($DB["stream"]=="all")||($DB["stream"]==$stream) ) ) {
+			return serialize($var);
+		}
+		return ""; 
+	}
 
 	function pfTime($name) {
 		global $ARCurrent;

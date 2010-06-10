@@ -103,7 +103,7 @@ class postgresqlstore extends store {
 
 	 **********************************************************************************/ 
 
-		debug("call($template, ".serialize($args).", [list])", "store");
+		debug("call($template, ".debug_serialize($args).", [list])", "store");
 		$result = Array();
 		$this->error = "";
 		$this->count = @pg_numrows($objects["list"]);

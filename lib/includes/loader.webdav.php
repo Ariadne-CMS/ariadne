@@ -284,8 +284,8 @@
 		$result = false;
 
 		if( $cookiename != "ARCookie") {
-			debug("ldSetUserCookie(".serialize($cookie).")","object");
 			$ARUserCookie=serialize($cookie);
+			debug("ldSetUserCookie(".$ARUserCookie.")","object");
 			$result = setcookie($cookiename,$ARUserCookie, $expire, $path, $domain, $secure);
 		}
 

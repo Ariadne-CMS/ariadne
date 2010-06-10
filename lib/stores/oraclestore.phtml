@@ -104,7 +104,7 @@ class oraclestore extends store{
 	 wether it is a substore.
 	 **********************************************************************************/ 
 
-		debug("call($template, ".serialize($args).", [list])","store");
+		debug("call($template, ".debug_serialize($args).", [list])","store");
 
 		$result = Array();
 		$this->error="";
@@ -1072,7 +1072,7 @@ class oraclestore extends store{
 	}
 
 	function add_property($object, $property, $values) {
-		debug("add_property($object, $property, ".serialize($values)." )","all");
+		debug("add_property($object, $property, ".debug_serialize($values)." )","all");
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";

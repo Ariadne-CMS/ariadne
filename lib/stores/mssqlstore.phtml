@@ -104,7 +104,7 @@ class mssqlstore {
 	 wether it is a substore.
 	 **********************************************************************************/ 
 
-		debug("call($template, ".serialize($args).", [list])", "store");
+		debug("call($template, ".debug_serialize($args).", [list])", "store");
 		$this->error = "";
 		$this->count = ($objects["list"]) ? mssql_num_rows($objects["list"]) : 0;
 		debug("call: count=".$this->count,"all");

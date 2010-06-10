@@ -68,7 +68,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	***********************************************************************/
 	global $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls;
 
-		debug("pobject: ".$this->path.": call($arCallFunction, ".serialize($arCallArgs).")","object","all","IN");
+		debug("pobject: ".$this->path.": call($arCallFunction, ".debug_serialize($arCallArgs).")","object","all","IN");
 		
 		// default to view.html
 		if (!$arCallFunction) {
@@ -937,7 +937,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						}
 					}
 				}
-				debug('pobject: GetValidGrants() sgGrant('.serialize($AR->sgGrants).')');
+				debug('pobject: GetValidGrants() sgGrant('.debug_serialize($AR->sgGrants).')');
 				if( is_array($AR->sgGrants) ) {
 					ksort($AR->sgGrants);
 					$ppath = $this->make_path($path);
@@ -967,7 +967,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$grants=$AR->user->grants[$path];	
 
 		}
-		debug("pobject: GetValidGrants(user:".$AR->user->data->login."): end ( ".serialize($grants)." )","all");
+		debug("pobject: GetValidGrants(user:".$AR->user->data->login."): end ( ".debug_serialize($grants)." )","all");
 		return $grants;
 	}
 
@@ -1099,7 +1099,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if ($modifier && is_array($result)) {
 			$result=$result[$modifier];
 		}
-		debug("pobject: CheckSilent: result: ".serialize($grants));
+		debug("pobject: CheckSilent: result: ".debug_serialize($grants));
 		debug("pobject: CheckSilent: end","all");
 		return $result;
 	}
@@ -1355,7 +1355,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 								$arLibraryPath = $path;
 								$arType = $arCallTemplateType;
 								$lastcheckedpath = $checkpath = $arCallTemplatePath;
-								debug("getPinpTemplate: found $arCallFunction in library $arLibrary (arCallTemplatePath: ".serialize($arCallTemplatePath).")", "all");
+								debug("getPinpTemplate: found $arCallFunction in library $arLibrary (arCallTemplatePath: ".debug_serialize($arCallTemplatePath).")", "all");
 								break; // jump out of the foreach loop
 							}
 						}
@@ -1925,7 +1925,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}        
 		}
-		debug("getdata: end: result=".serialize($result),"all");
+		debug("getdata: end: result=".debug_serialize($result),"all");
 		return $result;
 	}
 
@@ -2272,7 +2272,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	function putvar($var, $value) {
 		global $ARCurrent;
 
-		debug("pobject: putvar($var, ".serialize($value).")","object");
+		debug("pobject: putvar($var, ".debug_serialize($value).")","object");
 		$ARCurrent->$var=$value;
 	}  
 
