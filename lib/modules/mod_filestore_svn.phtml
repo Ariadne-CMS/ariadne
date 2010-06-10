@@ -90,29 +90,32 @@
 			   the result of this function.
 			*/
 
-			$svn_instance = VersionControl_SVN::factory(array(
-				"add",
-				"blame",
-				"checkout", 
-				"cleanup",
-				"commit", 
-				"delete", 
-				"diff",
-				"export",
-				"import",
-				"info", 
-				"list", 
-				"log",
-				"propdel",
-				"propget",
-				"proplist",
-				"propset",
-				"resolved",
-				"revert",
-				"status", 
-				"update"
-			), $this->svn_options);
 
+			if( !$AR->SVN->instance ) {
+				$AR->SVN->instance = VersionControl_SVN::factory(array(
+					"add",
+					"blame",
+					"checkout", 
+					"cleanup",
+					"commit", 
+					"delete", 
+					"diff",
+					"export",
+					"import",
+					"info", 
+					"list", 
+					"log",
+					"propdel",
+					"propget",
+					"proplist",
+					"propset",
+					"resolved",
+					"revert",
+					"status", 
+					"update"
+				), $this->svn_options);
+			}
+			$svn_instance = $AR->SVN->instance;
 
 			$svn_switches = array();
 			if ($username) {
@@ -133,7 +136,6 @@
 				'object_id'		=> $id,
 				'info'			=> $svn_info 
 			);
-
 			return $svn;
 		}
 
