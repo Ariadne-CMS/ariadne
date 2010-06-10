@@ -311,10 +311,15 @@
 		}
 
 		function svn_info($svn, $name='') {
-			$args = array(
-				$this->get_path($svn, $name)
-			);
-			$result = $svn['instance']->info->run($args, $svn['switches']);
+			$path = $this->get_path($svn, $name);
+			if( file_exists($path.'.svn/') ) {
+				$args = array(
+					$path
+				);
+				$result = $svn['instance']->info->run($args, $svn['switches']);
+			} else {
+				$result = array();
+			}
 			return $result;
 		}
 
