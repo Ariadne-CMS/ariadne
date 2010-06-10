@@ -67,7 +67,8 @@
 	if ($wgWizCurrent==1) {
 		$arNewFilename=$this->getdata("arNewFilename","none");
 		if ($arNewFilename) {
-			$authconfig = $this->call("auth.ini");
+			$userConfig = $this->loadUserConfig();
+			$authconfig = $userConfig['authentication'];
 			$criteria["login"]["value"]["="]="'".AddSlashes($arNewFilename)."'";
 			$loginexists = false;
 			foreach ($authconfig['userdirs'] as $userdirpath) {

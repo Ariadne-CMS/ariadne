@@ -5,7 +5,6 @@
  
 	******************************************************************/
         require_once($this->store->get_config('code')."modules/mod_page.php");
-
 	if ((($this->arIsNewObject &&
 			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
 			$parentobj->CheckLogin("add", $this->type)) ||

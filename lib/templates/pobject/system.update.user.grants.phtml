@@ -10,7 +10,8 @@
 		$searchpath=array("pgroup"=>"/system/groups/", "puser"=>"/system/users/");
 		$types=array("puser", "pgroup");
 		$criteria=array();
-		$authconfig = $this->call("auth.ini");
+		$userConfig = $this->loadUserConfig();
+		$authconfig = $userConfig['authentication'];
 
 		$realgrants=$AR->user->grants[$this->path];
 		$AR->user->grants[$this->path]['config']=6;

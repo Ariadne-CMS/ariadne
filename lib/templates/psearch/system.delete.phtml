@@ -5,7 +5,8 @@
 		} else {
 			if (!$this->real_ls(".","system.get.phtml")) {
 				// remove grants for this object in all user objects.
-				$authconfig = $this->call("auth.ini");
+				$userConfig = $this->loadUserConfig();
+				$authconfig = $userConfig['authentication'];
 
 				if ($data->config->grants && is_array($data->config->grants)) {
 					while (list($login, $grants)=each($data->config->grants)) {

@@ -2,7 +2,8 @@
 	if ($this->CheckLogin("delete") && $this->CheckConfig()) {
 		$target=$this->getdata("target");
 		$target=$this->store->make_path($this->parent, $this->getdata("target","none"));
-		$authconfig = current($this->get($target, "auth.ini"));
+		$userConfig = $this->loadUserConfig();
+		$authconfig = $userConfig['authentication'];
 		$parentobject=current($this->get($this->parent, "system.get.phtml"));
 		if ($parentobject && $parentobject->AR_implements("pgroup")) {
 			// this is probably a link in a group

@@ -1,7 +1,8 @@
 <?php
   if ($this->CheckLogin("read") && $this->CheckConfig()) {
 	$target = $this->make_path($target);
-	$authconfig = current($this->get($target, "auth.ini"));
+	$userConfig = $this->loadUserConfig();
+	$authconfig = $userConfig['authentication'];
 
 	// Check if target is valid according to auth.ini
 	$validpath = false;

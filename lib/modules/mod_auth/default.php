@@ -10,8 +10,11 @@
 			array_unshift($this->config['userdirs'], "/system/users/"); // Make sure /system/users is always there on the first spot.
 
 			if ($requestedPath && !$this->config['siteconfig']) {
-				$site_config = current($store->call("auth.ini", "", $store->get($requestedPath)));
-				$this->config['siteconfig'] = $site_config;
+				$site = current($store->call("system.get.phtml", "", $store->get($requestedPath)));
+				if ($site) {
+					$site_config = $site->loadUserConfig();
+					$this->config['siteconfig'] = $site_config['authentication'];
+				}
 			}
 
 			$this->config['userdirs'] = array_merge($this->config['userdirs'], (array) $this->config['siteconfig']['userdirs']);

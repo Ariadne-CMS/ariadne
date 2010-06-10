@@ -4,7 +4,8 @@
 			$this->error=$ARnls["err:cannotlockobject"];
 		} else {
 			if (!$this->ls(".","system.get.phtml")) {
-				$authconfig = $this->call("auth.ini");
+				$userConfig = $this->loadUserConfig();
+				$authconfig = $userConfig['authentication'];
 
 				// copy $this so we'll be able to remove grants and templates _after_ the object has been deleted.
 				$clone = $this;

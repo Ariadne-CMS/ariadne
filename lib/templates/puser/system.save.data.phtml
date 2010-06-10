@@ -22,8 +22,8 @@
 			$this->data=new object;
 			$arIsNewObject=true;
 		}
-
-		$authconfig = $parentobj->call("auth.ini");
+		$userConfig = $this->loadUserConfig();
+		$authconfig = $userConfig['authentication'];
 
 		// unset the properties array, so no properties can be passed to this template.
 		$properties = Array();
