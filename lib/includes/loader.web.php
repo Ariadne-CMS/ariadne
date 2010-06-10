@@ -304,8 +304,6 @@
 
 	function ldHeader($header) {
 	global $ARCurrent;
-		debug("ldHeader:: $header");
-
 		$result=false;
 		if (!Headers_sent()) {
 			$result=true;
@@ -314,8 +312,6 @@
 			}
 			Header($header);
 			$ARCurrent->ldHeaders[strtolower($header)]=$header;
-		} else {
-			debug("Headers already sent, couldn't send $header","all");
 		}
 		return $result;
 	}
