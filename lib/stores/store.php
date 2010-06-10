@@ -239,7 +239,6 @@ abstract class store {
 	*/
 
 	public function get_config($field) {
-		debug("store::get_config($field)", "store");
 		switch ($field) {
 			case 'code':
 			case 'files':
@@ -252,7 +251,6 @@ abstract class store {
 				debug("store::get_config: undefined field $field requested","store");
 				break;
 		}
-		debug("store::get_config: end", "store");
 		return $result;
 	}
 
@@ -291,7 +289,6 @@ abstract class store {
 		This functions creates a new ariadne object
 	**********************************************************************************/
 	public function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) {
-		debug("newobject($path, $parent, $type, [data], $id, $lastchanged, $vtype, $size, $priority)","all");
 		$class = $type;
 		if ($subcpos = strpos($type, '.')) {
 			$class = substr($type, 0, $subcpos);
@@ -314,7 +311,6 @@ abstract class store {
 
 	public function close() {
 		// This is the destructor function, nothing much to see :)
-		debug("close()","store");
 		if (is_array($this->filestores)) {
 			while (list($key, $filestore)=each($this->filestores)) {
 				$filestore->close();
@@ -338,7 +334,6 @@ abstract class store {
 	with a '/' between them and at the start and the end. This string is 
 	then returned.
 	**********************************************************************/
-		debug("make_path($curr_dir, $path)","all");
 		$this->error = "";
 		if (!$path) {
 			$path = $curr_dir;
@@ -370,8 +365,6 @@ abstract class store {
 				}
 			}
 		}
-
-		debug("make_path: end ($result)","all");
 		return $result;
 	}
 
@@ -382,7 +375,6 @@ abstract class store {
 		$properties.
 	********************************************************************/
 
-		debug("save_properties([properties], $id)","all");
 		if ($properties && (is_array($properties)) && (is_int($id))) {
 			while (list($property, $property_set)=each($properties)) {
 				$this->del_property($id, $property);
@@ -393,7 +385,6 @@ abstract class store {
 				}
 			}
 		}
-		debug("save_properties: end","all");
 	}
 
 
