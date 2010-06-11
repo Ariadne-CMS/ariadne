@@ -1,5 +1,81 @@
-Changes:
+=========================
+Changes in release 2.7.1:
+=========================
+New features:
+- Added Ariadne API (read all about it!): basic HTML, CSS, menu, forms and
+lots of other coolness.
+- Added 'mogrify' function that allows morphing object types. Admin only,
+can break stuff.
+- Experimental: Added option that allows users and groups to be created
+outside /system/users/, thus providing users-per-site options
+- Experimental: Zen style dom creation
 
+Additions to existing features:
+- Rework of the core loader.php to make use of the new Ariadne API
+- Rewritten most of the explore view to make use of the new Ariadne API and
+HTML generation
+- Links to help pages in the Ariadne installer when a check fails
+- Extra checks in the Ariadne installer
+- Speedup in backend loading
+- Grantkey system has extended to allow grants to work on childobjects.
+- Extended mod_geo with Exif Lat/Long support (thanks Gerhard!)
+- Captcha does not show similar characters for better usability.
+- Added option to tag a custom field as containing HTML.
+- Added a default nextid length of 5 when no length is given, ie: {id}.
+- Added 'check all' option to the unlock window.
+- Specific templates for password changes on users
+- Improved handling of file uploads and replacement
+- Improved memory used for file uploads
+- Progress bars for import/export dialogs
+- Lock-removal dialog is now in the new style
+- All JS files for the backend now use their local minified versions for
+faster loading
+- Big speedups in the backend loading and browsing
+- Less memory usage for debugging statements
+- Removed some less important debug statements for better performance
+- Typetree is now read from the disk-template 'typetree.ini' and no longer
+uses the information within Ariadne.
+- Added html_entity* to the allowed functions list
+- Added getLibraries function to list active libraries on a given path
+
+Removed features:
+- WDDX export has been removed from the export dialog, since it has no
+import counterpart. This option is still available from the commandline.
+
+Bugfixes:
+- SVN dialog fixes
+- Fixes to the caching system to only cache GET requests
+- Fixes in the PINP compiler
+- Bugfix for missing mimetypes after saving files and images.
+- Bugfixes in the explore view (ariadne backend): up button, menu position
+- Bugfix in language-enabled SVN icons in template overview
+- Bugfix in required grants in hyperlink and image dialogs
+- Bugfix in SVN delete, now it also removes the templates in PINP when they
+are deleted in the repo.
+- Bugfix in psearch to make it possible to delete it (thanks Gerhard!)
+- Bugfix in template editor to make undo/redo work in IE
+- Bugfix in the display of the tree, fixed icon positioning
+- Fixed Toolbar editor to work in IE8.
+- Fixed problem with disappearing config data when calling other templates
+from the config (a relatively new feature)
+- Improved the config.ini workings, now the arConfig is passed as argument
+and the result value is set to the changed arConfig
+- Improved the config.ini handling, now uses the php stack so you can use
+get() in a config.ini template.
+- Added security check in getvar
+- Fixed line counting in pinp
+- Labelspans added to list, icon and details view in the Ariadne backend to
+prevent ugly views.
+- Fixed the display of the image browse dialog, buttons are now placed
+correctly
+- HTML editor now resizes with the window it is in
+- SVN handling with large directories (>100) now works correctly for unsvn,
+commit, revert
+- Grouping for SVN update messages
+
+=========================
+Changes in release 2.7.0:
+=========================
 Major work (more about this below):
 - All new user interface
 - New installer
