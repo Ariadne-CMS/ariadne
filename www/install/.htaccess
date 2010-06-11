@@ -1,7 +1,7 @@
 AuthName "Ariadne Install from Localhost Only"
 AuthType Basic
 
-<Limit GET>
+<Limit *>
 order deny,allow
 deny from all
 allow from localhost
