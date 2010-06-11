@@ -269,13 +269,13 @@ EOF;
 			return $this;
 		}
 
-		public function __toString( $indent = '', $current = 0 ) {
+		public function toString( $indent = '', $current = 0 ) {
 			if ( !$this->filled ) {
 				// do a default menu.
 				$this->bar();
 			}
 			
-			return parent::__toString( $indent, $current );
+			return parent::toString( $indent, $current );
 		}
 		
 		private function _makeURL( $path, $parent ) {

@@ -192,7 +192,11 @@
 			return (!trim($var)=='');
 		}
 
-		public function __toString( $indentWith = null ) {
+		public function __toString() {
+			return $this->toString();
+		}
+
+		public function toString( $indentWith = null ) {
 			foreach ( $this->attributes as $name => $value ) {
 				$position = 0;
 				foreach ( $this as $key => $node ) {
@@ -209,7 +213,7 @@
 			$position = 0;
 			foreach ( $this as $node) {
 				if ( $node instanceof ar_xmlElement) {
-					$result .= $node->__toString($indentWith, $position);
+					$result .= $node->toString($indentWith, $position);
 					$position++;
 				} else if ( $node instanceof ar_xmlNode) {
 					if ( trim($node->nodeValue) ) {
@@ -266,7 +270,6 @@
 		public function setAttribute( $name, $value, $dynamic = true ) {
 			$value = $this->_runPatterns($value);
 			if ($dynamic) {
-				//FIXME: misschien echt pas op __toString runnen? dus een else doen...
 				if ( isset($this->attributes[$name]) && is_array($value) && !isset($value[0]) ) {
 					if (!is_array($this->attributes[$name])) {
 						$this->attributes[$name] = array( $this->attributes[$name] );
@@ -566,6 +569,10 @@
 		}
 		
 		function __toString() {
+			return $this->toString();
+		}
+
+		function toString() {
 			if ($this->cdata) {
 				return "<![CDATA[" . str_replace("]]>", "]]&gt;", $this->nodeValue) . "]]>";
 			} else {
@@ -701,7 +708,11 @@
 			return $this;
 		}
 		
-		function __toString( $indent = '', $current = 0 ) {
+		function __toString() {
+			return $this->toString();
+		}
+
+		function toString( $indent = '', $current = 0 ) {
 			$indent = ar_xml::$indenting ? $indent : '';
 			$result = "\n" . $indent . '<' . ar_xml::name( $this->tagName );
 			if ( is_array($this->attributes) ) {
@@ -713,7 +724,7 @@
 			}
 			if ( $this->childNodes instanceof ar_xmlNodes && count($this->childNodes) ) {
 				$result .= '>';
-				$result .= $this->childNodes->__toString( ar_xml::$indent . $indent );
+				$result .= $this->childNodes->toString( ar_xml::$indent . $indent );
 				if ( substr($result, -1) == ">") {
 					$result .= "\n" . $indent;
 				}

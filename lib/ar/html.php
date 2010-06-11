@@ -106,11 +106,15 @@
 
 	class ar_htmlNodes extends ar_xmlNodes {
 	
-		public function __toString( $indentWith = null ) {
+		public function toString( $indentWith = null ) {
 			$indent = isset($indentWith) ? $indentWith : ( 
 				ar_html::$indenting ? ar_html::$indent : ''
 			);
-			return parent::__toString( $indent );
+			return parent::toString( $indent );
+		}
+
+		public function __toString() {
+			return $this->toString();
 		}
 		
 		public function getNodeList() {
@@ -126,7 +130,11 @@
 	
 	class ar_htmlElement extends ar_xmlElement {
 	
-		public function __toString( $indent = '', $current = 0 ) {
+		public function __toString() {
+			return $this->toString();
+		}
+
+		public function toString( $indent = '', $current = 0 ) {
 			$indent = ar_html::$indenting ? $indent : '';
 			$result = "\n" . $indent . '<' . ar_html::name( $this->tagName );
 			if ( is_array($this->attributes) ) {
@@ -140,7 +148,7 @@
 				$result .= '>';
 				if ( ar_html::canHaveContent( $this->tagName ) ) {
 					if ( isset($this->childNodes) && count($this->childNodes) ) {
-						$result .= $this->childNodes->__toString( ar_html::$indent . $indent );
+						$result .= $this->childNodes->toString( ar_html::$indent . $indent );
 						if ( substr($result, -1) == ">") {
 							$result .= "\n" . $indent;
 						}
