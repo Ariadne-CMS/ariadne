@@ -43,6 +43,36 @@
 		debug("Error: $text");
 	}
 
+	function ldRegisterFile($field = "file", &$error) {
+	global $ARnls, $store, $ldCmd_files;
+		debug("ldRegisterFile([$field], [error])");
+
+		require_once($store->get_config("code")."modules/mod_mimemagic.php");
+
+		$result = Array();
+		$file_data = $ldCmd_files[$field];
+		if ($file_data) {
+				$file_temp = tempnam($store->get_config("files")."temp", "upload");
+				$fp = fopen($file_temp, "wb+");
+				if (!$fp) {
+					$error = "could not write file '$field'";
+				} else {
+					debug("	file_data (".$file_data.")");
+					fwrite($fp, $file_data, strlen($file_data));
+					fclose($fp);
+
+					$file_type = get_mime_type($file_temp);
+
+					$result[$field] = $field;
+					$result[$field."_temp"] = substr($file_temp, strlen($store->get_config("files")."temp/"));
+					$result[$field."_size"] = filesize($file_temp);
+					$result[$field."_type"] = $file_type;
+					debug(" http_post_vars (".serialize($result).")");
+				}
+		}
+		debug("ldRegisterFile[end] ($result)");
+		return $result;
+	}
 
 	function ldAccessDenied($path, $message) {
 	global $ARCurrent;

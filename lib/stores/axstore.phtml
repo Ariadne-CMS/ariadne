@@ -43,10 +43,10 @@ class axstore {
 		$this->tempdir=tempnam($this->temp, "axtemp");
 		@unlink($this->tempdir);
 
-		debug("creating tempdir (".$this->tempdir.")", "store");
+		debug("axstore::creating tempdir (".$this->tempdir.")", "store");
 		if (@mkdir($this->tempdir, 0777)) {
 			if (file_exists($this->database)) {
-				debug("extracting database (".$this->database.")", "store");
+				debug("axstore::extracting database (".$this->database.")", "store");
 				if ($this->tar->extract($this->database, " ", $this->tempdir)) {
 					if (!file_exists($this->tempdir."/header.data")) {
 						$this->header["version"] = 1;
@@ -61,7 +61,7 @@ class axstore {
 					}
 					if (file_exists($this->tempdir."/objects.data")) {
 						// now we have found our objects.data, lets make an index of it
-						debug("loading (".$this->tempdir."/objects.data)", "store");
+						debug("axstore::loading (".$this->tempdir."/objects.data)", "store");
 						$this->ofile=fopen($this->tempdir."/objects.data", "rb");
 						if ($this->ofile) {
 							$currentoffset=ftell($this->ofile);
@@ -106,7 +106,7 @@ class axstore {
 								$currentoffset=ftell($this->ofile);
 							}
 
-							debug("loading (".$this->tempdir."/nodes.data", "store");
+							debug("axstore::loading (".$this->tempdir."/nodes.data", "store");
 							// read nodes data
 							$fp_nodes=fopen($this->tempdir."/nodes.data", "rb");
 							if ($fp_nodes) {
@@ -204,9 +204,9 @@ class axstore {
 	}
 
 	function get_config($field) {
-		debug("store::get_config($field)", "store");
+		debug("axstore::get_config($field)", "store");
 		$result = $this->$field;
-		debug("store::get_config: end", "all");
+		debug("axstore::get_config: end", "all");
 		return $result;
 	}
 
@@ -332,7 +332,7 @@ class axstore {
 
 	**********************************************************************/
 
-		debug("link($source,$destination)","store");
+		debug("axstore::link($source,$destination)","store");
 		$this->error="";
 		$edestination=AddSlashes($destination);
 		$esource=AddSlashes($source); 
@@ -340,11 +340,11 @@ class axstore {
 		$eparent=AddSlashes($parent);
 		if ($this->exists($destination)) {
 			$this->error="$destination already exists, cannot overwrite.";
-			debug("link: ERROR: ".$this->error,"store");
+			debug("axstore::link: ERROR: ".$this->error,"store");
 			$result=false;
 		} else if (!$this->exists($parent)) {
 			$this->error="$parent does not exist, cannot link.";
-			debug("link: ERROR: ".$this->error,"store");
+			debug("axstore::link: ERROR: ".$this->error,"store");
 			$result=false;
 		} else { 
 			if (ereg("\{([0-9]):id\}",$destination,$match)) {
@@ -354,7 +354,7 @@ class axstore {
 				}
 				$destination=ereg_replace("\{[0-9]:id\}",strval($subid),$destination);
 				$edestination=AddSlashes($destination);
-				debug("link: new destination: $destination ($subid)","all");
+				debug("axstore::link: new destination: $destination ($subid)","all");
 			}
 			$id=$this->exists($source);
 			if ($id) {
@@ -363,11 +363,11 @@ class axstore {
 				$node->object=$this->objects[$id];
 				$this->nodes[$destination]=$node;
 				$this->nodes[$parent]->children[$destination]=$this->nodes[$destination];
-				debug("link: end","all");
+				debug("axstore::link: end","all");
 				$result=$destination;
 			} else {
 				$result=false;
-				debug("link: end (no $source)","store");
+				debug("axstore::link: end (no $source)","store");
 			}
 		}
 		return $result;
@@ -492,7 +492,7 @@ class axstore {
 		if ($this->nodes[$path]) {
 			$result=$this->nodes[$path]->object->id;
 		} else {
-			debug("store::exists($path) false", "store");
+			debug("axstore::exists($path) false", "store");
 		}
 		return $result;
 	}
@@ -633,7 +633,7 @@ class axstore {
 	}
 
 	function load_property($object, $property, $values="") {
-		debug("load_property($object, $property, [values])","all");
+		debug("axstore::load_property($object, $property, [values])","all");
 
 		if ($object) {
 			$currProp=0;
@@ -655,7 +655,7 @@ class axstore {
 				$currProp++;
 			}
 		}
-		debug("load_property: end","all");
+		debug("axstore::load_property: end","all");
 		return $result;
 	}
 
@@ -772,12 +772,12 @@ class axstore {
 			debug("axstore::rm_dir removing ($path)", "store");
 			$dir=opendir($path);
 			while (false !== ($entry=readdir($dir))) {
-				debug("entry($entry)");
+				debug("axstore::entry($entry)");
 				if ($entry!="." && $entry!="..") {
 					if (is_dir($path.$entry)) {
 						$this->rm_dir($path.$entry);
 					} else {
-						debug("unlinking ($path$entry)\n");
+						debug("axstore::unlinking ($path$entry)\n");
 						unlink($path.$entry);
 					}
 				}
