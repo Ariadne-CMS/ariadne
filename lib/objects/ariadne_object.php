@@ -1189,6 +1189,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 
 
+	// returns a list of libraries loaded on $path
+	function getLibraries($path = '') {
+	global $ARConfig;
+		$path = $this->make_path($path);
+		return (array)$ARConfig->libraries[$path];
+	}
+
 	function getPinpTemplate($arCallFunction='view.html', $path=".", $top="", $inLibrary = false, $librariesSeen = null, $arSuperContext="") {
 	global $ARCurrent, $ARConfig, $AR;
 		debug("getPinpTemplate: function: $arCallFunction; path: $path; top: $top; inLib: $inLibrary; startType: $arStartType");
@@ -2173,6 +2180,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	function _putvar($var, $value) {
 		return $this->putvar($var, $value);
+	}
+
+	function _getLibraries($path = '') {
+		return $this->getLibraries($path);
 	}
 
 	function _setnls($nls) {
