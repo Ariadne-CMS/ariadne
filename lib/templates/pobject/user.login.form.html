@@ -1,158 +1,60 @@
 <?php
-    /******************************************************************
-     user.login.html                                       Muze Ariadne
-     ------------------------------------------------------------------
-     Author: Muze (info@muze.nl)
-     Date: 11 december 2002
-
-     Copyright 2002 Muze
-
-     This file is part of Ariadne.
-
-     Ariadne is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published 
-     by the Free Software Foundation; either version 2 of the License, 
-     or (at your option) any later version.
- 
-     Ariadne is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with Ariadne; if not, write to the Free Software 
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
-     02111-1307  USA
-
-    -------------------------------------------------------------------
-
-     Description:
-
-	Give the user a username and password prompt. On the page and
-	spawn the user.login.popup.html popupwindow.
-
-    ******************************************************************/
-
 	if (!$arLoginMessage) {
 		$arLoginMessage=$ARnls["loginrequired"];
 	}
-	// make sure the login page is not cached.
-	global $nocache, $AR_PATH_INFO;
+	global $nocache,$AR_PATH_INFO;
 	$nocache=true;
-	// make sure no language select dialog is shown.	
+	// make sure no language select dialog is shown.
 	$ARCurrent->nolangcheck=true;
-	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
-		if (!$arReturnPath) {
-			$split=strrpos($AR_PATH_INFO, "/");
-			$function=substr($AR_PATH_INFO,$split+1);
-			$arReturnPath=$this->path;
+	if (!$arReturnPath) {
+		$split=strrpos($AR_PATH_INFO, "/");
+		$function=substr($AR_PATH_INFO,$split+1);
+		$arReturnPath=$this->path;
+	}
+	if (!$arReturnTemplate) {
+		$arReturnTemplate=$function;
+		if (ldGetServerVar("QUERY_STRING")) {
+			$arReturnTemplate.="?".ldGetServerVar("QUERY_STRING");
 		}
-		if (!$arReturnTemplate) {
-			$arReturnTemplate=$function;
-			if (ldGetServerVar("QUERY_STRING")) {
-				$arReturnTemplate.="?".ldGetServerVar("QUERY_STRING");
-			}
-		}
-?>
-<html>
-<head>
-<title>Ariadne - <?php echo $arLoginMessage; ?></title>
-<script language="javascript">
-function dopopup() {
-  if (document.all) {
-    var popup_left=window.screenLeft+(document.body.clientWidth/2)-250;
-    var popup_top=window.screenTop+10;
-    // FIXME: change to modalDialog
-    // var popup_method=showModalDialog;
-    // var popup_properties='dialogHeight:308px; dialogWidth:515px; dialogLeft:'+popup_left+'px; dialogTop:'+popup_top+'px; resizable: yes; status: no; help: no;';
-    var popup_properties='left='+popup_left+',top='+popup_top+',directories=no,location=no,menubar=no,status=no,toolbar=no,resizable=yes,height=275,width=500';
-    // var popup_focus=false;
-    var popup_method=window.open;
-    var popup_focus=true;
-  } else {
-    var popup_method=window.open;
-    var popup_properties='directories=no,location=no,menubar=no,status=no,toolbar=no,resizable=yes,height=275,width=500';
-    var popup_focus=true;
-  }
-  popup=popup_method('<?php 
-	echo $this->make_url()."user.login.html".
-			"?arLoginMessage=".RawUrlEncode($arLoginMessage).
-			"&arPopup=1".
-			"&arErrorMessage=".RawUrlEncode($arErrorMessage).
-			"&ARLoginFailed=".RawUrlEncode($ARLogin).
-			"&arReturnPath=".RawUrlEncode($arReturnPath).
-			"&arReturnTemplate=".RawUrlEncode($arReturnTemplate); ?>',
-	'popup_login',popup_properties);
-  if (popup_focus) {
-    // because of  popup blockes we added this check
-    if(popup){
-      popup.focus();
-    }
-  }
-}
-</script>
-<style>
-	.width100 { width: 100px; }
-	.width200 { width: 200px; }
-	.width300 { width: 300px; }
-	H1		{ FONT: 12pt helvetica, sans-serif; FONT-WEIGHT: bold; }
-	TD		{ FONT: 10pt helvetica, sans-serif; }
-	BODY		{ FONT: 10pt helvetica, sans-serif;
-				BORDER: 0;
-				BACKGROUND-COLOR: #4488BB;
-			}
-	IMG		{
-				BORDER: 0;
-				MARGIN: 0;
-				PADDING: 0;
-			}
-	.small		{
-				FONT: 8pt helvetica, sans-serif;
-			}
-</style>
-</head>
-<body bgcolor="#BBBBBB" onLoad='dopopup();'>
-<table align="center" border="1" cellpadding="0" cellspacing="0" margin="0" width="500">
-<tr><td>
-<table align="center" border="0" cellpadding="0" cellspacing="0" margin="0" width="500" bgcolor="#FFFFFF">
-<tr>
-  <td rowspan="3"><img src="<?php echo $AR->dir->images; ?>clock.gif" alt="" align="left" border="0" hspace="0" vspace="0"></td>
-  <td valign="top" align="center"><img src="<?php echo $AR->dir->images; ?>ariadne.gif" alt="Ariadne - Web Application Server" vspace="5"></td>
-</tr><tr>
-  <td valign="top" align="right">
+	}
+	$arCallArgs['arReturnPath'] = $arReturnPath;
+	$arCallArgs['arReturnTemplate'] = $arReturnTemplate;
 
-<form name="login" method="POST" action="<?php echo $this->make_url($arReturnPath, '', true, true).htmlentities($arReturnTemplate); ?>">
-<input type="hidden" name="arReturnPath" value="<?php echo htmlentities($arReturnPath); ?>">
-<input type="hidden" name="arReturnTemplate" value="<?php echo htmlentities($arReturnTemplate); ?>">
-<table align="center" valign="middle" border="0" width="300">
-<tr>
-	<td colspan="2" align="center" valign="middle">
-			<table align="right">
-			<tr>
-				<td align="right"><?php echo $ARnls["login"]; ?>&nbsp;:</td>
-				<td><input type="text" name="ARLogin" size="16" value="<?php echo htmlentities($ARLogin); ?>"></td>
-			</tr><tr>
-				<td align="right"><?php echo $ARnls["password"]; ?>&nbsp;:</td>
-				<td><input type="password" name="ARPassword" size="16"></td>
-			</tr>
-			</table>
-	</td>
-</tr><tr>
-	<td colspan="2" align="right"><input type="submit" name="ok" value="&nbsp;<?php echo $ARnls["login"]; ?>&nbsp;"></td>
-</tr>
-</table>
+	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
+?>
+<div id="centered">
+<form name="login" method="POST" action="<?php echo $this->make_local_url($arReturnPath, '', true, true).htmlentities($arReturnTemplate); ?>">
+<div class="storevars">
+	<input type="hidden" name="arReturnPath" value="<?php echo htmlentities($arReturnPath); ?>">
+	<input type="hidden" name="arReturnTemplate" value="<?php echo htmlentities($arReturnTemplate); ?>">
+</div>
+<div id="header">
+	<div class="logo">
+		<img src="<?php echo $AR->dir->www;?>images/tree/logo2.gif" alt="Ariadne Web Application Server">
+		<span class="ariadne">Ariadne</span>
+		<span class="ariadne_sub">Web Application Server</span>
+	</div><?php echo $arLoginMessage; ?><img class="typeicon" src="<?php echo $AR->dir->images.'icons/large/grants.png'; ?>" alt="<?php echo $ARnls["login"]; ?>">
+</div>
+<div id="sectiondata" class="nosections notfixed">
+	<div id="tabs"></div>
+	<div id="tabsdata">
+		<div id="data">
+			<div class="field">
+				<label for="ARLogin" class="required"><?php echo $ARnls["login"]; ?></label>
+				<input type="text" id="ARLogin" name="ARLogin" value="<?php echo htmlentities($ARLogin); ?>">
+			</div>
+			<div class="field">
+				<label for="ARPassword" class="required"><?php echo $ARnls["password"]; ?></label>
+				<input type="password" id="ARPassword" name="ARPassword">
+			</div>
+			<div class="field">
+				<input type="submit" id="loginbutton" name="ok" class="wgWizControl" value="<?php echo $ARnls["login"]; ?>">
+			</div>
+		</div>
+	</div>
+</div>
 </form>
-</td>
-</tr><tr><td valign="bottom" align="center">
-  <span class="small">&copy; 1998 - 2010 <a href="http://www.muze.nl/" target="_blank">muze</a>. Ariadne comes with ABSOLUTELY NO WARRANTY. 
-  Ariadne is free software, you are welcome to redistribute it under certain <a href="<?php echo $this->make_url(".", false, false); ?>help.about.license.phtml" target="_blank">conditions</a>.<br>&nbsp;
-  </span>
-</td></tr>
-</table>
-</td></tr></table>
-</form>
-</body>
-</html>
+</div>
 <?php
 	}
 ?>

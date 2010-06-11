@@ -1,0 +1,27 @@
+#resultSet table {
+	width: 100%;
+}
+
+#resultSet .yui-dt-col-unlock {
+	width: 70px;
+}
+#resultSet .yui-dt-col-unlock input {
+	margin: 0px auto;
+}
+	
+#resultSet td .yui-dt-liner {
+	padding: 0px;
+}
+
+#resultSet label {
+	margin: auto;
+	padding: 4px 10px;
+}
+#resultSet .highlight td {
+	background-color: #D0DCF7;
+}
+.select_all {
+	float: right;
+	margin-right: 0px;
+	margin-top: 10px;
+}

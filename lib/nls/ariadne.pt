@@ -1,0 +1,41 @@
+<?php
+
+	$ARnls["ariadne:about"]						=	"Acerca...";
+	$ARnls["ariadne:browsebydate"]				=	"Navegar por data";
+	$ARnls["ariadne:browsebyletter"]				=	"Navegar por character";
+	$ARnls["ariadne:cache"]						=	"Caching para ";
+	$ARnls["ariadne:copy"]						=	"Copiar ";
+	$ARnls["ariadne:customfields"]				=	"Campos configuraveis para ";
+	$ARnls["ariadne:delete"]						=	"Apagar ";
+	$ARnls["ariadne:details"]					=	"Detalhes";
+	$ARnls["ariadne:detailsH"]					=	"Mais...";
+	$ARnls["ariadne:edit"]						=	"Alterar ";
+	$ARnls["ariadne:explore"]					=	"Explorar";
+	$ARnls["ariadne:export"]						=	"Exportar";
+	$ARnls["ariadne:folders"]					=	"Mapas";
+	$ARnls["ariadne:grants"]						=	"Permiss&otilde;es para ";
+	$ARnls["ariadne:help"]						=	"Ajuda";
+	$ARnls["ariadne:iconview"]					=	"Seleccionar uma vista de minaturas";
+	$ARnls["ariadne:import"]						=	"Importar";
+	$ARnls["ariadne:info"]						=	"Info";
+	$ARnls["ariadne:language"]					=	"Lingua para ";
+	$ARnls["ariadne:large"]						=	"Miniaturas";
+	$ARnls["ariadne:link"]						=	"Liga&ccedil;&atilde;o ";
+	$ARnls["ariadne:new"]						=	"Addicionar novo objecto";
+	$ARnls["ariadne:preferences"]				=	"Prefer&ecaret;ncias";
+	$ARnls["ariadne:priority"]					=	"Prioridade para ";
+	$ARnls["ariadne:rename"]						=	"Mudar nome ";
+	$ARnls["ariadne:search"]						=	"Pesquisa";
+	$ARnls["ariadne:settings"]					=	"Defini&ccedil;&otilde;es";
+	$ARnls["ariadne:shortcut"]					=	"Alterar atalho";
+	$ARnls["ariadne:small"]						=	"Lista";
+	$ARnls["ariadne:templates"]					=	"Moldes para ";
+	$ARnls["ariadne:tutorials"]					=	"Tutoriais";
+	$ARnls["ariadne:types"]						=	"Arvore de tipos para ";
+	$ARnls["ariadne:up"]							=	"Para cima";
+	$ARnls["ariadne:view"]						=	"Vista";
+	$ARnls["ariadne:viewweb"]					=	"Mostrar p&aacute;gina web";
+	$ARnls['ariadne:wysiwyg_editor']			=	"WYSIWYG editor";
+
+
+?>

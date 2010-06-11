@@ -1,0 +1,14 @@
+Welcome to Ariadne!
+
+To start the installation, please follow these steps:
+- create a database for Ariadne to be installed in
+- copy the www directory to your webroot and give it a suitable name, eg
+'ariadne'.
+- copy the file 'ariadne.inc-unix' or 'ariadne.inc-win' to 'ariadne.inc',
+depending on your platform.
+- edit ariadne.inc, and point $ariadne to the path of the lib directory, eg.
+/usr/local/ariadne/lib
+- give write grants for www-data to ariadne/lib/configs/ariadne.phtml
+- give write grants for www-data to ariadne/files/
+- give write grants for www-data to ariadne/lib/configs/svn to allow SVN support
+- point your webbrowser to http://yourhost/ariadne/install/ to start installation.

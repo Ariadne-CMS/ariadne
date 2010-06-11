@@ -6,85 +6,92 @@
    No result.
 
   ******************************************************************/
-  function wgWizKeepVars($array, $prefix="") {
-  // this function translates the given array to a list
-  // of hidden input types. When $ARCurrent->override is on
-  // there is no check to see wether a given variable
-  // has already been seen and $ARCurrent->seenit is set.
-  // In the case of an array, seenit is set to the name of
-  // the array (for each element). In the case of a normal
-  // variable, seenit is set to that variable's name.
-  // When $ARCurrent->override is not set, each variable is
-  // first checked against the 'seenit' array. If it is an
-  // element of an array, seenit is checked against the name
-  // of the array, else it is checked against the name of
-  // the variable itself.
-  // Only 'leaf' node or array elements are checked.
+	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
 
-    global $ARCurrent, $AR;
-    if (!$prefix) {
-      $prefix="arStoreVars";
-    }
-    $prefix.="[";
-    if ($prefix==="arStoreVars[") {
-      $toplevel=true;
-    }
-    if (!($regexp=$ARCurrent->regexp)) {
-      $regexp='^arStoreVars\[(';
-      reset($AR->nls->list);
-      while (list($key, $value)=each($AR->nls->list)) {
-        $regexp.=$key.'|';
-      }
-      $regexp=substr($regexp,0,-1).')\]\[$';
-      $ARCurrent->regexp=$regexp;
-    }
-    if (ereg($ARCurrent->regexp, $prefix)) {
-      $toplevel=true;
-    }
-    $postfix="]";
-    @reset($array);
-    while (list($key, $value)=@each($array)) {
-      if (is_array($value)) {
-        if ($key!=="arStoreVars") {
-          wgWizKeepVars($value, $prefix.$key.$postfix);
-        }
-      } else 
-      if ($ARCurrent->override) { // don't check $ARCurrent->seenit, do set it.
-        if ($toplevel) { // this is a normal name-value pair
-          $ARCurrent->seenit[$prefix.$key.$postfix]=true;
-        } else { // it's part of an array
-          $ARCurrent->seenit[$prefix]=true;
-        }
-        $value = htmlspecialchars($value);
-        echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
-      } else 
-      if (!$ARCurrent->seenit[$prefix] && !$toplevel) { // value part of array
-        $value = htmlspecialchars($value);
-        echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
-      } else
-      if (!$ARCurrent->seenit[$prefix.$key.$postfix] && $toplevel) { // value not in array
-        $value = htmlspecialchars($value);
-        echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
-      }
-    }
-  }
+	function wgWizKeepVars($array, $prefix="") {
+		// this function translates the given array to a list
+		// of hidden input types. When $ARCurrent->override is on
+		// there is no check to see wether a given variable
+		// has already been seen and $ARCurrent->seenit is set.
+		// In the case of an array, seenit is set to the name of
+		// the array (for each element). In the case of a normal
+		// variable, seenit is set to that variable's name.
+		// When $ARCurrent->override is not set, each variable is
+		// first checked against the 'seenit' array. If it is an
+		// element of an array, seenit is checked against the name
+		// of the array, else it is checked against the name of
+		// the variable itself.
+		// Only 'leaf' node or array elements are checked.
 
-  function wgWizGetAction($wgWizButtonPressed) {
-    global $ARnls;
-    $arReverseControl[$ARnls["next"]." >"]="next";
-    $arReverseControl["< ".$ARnls["prev"]]="prev";
-    $arReverseControl[$ARnls["save"]]="save";
-    $arReverseControl[$ARnls["back"]]="back";
-    $arReverseControl[$ARnls["cancel"]]="cancel";
-    return $arReverseControl[$wgWizButtonPressed];
-  }
+		global $ARCurrent, $AR;
+		if (!$prefix) {
+			$prefix="arStoreVars";
+		}
+		$prefix.="[";
+		if ($prefix==="arStoreVars[") {
+			$toplevel=true;
+		}
+		if (!($regexp=$ARCurrent->regexp)) {
+			$regexp='^arStoreVars\[(';
+			reset($AR->nls->list);
+			foreach( $AR->nls->list as $key => $value ) {
+				$regexp.=$key.'|';
+			}
+			$regexp=substr($regexp,0,-1).')\]\[$';
+			$ARCurrent->regexp=$regexp;
+		}
+		if (ereg($ARCurrent->regexp, $prefix)) {
+			$toplevel=true;
+		}
+		$postfix="]";
 
-  // code for pinp: calculate and return (preliminary) wgWizNextStep
-  if (!$wgWizControl) {
-    $wgWizControl=$this->getdata("wgWizControl","none");
-  }
-  if ($wgWizControl) {
-    $wgResult=wgWizGetAction($wgWizControl);
-  }
+		$ignoreVars = array(
+			"wgWizAction" => true,
+		);
 
+		if( is_array($array ) ) { 
+			reset($array);
+			foreach( $array as $key => $value ) {
+				if( !$ignoreVars[$key] ) {
+					if (is_array($value)) {
+						if ($key!=="arStoreVars") {
+							wgWizKeepVars($value, $prefix.$key.$postfix);
+						}
+					} elseif ($ARCurrent->override) { // don't check $ARCurrent->seenit, do set it.
+						if ($toplevel) { // this is a normal name-value pair
+							$ARCurrent->seenit[$prefix.$key.$postfix]=true;
+						} else { // it's part of an array
+							$ARCurrent->seenit[$prefix]=true;
+						}
+						$value = htmlspecialchars($value);
+						echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
+					} elseif (!$ARCurrent->seenit[$prefix] && !$toplevel) { // value part of array
+						$value = htmlspecialchars($value);
+						echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
+					} elseif (!$ARCurrent->seenit[$prefix.$key.$postfix] && $toplevel) { // value not in array
+						$value = htmlspecialchars($value);
+						echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
+					}
+				}
+			}
+		}
+	}
+
+	function wgWizGetAction($wgWizButtonPressed) {
+		global $ARnls;
+		$arReverseControl[$ARnls["next"]." >"]="next";
+		$arReverseControl["< ".$ARnls["prev"]]="prev";
+		$arReverseControl[$ARnls["save"]]="save";
+		$arReverseControl[$ARnls["back"]]="back";
+		$arReverseControl[$ARnls["cancel"]]="cancel";
+		return $arReverseControl[$wgWizButtonPressed];
+	}
+
+	// code for pinp: calculate and return (preliminary) wgWizNextStep
+	if (!$wgWizControl) {
+		$wgWizControl=$this->getdata("wgWizControl","none");
+	}
+	if ($wgWizControl) {
+		$wgResult=wgWizGetAction($wgWizControl);
+	}
 ?>

@@ -14,15 +14,15 @@
 
 	check_file( $ariadne."/configs/ariadne.phtml" );
 	cdebug("reading ".$ariadne."/configs/ariadne.phtml");
-	require($ariadne."/configs/ariadne.phtml");
+	require_once($ariadne."/configs/ariadne.phtml");
 	
 	check_file( $ariadne."/configs/store.phtml" );
 	cdebug("reading ".$ariadne."/configs/store.phtml");
-	require($ariadne."/configs/store.phtml");
+	require_once($ariadne."/configs/store.phtml");
 
 	check_file( $ariadne."/configs/axstore.phtml" );
 	cdebug("reading ".$ariadne."/configs/axstore.phtml");
-	require($ariadne."/configs/axstore.phtml");
+	require_once($ariadne."/configs/axstore.phtml");
 
 	check_file( $store_config['code'] );
 	check_file( $store_config['code']."includes/" );

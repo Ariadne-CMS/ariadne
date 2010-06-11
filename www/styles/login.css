@@ -1,0 +1,308 @@
+#login_panel,
+#login_panel .bd {
+	padding: 0px;
+	margin: 0px;
+	background-color: #C1CAE2;
+}
+
+#login_panel,
+#login_panel div {
+	font-size : 11px;
+	font-family : verdana;
+	line-height: 13px;
+}
+
+#login_panel #header {
+	height: 32px;
+	width: 100%;
+	background:url("../images/sprite.png") repeat-x 0 0;
+	border-bottom: 1px solid #808080;	
+	text-align: right;
+	vertical-align: middle;
+	line-height: 24px;
+	font-weight: bold;
+}
+
+#login_panel #header .typeicon {
+	margin-left: 10px;
+	margin-right: 10px;
+	vertical-align: middle;
+	margin-top: 6px;
+}
+
+#login_panel #header .logo {
+	width: 220px;
+	float: left;
+	text-align: left;
+	color: black;
+	text-decoration: none;
+}
+
+#login_panel #header .logo img {
+	margin-top: 4px;
+	margin-left: 11px;
+	border: 0px;
+}
+#login_panel #header .ariadne {
+	font-weight: bold;
+	font-family: arial, verdana;
+	font-size: 14px;
+	position: absolute;
+	top: 5px;
+	left: 42px;
+}
+
+#login_panel #header .ariadne_sub {
+	font-weight: normal;
+	font-size: 10px;
+	font-family: verdana;
+	position: absolute;
+	top: 17px;
+	left: 50px;
+}
+
+#login_panel #sections {
+	position: fixed;
+	top: 32px;
+	bottom: 0px;
+	left: 0px;
+	width: 120px;
+	z-index: 5;
+}
+#login_panel #sections.tabs {
+	top: 62px;
+}
+
+#login_panel #sections a {
+	display: block;
+	border: 1px solid #808080;
+	background-color: #D0DCF7;
+	margin-left: 10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	height: auto;
+	width: 100px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	text-align: center;
+	color: black;
+	text-decoration: none;
+}
+
+#login_panel #sections a:hover, #sections a.current:hover {
+	border: 1px solid #4A6799;
+	background-color: #EFF3FF;
+}
+
+#login_panel #sections a.current {
+	border: 1px solid #808080;
+	background-color: #EFF3FF;
+	font-weight: bold;
+	padding-right: 9px;
+	border-right: 1px solid #EFF3FF;
+}
+#login_panel #sections a.current:hover {
+	border-right: 1px solid #EFF3FF;
+}
+
+#login_panel #sections a img {
+	border: 0px;
+}
+
+#login_panel #tabsdata {
+        background-color: #EFF3FF;
+	padding: 10px;
+	border: 1px solid #808080;
+	position: fixed;
+	left: 120px;
+	right: 10px;
+	bottom: 40px;
+	top: 42px;
+}
+
+
+#login_panel .tabs #tabsdata {
+	top: 70px;
+}
+
+#login_panel .nosections #tabsdata {
+	left: 10px;
+}
+
+#login_panel #tabsdata fieldset {
+	padding-left: 20px;
+	padding-right: 20px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+#login_panel #tabsdata label {
+	margin-top: 10px;
+}
+ 
+#login_panel div.buttons input { 
+	background:url("../images/sprite.png") repeat-x 0 0;
+	border: 1px solid #808080;
+}
+
+#login_panel div.buttons {
+	position: fixed;
+	bottom: 10px;
+	right: 10px;
+	text-align: right;
+}
+
+#login_panel #sectiondata {
+	position: fixed;
+	top: 43px;
+	left: 120px;
+	right: 10px;
+	bottom: 40px;
+}
+
+#login_panel #sectiondata.nosections {
+	left: 10px;
+}
+
+#login_panel #tabnav a img {
+	border: 0px;
+}
+
+#login_panel #tabnav {
+	position: absolute;
+	list-style: none;
+	padding: 0px;
+	margin: 0px;
+	height: 30px;
+	width: 100%;
+	border-left: 1px solid #808080;
+	z-index: 5;
+}
+#login_panel #tabnav li {
+	margin: 0px;
+	float: left;
+	padding: 0px;
+}
+
+#login_panel #tabnav a {
+        background:url("../images/sprite.png") repeat-x scroll 0px 0px;
+	height: 16px;
+	padding: 5px;
+	background-color: #D0DCF7;
+	border-right: 1px solid #808080;
+	border-top: 1px solid #808080;
+	border-bottom: 1px solid #808080;
+	display: block;
+	text-decoration: none;
+	color: black;
+}
+#login_panel #tabnav a:hover {
+        background:url("../images/sprite.png") repeat-x scroll 0px -1700px;
+	background-color: #EFF3FF;
+	border-bottom: 1px solid #EFF3FF;
+}
+
+#login_panel #tabnav .tab-selected a {
+	background-color: #EFF3FF;
+	border-bottom: 1px solid #EFF3FF;
+	background:url("../images/sprite.png") repeat-x scroll 0px -1700px;
+}
+
+#login_panel #tabsdata .field {
+	width: 100%;
+	height: auto;
+	position: relative;
+	margin-bottom: 10px;
+}
+
+#login_panel #tabsdata input {
+	display: block;
+}
+
+#login_panel #tabsdata input.inputline {
+	width: 100%;
+}
+#login_panel .flag {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+}
+
+#login_panel #tabsdata .radio input, #tabsdata .checkbox input {
+	display: inline;
+}
+
+#login_panel div.keepimage {
+	margin-left: 25px;
+}
+#login_panel #tabsdata div.keepimage input {
+	display: inline;
+}
+
+#login_panel #header {
+	border: 1px solid #808080;
+	width: auto;
+}
+#login_panel .bd #header {
+	border: 0px;
+	border-bottom: 1px solid #808080;
+}
+
+#login_panel #centered {
+	width: 500px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-top: 50px; /* FIXME: properly vertical center this instead of using a margin to position it somewhere from the top */
+	position: relative;
+}
+#login_panel .bd #centered {
+	margin: 0px;
+}
+
+#login_panel #sectiondata.notfixed {
+	position: static;
+	margin-top: 10px;
+}
+#login_panel .notfixed #tabsdata {
+	position: static;
+	margin-top: 11px;
+}
+#login_panel #data {
+	text-align: center;
+}
+#login_panel #tabsdata input {
+	width: 150px;
+	margin-left: auto;
+	margin-right: auto;
+}
+#login_panel #tabsdata label {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 5px;
+}
+
+#login_panel .bd #tabsdata {
+	margin-left: 10px;
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
+
+#login_panel .bd {
+	border: 0px;
+}
+
+.language_flag {
+	border: 1px solid #808080;
+}
+#version {
+	border: 1px solid #808080;
+	background-color: white;
+	padding: 10px;
+	padding-top: 20px;
+	margin-bottom: 10px;
+}
+
+#disclaimer {
+	margin-top: 10px;
+}

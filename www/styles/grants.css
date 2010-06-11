@@ -1,0 +1,309 @@
+	input.hidden {
+		position: absolute;
+		height: 0px;
+		width: 0px;
+		z-index: -10;
+		left: -1000px;
+	}
+	#tabsdata .panel label.block {
+		display: block;
+		width: auto;
+		margin-top: 0px;
+	}
+
+	#panel1, #panel1 .items {
+		position: fixed;
+		left: 20px;
+		right: 67%;
+		top: 53px;
+		bottom: 51px;
+	}
+	#panel2, #panel2 .items {
+		position: fixed;
+		left: 34%;
+		right: 34%;
+		top: 53px;
+		bottom: 51px;
+
+	}
+
+	#panel3 {
+		position: fixed;
+		left: 67%;
+		right: 20px;
+		top: 53px;
+		bottom: 50%;
+	}
+	#panel4 {
+		margin-top: 10px;
+		position: fixed;
+		left: 67%;
+		right: 20px;
+		top: 50%;
+		bottom: 51px;
+	}
+	#panel1 .items, 
+	#panel2 .items {
+		bottom: 100px;
+	}
+
+	#panel1, 
+	#panel2 {
+		border: 1px solid #808080;
+	}
+	#panel1 h2,
+	#panel2 h2 {
+		border-top: 0px;
+		border-right: 1px solid #808080;
+		border-left: 1px solid #808080;
+	}
+
+	#panel3,
+	#panel4 {
+		overflow-y: auto;
+		overflow-x: hidden;
+		border: 1px solid #808080;
+		border-top: 0px;
+	}
+
+	.items {
+		border-top: 1px solid #808080;
+		overflow-x: hidden;
+		overflow-y: auto;
+	}
+	
+	.item {
+		border-bottom: 1px solid #808080;
+		vertical-align: middle;
+		margin-left: 5px;
+		margin-right: 5px;
+		text-decoration: none;
+		display: block;
+		color: black;
+		padding: 10px;
+		min-height: 24px;
+		position: relative;
+	}
+
+	.selected a {
+		padding-bottom: 0px;
+	}
+	.item.selected {
+		padding-bottom: 10px;
+		background-color: #DDDDFF;
+	}
+	.info label.block {
+		padding: 10px;
+		display: block;
+		text-decoration: none;
+		color: black;
+	}
+
+	.checkbox:hover label.more,
+	label.more:hover {
+                background-image: url("../images/sprite.png");
+		background-position: -5px -850px;
+		background-repeat: no-repeat;
+	}
+
+	#tabsdata .panel label.more {
+		text-decoration: none;
+		position: absolute;
+		display: block;
+		width: 20px;
+		height: 20px;
+		top: 3px;
+		right: 10px;
+	}
+
+	
+	#panel1 .item {
+		line-height: 20px;
+	}
+
+	#panel2 .item {
+		padding: 0px;
+	}
+
+	.item img {
+		float: left;
+		margin-right: 10px;
+	}
+	.item:hover {
+		background-color: #E5E5FF;
+	}
+	.panel .button {
+		background-image: url("../images/sprite.png");
+		border: 1px solid #808080;
+	}
+	.browse {
+		position: absolute;
+		bottom: 10px;
+	}
+	#tabsdata .browse input {
+		display: inline;
+		margin-left: 5px;
+	}
+	#tabsdata .panel label,
+	#tabsdata .panel input {
+		display: inline;
+		vertical-align: middle;
+	}
+	.grants, .clear {
+		clear: both;
+	}
+	.grants .checkbox {
+		padding-right: 10px;
+	}
+	#panel2 .item {
+		padding-top: 5px;
+		padding-bottom: 5px;
+	}
+	#panel2 .grants, #panel2 .grants_textmode {
+		display: none;
+	}
+
+	#panel2 .selected .grants {
+		display: block;
+		padding: 5px;
+	}
+
+	#panel2 .selected .grants_string {
+		display: none;
+	}
+
+	#tabsdata .grants .field {
+		width: 70px;
+		float: left;
+		margin-bottom: 0px;
+	}
+	#panel3 .item img,
+	#panel4 .item img {
+		float: left;
+		padding-bottom: 16px;
+	}
+
+	.explain table {
+		border-top: 1px solid #808080;
+	}
+
+	.other_grants .info {
+		float: left;
+	}
+
+	h2,
+	#panel2 .grants_textmode h2 {
+		padding: 5px;
+		margin: 0px;
+		background-image: url("../images/sprite.png");
+		font-size: 11px;
+		font-weight: normal;
+		border: 0px;
+		border-bottom: 1px solid #808080;
+		border-top: 1px solid #808080;
+	}
+	.owner {
+		margin-top: -16px;
+		float: right;
+	}
+
+	.moregrants {
+		margin-top: 10px;
+		margin-left: 5px;
+		margin-right: 5px;
+		background-color: white;
+		border-bottom: 1px solid #808080;
+		border-left: 1px solid #808080;
+		border-right: 1px solid #808080;
+	}
+	
+	.type {
+		padding: 5px;
+		clear: both;
+		vertical-align: middle;
+		min-height: 16px;
+	}
+	.type .name {
+		float: left;
+		display: block;
+		width: 80px;
+	}
+	#tabsdata .moregrants .field {
+		width: auto;
+	}
+
+	#tabsdata .types .field {
+		margin-top: 0px;
+	}
+	.moregrants select {
+		display: inline;
+		vertical-align: middle;
+		border: 1px solid #808080;
+	}
+	.modifier {
+		padding: 5px;
+	}
+	.addtype {
+		padding: 5px;
+		padding-left: 10px;
+	}
+	.addtype select {
+		margin-right: 10px;
+	}
+
+	#tabsdata .panel .selected .textmode {
+		display: block;
+		position: absolute;
+		top: 14px;
+		right: 10px;
+		height: 20px;
+		width: 20px;
+		padding-top: 4px;
+		padding-left: 4px;
+		background-image: url("../images/sprite.png");
+		border: 1px solid #808080;
+	}
+	#tabsdata .panel label.textmode {
+		display: none;
+	}
+
+	#panel2 .selected .grants_textmode {
+		display: block;
+		margin: 10px;
+		border: 1px solid #808080;
+		border-top: 0px;
+	}
+	#tabsdata textarea.grantstext {
+		padding: 0px;
+		margin: 0px;
+		width: 100%;
+		border: 0px;
+		height: 100px;
+	}	
+	label.modifier {
+		vertical-align: middle;
+		text-align: center;
+		background-image: url("../images/sprite.png");
+		line-height: 14px;
+		border: 1px solid #808080;
+		padding: 2px 4px !important;
+	}
+
+	label.modifier.selected {
+		background-position: 0px -1400px;
+		color: white;
+	}
+	label.specific {
+		font-style: italic;
+	}
+	.error {
+		background-color: yellow;
+		border: 1px solid #808080;
+		padding: 10px;
+		font-weight: bold;
+		border-top: 0px;
+	}
+	.inherited {
+		opacity: 0.5;
+		filter: alpha(opacity=50);
+	}
