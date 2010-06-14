@@ -92,7 +92,11 @@ class URL {
 		$context = pobject::getContext();
 		$me = $context["arCurrentObject"];
 
-		$settings = $me->call('editor.ini');
+		if( !$ARCurrent->arEditorSettings) {
+			$settings = $me->call("editor.ini");
+		} else {
+			$settings = $ARCurrent->arEditorSettings;
+		}
 		if ($ARCurrent->session && $ARCurrent->session->id) {
 			$session='/-'.$ARCurrent->session->id.'-';
 		} else {
