@@ -29,7 +29,6 @@
 	 No return value.	
 
 	******************************************************************/
-	debug($this->type."/system.get.config.data.phtml ".$this->path,"class");
 	$context = $this->getContext(ARCALLINGCONTEXT);
 	if (!$ARConfig->cache[$this->path] && $context["scope"] != "pinp") {
 		// first inherit parent configuration data
@@ -50,7 +49,6 @@
 		}
 		if ($data->config->nlsconfig->list) {
 			$configcache->nls = clone $data->config->nlsconfig;
-			debug("nls found");
 		}
 
 		if ($data->config->grants["pgroup"]["owner"]) {
@@ -60,8 +58,7 @@
 			if ($AR->user && $AR->user->data->login != 'public' && $AR->user->data->login === $this->data->config->owner) {
 				$ownergrants = $configcache->ownergrants;
 				if (is_array($ownergrants)) {
-					reset($ownergrants);
-					while (list($grant, $val) = each($ownergrants)) {
+					foreach( $ownergrants as $grant => $val ) {
 						$AR->user->ownergrants[$this->path][$grant] = $val;
 					}
 				}
