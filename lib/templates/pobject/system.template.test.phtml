@@ -25,11 +25,13 @@
 			} else {
 				$arResult = true;
 				
-				function testErrorHandler( $errno, $errstr, $errfile, $errline, $errcontext) {
-					global $arResult;
-					$arResult = ar::error( $errstr.' at line '.$errline, 5);
+				if (!function_exists('testErrorHandler')) {
+					function testErrorHandler( $errno, $errstr, $errfile, $errline, $errcontext) {
+						global $arResult;
+						$arResult = ar::error( $errstr.' at line '.$errline, 5);
+					}
 				}
-					
+									
 				set_error_handler(testErrorHandler, E_ALL^E_NOTICE);
 
 				function testImport( $compiled, $AR_this ) {
