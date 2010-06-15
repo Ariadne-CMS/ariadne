@@ -1132,7 +1132,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$loginSilent = $ARCurrent->arLoginSilent;
 		$ARCurrent->arLoginSilent = true;
 		// debug("getConfig:checkconfig start");
-		if (!$this->CheckConfig('config.ini', $arCallArgs)) {
+		if ($ARConfig->cache[$this->path]->hasConfigIni && !$this->CheckConfig('config.ini', $arCallArgs)) {
 			// debug("getConfig:checkconfig einde");
 			$arConfig = $ARCurrent->arResult;
 			if (!isset($arConfig)) {
@@ -1184,6 +1184,36 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 			// cache default templates
 			$configcache->templates=$this->data->config->templates;
+
+
+			// Speedup check for config.ini
+
+			if( !$configcache->hasDefaultConfigIni ) {
+				if( is_array($this->data->config->templates) ) {
+					foreach($this->data->config->templates as $type => $templates ) {
+						if( isset($templates["config.ini"]) ) {
+							$configcache->hasDefaultConfigIni = true;
+							$configcache->hasConfigIni = true;
+							break;
+						}
+					}
+				}
+			}
+			
+			// hasConfigIni is checked in getConfig. Only calls config.ini if set to true
+			
+			if( !$configcache->hasDefaultConfigIni ) {
+				$configcache->hasConfigIni = false;
+
+				if( is_array($this->data->config->pinp) ) {
+					foreach( $this->data->config->pinp as $type => $templates ) {
+						if( isset($templates["config.ini"]) ) {
+							$configcache->hasConfigIni = true;
+							break;
+						}
+					}
+				}
+			}
 
 			if ($this->data->config->cacheconfig) {
 				$configcache->cache=$this->data->config->cacheconfig;
