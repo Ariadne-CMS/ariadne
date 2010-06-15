@@ -38,5 +38,13 @@ include_once($this->code."objects/pobject.phtml");
 
 class pshortcut extends pobject { // pshortcut class definition
 
+	function getConfigData() {
+	global $ARConfig;
+		parent::getConfigData();
+		$configcache = $ARConfig->cache[$this->path];
+		$configcache->target = $this->data->path;
+		$ARConfig->cache[$this->path] = $configcache;
+	}
+
 } // end of pshortcut class definition
 ?>

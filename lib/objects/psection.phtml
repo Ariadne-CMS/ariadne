@@ -38,5 +38,14 @@ include_once($this->code."objects/pdir.phtml");
 
 class psection extends pdir {  // psection class definition
 
+
+	function getConfigData() {
+	global $ARConfig;
+		pdir::getConfigData();
+		$configcache=$ARConfig->cache[$this->path];
+		$configcache->section=$this->path;
+		$ARConfig->cache[$this->path]=$configcache;
+	}
+
 } // end of psection class definition
 ?>

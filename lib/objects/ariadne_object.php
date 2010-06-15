@@ -110,7 +110,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			// current object instead.
 			$this->nls=$this->data->nls->default;
 			$nls=&$this->nls;
-			$flag=" <img class=\"flag\" src=\"".$AR->dir->images."nls/small/$nls.gif\" alt=\"\" border=\"0\"> ";
 		}
 		if ($nls && $this->data->$nls) {
 			// now set the data and nlsdata pointers
@@ -1108,16 +1107,140 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 	}
 
+
+	function getConfig() {
+	global $ARConfig, $ARCurrent;
+		$context=$this->getContext(0);
+		// debug("getConfig(".$this->path.") context: ".$context['scope'] );
+		// debug(print_r($ARConfig->nls, true));
+		if( !$ARConfig->cache[$this->parent] && $this->parent!=".." ) {
+			$parent = current($this->get($this->parent, "system.get.phtml"));
+			$parent->getConfig();
+		}
+		
+		$this->getConfigData();
+		
+		$ARConfig->pinpcache[$this->path] = $ARConfig->pinpcache[$this->parent];
+		// backwards compatibility when calling templates from config.ini
+		if (!isset($ARCurrent->arConfig)) {
+			$ARCurrent->arConfig = $ARConfig->pinpcache[$this->path];
+		}
+
+		$arCallArgs['arConfig'] = $ARConfig->pinpcache[$this->path];
+
+		/* calling config.ini directly for each system.get.config.phtml call */
+		$loginSilent = $ARCurrent->arLoginSilent;
+		$ARCurrent->arLoginSilent = true;
+		// debug("getConfig:checkconfig start");
+		if (!$this->CheckConfig('config.ini', $arCallArgs)) {
+			// debug("getConfig:checkconfig einde");
+			$arConfig = $ARCurrent->arResult;
+			if (!isset($arConfig)) {
+				$arConfig = $ARCurrent->arConfig;
+			}
+			unset($ARCurrent->arResult);
+			if (is_array($arConfig['library'])) {
+				if (!$ARConfig->libraries[$this->path]) {
+					$ARConfig->libraries[$this->path] = Array();
+				}
+				foreach ($arConfig['library'] as $libName => $libPath) {
+					$this->loadLibrary($libName, $libPath);
+				}
+				unset($arConfig['library']);
+			}
+			$ARConfig->pinpcache[$this->path] = (array) $arConfig;
+		}
+		
+		$arConfig = &$ARConfig->pinpcache[$this->path];
+		if (!is_array($arConfig['authentication']['userdirs'])) {
+			$arConfig['authentication']['userdirs'] = Array('/system/users/');
+		} else {
+			if (reset($arConfig['authentication']['userdirs']) != '/system/users/') {
+				array_unshift($arConfig['authentication']['userdirs'], '/system/users/');
+			}
+		}
+		if (!is_array($arConfig['authentication']['groupdirs'])) {
+			$arConfig['authentication']['groupdirs'] = Array('/system/groups/');
+		} else {
+			if (reset($arConfig['authentication']['groupdirs']) != '/system/groups/') {
+				array_unshift($arConfig['authentication']['groupdirs'], '/system/groups/');
+			}
+		}
+
+		$ARCurrent->arLoginSilent = $loginSilent;
+
+		// remove pinpcache reference
+		unset($ARCurrent->arConfig);
+		
+		
+	}
+	
+	function getConfigData() {
+	global $ARConfig;
+		$context = $this->getContext(0);
+		if (!$ARConfig->cache[$this->path] && $context["scope"] != "pinp") {
+			// first inherit parent configuration data
+			$configcache= clone $ARConfig->cache[$this->parent];
+
+			// cache default templates
+			$configcache->templates=$this->data->config->templates;
+
+			if ($this->data->config->cacheconfig) {
+				$configcache->cache=$this->data->config->cacheconfig;
+			}
+
+			// store the current object type
+			$configcache->type = $this->type;
+
+			if ($this->data->config->typetree && ($this->data->config->typetree!="inherit")) {
+				$configcache->typetree=$this->data->config->typetree;
+			}
+			if ($this->data->config->nlsconfig->list) {
+				$configcache->nls = clone $this->data->config->nlsconfig;
+			}
+
+			if ($this->data->config->grants["pgroup"]["owner"]) {
+				$configcache->ownergrants = $this->data->config->grants["pgroup"]["owner"];
+			}
+			if (is_array($configcache->ownergrants)) {
+				if ($AR->user && $AR->user->data->login != 'public' && $AR->user->data->login === $this->data->config->owner) {
+					$ownergrants = $configcache->ownergrants;
+					if (is_array($ownergrants)) {
+						foreach( $ownergrants as $grant => $val ) {
+							$AR->user->ownergrants[$this->path][$grant] = $val;
+						}
+					}
+				}
+			}
+
+			if (is_array($this->data->config->customconfig)) {
+				$configcache->custom=array_merge(is_array($configcache->custom)?$configcache->custom:array(), $this->data->config->customconfig);
+			}
+			$ARConfig->cache[$this->path]=$configcache;
+
+		}
+	}
+
 	function loadConfig($path='') {
-	global $ARConfig, $ARConfigChecked;
+	global $ARConfig, $ARConfigChecked, $ARCurrent;
 		$configChecked = $ARConfigChecked;
 		$result=false;
 		$path=$this->make_path($path);
+		// debug("loadConfig($path)");
 		$parent=$this->make_path($path.'../');
+		$allnls = $ARCurrent->allnls;
+		$ARCurrent->allnls = true;
 		if (!$ARConfig->cache[$path]) {
 			if (($this->path == $path && !$this->arIsNewObject) || $this->exists($path)) {
 				$this->pushContext(Array("scope" => "php"));
-				$this->get($path, "system.get.config.phtml");
+				if( $this->path == $path ) {
+					// debug("loadConfig: currentpath $path ");
+					$this->getConfig();
+				} else {
+					// debug("loadConfig: get path $path ");
+					$cur_obj = current($this->get($path, "system.get.phtml"));
+					$cur_obj->getConfig();
+				}
 				$this->popContext();
 				$config=$ARConfig->cache[$path];
 			} else if ($path === '/') {
@@ -1126,15 +1249,20 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			} else {
 				if (!$ARConfig->cache[$parent]) {
 					$this->pushContext(Array("scope" => "php"));
-					$this->get($parent, 'system.get.config.phtml');
+					// debug("loadConfig: parent $parent");
+					$cur_obj = current($this->get($parent, "system.get.phtml"));
+					if( $cur_obj ) {
+						$cur_obj->getConfig();
+					}
 					$this->popContext();
 				}
 				$config=$ARConfig->cache[$parent];
 			}
 		} else {
+			// debug("loadConfig: exists $path ");
 			$config=$ARConfig->cache[$path];
 		}
-
+		$ARCurrent->allnls = $allnls;
 		// restore old ARConfigChecked state
 		$ARConfigChecked = $configChecked;
 		if (is_object($config)) {
@@ -1188,7 +1316,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 	}
 
-
 	// returns a list of libraries loaded on $path
 	function getLibraries($path = '') {
 	global $ARConfig;
@@ -1232,8 +1359,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$arCallType=$this->type;
 		}
 		$path = $this->make_path($path);
-
-
 
 		/* first check current templates */
 		if ($this->path == $path) {
@@ -1357,8 +1482,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$ARConfigChecked = true;
 			$config = $this->loadConfig();
 			$ARConfigChecked = $initialConfigChecked;
-
 			$ARConfig->nls=$config->nls;
+			
+			
 			// if a default language is entered in a parent and no language is
 			// explicitly selected in the url, use that default. 
 			// The root starts with the system default (ariadne.phtml config file)
@@ -2182,10 +2308,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $this->putvar($var, $value);
 	}
 
-	function _getLibraries($path = '') {
-		return $this->getLibraries($path);
-	}
-
 	function _setnls($nls) {
 		$this->setnls($nls);
 	}
@@ -2692,6 +2814,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	function _loadLibrary($name, $path) {
 		return $this->loadLibrary($name, $path);
 	}
+
+	
+
+	function _getLibraries($path = '') {
+		return $this->getLibraries($path);
+	}
+
 
 	function _getSetting($setting) {
 	global $AR;

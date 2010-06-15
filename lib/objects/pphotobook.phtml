@@ -38,6 +38,20 @@ include_once($this->code."objects/pdir.phtml");
 
 class pphotobook extends pdir { // pphotobook class definition
 
+	function getConfigData() {
+	global $ARConfig;
+		parent::getConfigData();
+		$configcache=$ARConfig->cache[$this->path];
+		if ($this->data->thumbwidth || $this->data->thumbheight) {
+			$configcache->thumb["width"]=$this->data->thumbwidth;
+			$configcache->thumb["height"]=$this->data->thumbheight;
+		}
+		if ($this->data->thumbcolor) {
+			$configcache->thumb["color"]=$this->data->thumbcolor;
+		}
+		$ARConfig->cache[$this->path]=$configcache;
+	}
+
 	function get_photos($max=0,$start=0) {
 		$crit["object"]["implements"]["="]="'pphoto'";
 		$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
