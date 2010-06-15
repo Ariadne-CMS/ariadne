@@ -1163,7 +1163,7 @@ function initEditable() {
 	var editable;
 	var editWindow=document.getElementById('tbContentElement').contentWindow;
 	for (i=0; i<editWindow.document.all.length; i++) {
-		if (editWindow.document.all[i].className == "editable") {
+		if ( editWindow.document.all[i].className.match( /\beditable\b/ ) ) {
 			editable=editWindow.document.all[i];
 			editable.onfocus=checkChangeStart;
 			editable.onblur=checkChangeEnd;
