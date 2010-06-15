@@ -626,6 +626,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	function make_path($path="") {
 		return $this->store->make_path($this->path, $path);
 	}
+	
+	function make_ariadne_url($path="") {
+		global $AR;
+		$path = $this->make_path($path);
+		return $AR->host . $AR->root . $this->store->rootoptions . $path;
+	}
+	
 
 	function make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=false) {
 		global $ARConfig, $AR, $ARCurrent;
@@ -2542,6 +2549,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	function _make_path($path="") {
 		return $this->make_path($path);
+	}
+
+	function _make_ariadne_url($path="") {
+		return $this->make_ariadne_url($path);
 	}
 
 	function _make_url($path="", $nls=false, $session=true, $https=-1, $keephost=false) {
