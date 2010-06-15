@@ -150,42 +150,46 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$ARCurrent->arCallClassTemplate = false;
 		}
 
-		while ($arType!="object") {
-			// search for the template, stop at the root class ('ariadne_object')
-			// (this should not happen, as pobject must have a 'default.phtml')
-			$arCallTemplate=$this->store->get_config("code")."templates/".$arType."/".$arCallFunction;
-			if (file_exists($arCallTemplate)) {
-				// template found
-				$arCallFunction = $arCallFunctionOrig;
-				include($arCallTemplate);
-				break;
-			} else if (file_exists($this->store->get_config("code")."templates/".$arType."/default.phtml")) {
-				// template not found, but we did find a 'default.phtml'
-				include($this->store->get_config("code")."templates/".$arType."/default.phtml");
-				break;
-			} else {
-				if (!($arSuper=$AR->superClass[$arType])) {
-					// no template found, no default.phtml found, try superclass.
+		if( $arCallFunction == "system.get.phtml" && ( $context = $this->getContext(ARCALLINGCONTEXT) ) && $context["scope"] != "pinp" ) {
+			$arResult = $this;
+		} else {
+			while ($arType!="object") {
+				// search for the template, stop at the root class ('ariadne_object')
+				// (this should not happen, as pobject must have a 'default.phtml')
+				$arCallTemplate=$this->store->get_config("code")."templates/".$arType."/".$arCallFunction;
+				if (file_exists($arCallTemplate)) {
+					// template found
+					$arCallFunction = $arCallFunctionOrig;
+					include($arCallTemplate);
+					break;
+				} else if (file_exists($this->store->get_config("code")."templates/".$arType."/default.phtml")) {
+					// template not found, but we did find a 'default.phtml'
+					include($this->store->get_config("code")."templates/".$arType."/default.phtml");
+					break;
+				} else {
+					if (!($arSuper=$AR->superClass[$arType])) {
+						// no template found, no default.phtml found, try superclass.
 
-					if ($subcpos = strpos($arType, '.')) {
-						$arSuper = substr($arType, 0, $subcpos);
-						if (!class_exists($arType)) {
-							// the super class was not yet loaded, so do that now
-							$this->store->newobject('', '', $arSuper, new object);
-						}
-					} else {
-						if (!class_exists($arType)) {
-							// the given class was not yet loaded, so do that now
-							$this->store->newobject('','',$arType,new object);
-							// include_once($this->store->get_config("code")."objects/".$arType.".phtml");
+						if ($subcpos = strpos($arType, '.')) {
+							$arSuper = substr($arType, 0, $subcpos);
+							if (!class_exists($arType)) {
+								// the super class was not yet loaded, so do that now
+								$this->store->newobject('', '', $arSuper, new object);
+							}
+						} else {
+							if (!class_exists($arType)) {
+								// the given class was not yet loaded, so do that now
+								$this->store->newobject('','',$arType,new object);
+								// include_once($this->store->get_config("code")."objects/".$arType.".phtml");
 
+							}
+							$arTemp=new $arType();
+							$arSuper=get_parent_class($arTemp);
 						}
-						$arTemp=new $arType();
-						$arSuper=get_parent_class($arTemp);
+						$AR->superClass[$arType]=$arSuper;
 					}
-					$AR->superClass[$arType]=$arSuper;
+					$arType=$arSuper;
 				}
-				$arType=$arSuper;
 			}
 		}
 		array_pop($ARCurrent->arCallStack);
