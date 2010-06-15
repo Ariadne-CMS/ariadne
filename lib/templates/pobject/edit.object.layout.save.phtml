@@ -37,12 +37,29 @@
 				$arReturnPage="edit.object.layout.form.phtml?type=".RawUrlEncode($newtype).
 					"&function=".RawUrlEncode($newfunction)."&language=".RawUrlEncode($newlanguage)."&cursorpos=".RawUrlEncode($cursorpos);
 			case isset($next_save) :
-				$this->call("system.save.layout.phtml", Array( 
-					"type"		=> $newtype,
-					"function"	=> $newfunction,
-					"language"	=> $newlanguage,
-					"default"	=> $default,
-					"template"	=> $template));
+				if ( ($newfunction=='config.ini') && ($this instanceof $newtype)) { 
+					$result = $this->call('system.template.test.phtml', array(
+						"type"		=> $newtype,
+						"function"	=> $newfunction,
+						"language"	=> $newlanguage,
+						"default"	=> $default,
+						"template"	=> $template
+					));
+					if (!$result) {
+						$this->error = 'Unknown error in config.ini';
+					} else if (ar_error::isError($result)) {
+						$this->error = $result->getMessage();
+					}
+				}
+				if (!$this->error) {
+					$this->call("system.save.layout.phtml", Array( 
+						"type"		=> $newtype,
+						"function"	=> $newfunction,
+						"language"	=> $newlanguage,
+						"default"	=> $default,
+						"template"	=> $template
+					));
+				}
 				break;
 			case isset($next_delete):
 				$this->call("system.delete.layout.phtml",$arCallArgs);

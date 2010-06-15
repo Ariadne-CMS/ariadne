@@ -198,10 +198,10 @@
 				if (ar_pinp::isAllowed($this, $realName)) {
 					return call_user_func_array(array($this, $realName), $arguments);
 				} else {
-					trigger_error("Method $realName not found in class ".get_class($this), E_USER_ERROR);
+					trigger_error("Method $realName not found in class ".get_class($this), E_USER_WARNING);
 				}
 			} else {
-				trigger_error("Method $name not found in class ".get_class($this), E_USER_ERROR);
+				trigger_error("Method $name not found in class ".get_class($this), E_USER_WARNING);
 			}
 		}
 	}
@@ -225,10 +225,10 @@
 						return ar::error( $e->getMessage(), $e->getCode() );
 					}
 				} else {
-					trigger_error("Method $realName not found in class ".get_class($this), E_USER_ERROR);
+					trigger_error("Method $realName not found in class ".get_class($this), E_USER_WARNING);
 				}
 			} else {
-				trigger_error("Method $name not found in class ".get_class($this), E_USER_ERROR);
+				trigger_error("Method $name not found in class ".get_class($this), E_USER_WARNING);
 			}
 		}
 		

@@ -1,0 +1,85 @@
+<?php
+	if ($this->CheckSilent("layout") && $this->CheckConfig()) {
+		// check arguments, remove ".."
+		$type     = str_replace("..", ".", $type);
+		$function = str_replace("..", ".", $function);
+		$language = str_replace("..", ".", $language);
+		
+		include_once($this->store->get_config("code")."modules/mod_pinp.phtml");
+		global $arResult;
+		$arResult = false;
+		if ( !$function ) {
+			$arResult = ar::error($ARnls["err:notemplatename"], 1);
+		} else if ( preg_match('/\.phtml$/isU', $function) ) {
+			$arResult = ar::error($ARnls["err:endswith.phtml"], 2);
+		} else if ( !preg_match('/^[a-z0-9\._-]*$/isU', $function) ) {
+			$arResult = ar::error($ARnls["err:illegalchars"], 3);
+		} else {
+			// first make sure that the object is clean (data can only be set via 
+			// the defined interface: $arCallArgs)
+
+			$pinp = new pinp( $AR->PINP_Functions, "local->", "\$AR_this->_");
+			$compiled = $pinp->compile( strtr( $template, "\r", "" ) );
+			if ( $pinp->error ) {
+				$arResult = ar::error($pinp->error, 4);
+			} else {
+				$arResult = true;
+				
+				function testErrorHandler( $errno, $errstr, $errfile, $errline, $errcontext) {
+					global $arResult;
+					$arResult = ar::error( $errstr.' at line '.$errline, 5);
+				}
+					
+				set_error_handler(testErrorHandler, E_ALL^E_NOTICE);
+
+				function testImport( $compiled, $AR_this ) {
+					$f = create_function(
+						'&$AR_this',
+						' $local = new object(); '.
+						' $local->data = $AR_this->data; '.
+						' $local->customdata = $AR_this->customdata; '.
+						' $local->nlsdata = $AR_this->nlsdata; '.
+						' $local->customnlsdata = $AR_this->customnlsdata; '.
+						' $local->path = $AR_this->path; '.
+						' $local->parent = $AR_this->parent; '.
+						' $local->type = $AR_this->type; '.
+						' $local->vtype = $AR_this->vtype; '.
+						' $local->priority = $AR_this->priority; '.
+						' $local->id = $AR_this->id; '.
+						' $local->lastchanged = $AR_this->lastchanged; '.
+						' $local->size = $AR_this->size; '.
+						' $local->nls = $AR_this->nls; '.
+						' $local->reqnls = $AR_this->reqnls; '.
+						' $local->arIsNewObject = $AR_this->arIsNewObject; '.
+						' $local->this = $AR_this; '.
+						' $local->store = $AR_this->store; '.
+						' $local->ARnls = &$AR_this->ARnls; '.
+						' ?'.'>'.
+						$compiled.
+						'<'.'?php '
+					);
+					return $f($AR_this);
+				}
+
+				try {
+					ob_start();
+
+					testImport( $compiled, $this );					
+					$content = ob_get_contents();
+
+					ob_end_clean();
+					if ($content) {
+						$arResult = ar::error( "Template generates output: ".$content, 8);
+					}
+
+				} catch( Exception $e) {
+					$arResult = ar::error( $e->getMessage, 6);
+				}
+					
+				restore_error_handler();
+				
+			}
+		}
+		return $arResult;
+	}
+?>
