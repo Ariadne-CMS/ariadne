@@ -6,7 +6,7 @@ define("AX_DUMMY", 1);
 define("AX_WITHOUT_DATA", 2);
 define("AX_WITHOUT_TEMPLATES", 4);
 define("AX_WITHOUT_FILES", 8);
-define("AX_VERSION", 2);
+define("AX_VERSION", 3);
 
 class axstore {
 
@@ -848,20 +848,6 @@ class axstore {
 						}
 
 						// filestores:
-						if (file_exists($this->tempdir."/templates")) {
-							if (!$this->tar->create($this->tempdir."/templates.tgz", "templates", $this->tempdir)) {
-								$this->error="Could not create templates archive: ".$this->tar->error;
-							}
-							$this->rm_dir($this->tempdir."/templates");
-						}
-
-						if (file_exists($this->tempdir."/files")) {
-							if (!$this->tar->create($this->tempdir."/files.tgz", "files", $this->tempdir)) {
-								$this->error="Could not create files archive: ".$this->tar->error;
-							}
-							$this->rm_dir($this->tempdir."/files");
-						}
-
 						if (file_exists($this->files."/temp")) {
 							$this->rm_dir($this->files."/temp");
 						}
