@@ -191,6 +191,9 @@
   /**************************************************************************/
 
   $AR->output_compression = 0;
+  $AR->output_compression_type = array (
+	'/text\/.+/'
+  );
 
   /**************************************************************************/
   /* Whether or not to hide the session id from the URL                     */

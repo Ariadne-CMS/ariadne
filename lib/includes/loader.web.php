@@ -302,16 +302,18 @@
 		return ldHeader("Location: $uri");
 	}
 
-	function ldHeader($header) {
+	function ldHeader($header,$replace=true) {
 	global $ARCurrent;
 		$result=false;
 		if (!Headers_sent()) {
 			$result=true;
-			if (is_array($header)) {
-				$header=implode('\n',$header);
+			list($key,$value) = explode(':',$header,2);
+			Header($header,$replace);
+			if($replace){
+				$ARCurrent->ldHeaders[strtolower($key)]=$header;
+			} else {
+				$ARCurrent->ldHeaders[strtolower($key)].=$header;
 			}
-			Header($header);
-			$ARCurrent->ldHeaders[strtolower($header)]=$header;
 		}
 		return $result;
 	}

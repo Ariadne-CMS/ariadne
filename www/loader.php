@@ -355,43 +355,56 @@
 			}
 
 
-			if ($AR->output_compression) {
-				/*
-					FIXME: when output may not be compressed, it still get saved under 
-					the cache/compressed/ directory so that another request will load
-					it from cache. (maybe we can save it to cache/normal/ and
-					create a (sym)link under cache/compressed/ to it? ).
-				*/
-				$ldCacheFilename = "/compressed".$ldCacheFilename;
-				$skip_compression = false;
+			$image_len = strlen($image);
+			if (!$AR->hideSessionIDfromURL && $ARCurrent->session && $ARCurrent->session->id) {
+				$ldCacheFilename = "/session".$ldCacheFilename;
+				$image = str_replace('-'.$ARCurrent->session->id.'-', '{arSessionID}', $image);
+			} else {
+				var_dump($AR->output_compression);
+				if ($AR->output_compression) {
+					$skip_compression = true;
 
-				if (is_array($ARCurrent->ldHeaders) && is_array($AR->output_compression_skip)) {
-					while(!$skip_compression && (list($key, $ctype)=each($AR->output_compression_skip))) {
-						if ($ARCurrent->ldHeaders["content-type: $ctype"]) {
-							$skip_compression = true;
+					// prevent errors if the config file is missing this option
+					if(!is_array($AR->output_compression_type)){
+						$AR->output_compression_type = array();
+					}
+
+					$contenttype="content-type";
+					$contenttypelength=strlen($contenttype);
+					$headers = $ARCurrent->ldHeaders;
+					
+					if($ARCurrent->ldHeaders["content-type"]) {
+						$header = $ARCurrent->ldHeaders["content-type"];
+						preg_match('/^content-type:\s+([^ ;]+)/i',$header,$matches);
+						$mimetype = $matches[1];
+						if(isset($mimetype)){
+							// dublecheck mimetype agains whitelist
+							foreach($AR->output_compression_type as $compress_match){
+								if(preg_match($compress_match,$mimetype)){
+									$skip_compression = false;
+									break;
+								}
+							}
 						}
 					}
-				}
 
-				if (!$skip_compression) {
-					ob_end_clean();
-					ob_start();
-					$crc = crc32($image);
-					$size = strlen($image);
-					$image = gzcompress($image, $AR->output_compression);
-					$image = substr($image, 0, strlen($image) - 4);
-					ldHeader("Content-Encoding: gzip");
-					/* add header */
-					$image = "\x1f\x8b\x08\x00\x00\x00\x00\x00".$image;
-					$image.= pack('V', $crc).pack('V', $size);
-					echo $image;
-				}
-				$image_len = strlen($image);
-			} else {
-				$image_len = strlen($image);
-				if (!$AR->hideSessionIDfromURL && $ARCurrent->session && $ARCurrent->session->id) {
-					$ldCacheFilename = "/session".$ldCacheFilename;
-					$image = str_replace('-'.$ARCurrent->session->id.'-', '{arSessionID}', $image);
+					if (!$skip_compression) {
+						$ldCacheFilename = "/compressed".$ldCacheFilename;
+						ob_end_clean();
+						ob_start();
+						$crc = crc32($image);
+						$size = strlen($image);
+						$image = gzcompress($image, $AR->output_compression);
+						$image = substr($image, 0, strlen($image) - 4);
+						ldHeader("Content-Encoding: gzip");
+						/* add header */
+						$image = "\x1f\x8b\x08\x00\x00\x00\x00\x00".$image;
+						$image.= pack('V', $crc).pack('V', $size);
+						echo $image;
+					} else {
+						$ldCacheFilename = "/normal".$ldCacheFilename;
+					}
+					$image_len = strlen($image);
 				} else {
 					$ldCacheFilename = "/normal".$ldCacheFilename;
 				}
