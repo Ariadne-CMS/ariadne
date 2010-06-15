@@ -18,6 +18,7 @@
 		public $css = null;
 		
 		public function __construct( $attributes = array(), $list = null ) {
+			$this->template = ar_content_html::$editMode ? 'system.get.link.phtml' : 'system.get.name.phtml';
 			if (!$attributes['class'] && !$attributes['id']) {
 				$attributes['class'] = 'menu';
 			}
@@ -341,6 +342,14 @@ EOF;
 		}
 
 		private function _getItemInfo( $item, $key, $parent, $current ) {
+			if ( $item instanceof ar_htmlElement ) {
+				if ($item->attributes['href']) {
+					$url = $item->attributes['href'];
+				} else {
+					$url = null;
+				}
+				$item = array( 'node' => $item, 'url' => $url );
+			}
 			if (!is_array($item)) {
 				$item = array( 'name' => $item );
 			}
@@ -412,7 +421,7 @@ EOF;
 		
 		public function fill( $list, $options = array() ) {
 			$current = $options['current'] ? $options['current'] : $this->current;
-			$root = $options['root'] ? $options['root'] : $this->root;
+			$root    = $options['root'] ? $options['root'] : $this->root;
 			if ( ($list instanceof ar_storeFind) || ($list instanceof ar_storeParents) ) {
 				$list = $list->call( $this->template, array( 'current' => $current, 'root' => $root ) );
 			}

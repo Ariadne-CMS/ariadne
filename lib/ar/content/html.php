@@ -1,13 +1,199 @@
 <?php
-	ar_pinp::allow('ar_content_html', array( 'getBody', 'parse', 'isEmpty', 'clean', 'compile', 'getReferences', 'stripARNameSpace' ) );
-	ar_pinp::allow('ar_content_htmlContent', array( 'getBody', 'parse', 'isEmpty', 'clean', 'compile', 'getReferences', 'stripARNameSpace' ) );
+	ar_pinp::allow( 'ar_content_html' );
+	ar_pinp::allow( 'ar_content_htmlContent' );
 
 	class ar_content_html extends arBase {
-	
-		public static function getBody( $html = null ) {
-			if (!isset($html)) {
-				$html = $this->html;
+
+		public static $editMode       = false;
+		public static $editPrefix     = 'editable_';
+		public static $editTemplate   = 'user.edit.page.html';
+		public static $editTarget     = '_top';		
+		protected static $editCounter = 0;
+		
+		public static function configure( $option, $value ) {
+			switch ($option) {
+				case 'editMode' : 
+					self::$editMode = $value;
+				break;
+				case 'editPrefix' :
+					self::$editPrefix = $value;
+				break;
+				case 'editTarget' :
+					self::$editTarget = $value;
+				break;
+				case 'editTemplate' :
+					self::$editTemplate = $value;
+				break;
 			}
+		}
+	
+		public static function link($content, $attributes = array(), $path = null, $url = null) {
+			if (self::$editMode) {
+				$url = ar_loader::makeURL($path);
+				$attributes[ 'href' ]   = $url . self::$editTemplate;
+				$attributes[ 'target' ] = self::$editTarget;
+			} else {
+				if ( !isset($url) ) {
+					$url = ar_loader::makeURL($path);
+				}
+				$attributes['href'] = $url;
+			}
+			return ar_html::tag( 'a', $attributes, $content );
+		}
+		
+		public static function editableLink($content, $attributes = array(), $path = null, $url = null ) {
+			if (self::$editMode) {
+				$attributes['onClick']    = 'event.cancelBubble = true;';
+				$attributes['onDblClick'] = "document.location=this.href; return false;";
+			}
+			return self::link( $content, $attributes, $path, $url);
+		}
+		
+		public static function editableDiv( $content, $name, $editTitle = '' ) {
+			if (self::$editMode) {
+				$context = pobject::getContext();
+				$me      = $context["arCurrentObject"];
+				list( $id, $registerContent ) = self::registerEditable($name);
+				return ar_html::nodes( $registerContent, ar_html::tag(
+					'div', 
+					array( 
+						'id'      => $id,
+						'class'   => 'editable',
+						'ar:path' => $me->path,
+						'ar:id'   => $me->id,
+						'title'   => $editTitle
+					), 
+					self::parse( $content ) 
+				) );
+			} else {
+				return self::parse( $content );
+			}
+		}
+		
+		public static function editableSpan( $content, $name, $editTitle = '' ) {
+			if (self::$editMode) {
+				$context = pobject::getContext();
+				$me      = $context["arCurrentObject"];
+				list( $id, $registerContent ) = self::registerEditable($name);
+				return ar_html::nodes( $registerContent, ar_html::tag(
+					'span', 
+					array( 
+						'id'      => $id,
+						'class'   => 'editable',
+						'ar:path' => $me->path,
+						'ar:id'   => $me->id,
+						'title'   => $editTitle
+					), 
+					self::parse( $content ) 
+				) );
+			} else {
+				return self::parse( $content );
+			}
+		}
+		
+		public static function editableTextSpan( $content, $name, $editTitle = '' ) {
+			if (self::$editMode) {
+				$context  = pobject::getContext();
+				$me       = $context["arCurrentObject"];
+				$register = self::registerEditable($name);
+				return ar_html::nodes( 
+					$register['content'], 
+					ar_html::tag(
+						'span', 
+						array( 
+							'id'      => $register['id'],
+							'class'   => array( 'editable', 'text-only' ),
+							'ar:path' => $me->path,
+							'ar:id'   => $me->id,
+							'title'   => $editTitle
+						), 
+						self::parse( $content ) 
+					)
+				);
+			} else {
+				return self::parse( $content );
+			}
+		}
+
+		public static function registerEditable( $name ) {
+			$context = pobject::getContext();
+			$me      = $context["arCurrentObject"];
+			$id      = self::$editCounter++;
+			$prefix  = self::$editPrefix;
+			return array(
+				'id' => $prefix.$id,
+				'content' => ar_html::tag(
+					'script', 
+					" parent.registerDataField('".$prefix.$id."', '".AddCSlashes($name, ARESCAPE)."', '".$me->path."', '".$me->id."' );"
+				)
+			);
+		}
+		
+		public static function editablePage($page=null, $name=null, $editTitle='', $default = null, $nls = null) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			if ( !isset($nls) ) {
+				$nls = $me->nls;
+			}
+			if ( !isset($name) ) {
+				$name = 'name';
+				$editName = "[$nls][page]";
+			} else if ($name[0] != '[') {
+				$editName = "[$nls][$name]";
+			} else {
+				$editName = $name;
+				$temp = split( $name, '[' );
+				$nls = substr($temp[0], 0, -1);
+				$name = substr($temp[1], 0, -1);
+			}
+			if ( !isset($page) ) {
+				$data = $me->data->{$nls};
+				if ( isset($default) && self::isEmpty( $data->{$name} ) ) {
+					$page = $default;
+				} else {
+					$page = $data->{$name};
+				}
+			}
+			if (self::$editMode) {
+				return self::editableDiv( self::parse($page), $name, $editTitle);
+			} else {
+				return self::parse( $page );
+			}
+		}
+		
+		public static function editableName( $content = null, $name = null, $editTitle = '', $default = null, $nls = null) {
+			$context = pobject::getContext();
+			$me = $context["arCurrentObject"];
+			if ( !isset($nls) ) {
+				$nls = $me->nls;
+			}
+			if ( !isset($name) ) {
+				$name = 'name';
+				$editName = "[$nls][name]";
+			} else if ($name[0] != '[') {
+				$editName = "[$nls][$name]";
+			} else {
+				$editName = $name;
+				$temp = split( $name, '[' );
+				$nls = substr($temp[0], 0, -1);
+				$name = substr($temp[1], 0, -1);
+			}
+			if ( !isset($content) ) {
+				$data = $me->data->{$nls};
+				if ( isset($default) && self::isEmpty( $data->{$name} ) ) {
+					$content = $default;
+				} else {
+					$content = $data->{$name};
+				}
+			}
+			if (self::$editMode) {
+				return self::editableTextSpan( $content, $name, $editTitle);
+			} else {
+				return $content;
+			}		
+		}
+		
+		public static function getBody( $html ) {
 			return new ar_content_htmlContent( 
 				preg_replace( '/^.*<BODY[^>]*>/isU', '', 
 					preg_replace( '/<\/BODY.*$/isU', '', $html ) 
@@ -15,10 +201,7 @@
 			);
 		}
 
-		public static function parse( $html = null, $full = false ) {
-			if (!isset($html)) {
-				$html = $this->html;
-			}
+		public static function parse( $html, $full = false ) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			include_once($me->store->get_config('code')."modules/mod_url.php");
