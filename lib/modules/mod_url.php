@@ -92,11 +92,6 @@ class URL {
 		$context = pobject::getContext();
 		$me = $context["arCurrentObject"];
 
-		if( !$ARCurrent->arEditorSettings) {
-			$settings = $me->call("editor.ini");
-		} else {
-			$settings = $ARCurrent->arEditorSettings;
-		}
 		if ($ARCurrent->session && $ARCurrent->session->id) {
 			$session='/-'.$ARCurrent->session->id.'-';
 		} else {
@@ -127,6 +122,13 @@ class URL {
 		$regExp = '|\{arCall:(.*?)\}|i';
 
 		while (preg_match($regExp, $page, $matches)) {
+			if( !$settings ) {
+				if( !$ARCurrent->arEditorSettings) {
+					$settings = $me->call("editor.ini");
+				} else {
+					$settings = $ARCurrent->arEditorSettings;
+				}
+			}
 			ob_start();
 				$parts	= explode("?", substr($matches[0], strlen('{arCall:'), -1), 2);
 				$args	= $parts[1];
