@@ -401,12 +401,19 @@ EOF;
 		}
 		
 		private function _fillFromArray( $list, $current, $parent = '[root]' ) {
+			// first enter all nodes into the items list
+			// then rearrange them into parent/child relations
+			// otherwise you must always have the parent in the list before any child
+			
 			foreach ( $list as $key => $item ) {
 				$itemInfo = $this->_getItemInfo( $item, $key, $parent, $current );
 				$itemNode = $itemInfo['node'];
+				$this->item[$itemInfo['url']] = $itemNode;
 				if ($itemInfo['children']) {
 					$this->_fillFromArray( $itemInfo['children'], $current, $itemInfo['url'] );
 				}
+			}
+			foreach ( $list as $key => $item ) {
 				if ( $parent == '[root]' ) {
 					$oldparent = '';
 					$newparent = dirname( $itemInfo['url'] ).'/';
