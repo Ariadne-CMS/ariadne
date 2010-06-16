@@ -288,17 +288,14 @@ EOF;
 		
 		private function _makeURL( $path, $parent ) {
 /*
-			- ?bla=bla    -> parent url + argumenten
+			- ?bla=bla    -> parent url + arguments
 			- #bla        -> parent url + fragment
-			- /pad        -> absoluut pad -> make_url
+			- /path        -> absolute path -> append to root url
 			- http://.../ -> url
 			  ftp://
-			  mailto:auke@muze.nl
+			  mailto:
 			  [a-z]+:
-			- rest is een pad -> make_url() op aanroepen, maar relatief t.o.v. parent node?
-			root node heeft de url van het huidige object, ook al is het geen link, relatieve
-			childnodes gaan dus relatief ten opzichte daarvan. Tenzij andere rootnode opgegeven
-			wordt.
+			- rest is a path -> append to parent path
 */			switch( $path[0] ) {
 				case '?' :
 					$qpos = strpos( '?', $parent );
@@ -603,13 +600,7 @@ EOF;
 			}
 			$maxDepth = (int)$options['maxDepth'];
 			if ($maxDepth>0) {
-				$match = " and object.path !~ '".$top."%/";
-				while ($maxDepth>0) {
-					$match .= "%/";
-					$maxDepth--;
-				}
-				$match .= "'";
-				$query .= $match;
+				$query .= " and object.path !~ '" . $top . str_repeat( '%/', $maxDepth + 1 ) . "'";
 			}
 			$this->fill( ar::get($top)->find("object.implements = 'pdir' and object.priority>=0".$query), $options );
 			return $this;
@@ -648,13 +639,7 @@ EOF;
 			}
 			$maxDepth = (int)$options['maxDepth'];
 			if ($maxDepth>0) {
-				$match = " and object.path !~ '".$top."%/";
-				while ($maxDepth>0) {
-					$match .= "%/";
-					$maxDepth--;
-				}
-				$match .= "'";
-				$query .= $match;
+				$query .= " and object.path !~ '" . $top . str_repeat( '%/', $maxDepth + 1 ) . "'";
 			}
 			$this->fill( ar::get( $top )->find( $query ), $options );
 			return $this;
