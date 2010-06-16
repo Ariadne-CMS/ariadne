@@ -1,5 +1,11 @@
 <?php
-
+	/* TODO: 
+	- styling: 
+		- dropdown: 
+			fix hover bg color (is now set on entire submenu instead of single item)
+			add hover fg color
+			add normal fg color
+	*/
 	ar_pinp::allow('ar_html_menu');
 
 	class ar_html_menu extends ar_htmlElement {
@@ -9,7 +15,9 @@
 		private $current = '';
 		private $rooturl = '';
 		private $filled  = false;
-		private $options = array();
+		private $options = array(
+			'skipOrphans' => false
+		);
 		private $prefix = '';
 		public $itemTag  = 'li';
 		public $listTag  = 'ul';
@@ -417,26 +425,40 @@ EOF;
 			foreach ( $this->items as $url => $itemNode ) {
 				if ( $url != '[root]' ) { // do not remove, prevents infinite loop
 					if ( $parent == '[root]' ) {
-						$oldparent = '';
-						$newparent = dirname( $url ).'/';
-						while ($newparent!=$oldparent && !isset($this->items[$newparent])) {
-							$oldparent = $newparent;
-							$newparent = dirname( $newparent ).'/';
-						}
-						if ( isset($this->items[$newparent]) ) {
-							$parentNode = $this->items[$newparent]->ul[0];
-							if (!isset($parentNode)) {
-								$parentNode = $this->items[$newparent]->appendChild( ar_html::tag( $this->listTag ) );
-							}
-						} else {
-							$newparent  = $parent;
+						if ($url == $this->rooturl) {
 							$parentNode = $this;
+						} else {
+							$oldparent = '';
+							$newparent = dirname( $url ).'/';
+							if ( !$this->options['skipOrphans'] ) {
+								while ($newparent!=$oldparent && !isset($this->items[$newparent]) && $newparent!=$this->rooturl) {
+									$oldparent = $newparent;
+									$newparent = dirname( $newparent ).'/';
+								}
+							}
+							if ( isset($this->items[$newparent]) ) {
+								$parentNode = $this->items[$newparent]->ul[0];
+								if (!isset($parentNode)) {
+									$parentNode = $this->items[$newparent]->appendChild( ar_html::tag( $this->listTag ) );
+								}
+							} else if ($newparent == $this->rooturl) {
+								$parentNode = $this;
+							} else if (!$this->options['skipOrphans']) {
+								$parentNode = $this;
+							} else {
+								$parentNode = null;
+							}
 						}
-					} else {
+					} else if ( isset($this->items[$parent]) ) {
+						$parentNode = $this->items[$parent];
+					} else if ( !$this->options['skipOrphans'] ) {
 						$parentNode = $this;
-						$newparent  = $parent;
+					} else {
+						$parentNode = null;
 					}
-					$parentNode->appendChild( $itemNode );
+					if ($parentNode) {
+						$parentNode->appendChild( $itemNode );
+					}
 				}
 			}
 		}
@@ -540,11 +562,13 @@ EOF;
 		public function tree( $options = array() ) {
 			$this->viewmode = 'tree';
 			$options += array(
-				'siblings' => true,
-				'children' => true,
-				'top'      => $this->root,
-				'current'  => $this->current,
-				'skipTop'  => false
+				'siblings'    => true,
+				'children'    => true,
+				'top'         => $this->root,
+				'current'     => $this->current,
+				'skipTop'     => false,
+				'skipOrphans' => true,
+				'maxDepth'    => 0
 			);
 			$current = $options['current'];
 			$top     = $options['top'];
@@ -577,6 +601,16 @@ EOF;
 			if ($query) {
 				$query = " and ( " . substr($query, 0, -4) . " )";
 			}
+			$maxDepth = (int)$options['maxDepth'];
+			if ($maxDepth>0) {
+				$match = " and object.path !~ '".$top."%/";
+				while ($maxDepth>0) {
+					$match .= "%/";
+					$maxDepth--;
+				}
+				$match .= "'";
+				$query .= $match;
+			}
 			$this->fill( ar::get($top)->find("object.implements = 'pdir' and object.priority>=0".$query), $options );
 			return $this;
 		}
@@ -599,8 +633,10 @@ EOF;
 		public function sitemap( $options = array() ) {
 			$this->viewmode = 'sitemap';
 			$options += array(
-				'top'     => $this->root,
-				'skipTop' => true
+				'top'         => $this->root,
+				'skipTop'     => true,
+				'maxDepth'    => 0,
+				'skipOrphans' => true
 			);
 			$top     = $options['top'];
 			if ( !isset($top) ) {
@@ -609,6 +645,16 @@ EOF;
 			$query = "object.implements='pdir' and object.priority>=0";
 			if ($options['skipTop']) {
 				$query .= " and object.path != '".$top."'";
+			}
+			$maxDepth = (int)$options['maxDepth'];
+			if ($maxDepth>0) {
+				$match = " and object.path !~ '".$top."%/";
+				while ($maxDepth>0) {
+					$match .= "%/";
+					$maxDepth--;
+				}
+				$match .= "'";
+				$query .= $match;
 			}
 			$this->fill( ar::get( $top )->find( $query ), $options );
 			return $this;
