@@ -275,7 +275,6 @@ EOF;
 				// do a default menu.
 				$this->bar();
 			}
-			
 			return parent::toString( $indent, $current );
 		}
 		
@@ -408,34 +407,37 @@ EOF;
 			foreach ( $list as $key => $item ) {
 				$itemInfo = $this->_getItemInfo( $item, $key, $parent, $current );
 				$itemNode = $itemInfo['node'];
-				$this->item[$itemInfo['url']] = $itemNode;
+				if ($parent=='[root]') {
+					$this->items[$itemInfo['url']] = $itemNode;
+				}
 				if ($itemInfo['children']) {
 					$this->_fillFromArray( $itemInfo['children'], $current, $itemInfo['url'] );
 				}
 			}
-			foreach ( $list as $key => $item ) {
-				if ( $parent == '[root]' ) {
-					$oldparent = '';
-					$newparent = dirname( $itemInfo['url'] ).'/';
-					while ($newparent!=$oldparent && !isset($this->items[$newparent])) {
-						$oldparent = $newparent;
-						$newparent = dirname( $newparent ).'/';
-					}
-					if ( isset($this->items[$newparent]) ) {
-						$parentNode = $this->items[$newparent]->ul[0];
-						if (!isset($parentNode)) {
-							$parentNode = $this->items[$newparent]->appendChild( ar_html::tag( $this->listTag ) );
+			foreach ( $this->items as $url => $itemNode ) {
+				if ( $url != '[root]' ) { // do not remove, prevents infinite loop
+					if ( $parent == '[root]' ) {
+						$oldparent = '';
+						$newparent = dirname( $url ).'/';
+						while ($newparent!=$oldparent && !isset($this->items[$newparent])) {
+							$oldparent = $newparent;
+							$newparent = dirname( $newparent ).'/';
+						}
+						if ( isset($this->items[$newparent]) ) {
+							$parentNode = $this->items[$newparent]->ul[0];
+							if (!isset($parentNode)) {
+								$parentNode = $this->items[$newparent]->appendChild( ar_html::tag( $this->listTag ) );
+							}
+						} else {
+							$newparent  = $parent;
+							$parentNode = $this;
 						}
 					} else {
-						$newparent  = $parent;
 						$parentNode = $this;
+						$newparent  = $parent;
 					}
-				} else {
-					$parentNode = $this;
-					$newparent  = $parent;
+					$parentNode->appendChild( $itemNode );
 				}
-				$parentNode->appendChild( $itemNode );
-				$this->items[$itemInfo['url']] = $itemNode;
 			}
 		}
 		
