@@ -388,6 +388,14 @@ EOF;
 				$item['node'] = ar_html::tag( $item['tagName'], $item['attributes'], 
 					ar_html::tag( 'a', $linkAttributes, $item['name'])
 				);
+			} else {
+				if ( ($item['path']==$current) || ($item['url'] == $current) ) {
+					$link = $item['node']->a[0];
+					if ($link) {
+						$link->setAttribute('class', array( 'menuCurrent' => 'menuCurrent') );
+					}
+					$item['node']->setAttribute('class', array( 'menuCurrent' => 'menuCurrent') );
+				}
 			}
 			return $item;
 		}
@@ -401,7 +409,10 @@ EOF;
 				}
 				if ( $parent == '[root]' ) {
 					$newparent = dirname( $itemInfo['url'] ).'/';
-					if (isset($this->items[$newparent])) {
+					while ($newparent && !isset($this->items[$newparent])) {
+						$newparent = dirname( $newparent ).'/';
+					}
+					if ( $newparent ) {
 						$parentNode = $this->items[$newparent]->ul[0];
 						if (!isset($parentNode)) {
 							$parentNode = $this->items[$newparent]->appendChild( ar_html::tag( $this->listTag ) );
