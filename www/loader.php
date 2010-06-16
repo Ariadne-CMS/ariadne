@@ -360,7 +360,6 @@
 				$ldCacheFilename = "/session".$ldCacheFilename;
 				$image = str_replace('-'.$ARCurrent->session->id.'-', '{arSessionID}', $image);
 			} else {
-				var_dump($AR->output_compression);
 				if ($AR->output_compression) {
 					$skip_compression = true;
 
