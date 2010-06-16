@@ -408,11 +408,13 @@ EOF;
 					$this->_fillFromArray( $itemInfo['children'], $current, $itemInfo['url'] );
 				}
 				if ( $parent == '[root]' ) {
+					$oldparent = '';
 					$newparent = dirname( $itemInfo['url'] ).'/';
-					while ($newparent && !isset($this->items[$newparent])) {
+					while ($newparent!=$oldparent && !isset($this->items[$newparent])) {
+						$oldparent = $newparent;
 						$newparent = dirname( $newparent ).'/';
 					}
-					if ( $newparent ) {
+					if ( isset($this->items[$newparent]) ) {
 						$parentNode = $this->items[$newparent]->ul[0];
 						if (!isset($parentNode)) {
 							$parentNode = $this->items[$newparent]->appendChild( ar_html::tag( $this->listTag ) );
