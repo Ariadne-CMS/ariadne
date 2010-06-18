@@ -83,16 +83,13 @@
 		}
 
 		function connect($id, $username='', $password='') {
-			global $AR;
-
 			/* Makes the connection between a filestore ID and a
 			   SVN repository. Other SVN commands will run using
 			   the result of this function.
 			*/
 
 
-			if( !$AR->SVN->instance ) {
-				$AR->SVN->instance = VersionControl_SVN::factory(array(
+			$svn_instance = VersionControl_SVN::factory(array(
 					"add",
 					"blame",
 					"checkout", 
@@ -114,8 +111,6 @@
 					"status", 
 					"update"
 				), $this->svn_options);
-			}
-			$svn_instance = $AR->SVN->instance;
 
 			$svn_switches = array();
 			if ($username) {
