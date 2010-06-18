@@ -87,9 +87,12 @@
 			   SVN repository. Other SVN commands will run using
 			   the result of this function.
 			*/
+			
+			global $AR;
+			
+			if( !$AR->SVN->instance ) {
 
-
-			$svn_instance = VersionControl_SVN::factory(array(
+				$AR->SVN->instance = VersionControl_SVN::factory(array(
 					"add",
 					"blame",
 					"checkout", 
@@ -111,7 +114,9 @@
 					"status", 
 					"update"
 				), $this->svn_options);
+			}
 
+			$svn_instance = $AR->SVN->instance;
 			$svn_switches = array();
 			if ($username) {
 				$svn_switches['username'] = $username;
@@ -171,6 +176,7 @@
 			$args = array(
 				$this->get_path($svn, $name),
 			);
+			$svn['instance']->add->_prepared = false;
 			$result = $svn['instance']->add->run($args, $svn['switches']);
 			return $result;
 		}
@@ -179,6 +185,7 @@
 			$args = array(
 				$this->get_path($svn, $name)
 			);
+			$svn['instance']->blame->_prepared = false;
 			$result = $svn['instance']->blame->run($args, $svn['switches']);
 			return $result;
 		}
@@ -187,6 +194,7 @@
 			$args = array(
 				$this->get_path($svn, $name)
 			);
+			$svn['instance']->cat->_prepared = false;
 			$result = $svn['instance']->cat->run($args, $svn['switches']);
 		}
 
@@ -207,7 +215,7 @@
 			if ($revision != '') {
 				$switches['revision'] = $revision;
 			}
-
+			$svn['instance']->checkout->_prepared = false;
 			$result = $svn['instance']->checkout->run($args, $switches);
 			return $result;
 		}
@@ -322,6 +330,7 @@
 			$args = array(
 				$this->get_path($svn, '')
 			);
+			$svn['instance']->list->_prepared = false;
 			$result = $svn['instance']->list->run($args, $svn['switches']);
 			return $result;
 		}
@@ -330,6 +339,7 @@
 			$args = array(
 				$this->get_path($svn, $name)
 			);
+			$svn['instance']->log->_prepared = false;
 			$result = $svn['instance']->log->run($args, $svn['switches']);
 			return $result;
 		}
@@ -339,6 +349,7 @@
 				$propkey,
 				$this->get_path($svn, $name)
 			);
+			$svn['instance']->propdel->_prepared = false;
 			$result = $svn['instance']->propdel->run($args, $svn['switches']);
 			return $result;
 		}
@@ -348,6 +359,7 @@
 				$propkey,
 				$this->get_path($svn, $name)
 			);
+			$svn['instance']->propget->_prepared = false;
 			$result = $svn['instance']->propget->run($args, $svn['switches']);
 			return $result;
 		}
@@ -356,6 +368,7 @@
 			$args = array(
 				$this->get_path($svn, $name)
 			);
+			$svn['instance']->proplist->_prepared = false;
 			$result = $svn['instance']->proplist->run($args, $svn['switches']);
 			return $result;
 		}
@@ -366,6 +379,7 @@
 				$propvalue,
 				$this->get_path($svn, $name)
 			);
+			$svn['instance']->propset->_prepared = false;
 			$result = $svn['instance']->propset->run($args, $svn['switches']);
 			return $result;
 		}
@@ -374,6 +388,7 @@
 			$args = array(
 				$this->get_path($svn, $name)
 			);
+			$svn['instance']->resolved->_prepared = false;
 			$result = $svn['instance']->resolved->run($args, $svn['switches']);
 			return $result;
 		}
@@ -382,6 +397,7 @@
 			$args = array(
 				$this->get_path($svn, $name)
 			);
+			$svn['instance']->revert->_prepared = false;
 			$result = $svn['instance']->revert->run($args, $svn['switches']);
 			return $result;
 		}
@@ -396,7 +412,7 @@
 				$args = array(
 					$path
 				);
-
+				$svn['instance']->status->_prepared = false;
 				$tempresult = $svn['instance']->status->run($args, $svn['switches']);
 
 				// Since we have a flat structure, remove the path and use only the names.
@@ -434,7 +450,7 @@
 			if ($revision != '') {
 				$switches['revision'] = $revision;
 			}
-
+			$svn['instance']->update->_prepared = false;
 			$result = $svn['instance']->update->run($args, $switches);
 			return $result;
 		}
@@ -448,6 +464,8 @@
 			$switches = $svn['switches'];
 			$switches['non-interactive'] = false;
 
+			$svn['instance']->list->_prepared = false;
+
 			$result = $svn['instance']->list->run_interactive($listargs, $switches);
 			return $result;
 		}
@@ -457,11 +475,13 @@
 				$name = $this->get_path($svn, $name);
 			}
 			// accepts a filename within the svn store and returns an array containing the ar: properties of the file
+			$svn['instance']->proplist->_prepared = false;
 			$proplist = explode("\n", $svn['instance']->proplist->run(array($name), $svn['switches']));
 			$result = array();
 			foreach( $proplist as $value ) {
 				$value = ltrim($value);
 				if( substr($value, 0, 3) == "ar:" ) {
+					$svn['instance']->propget->_prepared = false;
 					$result[$value] = $svn['instance']->propget->run(array($value, $name), $svn['switches']);
 				}
 			}
@@ -536,6 +556,7 @@
 				$repository
 			);
 			// echo "Testing repository directory - error is normal\n";
+			$svn['instance']->list->_prepared = false;
 			$svnlist = @$svn['instance']->list->run($listargs, $svn['switches']);
 			if ($svnlist) {
 				return false;
@@ -550,6 +571,7 @@
 				);
 				$switches = $svn['switches'];
 				$switches['message'] = "Repository creation";
+				$svn['instance']->import->_prepared = false;
 				$result = $svn['instance']->import->run($args, $switches);
 				rmdir($tempdir);
 			}
@@ -560,6 +582,7 @@
 			$args = array(
 				$repository . $name
 			);
+			$svn['instance']->info->_prepared = false;
 			$result = $svn['instance']->info->run($args, $svn['switches']);
 			return $result;
 		}
@@ -569,6 +592,7 @@
 				$propkey,
 				$repository . $name
 			);
+			$svn['instance']->propget->_prepared = false;
 			$result = $svn['instance']->propget->run($args, $svn['switches']);
 			return $result;
 		}
