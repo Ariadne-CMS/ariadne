@@ -140,4 +140,29 @@
 	$ARnls['ariadne:mogrify']					= 'Mogrify';
 
 	$ARnls['ariadne:lock:toggle_all']				= 'Kies alle';
+
+	$ARnls['ariadne:types:paddressbook']		= 'Adresboek';
+	$ARnls['ariadne:types:particle']			= 'Artikel';
+	$ARnls['ariadne:types:pbookmark']			= 'Bladwijzer';
+	$ARnls['ariadne:types:pcalendar']			= 'Kalender';
+	$ARnls['ariadne:types:pdir']				= 'Map';
+	$ARnls['ariadne:types:pfile']				= 'Bestand';
+	$ARnls['ariadne:types:pgroup']				= 'Groep';
+	$ARnls['ariadne:types:pnewspaper']			= 'Krant';
+	$ARnls['ariadne:types:pobject']				= 'Object';
+	$ARnls['ariadne:types:ppage']				= 'Pagina';
+	$ARnls['ariadne:types:pperson']				= 'Persoon';
+	$ARnls['ariadne:types:pphoto']				= 'Foto';
+	$ARnls['ariadne:types:pphotobook']			= 'Fotoboek';
+	$ARnls['ariadne:types:pscenario']			= 'Scenario';
+	$ARnls['ariadne:types:pshortcut']			= 'Snelkoppeling';
+	$ARnls['ariadne:types:psite']				= 'Site';
+	$ARnls['ariadne:types:puser']				= 'Gebruiker';
+	$ARnls['ariadne:types:pldapconnection']		= 'LDAP Verbinding';
+	$ARnls['ariadne:types:pcalitem']			= 'Kalender Item';
+	$ARnls['ariadne:types:porganization']		= 'Organisatie';
+	$ARnls['ariadne:types:pprofile']			= 'Profiel';
+	$ARnls['ariadne:types:psearch']				= 'Zoekopdracht';
+	$ARnls['ariadne:types:psection']			= 'Sectie';
+
 ?>

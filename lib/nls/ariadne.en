@@ -142,4 +142,29 @@
 	$ARnls['ariadne:mogrify']					= 'Mogrify';
 
 	$ARnls['ariadne:lock:toggle_all']				= 'Toggle all';
+
+	$ARnls['ariadne:types:paddressbook']		= 'Addressbook';
+	$ARnls['ariadne:types:particle']			= 'Article';
+	$ARnls['ariadne:types:pbookmark']			= 'Bookmark';
+	$ARnls['ariadne:types:pcalendar']			= 'Calendar';
+	$ARnls['ariadne:types:pdir']				= 'Directory';
+	$ARnls['ariadne:types:pfile']				= 'File';
+	$ARnls['ariadne:types:pgroup']				= 'Group';
+	$ARnls['ariadne:types:pnewspaper']			= 'Newspaper';
+	$ARnls['ariadne:types:pobject']				= 'Object';
+	$ARnls['ariadne:types:ppage']				= 'Page';
+	$ARnls['ariadne:types:pperson']				= 'Person';
+	$ARnls['ariadne:types:pphoto']				= 'Photo';
+	$ARnls['ariadne:types:pphotobook']			= 'Photobook';
+	$ARnls['ariadne:types:pscenario']			= 'Scenario';
+	$ARnls['ariadne:types:pshortcut']			= 'Shortcut';
+	$ARnls['ariadne:types:psite']				= 'Site';
+	$ARnls['ariadne:types:puser']				= 'User';
+	$ARnls['ariadne:types:pldapconnection']		= 'LDAP Connection';
+	$ARnls['ariadne:types:pcalitem']			= 'Calendar Item';
+	$ARnls['ariadne:types:porganization']		= 'Organization';
+	$ARnls['ariadne:types:pprofile']			= 'Profile';
+	$ARnls['ariadne:types:psearch']				= 'Search';
+	$ARnls['ariadne:types:psection']			= 'Section';
+
 ?>
