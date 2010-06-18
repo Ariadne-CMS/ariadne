@@ -1,38 +1,4 @@
 <?php
-    /******************************************************************
-     user.languageselect.html                              Muze Ariadne
-     ------------------------------------------------------------------
-     Author: Muze (info@muze.nl)
-     Date: 11 december 2002
-
-     Copyright 2002 Muze
-
-     This file is part of Ariadne.
-
-     Ariadne is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published 
-     by the Free Software Foundation; either version 2 of the License, 
-     or (at your option) any later version.
- 
-     Ariadne is distributed in the hope that it will be useful,
-     but WITHOUT ANY WARRANTY; without even the implied warranty of
-     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-     GNU General Public License for more details.
-
-     You should have received a copy of the GNU General Public License
-     along with Ariadne; if not, write to the Free Software 
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
-     02111-1307  USA
-
-    -------------------------------------------------------------------
-
-     Description:
-
-	Gives the user a language selection. This template is called
-	when an object is not available in the language.
-
-    ******************************************************************/
-
   global $nocache;
   $nocache=true;
 
@@ -40,52 +6,58 @@
   // allnls to true. 
   $ARCurrent->allnls=true;
   if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
+  	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
 ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<body bgcolor="white">
-<h3><?php printf($ARnls["languagenotavailable"],$AR->nls->list[$this->reqnls]); ?></h3>
-<table border="0" bgcolor="#404074" cellpadding="0" cellspacing="0">
-<tr>
-	<td colspan="3">
-		<img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="4" height="16">
-		<font face="arial, helvetica, sans-serif" size="2" color="white"><b>
-			<?php echo $ARnls["selectlanguage"]; ?>
-		</b></font>
-	</td>
-</tr>
-<tr>
-	<td><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"></td>
-	<td bgcolor="white">
-		<table border="0" cellspacing="2" cellpadding="2" width="100%">
-		<tr>
-		<?php 
-			if (!$ARConfig->nls) {
-				$ARConfig->nls=$AR->nls;
-			}
-			if (ldGetServerVar("QUERY_STRING")) {
-				$query="?".ldGetServerVar("QUERY_STRING");
-			} else {
-				$query="";
-			}
-			reset($ARConfig->nls->list);
-			while (list($arnls, $arlanguage)=each($ARConfig->nls->list)) {
-				// now list all non-selected-language variables
-				// $arlanguage=htmlentities($arlanguage);
-				$image=$AR->dir->images.'nls/'.$arnls.'.gif';
-				if (isset($this->data->nls->list[$arnls])) {
-					ldSetNls($arnls);
-					echo "<td align=\"center\"><font face=\"arial, helvetica, sans-serif\"><a href=\"".$this->make_url().$arOriginalFunction.$query."\"><img alt=\"$arlanguage\" src=\"$image\"><br>$arlanguage</a></font></td>\n";
-				}
-			}
-		?>
-		</tr>
-		</table>
-	</td>
-	<td><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"></td>
-</tr><tr>
-	<td colspan="3"><img src="<?php echo $AR->dir->images; ?>dot.gif" alt="" width="1" height="1"></td>
-</tr>
-</table>	
+	<head>
+		<title>Ariadne - <?php echo $ARnls["ariadne:selectlanguage"]; ?></title>
+		<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>login.css">
+		<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+	</head>
+<body id="login_panel">
+	<div id="centered">
+		<div id="header">
+			<div class="logo">
+				<img src="<?php echo $AR->dir->www;?>images/tree/logo2.gif" alt="Ariadne Web Application Server">
+				<span class="ariadne">Ariadne</span>
+				<span class="ariadne_sub">Web Application Server</span>
+			</div><?php echo $ARnls["ariadne:selectlanguage"]; ?><img class="typeicon" src="<?php echo $AR->dir->images.'icons/large/language.png'; ?>" alt="<?php echo $ARnls["selectlanguage"]; ?>">
+		</div>
+		<div id="sectiondata" class="nosections notfixed">
+			<div id="tabs"></div>
+			<div id="tabsdata">
+				<div id="data">
+					<div class="field">
+						<h3><?php printf($ARnls["languagenotavailable"],$AR->nls->list[$this->reqnls]); ?></h3>
+						<strong><?php echo $ARnls["ariadne:selectlanguage"]; ?></strong>
+<?php 
+	if (!$ARConfig->nls) {
+		$ARConfig->nls=$AR->nls;
+	}
+	if (ldGetServerVar("QUERY_STRING")) {
+		$query="?".ldGetServerVar("QUERY_STRING");
+	} else {
+		$query="";
+	}
+	foreach( $ARConfig->nls->list as $arnls => $arlanguage ) {
+		// now list all non-selected-language variables
+		// $arlanguage=htmlentities($arlanguage);
+		$image=$AR->dir->images.'nls/'.$arnls.'.gif';
+		if (isset($this->data->nls->list[$arnls])) {
+			ldSetNls($arnls);
+?>
+					<label for="button_<?php echo $arnls; ?>"><?php echo $arlanguage; ?></label>
+					<a id="button_<?php echo $arnls; ?>" href="<?php echo $this->make_local_url().$arOriginalFunction.$query; ?>"><img alt="<?php echo $arlanguage; ?>" class="language_flag" src="<?php echo $image; ?>"></a>
+<?php
+		}
+	}
+?>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
 <?php

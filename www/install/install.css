@@ -1,0 +1,172 @@
+.keepvars {
+	display: none;
+}
+.hidden {
+	position: absolute;
+	left: -10000px;
+	height: 1px;
+	width: 1px;
+}
+.button {
+	display: block;
+	padding: 3px 6px;
+	background-image: url("../images/sprite.png");
+	border: 1px solid #808080;
+	float: left;
+	margin-left: 10px;
+	min-width: 60px;
+	text-align: center;
+}
+.section {
+	display: block;
+	height: 60px;
+	width: 80px;
+	margin-top: 10px;
+	margin-left: 10px;
+	margin-right: 10px;
+	padding: 10px;
+	background-color: #D0DCF7;
+	border: 1px solid #808080;
+	text-align: center;
+}
+.section:hover {
+	background-color: #EFF3FF;
+}
+.section.current {
+	border-right: 0px;
+	padding-right: 20px;
+	background-color: #EFF3FF;
+}
+
+.title {
+	display: block;
+	font-size: 11px;
+}
+.passed {
+	font-weight: bold;
+	color: green;
+}
+.failed {
+	font-weight: bold;
+	color: red;
+}
+
+.checks {
+	border-collapse: collapse;
+	border: 1px solid #808080;
+	margin-top: 10px;
+	width: 400px;
+	margin-bottom: 10px;
+}
+.checks td {
+	line-height: 16px;
+	vertical-align: middle;
+	padding: 4px;
+}
+.checks .odd,
+.db_basic .odd {
+	background-color: white;
+}
+.checks .even,
+.db_basic .even {
+	background-color: #EEEEEE;
+}
+.checks .col1 {
+	width: 300px;
+}
+
+.step {
+	position: relative;
+	width: 500px;
+	height: 20px;
+	border: 1px solid #808080;
+	padding: 4px;
+	margin-bottom: 5px;
+	background-color: white;
+}
+
+.step .progress {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 28px;
+	width: 0%;
+	overflow: hidden;
+	background-image: url('../images/sprite.png');
+	background-position: 0px -1400px;
+}
+
+.step .step_desc {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	height: 28px;
+	width: 100%;
+	text-align: center;
+	vertical-align: center;
+	line-height: 28px;
+	z-index: 3;
+	color: #444444;
+}
+
+.step.current .step_desc {
+	color: white;
+}
+.step.current {
+	background-image: url('../images/sprite.png');
+	background-position: 0px -100px;
+}
+
+h1,h2 {
+	font-family: verdana;
+	color: #303030;
+}
+h1 {
+	font-size: 16px;
+	padding-bottom: 5px;
+	border-bottom: 1px solid #808080;
+}
+
+h2 {
+	font-size: 14px;
+}
+
+.required, .recommended {
+	margin-bottom: 20px;
+}
+.text {
+	width: 170px;
+}
+
+.db_basic {
+	border-collapse: collapse;
+	border: 1px solid #808080;
+}
+
+#tabsdata .required label.button,
+#tabsdata .recommended label.button {
+	width: auto;
+	display: inline;
+	float: none;
+	margin-left: 0px;
+}
+
+#tabsdata .db_basic label {
+	margin-top: 0px;
+}
+
+.db_basic td {
+	vertical-align: top;
+	padding: 10px;
+}
+.db_basic .col2 {
+	width: 320px;
+}
+.db_basic .col1 {
+	width: 200px;
+}
+.helpicon {
+	margin: 0px;
+	margin-left: 16px;
+	vertical-align: middle;
+}

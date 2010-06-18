@@ -1,0 +1,49 @@
+<?php
+	/*****************************************************************************
+
+		The German nls files are contributed by: Reini Urban <rurban@x-ray.at>
+
+		Modified by Christoph Lindemann <christoph@lindemann.nu> 2005-01-06
+
+	*****************************************************************************/
+
+	$ARnls["ariadne:about"]						=	"Über Ariadne";
+	$ARnls["ariadne:browsebydate"]				=	"Nach Datum ordnen";
+	$ARnls["ariadne:browsebyletter"]				=	"Nach Buchstaben ordnen";
+	$ARnls["ariadne:cache"]						=	"Zwischenspeicher einstellen für ";
+	$ARnls["ariadne:copy"]						=	"Kopieren ";
+	$ARnls["ariadne:customfields"]				=	"Benutzerdefinierte Felder einstellen für ";
+	$ARnls["ariadne:delete"]						=	"Löschen ";
+	$ARnls["ariadne:details"]					=	"Details";
+	$ARnls["ariadne:detailsH"]					=	"Mehr...";
+	$ARnls["ariadne:edit"]						=	"Bearbeiten";
+	$ARnls["ariadne:explore"]					=	"Durchsuchen";
+	$ARnls["ariadne:export"]						=	"Exportieren";
+	$ARnls["ariadne:folders"]					=	"Ordner";
+	$ARnls["ariadne:grants"]						=	"Rechte einstellen für";
+	$ARnls["ariadne:help"]						=	"Hilfe";
+	$ARnls["ariadne:iconview"]					=	"Symbol Ansicht";
+	$ARnls["ariadne:import"]						=	"Importieren";
+	$ARnls["ariadne:info"]						=	"Info";
+	$ARnls["ariadne:language"]					=	"Sprache einstellen für ";
+	$ARnls["ariadne:large"]						=	"Grosse Symbole";
+	$ARnls["ariadne:link"]						=	"Verknüpfung ";
+	$ARnls["ariadne:new"]						=	"Neues Objekt hinzufügen";
+	$ARnls["ariadne:preferences"]				=	"Einstellungen";
+	$ARnls["ariadne:priority"]					=	"Priorität einstellen für ";
+	$ARnls["ariadne:rename"]						=	"Umbenennen ";
+	$ARnls["ariadne:search"]						=	"Suchen";
+	$ARnls["ariadne:settings"]					=	"Eigenschaften";
+	$ARnls["ariadne:shortcut"]					=	"Verknüpfung bearbeiten";
+	$ARnls["ariadne:small"]						=	"Listenansicht";
+	$ARnls["ariadne:templates"]					=	"Vorlagen einestellen für ";
+	$ARnls["ariadne:tutorials"]					=	"Beispiele";
+	$ARnls["ariadne:types"]						=	"Typenstamm einstellen für ";
+	$ARnls["ariadne:up"]							=	"Hoch";
+	$ARnls["ariadne:by"]						=	"Von";
+	$ARnls["ariadne:view"]						=	"Anzeigen";
+	$ARnls["ariadne:viewweb"]					=	"Webseite anzeigen";
+
+	$ARnls["ariadne:selectlanguage"]			=	"Wählen sie eine andere Sprache";
+
+?>

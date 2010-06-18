@@ -1,0 +1,27 @@
+.browse {
+	margin-left: 0px;
+	overflow: auto;
+	max-height: 390px;
+}
+
+div.buttons {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+}
+
+div.buttons input {
+        background:url("../images/sprite.png") repeat-x 0 0;
+        border: 1px solid #808080;
+}
+
+#explore_top .searchdiv {
+	left: 430px;
+}
+.viewpane_footer {
+	margin-top: -10px;
+}
+
+.viewpane {
+	padding-bottom: 10px;
+}

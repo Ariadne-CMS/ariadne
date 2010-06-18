@@ -1,0 +1,92 @@
+#explore_tree #treeDiv {
+	xborder-right: 1px solid #808080 !important;
+	xwidth: 199px;
+	height: 100%;
+}
+
+#explore_tree #treecontrol {
+	xwidth: 219px;
+	xborder-right: 1px solid #808080;
+}
+
+#explore_menubar .bd {
+	position: relative;
+	margin-left: -3px;
+}
+
+#explore_menubar ul{
+	background: url('../images/sprite.png');
+}
+
+.sidebar {
+	position: relative;
+	margin-top: -45px;
+}
+
+.browse {
+	width: 600px;
+	position: relative;
+	left: 20px;
+	margin-top: -30px;
+}
+
+.searchdiv {
+	position: absolute;
+	left: 0px;
+	text-align: right;
+	font-size: 11px;
+	width: auto;
+	margin-left: 700px;
+	margin-right: 20px;
+	bborder-left: 700px solid black;
+	bborder-right: 20px solid black;
+}
+.searchdiv a, .searchdiv img {
+	border: 0px;
+	width: 16px;
+	height: 16px;
+}
+
+.searchdiv form {
+	margin: 0px;
+	padding: 0px;
+	width: 200px;
+}
+
+.searchdiv div {
+	display: inline;
+	text-align: left;
+}
+
+.searchdiv input {
+	border: 1px solid #808080;
+	padding-left: 2px;
+	line-height: 16px;
+	height: 16px;
+	width: 100%;
+}
+
+span.tree_icon {
+	padding: 0px;
+	margin: 0px;
+	margin-left: 5px;
+	margin-top: 3px;
+	margin-right: -3px;
+}
+
+.section.expanded a.toggle {
+	background: none;
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='<?php echo $AR->dir->images; ?>icons/small/normalcollapse_hot.png',sizingMethod='crop');
+}
+.section.expanded a.toggle:hover {
+	background: none;
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='<?php echo $AR->dir->images; ?>icons/small/normalcollapse_hot.png',sizingMethod='crop');
+}
+.section.collapsed a.toggle {
+	background: none;
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='<?php echo $AR->dir->images; ?>icons/small/normalexpand_hot.png',sizingMethod='crop');
+}
+.section.collapsed a.toggle:hover {
+	background: none;
+	filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='<?php echo $AR->dir->images; ?>icons/small/normalexpand_hot.png',sizingMethod='crop');
+}

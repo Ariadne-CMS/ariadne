@@ -1,0 +1,45 @@
+<?php
+
+
+        // Traduzione italiana a cura di Dino Gerlando Termini
+        // M.B.I. S.r.l - dtermini@mbigroup.it
+
+	$ARnls["ariadne:about"]						=	"Informazioni";
+	$ARnls["ariadne:browsebydate"]				=	"Naviga per data";
+	$ARnls["ariadne:browsebyletter"]				=	"Naviga per lettera";
+	$ARnls["ariadne:cache"]						=	"Configura cache per ";
+	$ARnls["ariadne:copy"]						=	"Copia ";
+	$ARnls["ariadne:customfields"]				=	"Aggiungi un campo a ";
+	$ARnls["ariadne:delete"]						=	"Elimina ";
+	$ARnls["ariadne:details"]					=	"Dettagli";
+	$ARnls["ariadne:detailsH"]					=	"Altro...";
+	$ARnls["ariadne:edit"]						=	"Modifica ";
+	$ARnls["ariadne:explore"]					=	"Esplora";
+	$ARnls["ariadne:export"]						=	"Esporta";
+	$ARnls["ariadne:folders"]					=	"Cartelle";
+	$ARnls["ariadne:grants"]						=	"Configura i diritti per ";
+	$ARnls["ariadne:help"]						=	"Aiuto";
+	$ARnls["ariadne:iconview"]					=	"Seleziona una vista";
+	$ARnls["ariadne:import"]						=	"Importa";
+	$ARnls["ariadne:info"]						=	"Informazioni";
+	$ARnls["ariadne:language"]					=	"Scegli la lingua per ";
+	$ARnls["ariadne:large"]						=	"Icone";
+	$ARnls["ariadne:link"]						=	"Collega ";
+	$ARnls["ariadne:new"]						=	"Nuovo oggetto";
+	$ARnls["ariadne:preferences"]				=	"Preferenze";
+	$ARnls["ariadne:priority"]					=	"Decidi la priorit&agrave; per ";
+	$ARnls["ariadne:rename"]						=	"Rinomina ";
+	$ARnls["ariadne:search"]						=	"Cerca";
+	$ARnls["ariadne:settings"]					=	"Settaggi";
+	$ARnls["ariadne:shortcut"]					=	"Modifica link";
+	$ARnls["ariadne:small"]						=	"Lista";
+	$ARnls["ariadne:templates"]					=	"Elenco template per ";
+	$ARnls["ariadne:tutorials"]					=	"Manuali";
+	$ARnls["ariadne:types"]						=	"Scegli il typetree per ";
+	$ARnls["ariadne:up"]							=	"Su";
+	$ARnls["ariadne:view"]						=	"Vista";
+	$ARnls["ariadne:viewweb"]					=	"Vista web";
+	$ARnls['ariadne:wysiwyg_editor']			=	"WYSIWYG editor";
+
+
+?>

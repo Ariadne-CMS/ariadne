@@ -1,13 +1,29 @@
 <?php
-	global $nocache;
+	if (!$arLoginMessage) {
+		$arLoginMessage=$ARnls["loginrequired"];
+	}
+	global $nocache,$AR_PATH_INFO;
 	$nocache=true;
-	// make sure no language select dialog is shown.	
+	// make sure no language select dialog is shown.
 	$ARCurrent->nolangcheck=true;
-	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
-		if ($arPopup) {
-			$this->call("user.session.timeout.popup.html", $arCallArgs);
-		} else {
-			$this->call("user.session.timeout.form.html", $arCallArgs);
+	if (!$arReturnPath) {
+		$split=strrpos($AR_PATH_INFO, "/");
+		$function=substr($AR_PATH_INFO,$split+1);
+		$arReturnPath=$this->path;
+	}
+	if (!$arReturnTemplate) {
+		$arReturnTemplate=$function;
+		if (ldGetServerVar("QUERY_STRING")) {
+			$arReturnTemplate.="?".ldGetServerVar("QUERY_STRING");
 		}
+	}
+	$arCallArgs['arReturnPath'] = $arReturnPath;
+	$arCallArgs['arReturnTemplate'] = $arReturnTemplate;
+	$arCallArgs['arLoginMessage'] = $arLoginMessage;
+
+	ldHeader("X-Ariadne-401: ".$arLoginMessage);
+
+	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
+		$this->call("user.login.html", $arCallArgs);
 	}
 ?>

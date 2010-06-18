@@ -1,0 +1,41 @@
+<?php
+
+	$ARnls["ariadne:about"]						=	"O...";
+	$ARnls["ariadne:browsebydate"]				=	"Razgledaj po datumu";
+	$ARnls["ariadne:browsebyletter"]				=	"Razgledaj po slovu";
+	$ARnls["ariadne:cache"]						=	"Zadaj keširanje za ";
+	$ARnls["ariadne:copy"]						=	"Kopiraj ";
+	$ARnls["ariadne:customfields"]				=	"Zadaj korisnička polja za ";
+	$ARnls["ariadne:delete"]						=	"Izbriši ";
+	$ARnls["ariadne:details"]					=	"Detalji";
+	$ARnls["ariadne:detailsH"]					=	"Više...";
+	$ARnls["ariadne:edit"]						=	"Editiraj ";
+	$ARnls["ariadne:explore"]					=	"Istraži";
+	$ARnls["ariadne:export"]						=	"Izvezi";
+	$ARnls["ariadne:folders"]					=	"Mape";
+	$ARnls["ariadne:grants"]						=	"Zadaj dozvole za ";
+	$ARnls["ariadne:help"]						=	"Pomoć";
+	$ARnls["ariadne:iconview"]					=	"Izaberi vrstu prikaza";
+	$ARnls["ariadne:import"]						=	"Uvezi";
+	$ARnls["ariadne:info"]						=	"Podaci";
+	$ARnls["ariadne:language"]					=	"Zadaj jezik za ";
+	$ARnls["ariadne:large"]						=	"Ikone";
+	$ARnls["ariadne:link"]						=	"Napravi kraticu za ";
+	$ARnls["ariadne:new"]						=	"Dodaj novi objekt";
+	$ARnls["ariadne:preferences"]				=	"Preferencije";
+	$ARnls["ariadne:priority"]					=	"Zadaj prioritet za ";
+	$ARnls["ariadne:rename"]						=	"Preimenuj ";
+	$ARnls["ariadne:search"]						=	"Traži";
+	$ARnls["ariadne:settings"]					=	"Postavke";
+	$ARnls["ariadne:shortcut"]					=	"Editiraj kraticu";
+	$ARnls["ariadne:small"]						=	"Lista";
+	$ARnls["ariadne:templates"]					=	"Zadaj predloške za ";
+	$ARnls["ariadne:tutorials"]					=	"Vodiči";
+	$ARnls["ariadne:types"]						=	"Zadaj stablo tipova za ";
+	$ARnls["ariadne:up"]							=	"Gore";
+	$ARnls["ariadne:view"]						=	"Prikaži";
+	$ARnls["ariadne:viewweb"]					=	"Prikaži web stranicu";
+	$ARnls['ariadne:wysiwyg_editor']			=	"WYSIWYG editor";
+
+
+?>
