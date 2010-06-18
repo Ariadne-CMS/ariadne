@@ -100,7 +100,7 @@
 			'loadicon' => $loadicon,
 			'loadiconalt' => $loadiconalt,
 			'tasks' => $tasks,
-			'inline_icon' => $this->call('system.get.icon.php', array('size' => 'small')),
+			'inline_icon' => $ARCurrent->arTypeIcons[$this->type]['small'] ? $ARCurrent->arTypeIcons[$this->type]['small'] : $this->call('system.get.icon.php', array('size' => 'small')),
 			'inline_iconalt' => $this->type
 		);
 

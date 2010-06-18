@@ -20,12 +20,13 @@
 			$dotPos=strpos($type, '.');
 			if (false!==$dotPos) {
 				$realtype=substr($type, 0, $dotPos);
+				$ARCurrent->arTypeIcons[$type] = $ARCurrent->arTypeIcons[$realtype];
 				$icon=$ARCurrent->arTypeIcons[$realtype][$size];
 			} else {
 				$realsize = ($size == "default") ? "large" : $size;
 				$icon=$AR->dir->images."icons/".$realsize."/unknown.png";
+				$ARCurrent->arTypeIcons[$type][$size] = $icon;
 			}
-			$ARCurrent->arTypeIcons[$type][$size] = $icon;
 		}
 		$arResult=$icon;
 	}

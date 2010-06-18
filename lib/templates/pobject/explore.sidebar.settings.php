@@ -102,8 +102,10 @@
 				'tasks' => $settings
 			);
 			if( $shortcutSidebar ) {
-				$this->call('typetree.ini');
-				$section['inline_icon'] = $this->call('system.get.icon.php', array('size' => 'small'));
+				if (!$ARCurrent->arTypeTree) {
+					$this->call('typetree.ini');
+				}
+				$section['inline_icon'] = $ARCurrent->arTypeIcons[$this->type]['small'] ? $ARCurrent->arTypeIcons[$this->type]['small'] : $this->call('system.get.icon.php', array('size' => 'small'));
 				$section['inline_iconalt'] = $this->type;
 			}
 			

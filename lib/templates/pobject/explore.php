@@ -87,10 +87,14 @@
 //		$base_object = $this;
 //		$base_object = current($this->get('/', 'system.get.phtml'));
 
+		if (!$ARCurrent->arTypeTree) {
+			$base_object->call("typetree.ini");
+		}
+
 		// This set initializes the tree from the user object
 		$path 	= $base_object->path;
 		$name 	= $base_object->nlsdata->name;
-		$icon 	= $base_object->call('system.get.icon.php', array('size' => 'medium'));
+		$icon 	= $ARCurrent->arTypeIcons[$base_object->type]['medium'] ? $ARCurrent->arTypeIcons[$base_object->type]['medium'] : $base_object->call('system.get.icon.php', array('size' => 'medium'));
 
 		$loader = $this->store->root;
 		$wwwroot = $AR->dir->www;
