@@ -11,16 +11,10 @@
 			// get typetree to get the correct icon
 			$this->call('typetree.ini');
 		}
-		if( !$size ) {
-			$size = 'default';
+		if (!$size || $size == "large") {
+			$size = "default";
 		}
-		if( $size == 'large' ) {
-			$size = 'default';
-		} elseif ($size == 'default') {
-			$realsize = 'large';
-		} else {
-			$realsize = $size;
-		}
+
 		$icon=$ARCurrent->arTypeIcons[$type][$size];
 		if (!$icon) {
 			$dotPos=strpos($type, '.');
@@ -28,6 +22,7 @@
 				$realtype=substr($type, 0, $dotPos);
 				$icon=$ARCurrent->arTypeIcons[$realtype][$size];
 			} else {
+				$realsize = ($size == "default") ? "large" : $size;
 				$icon=$AR->dir->images."icons/".$realsize."/unknown.png";
 			}
 			$ARCurrent->arTypeIcons[$type][$size] = $icon;

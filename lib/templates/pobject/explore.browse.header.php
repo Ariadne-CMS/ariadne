@@ -32,12 +32,12 @@
 		if (!$ARCurrent->arTypeTree) {
 			$this->call("typetree.ini");
 		}
-		$icon = $this->call("system.get.icon.php");
+		$icon = $ARCurrent->arTypeIcons[$this->type]['default'] ? $ARCurrent->arTypeIcons[$this->type]['default'] : $this->call("system.get.icon.php");
 		$iconalt = $this->type;
 		if( $this->implements("pshortcut") ) {
 			$overlay_icon = $icon;
 			$overlay_alt = $this->type;
-			$icon = current($this->get($this->data->path, "system.get.icon.php"));
+			$icon = $ARCurrent->arTypeIcons[$this->vtype]['default'] ? $ARCurrent->arTypeIcons[$this->vtype]['default'] : current($this->get($this->data->path, "system.get.icon.php"));
 			$iconalt = $this->vtype;
 		}
 ?>
