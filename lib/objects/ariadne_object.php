@@ -1421,10 +1421,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						$path => $types
 					);
 				} else {
-					$ARConfig->libraryCache[$base][$function] = array_merge(
-						Array($path => $types),
-						$ARConfig->libraryCache[$base][$function]
-					);
+					$ARConfig->libraryCache[$base][$function][$path] = $types;
 				}
 			}
 		}
