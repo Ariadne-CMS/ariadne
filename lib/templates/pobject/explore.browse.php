@@ -88,13 +88,11 @@
 	muze.ariadne.explore.viewpane.path = '<?php echo $this->path ?>';	
 </script>
 
-<?php if ($viewtype == "details") { ?>
 <script type="text/javascript">
 <?php 
 	yui::showTableJs($divId, $tableId, $fields, $colDefs); 
 ?>
 </script>
-<?php } ?>
 <script type="text/javascript">
 	YAHOO.util.Event.onDOMReady(
 		function() {
