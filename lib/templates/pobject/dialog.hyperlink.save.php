@@ -1,7 +1,6 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
-		require_once($this->store->get_config("code")."modules/mod_json.php");
 		$arEditorSettings = $this->call('editor.ini');
 
 		$attributes = array();
@@ -34,7 +33,7 @@
 			$attributes = array_merge($attributes, $arEditorSettings['link']['behaviours'][$this->getdata('behaviour')]['attributes']);
 		}
 
-		$attributes_json = JSON::encode($attributes);
+		$attributes_json = json_encode($attributes);
 		?>
 		<script type="text/javascript">
 			if (window.opener && window.opener.callback) {

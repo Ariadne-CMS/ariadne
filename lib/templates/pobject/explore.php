@@ -2,7 +2,6 @@
 	$ARCurrent->nolangcheck = true;
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
   		include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
-		require_once($this->store->get_config("code")."modules/mod_json.php");
 		require_once($this->store->get_config("code")."modules/mod_yui.php");
 
 		$menuitems = array(
@@ -197,7 +196,7 @@
 	muze.ariadne.registry.set("SessionID","<?php echo addslashes($ARCurrent->session->id); ?>");
 
 	muze.ariadne.registry.set("path", "<?php echo addslashes($this->path); ?>");
-	muze.ariadne.nls = eval(<?php echo JSON::encode($JSnls); ?>);
+	muze.ariadne.nls = eval(<?php echo json_encode($JSnls); ?>);
 <?php
 	if( $AR->user->data->windowprefs["edit_object_layout"] ) {
 		echo "\tmuze.ariadne.registry.set('window_new_layout', 1);\n";

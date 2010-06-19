@@ -1,7 +1,6 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
-		require_once($this->store->get_config("code")."modules/mod_json.php");
 		$arEditorSettings = $this->call("editor.ini");
 		$arpath = $this->getdata('arpath');
 		if (!$arpath) {
