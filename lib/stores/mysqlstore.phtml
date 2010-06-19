@@ -345,13 +345,15 @@ class mysqlstore extends store{
 
 	 **********************************************************************************/
 		if (!is_array($criteria) && ($criteria=trim($criteria))) {
-			$sqlcompiler= $this->compilerFactory();
-			$query_string=$sqlcompiler->compile($path, $criteria, $limit, $offset);
-			if ($sqlcompiler->error) {
-				$this->error=$sqlcompiler->error;
+			if (!($query_string = $this->cachedQueries[$criteria])) {
+				$sqlcompiler= $this->compilerFactory();
+				$query_string=$sqlcompiler->compile($path, $criteria, $limit, $offset);
+				if ($sqlcompiler->error) {
+					$this->error=$sqlcompiler->error;
+				}
+				$this->cachedQueries[$criteria] = $query_string;
+				unset($sqlcompiler);
 			}
-			unset($sqlcompiler);
-
 		} else {
 			$this->error="";
 			$count=0;
@@ -932,7 +934,11 @@ class mysqlstore extends store{
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
 
-		$object=$this->exists($path);
+		if (is_int($path)) {
+			$object = $path;
+		} else {
+			$object=$this->exists($path);
+		}
 		$query_string="select path from $nodes_tbl where object=$object";
 		$temp=mysql_db_query($this->database,$query_string, $this->connect_id);
 		while ($row=@mysql_fetch_array($temp)) {
