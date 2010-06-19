@@ -12,8 +12,6 @@
 			$nlsdata=$data->$arLanguage;
 		}
 
-		$myName = $nlsdata->name;
-		
 		$settings = array();
 		if ($this->CheckSilent("edit")) {
 			$task = array(
