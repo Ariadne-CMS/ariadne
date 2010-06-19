@@ -1,8 +1,6 @@
 <?php
 	if ($AR->user && !$this->CheckSilent("read")) {
 		$arResult['grants']['read'] = false;
-	} else {
-		$grants=$this->GetValidGrants();			
 	}
 
 	$arResult["name"]=$this->nlsdata->name;
