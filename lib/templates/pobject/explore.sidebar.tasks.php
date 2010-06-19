@@ -10,8 +10,6 @@
 			$nlsdata=$data->$arLanguage;
 		}
 
-		$myName = $nlsdata->name;
-
 		$tasks = array();
 		
 		if( $this->CheckSilent("read") && $shortcutSidebar ) {
@@ -113,35 +111,13 @@
 			'nlslabel' => $ARnls['ariadne:viewweb']
 		);		
 
-/*
-		$this->call("typetree.ini");
-		$icon=$this->call('system.get.icon.php');
-		$iconalt = $this->type;
-		
-		if( $this->implements("pshortcut") ) {
-			$overlay_icon = $icon;
-			$overlay_alt = $this->type;
-			$icon = current($this->get($this->data->path, 'system.get.icon.php'));
-			$iconalt = $this->vtype;
-		} 
-*/
-		$loadicon = $AR->dir->images . 'ajax-loading.gif';
-		$loadiconalt = "Loading...";
-
 		$arCallArgs["sectionName"] = "tasks";
 		$arCallArgs["sectionDisplayName"] = $ARnls["ariadne:options"];
 		$arCallArgs["icon"] = $icon;
-		$arCallArgs["loadicon"] = $loadicon;
 		
 		$section = array(
 			'id' => 'tasks',
 			'label' => $ARnls["ariadne:options"],
-//			'icon' => $icon,
-//			'iconalt' => $iconalt,
-//			'overlay_icon' => $overlay_icon,
-//			'overlay_iconalt' => $overlay_alt,
-			'loadicon' => $loadicon,
-			'loadiconalt' => $loadiconalt,
 			'tasks' => $tasks
 		);
 		if( $shortcutSidebar ) {
@@ -153,6 +129,6 @@
 		}
 
 		$section = $this->call('explore.sidebar.tasks.extra.html', array("section" => $section, "images" => $AR->dir->images));
-		echo(showSection($section));
+		echo showSection($section);
 	}
 ?>

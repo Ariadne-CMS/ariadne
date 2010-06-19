@@ -10,20 +10,8 @@
 			$nlsdata=$data->$arLanguage;
 		}
 
-		$myName = $nlsdata->name;
-
 		$tasks = array();
 
-/*		
-		if ($this->CheckSilent("add",ARANYTYPE) && !$hideAdd) {
-			$tasks[] = array(
-				'href' => $this->make_ariadne_url() ."dialog.add.php",
-				'onclick' => "muze.ariadne.explore.arshow('edit_object_data',this.href); return false;",
-				'icon' => $AR->dir->images . 'icons/small/add.png',
-				'nlslabel' => $ARnls['ariadne:new']
-			);
-		}
-*/
 		if($this->CheckSilent("edit")) {
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() . "dialog.edit.shortcut.php",
@@ -71,40 +59,15 @@
 				'nlslabel' => $ARnls['ariadne:wysiwyg_editor']
 			);		
 		}
-/*
-		$this->call("typetree.ini");
-		$icon=$this->call('system.get.icon.php');
-		$iconalt = $this->type;
-		
-		if( $this->implements("pshortcut") ) {
-			$overlay_icon = $icon;
-			$overlay_alt = $this->type;
-			$icon = current($this->get($this->data->path, 'system.get.icon.php'));
-			$iconalt = $this->vtype;
-		} 
-		$loadicon = $AR->dir->images . 'ajax-loading.gif';
-		$loadiconalt = "Loading...";
-
-		$arCallArgs["sectionName"] = "shortcuttasks";
-		$arCallArgs["sectionDisplayName"] = $ARnls["ariadne:options"];
-		$arCallArgs["icon"] = $icon;
-		$arCallArgs["loadicon"] = $loadicon;
-*/		
 		$section = array(
 			'id' => 'shortcuttasks',
 			'label' => $ARnls["ariadne:options"],
-//			'icon' => $icon,
-//			'iconalt' => $iconalt,
-//			'overlay_icon' => $overlay_icon,
-//			'overlay_iconalt' => $overlay_alt,
-			'loadicon' => $loadicon,
-			'loadiconalt' => $loadiconalt,
 			'tasks' => $tasks,
 			'inline_icon' => $ARCurrent->arTypeIcons[$this->type]['small'] ? $ARCurrent->arTypeIcons[$this->type]['small'] : $this->call('system.get.icon.php', array('size' => 'small')),
 			'inline_iconalt' => $this->type
 		);
 
 		$section = $this->call('explore.sidebar.tasks.extra.html', array("section" => $section, "images" => $AR->dir->images));
-		echo(showSection($section));
+		echo showSection($section);
 	}
 ?>

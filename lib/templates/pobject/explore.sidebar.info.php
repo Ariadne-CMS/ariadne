@@ -4,14 +4,6 @@
 	include_once($this->store->get_config("code")."modules/mod_yui.php");
 	
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		if (!$arLanguage) {
-			$arLanguage=$nls;
-			if (is_array($arCallArgs)) {
-				$arCallArgs["arLanguage"]=$nls;
-			} else {
-				$arCallArgs.="&arLanguage=$nls";
-			}
-		}
 
 		if( !$ARCurrent->arTypeNames ) {
 			$this->call("typetree.ini");
