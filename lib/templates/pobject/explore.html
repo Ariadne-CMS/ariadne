@@ -1,9 +1,7 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		if ($arPath) {
-			if ($this->exists($arPath)) {
-				ldRedirect($this->store->root . $arPath . "explore.html");
-			}
+		if ($arPath && $this->exists($arPath) ) {
+			ldRedirect( $this->make_ariadne_url($arPath) . "explore.html");
 		}
 
 		if ($AR->user->data->language) {
