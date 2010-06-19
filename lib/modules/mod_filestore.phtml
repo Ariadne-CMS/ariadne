@@ -142,10 +142,10 @@
 		function import($fsId, $fsName, $fsLocalVars="", &$fsObject) {
 			// this looks scary, and maybe it is...
 			// first check the cached templates
-			global $ARCurrent;
-			if (!$ARCurrent->fsFunctions[$fsId][$fsName]) {
+			global $ARConfig;
+			if (!$ARConfig->fsFunctions[$fsId][$fsName]) {
 				// template isn't in the cache, so define it... as a new function
-				$ARCurrent->fsFunctions[$fsId][$fsName]=create_function('&$AR_this',
+				$ARConfig->fsFunctions[$fsId][$fsName]=create_function('&$AR_this',
 					' $local = new object(); '.
 					' $local->data = $AR_this->data; '.
 					' $local->customdata = $AR_this->customdata; '.
@@ -174,7 +174,7 @@
 				// at the end it checks for $arResult or $this->arResult and returns it if set.
 			}
 			// now call the function...
-			$fsFunc=&$ARCurrent->fsFunctions[$fsId][$fsName];
+			$fsFunc=&$ARConfig->fsFunctions[$fsId][$fsName];
 			return $fsFunc($fsObject, $fsLocalVars);
 		}
 
