@@ -1307,7 +1307,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		// restore old ARConfigChecked state
 		$ARConfigChecked = $configChecked;
 		if (is_object($config)) {
-			$result = clone($config);
+			$result = $config;
 		}
 		return $result;
 	}
@@ -1397,9 +1397,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$arLibraryPath = $path;
 		}
 		$config = ($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
-		if ($path != '/' && $config->type != 'psection') {
-			$this->loadLibraryCache($base, $this->store->make_path($path, '../'), $arLibraryPath);
-		}
 		$templates = $config->templates;
 		if (is_array($templates)) {
 			$list = Array();
@@ -1424,6 +1421,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					$ARConfig->libraryCache[$base][$function][$path] = $types;
 				}
 			}
+		}
+		if ($path != '/' && $config->type != 'psection') {
+			$this->loadLibraryCache($base, $this->store->make_path($path, '../'), $arLibraryPath);
 		}
 	}
 
