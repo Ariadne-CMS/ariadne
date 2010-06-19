@@ -23,18 +23,18 @@
 		$info['type'] = yui::labelspan($myType);
 		$info['size'] = $this->size;
 
-		$info['priority'] = $this->priority;
 		if ($this->CheckSilent("edit")) {
 			$info['priority'] = "<a href=\"javascript:muze.ariadne.explore.arshow('edit_priority','" . $this->make_ariadne_url() . "dialog.priority.php')\" title=\"". $ARnls['change_priority'] . "\">" . $this->priority . "</a>";
+		} else {
+			$info['priority'] = $this->priority;
 		}
 
 		$info['ariadne:id'] = $this->id;
 
-		$details .= yui::section_table($info);
 		$section = array(
 			'id' => 'info',
 			'label' => $ARnls['ariadne:info'],
-			'details' => $details
+			'details' => yui::section_table($info)
 		);
 
 		echo showSection($section);
