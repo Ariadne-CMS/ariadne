@@ -123,13 +123,11 @@
 <head>
 <title>Ariadne<?php echo ": " . $AR->user->data->name . ": " . $objectName; ?></title>
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-<!--link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>fonts/fonts-min.css"-->
 <link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>button/assets/skins/sam/button.css">
 <link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>menu/assets/skins/sam/menu.css">
 <link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>treeview/assets/skins/sam/treeview.css">
 <link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>container/assets/skins/sam/container.css">
 <link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>datatable/assets/skins/sam/datatable.css">
-<link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>treeview/assets/skins/sam/treeview.css">
 
 <script type="text/javascript" src="<?php echo $yui_base;?>yahoo-dom-event/yahoo-dom-event.js"></script>
 <script type="text/javascript" src="<?php echo $yui_base;?>element/element-min.js"></script>
