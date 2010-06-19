@@ -13,15 +13,14 @@
 			}
 		}
 
-		// FIXME: should take this information from sys.object.list.entry.html
-
-		$myType = $this->get("/system/ariadne/types/".$this->type, "system.get.name.phtml");
-		if (!$myType) {
-			$myType = array($this->type);
+		if( !$ARCurrent->arTypeNames ) {
+			$this->call("typetree.ini");
 		}
 
+		$myType = ( $ARCurrent->arTypeNames[$this->type] ? $ARCurrent->arTypeNames[$this->type] : $this->type );
+
 		$info = array();
-		$info['type'] = yui::labelspan($myType[0]);
+		$info['type'] = yui::labelspan($myType);
 		$info['size'] = $this->size;
 
 		$info['priority'] = $this->priority;
@@ -30,11 +29,6 @@
 		}
 
 		$info['ariadne:id'] = $this->id;
-
-/*		$details = '<strong>' . $myName . '</strong><br>';
-		$details .= $myType[0];
-		$details .= '<br>';
-*/
 
 		$details .= yui::section_table($info);
 		$section = array(

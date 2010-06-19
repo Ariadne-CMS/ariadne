@@ -27,7 +27,7 @@
 		if( !$mod_user ) {
 			$mod_user = $this->data->mod_user;
 		}
-		$name = $this->call("system.get.name.phtml");
+		$name = $this->nlsdata->name;
 
 		if (!$ARCurrent->arTypeTree) {
 			$this->call("typetree.ini");
