@@ -17,16 +17,17 @@
 
 		$userConfig = $this->loadUserConfig();
 		$authconfig = $userConfig['authentication'];
+		
+		$mod_user = $this->data->muser;
+		
 		foreach ($authconfig['userdirs'] as $userdir) {
-			$mod_user = current($this->find($userdir, "login.value='".AddCSlashes($this->data->muser, ARESCAPE)."'", "system.get.name.phtml"));
-			if ($mod_user) {
+			$muser = current($this->find($userdir, "login.value='".AddCSlashes($this->data->muser, ARESCAPE)."'", "system.get.phtml"));
+			if ($muser) {
+				$mod_user = $muser->nlsdata->name;
 				break;
 			}
 		}
 
-		if( !$mod_user ) {
-			$mod_user = $this->data->mod_user;
-		}
 		$name = $this->nlsdata->name;
 
 		if (!$ARCurrent->arTypeTree) {
