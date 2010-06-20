@@ -35,27 +35,20 @@
 	
 	$arResult["icon"]=$arResult["icons"]["small"];
 
-//	$arResult["pre"]=$flag;
-
 	if ($AR->SVN->enabled) {
 		$svn = array();
 
 		$filestore = $this->store->get_filestore_svn("templates");
-		$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
 		$svn_object = $filestore->connect($this->id);
-
-		ob_start();
 		$svn_status = $filestore->svn_status($svn_object);
-		ob_end_clean();
 
 		if ($svn_status) {
 			foreach ($svn_status as $key => $value) {
-				if (substr($key, -5) == ".pinp") {
-				} else {
+				if (substr($key, -5) != ".pinp") {
 					unset($svn_status[$key]);
 				}
 			} 
-			if (sizeof($svn_status)) {
+			if (count($svn_status)) {
 				$svn['status'] = 'modified';
 				$svn_icon = $AR->dir->images . 'svn/ModifiedIcon.png';
 			} else {

@@ -67,9 +67,6 @@
 			global $AR;
 			filestore::filestore($name, $root);
 
-			// Setup error handling -- always a good idea!
-			$this->svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
-
 			if (!isset($AR->SVN->path)) {
 				$AR->SVN->path = '/usr/bin/svn';
 			}
