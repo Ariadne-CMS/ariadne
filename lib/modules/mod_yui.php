@@ -53,8 +53,7 @@
 					if ($item['label']) {
 						$itemname = $item['label'];
 					}
-					$content = ar_html::nodes();
-					
+
 					$link = array(
 						"class" => $menuname. 'itemlabel',
 						"href" => $item["href"],
@@ -64,18 +63,16 @@
 						$link["onclick"] = $item["onclick"];
 					}
 					if( $item["icon"] ) {
-						$content[] = ar_html::tag("img", array("src" => $item["icon"], "alt" => $item["iconalt"]));
+						$icon = ar_html::tag("img", array("src" => $item["icon"], "alt" => $item["iconalt"]));
 					}
-					$content[] = ar_html::tag("span", array("class" => "menulabel"), $itemname);
+					$content = ar_html::tag("span", array("class" => "menulabel"), $itemname);
+
+					$a = ar_html::tag("a", $link, $icon, $content);
 					
-					$a = ar_html::tag("a", $link, $content);
-					
-					$licontent = ar_html::nodes();
-					$licontent[] = $a;
 					if( is_array($item['submenu']) ) {
-						$licontent[] = self::yui_menuitems($item['submenu'], "yuimenu");
+						$submenu = self::yui_menuitems($item['submenu'], "yuimenu");
 					}
-					$nodes[] = ar_html::tag("li", array("class" => $menuname."item"), $licontent);
+					$nodes[] = ar_html::tag("li", array("class" => $menuname."item"), $a, $submenu);
 				}
 				
 				
