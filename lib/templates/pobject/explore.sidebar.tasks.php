@@ -1,14 +1,9 @@
 <?php
-	$ARCurrent->nolangcheck=true;
-  	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
+	$ARCurrent->allnls = true;
 
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		if (!$arLanguage) {
-			$arLanguage=$nls;
-		}
-		if (isset($data->$arLanguage)) {
-			$nlsdata=$data->$arLanguage;
-		}
+
+	  	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
 
 		$tasks = array();
 		

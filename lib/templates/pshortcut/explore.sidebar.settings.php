@@ -5,15 +5,7 @@
   	include_once($this->store->get_config("code")."nls/menu.".$this->reqnls);
 
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		if (!$arLanguage) {
-			$arLanguage=$nls;
-		}
-		if (isset($data->$arLanguage)) {
-			$nlsdata=$data->$arLanguage;
-		}
 
-		$myName = $nlsdata->name;
-		
 		$settings = array();
 
 		if ($this->CheckSilent("layout")) {

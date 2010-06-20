@@ -1,5 +1,6 @@
 <?php
-$ARCurrent->nolangcheck=true;    
+$ARCurrent->nolangcheck = true;
+$ARCurrent->allnls = true;
 
 if ($this->CheckLogin("read") && $this->CheckConfig()) {
 
@@ -26,7 +27,9 @@ if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		$arCallArgs["shortcutSidebar"] = true;
 
 		//tasks
-		$this->call("typetree.ini");
+		if( !$ARCurrent->arTypeTree ) {
+			$this->call("typetree.ini");
+		}
 		
 		// tasks on the target
 		$this->get($this->data->path, "explore.sidebar.tasks.php", $arCallArgs);
