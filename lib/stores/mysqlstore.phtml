@@ -37,6 +37,8 @@ class mysqlstore extends store{
 	protected $connect_id;
 	protected $tbl_prefix;
 	protected $database;
+	protected $cachedQueries;
+	
 	public $total = 0;
 
 	public function __construct($path, $config) {
