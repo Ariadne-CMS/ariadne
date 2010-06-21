@@ -1264,14 +1264,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	function loadConfig($path='') {
 	global $ARConfig, $ARConfigChecked, $ARCurrent;
-		$configChecked = $ARConfigChecked;
 		$result=false;
 		$path=$this->make_path($path);
 		// debug("loadConfig($path)");
-		$parent=$this->make_path($path.'../');
-		$allnls = $ARCurrent->allnls;
-		$ARCurrent->allnls = true;
 		if (!$ARConfig->cache[$path]) {
+			$allnls = $ARCurrent->allnls;
+			$ARCurrent->allnls = true;
+			$configChecked = $ARConfigChecked;
 			if (($this->path == $path && !$this->arIsNewObject) || $this->exists($path)) {
 				$this->pushContext(Array("scope" => "php"));
 				if( $this->path == $path ) {
@@ -1283,11 +1282,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					$cur_obj->getConfig();
 				}
 				$this->popContext();
-				$config=$ARConfig->cache[$path];
+				$result=$ARConfig->cache[$path];
 			} else if ($path === '/') {
 				// special case: / doesn't exists in the store
-				$config=$ARConfig->cache['..'];
+				$result=$ARConfig->cache['..'];
 			} else {
+				$parent=$this->make_path($path.'../');
 				if (!$ARConfig->cache[$parent]) {
 					$this->pushContext(Array("scope" => "php"));
 					// debug("loadConfig: parent $parent");
@@ -1297,17 +1297,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					}
 					$this->popContext();
 				}
-				$config=$ARConfig->cache[$parent];
+				$result=$ARConfig->cache[$parent];
 			}
+			// restore old ARConfigChecked state
+			$ARConfigChecked = $configChecked;
+			$ARCurrent->allnls = $allnls;
 		} else {
 			// debug("loadConfig: exists $path ");
-			$config=$ARConfig->cache[$path];
-		}
-		$ARCurrent->allnls = $allnls;
-		// restore old ARConfigChecked state
-		$ARConfigChecked = $configChecked;
-		if (is_object($config)) {
-			$result = $config;
+			$result=$ARConfig->cache[$path];
 		}
 		return $result;
 	}
