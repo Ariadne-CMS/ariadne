@@ -64,18 +64,20 @@
 			$args = func_get_args();
 			$name = array_shift($args);
 			$attributes = array();
-			$childNodes = ar_xml::nodes();
+			$childNodes = array(); //ar_xml::nodes();
 			foreach ($args as $arg) {
 				if ( is_array( $arg ) && !is_a( $arg, 'ar_xmlNodes' ) ) {
 					$attributes = array_merge($attributes, $arg);
 				} else if ($arg instanceof ar_xmlNodes) {
-					$childNodes = ar_html::nodes($childNodes, $arg);
+					$childNodes = array_merge($childNodes, (array) $arg);
 				} else {
 					$childNodes[] = $arg;
 				}
 			}
 			if ( !count( $childNodes ) ) {
 				$childNodes = null;
+			} else {
+				$childNodes = new ar_htmlNodes( $childNodes );
 			}
 			return new ar_htmlElement($name, $attributes, $childNodes);
 		}

@@ -12,6 +12,7 @@
 		public static $indenting = true;
 		private static $comments = true;
 		public static $indent = "\t";
+		public static $strict = false;
 		
 		public static function configure( $option, $value ) {
 			switch ( $option ) {
@@ -27,6 +28,9 @@
 				break;
 				case 'comments' :
 					self::$comments = (bool)$value;
+				break;
+				case 'strict':
+					self::$strict = (bool)$value;
 				break;
 			}			
 		}
@@ -52,8 +56,12 @@
 
 		public static function name( $name ) {
 			ar::untaint($name, FILTER_UNSAFE_RAW);
-			$name = mb_eregi_replace( '[^-.0-9:a-z_]', '', $name);
-			$name = mb_eregi_replace( '^[^:a-z_]*', '', $name);
+			if (self::$strict) {
+				$newname = preg_replace( '/[^-.0-9:a-z_]/isU', '', $name);
+				$newname = preg_replace( '/^[^:a-z_]*/isU', '', $newname);
+				//FIXME: throw an error here or something if newname !== name
+				$name = $newname;
+			}
 			return $name;
 		}
 
@@ -103,21 +111,23 @@
 		}
 		
 		public static function tag() {
-			$args = func_get_args();
-			$name = array_shift($args);
+			$args       = func_get_args();
+			$name       = array_shift($args);
 			$attributes = array();
-			$content = ar_xml::nodes();
+			$content    = array();
 			foreach ($args as $arg) {
 				if ( is_array( $arg ) && !is_a( $arg, 'ar_xmlNodes' ) ) {
 					$attributes = array_merge($attributes, $arg);
 				} else if ($arg instanceof ar_xmlNodes) {
-					$content = ar_xml::nodes($content, $arg);
+					$content    = array_merge( $content, (array) $arg);
 				} else {
-					$content[] = $arg;
+					$content[]  = $arg;
 				}
 			}
 			if ( !count( $content ) ) {
 				$content = null;
+			} else {
+				$content = new ar_xmlNodes( $content );
 			}
 			return new ar_xmlElement($name, $attributes, $content);
 		}
