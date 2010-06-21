@@ -253,7 +253,7 @@
 			if ($iconsrc) {
 				return ar_html::tag('img', array('class' => 'explore_svnicon', 'src' => $iconsrc, 'alt' => $alt ));
 			} else {
-				return false;
+				return null;
 			}
 		}
 
@@ -283,46 +283,26 @@
 		function showList($objects, $viewtype='list') {
 			global $AR, $ARnls;
 			
-			$nodes = ar_html::nodes();
 			if (is_array($objects) && count($objects) > 0) {
+				$nodes = ar_html::nodes();
+				switch ($viewtype) {
+					case "details" : 
+						$maxlen = 32;
+					break;
+					case "icons" :
+						$maxlen = 7;
+					break;
+					default :
+						$maxlen = 11;
+					break;
+				}
 				foreach ($objects as $node) {
-					$item = array(
-						// FIXME: should we use $this->store->root?
-						'href' => $AR->user->store->root . $node['path'] . 'explore.html', 
-						'ondoubleclick' => "top.muze.ariadne.explore.view('" . htmlspecialchars($node['path']) . "'); return false;",
-					);
-
-					$name = $node['name']; 
-
-					switch ($viewtype) {
-						case "details" : 
-							$maxlen = 32;
-						break;
-						case "icons" :
-							$maxlen = 7;
-						break;
-						default :
-							$maxlen = 11;
-						break;
-					}
-
-					if ($maxlen) {
-						$name = self::labelspan($name, $maxlen);
-					}
-
-					$item['label'] = $name;
-
-					if (is_array($node['svn'])) {
-						$item['svnicon'] = self::getSvnIcon($node['svn']['status']);
-					}
-
 					$content = self::getTypeIcon($node, $viewtype);
-
-					if( $item['svnicon'] ) {
-						$content[] = $item['svnicon'];
+					if( is_array($node['svn']) ) {
+						$content[] = self::getSvnIcon($node['svn']['status']);
 					}
-					$content[]= ar_html::tag('span', array('class' => 'explore_name'), $item['label'] );
-					$nodes[] = ar_html::tag( 'li', array('class' => 'explore_item'), ar_html::tag( 'a', array('href' => $item['href'], 'onDblClick' => $item['ondoubleclick'], 'title' => $nodes['name']), $content) );
+					$content[]= ar_html::tag('span', array('class' => 'explore_name'), self::labelspan($node['name'], $maxlen ));
+					$nodes[] = ar_html::tag( 'li', array('class' => 'explore_item'), ar_html::tag( 'a', array('href' => $node['local_url'].'explore.html', 'onDblClick' => "top.muze.ariadne.explore.view('" . htmlspecialchars($node['path']) . "'); return false;", 'title' => $node['name']), $content) );
 				}
 				$result = ar_html::tag('ul', array('class' => array('explore_list', $viewtype) ), $nodes);
 			} else {
