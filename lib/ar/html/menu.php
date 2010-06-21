@@ -22,11 +22,10 @@
 		public $itemTag  = 'li';
 		public $listTag  = 'ul';
 		public $viewmode = 'list';
-		public $template = 'system.get.name.phtml';
+		public $template = 'system.get.link.phtml';
 		public $css = null;
 		
 		public function __construct( $attributes = array(), $list = null ) {
-			$this->template = ar_content_html::$editMode ? 'system.get.link.phtml' : 'system.get.name.phtml';
 			if (!$attributes['class'] && !$attributes['id']) {
 				$attributes['class'] = 'menu';
 			}
