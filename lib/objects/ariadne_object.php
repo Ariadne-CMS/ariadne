@@ -1435,6 +1435,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					$ARConfig->libraries[$this->path]=array();
 				}
 				array_unshift($ARConfig->libraries[$this->path],$path);
+				if (!$ARConfig->cacheableLibraries[$this->path]) {
+					$ARConfig->cacheableLibraries[$this->path] = Array($path);
+				} else {
+					array_unshift($ARConfig->cacheableLibraries[$this->path], $path);
+				}
 			}
 		} else if ($name && is_string($name)) {
 			if (!$ARConfig->cache[$this->path]) {
@@ -1559,21 +1564,21 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			}
 
 			if (!$arTemplateId && $arCallFunction != 'config.ini') {
-				if ($ARConfig->libraries[$checkpath]) {
-					foreach ($ARConfig->libraries[$checkpath] as $library => $path) {
+				if ($ARConfig->cacheableLibraries[$checkpath]) {
+					foreach ($ARConfig->cacheableLibraries[$checkpath] as $library => $path) {
 						if (is_int($library) && !$librariesSeen[$path]) {
 							$librariesSeen[$path] = true;
 							if ($arCallFunction != 'config.ini') {
 								if (!$ARConfig->librariesCached[$checkpath][$path]) {
 									$this->loadLibraryCache($checkpath, $path);
-									unset($ARConfig->libraries[$checkpath][$library]);
+									unset($ARConfig->cacheableLibraries[$checkpath][$library]);
 								}
 							}
 						}
 					}
 				}
 
-				if (isset($ARConfig->libraries[$checkpath])) {
+				if (isset($ARConfig->cacheableLibraries[$checkpath])) {
 					$template = $this->getTemplateFromCache($checkpath, $arCallType, $arCallFunction, &$arSuperContext);
 					if ($template["arTemplateId"]) {
 						return $template;
