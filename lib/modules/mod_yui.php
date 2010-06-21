@@ -5,29 +5,29 @@
 
 	class yui {
 	
-	/* explore.sidebar.info.php */
-	function section_table($info) {
-		global $ARnls;
-		$result = '';
-		if (is_array($info)) {
-			$rows = ar_html::nodes();
-			foreach( $info as $key => $value ) {
-				$rows[] = ar_html::tag("tr", ar_html::tag("td", $ARnls[$key].":"), ar_html::tag("td", array("class" => "data"), $value) );
+		/* explore.sidebar.info.php */
+		function section_table($info) {
+			global $ARnls;
+			$result = '';
+			if (is_array($info)) {
+				$rows = ar_html::nodes();
+				foreach( $info as $key => $value ) {
+					$rows[] = ar_html::tag("tr", ar_html::tag("td", $ARnls[$key].":"), ar_html::tag("td", array("class" => "data"), $value) );
+				}
+				$result = ar_html::tag("table", array("class" => "infotable"), $rows);
 			}
-			$result = ar_html::tag("table", array("class" => "infotable"), $rows);
+			return $result;
 		}
-		return $result;
-	}
-	
-	function labelspan($label, $maxlabellength=16) {
-		// Reduce length of a label if they are too long.
-		if (mb_strlen($label, "utf-8") > $maxlabellength) {
-			$label = ar_html::tag("span", array("title" => $label),htmlspecialchars(mb_substr($label, 0, $maxlabellength-3,"utf-8")."...")); 
-		} else {
-			$label = htmlspecialchars($label);
+		
+		function labelspan($label, $maxlabellength=16) {
+			// Reduce length of a label if they are too long.
+			if (mb_strlen($label, "utf-8") > $maxlabellength) {
+				$label = ar_html::tag("span", array("title" => $label),htmlspecialchars(mb_substr($label, 0, $maxlabellength-3,"utf-8")."...")); 
+			} else {
+				$label = htmlspecialchars($label);
+			}
+			return $label;
 		}
-		return $label;
-	}
 	
 	
 	/* dialog.templates.list.php */
@@ -45,13 +45,8 @@
 				$nodes = ar_html::nodes();
 				
 				foreach ($menuitems as $item) {
-					$itemname = '';
-					
 					if (!$item['href']) {
 						$item['href'] = "#";
-					}
-					if ($item['label']) {
-						$itemname = $item['label'];
 					}
 
 					$link = array(
@@ -65,7 +60,7 @@
 					if( $item["icon"] ) {
 						$icon = ar_html::tag("img", array("src" => $item["icon"], "alt" => $item["iconalt"]));
 					}
-					$content = ar_html::tag("span", array("class" => "menulabel"), $itemname);
+					$content = ar_html::tag("span", array("class" => "menulabel"), $item['label']);
 
 					$a = ar_html::tag("a", $link, $icon, $content);
 					
@@ -74,7 +69,6 @@
 					}
 					$nodes[] = ar_html::tag("li", array("class" => $menuname."item"), $a, $submenu);
 				}
-				
 				
 				$div = array( "class" => $menuname );
 				if( $menuid ) {
