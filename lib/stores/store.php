@@ -335,15 +335,11 @@ abstract class store {
 	then returned.
 	**********************************************************************/
 		$this->error = "";
-		if (!$path) {
-			$path = $curr_dir;
-			$curr_dir = '/';
-		}
+		$result = "/";
 		if ($path[0] === "/") {
-			$result = "/";
 			$path = substr($path, 1);
 		} else {
-			$result = $curr_dir;
+			$path = substr($curr_dir, 1).'/'.$path;
 		}
 		if ($path) {
 			$splitpath=explode("/", $path);
