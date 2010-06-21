@@ -1,0 +1,9 @@
+<?php
+	if ($this->CheckLogin('read') && $this->CheckConfig()) {
+		$arResult = ar_html::tag('li',
+			ar_content_html::editableLink(
+				ar_content_html::editableTextSpan( $nlsdata->name, "[$nls][name]" )
+			)
+		);
+	}
+?>
