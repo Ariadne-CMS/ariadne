@@ -17,7 +17,6 @@
 			);
 		}
 		
-		
 		if ($this->CheckSilent("add",ARANYTYPE) && !$hideAdd) {
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() ."dialog.add.php",
@@ -36,14 +35,6 @@
 			);
 		}
 
-		if($this->implements("pshortcut") && $this->CheckSilent("edit")) {
-			$tasks[] = array(
-				'href' => $this->make_ariadne_url() . "dialog.edit.shortcut.php",
-				'onclick' => "muze.ariadne.explore.arshow('edit_object_shortcut',this.href); return false;",
-				'icon' => $AR->dir->images . 'icons/small/edit.png',
-				'nlslabel' => $ARnls['ariadne:shortcut']
-			);
-		}
 		if( !$shortcutSidebar ) {
 			if ($this->CheckSilent("delete")) {
 				$tasks[] = array(
