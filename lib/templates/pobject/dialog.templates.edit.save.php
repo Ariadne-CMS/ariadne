@@ -16,6 +16,8 @@
 		}
 		if ( !$this->error ) {
 			$this->call("system.save.layout.phtml", $args );
+		}
+		if ( !$this->error ) {
 			$this->call("window.opener.objectadded.js");
 			$this->call("dialog.templates.edit.cancel.php"); // this will sent the user to the overview
 		} else {
