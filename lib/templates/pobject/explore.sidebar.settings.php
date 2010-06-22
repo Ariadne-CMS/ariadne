@@ -18,7 +18,6 @@
 				$task['class'] = 'sethere';
 			}
 			$settings[] = $task;
-
 		}
 		if ($this->CheckSilent("layout")) {
 			$task = array(
@@ -87,7 +86,7 @@
 			$settings[] = $task;
 		}
 
-		if ($settings) {
+		if (count($settings)) {
 			$section = array(
 				'id' => 'settings',
 				'label' => $ARnls['ariadne:settings'],

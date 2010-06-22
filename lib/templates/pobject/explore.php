@@ -77,14 +77,7 @@
 			)
 		);
 
-
-		/* retrieve HTTP GET variables */
-		global $AR;
-
-
 		$base_object = $AR->user;
-//		$base_object = $this;
-//		$base_object = current($this->get('/', 'system.get.phtml'));
 
 		if (!$ARCurrent->arTypeTree) {
 			$base_object->call("typetree.ini");
@@ -100,8 +93,6 @@
 		$interface = $data->interface;
 
 		$yui_base = $wwwroot . "js/yui/";
-	//	$yui_base = "http://yui.yahooapis.com/2.5.2/";
-	
 	
 		$viewmodes = array( "list" => 1, "details" => 1, "icons" => 1);
 		$viewmode = $_COOKIE["viewmode"];
