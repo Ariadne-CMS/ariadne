@@ -539,7 +539,7 @@ muze.ariadne.explore.sidebar = function() {
 			var fadeOut = new YAHOO.util.Anim("sidebar", { opacity: {to: 0.3}}, 0.2);
 			fadeOut.animate();
 			var fadeIn = function() {
-				var fadeIn = new YAHOO.util.Anim("sidebar", { opacity: {to: 1}}, 0.2);
+				var fadeIn = new YAHOO.util.Anim("sidebar", { opacity: {to: 1}}, 0.1);
 				fadeIn.animate();
 
 				// Fix for PNG filters in IE6 that break while using another filter;
@@ -718,7 +718,7 @@ muze.ariadne.explore.viewpane = function() {
 			var fadeOut = new YAHOO.util.Anim("archildren", { opacity: {to: 0.3}}, 0.2);
 			fadeOut.animate();
 			var fadeIn = function() {
-				var fadeIn = new YAHOO.util.Anim("archildren", { opacity: {to: 1}}, 0.2);
+				var fadeIn = new YAHOO.util.Anim("archildren", { opacity: {to: 1}}, 0.1);
 
 				// Fix for PNG filters in IE6 that break while using another filter;
 				fadeIn.onComplete.subscribe(function() {
@@ -805,7 +805,7 @@ muze.ariadne.explore.browseheader = function() {
 			var fadeOut = new YAHOO.util.Anim("browseheader", { opacity: {to: 0.3}}, 0.2);
 			fadeOut.animate();
 			var fadeIn = function() {
-				var fadeIn = new YAHOO.util.Anim("browseheader", { opacity: {to: 1}}, 0.2);
+				var fadeIn = new YAHOO.util.Anim("browseheader", { opacity: {to: 1}}, 0.1);
 				fadeIn.animate();
 
 				// Fix for PNG filters in IE6 that break while using another filter;
