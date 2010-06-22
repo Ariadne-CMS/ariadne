@@ -1194,8 +1194,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$configcache= clone $ARConfig->cache[$this->parent];
 
 			// cache default templates
-			$configcache->templates=$this->data->config->templates;
-
+			if (isset($this->data->config->templates) && count($this->data->config->templates)) {
+				$configcache->templates=&$this->data->config->templates;
+			}
 
 			// Speedup check for config.ini
 
