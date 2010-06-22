@@ -624,7 +624,18 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 
 	function make_path($path="") {
-		return $this->store->make_path($this->path, $path);
+		switch($path){
+			case '':
+			case '.':
+			case $this->path:
+				return $this->path;
+				break;
+			case '..':
+				return $this->parent;
+				break;
+			default:
+				return $this->store->make_path($this->path, $path);
+		}
 	}
 	
 	function make_ariadne_url($path="") {
