@@ -4,6 +4,7 @@
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 
 	  	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
+	  	require_once($this->store->get_config("code")."modules/mod_yui.php");
 
 		$tasks = array();
 		
@@ -124,6 +125,6 @@
 		}
 
 		$section = $this->call('explore.sidebar.tasks.extra.html', array("section" => $section, "images" => $AR->dir->images));
-		echo showSection($section);
+		echo yui::getSection($section);
 	}
 ?>

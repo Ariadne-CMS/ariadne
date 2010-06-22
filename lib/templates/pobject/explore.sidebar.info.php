@@ -1,7 +1,7 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
-	include_once($this->store->get_config("code")."modules/mod_yui.php");
+	require_once($this->store->get_config("code")."modules/mod_yui.php");
 	
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 
@@ -11,17 +11,16 @@
 
 		$myType = ( $ARCurrent->arTypeNames[$this->type] ? $ARCurrent->arTypeNames[$this->type] : $this->type );
 
-		$info = array();
-		$info['type'] = yui::labelspan($myType);
-		$info['size'] = $this->size;
+		$info = array(
+			'type' => yui::labelspan($myType),
+			'size' => $this->size,
+			'priority' => $this->priority,
+			'ariadne:id' => $this->id
+		);
 
 		if ($this->CheckSilent("edit")) {
 			$info['priority'] = "<a href=\"javascript:muze.ariadne.explore.arshow('edit_priority','" . $this->make_ariadne_url() . "dialog.priority.php')\" title=\"". $ARnls['change_priority'] . "\">" . $this->priority . "</a>";
-		} else {
-			$info['priority'] = $this->priority;
 		}
-
-		$info['ariadne:id'] = $this->id;
 
 		$section = array(
 			'id' => 'info',
@@ -29,6 +28,6 @@
 			'details' => yui::section_table($info)
 		);
 
-		echo showSection($section);
+		echo yui::getSection($section);
 	}
 ?>

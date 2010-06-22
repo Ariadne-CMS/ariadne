@@ -1,7 +1,7 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
-	include_once($this->store->get_config("code")."modules/mod_yui.php");
+	require_once($this->store->get_config("code")."modules/mod_yui.php");
 
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 
@@ -31,6 +31,6 @@
 			'details' => yui::section_table($info)
 		);
 
-		echo showSection($section);
+		echo yui::getSection($section);
 	}
 ?>

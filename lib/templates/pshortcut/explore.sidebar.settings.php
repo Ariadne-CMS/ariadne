@@ -4,6 +4,8 @@
   	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
   	include_once($this->store->get_config("code")."nls/menu.".$this->reqnls);
 
+	require_once($this->store->get_config("code")."modules/mod_yui.php");
+
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 
 		$settings = array();
@@ -86,7 +88,7 @@
 			$section['inline_icon'] = $ARCurrent->arTypeIcons[$this->type]['small'] ? $ARCurrent->arTypeIcons[$this->type]['small'] : $this->call('system.get.icon.php', array('size' => 'small'));
 			$section['inline_iconalt'] = $this->type;
 			
-            echo(showSection($section));
+            echo yui::getSection($section);
 		}
 	}
 ?>

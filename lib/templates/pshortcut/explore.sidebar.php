@@ -6,8 +6,6 @@ if ($this->CheckLogin("read") && $this->CheckConfig()) {
 
   	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
 
-	$this->call("pobject::explore.sidebar.functions.php", $arCallArgs);
-
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		global $invisibleSections;

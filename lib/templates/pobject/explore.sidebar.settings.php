@@ -2,16 +2,10 @@
 	$ARCurrent->nolangcheck=true;
 	include_once($this->store->get_config("code")."nls/".$this->reqnls);
   	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
-  	include_once($this->store->get_config("code")."nls/menu.".$this->reqnls);
+ 	include_once($this->store->get_config("code")."nls/menu.".$this->reqnls);
+	require_once($this->store->get_config("code")."modules/mod_yui.php");
 
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		if (!$arLanguage) {
-			$arLanguage=$nls;
-		}
-		if (isset($data->$arLanguage)) {
-			$nlsdata=$data->$arLanguage;
-		}
-
 		$settings = array();
 		if ($this->CheckSilent("edit")) {
 			$task = array(
@@ -107,7 +101,7 @@
 				$section['inline_iconalt'] = $this->type;
 			}
 			
-            echo(showSection($section));
+            echo yui::getSection($section);
 		}
 	}
 ?>

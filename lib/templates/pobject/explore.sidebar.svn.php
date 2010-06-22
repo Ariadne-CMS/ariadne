@@ -1,6 +1,7 @@
 <?php
 	$ARCurrent->nolangcheck=true;
   	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
+	require_once($this->store->get_config("code")."modules/mod_yui.php");
 
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		$fstore	= $this->store->get_filestore_svn("templates");
@@ -87,6 +88,6 @@
 			'tasks' => $tasks
 		);
 
-		echo showSection($section);
+		echo yui::getSection($section);
 	}
 ?>

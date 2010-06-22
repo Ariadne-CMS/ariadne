@@ -2,6 +2,8 @@
 	$ARCurrent->nolangcheck = true;
 	$ARCurrent->allnls = true;
 
+	require_once($this->store->get_config("code")."modules/mod_yui.php");
+	
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 
 	  	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
@@ -64,6 +66,6 @@
 		);
 
 		$section = $this->call('explore.sidebar.tasks.extra.html', array("section" => $section, "images" => $AR->dir->images));
-		echo showSection($section);
+		echo yui::getSection($section);
 	}
 ?>
