@@ -15,31 +15,31 @@
 		}
 		$offset = ($current_page-1) * $items_per_page;
 
-		$fields = array(
-			'svn',
-			'type',
-			'name',
-			'path',
-			'filename',
-			'size',
-			'owner',
-			'modified',
-			'language',
-			'priority'
+		$colDefs = array(
+			array( 'key' => 'svn', 'label' => $ARnls['svn'], 'sortable' => true ),
+			array( 'key' => 'type', 'label' => $ARnls['type'], 'sortable' => true ),
+			array( 'key' => 'name', 'label' => $ARnls['name'], 'sortable' => true ),
+			array( 'key' => 'path', 'label' => $ARnls['path'], 'sortable' => true ),
+			array( 'key' => 'filename', 'label' => $ARnls['filename'], 'sortable' => true ),
+			array( 'key' => 'size', 'label' => $ARnls['size'], 'sortable' => true ),
+			array( 'key' => 'owner', 'label' => $ARnls['owner'], 'sortable' => true ),
+			array( 'key' => 'modified', 'label' => $ARnls['modified'], 'sortable' => true ),
+			array( 'key' => 'language', 'label' => $ARnls['language'], 'sortable' => true ),
+			array( 'key' => 'priority', 'label' => $ARnls['priority'], 'sortable' => true ),
 		);
 		if (!$AR->SVN->enabled) {
 			// No SVN if SVN is not enabled;
-			unset($fields[0]);
+			unset($colDefs[0]);
 		}
 
-		$colDefs = yui::colDefs($fields);
+		// $colDefs = yui::colDefs($fields);
 
 		$listargs = array(
 			"limit" => $items_per_page,
 			"offset" => $offset
 		);
 		
-	        if ($viewtype == "details") {
+        if ($viewtype == "details") {
 			$order = $_COOKIE["sortorder"];
 			$direction = $_COOKIE["sortdirection"];
 			if ($order) {
@@ -93,7 +93,7 @@
 
 <script type="text/javascript">
 <?php 
-	yui::showTableJs($divId, $tableId, $fields, $colDefs); 
+	yui::showTableJs($divId, $tableId, $colDefs); 
 ?>
 </script>
 <script type="text/javascript">

@@ -286,8 +286,9 @@
 			echo ar_html::tag('div', array('id' => $divId, 'class' => 'yui-dt-'), $table)."\n";
 		}
 
-		function showTableJs($divId, $tableId, $fields, $columnDefs) {
+		function showTableJs($divId, $tableId, $columnDefs) {
 			$jsColDefs = '';
+			$jsFields = '';
 			foreach ($columnDefs as $colDef) {
 				$jsColDefs .= "\t\t\t".'{key:"' . $colDef['key'] . '"';
 				if ($colDef['label']) {
@@ -297,16 +298,12 @@
 					$jsColDefs .= ',sortable:true';
 					}
 				$jsColDefs .= "},\n";
+
+				$jsFields .= "\t\t\t\t".'{key:"' . $colDef['key'] . '"},'."\n";
 			}
 
 			// Strip last comma and \n;
 			$jsColDefs = substr($jsColDefs, 0, strlen($jsColDefs)-2);
-
-			$jsFields = '';
-			$jsFields = '';
-			foreach ($fields as $key) {
-				$jsFields .= "\t\t\t\t".'{key:"' . $key . '"},'."\n";
-			}
 			$jsFields = substr($jsFields, 0, strlen($jsFields)-2);
 
 			echo '		muze.ariadne.explore.viewpane.myColumnDefs = [' . "\n";
