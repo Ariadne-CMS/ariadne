@@ -33,17 +33,14 @@
 		$svn_status = $filestore->svn_status($svn_object);
 
 		if ($svn_status) {
+			$svn['status'] = 'insubversion';
+			$svn_icon = $AR->dir->images . 'svn/InSubVersionIcon.png';
 			foreach ($svn_status as $key => $value) {
-				if (substr($key, -5) != ".pinp") {
-					unset($svn_status[$key]);
+				if (substr($key, -5) == ".pinp") {
+					$svn['status'] = 'modified';
+					$svn_icon = $AR->dir->images . 'svn/ModifiedIcon.png';
+					break;
 				}
-			} 
-			if (count($svn_status)) {
-				$svn['status'] = 'modified';
-				$svn_icon = $AR->dir->images . 'svn/ModifiedIcon.png';
-			} else {
-				$svn['status'] = 'insubversion';
-				$svn_icon = $AR->dir->images . 'svn/InSubVersionIcon.png';
 			}
 		} else {
 			$svn['status'] = 'notinsubversion';
