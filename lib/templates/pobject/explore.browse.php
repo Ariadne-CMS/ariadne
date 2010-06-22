@@ -32,8 +32,6 @@
 			unset($colDefs[0]);
 		}
 
-		// $colDefs = yui::colDefs($fields);
-
 		$listargs = array(
 			"limit" => $items_per_page,
 			"offset" => $offset
@@ -103,7 +101,7 @@
 		}
 	);
 </script>
-	<div class="viewpane" id="viewpane">
+	<div class="viewpane <?php echo $viewtype; ?>" id="viewpane">
 <?php 
 	yui::showPaging($object_list['total'], $items_per_page, $current_page, "top");
 	if ($viewtype == "details") {
@@ -116,12 +114,9 @@
 	} else {
 		yui::showList($object_list['objects'], $viewtype);
 	}
-	if( $viewtype != "details" ) {
 ?>
-		<div class="viewpane_footer">
-		</div>
+	<div class="viewpane_footer"></div>
 <?php
-	}
 	yui::showPaging($object_list['total'], $items_per_page, $current_page, "bottom");
 ?>
 	</div>

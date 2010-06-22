@@ -512,6 +512,10 @@ TH,TD,LI,P,BODY,DIV {
 	padding-top: 7px;
 }
 
+.details .viewpane_footer {
+	padding-top: 0px;
+}
+
 .viewpane .highlight td {
 	background-color: #D0DCF7;
 }
