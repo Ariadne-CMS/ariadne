@@ -9,7 +9,7 @@
 				'label' => $ARnls['ariadne:logoff'],
 				'iconalt' => $ARnls['ariadne:logoff'],
 				'icon' => $AR->dir->images . 'icons/medium/logout.png',
-				'href' => $loader . $path .'logoff.php'
+				'href' => $this->make_ariadne_url() .'logoff.php'
 			),
 			array(
 				'label' => $ARnls['ariadne:search'],
