@@ -23,7 +23,7 @@
 	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
 ?>
 <div id="centered">
-<form name="login" method="POST" action="<?php echo $this->make_local_url($arReturnPath, '', true, true).htmlentities($arReturnTemplate); ?>">
+<form name="login" method="POST" action="<?php echo $this->make_local_url($arReturnPath); ?>login.phtml">
 <div class="storevars">
 	<input type="hidden" name="arReturnPath" value="<?php echo htmlentities($arReturnPath); ?>">
 	<input type="hidden" name="arReturnTemplate" value="<?php echo htmlentities($arReturnTemplate); ?>">
