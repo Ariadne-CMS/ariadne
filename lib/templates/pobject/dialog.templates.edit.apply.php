@@ -18,6 +18,8 @@
 		}
 		if ( !$this->error ) {
 			$this->call("system.save.layout.phtml", $args );
+		}
+		if ( !$this->error ) {
 			$this->call("window.opener.objectadded.js");
 			$formArgs = array();
 		} else {
