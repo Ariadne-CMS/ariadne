@@ -8,6 +8,7 @@
   ******************************************************************/
 	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
 
+if( !function_exists("wgWizKeepVars") ) {
 	function wgWizKeepVars($array, $prefix="") {
 		// this function translates the given array to a list
 		// of hidden input types. When $ARCurrent->override is on
@@ -76,7 +77,9 @@
 			}
 		}
 	}
+}
 
+if( !function_exists("wgWizGetAction") ) {
 	function wgWizGetAction($wgWizButtonPressed) {
 		global $ARnls;
 		$arReverseControl[$ARnls["next"]." >"]="next";
@@ -86,7 +89,7 @@
 		$arReverseControl[$ARnls["cancel"]]="cancel";
 		return $arReverseControl[$wgWizButtonPressed];
 	}
-
+}
 	// code for pinp: calculate and return (preliminary) wgWizNextStep
 	if (!$wgWizControl) {
 		$wgWizControl=$this->getdata("wgWizControl","none");

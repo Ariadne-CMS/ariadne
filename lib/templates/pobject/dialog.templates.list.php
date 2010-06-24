@@ -4,7 +4,7 @@
 		require_once($this->store->get_config("code")."modules/mod_yui.php");
 		
 		$editor="dialog.templates.edit.php";
-
+		
 		$this->call('typetree.ini');
 		$icons = $ARCurrent->arTypeIcons;
 		$names = $ARCurrent->arTypeNames;
@@ -14,8 +14,6 @@
 
 		if ($svn_enabled) {
 			$filestore = $this->store->get_filestore_svn("templates");
-
-			$svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
 			$svn = $filestore->connect($this->id);
 			$svn_info = $filestore->svn_info($svn);
 			$svn_status = $filestore->svn_status($svn);
@@ -25,8 +23,6 @@
 
 		$wwwroot = $AR->dir->www;
 		$yui_base = $wwwroot . "js/yui/";
-//		$yui_base = "http://developer.yahoo.com/yui/";
-
 
 		$search = $this->getdata("search");
 	
@@ -189,22 +185,18 @@
 			$pinp = $data->config->pinp;
 			$templates = $data->config->templates;
 
-			if ($svn_enabled) {
-				if ($svn_status) {
-					foreach ($svn_status as $filename=>$file_status) {
-						if ($filename) {
-							if ($file_status == "!") {
-								// Template is deleted here, but not in the SVN.
-								$file_meta = array();
-								$file_meta['ar:default'] = $filestore->svn_propget($svn, "ar:default", $filename);
-								$file_meta['ar:type'] = $filestore->svn_propget($svn, "ar:type", $filename);
-								$file_meta['ar:function'] = $filestore->svn_propget($svn, "ar:function", $filename);
-								$file_meta['ar:language'] = $filestore->svn_propget($svn, "ar:language", $filename);
+			if ($svn_enabled && $svn_status ) {
+				foreach ($svn_status as $filename=>$file_status) {
+					if ($file_status == "!") {
+						// Template is deleted here, but not in the SVN.
+						$file_meta = array();
+						$file_meta['ar:default'] = $filestore->svn_propget($svn, "ar:default", $filename);
+						$file_meta['ar:type'] = $filestore->svn_propget($svn, "ar:type", $filename);
+						$file_meta['ar:function'] = $filestore->svn_propget($svn, "ar:function", $filename);
+						$file_meta['ar:language'] = $filestore->svn_propget($svn, "ar:language", $filename);
 
-								$pinp[$file_meta['ar:type']][$file_meta['ar:function']][$file_meta['ar:language']] = $this->id;
-								$templates[$file_meta['ar:type']][$file_meta['ar:function']] = $file_meta['ar:default'];
-							}
-						}
+						$pinp[$file_meta['ar:type']][$file_meta['ar:function']][$file_meta['ar:language']] = $this->id;
+						$templates[$file_meta['ar:type']][$file_meta['ar:function']] = $file_meta['ar:default'];
 					}
 				}
 			}
@@ -221,41 +213,39 @@
 						foreach ($templatelist as $language => $template) {
 							$filename = $type . "." . $function . "." . $language . ".pinp";
 							$filename_short = $type . "." . $function . "." . $language;
-							if ($svn_enabled) {
-								if ($svn_status) {
-									$svn_style = "";
-									$svn_style_hide = "";
-									$svn_img = "";
+							if ($svn_enabled && $svn_status ) {
+								$svn_style = "";
+								$svn_style_hide = "";
+								$svn_img = "";
 
-									switch($svn_status[$filename]) {
-										// Fixme: find out the codes for "locked", "read only" and add them.
+								switch($svn_status[$filename]) {
+									// Fixme: find out the codes for "locked", "read only" and add them.
 
-										case "C":
-											$svn_img = "ConflictIcon.png";
-											$svn_alt = $ARnls['ariadne:svn:conflict'];
-											break;
-										case "M":
-											$svn_img = "ModifiedIcon.png";
-											$svn_alt = $ARnls['ariadne:svn:modified'];
-											break;
-										case "?":
-											break;
-										case "A":
-											$svn_img = "AddedIcon.png";
-											$svn_alt = $ARnls['ariadne:svn:added'];
-											break;
-										case "D":
-											$svn_img = "DeletedIcon.png";
-											$svn_alt = $ARnls['ariadne:svn:deleted'];
-										case "!":
-											$svn_style = "filter: alpha(opacity=30); opacity: 0.3;";
-											$svn_style_hide = "filter: alpha(opacity=0); opacity: 0;";
-											break;
-										default:
-											$svn_img = "InSubVersionIcon.png";
-											$svn_alt = $ARnls['ariadne:svn:insubversion'];
-											break;
-									}
+									case "C":
+										$svn_img = "ConflictIcon.png";
+										$svn_alt = $ARnls['ariadne:svn:conflict'];
+										break;
+									case "M":
+										$svn_img = "ModifiedIcon.png";
+										$svn_alt = $ARnls['ariadne:svn:modified'];
+										break;
+									case "?":
+										break;
+									case "A":
+										$svn_img = "AddedIcon.png";
+										$svn_alt = $ARnls['ariadne:svn:added'];
+										break;
+									case "D":
+										$svn_img = "DeletedIcon.png";
+										$svn_alt = $ARnls['ariadne:svn:deleted'];
+									case "!":
+										$svn_style = "filter: alpha(opacity=30); opacity: 0.3;";
+										$svn_style_hide = "filter: alpha(opacity=0); opacity: 0;";
+										break;
+									default:
+										$svn_img = "InSubVersionIcon.png";
+										$svn_alt = $ARnls['ariadne:svn:insubversion'];
+										break;
 								}
 							}
 
@@ -284,7 +274,7 @@
 							}
 						}
 
-						$icon_src = $this->call("system.get.icon.php", array("type" => $type, "size" => "small"));
+						$icon_src = $ARCurrent->arTypeIcons[$type]["small"] ? $ARCurrent->arTypeIcons[$type]["small"] : $this->call("system.get.icon.php", array("type" => $type, "size" => "small"));
 						$icon_alt = $type;
 						?><tr valign="middle">
 							<td class="svn">
