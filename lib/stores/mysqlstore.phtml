@@ -347,15 +347,13 @@ class mysqlstore extends store{
 
 	 **********************************************************************************/
 		if (!is_array($criteria) && ($criteria=trim($criteria))) {
-			if (!($query_string = $this->cachedQueries[$criteria." limit $limit offset $offset"])) {
-				$sqlcompiler= $this->compilerFactory();
-				$query_string=$sqlcompiler->compile($path, $criteria, $limit, $offset);
-				if ($sqlcompiler->error) {
-					$this->error=$sqlcompiler->error;
-				}
-				$this->cachedQueries[$criteria." limit $limit offset $offset"] = $query_string;
-				unset($sqlcompiler);
+			$sqlcompiler= $this->compilerFactory();
+			$query_string=$sqlcompiler->compile($path, $criteria, $limit, $offset);
+			if ($sqlcompiler->error) {
+				$this->error=$sqlcompiler->error;
 			}
+			//$this->cachedQueries[$criteria." limit $limit offset $offset"] = $query_string;
+			unset($sqlcompiler);
 		} else {
 			$this->error="";
 			$count=0;
