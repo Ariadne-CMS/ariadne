@@ -11,9 +11,11 @@
 		// now make sure this->data is clean.
 		$this->data=current($this->get($this->path, "system.get.data.phtml"));
 		if ($action=="add") {
+			$this->data->config->groups[$path]=$id;
 			$this->data->groups[$path]=$id;
 			$this->save();
 		} else {
+			unset($this->data->config->groups[$path]);
 			unset($this->data->groups[$path]);
 			$this->save();
 		}

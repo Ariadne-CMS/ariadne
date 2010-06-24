@@ -887,13 +887,20 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					if (is_array($groups)) {
 						foreach($groups as $group ){
 							if (is_object($group)) {
-								$AR->user->groups[$group->data->login] = $group;
+								$AR->user->groups[$group->path] = $group;
 							}
 						}
 					}
-					if (!$AR->user->groups["public"]) {
+					if (is_array($AR->user->data->config->groups)) {
+						foreach ($AR->user->data->config->groups as $groupPath => $groupId) {
+							if (!$AR->user->group[$groupPath]) {
+								$AR->user->groups[$groupPath] = current($this->get($groupPath, "system.get.phtml"));
+							}
+						}
+					}
+					if (!$AR->user->groups["/system/groups/public/"]) {
 						if ($public=current($this->get("/system/groups/public/", "system.get.phtml"))) {
-							$AR->user->groups["public"] = $public;
+							$AR->user->groups[$public->path] = $public;
 						}
 					}
 				}

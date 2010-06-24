@@ -1,7 +1,9 @@
 <?php
 	class mod_auth_default {
 		function mod_auth_default($config="", $requestedPath="") {
-			global $store;
+			global $ARConfig, $store;
+
+			$oldConfig = $ARConfig->cache;
 
 			$this->config = $config;
 			if (!is_array($this->config['userdirs'])) {
@@ -16,6 +18,7 @@
 					$this->config['siteconfig'] = $site_config['authentication'];
 				}
 			}
+			$ARConfig->cache = $oldConfig;
 
 			$this->config['userdirs'] = array_merge($this->config['userdirs'], (array) $this->config['siteconfig']['userdirs']);
 		}
