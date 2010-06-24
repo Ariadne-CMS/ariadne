@@ -63,15 +63,19 @@
 		setcookie("ARCookie",$ARCookie, 0, '/');
 	}
 
-	function ldAccessTimeout($path, $message) {
+	function ldAccessTimeout($path, $message, $args = null) {
 	global $ARCurrent, $store;
 		/* 
 			since there is no 'peek' function, we need to pop and push
 			the arCallArgs variable.
 		*/
 
-		$arCallArgs = @array_pop($ARCurrent->arCallStack);
-		@array_push($ARCurrent->arCallStack, $arCallArgs);
+		if( isset( $args ) ) {
+			$arCallArgs = $args;
+		} else {
+			$arCallArgs = @array_pop($ARCurrent->arCallStack);
+			@array_push($ARCurrent->arCallStack, $arCallArgs);
+		}
 
 		if (!$arCallArgs || is_array($arCallArgs)) {
 			$arCallArgs["arLoginMessage"] = $message;
@@ -87,15 +91,19 @@
 
 	}
 
-	function ldAccessDenied($path, $message) {
+	function ldAccessDenied($path, $message, $args = null) {
 	global $ARCurrent, $store;
 		/* 
 			since there is no 'peek' function, we need to pop and push
 			the arCallArgs variable.
 		*/
 
-		$arCallArgs = @array_pop($ARCurrent->arCallStack);
-		@array_push($ARCurrent->arCallStack, $arCallArgs);
+		if( isset( $args ) ) {
+			$arCallArgs = $args;
+		} else {
+			$arCallArgs = @array_pop($ARCurrent->arCallStack);
+			@array_push($ARCurrent->arCallStack, $arCallArgs);
+		}
 
 		if (!$arCallArgs || is_array($arCallArgs)) {
 			$arCallArgs["arLoginMessage"] = $message;
@@ -111,15 +119,19 @@
 
 	}
 
-	function ldAccessPasswordExpired($path, $message) {
+	function ldAccessPasswordExpired($path, $message, $args=null) {
 	global $ARCurrent, $store;
 		/* 
 			since there is no 'peek' function, we need to pop and push
 			the arCallArgs variable.
 		*/
 
-		$arCallArgs = @array_pop($ARCurrent->arCallStack);
-		@array_push($ARCurrent->arCallStack, $arCallArgs);
+		if( isset( $args ) ) {
+			$arCallArgs = $args;
+		} else {
+			$arCallArgs = @array_pop($ARCurrent->arCallStack);
+			@array_push($ARCurrent->arCallStack, $arCallArgs);
+		}
 
 		if (!$arCallArgs || is_array($arCallArgs)) {
 			$arCallArgs["arLoginMessage"] = $message;

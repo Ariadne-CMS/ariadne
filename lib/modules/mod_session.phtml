@@ -37,7 +37,7 @@ class session {
 			$this->lastchanged=$result->lastchanged;
 			$this->system = $result->data->system;
 			unset($result->data->system);
-			if ($this->lastchanged < (time()-$this->timeout)) {
+			if ($result->data->ARSessionTimedout || $this->lastchanged < (time()-$this->timeout)) {
 				debug("session: ".$this->id." ARSessionTimedout", "all");
 				$this->system->ARSessionTimedout = true;
 			}

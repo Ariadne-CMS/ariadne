@@ -299,13 +299,13 @@
 
 			if ($result!==true) {
 				if ($result == LD_ERR_ACCESS) {
-					ldAccessDenied($path, $ARnls["accessdenied"]);
+					ldAccessDenied($path, $ARnls["accessdenied"], $args);
 					$function = false;
 				} else if ($result == LD_ERR_SESSION) {
-					ldAccessTimeout($path, $ARnls["sessiontimeout"]);
+					ldAccessTimeout($path, $ARnls["sessiontimeout"], $args);
 					$function = false;
 				} else if ($result == LD_ERR_EXPIRED) {
-					ldAccessPasswordExpired($path, $ARnls["sessionpasswordexpired"]);
+					ldAccessPasswordExpired($path, $ARnls["sessionpasswordexpired"], $args);
 					$function = false;
 				}
 			}
@@ -320,9 +320,10 @@
 					}
 				} else {
 					if ($ARCurrent->session->get("oldArCallArgs", 1)) {
-						$args = $ARCurrent->session->get("oldArCallArgs", 1);
 						$_GET = array_merge( $_GET, (array)$ARCurrent->session->get("oldGET", 1) );
 						$_POST = array_merge( $_POST, (array)$ARCurrent->session->get("oldPOST", 1) );
+						$args = $ARCurrent->session->get("oldArCallArgs", 1);
+						$args = array_merge( $_GET, $_POST, $args); // $args, $_GET, $_POST );
 						$ARCurrent->session->put("oldArCallArgs", "", 1);
 						$ARCurrent->session->put("oldGET", "", 1);
 						$ARCurrent->session->put("oldPOST", "", 1);
