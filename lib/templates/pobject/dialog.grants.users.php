@@ -19,6 +19,21 @@
 		$selectedpath = $this->path;
 	}
 
+	$defaultGroupDir    = "/system/groups/";
+	if (is_array($authconfig['groupdirs'])) {
+		// find closest group directory
+		$nMatch = 0;
+		foreach ($authconfig['groupdirs'] as $groupDir) {
+			$length = min(strlen($this->path), strlen($groupDir));
+			for ($i = 0; $i < $length && $this->path[$i] === $groupDir[$i]; $i++);
+			if ($i > $nMatch) {
+				$nMatch = $i;
+				$defaultGroupDir = $groupDir;
+			}
+		}
+	}
+
+
 	$default_grants = array(
 		"read" => "Read",
 		"add" => "Add",
@@ -374,7 +389,7 @@
 			}
 		}
 	?>
-	<input type="text" id="extrauser" name="extrausers[]" value="/system/groups/">
+	<input type="text" id="extrauser" name="extrausers[]" value="<?php echo $defaultGroupDir; ?>">
 	<input class="button" type="button" value="..." title="<?php echo $ARnls['browse']; ?>" onclick='callbacktarget="extrauser"; window.open("<?php echo $this->make_ariadne_url('/'); ?>" + document.getElementById("extrauser").value + "dialog.browse.php", "browse", "height=480,width=750"); return false;'>
 	<input type="hidden" id="hidden_useradd" name="useradd" value=''>
 	<input type="submit" class="button" name="useradd" value="<?php echo $ARnls['add']; ?>">
