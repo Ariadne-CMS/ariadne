@@ -1,30 +1,27 @@
 <?php
 	class mod_auth_default {
-		function mod_auth_default($config="", $requestedPath="") {
-			global $ARConfig, $store;
 
-			$oldConfig = $ARConfig->cache;
-
+		function mod_auth_default($config=Array()) {
 			$this->config = $config;
-			if (!is_array($this->config['userdirs'])) {
-				$this->config['userdirs'] = array();
-			}
-			array_unshift($this->config['userdirs'], "/system/users/"); // Make sure /system/users is always there on the first spot.
-
-			if ($requestedPath && !$this->config['siteconfig']) {
-				$site = current($store->call("system.get.phtml", "", $store->get($requestedPath)));
-				if ($site) {
-					$site_config = $site->loadUserConfig();
-					$this->config['siteconfig'] = $site_config['authentication'];
-				}
-			}
-			$ARConfig->cache = $oldConfig;
-
-			$this->config['userdirs'] = array_merge($this->config['userdirs'], (array) $this->config['siteconfig']['userdirs']);
 		}
 
-		function authExternalUser($login, $password) {
+		function authExternalUser($login, $password, $requestedPath = "/") {
 			return false;
+		}
+
+		function loadConfig($requestedPath = "/") {
+		global $ARConfig, $store;
+			if (!$requestedPath) {
+				$requestedPath = "/";
+			}
+			$_cache = $ARConfig->cache;
+			$site = current($store->call("system.get.phtml", "", $store->get($requestedPath)));
+			if ($site) {
+				$site_config = $site->loadUserConfig();
+				$this->config['siteConfig'] = $site_config['authentication'];
+			}
+			$ARConfig->cache = $_cache;
+			return $this->config['siteConfig'];
 		}
 
 		function authUser($login, $password, $ARLoginPath="") {
@@ -32,21 +29,18 @@
 			$criteria["object"]["implements"]["="]="'puser'";
 			$criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
 
-			foreach ($this->config['userdirs'] as $userdir) {
-				$user_ob = current(
-					$store->call("system.get.phtml", "", $store->find($userdir, $criteria))
-				);
-				if ($user_ob) {
-					if (!$ARLoginPath || ($ARLoginPath == $userdir)) {
-						$user = $user_ob->call("system.authenticate.phtml", array("ARPassword" => $password));
+			$siteConfig = $this->loadConfig($ARLoginPath);
+			foreach ($siteConfig['userdirs'] as $userdir) {
+				$user = current($store->call("system.authenticate.phtml", array("ARPassword" => $password),
+												$store->find($userdir, $criteria, 1, 0)));
+				if ($user) {
 						$ARUserDir = $userdir;
 						break;
-					}
 				}
 			}
 
 			if (!$user) {
-				$user = $this->authExternalUser($login, $password);
+				$user = $this->authExternalUser($login, $password, $ARLoginPath);
 			}
 
 			if ($user) {
@@ -72,7 +66,7 @@
 
 		function getUser($login, $ARUserDir="/system/users/") {
 			global $store, $AR;
-			if (!$ARUserDir || $ARUserDir == "") {
+			if (!$ARUserDir) {
 				$ARUserDir = "/system/users/";
 			}
 
@@ -103,21 +97,21 @@
 			return $result;
 		}
 
-		function checkLogin($login, $password, $requestedPath="") {
+		function checkLogin($login, $password, $requestedPath="/") {
 		global $ARCurrent, $AR;
 			debug("checkLogin($login, [password])", "all");
 			if ($login) {
 				debug("checkLogin: initiating new login ($login)", "all");
 				if ($ARCurrent->session) {
 					$ARUserDir = $ARCurrent->session->get("ARUserDir", true);
-					if (!$ARUserDir || $ARUserDir == "") {
+					if (!$ARUserDir) {
 						$ARUserDir = "/system/users/";
 					}
 
 					if (!$ARCurrent->session->get("ARLogin") ||
 							$ARCurrent->session->get("ARLogin") == "public") {
 						debug("checkLogin: logging into a public session (".$ARCurrent->session->id.")", "all");
-						$result = $this->authUser($login, $password, $ARUserDir);
+						$result = $this->authUser($login, $password, $requestedPath);
 						if ($result !== true) {
 							$this->getUser('public');
 						}
@@ -127,7 +121,7 @@
 							$result = $this->getUser($login, $ARUserDir);
 						} else {
 							if ($ARCurrent->session->get("ARLogin") == $login) {
-								debug("checkLogin: user ($login) tries to login to his session without a cookie set", "all");
+								debug("checkLogin: user ($login) tries to login to his session without a cookie set @ $ARUserDir", "all");
 								$result = $this->authUser($login, $password, $ARUserDir);
 								if ($result !== true) {
 									$this->getUser('public');
@@ -151,7 +145,7 @@
 					}
 				} else {
 					debug("checkLogin: trying to log on", "all");
-					$result = $this->authUser($login, $password, $ARUserDir);
+					$result = $this->authUser($login, $password, $requestedPath);
 					if ($result !== true) {
 						$this->getUser('public');
 					}
@@ -160,7 +154,7 @@
 			} else {
 				if ($ARCurrent->session) {
 					$ARUserDir = $ARCurrent->session->get("ARUserDir", true);
-					if (!$ARUserDir || $ARUserDir == "") {
+					if (!$ARUserDir) {
 						$ARUserDir = "/system/users/";
 					}
 
@@ -210,7 +204,7 @@
 								debug("checkLogin: trying to respawn session ($sid) for user ($login)", "all");
 								if (ldCheckCredentials($login)) {
 									$ARUserDir = $ARCurrent->session->get("ARUserDir", true);
-									if (!$ARUserDir || $ARUserDir == "") {
+									if (!$ARUserDir) {
 										$ARUserDir = "/system/users/";
 									}
 
