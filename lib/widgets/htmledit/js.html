@@ -13,21 +13,22 @@
 <!--
 <?php
 	// FIXME: vervangen door JSON.
-	function make_ini_options($name, $option) {
-		if (is_array($option)) {
-			reset($option);
-			echo "	$name = new Array();\n";
-			foreach( $option as $key => $value ) {
-				make_ini_options($name."[\"$key\"]", $value);
+	if( !function_exists("make_ini_options") ) {
+		function make_ini_options($name, $option) {
+			if (is_array($option)) {
+				reset($option);
+				echo "	$name = new Array();\n";
+				foreach( $option as $key => $value ) {
+					make_ini_options($name."[\"$key\"]", $value);
+				}
+			} else
+			if (is_string($option)) {
+				echo "	$name = \"".AddCSlashes($option, ARESCAPE)."\";\n";
+			} else {
+				echo "	$name = ".(int)$option.";\n";
 			}
-		} else
-		if (is_string($option)) {
-			echo "	$name = \"".AddCSlashes($option, ARESCAPE)."\";\n";
-		} else {
-			echo "	$name = ".(int)$option.";\n";
 		}
 	}
-
 	if (is_array($wgHTMLEditOptions)) {
 		echo "var ";
 		make_ini_options("wgHTMLEditOptions", $wgHTMLEditOptions);
