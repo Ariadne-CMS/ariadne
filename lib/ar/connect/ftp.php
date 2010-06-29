@@ -70,8 +70,6 @@
 
 		public function cd( $dir );
 
-/* -- */
-		
 		public function ls();
 		
 		public function mkdir( $dirname );
@@ -89,9 +87,7 @@
 		public function mode( $mode );
 		
 		public function pasv( $pasv );
-		
-		public function timeout( $timeout );
-		
+			
 	}
 
 	class ar_connect_ftpClient extends arBase implements ar_connect_ftpClientInterface {
@@ -166,6 +162,8 @@
 		public function connect( $host, $port = 21) {
 			if ( ! $this->connection = ftp_connect( $host, $port ) ) {
 				return ar::error( "Could not connect to $host on port $port", 2);
+			} else if (ar_connect_ftp::$timeout) {
+				ftp_set_option( $this->connection, FTP_TIMEOUT_SEC, ar_connect_ftp::$timeout );
 			}
 			return $this;
 		}
@@ -187,25 +185,47 @@
 		}
 		
 		public function ls() {
+			return ftp_nlist($this->connection, '.');
 		}
 		
-		
 		public function mkdir( $dirname ) {
+			$result = ftp_mkdir( $this->connection, $dirname );
+			if (!$result) {
+				return ar::error( "Could not make directory $dirname.", 3);
+			}
 			return $this;
 		}
 		
 		public function rename( $name, $newname ) {
+			if (!ftp_rename( $this->connection, $name, $newname ) ) {
+				return ar::error( "Could not rename $name to $newname.", 4);
+			}
 			return $this;
 		}
 		
 		public function chmod( $mode, $filename ) {
+			if (!ftp_chmod( $this->connection, $mode, $filename) ) {
+				return ar::error( "Could not chmod $filename.", 5);
+			}
 			return $this;
 		}
 		
 		public function size( $filename ) {
+			$result = ftp_size($this->connection, $filename);
+			if ( $result == -1 ) {
+				return null;
+			} else {
+				return $result;
+			}
 		}
 		
 		public function mdtm( $filename ) {
+			$result = ftp_mdtm( $this->connection, $filename );
+			if ($result == -1 ) {
+				return null;
+			} else {
+				return $result;
+			}
 		}
 		
 		public function pwd() {
@@ -213,17 +233,15 @@
 		}
 		
 		public function mode( $mode ) {
+			$this->options['mode'] = $mode;
 			return $this;
 		}
 		
 		public function pasv( $pasv ) {
+			$this->options['pasv'] = $pasv;
 			return $this;
 		}
 		
-		public function timeout( $timeout ) {
-			return $this;
-		}
-
 	}
 
 ?>
