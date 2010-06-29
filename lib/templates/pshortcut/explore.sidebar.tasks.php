@@ -42,6 +42,15 @@
 			);		
 		}
 
+		if ($this->CheckSilent("admin")) {
+			$tasks[] = array(
+				'href' => $this->make_ariadne_url() . "dialog.mogrify.php",
+				'onclick' => "muze.ariadne.explore.arshow('object_fs',this.href); return false;",
+				'icon' => $AR->dir->images . 'icons/small/mogrify.png',
+				'nlslabel' => $ARnls['ariadne:mogrify']			
+			);
+		}
+
 		$tasks[] = array( // we use make_local_url specifically
 			'href' => $this->make_local_url()."view.html",
 			'onclick' => "muze.ariadne.explore.arshow('_new', this.href); return false;",
@@ -49,14 +58,6 @@
 			'nlslabel' => $ARnls['ariadne:viewweb']
 		);		
 
-		if ($this->CheckSilent("edit")) {
-			$tasks[] = array(
-				'href' => $this->make_ariadne_url()."user.edit.html",
-				'onclick' => "muze.ariadne.explore.arshow('_new', this.href); return false;",
-				'icon' => $AR->dir->images . 'icons/small/wysiwyg.png',
-				'nlslabel' => $ARnls['ariadne:wysiwyg_editor']
-			);		
-		}
 		$section = array(
 			'id' => 'shortcuttasks',
 			'label' => $ARnls["ariadne:options"],
