@@ -12,45 +12,37 @@
 	<tr>
 		<td>
 		<?php
-			$arLanguage = $this->getdata('arLanguage', 'none');
+			if( !function_exists("input_time") ) {
+				function input_time($name, $time) {
 
-			if (!$arLanguage) {
-				$arLanguage = $ARConfig->nls->default;
-			}
+					if (!is_numeric($time)) {
+						$date = getdate(time());
+						$hours = $date['hours'];
+						$mins = $date['minutes'];
+						$time = $hours * 3600 + $mins * 60;
+					} else {
+						$hours = floor($time / 3600);
+						$mins = floor(($time - ($hours * 3600)) / 60);
+					}
 
-			$selectednls = $arLanguage;
-			$selectedlanguage = $ARConfig->nls->list[$arLanguage];
-			$flag = '<img src="' . $AR->dir->images . 'nls/small/' . $selectednls . '.gif" alt="' . $selectedlanguage . '">';
+					$mins = floor($mins / 5) * 5;
 
-			function input_time($name, $time) {
+					echo '<input type="hidden" name="' . $name . '" value="' . $time . '">' . "\n";
+					echo '<nobr><select name="' . $name . '_hour" onchange="settime(\'' . $name . '\', this.form);">' . "\n";
 
-				if (!is_numeric($time)) {
-					$date = getdate(time());
-					$hours = $date['hours'];
-					$mins = $date['minutes'];
-					$time = $hours * 3600 + $mins * 60;
-				} else {
-					$hours = floor($time / 3600);
-					$mins = floor(($time - ($hours * 3600)) / 60);
+					for ($i = 0; $i <= 23; $i++) {
+						echo '<option value="' . $i . '"'.($i == $hours ? " selected" : "").'>' . sprintf("%02d", $i) . '</option>' . "\n";
+					}
+
+					echo '</select>:' . "\n";
+					echo '<select name="' . $name . '_minute" onchange="settime(\'' . $name . '\', this.form);">' . "\n";
+
+					for ($i = 0; $i <= 59; $i = $i + 5) {
+						echo '<option value="' . $i . '"'.($i == $mins ? " selected" : "").'>' . sprintf("%02d", $i) . '</option>' . "\n";
+					}
+
+					echo '</select></nobr>' . "\n";
 				}
-
-				$mins = floor($mins / 5) * 5;
-
-				echo '<input type="hidden" name="' . $name . '" value="' . $time . '">' . "\n";
-				echo '<nobr><select name="' . $name . '_hour" onchange="settime(\'' . $name . '\', this.form);">' . "\n";
-
-				for ($i = 0; $i <= 23; $i++) {
-					echo '<option value="' . $i . '"'.($i == $hours ? " selected" : "").'>' . sprintf("%02d", $i) . '</option>' . "\n";
-				}
-
-				echo '</select>:' . "\n";
-				echo '<select name="' . $name . '_minute" onchange="settime(\'' . $name . '\', this.form);">' . "\n";
-
-				for ($i = 0; $i <= 59; $i = $i + 5) {
-					echo '<option value="' . $i . '"'.($i == $mins ? " selected" : "").'>' . sprintf("%02d", $i) . '</option>' . "\n";
-				}
-
-				echo '</select></nobr>' . "\n";
 			}
 		?>
 			<fieldset id="selectstart">
