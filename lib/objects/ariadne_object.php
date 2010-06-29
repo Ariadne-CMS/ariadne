@@ -2679,11 +2679,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $this->make_ariadne_url($path);
 	}
 
-	function _make_url($path="", $nls=false, $session=true, $https=-1, $keephost=false) {
+	function _make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=false) {
 		return $this->make_url($path, $nls, $session, $https, $keephost);
 	}
 
-	function _make_local_url($path="", $nls="", $session=true, $https=-1) {
+	function _make_local_url($path="", $nls=false, $session=true, $https=NULL) {
 		return $this->make_local_url($path, $nls, $session, $https);
 	}
 
