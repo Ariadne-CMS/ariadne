@@ -1473,9 +1473,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			}
 			$ARConfig->libraries[$this->path][$name]=$path;
 			if (!$ARConfig->cacheableLibraries[$this->path]) {
-				$ARConfig->cacheableLibraries[$this->path] = Array($path);
+				$ARConfig->cacheableLibraries[$this->path] = Array($name => $path);
 			} else {
-				array_unshift($ARConfig->cacheableLibraries[$this->path], $path);
+				$ARConfig->cacheableLibraries[$this->path][$name] = $path;
 			}
 			// make sure that unnamed libraries don't get added to the configcache
 			unset($ARConfig->cache[$this->path]->libraries[$name]);
