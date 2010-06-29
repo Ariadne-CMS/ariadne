@@ -4,8 +4,10 @@
 		require_once($this->store->get_config("code")."modules/mod_yui.php");
 		
 		$editor="dialog.templates.edit.php";
-		
-		$this->call('typetree.ini');
+
+		if( !$ARCurrent->arTypeTree ) {		
+			$this->call('typetree.ini');
+		}
 		$icons = $ARCurrent->arTypeIcons;
 		$names = $ARCurrent->arTypeNames;
 
@@ -184,7 +186,6 @@
 		<?php
 			$pinp = $data->config->pinp;
 			$templates = $data->config->templates;
-
 			if ($svn_enabled && $svn_status ) {
 				foreach ($svn_status as $filename=>$file_status) {
 					if ($file_status == "!") {
@@ -200,13 +201,11 @@
 					}
 				}
 			}
-
-			if (($pinp) && is_array($pinp)) {
+			if (isset($pinp) && count($pinp)) {
 				foreach( $pinp as $type => $values ) {
 					uksort($values, array('yui', 'layout_sortfunc'));
 					foreach( $values as $function => $templatelist ) {
 						ksort($templatelist);
-						reset($templatelist);
 						$flagbuttons = '';
 						$flag_svn = '';
 						$grep_results = '';
@@ -250,25 +249,21 @@
 							}
 
 							$flag = "<img src=\"".$AR->dir->images."nls/small/$language.gif\" alt=\"".$AR->nls->list[$language]."\">";
-							if ($svn_enabled) {
-								if (sizeof($templatelist) > 1) {
-									if ($svn_img) {
-										$svn_img_src = $AR->dir->images . "/svn/$svn_img";
-										$flag_svn = '<img class="flag_svn_icon" alt="' . $svn_alt . '" src="' . $svn_img_src . '">';
-									}
-								}
+							if ($svn_enabled && count($templatelist) > 1 && $svn_imt ) {
+								$svn_img_src = $AR->dir->images . "/svn/$svn_img";
+								$flag_svn = '<img class="flag_svn_icon" alt="' . $svn_alt . '" src="' . $svn_img_src . '">';
 							}
 									
-							$flagbuttons .= "<a class=\"button\" href=\"".$this->store->get_config("root").$this->path.$editor."?type=".$type."&amp;function=".RawUrlEncode($function).
+							$flagbuttons .= "<a class=\"button\" href=\"".$this->make_ariadne_url().$editor."?type=".$type."&amp;function=".RawUrlEncode($function).
 								"&amp;language=".$language."\">" . $flag . $flag_svn . "</a> ";
 
 							if( is_array( $grepresults) && is_array($grepresults[$filename_short]) ) {
 								foreach( $grepresults[$filename_short] as $r ) {
 									list( $ln, $tx ) = split(":", $r, 2);
-									if (sizeof($templatelist) > 1) {
+									if (count($templatelist) > 1) {
 										$grep_results .= $flag . "&nbsp;";
 									}
-									$grep_results .= "<a href=\"".$this->store->get_config("root").$this->path.$editor."?type=".$type."&amp;function=".RawUrlEncode($function).
+									$grep_results .= "<a href=\"".$this->make_ariadne_url().$editor."?type=".$type."&amp;function=".RawUrlEncode($function).
 									"&amp;lineOffset=".rawurlencode($ln)."&amp;language=".rawurlencode($language)."\">".htmlspecialchars($r)."</a><br>";
 								}
 							}
@@ -303,7 +298,6 @@
 							?></td>
 								<?php
 									$tbasename = "$type.$function";
-									reset($templatelist);
 									$mtime = 0;
 									$msize = 0;
 									foreach( $templatelist as $language => $template ) {
@@ -317,7 +311,6 @@
 										}
 
 									}
-
 								?>
 							<td style="<?php echo $svn_style_hide;?>">
 								<div style="display:none;"><?php printf("%010d", $msize); ?></div><?php echo $this->make_filesize($msize); ?>&nbsp;
