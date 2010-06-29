@@ -40,28 +40,14 @@
 				echo '<nobr><select name="' . $name . '_hour" onchange="settime(\'' . $name . '\', this.form);">' . "\n";
 
 				for ($i = 0; $i <= 23; $i++) {
-					if (strlen($i) < 2) {
-						$i = "0" . $i;
-					}
-					if ($i != $hours) {
-						echo '<option value="' . $i . '">' . $i . '</option>' . "\n";
-					} else {
-						echo '<option value="'  . $i . '" selected>' . $i . '</option>' . "\n";
-					}
+					echo '<option value="' . $i . '"'.($i == $hours ? " selected" : "").'>' . sprintf("%02d", $i) . '</option>' . "\n";
 				}
 
 				echo '</select>:' . "\n";
 				echo '<select name="' . $name . '_minute" onchange="settime(\'' . $name . '\', this.form);">' . "\n";
 
 				for ($i = 0; $i <= 59; $i = $i + 5) {
-					if (strlen($i) < 2) {
-						$i = "0" . $i;
-					}
-					if ($i != $mins) {
-						echo '<option value="' . $i . '">' . $i . '</option>' . "\n";
-					} else {
-						echo '<option value="' . $i . '" selected>' . $i . '</option>' . "\n";
-					}
+					echo '<option value="' . $i . '"'.($i == $mins ? " selected" : "").'>' . sprintf("%02d", $i) . '</option>' . "\n";
 				}
 
 				echo '</select></nobr>' . "\n";
