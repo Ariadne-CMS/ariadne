@@ -371,6 +371,6 @@
 	$ARnls["err:activationexpired"]			= "Wachtwoord Activatie Code is verlopen";
 
 	$ARnls["expires"]						= "Verloopt";
-	$ARnls["toolbar_editor"]				= "Toolbar Editor";
+	$ARnls["toolbar_editor"]				= "Toolbar Editor (IE only)";
 	$ARnls["sessiontimeout"]				= "Sessie verlopen";
 ?>

@@ -378,6 +378,6 @@
 	$ARnls["err:activationexpired"]			= "Password Activation Code has expired";
 
 	$ARnls["expires"]						= "Expires";
-	$ARnls["toolbar_editor"]				= "Toolbar Editor";
+	$ARnls["toolbar_editor"]				= "Toolbar Editor (IE only)";
 	$ARnls["sessiontimeout"]				= "Session Timed Out";
 ?>
