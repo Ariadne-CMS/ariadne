@@ -41,8 +41,6 @@
 			$editorList = Array(
 				"wysiwyg"	=> $ARnls["wysiwyg"],
 				"toolbar"	=> $ARnls["toolbar_editor"],
-				"text"		=> $ARnls["text"],
-				"tinymce"	=> $ARnls["tinymce"]
 			);
 			foreach ($editorList as $key => $value) {
 				$selected = "";

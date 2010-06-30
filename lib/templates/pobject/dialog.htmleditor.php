@@ -29,10 +29,14 @@
 
 
 	if ($proceed) {
-		if ($file) {
-			$file.="/";
-		}
-		$yui_base = $AR->dir->www . "js/yui/";
+		if ( $AR->user->data->editor == "toolbar") {
+			$wgHTMLEditTemplate="edit.object.html.page.phtml";
+			include($this->store->get_config("code")."widgets/htmledit/toolbar.php");
+		} else {
+			if ($file) {
+				$file.="/";
+			}
+			$yui_base = $AR->dir->www . "js/yui/";
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -493,5 +497,6 @@
 </body>
 </html>
 <?php
+		} // end of else for editor check
 	}
 ?>
