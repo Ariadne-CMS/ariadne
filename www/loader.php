@@ -278,18 +278,12 @@
 			// instantiate the ARnls
 			global $ARnls;
 			$ARnls = ar('nls')->dict($AR->nls->default);
-			ldSetNls($nls);
-
-/*
-			// load language file
-			if (file_exists($ariadne.'/nls/'.$nls)) {
-				require($ariadne.'/nls/'.$nls);
-			} else if (file_exists($ariadne.'/nls/'.$AR->nls->default)) {
-				require($ariadne.'/nls/'.$AR->nls->default);
-			} else {
-				require($ariadne.'/nls/' . 'en');
+			if( $ARCurrent->nls != "" ) {
+				ldSetNls($nls);
 			}
-*/
+
+
+
 			if (substr($function, -6)==".phtml") {
 				// system template: no language check
 				$ARCurrent->nolangcheck=1;
