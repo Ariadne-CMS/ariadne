@@ -128,14 +128,14 @@ class ar_nlsDictionary extends arBase implements ArrayAccess {
 	}
 
 	public function offsetExists( $offset ) {
-		return ( $this->offsetGet( $offset ) !== null );
+		return ( $this->getEntry( $offset ) !== null );
 	}
 
 	public function offsetUnset( $offset ) {
 		unset($this->currentList[$offset]);
 	}
 
-	public function offsetGet( $offset ) {
+	private function getEntry( $offset ) {
 		if( isset( $this->currentList[$offset] ) ) {
 			return $this->currentList[$offset];
 		} elseif( strpos($offset, ":") !== false ) { // $ARnls["ariadne:foo"] => try and autoload "ariadne.$currentLanguage"
@@ -155,6 +155,12 @@ class ar_nlsDictionary extends arBase implements ArrayAccess {
 			}
 		}
 		return null;
+	}
+
+
+	public function offsetGet( $offset ) {
+		$value = $this->getEntry( $offset );
+		return ( isset( $value ) ? $value : "{".$offset."}" );
 	}
 }
 
