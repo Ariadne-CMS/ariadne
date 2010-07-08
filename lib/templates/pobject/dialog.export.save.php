@@ -67,7 +67,7 @@
 	}
 	
 </script>
-<?php echo $ARnls['m_export'] . " $srcpath"; ?>
+<?php echo $ARnls['ariadne:export'] . " $srcpath"; ?>
 <div id="progressbar">
 	<div id="progress"></div>
 	<div id="progress_text">0/<?php echo $total; ?></div>

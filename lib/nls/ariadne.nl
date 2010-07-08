@@ -4,7 +4,7 @@
 	$ARnls["ariadne:browsebyletter"]				=	"Verken op letter";
 	$ARnls["ariadne:cache"]						=	"Zet caching voor ";
 	$ARnls["ariadne:copy"]						=	"Kopieer ";
-	$ARnls["ariadne:customfields"]					=	"Zet eigen gegevens voor ";
+	$ARnls["ariadne:customfields"]					=	"Eigen gegevens";
 	$ARnls["ariadne:delete"]					=	"Verwijder ";
 	$ARnls["ariadne:details"]					=	"Details";
 	$ARnls["ariadne:detailsH"]					=	"Meer...";

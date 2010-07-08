@@ -80,14 +80,14 @@ class ar_nlsDictionary extends arBase implements ArrayAccess {
 		if( !$section ) {
 			if( ($fullFile = $this->baseDir.$nls) && file_exists($fullFile) ) {
 				include($fullFile);
-				$this->languages[$nls] = array_merge($this->languages[$nls], (array)$$varName);
+				$this->languages[$nls] = array_merge((array)$this->languages[$nls], (array)$$varName);
 			}
 		} else { 
 			$this->loaded[$section][$nls] = true;
 			$fullFile = $this->baseDir.$section.".".$nls;
 			if( file_exists($fullFile) ) {
 				include($fullFile);
-				$this->languages[$nls] = array_merge($this->languages[$nls], (array)$$varName);
+				$this->languages[$nls] = array_merge((array)$this->languages[$nls], (array)$$varName);
 			} else {
 				// FIXME: UGLY hack stolen from pobject::loadtext()
 				global $ARCurrent;
@@ -113,7 +113,7 @@ class ar_nlsDictionary extends arBase implements ArrayAccess {
 					$nlsarray = $ARCurrent->{$varName};
 				}
 				$ARCurrent->arResult = $arResult;
-				$this->languages[$nls] = array_merge($this->languages[$nls], $nlsarray);
+				$this->languages[$nls] = array_merge((array)$this->languages[$nls], $nlsarray);
 			}
 		}
 		return $this;

@@ -179,10 +179,14 @@
 	}
 
 	function ldSetNls($nls) {
-	global $ARCurrent;
+	global $ARCurrent, $ARnls;
 
 		$session=$ARCurrent->session->id;
 		ldSetRoot($session, $nls);
+		
+		if( is_object( $ARnls ) ) {
+			$ARnls->setLanguage($nls);
+		}
 	}
 
 	function ldSetSession($session='') {

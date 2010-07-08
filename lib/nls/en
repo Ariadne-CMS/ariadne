@@ -308,6 +308,7 @@
 	$ARnls["state"]							=	"State";
 	$ARnls["summary"]						=	"Summary";
 	$ARnls["sun"]							=	"Sun";
+	$ARnls["svn"]							=	"SVN";
 	$ARnls["target"]						=	"Target";
 	$ARnls["telephone"]						=	"Telephone";
 	$ARnls["template"]						=	"Template";

@@ -2,7 +2,6 @@
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 
-		include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
 		include($this->store->get_config("code")."widgets/wizard/code.php");
 
 		$arEditorSettings=$this->call('editor.ini');

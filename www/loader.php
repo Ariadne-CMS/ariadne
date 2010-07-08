@@ -94,6 +94,7 @@
 		// set the default user (public)
 		$AR->login="public";
 
+
 		// look for the template
 		$split=strrpos($AR_PATH_INFO, "/");
 		$path=substr($AR_PATH_INFO,0,$split+1);
@@ -249,7 +250,7 @@
 			} else {
 				// valid language
 				$path=substr($path, $split+1);
-				ldSetNls($ARCurrent->nls);
+				// ldSetNls($ARCurrent->nls);
 				$nls=$ARCurrent->nls;
 				$cachenls="/$nls";
 			}
@@ -274,6 +275,12 @@
 				ldStartSession($session_id);
 			}
 
+			// instantiate the ARnls
+			global $ARnls;
+			$ARnls = ar('nls')->dict($AR->nls->default);
+			ldSetNls($nls);
+
+/*
 			// load language file
 			if (file_exists($ariadne.'/nls/'.$nls)) {
 				require($ariadne.'/nls/'.$nls);
@@ -282,7 +289,7 @@
 			} else {
 				require($ariadne.'/nls/' . 'en');
 			}
-
+*/
 			if (substr($function, -6)==".phtml") {
 				// system template: no language check
 				$ARCurrent->nolangcheck=1;

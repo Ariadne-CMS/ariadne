@@ -1,8 +1,5 @@
 <?php
 	$ARCurrent->nolangcheck=true;
-	include_once($this->store->get_config("code")."nls/".$this->reqnls);
-  	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
- 	include_once($this->store->get_config("code")."nls/menu.".$this->reqnls);
 	require_once($this->store->get_config("code")."modules/mod_yui.php");
 
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
@@ -35,7 +32,7 @@
 				'href' => $this->make_ariadne_url() . "dialog.custom.php",
 				'onclick' => "muze.ariadne.explore.arshow('edit_object_custom',this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/customfields.png',
-				'nlslabel' => $ARnls["m_custom"]
+				'nlslabel' => $ARnls["ariadne:customfields"]
 			);
 			if ($this->data->config->customconfig) {
 				$task['class'] = 'sethere';

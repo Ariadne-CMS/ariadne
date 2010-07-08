@@ -2,7 +2,6 @@
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("add", ARANYTYPE) && $this->CheckConfig()) {
 
-		include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
 		include($this->store->get_config("code")."widgets/wizard/code.php");
 
 		$wgWizButtons = array(

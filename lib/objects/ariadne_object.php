@@ -2584,6 +2584,15 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 
 	function _gettext($index=false) {
+	global $ARnls;
+		if (!$index) {
+			return $ARnls;
+		} else {
+			return $ARnls[$index];
+		}
+	}
+/*
+	function _gettext($index=false) {
 	global $ARnls, $ARCurrent;
 		if (!$index) {
 			return array_merge($ARnls, $ARCurrent->ARnls ? $ARCurrent->ARnls : array(), $this->ARnls ? $this->ARnls : array());
@@ -2599,31 +2608,36 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			}
 		}
 	}
-
+*/
 	function _loadtext($nls, $section="") {
-		global $ARCurrent;
+	global $ARnls, $ARCurrent;
+		if( is_object($ARnls) ) {
+			$ARnls->load($section, $nls);
+			$this->ARnls = &$ARnls;
+		} else { // older loaders and other shizzle
 
-		$nls=eregi_replace('[^a-z]*','',$nls);
-		$section=eregi_replace('[^a-z0-9\._:-]*','',$section);
-		if (!$section) {
-			include($this->store->get_config("code")."nls/".$nls);
-			$this->ARnls = array_merge((array)$this->ARnls, $ARnls);
-		} else {
-			$nlsfile = $this->store->get_config("code")."nls/".$section.".".$nls;
-			if(strpos($nlsfile, ':') === false && file_exists($nlsfile)) {
-				include($nlsfile);
+			$nls=eregi_replace('[^a-z]*','',$nls);
+			$section=eregi_replace('[^a-z0-9\._:-]*','',$section);
+			if (!$section) {
+				include($this->store->get_config("code")."nls/".$nls);
 				$this->ARnls = array_merge((array)$this->ARnls, $ARnls);
 			} else {
-				// current result;
-				$arResult = $ARCurrent->arResult;
-				$this->pushContext(Array());
-					$oldnls = $this->reqnls;
-					$this->reqnls = $nls;
-					$this->CheckConfig($section, Array('nls' => $nls));
-					$this->reqnls = $oldnls;
-				$this->popContext();
-				// reset current result (CheckConfig may have changed it when it should not have).
-				$ARCurrent->arResult = $arResult;
+				$nlsfile = $this->store->get_config("code")."nls/".$section.".".$nls;
+				if(strpos($nlsfile, ':') === false && file_exists($nlsfile)) {
+					include($nlsfile);
+					$this->ARnls = array_merge((array)$this->ARnls, $ARnls);
+				} else {
+					// current result;
+					$arResult = $ARCurrent->arResult;
+					$this->pushContext(Array());
+						$oldnls = $this->reqnls;
+						$this->reqnls = $nls;
+						$this->CheckConfig($section, Array('nls' => $nls));
+						$this->reqnls = $oldnls;
+					$this->popContext();
+					// reset current result (CheckConfig may have changed it when it should not have).
+					$ARCurrent->arResult = $arResult;
+				}
 			}
 		}
 	}

@@ -4,8 +4,6 @@
 
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 
-	  	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
-
 		global $invisibleSections;
 		if (!$arLanguage) {
 			$arLanguage=$nls;

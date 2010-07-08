@@ -1,7 +1,6 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
-		include($this->store->get_config("code")."nls/menu.".$nls);
 
 		if ($this->error) {
 			echo "<div class=\"field\">\n";

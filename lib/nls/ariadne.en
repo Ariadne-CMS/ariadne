@@ -5,7 +5,7 @@
 	$ARnls["ariadne:browsebyletter"]				=	"Browse by letter";
 	$ARnls["ariadne:cache"]						=	"Set caching for ";
 	$ARnls["ariadne:copy"]						=	"Copy ";
-	$ARnls["ariadne:customfields"]				=	"Set custom fields for ";
+	$ARnls["ariadne:customfields"]				=	"Custom fields";
 	$ARnls["ariadne:delete"]						=	"Delete ";
 	$ARnls["ariadne:details"]					=	"Details";
 	$ARnls["ariadne:detailsH"]					=	"More...";

@@ -1,7 +1,6 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		include($this->store->get_config("code")."nls/menu.".$nls);
 ?>
 	<!--fieldset>
 		<legend><?php echo $ARnls["selectexporttype"]; ?></legend>
