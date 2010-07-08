@@ -9,6 +9,13 @@
 		$selectedlanguage=$AR->nls->list[$arLanguage];
 
 		$flagurl = $AR->dir->images."nls/small/$selectednls.gif";
+		
+		
+		$file_type = $this->getdata("file_type", $selectednls);
+		if( !$file_type ) {
+			$file_type = $this->getdata("mimetype", $selectednls);
+		}
+		
 ?>
 <fieldset id="data">
 	<legend><?php echo $ARnls["data"]; ?></legend>
@@ -21,8 +28,8 @@
 	<div class="field">
 		<label for="mimetype"><?php echo $ARnls["ariadne:mimetype"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
-		<input id="mimetype" type="text" name="<?php echo $selectednls."[mimetype]"; ?>" 
-			value="<?php $this->showdata("mimetype", $selectednls); ?>" class="inputline">
+		<input id="mimetype" type="text" name="<?php echo $selectednls."[file_type]"; ?>" 
+			value="<?php echo htmlspecialchars($file_type); ?>" class="inputline">
 	</div>
 	<div class="field">
 		<label for="summary"><?php echo $ARnls["summary"]; ?></label>
