@@ -100,7 +100,7 @@ class ar_nlsDictionary extends arBase implements ArrayAccess {
 					$oldAllnls = $ARCurrent->allnls;
 					$ARCurrent->allnls = true;
 					$me->CheckConfig($section, array("nls" => $nls));
-					$ARCurrnet->allnls = $oldAllnls;
+					$ARCurrent->allnls = $oldAllnls;
 					$me->reqnls = $oldnls;
 				$me->popContext();
 				
@@ -113,7 +113,7 @@ class ar_nlsDictionary extends arBase implements ArrayAccess {
 					$nlsarray = $ARCurrent->{$varName};
 				}
 				$ARCurrent->arResult = $arResult;
-				$this->languages[$nls] = array_merge((array)$this->languages[$nls], $nlsarray);
+				$this->languages[$nls] = array_merge((array)$this->languages[$nls], (array)$nlsarray);
 			}
 		}
 		return $this;
