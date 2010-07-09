@@ -2602,7 +2602,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if( is_object($ARnls) ) {
 			$ARnls->load($section, $nls);
 			$ARnls->setLanguage($nls);
-			$this->ARnls = &$ARnls;
+			$this->ARnls = $ARnls;
 		} else { // older loaders and other shizzle
 
 			$nls=eregi_replace('[^a-z]*','',$nls);
