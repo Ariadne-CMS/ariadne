@@ -81,7 +81,8 @@ class session {
 			if (!$id) { $id=$this->id; } else { $this->id=$id; }
 			// store session data
 			$this->data->system = $this->system;
-			if ($this->changed) {
+
+			if ($this->changed || $forceupdate) {
 				$this->sessionstore->save("/$id/","psession",$this->data);
 			} else {
 				$this->sessionstore->touch("/$id/", time());
