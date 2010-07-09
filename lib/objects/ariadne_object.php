@@ -1672,6 +1672,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			}
 			$nls=&$this->nls;
 			$reqnls=&$this->reqnls;
+
+			if (!$initialConfigChecked && is_object($ARnls)) {
+				$ARnls->setLanguage($ARCurrent->nls);
+			}
+
 			if (!$ARCurrent->arContentTypeSent) {
 				ldHeader("Content-Type: text/html; charset=UTF-8");
 				$ARCurrent->arContentTypeSent = true;
@@ -2591,28 +2596,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			return $ARnls[$index];
 		}
 	}
-/*
-	function _gettext($index=false) {
-	global $ARnls, $ARCurrent;
-		if (!$index) {
-			return array_merge($ARnls, $ARCurrent->ARnls ? $ARCurrent->ARnls : array(), $this->ARnls ? $this->ARnls : array());
-		} else {
-			if (isset($this->ARnls[$index])) {
-				return $this->ARnls[$index];
-			} else if (isset($ARCurrent->ARnls[$index])) {
-				return $ARCurrent->ARnls[$index];
-			} else if (isset($ARnls[$index])) {
-				return $ARnls[$index];
-			} else {
-				return "{" . $index . "}";
-			}
-		}
-	}
-*/
+
 	function _loadtext($nls, $section="") {
 	global $ARnls, $ARCurrent;
 		if( is_object($ARnls) ) {
 			$ARnls->load($section, $nls);
+			$ARnls->setLanguage($nls);
 			$this->ARnls = &$ARnls;
 		} else { // older loaders and other shizzle
 
