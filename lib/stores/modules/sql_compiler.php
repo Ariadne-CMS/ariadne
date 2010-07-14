@@ -1,4 +1,5 @@
 <?php
+
 abstract class sql_compiler {
 	protected $store;
 	public  $error;
@@ -7,49 +8,69 @@ abstract class sql_compiler {
 	protected $limit;
 	protected $cache;
 	protected $path;
+	protected $_SCAN_WS        = Array(" " => true, "\t" => true, "\n" => true);
+	protected $_SCAN_AZ        = Array("a" => true, "A" => true, "b" => true, "B" => true, "c" => true, "C" => true, "d" => true, "D" => true, "e" => true, "E" => true, "f" => true, "F" => true, "g" => true, "G" => true, "h" => true, "H" => true, "i" => true, "I" => true, "j" => true, "J" => true, "k" => true, "K" => true, "l" => true, "L" => true, "m" => true, "M" => true, "n" => true, "N" => true, "o" => true, "O" => true, "p" => true, "P" => true, "q" => true, "Q" => true, "r" => true, "R" => true, "s" => true, "S" => true, "t" => true, "T" => true, "u" => true, "U" => true, "v" => true, "V" => true, "w" => true, "W" => true, "x" => true, "X" => true, "y" => true, "Y" => true, "z" => true, "Z" => true);
+	protected $_SCAN_AZ_09     = Array("a" => true, "A" => true, "b" => true, "B" => true, "c" => true, "C" => true, "d" => true, "D" => true, "e" => true, "E" => true, "f" => true, "F" => true, "g" => true, "G" => true, "h" => true, "H" => true, "i" => true, "I" => true, "j" => true, "J" => true, "k" => true, "K" => true, "l" => true, "L" => true, "m" => true, "M" => true, "n" => true, "N" => true, "o" => true, "O" => true, "p" => true, "P" => true, "q" => true, "Q" => true, "r" => true, "R" => true, "s" => true, "S" => true, "t" => true, "T" => true, "u" => true, "U" => true, "v" => true, "V" => true, "w" => true, "W" => true, "x" => true, "X" => true, "y" => true, "Y" => true, "z" => true, "Z" => true, "_" => true, "0" => true, "1" => true, "2" => true, "3" => true, "4" => true, "5" => true, "6" => true, "7" => true, "8" => true, "9" => true);
+	protected $_SCAN_NUM       = Array("0" => true, "1" => true, "2" => true, "3" => true, "4" => true, "5" => true, "6" => true, "7" => true, "8" => true, "9" => true);
+	protected $_SCAN_NUM_START = Array("0" => true, "1" => true, "2" => true, "3" => true, "4" => true, "5" => true, "6" => true, "7" => true, "8" => true, "9" => true, "-" => true);
+	protected $_SCAN_CMP       = Array("~" => Array("=" => Array("FIN" => true)), "=" => Array("=" => Array("FIN" => true), "FIN" => true, "~" => Array("FIN" => true, "~" => Array("FIN" => true)), "*" => Array("FIN" => true, "*" => Array("FIN" => true)), "/" => Array("FIN" => true)), "!" => Array("=" => Array("FIN" => true), "~" => Array("FIN" => true, "~" => Array("FIN" => true)), "*" => Array("FIN" => true, "*" => Array("FIN" => true)), "/" => Array("FIN" => true, "/" => Array("FIN" => true))), "<" => Array("=" => Array("FIN" => true), "FIN" => true), ">" => Array("=" => Array("FIN" => true), "FIN" => true), "/" => Array("=" => Array("=" => Array("FIN" => true))));
 
-	protected function parse_const(&$query) {
-		/* integer or float regs[1] (& regs[2] : indicates float) */
-		$reg_id.='(-?[0-9]+([.][0-9]+)?)';
 
-		/* single quoted string regs[3] */
-		$reg_id.="|([']('')*([^']|[^\\\\]['][']|\\\\')*['])";
-
-		/* double quoted string regs[6] */
-		$reg_id.='|("([^"]|\\\\\")*")';
-
-		//$reg_id = '$reg_id)[[:space:]]*';
-
-		if (eregi($reg_id, $query, $regs)) {
-			if (is_numeric($regs[1])) {
-				if (is_numeric($regs[2])) {
+	protected function parse_const(&$YYBUFFER) {
+		$YYCURSOR = 0;
+		while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+			$YYCURSOR++;
+		}
+		$value = '';
+		$yych = $YYBUFFER[$YYCURSOR];
+		switch (true) {
+			case '"' === $yych: 
+			case "'" === $yych:
+				$quote = $yych;
+				$yych = $YYBUFFER[++$YYCURSOR];
+				while ($yych !== "\0" && $yych !== $quote) {
+					if ($yych === "\\") {
+						$yych = $YYBUFFER[++$YYCURSOR];
+						if ($yych !== $quote && $yych != "\\") {
+							$value .= "\\";
+						}
+					}
+					$value .= $yych;
+					$yych = $YYBUFFER[++$YYCURSOR];
+				}
+				$YYBUFFER = substr($YYBUFFER, $YYCURSOR + 1);
+				$node["id"] = "string";
+				$node["type"] = ($quote === '"') ? "double" : "single";
+				$node["value"] = "'".AddSlashes($value)."'";
+				return $node;
+			break;
+			case $this->_SCAN_NUM_START[$yych]:
+				$value = $yych;
+				$yych = $YYBUFFER[++$YYCURSOR];
+				while (isset($this->_SCAN_NUM[$yych])) {
+					$value .= $yych;
+					$yych = $YYBUFFER[++$YYCURSOR];
+				}
+				if ($yych === '.') {
+					$value .= $yych;
+					$yych = $YYBUFFER[++$YYCURSOR];
+					while (isset($this->_SCAN_NUM[$yych])) {
+						$value .= $yych;
+						$yych = $YYBUFFER[++$YYCURSOR];
+					}
 					$node["id"]="float";
-					$node["value"]=(float)$regs[1];
+					$node["value"]=(float)$value;
 				} else {
 					$node["id"]="int";
-					$node["value"]=(int)$regs[1];
+					$node["value"]=(int)$value;;
 				}
-			} else if ($str=$regs[3]) { 
-				$node["id"]="string";
-				$node["type"]="single";
-				$node["value"]="'".substr($str, 1, -1)."'";
-			} else if ($str=$regs[6]) {
-				$node["id"]="string";
-				$node["type"]="single";
-				$value=substr($str, 1, -1);
-				$value = ereg_replace('([^\\]\\")', '"', $value); 
-				$value = str_replace("'", AddSlashes("'"), $value);
-				$node["value"] = "'$value'";
-			}
-
-			$query=substr($query, strlen($regs[0]));
-		} else {
-			$this->error="could not find constant at '$query'";
+				$YYBUFFER = substr($YYBUFFER, $YYCURSOR);
+				return $node;
+			break;
 		}
-		return $node;
 	}
 
-	protected function parse_ident(&$query) {
+	protected function parse_ident(&$YYBUFFER) {
 		/* parse identifier regs 1,2 and 3
 
 			reg[1]: tablename
@@ -59,71 +80,127 @@ abstract class sql_compiler {
 		$reg_id='^[[:space:]]*(([a-z_][a-z0-9_]*)(:[a-z]+)?([.][a-z_][a-z0-9_]*)?([.][a-z_][a-z0-9_]*)?)';
 		$reg_id.='[[:space:]]*';
 
-		if (eregi($reg_id, $query, $regs) && $regs[1]) {
-			$match_1   = $regs[2];
-			$record_id = substr($regs[3], 1);
-			$match_2   = substr($regs[4], 1);
-			$match_3   = substr($regs[5], 1);
-			if (!$match_2) {
-				/* default table is 'object' */
-				$match_2 = $match_1;
-				$match_1 = "object";
-			}
-			$node["id"]="ident";
-
-			$table=$match_1;
-			$field=$match_2;
-			if ($table=="object") {
-				switch ($field) {
-					case "implements":
-						$node["id"]="implements";
-					break;
-					case "path":
-					case "parent":
-					case "priority":
-						$node["table"]="nodes";
-						$node["field"]=$field;
-					break;
-					default:
-						$node["table"]="objects";
-						$node["field"]=$field;
-				}
-			} else
-			if ($table == "my") {
-				$node["id"] = "custom";
-				if ($match_3) {
-					$node["nls"] = $field;
-					$field = $match_3;
-				}
-				$node["field"] = $field;
-				$node["record_id"] = $record_id;
-			} else {
-				$node["id"]="property";
-				if ($match_3) {
-					$node["nls"] = $field;
-					$field = $match_3;
-				}
-				$node["table"]="prop_".$table;
-				$node["field"]="AR_".$field;
-				$node["record_id"] = $record_id;
-			}
-			$query=substr($query, strlen($regs[0]));
-		} else {
-			$this->error="could not find identifier at '$query'";
+		$YYCURSOR = 0;
+		while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+			$YYCURSOR++;
 		}
+		$value = '';
+		$yych = $YYBUFFER[$YYCURSOR];
+
+		if ($this->_SCAN_AZ[$yych]) {
+			$value .= $yych;
+			$yych = $YYBUFFER[++$YYCURSOR];
+			while (isset($this->_SCAN_AZ_09[$yych])) {
+				$value .= $yych;
+				$yych = $YYBUFFER[++$YYCURSOR];
+			}
+			$match_1 = $value; $value = '';
+			if ($yych === ':') {
+				$yych = $YYBUFFER[++$YYCURSOR];
+				while (isset($this->_SCAN_AZ[$yych])) {
+					$value .= $yych;
+					$yych = $YYBUFFER[++$YYCURSOR];
+				}
+				$record_id = $value; $value = '';
+			}
+			if ($yych === '.') {
+				$yych = $YYBUFFER[++$YYCURSOR];
+				if ($this->_SCAN_AZ[$yych]) {
+					$value .= $yych;
+					$yych = $YYBUFFER[++$YYCURSOR];
+					while (isset($this->_SCAN_AZ_09[$yych])) {
+						$value .= $yych;
+						$yych = $YYBUFFER[++$YYCURSOR];
+					}
+				}
+				$match_2 = $value; $value = '';
+			}
+			if ($yych === '.') {
+				$yych = $YYBUFFER[++$YYCURSOR];
+				if ($this->_SCAN_AZ[$yych]) {
+					$value .= $yych;
+					$yych = $YYBUFFER[++$YYCURSOR];
+					while (isset($this->_SCAN_AZ_09[$yych])) {
+						$value .= $yych;
+						$yych = $YYBUFFER[++$YYCURSOR];
+					}
+				}
+				$match_3 = $value; $value = '';
+			}
+
+		}
+
+
+		if (!$match_2) {
+			/* default table is 'object' */
+			$match_2 = $match_1;
+			$match_1 = "object";
+		}
+		$node["id"]="ident";
+
+		$table=$match_1;
+		$field=$match_2;
+		if ($table=="object") {
+			switch ($field) {
+				case "implements":
+					$node["id"]="implements";
+				break;
+				case "path":
+				case "parent":
+				case "priority":
+					$node["table"]="nodes";
+					$node["field"]=$field;
+				break;
+				default:
+					$node["table"]="objects";
+					$node["field"]=$field;
+			}
+		} else
+		if ($table === "my") {
+			$node["id"] = "custom";
+			if ($match_3) {
+				$node["nls"] = $field;
+				$field = $match_3;
+			}
+			$node["field"] = $field;
+			$node["record_id"] = $record_id;
+		} else {
+			$node["id"]="property";
+			if ($match_3) {
+				$node["nls"] = $field;
+				$field = $match_3;
+			}
+			$node["table"]="prop_".$table;
+			$node["field"]="AR_".$field;
+			$node["record_id"] = $record_id;
+		}
+		$YYBUFFER = substr($YYBUFFER, $YYCURSOR);
 		return $node;
 	}
 
-	protected function parse_cmp_expr(&$query) {
-		$result=$this->parse_ident($query);
+	protected function parse_cmp_expr(&$YYBUFFER) {
+		$result=$this->parse_ident($YYBUFFER);
 		if ($result) {
-			$reg_cmp_op='^[[:space:]]*(~=|==?|\\!=|<=|>=|<|>|=~|=~~|!~|!~~|=\\*|!\\*|=\\*\\*|!\\*\\*|=/|/==|!/|!//)[[:space:]]*';
-			if (eregi($reg_cmp_op, $query, $regs)) {
+			$YYCURSOR = 0;
+			while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+				$YYCURSOR++;
+			}
+			$yych = $YYBUFFER[$YYCURSOR];
+			$YYCURSOR_START = $YYCURSOR;
+			$RULES = &$this->_SCAN_CMP;
+			while (isset($RULES[$yych])) {
+				$RULES = &$RULES[$yych];
+				if (isset($RULES['FIN'])) {
+					$YYMATCH = $YYCURSOR;
+				}
+				$yych = $YYBUFFER[++$YYCURSOR];
+			}
+			if (isset($YYMATCH)) {
 					$node["id"]="cmp";
-					$node["operator"]=$regs[1];
+					$node["operator"]=substr($YYBUFFER, $YYCURSOR_START, ($YYMATCH + 1) - $YYCURSOR_START);
 					$node["left"]=$result;
-					$query=substr($query, strlen($regs[0]));
-					$result=$this->parse_const($query);
+					$YYBUFFER = substr($YYBUFFER, $YYCURSOR);
+					$result=$this->parse_const($YYBUFFER);
 					if ($result) {
 						$node["right"]=$result;
 					}
@@ -135,92 +212,144 @@ abstract class sql_compiler {
 		return $result;
 	}
 
-	protected function parse_group_expr(&$query) {
-		if (eregi('^[[:space:]]*([(])[[:space:]]*', $query, $regs)) {
-			$query=substr($query, strlen($regs[0]));
-			$result=$this->parse_or_expr($query);
-			if (eregi('^[[:space:]]*([)])', $query, $regs)) {
-				$query=substr($query, strlen($regs[0]));
+	protected function parse_group_expr(&$YYBUFFER) {
+		$YYCURSOR = 0;
+		while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+			$YYCURSOR++;
+		}
+		$yych = $YYBUFFER[$YYCURSOR++];
+		if ($yych === '(') {
+			$YYBUFFER = substr($YYBUFFER, $YYCURSOR);
+			$result = $this->parse_or_expr($YYBUFFER);
+			$YYCURSOR = 0;
+			while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+				$YYCURSOR++;
+			}
+			$yych = $YYBUFFER[$YYCURSOR++];
+			if ($yych === ')') {
+				$YYBUFFER = substr($YYBUFFER, $YYCURSOR);
 				$node["id"]="group";
 				$node["left"]=$result;
 				$result=$node;
 			} else {
 				unset($result);
-				$this->error="missing closing group sign near '$query'";
+				$this->error = "missing closing group sign near '$YYBUFFER'";
 			}
 		} else {
-			$result=$this->parse_cmp_expr($query);
+			$result = $this->parse_cmp_expr($YYBUFFER);
 		}
 		return $result;
 	}
 
-	protected function parse_and_expr(&$query) {
-		$result=$this->parse_group_expr($query);
-		while ($result && eregi('^[[:space:]]*(and)', $query, $regs) && $regs[1]) {
-			$query=substr($query, strlen($regs[0]));
-			$right=$this->parse_group_expr($query);
-			if ($right) {
-				unset($node);
-				$node["id"]="and";
-				$node["left"]=$result;
-				$node["right"]=$right; 
-				$result=$node;
-			} else {
-				unset($result);
+	protected function parse_and_expr(&$YYBUFFER) {
+		$result=$this->parse_group_expr($YYBUFFER);
+		while (is_array($result)) {
+			$YYCURSOR = 0;
+			while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+				$YYCURSOR++;
 			}
-		}
-		return $result;
-	}
-
-	protected function parse_or_expr(&$query) {
-		$result=$this->parse_and_expr($query);
-		while ($result && eregi('^[[:space:]]+(or)[[:space:]]+', $query, $regs)) {
-			$query=substr($query, strlen($regs[0]));
-			$right=$this->parse_and_expr($query);
-			if ($right) {
-				unset($node);
-				$node["id"]="or";
-				$node["left"]=$result;
-				$node["right"]=$right; 
-				$result=$node;
-			} else {
-				unset($result);
-			}
-		}
-
-		return $result;
-	}
-
-	protected function parse_orderby(&$query) {
-		$field=$this->parse_ident($query);
-		$reg_sort_type='^[[:space:]]*(ASC|DESC)';
-		if (eregi($reg_sort_type, $query, $regs)) {
-			$sort_type=$regs[1];
-			$query=substr($query, strlen($regs[0]));
-		} else {
-			$sort_type="ASC";	// default
-		}
-		while ($field) {
-			$node["id"]="orderbyfield";
-			if ($sort_type) {
-				$node["type"]=$sort_type;
-				$node["right"]=$field;
-				$node["left"]=$result;
-				$result=$node;
-				$sort_type="";
-			}
-			if (eregi('^[[:space:]]*[,]', $query, $regs)) {
-				$query=substr($query, strlen($regs[0]));
-				$field=$this->parse_ident($query);
-				$reg_sort_type='[[:space:]]*(ASC|DESC)';
-				if (eregi($reg_sort_type, $query, $regs)) {
-					$sort_type=$regs[1];
-					$query=substr($query, strlen($regs[0]));
+			$ident = strtolower(substr($YYBUFFER, $YYCURSOR, 3));
+			if ($ident === 'and' && isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR + 3]])) {
+				$YYBUFFER = substr($YYBUFFER, $YYCURSOR + 3);
+				$right = $this->parse_group_expr($YYBUFFER);
+				if (is_array($right)) {
+					$result = Array(
+						'id' => $ident,
+						'left' => $result,
+						'right' => $right
+					);
 				} else {
-					$sort_type="ASC";	// default
+					unset($result);
 				}
 			} else {
+				break;
+			}
+		}
+		return $result;
+	}
+
+	protected function parse_or_expr(&$YYBUFFER) {
+		$result=$this->parse_and_expr($YYBUFFER);
+		while (is_array($result)) {
+			$YYCURSOR = 0;
+			while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+				$YYCURSOR++;
+			}
+			$ident = strtolower(substr($YYBUFFER, $YYCURSOR, 2));
+			if ($ident === 'or' && isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR + 2]])) {
+				$YYBUFFER = substr($YYBUFFER, $YYCURSOR + 2);
+				$right = $this->parse_and_expr($YYBUFFER);
+				if (is_array($right)) {
+					$result = Array(
+						'id' => $ident,
+						'left' => $result,
+						'right' => $right
+					);
+				} else {
+					unset($result);
+				}
+			} else {
+				break;
+			}
+		}
+		return $result;
+	}
+
+	protected function parse_orderby(&$YYBUFFER) {
+		$field = $this->parse_ident($YYBUFFER);
+		$reg_sort_type = '^[[:space:]]*(ASC|DESC)';
+
+		$YYCURSOR = 0;
+		while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+			$YYCURSOR++;
+		}
+		$value = '';
+		$yych  = $YYBUFFER[$YYCURSOR];
+		if ($this->_SCAN_AZ[$yych]) {
+			$value .= $yych;
+			$yych = $YYBUFFER[++$YYCURSOR];
+			while (isset($this->_SCAN_AZ[$yych])) {
+				$value .= $yych;
+				$yych = $YYBUFFER[++$YYCURSOR];
+			}
+			$sort_type = strtoupper($value);
+		} else {
+			$sort_type = 'ASC';
+		}
+		while (is_array($field)) {
+			$result = Array(
+				'id' => 'orderbyfield',
+				'type' => $sort_type,
+				'right' => $field,
+				'left' => $result
+			);
+			while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+				$YYCURSOR++;
+			}
+			$yych  = $YYBUFFER[$YYCURSOR];
+			if ($yych !== ',') {
+				$YYBUFFER = substr($YYBUFFER, $YYCURSOR);
 				unset($field);
+			} else {
+				$YYBUFFER = substr($YYBUFFER, $YYCURSOR + 1);
+				$field = $this->parse_ident($YYBUFFER);
+				$YYCURSOR = 0;
+				while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
+					$YYCURSOR++;
+				}
+				$value = '';
+				$yych  = $YYBUFFER[$YYCURSOR];
+				if ($this->_SCAN_AZ[$yych]) {
+					$value .= $yych;
+					$yych = $YYBUFFER[++$YYCURSOR];
+					while (isset($this->_SCAN_AZ[$yych])) {
+						$value .= $yych;
+						$yych = $YYBUFFER[++$YYCURSOR];
+					}
+					$sort_type = strtoupper($value);
+				} else {
+					$sort_type = 'ASC';
+				}
 			}
 		}
 		return $result;
@@ -244,11 +373,55 @@ abstract class sql_compiler {
 	}
 
 	protected function parse_query(&$query) {
+
 		if (!eregi('^[[:space:]]*order[[:space:]]*by[[:space:]]+', $query, $regs)) {
 			$result=$this->parse_or_expr($query);
 		} else {
 			$no_selection = true;
 		}
+
+/*
+		$YYCURSOR = 0;
+		while ($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]]) {
+			$YYCURSOR++;
+		}
+
+		$yych  = $YYBUFFER[$YYCURSOR];
+		if ($this->_SCAN_AZ[$yych]) {
+			$value = $yych;
+			$yych  = $YYBUFFER[++$YYCURSOR];
+			while ($this->_SCAN_AZ[$yych]) {
+				$value .= $yych;
+				$yych = $YYBUFFER[++$YYCURSOR];
+			}
+			$value = strtolower($value);
+			if ($value === 'order') {
+				while ($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]]) {
+					$YYCURSOR++;
+				}
+				$yych  = $YYBUFFER[$YYCURSOR];
+				if ($this->_SCAN_AZ[$yych]) {
+					$value = $yych;
+					$yych  = $YYBUFFER[++$YYCURSOR];
+					while ($this->_SCAN_AZ[$yych]) {
+						$value .= $yych;
+						$yych = $YYBUFFER[++$YYCURSOR];
+					}
+					$value = strtolower($value);
+					if ($value === 'by') {
+						$YYBUFFER = substr($YYBUFFER, $YYCURSOR;
+						$result = $this->parse_or_expr($YYBUFFER);
+						$YYCURSOR = 0;
+						$value = '';
+					} else {
+						$this->error = "syntax error near: $YYBUFFER";
+						return false;
+					}
+				}				
+			}
+		}
+
+*/		
 
 		if (eregi('^[[:space:]]*join[[:space:]]*target[[:space:]]*on[[:space:]]*', $query, $regs)) {
 			$this->join_target_properties = Array();
@@ -286,24 +459,20 @@ abstract class sql_compiler {
 		debug("sql_compiler::compile ($path, $query, $limit, $offset)", "store");
 		$this->error="";
 		$this->path = $path;
-		$compiled_query=$this->cache[$query];
 
 		$this->limit=$limit;
 		$this->offset=$offset;
 
-		if (!$compiled_query) {
-			$cache_query=$query;
-			$tree=$this->parse_query($query);
-			if (!$this->error && trim($query)) {
-				$this->error="unkown operator near '$query'";
-				$result="";
-			} else {
-				if ($tree) {
-					$compiled_query=$this->priv_sql_compile($tree);
-					$this->cache[$cache_query]=$compiled_query;
-				}
+		$tree=$this->parse_query($query);
+		if (!$this->error && trim($query)) {
+			$this->error="unkown operator near '$query'";
+			$result="";
+		} else {
+			if ($tree) {
+				$compiled_query=$this->priv_sql_compile($tree);
 			}
 		}
+//		echo "\nquery: $cp_query\n";
 		return $compiled_query;
 	}
 
