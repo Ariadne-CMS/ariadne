@@ -181,7 +181,7 @@ class pphoto extends pfile { // pphoto class definition
 
 		$this->set_context("mogrify");
 
-		$ARConfig->photoStack[$this->id][]=" -crop ".((int)$width)."x".((int)$height)."+".((int)$x)."+".((int)$y);
+		$ARConfig->photoStack[$this->id][]=" -crop ".((int)$width)."x".((int)$height)."+".((int)$x)."+".((int)$y)."! +repage";
 		return true;
 	} 
 
