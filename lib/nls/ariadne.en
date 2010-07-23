@@ -54,6 +54,7 @@
 	$ARnls["ariadne:childrenonly"]				=	"Children only";
 	$ARnls["ariadne:currentobjectonly"]			=	"Current object only";
 	$ARnls["ariadne:currentandchildren"]		=	"Current object and children";
+	$ARnls['ariadne:change_priority']			=	"Change priority";
 
 	$ARnls['ariadne:svn']						= "SVN";
 	$ARnls['ariadne:svn:checkunder']                = "Checkunder";

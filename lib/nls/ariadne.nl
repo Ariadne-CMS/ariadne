@@ -53,6 +53,7 @@
 	$ARnls["ariadne:childrenonly"]				=	"Alleen kinderen";
 	$ARnls["ariadne:currentobjectonly"]			=	"Alleen het huidige object";
 	$ARnls["ariadne:currentandchildren"]		=	"Huidig object met kinderen";
+	$ARnls["ariadne:change_priority"]			=	"Zet prioriteit";
 
 	$ARnls['ariadne:svn']						= "SVN";
 	$ARnls['ariadne:svn:checkunder']				= 	"Checkunder";
