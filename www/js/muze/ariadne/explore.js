@@ -29,6 +29,7 @@ muze.ariadne.explore = function() {
 			'edit_object_nls'		: windowprops_common + ',height=350,width=450',
 			'edit_priority'			: windowprops_common + ',height=220,width=400',
 			'edit_object_grantkey'	: windowprops_common + ',height=330,width=400',
+			'edit_object_mogrify'	: windowprops_common + ',height=240,width=400',
 			'edit_object_owner'		: windowprops_common + ',height=260,width=400',
 			'view_fonts'			: windowprops_common + ',height=300,width=450',
 			'help'				: windowprops_full,

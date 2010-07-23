@@ -70,7 +70,7 @@
 		if ($this->CheckSilent("admin")) {
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() . "dialog.mogrify.php",
-				'onclick' => "muze.ariadne.explore.arshow('object_fs',this.href); return false;",
+				'onclick' => "muze.ariadne.explore.arshow('edit_object_mogrify',this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/mogrify.png',
 				'nlslabel' => $ARnls['ariadne:mogrify']			
 			);

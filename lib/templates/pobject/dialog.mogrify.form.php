@@ -16,7 +16,7 @@
 	<legend><?php echo $ARnls["ariadne:mogrify"]; ?></legend>
 	<div class="field">
 		<label for="target" class="required" style="float: left; width: 65px; margin-top: 5px;"><?php echo $ARnls["ariadne:type"]; ?></label>
-		<select name="type">
+		<select class="selectline" name="type">
 		<?php
 			foreach ( $ARCurrent->arTypeNames as $typeValue => $typeName ) {
 				echo '<option value="'.$typeValue.'"';
@@ -30,7 +30,7 @@
 	</div>
 	<div class="field">
 		<label for="target" class="required" style="float: left; width: 65px; margin-top: 5px;"><?php echo $ARnls["ariadne:vtype"]; ?></label>
-		<select name="vtype">
+		<select class="selectline" name="vtype">
 		<?php
 			foreach ( $ARCurrent->arTypeNames as $typeValue => $typeName ) {
 				if (strpos(".", $typeValue)===false) {
