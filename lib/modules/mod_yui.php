@@ -186,6 +186,8 @@
 					
 					if( is_array($item['submenu']) ) {
 						$submenu = self::yui_menuitems($item['submenu'], "yuimenu");
+					} else {
+						$submenu = false;
 					}
 					$nodes[] = ar_html::tag("li", array("class" => $menuname."item"), $a, $submenu);
 				}
