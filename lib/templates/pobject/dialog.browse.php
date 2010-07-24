@@ -42,7 +42,7 @@
 		if ($this->CheckSilent("add",ARANYTYPE) && !$hideAdd) {
 			$menuitems[] = array(
 				'href' => $this->make_ariadne_url() ."dialog.add.php",
-				'onclick' => "muze.ariadne.explore.arshow('edit_object_data',this.href); return false;",
+				'onclick' => "muze.ariadne.explore.arshow('dialog.add',this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/add.png',
 				'nlslabel' => $ARnls['ariadne:new']
 			);

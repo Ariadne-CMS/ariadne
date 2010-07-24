@@ -18,7 +18,7 @@
 		$info['size'] = $this->size;
 
 		if ($this->CheckSilent("edit")) {
-			$info['priority'] = "<a href=\"javascript:muze.ariadne.explore.arshow('edit_priority','" . $this->make_ariadne_url() . "dialog.priority.php')\" title=\"". $ARnls['change_priority'] . "\">" . $this->priority . "</a>";
+			$info['priority'] = "<a href=\"javascript:muze.ariadne.explore.arshow('dialog.priority','" . $this->make_ariadne_url() . "dialog.priority.php')\" title=\"". $ARnls['change_priority'] . "\">" . $this->priority . "</a>";
 		} else {
 			$info['priority'] = $this->priority;
 		}

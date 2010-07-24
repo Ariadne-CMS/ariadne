@@ -28,7 +28,7 @@
 				'label' => $ARnls['ariadne:preferences'],
 				'iconalt' => $ARnls['ariadne:preferences'],
 				'icon' => $AR->dir->images . 'icons/small/preferences.png',
-				'onclick' => "muze.ariadne.explore.arshow('edit_preferences','" . $this->store->root.$AR->user->path . "dialog.preferences.php'); return false;",
+				'onclick' => "muze.ariadne.explore.arshow('dialog.preferences','" . $this->store->root.$AR->user->path . "dialog.preferences.php'); return false;",
 				'href' => $this->make_ariadne_url($AR->user->path) . "dialog.preferences.php"
 			),
 			array(
@@ -62,7 +62,7 @@
 					),
 					array(
 						'href' => "#",
-						'onclick' => "muze.ariadne.explore.arshow('help_about','help.about.php'); return false;" ,
+						'onclick' => "muze.ariadne.explore.arshow('help.about','help.about.php'); return false;" ,
 						'label' => $ARnls['ariadne:about']
 					)
 				)

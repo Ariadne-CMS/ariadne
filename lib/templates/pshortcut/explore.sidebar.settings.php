@@ -13,7 +13,7 @@
 		if ($this->CheckSilent("layout")) {
 			$task = array(
 				'href' => $this->make_ariadne_url() . "dialog.templates.php",
-				'onclick' => "muze.ariadne.explore.arshow('edit_object_layout', this.href); return false;",
+				'onclick' => "muze.ariadne.explore.arshow('dialog.templates', this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/templates.png',
 				'nlslabel' => $ARnls['templates']
 			);
@@ -24,7 +24,7 @@
 
 			$task = array(
 				'href' => $this->make_ariadne_url() . "dialog.custom.php",
-				'onclick' => "muze.ariadne.explore.arshow('edit_object_custom',this.href); return false;",
+				'onclick' => "muze.ariadne.explore.arshow('dialog.custom',this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/customfields.png',
 				'nlslabel' => $ARnls["m_custom"]
 			);
@@ -35,7 +35,7 @@
 
 			$task = array(
 				'href' => $this->make_ariadne_url() . "dialog.language.php",
-				'onclick' => "muze.ariadne.explore.arshow('edit_object_nls',this.href); return false;",
+				'onclick' => "muze.ariadne.explore.arshow('dialog.language',this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/language.png',
 				'nlslabel' => $ARnls['language']
 			);
@@ -48,7 +48,7 @@
 		if ($this->CheckSilent("config")) {
 			$task = array(
 				'href' => $this->make_ariadne_url() . "dialog.grants.php",
-				'onclick' => "muze.ariadne.explore.arshow('edit_object_grants',this.href); return false;",
+				'onclick' => "muze.ariadne.explore.arshow('dialog.grants',this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/grants.png',
 				'nlslabel' => $ARnls['grants']
 			);
@@ -58,7 +58,7 @@
 			$settings[] = $task;
 			$task = array(
 				'href' => $this->make_ariadne_url() . "dialog.owner.php",
-				'onclick' => "muze.ariadne.explore.arshow('edit_object_owner', this.href); return false;",
+				'onclick' => "muze.ariadne.explore.arshow('dialog.owner', this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/owner.png',
 				'nlslabel' => $ARnls['owner']
 			);
@@ -68,7 +68,7 @@
 		if ($this->CheckSilent("edit")) {
 			$task = array(
 				'href' => $this->make_ariadne_url() . "dialog.priority.php",
-				'onclick' => "muze.ariadne.explore.arshow('edit_priority',this.href); return false;",
+				'onclick' => "muze.ariadne.explore.arshow('dialog.priority',this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/priority.png',
 				'nlslabel' => $ARnls['priority']
 			);

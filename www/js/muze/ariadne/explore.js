@@ -9,18 +9,66 @@ muze.require("muze.util.splitpane");
 muze.ariadne.explore = function() {
 	var windowprops_common = 'resizable';
 	var windowprops_full = 'directories,location,menubar,status,toolbar,resizable,scrollbars';
+	var windowsize_small = ",height=230,width=400";
+	var windowsize_large = ",height=475,width=550";
 
 	return {
 		// Array to store YAHOO.Util.Connect objects.
 		loaders : Array(),
 		authenticate_panel : null,
 		windowprops : {
-			'object_fs'				: windowprops_common + ',height=230,width=400',
-			'object_new'			: windowprops_common + ',height=360,width=450',
+			'dialog.add' 			: windowprops_common + windowsize_large,
+			'dialog.edit' 			: windowprops_common + windowsize_large,
+			'dialog.edit.shortcut'		: windowprops_common + windowsize_large,
+			'dialog.rename'			: windowprops_common + windowsize_small,
+			'dialog.copy'			: windowprops_common + windowsize_small,
+			'dialog.link'			: windowprops_common + windowsize_small,
+			'dialog.delete'			: windowprops_common + windowsize_small,
+			'dialog.mogrify'		: windowprops_common + ',height=250,width=400',
+			'dialog.import'			: windowprops_common + windowsize_large,
+			'dialog.export'			: windowprops_common + windowsize_large,
+
+
+			'dialog.svn.tree.info'		: windowprops_common + windowsize_large,
+			'dialog.svn.tree.diff'		: windowprops_common + windowsize_large,
+			'dialog.svn.tree.commit'	: windowprops_common + windowsize_large,
+			'dialog.svn.tree.revert'	: windowprops_common + windowsize_large,
+			'dialog.svn.tree.update'	: windowprops_common + windowsize_large,
+			'dialog.svn.tree.unsvn'		: windowprops_common + windowsize_large,
+			'dialog.svn.tree.checkout'	: windowprops_common + windowsize_large,
+			'dialog.svn.tree.import'	: windowprops_common + windowsize_large,
+
+			'dialog.svn.templates.resolved'	: windowprops_common + windowsize_large,
+			'dialog.svn.templates.diff'	: windowprops_common + windowsize_large,
+			'dialog.svn.templates.commit'	: windowprops_common + windowsize_large,
+			'dialog.svn.templates.revert'	: windowprops_common + windowsize_large,
+			'dialog.svn.templates.update'	: windowprops_common + windowsize_large,
+			'dialog.svn.templates.delete'	: windowprops_common + windowsize_large,
+			'dialog.svn.templates.unsvn'	: windowprops_common + windowsize_large,
+			'dialog.svn.templates.checkout'	: windowprops_common + windowsize_large,
+			'dialog.svn.templates.import'	: windowprops_common + windowsize_large,
+
+			'dialog.priority'		: windowprops_common + windowsize_small,
+
+			// FIXME: The dialog sizes should be as consistent as possible, not all different sizes.
+			'dialog.cache'			: windowprops_common + ',height=350,width=500',
+			'dialog.templates'		: windowprops_common + ',height=400,width=700',
+			'dialog.custom'			: windowprops_common + ',height=300,width=625',
+			'dialog.language'		: windowprops_common + ',height=350,width=450',
+			'dialog.grants'			: windowprops_common + ',height=570,width=950',
+			'dialog.owner'			: windowprops_common + ',height=260,width=400',
+			'dialog.grantkey'		: windowprops_common + ',height=330,width=400',
+			'dialog.preferences'		: windowprops_common + ',height=400,width=500',
+			'dialog.search'			: windowprops_common + ',height=500,width=700',
+			'help.about'			: windowprops_common + ',height=375,width=600',
+
+			'help'				: windowprops_full,
+			'_new'				: windowprops_full
+
+			// Deprecated window names.
 			'edit_find'				: windowprops_common + ',height=500,width=700',
 			'edit_preferences'		: windowprops_common + ',height=400,width=500',
 			'edit_object_data'		: windowprops_common + ',height=475,width=550',
-			'edit_object_cache'		: windowprops_common + ',height=350,width=500',
 			'edit_object_layout'	: windowprops_common + ',height=400,width=700',
 			'edit_object_custom'	: windowprops_common + ',height=300,width=625',
 			'edit_object_shortcut'	: windowprops_common + ',height=475,width=550',
@@ -181,7 +229,7 @@ muze.ariadne.explore = function() {
 			muze.ariadne.explore.browseheader.view(path);
 		},
 		arEdit : function(object, arguments) {
-			muze.ariadne.explore.arshow('edit_object_data',this.store_root+object+'edit.object.data.phtml', arguments);
+			muze.ariadne.explore.arshow('dialog.edit',this.store_root+object+'dialog.edit.php', arguments);
 		},
 		arshow : function (windowname, link, arguments) {
 			properties=muze.ariadne.explore.windowprops[windowname];
@@ -465,7 +513,7 @@ muze.ariadne.explore.toolbar = function() {
 			muze.ariadne.explore.view(path);
 		},
 		searchwindow : function() {
-			muze.ariadne.explore.arshow('edit_find', top.muze.ariadne.registry.get('store_root')+top.muze.ariadne.registry.get('path')+'dialog.search.php');
+			muze.ariadne.explore.arshow('dialog.search', top.muze.ariadne.registry.get('store_root')+top.muze.ariadne.registry.get('path')+'dialog.search.php');
 		}
 	}
 }();
@@ -498,7 +546,7 @@ muze.ariadne.explore.sidebar = function() {
 			}
 		},
 		arEdit : function(object, arguments) {
-			muze.ariadne.explore.arshow('edit_object_data',top.muze.ariadne.registry.get("store_root")+object+'edit.object.data.phtml', arguments);
+			muze.ariadne.explore.arshow('dialog.edit',top.muze.ariadne.registry.get("store_root")+object+'dialog.edit.php', arguments);
 		},
 		removeFromCookie : function(section){
 			if (muze.ariadne.explore.sidebar.invisibleSections[section]) {

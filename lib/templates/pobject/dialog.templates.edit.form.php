@@ -98,15 +98,15 @@
 						<div id="svn" class="yuimenu">
 							<div class="bd">
                                 <ul class="first-of-type">
-                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.commit.php?type=<?php echo rawurlencode($type); ?>&function=<?php echo rawurlencode($function); ?>&language=<?php echo rawurlencode($language);?>" onclick="muze.ariadne.explore.arshow('edit_object_data', this.href); return false;"><?php echo $ARnls["ariadne:svn:commit"]; ?></a></li>
-                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.update.php?type=<?php echo rawurlencode($type); ?>&function=<?php echo rawurlencode($function); ?>&language=<?php echo rawurlencode($language);?>" onclick="muze.ariadne.explore.arshow('edit_object_data', this.href); return false;"><?php echo $ARnls["ariadne:svn:update"]; ?></a></li>
-                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.diff.php?type=<?php echo rawurlencode($type); ?>&function=<?php echo rawurlencode($function); ?>&language=<?php echo rawurlencode($language);?>" onclick="muze.ariadne.explore.arshow('edit_object_data', this.href); return false;"><?php echo $ARnls["ariadne:svn:diff"]; ?></a></li>
-                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.revert.php?type=<?php echo rawurlencode($type); ?>&function=<?php echo rawurlencode($function); ?>&language=<?php echo rawurlencode($language);?>" onclick="muze.ariadne.explore.arshow('edit_object_data', this.href); return false;"><?php echo $ARnls["ariadne:svn:revert"]; ?></a></li>
-                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.delete.php?type=<?php echo rawurlencode($type); ?>&function=<?php echo rawurlencode($function); ?>&language=<?php echo rawurlencode($language);?>" onclick="muze.ariadne.explorer.arshow('edit_object_data', this.href); return false;"><?php echo $ARnls["ariadne:svn:delete"]; ?></a></li>
+                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.commit.php?type=<?php echo rawurlencode($type); ?>&function=<?php echo rawurlencode($function); ?>&language=<?php echo rawurlencode($language);?>" onclick="muze.ariadne.explore.arshow('dialog.svn.templates.commit', this.href); return false;"><?php echo $ARnls["ariadne:svn:commit"]; ?></a></li>
+                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.update.php?type=<?php echo rawurlencode($type); ?>&function=<?php echo rawurlencode($function); ?>&language=<?php echo rawurlencode($language);?>" onclick="muze.ariadne.explore.arshow('dialog.svn.templates.update', this.href); return false;"><?php echo $ARnls["ariadne:svn:update"]; ?></a></li>
+                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.diff.php?type=<?php echo rawurlencode($type); ?>&function=<?php echo rawurlencode($function); ?>&language=<?php echo rawurlencode($language);?>" onclick="muze.ariadne.explore.arshow('dialog.svn.templates.diff', this.href); return false;"><?php echo $ARnls["ariadne:svn:diff"]; ?></a></li>
+                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.revert.php?type=<?php echo rawurlencode($type); ?>&function=<?php echo rawurlencode($function); ?>&language=<?php echo rawurlencode($language);?>" onclick="muze.ariadne.explore.arshow('dialog.svn.templates.revert', this.href); return false;"><?php echo $ARnls["ariadne:svn:revert"]; ?></a></li>
+                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.delete.php?type=<?php echo rawurlencode($type); ?>&function=<?php echo rawurlencode($function); ?>&language=<?php echo rawurlencode($language);?>" onclick="muze.ariadne.explorer.arshow('dialog.svn.templates.delete', this.href); return false;"><?php echo $ARnls["ariadne:svn:delete"]; ?></a></li>
 							<?php
 									if( $svn_status[$filename] ) {
 							?>
-                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.resolved.php?type=<?php echo rawurlencode($type); ?>&function=<?php echo rawurlencode($function); ?>&language=<?php echo rawurlencode($language);?>" onclick="muze.ariadne.explorer.arshow('edit_object_data', this.href); return false;"><?php echo $ARnls["ariadne:svn:resolved"]; ?></a></li>
+                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.resolved.php?type=<?php echo rawurlencode($type); ?>&function=<?php echo rawurlencode($function); ?>&language=<?php echo rawurlencode($language);?>" onclick="muze.ariadne.explorer.arshow('dialog.svn.templates.resolved', this.href); return false;"><?php echo $ARnls["ariadne:svn:resolved"]; ?></a></li>
 							<?php
 									}
 							?>    
@@ -119,7 +119,7 @@
 	if( $this->CheckSilent("config") ) {
 ?>
 					<li class="yuimenubaritem">
-						 <a class="yuimenubaritemlabel" href="dialog.grantkey.php" onclick="muze.ariadne.explore.arshow('edit_object_grantkey', this.href); return false;">
+						 <a class="yuimenubaritemlabel" href="dialog.grantkey.php" onclick="muze.ariadne.explore.arshow('dialog.grantkey', this.href); return false;">
 							<?php echo $ARnls['ariadne:grantkey']; ?>
 						 </a>
 					</li>

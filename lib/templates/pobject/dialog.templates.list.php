@@ -97,17 +97,17 @@
 <?php
 		if ($svn_info['Revision']) {
 ?>
-                                                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.tree.info.php" onclick="muze.ariadne.explore.arshow('edit_object_data', this.href); return false;"><?php echo $ARnls["ariadne:svn:info"]; ?></a></li>
-                                                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.diff.php" onclick="muze.ariadne.explore.arshow('edit_object_data', this.href); return false;"><?php echo $ARnls["ariadne:svn:diff"]; ?></a></li>
-                                                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.commit.php" onclick="muze.ariadne.explore.arshow('edit_object_data', this.href); return false;"><?php echo $ARnls["ariadne:svn:commit"]; ?></a></li>
-                                                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.revert.php" onclick="muze.ariadne.explore.arshow('edit_object_data', this.href); return false;"><?php echo $ARnls["ariadne:svn:revert"]; ?></a></li>
-                                                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.update.php" onclick="muze.ariadne.explore.arshow('edit_object_data', this.href); return false;"><?php echo $ARnls["ariadne:svn:update"]; ?></a></li>
-                                                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.unsvn.php" onclick="muze.ariadne.explore.arshow('edit_object_data', this.href); return false;"><?php echo $ARnls["ariadne:svn:unsvn"]; ?></a></li>
+                                                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.tree.info.php" onclick="muze.ariadne.explore.arshow('dialog.svn.tree.info', this.href); return false;"><?php echo $ARnls["ariadne:svn:info"]; ?></a></li>
+                                                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.diff.php" onclick="muze.ariadne.explore.arshow('dialog.svn.templates.diff', this.href); return false;"><?php echo $ARnls["ariadne:svn:diff"]; ?></a></li>
+                                                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.commit.php" onclick="muze.ariadne.explore.arshow('dialog.svn.templates.commit', this.href); return false;"><?php echo $ARnls["ariadne:svn:commit"]; ?></a></li>
+                                                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.revert.php" onclick="muze.ariadne.explore.arshow('dialog.svn.templates.revert', this.href); return false;"><?php echo $ARnls["ariadne:svn:revert"]; ?></a></li>
+                                                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.update.php" onclick="muze.ariadne.explore.arshow('dialog.svn.templates.update', this.href); return false;"><?php echo $ARnls["ariadne:svn:update"]; ?></a></li>
+                                                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.unsvn.php" onclick="muze.ariadne.explore.arshow('dialog.svn.templates.unsvn', this.href); return false;"><?php echo $ARnls["ariadne:svn:unsvn"]; ?></a></li>
 <?php
 		} else {
 ?>
-                                                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.checkout.php" onclick="muze.ariadne.explore.arshow('edit_object_data', this.href); return false;"><?php echo $ARnls["ariadne:svn:checkout"]; ?></a></li>
-                                                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.import.php" onclick="muze.ariadne.explore.arshow('edit_object_data', this.href); return false;"><?php echo $ARnls["ariadne:svn:import"]; ?></a></li>
+                                                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.checkout.php" onclick="muze.ariadne.explore.arshow('dialog.svn.templates.checkout', this.href); return false;"><?php echo $ARnls["ariadne:svn:checkout"]; ?></a></li>
+                                                                    <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.import.php" onclick="muze.ariadne.explore.arshow('dialog.svn.templates.import', this.href); return false;"><?php echo $ARnls["ariadne:svn:import"]; ?></a></li>
 <?php
 		}
 ?>
@@ -120,7 +120,7 @@
 	if( $this->CheckSilent("config") ) {
 ?>
 					<li class="yuimenubaritem">
-						 <a class="yuimenubaritemlabel" href="dialog.grantkey.php" onclick="muze.ariadne.explore.arshow('edit_object_grantkey', this.href); return false;">
+						 <a class="yuimenubaritemlabel" href="dialog.grantkey.php" onclick="muze.ariadne.explore.arshow('dialog.grantkey', this.href); return false;">
 							<?php echo $ARnls['ariadne:grantkey']; ?>
 						 </a>
 					</li>
