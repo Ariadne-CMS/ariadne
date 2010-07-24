@@ -240,6 +240,7 @@ muze.ariadne.explore = function() {
 				myNewWindow = 1;
 			}
 			
+			windowname = windowname.replace(/\./g, "_");
 			if( myNewWindow ) {
 				// append a timestamp to allow multiple template windows
 				myDate = new Date();
@@ -247,7 +248,6 @@ muze.ariadne.explore = function() {
 			}
 			// get the SessionID from the top so we can uniquely name windows
 			sessionid = muze.ariadne.registry.get("SessionID");
-			windowname = sessionid+windowname.replace(".", "_");
 
 			/* FIXME: doesn't work without frames on mozilla*/ 
 			windowsize=muze.ariadne.registry.get(windowname);
