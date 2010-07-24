@@ -20,7 +20,9 @@
 	);
 
 	// Sort the languages alphabetic
-	asort($arResult['language']);
+	if (is_array($arResult['language'])) {
+		asort($arResult['language']);
+	}
 
 	if ($AR->user && !$this->CheckSilent("read")) {
 		$arResult['grants']['read'] = false;
