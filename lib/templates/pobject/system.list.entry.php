@@ -18,7 +18,10 @@
 			"large" => ( $ARCurrent->arTypeIcons[$this->type]["large"] ? $ARCurrent->arTypeIcons[$this->type]["large"] : $this->call('system.get.icon.php', array('size' => 'large')) )
 		)
 	);
-	
+
+	// Sort the languages alphabetic
+	asort($arResult['language']);
+
 	if ($AR->user && !$this->CheckSilent("read")) {
 		$arResult['grants']['read'] = false;
 	}
