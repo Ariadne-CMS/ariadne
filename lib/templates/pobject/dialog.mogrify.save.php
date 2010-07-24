@@ -13,11 +13,12 @@
 	<input unselectable="on" type="submit" name="wgWizControl" class="wgWizControl" onClick="document.wgWizForm.wgWizAction.value='cancel';" value="<?php echo $ARnls['cancel']; ?>">
 	</div>
 	</div>
-			<script type='text/javascript'>
-				<?php if (!$this->error) { ?>
-				window.close();
-				<?php } ?>
-			</script>
+	<?php if (!$this->error) { ?>
+		<script type="text/javascript">
+			window.opener.muze.ariadne.explore.view('<?php echo $this->path; ?>');
+			window.close();
+		</script>
+	<?php } ?>
 <?php
 	}
 ?>
