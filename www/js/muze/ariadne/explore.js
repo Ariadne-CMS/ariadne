@@ -15,7 +15,7 @@ muze.ariadne.explore = function() {
 		loaders : Array(),
 		authenticate_panel : null,
 		windowprops : {
-			'object_fs'				: windowprops_common + ',height=225,width=400',
+			'object_fs'				: windowprops_common + ',height=230,width=400',
 			'object_new'			: windowprops_common + ',height=360,width=450',
 			'edit_find'				: windowprops_common + ',height=500,width=700',
 			'edit_preferences'		: windowprops_common + ',height=400,width=500',
