@@ -202,7 +202,9 @@ for($i=1;$i<$linetotal;$i++) { echo $i."\n"; }
 	}
 	
 	function saveCurrentPos() {
-		document.getElementById('cursorOffset').value = currentPos.offset;
+		if (currentPos && currentPos.offset) {
+			document.getElementById('cursorOffset').value = currentPos.offset;
+		}
 		return true;
 	}
 	
