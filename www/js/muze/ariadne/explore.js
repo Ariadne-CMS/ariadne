@@ -63,7 +63,7 @@ muze.ariadne.explore = function() {
 			'help.about'			: windowprops_common + ',height=375,width=600',
 
 			'help'				: windowprops_full,
-			'_new'				: windowprops_full
+			'_new'				: windowprops_full,
 
 			// Deprecated window names.
 			'edit_find'				: windowprops_common + ',height=500,width=700',
@@ -80,7 +80,6 @@ muze.ariadne.explore = function() {
 			'edit_object_mogrify'	: windowprops_common + ',height=250,width=400',
 			'edit_object_owner'		: windowprops_common + ',height=260,width=400',
 			'view_fonts'			: windowprops_common + ',height=300,width=450',
-			'help'				: windowprops_full,
 			'help_about'			: windowprops_common + ',height=375,width=600',
 			'svn_object_info'		: windowprops_common + ',height=475,width=550',
 			'svn_object_diff'		: windowprops_common + ',height=475,width=550',
@@ -89,8 +88,7 @@ muze.ariadne.explore = function() {
 			'svn_object_update'		: windowprops_common + ',height=475,width=550',
 			'svn_object_unsvn'		: windowprops_common + ',height=475,width=550',
 			'svn_object_checkout'		: windowprops_common + ',height=475,width=550',
-			'svn_object_import'		: windowprops_common + ',height=475,width=550',
-			'_new'					: windowprops_full
+			'svn_object_import'		: windowprops_common + ',height=475,width=550'
 		},
 		store_root : top.muze.ariadne.registry.get('store_root'), // FIXME: deze wordt te vroeg gedaan, dus is leeg.
 		authenticate_loaders : Array(),
@@ -249,7 +247,7 @@ muze.ariadne.explore = function() {
 			}
 			// get the SessionID from the top so we can uniquely name windows
 			sessionid = muze.ariadne.registry.get("SessionID");
-			windowname = sessionid+windowname;
+			windowname = sessionid+windowname.replace(".", "_");
 
 			/* FIXME: doesn't work without frames on mozilla*/ 
 			windowsize=muze.ariadne.registry.get(windowname);
