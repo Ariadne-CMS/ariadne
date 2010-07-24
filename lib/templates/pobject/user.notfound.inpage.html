@@ -1,13 +1,4 @@
 <?php
-if( $this->CheckConfig($arCallFunction, $arCallArgs) ) {
-?>
-<table border="0" width="300">
-<tr>
-  <td align="center" valign="top">
-    <h2>404 - Not Found</h2>
-
-    
-<?php
 	$total = $arRequestedPath.$arRequestedTemplate; 
 
 	if( $arRequestedPath == $this->path ) {
@@ -18,12 +9,15 @@ if( $this->CheckConfig($arCallFunction, $arCallArgs) ) {
 		$what = substr($arRequestedPath, strlen($this->path));
 	}
 
+	if( $this->CheckConfig($arCallFunction, $arCallArgs) ) {
 ?>
-	<b><?php echo $message; ?></b><br><br>
-	<?php echo str_replace($what,"<font color=\"#FF0000\">".$what."</font>", $total); ?>
-  </td>
-</tr>
-</table>
+<h2>404 - Not Found</h2>
+<p>
+	<strong><?php echo $message; ?></strong>
+</p>
+<p>
+<?php echo str_replace($what,"<span class='highlight'>".$what."</span>", $total);
+?></p>
 <?php
 }
 ?>
