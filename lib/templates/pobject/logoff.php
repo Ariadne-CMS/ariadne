@@ -51,7 +51,7 @@ if ($this->CheckLogin("read")) {
       echo $pageStart;
       
       // Add nls for this phrase
-      echo "Session closed for ".$data->name;
+      echo "Session closed for ".$AR->user->data->name;
       echo $loginForm;
       echo $pageEnd;   
     }
