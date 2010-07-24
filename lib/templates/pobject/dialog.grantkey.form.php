@@ -6,6 +6,8 @@
 		if( $grants ) {
 			$grantkey = $this->sgKey($grants);
 		}
+		if ($AR->sgSalt) {
+
 ?>
 	<fieldset id="data">
 			<legend><?php echo $ARnls["ariadne:grantkey"]; ?></legend>
@@ -21,5 +23,8 @@
 			</div>
 	</fieldset>
 <?php
+		} else {
+			echo $ARnls['err:nosalt'];
+		}
 	}
 ?>

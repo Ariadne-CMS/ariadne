@@ -15,11 +15,13 @@
 		$wgWizButtons = array(
 			"cancel" => array(
 				"value" => $ARnls["ariadne:close"]
-			),
-			"generate" => array(
-				"value" => $ARnls["ariadne:generate"]
-			),
+			)
 		);
+		if ($AR->sgSalt) {
+			$wgWizButtons["generate"] = array(
+				"value" => $ARnls["ariadne:generate"]
+			);
+		}
 
 		$wgWizTitle = $ARnls["ariadne:grantkey"];
 		$wgWizHeader = $wgWizTitle;

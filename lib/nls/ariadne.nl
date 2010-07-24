@@ -47,7 +47,7 @@
 	$ARnls["ariadne:options"]					=	"Opties";
 	$ARnls["ariadne:browsetotarget"]			= 	"Blader naar doel";
 	$ARnls["ariadne:selectlanguage"]			=	"Kies een taal";
-	$ARnls["ariadne:grantkey"]					=	"Rechten sleutel";
+	$ARnls["ariadne:grantkey"]					=	"Rechtensleutel";
 	$ARnls["ariadne:generate"]					=	"Genereer";
 	$ARnls["ariadne:close"]						=	"Sluiten";
 	$ARnls["ariadne:childrenonly"]				=	"Alleen kinderen";
@@ -133,6 +133,8 @@
 
 	$ARnls['ariadne:override_typetree']				= 'Negeer typeboom instellingen';
 	$ARnls['err:typetree_does_not_allow']				= 'De typeboom instellingen staan dit object type hier niet toe.';
+	$ARnls['err:nosalt']						= 'Er is geen "salt" geconfigureerd in Ariadne. Voeg deze toe aan de hoofdconfiguratie van Ariadne om gebruik te kunnen maken van rechtensleutels.';
+
 	$ARnls['ariadne:prev']						= 'Vorige';
 	$ARnls['ariadne:next']						= 'Volgende';
 	

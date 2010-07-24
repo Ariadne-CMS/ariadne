@@ -135,6 +135,7 @@
 
 	$ARnls['ariadne:override_typetree']				= 'Override typetree settings';
 	$ARnls['err:typetree_does_not_allow']				= 'Typetree does not allow this object type here';
+	$ARnls['err:nosalt']						= 'No salt is configured in Ariadne. Please configure this in the main Ariadne configuration to allow generation of grant keys.';
 	$ARnls['ariadne:prev']						= "Previous";
 	$ARnls['ariadne:next']						= "Next";
 	
