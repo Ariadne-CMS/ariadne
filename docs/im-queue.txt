@@ -1,0 +1,26 @@
+Im-queue:
+Simple utility to limit the amount of imagemagick jobs running in paralel
+
+Config flags
+$AR->IMQueue['semKey']:
+Key to use for the semaphore, must be an integer
+default is pick one based on the inode number of the script
+
+$AR->IMQueue['max']:
+maxiumum amount of process which are allowed to be running
+
+$AR->IMQueue['timeout']:
+How long should the script be waiting for a lock before aborting the operation.
+
+
+Howto configure ariadne to use im-queue:
+this is done by prefixing the $AR->IM-> commands with the im-queue wrapper in the config file.
+This could be done like this:
+  $AR->IM->convert          = $AR->dir->install . '/bin/im-queue.php /usr/bin/convert';
+  $AR->IM->mogrify          = $AR->dir->install . '/bin/im-queue.php /usr/bin/mogrify';
+  $AR->IM->composite        = $AR->dir->install . '/bin/im-queue.php /usr/bin/composite';
+  $AR->IM->identify         = $AR->dir->install . '/bin/im-queue.php /usr/bin/identify';
+
+
+
+

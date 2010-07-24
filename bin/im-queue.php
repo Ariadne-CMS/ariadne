@@ -18,20 +18,32 @@
 
 	$semKey = $AR->IMQueue['semKey'];
 	if (!$semKey) {
-		$semKey = 1234;
+		$semKey = ftok($_SERVER['PHP_SELF'],1);
 	}
+
 	$max    = $AR->IMQueue['max'];
 	if (!$max) {
 		$max = 2;
 	}
 
-	$sem = sem_get($semKey, $max);
-	sem_acquire($sem);
-		$p = popen($cmd.$cmd_args, 'r');
-		while (!feof($p)) {
-			echo fread($p, 4096);
+	$timeout    = $AR->IMQueue['timeout'];
+	if (!$timeout) {
+		$timeout = 60;
+	}
+
+	/*
+	from the sysexit.h : #define EX_UNAVAILABLE  69      // service unavailable 
+	*/
+	$return_var = 69;
+
+	if( $sem = sem_get($semKey, $max)) {
+		pcntl_alarm($timeout); // we wait timeout seconds after that, lets bail out
+		if ( sem_acquire($sem) ) {
+			pcntl_alarm(0); // we have the lock, now we wait till the programm ends
+			passthru  (  $cmd.$cmd_args  ,&$return_var  );
 		}
-		fclose($p);
-	sem_release($sem);
+		sem_release($sem);
+	}
+	exit($return_var);
 
 ?>
