@@ -141,7 +141,7 @@
 ?>
 	<div class="searchdiv">	
 		<input class="text" type="text" id="search" name="search" value="<?php echo htmlspecialchars($search); ?>">
-		<input type="submit" id="searchbutton" class="wgWizControl" name="wgWizControl" onclick="document.wgWizForm.wgWizAction.value='grep'"; value="<?php echo $ARnls["search"]; ?>">
+		<input type="submit" id="searchbutton" class="wgWizControl" name="wgWizControl" onclick="document.wgWizForm.wgWizAction.value='grep'" value="<?php echo $ARnls["search"]; ?>">
 	</div>
 <?php
 		$grepresults = false;
@@ -238,8 +238,8 @@
 										$svn_img = "DeletedIcon.png";
 										$svn_alt = $ARnls['ariadne:svn:deleted'];
 									case "!":
-										$svn_style = "filter: alpha(opacity=30); opacity: 0.3;";
-										$svn_style_hide = "filter: alpha(opacity=0); opacity: 0;";
+										$svn_style = "blurred";
+										$svn_style_hide = "hidden";
 										break;
 									default:
 										$svn_img = "InSubVersionIcon.png";
@@ -282,20 +282,19 @@
 									}
 								?>
 							</td>
-						       <td align="left" valign="middle" style="height:23px; <?php echo $svn_style;?>">
-								
-								<img class="type_icon" alt="<?php echo $icon_alt; ?>" src="<?php echo $icon_src; ?>">
-
-								<?php echo $type; ?>&nbsp;</td>
-							<td style="<?php echo $svn_style;?>" align="left"><div style="display:none;"><?php echo $function; ?></div><?php  
+						       <td align="left" valign="middle" style="height:23px;">
+								<div class="<?php echo $svn_style; ?>">
+									<img class="type_icon" alt="<?php echo $icon_alt; ?>" src="<?php echo $icon_src; ?>">
+								<?php echo $type; ?>&nbsp;</div></td>
+							<td align="left"><div style="display:none;"><?php echo $function; ?></div><div class="<?php echo $svn_style; ?>"><?php  
 								if (!$templates[$type][$function]) {
 									echo "<img class='local' src='{$AR->dir->images}local.gif' alt='local'>";	
 								}
 							?>
-							<?php echo $function; ?></td>
-							<td style="<?php echo $svn_style;?>"><?php
+							<?php echo $function; ?></div></td>
+							<td><div class="<?php echo $svn_style; ?>"><?php
 								echo $flagbuttons;
-							?></td>
+							?></div></td>
 								<?php
 									$tbasename = "$type.$function";
 									$mtime = 0;
@@ -312,16 +311,23 @@
 
 									}
 								?>
-							<td style="<?php echo $svn_style_hide;?>">
-								<div style="display:none;"><?php printf("%010d", $msize); ?></div><?php echo $this->make_filesize($msize); ?>&nbsp;
+							<td>
+								<div style="display:none;"><?php printf("%010d", $msize); ?></div>
+								<div class="<?php echo $svn_style_hide;?>">
+									<?php echo $this->make_filesize($msize); ?>&nbsp;
+								</div>
 							</td>
-							<td style="<?php echo $svn_style_hide;?>">
+							<td>
 								<div style="display:none;"><?php print $mtime; ?></div>
-								<?php echo strftime("%H:%M", $mtime); ?>&nbsp;&nbsp;
-								<?php echo strftime("%d %b %Y", $mtime); ?>&nbsp;
+								<div class="<?php echo $svn_style_hide;?>">
+									<?php echo strftime("%H:%M", $mtime); ?>&nbsp;&nbsp;
+									<?php echo strftime("%d %b %Y", $mtime); ?>&nbsp;
+								</div>
 							</td>
-							<td style="<?php echo $svn_style_hide;?>">
-								<?php echo $grep_results; ?>
+							<td>
+								<div class="<?php echo $svn_style_hide;?>">
+									<?php echo $grep_results; ?>
+								</div>
 							</td>
 						</tr><?php
 					}
