@@ -48,7 +48,7 @@
 </script>
 <script type="text/javascript">
 	function toggleAll() {
-		var boxes = document.getElementsByClassName('checkbox');
+		var boxes = YAHOO.util.Dom.getElementsByClassName('checkbox');
 		if (boxes.length) {
 			var check = !boxes[0].checked;
 			for (var i = 0; i < boxes.length; i++) {
