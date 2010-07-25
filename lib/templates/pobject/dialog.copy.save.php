@@ -60,7 +60,15 @@
 				foreach ($objects as $object) {
 					$sourcepath = $object->path;
 					$targetpath = $copytarget . substr($sourcepath, strlen($this->path), strlen($sourcepath));
-					$this->get($sourcepath, "system.copyto.phtml", array("target" => $targetpath));
+					$error = current($this->get($sourcepath, "system.copyto.phtml", array("target" => $targetpath)));
+					if ($error) {
+						// FIXME: If there was an error copying an object, is there any point to try to copy its children?
+						?>
+						<script type="text/javascript">
+							alert("<?php echo addslashes($error); ?>");
+						</script>
+						<?php
+					}
 				}
 
 				$new_objects_left = $this->count_find($target, $query);
