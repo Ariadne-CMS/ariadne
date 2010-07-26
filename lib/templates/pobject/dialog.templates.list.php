@@ -249,7 +249,7 @@
 							}
 
 							$flag = "<img src=\"".$AR->dir->images."nls/small/$language.gif\" alt=\"".$AR->nls->list[$language]."\">";
-							if ($svn_enabled && count($templatelist) > 1 && $svn_imt ) {
+							if ($svn_enabled && (count($templatelist) > 1) && $svn_img ) {
 								$svn_img_src = $AR->dir->images . "/svn/$svn_img";
 								$flag_svn = '<img class="flag_svn_icon" alt="' . $svn_alt . '" src="' . $svn_img_src . '">';
 							}
