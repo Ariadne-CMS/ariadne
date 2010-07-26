@@ -219,12 +219,16 @@ muze.ariadne.explore = function() {
 			}
 			if (muze.ariadne.explore.viewpane.selectedPath) {
 				muze.ariadne.explore.viewpane.view(muze.ariadne.explore.viewpane.path);
-				// FIXME: Re-select the previously selected item;
-				//muze.ariadne.explore.viewpane.select(selectedPath);
+				muze.ariadne.explore.viewpane.saved_load_handler = muze.ariadne.explore.viewpane.load_handler;
+				muze.ariadne.explore.viewpane.load_handler = function() {
+					muze.ariadne.explore.viewpane.saved_load_handler();
+					muze.ariadne.explore.viewpane.load_handler = muze.ariadne.explore.viewpane.saved_load_handler;
+					muze.ariadne.explore.viewpane.reselect();
+				};
 			} else {
 				muze.ariadne.explore.viewpane.view(path);
 			}
-			muze.ariadne.explore.browseheader.view(path);
+			muze.ariadne.explore.browseheader.view(muze.ariadne.explore.browseheader.currentpath);
 		},
 		arEdit : function(object, arguments) {
 			muze.ariadne.explore.arshow('dialog.edit',this.store_root+object+'dialog.edit.php', arguments);
@@ -654,6 +658,7 @@ muze.ariadne.explore.sidebar.section = function() {
 
 muze.ariadne.explore.viewpane = function() {
 	return {
+		saved_load_handler : null,
 		selectedItem : null,
 		selectedPath : null,
 		path : null,
@@ -673,6 +678,54 @@ muze.ariadne.explore.viewpane = function() {
 		filter : function(type) {
 			muze.ariadne.explore.viewpane.typefilter = type;
 			muze.ariadne.explore.viewpane.view(muze.ariadne.explore.viewpane.path);
+		},
+		setitempath : function(item) {
+			if (!item.path) {
+				var href = item.getElementsByTagName("A")[0].href;
+				var store_root = muze.ariadne.registry.get('store_root');
+
+				// Find the location of the store root, and take everything behind it.
+				store_root_pos = href.indexOf(store_root);
+				if (store_root_pos < 0) {
+					store_root = store_root.substring(0, store_root.lastIndexOf("/")); 
+					store_root_pos = href.indexOf(store_root);
+				}
+				path = href.substring(store_root_pos + store_root.length, href.length);
+				// Remove "explore.html from the end, and all other trailing stuff.
+				explore_pos = path.indexOf('explore.html'); // FIXME: configbaar maken.
+				item.path = path.substring(0, explore_pos);
+			}
+		},
+		reselect : function() {
+			var viewmode=top.muze.ariadne.registry.get('viewmode');
+			if (!viewmode) {
+				viewmode = 'list';
+			}
+
+			var path = muze.ariadne.explore.viewpane.selectedItem.path;
+			if (viewmode != 'details') {
+				var items = document.getElementById("viewpane").getElementsByTagName("LI");
+				for(i=0; i<items.length; i++) {
+					muze.ariadne.explore.viewpane.setitempath(items[i]);
+					if (items[i].path == path) {
+						YAHOO.util.Dom.addClass(items[i], 'selected');
+						muze.ariadne.explore.viewpane.selectedItem = items[i];
+						break;
+					}
+				}
+			} else {
+				if (muze.ariadne.explore.viewpane.dataTable) {
+					var records = muze.ariadne.explore.viewpane.dataTable.getRecordSet().getRecords();
+					for (i=0; i<records.length; i++) {
+						if(records[i].getData("path") == path) {
+							records[i].path = records[i].getData("path");
+							muze.ariadne.explore.viewpane.selectedItem = records[i];
+							muze.ariadne.explore.viewpane.dataTable.selectRow(records[i]);
+							break;
+						}
+					}
+				}
+			}
 		},
 		selectItem : function(item) {
 			if (item != muze.ariadne.explore.viewpane.selectedItem){
@@ -705,6 +758,7 @@ muze.ariadne.explore.viewpane = function() {
 			//args.target.path = muze.ariadne.explore.viewpane.path + filename + '/';
 
 			this.selectRow(args.target);
+			muze.ariadne.explore.viewpane.selectedItem = args.target;
 			muze.ariadne.explore.viewpane.onSelectItem(args.target);
 			// FIXME: with the regular onClick not in place, we need a way to unselect a row.
 		},
@@ -778,28 +832,12 @@ muze.ariadne.explore.viewpane = function() {
 			muze.ariadne.explore.load(url, archildren, fadeIn);
 		},
 		onSelectItem : function(item) {
-			if (item.path) {
-				var path = item.path;
-			} else {
-				var href = item.getElementsByTagName("A")[0].href;
-				var store_root = muze.ariadne.registry.get('store_root');
+			muze.ariadne.explore.viewpane.setitempath(item);
 
-				// Find the location of the store root, and take everything behind it.
-				store_root_pos = href.indexOf(store_root);
-				if (store_root_pos < 0) {
-					store_root = store_root.substring(0, store_root.lastIndexOf("/")); 
-					store_root_pos = href.indexOf(store_root);
-				}
-				path = href.substring(store_root_pos + store_root.length, href.length);
-				// Remove "explore.html from the end, and all other trailing stuff.
-				explore_pos = path.indexOf('explore.html'); // FIXME: configbaar maken.
-				path = path.substring(0, explore_pos);
-			}
-			
-			muze.ariadne.explore.sidebar.view(path);
-			muze.ariadne.explore.browseheader.view(path);
-			muze.ariadne.explore.viewpane.selectedPath = path;
-			document.getElementById("searchpath").value = path;
+			muze.ariadne.explore.sidebar.view(item.path);
+			muze.ariadne.explore.browseheader.view(item.path);
+			muze.ariadne.explore.viewpane.selectedPath = item.path;
+			document.getElementById("searchpath").value = item.path;
 		},
 		view : function(path, page) {
 			if (!page) {
