@@ -112,6 +112,18 @@ muze.event = function() {
 			return true;
 		},
 
+		fire:function(el, name, evt) {
+			if (document.createEvent) {
+				if (!evt) {
+					evt = el.ownerDocument.createEvent("UIEvent");
+					evt.initEvent(name, true, true);
+				}
+				el.dispatchEvent(evt);
+			} else {
+				el.fireEvent(name, evt);
+			}
+		},
+
 		attach:function(ob, event, fp, useCapture) {
 			if (ob) {
 				function createHandlerFunction(obj, fn){
