@@ -19,6 +19,9 @@
 							window.opener.muze.ariadne.explore.tree.refresh('<?php echo $this->path; ?>');
 							window.opener.muze.ariadne.explore.sidebar.view('<?php echo $this->path; ?>');
 							window.opener.muze.ariadne.explore.browseheader.view('<?php echo $this->path; ?>');
+						} else {
+							// Fallback for shortcuts.
+							window.opener.muze.ariadne.explore.objectadded();
 						}
 					}
 					<?php
