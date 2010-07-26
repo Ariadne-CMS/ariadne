@@ -8,14 +8,18 @@
 		$password = $this->getdata('password');
 		$message = $this->getdata('message');
 
-		if (isset($repository)) {
+		if (!isset($repository) || $repository == '') {
+			echo $ARnls['err:svn:enterURL'];
+			flush();
+			return;
+		} else {
 			$repository = rtrim($repository, "/") . "/";
 			$fstore	= $this->store->get_filestore_svn("templates");
 			$svn	= $fstore->connect($this->id, $username, $password);
 			$svn_info = $fstore->svn_info($svn);
 
 			if ($svn_info['Revision']) {
-				echo $this->path . " is already under version control - update instead.<br>";
+				echo $this->path . " is already under version control - update instead.<br>"; // FIXME: nls
 			}
 
 			if ($repoPath) {
@@ -29,11 +33,11 @@
 			}
 			$repository = rtrim($repository, "/") . "/" . $repo_subpath;
 
-			echo "<span class='svn_headerline'>Importing ".$this->path." in ".$repository."</span>\n\n";
+			echo "<span class='svn_headerline'>Importing ".$this->path." in ".$repository."</span>\n\n"; // FIXME: nls
 
 			$mkdirs = $fstore->svn_mkdirs($svn, $repository);
 			if (!$mkdirs) {
-				echo "Repository already exists - use checkout and add instead\n";
+				echo "Repository already exists - use checkout and add instead\n"; // FIXME: nls
 				flush();
 				return;
 			}
@@ -47,7 +51,7 @@
 			$fileinfo['']['ar:type'] = $this->type;
 			$fileinfo['']['ar:name'] = $this->nlsdata->name;
 
-			echo "<span class='svn_adddirline'>Adding ".$this->path."</span>\n";
+			echo "<span class='svn_adddirline'>Adding ".$this->path."</span>\n"; // FIXME: nls
 			$pinp = $this->data->config->pinp;
 			if ($pinp) {
 				foreach( $pinp as $type => $values ) {
@@ -78,10 +82,10 @@
 			$result = $fstore->svn_commit($svn, $message, $fileinfo);
 			$res = explode("\n", $result);
 			foreach( $res as $line ) {
-				if( substr($line, 0, 12) == "Transmitting" ) {
+				if( substr($line, 0, 12) == "Transmitting" ) { // FIXME: nls
 					echo "<span class='svn_adddirline'>".$line."</span>\n";
 				}
-                 if( substr($line, 0, 9) == "Committed" ) {
+				if( substr($line, 0, 9) == "Committed" ) { // FIXME: nls
 					echo "<span class='svn_revisionline'>".$line."</span>\n";
 				}
 			}

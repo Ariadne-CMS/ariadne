@@ -89,6 +89,7 @@
 	$ARnls['ariadne:svn:insubversion'] 				= "In versiebeheer";
 	$ARnls['filename']						= "Bestand";
 	$ARnls['ariadne:svn:nomod']                 =   "Geen wijzigingen";
+	$ARnls['err:svn:enterURL']				= "Voer een valide SVN repository URL in.";
 
 	$ARnls['ariadne:template:row']				= "Rij";
 	$ARnls['ariadne:template:col']				= "Kolom";

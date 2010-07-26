@@ -10,7 +10,11 @@
 		$checkunder = $this->getdata('checkunder');
 		$revision	= $this->getdata('revision');
 
-		if (isset($repository)) {
+		if (!isset($repository) || $repository == '') {
+			echo $ARnls['err:svn:enterURL'];
+			flush();
+			return;
+		} else {
 			$repository = rtrim($repository, "/") . "/";
 			$fstore	= $this->store->get_filestore_svn("templates");
 			$svn	= $fstore->connect($this->id, $username, $password);

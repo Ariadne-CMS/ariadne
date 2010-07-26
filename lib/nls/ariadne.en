@@ -91,6 +91,7 @@
 	$ARnls['ariadne:svn:insubversion'] 				= "In subversion";
 
 	$ARnls['ariadne:svn:nomod']					=	"No modifications";	
+	$ARnls['err:svn:enterURL']				= "Please enter a valid SVN repository URL.";
 
 	$ARnls['ariadne:template:row']				= "Row";
 	$ARnls['ariadne:template:col']				= "Col";

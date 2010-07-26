@@ -16,7 +16,11 @@
 		$svn_info = $fstore->svn_info($svn);
 		$repository = $svn_info['URL'];
 
-		if (isset($repository)) {
+		if (!isset($repository) || $repository == '') {
+			echo $ARnls['err:svn:enterURL'];
+			flush();
+			return;
+		} else {
 			$repository = rtrim($repository, "/") . "/" . $repo_subpath;
 			
 			$updating = $this->path;

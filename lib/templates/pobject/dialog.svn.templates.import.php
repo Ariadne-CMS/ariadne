@@ -19,6 +19,9 @@
 			$wgWizButtons = array(
 				"cancel" => array(
 					"value" => $ARnls["ok"]
+				),
+				"template" => array(
+					"value" => $ARnls['back']
 				)
 			);
 		} else {

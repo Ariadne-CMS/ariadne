@@ -3,7 +3,11 @@
         if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		$repository = $this->data->custom['none']['svn'];
 
-		if (isset($repository)) {
+		if (!isset($repository) || $repository == '') {
+			echo $ARnls['err:svn:enterURL'];
+			flush();
+			return;
+		} else {
 			$username = $_POST['username'];
 			$password = $_POST['password'];
 
@@ -24,8 +28,6 @@
 		
 				print_r($status);
 			}
-		} else {
-			echo "No SVN repository information set.";
 		}
 	}
 ?>
