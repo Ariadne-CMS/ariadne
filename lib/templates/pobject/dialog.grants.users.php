@@ -216,6 +216,7 @@
 ?>
 <div class="items">
 	<h2><?php echo $ARnls['ariadne:grants:users_with_grants']; echo yui::labelspan($selectedpath, 20); ?></h2>
+	<input type="hidden" name="selecteduser" value="<?php echo htmlspecialchars($selecteduser); ?>">
 	<?php if ($error) { ?>
 		<div class="error"><?php echo $error; ?></div>
 	<?php } ?>

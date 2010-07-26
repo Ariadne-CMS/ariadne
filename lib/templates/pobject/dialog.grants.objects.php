@@ -72,6 +72,7 @@
 ?>
 <div class="items">
 <h2><?php echo $ARnls['ariadne:grants:objects_with_grants']; ?></h2>
+	<input type="hidden" name="selectedpath" value="<?php echo htmlspecialchars($selectedpath); ?>">
 	<?php	if ($error) { ?>
 		<div class="error"><?php echo $error; ?></div>
 	<?php	} ?>
