@@ -15,6 +15,7 @@
 	</div>
 	<?php if (!$this->error) { ?>
 		<script type="text/javascript">
+			window.opener.muze.ariadne.explore.tree.refresh('<?php echo $this->path; ?>');
 			window.opener.muze.ariadne.explore.view('<?php echo $this->path; ?>');
 			window.close();
 		</script>
