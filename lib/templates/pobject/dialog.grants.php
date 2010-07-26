@@ -9,7 +9,8 @@
 				"template" => "dialog.grants.form.php",
 				"cancel" => "window.close.js",
 				"review" => "dialog.grants.review.php",
-				"save" => "dialog.grants.save.php"
+				"save" => "dialog.grants.save.php",
+				"back" => "dialog.grants.form.php"
 			)
 		);
 
@@ -23,6 +24,10 @@
 			);
 		} elseif ($wgWizAction == "review") {
 			$wgWizButtons = array(
+				"back" => array(
+					"value" => $ARnls["back"],
+					"location" => "left"
+				),
 				"cancel" => array(
 					"value" => $ARnls["cancel"]
 				),
