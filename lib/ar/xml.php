@@ -226,12 +226,15 @@
 					$result .= $node->toString($indentWith, $position);
 					$position++;
 				} else if ( $node instanceof ar_xmlNode) {
-					if ( trim($node->nodeValue) ) {
-						$result .= $node;
+					$stringValue = (string) $node;
+					if ( trim($stringValue) !== "" ) {
+						$result .= $stringValue;
 					}
-					
-				} else if ( is_string($node) && ($node = trim($node) ) ) {
-					$result .= ar_xml::indent( (string) $node, $indentWith);
+				} else if ( is_string($node) ) {
+					$node = trim($node);
+					if( $node !== "" ) {
+						$result .= ar_xml::indent( (string) $node, $indentWith);
+					}
 				}
 			}
 			return $result;
