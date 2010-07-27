@@ -4,10 +4,11 @@
 		set_time_limit(0);
 		$this->resetloopcheck();
 
-		$repository = $this->getdata('repository');
+		$repository 	= $this->getdata('repository');
 		$username 	= $this->getdata('username');
 		$password 	= $this->getdata('password');
-		$checkunder = $this->getdata('checkunder');
+		$checkunder 	= $this->getdata('checkunder');
+		$revision	= $this->getdata('revision');
 
 		if (!isset($repository) || $repository == '') {
 			echo $ARnls['err:svn:enterURL'];
@@ -22,7 +23,6 @@
 			if ($svn_info['Revision']) {
 				echo $this->path . " is already under version control - update instead.\n";
 			} else {
-			
 				if ($repoPath) {
 					$repo_subpath = substr($this->path, strlen($repoPath));
 				} else {
@@ -45,10 +45,10 @@
 				}
 
 				if( $checkunder ) {
-					$result = $fstore->svn_checkunder($svn, $repository);
+					$result = $fstore->svn_checkunder($svn, $repository, $revision);
 				} else {
 				// Checkout the templates.
-					$result = $fstore->svn_checkout($svn, $repository);
+					$result = $fstore->svn_checkout($svn, $repository, $revision);
 				}
 
 				if ($result) {
@@ -56,7 +56,7 @@
 					foreach ($result as $item) {
 						$templates[] = $item['name'];
 						if( $item["status"]  == "A" ) {
-							$props = $fstore->svn_get_ariadne_props($svn, $item['name']);
+							$props = $fstore->svn_get_ariadne_props($svn, $item['name'], $revision);
 							echo "<span class='svn_addtemplateline'>Adding ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
 						} elseif( $item["status"] == "U" || substr(ltrim($item['name']),0,2) == 'U ' ) { // substr to work around bugs in SVN.php
 							echo "<span class='svn_revisionline'>Done ".$this->path." Revision ".$item["revision"]."</span>\n\n";
@@ -80,10 +80,11 @@
 				$arCallArgs['repoPath'] = $this->path;
 				$arCallArgs['repository'] = $repository;
 				$arCallArgs['checkunder'] = $checkunder;
+				$arCallArgs['revision'] = $revision;
 				$this->ls($this->path, "system.svn.checkout.recursive.php", $arCallArgs);
 
 				// Create the dirs and checkout them if needed.
-				$dirlist = $fstore->svn_list($svn);
+				$dirlist = $fstore->svn_list($svn, $revision);
 				if ($dirlist) {
 					$arCallArgs['dirlist'] = $dirlist;
 					$arCallArgs['svn'] = $svn;

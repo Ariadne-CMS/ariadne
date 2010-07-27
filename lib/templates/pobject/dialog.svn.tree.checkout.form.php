@@ -25,6 +25,10 @@
 				<input id="password" type="password" name="password" value="" class="inputline">
 			</div>
 			<div class="field">
+				<label for="revision" class="required"><?php echo $ARnls['ariadne:svn:revision']; ?></label>
+				<input id="revision" type="text" name="revision" value="" class="inputline">
+			</div>
+			<div class="field">
 				<label for="checkunder"><?php echo $ARnls['ariadne:svn:checkunder']; ?></label>
 				<input id="checkunder" type="checkbox" name="checkunder" value="1">
 			</div>

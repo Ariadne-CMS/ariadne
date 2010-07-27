@@ -25,7 +25,7 @@
 	svn_export($svn, $repository, $revision)
 	svn_import($svn, $repository, $comment)
 	svn_info($svn, $name)
-	svn_list($svn)
+	svn_list($svn, $revision)
 	svn_log($svn, $name)
 	svn_propdel($svn, $propkey, $name)
 	svn_propget($svn, $propkey, $name)
@@ -41,7 +41,7 @@
 	svn_checkunder($svn, $repository, $revision)
 	svn_mkdirs($svn, $repository)
 	svn_rinfo($svn, $repository, $name)
-	svn_rpropget($svn, $repository, $propkey, $name)
+	svn_rpropget($svn, $repository, $propkey, $name, $revision)
 	
 	The following functions have not yet been implemented:
 	svn_copy
@@ -326,12 +326,18 @@
 			return $result;
 		}
 
-		function svn_list($svn) {
+		function svn_list($svn, $revision='HEAD') {
 			$args = array(
 				$this->get_path($svn, '')
 			);
+
+			$switches = $svn['switches'];
+			if ($revision != '') {
+				$switches['revision'] = $revision;
+			}
+	
 			$svn['instance']->list->_prepared = false;
-			$result = $svn['instance']->list->run($args, $svn['switches']);
+			$result = $svn['instance']->list->run($args, $switches);
 			return $result;
 		}
 
@@ -470,19 +476,26 @@
 			return $result;
 		}
 
-		function svn_get_ariadne_props($svn, $name='') {
+		function svn_get_ariadne_props($svn, $name='', $revision='HEAD') {
 			if( substr($name, 0, 1) != "/" ) {
 				$name = $this->get_path($svn, $name);
 			}
+
+			$switches = $svn['switches'];
+
+			if ($revision != '') {
+				$switches['revision'] = $revision;
+			}
+
 			// accepts a filename within the svn store and returns an array containing the ar: properties of the file
 			$svn['instance']->proplist->_prepared = false;
-			$proplist = explode("\n", $svn['instance']->proplist->run(array($name), $svn['switches']));
+			$proplist = explode("\n", $svn['instance']->proplist->run(array($name), $switches));
 			$result = array();
 			foreach( $proplist as $value ) {
 				$value = ltrim($value);
 				if( substr($value, 0, 3) == "ar:" ) {
 					$svn['instance']->propget->_prepared = false;
-					$result[$value] = $svn['instance']->propget->run(array($value, $name), $svn['switches']);
+					$result[$value] = $svn['instance']->propget->run(array($value, $name), $switches);
 				}
 			}
 			return $result;			
@@ -587,13 +600,20 @@
 			return $result;
 		}
 
-		function svn_rpropget($svn, $repository, $propkey, $name='') {
+		function svn_rpropget($svn, $repository, $propkey, $name='', $revision='HEAD') {
 			$args = array(
 				$propkey,
 				$repository . $name
 			);
+
+			$switches = $svn['switches'];
+
+			if ($revision != '' && $revision != 'HEAD') {
+				$switches['revision'] = $revision;
+			}
+
 			$svn['instance']->propget->_prepared = false;
-			$result = $svn['instance']->propget->run($args, $svn['switches']);
+			$result = $svn['instance']->propget->run($args, $switches);
 			return $result;
 		}
 

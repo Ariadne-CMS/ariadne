@@ -8,20 +8,36 @@
 		$fstore	= $this->store->get_filestore_svn("templates");
 		$svn	= $fstore->connect($this->id, $this->getdata("username"), $this->getdata("password"));
 		$svn_info = $fstore->svn_info($svn);
-		$repository = $svn_info['URL'];
+		$stored_repository = rtrim($svn_info['URL'], "/") . "/";
+		$revision = $this->getdata('revision');
+		$repository = $this->getdata('repository');
 
-		if (!isset($repository) || $repository == '') {
-			echo $ARnls['err:svn:enterURL'];
-			flush();
-			return;
-		} else {
+		$repoPath = $this->getdata("repoPath");
+
+		if ($repoPath) {
+			$repo_subpath = substr($this->path, strlen($repoPath));
 			$repository = rtrim($repository, "/") . "/" . $repo_subpath;
-			
-			echo "\n<span class='svn_headerline'>Updating ".$this->path." from ".$repository."</span>\n";
+		} else {
+			$repository = $stored_repository;
+		}
+
+		if (!$svn_info) {
+			echo "\n<span class='svn_error'>" . $this->path . ": is not in SVN.</span>\n";
+			flush();
+		} else if (($repository != $stored_repository) && $revision) {
+			echo "Checked repo: [$repository] [$stored_repository] rev $revision";
+			echo "\n<span class='svn_error'>" . $this->path . ": " . $ARnls['err:svn:leaving_recurse_tree'] . "</span>\n";
+			flush();
+		} else {
+			if(!$revision) {
+				echo "\n<span class='svn_headerline'>Updating ".$this->path." from ".$repository."</span>\n";
+			} else {
+				echo "\n<span class='svn_headerline'>Updating ".$this->path." to revision $revision from $repository</span>\n";
+			} 
 			flush();
 
 			// Update the templates.
-			$result = $fstore->svn_update($svn);
+			$result = $fstore->svn_update($svn, '', $revision);
 
 			if ($result) {
 				$updated_templates = array();
@@ -43,7 +59,7 @@
 							break;
 					}
 
-					$props = $fstore->svn_get_ariadne_props($svn, $item['name']);
+					$props = $fstore->svn_get_ariadne_props($svn, $item['name'], $revision);
 					if( $item["status"]  == "A" ) {
 						echo "<span class='svn_addtemplateline'>Adding ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
 					} elseif( $item["status"] == "U" || substr(ltrim($item['name']),0,2) == 'U ' ) { // substr to work around bugs in SVN.php
@@ -86,11 +102,12 @@
 			// Run update on the existing subdirs.
 			$arCallArgs['repoPath'] = $this->path;
 			$arCallArgs['repository'] = $repository;
-			
+			$arCallArgs['revision'] = $revision;
+
 			$this->ls($this->path, "system.svn.update.recursive.php", $arCallArgs);
 
 			// Create the dirs, restore them if needed.
-			$dirlist = $fstore->svn_list($svn);
+			$dirlist = $fstore->svn_list($svn, $revision);
 			if ($dirlist) {
 				$arCallArgs['dirlist'] = $dirlist;
 				$arCallArgs['svn'] = $svn;

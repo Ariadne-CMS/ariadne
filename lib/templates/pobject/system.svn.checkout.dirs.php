@@ -2,7 +2,6 @@
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		$this->resetloopcheck();
-	
 		if ($dirlist) {
 			foreach ($dirlist as $item) {
 				if ($item['type'] == "D") {
@@ -19,7 +18,7 @@
 						// If not found in SVN:
 						// type defaults to psection
 						// name defaults to pathname 
-						$svn_type = $fstore->svn_rpropget($svn, $repository, "ar:type", $dirinfo['ar:path']);
+						$svn_type = $fstore->svn_rpropget($svn, $repository, "ar:type", $dirinfo['ar:path'], $revision);
 						if ($svn_type != "") {
 							// echo "SVN type: [$svn_type]<br>";
 							$dirinfo['ar:type'] = $svn_type;
@@ -27,7 +26,7 @@
 							// echo "SVN type not found, default to psection<br>";
 							$dirinfo['ar:type'] = "psection";
 						}
-						$svn_name = $fstore->svn_rpropget($svn, $repository, "ar:name", $dirinfo['ar:path']);
+						$svn_name = $fstore->svn_rpropget($svn, $repository, "ar:name", $dirinfo['ar:path'], $revision);
 						if ($svn_name != "") {
 							$dirinfo['ar:name'] = $svn_name;
 						} else {
@@ -47,6 +46,7 @@
 							echo "Error: " . $this->error . "\n";
 						} else {
 							$arCallArgs['repository'] = $repository;
+							$arCallARgs['revision'] = $revision;
 							$this->get($dirpath, "system.svn.checkout.recursive.php", $arCallArgs);
 						}
 					}

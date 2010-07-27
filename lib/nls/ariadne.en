@@ -92,6 +92,7 @@
 
 	$ARnls['ariadne:svn:nomod']					=	"No modifications";	
 	$ARnls['err:svn:enterURL']				= "Please enter a valid SVN repository URL.";
+	$ARnls['err:svn:leaving_recurse_tree']			= "This repository is not part of the repository tree of the parent.";
 
 	$ARnls['ariadne:template:row']				= "Row";
 	$ARnls['ariadne:template:col']				= "Col";

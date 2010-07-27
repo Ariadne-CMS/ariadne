@@ -12,6 +12,10 @@
 				<label for="password" class="required"><?php echo $ARnls['ariadne:svn:password']; ?></label>
 				<input id="password" type="password" name="password" value="" class="inputline">
 			</div>
+			<div class="field">
+				<label for="revision" class="required"><?php echo $ARnls['ariadne:svn:revision']; ?></label>
+				<input id="revision" type="text" name="revision" value="" class="inputline">
+			</div>
 		</fieldset>
 <?php
 	}

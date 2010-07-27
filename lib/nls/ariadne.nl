@@ -90,6 +90,7 @@
 	$ARnls['filename']						= "Bestand";
 	$ARnls['ariadne:svn:nomod']                 =   "Geen wijzigingen";
 	$ARnls['err:svn:enterURL']				= "Voer een valide SVN repository URL in.";
+	$ARnls['err:svn:leaving_recurse_tree']			= "Deze repository maakt geen deel uit van de repository-boom van deze actie.";
 
 	$ARnls['ariadne:template:row']				= "Rij";
 	$ARnls['ariadne:template:col']				= "Kolom";
