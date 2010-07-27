@@ -29,13 +29,13 @@
 
 #sectiondata {
 	position: static;
+	margin-top: 10px;
 }
 
 #tabsdata {
 	position: static;
 	width: 600px;
 	margin: 0px auto;
-	border-top: 0px;
 }
 
 #header .typeicon {
