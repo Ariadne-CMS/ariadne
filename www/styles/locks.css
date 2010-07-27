@@ -26,3 +26,41 @@
 	margin-right: 0px;
 	margin-top: 10px;
 }
+
+#sectiondata {
+	position: static;
+}
+
+#tabsdata {
+	position: static;
+	width: 600px;
+	margin: 0px auto;
+	border-top: 0px;
+}
+
+#header .typeicon {
+	position: absolute;
+	z-index: 2;
+}
+#header {
+	overflow: visible;
+	width: 620px;
+	position: relative;
+	border: 1px solid #808080;
+	line-height: 32px;
+}
+
+#wgWizForm {
+	width: 620px;
+	margin: 0px auto;
+	margin-top: 50px;
+}
+
+div.buttons div.right {
+	position: static;
+	margin-top: 10px;
+}
+
+html,body {
+	height: auto;
+}
