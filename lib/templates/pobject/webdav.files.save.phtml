@@ -11,7 +11,7 @@
 
 		// now make the new values available for system.save.data.phtml
 		$arCallArgs["file"]=$fileinfo["name"];
-		$arCallArgs["file_temp"]=substr($fileinfo["tmp_name"],strlen($this->store->get_config("files")."temp/"));
+		$arCallArgs["file_temp"]=basename($fileinfo["tmp_name"]);
 		$arCallArgs["file_size"]=$fileinfo["size"];
 		$arCallArgs["file_type"]=$fileinfo["type"];
 		$arCallArgs["mimetype"]=$fileinfo["type"];
