@@ -522,11 +522,9 @@ class pphoto extends pfile { // pphoto class definition
 					if (!$failed) {
 						$destsrc = $tmpsrc;
 
-						ob_start();
 						debug("pphoto: destination file is $destsrc");
-						readfile($destsrc);
-						$result=ob_get_contents();
-						ob_end_clean();
+						$result = file_get_contents($destsrc);
+						
 						@unlink($tmpsrc);
 						@unlink($destsrc);
 					} else {
