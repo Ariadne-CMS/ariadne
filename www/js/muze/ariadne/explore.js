@@ -702,26 +702,28 @@ muze.ariadne.explore.viewpane = function() {
 				viewmode = 'list';
 			}
 
-			var path = muze.ariadne.explore.viewpane.selectedItem.path;
-			if (viewmode != 'details') {
-				var items = document.getElementById("viewpane").getElementsByTagName("LI");
-				for(i=0; i<items.length; i++) {
-					muze.ariadne.explore.viewpane.setitempath(items[i]);
-					if (items[i].path == path) {
-						YAHOO.util.Dom.addClass(items[i], 'selected');
-						muze.ariadne.explore.viewpane.selectedItem = items[i];
-						break;
-					}
-				}
-			} else {
-				if (muze.ariadne.explore.viewpane.dataTable) {
-					var records = muze.ariadne.explore.viewpane.dataTable.getRecordSet().getRecords();
-					for (i=0; i<records.length; i++) {
-						if(records[i].getData("path") == path) {
-							records[i].path = records[i].getData("path");
-							muze.ariadne.explore.viewpane.selectedItem = records[i];
-							muze.ariadne.explore.viewpane.dataTable.selectRow(records[i]);
+			if (muze.ariadne.explore.viewpane.selectedItem && muze.ariadne.explore.viewpane.selectedItem.path) {
+				var path = muze.ariadne.explore.viewpane.selectedItem.path;
+				if (viewmode != 'details') {
+					var items = document.getElementById("viewpane").getElementsByTagName("LI");
+					for(i=0; i<items.length; i++) {
+						muze.ariadne.explore.viewpane.setitempath(items[i]);
+						if (items[i].path == path) {
+							YAHOO.util.Dom.addClass(items[i], 'selected');
+							muze.ariadne.explore.viewpane.selectedItem = items[i];
 							break;
+						}
+					}
+				} else {
+					if (muze.ariadne.explore.viewpane.dataTable) {
+						var records = muze.ariadne.explore.viewpane.dataTable.getRecordSet().getRecords();
+						for (i=0; i<records.length; i++) {
+							if(records[i].getData("path") == path) {
+								records[i].path = records[i].getData("path");
+								muze.ariadne.explore.viewpane.selectedItem = records[i];
+								muze.ariadne.explore.viewpane.dataTable.selectRow(records[i]);
+								break;
+							}
 						}
 					}
 				}
