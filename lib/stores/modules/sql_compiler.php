@@ -313,6 +313,11 @@ abstract class sql_compiler {
 				$yych = $YYBUFFER[++$YYCURSOR];
 			}
 			$sort_type = strtoupper($value);
+			if (!($sort_type == 'ASC' || $sort_type == 'DESC')) { // If sort type is anything else than ASC or DESC, it is not part of the order by.
+				$sort_type = 'ASC';
+				$YYCURSOR = $YYCURSOR - strlen($value);
+				$value = '';
+			}
 		} else {
 			$sort_type = 'ASC';
 		}
@@ -347,6 +352,11 @@ abstract class sql_compiler {
 						$yych = $YYBUFFER[++$YYCURSOR];
 					}
 					$sort_type = strtoupper($value);
+					if (!($sort_type == 'ASC' || $sort_type == 'DESC')) { // If sort type is anything else than ASC or DESC, it is not part of the order by.
+						$sort_type = 'ASC';
+						$YYCURSOR = $YYCURSOR - strlen($value);
+						$value = '';
+					}
 				} else {
 					$sort_type = 'ASC';
 				}
