@@ -16,10 +16,7 @@
 
 				$filename = substr($filename, 1);
 
-				ob_start();
-				@readfile($path);
-				$template = ob_get_contents();
-				ob_end_clean();
+				$template = file_get_contents($path);
 
 				$meta = array();
 				$meta['ar:default']	= $fstore->svn_propget($svn, "ar:default", $filename);
