@@ -545,10 +545,7 @@ class ISBN
         }
         
         /* load external data */
-        ob_start();
-          readfile($this->groups_csv);
-          $t = ob_get_contents();
-        ob_end_clean();
+	$t = file_get_contents($this->groups_csv);
         /* parse external data */
         $groups = array();      
         $tls    = split("\n", $t);
