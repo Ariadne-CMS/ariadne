@@ -236,11 +236,11 @@ muze.ariadne.explore = function() {
 		arshow : function (windowname, link, arguments) {
 			properties=muze.ariadne.explore.windowprops[windowname];
 			myNewWindow = 0;
-			if( windowname == 'edit_object_layout' && muze.ariadne.registry.get('window_new_layout')) {
+			if( windowname == 'dialog.templates' && muze.ariadne.registry.get('window_new_layout')) {
 				myNewWindow = 1;
 			}
 
-			if( windowname == 'edit_object_grants' && muze.ariadne.registry.get('window_new_grants')) {
+			if( windowname == 'dialog.grants' && muze.ariadne.registry.get('window_new_grants')) {
 				myNewWindow = 1;
 			}
 			
