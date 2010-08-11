@@ -4,7 +4,7 @@
 ?>
 	<div id="mogrify"><?php echo $ARnls["mogrifying"] . " " . $current_object_path; ?></div>
 <?php
-		$this->mogrify( $this->id, $this->getdata('type'), $this->getdata('vtype'));
+		$this->mogrify( $this->id, $this->getdata('type'));
 		if ($this->error) {
 			echo '<div class="error">'.$this->error.'</div>';
 		}

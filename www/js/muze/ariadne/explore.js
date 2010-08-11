@@ -24,7 +24,7 @@ muze.ariadne.explore = function() {
 			'dialog.copy'			: windowprops_common + windowsize_small,
 			'dialog.link'			: windowprops_common + windowsize_small,
 			'dialog.delete'			: windowprops_common + windowsize_small,
-			'dialog.mogrify'		: windowprops_common + ',height=250,width=400',
+			'dialog.mogrify'		: windowprops_common + windowsize_small,
 			'dialog.import'			: windowprops_common + windowsize_large,
 			'dialog.export'			: windowprops_common + windowsize_large,
 

@@ -28,22 +28,6 @@
 		?>
 		</select>
 	</div>
-	<div class="field">
-		<label for="target" class="required" style="float: left; width: 65px; margin-top: 5px;"><?php echo $ARnls["ariadne:vtype"]; ?></label>
-		<select class="selectline" name="vtype">
-		<?php
-			foreach ( $ARCurrent->arTypeNames as $typeValue => $typeName ) {
-				if (strpos(".", $typeValue)===false) {
-					echo '<option value="'.$typeValue.'"';
-					if ($typeValue==$vtype) {
-						echo ' selected';
-					}
-					echo '>'.$typeName.' ( '.$typeValue.' ) </option>'."\n";
-				}
-			}
-		?>
-		</select>
-	</div>
 </fieldset>
 <?php	} 
 ?>
