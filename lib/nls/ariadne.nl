@@ -55,6 +55,9 @@
 	$ARnls["ariadne:currentandchildren"]		=	"Huidig object met kinderen";
 	$ARnls["ariadne:change_priority"]			=	"Zet prioriteit";
 
+	$ARnls["ariadne:remove_file"] = "Verwijder het huidige bestand";
+	$ARnls["ariadne:file_uploaded"] = "Bestand toegevoegd";
+
 	$ARnls['ariadne:svn']						= "SVN";
 	$ARnls['ariadne:svn:checkunder']				= 	"Checkunder";
 	$ARnls['ariadne:svn:checkout']					=	"Checkout";

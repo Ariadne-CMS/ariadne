@@ -15,7 +15,6 @@
 		if( !$file_type ) {
 			$file_type = $this->getdata("mimetype", $selectednls);
 		}
-		
 ?>
 <fieldset id="data">
 	<legend><?php echo $ARnls["data"]; ?></legend>
@@ -42,6 +41,9 @@
 		<label for="file"><?php echo $ARnls["file"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
 		<input id="file" type="file" name="<?php echo $selectednls."[file]"; ?>" class="inputline">
+		<?php if ($this->getdata("file_size", $selectednls)) { ?>
+			<div class="file_uploaded"><?php echo $ARnls['ariadne:file_uploaded']; ?>: <?php echo $this->make_filesize($this->getdata("file_size", $selectednls)); ?></div>
+		<?php } ?>
 	</div>
 </fieldset>
 

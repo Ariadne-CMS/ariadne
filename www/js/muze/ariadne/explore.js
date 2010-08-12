@@ -10,7 +10,7 @@ muze.ariadne.explore = function() {
 	var windowprops_common = 'resizable';
 	var windowprops_full = 'directories,location,menubar,status,toolbar,resizable,scrollbars';
 	var windowsize_small = ",height=230,width=400";
-	var windowsize_large = ",height=475,width=550";
+	var windowsize_large = ",height=495,width=550";
 
 	return {
 		// Array to store YAHOO.Util.Connect objects.

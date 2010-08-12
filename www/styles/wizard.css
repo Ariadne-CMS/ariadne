@@ -327,6 +327,11 @@ div.buttons div.center {
 	width: 100%;
 }
 
+#tabsdata div.file_uploaded {
+	margin-top: -19px;
+	margin-left: 5px;
+}
+
 #progressbar {
 	height: 30px;
 	position: fixed;
