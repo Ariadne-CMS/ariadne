@@ -448,7 +448,9 @@ muze.ariadne.explore.tree = function() {
 		refresh : function(path) {
 			var node = tree.getNodeByProperty("path", path);
 			if (node && node.parent) {
-				tree.removeChildren(node.parent);
+				if (path != tree.getRoot().children[0].path) {
+					tree.removeChildren(node.parent);
+				}
 				muze.ariadne.explore.tree.setpath(path);
 			}
 		},
@@ -516,7 +518,23 @@ muze.ariadne.explore.toolbar = function() {
 		},
 		searchwindow : function() {
 			muze.ariadne.explore.arshow('dialog.search', top.muze.ariadne.registry.get('store_root')+top.muze.ariadne.registry.get('path')+'dialog.search.php');
-		}
+		},
+		load : function(path) {
+			var sUrl = top.muze.ariadne.registry.get('store_root')+path+'explore.toolbar.php';
+			var fadeOut = new YAHOO.util.Anim("explore_top", { opacity: {to: 0.3}}, 0.2);
+			fadeOut.animate();
+			var fadeIn = function() {
+				var fadeIn = new YAHOO.util.Anim("explore_top", { opacity: {to: 1}}, 0.1);
+				fadeIn.animate();
+
+				// Fix for PNG filters in IE6 that break while using another filter;
+				fadeIn.onComplete.subscribe(function() {
+					document.getElementById("explore_top").style.filter = '';
+				});
+			};
+
+			muze.ariadne.explore.load(sUrl, document.getElementById("explore_top"), fadeIn, false);
+		},
 	}
 }();
 

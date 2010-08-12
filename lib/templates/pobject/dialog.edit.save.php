@@ -24,6 +24,11 @@
 							window.opener.muze.ariadne.explore.objectadded();
 						}
 					}
+					<?php	if ($this->path == $AR->user->path) {  ?>
+							window.opener.muze.ariadne.explore.viewpane.view('<?php echo $this->path; ?>');
+							window.opener.muze.ariadne.explore.toolbar.load('<?php echo $this->path; ?>');
+					<?php	}	?>
+
 					<?php
 						if (!$arIsNewObject || $this->getdata("arCloseWindow", "none")) {
 					?>
