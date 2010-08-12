@@ -1205,7 +1205,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 	
 	function getConfigData() {
-	global $ARConfig;
+	global $ARConfig, $AR;
 		$context = $this->getContext(0);
 		if (!$ARConfig->cache[$this->path] && $context["scope"] != "pinp") {
 			// first inherit parent configuration data
