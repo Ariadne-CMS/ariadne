@@ -44,6 +44,9 @@ class ar_nlsDictionary extends arBase implements ArrayAccess {
 	}
 
 	public function setLanguage( $language ) {
+		if( !isset($language) || $language == "" ) {
+			$language = $this->defaultLanguage;
+		}
 		if( !isset( $this->languages[$language] ) ) {
 			$this->languages[$language] = array();
 		}
