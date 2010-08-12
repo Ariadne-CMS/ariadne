@@ -110,6 +110,8 @@
 					$fulltext = $properties['fulltext'];
 					$tempfile = $this->getdata("file_temp", $nlskey);
 					$mimetype = $this->getdata("file_type", $nlskey);
+					$deletefile = $this->getdata("delete", $nlskey);
+
 					if (!$mimetype) {
 						$mimetype = $this->getdata("mimetype", $nlskey);
 					}
@@ -123,7 +125,7 @@
 					
 					// now check whether $file_temp is defined, if so, move it
 					if (!$this->error) {
-						if ($tempfile) {
+						if ($tempfile && !$deletefile) {
 							$tempfile=ereg_replace("[\\\/]","",$tempfile); // make sure nobody gets /etc/passwd
 							$tempfile=$this->store->get_config("files")."temp/".$tempfile;
 
@@ -198,6 +200,30 @@
 								$tempfile=false;
 							}
 						} 
+
+						if ($deletefile) {
+							$files = $this->store->get_filestore("files");
+							if ($nlskey != "none") {
+								$files->remove($this->id, $nlskey."_file");
+								unset($this->data->$nlskey->filesize);
+								unset($this->data->$nlskey->mimetype);
+							} else {
+								$files->remove($this->id, "file");
+							}
+
+							if ($nlskey == $this->data->nls->default) {
+								$files->remove($this->id, "file");
+							}
+							foreach ($properties["fulltext"] as $count => $property) {
+								if ($property['nls'] == AddSlashes($nlskey)) {
+									unset($properties["fulltext"][$count]);
+								}
+							}
+							if ($tempfile) {
+								unlink($tempfile);
+							}
+						}
+
 						if ($this->store->is_supported("fulltext")) {
 							$filetext = $this->GetPlainText("file", $nlskey);
 							if ($filetext) {
