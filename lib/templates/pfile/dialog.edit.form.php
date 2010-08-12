@@ -15,6 +15,12 @@
 		if( !$file_type ) {
 			$file_type = $this->getdata("mimetype", $selectednls);
 		}
+
+		$file_size = $this->getdata("file_size", $selectednls); // Filesize of the uploaded file
+		if (!$file_size && $this->ExistsFile("file", $selectednls)) {
+			$file_size = $this->getdata("filesize", $selectednls); // Filesize of the file that is in Ariadne.
+		}
+
 ?>
 <fieldset id="data">
 	<legend><?php echo $ARnls["data"]; ?></legend>
@@ -40,11 +46,29 @@
 	<div class="field">
 		<label for="file"><?php echo $ARnls["file"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
-		<input id="file" type="file" name="<?php echo $selectednls."[file]"; ?>" class="inputline">
+		<input id="file" type="file" name="<?php echo $selectednls."[file]"; ?>" class="inputline" onchange="document.getElementById('file_uploaded').style.display='none';">
 		<?php if ($this->getdata("file_size", $selectednls)) { ?>
-			<div class="file_uploaded"><?php echo $ARnls['ariadne:file_uploaded']; ?>: <?php echo $this->make_filesize($this->getdata("file_size", $selectednls)); ?></div>
+			<div id="file_uploaded" class="file_uploaded"><?php echo $ARnls['ariadne:file_uploaded']; ?>: <?php echo $this->make_filesize($this->getdata("file_size", $selectednls)); ?></div>
+			<script type="text/javascript">
+				if (document.getElementById("file").value) {
+					document.getElementById('file_uploaded').style.display='none';
+				}
+			</script>
 		<?php } ?>
 	</div>
+<?php	if ($file_size) { 
+		$checked = '';
+		if ($this->getdata("delete", $selectednls)) {
+			$checked = "checked ";
+		}
+	?>
+	<div class="field checkbox">
+		<input type="hidden" name="<?php echo $selectednls . "[delete]"; ?>" value="0">
+		<input id="delete" type="checkbox" name="<?php echo $selectednls . "[delete]"; ?>" class="checkbox" value="1" <?php echo $checked; ?>>
+		<label for="delete"><?php echo $ARnls["ariadne:remove_file"]; ?> (<?php echo $ARnls['size']; ?>: <?php echo $this->make_filesize($file_size); ?>)</label>
+		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
+	</div>
+<?php	} ?>
 </fieldset>
 
 <?php } ?>

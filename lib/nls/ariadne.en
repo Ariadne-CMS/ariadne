@@ -57,7 +57,7 @@
 	$ARnls['ariadne:change_priority']			=	"Change priority";
 
 	$ARnls['ariadne:remove_file']			= "Remove current file";
-	$ARnls['ariadne:file_uploaded']			= "File uploaded";
+	$ARnls['ariadne:file_uploaded']			= "File";
 
 	$ARnls['ariadne:svn']						= "SVN";
 	$ARnls['ariadne:svn:checkunder']                = "Checkunder";
