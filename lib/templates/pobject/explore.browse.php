@@ -1,6 +1,11 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+
+		if ($AR->user->data->language) {
+			$ARnls->setLanguage($AR->user->data->language);
+		}
+
 		require_once($this->store->get_config("code")."modules/mod_yui.php");
 		if (!$ARCurrent->arTypeTree) {
 			$this->call("typetree.ini");

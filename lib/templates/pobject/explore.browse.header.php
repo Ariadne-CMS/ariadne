@@ -2,6 +2,11 @@
 	$ARCurrent->nolangcheck=true;
 	$ARCurrent->allnls = true;
 	if( $this->CheckLogin("read") && $this->CheckConfig() ) {
+
+		if ($AR->user->data->language) {
+			$ARnls->setLanguage($AR->user->data->language);
+		}
+
 		
 		if( !$arLanguage ) {
 			$arLanguage = $nls;

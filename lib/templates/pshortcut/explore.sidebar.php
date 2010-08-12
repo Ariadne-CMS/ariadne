@@ -4,10 +4,13 @@ $ARCurrent->allnls = true;
 
 if ($this->CheckLogin("read") && $this->CheckConfig()) {
 
-  	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
-
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+
+		if ($AR->user->data->language) {
+			ldSetNls($AR->user->data->language);
+		}
+
 		global $invisibleSections;
 		if (!$arLanguage) {
 			$arLanguage=$nls;
