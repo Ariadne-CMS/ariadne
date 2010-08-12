@@ -144,6 +144,7 @@ a.button img {
 	width: 39px;
 	border: 1px solid #808080;
 	border-right: 1px solid #cccccc;
+	background-color: #dddddd;
 }
 
 #tabsdata #template_editor #template {
