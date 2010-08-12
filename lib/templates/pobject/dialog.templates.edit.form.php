@@ -254,7 +254,7 @@ for($i=1;$i<$linetotal;$i++) { echo $i."\n"; }
 		var wgWizForm = document.getElementById("wgWizForm");
 		wgWizForm.wgWizSubmitHandler = function() {
 			var lines = document.getElementById("linenumbers")
-			lines.value = "";
+			lines.parentNode.removeChild(lines);
 			return true;
 		}
 	
