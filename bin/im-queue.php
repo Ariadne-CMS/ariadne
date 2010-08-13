@@ -18,7 +18,7 @@
 
 	$semKey = $AR->IMQueue['semKey'];
 	if (!$semKey) {
-		$semKey = ftok($_SERVER['PHP_SELF'],1);
+		$semKey = ftok('/',1);
 	}
 
 	$max    = $AR->IMQueue['max'];
