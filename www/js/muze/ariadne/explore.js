@@ -534,7 +534,7 @@ muze.ariadne.explore.toolbar = function() {
 			};
 
 			muze.ariadne.explore.load(sUrl, document.getElementById("explore_top"), fadeIn, false);
-		},
+		}
 	}
 }();
 
