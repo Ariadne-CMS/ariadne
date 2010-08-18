@@ -1,4 +1,64 @@
 =========================
+Changes in release 2.7.2:
+=========================
+New features:
+- more speed, less CPU time needed.
+- added image-magick queue to prevent denial of service through lots of image magick calls
+- groups are now allowed outside /system/groups/
+- added ftp client to ar
+- added runtime test for config.ini before saving
+- reinstated editor selection (YUI or Toolbar)
+- reworked gettext/loadtext nls
+- Added option to delete a file for a specific language
+- recursive SVN checkout and update now allow a specific revision number
+
+Additions to existing features:
+- removed lots of debug statements to speed things up
+- speedups in editor.ini, typetree aanroep
+- reworked compression support
+- import/export skips compression of files/templates folders to speed things up
+- speedups in SVN support, reuse the SVN instance
+- typetree nls moved to typetree.ini, deprecates ariadne object-based typetree
+- speedups in icon fetching
+- reworked mysql query compiler
+- added visual queue for uploaded files in file/photo dialogs
+- explorer/user interface language is now treated seperate from the data language
+- User interface now updates to the new language after changing the users language.
+- explorer tree now also updates when a node is changed
+- explorer now re-selects an item after an object is added
+- 0 values can now be displayed using ar_html and ar_xml
+
+Bugfixes:
+- fixed calendar call for articles
+- several fixes in the nls/language support
+- several fixes to better support website speed profiling
+- fixed backend to use backend-urls instead of frontend urls
+- fix in HTML toolbar editor to allow classes on editable divs
+- fixes in ar/html/menu
+- lots of code cleanup
+- fix post/get/callargs after failed logins
+- fix in customdata dialog to prevent arrays/objects being destroyed when using this dialog
+- bugfix in SVN resolved, conflicts can now be resolved correctly from within Ariadne
+- bugfix in the installer for SVN support, removed trailing slash.
+- Fixed broken owner grants to work again
+- fixes in manual mimetype setting for pfiles
+- fix for 'crop' to make sure the result is the requested size.
+- fixed windowsizes and window dialog names
+- allow logoff from any object
+- language list sorted to be more consistent
+- added new 404 page styling
+- fixed mogrify window and options, vtype is removed since it is overwritten
+- layout improvements in the lock dialog
+- bugfixes in grants dialog
+- SVN dialogs now requires a repository to be entered
+
+Deprecated:
+- deprecated mod_json in favour of json_encode
+
+
+
+
+=========================
 Changes in release 2.7.1:
 =========================
 New features:
