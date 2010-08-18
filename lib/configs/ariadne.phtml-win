@@ -341,6 +341,11 @@
   // FIXME: build a better system for this, type dependant?
   $ARConfig->cache[".."]->FTP['mkdir']="pdir";
 
+  $ARConfig->pinpcache[".."]["nls"] = array(
+    "pphoto" => array( "allnls" => true, "nolangcheck" => true),
+    "pperson" => array("allnls" => true, "nolangcheck" => true)
+  );
+
 
   /**************************************************************************/
   /* Setup the variable repository for putvar/getvar                        */
