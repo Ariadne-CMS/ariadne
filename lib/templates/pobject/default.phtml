@@ -24,6 +24,25 @@
 	debug("default.phtml: ($arCallFunction)", "object");
 	global $ARConfigChecked;
 	$isARConfigChecked = $ARConfigChecked;
+	$config = $this->loadUserConfig();
+	$type = $this->type;
+	if ( !isset( $config['nls'][$type] ) ) {
+		$pos = strpos($type, '.');
+		if ( $pos !== false ) {
+			$type = substr( $type, 0, $pos );
+		}
+	}
+	$ThisIsTrue = 'Set by default.phtml';
+	if (isset($config['nls'][$type])) {
+		if ($config['nls'][$type]['allnls']) {
+			$remember['allnls'] = $ARCurrent->allnls;
+			$ARCurrent->allnls = $ThisIsTrue; //$config['nls'][$type]['allnls'];
+		}
+		if ($config['nls'][$type]['nolangcheck']) {
+			$ARCurrent->nolangcheck = true;
+		}
+	}
+
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunctionOrig, $arCallArgs)) {
 		if ($this->exists($this->path.$arCallFunction."/")) {
 			// first check if it's a pdir, if so, change the location
@@ -40,5 +59,9 @@
 		} else {
 			ldObjectNotFound($this->path, $arCallFunction);
 		}
+	}
+
+	if (isset($remember['allnls']) && $ARCurrent->allnls === $ThisIsTrue) {
+		$ARCurrent->allnls = $remember['allnls'];
 	}
 ?>
