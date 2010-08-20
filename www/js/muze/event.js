@@ -83,12 +83,15 @@ muze.event = function() {
 
 	var events = {
 
-		get:function(evt) {
+		get:function(evt, win) {
+			if (!win) {
+				win = window;
+			}
 			if (!evt) {
-				evt=window.event;
+				evt=win.event;
 			}
 			if (!evt.target) {
-				evt.target=evt.srcElement;
+				evt.target = evt.srcElement;
 			}
 			return evt;
 		},
@@ -115,12 +118,12 @@ muze.event = function() {
 		fire:function(el, name, evt) {
 			if (document.createEvent) {
 				if (!evt) {
-					evt = el.ownerDocument.createEvent("UIEvent");
+					evt = el.ownerDocument.createEvent("HTMLEvents");
 					evt.initEvent(name, true, true);
 				}
 				el.dispatchEvent(evt);
 			} else {
-				el.fireEvent(name, evt);
+				el.fireEvent('on'+name, evt);
 			}
 		},
 
