@@ -46,7 +46,7 @@
 	<div class="field">
 		<label for="file"><?php echo $ARnls["file"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
-		<input id="file" type="file" name="<?php echo $selectednls."[file]"; ?>" class="inputline" onchange="document.getElementById('file_uploaded').style.display='none';">
+		<input id="file" type="file" name="<?php echo $selectednls."[file]"; ?>" class="inputline" onchange="if (document.getElementById('file_uploaded')) {document.getElementById('file_uploaded').style.display='none'};">
 		<?php if ($this->getdata("file_size", $selectednls)) { ?>
 			<div id="file_uploaded" class="file_uploaded"><?php echo $ARnls['ariadne:file_uploaded']; ?>: <?php echo $this->make_filesize($this->getdata("file_size", $selectednls)); ?></div>
 			<script type="text/javascript">
