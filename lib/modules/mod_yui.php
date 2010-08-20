@@ -179,8 +179,14 @@
 					}
 					if( $item["icon"] ) {
 						$icon = ar_html::tag("img", array("src" => $item["icon"], "alt" => $item["iconalt"]));
+					} else {
+						$icon = false;
 					}
-					$content = ar_html::tag("span", array("class" => "menulabel"), $item['label']);
+					if( $item["label"] ) {
+						$content = ar_html::tag("span", array("class" => "menulabel"), $item['label']);
+					} else {
+						$content = false;
+					}
 
 					$a = ar_html::tag("a", $link, $icon, $content);
 					
