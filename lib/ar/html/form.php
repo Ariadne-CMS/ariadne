@@ -3,7 +3,7 @@
 	require_once(dirname(__FILE__).'/../html.php');
 
 	ar_pinp::allow('ar_html_form', array(
-		'addField', 'addButton', 'setValue', 'getValue', 'getValues', 'isValid', 'isSubmitted', 'validate', 'registerInputType', 'registerValidateCheck'
+		'addField', 'addButton', 'setValue', 'getValue', 'getValues', 'getHTML', 'isValid', 'isSubmitted', 'validate', 'registerInputType', 'registerValidateCheck'
 	) );
 	
 	class ar_html_form extends arBase {
@@ -65,7 +65,7 @@
 			}
 		}
 
-		public function __toString() {
+		public function getHTML() {
 			$content = '';
 			$buttonContent = '';
 			$attributes = array();
@@ -88,17 +88,21 @@
 			$content = ar_html::nodes();
 			if (is_array($this->fields)) {
 				foreach ($this->fields as $key => $field) {
-					$content[] = $field;
+					$content[] = $field->getField();
 				}
 			}
 			if ($this->buttons) {
 				$buttonContent = ar_html::nodes();
 				foreach ($this->buttons as $key => $button) {
-					$buttonContent[] = $button;
+					$buttonContent[] = $button->getButton();
 				}
 				$content[] = ar_html::tag('div', $buttonContent, array('class' => 'formButtons'));
 			}
-			return (string)ar_html::tag('form', $content, $attributes);
+			return ar_html::tag('form', $content, $attributes);		
+		}
+		
+		public function __toString() {
+			return (string) $this->getHTML();
 		}
 
 		public function getValue($name) {
