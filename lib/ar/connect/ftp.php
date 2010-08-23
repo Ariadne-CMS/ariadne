@@ -140,7 +140,7 @@
 			if ($contents instanceof pfile ) {
 				global $store;
 				$files = $store->get_filestore('files');
-				$path = $files->make_path($contents->id, '_file');
+				$path = $files->make_path($contents->id, 'file');
 				$fp = fopen($path, 'r');
 			} else {
 				$fp = fopen("php://temp/maxmemory:10485760", "w+");
