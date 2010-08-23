@@ -155,7 +155,7 @@
 					$name = $label;
 				}
 			}
-			if (!$label) {
+			if ( !$label && $label!==false ) {
 				$label	= $name;
 			}
 			if (!is_array($field)) {
@@ -449,13 +449,17 @@
 			if (!isset($label)) {
 				$label = $this->label;
 			}
-			if ($this->required) {
-				$label .= $this->form->requiredLabel;
+			if ($label!==false) {
+				if ($this->required) {
+					$label .= $this->form->requiredLabel;
+				}
+				if ($id) {
+					$attributes['for'] = $id;
+				}
+				return ar_html::tag('label', $label, $attributes);
+			} else {
+				return '';
 			}
-			if ($id) {
-				$attributes['for'] = $id;
-			}
-			return ar_html::tag('label', $label, $attributes);
 		}
 
 		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null ) {
