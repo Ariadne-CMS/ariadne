@@ -534,8 +534,8 @@
 		public function validate() {
 			$result = array();
 			$value  = $this->getValue();
-			if ( $this->required && !isset($value) ) {
-				$result[ $this->label ] = ar::error( 'Required input missing', 'required' );
+			if ( $this->required && ( !isset($value) || $value === '' ) ) {
+				$result[ $this->name ] = ar::error( 'Required input missing', 'required' );
 			} else if ( is_array( $this->checks ) ) {
 				foreach( $this->checks as $check ) {
 					$regex = false;
@@ -546,7 +546,7 @@
 							$message     = ar_html_form::$checks[$check]['message'];
 							if ( is_callable( $checkMethod ) ) {
 								if ( !$checkMethod( $value ) ) {
-									$result[$this->label] = ar::error(
+									$result[ $this->name ] = ar::error(
 										sprintf( $message, $value ),
 										$check
 									);
@@ -563,7 +563,7 @@
 						$message = 'Failed to match expected input';
 					}
 					if ( $regex && !preg_match( $regex, $value ) ) {
-						$result[$this->label] = ar::error( sprintf( $message, $value ), $check );
+						$result[ $this->name ] = ar::error( sprintf( $message, $value ), $check );
 					}
 				}
 			}
