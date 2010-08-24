@@ -239,6 +239,9 @@
 		
 		public function pasv( $pasv ) {
 			$this->options['pasv'] = $pasv;
+			if ( !ftp_pasv( $this->connection, $pasv) ) {
+				return ar::error( "Could not switch passive mode.", 6);
+			}
 			return $this;
 		}
 		
