@@ -777,6 +777,10 @@
 		}
 
 		public function __toString() {
+			return (string) $this->getField();
+		}
+		
+		public function getField() {
 			$content = ar_html::nodes();
 			if (isset($this->uncheckedValue)) {
 				$content[] = $this->getInput('hidden', $this->name, $this->uncheckedValue, false, 
@@ -785,7 +789,7 @@
 			$content[] = $this->getCheckBox($this->name, $this->checkedValue, 
 				($this->checkedValue==$this->value), $this->disabled, $this->uncheckedValue);
 			$content[] = $this->getLabel($this->label, $this->name);
-			return (string)$this->getField($content);
+			return parent::getField($content);
 		}
 		
 		protected function getCheckBox($name=null, $value=null, $checked=false, $disabled=null, $uncheckedValue=false) {
@@ -913,13 +917,17 @@
 	
 	class ar_html_formInputHtml extends ar_html_formInput {
 		
-		public function __toString() {
+		public function getField() {
 			$content = ar_html::nodes();
 			if ($this->label) {
 				$content[] = $this->getLabel($this->label);
 			}
 			$content[] = $this->value;
-			return (string)$this->getField($content);
+			return parent::getField($content);		
+		}
+		
+		public function __toString() {
+			return (string) $this->getField();
 		}
 	}
 	
