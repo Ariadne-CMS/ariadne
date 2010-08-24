@@ -93,8 +93,8 @@
 			return ar_store::exists($path);
 		}
 		
-		public static function error($message, $code) {
-			return ar_error::raiseError($message, $code);
+		public static function error($message, $code, $previous = null) {
+			return ar_error::raiseError($message, $code, $previous);
 		}
 		
 		public static function call( $template, $params = null ) {
@@ -108,7 +108,7 @@
 				return;
 			} else if ( is_array($value) ) {
 				array_walk_recursive( $value, array( self, 'taint' ) );
-			} else if ( is_string($value) ) {
+			} else if ( is_string($value) && $value ) { // empty strings don't need tainting
 				$value = new arTainted($value);
 			}
 		}
@@ -248,20 +248,21 @@
 		var $code;
 		static $throwExceptions = false;
 
-		public function __construct($message = null, $code = null) {
-			$this->message = $message;
-			$this->code    = $code;
+		public function __construct($message = null, $code = null, $previous = null) {
+			$this->message  = $message;
+			$this->code     = $code;
+			$this->previous = $previous;
 		}
 
 		public static function isError($ob) {
 			return (is_a($ob, 'ar_error') || is_a($ob, 'error') || is_a($ob, 'PEAR_Error'));
 		}
 
-		public static function raiseError($message, $code) {
+		public static function raiseError($message, $code, $previous) {
 			if (self::$throwExceptions) {
-				throw new ar_exceptionDefault($message, $code);
+				throw new ar_exceptionDefault($message, $code, $previous);
 			} else {
-				return new ar_error($message, $code);
+				return new ar_error($message, $code, $previous);
 			}
 		}
 
