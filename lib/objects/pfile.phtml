@@ -165,7 +165,7 @@ class pfile extends pobject { // pfile class definition
 		if (!$filename) {
 			$filename = substr($this->path, strlen($this->parent), -1);
 		}
-		ldHeader('Cache-Control: no-cache, must-revalidate');
+		ldHeader('Cache-Control: private');
 		// set pragma: cache; bug workaround for internet explorer and https
 		if (ldGetServerVar('HTTPS')) {
 			ldHeader('Pragma: cache');
