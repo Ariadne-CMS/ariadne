@@ -1,7 +1,7 @@
 <?php
 	if ($this->CheckConfig("layout")) {
 
-		file_get_contents($file["tmp_name"]);
+		$template = file_get_contents($file["tmp_name"]);
 
 		eregi('^(local[.])?([a-z_0-9-]+)[.](.*)[.](.*)', $file["name"], $regs);
 		$default	= ! $regs[1];
