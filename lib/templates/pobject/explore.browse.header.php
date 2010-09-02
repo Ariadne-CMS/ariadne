@@ -3,7 +3,7 @@
 	$ARCurrent->allnls = true;
 	if( $this->CheckLogin("read") && $this->CheckConfig() ) {
 
-		if ($AR->user->data->language) {
+		if ($AR->user->data->language && is_object($ARnls) ) {
 			$ARnls->setLanguage($AR->user->data->language);
 		}
 
