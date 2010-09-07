@@ -15,6 +15,9 @@ TH,TD,LI,P,BODY,DIV {
 	line-height: 13px;
 }
 
+* {
+	filter: inherit;
+}
 
 /*
  * Tree widget
