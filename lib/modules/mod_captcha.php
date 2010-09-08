@@ -126,7 +126,9 @@
 			$captchaImg = ereg_replace("[\\\/]", "", $captchaImg);
 			$filename = $me->store->get_config('files').'temp/hn_captcha_'.$captchaImg.'.jpg';
 //			ldSetContent('image/jpg');
-			readfile($filename);
+			if( file_exists($filename) ) {	
+				readfile($filename);
+			}
 		}
 
 		function getImgSrc($url='') {
