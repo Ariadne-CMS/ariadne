@@ -1,8 +1,8 @@
 <?php
 	if ($new_admin_password) {
-		include("../ariadne.inc");
-		include($ariadne."/configs/ariadne.phtml");
-		include($ariadne."/configs/store.phtml");
+		include_once("../ariadne.inc");
+		include_once($ariadne."/configs/ariadne.phtml");
+		include_once($ariadne."/configs/store.phtml");
 		include_once($ariadne."/stores/".$store_config["dbms"]."store.phtml");
 		include_once($ariadne."/includes/loader.web.php");
 

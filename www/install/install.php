@@ -3,5 +3,7 @@
 	include("check.php");
 	include("init_database.php");
 	include("install_base_package.php");
+	$new_admin_password='muze';
+	include("set_admin_password.php");
 ?>	
 </pre>
