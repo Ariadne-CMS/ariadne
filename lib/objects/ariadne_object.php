@@ -641,14 +641,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	function make_ariadne_url($path="") {
 		global $AR;
 		$path = $this->make_path($path);
-		return $AR->host . $AR->root . $this->store->rootoptions . $path;
+		return $AR->host . $AR->root . $this->store->get_config('rootoptions') . $path;
 	}
 	
 
 	function make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=false) {
 		global $ARConfig, $AR, $ARCurrent;
 
-		$rootoptions=$this->store->rootoptions;
+		$rootoptions=$this->store->get_config('rootoptions');
 		if (!$session || ($nls !== false)) {
 			$rootoptions = "";
 			if ($session && $ARCurrent->session->id && !$AR->hideSessionIDfromURL) {

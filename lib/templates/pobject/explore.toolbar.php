@@ -36,7 +36,7 @@
 				'label' => $ARnls['ariadne:preferences'],
 				'iconalt' => $ARnls['ariadne:preferences'],
 				'icon' => $AR->dir->images . 'icons/small/preferences.png',
-				'onclick' => "muze.ariadne.explore.arshow('dialog.preferences','" . $this->store->root.$AR->user->path . "dialog.preferences.php'); return false;",
+				'onclick' => "muze.ariadne.explore.arshow('dialog.preferences','" . $this->store->get_config('root').$AR->user->path . "dialog.preferences.php'); return false;",
 				'href' => $this->make_ariadne_url($AR->user->path) . "dialog.preferences.php"
 			),
 			array(

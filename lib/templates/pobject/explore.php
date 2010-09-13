@@ -12,7 +12,7 @@
 		$name 	= $base_object->nlsdata->name;
 		$icon 	= $ARCurrent->arTypeIcons[$base_object->type]['medium'] ? $ARCurrent->arTypeIcons[$base_object->type]['medium'] : $base_object->call('system.get.icon.php', array('size' => 'medium'));
 
-		$loader = $this->store->root;
+		$loader = $this->store->get_config('root');
 		$wwwroot = $AR->dir->www;
 		$interface = $data->interface;
 
@@ -103,7 +103,7 @@
 	muze.ariadne.explore.tree.baseIcon	= '<?php echo addslashes($icon); ?>';
 
 	muze.ariadne.registry.set('root', '<?php echo addslashes($AR->root); ?>');
-	muze.ariadne.registry.set('store_root', '<?php echo addslashes($this->store->root); ?>');
+	muze.ariadne.registry.set('store_root', '<?php echo addslashes($this->store->get_config('root')); ?>');
 	
 	// setting session ID for unique naming of windows within one ariadne session.
 	muze.ariadne.registry.set("SessionID","<?php echo addslashes($ARCurrent->session->id); ?>");
