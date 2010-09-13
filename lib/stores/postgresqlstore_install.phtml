@@ -273,12 +273,6 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 		return $result;
 	}
 
-	function close() {
-		$query = "analyze";
-		$this->store_run_query($query);
-		parent::close();
-	}
-
 }
 
 ?>
