@@ -38,7 +38,7 @@
 				"template" => "dialog.edit.custom.php" 
 			);
 		}
-		if( !$this->lock('0')){
+		if( !$this->lock('O')){
 			$i = $wgWizFlow[0]["current"]+1;
 			$wgWizFlow[$i]["template"] = "dialog.edit.lock.php";	                        
 		}
