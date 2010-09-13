@@ -27,7 +27,7 @@
 		// now populate the month with all entries.
 
 		function AddTodo($from, $to, $priority, $path, $name, $summary) {
-			global $ARCurrent
+			global $ARCurrent;
 
 			$i=@count($ARCurrent->todolist[$from]);
 			$ARCurrent->todolist[$from][$i]["text"]="<a class=\"cal\" href=\"".
