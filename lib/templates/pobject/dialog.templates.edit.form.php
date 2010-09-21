@@ -291,8 +291,6 @@ for($i=1;$i<$linetotal;$i++) { echo $i."\n"; }
 ?>
 		var pos = new muze.util.textarea.Position( <?php echo $line; ?>, 0, 0, <?php echo $pos; ?>);
 		muze.util.textarea.setCursorPosition(area, pos);
-		updateStatusBar();
-
 	}
 	
 	YAHOO.util.Event.onDOMReady(initHandlers);
