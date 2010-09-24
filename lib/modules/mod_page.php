@@ -22,8 +22,8 @@ class pinp_page {
 		return page::clean($page, $settings);
 	}
 
-	function _compile($page) {
-		return page::compile($page);
+	function _compile($page, $language='') {
+		return page::compile($page, $language);
 	}
 
 	function _getReferences($page) {
