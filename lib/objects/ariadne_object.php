@@ -807,6 +807,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if (!$id) {
 			$id = $this->id;
 		}
+		if (!$vtype) {
+			$vtype = $type;
+		}
+		if (strpos($vtype, '.')!==false) {
+			$vtype = substr($vtype, 0, strpos($vtype, '.'));
+		}
 		$result = $this->store->mogrify($id, $type, $vtype);
 		if ($this->store->error) {
 			$this->error = $this->store->error;
