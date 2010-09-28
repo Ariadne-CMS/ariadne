@@ -1,8 +1,18 @@
+html {
+	width: 100%;
+	height: 100%;
+}
 #login_panel,
 #login_panel .bd {
 	padding: 0px;
 	margin: 0px;
 	background-color: #C1CAE2;
+}
+
+#login_panel {
+	background-image:url("../images/watermark.png");
+	background-position:right bottom;
+	background-repeat:no-repeat;
 }
 
 #login_panel,
