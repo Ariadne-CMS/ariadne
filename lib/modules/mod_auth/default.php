@@ -26,6 +26,9 @@
 
 		function authUser($login, $password, $ARLoginPath="") {
 		global $store, $AR;
+			// Make sure we always have a user.
+			$this->getUser('public');
+
 			$criteria["object"]["implements"]["="]="'puser'";
 			$criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
 
