@@ -132,7 +132,7 @@
 							} else
 							if (ldCheckCredentials($ARCurrent->session->get("ARLogin")))  {
 								debug("checkLogin: user tries to login as another user", "all");
-								$result = $this->authUser($login, $password, $ARUserDir);
+								$result = $this->authUser($login, $password, $requestedPath);
 								if ($result !== true) {
 									$this->getUser('public');
 								}
