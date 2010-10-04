@@ -307,8 +307,22 @@
 					$function = false;
 				}
 			}
-
-			if( $session_id ) {
+			
+			// valid new login, without a session, morph to login.redirect.php to redirect to a session containing url
+			if( !$session_id && $args["ARLogin"] && $args["ARPassword"] && $function !== false && !$AR->hideSessionIDfromURL ) {
+				if ($arDefaultFunction !== $function) {
+					$args["arRequestedTemplate"] = $function;
+				} else {
+					$args["arRequestedTemplate"] = "";
+				}
+				$function = "login.redirect.php";
+				if (!$ARCurrent->session->get("oldArCallArgs", 1)) {
+					$ARCurrent->session->put("oldGET", $_GET, 1);
+					$ARCurrent->session->put("oldPOST", $_POST, 1);
+					$ARCurrent->session->put("oldArCallArgs", $args, 1);
+					$ARCurrent->session->save(0, true);
+				}
+			} else if( $session_id ) {
 				if ($ARCurrent->session->get("ARSessionTimedout", 1)) {
 					if (!$ARCurrent->session->get("oldArCallArgs", 1)) {
 						$ARCurrent->session->put("oldGET", $_GET, 1);
