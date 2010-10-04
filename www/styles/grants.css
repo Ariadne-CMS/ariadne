@@ -260,7 +260,7 @@
 		width: 20px;
 		padding-top: 4px;
 		padding-left: 4px;
-		background-image: url("../images/sprite.png");
+		background-image: url("../images/wizard/textmodebutton.png");
 		border: 1px solid #808080;
 	}
 	#tabsdata .panel label.textmode {

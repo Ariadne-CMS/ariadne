@@ -244,14 +244,14 @@
 			</div>
 			<?php 	if (!$info['grants_inherited']) { ?>
 				<?php	if($textmode) {	?>
-					<label class="textmode block" for="textmode"><img src="<?php echo $AR->dir->www; ?>images/icons/small/preferences.png" alt="Toggle textmode"></label>
+					<label class="textmode block" for="textmode"></label>
 					<input class="hidden" type="submit" name="textmode" value="0" id="textmode">
 					<div class="grants_textmode">
 						<h2>Advanced grants</h2>
 						<textarea class="grantstext" name="data[<?php echo $selectedpath;?>][<?php echo $path; ?>][grants][grantsstring]" rows=4 cols=30><?php echo $info['grants']['grantsstring']; ?></textarea>
 					</div>
 				<?php	} else {	?>
-					<label class="textmode block" for="textmode"><img src="<?php echo $AR->dir->www; ?>images/icons/small/preferences.png" alt="Toggle textmode"></label>
+					<label class="textmode block" for="textmode"></label>
 					<input class="hidden" type="submit" name="textmode" value="1" id="textmode">
 					<div class="grants">
 						<?php	foreach ($available_grants as $grant => $grant_name) { 
