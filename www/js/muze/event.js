@@ -180,7 +180,6 @@ muze.event = function() {
 			for (var i=cache.length-1; i>=0; i--) {
 				item=cache[i];
 				if (item) {
-					item.object['on'+item.event]=null;
 					if (item.object.removeEventListener) {
 						item.object.removeEventListener(item.event, item.handler, item.useCapture);
 					} else if (item.object.detachEvent) {
