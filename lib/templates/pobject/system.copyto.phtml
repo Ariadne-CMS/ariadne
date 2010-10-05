@@ -12,10 +12,15 @@
 					$oldgrants = $this->data->config->grants;
 					unset($this->data->config->grants);
 					$target=$this->make_path($target);
+
 					if (!$this->exists($target)) {
 						// first make sure that the object is clean (data can only be set via 
 						// the defined interface: $arCallArgs)
 						$this->data=current($this->get(".","system.get.data.phtml"));
+
+						$this->data->config->owner = $AR->user->data->login;
+						$this->data->config->owner_name = $AR->user->data->name;
+						$properties['owner'][0]['value'] = "'".AddSlashes($user->data->login)."'";
 
 						// now save the object to get its new id.
 						if ($defaultnls && !$this->data->$defaultnls) {
