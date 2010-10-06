@@ -371,6 +371,8 @@ TH,TD,LI,P,BODY,DIV {
 	height: 1px;
 	overflow: hidden;
 	visibility: hidden;
+	padding-bottom: 0px;
+	padding-top: 0px;
 }
 
 .section.expanded .sectionbody {
