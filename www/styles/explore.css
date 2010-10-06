@@ -274,7 +274,7 @@ TH,TD,LI,P,BODY,DIV {
 	width: 200px;
 	color: black;
 	float: left;
-	padding-top: 5px;
+	padding-top: 15px;
 }
 
 .sidebar a {
@@ -324,7 +324,7 @@ TH,TD,LI,P,BODY,DIV {
 }
 
 .sidebar .section {
-	margin-top: 10px;
+	margin-bottom: 10px;
 	position: relative;
 }
 
