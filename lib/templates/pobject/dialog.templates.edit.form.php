@@ -278,7 +278,7 @@ for($i=1;$i<$linetotal;$i++) { echo $i."\n"; }
 		// set the cursor pos if needed
 		$col = 0;
 		$pos = $this->getvar("cursorOffset");
-		if( !isset($pos) ) {
+		if( !isset($pos) || $pos == '') {
 			$pos = 0;
 		}
 		$line = $this->getvar("lineOffset");
