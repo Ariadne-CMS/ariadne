@@ -113,7 +113,7 @@
 				$this->pass = $parsed['pass'] ? $parsed['pass'] : 'guest';
 				$this->path = $parsed['path'];
 				if ($this->path[strlen($this->path)-1] != '/' ) {
-					$this->path = dirname($this->path);
+					$this->path = substr(dirname($this->path), 1); // relative path for cd
 				}
 				if ($this->host) {
 					$this->connect( $this->host, $this->port );
