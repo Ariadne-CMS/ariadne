@@ -35,7 +35,7 @@
 						//    echo "  CustomData['".AddCSlashes($cdnls, ARESCAPE)."']['".AddCSlashes($cdname, ARESCAPE)."']='".AddCSlashes($cdvalue, ARESCAPE)."';\n";
 
 						if (!is_array($cdvalue) && !is_object($cdvalue)) { // Don't show customdata with objects/arrays, the dialog cannot handle them.
-							echo "  CustomData['".AddCSlashes($cdnls, ARESCAPE)."']['".AddCSlashes($cdname, ARESCAPE)."']='".str_replace("\r\n", "\\n", AddCSlashes($cdvalue, ARESCAPE))."';\n";
+							echo "  CustomData['".AddCSlashes($cdnls, ARESCAPE)."']['".AddCSlashes($cdname, ARESCAPE)."']='".str_replace('</script>', '<\\/script>', str_replace("\r\n", "\\n", AddCSlashes($cdvalue, ARESCAPE)))."';\n";
 						}
 					}
 				}
