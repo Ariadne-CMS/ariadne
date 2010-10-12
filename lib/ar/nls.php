@@ -85,7 +85,7 @@ class ar_nlsDictionary extends arBase implements ArrayAccess {
 				include($fullFile);
 				$this->languages[$nls] = array_merge((array)$this->languages[$nls], (array)$$varName);
 			}
-		} else { 
+		} elseif( !$this->loaded[$section][$nls] ) { 
 			$this->loaded[$section][$nls] = true;
 			$fullFile = $this->baseDir.$section.".".$nls;
 			if( file_exists($fullFile) ) {
