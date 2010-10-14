@@ -328,9 +328,10 @@ muze.global = this;
 	Env.bugs = {};
 	//define the support object
 	Env.support = {};
-	
+
 	//isHostMethod, isHostCollection, and isHostObject are courtesy of Peter Michaux and his exellecent post on
 	//feature detection (http://peter.michaux.ca/articles/feature-detection-state-of-the-art-browser-scripting)
+
 	
 	//Is the member a callable method of its host (element.hasAttribute)
 	Env.isHostMethod = function(o, prop){
@@ -764,7 +765,7 @@ muze.global = this;
 		var script = document.createElement("script");
 		try{
 			//Try to append a textnode that will hopefully be evaluated and create a new property on the Env namespace
-			script.appendChild(document.createTextNode("Env.test = true;"));
+			script.appendChild(document.createTextNode("muze.env.test = true;"));
 		}catch(e){
 			//If an exception is caught, it must be IE and not supported
 			return false;
@@ -857,6 +858,7 @@ muze.global = this;
 	Env.support.cssFloat = "cssFloat" in el.style;
 	//Does the browser support CSS transforms
 	Env.support.cssTransform = "WebkitTransform" in el.style || "MozTransform" in el.style;
+
 	
 	//Change the id to trigger the DOMAttrModified and DOMSubtreeModified (except in Safari) event if it is supported
 	el.id = new Date().getTime() + Math.random();	
@@ -920,6 +922,7 @@ muze.global = this;
 			return false;
 		}
 	})();
+
 	
 	//These tests can only be determined once they are included in the DOM and rendered
 	//For now we just set them to false, they must be proven
@@ -986,6 +989,5 @@ muze.global = this;
 			delete el["on"+type];
 		}
 	};
-
 	return Env;
 })();
