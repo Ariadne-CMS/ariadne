@@ -1,4 +1,7 @@
 /*
+	FIXME: event add/remove via array index laten werken, geen directe functie pointers, alleen indexes in handles array
+	op die manier krijg je geen circulaire referenties via closures
+	
 	javascript events library for muze modules
 	----------------------------------------
 
@@ -66,134 +69,298 @@
 
 
 	void clean() 
-		This method cleans/removes all attached event handlers. It is automatically run on unload of document
+		This method cleans/removes all attached event handlers. It is automatically run on unload of document, if needed.
 
+	TODO:
+		custom events met trigger en bind achtige functie, misschien in eigen namespace
+		
 */
 
+muze.require('muze.env', function() {
 
-muze.namespace('muze.event');
-
-muze.event = function() {
+muze.namespace('muze.event', function() {
 
 	/* private methods */
 
 	/* private variables */
+	var event = this;
 
-	var cache=[];
+	
 
-	var events = {
-
-		get:function(evt, win) {
+	if (muze.env.isHostMethod(document, 'createEvent')) {
+		event.create = function( name, maskEvt, win ) {
 			if (!win) {
-				win = window;
+				win = muze.global;
 			}
-			if (!evt) {
-				evt=win.event;
+			var type = 'HTMLEvents';
+			var init = function(evt, mask) {
+				evt.initEvent(name, mask ? mask.bubbles : true, mask ? mask.cancelable : true);
 			}
-			if (!evt.target) {
-				evt.target = evt.srcElement;
-			}
-			return evt;
-		},
-
-		cancel:function(evt) {
-			evt = muze.event.get(evt);
-			if (evt.returnValue) {
-				evt.returnValue=false;
-			} 
-			if (evt.preventDefault) {
-				evt.preventDefault();
-			}
-			evt.cancelBubble=true;
-			if (evt.stopPropagation) {
-				evt.stopPropagation();
-			}
-			return false;
-		},
-
-		pass:function(evt) {
-			return true;
-		},
-
-		fire:function(el, name, evt) {
-			if (document.createEvent) {
-				if (!evt) {
-					evt = el.ownerDocument.createEvent("HTMLEvents");
-					evt.initEvent(name, true, true);
-				}
-				el.dispatchEvent(evt);
-			} else {
-				el.fireEvent('on'+name, evt);
-			}
-		},
-
-		attach:function(ob, event, fp, useCapture) {
-			if (ob) {
-				function createHandlerFunction(obj, fn){
-					var o = new Object;
-					o.myObj = obj;
-					o.calledFunc = fn;
-					o.myFunc = function(e){ 
-						var e = muze.event.get(e);
-						return o.calledFunc.call(o.myObj, e);
+			switch (name) {
+				case 'click' :
+				case 'dblclick':
+				case 'mousedown':
+				case 'mousemove':
+				case 'mouseout':
+				case 'mouseover':
+				case 'mouseup':
+				case 'mousewheel':
+				case 'contextmenu':
+				case 'DOMMouseScroll':
+				case 'drag':
+				case 'dragdrop':
+				case 'dragend':
+				case 'dragenter':
+				case 'dragover':
+				case 'dragexit':
+				case 'dragleave':
+				case 'dragstart':
+				case 'drop':				
+					type = 'MouseEvents';
+					init = function(evt, mask) {
+						if (mask) {
+							evt.initMouseEvent(name, mask.bubbles, mask.cancelable, mask.view, mask.detail, mask.screenX, mask.screenY, mask.clientX, mask.clientY, mask.ctrlKey, mask.altKey, mask.shiftKey, mask.metaKey, mask.button, mask.relatedTarget);
+						} else {
+							evt.initMouseEvent(name, true, true);
+						}						
 					}
-					return o.myFunc;
-				}
-				var handler=createHandlerFunction(ob, fp);
-				cache[cache.length]={ event:event, object:ob, handler:handler, useCapture:useCapture };
-				if (ob.addEventListener){
-					ob.addEventListener(event, handler, useCapture);
-					return handler;
-				} else if (ob.attachEvent){
-					ob.attachEvent("on"+event, handler);
-					return handler;
-				} else {
-					//FIXME: don't do alerts like this
-					alert("Handler could not be attached");
-				}
-			} else {
-				//FIXME: don't do alerts like this
-				alert('Object not found');
-			}
-		},
-
-		detach:function(ob, event, fp, useCapture) {
-			if (ob) {
-				var item=null;
-				for( var i=cache.length-1; i>=0; i--) {
-					item = cache[i];
-					if( item && item.object == ob && item.event == event && item.handler == fp && item.useCapture == useCapture) {
-						if (item.object.removeEventListener) {
-							item.object.removeEventListener(item.event, item.handler, item.useCapture);
-						} else if (item.object.detachEvent) {
-							item.object.detachEvent("on" + item.event, item.handler);
+				break;
+				case 'DOMFocusIn':
+				case 'DOMFocusOut':
+				case 'DOMActivate':
+					type = 'UIEvents';
+					init = function(evt, mask) {
+						if (mask) {
+							evt.initUIEvent(name, mask.bubbles, mask.cancelable, mask.view, mask.detail);
+						} else {
+							evt.initUIEvent(name, true, true, win);
 						}
-						cache[i]=null;
-						return;	
 					}
-				}
-			}
-		},
-
-		clean:function() {
-			var item=null;
-			for (var i=cache.length-1; i>=0; i--) {
-				item=cache[i];
-				if (item) {
-					if (item.object.removeEventListener) {
-						item.object.removeEventListener(item.event, item.handler, item.useCapture);
-					} else if (item.object.detachEvent) {
-						item.object.detachEvent("on" + item.event, item.handler);
+				break;
+				case 'keypress':
+				case 'keydown':
+				case 'keyup':
+					type = 'KeyboardEvents';
+					if (muze.env.isHostMethod(evt, 'initKeyboardEvent')) {
+						init = function(evt, mask) {
+							if (mask) {
+								var modifiers = '';
+								if (mask.altKey) {
+									modifiers += 'Alt ';
+								}
+								if (mask.ctrlKey) {
+									modifiers += 'Control ';
+								}
+								if (mask.shiftKey) {
+									modifiers += 'Shift ';
+								}
+								if (mask.metaKey) {
+									modifiers += 'Meta ';
+								}
+								evt.initKeyboardEvent(name, !!mask.bubbles, !!mask.cancelable, mask.view, mask.keyIdentifier, mask.keyLocation, modifiers);
+							} else {
+								evt.initKeyboardEvent(name, true, true, win);
+							}
+						}
+					} else if (muze.env.isHostMethod(evt, 'initKeyEvent')) {
+						init = function(evt, mask) {
+							if (mask) {
+								evt.initKeyEvent(name, !!mask.bubbles, !!mask.cancelable, mask.view, mask.ctrlKey, mask.altKey, mask.shiftKey, mask.metaKey, mask.keyCode, mask.charCode);
+							} else {
+								ect.initKeyEvent(name, true, true, win);
+							}
+						}
 					}
-					cache[i]=null;
-				}
+				break;
+				case 'message':
+					type = 'MessageEvent';
+					init = function(evt, mask) {
+						if (mask) {
+							evt.initMessageEvent(name, mask.bubbles, mask.cancelable, mask.data, mask.origin, mask.lastEventId, mask.source, mask.ports);
+						} else {
+							evt.initMessageEvent(name, true, true, '', '', '', '', null);
+						}
+					}
+				break;
 			}
-			item=null;
+			var evt =  win.document.createEvent(type);
+			init(evt, maskEvt);
+			return evt;
 		}
-
+	} else if (muze.env.isHostMethod(document, 'createEventObject') ) {
+		event.create = function( name, evt, win ) {
+			if (!win) {
+				win = muze.global;
+			}
+			var evt = win.document.createEventObject(name, evt);
+			return evt;
+		};
+	} else {
+		event.create = false;
 	}
 
-	events.attach(window, 'unload', events.clean);
+	if (muze.env.isHostMethod(document, 'dispatchEvent')) {
+		event.fire = function(el, name, evt) {
+			var win = muze.global;
+			if (el.ownerDocument && el.ownerDocument.defaultView) {
+				win = el.ownerDocument.defaultView;
+			} else if (el.ownerDocument && el.ownerDocument.parentWindow) {
+				win = el.ownerDocument.parentWindow;
+			}
+			evt = muze.event.create(name, evt, win);
+			el.dispatchEvent(evt);
+		}
+	} else if (muze.env.isHostMethod(document, 'fireEvent')) {
+		event.fire = function(el, name, evt) {
+			if (name.substr(0,3)!=='DOM') {
+				name = 'on'+name;
+			}
+			el.fireEvent(name, evt);
+		}
+	} else {
+		event.fire = false;
+	}
+	
+	event.get = function(evt, win) {
+		if ( !win ) {
+			win = muze.global;
+		}
+		if ( !evt ) {
+			evt = win.event;
+		}
+		return evt;
+	};
 
-	return events;
-}();
+	event.cancel = function(evt) {
+		event.preventDefault(evt);
+		event.stopPropagation(evt);
+		return false;
+	};
+	
+	event.stopPropagation = function(evt) {
+		evt = event.get(evt);
+		if (muze.env.isHostMethod(evt, 'stopPropagation')) {
+			evt.stopPropagation();
+		} else {
+			evt.cancelBubble = true;
+		}
+	};
+
+	event.preventDefault = function(evt) {
+		evt = event.get(evt);
+		if (muze.env.isHostMethod(evt, 'preventDefault')) {
+			evt.preventDefault();
+		} else {
+			evt.returnValue=false;
+		} 
+	};
+	
+	event.pass = function(evt) {
+		return true;
+	};
+
+	event.target = function(evt) {
+		evt = event.get(evt);
+		if (muze.env.isHostObject(evt, 'target') ) {
+			return evt.target;
+		} else if (muze.env.isHostObject(evt, 'srcElement') ) {
+			return evt.srcElement;
+		} else {
+			return null;
+		}
+	}
+
+	event.getCharCode = function(evt) {
+		evt = event.get(evt);
+		if (evt.type=='keypress' || evt.type=='onkeypress') {
+			return (evt.charCode ? evt.charCode : ((evt.keyCode) ? evt.keyCode : evt.which));
+		} else {
+			return false;
+		}
+	}
+
+	var docEl = document.documentElement;
+	var listeners = [];
+
+	var getWrapper = function( id ) {
+		return function(evt) {
+			var o = listeners[id].el;
+			if (o.ownerDocument) {
+				var win = o.ownerDocument.defaultView ? o.ownerDocument.defaultView : o.ownerDocument.parentWindow;
+			} else if (o.defaultView) {
+				var win = o.defaultView;
+			} else if (o.parentWindow) {
+				var win = o.parentWindow;
+			} else if (o.document) {
+				var win = o;
+			} else {
+				var win = muze.global;
+			}
+			evt = event.get(evt, win);
+			var f = listeners[id].listener;
+			f.call(o, evt);
+		}
+	}
+
+	if (muze.env.isHostMethod(docEl, 'addEventListener')) {
+		event.attach = function(o, sEvent, fListener, useCapture) {
+			var listenerID = listeners.push( {
+				el : o,
+				listener : fListener
+			} ) - 1;
+			var wrapped = getWrapper(listenerID);
+			o.addEventListener(sEvent, wrapped, !!useCapture);
+			return wrapped;
+		};
+	} else if (muze.env.isHostMethod(docEl, 'attachEvent')) {
+		event.attach = function(o, sEvent, fListener, useCapture) {
+			if (!muze.env.isFunction(fListener)) {
+				throw {
+					el : o,
+					message : 'listener is not a method',
+					event : sEvent
+				};
+			}
+			var listenerID = listeners.push( {
+				el : o,
+				listener : fListener
+			} ) - 1;
+			if (sEvent.substr(0,3)!='DOM') {
+				sEvent = 'on' + sEvent;
+			}
+			var wrapped = getWrapper(listenerID);
+			o.attachEvent(sEvent, wrapped);
+			return wrapped;
+		};
+	} else {
+		event.attach = false;
+	}
+
+
+	if (muze.env.isHostMethod(docEl, 'removeEventListener') ) {
+		event.detach = function(o, sEvent, handle, useCapture) {	
+			if (o && sEvent) {
+				var result = o.removeEventListener(sEvent, handle, !!useCapture);
+				return result;
+			} else {
+				return false;
+			}
+		};
+	} else if (muze.env.isHostMethod(docEl, 'detachEvent') ) {
+		event.detach = function(o, sEvent, handle, useCapture) {	
+			if (o && sEvent) {
+				var result = o.detachEvent('on'+sEvent, handle);
+				return result;
+			} else {
+				return false;
+			}
+		}
+	} else {
+		event.detach = false;
+	}
+	
+	event.clean = function() { }
+
+});
+
+});
