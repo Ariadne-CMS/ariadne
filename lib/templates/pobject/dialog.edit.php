@@ -1,5 +1,6 @@
 <?php
 	$ARCurrent->nolangcheck=true;
+	$ARCurrent->allnls = true;
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 		$configcache=$ARConfig->cache[$this->path];
 		if ($configcache->custom) {
@@ -49,6 +50,7 @@
 			$ARCurrent->arLanguage=$arLanguage;
 		}
 		// call user overridable flow
+		$ARCurrent->allnls = true;
 		$wgWizFlow = $this->call("user.wizard.edit.html", Array("wgWizFlow" => $wgWizFlow));
 
 		$this->call("typetree.ini");
