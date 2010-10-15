@@ -33,7 +33,7 @@
 		);
 		if (!$AR->SVN->enabled) {
 			// No SVN if SVN is not enabled;
-			unset($colDefs[0]);
+			array_shift($colDefs);
 		}
 
 		$listargs = array(
