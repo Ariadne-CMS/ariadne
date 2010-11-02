@@ -4,8 +4,12 @@
 
 	$oldvalue = $ARCurrent->allnls;
 	$ARCurrent->allnls = true;
+	$nolangcheck = $ARCurrent->nolangcheck;
+	$ARCurrent->nolangcheck = true;
+	
 	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
 		$arResult = false;
 	}
 	$ARCurrent->allnls = $oldvalue;
+	$ARCurrent->nolangcheck = $nolangcheck;
 ?>
