@@ -72,6 +72,15 @@ class pphoto extends pfile { // pphoto class definition
 		return $result;
 	}
 
+	function shadow($shadowcolor="black", $background="white", $opacity=80, $size=3, $posx="+5", $posy="+5") {
+		global $ARConfig;
+		$this->set_context("shadow");
+
+		$ARConfig->photoStack[$this->id][]=" {buildfile} ( +clone -background $shadowcolor -shadow " . $opacity . "x" . $size . $posx . $posy . " ) +swap -background $background -layers merge +repage";
+		$ARConfig->photoStack[$this->id][]=" {targetfile}";
+		return true;
+	}
+
 	function getExif( $sections = false, $arrays = true, $thumbnail = false, $nls = '') {
 		if (!$nls) {
 			$nls = $this->reqnls;
@@ -418,6 +427,8 @@ class pphoto extends pfile { // pphoto class definition
 				$contextexecutable = $AR->IM->composite;
 			} elseif( $ARConfig->photoContext[$this->id] == "convert" ) {
 				$contextexecutable = $AR->IM->convert;
+			} elseif( $ARConfig->photoContext[$this->id] == "shadow") {
+				$contextexecutable = $AR->IM->convert;
 			} else {
 				$unknown = true; // This should NOT happen
 			}
@@ -586,8 +597,12 @@ class pphoto extends pfile { // pphoto class definition
 		return $result;
 	}
 
-	function _convert($format="", $quality=75) {
-		return $this->convert($format, $quality);
+	function _convert($format="", $quality=75, $background="white") {
+		return $this->convert($format, $quality, $background);
+	}
+
+	function _shadow($shadowcolor="black", $background="white", $opacity=80, $size=3, $posx="+5", $posy="+5") {
+		return $this->shadow($shadowcolor, $background, $opacity, $size, $posx, $posy);
 	}
 
 	function _scale($x, $y, $fillcolor=false, $keepaspect=true) {
