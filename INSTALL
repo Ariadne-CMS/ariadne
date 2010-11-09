@@ -11,4 +11,10 @@ depending on your platform.
 - give write grants for www-data to ariadne/lib/configs/ariadne.phtml
 - give write grants for www-data to ariadne/files/
 - give write grants for www-data to ariadne/lib/configs/svn to allow SVN support
+- remove the .htaccess file from the ariadne/www/install/ folder
 - point your webbrowser to http://yourhost/ariadne/install/ to start installation.
+
+After a succesful installation:
+- remove the www/install folder
+- schedule the cleanup script in the bin folder to remove unused files and session data
+- remove write access to lib/configs/ariadne.phtml for the www-data user
