@@ -1,4 +1,82 @@
 =========================
+Changes in release 2.7.3:
+=========================
+Changes:
+- ar
+  - empty strings are nolonger tainted
+- ar_html_form
+  - Labels in forms are now optional, set the label to false to skip the label.
+  - Return errors with the name of the fields as the key instead of the label, 
+    this makes it easier to show the correct error messages in multilingual 
+	forms.
+  - Added getHTML() method, which returns the ar_html dom object, allowing you 
+    to manipulate the form output.
+- muze javascript libraries updated
+  - added capabilities checking, with muze.env
+  - muze.event no longer automatically attaches a cleanup routine onunload. It 
+    no longer needs it. The event library doesn't generate circular references. 
+	With this change browser fast history navigation feature works again.
+  - muze.js base lib has been updated:
+    - the namespace() method now has an optional function argument, the return 
+	  value of this method will be stored as the namespace object. 
+	- the require() method also has an optional function argument. This method
+	  will only be called if the requirements are met.
+	- include() and load() return a loader object, which allows you to set
+	  callback methods using loader.onload() and load.ontimeout(). You can clear
+	  these method using loader.clear().
+- pphoto
+  - Added a new shadow() method.
+  
+Bugfixes:
+- ar_connect_ftp
+  - Fixed a bug in the handling of pfile objects, you can now put() an ariadne 
+    pfile object.
+  - pasv() now returns an error if switching to or from passive mode fails.
+  - Fixed parsing of the url in ar_connect_ftpClient::__construct, now parses 
+    paths not ending on a '/' correctly.
+- ar_html_form
+  - Fixed form validation: empty strings are now also flagged as incorrect for 
+    required fields.
+  - Fixed the html input type, was broken in previous release
+- ar_nls
+  - Fixed autoloading sections that do not exist, they are now flagged as 
+    missing instead of trying to load them every time.
+- Fixed file downloads for internet explorer. Cache-control is now set to 
+  private, which fixes intermittent problems with downloading. 
+- Fixed a bug which made it impossible to save a template through the ftp 
+  loader.
+- Fixed opacity in IE8 so the fades on the sidebar of the yui interface work.
+- Fix the installer to properly set the ariadne webroot
+- Fixed the old install script to set the admin password since the base.ax 
+  no longer has an admin password.
+- Fixed locking when starting the edit dialog
+- Fixed a problem in the sql compiler (used by find()) which broke multiline 
+  queries.
+- Fixed a javascript error in the template editor when restoring the cursor 
+  position.
+- Fixed the mogrify feature to set the correct vtype for subtypes (e.g. 
+  ppage.subtype now sets the vtype correctly to ppage).
+- Fixed the pinp interface for mod_page:compile - added a missing language 
+  option
+- Fixes in the authentication system
+  - it now properly initializes Ariadne with the public user before trying to 
+    authenticate the given user account.
+  - Logging into an active session with another user now works with custom 
+    user folders.
+  - The loader now automatically redirects to a url with a sesssion id after 
+    a user logs in on a page
+  - Fix the grants dialog textmode button to be clickable in internet explorer
+  - Copying an object will now set the owner of the copied object to the user 
+    doing the copying
+- Fixed a problem with custom data fields in the edit object dialog when the
+  custom data contains the </script> tag.
+- Fixed workflows (user.workflow.pre.html and user.workflow.post.html) so they
+  are now always executed even when the requested language is not set on that 
+  object.
+- Guard against errors reading captcha files that no longer exist.
+- Minor cosmetic changes to the yui interface
+
+=========================
 Changes in release 2.7.2:
 =========================
 New features:
