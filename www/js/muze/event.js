@@ -121,7 +121,7 @@ muze.namespace('muze.event', function() {
 						if (mask) {
 							evt.initMouseEvent(name, mask.bubbles, mask.cancelable, mask.view, mask.detail, mask.screenX, mask.screenY, mask.clientX, mask.clientY, mask.ctrlKey, mask.altKey, mask.shiftKey, mask.metaKey, mask.button, mask.relatedTarget);
 						} else {
-							evt.initMouseEvent(name, true, true);
+							evt.initMouseEvent(name, true, true, win, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
 						}						
 					}
 				break;
@@ -133,7 +133,7 @@ muze.namespace('muze.event', function() {
 						if (mask) {
 							evt.initUIEvent(name, mask.bubbles, mask.cancelable, mask.view, mask.detail);
 						} else {
-							evt.initUIEvent(name, true, true, win);
+							evt.initUIEvent(name, true, true, win, 1);
 						}
 					}
 				break;
@@ -159,7 +159,7 @@ muze.namespace('muze.event', function() {
 								}
 								evt.initKeyboardEvent(name, !!mask.bubbles, !!mask.cancelable, mask.view, mask.keyIdentifier, mask.keyLocation, modifiers);
 							} else {
-								evt.initKeyboardEvent(name, true, true, win);
+								evt.initKeyboardEvent(name, true, true, win, '', 0, '');
 							}
 						}
 					} else if (muze.env.isHostMethod(evt, 'initKeyEvent')) {
@@ -167,7 +167,7 @@ muze.namespace('muze.event', function() {
 							if (mask) {
 								evt.initKeyEvent(name, !!mask.bubbles, !!mask.cancelable, mask.view, mask.ctrlKey, mask.altKey, mask.shiftKey, mask.metaKey, mask.keyCode, mask.charCode);
 							} else {
-								ect.initKeyEvent(name, true, true, win);
+								ect.initKeyEvent(name, true, true, win, false, false, false, false, 0, 0);
 							}
 						}
 					}
