@@ -140,7 +140,7 @@ class page {
 			$result = true;
 		}
 		if ($node['attribs']['ar:type'] == "template") {
-				$path		= $me->make_path($node['attribs']['ar:path']);
+				$path		= $node['attribs']['ar:path'];
 				$template	= $node['attribs']['ar:name'];
 				$argsarr	= Array();
 				if (is_array($node['attribs'])) {

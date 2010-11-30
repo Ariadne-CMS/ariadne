@@ -137,7 +137,7 @@ class URL {
 				if (substr($rest, -1) !== '/') {
 					$template = basename($rest);
 				}
-				$path = substr($rest, 0, -(strlen($template)));
+				$path = $me->make_path( substr($rest, 0, -(strlen($template))) );
 				if (is_array($settings['arCall'][$template])) {
 					$cpaths = $settings['arCall'][$template]['paths'];
 					if (is_array($cpaths)) {
