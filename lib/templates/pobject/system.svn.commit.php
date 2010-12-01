@@ -62,7 +62,7 @@
 
 		$result = $fstore->svn_commit($svn, $message, $fileinfo);
 		if ($result === false) {
-			echo "Commit failed.<br>";
+			echo "Commit failed.<br>\n";
 			if (count($errs = $fstore->svnstack->getErrors())) {
 				foreach ($errs as $err) {
 					echo $err['message']."<br>\n";
@@ -85,7 +85,7 @@
 				$this->call( "system.delete.layout.phtml", array( "type" => $type, "language" => $language, "function" => $function ) );
 			}
 		} else {
-			echo "No changes to commit.<br>";
+			echo "No changes to commit.<br>\n";
 		}
 		if( $result ) {
 			echo $result;
