@@ -3,7 +3,7 @@ html,body {
 	margin: 0px;
 	background-color: #C1CAE2;
 	font-size : 11px;
-	font-family : verdana;
+	font-family : verdana,helvetica, arial, sans-serif;
 	height: 100%;
 	width: 100%;
 	overflow: hidden;
@@ -11,7 +11,7 @@ html,body {
 
 TH,TD,LI,P,BODY,DIV {
 	font-size : 11px;
-	font-family : verdana;
+	font-family : verdana,helvetica, arial, sans-serif;
 	line-height: 13px;
 }
 
@@ -130,7 +130,7 @@ TH,TD,LI,P,BODY,DIV {
 #explore_top .ariadne_sub {
 	font-weight: normal;
 	font-size: 10px;
-	font-family: verdana;
+	font-family: verdana,helvetica, arial, sans-serif;
 	position: absolute;
 	top: 17px;
 	left: 50px;
@@ -211,7 +211,7 @@ TH,TD,LI,P,BODY,DIV {
 	padding-bottom: 2px;
 	height: 22px;
 	font-size: 11px;
-	font-family: verdana;
+	font-family: verdana,helvetica, arial, sans-serif;
 }
 
 #explore_menubar a.yuimenubaritemlabel-selected {

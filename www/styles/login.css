@@ -18,7 +18,7 @@ html {
 #login_panel,
 #login_panel div {
 	font-size : 11px;
-	font-family : verdana;
+	font-family : verdana,helvetica, arial, sans-serif;
 	line-height: 13px;
 }
 
@@ -65,7 +65,7 @@ html {
 #login_panel #header .ariadne_sub {
 	font-weight: normal;
 	font-size: 10px;
-	font-family: verdana;
+	font-family: verdana,helvetica, arial, sans-serif;
 	position: absolute;
 	top: 17px;
 	left: 50px;

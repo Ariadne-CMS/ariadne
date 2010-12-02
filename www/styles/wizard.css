@@ -8,12 +8,12 @@ html, body {
 	margin: 0px;
 	background-color: #C1CAE2;
 	font-size : 11px;
-	font-family : verdana;
+	font-family : verdana,helvetica, arial, sans-serif;
 }
 
 TH,TD,LI,P,BODY,DIV {
 	font-size : 11px;
-	font-family : verdana;
+	font-family : verdana,helvetica, arial, sans-serif;
 	line-height: 13px;
 }
 
@@ -68,7 +68,7 @@ a img {
 #header .ariadne_sub {
 	font-weight: normal;
 	font-size: 10px;
-	font-family: verdana;
+	font-family: verdana,helvetica, arial, sans-serif;
 	position: absolute;
 	top: 17px;
 	left: 50px;

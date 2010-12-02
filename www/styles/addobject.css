@@ -3,7 +3,7 @@ html,body {
 	width: 100%;
 	padding: 0px;
 	margin: 0px;
-	font-family: verdana;
+	font-family: verdana,helvetica, arial, sans-serif;
 	font-size: 11px;
 	background-color: #C1CAE2;
 }
