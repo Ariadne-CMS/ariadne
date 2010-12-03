@@ -74,7 +74,7 @@
 	$ARnls['install:database_pass']		= 'Database-wachtwoord:';
 	$ARnls['install:database_pass_help']	= 'Voer het wachtwoord in die Ariadne gebruikt om verbinding te maken met de database-server. Het wordt aangeraden om een wachtwoord op de database in te stellen.';
 	$ARnls['install:database_name']		= 'Database-naam:';
-	$ARnls['install:database_name_help']	= 'Dit is de naam van de database waar Ariadne in wordt geinstalleerd. Bij twijfel over wat hier in te vullen raden wij "ariadne" aan.';
+	$ARnls['install:database_name_help']	= 'Dit is de naam van de database waar Ariadne in wordt geinstalleerd. Bij twijfel over wat hier in te vullen raden wij "ariadne" aan. Let op: database-naam is hoofdlettergevoelig.';
 
 	$ARnls['install:ariadne_configuration']	= 'Ariadne configuratie';
 	$ARnls['install:ariadne_basic']		= 'Ariadne basis instellingen';

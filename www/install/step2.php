@@ -74,7 +74,7 @@
 										$resultstring = '<span class="passed">' . $ARnls['install:check_ok'] . '</span>';
 									} else {
 										$resultstring = '<span class="failed">' . $ARnls['install:check_failed'] . '</span>';
-										$resultstring .= '<a href="http://www.ariadne-cms.org/docs/installation-requirements/#' . str_replace("check_", "", $check) . '">';
+										$resultstring .= '<a target="_blank" href="http://www.ariadne-cms.org/docs/installation-requirements/#' . str_replace("check_", "", $check) . '">';
 										$resultstring .= '<img class="helpicon" src="../images/icons/small/help.png" alt="' . $ARnls['install:help'] . '" title="' . $ARnls['install:help'] . '">';
 										$resultstring .= '</a>';
 									}

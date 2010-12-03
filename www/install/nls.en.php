@@ -72,7 +72,7 @@
 	$ARnls['install:database_pass']		= 'Database password:';
 	$ARnls['install:database_pass_help']	= 'This is the same password that you would use to connect to the database. Using a password on the database is highly recommended.';
 	$ARnls['install:database_name']		= 'Database name:';
-	$ARnls['install:database_name_help']	= 'This is the name of the database where Ariadne will be installed. If you are unsure what to enter here, we recommend "ariadne"';
+	$ARnls['install:database_name_help']	= 'This is the name of the database where Ariadne will be installed. If you are unsure what to enter here, we recommend "ariadne". Note: the database name is case sensitive.';
 
 	$ARnls['install:ariadne_configuration']	= 'Ariadne configuration';
 	$ARnls['install:ariadne_basic']		= 'Ariadne basic settings';
