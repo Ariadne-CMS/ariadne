@@ -307,7 +307,11 @@
 					}
 				$jsColDefs .= "},\n";
 
-				$jsFields .= "\t\t\t\t".'{key:"' . $colDef['key'] . '"},'."\n";
+				$jsFields .= "\t\t\t\t".'{key:"' . $colDef['key'] . '"';
+				if ($colDef['parser']) {
+					$jsFields .= ',parser:"' . $colDef['parser'] . '"';
+				}
+				$jsFields .= '},'."\n";
 			}
 
 			// Strip last comma and \n;

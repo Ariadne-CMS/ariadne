@@ -25,11 +25,11 @@
 			array( 'key' => 'name', 'label' => $ARnls['name'], 'sortable' => true ),
 			array( 'key' => 'path', 'label' => $ARnls['path'], 'sortable' => true ),
 			array( 'key' => 'filename', 'label' => $ARnls['filename'], 'sortable' => true ),
-			array( 'key' => 'size', 'label' => $ARnls['size'], 'sortable' => true ),
+			array( 'key' => 'size', 'label' => $ARnls['size'], 'sortable' => true, 'parser' => 'number' ),
 			array( 'key' => 'owner', 'label' => $ARnls['owner'], 'sortable' => true ),
 			array( 'key' => 'modified', 'label' => $ARnls['modified'], 'sortable' => true ),
 			array( 'key' => 'language', 'label' => $ARnls['language'], 'sortable' => true ),
-			array( 'key' => 'priority', 'label' => $ARnls['priority'], 'sortable' => true ),
+			array( 'key' => 'priority', 'label' => $ARnls['priority'], 'sortable' => true, 'parser' => 'number' ),
 		);
 		if (!$AR->SVN->enabled) {
 			// No SVN if SVN is not enabled;
