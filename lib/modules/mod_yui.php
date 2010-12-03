@@ -597,6 +597,7 @@
 					}
 				}
 			}
+			asort($result);
 			return $result;
 		}
 		

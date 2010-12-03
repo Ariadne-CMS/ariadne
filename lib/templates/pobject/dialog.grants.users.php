@@ -186,6 +186,7 @@
 
 	$typetree = $this->call('typetree.ini');
 	$typenames = $this->getvar("arTypeNames");
+	asort($typenames);
 
 /*	// FIXME: Types met grants uit de grantsstring vissen.
 	$types = array(
