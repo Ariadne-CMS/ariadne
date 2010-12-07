@@ -34,8 +34,8 @@
 			$count=0;
 			$nlslist = Array("none");
 			while (list($key, $value)=each($AR->nls->list)) {
-				array_push($nlslist, $key);
 				if ($this->getdata("name",$key)) {
+					array_push($nlslist, $key);
 					if (!$this->data->$key) {
 						$newnlsdata=new object;
 					} else {
