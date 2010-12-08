@@ -36,21 +36,21 @@
 		$databases['postgresql'] = "PostgreSQL";
 	}
 
-	$language 		= $_POST['language'];
-	$step			= $_POST['step'];
-	$database		= $_POST['database'];
-	$database_host 		= $_POST['database_host'];
-	$database_user 		= $_POST['database_user'];
-	$database_pass 		= $_POST['database_pass'];
-	$database_name 		= $_POST['database_name'];
-	$admin_pass		= $_POST['admin_pass'];
-	$admin_pass_repeat 	= $_POST['admin_pass_repeat'];
-	$ariadne_location	= $_POST['ariadne_location'];
-	$install_demo		= $_POST['install_demo'];
-	$install_libs		= $_POST['install_libs'];
-	$install_docs		= $_POST['install_docs'];
-	$enable_svn		= $_POST['enable_svn'];
-	$downloaded_config	= $_POST['downloaded_config'];
+	$language            = $_POST['language'];
+	$step                = $_POST['step'];
+	$database            = $_POST['database'];
+	$database_host       = $_POST['database_host'];
+	$database_user       = $_POST['database_user'];
+	$database_pass       = $_POST['database_pass'];
+	$database_name       = $_POST['database_name'];
+	$admin_pass          = $_POST['admin_pass'];
+	$admin_pass_repeat   = $_POST['admin_pass_repeat'];
+	$ariadne_location    = $_POST['ariadne_location'];
+	$install_demo        = $_POST['install_demo'];
+	$install_libs        = $_POST['install_libs'];
+	$install_docs        = $_POST['install_docs'];
+	$enable_svn          = $_POST['enable_svn'];
+	$downloaded_config   = $_POST['downloaded_config'];
 
 	// Sanity checks for postvars, make sure the values are what we expect.
 	if (!$languages[$language]) {
@@ -75,21 +75,23 @@
 
 	// Add the vars here that will be fed to keepvars.php; These will be passed from step to step.
 	$postvars = array();
-	$postvars['language'] 		= $language;
-	$postvars['step']		= $step;
-	$postvars['database']		= $database;
-	$postvars['database_host'] 	= $database_host;
-	$postvars['database_user'] 	= $database_user;
-	$postvars['database_pass'] 	= $database_pass;
-	$postvars['database_name'] 	= $database_name;
-	$postvars['admin_pass'] 	= $admin_pass;
-	$postvars['admin_pass_repeat'] 	= $admin_pass_repeat;
-	$postvars['admin_pass_repeat'] 	= $admin_pass_repeat;
-	$postvars['ariadne_location']	= $ariadne_location;
-	$postvars['enable_svn']		= $enable_svn;
-	$postvars['install_demo']	= $install_demo;
-	$postvars['install_libs']	= $install_libs;
-	$postvars['install_docs']	= $install_docs;
+	$postvars['language']          = $language;
+	$postvars['step']              = $step;
+	$postvars['database']          = $database;
+	$postvars['database_host']     = $database_host;
+	$postvars['database_user']     = $database_user;
+	$postvars['database_pass']     = $database_pass;
+	$postvars['database_name']     = $database_name;
+	$postvars['admin_pass']        = $admin_pass;
+	$postvars['admin_pass_repeat'] = $admin_pass_repeat;
+	$postvars['admin_pass_repeat'] = $admin_pass_repeat;
+	$postvars['ariadne_location']  = $ariadne_location;
+	$postvars['enable_svn']        = $enable_svn;
+	$postvars['install_demo']      = $install_demo;
+	$postvars['install_libs']      = $install_libs;
+	$postvars['install_docs']      = $install_docs;
+
+	$postvars = array_merge($postvars,$found_bins);
 
 	if ($step == 'step6') {
 		$postvars['downloaded_config'] = $downloaded_config;

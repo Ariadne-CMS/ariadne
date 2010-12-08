@@ -108,28 +108,40 @@
 	}
 
 	function check_im_convert() {
-		if (is_executable("/usr/bin/convert")) {
+		$bin = find_in_path('convert');
+		if (is_executable($bin)) {
+			global $found_bins;
+			$found_bins['bin_convert'] = $bin;
 			return true;
 		}
 		return false;
 	}
 
 	function check_im_mogrify() {
-		if (is_executable("/usr/bin/mogrify")) {
+		$bin = find_in_path('mogrify');
+		if (is_executable($bin)) {
+			global $found_bins;
+			$found_bins['bin_mogrify'] = $bin;
 			return true;
 		}
 		return false;
 	}
 
 	function check_im_composite() {
-		if (is_executable("/usr/bin/composite")) {
+		$bin = find_in_path('composite');
+		if (is_executable($bin)) {
+			global $found_bins;
+			$found_bins['bin_composite'] = $bin;
 			return true;
 		}
 		return false;
 	}
 
 	function check_im_identify() {
-		if (is_executable("/usr/bin/identify")) {
+		$bin = find_in_path('identify');
+		if (is_executable($bin)) {
+			global $found_bins;
+			$found_bins['bin_identify'] = $bin;
 			return true;
 		}
 		return false;
@@ -166,7 +178,10 @@
 	}
 
 	function check_svn_binary() {
-		if (is_executable("/usr/bin/svn")) {
+		$bin = find_in_path('svn');
+		if (is_executable($bin)) {
+			global $found_bins;
+			$found_bins['bin_svn'] = $bin;
 			return true;
 		}
 		return false;
@@ -181,14 +196,20 @@
 	}
 
 	function check_html_tidy() {
-		if (is_executable("/usr/bin/tidy")) {
+		$bin = find_in_path('tidy');
+		if (is_executable($bin)) {
+			global $found_bins;
+			$found_bins['bin_tidy'] = $bin;
 			return true;
 		}
 		return false;
 	}
 
 	function check_grep() {
-		if (is_executable("/bin/grep")) {
+		$bin = find_in_path('grep');
+		if (is_executable($bin)) {
+			global $found_bins;
+			$found_bins['bin_grep'] = $bin;
 			return true;
 		}
 		return false;
@@ -247,7 +268,7 @@
 	}
 
 	function check_connect_db_mysql($conf) {
-                if(@mysql_pconnect($conf->host, $conf->user, $conf->password)) {
+		if(@mysql_pconnect($conf->host, $conf->user, $conf->password)) {
 			return true;
 		}
 		return false;
@@ -338,6 +359,20 @@
 		}
 		return false;
 	}
+
+
+	function find_in_path($needle,array $extrapath=array()) {
+		$paths = explode(PATH_SEPARATOR,$_ENV['PATH']);
+		$paths = array_merge($paths,$extrapath);
+		foreach($paths as $path){
+			$file = $path . '/' . $needle;
+			if(file_exists($file)) {
+				return $file;
+			}
+		}
+	}
+
+	$found_bins = array(); // will be filled by the check functions
 
 	$required_checks = array(
 		"check_php_version" => check_php_version(),		// php => 5.0.0
