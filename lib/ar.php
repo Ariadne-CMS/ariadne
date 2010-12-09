@@ -3,7 +3,7 @@
 	require_once(ARBaseDir.'pinp.php');
 	require_once(ARBaseDir.'core/exception.php');
 
-	ar_pinp::allow('ar', array('load', 'ls', 'get', 'find', 'parents', 'error', 'getvar', 'call', 'taint', 'untaint'));
+	ar_pinp::allow('ar');
 	ar_pinp::allow('ar_error');
 
 	class ar {
@@ -162,6 +162,10 @@
 			self::autoload('ar_listExpression');
 			$params = func_get_args();
 			return new ar_listExpression_Pattern( $params );
+		}
+		
+		public static function url( $url ) {
+			return ar_url::create( $url );
 		}
 	}
 	
@@ -345,6 +349,10 @@
 		public static function _listPattern() {
 			$params = func_get_args();
 			return call_user_func_array( array( 'ar', 'listPattern'), $params);
+		}
+		
+		public static function _url( $url ) {
+			return ar::url( $url );
 		}
 	}
 	

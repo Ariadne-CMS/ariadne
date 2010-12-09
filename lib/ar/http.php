@@ -9,7 +9,7 @@
 	class ar_http extends arBase {
 	
 		private static $_GET, $_POST, $_REQUEST, $_SERVER, $_COOKIE;  //needed to make __get() work
-		private static $tainting = true;
+		public static $tainting = true;
 		
 		public function __get($var) {
 			switch ($var) {
