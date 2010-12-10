@@ -42,9 +42,6 @@
 					}
 				break;
 				case 'path' :
-					if (substr($value, 0, 1)!=='/') {
-						$value = '/'.$value;
-					}
 					$this->components[$var] = $value;
 				break;
 				case 'password' :
@@ -64,19 +61,26 @@
 
 		public function __toString() {
 			$url = '';
-			if ($this->components['scheme']) {
-				$url .= $this->components['scheme'].'://';
-			}
-			if ($this->components['user']) {
-				$url .= $this->components['user'];
-				if ($this->components['pass']) {
-					$url .= ':'.$this->components['pass'];
+			if ($this->components['host']) {
+				if ($this->components['scheme']) {
+					$url .= $this->components['scheme'].'://';
 				}
-				$url .= '@';
-			}
-			$url .= $this->components['host'];
-			if ($this->components['port']) {
-				$url .= ':'.$this->components['port'];
+				if ($this->components['user']) {
+					$url .= $this->components['user'];
+					if ($this->components['pass']) {
+						$url .= ':'.$this->components['pass'];
+					}
+					$url .= '@';
+				}
+				$url .= $this->components['host'];
+				if ($this->components['port']) {
+					$url .= ':'.$this->components['port'];
+				}
+				if ($this->components['path']) {
+					if (substr($this->components['path'], 0, 1)!=='/') {
+						$url.= '/';
+					}
+				}
 			}
 			$url .= $this->components['path'];
 			$query = ''.$this->query;
