@@ -362,12 +362,22 @@
 
 
 	function find_in_path($needle,array $extrapath=array()) {
-		$paths = explode(PATH_SEPARATOR,$_ENV['PATH']);
+		$paths = explode(PATH_SEPARATOR,$_SERVER['PATH']);
 		$paths = array_merge($paths,$extrapath);
+				
+		$exts = explode(PATH_SEPARATOR,$_SERVER['PATHEXT']);
+
 		foreach($paths as $path){
-			$file = $path . '/' . $needle;
+			$file = $path . DIRECTORY_SEPARATOR . $needle;
 			if(file_exists($file)) {
 				return $file;
+			}
+			
+			// W32 needs this
+			foreach ($exts as $ext) {
+				if(file_exists($file.$ext)) {
+					return $file.$ext;
+				}
 			}
 		}
 	}
