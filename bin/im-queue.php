@@ -10,11 +10,7 @@
 	}
 
 	$cmd = $argv[1];
-	$cmd_args = '';
 	$arguments = array_slice($argv, 2);
-	foreach ($arguments as $i => $arg) {
-		$cmd_args .= ' '.escapeshellarg($arg);
-	}
 
 	$semKey = $AR->IMQueue['semKey'];
 	if (!$semKey) {
@@ -40,9 +36,11 @@
 		pcntl_alarm($timeout); // we wait timeout seconds after that, lets bail out
 		if ( sem_acquire($sem) ) {
 			pcntl_alarm(0); // we have the lock, now we wait till the programm ends
-			passthru  (  $cmd.$cmd_args  ,&$return_var  );
+			pcntl_exec($cmd,$arguments);
+			// this program ends here
+			// after exec this program nolonger exists
+			
 		}
-		sem_release($sem);
 	}
 	exit($return_var);
 
