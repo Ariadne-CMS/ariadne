@@ -53,9 +53,10 @@
 					$paramsString = '';
 				}
 				return create_function( '', '
-					$context = pobject::getContext(); 
-					$me = $context["arCurrentObject"]; 
-					$me->resetloopcheck(); 
+					$me = ar::context()->getObject();
+					if ( $me ) {
+						$me->resetloopcheck(); 
+					}
 					$args_in = func_get_args();
 					$params = array( '.$paramsString.' );
 					if (count($params)) {

@@ -74,6 +74,10 @@
 			}
 		}
 		
+		public static function header( $header ) {
+			return ar_http_headers::header( $header );
+		}
+		
 	}
 	
 	interface ar_httpClient {

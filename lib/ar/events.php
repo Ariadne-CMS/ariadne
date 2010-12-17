@@ -1,7 +1,7 @@
 <?php
 
 	ar_pinp::allow( 'ar_events', array(
-		'listen', 'capture', 'fire', 'get', 'at'
+		'listen', 'capture', 'fire', 'get', 'event'
 	) );
 	ar_pinp::allow( 'ar_eventsInstance' );
 	ar_pinp::allow( 'ar_eventsEvent' );
@@ -41,25 +41,25 @@
 			return $result;
 		}
 		
-		protected static walkListeners( $listeners, $path, $objectType, $capture ) {
+		protected static function walkListeners( $listeners, $path, $objectType, $capture ) {
 			$objectTypeStripped = $objectType;
 			$pos = strpos('.', $objectType);
 			if ($pos!==false) {
 				$objectTypeStripped = substr($objectType, 0, $pos);
 			}
-			
-			$pathticles = split( $path, '/' );
+			$pathticles = split( '/', $path );
 			$pathlist = array( '/' );
 			$prevpath = '/';
-			foreach( $paththicles as $pathticle ) {
-				$prevpath .= $pathticle . '/';
-				$pathlist[] = $prevpath;
+			foreach( $pathticles as $pathticle ) {
+				if ($pathticle) {
+					$prevpath .= $pathticle . '/';
+					$pathlist[] = $prevpath;
+				}
 			}
 
 			if (!$capture) {
 				$pathlist = array_reverse( $pathlist );
 			}
-
 			$counter = count( $pathlist );
 			reset($pathlist);
 			
@@ -67,9 +67,9 @@
 				$currentPath = current( $pathlist );
 				if ( is_array( $listeners[$currentPath] ) ) {
 					foreach ($listeners[$currentPath] as $listener ) {
-						if ( ( !isset($listener['type']) && !isset($objectType) ) ||
-							 ( $listener['type'] == $objectType) ||
-							 ( $listener['type'] == $objectTypeStripped) ||
+						if ( !isset($listener['type']) ||
+							 ( $listener['type'] == $objectType ) ||
+							 ( $listener['type'] == $objectTypeStripped ) ||
 							 ( is_a( $objectType, $listener['type'] ) ) ) 
 						{
 							$result = call_user_func_array( $listener['method'], $listener['args'] );
@@ -83,15 +83,15 @@
 			return true;
 		}
 		
-		public static function get() {
+		public static function event() {
 			return self::$event;
 		}
 		
-		public static function at( $path ) {
+		public static function get( $path ) {
 			return new ar_eventsInstance( $path );
 		}
 		
-		public static function addListener( $path, $eventName, $objectType, $method, $capture = false ) {
+		public static function addListener( $path, $eventName, $objectType, $method, $args, $capture = false ) {
 			$when = ($capture) ? 'capture' : 'listen';
 			self::$listeners[$when][$eventName][$path][] = array(
 				'type' => $objectType,
@@ -129,7 +129,7 @@
 		/* FIXME: add a add() method, which re-adds the listener, potentially as last in the list */
 	}
 	
-	class ar_eventsInstance extends ar_events {
+	class ar_eventsInstance extends arBase {
 		private $path = '/';
 		private $eventName = null;
 		private $objectType = null;
@@ -144,9 +144,9 @@
 		
 		public function call( $method, $args = array() ) {
 			if ( is_string($method) ) {
-				$method = ar_pinp::getCallBack( $method, $args );
+				$method = ar_pinp::getCallBack( $method, array_keys($args) );
 			}
-			return ar_events::addListener( $this->path, $this->eventName, $objectType, $method, $capture);
+			return ar_events::addListener( $this->path, $this->eventName, $this->objectType, $method, $args, $this->capture);
 		}
 		
 		public function listen( $eventName, $objectType = null ) {
@@ -160,7 +160,7 @@
 			$this->eventName = $eventName;
 			$this->objectType = $objectType;
 			$this->capture = true;
-			return $this;			
+			return $this;
 		}
 		
 		public function fire($eventName, $eventData, $objectType = null) {

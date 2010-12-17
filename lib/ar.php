@@ -9,6 +9,7 @@
 	class ar {
 		protected static $instances;
 		protected static $ar;
+		protected static $context = null;
 		
 		public static function __callStatic($name, $arguments) {
 			return self::load($name);
@@ -166,6 +167,21 @@
 		
 		public static function url( $url ) {
 			return ar_url::create( $url );
+		}
+		
+		public static function context() {
+			if (!isset(self::$context)) {
+				self::setContext( new ar_ariadneContext() );
+			}
+			return self::$context;
+		}
+		
+		public static function setContext( $context ) {
+			if ( !isset( self::$context ) ) {
+				self::$context = $context;
+			} else {
+				return self::error( 'Context can only be set once.', ar_exceptions::ACCESS_DENIED );
+			}
 		}
 	}
 	
@@ -362,5 +378,77 @@
 		return ar::load($name);
 	}
 
+	interface ar_contextInterface {
+		public static function getPath( $options = array() );
+		
+		public static function getObject( $options = array() );
+		
+		public static function getLoader( $options = array() );
+	}
+	
+	class ar_ariadneContext implements ar_contextInterface {
+	
+		public static function makePath( $cwd, $path ) { //FIXME: move this method to a better place
+			$result = '/';
+			if ( $path[0] === '/' ) {
+				$path = substr( $path, 1);
+			} else {
+				$path = substr( $cwd, 1 ) . '/' . $path;
+			}
+			if ( $path ) {
+				$splitpath = explode( '/', $path );
+				foreach ( $splitpath as $pathticle ) {
+					switch( $pathticle ) {
+						case ".." :
+							$result = dirname( $result );
+							// if second char of $result is not set, then current result is the rootNode
+							if ( isset($result[1]) ) {
+								$result .= "/";
+							}
+							$result[0] = "/"; // make sure that even under windows, slashes are always forward slashes.
+						break;
+						case "." : break;
+						case ""	 : break;
+						default:
+							$result .= $pathticle . '/';
+						break;
+					}
+				}
+			}
+			return $result;
+		}
+	
+		public static function getPath( $options = array() ) {
+			$me = self::getObject( $options );
+			if ($me) {
+				$path = $me->make_path( $options['path'] );
+				if ($options['rememberShortcuts']) {
+					$me->_load('mod_keepurl.php');
+					$path = pinp_keepurl::_make_path( $path );
+				} else if ($options['skipShortcuts']) {
+					$me->_load('mod_keepurl.php');
+					$path = pinp_keepurl::_make_real_path( $path );
+				}
+			} else {
+				$path = self::makePath( '/', $options['path'] );
+			}
+			return $path;
+		}
+		
+		public static function getObject( $options = array() ) {
+			if ( class_exists( 'pobject' ) ) {
+				$context = pobject::getContext();
+				$me = $context["arCurrentObject"];
+			} else {
+				$me = null;
+			}
+			return $me;
+		}
+		
+		public static function getLoader( $options = array() ) { //FIXME: move code from ar_loader to here
+			return ar_loader::getLoader();
+		}
+	}
+	
 	spl_autoload_register('ar::autoload');
 ?>

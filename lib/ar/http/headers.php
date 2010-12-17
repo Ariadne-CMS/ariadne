@@ -1,9 +1,7 @@
 <?php
 	require_once(dirname(__FILE__).'/../../ar.php');
 
-	ar_pinp::allow('ar_http_headers', array(
-		'add', 'sent', 'cache', 'disableCache', 'content', 'redirect', 'getStatusMessage'
-	));
+	ar_pinp::allow('ar_http_headers');
 		
 	class ar_http_headers extends arBase {
 
@@ -66,7 +64,8 @@
 			510 => 'Not Extended'
 		);
 			
-		public static function header( $header ) {
+		public static function header( $header, $replace = true ) {
+			global $ARCurrent;
 			if ( headers_sent() ) {
 				return new ar_error('PHP has already sent the headers. This error can be caused by trailing white space or newlines in the configuration files.', ar_exceptions_configError::HEADERS_SENT);
 			}
@@ -74,53 +73,96 @@
 				$header = implode( '\n', $header );
 			}
 			if ( self::$enabled ) {
-				self::$headers[] = $header;
-				return ldHeader( $header );
+				list($key,$value) = explode(':',$header,2);
+				Header($header,$replace);
+				if($replace){
+					self::$headers[strtolower($key)] = $header;
+					if ($ARCurrent) {
+						$ARCurrent->ldHeaders[strtolower($key)] = $header;
+					}
+				} else {
+					self::$headers[strtolower($key)] .= $header;
+					if ($ARCurrent) {
+						$ARCurrent->ldHeaders[strtolower($key)] .= $header;
+					}
+				}
+				return true;
 			} else {
 				return false;
 			}
 		}
 
-		public function sent() {
+		public static function sent() {
 			return Headers_sent();
 		}
 		
-		public function cache( $expires = null, $modified = null ) {
+		public static function cache( $expires = null, $modified = null, $caching = true ) {
 			if ( self::$enabled ) {
-				return ldSetClientCache(true, $expires, $modified);
+				$now = time();
+				if ( !isset($modified) ) {
+					$modified = $now;
+				}
+				if ($caching) {
+					if ( !isset($expires) ) {
+						$expires = $now + 1800;
+					}
+					$result = self::header("Pragma: cache");
+					self::header("Cache-control: public");
+				} else {
+					if ( !isset($expires) ) {
+						$expires = 0;
+					}
+					$result = self::header("Pragma: no-cache");
+					self::header("Cache-control: must-revalidate, max-age=0, private");
+				}
+				if ( $expires !== false ) {
+					self::header("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT", $expires));
+				}
+				if ( $modified !== false ) {
+					self::header("Last-Modified: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT", $modified));
+				}
+				return $result;
 			} else {
 				return false;
 			}
 		}
 		
-		public function disableCache() {
+		public static function disableCache() {
 			if ( self::$enabled ) {
-				return ldSetClientCache(false);
+				return self::cache( 0, time(), false );
 			} else {
 				return false;
 			}
 		}
 		
-		public function content($mimetype, $size=0) {
+		public static function content($mimetype, $size=0) {
+			global $ARCurrent;
 			if ( self::$enabled ) {
-				return ldSetContent($mimetype, $size);
+				$result = self::header("Content-Type: ".$mimetype);
+				if ($ARCurrent) {
+					$ARCurrent->arContentTypeSent = true;
+				}
+				if ($size) {
+					self::header("Content-Length: ".$size);
+				}
+				return $result;
 			} else {
 				return false;
 			}
 		}
 		
-		public function redirect($URI, $statusCode=0) {
+		public static function redirect($URI, $statusCode=0) {
 			if ($statusCode && is_numeric($statusCode)) {
 				self::header('HTTP/1.1 '.$statusCode.' '.self::getStatusMessage($statusCode));
 			}
 			return self::header('Location: '.$URI);
 		}
 		
-		public function getStatusMessage($statusCode) {
+		public static function getStatusMessage($statusCode) {
 			return self::$statusCodes[$statusCode];
 		}
 		
-		public function setStatusMessage($statusCode, $statusMessage) {
+		public static function setStatusMessage($statusCode, $statusMessage) {
 			self::$statusCodes[$statusCode] = $statusMessage;
 		}
 	}
