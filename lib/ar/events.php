@@ -19,20 +19,28 @@
 			return self::listen( $eventName, $objectType, true );
 		}
 		
-		public static function fire( $eventName, $eventData, $objectType = null, $path = '') {
+		public static function fire( $eventName, $eventData = array(), $objectType = null, $path = '') {
 			$prevEvent = null;
-			if (self::$event) {
+			if ( self::$event ) {
 				$prevEvent = self::$event;
 			}
 			$path = ar::context()->getPath( array( 'path' => $path ) );
+			if ( !isset($objectType) ) {
+				$me = ar::context()->getObject( array( 'path' => $path ) );
+				if ($me) {
+					$objectType = $me->type;
+				}
+			} else if ( !$objectType ) { // when set to false to prevent automatic filling of the objectType, reset it to null
+				$objectType = null;
+			}
 			self::$event = new ar_eventsEvent( $eventName, $eventData );
 			if ( self::walkListeners( self::$listeners['capture'][$eventName], $path, $objectType, true ) ) {
 				self::walkListeners( self::$listeners['listen'][$eventName], $path, $objectType, false );
 			}
 			
-			if (self::$event->preventDefault) {
+			if ( self::$event->preventDefault ) {
 				$result = false;
-			} else if (self::$event->data) {
+			} else if ( self::$event->data ) {
 				$result = self::$event->data;
 			} else {
 				$result = true;
@@ -44,20 +52,20 @@
 		protected static function walkListeners( $listeners, $path, $objectType, $capture ) {
 			$objectTypeStripped = $objectType;
 			$pos = strpos('.', $objectType);
-			if ($pos!==false) {
+			if ( $pos !== false ) {
 				$objectTypeStripped = substr($objectType, 0, $pos);
 			}
 			$pathticles = split( '/', $path );
 			$pathlist = array( '/' );
 			$prevpath = '/';
-			foreach( $pathticles as $pathticle ) {
-				if ($pathticle) {
-					$prevpath .= $pathticle . '/';
+			foreach ( $pathticles as $pathticle ) {
+				if ( $pathticle ) {
+					$prevpath  .= $pathticle . '/';
 					$pathlist[] = $prevpath;
 				}
 			}
 
-			if (!$capture) {
+			if ( !$capture ) {
 				$pathlist = array_reverse( $pathlist );
 			}
 			$counter = count( $pathlist );
@@ -66,7 +74,7 @@
 			do {
 				$currentPath = current( $pathlist );
 				if ( is_array( $listeners[$currentPath] ) ) {
-					foreach ($listeners[$currentPath] as $listener ) {
+					foreach ( $listeners[$currentPath] as $listener ) {
 						if ( !isset($listener['type']) ||
 							 ( $listener['type'] == $objectType ) ||
 							 ( $listener['type'] == $objectTypeStripped ) ||
@@ -121,7 +129,7 @@
 		}
 		
 		public function remove() {
-			if (isset($this->id)) {
+			if ( isset($this->id) ) {
 				ar_events::removeListener( $this->name, $this->path, $this->capture, $this->id );
 			}
 		}
