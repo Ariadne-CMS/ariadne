@@ -78,6 +78,14 @@
 			return ar_http_headers::header( $header );
 		}
 		
+		public static function get( $url, $request = null, $options = array() ) {
+			return self::request( 'GET', $url, $request, $options);
+		}
+		
+		public static function post( $url, $request = null, $options = array() ) {
+			return self::request( 'POST', $url, $request, $options);
+		}
+		
 	}
 	
 	interface ar_httpClient {
