@@ -13,6 +13,7 @@
 		private static $comments = true;
 		public static $indent = "\t";
 		public static $strict = false;
+		public static $preserveWhiteSpace = false;
 		
 		public static function configure( $option, $value ) {
 			switch ( $option ) {
@@ -32,6 +33,9 @@
 				case 'strict':
 					self::$strict = (bool)$value;
 				break;
+				case 'preserveWhiteSpace' :
+					self::$preserveWhiteSpace = (bool) $value;
+				break;
 			}			
 		}
 
@@ -42,7 +46,7 @@
 				} else if ( $standalone === 'true' ) {
 					$standalone = 'yes';
 				}
-				$standalone = $this->attribute( 'standalone', $standalone );
+				$standalone = self::attribute( 'standalone', $standalone );
 			} else {
 				$standalone = '';
 			}
@@ -111,6 +115,11 @@
 		}
 		
 		public static function tag() {
+			$args = func_get_args();
+			return call_user_func_array( array( 'ar_xml', 'node' ), $args );
+		}
+		
+		public static function node() {
 			$args       = func_get_args();
 			$name       = array_shift($args);
 			$attributes = array();
@@ -148,6 +157,64 @@
 			$nodes = call_user_func_array( array( 'ar_xmlNodes', 'mergeArguments' ), $args );
 			return new ar_xmlNodes( $nodes );
 		}
+		
+		protected static function parseAttributes( $attributes ) {
+			$result = array();
+			foreach ( $attributes as $attrName => $attrNode ) {
+				$result[$attrName] = $attrNode->value;
+			}
+			return $result;
+		}
+		
+		protected static function parseChildren( $DOMElement ) {
+			$result = array();
+			foreach ( $DOMElement->childNodes as $child ) {
+				if ( $child instanceof DOMCharacterData ) {
+					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
+						$result[] = $child->data;
+					}
+				} else if ( $child instanceof DOMCdataSection ) {
+					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
+						$result[] = self::cdata( $child->data );
+					}
+				} else if ( $child instanceof DOMNode ) {
+					$result[] = self::node( $child->tagName, self::parseAttributes( $child->attributes ), self::parseChildren( $child ) );
+				}
+			}
+			return self::nodes( $result );
+		}
+		
+		protected static function parseHead( DOMDocument $dom ) {
+			$result = self::nodes();
+			if ($dom->xmlVersion && $dom->xmlEncoding) {
+				$result[] = self::preamble( $dom->xmlVersion, $dom->xmlEncoding, $dom->xmlStandalone );
+			}
+			if ($dom->doctype) {
+				$doctype = '<!DOCTYPE '.$dom->doctype->name;
+				if ($dom->doctype->publicId) {
+					$doctype .= ' PUBLIC "'.$dom->doctype->publicId.'"';
+				}
+				if ($dom->doctype->systemId) {
+					$doctype .= ' "'.$dom->doctype->systemId.'"';
+				}
+				$doctype .= '>';
+				$result[] = $doctype;
+			}
+			return $result;
+		}
+		
+		public static function parse( $xml ) {
+			$dom = new DOMDocument();
+			if ( $dom->loadXML( $xml ) ) {
+				$domroot = $dom->documentElement;
+				if ( $domroot ) {
+					$result = self::parseHead( $dom );
+					$result[] = self::node( $domroot->tagName, self::parseAttributes( $domroot->attributes ), self::parseChildren( $domroot ) );
+					return $result;
+				}
+			}
+			return ar_error::raiseError( 'Incorrect xml passed', ar_exceptions::ILLEGAL_ARGUMENT );
+		}
 	}
 
 	/*
@@ -166,6 +233,7 @@
 		private $parentNode = null;
 		public $attributes  = array();
 		public $isDocumentFragment = true;
+		private $nodeValue = '';
 		
 		public static function mergeArguments(){
 			$args  = func_get_args();
@@ -317,6 +385,17 @@
 				case 'childNodes' :
 					return $this;
 				break;
+				case 'nodeValue' :
+					if ( count($this)==1 ) {
+						return $this[0]->nodeValue;
+					} else {
+						$result = array();
+						foreach($this as $node) {
+							$result[] = $node->nodeValue;
+						}
+						return $result;
+					}
+				break;
 				default :
 					if (!isset($this->parentNode) && !$this->isDocumentFragment ) {
 						$result = array();
@@ -401,6 +480,22 @@
 			$result = $this->getNodeList( $nodeList );
 			$result->isDocumentFragment = false;
 			return $result;
+		}
+		
+		function getElementById( $id ) {
+			if (isset($this->parentNode)) {
+				return $this->parentNode->getElementById($id);
+			} else {
+				foreach ($this as $node ) {
+					if ( $node instanceof ar_xmlElement ) {
+						$el = $node->getElementById($id);
+						if ( isset($el) ) {
+							return $el;
+						}
+					}
+				}
+				return null;
+			}
 		}
 		
 		function __clearAllNodes() {
@@ -493,7 +588,7 @@
 		
 		private function _appendChild( $el ) {
 			$this->_setParentNodes( $el );
-			if ( !is_array( $el ) ) {
+			if ( !is_array( $el ) && !( $el instanceof ArrayObject ) ) {
 				$list = array( $el );
 			} else {
 				$list = (array) $el;
@@ -572,7 +667,7 @@
 	
 	class ar_xmlNode extends arBase implements ar_xmlNodeInterface {
 		public $parentNode = null;
-		public $nodeValue = '';
+		private $nodeValue = '';
 		public $cdata = false;
 		
 		function __construct($value, $parentNode = null, $cdata = false) {
@@ -605,6 +700,9 @@
 						return $this->parentNode->childNodes->getNextSibling($this);
 					}
 				break;
+				case 'nodeValue' :
+					return $this->nodeValue;
+				break;
 			}
 		}
 		
@@ -613,6 +711,9 @@
 				case 'previousSibling' :
 				case 'nextSibling' :
 					return false;
+				break;
+				case 'nodeValue' :
+					$this->nodeValue = $value;
 				break;
 			}
 		}
@@ -644,16 +745,17 @@
 		private $childNodes = null;
 		public $parentNode  = null;
 		private $idCache    = array();
+		private $nodeValue  = '';
 		
 		function __construct($name, $attributes, $childNodes, $parentNode = null) {
 			$this->tagName    = $name;
-			$this->attributes = $attributes;
-			if (!isset($childNodes)) {
-				$childNodes = $this->getNodeList();
-			}
-			$this->childNodes = $childNodes;
-			$this->childNodes->setParentNode( $this );
 			$this->parentNode = $parentNode;
+			$this->childNodes = $this->getNodeList();
+			$this->childNodes->setParentNode( $this );
+			if ($childNodes) {
+				$this->appendChild( $childNodes );
+			}
+			$this->setAttributes( $attributes );
 		}
 		
 		public function __clearParentIdCache() {
@@ -754,10 +856,6 @@
 		}
 		
 		function __get( $name ) {
-			$result = parent::__get( $name );
-			if ( isset($result) ) {
-				return $result;
-			}
 			switch( $name ) {
 				case 'firstChild' :
 					if (isset($this->childNodes) && count($this->childNodes)) {
@@ -772,6 +870,16 @@
 				case 'childNodes' :
 					return $this->childNodes;
 				break;
+				case 'nodeValue' :
+					//echo get_class($this->childNodes[0]).'('.$this->childNodes[0].')';
+					if (isset($this->childNodes) && count($this->childNodes) ) {
+						return $this->childNodes->nodeValue;
+					}
+				break;
+			}
+			$result = parent::__get( $name );
+			if ( isset($result) ) {
+				return $result;
 			}
 			return $this->getElementsByTagName( $name, false );
 		}
@@ -843,7 +951,7 @@
 		function removeChild( $el ) {
 			return $this->childNodes->removeChild( $el );
 		}
-
+		
 	}
 	
 ?>

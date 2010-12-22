@@ -11,6 +11,7 @@
 		const PASSWORD_EXPIRED = 106;
 		const OBJECT_NOT_FOUND = 107;
 		const DATABASE_EMPTY   = 108;
+		const ILLEGAL_ARGUMENT = 109;
 	}
 	
 	class ar_exceptionDefault extends Exception implements ar_exception { }

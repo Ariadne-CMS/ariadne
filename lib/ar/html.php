@@ -7,6 +7,7 @@
 	class ar_html extends ar_xml {
 
 		public static $xhtml = false;
+		public static $preserveWhiteSpace = false;
 		private static $emptyTags = array(
 			'input' => 1, 'br'       => 1, 'hr'      => 1, 'img'  => 1, 'link'  => 1, 'meta' => 1, 'frame' => 1, 
 			'base'  => 1, 'basefont' => 1, 'isindex' => 1, 'area' => 1, 'param' => 1, 'col'  => 1, 'embed' => 1
@@ -62,6 +63,11 @@
 		
 		public static function tag() {
 			$args = func_get_args();
+			return call_user_func_array( array( 'ar_html', 'node' ), $args );
+		}
+		
+		public static function node() {
+			$args = func_get_args();
 			$name = array_shift($args);
 			$attributes = array();
 			$childNodes = array(); //ar_xml::nodes();
@@ -104,6 +110,36 @@
 			return new ar_html_zen( $string );
 		}
 		
+		protected static function parseChildren( $DOMElement ) {
+			$result = array();
+			foreach ( $DOMElement->childNodes as $child ) {
+				if ( $child instanceof DOMCharacterData ) {
+					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
+						$result[] = $child->data;
+					}
+				} else if ( $child instanceof DOMCdataSection ) {
+					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
+						$result[] = self::cdata( $child->data );
+					}
+				} else if ( $child instanceof DOMNode ) {
+					$result[] = self::node( $child->tagName, self::parseAttributes( $child->attributes ), self::parseChildren( $child ) );
+				}
+			}
+			return self::nodes( $result );
+		}
+
+		public static function parse( $html ) {
+			$dom = new DOMDocument();
+			if ( $dom->loadHTML( $html ) ) {
+				$domroot = $dom->documentElement;
+				if ( $domroot ) {
+					$result = self::parseHead( $dom );
+					$result[] = self::node( $domroot->tagName, self::parseAttributes( $domroot->attributes ), self::parseChildren( $domroot ) );
+					return $result;
+				}
+			}
+			return ar_error::raiseError( 'Incorrect html passed', ar_exceptions::ILLEGAL_ARGUMENT );
+		}		
 	}
 
 	class ar_htmlNodes extends ar_xmlNodes {
