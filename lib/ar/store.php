@@ -106,6 +106,24 @@
 			return $path;
 		}
 
+		public static function currentProject( $path = '' ) {
+			$path = '/';
+			$me = ar::context()->getObject();
+			if ($me) {
+				$path = $me->currentproject( $path );
+			}
+			return $path;
+		}
+
+		public static function parentProject( $path = '' ) {
+			$path = '/';
+			$me = ar::context()->getObject();
+			if ($me) {
+				$path = $me->parentProject( $path );
+			}
+			return $path;
+		}
+
 		public static function makePath( $path = '' ) {
 			return ar::context()->getPath( array(
 				'rememberShortcuts' => self::$rememberShortcuts,

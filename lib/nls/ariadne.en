@@ -155,6 +155,7 @@
 	$ARnls['ariadne:types:pbookmark']			= 'Bookmark';
 	$ARnls['ariadne:types:pcalendar']			= 'Calendar';
 	$ARnls['ariadne:types:pdir']				= 'Directory';
+	$ARnls['ariadne:types:pdir.projects']		= 'Projects Folder';
 	$ARnls['ariadne:types:pfile']				= 'File';
 	$ARnls['ariadne:types:pgroup']				= 'Group';
 	$ARnls['ariadne:types:pnewspaper']			= 'Newspaper';
@@ -163,6 +164,7 @@
 	$ARnls['ariadne:types:pperson']				= 'Person';
 	$ARnls['ariadne:types:pphoto']				= 'Photo';
 	$ARnls['ariadne:types:pphotobook']			= 'Photobook';
+	$ARnls['ariadne:types:pproject']			= 'Project';
 	$ARnls['ariadne:types:pscenario']			= 'Scenario';
 	$ARnls['ariadne:types:pshortcut']			= 'Shortcut';
 	$ARnls['ariadne:types:psite']				= 'Site';

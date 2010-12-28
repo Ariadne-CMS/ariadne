@@ -154,12 +154,14 @@
 	$ARnls['ariadne:types:pbookmark']			= 'Bladwijzer';
 	$ARnls['ariadne:types:pcalendar']			= 'Kalender';
 	$ARnls['ariadne:types:pdir']				= 'Map';
+	$ARnls['ariadne:types:pdir.projects']		= 'Projecten Map';
 	$ARnls['ariadne:types:pfile']				= 'Bestand';
 	$ARnls['ariadne:types:pgroup']				= 'Groep';
 	$ARnls['ariadne:types:pnewspaper']			= 'Krant';
 	$ARnls['ariadne:types:pobject']				= 'Object';
 	$ARnls['ariadne:types:ppage']				= 'Pagina';
 	$ARnls['ariadne:types:pperson']				= 'Persoon';
+	$ARnls['ariadne:types:pproject']			= 'Project';
 	$ARnls['ariadne:types:pphoto']				= 'Foto';
 	$ARnls['ariadne:types:pphotobook']			= 'Fotoboek';
 	$ARnls['ariadne:types:pscenario']			= 'Scenario';

@@ -2756,11 +2756,27 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $config->section;
 	}
 
-	function parentsection($section) {
+	function parentsection($path) {
 	global $ARConfig;
-		$path=$this->store->make_path($section, "..");
+		$path=$this->store->make_path($path, "..");
 		$config=($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path); 
 		return $config->section;
+	}
+
+	function currentproject($path="") {
+	global $ARConfig;
+		if (!$path) {
+			$path=$this->path;
+		}
+		$config=($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
+		return $config->project;
+	}
+
+	function parentproject($path) {
+	global $ARConfig;
+		$path=$this->store->make_path($path, "..");
+		$config=($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path); 
+		return $config->project;
 	}
 
 	function getValue($name, $nls=false) {
@@ -2853,6 +2869,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	function _parentsection($section) {
 		return $this->parentsection($section);
+	}
+
+	function _currentproject() {
+		return $this->currentproject();
+	}
+
+	function _parentproject($path) {
+		return $this->parentproject($path);
 	}
 
 	function _checkgrant($grant, $modifier=ARTHISTYPE, $path=".") {
