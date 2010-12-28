@@ -670,8 +670,13 @@ muze.global = this;
 		}
 	})();
 	
+
+
 	//Does the browser support cookies
-	Env.support.cookies = !!navigator.cookieEnabled && navigator.cookieEnabled;
+	//Env.support.cookies = !!navigator.cookieEnabled && navigator.cookieEnabled;
+	//The above check generates a security violation in IE when used inside a Modal Dialog, hence the adjusted check below
+	document.cookie="muzeEnvTestCookie";
+	Env.support.cookies = (document.cookie.indexOf("muzeEnvTestCookie") != -1) ? true : false;
 	//Is the browser in standards mode or quirks mode
 	Env.support.strict = !!document.compatMode && document.compatMode == "CSS1Compat";
 	//Is the current page hosted on a secure server
