@@ -101,14 +101,13 @@
 							"operation" => "2.4/upgrade.nls.es.php",
 							"newversion" => "2.4.0.1"
 							));
-
 		case "2.4.0.1":
 				array_push($todo, Array(
 							"description" => "Recompiling all PINP templates.",
 							"operation" => "all/upgrade.templates.php",
 							"newversion" => "2.6"
 							));
-
+		case "2.4.1":
 		case "2.6":
 		case "2.6.0":
 		case "2.6.1":
