@@ -213,6 +213,14 @@
 		$store->add_type("psection", "pdir");
 		$store->add_type("psection", "psection");
 
+		// install pproject type
+
+		$store->add_type("pproject", "pobject");
+		$store->add_type("pproject", "ppage");
+		$store->add_type("pproject", "pdir");
+		$store->add_type("pproject", "psection");
+		$store->add_type("pproject", "pproject");
+
 		// install pconnector type
 
 		$store->add_type("pconnector", "pobject");

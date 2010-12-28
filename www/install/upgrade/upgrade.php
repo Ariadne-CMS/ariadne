@@ -109,6 +109,18 @@
 							"newversion" => "2.6"
 							));
 
+		case "2.6":
+		case "2.7":
+		case "2.7.1":
+		case "2.7.2":
+		case "2.7.3":
+				array_push($todo, Array(
+							"description" => "Adding the pproject type.",
+							"operation" => "2.7.4/upgrade.types.php",
+							"newversion" => "2.7.4"
+							));
+
+			
 	}
 
 
