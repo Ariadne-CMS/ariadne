@@ -26,6 +26,16 @@
 				break;
 			}
 		}
+
+		public function __get( $varname ) {
+			if ( isset( self::$$varname ) ) {
+				return self::$$varname;
+			}
+		}
+	
+		public function __set( $varname, $value ) {
+			self::configure( $varname, $value );
+		}
 	
 		public static function link($content, $attributes = array(), $path = null, $url = null) {
 			if (self::$editMode) {

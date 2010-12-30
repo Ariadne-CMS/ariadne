@@ -99,9 +99,19 @@
 		}
 		
 		public static function call( $template, $params = null ) {
-			$context = pobject::getContext();
-			$me = $context['arCurrentObject'];
-			return $me->call( $template, $params );
+			$context = self::context();
+			$me = $context->getObject();
+			if ($me) {
+				return $me->call( $template, $params );
+			}
+		}
+		
+		public static function callSuper() {
+			$context = self::context();
+			$me = $context->getObject();
+			if ($me) {
+				return $me->_call_super();
+			}
 		}
 		
 		public static function taint(&$value) {
@@ -183,6 +193,12 @@
 				return self::error( 'Context can only be set once.', ar_exceptions::ACCESS_DENIED );
 			}
 		}
+		
+		public static function acquire( $varname, $options = array() ) {
+			$context = self::context();
+			return $context->acquire( $varname, $options = array() );
+		}
+		
 	}
 	
 	class arTainted {
@@ -342,6 +358,10 @@
 			return ar::call($template, $params);
 		}
 		
+		public static function _callSuper() {
+			return ar::callSuper();
+		}
+		
 		public static function _taint(&$value) {
 			ar::taint($value);
 		}
@@ -369,6 +389,10 @@
 		
 		public static function _url( $url ) {
 			return ar::url( $url );
+		}
+		
+		public static function _acquire( $varname, $options = array() ) {
+			return ar::acquire( $varname, $options = array() );
 		}
 	}
 	
@@ -448,6 +472,19 @@
 		public static function getLoader( $options = array() ) { //FIXME: move code from ar_loader to here
 			return ar_loader::getLoader();
 		}
+		
+		public static function acquire( $varname, $options = array() ) {
+			$me = self::getObject( $options );
+			if ($me) {
+				$data = $me->loadUserConfig();
+				$vars = explode('.', $varname);
+				foreach( $vars as $var ) {
+					$data = $data[$var];
+				}
+				return $data;
+			}
+		}
+		
 	}
 	
 	spl_autoload_register('ar::autoload');

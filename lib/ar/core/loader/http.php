@@ -236,11 +236,11 @@
 		}
 		
 		public function redirect( $url ) {
-			return ar_http::redirect( $url );
+			return ar_http_headers::redirect( $url );
 		}
 		
 		public function header( $header ) {
-			return ar_http::header( $header );
+			return ar_http_headers::header( $header );
 		}
 		
 		public function getvar( $name = null, $method = null ) {
@@ -248,23 +248,23 @@
 		}
 		
 		public function cache( $expires = 0, $modified = false ) {
-			return ar_http::cache( $expires, $modified);
+			return ar_http_headers::cache( $expires, $modified);
 		}
 		
 		public function disableCache() {
-			return ar_http::disableCache();		
+			return ar_http_headers::disableCache();		
 		}
 		
 		public function content( $contentType, $size = 0 ) {
-			return ar_http::content( $contentType, $size );
+			return ar_http_headers::content( $contentType, $size );
 		}
 		
 		public function isCacheable() {
 		}
 		
 		public function makeURL( $path = '', $nls = '', $session = true, $https = null, $keephost = false ) {
-			$context = pobject::getContext();
-			$me = $context["arCurrentObject"];
+			$context = ar::context();
+			$me = $context->getObject();
 			return $me->make_url( $path, $nls, $session, $https, $keephost );
 		}
 	}

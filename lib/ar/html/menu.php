@@ -31,14 +31,11 @@
 			}
 			parent::__construct( 'ul', $attributes, null );
 			$this->items['[root]'] = $this;
-			//FIXME: remove getContext stuff by adding make_url to ar::something
-			if ( class_exists('pobject') ) {
-				$context = pobject::getContext();
-				if ( isset($context) && isset($context['arCurrentObject']) ) {
-					$me            = $context["arCurrentObject"];
-					$this->root    = $me->path;
-					$this->rooturl = $me->make_url();
-				}
+			$context = ar::context();
+			$me = $context->getObject();
+			if ( $me ) {
+				$this->root    = $me->currentsite();
+				$this->rooturl = $me->make_url( $this->root );
 			}
 			if ( !isset($this->root) ) {
 				$this->root    = '/';

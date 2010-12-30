@@ -163,7 +163,11 @@
 			} else {
 				$path = $this->path;
 			}
-			$result = $store->call( $template, $args, $store->find( $path, $this->query, $this->limit, $this->offset), array( 'usePathAsKey' => true ) );
+			$query = $this->query;
+			if ($this->order) {
+				$query .= ' order by '.$this->order;
+			}
+			$result = $store->call( $template, $args, $store->find( $path, $query, $this->limit, $this->offset), array( 'usePathAsKey' => true ) );
 			return $result;
 		}
 
