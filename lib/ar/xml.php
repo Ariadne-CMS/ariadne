@@ -6,6 +6,7 @@
 	ar_pinp::allow( 'ar_xmlElement' );
 	ar_pinp::allow( 'ar_xmlNode' );
 	ar_pinp::allow( 'ar_xmlNodes' );
+	ar_pinp::allow( 'ar_xmlDataBinding' );
 
 	class ar_xml extends arBase {
 
@@ -158,11 +159,51 @@
 			return new ar_xmlNodes( $nodes );
 		}
 		
-		protected static function parseAttributes( $attributes ) {
+		protected static function parseAttributes( $DOMElement ) {
+			// get all attributes including namespaced ones and namespaces themselves...
+			// this is the best I could do given the many bugs and oversights in php's
+			// DOM implementation.
 			$result = array();
-			foreach ( $attributes as $attrName => $attrNode ) {
-				$result[$attrName] = $attrNode->value;
+
+			// this part retrieves all available namespaces on the parent
+			// xpath is the only reliable way
+			$x = new DOMXPath( $DOMElement->ownerDocument );
+			$p = $DOMElement->parentNode;
+			if ($p && $p instanceof DOMNode ) {
+				$pns = $x->query('namespace::*', $p );
+				foreach( $pns as $node ) {
+					$allns[$node->localName] = $p->lookupNamespaceURI( $node->localName );
+				}
 			}
+			// this retrieves all namespaces on the current node
+			// all 'new' namespace must have been declared on this node
+			$ns = $x->query('namespace::*', $DOMElement);
+			foreach( $ns as $node) {
+				$uri = $DOMElement->lookupNamespaceURI( $node->localName );
+				if ($allns[$node->localName]!=$uri && $node->localName!='xmlns') {
+					$declaredns['xmlns:'.$node->localName] = $uri;
+					//$allns[$node->localName] = $uri;
+				}
+			}
+
+			// finally check if the default namespace has been altered
+			$dns = $DOMElement->getAttribute('xmlns');
+			if ($dns) {
+				$declaredns['xmlns'] = $dns;
+				//$allns['{default}'] = $dns;
+			}
+
+			$result = $declaredns;
+
+			$length = $DOMElement->attributes->length;
+			for ($i=0; $i<$length; $i++) {
+				$a = $DOMElement->attributes->item($i);
+				if ($a->prefix) {
+					$prefix = $a->prefix.':';
+				}
+				$result[$prefix.$a->name] = $a->value;
+			}
+
 			return $result;
 		}
 		
@@ -177,8 +218,8 @@
 					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
 						$result[] = self::cdata( $child->data );
 					}
-				} else if ( $child instanceof DOMNode ) {
-					$result[] = self::node( $child->tagName, self::parseAttributes( $child->attributes ), self::parseChildren( $child ) );
+				} else if ( $child instanceof DOMElement ) {
+					$result[] = self::node( $child->tagName, self::parseAttributes( $child ), self::parseChildren( $child ) );
 				}
 			}
 			return self::nodes( $result );
@@ -209,7 +250,16 @@
 				$domroot = $dom->documentElement;
 				if ( $domroot ) {
 					$result = self::parseHead( $dom );
-					$result[] = self::node( $domroot->tagName, self::parseAttributes( $domroot->attributes ), self::parseChildren( $domroot ) );
+					$root = self::node( $domroot->tagName, self::parseAttributes( $domroot ), self::parseChildren( $domroot ) );
+					$s = simplexml_import_dom( $dom );
+					$n = $s->getDocNamespaces();
+					foreach( $n as $prefix => $ns ) {
+						if ($prefix) {
+							$prefix = ':'.$prefix;
+						}
+						$root->setAttribute('xmlns'.$prefix, $ns);
+					}
+					$result[] = $root;
 					return $result;
 				}
 			}
@@ -396,6 +446,17 @@
 						return $result;
 					}
 				break;
+				case 'attributes' :
+					if ( count($this)==1 ) {
+						return $this[0]->attributes;
+					} else {
+						$result = array();
+						foreach($this as $node) {
+							$result[] = $node->attributes;
+						}
+						return $result;
+					}
+				break;				
 				default :
 					if (!isset($this->parentNode) && !$this->isDocumentFragment ) {
 						$result = array();
@@ -639,7 +700,7 @@
 			}
 		}	
 
-		function removeChild( ar_xmlNodeInterface $el ) {
+		public function removeChild( ar_xmlNodeInterface $el ) {
 			// Warning: must never ever call _removeChildNodes, can be circular.
 			if ( is_array( $el ) ) {
 				foreach( $el as $subEl ) {
@@ -662,7 +723,17 @@
 			}
 			return $el;
 		}
-			
+
+		public function bind( $nodes, $name, $type = 'string' ) {
+			$b = new ar_xmlDataBinding( );
+			return $b->bind( $nodes, $name, $type );
+		}
+
+		public function bindEach( $nodes, $type = 'string' ) {
+			$b = new ar_xmlDataBinding( );
+			return $b->bindEach( $nodes, 'list', $type)->list;
+		}
+
 	}
 	
 	class ar_xmlNode extends arBase implements ar_xmlNodeInterface {
@@ -789,7 +860,7 @@
 			}
 		}
 		
-		function setAttributes( array $attributes ) {
+		function setAttributes( $attributes ) {
 			foreach ( $attributes as $name => $value ) {
 				$this->setAttribute( $name, $value );
 			}
@@ -951,7 +1022,79 @@
 		function removeChild( $el ) {
 			return $this->childNodes->removeChild( $el );
 		}
+
+		public function bind( $nodes, $name, $type = 'string' ) {
+			$b = new ar_xmlDataBinding( );
+			return $b->bind( $nodes, $name, $type );
+		}
+
+		public function bindEach( $nodes, $type = 'string' ) {
+			$b = new ar_xmlDataBinding( );
+			return $b->bindEach( $nodes, 'list', $type)->list;
+		}
 		
 	}
 	
+	class ar_xmlDataBinding extends arBase {
+
+		public function bindEach( $nodes, $name, $type='string') {
+			$total = count($nodes);
+			$this->{$name} = array();
+			foreach ( $nodes as $key => $node ) {
+				$this->{$name}[$key] = $this->bindValue( $node, $type);
+			}
+			return $this;
+		}
+
+		public function bind( $node, $name, $type='string' ) {
+			if ( ( is_array($node) || ( $node instanceof Countable ) ) && count($node)>1 ) {
+				return $this->bindEach( $node, $name, $type );
+			}
+			$this->{$name} = $this->bindValue( $node, $type );
+			return $this;
+		}
+		
+		public function __toString() {
+			return $this->source->toString();
+		}
+		
+		protected function bindValue( $source, $type ) {
+			if ( $source instanceof ar_xmlNode || $source instanceof ar_xmlNodes ) {
+				$nodeValue = $source->nodeValue;
+				if (is_array($nodeValue) && !count($nodeValue)) {
+					$nodeValue = null;
+				}
+			} else {
+				$nodeValue = $source;
+			}
+			if ( is_callable($type) ) {
+				$nodeValue = call_user_func( $type, $source );
+			} else {
+				switch ($type) {
+					case 'int'    : $nodeValue = (int) $nodeValue;
+					break;
+					case 'float'  : $nodeValue = (float) $nodeValue;
+					break;
+					case 'string' : $nodeValue = (string) $nodeValue;
+					break;
+					case 'bool'   : $nodeValue = (bool) $nodeValue;
+					break;
+					case 'xml' :
+					case 'html' :
+							if ($source instanceof ar_xmlNode || $source instanceof ar_xmlNodes) {
+								$nodeValue = (string) $source->childNodes;
+							}
+					break;
+					default       :
+						if ( class_exists($type) ) {
+							$nodeValue = new $type($nodeValue);
+						}
+					break;
+				}
+			}
+			return $nodeValue;
+		}
+
+	}
+
 ?>
