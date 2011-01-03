@@ -163,7 +163,8 @@
 			// get all attributes including namespaced ones and namespaces themselves...
 			// this is the best I could do given the many bugs and oversights in php's
 			// DOM implementation.
-			$result = array();
+
+			$declaredns = array();
 
 			// this part retrieves all available namespaces on the parent
 			// xpath is the only reliable way
@@ -291,7 +292,7 @@
 			foreach ( $args as $input ) {
 				if ( is_array( $input ) || is_a( $input, 'ar_xmlNodes' ) ) {
 					$nodes = array_merge( $nodes, (array) $input );
-				} else {
+				} else if ($input) { // skip empty and NULL arguments
 					$nodes[] = $input;
 				}
 			}
