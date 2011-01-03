@@ -1087,7 +1087,7 @@
 							}
 					break;
 					default       :
-						if ( class_exists($type) ) {
+						if ( is_string($type) && class_exists($type) ) {
 							$nodeValue = new $type($nodeValue);
 						}
 					break;
