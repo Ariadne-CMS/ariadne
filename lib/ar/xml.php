@@ -730,9 +730,9 @@
 			return $b->bind( $nodes, $name, $type );
 		}
 
-		public function bindEach( $nodes, $type = 'string' ) {
+		public function bindAsArray( $nodes, $type = 'string' ) {
 			$b = new ar_xmlDataBinding( );
-			return $b->bindEach( $nodes, 'list', $type)->list;
+			return $b->bindAsArray( $nodes, 'list', $type)->list;
 		}
 
 	}
@@ -1029,16 +1029,16 @@
 			return $b->bind( $nodes, $name, $type );
 		}
 
-		public function bindEach( $nodes, $type = 'string' ) {
+		public function bindAsArray( $nodes, $type = 'string' ) {
 			$b = new ar_xmlDataBinding( );
-			return $b->bindEach( $nodes, 'list', $type)->list;
+			return $b->bindAsArray( $nodes, 'list', $type)->list;
 		}
 		
 	}
 	
 	class ar_xmlDataBinding extends arBase {
 
-		public function bindEach( $nodes, $name, $type='string') {
+		public function bindAsArray( $nodes, $name, $type='string') {
 			$total = count($nodes);
 			$this->{$name} = array();
 			foreach ( $nodes as $key => $node ) {
@@ -1049,7 +1049,7 @@
 
 		public function bind( $node, $name, $type='string' ) {
 			if ( ( is_array($node) || ( $node instanceof Countable ) ) && count($node)>1 ) {
-				return $this->bindEach( $node, $name, $type );
+				return $this->bindAsArray( $node, $name, $type );
 			}
 			$this->{$name} = $this->bindValue( $node, $type );
 			return $this;

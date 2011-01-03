@@ -13,7 +13,7 @@ class ar_connect_rss extends ar_xmlDataBinding {
 
 			$this->bind( $dom->rss->channel->title, 'title' )
 				->bind( $dom->rss->channel->link, 'link' )
-				->bindEach( 
+				->bindAsArray( 
 					$dom->rss->channel->item, 
 					'items', 
 					array( 'ar_connect_rss', 'parseItem' )
