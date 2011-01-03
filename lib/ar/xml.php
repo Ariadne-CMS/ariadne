@@ -1096,7 +1096,7 @@
 							}
 					break;
 					default       :
-						if ( is_string($type) && class_exists($type) ) {
+						if ( is_string($type) && class_exists($type) && ar_pinp::isAllowed($type, '__construct') ) {
 							$nodeValue = new $type($nodeValue);
 						}
 					break;
