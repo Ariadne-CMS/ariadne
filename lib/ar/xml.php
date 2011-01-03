@@ -117,10 +117,15 @@
 		
 		public static function tag() {
 			$args = func_get_args();
-			return call_user_func_array( array( 'ar_xml', 'node' ), $args );
+			return call_user_func_array( array( 'ar_xml', 'el' ), $args );
 		}
 		
-		public static function node() {
+		public static function element() {
+			$args = func_get_args();
+			return call_user_func_array( array( 'ar_xml', 'el' ), $args );
+		}
+
+		public static function el() {
 			$args       = func_get_args();
 			$name       = array_shift($args);
 			$attributes = array();
@@ -220,7 +225,7 @@
 						$result[] = self::cdata( $child->data );
 					}
 				} else if ( $child instanceof DOMElement ) {
-					$result[] = self::node( $child->tagName, self::parseAttributes( $child ), self::parseChildren( $child ) );
+					$result[] = self::el( $child->tagName, self::parseAttributes( $child ), self::parseChildren( $child ) );
 				}
 			}
 			return self::nodes( $result );
@@ -251,7 +256,7 @@
 				$domroot = $dom->documentElement;
 				if ( $domroot ) {
 					$result = self::parseHead( $dom );
-					$root = self::node( $domroot->tagName, self::parseAttributes( $domroot ), self::parseChildren( $domroot ) );
+					$root = self::el( $domroot->tagName, self::parseAttributes( $domroot ), self::parseChildren( $domroot ) );
 					$s = simplexml_import_dom( $dom );
 					$n = $s->getDocNamespaces();
 					foreach( $n as $prefix => $ns ) {
@@ -290,7 +295,7 @@
 			$args  = func_get_args();
 			$nodes = array();
 			foreach ( $args as $input ) {
-				if ( is_array( $input ) || is_a( $input, 'ar_xmlNodes' ) ) {
+				if ( is_array( $input ) || $input instanceof ar_xmlNodes ) {
 					$nodes = array_merge( $nodes, (array) $input );
 				} else if ($input) { // skip empty and NULL arguments
 					$nodes[] = $input;
@@ -453,7 +458,9 @@
 					} else {
 						$result = array();
 						foreach($this as $node) {
-							$result[] = $node->attributes;
+							if ($node instanceof ar_xmlElement || $node instanceof ar_xmlNodes ) {
+								$result[] = $node->attributes;
+							}
 						}
 						return $result;
 					}
@@ -462,8 +469,10 @@
 					if (!isset($this->parentNode) && !$this->isDocumentFragment ) {
 						$result = array();
 						foreach ($this as $node) {
-							$temp = $node->getElementsByTagName( $name, false );
-							$result = array_merge( $result, (array) $temp);
+							if ($node instanceof ar_xmlElement || $node instanceof ar_xmlNodes ) {
+								$temp = $node->getElementsByTagName( $name, false );
+								$result = array_merge( $result, (array) $temp);
+							}
 						}
 						$result = $this->getNodeList( $result );
 						$result->isDocumentFragment = false;

@@ -63,14 +63,19 @@
 		
 		public static function tag() {
 			$args = func_get_args();
-			return call_user_func_array( array( 'ar_html', 'node' ), $args );
+			return call_user_func_array( array( 'ar_html', 'el' ), $args );
 		}
 		
-		public static function node() {
+		public static function element() {
+			$args = func_get_args();
+			return call_user_func_array( array( 'ar_html', 'el' ), $args );
+		}		
+	
+		public static function el() {
 			$args = func_get_args();
 			$name = array_shift($args);
 			$attributes = array();
-			$childNodes = array(); //ar_xml::nodes();
+			$childNodes = array();
 			foreach ($args as $arg) {
 				if ( is_array( $arg ) && !is_a( $arg, 'ar_xmlNodes' ) ) {
 					$attributes = array_merge($attributes, $arg);
@@ -122,7 +127,7 @@
 						$result[] = self::cdata( $child->data );
 					}
 				} else if ( $child instanceof DOMNode ) {
-					$result[] = self::node( $child->tagName, self::parseAttributes( $child->attributes ), self::parseChildren( $child ) );
+					$result[] = self::el( $child->tagName, self::parseAttributes( $child ), self::parseChildren( $child ) );
 				}
 			}
 			return self::nodes( $result );
@@ -134,7 +139,7 @@
 				$domroot = $dom->documentElement;
 				if ( $domroot ) {
 					$result = self::parseHead( $dom );
-					$result[] = self::node( $domroot->tagName, self::parseAttributes( $domroot->attributes ), self::parseChildren( $domroot ) );
+					$result[] = self::el( $domroot->tagName, self::parseAttributes( $domroot ), self::parseChildren( $domroot ) );
 					return $result;
 				}
 			}
