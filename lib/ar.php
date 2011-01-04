@@ -252,7 +252,7 @@
 		}
 		
 		public function __call($name, $arguments) {
-			if (($name[0]==='_')) {
+			if ( $name[0] === '_' ) {
 				$realName = substr($name, 1);
 				if (ar_pinp::isAllowed($this, $realName)) {
 					try {
@@ -275,7 +275,16 @@
 			} else {
 				return $result;
 			}
-		}		
+		}
+		
+		public function __get( $name ) {
+			return $this->wrapped->$name;
+		}
+		
+		public function __set( $name, $value ) {
+			$this->wrapped->$name = $value;
+		}
+		
 	}
 
 	
@@ -316,6 +325,10 @@
 
 		public function getCode() {
 			return $this->code;
+		}
+		
+		public function __toString() {
+			return $this->code.": ".$this->message."\r\n";
 		}
 	}
 
