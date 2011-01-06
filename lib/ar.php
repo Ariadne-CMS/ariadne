@@ -303,7 +303,7 @@
 			return (is_a($ob, 'ar_error') || is_a($ob, 'error') || is_a($ob, 'PEAR_Error'));
 		}
 
-		public static function raiseError($message, $code, $previous) {
+		public static function raiseError($message, $code, $previous = null) {
 			if (self::$throwExceptions) {
 				throw new ar_exceptionDefault($message, $code, $previous);
 			} else {
