@@ -112,7 +112,7 @@
 		public $responseHeaders = null;
 
 		private function parseRequestURL( $url ) {
-			$request = explode( '?', $url );
+			$request = explode( '?', (string) $url );
 			if ( isset($request[1]) ) {
 				return $request[1];
 			} else {
@@ -145,8 +145,9 @@
 				'content' => $request
 			), $options );
 			$context = stream_context_create( array( 'http' => $options ) );
-			$result = @file_get_contents( $url, false, $context );
+			$result = @file_get_contents( (string) $url, false, $context );
 			$this->responseHeaders = $http_response_header; //magic php variable set by file_get_contents.
+			$this->requestHeaders = $options['header'];
 			return $result;
 		}
 
@@ -155,12 +156,13 @@
 		}
 
 		public function get( $url, $request = null, $options = array() ) {
+			
 			if ( !isset($request) ) {
 				$request = $this->parseRequestURL($url);
 			}
-			return $this->send( 'POST', $url, $request, $options );		
+			return $this->send( 'GET', $url, $request, $options );		
 		}
-
+		
 		public function post( $url, $request = null, $options = array() ) {
 			return $this->send( 'POST', $url, $request, $options );		
 		}
@@ -177,7 +179,7 @@
 			if (is_array($headers)) {
 				$headers = join("\r\n", $headers);
 			}
-			$this->options['headers'] = $this->options['headers'].$headers;
+			$this->options['header'] = $this->options['headers'].$headers;
 			return $this;
 		}
 	}
