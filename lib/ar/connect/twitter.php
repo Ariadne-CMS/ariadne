@@ -21,6 +21,79 @@ class ar_connect_twitter extends arBase {
 		return new ar_connect_twitter( $httpClient );
 	}
 	
+	public function login( $consumerKey = '', $consumerSecret = '', $callback = '', $redirect = true ) {
+		$session = ar_loader::session();
+		if ( !$session->id() ) {
+			$session->start();
+		}
+		
+		if ( isset($callback) && substr($callback, 0, 4)!='http' && $callback!='oob' ) {
+			$callback = ar_loader::makeURL().$callback;
+		}
+		
+		if ( !$this->client instanceof ar_connect_oauthConsumer ) {
+			// FIXME: what if you want a caching client?
+			$this->client = ar_connect_oauth::client( $consumerKey, $consumerSecret );
+			$this->client->enableDebug();
+		}
+		
+		$access_token        = $session->getvar('access_token'); 
+		$access_token_secret = $session->getvar('access_token_secret');
+		if ( $access_token && $access_token_secret ) {
+			$this->client->setToken( $access_token, $access_token_secret );
+			return true;
+		}
+		
+		$oauth_verifier     = $session->getvar('oauth_verifier');
+		$oauth_token        = $session->getvar('oauth_token');
+		$oauth_token_secret = $session->getvar('oauth_token_secret');
+		if ( !$oauth_verifier ) {
+			$oauth_token_arg = ar::getvar('oauth_token');
+			$oauth_verifier  = ar::getvar('oauth_verifier');
+			if ( $oauth_verifier ) {
+				$session->putvar( 'oauth_verifier', $oauth_verifier );
+			} else {
+				if ( !$callback ) {
+					$callback = 'oob';
+				}
+				$info = $this->client->getRequestToken( 'http://api.twitter.com/oauth/request_token', (string) $callback );
+				if ( ar_error::isError($info) ) {
+					$info->debugInfo = $this->client->debugInfo;
+					return $info;
+				}
+				$this->client->setToken( $info['oauth_token'], $info['oauth_token_secret'] );
+				$session->putvar( 'oauth_token', $info['oauth_token'] );
+				$session->putvar( 'oauth_token_secret', $info['oauth_token_secret'] );
+				if ($redirect) {
+					ar_loader::redirect( 'http://api.twitter.com/oauth/authorize?oauth_token='.RawUrlEncode( $info['oauth_token'] ) );
+					return false;
+				} else {
+					return ar::url( 'http://api.twitter.com/oauth/authorize?oauth_token='.RawUrlEncode( $info['oauth_token'] ) );
+				}
+			}
+		}
+
+		if ( $oauth_verifier ) {
+			$this->client->setToken( $oauth_token, $oauth_token_secret );
+			$info = $this->client->getAccessToken( 'http://api.twitter.com/oauth/access_token', '', $oauth_verifier );
+			if ( ar_error::isError( $info ) ) {
+				$info->debugInfo = $this->client->debugInfo;
+				return $info;
+			}
+			echo '<hr><pre>';
+			var_dump($info);
+			echo '</pre><hr>';
+			$access_token = $info['oauth_token'];
+			$access_token_secret = $info['oauth_token_secret'];
+			$this->client->setToken( $access_token, $access_token_secret );	
+			$session->putvar( 'access_token', $access_token );
+			$session->putvar( 'access_token_secret', $access_token_secret );
+			return $info;
+		}
+		
+		return false;		
+	}
+	
 	public function statuses( $options = array() ) {
 		// http://dev.twitter.com/doc/get/statuses/user_timeline
 		$defaults = array(
