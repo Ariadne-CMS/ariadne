@@ -3,10 +3,12 @@
 	    
 
 	ar_pinp::allow('ar_loader');
+	ar_pinp::allow('ar_loaderSession');
 
 	class ar_loader extends arBase {
 
 		static public $makeLocalURL = false;
+		static public $session = null;
 		
 		public static function configure( $option, $value ) {
 			switch ($option) {
@@ -60,6 +62,63 @@
 			return $loader->makeURL( $path, $nls, $session, $https, self::$makeLocalURL );
 		}
 		
+		public static function session() {
+			if (!self::$session) {
+				self::$session = new ar_loaderSession();
+			}
+			return self::$session;
+		}
+	
+	}
+	
+	class ar_loaderSession extends arBase {
+		
+		public static function id() {
+			global $ARCurrent;
+			
+			if ($ARCurrent->session) {
+				return $ARCurrent->session->id;
+			} else {
+				return 0;
+			}
+		}
+		
+		public static function getvar( $name ) {
+			global $ARCurrent;
+
+			if ($ARCurrent->session) {
+				return $ARCurrent->session->get($name);
+			} else {
+				return false;
+			}
+		}
+		
+		public static function putvar( $name, $value ) {
+			global $ARCurrent;
+
+			if ($ARCurrent->session) {
+				return $ARCurrent->session->put($name, $value);
+			} else {
+				return false;
+			}
+ 		}
+	
+		public static function start() {
+			global $ARCurrent;
+			
+			ldStartSession(0);
+			return $ARCurrent->session->id;
+		}
+		
+		public static function kill() {
+		    global $ARCurrent;
+
+			if ($ARCurrent->session) {
+				$ARCurrent->session->kill();
+				unset($ARCurrent->session);
+			} 
+		}
+	
 	}
 	
 ?>
