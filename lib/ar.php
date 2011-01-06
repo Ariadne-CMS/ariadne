@@ -253,18 +253,18 @@
 		
 		public function __call($name, $arguments) {
 			if ( $name[0] === '_' ) {
-				$realName = substr($name, 1);
-				if (ar_pinp::isAllowed($this, $realName)) {
-					try {
-						return $this->__wrap( call_user_func_array(array($this->wrapped, $realName), $arguments) );
-					} catch( Exception $e ) {
-						return ar::error( $e->getMessage(), $e->getCode() );
-					}
-				} else {
-					trigger_error("Method $realName not found in class ".get_class($this), E_USER_WARNING);
+				if ( !method_exists( $this->wrapped, $name ) || !ar_pinp::isAllowed( $this, $name ) ) {
+					$name = substr($name, 1);
+				}
+			}
+			if (ar_pinp::isAllowed($this, $name)) {
+				try {
+					return $this->__wrap( call_user_func_array( array( $this->wrapped, $name), $arguments) );
+				} catch( Exception $e ) {
+					return ar::error( $e->getMessage(), $e->getCode() );
 				}
 			} else {
-				trigger_error("Method $name not found in class ".get_class($this), E_USER_WARNING);
+				trigger_error("Method $realName not found in class ".get_class($this), E_USER_WARNING);
 			}
 		}
 		
