@@ -67,7 +67,7 @@
 		public static function header( $header, $replace = true ) {
 			global $ARCurrent;
 			if ( headers_sent() ) {
-				return new ar_error('PHP has already sent the headers. This error can be caused by trailing white space or newlines in the configuration files.', ar_exceptions_configError::HEADERS_SENT);
+				return new ar_error('PHP has already sent the headers. This error can be caused by trailing white space or newlines in the configuration files.', ar_exceptions::HEADERS_SENT);
 			}
 			if ( is_array($header) ) {
 				$header = implode( '\n', $header );
