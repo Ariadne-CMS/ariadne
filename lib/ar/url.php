@@ -10,6 +10,7 @@
 		
 		public function __construct( $url ) {
 			$this->components = parse_url( $url );
+			// FIXME: make option to skip parsing of the query part
 			$this->query = new ar_urlQuery( $this->components['query'] );
 		}
 		
@@ -101,6 +102,8 @@
 		
 		public function __construct( $query ) {
 			if ($query) {
+				// FIXME: parse_str cannot handle all types of query string
+				// ?val&1+2=3  =>  val=&1_2=3
 				parse_str( $query, $this->arguments );
 				if (ar_http::$tainting) {
 					ar::taint($this->arguments);
@@ -123,9 +126,21 @@
 		public function __toString() {
 			$arguments = $this->arguments;
 			ar::untaint( $arguments, FILTER_UNSAFE_RAW);
-			return http_build_query( (array) $arguments );
+			// FIXME: http_build_query cannot build all query strings, see above about parse_str
+			$result = http_build_query( (array) $arguments );
+			$result = str_replace( '%7E', '~', $result ); // incorrectly encoded, obviates need for oauth_encode_url
+			return $result;
 		}
 		
+		public function import( $values ) {
+			if ( is_string( $values ) ) {
+				parse_str( $values, $result );
+				$values = $result;
+			}
+			if ( is_array( $values) ) {
+				$this->arguments = $values + $this->arguments;
+			}
+		}
 	}
 	
 ?>
