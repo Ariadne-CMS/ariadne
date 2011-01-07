@@ -1,10 +1,124 @@
 <?php
 
 ar_pinp::allow('ar_connect_twitter');
-
-ar::load('http');
+ar_pinp::allow('ar_connect_twitterClient');
 
 class ar_connect_twitter extends arBase {
+
+	public static function client( $httpClient = null ) {
+		return new ar_connect_twitterClient( $httpClient );
+	}
+	
+	public static function parse( $text, $parseTwitterLinks = true ) {
+		// link URLs
+		$text = " ".preg_replace( "/(([[:alnum:]]+:\/\/)|www\.)([^[:space:]]*)".
+			"([[:alnum:]#?\/&=])/i", "<a href=\"\\1\\3\\4\" target=\"_blank\">".
+			"\\1\\3\\4</a>", $text);
+
+		// link mailtos
+		$text = preg_replace( "/(([a-z0-9_]|\\-|\\.)+@([^[:space:]]*)".
+			"([[:alnum:]-]))/i", "<a href=\"mailto:\\1\">\\1</a>", $text);
+
+		if ( $parseTwitterLinks ) {
+			if ( is_array($parseTwitterLinks) ) {
+				$userlink = $parseTwitterLinks['user'];
+				$argumentLink = $parseTwitterLinks['arguments'];
+			} else {
+				$userLink = true;
+				$argumentLink = true;
+			}
+			if ( is_bool($userLink) && $userLink ) {
+				$userLink = '<a href="http://twitter.com/{user}" target="_blank">@{user}</a>';
+			}
+			if ( is_bool($argumentLink) && $argumentLink ) {
+				$argumentLink = '<a href="http://twitter.com/search?q=%23{argument}" target="_blank">#{argument}</a>';
+			}
+			if ($userLink) {
+				//link twitter users
+				$text = preg_replace_callback( '/([\b ])@([a-z0-9_]*)\b/i', 
+					create_function( 
+						'$matches', 
+						'return $matches[1].str_replace( "{user}", $matches[2], "'.AddCSlashes( (string) $userLink, '"' ).'" );'
+					),
+					$text
+				);
+			}
+			if ($argumentLink) {
+				//link twitter arguments
+				$text = preg_replace_callback( '/([\b ])#([a-z0-9_]*)\b/i',
+					create_function( 
+						'$matches', 
+						'return $matches[1].str_replace( "{argument}", $matches[2], "'.AddCSlashes( (string) $argumentLink, '"' ).'" );'
+					),
+					$text
+				);
+			}
+		}
+		
+		return trim($text);
+	}
+	
+	public static function friendlyDate( $date, $nls = null, $now = null ) {
+		if (!$nls) {
+			$nls = array(
+				'lastyear'   => 'last year',
+				'yearsago'   => '%d years ago',
+				'lastmonth'  => 'last month',
+				'monthsago'  => '%d months ago',
+				'lastweek'   => 'last week',
+				'weeksago'   => '%d weeks ago',
+				'yesterday'  => 'yesterday',
+				'daysago'    => '%d days ago',
+				'hourago'    => '1 hour ago',
+				'hoursago'   => '%d hours ago',
+				'minuteago'  => '1 minute ago',
+				'minutesago' => '%d minutes ago',
+				'justnow'    => 'just now'
+			);
+		}
+				
+		if ( !isset($now) ) {
+			$now = time();
+		}
+		if ( is_string($date) ) {
+			$date = strtotime($date, $now);
+		}
+		if ( is_string( $now ) ) {
+			$now = strtotime( $now );
+		}
+		if ( is_int( $date ) && is_int( $now ) ) {
+			$interval = getdate($now - $date);
+			
+			if ( $interval['year'] > 1971 ) {
+				return sprintf( $nls['yearsago'], ( $interval['year'] - 1970 ) );
+			} else if ( ($interval['year'] > 1970 ) || ( $interval['mon'] > 11 ) ) {
+				return $nls['lastyear'];
+			} else if ( $interval['mon'] > 2 ) {
+				return sprintf( $nls['monthsago'], $interval['mon'] );
+			} else if ( $interval['mon'] > 1 ) {
+				return $nls['lastmonth'];
+			} else if ( $interval['mday'] > 2 ) {
+				return sprintf( $nls['daysago'], $interval['mday'] );
+			} else if ( $interval['mday'] > 1 ) {
+				return $nls['yesterday'];
+			} else if ( $interval['hours'] > 2 ) {
+				return sprintf( $nls['hoursago'], $interval['hours'] );
+			} else if ( $interval['hours'] > 1 ) {
+				return $nls['hourago'];
+			} else if ( $interval['minutes'] > 1 ) {
+				return sprintf( $nls['minutesago'], $interval['minutes'] );
+			} else if ( $interval['minutes'] > 0 ) {
+				return $nls['minuteago'];
+			} else {
+				return $nls['justnow'];
+			}
+		} else {
+			return ar_error::raiseError( 'Illegal date argument', ar_exceptions::ILLEGAL_ARGUMENT );
+		}
+	}
+}
+
+class ar_connect_twitterClient extends arBase {
 
 	private $rootURL = 'http://api.twitter.com/1/';
 	private $searchURL = 'http://search.twitter.com/search.json';
@@ -12,16 +126,31 @@ class ar_connect_twitter extends arBase {
 	
 	public function __construct( $httpClient = null ) {
 		if (!$httpClient) {
+			ar::load('http');
 			$httpClient = new ar_httpClientStream();
 		}
 		$this->client = $httpClient;
 	}
-	
-	public static function get( $httpClient = null ) {
-		return new ar_connect_twitter( $httpClient );
+
+	public function parse( $text, $parseTwitterLinks=true ) {
+		return ar_connect_twitter::parse( $text, $parseTwitterLinks );
 	}
 	
-	public function login( $consumerKey = '', $consumerSecret = '', $callback = '', $redirect = true ) {
+	public function friendlyDate( $date, $nls = null, $now = null ) {
+		return ar_connect_twitter::friendlyDate( $date, $nls, $now );
+	}
+	
+	public function setAccessToken( $access_token, $access_token_secret, $consumerKey = null, $consumerSecret = null ) {
+	
+		if ( !$this->client instanceof ar_connect_oauthConsumer ) {
+			// FIXME: what if you want a caching client?
+			$this->client = ar_connect_oauth::client( $consumerKey, $consumerSecret );
+		}
+		
+		return $this->client->setToken( $access_token, $access_token_secret );
+	}
+	
+	public function login( $consumerKey = null, $consumerSecret = null, $callback = '', $redirect = true ) {
 		$session = ar_loader::session();
 		if ( !$session->id() ) {
 			$session->start();
@@ -34,7 +163,6 @@ class ar_connect_twitter extends arBase {
 		if ( !$this->client instanceof ar_connect_oauthConsumer ) {
 			// FIXME: what if you want a caching client?
 			$this->client = ar_connect_oauth::client( $consumerKey, $consumerSecret );
-			$this->client->enableDebug();
 		}
 		
 		$access_token        = $session->getvar('access_token'); 
@@ -94,32 +222,28 @@ class ar_connect_twitter extends arBase {
 		return false;		
 	}
 	
-	public function statuses( $options = array() ) {
+	public function tweets( $user, $options = array() ) {
 		// http://dev.twitter.com/doc/get/statuses/user_timeline
 		$defaults = array(
 			'count' => 10, 
 			'page' => 1
 		);
 		$options += $defaults;
-		if ($options['user']) {
-			$url = ar::url( $this->rootURL.'statuses/user_timeline/'.$options['user'].'.json' );
-			unset($options['user']);
-		} else {
-			$url = ar::url( $this->rootURL.'statuses/user_timeline.json' );
+		if ( is_numeric($user) ) {
+			$options['user_id'] = $user;
+			unset($user);
+		} else if ($user) {
+			$options['screen_name'] = $user;
 		}
-		$url->query->import( $options );
-		$json = $this->client->get( $url );
-		if ($json && !ar_error::isError($json) ) {
-			$statuses = json_decode($json);
-			foreach( $statuses as $index => $status ) {
+		$tweets = $this->get( 'statuses/user_timeline', $options );
+		if ($tweets && !ar_error::isError($tweets) ) {
+			foreach( $tweets as $index => $tweet ) {
 //				$statuses[$index]['created_at'] = new ar_i18nDateTime( $status['created_at'] );
 //				$statuses[$index]['user']['created_at'] = new ar_i18nDateTime( $status['user']['create_at'] );
-				$status->user->profile_image_url = ar::url( $status->user->profile_image_url );
+				$tweet->user->profile_image_url = ar::url( $tweet->user->profile_image_url );
 			}
-			return $statuses;
-		} else {
-			return $json;
 		}
+		return $tweets;
 	}
 
 	public function trends( $timeslice = 'current', $options = array() ) {
@@ -132,19 +256,10 @@ class ar_connect_twitter extends arBase {
 				$timeslice = 'current';
 			break;
 		}
-		$url = ar::url( $this->rootURL.'trends/'.$timeslice.'.json' );
-		$url->query->import( $options );
-		$json = $this->client->get( $url );
-		if ($json && !ar_error::isError($json) ) {
-			$trends = json_decode( $json );
-			return $trends;
-		} else {
-			return $json;
-		}
+		return $this->get( 'trends/'.$timeslice, $options );
 	}
 	
 	public function search( $options = array() ) {
-		// http://search.twitter.com/api/
 		if ( is_string($options) ) {
 			$options = array( 'q' => $options );
 		}
@@ -156,11 +271,27 @@ class ar_connect_twitter extends arBase {
 		} else {
 			return $json;
 		}
+		
 	}
 	
 	public function tweet( $status, $options = array() ) {
-		$url = ar::url( $this->rootURL.'statuses/update.json' );
 		$options['status'] = $status;
+		return $this->post( 'statuses/update', $options );
+	}
+	
+	public function get( $path, $options = array() ) {
+		$url = ar::url( $this->rootURL.$path.'.json' );
+		$url->query->import( $options );
+		$json = $this->client->get( $url );
+		if ($json && !ar_error::isError($json) ) {
+			return json_decode( $json );
+		} else {
+			return $json;
+		}
+	}
+	
+	public function post( $path, $options = array() ) {
+		$url = ar::url( $this->rootURL.$path.'.json' );
 		$json = $this->client->post( $url, $options );
 		if ($json && !ar_error::isError($json) ) {
 			return json_decode( $json );
