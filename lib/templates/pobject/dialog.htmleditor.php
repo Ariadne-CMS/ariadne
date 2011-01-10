@@ -203,6 +203,8 @@
 
 		// YAHOO.log('Create the Editor..', 'info', 'example');
 		myEditor = new YAHOO.widget.Editor('htmltext', myConfig);
+		// remove form deletion
+		myEditor.invalidHTML = { };
 
 		var state = 'off';
 		myEditor.on('toolbarLoaded', function() {
