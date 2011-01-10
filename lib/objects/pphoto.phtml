@@ -214,7 +214,7 @@ class pphoto extends pfile { // pphoto class definition
 		$ARConfig->photoStack[$this->id][]=" -size ".$x."x".$y." -geometry ".$x."x".$y.">";
 
 		$info=$this->getimageinfo();
-		if ( is_number($info[0]) && is_number($info[1]) && $info[0] && $info[1] ) {
+		if ( is_numeric($info[0]) && is_numeric($info[1]) && $info[0] && $info[1] ) {
 			$aspectx=$x/$info[0];
 			$aspecty=$y/$info[1];
 			if ($aspectx>$aspecty) {
