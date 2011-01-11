@@ -18,6 +18,14 @@
 			}
 		}
 		
+		public function __set( $name, $value ) {
+			self::configure( $name, $value );
+		}
+		
+		public function __get( $name ) {
+			return self::${$name};
+		}
+		
 		private static function getLoader() {
 			global $AR;
 			if ($AR->request && isset($AR->request['loader'])) {
@@ -72,6 +80,8 @@
 	}
 	
 	class ar_loaderSession extends arBase {
+		// FIXME: merge ar_session and ar_loaderSession in some way
+		// loader should control only how to get and set the session id
 		
 		public static function id() {
 			global $ARCurrent;
