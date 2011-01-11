@@ -40,6 +40,14 @@
 			}			
 		}
 
+		public function __set( $name, $value ) {
+			$this->configure( $name, $value );
+		}
+		
+		public function __get( $name ) {
+			return self::${$name};
+		}
+		
 		public static function preamble( $version = '1.0', $encoding = 'UTF-8', $standalone = null ) {
 			if ( isset($standalone) ) {
 				if ( $standalone === 'false' ) {
@@ -252,6 +260,7 @@
 		
 		public static function parse( $xml ) {
 			$dom = new DOMDocument();
+			$prevErrorSetting = libxml_use_internal_errors(true);
 			if ( $dom->loadXML( $xml ) ) {
 				$domroot = $dom->documentElement;
 				if ( $domroot ) {
@@ -269,7 +278,10 @@
 					return $result;
 				}
 			}
-			return ar_error::raiseError( 'Incorrect xml passed', ar_exceptions::ILLEGAL_ARGUMENT );
+			$errors = libxml_get_errors();
+			libxml_clear_errors();
+			libxml_use_internal_errors( $prevErrorSetting );
+			return ar_error::raiseError( 'Incorrect xml passed', ar_exceptions::ILLEGAL_ARGUMENT, $errors );
 		}
 	}
 
@@ -484,24 +496,6 @@
 			}
 		}
 		
-		public function __set( $name, $value ) {
-			switch( $name ) {
-				case 'parentNode' :
-					$this->setParentNode($value);
-				break;
-				default :
-					if (isset($this[0]) && is_object($this[0]) ) {
-						$el = $this[0];
-						$el->{$name} = $value;
-					} else if ($value instanceof ar_xmlElement) {
-						$this[] = $value;
-					} else {
-						$this[] = ar_xml::tag($name, (string)$value);
-					}
-				break;
-			}
-		}
-		
 		public function __call( $name, $params ) {
 			if (($name[0]==='_')) {
 				$realName = substr($name, 1);
@@ -515,6 +509,48 @@
 				return call_user_func_array( array( $el, $name ), $params );
 			} else {
 				return null;
+			}
+		}
+
+		public function __unset( $name ) {
+			// e.g. unset( $xml->root->child )
+			// __unset is called on $xml->root with 'child' as $name
+			// so find all tags with name 'child' and remove them
+			// or unset( $xml->root->child[2] )
+			// 
+			if (is_numeric($name)) {
+				$node = $this->childNodes[$name];
+				$this->removeChild($node);
+			} else {
+				$nodes = $this->getElementsByTagname( $name, false );
+				$this->removeChild($nodes);
+			}
+		}
+		
+		public function __set( $name, $value ) {
+			switch( $name ) {
+				case 'parentNode' :
+					$this->setParentNode($value);
+				break;
+				default :
+/*
+					if (isset($this[0]) && is_object($this[0]) ) {
+						$el = $this[0];
+						$el->{$name} = $value;
+					} else if ($value instanceof ar_xmlElement) {
+						$this[] = $value;
+					} else {
+						$this[] = ar_xml::tag($name, (string)$value);
+					}
+*/
+					if (is_numeric($name)) {
+						$node = $this->childNodes[$name];
+						$this->replaceChild($node, $value);
+					} else {
+						$nodes = $this->getElementsByTagname( $name, false );
+						$this->replaceChild($nodes, $value);
+					}
+				break;
 			}
 		}
 		
@@ -828,7 +864,7 @@
 		private $idCache    = array();
 		private $nodeValue  = '';
 		
-		function __construct($name, $attributes, $childNodes, $parentNode = null) {
+		function __construct($name, $attributes = null, $childNodes = null, $parentNode = null) {
 			$this->tagName    = $name;
 			$this->parentNode = $parentNode;
 			$this->childNodes = $this->getNodeList();
@@ -836,7 +872,9 @@
 			if ($childNodes) {
 				$this->appendChild( $childNodes );
 			}
-			$this->setAttributes( $attributes );
+			if ($attributes) {
+				$this->setAttributes( $attributes );
+			}
 		}
 		
 		public function __clearParentIdCache() {
@@ -1088,6 +1126,8 @@
 					case 'string' : $nodeValue = (string) $nodeValue;
 					break;
 					case 'bool'   : $nodeValue = (bool) $nodeValue;
+					break;
+					case 'url' : $nodeValue = ar::url( $nodeValue );
 					break;
 					case 'xml' :
 					case 'html' :
