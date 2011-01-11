@@ -1,7 +1,6 @@
 <?php
 
 	ar_pinp::allow( 'ar_connect_ftp');
-
 	ar_pinp::allow( 'ar_connect_ftpClient' );
 
 	class ar_connect_ftp extends arBase {
@@ -50,12 +49,18 @@
 			}
 		}
 		
+		public static function __set( $name, $value ) {
+			self::configure( $name, $value );
+		}
+		
+		public static function __get( $name ) {
+			return self::${$name};
+		}
+		
 	}
 	
 	interface ar_connect_ftpClientInterface {
 	
-		public function __construct( $url = null, $options = array() );
-
 		public function get( $file, $options = array() );
 
 		public function put( $contents, $file, $options = array() );
@@ -91,7 +96,7 @@
 	}
 
 	class ar_connect_ftpClient extends arBase implements ar_connect_ftpClientInterface {
-
+		//FIXME: change error codes to the ar_exception constants
 		public $options = array();
 		public $host = null;
 		public $port = null;
