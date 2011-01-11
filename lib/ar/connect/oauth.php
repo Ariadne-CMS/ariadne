@@ -1,7 +1,6 @@
 <?php
 	ar_pinp::allow('ar_connect_oauth');
-	ar_pinp::allow('ar_connect_oauthConsumer');
-	ar_pinp::allow('ar_connect_oauthProvider');
+	ar_pinp::allow('ar_connect_oauthClient');
 	
 	class ar_connect_oauth extends arBase {	
 	
@@ -13,13 +12,13 @@
 			}
 		}
 		
-		public static function client( $consumer_key, $consumer_secret, $signature_method= OAUTH_SIG_METHOD_HMACSHA1, $auth_type = 0 ) {
-			return new ar_connect_oauthConsumer( $consumer_key, $consumer_secret, $signature_method, $auth_type );
+		public static function client( $consumer_key, $consumer_secret, $signature_method = OAUTH_SIG_METHOD_HMACSHA1, $auth_type = 0 ) {
+			return new ar_connect_oauthClient( $consumer_key, $consumer_secret, $signature_method, $auth_type );
 		}
 			
 	}
 
-	class ar_connect_oauthConsumer extends arWrapper {
+	class ar_connect_oauthClient extends arWrapper implements ar_httpClient {
 	
 		public function __construct( $consumer_key, $consumer_secret, $signature_method= OAUTH_SIG_METHOD_HMACSHA1, $auth_type = 0 ) {
 			if ( !class_exists('OAuth') ) {
