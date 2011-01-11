@@ -5,9 +5,10 @@ require_once($AR->dir->install."/lib/includes/ripcord/ripcord.php");
 require_once(dirname(__FILE__).'/../../ar.php');
 
 ar_pinp::allow('ar_connect_xmlrpc');
-ar_pinp::allow('ar_connect_xmlrpcClientWrapper');
-ar_pinp::allow('ar_connect_xmlrpcServerWrapper');
+ar_pinp::allow('ar_connect_xmlrpcClient');
+ar_pinp::allow('ar_connect_xmlrpcServer');
 
+// FIXME: define interfaces
 
 class ar_connect_xmlrpc extends arBase {
 
@@ -28,7 +29,7 @@ class ar_connect_xmlrpc extends arBase {
 
 	public static function client($url, $options = null) {
 		try {
-			return new ar_connect_xmlrpcClientWrapper( ripcord::client($url, $options) );
+			return new ar_connect_xmlrpcClient( ripcord::client($url, $options) );
 		} catch( Ripcord_Exception $e ) {
 			return new ar_error($e->getMessage(), $e->getCode() );
 		}
@@ -36,7 +37,7 @@ class ar_connect_xmlrpc extends arBase {
 	
 	public static function server($methods, $options = null, $documentation = false) {
 		try {
-			return new ar_connect_xmlrpcServerWrapper( ripcord::server(
+			return new ar_connect_xmlrpcServer( ripcord::server(
 				self::services( $methods ),
 				$options, 
 				$documentation ? new ar_connect_xmlrpcDocumentor( $options, $documentation ) : false
@@ -88,7 +89,7 @@ class ar_connect_xmlrpc extends arBase {
 	}
 }
 
-class ar_connect_xmlrpcClientWrapper extends arBase {
+class ar_connect_xmlrpcClient extends arBase {
 	private $wrapped = null;
 	
 	public function __construct( $wrapped ) {
@@ -98,7 +99,7 @@ class ar_connect_xmlrpcClientWrapper extends arBase {
 	public function __get($name) {
 		$result = $this->wrapped->{$name};
 		if ( is_a('Ripcord_Client', $result) ) {
-			return new ar_connect_xmlrpcClientWrapper($result);
+			return new ar_connect_xmlrpcClient($result); // FIXME: use clone here instead?
 		} else {
 			return $result;
 		}
@@ -120,7 +121,7 @@ class ar_connect_xmlrpcClientWrapper extends arBase {
 	}
 }
 
-class ar_connect_xmlrpcServerWrapper extends arBase {
+class ar_connect_xmlrpcServer extends arBase {
 	private $wrapped = null;
 	
 	public function __construct( $wrapped ) {
@@ -146,7 +147,7 @@ class ar_connect_xmlrpcServerWrapper extends arBase {
 class ar_connect_xmlrpcDocumentor extends arBase implements Ripcord_Documentor_Interface {
 	private $documentation = null;
 	
-	public function __construct( $options = null ) {
+	public function __construct( $options = null ) { // FIXME: this is evil. Ripcord_Documentor_Interface no longer has __construct in it.
 		$args = func_get_args();
 		if (isset($args[1])) {
 			$this->documentation = $args[1];
