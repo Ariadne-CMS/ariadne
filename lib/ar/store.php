@@ -1,13 +1,8 @@
 <?php
 	
-	require_once(dirname(__FILE__).'/../ar.php');
-
 	ar_pinp::allow('ar_store');
-
 	ar_pinp::allow('ar_storeFind'); 
-
 	ar_pinp::allow('ar_storeGet');
-
 	ar_pinp::allow('ar_storeParents');
 
 	class ar_store extends arBase {
