@@ -1,10 +1,9 @@
 <?php
 
 	ar_pinp::allow( 'ar_url');
-
 	ar_pinp::allow( 'ar_urlQuery' );
 
-	class ar_url extends arBase {
+	class ar_url extends arBase implements arKeyValueStoreInterface {
 	
 		private $components, $query;
 		
@@ -12,10 +11,6 @@
 			$this->components = parse_url( $url );
 			// FIXME: make option to skip parsing of the query part
 			$this->query = new ar_urlQuery( $this->components['query'] );
-		}
-		
-		public static function create( $url ) {
-			return new ar_url( $url );
 		}
 		
 		public function __get($var) {
@@ -94,9 +89,17 @@
 			return $url;
 		}
 		
+		public function getvar( $name ) {
+			return $this->query->$name;
+		}
+		
+		public function putvar( $name, $value ) {
+			$this->query->{$name} = $value;
+		}
+		
 	}
 	
-	class ar_urlQuery extends arBase {
+	class ar_urlQuery extends arBase implements arKeyValueStoreInterface {
 		
 		private $arguments = array();
 		
@@ -112,6 +115,14 @@
 		}
 		
 		public function __get( $var ) {
+			return $this->getvar( $name );
+		}
+		
+		public function __set( $var, $value ) {
+			return $this->putvar( $name, $value );
+		}
+		
+		public function getvar( $name ) {
 			if (isset($this->arguments[$var]) ) {
 				return $this->arguments[$var];
 			} else {
@@ -119,10 +130,10 @@
 			}
 		}
 		
-		public function __set( $var, $value ) {
+		public function putvar( $name, $value ) {
 			$this->arguments[$var] = $value;
 		}
-		
+
 		public function __toString() {
 			$arguments = $this->arguments;
 			ar::untaint( $arguments, FILTER_UNSAFE_RAW);
@@ -141,6 +152,8 @@
 				$this->arguments = $values + $this->arguments;
 			}
 		}
+		
+		
 	}
 	
 ?>
