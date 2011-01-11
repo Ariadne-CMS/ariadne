@@ -10,6 +10,7 @@ class ar_connect_twitter extends arBase {
 	}
 	
 	public static function parse( $text, $parseTwitterLinks = true ) {
+		// FIXME: allow normal links and mailto links to be specified like the user and argument links
 		// link URLs
 		$text = " ".preg_replace( "/(([[:alnum:]]+:\/\/)|www\.)([^[:space:]]*)".
 			"([[:alnum:]#?\/&=])/i", "<a href=\"\\1\\3\\4\" target=\"_blank\">".
@@ -22,7 +23,7 @@ class ar_connect_twitter extends arBase {
 		if ( $parseTwitterLinks ) {
 			if ( is_array($parseTwitterLinks) ) {
 				$userlink = $parseTwitterLinks['user'];
-				$argumentLink = $parseTwitterLinks['arguments'];
+				$argumentLink = $parseTwitterLinks['argument'];
 			} else {
 				$userLink = true;
 				$argumentLink = true;
@@ -142,7 +143,7 @@ class ar_connect_twitterClient extends arBase {
 	
 	public function setAccessToken( $access_token, $access_token_secret, $consumerKey = null, $consumerSecret = null ) {
 	
-		if ( !$this->client instanceof ar_connect_oauthConsumer ) {
+		if ( !$this->client instanceof ar_connect_oauthClient ) { //FIXME: a real OAuth is also ok
 			// FIXME: what if you want a caching client?
 			$this->client = ar_connect_oauth::client( $consumerKey, $consumerSecret );
 		}
@@ -151,16 +152,17 @@ class ar_connect_twitterClient extends arBase {
 	}
 	
 	public function login( $consumerKey = null, $consumerSecret = null, $callback = '', $redirect = true ) {
-		$session = ar_loader::session();
+		// FIXME: $redirect should probably be allowed to be an object that implements a redirect() method
+		$session = ar_loader::session(); //FIXME: allow different session object to be passed
 		if ( !$session->id() ) {
 			$session->start();
 		}
 		
-		if ( isset($callback) && substr($callback, 0, 4)!='http' && $callback!='oob' ) {
+		if ( isset($callback) && substr( (string) $callback, 0, 4)!='http' && $callback!='oob' ) {  
 			$callback = ar_loader::makeURL().$callback;
 		}
 		
-		if ( !$this->client instanceof ar_connect_oauthConsumer ) {
+		if ( !$this->client instanceof ar_connect_oauthClient ) { ////FIXME: a real OAuth is also ok
 			// FIXME: what if you want a caching client?
 			$this->client = ar_connect_oauth::client( $consumerKey, $consumerSecret );
 		}
@@ -196,7 +198,7 @@ class ar_connect_twitterClient extends arBase {
 					ar_loader::redirect( 'http://api.twitter.com/oauth/authorize?oauth_token='.RawUrlEncode( $info['oauth_token'] ) );
 					return false;
 				} else {
-					return ar::url( 'http://api.twitter.com/oauth/authorize?oauth_token='.RawUrlEncode( $info['oauth_token'] ) );
+					return 'http://api.twitter.com/oauth/authorize?oauth_token='.RawUrlEncode( $info['oauth_token'] );
 				}
 			}
 		}
@@ -208,9 +210,6 @@ class ar_connect_twitterClient extends arBase {
 				$info->debugInfo = $this->client->debugInfo;
 				return $info;
 			}
-			echo '<hr><pre>';
-			var_dump($info);
-			echo '</pre><hr>';
 			$access_token = $info['oauth_token'];
 			$access_token_secret = $info['oauth_token_secret'];
 			$this->client->setToken( $access_token, $access_token_secret );	
@@ -235,15 +234,7 @@ class ar_connect_twitterClient extends arBase {
 		} else if ($user) {
 			$options['screen_name'] = $user;
 		}
-		$tweets = $this->get( 'statuses/user_timeline', $options );
-		if ($tweets && !ar_error::isError($tweets) ) {
-			foreach( $tweets as $index => $tweet ) {
-//				$statuses[$index]['created_at'] = new ar_i18nDateTime( $status['created_at'] );
-//				$statuses[$index]['user']['created_at'] = new ar_i18nDateTime( $status['user']['create_at'] );
-				$tweet->user->profile_image_url = ar::url( $tweet->user->profile_image_url );
-			}
-		}
-		return $tweets;
+		return $this->get( 'statuses/user_timeline', $options );
 	}
 
 	public function trends( $timeslice = 'current', $options = array() ) {
@@ -259,7 +250,7 @@ class ar_connect_twitterClient extends arBase {
 		return $this->get( 'trends/'.$timeslice, $options );
 	}
 	
-	public function search( $options = array() ) {
+	public function search( $options ) {
 		if ( is_string($options) ) {
 			$options = array( 'q' => $options );
 		}
