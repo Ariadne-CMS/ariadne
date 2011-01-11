@@ -12,6 +12,7 @@
 		const OBJECT_NOT_FOUND = 107;
 		const DATABASE_EMPTY   = 108;
 		const ILLEGAL_ARGUMENT = 109;
+		const CONFIGURATION_ERROR = 110;
 	}
 	
 	class ar_exceptionDefault extends Exception implements ar_exception { }
