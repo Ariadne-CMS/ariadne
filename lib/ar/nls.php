@@ -5,9 +5,11 @@ ar_pinp::allow( 'ar_nlsDictionary', array("load", "setLanguage", "getLanguage") 
 
 class ar_nls extends arBase {
 
-	public static function dict($defaultLanguage, $currentLanguage = null, $defaultVarName = "ARnls" ) {
-		global $store; // FIXME!!
-		$baseDir = $store->get_config("code")."nls/";
+	public static function dict($defaultLanguage, $currentLanguage = null, $defaultVarName = "ARnls", $baseDir = null ) {
+		if ( !$baseDir ) {
+			global $store; // FIXME: remove dependency on $store, use arbasedir in some way.
+			$baseDir = $store->get_config("code")."nls/";
+		}
 		return new ar_nlsDictionary($baseDir, $defaultLanguage, $currentLanguage, $defaultVarName );
 	}
 
