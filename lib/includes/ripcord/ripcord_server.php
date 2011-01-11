@@ -5,7 +5,7 @@
  * @author Auke van Slooten <auke@muze.nl>
  * @copyright Copyright (C) 2010, Muze <www.muze.nl>
  * @license http://opensource.org/licenses/gpl-3.0.html GNU Public License
- * @version Ripcord 0.3 - PHP 5.0
+ * @version Ripcord 0.9 - PHP 5
  */
  
 /**
@@ -31,11 +31,20 @@ require_once(dirname(__FILE__).'/ripcord.php');
  * <code>
  * <?php
  *   $myObject = new MyClass();
- *   $server = ripcord::server(  array( 'namespace1' => $myObject, 'namespace2' => 'myOtherClass'  )  );
+ *   $server = ripcord::server( 
+ *     array( 
+ *       'namespace1' => $myObject,
+ *       'namespace2' => 'myOtherClass'
+ *     )
+ *   );
  *   $server->run();
  * ?>
  * </code>
-  * @package Ripcord
+ * 
+ * You don't need to instantiate a class to use it with Ripcord, in the above example 'myOtherClass' is the
+ * name of a PHP class to use. In addition you may also specify functions or methods directly, in any format
+ * that matches PHP's is_callable() criteria.
+ * @package Ripcord
 */
 class Ripcord_Server 
 {
@@ -118,7 +127,7 @@ class Ripcord_Server
 	
 	/**
 	 * Allows you to add a service to the server after construction.
-	 * @param object $service The object whose public methods must be added to the rpc server
+	 * @param object $service The object or class whose public methods must be added to the rpc server. May also be a function or method.
 	 * @param string $serviceName Optional. The namespace for the methods.
 	 * @throws Ripcord_InvalidArgumentException (ripcord::unknownServiceType) when passed an incorrect service
 	 */
@@ -196,14 +205,17 @@ class Ripcord_Server
 			if ( ( $query = $_SERVER['QUERY_STRING'] ) 
 				&& isset($this->wsdl[$query]) && $this->wsdl[$query] )
 			{
+				header('Content-type: text/xml');
 				echo $this->wsdl[$query];
 			}
 			else if ( $this->documentor )
 			{
+				header('Content-type: text/html; charset=' . $this->outputOptions['encoding']);
 				$this->documentor->handle( $this, $this->methods );
 			}
 			else
 			{
+				header('Content-type: text/xml');
 				echo xmlrpc_encode_request(
 					null,  
 					ripcord::fault( -1, 'No request xml found.' ),
@@ -213,6 +225,7 @@ class Ripcord_Server
 		}
 		else 
 		{
+			header('Content-type: text/xml');
 			echo $this->handle( $request_xml );
 		}
 	}
@@ -253,7 +266,7 @@ class Ripcord_Server
 	
 	/**
 	 * This method implements the system.multiCall method without dumping core. The built-in method from the
-	 * xmlrpc library dumps core when you have registered any php methods, at least on php 5.3.1 and php 5.2.8
+	 * xmlrpc library dumps core when you have registered any php methods, fixed in php 5.3.2
 	 */
 	private function multiCall( $params = null ) {
 		if ( $params && is_array( $params ) ) 
@@ -298,8 +311,8 @@ class Ripcord_Server
 			$method = $result['methodName'];
 			$params = $result['params'];
 		}
-		if ( $method == 'system.multiCall' ) {
-			// php's xml-rpc server (xmlrpc-epi) crashes on multicall, so handle it ourselves...
+		if ( $method == 'system.multiCall' || $method == 'system.multicall' ) {
+			// php's xml-rpc server (xmlrpc-epi) crashes on multicall, so handle it ourselves... fixed in php 5.3.2
 			$result = $this->multiCall( $params );
 		} else {
 			try {
