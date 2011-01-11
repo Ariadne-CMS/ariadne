@@ -5,7 +5,6 @@
 	ar_pinp::allow( 'ar_connect_soapHeader' );
 	ar_pinp::allow( 'ar_connect_soapParam' );
 	ar_pinp::allow( 'ar_connect_soapVar' );
-	ar_pinp::allow( 'ar_connect_soapClient' );
 
 	class ar_connect_soap extends arBase {
 	
