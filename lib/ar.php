@@ -500,5 +500,13 @@
 		
 	}
 	
+	interface arKeyValueStoreInterface {
+	
+		function getvar( $name );
+		
+		function putvar( $name, $value );
+	
+	}
+	
 	spl_autoload_register('ar::autoload');
 ?>
