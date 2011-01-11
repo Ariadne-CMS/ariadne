@@ -1,13 +1,18 @@
 <?php
 
 ar_pinp::allow('ar_connect_db');
-ar_pinp::allow('ar_connect_dbWrapper');
+ar_pinp::allow('ar_connect_dbClient');
 
 class ar_connect_db extends arBase {
 	
 	function connect( $dsn, $username='', $password='', $driver_options=array() ) {
+		// deprecated
+		return self::client( $dsn, $username, $password, $driver_options );
+	}
+	
+	function client( $dsn, $username='', $password='', $driverOptions = array() ) {
 		try {
-			return new ar_connect_dbWrapper( new PDO($dsn, $username, $password, $driver_options) );
+			return new ar_connect_dbClient( new PDO($dsn, $username, $password, $driver_options) );
 		} catch( Exception $e ) {
 			return ar::error( $e->getMessage(), $e->getCode() );
 		}
@@ -15,11 +20,13 @@ class ar_connect_db extends arBase {
 
 }
 
-class ar_connect_dbWrapper extends arWrapper implements Iterator {
+// FIXME: define an interface
+
+class ar_connect_dbClient extends arWrapper implements Iterator {
 	
 	function __construct( $wrapped ) {
 		parent::__construct($wrapped);
-		$this->__class = 'ar_connect_dbWrapper';
+		$this->__class = 'ar_connect_dbClient';
 		if ($this->wrapped instanceof PDOStatement) {
 			$this->row = $this->wrapped->fetch();
 			if (!$this->row) {
@@ -59,7 +66,8 @@ class ar_connect_dbWrapper extends arWrapper implements Iterator {
 	}
 	
 	function valid() {
-		return isset($this->row);
+		// note: somehow isset() returns false here, so use is_array instead.
+		return is_array($this->row);
 	}
 
 }
