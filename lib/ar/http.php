@@ -89,7 +89,6 @@
 	}
 	
 	interface ar_httpClient {
-		public function __construct( $options = array() );
 
 		public function get( $url, $request = null, $options = array() );
 
@@ -99,7 +98,7 @@
 
 		public function delete( $url, $request = null, $options = array() );
 
-		public function send( $type, $url, $request, $options = array() );
+		public function send( $type, $url, $request = null, $options = array() );
 		
 		public function headers( $headers );
 
@@ -136,7 +135,7 @@
 			return call_user_func_array( 'array_merge', $args );
 		}
 
-		public function send( $type, $url, $request, $options = array() ) {
+		public function send( $type, $url, $request = null, $options = array() ) {
 			if ( is_array( $request ) ) {
 				$request = $this->compileRequest( $request );
 			}
