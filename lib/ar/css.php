@@ -7,20 +7,26 @@
 	class ar_css extends arBase {
 		
 		public static function stylesheet() {
-			return new ar_cssStyleSheet('style', array('type' => 'text') );
+			return new ar_cssStyleSheet( );
 		}
 		
 	}
 	
 	class ar_cssStyleSheet extends ar_htmlElement {
-		
+		// FIXME: make the css content available as nodeValue of a child ar_htmlNode (or a list of nodes?)
+		// create a ar_cssRule which implements or extends ar_htmlNode?
 		private $cssText   = '';
 		private $variables = array();
 		public  $rules     = null;
 		
-		public function __construct($tagName, $attributes, $childNodes = null, $parentNode = null) {
+		public function __construct($tagName = 'style', $attributes = array(), $childNodes = null, $parentNode = null) {
 			$this->rules   = new ar_cssRules( $this );
-			$attributes['type'] = 'text/css';
+			if ( !$attributes ) {
+				$attributes = array();
+			}
+			if ( !$attributes['type'] ) {
+				$attributes['type'] = 'text/css';
+			}
 			parent::__construct( $tagName, $attributes, null, $parentNode );
 		}
 		
