@@ -96,46 +96,51 @@
 		public function putvar( $name, $value ) {
 			$this->query->{$name} = $value;
 		}
+
+		public function import( $values ) {
+			$this->query->import( $values );
+		}
 		
 	}
 	
-	class ar_urlQuery extends arBase implements arKeyValueStoreInterface {
-		
-		private $arguments = array();
+	class ar_urlQuery extends ArrayObject implements arKeyValueStoreInterface /*, ArrayAcces, IteratorAggregate, .. */ {
 		
 		public function __construct( $query ) {
+			$arguments = array();
 			if ($query) {
 				// FIXME: parse_str cannot handle all types of query string
 				// ?val&1+2=3  =>  val=&1_2=3
-				parse_str( $query, $this->arguments );
-				if (ar_http::$tainting) {
-					ar::taint($this->arguments);
+				parse_str( $query, $arguments );
+				if ( class_exists('ar_http') && ar_http::$tainting) {
+					ar::taint($arguments);
 				}
 			}
+			parent::__construct( $arguments, ArrayObject::ARRAY_AS_PROPS );
 		}
 		
-		public function __get( $var ) {
-			return $this->getvar( $name );
-		}
-		
-		public function __set( $var, $value ) {
-			return $this->putvar( $name, $value );
+		public function __call( $name, $arguments ) {
+			if (($name[0]==='_')) {
+				$realName = substr($name, 1);
+				if (ar_pinp::isAllowed($this, $realName)) {
+					return call_user_func_array(array($this, $realName), $arguments);
+				} else {
+					trigger_error("Method $realName not found in class ".get_class($this), E_USER_WARNING);
+				}
+			} else {
+				trigger_error("Method $name not found in class ".get_class($this), E_USER_WARNING);
+			}
 		}
 		
 		public function getvar( $name ) {
-			if (isset($this->arguments[$var]) ) {
-				return $this->arguments[$var];
-			} else {
-				return null;
-			}
+			return $this->offsetGet($name);
 		}
 		
 		public function putvar( $name, $value ) {
-			$this->arguments[$var] = $value;
+			$this->offsetSet($name, $value);
 		}
 
 		public function __toString() {
-			$arguments = $this->arguments;
+			$arguments = (array) $this;
 			ar::untaint( $arguments, FILTER_UNSAFE_RAW);
 			// FIXME: http_build_query cannot build all query strings, see above about parse_str
 			$result = http_build_query( (array) $arguments );
@@ -149,11 +154,12 @@
 				$values = $result;
 			}
 			if ( is_array( $values) ) {
-				$this->arguments = $values + $this->arguments;
+				foreach( $values as $name => $value ) {
+					$this->offsetSet($name, $value);
+				}
 			}
-		}
-		
-		
+		}		
+
 	}
 	
 ?>
