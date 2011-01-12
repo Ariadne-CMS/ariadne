@@ -46,7 +46,6 @@
 				break;
 			}
 			try {
-				var_dump($request);
 				return $this->wrapped->fetch( (string) $url, $request, $type, $headers );
 			} catch( Exception $e ) {
 				return ar_error::raiseError( $e->getMessage(), $e->getCode() );
@@ -73,7 +72,10 @@
 			if (is_array($headers)) {
 				$headers = join("\r\n", $headers);
 			}
-			$this->options['header'] = $this->options['headers'].$headers;
+			if ($this->options['header'] && substr( $this->options['header'], -2 )!=="\r\n") {
+				$this->options['header'] .= "\r\n";
+			}
+			$this->options['header'] .= $headers;
 			return $this;
 		}
 
