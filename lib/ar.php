@@ -1,5 +1,5 @@
 <?php
-	define('ARBaseDir', $AR->dir->install.'/lib/ar/');
+	define('ARBaseDir', dirname( __FILE__ ) . '/ar/');
 	require_once(ARBaseDir.'pinp.php');
 	require_once(ARBaseDir.'core/exception.php');
 
