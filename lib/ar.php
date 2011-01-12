@@ -176,7 +176,7 @@
 		}
 		
 		public static function url( $url ) {
-			return ar_url::create( $url );
+			return new ar_url( $url );
 		}
 		
 		public static function context() {
