@@ -28,6 +28,15 @@
 				case '_COOKIE' :
 					return $this->getvar( null, 'COOKIE');
 				break;
+				case 'tainting' :
+					return self::$tainting;
+				break;
+			}
+		}
+		
+		public function __set( $var, $value ) {
+			if ($var=='tainting') {
+				self::$tainting = (bool) $value;
 			}
 		}
 

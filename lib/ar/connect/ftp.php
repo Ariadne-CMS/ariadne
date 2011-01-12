@@ -54,7 +54,9 @@
 		}
 		
 		public static function __get( $name ) {
-			return self::${$name};
+			if ( isset( self::${$name} ) ) {
+				return self::${$name};
+			}
 		}
 		
 	}

@@ -23,6 +23,16 @@
 				break;
 			}
 		}
+		
+		public static function __set( $name, $value ) {
+			self::configure( $name, $value );
+		}
+		
+		public static function __get( $name ) {
+			if ( isset( self::${$name} ) ) {
+				return self::${$name};
+			}
+		}
 
 		public static function doctype( $type = 'strict', $quirksmode = false ) {
 			if ($type) {

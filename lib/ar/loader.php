@@ -18,12 +18,14 @@
 			}
 		}
 		
-		public function __set( $name, $value ) {
+		public static function __set( $name, $value ) {
 			self::configure( $name, $value );
 		}
 		
-		public function __get( $name ) {
-			return self::${$name};
+		public static function __get( $name ) {
+			if ( isset( self::${$name} ) ) {
+				return self::${$name};
+			}
 		}
 		
 		private static function getLoader() {

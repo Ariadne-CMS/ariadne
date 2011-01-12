@@ -15,6 +15,16 @@
 				break;
 			}
 		}
+
+		public static function __set( $name, $value ) {
+			self::configure( $name, $value );
+		}
+		
+		public static function __get( $name ) {
+			if ( isset( self::${$name} ) ) {
+				return self::${$name};
+			}
+		}
 				
 		public static function ls() {
 			return new ar_storeList( ar::context()->getPath() );

@@ -27,14 +27,14 @@
 			}
 		}
 
-		public function __get( $varname ) {
-			if ( isset( self::$$varname ) ) {
-				return self::$$varname;
-			}
+		public static function __set( $name, $value ) {
+			self::configure( $name, $value );
 		}
-	
-		public function __set( $varname, $value ) {
-			self::configure( $varname, $value );
+		
+		public static function __get( $name ) {
+			if ( isset( self::${$name} ) ) {
+				return self::${$name};
+			}
 		}
 	
 		public static function link($content, $attributes = array(), $path = null, $url = null) {
