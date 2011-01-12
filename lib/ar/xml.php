@@ -1,7 +1,5 @@
 <?php
 
-	require_once(dirname(__FILE__).'/../ar.php');
-
 	ar_pinp::allow( 'ar_xml' );
 	ar_pinp::allow( 'ar_xmlElement' );
 	ar_pinp::allow( 'ar_xmlNode' );
@@ -1134,7 +1132,7 @@
 					case 'xml' :
 					case 'html' :
 							if ($source instanceof ar_xmlNode || $source instanceof ar_xmlNodes) {
-								$nodeValue = (string) $source->childNodes;
+								$nodeValue = (string) $source;
 							}
 					break;
 					default       :
