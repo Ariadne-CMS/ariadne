@@ -714,17 +714,34 @@
 	global $mimemagic_data, $mimetypes_data;
 		$result = false;
 		if ($flags & MIME_DATA) {
-			reset($mimemagic_data);
-			$fp = fopen($filename, "rb");
-			if ($fp) {
-				while (!$result && (list($offset, $odata)=each($mimemagic_data))) {
-					while (!$result && (list($length, $ldata)=each($odata))) {
-						fseek($fp, $offset, SEEK_SET);
-						$lookup=fread($fp, $length);
-						$result=$ldata[$lookup];
-					}
+			if(function_exists('finfo_file')){
+				// php 5.3.0 style
+				$finfo = @finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
+				if($finfo) {
+					$result = @finfo_file($finfo, $filename);
 				}
-				fclose($fp);
+				finfo_close($finfo);
+			} else {
+				// pre 5.3.0 style
+				$result = @mime_content_type($filename);
+			}
+			
+
+			if(!$result) {
+				reset($mimemagic_data);
+				$fp = fopen($filename, "rb");
+				if ($fp) {
+					while (!$result && (list($offset, $odata)=each($mimemagic_data))) {
+						while (!$result && (list($length, $ldata)=each($odata))) {
+							fseek($fp, $offset, SEEK_SET);
+							$lookup=fread($fp, $length);
+							if(isset($ldata[$lookup])){
+								$result=$ldata[$lookup];
+							}
+						}
+					}
+					fclose($fp);
+				}
 			}
 		}
 
