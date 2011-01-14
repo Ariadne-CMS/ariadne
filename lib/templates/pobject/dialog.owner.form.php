@@ -1,6 +1,6 @@
 <?php
 	$ARCurrent->nolangcheck=true;
-	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
+	if ($this->CheckLogin("config") && $this->CheckConfig()) {
 		$this->data = current($this->get($this->path, "system.get.data.phtml"));
 		$query = "object.implements='puser' and login.value='".AddSlashes($this->data->config->owner)."'";
 		$wgBrowsePath = current($this->find('/system/users/', $query, 'system.get.path.phtml'));
