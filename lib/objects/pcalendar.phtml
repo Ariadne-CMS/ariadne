@@ -34,7 +34,8 @@
     ******************************************************************/
 
 debug("pcalendar: Load","object");
-include_once($this->code."objects/pdir.phtml");
+global $ariadne;
+require_once($ariadne."/objects/pdir.phtml");
 
 class pcalendar extends pdir { // pcalendar class definition
 

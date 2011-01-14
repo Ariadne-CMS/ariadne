@@ -34,7 +34,8 @@
     ******************************************************************/
 
 debug("pgroup: Load","object");
-include_once($this->code."objects/puser.phtml");
+global $ariadne;
+require_once($ariadne."/objects/puser.phtml");
 
 class pgroup extends puser { // pgroup class definition
 

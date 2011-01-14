@@ -34,7 +34,8 @@
     ******************************************************************/
 
 debug("psection: Load","object");
-include_once($this->code."objects/pdir.phtml");
+global $ariadne;
+require_once($ariadne."/objects/pdir.phtml");
 
 class psection extends pdir {  // psection class definition
 

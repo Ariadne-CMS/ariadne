@@ -33,7 +33,8 @@
 
     ******************************************************************/
 debug("particle.phtml: Load","object");
-include_once($this->code."objects/ppage.phtml");
+global $ariadne;
+require_once($ariadne."/objects/ppage.phtml");
 
 class particle extends ppage { // particle class definition
 

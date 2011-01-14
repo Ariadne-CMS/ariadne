@@ -34,7 +34,8 @@
     ******************************************************************/
 
 debug("pdir: Load","object");
-include_once($this->code."objects/ppage.phtml");
+global $ariadne;
+require_once($ariadne."/objects/ppage.phtml");
 
 class pdir extends ppage { // pdir class definition
 

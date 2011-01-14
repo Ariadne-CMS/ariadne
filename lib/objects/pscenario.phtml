@@ -34,7 +34,8 @@
     ******************************************************************/
 
 debug("pscenario: Load","object");
-include_once($this->code."objects/pobject.phtml");
+global $ariadne;
+require_once($ariadne."/objects/pobject.phtml");
 
 class pscenario extends pobject { // pscenario class definition
 

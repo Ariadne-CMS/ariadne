@@ -34,7 +34,8 @@
     ******************************************************************/
 
 debug("pshadowuser: Load","object");
-include_once($this->code."objects/puser.phtml");
+global $ariadne;
+include_once($ariadne."/objects/puser.phtml");
 
 class pshadowuser extends puser {  // pshadowuser class definition
 

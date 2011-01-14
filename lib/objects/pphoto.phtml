@@ -34,7 +34,8 @@
     ******************************************************************/
 
 debug("pphoto: Load","object");
-include_once($this->code."objects/pfile.phtml");
+global $ariadne;
+require_once($ariadne."/objects/pfile.phtml");
 
 class pphoto extends pfile { // pphoto class definition
 

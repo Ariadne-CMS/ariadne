@@ -34,7 +34,8 @@
     ******************************************************************/
 
 debug("pperson: load","object");
-include_once($this->code."objects/pobject.phtml");
+global $ariadne;
+require_once($ariadne."/objects/pobject.phtml");
 
 class pperson extends pobject { // class definition
 

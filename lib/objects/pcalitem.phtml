@@ -34,7 +34,8 @@
     ******************************************************************/
 
 debug("pcalitem: Load","object");
-include_once($this->code."objects/pobject.phtml");
+global $ariadne;
+require_once($ariadne."/objects/pobject.phtml");
 
 class pcalitem extends pobject { // pcalitem class definition
 

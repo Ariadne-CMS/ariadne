@@ -19,7 +19,8 @@
     ******************************************************************/
 
 debug("pldapconnection: Load","object");
-include_once($this->code."objects/pconnector.phtml");
+global $ariadne;
+require_once($ariadne."/objects/pconnector.phtml");
 
 class pldapconnection extends pconnector { // psearch class definition
 

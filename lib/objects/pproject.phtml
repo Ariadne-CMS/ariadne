@@ -34,7 +34,8 @@
     ******************************************************************/
 
 debug("psection: Load","object");
-include_once($this->code."objects/psection.phtml");
+global $ariadne;
+require_once($ariadne."/objects/psection.phtml");
 
 class pproject extends psection {  // pproject class definition
 

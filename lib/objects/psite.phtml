@@ -34,7 +34,8 @@
     ******************************************************************/
 
 debug("psite: Load","object");
-include_once($this->code."objects/psection.phtml");
+global $ariadne;
+include_once($ariadne."/objects/psection.phtml");
 
 class psite extends psection {  // psite class definition
 

@@ -1,7 +1,8 @@
 <?php
 
 debug("pconnector: Load","object");
-include_once($this->code."objects/pdir.phtml");
+global $ariadne;
+require_once($ariadne."/objects/pdir.phtml");
 
 class pconnector extends pdir { // class definition
 
