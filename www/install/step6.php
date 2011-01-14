@@ -56,11 +56,10 @@
 			}
 		}
 
-		$ar_dir_www = $_SERVER['SCRIPT_FILENAME'];
+		$ar_dir_www = $_SERVER['PHP_SELF'];
 
 		$docroot = $_SERVER['DOCUMENT_ROOT'];
 		$ar_dir_www = preg_replace("|/install/index.php$|", '', $ar_dir_www);
-		$ar_dir_www = str_replace($docroot, '', $ar_dir_www);
 
 		// Generate the config file.
 		ob_start();
