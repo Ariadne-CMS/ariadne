@@ -15,7 +15,7 @@
 			// file is not where we expected it, try to find out where it is
 			$test=tempnam($this->store->get_config("files")."temp".$matchslash,"ax");
 			@unlink($test);
-			$testdir=substr($test, 0, strrpos($tempfile,$matchslash)+1);
+			$testdir=dirname($test).$matchslash;
 			if (file_exists($testdir) && file_exists($testdir.$tempfilename)) {
 				$tempfile=$testdir.$tempfilename;
 			} else {
