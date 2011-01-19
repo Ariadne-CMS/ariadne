@@ -1,3 +1,103 @@
+========================
+Changes in Ariadne 2.7.4
+========================
+
+This release has a number of small improvements and fixes, as well as a
+greatly expanded and improved version of the new API. There is a new demo
+project included now by default, based on the layout of
+http://www.ariadne-cms.org/ and built entirely using the new API. We
+added a new object type, pproject, which is intended to ease management
+of projects with their sites, users and libraries. This will be expanded
+with a number of user interface improvements in Ariadne 2.8.
+
+New features:
+- Added first version of pproject (beta)
+- Createsymlinks now has a configuration file.
+
+Additions to existing features:
+- SHA1 had been added to pinp-safe functions
+- Backend now has more fallback fonts in the CSS (Ubuntu has no Verdana
+by default)
+- Install help links now open in a new window
+- Added a hint about case-sensitivity in the installer help
+- Made the queue-mechanism for image magick a bit more resource-friendly.
+
+AR: Ariadne General API: Additions and changes
+
+The next generation Ariadne API has been extensively tested and expanded. It
+is now complete enough to build entire projects with. The API has been
+checked for consistency, correctness, ease-of-use and expandibility. We've
+added a lot of features which will make working with Ariadne much more simple.
+
+Additions:
+- Added ar::url
+- Added XML and HTML parsing to ar/xml and ar/html
+- Added easy XML data binding
+- Added ar/connect/oauth
+- Added ar/connect/rss
+- Added ar/connect/soap
+- Added ar/connect/twitter
+- Added ar/events
+
+Changes
+- all static options in modules can now be set directly in pinp, no
+  need to call configure(), you can access them as if they weren't static.
+- made ar_http::$tainting public so other components can read it.
+- ar_xml::tag and ar_html::tag have been deprecated in favour of ar_xml::el and ar_html::el
+- ar::xml: Added noveValue support for elements and nodelists.
+- Added getElementById to ar_xmlNodes
+- Added preserveWhiteSpace configuration option.
+- Added get and post methods to ar_http as shortcuts to the client methods.
+- set default root in ar/html/menu.php to the current site instead of current path
+- Added __get and __get in ar/content/html
+- Added ar::callSuper();
+- added ar::acquire to get user config settings
+- Improved XML error handling in ar/xml
+- ar/connect/ftp: added get and set for configure options
+- ar/connect/xmlrpc: renamed xmlrpcServerWraper to xmlrpcServer
+- ar/connect/db: renamed dbWrapper to dbClient. Renamed connect() to
+client(), connect() is now deprecated.
+- ar/connect/http: made the definition of send() more in line with the
+rest of ar/connect
+- improved constructor in ar/css
+- ar/loader: added get and set for configure options
+- ar/nls now has support for baseDir
+
+
+Bugfixes:
+- Added search results for shortcuts in the Ariadne search dialog
+- Fixed a problem with aspect ratio calculation when scaling a pphoto
+- muze/event.js: Fix for keyboard, mouse and key events in Firefox.
+- Added full path information stores.
+- mod_page: make_path is run on show instead of compile, which means
+objects with - - content containing template calls can be renamed.
+- Added newlines to SVN error messages
+- Sorting in details view now works for numeric values
+- Grants dialog now shows the types ordered alphabetically
+- Cleaned up some disabled CSS rules for the backend.
+- Properties are now only saved for NLS values that are available
+- Installer now detects supported binaries better
+- Fixed missing version numbers in upgrade script.
+- Fixed the cookie check in muze.js which triggered a security violation
+error when used insde a modal dialog.
+- Fixed ordering in ar::find
+- fixed headers in ar/code/loader/http.php
+- fixed bug in ar::xml mergeArguments, now ignores inputs which parse to
+false/NULL
+- fixed ar_error::raiseError arguments, 3rd argument is now optional.
+- YUI HTML editor no longer removes "dangerous" tags like form and
+input, we allow them in Ariadne.
+- mod_mimemagic now tries the php internal functions first before trying to
+detect it self, this should improve mimetype detection without breaking
+backwards compatibility
+- Owner dialog now checks for layout grant instead of both layout and
+config.
+- Added missing compression config option in installation config.
+- Fixed installation directory detection which was off in some cases.
+- Replaced include_once with require_once for ariadne objects. Removed
+dependancy to be in object scope when the include happens.
+
+
 =========================
 Changes in release 2.7.3:
 =========================
