@@ -1,0 +1,15 @@
+Welcome to a new version of Ariadne!
+
+If you have an existing Ariadne installation and want to upgrade to the
+latest version, either copy the new distribution over the previous one,
+or create a new base directory for Ariadne. In the latter case, make
+sure you copy all the configuration files and either copy the original 
+ariadne/files/ directory to the new location, while keeping the user
+grants intact (it should be writable for the webserver user).
+
+Then make sure the ariadne/www/install/ directory is open by removing 
+the .htaccess file there temporarily and open a browser at your ariadne
+installation at ariadne/install/upgrade/upgrade.php
+
+If there is a need to run additional upgrade scripts, this page will 
+tell you what the next steps are.
