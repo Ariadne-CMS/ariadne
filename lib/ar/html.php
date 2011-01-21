@@ -24,13 +24,13 @@
 			}
 		}
 		
-		public static function __set( $name, $value ) {
-			self::configure( $name, $value );
+		public function __set( $name, $value ) {
+			ar_html::configure( $name, $value );
 		}
 		
-		public static function __get( $name ) {
-			if ( isset( self::${$name} ) ) {
-				return self::${$name};
+		public function __get( $name ) {
+			if ( isset( ar_html::${$name} ) ) {
+				return ar_html::${$name};
 			}
 		}
 
