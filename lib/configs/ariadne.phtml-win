@@ -378,4 +378,11 @@
   define('ARESCAPE', "'\"\\\n\r");
   define('ARCALLINGCONTEXT', 1);
   define('ARUNNAMED',null);
+
+  /**************************************************************************/
+  /* Workaround for PHP 5.3 warning about date.timezone                     */
+  /**************************************************************************/
+  if ( !init_get('date.timezone') ) {
+    init_set('date.timezone', 'GMT');
+  }
 ?>
