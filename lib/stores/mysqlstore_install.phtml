@@ -49,9 +49,9 @@ CREATE TABLE ".$this->tbl_prefix."types (
 			if ($query["msg"]) {
 				echo $query["msg"]."\n";
 			}
-			mysql_db_query($this->database,$query["query_string"], $this->connect_id);
-			$errno=mysql_errno($this->connect_id);
-			if ($errno) {
+			$qresult = $this->store_run_query($query["query_string"]);
+
+			if (!$qresult) {
 				$error=mysql_error($this->connect_id);
 				error("Mysql: $errno: $error");
 			}
@@ -176,13 +176,13 @@ CREATE TABLE ".$this->tbl_prefix."types (
 					$create_string.=$indexstring;
 					// finally add the index on the object field and close the query.
 					$create_string.="index object(object) )\n";
-					$temp=mysql_db_query($this->database,$create_string, $this->connect_id);
+					$this->store_run_query($create_string);
+
 					$query_string="insert into ".$this->tbl_prefix."properties values ( '".AddSlashes($property)."' )";
-					mysql_db_query($this->database,$query_string, $this->connect_id);
-					$errno=mysql_errno($this->connect_id);
-					if ($errno) {
-						$error=mysql_error($this->connect_id);
-						error("ERROR: Mysql: $errno: $error");
+					$qresult = $this->store_run_query($query_string);
+
+					if (!$qresult ) {
+						error($this->error)
 					}
 					//FIXME: check for succes first, how?
 				}
@@ -210,13 +210,12 @@ CREATE TABLE ".$this->tbl_prefix."types (
 		$eproperty=AddSlashes($property);
 		$remove_string="drop table ".$this->tbl_prefix."prop_$eproperty";
 		debug($remove_string,"store");
-		$temp=mysql_db_query($this->database,$remove_string, $this->connect_id);
+		$this->store_run_query($remove_string);
+
 		$query_string="delete from ".$this->tbl_prefix."properties where name='$eproperty'";
-		mysql_db_query($this->database,$query_string, $this->connect_id);
-		$errno=mysql_errno($this->connect_id);
-		if ($errno) {
-			$error=mysql_error($this->connect_id);
-			error("ERROR: Mysql: $errno: $error");
+		$qresult = $this->store_run_query($query_string);
+		if (!$qresult) {
+			error($this->error);
 		}
 		//FIXME: check for succes first, check whether table no longer exists.
 		return 1;
@@ -237,14 +236,9 @@ CREATE TABLE ".$this->tbl_prefix."types (
 			$etype=AddSlashes($type);
 			$eimplements=AddSlashes($implements);
 			$query_string="insert into ".$this->tbl_prefix."types values ('$etype','$eimplements')";
-			debug($query_string,"store");
-			mysql_db_query($this->database,$query_string, $this->connect_id);
-			$errno=mysql_errno($this->connect_id);
-			if ($errno) {
-				$error=mysql_error($this->connect_id);
-				$result=0;
-				error("ERROR: Mysql: $errno: $error");
-				$this->error="Mysql: $errno: $error";
+			$qresult = $this->store_run_query($query_string);
+			if (!$qresult) {
+				error($this->error);
 			} else {
 				$result=1;
 			}	
@@ -271,12 +265,9 @@ CREATE TABLE ".$this->tbl_prefix."types (
 			$eimplements=AddSlashes($implements);
 			$query_string="delete from ".$this->tbl_prefix."types where type='$etype' and implements='$etype'";
 		}
-		debug($query_string,"store");
-		mysql_db_query($this->database,$query_string, $this->connect_id);
-		$errno=mysql_errno($this->connect_id);
-		if ($errno) {
-			$error=mysql_error($this->connect_id);
-			error("ERROR: Mysql: $errno: $error");
+		$qresult = $this->store_run_query($query_string);
+		if (!$qresult) {
+			error($this->error);
 			$result=0;
 		} else {
 			$result=1;
