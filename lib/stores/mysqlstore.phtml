@@ -514,13 +514,13 @@ class mysqlstore extends store{
 				} else {
 					$query_string="update $objects_tbl set object='$edata', lastchanged=NULL where id=$id"; 
 				}
-				$result =  $this->store_run_query($query_string);
-				if (!$result) { // mysql_affected_rows doesn't always work
+				$qresult = $this->store_run_query($query_string);
+				if ($qresult !== false) {
 					$this->save_properties($properties, $id, $this); 
 					if($priority !== false) {
 						$query_string="update $nodes_tbl set priority=$epriority where path='$epath'";
-						$result = $this->store_run_query($query_string);
-						if (!$result) {
+						$qresult = $this->store_run_query($query_string);
+						if ($qresult === false) {
 							debug("save: update object failed!","store");
 							debug("save: ".$this->error,"store");
 							$result=0;
@@ -554,7 +554,7 @@ class mysqlstore extends store{
 					// before we proceed, we need to lock the 'nodes' and 'objects' table
 					$query_string="lock tables ".$this->tbl_prefix."nodes write, ".$this->tbl_prefix."objects write";
 					$qresult = $this->store_run_query($query_string);
-					if ($qresult ) {
+					if ($qresult !== false) {
 						$needunlocking = true;
 
 						$subid=$this->get_nextid($parent, $mask);
@@ -575,7 +575,7 @@ class mysqlstore extends store{
 					$query_string="insert into $objects_tbl (id,type,object,vtype) values (0,'$etype','$edata','$evtype')";
 					$qresult = $this->store_run_query($query_string);
 					$id=mysql_insert_id($this->connect_id);
-					if ($qresult && $id) {
+					if ($qresult !== false && $id) {
 						$query_string="insert into $nodes_tbl (path,parent,object,priority) values ('$epath','$eparent',$id,$epriority)";
 						$qresult = $this->store_run_query($query_string);
 						if ($qresult) {
