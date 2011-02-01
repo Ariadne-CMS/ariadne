@@ -15,7 +15,7 @@ class ar_nls extends arBase {
 
 }
 
-class ar_nlsDictionary extends arBase implements ArrayAccess {
+class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 
 	private $currentList = null;
 	private $defaultList = null;
@@ -33,9 +33,10 @@ class ar_nlsDictionary extends arBase implements ArrayAccess {
 		if( !isset($currentLanguage) ) {
 			$currentLanguage = $defaultLanguage;
 		}
+
 		$this->languages[$defaultLanguage] = array();
 		$this->languages[$currentLanguage] = array();
-		
+			
 		$this->defaultList = &$this->languages[$defaultLanguage];
 		$this->currentList = &$this->languages[$currentLanguage];
 		
@@ -124,6 +125,8 @@ class ar_nlsDictionary extends arBase implements ArrayAccess {
 		return $this;
 	}
 
+	/* ArrayAccess */
+	
 	public function offsetSet( $offset, $value ) {
 		if ($offset == "") {
 			$this->currentList[] = $value;
@@ -167,6 +170,29 @@ class ar_nlsDictionary extends arBase implements ArrayAccess {
 		$value = $this->getEntry( $offset );
 		return ( isset( $value ) ? $value : "{".$offset."}" );
 	}
+	
+	/* Iterator */
+	public function current() {
+		return current($this->currentList);
+	}
+	
+	public function key() {
+		return key($this->currentList);
+	}
+	
+	public function next() {
+		return next($this->currentList);
+	}
+	
+	public function rewind() {
+		return reset($this->currentList);
+	}
+	
+	public function valid() {
+		$value = key($this->currentList);
+		return isset($value);
+	}
+	
 }
 
 ?>
