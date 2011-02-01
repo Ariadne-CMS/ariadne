@@ -9,6 +9,7 @@
 	echo "<?php \n"; // start php template
 	echo "	global \$mimemagic_data;\n";	
 	echo "	global \$mimetypes_data;\n";	
+	echo "	global \$contenttypes_data;\n";
 	echo "\n";
 	echo "	define(\"MIME_EXT\",	1);\n";
 	echo "	define(\"MIME_DATA\",	2);\n";
@@ -174,21 +175,40 @@
 		}
 	?>
 
+	$contenttypes_data = Array(
+		'docx' => Array(
+			'application/zip' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+		)
+	);
+
 	function get_mime_type($filename, $flags = 3) {
 	global $mimemagic_data, $mimetypes_data;
 		$result = false;
 		if ($flags & MIME_DATA) {
-			reset($mimemagic_data);
-			$fp = fopen($filename, "rb");
-			if ($fp) {
-				while (!$result && (list($offset, $odata)=each($mimemagic_data))) {
-					while (!$result && (list($length, $ldata)=each($odata))) {
-						fseek($fp, $offset, SEEK_SET);
-						$lookup=fread($fp, $length);
-						$result=$ldata[$lookup];
-					}
+			if (function_exists('finfo_file')) {
+				// php 5.3.0 style
+				$finfo = @finfo_open(FILEINFO_MIME_TYPE); // return mime type ala mimetype extension
+				if ($finfo) {
+					$result = @finfo_file($finfo, $filename);
 				}
-				fclose($fp);
+				finfo_close($finfo);
+			} else {
+				// pre 5.3.0 style
+				$result = @mime_content_type($filename);
+			}
+			if (!$result) {
+				reset($mimemagic_data);
+				$fp = fopen($filename, "rb");
+				if ($fp) {
+					while (!$result && (list($offset, $odata)=each($mimemagic_data))) {
+						while (!$result && (list($length, $ldata)=each($odata))) {
+							fseek($fp, $offset, SEEK_SET);
+							$lookup=fread($fp, $length);
+							$result=$ldata[$lookup];
+						}
+					}
+					fclose($fp);
+				}
 			}
 		}
 
@@ -196,6 +216,20 @@
 			if (eregi('.*[.]([^.]*)', $filename, $regs)) {
 				$result = $mimetypes_data[strtolower($regs[1])];
 			}
+		}
+		return $result;
+	}
+
+	function get_content_type($mimetype, $extension) {
+	global $contenttypes_data;
+		$ePos = strrpos($extension, '.');
+		if ($ePos !== false) {
+			$extension = substr($extension, $ePos + 1);
+		}
+
+		$result = $contenttypes_data[$extension][$mimetype];
+		if (!$result) {
+			$result = $mimetype;
 		}
 		return $result;
 	}

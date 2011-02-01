@@ -37,6 +37,7 @@ debug("pfile: Load","object");
 global $ariadne;
 require_once($ariadne."/objects/pobject.phtml");
 require_once($ariadne."/modules/mod_url.php");
+require_once($ariadne."/modules/mod_mimemagic.php");
 
 class pfile extends pobject { // pfile class definition
 
@@ -92,7 +93,6 @@ class pfile extends pobject { // pfile class definition
 		if (!$mimetype) {
 			$mimetype = $this->data->mimetype;
 		}
-
 		if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
 			if ($ARCurrent->cachetime==0 && !$AR->output_compression) {
 				ob_start(); // start the cache
@@ -105,6 +105,10 @@ class pfile extends pobject { // pfile class definition
 		}
 		if (!ereg("^text/", $mimetype)) {
 			$size = $files->size($this->id, $file);
+		}
+		
+		if (function_exists("get_content_type")) {
+			$mimetype = get_content_type($mimetype, basename($this->path));
 		}
 
 		if (ldSetContent($mimetype, $size)) {
