@@ -8,20 +8,14 @@
 
 		// new file uploaded -> save it to the standard ariadne tempdir
 		$file_artemp=tempnam($this->store->get_config("files")."temp/","upload");
-/*
-		// Insert virusscan
-		list($inf, $inftp) = virusscan($fileinfo["tmp_name"]);
-		if($inf) {
-			virusclean($file_temp);
-			$this->error = sprintf($ARnls["err:fileuploadvirus"], $inftp);
-		}
-*/
+
 		// now make the new values available for system.save.data.phtml
-		$arCallArgs["file"]=$fileinfo["name"];
-		$arCallArgs["file_temp"]=substr($fileinfo["tmp_name"],strlen($this->store->get_config("files")."temp/"));
-		$arCallArgs["file_size"]=$fileinfo["size"];
-		$arCallArgs["file_type"]=$fileinfo["type"];
-		$arCallArgs["mimetype"]=$fileinfo["type"];
+		$defaultNLS = $ARConfig->nls->default;
+		$arCallArgs[$defaultNLS]["file"]=$fileinfo["name"];
+		$arCallArgs[$defaultNLS]["file_temp"]=basename($fileinfo["tmp_name"]);
+		$arCallArgs[$defaultNLS]["file_size"]=$fileinfo["size"];
+		$arCallArgs[$defaultNLS]["file_type"]=$fileinfo["type"];
+		$arCallArgs[$defaultNLS]["mimetype"]=$fileinfo["type"];
 		$this->call("ftp.files.save.data.phtml", $arCallArgs);
 
 		if ($this->error) {

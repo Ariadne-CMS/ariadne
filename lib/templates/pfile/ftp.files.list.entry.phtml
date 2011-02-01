@@ -2,7 +2,7 @@
 	$nls = $this->data->nls->default;
 
 	$result["date"]=$this->lastchanged;
-	$result["size"]=$this->data->$nls->filesize;
+	$result["size"]=(int)$this->data->$nls->filesize;
 	$result["path"]=$this->path;
 	$result["type"]="file";
 
