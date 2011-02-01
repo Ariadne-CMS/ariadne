@@ -5,13 +5,10 @@
 			(!$this->arIsNewObject && $this->CheckLogin("edit")))
       && $this->CheckConfig()) {
 
-		$tmpname=$this->getdata("file");
-		$dotPos=strrpos($tmpname, '.');
-		if (false!==$dotPos) {
-			$tmpname=substr($tmpname,0,$dotPos);
-		}
+		$defaultNLS = $ARConfig->nls->default;
+		$tmpname=${$defaultNLS}['file'];
 		$tmpname=str_replace('_',' ',$tmpname);
-		$arCallArgs[$ARConfig->nls->default]["name"]=$tmpname;
+		$arCallArgs[$defaultNLS]["name"]=$tmpname;
 
 		$this->call("system.save.data.phtml", $arCallArgs);
 	}
