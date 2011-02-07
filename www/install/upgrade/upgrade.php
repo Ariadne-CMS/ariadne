@@ -111,6 +111,7 @@
 		case "2.6":
 		case "2.6.0":
 		case "2.6.1":
+		case "2.6.1-php4":
 		case "2.7":
 		case "2.7.0":
 		case "2.7.1":
