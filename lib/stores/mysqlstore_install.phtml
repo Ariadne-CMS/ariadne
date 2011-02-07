@@ -182,7 +182,7 @@ CREATE TABLE ".$this->tbl_prefix."types (
 					$qresult = $this->store_run_query($query_string);
 
 					if (!$qresult ) {
-						error($this->error)
+						error($this->error);
 					}
 					//FIXME: check for succes first, how?
 				}
