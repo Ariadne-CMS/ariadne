@@ -79,7 +79,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		// callstack is needed for getvar()
 		$ARCurrent->arCallStack[]=&$arCallArgs;
 		// keep track of the context (php or pinp) in which the called template runs. call always sets it php, CheckConfig sets it to pinp if necessary.
-		$this->pushContext(Array("arCurrentObject" => $this,"scope" => "php"));
+		$this->pushContext(Array("arSuperContext" => Array(), "arCurrentObject" => $this,"scope" => "php"));
 
 		// convert the deprecated urlencoded arguments to an array
 		if (is_string($arCallArgs)) {
@@ -1363,21 +1363,15 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$arType = $type;
 			while ($arType!='ariadne_object') {
 //				echo "checking $i::$arType<br>\n";
-				if (!$arSuperContext && ($arTemplate=$templates[$arType][$this->reqnls])) {
+				if (!$arSuperContext[$checkpath.":".$arType.":".$function] && ($arTemplate=$templates[$arType][$this->reqnls])) {
 					$arCallTemplate=$arType.".".$function.".".$this->reqnls;
 					$arTemplateNls=$this->reqnls;
 					break 2;
-				} else if (!$arSuperContext && ($arTemplate=$templates[$arType]['any'])) {
+				} else if (!$arSuperContext[$checkpath.":".$arType.":".$function] && ($arTemplate=$templates[$arType]['any'])) {
 					$arCallTemplate=$arType.".".$function.".any";
 					$arTemplateNls="any";
 					break 2;
 				} else {
-					if ($arSuperContext['path'] == $checkpath 
-							&& $arSuperContext['function'] == $function
-								&& $arSuperContext['type'] == $arType
-					) {
-							$arSuperContext = Array();
-					}
 
 					if (!($arSuper=$AR->superClass[$arType])) {
 						// no template found, no default.phtml found, try superclass.
@@ -1549,19 +1543,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$lastcheckedpath = $checkpath;
 			$arType = $arSetType;
 			while ($arType!='ariadne_object' && !$arCallTemplate) {
-				if (!$arSuperContext && ($arTemplateId=$curr_templates[$arType][$arCallFunction][$this->reqnls])) {
+				if (!$arSuperContext[$checkpath.":".$arType.":".$arCallFunction] && ($arTemplateId=$curr_templates[$arType][$arCallFunction][$this->reqnls])) {
 					$arCallTemplate=$arType.".".$arCallFunction.".".$this->reqnls;
 					$arTemplateNls=$this->reqnls;
-				} else if (!$arSuperContext && ($arTemplateId=$curr_templates[$arType][$arCallFunction]['any'])) {
+				} else if (!$arSuperContext[$checkpath.":".$arType.":".$arCallFunction] && ($arTemplateId=$curr_templates[$arType][$arCallFunction]['any'])) {
 					$arCallTemplate=$arType.".".$arCallFunction.".any";
 					$arTemplateNls="any";
 				} else {
-					if ($arSuperContext['path'] == $checkpath 
-							&& $arSuperContext['function'] == $arCallFunction
-								&& $arSuperContext['type'] == $arType
-					) {
-							$arSuperContext = Array();
-					}
 
 					if (!($arSuper=$AR->superClass[$arType])) {
 						// no template found, no default.phtml found, try superclass.
@@ -2343,6 +2331,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if (!$arCallArgs) {
 			$arCallArgs = current($ARCurrent->arCallStack);
 		}
+		$arSuperContext = (array)$context['arSuperContext'];
 		$arLibrary		= $context['arLibrary'];
 		$arLibraryPath	= $context['arLibraryPath'];
 		$arCallFunction	= $context['arCallFunction'];
@@ -2357,13 +2346,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		// remove current library path from the arLibrariesSeen array so that
 		// Ariadne will be able to re-enter the library and toggle the arSuperContext boolean there.
 		unset($arLibrariesSeen[$arLibraryPath]);
-		$arSuperContext = Array(
-			'path' => $arSuperPath,
-			'type' => $arCallType,
-			'function' => $arSuperFunction
-		);
+		$arSuperContext[$arSuperPath.":".$arCallType.":".$arSuperFunction] = true;
 		debug("call_super: searching for the template following (path: $arSuperPath; type: $arCallType; function: $arCallFunction) from $this->path");
-		$template = $this->getPinpTemplate($arCallFunction, $this->path, '', false, $arLibrariesSeen, &$arSuperContext);
+		$template = $this->getPinpTemplate($arCallFunction, $this->path, '', false, $arLibrariesSeen, $arSuperContext);
 		if ($template["arCallTemplate"] && $template["arTemplateId"]) {
 			$arTemplates=$this->store->get_filestore("templates");
 			if ($arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"])) { 
@@ -2382,6 +2367,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$this->pushContext(
 					Array(
 						"scope" => "pinp",
+						"arSuperContext" => $arSuperContext,
 						"arLibrary" => $arLibrary,
 						"arLibraryPath" => $template['arLibraryPath'],
 						"arCallFunction" => $arCallFunction,
