@@ -78,7 +78,7 @@
 	$mimemagic_data[0][9]["\60\60\115\115\130\120\122\63\60"]="application/x-quark-xpress-3"; 
 	$mimemagic_data[0][8]["\101\124\46\124\106\117\122\115"]="image/vnd.djvu"; 
 	$mimemagic_data[0][8]["\127\157\162\144\120\162\157\60"]="application/vnd.lotus-wordpro"; 
-	$mimemagic_data[0][8]["\320\317\21\340\241\261\32\341"]="application/msword"; 
+//	$mimemagic_data[0][8]["\320\317\21\340\241\261\32\341"]="application/msword-frut"; 
 	$mimemagic_data[0][8]["\43\41\40\162\156\145\167\163"]="message/rfc822"; 
 	$mimemagic_data[0][8]["\73\105\114\103\23\0\0\0"]="application/x-elc"; 
 	$mimemagic_data[0][8]["\74\115\111\106\106\151\154\145"]="application/x-mif"; 
