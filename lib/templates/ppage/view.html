@@ -1,0 +1,26 @@
+<?php
+	/******************************************************************
+	 view.html                                             Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: read
+	 Global variables: none
+
+	 This displays a suitable overview of the object.
+
+	 If a child object with the filename 'index.html' exists, view.html
+	 of that object will be called instead. This will still happen even
+	 if you override this template with an object template.
+
+	 no result.
+ 
+	******************************************************************/
+	if ($this->exists("index.html/")) {
+		$ARCurrent->cachepage=$this->path.$arCallFunction;
+		$this->get("index.html/","view.html", $arCallArgs);
+	} else {
+		if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+			$this->call("pobject::view.html", $arCallArgs);
+		}
+	}
+?>
