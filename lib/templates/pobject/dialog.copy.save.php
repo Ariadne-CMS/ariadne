@@ -62,12 +62,12 @@
 					$targetpath = $copytarget . substr($sourcepath, strlen($this->path), strlen($sourcepath));
 					$error = current($this->get($sourcepath, "system.copyto.phtml", array("target" => $targetpath)));
 					if ($error) {
-						// FIXME: If there was an error copying an object, is there any point to try to copy its children?
 						?>
 						<script type="text/javascript">
 							alert("<?php echo addslashes($error); ?>");
 						</script>
 						<?php
+						return false;
 					}
 				}
 

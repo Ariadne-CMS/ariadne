@@ -109,12 +109,11 @@
 						if ($this->error) {
 							echo "\n// $this->error\n";
 							?>
-							if (!confirm('<?php echo AddCSlashes(sprintf($this->error,$newpath), ARESCAPE); ?>')) {
-								if (top.window) {
-									top.window.close();
-								} else {
-									window.close();
-								}
+							alert('<?php echo AddCSlashes(sprintf($this->error,$newpath), ARESCAPE); ?>');
+							if (top.window) {
+								top.window.close();
+							} else {
+								window.close();
 							} 
 							<?php
 						}
