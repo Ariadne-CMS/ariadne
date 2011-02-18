@@ -1,5 +1,7 @@
 <?php
-	define('ARBaseDir', dirname( __FILE__ ) . '/ar/');
+	if ( !defined('ARBaseDir') ) {
+		define('ARBaseDir', dirname( __FILE__ ) . '/ar/');
+	}
 	require_once(ARBaseDir.'pinp.php');
 	require_once(ARBaseDir.'core/exception.php');
 
@@ -464,7 +466,10 @@
 					$path = pinp_keepurl::_make_path( $path );
 				} else if ($options['skipShortcuts']) {
 					$me->_load('mod_keepurl.php');
-					$path = pinp_keepurl::_make_real_path( $path );
+					$realpath = pinp_keepurl::_make_real_path( $path );
+					if ($realpath) {
+						$path = $realpath;
+					}
 				}
 			} else {
 				$path = self::makePath( '/', $options['path'] );
