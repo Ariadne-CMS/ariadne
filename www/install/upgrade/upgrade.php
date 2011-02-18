@@ -122,7 +122,14 @@
 							"operation" => "2.7.4/upgrade.types.php",
 							"newversion" => "2.7.4"
 							));
-
+		case "2.7.4":
+			if (in_array($store_config["dbms"], Array("mysql", "mysql4"))) {
+				array_push($todo, Array(
+							"description" => "Adding defaults to store_prop definitions.",
+							"operation" => "2.7.5/upgrade.store_prop_tables.php",
+							"newversion" => "2.7.5"
+							));
+			}
 			
 	}
 

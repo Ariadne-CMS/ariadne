@@ -74,6 +74,37 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 		return $return;
 	}
 
+
+	function _generate_column_def($type, $size, $default = null) {
+		switch($type) {
+			case "string": 
+				if ($size>0 && $size<256) {
+					if (!isset($default)) {
+						$default = "";
+					}
+					$result="varchar($size) DEFAULT '$default' not null\n";
+				} else {
+					$result=0;
+					$this->error="Wrong format for typedefinition $name: incorrect size."; 
+				}
+				break;
+			case "number":
+				if (!isset($default)) {
+					$default = 0;
+				}
+				$result="bigint default $default not null\n";
+				break;
+			case "boolean":
+				if (!isset($default)) {
+					$default = false;
+				}
+				$result="bool DEFAULT $default not null\n";
+				break;
+		}
+		return $result;
+	}
+
+
 	function create_property($property, $definition, $indexes="") {
 	/**********************************************************************
 
@@ -110,32 +141,18 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 		if (eregi("^[a-z][a-z0-9_-]*$",$property) && strlen($property)<=16) {
 			$tablename=$this->tbl_prefix."prop_".AddSlashes($property);
 			$create_string="create table ".AddSlashes($tablename)." (\n";
-			while (list($name, $typedef)=each($definition)) {
+
+			foreach ($definition['fields'] as $name => $typedef) {
 				if (!eregi("^[a-z][a-z0-9_-]*$",$name) || strlen($name)>16) {
 					$result=0;
 					$this->error="Wrong format for type: $name";
 					break;
 				}	 
-				$create_string.= "	AR_".$name."	";
+				$create_string .= " AR_".$name." ";
+				$create_string .= $this->_generate_column_def($typedef['type'], $typedef['size'], $typedef['default']);
+				$create_string .= ",";
+
 				$indexstring.="AR_$name,";
-				while (list($type,$size)=each($typedef)) {
-					switch($type) {
-						case "string": 
-							if ($size>0 && $size<256) {
-								$create_string.="varchar(".$size.") DEFAULT '' not null,\n";
-							} else {
-								$result=0;
-								$this->error="Wrong format for typedefinition $name: incorrect size."; 
-							}
-							break;
-						case "number":
-							$create_string.="bigint DEFAULT 0 not null,\n";
-							break;
-						case "boolean":
-							$create_string.="bool DEFAULT false not null,\n";
-							break;
-					}
-				}
 			}
 			if ($result) {
 				// now add the 'object' field.
@@ -144,9 +161,9 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 				if ($indexes=="none") {
 					$indexstring="";
 				} else {
-					if ($indexes && is_array($indexes)) {
+					if ($definition['indexes'] && is_array($definition['indexes'])) {
 						$indexstring="";
-						while ((list($key, $values)=each($indexes)) && $result) {
+						foreach ($definition['indexes'] as $key => $values) {
 							$indexstring.="CREATE INDEX ".$tablename."_id".$key." ON ".$tablename." (";
 							$comma="";
 							while (list($key2, $name)=each($values)) {
