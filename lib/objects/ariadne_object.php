@@ -1216,7 +1216,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if (!$ARConfig->cache[$this->path] && $context["scope"] != "pinp") {
 			// first inherit parent configuration data
 			$configcache= clone $ARConfig->cache[$this->parent];
-
+			unset($configcache->localTemplates);
 			// cache default templates
 			if (isset($this->data->config->templates) && count($this->data->config->templates)) {
 				$configcache->templates=&$this->data->config->templates;
@@ -1240,8 +1240,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			
 			if( !$configcache->hasDefaultConfigIni ) {
 				$configcache->hasConfigIni = false;
-
 				if( is_array($this->data->config->pinp) ) {
+					$configcache->localTemplates = $this->data->config->pinp;
 					foreach( $this->data->config->pinp as $type => $templates ) {
 						if( isset($templates["config.ini"]) ) {
 							$configcache->hasConfigIni = true;
@@ -1413,7 +1413,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$arLibraryPath = $path;
 		}
 		$config = ($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
-		$templates = $config->templates;
+		$templates = $config->localTemplates;
 		if (is_array($templates)) {
 			$list = Array();
 			foreach ($templates as $type => $functions) {
