@@ -266,23 +266,37 @@ class htmlcleaner
 		if (is_array($config["delete_emptied"])) {
 			$config["delete_emptied"] = array_flip($config["delete_emptied"]);
 		}
+		if (is_array($config["delete_empty_containers"])) {
+			$config["delete_empty_containers"] = array_flip($config["delete_empty_containers"]);
+		}
 		$delete_stack = Array();
-
-		foreach ($parts as $part) {
-			if ($part->nodeType == HTML_CLEANER_NODE_CLOSINGSTYLE_NONE
-				&& isset($config["delete_emptied"][$part->nodeName])
-				&& count($delete_stack)) {
-				do {
-					$closed = array_pop($delete_stack);
-				} while ($closed["tag"] && $closed["tag"] != $part->nodeName);
-				if ($closed["delete"]) {
-					unset($part);
+		$skipNodes = 0;
+		foreach ($parts as $i => $part) {
+			if ($skipNodes > 0) {
+				$skipNodes--;
+				continue;
+			}
+			if ($part->nodeType == HTML_CLEANER_NODE_CLOSINGSTYLE_NONE) {
+				if (isset($config["delete_emptied"][$part->nodeName])
+						&& count($delete_stack)) {
+					do {
+						$closed = array_pop($delete_stack);
+					} while ($closed["tag"] && $closed["tag"] != $part->nodeName);
+					if ($closed["delete"]) {
+						unset($part);
+					}
 				}
 			} else
-			if ($part->nodeType == HTML_CLEANER_NODE_NODETYPE_NODE
-				&& isset($config["delete_emptied"][$part->nodeName])
-				&& count($delete_stack)) {
-					array_push($delete_stack, Array("tag" => $part->nodeName));
+			if ($part->nodeType == HTML_CLEANER_NODE_NODETYPE_NODE) {
+				if (isset($config["delete_emptied"][$part->nodeName])
+					&& count($delete_stack)) {
+						array_push($delete_stack, Array("tag" => $part->nodeName));
+				} else if (isset($config["delete_empty_containers"][$part->nodeName])) {
+						if ($parts[$i+1] && $parts[$i+1]->nodeName == $part->nodeName && $parts[$i+1]->nodeType == HTML_CLEANER_NODE_NODETYPE_CLOSINGNODE) {
+							$skipNodes = 1;
+							continue;
+						}
+				}
 			}
 
 			if ($part && is_array($rewrite_rules)) {
