@@ -33,8 +33,8 @@
 
     ******************************************************************/
 debug("paddressbook: Load","object");
-global $ariadne;
-require_once($ariadne."/objects/pdir.phtml");
+global $AR;
+require_once($AR->dir->install."/lib/objects/pdir.phtml");
 
 function sort_addresses($a,$b) {
 	global $addresses_sortby;

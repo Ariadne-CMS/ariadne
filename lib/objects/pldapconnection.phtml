@@ -19,8 +19,8 @@
     ******************************************************************/
 
 debug("pldapconnection: Load","object");
-global $ariadne;
-require_once($ariadne."/objects/pconnector.phtml");
+global $AR;
+require_once($AR->dir->install."/lib/objects/pconnector.phtml");
 
 class pldapconnection extends pconnector { // psearch class definition
 
