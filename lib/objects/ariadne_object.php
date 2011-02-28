@@ -2342,16 +2342,21 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if ($arLibrary) {
 			$arSuperFunction = str_replace($arLibrary.':', '', $arCallFunction);
 		}
-
+		if (strpos($arSuperFunction, "::") !== false) {
+			// template of a specific class defined via call("class::template");
+			list($arBaseType, $arSuperFunction)=explode("::", $arSuperFunction);
+		}
 		// remove current library path from the arLibrariesSeen array so that
 		// Ariadne will be able to re-enter the library and toggle the arSuperContext boolean there.
 		unset($arLibrariesSeen[$arLibraryPath]);
 		$arSuperContext[$arSuperPath.":".$arCallType.":".$arSuperFunction] = true;
+
 		debug("call_super: searching for the template following (path: $arSuperPath; type: $arCallType; function: $arCallFunction) from $this->path");
 		$template = $this->getPinpTemplate($arCallFunction, $this->path, '', false, $arLibrariesSeen, $arSuperContext);
 		if ($template["arCallTemplate"] && $template["arTemplateId"]) {
 			$arTemplates=$this->store->get_filestore("templates");
 			if ($arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"])) { 
+				debug("call_super: found template ".$template["arCallTemplate"]." on object with id ".$template["arTemplateId"]);
 				$arLibrary = $template['arLibrary'];
 				if (is_int($arLibrary)) {
 					// set the library name for unnamed libraries to 'current'
