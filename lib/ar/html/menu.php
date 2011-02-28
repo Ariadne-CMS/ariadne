@@ -262,11 +262,12 @@ EOF;
 		}
 		
 		public function root( $url, $path='/' ) {
-			if ($this->root == $this->current) {
+			if ($this->root == $this->current) { // FIXME: this looks like nonsense
 				$this->current = $path;
 			}
 			$this->rooturl = $url;
 			$this->root    = $path;
+			return $this;
 		}
 		
 		public function template( $template ) {
