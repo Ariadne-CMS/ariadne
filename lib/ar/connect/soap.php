@@ -16,8 +16,14 @@
 			return new ar_connect_soapServer( $wsdl, $options );
 		}
 	
-		public static function header( $namespace, $name, $data = null, $mustUnderstand = false, $actor = '' ) {
-			return new ar_connect_soapHeader( $namespace, $name, $data, $mustUnderstand, $actor );
+		public static function header( $namespace, $name, $data = null, $mustUnderstand = false, $actor = null ) {
+			if (isset($actor)) {
+				$soapHeader = new SoapHeader( $namespace, $name, $data, $mustUnderstand, $actor);
+			} else {
+				$soapHeader = new SoapHeader( $namespace, $name, $data, $mustUnderstand);
+			}
+			return $soapHeader;
+			//return new ar_connect_soapHeader( $namespace, $name, $data, $mustUnderstand, $actor );
 		}
 
 		public static function param( $data, $name ) {
@@ -36,8 +42,17 @@
 		function __construct( $wsdl, $options = array() ) {
 			$soapClient = new SoapClient( $wsdl, $options );
 			parent::__construct( $soapClient );
+		}	
+
+		function _soapCall($name, $arguments, $options = Array(), $inputHeaders = Array(), &$outputHeaders = Array()) {
+			$result = new arWrapper($this->wrapped->__soapCall($name, $arguments, $options, $inputHeaders, &$outputHeaders));
+			return $result;
 		}
-	
+
+		function _setSoapHeaders($soapHeaders = null) {
+			$this->wrapped->__setSoapHeaders($soapHeaders);
+		}
+
 	}
 
 	class ar_connect_soapServer extends arWrapper {
@@ -51,8 +66,12 @@
 	
 	class ar_connect_soapHeader extends arWrapper {
 		
-		function __construct( $namespace, $name, $data = null, $mustUnderstand = false, $actor = '' ) {
-			$soapHeader = new SoapHeader( $namespace, $name, $data, $mustUnderstand, $actor );
+		function __construct( $namespace, $name, $data = null, $mustUnderstand = false, $actor = null ) {
+			if (isset($actor)) {
+				$soapHeader = new SoapHeader( $namespace, $name, $data, $mustUnderstand, $actor);
+			} else {
+				$soapHeader = new SoapHeader( $namespace, $name, $data, $mustUnderstand);
+			}
 			parent::__construct( $soapHeader );
 		}
 	
