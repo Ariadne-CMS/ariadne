@@ -15,7 +15,7 @@
 				array_pop($ARCurrent->shortcut_redirect);
 			} else {
 				$arResult=false;
-				$this->error=sprintf($ARnls["err:shortcutnopath"],$this->path,$path);
+				debug("pshortuct::default.phtml: ".sprintf($ARnls["err:shortcutnopath"],$this->path,$path));
 			}
 		}
 		unset($ARConfig->cache[$this->data->path]->templates_path);
