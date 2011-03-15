@@ -728,9 +728,6 @@
 					$result = @finfo_file($finfo, $filename);
 				}
 				finfo_close($finfo);
-			} else {
-				// pre 5.3.0 style
-				$result = @mime_content_type($filename);
 			}
 			if (!$result) {
 				reset($mimemagic_data);
