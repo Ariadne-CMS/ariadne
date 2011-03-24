@@ -3056,12 +3056,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 
 		$nocache = true;
-		$item = pobject::getContext();
-		if ($item["arLibraryPath"]) { //  != NULL) {
-			echo "Error on line $errline in ".$item['arCallFunction'] ." in library ".$item["arLibraryPath"] ."\n<br>";
+		$context = pobject::getContext();
+		if ($context["arLibraryPath"]) { //  != NULL) {
+			echo "Error on line $errline in ".$context['arCallFunction'] ." in library ".$context["arLibraryPath"] ."\n<br>";
 			echo $errstr."\n<br>";
 		} else {
-			echo "Error on line $errline in ".$item['arCallFunction'] ." on object ".$errcontext['AR_this']->path."\n<br>";
+			echo "Error on line $errline in ".$context['arCallFunction'] ." on object ".$context['arCurrentObject']->path."\n<br>";
 			echo $errstr."\n<br>";
 		}
 
