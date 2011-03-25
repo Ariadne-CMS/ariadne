@@ -2499,17 +2499,25 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return sha1( $AR->sgSalt . $grants . $this->path);
 	}
 	
-	function sgBegin($grants, $key) {
+	function sgBegin($grants, $key = '') {
 		global $AR;
 		$result = false;
+		$context = $this->getContext();
 
 		// serialize the grants so the order does not matter, mod_grant takes care of the sorting for us
 		$this->_load("mod_grant.php");
 		$mg = new mod_grant();
 		$grantsarray = array();
 		$mg->compile($grants, $grantsarray);
-		$checkgrants = serialize($grantsarray);
-		$check = ( $AR->sgSalt ? sha1( $AR->sgSalt . $checkgrants . $this->path) : false ); // not using suKey because that checks for config grant
+
+		$check = false;
+		if ($context['scope'] == 'pinp') {
+			$checkgrants = serialize($grantsarray);
+			$check = ( $AR->sgSalt ? sha1( $AR->sgSalt . $checkgrants . $this->path) : false ); // not using suKey because that checks for config grant
+		} else {
+			$check = true;
+			$key = true;
+		}
 		if( $check !== false && $check === $key ) {
 			$AR->user->grants = array(); // unset all grants for the current user, this makes sure GetValidGrants gets called again for this path and all childs
 			$grantsarray = (array)$AR->sgGrants[$this->path];
