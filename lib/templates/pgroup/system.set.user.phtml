@@ -11,14 +11,31 @@
 							"action"	=> $action,
 							"path"		=> $this->path,
 							"id"		=> $this->data->login));
+
 			if ($action=="add") {
-				$this->store->link($path, $this->path.$user->data->login."/");
+				$this->sgBegin('add(pshortcut)');
+					$this->call('system.new.phtml', Array(
+							$ARConfig->nls->default  => Array(
+								'name' => $user->data->name
+							),
+							'arNewType'     => 'pshortcut',
+							'arNewFilename' => basename($path),
+							'keepurl'       => true,
+							'path'			=> $path
+					));
+					//$this->store->link($path, $this->path.$user->data->login."/");
+				$this->sgEnd();
 			} else {
-				if (($login=$user->data->login) && $login!=".") {
-					$this->store->delete($this->path.$login."/");
+				$login = $user->data->login;
+				if ($login && $login!=".") {
+					$this->sgBegin('>delete(pshortcut)');
+						$this->get($this->path.$login.'/', 'system.delete.phtml');
+						//$this->store->delete($this->path.$login."/");
+					$this->sgEnd();
 				}
 			}
 		}
+		$properties = Array();
 		//calculate and save new member properties
 		$members=$this->ls(".","system.get.login.phtml");
 		while (list($key, $member)=@each($members)) {
