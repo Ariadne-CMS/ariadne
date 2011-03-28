@@ -1,5 +1,42 @@
 ========================
-Changes in Ariadne 2.7.4
+Changes in Ariadne 2.7.5
+========================
+
+New features:
+- Added get_content_type function to mod_mimemagic
+- Added upgrade script for newer myqsl database which adds defaults to table fields
+- Mod_htmlcleaner now has the option to remove empty tags
+- Added error reporting support for Fatal errors
+- Added ar/connect/multigate, a connector to Multigate to allow easy messaging from Ariadne. Only supports IRC for now but multigate will allow a broad choice in messaging protocols.
+- Users no longer require hardlinks in groups, but can be shortcut items now.
+
+Changes to existing features:
+- rewrote the mysqlstore to do all query's with the internal store_run_query function, and replaced mysql_db_query because it is deprecated
+- Fixed iterator support for ARnls
+- Changed arSuperContext from a switch to an array which keeps score of seen templates. This resolves conflicts created by loading the same unnamed library on multiple paths.
+- Index.html now also allowed on ppage
+- Added default setting for ARBasedir in ariadne config to prevent problems with symlinks
+- Refactored the database init code;
+- Upgraded YUI to version 2.8.2
+- Fixes in the whole codebase to use $AR instead of $ariadne
+- sgBegin can be used in php-based scripts without a key to make it easier to get the correct grants.
+
+Bugfixes:
+- fixed NLS problem with file uploads
+- removed some unused code
+- FTP filenames now get the correct data for name info
+- Added missing case for Ariadne upgrade scripts
+- Fixes in mod_keepurl: make_real_path and get()
+- Removed magic marker that detected .pps and .xls files as msword
+- Fixed copy functions to check for illegal filenames
+- Fixed caching of library templates
+- Fixed endless loop when call_super()ing on an baseType::function.html call
+- ar/html/menu: fixed root() to return the correct value
+- ar/connect/soap: Fixed header instantiation and __soapCall methods
+
+
+========================
+Changes in release 2.7.4
 ========================
 
 This release has a number of small improvements and fixes, as well as a
