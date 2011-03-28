@@ -366,6 +366,8 @@
 					if ( trim($stringValue) !== "" ) {
 						$result .= $stringValue;
 					}
+				} else if ( $node instanceof ar_xmlNodes) {
+					$result .= $node->toString( $indentWith );
 				} else if ( is_string($node) ) {
 					$node = trim($node);
 					if( $node !== "" ) {
