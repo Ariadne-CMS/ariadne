@@ -2358,6 +2358,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			if ($arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"])) { 
 				debug("call_super: found template ".$template["arCallTemplate"]." on object with id ".$template["arTemplateId"]);
 				$arLibrary = $template['arLibrary'];
+				debug("call_super: found template on ".$template["arTemplateId"]);
 				if (is_int($arLibrary)) {
 					// set the library name for unnamed libraries to 'current'
 					// so that calls using getvar('arLibrary') will keep on working
@@ -3066,10 +3067,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$nocache = true;
 		$context = pobject::getContext();
 		if ($context["arLibraryPath"]) { //  != NULL) {
-			echo "Error on line $errline in ".$context['arCallFunction'] ." in library ".$context["arLibraryPath"] ."\n<br>";
+			echo "Error on line $errline in ".$context['arCallTemplateType'].'::'.$context['arCallFunction'] ." in library ".$context["arLibraryPath"] ."\n<br>";
 			echo $errstr."\n<br>";
 		} else {
-			echo "Error on line $errline in ".$context['arCallFunction'] ." on object ".$context['arCurrentObject']->path."\n<br>";
+			echo "Error on line $errline in ".$context['arCallTemplateType'].'::'.$context['arCallFunction'] ." on object ".$context['arCurrentObject']->path."\n<br>";
 			echo $errstr."\n<br>";
 		}
 
