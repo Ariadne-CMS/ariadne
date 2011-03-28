@@ -8,7 +8,6 @@ New features:
 - Mod_htmlcleaner now has the option to remove empty tags
 - Added error reporting support for Fatal errors
 - Added ar/connect/multigate, a connector to Multigate to allow easy messaging from Ariadne. Only supports IRC for now but multigate will allow a broad choice in messaging protocols.
-- Users no longer require hardlinks in groups, but can be shortcut items now.
 
 Changes to existing features:
 - rewrote the mysqlstore to do all query's with the internal store_run_query function, and replaced mysql_db_query because it is deprecated
