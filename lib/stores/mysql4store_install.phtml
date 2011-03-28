@@ -12,6 +12,14 @@ class mysql4store_install extends mysql4store {
 		return mysqlstore_install::create_property($property, $definition, $indexes);
 	}
 
+	function alter_property($property, $definition) {
+		return mysqlstore_install::alter_property($property, $definition);
+	}
+
+	function _generate_column_def($type, $size, $default = null) {
+		return mysqlstore_install::_generate_column_def($type, $size, $default);
+	}
+
 	function remove_property($property) {
 		return mysqlstore_install::remove_property($property);
 	}
