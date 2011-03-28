@@ -127,9 +127,15 @@
 				array_push($todo, Array(
 							"description" => "Adding defaults to store_prop definitions.",
 							"operation" => "2.7.5/upgrade.store_prop_tables.php",
-							"newversion" => "2.7.5"
+							"newversion" => "2.7.5pre1"
 							));
 			}
+		case "2.7.5pre1":
+				array_push($todo, Array(
+							"description" => "Bumping revision to 2.7.5.",
+							"operation" => "all/dummy.php",
+							"newversion" => "2.7.5"
+							));
 			
 	}
 
