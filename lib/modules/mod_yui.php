@@ -572,6 +572,7 @@
 		
 		/* dialog.add.list.php */
 		function getTypes($arObject, $showall) {
+			$result = Array();
 			if (!$showall) {
 				$typetree = $arObject->call('typetree.ini');
 				$thistypetree = $typetree[$arObject->type];
