@@ -1235,13 +1235,15 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					}
 				}
 			}
-			
+
+			if (is_array($this->data->config->pinp)) {
+				$configcache->localTemplates = $this->data->config->pinp;
+			}			
 			// hasConfigIni is checked in getConfig. Only calls config.ini if set to true
 			
 			if( !$configcache->hasDefaultConfigIni ) {
 				$configcache->hasConfigIni = false;
 				if( is_array($this->data->config->pinp) ) {
-					$configcache->localTemplates = $this->data->config->pinp;
 					foreach( $this->data->config->pinp as $type => $templates ) {
 						if( isset($templates["config.ini"]) ) {
 							$configcache->hasConfigIni = true;
