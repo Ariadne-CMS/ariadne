@@ -31,10 +31,10 @@
 			// the defined interface: $arCallArgs)
 			$this->data=current($this->get(".","system.get.data.phtml"));
 
-			if ($type=current($this->get($userpath, "system.get.type.phtml"))) {
-				if ($this->store->implements($type, "pgroup")) {
+			if ($userObj=current($this->get($userpath, "system.get.phtml"))) {
+				if ($userObj->AR_implements("pgroup")) {
 					$type="pgroup";
-				} else if ($this->store->implements($type, "puser")) {
+				} else if ($userObj->AR_implements("puser")) {
 					$type="puser";
 				} else {
 					$this->error=sprintf($ARnls["err:nousergroup"],$userpath);
