@@ -1,6 +1,5 @@
 <?php
 	$total = $arRequestedPath.$arRequestedTemplate; 
-
 	if( $arRequestedPath == $this->path ) {
 		$message = $ARnls["notfoundtemplate"];
 		$what = $arRequestedTemplate;
@@ -8,6 +7,8 @@
 		$message = $ARnls["notfoundpath"];
 		$what = substr($arRequestedPath, strlen($this->path));
 	}
+	$what  = htmlentities($what, ENT_COMPAT, 'UTF-8');
+	$total = htmlentities($total, ENT_COMPAT, 'UTF-8');
 
 	if( $this->CheckConfig($arCallFunction, $arCallArgs) ) {
 ?>
