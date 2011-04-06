@@ -39,6 +39,8 @@
 						}
 					}
 				}
+			} else {
+				$custom = array();
 			}
 
 			if( $this->arIsNewObject ) {
