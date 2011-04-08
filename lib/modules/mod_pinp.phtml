@@ -423,7 +423,6 @@ class scanner {
 									$result .= $yych;
 									$yych = $YYBUFFER[++$YYCURSOR];
 									while ($yych != "\n" && $yych != "\r" && ord($yych)!==0) {
-										$result .= $yych;
 										$yych = $YYBUFFER[++$YYCURSOR];
 									}
 									return PT_UNPARSED;
@@ -433,11 +432,12 @@ class scanner {
 									$start_line = $this->YYLINE;
 									$yych = $YYBUFFER[++$YYCURSOR];
 									while (ord($yych)!==0) {
-										$result .= $yych;
 										if ($yych == "\n") {
+											$result .= $yych;
 											$this->YYLINE++;
 										}
 										if ($yych == '*') {
+											$result .= $yych;
 											if  (($yych = $YYBUFFER[++$YYCURSOR]) == '/') {
 												$result .= $yych;
 												++$YYCURSOR;
