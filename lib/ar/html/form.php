@@ -961,5 +961,24 @@
 			}
 			return ar_html::tag('fieldset', $content, $attributes);
 		}
+
+		public function getNameValue() {
+			$result = Array();
+			foreach ($this->children as $child) {
+				$result = array_merge($result, $child->getNameValue());
+			}
+			return $result;
+		}
+
+		public function validate( $inputs = null ) {
+			$valid = array();
+			foreach ( $this->children as $key => $child ) {
+				$result = $child->validate( $inputs );
+				$valid  = array_merge( $valid, $result );
+			}
+			return $valid;			
+		}
+
+
 	}
 ?>
