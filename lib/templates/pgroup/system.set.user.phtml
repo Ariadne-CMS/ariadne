@@ -28,10 +28,13 @@
 			} else {
 				$login = $user->data->login;
 				if ($login && $login!=".") {
-					$this->sgBegin('>delete(pshortcut)');
-						$this->get($this->path.$login.'/', 'system.delete.phtml');
-						//$this->store->delete($this->path.$login."/");
-					$this->sgEnd();
+					if ($user->AR_implements('pshortcut')) {
+						$this->sgBegin('>delete(pshortcut)');
+							$this->get($this->path.$login.'/', 'system.delete.phtml');
+						$this->sgEnd();
+					} else {
+						$this->store->delete($this->path.$login."/");
+					}
 				}
 			}
 		}
