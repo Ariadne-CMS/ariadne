@@ -28,9 +28,10 @@
 			} else {
 				$login = $user->data->login;
 				if ($login && $login!=".") {
-					if ($user->AR_implements('pshortcut')) {
+					$linkedObj = current($this->get($this->path.$login, 'system.get.phtml'));
+					if ($linkedObj->AR_implements('pshortcut')) {
 						$this->sgBegin('>delete(pshortcut)');
-							$this->get($this->path.$login.'/', 'system.delete.phtml');
+							$linkedObj->call('system.delete.phtml');
 						$this->sgEnd();
 					} else {
 						$this->store->delete($this->path.$login."/");
