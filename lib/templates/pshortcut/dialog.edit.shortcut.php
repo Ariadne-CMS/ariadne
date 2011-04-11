@@ -31,7 +31,7 @@
 			$wgWizFlow[] = array(
 				"title" => $ARnls["customdata"],
 				"image" => $AR->dir->images.'wizard/customdata.png',
-				"template" => "dialog.edit.custom.php" 
+				"template" => "dialog.edit.shortcut.custom.php" 
 			);
 		}
 		if( !$this->lock('O')){
