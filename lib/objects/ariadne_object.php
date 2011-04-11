@@ -2354,7 +2354,26 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$arSuperContext[$arSuperPath.":".$arCallType.":".$arSuperFunction] = true;
 
 		debug("call_super: searching for the template following (path: $arSuperPath; type: $arCallType; function: $arCallFunction) from $this->path");
-		$template = $this->getPinpTemplate($arCallFunction, $this->path, '', false, $arLibrariesSeen, $arSuperContext);
+		// FIXME: Redirect code has to move to getPinpTemplate()
+		$redirects	= $ARCurrent->shortcut_redirect;
+		if (is_array($redirects)) {
+			$redirpath = $this->path;
+			while (!$template['arTemplateId'] && 
+						($redir = array_pop($redirects)) &&
+							$redir["keepurl"] && 
+								(substr($redirpath, 0, strlen($redir["dest"])) == $redir["dest"])
+			) {
+				debug("call_super: following shortcut redirect: $redirpath; to ".$redir["dest"]);
+				$template = $this->getPinpTemplate($arCallFunction, $redirpath, $redir["dest"], false, $arLibrariesSeen, $arSuperContext);
+				$redirpath = $redir['src'];
+			}
+			if (!$template["arTemplateId"]) {
+				$template = $this->getPinpTemplate($arCallFunction, $redirpath, '', false, $arLibrariesSeen, $arSuperContext);
+			}
+		}
+		if (!$template["arTemplateId"]) {
+			$template = $this->getPinpTemplate($arCallFunction, $this->path, '', false, $arLibrariesSeen, $arSuperContext);
+		}
 		if ($template["arCallTemplate"] && $template["arTemplateId"]) {
 			$arTemplates=$this->store->get_filestore("templates");
 			if ($arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"])) { 
