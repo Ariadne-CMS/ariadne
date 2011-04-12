@@ -2552,7 +2552,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	
 	function sgEnd() {
 		global $AR;
-		$ar->user->grants = array(); // unset all grants for the current user, this makes sure GetValidGrants gets called again for this path and all childs
+		$AR->user->grants = array(); // unset all grants for the current user, this makes sure GetValidGrants gets called again for this path and all childs
 		unset($AR->sgGrants[$this->path]);
 		return true; // temp return true;
 	}
