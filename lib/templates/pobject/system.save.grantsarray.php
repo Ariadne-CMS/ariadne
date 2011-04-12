@@ -27,9 +27,6 @@
 			$this->error=$ARnls["err:missingparam"];
 		}
 		if (!$this->error) {
-			// first make sure that the object is clean (data can only be set via 
-			// the defined interface: $arCallArgs)
-			$this->data=current($this->get(".","system.get.data.phtml"));
 
 			if ($userObj=current($this->get($userpath, "system.get.phtml"))) {
 				if ($userObj->AR_implements("pgroup")) {
@@ -41,7 +38,11 @@
 				}
 				if (!$this->error) {
 					if ($id=current($this->get($userpath, "system.get.login.phtml"))) {
+						// first make sure that the object is clean (data can only be set via 
+						// the defined interface: $arCallArgs)
+						$this->data=current($this->get(".","system.get.data.phtml"));
 						$this->data->config->grants[$type][$id] = $grants;
+						$this->save($properties);
 						$result=current($this->get($userpath, "system.save.grants.user.phtml", Array(
 							"action"	=> "set",
 							"path"		=> $this->path,
@@ -55,7 +56,6 @@
 				$this->error=sprintf($ARnls["err:notfindusergroup"],$userpath);
 			}
 			if (!$this->error) {
-				$this->save($properties);
 				// clear public cache recursively
 				$this->ClearCache($this->path, false, true);
 			}
