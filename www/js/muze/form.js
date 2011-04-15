@@ -121,20 +121,25 @@ muze.form.keyboardNumbers = function() {
 			for (i=0; i<inputs.length; i++) {
 				if (inputs[i] && inputs[i].className && inputs[i].className.indexOf("muze_form_keyboardNumbers") != -1) {
 					inputelm = inputs[i];
-					muze.event.attach(inputelm, "keypress", muze.form.keyboardNumbers.execute);
+					muze.event.attach(inputelm, "keydown", muze.form.keyboardNumbers.execute); // IE does not fire keypress event for arrows.
 				}
 			}
 		},
 		execute : function(evt) {
+			var keyCode = evt.keyCode ? evt.keyCode : evt.which ? evt.which : evt.charCode;
 			if (!isNaN(this.value)) {
 				myvalue = parseInt(this.value);
-				if (evt.keyCode == 38) { // keyboard arrow up
+				if (isNaN(myvalue)) {
+					myvalue = 0;
+				}
+				if (keyCode == 38) { // keyboard arrow up
 					myvalue++;
 				}
-				if (evt.keyCode == 40) { // keyboard arrow down
+				if (keyCode == 40) { // keyboard arrow down
 					myvalue--;
 				}
 				this.value = myvalue;
+				muze.event.fire(this, "change");
 			}
 		}
 	}
