@@ -123,14 +123,16 @@ muze.form.keyboardNumbers = function() {
 					inputelm = inputs[i];
 					muze.event.attach(inputelm, "keypress", muze.form.keyboardNumbers.execute);
 				}
+			}
 		},
 		execute : function(evt) {
 			if (!isNaN(this.value)) {
 				myvalue = parseInt(this.value);
-				if (evt.keyCode == '') { // keyboard arrow up
+				if (evt.keyCode == 38) { // keyboard arrow up
 					myvalue++;
 				}
-				if (evt.keyCode == '') { // keyboard arrow down
+				if (evt.keyCode == 40) { // keyboard arrow down
+					myvalue--;
 				}
 				this.value = myvalue;
 			}
