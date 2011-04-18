@@ -134,12 +134,14 @@ muze.form.keyboardNumbers = function() {
 				}
 				if (keyCode == 38) { // keyboard arrow up
 					myvalue++;
+					this.value = myvalue;
+					muze.event.fire(this, "change");
 				}
 				if (keyCode == 40) { // keyboard arrow down
 					myvalue--;
+					this.value = myvalue;
+					muze.event.fire(this, "change");
 				}
-				this.value = myvalue;
-				muze.event.fire(this, "change");
 			}
 		}
 	}
