@@ -174,23 +174,14 @@
 						$this->getUser('public');
 						$result = LD_ERR_SESSION;
 					} else {
-						$cookie = ldGetCredentials();
-						$cookie_login = $cookie[$ARCurrent->session->id]['login'];
-		
-						if ($cookie_login) {
-							$login = $ARCurrent->session->get("ARLogin");
-							if (ldCheckCredentials($login)) {
-								debug("checkLogin: logging ($login) into a private session (".$ARCurrent->session->id.") with credentials from cookie", "all");
-								$result = $this->getUser($login, $ARUserDir);
-							} else {
-								debug("checkLogin: could not login ($login) on private session (".$ARCurrent->session->id.") with credentials from cookie: removing cookie", "all");
-								unset($cookie[$ARCurrent->session->id]);
-								setcookie("ARCookie", serialize($cookie), 0, '/');
-								$this->getUser('public');
-								$result = LD_ERR_ACCESS;
-							}
+						$login = $ARCurrent->session->get("ARLogin");
+						if (ldCheckCredentials($login)) {
+							debug("checkLogin: logging ($login) into a private session (".$ARCurrent->session->id.") with credentials from cookie", "all");
+							$result = $this->getUser($login, $ARUserDir);
 						} else {
-							debug("checkLogin: user tried to hijack a session (".$ARCurrent->session->id.") ", "all");
+							debug("checkLogin: could not login ($login) on private session (".$ARCurrent->session->id.") with credentials from cookie: removing cookie", "all");
+							unset($cookie[$ARCurrent->session->id]);
+							setcookie("ARCookie", serialize($cookie), 0, '/');
 							$this->getUser('public');
 							$result = LD_ERR_ACCESS;
 						}

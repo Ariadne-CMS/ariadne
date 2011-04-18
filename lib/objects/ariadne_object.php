@@ -3065,6 +3065,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			case 'www':
 			case 'dir:www':
 				return $AR->dir->www;
+			case 'ARSessionKeyCheck':
+				$result = null;
+				if (function_exists('ldGenerateSessionKeyCheck')) {
+					$result = ldGenerateSessionKeyCheck();
+				}
+				return $result;
+			break;
 		}
 	}
 

@@ -56,7 +56,7 @@
 
 		$cookie[$ARCurrent->session->id]['login']=$login;
 		$cookie[$ARCurrent->session->id]['timestamp']=time();
-		$cookie[$ARCurrent->session->id]['check']="{".ARCrypt($login.$ARUserDir.$session_key)."}";
+		$cookie[$ARCurrent->session->id]['check']=ldGenerateSessionKeyCheck();
 		$ARCookie=serialize($cookie);
 		debug("setting cookie ($ARCookie)");
 		header('P3P: CP="NOI CUR OUR"');
@@ -147,6 +147,13 @@
 
 	}
 
+	function ldGenerateSessionKeyCheck() {
+	global $ARCurrent;
+		$session_key = $ARCurrent->session->get('ARSessionKey', true);
+		$ARUserDir   = $ARCurrent->session->get('ARUserDir', true);
+		$login       = $ARCurrent->session->get('ARLogin');
+		return "{".ARCrypt($login.$ARUserDir.$session_key)."}";
+	}
 
 	function ldGetCredentials() {
 		/* 
@@ -165,19 +172,28 @@
 	global $ARCurrent, $AR;
 		debug("ldCheckCredentials()","object");
 		$result=false;
-		$session_key = $ARCurrent->session->get('ARSessionKey', true);
-		$ARUserDir = $ARCurrent->session->get('ARUserDir', true);
 		$cookie=ldGetCredentials();
-		if ($session_key && $login==$cookie[$ARCurrent->session->id]['login']
+		if ($login==$cookie[$ARCurrent->session->id]['login']
 			&& ($saved=$cookie[$ARCurrent->session->id]['check'])) {
-			$check="{".ARCrypt($login.$ARUserDir.$session_key)."}";
+			$check=ldGenerateSessionKeyCheck();
 			if ($check==$saved && !$ARCurrent->session->get('ARSessionTimedout', 1)) {
 				$result=true;
 			} else {
 				debug("login check failed","all");
 			}
 		} else {
-			debug("wrong login or corrupted cookie","all");
+			$ARSessionKeyCheck = $_GET['ARSessionKeyCheck'];
+			if (!$ARSessionKeyCheck) {
+				$ARSessionKeyCheck = $_POST['ARSessionKeyCheck'];
+			}
+			if ($ARSessionKeyCheck) {
+				debug("ldCheckCredentials: trying ARSessionKeyCheck ($ARSessionKeyCheck)");
+				if ($ARSessionKeyCheck == ldGenerateSessionKeyCheck()) {
+					$result = true;
+				}
+			} else {
+				debug("wrong login or corrupted cookie","all");
+			}
 		}
 		return $result;
 	}
