@@ -639,6 +639,11 @@
 	}
 
 	class ar_html_formInputPassword extends ar_html_formInputText {
+
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null ) {
+			$value = ''; // never display a password's value
+			return parent::getInput($type, $name, $value, $disabled, $id, $title);
+		}
 		
 	}
 	
