@@ -50,7 +50,7 @@
 		$AR->user->data->login=$ARLogin="admin";
 
 		$ax_config["writeable"]=false;
-		$ax_config["database"]="../ariadne.ax";
+		$ax_config["database"]="../packages/base.ax";
 		echo "ax file (".$ax_config["database"].")\n";
 		set_time_limit(0);
 		$inst_store = $ax_config["dbms"]."store";
