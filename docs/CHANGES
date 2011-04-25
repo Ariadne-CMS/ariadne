@@ -1,4 +1,20 @@
 ========================
+Changes in Ariadne 2.7.6
+========================
+
+New features:
+- Added new dynamic form functionality. See www/js/form.js.
+- Added the option to post the Ariadne session check key when cookies are not available (in flash applications).
+
+Changes to existing features:
+- ar/form: password fields no longer shows passwords value in the input
+
+Bugfixes:
+- Fixed upgrade from 2.4rc2 (ariadne base package was renamed).
+- Non-default templates are not saved within the unnamed library cache anymore.
+
+
+========================
 Changes in Ariadne 2.7.5
 ========================
 
