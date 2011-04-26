@@ -136,6 +136,12 @@
 							"operation" => "all/dummy.php",
 							"newversion" => "2.7.5"
 							));
+		case "2.7.5":
+				array_push($todo, Array(
+							"description" => "Bumping revision to 2.7.6.",
+							"operation" => "all/dummy.php",
+							"newversion" => "2.7.6"
+							));
 			
 	}
 
