@@ -36,8 +36,11 @@ class session {
 			$this->id=$id;
 			$this->lastchanged=$result->lastchanged;
 			$this->system = $result->data->system;
+			if (isset($this->system->timeout)) {
+				$this->timeout = $this->system->timeout;
+			}
 			unset($result->data->system);
-			if ($result->data->ARSessionTimedout || $this->lastchanged < (time()-$this->timeout)) {
+			if ($result->data->ARSessionTimedout || $this->timeout && $this->lastchanged < (time()-$this->timeout)) {
 				debug("session: ".$this->id." ARSessionTimedout", "all");
 				$this->system->ARSessionTimedout = true;
 			}
@@ -74,6 +77,10 @@ class session {
         debug("session->get: end","all");
 		return $result;
    	}
+
+	function setTimeout($timeout = 0) {
+		$this->put('timeout', $timeout, true);
+	}
 
 	function save($id=0, $forceupdate=0) {
         debug("session->save($id)","store");
