@@ -179,6 +179,10 @@
 					$cachetime=$timecheck+3600;
 				} else {
 					$cachetime=$mtime; 
+					// same '30 minutes' as used 13 lines above
+					if($cachetime == 0){
+						$cachetime = $timecheck + 1800;
+					}
 				}
 				if (file_exists($cachedheader)) {
 					$filedata = file($cachedheader);
