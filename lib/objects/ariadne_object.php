@@ -2684,6 +2684,15 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 	}
 
+	function _setsessiontimeout($timeout = 0) {
+	global $ARCurrent;
+		if ($ARCurrent->session) {
+			return $ARCurrent->session->setTimeout($timeout);
+		} else {
+			return false;
+		}
+	}
+
 	function _killsession() {
 	global $ARCurrent;
 
