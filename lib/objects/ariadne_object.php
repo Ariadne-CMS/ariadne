@@ -1814,7 +1814,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 							$this->nlsdata=$this->data->$nls;
 							$continue=true;
 						} else {
-							// requested language not available, allnls not set
+							debug("CheckConfig: requested language not available, allnls not set","object");
 							// -> skip this object (do not run template but do return false)
 							$continue=false;
 						}
@@ -3104,12 +3104,16 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$nocache = true;
 		$context = pobject::getContext();
 		if ($context["arLibraryPath"]) { //  != NULL) {
-			echo "Error on line $errline in ".$context['arCallTemplateType'].'::'.$context['arCallFunction'] ." in library ".$context["arLibraryPath"] ."\n<br>";
-			echo $errstr."\n<br>";
+			$msg = "Error on line $errline in ".$context['arCallTemplateType'].'::'.$context['arCallFunction'] ." in library ".$context["arLibraryPath"] ."\n".$errstr."\n";
 		} else {
-			echo "Error on line $errline in ".$context['arCallTemplateType'].'::'.$context['arCallFunction'] ." on object ".$context['arCurrentObject']->path."\n<br>";
-			echo $errstr."\n<br>";
+			$msg = "Error on line $errline in ".$context['arCallTemplateType'].'::'.$context['arCallFunction'] ." on object ".$context['arCurrentObject']->path."\n".$errstr."\n";
 		}
+		$display = ini_get('display_errors');
+
+		if($display) {
+			echo $msg;
+		}
+		error_log($msg);
 
 		return false;
 	}
