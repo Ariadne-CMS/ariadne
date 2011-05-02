@@ -211,7 +211,7 @@
 				<font face="helvetica, sans-serif"><b><?php echo $ARnls["short"]; ?></b>&nbsp;:</font>
 			</td><td>
 				<input type="text" name="<?php echo $nls; ?>[name]" size="32" maxlength="32" value="<?php 
-					echo ereg_replace('&','&amp;',$this->getdata("name",$nls)); ?>">
+					echo preg_replace('/&/','&amp;',$this->getdata("name",$nls)); ?>">
 			</td>
 		</tr><tr>
 			<td align="right" valign="top">
@@ -219,7 +219,7 @@
 			</td>
 			<td>
 				<textarea name="<?php echo $nls; ?>[summary]" cols=62" rows="4" wrap="soft"><?php 
-					echo ereg_replace("&","&amp;",$this->getdata("summary",$nls)); 
+					echo preg_replace("/&/","&amp;",$this->getdata("summary",$nls)); 
 				?></textarea>
 			</td>
 		</tr>

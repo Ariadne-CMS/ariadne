@@ -35,7 +35,7 @@
 		<label for="summary"><?php echo $ARnls["summary"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
 		<textarea name="<?php echo $selectednls."[summary]"; ?>" class="inputbox"><?php
-			echo ereg_replace("&","&amp;",$this->getdata("summary", $selectednls));
+			echo preg_replace("/&/","&amp;",$this->getdata("summary", $selectednls));
 		?></textarea>
 	</div>
 	<div class="field">

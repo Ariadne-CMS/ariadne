@@ -79,7 +79,7 @@
   </td>
   <td>
     <textarea name="<?php echo $selectednls."[summary]"; ?>" cols="50" rows="4" wrap="soft"><?php
-        echo ereg_replace("&","&amp;",$this->getdata("summary",$selectednls));
+        echo preg_replace("/&/","&amp;",$this->getdata("summary",$selectednls));
     ?></textarea>
   </td>
 </tr><tr>
@@ -88,7 +88,7 @@
   </td>
   <td>
     <textarea name="<?php echo $selectednls."[effect]"; ?>" cols="50" rows="4" wrap="soft"><?php
-        echo ereg_replace("&","&amp;",$this->getdata("effect",$selectednls));
+        echo preg_replace("/&/","&amp;",$this->getdata("effect",$selectednls));
     ?></textarea>
   </td>
 </tr>

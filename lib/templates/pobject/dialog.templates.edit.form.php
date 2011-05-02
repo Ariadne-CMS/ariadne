@@ -41,8 +41,8 @@
 	} else {
 		$file = $template;
 	}
-	$file=ereg_replace("&","&amp;",$file);
-	$file=ereg_replace("<","&lt;", ereg_replace(">","&gt;",$file));
+	$file=preg_replace("/&/","&amp;",$file);
+	$file=preg_replace("/</","&lt;", preg_replace("/>/","&gt;",$file));
 
 ?>
 	<script type="text/javascript">

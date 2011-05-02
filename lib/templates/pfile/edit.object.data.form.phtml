@@ -49,7 +49,7 @@
 						}
 					?>
 					<textarea name="<?php echo $selectednls."[summary]"; ?>" cols="30" rows="<?php echo $rows; ?>" wrap="soft"><?php 
-							echo ereg_replace("&","&amp;",$this->getdata("summary", $selectednls)); 
+							echo preg_replace("/&/","&amp;",$this->getdata("summary", $selectednls)); 
 					?></textarea>
 				</td>
 			</tr><tr>

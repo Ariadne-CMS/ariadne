@@ -14,7 +14,7 @@
 			<div class="field">
 				<label for="grants" class="required"><?php echo $ARnls["grants"]; ?></label>
 				<textarea id="grants" name="grants" class="inputbox<?php if( !$grantkey ) echo " wgWizAutoFocus"; ?>" rows="5" cols="42"><?php
-					echo ereg_replace("&","&amp;",$this->getvar("grants"));
+					echo preg_replace("/&/","&amp;",$this->getvar("grants"));
 				?></textarea>
 			</div>
 			<div class="field">

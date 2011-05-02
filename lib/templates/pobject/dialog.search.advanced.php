@@ -16,7 +16,7 @@
 	<div class="field">
 		<label for="query"><?php echo $ARnls["ariadne:query"]; ?></label>
 		<textarea id="query" name="query" class="inputbox" rows="5" cols="42"><?php
-			echo ereg_replace("&","&amp;",$query);
+			echo preg_replace("/&/","&amp;",$query);
 		?></textarea>
 	</div>
 </fieldset>

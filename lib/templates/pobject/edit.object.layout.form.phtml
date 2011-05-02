@@ -309,8 +309,8 @@ function insertTab(event,obj) {
 
 <textarea name="linenumber" id="linenumber"  wrap="off" readonly class="linenumbers" tabindex="-1">
 <?php
-	$file=ereg_replace("&","&amp;",$file);
-	$file=ereg_replace("<","&lt;", ereg_replace(">","&gt;",$file));
+	$file=preg_replace("/&/","&amp;",$file);
+	$file=preg_replace("/</","&lt;", preg_replace("/>/","&gt;",$file));
 
 	$linetotal = 1;
 	$linetotal = substr_count( $file, "\n");
