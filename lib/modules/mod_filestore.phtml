@@ -27,7 +27,9 @@
 
 	is_empty($id)
 
-	copy($id, $newid, $name="", $newname="")
+	copy($id, $name, $newid, $newname)
+
+	copyNode($id, $newid)
 
 	move($id, $newid, $name="", $newname="")
 
@@ -297,6 +299,17 @@
 			$source=$this->make_path($id, $name);
 			$target=$this->make_path($newid, $newname, WRITE);
 			return copy($source, $target);
+		}
+
+		function copyNode($id, $newid) {
+			$source=$this->make_path($id);
+			$target=$this->make_path($newid, '', WRITE);
+			$files = $this->ls($id);
+			if (is_array($files)) {
+				foreach ($files as $file) {
+					copy($source."_".$file, $target."_".$file);
+				}
+			}
 		}
 
 		function move($id, $name, $newid, $newname) {
