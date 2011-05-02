@@ -557,7 +557,7 @@ class mysqlstore extends store{
 						$needunlocking = true;
 
 						$subid=$this->get_nextid($parent, $mask);
-						$path=ereg_replace("\{([0-9]:)?id\}",strval($subid),$path);
+						$path=preg_replace("/\{([0-9]:)?id\}/",strval($subid),$path);
 						$epath=AddSlashes($path);
 					} else {
 						error("PANIC: could not obtain write lock on nodes table!");
@@ -773,7 +773,7 @@ class mysqlstore extends store{
 					if ($qresult) {
 						$needunlocking = true;
 						$subid = $this->get_nextid($parent, $mask);
-						$destination=ereg_replace("\{([0-9]:)?id\}",strval($subid),$destination);
+						$destination=preg_replace("/\{([0-9]:)?id\}/",strval($subid),$destination);
 						$edestination=AddSlashes($destination);
 					} else {
 						error("PANIC: could not obtain write lock on nodes table!");
@@ -867,7 +867,7 @@ class mysqlstore extends store{
 					if ($qresult){
 						$needunlocking = true;
 						$subid = $this->get_nextid($parent, $mask);
-						$destination=ereg_replace("\{([0-9]:)?id\}",strval($subid),$destination);
+						$destination=preg_replace("/\{([0-9]:)?id\}/",strval($subid),$destination);
 						$edestination=AddSlashes($destination);
 					} else {
 						error("PANIC: could not obtain write lock on nodes table!");

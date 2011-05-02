@@ -1305,7 +1305,7 @@ class soap_transport_http extends nusoap_base {
                 if(ereg("^(.*)\r?\n\r?\n",$data)) {
                         $this->debug("found proper separation of headers and document");
                         $this->debug("getting rid of headers, stringlen: ".strlen($data));
-                        $clean_data = ereg_replace("^[^<]*\r\n\r\n","", $data);
+                        $clean_data = preg_replace("/^[^<]*\r\n\r\n/","", $data);
                         $this->debug("cleaned data, stringlen: ".strlen($clean_data));
                 */
                 } else {
@@ -1401,7 +1401,7 @@ class soap_transport_http extends nusoap_base {
                 if(ereg("^(.*)\r?\n\r?\n",$data)) {
                         $this->debug("found proper separation of headers and document");
                         $this->debug("getting rid of headers, stringlen: ".strlen($data));
-                        $clean_data = ereg_replace("^[^<]*\r\n\r\n","", $data);
+                        $clean_data = preg_replace("/^[^<]*\r\n\r\n/","", $data);
                         $this->debug("cleaned data, stringlen: ".strlen($clean_data));
                 } else {
                         $this->setError('no proper separation of headers and document.');

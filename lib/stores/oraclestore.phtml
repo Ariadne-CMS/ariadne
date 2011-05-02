@@ -617,7 +617,7 @@ class oraclestore extends store{
 					// before we proceed, we need to lock the 'nodes' and 'objects' table
 
 						$subid=$this->get_nextid($parent, $mask);
-						$path=ereg_replace("\{([0-9]:)?id\}",strval($subid),$path);
+						$path=preg_replace("/\{([0-9]:)?id\}/",strval($subid),$path);
 						$epath=AddSlashes($path);
 						debug("save: new path: $path ($subid)","all");
 				}
@@ -827,7 +827,7 @@ class oraclestore extends store{
 			$mask = substr($destination, strlen($parent));
 			if (ereg("(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) {
 					$subid = $this->get_nextid($parent, $mask);
-					$destination=ereg_replace("\{([0-9]:)?id\}",strval($subid),$destination);
+					$destination=preg_replace("/\{([0-9]:)?id\}/",strval($subid),$destination);
 					$edestination=AddSlashes($destination);
 					debug("link: new destination: $destination ($subid)","all");
 			}
@@ -919,7 +919,7 @@ class oraclestore extends store{
 			$mask = substr($destination, strlen($parent));
 			if (ereg("(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) {
 					$subid = $this->get_nextid($parent, $mask);
-					$destination=ereg_replace("\{([0-9]:)?id\}",strval($subid),$destination);
+					$destination=preg_replace("/\{([0-9]:)?id\}/",strval($subid),$destination);
 					$edestination=AddSlashes($destination);
 					debug("move: new destination: $destination ($subid)","all");
 			}

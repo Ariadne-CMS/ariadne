@@ -2,7 +2,7 @@
 	echo "<b>$this->error</b><br>\n";
 ?>
 <script>
-	alert('<?php echo ereg_replace("'","\\'",$this->error); ?>');
+	alert('<?php echo preg_replace("/'/","\\'",$this->error); ?>');
 	history.back();
 </script>
 <form>

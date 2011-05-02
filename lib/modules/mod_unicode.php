@@ -70,7 +70,7 @@
 		function convertToUTF8($charset, $string) {
 		global $charset_table;
 			if (!$charset_table[$charset]) {
-				$tablename = ereg_replace('[^a-z0-9_-]*', '', strtolower($charset));
+				$tablename = preg_replace('/[^a-z0-9_-]*/', '', strtolower($charset));
 				include("mod_unicode.$tablename.php");
 				$charset_table[$charset] = $table;
 			}

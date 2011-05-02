@@ -19,7 +19,7 @@
       if (is_array($value)) {
         arKeepVars($value, $prefix.$key.$postfix);
       } else { // value not in array
-        echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".ereg_replace('"','&quot;',$value)."\">\n";
+        echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".preg_replace('/"/','&quot;',$value)."\">\n";
       }
     }
   }

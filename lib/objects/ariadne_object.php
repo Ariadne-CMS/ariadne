@@ -693,10 +693,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			if (is_bool($https)) {
 				if ($https) {
 					if ($AR->https) {
-						$url = ereg_replace('^http:', 'https:', $url);
+						$url = preg_replace('/^http:/', 'https:', $url);
 					}
 				} else {
-					$url = ereg_replace('^https:', 'http:', $url);
+					$url = preg_replace('/^https:/', 'http:', $url);
 				}
 			}
 		} else {
@@ -2581,8 +2581,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	function _widget($arWidgetName, $arWidgetTemplate, $arWidgetArgs="", $arWidgetType="lib") {
 	global $AR, $ARConfig, $ARCurrent, $ARnls;
 
-		$arWidgetName=ereg_replace("[^a-zA-Z0-9\/]","",$arWidgetName);
-		$arWidgetTemplate=ereg_replace("[^a-zA-Z0-9\.]","",$arWidgetTemplate);
+		$arWidgetName=preg_replace("/[^a-zA-Z0-9\/]/","",$arWidgetName);
+		$arWidgetTemplate=preg_replace("/[^a-zA-Z0-9\.]/","",$arWidgetTemplate);
 		if ($arWidgetType=="www") {
 			$coderoot=$AR->dir->root;
 		} else {

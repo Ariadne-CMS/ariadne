@@ -352,7 +352,7 @@ class axstore {
 				if ($match[1]) {
 					$subid=substr("000000000".$subid,-(intval($match[1])));
 				}
-				$destination=ereg_replace("\{[0-9]:id\}",strval($subid),$destination);
+				$destination=preg_replace("/\{[0-9]:id\}/",strval($subid),$destination);
 				$edestination=AddSlashes($destination);
 				debug("axstore::link: new destination: $destination ($subid)","all");
 			}
@@ -513,7 +513,7 @@ class axstore {
 			if ($match[1]) { 
 				$subid=substr("000000000".$subid,-(intval($match[1])));
 			}
-			$path=ereg_replace("\{[0-9]:id\}",strval($subid),$path);
+			$path=preg_replace("/\{[0-9]:id\}/",strval($subid),$path);
 		}
 /*
 		if (is_array($properties)) {
