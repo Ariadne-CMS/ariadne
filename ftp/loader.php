@@ -585,7 +585,7 @@
 					case 'LIST':
 						$args = chop($args);
 						// only use the last word (some clients issue LIST -l [filename])
-						$args=ereg_replace('(-[^[:space:]]+)?[[:space:]]*([^[:space:]]*)$', '\2', $args);
+						$args=preg_replace('/(-[^[:space:]]+)?[[:space:]]*([^[:space:]]*)$/', '\2', $args);
 						debug("LIST ARGS($args)");
 						$path = $args;
 						ftp_TranslatePath($path, $listMode);
@@ -868,7 +868,7 @@
 
 					case 'MKD':
 						$path_requested = $args;
-						$path=ereg_replace('/'.ESPCHL.'[^/]*'.ESPCHR.'/', "/", $args);
+						$path=preg_replace("|/".ESPCHL.'[^/]*'.ESPCHR."/|", "/", $args);
 						eregi('^(.*[/])?(.*)$', $path, $regs);
 						$arNewFilename=eregi_replace('[^.a-z0-9_-]', '_', $regs[2]);
 

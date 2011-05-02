@@ -160,7 +160,7 @@
 				if (!eregi('^[[:space:]]*#', $line, $regs)) {
 					if (eregi('^([^[:space:]]*)(.*)$', $line, $regs)) {
 						$mimetype = $regs[1];
-						$extensions = trim(ereg_replace('[[:space:]]+', ' ', $regs[2]));
+						$extensions = trim(preg_replace('/[[:space:]]+/', ' ', $regs[2]));
 						if ($extensions) {
 							$extensions = explode(' ', $extensions);
 							reset($extensions);

@@ -123,7 +123,7 @@
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			$captchaImg = $me->getvar('show');
-			$captchaImg = ereg_replace("[\\\/]", "", $captchaImg);
+			$captchaImg = preg_replace("|[\\\/]|", "", $captchaImg);
 			$filename = $me->store->get_config('files').'temp/hn_captcha_'.$captchaImg.'.jpg';
 //			ldSetContent('image/jpg');
 			if( file_exists($filename) ) {	

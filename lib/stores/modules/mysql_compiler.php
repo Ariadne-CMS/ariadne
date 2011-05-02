@@ -127,7 +127,7 @@ class mysql_compiler extends sql_compiler {
 			case 'string':
 				$result = $node["value"];
 				if ($escape_chars) {
-					$result = ereg_replace('([^\\])_', '\\1\_', $result);
+					$result = preg_replace('/([^\\])_/', '\\1\_', $result);
 				}
 				return $result;
 			break;

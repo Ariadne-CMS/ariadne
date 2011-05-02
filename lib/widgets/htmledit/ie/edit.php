@@ -54,7 +54,7 @@
     }
     if (!$target) {
       global $AR;
-      $server_name=ereg_replace('[htpfs]+://','',$AR->host);
+      $server_name=preg_replace("|[htpfs]+://|",'',$AR->host);
       if ($_SERVER["HTTP_HOST"]!=$server_name) {
         // editor called directly from an ariadne hosted site, not via the AR->host
         // so the user credentials cookie is only available there and save must

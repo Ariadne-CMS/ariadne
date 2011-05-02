@@ -5,7 +5,7 @@
 		function get_token() {
 			$this->token = $this->token_ahead;
 			$this->token_value = $this->token_ahead_value;
-			$this->input = ereg_replace('^([[:space:]]|,)*', '', $this->input);
+			$this->input = preg_replace('/^([[:space:]]|,)*/', '', $this->input);
 			//echo "scanner: input(".$this->input.")<br>\n";
 			switch (true) {
 				case ereg('^([a-zA-Z0-9_][a-zA-Z0-9._]*)', $this->input, $regs):

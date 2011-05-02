@@ -50,7 +50,7 @@
       if (eregi('^([a-z]):', $tar_path, $regs)) {
         $tar_path="//".$regs[1].substr($tar_path,2);
       }
-      $tar_path=ereg_replace('([^\])[ ]', '\1\ ', $tar_path);
+      $tar_path=preg_replace('/([^\])[ ]/', '\1\ ', $tar_path);
   
       $compress_cmd                     = '--use-compress-program='.($tar_path).'/bin/gzip.exe';
       $tar_cmd                          = $AR->dir->install.'\bin\tar.exe '.$compress_cmd;
