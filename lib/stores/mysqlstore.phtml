@@ -27,7 +27,7 @@
 
 *******************************************************************************/
 
-define('MAX_PATH_LENGTH', 128);
+define('MAX_PATH_LENGTH', 254);
 
 // general objectstore functions
 require_once($ariadne."/stores/store.php");
@@ -348,7 +348,6 @@ class mysqlstore extends store{
 			if ($sqlcompiler->error) {
 				$this->error=$sqlcompiler->error;
 			}
-			//$this->cachedQueries[$criteria." limit $limit offset $offset"] = $query_string;
 			unset($sqlcompiler);
 		} else {
 			$this->error="";
@@ -796,7 +795,7 @@ class mysqlstore extends store{
 			}
 			if ($needunlocking) {
 				$query_string = "unlock tables";
-				store_run_query($query_string);
+				$this->store_run_query($query_string);
 			}
 		} else {
 			$this->error="$parent does not exist, cannot link.";
