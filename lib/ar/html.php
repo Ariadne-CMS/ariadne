@@ -113,12 +113,12 @@
 			return new ar_html_form( $fields, $buttons, $action, $method );
 		}
 		
-		public static function table( $rows, $header = null, $rowHeader = null, $foot = null ) {
-			return new ar_html_table( $rows, $header, $rowHeader, $foot);
+		public static function table( $rows, $attributes = null, $childNodes = null, $parentNode = null ) {
+			return new ar_html_table( $rows, $attributes, $childNodes, $parentNode );
 		}
 		
-		public static function menu( $attributes = null, $list = null ) {
-			return new ar_html_menu( $attributes, $list );
+		public static function menu( $tagName = 'ul', $attributes = null, $childNodes = null, $parentNode = null ) {
+			return ar_html_menu::el( $tagName, $attributes, $childNodes, $parentNode );
 		}
 		
 		public static function zen( $string ) {
