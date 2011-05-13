@@ -116,7 +116,7 @@ class page {
 		// will only use the new compile method when it is needed (htmlblocks)
 		// otherwise just return the $page, so 99.9% of the sites don't walk
 		// into bugs. 21-05-2007
-		$isChanged = page::compileWorker(&$nodes);
+		$isChanged = page::compileWorker($nodes);
 		if ($isChanged) {
 			return htmlparser::compile($nodes);
 		} else {
@@ -165,7 +165,7 @@ class page {
 			foreach ($node['children'] as $key => $child) {
 				// single | makes the following line always run the compileworker
 				// method, while any return true in that method makes $result true
-				$result = $result | page::compileWorker(&$node['children'][$key]);
+				$result = $result | page::compileWorker($node['children'][$key]);
 			}
 		}
 		return $result;

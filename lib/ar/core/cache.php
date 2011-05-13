@@ -1,7 +1,6 @@
 <?php
 
 	interface ar_core_cacheInterface {
-		public $enabled = false;
 		public function __construct($cacheOptions);
 		public function isFresh($cacheImage);
 		public function isFresher($cacheImage, $minFresh);

@@ -1599,7 +1599,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 
 				if (isset($ARConfig->cacheableLibraries[$checkpath])) {
-					$template = $this->getTemplateFromCache($checkpath, $arCallType, $arCallFunction, &$arSuperContext);
+					$template = $this->getTemplateFromCache($checkpath, $arCallType, $arCallFunction, $arSuperContext);
 					if ($template["arTemplateId"]) {
 						return $template;
 					}

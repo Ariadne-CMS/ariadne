@@ -283,7 +283,7 @@
 			// will only use the new compile method when it is needed (htmlblocks)
 			// otherwise just return the $html, so 99.9% of the sites don't walk
 			// into bugs. 21-05-2007
-			$isChanged = self::compileWorker(&$nodes);
+			$isChanged = self::compileWorker($nodes);
 			if ($isChanged) {
 				return new ar_content_htmlContent( htmlparser::compile($nodes) );
 			} else {
@@ -332,7 +332,7 @@
 				foreach ($node['children'] as $key => $child) {
 					// single | makes the following line always run the compileworker
 					// method, while any return true in that method makes $result true
-					$result = $result | self::compileWorker(&$node['children'][$key]);
+					$result = $result | self::compileWorker($node['children'][$key]);
 				}
 			}
 			return $result;

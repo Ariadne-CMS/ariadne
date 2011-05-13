@@ -45,7 +45,7 @@
 		}	
 
 		function _soapCall($name, $arguments, $options = Array(), $inputHeaders = Array(), &$outputHeaders = Array()) {
-			$result = new arWrapper($this->wrapped->__soapCall($name, $arguments, $options, $inputHeaders, &$outputHeaders));
+			$result = new arWrapper($this->wrapped->__soapCall($name, $arguments, $options, $inputHeaders, $outputHeaders));
 			return $result;
 		}
 
