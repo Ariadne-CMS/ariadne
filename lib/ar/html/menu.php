@@ -318,7 +318,7 @@ EOF;
 							display      : inline;
 						}
 						$prefix $itemTag $itemTag:before { 
-							content      : \"\0020 \00BB \0020\"  /* >> or &raquo; character */
+							content      : \"\\0020 \\00BB \\0020\"  /* >> or &raquo character */
 						}
 					");
 				break;
@@ -756,34 +756,38 @@ EOF;
 		public function configure( $options ) {
 			if ($options['top']) {
 				$this->root( ar('loader')->makeURL($options['top']), $options['top'] );
+			} else {
+				$options['top'] = $this->root;
 			}
 			if ($options['current']) {
 				$this->current( $options['current'] );
+			} else {
+				$options['current'] = $this->current;
 			}
 			$this->options = array_merge( $this->options, $options );
-			return $this;
+			return $this->options;
 		}
 		
 		public function bar( $options = array() ) {
-			$this->configure( $options );
+			$options = $this->configure( $options );
 			$this->fill( ar_html_menu::bar( $options ) );
 			return $this;
 		}
 		
 		public function tree( $options = array() ) {
-			$this->configure( $options );
+			$options = $this->configure( $options );
 			$this->fill( ar_html_menu::tree( $options ) );
 			return $this;	
 		}
 		
 		public function crumbs( $options = array() ) {
-			$this->configure( $options );
+			$options = $this->configure( $options );
 			$this->fill( ar_html_menu::crumbs( $options ) );
 			return $this;	
 		}
 		
 		public function sitemap( $options = array() ) {
-			$this->configure( $options );
+			$options = $this->configure( $options );
 			$this->fill( ar_html_menu::sitemap( $options ) );
 			return $this;			
 		}
