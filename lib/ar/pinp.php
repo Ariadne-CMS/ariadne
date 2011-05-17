@@ -73,8 +73,13 @@
 				return false;
 			}
 		}
+
+		public static function load( $name, $library ) {
+			$context = ar::context()->getObject();
+			return $context->loadLibrary( $name, $library );			
+		}
 	}
 
-	ar_pinp::allow('ar_pinp', array('isAllowed', 'getCallback'));
+	ar_pinp::allow('ar_pinp', array('isAllowed', 'getCallback', 'load'));
 	
 ?>
