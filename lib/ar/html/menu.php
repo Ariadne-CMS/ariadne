@@ -130,6 +130,7 @@
 		private $stripeOptions = false;
 		private $levelOptions  = false;
 		private $autoIDOptions  = false;
+		private $styleType = 'bar';
 		private $options = array(
 			'skipOrphans' => false,
 			'itemTag'     => 'li',
@@ -269,6 +270,9 @@ EOF;
 		}
 		
 		public function style( $type = '' ) {
+			if (!$type) {
+				$type = $this->styleType;
+			}
 			$itemTag = $this->options['itemTag'];
 			$listTag = $this->options['listTag'];
 			$prefix = $this->prefix;
@@ -276,17 +280,30 @@ EOF;
 				case 'bar' :
 					$this->css->import("
 						$prefix $itemTag { 
-							float:            : left;
+							float            : left;
+							padding	         : 0px 10px;
 						}
 						$prefix $listTag $listTag {
-							float:            : left;
-							padding:          : 0px;
-							margin:           : 0px;
+							float            : left;
+							padding          : 0px;
+							margin           : 0px;
 						}
 						$prefix { 
-							overflow:         : hidden;
-							padding-right:    : 20px;
+							overflow         : hidden;
+							padding-right    : 20px;
 						}");
+				break;
+				case 'sitemap' :
+					$this->css->import("
+						$prefix $itemTag {
+							margin-left: 0px;
+							padding-left: 0px;
+						}
+						$prefix $listTag {
+							margin-left: 20px;
+							padding-left: 0px;
+						}
+					");
 				break;
 				case 'tree' :
 					$this->css->import("
@@ -473,9 +490,13 @@ EOF;
 			  mailto:
 			  [a-z]+:
 			- rest is a path -> append to parent path
-*/			switch( $path[0] ) {
+*/
+			if ($parent=='[root]') {
+				$parent = '';
+			}
+			switch( $path[0] ) {
 				case '?' :
-					$qpos = strpos( '?', $parent );
+					$qpos = ($parent) ? strpos( '?', $parent ) : false;
 					if (false!==$qpos) {
 						$url   = substr($parent, $qpos);
 						$query = substr($parent, $qpos+1);
@@ -495,7 +516,7 @@ EOF;
 					}
 				break;
 				case '#' :
-					$fpos = strpos( '#', $parent );
+					$fpos = ($parent) ? strpos( '#', $parent ) : false;
 					if ( false !== $fpos ) {
 						$url = substr($parent, $fpos);
 					} else {
@@ -537,7 +558,7 @@ EOF;
 			$path = $item['path'];
 			if ( !isset($path) ) {
 				$path = $key;
-				$item['path'] = $parent.$key;
+				$item['path'] = $parent . $key;
 			}
 			if ( !isset($item['url']) ) {
 				$item['url'] = $this->_makeURL( $path, $parent );
@@ -784,24 +805,28 @@ EOF;
 		public function bar( $options = array() ) {
 			$options = $this->configure( $options );
 			$this->fill( ar_html_menu::bar( $options ) );
+			$this->styleType = 'bar';
 			return $this;
 		}
 		
 		public function tree( $options = array() ) {
 			$options = $this->configure( $options );
 			$this->fill( ar_html_menu::tree( $options ) );
+			$this->styleType = 'tree';
 			return $this;	
 		}
 		
 		public function crumbs( $options = array() ) {
 			$options = $this->configure( $options );
 			$this->fill( ar_html_menu::crumbs( $options ) );
+			$this->styleType = 'crumbs';
 			return $this;	
 		}
 		
 		public function sitemap( $options = array() ) {
 			$options = $this->configure( $options );
 			$this->fill( ar_html_menu::sitemap( $options ) );
+			$this->styleType = 'sitemap';
 			return $this;			
 		}
 		
