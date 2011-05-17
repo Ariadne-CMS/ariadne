@@ -491,7 +491,7 @@ EOF;
 						$params = array_merge_recursive( $params, $newparams );
 						$url   .= '?' . http_build_query( $params );
 					} else {
-						$url   .= $path;
+						$url   = $parent . $path;
 					}
 				break;
 				case '#' :
@@ -534,11 +534,13 @@ EOF;
 			if (!is_array($item)) {
 				$item = array( 'name' => $item );
 			}
-			if ( !isset($item['path']) ) {
-				$item['path'] = $key;
+			$path = $item['path'];
+			if ( !isset($path) ) {
+				$path = $key;
+				$item['path'] = $parent.$key;
 			}
 			if ( !isset($item['url']) ) {
-				$item['url'] = $this->_makeURL( $item['path'], $parent );
+				$item['url'] = $this->_makeURL( $path, $parent );
 			}
 			if ( !isset($item['node']) ) {
 				if ( !isset($item['tagName']) ) {
@@ -589,8 +591,19 @@ EOF;
 			foreach ( $list as $key => $item ) {
 				$itemInfo = $this->_getItemInfo( $item, $key, $parent, $current );
 				$itemNode = $itemInfo['node'];
-				if ($parent=='[root]') {
+				if ($parent == '[root]') {
 					$this->items[$itemInfo['url']] = $itemNode;
+				} else {
+					$parentNode = $this->items[$parent];
+					if ($parentNode) {
+						$uls = $parentNode->getElementsByTagName( $this->options['listTag'], true );
+						if (!$uls || !$uls[0]) {
+							$ul = $parentNode->appendChild( ar_html::el( $this->options['listTag'] ) );
+						} else {
+							$ul = $uls[0];
+						}
+						$ul->appendChild($itemNode);
+					}
 				}
 				if ($itemInfo['children']) {
 					$this->_fillFromArray( $itemInfo['children'], $current, $itemInfo['url'] );
@@ -611,9 +624,9 @@ EOF;
 								}
 							}
 							if ( isset($this->items[$newparent]) ) {
-								$parentNode = $this->items[$newparent]->ul[0];
-								if (!isset($parentNode)) {
-									$parentNode = $this->items[$newparent]->appendChild( ar_html::tag( $this->options['listTag'] ) );
+								$parentNode = current( $this->items[$newparent]->getElementsByTagName( $this->options['listTag'] ) );
+								if (!$parentNode || !isset($parentNode)) {
+									$parentNode = $this->items[$newparent]->appendChild( ar_html::el( $this->options['listTag'] ) );
 								}
 							} else if ($newparent == $this->rooturl) {
 								$parentNode = $this;
@@ -658,14 +671,14 @@ EOF;
 			);
 			if ( $options['striping'] ) {
 				if ( $options['stripingContinue'] ) {
-					$this->getElementsByTagName('li')->setAttribute('class', array(
+					$this->getElementsByTagName( $this->options['itemTag'] )->setAttribute('class', array(
 						'menuStriping' => $options['striping']
 					) );
 				} else {
 					$this->childNodes->setAttribute( 'class', array(
 						'menuStriping' => $options['striping']
 					) );
-					$uls = $this->getElementsByTagName('ul');
+					$uls = $this->getElementsByTagName( $this->options['listTag'] );
 					foreach( $uls as $ul ) {
 						$ul->childNodes->setAttribute( 'class', array(
 							'menuStriping' => $options['striping']
@@ -700,7 +713,7 @@ EOF;
 					$this->levels( array( 
 						'maxDepth' => $options['maxDepth'] - 1, 
 						'startLevel' => $options['startLevel'] + 1, 
-						'rootNode' => $element->li->ul 
+						'rootNode' => $element->getElementsByTagName( $this->options['itemTag'], true )->getElementsByTagName( $this->options['listTag'], true ) 
 					) );
 				}
 			}
@@ -728,7 +741,7 @@ EOF;
 				if ( !$li->attributes['id'] ) {
 					$li->setAttribute( 'id', $id );
 				}
-				$ul = $li->ul;
+				$ul = $li->getElementsByTagName( $this->options['listTag'], true );
 				if (count($ul)) {
 					$this->autoID( array(
 						'rootID' => $id, 
@@ -741,7 +754,7 @@ EOF;
 		}
 		
 		public function childIndicators() {
-			$list = $this->getElementsByTagName('ul');
+			$list = $this->getElementsByTagName( $this->options['listTag'] );
 			foreach( $list as $ul) {
 				$ul->parentNode->setAttribute('class', array('menuChildIndicator' => 'menuHasChildren'));
 			}
