@@ -66,11 +66,20 @@ class mysqllock {
 		This function locks an object/path
 	 **********************************************************************/
 		debug("mysqllock:lock($identity,$path,$time,$type)","store");
+		$tablelock = "write";
+		$checkonly = false;
+
 		if (!$time) {
 			$time=time()+$this->lock_duration;
  		}
+
+		if($time < time()) {
+			$checkonly = true;
+			$tablelock = "read";
+		}
+
 		// lock table first
-		$query_string="lock tables ".$this->tbl_prefix."locks write";
+		$query_string="lock tables ".$this->tbl_prefix."locks ".$tablelock;
 		@mysql_db_query($this->database, $query_string,$this->connectid);
 
 		// check if the path is not already locked by a parent
@@ -101,23 +110,27 @@ class mysqllock {
 
 		$result=false;
 		if (!$alreadylocked) {
-			// clear old lock entries
-			$query_string="
-				delete from ".$this->tbl_prefix."locks where `path`='".AddSlashes($path)."'";
+			if(!$checkonly) {
+				// clear old lock entries
+				$query_string="
+					delete from ".$this->tbl_prefix."locks where `path`='".AddSlashes($path)."'";
 
-			mysql_db_query($this->database, $query_string, $this->connectid);
+				mysql_db_query($this->database, $query_string, $this->connectid);
 
-			$query_string="
-				insert into ".$this->tbl_prefix."locks (`path`, `release`, `type`, `identity`) values (
-				'".AddSlashes($path)."', $time, '".AddSlashes($type)."',
-				'".AddSlashes($identity)."')";
+				$query_string="
+					insert into ".$this->tbl_prefix."locks (`path`, `release`, `type`, `identity`) values (
+					'".AddSlashes($path)."', $time, '".AddSlashes($type)."',
+					'".AddSlashes($identity)."')";
 
-			mysql_db_query($this->database, $query_string, $this->connectid);
-			if (!mysql_errno()) {
-				$result=true;
+				mysql_db_query($this->database, $query_string, $this->connectid);
+				if (!mysql_errno()) {
+					$result=true;
+				} else {
+					$this->error=2;
+					$this->error_message="MOD_LOCK: ERROR 2: ".mysql_error();
+				}
 			} else {
-				$this->error=2;
-				$this->error_message="MOD_LOCK: ERROR 2: ".mysql_error();
+				$result = true;
 			}
 		} else {
 			$this->error=1;
