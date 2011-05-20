@@ -283,10 +283,10 @@
 
 	function check_db_grants_postgresql($conf) {
 		if ( check_select_db_postgresql($conf) ) {
-			$query = "SELECT has_database_privilege ( ".$conf->database.", 'CREATE' );"; 
+			$query = "SELECT has_database_privilege ( '".$conf->database."', 'CREATE' );"; 
 			$result = pg_query( $query );
 			while ( $row = pg_fetch_row( $result ) ) {
-				if ( $row[0]=='True' ) {
+				if ( $row[0]=='t' ) {
 					return true;
 				}
 			}
@@ -303,8 +303,7 @@
 
 	function check_connect_db_postgresql($conf) {
 		if (strpos(':', $conf->host)) {
-			$host = explode($conf->host, ':')[0];
-			$port = explode($conf->host, ':')[1];
+			list($host,$port) = explode($conf->host, ':');
 			$host .= ' port='.$port;
 		} else {
 			$host = $conf->host;
