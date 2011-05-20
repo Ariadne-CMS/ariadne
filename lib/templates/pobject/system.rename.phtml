@@ -5,46 +5,61 @@
 		} else {
 			$target=$this->getdata("target");
 			$target=$this->store->make_path($this->parent, $this->getdata("target","none"));
-			if ($this->exists($target)) {
-				if (substr(strtolower($target), 0, strlen(strtolower($this->path)))==strtolower($this->path)) {
-					if (strtolower($target) == strtolower($this->path)) {
-						$parent = $this->parent;
+
+			$eventData = new object();
+			$eventData->arTarget = $target;
+			$eventData = ar_events::fire( 'onbeforemove', $eventData );
+			if ( !$eventData || ar_error::isError( $eventData ) ) {
+				$arResult = $eventData;
+			} else {
+				$target = $eventData->arTarget;
+			
+				if ($this->exists($target)) {
+					if (substr(strtolower($target), 0, strlen(strtolower($this->path)))==strtolower($this->path)) {
+						if (strtolower($target) == strtolower($this->path)) {
+							$parent = $this->parent;
+						} else {
+							$this->error=$ARnls["err:nomovebelow"];
+						}
 					} else {
+						$parent=$target;
+						$target.=substr($this->path, strlen($this->parent));
+					}
+				} else {
+					$parent=$this->store->make_path($target, '..');
+					if (!$this->exists($parent)) {
+						$this->error=sprintf($ARnls["err:noparentcreatefirst"],$parent);
+					} else if (substr($parent, 0, strlen($this->path))==$this->path) {
 						$this->error=$ARnls["err:nomovebelow"];
 					}
-				} else {
-					$parent=$target;
-					$target.=substr($this->path, strlen($this->parent));
 				}
-			} else {
-				$parent=$this->store->make_path($target, '..');
-				if (!$this->exists($parent)) {
-					$this->error=sprintf($ARnls["err:noparentcreatefirst"],$parent);
-				} else if (substr($parent, 0, strlen($this->path))==$this->path) {
-					$this->error=$ARnls["err:nomovebelow"];
+				if (!eregi("^[a-z0-9_\{\}\.\:/-]+$",$target)) { 
+					$this->error=sprintf($ARnls["err:fileillegalchars"],$target);
 				}
-			}
-			if (!eregi("^[a-z0-9_\{\}\.\:/-]+$",$target)) { 
-				$this->error=sprintf($ARnls["err:fileillegalchars"],$target);
-			}
 
-			$this->unlock();
+				$this->unlock();
 
-			if (!$this->error) {
-				if (current($this->get($parent, "system.check.grant.phtml", array("grant"=>"add", "modifier"=>$this->type)))) {
-					$this->find($this->path, "", "system.update.user.grants.phtml", array("action"=>"delete"));
-					$target = $this->store->move($this->path, $target);
+				if (!$this->error) {
+					if (current($this->get($parent, "system.check.grant.phtml", array("grant"=>"add", "modifier"=>$this->type)))) {
 
-					if ($target) {
-						$this->path=$target;
-						$this->parent=$parent;
-						$arResult=$target;
-						$this->find($this->path, "", "system.update.user.grants.phtml", array("config"=>$this->CheckSilent("config")));
+						$this->find($this->path, "", "system.update.user.grants.phtml", array("action"=>"delete"));
+						
+						$target = $this->store->move($this->path, $eventData->arTarget);
+
+						if ( $target ) {
+							$this->path=$target;
+							$this->parent=$parent;
+							$arResult=$target;
+							$this->find($this->path, "", "system.update.user.grants.phtml", array("config"=>$this->CheckSilent("config")));
+							
+							ar_events::fire( 'onmove', $eventData );
+							
+						} else {
+							$this->error=$this->store->error;
+						}
 					} else {
-						$this->error=$this->store->error;
+						$this->error=$ARnls["accessdenied"];
 					}
-				} else {
-					$this->error=$ARnls["accessdenied"];
 				}
 			}
 		}

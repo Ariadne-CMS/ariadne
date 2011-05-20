@@ -14,47 +14,62 @@
 					$target=$this->make_path($target);
 					if (eregi("^[a-z0-9_\{\}\.\:-]+$", basename($target))) {
 						if (!$this->exists($target)) {
-							// first make sure that the object is clean (data can only be set via 
-							// the defined interface: $arCallArgs)
-							$this->data=current($this->get(".","system.get.data.phtml"));
+						
+							$eventData = new object();
+							$eventData->arTarget = $target;
+							$eventData->arSearch = $search;
+							$eventData->arReplace = $replace;
+							$eventData = ar_events::fire( 'onbeforecopy', $eventData );
+							if (!$eventData || ar_error::isError( $eventData ) ) {
+							
+								$arResult = $eventData;
+								
+							} else {
+								
+								// first make sure that the object is clean (data can only be set via 
+								// the defined interface: $arCallArgs)
+								$this->data=current($this->get(".","system.get.data.phtml"));
 
-							$this->data->config->owner = $AR->user->data->login;
-							$this->data->config->owner_name = $AR->user->data->name;
-							$properties['owner'][0]['value'] = "'".AddSlashes($user->data->login)."'";
+								$this->data->config->owner = $AR->user->data->login;
+								$this->data->config->owner_name = $AR->user->data->name;
+								$properties['owner'][0]['value'] = "'".AddSlashes($user->data->login)."'";
 
-							// now save the object to get its new id.
-							if ($defaultnls && !$this->data->$defaultnls) {
-								$this->data->nls->default=$ARConfig->nls->default;
-							}
-							$properties=$this->load_properties();
-							$ARCurrent->newpath=$this->store->save($target, $this->type, $this->data, $properties, $this->vtype, $this->priority);
-							if ($ARCurrent->newid=$this->exists($ARCurrent->newpath)) {
+								// now save the object to get its new id.
+								if ($defaultnls && !$this->data->$defaultnls) {
+									$this->data->nls->default=$ARConfig->nls->default;
+								}
+								$properties=$this->load_properties();
+								$ARCurrent->newpath=$this->store->save($target, $this->type, $this->data, $properties, $this->vtype, $this->priority);
+								if ($ARCurrent->newid=$this->exists($ARCurrent->newpath)) {
 
-								// now save templates for the new object
-								if ($this->data->config->pinp) {
-									$templates=$this->store->get_filestore("templates");
-									while (list($type, $values)=each($data->config->pinp)) {
-										while (list($function, $templatelist)=each($values)) {
-											while (list($language, $id)=each($templatelist)) {
-												$template=$type.".".$function.".".$language;
-												$templates->copy($this->id, $template.".pinp", $ARCurrent->newid, $template.".pinp");
-												$templates->copy($this->id, $template, $ARCurrent->newid, $template);
-												$this->data->config->pinp[$type][$function][$language]=$ARCurrent->newid;
+									// now save templates for the new object
+									if ($this->data->config->pinp) {
+										$templates=$this->store->get_filestore("templates");
+										while (list($type, $values)=each($data->config->pinp)) {
+											while (list($function, $templatelist)=each($values)) {
+												while (list($language, $id)=each($templatelist)) {
+													$template=$type.".".$function.".".$language;
+													$templates->copy($this->id, $template.".pinp", $ARCurrent->newid, $template.".pinp");
+													$templates->copy($this->id, $template, $ARCurrent->newid, $template);
+													$this->data->config->pinp[$type][$function][$language]=$ARCurrent->newid;
 
-												if ($this->data->config->templates[$type][$function][$language]) {
-													$this->data->config->templates[$type][$function][$language]=$ARCurrent->newid;
+													if ($this->data->config->templates[$type][$function][$language]) {
+														$this->data->config->templates[$type][$function][$language]=$ARCurrent->newid;
+													}
 												}
 											}
 										}
 									}
-								}
 
-								$this->store->save($ARCurrent->newpath, $this->type, $this->data);
+									$this->store->save($ARCurrent->newpath, $this->type, $this->data);
 
-								$this->find($ARCurrent->newpath, "", "system.update.user.grants.phtml", array("config"=>$pobject->CheckSilent("config")));
+									$this->find($ARCurrent->newpath, "", "system.update.user.grants.phtml", array("config"=>$pobject->CheckSilent("config")));
 
-							} // else: first save failed.
-
+									ar_events::fire( 'oncopy', $eventData );
+									
+								} // else: first save failed.
+							}
+							
 						} else {
 							$arResult=sprintf($ARnls["err:alreadyexists"],$target);
 						}
