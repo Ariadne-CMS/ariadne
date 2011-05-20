@@ -1761,6 +1761,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 							$eventData = new object();
 							$eventData->arCallFunction = $arCallFunction;
 							$eventData->arCallArgs = $arCallArgs;
+							$eventData->arRequestedNLS = $reqnls;
 							$result = ar_events::fire( 'onlanguagenotfound', $eventData );
 							if ( $result ) { // continue with default action: langaugeselect
 								$arCallArgs["arOriginalFunction"] = $result->arCallFunction;
