@@ -21,8 +21,7 @@
 	}
 
 	function check_postgresql() {
-		return false;
-		if (function_exists('pg_Connect')) {
+		if (function_exists('pg_connect')) {
 			return true;
 		}
 		return false;
@@ -216,23 +215,38 @@
 	}
 
 	function check_connect_db($conf) {
-		if ($conf->dbms == 'mysql') {
-			return check_connect_db_mysql($conf);
+		switch ( $conf->dbms ) {
+			case 'mysql':
+				return check_connect_db_mysql($conf);
+			break;
+			case 'postgresql':
+				return check_connect_db_postgresql($conf);
+			break;
 		}
 		// FIXME: Add postgresql checks too
 		return false;
 	}
 
 	function check_select_db($conf) {
-		if ($conf->dbms == 'mysql') {
-			return check_select_db_mysql($conf);
+		switch ( $conf->dbms ) {
+			case 'mysql':
+				return check_select_db_mysql($conf);
+			break;
+			case 'postgresql':
+				return check_select_db_postgresql($conf);
+			break;
 		}
 		return false;
 	}
 
 	function check_db_grants($conf) {
-		if ($conf->dbms == 'mysql') {
-			return check_db_grants_mysql($conf);
+		switch ( $conf->dbms ) {
+			case 'mysql':
+				return check_db_grants_mysql($conf);
+			break;
+			case 'postgresql':
+				return check_db_grants_postgresql($conf);
+			break;
 		}
 		return false;
 	}
@@ -267,11 +281,36 @@
 		return false;
 	}
 
+	function check_db_grants_postgresql($conf) {
+		if ( check_select_db_postgresql($conf) ) {
+			$query = "SELECT has_database_privilege ( ".$conf->database.", 'CREATE' );"; 
+			$result = pg_query( $query );
+			while ( $row = pg_fetch_row( $result ) ) {
+				if ( $row[0]=='True' ) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	function check_connect_db_mysql($conf) {
 		if(@mysql_pconnect($conf->host, $conf->user, $conf->password)) {
 			return true;
 		}
 		return false;
+	}
+
+	function check_connect_db_postgresql($conf) {
+		if (strpos(':', $conf->host)) {
+			$host = explode($conf->host, ':')[0];
+			$port = explode($conf->host, ':')[1];
+			$host .= ' port='.$port;
+		} else {
+			$host = $conf->host;
+		}
+		$conf->connection = @pg_connect('host='.$host.' dbname='.$conf->database.' user='.$conf->user.' password='.$conf->password);
+		return (bool) $conf->connection;
 	}
 
 	function check_select_db_mysql($conf) {
@@ -283,9 +322,19 @@
 		return false;
 	}
 
+	function check_select_db_postgresql($conf) {
+		return check_connect_db_postgresql($conf); //connect also checks database
+	}
+
+
 	function check_db_is_empty($conf) {
-		if($conf->dbms == 'mysql') {
-			return check_db_is_empty_mysql($conf);
+		switch( $conf->dbms ) {
+			case 'mysql':
+				return check_db_is_empty_mysql($conf);
+			break;
+			case 'postgresql':
+				return check_db_is_empty_postgresql($conf);			
+			break;
 		}
 		return false;
 	}
@@ -298,6 +347,17 @@
 				if (mysql_num_rows($result) == 0) {
 					return true;
 				}
+			}
+		}
+		return false;
+	}
+
+	function check_db_is_empty_postgresql($conf) {
+		if (check_connect_db_postgresql($conf)) {
+			$query = "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public';";
+			$result = pg_query($conf->connection, $query);
+			if (pg_num_rows($result) == 0) {
+				return true;
 			}
 		}
 		return false;
