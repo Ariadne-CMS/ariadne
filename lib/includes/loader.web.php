@@ -147,16 +147,24 @@
 			if ($prevPath==$path) {
 				error("Database is not initialised, please run <a href=\"".$AR->dir->www."install/install.php\">the installer</a>");
 			} else {
-				// no results: page couldn't be found, show user definable 404 message
-				if (!is_array($arCallArgs)) {
-					$arCallArgs = Array();
+
+				$eventData = new object();
+				$eventData->arCallPath = $requestedpath;
+				$eventData->arCallFunction = $requestedtemplate;
+				$eventData->arCallArgs = $arCallArgs;
+				$eventData = ar_events::fire( 'onnotfound', $eventData );
+				if ( $eventData ) {
+
+					// no results: page couldn't be found, show user definable 404 message
+					$arCallArgs = (array) $eventData->arCallArgs;
+					$myarCallArgs = array_merge($arCallArgs, 
+						Array(	"arRequestedPath" => $requestedpath,
+						 		"arRequestedTemplate" => $requestedtemplate 
+						)
+					);
+					$store->call("user.notfound.html",$myarCallArgs,
+						 $store->get($path));
 				}
-				$myarCallArgs = array_merge($arCallArgs, 
-				Array(	"arRequestedPath" => $requestedpath,
-					 		"arRequestedTemplate" => $requestedtemplate 
-				));
-				$store->call("user.notfound.html",$myarCallArgs,
-					 $store->get($path));
 			}
 		}
 	}

@@ -77,18 +77,28 @@
 			@array_push($ARCurrent->arCallStack, $arCallArgs);
 		}
 
-		if (!$arCallArgs || is_array($arCallArgs)) {
-			$arCallArgs["arLoginMessage"] = $message;
-		} else {
-			$arCallArgs.="&arLoginMessage=".urlencode($message);
-		}
-		if (!$ARCurrent->arLoginSilent) {
-			$ARCurrent->arLoginSilent = true;
-			$store->call("user.session.timeout.html", 
-								$arCallArgs,
-								$store->get($path) );
-		}
+		$me = ar_context::getObject();
+		$context = $me->getContext();
+	    $eventData = new object();
+	    $eventData->arCallPath = $path;
+	    $eventData->arCallFunction = $context['arCallFunction'];
+		$eventData->arCallArgs = $arCallArgs;
+	    $eventData->arLoginMessage = $message;
+		$eventData->arReason = 'access timeout';
+		$eventData = ar_events::fire( 'onaccessdenied', $eventData );
+		if ( $eventData ) {
 
+			$arCallArgs = $eventData->arCallArgs;
+			$arCallArgs["arLoginMessage"] = $eventData->message;
+
+			if (!$ARCurrent->arLoginSilent) {
+				$ARCurrent->arLoginSilent = true;
+				$store->call("user.session.timeout.html", 
+									$arCallArgs,
+									$store->get($path) );
+			}
+
+		}
 	}
 
 	function ldAccessDenied($path, $message, $args = null) {
@@ -105,18 +115,27 @@
 			@array_push($ARCurrent->arCallStack, $arCallArgs);
 		}
 
-		if (!$arCallArgs || is_array($arCallArgs)) {
-			$arCallArgs["arLoginMessage"] = $message;
-		} else {
-			$arCallArgs.="&arLoginMessage=".urlencode($message);
-		}
-		if (!$ARCurrent->arLoginSilent) {
-			$ARCurrent->arLoginSilent = true;
-			$store->call("user.login.html", 
-								$arCallArgs,
-								$store->get($path) );
-		}
+		$me = ar_context::getObject();
+		$context = $me->getContext();
+	    $eventData = new object();
+	    $eventData->arCallPath = $path;
+	    $eventData->arCallFunction = $context['arCallFunction'];
+		$eventData->arCallArgs = $arCallArgs;
+	    $eventData->arLoginMessage = $message;
+		$eventData->arReason = 'access denied';
+		$eventData = ar_events::fire( 'onaccessdenied', $eventData );
+		if ( $eventData ) {
 
+			$arCallArgs = $eventData->arCallArgs;
+			$arCallArgs["arLoginMessage"] = $eventData->message;
+
+			if (!$ARCurrent->arLoginSilent) {
+				$ARCurrent->arLoginSilent = true;
+				$store->call("user.login.html", 
+									$arCallArgs,
+									$store->get($path) );
+			}
+		}
 	}
 
 	function ldAccessPasswordExpired($path, $message, $args=null) {
@@ -133,16 +152,26 @@
 			@array_push($ARCurrent->arCallStack, $arCallArgs);
 		}
 
-		if (!$arCallArgs || is_array($arCallArgs)) {
-			$arCallArgs["arLoginMessage"] = $message;
-		} else {
-			$arCallArgs.="&arLoginMessage=".urlencode($message);
-		}
-		if (!$ARCurrent->arLoginSilent) {
-			$ARCurrent->arLoginSilent = true;
-			$store->call("user.password.expired.html", 
-								$arCallArgs,
-								$store->get($path) );
+		$me = ar_context::getObject();
+		$context = $me->getContext();
+	    $eventData = new object();
+	    $eventData->arCallPath = $path;
+	    $eventData->arCallFunction = $context['arCallFunction'];
+	    $eventData->arLoginMessage = $message;
+		$eventData->arReason = 'password expired';
+		$eventData->arCallArgs = $arCallArgs;
+		$eventData = ar_events::fire( 'onaccessdenied', $eventData );
+		if ( $eventData ) {
+
+			$arCallArgs = $eventData->arCallArgs;
+			$arCallArgs["arLoginMessage"] = $eventData->arLoginMessage;
+
+			if (!$ARCurrent->arLoginSilent) {
+				$ARCurrent->arLoginSilent = true;
+				$store->call("user.password.expired.html", 
+									$arCallArgs,
+									$store->get($path) );
+			}
 		}
 
 	}
