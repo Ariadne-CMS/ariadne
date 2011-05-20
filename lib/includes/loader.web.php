@@ -147,6 +147,16 @@
 			if ($prevPath==$path) {
 				error("Database is not initialised, please run <a href=\"".$AR->dir->www."install/install.php\">the installer</a>");
 			} else {
+				// make sure the config check has been run:
+				$ob = current( $store->call('system.get.phtml', array(), $store->get($path) ) );
+				$ob->CheckConfig();
+
+				$ob->pushContext( array(
+					"arSuperContext" => Array(),
+					"arCurrentObject" => $ob,
+					"scope" => "php",
+					"arCallFunction" => $requestedtemplate
+				) );
 
 				$eventData = new object();
 				$eventData->arCallPath = $requestedpath;
@@ -154,7 +164,6 @@
 				$eventData->arCallArgs = $arCallArgs;
 				$eventData = ar_events::fire( 'onnotfound', $eventData );
 				if ( $eventData ) {
-
 					// no results: page couldn't be found, show user definable 404 message
 					$arCallArgs = (array) $eventData->arCallArgs;
 					$myarCallArgs = array_merge($arCallArgs, 
@@ -165,6 +174,8 @@
 					$store->call("user.notfound.html",$myarCallArgs,
 						 $store->get($path));
 				}
+
+				$ob->popContext();
 			}
 		}
 	}
