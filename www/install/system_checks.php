@@ -1,4 +1,6 @@
 <?php
+	$ariadne = '';
+	
 	function check_php_version() {
 		if (version_compare(PHP_VERSION, '5.0.0', '>')) {
 			return true;
@@ -419,12 +421,15 @@
 		return false;
 	}
 
+	function getServerVar( $name ) {
+		return isset( $_SERVER[$name] ) ? $_SERVER[$name] : null;
+	}
 
 	function find_in_path($needle,array $extrapath=array()) {
-		$paths = explode(PATH_SEPARATOR,$_SERVER['PATH']);
+		$paths = explode(PATH_SEPARATOR,getServerVar('PATH'));
 		$paths = array_merge($paths,$extrapath);
 				
-		$exts = explode(PATH_SEPARATOR,$_SERVER['PATHEXT']);
+		$exts = explode(PATH_SEPARATOR, getServerVar('PATHEXT'));
 
 		foreach($paths as $path){
 			$file = $path . DIRECTORY_SEPARATOR . $needle;

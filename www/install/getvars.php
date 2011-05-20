@@ -1,6 +1,10 @@
 <?php
 	include_once("system_checks.php");
 
+	function getPostVar( $name ) {
+		return ( isset( $_POST[$name] ) ? $_POST[$name] : null );
+	}
+	
 	$defaults = array(
 		"language" 	=> "en",
 		"step" 		=> "step1",
@@ -36,32 +40,32 @@
 		$databases['postgresql'] = "PostgreSQL";
 	}
 
-	$language            = $_POST['language'];
-	$step                = $_POST['step'];
-	$database            = $_POST['database'];
-	$database_host       = $_POST['database_host'];
-	$database_user       = $_POST['database_user'];
-	$database_pass       = $_POST['database_pass'];
-	$database_name       = $_POST['database_name'];
-	$admin_pass          = $_POST['admin_pass'];
-	$admin_pass_repeat   = $_POST['admin_pass_repeat'];
-	$ariadne_location    = $_POST['ariadne_location'];
-	$install_demo        = $_POST['install_demo'];
-	$install_libs        = $_POST['install_libs'];
-	$install_docs        = $_POST['install_docs'];
-	$enable_svn          = $_POST['enable_svn'];
-	$downloaded_config   = $_POST['downloaded_config'];
+	$language            = getPostVar('language');
+	$step                = getPostVar('step');
+	$database            = getPostVar('database');
+	$database_host       = getPostVar('database_host');
+	$database_user       = getPostVar('database_user');
+	$database_pass       = getPostVar('database_pass');
+	$database_name       = getPostVar('database_name');
+	$admin_pass          = getPostVar('admin_pass');
+	$admin_pass_repeat   = getPostVar('admin_pass_repeat');
+	$ariadne_location    = getPostVar('ariadne_location');
+	$install_demo        = getPostVar('install_demo');
+	$install_libs        = getPostVar('install_libs');
+	$install_docs        = getPostVar('install_docs');
+	$enable_svn          = getPostVar('enable_svn');
+	$downloaded_config   = getPostVar('downloaded_config');
 
 	// Sanity checks for postvars, make sure the values are what we expect.
-	if (!$languages[$language]) {
+	if ( !isset($languages[$language] ) ) {
 		$language = $defaults['language'];
 	}
 
-	if (!$steps[$step]) {
+	if ( !isset($steps[$step]) ) {
 		$step = $defaults['step'];
 	}
 
-	if (!$databases[$database]) {
+	if ( !isset($databases[$database]) ) {
 		$database = '';
 	}
 
