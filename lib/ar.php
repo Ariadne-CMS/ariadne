@@ -108,11 +108,11 @@
 			}
 		}
 		
-		public static function callSuper() {
+		public static function callSuper( $params = null ) {
 			$context = self::context();
 			$me = $context->getObject();
 			if ($me) {
-				return $me->_call_super();
+				return $me->_call_super( $params );
 			}
 		}
 		
