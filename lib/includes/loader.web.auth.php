@@ -77,7 +77,7 @@
 			@array_push($ARCurrent->arCallStack, $arCallArgs);
 		}
 
-		$me = ar_context::getObject();
+		$me = ar_ariadneContext::getObject();
 		$context = $me->getContext();
 	    $eventData = new object();
 	    $eventData->arCallPath = $path;
@@ -115,7 +115,7 @@
 			@array_push($ARCurrent->arCallStack, $arCallArgs);
 		}
 
-		$me = ar_context::getObject();
+		$me = ar_ariadneContext::getObject();
 		$context = $me->getContext();
 	    $eventData = new object();
 	    $eventData->arCallPath = $path;
@@ -152,7 +152,7 @@
 			@array_push($ARCurrent->arCallStack, $arCallArgs);
 		}
 
-		$me = ar_context::getObject();
+		$me = ar_ariadneContext::getObject();
 		$context = $me->getContext();
 	    $eventData = new object();
 	    $eventData->arCallPath = $path;
