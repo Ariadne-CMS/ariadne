@@ -20,6 +20,10 @@
 		}
 		
 		public static function fire( $eventName, $eventData = array(), $objectType = null, $path = '') {
+			if ( !self::$listeners['capture'][$eventName] 
+				&& !self::$listeners['listen'][$eventName] ) {
+				return $eventData; // no listeners for this event, so dont bother searching
+			}
 			$prevEvent = null;
 			if ( self::$event ) {
 				$prevEvent = self::$event;
@@ -178,12 +182,12 @@
 	
 	class ar_eventsEvent extends arBase {
 		public $data = null;
-		private $eventName = '';
+		private $name = '';
 		private $preventDefault = false;
 		
-		public function __construct( $eventName, $eventData = null ) {
-			$this->eventName = $eventName;
-			$this->data = $eventData;
+		public function __construct( $name, $data = null ) {
+			$this->name = $name;
+			$this->data = $data;
 		}
 		
 		public function preventDefault() {
@@ -194,6 +198,9 @@
 		public function __get( $name ) {
 			if ( $name == 'preventDefault' ) {
 				return $this->preventDefault;
+			}
+			if ( $name == 'name' ) {
+				return $this->name
 			}
 		}
 		
