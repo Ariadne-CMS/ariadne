@@ -1,0 +1,60 @@
+<?php
+  /*************************************************************************/
+  /* Ariadne Authentication Configuration                                  */
+  /* ====================================                                  */
+  /* This file contains configuration information for the Ariadne-         */
+  /* Authentication module.                                                */
+  /*************************************************************************/
+
+
+  /*************************************************************************/
+  /* Set method to 'radius' for radius authentication                       */
+  /*************************************************************************/
+
+  $auth_config["method"] = "radius";
+
+  /*************************************************************************/
+  /* Enter here the type of users to be created.                           */
+  /*************************************************************************/
+
+  $auth_config["import_user_type"] = "puser";
+
+  /*************************************************************************/
+  /* Enter here the username which ariadne uses to save new Radius users    */
+  /*************************************************************************/
+
+  $auth_config["import_user_by"] = "admin";
+
+  /*************************************************************************/
+  /* Enter here the location of where the users have to be stored          */
+  /*************************************************************************/
+
+  $auth_config["import_user_directory"] = "/system/users/radius/";
+
+  /*************************************************************************/
+  /* Enter here the profile to be used for storing users from Radius       */
+  /*************************************************************************/
+
+  $auth_config["import_user_profile"] = "/system/profiles/radius/";
+
+  /*************************************************************************/
+  /* Radius specific settings                                              */
+  /*************************************************************************/
+
+  $auth_config["sharedsecret"] = "testing123";
+  
+  /*************************************************************************/
+  /* Enter here the address of the Radius server                           */
+  /*************************************************************************/
+  
+  $auth_config["radius_server"] = "localhost";
+  $auth_config["radius_port"] = "1812";
+
+
+  /**************************************************************************/
+  /* Generated password expiry. 
+  /*************************************************************************/
+
+  $auth_config["genpassexpiry"] = 3600 * 24; // expire generated passwords after 24 hours
+
+?>
