@@ -13,13 +13,24 @@
 	}
 	$authconfig = $userConfig['authentication'];
 
-	// Check if target is valid according to auth.ini
-	$validpath = false;
-	foreach ($authconfig['userdirs'] as $userdirpath) {
-		if (substr($target, 0, strlen($userdirpath)) == $userdirpath) {
-			$validpath = true;
-			break;
+	if ( $this instanceof pgroup ) {
+		$configpart = 'groupdirs';
+	} else if ( $this instanceof pprofile ) {
+		$configpart = null;
+	} else {
+		$configpart = 'userdirs';
+	}
+	if ($configpart) {
+		// Check if target is valid according to auth.ini
+		$validpath = false;
+		foreach ($authconfig[$configpart] as $userdirpath) {
+			if (substr($target, 0, strlen($userdirpath)) == $userdirpath) {
+				$validpath = true;
+				break;
+			}
 		}
+	} else {
+		$validpath = true;
 	}
 
 	if (!$validpath) {
