@@ -1,5 +1,18 @@
 <?php
 
+	function getCurrentTemplate( $function ) {
+		if ( isset($function) ) {
+			return $function;
+		} else {
+			$me = ar_ariadneContext::getObject();
+			if ($me) {
+				$context = $me->getContext();
+				return $context['arCallFunction'];
+			}
+		}
+		return null;
+	}
+
 	function ldSetCredentials($login, $ARUserDir="/system/users/") {
 		global $ARCurrent, $AR;
 		if (!$ARUserDir || $ARUserDir == "") {
@@ -63,7 +76,7 @@
 		setcookie("ARCookie",$ARCookie, 0, '/');
 	}
 
-	function ldAccessTimeout($path, $message, $args = null) {
+	function ldAccessTimeout($path, $message, $args = null, $function = null) {
 	global $ARCurrent, $store;
 		/* 
 			since there is no 'peek' function, we need to pop and push
@@ -77,11 +90,9 @@
 			@array_push($ARCurrent->arCallStack, $arCallArgs);
 		}
 
-		$me = ar_ariadneContext::getObject();
-		$context = $me->getContext();
-	    $eventData = new object();
+		$eventData = new object();
 	    $eventData->arCallPath = $path;
-	    $eventData->arCallFunction = $context['arCallFunction'];
+		$eventData->arCallFunction = getCurrentTemplate( $function );
 		$eventData->arCallArgs = $arCallArgs;
 	    $eventData->arLoginMessage = $message;
 		$eventData->arReason = 'access timeout';
@@ -101,7 +112,7 @@
 		}
 	}
 
-	function ldAccessDenied($path, $message, $args = null) {
+	function ldAccessDenied($path, $message, $args = null, $function = null) {
 	global $ARCurrent, $store;
 		/* 
 			since there is no 'peek' function, we need to pop and push
@@ -115,14 +126,13 @@
 			@array_push($ARCurrent->arCallStack, $arCallArgs);
 		}
 
-		$me = ar_ariadneContext::getObject();
-		$context = $me->getContext();
 	    $eventData = new object();
 	    $eventData->arCallPath = $path;
-	    $eventData->arCallFunction = $context['arCallFunction'];
+		$eventData->arCallFunction = getCurrentTemplate( $function );
 		$eventData->arCallArgs = $arCallArgs;
 	    $eventData->arLoginMessage = $message;
 		$eventData->arReason = 'access denied';
+
 		$eventData = ar_events::fire( 'onaccessdenied', $eventData );
 		if ( $eventData ) {
 
@@ -138,7 +148,7 @@
 		}
 	}
 
-	function ldAccessPasswordExpired($path, $message, $args=null) {
+	function ldAccessPasswordExpired($path, $message, $args=null, $function = null) {
 	global $ARCurrent, $store;
 		/* 
 			since there is no 'peek' function, we need to pop and push
@@ -152,12 +162,10 @@
 			@array_push($ARCurrent->arCallStack, $arCallArgs);
 		}
 
-		$me = ar_ariadneContext::getObject();
-		$context = $me->getContext();
-	    $eventData = new object();
+		$eventData = new object();
 	    $eventData->arCallPath = $path;
-	    $eventData->arCallFunction = $context['arCallFunction'];
-	    $eventData->arLoginMessage = $message;
+	    $eventData->arCallFunction = getCurrentTemplate( $function );
+		$eventData->arLoginMessage = $message;
 		$eventData->arReason = 'password expired';
 		$eventData->arCallArgs = $arCallArgs;
 		$eventData = ar_events::fire( 'onaccessdenied', $eventData );

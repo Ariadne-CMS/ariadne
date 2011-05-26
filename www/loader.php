@@ -301,13 +301,13 @@
 			$result = $mod_auth->checkLogin($args["ARLogin"], $args["ARPassword"], $path);
 			if ($result!==true) {
 				if ($result == LD_ERR_ACCESS) {
-					ldAccessDenied($path, $ARnls["accessdenied"], $args);
+					ldAccessDenied($path, $ARnls["accessdenied"], $args, $function);
 					$function = false;
 				} else if ($result == LD_ERR_SESSION) {
-					ldAccessTimeout($path, $ARnls["sessiontimeout"], $args);
+					ldAccessTimeout($path, $ARnls["sessiontimeout"], $args, $function);
 					$function = false;
 				} else if ($result == LD_ERR_EXPIRED) {
-					ldAccessPasswordExpired($path, $ARnls["sessionpasswordexpired"], $args);
+					ldAccessPasswordExpired($path, $ARnls["sessionpasswordexpired"], $args, $function);
 					$function = false;
 				}
 			}
