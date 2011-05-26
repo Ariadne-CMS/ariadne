@@ -200,7 +200,7 @@
 				return $this->preventDefault;
 			}
 			if ( $name == 'name' ) {
-				return $this->name
+				return $this->name;
 			}
 		}
 		
