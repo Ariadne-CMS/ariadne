@@ -1,6 +1,6 @@
 <?php
 
-	function getCurrentTemplate( $function ) {
+	function ldGetCurrentTemplate( $function ) { 
 		if ( isset($function) ) {
 			return $function;
 		} else {
@@ -92,7 +92,7 @@
 
 		$eventData = new object();
 	    $eventData->arCallPath = $path;
-		$eventData->arCallFunction = getCurrentTemplate( $function );
+		$eventData->arCallFunction = ldGetCurrentTemplate( $function );
 		$eventData->arCallArgs = $arCallArgs;
 	    $eventData->arLoginMessage = $message;
 		$eventData->arReason = 'access timeout';
@@ -128,7 +128,7 @@
 
 	    $eventData = new object();
 	    $eventData->arCallPath = $path;
-		$eventData->arCallFunction = getCurrentTemplate( $function );
+		$eventData->arCallFunction = ldGetCurrentTemplate( $function );
 		$eventData->arCallArgs = $arCallArgs;
 	    $eventData->arLoginMessage = $message;
 		$eventData->arReason = 'access denied';
@@ -164,7 +164,7 @@
 
 		$eventData = new object();
 	    $eventData->arCallPath = $path;
-	    $eventData->arCallFunction = getCurrentTemplate( $function );
+	    $eventData->arCallFunction = ldGetCurrentTemplate( $function );
 		$eventData->arLoginMessage = $message;
 		$eventData->arReason = 'password expired';
 		$eventData->arCallArgs = $arCallArgs;
