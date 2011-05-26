@@ -1,7 +1,16 @@
 <?php
   if ($this->CheckLogin("read") && $this->CheckConfig()) {
 	$target = $this->make_path($target);
-	$userConfig = $this->loadUserConfig();
+	$configpath = $target;
+	if (!$this->exists($configpath)) {
+		$configpath = $this->make_path($target.'../');
+	}
+	if ($this->exists($configpath)) {
+		$configOb = current($this->get( $configpath, 'system.get.phtml'));
+		$userConfig = $configOb->loadUserConfig();
+	} else {
+		$userConfig = $this->loadUserConfig();
+	}
 	$authconfig = $userConfig['authentication'];
 
 	// Check if target is valid according to auth.ini
