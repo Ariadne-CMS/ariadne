@@ -117,8 +117,9 @@
 			return new ar_html_table( $rows, $attributes, $childNodes, $parentNode );
 		}
 		
-		public static function menu( $tagName = 'ul', $attributes = null, $childNodes = null, $parentNode = null ) {
-			return ar_html_menu::el( $tagName, $attributes, $childNodes, $parentNode );
+		public static function menu() {
+			$args = func_get_args();
+			return call_user_func_array( array( 'ar_html_menu', 'el' ), $args );
 		}
 		
 		public static function zen( $string ) {

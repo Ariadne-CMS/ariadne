@@ -110,12 +110,32 @@
 			return ar::get( $current )->parents()->top( $top );
 		}
 
-		public static function el( $tagName, $attributes, $childNodes = null, $parentNode = null ) {
-			return new ar_html_menuElement( $tagName, $attributes, $childNodes, $parentNode );
+		public static function el() {
+			$args       = func_get_args();
+			$name       = array_shift($args);
+			$attributes = array();
+			$content    = array();
+			foreach ($args as $arg) {
+				if ( is_array( $arg ) && !is_a( $arg, 'ar_xmlNodes' ) ) {
+					$attributes = array_merge($attributes, $arg);
+				} else if ($arg instanceof ar_xmlNodes) {
+					$content    = array_merge( $content, (array) $arg);
+				} else {
+					$content[]  = $arg;
+				}
+			}
+			if ( !count( $content ) ) {
+				$content = null;
+			} else {
+				$content = new ar_htmlNodes( $content );
+			}
+			
+			return new ar_html_menuElement( $name, $attributes, $content );
 		}
 		
-		public static function element( $data, $attributes, $options ) {
-			return self::el( $data, $attributes, $options );
+		public static function element() {
+			$args = func_get_args();
+			return call_user_func_array( array( 'self', 'el' ), $args );
 		}
 		
 	}
@@ -341,6 +361,7 @@ EOF;
 				break;
 				case 'dropdown' :
 					$this->css
+						->bind('menuHeight', '1.5em')
 						->bind('menuItemWidth', 'auto')
 						->bind('menuSubItemWidth', '10em')
 						->bind('menuHoverItemBgColor', '#E4E4E4')
@@ -349,7 +370,8 @@ EOF;
 						->bind('menuBorderColor', 'transparent')
 						->import("
 							$prefix {
-								line-height  : 1px;
+								display          : block;
+								height           : var(menuHeight);
 							}
 							$prefix $itemTag {
 								width            : var(menuItemWidth);
@@ -558,7 +580,7 @@ EOF;
 			$path = $item['path'];
 			if ( !isset($path) ) {
 				$path = $key;
-				$item['path'] = $parent . $key;
+				$item['path'] = ( ( $parent!='[root]' ) ? $parent : '' ) . $key;
 			}
 			if ( !isset($item['url']) ) {
 				$item['url'] = $this->_makeURL( $path, $parent );
@@ -675,7 +697,7 @@ EOF;
 			$args = func_get_args();
 			foreach( $args as $list) {
 				if ( ($list instanceof ar_storeFind) || ($list instanceof ar_storeParents) ) {
-					$list = $list->call( $this->template, array( 'current' => $current, 'root' => $root ) );
+					$list = $list->call( $this->template, array( 'current' => $this->current, 'root' => $root ) );
 				}
 				if ( is_array($list) ) {
 					$this->_fillFromArray( $list, $this->current );
