@@ -185,9 +185,11 @@
 			return $this;
 		}
 		
-		/* remainder to be implemented */
-
-		public function delete( $file, $options = array() ) {
+		public function delete( $file ) {
+			$result = ftp_delete( $this->connection, $file );
+			if ( !$result ) {
+				return ar::error( "Could not delete file $file.", 7 );
+			}
 			return $this;
 		}
 		
