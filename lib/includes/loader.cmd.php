@@ -101,6 +101,16 @@
 		// dummy function
 	}
 
+	function ldGetUserCookie($cookiename="ARUserCookie") {
+		$cookie = false;
+		return $cookie;
+	}
+
+	function ldSetUserCookie($cookie, $cookiename="ARUserCookie", $expire=null, $path="/", $domain="", $secure=0) {
+		$result = false;
+		return $result;
+	}
+
 	function ldGetCredentials() {
 	}
 
