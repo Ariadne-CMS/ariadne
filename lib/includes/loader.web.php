@@ -364,7 +364,7 @@
 				$expires = 0;
 			}
 			$result = ldHeader("Pragma: no-cache");
-			ldHeader("Cache-control: must-revalidate, max-age=0, private");
+			ldHeader("Cache-control: no-store, no-cache, must-revalidate, max-age=0, private");
 		}
 		if ( $expires !== false ) {
 			ldHeader("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT", $expires));
