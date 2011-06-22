@@ -2400,7 +2400,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	global $ARCurrent;
 		$context = $this->getContext();
 		if (!$arCallArgs) {
-			$arCallArgs = current($ARCurrent->arCallStack);
+			$arCallArgs = end($ARCurrent->arCallStack);
 		}
 		$arSuperContext = (array)$context['arSuperContext'];
 		$arLibrary		= $context['arLibrary'];
