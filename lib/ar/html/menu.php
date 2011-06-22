@@ -238,6 +238,7 @@
 		public function script( $type = '', $matches = array() ) {
 			$script = '';
 			switch ($type) {
+				case 'pulldown' :
 				case 'dropdown' :	
 					$listTagUp = strtoupper( $this->options['listTag'] );
 					$itemTagUp = strtoupper( $this->options['itemTag'] );
@@ -359,6 +360,7 @@ EOF;
 						}
 					");
 				break;
+				case 'pulldown' :
 				case 'dropdown' :
 					$this->css
 						->bind('menuHeight', '1.5em')
