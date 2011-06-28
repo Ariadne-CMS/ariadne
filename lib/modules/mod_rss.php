@@ -157,6 +157,12 @@
 			switch ($name) {
 				default:
 					$element[$name] = $newElement;
+					if ($attribs) {
+						foreach($attribs as $attribName => $attribValue ) {
+							$element[$name.':'.$attribName] = $attribValue;
+						}
+					}
+				break;
 			}
 		}
 
