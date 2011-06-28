@@ -4,17 +4,17 @@
 
 	$ARnls["aboutariadne"]					=	"Over Ariadne";
 	$ARnls["accessdenied"]					=	"Toegang geweigerd";
-	$ARnls["add"]							=	"Voegtoe";
+	$ARnls["add"]							=	"Voeg toe";
 	$ARnls["addnewobject"]					=	"Voeg nieuw object toe";
 	$ARnls["address"]						=	"Adres";
-	$ARnls["addtime"]						=	"Wel Tijd";
+	$ARnls["addtime"]						=	"Voeg tijd toe";
 	$ARnls["advanced"]						=	"Geavanceerde opties";
 	$ARnls["advancedsearch"]				=	"Uitgebreid";
 	$ARnls["again"]							=	"Nogmaals";
 	$ARnls["alarm"]							=	"Alarm";
 	$ARnls["all"]							=	"Alle";
 	$ARnls["allgrants"]						=	"Alle rechten voor %s";
-	$ARnls["allobjects"]					=	"Alle Objecten";
+	$ARnls["allobjects"]					=	"Alle objecten";
 	$ARnls["any"]							=	"Elk";
 	$ARnls["apply"]							=	"Toepassen";
 	$ARnls["article"]						=	"Artikel";
@@ -23,7 +23,7 @@
 	$ARnls["back"]							=	"Terug";
 	$ARnls["browse"]						=	"Blader";
 	$ARnls["caching"]						=	"Cachen";
-	$ARnls["calenderentry"]					=	"Kalender notitie";
+	$ARnls["calenderentry"]					=	"Kalender item";
 	$ARnls["cancel"]						=	"Annuleer";
 	$ARnls["changeeffectivenextlogin"]		=	"Veranderingen worden doorgevoerd wanneer U zich opnieuw aanmeld.";
 	$ARnls["changenls"]						=	"Veranderingen in uw standaard taal instelling worden pas actief bij uw volgende aanmelding.";
@@ -176,7 +176,7 @@
 	$ARnls["grantsforobject"]				=	"Rechten voor dit object";
 	$ARnls["group"]							=	"Groep";
 	$ARnls["groupdata"]						=	"Groepgegevens voor";
-	$ARnls["groupmembership"]				=	"Groep lidmaatschap voor %s";
+	$ARnls["groupmembership"]				=	"Groepslidmaatschap voor %s";
 	$ARnls["groups"]						=	"Groepen";
 	$ARnls["height"]						=	"Hoogte";
 	$ARnls["help"]							=	"Help";
@@ -193,7 +193,7 @@
 	$ARnls["keepshortcuturl"]				=	"Behoud shortcut URL";
 	$ARnls["keywords"]						=	"Trefwoorden";
 	$ARnls["language"]						=	"Taal";
-	$ARnls["languagenotavailable"]			=	"Deze pagina is niet beschikbaar in taalkeuze %s.";
+	$ARnls["languagenotavailable"]			=	"Deze pagina is niet beschikbaar in taal %s.";
 	$ARnls["last"]							=	"Achternaam";
 	$ARnls["layout"]						=	"Layout";
 	$ARnls["layoutfor"]						=	"Layout voor %s";
@@ -207,7 +207,7 @@
 	$ARnls["loginrequired"]					=	"Authorisatie benodigd.";
 	$ARnls["logoff"]						=	"Meld af";
 	$ARnls["lookin"]						=	"Zoek in";
-	$ARnls["mailto"]						=	"Mail naar";
+	$ARnls["mailto"]						=	"E-mail naar";
 	$ARnls["manage"]						=	"Beheer";
 	$ARnls["membersofgroup"]				=	"Leden van deze groep";
 	$ARnls["middle"]						=	"Tussen";
@@ -242,7 +242,7 @@
 	$ARnls["openlocks"]						=	"Afschermingen voor %s:";
 	$ARnls["openinnewwindow"]						=	"Open in een nieuw venster";
 	$ARnls["options"]						=	"Opties";
-	$ARnls["orderedbrowsing"]				=	"!Ordered browsing";
+	$ARnls["orderedbrowsing"]				=	"Gesorteerd bladeren";
 	$ARnls["overwrite"]						=	"Overschrijven";
 	$ARnls["page"]							=	"Pagina";
 	$ARnls["password"]						=	"Wachtwoord";
@@ -349,8 +349,8 @@
 	$ARnls["change_owner"]					=	"Wijzig eigenaar";
 	$ARnls["owner"]							=	"Eigenaar";
 	$ARnls["change_owner_recursive"]		=	"Wijzig eigenaar van alle kinderen";
-	$ARnls["grants_for"]					=	"Grants voor";
-	$ARnls["grants_add_update"]				=	"Bewerk of voeg grants toe op";
+	$ARnls["grants_for"]					=	"Rechten voor";
+	$ARnls["grants_add_update"]				=	"Bewerk of voeg rechten toe op";
 	$ARnls["grants_user_group"]				=	"Gebruiker of groep";
 	$ARnls["grants_valid"]					=	"Geldig voor";
 	$ARnls["grants_global"]					=	"Alle objecten";
@@ -372,5 +372,5 @@
 
 	$ARnls["expires"]						= "Verloopt";
 	$ARnls["toolbar_editor"]				= "Toolbar Editor (IE only)";
-	$ARnls["sessiontimeout"]				= "Sessie verlopen";
+	$ARnls["sessiontimeout"]				= "Sessie is verlopen";
 ?>
