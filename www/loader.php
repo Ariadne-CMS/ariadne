@@ -79,7 +79,7 @@
 		$root=$AR->root;
 		$session_id=0;
 		$re="^/-(.{4})-/";
-		if (eregi($re,$AR_PATH_INFO,$matches)) {
+		if (preg_match( '|'.$re.'|' , $AR_PATH_INFO , $matches )) {
 			$session_id=$matches[1];
 			$AR_PATH_INFO=substr($AR_PATH_INFO,strlen($matches[0])-1);
 			$AR->hideSessionIDfromURL=false;
