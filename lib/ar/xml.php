@@ -283,6 +283,26 @@
 			libxml_use_internal_errors( $prevErrorSetting );
 			return ar_error::raiseError( 'Incorrect xml passed', ar_exceptions::ILLEGAL_ARGUMENT, $errors );
 		}
+
+		public static function tryToParse( $xml ) {
+			try {
+				$result = self::parse( (string) $xml );
+				if ( ar_error::isError($result) ) {
+					$result = new ar_xmlNode( $xml );
+				} else {
+					foreach( $result as $item ) {
+						if ( $item->attributes['xmlns:xml'] ) {
+							// DOMDocument adds a default xmlns which you usually don't want
+							unset( $item->attributes['xmlns:xml'] );
+						}
+					}
+				}
+			} catch( Exception $e ) {
+				$result = new ar_xmlNode( $xml );
+			}
+			return $result;
+		}
+
 	}
 
 	/*
@@ -321,6 +341,7 @@
 			$nodes = call_user_func_array( array( 'ar_xmlNodes', 'mergeArguments' ), $args );
 			foreach( $nodes as $key => $node) {
 				if (!$node instanceof ar_xmlNode) {
+					//$nodes[$key] = ar_xml::tryToParse($node); //new ar_xmlNode( $node );
 					$nodes[$key] = new ar_xmlNode( $node );
 				}
 			}
@@ -535,22 +556,20 @@
 					$this->setParentNode($value);
 				break;
 				default :
-/*
-					if (isset($this[0]) && is_object($this[0]) ) {
-						$el = $this[0];
-						$el->{$name} = $value;
-					} else if ($value instanceof ar_xmlElement) {
-						$this[] = $value;
-					} else {
-						$this[] = ar_xml::tag($name, (string)$value);
-					}
-*/
 					if (is_numeric($name)) {
 						$node = $this->childNodes[$name];
 						$this->replaceChild($node, $value);
 					} else {
-						$nodes = $this->getElementsByTagname( $name, false );
-						$this->replaceChild($nodes, $value);
+						switch ( $name ) {
+							case 'nodeValue' : // FIXME: remove all childnodes and replace it with the new value
+								$this->removeChild( $this->childNodes );
+								$this->appendChild( $value );
+							break;
+							default:
+								$nodes = $this->getElementsByTagname( $name, false );
+								$this->replaceChild($value, $nodes);
+							break;
+						}
 					}
 				break;
 			}
@@ -628,7 +647,7 @@
 		}
 		
 		function getPreviousSibling( ar_xmlNode $el ) {
-			$pos = $this->getPosition( $el );
+			$pos = $this->_getPosition( $el );
 			if ( $pos > 0 ) {
 				return $this[ $pos - 1 ];
 			} else {
@@ -637,17 +656,17 @@
 		}
 		
 		function getNextSibling( ar_xmlNode $el ) {
-			$pos = $this->getPosition( $el );
-			if ( $pos < count( $this ) ) {
-				return $this[ $pos + 1 ];
+			$pos = $this->_getLastPosition( $el );
+			if ( $pos <= count( $this ) ) {
+				return $this[ $pos ];
 			} else {
 				return null;
 			}
 		}
 		
-		function getPosition( $el ) {
+		function _getPosition( $el ) {
 			if ( is_array($el) || $el instanceof Traversable ) {
-				return $this->getPosition( reset($el) );
+				return $this->_getPosition( reset($el) );
 			} else {
 				foreach ( $this as $pos => $node ) {
 					if ( $node === $el ) {
@@ -656,10 +675,22 @@
 				}
 			}
 		}
+
+		function _getLastPosition( $el ) {
+			if ( is_array($el) || $el instanceof Traversable ) {
+				return $this->_getLastPosition( end($el) );
+			} else {
+				foreach ( $this as $pos => $node ) {
+					if ( $node === $el ) {
+						return $pos+1;
+					}
+				}
+			}
+		}
 		
 		private function _removeChildNodes( $el ) {
 			if ( isset( $this->parentNode ) ) {
-				if ( is_array( $el ) ) {
+				if ( is_array( $el ) || $el instanceof Traversable ) {
 					foreach ( $el as $subEl ) {
 						if ( isset($subEl->parentNode) ) {
 							$subEl->parentNode->removeChild( $subEl );
@@ -689,7 +720,11 @@
 			}		
 		}
 		
-		function appendChild( ar_xmlNodeInterface $el ) {
+		function appendChild( $el ) {
+			if ( ! $el instanceof ar_xmlNodeInterface ) {
+				$el = ar_xml::tryToParse( (string) $el );
+			}
+			
 			$this->_removeChildNodes( $el );
 			$result = $this->_appendChild( $el );
 			return $result;
@@ -706,12 +741,15 @@
 			return $el;
 		}
 
-		function insertBefore( ar_xmlNodeInterface $el, ar_xmlNodeInterface $referenceEl = null ) {
+		function insertBefore( $el, ar_xmlNodeInterface $referenceEl = null ) {
+			if ( ! $el instanceof ar_xmlNodeInterface ) {
+				$el = ar_xml::tryToParse( (string) $el );
+			}
 			$this->_removeChildNodes( $el );
 			if ( !isset($referenceEl) ) {
 				return $this->_appendChild( $el );
 			} else {
-				$pos = $this->getPosition( $referenceEl );
+				$pos = $this->_getPosition( $referenceEl );
 				if ( !isset($pos) ) {
 					$this->_appendChild( $el );
 				} else {
@@ -729,9 +767,12 @@
 			return $el;
 		}
 		
-		function replaceChild( ar_xmlNodeInterface $el, ar_xmlNodeInterface $referenceEl ) {
+		function replaceChild( $el, ar_xmlNodeInterface $referenceEl ) {
+			if ( !$el instanceof ar_xmlNodeInterface ) {
+				$el = ar_xml::tryToParse( (string) $el );
+			}
 			$this->_removeChildNodes( $el );
-			$pos = $this->getPosition( $referenceEl );
+			$pos = $this->_getPosition( $referenceEl );
 			if ( !isset($pos) ) { 
 				return null;
 			} else {
@@ -748,14 +789,14 @@
 			}
 		}	
 
-		public function removeChild( ar_xmlNodeInterface $el ) {
+		public function removeChild( $el ) {
 			// Warning: must never ever call _removeChildNodes, can be circular.
-			if ( is_array( $el ) ) {
+			if ( is_array( $el ) || $el instanceof Traversable) {
 				foreach( $el as $subEl ) {
 					$this->removeChild( $subEl );
 				}
 			} else {
-				$pos = $this->getPosition( $el );
+				$pos = $this->_getPosition( $el );
 				if ( isset($pos) ) {
 					$oldEl = $this[$pos];
 					$arr = (array) $this;
@@ -827,10 +868,6 @@
 		
 		function __set( $name, $value ) {
 			switch ($name) {
-				case 'previousSibling' :
-				case 'nextSibling' :
-					return false;
-				break;
 				case 'nodeValue' :
 					$this->nodeValue = $value;
 				break;
@@ -1006,11 +1043,17 @@
 		}
 		
 		function __set( $name, $value ) {
-			$result = parent::__set($name, $value);
-			if (isset($result)) {
-				return $result;
-			}
-			switch ($name ) {
+			switch ( $name ) {
+				case 'previousSibling':
+				case 'nextSibling':
+				break;
+				case 'nodeValue':
+					if ( isset($this->childNodes) && count($this->childNodes) ) {
+						$this->childNodes->nodeValue = $value;
+					} else {
+						$this->appendChild( $value );
+					}
+				break;
 				case 'childNodes' :
 					if ( !isset($value) ) {
 						$value = $this->getNodeList();
