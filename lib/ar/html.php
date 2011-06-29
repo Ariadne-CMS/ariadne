@@ -146,6 +146,7 @@
 
 		public static function parse( $html ) {
 			$dom = new DOMDocument();
+			$prevErrorSetting = libxml_use_internal_errors(true);
 			if ( $dom->loadHTML( $html ) ) {
 				$domroot = $dom->documentElement;
 				if ( $domroot ) {
@@ -154,8 +155,53 @@
 					return $result;
 				}
 			}
-			return ar_error::raiseError( 'Incorrect html passed', ar_exceptions::ILLEGAL_ARGUMENT );
-		}		
+			$errors = libxml_get_errors();
+			libxml_clear_errors();
+			libxml_use_internal_errors( $prevErrorSetting );
+			return ar_error::raiseError( 'Incorrect html passed', ar_exceptions::ILLEGAL_ARGUMENT, $errors );
+		}
+
+		protected static $lastHTML = null;
+		protected static $tryingToParse = null;
+		
+		public static function tryToParse( $html ) {
+			if (self::$tryingToParse && $html == self::$lastHTML) { 
+				return new ar_htmlNode( (string) $html);
+			}
+			self::$lastHTML = $html;
+			$rememberParsing = self::$tryingToParse;
+			self::$tryingToParse = true;
+			$result = $html;
+			if ($html) {
+				try {
+					$result = self::parse( $html );
+					if ( ar_error::isError($result) ) {
+						$result = new ar_htmlNode( (string) $html );
+					} else {
+						$check = trim($html);
+						/*
+							DOMDocument::loadHTML always generates a full html document 
+							so the next bit of magic tries to remove the added elements
+						*/
+						if (stripos($check, '<p') === 0 ) {
+							$result = $result->html->body[0]->childNodes;
+						} else {
+							$result = $result->html->body[0];
+							if ($result->firstChild->tagName=='p') {
+								$result = $result->firstChild;
+							}
+							$result = $result->childNodes;
+						}
+					}
+				} catch( Exception $e ) {
+					$result = new ar_htmlNode( (string) $html );
+				}
+			} else {
+				$result = new ar_htmlNode( (string) $html );
+			}
+			self::$tryingToParse = $rememberParsing;
+			return $result;
+		}
 	}
 
 	class ar_htmlNodes extends ar_xmlNodes {
@@ -174,6 +220,10 @@
 		public function getNodeList() {
 			$params = func_get_args();
 			return call_user_func_array( array( 'ar_html', 'nodes'), $params );
+		}
+		
+		protected function _tryToParse( $node ) {
+			return ar_html::tryToParse( $node );
 		}
 		
 	}
