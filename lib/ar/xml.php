@@ -120,7 +120,7 @@
 
 		public static function cdata( $value ) {
 			ar::untaint( $value, FILTER_UNSAFE_RAW );
-			return new ar_xmlNode($value, null, true); //'<![CDATA[' . str_replace( ']]>', ']]&gt;', $value ) . ']]>';
+			return new ar_xmlNode($value, null, true);
 		}
 		
 		public static function tag() {
@@ -224,7 +224,11 @@
 		protected static function parseChildren( $DOMElement ) {
 			$result = array();
 			foreach ( $DOMElement->childNodes as $child ) {
-				if ( $child instanceof DOMCharacterData ) {
+				if ( $child instanceof DOMComment ) {
+					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
+						$result[] = '<!--'.$child->data.'-->';
+					}
+				} else if ( $child instanceof DOMCharacterData ) {
 					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
 						$result[] = $child->data;
 					}
@@ -283,23 +287,34 @@
 			libxml_use_internal_errors( $prevErrorSetting );
 			return ar_error::raiseError( 'Incorrect xml passed', ar_exceptions::ILLEGAL_ARGUMENT, $errors );
 		}
-
+		
+		protected static $lastXML = null;
+		protected static $tryingToParse = false;
+		
 		public static function tryToParse( $xml ) {
-			try {
-				$result = self::parse( (string) $xml );
-				if ( ar_error::isError($result) ) {
-					$result = new ar_xmlNode( $xml );
-				} else {
-					foreach( $result as $item ) {
-						if ( $item->attributes['xmlns:xml'] ) {
-							// DOMDocument adds a default xmlns which you usually don't want
-							unset( $item->attributes['xmlns:xml'] );
-						}
-					}
-				}
-			} catch( Exception $e ) {
-				$result = new ar_xmlNode( $xml );
+			if (self::$tryingToParse && $xml == self::$lastXML) { 
+				// tryToParse calls parse which calls appendChild which may call tryToParse... so this prevents a loop. The tryingToParse variable prevents problems when calling tryToParse twice (not recursively) with the same xml.
+				return new ar_xmlNode( (string) $xml);
 			}
+			self::$lastXML = $xml;
+			$rememberParsing = self::$tryingToParse;
+			self::$tryingToParse = true;
+			$result = $xml;
+			if ($xml) {
+				try {
+					$result = self::parse( '<root>'.$xml.'</root>' );
+					if ( ar_error::isError($result) ) {
+						$result = new ar_xmlNode( (string) $xml );
+					} else {
+						$result = $result->firstChild->childNodes;
+					}
+				} catch( Exception $e ) {
+					$result = new ar_xmlNode( (string) $xml );
+				}
+			} else {
+				$result = new ar_xmlNode( (string) $xml );
+			}
+			self::$tryingToParse = $rememberParsing;
 			return $result;
 		}
 
@@ -336,15 +351,34 @@
 			return $nodes;
 		}
 
+		public function _normalizeNodes( $nodes ) {
+			$result = array();
+			if ( is_array($nodes) || $nodes instanceof Traversable ) {
+				foreach ( $nodes as $node ) {
+					if ( !$node instanceof ar_xmlNode ) {
+						$node = ar_xml::tryToParse( $node );
+					}
+					if ( is_array($node) || $node instanceof Traversable ) {
+						$subnodes = $this->_normalizeNodes( $node );
+						foreach ( $subnodes as $subnode ) {
+							$result[] = $subnode;
+						}
+					} else {
+						$result[] = $node;
+					}
+				}
+			} else {
+				if ( !$nodes instanceof ar_xmlNode ) {
+					$nodes = ar_xml::tryToParse( $nodes );
+				}
+				$result[] = $nodes;
+			}
+			return $result;
+		}
 		public function __construct() {
 			$args  = func_get_args();
 			$nodes = call_user_func_array( array( 'ar_xmlNodes', 'mergeArguments' ), $args );
-			foreach( $nodes as $key => $node) {
-				if (!$node instanceof ar_xmlNode) {
-					//$nodes[$key] = ar_xml::tryToParse($node); //new ar_xmlNode( $node );
-					$nodes[$key] = new ar_xmlNode( $node );
-				}
-			}
+			$nodes = $this->_normalizeNodes( $nodes );
 			parent::__construct($nodes);
 		}
 
@@ -561,9 +595,10 @@
 						$this->replaceChild($node, $value);
 					} else {
 						switch ( $name ) {
-							case 'nodeValue' : // FIXME: remove all childnodes and replace it with the new value
-								$this->removeChild( $this->childNodes );
-								$this->appendChild( $value );
+							case 'nodeValue' : 
+								foreach( $this->childNodes as $node ) {
+									$node->nodeValue = $value;
+								}
 							break;
 							default:
 								$nodes = $this->getElementsByTagname( $name, false );
@@ -627,7 +662,7 @@
 		}
 		
 		function __clearAllNodes() {
-			parent::__construct();
+			self::__construct();
 		}
 		
 		function setParentNode( ar_xmlElement $el ) {
@@ -708,11 +743,9 @@
 			if ( isset( $this->parentNode ) ) {
 				if ( is_array( $el ) || $el instanceof Traversable ) {
 					foreach ( $el as $subEl ) {
-						$subEl->__clearParentIdCache();
-						$subEl->parentNode = $this->parentNode;
-						$subEl->__restoreParentIdCache();
+						$this->_setParentNodes( $subEl );
 					}
-				} else {
+				} else if ( $el instanceof ar_xmlNode) {
 					$el->__clearParentIdCache();
 					$el->parentNode = $this->parentNode;
 					$el->__restoreParentIdCache();
@@ -721,10 +754,6 @@
 		}
 		
 		function appendChild( $el ) {
-			if ( ! $el instanceof ar_xmlNodeInterface ) {
-				$el = ar_xml::tryToParse( (string) $el );
-			}
-			
 			$this->_removeChildNodes( $el );
 			$result = $this->_appendChild( $el );
 			return $result;
@@ -737,14 +766,11 @@
 			} else {
 				$list = (array) $el;
 			}
-			parent::__construct( array_merge( (array) $this, $list ) );
+			self::__construct( array_merge( (array) $this, $list ) );
 			return $el;
 		}
 
 		function insertBefore( $el, ar_xmlNodeInterface $referenceEl = null ) {
-			if ( ! $el instanceof ar_xmlNodeInterface ) {
-				$el = ar_xml::tryToParse( (string) $el );
-			}
 			$this->_removeChildNodes( $el );
 			if ( !isset($referenceEl) ) {
 				return $this->_appendChild( $el );
@@ -761,16 +787,13 @@
 					}
 					$arr = (array) $this;
 					array_splice( $arr, $pos, 0, $list );
-					parent::__construct( $arr );
+					self::__construct( $arr );
 				}
 			}
 			return $el;
 		}
 		
 		function replaceChild( $el, ar_xmlNodeInterface $referenceEl ) {
-			if ( !$el instanceof ar_xmlNodeInterface ) {
-				$el = ar_xml::tryToParse( (string) $el );
-			}
 			$this->_removeChildNodes( $el );
 			$pos = $this->_getPosition( $referenceEl );
 			if ( !isset($pos) ) { 
@@ -784,7 +807,7 @@
 				}
 				$arr = (array) $this;
 				array_splice( $arr, $pos, 0, $list ); 
-				parent::__construct( $arr );
+				self::__construct( $arr );
 				return $this->removeChild( $referenceEl );
 			}
 		}	
@@ -801,7 +824,7 @@
 					$oldEl = $this[$pos];
 					$arr = (array) $this;
 					array_splice( $arr, $pos, 1);
-					parent::__construct( $arr );
+					self::__construct( $arr );
 					if ( isset($this->parentNode) ) {
 						$oldEl->__clearParentIdCache();
 						$oldEl->parentNode = null;
@@ -1049,10 +1072,9 @@
 				break;
 				case 'nodeValue':
 					if ( isset($this->childNodes) && count($this->childNodes) ) {
-						$this->childNodes->nodeValue = $value;
-					} else {
-						$this->appendChild( $value );
+						$this->removeChild( $this->childNodes );
 					}
+					$this->appendChild( $value );
 				break;
 				case 'childNodes' :
 					if ( !isset($value) ) {
@@ -1066,12 +1088,7 @@
 				break;
 				default:
 					$nodeList = $this->__get( $name );
-					if (isset($nodeList[0])) {
-						$node = $nodeList[0];
-						$node->tagName = $value->tagName;
-						$node->attributes = $value->attributes;
-						$node->childNodes = $value->childNodes;
-					}
+					$this->replaceChild( $value, $nodeList );
 				break;
 			}
 		}
