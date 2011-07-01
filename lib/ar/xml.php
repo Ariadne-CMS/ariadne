@@ -226,11 +226,11 @@
 			foreach ( $DOMElement->childNodes as $child ) {
 				if ( $child instanceof DOMComment ) {
 					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
-						$result[] = '<!--'.$child->data.'-->';
+						$result[] = new ar_xmlNode('<!--'.$child->data.'-->');
 					}
 				} else if ( $child instanceof DOMCharacterData ) {
 					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
-						$result[] = $child->data;
+						$result[] = new ar_xmlNode($child->data);
 					}
 				} else if ( $child instanceof DOMCdataSection ) {
 					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
@@ -257,12 +257,15 @@
 					$doctype .= ' "'.$dom->doctype->systemId.'"';
 				}
 				$doctype .= '>';
-				$result[] = $doctype;
+				$result[] = new ar_xmlNode($doctype);
 			}
 			return $result;
 		}
 		
 		public static function parse( $xml ) {
+			// important: parse must never return results with simple string values, but must always
+			// wrap them in an ar_xmlNode, or tryToParse may get called, which will call parse, which 
+			// will... etc.
 			$dom = new DOMDocument();
 			$prevErrorSetting = libxml_use_internal_errors(true);
 			if ( $dom->loadXML( $xml ) ) {
@@ -288,33 +291,24 @@
 			return ar_error::raiseError( 'Incorrect xml passed', ar_exceptions::ILLEGAL_ARGUMENT, $errors );
 		}
 		
-		protected static $lastXML = null;
-		protected static $tryingToParse = false;
-		
 		public static function tryToParse( $xml ) {
-			if (self::$tryingToParse && $xml == self::$lastXML) { 
-				// tryToParse calls parse which calls appendChild which may call tryToParse... so this prevents a loop. The tryingToParse variable prevents problems when calling tryToParse twice (not recursively) with the same xml.
-				return new ar_xmlNode( (string) $xml);
-			}
-			self::$lastXML = $xml;
-			$rememberParsing = self::$tryingToParse;
-			self::$tryingToParse = true;
 			$result = $xml;
-			if ($xml) {
-				try {
-					$result = self::parse( '<root>'.$xml.'</root>' );
-					if ( ar_error::isError($result) ) {
+			if ( ! ($xml instanceof ar_xmlNodeInterface ) ) {
+				if ($xml) {
+					try {
+						$result = self::parse( '<root>'.$xml.'</root>' );
+						if ( ar_error::isError($result) ) {
+							$result = new ar_xmlNode( (string) $xml );
+						} else {
+							$result = $result->firstChild->childNodes;
+						}
+					} catch( Exception $e ) {
 						$result = new ar_xmlNode( (string) $xml );
-					} else {
-						$result = $result->firstChild->childNodes;
 					}
-				} catch( Exception $e ) {
+				} else {
 					$result = new ar_xmlNode( (string) $xml );
 				}
-			} else {
-				$result = new ar_xmlNode( (string) $xml );
 			}
-			self::$tryingToParse = $rememberParsing;
 			return $result;
 		}
 
@@ -351,12 +345,16 @@
 			return $nodes;
 		}
 
+		protected function _tryToParse( $node ) {
+			return ar_xml::tryToParse( $node );
+		}
+		
 		public function _normalizeNodes( $nodes ) {
 			$result = array();
 			if ( is_array($nodes) || $nodes instanceof Traversable ) {
 				foreach ( $nodes as $node ) {
 					if ( !$node instanceof ar_xmlNode ) {
-						$node = ar_xml::tryToParse( $node );
+						$node = $this->_tryToParse( $node );
 					}
 					if ( is_array($node) || $node instanceof Traversable ) {
 						$subnodes = $this->_normalizeNodes( $node );
@@ -369,12 +367,13 @@
 				}
 			} else {
 				if ( !$nodes instanceof ar_xmlNode ) {
-					$nodes = ar_xml::tryToParse( $nodes );
+					$nodes = $this->_tryToParse( $nodes );
 				}
 				$result[] = $nodes;
 			}
 			return $result;
 		}
+		
 		public function __construct() {
 			$args  = func_get_args();
 			$nodes = call_user_func_array( array( 'ar_xmlNodes', 'mergeArguments' ), $args );

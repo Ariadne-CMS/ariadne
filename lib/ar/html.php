@@ -131,7 +131,7 @@
 			foreach ( $DOMElement->childNodes as $child ) {
 				if ( $child instanceof DOMCharacterData ) {
 					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
-						$result[] = $child->data;
+						$result[] = new ar_htmlNode( $child->data );
 					}
 				} else if ( $child instanceof DOMCdataSection ) {
 					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
@@ -145,6 +145,9 @@
 		}
 
 		public static function parse( $html ) {
+			// important: parse must never return results with simple string values, but must always
+			// wrap them in an ar_htmlNode, or tryToParse may get called, which will call parse, which 
+			// will... etc.
 			$dom = new DOMDocument();
 			$prevErrorSetting = libxml_use_internal_errors(true);
 			if ( $dom->loadHTML( $html ) ) {
@@ -161,45 +164,37 @@
 			return ar_error::raiseError( 'Incorrect html passed', ar_exceptions::ILLEGAL_ARGUMENT, $errors );
 		}
 
-		protected static $lastHTML = null;
-		protected static $tryingToParse = null;
-		
 		public static function tryToParse( $html ) {
-			if (self::$tryingToParse && $html == self::$lastHTML) { 
-				return new ar_htmlNode( (string) $html);
-			}
-			self::$lastHTML = $html;
-			$rememberParsing = self::$tryingToParse;
-			self::$tryingToParse = true;
 			$result = $html;
-			if ($html) {
-				try {
-					$result = self::parse( $html );
-					if ( ar_error::isError($result) ) {
-						$result = new ar_htmlNode( (string) $html );
-					} else {
-						$check = trim($html);
-						/*
-							DOMDocument::loadHTML always generates a full html document 
-							so the next bit of magic tries to remove the added elements
-						*/
-						if (stripos($check, '<p') === 0 ) {
-							$result = $result->html->body[0]->childNodes;
+			if ( ! ($html instanceof ar_xmlNodeInterface ) ) { // ar_xmlNodeInterface is correct, there is no ar_htmlNodeInterface
+				if ($html) {
+					try {
+						$result = self::parse( $html );
+						if ( ar_error::isError($result) ) {
+							$result = new ar_htmlNode( (string) $html );
 						} else {
-							$result = $result->html->body[0];
-							if ($result->firstChild->tagName=='p') {
-								$result = $result->firstChild;
+							$check = trim($html);
+							/*
+								DOMDocument::loadHTML always generates a full html document 
+								so the next bit of magic tries to remove the added elements
+							*/
+							if (stripos($check, '<p') === 0 ) {
+								$result = $result->html->body[0]->childNodes;
+							} else {
+								$result = $result->html->body[0];
+								if ($result->firstChild->tagName=='p') {
+									$result = $result->firstChild;
+								}
+								$result = $result->childNodes;
 							}
-							$result = $result->childNodes;
 						}
+					} catch( Exception $e ) {
+						$result = new ar_htmlNode( (string) $html );
 					}
-				} catch( Exception $e ) {
+				} else {
 					$result = new ar_htmlNode( (string) $html );
 				}
-			} else {
-				$result = new ar_htmlNode( (string) $html );
 			}
-			self::$tryingToParse = $rememberParsing;
 			return $result;
 		}
 	}
