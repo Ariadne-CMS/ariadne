@@ -325,6 +325,21 @@ class mysqlstore extends store{
 		return $result;
 	}
 
+	public function count_find($path, $criteria, $limit=100, $offset=0) {
+		$sqlcompiler= $this->compilerFactory();
+		$query=$sqlcompiler->compile($path, $criteria, $limit, $offset);
+		if ($sqlcompiler->error) {
+			$this->error=$sqlcompiler->error;
+		}
+		unset($sqlcompiler);
+		$qresult = $this->store_run_query($query["count_query"]);
+		if ($qresult) {
+			$result = mysql_fetch_array($qresult);
+			$count  = $result["count"];
+		}
+		return $count;
+	}
+
 	public function find($path, $criteria, $limit=100, $offset=0) {
 	/**********************************************************************************
 
@@ -344,11 +359,12 @@ class mysqlstore extends store{
 	 **********************************************************************************/
 		if (!is_array($criteria) && ($criteria=trim($criteria))) {
 			$sqlcompiler= $this->compilerFactory();
-			$query_string=$sqlcompiler->compile($path, $criteria, $limit, $offset);
+			$query=$sqlcompiler->compile($path, $criteria, $limit, $offset);
 			if ($sqlcompiler->error) {
 				$this->error=$sqlcompiler->error;
 			}
 			unset($sqlcompiler);
+			$result["list"]= $this->store_run_query($query["select_query"]);
 		} else {
 			$this->error="";
 			$count=0;
@@ -437,8 +453,8 @@ class mysqlstore extends store{
 				}
 				$query_string.="$limit";
 			}
+			$result["list"]= $this->store_run_query($query_string);
 		}
-		$result["list"]= $this->store_run_query($query_string);
 		return $result;
 	}
 
@@ -547,7 +563,7 @@ class mysqlstore extends store{
 				}
 
 				$mask = substr($path, strlen($parent));
-				if (ereg("^(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) { 
+				if (preg_match("/^(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) { 
 					// if the last part of a path matches something like {2:id} this
 					// part will automatically create a new number, unique in this directory, and fill it in.
 					// before we proceed, we need to lock the 'nodes' and 'objects' table
@@ -767,7 +783,7 @@ class mysqlstore extends store{
 				$result=false;
 			} else { 
 				$mask = substr($destination, strlen($parent));
-				if (ereg("(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) {
+				if (preg_match("/(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) {
 					$query_string="lock tables ".$this->tbl_prefix."nodes write";
 					$qresult=$this->store_run_query($query_string);
 					if ($qresult) {
@@ -814,7 +830,7 @@ class mysqlstore extends store{
 		if ($errno) {
 			$this->error="ERROR: Mysql: $errno: $error";
 			debug("run_query: ".$this->error,"store");
-			debug("run_query: query=$query_string","store");
+			debug("run_query: query=$query","store");
 			$result=false;
 		} else if (!isset($result)) {
 			$result=true;
@@ -860,7 +876,7 @@ class mysqlstore extends store{
 				$result=false;
 			} else { 
 				$mask = substr($destination, strlen($parent));
-				if (ereg("(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) {
+				if (preg_match("/(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) {
 					$query_string="lock tables ".$this->tbl_prefix."nodes write";
 					mysql_select_db($this->database,$this->connect_id);
 					$qresult = $this->store_run_query($query_string);
@@ -1101,7 +1117,7 @@ class mysqlstore extends store{
 		$path=AddSlashes($path);
 
 		$substr_s = strlen($path);
-		if (ereg("^(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) { 
+		if (preg_match("/^(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) { 
 			$subid = 0;
 			$mask_pre = $matches[1];
 			$substr_s += strlen($mask_pre)+1;
