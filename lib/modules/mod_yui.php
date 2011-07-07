@@ -403,10 +403,10 @@
 			return $result;
 		}
 
-		function showList($objects, $viewtype='list') {
+		function showList($data, $viewtype='list') {
 			global $AR, $ARnls;
-			
-			if (is_array($objects) && count($objects) > 0) {
+
+			if (is_array($data['objects']) && count($data['objects']) && $data['total'] > 0) {
 				$nodes = ar_html::nodes();
 				switch ($viewtype) {
 					case "details" : 
@@ -419,7 +419,7 @@
 						$maxlen = 11;
 					break;
 				}
-				foreach ($objects as $node) {
+				foreach ($data['objects'] as $node) {
 					$content = self::getTypeIcon($node, $viewtype);
 					if( is_array($node['svn']) ) {
 						$content[] = self::getSvnIcon($node['svn']['status']);
@@ -429,7 +429,11 @@
 				}
 				$result = ar_html::tag('ul', array('class' => array('explore_list', $viewtype) ), $nodes);
 			} else {
-				$result = ar_html::tag('div', array('class'=>'noobjects'), htmlspecialchars($ARnls['ariadne:no_objects_found']) );
+				if ($data['total'] > 1000) {
+					$result = ar_html::tag('div', array('class'=>'noobjects'), htmlspecialchars($ARnls['ariadne:too_many_objects_found'] . " (" . $data['total'] . ")"));
+				} else {
+					$result = ar_html::tag('div', array('class'=>'noobjects'), htmlspecialchars($ARnls['ariadne:no_objects_found']) );
+				}
 			}
 			echo $result."\n";
 		}
