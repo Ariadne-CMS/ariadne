@@ -243,7 +243,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	function count_find($path='', $query='') {
 		$path=$this->store->make_path($this->path, $path);
-		return $this->store->count($this->store->find($path, $query, 0));
+		if (method_exists($this->store, 'count_find')) {
+			$result = $this->store->count_find($path, $query, 0);
+		} else {
+			$result = $this->store->count($this->store->find($path, $query, 0));
+		}
+		return $result;
 	}
 
 	function count_ls($path) {
@@ -2000,7 +2005,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 		// now clear all parents untill the current site
 		$site=$this->currentsite($path);
-		if ($path!=$site && $path!='/') {
+		$project=$this->currentproject($path);
+		if ($path!=$site && $path != $project && $path!='/') {
 			$parent=$this->make_path($path.'../');
 			$this->ClearCache($parent, $private, false);
 		}
@@ -3067,6 +3073,32 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 
 	function _save($properties="", $vtype="") {
+		if (is_array($properties)) {
+			foreach ($properties as $prop_name => $prop) {
+				foreach ($prop as $prop_index => $prop_record) {
+					$record = Array();
+					foreach ($prop_record as $prop_field => $prop_value) {
+						switch (gettype($prop_value)) {
+							case "integer":
+							case "boolean":
+							case "double":
+								$value = $prop_value;
+							break;
+							default:
+								$value = "'".AddSlashes($prop_value)."'";
+								if (substr($prop_value, 0, 1) === "'" && substr($prop_value, -1) === "'"
+									&& "'".AddSlashes(StripSlashes(substr($prop_value, 1, -1)))."'" == $prop_value) {
+										$value = $prop_value;
+								}
+								
+						}
+						$record[$prop_field] = $value;
+					}
+					$properties[$prop_name][$prop_index] = $record;
+				}
+			}
+		}
+
 		if ($this->arIsNewObject && $this->CheckSilent('add', $this->type)) {
 			unset($this->data->config);
 			$result = $this->save($properties, $vtype);
@@ -3129,7 +3161,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $this->loadLibrary($name, $path);
 	}
 
-	
+	function _resetConfig($path='') {
+		return $this->resetConfig($path);
+	}
 
 	function _getLibraries($path = '') {
 		return $this->getLibraries($path);
