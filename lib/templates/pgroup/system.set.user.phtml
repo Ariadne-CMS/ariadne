@@ -39,16 +39,5 @@
 				}
 			}
 		}
-		$properties = Array();
-		//calculate and save new member properties
-		$members=$this->ls(".","system.get.login.phtml");
-		while (list($key, $member)=@each($members)) {
-			$properties["members"][]["login"]="'".AddSlashes($member)."'";
-		} 
-		if (!$properties["members"]) {
-			// make sure the members property is cleared
-			$properties["members"]=1;
-		}
-		$this->save($properties);
 	}
 ?>
