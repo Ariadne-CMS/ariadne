@@ -741,7 +741,7 @@ li.explore_item {
 }
 .paging li {
 	display: block;
-	width: 18px;
+	min-width: 18px;
 	height: 18px;
 	float: left;
 	margin-left: 5px;
@@ -753,10 +753,12 @@ li.explore_item {
 	text-decoration: none;
 	font-size: 11px;
 	height: 16px;
-	width: 16px;
+	min-width: 12px;
 	text-align: center;
 	line-height: 16px;
 	display: block;
+    padding-left: 2px;
+	padding-right: 2px;
 }
 
 .paging a:hover,
