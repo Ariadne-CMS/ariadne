@@ -106,6 +106,8 @@
 	$ARnls['ariadne:grants:grants_explained']		= "Grants explained for ";
 	$ARnls['ariadne:grants:other_grants']			= "Other grants for ";
 	$ARnls['ariadne:no_objects_found']			= "No objects found.";
+	$ARnls['ariadne:too_many_objects_found']    = "Too many objects found.";
+
 	$ARnls['ariadne:no_adding_found']			= "You can not add objects here.";
 
 	$ARnls['err:defaultlanguagenotavailable']		= 'The chosen default language was not selected as an available language.';

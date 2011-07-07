@@ -104,6 +104,8 @@
 	$ARnls['ariadne:grants:grants_explained']		= "Rechten verklaard voor ";
 	$ARnls['ariadne:grants:other_grants']			= "Andere rechten voor ";
 	$ARnls['ariadne:no_objects_found']			= "Geen objecten gevonden.";
+	$ARnls['ariadne:too_many_objects_found']	= "Te veel objecten gevonden.";
+
 	$ARnls['ariadne:no_adding_found']			= "U kunt hier geen objecten aanmaken.";
 
 	$ARnls['err:defaultlanguagenotavailable']		= 'De gekozen standaard taal is niet als beschikbaar gekozen.';
