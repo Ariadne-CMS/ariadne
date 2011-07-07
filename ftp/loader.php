@@ -269,7 +269,7 @@
 			$template="";
 			$absolute = ($path[0] === '/') ? true : false;
 			$path=$FTP->site.$FTP->store->make_path($FTP->cwd, $path);
-			while (ereg('/'.ESPCHL.'([^/]*)'.ESPCHR.'/', $path, $regs) && $regs[1]) {
+			while (preg_match('|/'.ESPCHL.'([^/]*)'.ESPCHR.'/|', $path, $regs) && $regs[1]) {
 				$listMode=$regs[1];
 				$path=str_replace("/".SPCHL.$listMode.SPCHR."/", "/", $path);
 			}
@@ -394,7 +394,7 @@
 
 						$path=$FTP->store->make_path($FTP->cwd, $args);
 						debug("ftp: cwd absolute path is ($path)");
-						while (ereg('/'.ESPCHL.'([^/]*)'.ESPCHR.'/', $path, $regs) && $regs[1]) {
+						while (preg_match('|/'.ESPCHL.'([^/]*)'.ESPCHR.'/|', $path, $regs) && $regs[1]) {
 							$FTP->listMode=$regs[1];
 							$path=str_replace("/".SPCHL.$FTP->listMode.SPCHR."/", "/", $path);
 						}
@@ -416,7 +416,7 @@
 					break;
 
 					case 'TYPE':
-						if (eregi('a|i', $args)) {
+						if (preg_match('/a|i/i', $args)) {
 							$FTP->DC["type"]=strtoupper($args);
 							ftp_Tell(200, "Type set to ".$args);
 						} else {
@@ -759,7 +759,7 @@
 
 						ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ASCII' : 'BINARY')." mode data connection");
 						debug("ftp: client wants to store file ($target)");
-						eregi('^/(.*/)?[^./]*[.]([^./]+)/$', $target, $regs);
+						preg_match('|^/(.*/)?[^./]*[.]([^./]+)/$|', $target, $regs);
 						$ext = $regs[2];
 						if (ftp_OpenDC()) {
 							$tempfile=tempnam($FTP->store->get_config('files')."temp/", "upload");
@@ -770,7 +770,7 @@
 								$fileinfo["tmp_name"]=$tempfile;
 								if ($listMode === "templates") {
 									ftp_TranslateTemplate($target, $template);
-									$fileinfo["name"]=eregi_replace('[^.a-z0-9_-]', '_', $template);
+									$fileinfo["name"]=preg_replace('/[^.a-z0-9_-]/i', '_', $template);
 
 									debug("ftp: writing to $tempfile\n");
 									if ($FTP->resume) {
@@ -798,7 +798,7 @@
 										$FTP->store->get($target));
 								} else {
 									$file=substr($target, strlen($path), -1);
-									$fileinfo["name"]=eregi_replace('[^.a-z0-9_-]', '_', $file);
+									$fileinfo["name"]=preg_replace('/[^.a-z0-9_-]/i', '_', $file);
 									if ($FTP->store->exists($target)) {
 										debug("ftp::store updating $target");
 										debug("ftp: writing to $tempfile\n");
@@ -869,8 +869,8 @@
 					case 'MKD':
 						$path_requested = $args;
 						$path=preg_replace("|/".ESPCHL.'[^/]*'.ESPCHR."/|", "/", $args);
-						eregi('^(.*[/])?(.*)$', $path, $regs);
-						$arNewFilename=eregi_replace('[^.a-z0-9_-]', '_', $regs[2]);
+						preg_match('|^(.*[/])?(.*)$|', $path, $regs);
+						$arNewFilename=preg_replace('/[^.a-z0-9_-]/i', '_', $regs[2]);
 
 						$path=$FTP->site.$FTP->store->make_path($FTP->cwd, $path);
 						$parent=$FTP->store->make_path($path, "..");
@@ -980,7 +980,7 @@
 			do {
 				$data=fgets($FTP->stdin, 2000);
 				debug("ftp: client:: '$data'");
-				if (eregi('^([a-z]+)([[:space:]]+(.*))?', $data, $regs)) {
+				if (preg_match('/^([a-z]+)([[:space:]]+(.*))?/i', $data, $regs)) {
 					$cmd=strtoupper($regs[1]);
 					$args=chop($regs[3]);
 					debug("ftp: cmd ($cmd) arg ($args)");
