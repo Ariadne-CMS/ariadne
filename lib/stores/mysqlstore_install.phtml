@@ -112,10 +112,12 @@ CREATE TABLE ".$this->tbl_prefix."types (
 			if (!eregi("^[a-z][a-z0-9_-]*$",$name) || strlen($name)>16) {
 				$result=0;
 				$this->error="Wrong format for type: $name";
+				error($this->error);
 				break;
 			}	 
 			$alter_string.= " modify AR_".$name."	";
 			$alter_string.= $this->_generate_column_def($typedef['type'], $typedef['size'], $typedef['default']);
+
 			$qresult = $this->store_run_query($alter_string);
 
 			if (!$qresult ) {
