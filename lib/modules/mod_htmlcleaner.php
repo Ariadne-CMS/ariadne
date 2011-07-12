@@ -70,7 +70,7 @@ class htmlcleanertag {
 			$offset=2;
 			$this->nodeType = HTML_CLEANER_NODE_NODETYPE_CLOSINGNODE;
 		}
-		for ($tagname = '';preg_match("/([a-zA-Z0-9]{1})/",$str[$offset]);$offset++)
+		for ($tagname = '';preg_match("/([a-zA-Z0-9:]{1})/",$str[$offset]);$offset++)
 			$tagname .= $str[$offset];
 		for ($tagattr = '';$offset<=$endset;$offset++)
 			$tagattr .= $str[$offset];
