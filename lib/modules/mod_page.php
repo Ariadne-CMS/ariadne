@@ -208,8 +208,9 @@ class page {
 		include_once($me->store->get_config('code')."modules/mod_htmlcleaner.php");
 		$cleanAR = array(
 			'rewrite' => array(
-				'^(A|IMG)$' => array(
-					'^ar:.*' =>false
+				'^(A|IMG|DIV)$' => array(
+					'^ar:.*' => false,
+					'^arargs:.*' => false
 				)
 			)
 		);
