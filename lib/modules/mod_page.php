@@ -210,8 +210,14 @@ class page {
 			'rewrite' => array(
 				'^(A|IMG|DIV)$' => array(
 					'^ar:.*' => false,
-					'^arargs:.*' => false
+					'^arargs:.*' => false,
+					'^class' => Array(
+						'htmlblock[ ]*uneditable[ ]*' => false
+					)
 				)
+			),
+			'delete_emptied' => Array(
+				'div', 'a'
 			)
 		);
 		return htmlcleaner::cleanup( $page, $cleanAR );
