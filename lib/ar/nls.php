@@ -77,7 +77,7 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 			$varName = $this->defaultVarName;
 		}
 		
-		$nls = eregi_replace('[^a-z]*','',$nls);
+		$nls = preg_replace('|[^a-z]*|i','',$nls);
 		$re = '|[^a-z-_.:0-9/]*|i';				// only allow 'normal' characters
 		$section = str_replace('//', '/', 			// protects against urls in the form of //google.com
 				str_replace('..', '', 			// protects against ../../../../../etc/passwd
