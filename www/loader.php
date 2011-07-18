@@ -260,7 +260,7 @@
 			}
 
 			// find (and fix) arguments
-			set_magic_quotes_runtime(0);
+			ini_set('magic_quotes_runtime', 0); 
 			if (get_magic_quotes_gpc()) {
 				// this fixes magic_quoted input
 				fix_quotes($_GET);
