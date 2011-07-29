@@ -292,10 +292,12 @@ class htmlcleaner
 					&& count($delete_stack)) {
 						array_push($delete_stack, Array("tag" => $part->nodeName));
 				} else if (isset($config["delete_empty_containers"][$part->nodeName])) {
+					if ($part->nodeName != 'a' || !$part->attributes['name']) {	// named anchor objects are not containers
 						if ($parts[$i+1] && $parts[$i+1]->nodeName == $part->nodeName && $parts[$i+1]->nodeType == HTML_CLEANER_NODE_NODETYPE_CLOSINGNODE) {
 							$skipNodes = 1;
 							continue;
 						}
+					}
 				}
 			}
 
