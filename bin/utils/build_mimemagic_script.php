@@ -18,7 +18,7 @@
 		// offset:
 		//	regs[1]: contains number
 		//  regs[2]: contains right side of hex number (regs[1] left side)
-		$re='^([0-9]+(x[0-9]+)?)[[:space:]]+';
+		$re='/^([0-9]+(x[0-9]+)?)[[:space:]]+';
 
 		// type:
 		$re.='([a-z]+)[[:space:]]+';
@@ -27,10 +27,10 @@
 		$re.='(([\\].|[^[:space:]])+)[[:space:]]+';
 
 		// mime-type:
-		$re.='(.*)$';
+		$re.='(.*)$/';
 
 		while ($line=fgets($mfp, 1000)) {
-			if (ereg($re, $line, $regs)) {
+			if (preg_match($re, $line, $regs)) {
 				if ($regs[2]) {
 					$offset=hexdec($regs[1].$regs[2]);
 				} else {
@@ -48,7 +48,7 @@
 								$newdata.=substr($data, $esc+4);
 								$data=$newdata;
 							} else
-							if (ereg('^[0-9]{3}', substr($data, $esc+1, 3), $regs)) {
+							if (preg_match('/^[0-9]{3}/', substr($data, $esc+1, 3), $regs)) {
 								// octal represantation
 								$char=octdec(substr($data, $esc+1, 3));
 								$newdata=substr($data, 0, $esc);
@@ -120,7 +120,7 @@
 				}
 
 				// test if it is really a mimetype and not some sort of a vague file description
-				if (eregi('^[.a-z0-9_-]+/[.a-z0-9_-]+$', $mimetype, $regs)) {
+				if (preg_match('|^[.a-z0-9_-]+/[.a-z0-9_-]+$|i', $mimetype, $regs)) {
 					$data_index = "";
 					for ($i=0; $i<strlen($data); $i++) {
 						$data_index.="\\".decoct(ord($data[$i]));
@@ -157,8 +157,8 @@
 		$mfp = fopen($mimetypes_db, "r");
 		if ($mfp) {
 			while ($line=fgets($mfp, 4000)) {
-				if (!eregi('^[[:space:]]*#', $line, $regs)) {
-					if (eregi('^([^[:space:]]*)(.*)$', $line, $regs)) {
+				if (!preg_match('/^[[:space:]]*#/i', $line, $regs)) {
+					if (preg_match('/^([^[:space:]]*)(.*)$/i', $line, $regs)) {
 						$mimetype = $regs[1];
 						$extensions = trim(preg_replace('/[[:space:]]+/', ' ', $regs[2]));
 						if ($extensions) {
@@ -213,7 +213,7 @@
 		}
 
 		if (($flags & MIME_EXT) && ( (($flags & MIME_DATA) && !$result) || !($flags & MIME_DATA) ) ) {
-			if (eregi('.*[.]([^.]*)', $filename, $regs)) {
+			if (preg_match('/.*[.]([^.]*)/i', $filename, $regs)) {
 				$result = $mimetypes_data[strtolower($regs[1])];
 			}
 		}
