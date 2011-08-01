@@ -759,7 +759,7 @@
 
 						ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ASCII' : 'BINARY')." mode data connection");
 						debug("ftp: client wants to store file ($target)");
-						preg_match('|^/(.*/)?[^./]*[.]([^./]+)/$|', $target, $regs);
+						preg_match('|^/(.*/)?[^./]*[.]([^./]+)/$|i', $target, $regs);
 						$ext = $regs[2];
 						if (ftp_OpenDC()) {
 							$tempfile=tempnam($FTP->store->get_config('files')."temp/", "upload");
@@ -869,7 +869,7 @@
 					case 'MKD':
 						$path_requested = $args;
 						$path=preg_replace("|/".ESPCHL.'[^/]*'.ESPCHR."/|", "/", $args);
-						preg_match('|^(.*[/])?(.*)$|', $path, $regs);
+						preg_match('|^(.*[/])?(.*)$|i', $path, $regs);
 						$arNewFilename=preg_replace('/[^.a-z0-9_-]/i', '_', $regs[2]);
 
 						$path=$FTP->site.$FTP->store->make_path($FTP->cwd, $path);
