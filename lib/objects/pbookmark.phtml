@@ -47,7 +47,7 @@ class pbookmark extends pobject { // class definition
 		$this->errorcode=0;
 		// first check the syntax
 		if ($url) {
-			if (eregi("([a-z]+://)?(([a-z0-9]+:)?([a-z0-9]+@)?)([-a-z0-9.]+)(:[0-9]+)?(.*)", $url, $matches)) {
+			if (preg_match("|([a-z]+://)?(([a-z0-9]+:)?([a-z0-9]+@)?)([-a-z0-9.]+)(:[0-9]+)?(.*)|i", $url, $matches)) {
 				$protocol=strtolower($matches[1]);
 				$user=$matches[3];
 				$password=$matches[4];
@@ -77,7 +77,7 @@ class pbookmark extends pobject { // class definition
 								$this->errorcode=5;
 								$this->errorseverity=5;
 								$this->errormessage="Error: Could not connect to WWW server on $host:$port, or server returned an empty page.";
-							} else if (eregi("HTTP/... ([0-9]+)(.*)", $result, $matches)) {
+							} else if (preg_match("|HTTP/... ([0-9]+)(.*)|i", $result, $matches)) {
 								$statuscode=intval($matches[1]);
 								$statusmessage=$matches[2];
 								switch($statuscode) {
