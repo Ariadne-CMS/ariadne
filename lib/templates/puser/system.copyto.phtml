@@ -39,7 +39,7 @@
 		$newpath = $target;
 		$newparent = $this->store->make_path($target, "..");
 		$newlogin = substr($newpath, strlen($newparent), -1);
-		if (ereg('\{.*\}', $newlogin)) {
+		if (preg_match('/\{.*\}/', $newlogin)) {
 			$arResult = $ARnls["err:donotuseid"];
 		} else {
 			// Check if user exists in any of the paths in auth.ini
