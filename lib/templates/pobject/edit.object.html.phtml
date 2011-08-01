@@ -32,7 +32,7 @@
 		} elseif ( $AR->user->data->editor == "toolbar") {
 			$wgHTMLEditTemplate="edit.object.html.page.phtml";
 			include($this->store->get_config("code")."widgets/htmledit/toolbar.php");
-		} elseif (	eregi(".*msie ([0-9]+).*",$_SERVER["HTTP_USER_AGENT"], $regs) &&
+		} elseif (	preg_match("/.*msie ([0-9]+).*/i",$_SERVER["HTTP_USER_AGENT"], $regs) &&
 				$regs[1] && 
 				(intval($regs[1])>=4) && 
 				($AR->user->data->editor!="text")
