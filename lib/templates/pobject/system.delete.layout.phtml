@@ -12,7 +12,7 @@
 		$template_dir=$this->path."class=/".$type."/";
 		$template_path=$template_dir.$function.".".$language;
 	 
-		if (eregi("^[a-z0-9\._-]+$",$function)) {
+		if (preg_match("/^[a-z0-9\._-]+$/i",$function)) {
 			if (isset($this->data->config->pinp[$type][$function][$language])) {
 				unset($this->data->config->pinp[$type][$function][$language]);
 				if (count($this->data->config->pinp[$type][$function])==0) {

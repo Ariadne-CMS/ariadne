@@ -12,7 +12,7 @@
 					$oldgrants = $this->data->config->grants;
 					unset($this->data->config->grants);
 					$target=$this->make_path($target);
-					if (eregi("^[a-z0-9_\{\}\.\:-]+$", basename($target))) {
+					if (preg_match("/^[a-z0-9_\{\}\.\:-]+$/i", basename($target))) {
 						if (!$this->exists($target)) {
 						
 							$eventData = new object();

@@ -29,9 +29,9 @@
 		include_once($this->store->get_config("code")."modules/mod_pinp.phtml");
 		if (!$function) {
 			$this->error=$ARnls["err:notemplatename"];
-		} else if (ereg("\.phtml$",$function)) {
+		} else if (preg_match("/\.phtml$/",$function)) {
 			$this->error=$ARnls["err:endswith.phtml"];
-		} else if (!eregi("^[a-z0-9\._-]*$",$function)) {
+		} else if (!preg_match("/^[a-z0-9\._-]*$/i",$function)) {
 			$this->error=$ARnls["err:illegalchars"];
 		} else {
 			// first make sure that the object is clean (data can only be set via 
