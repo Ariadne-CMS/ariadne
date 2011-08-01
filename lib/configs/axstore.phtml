@@ -47,7 +47,7 @@
   if ($ax_config["tar"]["mode"] == "system") {
     if ($AR->OS=='WIN32') {
       $tar_path=str_replace('\\', '/', $AR->dir->install);
-      if (eregi('^([a-z]):', $tar_path, $regs)) {
+      if (preg_match('/^([a-z]):/i', $tar_path, $regs)) {
         $tar_path="//".$regs[1].substr($tar_path,2);
       }
       $tar_path=preg_replace('/([^\])[ ]/', '\1\ ', $tar_path);
