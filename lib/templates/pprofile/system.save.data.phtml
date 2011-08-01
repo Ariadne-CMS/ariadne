@@ -47,7 +47,7 @@
 					if ($loginexists) {
 						$this->error=sprintf($ARnls["err:loginexists"],$login);
 					} else {
-						if (ereg('\{.*\}',$login)) {
+						if (preg_match('/\{.*\}/',$login)) {
 							$this->error=$ARnls["err:donotuseid"];
 						} else {
 							$this->data->login=$login;
