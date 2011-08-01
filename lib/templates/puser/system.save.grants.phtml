@@ -119,7 +119,7 @@
 									$newgrants=preg_replace('/ ?\{\} ?/',AddSlashes($current),$newgrants);
 								}
 								$newgrant=strtok($newgrants, " ");
-							} else if (ereg('(\{(.*)\})',$newgrant,$regs)) {
+							} else if (preg_match('/(\{(.*)\})/',$newgrant,$regs)) {
 								$cloned="";
 								if ($this->data->config->grants[$type][$regs[2]]) {
 									while (list($key, $value)=each($this->data->config->grants[$type][$regs[2]])) {
