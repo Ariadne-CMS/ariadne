@@ -203,10 +203,10 @@ class oraclestore_install extends oraclestore {
 			$indexes = Array();
 		}
 
-		if (eregi("^[a-z][a-z0-9_-]*$", $property) && strlen($property)<=16) {
+		if (preg_match("/^[a-z][a-z0-9_-]*$/i", $property) && strlen($property)<=16) {
 			$create_string="create table ".$this->tbl_prefix."prop_".AddSlashes($property)." (\n";
 			while (list($name, $typedef)=each($definition)) {
-				if (!eregi("^[a-z][a-z0-9_-]*$",$name) || strlen($name)>16) {
+				if (!preg_match("/^[a-z][a-z0-9_-]*$/i",$name) || strlen($name)>16) {
 					$result=0;
 					$this->error="Wrong format for type: $name";
 					break;

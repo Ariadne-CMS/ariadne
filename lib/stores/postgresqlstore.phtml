@@ -522,7 +522,7 @@ class postgresqlstore extends store {
 				if ($exec = $this->store_run_query( $query_string)) {
 
 					$mask = substr($path, strlen($parent));
-					if (ereg("^(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) { 
+					if (preg_match("/^(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) { 
 						// if the last part of a path matches something like {2:id} this
 						// part will automatically create a new number, unique in this directory, and fill it in.
 						$subid=$this->get_nextid($parent, $mask);
@@ -754,7 +754,7 @@ class postgresqlstore extends store {
 			$result = false;
 		} else { 
 			$mask = substr($destination, strlen($parent));
-			if (ereg("(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) {
+			if (preg_match("/(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) {
 				$query_string = "LOCK TABLE $nodes_tbl IN SHARE MODE";
 				if ($exec = $this->store_run_query( $query_string)) {
 					$subid = $this->get_nextid($parent,$mask);
@@ -840,7 +840,7 @@ class postgresqlstore extends store {
 			$result = false;
 		} else { 
 			$mask = substr($destination, strlen($parent));
-			if (ereg("(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) {
+			if (preg_match("/(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) {
 				$query_string = "LOCK TABLE $nodes_tbl IN SHARE MODE";
 				$exec = $this->store_run_query( $query_string);
 				if ($exec ==! false ) {
@@ -1102,7 +1102,7 @@ class postgresqlstore extends store {
 		$path=AddSlashes($path);
 
 		$substr_s = strlen($path);
-		if (ereg("^(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) { 
+		if (preg_match("/^(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) { 
 			$subid = 0;
 			$mask_pre = $matches[1];
 			$substr_s += strlen($mask_pre)+1;

@@ -611,7 +611,7 @@ class oraclestore extends store{
 				}
 
 				$mask = substr($path, strlen($parent));
-				if (ereg("^(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) { 
+				if (preg_match("/^(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) { 
 					// if the last part of a path matches something like {2:id} this
 					// part will automatically create a new number, unique in this directory, and fill it in.
 					// before we proceed, we need to lock the 'nodes' and 'objects' table
@@ -825,7 +825,7 @@ class oraclestore extends store{
 			$result=false;
 		} else { 
 			$mask = substr($destination, strlen($parent));
-			if (ereg("(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) {
+			if (preg_match("/(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) {
 					$subid = $this->get_nextid($parent, $mask);
 					$destination=preg_replace("/\{([0-9]:)?id\}/",strval($subid),$destination);
 					$edestination=AddSlashes($destination);
@@ -917,7 +917,7 @@ class oraclestore extends store{
 			$result=false;
 		} else { 
 			$mask = substr($destination, strlen($parent));
-			if (ereg("(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) {
+			if (preg_match("/(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) {
 					$subid = $this->get_nextid($parent, $mask);
 					$destination=preg_replace("/\{([0-9]:)?id\}/",strval($subid),$destination);
 					$edestination=AddSlashes($destination);
@@ -1148,7 +1148,7 @@ class oraclestore extends store{
 		$path=AddSlashes($path);
 
 		$substr_s = strlen($path);
-		if (ereg("^(.*)\{([0-9]:)?id\}(.*)",$mask,$matches)) { 
+		if (preg_match("/^(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) { 
 			$subid = 0;
 			$mask_pre = $matches[1];
 			$substr_s += strlen($mask_pre)+1;

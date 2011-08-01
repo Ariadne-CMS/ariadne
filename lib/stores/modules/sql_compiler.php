@@ -368,14 +368,14 @@ abstract class sql_compiler {
 
 	protected function parse_join_target_properties(&$query) {
 		do {
-			if (!eregi('^([a-z_][a-z0-9_]*)(:[a-z]+)?', $query, $regs)) {
+			if (!preg_match('/^([a-z_][a-z0-9_]*)(:[a-z]+)?/i', $query, $regs)) {
 				$this->error = "expected property name at '$query'";
 				return false;
 			}
 			$this->join_target_properties["prop_".$regs[1]][$regs[2]] = true;
 			$query = substr($query, strlen($regs[0]));
 
-			if (!ereg('^[[:space:]]*,[[:space:]]*', $query, $regs)) {
+			if (!preg_match('/^[[:space:]]*,[[:space:]]*/', $query, $regs)) {
 				return true;
 			}
 			$query = substr($query, strlen($regs[0]));

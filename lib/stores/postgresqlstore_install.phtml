@@ -138,12 +138,12 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 	**********************************************************************/
 		$result=1;
 		$this->error=false;
-		if (eregi("^[a-z][a-z0-9_-]*$",$property) && strlen($property)<=16) {
+		if (preg_match("/^[a-z][a-z0-9_-]*$/i",$property) && strlen($property)<=16) {
 			$tablename=$this->tbl_prefix."prop_".AddSlashes($property);
 			$create_string="create table ".AddSlashes($tablename)." (\n";
 
 			foreach ($definition['fields'] as $name => $typedef) {
-				if (!eregi("^[a-z][a-z0-9_-]*$",$name) || strlen($name)>16) {
+				if (!preg_match("/^[a-z][a-z0-9_-]*$/i",$name) || strlen($name)>16) {
 					$result=0;
 					$this->error="Wrong format for type: $name";
 					break;
@@ -167,7 +167,7 @@ CREATE INDEX ".$this->tbl_prefix."types_implements ON ".$this->tbl_prefix."TYPES
 							$indexstring.="CREATE INDEX ".$tablename."_id".$key." ON ".$tablename." (";
 							$comma="";
 							while (list($key2, $name)=each($values)) {
-								if (eregi("^[a-z][a-z0-9_-]*$",$name) && strlen($name)<=16) {
+								if (preg_match("/^[a-z][a-z0-9_-]*$/i",$name) && strlen($name)<=16) {
 									$indexstring.=$comma."AR_".$name;
 								} else {
 									$result=0;
