@@ -85,7 +85,7 @@
 <div class='listcontainer'>
 <table class="list" width="100%" border="0" cellspacing="0" cellpadding="4"><tr>
 <?php
-    $server_name=eregi_replace("^[htps:/]*/","",$AR->host);
+    $server_name=preg_replace("|^[htps:/]*/|i","",$AR->host);
 
 	if ($_SERVER["HTTP_HOST"]==$server_name) {
 		$currentpath=$this->store->get_config("root").$this->path;
