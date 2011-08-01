@@ -249,7 +249,7 @@
 		} else {
 			$time=time()+($time*3600);
 		}
-		if (!ereg("\.\.",$file)) {
+		if (!preg_match("/\.\./",$file)) {
 			if ($image) {
 				$path=substr($file, 1, strrpos($file, "/")-1);
 				if (!file_exists($store->get_config("files")."cache/".$path)) {
