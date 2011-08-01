@@ -11,7 +11,7 @@
 			}
 
 			$result = false;
-			eregi('([^:]+):([^@]+)@([^/]+).*$', $url,$matches);
+			preg_match('|([^:]+):([^@]+)@([^/]+).*$|i', $url,$matches);
 
 			$file_artemp =tempnam($me->store->get_config("files")."temp","upload");
 

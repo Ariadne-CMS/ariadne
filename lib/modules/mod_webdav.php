@@ -77,7 +77,7 @@
 			$mod_auth = new $auth_class($auth_config);
 
 			/* FIXME: make this configurable */
-			if (eregi('^Microsoft Data Access Internet', $_SERVER['HTTP_USER_AGENT'])) {
+			if (preg_match('/^Microsoft Data Access Internet/i', $_SERVER['HTTP_USER_AGENT'])) {
 				debug("webdav:check_auth using sessions");
 				$this->http_auth_realm = "Ariadne WebDAV: ".$ARCurrent->session->id;
 				if (!$ARCurrent->session || !$ARCurrent->session->id) {

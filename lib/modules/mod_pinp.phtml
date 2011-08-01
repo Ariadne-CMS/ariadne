@@ -1318,7 +1318,7 @@ class pinp {
 
 			$linenr = substr($where,strrpos($where,' ')+1);
 			// '^(.+) in /'
-			ereg('^(.+) in /',$reason,$matches);
+			preg_match('|^(.+) in /|',$reason,$matches);
 
 			$this->error = $error . ' : ' . $matches[1] . ' on line ' . $linenr;
 		}
