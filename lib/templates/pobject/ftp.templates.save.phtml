@@ -3,7 +3,7 @@
 
 		$template = file_get_contents($file["tmp_name"]);
 
-		eregi('^(local[.])?([a-z_0-9-]+)[.](.*)[.](.*)', $file["name"], $regs);
+		preg_match('/^(local[.])?([a-z_0-9-]+)[.](.*)[.](.*)/i', $file["name"], $regs);
 		$default	= ! $regs[1];
 		$type		= ($regs[2]) ? $regs[2] : "pobject";
 		$type		= str_replace('-', '.', $type);

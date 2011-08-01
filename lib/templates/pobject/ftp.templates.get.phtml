@@ -14,7 +14,7 @@
   ******************************************************************/
   $ARCurrent->nolangcheck=true;
   if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		eregi('^(local[.])?([a-z_0-9-]+)[.](.*)[.](.*)', $arRequestedTemplate, $regs);
+		preg_match('/^(local[.])?([a-z_0-9-]+)[.](.*)[.](.*)/i', $arRequestedTemplate, $regs);
 		$type = $regs[2];
 		debug("ftp.templates.get.phtml: type='$type'");
 		$type = str_replace('-', '.', $type);

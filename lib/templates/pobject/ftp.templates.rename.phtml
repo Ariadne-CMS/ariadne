@@ -2,7 +2,7 @@
   $ARCurrent->nolangcheck=true;
   if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 
-		eregi('^(local[.])?([a-z_0-9-]+)[.](.*)[.](.*)', $source_template, $regs);
+		preg_match('/^(local[.])?([a-z_0-9-]+)[.](.*)[.](.*)/i', $source_template, $regs);
 		$default=(int)! $regs[1];
 		$dtype=$regs[2];
 		$type = str_replace('-', '.', $dtype);
@@ -10,7 +10,7 @@
 		$language=$regs[4];
 		unset($regs);
 
-		eregi('^(local[.])?([a-z_0-9-]+)[.](.*)[.](.*)', $target_template, $regs);
+		preg_match('/^(local[.])?([a-z_0-9-]+)[.](.*)[.](.*)/i', $target_template, $regs);
 		$tdefault	= (int)! $regs[1];
 		$tdtype		= (isset($regs[2])) ? $regs[2] : $dtype;
 		$ttype		= str_replace('-', '.', $tdtype);
