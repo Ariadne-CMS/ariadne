@@ -293,6 +293,9 @@ muze.ariadne.explore.tree = function() {
 			nodeHTML += node.pre;
 		}
 		var myname = node.name;
+		if (!myname) {
+			myname = '';
+		}	
 		myname = myname.replace("&", "&amp;");
 		myname = myname.replace("<", "&lt;");
 		myname = myname.replace(">", "&gt;");
