@@ -124,8 +124,10 @@
 			continue;
 		} else {
 			$extra_ob = current($this->get($extrauser, 'system.get.phtml'));
+			if (strpos($extra_ob->type, "pshortcut") === 0) {
+				$extra_ob = current($this->get($extra_ob->data->path, 'system.get.phtml'));
+			}
 
-			// FIXME: Add check on type for puser/pgroup and subtypes of those.
 			if (
 				strpos($extra_ob->type, "puser") === 0 ||
 				strpos($extra_ob->type, "pgroup") === 0
