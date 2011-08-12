@@ -1,12 +1,13 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin('config') && $this->CheckConfig()) {
-		$copytarget = $this->getdata("target");
-		if (substr($copytarget, -1) != "/") {
-			$copytarget .= "/";
-		}
+		$copytarget = $this->make_path($this->getvar('target'));
+		$copytargetparent = $this->make_path($copytarget.'..');
 		if ($this->exists($copytarget)) {
 			$copytarget = $copytarget . basename($this->path) . "/";
+		} else if (!$this->exists($copytargetparent)) {
+			$this->error = sprintf($ARnls["err:filenameinvalidnoparent"], $copytarget, $copytargetparent);
+			return error($this->error);
 		}
 		// FIXME: add more checks to make sure the target to copy to will work as expected.
 
