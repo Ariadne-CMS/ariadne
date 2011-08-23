@@ -360,7 +360,7 @@
 
 		// now check for outputbuffering (caching)
 		if ($image=ob_get_contents()) {
-			if ($_SERVER['REQUEST_METHOD']!='GET') {
+			if ($_SERVER['REQUEST_METHOD']!='GET' || $DB["wasUsed"] > 0) {
 				$nocache = true;
 			}
 			// first set clientside cache headers
