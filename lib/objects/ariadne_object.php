@@ -1567,6 +1567,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$librariesSeen[$arLibraryPath] = true;
 				$inLibrary = true;
 				$path = $arLibraryPath;
+			} else {
+				debug("getPinpTemplate: Failed to find library $arLibrary");
+				return false;
 			}
 		}
 		if (strpos($arCallFunction,"::")!==false) {
