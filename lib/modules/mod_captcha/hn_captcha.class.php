@@ -677,14 +677,17 @@ class hn_captcha
 		/** @private **/
 		function check_captcha($public,$private)
 		{
+			$res = 'FALSE';
 			// when check, destroy picture on disk
 			if(file_exists($this->get_filename($public)))
 			{
 				$res = @unlink($this->get_filename($public)) ? 'TRUE' : 'FALSE';
 				if($this->debug) echo "\n<br>-Captcha-Debug: Delete image (".$this->get_filename($public).") returns: ($res)";
+				$res = (strtolower($private)==strtolower($this->generate_private($public))) ? 'TRUE' : 'FALSE';
+				if($this->debug) echo "\n<br>-Captcha-Debug: Comparing public with private key returns: ($res)";
+			} else {
+				if($this->debug) echo "\n<br>-Captcha-Debug: Expired";
 			}
-			$res = (strtolower($private)==strtolower($this->generate_private($public))) ? 'TRUE' : 'FALSE';
-			if($this->debug) echo "\n<br>-Captcha-Debug: Comparing public with private key returns: ($res)";
 			return $res == 'TRUE' ? TRUE : FALSE;
 		}
 
