@@ -8,7 +8,7 @@
 		public static $headers;
 		public static $enabled = true;
 	
-		private $statusCodes = array(
+		private static $statusCodes = array(
 			100 => 'Continue',
 			101 => 'Switching Protocols',
 			102 => 'Processing',
