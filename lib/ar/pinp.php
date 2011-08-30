@@ -7,7 +7,7 @@
 		
 		public static function allow($class, $methods = null) {
 			if (isset($methods)) {
-				self::$allowed[$class]['methods'] = array_fill_keys($methods, true);
+				self::$allowed[$class]['methods'] = array_combine( $methods, array_fill( 0, count($methods), true ) );
 				if (func_num_args()>2) {
 					$args = array_slice(func_get_args(), 2);
 					self::$allowed[$class]['implements'] = $args;
@@ -18,7 +18,7 @@
 		}
 		
 		public static function allowMatch($class, $methods) {
-			self::$allowed[$class]['matches'] = array_fill_keys($methods, true);
+			self::$allowed[$class]['matches'] = array_combine( $methods, array_fill( 0, count($methods), true ) );
 		}
 
 		public static function isAllowed($class, $method) {
