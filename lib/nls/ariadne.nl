@@ -35,6 +35,7 @@
 	$ARnls["ariadne:view"]						=	"Beeld";
 	$ARnls["ariadne:viewweb"]					=	"Toon webpagina";
 	$ARnls['ariadne:wysiwyg_editor']			=	"WYSIWYG editor";
+	$ARnls['ariadne:template_editor']			=	"Template editor";
 	$ARnls["ariadne:by"]						=	"Door";
 	$ARnls["ariadne:id"]						= 	"ID";
 	$ARnls["ariadne:logoff"]					= 	"Afmelden";
@@ -137,6 +138,9 @@
 	$ARnls["ariadne:editor:align_middle"]				= "Midden";
 	$ARnls["ariadne:editor:align_top"]				= "Top";
 	$ARnls["ariadne:editor:image_settings"]				= "Instellingen: Afbeelding";
+
+	$ARnls["ariadne:templateeditor:textarea"]		= "Textveld";
+	$ARnls["ariadne:templateeditor:ace"]			= "ACE";
 
 	$ARnls['ariadne:override_typetree']				= 'Negeer typeboom instellingen';
 	$ARnls['err:typetree_does_not_allow']				= 'De typeboom instellingen staan dit object type hier niet toe.';

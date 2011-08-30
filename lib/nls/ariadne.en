@@ -36,6 +36,7 @@
 	$ARnls["ariadne:view"]						=	"View";
 	$ARnls["ariadne:viewweb"]					=	"View webpage";
 	$ARnls['ariadne:wysiwyg_editor']			=	"WYSIWYG editor";
+	$ARnls['ariadne:template_editor']			=	"Template editor";
 	$ARnls["ariadne:by"]						=	"By";
 	$ARnls["ariadne:id"]						=	"ID";
 	$ARnls["ariadne:logoff"]					=	"Log off";
@@ -139,6 +140,9 @@
 	$ARnls["ariadne:editor:align_middle"]				= "Middle";
 	$ARnls["ariadne:editor:align_top"]				= "Top";
 	$ARnls["ariadne:editor:image_settings"]				= "Image settings";
+
+	$ARnls["ariadne:templateeditor:textarea"]		= "Textarea";
+	$ARnls["ariadne:templateeditor:ace"]			= "ACE";
 
 	$ARnls['ariadne:override_typetree']				= 'Override typetree settings';
 	$ARnls['err:typetree_does_not_allow']				= 'Typetree does not allow this object type here';
