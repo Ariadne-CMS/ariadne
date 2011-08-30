@@ -129,7 +129,7 @@
 			$result = "";
 			foreach ( $request as $key => $value ) { 
 				if ( !is_integer( $key ) ) {
-					$result .= urlencode($key)."=".urlencode($value)."&"; 
+					$result .= urlencode($key) . "=" . urlencode($value) . "&"; 
 				}
 			} 
 			return $result;	
@@ -150,11 +150,11 @@
 				'content' => $request
 			), $options );
 
-			if($options['method'] == 'GET') {
-				if(strpos($url,'?')===false) {
-					$url = $url.'?'.$options['content'];
+			if ( $options['method'] == 'GET' ) {
+				if ( strpos( $url, '?' ) === false ) {
+					$url = $url . '?' . $options['content'];
 				} else {
-					$url = $url.'&'.$options['content'];
+					$url = $url . '&' . $options['content'];
 				}
 				$options['content'] = '';
 			}
