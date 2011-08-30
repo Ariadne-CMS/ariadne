@@ -53,6 +53,9 @@
 			window.location.href = window.location.href;
 		}
 	</script>
+	<?php
+		if ($AR->user->data->template_editor == 'ace') {
+	?>
 	<style type="text/css">
 		div {
 			font-family: Monaco, 'Courier New', monospace !important;
@@ -120,6 +123,9 @@
 			}
 		}
 	</script>
+	<?php
+	}
+	?>
 	<div id="basicmenu" class="yuimenubar">
 		 <div class="bd">
 			  <ul class="first-of-type">
@@ -248,15 +254,24 @@
 	<textarea name="template" id="template" wrap="off"><?php echo $file; ?></textarea>
 	<div id="editor" style="display: none"></div>
 </div>
-<!-- div id="template_linenumbers">
+<?php
+	if ($AR->user->data->template_editor == 'textarea' || !$AR->user->data->template_editor) { 
+		echo "<div id=\"template_linenumbers\">\n";
+?>
 	<textarea name="linenumbers" id="linenumbers" wrap="off" readonly class="linenumbers" tabindex="-1" unselectable="on"><?php
 	$linetotal = substr_count($file, "\n");
 	$linetotal = $linetotal + 1000;
 for($i=1;$i<$linetotal;$i++) { echo $i."\n"; }
 	?></textarea>
-</div -->
+<?php
+		echo "</div>\n";
+	}
+?>
+<?php
+	if ($AR->user->data->template_editor == 'textarea' || !$AR->user->data->template_editor) { 
+?>
 <script type="text/javascript">
-/*
+
 	var currentPos;
 	
 	function posHandler() {
@@ -362,10 +377,16 @@ for($i=1;$i<$linetotal;$i++) { echo $i."\n"; }
 	}
 	
 	YAHOO.util.Event.onDOMReady(initHandlers);
-*/
 </script>
+<?php
+	}
+	if ($AR->user->data->template_editor == 'ace') {
+?>
 <script type="text/javascript">
 	muze.event.attach( document.getElementById('wgWizForm'), 'submit', function() {
 		document.getElementById('template').value = editor.getSession().getValue();
 	} );
 </script>
+<?php
+	}
+?>
