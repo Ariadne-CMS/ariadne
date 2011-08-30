@@ -67,7 +67,7 @@ class scanner {
 				"throw" => PT_THROW,
 				"try"	=> PT_TRY,
 				"catch"	=> PT_CATCH
-				);
+		);
 
 
 		
@@ -623,16 +623,16 @@ class pinp {
 		  "array_sum|array_unique|array_unshift|array_values|arsort|asort|count|current|".
 		  "each|end|in_array|array_search|key|krsort|ksort|list|natsort|natcasesort|".
 		  "next|pos|prev|range|reset|rsort|shuffle|sizeof|sort|get_object_vars";
-		$control_funcs="if|else|elseif|do|while|for|switch|foreach";
+		$control_funcs="if|else|elseif|do|while|for|switch|foreach|catch|throw";
 		$datetime_funcs="checkdate|date|getdate|gettimeofday|gmdate|gmmktime|".
 	      "gmstrftime|localtime|microtime|mktime|strftime|time|strtotime|".
 		  "easter_days|easter_date";
 		$math_funcs="abs|acos|acosh|asin|asinh|atan|atanh|atan2|base_convert|bindec|ceil|cos|".
 	      "cosh|decbin|dechex|decoct|deg2rad|exp|expm1|floor|getrandmax|hexdec|hypot|lcg_value|log|log10|log1p|max|min|".
-	      "mt_rand|mt_srand|mt_getrandmax|number_format|money_format|octdec|pi|pow|rad2deg|rand|round|".
+	      "mt_rand|mt_srand|mt_getrandmax|format_number|money_format|octdec|pi|pow|rad2deg|rand|round|".
 	      "sin|sinh|sqrt|srand|tan|tanh|bcadd|bccomp|bcdiv|bcmod|bcmul|bcpow|bcscale|bcsqrt|".
 		  "bcsub|gmp_[a-z_]+";
-		$misc_funcs="mail|highligh_string|pack|get_browser|get_class|uniqid|clone|set_time_limit|hash|json_encode|json_decode|is_a";
+		$misc_funcs="mail|highligh_string|pack|get_browser|get_class|uniqid|clone|set_time_limit|hash|json_encode|json_decode|is_a|sleep|usleep";
 		$net_funcs="checkdnsrr|gethostbyaddr|gethostbyname|gethostbynamel|getmxrr|".
 		  "getservbyport|getservbyname|ip2long|long2ip";
 		$regex_funcs="ereg|ereg_replace|eregi|eregi_replace|split|spliti|preg_match|".
@@ -648,7 +648,7 @@ class pinp {
 		  "strrpos|strspn|strstr|strtok|strtolower|strtoupper|str_replace|strtr|substr|".
 		  "substr_count|substr_replace|trim|ucfirst|ucwords|vprintf|vsprintf|wordwrap|".
 		  "base64_decode|base64_encode|urldecode|urlencode|parse_url|basename|dirname|".
-		  "mb_convert_encoding|utf8_encode|utf8_decode";
+		  "mb_convert_encoding|utf8_encode|utf8_decode|number_format";
 		$var_funcs="doubleval|empty|floatval|gettype|intval|is_array|is_bool|is_double|".
 		  "is_float|is_int|is_integer|is_long|is_null|is_numeric|is_object|is_real|".
 		  "is_resource|is_scalar|is_string|isset|settype|serialize|strval|unserialize|".
@@ -657,7 +657,7 @@ class pinp {
 		  "xml_parser_create|xml_parse_into_struct|xml_parser_free|".
 		  "xml_parser_get_option|xml_parser_set_option";
 		$debug_funcs="debug|debugon|debugoff|pftime|pfprint|pfreset|error";
-		$loader_funcs="ldaccesscas|ldheader|ldredirect|ldsetcontent|ldsetclientcache|ldgetusercookie|ldsetusercookie|ldgetclientvar|ldregisterfile|ldgetservervar|ar"; 
+		$loader_funcs="ldaccesscas|ldheader|ldredirect|ldsetcontent|ldsetclientcache|ldgetusercookie|ldsetusercookie|ldgetclientvar|ldregisterfile|ldgetservervar|ar|ldgeneratesessionkeycheck"; 
 		$ob_funcs="flush|ob_clean|ob_end_clean|ob_end_flush|ob_flush|ob_get_contents|ob_get_length|ob_get_level|ob_implicit_flush|ob_start";
 		$this->allowed_functions=array_flip(explode("|", "$array_funcs|$control_funcs|$datetime_funcs|$math_funcs|".
 		  "$misc_funcs|$net_funcs|$regex_funcs|$string_funcs|$var_funcs|$xml_funcs|".
@@ -876,6 +876,60 @@ class pinp {
 		if ($this->error) {
 			return false;
 		}
+		return $result;
+	}
+
+	function parse_catch_statement() {
+		$result = "";
+		if ($this->token_ahead != PT_PAR_OPEN) {
+			$this->error = "Expected '(' to follow 'catch' at line ".$this->scanner->YYLINE;
+			return false;
+		}
+		$result .= $this->token_ahead_value;
+
+		$this->next_token();
+		while ($this->token_ahead == PT_IDENT) {
+			$result .= $this->token_ahead_value;
+			$this->next_token();
+		}
+		if ($this->token_ahead != PT_VAR_REFERENCE) {
+			$this->error = "Expected variable within catch() case at line ".$this->scanner->YYLINE;
+			return false;
+		}
+		$result .= $this->token_ahead_value;
+		$this->next_token();
+
+		if ($this->token_ahead != PT_IDENT) {
+			$this->error = "Expected variable name within catch() case at line ".$this->scanner->YYLINE;
+			return false;
+		}
+		$varName = $this->token_ahead_value;
+		$result .= 'pinp_'.$varName;
+		$this->next_token();
+
+		$varNameClean = trim($varName);
+
+		if ($this->token_ahead != PT_PAR_CLOSE) {
+			$this->error = "Expected ')' to follow 'catch' statement at line ".$this->scanner->YYLINE;
+			return false;
+		}
+		$result .= $this->token_ahead_value;
+
+		$this->next_token();
+
+		if ($this->token_ahead != PT_CBRACE_OPEN) {	
+			$this->error = "Expected ')' to follow 'catch' statement at line ".$this->scanner->YYLINE;
+			return false;
+		}
+		$result .= $this->token_ahead_value;
+		$result .= $this->var_prefix.$varNameClean.'='.'$pinp_'.$varName.';';
+
+		$this->next_token();
+
+		$result .= $this->parse_statement_list();
+		$result .= $this->token_ahead_value;
+		$this->next_token();
+
 		return $result;
 	}
 
@@ -1139,11 +1193,6 @@ class pinp {
 						$result .= $expression;
 					}
 				break;
-				case PT_THROW:
-				case PT_TRY:
-				case PT_CATCH:
-					$this->error = "Exceptions are not supported yet. Error at line: ".$this->scanner->YYLINE;
-				break;
 				case PT_USE:
 				case PT_AS:
 					$this->error = "Aliasing/Importing is not supported yet. Error at line: ".$this->scanner->YYLINE;
@@ -1151,6 +1200,11 @@ class pinp {
 				case PT_NAMESPACE:
 				case PT_NAMESPACE_SEPERATOR:
 					$this->error = "Namespaces are not supported yet. Error at line: ".$this->scanner->YYLINE;
+				break;
+				case PT_CATCH:
+					$result .= $this->token_ahead_value;
+					$this->next_token();
+					$result .= $this->parse_catch_statement();
 				break;
 				case PT_STRING:
 					$result .= $this->token_ahead_value;
@@ -1168,6 +1222,9 @@ class pinp {
 					$result .= "->";
 					$this->next_token();
 				break;
+				case PT_THROW:
+				case PT_TRY:
+
 				case PT_NUMBER:
 				case PT_ASSIGN_OP:
 				case PT_UNPARSED:
@@ -1288,6 +1345,8 @@ class pinp {
 		}
 		if (!$this->error) {
 			$this->syntax_test();
+		} else {
+			echo "<!-- /* ".$template."  */ -->";
 		}
 		return $this->new_template;
 	}
@@ -1321,6 +1380,9 @@ class pinp {
 			preg_match('|^(.+) in /|',$reason,$matches);
 
 			$this->error = $error . ' : ' . $matches[1] . ' on line ' . $linenr;
+			echo "<!-- /* ".$template."  */ -->";
+			//$this->error .= $template;
+
 		}
 
 	}
