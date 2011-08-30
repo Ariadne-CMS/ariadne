@@ -623,7 +623,7 @@ class pinp {
 		  "array_sum|array_unique|array_unshift|array_values|arsort|asort|count|current|".
 		  "each|end|in_array|array_search|key|krsort|ksort|list|natsort|natcasesort|".
 		  "next|pos|prev|range|reset|rsort|shuffle|sizeof|sort|get_object_vars";
-		$control_funcs="if|else|elseif|do|while|for|switch|foreach|catch|throw";
+		$control_funcs="if|else|elseif|do|while|for|switch|foreach|throw";
 		$datetime_funcs="checkdate|date|getdate|gettimeofday|gmdate|gmmktime|".
 	      "gmstrftime|localtime|microtime|mktime|strftime|time|strtotime|".
 		  "easter_days|easter_date";
@@ -904,7 +904,7 @@ class pinp {
 			return false;
 		}
 		$varName = $this->token_ahead_value;
-		$result .= 'pinp_'.$varName;
+		$result .= 'pinp_exception_var';
 		$this->next_token();
 
 		$varNameClean = trim($varName);
@@ -922,7 +922,7 @@ class pinp {
 			return false;
 		}
 		$result .= $this->token_ahead_value;
-		$result .= $this->var_prefix.$varNameClean.'='.'$pinp_'.$varName.';';
+		$result .= $this->var_prefix.$varName.'='.'$pinp_exception_var;';
 
 		$this->next_token();
 
