@@ -129,7 +129,7 @@
 			$result = "";
 			foreach ( $request as $key => $value ) { 
 				if ( !is_integer( $key ) ) {
-					$result .= urlencode($key)."=".urlencode($val)."&"; 
+					$result .= urlencode($key)."=".urlencode($value)."&"; 
 				}
 			} 
 			return $result;	
@@ -149,6 +149,16 @@
 				'method' => $type,
 				'content' => $request
 			), $options );
+
+			if($options['method'] == 'GET') {
+				if(strpos($url,'?')===false) {
+					$url = $url.'?'.$options['content'];
+				} else {
+					$url = $url.'&'.$options['content'];
+				}
+				$options['content'] = '';
+			}
+
 			$context = stream_context_create( array( 'http' => $options ) );
 			$result = @file_get_contents( (string) $url, false, $context );
 			$this->responseHeaders = $http_response_header; //magic php variable set by file_get_contents.
