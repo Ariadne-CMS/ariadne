@@ -181,5 +181,6 @@
 	$ARnls['ariadne:types:pprofile']			= 'Profile';
 	$ARnls['ariadne:types:psearch']				= 'Search';
 	$ARnls['ariadne:types:psection']			= 'Section';
-
+	$ARnls['ariadne:programmers_reference']		= 'Programmers Reference';
+	$ARnls['ariadne:ace_editor']				= 'Ace Editor';
 ?>

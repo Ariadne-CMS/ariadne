@@ -45,5 +45,7 @@
 	$ARnls["ariadne:viewweb"]					=	"Webseite anzeigen";
 
 	$ARnls["ariadne:selectlanguage"]			=	"Wählen sie eine andere Sprache";
+	$ARnls['ariadne:programmers_reference']		= 'Programmers Reference';
+	$ARnls['ariadne:ace_editor']				= 'Ace Editor';
 
 ?>

@@ -37,5 +37,7 @@
 	$ARnls["ariadne:viewweb"]					=	"View webpage";
 	$ARnls['ariadne:wysiwyg_editor']			=	"WYSIWYG editor";
 
+	$ARnls['ariadne:programmers_reference']		= 'Programmers Reference';
+	$ARnls['ariadne:ace_editor']				= 'Ace Editor';
 
 ?>
