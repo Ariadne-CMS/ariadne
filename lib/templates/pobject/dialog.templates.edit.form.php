@@ -79,9 +79,12 @@
 			left: 22px;
 		}
 	</style>
+	<?php
+		$theme = 'eclipse';
+	?>
 	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/ace/ace-uncompressed.js" charset="utf-8"></script>
 	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/ace/theme-eclipse.js" charset="utf-8"></script>
-	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/ace/mode-html.js" charset="utf-8"></script>
+	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/ace/theme-<?php echo $theme; ?>.js" charset="utf-8"></script>
 	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/ace/mode-php.js" charset="utf-8"></script>
 	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/ace/mode-javascript.js" charset="utf-8"></script>
 	<script type="text/javascript">
@@ -92,8 +95,8 @@
 			var editorDiv = document.getElementById('editor');
 			editorDiv.style.display = 'block';
 			editor = ace.edit('editor');
-			editor.setTheme('ace/theme/eclipse');
-			var htmlMode = require('ace/mode/html').Mode;
+			// editor.setTheme('ace/theme/eclipse');
+			editor.setTheme('ace/theme/<?php echo $theme; ?>');
 			var phpMode = require('ace/mode/php').Mode;
 			editor.getSession().setMode( new phpMode() );
 			editor.getSession().setUseSoftTabs(false);
@@ -200,9 +203,29 @@
 	}
 ?>
 					<li class="yuimenubaritem">
-						 <a class="yuimenubaritemlabel" href="http://www.ariadne-cms.org/docs/reference/" onclick="muze.ariadne.explore.arshow('_new', this.href); return false;">
-							<?php echo $ARnls['help']; ?>
-						 </a>
+						<a class="yuimenubaritemlabel" href="#"><?php echo $ARnls["ariadne:help"]; ?></a>
+						<div id="help" class="yuimenu">
+							<div class="bd">
+                                <ul class="first-of-type">
+									<li class="yuimenuitem">
+										 <a class="yuimenuitemlabel" href="http://www.ariadne-cms.org/docs/reference/" onclick="muze.ariadne.explore.arshow('_new', this.href); return false;">
+											<?php echo $ARnls['ariadne:programmers_reference']; ?>
+										 </a>
+									</li>
+<?php
+	if ($AR->user->data->template_editor == 'ace') {
+?>
+									<li class="yuimenuitem">
+										 <a class="yuimenuitemlabel" href="http://www.ariadne-cms.org/docs/manual/ace/" onclick="muze.ariadne.explore.arshow('_new', this.href); return false;">
+											<?php echo $ARnls['ariadne:ace_editor']; ?>
+										 </a>
+									</li>
+<?php
+	}
+?>
+								</ul>
+							</div>
+						</div>
 					</li>
 			  </ul>
 		 </div>
