@@ -4,14 +4,51 @@ Changes in Ariadne 2.7.6
 
 New features:
 - Added new dynamic form functionality. See www/js/form.js.
-- Added the option to post the Ariadne session check key when cookies are not available (in flash applications).
+- Added the option to post the Ariadne session check key when cookies are not
+  available (in flash applications).
+- Experimental template editor with syntax highlighting: ace. Configurable
+  through preferences dialog.
+- New demo project (optional install).
+- Try/catch now supported in pinp templates.
+- Added support for debugging with firePHP.
+- Added mod_recaptcha module.
 
 Changes to existing features:
-- ar/form: password fields no longer shows passwords value in the input
+- Removed most of the ereg calls, replaced with preg.
+- Added NOFOLLOW meta tags for the default ariadne view.
+- Updated the portuguese, french and dutch translations.
+- Improved the installer, removed all warnings.
+- Made the mod_captcha module more robust.
+- Caching will be disabled when debuging is on.
+- Allow shortcuts to users/groups to be selected from the grants dialog.
+- Added 'delete_empty_containers' option to htmlcleaner which removes empty
+  container tags.
+- More robust htmlcleaner (attributes).
+- Improved handling within the management view for large object sets.
+- count_find() has now its own store handling for better performance.
+- Improved the ariadne error handler. It will only display errors in the page
+  when display_errors(php.ini) is set to on.
+- ar/xml and ar/html have been made more robust and consistent.
+- Numerous bugfixes in ar/connect/ftp.
+- ar/html/menu has been refactored to be more consistent and flexible.
+- Added ar/html/form::findField.
+- Improved ar/events performance, added the event name in the event object.
+- Added a large number of events to ariadne, see ar/events documentation.
 
 Bugfixes:
+- ar/form: password fields no longer shows passwords value in the input.
 - Fixed upgrade from 2.4rc2 (ariadne base package was renamed).
 - Non-default templates are not saved within the unnamed library cache anymore.
+- Fixed ar\http\client get requests with form data. Parameters are now encoded
+  in the url.
+- Chrome is no longer too eager in caching ariadne pages.
+- Fixed an allnls bug; templates will not be shown anymore when allnls is not
+  set and the object doesn't have the requested language.
+- We now skip language check for config.ini.
+- Fixed named library lookup for non-existing libraries.
+- Fixed several browsing bugs within the ariadne backend.
+- Fixed the user-account disable option.
+- Fulltext properties will not get imported via ax files.
 
 
 ========================
