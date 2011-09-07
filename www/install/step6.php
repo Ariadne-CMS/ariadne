@@ -8,6 +8,7 @@
 
 	$nextstep = "step$next";
 	$previousstep = "step$previous";
+	$oddeven = "even";
 
 	/* checks to do:
 		admin user
@@ -291,7 +292,7 @@
 								foreach ($checkresults as $key => $check_value) {
 									$oddeven = $oddeven == 'odd' ? 'even' : 'odd'; 
 									if ($check_value == true) {
-										$checkresult = "<span class='passed'>".$ARnls['install:check_passed']."</span>";
+										$checkresult = "<span class='passed'>".$ARnls['install:check_ok']."</span>";
 									} else {
 										$checkresult = "<span class='failed'>".$ARnls['install:check_failed']."</span>";
 									}

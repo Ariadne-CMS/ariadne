@@ -217,38 +217,44 @@
 	}
 
 	function check_connect_db($conf) {
-		switch ( $conf->dbms ) {
-			case 'mysql':
-				return check_connect_db_mysql($conf);
-			break;
-			case 'postgresql':
-				return check_connect_db_postgresql($conf);
-			break;
+		if ($conf && $conf->dbms) {
+			switch ( $conf->dbms ) {
+				case 'mysql':
+					return check_connect_db_mysql($conf);
+				break;
+				case 'postgresql':
+					return check_connect_db_postgresql($conf);
+				break;
+			}
+			// FIXME: Add postgresql checks too
 		}
-		// FIXME: Add postgresql checks too
 		return false;
 	}
 
 	function check_select_db($conf) {
-		switch ( $conf->dbms ) {
-			case 'mysql':
-				return check_select_db_mysql($conf);
-			break;
-			case 'postgresql':
-				return check_select_db_postgresql($conf);
-			break;
+		if ($conf && $conf->dbms) {
+			switch ( $conf->dbms ) {
+				case 'mysql':
+					return check_select_db_mysql($conf);
+				break;
+				case 'postgresql':
+					return check_select_db_postgresql($conf);
+				break;
+			}
 		}
 		return false;
 	}
 
 	function check_db_grants($conf) {
-		switch ( $conf->dbms ) {
-			case 'mysql':
-				return check_db_grants_mysql($conf);
-			break;
-			case 'postgresql':
-				return check_db_grants_postgresql($conf);
-			break;
+		if ($conf && $conf->dbms) {
+			switch ( $conf->dbms ) {
+				case 'mysql':
+					return check_db_grants_mysql($conf);
+				break;
+				case 'postgresql':
+					return check_db_grants_postgresql($conf);
+				break;
+			}
 		}
 		return false;
 	}

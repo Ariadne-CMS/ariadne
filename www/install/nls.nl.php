@@ -12,6 +12,7 @@
 	$ARnls['install:database']		= 'Database configuratie';
 	$ARnls['install:configuration']		= 'Ariadne configuratie';
 	$ARnls['install:install']		= 'Start installatie';
+	$ARnls['install:help']			= 'Help';
 
 	$ARnls['install:pre_install_info']	= 'Voor het uitvoeren van de installtie worden een aantal controles gedaan om te controleren of de eisen voor Ariadne zijn voldaan.';
 	$ARnls['install:required_options']	= 'Vereiste opties';

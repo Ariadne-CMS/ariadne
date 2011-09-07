@@ -9,6 +9,7 @@
 
 	$nextstep = "step$next";
 	$previousstep = "step$previous";
+	$oddeven = "even";
 
 
 ?>
