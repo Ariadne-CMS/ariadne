@@ -108,11 +108,11 @@
 			}
 		}
 		
-		public static function callSuper() {
+		public static function callSuper( $params = null ) {
 			$context = self::context();
 			$me = $context->getObject();
 			if ($me) {
-				return $me->_call_super();
+				return $me->_call_super( $params );
 			}
 		}
 		
@@ -290,7 +290,7 @@
 	}
 
 	
-	class ar_error extends arBase {
+	class ar_error extends ar_exceptionDefault {
 		var $message;
 		var $code;
 		static $throwExceptions = false;
@@ -301,13 +301,26 @@
 			$this->previous = $previous;
 		}
 
+		public function __call($name, $arguments) {
+			if (($name[0]==='_')) {
+				$realName = substr($name, 1);
+				if (ar_pinp::isAllowed($this, $realName)) {
+					return call_user_func_array(array($this, $realName), $arguments);
+				} else {
+					trigger_error("Method $realName not found in class ".get_class($this), E_USER_WARNING);
+				}
+			} else {
+				trigger_error("Method $name not found in class ".get_class($this), E_USER_WARNING);
+			}
+		}
+
 		public static function isError($ob) {
 			return (is_a($ob, 'ar_error') || is_a($ob, 'error') || is_a($ob, 'PEAR_Error'));
 		}
 
 		public static function raiseError($message, $code, $previous = null) {
 			if (self::$throwExceptions) {
-				throw new ar_exceptionDefault($message, $code, $previous);
+				throw new ar_error($message, $code, $previous);
 			} else {
 				return new ar_error($message, $code, $previous);
 			}
@@ -319,14 +332,6 @@
 					self::$throwExceptions = $value;
 				break;
 			}
-		}
-		
-		public function getMessage() {
-			return $this->message;
-		}
-
-		public function getCode() {
-			return $this->code;
 		}
 		
 		public function __toString() {

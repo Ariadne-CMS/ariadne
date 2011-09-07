@@ -147,16 +147,35 @@
 			if ($prevPath==$path) {
 				error("Database is not initialised, please run <a href=\"".$AR->dir->www."install/install.php\">the installer</a>");
 			} else {
-				// no results: page couldn't be found, show user definable 404 message
-				if (!is_array($arCallArgs)) {
-					$arCallArgs = Array();
+				// make sure the config check has been run:
+				$ob = current( $store->call('system.get.phtml', array(), $store->get($path) ) );
+				$ob->CheckConfig();
+
+				$ob->pushContext( array(
+					"arSuperContext" => Array(),
+					"arCurrentObject" => $ob,
+					"scope" => "php",
+					"arCallFunction" => $requestedtemplate
+				) );
+
+				$eventData = new object();
+				$eventData->arCallPath = $requestedpath;
+				$eventData->arCallFunction = $requestedtemplate;
+				$eventData->arCallArgs = $arCallArgs;
+				$eventData = ar_events::fire( 'onnotfound', $eventData );
+				if ( $eventData ) {
+					// no results: page couldn't be found, show user definable 404 message
+					$arCallArgs = (array) $eventData->arCallArgs;
+					$myarCallArgs = array_merge($arCallArgs, 
+						Array(	"arRequestedPath" => $requestedpath,
+						 		"arRequestedTemplate" => $requestedtemplate 
+						)
+					);
+					$store->call("user.notfound.html",$myarCallArgs,
+						 $store->get($path));
 				}
-				$myarCallArgs = array_merge($arCallArgs, 
-				Array(	"arRequestedPath" => $requestedpath,
-					 		"arRequestedTemplate" => $requestedtemplate 
-				));
-				$store->call("user.notfound.html",$myarCallArgs,
-					 $store->get($path));
+
+				$ob->popContext();
 			}
 		}
 	}
@@ -230,7 +249,7 @@
 		} else {
 			$time=time()+($time*3600);
 		}
-		if (!ereg("\.\.",$file)) {
+		if (!preg_match("/\.\./",$file)) {
 			if ($image) {
 				$path=substr($file, 1, strrpos($file, "/")-1);
 				if (!file_exists($store->get_config("files")."cache/".$path)) {
@@ -345,7 +364,7 @@
 				$expires = 0;
 			}
 			$result = ldHeader("Pragma: no-cache");
-			ldHeader("Cache-control: must-revalidate, max-age=0, private");
+			ldHeader("Cache-control: no-store, no-cache, must-revalidate, max-age=0, private");
 		}
 		if ( $expires !== false ) {
 			ldHeader("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT", $expires));

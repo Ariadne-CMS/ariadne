@@ -47,7 +47,7 @@
 			) ) );
 		}
 		
-		public static function exists( $path = "" ) {
+		public static function exists( $path = '' ) {
 			global $store;
 			return $store->exists( ar::context()->getPath( array(
 				'skipShortcuts' => true,
@@ -55,8 +55,7 @@
 			) ) );
 		}
 
-		public static function currentSite() {
-			$path = '/';
+		public static function currentSite( $path = '' ) {
 			$me = ar::context()->getObject();
 			if ($me) {
 				if (self::$rememberShortcuts) {
@@ -69,8 +68,7 @@
 			return $path;
 		}
 		
-		public static function parentSite( $site ) {
-			$path = '/';
+		public static function parentSite( $path = '' ) {
 			$me = ar::context()->getObject();
 			if ($me) {
 				if (self::$rememberShortcuts) {
@@ -84,7 +82,6 @@
 		}
 		
 		public static function currentSection( $path = '' ) {
-			$path = '/';
 			$me = ar::context()->getObject();
 			if ($me) {
 				if (self::$rememberShortcuts) {
@@ -98,7 +95,6 @@
 		}
 
 		public static function parentSection( $path = '' ) {
-			$path = '/';
 			$me = ar::context()->getObject();
 			if ($me) {
 				if (self::$rememberShortcuts) {
@@ -112,7 +108,6 @@
 		}
 
 		public static function currentProject( $path = '' ) {
-			$path = '/';
 			$me = ar::context()->getObject();
 			if ($me) {
 				$path = $me->currentproject( $path );
@@ -121,10 +116,9 @@
 		}
 
 		public static function parentProject( $path = '' ) {
-			$path = '/';
 			$me = ar::context()->getObject();
 			if ($me) {
-				$path = $me->parentProject( $path );
+				$path = $me->parentproject( $path );
 			}
 			return $path;
 		}

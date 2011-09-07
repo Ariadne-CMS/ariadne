@@ -8,6 +8,7 @@
 
 	$nextstep = "step$next";
 	$previousstep = "step$previous";
+	$oddeven = "even";
 
 	/* checks to do:
 		admin user
@@ -77,9 +78,7 @@
 			include("conf/salt.conf");
 			include("conf/pinp.conf");
 			include("conf/im.conf");
-		
-			echo "\$AR->SVN->enabled = $enable_svn;\n";
-			echo "\$AR->SVN->path	= '/usr/bin/svn';\n";
+			include("conf/svn.conf");
 		
 			include("conf/vs.conf");
 			include("conf/tidy.conf");
@@ -293,7 +292,7 @@
 								foreach ($checkresults as $key => $check_value) {
 									$oddeven = $oddeven == 'odd' ? 'even' : 'odd'; 
 									if ($check_value == true) {
-										$checkresult = "<span class='passed'>".$ARnls['install:check_passed']."</span>";
+										$checkresult = "<span class='passed'>".$ARnls['install:check_ok']."</span>";
 									} else {
 										$checkresult = "<span class='failed'>".$ARnls['install:check_failed']."</span>";
 									}

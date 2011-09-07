@@ -42,6 +42,7 @@
 	include_once($ax_config['code']."stores/".$ax_config["dbms"]."store.phtml");
 	include_once($store_config['code']."modules/mod_session.phtml");
 	include_once($store_config['code']."includes/loader.web.php");
+	include_once($ariadne."/ar.php");
 
 		// instantiate the store
 	$inst_store = $store_config["dbms"]."store_install";

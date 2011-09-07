@@ -108,16 +108,16 @@
 					if (!$this->error) {	
 						if ($id=current($this->get($path, "system.get.login.phtml"))) {
 							$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
-							$newgrants=ereg_replace('([\(\)])',' \\1 ',$newgrants);
+							$newgrants=preg_replace('/([\(\)])/',' \\1 ',$newgrants);
 							$newgrants=str_replace(',',' ',$newgrants);
-							$newgrants=ereg_replace("[[:space:]]"," ",$newgrants);
+							$newgrants=preg_replace("/[[:space:]]/"," ",$newgrants);
 							$firstgrant=strtok($newgrants, " ");
 							if ($firstgrant=="{}") {
 								if ($result=current($this->get($path, "system.get.grants.phtml", Array("path" => $this->path)))) {
 									$current=implode(" ", array_keys($result));
-									$newgrants=ereg_replace(' ?\{\} ?',AddSlashes($current),$newgrants);
+									$newgrants=preg_replace('/ ?\{\} ?/',AddSlashes($current),$newgrants);
 								}
-							} else if (ereg('(\{(.*)\})',$firstgrant,$regs)) {
+							} else if (preg_match('/(\{(.*)\})/',$firstgrant,$regs)) {
 								$cloned="";
 								if ($this->data->config->grants[$type][$regs[2]]) {
 									while (list($key, $value)=each($this->data->config->grants[$type][$regs[2]])) {
@@ -132,7 +132,7 @@
 										}
 									}
 								}
-								$newgrants=ereg_replace(" ?".$regs[1]." ?",AddSlashes($cloned),$newgrants);
+								$newgrants=preg_replace("/ ?".$regs[1]." ?/",AddSlashes($cloned),$newgrants);
 							}
 							$g_comp = new mod_grant;
 							$grants = $this->data->config->grants[$type][$id];

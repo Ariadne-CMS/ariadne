@@ -103,7 +103,7 @@ class pfile extends pobject { // pfile class definition
 		if (!$template || $template == "view.html") {
 			$filename = basename($this->path);
 		}
-		if (!ereg("^text/", $mimetype)) {
+		if (!preg_match("|^text/|", $mimetype)) {
 			$size = $files->size($this->id, $file);
 		}
 		
@@ -121,7 +121,7 @@ class pfile extends pobject { // pfile class definition
 				// side caching is on, the loader will override this header.
 				ldSetClientCache(true, $expires);
 			}
-		} else if(!ereg("^text/", $mimetype)) {
+		} else if(!preg_match("|^text/|", $mimetype)) {
 			error( sprintf( $ARnls["err:headerssentnottext"], $this->path ) );
 			$stop=true;
 		}
@@ -164,7 +164,7 @@ class pfile extends pobject { // pfile class definition
 			$ARCurrent->cachetime=-2; // set cache to onchange
 		}
 		$files=$this->store->get_filestore("files");
-		if (!ereg("^text/", $mimetype)) {
+		if (!preg_match("|^text/|", $mimetype)) {
 			$size=$files->size($this->id, $file);
 		}
 		if (!$filename) {
@@ -228,19 +228,19 @@ class pfile extends pobject { // pfile class definition
 		if ($files->exists($this->id, $file_plaintext) ) {
 			$result = $files->read($this->id, $file_plaintext);
 		} else {
-			if (eregi("^text/", $mimetype)) {
+			if (preg_match("|^text/|i", $mimetype)) {
 				$result=$this->GetFile($file);
 				if ($mimetype=="text/html") {
 					$result=$this->html_to_text($result);
 				}
-			} elseif (eregi("^application/(.*)$", $mimetype, $regs)) {
+			} elseif (preg_match("|^application/(.*)$|i", $mimetype, $regs)) {
 				$textualizer=$AR->Textualizers[$regs[1]];
 				if ($textualizer) {
 					$temp_file = tempnam($this->store->get_config('files').'temp/', 'totext');
 					@unlink($temp_file);
 	
 					$files->copy_from_store($temp_file, $this->id, $file);
-					exec(ereg_replace('FILE', $temp_file, $textualizer), $result, $ret);
+					exec(preg_replace('/FILE/', $temp_file, $textualizer), $result, $ret);
 	
 					@unlink($temp_file);
 					if (!$ret) {
@@ -262,7 +262,7 @@ class pfile extends pobject { // pfile class definition
 	function SaveFile($contents, $mimetype=false, $name='file') {  
 		global $AR;
 		$result="";
-		$name=ereg_replace("[\\\/]","",$name); // make sure nobody gets /etc/passwd
+		$name=preg_replace("|[\\\/]|","",$name); // make sure nobody gets /etc/passwd
 		if ($name) {
 			if (!$this->arIsNewObject && $this->CheckSilent('edit')) {
 				$files=$this->store->get_filestore("files");

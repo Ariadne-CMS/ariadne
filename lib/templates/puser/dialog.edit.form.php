@@ -67,8 +67,12 @@
 	</div>
 
 	<?php	
-		if (!in_array($this->data->login, Array("admin", "public"))) { 
-			if ($this->data->config->disabled) {
+		$disabled = $this->getvar('disabled');
+		if (!isset($disabled)) {
+			$disabled = $this->data->config->disabled;
+		}
+		if (!in_array($this->data->login, Array("admin", "public")) && $this->CheckSilent('config')) { 
+			if ($disabled) {
 				$checked = "checked ";
 			} else {
 				$checked = "";

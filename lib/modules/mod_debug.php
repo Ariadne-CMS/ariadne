@@ -44,6 +44,7 @@
 	$DB["method"]["loader"] = true;
 	$DB["method"]["syslog"] = false;
 	$DB["method"]["file"] = false;
+	$DB["wasUsed"] = 0;
 
 
 	function debugon($level="pinp", $stream="all") {
@@ -69,6 +70,7 @@
 			$DB["stream"] = $stream;
 			debug("Debugging ON ".$debugison,$level,$stream);
 		}
+		$DB["wasUsed"]++;
 		return true;
 	}
 
@@ -128,6 +130,7 @@
 			*/
 			if( $DB["method"]["loader"] && function_exists("debug_print") ) {
 				debug_print( "(".$timestamping.")".$DB_INDENT.$message."\n" );
+				flush();
 			}
 			if( $DB["method"]["syslog"] ) {
 				syslog(LOG_NOTICE,"(Ariadne) ".$DB_INDENT.$message);

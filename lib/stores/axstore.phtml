@@ -220,7 +220,7 @@ class axstore {
 		$result = false;
 		switch($feature) {
 			case 'fulltext':
-				$results = true;
+				$result = true;
 				break;
 			default:
 				$result = false;
@@ -347,12 +347,12 @@ class axstore {
 			debug("axstore::link: ERROR: ".$this->error,"store");
 			$result=false;
 		} else { 
-			if (ereg("\{([0-9]):id\}",$destination,$match)) {
+			if (preg_match("/\{([0-9]):id\}/",$destination,$match)) {
 				$subid=$this->nextid($parent);
 				if ($match[1]) {
 					$subid=substr("000000000".$subid,-(intval($match[1])));
 				}
-				$destination=ereg_replace("\{[0-9]:id\}",strval($subid),$destination);
+				$destination=preg_replace("/\{[0-9]:id\}/",strval($subid),$destination);
 				$edestination=AddSlashes($destination);
 				debug("axstore::link: new destination: $destination ($subid)","all");
 			}
@@ -506,14 +506,14 @@ class axstore {
 		} else {
 			$parent="..";
 		}
-		if (ereg("\{([0-9]):id\}",$path,$match)) { 
+		if (preg_match("/\{([0-9]):id\}/",$path,$match)) { 
 			// if the last part of a path matches something like {2:id} this
 			// part will automatically create a new number, unique in this directory, and fill it in.
 			$subid=$this->nextid($parent);
 			if ($match[1]) { 
 				$subid=substr("000000000".$subid,-(intval($match[1])));
 			}
-			$path=ereg_replace("\{[0-9]:id\}",strval($subid),$path);
+			$path=preg_replace("/\{[0-9]:id\}/",strval($subid),$path);
 		}
 /*
 		if (is_array($properties)) {

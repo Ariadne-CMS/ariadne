@@ -32,8 +32,19 @@
 		if (!$ARCurrent->arTypeIcons) {
 			$this->call('typetree.ini');
 		}
-		$total=$this->count_find(".", $query);
-		$objects = $this->find(".", $query, "system.list.entry.php", "", $limit, $offset);
+
+		$foldertotal = $this->count_find(".", "object.parent='".AddSlashes($this->path)."'");
+
+		// If the total is more than 1000 and sanity is set, don't get the list.
+		if (!($foldertotal > 1000 && $sanity)) {
+			$objects = $this->find(".", $query, "system.list.entry.php", "", $limit, $offset);
+		}
+
+		if ($name || $type) {
+			$total=$this->count_find(".", $query);
+		} else {
+			$total = $foldertotal;
+		}
 
 		$arResult = array(
 			'objects' => $objects,

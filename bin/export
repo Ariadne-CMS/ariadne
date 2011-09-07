@@ -14,6 +14,7 @@
 	require($ariadne."/includes/loader.web.php");
 	require($ariadne."/stores/".$store_config["dbms"]."store.phtml");
 	include($ariadne."/stores/axstore.phtml");
+	include_once($ariadne."/ar.php");
 	$nls = $AR->nls->default;
 
 

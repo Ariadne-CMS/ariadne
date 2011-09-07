@@ -6,11 +6,11 @@
 	}
 
 	function gettoken() {
-		$re='^[[:space:]]*("[^"]*"|[()]|and|or)';
+		$re='/^[[:space:]]*("[^"]*"|[()]|and|or)/i';
 		if (!$this->data) {
 			$result["id"]=false;
 		} else
-		if (eregi($re, $this->data, $matches)) {
+		if (preg_match($re, $this->data, $matches)) {
 			if ($matches[1][0]==='"') {
 				$result["id"]="var";
 				$result["text"]=substr($matches[1], 1, -1);
@@ -19,8 +19,8 @@
 			}
 			$this->data=substr($this->data, strlen($matches[0]));
 		} else {
-			$re='^[[:space:]]*([^[:space:]()]+)';
-			if (eregi($re, $this->data, $matches)) {
+			$re='/^[[:space:]]*([^[:space:]()]+)/i';
+			if (preg_match($re, $this->data, $matches)) {
 				$result["id"]="var";
 				$result["text"]=$matches[1];
 				$this->data=substr($this->data, strlen($matches[0]));

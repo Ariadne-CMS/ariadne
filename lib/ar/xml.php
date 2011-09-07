@@ -120,7 +120,7 @@
 
 		public static function cdata( $value ) {
 			ar::untaint( $value, FILTER_UNSAFE_RAW );
-			return new ar_xmlNode($value, null, true); //'<![CDATA[' . str_replace( ']]>', ']]&gt;', $value ) . ']]>';
+			return new ar_xmlNode($value, null, true);
 		}
 		
 		public static function tag() {
@@ -224,9 +224,13 @@
 		protected static function parseChildren( $DOMElement ) {
 			$result = array();
 			foreach ( $DOMElement->childNodes as $child ) {
-				if ( $child instanceof DOMCharacterData ) {
+				if ( $child instanceof DOMComment ) {
 					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
-						$result[] = $child->data;
+						$result[] = new ar_xmlNode('<!--'.$child->data.'-->');
+					}
+				} else if ( $child instanceof DOMCharacterData ) {
+					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
+						$result[] = new ar_xmlNode($child->data);
 					}
 				} else if ( $child instanceof DOMCdataSection ) {
 					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
@@ -253,12 +257,15 @@
 					$doctype .= ' "'.$dom->doctype->systemId.'"';
 				}
 				$doctype .= '>';
-				$result[] = $doctype;
+				$result[] = new ar_xmlNode($doctype);
 			}
 			return $result;
 		}
 		
 		public static function parse( $xml ) {
+			// important: parse must never return results with simple string values, but must always
+			// wrap them in an ar_xmlNode, or tryToParse may get called, which will call parse, which 
+			// will... etc.
 			$dom = new DOMDocument();
 			$prevErrorSetting = libxml_use_internal_errors(true);
 			if ( $dom->loadXML( $xml ) ) {
@@ -283,6 +290,28 @@
 			libxml_use_internal_errors( $prevErrorSetting );
 			return ar_error::raiseError( 'Incorrect xml passed', ar_exceptions::ILLEGAL_ARGUMENT, $errors );
 		}
+		
+		public static function tryToParse( $xml ) {
+			$result = $xml;
+			if ( ! ($xml instanceof ar_xmlNodeInterface ) ) {
+				if ($xml) {
+					try {
+						$result = self::parse( '<root>'.$xml.'</root>' );
+						if ( ar_error::isError($result) ) {
+							$result = new ar_xmlNode( (string) $xml );
+						} else {
+							$result = $result->firstChild->childNodes;
+						}
+					} catch( Exception $e ) {
+						$result = new ar_xmlNode( (string) $xml );
+					}
+				} else {
+					$result = new ar_xmlNode( (string) $xml );
+				}
+			}
+			return $result;
+		}
+
 	}
 
 	/*
@@ -316,14 +345,39 @@
 			return $nodes;
 		}
 
+		protected function _tryToParse( $node ) {
+			return ar_xml::tryToParse( $node );
+		}
+		
+		public function _normalizeNodes( $nodes ) {
+			$result = array();
+			if ( is_array($nodes) || $nodes instanceof Traversable ) {
+				foreach ( $nodes as $node ) {
+					if ( !$node instanceof ar_xmlNode ) {
+						$node = $this->_tryToParse( $node );
+					}
+					if ( is_array($node) || $node instanceof Traversable ) {
+						$subnodes = $this->_normalizeNodes( $node );
+						foreach ( $subnodes as $subnode ) {
+							$result[] = $subnode;
+						}
+					} else {
+						$result[] = $node;
+					}
+				}
+			} else {
+				if ( !$nodes instanceof ar_xmlNode ) {
+					$nodes = $this->_tryToParse( $nodes );
+				}
+				$result[] = $nodes;
+			}
+			return $result;
+		}
+		
 		public function __construct() {
 			$args  = func_get_args();
 			$nodes = call_user_func_array( array( 'ar_xmlNodes', 'mergeArguments' ), $args );
-			foreach( $nodes as $key => $node) {
-				if (!$node instanceof ar_xmlNode) {
-					$nodes[$key] = new ar_xmlNode( $node );
-				}
-			}
+			$nodes = $this->_normalizeNodes( $nodes );
 			parent::__construct($nodes);
 		}
 
@@ -535,22 +589,21 @@
 					$this->setParentNode($value);
 				break;
 				default :
-/*
-					if (isset($this[0]) && is_object($this[0]) ) {
-						$el = $this[0];
-						$el->{$name} = $value;
-					} else if ($value instanceof ar_xmlElement) {
-						$this[] = $value;
-					} else {
-						$this[] = ar_xml::tag($name, (string)$value);
-					}
-*/
 					if (is_numeric($name)) {
 						$node = $this->childNodes[$name];
 						$this->replaceChild($node, $value);
 					} else {
-						$nodes = $this->getElementsByTagname( $name, false );
-						$this->replaceChild($nodes, $value);
+						switch ( $name ) {
+							case 'nodeValue' : 
+								foreach( $this->childNodes as $node ) {
+									$node->nodeValue = $value;
+								}
+							break;
+							default:
+								$nodes = $this->getElementsByTagname( $name, false );
+								$this->replaceChild($value, $nodes);
+							break;
+						}
 					}
 				break;
 			}
@@ -608,7 +661,7 @@
 		}
 		
 		function __clearAllNodes() {
-			parent::__construct();
+			self::__construct();
 		}
 		
 		function setParentNode( ar_xmlElement $el ) {
@@ -628,7 +681,7 @@
 		}
 		
 		function getPreviousSibling( ar_xmlNode $el ) {
-			$pos = $this->getPosition( $el );
+			$pos = $this->_getPosition( $el );
 			if ( $pos > 0 ) {
 				return $this[ $pos - 1 ];
 			} else {
@@ -637,17 +690,17 @@
 		}
 		
 		function getNextSibling( ar_xmlNode $el ) {
-			$pos = $this->getPosition( $el );
-			if ( $pos < count( $this ) ) {
-				return $this[ $pos + 1 ];
+			$pos = $this->_getLastPosition( $el );
+			if ( $pos <= count( $this ) ) {
+				return $this[ $pos ];
 			} else {
 				return null;
 			}
 		}
 		
-		function getPosition( $el ) {
+		function _getPosition( $el ) {
 			if ( is_array($el) || $el instanceof Traversable ) {
-				return $this->getPosition( reset($el) );
+				return $this->_getPosition( reset($el) );
 			} else {
 				foreach ( $this as $pos => $node ) {
 					if ( $node === $el ) {
@@ -656,10 +709,22 @@
 				}
 			}
 		}
+
+		function _getLastPosition( $el ) {
+			if ( is_array($el) || $el instanceof Traversable ) {
+				return $this->_getLastPosition( end($el) );
+			} else {
+				foreach ( $this as $pos => $node ) {
+					if ( $node === $el ) {
+						return $pos+1;
+					}
+				}
+			}
+		}
 		
 		private function _removeChildNodes( $el ) {
 			if ( isset( $this->parentNode ) ) {
-				if ( is_array( $el ) ) {
+				if ( is_array( $el ) || $el instanceof Traversable ) {
 					foreach ( $el as $subEl ) {
 						if ( isset($subEl->parentNode) ) {
 							$subEl->parentNode->removeChild( $subEl );
@@ -677,11 +742,9 @@
 			if ( isset( $this->parentNode ) ) {
 				if ( is_array( $el ) || $el instanceof Traversable ) {
 					foreach ( $el as $subEl ) {
-						$subEl->__clearParentIdCache();
-						$subEl->parentNode = $this->parentNode;
-						$subEl->__restoreParentIdCache();
+						$this->_setParentNodes( $subEl );
 					}
-				} else {
+				} else if ( $el instanceof ar_xmlNode) {
 					$el->__clearParentIdCache();
 					$el->parentNode = $this->parentNode;
 					$el->__restoreParentIdCache();
@@ -689,7 +752,7 @@
 			}		
 		}
 		
-		function appendChild( ar_xmlNodeInterface $el ) {
+		function appendChild( $el ) {
 			$this->_removeChildNodes( $el );
 			$result = $this->_appendChild( $el );
 			return $result;
@@ -702,16 +765,16 @@
 			} else {
 				$list = (array) $el;
 			}
-			parent::__construct( array_merge( (array) $this, $list ) );
+			self::__construct( array_merge( (array) $this, $list ) );
 			return $el;
 		}
 
-		function insertBefore( ar_xmlNodeInterface $el, ar_xmlNodeInterface $referenceEl = null ) {
+		function insertBefore( $el, ar_xmlNodeInterface $referenceEl = null ) {
 			$this->_removeChildNodes( $el );
 			if ( !isset($referenceEl) ) {
 				return $this->_appendChild( $el );
 			} else {
-				$pos = $this->getPosition( $referenceEl );
+				$pos = $this->_getPosition( $referenceEl );
 				if ( !isset($pos) ) {
 					$this->_appendChild( $el );
 				} else {
@@ -723,15 +786,15 @@
 					}
 					$arr = (array) $this;
 					array_splice( $arr, $pos, 0, $list );
-					parent::__construct( $arr );
+					self::__construct( $arr );
 				}
 			}
 			return $el;
 		}
 		
-		function replaceChild( ar_xmlNodeInterface $el, ar_xmlNodeInterface $referenceEl ) {
+		function replaceChild( $el, ar_xmlNodeInterface $referenceEl ) {
 			$this->_removeChildNodes( $el );
-			$pos = $this->getPosition( $referenceEl );
+			$pos = $this->_getPosition( $referenceEl );
 			if ( !isset($pos) ) { 
 				return null;
 			} else {
@@ -743,24 +806,24 @@
 				}
 				$arr = (array) $this;
 				array_splice( $arr, $pos, 0, $list ); 
-				parent::__construct( $arr );
+				self::__construct( $arr );
 				return $this->removeChild( $referenceEl );
 			}
 		}	
 
-		public function removeChild( ar_xmlNodeInterface $el ) {
+		public function removeChild( $el ) {
 			// Warning: must never ever call _removeChildNodes, can be circular.
-			if ( is_array( $el ) ) {
+			if ( is_array( $el ) || $el instanceof Traversable) {
 				foreach( $el as $subEl ) {
 					$this->removeChild( $subEl );
 				}
 			} else {
-				$pos = $this->getPosition( $el );
+				$pos = $this->_getPosition( $el );
 				if ( isset($pos) ) {
 					$oldEl = $this[$pos];
 					$arr = (array) $this;
 					array_splice( $arr, $pos, 1);
-					parent::__construct( $arr );
+					self::__construct( $arr );
 					if ( isset($this->parentNode) ) {
 						$oldEl->__clearParentIdCache();
 						$oldEl->parentNode = null;
@@ -827,10 +890,6 @@
 		
 		function __set( $name, $value ) {
 			switch ($name) {
-				case 'previousSibling' :
-				case 'nextSibling' :
-					return false;
-				break;
 				case 'nodeValue' :
 					$this->nodeValue = $value;
 				break;
@@ -1006,11 +1065,16 @@
 		}
 		
 		function __set( $name, $value ) {
-			$result = parent::__set($name, $value);
-			if (isset($result)) {
-				return $result;
-			}
-			switch ($name ) {
+			switch ( $name ) {
+				case 'previousSibling':
+				case 'nextSibling':
+				break;
+				case 'nodeValue':
+					if ( isset($this->childNodes) && count($this->childNodes) ) {
+						$this->removeChild( $this->childNodes );
+					}
+					$this->appendChild( $value );
+				break;
 				case 'childNodes' :
 					if ( !isset($value) ) {
 						$value = $this->getNodeList();
@@ -1023,12 +1087,7 @@
 				break;
 				default:
 					$nodeList = $this->__get( $name );
-					if (isset($nodeList[0])) {
-						$node = $nodeList[0];
-						$node->tagName = $value->tagName;
-						$node->attributes = $value->attributes;
-						$node->childNodes = $value->childNodes;
-					}
+					$this->replaceChild( $value, $nodeList );
 				break;
 			}
 		}

@@ -53,7 +53,7 @@
 		<font face="helvetica, sans-serif"><?php echo $ARnls["summary"]; ?>&nbsp;:</font>
 	</td><td>
 		<textarea cols=50 rows=3 wrap=soft name="<?php echo $selectednls; ?>[summary]"><?php 
-			echo ereg_replace('&','&amp;',$this->getdata("summary",$selectednls)); 
+			echo preg_replace('/&/','&amp;',$this->getdata("summary",$selectednls)); 
 		?></textarea>
 	</td>
 </tr><tr>

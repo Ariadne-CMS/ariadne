@@ -293,6 +293,9 @@ muze.ariadne.explore.tree = function() {
 			nodeHTML += node.pre;
 		}
 		var myname = node.name;
+		if (!myname) {
+			myname = '';
+		}	
 		myname = myname.replace("&", "&amp;");
 		myname = myname.replace("<", "&lt;");
 		myname = myname.replace(">", "&gt;");
@@ -313,7 +316,7 @@ muze.ariadne.explore.tree = function() {
 		
 		//prepare URL for XHR request:
 		var time = new Date();
-		var sUrl = muze.ariadne.explore.tree.loaderUrl + nodePath + "system.list.folders.json.php?" + time.getTime();
+		var sUrl = muze.ariadne.explore.tree.loaderUrl + nodePath + "system.list.folders.json.php?sanity=true&" + time.getTime();
 
 		//prepare our callback object
 		var callback = {

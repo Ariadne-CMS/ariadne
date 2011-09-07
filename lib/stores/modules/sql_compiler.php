@@ -368,14 +368,14 @@ abstract class sql_compiler {
 
 	protected function parse_join_target_properties(&$query) {
 		do {
-			if (!eregi('^([a-z_][a-z0-9_]*)(:[a-z]+)?', $query, $regs)) {
+			if (!preg_match('/^([a-z_][a-z0-9_]*)(:[a-z]+)?/i', $query, $regs)) {
 				$this->error = "expected property name at '$query'";
 				return false;
 			}
 			$this->join_target_properties["prop_".$regs[1]][$regs[2]] = true;
 			$query = substr($query, strlen($regs[0]));
 
-			if (!ereg('^[[:space:]]*,[[:space:]]*', $query, $regs)) {
+			if (!preg_match('/^[[:space:]]*,[[:space:]]*/', $query, $regs)) {
 				return true;
 			}
 			$query = substr($query, strlen($regs[0]));
@@ -384,7 +384,7 @@ abstract class sql_compiler {
 
 	protected function parse_query(&$query) {
 
-		if (!eregi('^[[:space:]]*order[[:space:]]*by[[:space:]]+', $query, $regs)) {
+		if (!preg_match('|^[[:space:]]*order[[:space:]]*by[[:space:]]+|i', $query, $regs)) {
 			$result=$this->parse_or_expr($query);
 		} else {
 			$no_selection = true;
@@ -433,20 +433,20 @@ abstract class sql_compiler {
 
 */		
 
-		if (eregi('^[[:space:]]*join[[:space:]]*target[[:space:]]*on[[:space:]]*', $query, $regs)) {
+		if (preg_match('|^[[:space:]]*join[[:space:]]*target[[:space:]]*on[[:space:]]*|i', $query, $regs)) {
 			$this->join_target_properties = Array();
 			$query = substr($query, strlen($regs[0]));
 			$this->parse_join_target_properties($query);
 		}
 
-		if ($no_selection || eregi('^[[:space:]]*order[[:space:]]*by[[:space:]]+', $query, $regs)) {
+		if ($no_selection || preg_match('|^[[:space:]]*order[[:space:]]*by[[:space:]]+|i', $query, $regs)) {
 			$query=substr($query, strlen($regs[0]));
 			$node["id"]="orderby";
 			$node["right"]=$this->parse_orderby($query);
 			$node["left"]=$result;
 			$result=$node;
 		}
-		if (eregi('^[[:space:]]*limit[[:space:]]+([0-9]+)[[:space:]]*([,][[:space:]]*([0-9]+))?', $query, $regs)) {
+		if (preg_match('|^[[:space:]]*limit[[:space:]]+([0-9]+)[[:space:]]*([,][[:space:]]*([0-9]+))?|i', $query, $regs)) {
 			$query=substr($query, strlen($regs[0]));
 			$limit_s["id"]="limit";
 			$limit_s["offset"]=$regs[1];

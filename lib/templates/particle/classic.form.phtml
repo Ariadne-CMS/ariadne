@@ -162,7 +162,7 @@
 	<td align="left">
 		<font face="helvetica, sans-serif">
 		<textarea name="<?php echo $nls; ?>[summary]" cols="40" rows="8" wrap="soft"><?php 
-			echo ereg_replace("&","&amp;", $this->getdata("summary",$nls)); 
+			echo preg_replace("/&/","&amp;", $this->getdata("summary",$nls)); 
 		?></textarea>
 		</font>
 	</td>

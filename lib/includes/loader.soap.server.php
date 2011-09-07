@@ -1305,7 +1305,7 @@ class soap_transport_http extends nusoap_base {
                 if(ereg("^(.*)\r?\n\r?\n",$data)) {
                         $this->debug("found proper separation of headers and document");
                         $this->debug("getting rid of headers, stringlen: ".strlen($data));
-                        $clean_data = ereg_replace("^[^<]*\r\n\r\n","", $data);
+                        $clean_data = preg_replace("/^[^<]*\r\n\r\n/","", $data);
                         $this->debug("cleaned data, stringlen: ".strlen($clean_data));
                 */
                 } else {
@@ -1401,7 +1401,7 @@ class soap_transport_http extends nusoap_base {
                 if(ereg("^(.*)\r?\n\r?\n",$data)) {
                         $this->debug("found proper separation of headers and document");
                         $this->debug("getting rid of headers, stringlen: ".strlen($data));
-                        $clean_data = ereg_replace("^[^<]*\r\n\r\n","", $data);
+                        $clean_data = preg_replace("/^[^<]*\r\n\r\n/","", $data);
                         $this->debug("cleaned data, stringlen: ".strlen($clean_data));
                 } else {
                         $this->setError('no proper separation of headers and document.');
@@ -2726,7 +2726,7 @@ class soap_parser extends nusoap_base {
                         //xml_parser_set_option($parser, XML_OPTION_SKIP_WHITE, 1);
                         xml_parser_set_option($this->parser, XML_OPTION_CASE_FOLDING, 0);
                         // Set the object for the parser.
-                        xml_set_object($this->parser, &$this);
+                        xml_set_object($this->parser, $this);
                         // Set the element handlers for the parser.
                         xml_set_element_handler($this->parser, "start_element","end_element");
                         xml_set_character_data_handler($this->parser,"character_data");

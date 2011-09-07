@@ -113,12 +113,13 @@
 			return new ar_html_form( $fields, $buttons, $action, $method );
 		}
 		
-		public static function table( $rows, $header = null, $rowHeader = null, $foot = null ) {
-			return new ar_html_table( $rows, $header, $rowHeader, $foot);
+		public static function table( $rows, $attributes = null, $childNodes = null, $parentNode = null ) {
+			return new ar_html_table( $rows, $attributes, $childNodes, $parentNode );
 		}
 		
-		public static function menu( $attributes = null, $list = null ) {
-			return new ar_html_menu( $attributes, $list );
+		public static function menu() {
+			$args = func_get_args();
+			return call_user_func_array( array( 'ar_html_menu', 'el' ), $args );
 		}
 		
 		public static function zen( $string ) {
@@ -130,7 +131,7 @@
 			foreach ( $DOMElement->childNodes as $child ) {
 				if ( $child instanceof DOMCharacterData ) {
 					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
-						$result[] = $child->data;
+						$result[] = new ar_htmlNode( $child->data );
 					}
 				} else if ( $child instanceof DOMCdataSection ) {
 					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
@@ -144,7 +145,11 @@
 		}
 
 		public static function parse( $html ) {
+			// important: parse must never return results with simple string values, but must always
+			// wrap them in an ar_htmlNode, or tryToParse may get called, which will call parse, which 
+			// will... etc.
 			$dom = new DOMDocument();
+			$prevErrorSetting = libxml_use_internal_errors(true);
 			if ( $dom->loadHTML( $html ) ) {
 				$domroot = $dom->documentElement;
 				if ( $domroot ) {
@@ -153,8 +158,45 @@
 					return $result;
 				}
 			}
-			return ar_error::raiseError( 'Incorrect html passed', ar_exceptions::ILLEGAL_ARGUMENT );
-		}		
+			$errors = libxml_get_errors();
+			libxml_clear_errors();
+			libxml_use_internal_errors( $prevErrorSetting );
+			return ar_error::raiseError( 'Incorrect html passed', ar_exceptions::ILLEGAL_ARGUMENT, $errors );
+		}
+
+		public static function tryToParse( $html ) {
+			$result = $html;
+			if ( ! ($html instanceof ar_xmlNodeInterface ) ) { // ar_xmlNodeInterface is correct, there is no ar_htmlNodeInterface
+				if ($html) {
+					try {
+						$result = self::parse( $html );
+						if ( ar_error::isError($result) ) {
+							$result = new ar_htmlNode( (string) $html );
+						} else {
+							$check = trim($html);
+							/*
+								DOMDocument::loadHTML always generates a full html document 
+								so the next bit of magic tries to remove the added elements
+							*/
+							if (stripos($check, '<p') === 0 ) {
+								$result = $result->html->body[0]->childNodes;
+							} else {
+								$result = $result->html->body[0];
+								if ($result->firstChild->tagName=='p') {
+									$result = $result->firstChild;
+								}
+								$result = $result->childNodes;
+							}
+						}
+					} catch( Exception $e ) {
+						$result = new ar_htmlNode( (string) $html );
+					}
+				} else {
+					$result = new ar_htmlNode( (string) $html );
+				}
+			}
+			return $result;
+		}
 	}
 
 	class ar_htmlNodes extends ar_xmlNodes {
@@ -173,6 +215,10 @@
 		public function getNodeList() {
 			$params = func_get_args();
 			return call_user_func_array( array( 'ar_html', 'nodes'), $params );
+		}
+		
+		protected function _tryToParse( $node ) {
+			return ar_html::tryToParse( $node );
 		}
 		
 	}

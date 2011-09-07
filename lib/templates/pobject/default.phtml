@@ -35,7 +35,8 @@
 	$ThisIsTrue = 'Set by default.phtml';
 	if (isset($config['nls'][$type])) {
 		if ($config['nls'][$type]['allnls']) {
-			$remember['allnls'] = $ARCurrent->allnls;
+			$allnlsSetByDefault = true;
+			$oldAllnls = $ARCurrent->allnls;
 			$ARCurrent->allnls = $ThisIsTrue; //$config['nls'][$type]['allnls'];
 		}
 		if ($config['nls'][$type]['nolangcheck']) {
@@ -61,7 +62,7 @@
 		}
 	}
 
-	if (isset($remember['allnls']) && $ARCurrent->allnls === $ThisIsTrue) {
-		$ARCurrent->allnls = $remember['allnls'];
+	if ($allnlsSetByDefault && $ARCurrent->allnls === $ThisIsTrue) {
+		$ARCurrent->allnls = $oldAllnls;
 	}
 ?>

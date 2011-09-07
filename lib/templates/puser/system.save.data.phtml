@@ -76,11 +76,14 @@
 			}
 		}
 
-/*
-		if (isset($disabled)) {
-			$this->call("system.save.access.phtml", Array("disabled" => $disabled));
+		$disabled = $this->getvar('disabled');
+		if (isset($disabled) && !in_array($login, Array("admin", "public")) && $this->CheckSilent('config')) {
+			if (!is_object($this->data->config)) {
+				$this->data->config = new object;
+			}
+			$this->data->config->disabled = $disabled;
 		}
-*/
+
 
 		if ($this->arIsNewObject) {
 			if ($login) {
@@ -100,7 +103,7 @@
 					if ($loginexists) {
 						$this->error=sprintf($ARnls["err:loginexists"],$login);
 					} else {
-						if (ereg('\{.*\}',$login)) {
+						if (preg_match('/\{.*\}/',$login)) {
 							$this->error=$ARnls["err:donotuseid"];
 						} else {
 							$this->data->login=$login;

@@ -3,7 +3,7 @@
 	require_once(dirname(__FILE__).'/../html.php');
 
 	ar_pinp::allow('ar_html_form', array(
-		'addField', 'addButton', 'setValue', 'getValue', 'getValues', 'getHTML', 'isValid', 'isSubmitted', 'validate', 'registerInputType', 'registerValidateCheck'
+		'addField', 'addButton', 'setValue', 'getValue', 'getValues', 'getHTML', 'isValid', 'isSubmitted', 'validate', 'registerInputType', 'registerValidateCheck', 'findField'
 	) );
 	
 	class ar_html_form extends arBase {
@@ -650,6 +650,9 @@
 	class ar_html_formInputHidden extends ar_html_formInput {
 			
 		public function __construct($field, $form) {
+			if ($field->label == $field->name) {
+				$field->label = false;
+			}
 			parent::__construct($field, $form);
 			$this->disabled = false;
 		}

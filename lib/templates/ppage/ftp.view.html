@@ -11,7 +11,7 @@
 
 	******************************************************************/
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		$page = ereg_replace( '<title>(.*)</title>',
+		$page = preg_replace( "/<title>(.*)<\/title>/",
 								"<title>$nlsdata->name</title>",
 								$nlsdata->page
 							);

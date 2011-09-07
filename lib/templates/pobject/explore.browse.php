@@ -38,7 +38,8 @@
 
 		$listargs = array(
 			"limit" => $items_per_page,
-			"offset" => $offset
+			"offset" => $offset,
+			"sanity" => true
 		);
 		
         if ($viewtype == "details") {
@@ -116,7 +117,7 @@
 		</script>
 		<?php
 	} else {
-		yui::showList($object_list['objects'], $viewtype);
+		yui::showList($object_list, $viewtype);
 	}
 ?>
 	<div class="viewpane_footer"></div>

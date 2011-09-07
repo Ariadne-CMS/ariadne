@@ -15,7 +15,7 @@
   $ARCurrent->nolangcheck=true;
   $arResult = false;
   if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		eregi('^(local[.])?([a-z_0-9]+)[.](.*)[.](.*)', $arRequestedTemplate, $regs);
+		preg_match('/^(local[.])?([a-z_0-9]+)[.](.*)[.](.*)/i', $arRequestedTemplate, $regs);
 		$type=$regs[2];
 		$function=$regs[3];
 		$language=$regs[4];

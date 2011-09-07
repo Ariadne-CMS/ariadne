@@ -299,7 +299,7 @@ class httphelper {
 					} else if ($headerEnd && !$redirecting) { 
 						//this is the html from the page 
 						$contents = $contents . $currentLine; 
-					} else if ( ereg("^HTTP", $currentLine) ) { 
+					} else if ( preg_match("/^HTTP/", $currentLine) ) { 
 						//came to the start of the header 
 						$headerStart = 1; 
 						$headerContents = $currentLine;

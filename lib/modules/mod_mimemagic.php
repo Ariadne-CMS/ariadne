@@ -746,7 +746,7 @@
 		}
 
 		if (($flags & MIME_EXT) && ( (($flags & MIME_DATA) && !$result) || !($flags & MIME_DATA) ) ) {
-			if (eregi('.*[.]([^.]*)', $filename, $regs)) {
+			if (preg_match('/.*[.]([^.]*)/i', $filename, $regs)) {
 				$result = $mimetypes_data[strtolower($regs[1])];
 			}
 		}

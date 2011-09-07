@@ -9,25 +9,25 @@
 		public static $pasv         = false;
 		public static $transferMode = FTP_BINARY;
 	
-		public static function get( $url = null, $options = array() ) {
+		public static function get( $url, $options = array() ) {
 			$path = parse_url( $url, PHP_URL_PATH );
 			$fileName = basename($path);
-			try {
-				$client = new ar_connect_ftpClient( $url, $options );
+			$client = new ar_connect_ftpClient( $url, $options );
+			if ( !ar_error::isError( $client) ) {
 				return $client->get( $fileName );
-			} catch( ar_exception $e ) {
-				return ar::error( $e->getMessage(), $e->getCode(), $e );
+			} else {
+				return $client;
 			}
 		}
 		
-		public static function put( $contents, $url = null, $options = array() ) {
+		public static function put( $url, $contents, $options = array() ) {
 			$path = parse_url( $url, PHP_URL_PATH );
 			$fileName = basename($path);
-			try {
-				$client = new ar_connect_ftpClient($url, $options );
+			$client = new ar_connect_ftpClient($url, $options );
+			if ( !ar_error::isError( $client ) ) {
 				return $client->put( $contents, $fileName );
-			} catch( ar_exception $e ) {
-				return ar::error( $e->getMessage(), $e->getCode(), $e );
+			} else {
+				return $client;
 			}
 		}
 
@@ -154,8 +154,11 @@
 				fwrite( $fp, (string) $contents );
 				fseek( $fp, 0);
 			}
-			ftp_fput( $this->connection, $file, $fp, $this->options['mode'] );
+			$result = ftp_fput( $this->connection, $file, $fp, $this->options['mode'] );
 			fclose($fp);
+			if ( !$result ) {
+				return ar::error( "Could not save file $file.", 10 );
+			} 
 			return $this;
 		}
 		
@@ -167,7 +170,7 @@
 		}
 		
 		public function connect( $host, $port = 21) {
-			if ( ! $this->connection = ftp_connect( $host, $port ) ) {
+			if ( ! $this->connection = ftp_connect( $host, $port ) ) { // FIXME: add timeout?
 				return ar::error( "Could not connect to $host on port $port", 2);
 			} else if (ar_connect_ftp::$timeout) {
 				ftp_set_option( $this->connection, FTP_TIMEOUT_SEC, ar_connect_ftp::$timeout );
@@ -176,7 +179,10 @@
 		}
 
 		public function cd( $dir ) {
-			ftp_chdir( $this->connection, $dir );
+			$result = ftp_chdir( $this->connection, $dir );
+			if ( !$result ) {
+				return ar::error( "Could not change to directory $dir.", 9);
+			}
 			return $this;
 		}
 		
@@ -185,14 +191,20 @@
 			return $this;
 		}
 		
-		/* remainder to be implemented */
-
-		public function delete( $file, $options = array() ) {
+		public function delete( $file ) {
+			$result = ftp_delete( $this->connection, $file );
+			if ( !$result ) {
+				return ar::error( "Could not delete file $file.", 7 );
+			}
 			return $this;
 		}
 		
 		public function ls() {
-			return ftp_nlist($this->connection, '.');
+			$result = ftp_nlist($this->connection, '.');
+			if ( !$result ) {
+				return ar::error( "Could not list the current directory.", 8);
+			}
+			return $result;
 		}
 		
 		public function mkdir( $dirname ) {
@@ -244,7 +256,7 @@
 			return $this;
 		}
 		
-		public function pasv( $pasv ) {
+		public function pasv( $pasv = true ) {
 			$this->options['pasv'] = $pasv;
 			if ( !ftp_pasv( $this->connection, $pasv) ) {
 				return ar::error( "Could not switch passive mode.", 6);

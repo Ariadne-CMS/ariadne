@@ -55,7 +55,7 @@
 	</tr><tr>
 		<td colspan="2">
 			<textarea name="<?php echo $selectednls."[summary]"; ?>" cols="30" rows="2" wrap="soft" class="inputbox"><?php 
-					echo ereg_replace("&","&amp;",$this->getdata("summary", $selectednls)); 
+					echo preg_replace("/&/","&amp;",$this->getdata("summary", $selectednls)); 
 			?></textarea>
 		</td>
 	</tr><tr>

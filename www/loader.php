@@ -79,7 +79,7 @@
 		$root=$AR->root;
 		$session_id=0;
 		$re="^/-(.{4})-/";
-		if (eregi($re,$AR_PATH_INFO,$matches)) {
+		if (preg_match( '|'.$re.'|' , $AR_PATH_INFO , $matches )) {
 			$session_id=$matches[1];
 			$AR_PATH_INFO=substr($AR_PATH_INFO,strlen($matches[0])-1);
 			$AR->hideSessionIDfromURL=false;
@@ -179,6 +179,10 @@
 					$cachetime=$timecheck+3600;
 				} else {
 					$cachetime=$mtime; 
+					// same '30 minutes' as used 13 lines above
+					if($cachetime == 0){
+						$cachetime = $timecheck + 1800;
+					}
 				}
 				if (file_exists($cachedheader)) {
 					$filedata = file($cachedheader);
@@ -256,7 +260,7 @@
 			}
 
 			// find (and fix) arguments
-			set_magic_quotes_runtime(0);
+			ini_set('magic_quotes_runtime', 0); 
 			if (get_magic_quotes_gpc()) {
 				// this fixes magic_quoted input
 				fix_quotes($_GET);
@@ -297,13 +301,13 @@
 			$result = $mod_auth->checkLogin($args["ARLogin"], $args["ARPassword"], $path);
 			if ($result!==true) {
 				if ($result == LD_ERR_ACCESS) {
-					ldAccessDenied($path, $ARnls["accessdenied"], $args);
+					ldAccessDenied($path, $ARnls["accessdenied"], $args, $function);
 					$function = false;
 				} else if ($result == LD_ERR_SESSION) {
-					ldAccessTimeout($path, $ARnls["sessiontimeout"], $args);
+					ldAccessTimeout($path, $ARnls["sessiontimeout"], $args, $function);
 					$function = false;
 				} else if ($result == LD_ERR_EXPIRED) {
-					ldAccessPasswordExpired($path, $ARnls["sessionpasswordexpired"], $args);
+					ldAccessPasswordExpired($path, $ARnls["sessionpasswordexpired"], $args, $function);
 					$function = false;
 				}
 			}
@@ -356,7 +360,7 @@
 
 		// now check for outputbuffering (caching)
 		if ($image=ob_get_contents()) {
-			if ($_SERVER['REQUEST_METHOD']!='GET') {
+			if ($_SERVER['REQUEST_METHOD']!='GET' || $DB["wasUsed"] > 0) {
 				$nocache = true;
 			}
 			// first set clientside cache headers

@@ -1,7 +1,7 @@
 <?php
 	if ($this->CheckConfig("layout") && $this->CheckConfig()) {
 
-		eregi('^(local[.])?([a-z_0-9-]+)[.](.*)[.](.*)', $template, $regs);
+		preg_match('/^(local[.])?([a-z_0-9-]+)[.](.*)[.](.*)/i', $template, $regs);
 		$default	= ! $regs[1];
 		$dtype		= $regs[2];
 		$type		= str_replace('-', '.', $dtype);

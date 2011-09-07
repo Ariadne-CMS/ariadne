@@ -5,7 +5,7 @@
 			$html=$htmltext;
 		}
 		// change hardcoded links and images to use a placeholder for the root
-		$html=ereg_replace("(http://[^/]*)?".$this->store->get_config("root"),"{arRoot}",$html);
+		$html=preg_replace("/(http:\/\/[^\/]*)?/".$this->store->get_config("root"),"{arRoot}",$html);
 		if ($this->data->mimetype=="text/html") {
 			$file="file";
 		} else {

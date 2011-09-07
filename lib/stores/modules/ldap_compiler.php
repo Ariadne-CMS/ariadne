@@ -46,7 +46,7 @@
 				$result=$node["value"];
 			break;
 			case 'and':
-				if (ereg("^&[0-9]+$", $this->buildlist[sizeof($this->buildlist)-1]) &&
+				if (preg_match("/^&[0-9]+$/", $this->buildlist[sizeof($this->buildlist)-1]) &&
 				    !$this->groupingflag) {
 					$this->buildlist[sizeof($this->buildlist)-1]="&".
 				          (substr($this->buildlist[sizeof($this->buildlist)-1], 1)+1);
@@ -58,7 +58,7 @@
 				$this->compile_tree($node["right"]);
 			break;
 			case 'or':
-				if (ereg("^\|[0-9]+$", $this->buildlist[sizeof($this->buildlist)-1]) &&
+				if (preg_match("/^\|[0-9]+/$", $this->buildlist[sizeof($this->buildlist)-1]) &&
 				    !$this->groupingflag) {
 					$this->buildlist[sizeof($this->buildlist)-1]="|".
 				          (substr($this->buildlist[sizeof($this->buildlist)-1], 1)+1);
@@ -194,7 +194,7 @@
 			if (sizeof($groupstack)>0) {
 				$groupstack[sizeof($groupstack)-1]--;
 			}
-			if (ereg("^[&\|][0-9]+$", $item)) {
+			if (preg_match("/^[&\|][0-9]+$/", $item)) {
 				array_push($groupstack, substr($item, 1));
 				$query.="(".substr($item, 0, 1);
 			} else {

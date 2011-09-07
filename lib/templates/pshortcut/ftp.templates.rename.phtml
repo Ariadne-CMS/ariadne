@@ -1,7 +1,7 @@
 <?php
   $ARCurrent->nolangcheck=true;
   if ($this->CheckLogin("layout") && $this->CheckConfig()) {
-		eregi('^(local[.])?([a-z_0-9]+)[.](.*)[.](.*)', $source_template, $regs);
+		preg_match('/^(local[.])?([a-z_0-9]+)[.](.*)[.](.*)/i', $source_template, $regs);
 		$default=$regs[1];
 		$type=$regs[2];
 		$function=$regs[3];
@@ -15,7 +15,7 @@
 				$file=$templates->read($this->id, $template);
 				/* now we have to save our template */
 
-				eregi('^(local[.])?([a-z_0-9]+)[.](.*)[.](.*)', $target_template, $regs);
+				preg_match('/^(local[.])?([a-z_0-9]+)[.](.*)[.](.*)/i', $target_template, $regs);
 				$tdefault	= (isset($regs[1])) ? $regs[1] : $default;
 				$ttype		= (isset($regs[2])) ? $regs[2] : $type;
 				$tfunction	= (isset($regs[3])) ? $regs[3] : $target_template;

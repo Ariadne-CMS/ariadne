@@ -11,8 +11,8 @@ if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 	
 	foreach ($AR->nls->list as $language => $language_name) {
 		if (!$this->getdata("name", $language)) {
-			if (($file=$this->getdata("file", $language)) && ereg("[^\/\\]*\$", $file, $matches)) {
-				$arFilename = eregi_replace("[^a-z0-9\./_-]", "_", $matches[0]);
+			if (($file=$this->getdata("file", $language)) && preg_match("|[^\/\\\]*\$|", $file, $matches)) {
+				$arFilename = preg_replace("|[^a-z0-9\./_-]|i", "_", $matches[0]);
 				$_POST[$language]["name"] = $arFilename;
 			}
 		}

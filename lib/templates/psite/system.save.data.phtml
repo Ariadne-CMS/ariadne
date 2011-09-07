@@ -30,7 +30,7 @@
 						$clearcache=true;
 						$this->data->$key->url=$url;
 					}
-					eregi('^([a-z0-9]+)://([^/:]+)(:[0-9]+)?', $url, $regs);
+					preg_match('|^([a-z0-9]+)://([^/:]+)(:[0-9]+)?|i', $url, $regs);
 					if ($url) {
 						$this->data->url_list['nls'][$key] = $url;
 						if (!$this->data->url_list['host'][$regs[2].$regs[3]]) {

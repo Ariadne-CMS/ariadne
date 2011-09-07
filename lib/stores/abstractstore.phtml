@@ -270,14 +270,14 @@ class store {
 		}
 		$epath=AddSlashes($path);
 		$eparent=AddSlashes($parent);
-		if (ereg("{([0-9]):id}",$path,$match)) { 
+		if (preg_match("/{([0-9]):id}/",$path,$match)) { 
 			// if the last part of a path matches something like {2:id} this
 			// part will automatically create a new number, unique in this directory, and fill it in.
 			$subid=$this->nextid($parent);
 			if ($match[1]) { 
 				$subid=substr("000000000".$subid,-(intval($match[1])));
 			}
-			$path=ereg_replace("{[0-9]:id}",strval($subid),$path);
+			$path=preg_replace("/{[0-9]:id}/",strval($subid),$path);
 			debug("save: new path: $path ($subid)","all");
 		}
 		$edata=AddSlashes(serialize($data));
@@ -393,12 +393,12 @@ class store {
 			debug("link: ERROR: ".$this->error,"store");
 			$result=0;
 		} else { 
-			if (ereg("{([0-9]):id}",$destination,$match)) {
+			if (preg_match("/{([0-9]):id}/",$destination,$match)) {
 				$subid=$this->nextid($parent);
 				if ($match[1]) {
 					$subid=substr("000000000".$subid,-(intval($match[1])));
 				}
-				$destination=ereg_replace("{[0-9]:id}",strval($subid),$destination);
+				$destination=preg_replace("/{[0-9]:id}/",strval($subid),$destination);
 				$edestination=AddSlashes($destination);
 				debug("link: new destination: $destination ($subid)","all");
 			}

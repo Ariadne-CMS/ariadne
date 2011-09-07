@@ -1,16 +1,36 @@
 <?php
   if ($this->CheckLogin("read") && $this->CheckConfig()) {
 	$target = $this->make_path($target);
-	$userConfig = $this->loadUserConfig();
+	$configpath = $target;
+	if (!$this->exists($configpath)) {
+		$configpath = $this->make_path($target.'../');
+	}
+	if ($this->exists($configpath)) {
+		$configOb = current($this->get( $configpath, 'system.get.phtml'));
+		$userConfig = $configOb->loadUserConfig();
+	} else {
+		$userConfig = $this->loadUserConfig();
+	}
 	$authconfig = $userConfig['authentication'];
 
-	// Check if target is valid according to auth.ini
-	$validpath = false;
-	foreach ($authconfig['userdirs'] as $userdirpath) {
-		if (substr($target, 0, strlen($userdirpath)) == $userdirpath) {
-			$validpath = true;
-			break;
+	if ( $this instanceof pgroup ) {
+		$configpart = 'groupdirs';
+	} else if ( $this instanceof pprofile ) {
+		$configpart = null;
+	} else {
+		$configpart = 'userdirs';
+	}
+	if ($configpart) {
+		// Check if target is valid according to auth.ini
+		$validpath = false;
+		foreach ($authconfig[$configpart] as $userdirpath) {
+			if (substr($target, 0, strlen($userdirpath)) == $userdirpath) {
+				$validpath = true;
+				break;
+			}
 		}
+	} else {
+		$validpath = true;
 	}
 
 	if (!$validpath) {
@@ -19,7 +39,7 @@
 		$newpath = $target;
 		$newparent = $this->store->make_path($target, "..");
 		$newlogin = substr($newpath, strlen($newparent), -1);
-		if (ereg('\{.*\}', $newlogin)) {
+		if (preg_match('/\{.*\}/', $newlogin)) {
 			$arResult = $ARnls["err:donotuseid"];
 		} else {
 			// Check if user exists in any of the paths in auth.ini

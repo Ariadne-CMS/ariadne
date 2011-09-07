@@ -39,7 +39,7 @@ class pinp_page {
 class page {
 
 	function getBody($page) {
-		return eregi_replace('^.*<BODY[^>]*>', '', eregi_replace('</BODY.*$', '', $page));
+		return preg_replace('/^.*<BODY[^>]*>/i', '', preg_replace('|</BODY.*$|i', '', $page));
 	}
 
 	function parse($page, $full=false) {
@@ -116,7 +116,7 @@ class page {
 		// will only use the new compile method when it is needed (htmlblocks)
 		// otherwise just return the $page, so 99.9% of the sites don't walk
 		// into bugs. 21-05-2007
-		$isChanged = page::compileWorker(&$nodes);
+		$isChanged = page::compileWorker($nodes);
 		if ($isChanged) {
 			return htmlparser::compile($nodes);
 		} else {
@@ -165,7 +165,7 @@ class page {
 			foreach ($node['children'] as $key => $child) {
 				// single | makes the following line always run the compileworker
 				// method, while any return true in that method makes $result true
-				$result = $result | page::compileWorker(&$node['children'][$key]);
+				$result = $result | page::compileWorker($node['children'][$key]);
 			}
 		}
 		return $result;
@@ -208,9 +208,16 @@ class page {
 		include_once($me->store->get_config('code')."modules/mod_htmlcleaner.php");
 		$cleanAR = array(
 			'rewrite' => array(
-				'^(A|IMG)$' => array(
-					'^ar:.*' =>false
+				'^(A|IMG|DIV)$' => array(
+					'^ar:.*' => false,
+					'^arargs:.*' => false,
+					'^class' => Array(
+						'htmlblock[ ]*uneditable[ ]*' => false
+					)
 				)
+			),
+			'delete_emptied' => Array(
+				'div', 'a'
 			)
 		);
 		return htmlcleaner::cleanup( $page, $cleanAR );

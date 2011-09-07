@@ -36,6 +36,7 @@
 	$ARnls["ariadne:view"]						=	"View";
 	$ARnls["ariadne:viewweb"]					=	"View webpage";
 	$ARnls['ariadne:wysiwyg_editor']			=	"WYSIWYG editor";
+	$ARnls['ariadne:template_editor']			=	"Template editor";
 	$ARnls["ariadne:by"]						=	"By";
 	$ARnls["ariadne:id"]						=	"ID";
 	$ARnls["ariadne:logoff"]					=	"Log off";
@@ -106,6 +107,8 @@
 	$ARnls['ariadne:grants:grants_explained']		= "Grants explained for ";
 	$ARnls['ariadne:grants:other_grants']			= "Other grants for ";
 	$ARnls['ariadne:no_objects_found']			= "No objects found.";
+	$ARnls['ariadne:too_many_objects_found']    = "Too many objects found.";
+
 	$ARnls['ariadne:no_adding_found']			= "You can not add objects here.";
 
 	$ARnls['err:defaultlanguagenotavailable']		= 'The chosen default language was not selected as an available language.';
@@ -137,6 +140,9 @@
 	$ARnls["ariadne:editor:align_middle"]				= "Middle";
 	$ARnls["ariadne:editor:align_top"]				= "Top";
 	$ARnls["ariadne:editor:image_settings"]				= "Image settings";
+
+	$ARnls["ariadne:templateeditor:textarea"]		= "Textarea";
+	$ARnls["ariadne:templateeditor:ace"]			= "ACE";
 
 	$ARnls['ariadne:override_typetree']				= 'Override typetree settings';
 	$ARnls['err:typetree_does_not_allow']				= 'Typetree does not allow this object type here';
@@ -175,5 +181,6 @@
 	$ARnls['ariadne:types:pprofile']			= 'Profile';
 	$ARnls['ariadne:types:psearch']				= 'Search';
 	$ARnls['ariadne:types:psection']			= 'Section';
-
+	$ARnls['ariadne:programmers_reference']		= 'Programmers Reference';
+	$ARnls['ariadne:ace_editor']				= 'Ace Editor';
 ?>

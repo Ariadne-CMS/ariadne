@@ -9,8 +9,8 @@
 	
 	class ar_core_session implements ar_core_sessionInterface {
 		private $hideSessionIDFromURL = false;
-		private $this->options = array();
-		private $this->modSession = null;
+		private $options = array();
+		private $modSession = null;
 		
 		public function __construct($options = null) {
 			require_once($options['code'].'modules/mod_session.phtml');

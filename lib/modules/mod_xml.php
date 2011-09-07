@@ -66,7 +66,7 @@
 		}
 
 		function _parse_url($url) {
-			if (!eregi('^https?://', $url)) {
+			if (!preg_match('|^https?://|i', $url)) {
 				$this->error = "Not a valid URL ($url)";
 			} else {
 				$parser = xml_parser_create();
@@ -91,7 +91,7 @@
 		}
 
 		function _parse_curl($url) {
-			if (!eregi('^https?://', $url)) {
+			if (!preg_match('|^https?://|i', $url)) {
 				$this->error = "Not a valid URL ($url)";
 			} else {
 				$parser = xml_parser_create();

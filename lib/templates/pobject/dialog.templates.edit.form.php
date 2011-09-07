@@ -41,8 +41,8 @@
 	} else {
 		$file = $template;
 	}
-	$file=ereg_replace("&","&amp;",$file);
-	$file=ereg_replace("<","&lt;", ereg_replace(">","&gt;",$file));
+	$file=preg_replace("/&/","&amp;",$file);
+	$file=preg_replace("/</","&lt;", preg_replace("/>/","&gt;",$file));
 
 ?>
 	<script type="text/javascript">
@@ -53,6 +53,82 @@
 			window.location.href = window.location.href;
 		}
 	</script>
+	<?php
+		if ($AR->user->data->template_editor == 'ace') {
+	?>
+	<style type="text/css">
+		div {
+			font-family: Monaco, 'Courier New', monospace !important;
+		}
+		label {
+			font-family: verdana, helverica, arial, sans-serif;
+		}
+		#tabsdata #template_editor #template, #editor {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			border: 0px;
+			padding: 0px;
+			margin: 0px;
+		}
+		#editor {
+			background-color: white;
+			cursor: text;
+		}
+		#tabsdata #template_editor {
+			left: 22px;
+		}
+	</style>
+	<?php
+		$theme = 'eclipse';
+	?>
+	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/ace/ace-uncompressed.js" charset="utf-8"></script>
+	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/ace/theme-eclipse.js" charset="utf-8"></script>
+	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/ace/theme-<?php echo $theme; ?>.js" charset="utf-8"></script>
+	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/ace/mode-php.js" charset="utf-8"></script>
+	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/ace/mode-javascript.js" charset="utf-8"></script>
+	<script type="text/javascript">
+		var editor = null;
+		window.onload = function() {
+			var template = document.getElementById('template');
+			template.style.display = 'none';
+			var editorDiv = document.getElementById('editor');
+			editorDiv.style.display = 'block';
+			editor = ace.edit('editor');
+			// editor.setTheme('ace/theme/eclipse');
+			editor.setTheme('ace/theme/<?php echo $theme; ?>');
+			var phpMode = require('ace/mode/php').Mode;
+			editor.getSession().setMode( new phpMode() );
+			editor.getSession().setUseSoftTabs(false);
+			editor.getSession().setValue( template.value );
+			<?php
+				$error = $this->getvar("error");
+				if( $error ) {
+					echo "alert('".AddCSlashes($error, ARESCAPE)."');\n";
+				}
+				// set the cursor pos if needed
+				$col = $this->getvar("cursorOffset");
+				if( !isset($col) || $col == '') {
+					$col = 1;
+				}
+				$line = $this->getvar("lineOffset");
+				if( !isset($line) || $line == -1 ) {
+					$line = 1;
+				}
+			?>
+			//editor.gotoLine( <?php echo $line+1; ?> );
+			editor.navigateTo( <?php echo $line; ?>, <?php echo $col; ?> );
+			var wgWizForm = document.getElementById("wgWizForm");
+			wgWizForm.wgWizSubmitHandler = function() {
+				document.getElementById('cursorOffset').value = editor.selection.selectionLead.column;
+				document.getElementById('lineOffset').value = editor.selection.selectionLead.row;
+				return true;
+			}
+		}
+	</script>
+	<?php
+	}
+	?>
 	<div id="basicmenu" class="yuimenubar">
 		 <div class="bd">
 			  <ul class="first-of-type">
@@ -127,9 +203,29 @@
 	}
 ?>
 					<li class="yuimenubaritem">
-						 <a class="yuimenubaritemlabel" href="http://www.ariadne-cms.org/docs/reference/" onclick="muze.ariadne.explore.arshow('_new', this.href); return false;">
-							<?php echo $ARnls['help']; ?>
-						 </a>
+						<a class="yuimenubaritemlabel" href="#"><?php echo $ARnls["ariadne:help"]; ?></a>
+						<div id="help" class="yuimenu">
+							<div class="bd">
+                                <ul class="first-of-type">
+									<li class="yuimenuitem">
+										 <a class="yuimenuitemlabel" href="http://www.ariadne-cms.org/docs/reference/" onclick="muze.ariadne.explore.arshow('_new', this.href); return false;">
+											<?php echo $ARnls['ariadne:programmers_reference']; ?>
+										 </a>
+									</li>
+<?php
+	if ($AR->user->data->template_editor == 'ace') {
+?>
+									<li class="yuimenuitem">
+										 <a class="yuimenuitemlabel" href="http://www.ariadne-cms.org/docs/manual/ace/" onclick="muze.ariadne.explore.arshow('_new', this.href); return false;">
+											<?php echo $ARnls['ariadne:ace_editor']; ?>
+										 </a>
+									</li>
+<?php
+	}
+?>
+								</ul>
+							</div>
+						</div>
 					</li>
 			  </ul>
 		 </div>
@@ -179,14 +275,24 @@
 </div>
 <div id="template_editor">
 	<textarea name="template" id="template" wrap="off"><?php echo $file; ?></textarea>
+	<div id="editor" style="display: none"></div>
 </div>
-<div id="template_linenumbers">
+<?php
+	if ($AR->user->data->template_editor == 'textarea' || !$AR->user->data->template_editor) { 
+		echo "<div id=\"template_linenumbers\">\n";
+?>
 	<textarea name="linenumbers" id="linenumbers" wrap="off" readonly class="linenumbers" tabindex="-1" unselectable="on"><?php
 	$linetotal = substr_count($file, "\n");
 	$linetotal = $linetotal + 1000;
 for($i=1;$i<$linetotal;$i++) { echo $i."\n"; }
 	?></textarea>
-</div>
+<?php
+		echo "</div>\n";
+	}
+?>
+<?php
+	if ($AR->user->data->template_editor == 'textarea' || !$AR->user->data->template_editor) { 
+?>
 <script type="text/javascript">
 
 	var currentPos;
@@ -295,3 +401,15 @@ for($i=1;$i<$linetotal;$i++) { echo $i."\n"; }
 	
 	YAHOO.util.Event.onDOMReady(initHandlers);
 </script>
+<?php
+	}
+	if ($AR->user->data->template_editor == 'ace') {
+?>
+<script type="text/javascript">
+	muze.event.attach( document.getElementById('wgWizForm'), 'submit', function() {
+		document.getElementById('template').value = editor.getSession().getValue();
+	} );
+</script>
+<?php
+	}
+?>

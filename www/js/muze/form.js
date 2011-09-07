@@ -180,7 +180,7 @@ muze.form.subselection = function() {
 		attach : function() {
 			inputs = document.getElementsByTagName("DIV");
 			for (i=0; i<inputs.length; i++) {
-				if (inputs[i] && inputs[i].className && inputs[i].className.indexOf("muze_form_subselection") != -1) {
+				if (inputs[i] && inputs[i].className && inputs[i].className.indexOf("muze_form_show_subselection") != -1) {
 					inputelm = inputs[i].getElementsByTagName("SELECT")[0];
 					if (inputelm) {
 						muze.event.attach(inputelm, "change", muze.form.subselection.execute);

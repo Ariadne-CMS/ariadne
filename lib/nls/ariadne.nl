@@ -35,6 +35,7 @@
 	$ARnls["ariadne:view"]						=	"Beeld";
 	$ARnls["ariadne:viewweb"]					=	"Toon webpagina";
 	$ARnls['ariadne:wysiwyg_editor']			=	"WYSIWYG editor";
+	$ARnls['ariadne:template_editor']			=	"Template editor";
 	$ARnls["ariadne:by"]						=	"Door";
 	$ARnls["ariadne:id"]						= 	"ID";
 	$ARnls["ariadne:logoff"]					= 	"Afmelden";
@@ -104,6 +105,8 @@
 	$ARnls['ariadne:grants:grants_explained']		= "Rechten verklaard voor ";
 	$ARnls['ariadne:grants:other_grants']			= "Andere rechten voor ";
 	$ARnls['ariadne:no_objects_found']			= "Geen objecten gevonden.";
+	$ARnls['ariadne:too_many_objects_found']	= "Te veel objecten gevonden.";
+
 	$ARnls['ariadne:no_adding_found']			= "U kunt hier geen objecten aanmaken.";
 
 	$ARnls['err:defaultlanguagenotavailable']		= 'De gekozen standaard taal is niet als beschikbaar gekozen.';
@@ -135,6 +138,9 @@
 	$ARnls["ariadne:editor:align_middle"]				= "Midden";
 	$ARnls["ariadne:editor:align_top"]				= "Top";
 	$ARnls["ariadne:editor:image_settings"]				= "Instellingen: Afbeelding";
+
+	$ARnls["ariadne:templateeditor:textarea"]		= "Textveld";
+	$ARnls["ariadne:templateeditor:ace"]			= "ACE";
 
 	$ARnls['ariadne:override_typetree']				= 'Negeer typeboom instellingen';
 	$ARnls['err:typetree_does_not_allow']				= 'De typeboom instellingen staan dit object type hier niet toe.';
@@ -174,5 +180,7 @@
 	$ARnls['ariadne:types:pprofile']			= 'Profiel';
 	$ARnls['ariadne:types:psearch']				= 'Zoekopdracht';
 	$ARnls['ariadne:types:psection']			= 'Sectie';
+	$ARnls['ariadne:programmers_reference']		= 'Programmers Reference';
+	$ARnls['ariadne:ace_editor']				= 'Ace Editor';
 
 ?>

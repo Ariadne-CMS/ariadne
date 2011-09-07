@@ -58,7 +58,7 @@ class pphoto extends pfile { // pphoto class definition
 		$this->set_context("convert");
 
 		$result=false;
-		if (eregi('[^a-z0-9+]',$format)) {
+		if (preg_match('/[^a-z0-9+]/i',$format)) {
 			$this->error=sprintf($ARnls["err:convillegalformat"],$format);
 		} else {
 			$ARConfig->photoStack[$this->id][]=" -format $format";
@@ -117,7 +117,7 @@ class pphoto extends pfile { // pphoto class definition
 		$f_store->copy_from_store($tmpsrc, $this->id, $file);
 		$execstring = $AR->IM->identify." ".$tmpsrc;
 		$myarray = Array();
-		$result = exec( $execstring, &$myarray );
+		$result = exec( $execstring, $myarray );
 		@unlink( $tmpsrc );
 		$f_store->close();
 		return $myarray;
@@ -305,7 +305,7 @@ class pphoto extends pfile { // pphoto class definition
 			$compose .= $resize;
 		}
 
-		if ($method && eregi('[^a-z0-9+\-]',$method)) {
+		if ($method && preg_match('/[^a-z0-9+\-]/i',$method)) {
 			$this->error=sprintf($ARnls["err:composeillegalmethod"],$method);
 		} else {
 			$targetobj = current($this->get($target, "system.get.phtml"));
@@ -573,7 +573,7 @@ class pphoto extends pfile { // pphoto class definition
 	global $ARConfig;
 		if (is_array($this->arClearList)) {
 			foreach ( $this->arClearList as $value) {
-				if (!eregi("[^a-z0-9\._-]",$value)) {
+				if (!preg_match("/[^a-z0-9\._-]/i",$value)) {
 					@unlink($value);
 				}
 			}
@@ -581,7 +581,7 @@ class pphoto extends pfile { // pphoto class definition
 		unset($ARConfig->photoStack[$this->id]);
 	}
 
-	function getimageinfo($extrainfo=false, $nls = '') {
+	function getimageinfo(&$extrainfo=false, $nls = '') {
 		$tmpsrc = tempnam($this->store->get_config("files")."temp/", "photo");
 		if (!$nls) {
 			$nls = $this->reqnls;
@@ -593,7 +593,7 @@ class pphoto extends pfile { // pphoto class definition
 		}
 		$f_store->copy_from_store($tmpsrc, $this->id, $file);
 		if ($extrainfo!==false) {
-			$result=getimagesize($tmpsrc, &$extrainfo);
+			$result=getimagesize($tmpsrc, $extrainfo);
 		} else {
 			$result=getimagesize($tmpsrc);
 		}
@@ -666,12 +666,8 @@ class pphoto extends pfile { // pphoto class definition
 		return $this->cleanup();
 	}
 
-	function _getimageinfo($extrainfo=false, $nls='') {
-		if ($extrainfo!==false) {
-			return $this->getimageinfo(&$extrainfo, $nls);
-		} else {
-			return $this->getimageinfo(null, $nls);
-		}
+	function _getimageinfo(&$extrainfo=false, $nls='') {
+			return $this->getimageinfo($extrainfo, $nls);
 	}
 	
 	function _identify($nls = '') {

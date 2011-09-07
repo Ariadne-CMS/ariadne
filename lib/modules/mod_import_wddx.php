@@ -22,7 +22,7 @@ class import_wddx {
 		$this->stack = array();
 		$this->xml_parser = xml_parser_create();
 		// use case-folding so we are sure to find the tag in $map_array
-		xml_set_object($this->xml_parser, &$this);
+		xml_set_object($this->xml_parser, $this);
 		xml_parser_set_option($this->xml_parser, XML_OPTION_CASE_FOLDING, false);
 		xml_set_element_handler($this->xml_parser, "startElement", "endElement");
 		xml_set_character_data_handler($this->xml_parser, "characterData");
@@ -151,7 +151,7 @@ class import_wddx {
 			$this->linkObject($path,$this->linktable[$objdata['id']]);
 		} else {
 			$this->linktable[$objdata['id']] = $path;
-			$this->storeObject($path,&$objdata);
+			$this->storeObject($path,$objdata);
 		}
 	}
 

@@ -1,20 +1,42 @@
 Welcome to Ariadne!
 
 To start the installation, please follow these steps:
+
 - create a database for Ariadne to be installed in
+
 - copy the www directory to your webroot and give it a suitable name, eg
 'ariadne'.
-- copy the file 'ariadne.inc-unix' or 'ariadne.inc-win' to 'ariadne.inc',
-depending on your platform.
+
+- copy the file 'ariadne.inc-unix' or 'ariadne.inc-win' in your ariadne 
+www directory to 'ariadne.inc'. Choose the correct version depending on 
+your server operating system.
+
 - edit ariadne.inc, and point $ariadne to the path of the lib directory, eg.
-/usr/local/ariadne/lib
-- give write grants for www-data to ariadne/lib/configs/ariadne.phtml
-- give write grants for www-data to ariadne/files/
-- give write grants for www-data to ariadne/lib/configs/svn to allow SVN support
-- remove the .htaccess file from the ariadne/www/install/ folder
-- point your webbrowser to http://yourhost/ariadne/install/ to start installation.
+/usr/local/ariadne/lib or /home/youruser/ariadne/lib
+
+- give write grants for the user your webserver runs as, typically www-data 
+in unix systems, to ariadne/lib/configs/ariadne.phtml
+
+- give write grants for www-data to ariadne/files/ and its subdirectories.
+
+- give write grants for www-data to the ariadne/lib/configs/svn/ directory 
+if you want to enable support for the Subversion versioning system (SVN). 
+
+- remove the .htaccess file from the ariadne/www/install/ folder temporarily. 
+You must either restore it after installation or remove the entire install 
+directory when you are done.
+
+- point your webbrowser to http://yourhost/ariadne/install/ to start 
+installation.
+	
 
 After a succesful installation:
-- remove the www/install folder
-- schedule the cleanup script in the bin folder to remove unused files and session data
-- remove write access to lib/configs/ariadne.phtml for the www-data user
+
+- remove the www/install folder or restore the .htaccess file.
+
+- schedule the cleanup script in the bin folder to remove unused files and 
+session data. In unix systems you can use the crontab tool for this.
+
+- remove write access to lib/configs/ariadne.phtml for www-data.
+
+Enjoy Ariadne!

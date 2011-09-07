@@ -45,7 +45,7 @@
 		}
 
 		function setFeedUrl($url, $username='', $password='') {
-			if (eregi('^https?://', $url)) {
+			if (preg_match('|^https?://|i', $url)) {
 				$this->rss_url = $url;
 				$this->rss_user = $username;
 				$this->rss_password = $password;
@@ -95,7 +95,7 @@
 				fclose($this->rss_fp);
 			}
 			if ($this->rss_url) {
-				if (!eregi('^https?://', $this->rss_url)) {
+				if (!preg_match('|^https?://|i', $this->rss_url)) {
 					$this->error = $this->rss_url." is not a valid URL";
 				} else {
 					$this->rss_fp = fopen($this->rss_url, "r");
@@ -157,6 +157,12 @@
 			switch ($name) {
 				default:
 					$element[$name] = $newElement;
+					if ($attribs) {
+						foreach($attribs as $attribName => $attribValue ) {
+							$element[$name.':'.$attribName] = $attribValue;
+						}
+					}
+				break;
 			}
 		}
 

@@ -172,10 +172,10 @@
                     echo " check=new String(document.wgWizForm['$name'].value);\n";
                     echo " if (!check.match('".$checklist["ereg"]."')) {\n";
                     if ($checklist["error"]) {
-                      echo "   alert('".ereg_replace("'","\\'",$checklist["error"])."');\n";
+                      echo "   alert('".preg_replace("/'/","\\'",$checklist["error"])."');\n";
                       echo "   return false;\n";
                     } else if ($checklist["confirm"]) {
-                      echo "   return confirm('".ereg_replace("'","\\'",$checklist["confirm"])."');\n";
+                      echo "   return confirm('".preg_replace("/'/","\\'",$checklist["confirm"])."');\n";
                     } 
                     echo " } ";
                   }

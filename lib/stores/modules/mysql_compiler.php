@@ -127,7 +127,7 @@ class mysql_compiler extends sql_compiler {
 			case 'string':
 				$result = $node["value"];
 				if ($escape_chars) {
-					$result = ereg_replace('([^\\])_', '\\1\_', $result);
+					$result = preg_replace('/([^\\\])_/', '\\1\_', $result);
 				}
 				return $result;
 			break;
@@ -334,6 +334,7 @@ class mysql_compiler extends sql_compiler {
 			}
 		}
 
+		$join = "";
 		if (is_array($this->nls_join)) {
 			reset($this->nls_join);
 			while (list($key, $value)=each($this->nls_join)) {
@@ -342,9 +343,6 @@ class mysql_compiler extends sql_compiler {
 		}
 
 
-		$query="select distinct($nodes.path), $nodes.parent, $nodes.priority, ";
-		$query.=" $objects.id, $objects.type, $objects.vtype ";
-		$query.=" from $tables $join";
 		$query.=" where $nodes.object=$objects.id $prop_dep";
 		$query.=" and $nodes.path like '".AddSlashes($this->path)."%' ";
 		if ($this->where_s) {
@@ -364,13 +362,17 @@ class mysql_compiler extends sql_compiler {
 		} else {
 			$orderby = " order by $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
 		}
-		$query .= $orderby . " $this->limit_s ";
 
-		$oquery =	"select results.path, results.parent, results.priority, results.id, results.type, ".
+		$select_query =	"select distinct($objects.id), $nodes.path, $nodes.parent, $nodes.priority, $objects.type, ".
 					" $objects.object, UNIX_TIMESTAMP($objects.lastchanged) as lastchanged, $objects.vtype ".
-					"from ( $query ) as results, $objects ". //using(id), $join" . $orderby;
-					"where results.id = $objects.id "; // order by results.mc";
-		return $oquery;
+		$select_query .= "from $tables $join $query "; 
+
+		$select_query .= $orderby . " $this->limit_s ";
+		$count_query = "select count(distinct($objects.id)) as count from $tables ".$query;
+
+//		echo $count_query;
+
+		return Array("select_query" => $select_query, "count_query" => $count_query);
 	}
 
   }

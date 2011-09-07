@@ -66,8 +66,8 @@
 
 	/* for backwards compat. */
 	$file = $this->getdata("file", "none");
-	if ($file && ereg("[^\/\\]*\$", $file, $matches)) {
-		$arFilename = eregi_replace("[^a-z0-9\./_-]", "_", $matches[0]);
+	if ($file && preg_match("|[^\/\\]*\$|", $file, $matches)) {
+		$arFilename = preg_replace("|[^a-z0-9\./_-]|i", "_", $matches[0]);
 		if (!$arNewFilename) {
 			$_POST['arNewFilename'] = $arFilename;
 			$this->path = $this->store->make_path($this->parent, $arFilename);
@@ -80,8 +80,8 @@
 	foreach ($AR->nls->list as $language => $language_name) {
 		$arNewFilename = $this->getdata("arNewFilename","none");
 		if (!$arNewFilename || !$this->getdata("name", $language)) {
-			if (($file=$this->getdata("file", $language)) && ereg("[^\/\\]*\$", $file, $matches)) {
-				$arFilename = eregi_replace("[^a-z0-9\./_-]", "_", $matches[0]);
+			if (($file=$this->getdata("file", $language)) && preg_match("|[^\/\\]*\$|", $file, $matches)) {
+				$arFilename = preg_replace("|[^a-z0-9\./_-]|i", "_", $matches[0]);
 				if (!$arNewFilename) {
 					$_POST['arNewFilename'] = $arFilename;
 					$this->path = $this->store->make_path($this->parent, $arFilename);

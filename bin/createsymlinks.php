@@ -32,7 +32,7 @@
 			$path .= '/';
 		}
 		
-		if (eregi('(/?.*/)?(.+/)', $path, $regs)) {
+		if (preg_match('|(/?.*/)?(.+/)|i', $path, $regs)) {
 			$parent = $regs[1];
 			
 			if ($parent && !file_exists($parent)) {
@@ -93,7 +93,7 @@
 				$f = $path . $file;
 				if (is_file($f)) {
 					/* do not link backupfiles */
-					if (!eregi('^.*~$', $f, $regs)) {
+					if (!preg_match('/^.*~$/i', $f, $regs)) {
 						$targetpath = $dstdir . substr($path, strlen($srcdir));
 						$target = $targetpath . $file;
 						

@@ -11,7 +11,7 @@
 			$query.=" and name.value ~= '".AddSlashes($letter)."%'";
 		}
 		if ($date=$this->getvar('date')) {
-			$date=ereg_replace("[^0-9]*","",$date);
+			$date=preg_replace("/[^0-9]*/","",$date);
 			$query.=" and timeframe.start <= ".($date+86400)." and timeframe.end >= ".$date;
 		}
 //		if ($AR->user->data->orderedbrowsing) {

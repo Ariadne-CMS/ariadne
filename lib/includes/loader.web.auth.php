@@ -1,5 +1,18 @@
 <?php
 
+	function ldGetCurrentTemplate( $function ) { 
+		if ( isset($function) ) {
+			return $function;
+		} else {
+			$me = ar_ariadneContext::getObject();
+			if ($me) {
+				$context = $me->getContext();
+				return $context['arCallFunction'];
+			}
+		}
+		return null;
+	}
+
 	function ldSetCredentials($login, $ARUserDir="/system/users/") {
 		global $ARCurrent, $AR;
 		if (!$ARUserDir || $ARUserDir == "") {
@@ -63,7 +76,7 @@
 		setcookie("ARCookie",$ARCookie, 0, '/');
 	}
 
-	function ldAccessTimeout($path, $message, $args = null) {
+	function ldAccessTimeout($path, $message, $args = null, $function = null) {
 	global $ARCurrent, $store;
 		/* 
 			since there is no 'peek' function, we need to pop and push
@@ -77,21 +90,29 @@
 			@array_push($ARCurrent->arCallStack, $arCallArgs);
 		}
 
-		if (!$arCallArgs || is_array($arCallArgs)) {
-			$arCallArgs["arLoginMessage"] = $message;
-		} else {
-			$arCallArgs.="&arLoginMessage=".urlencode($message);
-		}
-		if (!$ARCurrent->arLoginSilent) {
-			$ARCurrent->arLoginSilent = true;
-			$store->call("user.session.timeout.html", 
-								$arCallArgs,
-								$store->get($path) );
-		}
+		$eventData = new object();
+	    $eventData->arCallPath = $path;
+		$eventData->arCallFunction = ldGetCurrentTemplate( $function );
+		$eventData->arCallArgs = $arCallArgs;
+	    $eventData->arLoginMessage = $message;
+		$eventData->arReason = 'access timeout';
+		$eventData = ar_events::fire( 'onaccessdenied', $eventData );
+		if ( $eventData ) {
 
+			$arCallArgs = $eventData->arCallArgs;
+			$arCallArgs["arLoginMessage"] = $eventData->message;
+
+			if (!$ARCurrent->arLoginSilent) {
+				$ARCurrent->arLoginSilent = true;
+				$store->call("user.session.timeout.html", 
+									$arCallArgs,
+									$store->get($path) );
+			}
+
+		}
 	}
 
-	function ldAccessDenied($path, $message, $args = null) {
+	function ldAccessDenied($path, $message, $args = null, $function = null) {
 	global $ARCurrent, $store;
 		/* 
 			since there is no 'peek' function, we need to pop and push
@@ -105,21 +126,29 @@
 			@array_push($ARCurrent->arCallStack, $arCallArgs);
 		}
 
-		if (!$arCallArgs || is_array($arCallArgs)) {
-			$arCallArgs["arLoginMessage"] = $message;
-		} else {
-			$arCallArgs.="&arLoginMessage=".urlencode($message);
-		}
-		if (!$ARCurrent->arLoginSilent) {
-			$ARCurrent->arLoginSilent = true;
-			$store->call("user.login.html", 
-								$arCallArgs,
-								$store->get($path) );
-		}
+	    $eventData = new object();
+	    $eventData->arCallPath = $path;
+		$eventData->arCallFunction = ldGetCurrentTemplate( $function );
+		$eventData->arCallArgs = $arCallArgs;
+	    $eventData->arLoginMessage = $message;
+		$eventData->arReason = 'access denied';
 
+		$eventData = ar_events::fire( 'onaccessdenied', $eventData );
+		if ( $eventData ) {
+
+			$arCallArgs = $eventData->arCallArgs;
+			$arCallArgs["arLoginMessage"] = $eventData->message;
+
+			if (!$ARCurrent->arLoginSilent) {
+				$ARCurrent->arLoginSilent = true;
+				$store->call("user.login.html", 
+									$arCallArgs,
+									$store->get($path) );
+			}
+		}
 	}
 
-	function ldAccessPasswordExpired($path, $message, $args=null) {
+	function ldAccessPasswordExpired($path, $message, $args=null, $function = null) {
 	global $ARCurrent, $store;
 		/* 
 			since there is no 'peek' function, we need to pop and push
@@ -133,16 +162,24 @@
 			@array_push($ARCurrent->arCallStack, $arCallArgs);
 		}
 
-		if (!$arCallArgs || is_array($arCallArgs)) {
-			$arCallArgs["arLoginMessage"] = $message;
-		} else {
-			$arCallArgs.="&arLoginMessage=".urlencode($message);
-		}
-		if (!$ARCurrent->arLoginSilent) {
-			$ARCurrent->arLoginSilent = true;
-			$store->call("user.password.expired.html", 
-								$arCallArgs,
-								$store->get($path) );
+		$eventData = new object();
+	    $eventData->arCallPath = $path;
+	    $eventData->arCallFunction = ldGetCurrentTemplate( $function );
+		$eventData->arLoginMessage = $message;
+		$eventData->arReason = 'password expired';
+		$eventData->arCallArgs = $arCallArgs;
+		$eventData = ar_events::fire( 'onaccessdenied', $eventData );
+		if ( $eventData ) {
+
+			$arCallArgs = $eventData->arCallArgs;
+			$arCallArgs["arLoginMessage"] = $eventData->arLoginMessage;
+
+			if (!$ARCurrent->arLoginSilent) {
+				$ARCurrent->arLoginSilent = true;
+				$store->call("user.password.expired.html", 
+									$arCallArgs,
+									$store->get($path) );
+			}
 		}
 
 	}

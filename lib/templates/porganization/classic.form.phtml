@@ -139,7 +139,7 @@
 	</td>
 	<td colspan="2">
 		<textarea name="<?php echo $nls."[summary]"; ?>" cols="50" rows="4" wrap="soft"><?php
-				echo ereg_replace("&","&amp;",$this->getdata("summary",$nls));
+				echo preg_replace("/&/","&amp;",$this->getdata("summary",$nls));
 		?></textarea>
 	</td>
 </tr>

@@ -5,15 +5,15 @@
 		function get_token() {
 			$this->token = $this->token_ahead;
 			$this->token_value = $this->token_ahead_value;
-			$this->input = ereg_replace('^([[:space:]]|,)*', '', $this->input);
+			$this->input = preg_replace('/^([[:space:]]|,)*/', '', $this->input);
 			//echo "scanner: input(".$this->input.")<br>\n";
 			switch (true) {
-				case ereg('^([a-zA-Z0-9_][a-zA-Z0-9._]*)', $this->input, $regs):
+				case preg_match('/^([a-zA-Z0-9_][a-zA-Z0-9._]*)/', $this->input, $regs):
 					$this->token_ahead = T_G_IDENT;
 					$this->token_ahead_value = $regs[1];
 					$this->input = substr($this->input, strlen($regs[1]));
 				break;
-				case ereg('^([]+->=(){}[])', $this->input, $regs):
+				case preg_match('/^([]+->=(){}[])/', $this->input, $regs):
 					$this->token_ahead = $regs[1];
 					$this->token_ahead_value = $regs[1];
 					$this->input = substr($this->input, 1);

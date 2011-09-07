@@ -1,5 +1,5 @@
 <?php
-  if (eregi(".*msie ([0-9]+).*",$_SERVER['HTTP_USER_AGENT'], $regs) &&
+  if (preg_match("/.*msie ([0-9]+).*/i",$_SERVER['HTTP_USER_AGENT'], $regs) &&
        $regs[1] && (intval($regs[1])>=4)) { //ie4+
     include($this->store->get_config("code")."widgets/htmledit/ie/edit.php");
   } else {

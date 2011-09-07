@@ -126,7 +126,7 @@ HM_Array3 = [
 		$this->setnls($arLanguage);
 	}
 
-	if (eregi("^(http[s]?://)?".$_SERVER["HTTP_HOST"], $this->make_url())) {
+	if (preg_match("|^(http[s]?://)?|i".$_SERVER["HTTP_HOST"], $this->make_url())) {
 		echo $this->make_url();
 	} else {
 		echo $this->make_url('.', '', false);
