@@ -65,7 +65,7 @@
 		$tableId = "resultsTable";
 
 		if( $viewtype == "details" ) {
-			$data = array();
+			$datalist = array();
 			foreach($object_list['objects'] as $item) {
 				$datarow = array();
 				if ($AR->SVN->enabled) {
@@ -85,9 +85,10 @@
 						$datarow['language'] .= "<a href='#' onClick=\"muze.ariadne.registry.set('store_root', muze.ariadne.registry.get('root') + '/-' + muze.ariadne.registry.get('SessionID') + '-/" . $key . "'); muze.ariadne.explore.objectadded(); return false;\" title=\"".htmlspecialchars($value)."\"><img class=\"flag\" src=\"".$AR->dir->images."nls/small/".$key.".gif\" alt=\"".htmlspecialchars($value)."\"></a> ";
 					}
 				}
-				array_push($data, $datarow);
+				array_push($datalist, $datarow);
 			}
 		}
+
 ?>
 
 <script type="text/javascript">
@@ -96,7 +97,7 @@
 
 <script type="text/javascript">
 <?php 
-	yui::showTableJs($divId, $tableId, $colDefs); 
+		yui::showTableJs($divId, $tableId, $colDefs); 
 ?>
 </script>
 <script type="text/javascript">
@@ -106,11 +107,16 @@
 		}
 	);
 </script>
-	<div class="viewpane <?php echo $viewtype; ?>" id="viewpane">
+<?php
+		$eventData = new object();
+		$eventData = ar_events::fire( 'ariadne:onbeforeexplore', $eventData );
+		if ( $eventData ) {
+?>
+	<div class="browse viewpane <?php echo $viewtype; ?>" id="viewpane">
 <?php 
 	yui::showPaging($object_list['total'], $items_per_page, $current_page, "top");
 	if ($viewtype == "details") {
-		yui::showTable($divId, $tableId, $colDefs, $data);
+		yui::showTable($divId, $tableId, $colDefs, $datalist);
 		?>
 		<script type="text/javascript">
 			YAHOO.util.Event.onDOMReady(muze.ariadne.explore.viewpane.load_handler);
@@ -126,5 +132,7 @@
 ?>
 	</div>
 <?php
+			ar_events::fire('ariadne:onexplore');
+		}
 	}
 ?>

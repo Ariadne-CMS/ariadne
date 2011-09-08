@@ -49,14 +49,6 @@
 				'icon' => $AR->dir->images . 'icons/small/copy.png',
 				'nlslabel' => $ARnls['ariadne:copy']
 			);
-			if ($this->CheckSilent("config")) {
-				$tasks[] = array(
-					'href' => $this->make_ariadne_url() . "dialog.link.php",
-					'onclick' => "muze.ariadne.explore.arshow('dialog.link',this.href); return false;",
-					'icon' => $AR->dir->images . 'icons/small/link.png',
-					'nlslabel' => $ARnls['ariadne:link']
-				);		
-			}
 		
 			if ($this->CheckSilent("delete")) {
 				$tasks[] = array(

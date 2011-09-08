@@ -145,10 +145,10 @@
 			$this->call("explore.browse.header.php");
 		?>
 		</div>
-		<div class="browse" id="archildren">
-			<?php
-				$this->call("explore.browse.".$viewmode.".php");
-			?>
+		<div id="archildren">
+		<?php
+			$this->call("explore.browse.".$viewmode.".php");
+		?>
 		</div>
 	</div>
 </body>
