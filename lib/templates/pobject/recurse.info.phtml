@@ -1,8 +1,0 @@
-<?php
-	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		?>
-			addobject('<?php echo $this->path; ?>','<?php echo $this->parent; ?>', '<?php echo urlencode($nlsdata->name); ?>');
-		<?php
-		$arResult=$this->path;
-	}
-?>

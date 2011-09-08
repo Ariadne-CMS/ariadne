@@ -1,6 +1,0 @@
-<?php
-	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		// call browse list for objects that do not have page data
-		$this->call("browse.nav.list.phtml", $arCallArgs);
-	}
-?>

@@ -1,9 +1,0 @@
-<?php
-	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
-		if ($data->mimetype=="text/html") {
-			$this->ShowFile();
-		} else {
-			error("This is not an html file");
-		}
-	}
-?>
