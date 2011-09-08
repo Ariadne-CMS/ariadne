@@ -158,7 +158,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if( $arCallFunction == "system.get.phtml" && ( $context = $this->getContext(ARCALLINGCONTEXT) ) && $context["scope"] != "pinp" ) {
 			$arResult = $this;
 		} else {
-			while ($arType!="object") {
+			while ($arType!="ariadne_object") {
 				// search for the template, stop at the root class ('ariadne_object')
 				// (this should not happen, as pobject must have a 'default.phtml')
 				$arCallTemplate=$this->store->get_config("code")."templates/".$arType."/".$arCallFunction;
