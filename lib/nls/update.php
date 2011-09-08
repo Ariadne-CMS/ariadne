@@ -6,7 +6,7 @@
   include($ariadne."includes/loader.web.php");
 
   $languages=Array('nl','de','es','pl','hr','it','fr','sv', 'en');
-  $modules=Array('','winxp.','ieedit.','menu.');
+  $modules=Array('','ariadne.');
   $target='./new/';
   define('NLSESCAPE', "\"\\\n\r");
 
