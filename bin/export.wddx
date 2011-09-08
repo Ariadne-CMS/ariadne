@@ -9,10 +9,10 @@ if (!@include_once($ariadne."/configs/ariadne.phtml")) {
 		exit(1);
 	}
 }
-require($ariadne."/configs/store.phtml");
-require($ariadne."/includes/loader.web.php");
-require($ariadne."/stores/".$store_config["dbms"]."store.phtml");
-
+require_once($ariadne."/configs/store.phtml");
+require_once($ariadne."/includes/loader.web.php");
+require_once($ariadne."/stores/".$store_config["dbms"]."store.phtml");
+require_once($ariadne."/ar.php");
 
 $HELP_INFO="export.wddx [--options] [source path] [destination path] file.wddx
 The export command will export objects from the current Ariadne database to

@@ -8,21 +8,22 @@
 			exit(1);
 		}
 	}
-	require($ariadne."/configs/store.phtml");
-	require($ariadne."/includes/loader.web.php");
-	require($ariadne."/stores/".$store_config["dbms"]."store.phtml");
+	require_once($ariadne."/configs/store.phtml");
+	require_once($ariadne."/includes/loader.web.php");
+	require_once($ariadne."/stores/".$store_config["dbms"]."store.phtml");
+	require_once($ariadne."/ar.php");
 
 	$inst_store = $store_config["dbms"]."store";
-	$store=new $inst_store($root,$store_config);
+	$store = new $inst_store($root,$store_config);
 
-	$ARLogin="admin";
+	$ARLogin = "admin";
 	$AR->user=current($store->call("system.get.phtml",array(),$store->get("/system/users/admin/")));
 
 	require_once($store->get_config("code")."modules/mod_import_wddx.php");
 
 	//debugon('all');
 	$HELP_INFO = 
-"improt.wddx [--options] [source path] [destination path] file.wddx
+"import.wddx [--options] [source path] [destination path] file.wddx
 The import command will import objects from the current Ariadne database to
 the specified .wddx file. It will import all objects from your .wddx file.
 

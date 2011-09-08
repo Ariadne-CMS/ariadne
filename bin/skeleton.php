@@ -12,7 +12,7 @@
 	require_once($ariadne."/includes/loader.cmd.php");
 	require_once($ariadne."/stores/".$store_config["dbms"]."store.phtml");
 	include($ariadne."/nls/".$AR->nls->default);
-	include_once($ariadne."/modules/mod_ar.php");
+	require_once($ariadne."/ar.php");
 
 	/* instantiate the store */
 	$inst_store = $store_config["dbms"]."store";

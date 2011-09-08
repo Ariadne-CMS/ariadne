@@ -20,6 +20,7 @@
 	require_once($ariadne."/stores/mysqlstore.phtml");
 	require_once($ariadne."/stores/axstore.phtml");
 	require_once("./utils/shared_functions.php");
+	require_once($ariadne."/ar.php");
 
 	set_time_limit(0);
 
