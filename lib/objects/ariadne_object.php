@@ -1748,7 +1748,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$this->customnlsdata=$this->data->custom[$nls];
 			}
 
-			if (!$ARConfigChecked) {
+			if (!$ARConfigChecked && $arCallFunction) { // only fire this for pinp overrideable templates
 				// this template is the first template called in this request.
 				$eventData = new object();
 				$eventData->arCallArgs = $arCallArgs;
