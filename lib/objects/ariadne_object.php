@@ -1753,7 +1753,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$eventData = new object();
 				$eventData->arCallArgs = $arCallArgs;
 				$eventData->arCallFunction = $arCallFunction;
+				
+				$ARConfigChecked = true;
 				$result = ar_events::fire( 'onbeforeview', $eventData );
+				$ARConfigChecked = $initialConfigChecked;
 				if ( !$result ) { //prevent default action: view
 					return false;
 				}
