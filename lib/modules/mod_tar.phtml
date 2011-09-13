@@ -147,7 +147,7 @@
 		global $AR;
 			if ($AR->OS=="WIN32") {
 				$path=str_replace('\\', '/', $path);
-				if (eregi('^([a-z]):', $path, $regs)) {
+				if (preg_match('/^([a-z]):/i', $path, $regs)) {
 					$path="//".$regs[1].substr($path,2);
 				}
 			} else {
