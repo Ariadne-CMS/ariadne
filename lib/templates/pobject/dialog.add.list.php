@@ -6,7 +6,7 @@
 			$arReturnTemplate="dialog.new.php";
 		}
 
-		$server_name=eregi_replace("^[htps:/]*/","",$AR->host);
+		$server_name=preg_replace("|^[htps:/]*/|i","",$AR->host);
 
 		if ($_SERVER["HTTP_HOST"]==$server_name) {
 			$currentpath=$this->store->get_config("root").$this->path;

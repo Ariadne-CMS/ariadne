@@ -33,7 +33,7 @@
 						$this->error=$ARnls["err:nomovebelow"];
 					}
 				}
-				if (!eregi("^[a-z0-9_\{\}\.\:/-]+$",$target)) { 
+				if (!preg_match("|^[a-z0-9_\{\}\.\:/-]+$|i",$target)) { 
 					$this->error=sprintf($ARnls["err:fileillegalchars"],$target);
 				}
 

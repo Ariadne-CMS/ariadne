@@ -33,15 +33,15 @@ if( !function_exists("wgWizKeepVars") ) {
 			$toplevel=true;
 		}
 		if (!($regexp=$ARCurrent->regexp)) {
-			$regexp='^arStoreVars\[(';
+			$regexp='/^arStoreVars\[(';
 			reset($AR->nls->list);
 			foreach( $AR->nls->list as $key => $value ) {
 				$regexp.=$key.'|';
 			}
-			$regexp=substr($regexp,0,-1).')\]\[$';
+			$regexp=substr($regexp,0,-1).')\]\[$/';
 			$ARCurrent->regexp=$regexp;
 		}
-		if (ereg($ARCurrent->regexp, $prefix)) {
+		if (preg_match($ARCurrent->regexp, $prefix)) {
 			$toplevel=true;
 		}
 		$postfix="]";

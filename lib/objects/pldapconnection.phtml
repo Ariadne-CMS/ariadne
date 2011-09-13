@@ -47,8 +47,8 @@ class pldapconnection extends pconnector { // psearch class definition
 			$ldapexpr=trim($ldapexpr);
 
 			// $reg_cmp_op based on sql_compiler.php
-			$reg_cmp_op='(.*)[[:space:]]*(~=|==?|\\!=|<=|>=|<|>|=~|=~~|!~|!~~|=\\*|!\\*|=\\*\\*|!\\*\\*|=/|/==|!/|!//)[[:space:]]*(.*)';
-                        if (eregi($reg_cmp_op, $ariadneexpr, $regs)) {
+			$reg_cmp_op='%(.*)[[:space:]]*(~=|==?|\\!=|<=|>=|<|>|=~|=~~|!~|!~~|=\\*|!\\*|=\\*\\*|!\\*\\*|=/|/==|!/|!//)[[:space:]]*(.*)%i';
+                        if (preg_match($reg_cmp_op, $ariadneexpr, $regs)) {
 				// Ariadne search string has property name and value given
 				$ariadnename=trim($regs[1]);
 				$operator=$regs[2];

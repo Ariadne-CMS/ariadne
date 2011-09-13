@@ -425,7 +425,7 @@ class hn_captcha
 			$this->key = md5($this->secretstring);
 			do {
 				$this->public_key = substr(md5(uniqid(rand(),true)), 0, $this->chars);
-			} while (eregi('[1o0l]', $this->generate_private()));
+			} while (preg_match('/[1o0l]/i', $this->generate_private()));
 			if($this->debug) echo "\n<br>-Captcha-Debug: Generate Keys, public key is: (".$this->public_key.")";
 
 		}

@@ -10,7 +10,14 @@
 		$mimetypes = $ARConfig->cache[$this->path]->mimetypes;
 		@reset($mimetypes);
 		while (!$arNewType && (list($regexp, $arType)=@each($mimetypes))) {
-			if (eregi($regexp, $fileinfo["type"], $regs)) {
+			// Find a suitable delimiter
+			$delimiters = array("/", "|", "%", "#");
+			$delimiter = array_pop($delimiters);
+			while ($delimiter && (strpos($regexp, $delimiter) !== false)) {
+				$delimiter = array_pop($delimiters);
+			}
+
+			if (preg_match($delimiter . $regexp . $delimiter . "i", $fileinfo["type"], $regs)) {
 				$arNewType = $arType;
 			}
 		}
