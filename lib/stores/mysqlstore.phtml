@@ -337,7 +337,7 @@ class mysqlstore extends store{
 			$result = mysql_fetch_array($qresult);
 			$count  = $result["count"];
 		}
-		return $count;
+		return (int)$count;
 	}
 
 	public function find($path, $criteria, $limit=100, $offset=0) {
@@ -821,7 +821,7 @@ class mysqlstore extends store{
 		return $result;
 	}
 
-	protected function store_run_query($query) {
+	public function store_run_query($query) {
 		/* private function, do not use this outside this class */
 		mysql_select_db($this->database,$this->connect_id);
 		$result=mysql_query( $query, $this->connect_id);
