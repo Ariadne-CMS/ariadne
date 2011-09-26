@@ -262,6 +262,7 @@ div.buttons div.center {
 	height: auto;
 	position: relative;
 	margin-bottom: 10px;
+	clear: left;
 }
 
 #tabsdata input {
