@@ -54,6 +54,21 @@
 		}
 	}
 
+	function ldGatherXSSInput(&$xss, $input) {
+		if (is_array($input)) {
+			foreach ($input as $key => $value) {
+				ldGatherXSSInput($xss, $value);
+			}
+		} else {
+			$input = (string)$input;
+			if (strlen($input) > 10) {
+				if (preg_match('/[\'"<>]/', $input, $matches)) {
+					$xss[strlen($input)][$input] = $input;
+				}
+			}
+		}
+	}
+
 
 	if(!isset($AR_PATH_INFO)){
 		$AR_PATH_INFO=$_SERVER["PATH_INFO"];
@@ -347,6 +362,16 @@
 				}
 			}
 
+			$xss_vars = array();
+			foreach (array('GET', 'POST') as $method) {
+				if (is_array(${'_'.$method})) {
+					ldGatherXSSInput($xss_vars, ${'_'.$method});
+				}
+			}
+
+			if (count($xss_vars)) {
+				ob_start();
+			}
 
 			if ($function!==false) {
 				// finally call the requested object
@@ -356,7 +381,41 @@
 					ldObjectNotFound($path, $function);
 				}
 			}
+
+			if (count($xss_vars)) {
+				$image = ob_get_contents();
+				ob_end_clean();
+
+				$header = $ARCurrent->ldHeaders["content-type"];
+				preg_match('/^content-type:\s+([^ ;]+)/i', $header, $matches);
+				$mimetype = strtolower($matches[1]);
+				if (substr($mimetype, 0, 5) == 'text/') {
+					krsort($xss_vars, SORT_NUMERIC);
+					foreach ($xss_vars as $length => $values) {
+						if (is_array($values)) {
+							foreach ($values as $value) {
+								$occurances = substr_count($image, $value);
+								if ($occurances > 0 && $occurances < 3) {
+									$image = str_replace(
+										$value, 
+										str_replace(
+											array('<', '>', '"', "'"),
+											array('&lt;', '&gt;', '&quot;', '&#39;'),
+											$value
+										),
+										$image
+									);
+								}
+							}
+						}
+					}
+				}
+				echo $image;
+			}
+
+
 		}
+
 
 		// now check for outputbuffering (caching)
 		if ($image=ob_get_contents()) {
