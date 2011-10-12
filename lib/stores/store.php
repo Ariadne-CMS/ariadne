@@ -45,7 +45,7 @@ abstract class store {
 	protected $code;
 	protected $proxystore;
 	protected $files;
-	protected $filestores;
+	protected $_filestores;
 	protected $config;
 
 
@@ -311,8 +311,8 @@ abstract class store {
 
 	public function close() {
 		// This is the destructor function, nothing much to see :)
-		if (is_array($this->filestores)) {
-			while (list($key, $filestore)=each($this->filestores)) {
+		if (is_array($this->_filestores)) {
+			while (list($key, $filestore)=each($this->_filestores)) {
 				$filestore->close();
 			}
 		}
@@ -386,18 +386,18 @@ abstract class store {
 
 	public function get_filestore($name) {
 		require_once($this->code."modules/mod_filestore.phtml");
-		if (!$this->filestores[$name]) {
-			$this->filestores[$name]=new filestore($name, $this->files);
+		if (!$this->_filestores[$name]) {
+			$this->_filestores[$name]=new filestore($name, $this->files);
 		}
-		return $this->filestores[$name];
+		return $this->_filestores[$name];
 	}
 
 	public function get_filestore_svn($name) {
 		require_once($this->code."modules/mod_filestore_svn.phtml");
-		if (!$this->filestores["svn_" . $name]) {
-			$this->filestores["svn_" . $name] = new filestore_svn($name, $this->files);
+		if (!$this->_filestores["svn_" . $name]) {
+			$this->_filestores["svn_" . $name] = new filestore_svn($name, $this->files);
 		}
-		return $this->filestores["svn_" . $name];
+		return $this->_filestores["svn_" . $name];
 	}
 
 	protected function compilerFactory(){

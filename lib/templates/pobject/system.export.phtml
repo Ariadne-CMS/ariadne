@@ -170,82 +170,75 @@
 							$object->axflags |= AX_WITHOUT_FILES;
 						}
 
-						if (!$ARCurrent->saved_object[$object->id]) {
-							if ((!$ARCurrent->options["force"] || ($object->axflags & (AX_DUMMY | AX_WITHOUT_DATA))) && $ARCurrent->importStore->exists($newpath)) {
-								$ARCurrent->saved_object[$object->id]=$newpath;
-								// we may never overwrite an existing object with a
-								// dummy object
-								if (!($object->axflags & AX_DUMMY) && 
-									!($object->axflags & AX_WITHOUT_DATA)) {
+						if ((!$ARCurrent->options["force"] || ($object->axflags & (AX_DUMMY | AX_WITHOUT_DATA))) && $ARCurrent->importStore->exists($newpath)) {
+							$ARCurrent->saved_object[$object->id]=$newpath;
+							// we may never overwrite an existing object with a
+							// dummy object
+							if (!($object->axflags & AX_DUMMY) && 
+								!($object->axflags & AX_WITHOUT_DATA)) {
 
-									$oldObject=current($ARCurrent->importStore->call("system.get.clone.phtml", $arCallArgs,
-													$ARCurrent->importStore->get($newpath)));
+								$oldObject=current($ARCurrent->importStore->call("system.get.clone.phtml", $arCallArgs,
+												$ARCurrent->importStore->get($newpath)));
 
-									if (($object->lastchanged > $oldObject->lastchanged)) {
-										display("(updating)");
-										$save_obj = true;
-									} else {
-										$save_obj = false;
-										display("(ok)");
-										unset($oldObject);	// no update needed
-									}
+								if (($object->lastchanged > $oldObject->lastchanged)) {
+									display("(updating)");
+									$save_obj = true;
 								} else {
-									display("(no overwrite)");
 									$save_obj = false;
+									display("(ok)");
+									unset($oldObject);	// no update needed
 								}
-							}
-
-
-							if ($save_obj) {
-								// next one has to be linked
-								$ARCurrent->saved_object[$object->id]=$newpath;
-
-									if ($ARCurrent->importStore->exists($newpath)) {
-										$ARCurrent->importStore->call(
-												"system.export.update.phtml", 
-												Array("newObject" => $object),
-												$ARCurrent->importStore->get($newpath));
-
-									} else {
-										$impObject = clone $object ;
-										display("(saving ".(($impObject->axflags) ? " (".$object->axflags.") " : "").")");
-										$impObject->arIsNewObject = true;
-										$impObject->path = $newpath;
-										if ($newpath!="/") {
-											$impObject->parent = $this->store->make_path($newpath, "..");
-										} else {
-											$impObject->parent = "..";
-										}
-										$impObject->store = $ARCurrent->importStore;
-										$impObject->call("system.import.phtml", $arCallArgs);
-										if ($impObject->error) {
-											display("\n	ERROR (".$impObject->error.")\n");
-											$exclude_list[] = $impObject->path;
-											continue;
-										}
-									}
-							}
-
-							if (!($object->axflags & AX_DUMMY)) {
-									$object->newObject=current(
-										$ARCurrent->importStore->call("system.get.clone.phtml", $arCallArgs,
-											$ARCurrent->importStore->get($newpath)));
-
-									if (!($object->axflags & AX_WITHOUT_TEMPLATES)) {
-										// (update or set templates and files)
-										$object->call("system.export.templates.phtml", $arCallArgs);
-									}
-									if (!($object->axflags & AX_WITHOUT_FILES)) {
-										$object->call("system.export.files.phtml", $arCallArgs);
-									}
-							}
-
-						} else {
-							if (!$ARCurrent->importStore->exists($newpath)) {
-								display("(linking)");
-								$ARCurrent->importStore->link($ARCurrent->saved_object[$object->id], $newpath);
+							} else {
+								display("(no overwrite)");
+								$save_obj = false;
 							}
 						}
+
+
+						if ($save_obj) {
+							// next one has to be linked
+							$ARCurrent->saved_object[$object->id]=$newpath;
+
+								if ($ARCurrent->importStore->exists($newpath)) {
+									$ARCurrent->importStore->call(
+											"system.export.update.phtml", 
+											Array("newObject" => $object),
+											$ARCurrent->importStore->get($newpath));
+
+								} else {
+									$impObject = clone $object ;
+									display("(saving ".(($impObject->axflags) ? " (".$object->axflags.") " : "").")");
+									$impObject->arIsNewObject = true;
+									$impObject->path = $newpath;
+									if ($newpath!="/") {
+										$impObject->parent = $this->store->make_path($newpath, "..");
+									} else {
+										$impObject->parent = "..";
+									}
+									$impObject->store = $ARCurrent->importStore;
+									$impObject->call("system.import.phtml", $arCallArgs);
+									if ($impObject->error) {
+										display("\n	ERROR (".$impObject->error.")\n");
+										$exclude_list[] = $impObject->path;
+										continue;
+									}
+								}
+						}
+
+						if (!($object->axflags & AX_DUMMY)) {
+								$object->newObject=current(
+									$ARCurrent->importStore->call("system.get.clone.phtml", $arCallArgs,
+										$ARCurrent->importStore->get($newpath)));
+
+								if (!($object->axflags & AX_WITHOUT_TEMPLATES)) {
+									// (update or set templates and files)
+									$object->call("system.export.templates.phtml", $arCallArgs);
+								}
+								if (!($object->axflags & AX_WITHOUT_FILES)) {
+									$object->call("system.export.files.phtml", $arCallArgs);
+								}
+						}
+
 						display("\n");
 
 						$check_path = $this->store->make_path($newpath, "..");

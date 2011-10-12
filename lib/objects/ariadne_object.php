@@ -1352,7 +1352,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					// debug("loadConfig: currentpath $path ");
 					$this->getConfig();
 				} else {
-					// debug("loadConfig: get path $path ");
+					//debug("loadConfig: get path $path ");
 					$cur_obj = current($this->get($path, "system.get.phtml"));
 					$cur_obj->getConfig();
 				}

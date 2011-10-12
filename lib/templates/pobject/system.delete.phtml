@@ -35,25 +35,6 @@
 							}
 						}
 					}
-					/*
-						do not remove templates if we have links to this object
-					*/
-					if (!count($clone->store->list_paths($clone->path))) {
-						// remove templates
-						if ($clone->data->config->pinp) {
-							$templates = $clone->store->get_filestore("templates");
-							while (list($type, $values)=each($clone->data->config->pinp)) {
-								while (list($function, $templatelist)=each($values)) {
-									while (list($language, $template)=each($templatelist)) {
-										$file=$type.".".$function.".".$language;
-										$templates->remove($clone->id, $file);
-										$file.=".pinp";
-										$templates->remove($clone->id, $file);
-									}
-								}
-							}
-						}
-					}
 					// clear cache
 					$clone->ClearCache();
 					$clone->resetConfig();

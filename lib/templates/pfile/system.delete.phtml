@@ -1,12 +1,3 @@
 <?php
-	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		// first do normal delete
-		$linked = (count($this->store->list_paths($this->path)) != 1);
-		$this->call("pobject::system.delete.phtml");
-		if (!$this->error && !$linked) {
-			// no errors: delete files
-			$files=$this->store->get_filestore("files");
-			$files->purge($this->id);
-		}
-	}
+	$this->call("pobject::system.delete.phtml");
 ?>
