@@ -55,6 +55,7 @@
 	$install_libs        = getPostVar('install_libs');
 	$install_docs        = getPostVar('install_docs');
 	$enable_svn          = getPostVar('enable_svn');
+	$enable_workspaces   = getPostVar('enable_workspaces');
 	$downloaded_config   = getPostVar('downloaded_config');
 
 	// Sanity checks for postvars, make sure the values are what we expect.
@@ -92,6 +93,7 @@
 	$postvars['admin_pass_repeat'] = $admin_pass_repeat;
 	$postvars['ariadne_location']  = $ariadne_location;
 	$postvars['enable_svn']        = $enable_svn;
+	$postvars['enable_workspaces'] = $enable_workspaces;
 	$postvars['install_demo']      = $install_demo;
 	$postvars['install_libs']      = $install_libs;
 	$postvars['install_docs']      = $install_docs;
