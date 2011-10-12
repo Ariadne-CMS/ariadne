@@ -62,6 +62,10 @@
 		$docroot = $_SERVER['DOCUMENT_ROOT'];
 		$ar_dir_www = preg_replace("|/install/index.php$|", '', $ar_dir_www);
 
+		if ($enable_workspaces) {
+			$database = $database . "_workspaces";
+		}
+
 		// Generate the config file.
 		ob_start();
 		 	include("conf/global.conf"); 

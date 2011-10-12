@@ -86,6 +86,7 @@
 	$ARnls['install:admin_pass_repeat_help']= 'Enter the same password as entered before. This is to ensure the passwords match.';
 	$ARnls['install:install_modules']	= 'Install extra modules';
 	$ARnls['install:enable_svn']		= 'Enable SVN support in Ariadne';
+	$ARnls['install:enable_workspaces']	= 'Enable Workspace support in Ariadne (EXPERIMENTAL)';
 	$ARnls['install:install_libs']		= 'Install Ariadne basic libraries';
 	$ARnls['install:install_demo']		= 'Install sample sites and layouts';
 	$ARnls['install:install_docs']		= 'Install Ariadne reference site';

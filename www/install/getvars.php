@@ -35,6 +35,7 @@
 	$databases = array();
 	if (check_mysql()) {
 		$databases['mysql'] = "MySQL";
+//		$databases['mysql_workspaces'] = "MySQL Workspaced (EXPERIMENTAL)";
 	}
 	if (check_postgresql()) {
 		$databases['postgresql'] = "PostgreSQL";
