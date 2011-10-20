@@ -1192,7 +1192,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 
 	function getConfig() {
-	global $ARConfig, $ARCurrent;
+	global $ARConfig, $ARCurrent, $ARConfigChecked;
 		$context=$this->getContext(0);
 		// debug("getConfig(".$this->path.") context: ".$context['scope'] );
 		// debug(print_r($ARConfig->nls, true));
@@ -1215,6 +1215,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$loginSilent = $ARCurrent->arLoginSilent;
 		$ARCurrent->arLoginSilent = true;
 		// debug("getConfig:checkconfig start");
+
+		$initialNLS = $ARCurrent->nls;
+		$initialConfigChecked = $ARConfigChecked;
+
 		if ($ARConfig->cache[$this->path]->hasConfigIni && !$this->CheckConfig('config.ini', $arCallArgs)) {
 			// debug("getConfig:checkconfig einde");
 			$arConfig = $ARCurrent->arResult;
@@ -1233,6 +1237,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			}
 			$ARConfig->pinpcache[$this->path] = (array) $arConfig;
 		}
+
+		$ARConfigChecked = $initialConfigChecked;
+		$ARCurrent->nls = $initialNLS;
 		
 		$arConfig = &$ARConfig->pinpcache[$this->path];
 		if (!is_array($arConfig['authentication']['userdirs'])) {
