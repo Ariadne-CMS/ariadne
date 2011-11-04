@@ -1,19 +1,19 @@
 <?php
-	ar_pinp::allow('ar_session');
-	ar_pinp::allow('ar_sessionStore');
+	ar_pinp::allow('ar_loader_session');
+	ar_pinp::allow('ar_loader_sessionStore');
 	
-	class ar_session extends arBase {
+	class ar_loader_session extends arBase {
 	
 		public static function start() {
 			global $ARCurrent;
 			ldStartSession(0);
-			return new ar_sessionStore( $ARCurrent->session );
+			return new ar_loader_sessionStore( $ARCurrent->session );
 		}
 		
 		public static function get() {
 			global $ARCurrent;
 			if ($ARCurrent->session && $ARCurrent->session->id ) {
-				return new ar_sessionStore( $ARCurrent->session );
+				return new ar_loader_sessionStore( $ARCurrent->session );
 			} else {
 				return null;
 			}
@@ -29,7 +29,7 @@
 		
 	}
 	
-	class ar_sessionStore extends arBase implements arKeyValueStoreInterface {
+	class ar_loader_sessionStore extends arBase implements arKeyValueStoreInterface {
 	
 		protected $session = null;
 	
