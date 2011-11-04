@@ -12,9 +12,9 @@
 				$store = self::$store;
 			}
 			if ( !$store ) {
-				self::$store =  ar('session')->get();
+				self::$store =  ar('loader/session')->get();
 				if ( !self::$store ) {
-					self::$store = ar('session')->start();
+					self::$store = ar('loader/session')->start();
 				}
 				$store = self::$store;
 			}
