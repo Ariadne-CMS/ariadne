@@ -1,0 +1,16 @@
+<?php
+	
+	global $nocache, $ARConfigChecked;
+	$nocache=true;
+
+
+	$fullpage = false;
+	if( !headers_sent() ) {
+		$fullpage = true;
+	}
+
+	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
+		ldHeader("HTTP/1.0 400 Bad Request");
+		$this->call("user.xss.full.html", $arCallArgs);
+	}
+?>

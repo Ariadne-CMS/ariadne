@@ -381,4 +381,7 @@
 	$ARnls["expires"]						= "Expires";
 	$ARnls["toolbar_editor"]				= "Toolbar Editor (IE only)";
 	$ARnls["sessiontimeout"]				= "Session Timed Out";
+
+	$ARnls["invalidRequest"]				= "The server could not process the request due to invalid input.";
+
 ?>
