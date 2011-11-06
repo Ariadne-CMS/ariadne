@@ -50,6 +50,31 @@ class mysql_workspacesstore extends mysqlstore {
 		}
 
 	}
+	
+	public function getLayer($path) {
+		if (is_array($this->layer)) {
+			foreach ($this->layer as $layerPath => $layer) {
+				if (substr($layerPath, 0, strlen($path)) == $path) {
+					return $layer;
+				}
+			}
+			return 0;
+		} else {
+			return $this->layer;
+		}
+	}
+
+	public function setLayer($layer, $path = '/') {
+		if (!is_array($this->layer)) {
+			$this->layer = array(
+					'/'   => $this->layer,
+					$path => $layer
+			);
+		} else {
+			$this->layer[$path] = $layer;
+		}
+	}
+
 
 	public function get($path) {
 	/**********************************************************************************
@@ -71,7 +96,7 @@ class mysql_workspacesstore extends mysqlstore {
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
-		$layer=(int)$this->layer;
+		$layer=(int)$this->getLayer($path);
 		
 		if ($layer) {
 			$query_string="select $nodes_tbl.path, $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path='$epath' and ( $nodes_tbl.layer = $layer OR $nodes_tbl.layer = 0 and $nodes_tbl.id NOT IN (select $nodes_tbl.id from $nodes_tbl where $nodes_tbl.layer = $layer) and $nodes_tbl.path NOT IN (select path from $nodes_tbl where layer = $layer))";
@@ -88,7 +113,7 @@ class mysql_workspacesstore extends mysqlstore {
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
-		$layer=(int)$this->layer;
+		$layer=(int)$this->getLayer($path);
 		if ( ( strlen( $type ) > 32 ) || (strlen( $vtype ) > 32 ) ) {
 			$this->error = "Type names are too long, maximum is 32 characters ( $type, $vtype )";
 		} else if ( !$type ) {
@@ -156,7 +181,7 @@ class mysql_workspacesstore extends mysqlstore {
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
-		$layer=(int)$this->layer;
+		$layer=(int)$this->getLayer('/'); //FIXME: resolve path before we get the current layer
 		
 		if ($timestamp == -1) {
 			$timestamp = time();
@@ -225,7 +250,7 @@ class mysql_workspacesstore extends mysqlstore {
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
-		$layer=(int)$this->layer;
+		$layer=(int)$this->getLayer($epath);
 		if ($layer) {
 			$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and ($nodes_tbl.layer = $layer OR $nodes_tbl.layer = 0 and $nodes_tbl.id NOT IN (select $nodes_tbl.id from $nodes_tbl where layer = $layer) and $nodes_tbl.path NOT IN (select path from $nodes_tbl where layer = $layer)) and $nodes_tbl.parent='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
 		} else {
@@ -257,7 +282,7 @@ class mysql_workspacesstore extends mysqlstore {
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
-		$layer=(int)$this->layer;
+		$layer=(int)$this->getLayer($epath);
 		
 		$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.path=substring('$epath',1,length(path)) and $nodes_tbl.path LIKE '$etop%' and ( $nodes_tbl.layer = $layer OR $nodes_tbl.layer = 0 and $nodes_tbl.id NOT IN (select $nodes_tbl.id from $nodes_tbl where $nodes_tbl.layer = $layer) and $nodes_tbl.path NOT IN (select path from $nodes_tbl where layer = $layer)) order by path";
 		$result["method"]="parents";
@@ -300,7 +325,7 @@ class mysql_workspacesstore extends mysqlstore {
 	 **********************************************************************************/
 		if (!is_array($criteria) && ($criteria=trim($criteria))) {
 			$sqlcompiler= $this->compilerFactory();
-			$query=$sqlcompiler->compile($path, $criteria, $limit, $offset, $this->layer);
+			$query=$sqlcompiler->compile($path, $criteria, $limit, $offset, $this->getLayer($path));
 			if ($sqlcompiler->error) {
 				$this->error=$sqlcompiler->error;
 			}
@@ -460,7 +485,7 @@ class mysql_workspacesstore extends mysqlstore {
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
-		$layer=(int)$this->layer;
+		$layer=(int)$this->getLayer($epath);
 
 		if (strlen($path)<MAX_PATH_LENGTH) { // initial check
 			$id=$this->exists($path);
@@ -582,7 +607,7 @@ class mysql_workspacesstore extends mysqlstore {
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		if (!isset($layer)) {
-			$layer=(int)$this->layer;
+			$layer=(int)$this->getLayer($path);
 		} else {
 			$layer=(int)$layer;
 		}
@@ -653,7 +678,7 @@ class mysql_workspacesstore extends mysqlstore {
 		$nextid_tbl=$this->tbl_prefix."seq_id";
 		$epath=AddSlashes($path);
 		$eparent=$this->make_path($epath, '..');
-		$layer=(int)$this->layer;
+		$layer=(int)$this->getLayer($path);
 
 		$object=$this->exists($path);
 		if ($object) {
@@ -737,7 +762,7 @@ class mysql_workspacesstore extends mysqlstore {
 		
 		$query_string="select object from $nodes_tbl where path='$epath'";
 		if (!isset($layer)) {
-			$layer = (int)$this->layer;
+			$layer = (int)$this->getLayer($path);
 			$query_string .= " and (layer = $layer OR layer = 0 and id NOT IN (select id from $nodes_tbl where layer = $layer) and $nodes_tbl.path NOT IN (select path from $nodes_tbl where layer = $layer))";		
 		} else {
 			$layer = (int)$layer;
@@ -768,7 +793,7 @@ class mysql_workspacesstore extends mysqlstore {
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
-		$layer=(int)$this->layer;
+		$layer=(int)$this->getLayer($destination);
 		
 		$this->error="";
 		$esource=AddSlashes($source); 
