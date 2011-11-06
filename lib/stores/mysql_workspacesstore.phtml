@@ -37,7 +37,7 @@ class mysql_workspacesstore extends mysqlstore {
 	public function __construct($path, $config) {
 		parent::__construct($path, $config);
 
-		$this->layer = (int)$config["layer"];
+		$this->layer = $config["layer"];
 
 		/* Include module mysql_compiler */
 		include_once($this->code."stores/modules/mysql_workspaces_compiler.php");
@@ -54,7 +54,7 @@ class mysql_workspacesstore extends mysqlstore {
 	public function getLayer($path) {
 		if (is_array($this->layer)) {
 			foreach ($this->layer as $layerPath => $layer) {
-				if (substr($layerPath, 0, strlen($path)) == $path) {
+				if (substr($path, 0, strlen($layerPath)) == $layerPath) {
 					return $layer;
 				}
 			}
@@ -73,6 +73,80 @@ class mysql_workspacesstore extends mysqlstore {
 		} else {
 			$this->layer[$path] = $layer;
 		}
+	}
+
+
+	public function getLayerStatus($path = '/', $includeData = false) {
+		$layer = (int)$this->getLayer($path);
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+		$result = array();
+		
+		if ($layer) {
+			$query_string = "select new.id as new_id, new.path as new_path, new.object as new_object, 
+						UNIX_TIMESTAMP(new_objects.lastchanged) as new_lastchanged, new_objects.type as new_type, new_objects.vtype as new_vtype,
+						old.id as old_id, old.path as old_path, old.object as old_object,
+						UNIX_TIMESTAMP(old_objects.lastchanged) as old_lastchanged, old_objects.type as old_type, old_objects.vtype as old_vtype,
+						old_stale.id as old_stale_id, old_stale.path as old_stale_path
+			";
+			if ($includeData) {
+				$query_string .= "
+					, new_objects.object as new_data, old_objects.object as old_data
+				";
+			}
+			$query_string .= "
+						from $nodes_tbl as new
+							left join $nodes_tbl as old on new.id = old.id and old.layer = 0
+							left join $objects_tbl as new_objects on new.object = new_objects.id
+							left join $objects_tbl as old_objects on old.object = old_objects.id
+							left join $nodes_tbl as old_stale on new.path = old_stale.path and old_stale.layer = 0
+						where new.layer = $layer
+						order by new.path ASC
+			";
+			$query_result = $this->store_run_query($query_string);
+			if ($query_result) {
+				while ($row =  mysql_fetch_array($query_result)) {
+					$record = array();
+					foreach ($row as $key => $value) {
+						if (!is_numeric($key)) {
+							if (substr($key, 0, strlen('old_stale_')) == 'old_stale_') {
+								$record['old_stale'][substr($key, strlen('old_stale_'))] = $value;
+							} else if (substr($key, 0, strlen('old_')) == 'old_') {
+								$field = substr($key, strlen('old_'));
+								if ($field == 'data') {
+									$value = unserialize($value);
+								}
+								$record['old'][$field] = $value;
+							} else if (substr($key, 0, strlen('new_')) == 'new_') {
+								$field = substr($key, strlen('new_'));
+								if ($field == 'data') {
+									$value = unserialize($value);
+								}
+								$record['new'][$field] = $value;
+							}
+						}
+					}
+					if ($record['old']['id'] == $record['new']['id']) {
+						if (!$record['new']['object']) {
+							$record['operation'][] = 'delete';
+						} else if ($record['old']['object'] == $record['new']['object']) {
+							$record['operation'][] = 'move';
+						} else {
+							$record['operation'][] = 'update';
+							if ($record['old']['path'] != $record['new']['path']) {
+								$record['operation'][] = 'move';
+							}
+						}
+					} else if ($record['old_stale']['path']) {
+						$record['operation'][] = 'overwrite';
+					} else {
+						$record['operation'][] = 'create';
+					}
+					$result[] = $record;
+				}
+			}
+		}
+		return $result;
 	}
 
 
@@ -469,7 +543,6 @@ class mysql_workspacesstore extends mysqlstore {
 
 	***************************************************************/
 
-
 		$this->error="";
 		if ($path!="/") {
 			$parent=$this->make_path($path, "..");
@@ -485,7 +558,7 @@ class mysql_workspacesstore extends mysqlstore {
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
-		$layer=(int)$this->getLayer($epath);
+		$layer=(int)$this->getLayer($path);
 
 		if (strlen($path)<MAX_PATH_LENGTH) { // initial check
 			$id=$this->exists($path);
@@ -565,6 +638,10 @@ class mysql_workspacesstore extends mysqlstore {
 					$qresult = $this->store_run_query($query_string);
 					$id=mysql_insert_id($this->connect_id);
 					if ($qresult !== false && $id) {
+						if ($layer) {
+							$query_string = "delete from $nodes_tbl where path = '$epath' and layer = $layer";
+							$this->store_run_query($query_string);
+						}
 						$query_string="insert into $nodes_tbl (layer, path, parent, object, priority) values ($layer, '$epath','$eparent',$id,$epriority)";
 						$qresult = $this->store_run_query($query_string);
 						if ($qresult) {
