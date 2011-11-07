@@ -9,7 +9,7 @@
 			"delimiter"		=> ",",
 			"enclosure"		=> '"',
 			"escape"        => '"',
-			"charset"		=> "ISO-8859-15",
+			"encoding"		=> "ISO-8859-1",
 			"lineEnd"		=> "\n",
 			"headers"       => true
 		);
@@ -81,7 +81,7 @@
 			"delimiter"		=> ",",
 			"enclosure"		=> '"',
 			"escape"        => '"',
-			"charset"		=> "ISO-8859-15",
+			"encoding"		=> "ISO-8859-1",
 			"lineEnd"		=> "\n",
 			"forceEnclosure"=> false,
 			"headers"       => true
@@ -148,7 +148,6 @@
 				$result .= (string) $csvLine . $this->configuration['lineEnd'];
 			}
 			$result = substr( $result, 0, strlen( $result ) - strlen( $this->configuration['lineEnd'] ) );
-			$result = $this->convertToCharset( $result );
 			return $result;
 		}
 
@@ -179,19 +178,12 @@
 		}
 		
 		protected function convertToUTF8( $text ) {
-			if ( strtolower( $this->configuration['charset'] ) != 'utf-8' ) {
-			//	$text = iconv( $this->configuration['charset'], 'UTF-8', $text );
+			if ( strtolower( $this->configuration['encoding'] ) != 'utf-8' ) {
+				$text = iconv( $this->configuration['encoding'], 'UTF-8', $text );
 			}
 			return $text;
 		}
 		
-		protected function convertToCharset( $text ) {
-			if ( strtolower( $this->configuration['charset'] ) != 'utf-8' ) {
-			//	$text = iconv( 'utf-8', $this->configuration['charset'] . '//TRANSLIT', $text );
-			}
-			return $text;
-		}
-
 	}
 	
 	class ar_formats_csvLine extends ArrayObject implements arKeyValueStoreInterface {
@@ -216,9 +208,6 @@
 				$elements = fgetcsv( $file, 0, $delimiter, $enclosure, $escape );
 				fclose($file);
 				unset($file);
-			}
-			foreach ( $elements as $key => $element ) {
-				$elements[$key] = $this->convertToUTF8( $element );
 			}
 			return $elements;
 		}
@@ -260,21 +249,7 @@
 			$result = substr( $result, 0, strlen( $result ) - 1 );
 			return $result;
 		}
-
-		protected function convertToUTF8( $text ) {
-			if ( strtolower( $this->configuration['charset'] ) != 'utf-8' ) {
-			//	$text = iconv( $this->configuration['charset'], 'UTF-8', $text );
-			}
-			return $text;
-		}
-		
-		protected function convertToCharset( $text ) {
-			if ( strtolower( $this->configuration['charset'] ) != 'utf-8' ) {
-			//	$text = iconv( 'utf-8', $this->configuration['charset'] . '//TRANSLIT', $text );
-			}
-			return $text;
-		}
-		
+	
 		protected function escape( $value ) {
 			if ( strpos( $value, $this->configuration['delimiter'] ) !== false 
 				|| strpos( $value, $this->configuration['enclosure'] ) !== false
@@ -331,7 +306,7 @@
 			"seperator"		=> ",",
 			"quotation"		=> '"',
 			"escape"        => '"',
-			"charset"		=> "ISO-8859-15",
+			"encoding"		=> "ISO-8859-1",
 			"lineEnd"		=> "\n",
 			"forceEnclosure"=> false,
 			"headers"       => true
@@ -376,7 +351,6 @@
 				$result .= (string) $line . $this->configuration['lineEnd'];
 			}
 			$result = substr( $result, 0, strlen( $result ) - strlen( $this->configuration['lineEnd'] ) );
-			$result = $this->convertToCharset( $result );
 			return $result;
 		}
 		
@@ -385,15 +359,8 @@
 		}
 
 		protected function convertToUTF8( $text ) {
-			if ( strtolower( $this->configuration['charset'] ) != 'utf-8' ) {
-			//	$text = iconv( $this->configuration['charset'], 'UTF-8', $text );
-			}
-			return $text;
-		}
-		
-		protected function convertToCharset( $text ) {
-			if ( strtolower( $this->configuration['charset'] ) != 'utf-8' ) {
-			//	$text = iconv( 'utf-8', $this->configuration['charset'] . '//TRANSLIT', $text );
+			if ( strtolower( $this->configuration['encoding'] ) != 'utf-8' ) {
+				$text = iconv( $this->configuration['encoding'], 'UTF-8', $text );
 			}
 			return $text;
 		}

@@ -1,7 +1,5 @@
 <?php
 
-	require_once(dirname(__FILE__).'/../html.php');
-
 	ar_pinp::allow('ar_html_form', array(
 		'addField', 'addButton', 'setValue', 'getValue', 'getValues', 'getHTML', 'isValid', 'isSubmitted', 'validate', 'registerInputType', 'registerValidateCheck', 'findField'
 	) );

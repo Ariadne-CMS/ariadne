@@ -2,8 +2,6 @@
 global $AR;
 require_once($AR->dir->install."/lib/includes/ripcord/ripcord.php");
 
-require_once(dirname(__FILE__).'/../../ar.php');
-
 ar_pinp::allow('ar_connect_xmlrpc');
 ar_pinp::allow('ar_connect_xmlrpcClient');
 ar_pinp::allow('ar_connect_xmlrpcServer');

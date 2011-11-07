@@ -262,13 +262,25 @@
 			return $result;
 		}
 		
-		public static function parse( $xml ) {
+		public static function parse( $xml, $encoding = null ) {
 			// important: parse must never return results with simple string values, but must always
 			// wrap them in an ar_xmlNode, or tryToParse may get called, which will call parse, which 
 			// will... etc.
 			$dom = new DOMDocument();
+			if ( $encoding ) {
+				$xml = '<?xml encoding="' . $encoding . '">' . $xml;
+			}
 			$prevErrorSetting = libxml_use_internal_errors(true);
 			if ( $dom->loadXML( $xml ) ) {
+				if ( $encoding ) {
+					foreach( $dom->childNodes as $item ) {
+						if ( $item->nodeType == XML_PI_NODE ) {
+							$dom->removeChild( $item );
+							break;
+						}
+					}
+					$dom->encoding = $encoding;
+				}
 				$domroot = $dom->documentElement;
 				if ( $domroot ) {
 					$result = self::parseHead( $dom );
@@ -294,7 +306,7 @@
 		public static function tryToParse( $xml ) {
 			$result = $xml;
 			if ( ! ($xml instanceof ar_xmlNodeInterface ) ) {
-				if ($xml) {
+				if ($xml && strpos( $xml, '<' ) !== false ) {
 					try {
 						$result = self::parse( '<root>'.$xml.'</root>' );
 						if ( ar_error::isError($result) ) {
@@ -346,9 +358,10 @@
 		}
 
 		protected function _tryToParse( $node ) {
-			return ar_xml::tryToParse( $node );
+			$node = ar_xml::tryToParse( $node );
+			return $node;
 		}
-		
+	
 		public function _normalizeNodes( $nodes ) {
 			$result = array();
 			if ( is_array($nodes) || $nodes instanceof Traversable ) {

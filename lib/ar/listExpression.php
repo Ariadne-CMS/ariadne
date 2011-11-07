@@ -1,6 +1,5 @@
 <?php
 	//TODO: __toString method in listexpression, with a builtin counter.
-	require_once(dirname(__FILE__).'/../ar.php');
 
 	ar_pinp::allow('ar_listExpression', array('pattern', 'item', 'define', 'getStringIterator', 'setToStringCallback') );
 	ar_pinp::allow('ar_listExpression_Pattern', array('define') );
