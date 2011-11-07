@@ -976,6 +976,10 @@
 			return $this;
 		}
 
+		function getAttribute( $name ) {
+			return $this->attributes[$name];
+		}
+
 		function setAttribute( $name, $value ) {
 			if ( $name == 'id' ) {
 				$oldId = null;
