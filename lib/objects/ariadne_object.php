@@ -2122,6 +2122,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
            any remaining session id's to {arSession} ?
 		*/
 		if (($file=array_pop($ARCurrent->cache)) && $image=ob_get_contents()) {
+			$result = $image; 
+
 			$contentType = $ARCurrent->ldHeaders['content-type'];
 			if (preg_match('|^content-type:[ ]*([^ /]+)/|i', $contentType, $matches)) {
 				$contentType = $matches[1];
@@ -2149,7 +2151,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			   FIXME: test again in php 4.0.4 
 			*/
 			ob_end_clean();
-			echo str_replace("{arSession}",$session,$image);
+			echo $result;
 		} else {
 			error($ARnls["err:savecachenofile"]);
 		}
