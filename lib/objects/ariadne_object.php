@@ -2049,11 +2049,22 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$pcache=$this->store->get_filestore("privatecache");
 			if ( $pcache->exists($this->id, $file) &&
 			     ($pcache->mtime($this->id, $file)>time()) ) {
-				// FIXME!: should fix links, replace old session id's; use correct root, etc.
-				if ($ARCurrent->session) {
-					$session="/-".$ARCurrent->session->id."-";
+
+				$result = $pcache->read($this->id, $file);
+
+				$contentType = $ARCurrent->ldHeaders['content-type'];
+				if (preg_match('|^content-type:[ ]*([^ /]+)/|i', $contentType, $matches)) {
+					$contentType = $matches[1];
+				} else {
+					$contentType = '';
 				}
-				$result=str_replace("{arSession}", $session, $pcache->read($this->id, $file));
+
+				if (!$contentType || strtolower($contentType) == 'text') {
+					require_once($this->store->get_config('code')."modules/mod_url.php");
+					$temp = explode('.', $file);
+					$imageNLS = $temp[0];
+					$result = URL::ARtoRAW($result, $imageNLS);
+				}
 			} else {
 				$result=false;
 				$ARCurrent->cache[]=$file;
@@ -2099,17 +2110,22 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
            any remaining session id's to {arSession} ?
 		*/
 		if (($file=array_pop($ARCurrent->cache)) && $image=ob_get_contents()) {
-			if ($ARCurrent->session) {
-				$image=str_replace("/-".$ARCurrent->session->id."-","{arSession}",$image);
-				$session="/-".$ARCurrent->session->id."-";
+			$result = $image; 
+
+			$contentType = $ARCurrent->ldHeaders['content-type'];
+			if (preg_match('|^content-type:[ ]*([^ /]+)/|i', $contentType, $matches)) {
+				$contentType = $matches[1];
+			} else {
+				$contentType = '';
 			}
-			//$path=substr($file, 0, strrpos($file, "/"));
-			//if (!file_exists($this->store->get_config("files")."privatecache".$path)) {
-			//	ldMkDir("privatecache".$path);
-			//}
-			//$fp=fopen($this->store->get_config("files")."privatecache".$file, "w");
-			//fwrite($fp, $image);
-			//fclose($fp);
+
+			if (!$contentType || strtolower($contentType) == 'text') {
+				require_once($this->store->get_config('code')."modules/mod_url.php");
+				$temp = explode('.', $file);
+				$imageNLS = $temp[0];
+				$image = URL::RAWtoAR($image, $imageNLS);
+			}
+
 			$pcache=$this->store->get_filestore("privatecache");
 			$pcache->write($image, $this->id, $file);
 			$time=time()+($time*3600);
@@ -2123,7 +2139,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			   FIXME: test again in php 4.0.4 
 			*/
 			ob_end_clean();
-			echo str_replace("{arSession}",$session,$image);
+			echo $result;
 		} else {
 			error($ARnls["err:savecachenofile"]);
 		}
