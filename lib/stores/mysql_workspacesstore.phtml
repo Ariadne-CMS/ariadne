@@ -138,7 +138,10 @@ class mysql_workspacesstore extends mysqlstore {
 							}
 						}
 					} else if ($record['old_stale']['path']) {
-						$record['operation'][] = 'overwrite';
+						$record['operation'] = array(
+							'delete',
+							'create'
+						);
 					} else {
 						$record['operation'][] = 'create';
 					}

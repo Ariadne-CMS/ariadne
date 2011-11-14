@@ -1,8 +1,34 @@
 <?php
 
-include_once($ariadne."/stores/mysqlstore.phtml");
+include_once($ariadne."/stores/mysql_workspacesstore.phtml");
 
-class mysql_workspacesstore_install extends mysqlstore {
+class mysql_workspacesstore_install extends mysql_workspacesstore {
+
+
+	function upgrade() {
+		echo "upgrading mysql store for workspace support.\n";
+		$queries = Array(
+				array("query_string" => "alter table store_nodes drop primary key"),
+				array("query_string" => "alter table store_nodes add id int(11) NOT NULL AUTO_INCREMENT KEY"),
+				array("query_string" => "alter table store_nodes add layer int(11) NOT NULL DEFAULT '0'"),
+				array("query_string" => "alter table store_nodes drop primary key, add primary key(id, layer)"),
+				array("query_string" => "alter table store_nodes add UNIQUE KEY layer (layer,path)"),
+				array("query_string" => "alter table store_nodes add key path (path)")
+		);
+		while ((list($key, $query)=each($queries)) && (!$error)) {
+print_r($query);
+			if ($query["query_string"]) {
+				echo "Executing: ".$query["query_string"]."\n";
+			}
+			$qresult = $this->store_run_query($query["query_string"]);
+
+			if (!$qresult) {
+				$error=mysql_error($this->connect_id);
+				error("Mysql: $errno: $error");
+			}
+		}
+
+	}
 
 	function initialize() {
 		echo "initializing mysql store.\n";
@@ -17,10 +43,10 @@ CREATE TABLE ".$this->tbl_prefix."nodes (
 	id int(11) NOT NULL AUTO_INCREMENT,
 	PRIMARY KEY (id, layer),
 	UNIQUE KEY layer (layer,path),
-	UNIQUE KEY layer_2 (layer,path),
 	KEY object (object),
 	KEY parent (parent),
-	KEY (priority)
+	KEY (priority),
+	KEY (path)
 )";
 
 		$queries[1]["msg"]="creating objects table.";
