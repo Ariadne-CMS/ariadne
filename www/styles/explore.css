@@ -182,6 +182,9 @@ TH,TD,LI,P,BODY,DIV {
 	background-repeat: no-repeat;
 	background-position: bottom right;
 }
+.managediv.workspaced {
+	background-color: #91E29A;
+}
 
 /*
  * Menubar
