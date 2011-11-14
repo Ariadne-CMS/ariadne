@@ -145,6 +145,7 @@
 	$ARnls['ariadne:override_typetree']				= 'Negeer typeboom instellingen';
 	$ARnls['err:typetree_does_not_allow']				= 'De typeboom instellingen staan dit object type hier niet toe.';
 	$ARnls['err:nosalt']						= 'Er is geen "salt" geconfigureerd in Ariadne. Voeg deze toe aan de hoofdconfiguratie van Ariadne om gebruik te kunnen maken van rechtensleutels.';
+	$ARnls['err:no_add_on_target']					= 'Er zijn geen "toevoeg"-rechten op het doel';
 
 	$ARnls['ariadne:prev']						= 'Vorige';
 	$ARnls['ariadne:next']						= 'Volgende';
@@ -180,7 +181,17 @@
 	$ARnls['ariadne:types:pprofile']			= 'Profiel';
 	$ARnls['ariadne:types:psearch']				= 'Zoekopdracht';
 	$ARnls['ariadne:types:psection']			= 'Sectie';
+	$ARnls['ariadne:types:pdms']				= 'DMS koppeling';
+	$ARnls['ariadne:pdms:pdms_type']			= 'DMS type';
+	$ARnls['ariadne:pdms:ftp_host']				= 'FTP host';
+	$ARnls['ariadne:pdms:ftp_port']				= 'FTP port (standaard 21)';
+	$ARnls['ariadne:pdms:ftp_user']				= 'FTP gebruikersnaam';
+	$ARnls['ariadne:pdms:ftp_pass']				= 'FTP wachtwoord';
+	$ARnls['ariadne:pdms:ftp_root']				= 'FTP repository root';
+	$ARnls['ariadne:pdms:cmis_url']				= 'CMIS URL';
+	$ARnls['ariadne:pdms:cmis_user']			= 'CMIS gebruikersnaam';
+	$ARnls['ariadne:pdms:cmis_pass']			= 'CMIS wachtwoord';
+	$ARnls['ariadne:pdms:cmis_root']			= 'CMSI repository root';
 	$ARnls['ariadne:programmers_reference']		= 'Programmers Reference';
 	$ARnls['ariadne:ace_editor']				= 'Ace Editor';
-
 ?>

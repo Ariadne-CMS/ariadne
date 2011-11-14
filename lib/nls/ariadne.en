@@ -146,6 +146,7 @@
 
 	$ARnls['ariadne:override_typetree']				= 'Override typetree settings';
 	$ARnls['err:typetree_does_not_allow']				= 'Typetree does not allow this object type here';
+	$ARnls['err:no_add_on_target']					= 'Sorry, no "add" grants on target'; 
 	$ARnls['err:nosalt']						= 'No salt is configured in Ariadne. Please configure this in the main Ariadne configuration to allow generation of grant keys.';
 	$ARnls['ariadne:prev']						= "Previous";
 	$ARnls['ariadne:next']						= "Next";
@@ -181,6 +182,18 @@
 	$ARnls['ariadne:types:pprofile']			= 'Profile';
 	$ARnls['ariadne:types:psearch']				= 'Search';
 	$ARnls['ariadne:types:psection']			= 'Section';
+	$ARnls['ariadne:types:pdms']				= 'DMS connection';
+	$ARnls['ariadne:pdms:pdms_type']			= 'DMS type';
+	$ARnls['ariadne:pdms:ftp_host']				= 'FTP host';
+	$ARnls['ariadne:pdms:ftp_port']				= 'FTP port (default 21)';
+	$ARnls['ariadne:pdms:ftp_user']				= 'FTP username';
+	$ARnls['ariadne:pdms:ftp_pass']				= 'FTP password';
+	$ARnls['ariadne:pdms:ftp_root']				= 'FTP repository root';
+	$ARnls['ariadne:pdms:cmis_url']				= 'CMIS URL';
+	$ARnls['ariadne:pdms:cmis_user']			= 'CMIS username';
+	$ARnls['ariadne:pdms:cmis_pass']			= 'CMIS password';
+	$ARnls['ariadne:pdms:cmis_root']			= 'CMSI repository root';
 	$ARnls['ariadne:programmers_reference']		= 'Programmers Reference';
 	$ARnls['ariadne:ace_editor']				= 'Ace Editor';
+
 ?>
