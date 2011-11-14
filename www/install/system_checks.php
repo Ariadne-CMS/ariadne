@@ -220,6 +220,7 @@
 		if ($conf && $conf->dbms) {
 			switch ( $conf->dbms ) {
 				case 'mysql':
+				case 'mysql_workspaces':
 					return check_connect_db_mysql($conf);
 				break;
 				case 'postgresql':
@@ -235,6 +236,7 @@
 		if ($conf && $conf->dbms) {
 			switch ( $conf->dbms ) {
 				case 'mysql':
+				case 'mysql_workspaces':
 					return check_select_db_mysql($conf);
 				break;
 				case 'postgresql':
@@ -249,6 +251,7 @@
 		if ($conf && $conf->dbms) {
 			switch ( $conf->dbms ) {
 				case 'mysql':
+				case 'mysql_workspaces':
 					return check_db_grants_mysql($conf);
 				break;
 				case 'postgresql':
@@ -337,6 +340,7 @@
 	function check_db_is_empty($conf) {
 		switch( $conf->dbms ) {
 			case 'mysql':
+			case 'mysql_workspaces':
 				return check_db_is_empty_mysql($conf);
 			break;
 			case 'postgresql':
