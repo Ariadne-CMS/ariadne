@@ -161,25 +161,13 @@ muze.ariadne.explore = function() {
 							);
 						} else {
 							target.innerHTML = result.responseText;
-
-							// FIXME: Is this the correct way to do this? Somehow the javascript is not included, but we need to have it.
-							// Does not seem to work for IE, the script tags have already disappeared at this point. This is also the cause for the YUI table not initializing in IE.
-
-
-							// Callback was added for this purpose, use it to initialize after loading things.
-
-							/* scripts = target.getElementsByTagName("SCRIPT");
-							for (i=0; i< scripts.length; i++) {
-								var script = scripts[i].innerHTML;
-								eval(script);
-							}
-							*/
 							muze.util.pngfix();
 							callback();
 						}
 						delete muze.ariadne.explore.loaders[target.id];
 					}
 				},
+
 				failure : function(result) {
 					if(muze.ariadne.explore.loaders[target.id]) {
 						alert(muze.ariadne.nls["notfoundpath"]);
@@ -613,6 +601,12 @@ muze.ariadne.explore.sidebar = function() {
 			var fadeIn = function() {
 				var fadeIn = new YAHOO.util.Anim("sidebar", { opacity: {to: 1}}, 0.1);
 				fadeIn.animate();
+
+				if (document.getElementById("workspace_body")) {
+					document.getElementById("explore_managediv").className = "managediv workspaced";
+				} else {
+					document.getElementById("explore_managediv").className = "managediv";
+				}
 
 				// Fix for PNG filters in IE6 that break while using another filter;
 				fadeIn.onComplete.subscribe(function() {
