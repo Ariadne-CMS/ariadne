@@ -23,7 +23,7 @@
 			'money'        => '/^[+-]?(\d{1,3}(\.\d{3})*|(\d+))(\,\d{2})?$/D',
 			'email'        => '/^[\w!#$%&\'*+\/=?^`{|}~.-]+@(?:[a-z\d][a-z\d-]*(?:\.[a-z\d][a-z\d-]*)?)+\.(?:[a-z][a-z\d-]+)$/iD',
 			'domain_name'  => '/^([[:alnum:]]([a-zA-Z0-9\-]{0,61}[[:alnum:]])?\.)+[[:alpha:]]{2,}$/D',
-			'url'          => '/^(http|https|ftp)\://[a-zA-Z0-9\-\.]+\.[[:alpha:]]{2,3}(:[[:alnum:]]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*$/D',
+			'url'          => '/^(http|https|ftp)\:\/\/[a-zA-Z0-9\-\.]+\.[[:alpha:]]{2,3}(:[[:alnum:]]*)?\/?([a-zA-Z0-9\-\._\?\,\'\/\\\+&amp;%\$#\=~])*$/D',
 			'credit_card'  => '/^(\d{4}-){3}\d{4}$|^(\d{4} ){3}\d{4}$|^\d{16}$/D',
 			'date'         => '/^(\d{1,2}[.-/]\d{1,2}[.-/](\d{2}|\d{4})$/D',
 			'time'         => '/^(\d{1,2}[:]\d{2}([:]\d{2})?$/D'	
@@ -414,7 +414,7 @@
 	class ar_html_formInput {
 
 		protected $form;
-		public    $type, $name, $class, $id, $label, $disabled, $default, $required, $related, $checks, $value;
+		public    $type, $name, $class, $id, $label, $disabled, $default, $required, $related, $checks, $value, $maxlength, $size;
 	
 		public function __construct($field, $form) {
 			$this->form	= $form;
@@ -428,7 +428,9 @@
 			$this->required = isset($field->required) ? $field->required : false;
 			$this->checks   = isset($field->checks) ? $field->checks : array();
 			$this->title    = isset($field->title) ? $field->title : null;
-			
+			$this->maxlength	= isset($field->maxlength) ? $field->maxlength : null;
+			$this->size			= isset($field->size) ? $field->size : null;
+
 			if ( isset($this->checks) && !is_array($this->checks) ) {
 				$this->checks = array( $this->checks );
 			}
@@ -466,7 +468,7 @@
 			}
 		}
 
-		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null ) {
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $maxlength=null ) {
 			if (!isset($type)) {
 				$type = $this->type;
 			}
@@ -485,11 +487,15 @@
 			if (!isset($title)) {
 				$title = $this->title;
 			}
+			if (!isset($maxlength)) {
+				$maxlength = $this->maxlength;
+			}
 			$attributes = array(
 				'type'	=> $type,
 				'name'	=> $name,
 				'id'	=> $id,
-				'value'	=> $value
+				'value'	=> $value,
+				'maxlength' => $maxlength
 			);
 			if ($title) {
 				$attributes['title'] = $title;
@@ -664,7 +670,7 @@
 	
 	class ar_html_formInputTextarea extends ar_html_formInputText {
 
-		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null) {
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $maxlength=null) {
 			if (!isset($name)) {
 				$name = $this->name;
 			}
@@ -689,6 +695,9 @@
 			}
 			if ($disabled) {
 				$attributes['disabled'] = true;
+			}
+			if ($maxlength) {
+				$attributes['maxlength'] = $maxlength;
 			}
 			return ar_html::tag('textarea', $value, $attributes);
 		}
