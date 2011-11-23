@@ -12,7 +12,11 @@
 			$this->key = $key;
 			$this->encoding = $encoding;
 		}
-		
+
+		public function setKey( $key ) {
+			$this->key = $key;
+		}
+
 		public function crypt( $value ) {
 			return base64_encode(@mcrypt_encrypt($this->encoding, $this->key, $value, MCRYPT_MODE_CBC));
 		}
