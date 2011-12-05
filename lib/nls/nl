@@ -374,6 +374,6 @@
 	$ARnls["toolbar_editor"]				= "Toolbar Editor (IE only)";
 	$ARnls["sessiontimeout"]				= "Sessie is verlopen";
 
-	$ARnls["invalidRequest"]				= "De server kon het verzoek niet verwerken door ongeldige invoer.";
+	$ARnls["invalidRequest"]				= "Dit verzoek bevat ongeldige invoer.";
 
 ?>
