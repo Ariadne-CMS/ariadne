@@ -71,7 +71,6 @@
 							<?php
 							return false;
 						}
-						return false;
 					}
 
 					$new_objects_left = $this->count_find($target, $query);
