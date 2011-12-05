@@ -278,7 +278,7 @@
 	<div id="editor" style="display: none"></div>
 </div>
 <?php
-	if ($AR->user->data->template_editor == 'textarea' || !$AR->user->data->template_editor) { 
+	if ( $AR->user->data->template_editor != 'ace' ) {
 		echo "<div id=\"template_linenumbers\">\n";
 ?>
 	<textarea name="linenumbers" id="linenumbers" wrap="off" readonly class="linenumbers" tabindex="-1" unselectable="on"><?php
@@ -291,7 +291,7 @@ for($i=1;$i<$linetotal;$i++) { echo $i."\n"; }
 	}
 ?>
 <?php
-	if ($AR->user->data->template_editor == 'textarea' || !$AR->user->data->template_editor) { 
+	if ( $AR->user->data->template_editor != 'ace' ) {
 ?>
 <script type="text/javascript">
 
