@@ -387,6 +387,7 @@
 				ob_end_clean();
 
 				$header = $ARCurrent->ldHeaders["content-type"];
+				$xssDetected = false;
 				preg_match('/^content-type:\s+([^ ;]+)/i', $header, $matches);
 				$mimetype = strtolower($matches[1]);
 				if (substr($mimetype, 0, 5) == 'text/') {
@@ -395,22 +396,23 @@
 						if (is_array($values)) {
 							foreach ($values as $value) {
 								$occurances = substr_count($image, $value);
-								if ($occurances > 0 && $occurances < 3) {
-									$image = str_replace(
-										$value, 
-										str_replace(
-											array('<', '>', '"', "'"),
-											array('&lt;', '&gt;', '&quot;', '&#39;'),
-											$value
-										),
-										$image
-									);
+								if ($occurances > 0 ) {
+									$xssDetected = true;
+									break 2;
 								}
 							}
 						}
 					}
 				}
-				echo $image;
+
+				if($xssDetected) {
+					$newargs["oldArCallArgs"]     = $args;
+					$newargs["oldArCallFunction"] = $function;
+					$newargs['xss_vars']          = $xss_vars;
+					$store->call('user.xss.html', $newargs, $store->get($path));
+				} else {
+					echo $image;
+				}
 			}
 
 
