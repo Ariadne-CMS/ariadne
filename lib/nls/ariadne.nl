@@ -144,6 +144,7 @@
 
 	$ARnls['ariadne:override_typetree']				= 'Negeer typeboom instellingen';
 	$ARnls['err:typetree_does_not_allow']				= 'De typeboom instellingen staan dit object type hier niet toe.';
+	$ARnls['err:no_add_on_target']					= 'Er zijn geen "toevoeg"-rechten op het doel';
 	$ARnls['err:nosalt']						= 'Er is geen "salt" geconfigureerd in Ariadne. Voeg deze toe aan de hoofdconfiguratie van Ariadne om gebruik te kunnen maken van rechtensleutels.';
 
 	$ARnls['ariadne:prev']						= 'Vorige';

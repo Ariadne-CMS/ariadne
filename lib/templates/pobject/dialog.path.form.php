@@ -1,6 +1,6 @@
 <?php
 	$ARCurrent->nolangcheck=true;
-	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		$target = $this->getvar("target");
 		if (!$target) {
 			$target = $this->path;
