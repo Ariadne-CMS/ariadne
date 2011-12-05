@@ -8,7 +8,7 @@
 	ar_pinp::allow('ar');
 	ar_pinp::allow('ar_error');
 
-	class ar {
+	class ar implements arKeyValueStoreInterface {
 		protected static $instances;
 		protected static $ar;
 		protected static $context = null;
@@ -55,7 +55,11 @@
 				$fullName = self::_compileClassName($name);
 				if (!class_exists($fullName)) {
 					$fileName = self::_parseClassName($fullName);
-					require_once(ARBaseDir.$fileName.'.php');
+					if (!file_exists(ARBaseDir.$fileName.'.php')) {
+						error( $name . ' not found' );
+					} else {
+						require_once(ARBaseDir.$fileName.'.php');
+					}
 				}
 				if (!self::$instances[$name]) {
 					self::$instances[$name] = new $fullName();
@@ -72,6 +76,11 @@
 				$fileName = self::_parseClassName($className);
 				if (file_exists(ARBaseDir.$fileName.'.php')) {
 					require_once(ARBaseDir.$fileName.'.php');
+				} else {
+					$subFileName = preg_replace( '/[A-Z].*$/', '', $fileName );
+					if ( $subFileName != $fileName && file_exists( ARBaseDir.$subFileName.'.php' ) ) {
+						require_once( ARBaseDir.$subFileName.'.php' );
+					}					
 				}
 			}
 		}
@@ -141,7 +150,7 @@
 			self::untaint( $value, $options['filter'], $options['flags'] );
 		}
 
-		public static function getvar( $name ) {
+		public function getvar( $name ) {
 			global $ARCurrent, $ARConfig;
 			
 			if ($ARCurrent->arCallStack) {
@@ -162,7 +171,7 @@
 			return ar_loader::getvar( $name );
 		}
 		
-		public static function putvar( $name, $value ) {
+		public function putvar( $name, $value ) {
 			global $ARCurrent;
 			$ARCurrent->$name = $value;
 		}
@@ -315,7 +324,8 @@
 		}
 
 		public static function isError($ob) {
-			return (is_object($ob) && ( is_a($ob, 'ar_error') || is_a($ob, 'error') || is_a($ob, 'PEAR_Error') ));
+			return ( is_object($ob) 
+				&& ( is_a($ob, 'ar_error') || is_a($ob, 'error') || is_a($ob, 'PEAR_Error') ) );
 		}
 
 		public static function raiseError($message, $code, $previous = null) {
