@@ -270,8 +270,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$arNewParent=$this->make_path("..");
 			$arNewFilename=substr($this->path, strlen($arNewParent), -1);
 			$configcache=$this->loadConfig();
-			if (!eregi("\.\.",$arNewFilename)) {
-				if (eregi("^[a-z0-9_\{\}\.\:-]+$",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
+			if (!preg_match("/\.\./i",$arNewFilename)) {
+				if (preg_match("|^[a-z0-9_\{\}\.\:-]+$|i",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
 					if (!$this->exists($this->path)) { //arNewFilename)) {
 						if ($this->exists($arNewParent)) {
 							if (!$config = $this->data->config) {
@@ -1161,7 +1161,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	**********************************************************************/
 
 		$this->error="";
-		if (eregi("^/[a-z0-9\./_-]*/$",$newfilename)) {
+		if (preg_match("|^/[a-z0-9\./_-]*/$|i",$newfilename)) {
 			if (!$this->store->exists($newfilename)) {
 				$parent=$this->store->make_path($newfilename, "..");
 				if ($this->store->exists($parent)) {
@@ -2326,7 +2326,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					} else if ($headerEnd && !$redirecting) { 
 						//this is the html from the page 
 						$contents = $contents . $currentLine; 
-					} else if ( ereg("^HTTP", $currentLine) ) { 
+					} else if ( preg_match("/^HTTP/", $currentLine) ) { 
 						//came to the start of the header 
 						$headerStart = 1; 
 						$headerContents = $currentLine;
@@ -2741,8 +2741,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$this->ARnls = $ARnls;
 		} else { // older loaders and other shizzle
 
-			$nls=eregi_replace('[^a-z]*','',$nls);
-			$section=eregi_replace('[^a-z0-9\._:-]*','',$section);
+			$nls = preg_replace('/[^a-z]*/i','',$nls);
+			$section = preg_replace('/[^a-z0-9\._:-]*/i','',$section);
 			if (!$section) {
 				include($this->store->get_config("code")."nls/".$nls);
 				$this->ARnls = array_merge((array)$this->ARnls, $ARnls);
@@ -3076,7 +3076,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	function _load($class) {
 		// only allow access to modules in the modules directory.
-		$class=eregi_replace('[^a-z0-9\._]','',$class);
+		$class = preg_replace('/[^a-z0-9\._]/i','',$class);
 		include_once($this->store->get_config("code")."modules/".$class);
 	}
 
@@ -3159,9 +3159,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	function preg_replace_compile($pattern, $replacement) {
 	global $AR;
 		include_once($this->store->get_config("code")."modules/mod_pinp.phtml");
-		ereg("^\s*(.)", $pattern, $regs);
+		preg_match("/^\s*(.)/", $pattern, $regs);
 		$delim = $regs[1];
-		if (eregi($k="${delim}[^$delim]*e[^$delim]*".'$', $pattern)) {
+		if (eregi("${delim}[^$delim]*${delim}.*e.*".'$', $pattern)) {
 			$pinp = new pinp($AR->PINP_Functions, 'local->', '$AR_this->_');
 			return substr($pinp->compile("<pinp>$replacement</pinp>"), 5, -2);
 		} else {
@@ -3211,6 +3211,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			case 'www':
 			case 'dir:www':
 				return $AR->dir->www;
+			case 'images':
+			case 'dir:images':
+				return $AR->dir->images;
 			case 'ARSessionKeyCheck':
 				$result = null;
 				if (function_exists('ldGenerateSessionKeyCheck')) {
