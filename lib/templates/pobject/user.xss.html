@@ -1,16 +1,41 @@
 <?php
-	
-	global $nocache, $ARConfigChecked;
+	global $nocache;
 	$nocache=true;
 
-
-	$fullpage = false;
-	if( !headers_sent() ) {
-		$fullpage = true;
-	}
-
+	ldHeader("HTTP/1.0 400 Bad Request");
 	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
-		ldHeader("HTTP/1.0 400 Bad Request");
-		$this->call("user.xss.full.html", $arCallArgs);
+?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> 
+<html>
+	<head>
+		<title><?php echo $ARnls['invalidRequest']; ?></title>
+		<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->www; ?>styles/login.css">
+		<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+	</head>
+	<body id="login_panel">
+		<div id="centered">
+			<div id="header">
+				<div class="logo">
+					<img src="<?php echo $AR->dir->www; ?>/images/tree/logo2.gif" alt="Ariadne Web Application Server">
+					<span class="ariadne">Ariadne</span>
+					<span class="ariadne_sub">Web Application Server</span>
+				</div>
+			</div>
+			<div id="sectiondata" class="nosections notfixed">
+				<div id="tabs"></div>
+				<div id="tabsdata">
+					<div id="data">
+						<h2>400 - Bad request</h2>
+						<p>
+							<strong><?php echo $ARnls["invalidRequest"]; ?></strong>
+						</p>
+						<p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+<?php
 	}
 ?>
