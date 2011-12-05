@@ -315,7 +315,7 @@
 		}
 
 		public static function isError($ob) {
-			return (is_a($ob, 'ar_error') || is_a($ob, 'error') || is_a($ob, 'PEAR_Error'));
+			return (is_object($ob) && ( is_a($ob, 'ar_error') || is_a($ob, 'error') || is_a($ob, 'PEAR_Error') ));
 		}
 
 		public static function raiseError($message, $code, $previous = null) {
