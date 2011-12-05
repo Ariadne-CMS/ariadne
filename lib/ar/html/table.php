@@ -1,5 +1,4 @@
 <?php
-	require_once(dirname(__FILE__).'/../html.php');
 
 	ar_pinp::allow('ar_html_table');
 
@@ -25,7 +24,7 @@
 				'tableOddEven'   => ar::listPattern( '(tableOdd tableEven?)*' )
 			) );
 			$this->appendChild( 
-				ar_html::tag( 
+				ar_html::el( 
 					'tbody', $rows
 				) 
 			);
@@ -42,7 +41,7 @@
 					'tableOddEven'   => ar::listPattern( '(tableOdd tableEven?)*' ),
 					'tableFirstLast' => ar::listPattern( 'tableFirst .*', '.* tableLast')
 				) );
-				$nodes[] = ar_html::tag( 'tr', ar_html::nodes( $header, $cells ) );
+				$nodes[] = ar_html::el 'tr', ar_html::nodes( $header, $cells ) );
 			}
 			return $nodes;
 		}
@@ -50,7 +49,7 @@
 		private function getCells( $list, $tag = 'td') {
 			$nodes   = ar_html::nodes();
 			foreach ($list as $key => $content ) {
-				$nodes[] = ar_html::tag($tag, $content);
+				$nodes[] = ar_html::el($tag, $content);
 			}
 			return $nodes;
 		}
@@ -60,7 +59,7 @@
 				$nodes = $this->getCells( $list, 'th' );
 				$head = $this->thead->firstChild; //current( $this->getElementsByTagName('thead') );
 				if ( !isset($head) ) {
-					$head = ar_html::tag( 'thead', $attributes );
+					$head = ar_html::el( 'thead', $attributes );
 					if ( $foot = $this->tfoot->firstChild ) {
 						$this->insertBefore( $head, $foot );
 					} else if ( $body = $this->tbody->firstChild ) {
@@ -71,7 +70,7 @@
 				} else if (isset($attributes)) {
 					$head->setAttributes( $attributes );
 				}
-				$head->appendChild( ar_html::tag( 'tr', $nodes ) );
+				$head->appendChild( ar_html::el( 'tr', $nodes ) );
 			}
 			return $this;
 		}
@@ -81,7 +80,7 @@
 				$nodes = $this->getCells( $list, 'td' );
 				$foot = $this->tfoot->lastChild;
 				if ( !isset($foot) ) {
-					$foot = ar_html::tag( 'tfoot', $attributes );
+					$foot = ar_html::el( 'tfoot', $attributes );
 					if ( $head = $this->thead->lastChild ) {
 						$this->insertBefore( $foot, $head->nextSibling );
 					} else if ( $body = $this->tbody->firstChild ) {
@@ -92,7 +91,7 @@
 				} else if (isset( $attributes ) ) {
 					$foot->setAttributes( $attributes );
 				}
-				$foot->appendChild( ar_html::tag( 'tr', $nodes ) );
+				$foot->appendChild( ar_html::el( 'tr', $nodes ) );
 			}
 			return $this;
 		}
@@ -100,7 +99,7 @@
 		public function rowHeaders( $list, $attributes = array() ) {
 			foreach ( $list as $key => $value ) {
 				if ( ! ($value instanceof ar_htmlNode ) || $value->tagName != 'th' ) {
-					$list[$key] = ar_html::tag( 'th',
+					$list[$key] = ar_html::el( 'th',
 						array_merge( 
 							(array) $attributes, 
 							array( 'scope' => 'row' ) 
@@ -129,7 +128,7 @@
 		}
 		
 		public function caption($content, $attributes = null) {
-			$newCaption = ar_html::tag( 'caption', $content, $attributes );
+			$newCaption = ar_html::el( 'caption', $content, $attributes );
 			if ( $caption = $this->caption->firstChild ) {
 				$this->replaceChild( $newCaption, $caption );
 			} else {

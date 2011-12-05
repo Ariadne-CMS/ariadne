@@ -144,13 +144,25 @@
 			return self::nodes( $result );
 		}
 
-		public static function parse( $html ) {
+		public static function parse( $html, $encoding = null ) {
 			// important: parse must never return results with simple string values, but must always
 			// wrap them in an ar_htmlNode, or tryToParse may get called, which will call parse, which 
 			// will... etc.
 			$dom = new DOMDocument();
+			if ( $encoding ) {
+				$html = '<?xml encoding="' . $encoding . '">' . $html;
+			}
 			$prevErrorSetting = libxml_use_internal_errors(true);
 			if ( $dom->loadHTML( $html ) ) {
+				if ( $encoding ) {
+					foreach( $dom->childNodes as $item ) {
+						if ( $item->nodeType == XML_PI_NODE ) {
+							$dom->removeChild( $item );
+							break;
+						}
+					}
+					$dom->encoding = $encoding;
+				}
 				$domroot = $dom->documentElement;
 				if ( $domroot ) {
 					$result = self::parseHead( $dom );
@@ -167,9 +179,9 @@
 		public static function tryToParse( $html ) {
 			$result = $html;
 			if ( ! ($html instanceof ar_xmlNodeInterface ) ) { // ar_xmlNodeInterface is correct, there is no ar_htmlNodeInterface
-				if ($html) {
+				if ( $html && strpos( $html, '<' ) !== false ) {
 					try {
-						$result = self::parse( $html );
+						$result = self::parse( $html, 'UTF-8' );
 						if ( ar_error::isError($result) ) {
 							$result = new ar_htmlNode( (string) $html );
 						} else {
