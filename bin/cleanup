@@ -70,10 +70,11 @@ if (!@include_once($ariadne."/configs/ariadne.phtml")) {
 	}
 
 }
-require($ariadne."/configs/store.phtml");
-require($ariadne."/configs/sessions.phtml");
-require($ariadne."/includes/loader.cmd.php");
-require($store_config['code']."stores/".$session_config["dbms"]."store.phtml");
+require_once($ariadne."/configs/store.phtml");
+require_once($ariadne."/configs/sessions.phtml");
+require_once($ariadne."/includes/loader.cmd.php");
+require_once($store_config['code']."stores/".$session_config["dbms"]."store.phtml");
+require_once($ariadne."/ar.php");
 
 set_time_limit(0);
 
@@ -112,4 +113,3 @@ if ($AR->OS=="UNIX") {
  */
 }
 ?>
-

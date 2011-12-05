@@ -13,7 +13,7 @@
 	require_once($ariadne."/stores/".$store_config["dbms"]."store.phtml");
 	require_once($ariadne."/modules/mod_pinp.phtml");
 	include($ariadne."/nls/".$AR->nls->default);
-	include_once($ariadne."/modules/mod_ar.php");
+	require_once($ariadne."/ar.php");
 
 	$template = $argv[1];
 	$fp = @fopen($template, 'r');
