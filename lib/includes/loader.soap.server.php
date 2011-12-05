@@ -243,7 +243,7 @@ class nusoap_base {
                         break;
                         case (is_array($val) || $type):
                                 // detect if struct or array
-                                if(ereg("^[0-9]+$",key($val)) || ereg('^ArrayOf',$type)){
+                                if(preg_match("/^[0-9]+$/",key($val)) || preg_match('/^ArrayOf/',$type)){
                                         foreach($val as $v){
                                                 $tt = gettype($v);
                                                 $array_types[$tt] = 1;
@@ -333,17 +333,17 @@ class nusoap_base {
 function timestamp_to_iso8601($timestamp,$utc=true){
         $datestr = date("Y-m-d\TH:i:sO",$timestamp);
         if($utc){
-                $eregStr =
-                "([0-9]{4})-".        // centuries & years CCYY-
+                $pregStr =
+                "/([0-9]{4})-".        // centuries & years CCYY-
                 "([0-9]{2})-".        // months MM-
                 "([0-9]{2})".        // days DD
                 "T".                        // separator T
                 "([0-9]{2}):".        // hours hh:
                 "([0-9]{2}):".        // minutes mm:
                 "([0-9]{2})(\.[0-9]*)?". // seconds ss.ss...
-                "(Z|[+\-][0-9]{2}:?[0-9]{2})?"; // Z to indicate UTC, -/+HH:MM:SS.SS... for local tz's
+                "(Z|[+\-][0-9]{2}:?[0-9]{2})?/"; // Z to indicate UTC, -/+HH:MM:SS.SS... for local tz's
 
-                if(ereg($eregStr,$datestr,$regs)){
+                if(preg_match($pregStr,$datestr,$regs)){
                         return sprintf("%04d-%02d-%02dT%02d:%02d:%02dZ",$regs[1],$regs[2],$regs[3],$regs[4],$regs[5],$regs[6]);
                 }
                 return false;
@@ -359,16 +359,16 @@ function timestamp_to_iso8601($timestamp,$utc=true){
 * @access   public
 */
 function iso8601_to_timestamp($datestr){
-        $eregStr =
-        "([0-9]{4})-".        // centuries & years CCYY-
+        $pregStr =
+        "/([0-9]{4})-".        // centuries & years CCYY-
         "([0-9]{2})-".        // months MM-
         "([0-9]{2})".        // days DD
         "T".                        // separator T
         "([0-9]{2}):".        // hours hh:
         "([0-9]{2}):".        // minutes mm:
         "([0-9]{2})(\.[0-9]+)?". // seconds ss.ss...
-        "(Z|[+\-][0-9]{2}:?[0-9]{2})?"; // Z to indicate UTC, -/+HH:MM:SS.SS... for local tz's
-        if(ereg($eregStr,$datestr,$regs)){
+        "(Z|[+\-][0-9]{2}:?[0-9]{2})?/"; // Z to indicate UTC, -/+HH:MM:SS.SS... for local tz's
+        if(preg_match($pregStr,$datestr,$regs)){
                 // not utc
                 if($regs[8] != "Z"){
                         $op = substr($regs[8],0,1);
@@ -605,7 +605,7 @@ class XMLSchema extends nusoap_base  {
                 // loop through atts, logging ns declarations
                 foreach($attrs as $key => $value){
                         // if ns declarations, add to class level array of valid namespaces
-                        if(ereg("^xmlns",$key)){
+                        if(preg_match("/^xmlns/",$key)){
                                 if($ns_prefix = substr(strrchr($key,":"),1)){
                                         $this->namespaces[$ns_prefix] = $value;
                                 } else {
@@ -622,7 +622,7 @@ class XMLSchema extends nusoap_base  {
                 }
 
                 // get element prefix
-                if(ereg(":",$name)){
+                if(preg_match("/:/",$name)){
                         // get ns prefix
                         $prefix = substr($name,0,strpos($name,":"));
                         // get unqualified name
@@ -677,7 +677,7 @@ class XMLSchema extends nusoap_base  {
                                         $this->currentComplexType = $attrs['name'];
                                         $this->complexTypes[$this->currentComplexType] = $attrs;
                                         $this->complexTypes[$this->currentComplexType]['typeClass'] = 'complexType';
-                                        if(ereg(':Array$',$attrs['base'])){
+                                        if(preg_match('/:Array$/',$attrs['base'])){
                                                 $this->complexTypes[$this->currentComplexType]['phpType'] = 'array';
                                         } else {
                                                 $this->complexTypes[$this->currentComplexType]['phpType'] = 'struct';
@@ -849,7 +849,7 @@ class XMLSchema extends nusoap_base  {
         */
         function expandQname($qname){
                 // get element prefix
-                if(ereg(":",$qname)){
+                if(preg_match("/:/",$qname)){
                         // get unqualified name
                         $name = substr(strstr($qname,":"),1);
                         // get ns prefix
@@ -1302,7 +1302,7 @@ class soap_transport_http extends nusoap_base {
 					$clean_data = $result[2];
 					$this->debug("cleaned data, stringlen: ".strlen($clean_data));
                 /*
-                if(ereg("^(.*)\r?\n\r?\n",$data)) {
+                if(preg_match("/^(.*)\r?\n\r?\n/",$data)) {
                         $this->debug("found proper separation of headers and document");
                         $this->debug("getting rid of headers, stringlen: ".strlen($data));
                         $clean_data = preg_replace("/^[^<]*\r\n\r\n/","", $data);
@@ -1398,7 +1398,7 @@ class soap_transport_http extends nusoap_base {
                 curl_close($ch);
 
                 // separate content from HTTP headers
-                if(ereg("^(.*)\r?\n\r?\n",$data)) {
+                if(preg_match("/^(.*)\r?\n\r?\n/",$data)) {
                         $this->debug("found proper separation of headers and document");
                         $this->debug("getting rid of headers, stringlen: ".strlen($data));
                         $clean_data = preg_replace("/^[^<]*\r\n\r\n/","", $data);
@@ -1496,7 +1496,7 @@ class soap_server extends nusoap_base {
         */
         function service($data){
                 // print wsdl
-                if(ereg('^wsdl',$GLOBALS['QUERY_STRING'])){
+                if(preg_match('/^wsdl/',$GLOBALS['QUERY_STRING'])){
                         header("Content-Type: text/xml\r\n");
                         print $this->wsdl->serialize();
                 // print web interface
@@ -1554,7 +1554,7 @@ class soap_server extends nusoap_base {
                 // get the character encoding of the incoming request
                 if(strpos($headers_array['Content-Type'],"=")){
                         $enc = str_replace("\"","",substr(strstr($headers_array["Content-Type"],"="),1));
-                        if(eregi("^(ISO-8859-1|US-ASCII|UTF-8)$",$enc)){
+                        if(preg_match("/^(ISO-8859-1|US-ASCII|UTF-8)$/i",$enc)){
                                 $this->xml_encoding = $enc;
                         } else {
                                 $this->xml_encoding = 'us-ascii';
@@ -1683,7 +1683,7 @@ class soap_server extends nusoap_base {
                 // get the character encoding of the incoming request
                 if(strpos($headers_array['Content-Type'],"=")){
                         $enc = str_replace("\"","",substr(strstr($headers_array["Content-Type"],"="),1));
-                        if(eregi("^(ISO-8859-1|US-ASCII|UTF-8)$",$enc)){
+                        if(preg_match("/^(ISO-8859-1|US-ASCII|UTF-8)$/i",$enc)){
                                 $this->xml_encoding = $enc;
                         } else {
                                 $this->xml_encoding = 'us-ascii';
@@ -2165,7 +2165,7 @@ class wsdl extends XMLSchema {
         */
         function start_element($parser, $name, $attrs) {
 
-                if($this->status == "schema" || ereg("schema$",$name)){
+                if($this->status == "schema" || preg_match("/schema$/",$name)){
                         //$this->debug("startElement for $name ($attrs[name]). status = $this->status (".$this->getLocalPart($name).")");
                         $this->status = "schema";
                         $this->schemaStartElement($parser,$name,$attrs);
@@ -2177,7 +2177,7 @@ class wsdl extends XMLSchema {
                         $this->depth_array[$depth] = $pos;
 
                         // get element prefix
-                        if(ereg(":",$name)){
+                        if(preg_match("/:/",$name)){
                                 // get ns prefix
                                 $prefix = substr($name,0,strpos($name,":"));
                                 // get unqualified name
@@ -2188,7 +2188,7 @@ class wsdl extends XMLSchema {
                         // loop through atts, logging ns declarations
                         foreach($attrs as $key => $value){
                                 // if ns declarations, add to class level array of valid namespaces
-                                if(ereg("^xmlns",$key)){
+                                if(preg_match("/^xmlns/",$key)){
                                         if($ns_prefix = substr(strrchr($key,":"),1)){
                                                 $this->namespaces[$ns_prefix] = $value;
                                         } else {
@@ -2310,7 +2310,7 @@ class wsdl extends XMLSchema {
                                 case "binding":
                                         if(isset($attrs['name'])){
                                                 // get binding name
-                                                if(ereg(":",$attrs['name'])){
+                                                if(preg_match("/:/",$attrs['name'])){
                                                         $this->currentBinding = substr(strstr($attrs['name'],":"),1);
                                                         $prefix = substr($name,0,strpos($attrs['name'],":"));
                                                 } else {
@@ -2343,7 +2343,7 @@ class wsdl extends XMLSchema {
         */
         function end_element($parser, $name) {
             // unset schema status
-                if(ereg('types$',$name) || ereg('schema$',$name)){
+                if(preg_match('/types$/',$name) || preg_match('/schema$/',$name)){
                         $this->status = "";
                 }
                 if($this->status == 'schema'){
@@ -2829,7 +2829,7 @@ class soap_parser extends nusoap_base {
                         // if ns declarations, add to class level array of valid namespaces
                         if(strpos($key,'xmlns:')){
                                 $prefix = substr(strrchr($key,":"),1);
-                                if(ereg('^http://www.w3.org/[0-9]{4}/XMLSchema$',$value)){
+                                if(preg_match('|^http://www.w3.org/[0-9]{4}/XMLSchema$|',$value)){
                                         global $XMLSchemaVersion,$namespaces;
                                         $XMLSchemaVersion = $value;
                                         $namespaces["xsd"] = $XMLSchemaVersion;
@@ -2847,7 +2847,7 @@ class soap_parser extends nusoap_base {
                                 // should do something here with the namespace of specified type?
                         } elseif(strpos($key,":arrayType")){
                                 $this->message[$pos]['type'] = 'array';
-                                /* do arrayType ereg here
+                                /* do arrayType preg here
                                 [1]    arrayTypeValue    ::=    atype asize
                                 [2]    atype    ::=    QName rank*
                                 [3]    rank    ::=    '[' (',')* ']'
@@ -2855,8 +2855,8 @@ class soap_parser extends nusoap_base {
                                 [5]    length    ::=    nextDimension* Digit+
                                 [6]    nextDimension    ::=    Digit+ ','
                                 */
-                                $expr = "([A-Za-z0-9_]+):([A-Za-z]+[A-Za-z0-9_]+)\[([0-9]+),?([0-9]*)\]";
-                                if(ereg($expr,$value,$regs)){
+                                $expr = "/([A-Za-z0-9_]+):([A-Za-z]+[A-Za-z0-9_]+)\[([0-9]+),?([0-9]*)\]/";
+                                if(preg_match($expr,$value,$regs)){
                                         $this->message[$pos]['typePrefix'] = $regs[1];
                                         $this->message[$pos]['arraySize'] = $regs[3];
                                         $this->message[$pos]['arrayCols'] = $regs[4];
@@ -2909,11 +2909,11 @@ class soap_parser extends nusoap_base {
                 // switch status
                 if($pos == $this->root_struct){
                         $this->status = "body";
-                } elseif(eregi(":Body",$name)){
+                } elseif(preg_match("/:Body/i",$name)){
                         $this->status = "header";
-                 } elseif(eregi(":Header",$name)){
+                 } elseif(preg_match("/:Header/i",$name)){
                         $this->status = "envelope";
-                } elseif(eregi(":Envelope",$name)){
+                } elseif(preg_match("/:Envelope/i",$name)){
                         // resolve hrefs/ids
                         if(sizeof($this->multirefs) > 0){
                                 foreach($this->multirefs as $id => $hrefs){

@@ -30,7 +30,7 @@
 				if ($matches[2]) {
 					$imgtag = $matches[1];
 					$imgpath = $matches[2];
-					if ($imgpath && !eregi('^[[:space:]]*(http://|/)', $imgpath)) {
+					if ($imgpath && !preg_match('%^[[:space:]]*(http://|/)%i', $imgpath)) {
 						$newimgpath = $this->store->make_path($this->parent, $imgpath);
 						$newimgpath = substr($newimgpath, 0, -1);	
 						$newimgtag = str_replace($imgpath, "{arRoot}$newimgpath", $imgtag);
@@ -65,7 +65,7 @@
 			debug("pagedata(".$this->path.")($nls)");
 			$arCallArgs[$nls]["page"] = $page;
 
-			if (eregi('<title>(.*)</title>', $page, $regs)) {
+			if (preg_match('|<title>(.*)</title>|i', $page, $regs)) {
 				$arCallArgs[$nls]["name"]=$regs[1];
 			} else {
 				$arCallArgs[$nls]["name"]=$this->getdata("file");
