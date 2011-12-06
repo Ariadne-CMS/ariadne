@@ -43,7 +43,7 @@
 			$this->action	= $action;
 			$this->method	= $method;
 			$this->requiredLabel = isset($requiredLabel) ? $requiredLabel : 
-				ar_html::tag('span', array('title' => 'Required', 'class' => 'formRequired'), '*');
+				ar_html::el('span', array('title' => 'Required', 'class' => 'formRequired'), '*');
 		}
 	
 		public function addField($value) {
@@ -94,9 +94,9 @@
 				foreach ($this->buttons as $key => $button) {
 					$buttonContent[] = $button->getButton();
 				}
-				$content[] = ar_html::tag('div', $buttonContent, array('class' => 'formButtons'));
+				$content[] = ar_html::el('div', $buttonContent, array('class' => 'formButtons'));
 			}
-			return ar_html::tag('form', $content, $attributes);		
+			return ar_html::el('form', $content, $attributes);		
 		}
 		
 		public function __toString() {
@@ -381,7 +381,7 @@
 			if ($extra) {
 				$attributes = array_merge($attributes, $extra);
 			}
-			return ar_html::tag('input', $attributes);
+			return ar_html::el('input', $attributes);
 		}
 		
 		public function __toString() {
@@ -458,7 +458,7 @@
 				if ($id) {
 					$attributes['for'] = $id;
 				}
-				return ar_html::tag('label', $label, $attributes);
+				return ar_html::el('label', $label, $attributes);
 			} else {
 				return '';
 			}
@@ -495,9 +495,9 @@
 			$content = ar_html::nodes();
 			if ($disabled) {
 				$attributes['disabled'] = true;
-				$content[] = ar_html::tag('input', array('type' => 'hidden', 'name' => $name, 'value' => $value));
+				$content[] = ar_html::el('input', array('type' => 'hidden', 'name' => $name, 'value' => $value));
 			}
-			$content[] = ar_html::tag('input', $attributes);
+			$content[] = ar_html::el('input', $attributes);
 			return $content;
 		}
 
@@ -524,9 +524,9 @@
 			}
 			$attributes = array('class' => $class);
 			if ($this->id) {
-				$attributes['id'] = $id;
+				$attributes['id'] = $this->id;
 			}
-			return ar_html::tag('div', $content, $attributes);
+			return ar_html::el('div', $content, $attributes);
 		}
 		
 		public function validate() {
@@ -603,7 +603,7 @@
 				$getInput = ar_html_form::$customTypes[ $this->type ]['getInput'];
 				return $getInput($this);
 			}
-			return ar_html::tag('strong', 'Error: Field type ' . $this->type . ' does not exist.');
+			return ar_html::el('strong', 'Error: Field type ' . $this->type . ' does not exist.');
 		}
 		
 		public function getValue() {
@@ -688,7 +688,7 @@
 			if ($disabled) {
 				$attributes['disabled'] = true;
 			}
-			return ar_html::tag('textarea', $value, $attributes);
+			return ar_html::el('textarea', $value, $attributes);
 		}
 		
 	}
@@ -728,21 +728,18 @@
 				$attributes['title'] = $title;
 			}
 			
-/*			FIXME: need to allow an array of values in $value and generate multiple hidden input tags when disabled and
-			automatically add the '[]' to the name, if not already set.
 			if ($multiple) {
 				$attributes['multiple'] = "multiple";
 			}
-*/			$content = ar_html::nodes();
+			$content = ar_html::nodes();
 			if ($disabled) {
 				$attributes['disabled'] = true;
-				$content[] = ar_html::tag('input', array('name' => $name, 'type' => 'hidden', 'value' => $value));
 			}
-			$content[] = ar_html::tag('select', $this->getOptions($options, $value), $attributes);
+			$content[] = ar_html::el('select', $this->getOptions($options, $value), $attributes);
 			return $content;
 		}
 
-		protected function getOptions($options=null, $selectedValue=false) {
+		protected function getOptions($options=null, $selectedValues=false) {
 			$content = ar_html::nodes();
 			if (!isset($options)) {
 				$options = $this->options;
@@ -757,20 +754,20 @@
 					if (!isset($option['value'])) {
 						$option['value'] = $key;
 					}
-					$content[] = $this->getOption($option['name'], $option['value'], $selectedValue);
+					$content[] = $this->getOption($option['name'], $option['value'], $selectedValues);
 				}
 			}
 			return $content;
 		}
 		
-		protected function getOption($name, $value='', $selectedValue=false) {
+		protected function getOption($name, $value='', $selectedValues=false) {
 			$attributes = array(
 				'value' => $value
 			);
-			if ($selectedValue!==false && $selectedValue == $value) {
+			if ($selectedValues!==false && ( (!$this->multiple && $selectedValues == $value) || ( is_array($selectedValues) && $selectedValues[$name] == $value ) ) ){
 				$attributes[] = 'selected';
 			}
-			return ar_html::tag('option', $name, $attributes);
+			return ar_html::el('option', $name, $attributes);
 		}
 	}
 	
@@ -793,12 +790,12 @@
 					$this->name.'_uncheckedValue');
 			}
 			$content[] = $this->getCheckBox($this->name, $this->checkedValue, 
-				($this->checkedValue==$this->value), $this->disabled, $this->uncheckedValue);
+				($this->checkedValue==$this->value), $this->disabled, $this->uncheckedValue, $this->id);
 			$content[] = $this->getLabel($this->label, $this->name);
 			return parent::getField($content);
 		}
 		
-		protected function getCheckBox($name=null, $value=null, $checked=false, $disabled=null, $uncheckedValue=false) {
+		protected function getCheckBox($name=null, $value=null, $checked=false, $disabled=null, $uncheckedValue=false, $id=null) {
 			$content = ar_html::nodes();
 			if (!isset($name)) {
 				$name = $this->name;
@@ -831,10 +828,10 @@
 					$hiddenvalue = false;
 				}
 				if ($hiddenvalue) {
-					$content[] = ar_html::tag('input', array('type' => 'hidden', 'name' => $name, 'value' => $hiddenvalue));
+					$content[] = ar_html::el('input', array('type' => 'hidden', 'name' => $name, 'value' => $hiddenvalue));
 				}
 			}
-			$content[] = ar_html::tag('input', $attributes );
+			$content[] = ar_html::el('input', $attributes );
 			return $content;
 		}
 	}
@@ -861,7 +858,7 @@
 			$attributes = array(
 				'class' => 'formRadioButtons'
 			);
-			$content[] = ar_html::tag('div', $this->getRadioButtons($name, $options, $value), $attributes);
+			$content[] = ar_html::el('div', $this->getRadioButtons($name, $options, $value), $attributes);
 			return $content;
 		}
 
@@ -915,8 +912,8 @@
 			if ($disabled) {
 				$attributes['disabled'] = true;
 			}
-			return ar_html::tag('div', $class, ar_html::nodes(
-				ar_html::tag('input', $attributes),
+			return ar_html::el('div', $class, ar_html::nodes(
+				ar_html::el('input', $attributes),
 				$this->getLabel($label, $id)));
 		}	
 	}
@@ -951,7 +948,7 @@
 		
 		public function getField($content=null) {
 			if ($this->label) {
-				$legend = ar_html::tag('legend', $this->label);
+				$legend = ar_html::el('legend', $this->label);
 			}
 			if (!isset($content)) {
 				$content = $this->children;
@@ -963,9 +960,9 @@
 			}
 			$attributes = array('class' => $class);
 			if ($this->id) {
-				$attributes['id'] = $id;
+				$attributes['id'] = $this->id;
 			}
-			return ar_html::tag('fieldset', $content, $attributes);
+			return ar_html::el('fieldset', $content, $attributes);
 		}
 
 		public function getNameValue() {
