@@ -41,7 +41,7 @@
 					'tableOddEven'   => ar::listPattern( '(tableOdd tableEven?)*' ),
 					'tableFirstLast' => ar::listPattern( 'tableFirst .*', '.* tableLast')
 				) );
-				$nodes[] = ar_html::el 'tr', ar_html::nodes( $header, $cells ) );
+				$nodes[] = ar_html::el('tr', ar_html::nodes( $header, $cells ) );
 			}
 			return $nodes;
 		}
