@@ -3161,7 +3161,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		include_once($this->store->get_config("code")."modules/mod_pinp.phtml");
 		preg_match("/^\s*(.)/", $pattern, $regs);
 		$delim = $regs[1];
-		if (eregi("${delim}[^$delim]*${delim}.*e.*".'$', $pattern)) {
+		if (eregi("\\${delim}[^$delim]*\\${delim}.*e.*".'$', $pattern)) {
 			$pinp = new pinp($AR->PINP_Functions, 'local->', '$AR_this->_');
 			return substr($pinp->compile("<pinp>$replacement</pinp>"), 5, -2);
 		} else {
