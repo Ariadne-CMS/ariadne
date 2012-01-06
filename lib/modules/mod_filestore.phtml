@@ -381,14 +381,14 @@
 			// calculate path based on $id and $name
 			$path=$this->root;
 			if (!file_exists($path) && $write) {
-				mkdir($path, DIRMODE);
+				@mkdir($path, DIRMODE); // Supress error, can trigger with race condition.
 			}	
 			while ($id) {
 				$next=floor($id/PATHTICLESIZE);
 				$part=$id%PATHTICLESIZE;
 				$path.="/$part";
 				if (!file_exists($path) && $write) {
-					mkdir($path, DIRMODE);
+					@mkdir($path, DIRMODE); // Supress error, can trigger with race condition.
 				}
 				$id=$next;
 			}
