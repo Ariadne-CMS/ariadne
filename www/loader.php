@@ -368,7 +368,8 @@
 					ldGatherXSSInput($xss_vars, ${'_'.$method});
 				}
 			}
-
+			ldGatherXSSInput( $xss_vars, $function );
+			ldGatherXSSInput( $xss_vars, $path );
 			if (count($xss_vars)) {
 				ob_start();
 			}
@@ -405,10 +406,11 @@
 					}
 				}
 
-				if($xssDetected) {
-					$newargs["oldArCallArgs"]     = $args;
-					$newargs["oldArCallFunction"] = $function;
-					$newargs['xss_vars']          = $xss_vars;
+				if ($xssDetected) {
+					$newargs["arRequestedArgs"]     = $args;
+					$newargs["arRequestedTemplate"] = $function;
+					$newargs["arSuspectedArgs"]     = $xss_vars;
+					$newargs["arResultOutput"]      = $image;
 					$store->call('user.xss.html', $newargs, $store->get($path));
 				} else {
 					echo $image;
