@@ -26,7 +26,7 @@
 				<label for="summary"><?php echo $ARnls["summary"]; ?></label>
 				<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
 				<textarea id="summary" name="<?php echo $selectednls."[summary]"; ?>" class="inputbox" rows="5" cols="42"><?php
-					echo preg_replace("/&/","&amp;",$this->getdata("summary", $selectednls));
+					echo $this->showdata("summary", $selectednls);
 				?></textarea>
 			</div>
 		</fieldset>

@@ -1,6 +1,7 @@
 <?php
 	global $nocache;
 	$nocache=true;
+	$ARCurrent->allnls = true;
 
 	ldHeader("HTTP/1.0 400 Bad Request");
 	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {

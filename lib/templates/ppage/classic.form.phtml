@@ -55,7 +55,7 @@
 	</td>
 	<td>
 		<textarea name="<?php echo $nls."[summary]"; ?>" cols="50" rows="4" wrap="soft"><?php 
-				echo preg_replace("/&/","&amp;",$this->getdata("summary",$nls)); 
+				echo $this->showdata("summary",$nls); 
 		?></textarea>
 	</td>
 </tr><tr>

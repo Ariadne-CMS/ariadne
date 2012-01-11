@@ -64,13 +64,13 @@ if( !function_exists("wgWizKeepVars") ) {
 						} else { // it's part of an array
 							$ARCurrent->seenit[$prefix]=true;
 						}
-						$value = htmlspecialchars($value);
+						$value = htmlentities($value, ENT_QUOTES, 'UTF-8');
 						echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
 					} elseif (!$ARCurrent->seenit[$prefix] && !$toplevel) { // value part of array
-						$value = htmlspecialchars($value);
+						$value = htmlentities($value, ENT_QUOTES, 'UTF-8');
 						echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
 					} elseif (!$ARCurrent->seenit[$prefix.$key.$postfix] && $toplevel) { // value not in array
-						$value = htmlspecialchars($value);
+						$value = htmlentities($value, ENT_QUOTES, 'UTF-8');
 						echo "<input type=\"hidden\" name=\"".$prefix.$key.$postfix."\" value=\"".$value."\">\n";
 					}
 				}

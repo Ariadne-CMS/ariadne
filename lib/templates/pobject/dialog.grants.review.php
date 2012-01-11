@@ -11,9 +11,9 @@
 		foreach( $gusers as $upath => $value ) {
 			echo "<tr><td>".htmlspecialchars($gpath)."</td><td>".htmlspecialchars($upath)."</td>";
 			if (is_array($value['grants']['array'])) {
-				echo "<td>".grantsArrayToString($value["grants"]["array"])."</td>";
+				echo "<td>".htmlentities(grantsArrayToString($value["grants"]["array"]), ENT_QUOTES, 'UTF-8')."</td>";
 			} else {
-				echo "<td>".$value['grants']['grantsstring']."</td>";
+				echo "<td>".htmlentities($value['grants']['grantsstring'], ENT_QUOTES, 'UTF-8')."</td>";
 			}
 			echo "</tr>";
 		}

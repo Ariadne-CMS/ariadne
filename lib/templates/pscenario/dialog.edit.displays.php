@@ -39,8 +39,8 @@
 <fieldset id="priority">
 	<legend><?php echo $ARnls["priority"]; ?></legend>
 	<div class="field">
-		<label for="value"><?php echo $ARnls["priority"]; ?></label>
-		<input type="text" name="value" maxlength="50" id="value"
+		<label for="priority"><?php echo $ARnls["priority"]; ?></label>
+		<input type="text" name="priority" maxlength="50" id="priority"
 			value="<?php $this->showdata("priority","none"); ?>" class="inputline">
 	</div>
 </fieldset>
@@ -64,8 +64,8 @@
 				$ddata=$this->getdata("display", "none");
 				foreach( $displays as $key => $val ) {
 					?>
-						<input type="hidden" name="display[<?php echo $val; ?>][start]" value="<?php echo $ddata[$val]["start"]; ?>">
-						<input type="hidden" name="display[<?php echo $val; ?>][end]" value="<?php echo $ddata[$val]["end"]; ?>">
+						<input type="hidden" name="display[<?php echo $val; ?>][start]" value="<?php echo (int) $ddata[$val]["start"]; ?>">
+						<input type="hidden" name="display[<?php echo $val; ?>][end]" value="<?php echo (int) $ddata[$val]["end"]; ?>">
 					<?php
 				}
 			}

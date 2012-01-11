@@ -30,7 +30,7 @@
 	<div class="field">
 		<label for="query"><?php echo $ARnls["search"]; ?></label>
 		<textarea id="query" name="query" class="inputbox" rows="5" cols="42"><?php
-			echo preg_replace("/&/","&amp;",$this->getdata("query", "none"));
+			echo $this->showdata("query", "none");
 		?></textarea>
 	</div>
 </fieldset>

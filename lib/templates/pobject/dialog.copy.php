@@ -5,7 +5,7 @@
 
 		$wgWizFlow = array(
 			array(
-				"current" => $this->getdata("wgWizCurrent","none"),
+				"current" => $this->getvar("wgWizCurrent","none"),
 				"template" => "dialog.path.form.php",
 				"cancel" => "window.close.js",
 				"save" => "dialog.copy.save.php"

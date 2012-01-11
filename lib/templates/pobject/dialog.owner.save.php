@@ -7,7 +7,7 @@
 		$user = current($this->get($owner, "system.get.phtml"));
 		if (!$user || !$user->implements('puser') || $user->implements('pgroup')) {
 			$this->error = sprintf($ARnls["err:notfindusergroup"], $owner);
-			echo $this->error;
+			echo htmlentities($this->error, ENT_QUOTES, 'UTF-8');
 		} else {
 
 

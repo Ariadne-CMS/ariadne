@@ -39,7 +39,7 @@
 			</tr><tr>
 				<td colspan="2">
 					<textarea name="<?php echo $selectednls."[summary]"; ?>" cols="30" rows="4" wrap="soft" class="inputbox"><?php 
-							echo preg_replace("/&/","&amp;",$this->getdata("summary", $selectednls)); 
+							echo $this->showdata("summary", $selectednls); 
 					?></textarea>
 				</td>
 			<?php
