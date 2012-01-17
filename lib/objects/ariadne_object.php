@@ -283,7 +283,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 							$context = $this->getContext();
 							
 							$eventData = new object();
-							$eventData->arProperties = $properties;
 							$eventData->arCallArgs = $arCallArgs;
 							$eventData->arCallFunction	= $context['arCallFunction'];
 							$eventData->arIsNewObject = true;
@@ -292,11 +291,17 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 								return false; // prevent saving of the object.
 							}
 							$arCallArgs = $eventData->arCallArgs;
-							$arCallArgs['properties'] = $eventData->arProperties;
 							
 							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 							$wf_object->arIsNewObject=true;
 							$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);
+							if (is_array($eventData->arProperties)) {
+								if (is_array($wf_result)) {
+									$wf_result = array_merge_recursive($wf_result, $eventData->arProperties);
+								} else {
+									$wf_result = $eventData->arProperties;
+								}
+							}
 							$this->error = $wf_object->error;
 							$this->priority = $wf_object->priority;
 							$this->data = $wf_object->data;
@@ -468,7 +473,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					$context = $this->getContext();
 							
 					$eventData = new object();
-					$eventData->arProperties = $properties;
 					$eventData->arCallArgs = $arCallArgs;
 					$eventData->arCallFunction = $context['arCallFunction'];
 					$eventData->arIsNewObject = false;
@@ -477,10 +481,16 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						return false; // prevent saving of the object.
 					}
 					$arCallArgs = $eventData->arCallArgs;
-					$arCallArgs['properties'] = $eventData->arProperties;
-							
+
 					$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 					$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);
+					if (is_array($eventData->arProperties)) {
+						if (is_array($wf_result)) {
+							$wf_result = array_merge_recursive($wf_result, $eventData->arProperties);
+						} else {
+							$wf_result = $eventData->arProperties;
+						}
+					}
 					$this->error = $wf_object->error;
 					$this->priority = $wf_object->priority;
 					$this->data = $wf_object->data;
