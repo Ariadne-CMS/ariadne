@@ -132,7 +132,7 @@
 					$result .= urlencode($key) . "=" . urlencode($value) . "&"; 
 				}
 			} 
-			return $result;	
+			return substr( $result, 0, -1);	
 		}
 
 		private function mergeOptions( ) {
@@ -150,7 +150,7 @@
 				'content' => $request
 			), $options );
 
-			if ( $options['method'] == 'GET' ) {
+			if ( $options['method'] == 'GET' && $options['content'] ) {
 				if ( strpos( $url, '?' ) === false ) {
 					$url = $url . '?' . $options['content'];
 				} else {
@@ -158,7 +158,6 @@
 				}
 				$options['content'] = '';
 			}
-
 			$context = stream_context_create( array( 'http' => $options ) );
 			$result = @file_get_contents( (string) $url, false, $context );
 			$this->responseHeaders = $http_response_header; //magic php variable set by file_get_contents.
@@ -171,10 +170,6 @@
 		}
 
 		public function get( $url, $request = null, $options = array() ) {
-			
-			if ( !isset($request) ) {
-				$request = $this->parseRequestURL($url);
-			}
 			return $this->send( 'GET', $url, $request, $options );		
 		}
 		
