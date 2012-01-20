@@ -1,4 +1,46 @@
 ========================
+Changes in Ariadne 2.7.7
+========================
+
+New features:
+- added XSS protection
+- added getAttribute() method in ar/xml and ar/html.
+- added maxlength attribute in ar/html/form for textarea type.
+- added support for multiple select in ar/html/form.
+- added images or dir:images support to getSetting() method. This returns
+  the globally configured ariadne images directory.
+
+Changes to existing features:
+- removed require_once() calls in all ar library files, this is now handled
+  by ar::autoload.
+- local urls in private cache files are now automatically parsed so sessions
+  in url's are replaced with the correct session id.
+- improved the grants checks when copying objects, now correctly requires
+  add grants on the target object.
+- improved delete dialog so the object to delete is not abbreviated for
+  longer paths.
+- improved performance of ar/xml and ar/html, they now only try to parse
+  input if the input possibly contains xml or html.
+
+Bugfixes:
+- changed most regular expressions from ereg(i) to preg version for
+  compatibility with PHP 5.3
+- fixed problem in the Ariadne user interface, now all objects are listed,
+  regardless of the languages set in the objects.
+- fixed problem with set_admin_password.php, now works again.
+- fixed problem with scripts in bin/ directory, they now all use the same
+  set of includes, including ar.php.
+- onbeforeview now only fires for templates that can be overridden by pinp
+  templates. This prevents an error in a onbeforeview handler from killing
+  Ariadne.
+- fixed bug in ar/xml and ar/html, they now handle utf-8 input correctly.
+- fixed bug in ar/html/form, now correctly sets id attributes
+- fixed bug in ar/html/form, the regular expression for URL's was incorrect.
+- fixed bug in ar/connect/soap, now handles exceptions correctly.
+- fixed bug in onbeforeview, now won't recurse infinitely
+
+
+========================
 Changes in Ariadne 2.7.6
 ========================
 
