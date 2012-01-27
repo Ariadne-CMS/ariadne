@@ -287,10 +287,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 							}
 							$arCallArgs = $eventData->arCallArgs;
 							$arCallArgs['properties'] = $eventData->arProperties;
-							
+							$properties = $eventData->arProperties;
 							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 							$wf_object->arIsNewObject=true;
-							$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);
+							$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);							
 							$this->error = $wf_object->error;
 							$this->priority = $wf_object->priority;
 							$this->data = $wf_object->data;
@@ -472,7 +472,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					}
 					$arCallArgs = $eventData->arCallArgs;
 					$arCallArgs['properties'] = $eventData->arProperties;
-							
+					$properties = $eventData->arProperties;
+		
 					$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 					$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);
 					$this->error = $wf_object->error;
@@ -1719,6 +1720,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					if ( !$ARConfigChecked ) {
 						$ARCurrent->nls = $this->nls;
 					}
+				}
 			} else {
 				$this->reqnls = $ARCurrent->nls;
 			}
