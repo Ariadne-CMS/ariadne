@@ -68,7 +68,8 @@
 			}
 		}
 	}
-
+	ldGatherXSSInput( $xss_vars, $function );
+	ldGatherXSSInput( $xss_vars, $path );
 
 	if(!isset($AR_PATH_INFO)){
 		$AR_PATH_INFO=$_SERVER["PATH_INFO"];
@@ -406,9 +407,10 @@
 				}
 
 				if($xssDetected) {
-					$newargs["oldArCallArgs"]     = $args;
-					$newargs["oldArCallFunction"] = $function;
-					$newargs['xss_vars']          = $xss_vars;
+					$newargs["arRequestedArgs"]     = $args;
+					$newargs["arRequestedTemplate"] = $function;
+					$newargs["arSuspectedArgs"]     = $xss_vars;
+					$newargs["arResultOutput"]      = $image;
 					$store->call('user.xss.html', $newargs, $store->get($path));
 				} else {
 					echo $image;
