@@ -44,8 +44,12 @@
 			parent::__construct( $soapClient );
 		}	
 
-		function _soapCall($name, $arguments, $options = Array(), $inputHeaders = Array(), &$outputHeaders = Array()) {
-			$result = new arWrapper($this->wrapped->__soapCall($name, $arguments, $options, $inputHeaders, $outputHeaders));
+		function _soapCall( $name, $arguments, $options = Array(), $inputHeaders = Array(), &$outputHeaders = Array() ) {
+			try {
+				$result = new arWrapper( $this->wrapped->__soapCall( $name, $arguments, $options, $inputHeaders, $outputHeaders ) );
+			} catch( Exception $e ) {
+				$result = ar::error( $e->getMessage(), $e->getCode() );
+			}
 			return $result;
 		}
 
