@@ -141,6 +141,7 @@ muze.namespace('muze.event', function() {
 				case 'keydown':
 				case 'keyup':
 					type = 'KeyboardEvents';
+					var evt = win.document.createEvent( type );
 					if (muze.env.isHostMethod(evt, 'initKeyboardEvent')) {
 						init = function(evt, mask) {
 							if (mask) {
@@ -167,7 +168,7 @@ muze.namespace('muze.event', function() {
 							if (mask) {
 								evt.initKeyEvent(name, !!mask.bubbles, !!mask.cancelable, mask.view, mask.ctrlKey, mask.altKey, mask.shiftKey, mask.metaKey, mask.keyCode, mask.charCode);
 							} else {
-								ect.initKeyEvent(name, true, true, win, false, false, false, false, 0, 0);
+								evt.initKeyEvent(name, true, true, win, false, false, false, false, 0, 0);
 							}
 						}
 					}
