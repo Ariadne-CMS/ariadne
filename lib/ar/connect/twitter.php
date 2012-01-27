@@ -146,6 +146,9 @@ class ar_connect_twitterClient extends arBase {
 		if ( !$this->client instanceof ar_connect_oauthClient ) { //FIXME: a real OAuth is also ok
 			// FIXME: what if you want a caching client?
 			$this->client = ar_connect_oauth::client( $consumerKey, $consumerSecret );
+			if ( ar_error::isError($this->client) ) {
+				return $this->client;
+			}
 		}
 		
 		return $this->client->setToken( $access_token, $access_token_secret );
@@ -165,6 +168,9 @@ class ar_connect_twitterClient extends arBase {
 		if ( !$this->client instanceof ar_connect_oauthClient ) { ////FIXME: a real OAuth is also ok
 			// FIXME: what if you want a caching client?
 			$this->client = ar_connect_oauth::client( $consumerKey, $consumerSecret );
+			if ( ar_error::isError($this->client) ) {
+				return $this->client;
+			}
 		}
 		
 		$access_token        = $session->getvar('access_token'); 
