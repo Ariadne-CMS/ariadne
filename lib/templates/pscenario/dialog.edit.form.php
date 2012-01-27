@@ -22,14 +22,14 @@
 		<label for="summary"><?php echo $ARnls["summary"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
 		<textarea id="summary" name="<?php echo $selectednls."[summary]"; ?>" class="inputbox" rows="5" cols="42"><?php
-			echo preg_replace("/&/","&amp;",$this->getdata("summary", $selectednls));
+			echo $this->showdata("summary", $selectednls);
 		?></textarea>
 	</div>
 	<div class="field">
 		<label for="effect"><?php echo $ARnls["effect"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
 		<textarea id="effect" name="<?php echo $selectednls."[effect]"; ?>" class="inputbox" rows="5" cols="42"><?php
-			echo preg_replace("/&/","&amp;",$this->getdata("effect", $selectednls));
+			echo $this->showdata("effect", $selectednls);
 		?></textarea>
 	</div>
 </fieldset>

@@ -1497,6 +1497,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	function loadLibrary($name, $path) {
 	global $ARConfig;
 		$path=$this->make_path($path);
+		debug("pobject::loadLibrary($name, $path);");
 		if ($name===ARUNNAMED) {
 			if (strstr($path, $this->path)===0) {
 				error('You cannot load an unnamed library from a child object.');
@@ -2242,7 +2243,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 
 	function showdata($varname, $nls="none") {
-		echo htmlspecialchars($this->getdata($varname, $nls));
+		echo htmlspecialchars($this->getdata($varname, $nls), ENT_QUOTES, 'UTF-8');
 	}
 
 	function setnls($nls) {

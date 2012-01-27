@@ -41,9 +41,9 @@
 	} else {
 		$file = $template;
 	}
-	$file=preg_replace("/&/","&amp;",$file);
-	$file=preg_replace("/</","&lt;", preg_replace("/>/","&gt;",$file));
-
+//	$file=preg_replace("/&/","&amp;",$file);
+//	$file=preg_replace("/</","&lt;", preg_replace("/>/","&gt;",$file));
+	$file = htmlentities($file, ENT_QUOTES, 'UTF-8');
 ?>
 	<script type="text/javascript">
 		function objectadded() {
@@ -367,7 +367,7 @@ for($i=1;$i<$linetotal;$i++) { echo $i."\n"; }
 <?php
 		$error = $this->getvar("error");
 		if( $error ) {
-			echo "alert('".AddCSlashes($error, ARESCAPE)."');\n";
+			echo "alert(\"".AddCSlashes($error, ARESCAPE)."\");\n";
 		}
 ?>
 		var area = document.getElementById("template");

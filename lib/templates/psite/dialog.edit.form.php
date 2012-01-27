@@ -23,19 +23,19 @@
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
 		<input id="name" type="text" name="<?php echo $selectednls."[url]"; ?>" 
 			value="<?php
-					if (!$url=$this->getdata("url", $selectednls)) {
+					if (!$url = $this->getdata("url", $selectednls)) {
 						if (!$this->arIsNewObject && ($selectednls==$this->data->nls->default)) {
-							$url=$this->getdata("url", "none");
+							$url = $this->getdata("url", "none");
 						}
 					}
-					echo $url;
+					echo htmlspecialchars( $url, ENT_QUOTES, 'UTF-8');
 				?>" class="inputline">
 	</div>
 	<div class="field">
 		<label for="summary"><?php echo $ARnls["summary"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
 		<textarea name="<?php echo $selectednls."[summary]"; ?>" class="inputbox"><?php
-			echo preg_replace("/&/","&amp;",$this->getdata("summary", $selectednls));
+			echo $this->showdata("summary", $selectednls);
 		?></textarea>
 	</div>
 	<div class="field">
