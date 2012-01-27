@@ -344,7 +344,7 @@ class mysqlstore extends store{
 			$result = mysql_fetch_array($qresult);
 			$count  = $result["count"];
 		}
-		return $count;
+		return (int) $count;
 	}
 
 	public function find($path, $criteria, $limit=100, $offset=0) {
