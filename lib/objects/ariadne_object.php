@@ -1699,20 +1699,23 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			// if a default language is entered in a parent and no language is
 			// explicitly selected in the url, use that default. 
 			// The root starts with the system default (ariadne.phtml config file)
-			if (!$ARCurrent->nls && $config->root['nls']) {
-				$this->reqnls = $config->root['nls'];
-				if (!$ARConfigChecked) {
-					$ARCurrent->nls = $this->reqnls;
-				}
-			} else if ($config->nls->default && !$ARCurrent->nls) {
-				$this->reqnls=$config->nls->default;
-				$this->nls=$this->reqnls;
-				if (!$ARConfigChecked) {
-					$ARCurrent->nls = $this->nls;
-				}
+			if ( !$ARCurrent->nls ) {
+				if ( $config->root['nls'] ) {
+					$this->reqnls = $config->root['nls'];
+					if ( !$ARConfigChecked ) {
+						$ARCurrent->nls = $this->reqnls;
+					}
+				} else if ( $config->nls->default ) {
+					$this->reqnls = $config->nls->default;
+					$this->nls = $this->reqnls;
+					if ( !$ARConfigChecked ) {
+						$ARCurrent->nls = $this->nls;
+					}
+			} else {
+				$this->reqnls = $ARCurrent->nls;
 			}
-			$nls=&$this->nls;
-			$reqnls=&$this->reqnls;
+			$nls = &$this->nls;
+			$reqnls = &$this->reqnls;
 
 			if (!$ARConfigChecked && is_object($ARnls)) {
 				$ARnls->setLanguage($ARCurrent->nls);
