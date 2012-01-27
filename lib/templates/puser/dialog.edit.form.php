@@ -54,19 +54,25 @@
 		<select id="profile" type="text" name="profile" class="selectline">
 			<option value=""><?php echo $ARnls["noprofile"]; ?></option>
 			<?php
-				$this->find(
-					"/system/profiles/",
-					"object.implements = 'pprofile'",
-					"show.option.phtml",
-					Array(
-						"selected" => $this->getdata("profile", "none")
-					)
-				);
+				$userConfig  = $this->loadUserConfig();
+				$profileDirs = (array)$userConfig["authentication"]["profiledirs"];
+				array_unshift($profileDirs, "/system/profiles");
+				foreach ($profileDirs as $profileDir) {
+					$this->find(
+						$profileDir,
+						"object.implements = 'pprofile'",
+						"show.option.phtml",
+						Array(
+							"selected" => $this->getdata("profile", "none")
+						)
+					);
+				}
 			?>
 		</select>
 	</div>
 
 	<?php	
+		
 		$disabled = $this->getvar('disabled');
 		if (!isset($disabled)) {
 			$disabled = $this->data->config->disabled;
