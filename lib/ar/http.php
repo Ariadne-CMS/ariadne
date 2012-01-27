@@ -132,7 +132,7 @@
 					$result .= urlencode($key) . "=" . urlencode($value) . "&"; 
 				}
 			} 
-			return $result;	
+			return substr( $result, 0, -1);	
 		}
 
 		private function mergeOptions( ) {
@@ -150,7 +150,7 @@
 				'content' => $request
 			), $options );
 
-			if ( $options['method'] == 'GET' ) {
+			if ( $options['method'] == 'GET' && $options['content'] ) {
 				if ( strpos( $url, '?' ) === false ) {
 					$url = $url . '?' . $options['content'];
 				} else {
@@ -171,10 +171,6 @@
 		}
 
 		public function get( $url, $request = null, $options = array() ) {
-			
-			if ( !isset($request) ) {
-				$request = $this->parseRequestURL($url);
-			}
 			return $this->send( 'GET', $url, $request, $options );		
 		}
 		
