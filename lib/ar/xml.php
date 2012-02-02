@@ -1129,8 +1129,8 @@
 		}
 		
 		function getElementById( $id ) {
-			if (isset($this->idCache[$id])) {
-				return $this->idCache[$id];
+			if (isset($this->idCache[ (string) $id ])) {
+				return $this->idCache[ (string) $id ];
 			}
 		}
 		
