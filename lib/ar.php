@@ -127,12 +127,13 @@
 		
 		public static function taint(&$value) {
 			if ( is_numeric($value) ) {
-				return;
+				return $value;
 			} else if ( is_array($value) ) {
 				array_walk_recursive( $value, array( self, 'taint' ) );
 			} else if ( is_string($value) && $value ) { // empty strings don't need tainting
 				$value = new arTainted($value);
 			}
+			return $value;
 		}
 
 		public static function untaint(&$value, $filter = FILTER_SANITIZE_SPECIAL_CHARS, $flags = null) {
@@ -144,6 +145,7 @@
 					'flags' => $flags
 				) );
 			}
+			return $value;
 		}
 		
 		protected static function untaintArrayItem(&$value, $key, $options) {
