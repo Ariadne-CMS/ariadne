@@ -24,7 +24,7 @@
 			return $this->config['siteConfig'];
 		}
 
-		function authUser($login, $password, $ARLoginPath="") {
+		function authUser($login, $password, $ARLoginPath="/") {
 		global $store, $AR;
 			// Make sure we always have a user.
 			$this->getUser('public');
@@ -37,13 +37,14 @@
 				$user = current($store->call("system.authenticate.phtml", array("ARPassword" => $password),
 												$store->find($userdir, $criteria, 1, 0)));
 				if ($user) {
-						$ARUserDir = $userdir;
-						break;
+					$ARUserDir = $userdir;
+					break;
 				}
 			}
 
 			if (!$user) {
 				$user = $this->authExternalUser($login, $password, $ARLoginPath);
+				$ARUserDir = $user->parent;
 			}
 
 			if ($user) {
