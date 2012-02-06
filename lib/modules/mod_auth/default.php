@@ -24,7 +24,7 @@
 			return $this->config['siteConfig'];
 		}
 
-		function authUser($login, $password, $ARLoginPath="/") {
+		function authUser($login, $password, $ARLoginPath="") {
 		global $store, $AR;
 			// Make sure we always have a user.
 			$this->getUser('public');
