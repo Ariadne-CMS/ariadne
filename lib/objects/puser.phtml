@@ -41,8 +41,8 @@ class puser extends pdir { // puser class definition
 
 	static function hashPassword($password) {
 		global $AR;
-		if(isset($AR->passwordAlgorithm) ) {
-			$algo = $AR->passwordAlgorithm;
+		if(isset($AR->hashAlgorithm) ) {
+			$algo = $AR->hashAlgorithm;
 		} else {
 			$algo = 'MD5';
 		}
@@ -51,7 +51,8 @@ class puser extends pdir { // puser class definition
 
 		if (CRYPT_SHA512 == 1 && $algo === "SHA512") {
 			$hash = crypt($password, '$6$rounds=5000$' . sha1(time()) . '$');
-		} else if (CRYPT_MD5 == 1 && $algo === "MD5") {
+		} else {
+			// fall back to MD5, if SHA512 is not available, or not selected
 			$hash = crypt($password, '$1$' . sha1(time()) . '$');
 		}
 		return $hash;
