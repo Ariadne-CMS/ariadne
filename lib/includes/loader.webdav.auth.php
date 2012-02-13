@@ -27,7 +27,7 @@
 
 		/* create the session key */
 		srand((double)microtime()*1000000);
-		$session_key = ARCrypt(uniqid(rand(), true));
+		$session_key = md5(uniqid(rand(), true));
 
 		$ARCurrent->session->put("ARSessionKey", $session_key, true);
 		$ARCurrent->session->put("ARSessionTimedout", 0, 1);
@@ -54,7 +54,7 @@
 
 		$cookie[$ARCurrent->session->id]['login']=$login;
 		$cookie[$ARCurrent->session->id]['timestamp']=time();
-		$cookie[$ARCurrent->session->id]['check']="{".ARCrypt($login.$session_key)."}";
+		$cookie[$ARCurrent->session->id]['check']="{".md5($login.$session_key)."}";
 		$ARCookie=serialize($cookie);
 		debug("setting cookie ($ARCookie)");
 		setcookie("ARCookie",$ARCookie, 0, '/');
@@ -81,7 +81,7 @@
 		$cookie=ldGetCredentials();
 		if ($session_key && $login==$cookie[$ARCurrent->session->id]['login']
 			&& ($saved=$cookie[$ARCurrent->session->id]['check'])) {
-			$check="{".ARCrypt($login.$session_key)."}";
+			$check="{".md5($login.$session_key)."}";
 			if ($check==$saved && !$ARCurrent->session->get('ARSessionTimedout', 1)) {
 				$result=true;
 				debug("login check ok");
