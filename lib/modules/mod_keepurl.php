@@ -77,7 +77,7 @@
 			}
 			if ($path != $originalPath) {
 				$shortcut = current($me->get($path, 'system.get.phtml'));
-				if (!$shortcut->AR_implements('pshortcut')) {
+				if (!$shortcut || !$shortcut->AR_implements('pshortcut')) {
 					$result = $originalPath;
 				} else {
 					if (!is_array($redirects)) {
