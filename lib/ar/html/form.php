@@ -701,6 +701,28 @@
 		
 	}
 	
+	class ar_html_formInputFile extends ar_html_formInput {
+
+		var $multiple = false;
+
+		public function __construct( $field, $form ) {
+			parent::__construct( $field, $form );
+			$this->multiple = isset($field->multiple) ? $field->multiple : false;
+		}
+
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $multiple=null ) {
+			$content = parent::getInput( $type, $name, $value, $disabled, $id, $title );
+			if ( !isset($multiple) ) {
+				$multiple = $this->multiple;
+			}
+			if ( $multiple ) {
+				$content->attributes['multiple'] = true;
+			}
+			return $content;
+		}
+
+	}
+
 	class ar_html_formInputHidden extends ar_html_formInput {
 			
 		public function __construct($field, $form) {
