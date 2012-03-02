@@ -15,6 +15,9 @@
 				$requestedPath = "/";
 			}
 			$_cache = $ARConfig->cache;
+			while ( $requestedPath && $requestedPath!='/' && !$store->exists($requestedPath) ) {
+				$requestedPath = $store->make_path( $requestedPath, '..' );
+			} 
 			$site = current($store->call("system.get.phtml", "", $store->get($requestedPath)));
 			if ($site) {
 				$site_config = $site->loadUserConfig();
