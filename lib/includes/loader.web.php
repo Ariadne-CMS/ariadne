@@ -158,6 +158,8 @@
 					"arCallFunction" => $requestedtemplate
 				) );
 
+				$requestedArgs = $arCallArgs;
+
 				$eventData = new object();
 				$eventData->arCallPath = $requestedpath;
 				$eventData->arCallFunction = $requestedtemplate;
@@ -168,7 +170,8 @@
 					$arCallArgs = (array) $eventData->arCallArgs;
 					$myarCallArgs = array_merge($arCallArgs, 
 						Array(	"arRequestedPath" => $requestedpath,
-						 		"arRequestedTemplate" => $requestedtemplate 
+						 		"arRequestedTemplate" => $requestedtemplate,
+								"arRequestedArgs" => $requestargs
 						)
 					);
 					$store->call("user.notfound.html",$myarCallArgs,
@@ -334,7 +337,7 @@
 	function ldHeader($header,$replace=true) {
 	global $ARCurrent;
 		$result=false;
-		if (!Headers_sent()) {
+		if ( !Headers_sent() && !$ARCurrent->arNoHeaders ) {
 			$result=true;
 			list($key,$value) = explode(':',$header,2);
 			Header($header,$replace);
