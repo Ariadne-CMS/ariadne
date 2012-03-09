@@ -111,7 +111,7 @@
 				// chop root
 				$info['path'] = substr($info['path'], strlen($this->root)-1);
 
-				ldHeader("Last-Modified: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT", $info['props']['getlastmodified']));
+				ldHeader("Last-Modified: ".gmdate(DATE_RFC1123, $info['props']['getlastmodified']));
 				ldHeader("Content-Length: ".(int)$info['props']['getcontentlength']);
 
 				$status = "200 OK";

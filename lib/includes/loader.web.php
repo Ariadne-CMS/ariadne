@@ -370,10 +370,10 @@
 			ldHeader("Cache-control: no-store, no-cache, must-revalidate, max-age=0, private");
 		}
 		if ( $expires !== false ) {
-			ldHeader("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT", $expires));
+			ldHeader("Expires: ".gmdate(DATE_RFC1123, $expires));
 		}
 		if ( $modified !== false ) {
-			ldHeader("Last-Modified: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT", $modified));
+			ldHeader("Last-Modified: ".gmdate(DATE_RFC1123, $modified));
 		}
 		return $result;
 	}

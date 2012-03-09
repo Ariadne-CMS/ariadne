@@ -156,7 +156,7 @@
 						&& strtotime($ifModifiedSince) >= $this->cache->getCreatedTime($cacheImage) ) 
 					{
 						$loader->header('HTTP/1.1 304 Not Modified');
-						$loader->header('Expires: '.gmstrftime('%a, %d %b %Y %H:%M:S GMT', 
+						$loader->header('Expires: '.gmdate(DATE_RFC1123,
 							$this->cache->getStaleTime($cacheImage) ) );
 						return;
 					} else if ( ( !isset($cacheControl['max-age']) 

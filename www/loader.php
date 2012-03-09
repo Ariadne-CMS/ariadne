@@ -185,7 +185,7 @@
 				if ($mtime!=0 && $expires>$mtime) {
 					$expires = $mtime;
 				}
-				ldHeader("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$expires));
+				ldHeader("Expires: ".gmdate(DATE_RFC1123,$expires));
 			} else {
 				// now send caching headers too, maximum 1 hour client cache.
 				// FIXME: make this configurable. per directory? as a fraction?

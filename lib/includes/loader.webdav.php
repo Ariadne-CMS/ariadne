@@ -327,16 +327,16 @@
 			}
 			ldHeader("Pragma: cache");
 			ldHeader("Cache-control: cache");
-			ldHeader("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$expires));
-			$result=ldHeader("Last-Modified: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$modified));
+			ldHeader("Expires: ".gmdate(DATE_RFC1123,$expires));
+			$result=ldHeader("Last-Modified: ".gmdate(DATE_RFC1123,$modified));
 		} else {
 			if (!$modified) {
 				$modified=time();
 			}
 			ldHeader("Pragma: no-cache");
 			ldHeader("Cache-control: must-revalidate, max-age=0, private");
-			ldHeader("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$expires));
-			$result=ldHeader("Last-Modified: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT",$modified));
+			ldHeader("Expires: ".gmdate(DATE_RFC1123,$expires));
+			$result=ldHeader("Last-Modified: ".gmdate(DATE_RFC1123,$modified));
 		}
 		return $result;
 	}
