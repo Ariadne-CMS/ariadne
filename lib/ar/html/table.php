@@ -1,5 +1,4 @@
 <?php
-
 	ar_pinp::allow('ar_html_table');
 
 	class ar_html_table extends ar_htmlElement {
@@ -24,7 +23,7 @@
 				'tableOddEven'   => ar::listPattern( '(tableOdd tableEven?)*' )
 			) );
 			$this->appendChild( 
-				ar_html::el( 
+				ar_html::tag( 
 					'tbody', $rows
 				) 
 			);
@@ -41,7 +40,7 @@
 					'tableOddEven'   => ar::listPattern( '(tableOdd tableEven?)*' ),
 					'tableFirstLast' => ar::listPattern( 'tableFirst .*', '.* tableLast')
 				) );
-				$nodes[] = ar_html::el('tr', ar_html::nodes( $header, $cells ) );
+				$nodes[] = ar_html::tag( 'tr', ar_html::nodes( $header, $cells ) );
 			}
 			return $nodes;
 		}
@@ -59,7 +58,7 @@
 				$nodes = $this->getCells( $list, 'th' );
 				$head = $this->thead->firstChild; //current( $this->getElementsByTagName('thead') );
 				if ( !isset($head) ) {
-					$head = ar_html::el( 'thead', $attributes );
+					$head = ar_html::tag( 'thead', $attributes );
 					if ( $foot = $this->tfoot->firstChild ) {
 						$this->insertBefore( $head, $foot );
 					} else if ( $body = $this->tbody->firstChild ) {
@@ -70,7 +69,7 @@
 				} else if (isset($attributes)) {
 					$head->setAttributes( $attributes );
 				}
-				$head->appendChild( ar_html::el( 'tr', $nodes ) );
+				$head->appendChild( ar_html::tag( 'tr', $nodes ) );
 			}
 			return $this;
 		}
@@ -80,7 +79,7 @@
 				$nodes = $this->getCells( $list, 'td' );
 				$foot = $this->tfoot->lastChild;
 				if ( !isset($foot) ) {
-					$foot = ar_html::el( 'tfoot', $attributes );
+					$foot = ar_html::tag( 'tfoot', $attributes );
 					if ( $head = $this->thead->lastChild ) {
 						$this->insertBefore( $foot, $head->nextSibling );
 					} else if ( $body = $this->tbody->firstChild ) {
@@ -91,7 +90,7 @@
 				} else if (isset( $attributes ) ) {
 					$foot->setAttributes( $attributes );
 				}
-				$foot->appendChild( ar_html::el( 'tr', $nodes ) );
+				$foot->appendChild( ar_html::tag( 'tr', $nodes ) );
 			}
 			return $this;
 		}
@@ -99,7 +98,7 @@
 		public function rowHeaders( $list, $attributes = array() ) {
 			foreach ( $list as $key => $value ) {
 				if ( ! ($value instanceof ar_htmlNode ) || $value->tagName != 'th' ) {
-					$list[$key] = ar_html::el( 'th',
+					$list[$key] = ar_html::tag( 'th',
 						array_merge( 
 							(array) $attributes, 
 							array( 'scope' => 'row' ) 
@@ -128,7 +127,7 @@
 		}
 		
 		public function caption($content, $attributes = null) {
-			$newCaption = ar_html::el( 'caption', $content, $attributes );
+			$newCaption = ar_html::tag( 'caption', $content, $attributes );
 			if ( $caption = $this->caption->firstChild ) {
 				$this->replaceChild( $newCaption, $caption );
 			} else {
