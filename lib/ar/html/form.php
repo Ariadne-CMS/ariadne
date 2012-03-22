@@ -750,18 +750,22 @@
 
 		protected function getOptions($options=null, $selectedValues=false) {
 			$content = ar_html::nodes();
-			if (!isset($options)) {
+			if ( !isset($options) ) {
 				$options = $this->options;
 			}
-			if (is_array($options)) {
-				foreach($options as $key => $option) {
-					if (!is_array($option)) {
+			if ( is_array($options) ) {
+				foreach( $options as $key => $option ) {
+					if ( !is_array($option) ) {
 						$option = array(
 							'name' => $option
 						);
 					}
-					if (!isset($option['value'])) {
-						$option['value'] = $key;
+					if ( !isset($option['value']) ) {
+						if ( is_numeric( $key ) ) {
+							$option['value'] = $option['name'];
+						} else {
+							$option['value'] = $key;
+						}
 					}
 					$content[] = $this->getOption($option['name'], $option['value'], $selectedValues);
 				}
@@ -773,7 +777,10 @@
 			$attributes = array(
 				'value' => $value
 			);
-			if ($selectedValues!==false && ( (!$this->multiple && $selectedValues == $value) || ( is_array($selectedValues) && $selectedValues[$name] == $value ) ) ){
+			if ( $selectedValues!==false 
+				 &&	( ( !$this->multiple && $selectedValues == $value ) 
+					|| ( is_array($selectedValues) && $selectedValues[$name] == $value ) ) 
+			) {
 				$attributes[] = 'selected';
 			}
 			return ar_html::el('option', $name, $attributes);
