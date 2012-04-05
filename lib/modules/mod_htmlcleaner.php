@@ -257,6 +257,20 @@ class htmlcleaner
 	// removes the worst mess from word.
 	function cleanup($body, $config)
 	{
+
+		$scriptParts = array();
+		$scriptPart  = false;
+		do {
+			$scriptPartKey = "";
+			if (preg_match('!<script[^>]*>(.|[\r\n])*?</[^>]*script[^>]*>!i', $body, $matches)) {
+				do {
+					$scriptPartKey = '----'.md5(rand()).'----';
+				} while (strpos($body, $scriptPartKey) !== false);
+				$body = str_replace($matches[0], $scriptPartKey, $body);
+				$scriptParts[$scriptPartKey] = $matches[0];
+			}
+		} while($scriptPartKey);
+
 		$body = "<htmlcleaner>$body</htmlcleaner>";
 		$rewrite_rules = $config["rewrite"];
 		$return = '';
@@ -359,9 +373,14 @@ class htmlcleaner
 			if ($part && strstr($part->nodeValue,'<?xml:namespace')===false)
 				$return .= $part->toString();
 		}
+
+		foreach ($scriptParts as $key => $value) {
+			$return = str_replace($key, $value, $return);
+		}
 		//FIXME: htmlcleaner removes the '<' in '</htmlcleaner>' if the html code is broken
 		// ie: if the last tag in the input isn't properly closed... it should instead
 		// close any broken tag properly (add quotes and a '>')
+
 		return str_replace('<htmlcleaner>', '', str_replace('</htmlcleaner>', '', $return));
 	}
 }
