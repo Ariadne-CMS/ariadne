@@ -1040,7 +1040,7 @@
 	}
 	
 	class ar_html_formInputFieldset extends ar_html_formInput {
-		private $children = null;
+		protected $children = null;
 
 		public function __construct($field, $form) {
 			parent::__construct($field, $form);
@@ -1087,6 +1087,115 @@
 			return $valid;			
 		}
 
+	}
+	
+	class ar_html_formInputFieldList extends ar_html_formInputFieldset {
+		
 
+		protected function normalizeChildren( $value ) {
+			// make sure the children are a simple array, with numeric keys and that the name of the field
+			// is always an array
+			// and apply the default formfield on the given values and add those as children
+			$this->children = array();
+			$count = 0;
+			foreach ( $value as $key => $child ) {
+				if ( is_string($child) ) {
+					$child = array(
+						'value' => $child
+					);
+				}
+				$child['name'] = $this->name.'['.$count.']';
+				if ( $this->default ) {
+					$childOb = clone( $this->default );
+					if ( $childOb->setValues ) {
+						$childOb->setValues( $child );
+					} else {
+						$childOb->setValue( $child['value'] );
+					}
+				} else {
+					$childOb = $this->form->parseField( 0, $child );
+				}
+				$this->children[] = $childOb;
+				$count++;
+			}
+		}
+		
+		protected function handleUpdates($default) {
+			$delete = ar('http')->getvar( $this->name.'Delete' );
+			if ( isset($delete) ) {
+				ar::untaint($delete);
+				if ( $this->children[$delete] ) {
+					unset( $this->children[$delete] );
+				}
+			} else if ( $add = ar('http')->getvar( $this->name.'Add' ) ) {
+				$addedField = ar('http')->getvar( $this->newField->name );
+				if ( $addedField ) {
+					// add a copy of default to the children of this field
+					$newField = $default;
+					$newField['value'] = $addedField; // FIXME: generiek maken
+					$this->children[] = $this->form->parseField(0, $newField );
+				}
+			}
+		}
+		
+		public function __construct($field, $form) {
+			parent::__construct ($field, $form);
+			if ( isset( $field->value ) ) { // apply default behaviour, step 1
+				if ( !$field->newField ) {
+					$field->newField = array(
+						'name' => $this->name.'New',
+						'value' => '',
+						'label' => false
+					);
+				}
+				
+				if ( !$field->default ) {
+					$field->default = array(
+						'name' => $this->name.'[]',
+						'label' => false
+					);
+				}
+			}
+			
+			if ( $field->newField ) {
+				$this->newField = $form->parseField( 0, $field->newField );
+			}
+			if ( $field->default ) {
+				$this->default = $form->parseField( 0, $field->default );
+			}
+
+			if ( isset( $field->value ) ) { // apply default behaviour, step 2			
+				$this->normalizeChildren( $field->value );				
+				$this->handleUpdates( $field->default );
+			}
+		}
+		
+		public function getField($content=null) {
+			$fieldset = parent::getField($content);
+			$count = 0;
+			foreach( $fieldset->div as $field ) {
+				$field->appendChild( ar_html::el('button', array(
+					'class' => 'formFieldListDelete', 
+					'type' => 'submit',
+					'name' => $this->name.'Delete',
+					'value' => $count
+				), '-' ) );
+				$count++;
+			}
+			if ( $this->newField ) {
+				$newField = $this->newField->getField();
+				$newField->appendChild( ar_html::el('button', array(
+					'class' => 'formFieldListAdd', 
+					'type' => 'submit',
+					'name' => $this->name.'Add',
+					'value' => $this->name.'NewField'
+				), '+' ) );
+				$fieldset->appendChild(
+					ar_html::el('div', array('class' => 'formFieldListAdd'), $newField ) 
+				);
+			}
+			return $fieldset;
+		}
+		
 	}
 ?>
