@@ -632,6 +632,49 @@
 		
 	}
 	
+	class ar_html_formInputButton extends ar_html_formInput {
+		public $buttontype, $buttonlabel;
+		
+		public function __construct( $field, $form ) {
+			parent::__construct( $field, $form );
+			$this->buttontype = isset($field->buttontype) ? $field->buttontype : null;
+			$this->buttonlabel = isset($field->buttonlabel) ? $field->buttonlabel : $field->value;
+		}
+		
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $buttontype=null, $buttonlabel=null ) {
+			if ( !isset($buttontype) ) {
+				$buttontype = $this->buttontype;
+			}
+			if ( !isset($buttonlabel) ) {
+				$buttonlabel = $this->buttonlabel;
+			}
+			if ( !isset($name) ) {
+				$name = $this->name;
+			}
+			if ( !isset($value) ) {
+				$value = $this->value;
+			}
+			if ( !isset($disabled) ) {
+				$disabled = $this->disabled;
+			}
+			if ( !isset($title) ) {
+				$title = $this->title;
+			}
+			$attributes = array(
+				'type'	=> $buttontype,
+				'name'	=> $name,
+				'value'	=> $value
+			);
+			if ( $disabled ) {
+				$attributes['disabled'] = $disabled;
+			}
+			if ( isset( $title ) ) {
+				$attributes['title'] = $title;
+			}
+			return ar_html::el('button', $attributes, $buttonlabel);
+		}
+	}
+	
 	class ar_html_formInputText extends ar_html_formInput {
 		var $maxlength, $size;
 
@@ -874,6 +917,93 @@
 			}
 			return ar_html::el('option', $name, $attributes);
 		}
+	}
+
+	class ar_html_formInputButtonList extends ar_html_formInputSelect {
+	
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $options=null, $multiple=null) {
+			if (!isset($name)) {
+				$name = $this->name;
+			}
+			if (!isset($value)) {
+				$value = $this->value;
+			}
+			if (!isset($id)) {
+				$id = $name; 
+			}
+			if (!isset($multiple)) {
+				$multiple = $this->multiple;
+			}
+			if (!isset($disabled)) {
+				$disabled = $this->disabled;
+			}
+			$attributes = array(
+				'class' => 'formButtonListButtons'
+			);
+			$buttonAttributes = array(
+				'name'	=> $name
+			);
+			if ($disabled) {
+				$buttonAttributes['disabled'] = true;
+			}
+			if (!isset($title)) {
+				$title = $this->title;
+			}
+			if ($title) {
+				$attributes['title'] = $title;
+			}
+			$content = ar_html::nodes();
+			// FIXME: add hidden inputs with current value when multiple values are allowed
+			// pressing button again will unset the corresponding value
+			$content[] = ar_html::el('div', $this->getButtons($options, $value, $buttonAttributes), $attributes);
+			return $content;
+		}
+
+		protected function getButtons( $options, $value, $attributes ) {
+			$content = ar_html::nodes();
+			if ( !isset($options) ) {
+				$options = $this->options;
+			}
+			if ( is_array($options) ) {
+				foreach ( $options as $key => $button ) {
+					if ( !is_array($button) ) {
+						$button = array(
+							'label' => $button
+						);
+					}
+					if ( !isset($button['value']) ) {
+						$button['value'] = $key;
+					}
+					$content[] = $this->getButton($button, $value, $attributes);
+				}
+			}
+			$content->setAttribute('class', array(
+				'formButtonList' => ar::listPattern( 'formButtonListFirst .*', '.* formButtonListLast' )
+			) );
+			return $content;
+		}
+		
+		protected function getButton( $button, $selectedValues, $attributes ) {
+			if ($button['label']) {
+				$buttonLabel = $button['label'];
+				unset( $button['label'] );
+			} else {
+				$buttonLabel = $button['value'];
+			}
+			$attributes = array_merge( $button, $attributes );
+			$buttonEl = ar_html::el('button', $attributes, $buttonLabel);
+			var_dump($selectedValues);
+			if ( $selectedValues!==false 
+				&& ( (!$this->multiple && $selectedValues == $button['value']) 
+				|| ( is_array($selectedValues) && $selectedValues[$name] == $button['value'] ) ) 
+			) {
+				$buttonEl->setAttribute('class', array(
+					'formButtonListSelected' => 'formButtonListSelected'
+				) );
+			}
+			return $buttonEl;
+		}
+		
 	}
 	
 	class ar_html_formInputCheckbox extends ar_html_formInput {
