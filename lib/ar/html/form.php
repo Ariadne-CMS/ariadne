@@ -953,13 +953,11 @@
 				$attributes['title'] = $title;
 			}
 			$content = ar_html::nodes();
-			// FIXME: add hidden inputs with current value when multiple values are allowed
-			// pressing button again will unset the corresponding value
-			$content[] = ar_html::el('div', $this->getButtons($options, $value, $buttonAttributes), $attributes);
+			$content[] = ar_html::el('div', $this->getButtons($name, $options, $value, $buttonAttributes), $attributes);
 			return $content;
 		}
 
-		protected function getButtons( $options, $value, $attributes ) {
+		protected function getButtons( $name, $options, $value, $attributes ) {
 			$content = ar_html::nodes();
 			if ( !isset($options) ) {
 				$options = $this->options;
@@ -974,16 +972,25 @@
 					if ( !isset($button['value']) ) {
 						$button['value'] = $key;
 					}
-					$content[] = $this->getButton($button, $value, $attributes);
+					$content[] = $this->getButton($key, $name, $button, $value, $attributes);
 				}
 			}
 			$content->setAttribute('class', array(
 				'formButtonList' => ar::listPattern( 'formButtonListFirst .*', '.* formButtonListLast' )
 			) );
+			if ( !$this->multiple ) {
+				$content->insertBefore( ar_html::el('input', array(
+					'type' => 'hidden',
+					'name' => $name,
+					'value' => $value
+				) ), $content->firstChild );
+			}
 			return $content;
 		}
 		
-		protected function getButton( $button, $selectedValues, $attributes ) {
+		protected function getButton( $index, $name, $button, $selectedValues, $attributes ) {
+			// FIXME: add hidden inputs with current value when multiple values are allowed
+			// pressing button again will unset the corresponding value
 			if ($button['label']) {
 				$buttonLabel = $button['label'];
 				unset( $button['label'] );
@@ -991,8 +998,8 @@
 				$buttonLabel = $button['value'];
 			}
 			$attributes = array_merge( $button, $attributes );
+			$result = ar_html::nodes();
 			$buttonEl = ar_html::el('button', $attributes, $buttonLabel);
-			var_dump($selectedValues);
 			if ( $selectedValues!==false 
 				&& ( (!$this->multiple && $selectedValues == $button['value']) 
 				|| ( is_array($selectedValues) && $selectedValues[$name] == $button['value'] ) ) 
@@ -1229,6 +1236,9 @@
 			$this->children = array();
 			$count = 0;
 			foreach ( $value as $key => $child ) {
+				if ( !$child ) {
+					continue;
+				}
 				if ( is_string($child) ) {
 					$child = array(
 						'value' => $child
@@ -1273,7 +1283,7 @@
 			if ( isset( $field->value ) ) { // apply default behaviour, step 1
 				if ( !$field->newField ) {
 					$field->newField = array(
-						'name' => $this->name.'New',
+						'name' => $this->name.'[]',
 						'value' => '',
 						'label' => false
 					);
