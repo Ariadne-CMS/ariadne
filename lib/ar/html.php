@@ -126,6 +126,11 @@
 			return new ar_html_zen( $string );
 		}
 		
+		public static function editable() {
+			$args = func_get_args();
+			return call_user_func_array( 'ar_html_edit::el', $args );
+		}
+		
 		protected static function parseChildren( $DOMElement ) {
 			$result = array();
 			foreach ( $DOMElement->childNodes as $child ) {
