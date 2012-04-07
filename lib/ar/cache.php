@@ -1,14 +1,28 @@
 <?php
 
 	/* usage
+
+		simple:
+
+		if ( !$image = ar('cache')->getIfFresh( $name ) ) {
+			$image = expensiveOperation();
+			ar('cache')->set( $naam, $image );
+		}
+		echo $image;
+		
+		with locking:
+
 		if ( !$image = ar('cache')->getIfFresh( $naam ) ) {
 			if ( ar('cache')->lock( $naam ) ) {
 				$image = expensiveOperation();
 				ar('cache')->set( $naam, $image, '2 hours' );
-			} else {
-				// couldn't lock the cache image, so another process is already generating it
-				ar('cache')->wait( $naam ); // wait for the lock to be lifted or a timeout
+			} else if ( ar('cache')->wait( $naam ) ) { // lock failed, another process is generating the cache 
+				// continues here when the lock to be lifted
 				$image = ar('cache')->get($naam);
+			} else {
+				// couldn't lock the file in a reasonable time, you could generate an error here
+				// or just go with a stale image, or simply do the calculation:
+				$image = expensiveOperation();
 			}
 		}
 		echo $image;
@@ -119,10 +133,15 @@
 		
 		protected function __callCached( $method, $args ) {
 			$path = $method . '(' . md5( $args ) . ')';
-			$image = $this->cacheStore->get( $path );
-			if ( !$image || !$this->cacheStore->isFresh( $path ) ) {
-				$image = $this->__callCatch( $method, $args );
-				$this->cacheStore->set( $path, $image );
+			if ( !$image = $this->cacheStore->getIfFresh( $path ) ) {
+				if ( $this->cacheStore->lock( $path ) ) {
+					$image = $this->__callCatch( $method, $args );
+					$this->cacheStore->set( $path, serialize($image) );
+				} else if ( $this->cacheStore->wait( $path ) ){
+					$image = $this->cacheStore->get( $path ); // another process was generating the cacheimage
+				} else {
+					$image = $this->__callCatch( $method, $args ); // just get the result and return it
+				}
 			} else {
 				$image = unserialize( $image );
 			}
