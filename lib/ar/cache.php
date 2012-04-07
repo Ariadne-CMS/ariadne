@@ -104,6 +104,13 @@
 			return self::$cacheStore->clear( $name );
 		}
 		
+		public static function purge( $name = null ) {
+			if ( !self::$cacheStore ) {
+				self::$cacheStore = self::create();
+			}
+			return self::$cacheStore->purge( $name );
+		}
+		
 		public static function wrap( $object ) {
 			if ( !self::$cacheStore ) {
 				self::$cacheStore = self::create();
@@ -280,15 +287,34 @@
 				return false;
 			}
 		}
-		
+
 		public function clear( $path = null ) {
 			$cachePath = $this->cachePath( $path );
 			if ( file_exists( $cachePath ) ) {
 				if ( is_dir( $cachePath ) ){
 					$cacheDir = dir( $cachePath );
 					while (false !== ($entry = $d->read())) {
-						if ( $entry != '.' && $entry != '..' ) {
+						if ( $entry != '.' && $entry != '..' && !is_dir( $cachePath . '/' . $entry) {
 							$this->clear( $path . '/' . $entry ); 
+						}
+					}
+					return true;
+				} else {
+					return unlink( $cachePath );
+				}
+			} else {
+				return true;
+			}
+		}
+		
+		public function purge( $path = null ) {
+			$cachePath = $this->cachePath( $path );
+			if ( file_exists( $cachePath ) ) {
+				if ( is_dir( $cachePath ) ){
+					$cacheDir = dir( $cachePath );
+					while (false !== ($entry = $d->read())) {
+						if ( $entry != '.' && $entry != '..' ) {
+							$this->purge( $path . '/' . $entry ); 
 						}
 					}
 					return rmdir( $cachePath );
