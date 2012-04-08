@@ -31,7 +31,7 @@
 
 	ar_pinp::allow('ar_cache');
 	ar_pinp::allow('ar_cacheStore');
-	ar_pinp::allow('ar_cacheWrapper');
+	ar_pinp::allow('ar_cacheProxy');
 	
 	class ar_cache extends arBase {
 		
@@ -111,15 +111,15 @@
 			return self::$cacheStore->purge( $name );
 		}
 		
-		public static function wrap( $object ) {
+		public static function proxy( $object ) {
 			if ( !self::$cacheStore ) {
 				self::$cacheStore = self::create();
 			}
-			return new ar_cacheWrapper( $object, self::$cacheStore );
+			return new ar_cacheProxy( $object, self::$cacheStore );
 		}
 	}
 	
-	class ar_cacheWrapper extends arWrapper {
+	class ar_cacheProxy extends arWrapper {
 		var $cacheStore = null;
 		
 		public function __construct( $object, $cacheStore ) {
@@ -158,7 +158,7 @@
 			echo $cacheData['output'];
 			$result = $cacheData['result'];
 			if ( is_object( $result ) ) {
-				$result = new ar_cacheWrapper( $result, $this->cacheStore->subStore( $path ) );
+				$result = new ar_cacheProxy( $result, $this->cacheStore->subStore( $path ) );
 			}
 			return $result;
 		}
@@ -218,7 +218,11 @@
 		
 		public function get( $path ) {
 			$cachePath = $this->cachePath( $path );
-			return unserialize( file_get_contents( $cachePath ) );
+			if ( file_exists( $cachePath ) ) {
+				return unserialize( file_get_contents( $cachePath ) );
+			} else {
+				return null;
+			}
 		}
 
 		public function getvar( $name ) {
@@ -227,7 +231,11 @@
 		
 		public function isFresh( $path ) {
 			$cachePath = $this->cachePath( $path );
-			return ( filemtime( $cachePath ) > time() );
+			if ( file_exists( $cachePath ) ) {
+				return ( filemtime( $cachePath ) > time() );
+			} else {
+				return false;
+			}
 		}
 		
 		public function getIfFresh( $path, $freshness = 0 ) {
@@ -243,6 +251,10 @@
 			// locks the file against writing by other processes, so generation of time or resource expensive images
 			// will not happen by multiple processes simultaneously
 			$cachePath = $this->cachePath( $path );
+			$dir = dirname( $cachePath );
+			if ( !file_exists( $dir ) ) {
+				mkdir( $dir, $this->mode, true ); //recursive
+			}
 			$lockFile = fopen( $cachePath, 'c' );
 			$lockMode = LOCK_EX;
 			if ( !$blocking ) {
