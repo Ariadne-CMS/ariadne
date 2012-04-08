@@ -132,20 +132,23 @@
 			$result = parent::__call( $method, $args );
 			$output = ob_get_contents();
 			ob_end_flush();
-			return serialize( array(
+			return array(
 				'output' => $output,
 				'result' => $result
-			) );
+			);
 		}
 		
 		protected function __callCached( $method, $args ) {
-			$path = $method . '(' . md5( $args ) . ')';
+			$path = $method . '(' . md5( serialize($args) ) . ')';
 			if ( !$image = $this->cacheStore->getIfFresh( $path ) ) {
 				if ( $this->cacheStore->lock( $path ) ) {
 					$image = $this->__callCatch( $method, $args );
 					$this->cacheStore->set( $path, serialize($image) );
 				} else if ( $this->cacheStore->wait( $path ) ){
-					$image = $this->cacheStore->get( $path ); // another process was generating the cacheimage
+					if ( $image = $this->cacheStore->get( $path ) ) {
+						// another process was generating the cacheimage
+						unserialize( $image );
+					}
 				} else {
 					$image = $this->__callCatch( $method, $args ); // just get the result and return it
 				}
@@ -159,7 +162,7 @@
 			$image = $this->__callCached( $method, $args );			
 			echo $image['output'];
 			$result = $image['result'];
-			if ( is_object( $result ) ) 
+			if ( is_object( $result ) ) {
 				$result = new ar_cacheWrapper( $result, $this->cacheStore->subStore( $path ) );
 			}
 			return $result;
@@ -176,14 +179,14 @@
 		public function isFresh( $path );
 	}
 	
-	class ar_cacheStore implements ar_cacheStoreInterface, ar_nameValueStore {
+	class ar_cacheStore implements ar_cacheStoreInterface, arKeyValueStoreInterface {
 	
 		protected $basePath = '';
 		protected $timeout = 7200;
 		protected $mode = 0777;
 
 		public function __construct( $basePath, $timeout = 7200, $mode = 0777 ) {
-			$this->basePath = preg_replace('/\.\./g', '', $basePath);
+			$this->basePath = preg_replace('/\.\./', '', $basePath);
 
 			if ( is_string($timeout) ) {
 				$timeout = strtotime( $timeout, 0);
@@ -192,35 +195,39 @@
 			$this->mode = $mode;
 
 			if ( !defined("ARCacheDir") ) {
-				define( "ARCacheDir", sys_get_temp_dir().'ar_cache/' );
+				define( "ARCacheDir", sys_get_temp_dir().'/ar_cache/' );
 			}
-			if ( !file_existst("ARCacheDir") ) {
+			if ( !file_exists( ARCacheDir ) ) {
 				mkdir( ARCacheDir, $this->mode );
 			}
-			if ( !file_existst("ARCacheDir") ) {
-				throw ar_Exception("Cache Directory does not exist ( ".ARCacheDir." )", 1);
+			if ( !file_exists( ARCacheDir ) ) {
+				throw new ar_error("Cache Directory does not exist ( ".ARCacheDir." )", 1);
 			}
 			if ( !is_dir( ARCacheDir ) ) {
-				throw ar_Exception("Cache Directory is not a directory ( ".ARCacheDir." )", 1);
+				throw new ar_error("Cache Directory is not a directory ( ".ARCacheDir." )", 1);
 			}
 			if ( !is_writable( ARCacheDir ) ) {
-				throw ar_Exception("Cache Directory is not writable ( ".ARCacheDir." )", 1);
+				throw new ar_error("Cache Directory is not writable ( ".ARCacheDir." )", 1);
 			}
 		}
 		
 		protected function cachePath( $path ) {
 			// last '=' is added to prevent conflicts between subdirectories and cache images
 			// images always end in a '=', directories never end in a '='
-			return ARCacheDir . $basePath . preg_replace('/(\.\.|\=)/g', '', $path) . '='; 
+			return ARCacheDir . $this->basePath . preg_replace('/(\.\.|\=)/', '', $path) . '='; 
 		}
 		
 		public function subStore( $path ) {
-			return new ar_cacheStore( $this->basePath . preg_replace('/(\.\.|\=)/g', '', $path) );
+			return new ar_cacheStore( $this->basePath . preg_replace('/(\.\.|\=)/', '', $path) );
 		}
 		
 		public function get( $path ) {
 			$cachePath = $this->cachePath( $path );
 			return file_get_contents( $cachePath );
+		}
+
+		public function getvar( $name ) {
+			return $this->get( $name );
 		}
 		
 		public function isFresh( $path ) {
@@ -237,19 +244,19 @@
 			}
 		}
 
-		public static function lock( $path, $blocking = false ) {
+		public function lock( $path, $blocking = false ) {
 			// locks the file against writing by other processes, so generation of time or resource expensive images
 			// will not happen by multiple processes simultaneously
 			$cachePath = $this->cachePath( $path );
 			$lockFile = fopen( $cachePath, 'c' );
 			$lockMode = LOCK_EX;
 			if ( !$blocking ) {
-				$lockMode = $mode|LOCK_NB;
+				$lockMode = $lockMode|LOCK_NB;
 			}
 			return flock( $lockFile, $lockMode );
 		}
 
-		public static function wait( $path ) {
+		public function wait( $path ) {
 			$cachePath = $this->cachePath( $path );
 			$lockFile = fopen( $cachePath, 'c' );
 			$result = flock( $lockFile, LOCK_EX );
@@ -257,9 +264,16 @@
 			return $result;
 		}
 
-		public function set( $path, $value, $timout = 7200 ) {
+		public function putvar( $name, $value ) {
+			return $this->set( $name, $value );
+		}
+
+		public function set( $path, $value, $timeout = null ) {
 			$cachePath = $this->cachePath( $path );
-			if ( is_string($timeout) ) {
+			if ( !isset( $timeout ) ) {
+				$timeout = $this->timeout;
+			}
+			if ( is_string( $timeout ) ) {
 				$timeout = strtotime( $timeout, 0);
 			}
 			$dir = dirname( $cachePath );
@@ -268,7 +282,7 @@
 			}
 			if ( false !== file_put_contents( $cachePath, $value, LOCK_EX ) ) {
 				// FIXME: check dat de lock gemaakt met lock() weg is na file_put_contents
-				touch( $cachePath, time()+$timeout );
+				touch( $cachePath, time() + $timeout );
 			} else {
 				return false;
 			}
@@ -278,10 +292,10 @@
 			$cachePath = $this->cachePath( $path );
 			if ( file_exists( $cachePath ) && is_readable( $cachePath ) ) {
 				return array(
-					'size' => file_size($cachePath),
+					'size' => filesize($cachePath),
 					'fresh' => $this->isFresh( $path ),
 					'ctime' => filectime( $cachePath ),
-					'timeout' => filemtime() - time()
+					'timeout' => filemtime( $cachePath ) - time()
 				);
 			} else {
 				return false;
@@ -291,10 +305,10 @@
 		public function clear( $path = null ) {
 			$cachePath = $this->cachePath( $path );
 			if ( file_exists( $cachePath ) ) {
-				if ( is_dir( $cachePath ) ){
+				if ( is_dir( $cachePath ) ) {
 					$cacheDir = dir( $cachePath );
-					while (false !== ($entry = $d->read())) {
-						if ( $entry != '.' && $entry != '..' && !is_dir( $cachePath . '/' . $entry) {
+					while ( false !== ( $entry = $d->read() ) ) {
+						if ( $entry != '.' && $entry != '..' && !is_dir( $cachePath . '/' . $entry ) ) {
 							$this->clear( $path . '/' . $entry ); 
 						}
 					}
