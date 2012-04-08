@@ -140,28 +140,23 @@
 		
 		protected function __callCached( $method, $args ) {
 			$path = $method . '(' . md5( serialize($args) ) . ')';
-			if ( !$image = $this->cacheStore->getIfFresh( $path ) ) {
+			if ( !$cacheData = $this->cacheStore->getIfFresh( $path ) ) {
 				if ( $this->cacheStore->lock( $path ) ) {
-					$image = $this->__callCatch( $method, $args );
-					$this->cacheStore->set( $path, serialize($image) );
+					$cacheData = $this->__callCatch( $method, $args );
+					$this->cacheStore->set( $path, $cacheData );
 				} else if ( $this->cacheStore->wait( $path ) ){
-					if ( $image = $this->cacheStore->get( $path ) ) {
-						// another process was generating the cacheimage
-						unserialize( $image );
-					}
+					$cacheData = $this->cacheStore->get( $path );
 				} else {
-					$image = $this->__callCatch( $method, $args ); // just get the result and return it
+					$cacheData = $this->__callCatch( $method, $args ); // just get the result and return it
 				}
-			} else {
-				$image = unserialize( $image );
 			}
-			return $image;
+			return $cacheData;
 		}
 		
 		public function __call( $method, $args ) {
-			$image = $this->__callCached( $method, $args );			
-			echo $image['output'];
-			$result = $image['result'];
+			$cacheData = $this->__callCached( $method, $args );			
+			echo $cacheData['output'];
+			$result = $cacheData['result'];
 			if ( is_object( $result ) ) {
 				$result = new ar_cacheWrapper( $result, $this->cacheStore->subStore( $path ) );
 			}
@@ -223,7 +218,7 @@
 		
 		public function get( $path ) {
 			$cachePath = $this->cachePath( $path );
-			return file_get_contents( $cachePath );
+			return unserialize( file_get_contents( $cachePath ) );
 		}
 
 		public function getvar( $name ) {
@@ -280,7 +275,7 @@
 			if ( !file_exists( $dir ) ) {
 				mkdir( $dir, $this->mode, true ); //recursive
 			}
-			if ( false !== file_put_contents( $cachePath, $value, LOCK_EX ) ) {
+			if ( false !== file_put_contents( $cachePath, serialize( $value ), LOCK_EX ) ) {
 				// FIXME: check dat de lock gemaakt met lock() weg is na file_put_contents
 				touch( $cachePath, time() + $timeout );
 			} else {
