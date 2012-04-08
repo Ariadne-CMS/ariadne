@@ -80,6 +80,7 @@ class ar_connect_rssClient extends ar_xmlDataBinding {
 				->bind( $item->source->nodeValue, 'source' )
 				->bind( $item->source->getAttribute('url'), 'source_url' )
 				->bind( $item->pubDate, 'pubDate')	
+				->bind( $item->{'content:encoded'}, 'content:encoded', 'html' )
 				->bind( $item, 'rawXML', 'xml' );
 	}
 
