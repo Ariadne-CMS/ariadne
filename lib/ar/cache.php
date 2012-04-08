@@ -300,28 +300,19 @@
 		public function clear( $path = null ) {
 			$cachePath = $this->cachePath( $path );
 			if ( file_exists( $cachePath ) ) {
-				if ( is_dir( $cachePath ) ) {
-					$cacheDir = dir( $cachePath );
-					while ( false !== ( $entry = $d->read() ) ) {
-						if ( $entry != '.' && $entry != '..' && !is_dir( $cachePath . '/' . $entry ) ) {
-							$this->clear( $path . '/' . $entry ); 
-						}
-					}
-					return true;
-				} else {
-					return unlink( $cachePath );
-				}
+				return unlink( $cachePath );
 			} else {
 				return true;
 			}
 		}
 		
 		public function purge( $path = null ) {
-			$cachePath = $this->cachePath( $path );
+			$this->clear( $path );
+			$cachePath = substr( $this->cachePath( $path ), 0, -1 ); // remove last '='
 			if ( file_exists( $cachePath ) ) {
 				if ( is_dir( $cachePath ) ){
 					$cacheDir = dir( $cachePath );
-					while (false !== ($entry = $d->read())) {
+					while (false !== ($entry = $cacheDir->read())) {
 						if ( $entry != '.' && $entry != '..' ) {
 							$this->purge( $path . '/' . $entry ); 
 						}
