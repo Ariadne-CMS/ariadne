@@ -52,7 +52,11 @@
 			}
 			$prefix = 'pinp/'.$prefix; // make sure the pinp scripts have their own top level
 			$prefix = $prefix . ar::context()->getPath(); // make sure the cache store is limited to the current path in the context stack
-			return new ar_cacheStore( $prefix, $timeout );
+			try {
+				return new ar_cacheStore( $prefix, $timeout );
+			} catch( Exception $e ) {
+				return ar_error::raiseError( $e->getMessage(), $e->getCode() );
+			}
 		}
 		
 		public static function get( $name ) {
@@ -131,15 +135,14 @@
 			ob_start();
 			$result = parent::__call( $method, $args );
 			$output = ob_get_contents();
-			ob_end_flush();
+			ob_end_clean();
 			return array(
 				'output' => $output,
 				'result' => $result
 			);
 		}
 		
-		protected function __callCached( $method, $args ) {
-			$path = $method . '(' . md5( serialize($args) ) . ')';
+		protected function __callCached( $method, $args, $path ) {
 			if ( !$cacheData = $this->cacheStore->getIfFresh( $path ) ) {
 				if ( $this->cacheStore->lock( $path ) ) {
 					$cacheData = $this->__callCatch( $method, $args );
@@ -154,7 +157,8 @@
 		}
 		
 		public function __call( $method, $args ) {
-			$cacheData = $this->__callCached( $method, $args );			
+			$path = $method . '(' . md5( serialize($args) ) . ')';
+			$cacheData = $this->__callCached( $method, $args, $path );			
 			echo $cacheData['output'];
 			$result = $cacheData['result'];
 			if ( is_object( $result ) ) {
