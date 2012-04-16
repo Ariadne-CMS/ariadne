@@ -9,6 +9,7 @@ class session {
 		$this->sessionstore=new $inst_store($session_config["root"], $session_config);
 
 		$this->timeout=$session_config["timeout"];
+		$this->updateInterval = $session_config["timeout"]/10;
 
 		if ((!$id) || (!$this->sessionstore->exists("/$id/")))  { 
 			debug("session: generating new id", "all");
@@ -87,15 +88,25 @@ class session {
 		if (!$this->system->ARSessionTimedout || $forceupdate) {
 			if (!$id) { $id=$this->id; } else { $this->id=$id; }
 			// store session data
+			$now = time();
+			$interval = $this->timeout/10;
+			if ( $interval > 0 ) { 
+				$interval = min($interval,$this->updateInterval);
+			} else {
+				$interval = $this->updateInterval;
+			}
 			$this->data->system = $this->system;
-
 			if ($this->changed || $forceupdate) {
 				$this->sessionstore->save("/$id/","psession",$this->data);
+			} else if( ($now - $interval ) > $this->lastchanged ) {
+				// save session only if last save is 0.1 timeout lenght ago
+				$this->sessionstore->touch("/$id/", $now);
 			} else {
-				$this->sessionstore->touch("/$id/", time());
+				// no save needed, make sure lastchanged is not updated
+				$now = $this->lastchanged;
 			}
 			unset($this->data->system);
-			$this->lastchanged=time();
+			$this->lastchanged=$now;
 		} else {
 			debug("session timed out: no save!", "all");
 		}
