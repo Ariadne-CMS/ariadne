@@ -31,7 +31,7 @@
 		if (!function_exists("GetPassword")) {
 		    function GetPassword($pass1, $pass2) {
 			    if ($pass1 && ($pass1==$pass2)) {
-				    $password=ARCrypt($pass1);
+				    $password=puser::hashPassword($pass1);
 			    }
 			    return $password;
 		    }	
