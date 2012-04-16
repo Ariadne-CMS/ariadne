@@ -38,7 +38,7 @@
 
 		/* create the session key */
 		srand((double)microtime()*1000000);
-		$session_key = ARCrypt(uniqid(rand(), true));
+		$session_key = md5(uniqid(rand(), true));
 
 		$ARCurrent->session->put("ARSessionKey", $session_key, true);
 		$ARCurrent->session->put("ARSessionTimedout", 0, 1);
@@ -189,7 +189,7 @@
 		$session_key = $ARCurrent->session->get('ARSessionKey', true);
 		$ARUserDir   = $ARCurrent->session->get('ARUserDir', true);
 		$login       = $ARCurrent->session->get('ARLogin');
-		return "{".ARCrypt($login.$ARUserDir.$session_key)."}";
+		return "{".md5($login.$ARUserDir.$session_key)."}";
 	}
 
 	function ldGetCredentials() {

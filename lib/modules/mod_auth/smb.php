@@ -57,7 +57,7 @@
 				} else {
 					/* generate a uniq, not guessable, password */
 					srand((double)microtime()*1000000);
-					$password = ARCrypt(uniqid(rand(), true));
+					$password = md5(uniqid(rand(), true));
 
 					$userData = Array();
 					$userData["name"] = $login;
