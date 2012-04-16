@@ -205,10 +205,17 @@
 
   $AR->hideSessionIDfromURL = false;
 
-
   /* on Default we do not respawn sessions **********************************/
 
   $AR->arSessionRespawn = false;
+
+  /**************************************************************************/
+  /* password hashing algorithm                                             */
+  /* valid options are SHA512 and MD5                                       */
+  /* any value other then that will default to MD5                          */
+  /**************************************************************************/
+
+  $AR->hashAlgorithm = 'SHA512';
  
   /**************************************************************************/
   /* experimental LDAP support                                              */
@@ -353,12 +360,6 @@
 
   $ARCurrent=new object;                       // do not change
 
-  /* To crypt or not to crypt ***********************************************/
-
-  function ARCrypt($text) {
-    return md5($text);
-  }
- 
   /**************************************************************************/
   /* Global defines, used for the login functions, don't change these!      */
   /**************************************************************************/

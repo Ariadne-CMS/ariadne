@@ -348,11 +348,6 @@
 
   $ARCurrent=new object;                       // do not change
 
-  /* To crypt or not to crypt ***********************************************/
-
-  function ARCrypt($text) {
-    return md5($text);
-  }
  
   /**************************************************************************/
   /* Global defines, used for the login functions, don't change these!      */
