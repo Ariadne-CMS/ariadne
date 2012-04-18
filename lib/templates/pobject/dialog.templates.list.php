@@ -186,7 +186,11 @@
 		<?php
 			$pinp = $data->config->pinp;
 			$templates = $data->config->templates;
+
+			
 			if ($svn_enabled && $svn_status ) {
+				$deleted_templates = $data->config->deleted_templates;
+
 				foreach ($svn_status as $filename=>$file_status) {
 					if ($file_status == "!") {
 						// Template is deleted here, but not in the SVN.
@@ -198,6 +202,23 @@
 
 						$pinp[$file_meta['ar:type']][$file_meta['ar:function']][$file_meta['ar:language']] = $this->id;
 						$templates[$file_meta['ar:type']][$file_meta['ar:function']] = $file_meta['ar:default'];
+					} else if ($file_status == "D") {
+						foreach ($deleted_templates as $type => $functions) {
+							foreach ($functions as $function => $languages) {
+								foreach ($languages as $language => $default) {
+									if ($filename == "$type.$function.$language.pinp") {
+										$file_meta = array();
+										$file_meta['ar:default'] = $default;
+										$file_meta['ar:type'] = $type;
+										$file_meta['ar:function'] = $function;
+										$file_meta['ar:language'] = $language;
+
+										$pinp[$file_meta['ar:type']][$file_meta['ar:function']][$file_meta['ar:language']] = $this->id;
+										$templates[$file_meta['ar:type']][$file_meta['ar:function']] = $file_meta['ar:default'];
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -237,6 +258,11 @@
 									case "D":
 										$svn_img = "DeletedIcon.png";
 										$svn_alt = $ARnls['ariadne:svn:deleted'];
+										if ($this->data->config->deleted_templates[$type][$function][$language]) {
+											$svn_style = "blurred";
+											$svn_style_hide = "hidden";
+										}
+										break;
 									case "!":
 										$svn_style = "blurred";
 										$svn_style_hide = "hidden";

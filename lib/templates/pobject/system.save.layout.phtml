@@ -68,6 +68,20 @@
 						}
 					}
 				}
+
+				// Remove this template from 'deleted templates'.
+				if ($AR->SVN->enabled) {
+					if (isset($this->data->config->deleted_templates[$type][$function][$language])) {
+						unset($this->data->config->deleted_templates[$type][$function][$language]);
+						if (count($this->data->config->deleted_templates[$type][$function])==0) {
+							unset($this->data->config->deleted_templates[$type][$function]);
+							if (count($this->data->config->deleted_templates[$type])==0) {
+								unset($this->data->config->deleted_templates[$type]);
+							}
+						}
+					}
+				}
+
 				$this->save();
 				$this->ClearCache($this->path, false, true);
 			}

@@ -22,6 +22,14 @@
 					}
 				}
 				if (isset($this->data->config->templates[$type][$function][$language])) {
+					// Store the old template information in deleted_templates for SVN to use.
+					if ($AR->SVN->enabled) {
+						is_array($this->data->config->deleted_templates) ? false : $this->data->config->deleted_templates = array(); 
+						is_array($this->data->config->deleted_templates[$type]) ? false : $this->data->config->deleted_templates[$type] = array(); 
+						is_array($this->data->config->deleted_templates[$type][$function]) ? false : $this->data->config->deleted_templates[$type][$function] = array(); 
+						$this->data->config->deleted_templates[$type][$function][$language] = $this->data->config->templates[$type][$function][$language];
+					}
+
 					unset($this->data->config->templates[$type][$function][$language]);
 					if (count($this->data->config->templates[$type][$function])==0) {
 						unset($this->data->config->templates[$type][$function]);

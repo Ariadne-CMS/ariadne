@@ -58,6 +58,30 @@
 					}
 				}
 			}
+
+			$svn_status = (array)$fstore->svn_status($svn);
+			$deleted_templates = $this->data->config->deleted_templates;
+			if ($deleted_templates) {
+				foreach ( $deleted_templates as $type => $values) {
+					foreach ($values as $function => $templatelist) {
+						foreach ($templatelist as $language => $node) {
+							$pinp_filename = $type . "." . $function . "." . $language . ".pinp";
+							if ($svn_status[$pinp_filename] == 'D') {
+								$fileinfo[$pinp_filename] = array();
+								if (isset($this->data->config->deleted_templates[$type][$function][$language])) {
+									unset($this->data->config->deleted_templates[$type][$function][$language]);
+									if (count($this->data->config->deleted_templates[$type][$function])==0) {
+										unset($this->data->config->deleted_templates[$type][$function]);
+										if (count($this->data->config->deleted_templates[$type])==0) {
+											unset($this->data->config->deleted_templates[$type]);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
 
 		$result = $fstore->svn_commit($svn, $message, $fileinfo);
@@ -88,6 +112,7 @@
 			echo "No changes to commit.<br>\n";
 		}
 		if( $result ) {
+			$this->save();
 			echo $result;
 		}
 		flush();
