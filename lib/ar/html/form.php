@@ -637,16 +637,16 @@
 		
 		public function __construct( $field, $form ) {
 			parent::__construct( $field, $form );
-			$this->buttontype = isset($field->buttontype) ? $field->buttontype : null;
-			$this->buttonlabel = isset($field->buttonlabel) ? $field->buttonlabel : $field->value;
+			$this->buttonType = isset($field->buttonType) ? $field->buttonType : null;
+			$this->buttonLabel = isset($field->buttonLabel) ? $field->buttonLabel : $field->value;
 		}
 		
-		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $buttontype=null, $buttonlabel=null ) {
-			if ( !isset($buttontype) ) {
-				$buttontype = $this->buttontype;
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $buttonType=null, $buttonLabel=null ) {
+			if ( !isset($buttonType) ) {
+				$buttonType = $this->buttonType;
 			}
-			if ( !isset($buttonlabel) ) {
-				$buttonlabel = $this->buttonlabel;
+			if ( !isset($buttonLabel) ) {
+				$buttonLabel = $this->buttonLabel;
 			}
 			if ( !isset($name) ) {
 				$name = $this->name;
@@ -661,7 +661,7 @@
 				$title = $this->title;
 			}
 			$attributes = array(
-				'type'	=> $buttontype,
+				'type'	=> $buttonType,
 				'name'	=> $name,
 				'value'	=> $value
 			);
@@ -671,7 +671,7 @@
 			if ( isset( $title ) ) {
 				$attributes['title'] = $title;
 			}
-			return ar_html::el('button', $attributes, $buttonlabel);
+			return ar_html::el('button', $attributes, $buttonLabel);
 		}
 	}
 	
