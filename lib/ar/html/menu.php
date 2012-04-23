@@ -612,6 +612,12 @@ EOF;
 						$item['attributes']['class'] = array( $item['attributes']['class'] );
 					}
 					$item['attributes']['class']['menuCurrent'] = 'menuCurrent';
+				} else if ( ( strpos( $current, $item['path'] ) === 0 ) ||
+					 ( strpos( $current, $item['url'] ) === 0 ) ) {
+					if (!is_array($item['attributes']['class'])) {
+						$item['attributes']['class'] = array( $item['attributes']['class'] );
+					}
+					$item['attributes']['class']['menuParent'] = 'menuParent';
 				}
 				$item['node'] = ar_html::tag( $item['tagName'], $item['attributes'], 
 					ar_html::tag( 'a', $linkAttributes, $item['name'])
@@ -623,7 +629,11 @@ EOF;
 						$link->setAttribute('class', array( 'menuCurrent' => 'menuCurrent') );
 					}
 					$item['node']->setAttribute('class', array( 'menuCurrent' => 'menuCurrent') );
+				} else if ( ( strpos( $current, $item['path'] ) === 0 ) ||
+					 ( strpos( $current, $item['url'] ) === 0 ) ) {
+					$item['node']->setAttribute('class', array( 'menuParent' => 'menuParent' ) );
 				}
+
 			}
 			return $item;
 		}
