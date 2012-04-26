@@ -39,7 +39,7 @@ require_once($AR->dir->install."/lib/objects/pdir.phtml");
 
 class puser extends pdir { // puser class definition
 
-	static function hashPassword($password) {
+	function hashPassword($password) {
 		global $AR;
 		if(isset($AR->hashAlgorithm) ) {
 			$algo = $AR->hashAlgorithm;
@@ -50,18 +50,20 @@ class puser extends pdir { // puser class definition
 		$hash = false;
 
 		if (CRYPT_SHA512 == 1 && $algo === "SHA512") {
-			$hash = crypt($password, '$6$rounds=5000$' . sha1(time()) . '$');
+			$hash = crypt($password, '$6$rounds=5000$' . sha1($AR->sgSalt) . '$');
 		} else {
 			// fall back to MD5, if SHA512 is not available, or not selected
-			$hash = crypt($password, '$1$' . sha1(time()) . '$');
+			$hash = crypt($password, '$1$' . sha1($AR->sgSalt) . '$');
 		}
 		return $hash;
 	}
 
 	function CheckPassword($password) {
 		debug("puser: CheckPassword([password])","object");
-		$password=ARCrypt($password);
-		return $password==$this->data->password;
+		if (md5($password) == $this->data->password) { // md5 check for backwards compatibility
+			return true;
+		}
+		return ($this->hashPassword($password) == $this->data->password);
 	}
 
 	function GetGrants($path, &$result) {

@@ -23,37 +23,38 @@
 			$arIsNewObject=true;
 		}
 		$userConfig = $this->loadUserConfig();
-		$authconfig = $userConfig['authentication'];
+		$authConfig = $userConfig['authentication'];
 
 		// unset the properties array, so no properties can be passed to this template.
 		$properties = Array();
 
-		if (!function_exists("GetPassword")) {
-		    function GetPassword($pass1, $pass2) {
-			    if ($pass1 && ($pass1==$pass2)) {
-				    $password=puser::hashPassword($pass1);
-			    }
-			    return $password;
-		    }	
-		}
 
 		$pass1=$this->getdata("newpass1","none");
 		$pass2=$this->getdata("newpass2","none");
 		if ($pass1 || $pass2 ) {
-			if (!($this->data->password=GetPassword($pass1,$pass2))) {
+
+			$this->data->password = ($pass1 && ($pass1 == $pass2)) ? $this->hashPassword( $pass1 ) : null;
+			if (!$this->data->password) {
 				$this->error=$ARnls["err:validpassword"];
 			} else {
 				// Password is set; Set expiry time here -
 				// if the checkbox for 'never expires' is set,
 				// it will be unset before the final save.  if
-				if ($auth_config["expiry"]) {
-					$this->data->password_expiry = time() + $auth_config['expiry'];
+				if ($authConfig["expiry"]) {
+					$this->data->password_expiry = time() + $authConfig['expiry'];
 				}
 			}
 		}
-		$login = $this->make_path($this->getdata("arNewFilename", "none"));
-		$login = substr($login, strlen($this->store->make_path($login, "..")), -1);
 
+		$login = $this->getdata("login", "none");
+		if (!$login) {
+			$login = $this->make_path($this->getdata("arNewFilename", "none"));
+			$login = substr($login, strlen($this->store->make_path($login, "..")), -1);
+			if (preg_match('/\{.*\}/',$login)) {
+				$this->error = $ARnls["err:donotuseid"];
+				return false;
+			}
+		}
 
 		$this->data->name=$this->getdata("name","none");
 		$properties["name"][0]["value"]="'".AddSlashes($this->data->name)."'";
@@ -64,14 +65,14 @@
 		$this->data->telephone=$this->getdata("telephone","none");
 
 		// Password expiry flag can only be changed with config grants.
-		if ($auth_config["expiry"] && $this->CheckSilent("config")) {
+		if ($authConfig["expiry"] && $this->CheckSilent("config")) {
 			$password_never_expires = $this->getdata("neverexpires",0);
 			if ($password_never_expires) {
 				unset($this->data->password_expiry);
 			} else {
 				// Set expiry if it was not set before.
 				if (!$this->data_password_expiry) {
-					$this->data->password_expiry = time() + $auth_config['expiry'];
+					$this->data->password_expiry = time() + $authConfig['expiry'];
 				}
 			}
 		}
@@ -84,38 +85,34 @@
 			$this->data->config->disabled = $disabled;
 		}
 
+		if (!$login) {
+			$this->error = $ARnls["err:mustenterlogin"];
+			return false;
+		}
 
-		if ($this->arIsNewObject) {
-			if ($login) {
-				if (strlen($login)>32) {
-					$this->error=$ARnls["err:logintoolong"];
-				} else {
-					$criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
-					$loginexists = false;
-					foreach ($authconfig['userdirs'] as $userdirpath) {
-						$result=$this->find($userdirpath,$criteria,"system.get.phtml");
-						if ($result) {
-							$loginexists = true;
-							break;
-						}
-					}
-
-					if ($loginexists) {
-						$this->error=sprintf($ARnls["err:loginexists"],$login);
-					} else {
-						if (preg_match('/\{.*\}/',$login)) {
-							$this->error=$ARnls["err:donotuseid"];
-						} else {
-							$this->data->login=$login;
-							$properties["login"][0]["value"]="'".AddSlashes($login)."'";
-							if (!$this->data->password) {
-								$this->error=$ARnls["err:validpassword"];
-							}
-						}
+		if ($login != $this->data->login) {
+			if (strlen($login)>32) {
+				$this->error=$ARnls["err:logintoolong"];
+			} else {
+				$criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
+				$loginexists = false;
+				foreach ($authConfig['userdirs'] as $userdirpath) {
+					$result=$this->find($userdirpath,$criteria,"system.get.phtml");
+					if ($result) {
+						$loginexists = true;
+						break;
 					}
 				}
-			} else {
-				$this->error=$ARnls["err:mustenterlogin"];
+
+				if ($loginexists) {
+					$this->error=sprintf($ARnls["err:loginexists"],$login);
+				} else {
+					$this->data->login=$login;
+					$properties["login"][0]["value"]="'".AddSlashes($login)."'";
+					if (!$this->data->password) {
+						$this->error=$ARnls["err:validpassword"];
+					}
+				}
 			}
 		}
 
