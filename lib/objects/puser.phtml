@@ -50,20 +50,24 @@ class puser extends pdir { // puser class definition
 		$hash = false;
 
 		if (CRYPT_SHA512 == 1 && $algo === "SHA512") {
-			$hash = crypt($password, '$6$rounds=5000$' . sha1($AR->sgSalt) . '$');
+			$hash = crypt($password, '$6$rounds=5000$' . sha1(time()) . '$');
 		} else {
 			// fall back to MD5, if SHA512 is not available, or not selected
-			$hash = crypt($password, '$1$' . sha1($AR->sgSalt) . '$');
+			$hash = crypt($password, '$1$' . sha1(time()) . '$');
 		}
 		return $hash;
 	}
 
 	function CheckPassword($password) {
 		debug("puser: CheckPassword([password])","object");
-		if (md5($password) == $this->data->password) { // md5 check for backwards compatibility
-			return true;
+	   if($this->data->password[0] == '$' ) {
+			// salted password
+			return $this->data->password == crypt($password,$this->data->password);
+		} else {
+			// old md5 password
+			$password=md5($password);
+			return $password == $this->data->password;
 		}
-		return ($this->hashPassword($password) == $this->data->password);
 	}
 
 	function GetGrants($path, &$result) {
