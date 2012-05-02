@@ -645,9 +645,8 @@ EOF;
 			foreach ( $list as $key => $item ) {
 				$itemInfo = $this->_getItemInfo( $item, $key, $parent, $current );
 				$itemNode = $itemInfo['node'];
-				if ($parent == '[root]') {
-					$this->items[$itemInfo['url']] = $itemNode;
-				} else {
+				$this->items[$itemInfo['url']] = $itemNode;
+				if ( $parent != '[root]') {
 					$parentNode = $this->items[$parent];
 					if ($parentNode) {
 						$uls = $parentNode->getElementsByTagName( $this->options['listTag'], true );
