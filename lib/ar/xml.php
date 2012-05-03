@@ -94,7 +94,7 @@
 				if ( preg_match( '/^\s*<!\[CDATA\[/', $content ) ) {
 					$content = $value;
 				} else {
-					$content = htmlspecialchars( $value );
+					$content = htmlspecialchars( $value, ENT_QUOTES, 'UTF-8' );
 				}
 			}
 			return $content;
