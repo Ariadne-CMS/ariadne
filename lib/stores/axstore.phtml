@@ -459,8 +459,16 @@ class axstore {
 	}
 
 	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) {
-		include_once($this->code."objects/".$type.".phtml");
-		$object=new $type;
+		$class = $type;
+		if ($subcpos = strpos($type, '.')) {
+			$class = substr($type, 0, $subcpos);
+			$vtype = $class;
+		}
+		if (!class_exists($class)) {
+			include_once($this->code."objects/".$class.".phtml");
+		}
+
+		$object=new $class;
 		$object->init($this, $path, $data);
 		$object->type=$type;
 		$object->parent=$parent;
