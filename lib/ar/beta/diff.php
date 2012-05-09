@@ -18,7 +18,6 @@
 			$rows = ar_html::nodes();
 			foreach ($result as $key => $line) {
 				$cells = ar_html::nodes();
-
 				foreach ($line as $col => $content) {
 					if (is_array($content)) {
 						$options = array();
@@ -34,8 +33,8 @@
 					} else {
 						$cells[] = ar_html::tag("td", $content);
 					}
-					$rows[] = ar_html::tag("tr", $cells);
 				}
+				$rows[] = ar_html::tag("tr", $cells);
 			}
 
 			$table = ar_html::tag("table", array("class" => "diff"), $rows);
