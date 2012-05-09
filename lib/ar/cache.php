@@ -121,14 +121,20 @@
 			}
 			return new ar_cacheProxy( $object, self::$cacheStore );
 		}
+
 	}
 	
 	class ar_cacheProxy extends arWrapper {
+		// TODO: allow more control on retrieval:
+		// - get contents from cache even though cache may be stale
+		//   perhaps through an extra option in __construct?
 		var $cacheStore = null;
-		
-		public function __construct( $object, $cacheStore ) {
+		var $cacheController = null;
+
+		public function __construct( $object, $cacheStore, $cacheController = null ) {
 			parent::__construct( $object );
 			$this->cacheStore = $cacheStore;
+			$this->cacheController = $cacheController;
 		}
 
 		protected function __callCatch( $method, $args ) {
@@ -166,7 +172,15 @@
 			}
 			return $result;
 		}
-			
+		
+		public function __get( $name ) {
+			$result = parent::__get( $name );
+			if ( is_object( $result ) ) {
+				$result = new ar_cacheProxy( $result, $this->cacheStore->subStore( $name ) );
+			}
+			return $result;
+		}
+		
 	}
 	
 	interface ar_cacheStoreInterface {
