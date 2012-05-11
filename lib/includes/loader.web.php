@@ -101,10 +101,11 @@
 					$result[$field."_temp"]=basename($file_artemp);
 					$result[$field."_size"]=(int)$http_post_file['size'];
 					$type = get_mime_type($file_artemp);
+					$ext  = substr($file, strrpos($file, '.')); 
 					if (!$type) {
 						$type = get_mime_type($file, MIME_EXT);
 					}
-					$result[$field."_type"]=$type;
+					$result[$field."_type"] = get_content_type($type, $ext);
 				}
 			}
 		}

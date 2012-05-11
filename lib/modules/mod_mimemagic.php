@@ -712,9 +712,13 @@
 	$mimetypes_data["wrl"] = "x-world/x-vrml";
 
 	$contenttypes_data = Array(
-		'docx' => Array(
-			'application/zip' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+		'docx' => array(
+			'^application/zip$' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+		),
+		'css' => array(
+			'^text/.*' => 'text/css'
 		)
+
 	);
 
 	function get_mime_type($filename, $flags = 3) {
@@ -755,6 +759,9 @@
 
 	function get_content_type($mimetype, $extension) {
 	global $contenttypes_data;
+
+		$result = $mimetype;
+
 		$ePos = strrpos($extension, '.');
 		if ($ePos !== false) {
 			$extension = substr($extension, $ePos + 1);
@@ -762,7 +769,13 @@
 
 		$result = $contenttypes_data[$extension][$mimetype];
 		if (!$result) {
-			$result = $mimetype;
+			if (is_array($contenttypes_data[$extension])) {
+				foreach ($contenttypes_data[$extension] as $check => $res) {
+					if (preg_match("|$check|i", $mimetype)) {
+						return $res;
+					}
+				}
+			}
 		}
 		return $result;
 	}
