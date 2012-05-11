@@ -732,7 +732,11 @@
 					$result = @finfo_file($finfo, $filename);
 				}
 				finfo_close($finfo);
-			}
+			} else {
+				// pre 5.3.0 style
+				$result = @mime_content_type($filename);
+ 			}
+
 			if (!$result) {
 				reset($mimemagic_data);
 				$fp = fopen($filename, "rb");
@@ -760,8 +764,6 @@
 	function get_content_type($mimetype, $extension) {
 	global $contenttypes_data;
 
-		$result = $mimetype;
-
 		$ePos = strrpos($extension, '.');
 		if ($ePos !== false) {
 			$extension = substr($extension, $ePos + 1);
@@ -776,8 +778,11 @@
 					}
 				}
 			}
+		} else {
+			return $result;
 		}
-		return $result;
+
+		return $mimetype;
 	}
 
 ?>
