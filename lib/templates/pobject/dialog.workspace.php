@@ -9,7 +9,8 @@
 				"template" => "dialog.workspace.form.php",
 				"cancel" => "window.close.js",
 				"commit" => "dialog.workspace.commit.php",
-				"revert" => "dialog.workspace.revert.php"
+				"revert" => "dialog.workspace.revert.php",
+				"diff" => "dialog.workspace.diff.php"
 			)
 		);
 
@@ -22,6 +23,9 @@
 			),
 			"commit" => array(
 				"value" => $ARnls["ariadne:workspace:commit_selected"]
+			),
+			"diff" => array(
+				"value" => $ARnls["ariadne:workspace:diff_selected"]
 			)
 		);
 
@@ -29,6 +33,21 @@
 		$wgWizHeader = $wgWizTitle;
 		$wgWizHeaderIcon = $AR->dir->images.'icons/large/svndiff.png';
 
+		$yui_base = $AR->dir->www."js/yui/";
+		$wgWizStyleSheets = array(
+			$yui_base . "datatable/assets/skins/sam/datatable.css",
+			$yui_base . "menu/assets/skins/sam/menu.css",
+			$yui_base . "container/assets/skins/sam/container.css",	
+			$AR->dir->styles."templates.css",
+			
+		);
+
+		$wgWizScripts = array(
+				$yui_base . "element/element-min.js",
+				$yui_base . "datasource/datasource-min.js",
+				$yui_base . "datatable/datatable-min.js",
+				$yui_base . "container/container_core-min.js"
+		);
 		include($this->store->get_config("code")."widgets/wizard/yui.wizard.html");
 	}
 ?>

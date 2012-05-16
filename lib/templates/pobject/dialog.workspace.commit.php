@@ -1,11 +1,11 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
-		print_r($workspace);
+		$workspace = $this->getdata('workspacepath');
 
-//		echo "<pre class='svnresult'>\n";
-//		$this->call("system.svn.update.php", $arCallArgs);
-//		echo "</pre>\n";
-		$this->call("window.opener.objectadded.js");
+		if (is_array($workspace)) {
+			$this->store->commitLayer($this->path, array_keys($workspace));
+		}
+		$this->call("window.close.objectadded.js");
 	}
 ?>
