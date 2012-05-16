@@ -12,33 +12,42 @@
 
 			$diff = new Diff($a, $b);
 
-			$formatter = new AriadneDiffFormatter();
-			$result = $formatter->format($diff);
+			if ($diff) {
+				$formatter = new AriadneDiffFormatter();
+				$result = $formatter->format($diff);
 
-			$rows = ar_html::nodes();
-			foreach ($result as $key => $line) {
-				$cells = ar_html::nodes();
-				foreach ($line as $col => $content) {
-					if (is_array($content)) {
-						$options = array();
-						if ($content['class']) {
-							$options['class'] = $content['class'];
-						}
-						if ($content['colspan']) {
-							$options['colspan'] = $content['colspan'];
-						}
+				$rows = ar_html::nodes();
+				foreach ($result as $key => $line) {
+					$cells = ar_html::nodes();
+					foreach ($line as $col => $content) {
+						if (is_array($content)) {
+							$options = array();
+							if ($content['class']) {
+								$options['class'] = $content['class'];
+							}
+							if ($content['colspan']) {
+								$options['colspan'] = $content['colspan'];
+							}
 
-						$cell = ar_html::tag("td", $options, $content['data']);
-						$cells[] = $cell;
-					} else {
-						$cells[] = ar_html::tag("td", $content);
+							$cell = ar_html::tag("td", $options, $content['data']);
+							$cells[] = $cell;
+						} else {
+							$cells[] = ar_html::tag("td", $content);
+						}
 					}
+					$rows[] = ar_html::tag("tr", $cells);
 				}
-				$rows[] = ar_html::tag("tr", $cells);
-			}
 
-			$table = ar_html::tag("table", array("class" => "diff"), $rows);
-			return $table;
+				if (sizeof($rows)) {
+					$table = ar_html::tag("table", array("class" => "diff"), $rows);
+					$table->insertBefore(ar_html::tag("col", array("class" => "content")), $table->firstChild);
+					$table->insertBefore(ar_html::tag("col"), $table->firstChild);
+					$table->insertBefore(ar_html::tag("col", array("class" => "content")), $table->firstChild);
+					$table->insertBefore(ar_html::tag("col"), $table->firstChild);
+
+					return $table;
+				}
+			}
 		}
 
 		public static function style () {
@@ -75,6 +84,13 @@
 				  border-collapse: collapse;
 				  margin-bottom: 20px;
 				  width: 100%;
+				  table-layout: fixed;
+				}
+				table.diff col {
+					width: 1.4em;
+				}
+				table.diff col.content {
+					width: 50%;
 				}
 				table.diff tr.even, table.diff tr.odd {
 				  background-color: inherit;
