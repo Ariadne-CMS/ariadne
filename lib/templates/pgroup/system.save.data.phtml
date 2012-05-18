@@ -18,6 +18,10 @@
 			$this->data=new object;
 		}
 
+		$userConfig = $this->loadUserConfig();
+		$authConfig = $userConfig['authentication'];
+
+
 		// unset the properties array, so no properties can be passed to this template.
 		$properties = Array();
 
@@ -28,20 +32,32 @@
 		$properties["text"][0]["nls"]="'none'";
 		$this->data->email=$this->getdata("email","none");
 		if ($this->arIsNewObject) {
-			$login=$this->getdata("arNewFilename","none");
+			$login = $this->getdata("login", "none");
+			if (!$login) {
+				$login = $this->make_path($this->getdata("arNewFilename", "none"));
+				$login = substr($login, strlen($this->store->make_path($login, "..")), -1);
+				if (preg_match('/\{.*\}/',$login)) {
+					$this->error = $ARnls["err:donotuseid"];
+					return false;
+				}
+			}
 			if ($login) {
 				$criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
 				$criteria["object"]["implements"]["="]="'pgroup'";
-				$result=$this->find("/system/groups/",$criteria,"system.get.phtml");
-				if ($result) {
+
+				$loginexists = false;
+				foreach ($authConfig['groupdirs'] as $groupdirpath) {
+					$result = $this->find($groupdirpath, $criteria, "system.get.phtml");
+					if ($result) {
+						$loginexists = true;
+						break;
+					}
+				}
+				if ($loginexists) {
 					$this->error=sprintf($ARnls["err:loginexists"],$login);
 				} else {
-					if (preg_match('/\{.*\}/',$login)) {
-						$this->error=$ARnls["err:donotuseid"];
-					} else {
-						$this->data->login=$login;
-						$properties["login"][0]["value"]="'".AddSlashes($this->data->login)."'";
-					}
+					$this->data->login=$login;
+					$properties["login"][0]["value"]="'".AddSlashes($this->data->login)."'";
 				}
 			} else {
 				$this->error=$ARnls["err:mustenterlogin"];

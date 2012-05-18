@@ -83,6 +83,12 @@
 			}
 		}	
 	} else if ( $wgWizCurrent == 2 ) {
+		$login = $this->getdata("login", "none");
+		$arNewFilename = basename($this->getdata("arNewFilename", "none"));
+		echo "ARNEWFILENAME: $arNewFilename<br>\n";
+		if (!$login && $arNewFilename && !preg_match('/\{.*\}/i', $arNewFilename)) {
+			$this->data->login = $arNewFilename;
+		}
 
 		$profile = $this->getdata("profile", "none");
 		if ($profile && $this->getdata("arProfileLoaded", "none") != $profile) {
