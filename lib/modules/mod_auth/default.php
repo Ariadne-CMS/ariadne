@@ -15,6 +15,9 @@
 				$requestedPath = "/";
 			}
 			$_cache = $ARConfig->cache;
+			while ( $requestedPath && $requestedPath!='/' && !$store->exists($requestedPath) ) {
+				$requestedPath = $store->make_path( $requestedPath, '..' );
+			}
 			$site = current($store->call("system.get.phtml", "", $store->get($requestedPath)));
 			if ($site) {
 				$site_config = $site->loadUserConfig();
@@ -33,7 +36,10 @@
 			$criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
 
 			$siteConfig = $this->loadConfig($ARLoginPath);
+//			debug('siteconfig:'.print_r($siteConfig,true));
 			foreach ($siteConfig['userdirs'] as $userdir) {
+//				debug("searching in userdir $userdir");
+				
 				$user = current($store->call("system.authenticate.phtml", array("ARPassword" => $password),
 												$store->find($userdir, $criteria, 1, 0)));
 				if ($user) {
