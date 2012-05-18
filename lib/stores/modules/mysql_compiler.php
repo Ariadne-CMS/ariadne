@@ -365,7 +365,7 @@ class mysql_compiler extends sql_compiler {
 
 		$select_query =	"select distinct($objects.id), $nodes.path, $nodes.parent, $nodes.priority, $objects.type, ".
 					" $objects.object, UNIX_TIMESTAMP($objects.lastchanged) as lastchanged, $objects.vtype ".
-		$select_query .= "from $tables $join $query "; 
+		$select_query .= "from ($tables) $join $query "; 
 
 		$select_query .= $orderby . " $this->limit_s ";
 		$count_query = "select count(distinct($objects.id)) as count from $tables ".$query;
