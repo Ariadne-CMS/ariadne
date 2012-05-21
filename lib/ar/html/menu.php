@@ -25,7 +25,7 @@
 			}
 			$top = $options['top'];
 			if (!$top) {
-				$top = ar::currentSite( $current );
+				$top = ar_store::currentSite( $current );
 			}
 			$options += array(
 				'siblings'    => true,
@@ -70,7 +70,7 @@
 		public static function sitemap( $options = array() ) {
 			$top = $options['top'];
 			if (!$top) {
-				$top = ar::currentSite( ar::context()->getPath() );
+				$top = ar_store::currentSite( ar::context()->getPath() );
 			}
 			$options += array(
 				'skipTop'     => true,
@@ -94,7 +94,7 @@
 			}
 			$top = $options['top'];
 			if (!$top) {
-				$top = ar::currentSite( $current );
+				$top = ar_store::currentSite( $current );
 			}
 			$options += array(
 				'current' => $current,
@@ -152,7 +152,7 @@
 		private $autoIDOptions  = false;
 		private $styleType = 'bar';
 		private $options = array(
-			'skipOrphans' => false,
+			'skipOrphans' => true,
 			'itemTag'     => 'li',
 			'listTag'     => 'ul'
 		);
@@ -190,7 +190,7 @@
 			$context = ar::context();
 			$me = $context->getObject();
 			if ( $me ) {
-				$this->root    = $me->currentsite();
+				$this->root    = $me->path;
 				$this->rooturl = $me->make_url( $this->root );
 			}
 			if ( !isset($this->root) ) {
@@ -676,6 +676,7 @@ EOF;
 									$newparent = dirname( $newparent ).'/';
 								}
 							}
+
 							if ( isset($this->items[$newparent]) ) {
 								$parentNode = current( $this->items[$newparent]->getElementsByTagName( $this->options['listTag'] ) );
 								if (!$parentNode || !isset($parentNode)) {
