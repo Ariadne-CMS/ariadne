@@ -214,16 +214,16 @@ class htmlcleaner
 			}
 			if ($_state == 0) {	// state 0 : looking for <
 				if ($chr == '<') {
+					// start buffering
+					if ($_buffer!='') {
+						// store part
+						array_push($parts,new htmlcleanertag($_buffer));
+					}
+					$_buffer = '<';
 					if (($i+3 < $str_len) && $str[$i+1] == '!' && $str[$i+2] == '-' && $str[$i+3] == '-') {
 						// comment
 						$_state = 2;
 					} else {
-						// start buffering
-						if ($_buffer!='') {
-							// store part
-							array_push($parts,new htmlcleanertag($_buffer));
-						}
-						$_buffer = '<';
 						$_state = 1;
 					}
 				} else {
@@ -239,7 +239,9 @@ class htmlcleaner
 					$_state = -1;
 				}
 			} else if ($_state == 2) {	// state 2 : in comment looking for -->
+				$_buffer .= $chr;
 				if ($str[$i-2] == '-' && $str[$i-1] == '-' && $str[$i] == '>') {
+					array_push($parts,new htmlcleanertag($_buffer)); // Remove this line to make the cleaner leave out HTML comments from the parts.
 					$_state = -1;
 				}
 			} else if ($_state == 3) {
