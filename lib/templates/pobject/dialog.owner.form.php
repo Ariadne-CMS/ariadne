@@ -6,7 +6,23 @@
 		$wgBrowsePath = current($this->find('/system/users/', $query, 'system.get.path.phtml'));
 		if (!$wgBrowsePath) {
 			$wgBrowsePath = '/system/users/';
-	    }
+		}
+		$wgBrowseRoot = '/system/users/';
+
+		$arConfig = $this->loadUserConfig();
+		foreach($arConfig['authentication'] as $grouptype => $authdirs) {
+			if (in_array($wgBrowseRoot, $arConfig['authentication'][$grouptype])) {
+				foreach ($arConfig['authentication'][$grouptype] as $authpath) {
+					if ($authpath != $wgBrowseRoot) {
+						$extraroots .= "extraroots[]=$authpath&";
+					}
+				}
+			}
+		}
+		if ($extraroots) {
+			$extraroots = substr($extraroots, 0, -1);
+		}
+
 ?>
 <script type="text/javascript">
 	function callback(path) {
@@ -18,7 +34,7 @@
 		<div class="field">
 			<label for="owner" class="required"><?php echo $ARnls["owner"]; ?></label>
 			<input type="text" id="owner" name="owner" value="<?php echo $wgBrowsePath; ?>" class="inputline wgWizAutoFocus">
-			<input class="button" type="button" value="<?php echo $ARnls['browse']; ?>" title="<?php echo $ARnls['browse']; ?>" onclick='callbacktarget="extrauser"; window.open("<?php echo $this->make_ariadne_url('/system/users/'); ?>" + "dialog.browse.php", "browse", "height=480,width=750"); return false;'>
+			<input class="button" type="button" value="<?php echo $ARnls['browse']; ?>" title="<?php echo $ARnls['browse']; ?>" onclick='callbacktarget="extrauser"; window.open("<?php echo $this->make_ariadne_url($wgBrowseRoot); ?>" + "dialog.browse.php<?php if ($extraroots) { echo "?$extraroots"; }?>", "browse", "height=480,width=750"); return false;'>
 		</div>
 		<div class="field radio">
 			<input type="radio" id="normal" name="behaviour" value="0" checked>

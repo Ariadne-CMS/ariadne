@@ -392,9 +392,25 @@
 	<?php
 			}
 		}
+
+		$wgBrowseRoot = $defaultGroupDir;
+		$arConfig = $this->loadUserConfig();
+		foreach($arConfig['authentication'] as $grouptype => $authdirs) {
+			if (in_array($wgBrowseRoot, $arConfig['authentication'][$grouptype])) {
+				foreach ($arConfig['authentication'][$grouptype] as $authpath) {
+					if ($authpath != $wgBrowseRoot) {
+						$extraroots .= "extraroots[]=$authpath&";
+					}
+				}
+			}
+		}
+		if ($extraroots) {
+			$extraroots = substr($extraroots, 0, -1);
+		}
+
 	?>
 	<input type="text" id="extrauser" name="extrausers[]" value="<?php echo $defaultGroupDir; ?>">
-	<input class="button" type="button" value="..." title="<?php echo $ARnls['browse']; ?>" onclick='callbacktarget="extrauser"; window.open("<?php echo $this->make_ariadne_url('/'); ?>" + document.getElementById("extrauser").value + "dialog.browse.php", "browse", "height=480,width=750"); return false;'>
+	<input class="button" type="button" value="..." title="<?php echo $ARnls['browse']; ?>" onclick='callbacktarget="extrauser"; window.open("<?php echo $this->make_ariadne_url('/'); ?>" + document.getElementById("extrauser").value + "dialog.browse.php<?php echo $extraroots ? "?" . $extraroots : ""; ?>", "browse", "height=480,width=750"); return false;'>
 	<input type="hidden" id="hidden_useradd" name="useradd" value=''>
 	<input type="submit" class="button" name="useradd" value="<?php echo $ARnls['add']; ?>">
 </div>
