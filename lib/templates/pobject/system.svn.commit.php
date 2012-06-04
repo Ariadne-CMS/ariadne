@@ -23,12 +23,19 @@
 			} else {
 				$default = 0;
 			}
+			if ($this->data->config->privatetemplates[$type][$function]) {
+				$private = 1;
+			} else {
+				$private = 0;
+			}
+
 			$fileinfo = array();
 			$fileinfo[$pinp_filename] = array();
 			$fileinfo[$pinp_filename]['ar:type'] = $type;
 			$fileinfo[$pinp_filename]['ar:function'] = $function;
 			$fileinfo[$pinp_filename]['ar:language'] = $language;
 			$fileinfo[$pinp_filename]['ar:default'] = $default;
+			$fileinfo[$pinp_filename]['ar:private'] = $private;
 			$fstore->svn_add($svn, $pinp_filename);
 		} else { // whole list
 			$fileinfo = array();
@@ -47,12 +54,19 @@
 							} else {
 								$default = 0;
 							}
+
+							if ($this->data->config->privatetemplates[$type][$function]) {
+								$private = 1;
+							} else {
+								$private = 0;
+							}
 	
 							$fileinfo[$pinp_filename] = array();
 							$fileinfo[$pinp_filename]['ar:function'] = $function;
 							$fileinfo[$pinp_filename]['ar:type'] = $type;
 							$fileinfo[$pinp_filename]['ar:language'] = $language;
 							$fileinfo[$pinp_filename]['ar:default'] = $default;										
+							$fileinfo[$pinp_filename]['ar:private'] = $private;										
 							$fstore->svn_add($svn, $pinp_filename);
 						}
 					}
@@ -75,6 +89,12 @@
 										if (count($this->data->config->deleted_templates[$type])==0) {
 											unset($this->data->config->deleted_templates[$type]);
 										}
+									}
+								}
+								if (isset($this->data->config->deleted_privatetemplates[$type][$function])) {
+									unset($this->data->config->deleted_privatetemplates[$type][$function]);
+									if (count($this->data->config->deleted_privatetemplates[$type])==0) {
+										unset($this->data->config->deleted_privatetemplates[$type]);
 									}
 								}
 							}

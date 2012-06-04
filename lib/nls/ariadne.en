@@ -101,6 +101,7 @@
 	$ARnls['ariadne:template:row']				= "Row";
 	$ARnls['ariadne:template:col']				= "Col";
 	$ARnls['ariadne:template:char']				= "Char";
+	$ARnls['ariadne:template:private']			= "Private";
 
 	$ARnls['ariadne:grants:objects_with_grants']		= "Objects with grants configured";
 	$ARnls['ariadne:grants:users_with_grants']		= "Users/groups with grants on: ";

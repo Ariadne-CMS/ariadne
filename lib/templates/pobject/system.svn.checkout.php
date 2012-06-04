@@ -58,7 +58,7 @@
 						$templates[] = $item['name'];
 						if( $item["status"]  == "A" ) {
 							$props = $fstore->svn_get_ariadne_props($svn, $item['name']);
-							echo "<span class='svn_addtemplateline'>Adding ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
+							echo "<span class='svn_addtemplateline'>Adding ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "").( $props["ar:private"] == '1' ? " " . $ARnls["ariadne:template:private"] : "") . "</span>\n";
 						} elseif( $item["status"] == "U" || substr(ltrim($item['name']),0,2) == 'U ' ) { // substr to work around bugs in SVN.php
 							echo "<span class='svn_revisionline'>Done ".$this->path." Revision ".$item["revision"]."</span>\n\n";
 						}

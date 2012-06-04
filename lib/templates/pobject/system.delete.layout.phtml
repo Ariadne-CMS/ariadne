@@ -30,6 +30,18 @@
 						}
 					}
 				}
+				
+
+				if (isset($this->data->config->privatetemplates[$type][$function][$language])) {
+					unset($this->data->config->privatetemplates[$type][$function][$language]);
+					if (count($this->data->config->privatetemplates[$type][$function])==0) {
+						unset($this->data->config->privatetemplates[$type][$function]);
+						if (count($this->data->config->privatetemplates[$type])==0) {
+							unset($this->data->config->privatetemplates[$type]);
+						}
+					}
+				}
+				
 				$template=$type.".".$function.".".$language;
 				$templates=$this->store->get_filestore("templates");
 				$templates->remove($this->id, $template);

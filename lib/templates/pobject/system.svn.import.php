@@ -65,12 +65,18 @@
 							} else {
 								$default = 0;
 							}
+							if ($this->data->config->privatetemplates[$type][$function]) {
+								$private = 1;
+							} else {
+								$private = 0;
+							}
 
 							$fileinfo[$pinp_filename] = array();
 							$fileinfo[$pinp_filename]['ar:function'] = $function;
 							$fileinfo[$pinp_filename]['ar:type'] = $type;
 							$fileinfo[$pinp_filename]['ar:language'] = $language;
 							$fileinfo[$pinp_filename]['ar:default'] = $default;
+							$fileinfo[$pinp_filename]['ar:private'] = $private;
 							echo "<span class='svn_addtemplateline'>Adding ".$this->path.$function." (".$type.") [".$language."] ".( $default == '1' ? $ARnls["default"] : "")."</span>\n"; // FIXME: nls
 							flush();
 							$fstore->svn_add($svn, $pinp_filename);

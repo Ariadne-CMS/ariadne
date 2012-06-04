@@ -46,6 +46,18 @@
 			} else {
 				$this->data->config->pinp[$type][$function][$language]=$this->id;
 
+				if ($private) {
+					$this->data->config->privatetemplates[$type][$function] = 1;
+				} else {
+					if (isset($this->data->config->privatetemplates[$type][$function])) {
+						unset($this->data->config->privatetemplates[$type][$function]);
+						if (count($this->data->config->privatetemplates[$type])==0) {
+							unset($this->data->config->privatetemplates[$type]);
+						}
+					}
+				}
+
+
 				$file=$type.".".$function.".".$language;
 				$templates->write($template, $this->id, $file.".pinp");
 				if ($mtime) {

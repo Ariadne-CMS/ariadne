@@ -38,6 +38,22 @@
 						}
 					}
 				}
+				if (isset($this->data->config->privatetemplates[$type][$function])) {
+					// Store the old template information in deleted_privatetemplates for SVN to use.
+					if ($AR->SVN->enabled) {
+						is_array($this->data->config->deleted_privatetemplates) ? false : $this->data->config->deleted_privatetemplates = array(); 
+						is_array($this->data->config->deleted_privatetemplates[$type]) ? false : $this->data->config->deleted_privatetemplates[$type] = array(); 
+						$this->data->config->deleted_privatetemplates[$type][$function] = $this->data->config->privatetemplates[$type][$function];
+					}
+
+					unset($this->data->config->privatetemplates[$type][$function][$language]);
+					if (count($this->data->config->privatetemplates[$type][$function])==0) {
+						unset($this->data->config->privatetemplates[$type][$function]);
+						if (count($this->data->config->privatetemplates[$type])==0) {
+							unset($this->data->config->privatetemplates[$type]);
+						}
+					}
+				}
 				$template=$type.".".$function.".".$language;
 				$templates=$this->store->get_filestore("templates");
 				$templates->remove($this->id, $template);

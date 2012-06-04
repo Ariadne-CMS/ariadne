@@ -99,6 +99,7 @@
 	$ARnls['ariadne:template:row']				= "Rij";
 	$ARnls['ariadne:template:col']				= "Kolom";
 	$ARnls['ariadne:template:char']				= "Byte";
+	$ARnls['ariadne:template:private']			= "Private";
 
 	$ARnls['ariadne:grants:objects_with_grants']		= "Objecten met rechten geconfigureerd";
 	$ARnls['ariadne:grants:users_with_grants']		= "Gebruikers met rechten op: ";

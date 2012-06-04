@@ -1271,6 +1271,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			if (isset($this->data->config->templates) && count($this->data->config->templates)) {
 				$configcache->templates=&$this->data->config->templates;
 			}
+			if (isset($this->data->config->privatetemplates) && count($this->data->config->privatetemplates)) {
+				$configcache->privatetemplates=&$this->data->config->privatetemplates;
+			}
 
 			// Speedup check for config.ini
 
@@ -1448,6 +1451,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}
 		}
+
+		$config = ($ARConfig->cache[$arTemplate["arLibraryLocalPath"]]) ? $ARConfig->cache[$arTemplate["arLibraryLocalPath"]] : $this->loadConfig($arTemplate["arLibraryLocalPath"]);
+		$arPrivateTemplate = $config->privatetemplates[$type][$function];
+
 		return Array(
 			"arTemplateId" => $arTemplate["arTemplateId"],
 			"arCallTemplate" => $arCallTemplate,
@@ -1455,7 +1462,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			"arCallTemplateType" => $arType,
 			"arCallTemplatePath" => $arTemplate["arLibraryLocalPath"],
 			"arLibrary" => "current",
-			"arLibraryPath" => $arTemplate["arLibraryPath"]
+			"arLibraryPath" => $arTemplate["arLibraryPath"],
+			"arPrivateTemplate" => $arPrivateTemplate
 		);
 	}
 
@@ -1662,11 +1670,15 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			if ($checkpath == $top) {
 				break;
 			}
+
 			$checkpath=$this->store->make_path($checkpath, "..");
 			$config = ($ARConfig->cache[$checkpath]) ? $ARConfig->cache[$checkpath] : $this->loadConfig($checkpath);
 			$curr_templates = $config->templates;
 			$arSetType = $arCallType;
 		}
+
+		$config = ($ARConfig->cache[$lastcheckedpath]) ? $ARConfig->cache[$lastcheckedpath] : $this->loadConfig($lastcheckedpath);
+		$arPrivateTemplate = $config->privatetemplates[$arCallType][$arCallFunction];
 
 		$result["arTemplateId"] = $arTemplateId;
 		$result["arCallTemplate"] = $arCallTemplate;
@@ -1676,6 +1688,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$result["arLibrary"] = $arLibrary;
 		$result["arLibraryPath"] = $arLibraryPath;
 		$result["arLibrariesSeen"] = $librariesSeen;
+		$result["arPrivateTemplate"] = $arPrivateTemplate;
+
 		return $result;
 	}
 
@@ -1863,8 +1877,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 							$arCallArgs['arLibrary'] = $arLibrary;
 							$arCallArgs['arLibraryPath'] = $template["arLibraryPath"];
 						}
+
 						$ARCurrent->arCallStack[]=$arCallArgs;
 						// start running a pinp template
+
+						$currentContext = $this->getContext();
+
 						$this->pushContext(
 							Array(
 								"scope" => "pinp",
@@ -1878,7 +1896,17 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 								"arLibrariesSeen" => $template['arLibrariesSeen']
 							)
 						);
-						if ($ARCurrent->forcenls || isset($this->data->nls->list[$reqnls])) {
+
+						// FIXME: is 2 het correcte getal? Kan dit minder magisch?
+						if (sizeof($ARCurrent->arCallStack) == 2 && $template['arPrivateTemplate']) {
+							// Do not allow private templates to be called first in the stack.
+							// echo "Bad request"; 
+
+							// FIXME: Echte header sturen? Of gewoon niet uitvoeren? Wat is het correcte gedrag? 
+							// Return true zorgt er voor dat de default 404 handler het oppikt alsof het template niet bestaat.
+
+							return true;
+						} else if ($ARCurrent->forcenls || isset($this->data->nls->list[$reqnls])) {
 							// the requested language is available.
 							$this->nlsdata=$this->data->$reqnls;
 							$this->nls=$reqnls;
@@ -1901,7 +1929,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						if ($continue) {
 							if ($ARCurrent->ARShowTemplateBorders) {
 								echo "<!-- arTemplateStart\nData: ".$this->type." ".$this->path." \nTemplate: ".$template["arCallTemplatePath"]." ".$template["arCallTemplate"]." \nLibrary:".$template["arLibrary"]." -->";
-
 							}
 							set_error_handler(array('pobject','pinpErrorHandler'),error_reporting());
 							$arResult=$arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);

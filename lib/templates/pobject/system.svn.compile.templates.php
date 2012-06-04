@@ -23,9 +23,13 @@
 				$meta['ar:type']	= $fstore->svn_propget($svn, "ar:type", $filename);
 				$meta['ar:function']	= $fstore->svn_propget($svn, "ar:function", $filename);
 				$meta['ar:language']	= $fstore->svn_propget($svn, "ar:language", $filename);
+				$meta['ar:private']	= $fstore->svn_propget($svn, "ar:private", $filename);
 
 				if($meta['default'] == '1') {
 					$meta['default'] = 1;
+				}
+				if($meta['private'] == '1') {
+					$meta['private'] = 1;
 				}
 
 				//echo "Meta information:\n";
@@ -39,7 +43,8 @@
 							"default"	=> $meta['ar:default'],
 							"type"		=> $meta['ar:type'],
 							"function"	=> $meta['ar:function'],
-							"language"	=> $meta['ar:language']
+							"language"	=> $meta['ar:language'],
+							"private"	=> $meta['ar:private']
 							));
 
 				if ($this->error) {

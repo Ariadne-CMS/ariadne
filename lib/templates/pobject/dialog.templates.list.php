@@ -186,10 +186,11 @@
 		<?php
 			$pinp = $data->config->pinp;
 			$templates = $data->config->templates;
-
+			$privatetemplates = $data->config->privatetemplates;
 			
 			if ($svn_enabled && $svn_status ) {
 				$deleted_templates = $data->config->deleted_templates;
+				$deleted_privatetemplates = $data->config->deleted_privatetemplates;
 
 				foreach ($svn_status as $filename=>$file_status) {
 					if ($file_status == "!") {
@@ -199,19 +200,26 @@
 						$file_meta['ar:type'] = $filestore->svn_propget($svn, "ar:type", $filename);
 						$file_meta['ar:function'] = $filestore->svn_propget($svn, "ar:function", $filename);
 						$file_meta['ar:language'] = $filestore->svn_propget($svn, "ar:language", $filename);
+						$file_meta['ar:private'] = $filestore->svn_propget($svn, "ar:private", $filename);
 
 						$pinp[$file_meta['ar:type']][$file_meta['ar:function']][$file_meta['ar:language']] = $this->id;
 						$templates[$file_meta['ar:type']][$file_meta['ar:function']] = $file_meta['ar:default'];
+						$privatetemplates[$file_meta['ar:type']][$file_meta['ar:function']] = $file_meta['ar:private'];
+
 					} else if ($file_status == "D") {
 						foreach ($deleted_templates as $type => $functions) {
 							foreach ($functions as $function => $languages) {
 								foreach ($languages as $language => $default) {
 									if ($filename == "$type.$function.$language.pinp") {
+
 										$file_meta = array();
 										$file_meta['ar:default'] = $default;
 										$file_meta['ar:type'] = $type;
 										$file_meta['ar:function'] = $function;
 										$file_meta['ar:language'] = $language;
+										$file_meta['ar:private'] = $deleted_privatetemplates[$type][$function] ? 1 : 0;
+
+										$privatetemplates[$type][$function] = $file_meta['ar:private'];
 
 										$pinp[$file_meta['ar:type']][$file_meta['ar:function']][$file_meta['ar:language']] = $this->id;
 										$templates[$file_meta['ar:type']][$file_meta['ar:function']] = $file_meta['ar:default'];
@@ -314,10 +322,14 @@
 								<?php echo $type; ?>&nbsp;</div></td>
 							<td align="left"><div style="display:none;"><?php echo $function; ?></div><div class="<?php echo $svn_style; ?>"><?php  
 								if (!$templates[$type][$function]) {
-									echo "<img class='local' src='{$AR->dir->images}local.gif' alt='local'>";	
+									echo "<img class='local' src='{$AR->dir->images}local.gif' alt='local'>&nbsp;";	
+								}
+								if ($privatetemplates[$type][$function]) {
+									echo "<img class='private' src='{$AR->dir->images}private.png' alt='" . $ARnls['ariadne:template:private'] . "' title='" . $ARnls['ariadne:template:private'] . "'>";
 								}
 							?>
-							<?php echo $function; ?></div></td>
+							<?php echo $function; ?></div>
+							</td>
 							<td><div class="<?php echo $svn_style; ?>"><?php
 								echo $flagbuttons;
 							?></div></td>
