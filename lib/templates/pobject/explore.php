@@ -1,7 +1,8 @@
 <?php
 	$ARCurrent->nolangcheck = true;
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
-		$base_object = $AR->user;
+		//$base_object = $AR->user;
+		$base_object = $this;
 
 		if (!$ARCurrent->arTypeTree) {
 			$base_object->call("typetree.ini");
@@ -98,9 +99,10 @@
 <script type="text/javascript">
 	// Pass the settings for the tree to javascript.
 	muze.ariadne.explore.tree.loaderUrl 	= '<?php echo addslashes($loader); ?>';
-	muze.ariadne.explore.tree.basePath 	= '<?php echo addslashes($path); ?>';
-	muze.ariadne.explore.tree.baseName	= '<?php echo addslashes($name); ?>';
-	muze.ariadne.explore.tree.baseIcon	= '<?php echo addslashes($icon); ?>';
+
+	muze.ariadne.explore.tree.baseNodes	= [
+		{"path" : "<?php echo addslashes($path); ?>", "name" : "<?php echo addslashes($name); ?>", "icon" : "<?php echo addslashes($icon); ?>"}
+	];
 
 	muze.ariadne.registry.set('root', '<?php echo addslashes($AR->root); ?>');
 	muze.ariadne.registry.set('store_root', '<?php echo addslashes($this->store->get_config('root')); ?>');

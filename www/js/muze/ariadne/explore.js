@@ -190,8 +190,20 @@ muze.ariadne.explore = function() {
 				 muze.ariadne.explore.loaders[target.id] = YAHOO.util.Connect.asyncRequest('POST', url, load_callback, postvars);
 			}
 		},
-		view : function(path) {
-			muze.ariadne.explore.tree.view(path);
+		view : function(target) {
+			if (target.path) {
+				node = target;
+				path = target.path;
+			} else {
+				path = target;
+			}
+
+			if (node) {
+				muze.ariadne.explore.tree.view(node);
+			} else {
+				muze.ariadne.explore.tree.view(path);
+			}
+
 			muze.ariadne.explore.sidebar.view(path);
 			muze.ariadne.explore.viewpane.view(path);
 			muze.ariadne.explore.browseheader.view(path);
@@ -376,7 +388,7 @@ muze.ariadne.explore.tree = function() {
 		}
 	}
 
-        function buildTree(node) {
+        function buildTree(nodes) {
 		//create a new tree:
 		tree = new YAHOO.widget.TreeView("treeDiv");
 		//turn dynamic loading on for entire tree:
@@ -384,18 +396,24 @@ muze.ariadne.explore.tree = function() {
 
 		//get root node for tree:
 		var root = tree.getRoot();
-
-		var nodeData = getNodeData(node);
-		var tempNode = new YAHOO.widget.HTMLNode(nodeData, root, false, 1);
-		tempNode.path = node.path;
+		var firstNode;
+		for (i in nodes) {
+			var node = nodes[i];
+			var nodeData = getNodeData(node);
+			var tempNode = new YAHOO.widget.HTMLNode(nodeData, root, false, 1);
+			tempNode.path = node.path;
+			if (!firstNode) {
+				firstNode = tempNode;
+			}
+		}
 
 		//render tree with these toplevel nodes; all descendants of these nodes
 		//will be generated as needed by the dynamic loader.
 		tree.draw();
 
-		tree.subscribe('clickEvent', function(target) {muze.ariadne.explore.view(target.node.path);});
-		tree.subscribe('enterKeyPressed', function(node) {muze.ariadne.explore.view(node.path);});
-		tempNode.expand();
+		tree.subscribe('clickEvent', function(target) {muze.ariadne.explore.view(target.node);});
+		tree.subscribe('enterKeyPressed', function(node) {muze.ariadne.explore.view(node);});
+		firstNode.expand();
 	}
 
 	var status = 'visible';
@@ -404,15 +422,20 @@ muze.ariadne.explore.tree = function() {
 	return {
 		treewidth: "220px",
 		init : function() {
-			var baseNode = Array();
-			baseNode.path = muze.ariadne.explore.tree.basePath;
-			baseNode.name = muze.ariadne.explore.tree.baseName;
-			baseNode.icon = muze.ariadne.explore.tree.baseIcon;
-			buildTree(baseNode);
+			var baseNodes = muze.ariadne.explore.tree.baseNodes;
+			buildTree(baseNodes);
 		},
-		setpath : function(path) {
+		setpath : function(target) {
+			var node;
+			if (target.path) {
+				node = target;
+				path = target.path;
+			} else {
+				path = target;
+				node = tree.getNodeByProperty("path", path);
+			}
+
 			tree.unsubscribe('expandComplete');
-			var node = tree.getNodeByProperty("path", path);
 			var parent = path;
 			while (!node && parent) {
 				parent = parent.substring(0, parent.length-1);
@@ -697,14 +720,27 @@ muze.ariadne.explore.viewpane = function() {
 		setitempath : function(item) {
 			if (!item.path) {
 				var href = item.getElementsByTagName("A")[0].href;
+				href = decodeURI(href);
+
 				var store_root = muze.ariadne.registry.get('store_root');
 
 				// Find the location of the store root, and take everything behind it.
 				store_root_pos = href.indexOf(store_root);
+
+				// If not found, remove the language
 				if (store_root_pos < 0) {
 					store_root = store_root.substring(0, store_root.lastIndexOf("/")); 
 					store_root_pos = href.indexOf(store_root);
 				}
+
+				// If still not found, remove the session
+				if (store_root_pos < 0) {
+					store_root = store_root.substring(-1);
+					store_root = store_root.substring(0, store_root.lastIndexOf("/"));
+
+					store_root_pos = href.indexOf(store_root);
+				}
+
 				path = href.substring(store_root_pos + store_root.length, href.length);
 				// Remove "explore.html from the end, and all other trailing stuff.
 				explore_pos = path.indexOf('explore.html'); // FIXME: configbaar maken.
@@ -850,7 +886,6 @@ muze.ariadne.explore.viewpane = function() {
 		},
 		onSelectItem : function(item) {
 			muze.ariadne.explore.viewpane.setitempath(item);
-
 			muze.ariadne.explore.sidebar.view(item.path);
 			muze.ariadne.explore.browseheader.view(item.path);
 			muze.ariadne.explore.viewpane.selectedPath = item.path;

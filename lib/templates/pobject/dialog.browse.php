@@ -52,7 +52,12 @@
 		global $AR;
 
 		// FIXME: Er moet ook iets van een root zijn voor dit dialoog.
-		$base_object = $this;
+		$root = $this->getvar("root") ? $this->getvar("root") : $this->currentsite();
+		if ($root && $this->exists($root)) {
+			$base_object = current($this->get($root, "system.get.phtml"));
+		} else {
+			$base_object = $this;
+		}
 
 		// This set initializes the tree from the user object
 		$path 	= $base_object->path;
@@ -143,9 +148,10 @@
 <script type="text/javascript">
 	// Pass the settings for the tree to javascript.
 	muze.ariadne.explore.tree.loaderUrl 	= '<?php echo addslashes($loader); ?>';
-	muze.ariadne.explore.tree.basePath 	= '<?php echo addslashes($path); ?>';
-	muze.ariadne.explore.tree.baseName	= '<?php echo addslashes($name); ?>';
-	muze.ariadne.explore.tree.baseIcon	= '<?php echo addslashes($icon); ?>';
+
+	muze.ariadne.explore.tree.baseNodes	= [
+		{"path" : "<?php echo addslashes($path); ?>", "name" : "<?php echo addslashes($name); ?>", "icon" : "<?php echo addslashes($icon); ?>"}
+	];
 
 	muze.ariadne.registry.set('root', '<?php echo addslashes($root); ?>');
 	muze.ariadne.registry.set('store_root', '<?php echo addslashes($this->store->get_config('root')); ?>');
