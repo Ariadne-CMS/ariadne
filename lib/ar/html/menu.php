@@ -623,14 +623,15 @@ EOF;
 					ar_html::tag( 'a', $linkAttributes, $item['name'])
 				);
 			} else {
-				if ( ($item['path']==$current) || ($item['url'] == $current) ) {
-					$link = $item['node']->a[0];
+				$link = $item['node']->a[0];
+				if ( ($item['path']==$current) || ($item['url'] == $current) || ( $link && $link->attributes['href']==$current ) ) {
 					if ($link) {
 						$link->setAttribute('class', array( 'menuCurrent' => 'menuCurrent') );
 					}
 					$item['node']->setAttribute('class', array( 'menuCurrent' => 'menuCurrent') );
 				} else if ( ( strpos( $current, $item['path'] ) === 0 ) ||
-					 ( strpos( $current, $item['url'] ) === 0 ) ) {
+					 ( strpos( $current, $item['url'] ) === 0 ) ||
+					 ( $link && strpos( $current, $link->attributes['href'] ) === 0 ) ) {
 					$item['node']->setAttribute('class', array( 'menuParent' => 'menuParent' ) );
 				}
 			}
