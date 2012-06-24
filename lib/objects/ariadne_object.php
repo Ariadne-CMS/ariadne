@@ -1859,7 +1859,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					// $arCallTemplate=$this->store->get_config("files")."templates".$arCallTemplate;
 					// check if template exists, if it doesn't exist, then continue the original template that called CheckConfig
 					$arTemplates=$this->store->get_filestore("templates");
-					if ($arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"])) { 
+					if (
+						$arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"].".inc") ||
+						$arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"]) 
+					) { 
 						// check if the requested language exists, if not do not display anything, 
 						// unless otherwise indicated by $ARCurrent->allnls
 						// This triggers only for pinp templates called by other templates,
