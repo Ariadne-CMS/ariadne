@@ -187,9 +187,8 @@
 					if(is_callable($arTemplateFunction) ) {
 						$ARConfig->fsFunctions[$fsId][$fsName] = $arTemplateFunction;
 					}
-				} 
-				if(!$ARConfig->fsFunctions[$fsId][$fsName] ) {
-					// satill no function, call the old method
+				} else {
+					// old style template, import it
 					$ARConfig->fsFunctions[$fsId][$fsName] = $this->importOLD($fsId, $fsName);
 				}
 			}

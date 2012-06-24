@@ -67,6 +67,15 @@
 				if ($mtime) {
 					$templates->touch($this->id, $file, $mtime);
 				}
+				$templateCode = $templates->templateCodeFunction($this->id, $file); 
+
+				// generating optimized template code
+				$optimized = '<?php $arTemplateFunction = function(&$AR_this) { '.$templateCode.' }; ?>';
+
+				$templates->write($optimized, $this->id, $file.".inc");
+				if ($mtime) {
+					$templates->touch($this->id, $file.".inc", $mtime);
+				}
 				if ($default) { // add pinp template from default templates list
 					$this->data->config->templates[$type][$function][$language]=$this->id;
 				} else { // remove pinp template from default templates list
