@@ -58,6 +58,14 @@ global $ARBeenHere, $AR;
 									} else {
 										$new_filestore->write($compiled, $this->newObject->id, "$type.$function.$language");
 										$new_filestore->touch($this->newObject->id, "$type.$function.$language", $tmtime);
+
+										$templateCode = $new_filestore->templateCodeFunction($this->newObject->id, $type.".".$function.".".$language); 
+
+										// generating optimized template code
+										$optimized = '<?php $arTemplateFunction = function(&$AR_this) { '.$templateCode.' }; ?>';
+
+										$new_filestore->write($optimized, $this->newObject->id, $type.".".$function.".".$language.".inc");
+										$new_filestore->touch($this->newObject->id,  $type.".".$function.".".$language.".inc", $tmtime);
 									}
 								}
 
