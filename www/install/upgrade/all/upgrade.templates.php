@@ -1,6 +1,7 @@
 <?php
 	$code		= $store->get_config("code");
-	$templates 	= $store->get_config("files")."templates/";
+	$templates = $store->get_config("files")."templates/";
+   $templateStore = $store->get_filestore("templates");
 
 	require_once($code."modules/mod_pinp.phtml");
 
@@ -14,6 +15,22 @@
 		}
 
 		return $result;
+	}
+
+	function pathToObjectID($path) {
+		global $templates;
+		$objectID = 0;
+		$subpath = substr($path,strlen($templates));
+		$numbers = explode('/',$subpath);;
+		while (count($numbers)){
+			$pathicle = array_pop($numbers);
+			#print "objectID  == ".$objectID." and pathicle == ".$pathicle."\n";
+			$objectID = $objectID * 100;
+			$objectID += (int)$pathicle;
+		}
+
+		#print "End Result: ".$objectID."\n";
+		return $objectID;
 	}
 	
 	function showCompilerError($compiler, $pinp_template) {
@@ -35,37 +52,27 @@
 
 
 	function recompile($path) {
-		global $AR;
-		$php_version = (int)substr(phpversion(), 0, 1);
+		global $AR,$templateStore;
 		$dh = opendir($path);
+		$objectID = pathToObjectID($path);
 		while ( false !== ($file = readdir($dh))) {
 			if ($file != "." && $file != "..") {
 				$f = $path.$file;
 				if (substr($file, -strlen(".pinp")) == ".pinp" && is_file($f)) {
-					$file_compiled =  substr($f, 0, -strlen(".pinp"));
-					echo "Recompiling $file<br>\n";
-					$pinp_code = "";
-					$fp = fopen($f, "r");
-					while (!feof($fp)) {
-						$pinp_code .= fread($fp, 4096);
-					}
-					fclose($fp);
+					$templateName =  substr($file, 1, -strlen(".pinp"));
+					echo "Recompiling $templateName<br>\n";
+					$pinp_code = file_get_contents($f);
 
-					if ($php_version > 4) {
-						$objectContext = "\$AR_this->_";
-					} else {
-						$objectContext = "\$this->_";
-					}
-					$compiler = new pinp($AR->PINP_Functions, "local->", $objectContext);
+					$compiler = new pinp($AR->PINP_Functions, "local->", "\$AR_this->_");
 					$pinp_code_compiled_new = $compiler->compile(strtr($pinp_code, "\r", ""));
 					if ($compiler->error) {
 						showCompilerError($compiler, $path.$file);
 					} else {
-						$fp = fopen($file_compiled, "w");
-						fwrite($fp, $pinp_code_compiled_new);
-						fclose($fp);
+						$templateStore->write($pinp_code_compiled_new,$objectID,$templateName);
+						$templateCode = $templateStore->templateCodeFunction($objectID, $templateName);	
+						$optimized = '<?php $arTemplateFunction = function(&$AR_this) { '.$templateCode.' }; ?>';
+						$templateStore->write($optimized, $objectID, $templateName.".inc");
 					}
-
 				} else if (is_dir($f) && $file != "CVS" && $file != ".svn") {
 					recompile("$f/");
 				}
