@@ -66,15 +66,8 @@ class pfile extends pobject { // pfile class definition
 		}
 	}
 
-	function ParseFile($file, $nls='') {
-		if (!$nls) {
-			$nls = $this->reqnls;
-		}
-		$files = $this->store->get_filestore("files");
-		if ($files->exists($this->id, $nls."_$file")) {
-			$file = $nls."_$file";
-		}
-		return URL::ARtoRAW($file, true);
+	function ParseFile($filecontent) {
+		return URL::ARtoRAW($filecontent, true);
 	}
 
 	function ShowFile($file='file', $nls='', $mimetype='') {
@@ -187,8 +180,8 @@ class pfile extends pobject { // pfile class definition
 		$files->close();
 	}
 
-	function _ParseFile($file, $nls='') {
-		return $this->ParseFile($file, $nls);
+	function _ParseFile($filecontent) {
+		return $this->ParseFile($filecontent);
 	}
   
 	function _ExistsFile($file='file', $nls='') {
