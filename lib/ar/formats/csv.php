@@ -97,9 +97,11 @@
 				$file = fopen( "php://temp/maxmemory:$maxBuffer", 'r+' );
 				fputs( $file, $text );
 				rewind( $file );
-				while ( !feof( $file ) ) {
-					$lines[] = fgetcsv( $file, 0, $this->configuration['delimiter'], $this->configuration['enclosure'], $this->configuration['escape'] );
-				}
+				do {
+					$line = fgetcsv( $file, 0, $this->configuration['delimiter'], $this->configuration['enclosure'], $this->configuration['escape'] );
+					$lines[] = $line;
+
+				} while ( !feof( $file ) && $line !== false );
 				fclose($file);
 				unset($file);
 			} else {
