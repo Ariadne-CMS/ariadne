@@ -191,6 +191,8 @@ muze.ariadne.explore = function() {
 			}
 		},
 		view : function(target) {
+			var node;
+			var path;
 			if (target.path) {
 				node = target;
 				path = target.path;
