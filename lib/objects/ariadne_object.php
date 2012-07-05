@@ -1989,6 +1989,46 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$norealnode = true;
 			}
 		}
+
+		if($norealnode !== true) {
+			/*
+				we don't want to recurse to the currentsite, because the path
+				doesn't exists in the database, so it doesn't have a currentsite
+				
+				the privatecache should be emptied by delete, or by the cleanup
+				cronjob. The current path doesn't exists in the database, so a
+				object id which is needed to find the node in the cache, isn't
+				available
+			*/
+
+			if ($private ) {
+				// now remove any private cache entries.
+				// FIXME: this doesn't scale very well.
+				//        only scalable solution is storage in a database
+				//        but it will need the original path info to
+				//        remove recursively fast enough.
+				  //        this means a change in the filestore api. -> 2.5
+				$pcache=$this->store->get_filestore("privatecache");
+				if ($recurse) {
+					$ids=$this->store->info($this->store->find($path, "" ,0));
+					if(is_array($ids)){
+						foreach($ids as $value) {
+							$pcache->purge($value["id"]);
+						}
+					}
+				} else {
+					$pcache->purge($this->id);
+				}
+			}
+
+			// now clear all parents untill the current site
+			$site=$this->currentsite($path);
+			$project=$this->currentproject($path);
+			if ($path!=$site && $path != $project && $path!='/') {
+				$parent=$this->make_path($path.'../');
+				$this->ClearCache($parent, $private, false);
+			}
+		}
 		$recursed = array();
 
 		// filesystem cache image filenames are always lower case, so
@@ -2032,44 +2072,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					@unlink(substr($fpath,0,-1)."=");
 					@unlink(substr($hpath,0,-1)."=");
 				}
-			}
-		}
-		if($norealnode === true) {
-			/*
-				we don't want to recurse to the currentsite, because the path
-				doesn't exists in the database, so it doesn't have a currentsite
-				
-				the privatecache should be emptied by delete, or by the cleanup
-				cronjob. The current path doesn't exists in the database, so a
-				object id which is needed to find the node in the cache, isn't
-				available
-			*/
-			return; 
-		}
-		// now clear all parents untill the current site
-		$site=$this->currentsite($path);
-		$project=$this->currentproject($path);
-		if ($path!=$site && $path != $project && $path!='/') {
-			$parent=$this->make_path($path.'../');
-			$this->ClearCache($parent, $private, false);
-		}
-		if ($private) {
-			// now remove any private cache entries.
-			// FIXME: this doesn't scale very well.
-			//        only scalable solution is storage in a database
-			//        but it will need the original path info to
-			//        remove recursively fast enough.
-	        //        this means a change in the filestore api. -> 2.5
-			$pcache=$this->store->get_filestore("privatecache");
-			if ($recurse) {
-				$ids=$this->store->info($this->store->find($path, "" ,0));
-				if(is_array($ids)){
-					foreach($ids as $value) {
-						$pcache->purge($value["id"]);
-					}
-				}
-			} else {
-				$pcache->purge($this->id);
 			}
 		}
 	}
