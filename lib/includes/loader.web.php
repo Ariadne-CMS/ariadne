@@ -314,16 +314,25 @@
 		return $cookie;
 	}
 
-	function ldSetUserCookie($cookie, $cookiename="ARUserCookie", $expire=null, $path="/", $domain="", $secure=0) {
+	function ldSetConsentedCookie($cookie, $cookiename="ARUserCookie", $expire=null, $path="/", $domain="", $secure=0) {
+		// Sets a cookie, but only when ARCookieConsent has been given.
+		return ldSetUserCookie($cookie, $cookiename, $expire, $path, $domain, $secure, true);
+	}
+
+	function ldSetUserCookie($cookie, $cookiename="ARUserCookie", $expire=null, $path="/", $domain="", $secure=0, $consentneeded=false) {
 		$result = false;
 
-		if( $cookiename != "ARCookie") {
-			$ARUserCookie=serialize($cookie);
-			debug("ldSetUserCookie(".$ARUserCookie.")","object");
-			header('P3P: CP="NOI CUR OUR"');
-			$result = setcookie($cookiename,$ARUserCookie, $expire, $path, $domain, $secure);
+		$cookieconsent = ldGetUserCookie("ARCookieConsent");
+		if (!$consentneeded || ($cookieconsent == true)) { // Only set cookies when consent has been given, or no consent is needed for this cookie.
+			if( $cookiename != "ARCookie") {
+				$ARUserCookie=serialize($cookie);
+				debug("ldSetUserCookie(".$ARUserCookie.")","object");
+				header('P3P: CP="NOI CUR OUR"');
+				$result = setcookie($cookiename,$ARUserCookie, $expire, $path, $domain, $secure);
+			}
+		} else {
+			debug("ldSetUserCookie: no consent. (".$ARUserCookie.")","object");
 		}
-
 		return $result;
 	}
 
