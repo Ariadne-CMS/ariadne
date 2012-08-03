@@ -222,8 +222,15 @@ class scanner {
 							return PT_VAR_REFERENCE;
 						break;
 						case '"':
-							++$YYCURSOR;
 							$result = $yych;
+                                                        $yych = $YYBUFFER[++$YYCURSOR];
+                                                        while ($YYCLASSES["NOISE"][$yych]) {
+								$result .= $yych;
+                                                                if ($yych == "\n") {
+                                                                        $this->YYLINE++;
+                                                                }
+                                                                $yych = $YYBUFFER[++$YYCURSOR];
+                                                        }
 							return PT_DQ_STRING;
 						break;
 						case "\0":
@@ -529,7 +536,15 @@ class scanner {
 						break;
 						case '"':
 							$result = $yych;
-							++$YYCURSOR;
+							$yych = $YYBUFFER[++$YYCURSOR];
+							while ($YYCLASSES["NOISE"][$yych]) {
+								$result .= $yych;
+                                                                if ($yych == "\n") {
+                                                                        $this->YYLINE++;
+                                                                }
+                                                                $yych = $YYBUFFER[++$YYCURSOR];
+                                                        }
+							
 							return PT_DQ_STRING;
 						break;
 						case "'":
