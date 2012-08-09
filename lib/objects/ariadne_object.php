@@ -2212,12 +2212,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 	}
 
-	function getdata($varname, $nls="none") {
+	function getdata($varname, $nls="none", $emptyResult=false) {
 	// function to retrieve variables from $this->data, with the correct
 	// language version.
 	global $ARCurrent;
 
-		$result=false;
+		$result = false;
 		if ($nls!="none") {
 			if ($ARCurrent->arCallStack) {
 				$arCallArgs=end($ARCurrent->arCallStack);
@@ -2273,11 +2273,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}        
 		}
+		if ( $result === false ) {
+			$result = $emptyResult;
+		}
 		return $result;
 	}
 
-	function showdata($varname, $nls="none") {
-		echo htmlspecialchars($this->getdata($varname, $nls), ENT_QUOTES, 'UTF-8');
+	function showdata($varname, $nls="none", $emptyResult=false) {
+		echo htmlspecialchars($this->getdata($varname, $nls, $emptyResult), ENT_QUOTES, 'UTF-8');
 	}
 
 	function setnls($nls) {
@@ -2743,12 +2746,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 	}
 
-	function _getdata($varname, $nls="none") { 
-		return $this->getdata($varname, $nls);
+	function _getdata($varname, $nls="none", $emptyResult=false) { 
+		return $this->getdata($varname, $nls, $emptyResult);
 	}
 
-	function _showdata($varname, $nls="none") {
-		$this->showdata($varname, $nls);
+	function _showdata($varname, $nls="none", $emptyResult=false) {
+		$this->showdata($varname, $nls, $emptyResult);
 	}
 
 	function _gettext($index=false) {
