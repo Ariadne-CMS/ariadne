@@ -73,7 +73,7 @@ class pphoto extends pfile { // pphoto class definition
 		return $result;
 	}
 
-	function shadow($shadowcolor="black", $background="white", $opacity=80, $size=3, $posx="+5", $posy="+5") {
+	function shadow($shadowcolor="black", $background="white", $opacity=80, $size=3, $posx="+5", $posy="+5", $readModifier=null) {
 		global $ARConfig;
 		$this->set_context("shadow");
 
@@ -416,6 +416,21 @@ class pphoto extends pfile { // pphoto class definition
 		return true;
 	}
 
+	function selectFrames() {
+		global $ARConfig;
+		$args = func_get_args();
+		$readModifier = '';
+		foreach( $args as $arg ) {
+			$arg = preg_replace('/[^0-9\-,]+/','', (string) $arg );
+			if ($arg) {
+				$readModifier .= $arg.',';
+			}
+		}
+		if ($readModifier) {
+			$readModifier = '['.substr($readModifier, 0, -1).']';
+			$ARConfig->photoReadModifier = $readModifier;
+		}
+	}
 
 	function set_context($context) {
 		global $AR, $ARConfig;
@@ -442,7 +457,10 @@ class pphoto extends pfile { // pphoto class definition
 				foreach($ARConfig->photoStack[$this->id] as $value){
 					$image.=$value;
 				}
-
+				if ( isset($ARConfig->photoReadModifier) ) {
+					$image = str_replace('{buildfile}', '{buildfile}'.$ARConfig->photoReadModifier, $image );
+					unset( $ARConfig->photoReadModifier );
+				}
 				$ARConfig->photoCommandStack[$this->id][] = $contextexecutable.$image;
 				unset($ARConfig->photoStack[$this->id]);
 				if( $context == "build" ) {
@@ -676,6 +694,11 @@ class pphoto extends pfile { // pphoto class definition
 	
 	function _getExif( $sections = false, $arrays = true, $thumbnail = true, $nls = '') {
 		return $this->getExif( $sections, $arrays, $thumbnail, $nls);
+	}
+	
+	function _selectFrames() {
+		$args = func_get_args();
+		return call_user_func_array( array( $this, 'selectFrames'), $args );
 	}
 	
 } // end of pphoto class definition
