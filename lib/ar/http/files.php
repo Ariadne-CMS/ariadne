@@ -25,8 +25,9 @@
 			return $_FILES;
 		}
 		
-		public static function getfile( $filename ) {
+		public static function getFile( $filename ) {
 			// return opened file if exists, null otherwise
+			$filename = (string) $filename;
 			$file = null;
 			$info = $_FILES[$filename];
 			if ( $info && is_uploaded_file( $info['tmp_name'] ) ) {
@@ -55,12 +56,14 @@
 			return $this->store->getvar('registeredFiles');
 		}
 		
-		public function getfile( $filename, $nls = 'none' ) {
+		public function getFile( $filename, $nls = 'none' ) {
+			$filename = (string) $filename;
+			$nls = (string) $nls;
 			$registeredFiles = $this->ls();
 			$info = $registeredFiles[$filename][$nls];
-			if ($info && $info[$filename.'_temp']) {
+			if ($info && $info['temp']) {
 				// check before removing
-				$tempfile = preg_replace( "|[\\\/]|", "", $info[$filename.'_temp'] );
+				$tempfile = preg_replace( "|[\\\/]|", "", $info['temp'] );
 				$tempOb = ar::context()->getObject();
 				$tempfile = $tempOb->store->get_config('files').'temp/'.$tempfile;
 				$resource = fopen( $tempfile, 'r+b' );
@@ -70,14 +73,38 @@
 			}
 		}
 		
-		public function putfile( $filename, $nls = 'none') {
+		public function getInfo( $filename, $nls = 'none' ) {
+			$filename = (string) $filename;
+			$nls = (string) $nls;
+			$registeredFiles = $this->ls();
+			$info = $registeredFiles[$filename][$nls];
+			if ( $info ) {
+				return $info;
+			} else {
+				return ar('error')->raiseError( 'No info for file '.$filename.' found', 502 );
+			}
+		}
+		
+		public function putfile( $filename, $nls = 'none', $originalName = 'null' ) {
+			$filename = (string) $filename;
+			$nls = (string) $nls;
+			if ( !isset($originalName) ) {
+				$originalName = $filename;
+			}
+			$originalName = (string) $originalName;
 			$registeredFiles = (array) $this->store->getvar('registeredFiles');
 			$error = '';
-			$fileInfo = ldRegisterFile( $filename, $error );
+			$fileInfo = ldRegisterFile( $originalName, $error );
 			if (!$error) {
-				$registeredFiles[ $filename ][ $nls ] = $fileInfo;
+				$cleanInfo = array(
+					'name' => $fileInfo[ $originalName ],
+					'temp' => $fileInfo[ $originalName.'_temp' ],
+					'size' => $fileInfo[ $originalName.'_size' ],
+					'type' => $fileInfo[ $originalName.'_type' ]
+				);
+				$registeredFiles[ $filename ][ $nls ] = $cleanInfo;
 				$this->store->putvar('registeredFiles', $registeredFiles );
-				$result = $fileInfo;
+				$result = $cleanInfo;
 			} else {
 				$result = ar('error')->raiseError( $error, 501 );
 			}		
@@ -85,6 +112,8 @@
 		}
 		
 		public function remove( $filename, $nls = 'none') {
+			$filename = (string) $filename;
+			$nls = (string) $nls;
 			$registeredFiles = $this->ls();
 			$info = $registeredFile[$filename][$nls];
 			unset($registeredFiles[$filename][$nls]);
