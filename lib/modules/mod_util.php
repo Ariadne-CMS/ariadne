@@ -119,6 +119,19 @@
 			return $result;
 		}
 
+		function _preg_replace_callback($regExp,$callback,$haystack) {
+				$context = pobject::getContext();
+				$me = $context["arCurrentObject"];
+				$result = false;
+				if (pinp_util::is_callback($callback)) {
+						$result =  preg_replace_callback($regExp, $callback,$haystack);
+				} else {
+						$me->error = "'$callback' is not a valid callback function";
+				}
+				return $result;
+		}
+
+
 		function _usort(&$array, $callback) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
