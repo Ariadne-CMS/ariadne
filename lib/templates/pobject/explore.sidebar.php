@@ -27,7 +27,10 @@
 			$this->call("typetree.ini");
 		}
 		$this->call("explore.sidebar.tasks.php", $arCallArgs);
-		$this->call("explore.sidebar.settings.php", $arCallArgs);
+		if ( ar_events::fire( 'ariadne:onbeforesidebarsettings', true ) ) {
+			$this->call("explore.sidebar.settings.php", $arCallArgs);
+			ar_events::fire( 'ariadne:onsidebarsettings' );
+		}
 		if ($AR->SVN->enabled) {
 			$this->call("explore.sidebar.svn.php", $arCallArgs);
 		}
