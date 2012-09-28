@@ -163,11 +163,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				// (this should not happen, as pobject must have a 'default.phtml')
 				$arCallTemplate=$this->store->get_config("code")."templates/".$arType."/".$arCallFunction;
 				if (file_exists($arCallTemplate)) {
+					debug('found '.$arCallTemplate, 'all');
 					// template found
 					$arCallFunction = $arCallFunctionOrig;
 					include($arCallTemplate);
 					break;
 				} else if (file_exists($this->store->get_config("code")."templates/".$arType."/default.phtml")) {
+					debug('found default.phtml', 'all');
 					// template not found, but we did find a 'default.phtml'
 					include($this->store->get_config("code")."templates/".$arType."/default.phtml");
 					break;
@@ -471,7 +473,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						$arCallArgs=end($ARCurrent->arCallStack);
 					}
 					$context = $this->getContext();
-							
+
+					$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+
+					$this->pushContext(array('scope' => 'php', 'arCurrentObject' => $wf_object));
+
 					$eventData = new object();
 					$eventData->arCallArgs = $arCallArgs;
 					$eventData->arCallFunction = $context['arCallFunction'];
@@ -482,7 +488,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					}
 					$arCallArgs = $eventData->arCallArgs;
 
-					$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+					$this->popContext();
+
 					$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);
 					if (is_array($eventData->arProperties)) {
 						if (is_array($wf_result)) {
@@ -615,7 +622,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 							//$this->ClearCache($this->path, true, false);
 							// all save actions have been done, fire onsave.
 							$eventData->arProperties = $properties;
+
+							$this->pushContext(array('scope' => 'php', 'arCurrentObject' => $this));
 							ar_events::fire( 'onsave', $eventData ); // nothing to prevent here, so ignore return value
+							$this->popContext();
+
 						} else {
 							$this->error = $this->store->error;
 							$result = false;
@@ -1204,7 +1215,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	function getConfig() {
 	global $ARConfig, $ARCurrent, $ARConfigChecked;
 		$context=$this->getContext(0);
-		// debug("getConfig(".$this->path.") context: ".$context['scope'] );
+		 debug("getConfig(".$this->path.") context: ".$context['scope'] );
 		// debug(print_r($ARConfig->nls, true));
 		if( !$ARConfig->cache[$this->parent] && $this->parent!=".." ) {
 			$parent = current($this->get($this->parent, "system.get.phtml"));
@@ -1228,8 +1239,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 		$initialNLS = $ARCurrent->nls;
 		$initialConfigChecked = $ARConfigChecked;
-
+		$initialNoHeaders = $ARCurrent->arNoHeaders;
+		$ARCurrent->arNoHeaders = true;
+		ob_start();
 		if ($ARConfig->cache[$this->path]->hasConfigIni && !$this->CheckConfig('config.ini', $arCallArgs)) {
+			debug("pobject::getConfig() loaded config.ini @ ".$this->path);
 			// debug("getConfig:checkconfig einde");
 			$arConfig = $ARCurrent->arResult;
 			if (!isset($arConfig)) {
@@ -1247,7 +1261,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			}
 			$ARConfig->pinpcache[$this->path] = (array) $arConfig;
 		}
-
+		ob_end_clean();	
+		$ARCurrent->arNoHeaders = $initialNoHeaders;
 		$ARConfigChecked = $initialConfigChecked;
 		$ARCurrent->nls = $initialNLS;
 		
@@ -1645,8 +1660,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}
 			if ($inLibrary) {
+				debug("getPinpTemplate; INLIBRARY $checkpath; ".$ARConfig->cache[$checkpath]->type);
 				if ($ARConfig->cache[$checkpath]->type == 'psection') {
-					// break search operation when we have searched a 
+					debug("BREAKING; $arTemplateId");
+					// break search operation when we have found a 
 					// psection object
 					break;
 				}
@@ -1683,6 +1700,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$arSetType = $arCallType;
 		}
 
+		debug("getPinpTemplate END; $arTemplateId; $checkpath;");
 		$result["arTemplateId"] = $arTemplateId;
 		$result["arCallTemplate"] = $arCallTemplate;
 		$result["arCallType"] = $arCallType;
@@ -1705,7 +1723,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 		// system templates (.phtml) have $arCallFunction=='', so the first check in the next line is to
 		// make sure that loopcounts don't apply to those templates.
-		if ($arCallFunction && $ARBeenHere[$this->path][$arCallFunction]>$MAX_LOOP_COUNT) { // protect against infinite loops
+		if (0 && $arCallFunction && $ARBeenHere[$this->path][$arCallFunction]>$MAX_LOOP_COUNT) { // protect against infinite loops
 			error(sprintf($ARnls["err:maxloopexceed"],$this->path,$arCallFunction,$arCallArgs));
 			$this->store->close();
 			exit();
@@ -3074,7 +3092,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$user = $AR->pinp_user;
 		} else {
 			$this->pushContext(Array("scope" => "php"));
-				$user = current($AR->user->get(".", "system.get.phtml"));
+				if ( $AR->user instanceof ariadne_object ) {
+					$user = current($AR->user->get(".", "system.get.phtml"));
+				} else {
+					$user = $AR->user;
+				}
 				$AR->pinp_user = $user;
 			$this->popContext();
 		}
@@ -3190,6 +3212,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			}
 		} else {
 			$newrepl = $this->preg_replace_compile($pattern, $replacement);
+//			var_dump($newrepl);
 		}
 		return preg_replace($pattern, $newrepl, $text, $limit);
 	}
