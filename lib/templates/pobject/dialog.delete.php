@@ -1,6 +1,6 @@
 <?php
 	$ARCurrent->nolangcheck=true;
-	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+	if ($this->CheckLogin("delete") && $this->CheckConfig()) {
 		include($this->store->get_config("code")."widgets/wizard/code.php");
 
 		$wgWizFlow = array(
@@ -14,22 +14,30 @@
 
 
 		$wgWizAction = $this->getdata("wgWizAction");
-		
-		if( $wgWizAction == "save" ) {
+
+		if (!$this->CheckLogin("delete")) {
 			$wgWizButtons = array(
 				"cancel" => array(
 					"value" => $ARnls["ok"]
 				)
 			);
 		} else {
-			$wgWizButtons = array(
-				"cancel" => array(
-					"value" => $ARnls["cancel"]
-				),
-				"save" => array(
-					"value" => $ARnls["delete"]
-				),
-			);
+			if( $wgWizAction == "save" ) {
+				$wgWizButtons = array(
+					"cancel" => array(
+						"value" => $ARnls["ok"]
+					)
+				);
+			} else {
+				$wgWizButtons = array(
+					"cancel" => array(
+						"value" => $ARnls["cancel"]
+					),
+					"save" => array(
+						"value" => $ARnls["delete"]
+					),
+				);
+			}			
 		}
 
 		$wgWizTitle=$ARnls["delete"];
