@@ -98,8 +98,11 @@
 			document.getElementById('progress_text').innerHTML = 'Done';
 			document.getElementById('progress').style.width = '100%';
 			document.getElementById('deleting').innerHTML = '<?php echo $ARnls["deleting"] . " " . $current_object_path; ?>';
-			window.opener.muze.ariadne.explore.view('<?php echo ($this->getvar("childrenonly") ? $this->path : $this->parent );?>');
+			if ( window.opener && window.opener.muze && window.opener.muze.ariadne ) {
+				window.opener.muze.ariadne.explore.view('<?php echo ($this->getvar("childrenonly") ? $this->path : $this->parent );?>');
+			}
 			window.close();
+			
 		</script>
 <?php
 	}
