@@ -48,11 +48,6 @@
 			<div id="progress"></div>
 			<div id="progress_text">0/<?php echo $total; ?></div>
 		</div>
-		<div class="buttons">
-		<div class="left">
-		<input unselectable="on" type="submit" name="wgWizControl" class="wgWizControl" onClick="document.wgWizForm.wgWizAction.value='cancel';" value="<?php echo $ARnls['cancel']; ?>">
-		</div>
-		</div>
 		<?php 
 				while ($offset < $objects_left) {
 					flush();
