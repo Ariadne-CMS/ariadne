@@ -33,8 +33,9 @@ if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		}
 		
 		// tasks on the target
-		$this->get($this->data->path, "explore.sidebar.tasks.php", $arCallArgs);
-		$this->get($this->data->path, "explore.sidebar.settings.php", $arCallArgs); 		
+		$path = $this->store->make_path( $this->data->path, $this->parent );
+		$this->get($path, "explore.sidebar.tasks.php", $arCallArgs);
+		$this->get($path, "explore.sidebar.settings.php", $arCallArgs); 		
 
 		$arCallArgs["shortcutSidebar"] = false;
 		//tasks on the shortcut
