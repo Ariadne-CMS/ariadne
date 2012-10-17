@@ -8,7 +8,6 @@
 
 		include_once($this->store->get_config("code")."modules/mod_unicode.php");
 
-
 		if (!function_exists("convData2UTF8")) {
 			function convData2UTF8($data, $charset) {
 				if (is_array($data)) {
@@ -48,6 +47,7 @@
 			unset($this->properties['fulltext']);
 		}
 
+		$this->call('system.import.translations.phtml');
 
 		$this->store->save(
 				$this->path,
