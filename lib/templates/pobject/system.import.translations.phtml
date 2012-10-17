@@ -38,7 +38,7 @@
 		if (is_array($ARCurrent->options['rewrite_references'])) {
 			foreach ($ARCurrent->options['rewrite_references'] as $oldPath => $newPath) {
 				if ($this->data->path) {
-					if (strrpos($this->data->path, $oldPath) === 0) {
+					if (strpos($this->data->path, $oldPath) === 0) {
 						$this->data->path = $newPath . substr( $this->data->path, strlen( $oldPath ) );
 					}
 				}
@@ -46,7 +46,7 @@
 				if (is_array($this->properties['references'])) {
 					foreach ($this->properties['references'] as $i => $record) {
 						if ($record['path']) {
-							if (strrpos($record['path'], $oldPath) === 0) {
+							if (strpos($record['path'], $oldPath) === 0) {
 								$this->properties['references'][$i]['path'] = $newPath . substr( $record['path'], strlen( $oldPath ) );
 							}
 						}
