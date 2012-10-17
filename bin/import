@@ -28,6 +28,12 @@
     --without-grants         Don't import grant information.
     --without-templates      Don't import templates.
     --without-files          Don't import files.
+    --rewrite-urls           Rewrite URLs in page, summary and customdata fields
+                             Example: --rewrite-urls=http://dev.fastbizz.com,http://www.fastbizz.com
+
+    --rewrite-references     Rewrite references in shortcuts, page-, summary- and customdata fields
+                             Example: --rewrite-references=/projects/fastbizz-dev/,/projects/fastbizz/
+
     --use-nls                This will update/import the specified nls data.
     --tar_nofail             Skip tar/gz errors.
     --force                  Overwrites existing objects.
@@ -101,9 +107,36 @@
 				case 'tar_fail':
 					$ax_config["tar_nofail"]=false;
 				break;
+				case 'rewrite':
+					switch ($option) {
+						case 'references':
+							if ($option_value) {
+								$fpaths = explode(",", $option_value);
+								if (count($fpaths) != 2) {
+									die("--rewrite-references expects nothing or a source- and a destination path, seperated by a comma\n");
+								} else {
+									$ARCurrent->options['rewrite_references'][ $fpaths[0] ] = $fpaths[1];
+								}
+							} else {
+								$ARCurrent->options['rewrite_references'] = array( 'default' => 'default' );
+							}
+						break;
+						case 'urls':
+							$urls = explode(",", $option_value);
+							if (count($urls) != 2) {
+								die("--rewrite-urls expects a source url and a destination url, seperated by a comma\n");
+							} else {
+								$ARCurrent->options['rewrite_urls'][ $urls[0] ] = $urls[1];
+							}
+						break;
+						default:
+							die("no idea howto rewrite $option\n");
+						break;
+					}
+				break;
 
 				default:
-					echo "unknow option-switch ($option_switch)\n";
+					die("unknow option-switch ($option_switch)\n");
 			}
 		} else {
 			$arg_v[$arg_c++]=$cmd;
