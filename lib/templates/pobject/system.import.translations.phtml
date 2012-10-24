@@ -2,11 +2,12 @@
 
 
 		if (is_array($ARCurrent->options['rewrite_urls'])) {
+			$nls_list = $AR->nls->list;
+			$nls_list['none'] = 'None';
 			foreach ($ARCurrent->options['rewrite_urls'] as $oldURL => $newURL) {
 				if (substr($oldURL, -1) != '/') {
 					$oldURL .= '/';
 				}
-				$nls_list = $AR->nls->list;
 				foreach ($nls_list as $nls => $nls_name) {
 						if ($this->data->$nls) {
 							$nls_fields = array( 'page' , 'summary' );
@@ -20,7 +21,8 @@
 									}
 								}
 							}
-						} else if (is_array($this->data->custom[ $nls ])) {
+						}
+						if (is_array($this->data->custom[ $nls ])) {
 							foreach ($this->data->custom[ $nls ] as $customField => $page) {
 								if ($page) {
 									$regexp = '|' . str_replace('|', '\|', $oldURL) . '|';
