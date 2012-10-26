@@ -44,7 +44,6 @@ the specified .wddx file. It will import all objects from your .wddx file.
   --prefix                 Prefixes all objects with the given path
 ";
 
-	//TODO: commandline configuration
 	$arg_c=0;
 	$arg_v[$arg_c++]=$argv[0];
 
@@ -144,8 +143,7 @@ the specified .wddx file. It will import all objects from your .wddx file.
 			break;
 		case 1:
 		default:
-			echo "verkeerde hoeveelheid argumenten ($arg_c)";
-			print_r($arg_v);
+			echo $HELP_INFO;
 			exit(0);
 
 	}

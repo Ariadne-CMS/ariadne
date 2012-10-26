@@ -94,6 +94,7 @@ class export_wddx {
 	}
 
 	function export_data($fp,$name, $value) {
+		global $ARCurrent;
 		if (!is_null($value)) {
 			fwrite($fp,"<var name=\"$name\">\n");
 			if (is_bool($value)) {
@@ -102,6 +103,9 @@ class export_wddx {
 			} else if (is_int($value)||is_real($value)||is_float($value)) {
 				fwrite($fp,"<number>$value</number>\n");
 			} else if (is_string($value) || ($value==="")) {
+				if($ARCurrent->wddxoptions['srcpath'] != $ARCurrent->wddxoptions['dstpath']){
+					$value = preg_replace( '#(^|[\'"])'.$ARCurrent->wddxoptions['srcpath'].'#i', '$1'.$ARCurrent->wddxoptions['dstpath'], $value);
+				}
 				fwrite($fp,"<string><![CDATA[".export_wddx::strtoxmldata($value)."]]></string>\n");
 			} else if (is_array($value) || is_object($value)) {
 				if (is_array($value)) {
