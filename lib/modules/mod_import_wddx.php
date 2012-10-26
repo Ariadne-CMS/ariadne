@@ -78,6 +78,10 @@ class import_wddx {
 			}
 			$struct = array_pop($this->stack);
 
+			if ( is_string( $value['data'] ) && $this->seenconfig && ( $this->config['srcpath'] != $this->config['dstpath'] ) ) {
+				$value['data'] = preg_replace( '#(^|[\'"])'.$this->config['srcpath'].'#i', '$1'.$this->config['dstpath'], $value['data'] );
+			}
+
 			$key = $var["data"];
 			if(is_object($struct["data"]))
 			{
@@ -505,9 +509,6 @@ class import_wddx {
 					}
 				break;
 				case "string":
-					if ( $this->seenconfig && ( $this->config['srcpath'] != $this->config['dstpath'] ) ) {
-						$data = preg_replace( '#(^|[\'"])'.$this->config['srcpath'].'#i', '$1'.$this->config['dstpath'], $data );
-					}
 					$element["data"] .= $data;
 				break;
 			}
