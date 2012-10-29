@@ -1,5 +1,4 @@
 <?php
-
 	ar_pinp::allow( 'ar_http_files');
 	ar_pinp::allow( 'ar_http_filesRegistry');
 	
