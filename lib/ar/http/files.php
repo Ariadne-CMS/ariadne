@@ -85,7 +85,7 @@
 			}
 		}
 		
-		public function putfile( $filename, $nls = 'none', $originalName = 'null' ) {
+		public function putFile( $filename, $nls = 'none', $originalName = null ) {
 			$filename = (string) $filename;
 			$nls = (string) $nls;
 			if ( !isset($originalName) ) {
