@@ -41,9 +41,12 @@ define("PT_CATCH",			216);
 define("PT_CBRACE_OPEN_VAR",215);
 define("PT_VAR_CBRACE_OPEN",214);
 define("PT_HEREDOC",		213);
+define("PT_EXT_COMPILE_START", 212);
+define("PT_EXT_COMPILE_END", 211);
 
 define("YY_STATE_HTML",			1);
 define("YY_STATE_PINP",			2);
+define("YY_STATE_EXT_COMPILE",		3);
 
 class scanner {
 
@@ -151,6 +154,16 @@ class scanner {
 		$this->YYCURSOR = $this->YYCURSOR - strlen($string);
 	}
 
+	function ext_compile($engine, $string) {
+		if ($engine == "lessc") { // FIXME: Define an API for compiler classes so that no specific configuration is needed here.
+			$client = ar('beta/lessc')->client();
+			return $client->compile($string);
+		} else if ($engine == "test") {
+			return "[[ TEST ]] $string [[ /TEST ]]";
+		}
+		return false;
+	}
+
 	function scan(&$result) {
 		$YYCURSOR = &$this->YYCURSOR;
 		$YYBUFFER = &$this->YYBUFFER;
@@ -167,7 +180,7 @@ class scanner {
 					} else {
 						$matches='';
 						$scan_buffer = substr($YYBUFFER, $YYCURSOR, -1);
-						$re_code="^(.*)(<pinp>|<script[^>]+language[^>]*=[^>]*php[^>]*>|<[%?])";
+						$re_code="^(.*)(<pinp>|<compile:[^>]*>|<script[^>]+language[^>]*=[^>]*php[^>]*>|<[%?])";
 						if (preg_match("!".$re_code."!Usi", $scan_buffer, $matches)) {
 							$this->YYLINE += substr_count($matches[1], "\n");
 							if ($matches[2]) {
@@ -177,6 +190,12 @@ class scanner {
 									$YYCURSOR+=strlen($matches[0]);
 									$YYSTATE = YY_STATE_PINP;
 									return PT_PINP_START;
+								} else if (strpos(strtolower($matches[2]), "<compile:") === 0) {
+									/* compile tag found */
+									$result = $matches[1];
+									$YYCURSOR+=strlen($matches[0]);
+									$YYSTATE = YY_STATE_EXT_COMPILE;
+									return PT_EXT_COMPILE_START;
 								} else {
 									/* php start tag found */
 									$result = $matches[1];
@@ -612,6 +631,61 @@ class scanner {
 						break;
 					}
 				break;
+				case YY_STATE_EXT_COMPILE:
+						$startLine = $this->YYLINE;
+						do {
+							while ($yych !== '<' && ord($yych) !== 0) {
+								if ($yych == "\n") {
+									$this->YYLINE++;
+								}
+								$yych = $YYBUFFER[++$YYCURSOR];
+							}
+
+							if ($yych === '<') {
+								$yych = $YYBUFFER[++$YYCURSOR];
+								switch ($yych) {
+									case '/':
+										$yych = $YYBUFFER[++$YYCURSOR];
+										while ($yych == ' ') {
+											$yych = $YYBUFFER[++$YYCURSOR];
+										} 
+										$tag_element = "";
+										while ($yych != ' ' && ord($yych)!==0 && $yych != '>') {
+											$tag_element .= $yych;
+											$yych = $YYBUFFER[++$YYCURSOR];
+										}
+										while (ord($yych)!==0 && $yych!='>') {
+											$yych = $YYBUFFER[++$YYCURSOR];
+										}
+										if ($yych=='>') {
+											++$YYCURSOR;
+										}
+
+										if (preg_match('|^compile:([a-z]+)|i', $tag_element, $matches)) {
+											$result = $this->ext_compile($matches[1], substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR -$YYCURSOR_START - (strlen($tag_element) + 3) ));
+											if ($result === false) {
+												$this->error = "Compiler '".$matches[1]."' not found (started at line $startLine) ";
+												return PT_ERROR;
+											}
+											$YYSTATE = YY_STATE_HTML;
+											return PT_EXT_COMPILE_END;
+										} else {
+											continue 2;
+										}
+									break;
+									default:
+										continue 2;
+									break;
+								}
+							}
+							break;
+						} while (1);
+
+						$YYSTATE = YY_STATE_HTML;
+						$result = $yych;
+						return PT_EOF;
+				break;
+
 			}
 		} while (1);
 	}
@@ -656,7 +730,7 @@ class pinp {
 		  "convert_cyr_string|count_chars|crc32|crypt|echo|explode|flush|".
 		  "get_html_translation_table|htmlentities|htmlspecialchars|implode|join|".
 		  "levenshtein|localeconv|ltrim|md5|sha1|metaphone|nl2br|ord|parse_str|print|printf|".
-		  "quoted_printable_decode|html_entity_decode|html_entity_encode|quotemeta|rawurldecode|rawurlencode|rtrim|str_rot13|".
+		  "quoted_printable_decode|filter_var|html_entity_decode|html_entity_encode|quotemeta|rawurldecode|rawurlencode|rtrim|str_rot13|".
 	      "sscanf|setlocale|similar_text|soundex|sprintf|strncasecmp|strcasecmp|strchr|".
 		  "strcmp|strcoll|strcspn|strip_tags|stripcslashes|stripslashes|stristr|strlen|".
 		  "strnatcmp|strnatcasecmp|strncmp|str_pad|strpos|strrchr|str_repeat|strrev|".
@@ -1307,6 +1381,16 @@ class pinp {
 					$this->in_pinp = false;
 					$this->next_token();
 				break;
+				case PT_EXT_COMPILE_START:
+					$this->in_ext_compile = true;
+					$this->next_token();
+				break;
+				case PT_EXT_COMPILE_END:
+					$result .= $this->token_ahead_value;
+					$this->in_ext_compile = false;
+					$this->next_token();
+				break;
+
 				case PT_RETURN:
 					$ret_result = $this->token_ahead_value;
 					$this->next_token();
@@ -1358,6 +1442,14 @@ class pinp {
 				$this->error = "Unexpected '".$this->token_ahead_value."' at line ".$this->scanner->YYLINE; //no closing pinp tag found";
 			}
 		}
+		if (!$this->error && $this->in_ext_compile) {
+			if ($this->token_ahead == PT_EOF) {
+				$this->error = "No closing COMPILE tag found at line ".$this->scanner->YYLINE;
+			} else {
+				$this->error = "Unexpected '".$this->token_ahead_value."' at line ".$this->scanner->YYLINE; //no closing pinp tag found";
+			}
+		}
+
 		if (!$this->error) {
 			$this->syntax_test();
 		}
