@@ -156,8 +156,9 @@ class scanner {
 
 	function ext_compile($engine, $string) {
 		if ($engine == "lessc") { // FIXME: Define an API for compiler classes so that no specific configuration is needed here.
-			$client = ar('beta/lessc')->client();
-			return $client->compile($string);
+			return ar('beta/lessc')->compile($string);
+		} else if ($engine == "jsmin") {
+			return ar('beta/jsmin')->compile($string);
 		} else if ($engine == "test") {
 			return "[[ TEST ]] $string [[ /TEST ]]";
 		}
@@ -180,8 +181,10 @@ class scanner {
 					} else {
 						$matches='';
 						$scan_buffer = substr($YYBUFFER, $YYCURSOR, -1);
-						$re_code="^(.*)(<pinp>|<compile:[^>]*>|<script[^>]+language[^>]*=[^>]*php[^>]*>|<[%?])";
+						$re_code="^(.*)(<pinp>|<compile:[^>]+>|<script[^>]+language[^>]*=[^>]*php[^>]*>|<[%?])";
+//						$re_code="^(.*)(<pinp>|<script[^>]+language[^>]*=[^>]*php[^>]*>|<[%?])";
 						if (preg_match("!".$re_code."!Usi", $scan_buffer, $matches)) {
+
 							$this->YYLINE += substr_count($matches[1], "\n");
 							if ($matches[2]) {
 								if (strtolower($matches[2]) === "<pinp>") {
@@ -1382,6 +1385,7 @@ class pinp {
 					$this->next_token();
 				break;
 				case PT_EXT_COMPILE_START:
+					$result .= $this->token_ahead_value;
 					$this->in_ext_compile = true;
 					$this->next_token();
 				break;
