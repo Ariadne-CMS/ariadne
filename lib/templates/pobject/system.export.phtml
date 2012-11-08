@@ -113,8 +113,9 @@
 				$query = "object.path =~ '" . $srcpath . "%' order by path ASC";
 				$items_to_process = $this->count_find($srcpath, $query);
 			}
+			$stepsize=100;
 			progress(0, $items_to_process);
-			while (count($result=$this->store->call("system.export.object.phtml",$arCallArgs,$this->store->find($srcpath,$criteria,100,$offset)))) {
+			while (count($result=$this->store->call("system.export.object.phtml",$arCallArgs,$this->store->find($srcpath,$criteria,$stepsize,$offset)))) {
 				if (is_array($checkpaths)) {
 					unset($newresult);
 					@reset($checkpaths);
@@ -271,7 +272,7 @@
 					$items_processed++;
 					progress($items_processed, $items_to_process);
 				}
-				$offset+=100;
+				$offset+=$stepsize;
 			}
 			if (!$ARCurrent->options["without_grants"]) {
 				display("updating grants (groups)\n");
