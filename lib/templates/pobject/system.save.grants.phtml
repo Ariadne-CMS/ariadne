@@ -98,6 +98,8 @@
 				}
 			} else if ($newgrants) {
 				if ($type=current($this->get($path, "system.get.type.phtml"))) {
+					$temp = explode(".", $type);
+					$type = $temp[0];
 					if ($this->store->AR_implements($type, "pgroup")) {
 						$type="pgroup";
 					} else if ($this->store->AR_implements($type, "puser")) {
