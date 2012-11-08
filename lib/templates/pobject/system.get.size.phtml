@@ -1,0 +1,27 @@
+<?php
+  /******************************************************************
+   system.get.size.phtml				   		   Muze Ariadne v2.8
+   ------------------------------------------------------------------
+   Arguments: none
+   Grant needed: read
+   Global variables: none
+
+   Returns the size of this object.
+
+  ******************************************************************/
+	$ARCurrent->nolangcheck=true;
+
+	//if ($this->CheckLogin('read') && $this->CheckConfig()) {
+		$arResult=$this->size;
+		if (isset($this->data->filesize)) {
+			$arResult += $this->data->filesize;
+		}
+		if (is_array($this->data->nls->list)) {
+			foreach ($this->data->nls->list as $key => $language) {
+				if (isset($this->data->$key->filesize)) {
+					$arResult += $this->data->$key->filesize;
+				}
+			}
+		}
+	//}
+?>
