@@ -68,13 +68,13 @@
   function SetDate(name, date, formatted) {
     document.wgWizForm.repeatend.value=date;
     document.wgWizForm['day_repeatend'].value=date;
-    document.wgWizForm['day_repeatendformatted'].value=formatted;
+    document.wgWizForm['formattedday_repeatend'].value=formatted;
     document.wgWizForm['week_repeatend'].value=date;
-    document.wgWizForm['week_repeatendformatted'].value=formatted;
+    document.wgWizForm['formattedweek_repeatend'].value=formatted;
     document.wgWizForm['month_repeatend'].value=date;
-    document.wgWizForm['month_repeatendformatted'].value=formatted;
+    document.wgWizForm['formattedmonth_repeatend'].value=formatted;
     document.wgWizForm['year_repeatend'].value=date;
-    document.wgWizForm['year_repeatendformatted'].value=formatted;
+    document.wgWizForm['formattedyear_repeatend'].value=formatted;
   }
   function init_repeat() {
 	<?php
