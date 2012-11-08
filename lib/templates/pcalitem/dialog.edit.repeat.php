@@ -20,6 +20,10 @@
 			$repeatend=$this->getdata("date", "none") + $this->getdata("starthour","none")*3600 + $this->getdata("startminute", "none") * 60;
 		}
 		$repeat_on=$this->getdata("repeat_on", "none");
+		if ( !$repeat_on ) {
+			$weekday = date('w', $this->getdata('date'));
+			$repeat_on[$weekday] = true;
+		}
 		$repeat_by=$this->getdata("repeat_by", "none");
 		if (!$repeat_by) {
 			$repeat_by="day";
