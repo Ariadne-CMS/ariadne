@@ -14,7 +14,7 @@ class session {
 		if ((!$id) || (!$this->sessionstore->exists("/$id/")))  { 
 			debug("session: generating new id", "all");
 			// generate new id
-			srand((double)microtime()*1000000);
+			srand((int)  (microtime(true)*1000000));
 			do { 
 				// 3 bytes id
 				$genid=chr(rand(1,255)).chr(rand(1,255)).chr(rand(1,255));
