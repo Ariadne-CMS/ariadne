@@ -9,17 +9,17 @@
    Returns the size of this object.
 
   ******************************************************************/
-        $ARCurrent->nolangcheck=true;
-        if ($this->CheckLogin('read') && $this->CheckConfig()) {
-		$arResult=$this->size;
-		if ($this->data->filesize) {
-			$arResult += $this->data->filesize;
-		}
-		if ($this->data->nls->list) {
-			foreach ($this->data->nls->list as $key => $language) {
-				if ($this->data->$nls->filesize) {
-					$arResult += $this->data->$nls->filesize;
-				}
+	$ARCurrent->nolangcheck=true;
+	$arResult=$this->size;
+
+	if ($this->data->filesize) {
+		$arResult += $this->data->filesize;
+	}
+
+	if ($this->data->nls->list) {
+		foreach ($this->data->nls->list as $key => $language) {
+			if ($this->data->$nls->filesize) {
+				$arResult += $this->data->$nls->filesize;
 			}
 		}
 	}
