@@ -412,23 +412,21 @@
 	class ar_html_formInput {
 
 		protected $form;
-		public    $type, $name, $class, $id, $label, $disabled, $default, $required, $related, $checks, $value, $maxlength, $size;
+		public    $type, $name, $class, $id, $label, $disabled, $default, $required, $related, $checks, $value;
 	
 		public function __construct($field, $form) {
-			$this->form	= $form;
-			$this->type	= isset($field->type) ? $field->type : null;
-			$this->name	= isset($field->name) ? $field->name : null;
+			$this->form		= $form;
+			$this->type		= isset($field->type) ? $field->type : null;
+			$this->name		= isset($field->name) ? $field->name : null;
 			$this->class	= isset($field->class) ? $field->class : null;
-			$this->id	= isset($field->id) ? $field->id : null;
+			$this->id		= isset($field->id) ? $field->id : null;
 			$this->label	= isset($field->label) ? $field->label : null;
 			$this->disabled	= isset($field->disabled) ? $field->disabled : false;
 			$this->default	= isset($field->default) ? $field->default : null; 
 			$this->required = isset($field->required) ? $field->required : false;
 			$this->checks   = isset($field->checks) ? $field->checks : array();
 			$this->title    = isset($field->title) ? $field->title : null;
-			$this->maxlength	= isset($field->maxlength) ? $field->maxlength : null;
-			$this->size			= isset($field->size) ? $field->size : null;
-
+			
 			if ( isset($this->checks) && !is_array($this->checks) ) {
 				$this->checks = array( $this->checks );
 			}
@@ -466,7 +464,7 @@
 			}
 		}
 
-		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $maxlength=null ) {
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null ) {
 			if (!isset($type)) {
 				$type = $this->type;
 			}
@@ -485,15 +483,11 @@
 			if (!isset($title)) {
 				$title = $this->title;
 			}
-			if (!isset($maxlength)) {
-				$maxlength = $this->maxlength;
-			}
 			$attributes = array(
 				'type'	=> $type,
 				'name'	=> $name,
 				'id'	=> $id,
-				'value'	=> $value,
-				'maxlength' => $maxlength
+				'value'	=> $value
 			);
 			if ($title) {
 				$attributes['title'] = $title;
@@ -638,8 +632,107 @@
 		
 	}
 	
-	class ar_html_formInputText extends ar_html_formInput {
+	class ar_html_formInputButton extends ar_html_formInput {
+		public $buttontype, $buttonlabel;
 		
+		public function __construct( $field, $form ) {
+			parent::__construct( $field, $form );
+			$this->buttonType = isset($field->buttonType) ? $field->buttonType : null;
+			$this->buttonLabel = isset($field->buttonLabel) ? $field->buttonLabel : $field->value;
+		}
+		
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $buttonType=null, $buttonLabel=null ) {
+			if ( !isset($buttonType) ) {
+				$buttonType = $this->buttonType;
+			}
+			if ( !isset($buttonLabel) ) {
+				$buttonLabel = $this->buttonLabel;
+			}
+			if ( !isset($name) ) {
+				$name = $this->name;
+			}
+			if ( !isset($value) ) {
+				$value = $this->value;
+			}
+			if ( !isset($disabled) ) {
+				$disabled = $this->disabled;
+			}
+			if ( !isset($title) ) {
+				$title = $this->title;
+			}
+			$attributes = array(
+				'type'	=> $buttonType,
+				'name'	=> $name,
+				'value'	=> $value
+			);
+			if ( $disabled ) {
+				$attributes['disabled'] = $disabled;
+			}
+			if ( isset( $title ) ) {
+				$attributes['title'] = $title;
+			}
+			return ar_html::el('button', $attributes, $buttonLabel);
+		}
+	}
+	
+	class ar_html_formInputText extends ar_html_formInput {
+		var $maxlength, $size;
+
+		public function __construct( $field, $form ) {
+			parent::__construct( $field, $form );
+			$this->maxlength = isset($field->maxlength) ? $field->maxlength : null;
+			$this->size = isset($field->size) ? $field->size : null;
+		}
+
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $maxlength=null, $size=null ) {
+			if ( !isset($type) ) {
+				$type = $this->type;
+			}
+			if ( !isset($name) ) {
+				$name = $this->name;
+			}
+			if ( !isset($value) ) {
+				$value = $this->value;
+			}
+			if ( !isset($id) ) {
+				$id = $name; //this->id is for the field div, not the input tag
+			}
+			if ( !isset($disabled) ) {
+				$disabled = $this->disabled;
+			}
+			if ( !isset($title) ) {
+				$title = $this->title;
+			}
+			if ( !isset($maxlength) ) {
+				$maxlength = $this->maxlength;
+			}
+			if ( !isset($size) ) {
+				$size = $this->size;
+			} 
+			$attributes = array(
+				'type'	=> $type,
+				'name'	=> $name,
+				'id'	=> $id,
+				'value'	=> $value
+			);
+			if ( $title ) {
+				$attributes['title'] = $title;
+			}
+			if ( $maxlength ) {
+				$attributes['maxlength'] = $maxlength;
+			}
+			if ( $size ) {
+				$attributes['size'] = $size;
+			}
+			$content = ar_html::nodes();
+			if ($disabled) {
+				$attributes['disabled'] = true;
+				$content[] = ar_html::el('input', array('type' => 'hidden', 'name' => $name, 'value' => $value));
+			}
+			$content[] = ar_html::el('input', $attributes);
+			return $content;
+		}
+	
 	}
 
 	class ar_html_formInputPassword extends ar_html_formInputText {
@@ -651,6 +744,28 @@
 		
 	}
 	
+	class ar_html_formInputFile extends ar_html_formInput {
+
+		var $multiple = false;
+
+		public function __construct( $field, $form ) {
+			parent::__construct( $field, $form );
+			$this->multiple = isset($field->multiple) ? $field->multiple : false;
+		}
+
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $multiple=null ) {
+			$content = parent::getInput( $type, $name, $value, $disabled, $id, $title );
+			if ( !isset($multiple) ) {
+				$multiple = $this->multiple;
+			}
+			if ( $multiple ) {
+				$content->attributes['multiple'] = true;
+			}
+			return $content;
+		}
+
+	}
+
 	class ar_html_formInputHidden extends ar_html_formInput {
 			
 		public function __construct($field, $form) {
@@ -668,7 +783,16 @@
 	
 	class ar_html_formInputTextarea extends ar_html_formInputText {
 
-		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $maxlength=null) {
+		var $maxlength, $rows, $cols;
+
+		public function __construct( $field, $form ) {
+			parent::__construct( $field, $form );
+			$this->maxlength = ( isset($field->maxlength) ? $field->maxlength : null );
+			$this->rows = ( isset($field->rows) ? $field->rows : null );
+			$this->cols = ( isset($field->cols) ? $field->cols : null );
+		}
+	
+		protected function getInput( $type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $maxlength=null, $rows=null, $cols=null ) {
 			if (!isset($name)) {
 				$name = $this->name;
 			}
@@ -680,6 +804,15 @@
 			}
 			if (!isset($disabled)) {
 				$disabled = $this->disabled;
+			}
+			if ( !isset($maxlength) ) {
+				$maxlength = $this->maxlength;
+			}
+			if ( !isset($rows) ) {
+				$rows = $this->rows;
+			}
+			if ( !isset($cols) ) {
+				$cols = $this->cols;
 			}
 			$attributes = array(
 				'name'	=> $name,
@@ -694,8 +827,14 @@
 			if ($disabled) {
 				$attributes['disabled'] = true;
 			}
-			if ($maxlength) {
+			if ( $maxlength ) {
 				$attributes['maxlength'] = $maxlength;
+			}
+			if ( $cols ) {
+				$attributes['cols'] = $cols;
+			}
+			if ( $rows ) {
+				$attributes['rows'] = $rows;
 			}
 			return ar_html::el('textarea', $value, $attributes);
 		}
@@ -750,22 +889,18 @@
 
 		protected function getOptions($options=null, $selectedValues=false) {
 			$content = ar_html::nodes();
-			if ( !isset($options) ) {
+			if (!isset($options)) {
 				$options = $this->options;
 			}
-			if ( is_array($options) ) {
-				foreach( $options as $key => $option ) {
-					if ( !is_array($option) ) {
+			if (is_array($options)) {
+				foreach($options as $key => $option) {
+					if (!is_array($option)) {
 						$option = array(
 							'name' => $option
 						);
 					}
-					if ( !isset($option['value']) ) {
-						if ( is_numeric( $key ) ) {
-							$option['value'] = $option['name'];
-						} else {
-							$option['value'] = $key;
-						}
+					if (!isset($option['value'])) {
+						$option['value'] = $key;
 					}
 					$content[] = $this->getOption($option['name'], $option['value'], $selectedValues);
 				}
@@ -777,14 +912,105 @@
 			$attributes = array(
 				'value' => $value
 			);
-			if ( $selectedValues!==false 
-				 &&	( ( !$this->multiple && $selectedValues == $value ) 
-					|| ( is_array($selectedValues) && $selectedValues[$name] == $value ) ) 
-			) {
+			if ($selectedValues!==false && ( (!$this->multiple && $selectedValues == $value) || ( is_array($selectedValues) && $selectedValues[$name] == $value ) ) ){
 				$attributes[] = 'selected';
 			}
 			return ar_html::el('option', $name, $attributes);
 		}
+	}
+
+	class ar_html_formInputButtonList extends ar_html_formInputSelect {
+	
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $options=null, $multiple=null) {
+			if (!isset($name)) {
+				$name = $this->name;
+			}
+			if (!isset($value)) {
+				$value = $this->value;
+			}
+			if (!isset($id)) {
+				$id = $name; 
+			}
+			if (!isset($multiple)) {
+				$multiple = $this->multiple;
+			}
+			if (!isset($disabled)) {
+				$disabled = $this->disabled;
+			}
+			$attributes = array(
+				'class' => 'formButtonListButtons'
+			);
+			$buttonAttributes = array(
+				'name'	=> $name
+			);
+			if ($disabled) {
+				$buttonAttributes['disabled'] = true;
+			}
+			if (!isset($title)) {
+				$title = $this->title;
+			}
+			if ($title) {
+				$attributes['title'] = $title;
+			}
+			$content = ar_html::nodes();
+			$content[] = ar_html::el('div', $this->getButtons($name, $options, $value, $buttonAttributes), $attributes);
+			return $content;
+		}
+
+		protected function getButtons( $name, $options, $value, $attributes ) {
+			$content = ar_html::nodes();
+			if ( !isset($options) ) {
+				$options = $this->options;
+			}
+			if ( is_array($options) ) {
+				foreach ( $options as $key => $button ) {
+					if ( !is_array($button) ) {
+						$button = array(
+							'label' => $button
+						);
+					}
+					if ( !isset($button['value']) ) {
+						$button['value'] = $key;
+					}
+					$content[] = $this->getButton($key, $name, $button, $value, $attributes);
+				}
+			}
+			$content->setAttribute('class', array(
+				'formButtonList' => ar::listPattern( 'formButtonListFirst .*', '.* formButtonListLast' )
+			) );
+			if ( !$this->multiple ) {
+				$content->insertBefore( ar_html::el('input', array(
+					'type' => 'hidden',
+					'name' => $name,
+					'value' => $value
+				) ), $content->firstChild );
+			}
+			return $content;
+		}
+		
+		protected function getButton( $index, $name, $button, $selectedValues, $attributes ) {
+			// FIXME: add hidden inputs with current value when multiple values are allowed
+			// pressing button again will unset the corresponding value
+			if ($button['label']) {
+				$buttonLabel = $button['label'];
+				unset( $button['label'] );
+			} else {
+				$buttonLabel = $button['value'];
+			}
+			$attributes = array_merge( $button, $attributes );
+			$result = ar_html::nodes();
+			$buttonEl = ar_html::el('button', $attributes, $buttonLabel);
+			if ( $selectedValues!==false 
+				&& ( (!$this->multiple && $selectedValues == $button['value']) 
+				|| ( is_array($selectedValues) && $selectedValues[$name] == $button['value'] ) ) 
+			) {
+				$buttonEl->setAttribute('class', array(
+					'formButtonListSelected' => 'formButtonListSelected'
+				) );
+			}
+			return $buttonEl;
+		}
+		
 	}
 	
 	class ar_html_formInputCheckbox extends ar_html_formInput {
@@ -951,7 +1177,7 @@
 	}
 	
 	class ar_html_formInputFieldset extends ar_html_formInput {
-		private $children = null;
+		protected $children = null;
 
 		public function __construct($field, $form) {
 			parent::__construct($field, $form);
@@ -998,6 +1224,118 @@
 			return $valid;			
 		}
 
+	}
+	
+	class ar_html_formInputFieldList extends ar_html_formInputFieldset {
+		
 
+		protected function normalizeChildren( $value ) {
+			// make sure the children are a simple array, with numeric keys and that the name of the field
+			// is always an array
+			// and apply the default formfield on the given values and add those as children
+			$this->children = array();
+			$count = 0;
+			foreach ( $value as $key => $child ) {
+				if ( !$child ) {
+					continue;
+				}
+				if ( is_string($child) ) {
+					$child = array(
+						'value' => $child
+					);
+				}
+				$child['name'] = $this->name.'['.$count.']';
+				if ( $this->default ) {
+					$childOb = clone( $this->default );
+					if ( $childOb->setValues ) {
+						$childOb->setValues( $child );
+					} else {
+						$childOb->setValue( $child['value'] );
+					}
+				} else {
+					$childOb = $this->form->parseField( 0, $child );
+				}
+				$this->children[] = $childOb;
+				$count++;
+			}
+		}
+		
+		protected function handleUpdates($default) {
+			$delete = ar('http')->getvar( $this->name.'Delete' );
+			if ( isset($delete) ) {
+				ar::untaint($delete);
+				if ( $this->children[$delete] ) {
+					unset( $this->children[$delete] );
+				}
+			} else if ( $add = ar('http')->getvar( $this->name.'Add' ) ) {
+				$addedField = ar('http')->getvar( $this->newField->name );
+				if ( $addedField ) {
+					// add a copy of default to the children of this field
+					$newField = $default;
+					$newField['value'] = $addedField; // FIXME: generiek maken
+					$this->children[] = $this->form->parseField(0, $newField );
+				}
+			}
+		}
+		
+		public function __construct($field, $form) {
+			parent::__construct ($field, $form);
+			if ( isset( $field->value ) ) { // apply default behaviour, step 1
+				if ( !$field->newField ) {
+					$field->newField = array(
+						'name' => $this->name.'[]',
+						'value' => '',
+						'label' => false
+					);
+				}
+				
+				if ( !$field->default ) {
+					$field->default = array(
+						'name' => $this->name.'[]',
+						'label' => false
+					);
+				}
+			}
+			
+			if ( $field->newField ) {
+				$this->newField = $form->parseField( 0, $field->newField );
+			}
+			if ( $field->default ) {
+				$this->default = $form->parseField( 0, $field->default );
+			}
+
+			if ( isset( $field->value ) ) { // apply default behaviour, step 2			
+				$this->normalizeChildren( $field->value );				
+				$this->handleUpdates( $field->default );
+			}
+		}
+		
+		public function getField($content=null) {
+			$fieldset = parent::getField($content);
+			$count = 0;
+			foreach( $fieldset->div as $field ) {
+				$field->appendChild( ar_html::el('button', array(
+					'class' => 'formFieldListDelete', 
+					'type' => 'submit',
+					'name' => $this->name.'Delete',
+					'value' => $count
+				), '-' ) );
+				$count++;
+			}
+			if ( $this->newField ) {
+				$newField = $this->newField->getField();
+				$newField->appendChild( ar_html::el('button', array(
+					'class' => 'formFieldListAdd', 
+					'type' => 'submit',
+					'name' => $this->name.'Add',
+					'value' => $this->name.'NewField'
+				), '+' ) );
+				$fieldset->appendChild(
+					ar_html::el('div', array('class' => 'formFieldListAdd'), $newField ) 
+				);
+			}
+			return $fieldset;
+		}
+		
 	}
 ?>
