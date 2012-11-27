@@ -387,14 +387,22 @@ div.buttons div.center {
 }
 #data.delete .typeicon,
 #data.delete .overlay_typeicon {
-        vertical-align: middle;
-        position: relative;
-        margin-right: 5px;
+	vertical-align: middle;
+	position: relative;
+	margin-right: 5px;
+	display: block;
+	float: left;
 }
 #data.delete .overlay_typeicon {
-        margin-left: -31px;
+	margin-left: -31px;
 }
-
+#data.delete .name {
+	margin-left: 27px;
+}
+#data.delete .path {
+	margin-left: 27px;
+	margin-bottom: 10px;
+}
 .clear {
 	clear: both;
 }
