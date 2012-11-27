@@ -11,19 +11,6 @@ html, body {
 	font-family : verdana,helvetica, arial, sans-serif;
 }
 
-#header div.logo img,
-#header div.logo span.ariadne,
-#header div.logo span.ariadne_sub {
-	display: none;
-}
-#header div.logo {
-	height: 30px;
-	background-image: url("http://yvo.muze.nl/logo_vedor.png");
-	background-repeat: no-repeat;
-	background-position: 16px 3px;
-}
-
-
 TH,TD,LI,P,BODY,DIV {
 	font-size : 11px;
 	font-family : verdana,helvetica, arial, sans-serif;
