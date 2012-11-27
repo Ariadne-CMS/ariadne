@@ -6,10 +6,23 @@ html, body {
 	width: 100%;
 	padding: 0px;
 	margin: 0px;
-	background-color: #C1CAE2;
+	background-color: #EEEEEE;
 	font-size : 11px;
 	font-family : verdana,helvetica, arial, sans-serif;
 }
+
+#header div.logo img,
+#header div.logo span.ariadne,
+#header div.logo span.ariadne_sub {
+	display: none;
+}
+#header div.logo {
+	height: 30px;
+	background-image: url("http://yvo.muze.nl/logo_vedor.png");
+	background-repeat: no-repeat;
+	background-position: 16px 3px;
+}
+
 
 TH,TD,LI,P,BODY,DIV {
 	font-size : 11px;
@@ -89,7 +102,7 @@ a img {
 #sections a {
 	display: block;
 	border: 1px solid #808080;
-	background-color: #D0DCF7;
+	background-color: #CCCCCC;
 	margin-left: 10px;
 	margin-top: 10px;
 	margin-bottom: 10px;
@@ -104,18 +117,18 @@ a img {
 
 #sections a:hover, #sections a.current:hover {
 	border: 1px solid #4A6799;
-	background-color: #EFF3FF;
+	background-color: #FFFFFF;
 }
 
 #sections a.current {
 	border: 1px solid #808080;
-	background-color: #EFF3FF;
+	background-color: #FFFFFF;
 	font-weight: bold;
 	padding-right: 9px;
-	border-right: 1px solid #EFF3FF;
+	border-right: 1px solid #FFFFFF;
 }
 #sections a.current:hover {
-	border-right: 1px solid #EFF3FF;
+	border-right: 1px solid #FFFFFF;
 }
 
 #sections a img {
@@ -126,7 +139,7 @@ a img {
 }
 
 #tabsdata {
-        background-color: #EFF3FF;
+        background-color: #FFFFFF;
 	padding: 10px;
 	border: 1px solid #808080;
 	position: fixed;
@@ -237,7 +250,7 @@ div.buttons div.center {
         background:url("../images/sprite.png") repeat-x scroll 0px 0px;
 	height: 16px;
 	padding: 5px;
-	background-color: #D0DCF7;
+	background-color: #CCCCCC;
 	border-right: 1px solid #808080;
 	border-top: 1px solid #808080;
 	border-bottom: 1px solid #808080;
@@ -247,14 +260,14 @@ div.buttons div.center {
 }
 #tabnav a:hover {
         background:url("../images/sprite.png") repeat-x scroll 0px -1700px;
-	background-color: #EFF3FF;
-	border-bottom: 1px solid #EFF3FF;
+	background: #FFFFFF;
+	border-bottom: 1px solid #FFFFFF;
 }
 
 #tabnav .tab-selected a {
-	background-color: #EFF3FF;
-	border-bottom: 1px solid #EFF3FF;
+	border-bottom: 1px solid #FFFFFF;
 	background:url("../images/sprite.png") repeat-x scroll 0px -1700px;
+	background: #FFFFFF;
 }
 
 #tabsdata .field {
@@ -372,7 +385,24 @@ div.buttons div.center {
 	background-color: white;
 	padding: 5px;
 }
-
+#data.delete .typeicon,
+#data.delete .overlay_typeicon {
+	vertical-align: middle;
+	position: relative;
+	margin-right: 5px;
+	display: block;
+	float: left;
+}
+#data.delete .overlay_typeicon {
+	margin-left: -31px;
+}
+#data.delete .name {
+	margin-left: 27px;
+}
+#data.delete .path {
+	margin-left: 27px;
+	margin-bottom: 10px;
+}
 .clear {
 	clear: both;
 }

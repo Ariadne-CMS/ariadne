@@ -48,11 +48,6 @@
 			<div id="progress"></div>
 			<div id="progress_text">0/<?php echo $total; ?></div>
 		</div>
-		<div class="buttons">
-		<div class="left">
-		<input unselectable="on" type="submit" name="wgWizControl" class="wgWizControl" onClick="document.wgWizForm.wgWizAction.value='cancel';" value="<?php echo $ARnls['cancel']; ?>">
-		</div>
-		</div>
 		<?php 
 				while ($offset < $objects_left) {
 					flush();
@@ -109,11 +104,13 @@
 					document.getElementById('progress').style.width = '100%';
 					document.getElementById('copy').innerHTML = '<?php echo $ARnls["copying"] . " " . $current_object_path; ?>';
 					// FIXME: Add copied path to the tree?
-					currentpath = window.opener.muze.ariadne.registry.get('path');
-					if (currentpath == '<?php echo $this->make_path($copytarget . "../"); ?>') {
-						window.opener.muze.ariadne.explore.objectadded();
-					} else {
-						window.opener.muze.ariadne.explore.tree.view('<?php echo $this->make_path($copytarget . "../"); ?>');
+					if ( window.opener && window.opener.muze && window.opener.muze.ariadne && window.opener.muze.ariadne.registry ) {
+						currentpath = window.opener.muze.ariadne.registry.get('path');
+						if (currentpath == '<?php echo $this->make_path($copytarget . "../"); ?>') {
+							window.opener.muze.ariadne.explore.objectadded();
+						} else {
+							window.opener.muze.ariadne.explore.tree.view('<?php echo $this->make_path($copytarget . "../"); ?>');
+						}
 					}
 					window.close();
 				</script>
