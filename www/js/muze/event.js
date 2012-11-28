@@ -305,6 +305,13 @@ muze.namespace('muze.event', function() {
 
 	if (muze.env.isHostMethod(docEl, 'addEventListener')) {
 		event.attach = function(o, sEvent, fListener, useCapture) {
+			if ( !muze.env.isFunction(fListener) ) {
+				throw {
+					el : o,
+					message : 'listener is not a method',
+					event : sEvent
+				};
+			}
 			var listenerID = listeners.push( {
 				el : o,
 				listener : fListener
