@@ -90,7 +90,7 @@ muze.ariadne.explore = function() {
 			'svn_object_checkout'		: windowprops_common + ',height=475,width=550',
 			'svn_object_import'		: windowprops_common + ',height=475,width=550'
 		},
-		store_root : top.muze.ariadne.registry.get('store_root'), // FIXME: deze wordt te vroeg gedaan, dus is leeg.
+		store_root : muze.ariadne.registry.get('store_root'), // FIXME: deze wordt te vroeg gedaan, dus is leeg.
 		authenticate_loaders : Array(),
 		authenticate : function(callback, message) {
 			muze.ariadne.explore.authenticate_loaders.push(callback); // Store the original loaders to fire when authentication is done;
@@ -107,7 +107,7 @@ muze.ariadne.explore = function() {
 					visible: false
 				});
 
-				var login_path = top.muze.ariadne.registry.get('path');
+				var login_path = muze.ariadne.registry.get('path');
 				if (!login_path) {
 					login_path = '/';
 				}
@@ -520,10 +520,10 @@ muze.ariadne.explore.toolbar = function() {
 			muze.ariadne.explore.view(path);
 		},
 		searchwindow : function() {
-			muze.ariadne.explore.arshow('dialog.search', top.muze.ariadne.registry.get('store_root')+top.muze.ariadne.registry.get('path')+'dialog.search.php');
+			muze.ariadne.explore.arshow('dialog.search', muze.ariadne.registry.get('store_root')+muze.ariadne.registry.get('path')+'dialog.search.php');
 		},
 		load : function(path) {
-			var sUrl = top.muze.ariadne.registry.get('store_root')+path+'explore.toolbar.php';
+			var sUrl = muze.ariadne.registry.get('store_root')+path+'explore.toolbar.php';
 			var fadeOut = new YAHOO.util.Anim("explore_top", { opacity: {to: 0.3}}, 0.2);
 			fadeOut.animate();
 			var fadeIn = function() {
@@ -569,7 +569,7 @@ muze.ariadne.explore.sidebar = function() {
 			}
 		},
 		arEdit : function(object, arguments) {
-			muze.ariadne.explore.arshow('dialog.edit',top.muze.ariadne.registry.get("store_root")+object+'dialog.edit.php', arguments);
+			muze.ariadne.explore.arshow('dialog.edit',muze.ariadne.registry.get("store_root")+object+'dialog.edit.php', arguments);
 		},
 		removeFromCookie : function(section){
 			if (muze.ariadne.explore.sidebar.invisibleSections[section]) {
@@ -607,7 +607,7 @@ muze.ariadne.explore.sidebar = function() {
 		},
 		load : function(path) {
 			muze.ariadne.explore.sidebar.currentpath = path;
-			var sUrl = top.muze.ariadne.registry.get('store_root')+path+'explore.sidebar.php';
+			var sUrl = muze.ariadne.registry.get('store_root')+path+'explore.sidebar.php';
 			var fadeOut = new YAHOO.util.Anim("sidebar", { opacity: {to: 0.3}}, 0.2);
 			fadeOut.animate();
 			var fadeIn = function() {
@@ -718,7 +718,7 @@ muze.ariadne.explore.viewpane = function() {
 			}
 		},
 		reselect : function() {
-			var viewmode=top.muze.ariadne.registry.get('viewmode');
+			var viewmode=muze.ariadne.registry.get('viewmode');
 			if (!viewmode) {
 				viewmode = 'list';
 			}
@@ -820,16 +820,16 @@ muze.ariadne.explore.viewpane = function() {
 			muze.ariadne.explore.viewpane.onSelectItem(item);
 		},
 		setviewmode : function(viewmode) {
-			top.muze.ariadne.registry.set('viewmode', viewmode);
-			top.muze.ariadne.cookie.set('viewmode', viewmode);
-			var path = top.muze.ariadne.registry.get('path');
+			muze.ariadne.registry.set('viewmode', viewmode);
+			muze.ariadne.cookie.set('viewmode', viewmode);
+			var path = muze.ariadne.registry.get('path');
 			muze.ariadne.explore.viewpane.view(path);
 			muze.ariadne.explore.browseheader.view(path);
 			muze.ariadne.explore.sidebar.view(path);
 		},
 		update : function(qs) {
-			var browse_template = top.muze.ariadne.registry.get('browse_template');
-			var viewmode=top.muze.ariadne.registry.get('viewmode');
+			var browse_template = muze.ariadne.registry.get('browse_template');
+			var viewmode=muze.ariadne.registry.get('viewmode');
 			if (!viewmode) {
 				viewmode='list';
 			}
@@ -866,14 +866,14 @@ muze.ariadne.explore.viewpane = function() {
 			if (!page) {
 				page = 1;
 			}
-			var browse_template = top.muze.ariadne.registry.get('browse_template');
-			var viewmode = top.muze.ariadne.cookie.get('viewmode');
+			var browse_template = muze.ariadne.registry.get('browse_template');
+			var viewmode = muze.ariadne.cookie.get('viewmode');
 			if( viewmode == 0 ) {
-				viewmode = top.muze.ariadne.registry.get('viewmode');
+				viewmode = muze.ariadne.registry.get('viewmode');
 			} else {
-				top.muze.ariadne.registry.set('viewmode', viewmode);
+				muze.ariadne.registry.set('viewmode', viewmode);
 			}
-			var store_root = top.muze.ariadne.registry.get('store_root');
+			var store_root = muze.ariadne.registry.get('store_root');
 
 			var url = store_root + path + browse_template + viewmode + '.php?';
 			if (muze.ariadne.explore.viewpane.typefilter) {
@@ -908,7 +908,7 @@ muze.ariadne.explore.browseheader = function() {
 		},
 		load : function(path) {
 			muze.ariadne.explore.browseheader.currentpath = path;
-			var sUrl = top.muze.ariadne.registry.get('store_root')+path+'explore.browse.header.php';
+			var sUrl = muze.ariadne.registry.get('store_root')+path+'explore.browse.header.php';
 
 			var fadeOut = new YAHOO.util.Anim("browseheader", { opacity: {to: 0.3}}, 0.2);
 			fadeOut.animate();
