@@ -38,7 +38,10 @@
 	$this->data->config->templates=$keep_templates;
 	$this->data->config->pinp=$keep_pinp;
 	$this->priority=$newObject->priority;
-	$this->save();
+
+	$this->call( 'system.import.translations.phtml' );
+
+	$this->save( $this->properties );
 
   } else {
 	$arResult=false;

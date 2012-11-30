@@ -3,6 +3,12 @@
 $ARCurrent->nolangcheck=true;
 if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 
+	$login = $this->getdata("login", "none");
+	$arNewFilename = basename($this->getdata("arNewFilename", "none"));
+	if (!$login && $arNewFilename && !preg_match('/\{.*\}/i', $arNewFilename)) {
+		$this->data->login = $arNewFilename;
+	}
+
 	$wgWizFlow[1]["nolang"] = true; // no language tabs on first form
 
 	$wgWizFlow[] = array(

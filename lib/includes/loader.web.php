@@ -101,10 +101,11 @@
 					$result[$field."_temp"]=basename($file_artemp);
 					$result[$field."_size"]=(int)$http_post_file['size'];
 					$type = get_mime_type($file_artemp);
+					$ext  = substr($file, strrpos($file, '.')); 
 					if (!$type) {
 						$type = get_mime_type($file, MIME_EXT);
 					}
-					$result[$field."_type"]=$type;
+					$result[$field."_type"] = get_content_type($type, $ext);
 				}
 			}
 		}
@@ -158,6 +159,8 @@
 					"arCallFunction" => $requestedtemplate
 				) );
 
+				$requestedArgs = $arCallArgs;
+
 				$eventData = new object();
 				$eventData->arCallPath = $requestedpath;
 				$eventData->arCallFunction = $requestedtemplate;
@@ -168,7 +171,8 @@
 					$arCallArgs = (array) $eventData->arCallArgs;
 					$myarCallArgs = array_merge($arCallArgs, 
 						Array(	"arRequestedPath" => $requestedpath,
-						 		"arRequestedTemplate" => $requestedtemplate 
+						 		"arRequestedTemplate" => $requestedtemplate,
+								"arRequestedArgs" => $requestargs
 						)
 					);
 					$store->call("user.notfound.html",$myarCallArgs,
@@ -343,7 +347,7 @@
 	function ldHeader($header,$replace=true) {
 	global $ARCurrent;
 		$result=false;
-		if (!Headers_sent()) {
+		if ( !Headers_sent() && !$ARCurrent->arNoHeaders ) {
 			$result=true;
 			list($key,$value) = explode(':',$header,2);
 			Header($header,$replace);

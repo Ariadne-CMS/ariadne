@@ -97,12 +97,10 @@
 					$this->error=sprintf($ARnls["err:notremovegrant"],$id,$path);
 				}
 			} else if ($newgrants) {
-				if ($type=current($this->get($path, "system.get.type.phtml"))) {
-					$temp = explode(".", $type);
-					$type = $temp[0];
-					if ($this->store->AR_implements($type, "pgroup")) {
+				if ($object=current($this->get($path, "system.get.phtml"))) {
+					if ($object->AR_implements("pgroup")) {
 						$type="pgroup";
-					} else if ($this->store->AR_implements($type, "puser")) {
+					} else if ($object->AR_implements("puser")) {
 						$type="puser";
 					} else {
 						$this->error=sprintf($ARnls["err:nousergroup"],$path);
@@ -142,6 +140,7 @@
 								$grants = Array();
 							}
 							$g_comp->compile($newgrants, $grants);
+
 							if (!$g_comp->error) {
 								$this->data->config->grants[$type][$id] = $grants;
 								if (!@count($this->data->config->grants[$type][$id])) {
@@ -150,10 +149,15 @@
 										unset($this->data->config->grants[$type]);
 									}
 								}
+
+
+								$this->save($properties);
+								$grants = $this->data->config->grants[$type][$id];
+
 								$result=current($this->get($path, "system.save.grants.user.phtml", Array(
 												"action"	=> "set",
 												"path"		=> $this->path,
-												"grants"	=> $this->data->config->grants[$type][$id])));
+												"grants"	=> $grants)));
 
 							} else {
 								$this->error = $g_comp->error;
@@ -166,7 +170,6 @@
 					$this->error=sprintf($ARnls["err:notfindusergroup"],$path);
 				}
 				if (!$this->error) {
-					$this->save($properties);
 					// clear public cache recursively
 					$this->ClearCache($this->path, false, true);
 				}

@@ -39,9 +39,8 @@
 		if ( $settingsEventData ) {
 			// Do the stuff you need to do.
 			$this->call("explore.sidebar.settings.php", $arCallArgs);
-
-                        ar_events::fire('ariadne:onsidebarsettings');
-                }
+			ar_events::fire( 'ariadne:onsidebarsettings' );
+		}
 
 		if ($AR->SVN->enabled) {
 			$svnEventData = new object();

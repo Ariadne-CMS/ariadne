@@ -20,9 +20,6 @@
 		$userpath=$this->getvar("userpath");
 		$grants=$this->getvar("grants");
 
-		var_dump($userpath);
-		var_dump($grants);
-
 		if (!$userpath || !is_array($grants)) {
 			$this->error=$ARnls["err:missingparam"];
 		}

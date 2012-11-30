@@ -748,7 +748,7 @@ class pinp {
 		  "xml_parser_create|xml_parse_into_struct|xml_parser_free|".
 		  "xml_parser_get_option|xml_parser_set_option";
 		$debug_funcs="debug|debugon|debugoff|pftime|pfprint|pfreset|error";
-		$loader_funcs="ldaccesscas|ldheader|ldredirect|ldsetcontent|ldsetclientcache|ldgetusercookie|ldsetusercookie|ldgetclientvar|ldregisterfile|ldgetservervar|ar|ldgeneratesessionkeycheck"; 
+		$loader_funcs="ldaccesscas|ldheader|ldredirect|ldsetcontent|ldsetclientcache|ldgetusercookie|ldsetusercookie|ldgetclientvar|ldregisterfile|ldgetservervar|ar|ldgeneratesessionkeycheck|ldaccessdenied"; 
 		$ob_funcs="flush|ob_clean|ob_end_clean|ob_end_flush|ob_flush|ob_get_contents|ob_get_length|ob_get_level|ob_implicit_flush|ob_start";
 		$this->allowed_functions=array_flip(explode("|", "$array_funcs|$control_funcs|$datetime_funcs|$math_funcs|".
 		  "$misc_funcs|$net_funcs|$regex_funcs|$string_funcs|$var_funcs|$xml_funcs|".
@@ -1148,7 +1148,7 @@ class pinp {
 		if ($this->token_ahead == PT_HEREDOC) {
 			$this->next_token();
 			if ($this->token_ahead != PT_IDENT) {
-				$this->error = "Expected an identifier following HereDoc operator at line: ".$this->scanner->YYLINE;
+				$this->error = "Expected an identifier, instead of (".$this->scanner->error."), following HereDoc operator at line: ".$this->scanner->YYLINE;
 				return false;
 			}
 			$hereDoc = rtrim($this->token_ahead_value);

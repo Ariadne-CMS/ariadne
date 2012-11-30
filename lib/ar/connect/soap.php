@@ -31,7 +31,7 @@
 		}
 		
 		public static function variable( $data, $encoding, $type_name = '', $type_namespace = '', $node_name = '', $node_namespace = '') {
-			return new ar_connect_soapVar( $data, $encoding, $type_name, $type_namespace, $node_name, $node_namespace );
+			return new SoapVar( $data, $encoding, $type_name, $type_namespace, $node_name, $node_namespace );
 		}
 		
 	}
@@ -55,6 +55,10 @@
 
 		function _setSoapHeaders($soapHeaders = null) {
 			$this->wrapped->__setSoapHeaders($soapHeaders);
+		}
+
+		function _getLastResponse() {
+			return $this->wrapped->__getLastResponse();
 		}
 
 	}

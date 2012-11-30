@@ -157,16 +157,18 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if( $arCallFunction == "system.get.phtml" && ( $context = $this->getContext(ARCALLINGCONTEXT) ) && $context["scope"] != "pinp" ) {
 			$arResult = $this;
 		} else {
-			while ($arType!="ariadne_object") {
+			while ($arType != "ariadne_object") {
 				// search for the template, stop at the root class ('ariadne_object')
 				// (this should not happen, as pobject must have a 'default.phtml')
 				$arCallTemplate=$this->store->get_config("code")."templates/".$arType."/".$arCallFunction;
 				if (file_exists($arCallTemplate)) {
+					//debug('found '.$arCallTemplate, 'all');
 					// template found
 					$arCallFunction = $arCallFunctionOrig;
 					include($arCallTemplate);
 					break;
 				} else if (file_exists($this->store->get_config("code")."templates/".$arType."/default.phtml")) {
+					//debug('found default.phtml', 'all');
 					// template not found, but we did find a 'default.phtml'
 					include($this->store->get_config("code")."templates/".$arType."/default.phtml");
 					break;
@@ -242,7 +244,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	function count_find($path='', $query='') {
 		$path=$this->store->make_path($this->path, $path);
-		return $this->store->count_find($path, $query, 0);
+		if (method_exists($this->store, 'count_find')) {
+			$result = $this->store->count_find($path, $query, 0);
+		} else {
+			$result = $this->store->count($this->store->find($path, $query, 0));
+		}
+		return $result
 	}
 
 	function count_ls($path) {
@@ -275,9 +282,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 								$arCallArgs=end($ARCurrent->arCallStack);
 							}
 							$context = $this->getContext();
-							
+
 							$eventData = new object();
-							$eventData->arProperties = $properties;
 							$eventData->arCallArgs = $arCallArgs;
 							$eventData->arCallFunction	= $context['arCallFunction'];
 							$eventData->arIsNewObject = true;
@@ -286,11 +292,17 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 								return false; // prevent saving of the object.
 							}
 							$arCallArgs = $eventData->arCallArgs;
-							$arCallArgs['properties'] = $eventData->arProperties;
-							$properties = $eventData->arProperties;
+
 							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 							$wf_object->arIsNewObject=true;
-							$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);							
+							$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);
+							if (is_array($eventData->arProperties)) {
+								if (is_array($wf_result)) {
+									$wf_result = array_merge_recursive($wf_result, $eventData->arProperties);
+								} else {
+									$wf_result = $eventData->arProperties;
+								}
+							}
 							$this->error = $wf_object->error;
 							$this->priority = $wf_object->priority;
 							$this->data = $wf_object->data;
@@ -460,9 +472,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						$arCallArgs=end($ARCurrent->arCallStack);
 					}
 					$context = $this->getContext();
-							
+
+					$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+
+					$this->pushContext(array('scope' => 'php', 'arCurrentObject' => $wf_object));
+
 					$eventData = new object();
-					$eventData->arProperties = $properties;
 					$eventData->arCallArgs = $arCallArgs;
 					$eventData->arCallFunction = $context['arCallFunction'];
 					$eventData->arIsNewObject = false;
@@ -471,11 +486,17 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						return false; // prevent saving of the object.
 					}
 					$arCallArgs = $eventData->arCallArgs;
-					$arCallArgs['properties'] = $eventData->arProperties;
-					$properties = $eventData->arProperties;
-		
-					$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+
+					$this->popContext();
+
 					$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);
+					if (is_array($eventData->arProperties)) {
+						if (is_array($wf_result)) {
+							$wf_result = array_merge_recursive($wf_result, $eventData->arProperties);
+						} else {
+							$wf_result = $eventData->arProperties;
+						}
+					}
 					$this->error = $wf_object->error;
 					$this->priority = $wf_object->priority;
 					$this->data = $wf_object->data;
@@ -600,7 +621,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 							//$this->ClearCache($this->path, true, false);
 							// all save actions have been done, fire onsave.
 							$eventData->arProperties = $properties;
+
+							$this->pushContext(array('scope' => 'php', 'arCurrentObject' => $this));
 							ar_events::fire( 'onsave', $eventData ); // nothing to prevent here, so ignore return value
+							$this->popContext();
+
 						} else {
 							$this->error = $this->store->error;
 							$result = false;
@@ -1215,6 +1240,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$initialConfigChecked = $ARConfigChecked;
 
 		if ($ARConfig->cache[$this->path]->hasConfigIni && !$this->CheckConfig('config.ini', $arCallArgs)) {
+			//debug("pobject::getConfig() loaded config.ini @ ".$this->path);
 			// debug("getConfig:checkconfig einde");
 			$arConfig = $ARCurrent->arResult;
 			if (!isset($arConfig)) {
@@ -1638,8 +1664,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}
 			if ($inLibrary) {
+				//debug("getPinpTemplate; INLIBRARY $checkpath; ".$ARConfig->cache[$checkpath]->type);
 				if ($ARConfig->cache[$checkpath]->type == 'psection') {
-					// break search operation when we have searched a 
+					// debug("BREAKING; $arTemplateId");
+					// break search operation when we have found a 
 					// psection object
 					break;
 				}
@@ -1680,6 +1708,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$config = ($ARConfig->cache[$lastcheckedpath]) ? $ARConfig->cache[$lastcheckedpath] : $this->loadConfig($lastcheckedpath);
 		$arPrivateTemplate = $config->privatetemplates[$arCallType][$arCallFunction];
 
+		//debug("getPinpTemplate END; $arTemplateId; $checkpath;");
 		$result["arTemplateId"] = $arTemplateId;
 		$result["arCallTemplate"] = $arCallTemplate;
 		$result["arCallType"] = $arCallType;
@@ -1704,7 +1733,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 		// system templates (.phtml) have $arCallFunction=='', so the first check in the next line is to
 		// make sure that loopcounts don't apply to those templates.
-		if ($arCallFunction && $ARBeenHere[$this->path][$arCallFunction]>$MAX_LOOP_COUNT) { // protect against infinite loops
+		if (0 && $arCallFunction && $ARBeenHere[$this->path][$arCallFunction]>$MAX_LOOP_COUNT) { // protect against infinite loops
 			error(sprintf($ARnls["err:maxloopexceed"],$this->path,$arCallFunction,$arCallArgs));
 			$this->store->close();
 			exit();
@@ -1744,6 +1773,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			if (!$ARConfigChecked && is_object($ARnls)) {
 				$ARnls->setLanguage($ARCurrent->nls);
 			}
+
 
 			if (!$ARCurrent->arContentTypeSent) {
 				ldHeader("Content-Type: text/html; charset=UTF-8");
@@ -2771,8 +2801,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$this->ARnls = $ARnls;
 		} else { // older loaders and other shizzle
 
-			$nls=preg_replace('/[^a-z]*/i','',$nls);
-			$section=preg_replace('/[^a-z0-9\._:-]*/i','',$section);
+			$nls = preg_replace('/[^a-z]*/i','',$nls);
+			$section = preg_replace('/[^a-z0-9\._:-]*/i','',$section);
 			if (!$section) {
 				include($this->store->get_config("code")."nls/".$nls);
 				$this->ARnls = array_merge((array)$this->ARnls, $ARnls);
@@ -3094,7 +3124,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$user = $AR->pinp_user;
 		} else {
 			$this->pushContext(Array("scope" => "php"));
-				$user = current($AR->user->get(".", "system.get.phtml"));
+				if ( $AR->user instanceof ariadne_object ) {
+					$user = current($AR->user->get(".", "system.get.phtml"));
+				} else {
+					$user = $AR->user;
+				}
 				$AR->pinp_user = $user;
 			$this->popContext();
 		}
@@ -3107,7 +3141,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	function _load($class) {
 		// only allow access to modules in the modules directory.
-		$class=preg_replace('/[^a-z0-9\._]/i','',$class);
+		$class = preg_replace('/[^a-z0-9\._]/i','',$class);
 		include_once($this->store->get_config("code")."modules/".$class);
 	}
 

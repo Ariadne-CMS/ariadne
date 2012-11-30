@@ -25,7 +25,7 @@
 			}
 			$top = $options['top'];
 			if (!$top) {
-				$top = ar::currentSite( $current );
+				$top = ar_store::currentSite( $current );
 			}
 			$options += array(
 				'siblings'    => true,
@@ -70,7 +70,7 @@
 		public static function sitemap( $options = array() ) {
 			$top = $options['top'];
 			if (!$top) {
-				$top = ar::currentSite( ar::context()->getPath() );
+				$top = ar_store::currentSite( ar::context()->getPath() );
 			}
 			$options += array(
 				'skipTop'     => true,
@@ -94,7 +94,7 @@
 			}
 			$top = $options['top'];
 			if (!$top) {
-				$top = ar::currentSite( $current );
+				$top = ar_store::currentSite( $current );
 			}
 			$options += array(
 				'current' => $current,
@@ -152,7 +152,7 @@
 		private $autoIDOptions  = false;
 		private $styleType = 'bar';
 		private $options = array(
-			'skipOrphans' => false,
+			'skipOrphans' => true,
 			'itemTag'     => 'li',
 			'listTag'     => 'ul'
 		);
@@ -190,7 +190,7 @@
 			$context = ar::context();
 			$me = $context->getObject();
 			if ( $me ) {
-				$this->root    = $me->currentsite();
+				$this->root    = $me->path;
 				$this->rooturl = $me->make_url( $this->root );
 			}
 			if ( !isset($this->root) ) {
@@ -623,14 +623,15 @@ EOF;
 					ar_html::tag( 'a', $linkAttributes, $item['name'])
 				);
 			} else {
-				if ( ($item['path']==$current) || ($item['url'] == $current) ) {
-					$link = $item['node']->a[0];
+				$link = $item['node']->a[0];
+				if ( ($item['path']==$current) || ($item['url'] == $current) || ( $link && $link->attributes['href']==$current ) ) {
 					if ($link) {
 						$link->setAttribute('class', array( 'menuCurrent' => 'menuCurrent') );
 					}
 					$item['node']->setAttribute('class', array( 'menuCurrent' => 'menuCurrent') );
 				} else if ( ( strpos( $current, $item['path'] ) === 0 ) ||
-					 ( strpos( $current, $item['url'] ) === 0 ) ) {
+					 ( strpos( $current, $item['url'] ) === 0 ) ||
+					 ( $link && strpos( $current, $link->attributes['href'] ) === 0 ) ) {
 					$item['node']->setAttribute('class', array( 'menuParent' => 'menuParent' ) );
 				}
 
@@ -646,9 +647,8 @@ EOF;
 			foreach ( $list as $key => $item ) {
 				$itemInfo = $this->_getItemInfo( $item, $key, $parent, $current );
 				$itemNode = $itemInfo['node'];
-				if ($parent == '[root]') {
-					$this->items[$itemInfo['url']] = $itemNode;
-				} else {
+				$this->items[$itemInfo['url']] = $itemNode;
+				if ( $parent != '[root]') {
 					$parentNode = $this->items[$parent];
 					if ($parentNode) {
 						$uls = $parentNode->getElementsByTagName( $this->options['listTag'], true );
@@ -678,6 +678,7 @@ EOF;
 									$newparent = dirname( $newparent ).'/';
 								}
 							}
+
 							if ( isset($this->items[$newparent]) ) {
 								$parentNode = current( $this->items[$newparent]->getElementsByTagName( $this->options['listTag'] ) );
 								if (!$parentNode || !isset($parentNode)) {

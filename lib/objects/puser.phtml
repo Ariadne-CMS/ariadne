@@ -39,7 +39,7 @@ require_once($AR->dir->install."/lib/objects/pdir.phtml");
 
 class puser extends pdir { // puser class definition
 
-	static function hashPassword($password) {
+	function hashPassword($password) {
 		global $AR;
 		if(isset($AR->hashAlgorithm) ) {
 			$algo = $AR->hashAlgorithm;

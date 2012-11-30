@@ -6,7 +6,7 @@
 		$this->data=current($this->get("","system.get.data.phtml"));
 
 		if (($user=current($this->get($path, "system.get.phtml")))
-			&& $this->store->AR_implements($user->type, "puser")) {
+			&& $user->AR_implements("puser")) {
 			$user->call("system.set.group.phtml", Array(
 							"action"	=> $action,
 							"path"		=> $this->path,

@@ -17,7 +17,7 @@
 			$_cache = $ARConfig->cache;
 			while ( $requestedPath && $requestedPath!='/' && !$store->exists($requestedPath) ) {
 				$requestedPath = $store->make_path( $requestedPath, '..' );
-			} 
+			}
 			$site = current($store->call("system.get.phtml", "", $store->get($requestedPath)));
 			if ($site) {
 				$site_config = $site->loadUserConfig();
@@ -37,16 +37,18 @@
 
 			$siteConfig = $this->loadConfig($ARLoginPath);
 			foreach ($siteConfig['userdirs'] as $userdir) {
+
 				$user = current($store->call("system.authenticate.phtml", array("ARPassword" => $password),
 												$store->find($userdir, $criteria, 1, 0)));
 				if ($user) {
-						$ARUserDir = $userdir;
-						break;
+					$ARUserDir = $userdir;
+					break;
 				}
 			}
 
 			if (!$user) {
 				$user = $this->authExternalUser($login, $password, $ARLoginPath);
+				$ARUserDir = $user->parent;
 			}
 
 			if ($user) {

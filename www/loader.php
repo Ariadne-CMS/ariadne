@@ -68,8 +68,7 @@
 			}
 		}
 	}
-	ldGatherXSSInput( $xss_vars, $function );
-	ldGatherXSSInput( $xss_vars, $path );
+
 
 	if(!isset($AR_PATH_INFO)){
 		$AR_PATH_INFO=$_SERVER["PATH_INFO"];
@@ -370,6 +369,8 @@
 				}
 			}
 
+			ldGatherXSSInput( $xss_vars, $function );
+			ldGatherXSSInput( $xss_vars, $path );
 			if (count($xss_vars)) {
 				ob_start();
 			}
@@ -406,7 +407,7 @@
 					}
 				}
 
-				if($xssDetected) {
+				if ($xssDetected) {
 					$newargs["arRequestedArgs"]     = $args;
 					$newargs["arRequestedTemplate"] = $function;
 					$newargs["arSuspectedArgs"]     = $xss_vars;

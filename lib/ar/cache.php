@@ -115,11 +115,11 @@
 			return self::$cacheStore->purge( $name );
 		}
 		
-		public static function proxy( $object ) {
+		public static function proxy( $object, $timeout = null ) {
 			if ( !self::$cacheStore ) {
 				self::$cacheStore = self::create();
 			}
-			return new ar_cacheProxy( $object, self::$cacheStore );
+			return new ar_cacheProxy( $object, self::$cacheStore, $timeout );
 		}
 
 	}
@@ -130,11 +130,15 @@
 		//   perhaps through an extra option in __construct?
 		var $cacheStore = null;
 		var $cacheController = null;
+		var $cacheTimeout = '2 hours';
 
-		public function __construct( $object, $cacheStore, $cacheController = null ) {
+		public function __construct( $object, $cacheStore, $cacheTimeout = null, $cacheController = null ) {
 			parent::__construct( $object );
 			$this->cacheStore = $cacheStore;
 			$this->cacheController = $cacheController;
+			if ( isset($cacheTimeout) ) {
+				$this->cacheTimeout = $cacheTimeout;
+			}
 		}
 
 		protected function __callCatch( $method, $args ) {
@@ -152,7 +156,7 @@
 			if ( !$cacheData = $this->cacheStore->getIfFresh( $path ) ) {
 				if ( $this->cacheStore->lock( $path ) ) {
 					$cacheData = $this->__callCatch( $method, $args );
-					$this->cacheStore->set( $path, $cacheData );
+					$this->cacheStore->set( $path, $cacheData, $this->cacheTimeout );
 				} else if ( $this->cacheStore->wait( $path ) ){
 					$cacheData = $this->cacheStore->get( $path );
 				} else {

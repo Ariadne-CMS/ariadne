@@ -12,7 +12,7 @@
 				}
 				if ($this->exists($this->data->path.$subpath)) {
 					array_push($ARCurrent->shortcut_redirect, Array("src" => $this->path, "dest" => $this->data->path, "keepurl" => $this->data->keepurl));
-						$arResult = $this->get($this->data->path.$subpath, $arRequestedTemplate, $arCallArgs);
+						$arResult = $this->get($this->data->path.$subpath, $arRequestedTemplate, $arCallArgs['arRequestedArgs']);
 					array_pop($ARCurrent->shortcut_redirect);
 				} else {
 					$subshortcut = $this->make_path($this->data->path.$subpath);

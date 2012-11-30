@@ -4,8 +4,8 @@
 	require_once($AR->dir->install."/lib/ar/html.php");
 
 	class pinp_yui {
-		function _getSection($section) {
-			return yui::getSection($section);
+		function _getSection( $section ) {
+			return yui::getSection( $section );
 		}
 	}
 

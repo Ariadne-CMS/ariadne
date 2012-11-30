@@ -94,7 +94,7 @@
 				if ( preg_match( '/^\s*<!\[CDATA\[/', $content ) ) {
 					$content = $value;
 				} else {
-					$content = htmlspecialchars( $value );
+					$content = htmlspecialchars( $value, ENT_QUOTES, 'UTF-8' );
 				}
 			}
 			return $content;
@@ -444,6 +444,7 @@
 			}
 			return $result;
 		}
+
 		
 		public function setAttributes( array $attributes, $dynamic = true ) {
 			foreach ($attributes as $name => $value) {
@@ -483,6 +484,10 @@
 				$result = $value;
 			}
 			return $result;
+		}
+
+		public function getAttribute( $name ) {
+			return $this->attributes[$name];
 		}
 		
 		public function setAttribute( $name, $value, $dynamic = true ) {
@@ -1145,8 +1150,8 @@
 		}
 		
 		function getElementById( $id ) {
-			if (isset($this->idCache[$id])) {
-				return $this->idCache[$id];
+			if (isset($this->idCache[ (string) $id ])) {
+				return $this->idCache[ (string) $id ];
 			}
 		}
 		
