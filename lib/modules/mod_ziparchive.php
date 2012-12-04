@@ -14,7 +14,7 @@
 
 
 	class ZipArchiveWrapper extends ZipArchive {
-		protected $filename;
+		protected $_filename;
 
 		function __construct() {
 		}
