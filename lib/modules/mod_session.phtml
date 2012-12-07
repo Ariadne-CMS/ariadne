@@ -125,8 +125,10 @@ class session {
  
 	function kill() {
 		debug("session->kill()","store");
+		//FIXME: also delete childs in the session store
+		// should we mark the session as 'dead' and let the sessioncleanup fix the rest ?
 		// remove session data from store
-		$this->sessionstore->purge("/".$this->id."/");
+		$this->sessionstore->delete("/".$this->id."/");
 		$this->sessionstore->close();
 		$this->id=0;
 		debug("session->kill: end","all");
