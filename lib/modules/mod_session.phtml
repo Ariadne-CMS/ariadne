@@ -2,7 +2,7 @@
 class session {
 
 	function session($session_config, $id=0) {
-        debug("session([array],$id)","store");
+		debug("session([array],$id)","store");
 		// init session store
 		$inst_store = $session_config["dbms"]."store";
 		include_once($session_config["code"]."stores/$inst_store.phtml");
@@ -11,11 +11,11 @@ class session {
 		$this->timeout=$session_config["timeout"];
 		$this->updateInterval = $session_config["timeout"]/10;
 
-		if ((!$id) || (!$this->sessionstore->exists("/$id/")))  { 
+		if ((!$id) || (!$this->sessionstore->exists("/$id/"))) {
 			debug("session: generating new id", "all");
 			// generate new id
-			srand((int)  (microtime(true)*1000000));
-			do { 
+			srand((int) (microtime(true)*1000000));
+			do {
 				$attempts++;
 				$id = false;
 				if ($attempts % 25 === 0) {
@@ -24,12 +24,11 @@ class session {
 					shuffle($purgedSessions);
 					$id = current($$purgedSessions);
 					debug("session","reuse id is $id");
-				} 
 				}
 				if (!$id ) {
 					// 3 bytes id
 					$genid=chr(rand(1,255)).chr(rand(1,255)).chr(rand(1,255));
-					// replace all slashes with "0" 
+					// replace all slashes with "0"
 					$id=strtr(base64_encode($genid),"/+","01");
 				}
 				debug("session","new id is $id");
@@ -62,7 +61,7 @@ class session {
 		}
 
 		$this->put("ARSessionId",$this->id);
-        debug("session: end","all");
+		debug("session: end","all");
 	}
 
 	function put($varname, $value, $system=0) {
@@ -82,28 +81,28 @@ class session {
 	}
 
 	function get($varname, $system=0) {
-        debug("session->get($varname, $system)","store");
+		debug("session->get($varname, $system)","store");
 		if (!$system) {
 			$result = $this->data->$varname;
 		} else {
 			$result = $this->system->$varname;
 		}
-        debug("session->get: end","all");
+		debug("session->get: end","all");
 		return $result;
-   	}
+	}
 
 	function setTimeout($timeout = 0) {
 		$this->put('timeout', $timeout, true);
 	}
 
 	function save($id=0, $forceupdate=0) {
-        debug("session->save($id)","store");
+		debug("session->save($id)","store");
 		if (!$this->system->ARSessionTimedout || $forceupdate) {
 			if (!$id) { $id=$this->id; } else { $this->id=$id; }
 			// store session data
 			$now = time();
 			$interval = $this->timeout/10;
-			if ( $interval > 0 ) { 
+			if ( $interval > 0 ) {
 				$interval = min($interval,$this->updateInterval);
 			} else {
 				$interval = $this->updateInterval;
@@ -123,7 +122,7 @@ class session {
 		} else {
 			debug("session timed out: no save!", "all");
 		}
-        debug("session->save: end","all");
+		debug("session->save: end","all");
 	}
 
 	function suspend() {
@@ -131,10 +130,10 @@ class session {
 		$this->save();
 		$this->sessionstore->close();
 		$this->id=0;
-        debug("session->suspend: end","all");
-		ldSetSession();      
+		debug("session->suspend: end","all");
+		ldSetSession();
 	}
- 
+
 	function kill() {
 		debug("session->kill()","store");
 		//FIXME: also delete childs in the session store
