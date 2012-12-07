@@ -682,10 +682,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $result;
 	}
 
-	function purge() {
-		return $this->store->purge($this->path);
-	}
-
 	function exists($path) {
 		$path=$this->make_path($path);
 		return $this->store->exists($path);
