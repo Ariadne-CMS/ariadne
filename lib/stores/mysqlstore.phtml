@@ -941,16 +941,19 @@ class mysqlstore extends store{
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
+		$result = array();
 
 		if (is_int($path)) {
 			$object = $path;
 		} else {
 			$object=$this->exists($path);
 		}
-		$query_string="select path from $nodes_tbl where object=$object";
-		$qresult = $this->store_run_query($query_string);
-		while ($row=@mysql_fetch_array($qresult)) {
-			$result[]=$row["path"];
+		if($object !== false) {
+			$query_string="select path from $nodes_tbl where object=$object";
+			$qresult = $this->store_run_query($query_string);
+			while ($row=@mysql_fetch_array($qresult)) {
+				$result[]=$row["path"];
+			}
 		}
 		return $result;
 	}
