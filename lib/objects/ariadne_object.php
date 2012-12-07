@@ -249,7 +249,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		} else {
 			$result = $this->store->count($this->store->find($path, $query, 0));
 		}
-		return $result
+		return $result;
 	}
 
 	function count_ls($path) {
@@ -1806,6 +1806,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$eventData->arCallFunction = $arCallFunction;
 				
 				$ARConfigChecked = true;
+debug("ONBEFOREVIEW ($arCallFunction)");
 				$result = ar_events::fire( 'onbeforeview', $eventData );
 				$ARConfigChecked = $initialConfigChecked;
 				if ( !$result ) { //prevent default action: view
