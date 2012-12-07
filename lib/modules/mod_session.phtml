@@ -16,10 +16,23 @@ class session {
 			// generate new id
 			srand((int)  (microtime(true)*1000000));
 			do { 
-				// 3 bytes id
-				$genid=chr(rand(1,255)).chr(rand(1,255)).chr(rand(1,255));
-				// replace all slashes with "0" 
-				$id=strtr(base64_encode($genid),"/+","01");
+				$attempts++;
+				$id = false;
+				if ($attempts % 25 === 0) {
+					debug("session","Cleaning up sessions and reusing old session");
+					$purgedSessions = $this->purgeExpiredSessions();
+					shuffle($purgedSessions);
+					$id = current($$purgedSessions);
+					debug("session","reuse id is $id");
+				} 
+				}
+				if (!$id ) {
+					// 3 bytes id
+					$genid=chr(rand(1,255)).chr(rand(1,255)).chr(rand(1,255));
+					// replace all slashes with "0" 
+					$id=strtr(base64_encode($genid),"/+","01");
+				}
+				debug("session","new id is $id");
 			} while ($this->sessionstore->exists("/".$id."/"));
 			// save new session object
 			$this->data=new object;
@@ -113,7 +126,6 @@ class session {
         debug("session->save: end","all");
 	}
 
-
 	function suspend() {
 		debug("session->suspend()","store");
 		$this->save();
@@ -133,6 +145,15 @@ class session {
 		$this->id=0;
 		debug("session->kill: end","all");
 		ldSetSession();
+	}
+
+	function purgeExpiredSessions( $limit=100 ) {
+		// expire all old sessions
+		$query = "object.implements='psession' and object.lastchanged < ".(time() - $this->timeout*4) . " order by object.lastchanged";
+		$result = array();
+		$result = $this->sessionstore->call("system.expire.silent.phtml","",
+				$this->sessionstore->find("/", $query,$limit));
+		return $result;
 	}
 }
 ?>
