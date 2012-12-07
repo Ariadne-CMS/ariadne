@@ -736,7 +736,7 @@ class mysql_workspacesstore extends mysqlstore {
 		return $id;
 	}
 
-	public function purge($path) {
+	protected function purge($path) {
 	/**********************************************************************
 	 
 		This function will delete the object pointed to by $path and all

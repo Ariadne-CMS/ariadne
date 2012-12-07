@@ -160,7 +160,7 @@ abstract class store {
 	***************************************************************/
 
 
-	public abstract function purge($path);
+	protected abstract function purge($path);
 	/**********************************************************************
 		This function will delete the object pointed to by $path and all
 	other paths pointing to that object. It will then remove any property
