@@ -667,22 +667,12 @@ class mysqlstore extends store{
 			$query_string="delete from $objects_tbl where id=$object";
 			$this->store_run_query($query_string);
 
-			$paths=$this->list_paths($path);
-			if (is_array($paths)) {
-				while (list($key, $path)=each($paths)) {
-					$epath=AddSlashes($path);
-					$query_string="delete from $nextid_tbl where path='$epath'";
-					$this->store_run_query($query_string);
-				}
-			}
-			
 			foreach ($this->filestores as $fsName) {
 				debug("store::purge purging fstore($fsName, $object)", "store");
 				$fStore = $this->get_filestore($fsName);
 				$fStore->purge($object);
 			}
-			
-			
+
 		} else { // no such path, so purge already succeeded :)
 			$result=1;
 		}
