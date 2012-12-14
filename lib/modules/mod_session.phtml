@@ -19,11 +19,11 @@ class session {
 				$attempts++;
 				$id = false;
 				if ($attempts % 25 === 0) {
-					debug("session","Cleaning up sessions and reusing old session");
-					$purgedSessions = $this->purgeExpiredSessions();
+					debug("Cleaning up sessions and reusing old session","store");
+					$purgedSessions = (array)$this->purgeExpiredSessions();
 					shuffle($purgedSessions);
-					$id = current($$purgedSessions);
-					debug("session","reuse id is $id");
+					$id = current($purgedSessions);
+					debug("reuse id is $id","store");
 				}
 				if (!$id ) {
 					// 3 bytes id
@@ -31,7 +31,7 @@ class session {
 					// replace all slashes with "0"
 					$id=strtr(base64_encode($genid),"/+","01");
 				}
-				debug("session","new id is $id");
+				debug("new id is $id","store");
 			} while ($this->sessionstore->exists("/".$id."/"));
 			// save new session object
 			$this->data=new object;
@@ -148,7 +148,7 @@ class session {
 
 	function purgeExpiredSessions( $limit=100 ) {
 		// expire all old sessions
-		$query = "object.implements='psession' and object.lastchanged < ".(time() - $this->timeout*4) . " order by object.lastchanged";
+		$query = "object.implements='psession' and object.lastchanged < ".(time() - $this->timeout*4) ;
 		$result = array();
 		$result = $this->sessionstore->call("system.expire.silent.phtml","",
 				$this->sessionstore->find("/", $query,$limit));
