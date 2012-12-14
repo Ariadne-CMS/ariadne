@@ -14,7 +14,7 @@ class session {
 		if ((!$id) || (!$this->sessionstore->exists("/$id/"))) {
 			debug("session: generating new id", "all");
 			// generate new id
-			srand((int) (microtime(true)*1000000));
+			mt_srand((int) (microtime(true)*1000000));
 			do {
 				$attempts++;
 				$id = false;
@@ -26,10 +26,8 @@ class session {
 					debug("reuse id is $id","store");
 				}
 				if (!$id ) {
-					// 3 bytes id
-					$genid=chr(rand(1,255)).chr(rand(1,255)).chr(rand(1,255));
-					// replace all slashes with "0"
-					$id=strtr(base64_encode($genid),"/+","01");
+					// base36 encoded 4 char length == 36^4-1 == 1679615
+					$id = sprintf("%04s",base_convert(mt_rand(0,1679615),10,36));
 				}
 				debug("new id is $id","store");
 			} while ($this->sessionstore->exists("/".$id."/"));
