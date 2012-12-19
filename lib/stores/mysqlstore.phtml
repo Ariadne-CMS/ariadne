@@ -570,7 +570,7 @@ class mysqlstore extends store{
 				}
 
 				$mask = substr($path, strlen($parent));
-				if (preg_match("/^(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) { 
+				if (preg_match("/^(.*)\{([0-9]+:)?id\}(.*)/",$mask,$matches)) { 
 					// if the last part of a path matches something like {2:id} this
 					// part will automatically create a new number, unique in this directory, and fill it in.
 					// before we proceed, we need to lock the 'nodes' and 'objects' table
@@ -580,7 +580,7 @@ class mysqlstore extends store{
 						$needunlocking = true;
 
 						$subid=$this->get_nextid($parent, $mask);
-						$path=preg_replace("/\{([0-9]:)?id\}/",strval($subid),$path);
+						$path=preg_replace("/\{([0-9]+:)?id\}/",strval($subid),$path);
 						$epath=AddSlashes($path);
 					} else {
 						error("PANIC: could not obtain write lock on nodes table!");
@@ -788,13 +788,13 @@ class mysqlstore extends store{
 				$result=false;
 			} else { 
 				$mask = substr($destination, strlen($parent));
-				if (preg_match("/(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) {
+				if (preg_match("/(.*)\{([0-9]+:)?id\}(.*)/",$mask,$matches)) {
 					$query_string="lock tables ".$this->tbl_prefix."nodes write";
 					$qresult=$this->store_run_query($query_string);
 					if ($qresult) {
 						$needunlocking = true;
 						$subid = $this->get_nextid($parent, $mask);
-						$destination=preg_replace("/\{([0-9]:)?id\}/",strval($subid),$destination);
+						$destination=preg_replace("/\{([0-9]+:)?id\}/",strval($subid),$destination);
 						$edestination=AddSlashes($destination);
 					} else {
 						error("PANIC: could not obtain write lock on nodes table!");
@@ -881,14 +881,14 @@ class mysqlstore extends store{
 				$result=false;
 			} else { 
 				$mask = substr($destination, strlen($parent));
-				if (preg_match("/(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) {
+				if (preg_match("/(.*)\{([0-9]+:)?id\}(.*)/",$mask,$matches)) {
 					$query_string="lock tables ".$this->tbl_prefix."nodes write";
 					mysql_select_db($this->database,$this->connect_id);
 					$qresult = $this->store_run_query($query_string);
 					if ($qresult){
 						$needunlocking = true;
 						$subid = $this->get_nextid($parent, $mask);
-						$destination=preg_replace("/\{([0-9]:)?id\}/",strval($subid),$destination);
+						$destination=preg_replace("/\{([0-9]+:)?id\}/",strval($subid),$destination);
 						$edestination=AddSlashes($destination);
 					} else {
 						error("PANIC: could not obtain write lock on nodes table!");
@@ -1125,28 +1125,34 @@ class mysqlstore extends store{
 		$path=AddSlashes($path);
 
 		$substr_s = strlen($path);
-		if (preg_match("/^(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) { 
+		if (preg_match("/^(.*)\{([0-9]+:)?id\}(.*)/",$mask,$matches)) { 
 			$subid = 0;
 			$mask_pre = $matches[1];
 			$substr_s += strlen($mask_pre)+1;
-			$substr_l = intval(substr($matches[2], 0, 1));
-			if (!$substr_l) {
-				$substr_l = 5; // default length is 5
+			if ( $matches[2] ) {
+				$substr_l = intval($matches[2]);
+				if (!$substr_l) {
+					$substr_l = 5; // default length is 5
+				}
+			} else {
+				$substr_l = false;
 			}
 			$mask_post= $matches[3];
-			$query_string = 
-				"select max(substring(path, $substr_s, $substr_l)) as id
-				from ".$this->tbl_prefix."nodes where 
-				parent =  '$path' and
-				path regexp '^".$path.$mask_pre."[0-9]\{".$substr_l."\}".$mask_post."'";
+			$prefix_length = strlen( $path ) + strlen( $mask_pre ) + 1;
+			$query_string = "select max( cast( substring( path, $prefix_length ) as unsigned ) ) as id
+				from {$this->tbl_prefix}nodes
+				where parent = '$path'
+				and path regexp '^".$path.$mask_pre."[0-9]+".$mask_post."'";
 
 			$result = $this->store_run_query($query_string);
 			if ($result) {
 				$row = mysql_fetch_array($result);
-				$subid  = (int)$row["id"];
+				$subid = intval( $row['id'] );
 			}
 			$subid=$subid+1;
-			$subid = sprintf("%0".$substr_l."d", $subid);
+			if ( $substr_l !== false ) {
+				$subid = sprintf("%0".$substr_l."d", $subid);
+			}
 		}
 		return $subid;
 	}
