@@ -1239,23 +1239,16 @@
 				if ( !$child ) {
 					continue;
 				}
+				ar::untaint( $child, FILTER_UNSAFE_RAW );
 				if ( is_string($child) ) {
-					$child = array(
-						'value' => $child
-					);
+					$value = $child;
+					$child = clone( $this->defaultField );
+					$child->setValue( $value );
+				} else if ( is_array( $child ) ) {
+					$child = $this->form->parseField(0, $child );
 				}
-				$child['name'] = $this->name.'['.$count.']';
-				if ( $this->default ) {
-					$childOb = clone( $this->default );
-					if ( $childOb->setValues ) {
-						$childOb->setValues( $child );
-					} else {
-						$childOb->setValue( $child['value'] );
-					}
-				} else {
-					$childOb = $this->form->parseField( 0, $child );
-				}
-				$this->children[] = $childOb;
+				$child->name = $this->name.'['.$count.']';
+				$this->children[] = $child;
 				$count++;
 			}
 		}
@@ -1280,7 +1273,19 @@
 		
 		public function __construct($field, $form) {
 			parent::__construct ($field, $form);
-			if ( isset( $field->value ) ) { // apply default behaviour, step 1
+			if ( isset($field->value) ) {
+				$this->value = $field->value;
+			} else {
+				$value = ar()->http->getvar($this->name);
+				if ( isset($value) ) {
+					$this->value = $value;
+				} else if ( isset($this->default) ) {
+					$this->value = $this->default;
+				} else {
+					$this->value = null;
+				}
+			}
+			if ( isset( $this->value ) ) { // apply default behaviour, step 1
 				if ( !$field->newField ) {
 					$field->newField = array(
 						'name' => $this->name.'[]',
@@ -1289,8 +1294,8 @@
 					);
 				}
 				
-				if ( !$field->default ) {
-					$field->default = array(
+				if ( !$field->defaultField ) {
+					$field->defaultField = array(
 						'name' => $this->name.'[]',
 						'label' => false
 					);
@@ -1300,13 +1305,13 @@
 			if ( $field->newField ) {
 				$this->newField = $form->parseField( 0, $field->newField );
 			}
-			if ( $field->default ) {
-				$this->default = $form->parseField( 0, $field->default );
+			if ( $field->defaultField ) {
+				$this->defaultField = $form->parseField( 0, $field->defaultField );
 			}
 
-			if ( isset( $field->value ) ) { // apply default behaviour, step 2			
-				$this->normalizeChildren( $field->value );				
-				$this->handleUpdates( $field->default );
+			if ( isset( $this->value ) ) { // apply default behaviour, step 2			
+				$this->normalizeChildren( $this->value );				
+				$this->handleUpdates( $field->defaultField );
 			}
 		}
 		
