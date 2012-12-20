@@ -12,6 +12,9 @@
 			'input' => 1, 'br'       => 1, 'hr'      => 1, 'img'  => 1, 'link'  => 1, 'meta' => 1, 'frame' => 1, 
 			'base'  => 1, 'basefont' => 1, 'isindex' => 1, 'area' => 1, 'param' => 1, 'col'  => 1, 'embed' => 1
 		);
+		private static $noIndentInside = array(
+			'textarea' => 1
+		);
 
 		public static function configure( $option, $value ) {
 			switch ($option) {
@@ -71,6 +74,10 @@
 			return !isset( self::$emptyTags[strtolower($name)] );
 		}
 		
+		public static function canIndentInside( $name ) {
+			return !isset( self::$noIndentInside[strtolower($name)] );
+		}
+
 		public static function tag() {
 			$args = func_get_args();
 			return call_user_func_array( array( 'ar_html', 'el' ), $args );
@@ -264,9 +271,13 @@
 				$result .= '>';
 				if ( ar_html::canHaveContent( $this->tagName ) ) {
 					if ( isset($this->childNodes) && count($this->childNodes) ) {
-						$result .= $this->childNodes->toString( ar_html::$indent . $indent );
-						if ( substr($result, -1) == ">") {
-							$result .= "\n" . $indent;
+						if (ar_html::canIndentInside( $this->tagName ) ) {
+							$result .= $this->childNodes->toString( ar_html::$indent . $indent );
+							if ( substr($result, -1) == ">") {
+								$result .= "\n" . $indent;
+							}
+						} else {
+							$result .= $this->childNodes->toString( '' );
 						}
 					}
 					$result .= '</' . ar_html::name( $this->tagName ) . '>';

@@ -64,6 +64,7 @@
 			if ($maxDepth>0) {
 				$query .= " and object.path !~ '" . $top . str_repeat( '%/', $maxDepth + 1 ) . "'";
 			}
+
 			return ar::get($top)->find("object.implements = 'pdir' and object.priority>=0".$query);
 		}
 	
@@ -642,11 +643,12 @@ EOF;
 			// first enter all nodes into the items list
 			// then rearrange them into parent/child relations
 			// otherwise you must always have the parent in the list before any child
-			
+
 			foreach ( $list as $key => $item ) {
 				$itemInfo = $this->_getItemInfo( $item, $key, $parent, $current );
 				$itemNode = $itemInfo['node'];
 				$this->items[$itemInfo['url']] = $itemNode;
+
 				if ( $parent != '[root]') {
 					$parentNode = $this->items[$parent];
 					if ($parentNode) {
@@ -698,7 +700,8 @@ EOF;
 					} else {
 						$parentNode = null;
 					}
-					if ($parentNode) {
+
+					if ($parentNode && ($parentNode !== $itemNode)) { // itemNode should not be parentNode to prevent loops
 						$parentNode->appendChild( $itemNode );
 					}
 				}
@@ -833,7 +836,7 @@ EOF;
 				$options['current'] = $this->current;
 			}
 			$this->options = array_merge( $this->options, $options );
-			return $this->options;
+			return $this;
 		}
 		
 		public function bar( $options = array() ) {
