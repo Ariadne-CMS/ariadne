@@ -116,7 +116,7 @@
 			$values = array();
 			foreach ($this->fields as $key => $field) {
 				$result = $field->getNameValue();
-				$values = array_merge($values, $result);
+				$values = array_replace_recursive($values, $result);
 			}
 			return $values;			
 		}
@@ -426,14 +426,23 @@
 			$this->required = isset($field->required) ? $field->required : false;
 			$this->checks   = isset($field->checks) ? $field->checks : array();
 			$this->title    = isset($field->title) ? $field->title : null;
-			
+			$this->help		= isset($field->help) ? $field->help : null;
+
 			if ( isset($this->checks) && !is_array($this->checks) ) {
 				$this->checks = array( $this->checks );
 			}
 			if (isset($field->value)) {
 				$this->value = $field->value;
 			} else {
-				$value = ar()->http->getvar($this->name);
+				// Find the value, also allow for format like field[subfield]				
+				$name = $this->name;
+				if (preg_match("/(\w+)\[(.*?)]/", $name, $matches)) {
+					$arrayvalue = ar::getvar($matches[1]);
+					$value = $this->getArrayValue( substr( $name, strlen( $matches[1] ) ), $arrayvalue );
+				} else {
+					$value = ar()->getvar($name);
+				}
+
 				if (isset($value)) {
 					$this->value = $value;
 				} else if (isset($this->default)) {
@@ -442,6 +451,40 @@
 					$this->value = null;
 				}
 			}
+		}
+
+		protected function getArrayValue( $name, $value ) {
+			if ( !$name ) {
+				return $value;
+			}
+			if ( preg_match( '/^\[([^\]]*)\]/', $name, $matches ) ) {
+				$index = $matches[1];
+				if ( $index && isset( $value[ $index ] ) ) {
+					return $this->getArrayValue( substr( $name, strlen( $index )+2 ), $value[ $index ] );
+				} else {
+					return null;
+				}
+			} else {
+				return null;
+			}
+		}
+
+		protected function getHelp($help=null) {
+			if (!isset($help)) {
+				$help = $this->help;
+			}
+			$class = array('formHelp', 'formHelp'.ucfirst($this->type) );
+			if ($this->class) {
+				$class[] = $this->class;
+			}
+			$attributes = array('class' => $class);
+
+			if ($help !== null) {
+				$help = ar_html::el('div', $help, array('class' => 'helpContent'));
+				return ar_html::el('div', $help, $attributes);
+			} else {
+				return '';
+			}	
 		}
 
 		protected function getLabel($label=null, $id='', $attributes=null) {
@@ -510,13 +553,36 @@
 			return true;
 		}
 		
+		private function buildQuery( $name, $value ) {
+			if ( is_array( $value ) ) {
+				$result = '';
+				foreach ( $value as $index => $subvalue ) {
+					$result .= $this->buildQuery( $name.'['.$index.']', $subvalue ) . '&';
+				}
+			} else {
+				$result = $name . '=' . RawUrlEncode( $value );
+			}
+			return $result;
+		}
+
 		public function getNameValue() {
-			return array( $this->name => $this->getValue() );
+			$nameArrayIndex = strpos( $this->name, '[' );
+			if ( $nameArrayIndex ) {
+				$urlQuery = $this->buildQuery( $this->name, $this->getValue() );
+				parse_str( $urlQuery, $result );
+				return $result;
+			} else {
+				return array( $this->name => $this->getValue() );
+			}
 		}
 		
 		public function getField( $content = null ) {
 			if (!isset($content)) {
 				$content = ar_html::nodes($this->getLabel(), $this->getInput());
+			}
+			$help = $this->getHelp();
+			if ($help) {
+				$content[] = $help;
 			}
 			$class = array('formField', 'form'.ucfirst($this->type) );
 			if ($this->class) {
@@ -541,7 +607,7 @@
 						if ( is_array(ar_html_form::$checks[$check]) 
 							&& isset(ar_html_form::$checks[$check]['check']) ) {
 							$checkMethod = ar_html_form::$checks[$check]['check'];
-							$message     = ar_html_form::$checks[$check]['message'];
+							$message	 = ar_html_form::$checks[$check]['message'];
 							if ( is_callable( $checkMethod ) ) {
 								if ( !$checkMethod( $value ) ) {
 									$result[ $this->name ] = ar::error(
@@ -575,6 +641,16 @@
 	}
 	
 	class ar_html_formInputMissing extends ar_html_formInput {
+
+		public function __construct($field, $form) {
+			parent::__construct( $field, $form );
+			$fieldProps = get_object_vars($field);
+			foreach ( $fieldProps as $name => $value ) {
+				if ( !isset($this->{$name}) ) {
+					$this->{$name} = $value;
+				}
+			}
+		}
 
 		public function getField( $content = null ) {
 			if ( isset(ar_html_form::$customTypes[ $this->type ]) ) {
@@ -791,7 +867,7 @@
 			$this->rows = ( isset($field->rows) ? $field->rows : null );
 			$this->cols = ( isset($field->cols) ? $field->cols : null );
 		}
-	
+
 		protected function getInput( $type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $maxlength=null, $rows=null, $cols=null ) {
 			if (!isset($name)) {
 				$name = $this->name;
@@ -799,6 +875,7 @@
 			if (!isset($value)) {
 				$value = $this->value;
 			}
+
 			if (!isset($id)) {
 				$id = $name; 
 			}
@@ -838,7 +915,6 @@
 			}
 			return ar_html::el('textarea', $value, $attributes);
 		}
-		
 	}
 	
 	class ar_html_formInputSelect extends ar_html_formInput {
@@ -1036,7 +1112,7 @@
 			$content[] = $this->getLabel($this->label, $this->name);
 			return parent::getField($content);
 		}
-		
+
 		protected function getCheckBox($name=null, $value=null, $checked=false, $disabled=null, $uncheckedValue=false, $id=null) {
 			$content = ar_html::nodes();
 			if (!isset($name)) {
@@ -1210,7 +1286,8 @@
 		public function getNameValue() {
 			$result = Array();
 			foreach ($this->children as $child) {
-				$result = array_merge($result, $child->getNameValue());
+				$childResult = $child->getNameValue();
+				$result = array_replace_recursive($result, $childResult);
 			}
 			return $result;
 		}
@@ -1228,7 +1305,6 @@
 	
 	class ar_html_formInputFieldList extends ar_html_formInputFieldset {
 		
-
 		protected function normalizeChildren( $value ) {
 			// make sure the children are a simple array, with numeric keys and that the name of the field
 			// is always an array
@@ -1254,13 +1330,14 @@
 		}
 		
 		protected function handleUpdates($default) {
-			$delete = ar('http')->getvar( $this->name.'Delete' );
+			$check = ar('http')->getvar( $this->name );
+			$delete = $check['Delete'];
 			if ( isset($delete) ) {
 				ar::untaint($delete);
 				if ( $this->children[$delete] ) {
 					unset( $this->children[$delete] );
 				}
-			} else if ( $add = ar('http')->getvar( $this->name.'Add' ) ) {
+			} else if ( $add = $check['Add'] ) {
 				$addedField = ar('http')->getvar( $this->newField->name );
 				if ( $addedField ) {
 					// add a copy of default to the children of this field
@@ -1322,7 +1399,7 @@
 				$field->appendChild( ar_html::el('button', array(
 					'class' => 'formFieldListDelete', 
 					'type' => 'submit',
-					'name' => $this->name.'Delete',
+					'name' => $this->name.'[Delete]',
 					'value' => $count
 				), '-' ) );
 				$count++;
@@ -1332,7 +1409,7 @@
 				$newField->appendChild( ar_html::el('button', array(
 					'class' => 'formFieldListAdd', 
 					'type' => 'submit',
-					'name' => $this->name.'Add',
+					'name' => $this->name.'[Add]',
 					'value' => $this->name.'NewField'
 				), '+' ) );
 				$fieldset->appendChild(

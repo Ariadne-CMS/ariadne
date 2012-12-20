@@ -348,7 +348,7 @@
 			$args  = func_get_args();
 			$nodes = array();
 			foreach ( $args as $input ) {
-				if ( is_array( $input ) || $input instanceof ar_xmlNodes ) {
+				if ( is_array( $input ) || $input instanceof ar_xmlNodes ) { //FIXME: accept other array like objects as well?
 					$nodes = array_merge( $nodes, (array) $input );
 				} else if ($input) { // skip empty and NULL arguments
 					$nodes[] = $input;
@@ -366,7 +366,7 @@
 			$result = array();
 			if ( is_array($nodes) || $nodes instanceof Traversable ) {
 				foreach ( $nodes as $node ) {
-					if ( !$node instanceof ar_xmlNode ) {
+					if ( !$node instanceof ar_xmlNodeInterface ) {
 						$node = $this->_tryToParse( $node );
 					}
 					if ( is_array($node) || $node instanceof Traversable ) {
@@ -395,7 +395,7 @@
 		}
 
 		public function offsetSet($offset, $value) {
-			if (!$value instanceof ar_xmlNode) {
+			if (!$value instanceof ar_xmlNodeInterface) {
 				$value = new ar_xmlNode( $value );
 			}
 			parent::offsetSet($offset, $value);
@@ -778,7 +778,7 @@
 					$el->parentNode = $this->parentNode;
 					$el->__restoreParentIdCache();
 				}
-			}		
+			}	
 		}
 		
 		function appendChild( $el ) {
@@ -993,7 +993,7 @@
 			} else {
 				$this->idCache[$id] = $el;
 			}
-			if (isset($this->parentNode)) {
+			if (isset($this->parentNode) && $this->parentNode !== $this) { // Prevent loops if the parentNode is this object.
 				$this->parentNode->__updateIdCache($id, $el, $oldEl);
 			}
 		}
@@ -1027,7 +1027,7 @@
 			} else {
 				$this->attributes[$name] = $value;
 			}
-			if ($name=='id') {
+			if ('id'==(string)$name) { // string cast is necessary, otherwise if $name is 0, 'id' will be cast to int, which is also 0...
 				if ( isset($oldId) ) {
 					$this->__updateIdCache( $oldId, null, $this );
 				}
@@ -1188,6 +1188,7 @@
 		public function bindAsArray( $nodes, $name, $type='string') {
 			$total = count($nodes);
 			$this->{$name} = array();
+
 			foreach ( $nodes as $key => $node ) {
 				$this->{$name}[$key] = $this->bindValue( $node, $type);
 			}
