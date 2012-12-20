@@ -114,10 +114,10 @@
 					self::header("Cache-control: must-revalidate, max-age=0, private");
 				}
 				if ( $expires !== false ) {
-					self::header("Expires: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT", $expires));
+					self::header("Expires: ".gmdate(DATE_RFC1123, $expires));
 				}
 				if ( $modified !== false ) {
-					self::header("Last-Modified: ".gmstrftime("%a, %d %b %Y %H:%M:%S GMT", $modified));
+					self::header("Last-Modified: ".gmdate(DATE_RFC1123, $modified));
 				}
 				return $result;
 			} else {

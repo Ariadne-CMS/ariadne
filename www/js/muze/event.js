@@ -141,7 +141,7 @@ muze.namespace('muze.event', function() {
 				case 'keydown':
 				case 'keyup':
 					type = 'KeyboardEvents';
-					var evt = win.document.createEvent(type);
+					var evt = win.document.createEvent( type );
 					if (muze.env.isHostMethod(evt, 'initKeyboardEvent')) {
 						init = function(evt, mask) {
 							if (mask) {
@@ -305,6 +305,13 @@ muze.namespace('muze.event', function() {
 
 	if (muze.env.isHostMethod(docEl, 'addEventListener')) {
 		event.attach = function(o, sEvent, fListener, useCapture) {
+			if ( !muze.env.isFunction(fListener) ) {
+				throw {
+					el : o,
+					message : 'listener is not a method',
+					event : sEvent
+				};
+			}
 			var listenerID = listeners.push( {
 				el : o,
 				listener : fListener

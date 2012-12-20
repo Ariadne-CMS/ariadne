@@ -60,13 +60,13 @@ class puser extends pdir { // puser class definition
 
 	function CheckPassword($password) {
 		debug("puser: CheckPassword([password])","object");
-	   if($this->data->password[0] == '$' ) {
+		if ($this->data->password[0] === '$') {
 			// salted password
-			return $this->data->password == crypt($password,$this->data->password);
+			return $this->data->password === crypt($password,$this->data->password);
 		} else {
 			// old md5 password
 			$password=md5($password);
-			return $password == $this->data->password;
+			return $password === $this->data->password;
 		}
 	}
 

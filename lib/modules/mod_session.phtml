@@ -2,23 +2,34 @@
 class session {
 
 	function session($session_config, $id=0) {
-        debug("session([array],$id)","store");
+		debug("session([array],$id)","store");
 		// init session store
 		$inst_store = $session_config["dbms"]."store";
 		include_once($session_config["code"]."stores/$inst_store.phtml");
 		$this->sessionstore=new $inst_store($session_config["root"], $session_config);
 
 		$this->timeout=$session_config["timeout"];
+		$this->updateInterval = $session_config["timeout"]/10;
 
-		if ((!$id) || (!$this->sessionstore->exists("/$id/")))  { 
+		if ((!$id) || (!$this->sessionstore->exists("/$id/"))) {
 			debug("session: generating new id", "all");
 			// generate new id
-			srand((double)microtime()*1000000);
-			do { 
-				// 3 bytes id
-				$genid=chr(rand(1,255)).chr(rand(1,255)).chr(rand(1,255));
-				// replace all slashes with "0" 
-				$id=strtr(base64_encode($genid),"/+","01");
+			mt_srand((int) (microtime(true)*1000000));
+			do {
+				$attempts++;
+				$id = false;
+				if ($attempts % 25 === 0) {
+					debug("Cleaning up sessions and reusing old session","store");
+					$purgedSessions = (array)$this->purgeExpiredSessions();
+					shuffle($purgedSessions);
+					$id = current($purgedSessions);
+					debug("reuse id is $id","store");
+				}
+				if (!$id ) {
+					// base36 encoded 4 char length == 36^4-1 == 1679615
+					$id = sprintf("%04s",base_convert(mt_rand(0,1679615),10,36));
+				}
+				debug("new id is $id","store");
 			} while ($this->sessionstore->exists("/".$id."/"));
 			// save new session object
 			$this->data=new object;
@@ -48,7 +59,7 @@ class session {
 		}
 
 		$this->put("ARSessionId",$this->id);
-        debug("session: end","all");
+		debug("session: end","all");
 	}
 
 	function put($varname, $value, $system=0) {
@@ -68,58 +79,78 @@ class session {
 	}
 
 	function get($varname, $system=0) {
-        debug("session->get($varname, $system)","store");
+		debug("session->get($varname, $system)","store");
 		if (!$system) {
 			$result = $this->data->$varname;
 		} else {
 			$result = $this->system->$varname;
 		}
-        debug("session->get: end","all");
+		debug("session->get: end","all");
 		return $result;
-   	}
+	}
 
 	function setTimeout($timeout = 0) {
 		$this->put('timeout', $timeout, true);
 	}
 
 	function save($id=0, $forceupdate=0) {
-        debug("session->save($id)","store");
+		debug("session->save($id)","store");
 		if (!$this->system->ARSessionTimedout || $forceupdate) {
 			if (!$id) { $id=$this->id; } else { $this->id=$id; }
 			// store session data
+			$now = time();
+			$interval = $this->timeout/10;
+			if ( $interval > 0 ) {
+				$interval = min($interval,$this->updateInterval);
+			} else {
+				$interval = $this->updateInterval;
+			}
 			$this->data->system = $this->system;
-
 			if ($this->changed || $forceupdate) {
 				$this->sessionstore->save("/$id/","psession",$this->data);
+			} else if( ($now - $interval ) > $this->lastchanged ) {
+				// save session only if last save is 0.1 timeout lenght ago
+				$this->sessionstore->touch("/$id/", $now);
 			} else {
-				$this->sessionstore->touch("/$id/", time());
+				// no save needed, make sure lastchanged is not updated
+				$now = $this->lastchanged;
 			}
 			unset($this->data->system);
-			$this->lastchanged=time();
+			$this->lastchanged=$now;
 		} else {
 			debug("session timed out: no save!", "all");
 		}
-        debug("session->save: end","all");
+		debug("session->save: end","all");
 	}
-
 
 	function suspend() {
 		debug("session->suspend()","store");
 		$this->save();
 		$this->sessionstore->close();
 		$this->id=0;
-        debug("session->suspend: end","all");
-		ldSetSession();      
+		debug("session->suspend: end","all");
+		ldSetSession();
 	}
- 
+
 	function kill() {
 		debug("session->kill()","store");
+		//FIXME: also delete childs in the session store
+		// should we mark the session as 'dead' and let the sessioncleanup fix the rest ?
 		// remove session data from store
-		$this->sessionstore->purge("/".$this->id."/");
+		$this->sessionstore->delete("/".$this->id."/");
 		$this->sessionstore->close();
 		$this->id=0;
 		debug("session->kill: end","all");
 		ldSetSession();
+	}
+
+	function purgeExpiredSessions( $limit=100 ) {
+		// expire all old sessions
+		$query = "object.implements='psession' and object.lastchanged < ".(time() - $this->timeout*4) ;
+		$result = array();
+		$result = $this->sessionstore->call("system.expire.silent.phtml","",
+				$this->sessionstore->find("/", $query,$limit));
+		return $result;
 	}
 }
 ?>

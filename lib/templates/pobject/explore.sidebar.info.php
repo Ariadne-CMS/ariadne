@@ -12,7 +12,7 @@
 
 		$info = array(
 			'type' => yui::labelspan($myType),
-			'size' => $this->size,
+			'size' => $this->make_filesize($this->call("system.get.size.phtml")),
 			'priority' => $this->priority,
 			'ariadne:id' => $this->id
 		);

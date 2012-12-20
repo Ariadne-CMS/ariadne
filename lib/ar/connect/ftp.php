@@ -191,7 +191,7 @@
 			return $this;
 		}
 		
-		public function delete( $file ) {
+		public function delete( $file, $options = array() ) {
 			$result = ftp_delete( $this->connection, $file );
 			if ( !$result ) {
 				return ar::error( "Could not delete file $file.", 7 );
@@ -199,10 +199,45 @@
 			return $this;
 		}
 		
-		public function ls() {
-			$result = ftp_nlist($this->connection, '.');
-			if ( !$result ) {
-				return ar::error( "Could not list the current directory.", 8);
+		public function ls($path='.', $verbose=false) {
+			if (!$verbose) {
+				$result = ftp_nlist($this->connection, $path);
+				if ( !$result ) {
+					return ar::error( "Could not list the current directory.", 8);
+				}
+			} else {
+				if (!$this->connection) {
+					return ar::error("Connection is not active", 42);
+				}
+				$list = ftp_rawlist($this->connection, $path);
+				if ( !$list ) {
+					return ar::error( "Could not rawlist the current directory.", 9);
+				}
+				$result = array();
+				foreach($list as $info) {
+					$info = preg_split("/[\s]+/", $info, 9);
+					$entry = array(
+						"permissions" => $info[0],
+						"linkcount" => $info[1],
+						"userid" => $info[2],
+						"groupid" => $info[3],
+						"size" => (int)$info[4],
+						"mtime" => strtotime($info[5] . " " . $info[6] . " " . $info[7]),
+						"name"=> $info[8]
+					);
+
+					if (substr($info[0], 0, 1) == "d") {
+						$entry['type'] = "dir";
+					} elseif (substr($info[0], 0, 1) == "l") {
+						$entry['type'] = "shortcut";
+						$nameinfo = explode(" -> ", $info[8]);
+						$entry['name'] = $nameinfo[0];
+						$entry['target'] = $nameinfo[1];
+					} else {
+						$entry['type'] = "file";
+					}
+					$result[$entry['name']] = $entry;
+				}
 			}
 			return $result;
 		}

@@ -78,6 +78,10 @@ class import_wddx {
 			}
 			$struct = array_pop($this->stack);
 
+			if ( is_string( $value['data'] ) && $this->seenconfig && ( $this->config['srcpath'] != $this->config['dstpath'] ) ) {
+				$value['data'] = preg_replace( '#(^|[\'"])'.$this->config['srcpath'].'#i', '$1'.$this->config['dstpath'], $value['data'] );
+			}
+
 			$key = $var["data"];
 			if(is_object($struct["data"]))
 			{
@@ -86,7 +90,7 @@ class import_wddx {
 			{
 				$struct["data"][$key] = $value["data"];
 			} else {
-				echo "what the fuck is this\n";
+				echo "corrupted data found:\n";
 				echo "#.#.#.#\n";
 				print_r($struct["data"]);
 				echo "#.#.#.#\n";
@@ -98,13 +102,15 @@ class import_wddx {
 		} else if( $name == "struct"){
 			if(!$this->seenconfig){
 				// still waiting for the config
-				if($this->nestdeep == -2){ // -1 is the depth directly under <data>
+				if($this->nestdeep == -2){ 
+					// -1 is the depth directly under <data>
+					// -2 is the struct with the wddx configuration data
 					$this->seenconfig = true;
 					$config = (array_pop($this->stack));
 					// oke do something with the config data please ?
 					foreach ($config[data][options] as  $key => $value){
 						if(!isset($this->config[$key])){
-							print "Taking config from wddx: $key => $value \n";
+							$this->print_verbose("Taking config from wddx: $key => $value \n");
 							$this->config[$key] = $value;
 						}
 					}
@@ -130,10 +136,8 @@ class import_wddx {
 		 */
 		debug("WDDX working on ".$objdata['path'],'all');
 
-		if($this->config['srcpath'] != $this->config['dstpath'] ){
-			if(
-				strstr( substr($objdata['path'],strlen($this->config['srcpath'])), $this->config['srcpath'])
-			){
+		if ( $this->config['srcpath'] != $this->config['dstpath'] ){
+			if ( strpos( $objdata['path'], $this->config['srcpath'] ) === 0 ){
 				$objdata['path'] = $this->config['dstpath'].substr($objdata['path'],strlen($this->config['srcpath']));
 			}
 		}
@@ -141,7 +145,7 @@ class import_wddx {
 		if($this->config['prefix']){
 			$path = $this->store->make_path($this->config['prefix'],"./".$objdata['path']);
 		} else {
-			print "prefixless: ".$this->config['srcpath'].":".$objdata['path']."\n";
+			$this->print_verbose("prefixless: ".$this->config['srcpath'].":".$objdata['path']."\n");
 			$path = $this->store->make_path($this->config['srcpath'], $objdata['path']);
 		}
 

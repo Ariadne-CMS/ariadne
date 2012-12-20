@@ -133,7 +133,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if ($this->data->custom[$nls]) {
 			$customnlsdata=$this->data->custom[$nls];
 		}
-
 		$arCallFunctionOrig = $arCallFunction;
 		if (strpos($arCallFunction,"::")!==false) {
 			// template of a specific class defined via call("class::template");
@@ -163,13 +162,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				// (this should not happen, as pobject must have a 'default.phtml')
 				$arCallTemplate=$this->store->get_config("code")."templates/".$arType."/".$arCallFunction;
 				if (file_exists($arCallTemplate)) {
-					debug('found '.$arCallTemplate, 'all');
+					//debug('found '.$arCallTemplate, 'all');
 					// template found
 					$arCallFunction = $arCallFunctionOrig;
 					include($arCallTemplate);
 					break;
 				} else if (file_exists($this->store->get_config("code")."templates/".$arType."/default.phtml")) {
-					debug('found default.phtml', 'all');
+					//debug('found default.phtml', 'all');
 					// template not found, but we did find a 'default.phtml'
 					include($this->store->get_config("code")."templates/".$arType."/default.phtml");
 					break;
@@ -283,7 +282,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 								$arCallArgs=end($ARCurrent->arCallStack);
 							}
 							$context = $this->getContext();
-							
+
 							$eventData = new object();
 							$eventData->arCallArgs = $arCallArgs;
 							$eventData->arCallFunction	= $context['arCallFunction'];
@@ -293,7 +292,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 								return false; // prevent saving of the object.
 							}
 							$arCallArgs = $eventData->arCallArgs;
-							
+
 							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 							$wf_object->arIsNewObject=true;
 							$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);
@@ -1215,7 +1214,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	function getConfig() {
 	global $ARConfig, $ARCurrent, $ARConfigChecked;
 		$context=$this->getContext(0);
-		 debug("getConfig(".$this->path.") context: ".$context['scope'] );
+		// debug("getConfig(".$this->path.") context: ".$context['scope'] );
 		// debug(print_r($ARConfig->nls, true));
 		if( !$ARConfig->cache[$this->parent] && $this->parent!=".." ) {
 			$parent = current($this->get($this->parent, "system.get.phtml"));
@@ -1239,11 +1238,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 		$initialNLS = $ARCurrent->nls;
 		$initialConfigChecked = $ARConfigChecked;
-		$initialNoHeaders = $ARCurrent->arNoHeaders;
-		$ARCurrent->arNoHeaders = true;
-		ob_start();
+
 		if ($ARConfig->cache[$this->path]->hasConfigIni && !$this->CheckConfig('config.ini', $arCallArgs)) {
-			debug("pobject::getConfig() loaded config.ini @ ".$this->path);
+			//debug("pobject::getConfig() loaded config.ini @ ".$this->path);
 			// debug("getConfig:checkconfig einde");
 			$arConfig = $ARCurrent->arResult;
 			if (!isset($arConfig)) {
@@ -1261,8 +1258,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			}
 			$ARConfig->pinpcache[$this->path] = (array) $arConfig;
 		}
-		ob_end_clean();	
-		$ARCurrent->arNoHeaders = $initialNoHeaders;
+
 		$ARConfigChecked = $initialConfigChecked;
 		$ARCurrent->nls = $initialNLS;
 		
@@ -1384,7 +1380,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					// debug("loadConfig: currentpath $path ");
 					$this->getConfig();
 				} else {
-					// debug("loadConfig: get path $path ");
+					//debug("loadConfig: get path $path ");
 					$cur_obj = current($this->get($path, "system.get.phtml"));
 					$cur_obj->getConfig();
 				}
@@ -1478,6 +1474,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}
 		}
+
 		return Array(
 			"arTemplateId" => $arTemplate["arTemplateId"],
 			"arCallTemplate" => $arCallTemplate,
@@ -1660,9 +1657,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}
 			if ($inLibrary) {
-				debug("getPinpTemplate; INLIBRARY $checkpath; ".$ARConfig->cache[$checkpath]->type);
+				//debug("getPinpTemplate; INLIBRARY $checkpath; ".$ARConfig->cache[$checkpath]->type);
 				if ($ARConfig->cache[$checkpath]->type == 'psection') {
-					debug("BREAKING; $arTemplateId");
+					// debug("BREAKING; $arTemplateId");
 					// break search operation when we have found a 
 					// psection object
 					break;
@@ -1694,13 +1691,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			if ($checkpath == $top) {
 				break;
 			}
+
 			$checkpath=$this->store->make_path($checkpath, "..");
 			$config = ($ARConfig->cache[$checkpath]) ? $ARConfig->cache[$checkpath] : $this->loadConfig($checkpath);
 			$curr_templates = $config->templates;
 			$arSetType = $arCallType;
 		}
 
-		debug("getPinpTemplate END; $arTemplateId; $checkpath;");
+		//debug("getPinpTemplate END; $arTemplateId; $checkpath;");
 		$result["arTemplateId"] = $arTemplateId;
 		$result["arCallTemplate"] = $arCallTemplate;
 		$result["arCallType"] = $arCallType;
@@ -1709,6 +1707,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$result["arLibrary"] = $arLibrary;
 		$result["arLibraryPath"] = $arLibraryPath;
 		$result["arLibrariesSeen"] = $librariesSeen;
+
 		return $result;
 	}
 
@@ -1741,24 +1740,24 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			// if a default language is entered in a parent and no language is
 			// explicitly selected in the url, use that default. 
 			// The root starts with the system default (ariadne.phtml config file)
-			if (!$ARCurrent->nls) {
-				if ($config->root['nls']) {
+			if ( !$ARCurrent->nls ) {
+				if ( $config->root['nls'] ) {
 					$this->reqnls = $config->root['nls'];
-					if (!$ARConfigChecked) {
+					if ( !$ARConfigChecked ) {
 						$ARCurrent->nls = $this->reqnls;
 					}
-				} else if ($config->nls->default) {
-					$this->reqnls=$config->nls->default;
-					$this->nls=$this->reqnls;
-					if (!$ARConfigChecked) {
+				} else if ( $config->nls->default ) {
+					$this->reqnls = $config->nls->default;
+					$this->nls = $this->reqnls;
+					if ( !$ARConfigChecked ) {
 						$ARCurrent->nls = $this->nls;
 					}
 				}
 			} else {
 				$this->reqnls = $ARCurrent->nls;
 			}
-			$nls=&$this->nls;
-			$reqnls=&$this->reqnls;
+			$nls = &$this->nls;
+			$reqnls = &$this->reqnls;
 
 			if (!$ARConfigChecked && is_object($ARnls)) {
 				$ARnls->setLanguage($ARCurrent->nls);
@@ -1879,7 +1878,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					// $arCallTemplate=$this->store->get_config("files")."templates".$arCallTemplate;
 					// check if template exists, if it doesn't exist, then continue the original template that called CheckConfig
 					$arTemplates=$this->store->get_filestore("templates");
-					if ($arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"])) { 
+					if ( $arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"]) ) { 
 						// check if the requested language exists, if not do not display anything, 
 						// unless otherwise indicated by $ARCurrent->allnls
 						// This triggers only for pinp templates called by other templates,
@@ -1897,8 +1896,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 							$arCallArgs['arLibrary'] = $arLibrary;
 							$arCallArgs['arLibraryPath'] = $template["arLibraryPath"];
 						}
+
 						$ARCurrent->arCallStack[]=$arCallArgs;
 						// start running a pinp template
+
+						$currentContext = $this->getContext();
+
 						$this->pushContext(
 							Array(
 								"scope" => "pinp",
@@ -1912,6 +1915,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 								"arLibrariesSeen" => $template['arLibrariesSeen']
 							)
 						);
+
 						if ($ARCurrent->forcenls || isset($this->data->nls->list[$reqnls])) {
 							// the requested language is available.
 							$this->nlsdata=$this->data->$reqnls;
@@ -1935,7 +1939,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						if ($continue) {
 							if ($ARCurrent->ARShowTemplateBorders) {
 								echo "<!-- arTemplateStart\nData: ".$this->type." ".$this->path." \nTemplate: ".$template["arCallTemplatePath"]." ".$template["arCallTemplate"]." \nLibrary:".$template["arLibrary"]." -->";
-
 							}
 							set_error_handler(array('pobject','pinpErrorHandler'),error_reporting());
 							$arResult=$arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
@@ -1993,6 +1996,46 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$norealnode = true;
 			}
 		}
+
+		if ($norealnode !== true) {
+			/*
+				we don't want to recurse to the currentsite, because the path
+				doesn't exists in the database, so it doesn't have a currentsite
+				
+				the privatecache should be emptied by delete, or by the cleanup
+				cronjob. The current path doesn't exists in the database, so a
+				object id which is needed to find the node in the cache, isn't
+				available
+			*/
+
+			if ($private) {
+				// now remove any private cache entries.
+				// FIXME: this doesn't scale very well.
+				//        only scalable solution is storage in a database
+				//        but it will need the original path info to
+				//        remove recursively fast enough.
+				  //        this means a change in the filestore api. -> 2.5
+				$pcache=$this->store->get_filestore("privatecache");
+				if ($recurse) {
+					$ids=$this->store->info($this->store->find($path, "" ,0));
+					if(is_array($ids)){
+						foreach($ids as $value) {
+							$pcache->purge($value["id"]);
+						}
+					}
+				} else {
+					$pcache->purge($this->id);
+				}
+			}
+
+			// now clear all parents untill the current site
+			$site=$this->currentsite($path);
+			$project=$this->currentproject($path);
+			if ($path!=$site && $path != $project && $path!='/') {
+				$parent=$this->make_path($path.'../');
+				$this->ClearCache($parent, $private, false);
+			}
+		}
 		$recursed = array();
 
 		// filesystem cache image filenames are always lower case, so
@@ -2036,44 +2079,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					@unlink(substr($fpath,0,-1)."=");
 					@unlink(substr($hpath,0,-1)."=");
 				}
-			}
-		}
-		if($norealnode === true) {
-			/*
-				we don't want to recurse to the currentsite, because the path
-				doesn't exists in the database, so it doesn't have a currentsite
-				
-				the privatecache should be emptied by delete, or by the cleanup
-				cronjob. The current path doesn't exists in the database, so a
-				object id which is needed to find the node in the cache, isn't
-				available
-			*/
-			return; 
-		}
-		// now clear all parents untill the current site
-		$site=$this->currentsite($path);
-		$project=$this->currentproject($path);
-		if ($path!=$site && $path != $project && $path!='/') {
-			$parent=$this->make_path($path.'../');
-			$this->ClearCache($parent, $private, false);
-		}
-		if ($private) {
-			// now remove any private cache entries.
-			// FIXME: this doesn't scale very well.
-			//        only scalable solution is storage in a database
-			//        but it will need the original path info to
-			//        remove recursively fast enough.
-	        //        this means a change in the filestore api. -> 2.5
-			$pcache=$this->store->get_filestore("privatecache");
-			if ($recurse) {
-				$ids=$this->store->info($this->store->find($path, "" ,0));
-				if(is_array($ids)){
-					foreach($ids as $value) {
-						$pcache->purge($value["id"]);
-					}
-				}
-			} else {
-				$pcache->purge($this->id);
 			}
 		}
 	}
@@ -2214,12 +2219,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 	}
 
-	function getdata($varname, $nls="none") {
+	function getdata($varname, $nls="none", $emptyResult=false) {
 	// function to retrieve variables from $this->data, with the correct
 	// language version.
 	global $ARCurrent;
 
-		$result=false;
+		$result = false;
 		if ($nls!="none") {
 			if ($ARCurrent->arCallStack) {
 				$arCallArgs=end($ARCurrent->arCallStack);
@@ -2275,11 +2280,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}        
 		}
+		if ( $result === false ) {
+			$result = $emptyResult;
+		}
 		return $result;
 	}
 
-	function showdata($varname, $nls="none") {
-		echo htmlspecialchars($this->getdata($varname, $nls), ENT_QUOTES, 'UTF-8');
+	function showdata($varname, $nls="none", $emptyResult=false) {
+		echo htmlspecialchars($this->getdata($varname, $nls, $emptyResult), ENT_QUOTES, 'UTF-8');
 	}
 
 	function setnls($nls) {
@@ -2745,12 +2753,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 	}
 
-	function _getdata($varname, $nls="none") { 
-		return $this->getdata($varname, $nls);
+	function _getdata($varname, $nls="none", $emptyResult=false) { 
+		return $this->getdata($varname, $nls, $emptyResult);
 	}
 
-	function _showdata($varname, $nls="none") {
-		$this->showdata($varname, $nls);
+	function _showdata($varname, $nls="none", $emptyResult=false) {
+		$this->showdata($varname, $nls, $emptyResult);
 	}
 
 	function _gettext($index=false) {
@@ -2966,6 +2974,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 
 	function setValue($name, $value, $nls=false) {
+
 	global $AR, $ARConfig;
 		if ($value === NULL) {
 			if ($nls && $nls!="none") {
@@ -3212,7 +3221,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			}
 		} else {
 			$newrepl = $this->preg_replace_compile($pattern, $replacement);
-//			var_dump($newrepl);
 		}
 		return preg_replace($pattern, $newrepl, $text, $limit);
 	}

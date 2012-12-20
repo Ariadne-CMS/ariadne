@@ -513,6 +513,17 @@
 			return $this;
 		}
 		
+		public function removeAttribute( $name ) {
+			if ( isset( $this->attributes[$name] ) ) {
+				unset( $this->attributes[$name] );
+			}
+			foreach ( $this as $key => $node ) {
+				if ( $node instanceof ar_xmlElement ) {
+					$node->removeAttribute( $name );
+				}
+			}
+		}
+		
 		public function __get( $name ) {
 			switch ( $name ) {
 				case 'parentNode' :
@@ -994,6 +1005,10 @@
 			return $this;
 		}
 
+		function getAttribute( $name ) {
+			return $this->attributes[$name];
+		}
+
 		function setAttribute( $name, $value ) {
 			if ( $name == 'id' ) {
 				$oldId = null;
@@ -1019,6 +1034,12 @@
 				$this->__updateIdCache($value, $this);
 			}
 			return $this;
+		}
+		
+		function removeAttribute( $name ) {
+			if ( isset( $this->attributes[$name] ) ) {
+				unset( $this->attributes[$name] );
+			}
 		}
 		
 		function __toString() {

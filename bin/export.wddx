@@ -119,7 +119,8 @@ if ($arg_c>1) {
 			$dstfile=$arg_v[3];
 			break;
 		default:
-			echo "Te weinig/veel argumenten";
+			echo $HELP_INFO;
+			//echo "Te weinig/veel argumenten";
 			exit(0);
 	}
 	$ARCurrent->wddxoptions["srcpath"]=$srcpath;
@@ -139,6 +140,8 @@ if ($arg_c>1) {
 	} else {
 		$error = 'wddx: error on opening outfile';
 	}
+} else {
+	echo $HELP_INFO;
 }
 
 if ($error) {

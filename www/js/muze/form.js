@@ -224,10 +224,10 @@ muze.form.textareaMaxLength = function() {
 		},
 		execute : function(evt) {
 			// FIXME: This requires invalid HTML, because maxlength attribute does not exist for textarea.
-			var maxlength = parseInt(this.getAttribute("maxlength"));
-			var keycode = evt.keyCode ? evt.keyCode : evt.which ? evt.which : evt.charCode;
+			var maxLength = parseInt(this.getAttribute("maxlength"));
+			var keyCode = evt.keyCode ? evt.keyCode : evt.which ? evt.which : evt.charCode;
 
-			if (maxlength && (this.value.length >= maxlength) && (keycode == 13 || keycode >= 33)) {
+			if (maxLength && (this.value.length >= maxLength) && (keyCode == 13 || keyCode >= 33)) {
 				muze.event.cancel(evt);
 				return false;
 			}

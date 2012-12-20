@@ -1,0 +1,25 @@
+<?php
+	/******************************************************************
+	 system.expire.silent.phtml                                   Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: none
+	 Global variables: none
+
+	 This template deletes the expired session.
+
+	******************************************************************/
+
+	// delete all childs nodes
+	$query = "parent =~ '".$this->path."%' order by path desc";
+	if ($this->count_find($this->path,$query) >= 1) {
+		$objects = $this->find($this->path,$query,"system.get.phtml",'',0,0);
+		foreach ($objects as $child) {
+			$child->store->delete($child->path);
+		}
+	}
+
+	// purge my self
+	$this->store->delete($this->path);
+	$arResult = basename($this->path);
+?>

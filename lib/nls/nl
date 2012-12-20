@@ -373,6 +373,6 @@
 	$ARnls["expires"]						= "Verloopt";
 	$ARnls["toolbar_editor"]				= "Toolbar Editor (IE only)";
 	$ARnls["sessiontimeout"]				= "Sessie is verlopen";
-	$ARnls["invalidRequest"]				= "Dit verzoek bevat ongeldige invoer."; 
+	$ARnls["invalidRequest"]				= "Dit verzoek bevat ongeldige invoer.";
 
 ?>
