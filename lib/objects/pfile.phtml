@@ -234,10 +234,13 @@ class pfile extends pobject { // pfile class definition
 	
 					$files->copy_from_store($temp_file, $this->id, $file);
 					exec(preg_replace('/FILE/', $temp_file, $textualizer), $result, $ret);
-	
+
 					@unlink($temp_file);
+
 					if (!$ret) {
 						$result = implode("\n", $result);
+					} else {
+						$result = "";
 					}
 				}
 			}

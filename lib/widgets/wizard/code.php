@@ -79,6 +79,12 @@ if( !function_exists("wgWizKeepVars") ) {
 	}
 }
 
+class pinp_wizard {
+	function _wgWizKeepVars($array, $prefix="") {
+		return wgWizKeepVars($array, $prefix);
+	}
+}
+
 if( !function_exists("wgWizGetAction") ) {
 	function wgWizGetAction($wgWizButtonPressed) {
 		global $ARnls;

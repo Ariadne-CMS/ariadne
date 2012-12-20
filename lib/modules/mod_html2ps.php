@@ -103,6 +103,8 @@
 				'imagequality_workaround' => isset($config['imagequality_workaround']),
 				'draw_page_border'				=> isset($config['pageborder']),
 				'debugbox'			=> isset($config['debugbox']),
+				'watermarkhtml'			=> isset($config['watermarkhtml']),
+				'smartpagebreak'			=> isset($config['smartpagebreak']),
 				'html2xhtml'		=> !isset($config['html2xhtml']),
 				'mode'					=> 'html'
 			);

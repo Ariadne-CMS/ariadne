@@ -197,4 +197,14 @@
 	$ARnls['ariadne:programmers_reference']		= 'Programmers Reference';
 	$ARnls['ariadne:ace_editor']				= 'Ace Editor';
 
+	$ARnls['ariadne:rewrite']					= 'Rewrite content';
+	$ARnls['ariadne:rewriting']					= 'Rewriting';
+	$ARnls['ariadne:rewrite.urls']				= 'Rewrite URLs';
+	$ARnls['ariadne:rewrite.oldurl']			= 'Old URL';
+	$ARnls['ariadne:rewrite.newurl']			= 'New URL';
+
+	$ARnls['ariadne:rewrite.references']		= 'Rewrite path references';
+	$ARnls['ariadne:rewrite.oldreference']		= 'Old path';
+	$ARnls['ariadne:rewrite.newreference']		= 'New path';
+	$ARnls['ariadne:err:rewrite.no_input']		= 'Geef eerst herschrijfinstructies op.';
 ?>

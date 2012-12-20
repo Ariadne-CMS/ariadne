@@ -2687,10 +2687,11 @@ debug("ONBEFOREVIEW ($arCallFunction)");
 		return sha1( $AR->sgSalt . $grants . $this->path);
 	}
 	
-	function sgBegin($grants, $key = '') {
+	function sgBegin($grants, $key = '', $path = '.') {
 		global $AR;
 		$result = false;
 		$context = $this->getContext();
+		$path    = $this->make_path($path);
 
 		// serialize the grants so the order does not matter, mod_grant takes care of the sorting for us
 		$this->_load("mod_grant.php");
@@ -2701,25 +2702,26 @@ debug("ONBEFOREVIEW ($arCallFunction)");
 		$check = false;
 		if ($context['scope'] == 'pinp') {
 			$checkgrants = serialize($grantsarray);
-			$check = ( $AR->sgSalt ? sha1( $AR->sgSalt . $checkgrants . $this->path) : false ); // not using suKey because that checks for config grant
+			$check = ( $AR->sgSalt ? sha1( $AR->sgSalt . $checkgrants . $path) : false ); // not using suKey because that checks for config grant
 		} else {
 			$check = true;
 			$key = true;
 		}
 		if( $check !== false && $check === $key ) {
 			$AR->user->grants = array(); // unset all grants for the current user, this makes sure GetValidGrants gets called again for this path and all childs
-			$grantsarray = (array)$AR->sgGrants[$this->path];
+			$grantsarray = (array)$AR->sgGrants[$path];
 			$mg->compile($grants, $grantsarray);
-			$AR->sgGrants[$this->path] = $grantsarray;
+			$AR->sgGrants[$path] = $grantsarray;
 			$result = true;
 		}
 		return $result;
 	}
 	
-	function sgEnd() {
+	function sgEnd($path = '.') {
 		global $AR;
 		$AR->user->grants = array(); // unset all grants for the current user, this makes sure GetValidGrants gets called again for this path and all childs
-		unset($AR->sgGrants[$this->path]);
+		$path = $this->make_path( $path );
+		unset($AR->sgGrants[$path]);
 		return true; // temp return true;
 	}
 	
@@ -2732,12 +2734,12 @@ debug("ONBEFOREVIEW ($arCallFunction)");
 		return $result;
 	}
 	
-	function _sgBegin($grants, $key) {
-		return $this->sgBegin($grants, $key);
+	function _sgBegin($grants, $key, $path = '.') {
+		return $this->sgBegin($grants, $key, $path);
 	}
 	
-	function _sgEnd() {
-		return $this->sgEnd();
+	function _sgEnd($path = '.') {
+		return $this->sgEnd($path);
 	}
 	
 	function _sgCall($grants, $key, $function="view.html", $args="") {
