@@ -17,6 +17,7 @@
 						
 							$eventData = new object();
 							$eventData->arTarget = $target;
+							$eventData->arSource = $this->path;
 							$eventData->arSearch = $search;
 							$eventData->arReplace = $replace;
 							$eventData = ar_events::fire( 'onbeforecopy', $eventData );
@@ -65,8 +66,13 @@
 
 									$this->find($ARCurrent->newpath, "", "system.update.user.grants.phtml", array("config"=>$pobject->CheckSilent("config")));
 
-									ar_events::fire( 'oncopy', $eventData );
-									
+									$this->pushContext( array(
+										"arCurrentObject" => current($this->get($ARCurrent->newpath, 'system.get.phtml', '')),
+									) );
+
+										ar_events::fire( 'oncopy', $eventData );
+
+									$this->popContext();
 								} // else: first save failed.
 							}
 							

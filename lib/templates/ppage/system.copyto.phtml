@@ -4,22 +4,25 @@
 	******************************************************************/
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		if (!($result=$this->call("pobject::system.copyto.phtml", $arCallArgs))) {
-			// change links in $nlsdata->page
-			if ($search && $replace) {
-				reset($AR->nls->list);
-				while (list($nls, $language)=each($AR->nls->list)) {
-					if ($this->data->$nls && $this->data->$nls->page) {
-						$this->data->$nls->page=str_replace("{arRoot}".$search, "{arRoot}".$replace, $this->data->$nls->page);
+
+			if (!$ARCurrent->newpath) {
+				$arResult="no path to save to";
+			} else {
+			    $targetData = current($this->get($ARCurrent->newpath, "system.get.data.phtml"));
+
+				// change links in $nlsdata->page
+				if ($search && $replace) {
+					reset($AR->nls->list);
+					while (list($nls, $language)=each($AR->nls->list)) {
+						if ($targetData->$nls && $targetData->$nls->page) {
+							$targetData->$nls->page=str_replace("{arRoot}".$search, "{arRoot}".$replace, $targetData->$nls->page);
+						}
 					}
 				}
+
+				$this->store->save($ARCurrent->newpath, $this->type, $targetData);
 			}
-			if ($ARCurrent->newpath) {
-				debug("ppage/system.copyto.phtml: path:".$ARCurrent->newpath,"all");
-				$this->store->save($ARCurrent->newpath, $this->type, $this->data);
-			} else {
-				$arResult="no path to save to";
-				debug("ppage/system.copyto.phtml: path:".$arResult,"all");
-			}
+
 		} else {
 			$arResult=$result;
 		}

@@ -195,4 +195,15 @@
 	$ARnls['ariadne:pdms:cmis_root']			= 'CMSI repository root';
 	$ARnls['ariadne:programmers_reference']		= 'Programmers Reference';
 	$ARnls['ariadne:ace_editor']				= 'Ace Editor';
+
+	$ARnls['ariadne:rewrite']					= 'Inhoud herschrijven';
+	$ARnls['ariadne:rewriting']					= 'Inhoud herschrijven van ';
+	$ARnls['ariadne:rewrite.urls']				= 'URLs herschrijven';
+	$ARnls['ariadne:rewrite.oldurl']			= 'Oude URL';
+	$ARnls['ariadne:rewrite.newurl']			= 'Nieuwe URL';
+
+	$ARnls['ariadne:rewrite.references']		= 'Paden herschrijven';
+	$ARnls['ariadne:rewrite.oldreference']		= 'Oude pad';
+	$ARnls['ariadne:rewrite.newreference']		= 'Nieuwe pad';
+	$ARnls['ariadne:err:rewrite.no_input']		= 'Geef eerst herschrijfinstructies op.';
 ?>
