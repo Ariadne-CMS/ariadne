@@ -99,7 +99,7 @@
 				break;
 
 				default:
-					echo "unknow option-switch ($option_switch)\n";
+					die("unknow option-switch ($option_switch)\n");
 			}
 		} else {
 			$arg_v[$arg_c++]=$cmd;
@@ -113,6 +113,7 @@
 		$AR->user=new object;
 		$AR->user->data=new object;
 		$AR->user->data->login="admin";
+
 
 		$ARCurrent->nolangcheck = true;
 		if ($arg_c>3) {
@@ -133,6 +134,11 @@
 		if (!$importStore->error) {
 			$inst_store = $store_config["dbms"]."store";
 			$store=new $inst_store($root,$store_config);
+
+			/* now load a user (admin in this case)*/
+			$login = "admin";
+			$query = "object.implements = 'puser' and login.value='$login'";
+			$AR->user = current($store->call('system.get.phtml', '', $store->find('/system/users/', $query)));
 
 			if (is_array($patharray) && count($patharray)>1) {
 				while (list(, $patharray_entry)=each($patharray)) {
