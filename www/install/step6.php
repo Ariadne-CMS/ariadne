@@ -90,6 +90,7 @@
 			include("conf/debug.conf");
 			include("conf/outputzip.conf");
 			include("conf/hidesession.conf");
+			include("conf/hashalgorithm.conf");
 			include("conf/ldap.conf");
 			include("conf/auto.conf");
 		$configfile = ob_get_contents();
