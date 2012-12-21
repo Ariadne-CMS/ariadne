@@ -428,6 +428,7 @@ muze.ariadne.explore.tree = function() {
 			buildTree(baseNodes);
 		},
 		setpath : function(target) {
+			if (!tree) { return; }
 			var node;
 			if (target.path) {
 				node = target;
@@ -894,6 +895,7 @@ muze.ariadne.explore.viewpane = function() {
 			document.getElementById("searchpath").value = item.path;
 		},
 		view : function(path, page) {
+			if (!muze.ariadne.explore.viewpane.exists()) { return }
 			if (!page) {
 				page = 1;
 			}
