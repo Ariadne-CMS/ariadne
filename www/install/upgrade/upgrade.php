@@ -132,16 +132,13 @@
 							));
 			}
 		case "2.7.5pre1":
-				array_push($todo, Array(
-							"description" => "Bumping revision to 2.7.5.",
-							"operation" => "all/dummy.php",
-							"newversion" => "2.7.5"
-							));
 		case "2.7.5":
+		case "2.7.6":
+		case "2.7.7":
 				array_push($todo, Array(
-							"description" => "Bumping revision to 2.7.6.",
+							"description" => "Bumping revision to 2.7.8.",
 							"operation" => "all/dummy.php",
-							"newversion" => "2.7.6"
+							"newversion" => "2.7.8"
 							));
 			
 	}
