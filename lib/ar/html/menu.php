@@ -191,7 +191,7 @@
 			$context = ar::context();
 			$me = $context->getObject();
 			if ( $me ) {
-				$this->root    = $me->path;
+				$this->root    = $me->currentsite();
 				$this->rooturl = $me->make_url( $this->root );
 			}
 			if ( !isset($this->root) ) {
@@ -837,7 +837,7 @@ EOF;
 				$options['current'] = $this->current;
 			}
 			$this->options = array_merge( $this->options, $options );
-			return $this;
+			return $this->options;
 		}
 		
 		public function bar( $options = array() ) {
