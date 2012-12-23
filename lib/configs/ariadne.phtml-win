@@ -417,7 +417,7 @@
   define('ARESCAPE', "'\"\\\n\r");
   define('ARCALLINGCONTEXT', 1);
   define('ARUNNAMED',null);
-  define('ARBaseDir', $AR->dir->install.'\lib\ar\');
+  define('ARBaseDir', $AR->dir->install.'\lib\ar\\');
 
   /**************************************************************************/
   /* Workaround for PHP 5.3 warning about date.timezone                     */
