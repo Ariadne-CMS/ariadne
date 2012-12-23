@@ -7,7 +7,9 @@
   /*   // do not change                                                     */
   /**************************************************************************/
 
-                              class object { }          // do not change
+                              if (!class_exists('object')) {
+                                   class object { }     // do not change
+                              }
                               $AR = new object;         // do not change
                               $AR->dir = new object;    // do not change
                               $AR->IM = new object;     // do not change
@@ -106,6 +108,28 @@
   // $AR->IM->hardLimit			= 10000000; // 10 megapixel
   // $AR->IM->hardLimitBytes	= 2000000;  // 2 MB
 
+  /**************************************************************************/
+  /* ImageMagick Queueing options.                                          */
+  /* Uncomment the following lines to adjust the default ImageMagick        */
+  /* queueing options. The default is limited to 2 IM processes at a time   */
+  /* per server. The default semKey is calculated with the ftok call        */
+  /* This wil generated a unique semKey.                                    */
+  /* timeout defaults to 60 seconds.                                        */
+  /*                                                                        */
+  /* Warning:                                                               */
+  /* the semaphore limit is set on creating the semahore. If multiple       */
+  /* ariadne installs have different limits, the first to create the        */
+  /* semaphore wil set the limit.                                           */
+  /*                                                                        */
+  /* If you wish to use the ImageMagick Queuer you should prepend the IM    */
+  /* commands in the following manner:                                      */
+  /* $AR->IM->convert = '/path/to/ariadne/bin/im-queue.php /usr/bin/convert'*/
+  /**************************************************************************/
+  // $AR->IMQueue = array();
+  // $AR->IMQueue["semKey"] = ftok('/',1);
+  // $AR->IMQueue["max"] = 2;
+  // $AR->IMQueue["timeout"] = 60;
+
 
   /**************************************************************************/
   /* SVN Configuration                                                      */
@@ -151,8 +175,8 @@
   /**************************************************************************/
 
   $AR->Textualizers = Array(                                // Package:
-  	pdf	    => '/usr/bin/pdftotext -q -raw FILE -',         // xpdf-utils
-  	msword  => '/usr/bin/antiword -w 0 FILE',               // antiword
+  	'pdf'     => '/usr/bin/pdftotext -q -raw FILE -',         // xpdf-utils
+  	'msword'  => '/usr/bin/antiword -w 0 FILE',               // antiword
   );
 
   /**************************************************************************/
