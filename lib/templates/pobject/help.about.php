@@ -20,7 +20,7 @@
 				<div id="data">
 					<div id="version">
 						Version 8.0<br>
-						Jan 27; 2012<br><br>
+						Dec 21; 2012<br><br>
 						&copy; 1998 - 2012 <a href="http://www.muze.nl/" target="_blank">Muze</a>
 					</div>
 					<form action="">
