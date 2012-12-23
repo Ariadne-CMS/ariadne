@@ -1,7 +1,7 @@
 <?php
 	$ariadne = '';
-	if ( isset($_GET['new_admin_password']) ) {
-		include_once("../ariadne.inc");
+	if ( isset($new_admin_password) ) {
+		include("../ariadne.inc");
 		include_once($ariadne."/configs/ariadne.phtml");
 		include_once($ariadne."/configs/store.phtml");
 		include_once($ariadne."/stores/".$store_config["dbms"]."store.phtml");
@@ -25,8 +25,8 @@
 		$store->call(
 			"system.save.data.phtml", 
 			Array(
-				"newpass1" => $_GET['new_admin_password'],
-				"newpass2" => $_GET['new_admin_password']
+				"newpass1" => $new_admin_password,
+				"newpass2" => $new_admin_password
 			),
 			$store->get("/system/users/admin/")
 		);
