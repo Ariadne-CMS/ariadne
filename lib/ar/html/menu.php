@@ -153,7 +153,7 @@
 		private $autoIDOptions  = false;
 		private $styleType = 'bar';
 		private $options = array(
-			'skipOrphans' => true,
+			'skipOrphans' => false,
 			'itemTag'     => 'li',
 			'listTag'     => 'ul'
 		);
@@ -837,33 +837,33 @@ EOF;
 				$options['current'] = $this->current;
 			}
 			$this->options = array_merge( $this->options, $options );
-			return $this->options;
+			return $this;
 		}
 		
 		public function bar( $options = array() ) {
-			$options = $this->configure( $options );
-			$this->fill( ar_html_menu::bar( $options ) );
+			$this->configure( $options );
+			$this->fill( ar_html_menu::bar( $this->options ) );
 			$this->styleType = 'bar';
 			return $this;
 		}
 		
 		public function tree( $options = array() ) {
-			$options = $this->configure( $options );
-			$this->fill( ar_html_menu::tree( $options ) );
+			$this->configure( $options );
+			$this->fill( ar_html_menu::tree( $this->options ) );
 			$this->styleType = 'tree';
 			return $this;	
 		}
 		
 		public function crumbs( $options = array() ) {
-			$options = $this->configure( $options );
-			$this->fill( ar_html_menu::crumbs( $options ) );
+			$this->configure( $options );
+			$this->fill( ar_html_menu::crumbs( $this->options ) );
 			$this->styleType = 'crumbs';
 			return $this;	
 		}
 		
 		public function sitemap( $options = array() ) {
-			$options = $this->configure( $options );
-			$this->fill( ar_html_menu::sitemap( $options ) );
+			$this->configure( $options );
+			$this->fill( ar_html_menu::sitemap( $this->options ) );
 			$this->styleType = 'sitemap';
 			return $this;			
 		}
