@@ -3,6 +3,42 @@ Changes in Ariadne 2.8.0
 ========================
 
 ========================
+Changes in Ariadne 2.7.8
+========================
+
+Bugfixes:
+- many XSS failures in templates fixed.
+- puser subtypes addable to groups
+- enabled local profiles 
+- external authentication now also works with ARUserDirs
+- mod_keepurl() now handles unreadable shortcuts properly
+- keep_url redirects do now pass original callargs instead of the arguments given to user.notfound.html
+- fixed generation of last-modified en expire headers to use the gmdate function because strftime's output changes with the locale; Updated gmdate usage to use the defined DATE_RFC1123 format
+- htmlcleaner now correctly handles embedded script tags
+- removed ARCrypt(); puser now has its own hashPassword() function
+- added subtype support to the axstore; fixes axstore updates containing subtypes.
+- mimetype in wizard is now editable again
+- added content-type check to ldRegisterFile() (for eg docx formats)
+- fixed mysql precendence using commas and parentheses
+- fixed problem with checklogin calling things on non existing paths, when using user.notfound.html constructs
+- fixed many eventHandling routines like onmove() oncopy()
+- added support for relative shortcuts
+- fixed grants textarea dialog 
+- fixed {x:id} handling, now works with {id} and {10:id}; will also continue beyond maximum size. e.g. {1:id} will work when last id was 10, will then return 11, etc.
+
+New features:
+- taint() and untaint() now return their values
+- many updates and additions to the ar modules.
+- new version of ace, straight from git, less buggy though no official release
+- added option to puser to set login independant of filename
+- added diff-tool to ar/beta/
+- added cookieconsent feature
+- added reference and url rewrites to bin/import.
+- added mod_ZipArchive which is a wrapper to ZipArchive
+- added rewrite URL and references dialog
+- added mod_rcas (remote authentication)
+
+========================
 Changes in Ariadne 2.7.7
 ========================
 
