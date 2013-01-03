@@ -130,7 +130,7 @@
 			"check_select_db" => array("check_select_db",$AR->DB),
 			"check_db_grants" => array("check_db_grants",$AR->DB),
 			"check_db_is_empty" => array("check_db_is_empty",$AR->DB),
-			"check_files" => array("check_file", $ar_dir_install . "/files"),
+			"check_files" => array("check_file", $ar_dir_install . "/files/"),
 			"check_files_write" => "check_files_write",
 			"check_base_ax" => "check_base_ax",
 		);

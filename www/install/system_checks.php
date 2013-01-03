@@ -30,7 +30,7 @@
 	}
 
 	function check_apache() {
-		if (preg_match("/^Apache\/2/", $_SERVER['SERVER_SOFTWARE'])) {
+		if (preg_match("/^apache/i", $_SERVER['SERVER_SOFTWARE'])) {
 			return true;
 		}
 		return false;
