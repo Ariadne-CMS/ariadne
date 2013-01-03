@@ -71,12 +71,11 @@ class mysqlstore extends store{
 		// so we have to supply the database name wheenever a query is run
 		$this->database=$config["database"];
 
+		$config["password"]="";
 		$this->config=$config;
 
 		/* Include module mysql_compiler */
 		include_once($this->code."stores/modules/mysql_compiler.php");
-		/* include proxystore */
-		//include_once($this->code."stores/proxystore.phtml");
 		include_once($this->code."stores/modules/mysqlstore_iterator.php");
 		include_once($this->code."modules/mod_selector.php");
 		
@@ -85,14 +84,9 @@ class mysqlstore extends store{
 		$this->mod_lock=new mysqllock($config["prefix"]);
 		$this->mod_lock->select_db($config["database"], $this->connect_id);
 		$this->mod_lock->lock_duration=$config["lock_duration"];
-		$config["password"]="";
 
-		//$this->proxystore = proxystore::createproxy($this,$config);
-		if ($config['proxystore']) {
-			$this->proxystore = $config['proxystore'];
-		} else {
-			$this->proxystore = $this;
-		}
+		// legacy support
+		$this->proxystore = $this;
 
 		if (is_array($config['filestores'])) {
 			$this->filestores = $config['filestores'];
