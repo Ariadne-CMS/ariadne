@@ -63,9 +63,9 @@
 
 		/* public */
 
-		function filestore_svn($name, $root) {
+		function __construct($name, $root) {
 			global $AR;
-			filestore::filestore($name, $root);
+			parent::__construct($name, $root);
 
 			// Setup error handling -- always a good idea!
 			$this->svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');

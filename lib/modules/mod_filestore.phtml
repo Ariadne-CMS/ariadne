@@ -57,9 +57,13 @@
 
 	class filestore {
 
+		protected $root;
+		protected $name;
+
+
 		/* public */
 
-		function filestore($name, $root) {
+		public function __construct($name, $root) {
 			// initialize filestore
 			$this->name=$name;
 			// make a copy of the store data, not a reference
@@ -72,7 +76,7 @@
 			}
 		}
 
-		function write($contents, $id, $name) {
+		public function write($contents, $id, $name) {
 			$result=false;
 			if ($name) {
 				$path=$this->make_path($id, $name, WRITE);
@@ -88,7 +92,7 @@
 			return $result;
 		}
 
-		function read($id, $name, $limit=0, $offset=0) {
+		public function read($id, $name, $limit=0, $offset=0) {
 			$result=false;
 			$path=$this->make_path($id, $name);
 			if (file_exists($path))	{
@@ -111,7 +115,7 @@
 			return $result;
 		}
 
-		function show($id, $name) {
+		public function show($id, $name) {
 			$result=false;
 			$path=$this->make_path($id, $name);
 			if (file_exists($path))	{
@@ -120,11 +124,11 @@
 			return $result;
 		}
 
-		function exists($id, $name) {
+		public function exists($id, $name) {
 			return file_exists($this->make_path($id, $name));
 		}
 
-		function ls($id) {
+		public function ls($id) {
 			$path=$this->make_path($id);
 			if ($dir=@opendir($path)) {
 				$result=array();
@@ -140,7 +144,7 @@
 			return $result;
 		}
 
-		function templateCodeFunction($fsId, $fsName) {
+		public function templateCodeFunction($fsId, $fsName) {
 				$template = 
 				' $local = new object(); '.
 				' $local->data = $AR_this->data; '.
@@ -167,14 +171,14 @@
 			return $template;
 		}
 
-		function importOLD($fsId, $fsName) {
+		protected function importOLD($fsId, $fsName) {
 			// this looks scary, and maybe it is...
 			$template = $this->templateCodeFunction($fsId, $fsName);
 			$newTemplate = create_function('&$AR_this', $template );
 			return $newTemplate;;
 		}
 
-		function import($fsId, $fsName, $fsLocalVars="", &$fsObject) {
+		public function import($fsId, $fsName, $fsLocalVars="", &$fsObject) {
 			// this looks scary, and maybe it is...
 			// first check the cached templates
 			global $ARConfig;
@@ -197,17 +201,8 @@
 			return $fsFunc($fsObject, $fsLocalVars);
 		}
 
-		protected function copy_file_to_store($source,$destination) {
-			$temp = tempnam(dirname($destination),"_temp_");
-			$result=copy($source,$temp);
-			if($result !== false) {
-				rename($temp,$destination);
-			}
-			return $result;
-		}
 
-
-		function copy_to_store($file, $id, $name="") {
+		public function copy_to_store($file, $id, $name="") {
 			$result=false;
 			//if (file_exists($file)) {
 				if (is_dir($file)) {
@@ -237,7 +232,7 @@
 			return $result;
 		}
 
-		function copy_from_store($target, $id, $name="") {
+		public function copy_from_store($target, $id, $name="") {
 			$result=false;
 			if ($name) {
 				$path=$this->make_path($id, $name);
@@ -275,7 +270,7 @@
 			return $result;
 		}
 
-		function remove($id, $name) {
+		public function remove($id, $name) {
 			$result=false;
 			$path=$this->make_path($id, $name);
 			if (file_exists($path)) {
@@ -286,7 +281,7 @@
 			}
 		}
 
-		function is_empty($id) {
+		public function is_empty($id) {
 			$empty=false;
 			if ($dir=@opendir($this->make_path($id))) {
 				$empty=true;
@@ -300,7 +295,7 @@
 			return $empty;
 		}
 
-		function purge($id) {
+		public function purge($id) {
 			$path=$this->make_path($id);
 			if ($dir=@opendir($path)) {
 				$empty=true;
@@ -322,13 +317,13 @@
 			}
 		}
 
-		function copy($id, $name, $newid, $newname) {
+		public function copy($id, $name, $newid, $newname) {
 			$source=$this->make_path($id, $name);
 			$target=$this->make_path($newid, $newname, WRITE);
 			return copy($source, $target);
 		}
 
-		function copyNode($id, $newid) {
+		public function copyNode($id, $newid) {
 			$source=$this->make_path($id);
 			$target=$this->make_path($newid, '', WRITE);
 			$files = $this->ls($id);
@@ -339,7 +334,7 @@
 			}
 		}
 
-		function move($id, $name, $newid, $newname) {
+		public function move($id, $name, $newid, $newname) {
 			$result=false;
 			$source=$this->make_path($id, $name);
 			$target=$this->make_path($newid, $newname, WRITE);
@@ -349,7 +344,7 @@
 			return $result;
 		}
 
-		function size($id, $name) {
+		public function size($id, $name) {
 			$path=$this->make_path($id, $name);
 			if (file_exists($path)) {
 				$result=filesize($path);
@@ -359,7 +354,7 @@
 			return $result;
 		}
 
-		function mtime($id, $name) {
+		public function mtime($id, $name) {
 			$path=$this->make_path($id, $name);
 			if (file_exists($path)) {
 				$result=filemtime($path);
@@ -369,7 +364,7 @@
 			return $result;
 		}
 
-		function ctime($id, $name) {
+		public function ctime($id, $name) {
 			$path=$this->make_path($id, $name);
 			if (file_exists($path)) {
 				$result=filectime($path);
@@ -379,7 +374,17 @@
 			return $result;
 		}
 
-		function touch($id, $name, $time) {
+		public function stat($id,$name) {
+			$path=$this->make_path($id, $name);
+			if (file_exists($path)) {
+				$result=stat($path);
+			} else {
+				$result=false;
+			}
+			return $result;
+		}
+
+		public function touch($id, $name, $time) {
 			$path=$this->make_path($id, $name);
 			if (file_exists($path)) {
 				$result=touch($path, $time);
@@ -394,7 +399,7 @@
 
 		/* private functions */
 
-		function make_path($id, $name="", $write=false) {
+		protected function make_path($id, $name="", $write=false) {
 			// calculate path based on $id and $name
 			$path=$this->root;
 			if (!file_exists($path) && $write) {
@@ -416,11 +421,11 @@
 			return $path;
 		}
 
-		function get_filename($file) {
+		protected function get_filename($file) {
 			return substr($file, 1);
 		}
 
-		function get_parent_id($id) {
+		protected function get_parent_id($id) {
 			$parent=0;
 			$count=0;
 			while ($id) {
@@ -435,7 +440,7 @@
 			return $parent;
 		}	
 
-		function rmdir($id) {
+		protected function rmdir($id) {
 			$result=true;
 			if ($this->is_empty($id)) {
 				$path=$this->make_path($id);
@@ -455,5 +460,15 @@
 			}
 			return $result;
 		}
+
+		protected function copy_file_to_store($source,$destination) {
+			$temp = tempnam(dirname($destination),"_temp_");
+			$result=copy($source,$temp);
+			if($result !== false) {
+				rename($temp,$destination);
+			}
+			return $result;
+		}
+
 	}
 ?>
