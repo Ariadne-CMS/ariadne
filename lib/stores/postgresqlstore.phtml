@@ -34,12 +34,11 @@ require_once($ariadne."/stores/store.php");
 // general objectstore functions
 class postgresqlstore extends store {
 
-	var $connect_id;
-	var $error;
-	var $root;
-	var $code;
+	protected $connect_id;
+	protected $code;
+	protected $transaction = false;
 
-	function postgresqlstore($path, $config) {
+	public function __construct($path, $config) {
 		global $AR;
 	/**********************************************************************************
 
@@ -74,8 +73,6 @@ class postgresqlstore extends store {
 
 		/* Instantiate module postgresql_compiler */
 		include_once($this->code."stores/modules/postgresql_compiler.php");
-		/* include proxystore */
-		include_once($this->code."stores/proxystore.phtml");
 
 		/* Instantiate module locking */
 		include_once($this->code."modules/mod_lock/postgresql.phtml");
@@ -84,13 +81,13 @@ class postgresqlstore extends store {
 		$this->mod_lock->lock_duration = $config["lock_duration"];
 
 		$config["password"] = "";
-		$this->proxystore = &proxystore::createproxy($this,$config);
+		$this->proxystore = $this;
 
 		debug("postgresqlstore: end", "all");
 
 	}
 
-	function call($template, $args, $objects, $options = array() ) {
+	public function call($template, $args, $objects, $options = array() ) {
 	/**********************************************************************************
 	
 	 This function takes a list of objects, the function to be called in each of those
@@ -135,11 +132,11 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
-	function count($objects) {
+	public function count($objects) {
 		return (@pg_numrows($objects["list"]));
 	}
 
-	function info($objects) {
+	public function info($objects) {
 		debug("call($template, $args, [list])","store");
 		$i = 0;
 		while ($row=@pg_fetch_array($objects["list"], $i++)) {
@@ -149,14 +146,14 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
-	function get_config($field) {
+	public function get_config($field) {
 		debug("store::get_config($field)", "store");
 		$result = $this->$field;
 		debug("store::get_config: end", "all");
 		return $result;
 	}
 
-	function get($path) {
+	public function get($path) {
 	/**********************************************************************************
 
 	 This function takes as argument a path to an object in the store and will retrieve
@@ -184,7 +181,7 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
-	function touch($id, $timestamp = -1) {
+	public function touch($id, $timestamp = -1) {
 		debug("touch($id, $timestamp)","store");
 		$this->error="";
 
@@ -228,7 +225,7 @@ class postgresqlstore extends store {
 		return $result;
 	}
 
-	function ls($path) {
+	public function ls($path) {
 	/**********************************************************************************
 
 	 This function takes as argument a path to an object in the store and will retrieve
@@ -257,7 +254,7 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
-	function parents($path, $top="/") {
+	public function parents($path, $top="/") {
 	/**********************************************************************************
 
 	 This function takes as argument a path to an object in the store. It will return 
@@ -288,7 +285,7 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
-	function find($path, $criteria, $limit=100, $offset=0) {
+	public function find($path, $criteria, $limit=100, $offset=0) {
 	/**********************************************************************************
 
 	 This function takes as arguments a path to an object in the store and some search
@@ -408,13 +405,13 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
-	function close() {
+	public function close() {
 		parent::close();
 		$this->stop_transaction(false);
 		return (@pg_close($this->connect_id));
 	}
 
-	function save($path, $type, $data, $properties="", $vtype="", $priority=false) {
+	public function save($path, $type, $data, $properties="", $vtype="", $priority=false) {
 	/***************************************************************
 
 		This function takes as argument a path, type, objectdata and 
@@ -588,7 +585,7 @@ class postgresqlstore extends store {
 		return $result;
 	}
 
-	function purge($path) {
+	protected function purge($path) {
 	/**********************************************************************
 	 
 		This function will delete the object pointed to by $path and all
@@ -641,7 +638,7 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
-	function delete($path) {
+	public function delete($path) {
 	/**********************************************************************
 
 		This function deletes the path given. If this is the last path pointing
@@ -684,7 +681,7 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
-	function exists($path) {
+	public function exists($path) {
 	/**********************************************************************
 
 		This function checks the given path to see if it exists. If it does
@@ -719,7 +716,7 @@ class postgresqlstore extends store {
 		return ($object);
 	}
 
-	function link($source, $destination) {
+	public function link($source, $destination) {
 	/**********************************************************************
 
 		Link adds an extra path to an already existing object. It has two
@@ -792,7 +789,7 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
-	function store_run_query($query) {
+	protected function store_run_query($query) {
 	/**********************************************************************
 
 		`private` function to handle query's and set $this->error when this fails
@@ -809,7 +806,7 @@ class postgresqlstore extends store {
 		return $result;
 	}
 
-	function move($source, $destination) {
+	public function move($source, $destination) {
 	/**********************************************************************
 
 	$destination should always start and end with a '/'.
@@ -895,7 +892,7 @@ class postgresqlstore extends store {
 		}
 	}
 
-	function list_paths($path) {
+	public function list_paths($path) {
 	/**********************************************************************
 
 		This function returns an array of all paths pointing to the same object 
@@ -921,7 +918,7 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
-	function AR_implements($type, $implements) {
+	public function AR_implements($type, $implements) {
 	/**********************************************************************
 
 		This function returns 1 if the $type implements the type or
@@ -951,7 +948,7 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
-	function load_properties($object, $values="") {
+	public function load_properties($object, $values="") {
 		debug("load_properties($object, [values])","all");
 		if ($object) {
 			$query_string = "select name from ".$this->tbl_prefix."properties";
@@ -969,7 +966,7 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
-	function load_property($object, $property, $values="") {
+	public function load_property($object, $property, $values="") {
 		debug("load_property($object, $property, [values])","all");
 
 		$nodes_tbl = $this->tbl_prefix."nodes";
@@ -1005,7 +1002,7 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
-	function add_property($object, $property, $values) {
+	public function add_property($object, $property, $values) {
 		debug("add_property($object, $property, [values])","all");
 
 		$nodes_tbl = $this->tbl_prefix."nodes";
@@ -1037,7 +1034,7 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
-	function del_property($object, $property="", $values="") {
+	public function del_property($object, $property="", $values="") {
 		debug("del_property($object, $property, [values])","all");
 		$result=false;
 
@@ -1080,7 +1077,7 @@ class postgresqlstore extends store {
 	}
 
 
-	function set_nextid($path, $newid) {
+	public function set_nextid($path, $newid) {
 	/**********************************************************************
 
 		'private' function of postgresql store. 
@@ -1091,7 +1088,7 @@ class postgresqlstore extends store {
 	}
 
 
-	function get_nextid($path, $mask="{5:id}") {
+	public function get_nextid($path, $mask="{5:id}") {
 	/**********************************************************************
 
 		'private' function of postgressql store. This will return the next
@@ -1125,7 +1122,7 @@ class postgresqlstore extends store {
 		return $subid;
 	}
 
-	function start_transaction(){
+	protected function start_transaction(){
 	/**********************************************************************
 
 		'private' function of postgressql store. This will start a transaction.
@@ -1138,7 +1135,7 @@ class postgresqlstore extends store {
 		return $this->transaction;
 	}
 
-	function stop_transaction($how){
+	protected function stop_transaction($how){
 	/**********************************************************************
 
 		'private' function of postgressql store. This will end a transaction when
