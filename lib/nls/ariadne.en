@@ -207,4 +207,8 @@
 	$ARnls['ariadne:rewrite.oldreference']		= 'Old path';
 	$ARnls['ariadne:rewrite.newreference']		= 'New path';
 	$ARnls['ariadne:err:rewrite.no_input']		= 'Geef eerst herschrijfinstructies op.';
+
+	$ARnls['ariadne:new:lettersnumbers'] = 'Use letters and numbers, no spaces';
+	$ARnls['ariadne:new:autonumber'] = 'Number automatically';
+
 ?>

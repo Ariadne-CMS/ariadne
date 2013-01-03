@@ -206,4 +206,7 @@
 	$ARnls['ariadne:rewrite.oldreference']		= 'Oude pad';
 	$ARnls['ariadne:rewrite.newreference']		= 'Nieuwe pad';
 	$ARnls['ariadne:err:rewrite.no_input']		= 'Geef eerst herschrijfinstructies op.';
+
+	$ARnls['ariadne:new:lettersnumbers'] = 'Gebruik alleen letters en cijfers, geen spaties';
+	$ARnls['ariadne:new:autonumber'] = 'Automatisch doornummeren';
 ?>
