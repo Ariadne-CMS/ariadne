@@ -43,7 +43,6 @@ abstract class store {
 	public $mod_lock;
 	public $total;
 	protected $code;
-	protected $proxystore;
 	protected $files;
 	protected $_filestores;
 	protected $config;
@@ -305,7 +304,7 @@ abstract class store {
 		$object->vtype=$vtype;
 		$object->size=(int)$size;
 		$object->priority=(int)$priority;
-		$object->init($this->proxystore, $path, $data);
+		$object->init($this, $path, $data);
 		return $object;
 	}
 

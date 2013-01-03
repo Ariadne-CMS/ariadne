@@ -81,7 +81,6 @@ class postgresqlstore extends store {
 		$this->mod_lock->lock_duration = $config["lock_duration"];
 
 		$config["password"] = "";
-		$this->proxystore = $this;
 
 		debug("postgresqlstore: end", "all");
 

@@ -42,13 +42,6 @@ class mysql_workspacesstore extends mysqlstore {
 		/* Include module mysql_compiler */
 		include_once($this->code."stores/modules/mysql_workspaces_compiler.php");
 
-		//$this->proxystore = proxystore::createproxy($this,$config);
-		if ($config['proxystore']) {
-			$this->proxystore = $config['proxystore'];
-		} else {
-			$this->proxystore = $this;
-		}
-
 	}
 	
 	public function getLayer($path) {
