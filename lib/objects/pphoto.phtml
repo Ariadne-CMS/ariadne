@@ -73,7 +73,21 @@ class pphoto extends pfile { // pphoto class definition
 		return $result;
 	}
 
-	function shadow($shadowcolor="black", $background="white", $opacity=80, $size=3, $posx="+5", $posy="+5", $readModifier=null) {
+	function colorspace($colorspace="RGB") {
+		global $ARConfig;
+		$this->set_context("convert");
+		$result = false;
+		if (preg_match('/[a-z0-9+]/i', $colorspace)) {
+			$ARConfig->photoStack[$this->id][]=" -colorspace $colorspace";
+			$ARConfig->photoStack[$this->id][]=" {buildfile} {targetfile}";
+			$result = true;
+		} else {
+			$this->error=sprintf($ARnls["err:convillegalformat"], $colorspace);
+		}
+		return $result;
+	}
+
+	function shadow($shadowcolor="black", $background="white", $opacity=80, $size=3, $posx="+5", $posy="+5") {
 		global $ARConfig;
 		$this->set_context("shadow");
 
@@ -626,6 +640,10 @@ class pphoto extends pfile { // pphoto class definition
 
 	function _shadow($shadowcolor="black", $background="white", $opacity=80, $size=3, $posx="+5", $posy="+5") {
 		return $this->shadow($shadowcolor, $background, $opacity, $size, $posx, $posy);
+	}
+
+	function _colorspace($colorspace="RGB") {
+		return $this->colorspace($colorspace);
 	}
 
 	function _scale($x, $y, $fillcolor=false, $keepaspect=true) {
