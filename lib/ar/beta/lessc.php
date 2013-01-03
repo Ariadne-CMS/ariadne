@@ -11,12 +11,12 @@
  */
 
 ar_pinp::allow('ar_beta_lessc');
-ar_pinp::allow('lessc');
 
 class ar_beta_lessc extends arBase {
-        public static function client() {
-                return new lessc;
-        }
+	public static function compile($string) {
+		$client = new lessc;
+		return $client->compile($string);
+	}
 }
 
 /**
@@ -56,7 +56,7 @@ class ar_beta_lessc extends arBase {
  * The `lessc_formatter` takes a CSS tree, and dumps it to a formatted string,
  * handling things like indentation.
  */
-class lessc extends arBase {
+class lessc {
 	static public $VERSION = "v0.3.8";
 	static protected $TRUE = array("keyword", "true");
 	static protected $FALSE = array("keyword", "false");
