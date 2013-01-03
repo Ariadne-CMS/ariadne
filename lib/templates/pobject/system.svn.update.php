@@ -30,6 +30,7 @@
 			
 			echo "\n<span class='svn_headerline'>Updating ".$updating." from ".$repository."</span>\n";
 			flush();
+
 			$result = $fstore->svn_update($svn, $filename, $this->getdata("revision"));
 			if ($result) {
 				$updated_templates = array();
@@ -46,6 +47,8 @@
 						case "D":
 							$deleted_templates[] = $item['name'];
 							break;
+						case "C":
+							break; // Don't try to recompile conflicted templates
 						default:
 							$updated_templates[] = $item['name'];
 							break;

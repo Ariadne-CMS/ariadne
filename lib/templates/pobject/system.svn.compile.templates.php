@@ -10,7 +10,7 @@
 				$underscore = substr($filename, 0, 1);
 				$pinp = substr($filename, -5);
 
-				if ($underscore != "_" || $pinp != ".pinp") {
+				if (!file_exists($path) || $underscore != "_" || $pinp != ".pinp") {
 					continue; // not a template
 				}
 
