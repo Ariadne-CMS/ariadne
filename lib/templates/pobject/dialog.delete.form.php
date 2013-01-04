@@ -81,5 +81,7 @@
 			echo '</div>';
 		}
 		echo '</fieldset>';
+	} else {
+		echo $ARnls['e:nodeletegrants'];
 	}
 ?>
