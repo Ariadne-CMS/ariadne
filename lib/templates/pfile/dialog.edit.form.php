@@ -36,6 +36,7 @@
 		<input id="mimetype" type="text" name="<?php echo $selectednls."[file_type]"; ?>" 
 			value="<?php echo htmlspecialchars($file_type); ?>" class="inputline">
 	</div>
+	<?php if (!$arNewType) { ?>
 	<div class="field">
 		<label for="summary"><?php echo $ARnls["summary"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
@@ -56,6 +57,7 @@
 			</script>
 		<?php } ?>
 	</div>
+	<?php } ?>
 <?php	if ($file_size) { 
 		$checked = '';
 		if ($this->getdata("delete", $selectednls)) {

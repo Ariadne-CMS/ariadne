@@ -38,7 +38,7 @@
 	<div class="field">
 		<label for "file" class="required"><?php echo $ARnls["file"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
-		<input id="file" type="file" name="<?php echo $selectednls."[file]"; ?>" class="inputline wgWizAutoFocus">
+		<input id="file" type="file" name="<?php echo $selectednls."[file]"; ?>" class="inputline wgWizAutoFocus"> <input type="submit" name="upload" value="Upload">
 	</div>
 	<div id="busy"><?php echo $ARnls["ariadne:uploading"]; ?>...</div>
 </fieldset>
