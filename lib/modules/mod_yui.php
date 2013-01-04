@@ -386,7 +386,7 @@
 			}
 		}
 
-		function getTypeIcon($item, $viewtype) {
+		function getTypeIcon($item, $viewtype='list') {
 		
 		
 			$type = $item["type"];
