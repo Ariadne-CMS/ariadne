@@ -53,7 +53,7 @@
 
 		// FIXME: Er moet ook iets van een root zijn voor dit dialoog.
 		$root = $this->getvar("root") ? $this->getvar("root") : $this->currentsite();
-		if ($root && $this->exists($root)) {
+		if ($root && $root != '/' && $this->exists($root)) {
 			$base_object = current($this->get($root, "system.get.phtml"));
 		} else {
 			$base_object = $this;
@@ -166,6 +166,16 @@
 	}
 	if( $AR->user->data->windowprefs["edit_object_grants"] ) {
 		echo "\tmuze.ariadne.registry.set('window_new_grants', 1);\n";
+	}
+
+	foreach ($extraroots as $extrapath) {
+		if ($extrapath != $path) {
+			$extrapath_ob = current($this->get($extrapath, "system.get.phtml"));
+			if ($extrapath_ob) {
+				$extrapath_icon = $extrapath_ob->call('system.get.icon.php', array('size' => 'medium'));
+				echo "\tmuze.ariadne.explore.tree.baseNodes.push({'path' : '$extrapath', 'name' : '" . $extrapath_ob->nlsdata->name . "', 'icon' : '$extrapath_icon'});";
+			}
+		}
 	}
 ?>
 </script>
