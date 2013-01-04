@@ -31,6 +31,7 @@
 					echo htmlspecialchars( $url, ENT_QUOTES, 'UTF-8');
 				?>" class="inputline">
 	</div>
+	<?php if (!$arNewType) { ?>
 	<div class="field">
 		<label for="summary"><?php echo $ARnls["summary"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
@@ -49,6 +50,7 @@
 			include($this->store->get_config("code")."widgets/htmledit/form.html"); 
 		?>
 	</div>
+	<?php } ?>
 </fieldset>
 
 <?php } ?>
