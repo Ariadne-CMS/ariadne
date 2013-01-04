@@ -1,4 +1,5 @@
 <?php
+	global $AR;
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("add", ARANYTYPE) && $this->CheckConfig()) {
 		require_once($this->store->get_config("code")."modules/mod_yui.php");

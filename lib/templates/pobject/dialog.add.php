@@ -1,44 +1,40 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("add", ARANYTYPE) && $this->CheckConfig()) {
-
 		include($this->store->get_config("code")."widgets/wizard/code.php");
 
-		$wgWizButtons = array(
-			"cancel" => array(
-				"value" => $ARnls["cancel"]
-			),
-		);
-
-		$wgWizFlow = array();
-		$wgWizFlow[] = array(
-			"current" => $this->getdata("wgWizCurrent","none"),
-			"cancel" => "window.close.js",
+		$wgWizFlow = array(
+			array(
+				"current" => $this->getvar("wgWizCurrent","none"),
+				"template" => "dialog.add.form.php",
+				"cancel" => "window.close.js",
+				"save" => "dialog.add.save.php"
+			)
 		);
 		
-		$wgWizFlow[] = array(
-			"title" => $ARnls["typetree"],
-			"image" => $AR->dir->images.'wizard/add_typetree.png',
-			"template" => "dialog.add.typetree.php",
-		);
-
-		if( $this->CheckSilent("layout") ) {
-			$wgWizFlow[] = array(
-				"title" => $ARnls["all"],
-				"image" => $AR->dir->images.'wizard/add_all.png',
-				"template" => "dialog.add.all.php",
+		if ($wgWizAction == 'save') {
+			$wgWizButtons = array(
+				"cancel" => array(
+					"value" => $ARnls["cancel"]
+				),
+				"template" => array(
+					"value" => $ARnls["back"]
+				)
 			);
-		}
-		
-		$wgWizFlow = $this->call("user.wizard.add.html", Array("wgWizFlow" => $wgWizFlow));
-		
-		$wgWizStyleSheets = array(
-			$AR->dir->styles."addobject.css",
-		);
-		// spawn wizard
-		$wgWizHeaderIcon = $AR->dir->images . 'icons/large/add.png';
-		$wgWizTitle=$ARnls["ariadne:new"];
-		$wgWizHeader=$wgWizTitle;
+		} else {
+			$wgWizButtons = array(
+				"cancel" => array(
+					"value" => $ARnls["cancel"]
+				),
+				"save" => array(
+					"value" => $ARnls["add"]
+				),
+			);
+		}				
+
+		$wgWizTitle=$ARnls["add"];
+		$wgWizHeader = $wgWizTitle;
+		$wgWizHeaderIcon = $AR->dir->images.'icons/large/add.png';
 
 		include($this->store->get_config("code")."widgets/wizard/yui.wizard.html");
 	}
