@@ -1,8 +1,7 @@
 <?php
 
 $ARCurrent->nolangcheck=true;
-if ($this->CheckLogin("edit") && $this->CheckConfig()) {
-
+if (($this->CheckLogin("edit") || $this->CheckLogin("add", ARANYTYPE)) && $this->CheckConfig()) {
 	$wgWizFlow[] = Array (
 		"title"		=> "Connection", //FIXME use NLS
 		"template"	=> "edit.object.data.conninfo.phtml",

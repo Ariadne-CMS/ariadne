@@ -1,7 +1,7 @@
 <?php
 
 $ARCurrent->nolangcheck=true;
-if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+if (($this->CheckLogin("edit") || $this->CheckLogin("add", ARANYTYPE)) && $this->CheckConfig()) {
 
 	$wgWizFlow[] = array(
 		"title" => $ARnls["display"],
