@@ -135,7 +135,7 @@
 						'label' => false
 					)
 				);
-				$snippit = ar('html')->form($fields, false)->getFields();
+				$snippit = ar('html')->form($fields, false)->getHTML()->childNodes;
 				foreach ($snippit->getElementsByTagName("input") as $radioOption) {
 					$radioOption->setAttribute("onclick", "this.form.submit();");
 				}
@@ -193,7 +193,7 @@
 								"uncheckedValue" => 0
 							)
 						);
-						$snippit = ar('html')->form($fields, false)->getFields();
+						$snippit = ar('html')->form($fields, false)->getHTML()->childNodes;
 						foreach ($snippit->getElementsByTagName("input") as $checkOption) {
 							$checkOption->setAttribute("onclick", "this.form.submit();");
 						}
@@ -211,7 +211,7 @@
 						)
 					);
 				}
-				$snippit = ar('html')->form($fields, false)->getFields();
+				$snippit = ar('html')->form($fields, false)->getHTML()->childNodes;
 				foreach ($snippit->getElementsByTagName("input") as $radioOption) {
 					$radioOption->setAttribute("onclick", "this.form.submit();");
 				}
@@ -342,7 +342,7 @@
 			 ?>
 				<fieldset id="languages">
 					<legend><?php echo $ARnls['ariadne:add:extralanguages']; ?></legend>
-					<?php echo ar('html')->form($fields, false)->getFields(); ?>
+					<?php echo ar('html')->form($fields, false)->getHTML()->childNodes; ?>
 				</fieldset>
 			<?php } ?>
 		<?php } ?>
