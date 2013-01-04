@@ -153,7 +153,7 @@ muze.form.numbersOnly = function() {
 			inputs = document.getElementsByTagName("INPUT");
 			for (i=0; i<inputs.length; i++) {
 				if (inputs[i] && inputs[i].className && inputs[i].className.indexOf("muze_form_numbersonly") != -1) {
-					muze.event.attach(inputs[i], "keypress", muze.form.numbersonly.execute);
+					muze.event.attach(inputs[i], "keypress", muze.form.numbersOnly.execute);
 				}
 			}
 		},
