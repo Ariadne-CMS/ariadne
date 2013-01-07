@@ -51,6 +51,7 @@
 		$ARnls['ariadne:add:extralanguages'] = 'Extra taalgegevens toevoegen';
 		$ARnls['ariadne:add:default_language_data'] = 'Gegevens standaardtaal';
 		$ARnls['ariadne:add:add_language'] = 'Taal toevoegen';
+		$ARnls['ariadne:add:change_type'] = 'Wijzig type';
 
 ?>
 		<style type="text/css">
@@ -78,12 +79,14 @@
 				vertical-align: middle;
 			}
  
-			#type div.formRadio.type input {
+			#type div.formRadio.type input,
+			#type div.formRadio.type_selected input {
 				visibility: hidden;
 				height: 0px;
 			}
 
-			#type div.formRadio.type input + label {
+			#type div.formRadio.type input + label,
+			#type div.formRadio.type_selected input + label {
 				border: 1px solid transparent;
 				padding: 3px;
 				margin-top: 0px;
@@ -99,26 +102,54 @@
 				background-color: #316AC5;
 				color: white;
 			}
-			#type div.formRadio.type div.radioButton {
+			#type div.formRadio.type div.radioButton,
+			#type div.formRadio.type_selected div.radioButton {
 				display: inline-block;
 				text-align: center;
 				margin-right: 5px;
 			}
-			#type div.formRadio.type div.radioButton img {
+			#type div.formRadio.type div.radioButton img,
+			#type div.formRadio.type_selected div.radioButton img {
 				display: block;
 				margin: 0px auto;
 			}
-			fieldset.editdata fieldset legend {
-				display: none;
+			#type {
+				position: relative;
 			}
+			#type .othertype {
+				position: absolute;
+				top: 10px;
+				right: 10px;
+			}
+
+			fieldset.editdata fieldset legend {
+				display: block;
+				margin-left: 20px;
+				padding-left: 5px;
+				padding-right: 5px;
+			}
+			fieldset.editdata table {
+				border-collapse: collapse;
+				margin: 0px;
+				padding: 0px;
+			}
+
 			#tabsdata fieldset.editdata fieldset {
 				border: 0px;
 				margin: 0px;
 				padding: 0px;
+				border-top: 1px solid #888888;
 			}
 			img.flag {
 				display: none;
 			}
+			#languages div.formField {
+				display: inline;
+			}
+			button.addLanguage {
+				display: inline;
+			}
+
 		</style>
 		<fieldset id="location">
 			<legend><?php echo $ARnls['ariadne:add:location']; ?></legend>
@@ -166,7 +197,7 @@
 					echo "<legend>Object aanmaken: " . $itemlist[$arNewType]['name'] . "</legend>";
 					$typeslist = array(
 						$arNewType => $typeslist[$arNewType],
-						'' => ar('html')->el("div", array("class" => "otherType"), "Wijzig type")
+//						'' => ar('html')->el("div", array("class" => "otherType"), $ARnls['ariadne:add:change_type'])
 					);
 
 					$fields = array(
@@ -175,7 +206,7 @@
 							"value" => $arNewType,
 							"options" => $typeslist,
 							"label" => false,
-							"class" => "type"
+							"class" => "type_selected"
 						)
 					);
 				} else {
@@ -216,6 +247,10 @@
 					$radioOption->setAttribute("onclick", "this.form.submit();");
 				}
 				echo $snippit;
+
+				if ($arNewType) { ?>
+					<button class="othertype" type="submit" name="arNewType" value="">Wijzig type</button>
+				<?php }
 			?>			
 		</fieldset>
 		<?php if ($arNewType) { ?>
@@ -336,7 +371,8 @@
 							"type" => "button",
 							"value" =>
 							$ARnls['ariadne:add:add_language'],
-							"label" => false
+							"label" => false,
+							"class" => "addLanguage"
 						)
 					);
 			 ?>
