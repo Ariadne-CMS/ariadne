@@ -399,7 +399,7 @@
 
 		/* private functions */
 
-		protected function make_path($id, $name="", $write=false) {
+		public function make_path($id, $name="", $write=false) {
 			// calculate path based on $id and $name
 			$path=$this->root;
 			if (!file_exists($path) && $write) {
