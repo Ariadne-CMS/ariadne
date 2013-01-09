@@ -50,14 +50,18 @@
 					</div>
 					<div class="field checkbox">
 						<?php
-							if ($enable_workspaces) {
+							$disabled = '';
+							if ($database != "mysql") {
+								$checked = '';
+								$disabled = "disabled";
+							} elseif ($enable_workspaces) {
 								$checked = "checked='checked'";
 							} else {
 								$checked = '';
 							}
 						?>
 						<input type="hidden" name="enable_workspaces" value="0">
-						<input <?php echo $checked; ?> type="checkbox" id="enable_workspaces" name="enable_workspaces" value="1">
+						<input <?php echo $checked . ' ' . $disabled; ?> type="checkbox" id="enable_workspaces" name="enable_workspaces" value="1">
 						<label for='enable_workspaces'><?php echo $ARnls['install:enable_workspaces']; ?></label>
 					</div>
 					<?php if (check_demo_ax()) { ?>
