@@ -416,7 +416,7 @@ function ScrollTree(x, y) {
   if (!isset($layout) || (!$layout)) {
     $layout="./frames.js";
   } else {
-    $layout=preg_replace("|[\./\\]|","",$layout).".js";
+    $layout=preg_replace("|[\./\\\]|","",$layout).".js";
   }
   include($layout);
 ?>
