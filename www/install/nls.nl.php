@@ -51,6 +51,7 @@
 	$ARnls['install:check_selected_db_store_install'] = 'Store installatieprocedure is leesbaar';
 	$ARnls['install:check_nls']		= 'NLS map is leesbaar';
 	$ARnls['install:check_tar_class']	= 'Archive/Tar class is beschikbaar';
+	$ARnls['install:check_mb_functions'] = 'Multibyte string support is beschikbaar';
 
 	$ARnls['install:check_default_nls']	= 'Standaard NLS taalbestanden zijn beschikbaar';
 	$ARnls['install:check_connect_db']	= 'Verbinding maken naar database server';

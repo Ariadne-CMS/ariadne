@@ -49,6 +49,7 @@
 	$ARnls['install:check_selected_db_store_install'] = 'Store installation procedure is readable';
 	$ARnls['install:check_nls']		= 'NLS directory is readable';
 	$ARnls['install:check_tar_class']	= 'Archive/Tar class is available';
+	$ARnls['install:check_mb_functions'] = 'Multibyte string support is available';
 
 	$ARnls['install:check_default_nls']	= 'Default nls language files are available';
 	$ARnls['install:check_connect_db']	= 'Connect to database server';

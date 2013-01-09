@@ -369,7 +369,7 @@
 				return check_db_is_empty_mysql($conf);
 			break;
 			case 'postgresql':
-				return check_db_is_empty_postgresql($conf);			
+				return check_db_is_empty_postgresql($conf);
 			break;
 		}
 		return false;
@@ -456,6 +456,13 @@
 		return false;
 	}
 
+	function check_mb_functions() {
+		if (function_exists('mb_substr')) {
+			return true;
+		}
+		return false;
+	}
+
 	function getServerVar( $name ) {
 		return isset( $_SERVER[$name] ) ? $_SERVER[$name] : null;
 	}
@@ -494,6 +501,7 @@
 		"check_files_write" => check_files_write(),		// Check if files dir can be written by www-data
 		"check_base_ax"	=> check_base_ax(),
 		"check_tar_class" => check_tar_class(),			// Check if Archive/Tar class is available to import packages with.
+		"check_mb_functions" => check_mb_functions(),			// Check if Archive/Tar class is available to import packages with.
 	);
 
 	$recommended_checks = array(
