@@ -47,7 +47,7 @@
 	}
 
 	function check_accept_path_info() {
-		if (check_apache()) {
+		if ( function_exists('apache_lookup_uri')) {
 			$extrapath = "/test_path_info/";
 			$object = apache_lookup_uri($_SERVER['REQUEST_URI'] . $extrapath);
 			if ($object->path_info == $extrapath) {
@@ -55,9 +55,34 @@
 			}
 			return false;
 		} else {
-			if ($_SERVER['PATH_INFO']) {
-				// FIXME: Need a better check for this.
-				return true;
+			$ariadne = '';
+			@include("../ariadne.inc");
+			if ( $ariadne != '' ) {
+				require_once($ariadne . '/ar.php');
+
+				// checking if path_info could be available
+				$testuri = 'http://' .  $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"];
+				$testuri = str_replace('/index.php', '/serverinfo.php', $testuri);
+				$result1 = json_decode(ar_http::get($testuri),true);
+				$result2 = json_decode(ar_http::get($testuri.'/my/path/info'),true);
+
+				if ( is_array($result1) && is_array($result2) ) {
+					// self request works
+					// pathinfo could work
+					if( $result2['server']['PATH_INFO'] == '/my/path/info' ) {
+						return true;
+					} else {
+						return false;
+					}
+				} elseif ( is_array($result1) && is_null($result2) ) {
+					// self request works
+					// request with pathinfo fails
+					return false;
+				} else {
+					// self request fails
+					// should return 'check via browser'
+					return false;
+				}
 			}
 		}
 		return false;
