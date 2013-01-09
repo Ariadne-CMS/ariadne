@@ -2,7 +2,7 @@
 	$ariadne = '';
 	
 	function check_php_version() {
-		if (version_compare(PHP_VERSION, '5.0.0', '>')) {
+		if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
 			return true;
 		}
 		return false;
