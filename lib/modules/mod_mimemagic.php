@@ -712,13 +712,17 @@
 	$mimetypes_data["wrl"] = "x-world/x-vrml";
 
 	$contenttypes_data = Array(
-		'docx' => array(
-			'^application/zip$' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-		),
-		'css' => array(
-			'^text/.*' => 'text/css'
-		)
-
+		'xlsx' => array( '^application/zip$' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ),
+		'xltx' => array( '^application/zip$' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.template' ),
+		'potx' => array( '^application/zip$' => 'application/vnd.openxmlformats-officedocument.presentationml.template' ),
+		'ppsx' => array( '^application/zip$' => 'application/vnd.openxmlformats-officedocument.presentationml.slideshow' ),
+		'pptx' => array( '^application/zip$' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation' ),
+		'sldx' => array( '^application/zip$' => 'application/vnd.openxmlformats-officedocument.presentationml.slide' ),
+		'docx' => array( '^application/zip$' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ),
+		'dotx' => array( '^application/zip$' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.template' ),
+		'xlam' => array( '^application/zip$' => 'application/vnd.ms-excel.addin.macroEnabled.12' ), 
+		'xlsb' => array( '^application/zip$' => 'application/vnd.ms-excel.sheet.binary.macroEnabled.12' ),
+		'css'  => array( '^text/.*' => 'text/css' )
 	);
 
 	function get_mime_type($filename, $flags = 3) {
