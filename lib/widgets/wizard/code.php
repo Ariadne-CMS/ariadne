@@ -79,9 +79,11 @@ if( !function_exists("wgWizKeepVars") ) {
 	}
 }
 
-class pinp_wizard {
-	function _wgWizKeepVars($array, $prefix="") {
-		return wgWizKeepVars($array, $prefix);
+if( !class_exists('pinp_wizard') ) {
+	class pinp_wizard {
+		function _wgWizKeepVars($array, $prefix="") {
+			return wgWizKeepVars($array, $prefix);
+		}
 	}
 }
 
