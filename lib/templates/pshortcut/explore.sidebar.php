@@ -33,7 +33,7 @@ if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		}
 		
 		// tasks on the target
-		$path = $this->store->make_path( $this->data->path, $this->parent );
+		$path = $this->store->make_path( $this->parent, $this->data->path);
 		$this->get($path, "explore.sidebar.tasks.php", $arCallArgs);
 		$this->get($path, "explore.sidebar.settings.php", $arCallArgs);
 
