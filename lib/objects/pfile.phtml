@@ -86,6 +86,13 @@ class pfile extends pobject { // pfile class definition
 		if (!$mimetype) {
 			$mimetype = $this->data->mimetype;
 		}
+
+		if (!$mimetype) {
+			if (function_exists("get_content_type")) {
+				$mimetype = get_content_type($mimetype, basename($this->path));
+			}
+		}
+
 		if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
 			if ($ARCurrent->cachetime==0 && !$AR->output_compression) {
 				ob_start(); // start the cache
@@ -100,9 +107,6 @@ class pfile extends pobject { // pfile class definition
 			$size = $files->size($this->id, $file);
 		}
 		
-		if (function_exists("get_content_type")) {
-			$mimetype = get_content_type($mimetype, basename($this->path));
-		}
 
 		if (ldSetContent($mimetype, $size)) {
 			$cacheseconds=1800; // 1/2 hour
