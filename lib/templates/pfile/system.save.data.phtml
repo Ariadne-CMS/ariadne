@@ -69,7 +69,12 @@
 			}
 		}
 		if (!$this->error) {
-			$this->data->mimetype=$this->getdata("mimetype","none");
+			$file_type = $this->getdata("file_type", "none");
+			if (!$file_type) {
+				$file_type = $this->getdata("mimetype","none");
+			}
+			$this->data->mimetype = $file_type;
+
 			$this->save($properties);
 
 			if (!$this->error) {
@@ -83,9 +88,11 @@
 					$fulltext = $properties['fulltext'];
 					$tempfile = $this->getdata("file_temp", $nlskey);
 					$mimetype = $this->getdata("mimetype", $nlskey);
-					if (!$this->data->$nlskey || !$mimetype || $mimetype == $this->data->$nlskey->mimetype) {
-						$mimetype = $this->getdata("file_type", $nlskey);
+					$file_type = $this->getdata("file_type", $nlskey);
+					if (!$file_type) {
+						$file_type = $mimetype;
 					}
+					$mimetype = $file_type;
 					
 					$this->data->$nlskey->mimetype = $mimetype;
 					
