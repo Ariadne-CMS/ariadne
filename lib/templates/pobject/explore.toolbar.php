@@ -102,6 +102,7 @@
 					<input size="30" id="searchpath" class="text" type="text" name="arPath" value="<?php echo $this->path; ?>">
 					<input type="image" src="<?php echo $AR->dir->www; ?>images/icons/small/go.png" title="<?php echo htmlspecialchars($ARnls['ariadne:search']); ?>" id="searchbutton" name="searchsubmit" value="<?php echo $ARnls["ariadne:search"]; ?>">
 				</div>
+				<div id="resultscontainer"></div>
 			</form>
 		</div>
 <?php	}	?>
