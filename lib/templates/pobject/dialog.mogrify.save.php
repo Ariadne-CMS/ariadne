@@ -1,6 +1,6 @@
 <?php
 	$ARCurrent->nolangcheck=true;
-	if ($this->CheckLogin('config') && $this->CheckConfig()) {
+	if ($this->CheckLogin('config') && $this->CheckConfig() && $this->can_mogrify() ) {
 ?>
 	<div id="mogrify"><?php echo $ARnls["mogrifying"] . " " . $current_object_path; ?></div>
 <?php

@@ -1,6 +1,6 @@
 <?php
 	$ARCurrent->nolangcheck=true;
-	if ($this->CheckLogin("config") && $this->CheckConfig()) {
+	if ($this->CheckLogin("config") && $this->CheckConfig() && $this->can_mogrify() ) {
 		include($this->store->get_config("code")."widgets/wizard/code.php");
 
 		$wgWizFlow = array(

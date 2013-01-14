@@ -890,6 +890,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $result;
 	}
 
+	function can_mogrify() {
+		if ($this->path == "/system/users/admin/") {
+			return false;
+		}
+		return true;
+	}
+
 	function load_properties() {
 		return $this->store->load_properties($this->id);
 	}

@@ -59,7 +59,7 @@
 				);		
 			}
 		}
-		if ($this->CheckSilent("admin")) {
+		if ($this->CheckSilent("admin") && $this->can_mogrify() ) {
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() . "dialog.mogrify.php",
 				'onclick' => "muze.ariadne.explore.arshow('dialog.mogrify',this.href); return false;",
