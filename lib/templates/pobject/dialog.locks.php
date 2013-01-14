@@ -1,8 +1,7 @@
 <?php
 	$ARCurrent->nolangcheck=true;
-	if ($this->CheckLogin("config") && $this->CheckConfig()) {
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		include($this->store->get_config("code")."widgets/wizard/code.php");
-		include($this->store->get_config("code")."nls/menu.".$nls);
 
 		$wgWizFlow = array(
 			array(
