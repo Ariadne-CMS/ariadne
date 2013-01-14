@@ -44,6 +44,7 @@
 <link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>treeview/assets/skins/sam/treeview.css">
 <link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>container/assets/skins/sam/container.css">
 <link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>datatable/assets/skins/sam/datatable.css">
+<link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>autocomplete/assets/skins/sam/autocomplete.css">
 
 <script type="text/javascript" src="<?php echo $yui_base;?>yahoo-dom-event/yahoo-dom-event.js"></script>
 <script type="text/javascript" src="<?php echo $yui_base;?>element/element-min.js"></script>
@@ -60,6 +61,7 @@
 <script type="text/javascript" src="<?php echo $yui_base;?>slider/slider-min.js"></script>
 <script type="text/javascript" src="<?php echo $yui_base;?>animation/animation-min.js"></script>
 <script type="text/javascript" src="<?php echo $yui_base;?>container/container-min.js"></script>
+<script type="text/javascript" src="<?php echo $yui_base;?>autocomplete/autocomplete-min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>explore.css">
 <!--[if lt IE 7]><link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>explore.ie6.css"><![endif]-->
@@ -94,6 +96,7 @@
 	//once the DOM has loaded, we can go ahead and set up our tree:
 	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.tree.init, muze.ariadne.explore.tree, true);
 	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.splitpane.init);
+	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.searchbar.init);
 </script>
 
 <script type="text/javascript">

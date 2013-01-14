@@ -555,6 +555,54 @@ muze.ariadne.explore.toolbar = function() {
 	}
 }();
 
+muze.ariadne.explore.searchbar = function() {
+	return {
+		init : function() {
+			// Use an XHRDataSource
+			var nodePath = encodeURI(muze.ariadne.registry.get('path'));
+
+			var oDS = new YAHOO.util.XHRDataSource(muze.ariadne.explore.tree.loaderUrl + nodePath + "system.search.json");
+			
+			// Set the responseType
+			oDS.responseType = YAHOO.util.XHRDataSource.TYPE_TEXT;
+			// Define the schema of the delimited results
+			// oDS.responseSchema = {
+			//	recordDelim: "\n",
+			//	fieldDelim: "\t"
+			//};
+
+			oDS.responseType = YAHOO.util.XHRDataSource.TYPE_JSON;
+			// Define the schema of the delimited results
+			oDS.responseSchema = {
+				resultsList:"entries",
+				fields: ["path","name", "icons", "overlay_icons"]
+			};
+
+			// Enable caching
+			oDS.maxCacheEntries = 5;
+			// Instantiate the AutoComplete
+			var oAC = new YAHOO.widget.AutoComplete("searchpath", "resultscontainer", oDS);
+
+			oAC.formatResult = function(oResultItem, sQuery) { 
+				// This was defined by the schema array of the data source
+				var image = "<img src='" + oResultItem[2].medium + "'>";
+				if (oResultItem[3] && oResultItem[3].medium) {
+					image += "<img class='icon_overlay' src='" + oResultItem[3].medium + "'>";
+				}
+
+				return image + " <span>" + oResultItem[0] + "<br>" + oResultItem[1] + "</span>";
+			};
+
+			oAC.maxResultsDisplayed = 20;
+
+			return {
+				oDS: oDS,
+				oAC: oAC
+			};
+		}
+	}
+}();
+
 muze.ariadne.explore.splitpane = function() {
 	return {
 		init : function() {

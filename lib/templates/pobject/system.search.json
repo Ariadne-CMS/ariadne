@@ -1,0 +1,19 @@
+<?php
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		$AR->SVN->enabled = false; // SVN information is not needed and slows down the query a lot.
+		$arquery = "object.path =~ '%$query%' or name.value =~ '%$query%'";
+		$results = $this->find("/", $arquery, "system.list.entry.php");
+
+		// array_filter changes the json encoded result; unsetting array elements does the same;
+		$resultset = array();
+		foreach ($results as $key => $item) {
+			if ($item['grants']['read'] === false) {
+				unset($results[$key]);
+			} else {
+				$resultset[] = $item;
+			}
+		}
+		
+		echo json_encode( array("entries" => $resultset ));
+	}
+?>
