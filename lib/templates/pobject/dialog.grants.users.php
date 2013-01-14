@@ -2,6 +2,9 @@
 	include_once("dialog.grants.logic.php");
 	
 	include_once($this->store->get_config("code")."modules/mod_yui.php");
+	include_once($this->store->get_config("code")."modules/mod_grant.php");
+	include_once($this->store->get_config("code")."ar.php");
+
 
 	$userConfig = $this->loadUserConfig();
 	$authconfig = $userConfig['authentication'];
@@ -15,6 +18,8 @@
 	$stored_vars = $this->getdata("arStoreVars");
 	$data = $this->getdata('data');
 
+	$textswitch = ar::getvar("textmode", "post");
+	
 	if (!$selectedpath) {
 		$selectedpath = $this->path;
 	}
@@ -41,6 +46,7 @@
 		"layout" => "Layout",
 		"config" => "Config",
 		"delete" => "Delete",
+		"none" => "None"
 	);
 
 	$available_grants = $default_grants;
@@ -233,7 +239,18 @@
 			$info['grants'] = arrayMergeCorrect($info['grants'], $formdata['grants']);
 //			$info['grants'] = array_merge($info['grants'], $stored_formdata['grants'], $formdata['grants']);
 //			echo "<pre>";
-//			print_r($info);
+//			print_r($info['grants']);
+			if (isset($textswitch) && $textswitch == 1) {
+				$info['grants']['grantsstring'] = grantsArrayToString($formdata['grants']['array']);
+			} else if (isset($textswitch) && $textswitch == 0) {
+				$g_comp = new mod_grant;
+				$newgrants = array();
+//				print_r($info['grants']);
+
+				$g_comp->compile($formdata['grants']['grantsstring'], $newgrants);
+				
+				$info['grants']['array'] = $newgrants;
+			}
 //			echo "</pre>";
 	?>
 		<div class="item<?php if($path == $selecteduser) { echo " selected";} if ($info['grants_inherited']) { echo " inherited";} ?>">
