@@ -81,7 +81,10 @@
 	?>
 			<label for="select_<?php echo $ob_id; ?>" class="block item <?php if($path == $selectedpath) { echo " selected";} ?>" title="<?php echo $info['name'];?>">
 				<img src="<?php echo $this->call('system.get.icon.php', array('type' => $info['type'], size => 'medium')); ?>" alt="<?php echo $info['type'];?>">
-				<span class="path"><?php echo yui::labelspan($path, 24); ?></span>
+				<div class="object">
+					<span class="name"><?php echo yui::labelspan($info['name'], 24); ?></span><br>
+					<span class="path"><?php echo yui::labelspan($path, 24); ?></span>
+				</div>
 			</label>
 			<input class="hidden" id="select_<?php echo $ob_id; ?>" type="submit" name="selectedpath" value="<?php echo $path; ?>">
 	<?php	} ?>
