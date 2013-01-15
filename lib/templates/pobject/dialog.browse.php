@@ -95,6 +95,7 @@
 <link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>container/assets/skins/sam/container.css">
 <link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>datatable/assets/skins/sam/datatable.css">
 <link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>treeview/assets/skins/sam/treeview.css">
+<link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>autocomplete/assets/skins/sam/autocomplete.css">
 
 <script type="text/javascript" src="<?php echo $yui_base;?>yahoo-dom-event/yahoo-dom-event.js"></script>
 <script type="text/javascript" src="<?php echo $yui_base;?>element/element-min.js"></script>
@@ -110,6 +111,7 @@
 <script type="text/javascript" src="<?php echo $yui_base;?>dragdrop/dragdrop-min.js"></script>
 <script type="text/javascript" src="<?php echo $yui_base;?>slider/slider-min.js"></script>
 <script type="text/javascript" src="<?php echo $yui_base;?>animation/animation-min.js"></script>
+<script type="text/javascript" src="<?php echo $yui_base;?>autocomplete/autocomplete-min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>explore.css">
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>browse.css">
@@ -143,6 +145,7 @@
 	//once the DOM has loaded, we can go ahead and set up our tree:
 	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.tree.init, muze.ariadne.explore.tree, true);
 	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.splitpane.init);
+	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.searchbar.init);
 </script>
 
 <script type="text/javascript">
@@ -168,7 +171,7 @@
 		echo "\tmuze.ariadne.registry.set('window_new_grants', 1);\n";
 	}
 
-	foreach ($extraroots as $extrapath) {
+	foreach ((array)$extraroots as $extrapath) {
 		if ($extrapath != $path) {
 			$extrapath_ob = current($this->get($extrapath, "system.get.phtml"));
 			if ($extrapath_ob) {
@@ -206,11 +209,12 @@
 		</div>
 		<?php echo yui::yui_menuitems($menuitems, "yuimenubar", "explore_menubar")."\n"; ?>
 		<div class="searchdiv">
-			<form action="explore.html" onsubmit="muze.ariadne.explore.toolbar.searchsubmit(this.arPath.value); return false;">
+			<form action="dialog.browse.php" onsubmit="muze.ariadne.explore.toolbar.searchsubmit(this.arPath.value); return false;">
 				<div>
 					<input size="30" id="searchpath" class="text" type="text" name="arPath" value="<?php echo $this->path; ?>">
 					<input type="image" src="<?php echo $AR->dir->www; ?>images/icons/small/go.png" title="<?php echo htmlspecialchars($ARnls['ariadne:search']); ?>" id="searchbutton" name="searchsubmit" value="<?php echo $ARnls["ariadne:search"]; ?>">
 				</div>
+				<div id="resultscontainer"></div>
 			</form>
 		</div>
 	</div>
