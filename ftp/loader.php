@@ -10,7 +10,7 @@
 		include("../www/ariadne.inc");
 	}
 	require_once($ariadne."/configs/ariadne.phtml");
-    require_once($ariadne."/configs/ftp/$configfile");
+	require_once($ariadne."/configs/ftp/$configfile");
 	require_once($ariadne."/configs/store.phtml");
 	require_once($ariadne."/includes/loader.ftp.php");
 	require_once($ariadne."/configs/sessions.phtml");
