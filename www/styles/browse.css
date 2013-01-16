@@ -1,27 +1,76 @@
 .browse {
 	margin-left: 0px;
-	overflow: auto;
-	max-height: 390px;
-}
-
-div.buttons {
-        position: fixed;
-        bottom: 10px;
-        right: 10px;
+	xoverflow: auto;
+	border: 0px;
 }
 
 div.buttons input {
-        background:url("../images/sprite.png") repeat-x 0 0;
-        border: 1px solid #808080;
+	background:url("../images/sprite.png") repeat-x 0 0;
+	border: 1px solid #808080;
+}
+
+#explore_top {
+	position: relative;
+	top: 0px;
+	border-top: 1px solid #808080;
+	margin-top: -32px;
+}
+
+#sectiondata {
+	padding-top: 30px;
+	border: 1px solid #808080;
+	background-color: #EEEEEE;
+}
+#explore_tree {
+	background: none;
+}
+#splitpane_thumb {
+	bottom: 2px;
+	height: auto;
+}
+
+#explore_menubar {
+	margin-left: 0px;
+}
+
+#explore_tree #treeDiv {
+	position: absolute;
+	top: 0px;
+	bottom: 2px;
 }
 
 #explore_top .searchdiv {
-	left: 430px;
+	position: absolute;
+	left: 230px;
 }
+#explore_menubar {
+	margin-top: 0px;
+}
+
 .viewpane_footer {
 	margin-top: -10px;
 }
 
 .viewpane {
-	padding-bottom: 10px;
+	border: 1px solid #808080;
+}
+.viewpane.details {
+	border: 0px;
+}
+.viewpane.details .yui-dt table {
+	border: 1px solid #808080;
+}
+
+.managediv {
+	position: absolute;
+	background: none;
+	bottom: 0px;
+	border: 0px;
+	background-color: #F8F8F8;
+}
+
+.viewpane .flag {
+	position: static;
+	top: auto;
+	right: auto;
 }

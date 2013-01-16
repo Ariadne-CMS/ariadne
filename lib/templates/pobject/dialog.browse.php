@@ -1,6 +1,11 @@
 <?php
 	$ARCurrent->nolangcheck = true;
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		global $AR;
+		if (false && !$this->CheckSilent("layout")) {
+			$AR->SVN->enabled = false; // FIXME: in details view with SVN disabled, the rows are populated wrong.
+		}
+
 		include_once($this->store->get_config("code")."modules/mod_yui.php");
 
 		$menuitems = array(
@@ -49,8 +54,6 @@
 		}
 
 		/* retrieve HTTP GET variables */
-		global $AR;
-
 		// FIXME: Er moet ook iets van een root zijn voor dit dialoog.
 		$root = $this->getvar("root") ? $this->getvar("root") : $this->currentsite();
 		if ($root && $root != '/' && $this->exists($root)) {
@@ -115,6 +118,7 @@
 
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>explore.css">
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>browse.css">
+<link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>wizard.css">
 <!--[if lt IE 7]><link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>explore.ie6.css"><![endif]-->
 
 <script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze.js"></script>
@@ -201,44 +205,51 @@
 </head>
 
 <body class="yui-skin-sam">
-	<div id="explore_top">
+	<div id="header">
 		<div class="logo">
-			<img src="<?php echo $wwwroot;?>images/tree/logo2.gif" alt="Ariadne Web Application Server">
+			<img src="/ariadne/images/tree/logo2.gif" alt="Ariadne Web Application Server">
 			<span class="ariadne">Ariadne</span>
 			<span class="ariadne_sub">Web Application Server</span>
 		</div>
-		<?php echo yui::yui_menuitems($menuitems, "yuimenubar", "explore_menubar")."\n"; ?>
-		<div class="searchdiv">
-			<form action="dialog.browse.php" onsubmit="muze.ariadne.explore.toolbar.searchsubmit(this.arPath.value); return false;">
-				<div>
-					<input size="30" id="searchpath" class="text" type="text" name="arPath" value="<?php echo $this->path; ?>">
-					<input type="image" src="<?php echo $AR->dir->www; ?>images/icons/small/go.png" title="<?php echo htmlspecialchars($ARnls['ariadne:search']); ?>" id="searchbutton" name="searchsubmit" value="<?php echo $ARnls["ariadne:search"]; ?>">
-				</div>
-				<div id="resultscontainer"></div>
-			</form>
-		</div>
-	</div>
-	
-	<div id="explore_tree">
-		<div id="treeDiv"></div>
-		<div id="splitpane_slider"></div>
-		<div id="splitpane_thumb"></div>
+		<span class="text">Browse</span>
+		<img class="typeicon" src="/ariadne/images/icons/large/search.png" alt="Browse">
 	</div>
 
-	<div id="explore_managediv" class="managediv">
-		<div class="browse" id="archildren">
-			<?php
-				$this->call("explore.browse.".$viewmode.".php");
-			?>
+	<div id="sectiondata" class="nosections">
+		<div id="explore_top">
+			<?php echo yui::yui_menuitems($menuitems, "yuimenubar", "explore_menubar")."\n"; ?>
+			<div class="searchdiv">
+				<form action="dialog.browse.php" onsubmit="muze.ariadne.explore.toolbar.searchsubmit(this.arPath.value); return false;">
+					<div>
+						<input size="30" id="searchpath" class="text" type="text" name="arPath" value="<?php echo $this->path; ?>">
+						<input type="image" src="<?php echo $AR->dir->www; ?>images/icons/small/go.png" title="<?php echo htmlspecialchars($ARnls['ariadne:search']); ?>" id="searchbutton" name="searchsubmit" value="<?php echo $ARnls["ariadne:search"]; ?>">
+					</div>
+					<div id="resultscontainer"></div>
+				</form>
+			</div>
 		</div>
+		
+		<div id="explore_tree">
+			<div id="treeDiv"></div>
+			<div id="splitpane_slider"></div>
+			<div id="splitpane_thumb"></div>
+		</div>
+
+		<div id="explore_managediv" class="managediv">
+			<div class="browse" id="archildren">
+				<?php
+					$this->call("explore.browse.".$viewmode.".php");
+				?>
+			</div>
+		</div>
+	</div>
+	<div class="explore_buttons">
 		<form action="" onsubmit="callback(); return false;">
 			<div class="buttons">
-				<select name="type" onchange="muze.ariadne.explore.viewpane.filter(this.value);">
-					<option value=''>no filter</options>
-					<option value='pdir'>pdir</options>
-				</select>
-				<input type='submit' value='Annuleer' onclick="window.close(); return false;">
-				<input type='submit' value='Selecteer' onclick="callback(); return false;">
+				<div class="right">
+					<input type='submit' value='Annuleer' onclick="window.close(); return false;">
+					<input type='submit' value='Selecteer' onclick="callback(); return false;">
+				</div>
 			</div>
 		</form>
 	</div>
