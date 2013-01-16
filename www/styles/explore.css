@@ -231,12 +231,30 @@ TH,TD,LI,P,BODY,DIV {
 	left: 710px;
 	right: 16px;
 	top: 5px;
+	z-index: 1;
 }
-.searchdiv a, .searchdiv img {
+.searchdiv .yui-ac-content {
+	overflow-x: hidden;
+	overflow-y: auto;
+	max-height: 160px;
+}
+
+.searchdiv .yui-ac-content li span {
+	display: inline-block;
+	margin-left: 4px;
+}
+
+.searchdiv li img.icon_overlay {
+	position: absolute;
+	margin-left: -22px;
+	marginp-top: 2px;
+}
+
+/*.searchdiv a, .searchdiv img {
 	border: 0px;
 	width: 16px;
 	height: 16px;
-}
+}*/
 
 .searchdiv form {
 	margin: 0px;
