@@ -52,7 +52,7 @@ muze.ariadne.explore = function() {
 			// FIXME: The dialog sizes should be as consistent as possible, not all different sizes.
 			'dialog.add' 			: windowprops_common + ',height=600,width=550',
 			'dialog.cache'			: windowprops_common + ',height=350,width=500',
-			'dialog.templates'		: windowprops_common + ',height=400,width=700',
+			'dialog.templates'		: windowprops_common + ',height=500,width=800',
 			'dialog.custom'			: windowprops_common + ',height=300,width=625',
 			'dialog.language'		: windowprops_common + ',height=350,width=450',
 			'dialog.grants'			: windowprops_common + ',height=570,width=950',
@@ -230,7 +230,11 @@ muze.ariadne.explore = function() {
 			} else {
 				muze.ariadne.explore.viewpane.view(path);
 			}
-			muze.ariadne.explore.browseheader.view(muze.ariadne.explore.browseheader.currentpath);
+			if (muze.ariadne.explore.browseheader.currentpath) {
+				muze.ariadne.explore.browseheader.view(muze.ariadne.explore.browseheader.currentpath);
+			} else {
+				muze.ariadne.explore.browseheader.view(path);
+			}
 		},
 		arEdit : function(object, arguments) {
 			muze.ariadne.explore.arshow('dialog.edit',this.store_root+object+'dialog.edit.php', arguments);
