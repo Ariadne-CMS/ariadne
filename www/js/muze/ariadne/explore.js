@@ -17,7 +17,6 @@ muze.ariadne.explore = function() {
 		loaders : Array(),
 		authenticate_panel : null,
 		windowprops : {
-			'dialog.add' 			: windowprops_common + windowsize_large,
 			'dialog.edit' 			: windowprops_common + windowsize_large,
 			'dialog.edit.shortcut'		: windowprops_common + windowsize_large,
 			'dialog.rename'			: windowprops_common + windowsize_small,
@@ -51,6 +50,7 @@ muze.ariadne.explore = function() {
 			'dialog.priority'		: windowprops_common + windowsize_small,
 
 			// FIXME: The dialog sizes should be as consistent as possible, not all different sizes.
+			'dialog.add' 			: windowprops_common + ',height=600,width=550',
 			'dialog.cache'			: windowprops_common + ',height=350,width=500',
 			'dialog.templates'		: windowprops_common + ',height=400,width=700',
 			'dialog.custom'			: windowprops_common + ',height=300,width=625',
