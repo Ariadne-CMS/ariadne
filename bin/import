@@ -41,6 +41,8 @@
                              Convert data for language [nls] from 
                              [source-charset] to UTF-8. Default 
                              source-charset is CP1252.
+    --skip-user-check        Skip the user check  to see if the owner of files/templates
+                             matches the user running the import
     --help                   This information.\n\n";
 
 	$arg_c=0;
@@ -134,15 +136,63 @@
 						break;
 					}
 				break;
-
+				case 'skip':
+					switch ($option) {
+						case 'user-check':
+							$ARCurrent->options["skip-user-check"] = true;
+						break;
+						default:
+							die("Unknown skip option\n");
+						break;
+					}
+				break;
 				default:
-					die("unknow option-switch ($option_switch)\n");
+					die("unknown option-switch ($option_switch)\n");
 			}
 		} else {
 			$arg_v[$arg_c++]=$cmd;
 		}
 	}
 
+	if (function_exists("posix_getuid")) {
+		if (!$ARCurrent->options["skip-user-check"]) {
+			if ( posix_getuid() == 0 ) {
+				die("User running the import script is root, override with --skip-user-check.\n");
+			}
+			if (
+				// Check if the user running the import script is also the owner and group of the files/files and files/templates directory.
+				posix_getuid() != fileowner($AR->dir->install . "/files/files/") ||
+				posix_getgid() != filegroup($AR->dir->install . "/files/files/") ||
+				posix_getuid() != fileowner($AR->dir->install . "/files/templates/") ||
+				posix_getgid() != filegroup($AR->dir->install . "/files/templates/")
+			) {
+				if (posix_getuid() != fileowner($AR->dir->install . "/files/files/")) {
+					$message .= $AR->dir->install . "/files/files/ owner is not current user.\n";
+				}
+				if (posix_getgid() != filegroup($AR->dir->install . "/files/files/")) {
+					$message .= $AR->dir->install . "/files/files/ group is not current group.\n";
+				}
+				if (posix_getuid() != fileowner($AR->dir->install . "/files/templates/")) {
+					$message .= $AR->dir->install . "/files/templates/ owner is not current user.\n";
+				}
+				if (posix_getgid() != filegroup($AR->dir->install . "/files/templates/")) {
+					$message .= $AR->dir->install . "/files/templates/ group is not current group.\n";
+				}
+
+				die(
+					"User running the import is not the owner and group of the files directory, override with --skip-user-check.\n" . $message
+				);
+			}
+		}
+	}
+
+	var_dump(!$ARCurrent->options["skip-user-check"]);
+	var_dump( posix_getuid() != fileowner($AR->dir->install . "/files/files/") );
+	var_dump( posix_getgid() != filegroup($AR->dir->install . "/files/files/") );
+	var_dump( posix_getuid() != fileowner($AR->dir->install . "/files/templates/") );
+	var_dump( posix_getgid() != filegroup($AR->dir->install . "/files/templates/") );
+
+	// Ready to go!
 	set_time_limit(0);
 
 
