@@ -41,6 +41,15 @@
 	include_once($store_config['code']."modules/mod_debug.php");
 	include_once($store_config['code']."includes/loader.web.auth.php");
 	
+
+        if (
+                is_array($AR->loader->web['AllowedMethods']) &&
+                !(in_array($_SERVER['REQUEST_METHOD'], $AR->loader->web['AllowedMethods']))
+        ) {
+                ldHeader("HTTP/1.1 405 Not allowed");
+                exit;
+        }
+
 	function debug_print( $text ) {
 		echo "<b>".$text."</b><br>";
 		flush();
