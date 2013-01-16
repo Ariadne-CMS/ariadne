@@ -149,7 +149,9 @@
 			button.addLanguage {
 				display: inline;
 			}
-
+			#tabsdata div.right {
+				float: right;
+			}
 		</style>
 		<fieldset id="location">
 			<legend><?php echo $ARnls['ariadne:add:location']; ?></legend>
@@ -307,7 +309,7 @@
 				$wgWizFlow = $wgWizCallObject->call("dialog.new.flow.php", array( "wgWizFlow" => $wgWizFlow ));
 
 				// Custom data and locking gets added last.
-				if( $hascustomdata ) {
+				if( false && $hascustomdata ) { // Skip custom data for now, it doesn't play nice with the rest.
 					$wgWizFlow[] = array(
 						"title" => $ARnls["customdata"],
 						"image" => $AR->dir->images.'wizard/customdata.png',

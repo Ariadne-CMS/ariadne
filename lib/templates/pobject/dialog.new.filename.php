@@ -23,18 +23,18 @@
 </script>
 <fieldset id="data">
 	<legend><?php echo $ARnls["filename"]; ?></legend>
-	<div class="left">
-		<div class="field">
-			<label for="arNewFilename" class="required"><?php echo $ARnls["filename"]; ?></label>
-			<input id="arNewFilename" class="inputline wgWizAutoSelect wgWizAutoFocus" <?php echo $inputDisabled; ?> type="text" name="arNewFilename" value="<?php echo $fname ?>">
-			<div class="help"><?php echo $ARnls['ariadne:new:lettersnumbers']; ?></div>
-		</div>
-	</div>
 	<div class="right">
 		<label for="autonumber">&nbsp;</label>
 		<div class="field checkbox">
 			<input onchange="toggleAutoNumber();" onclick="toggleAutoNumber();" <?php echo $autoNumberChecked; ?> type="checkbox" name="arNewFilename" value="{5:id}" id="autonumber" <?php if ($fname == "{5:id}") { echo "checked"; }?>>
 			<label for="autonumber"><?php echo $ARnls["ariadne:new:autonumber"]; ?></label>
+		</div>
+	</div>
+	<div class="left">
+		<div class="field">
+			<label for="arNewFilename" class="required"><?php echo $ARnls["filename"]; ?></label>
+			<input id="arNewFilename" class="inputline wgWizAutoSelect wgWizAutoFocus" <?php echo $inputDisabled; ?> type="text" name="arNewFilename" value="<?php echo $fname ?>">
+			<div class="help"><?php echo $ARnls['ariadne:new:lettersnumbers']; ?></div>
 		</div>
 	</div>
 </fieldset>
