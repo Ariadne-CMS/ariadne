@@ -13,14 +13,14 @@
 
 		//debug("call (system.save.layout.phtml) template=$template, default=$default, type=$type, function=$function, language=$language");
 		$this->call("system.save.layout.phtml", Array(
-												"template" => $template,
-												"default" => $default,
-												"type"		=> $type,
-												"function"	=> $function,
-												"language"	=> $language ));
+			"template" => $template,
+			"default" => $default,
+			"type"		=> $type,
+			"function"	=> $function,
+		"language"	=> $language ));
+
 		if ($this->error) {
 			$ARCurrent->ftp_error=$this->error;
 		}
-
 	}
 ?>
