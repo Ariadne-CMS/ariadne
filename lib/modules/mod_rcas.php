@@ -59,7 +59,8 @@
 	class pinp_rcas {
 
 		function _init($module, $config = Array()) {
-			require_once("mod_rcas/".basename($module).".php");
+			global $ariadne;
+			require_once($ariadne.'/modules/mod_rcas/'.basename($module).".php");
 			$className = "rcas_$module";
 			return new $className($config);
 		}
