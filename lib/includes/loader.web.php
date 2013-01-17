@@ -260,15 +260,24 @@
 					ldMkDir("cache/".$path);
 					ldMkDir("cacheheaders/".$path);
 				}
+
+				$imagetemp   = tempnam($store->get_config("files")."cache/".$path."/","ARCacheImage");
+				$headertemp  = tempnam($store->get_config("files")."cacheheaders/".$path."/","ARCacheImage");
+
 				$fileimage   = $store->get_config("files")."cache".$file;
 				$fileheaders = $store->get_config("files")."cacheheaders".$file;
-				$fpi=@fopen($fileimage, "wb");
-				$fph=@fopen($fileheaders, "wb");
+
+				$fpi=@fopen($imagetemp, "wb");
+				$fph=@fopen($headertemp, "wb");
+
 				if($fpi && $fph) {
-					fwrite($fpi, $image);
-					fclose($fpi);
 					fwrite($fph, $headers);
 					fclose($fph);
+					fwrite($fpi, $image);
+					fclose($fpi);
+
+					rename($headertemp,$fileheaders);
+					rename($imagetemp,$fileimage);
 				} else {
 					if($fpi) {
 						fclose($fpi);
