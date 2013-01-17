@@ -253,7 +253,10 @@ muze.global = this;
 			} else {
 				timestamp = '?t=' + timestamp.getTime();
 			}
+		} else {
+			timestamp = '';
 		}
+
 		var http = _getHTTPObject();
 		http.open( 'GET', url + timestamp, !waitforme );
 		if ( !waitforme ) {
