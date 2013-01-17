@@ -135,6 +135,25 @@ muze.dialog = (function() {
 	};
 
 	/*
+		This method can be used by the child window to check if the parent has a callback expected by the child.
+		e.g.: window.opener.muze.dialog.hasCallback( window.name, 'submit' );
+	*/
+
+	self.hasCallback = function( windowName, action) {
+		if ( callbackRegistry[windowName] ) {
+			var callbackList = callbackRegistry[windowName];
+			if (action) {
+				if ( callbackList[action] ) {
+					return true;
+				}
+			} else {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/*
 		This method allows you to check whether a dialog exists.
 	*/
 	self.exists = function( windowName ) {
