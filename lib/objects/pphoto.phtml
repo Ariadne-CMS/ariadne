@@ -422,11 +422,11 @@ class pphoto extends pfile { // pphoto class definition
 		$readModifier = '';
 		foreach( $args as $arg ) {
 			$arg = preg_replace('/[^0-9\-,]+/','', (string) $arg );
-			if ($arg) {
+			if (isset($arg)) {
 				$readModifier .= $arg.',';
 			}
 		}
-		if ($readModifier) {
+		if (isset($readModifier)) {
 			$readModifier = '['.substr($readModifier, 0, -1).']';
 			$ARConfig->photoReadModifier = $readModifier;
 		}
