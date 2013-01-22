@@ -739,8 +739,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$temp_config=$ARConfig->cache[$temp_site];
 		}
 
-		if (!$nls && ($AR->host == $temp_config->root["value"]) ||
-			($nls && $AR->host == $temp_config->root['list']['nls'][$nls])) {
+		if ((!$nls && $this->compare_hosts($AR->host, $temp_config->root["value"])) ||
+			($nls && ($this->compare_hosts($AR->host, $temp_config->root['list']['nls'][$nls])))) {
 			$keephost = false;
 		}
 		if (!$keephost) {
@@ -768,7 +768,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}
 		} else {
-			if ($AR->host == $temp_config->root["value"]) {
+			if ($this->compare_hosts($AR->host, $temp_config->root["value"])) {
 				$url=$temp_config->root["value"].$rootoptions;
 				$url.=substr($path, strlen($temp_config->root["path"])-1);
 			} else {
@@ -776,6 +776,15 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			}
 		}
 		return $url;
+	}
+
+	function compare_hosts($url1, $url2) {
+		// Check if hosts are equal, so that http://www.muze.nl and //www.muze.nl also match. 
+		// using preg_replace instead of parse_url() because the latter doesn't parse '//www.muze.nl' correctly.
+		return (
+			($url1 == $url2) ||
+			(preg_replace('|^[a-z:]*//|i', '', $url1) == preg_replace('|^[a-z:]*//|i', '', $url2))
+		);
 	}
 
 	function make_local_url($path="", $nls=false, $session=true, $https=NULL) {
@@ -803,7 +812,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$config=($ARConfig->cache[$checkpath]) ? $ARConfig->cache[$checkpath] : $this->loadConfig($checkpath);
 			}
 			if ($config) {
-				if ($config->root['value']==$AR->host) {
+				if ($this->compare_hosts($config->root['value'], $AR->host)) {
 					$site=$config->site;
 				}
 			}
@@ -814,9 +823,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$site='/';
 		}
 		$site_url=$this->make_url($site, $nls, $session, $https, true);
-		if (substr($site_url, 0, strlen($AR->host))!=$AR->host) {
-			$site_url=$this->make_url($site, $nls, $session, $https, true);
-		}
 		if ($newpath) { // $newpath is the destination of a shortcut redirection, with keepurl on
 			$rest=substr($newpath, strlen($site));
 		} else {
