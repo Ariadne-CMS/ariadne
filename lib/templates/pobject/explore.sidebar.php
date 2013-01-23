@@ -54,14 +54,14 @@
 		$infoEventData = ar_events::fire( 'ariadne:onbeforesidebarinfo', $infoEventData );
 		if ($infoEventData) {
 			$this->call("explore.sidebar.info.php", $arCallArgs); 
-			ar_events::fire('ariadne.onsidebarinfo');
+			ar_events::fire('ariadne:onsidebarinfo');
 		}
 
 		$detailsEventData = new object();
 		$detailsEventData = ar_events::fire( 'ariadne:onbeforesidebardetails', $detailsEventData );
 		if ($detailsEventData) {
 			$this->call("explore.sidebar.details.php", $arCallArgs);
-			ar_events::fire('ariadne.onsidebardetails');
+			ar_events::fire('ariadne:onsidebardetails');
 		}
 	
 	}
