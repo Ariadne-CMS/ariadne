@@ -209,4 +209,6 @@
 
 	$ARnls['ariadne:new:lettersnumbers'] = 'Gebruik alleen letters en cijfers, geen spaties';
 	$ARnls['ariadne:new:autonumber'] = 'Automatisch doornummeren';
+
+	$ARnls['ariadne:su'] = 'Wissel gebruiker';
 ?>

@@ -82,6 +82,14 @@
 			);
 		}
 
+		if ($this->CheckSilent("admin") ) {
+			$tasks[] = array(
+				'href' => $this->make_ariadne_url() . "dialog.su.php",
+				'onclick' => "muze.ariadne.explore.arshow('dialog.su',this.href); return false;",
+				'icon' => $AR->dir->images . 'icons/small/grants.png',
+				'nlslabel' => $ARnls['ariadne:su']			
+			);
+		}
 		$tasks[] = array( // we use make_local_url specifically here.
 			'href' => $this->make_local_url()."view.html",
 			'onclick' => "muze.ariadne.explore.arshow('_new', this.href); return false;",
