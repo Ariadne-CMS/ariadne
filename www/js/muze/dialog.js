@@ -40,6 +40,7 @@ muze.dialog = (function() {
 	*/
 	var callbackHandler = function( id ) {
 		this.id = id;
+		this.dialog = windowRegistry[ id ];
 		var handler = this;
 
 		/*
