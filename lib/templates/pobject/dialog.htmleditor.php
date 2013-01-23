@@ -53,7 +53,7 @@
 <script type="text/javascript" src="<?php echo $yui_base; ?>container/container-min.js"></script>
 <script type="text/javascript" src="<?php echo $yui_base; ?>menu/menu-min.js"></script>
 <script type="text/javascript" src="<?php echo $yui_base; ?>button/button-min.js"></script>
-<script type="text/javascript" src="<?php echo $yui_base; ?>editor/editor-min.js"></script>
+<script type="text/javascript" src="<?php echo $yui_base; ?>editor/editor.js"></script>
 
 <script type="text/javascript">
 <!--
@@ -281,7 +281,7 @@
 				var _sel = this._getSelectedElement();
 				var arpath; var artype; var arbehaviour; var aranchor; var name; var href;
 
-				if (_sel.getAttribute) {
+				if (_sel.tagName == "A" && getAttribute) {
 					arpath 		= _sel.getAttribute("ar:path");
 					artype 		= _sel.getAttribute("ar:type");
 					arbehaviour 	= _sel.getAttribute("ar:behaviour");

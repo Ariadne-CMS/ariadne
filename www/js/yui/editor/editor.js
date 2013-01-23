@@ -6443,7 +6443,14 @@ var Dom = YAHOO.util.Dom,
                 return el;
             };
 
-            if (!this._hasSelection()) {
+            // Help webkit browsers with a proper selection;
+            if (this._lastImage) {
+                this._getSelection().setBaseAndExtent(this._lastImage, 0, this._lastImage, 1);
+                Dom.removeClass(this._lastImage, 'selected');
+                this._lastImage = null;
+            }
+
+            if (this._getSelectedElement().tagName != "IMG" && !this._hasSelection()) {
                 if (this._getDoc().queryCommandEnabled('insertimage')) {
                     this._getDoc().execCommand('insertimage', false, 'yui-tmp-img');
                     var imgs = this._getDoc().getElementsByTagName('img');
