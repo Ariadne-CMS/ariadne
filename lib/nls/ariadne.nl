@@ -211,4 +211,6 @@
 	$ARnls['ariadne:new:autonumber'] = 'Automatisch doornummeren';
 
 	$ARnls['ariadne:su'] = 'Wissel gebruiker';
+
+	$ARnls['ariadne:browse:select'] = 'Selecteer';
 ?>

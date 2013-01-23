@@ -213,4 +213,5 @@
 
 	$ARnls['ariadne:su'] = 'Switch user';
 
+	$ARnls['ariadne:browse:select'] = 'Select';
 ?>
