@@ -77,7 +77,7 @@ a img {
 #sections {
 	position: fixed;
 	top: 32px;
-	bottom: 0px;
+	bottom: 40px;
 	left: 0px;
 	width: 120px;
 	z-index: 5;
