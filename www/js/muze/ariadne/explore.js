@@ -113,7 +113,7 @@ muze.ariadne.explore = function() {
 				}
 
 				// FIXME: Find the login form in login_form and insert that into the body;
-				var login_url = muze.ariadne.registry.get('root') + muze.ariadne.registry.get('path') + 'user.login.form.html';
+				var login_url = muze.ariadne.registry.get('store_root') + muze.ariadne.registry.get('path') + 'user.login.form.html';
 				if (message) {
 					login_url += '?arLoginMessage='+escape(message);
 				}
@@ -200,12 +200,15 @@ muze.ariadne.explore = function() {
 				path = target;
 			}
 
+			// Contain in dialog root.
+			if (!muze.ariadne.explore.viewable(path)) { return }
+
 			if (node) {
 				muze.ariadne.explore.tree.view(node);
 			} else {
 				muze.ariadne.explore.tree.view(path);
 			}
-
+			
 			muze.ariadne.explore.sidebar.view(path);
 			muze.ariadne.explore.viewpane.view(path);
 			muze.ariadne.explore.browseheader.view(path);
@@ -271,6 +274,19 @@ muze.ariadne.explore = function() {
 			arguments=window.location.search+arguments;
 			workwindow=window.open(link+arguments, windowname, properties);
 			workwindow.focus();
+		},
+		viewable : function(path) {
+			// Contain in dialog root.
+			var result = false;
+			if (path.indexOf(muze.ariadne.registry.get('root')) == 0) { 
+				result = true;
+			}
+			for (var i in muze.ariadne.explore.tree.baseNodes) {
+				if (path.indexOf(muze.ariadne.explore.tree.baseNodes[i].path) == 0) {
+					result = true;
+				}
+			}
+			return result;
 		}
 	}
 }();
@@ -441,6 +457,9 @@ muze.ariadne.explore.tree = function() {
 				path = target;
 				node = tree.getNodeByProperty("path", path);
 			}
+
+			// Contain in dialog root.
+			if (!muze.ariadne.explore.viewable(path)) { return }
 
 			tree.unsubscribe('expandComplete');
 			var parent = path;
@@ -672,8 +691,14 @@ muze.ariadne.explore.sidebar = function() {
 			}
 		},
 		load : function(path) {
+			// Contain in dialog root.
+			if (!muze.ariadne.explore.viewable(path)) { return }
+
 			muze.ariadne.explore.sidebar.currentpath = path;
-			var sUrl = muze.ariadne.registry.get('store_root')+path+'explore.sidebar.php';
+			var template = 'explore.sidebar.php';
+			
+			var sUrl = muze.ariadne.registry.get('store_root')+path+template;
+
 			var fadeOut = new YAHOO.util.Anim("sidebar", { opacity: {to: 0.3}}, 0.2);
 			fadeOut.animate();
 			var fadeIn = function() {
@@ -836,8 +861,8 @@ muze.ariadne.explore.viewpane = function() {
 			}
 		},
 		selectItem : function(item) {
+			YAHOO.util.Dom.addClass(item, 'selected');
 			if (item != muze.ariadne.explore.viewpane.selectedItem){
-				YAHOO.util.Dom.addClass(item, 'selected');
 				muze.ariadne.explore.viewpane.selectedItem = item;
 				muze.ariadne.explore.viewpane.onSelectItem(item);
 			}
@@ -849,6 +874,11 @@ muze.ariadne.explore.viewpane = function() {
 			}
 			if (muze.ariadne.explore.viewpane.dataTable) {
 				muze.ariadne.explore.viewpane.dataTable.unselectAllRows();
+			}
+
+			var items = YAHOO.util.Dom.getElementsByClassName("selected", "li", "viewpane");
+			for (var i=0; i<items.length; i++) {
+				YAHOO.util.Dom.removeClass(items[i], "selected");
 			}
 		},
 		rowClick : function(args) {
@@ -891,7 +921,11 @@ muze.ariadne.explore.viewpane = function() {
 			var target = YAHOO.util.Event.getTarget(event);
 			while(target.id != "viewpane") {
 				if (YAHOO.util.Dom.hasClass(target, 'explore_item')) {
-					muze.ariadne.explore.viewpane.selectItem(target);
+					if (YAHOO.util.Dom.hasClass(target, 'selected')) {
+						YAHOO.util.Dom.removeClass(target, 'selected');
+					} else {
+						muze.ariadne.explore.viewpane.selectItem(target);
+					}
 					return;
 				}
 				if (target.parentNode) {
@@ -934,10 +968,67 @@ muze.ariadne.explore.viewpane = function() {
 					muze.ariadne.explore.viewpane.removefilter();
 				});
 				fadeIn.animate();
+				YAHOO.util.Event.removeListener('archildren', 'click', muze.ariadne.explore.viewpane.onClick);
 				YAHOO.util.Event.addListener('archildren', 'click', muze.ariadne.explore.viewpane.onClick);
+				YAHOO.util.Event.removeListener('archildren', 'selected', muze.ariadne.explore.viewpane.onSelected);
+				YAHOO.util.Event.addListener('archildren', 'selected', muze.ariadne.explore.viewpane.onSelected);
+				YAHOO.util.Event.removeListener('archildren', 'clearselection', muze.ariadne.explore.viewpane.unselectItem);
+				YAHOO.util.Event.addListener('archildren', 'clearselection', muze.ariadne.explore.viewpane.unselectItem);
+
 				muze.ariadne.explore.viewpane.load_handler();
 			};
 			muze.ariadne.explore.load(url, archildren, fadeIn);
+		},
+		onSelected : function(event) {
+			// FIXME: Add correct handling for row selection for details view.
+
+			var items = YAHOO.util.Dom.getElementsByClassName("selectable-selected", "*", "archildren");
+			if (items.length == 0) {
+				muze.ariadne.explore.viewpane.unselectItem();
+			} else if (items.length == 1) {
+				if (items[0].tagName == "TR") {
+					muze.ariadne.explore.viewpane.dataTable.selectRow(items[0]);
+				} else {
+					muze.ariadne.explore.viewpane.selectItem(items[0]);
+				}
+			}
+
+			for (var i=0; i< items.length; i++) {
+				if (items[i].tagName == "TR") {
+					muze.ariadne.explore.viewpane.dataTable.selectRow(items[i]);
+				} else {
+					YAHOO.util.Dom.addClass(items[i],"selected");
+				}
+			}
+
+			var unselectitems = YAHOO.util.Dom.getElementsByClassName("yui-dt-selected", "*", "archildren");
+			for (var j=0; j<unselectitems.length; j++) {
+				if (YAHOO.util.Dom.hasClass(unselectitems[j], "selectable-selected")) {
+				} else {
+					console.log("unselecting " + unselectitems[j]);
+					muze.ariadne.explore.viewpane.dataTable.unselectRow(unselectitems[j]);
+				}
+			}
+
+
+			var unselectitems = YAHOO.util.Dom.getElementsByClassName("selected", "*", "archildren");
+			console.log(unselectitems.length);
+			console.log(unselectitems);
+			for (var j=0; j<unselectitems.length; j++) {
+				if (YAHOO.util.Dom.hasClass(unselectitems[j], "selectable-selected")) {
+				} else {
+					YAHOO.util.Dom.removeClass(unselectitems[j], "selected");
+				}
+			}
+
+			if (items.length != 1) {
+				// Select the parent object.
+				var item = new Object();
+				item.path = muze.ariadne.explore.viewpane.path;
+				muze.ariadne.explore.viewpane.onSelectItem(item);
+			} else {
+				muze.ariadne.explore.viewpane.onSelectItem(items[0]);
+			}
 		},
 		onSelectItem : function(item) {
 			muze.ariadne.explore.viewpane.setitempath(item);
@@ -947,6 +1038,9 @@ muze.ariadne.explore.viewpane = function() {
 			document.getElementById("searchpath").value = item.path;
 		},
 		view : function(path, page) {
+			// Contain in dialog root.
+			if (!muze.ariadne.explore.viewable(path)) { return }
+
 			if (!muze.ariadne.explore.viewpane.exists()) { return }
 			if (!page) {
 				page = 1;

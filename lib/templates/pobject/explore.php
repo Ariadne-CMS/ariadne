@@ -107,7 +107,7 @@
 		{"path" : "<?php echo addslashes($path); ?>", "name" : "<?php echo addslashes($name); ?>", "icon" : "<?php echo addslashes($icon); ?>"}
 	];
 
-	muze.ariadne.registry.set('root', '<?php echo addslashes($AR->root); ?>');
+	muze.ariadne.registry.set('root', '/');
 	muze.ariadne.registry.set('store_root', '<?php echo addslashes($this->store->get_config('root')); ?>');
 	
 	// setting session ID for unique naming of windows within one ariadne session.

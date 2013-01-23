@@ -41,17 +41,14 @@
 				//'href' => "javascript:muze.ariadne.explore.view('" . $this->parent . "');"
 				'href' => $this->make_ariadne_url($this->parent) . "dialog.browse.php",
 				'onclick' => "muze.ariadne.explore.toolbar.viewparent(); return false;"
+			),
+			array(
+				'iconalt' => $ARnls['ariadne:delete'],
+				'icon' => $AR->dir->images . 'icons/small/delete.png',
+				'href' => $this->make_ariadne_url() . "dialog.delete.php",
+				'onclick' => "muze.ariadne.explore.arshow('dialog.delete', muze.ariadne.explore.tree.loaderUrl + document.getElementById('searchpath').value + 'dialog.delete.php'); return false;"
 			)
 		);
-
-		if ($this->CheckSilent("add",ARANYTYPE) && !$hideAdd) {
-			$menuitems[] = array(
-				'href' => $this->make_ariadne_url() ."dialog.add.php",
-				'onclick' => "muze.ariadne.explore.arshow('dialog.add',this.href); return false;",
-				'icon' => $AR->dir->images . 'icons/small/add.png',
-				'nlslabel' => $ARnls['ariadne:new']
-			);
-		}
 
 		/* retrieve HTTP GET variables */
 		// FIXME: Er moet ook iets van een root zijn voor dit dialoog.
@@ -185,6 +182,7 @@
 		}
 	}
 ?>
+
 </script>
 
 <script type="text/javascript">
@@ -246,9 +244,17 @@
 	<div class="explore_buttons">
 		<form action="" onsubmit="callback(); return false;">
 			<div class="buttons">
+				<div class="left"><?php
+					$extraButtonsEventData = new object();
+					$extraButtonsEventData = ar_events::fire( 'ariadne:onbeforebrowsebuttons', $extraButtonsEventData );
+					if ($extraButtonsEventData) {
+						$this->call("dialog.browse.buttons.extra.php", array( "hideAdd" => $hideAdd ));
+						ar_events::fire('ariadne:onbrowsebuttons');
+					}
+				?></div>
 				<div class="right">
-					<input type='submit' value='Annuleer' onclick="window.close(); return false;">
-					<input type='submit' value='Selecteer' onclick="callback(); return false;">
+					<input type='submit' value='<?php echo $ARnls['cancel']; ?>' onclick="window.close(); return false;">
+					<input type='submit' value='<?php echo $ARnls['ariadne:browse:select']; ?>' onclick="callback(); return false;">
 				</div>
 			</div>
 		</form>
