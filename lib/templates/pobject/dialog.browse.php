@@ -72,9 +72,12 @@
 	//	$yui_base = "http://developer.yahoo.com/yui/";
 
 		$viewmodes = array( "list" => 1, "details" => 1, "icons" => 1);
-		$viewmode = $_COOKIE["viewmode"];
+		$viewmode = $_GET["viewmode"];
 		if( !$viewmode || !$viewmodes[$viewmode] ) {
-			$viewmode = 'list';
+			$viewmode = $_COOKIE["viewmode"];
+			if( !$viewmode || !$viewmodes[$viewmode] ) {
+				$viewmode = 'list';
+			}
 		}	
 
 
@@ -191,10 +194,15 @@
 		if (!path) {
 			path = muze.ariadne.registry.get("path");
 		}
-		try {
+
+		if (top.window.opener.muze.dialog && window.opener.muze.dialog.hasCallback( window.name, 'submit') ) {
+			window.opener.muze.dialog.callback( window.name, 'submit', { 
+				'path' : path
+			} );
+		} else if (window.opener && window.opener.callback) {
 			window.opener.callback(path);
-		} catch(e) {
-			alert("Opener window not found?");
+		} else {
+			console.log("Opener window not found?");
 		}
 		window.close();
 	}
