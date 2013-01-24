@@ -486,6 +486,7 @@ muze.ariadne.explore.tree = function() {
 			}
 		},
 		refresh : function(path) {
+			if (!tree) { return; }
 			var node = tree.getNodeByProperty("path", path);
 			if (node && node.parent) {
 				if (path != tree.getRoot().children[0].path) {
