@@ -18,9 +18,7 @@
 							'path' : '<?php echo $this->path; ?>',
 							'url'  : '<?php echo $this->make_url($this->path); ?>'
 						} );
-					}
-
-					if (top.window.opener.objectadded && top.window.opener.muze && top.window.opener.muze.ariadne ) {
+					} else if (top.window.opener.objectadded && top.window.opener.muze && top.window.opener.muze.ariadne ) {
 						currentpath = window.opener.muze.ariadne.registry.get('path');
 						if (currentpath == '<?php echo $this->parent; ?>') {
 							window.opener.muze.ariadne.explore.objectadded();
