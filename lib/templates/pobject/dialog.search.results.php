@@ -1,10 +1,21 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckSilent("read") && $this->CheckConfig()) {
+		ldSetUserCookie(array(
+			"query" => $this->getdata("query"),
+			"searchname" => $this->getdata("searchname"),
+			"searchtext" => $this->getdata("searchtext"),
+			"arimplements" => $this->getdata("arimplements"),
+			"context" => $context,
+			"advanced" => $advanced
+
+		), "ariadneDialogSearch");
+
 		$query = $this->call("dialog.search.results.query.php", array("context" => $context, "advanced" => $advanced));
+
 		if ($query || $this->getvar("wgWizAction") === "0" ) {
 ?>
-<style>
+<style type="text/css">
 	#resultSet {
 		margin-top: 10px;
 		margin-left: 3px;

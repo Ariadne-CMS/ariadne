@@ -48,6 +48,22 @@
 			$spath."datatable/datatable-min.js"
 		);
 
+		if (!$wgWizNextStep) {
+			$searchcookie = ldGetUserCookie("ariadneDialogSearch");
+
+			if ($searchcookie['context'] == 1) {
+				$wgWizNextStep = 1;
+				$this->putvar('searchname', $searchcookie['searchname']);
+				$this->putvar('searchtext', $searchcookie['searchtext']);
+				$this->putvar('arimplements', $searchcookie['arimplements']);
+			}
+			if ($searchcookie['advanced'] == 1) {
+				$wgWizNextStep = 2;
+				$this->putvar('query', $searchcookie['query']);
+			}
+
+		}
+
 		include($this->store->get_config("code")."widgets/wizard/yui.wizard.html");
 	}
 ?>
