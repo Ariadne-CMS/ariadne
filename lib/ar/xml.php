@@ -225,15 +225,15 @@
 			$result = array();
 			foreach ( $DOMElement->childNodes as $child ) {
 				if ( $child instanceof DOMComment ) {
-					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
+					if ( self::$preserveWhiteSpace || trim( $child->data )!=='' ) {
 						$result[] = new ar_xmlNode('<!--'.$child->data.'-->');
 					}
 				} else if ( $child instanceof DOMCharacterData ) {
-					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
+					if ( self::$preserveWhiteSpace || trim( $child->data )!=='' ) {
 						$result[] = new ar_xmlNode($child->data);
 					}
 				} else if ( $child instanceof DOMCdataSection ) {
-					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
+					if ( self::$preserveWhiteSpace || trim( $child->data )!=='' ) {
 						$result[] = self::cdata( $child->data );
 					}
 				} else if ( $child instanceof DOMElement ) {

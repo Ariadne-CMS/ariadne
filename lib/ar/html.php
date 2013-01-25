@@ -142,11 +142,11 @@
 			$result = array();
 			foreach ( $DOMElement->childNodes as $child ) {
 				if ( $child instanceof DOMCharacterData ) {
-					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
+					if ( self::$preserveWhiteSpace || trim( $child->data )!=='' ) {
 						$result[] = new ar_htmlNode( $child->data );
 					}
 				} else if ( $child instanceof DOMCdataSection ) {
-					if ( self::$preserveWhiteSpace || trim( $child->data ) ) {
+					if ( self::$preserveWhiteSpace || trim( $child->data )!=='' ) {
 						$result[] = self::cdata( $child->data );
 					}
 				} else if ( $child instanceof DOMNode ) {
