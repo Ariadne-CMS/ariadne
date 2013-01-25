@@ -289,7 +289,11 @@
 							}
 									
 							$flagbuttons .= "<a class=\"button\" href=\"".$this->make_ariadne_url().$editor."?type=".$type."&amp;function=".RawUrlEncode($function).
-								"&amp;language=".$language."\">" . $flag . $flag_svn . "</a> ";
+								"&amp;language=".$language;
+							if ($search) {
+								$flagbuttons .= "&amp;search=".RawUrlEncode($search);
+							}
+							$flagbuttons .= "\">" . $flag . $flag_svn . "</a> ";
 
 							if( is_array( $grepresults) && is_array($grepresults[$filename_short]) ) {
 								foreach( $grepresults[$filename_short] as $r ) {
