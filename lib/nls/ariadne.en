@@ -197,6 +197,17 @@
 	$ARnls['ariadne:programmers_reference']		= 'Programmers Reference';
 	$ARnls['ariadne:ace_editor']				= 'Ace Editor';
 
+	$ARnls['ariadne:workspace:update']			= 'Updated';
+	$ARnls['ariadne:workspace:delete']			= 'Deleted';
+	$ARnls['ariadne:workspace:move']			= 'Moved';
+	$ARnls['ariadne:workspace:create']			= 'Created';
+	$ARnls['ariadne:workspace:commit_selected']	= 'Commit selected';
+	$ARnls['ariadne:workspace:revert_selected'] = 'Revert selected';
+	$ARnls['ariadne:workspace:manage_workspace'] = 'Manage workspace';
+	$ARnls['ariadne:workspace:status']			= 'Status';
+	$ARnls['ariadne:workspace:workspace']		= 'Workspace';
+	$ARnls['ariadne:workspace:diff_selected']		= 'Diff selected';
+
 	$ARnls['ariadne:rewrite']					= 'Rewrite content';
 	$ARnls['ariadne:rewriting']					= 'Rewriting';
 	$ARnls['ariadne:rewrite.urls']				= 'Rewrite URLs';

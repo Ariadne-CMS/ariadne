@@ -45,6 +45,32 @@
 						$properties["url"][$count]["port"]=	"'".substr(AddSlashes($regs[3]), 1)."'";
 					}
 					$count++;
+
+					$workspaceurl=$this->getdata("workspaceurl",$key);
+					if (substr($workspaceurl, -1, 1)=='/') {
+						$workspaceurl=substr($workspaceurl, 0, -1);
+					}
+					if ($workspaceurl!=$this->data->$key->workspaceurl) {
+						$clearcache=true;
+						$this->data->$key->workspaceurl=$workspaceurl;
+					}
+					preg_match('|^([a-z0-9]+)://([^/:]+)(:[0-9]+)?|i', $workspaceurl, $regs);
+					if ($workspaceurl) {
+						$this->data->workspaceurl_list['nls'][$key] = $workspaceurl;
+						if (!$this->data->workspaceurl_list['host'][$regs[2].$regs[3]]) {
+							$this->data->workspaceurl_list['host'][$regs[2].$regs[3]] = $key;
+						} else {
+							$this->error = "Please fill in distinctive hostnames; they should not be the same for different languages.";
+						}
+					}
+					$properties["url"][$count]["protocol"]=	"'".AddSlashes($regs[1])."'";
+					$properties["url"][$count]["host"]=		"'".AddSlashes($regs[2])."'";
+					if ($regs[3]) {
+						$properties["url"][$count]["port"]=	"'".substr(AddSlashes($regs[3]), 1)."'";
+					}
+					$count++;
+
+
                 }
 			}
 			if ($clearcache) {
@@ -52,7 +78,7 @@
 				$this->ClearCache();
 			}
 			$this->data->url=$this->data->{$this->data->nls->default}->url;
-
+			$this->data->workspaceurl=$this->data->{$this->data->nls->default}->workspaceurl;
 			if (!$this->error) {
 				$this->save($properties);
 				$this->ClearCache();

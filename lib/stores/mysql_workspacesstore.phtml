@@ -53,7 +53,7 @@ class mysql_workspacesstore extends mysqlstore {
 			}
 			return 0;
 		} else {
-			return $this->layer;
+			return (int)$this->layer;
 		}
 	}
 
@@ -71,6 +71,7 @@ class mysql_workspacesstore extends mysqlstore {
 
 	public function getLayerStatus($path = '/', $includeData = false) {
 		$layer = (int)$this->getLayer($path);
+		$epath = addslashes($path);
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
 		$result = array();
@@ -94,6 +95,7 @@ class mysql_workspacesstore extends mysqlstore {
 							left join $objects_tbl as old_objects on old.object = old_objects.id
 							left join $nodes_tbl as old_stale on new.path = old_stale.path and old_stale.layer = 0
 						where new.layer = $layer
+						and new.path like '$epath%'
 						order by new.path ASC
 			";
 			$query_result = $this->store_run_query($query_string);
@@ -138,13 +140,95 @@ class mysql_workspacesstore extends mysqlstore {
 					} else {
 						$record['operation'][] = 'create';
 					}
-					$result[] = $record;
+					$result[$record['new']['path']] = $record;
 				}
 			}
 		}
 		return $result;
 	}
 
+	public function commitLayer($path, $pathList, $layer = null) {
+		$layer = (int)$this->getLayer($path);
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+
+		if (is_array($pathList)) {
+			$statusList = $this->getLayerStatus($path);
+			foreach ($pathList as $path) {
+				$epath  = addslashes($path);
+				$status = $statusList[$path];
+				if ($status) {
+					$query_string = "delete from $nodes_tbl where layer = 0 and path = '$epath'";
+					$this->store_run_query($query_string);
+					
+					$query_string = "update $nodes_tbl set layer = 0 where layer = $layer and id = ".((int)$status['new']['id']);
+					$this->store_run_query($query_string);
+
+					if ($status['old']['id']) {
+						$query_string = "select count(object) as count from $nodes_tbl where object = ".((int)$status['old']['id']);
+						$result = $this->store_run_query($query_string);
+						if ($result) {
+							$objects = mysql_fetch_array($result);
+							if ($objects['count'] == 0) {
+
+								$this->del_property($object);
+
+								$query_string="delete from $objects_tbl where id=$object";
+								$this->store_run_query($query_string);
+
+								foreach ($this->filestores as $fsName) {
+									debug("store::purge purging fstore($fsName, $object)", "store");
+									$fStore = $this->get_filestore($fsName);
+									$fStore->purge($object);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public function revertLayer($path, $pathList, $layer = null) {
+		$layer = (int)$this->getLayer($path);
+
+		$nodes_tbl=$this->tbl_prefix."nodes";
+		$objects_tbl=$this->tbl_prefix."objects";
+
+		if (is_array($pathList)) {
+			$statusList = $this->getLayerStatus($path);
+			foreach ($pathList as $path) {
+				$epath  = addslashes($path);
+				$status = $statusList[$path];
+				if ($status) {
+					$query_string = "delete from $nodes_tbl where layer = $layer and path = '$epath'";
+					$this->store_run_query($query_string);
+					
+					if ($status['new']['id']) {
+						$query_string = "select count(object) as count from $nodes_tbl where object = ".((int)$status['new']['id']);
+						$result = $this->store_run_query($query_string);
+						if ($result) {
+							$objects = mysql_fetch_array($result);
+							if ($objects['count'] == 0) {
+
+								$this->del_property($object);
+
+								$query_string="delete from $objects_tbl where id=$object";
+								$this->store_run_query($query_string);
+
+								foreach ($this->filestores as $fsName) {
+									debug("store::purge purging fstore($fsName, $object)", "store");
+									$fStore = $this->get_filestore($fsName);
+									$fStore->purge($object);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+			
+	}
 
 	public function get($path) {
 	/**********************************************************************************
@@ -203,9 +287,7 @@ class mysql_workspacesstore extends mysqlstore {
 				$temp = mysql_fetch_array($qresult);
 				$id = $temp["object"];
 				$objectLayer = $temp["layer"];
-				if ($layer && $layer != $objectLayer) {
-					$id = $this->addObjectToLayer($temp["path"]);
-				}
+				$id = $this->addObjectToLayer($temp["path"]);
 			}
 		} else if ($layer) {
 			$eid = (int)$id;
@@ -217,9 +299,7 @@ class mysql_workspacesstore extends mysqlstore {
 				$temp = mysql_fetch_array($qresult);
 				$id = $temp["object"];
 				$objectLayer = $temp["layer"];
-				if ($layer != $objectLayer) {
-					$id = $this->addObjectToLayer($temp["path"]);
-				}
+				$id = $this->addObjectToLayer($temp["path"]);
 			}
 			
 		}
@@ -271,9 +351,7 @@ class mysql_workspacesstore extends mysqlstore {
 				$temp = mysql_fetch_array($qresult);
 				$id = $temp["object"];
 				$objectLayer = $temp["layer"];
-				if ($layer && $layer != $objectLayer) {
-					$id = $this->addObjectToLayer($temp["path"]);
-				}
+				$id = $this->addObjectToLayer($temp["path"]);
 			}
 		} else if ($layer) {
 			$eid = (int)$id;
@@ -285,9 +363,7 @@ class mysql_workspacesstore extends mysqlstore {
 				$temp = mysql_fetch_array($qresult);
 				$id = $temp["object"];
 				$objectLayer = $temp["layer"];
-				if ($layer != $objectLayer) {
-					$id = $this->addObjectToLayer($temp["path"]);
-				}
+				$id = $this->addObjectToLayer($temp["path"]);
 			}
 			
 		}
@@ -538,7 +614,6 @@ class mysql_workspacesstore extends mysqlstore {
 		Any other property set will remain as it was.
 
 	***************************************************************/
-
 		$this->error="";
 		if ($path!="/") {
 			$parent=$this->make_path($path, "..");
@@ -555,16 +630,10 @@ class mysql_workspacesstore extends mysqlstore {
 		$objects_tbl=$this->tbl_prefix."objects";
 		$types_tbl=$this->tbl_prefix."types";
 		$layer=(int)$this->getLayer($path);
-
 		if (strlen($path)<MAX_PATH_LENGTH) { // initial check
 			$id=$this->exists($path);
-			if ($layer && $id) {
-				$origID = $this->exists($path, 0);
-				if ($origID == $id) {
-					$id = $this->addObjectToLayer($path);
-				}
-			}
 			if ($id) { //update
+				$id = $this->addObjectToLayer($path);
 				$result = $path;
 				if ($vtype) { // only change/save vtype if it is explicitly set
 					$evtype=AddSlashes($vtype);
@@ -684,46 +753,79 @@ class mysql_workspacesstore extends mysqlstore {
 		} else {
 			$layer=(int)$layer;
 		}
-		
 		debug("store::addObjectToLayer($path, $layer)", "store");
+
+		$query_string_node = "select id, path, parent, object, priority from $nodes_tbl where path = '$epath' and layer = 0";
+		$result = $this->store_run_query($query_string_node);
+		if (!$result) {
+			return false;
+		}
+		$node = mysql_fetch_array($result);
+		if (!$layer) {
+			return $node['object'];
+		}
 		
-		if ($layer && !$this->exists($path, $layer)) {
-			$query_string_node = "select id, path, parent, object, priority from $nodes_tbl where path = '$epath' and layer = 0";
-			$nresult = $this->store_run_query($query_string_node);
-			if ($nresult) {
-				$node = mysql_fetch_array($nresult);
-				$query_string_object = "select id, type, vtype, object, lastchanged from $objects_tbl where id = ".AddSlashes($node['object']);
-				$oresult = $this->store_run_query($query_string_object);
-				if ($oresult) {
-					$object = mysql_fetch_array($oresult);
-					$insert_object_string = "insert into $objects_tbl (layer, type, vtype, object, lastchanged)
-						values ($layer, '".AddSlashes($object['type'])."',
-							'".AddSlashes($object['vtype'])."', '".AddSlashes($object['object'])."',
-							'".AddSlashes($object['lastchanged'])."'
-						)
-					";
-					$res = $this->store_run_query($insert_object_string);
-					if ($res) {
-						$id=mysql_insert_id($this->connect_id);
-						$insert_node_string = "insert into store_nodes (layer, id, path, parent, priority, object)
-							values($layer, ".AddSlashes($node['id']).", '$epath',
-							'".AddSlashes($node['parent'])."', '".AddSlashes($node['priority'])."',
-							$id)
-						";
-						$res = $this->store_run_query($insert_node_string);
-						if ($res) {
-							$properties = $this->load_properties($object['id']);
-							$this->save_properties($properties, $id);
-							foreach ($this->filestores as $fsName) {
-								debug("store::addObjectToLayer::filestore($fsName, id: ".$object['id'].")", "store");
-								$fStore = $this->get_filestore($fsName);
-								$fStore->copyNode($object['id'], $id);
-							}
-						} else {
-							//FIMXE: remove object
-						}
-					}
-				}
+		$query_string_new_node = "select id, path, parent, object, priority from $nodes_tbl where path = '$epath' and layer = $layer";
+		$result = $this->store_run_query($query_string_new_node);
+		if (!$result) {
+			return false;
+		}
+		$newNode = mysql_fetch_array($result);
+		
+		if (!$node && $newNode) {
+			$query_string_node = "select id, path, parent, object, priority from $nodes_tbl where id = ".$newNode['id']." and layer = 0";
+			$result = $this->store_run_query($query_string_node);
+			if (!$result) {
+				return false;
+			}
+			$node = mysql_fetch_array($result);
+		}
+
+		$query_string_object = "select id, type, vtype, object, lastchanged from $objects_tbl where id = ".AddSlashes($node['object']);
+		$result = $this->store_run_query($query_string_object);
+		if (!$result) {
+			return false;
+		}
+
+		$object = mysql_fetch_array($result);
+		if (!$newNode['object'] || $newNode['object'] == $object['id']) {
+			$insert_object_string = "insert into $objects_tbl (layer, type, vtype, object, lastchanged)
+				values ($layer, '".AddSlashes($object['type'])."',
+					'".AddSlashes($object['vtype'])."', '".AddSlashes($object['object'])."',
+					'".AddSlashes($object['lastchanged'])."'
+				)
+			";
+			$result = $this->store_run_query($insert_object_string);
+			if (!$result) {
+				return false;
+			}
+			$id = mysql_insert_id($this->connect_id);
+		} else {
+			$id = $newNode['object'];
+		}
+
+		if (!$newNode['id'] || $newNode['object'] == $object['id']) {
+			if (!$newNode['id']) {
+				$node_query_string = "insert into store_nodes (layer, id, path, parent, priority, object)
+					values($layer, ".AddSlashes($node['id']).", '$epath',
+					'".AddSlashes($node['parent'])."', '".AddSlashes($node['priority'])."',
+					$id)
+				";
+			} else {
+				$node_query_string = "update store_nodes set object = $id where id = ".$newNode['id']." and layer = $layer";
+			}
+			
+			$result = $this->store_run_query($node_query_string);
+			if (!$result) {
+				return false;
+			}
+
+			$properties = $this->load_properties($object['id']);
+			$this->save_properties($properties, $id);
+			foreach ($this->filestores as $fsName) {
+				debug("store::addObjectToLayer::filestore($fsName, id: ".$object['id'].")", "store");
+				$fStore = $this->get_filestore($fsName);
+				$fStore->copyNode($object['id'], $id);
 			}
 		}
 		return $id;
@@ -761,27 +863,32 @@ class mysql_workspacesstore extends mysqlstore {
 				} else {
 					$query_string="delete from $nodes_tbl where object=$object and layer=$layer";
 				}
-				
-				$temp=$this->store_run_query($query_string);
-				if ($temp) {
-					$result=mysql_affected_rows($this->connect_id);
-				}
-				$this->del_property($object);
-
-				$query_string="delete from $objects_tbl where id=$object";
 				$this->store_run_query($query_string);
+				
+				$query_string = "select count(object) as count from $nodes_tbl where object = $object";
+				$result = $this->store_run_query($query_string);
+				if ($result) {
+					$objects = mysql_fetch_array($result);
+					if ($objects['count'] == 0) {
 
-				foreach ($this->filestores as $fsName) {
-					debug("store::purge purging fstore($fsName, $object)", "store");
-					$fStore = $this->get_filestore($fsName);
-					$fStore->purge($object);
+						$this->del_property($object);
+
+						$query_string="delete from $objects_tbl where id=$object";
+						$this->store_run_query($query_string);
+
+						foreach ($this->filestores as $fsName) {
+							debug("store::purge purging fstore($fsName, $object)", "store");
+							$fStore = $this->get_filestore($fsName);
+							$fStore->purge($object);
+						}
+					}
 				}
 				$result = 1;
 			} else {
 				$query_string="select id from $nodes_tbl where path = '$epath' and layer = 0";
-				$qresult = $this->store_run_query($query_string);
-				if ($qresult) {
-					$tmp = mysql_fetch_array($qresult);
+				$result = $this->store_run_query($query_string);
+				if ($result) {
+					$tmp = mysql_fetch_array($result);
 					$nodeId = $tmp['id'];
 					if ($nodeId) {
 						$query_string="replace into $nodes_tbl (path, parent, object, id, layer) values ('$epath', '$eparent', 0, $nodeId, $layer)";

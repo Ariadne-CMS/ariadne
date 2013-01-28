@@ -5,10 +5,13 @@
 	(c) Muze 2011;
 */
 	class workspace {
-		var $layers = array(
-			"live" => 0,
-			"workspace" => 1
-		);
+		function getLayer($workspace) {
+			$layers = array( // FIXME: should only define this once, not every time function is called.
+				"live" => 0,
+				"workspace" => 1
+			);
+			return $layers[$workspace];
+		}
 
 		function enabled($path, $workspace="workspace") {
 			// Check if the current path has an active workspace. Useful to warn the user that changes will not be directly visible.
@@ -31,12 +34,40 @@
 			// any object has been created, created will be
 			// true).
 
-			return array(
-				"modified" => false, // combination of 'update' and 'overwrite'
-				"moved" => false,
-				"deleted" => false,
-				"created" => true
+			$context = pobject::getContext();
+			$me = $context['arCurrentObject'];
+			
+			// FIXME: layerstatus wordt nu van de huidige active layer opgehaald in plaats van $workspace
+
+			$layerstatus = $me->store->getLayerstatus($me->path, false);
+
+			$result = array(
+					"update" => false,
+					"move" => false,
+					"delete" => false,
+					"create" => false,
+					"overwrite" => false
 			);
+
+			if (is_array($layerstatus)) {
+				if (!$recursive) {
+					if ($layerstatus[$me->path] && is_array($layerstatus[$me->path]['operation'])) {
+						foreach ($layerstatus[$me->path]['operation'] as $operation) {
+							$result[$operation] = true;
+						}
+					}
+				} else {
+					foreach ($layerstatus as $path) {
+						if (is_array($layerstatus[$path]['operation'])) {
+							foreach ($layerstatus[$me->path]['operation'] as $operation) {
+								$result[$operation] = true;
+							}
+						}
+					}
+				}
+			}
+
+			return $result;
 		}
 
 		function diff($path, $recursive=false, $workspace="workspace") {
@@ -79,6 +110,17 @@
 			// calls on objects will return the workspaced
 			// version when this has been called. This should be
 			// called from within the workspace loader.
+			$context = pobject::getContext();
+			$me = $context['arCurrentObject'];
+
+			// FIXME: Checken of de gevraagde workspace wel geconfigged is voor dit pad.
+			$layer = workspace::getLayer($workspace);
+			if (!isset($layer)) {
+				return false;
+			} else {
+				$me->store->setLayer($layer);
+				return true;
+			}
 		}
 	}
 
