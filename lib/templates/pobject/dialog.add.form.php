@@ -52,7 +52,8 @@
 		$ARnls['ariadne:add:default_language_data'] = 'Gegevens standaardtaal';
 		$ARnls['ariadne:add:add_language'] = 'Taal toevoegen';
 		$ARnls['ariadne:add:change_type'] = 'Wijzig type';
-
+		$ARnls['filename'] = 'Bestandsnaam';
+		$ARnls['name'] = 'Weergavenaam';
 ?>
 		<style type="text/css">
 			#tabsdata label {
@@ -127,6 +128,7 @@
 				margin-left: 20px;
 				padding-left: 5px;
 				padding-right: 5px;
+				display: none;
 			}
 			fieldset.editdata table {
 				border-collapse: collapse;
@@ -138,7 +140,7 @@
 				border: 0px;
 				margin: 0px;
 				padding: 0px;
-				border-top: 1px solid #888888;
+				xborder-top: 1px solid #888888;
 			}
 			img.flag {
 				display: none;
