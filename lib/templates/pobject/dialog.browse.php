@@ -213,12 +213,12 @@
 <body class="yui-skin-sam">
 	<div id="header">
 		<div class="logo">
-			<img src="/ariadne/images/tree/logo2.gif" alt="Ariadne Web Application Server">
+			<img src="<?$AR->dir->images; ?>tree/logo2.gif" alt="Ariadne Web Application Server">
 			<span class="ariadne">Ariadne</span>
 			<span class="ariadne_sub">Web Application Server</span>
 		</div>
 		<span class="text">Browse</span>
-		<img class="typeicon" src="/ariadne/images/icons/large/search.png" alt="Browse">
+		<img class="typeicon" src="<?php echo $AR->dir->images; ?>icons/large/search.png" alt="Browse">
 	</div>
 
 	<div id="sectiondata" class="nosections">
