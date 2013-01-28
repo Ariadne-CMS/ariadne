@@ -2,8 +2,8 @@
 	$ARCurrent->nolangcheck = true;
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		global $AR;
-		if (false && !$this->CheckSilent("layout")) {
-			$AR->SVN->enabled = false; // FIXME: in details view with SVN disabled, the rows are populated wrong.
+		if (!$this->CheckSilent("layout")) {
+			$AR->SVN->enabled = false;
 		}
 
 		include_once($this->store->get_config("code")."modules/mod_yui.php");
