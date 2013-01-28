@@ -80,7 +80,8 @@
 				'icon' => $AR->dir->images . 'icons/small/up.png',
 				//'href' => "javascript:muze.ariadne.explore.view('" . $this->parent . "');"
 				'href' => $this->make_ariadne_url($this->parent) . "explore.html",
-				'onclick' => "muze.ariadne.explore.toolbar.viewparent(); return false;"
+				'onclick' => "muze.ariadne.explore.toolbar.viewparent(); return false;",
+				'id' => "viewparent"
 			)
 		);
 
