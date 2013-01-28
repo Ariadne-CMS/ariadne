@@ -557,15 +557,7 @@ class scanner {
 						break;
 						case '"':
 							$result = $yych;
-							$yych = $YYBUFFER[++$YYCURSOR];
-							while ($YYCLASSES["NOISE"][$yych]) {
-								$result .= $yych;
-                                                                if ($yych == "\n") {
-                                                                        $this->YYLINE++;
-                                                                }
-                                                                $yych = $YYBUFFER[++$YYCURSOR];
-                                                        }
-							
+							++$YYCURSOR;
 							return PT_DQ_STRING;
 						break;
 						case "'":
