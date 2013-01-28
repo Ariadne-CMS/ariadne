@@ -8,17 +8,17 @@
 			$this->call("typetree.ini");
 		}
 
-		$myType = ( $ARCurrent->arTypeNames[$this->type] ? $ARCurrent->arTypeNames[$this->type] : $this->type );
+                $myType = ( $ARCurrent->arTypeNames[$this->type] ? yui::labelspan($ARCurrent->arTypeNames[$this->type]) . "<br>" . yui::labelspan("(" . $this->type . ")") : yui::labelspan($this->type) );
 
 		$info = array(
-			'type' => yui::labelspan($myType),
+			'type' => $myType,
 			'size' => $this->make_filesize($this->call("system.get.size.phtml")),
-			'priority' => $this->priority,
+			'priority' => isset($this->priority) ? $this->priority : '--',
 			'ariadne:id' => $this->id
 		);
 
 		if ($this->CheckSilent("edit")) {
-			$info['priority'] = "<a href=\"javascript:muze.ariadne.explore.arshow('dialog.priority','" . $this->make_ariadne_url() . "dialog.priority.php')\" title=\"". $ARnls['ariadne:change_priority'] . "\">" . $this->priority . "</a>";
+			$info['priority'] = "<a href=\"javascript:muze.ariadne.explore.arshow('dialog.priority','" . $this->make_ariadne_url() . "dialog.priority.php')\" title=\"". $ARnls['ariadne:change_priority'] . "\">" . (isset($this->priority) ? $this->priority : "--") . "</a>";
 		}
 
 		$section = array(

@@ -459,6 +459,10 @@ TH,TD,LI,P,BODY,DIV {
 	width: 100%;
 	border-collapse: collapse;
 }
+.infotable td {
+	vertical-align: top;
+}
+
 
 /* 
  * Explore browsewindow
@@ -544,6 +548,7 @@ TH,TD,LI,P,BODY,DIV {
 
 .viewpane .highlight td {
 	background-color: #D0DCF7;
+	color: black;
 }
 
 .viewpane .noobjects {
@@ -836,4 +841,20 @@ li.explore_item {
 }
 .clear {
 	clear: both;
+}
+.selectableHelper {
+	border: 1px dotted black;
+	position: absolute;
+}
+.selecting a,
+.selected.selecting a {
+	border: 1px solid #4A6799;
+	background-color: #D0DCF7;
+}
+#resultsDiv tr.selecting {
+	background-color: #D0DCF7;
+}
+#resultsDiv tr.yui-dt-selected.selecting td {
+	background-color: #D0DCF7;
+	color: black;
 }
