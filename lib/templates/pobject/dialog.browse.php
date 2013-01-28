@@ -195,7 +195,7 @@
 			path = muze.ariadne.registry.get("path");
 		}
 
-		if (top.window.opener.muze.dialog && window.opener.muze.dialog.hasCallback( window.name, 'submit') ) {
+		if (window.opener.muze && window.opener.muze.dialog && window.opener.muze.dialog.hasCallback( window.name, 'submit') ) {
 			window.opener.muze.dialog.callback( window.name, 'submit', { 
 				'path' : path
 			} );
