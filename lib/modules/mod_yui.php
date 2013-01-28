@@ -201,7 +201,7 @@
 					} else {
 						$submenu = false;
 					}
-					$nodes[] = ar_html::tag("li", array("class" => $menuname."item"), $a, $submenu);
+					$nodes[] = ar_html::tag("li", array("id" => $item['id'], "class" => $menuname."item"), $a, $submenu);
 				}
 				
 				$div = array( "class" => $menuname );
