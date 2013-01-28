@@ -258,7 +258,7 @@
 				<label class="block" for="selectuser_<?php echo $user_id; ?>">
 					<img src="<?php echo $this->call('system.get.icon.php', array('type' => $info['type'], 'size' => 'medium'));?>" alt="<?php echo $info['type']; ?>">
 					<span class="name"><?php echo $info['name']; ?></span><br>
-					<span class="grants_string"><?php echo $info['grants']['grantsstring']; ?></span>
+					<span class="grants_string"><?php echo htmlspecialchars($info['grants']['grantsstring']); ?></span>
 				</label>
 				<input type="submit" name="selecteduser" class="hidden" value="<?php echo $path; ?>" id="selectuser_<?php echo $user_id; ?>">
 			</div>
