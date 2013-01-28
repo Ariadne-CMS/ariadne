@@ -44,7 +44,7 @@
 
         if (
                 is_array($AR->loader->web['AllowedMethods']) &&
-                !(in_array($_SERVER['REQUEST_METHOD'], $AR->loader->web['AllowedMethods']))
+                !(in_array(strtoupper($_SERVER['REQUEST_METHOD']), $AR->loader->web['AllowedMethods']))
         ) {
                 ldHeader("HTTP/1.1 405 Not allowed");
                 exit;
