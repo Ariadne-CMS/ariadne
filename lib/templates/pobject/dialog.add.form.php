@@ -251,7 +251,7 @@
 				echo $snippit;
 
 				if ($arNewType) { ?>
-					<button class="othertype" type="submit" name="arNewType" value="">Wijzig type</button>
+					<button class="othertype" type="submit" name="arNewType" value=""><?php echo $ARnls['ariadne:add:change_type']; ?></button>
 				<?php }
 			?>			
 		</fieldset>
@@ -368,6 +368,11 @@
 							"options" => $languageList,
 							"label" => false,
 							"name" => "extraLanguage",
+						),
+						"addLanguageHidden" => array(
+							"type" => "html",
+							"value" => "<input type='hidden' name='addLanguage' value=''>",
+							"label" => false
 						),
 						"addLanguage" => array(
 							"type" => "button",
