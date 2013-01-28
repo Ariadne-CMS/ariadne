@@ -800,32 +800,37 @@ muze.ariadne.explore.viewpane = function() {
 		},
 		setitempath : function(item) {
 			if (!item.path) {
-				var href = item.getElementsByTagName("A")[0].href;
-				href = decodeURI(href);
+				if (item.tagName == "TR") {
+					var record = muze.ariadne.explore.viewpane.dataTable.getRecord(item);
+					item.path = record.getData("path");
+				} else {
+					var href = item.getElementsByTagName("A")[0].href;
+					href = decodeURI(href);
 
-				var store_root = muze.ariadne.registry.get('store_root');
+					var store_root = muze.ariadne.registry.get('store_root');
 
-				// Find the location of the store root, and take everything behind it.
-				store_root_pos = href.indexOf(store_root);
-
-				// If not found, remove the language
-				if (store_root_pos < 0) {
-					store_root = store_root.substring(0, store_root.lastIndexOf("/")); 
+					// Find the location of the store root, and take everything behind it.
 					store_root_pos = href.indexOf(store_root);
+
+					// If not found, remove the language
+					if (store_root_pos < 0) {
+						store_root = store_root.substring(0, store_root.lastIndexOf("/")); 
+						store_root_pos = href.indexOf(store_root);
+					}
+
+					// If still not found, remove the session
+					if (store_root_pos < 0) {
+						store_root = store_root.substring(-1);
+						store_root = store_root.substring(0, store_root.lastIndexOf("/"));
+
+						store_root_pos = href.indexOf(store_root);
+					}
+
+					path = href.substring(store_root_pos + store_root.length, href.length);
+					// Remove "explore.html from the end, and all other trailing stuff.
+					explore_pos = path.indexOf('explore.html'); // FIXME: configbaar maken.
+					item.path = path.substring(0, explore_pos);
 				}
-
-				// If still not found, remove the session
-				if (store_root_pos < 0) {
-					store_root = store_root.substring(-1);
-					store_root = store_root.substring(0, store_root.lastIndexOf("/"));
-
-					store_root_pos = href.indexOf(store_root);
-				}
-
-				path = href.substring(store_root_pos + store_root.length, href.length);
-				// Remove "explore.html from the end, and all other trailing stuff.
-				explore_pos = path.indexOf('explore.html'); // FIXME: configbaar maken.
-				item.path = path.substring(0, explore_pos);
 			}
 		},
 		reselect : function() {
