@@ -36,9 +36,11 @@
 	require_once($ariadne."/configs/ariadne.phtml");
 	require_once($ariadne."/configs/authentication.phtml");
 	require_once($ariadne."/configs/store.phtml");
-	if (getenv("ARIADNE_WORKSPACE")) {
-	    $store_config['layer'] = array( '/' => 1 );
+
+	if ($workspace = getenv("ARIADNE_WORKSPACE")) {
+	    $store_config['layer'] = array( $workspace => 1 );
 	}
+
 	include_once($store_config['code']."stores/".$store_config["dbms"]."store.phtml");
 	include_once($store_config['code']."modules/mod_session.phtml");
 	include_once($store_config['code']."includes/loader.web.php");
