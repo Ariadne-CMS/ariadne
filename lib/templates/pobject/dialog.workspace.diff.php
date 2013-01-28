@@ -52,9 +52,9 @@
 			echo ar_beta_diff::style();
 
 			foreach ($workspace as $path => $layer) {
-				$this->store->setLayer($layer);
+				$this->store->setLayer($layer, $this->path);
 				$ob1 = current($this->get($path, "system.get.phtml"));
-				$this->store->setLayer(0);
+				$this->store->setLayer(0, $this->path);
 				$ob2 = current($this->get($path, "system.get.phtml"));
 
 				echo "<h1>" . $ob1->nlsdata->name . "</h1>";
