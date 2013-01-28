@@ -212,6 +212,7 @@ muze.ariadne.explore = function() {
 			muze.ariadne.explore.sidebar.view(path);
 			muze.ariadne.explore.viewpane.view(path);
 			muze.ariadne.explore.browseheader.view(path);
+			muze.ariadne.explore.toolbar.view(path);
 			muze.ariadne.registry.set('path', path);
 		},
 		objectadded : function() {
@@ -287,6 +288,15 @@ muze.ariadne.explore = function() {
 				}
 			}
 			return result;
+		},
+		getparent : function(path) {
+			parent = path.substring(0, path.length - 1); // strip last slash;
+			lastslash = parent.lastIndexOf('/');
+			if (lastslash != -1) {
+				parent = parent.substring(0, lastslash);
+			}
+			parent = parent + "/";
+			return parent;
 		}
 	}
 }();
@@ -530,11 +540,17 @@ muze.ariadne.explore.toolbar = function() {
 	return {
 		init : function() {
 			var menuBar = new YAHOO.widget.MenuBar("explore_menubar", { autosubmenudisplay: true, hidedelay: 750, showdelay: 0, lazyload: true });
-
 			menuBar.render();
+			muze.ariadne.explore.toolbar.view(document.getElementById("searchpath").value);
 		},
 		view : function(path) {
 			document.getElementById("searchpath").value = path;
+			var parent = muze.ariadne.explore.getparent(path);
+			if (!muze.ariadne.explore.viewable(parent)) {
+				document.getElementById("viewparent").style.opacity = '0.3';
+			} else {
+				document.getElementById("viewparent").style.opacity = '1';
+			}
 		},
 		viewparent : function() {
 			if( muze.ariadne.explore.viewpane.selectedPath ) {
@@ -542,13 +558,8 @@ muze.ariadne.explore.toolbar = function() {
 			} else {
 				path = muze.ariadne.registry.get('path');
 			}
-			path = path.substring(0, path.length - 1); // strip last slash;
-			lastslash = path.lastIndexOf('/');
-			if (lastslash != -1) {
-				path = path.substring(0, lastslash);
-			}
-			path = path + "/";
-			muze.ariadne.explore.view(path);
+			parent = muze.ariadne.explore.getparent(path);
+			muze.ariadne.explore.view(parent);
 		},
 		searchsubmit : function(path) {
 			// Check for trailing slash, add if needed.
@@ -829,7 +840,13 @@ muze.ariadne.explore.viewpane = function() {
 					path = href.substring(store_root_pos + store_root.length, href.length);
 					// Remove "explore.html from the end, and all other trailing stuff.
 					explore_pos = path.indexOf('explore.html'); // FIXME: configbaar maken.
-					item.path = path.substring(0, explore_pos);
+					if (explore_pos == -1) {
+						explore_pos = path.indexOf('dialog.browse.php');
+					}
+
+					if (explore_pos != -1) {
+						item.path = path.substring(0, explore_pos);
+					}
 				}
 			}
 		},
@@ -1018,8 +1035,6 @@ muze.ariadne.explore.viewpane = function() {
 
 
 			var unselectitems = YAHOO.util.Dom.getElementsByClassName("selected", "*", "archildren");
-			console.log(unselectitems.length);
-			console.log(unselectitems);
 			for (var j=0; j<unselectitems.length; j++) {
 				if (YAHOO.util.Dom.hasClass(unselectitems[j], "selectable-selected")) {
 				} else {
@@ -1041,7 +1056,7 @@ muze.ariadne.explore.viewpane = function() {
 			muze.ariadne.explore.sidebar.view(item.path);
 			muze.ariadne.explore.browseheader.view(item.path);
 			muze.ariadne.explore.viewpane.selectedPath = item.path;
-			document.getElementById("searchpath").value = item.path;
+			muze.ariadne.explore.toolbar.view(item.path);
 		},
 		view : function(path, page) {
 			// Contain in dialog root.
@@ -1069,7 +1084,8 @@ muze.ariadne.explore.viewpane = function() {
 			}
 
 			muze.ariadne.explore.viewpane.browseto(url);
-			document.getElementById("searchpath").value = path;
+
+			muze.ariadne.explore.toolbar.view(path);
 			muze.ariadne.explore.viewpane.path = path;
 			muze.ariadne.explore.viewpane.selectedPath = path;
 		}
