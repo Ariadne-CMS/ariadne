@@ -16,10 +16,7 @@
 		function enabled($path, $workspace="workspace") {
 			// Check if the current path has an active workspace. Useful to warn the user that changes will not be directly visible.
 
-			$context = pobject::getContext();
-			$me = $context['arCurrentObject'];
-			$config = $me->loadUserConfig();
-			if ($config['workspace'] == $workspace) {
+			if ($this->store->getLayer($path) == workspace::getLayer($workspace)) {
 				return true;
 			}
 			return false;

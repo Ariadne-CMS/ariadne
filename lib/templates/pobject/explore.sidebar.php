@@ -42,6 +42,10 @@
 			ar_events::fire( 'ariadne:onsidebarsettings' );
 		}
 
+		if (getenv("ARIADNE_WORKSPACE") && workspace::enabled($this->path)) {
+			$this->call("explore.sidebar.workspace.php", $arCallArgs);
+		}
+
 		if ($AR->SVN->enabled) {
 			$svnEventData = new object();
 			$svnEventData = ar_events::fire( 'ariadne:onbeforesidebarsvn', $svnEventData );

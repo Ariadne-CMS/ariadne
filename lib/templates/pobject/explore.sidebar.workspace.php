@@ -7,7 +7,7 @@
 	  	require_once($this->store->get_config("code")."modules/mod_workspace.php");
 //        include_once($this->store->get_config("code")."/ar/crypt.php");
 
-		if (workspace::enabled($path) && getenv("ARIADNE_WORKSPACE")) {
+		if (workspace::enabled($this->path) && getenv("ARIADNE_WORKSPACE")) {
 			$imagesdir = $AR->dir->images;
 			$status = workspace::status($this->path);
 

@@ -38,7 +38,22 @@
 	require_once($ariadne."/configs/store.phtml");
 
 	if ($workspace = getenv("ARIADNE_WORKSPACE")) {
-	    $store_config['layer'] = array( $workspace => 1 );
+		include_once($store_config['code']."modules/mod_workspace.php");
+		$layer = workspace::getLayer($workspace);
+		if (!$layer) {
+			$layer = 1;
+		}
+
+		if ($wspaths = getenv("ARIADNE_WORKSPACE_PATHS")) {
+			$wspaths = explode(";", $wspaths);
+			foreach ($wspaths as $wspath) {
+				if ($wspath != '') {
+					$store_config['layer'][$wspath] = $layer;
+				}
+			}
+		} else {
+			$store_config['layer'] = array('/' => $layer );
+		}
 	}
 
 	include_once($store_config['code']."stores/".$store_config["dbms"]."store.phtml");
