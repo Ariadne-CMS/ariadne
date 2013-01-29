@@ -15,11 +15,14 @@
 		// unset the properties array, so no properties can be passed to this template.
 		$properties = Array();
 		$this->data->url_list = Array();
+		$this->data->workspaceurl_list = Array();
+
 		if (!$this->error) {
 			$this->arIsNewObject=false;
             reset($AR->nls->list);
             $count=0;
 			$clearcache=false;
+
             while (!$this->error && (list($key, $value)=each($AR->nls->list))) {
                 if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
 					$url=$this->getdata("url",$key);
