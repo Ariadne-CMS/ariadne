@@ -46,6 +46,7 @@ class mysql_workspacesstore extends mysqlstore {
 	
 	public function getLayer($path) {
 		if (is_array($this->layer)) {
+			krsort($this->layer); // Order path in reverse order, so longer (more specific) paths get found first.
 			foreach ($this->layer as $layerPath => $layer) {
 				if (substr($path, 0, strlen($layerPath)) == $layerPath) {
 					return $layer;
@@ -64,7 +65,7 @@ class mysql_workspacesstore extends mysqlstore {
 					$path => $layer
 			);
 		} else {
-			$this->layer[$path] = $layer;
+			$this->layer[$path] = (int)$layer;
 		}
 	}
 
