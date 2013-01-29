@@ -32,9 +32,7 @@
 				?>" class="inputline">
 	</div>
 	<?php
-		$siteconfig = $this->loadUserConfig();
-		$workspace = $siteconfig['workspace'];
-		if ($workspace) {
+		if (getenv("ARIADNE_WORKSPACE") && workspace::enabled($this->path)) {
 	?>
 	<div class="field">
 		<label for="name" class="required"><?php echo $ARnls["url"] . ": " . $workspace; ?></label>
