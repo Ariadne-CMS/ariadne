@@ -49,9 +49,8 @@ class psite extends psection {  // psite class definition
           $hostsubwww = substr($host, 4);
       }
 
-      $siteconfig = $this->loadUserConfig();
       $ariadne_workspace = getenv('ARIADNE_WORKSPACE');
-      $workspace = $ariadne_workspace && $siteconfig['workspace'];
+      $workspace = $ariadne_workspace && workspace::enabled($this->path);
 
       if ($workspace) {
 	      if (($sitenls=$this->data->workspaceurl_list["host"][$hostsubwww]) 
