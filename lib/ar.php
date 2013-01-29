@@ -325,21 +325,13 @@
 			}
 		}
 
-		public static function getThrowExceptions() {
-//			$result = ar::context->get('arThrowExceptions');
-			if (!isset($result)) {
-				$result = self::$throwExceptions;
-			}
-			return $result;
-		}
-
 		public static function isError($ob) {
 			return ( is_object($ob) 
 				&& ( is_a($ob, 'ar_error') || is_a($ob, 'error') || is_a($ob, 'PEAR_Error') ) );
 		}
 
 		public static function raiseError($message, $code, $previous = null) {
-			if (self::getThrowExceptions()) {
+			if (self::$throwExceptions) {
 				throw new ar_error($message, $code, $previous);
 			} else {
 				return new ar_error($message, $code, $previous);
@@ -443,14 +435,6 @@
 	}
 
 	interface ar_contextInterface {
-		public static function push( $options = array() );
-
-		public static function pop();
-
-		public static function set($name, $value);
-
-		public static function get($name);
-
 		public static function getPath( $options = array() );
 		
 		public static function getObject( $options = array() );
@@ -490,25 +474,6 @@
 			return $result;
 		}
 	
-		public static function push( $options = array() ) {
-			pobject::pushContext( $options );
-		}
-
-		public static function pop() {
-			pobject::popContext();
-		}
-
-		public static function set($name, $value) {
-			$context = pobject::getContext();
-			$context[$name] = $value;
-			pobject::setContext( $context );
-		}
-
-		public static function get($name) {
-			$context = pobject::getContext();
-			return $context[$name];
-		}
-
 		public static function getPath( $options = array() ) {
 			$me = self::getObject( $options );
 			if ($me) {
