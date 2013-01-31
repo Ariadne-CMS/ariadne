@@ -1311,34 +1311,55 @@
 			// and apply the default formfield on the given values and add those as children
 			$this->children = array();
 			$count = 0;
-			foreach ( $value as $key => $child ) {
-				if ( !$child ) {
-					continue;
+			if ( is_array($value) ) {
+				foreach ( $value as $key => $child ) {
+					if ( !$child ) {
+						continue;
+					}
+					if ( !is_numeric( $key ) ) {
+						continue; // skip [Add] and [Delete] entries
+					}
+					ar::untaint( $child, FILTER_UNSAFE_RAW );
+					if ( !is_array($child) || !isset($child['value']) ) {
+						$child = array(
+							'value' => $child
+						);
+					}
+					$child['name'] = $this->name.'['.$count.']';
+					if ( $this->defaultField ) {
+						$childOb = clone( $this->defaultField );
+						$childOb->name = $child['name'];
+						$childOb->setValue( $child['value'] );
+					} else {
+						$childOb = $this->form->parseField( 0, $child );
+					}
+					$this->children[] = $childOb;
+					$count++;
 				}
-				ar::untaint( $child, FILTER_UNSAFE_RAW );
-				if ( is_string($child) ) {
-					$value = $child;
-					$child = clone( $this->defaultField );
-					$child->setValue( $value );
-				} else if ( is_array( $child ) ) {
-					$child = $this->form->parseField(0, $child );
-				}
-				$child->name = $this->name.'['.$count.']';
-				$this->children[] = $child;
-				$count++;
 			}
 		}
 		
+		protected function getvar( $name ) {
+			if (preg_match("/(\w+)\[(.*?)]/", $name, $matches)) {
+				$arrayvalue = ar::getvar($matches[1]);
+				$value = $this->getArrayValue( substr( $name, strlen( $matches[1] ) ), $arrayvalue );
+			} else {
+				$value = ar()->getvar($name);
+			}
+			return $value;
+		}
+
 		protected function handleUpdates($default) {
-			$check = ar('http')->getvar( $this->name );
-			$delete = $check['Delete'];
-			if ( isset($delete) ) {
+			$check = $this->getvar( $this->name ); //$check = ar('http')->getvar( $this->name );
+			if ( isset($check['Delete']) ) {
+				$delete = $check['Delete'];
 				ar::untaint($delete);
 				if ( $this->children[$delete] ) {
 					unset( $this->children[$delete] );
 				}
-			} else if ( $add = $check['Add'] ) {
-				$addedField = ar('http')->getvar( $this->newField->name );
+			} else if ( isset( $check['Add'] ) ) {
+				$add = $check['Add'];
+				$addedField = $this->getvar( $this->newField->name ); //ar('http')->getvar( $this->newField->name );
 				if ( $addedField ) {
 					// add a copy of default to the children of this field
 					$newField = $default;
@@ -1350,19 +1371,7 @@
 		
 		public function __construct($field, $form) {
 			parent::__construct ($field, $form);
-			if ( isset($field->value) ) {
-				$this->value = $field->value;
-			} else {
-				$value = ar()->http->getvar($this->name);
-				if ( isset($value) ) {
-					$this->value = $value;
-				} else if ( isset($this->default) ) {
-					$this->value = $this->default;
-				} else {
-					$this->value = null;
-				}
-			}
-			if ( isset( $this->value ) ) { // apply default behaviour, step 1
+			if ( isset( $field->value ) ) { // apply default behaviour, step 1
 				if ( !$field->newField ) {
 					$field->newField = array(
 						'name' => $this->name.'[]',
@@ -1386,9 +1395,9 @@
 				$this->defaultField = $form->parseField( 0, $field->defaultField );
 			}
 
-			if ( isset( $this->value ) ) { // apply default behaviour, step 2			
-				$this->normalizeChildren( $this->value );				
-				$this->handleUpdates( $field->defaultField );
+			if ( isset( $field->value ) ) { // apply default behaviour, step 2			
+				$this->normalizeChildren( $field->value );				
+				$this->handleUpdates( $field->default );
 			}
 		}
 		
