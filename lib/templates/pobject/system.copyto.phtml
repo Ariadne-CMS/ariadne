@@ -46,12 +46,11 @@
 									// now save templates for the new object
 									if ($this->data->config->pinp) {
 										$templates=$this->store->get_filestore("templates");
+										$templates->copyNode( $this->id, $ARCurrent->newid );
 										while (list($type, $values)=each($data->config->pinp)) {
 											while (list($function, $templatelist)=each($values)) {
 												while (list($language, $id)=each($templatelist)) {
 													$template=$type.".".$function.".".$language;
-													$templates->copy($this->id, $template.".pinp", $ARCurrent->newid, $template.".pinp");
-													$templates->copy($this->id, $template, $ARCurrent->newid, $template);
 													$this->data->config->pinp[$type][$function][$language]=$ARCurrent->newid;
 
 													if ($this->data->config->templates[$type][$function][$language]) {
