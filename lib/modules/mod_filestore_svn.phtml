@@ -622,5 +622,44 @@
 			$path = $this->get_path($svn, '') . ".svn/";
 			$this->rmdir_rf($path);
 		}
+
+		public function copySvn($id, $newid) {
+			$source = $this->make_path($id, '') . ".svn";
+			$target = $this->make_path($newid, '', WRITE) . ".svn";
+
+			return $this->copyRecursive($source, $target);
+		}
+
+		public function copyNode($id, $newid) {
+			parent::copyNode($id, $newid);
+			$this->copySvn($id, $newid);
+		}
+
+		private function copyRecursive($source, $target) {
+			if (is_dir($source)) {
+				@mkdir($target);
+				$objects = scandir($source);
+
+				if( sizeof($objects) > 0 ) {
+					foreach( $objects as $file ) {
+						if( $file == "." || $file == ".." )
+							continue;
+							// go on
+
+						if( is_dir( $source."/".$file ) ) {
+							$this->copyRecursive( $source."/".$file, $target."/".$file );
+						} else {
+							copy( $source."/".$file, $target."/".$file );
+						}
+					}
+				}
+				return true;
+			} elseif( is_file($source) ) {
+				return copy($source, $target);
+			} else {
+				return false;
+			}
+		}
 	}
+
 ?>
