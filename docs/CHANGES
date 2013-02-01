@@ -15,6 +15,7 @@ Bugfixes:
 
 Features:
 - added muze dialog loader to create crossbrowser dialogs as replacement of showmodeldialog
+- added '//' crossprotocol option to psite and make_*_url()
 - updated pinp function list
 - Updated gzip 
 
