@@ -135,10 +135,11 @@
 		case "2.7.5":
 		case "2.7.6":
 		case "2.7.7":
+		case "2.797":
 				array_push($todo, Array(
-							"description" => "Bumping revision to 2.7.8.",
+							"description" => "Bumping revision to 2.7.9.",
 							"operation" => "all/dummy.php",
-							"newversion" => "2.7.8"
+							"newversion" => "2.7.9"
 							));
 			
 	}
