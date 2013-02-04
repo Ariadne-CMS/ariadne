@@ -1,6 +1,6 @@
 <?php
-
 	global $AR;
+
 	require_once($AR->dir->install."/lib/ar/html.php");
 
 	class pinp_yui {
@@ -371,6 +371,8 @@
 
 		function getSvnIcon($status) {
 			global $AR;
+			global $ARnls;
+
 			if ($status == 'insubversion') {
 				$iconsrc =  $AR->dir->images . 'svn/InSubVersionIcon.png';
 				$alt = $ARnls['ariadne:svn:insubversion'];
@@ -378,9 +380,8 @@
 				$iconsrc = $AR->dir->images . 'svn/ModifiedIcon.png';
 				$alt = $ARnls['ariadne:svn:modified'];
 			}
-
 			if ($iconsrc) {
-				return ar_html::tag('img', array('class' => 'explore_svnicon', 'src' => $iconsrc, 'alt' => $alt ));
+				return ar_html::tag('img', array('class' => 'explore_svnicon', 'src' => $iconsrc, 'alt' => $alt, 'title' => $alt ));
 			} else {
 				return null;
 			}
