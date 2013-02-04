@@ -419,7 +419,7 @@
 						$maxlen = 32;
 					break;
 					case "icons" :
-						$maxlen = 7;
+						$maxlen = 14;
 					break;
 					default :
 						$maxlen = 11;
@@ -430,8 +430,13 @@
 					if( is_array($node['svn']) ) {
 						$content[] = self::getSvnIcon($node['svn']['status']);
 					}
+
+					$item_class = "explore_item";
+					if ($node['priority'] < 0) {
+						$item_class .= " hidden";
+					}
 					$content[]= ar_html::tag('span', array('class' => 'explore_name'), self::labelspan($node['name'], $maxlen ));
-					$nodes[] = ar_html::tag( 'li', array('class' => 'explore_item'), ar_html::tag( 'a', array('href' => $node['local_url'].'explore.html', 'onDblClick' => "top.muze.ariadne.explore.view('" . htmlspecialchars($node['path']) . "'); return false;", 'title' => $node['name']), $content) );
+					$nodes[] = ar_html::tag( 'li', array('class' => $item_class), ar_html::tag( 'a', array('href' => $node['local_url'].'explore.html', 'onDblClick' => "top.muze.ariadne.explore.view('" . htmlspecialchars($node['path']) . "'); return false;", 'title' => $node['name']), $content) );
 				}
 				$result = ar_html::tag('ul', array('class' => array('explore_list', $viewtype) ), $nodes);
 			} else {

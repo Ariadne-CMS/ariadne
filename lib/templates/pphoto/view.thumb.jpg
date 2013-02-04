@@ -1,0 +1,45 @@
+<?php
+	/******************************************************************
+	 view.thumb.html                                       Muze Ariadne
+	 ------------------------------------------------------------------
+	 Arguments: none
+	 Grant needed: read
+	 Global variables: none
+
+	 This displays a thumbnail of the image.
+
+	 no result.
+
+	******************************************************************/
+	$ARCurrent->nolangcheck=true;
+	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
+		$configcache=$ARConfig->cache[$this->path];
+		$thumbwidth=$configcache->thumb["width"];
+		$thumbheight=$configcache->thumb["height"];
+		$thumbcolor=$configcache->thumb["color"];
+		$thumbwidth = 80;
+		$thumbheight = 80;
+		if ($AR->user->data->login=="public" || $this->CheckPublic("read")) {
+			// always set the client cache for thumbnails, even when caching
+			// is turned off. Otherwise the server might grind to a halt.
+			// If caching is on, the loader will override it based on that.
+			ldSetClientCache(true, time()+7200);
+		}
+		ldSetContent("image/jpeg");
+		if (!$this->cached("ar_thumb_".$thumbwidth."x".$thumbheight.$thumbcolor)) {
+			$this->convert("jpg");
+			$this->scale($thumbwidth, $thumbheight, $thumbcolor);
+			$result=$this->build();
+			if ($result) {
+				echo $result;
+				$this->savecache(999);
+			} else if ($this->path!="/system/photo/nothumb/") {
+				$this->get("/system/photo/nothumb/","view.html");
+				$this->savecache(0);
+			} else {
+				$this->ShowFile();
+				$this->savecache(0);
+			}
+		}
+	}
+?>

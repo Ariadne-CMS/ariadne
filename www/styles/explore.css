@@ -613,12 +613,22 @@ li.explore_item {
 }
 
 .explore_icon_shortcut_list,
-.explore_icon_shortcut_icons,
 .explore_icon_shortcut_details {
 	vertical-align: bottom;
 	border: 0px;
 	position: absolute;
 	left: 2px;
+}
+.explore_icon_shortcut_icons {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -16px;
+	margin-left: -16px;
+}
+
+.explore_item.hidden {
+	opacity: 0.3;
 }
 
 .yui-dt-liner {
@@ -631,10 +641,6 @@ li.explore_item {
 	vertical-align: top;
 }
 
-.explore_item .explore_icon_shortcut_icons {
-	left: 24px;
-}
-
 .explore_item .explore_svnicon {
 	height: 10px;
 	width: 10px;
@@ -642,6 +648,24 @@ li.explore_item {
 	position: absolute;
 	left: 18px;
 	top: 6px;
+}
+
+.explore_list.icons .explore_item {
+	height: 100px;
+	width: 100px;
+}
+
+.explore_list.icons .explore_item a {
+	border: 1px solid #EEEEEE;
+	height: 100px;
+	line-height: 80px;
+}
+.explore_list.icons .explore_icon {
+	vertical-align: middle;
+	position: relative;
+}
+.explore_list.icons .explore_name {
+	line-height: 1.1em;
 }
 
 .explore_list .selected a, .yui-dt-body .selected {
@@ -672,17 +696,11 @@ li.explore_item {
 
 }
 .icons .explore_item .explore_name {
-	width: 78px;
+	width: 100%;
 	position: absolute;
 	bottom: 0px;
 	left: 0px;
 }
-
-.icons .explore_item .explore_icon {
-	left: 22px;
-
-}
-
 .icons .explore_svnicon {
 	height: 16px;
 	width: 16px;
