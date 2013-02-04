@@ -9,6 +9,9 @@
 
 	include("wizardlogic.php");
 
+	if ($wgWizBufferOutput) {
+		ob_start();
+	}
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -244,3 +247,10 @@
 </form>
 </body>
 </html>
+<?php
+	if ($wgWizBufferOutput) {
+                $result = ob_get_contents();
+                ob_end_clean();
+                echo $result;
+	}
+?>

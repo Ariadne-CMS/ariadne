@@ -36,6 +36,7 @@
 		$wgWizHeader = $wgWizTitle;
 		$wgWizHeaderIcon = $AR->dir->images.'icons/large/grants.png';
 
+		$wgWizBufferOutput = true; // Allow sending headers
 		include($this->store->get_config("code")."widgets/wizard/yui.wizard.html");
 	}
 ?>

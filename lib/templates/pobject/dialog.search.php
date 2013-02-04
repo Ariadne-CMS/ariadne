@@ -64,6 +64,7 @@
 
 		}
 
+		$wgWizBufferOutput = true; // Allow sending headers
 		include($this->store->get_config("code")."widgets/wizard/yui.wizard.html");
 	}
 ?>
