@@ -576,7 +576,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						}
 					}
 					if (!$this->error) {
-						if($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)){
+						if ($this->path = $this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)){
+							$this->id = $this->store->exists( $this->path );
 							$result=$this->path;
 							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 							$arCallArgs = $eventData->arCallArgs;

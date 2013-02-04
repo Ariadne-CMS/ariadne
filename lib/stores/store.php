@@ -391,7 +391,7 @@ abstract class store {
 			require_once($this->code."modules/mod_filestore.phtml");
 		}
 		if (!$this->_filestores[$name]) {
-			$this->_filestores[$name]=new filestore($name, $this->files);
+			$this->_filestores[$name]=new filestore($name, $this->files, $this);
 		}
 		return $this->_filestores[$name];
 	}

@@ -709,7 +709,7 @@ class axstore {
 	function get_filestore($name) {
 		require_once($this->code."modules/mod_filestore.phtml");
 		if (!$this->filestores[$name]) {
-			$this->filestores[$name]=new filestore($name, $this->tempdir."/");
+			$this->filestores[$name]=new filestore($name, $this->tempdir."/", $this);
 		}
 		return $this->filestores[$name];
 	}

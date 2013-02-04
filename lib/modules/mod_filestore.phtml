@@ -63,12 +63,15 @@
 
 		/* public */
 
-		public function __construct($name, $root) {
+		public function __construct($name, $root, $store) {
 			// initialize filestore
 			$this->name=$name;
 			// make a copy of the store data, not a reference
 			// for security reasons
 			$this->root=$root.$name;
+			// reference to the store
+			$this->store = $store;
+			
 			if (!file_exists($this->root)) {
 				if (!@mkdir($this->root, DIRMODE)) {
 					error("Failed opening filestore $name with root: $root");
@@ -76,9 +79,17 @@
 			}
 		}
 
+		public function addObjectToLayer( $id ) {
+			if (method_exists($this->store, "addObjectToLayer")) {
+				return $this->store->addObjectToLayer( $id );
+			}
+			return $id;
+		}
+
 		public function write($contents, $id, $name) {
 			$result=false;
 			if ($name) {
+				$id = $this->addObjectToLayer( $id );
 				$path=$this->make_path($id, $name, WRITE);
 				$tempfile = tempnam($this->make_path($id),$name.'_temp_');
 				if ($fp=fopen($tempfile, "wb")) {
@@ -205,6 +216,7 @@
 		public function copy_to_store($file, $id, $name="") {
 			$result=false;
 			//if (file_exists($file)) {
+				$id = $this->addObjectToLayer( $id );
 				if (is_dir($file)) {
 					$path=$this->make_path($id, "", WRITE);
 					// copy all files, result is number of files
@@ -272,6 +284,7 @@
 
 		public function remove($id, $name) {
 			$result=false;
+			$id = $this->addObjectToLayer( $id );
 			$path=$this->make_path($id, $name);
 			if (file_exists($path)) {
 				unlink($path);
@@ -296,6 +309,7 @@
 		}
 
 		public function purge($id) {
+			$id = $this->addObjectToLayer( $id );
 			$path=$this->make_path($id);
 			if ($dir=@opendir($path)) {
 				$empty=true;
@@ -318,12 +332,14 @@
 		}
 
 		public function copy($id, $name, $newid, $newname) {
+			$newid = $this->addObjectToLayer( $newid );
 			$source=$this->make_path($id, $name);
 			$target=$this->make_path($newid, $newname, WRITE);
 			return copy($source, $target);
 		}
 
 		public function copyNode($id, $newid) {
+			$newid = $this->addObjectToLayer( $newid );
 			$source=$this->make_path($id);
 			$target=$this->make_path($newid, '', WRITE);
 			$files = $this->ls($id);
@@ -336,6 +352,7 @@
 
 		public function move($id, $name, $newid, $newname) {
 			$result=false;
+			$newid = $this->addObjectToLayer( $newid );
 			$source=$this->make_path($id, $name);
 			$target=$this->make_path($newid, $newname, WRITE);
 			if (copy($source, $target)) {
@@ -385,6 +402,7 @@
 		}
 
 		public function touch($id, $name, $time) {
+			$id = $this->addObjectToLayer( $id );
 			$path=$this->make_path($id, $name);
 			if (file_exists($path)) {
 				$result=touch($path, $time);
