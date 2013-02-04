@@ -656,7 +656,7 @@ li.explore_item {
 }
 
 .explore_list.icons .explore_item a {
-	border: 1px solid #EEEEEE;
+	border: 1px solid #DDDDDD;
 	height: 100px;
 	line-height: 80px;
 }
@@ -704,7 +704,8 @@ li.explore_item {
 .icons .explore_svnicon {
 	height: 16px;
 	width: 16px;
-	left: 40px;
+	left: 8px;
+	top: 8px;
 }
 .icons .explore_item {
 	width: 78px;
