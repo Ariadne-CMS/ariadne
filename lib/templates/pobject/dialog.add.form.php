@@ -253,6 +253,7 @@
 				echo $snippit;
 
 				if ($arNewType) { ?>
+					<input tabindex="-1" style="position: absolute; left: -1000px; width: 0px; height: 0px;" unselectable="on" type="submit" name="wgWizControl" class="wgWizControl" value="current">
 					<button class="othertype" type="submit" name="arNewType" value=""><?php echo $ARnls['ariadne:add:change_type']; ?></button>
 				<?php }
 			?>			
