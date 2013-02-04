@@ -28,7 +28,7 @@
 		ldSetContent("image/jpeg");
 		if (!$this->cached("ar_thumb_".$thumbwidth."x".$thumbheight.$thumbcolor)) {
 			$this->convert("jpg");
-			$this->scale($thumbwidth, $thumbheight, $thumbcolor);
+			$this->scaledown($thumbwidth, $thumbheight, $thumbcolor);
 			$result=$this->build();
 			if ($result) {
 				echo $result;
