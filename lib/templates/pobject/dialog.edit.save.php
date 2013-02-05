@@ -1,7 +1,11 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	$arIsNewObject=$this->arIsNewObject;
-	$this->call("system.save.data.phtml",$arCallArgs);
+	if ($this->AR_implements('pshortcut')) {
+		$this->call("system.save.shortcut.phtml",$arCallArgs);
+	} else {
+		$this->call("system.save.data.phtml",$arCallArgs);
+	}
 	if ($this->error) {
 		?>
 			<font color="red" face="arial,helvetica,sans-serif" size=+1><?php echo $this->error; ?></font><p>

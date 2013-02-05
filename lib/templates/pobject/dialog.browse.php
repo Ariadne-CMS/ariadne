@@ -53,8 +53,8 @@
 
 		/* retrieve HTTP GET variables */
 		// FIXME: Er moet ook iets van een root zijn voor dit dialoog.
-		$root = $this->getvar("root") ? $this->getvar("root") : $this->currentsite();
-		if ($root && $root != '/' && $this->exists($root)) {
+		$root = $this->getvar("root") ? $this->getvar("root") : $this->currentproject();
+		if ($root && $this->exists($root)) {
 			$base_object = current($this->get($root, "system.get.phtml"));
 		} else {
 			$base_object = $this;
