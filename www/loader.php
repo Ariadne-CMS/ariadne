@@ -130,10 +130,10 @@
 		// since the nls isn't literaly in the url anymore.
 		$ldCacheFilename.=str_replace(':','=',str_replace('/','',$AR->host)).'=';
 
-		if (ldGetServerVar("QUERY_STRING")) {
-			$ldCacheFilename.=ldGetServerVar("QUERY_STRING");
+		$qs = ldGetServerVar("QUERY_STRING");
+		if ($qs != '') {
+			$ldCacheFilename.=sha1($qs);
 		}
-
 
 		/*
 			do not active output compression if:
