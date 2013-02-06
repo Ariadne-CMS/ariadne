@@ -42,9 +42,10 @@ class ppage extends pobject { // ppage class definition
 
 	function ParsePage($page, $full=false) {
 		if (!$full) {
-			$page = preg_replace('|^.*<BODY[^>]*>|i','',
-								preg_replace('|</BODY.*$|i','',$page));
+			$page = preg_replace('|^.*<BODY[^>]*>|is','',
+								preg_replace('|</BODY.*$|is','',$page));
 		}
+
 		return URL::ARtoRAW($page);
 	}
 
