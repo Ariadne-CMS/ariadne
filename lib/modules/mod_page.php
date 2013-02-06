@@ -39,7 +39,7 @@ class pinp_page {
 class page {
 
 	function getBody($page) {
-		return preg_replace('/^.*<BODY[^>]*>/i', '', preg_replace('|</BODY.*$|i', '', $page));
+		return preg_replace('/^.*<BODY[^>]*>/is', '', preg_replace('|</BODY.*$|is', '', $page));
 	}
 
 	function parse($page, $full=false) {
