@@ -399,7 +399,7 @@ abstract class store {
 	public function get_filestore_svn($name) {
 		require_once($this->code."modules/mod_filestore_svn.phtml");
 		if (!$this->_filestores["svn_" . $name]) {
-			$this->_filestores["svn_" . $name] = new filestore_svn($name, $this->files);
+			$this->_filestores["svn_" . $name] = new filestore_svn($name, $this->files, $this);
 		}
 		return $this->_filestores["svn_" . $name];
 	}

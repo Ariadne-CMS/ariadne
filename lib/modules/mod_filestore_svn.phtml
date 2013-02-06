@@ -63,9 +63,9 @@
 
 		/* public */
 
-		function __construct($name, $root) {
+		function __construct($name, $root, $store) {
 			global $AR;
-			parent::__construct($name, $root);
+			parent::__construct($name, $root, $store);
 
 			// Setup error handling -- always a good idea!
 			$this->svnstack = &PEAR_ErrorStack::singleton('VersionControl_SVN');
