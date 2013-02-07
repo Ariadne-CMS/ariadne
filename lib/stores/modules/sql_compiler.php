@@ -276,7 +276,7 @@ abstract class sql_compiler {
 				$YYCURSOR++;
 			}
 			$ident = strtolower(substr($YYBUFFER, $YYCURSOR, 2));
-			if ($ident === 'or' && !isset($this->_SCAN_AZ_09[$YYBUFFER[$YYCURSOR + 3]]) ) {
+			if ($ident === 'or' && !isset($this->_SCAN_AZ_09[$YYBUFFER[$YYCURSOR + 2]]) ) {
 				$YYBUFFER = substr($YYBUFFER, $YYCURSOR + 2);
 				$right = $this->parse_and_expr($YYBUFFER);
 				if (is_array($right)) {
