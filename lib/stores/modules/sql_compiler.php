@@ -249,7 +249,7 @@ abstract class sql_compiler {
 				$YYCURSOR++;
 			}
 			$ident = strtolower(substr($YYBUFFER, $YYCURSOR, 3));
-			if ($ident === 'and' && isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR + 3]])) {
+			if ($ident === 'and' && !isset($this->_SCAN_AZ_09[$YYBUFFER[$YYCURSOR + 3]]) ) {
 				$YYBUFFER = substr($YYBUFFER, $YYCURSOR + 3);
 				$right = $this->parse_group_expr($YYBUFFER);
 				if (is_array($right)) {
@@ -276,7 +276,7 @@ abstract class sql_compiler {
 				$YYCURSOR++;
 			}
 			$ident = strtolower(substr($YYBUFFER, $YYCURSOR, 2));
-			if ($ident === 'or' && isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR + 2]])) {
+			if ($ident === 'or' && !isset($this->_SCAN_AZ_09[$YYBUFFER[$YYCURSOR + 3]]) ) {
 				$YYBUFFER = substr($YYBUFFER, $YYCURSOR + 2);
 				$right = $this->parse_and_expr($YYBUFFER);
 				if (is_array($right)) {
