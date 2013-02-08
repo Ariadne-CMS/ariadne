@@ -89,6 +89,11 @@
 			}
 			$rootpath=$srcpath;
 		}
+
+
+
+		$clearcachePath = $destpath;
+
 		if (!is_array($ARCurrent->options['rewrite_references'])) {
 			$ARCurrent->options['rewrite_references'] = array();
 		} else if ($ARCurrent->options['rewrite_references']['default']) {
@@ -161,6 +166,15 @@
 					if ($save_obj) {
 
 						display("processing($newpath)	");
+						if ($object->axflags & AX_DUMMY) {
+							if (strpos( $newpath, $clearcachePath ) === 0) {
+								$clearcachePath = $newpath;
+								$ccPathChangedForDummy = true;
+							}
+						} else if ($ccPathChangedForDummy && strpos( $newpath, $clearcachePath ) === 0) {
+							$ccPathChangedForDummy = false;
+							$clearcachePath = $newpath;
+						}
 
 						if ($ARCurrent->options["without_data"]) {
 							display("no data for (".$object->path.")");
@@ -309,12 +323,12 @@
 
 			}
 			if ($ARCurrent->AXAction == "import") {
-				display("clearing cache.\n");
+				display("clearing cache on $clearcachePath.\n");
 				$ARCurrent->importStore->call("system.cache.clear.phtml", 
 						Array(
 							"private" => true,
 							"recurse" => true
-						) , $ARCurrent->importStore->get($destpath));
+						) , $ARCurrent->importStore->get($clearcachePath));
 			}
 		}
 	}
