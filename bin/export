@@ -44,29 +44,16 @@
 
 	next($argv); // do not parse the filename
 	while (list(,$cmd)=each($argv)) {
-		if (strpos($cmd, "--") === 0) {
-			if (strpos(substr($cmd, 2),"-")===false) {
-				$option_switch=substr($cmd, 2);
-			} else {
+		$option = ldParseOption($cmd);
+		if ($option !== false ) {
 
-				$option_switch=substr($cmd, 2, strpos(substr($cmd, 2),"-"));
-
-				if (strpos($cmd, "=")!==false) {
-					$option_value=substr($cmd, strpos($cmd, "=")+1);
-					$option=substr($cmd, strlen($option_switch)+3, strpos($cmd, "=") - (strlen($option_switch)+3));
-				} else {
-					$option=substr($cmd, strlen($option_switch)+3);
-				}
-			}
-
-			//echo "switch($option_switch)($option)='$option_value'\n";
-
-			switch ($option_switch) {
+//			echo "switch(".$option['switch'].")(".$option['subswitch'].")='".$option['value']."'\n";
+			switch ($option['switch']) {
 				case 'with':
-					$ARCurrent->options[$option]=($option_value) ? $option_value : true;
+					$ARCurrent->options[$option['subswitch']]=($option['value']) ? $option['value'] : true;
 				break;
 				case 'without':
-					$ARCurrent->options["without_$option"]=true;
+					$ARCurrent->options["without_".$option['subswitch']]=true;
 				break;
 
 				case 'help':
@@ -76,10 +63,10 @@
 
 				case 'convertToUTF8':
 				case 'convert2UTF8':
-					if (!$option_value) {
-						$option_value = "CP1252";
+					if (!$option['value']) {
+						$option['value'] = "CP1252";
 					}
-					$callArgs["convert_charsets"][$option] = $option_value;
+					$callArgs["convert_charsets"][$option['subswitch']] = $option['value'];
 				break;
 
 				case 'verbose':
@@ -99,7 +86,7 @@
 				break;
 
 				default:
-					die("unknow option-switch ($option_switch)\n");
+					die("unknow option-switch (".$option['switch'].")\n");
 			}
 		} else {
 			$arg_v[$arg_c++]=$cmd;
