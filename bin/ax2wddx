@@ -12,7 +12,7 @@
 	}
 	require_once($ariadne."/configs/axstore.phtml");
 	require_once($ariadne."/configs/store.phtml");
-	require_once($ariadne."/includes/loader.web.php");
+	require_once($ariadne."/includes/loader.cmd.php");
 	require_once($ariadne."/stores/axstore.phtml");
 	include($ariadne."/nls/".$AR->nls->default);
 	require_once($ariadne."/ar.php");

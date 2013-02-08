@@ -11,7 +11,7 @@
 	}
 	require($ariadne."/configs/store.phtml");
 	require($ariadne."/configs/axstore.phtml");
-	require($ariadne."/includes/loader.web.php");
+	require($ariadne."/includes/loader.cmd.php");
 	require($ariadne."/stores/".$store_config["dbms"]."store.phtml");
 	include($ariadne."/stores/axstore.phtml");
 	include_once($ariadne."/ar.php");
