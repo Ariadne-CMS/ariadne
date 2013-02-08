@@ -180,6 +180,13 @@
 		$AR->user->data=new object;
 		$AR->user->data->login="admin";
 
+		if( isset( $ARCurrent->options['temp']) && 
+			is_dir($ARCurrent->options['temp']) &&
+			is_writeable($ARCurrent->options['temp'])
+			){
+			$ax_config['temp'] = $ARCurrent->options['temp'];
+		}
+
 		$ARCurrent->allnls = true;
 		$ARCurrent->nolangcheck = true;
 		$ax_config["writeable"]=false;
