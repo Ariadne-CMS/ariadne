@@ -148,4 +148,24 @@
 		echo "NOT FOUND: [".$requestedpath."][".$requestedtemplate."]";
 	}
 
+	function ldParseOption($cmd) {
+		$result = false;
+		if (strpos($cmd, "--") === 0) {
+			$result = array ('cmd' => $cmd);
+			$option_switch=substr($cmd, 2);
+
+			if (strpos($option_switch,'=') !== false) {
+				$result['value'] = substr($option_switch, strpos($option_switch, "=")+1);
+				$option_switch=substr($option_switch,0,strpos($option_switch, "="));
+			}
+
+			if (strpos($option_switch,"-")!==false) {
+				$result['subswitch'] = substr($option_switch, strpos($option_switch,"-")+1);
+				$option_switch=substr($option_switch, 0, strpos($option_switch,"-"));
+			}
+			$result['switch'] = $option_switch;
+		}
+		return $result;
+	}
+
 ?>
