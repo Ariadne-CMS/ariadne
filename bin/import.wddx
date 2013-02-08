@@ -49,30 +49,10 @@ the specified .wddx file. It will import all objects from your .wddx file.
 
 	next($argv); // do not parse the filename
 	while (list(,$cmd)=each($argv)) {
-		if (strpos($cmd, "--") === 0) {
-			if (strpos(substr($cmd, 2),"-")===false || (
-				strpos(substr($cmd, 2),"-") >= strpos($cmd, "=")
-			)) {
-				$option_switch=substr($cmd, 2);
-				if (strpos($option_switch, "=")!==false) {
-					$option_value=substr($option_switch, strpos($option_switch, "=")+1);
-					$tmp = substr($option_switch,0,strpos($option_switch,"="));
-					$option_switch = $tmp;
-				}
-			} else {
+		$option = ldParseOption($cmd);
+		if ($option !== false ) {
 
-
-				$option_switch=substr($cmd, 2, strpos(substr($cmd, 2),"-"));
-
-				if (strpos($cmd, "=")!==false) {
-					$option_value=substr($cmd, strpos($cmd, "=")+1);
-					$option=substr($cmd, strlen($option_switch)+3, strpos($cmd, "=") - (strlen($option_switch)+3));
-				} else {
-					$option=substr($cmd, strlen($option_switch)+3);
-				}
-			}
-
-			switch ($option_switch) {
+			switch ($option['switch']) {
 				case 'help':
 					echo $HELP_INFO;
 					exit;
@@ -112,13 +92,13 @@ the specified .wddx file. It will import all objects from your .wddx file.
 				break;
 
 				case 'prefix':
-					if($option_value) {
-						$options["prefix"] = $option_value;
+					if($option['value']) {
+						$options["prefix"] = $option['value'];
 					}
 				break;
 
 				default:
-					echo "unknow option-switch ($option_switch)\n";
+					echo "unknow option-switch ($option['switch'])\n";
 			}
 		} else {
 			$arg_v[$arg_c++]=$cmd;

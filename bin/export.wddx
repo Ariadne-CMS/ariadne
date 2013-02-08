@@ -34,29 +34,10 @@ $arg_v[$arg_c++]=$argv[0];
 
 next($argv); // do not parse the filename
 while (list(,$cmd)=each($argv)) {
-	if (strpos($cmd, "--") === 0) {
-		if (strpos(substr($cmd, 2),"-")===false) {
-			if (strpos($cmd, "=")!==false) {
-				$option_switch=substr($cmd, 2, strpos($cmd, "=") - 2);
-				$option_value=substr($cmd, strpos($cmd, "=")+1);
-			} else {
-				$option_switch=substr($cmd, 2);
-			}
-		} else {
+	$option = ldParseOption($cmd);
+	if ($option !== false ) {
 
-			$option_switch=substr($cmd, 2, strpos(substr($cmd, 2),"-"));
-
-			if (strpos($cmd, "=")!==false) {
-				$option_value=substr($cmd, strpos($cmd, "=")+1);
-				$option=substr($cmd, strlen($option_switch)+3, strpos($cmd, "=") - (strlen($option_switch)+3));
-			} else {
-				$option=substr($cmd, strlen($option_switch)+3);
-			}
-		}
-
-		//echo "switch($option_switch)($option)='$option_value'\n";
-
-		switch ($option_switch) {
+		switch ($option['switch']) {
 			case 'help':
 				echo $HELP_INFO;
 				exit;
@@ -83,11 +64,11 @@ while (list(,$cmd)=each($argv)) {
 				break;
 
 			case 'query':
-				$ARCurrent->wddxoptions["query"] = $option_value;
+				$ARCurrent->wddxoptions["query"] = $option['value'];
 				break;
 
 			default:
-				echo "unknow option-switch ($option_switch)\n";
+				echo "unknow option-switch ($option['switch'])\n";
 		}
 	} else {
 		$arg_v[$arg_c++]=$cmd;
