@@ -186,15 +186,8 @@
 		}
 	}
 
-	var_dump(!$ARCurrent->options["skip-user-check"]);
-	var_dump( posix_getuid() != fileowner($AR->dir->install . "/files/files/") );
-	var_dump( posix_getgid() != filegroup($AR->dir->install . "/files/files/") );
-	var_dump( posix_getuid() != fileowner($AR->dir->install . "/files/templates/") );
-	var_dump( posix_getgid() != filegroup($AR->dir->install . "/files/templates/") );
-
 	// Ready to go!
 	set_time_limit(0);
-
 
 	if ($arg_c>=2) {
 		$ARLogin="admin";
