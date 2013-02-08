@@ -215,7 +215,7 @@
 
 		public function copy_to_store($file, $id, $name="") {
 			$result=false;
-			//if (file_exists($file)) {
+			if (file_exists($file)) {
 				$id = $this->addObjectToLayer( $id );
 				if (is_dir($file)) {
 					$path=$this->make_path($id, "", WRITE);
@@ -240,7 +240,7 @@
 					$path=$this->make_path($id, $name, WRITE);
 					$result = $this->copy_file_to_store($file, $path);
 				}
-			//}
+			}
 			return $result;
 		}
 
