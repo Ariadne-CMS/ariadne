@@ -50,43 +50,28 @@
 
 	next($argv); // do not parse the filename
 	while (list(,$cmd)=each($argv)) {
-		if (strpos($cmd, "--") === 0) {
-			if (strpos(substr($cmd, 2),"-")===false) {
-				$option_switch=substr($cmd, 2);
-			} else {
-
-				$option_switch=substr($cmd, 2, strpos(substr($cmd, 2),"-"));
-
-				if (strpos($cmd, "=")!==false) {
-					$option_value=substr($cmd, strpos($cmd, "=")+1);
-					$option=substr($cmd, strlen($option_switch)+3, strpos($cmd, "=") - (strlen($option_switch)+3));
-				} else {
-					$option=substr($cmd, strlen($option_switch)+3);
-				}
-			}
-
-//			echo "switch($option_switch)($option)='$option_value'\n";
-
-			switch ($option_switch) {
+		$option = ldParseOption($cmd);
+		if ($option !== false ) {
+			switch ($option['switch']) {
 				case 'with':
-					$ARCurrent->options[$option]=($option_value) ? $option_value : true;
+					$ARCurrent->options[$option['subswitch']]=($option['value']) ? $option['value'] : true;
 				break;
 				case 'without':
-					$ARCurrent->options["without_$option"]=true;
+					$ARCurrent->options["without_".$option['subswitch']]=true;
 				break;
 				case 'use':
-					switch($option) {
+					switch($option['subswitch']) {
 						case 'nls':
-							$ARCurrent->options["nls"][$option_value] = $option_value;
+							$ARCurrent->options["nls"][$option['value']] = $option['value'];
 						break;
 					}
 				break;
 				case 'convertToUTF8':
 				case 'convert2UTF8':
-					if (!$option_value) {
-						$option_value = "CP1252";
+					if (!$option['value']) {
+						$option['value'] = "CP1252";
 					}
-					$callArgs["convert_charsets"][$option] = $option_value;
+					$callArgs["convert_charsets"][$option['subswitch']] = $option['value'];
 				break;
 
 				case 'verbose':
@@ -110,10 +95,10 @@
 					$ax_config["tar_nofail"]=false;
 				break;
 				case 'rewrite':
-					switch ($option) {
+					switch ($option['subswitch']) {
 						case 'references':
-							if ($option_value) {
-								$fpaths = explode(",", $option_value);
+							if ($option['value']) {
+								$fpaths = explode(",", $option['value']);
 								if (count($fpaths) != 2) {
 									die("--rewrite-references expects nothing or a source- and a destination path, seperated by a comma\n");
 								} else {
@@ -124,7 +109,7 @@
 							}
 						break;
 						case 'urls':
-							$urls = explode(",", $option_value);
+							$urls = explode(",", $option['value']);
 							if (count($urls) != 2) {
 								die("--rewrite-urls expects a source url and a destination url, seperated by a comma\n");
 							} else {
@@ -132,12 +117,12 @@
 							}
 						break;
 						default:
-							die("no idea howto rewrite $option\n");
+							die("no idea howto rewrite ".$option['subswitch']."\n");
 						break;
 					}
 				break;
 				case 'skip':
-					switch ($option) {
+					switch ($option['subswitch']) {
 						case 'user-check':
 							$ARCurrent->options["skip-user-check"] = true;
 						break;
@@ -147,7 +132,7 @@
 					}
 				break;
 				default:
-					die("unknown option-switch ($option_switch)\n");
+					die("unknown option-switch (".$option['switch'].")\n");
 			}
 		} else {
 			$arg_v[$arg_c++]=$cmd;
