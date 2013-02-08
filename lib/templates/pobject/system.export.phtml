@@ -182,6 +182,7 @@
 						}
 
 						if ($ARCurrent->options["without_templates"]) {
+							unset($object->data->config->privatetemplates);
 							unset($object->data->config->templates);
 							unset($object->data->config->pinp);
 							$object->axflags |= AX_WITHOUT_TEMPLATES;
