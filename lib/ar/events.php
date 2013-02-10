@@ -5,6 +5,7 @@
 	) );
 	ar_pinp::allow( 'ar_eventsInstance' );
 	ar_pinp::allow( 'ar_eventsEvent' );
+	ar_pinp::allow( 'ar_eventsListener' );
 
 	class ar_events extends arBase {
 		protected static $listeners = array();
