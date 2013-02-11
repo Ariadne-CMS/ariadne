@@ -3,12 +3,14 @@
 define("DIRMODE", 0770);
 
 class cacherss {
-	function cacherss( $httphelper ) {
+
+	function cacherss( $httphelper, $timeout = 1800 ) {
 		$this->httphelper = $httphelper;
+		$this->timeout = $timeout;
 	}
 	
 	function load( $url ) {
-		$data = $this->httphelper->load( $url, "", time() - (30*60) );
+		$data = $this->httphelper->load( $url, "", time() - $this->timeout );
 		$this->xmldata = $data["data"];
 
 		$rssfeed = new cacherssfeed(); // load from string
@@ -18,7 +20,7 @@ class cacherss {
 	}
 
 	function titlelink($url) {
-		$data = $this->httphelper->load( $url, "", time() - (30*60) );
+		$data = $this->httphelper->load( $url, "", time() - $this->timeout );
 		$this->xmldata = $data["data"];
 
 		$rssfeed = new cacherssfeed(); // load from string
@@ -31,27 +33,28 @@ class cacherss {
 
 
 class pinp_cacherss {
-	function _load( $url ) {
+	function _load( $url, $timeout = 1800 ) {
 		global $AR;
 		$cachelocation = $AR->dir->install . "/files/cache/rss/";
 		$cache = new cache( $cachelocation );
-		$httphelper = new httphelper( $cache);
-		$rss = new cacherss( $httphelper );
+		$httphelper = new httphelper( $cache );
+		$rss = new cacherss( $httphelper, $timeout );
 		return $rss->load( $url );
 	}
 
-	function _titlelink( $url ) {
+	function _titlelink( $url, $timeout = 1800 ) {
 		global $AR;
 		$cachelocation = $AR->dir->install . "/files/cache/rss/";
 		$cache = new cache( $cachelocation );
-		$httphelper = new httphelper( $cache);
-		$rss = new cacherss( $httphelper );
+		$httphelper = new httphelper( $cache );
+		$rss = new cacherss( $httphelper, $timeout );
 		return $rss->titlelink( $url );
 	}
 }
 
 
 class cacherssfeed {
+
 	function parseString( $xmldata ) {
 		// reset namestack
 		$this->xmldata = $xmldata;
