@@ -310,20 +310,30 @@
 				}
 				if ($colDef['sortable']) {
 					$jsColDefs .= ',sortable:true';
-					}
+				}
+
+				if ($colDef['formatter']) {
+					$jsColDefs .= ',formatter:"' . $colDef['formatter'] . '"';
+				}
+				if ($colDef['formatterfunc']) {
+					$jsColDefs .= ',formatter:' . $colDef['formatterfunc'];
+				}
 				$jsColDefs .= "},\n";
 
 				$jsFields .= "\t\t\t\t".'{key:"' . $colDef['key'] . '"';
 				if ($colDef['parser']) {
 					$jsFields .= ',parser:"' . $colDef['parser'] . '"';
 				}
+				if ($colDef['parserfunc']) {
+					$jsFields .= ',parser:' . $colDef['parserfunc'];
+				}
+
 				$jsFields .= '},'."\n";
 			}
 
 			// Strip last comma and \n;
 			$jsColDefs = substr($jsColDefs, 0, strlen($jsColDefs)-2);
 			$jsFields = substr($jsFields, 0, strlen($jsFields)-2);
-
 			echo '		muze.ariadne.explore.viewpane.myColumnDefs = [' . "\n";
 			echo $jsColDefs."\n";
 			echo '	        ];' . "\n";
@@ -340,6 +350,7 @@
 			echo '			muze.ariadne.explore.viewpane.dataTable.subscribe("rowDblclickEvent", muze.ariadne.explore.viewpane.rowDoubleClick);' . "\n";
 			echo '			muze.ariadne.explore.viewpane.dataTable.subscribe("rowMouseoverEvent", muze.ariadne.explore.viewpane.onEventHighlightRow);' . "\n";
 			echo '			muze.ariadne.explore.viewpane.dataTable.subscribe("rowMouseoutEvent", muze.ariadne.explore.viewpane.onEventUnhighlightRow);' . "\n";
+			echo '			muze.ariadne.explore.viewpane.dataTable.subscribe("columnSortEvent", muze.ariadne.explore.viewpane.onEventSortColumn);' . "\n";
 			echo '		}' . "\n";
 
 		}

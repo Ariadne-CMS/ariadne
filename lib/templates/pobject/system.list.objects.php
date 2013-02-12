@@ -13,8 +13,50 @@
 				$query.=" and name.value ~= '%".AddSlashes($name)."%'";
 			}
 
-			$query.=" order by name.$nls.value, name.none.value";
+			
+			$orderqueries = array(
+				"name" => array(
+					"name.$nls.value",
+					"name.none.value"
+				),
+				"ctime" => array(
+					"time.ctime",
+					"name.$nls.value",
+					"name.none.value"
+				),
+				"path" => array(
+					"path",
+					"name.$nls.value",
+					"name.none.value"
+				),
+				"mtime" => array(
+					"time.mtime",
+					"name.$nls.value",
+					"name.none.value"
+				),
+				"priority" => array(
+					"priority",
+					"name.$nls.value",
+					"name.none.value"
+				)
+			);
+
+			// Aliases
+			$orderqueries['modified'] = $orderqueries['mtime'];
+			$orderqueries['filename'] = $orderqueries['path'];
+			
+			if (!$orderqueries[$order]) {
+				$order = 'name';
+			}
+
+			if ($orderqueries[$order]) {
+				$directionpart = (strtolower($direction) == 'desc' ? " DESC" : " ASC");
+				$querypart = implode($directionpart . ", ", (array)$orderqueries[$order]);
+				$query .= " order by " . $querypart . $directionpart;
+			}
 		}
+
+		// echo $query;
 
 		if (!$limit) {
 			$limit=0;

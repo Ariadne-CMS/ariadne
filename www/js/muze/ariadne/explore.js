@@ -297,6 +297,13 @@ muze.ariadne.explore = function() {
 			}
 			parent = parent + "/";
 			return parent;
+		},
+		dateParser : function(date) {
+			dateInfo = date.split("-");
+			return new Date(dateInfo[2], dateInfo[1], dateInfo[0]);
+		},
+		dateFormatter : function(container, record, column, data) {
+			container.innerHTML = YAHOO.util.Date.format(data, {format:"%d-%m-%Y"});
 		}
 	}
 }();
@@ -349,6 +356,15 @@ muze.ariadne.explore.tree = function() {
 		//prepare URL for XHR request:
 		var time = new Date();
 		var sUrl = muze.ariadne.explore.tree.loaderUrl + nodePath + "system.list.folders.json.php?sanity=true&" + time.getTime();
+		var order = muze.ariadne.registry.get('order');
+		var direction = muze.ariadne.registry.get('direction');
+
+		if (order) {
+			sUrl += "&order=" + order;
+		}
+		if (direction) {
+			sUrl += "&direction=" + direction;
+		}
 
 		//prepare our callback object
 		var callback = {
@@ -420,7 +436,7 @@ muze.ariadne.explore.tree = function() {
 		}
 	}
 
-        function buildTree(nodes) {
+	function buildTree(nodes) {
 		//create a new tree:
 		tree = new YAHOO.widget.TreeView("treeDiv");
 		//turn dynamic loading on for entire tree:
@@ -938,6 +954,17 @@ muze.ariadne.explore.viewpane = function() {
 		onEventUnhighlightRow : function(event) {
 			YAHOO.util.Dom.removeClass(event.target, "highlight");
 		},
+		onEventSortColumn : function(event, dir) {
+			if (event.dir == 'yui-dt-asc') {
+				event.dir = 'asc';
+			}
+			if (event.dir == 'yui-dt-desc') {
+				event.dir = 'desc';
+			}
+
+			muze.ariadne.registry.set('order', event.column.key);
+			muze.ariadne.registry.set('direction', event.dir);
+		},
 		onClick : function(event) {
 			YAHOO.util.Event.preventDefault(event);
 			muze.ariadne.explore.viewpane.unselectItem();
@@ -1068,14 +1095,23 @@ muze.ariadne.explore.viewpane = function() {
 			}
 			var browse_template = muze.ariadne.registry.get('browse_template');
 			var viewmode = muze.ariadne.cookie.get('viewmode');
+			var order = muze.ariadne.registry.get('order');
+			var direction = muze.ariadne.registry.get('direction');
+			var store_root = muze.ariadne.registry.get('store_root');
+
 			if( viewmode == 0 ) {
 				viewmode = muze.ariadne.registry.get('viewmode');
 			} else {
 				muze.ariadne.registry.set('viewmode', viewmode);
 			}
-			var store_root = muze.ariadne.registry.get('store_root');
 
 			var url = store_root + path + browse_template + viewmode + '.php?';
+			if (order) {
+				url = url + '&order=' + order;
+			}
+			if (direction) {
+				url = url + '&direction=' + direction;
+			}
 			if (muze.ariadne.explore.viewpane.typefilter) {
 				url = url + 'type=' + muze.ariadne.explore.viewpane.typefilter;
 			}

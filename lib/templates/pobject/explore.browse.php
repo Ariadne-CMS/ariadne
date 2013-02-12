@@ -17,6 +17,13 @@
 		if (!$current_page) {
 			$current_page = 1;
 		}
+		if (!$order=$this->getvar('order')) {
+			$order = "name";
+		}
+		if (!$direction=$this->getvar('direction')) {
+			$direction = "ASC";
+		}
+
 		$offset = ($current_page-1) * $items_per_page;
 
 		$colDefs = array(
@@ -27,7 +34,7 @@
 			array( 'key' => 'filename', 'label' => $ARnls['filename'], 'sortable' => true ),
 			array( 'key' => 'size', 'label' => $ARnls['size'], 'sortable' => true, 'parser' => 'number' ),
 			array( 'key' => 'owner', 'label' => $ARnls['owner'], 'sortable' => true ),
-			array( 'key' => 'modified', 'label' => $ARnls['modified'], 'sortable' => true ),
+			array( 'key' => 'modified', 'label' => $ARnls['modified'], 'sortable' => true, 'formatterfunc' => 'muze.ariadne.explore.dateFormatter', 'parserfunc' => 'muze.ariadne.explore.dateParser' ),
 			array( 'key' => 'language', 'label' => $ARnls['language'], 'sortable' => true ),
 			array( 'key' => 'priority', 'label' => $ARnls['priority'], 'sortable' => true, 'parser' => 'number' ),
 		);
@@ -39,20 +46,11 @@
 		$listargs = array(
 			"limit" => $items_per_page,
 			"offset" => $offset,
-			"sanity" => true
+			"sanity" => true,
+			"order" => $order,
+			"direction" => $direction
 		);
 		
-        if ($viewtype == "details") {
-			$order = $_COOKIE["sortorder"];
-			$direction = $_COOKIE["sortdirection"];
-			if ($order) {
-				$listargs["order"] = $order;
-			}
-			if ($direction) {
-				$listargs["direction"] = $direction;
-			}
-		}
-
 		$object_list = $this->call('system.list.objects.php', $listargs);
 
 		if (!is_array($object_list)) {

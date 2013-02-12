@@ -2,6 +2,7 @@
 	$ARCurrent->nolangcheck = true;
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		global $AR;
+		
 		if (!$this->CheckSilent("layout")) {
 			$AR->SVN->enabled = false;
 		}
@@ -73,14 +74,26 @@
 	//	$yui_base = "http://developer.yahoo.com/yui/";
 
 		$viewmodes = array( "list" => 1, "details" => 1, "icons" => 1);
-		$viewmode = $_GET["viewmode"];
+		$viewmode = $this->getvar("viewmode");
 		if( !$viewmode || !$viewmodes[$viewmode] ) {
-			$viewmode = $_COOKIE["viewmode"];
+			$viewmode = ldGetUserCookie("viewmode");
 			if( !$viewmode || !$viewmodes[$viewmode] ) {
 				$viewmode = 'list';
 			}
-		}	
+		}
 
+		$ordering = array("name" => 1, "filename" => 1, "ctime" => 1, "mtime" => 1, "modified" => 1, "priority" => 1, "path" => 1); // List of allowed ordering options;
+		$directions = array("asc" => 1, "desc" => 1);
+		$order = strtolower($this->getvar('order'));
+		if (!$order || !$ordering[$order]) {
+			$order = 'name';
+		}
+
+		$direction = strtolower($this->getvar('direction'));
+		if (!$direction || !$directions[$direction]) {
+			$direction = 'asc';
+		}
+		
 
 		$objectName = $nlsdata->name;
 		if (!$objectName) {
@@ -146,6 +159,8 @@
 	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.sidebar.getInvisiblesCookie);
 	muze.ariadne.registry.set('browse_template','explore.browse.');
 	muze.ariadne.registry.set('viewmode', '<?php echo $viewmode; ?>');
+	muze.ariadne.registry.set('order', '<?php echo $order; ?>');
+	muze.ariadne.registry.set('direction', '<?php echo $direction; ?>');
 
 	//once the DOM has loaded, we can go ahead and set up our tree:
 	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.tree.init, muze.ariadne.explore.tree, true);
