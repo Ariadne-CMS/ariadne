@@ -338,8 +338,10 @@
 			return copy($source, $target);
 		}
 
-		public function copyNode($id, $newid) {
-			$newid = $this->addObjectToLayer( $newid );
+		public function copyNode($id, $newid, $calledByStore = false) {
+			if (!$calledByStore) {
+				$newid = $this->addObjectToLayer( $newid );
+			}
 			$source=$this->make_path($id);
 			$target=$this->make_path($newid, '', WRITE);
 			$files = $this->ls($id);

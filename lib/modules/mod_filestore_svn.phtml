@@ -139,7 +139,10 @@
 			return $svn;
 		}
 
-		function get_path($svn, $name) {
+		function get_path(&$svn, $name, $write = false) {
+			if ($write) {
+				$svn['object_id'] = $this->addObjectToLayer( $svn['object_id'] );
+			}
 			$path = $this->make_path($svn['object_id'], $name);
 			return $path;
 		}
@@ -174,7 +177,7 @@
 			*/
 
 			$args = array(
-				$this->get_path($svn, $name),
+				$this->get_path($svn, $name, true),
 			);
 			$svn['instance']->add->_prepared = false;
 			$result = $svn['instance']->add->run($args, $svn['switches']);
@@ -207,7 +210,7 @@
 
 			$args = array(
 				$repository,
-				$this->get_path($svn, '')
+				$this->get_path($svn, '', true)
 			);
 			
 			$switches = $svn['switches'];
@@ -259,10 +262,10 @@
 					foreach ($file as $key => $value) {
 						$this->svn_propset($svn, $key, $value, $filename);
 					}
-					$args[] = $this->get_path($svn, $filename);
+					$args[] = $this->get_path($svn, $filename, true);
 				}
 			} else {
-				$args[] = $this->get_path($svn, '');
+				$args[] = $this->get_path($svn, '', true);
 			}
 
 			$switches = $svn['switches'];
@@ -273,7 +276,7 @@
 
 		function svn_delete($svn, $name='') {
 			$args = array(
-				$this->get_path($svn, $name)
+				$this->get_path($svn, $name, true)
 			);
 			$switches = $svn['switches'];
 			$result = $svn['instance']->delete->run($args, $switches);
@@ -291,7 +294,7 @@
 		function svn_export($svn, $repository, $revision='HEAD') {
 			$args = array(
 				$repository,
-				$this->get_path($svn, '')
+				$this->get_path($svn, '', true)
 			);
 			
 			$switches = $svn['switches'];
@@ -305,7 +308,7 @@
 
 		function svn_import($svn, $repository, $comment='') {
 			$args = array(
-				$this->get_path($svn, ''),
+				$this->get_path($svn, '', true),
 				$repository
 			);
 			$switches = $svn['switches'];
@@ -354,7 +357,7 @@
 		function svn_propdel($svn, $propkey, $name='') {
 			$args = array(
 				$propkey,
-				$this->get_path($svn, $name)
+				$this->get_path($svn, $name, true)
 			);
 			$svn['instance']->propdel->_prepared = false;
 			$result = $svn['instance']->propdel->run($args, $svn['switches']);
@@ -384,7 +387,7 @@
 			$args = array(
 				$propkey,
 				$propvalue,
-				$this->get_path($svn, $name)
+				$this->get_path($svn, $name, true)
 			);
 			$svn['instance']->propset->_prepared = false;
 			$result = $svn['instance']->propset->run($args, $svn['switches']);
@@ -393,7 +396,7 @@
 
 		function svn_resolved($svn, $name='') {
 			$args = array(
-				$this->get_path($svn, $name)
+				$this->get_path($svn, $name, true)
 			);
 			$svn['instance']->resolved->_prepared = false;
 			$result = $svn['instance']->resolved->run($args, $svn['switches']);
@@ -402,7 +405,7 @@
 
 		function svn_revert($svn, $name='') {
 			$args = array(
-				$this->get_path($svn, $name)
+				$this->get_path($svn, $name, true)
 			);
 			$svn['instance']->revert->_prepared = false;
 			$result = $svn['instance']->revert->run($args, $svn['switches']);
@@ -450,7 +453,7 @@
 
 		function svn_update($svn, $name='', $revision='HEAD') {
 			$args = array(
-				$this->get_path($svn, $name)
+				$this->get_path($svn, $name, true)
 			);
 			$switches = $svn['switches'];
 
@@ -510,7 +513,7 @@
 			// checkout the SVN, then move the original
 			// templates back over the SVN version.
 
-			$dir = $this->get_path($svn, '');
+			$dir = $this->get_path($svn, '', true);
 			$tempdir = tempnam($AR->dir->install . "/files/temp/", "svntemp");
 			unlink($tempdir);
 
@@ -619,7 +622,7 @@
 		}
 
 		function svn_unsvn($svn) {
-			$path = $this->get_path($svn, '') . ".svn/";
+			$path = $this->get_path($svn, '', true) . ".svn/";
 			$this->rmdir_rf($path);
 		}
 
@@ -630,8 +633,8 @@
 			return $this->copyRecursive($source, $target);
 		}
 
-		public function copyNode($id, $newid) {
-			parent::copyNode($id, $newid);
+		public function copyNode($id, $newid, $calledByStore = false) {
+			parent::copyNode($id, $newid, $calledByStore);
 			$this->copySvn($id, $newid);
 		}
 

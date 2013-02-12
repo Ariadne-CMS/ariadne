@@ -385,13 +385,14 @@ abstract class store {
 
 	public function get_filestore($name) {
 		global $AR;
-		if ($AR->SVN->enabled && ($name == "templates")) {
-			require_once($this->code."modules/mod_filestore_svn.phtml");
-		} else {
-			require_once($this->code."modules/mod_filestore.phtml");
-		}
 		if (!$this->_filestores[$name]) {
-			$this->_filestores[$name]=new filestore($name, $this->files, $this);
+			if ($AR->SVN->enabled && ($name == "templates")) {
+				require_once($this->code."modules/mod_filestore_svn.phtml");
+				$this->_filestores[$name]=new filestore_svn($name, $this->files, $this);
+			} else {
+				require_once($this->code."modules/mod_filestore.phtml");
+				$this->_filestores[$name]=new filestore($name, $this->files, $this);
+			}
 		}
 		return $this->_filestores[$name];
 	}

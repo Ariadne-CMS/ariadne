@@ -778,9 +778,9 @@ class mysql_workspacesstore extends mysqlstore {
 			if (!$result) {
 				return false;
 			}
-			$layerdNode = mysql_fetch_array($result);
-			if ($layerdNode) {
-				return $layerdNode['path'];
+			$layeredNode = mysql_fetch_array($result);
+			if ($layeredNode) {
+				return $layeredNode['path'];
 			}
 		}
 		return $node['path'];
@@ -884,7 +884,7 @@ class mysql_workspacesstore extends mysqlstore {
 			foreach ($this->filestores as $fsName) {
 				debug("store::addObjectToLayer::filestore($fsName, id: ".$object['id'].")", "store");
 				$fStore = $this->get_filestore($fsName);
-				$fStore->copyNode($object['id'], $id);
+				$fStore->copyNode($object['id'], $id, true);
 			}
 		}
 		return $id;
