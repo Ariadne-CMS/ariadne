@@ -215,8 +215,6 @@
 				$repository,
 				$this->get_path($svn, '', true)
 			);
-			echo "checkout";
-			print_r($args);
 			
 			$switches = $svn['switches'];
 
@@ -225,7 +223,6 @@
 			}
 			$svn['instance']->checkout->_prepared = false;
 			$result = $svn['instance']->checkout->run($args, $switches);
-			print_r($result);
 			return $result;
 		}
 
