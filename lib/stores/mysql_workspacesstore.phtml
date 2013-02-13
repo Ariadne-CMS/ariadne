@@ -37,7 +37,7 @@ class mysql_workspacesstore extends mysqlstore {
 	public function __construct($path, $config) {
 		parent::__construct($path, $config);
 
-		$this->layer = $config["layer"];
+		$this->layers = (array) $config["layer"];
 
 		/* Include module mysql_compiler */
 		include_once($this->code."stores/modules/mysql_workspaces_compiler.php");
@@ -45,28 +45,17 @@ class mysql_workspacesstore extends mysqlstore {
 	}
 	
 	public function getLayer($path) {
-		if (is_array($this->layer)) {
-			krsort($this->layer); // Order path in reverse order, so longer (more specific) paths get found first.
-			foreach ($this->layer as $layerPath => $layer) {
-				if (substr($path, 0, strlen($layerPath)) == $layerPath) {
-					return $layer;
-				}
+		krsort($this->layers); // Order path in reverse order, so longer (more specific) paths get found first.
+		foreach ($this->layers as $layerPath => $layer) {
+			if (substr($path, 0, strlen($layerPath)) == $layerPath) {
+				return $layer;
 			}
-			return 0;
-		} else {
-			return (int)$this->layer;
 		}
+		return 0;
 	}
 
 	public function setLayer($layer, $path = '/') {
-		if (!is_array($this->layer)) {
-			$this->layer = array(
-					'/'   => $this->layer,
-					$path => $layer
-			);
-		} else {
-			$this->layer[$path] = (int)$layer;
-		}
+		$this->layers[ $path ] = (int)$layer;
 	}
 
 
@@ -438,7 +427,7 @@ class mysql_workspacesstore extends mysqlstore {
 
 	public function count_find($path, $criteria, $limit=100, $offset=0) {
 		$sqlcompiler= $this->compilerFactory();
-		$query=$sqlcompiler->compile($path, $criteria, $limit, $offset, $this->layer);
+		$query=$sqlcompiler->compile($path, $criteria, $limit, $offset, $this->layers);
 		if ($sqlcompiler->error) {
 			$this->error=$sqlcompiler->error;
 		}
@@ -487,7 +476,7 @@ class mysql_workspacesstore extends mysqlstore {
 			$nodes_tbl=$this->tbl_prefix."nodes";
 			$objects_tbl=$this->tbl_prefix."objects";
 			$types_tbl=$this->tbl_prefix."types";
-			$layer=(int)$this->layer;
+			$layer = $this->getLayer( $path );
 			while (list($property, $values)=@each($criteria)) {
 				$eproperty=AddSlashes($property);
 				if ($property!="object") {
@@ -749,15 +738,11 @@ class mysql_workspacesstore extends mysqlstore {
 		debug("store::getPathById( $id )", "store");
 
 		$query_string_layers = "";
-		if (is_array($this->layer)) {
-			foreach ($this->layer as $path => $layer) {
-				if ($query_string_layers) {
-					$query_string_layers .= " OR ";
-				}
-				$query_string_layers .= " ( path like '".AddSlashes($path)."%' and layer = ".((int)$layer)." ) ";
+		foreach ($this->layers as $path => $layer) {
+			if ($query_string_layers) {
+				$query_string_layers .= " OR ";
 			}
-		} else {
-			$query_string_layers .= " layer = ".((int)$this->layer)." ";
+			$query_string_layers .= " ( path like '".AddSlashes($path)."%' and layer = ".((int)$layer)." ) ";
 		}
 		
 		$query_string_node = "select path, id, layer from $nodes_tbl where object = ".((int)$id)." and (layer = 0 OR $query_string_layers) order by layer DESC";
@@ -1162,7 +1147,7 @@ class mysql_workspacesstore extends mysqlstore {
 
 		$path=AddSlashes($path);
 		$nodes_tbl = $this->tbl_prefix."nodes";
-		$layer=(int)$this->layer;
+		$layer = $this->getLayer( $path );
 		$substr_s = strlen($path);
 		if (preg_match("/^(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) { 
 			$subid = 0;
