@@ -15,17 +15,19 @@
 			
 			muze.namespace('muze.test', function() { this.test = function() { alert 'test'; } }  );
 
-	object require(string modules, function continuation) 
-		This method only checks if the given module is available (registered).
-		If not, it will throw an error with the missing module, and return
-		false. 
-		If it is available, it will return the module object.
-		require does not attempt to load the required module, you must make sure you do
-		that yourself. You can either load each script seperately, or in one go through
-		Ariadne's ariadne.load.js template
-		If a continuation function is supplied, that function will only be called if the
-		required namespaces are available. If not, no errors will be thrown.
-		If you require multiple modules, seperate them with a ','. Extra spaces will be trimmed of.
+	object require(mixed modules, function continuation) 
+		This method checks if the given module is available (registered).
+		If not, it will try to load the module, if it can or throw an error with the 
+		missing module, and return false.
+		If it is available, it will return the module object, for a single module.
+		If a continuation function is supplied, that function will be called if and when the
+		required namespaces are available. 
+		If you require multiple modules, pass an array with all required modules or a string 
+		with all modules seperated with a ','. Extra spaces will be trimmed of.
+		You can specify a url for any given module instead of a module name or in addition of
+		a module name by seperating them with a '|' character:
+			muze.require('jquery|//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js', ...)
+			muze.require('//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js', ...)
 		
 		muze.require('module.not.available');
 		
@@ -117,6 +119,13 @@
 
 var muze = this.muze = {};
 muze.global = this;
+muze.url = (function() {
+	var scripts = document.getElementsByTagName('script');
+	var index = scripts.length - 1;
+	var urlHelper = document.createElement('a');
+	urlHelper.href = scripts[index].src;
+	return urlHelper;
+})();
 
 (function() {
 
@@ -192,7 +201,35 @@ muze.global = this;
 		return moduleInstance;
 	};
 
-	muze.require = function( modules, continuation ) {
+	function _parseModuleInfo( moduleInfo ) {
+		var pipePos = moduleInfo.indexOf('|');
+		var slashPos = moduleInfo.indexOf('/');
+		if ( pipePos != -1 ) {
+			var module = moduleInfo.substring(0, pipePos);
+			var url = moduleInfo.substring(pipePos+1);
+		} else if ( slashPos != -1 ) {
+			var module = false;
+			var url = moduleInfo;
+		} else {
+			var module = moduleInfo;
+			var url = document.createElement('a');
+			url.href = muze.url.href;
+			if ( url.search.match('muze') ) {
+				url.search = '?'+module;
+			} else if ( url.pathname.match('muze.js') ) {
+				url.pathname = url.pathname.replace('muze.js', module.replace('.','/')+'.js' );
+			} else {
+				throw 'could not load modules dynamically - muze.url not set correctly';
+			}
+			url = url.href;
+		}
+		return {
+			module: module,
+			url: url
+		};
+	}
+
+	function _parseModulesList( modules ) {
 		// the continuation is a function which is only run if all requirements are met
 		if (typeof modules == 'string') {
 			var modulesList = (/,/.test(modules)) ? modules.split(',') : [ modules ];
@@ -202,17 +239,52 @@ muze.global = this;
 			throw('Incorrect argument 1 (required modules): '+modules);
 			return false;
 		}
-		for (var i=0; i<modulesList.length; i++) {
-			var moduleInstance = _namespaceWalk( modulesList[i], function(ob, name) {
+		var scriptsToCheck = [];
+		for ( var i=0; i<modulesList.length; i++ ) {
+			scriptsToCheck[i] = _parseModuleInfo( modulesList[i] );
+		}
+		return scriptsToCheck;		
+	}
+
+	muze.require = function( modules, continuation ) {
+		modules = _parseModulesList( modules );
+		var scriptsToLoad = [];
+		for (var i=0; i<modules.length; i++) {
+			if ( modules[i].module ) {
+				var moduleInstance = _namespaceWalk( modules[i].module, function(ob, name) {
+					if (typeof continuation == 'undefined') {
+						throw 'namespace ' + name + ' not found ';
+					} else {
+						scriptsToLoad[ scriptsToLoad.length ] = modules[i];
+					}
+				});
+			} else if ( !included[ modules[i].url ] ) {
 				if (typeof continuation == 'undefined') {
 					throw 'namespace ' + name + ' not found ';
 				} else {
-					continuation = false;
+					scriptsToLoad[ scriptsToLoad.length ] = modules[i];
 				}
-			});
+			}
 		}
-		if (typeof continuation == 'function') {
-			continuation.call(muze.global);
+		if ( typeof continuation == 'function' ) {
+			if ( scriptsToLoad.length ) {
+				var loadedScripts = 0;
+				for ( var i = 0; i<scriptsToLoad.length; i++ ) {
+					muze.include( scriptsToLoad[i].url, scriptsToLoad[i].module ).onload( (function(module, url) {
+						return function() {
+							if ( module ) {
+								registered[module] = url;
+							}
+							loadedScripts++
+							if ( loadedScripts == scriptsToLoad.length ) {
+								continuation.call(muze.global);
+							}
+						};
+					})(scriptsToLoad[i].module, scriptsToLoad[i].url) );
+				}
+			} else {
+				continuation.call(muze.global);
+			}
 		}
 		return moduleInstance;
 	};
@@ -220,14 +292,21 @@ muze.global = this;
 	muze.include = function(url, module) {
 		var loader = muze.loader();
 		if (!included[url] && (!module || !registered[module])) {
+			var handleOnLoad = function() {
+				included[url] = true;
+				if ( module ) {
+					registered[module] = url;
+				}
+				loader.loaded();
+			};
 			var script = document.createElement('SCRIPT');
 			script.src = url;
 			try {
-				script.addEventListener('load', loader.loaded, false);
+				script.addEventListener('load', handleOnLoad, false);
 			} catch(e) {
 				script.onreadystatechange = function() { 
 					if (script.readyState == 'loaded' || script.readyState == 'complete') {
-						loader.loaded();
+						handleOnLoad();
 						script.onreadystatechange = null;
 					}
 				};
