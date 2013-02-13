@@ -459,7 +459,7 @@ class mysql_workspacesstore extends mysqlstore {
 	 **********************************************************************************/
 		if (!is_array($criteria) && ($criteria=trim($criteria))) {
 			$sqlcompiler= $this->compilerFactory();
-			$query=$sqlcompiler->compile($path, $criteria, $limit, $offset, $this->getLayer($path));
+			$query=$sqlcompiler->compile($path, $criteria, $limit, $offset, $this->layers);
 			if ($sqlcompiler->error) {
 				$this->error=$sqlcompiler->error;
 			}

@@ -53,17 +53,28 @@ class mysql_workspaces_compiler extends mysql_compiler {
 		$query = " where $nodes.object=$objects.id $prop_dep";
 		$query .= " and $nodes.path like '".AddSlashes($this->path)."%' ";
 
-		if ($this->layer) {
-			$layer = (int)$this->layer;
+
+		$query_string_layers = "";
+		$layering = false;
+		foreach ($this->layers as $lPath => $lId) {
+			if ($lId) {
+				$layering = true;
+				if ($query_string_layers) {
+					$query_string_layers .= " OR ";
+				}
+				$query_string_layers .= " ( $nodes.path like '".AddSlashes($lPath)."%' and $nodes.layer = ".((int)$lId)." ) ";
+			}
+		}
+		if ($layering) {
 			$query .= " and ( 
-								$nodes.layer = $layer
+								( $query_string_layers )
 							OR 
 								$nodes.layer = 0
 								and $nodes.id NOT IN (
-									select $nodes.id from $nodes where $nodes.layer = $layer
+									select $nodes.id from $nodes where ( $query_string_layers )
 								)
 								and $nodes.path NOT IN (
-									select $nodes.path from $nodes where $nodes.layer = $layer
+									select $nodes.path from $nodes where ( $query_string_layers )
 								)
 						)
 			";

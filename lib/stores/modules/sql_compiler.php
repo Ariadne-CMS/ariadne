@@ -465,14 +465,14 @@ abstract class sql_compiler {
 	// virtual (&private) method. To be implemented in the sql specific compiler
 	protected abstract function priv_sql_compile($node) ;
 
-	public function compile($path, $query, $limit=100, $offset=0, $layer=0) {
+	public function compile($path, $query, $limit=100, $offset=0, $layers = array()) {
 		debug("sql_compiler::compile ($path, $query, $limit, $offset, $layer)", "store");
 		$this->error="";
 		$this->path = $path;
 
 		$this->limit=$limit;
 		$this->offset=$offset;
-		$this->layer=$layer;
+		$this->layers=$layers;
 
 		$tree=$this->parse_query($query);
 		if (!$this->error && trim($query)) {
