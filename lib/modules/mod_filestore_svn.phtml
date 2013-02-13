@@ -142,7 +142,10 @@
 		function get_path(&$svn, $name, $write = false) {
 			if ($write) {
 				$svn['object_id'] = $this->addObjectToLayer( $svn['object_id'] );
+			} else {
+				$svn['object_id'] = $this->getObjectId( $svn['object_id'] );
 			}
+			
 			$path = $this->make_path($svn['object_id'], $name);
 			return $path;
 		}
@@ -212,6 +215,8 @@
 				$repository,
 				$this->get_path($svn, '', true)
 			);
+			echo "checkout";
+			print_r($args);
 			
 			$switches = $svn['switches'];
 
@@ -220,6 +225,7 @@
 			}
 			$svn['instance']->checkout->_prepared = false;
 			$result = $svn['instance']->checkout->run($args, $switches);
+			print_r($result);
 			return $result;
 		}
 

@@ -79,6 +79,16 @@
 			}
 		}
 
+		public function getObjectId( $id ) {
+			if (method_exists($this->store, "getNodeByObjectId")) {
+				$node = $this->store->getNodeByObjectId( $id );
+				if ($node['object']) {
+					return $node['object'];
+				}
+			}
+			return $id;
+		}
+
 		public function addObjectToLayer( $id ) {
 			if (method_exists($this->store, "addObjectToLayer")) {
 				return $this->store->addObjectToLayer( $id );
