@@ -1988,7 +1988,7 @@ debug("ONBEFOREVIEW ($arCallFunction)");
 						array_pop($ARCurrent->arCallStack);
 						$this->popContext();
 
-						if ( !$initialConfigChecked ) {
+						if ( !$initialConfigChecked && $arCallFunction != 'config.ini' ) {
 							// this template was the first template called in this request.
 							$eventData = new object();
 							$eventData->arCallArgs = $arCallArgs;
