@@ -3,8 +3,8 @@
 	$nocache=true;
 	$ARCurrent->allnls = true;
 
-	ldHeader("HTTP/1.0 400 Bad Request");
 	if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
+		ldHeader("HTTP/1.0 400 Bad Request");
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> 
 <html>
