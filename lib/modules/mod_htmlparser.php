@@ -98,12 +98,6 @@
 						$quote = $yych;
 						$yych = $yych = $YYBUFFER[++$YYCURSOR];
 						while ($yych !== "\000" && $yych !== $quote) {
-							if ($yych == "\\") {
-								$yych = $yych = $YYBUFFER[++$YYCURSOR];
-								if ($yych !== $quote) {
-									$value .= "\\";
-								}
-							}
 							$value .= $yych;
 							$yych = $yych = $YYBUFFER[++$YYCURSOR];
 						}
