@@ -521,26 +521,28 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					$i=0;
 					if (is_array($this->data->custom)) {
 						foreach($this->data->custom as $nls => $cdata){
-							foreach($cdata as $name => $value ){
-								if ($configcache->custom[$name]['containsHTML']) {
-									$this->_load('mod_url.php');
-									$value = URL::RAWtoAR($value, $nls);
-									$this->data->custom[$nls][$name] = $value;
-								}
-								if ($configcache->custom[$name]['property']) {
-									// one index, this order (name, value, nls) ?
-									if (is_array($value)) {
-										foreach($value as $valkey => $valvalue){
+							if ( is_array( $cdata ) ) {
+								foreach($cdata as $name => $value ){
+									if ($configcache->custom[$name]['containsHTML']) {
+										$this->_load('mod_url.php');
+										$value = URL::RAWtoAR($value, $nls);
+										$this->data->custom[$nls][$name] = $value;
+									}
+									if ($configcache->custom[$name]['property']) {
+										// one index, this order (name, value, nls) ?
+										if (is_array($value)) {
+											foreach($value as $valkey => $valvalue){
+												$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
+												$properties["custom"][$i]["value"]="'".AddSlashes($valvalue)."'";
+												$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
+												$i++;
+											}
+										} else {
 											$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
-											$properties["custom"][$i]["value"]="'".AddSlashes($valvalue)."'";
+											$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
 											$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
 											$i++;
 										}
-									} else {
-										$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
-										$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
-										$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
-										$i++;
 									}
 								}
 							}
