@@ -7,7 +7,7 @@
 		$newurl = $this->getvar('newurl');
 
 		$oldreference = $this->getvar('oldreference');
-		$newreference = $this->getvar('newreferece');
+		$newreference = $this->getvar('newreference');
 
 		if ($oldurl && $newurl) {
 			$rewrite_urls = array(
