@@ -4,7 +4,7 @@
 	$title = $_GET["title"];
 	$format = $_GET["format"];
 
-	$name = preg_replace("/[^A-Za-z0-9 _-]/", '', $name);
+	$name = preg_replace("/[^[\]A-Za-z0-9 _-]/", '', $name);
 	$title = preg_replace("/[^A-Za-z0-9 _-]/", '', $title);
 	$date = preg_replace("[^0-9]", '', $date);
 	$format = preg_replace("/[^%mdYy-]/", '', $format);
