@@ -20,24 +20,26 @@
 						} );
 					}
 
-					if (top.window.opener.objectadded && top.window.opener.muze && top.window.opener.muze.ariadne ) {
-						currentpath = window.opener.muze.ariadne.registry.get('path');
-						if (currentpath == '<?php echo $this->parent; ?>') {
-							window.opener.muze.ariadne.explore.objectadded();
-						} else if (currentpath == '<?php echo $this->path; ?>') {
-							window.opener.muze.ariadne.explore.tree.refresh('<?php echo $this->path; ?>');
-							window.opener.muze.ariadne.explore.sidebar.view('<?php echo $this->path; ?>');
-							window.opener.muze.ariadne.explore.browseheader.view('<?php echo $this->path; ?>');
-						} else {
-							// Fallback for shortcuts.
-							window.opener.muze.ariadne.explore.objectadded();
+					try {
+						if (top.window.opener.objectadded && top.window.opener.muze && top.window.opener.muze.ariadne ) {
+							currentpath = window.opener.muze.ariadne.registry.get('path');
+							if (currentpath == '<?php echo $this->parent; ?>') {
+								window.opener.muze.ariadne.explore.objectadded();
+							} else if (currentpath == '<?php echo $this->path; ?>') {
+								window.opener.muze.ariadne.explore.tree.refresh('<?php echo $this->path; ?>');
+								window.opener.muze.ariadne.explore.sidebar.view('<?php echo $this->path; ?>');
+								window.opener.muze.ariadne.explore.browseheader.view('<?php echo $this->path; ?>');
+							} else {
+								// Fallback for shortcuts.
+								window.opener.muze.ariadne.explore.objectadded();
+							}
 						}
+						<?php	if ($this->path == $AR->user->path) {  ?>
+								window.opener.muze.ariadne.explore.viewpane.view('<?php echo $this->path; ?>');
+								window.opener.muze.ariadne.explore.toolbar.load('<?php echo $this->path; ?>');
+						<?php	}	?>
+					} catch (e) {
 					}
-					<?php	if ($this->path == $AR->user->path) {  ?>
-							window.opener.muze.ariadne.explore.viewpane.view('<?php echo $this->path; ?>');
-							window.opener.muze.ariadne.explore.toolbar.load('<?php echo $this->path; ?>');
-					<?php	}	?>
-
 					<?php
 						if (!$arIsNewObject || $this->getdata("arCloseWindow", "none")) {
 					?>
