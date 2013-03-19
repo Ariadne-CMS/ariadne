@@ -91,7 +91,7 @@
 					}
 				}
 				$this->data->scenario=$scenario;
-				if ( !isset($starttime) ) {
+				if ( !isset($startdatetime) ) {
 					$this->data->startdate=$this->getdata("startdate","none");
 					$this->data->starttime_hour = $this->getdata("starttime_hour");
 					$this->data->starttime_minute = $this->getdata("starttime_minute");
@@ -99,14 +99,16 @@
 					$this->data->starttime=($this->data->starttime_hour*3600)
 										+($this->data->starttime_minute*60)
 										+($this->data->starttime_seconds);
+					$this->data->startdatetime = $this->data->startdate + $this->data->starttime;
 				} else {
-					$this->data->startdate = strtotime('today', $starttime);
-					$this->data->starttime = $starttime - $this->data->startdate;
-					$this->data->starttime_hour = strftime('%H', $starttime);
-					$this->data->starttime_minute = strftime('%M', $starttime);
-					$this->data->starttime_seconds = strftime('%S', $starttime);
+					$this->data->startdate = strtotime('today', $startdatetime);
+					$this->data->starttime = $startdatetime - $this->data->startdate;
+					$this->data->starttime_hour = strftime('%H', $startdatetime);
+					$this->data->starttime_minute = strftime('%M', $startdatetime);
+					$this->data->starttime_seconds = strftime('%S', $startdatetime);
+					$this->data->startdatetime = $startdatetime;
 				}
-				if ( !isset($endtime) ) {
+				if ( !isset($enddatetime) ) {
 					$this->data->enddate=$this->getdata("enddate","none");
 					$this->data->endtime_hour = $this->getdata("endtime_hour");
 					$this->data->endtime_minute = $this->getdata("endtime_minute");
@@ -114,12 +116,14 @@
 					$this->data->endtime=($this->data->endtime_hour*3600)
 										+($this->data->endtime_minute*60)
 										+($this->data->endtime_seconds);
+					$this->data->enddatetime = $this->data->enddate + $this->data->endtime;
 				} else {
-					$this->data->enddate = strtotime('today', $endtime);
-					$this->data->endtime = $endtime - $this->data->enddate;
-					$this->data->endtime_hour = strftime('%H', $endtime);
-					$this->data->endtime_minute = strftime('%M', $endtime);
-					$this->data->endtime_seconds = strftime('%S', $endtime);
+					$this->data->enddate = strtotime('today', $enddatetime);
+					$this->data->endtime = $enddatetime - $this->data->enddate;
+					$this->data->endtime_hour = strftime('%H', $enddatetime);
+					$this->data->endtime_minute = strftime('%M', $enddatetime);
+					$this->data->endtime_seconds = strftime('%S', $enddatetime);
+					$this->data->enddatetime = $enddatetime;
 				}
 
 				if( ( !$this->data->endtime ) && ( !$this->data->enddate ) ) {
