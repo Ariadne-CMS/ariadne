@@ -1,12 +1,13 @@
 <?php
 
 	ar_pinp::allow('ar_html_form', array(
-		'addField', 'addButton', 'setValue', 'getValue', 'getValues', 'getHTML', 'isValid', 'isSubmitted', 'validate', 'registerInputType', 'registerValidateCheck', 'findField'
+		'configure', 'addField', 'addButton', 'setValue', 'getValue', 'getValues', 'getHTML', 'isValid', 'isSubmitted', 'validate', 'registerInputType', 'registerValidateCheck', 'findField'
 	) );
 	
 	class ar_html_form extends arBase {
 		// todo: file upload field, captcha
 		static public $customTypes;
+		static public $requiredTitle = 'Required';
 		
 		static public $checks = array(
 			'alpha'        => '/^[[:alpha:]]+$/iD',
@@ -43,9 +44,18 @@
 			$this->action	= $action;
 			$this->method	= $method;
 			$this->requiredLabel = isset($requiredLabel) ? $requiredLabel : 
-				ar_html::el('span', array('title' => 'Required', 'class' => 'formRequired'), '*');
+				ar_html::el('span', array('title' => self::$requiredTitle, 'class' => 'formRequired'), '*');
 		}
-	
+		
+		public function configure( $name, $value ) {
+			switch ( $name ) {
+				case 'requiredTitle' :
+					self::$requiredTitle = $value;
+				break;
+			}
+			return $this;
+		}
+
 		public function addField($value) {
 			$this->fields[] = $this->parseField(0, $value);
 		}
