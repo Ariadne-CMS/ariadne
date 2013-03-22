@@ -646,6 +646,9 @@ EOF;
 			// otherwise you must always have the parent in the list before any child
 
 			foreach ( $list as $key => $item ) {
+				if ( !$item ) {
+					continue;
+				}
 				$itemInfo = $this->_getItemInfo( $item, $key, $parent, $current );
 				$itemNode = $itemInfo['node'];
 				$this->items[$itemInfo['url']] = $itemNode;
