@@ -389,7 +389,10 @@
 				$expires = $now + 1800;
 			}
 			$result = ldHeader("Pragma: cache");
-			ldHeader("Cache-control: public");
+
+			// Give the client the max-age
+			$maxage = $expires - $now;
+			ldHeader("Cache-control: public, max-age=$maxage");
 		} else {
 			if ( !isset($expires) ) {
 				$expires = 0;

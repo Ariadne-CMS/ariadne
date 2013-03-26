@@ -188,9 +188,15 @@
 		$logstats->log();
 
 		$timecheck=time();
+
+		// FIXME: Chrome sometimes sends If-Modified-Since combined with Pragma: no-cache or Cache-control: no-cache;
+		// The check should first check if a 304 not modified header can be sent;
+		// then check if the cache-image can be used;
+		// then pass it to Ariadne.
+		// For now: pragma: no-cache check is removed, this makes Ariadne stubborn with returning cache-images.
+
 		if (file_exists($cachedimage) && 
 			(strpos($_SERVER["ALL_HTTP"],"no-cache") === false) &&
-			(strpos($_SERVER['HTTP_PRAGMA'],"no-cache") === false) &&
 			((($mtime=filemtime($cachedimage))>$timecheck) || ($mtime==0)) &&
 			($_SERVER["REQUEST_METHOD"]!="POST")) {
 
@@ -199,16 +205,19 @@
 				// the mtime is used as expiration time, the ctime is the correct last modification time.
 				// as an object clears the cache upon a save.
 				ldHeader("HTTP/1.1 304 Not Modified");
-				// The HTTP spec also requires a new Expirs header to be sent, if the value differs from the
-				// the previous 200 response. Since you don't want browsers to repeatedly send the if-modified-since
-				// request, but like them to back off a suitable time, we need to resend a new expires header here.
-				// The back off time is 30 minutes, for no good reason.
-				$expires = $timecheck + 1800;
-				if ($mtime!=0 && $expires>$mtime) {
-					$expires = $mtime;
+
+				// Send the original headers - they will already contain the correct max-age and expires values;
+				if (file_exists($cachedheader)) {
+					$filedata = file($cachedheader);
+					if (is_array($filedata)) {
+						while (list($key, $header)=each($filedata)) {
+							ldHeader($header);
+						}
+					}
 				}
-				ldHeader("Expires: ".gmdate(DATE_RFC1123,$expires));
 			} else {
+				ldHeader("X-Ariadne-Cache: Hit");
+
 				// now send caching headers too, maximum 1 hour client cache.
 				// FIXME: make this configurable. per directory? as a fraction?
 				$freshness=$mtime-$timecheck;
@@ -400,6 +409,7 @@
 			if ($function!==false) {
 				// finally call the requested object
 				unset($store->total);
+if ($_GET['debugon']) debugon('all');
 				$store->call($function, $args, $store->get($path));
 				if (!$store->total) {
 					ldObjectNotFound($path, $function);
@@ -452,9 +462,13 @@
 			// first set clientside cache headers
 			if (!$ARCurrent->arDontCache && !$nocache && ($cachetime=$ARCurrent->cachetime)) {
 				if ($cachetime==-2) {
-					$cachetime=999;
+					$cachetime = 999;
+					$ARCurrent->cachetime = 999;
+					ldSetClientCache(true, time()+1800); // Let the client revalidate cached image after 30 minutes;
+				} else {
+					// FIXME: Is it wise to give the client the same expiry as the cachetime? Or should this also be 30 minutes?
+					ldSetClientCache(true, time()+(($cachetime * 3600)/2));
 				}
-				ldSetClientCache(true, time()+(($cachetime * 3600)/2));
 			}
 
 
@@ -513,6 +527,8 @@
 			}
 			// because we have the full content, we can now also calculate the content length
 			ldHeader("Content-Length: ".$image_len);
+			ldHeader("X-Ariadne-Cache: Miss");
+
 			// flush the buffer, this will send the contents to the browser
 			ob_end_flush();
 			debug("loader: ob_end_flush()","all");
