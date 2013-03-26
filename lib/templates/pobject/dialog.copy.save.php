@@ -49,6 +49,7 @@
 			<div id="progress_text">0/<?php echo $total; ?></div>
 		</div>
 		<?php 
+				$copiedTo = "";
 				while ($offset < $objects_left) {
 					flush();
 					set_time_limit(30);
@@ -110,6 +111,10 @@
 							window.opener.muze.ariadne.explore.objectadded();
 						} else {
 							window.opener.muze.ariadne.explore.tree.view('<?php echo $this->make_path($copytarget . "../"); ?>');
+						}
+					} else {
+						if (window.opener.objectadded) {
+							window.opener.objectadded('<?php echo $this->type; ?>', '<?php echo $nlsdata->name; ?>', '<?php echo $ARCurrent->newpath; ?>');
 						}
 					}
 					window.close();
