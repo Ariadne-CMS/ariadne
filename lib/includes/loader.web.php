@@ -159,7 +159,7 @@
 			} else {
 				// make sure the config check has been run:
 				$ob = current( $store->call('system.get.phtml', array(), $store->get($path) ) );
-				$ob->CheckConfig();
+				$ob->loadConfig(); //CheckConfig();
 
 				$ob->pushContext( array(
 					"arSuperContext" => Array(),
