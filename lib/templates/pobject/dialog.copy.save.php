@@ -66,6 +66,9 @@
 							</script>
 							<?php
 							return false;
+						} else if (!$copiedTo) {
+							$copiedTo = $ARCurrent->newpath;
+							$copytarget = $copiedTo;
 						}
 					}
 
@@ -99,7 +102,11 @@
 					echo "document.getElementById('copy').innerHTML = '" . $ARnls["copying"] . " " . $next_object_path . "';\n";
 					echo "</script>";
 					flush();
-				}?>
+				}
+
+				$ARCurrent->newpath = $copiedTo;
+
+				?>
 				<script type='text/javascript'>
 					document.getElementById('progress_text').innerHTML = 'Done';
 					document.getElementById('progress').style.width = '100%';
