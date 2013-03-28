@@ -1591,7 +1591,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return (array)$ARConfig->libraries[$path];
 	}
 
-	function getPinpTemplate($arCallFunction='view.html', $path=".", $top="", $inLibrary = false, $librariesSeen = null, $arSuperContext="") {
+	function getPinpTemplate($arCallFunction='view.html', $path=".", $top="", $inLibrary = false, $librariesSeen = null, $arSuperContext=array()) {
 	global $ARCurrent, $ARConfig, $AR;
 		debug("getPinpTemplate: function: $arCallFunction; path: $path; top: $top; inLib: $inLibrary; startType: $arStartType");
 		$result = Array();

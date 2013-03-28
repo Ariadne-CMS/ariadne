@@ -294,8 +294,8 @@
 						if ($node) {
 							if ($node['type'] !== 'tagSingle') {
 								$openTag = $node['tagName'];
-								array_push($stack, &$node);
-									$node['children'] = htmlparser::parse_Node($parser, $stack);
+								$stack[] = &$node;
+								$node['children'] = htmlparser::parse_Node($parser, $stack);
 								array_pop($stack);
 								$current = end($stack);
 							}
