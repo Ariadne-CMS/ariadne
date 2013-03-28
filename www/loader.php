@@ -409,7 +409,6 @@
 			if ($function!==false) {
 				// finally call the requested object
 				unset($store->total);
-if ($_GET['debugon']) debugon('all');
 				$store->call($function, $args, $store->get($path));
 				if (!$store->total) {
 					ldObjectNotFound($path, $function);
