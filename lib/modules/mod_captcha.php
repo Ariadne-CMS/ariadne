@@ -26,6 +26,9 @@
 	class captcha {
 
 		function process($aconfig='') {
+		global $ARCurrent;
+			$ARCurrent->arDontCache = true;
+
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			// ConfigArray
@@ -120,6 +123,8 @@
 		}
 
 		function showImg() {
+		global $ARCurrent;
+			$ARCurrent->arDontCache = true;
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			$captchaImg = $me->getvar('show');
@@ -132,6 +137,8 @@
 		}
 
 		function getImgSrc($url='') {
+		global $ARCurrent;
+			$ARCurrent->arDontCache = true;
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			$context = $me->getContext();
@@ -141,6 +148,8 @@
 		}
 
 		function getFormField() {
+		global $ARCurrent;
+			$ARCurrent->arDontCache = true;
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			$context = $me->getContext();
