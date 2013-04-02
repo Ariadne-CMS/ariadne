@@ -8,7 +8,7 @@
 		// todo: file upload field, captcha
 		static public $customTypes;
 		static public $requiredTitle = 'Required';
-		
+
 		static public $checks = array(
 			'alpha'        => '/^[[:alpha:]]+$/iD',
 			'alphanumeric' => '/^[[:alnum:]]+$/iD',
@@ -489,7 +489,7 @@
 			}
 			$attributes = array('class' => $class);
 
-			if ($help !== null) {
+			if ( trim($help) ) {
 				$help = ar_html::el('div', $help, array('class' => 'helpContent'));
 				return ar_html::el('div', $help, $attributes);
 			} else {
@@ -497,12 +497,15 @@
 			}	
 		}
 
-		protected function getLabel($label=null, $id='', $attributes=null) {
+		protected function getLabel($label=null, $id=null, $attributes=null) {
 			if (!isset($attributes)) {
 				$attributes = array();
 			}
 			if (!isset($label)) {
 				$label = $this->label;
+			}
+			if (!isset($id)) {
+				$id = $this->name;
 			}
 			if ($label!==false) {
 				if ($this->required) {
