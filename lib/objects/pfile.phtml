@@ -143,7 +143,7 @@ class pfile extends pobject { // pfile class definition
 		$files->close();
 	}
 
-	function DownloadFile($file='file', $nls='') {
+	function DownloadFile($file='file', $nls='', $filename=false) {
 		global $AR, $ARCurrent;
 		if (!$nls) {
 			$nls = $this->reqnls;
@@ -200,8 +200,8 @@ class pfile extends pobject { // pfile class definition
 		return $this->ShowFile($file, $nls, $mimetype);
 	}
 
-	function _DownloadFile($file='file', $nls='') {
-		return $this->DownloadFile($file, $nls);
+	function _DownloadFile($file='file', $nls='', $filename=false) {
+		return $this->DownloadFile($file, $nls, $filename);
 	}
 
 	function GetPlainText($file='file', $nls='') {  
@@ -217,9 +217,14 @@ class pfile extends pobject { // pfile class definition
 		$mimetype = $this->data->mimetype;
 		if ($files->exists($this->id, $nls."_$file")) {
 			$file = $nls."_$file";
-			$mimetype = $this->data->$nls->mimetype;
+			if ( $this->data->$nls->mimetype ) {
+				$mimetype = $this->data->$nls->mimetype;
+			}
 		}
-
+		if ( !$mimetype ) {
+			$defaultnls = $this->data->nls->default;
+			$mimetype = $this->data->{$defaultnls}->mimetype;
+		}
 		$file_plaintext = $file."_plaintext";
 
 		if ($files->exists($this->id, $file_plaintext) ) {
@@ -235,12 +240,10 @@ class pfile extends pobject { // pfile class definition
 				if ($textualizer) {
 					$temp_file = tempnam($this->store->get_config('files').'temp/', 'totext');
 					@unlink($temp_file);
-	
 					$files->copy_from_store($temp_file, $this->id, $file);
 					exec(preg_replace('/FILE/', $temp_file, $textualizer), $result, $ret);
-
+				
 					@unlink($temp_file);
-
 					if (!$ret) {
 						$result = implode("\n", $result);
 					} else {
@@ -259,11 +262,17 @@ class pfile extends pobject { // pfile class definition
 		return $this->GetPlainText($file, $nls);
 	}
   
-	function SaveFile($contents, $mimetype=false, $name='file') {  
+	function SaveFile($contents, $mimetype=false, $name='file', $nls='') {  
 		global $AR;
 		$result="";
 		$name=preg_replace("|[\\\/]|","",$name); // make sure nobody gets /etc/passwd
 		if ($name) {
+			if ( $nls !== false ) {
+				if (!$nls) {
+					$nls = $this->reqnls;
+				}
+				$name = $nls.'_'.$name;
+			}
 			if (!$this->arIsNewObject && $this->CheckSilent('edit')) {
 				$files=$this->store->get_filestore("files");
 				return $files->write($contents, $this->id, $name);
@@ -299,8 +308,8 @@ class pfile extends pobject { // pfile class definition
 		}
 	}
 	
-	function _SaveFile($contents, $mimetype=false, $name='file') {
-		return $this->SaveFile($contents, $mimetype, $name);
+	function _SaveFile($contents, $mimetype=false, $name='file', $nls='') {
+		return $this->SaveFile($contents, $mimetype, $name, $nls);
 	}
   
 } // end of pfile class definition
