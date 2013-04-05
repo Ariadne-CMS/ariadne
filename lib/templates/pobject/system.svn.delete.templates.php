@@ -17,6 +17,8 @@
 			}
 		}
 		if (is_array($templates)) {
+			$templatestore=$this->store->get_filestore("templates");
+
 			foreach ($templates as $path) {
 				// _pobject.print_r.html.any.pinp
 				$filename = basename($path);
@@ -35,17 +37,21 @@
 					$language = $templates_info[$filename]['language'];
 					$function = $templates_info[$filename]['function'];
 
-					echo "<span class='svn_deletetemplateline'>Deleted ".$this->path.$function." (".$type.") [".$language."]</span>\n";
+					if (!$templatestore->exists($this->id, $filename)) {
+						echo "<span class='svn_deletetemplateline'>Deleted ".$this->path.$function." (".$type.") [".$language."]</span>\n";
 
-					$this->call("system.delete.layout.phtml", Array(
-						"type"		=> $type,
-						"function"	=> $function,
-						"language"	=> $language
-					));
+						$this->call("system.delete.layout.phtml", Array(
+							"type"		=> $type,
+							"function"	=> $function,
+							"language"	=> $language
+						));
 
-					if ($this->error) {
-						echo "\nError deleting ".$this->path.$meta['ar:function']." (".$meta['ar:type'].") [".$meta['ar:language']."]\n";
-						echo $this->error."\n\n";
+						if ($this->error) {
+							echo "\nError deleting ".$this->path.$meta['ar:function']." (".$meta['ar:type'].") [".$meta['ar:language']."]\n";
+							echo $this->error."\n\n";
+						}
+					} else {
+						echo "<span class='svn_deletetemplateline'>Skipped deleting ".$this->path.$function." (".$type.") [".$language."]</span>\n";
 					}
 				} else {
 					echo "\nError deleting " . $filename . " (not found in template list)\n\n";

@@ -64,7 +64,7 @@
 					} elseif( $item["status"] == "C" ) {
 						echo "<span class='svn_revisionline'>Conflict ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
 					} elseif( $item["status"] == "D" ) {
-						echo "<span class='svn_deletetemplateline'>Deleted ".$item["name"]."</span>\n"; // we don't know the props since it's deleted.
+					//	echo "<span class='svn_deletetemplateline'>Deleting ".$item["name"]."</span>\n"; // we don't know the props since it's deleted.
 					} else {
 						echo $item["status"]." ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."\n";
 					}
