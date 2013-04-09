@@ -1113,10 +1113,10 @@ muze.ariadne.explore.viewpane = function() {
 				url = url + '&direction=' + direction;
 			}
 			if (muze.ariadne.explore.viewpane.typefilter) {
-				url = url + 'type=' + muze.ariadne.explore.viewpane.typefilter;
+				url = url + '&type=' + muze.ariadne.explore.viewpane.typefilter;
 			}
 			if (page) {
-				url = url + 'page=' + page;
+				url = url + '&page=' + page;
 			}
 
 			muze.ariadne.explore.viewpane.browseto(url);
