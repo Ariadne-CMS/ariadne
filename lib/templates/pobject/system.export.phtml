@@ -20,6 +20,22 @@
 			}
 		}
 
+		if(!function_exists('getCommonParent')){
+			function getCommonParent($base,$match,$store) {
+
+				// if base is false, $match is the best parent
+				if ( $base === false ) {
+					return $match;
+				}
+
+				// check if $base matches $match prefix
+				while ( $base != '/' && strpos($match,$base) !== 0 )  {
+					$base = $store->make_path($base, "..");
+				}
+				return $base;
+			}	
+		}
+
 		if (get_class($ARCurrent->importStore) == "axstore") {
 			$ARCurrent->AXAction = "export";
 			$ARCurrent->AXHeader = &$ARCurrent->importStore->header;
@@ -92,7 +108,7 @@
 
 
 
-		$clearcachePath = $destpath;
+		$clearcachePath = false;
 
 		if (!is_array($ARCurrent->options['rewrite_references'])) {
 			$ARCurrent->options['rewrite_references'] = array();
@@ -164,18 +180,7 @@
 					}
 
 					if ($save_obj) {
-
 						display("processing($newpath)	");
-						if ($object->axflags & AX_DUMMY) {
-							if (strpos( $newpath, $clearcachePath ) === 0) {
-								$clearcachePath = $newpath;
-								$ccPathChangedForDummy = true;
-							}
-						} else if ($ccPathChangedForDummy && strpos( $newpath, $clearcachePath ) === 0) {
-							$ccPathChangedForDummy = false;
-							$clearcachePath = $newpath;
-						}
-
 						if ($ARCurrent->options["without_data"]) {
 							display("no data for (".$object->path.")");
 							$object->axflags |= AX_WITHOUT_DATA;
@@ -219,6 +224,8 @@
 
 
 							if ($save_obj) {
+								$clearcachePath = getCommonParent($clearcachePath,$newpath,$this->store);
+
 								// next one has to be linked
 								$ARCurrent->saved_object[$object->id]=$newpath;
 
@@ -251,6 +258,8 @@
 							}
 
 							if (!($object->axflags & AX_DUMMY)) {
+									$clearcachePath = getCommonParent($clearcachePath,$newpath,$this->store);
+
 									$object->newObject=current(
 										$ARCurrent->importStore->call("system.get.clone.phtml", $arCallArgs,
 											$ARCurrent->importStore->get($newpath)));
