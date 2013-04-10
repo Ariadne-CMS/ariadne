@@ -469,7 +469,7 @@
 			}
 			if ( preg_match( '/^\[([^\]]*)\]/', $name, $matches ) ) {
 				$index = $matches[1];
-				if ( $index && isset( $value[ $index ] ) ) {
+				if ( isset($index) && isset( $value[ $index ] ) ) {
 					return $this->getArrayValue( substr( $name, strlen( $index )+2 ), $value[ $index ] );
 				} else {
 					return null;
