@@ -1284,7 +1284,21 @@
 			if (!isset($content)) {
 				$content = $this->children;
 			}
+			/*if ( is_array($content) && trim($this->help) ) {
+				foreach( $content as $field ) {
+					if ( $field instanceof ar_html_formInputText || $field instanceof ar_htmlFormSelect ) {
+						if ( !trim($field->help)) {
+							$field->help = $this->help;
+						}
+						break;
+					}
+				}
+			}*/		
 			$content = ar_html::nodes($legend, $content);
+			$help = $this->getHelp();
+			if ( $help ) {
+				$content[] = $help;
+			}
 			$class = array('formField', 'form' . ucfirst($this->type) );
 			if ($this->class) {
 				$class[] = $this->class;
