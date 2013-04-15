@@ -162,6 +162,15 @@
   $AR->Tidy->options		= '--tidy-mark no --show-warnings yes -utf8 --force-output yes';
 
   /**************************************************************************/
+  /* Webkit information                                                     */
+  /**************************************************************************/
+
+  $AR->Webkit2png->path     = '/usr/local/bin/webkit2png'; 
+  $AR->Webkit2png->options  = '--log=/dev/null';
+  $AR->Webkit2png->xvfbPath = 'xvfb-run';
+  $AR->Webkit2png->xvfbOptions = '--server-args="-screen 0 1024x768x24+32"';
+
+  /**************************************************************************/
   /* Grep information                                                       */
   /**************************************************************************/
 
