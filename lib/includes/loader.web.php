@@ -310,7 +310,7 @@
 	}
 
 	function ldGetUserCookie($cookiename="ARUserCookie") {
-		$cookie = false;
+		$cookie = null;
 	
 		if( $_COOKIE[$cookiename] && !($cookiename == "ARCookie")) {
 

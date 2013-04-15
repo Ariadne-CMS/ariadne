@@ -135,6 +135,11 @@
 			$ldCacheFilename.=sha1($qs);
 		}
 
+		$cookieConsent = ldGetUserCookie("ARCookieConsent");
+		if (is_bool($cookieConsent)) {
+			$ldCacheFilename .= "=cookieConsent" . ((int)$cookieConsent);
+		}
+
 		/*
 			do not active output compression if:
 				- it isnt enabled
