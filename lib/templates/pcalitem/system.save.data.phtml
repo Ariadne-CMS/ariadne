@@ -47,6 +47,8 @@
 		if ($date=$this->getdata("date","none")) {
 			$this->data->date = $date;
 			$date_arr=getdate($date);
+		} else {
+			$date = strtotime('today');
 		}
 		if ($entry=$this->getdata("entry","none")) {
 			$entry_arr=getdate($entry);
