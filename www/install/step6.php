@@ -87,6 +87,7 @@
 		
 			include("conf/vs.conf");
 			include("conf/tidy.conf");
+			include("conf/webkit2png.conf");
 			include("conf/grep.conf");
 			include("conf/textualizer.conf");
 			include("conf/https.conf");
