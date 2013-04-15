@@ -162,7 +162,7 @@
   $AR->Tidy->options		= '--tidy-mark no --show-warnings yes -utf8 --force-output yes';
 
   /**************************************************************************/
-  /* HTMLTidy information                                                   */
+  /* Webkit information                                                     */
   /**************************************************************************/
 
   $AR->Webkit2png->path     = '/usr/local/bin/webkit2png'; 
