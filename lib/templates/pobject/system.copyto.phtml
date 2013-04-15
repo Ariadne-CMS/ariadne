@@ -61,6 +61,14 @@
 										}
 									}
 
+									if ($this->parent == $parent) {
+										if (isset($this->data->{$this->reqnls}->name)) {
+											$this->data->{$this->reqnls}->name .= $ARnls["ariadne:object:copied_object"];
+										} else {
+											$this->data->{$this->data->nls->default}->name .= $ARnls["ariadne:object:copied_object"];
+										}
+									}
+									
 									$this->store->save($ARCurrent->newpath, $this->type, $this->data);
 
 									$this->find($ARCurrent->newpath, "", "system.update.user.grants.phtml", array("config"=>$pobject->CheckSilent("config")));

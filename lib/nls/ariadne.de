@@ -48,4 +48,5 @@
 	$ARnls['ariadne:programmers_reference']		= 'Programmers Reference';
 	$ARnls['ariadne:ace_editor']				= 'Ace Editor';
 
+	$ARnls["ariadne:object:copied_object"]                          = " (Kopie)";
 ?>

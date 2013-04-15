@@ -61,18 +61,18 @@
 	$ARnls['ariadne:file_uploaded']			= "File";
 
 	$ARnls['ariadne:svn']						= "SVN";
-	$ARnls['ariadne:svn:checkunder']                = "Checkunder";
-	$ARnls['ariadne:svn:checkout']                  = "Checkout";
-	$ARnls['ariadne:svn:commit']                    = "Commit";
-	$ARnls['ariadne:svn:config']                    = "Configure";
-	$ARnls['ariadne:svn:diff']                              = "Diff";
-	$ARnls['ariadne:svn:import']                    = "Import";
-	$ARnls['ariadne:svn:info']                              = "SVN Info";
+	$ARnls['ariadne:svn:checkunder']		= "Checkunder";
+	$ARnls['ariadne:svn:checkout']		  = "Checkout";
+	$ARnls['ariadne:svn:commit']		    = "Commit";
+	$ARnls['ariadne:svn:config']		    = "Configure";
+	$ARnls['ariadne:svn:diff']			      = "Diff";
+	$ARnls['ariadne:svn:import']		    = "Import";
+	$ARnls['ariadne:svn:info']			      = "SVN Info";
 	$ARnls['ariadne:svn:notworkingcopy']    = "Not a working copy";
-	$ARnls['ariadne:svn:revert']                    = "Revert";
-	$ARnls['ariadne:svn:revision']                  = "SVN Revision";
-	$ARnls['ariadne:svn:unsvn']                             = "Remove version control";
-	$ARnls['ariadne:svn:update']                    = "Update";
+	$ARnls['ariadne:svn:revert']		    = "Revert";
+	$ARnls['ariadne:svn:revision']		  = "SVN Revision";
+	$ARnls['ariadne:svn:unsvn']			     = "Remove version control";
+	$ARnls['ariadne:svn:update']		    = "Update";
 	$ARnls['ariadne:svn:settings']			= "SVN Settings";
 	$ARnls['ariadne:svn:delete']			= "Delete";
 	$ARnls['ariadne:svn:deleteconfirm']		= "Are you sure you want to delete this template from SVN?";
@@ -225,4 +225,15 @@
 	$ARnls['ariadne:su'] = 'Switch user';
 
 	$ARnls['ariadne:browse:select'] = 'Select';
+
+	$ARnls['ariadne:apkg:install_package'] = 'Install Ariadne package';
+	$ARnls['ariadne:apkg:installing'] = 'Installing Ariadne package...';
+	$ARnls['ariadne:apkg:install'] = 'Install';
+	$ARnls['ariadne:apkg:target_location'] = 'Package install location';
+	$ARnls['ariadne:apkg:version'] = 'Version';
+	$ARnls['ariadne:apkg:package_information'] = 'Package information';
+	$ARnls['ariadne:apkg:depends_on'] = 'Depends on';
+	$ARnls['ariadne:apkg:maintainer'] = 'Maintainer';
+
+	$ARnls["ariadne:object:copied_object"]			  = " (Copy)";
 ?>

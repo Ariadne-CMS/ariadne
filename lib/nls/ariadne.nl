@@ -213,4 +213,15 @@
 	$ARnls['ariadne:su'] = 'Wissel gebruiker';
 
 	$ARnls['ariadne:browse:select'] = 'Selecteer';
+
+	$ARnls['ariadne:apkg:install_package'] = 'Installeer Ariadne package';
+	$ARnls['ariadne:apkg:installing'] = 'Ariadne package wordt geinstalleerd...';
+	$ARnls['ariadne:apkg:install'] = 'Installeer';
+	$ARnls['ariadne:apkg:target_location'] = 'Package install lokatie';
+	$ARnls['ariadne:apkg:version'] = 'Versienummer';
+	$ARnls['ariadne:apkg:package_information'] = 'Package informatie';
+	$ARnls['ariadne:apkg:depends_on'] = 'Depends op';
+	$ARnls['ariadne:apkg:maintainer'] = 'Maintainer';
+
+	$ARnls["ariadne:object:copied_object"]                          = " (Kopie)";
 ?>
