@@ -1,6 +1,5 @@
 <?php
 
-include_once($this->store->get_config('code')."modules/mod_htmlparser.php");
 
 //include_once($me->store->get_config('code')."modules/mod_debug.php");
 
@@ -38,8 +37,48 @@ class pinp_page {
 	
 class page {
 
+	private function pregError( $errno ) {
+		switch($errno) {
+			case PREG_NO_ERROR:
+				$result = 'There is no error.';
+				break;
+			case PREG_INTERNAL_ERROR:
+				$result = 'There is an internal error!';
+				break;
+			case PREG_BACKTRACK_LIMIT_ERROR:
+				$result = 'Backtrack limit was exhausted!';
+				break;
+			case PREG_RECURSION_LIMIT_ERROR:
+				$result = 'Recursion limit was exhausted!';
+				break;
+			case PREG_BAD_UTF8_ERROR:
+				$result = 'Bad UTF8 error!';
+				break;
+			case PREG_BAD_UTF8_OFFSET_ERROR:
+				$result = 'Bad UTF8 offset error!';
+				break;
+			default:
+				$result = 'Unknown preg errno '.$errno;
+		}
+		return $result;
+	}
+
 	function getBody($page) {
-		return preg_replace('/^.*<BODY[^>]*>/is', '', preg_replace('|</BODY.*$|is', '', $page));
+			$page = preg_replace('|</BODY.*$|is', '', $page);
+			$errno = preg_last_error();
+			if( $page === null || $errno != PREG_NO_ERROR ){
+				debug('preg_replace returned null errno '. $errno .' in ' . __CLASS__ . ':' . __FUNCTION__ . ':' . __LINE__ . '?');
+				debug('preg error:'. page::pregError($errno));
+				return '';
+			}
+			$page = preg_replace('/^.*<BODY[^>]*>/is', '', $page);
+			$errno = preg_last_error();
+			if( $page === null || $errno != PREG_NO_ERROR ){
+				debug('preg_replace returned null, errno '. $errno .' in ' . __CLASS__ . ':' . __FUNCTION__ . ':' . __LINE__ . '?');
+				debug('preg error:'. page::pregError($errno));
+				return '';
+			}
+			return $page;
 	}
 
 	function parse($page, $full=false) {
