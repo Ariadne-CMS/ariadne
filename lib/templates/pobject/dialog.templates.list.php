@@ -153,7 +153,7 @@
 			$result = exec($AR->Grep->path." ".$AR->Grep->options." $esc_search $templates_path*.pinp", $greps);
 			$grepresults = array();
 			foreach ($greps as $grep) {
-				list($file, $linenr, $line)=split(":", $grep, 3);
+				list($file, $linenr, $line)=explode(":", $grep, 3);
 				$file=substr($file, strrpos($file, '/'));
 				$file=substr($file, 2);
 				$file = substr($file, 0, strrpos($file, '.'));
@@ -297,7 +297,7 @@
 
 							if( is_array( $grepresults) && is_array($grepresults[$filename_short]) ) {
 								foreach( $grepresults[$filename_short] as $r ) {
-									list( $ln, $tx ) = split(":", $r, 2);
+									list( $ln, $tx ) = explode(":", $r, 2);
 									if (count($templatelist) > 1) {
 										$grep_results .= $flag . "&nbsp;";
 									}
