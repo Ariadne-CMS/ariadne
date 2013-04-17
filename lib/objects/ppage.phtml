@@ -37,16 +37,12 @@ debug("ppage: Load","object");
 global $AR;
 require_once($AR->dir->install."/lib/objects/pobject.phtml");
 require_once($AR->dir->install."/lib/modules/mod_url.php");
+require_once($AR->dir->install."/lib/modules/mod_page.php");
 
 class ppage extends pobject { // ppage class definition
 
 	function ParsePage($page, $full=false) {
-		if (!$full) {
-			$page = preg_replace('|^.*<BODY[^>]*>|is','',
-								preg_replace('|</BODY.*$|is','',$page));
-		}
-
-		return URL::ARtoRAW($page);
+		return page::parse($page, $full);
 	}
 
 	function RAWtoAR($page, $nls="") {
@@ -58,11 +54,7 @@ class ppage extends pobject { // ppage class definition
 	}
 
 	function GetReferences($page) {
-		// Use Perl compatible regex for non-greedy matching
-		preg_match_all("/['\"](\{(arSite|arRoot|arBase|arCurrentPage)(\/[a-z][a-z])?}.*?)['\"]/", $page, $matches);
-		$refs=preg_replace(array("|{arSite(/[a-z][a-z])?}|","|{arRoot(/[a-z][a-z])?}|","|{arBase(/[a-z][a-z])?}|", "|{arCurrentPage(/[a-z][a-z])?}|"),
-			array($this->currentsite(), "", "", $this->path), $matches[1]);
-		return $refs;
+		return page::GetReferences($page);
 	}
 
 	function GetPage($nls="", $source=false, $full=false) {
