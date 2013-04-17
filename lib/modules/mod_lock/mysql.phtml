@@ -53,7 +53,8 @@ class mysqllock {
 		debug("mysqllock:get_locks($identity)","store");
 		$query_string="select `path`,`release`, `type`, `identity` from ".$this->tbl_prefix."locks where 
 		`release` >=".time()." and `identity`='".AddSlashes($identity)."'";
-		$query=@mysql_db_query($this->database, $query_string,$this->connectid);
+		mysql_select_db($this->database,$this->connectid);
+		$query=@mysql_query($query_string,$this->connectid);
 		while ($temp=@mysql_fetch_array($query)) {
 			$result[$temp["path"]]=$temp;
 		}
@@ -80,7 +81,8 @@ class mysqllock {
 
 		// lock table first
 		$query_string="lock tables ".$this->tbl_prefix."locks ".$tablelock;
-		@mysql_db_query($this->database, $query_string,$this->connectid);
+		mysql_select_db($this->database,$this->connectid);
+		@mysql_query($query_string,$this->connectid);
 
 		// check if the path is not already locked by a parent
 		$query_string="
@@ -99,7 +101,8 @@ class mysqllock {
 		$alreadylocked=false;
 		// see if this lock is still alive
 		$query_string.=") AND `release`>=".time();
-		$query=@mysql_db_query($this->database, $query_string, $this->connectid);
+		mysql_select_db($this->database,$this->connectid);
+		$query=@mysql_query($query_string, $this->connectid);
 		while ($lock=@mysql_fetch_array($query)) {
 			if ($lock["identity"]!=$identity) {
 				// this is a lock with another identity, so fail the current lock attempt
@@ -115,14 +118,16 @@ class mysqllock {
 				$query_string="
 					delete from ".$this->tbl_prefix."locks where `path`='".AddSlashes($path)."'";
 
-				mysql_db_query($this->database, $query_string, $this->connectid);
+				mysql_select_db($this->database,$this->connectid);
+				mysql_query($query_string, $this->connectid);
 
 				$query_string="
 					insert into ".$this->tbl_prefix."locks (`path`, `release`, `type`, `identity`) values (
 					'".AddSlashes($path)."', $time, '".AddSlashes($type)."',
 					'".AddSlashes($identity)."')";
 
-				mysql_db_query($this->database, $query_string, $this->connectid);
+				mysql_select_db($this->database,$this->connectid);
+				mysql_query($query_string, $this->connectid);
 				if (!mysql_errno()) {
 					$result=true;
 				} else {
@@ -137,7 +142,8 @@ class mysqllock {
 			$this->error_message="MOD_LOCK: ERROR 1: $path already locked.";
 		}
 		$query_string="unlock tables";
-		mysql_db_query($this->database,$query_string,$this->connectid);
+		mysql_select_db($this->database,$this->connectid);
+		mysql_query($query_string,$this->connectid);
 
 		return ($result);
 	}
@@ -148,7 +154,8 @@ class mysqllock {
 		if ($path) {
 			$query_string.=" and `path`='".AddSlashes($path)."'";
 		}
-		mysql_db_query($this->database, $query_string, $this->connectid);
+		mysql_select_db($this->database,$this->connectid);
+		mysql_query($query_string, $this->connectid);
 
 	}
 
@@ -170,7 +177,8 @@ CREATE TABLE ".$this->tbl_prefix."locks (
   key (`identity`),
   key (`path`)
 )";
-		mysql_db_query($this->database, $query_string, $this->connectid);
+		mysql_select_db($this->database,$this->connectid);
+		mysql_query($query_string, $this->connectid);
 	}
 }
 ?>
