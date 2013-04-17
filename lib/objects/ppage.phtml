@@ -46,7 +46,7 @@ class ppage extends pobject { // ppage class definition
 	}
 
 	function RAWtoAR($page, $nls="") {
-		return $this->CompilePage($page, $nls); 
+		return URL::RAWtoAR($page, $nls);
 	}
 
 	function CompilePage($page, $nls="") {
