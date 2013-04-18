@@ -548,11 +548,11 @@ class ISBN
 	$t = file_get_contents($this->groups_csv);
         /* parse external data */
         $groups = array();      
-        $tls    = split("\n", $t);
+        $tls    = explode("\n", $t);
         $line   = 0;
         foreach ($tls as $tl) {
             $line++;            
-            $tlp = split(',', $tl);
+            $tlp = explode(',', $tl);
             if (sizeof($tlp) == 3) {
                 $index = intval($tlp[0]);
                 if (isset($groups[$index])) {

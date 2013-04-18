@@ -60,7 +60,7 @@
 			if ( $pos !== false ) {
 				$objectTypeStripped = substr($objectType, 0, $pos);
 			}
-			$pathticles = split( '/', $path );
+			$pathticles = explode( '/', $path );
 			$pathlist = array( '/' );
 			$prevpath = '/';
 			foreach ( $pathticles as $pathticle ) {
