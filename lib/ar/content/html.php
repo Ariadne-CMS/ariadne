@@ -152,7 +152,7 @@
 				$editName = "[$nls][$name]";
 			} else {
 				$editName = $name;
-				$temp = split( $name, '[' );
+				$temp = explode( '[' , $name );
 				$nls = substr($temp[0], 0, -1);
 				$name = substr($temp[1], 0, -1);
 			}
@@ -184,7 +184,7 @@
 				$editName = "[$nls][$name]";
 			} else {
 				$editName = $name;
-				$temp = split( $name, '[' );
+				$temp = explode( '[' , $name );
 				$nls = substr($temp[0], 0, -1);
 				$name = substr($temp[1], 0, -1);
 			}
