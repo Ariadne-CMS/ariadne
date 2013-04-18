@@ -436,7 +436,12 @@
 				if ($cachetime==-2) {
 					$cachetime=999;
 				}
-				ldSetClientCache(true, time()+1800);
+				$clientCachetime = $cachetime * 3600;
+				if ($clientCachetime > 1800) {
+					ldSetClientCache(true, time() + 1800);
+				} else {
+					ldSetClientCache(true, time() + $clientCachetime);
+				}
 			}
 
 
