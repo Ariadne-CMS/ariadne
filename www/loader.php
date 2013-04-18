@@ -195,8 +195,8 @@
 				// now send caching headers too, maximum 1 hour client cache.
 				// FIXME: make this configurable. per directory? as a fraction?
 				$freshness=$mtime-$timecheck;
-				if ($freshness>3600) { 
-					$cachetime=$timecheck+3600;
+				if ($freshness>1800) { 
+					$cachetime=$timecheck+1800;
 				} else {
 					$cachetime=$mtime; 
 					// same '30 minutes' as used 13 lines above
@@ -436,7 +436,7 @@
 				if ($cachetime==-2) {
 					$cachetime=999;
 				}
-				ldSetClientCache(true, time()+(($cachetime * 3600)/2));
+				ldSetClientCache(true, time()+1800);
 			}
 
 
