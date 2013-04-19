@@ -31,7 +31,7 @@
 		
 		public function send( $type, $url, $request = null, $options = array() ) {
 			if ( is_string($options['header']) ) {
-				$headers = split( '\r\n', $options['header'] );
+				$headers = preg_split( '\r\n', $options['header'] );
 			} else {
 				$headers = (array) $options['header'];
 			}
