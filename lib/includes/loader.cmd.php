@@ -64,7 +64,7 @@
 					$file_type = get_mime_type($file_temp);
 
 					$result[$field] = $field;
-					$result[$field."_temp"] = substr($file_temp, strlen($store->get_config("files")."temp/"));
+					$result[$field."_temp"] = basename($file_temp);
 					$result[$field."_size"] = filesize($file_temp);
 					$result[$field."_type"] = $file_type;
 					debug(" http_post_vars (".serialize($result).")");
