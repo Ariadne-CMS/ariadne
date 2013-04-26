@@ -8,7 +8,7 @@
 		$this->store=$store;
 	}
 
-	protected function compile_tree(&$node) {
+	protected function compile_tree(&$node, $arguments=null) {
 		switch ((string)$node["id"]) {
 			case 'cmp':
 				if ($node["left"]["id"] == "implements" && in_array($node["operator"], Array("!=", "=", "==")) ) {
@@ -27,11 +27,11 @@
 						break;
 					}
 				} else {
-					$result = parent::compile_tree($node);
+					$result = parent::compile_tree($node,$arguments);
 				}
 			break;
 			default:
-				$result = parent::compile_tree($node);
+				$result = parent::compile_tree($node,$arguments);
 			break;
 		}
 		return $result;
