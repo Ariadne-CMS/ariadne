@@ -4,14 +4,14 @@
 	require_once($AR->dir->install."/lib/ar/html.php");
 
 	class pinp_yui {
-		function _getSection( $section ) {
+		static public function _getSection( $section ) {
 			return yui::getSection( $section );
 		}
 	}
 
 	class yui {
 
-		function getSectionContent($settings) {
+		static public function getSectionContent($settings) {
 			$result = '';
 
 			if(is_array($settings)) {
@@ -57,7 +57,7 @@
 		}
 
 
-		function getSection($section) {
+		static public function getSection($section) {
 			$invisibleSections= $_COOKIE['invisibleSections'];
 
 			$maxheadlength = 18;
@@ -132,7 +132,7 @@
 
 	
 		/* explore.sidebar.info.php */
-		function section_table($info) {
+		static public function section_table($info) {
 			global $ARnls;
 			$result = '';
 			if (is_array($info)) {
@@ -145,7 +145,7 @@
 			return $result;
 		}
 		
-		function labelspan($label, $maxlabellength=16) {
+		static public function labelspan($label, $maxlabellength=16) {
 			// Reduce length of a label if they are too long.
 			if (mb_strlen($label, "utf-8") > $maxlabellength) {
 				$label = ar_html::tag("span", array("title" => $label),htmlspecialchars(mb_substr($label, 0, $maxlabellength-3,"utf-8")."...")); 
@@ -157,7 +157,7 @@
 	
 	
 	/* dialog.templates.list.php */
-		function layout_sortfunc($a, $b) {
+		static public function layout_sortfunc($a, $b) {
 			if ($a == $b) {
 				 return 0;
 			}
@@ -165,7 +165,7 @@
 		}
 	
 	/* explore.php */
-		function yui_menuitems($menuitems, $menuname, $menuid='') {
+		static public function yui_menuitems($menuitems, $menuname, $menuid='') {
 			$result = '';
 			if (is_array($menuitems)) {
 				$nodes = ar_html::nodes();
@@ -221,7 +221,7 @@
 
 
 	/* Explore.browse.php */
-		function showTable($divId, $tableId, $columnDefs, $data) {
+		static public function showTable($divId, $tableId, $columnDefs, $data) {
 		
 			if (is_array($columnDefs)) {
 
@@ -300,7 +300,7 @@
 			echo ar_html::tag('div', array('id' => $divId, 'class' => 'yui-dt-'), $table)."\n";
 		}
 
-		function showTableJs($divId, $tableId, $columnDefs) {
+		static public function showTableJs($divId, $tableId, $columnDefs) {
 			$jsColDefs = '';
 			$jsFields = '';
 			foreach ($columnDefs as $colDef) {
@@ -355,7 +355,7 @@
 
 		}
 
-		function colDefs($fields) {
+		static public function colDefs($fields) {
 			global $ARnls;
 		
 			// Create a default set of column definitions given a set of field keys.
@@ -380,7 +380,7 @@
 			return $columnDefs;
 		}
 
-		function getSvnIcon($status) {
+		static public function getSvnIcon($status) {
 			global $AR;
 			global $ARnls;
 
@@ -398,7 +398,7 @@
 			}
 		}
 
-		function getTypeIcon($item, $viewtype='list') {
+		static public function getTypeIcon($item, $viewtype='list') {
 		
 		
 			$type = $item["type"];
@@ -421,7 +421,7 @@
 			return $result;
 		}
 
-		function showList($data, $viewtype='list') {
+		static public function showList($data, $viewtype='list') {
 			global $AR, $ARnls;
 
 			if (is_array($data['objects']) && count($data['objects']) && $data['total'] > 0) {
@@ -461,7 +461,7 @@
 			echo $result."\n";
 		}
 		
-		function showPaging($total, $items_per_page, $current_page, $pagingclass="") {
+		static public function showPaging($total, $items_per_page, $current_page, $pagingclass="") {
 			global $AR;
 			if ($total > $items_per_page) {
 				$total_pages = (int) ($total/$items_per_page);
@@ -598,7 +598,7 @@
 		
 		
 		/* dialog.add.list.php */
-		function getTypes($arObject, $showall) {
+		static public function getTypes($arObject, $showall) {
 			$result = Array();
 			if (!$showall) {
 				$typetree = $arObject->call('typetree.ini');
@@ -628,7 +628,7 @@
 			return $result;
 		}
 		
-		function checkType($arObject, $type, $name, $currentpath, $arReturnTemplate) {
+		static public function checkType($arObject, $type, $name, $currentpath, $arReturnTemplate) {
 			global $AR;
 			global $ARCurrent;
 			if (!$arObject->CheckSilent("add", $type)) {
