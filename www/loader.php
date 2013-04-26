@@ -137,11 +137,11 @@
 		$path=substr($AR_PATH_INFO,0,$split+1);
 		$function=substr($AR_PATH_INFO,$split+1);
 		if (!$function) {
-			if (!$arDefaultFunction) {
+			if (!isset($arDefaultFunction) || $arDefaultFunction == '' ) {
 				$arDefaultFunction="view.html";
 			}
 			$function=$arDefaultFunction;
-			if ($arFunctionPrefix) {
+			if (isset($arFunctionPrefix) && $arFunctionPrefix != '' ) {
 				$function=$arFunctionPrefix.$function;
 			}
 			$AR_PATH_INFO.=$function;
@@ -269,7 +269,7 @@
 			// look for the language
 			$split=strpos(substr($AR_PATH_INFO, 1), "/");
 			$ARCurrent->nls=substr($path, 1, $split);
-			if (!$AR->nls->list[$ARCurrent->nls]) {
+			if (!isset($AR->nls->list[$ARCurrent->nls]) ) {
 				// not a valid language
 				$ARCurrent->nls="";
 				$nls=$AR->nls->default;
