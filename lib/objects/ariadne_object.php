@@ -3315,7 +3315,7 @@ debug("ONBEFOREVIEW ($arCallFunction)");
 		}
 	}
 
-	function pinpErrorHandler($errno, $errstr, $errfile, $errline, $errcontext) {
+	static public function pinpErrorHandler($errno, $errstr, $errfile, $errline, $errcontext) {
 		global $AR,$nocache,$ARCurrent;
 		if (($errno & error_reporting()) == 0) {
 			return true;
