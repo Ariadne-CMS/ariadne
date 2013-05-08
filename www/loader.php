@@ -319,7 +319,7 @@
 			// instantiate the store
 			$inst_store = $store_config["dbms"]."store";
 			$store=new $inst_store($root,$store_config);
-			$store->rootoptions = $rootoptions;
+			//$store->rootoptions = $rootoptions;
 
 			if ($session_id) {
 				ldStartSession($session_id);
@@ -344,7 +344,9 @@
 
 			$auth_class = "mod_auth_".$auth_config["method"];
 			$mod_auth = new $auth_class($auth_config);
-			$result = $mod_auth->checkLogin($args["ARLogin"], $args["ARPassword"], $path);
+			$username = ( isset($args["ARLogin"]) ? $args["ARLogin"] : null );
+			$password = ( isset($args["ARPassword"]) ? $args["ARPassword"] : null );
+			$result = $mod_auth->checkLogin($username, $password, $path);
 			if ($result!==true) {
 				if ($result == LD_ERR_ACCESS) {
 					ldAccessDenied($path, $ARnls["accessdenied"], $args, $function);
