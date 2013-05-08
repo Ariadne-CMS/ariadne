@@ -706,7 +706,18 @@ EOF;
 					}
 
 					if ($parentNode && ($parentNode !== $itemNode)) { // itemNode should not be parentNode to prevent loops
-						$parentNode->appendChild( $itemNode );
+						$temp = $parentNode;
+						$ok = true;
+						while( $temp ) {
+							if ( $temp === $itemNode ) {
+								$ok = false;
+								break;
+							}
+							$temp = $temp->parentNode;
+						}
+						if ( $ok ) {
+							$parentNode->appendChild( $itemNode );
+						}
 					}
 				}
 			}
