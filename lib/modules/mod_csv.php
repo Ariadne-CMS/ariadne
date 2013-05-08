@@ -199,7 +199,7 @@
 						$result = Array();
 					} else {
 						$result = fgetcsv($this->fp, $this->settings['bufferLength'], $this->settings['seperator'], $this->settings['quotation']);
-						if (strtolower($this->settings['charset']) != "utf-8") {
+						if (is_array($result) && strtolower($this->settings['charset']) != "utf-8") {
 							if (!function_exists("iconv")) {
 								global $store;
 								include_once($store->get_config("code")."modules/mod_unicode.php");
