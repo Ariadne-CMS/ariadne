@@ -484,6 +484,8 @@ muze.ariadne.explore.tree = function() {
 				node = tree.getNodeByProperty("path", path);
 			}
 
+			if (!tree) { return }
+
 			// Contain in dialog root.
 			if (!muze.ariadne.explore.viewable(path)) { return }
 
@@ -567,6 +569,7 @@ muze.ariadne.explore.toolbar = function() {
 			} else {
 				document.getElementById("viewparent").style.opacity = '1';
 			}
+			muze.ariadne.explore.searchbar.init();
 		},
 		viewparent : function() {
 			if( muze.ariadne.explore.viewpane.selectedPath ) {
@@ -612,7 +615,7 @@ muze.ariadne.explore.searchbar = function() {
 			// Use an XHRDataSource
 			var nodePath = encodeURI(muze.ariadne.registry.get('path'));
 
-			var oDS = new YAHOO.util.XHRDataSource(muze.ariadne.explore.tree.loaderUrl + nodePath + "system.search.json");
+			var oDS = new YAHOO.util.XHRDataSource(''); // muze.ariadne.explore.tree.loaderUrl + nodePath + "system.search.json");
 			
 			// Set the responseType
 			oDS.responseType = YAHOO.util.XHRDataSource.TYPE_TEXT;
@@ -633,6 +636,10 @@ muze.ariadne.explore.searchbar = function() {
 			oDS.maxCacheEntries = 5;
 			// Instantiate the AutoComplete
 			var oAC = new YAHOO.widget.AutoComplete("searchpath", "resultscontainer", oDS);
+
+			oAC.generateRequest = function(sQuery) {
+				return muze.ariadne.explore.tree.loaderUrl + muze.ariadne.registry.get('path') +  "system.search.json?query=" + sQuery;
+			};
 
 			oAC.formatResult = function(oResultItem, sQuery) { 
 				// This was defined by the schema array of the data source
