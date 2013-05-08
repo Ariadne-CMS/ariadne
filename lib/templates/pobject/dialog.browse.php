@@ -101,7 +101,7 @@
 		}
 
 		$browsepath = $this->getvar('path');
-		if (!$browsepath || !$this->exists($browsepath))) {
+		if (!$browsepath || !$this->exists($browsepath)) {
 			$browsepath = $this->path;
 		}
 ?>
