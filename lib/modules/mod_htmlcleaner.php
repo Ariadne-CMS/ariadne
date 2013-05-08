@@ -319,14 +319,17 @@ class htmlcleaner
 
 			if ($part && is_array($rewrite_rules)) {
 				foreach ($rewrite_rules as $tag_rule=>$attrib_rules) {
-					if (eregi($tag_rule, $part->nodeName)) {
+					$escaped_rule = str_replace('/','\/',$tag_rule);
+					if (preg_match('/'.$escaped_rule.'/is', $part->nodeName)) {
 						if (is_array($attrib_rules) && is_array($part->attributes)) {
 							foreach ($attrib_rules as $attrib_rule=>$value_rules) {
 								foreach ($part->attributes as $attrib_key=>$attrib_val) {
-									if (eregi($attrib_rule, $attrib_key)) {
+									$escaped_rule = str_replace('/','\/',$attrib_rule);
+									if (preg_match('/'.$escaped_rule.'/is', $attrib_key)) {
 										if (is_array($value_rules)) {
 											foreach ($value_rules as $value_rule=>$value) {
-												if (eregi($value_rule, $attrib_val)) {
+												$escaped_rule = str_replace('/','\/',$value_rule);
+												if (preg_match('/'.$escaped_rule.'/is', $attrib_val)) {
 													if ($value === false) {
 														unset($part->attributes[$attrib_key]);
 														if (!count($part->attributes)) {
@@ -339,7 +342,8 @@ class htmlcleaner
 															break 3;
 														}
 													} else {
-														$part->attributes[$attrib_key] = eregi_replace('^'.$value_rule.'$', $value, $part->attributes[$attrib_key]);
+														$escaped_rule = str_replace('/','\/',$value_rule);
+														$part->attributes[$attrib_key] = preg_replace('/^'.$escaped_rule.'$/is', $value, $part->attributes[$attrib_key]);
 													}
 												}
 											}
@@ -356,7 +360,8 @@ class htmlcleaner
 												break 2;
 											}
 										} else {
-											$part->attributes[eregi_replace('^'.$attrib_rule.'$', $value_rules, $attrib_key)] = $part->attributes[$attrib_key];
+											$escaped_rule = str_replace('/','\/',$attrib_rule);
+											$part->attributes[preg_replace('/^'.$escaped_rule.'$/is', $value_rules, $attrib_key)] = $part->attributes[$attrib_key];
 											unset($part->attributes[$attrib_key]);
 										}
 									}
