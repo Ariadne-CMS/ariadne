@@ -27,8 +27,8 @@
 			$me = $context["arCurrentObject"];
 			$path = $me->make_path($path);
 			if (@count($ARCurrent->shortcut_redirect)) {
-				$redir = end($ARCurrent->shortcut_redirect);
-				if ($redir["keepurl"] && substr($path, 0, strlen($redir["dest"])) == $redir["dest"]) {
+				$redir = reset($ARCurrent->shortcut_redirect);
+				if ($redir["keepurl"]) { // && substr($path, 0, strlen($redir["dest"])) == $redir["dest"]) {
 					$path = $redir["src"];
 				}
 			}
@@ -51,7 +51,7 @@
 			// for now we have to remove all current redirects
 			$old_redirects = $ARCurrent->shortcut_redirect;
 			$ARCurrent->shortcut_redirect = Array();
-			$realpath = self::_make_real_path($path, &$ARCurrent->shortcut_redirect);
+			$realpath = self::_make_real_path($path, $ARCurrent->shortcut_redirect);
 			if ($realpath) {
 				$context = pobject::getContext();
 				$me = $context["arCurrentObject"];
@@ -64,7 +64,7 @@
 			return $result;
 		}
 
-		function _make_real_path($path, $redirects = Array()) {
+		function _make_real_path($path, &$redirects = Array()) {
 			global $ARCurrent;
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
@@ -89,7 +89,7 @@
 					if ($me->exists($target.$subpath)) {
 						$result = $target.$subpath;
 					} else {
-						$result = self::_make_real_path($target.$subpath, &$redirects);
+						$result = self::_make_real_path($target.$subpath, $redirects);
 					}
 				}
 			} else {
