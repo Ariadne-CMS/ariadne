@@ -85,7 +85,7 @@ class mysqlstore extends store{
 		$this->mod_lock->select_db($config["database"], $this->connect_id);
 		$this->mod_lock->lock_duration=$config["lock_duration"];
 
-		if (is_array($config['filestores'])) {
+		if (isset($config['filestores']) && is_array($config['filestores'])) {
 			$this->filestores = $config['filestores'];
 		} else {
 			$this->filestores = Array('templates', 'files');
