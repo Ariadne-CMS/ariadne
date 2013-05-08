@@ -694,6 +694,9 @@
 		}
 		
 		function setParentNode( ar_xmlElement $el ) {
+			if ( $el === $this ) {
+				return false;
+			}
 			$this->parentNode = $el;
 			foreach ($this as $node) {
 				if ($node instanceof ar_xmlElement) {
@@ -877,7 +880,7 @@
 	}
 	
 	class ar_xmlNode extends arBase implements ar_xmlNodeInterface {
-		public $parentNode = null;
+		private $parentNode = null;
 		private $nodeValue = '';
 		public $cdata = false;
 		
@@ -901,6 +904,9 @@
 		
 		function __get( $name ) {
 			switch( $name ) {
+				case 'parentNode':
+					return $this->parentNode;
+				break;
 				case 'previousSibling' :
 					if (isset($this->parentNode)) {
 						return $this->parentNode->childNodes->getPreviousSibling($this);
@@ -922,6 +928,13 @@
 				case 'nodeValue' :
 					$this->nodeValue = $value;
 				break;
+				case 'parentNode' :
+					if ( $value === $this || !( $value instanceof ar_xmlElement ) ) {
+						$this->parentNode = null;
+					} else {
+						$this->parentNode = $value;
+					}
+				break;						
 			}
 		}
 		
@@ -950,7 +963,7 @@
 		public $tagName     = null;
 		public $attributes  = array();
 		private $childNodes = null;
-		public $parentNode  = null;
+		private $parentNode  = null;
 		private $idCache    = array();
 		private $nodeValue  = '';
 		
@@ -1076,6 +1089,9 @@
 		
 		function __get( $name ) {
 			switch( $name ) {
+				case 'parentNode' : 
+					return $this->parentNode;
+				break;
 				case 'firstChild' :
 					if (isset($this->childNodes) && count($this->childNodes)) {
 						return $this->childNodes[0];
@@ -1108,6 +1124,13 @@
 				case 'previousSibling':
 				case 'nextSibling':
 				break;
+				case 'parentNode':
+					if ( $value === $this || !($value instanceof ar_xmlElement) ) {
+						$this->parentNode = null;
+					} else {
+						$this->parentNode = $value;
+					}
+				break;
 				case 'nodeValue':
 					if ( isset($this->childNodes) && count($this->childNodes) ) {
 						$this->removeChild( $this->childNodes );
@@ -1130,7 +1153,7 @@
 				break;
 			}
 		}
-		
+
 		function __clone() {
 			parent::__clone();
 			$this->childNodes = $this->getNodeList();
