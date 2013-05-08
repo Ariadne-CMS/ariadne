@@ -745,6 +745,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if (!$keephost) {
 			if ($nls) {
 				$url=$temp_config->root["list"]["nls"][$nls];
+				if (is_array($url)) {
+					$url = current( $url );
+				}
 				if ($url) {
 					if (substr($url, -1)=='/') {
 						$url=substr($url, 0, -1);
@@ -801,6 +804,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$c_redirects_done++;
 				$newpath = $redir['src'].substr($newpath, strlen($redir['dest']));
 			}
+
 			if ($c_redirects_done == $c_redirects) {
 				$checkpath = $redir['src'];
 			}
@@ -1079,7 +1083,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $result;
 	}
 
-	function getContext($level=0) {
+	static function getContext($level=0) {
 	global $AR;
 		if (is_array($AR->context)) {
 			$result = $AR->context[sizeof($AR->context)-(1+$level)];
@@ -1818,7 +1822,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$eventData->arCallFunction = $arCallFunction;
 				
 				$ARConfigChecked = true;
-debug("ONBEFOREVIEW ($arCallFunction)");
 				$result = ar_events::fire( 'onbeforeview', $eventData );
 				$ARConfigChecked = $initialConfigChecked;
 				if ( !$result ) { //prevent default action: view
@@ -3241,7 +3244,8 @@ debug("ONBEFOREVIEW ($arCallFunction)");
 		include_once($this->store->get_config("code")."modules/mod_pinp.phtml");
 		preg_match("/^\s*(.)/", $pattern, $regs);
 		$delim = $regs[1];
-		if (eregi("\\${delim}[^$delim]*\\${delim}.*e.*".'$', $pattern)) {
+		// TODO: fixme deze eregi vervangen door iets wat niet eregi is
+		if (@eregi("\\${delim}[^$delim]*\\${delim}.*e.*".'$', $pattern)) {
 			$pinp = new pinp($AR->PINP_Functions, 'local->', '$AR_this->_');
 			return substr($pinp->compile("<pinp>$replacement</pinp>"), 5, -2);
 		} else {
