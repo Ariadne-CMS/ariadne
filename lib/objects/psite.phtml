@@ -43,52 +43,69 @@ class psite extends psection {  // psite class definition
 	global $ARConfig;
 		pdir::getConfigData();
 
-      $configcache=$ARConfig->cache[$this->path];
-      $hostsubwww = $host = $_SERVER["HTTP_HOST"];
-      if (substr($host, 0, 4) == 'www.') {
-          $hostsubwww = substr($host, 4);
-      }
+		$configcache=$ARConfig->cache[$this->path];
+		$hostsubwww = $host = $_SERVER["HTTP_HOST"];
+		if (substr($host, 0, 4) == 'www.') {
+			$hostsubwww = substr($host, 4);
+		}
 
-      $ariadne_workspace = getenv('ARIADNE_WORKSPACE');
-      $workspace = $ariadne_workspace && workspace::enabled($this->path);
+		$ariadne_workspace = getenv('ARIADNE_WORKSPACE');
+		$workspace = $ariadne_workspace && workspace::enabled($this->path);
 
-      if ($workspace) {
-	      if (($sitenls=$this->data->workspaceurl_list["host"][$hostsubwww]) 
-	          || (($sitenls=$this->data->workspaceurl_list["host"]["www.".$hostsubwww]))) {
+		if ($workspace) {
+			if (($sitenls=$this->data->workspaceurl_list["host"][$hostsubwww]) 
+				|| (($sitenls=$this->data->workspaceurl_list["host"]["www.".$hostsubwww]))) {
 
-	          $url = $this->data->workspaceurl_list["nls"][$sitenls];
-	      }
-	      if (!$url) {
-	          $url=$this->data->workspaceurl;
-	      }
-      } else {
-	      if (($sitenls=$this->data->url_list["host"][$hostsubwww]) 
-	          || (($sitenls=$this->data->url_list["host"]["www.".$hostsubwww]))) {
+				$url = $this->data->workspaceurl_list["nls"][$sitenls];
+			}
+			if (!$url) {
+				$url=$this->data->workspaceurl;
+			}
+		} else {
+			if (($sitenls=$this->data->url_list["host"][$hostsubwww]) 
+				|| (($sitenls=$this->data->url_list["host"]["www.".$hostsubwww]))) {
 
-	          $url = $this->data->url_list["nls"][$sitenls];
-	      }
-	      if (!$url) {
-	          $url=$this->data->url;
-	      }
-      }
+				$url = $this->data->url_list["nls"][$sitenls];
+				if (is_array($url)) {
+					$urls = $url;
+					$url  = array_shift($urls); // default
+					foreach( $urls as $_url ) {
+						$_hostsubwww = preg_replace('|^(.*//www\.)|', '', $_url);
+						if ($_hostsubwww == $hostsubwww) {
+							$url = $_url;
+							break;
+						}
+						$_host = preg_replace('|^(.*//)|', '', $_url);
+						if ($_host == $host) {
+							$url = $_url;
+							break;
+						}
+					}
+				}
 
-      if ($url) {
-          $configcache->root["path"]=$this->path;
-          $configcache->root["value"]=$url;
-          if ($workspace) {
-             $configcache->root["list"]=$this->data->url_list;
-          } else {
-             $configcache->root["list"]=$this->data->workspaceurl_list;
-          }
+			}
+			if (!$url) {
+				$url=$this->data->url;
+			}
+		}
 
-          if ($sitenls) {
-              $configcache->root["nls"] = $sitenls;
-          }
-      }
+		if ($url) {
+			$configcache->root["path"]=$this->path;
+			$configcache->root["value"]=$url;
+			if ($workspace) {
+			 $configcache->root["list"]=$this->data->url_list;
+			} else {
+			 $configcache->root["list"]=$this->data->workspaceurl_list;
+			}
 
-      $configcache->site=$this->path;
-      $configcache->section=$this->path;
-      $ARConfig->cache[$this->path]=$configcache;
+			if ($sitenls) {
+				$configcache->root["nls"] = $sitenls;
+			}
+		}
+
+		$configcache->site=$this->path;
+		$configcache->section=$this->path;
+		$ARConfig->cache[$this->path]=$configcache;
 	}
 
 } // end of psite class definition
