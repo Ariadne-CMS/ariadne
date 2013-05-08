@@ -99,6 +99,11 @@
 		if (!$objectName) {
 			$objectName = $data->name;
 		}
+
+		$browsepath = $this->getvar('path');
+		if (!$browsepath || !$this->exists($browsepath))) {
+			$browsepath = $this->path;
+		}
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -182,7 +187,7 @@
 	// setting session ID for unique naming of windows within one ariadne session.
 	muze.ariadne.registry.set("SessionID","<?php echo addslashes($ARCurrent->session->id); ?>");
 
-	muze.ariadne.registry.set("path", "<?php echo addslashes($this->path); ?>");
+	muze.ariadne.registry.set("path", "<?php echo addslashes($browsepath); ?>");
 <?php
 	if( $AR->user->data->windowprefs["edit_object_layout"] ) {
 		echo "\tmuze.ariadne.registry.set('window_new_layout', 1);\n";
@@ -200,6 +205,7 @@
 			}
 		}
 	}
+
 ?>
 
 </script>
@@ -243,7 +249,7 @@
 			<div class="searchdiv">
 				<form action="dialog.browse.php" onsubmit="muze.ariadne.explore.toolbar.searchsubmit(this.arPath.value); return false;">
 					<div>
-						<input size="30" id="searchpath" class="text" type="text" name="arPath" value="<?php echo $this->path; ?>">
+						<input size="30" id="searchpath" class="text" type="text" name="arPath" value="<?php echo $browsepath; ?>">
 						<input type="image" src="<?php echo $AR->dir->www; ?>images/icons/small/go.png" title="<?php echo htmlspecialchars($ARnls['ariadne:search']); ?>" id="searchbutton" name="searchsubmit" value="<?php echo $ARnls["ariadne:search"]; ?>">
 					</div>
 					<div id="resultscontainer"></div>
@@ -260,7 +266,7 @@
 		<div id="explore_managediv" class="managediv">
 			<div class="browse" id="archildren">
 				<?php
-					$this->call("explore.browse.".$viewmode.".php");
+					$this->get($browsepath, "explore.browse.".$viewmode.".php");
 				?>
 			</div>
 		</div>

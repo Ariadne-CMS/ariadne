@@ -9,7 +9,7 @@ muze.require("muze.util.splitpane");
 muze.ariadne.explore = function() {
 	var windowprops_common = 'resizable';
 	var windowprops_full = 'directories,location,menubar,status,toolbar,resizable,scrollbars';
-	var windowsize_small = ",height=230,width=400";
+	var windowsize_small = ",height=280,width=450";
 	var windowsize_large = ",height=495,width=550";
 
 	return {
@@ -462,6 +462,7 @@ muze.ariadne.explore.tree = function() {
 		tree.subscribe('clickEvent', function(target) {muze.ariadne.explore.view(target.node);});
 		tree.subscribe('enterKeyPressed', function(node) {muze.ariadne.explore.view(node);});
 		firstNode.expand();
+		muze.ariadne.explore.tree.view(muze.ariadne.registry.get("path"));
 	}
 
 	var status = 'visible';
@@ -497,6 +498,7 @@ muze.ariadne.explore.tree = function() {
 				node = tree.getNodeByProperty("path", parent);
 			}
 
+			
 			if (parent != path) {
 				tree.subscribe('expandComplete', function(node) {
 					tree.unsubscribe('expandComplete');
@@ -508,6 +510,7 @@ muze.ariadne.explore.tree = function() {
 			}
 			if(node) {
 				tree.removeChildren(node);
+				document.getElementById(node.contentElId).scrollIntoView(false);
 				node.expand();
 			} else {
 				tree.unsubscribe('expandComplete');

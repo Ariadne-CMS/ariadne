@@ -163,7 +163,7 @@ div.buttons input {
 	background:url("../images/sprite.png") repeat-x 0 0;
 	border: 1px solid #808080;
 }
-#tabsdata fieldset.browse {
+#tabsdata fieldset.browse .browse_wrapper {
 	padding-right: 105px;
 }
 #tabsdata fieldset.browse input {
@@ -373,20 +373,25 @@ div.buttons div.center {
 	padding: 5px;
 }
 #data.delete .typeicon,
-#data.delete .overlay_typeicon {
+#data.delete .overlay_typeicon,
+#data.browse .typeicon,
+#data.browse .overlay_typeicon {
 	vertical-align: middle;
 	position: relative;
 	margin-right: 5px;
 	display: block;
 	float: left;
 }
-#data.delete .overlay_typeicon {
+#data.delete .overlay_typeicon,
+#data.browse .overlay_typeicon {
 	margin-left: -31px;
 }
-#data.delete .name {
+#data.delete .name,
+#data.browse .name {
 	margin-left: 27px;
 }
-#data.delete .path {
+#data.delete .path,
+#data.browse .path {
 	margin-left: 27px;
 	margin-bottom: 10px;
 }
