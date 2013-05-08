@@ -225,7 +225,7 @@
   /* NOTE: don't add the protocol (http://) or slashes at the end.          */
   /**************************************************************************/
 
-  if ($_SERVER['HTTP_X_FORWARDED_HOST']) {
+  if (isset($_SERVER['HTTP_X_FORWARDED_HOST'])) {
     $AR->host                 = $_SERVER['HTTP_X_FORWARDED_HOST'];
   } else {
     $AR->host                 = $_SERVER['HTTP_HOST'];
