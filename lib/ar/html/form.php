@@ -677,7 +677,7 @@
 			);
 		}
 		
-		public function getLabel() {		
+		public function getLabel() {	
 			if ( isset(ar_html_form::$customTypes[ $this->type ]) ) {
 				$getLabel = ar_html_form::$customTypes[ $this->type ]['getLabel'];
 				if ( isset( $getLabel ) ) {
@@ -687,7 +687,7 @@
 			return parent::getLabel();
 		}
 
-		public function getInput() {		
+		public function getInput() {
 			if ( isset(ar_html_form::$customTypes[ $this->type ]) ) {
 				$getInput = ar_html_form::$customTypes[ $this->type ]['getInput'];
 				return $getInput($this);
