@@ -22,33 +22,48 @@
             reset($AR->nls->list);
             $count=0;
 			$clearcache=false;
-
             while (!$this->error && (list($key, $value)=each($AR->nls->list))) {
                 if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
-					$url=$this->getdata("url",$key);
-					if (substr($url, -1, 1)=='/') {
-						$url=substr($url, 0, -1);
+					$urls=$this->getdata("url",$key);
+					if (strpos($urls, ';')) {
+						$urls = explode(';', $urls);
+					} else {
+						$urls = array( $urls );
 					}
-					if ($url!=$this->data->$key->url) {
-						$clearcache=true;
-						$this->data->$key->url=$url;
-					}
-					preg_match('|^([a-z0-9]+)://([^/:]+)(:[0-9]+)?|i', $url, $regs);
-					if ($url) {
-						$this->data->url_list['nls'][$key] = $url;
-						if (!$this->data->url_list['host'][$regs[2].$regs[3]]) {
-							$this->data->url_list['host'][$regs[2].$regs[3]] = $key;
-						} else {
-							$this->error = "Please fill in distinctive hostnames; they should not be the same for different languages.";
-						}
-					}
-					$properties["url"][$count]["protocol"]=	"'".AddSlashes($regs[1])."'";
-					$properties["url"][$count]["host"]=		"'".AddSlashes($regs[2])."'";
-					if ($regs[3]) {
-						$properties["url"][$count]["port"]=	"'".substr(AddSlashes($regs[3]), 1)."'";
-					}
-					$count++;
+					$this->data->url_list['nls'][$key] = array();
 
+					$firstURL = true;
+					foreach ($urls as $i => $url) {
+						$url = trim($url);
+						if (!$url) {
+							continue;
+						}
+
+						if (substr($url, -1, 1)=='/') {
+							$url=substr($url, 0, -1);
+						}
+						if ($firstURL && $url!=$this->data->$key->url) {
+							$clearcache=true;
+							$this->data->$key->url=$url;
+						}
+
+						preg_match('|^([a-z0-9]+)://([^/:]+)(:[0-9]+)?|i', $url, $regs);
+						if ($url) {
+							$this->data->url_list['nls'][$key][] = $url;
+							if (!$this->data->url_list['host'][$regs[2].$regs[3]]) {
+								$this->data->url_list['host'][$regs[2].$regs[3]] = $key;
+							} else {
+								$this->error = "Please fill in distinctive hostnames; they should not be the same for different languages.";
+							}
+						}
+						$properties["url"][$count]["protocol"]=	"'".AddSlashes($regs[1])."'";
+						$properties["url"][$count]["host"]=		"'".AddSlashes($regs[2])."'";
+						if ($regs[3]) {
+							$properties["url"][$count]["port"]=	"'".substr(AddSlashes($regs[3]), 1)."'";
+						}
+						$count++;
+						$firstURL = false;
+					}
 					$workspaceurl=$this->getdata("workspaceurl",$key);
 					if (substr($workspaceurl, -1, 1)=='/') {
 						$workspaceurl=substr($workspaceurl, 0, -1);
