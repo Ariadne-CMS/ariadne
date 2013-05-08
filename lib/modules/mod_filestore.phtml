@@ -63,7 +63,7 @@
 
 		/* public */
 
-		public function __construct($name, $root, $store) {
+		public function __construct($name, $root, $store = null) {
 			// initialize filestore
 			$this->name=$name;
 			// make a copy of the store data, not a reference
@@ -90,7 +90,7 @@
 		}
 
 		public function addObjectToLayer( $id ) {
-			if (method_exists($this->store, "addObjectToLayer")) {
+			if ($this->store && method_exists($this->store, "addObjectToLayer")) {
 				return $this->store->addObjectToLayer( $id );
 			}
 			return $id;
