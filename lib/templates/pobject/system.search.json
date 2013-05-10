@@ -1,19 +1,26 @@
 <?php
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		$AR->SVN->enabled = false; // SVN information is not needed and slows down the query a lot.
-		$arquery = "object.path =~ '%$query%' or name.value =~ '%$query%'";
-		$results = $this->find("/", $arquery, "system.list.entry.php");
 
-		// array_filter changes the json encoded result; unsetting array elements does the same;
-		$resultset = array();
-		foreach ($results as $key => $item) {
-			if ($item['grants']['read'] === false) {
-				unset($results[$key]);
-			} else {
-				$resultset[] = $item;
-			}
-		}
+		$lastSlash   = strrpos( $query, '/' );
+		$queryPath   = AddSlashes( $query );
+		$parentPath  = $this->make_path( substr( $query, 0, $lastSlash + 1) );
+		$queryString = "object.parent = '$parentPath' and object.path ~= '$queryPath%'";
+
+		$resultSet = array();
+		$count = $this->count_find($parentPath, $queryString);
+		if ($count < 25) {
+			$results = $this->find($parentPath, $queryString, "system.list.entry.php");
 		
-		echo json_encode( array("entries" => $resultset ));
+			// array_filter changes the json encoded result; unsetting array elements does the same;
+			foreach ((array)$results as $key => $item) {
+				if ($item['grants']['read'] === false) {
+					unset($results[$key]);
+				} else {
+					$resultSet[] = $item;
+				}
+			}
+		}	
+		echo json_encode( array("entries" => $resultSet, "count" => $count, "parentPath" => $parentPath, "queryString" => $queryString ));
 	}
 ?>
