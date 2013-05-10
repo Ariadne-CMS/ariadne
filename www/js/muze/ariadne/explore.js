@@ -9,7 +9,7 @@ muze.require("muze.util.splitpane");
 muze.ariadne.explore = function() {
 	var windowprops_common = 'resizable';
 	var windowprops_full = 'directories,location,menubar,status,toolbar,resizable,scrollbars';
-	var windowsize_small = ",height=280,width=450";
+	var windowsize_small = ",height=300,width=550";
 	var windowsize_large = ",height=495,width=550";
 
 	return {
@@ -53,10 +53,10 @@ muze.ariadne.explore = function() {
 			'dialog.add' 			: windowprops_common + ',height=600,width=550',
 			'dialog.cache'			: windowprops_common + ',height=350,width=500',
 			'dialog.templates'		: windowprops_common + ',height=500,width=800',
-			'dialog.custom'			: windowprops_common + ',height=300,width=625',
+			'dialog.custom'			: windowprops_common + windowsize_large, //',height=300,width=625',
 			'dialog.language'		: windowprops_common + ',height=350,width=450',
 			'dialog.grants'			: windowprops_common + ',height=570,width=950',
-			'dialog.owner'			: windowprops_common + ',height=260,width=400',
+			'dialog.owner'			: windowprops_common + windowsize_small, //',height=260,width=400',
 			'dialog.grantkey'		: windowprops_common + ',height=330,width=400',
 			'dialog.preferences'		: windowprops_common + ',height=400,width=500',
 			'dialog.search'			: windowprops_common + ',height=500,width=700',
@@ -565,7 +565,11 @@ muze.ariadne.explore.toolbar = function() {
 			muze.ariadne.explore.toolbar.view(document.getElementById("searchpath").value);
 		},
 		view : function(path) {
-			document.getElementById("searchpath").value = path;
+			var searchPath = document.getElementById("searchpath");
+			if (searchPath.value == path) {
+				return;
+			}
+			searchPath.value = path;
 			var parent = muze.ariadne.explore.getparent(path);
 			if (!muze.ariadne.explore.viewable(parent)) {
 				document.getElementById("viewparent").style.opacity = '0.3';
@@ -613,6 +617,8 @@ muze.ariadne.explore.toolbar = function() {
 }();
 
 muze.ariadne.explore.searchbar = function() {
+	var oAC;
+
 	return {
 		init : function() {
 			// Use an XHRDataSource
@@ -638,8 +644,11 @@ muze.ariadne.explore.searchbar = function() {
 			// Enable caching
 			oDS.maxCacheEntries = 5;
 			// Instantiate the AutoComplete
-			var oAC = new YAHOO.widget.AutoComplete("searchpath", "resultscontainer", oDS);
-
+			if (typeof(oAC) == 'undefined') {
+				oAC = new YAHOO.widget.AutoComplete("searchpath", "resultscontainer", oDS);
+			} else {
+				oAC.reset();
+			}
 			oAC.generateRequest = function(sQuery) {
 				return muze.ariadne.explore.tree.loaderUrl + muze.ariadne.registry.get('path') +  "system.search.json?query=" + sQuery;
 			};
