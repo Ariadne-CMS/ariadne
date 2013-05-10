@@ -26,16 +26,7 @@
 
 	$defaultGroupDir    = "/system/groups/";
 	if (is_array($authconfig['groupdirs'])) {
-		// find closest group directory
-		$nMatch = 0;
-		foreach ($authconfig['groupdirs'] as $groupDir) {
-			$length = min(strlen($this->path), strlen($groupDir));
-			for ($i = 0; $i < $length && $this->path[$i] === $groupDir[$i]; $i++);
-			if ($i > $nMatch) {
-				$nMatch = $i;
-				$defaultGroupDir = $groupDir;
-			}
-		}
+		$defaultGroupDir = end($authconfig['groupdirs']);
 	}
 
 
@@ -412,12 +403,11 @@
 
 		$wgBrowseRoot = $defaultGroupDir;
 		$arConfig = $this->loadUserConfig();
-		foreach($arConfig['authentication'] as $grouptype => $authdirs) {
-			if (in_array($wgBrowseRoot, $arConfig['authentication'][$grouptype])) {
-				foreach ($arConfig['authentication'][$grouptype] as $authpath) {
-					if ($authpath != $wgBrowseRoot) {
-						$extraroots .= "extraroots[]=$authpath&";
-					}
+		foreach (array('groupdirs', 'userdirs') as $groupType) {
+			$authDirs = array_reverse( (array) $arConfig['authentication'][$groupType] );
+			foreach ($authDirs as $authDir) {
+				if ($authDir != $wgBrowseRoot) {
+					$extraroots .= "extraroots[]=$authDir&";
 				}
 			}
 		}
