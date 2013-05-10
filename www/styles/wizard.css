@@ -209,6 +209,12 @@ div.buttons div.center {
 	bottom: 40px;
 }
 
+#sectiondata img.typeicon {
+	float: left;
+	clear: both;
+	margin-right: 5px;
+}
+
 #sectiondata.nosections {
 	left: 10px;
 }
