@@ -19,7 +19,7 @@
 			}
 
 		} else {
-			error($ARnls["ariadne:no_adding_found"]);
+			// error($ARnls["ariadne:no_adding_found"]);
 		}
 
 		if ($arNewType) {
