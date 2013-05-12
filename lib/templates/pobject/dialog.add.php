@@ -1,18 +1,18 @@
 <?php
-	$ARCurrent->nolangcheck=true;
-	if ($this->CheckLogin("add", ARANYTYPE) && $this->CheckConfig()) {
-		include($this->store->get_config("code")."widgets/wizard/code.php");
+	$ARCurrent->nolangcheck = true;
+	if ( $this->CheckLogin("add", ARANYTYPE) && $this->CheckConfig() ) {
+		include( $this->store->get_config("code")."widgets/wizard/code.php" );
 
 		$wgWizFlow = array(
 			array(
-				"current" => $this->getvar("wgWizCurrent","none"),
+				"current"  => $this->getvar("wgWizCurrent","none"),
 				"template" => "dialog.add.form.php",
-				"cancel" => "window.close.js",
-				"save" => "dialog.add.save.php"
+				"cancel"   => "window.close.js",
+				"save"     => "dialog.add.save.php"
 			)
 		);
 		
-		if ($wgWizAction == 'save') {
+		if ( $wgWizAction == 'save' ) {
 			$wgWizButtons = array(
 				"cancel" => array(
 					"value" => $ARnls["cancel"]
@@ -32,10 +32,10 @@
 			);
 		}				
 
-		$wgWizTitle=$ARnls["add"];
+		$wgWizTitle = $ARnls["add"];
 		$wgWizHeader = $wgWizTitle;
 		$wgWizHeaderIcon = $AR->dir->images.'icons/large/add.png';
-
-		include($this->store->get_config("code")."widgets/wizard/yui.wizard.html");
+		$wgWizStyleSheets = array( $AR->dir->styles.'dialog.add.css' );
+		include( $this->store->get_config("code")."widgets/wizard/yui.wizard.html" );
 	}
 ?>
