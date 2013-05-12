@@ -65,7 +65,7 @@
 	$ARnls["default"]						=	"Vorgabe";
 	$ARnls["delete"]						=	"Löschen";
 	$ARnls["deleting"]						=	"Löschen";
-	$ARnls["details"]						=	"Details";
+	$ARnls["details"]						=	"Detail";
 	$ARnls["display"]						=	"Anzeige";
 	$ARnls["donotcache"]					=	"Nicht zwischenspeichern";
 	$ARnls["donotoverwrite"]				=	"Nicht überschreiben";
@@ -149,7 +149,7 @@
 	$ARnls["err:notfindusergroup"]			=	"Benutzer oder Benutzergruppe %s wurde nicht gefunden.";
 	$ARnls["err:notgetlogin"]				=	"Benutzername/ID konnte von %s nicht geholt werden.";
 	$ARnls["err:nothtmlfile"]				=	"Dies ist keine HTML Datei.";
-	$ARnls["err:notmplupdate"]				=	"template(%s) no update";
+	$ARnls["err:notmplupdate"]				=	"template(%s) nicht erneuert";
 	$ARnls["err:notremovegrant"]			=	"Zugriffsrecht konnte nicht von %s (%s) enfernt werden.";
 	$ARnls["err:notsavegrant"]				=	"Zugriffsrechte konnten nicht in %s gespeichert werden.";
 	$ARnls["err:nousergroup"]				=	"%s ist kein Benutzer und keine Gruppe";
@@ -197,7 +197,7 @@
 	$ARnls["inheritcache"]					=	"Eigenschaften erben";
 	$ARnls["interface"]						=	"Oberfläche";
 	$ARnls["item"]							=	"Element";
-	$ARnls["keepimage"]						=	"Zwischenspeicherzeit";
+	$ARnls["keepimage"]						=	"Bild behalten";
 	$ARnls["keywords"]						=	"Stichwörter";
 	$ARnls["language"]						=	"Sprache";
 	$ARnls["languagenotavailable"]			=	"Sprache %s ist leider nicht verfügbar.";

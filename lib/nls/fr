@@ -17,7 +17,7 @@
   $ARnls["apply"] = "Appliquer";
   $ARnls["article"] = "Article";
   $ARnls["available"] = "Disponible";
-  $ARnls["axnorootnode"] = "le fichier .ax n\'as pa de noeud racine, nous allons en cr&eacute;er un\n";
+  $ARnls["axnorootnode"] = "le fichier .ax n\'as pas de noeud racine, nous allons en cr&eacute;er un\n";
   $ARnls["back"] = "Retour";
   $ARnls["browse"] = "Explorer";
   $ARnls["caching"] = "Cacher";
@@ -82,8 +82,8 @@
   $ARnls["endson"] = "Finissent en";
   $ARnls["enternewvalue"] = "Entrer nouvelle valeur";
   $ARnls["err:alreadyexists"] = "%s existe d&eacute;j&agrave;.";
-  $ARnls["err:cannotdelsystemusers"] = "Vous ne pouvez pas supprimer les utilisateurs syst&egrave;me (admin et public)";
-  $ARnls["err:cannotedit.phtml"] = "Vous ne pouvez pas modifier les templates  finissant en \'.phtml\'";
+  $ARnls["err:cannotdelsystemusers"] = "Vous ne pouvez pas supprimer ou d&eacute;placer les utilisateurs syst&egrave;me (admin et public)";
+  $ARnls["err:cannotedit.phtml"] = "Vous ne pouvez pas modifier les templates finissant en \'.phtml\'";
   $ARnls["err:cannotlockobject"] = "Ne peut verrouiller l\'objet  %s";
   $ARnls["err:changetempdirfailed"] = "Ne peut pas changer le repertoire vers %stemp/ ";
   $ARnls["err:chooseotherfilename"] = "%s existe d&eacute;j&agrave;. Choisissez en un autre.";
@@ -282,7 +282,7 @@
   $ARnls["repeaton"] = "R&eacute;p&eacute;ter le";
   $ARnls["sat"] = "Sam";
   $ARnls["save"] = "Enregistrer";
-  $ARnls["scenario"] = "Scenario";
+  $ARnls["scenario"] = "Sc&eacute;nario";
   $ARnls["search"] = "Rechercher";
   $ARnls["selectlanguage"] = "Choisir un langage diff&eacute;rent :";
   $ARnls["setasdefault"] = "Mettre par d&eacute;faut ?";
