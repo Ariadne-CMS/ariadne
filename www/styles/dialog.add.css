@@ -1,0 +1,98 @@
+#tabsdata label {
+	display: inline-block;
+	width: 120px;
+}
+
+#location div.radioButton input,
+#location div.radioButton label {
+	display: inline;
+}
+
+#location div.radioButton {
+	margin-bottom: 3px;
+}
+
+#type label {
+	width: 72px;
+}
+
+#type div.formCheckbox input,
+#type div.formCheckbox label {
+	display: inline;
+	vertical-align: middle;
+}
+
+#type div.formRadio.type input,
+#type div.formRadio.type_selected input {
+	visibility: hidden;
+	height: 0px;
+}
+
+#type div.formRadio.type input + label,
+#type div.formRadio.type_selected input + label {
+	border: 1px solid transparent;
+	padding: 3px;
+	margin-top: 0px;
+}
+
+#type div.formRadio.type input:hover + label {
+	border: 1px solid #4A6799;
+	background-color: #D0DCF7;
+}
+
+#type div.formRadio.type input:checked + label {
+	border: 1px solid #4A6799;
+	background-color: #316AC5;
+	color: white;
+}
+#type div.formRadio.type div.radioButton,
+#type div.formRadio.type_selected div.radioButton {
+	display: inline-block;
+	text-align: center;
+	margin-right: 5px;
+}
+#type div.formRadio.type div.radioButton img,
+#type div.formRadio.type_selected div.radioButton img {
+	display: block;
+	margin: 0px auto;
+}
+#type {
+	position: relative;
+}
+#type .othertype {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}
+
+fieldset.editdata fieldset legend {
+	display: block;
+	margin-left: 20px;
+	padding-left: 5px;
+	padding-right: 5px;
+	display: none;
+}
+fieldset.editdata table {
+	border-collapse: collapse;
+	margin: 0px;
+	padding: 0px;
+}
+
+#tabsdata fieldset.editdata fieldset {
+	border: 0px;
+	margin: 0px;
+	padding: 0px;
+	xborder-top: 1px solid #888888;
+}
+img.flag {
+	display: none;
+}
+#languages div.formField {
+	display: inline;
+}
+button.addLanguage {
+	display: inline;
+}
+#tabsdata div.right {
+	float: right;
+}
