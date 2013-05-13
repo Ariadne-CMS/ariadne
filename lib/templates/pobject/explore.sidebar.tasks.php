@@ -19,7 +19,7 @@
 		if ($this->CheckSilent("add",ARANYTYPE) && !$hideAdd) {
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() ."dialog.add.php",
-				'onclick' => "muze.ariadne.explore.arshow('dialog.add',this.href); return false;",
+				'onclick' => "muze.ariadne.explore.dialog.add(this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/add.png',
 				'nlslabel' => $ARnls['ariadne:new']
 			);
@@ -28,7 +28,7 @@
 		if ($this->CheckSilent("edit")) {
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() . "dialog.edit.php",
-				'onclick' => "muze.ariadne.explore.arshow('dialog.edit',this.href); return false;",
+				'onclick' => "muze.ariadne.explore.dialog.edit(this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/edit.png',
 				'nlslabel' => $ARnls['ariadne:edit']
 			);
@@ -38,14 +38,14 @@
 			if ($this->CheckSilent("delete")) {
 				$tasks[] = array(
 					'href' => $this->make_ariadne_url() . "dialog.rename.php",
-					'onclick' => "muze.ariadne.explore.arshow('dialog.rename',this.href); return false;",
+					'onclick' => "muze.ariadne.explore.dialog.rename(this.href); return false;",
 					'icon' => $AR->dir->images . 'icons/small/rename.png',
 					'nlslabel' => $ARnls['ariadne:rename']
 				);
 			}
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() . "dialog.copy.php",
-				'onclick' => "muze.ariadne.explore.arshow('dialog.copy',this.href); return false;",
+				'onclick' => "muze.ariadne.explore.dialog.copy(this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/copy.png',
 				'nlslabel' => $ARnls['ariadne:copy']
 			);
@@ -62,7 +62,7 @@
 		if ($this->CheckSilent("admin") && $this->can_mogrify() ) {
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() . "dialog.mogrify.php",
-				'onclick' => "muze.ariadne.explore.arshow('dialog.mogrify',this.href); return false;",
+				'onclick' => "muze.ariadne.explore.dialog.mogrify(this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/mogrify.png',
 				'nlslabel' => $ARnls['ariadne:mogrify']			
 			);
@@ -70,13 +70,13 @@
 		if ($this->CheckSilent("config")) {
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() . "dialog.import.php",
-				'onclick' => "muze.ariadne.explore.arshow('dialog.import',this.href); return false;",
+				'onclick' => "muze.ariadne.explore.dialog.import(this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/import.png',
 				'nlslabel' => $ARnls['ariadne:import']
 			);		
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() . "dialog.export.php",
-				'onclick' => "muze.ariadne.explore.arshow('dialog.export',this.href); return false;",
+				'onclick' => "muze.ariadne.explore.dialog.export(this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/export.png',
 				'nlslabel' => $ARnls['ariadne:export']
 			);
@@ -85,7 +85,7 @@
 		if ($this->CheckSilent("admin") ) {
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() . "dialog.su.php",
-				'onclick' => "muze.ariadne.explore.arshow('dialog.su',this.href); return false;",
+				'onclick' => "muze.ariadne.explore.dialog.su(this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/grants.png',
 				'nlslabel' => $ARnls['ariadne:su']			
 			);

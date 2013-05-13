@@ -21,14 +21,14 @@
 		if ($this->CheckSilent("delete")) {
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() . "dialog.rename.php",
-				'onclick' => "muze.ariadne.explore.arshow('dialog.rename',this.href); return false;",
+				'onclick' => "muze.ariadne.explore.dialog.rename(this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/rename.png',
 				'nlslabel' => $ARnls['ariadne:rename']
 			);
 		}
 		$tasks[] = array(
 			'href' => $this->make_ariadne_url() . "dialog.copy.php",
-			'onclick' => "muze.ariadne.explore.arshow('dialog.copy',this.href); return false;",
+			'onclick' => "muze.ariadne.explore.dialog.copy(this.href); return false;",
 			'icon' => $AR->dir->images . 'icons/small/copy.png',
 			'nlslabel' => $ARnls['ariadne:copy']
 		);
@@ -45,7 +45,7 @@
 		if ($this->CheckSilent("admin")) {
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() . "dialog.mogrify.php",
-				'onclick' => "muze.ariadne.explore.arshow('dialog.mogrify',this.href); return false;",
+				'onclick' => "muze.ariadne.explore.dialog.mogrify(this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/mogrify.png',
 				'nlslabel' => $ARnls['ariadne:mogrify']			
 			);

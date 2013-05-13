@@ -28,7 +28,6 @@ muze.ariadne.explore = function() {
 			'dialog.import'			: windowprops_common + windowsize_large,
 			'dialog.export'			: windowprops_common + windowsize_large,
 
-
 			'dialog.svn.tree.info'		: windowprops_common + windowsize_large,
 			'dialog.svn.tree.diff'		: windowprops_common + windowsize_large,
 			'dialog.svn.tree.commit'	: windowprops_common + windowsize_large,
@@ -1193,6 +1192,45 @@ muze.ariadne.explore.browseheader = function() {
 
 muze.ariadne.explore.dialog = ( function () {
 	return {
+		'add': function(href) {
+			muze.dialog.open(href, 'dialog.add', { windowFeatures: muze.ariadne.explore.windowprops['dialog.add'] } )
+			.on('submit', function( args ) {
+				muze.ariadne.explore.objectadded();
+			})
+		},
+		'edit': function(href) {
+			muze.dialog.open(href, 'dialog.edit', { windowFeatures: muze.ariadne.explore.windowprops['dialog.edit'] } )
+			.on('submit', function( args ) {
+				muze.ariadne.explore.tree.refresh(args['path']);
+				muze.ariadne.explore.view(args['path']);
+			})
+			.always( function() {
+				this.close();
+			});
+		},
+		'rename': function(href) {
+			muze.dialog.open(href, 'dialog.rename', { windowFeatures: muze.ariadne.explore.windowprops['dialog.rename'] } )
+			.on('renamed', function( args ) {
+				muze.ariadne.explore.tree.refresh(args['path']);
+				muze.ariadne.explore.tree.view(args['path']);
+			})
+			.always( function() {
+				this.close();
+			});
+		},
+		'copy': function(href) {
+			muze.dialog.open(href, 'dialog.copy', { windowFeatures: muze.ariadne.explore.windowprops['dialog.copy'] } )
+			.on('copied', function( args ) {
+				if (args['path'] == args['copyTarget'] ) {
+					muze.ariadne.explore.objectadded();
+				} else {
+					muze.ariadne.explore.tree.view(args['copyTarget']);
+				}
+			})
+			.always( function() {
+				this.close();
+			});
+		},
 		'delete': function(href) {
 			muze.dialog.open(href, 'dialog.delete', { windowFeatures: muze.ariadne.explore.windowprops['dialog.delete'] } )
 			.on('deleted', function( args ) {
@@ -1201,6 +1239,34 @@ muze.ariadne.explore.dialog = ( function () {
 			.always( function() {
 				this.close();
 			});
+		},
+		'mogrify': function(href) {
+			muze.dialog.open(href, 'dialog.mogrify', { windowFeatures: muze.ariadne.explore.windowprops['dialog.mogrify'] } )
+			.on('mogrified', function( args ) {
+				muze.ariadne.explore.tree.refresh(args['path'])
+				muze.ariadne.explore.view(args['path']);
+			})
+			.always( function() {
+				this.close();
+			});
+		},
+		'import': function(href) {
+			muze.dialog.open(href, 'dialog.import', { windowFeatures: muze.ariadne.explore.windowprops['dialog.import'] } )
+			.on('imported', function( args ) {
+				muze.ariadne.explore.view(args['showPath']);
+			})
+			.always( function() {
+				this.close();
+			});
+		},
+		'export': function(href) {
+			muze.dialog.open(href, 'dialog.export', { windowFeatures: muze.ariadne.explore.windowprops['dialog.export'] } )
+			.always( function() {
+				this.close();
+			});
+		},
+		'su': function(href) {
+			muze.dialog.open(href, 'dialog.su', { windowFeatures: muze.ariadne.explore.windowprops['dialog.su'] } );
 		}
 	};
 }());
