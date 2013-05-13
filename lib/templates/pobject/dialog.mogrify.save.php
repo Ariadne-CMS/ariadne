@@ -15,9 +15,18 @@
 	</div>
 	<?php if (!$this->error) { ?>
 		<script type="text/javascript">
-			window.opener.muze.ariadne.explore.tree.refresh('<?php echo $this->path; ?>');
-			window.opener.muze.ariadne.explore.view('<?php echo $this->path; ?>');
-			window.close();
+			if ( window.opener && window.opener.muze && window.opener.muze.dialog ) {
+				window.opener.muze.dialog.callback( window.name, 'mogrified', { 
+					'path': '<?php echo $this->path; ?>'
+				});
+			} else  { 
+				// backward compatibility with pre muze.dialog openers
+				if ( window.opener && window.opener.muze && window.opener.muze.ariadne ) {
+					window.opener.muze.ariadne.explore.tree.refresh('<?php echo $this->path; ?>');
+					window.opener.muze.ariadne.explore.view('<?php echo $this->path; ?>');
+				}
+				window.close();
+			}
 		</script>
 	<?php } ?>
 <?php
