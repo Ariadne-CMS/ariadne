@@ -110,16 +110,23 @@
 					document.getElementById('progress_text').innerHTML = 'Done';
 					document.getElementById('progress').style.width = '100%';
 					document.getElementById('copy').innerHTML = '<?php echo $ARnls["copying"] . " " . $current_object_path; ?>';
-					// FIXME: Add copied path to the tree?
-					if ( window.opener && window.opener.muze && window.opener.muze.ariadne && window.opener.muze.ariadne.registry ) {
-						currentpath = window.opener.muze.ariadne.registry.get('path');
-						if (currentpath == '<?php echo $this->make_path($copytarget . "../"); ?>') {
-							window.opener.muze.ariadne.explore.objectadded();
-						} else {
-							window.opener.muze.ariadne.explore.tree.view('<?php echo $this->make_path($copytarget . "../"); ?>');
+					if ( window.opener && window.opener.muze && window.opener.muze.dialog && window.opener.muze.ariadne.registry ) {
+						window.opener.muze.dialog.callback( window.name, 'copied', { 
+							'copyTarget': '<?php echo $this->make_path($copytarget . "../"); ?>',
+							'path': window.opener.muze.ariadne.registry.get('path')
+						});
+					} else {
+						// FIXME: Add copied path to the tree?
+						if ( window.opener && window.opener.muze && window.opener.muze.ariadne && window.opener.muze.ariadne.registry ) {
+							currentpath = window.opener.muze.ariadne.registry.get('path');
+							if (currentpath == '<?php echo $this->make_path($copytarget . "../"); ?>') {
+								window.opener.muze.ariadne.explore.objectadded();
+							} else {
+								window.opener.muze.ariadne.explore.tree.view('<?php echo $this->make_path($copytarget . "../"); ?>');
+							}
 						}
+						window.close();
 					}
-					window.close();
 				</script>
 <?php
 			} else {
