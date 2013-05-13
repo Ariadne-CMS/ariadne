@@ -28,6 +28,17 @@
 		if (!$objectName) {
 			$objectName = $data->name;
 		}
+
+		$loadJS = array(
+			'muze',
+			'muze.event',
+			'muze.dialog',
+			'muze.util.pngfix',
+			'muze.util.splitpane',
+			'muze.ariadne.registry',
+			'muze.ariadne.cookie',
+			'muze.ariadne.explore'
+		);
 		
 		// only nls dependant var used atm.
 		$JSnls = array();
@@ -67,14 +78,7 @@
 <!--[if lt IE 7]><link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>explore.ie6.css"><![endif]-->
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>login.css">
 
-
-<script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze.js"></script>
-<script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/util/pngfix.js"></script>
-<script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/util/splitpane.js"></script>
-<script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/ariadne/registry.js"></script>
-<script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/ariadne/cookie.js"></script>
-<script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/ariadne/explore.js"></script>
-
+<script type="text/javascript" src="<?php echo $this->make_ariadne_url('/') . 'ariadne.load.js?' . implode('+', $loadJS ); ?>"></script>
 <script type="text/javascript">
 	// Backwards compatibility hooks - these should be removed in the end.
 	View = muze.ariadne.explore.view;
