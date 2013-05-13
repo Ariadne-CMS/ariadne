@@ -98,10 +98,18 @@
 			document.getElementById('progress_text').innerHTML = 'Done';
 			document.getElementById('progress').style.width = '100%';
 			document.getElementById('deleting').innerHTML = '<?php echo $ARnls["deleting"] . " " . $current_object_path; ?>';
-			if ( window.opener && window.opener.muze && window.opener.muze.ariadne ) {
-				window.opener.muze.ariadne.explore.view('<?php echo ($this->getvar("childrenonly") ? $this->path : $this->parent );?>');
+			if ( window.opener && window.opener.muze && window.opener.muze.dialog ) {
+				window.opener.muze.dialog.callback( window.name, 'deleted', { 
+					'childrenOnly': <?php echo (int)$this->getvar("childrenonly") ?>,
+					'showPath': '<?php echo ($this->getvar("childrenonly") ? $this->path : $this->parent );?>'
+				});
+			} else  { 
+				// backward compatibility with pre muze.dialog openers
+				if ( window.opener && window.opener.muze && window.opener.muze.ariadne ) {
+					window.opener.muze.ariadne.explore.view('<?php echo ($this->getvar("childrenonly") ? $this->path : $this->parent );?>');
+				}
+				window.close();
 			}
-			window.close();
 			
 		</script>
 <?php

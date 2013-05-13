@@ -53,7 +53,7 @@
 			if ($this->CheckSilent("delete")) {
 				$tasks[] = array(
 					'href' => $this->make_ariadne_url() . "dialog.delete.php",
-					'onclick' => "muze.ariadne.explore.arshow('dialog.delete',this.href); return false;",
+					'onclick' => "muze.ariadne.explore.dialog.delete(this.href); return false;",
 					'icon' => $AR->dir->images . 'icons/small/delete.png',
 					'nlslabel' => $ARnls['ariadne:delete']
 				);		

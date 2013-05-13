@@ -3,6 +3,7 @@ muze.namespace("muze.util");
 
 muze.require("muze.ariadne.registry");
 muze.require("muze.ariadne.cookie");
+muze.require("muze.dialog");
 muze.require("muze.util.pngfix");
 muze.require("muze.util.splitpane");
 
@@ -647,7 +648,8 @@ muze.ariadne.explore.searchbar = function() {
 			if (typeof(oAC) == 'undefined') {
 				oAC = new YAHOO.widget.AutoComplete("searchpath", "resultscontainer", oDS);
 			} else {
-				oAC.reset();
+				// FIXME: reset is undefined
+				//oAC.reset();
 			}
 			oAC.generateRequest = function(sQuery) {
 				return muze.ariadne.explore.tree.loaderUrl + muze.ariadne.registry.get('path') +  "system.search.json?query=" + sQuery;
@@ -1188,3 +1190,17 @@ muze.ariadne.explore.browseheader = function() {
 
 	}
 }();
+
+muze.ariadne.explore.dialog = ( function () {
+	return {
+		'delete': function(href) {
+			muze.dialog.open(href, 'dialog.delete', { windowFeatures: muze.ariadne.explore.windowprops['dialog.delete'] } )
+			.on('deleted', function( args ) {
+				muze.ariadne.explore.view(args['showPath']);
+			})
+			.always( function() {
+				this.close();
+			});
+		}
+	};
+}());
