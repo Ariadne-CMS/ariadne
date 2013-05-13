@@ -27,9 +27,18 @@
 				// FIXME: update the tree and explore window.
 				?>
 					<script type="text/javascript">
-						window.opener.muze.ariadne.explore.tree.refresh('<?php echo $this->path; ?>');
-						window.opener.muze.ariadne.explore.view('<?php echo $this->path; ?>');
-						window.close();
+						if ( window.opener && window.opener.muze && window.opener.muze.dialog ) {
+							window.opener.muze.dialog.callback( window.name, 'renamed', { 
+								'path': '<?php echo $this->path; ?>'
+							});
+						} else {
+							// FIXME: Add copied path to the tree?
+							if ( window.opener && window.opener.muze && window.opener.muze.ariadne  ) {
+								window.opener.muze.ariadne.explore.tree.refresh('<?php echo $this->path; ?>');
+								window.opener.muze.ariadne.explore.view('<?php echo $this->path; ?>');
+							}
+							window.close();
+						}
 					</script>
 				<?php
 			} else {
