@@ -61,6 +61,13 @@
 										}
 									}
 
+									/*
+									 * FIXME: 
+									 *  - This behavour should not be enabled by default
+									 *  - This should be done in a layer above system templates for example dialog.copy
+									 *  - only do this when the parent of the src and the parent of the target are the same
+									 */
+									/*
 									if ($this->parent == $parent) {
 										if (isset($this->data->{$this->reqnls}->name)) {
 											$this->data->{$this->reqnls}->name .= $ARnls["ariadne:object:copied_object"];
@@ -68,6 +75,7 @@
 											$this->data->{$this->data->nls->default}->name .= $ARnls["ariadne:object:copied_object"];
 										}
 									}
+									 */
 									
 									$this->store->save($ARCurrent->newpath, $this->type, $this->data);
 
