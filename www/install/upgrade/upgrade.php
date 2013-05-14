@@ -135,10 +135,12 @@
 		case "2.7.5":
 		case "2.7.6":
 		case "2.7.7":
+		case "2.7.8":
+		case "2.7.9":
 				array_push($todo, Array(
-							"description" => "Bumping revision to 2.7.8.",
-							"operation" => "all/dummy.php",
-							"newversion" => "2.7.8"
+							"description" => "Recompiling all PINP templates.",
+							"operation" => "all/upgrade.templates.php",
+							"newversion" => "8.0"
 							));
 			
 	}
