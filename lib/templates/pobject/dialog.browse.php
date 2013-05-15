@@ -141,6 +141,8 @@
 <!--[if lt IE 7]><link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>explore.ie6.css"><![endif]-->
 
 <script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze.js"></script>
+<script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/event.js"></script>
+<script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/dialog.js"></script>
 <script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/util/pngfix.js"></script>
 <script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/util/splitpane.js"></script>
 <script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/ariadne/registry.js"></script>

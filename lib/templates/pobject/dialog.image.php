@@ -29,7 +29,9 @@
 		$name=$ARCurrent->arTypeNames[$this->type];
 
 		$wgWizScripts = array(
-			$AR->dir->www . "js/muze.js"
+			$AR->dir->www . "js/muze.js",
+			$AR->dir->www . "js/muze/event.js",
+			$AR->dir->www . "js/muze/dialog.js"
 		);
 		// spawn wizard
 		$wgWizHeaderIcon = $AR->dir->images . 'icons/large/pphoto.png';

@@ -48,6 +48,8 @@
 
 		$wgWizScripts = array(
 			$AR->dir->www . "js/muze.js",
+			$AR->dir->www . "js/muze/event.js",
+			$AR->dir->www . "js/muze/dialog.js"
 		);
 
 		$wgWizTitle=$ARnls["grants"];

@@ -38,6 +38,8 @@
 				$yui_base . "container/container_core-min.js",
 				$yui_base . "menu/menu-min.js",
 				$AR->dir->www . "js/muze.js",
+				$AR->dir->www . "js/muze/event.js",
+				$AR->dir->www . "js/muze/dialog.js",
 				$AR->dir->www . "js/muze/ariadne/templates.js",
 				$AR->dir->www . "js/muze/ariadne/cookie.js",
 				$AR->dir->www . "js/muze/util/splitpane.js",
