@@ -273,15 +273,23 @@ class mysql_compiler extends sql_compiler {
 			case 'orderbyfield':
 				$this->in_orderby = true;
 				$left=$this->compile_tree($node["left"]);
-				if ($node["right"]["field"] == 'AR_relevance' && $this->store->is_supported("fulltext")) {
-					$right = $this->fulltext_expr[':'.$node["right"]["record_id"]];
+				if ( $node["right"]["field"] != "none" ) {
+					if ($node["right"]["field"] == 'AR_relevance' && $this->store->is_supported("fulltext")) {
+						$right = $this->fulltext_expr[':'.$node["right"]["record_id"]];
+					} else {
+						$right=$this->compile_tree($node["right"]);
+					}
+					if ($left) {
+						$result=" $left ,  $right ".$node["type"]." ";
+					} else {
+						$result=" $right ".$node["type"]." ";
+					}
 				} else {
-					$right=$this->compile_tree($node["right"]);
-				}
-				if ($left) {
-					$result=" $left ,  $right ".$node["type"]." ";
-				} else {
-					$result=" $right ".$node["type"]." ";
+					$result = "";
+					if ($left) {
+						$result = " $left ";
+					}
+					$this->skipDefaultOrderBy = true;
 				}
 			break;
 
@@ -358,8 +366,12 @@ class mysql_compiler extends sql_compiler {
 		}
 
 		if ($this->orderby_s) {
-			$orderby = " order by $this->orderby_s, $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
-		} else {
+			if ($this->skipDefaultOrderBy) {
+				$orderby = " order by $this->orderby_s "; 
+			} else {
+				$orderby = " order by $this->orderby_s, $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
+			}
+		} else if (!$this->skipDefaultOrderBy) { 
 			$orderby = " order by $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
 		}
 
