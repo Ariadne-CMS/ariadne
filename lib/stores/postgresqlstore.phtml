@@ -1047,6 +1047,7 @@ class postgresqlstore extends store {
 				$exec = $this->store_run_query( $query_string);
 				$i = 0;
 				if($exec){
+					$result=0;
 					while ($row=@pg_fetch_array($exec, $i++)) {
 						$query_string = "delete from ".$this->tbl_prefix."prop_".$row["name"]." where object=$object";
 						$exec_del = $this->store_run_query( $query_string);
