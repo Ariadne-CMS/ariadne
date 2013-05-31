@@ -217,19 +217,31 @@
 			case 'orderbyfield':
 				$this->in_orderby = true;
 				$left=$this->compile_tree($node["left"]);
-				$right=$this->compile_tree($node["right"]);
-				if ($left) {
-					$result=" $left ,  $right ".$node["type"]." ";
-					if($node["left"]['id'] == 'property' && !$node["right"]['nls']){
-						$lefttablefield = $this->tbl_prefix.$node["left"]['table'].".".$node["left"]['field'];
-						$this->select_list[$lefttablefield] = $lefttablefield;
+				if ( $node["right"]["field"] != "none" ) {
+					$right=$this->compile_tree($node["right"]);
+					if ($left) {
+						$result=" $left ,  $right ".$node["type"]." ";
+						if($node["left"]['id'] == 'property' && !$node["right"]['nls']){
+							$lefttablefield = $this->tbl_prefix.$node["left"]['table'].".".$node["left"]['field'];
+							$this->select_list[$lefttablefield] = $lefttablefield;
+						}
+					} else {
+						$result=" $right ".$node["type"]." ";
+					}
+					if($node["right"]['id'] == 'property' && !$node["right"]['nls']){
+						$righttablefield = $this->tbl_prefix.$node["right"]['table'].".".$node["right"]['field'];
+						$this->select_list[$righttablefield] = $righttablefield;
 					}
 				} else {
-					$result=" $right ".$node["type"]." ";
-				}
-				if($node["right"]['id'] == 'property' && !$node["right"]['nls']){
-					$righttablefield = $this->tbl_prefix.$node["right"]['table'].".".$node["right"]['field'];
-					$this->select_list[$righttablefield] = $righttablefield;
+					$result = "";
+					if ($left) {
+						$result = " $left ";
+						if($node["left"]['id'] == 'property' && !$node["right"]['nls']){
+							$lefttablefield = $this->tbl_prefix.$node["left"]['table'].".".$node["left"]['field'];
+							$this->select_list[$lefttablefield] = $lefttablefield;
+						}
+					}
+					$this->skipDefaultOrderBy = true;
 				}
 			break;
 
@@ -302,10 +314,15 @@
 			$query .= " and ($this->where_s_ext) ";
 		}
 		if ($this->orderby_s) {
-			$query.= " order by $this->orderby_s, $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
-		} else {
+			if ($this->skipDefaultOrderBy) {
+				$query.= " order by $this->orderby_s";
+			} else {
+				$query.= " order by $this->orderby_s, $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
+			}
+		} else if (!$this->skipDefaultOrderBy) {
 			$query.= " order by $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
 		}
+
 		$query.=" $this->limit_s ";
 		debug("postgresql_compiler::priv_sql_compile($query)", "store");
 
