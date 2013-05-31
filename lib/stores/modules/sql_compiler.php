@@ -439,7 +439,8 @@ abstract class sql_compiler {
 			$this->parse_join_target_properties($query);
 		}
 
-		if ($no_selection || preg_match('|^[[:space:]]*order[[:space:]]*by[[:space:]]+|i', $query, $regs)) {
+		$matching = preg_match('|^[[:space:]]*order[[:space:]]*by[[:space:]]+|i', $query, $regs);
+		if ( $matching || $no_selection ) {
 			$query=substr($query, strlen($regs[0]));
 			$node["id"]="orderby";
 			$node["right"]=$this->parse_orderby($query);
