@@ -186,6 +186,10 @@
 						$result=" lower($left) $operator lower($right) ";
 					} else {
 						// normal compile
+						/* lastchanged == unixtimestamp -> lastchanged == 200201.. */
+						if ($node["left"]["field"]=="lastchanged") {
+							$right = "to_timestamp($right)";
+						}
 						$result=" $left $operator $right ";
 					}
 				} else {
