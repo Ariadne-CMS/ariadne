@@ -352,7 +352,7 @@ class mysql_compiler extends sql_compiler {
 
 
 		$query.=" where $nodes.object=$objects.id $prop_dep";
-		$query.=" and $nodes.path like '".AddSlashes($this->path)."%' ";
+		$query.=" and $nodes.path like '".str_replace('_','\\_',AddSlashes($this->path))."%' ";
 		if ($this->where_s) {
 			$query.=" and ( $this->where_s ) ";
 		}

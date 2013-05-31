@@ -51,7 +51,7 @@ class mysql_workspaces_compiler extends mysql_compiler {
 
 
 		$query = " where $nodes.object=$objects.id $prop_dep";
-		$query .= " and $nodes.path like '".AddSlashes($this->path)."%' ";
+		$query .= " and $nodes.path like '".str_replace('_','\\_',AddSlashes($this->path))."%' ";
 
 
 		$query_string_layers = "";

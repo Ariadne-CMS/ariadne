@@ -310,7 +310,7 @@ class mysqlstore extends store{
 
 		$this->error="";
 		$epath=AddSlashes($path);
-		$etop=AddSlashes($top);
+		$etop=str_replace('_', '\\_', AddSlashes($top));
 
 		$nodes_tbl=$this->tbl_prefix."nodes";
 		$objects_tbl=$this->tbl_prefix."objects";
