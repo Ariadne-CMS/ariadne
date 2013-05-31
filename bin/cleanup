@@ -82,7 +82,7 @@ echo " . Clearing old sessions...\n";
 $inst_store = $session_config["dbms"]."store";
 $sessionstore=new $inst_store($root, $session_config);
 
-$query = "object.implements='psession' and object.lastchanged < ".(time() - $session_config["timeout"]*4);
+$query = "object.implements='psession' and object.lastchanged < ".(time() - $session_config["timeout"]*4) ."order by none";
 
 /* purge all expired sessions */
 while (count($sessionstore->call("system.expire.phtml","",

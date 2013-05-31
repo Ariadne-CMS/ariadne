@@ -146,7 +146,7 @@ class session {
 
 	function purgeExpiredSessions( $limit=100 ) {
 		// expire all old sessions
-		$query = "object.implements='psession' and object.lastchanged < ".(time() - $this->timeout*4) ;
+		$query = "object.implements='psession' and object.lastchanged < ".(time() - $this->timeout*4)."order by none" ;
 		$result = array();
 		$result = $this->sessionstore->call("system.expire.silent.phtml","",
 				$this->sessionstore->find("/", $query,$limit));
