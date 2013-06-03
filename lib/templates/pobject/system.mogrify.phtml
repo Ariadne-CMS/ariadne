@@ -1,0 +1,5 @@
+<?php
+	if ($this->CheckLogin('config') && $this->CheckConfig() && $this->can_mogrify() ) {
+		$this->mogrify( $this->id, $type );
+	}
+?>
