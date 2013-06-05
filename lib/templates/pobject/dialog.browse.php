@@ -104,6 +104,11 @@
 		if (!$browsepath || !$this->exists($browsepath)) {
 			$browsepath = $this->path;
 		}
+
+		$jail = ar::acquire('settings.jail');
+		if ( !$jail ) {
+			$jail = '/projects/';		
+		}
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -177,19 +182,22 @@
 
 <script type="text/javascript">
 	// Pass the settings for the tree to javascript.
-	muze.ariadne.explore.tree.loaderUrl 	= '<?php echo addslashes($loader); ?>';
+	muze.ariadne.explore.tree.loaderUrl 	= '<?php echo AddCSlashes( $loader, ARESCAPE ); ?>';
 
-	muze.ariadne.explore.tree.baseNodes	= [
-		{"path" : "<?php echo addslashes($path); ?>", "name" : "<?php echo addslashes($name); ?>", "icon" : "<?php echo addslashes($icon); ?>"}
-	];
+	muze.ariadne.explore.tree.baseNodes	= [{
+			"path" : "<?php echo AddCSlashes( $path, ARESCAPE ); ?>", 
+			"name" : "<?php echo AddCSlashes( $name, ARESCAPE ); ?>", 
+			"icon" : "<?php echo AddCSlashes( $icon, ARESCAPE ); ?>"
+	}];
 
-	muze.ariadne.registry.set('root', '<?php echo addslashes($root); ?>');
-	muze.ariadne.registry.set('store_root', '<?php echo addslashes($this->store->get_config('root')); ?>');
+	muze.ariadne.registry.set('root', '<?php echo AddCSlashes( $root, ARESCAPE ); ?>');
+	muze.ariadne.registry.set('jail', '<?php echo AddCSlashes( $jail, ARESCAPE ); ?>');
+	muze.ariadne.registry.set('store_root', '<?php echo AddCSlashes( $this->store->get_config('root'), ARESCAPE ); ?>');
 	
 	// setting session ID for unique naming of windows within one ariadne session.
-	muze.ariadne.registry.set("SessionID","<?php echo addslashes($ARCurrent->session->id); ?>");
+	muze.ariadne.registry.set("SessionID","<?php echo AddCSlashes( $ARCurrent->session->id, ARESCAPE ); ?>");
 
-	muze.ariadne.registry.set("path", "<?php echo addslashes($browsepath); ?>");
+	muze.ariadne.registry.set("path", "<?php echo AddCSlashes( $browsepath, ARESCAPE ); ?>");
 <?php
 	if( $AR->user->data->windowprefs["edit_object_layout"] ) {
 		echo "\tmuze.ariadne.registry.set('window_new_layout', 1);\n";
@@ -237,7 +245,7 @@
 <body class="yui-skin-sam">
 	<div id="header">
 		<div class="logo">
-			<img src="<?$AR->dir->images; ?>tree/logo2.gif" alt="Ariadne Web Application Server">
+			<img src="<?php echo $AR->dir->images; ?>tree/logo2.gif" alt="Ariadne Web Application Server">
 			<span class="ariadne">Ariadne</span>
 			<span class="ariadne_sub">Web Application Server</span>
 		</div>

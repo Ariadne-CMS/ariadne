@@ -18,77 +18,77 @@ muze.ariadne.explore = function() {
 		loaders : Array(),
 		authenticate_panel : null,
 		windowprops : {
-			'dialog.edit' 			: windowprops_common + windowsize_large,
-			'dialog.edit.shortcut'		: windowprops_common + windowsize_large,
-			'dialog.rename'			: windowprops_common + windowsize_small,
-			'dialog.copy'			: windowprops_common + windowsize_small,
-			'dialog.link'			: windowprops_common + windowsize_small,
-			'dialog.delete'			: windowprops_common + windowsize_small,
-			'dialog.mogrify'		: windowprops_common + windowsize_small,
-			'dialog.import'			: windowprops_common + windowsize_large,
-			'dialog.export'			: windowprops_common + windowsize_large,
+			'dialog_edit' 			: windowprops_common + windowsize_large,
+			'dialog_edit_shortcut'		: windowprops_common + windowsize_large,
+			'dialog_rename'			: windowprops_common + windowsize_small,
+			'dialog_copy'			: windowprops_common + windowsize_small,
+			'dialog_link'			: windowprops_common + windowsize_small,
+			'dialog_delete'			: windowprops_common + windowsize_small,
+			'dialog_mogrify'		: windowprops_common + windowsize_small,
+			'dialog_import'			: windowprops_common + windowsize_large,
+			'dialog_export'			: windowprops_common + windowsize_large,
 
-			'dialog.svn.tree.info'		: windowprops_common + windowsize_large,
-			'dialog.svn.tree.diff'		: windowprops_common + windowsize_large,
-			'dialog.svn.tree.commit'	: windowprops_common + windowsize_large,
-			'dialog.svn.tree.revert'	: windowprops_common + windowsize_large,
-			'dialog.svn.tree.update'	: windowprops_common + windowsize_large,
-			'dialog.svn.tree.unsvn'		: windowprops_common + windowsize_large,
-			'dialog.svn.tree.checkout'	: windowprops_common + windowsize_large,
-			'dialog.svn.tree.import'	: windowprops_common + windowsize_large,
+			'dialog_svn_tree_info'		: windowprops_common + windowsize_large,
+			'dialog_svn_tree_diff'		: windowprops_common + windowsize_large,
+			'dialog_svn_tree_commit'	: windowprops_common + windowsize_large,
+			'dialog_svn_tree_revert'	: windowprops_common + windowsize_large,
+			'dialog_svn_tree_update'	: windowprops_common + windowsize_large,
+			'dialog_svn_tree_unsvn'		: windowprops_common + windowsize_large,
+			'dialog_svn_tree_checkout'	: windowprops_common + windowsize_large,
+			'dialog_svn_tree_import'	: windowprops_common + windowsize_large,
 
-			'dialog.svn.templates.resolved'	: windowprops_common + windowsize_large,
-			'dialog.svn.templates.diff'	: windowprops_common + windowsize_large,
-			'dialog.svn.templates.commit'	: windowprops_common + windowsize_large,
-			'dialog.svn.templates.revert'	: windowprops_common + windowsize_large,
-			'dialog.svn.templates.update'	: windowprops_common + windowsize_large,
-			'dialog.svn.templates.delete'	: windowprops_common + windowsize_large,
-			'dialog.svn.templates.unsvn'	: windowprops_common + windowsize_large,
-			'dialog.svn.templates.checkout'	: windowprops_common + windowsize_large,
-			'dialog.svn.templates.import'	: windowprops_common + windowsize_large,
+			'dialog_svn_templates_resolved'	: windowprops_common + windowsize_large,
+			'dialog_svn_templates_diff'	: windowprops_common + windowsize_large,
+			'dialog_svn_templates_commit'	: windowprops_common + windowsize_large,
+			'dialog_svn_templates_revert'	: windowprops_common + windowsize_large,
+			'dialog_svn_templates_update'	: windowprops_common + windowsize_large,
+			'dialog_svn_templates_delete'	: windowprops_common + windowsize_large,
+			'dialog_svn_templates_unsvn'	: windowprops_common + windowsize_large,
+			'dialog_svn_templates_checkout'	: windowprops_common + windowsize_large,
+			'dialog_svn_templates_import'	: windowprops_common + windowsize_large,
 
-			'dialog.priority'		: windowprops_common + windowsize_small,
+			'dialog_priority'		: windowprops_common + windowsize_small,
 
 			// FIXME: The dialog sizes should be as consistent as possible, not all different sizes.
-			'dialog.add' 			: windowprops_common + ',height=600,width=550',
-			'dialog.cache'			: windowprops_common + ',height=350,width=500',
-			'dialog.templates'		: windowprops_common + ',height=500,width=800',
-			'dialog.custom'			: windowprops_common + windowsize_large, //',height=300,width=625',
-			'dialog.language'		: windowprops_common + ',height=350,width=450',
-			'dialog.grants'			: windowprops_common + ',height=570,width=950',
-			'dialog.owner'			: windowprops_common + windowsize_small, //',height=260,width=400',
-			'dialog.grantkey'		: windowprops_common + ',height=330,width=400',
-			'dialog.preferences'		: windowprops_common + ',height=400,width=500',
-			'dialog.search'			: windowprops_common + ',height=500,width=700',
-			'help.about'			: windowprops_common + ',height=375,width=600',
+			'dialog_add' 			: windowprops_common + ',height=600,width=550',
+			'dialog_cache'			: windowprops_common + ',height=350,width=500',
+			'dialog_templates'		: windowprops_common + ',height=500,width=800',
+			'dialog_custom'			: windowprops_common + windowsize_large, //',height=300,width=625',
+			'dialog_language'		: windowprops_common + ',height=350,width=450',
+			'dialog_grants'			: windowprops_common + ',height=570,width=950',
+			'dialog_owner'			: windowprops_common + windowsize_small, //',height=260,width=400',
+			'dialog_grantkey'		: windowprops_common + ',height=330,width=400',
+			'dialog_preferences'		: windowprops_common + ',height=400,width=500',
+			'dialog_search'			: windowprops_common + ',height=500,width=700',
+			'help_about'			: windowprops_common + ',height=375,width=600',
 
 			'help'				: windowprops_full,
 			'_new'				: windowprops_full,
 
 			// Deprecated window names.
-			'edit_find'				: windowprops_common + ',height=500,width=700',
-			'edit_preferences'		: windowprops_common + ',height=400,width=500',
-			'edit_object_data'		: windowprops_common + ',height=475,width=550',
-			'edit_object_layout'	: windowprops_common + ',height=400,width=700',
-			'edit_object_custom'	: windowprops_common + ',height=300,width=625',
-			'edit_object_shortcut'	: windowprops_common + ',height=475,width=550',
-			'edit_object_grants'	: windowprops_common + ',height=570,width=950',
-			'edit_object_types'		: windowprops_common + ',height=300,width=500',
-			'edit_object_nls'		: windowprops_common + ',height=350,width=450',
-			'edit_priority'			: windowprops_common + ',height=220,width=400',
-			'edit_object_grantkey'	: windowprops_common + ',height=330,width=400',
-			'edit_object_mogrify'	: windowprops_common + ',height=250,width=400',
-			'edit_object_owner'		: windowprops_common + ',height=260,width=400',
-			'view_fonts'			: windowprops_common + ',height=300,width=450',
-			'help_about'			: windowprops_common + ',height=375,width=600',
-			'svn_object_info'		: windowprops_common + ',height=475,width=550',
-			'svn_object_diff'		: windowprops_common + ',height=475,width=550',
-			'svn_object_commit'		: windowprops_common + ',height=475,width=550',
-			'svn_object_revert'		: windowprops_common + ',height=475,width=550',
-			'svn_object_update'		: windowprops_common + ',height=475,width=550',
-			'svn_object_unsvn'		: windowprops_common + ',height=475,width=550',
-			'svn_object_checkout'		: windowprops_common + ',height=475,width=550',
-			'svn_object_import'		: windowprops_common + ',height=475,width=550'
+			'edit.find'				: windowprops_common + ',height=500,width=700',
+			'edit.preferences'		: windowprops_common + ',height=400,width=500',
+			'edit.object.data'		: windowprops_common + ',height=475,width=550',
+			'edit.object.layout'	: windowprops_common + ',height=400,width=700',
+			'edit.object.custom'	: windowprops_common + ',height=300,width=625',
+			'edit.object.shortcut'	: windowprops_common + ',height=475,width=550',
+			'edit.object.grants'	: windowprops_common + ',height=570,width=950',
+			'edit.object.types'		: windowprops_common + ',height=300,width=500',
+			'edit.object.nls'		: windowprops_common + ',height=350,width=450',
+			'edit.priority'			: windowprops_common + ',height=220,width=400',
+			'edit.object.grantkey'	: windowprops_common + ',height=330,width=400',
+			'edit.object.mogrify'	: windowprops_common + ',height=250,width=400',
+			'edit.object.owner'		: windowprops_common + ',height=260,width=400',
+			'view.fonts'			: windowprops_common + ',height=300,width=450',
+			'help.about'			: windowprops_common + ',height=375,width=600',
+			'svn.object.info'		: windowprops_common + ',height=475,width=550',
+			'svn.object.diff'		: windowprops_common + ',height=475,width=550',
+			'svn.object.commit'		: windowprops_common + ',height=475,width=550',
+			'svn.object.revert'		: windowprops_common + ',height=475,width=550',
+			'svn.object.update'		: windowprops_common + ',height=475,width=550',
+			'svn.object.unsvn'		: windowprops_common + ',height=475,width=550',
+			'svn.object.checkout'		: windowprops_common + ',height=475,width=550',
+			'svn.object.import'		: windowprops_common + ',height=475,width=550'
 		},
 		store_root : muze.ariadne.registry.get('store_root'), // FIXME: deze wordt te vroeg gedaan, dus is leeg.
 		authenticate_loaders : Array(),
@@ -117,7 +117,7 @@ muze.ariadne.explore = function() {
 				if (message) {
 					login_url += '?arLoginMessage='+escape(message);
 				}
-				login_form = muze.load(login_url, true); // Load the url and wait for the result.
+				var login_form = muze.load(login_url, true); // Load the url and wait for the result.
 
 				muze.ariadne.explore.authenticate_panel.setBody(login_form);
 				muze.ariadne.explore.authenticate_panel.render(document.body);
@@ -187,7 +187,7 @@ muze.ariadne.explore = function() {
 			if (!postvars) {
 				muze.ariadne.explore.loaders[target.id] = YAHOO.util.Connect.asyncRequest('GET', url, load_callback); 
 			} else {
-				 muze.ariadne.explore.loaders[target.id] = YAHOO.util.Connect.asyncRequest('POST', url, load_callback, postvars);
+				muze.ariadne.explore.loaders[target.id] = YAHOO.util.Connect.asyncRequest('POST', url, load_callback, postvars);
 			}
 		},
 		view : function(target) {
@@ -221,7 +221,7 @@ muze.ariadne.explore = function() {
 			if (muze.ariadne.explore.sidebar.currentpath) {
 				muze.ariadne.explore.sidebar.view(muze.ariadne.explore.sidebar.currentpath);
 			} else {
-				 muze.ariadne.explore.sidebar.view(path);
+				muze.ariadne.explore.sidebar.view(path);
 			}
 			if (muze.ariadne.explore.viewpane.selectedPath) {
 				muze.ariadne.explore.viewpane.view(muze.ariadne.explore.viewpane.path);
@@ -241,30 +241,30 @@ muze.ariadne.explore = function() {
 			}
 		},
 		arEdit : function(object, arguments) {
-			muze.ariadne.explore.arshow('dialog.edit',this.store_root+object+'dialog.edit.php', arguments);
+			muze.ariadne.explore.arshow('dialog_edit',this.store_root+object+'dialog.edit.php', arguments);
 		},
 		arshow : function (windowname, link, arguments) {
-			properties=muze.ariadne.explore.windowprops[windowname];
-			myNewWindow = 0;
-			if( windowname == 'dialog.templates' && muze.ariadne.registry.get('window_new_layout')) {
+			var properties = muze.ariadne.explore.windowprops[windowname];
+			var myNewWindow = 0;
+			if( windowname == 'dialog_templates' && muze.ariadne.registry.get('window_new_layout')) {
 				myNewWindow = 1;
 			}
 
-			if( windowname == 'dialog.grants' && muze.ariadne.registry.get('window_new_grants')) {
+			if( windowname == 'dialog_grants' && muze.ariadne.registry.get('window_new_grants')) {
 				myNewWindow = 1;
 			}
 			
 			windowname = windowname.replace(/\./g, "_");
 			if( myNewWindow ) {
 				// append a timestamp to allow multiple template windows
-				myDate = new Date();
+				var myDate = new Date();
 				windowname = myDate.getTime() + windowname;
 			}
 			// get the SessionID from the top so we can uniquely name windows
-			sessionid = muze.ariadne.registry.get("SessionID");
+			var sessionid = muze.ariadne.registry.get("SessionID");
 
 			/* FIXME: doesn't work without frames on mozilla*/ 
-			windowsize=muze.ariadne.registry.get(windowname);
+			var windowsize=muze.ariadne.registry.get(windowname);
 			if (windowsize) {
 				// alert('windowsize='+windowsize);
 				properties=properties+','+windowsize;
@@ -272,34 +272,32 @@ muze.ariadne.explore = function() {
 			if (!arguments || arguments=='undefined') {
 				arguments='';
 			}
-			arguments=window.location.search+arguments;
-			workwindow=window.open(link+arguments, windowname, properties);
+			arguments = window.location.search+arguments;
+			var workwindow = window.open(link+arguments, windowname, properties);
 			workwindow.focus();
 		},
 		viewable : function(path) {
-			// Contain in dialog root.
-			var result = false;
-			if (path.indexOf(muze.ariadne.registry.get('root')) == 0) { 
-				result = true;
+			// Contain in dialog jail
+			var jail = muze.ariadne.registry.get('jail');
+			if ( !jail ) {
+				jail = '/';
 			}
-			for (var i in muze.ariadne.explore.tree.baseNodes) {
-				if (path.indexOf(muze.ariadne.explore.tree.baseNodes[i].path) == 0) {
-					result = true;
-				}
+			if ( path.indexOf(jail)==0 ) {
+				return true;
 			}
-			return result;
+			return false;
 		},
 		getparent : function(path) {
-			parent = path.substring(0, path.length - 1); // strip last slash;
-			lastslash = parent.lastIndexOf('/');
-			if (lastslash != -1) {
+			var parent = path.substring(0, path.length - 1); // strip last slash;
+			var lastslash = parent.lastIndexOf('/');
+			if ( lastslash != -1 ) {
 				parent = parent.substring(0, lastslash);
 			}
 			parent = parent + "/";
 			return parent;
 		},
 		dateParser : function(date) {
-			dateInfo = date.split("-");
+			var dateInfo = date.split("-");
 			return new Date(dateInfo[2], dateInfo[1], dateInfo[0]);
 		},
 		dateFormatter : function(container, record, column, data) {
@@ -580,11 +578,11 @@ muze.ariadne.explore.toolbar = function() {
 		},
 		viewparent : function() {
 			if( muze.ariadne.explore.viewpane.selectedPath ) {
-				path = muze.ariadne.explore.viewpane.selectedPath;
+				var path = muze.ariadne.explore.viewpane.selectedPath;
 			} else {
-				path = muze.ariadne.registry.get('path');
+				var path = muze.ariadne.registry.get('path');
 			}
-			parent = muze.ariadne.explore.getparent(path);
+			var parent = muze.ariadne.explore.getparent(path);
 			muze.ariadne.explore.view(parent);
 		},
 		searchsubmit : function(path) {
@@ -595,7 +593,7 @@ muze.ariadne.explore.toolbar = function() {
 			muze.ariadne.explore.view(path);
 		},
 		searchwindow : function() {
-			muze.ariadne.explore.arshow('dialog.search', muze.ariadne.registry.get('store_root')+muze.ariadne.registry.get('path')+'dialog.search.php');
+			muze.ariadne.explore.arshow('dialog_search', muze.ariadne.registry.get('store_root')+muze.ariadne.registry.get('path')+'dialog.search.php');
 		},
 		load : function(path) {
 			var sUrl = muze.ariadne.registry.get('store_root')+path+'explore.toolbar.php';
@@ -702,7 +700,7 @@ muze.ariadne.explore.sidebar = function() {
 			}
 		},
 		arEdit : function(object, arguments) {
-			muze.ariadne.explore.arshow('dialog.edit',muze.ariadne.registry.get("store_root")+object+'dialog.edit.php', arguments);
+			muze.ariadne.explore.arshow('dialog_edit',muze.ariadne.registry.get("store_root")+object+'dialog.edit.php', arguments);
 		},
 		removeFromCookie : function(section){
 			if (muze.ariadne.explore.sidebar.invisibleSections[section]) {
@@ -857,7 +855,7 @@ muze.ariadne.explore.viewpane = function() {
 					var store_root = muze.ariadne.registry.get('store_root');
 
 					// Find the location of the store root, and take everything behind it.
-					store_root_pos = href.indexOf(store_root);
+					var store_root_pos = href.indexOf(store_root);
 
 					// If not found, remove the language
 					if (store_root_pos < 0) {
@@ -873,9 +871,9 @@ muze.ariadne.explore.viewpane = function() {
 						store_root_pos = href.indexOf(store_root);
 					}
 
-					path = href.substring(store_root_pos + store_root.length, href.length);
+					var path = href.substring(store_root_pos + store_root.length, href.length);
 					// Remove "explore.html from the end, and all other trailing stuff.
-					explore_pos = path.indexOf('explore.html'); // FIXME: configbaar maken.
+					var explore_pos = path.indexOf('explore.html'); // FIXME: configbaar maken.
 					if (explore_pos == -1) {
 						explore_pos = path.indexOf('dialog.browse.php');
 					}
@@ -896,7 +894,7 @@ muze.ariadne.explore.viewpane = function() {
 				var path = muze.ariadne.explore.viewpane.selectedItem.path;
 				if (viewmode != 'details') {
 					var items = document.getElementById("viewpane").getElementsByTagName("LI");
-					for(i=0; i<items.length; i++) {
+					for (i=0; i<items.length; i++) {
 						muze.ariadne.explore.viewpane.setitempath(items[i]);
 						if (items[i].path == path) {
 							YAHOO.util.Dom.addClass(items[i], 'selected');
@@ -908,7 +906,7 @@ muze.ariadne.explore.viewpane = function() {
 					if (muze.ariadne.explore.viewpane.dataTable) {
 						var records = muze.ariadne.explore.viewpane.dataTable.getRecordSet().getRecords();
 						for (i=0; i<records.length; i++) {
-							if(records[i].getData("path") == path) {
+							if (records[i].getData("path") == path) {
 								records[i].path = records[i].getData("path");
 								muze.ariadne.explore.viewpane.selectedItem = records[i];
 								muze.ariadne.explore.viewpane.dataTable.selectRow(records[i]);
@@ -989,7 +987,7 @@ muze.ariadne.explore.viewpane = function() {
 			YAHOO.util.Event.preventDefault(event);
 			muze.ariadne.explore.viewpane.unselectItem();
 			var target = YAHOO.util.Event.getTarget(event);
-			while(target.id != "viewpane") {
+			while (target.id != "viewpane") {
 				if (YAHOO.util.Dom.hasClass(target, 'explore_item')) {
 					if (YAHOO.util.Dom.hasClass(target, 'selected')) {
 						YAHOO.util.Dom.removeClass(target, 'selected');
@@ -1193,13 +1191,13 @@ muze.ariadne.explore.browseheader = function() {
 muze.ariadne.explore.dialog = ( function () {
 	return {
 		'add': function(href) {
-			muze.dialog.open(href, 'dialog.add', { windowFeatures: muze.ariadne.explore.windowprops['dialog.add'] } )
+			muze.dialog.open(href, 'dialog_add', { windowFeatures: muze.ariadne.explore.windowprops['dialog_add'] } )
 			.on('submit', function( args ) {
 				muze.ariadne.explore.objectadded();
 			})
 		},
 		'edit': function(href) {
-			muze.dialog.open(href, 'dialog.edit', { windowFeatures: muze.ariadne.explore.windowprops['dialog.edit'] } )
+			muze.dialog.open(href, 'dialog_edit', { windowFeatures: muze.ariadne.explore.windowprops['dialog_edit'] } )
 			.on('submit', function( args ) {
 				muze.ariadne.explore.tree.refresh(args['path']);
 				muze.ariadne.explore.view(args['path']);
@@ -1209,7 +1207,7 @@ muze.ariadne.explore.dialog = ( function () {
 			});
 		},
 		'rename': function(href) {
-			muze.dialog.open(href, 'dialog.rename', { windowFeatures: muze.ariadne.explore.windowprops['dialog.rename'] } )
+			muze.dialog.open(href, 'dialog_rename', { windowFeatures: muze.ariadne.explore.windowprops['dialog_rename'] } )
 			.on('renamed', function( args ) {
 				muze.ariadne.explore.tree.refresh(args['path']);
 				muze.ariadne.explore.tree.view(args['path']);
@@ -1219,7 +1217,7 @@ muze.ariadne.explore.dialog = ( function () {
 			});
 		},
 		'copy': function(href) {
-			muze.dialog.open(href, 'dialog.copy', { windowFeatures: muze.ariadne.explore.windowprops['dialog.copy'] } )
+			muze.dialog.open(href, 'dialog_copy', { windowFeatures: muze.ariadne.explore.windowprops['dialog_copy'] } )
 			.on('copied', function( args ) {
 				if (args['path'] == args['copyTarget'] ) {
 					muze.ariadne.explore.objectadded();
@@ -1232,7 +1230,7 @@ muze.ariadne.explore.dialog = ( function () {
 			});
 		},
 		'delete': function(href) {
-			muze.dialog.open(href, 'dialog.delete', { windowFeatures: muze.ariadne.explore.windowprops['dialog.delete'] } )
+			muze.dialog.open(href, 'dialog_delete', { windowFeatures: muze.ariadne.explore.windowprops['dialog_delete'] } )
 			.on('deleted', function( args ) {
 				muze.ariadne.explore.view(args['showPath']);
 			})
@@ -1241,7 +1239,7 @@ muze.ariadne.explore.dialog = ( function () {
 			});
 		},
 		'mogrify': function(href) {
-			muze.dialog.open(href, 'dialog.mogrify', { windowFeatures: muze.ariadne.explore.windowprops['dialog.mogrify'] } )
+			muze.dialog.open(href, 'dialog_mogrify', { windowFeatures: muze.ariadne.explore.windowprops['dialog_mogrify'] } )
 			.on('mogrified', function( args ) {
 				muze.ariadne.explore.tree.refresh(args['path'])
 				muze.ariadne.explore.view(args['path']);
@@ -1251,7 +1249,7 @@ muze.ariadne.explore.dialog = ( function () {
 			});
 		},
 		'import': function(href) {
-			muze.dialog.open(href, 'dialog.import', { windowFeatures: muze.ariadne.explore.windowprops['dialog.import'] } )
+			muze.dialog.open(href, 'dialog_import', { windowFeatures: muze.ariadne.explore.windowprops['dialog_import'] } )
 			.on('imported', function( args ) {
 				muze.ariadne.explore.view(args['showPath']);
 			})
@@ -1260,13 +1258,13 @@ muze.ariadne.explore.dialog = ( function () {
 			});
 		},
 		'export': function(href) {
-			muze.dialog.open(href, 'dialog.export', { windowFeatures: muze.ariadne.explore.windowprops['dialog.export'] } )
+			muze.dialog.open(href, 'dialog_export', { windowFeatures: muze.ariadne.explore.windowprops['dialog_export'] } )
 			.always( function() {
 				this.close();
 			});
 		},
 		'su': function(href) {
-			muze.dialog.open(href, 'dialog.su', { windowFeatures: muze.ariadne.explore.windowprops['dialog.su'] } );
+			muze.dialog.open(href, 'dialog_su', { windowFeatures: muze.ariadne.explore.windowprops['dialog_su'] } );
 		}
 	};
 }());
