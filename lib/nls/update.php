@@ -29,9 +29,9 @@
 			foreach ($default as $arkey => $arvalue ) {
 				$tabs=substr("								",(int)((strlen($arkey)+2)/4));
 				if (isset($ARnls[$arkey])) {
-					$content .= sprintf("\t%-47s =    \"%s\";\n", "\$ARnls[\"$arkey\"]", AddCSlashes($ARnls[$arkey], NLSESCAPE));
+					$content .= sprintf("\t%-47s =    \"%s\";\n", "\$ARnls[\"$arkey\"]", AddCSlashes(stripcslashes($ARnls[$arkey]), NLSESCAPE));
 				} else {
-					$content .= sprintf("//\t%-47s =    \"%s\"; // value from english\n", "\$ARnls[\"$arkey\"]", AddCSlashes($arvalue, NLSESCAPE));
+					$content .= sprintf("//\t%-47s =    \"%s\"; // value from english\n", "\$ARnls[\"$arkey\"]", AddCSlashes(stripcslashes($arvalue), NLSESCAPE));
 				}
 			}
 			unset($ARnls);
