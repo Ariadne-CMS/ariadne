@@ -427,6 +427,40 @@
 		function close() {
 		}
 
+		/*
+			get_stream: returns a readable stream resource
+		*/
+		public function get_stream($id, $name) {
+			$result = false;
+			$path = $this->make_path($id, $name);
+			if (file_exists($path)) {
+				$result=fopen($path, 'r');
+			}
+			return $result;
+		}
+
+		/* 
+			copy_stream_to_store: copy the contents of a stream to a file in the filestore
+			*/
+		public function copy_stream_to_store($stream, $id, $name) {
+			$result = false;
+			$id = $this->addObjectToLayer( $id );
+			$path = $this->make_path($id, $name, WRITE);
+
+			$temp = tempnam(dirname($path), "_temp_");
+			$out = fopen($temp, 'w');
+
+			if ($stream !== false && $out !== false) {
+				$result = stream_copy_to_stream($stream, $out);
+				fclose($out);
+				if ($result !== false) {
+					rename($temp, $path);
+				}
+			}
+			return $result;
+		}
+
+
 		/* private functions */
 
 		public function make_path($id, $name="", $write=false) {
