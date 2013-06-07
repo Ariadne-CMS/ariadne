@@ -133,7 +133,7 @@
 	$ARnls["err:nonameentered"]				=	"You must enter a name for language '%s'";
 	$ARnls["err:nonewtype"]					=	"arNewType not defined.";
 	$ARnls["err:noparent"]					=	"parent %s doesn't exist.";
-	$ARnls["err:noparentcreatefirst"]		=	"%s doesn't exists, create it first.";
+	$ARnls["err:noparentcreatefirst"]		=	"%s doesn't exist, create it first.";
 	$ARnls["err:noparentdefined"]			=	"No parent defined for %s";
 	$ARnls["err:nosupportforshortcuts"]		=	"%s doesn't support shortcuts.";
 	$ARnls["err:notarget"]					=	"no target specified";
