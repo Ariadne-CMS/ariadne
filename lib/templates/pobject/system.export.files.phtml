@@ -22,10 +22,10 @@
 						$orig_filestore->mtime($this->id, $file))) {
 							display("	file($file) no update");
 				} else {
-					$tempname=tempnam($this->store->get_config("files")."temp", "temp");
-					$orig_filestore->copy_from_store($tempname, $this->id, $file);
-					$new_filestore->copy_to_store($tempname, $this->newObject->id, $file);
-					@unlink($tempname);
+					$srcStream = $orig_filestore->get_stream($this->id, $file);
+					$result = $new_filestore->copy_stream_to_store($srcStream, $this->newObject->id, $file);
+
+					fclose($srcStream);
 					display("	file($file) created");
 				}
 			}
