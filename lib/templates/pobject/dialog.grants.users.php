@@ -77,19 +77,19 @@
 							$grants_by_type[$grantname] = $grantvalue;
 							$grants[$grantname] = ARGRANTBYTYPE;
 						}
-						if (!is_array($users[$path])) {
-							$users[$path] = array(
-								"name" => $name,
-								"type" => $type,
-								"grants" => array(
-									'array' => $grants,
-									'bytype' => $grants_by_type,
-									"grantsstring" => $grantsstring
-								)
-							);
-							if ($selectedob->path != $selectedpath) {
-								$users[$path]["grants_inherited"] = 1;
-							}
+					}
+					if (!is_array($users[$path])) {
+						$users[$path] = array(
+							"name" => $name,
+							"type" => $type,
+							"grants" => array(
+								'array' => $grants,
+								'bytype' => $grants_by_type,
+								"grantsstring" => $grantsstring
+							)
+						);
+						if ($selectedob->path != $selectedpath) {
+							$users[$path]["grants_inherited"] = 1;
 						}
 					}
 				}
@@ -106,7 +106,6 @@
 	if ($users[$selecteduser]['grants_inherited']) {
 		$extrausers[] = $selecteduser;
 	}
-
 	
 	foreach ($extrausers as $key => $extrauser) {
 		if ($users[$extrauser]) {
@@ -232,7 +231,13 @@
 //			echo "<pre>";
 //			print_r($info['grants']);
 			if (isset($textswitch) && $textswitch == 1) {
-				$info['grants']['grantsstring'] = grantsArrayToString($formdata['grants']['array']);
+				$grants = (array)$formdata['grants']['array'];
+				foreach ($grants as $key => $val) {
+					if ($val == 8) {
+						$grants[ $key ] = $formdata['grants']['bytype'][ $key ];
+					}
+				}
+				$info['grants']['grantsstring'] = grantsArrayToString($grants);
 			} else if (isset($textswitch) && $textswitch == 0) {
 				$g_comp = new mod_grant;
 				$newgrants = array();
@@ -240,7 +245,19 @@
 
 				$g_comp->compile($formdata['grants']['grantsstring'], $newgrants);
 				
-				$info['grants']['array'] = $newgrants;
+				$grants_by_type = array();
+				foreach ($newgrants as $grantname => $grantvalue) {
+					if (!isset($available_grants[$grantname])) {
+						$available_grants[$grantname] = yui::labelspan($grantname, 8);
+					}
+					if (is_array($grantvalue)) {
+						$grants_by_type[$grantname] = $grantvalue;
+						$newgrants[$grantname] = ARGRANTBYTYPE;
+					}
+				}
+				$formdata['grants']['array'] = $newgrant;
+				$formdata['grants']['bytype'] = $grants_by_type;
+
 			}
 //			echo "</pre>";
 	?>
