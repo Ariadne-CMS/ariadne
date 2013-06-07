@@ -1210,7 +1210,7 @@ muze.ariadne.explore.dialog = ( function () {
 			muze.dialog.open(href, 'dialog_rename', { windowFeatures: muze.ariadne.explore.windowprops['dialog_rename'] } )
 			.on('renamed', function( args ) {
 				muze.ariadne.explore.tree.refresh(args['path']);
-				muze.ariadne.explore.tree.view(args['path']);
+				muze.ariadne.explore.view(args['path']);
 			})
 			.always( function() {
 				this.close();
