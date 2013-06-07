@@ -112,7 +112,7 @@
 	$ARnls["err:filenameinvalidnoparent"]	=	"%s ist ungueltig: %s besteht nicht.";
 	$ARnls["err:fileupload"]				=	"Fehler beim Hochladen der Datei. Bitte versuchen Sie es noch einmal.\nWenn das Problem wieder auftritt, kontaktieren Sie bitte Ihren Systemadministrator.";
 	$ARnls["err:fileuploadphtml"]			=	"Dateien mit der Erweiterung '.phtml' können nicht hochgeladen werden.";
-	$ARnls["err:fileuploadvirus"]			=	"!Die Datei %s enthält einen Virus! Überprüfen Sie ihr System und versuchen Sie es nochmal.\nWenn das Problem weiterhin besteht, kontaktieren Sie bitte Ihren Systemadministrator";
+	$ARnls["err:fileuploadvirus"]			=	"Die Datei %s enthält einen Virus! Überprüfen Sie ihr System und versuchen Sie es nochmal.\nWenn das Problem weiterhin besteht, kontaktieren Sie bitte Ihren Systemadministrator";
 	$ARnls["err:ftpnorenameself"]			=	"Die Vorlage kann nicht umbenannt werden.";
 	$ARnls["err:ftpnotemplate"]				=	"Keine Vorlage";
 	$ARnls["err:ftpnotemplatebadperm"]		=	"Vorlage kann nicht gefunden werden (ungültige Zugriffsrecht?)";

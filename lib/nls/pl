@@ -39,7 +39,7 @@
 	$ARnls["config"]						=	"Konfiguracja";
 	$ARnls["configuration"]					=	"Konfiguracja";
 	$ARnls["configure"]						=	"Konfiguracja %s ";
-	$ARnls["confirm:nonameentered"]			=	"Nie wprowadziłeś nazwy dla języka '%s'.\\Czy chcesz mimo to kontynuować?";
+	$ARnls["confirm:nonameentered"]			=	"Nie wprowadziłeś nazwy dla języka '%s'.\nCzy chcesz mimo to kontynuować?";
 	$ARnls["contactinformation"]			=	"Informacje kontaktowe";
 	$ARnls["contextsearch"]					=	"Kontekst";
 	$ARnls["copy"]							=	"Kopiuj";
@@ -102,7 +102,7 @@
 	$ARnls["err:filenameinvalidnoparent"]	=	"%s jest niewłaściwy(a): %s nie istnieje.";
 	$ARnls["err:fileupload"]				=	"Coś poszło nie tak podczas przesyłania pliku. Spróbuj ponownie\n\nJeżeli problem będzie się powtarzał, skontaktuj się z administratorem.";
 	$ARnls["err:fileuploadphtml"]			=	"Nie możesz przesyłać plików o rozszerzeniu .phtml.";
-	$ARnls["err:fileuploadvirus"]			=	"!Plik zawiera wirusa %s! Sprawdź prosze swój system i spróbuj ponownie.\nJeżeli problem się powtórzy, skontaktuj się z administratorem..";
+	$ARnls["err:fileuploadvirus"]			=	"Plik zawiera wirusa %s! Sprawdź prosze swój system i spróbuj ponownie.\nJeżeli problem się powtórzy, skontaktuj się z administratorem..";
 	$ARnls["err:ftpnorenameself"]			=	"nie mogę zmienić nazwy na taką samą";
 	$ARnls["err:ftpnotemplate"]				=	"nie ma takiego szablonu";
 	$ARnls["err:ftpnotemplatebadperm"]		=	"nie mogę znaleźć szablonu (błędne uprawnienia do pliku?)";
