@@ -244,14 +244,12 @@
 	$ARnls["open"]							=	"&Ouml;ppna";
 	$ARnls["openlocks"]						=	"&Ouml;ppna l&aring;sning f&ouml;r %s:";
 	$ARnls["options"]						=	"Alternativ";
-	$ARnls["orderedbrowsing"]				=	"!Ordered browsing";
 	$ARnls["overwrite"]						=	"Skriv &ouml;ver";
 	$ARnls["page"]							=	"Sida";
 	$ARnls["password"]						=	"L&ouml;senord";
 	$ARnls["passwordincorrect"]				=	"Felaktigt l&ouml;senord, f&ouml;rs&ouml;k igen.";
 	$ARnls["path"]							=	"S&ouml;kv&auml;g";
 	$ARnls["photo"]							=	"Bild";
-	$ARnls["photobook"]						=	"!Photobook";
 	$ARnls["pobox"]							=	"POBox";
 	$ARnls["preferences"]					=	"Inst&auml;llningar";
 	$ARnls["prev"]							=	"Previous";
@@ -310,7 +308,6 @@
 	$ARnls["templateonserver"]				=	"Mall p&aring; Server";
 	$ARnls["templates"]						=	"Mallar";
 	$ARnls["text"]							=	"Text";
-	$ARnls["thisobject"]					=	"!This Object";
 	$ARnls["thu"]							=	"Tor";
 	$ARnls["thumbcolor"]					=	"F&auml;rg";
 	$ARnls["thumbheight"]					=	"H&ouml;jd";

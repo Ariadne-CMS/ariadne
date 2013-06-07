@@ -238,7 +238,6 @@
 	$ARnls["open"]							=	"Otwórz";
 	$ARnls["openlocks"]						=	"Usuń blokadę na %s:";
 	$ARnls["options"]						=	"Opcje";
-	$ARnls["orderedbrowsing"]				=	"!Ordered browsing";
 	$ARnls["overwrite"]						=	"Nadpisz";
 	$ARnls["page"]							=	"Strona";
 	$ARnls["password"]						=	"Hasło";

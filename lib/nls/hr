@@ -236,14 +236,12 @@
 	$ARnls["open"]							=	"Otvori";
 	$ARnls["openlocks"]						=	"Otvori ključeve za %s:";
 	$ARnls["options"]						=	"Mogućnosti";
-	$ARnls["orderedbrowsing"]				=	"!Ordered browsing";
 	$ARnls["overwrite"]						=	"Prepisati";
 	$ARnls["page"]							=	"Stranica";
 	$ARnls["password"]						=	"Lozinka";
 	$ARnls["passwordincorrect"]				=	"Lozinka nije ispravnna, molim pokušajte ponovno.";
 	$ARnls["path"]							=	"Put";
 	$ARnls["photo"]							=	"Slika";
-	$ARnls["photobook"]						=	"!Photobook";
 	$ARnls["pobox"]							=	"Poštanski pretinac";
 	$ARnls["preferences"]					=	"Preferencije";
 	$ARnls["prev"]							=	"Nazad";
@@ -302,7 +300,6 @@
 	$ARnls["templateonserver"]				=	"Predložak na serveru";
 	$ARnls["templates"]						=	"Predlošci";
 	$ARnls["text"]							=	"Tekst";
-	$ARnls["thisobject"]					=	"!This Object";
 	$ARnls["thu"]							=	"Čet";
 	$ARnls["thumbcolor"]					=	"Boja";
 	$ARnls["thumbheight"]					=	"Visina";
