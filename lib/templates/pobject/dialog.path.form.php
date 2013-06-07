@@ -6,8 +6,10 @@
 			$target = $this->path;
 		}
 
-		$root = $this->getvar("root") ? $this->getvar("root") : $this->currentproject();
-		if (substr($root, -1) != "/") {
+		$root = $this->getvar("root");
+		if (!$root) {
+			$root = '/';
+		} else if (substr($root, -1) != "/") {
 			$root .= "/";
 		}
 
