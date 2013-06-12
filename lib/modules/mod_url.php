@@ -97,7 +97,7 @@ class URL {
 		} else {
 			$session='';
 		} 
-		$site = $me->currentsite();
+		$site = $me->currentsite($me->path, true);
 		$root = $me->store->get_config("root");
 		if (substr($root, -3) == "/$me->nls") {
 			$root = substr($root, 0, -3);
@@ -108,7 +108,7 @@ class URL {
 		}
 		$find[] = "%\\{arBase(/(?:[^}]+))?\\}%"; $repl[] = $AR->host.$root."\\1";
 		$find[] = "%\\{arRoot(/(?:[^}]+))?\\}%"; $repl[] = $AR->host.$me->store->get_config("root")."\\1";
-		$find[] = "%\\{arCurrentPage(?:/([^}]+))?\\}%e"; $repl[] = "\$me->make_url('', '\\1')";
+		$find[] = "%\\{arCurrentPage(?:/([^}]+))?\\}%e"; $repl[] = "\$me->make_local_url('', '\\1')";
 		$find[] = "%\\{arSession\\}%"; $repl[] = $session;
 
 		if (class_exists('edit') && edit::getEditMode()) {

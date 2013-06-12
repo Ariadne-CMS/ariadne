@@ -2939,13 +2939,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $this->savedatacache($name,$data,$time);
 	}
 
-	function currentsite($path="") {
+	function currentsite($path="", $skipRedirects = false) {
 		global $ARCurrent, $ARConfig;
 		if (!$path) {
 			$path=$this->path;
 		}
 		$config=($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
-		if (@count($ARCurrent->shortcut_redirect)) {
+		if (!$skipRedirects && @count($ARCurrent->shortcut_redirect)) {
 			$redir = end($ARCurrent->shortcut_redirect);
 			if ($redir["keepurl"] && substr($path, 0, strlen($redir["dest"])) == $redir["dest"]) {
 				if (substr($config->site, 0, strlen($redir["dest"]))!=$redir["dest"]) {
@@ -3073,8 +3073,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $this->showValue($name, $nls);
 	}
 
-	function _currentsite() {
-		return $this->currentsite();
+	function _currentsite($path="", $skipRedirects = false) {
+		return $this->currentsite( $path, $skipRedirects );
 	}
 
 	function _parentsite($site) {
