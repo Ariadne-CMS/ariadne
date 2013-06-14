@@ -3,6 +3,8 @@
 	if ( $this->CheckLogin("add", ARANYTYPE) && $this->CheckConfig() ) {
 		include( $this->store->get_config("code")."widgets/wizard/code.php" );
 
+		$this->call('system.save.tempfile.phtml');
+
 		$wgWizFlow = array(
 			array(
 				"current"  => $this->getvar("wgWizCurrent","none"),
