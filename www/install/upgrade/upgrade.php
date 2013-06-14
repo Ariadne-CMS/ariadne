@@ -140,7 +140,7 @@
 				array_push($todo, Array(
 							"description" => "Recompiling all PINP templates.",
 							"operation" => "all/upgrade.templates.php",
-							"newversion" => "8.0"
+							"newversion" => "8.0rc1"
 							));
 			
 	}

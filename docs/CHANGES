@@ -1,6 +1,76 @@
 ========================
-Changes in Ariadne 2.8.0
+Changes in Ariadne 8.0RC1
 ========================
+
+This Changes list is not complete. We changed the version numbering from 2.X.Y to X.Y so 2.8.0 will now be tagged as 8.0
+8.0 will be the last version compatible with PHP version 5.3 the next release will use 5.4.4, Debian stable, as minimal revision
+
+Bug fixes:
+ - Removed a lot of deprecated function calls from Ariadne
+   like mysql_db_query split ereg*
+ - the AR modules got a lot of testing, which removed to small bugs to list here
+ - Fixed some potential XSS attack vectors
+ - Fixed setting headers in the xss.user.html
+ - replaced substr with basename in loader.cmd.php
+ - Fixed hyperlink creation in editor
+ - added escaping in the grants dialog to prevent the xss detection from triggering
+ - fixed an escaping issue in queries using =~
+ - fixed querying on lastchanged in postgresql store
+ - fixed deleting objects when there are no property tables like with the sessionstore
+ - fixed queries with only ordering and no criteria
+ - fixed an mssing include in loader.web.php
+ - fixed dialog names with an . in the name
+ - fixed resaving complex grants, and toggleing between text en gui mode in grantsdialog
+
+
+New Features:
+- Workspaces, see docs/workspaces
+- multiple URL support for psite
+- auto-complete in the Ariadne backend
+- Multiple root support in the browse dialog which makes it easier for dialogs to only partial list content from Ariadne
+- view as User added in backend
+- PINP templates are now compiled to .inc files which contain an anonymous function.
+  This makes it possible for opcode caches to cache pinp templates
+- Templates are can be tagged as private.  Which prevents calling them from the URL
+- webkit2png module
+- The session store now purges expired sessions on demand when allocating a new session fails
+- improved session id random function
+- added tempdir support in export
+- a new html2pdf module
+- addedd support for 'order by none' to prevent the default ordering from ariadne
+- added streamable operators for the filestore, makes it posible to copy between 2 filestores more efficently
+
+
+Changes:
+- Cleanup of old templates, see docs/missing-since.8.0
+- all CLI scripts now use the cmd loader
+- numerous code cleanups removing warnings notices and deprecation
+- the Ariadne backend started to transition to the muze/dialog.js cross browser dialog code
+- unified commandline arguments parsing in cli scripts
+- added missing templates on pshortcut
+- cleanup on the nls files, regenerated and removed the double escaping
+
+
+========================
+Changes in Ariadne 2.7.9
+========================
+
+Bugfixes:
+- Fixed bug in the backend, shortcuts now point in the right direction
+- Fixed some XSS bugs
+- Fixed the MySQL store installer, it now correctly works with MySQL 5.5 and newer
+- Fixed writing cache images, from Ariadne perspective it is now an atomic operation
+- Fixed some javascript problems in muze.js
+- Fixed the php version dependency in the installer, the minimum php version is 5.3.0
+- Fixed the read modifier option in pphoto, frame 0 is now also valid
+- Fixed the rcas module include code
+- Fixed multiple bugs in ar/html/form.html
+
+Features:
+- added muze dialog loader to create crossbrowser dialogs as replacement of showmodeldialog
+- added '//' crossprotocol option to psite and make_*_url()
+- updated pinp function list
+- Updated gzip 
 
 ========================
 Changes in Ariadne 2.7.8
