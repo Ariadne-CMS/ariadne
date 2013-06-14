@@ -7,7 +7,6 @@
 	if ($action=="delete" || $this->getdata("config")) { // the grants need to be updated
 		debug("grants need to be updated");
 		$args=array("action"=>$action, "path"=>$this->path);
-		$searchpath=array("pgroup"=>"/system/groups/", "puser"=>"/system/users/");
 		$types=array("puser", "pgroup");
 		$criteria=array();
 		$userConfig = $this->loadUserConfig();
@@ -20,11 +19,21 @@
 		foreach ($types as $type) {
 			if ($typegrants=$this->data->config->grants[$type]) {
 				foreach ($typegrants as $id=>$grants) {
+					$user_ob = null;
 					$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
-					foreach ($authconfig['userdirs'] as $userdirpath) {
-						$user_ob = current($this->find($userdirpath, $criteria, "system.get.phtml"));
-						if ($user_ob) {
-							break;
+					if ( $type == 'puser' ) {
+						foreach ($authconfig['userdirs'] as $userdirpath) {
+							$user_ob = current($this->find($userdirpath, $criteria, "system.get.phtml"));
+							if ($user_ob) {
+								break;
+							}
+						}
+					} else {
+						foreach ($authconfig['groupdirs'] as $groupdirpath) {
+							$user_ob = current($this->find($groupdirpath, $criteria, "system.get.phtml"));
+							if ($user_ob) {
+								break;
+							}
 						}
 					}
 					if ($user_ob) {
