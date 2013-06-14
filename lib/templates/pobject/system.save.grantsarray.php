@@ -38,8 +38,12 @@
 						// first make sure that the object is clean (data can only be set via 
 						// the defined interface: $arCallArgs)
 						$this->data=current($this->get(".","system.get.data.phtml"));
-						$this->data->config->grants[$type][$id] = $grants;
-						$this->save($properties);
+						if (count($grants)) {
+							$this->data->config->grants[$type][$id] = $grants;
+						} else {
+							unset( $this->data->config->grants[$type][$id] );
+						}
+						$this->save();
 						$result=current($this->get($userpath, "system.save.grants.user.phtml", Array(
 							"action"	=> "set",
 							"path"		=> $this->path,
