@@ -9,6 +9,12 @@
 		$selectedlanguage=$AR->nls->list[$arLanguage];
 
 		$flagurl = $AR->dir->images."nls/small/$selectednls.gif";
+
+
+		$urlList = $this->getdata('urlList', $selectednls);
+		if (!is_array($urlList) || !count($urlList)) {
+			$urlList = array( $this->getdata('url', $selectednls) );
+		}
 ?>
 <fieldset id="data">
 	<legend><?php echo $ARnls["data"]; ?></legend>
@@ -21,15 +27,20 @@
 	<div class="field">
 		<label for="name" class="required"><?php echo $ARnls["url"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
-		<input id="name" type="text" name="<?php echo $selectednls."[url]"; ?>" 
-			value="<?php
-					if (!$url = $this->getdata("url", $selectednls)) {
-						if (!$this->arIsNewObject && ($selectednls==$this->data->nls->default)) {
-							$url = $this->getdata("url", "none");
-						}
-					}
-					echo htmlspecialchars( $url, ENT_QUOTES, 'UTF-8');
-				?>" class="inputline">
+		<?php
+			$snippetDef = array(
+				'url' => array(
+						'name' => $selectednls . '[urlList]',
+						'type' => 'fieldlist',
+						'label' => false,
+						'class' => 'inputline',
+						'value' => $urlList
+				)
+			);
+			$formSnippet = ar('html')->parse( (string)ar('html')->form( $snippetDef, null, null ) );
+			$snippet = $formSnippet->getElementsByTagName('fieldset');
+			echo (string)$snippet;
+		?>
 	</div>
 	<?php
 		if (getenv("ARIADNE_WORKSPACE") && workspace::enabled($this->path)) {

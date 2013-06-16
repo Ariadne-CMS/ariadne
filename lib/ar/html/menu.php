@@ -192,7 +192,7 @@
 			$me = $context->getObject();
 			if ( $me ) {
 				$this->root    = $me->currentsite();
-				$this->rooturl = $me->make_url( $this->root );
+				$this->rooturl = $me->make_local_url( $this->root );
 			}
 			if ( !isset($this->root) ) {
 				$this->root    = '/';

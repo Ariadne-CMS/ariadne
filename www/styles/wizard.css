@@ -401,6 +401,23 @@ div.buttons div.center {
 	margin-left: 27px;
 	margin-bottom: 10px;
 }
+
+
+#tabsdata #data fieldset.formField div.formField {
+	clear: right;
+}
+
+#tabsdata #data fieldset.formField  input {
+	display: inline;
+	width: 85%;
+} 
+#tabsdata #data fieldset.formField button.formFieldListDelete,
+#tabsdata #data fieldset.formField button.formFieldListAdd {
+	float: right;
+}
+
+
 .clear {
 	clear: both;
 }
+

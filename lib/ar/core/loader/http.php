@@ -262,7 +262,7 @@
 		public function isCacheable() {
 		}
 		
-		public function makeURL( $path = '', $nls = '', $session = true, $https = null, $keephost = false ) {
+		public function makeURL( $path = '', $nls = '', $session = true, $https = null, $keephost = null ) {
 			$context = ar::context();
 			$me = $context->getObject();
 			return $me->make_url( $path, $nls, $session, $https, $keephost );

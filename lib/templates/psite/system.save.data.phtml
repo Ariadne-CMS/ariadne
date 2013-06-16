@@ -14,44 +14,50 @@
 
 		// unset the properties array, so no properties can be passed to this template.
 		$properties = Array();
-		$this->data->url_list = Array();
-		$this->data->workspaceurl_list = Array();
+		$this->data->config->url_list = Array();
+		$this->data->config->workspaceurl_list = Array();
 
 		if (!$this->error) {
 			$this->arIsNewObject=false;
             reset($AR->nls->list);
             $count=0;
-			$clearcache=false;
+
             while (!$this->error && (list($key, $value)=each($AR->nls->list))) {
                 if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
-					$urls=$this->getdata("url",$key);
-					if (strpos($urls, ';')) {
-						$urls = explode(';', $urls);
-					} else {
-						$urls = array( $urls );
+					$mainURL = $this->getdata("url",$key);
+					$urlList = $this->getdata('urlList', $key);
+					if (!is_array($urlList)) {
+						$urlList = array( $mainURL );
+					} else if ($mainURL && !in_array($mainURL, $urlList)) {
+						array_unshift( $urlList, $mainURL );
+					} else if (!$mainURL) {
+						$mainURL = reset( $urlList );
 					}
-					$this->data->url_list['nls'][$key] = array();
+
+					$this->data->$key->url = $mainURL;
+					$this->data->$key->urlList = $urlList;
+					$this->data->config->url_list['nls'][$key] = array();
 
 					$firstURL = true;
-					foreach ($urls as $i => $url) {
+					foreach ($urlList as $i => $url) {
 						$url = trim($url);
 						if (!$url) {
+							unset( $this->data->$key->urlList[ $i ] );
 							continue;
 						}
 
 						if (substr($url, -1, 1)=='/') {
-							$url=substr($url, 0, -1);
-						}
-						if ($firstURL && $url!=$this->data->$key->url) {
-							$clearcache=true;
-							$this->data->$key->url=$url;
+							$url = substr($url, 0, -1);
 						}
 
 						preg_match('|^([a-z0-9]+)://([^/:]+)(:[0-9]+)?|i', $url, $regs);
 						if ($url) {
-							$this->data->url_list['nls'][$key][] = $url;
-							if (!$this->data->url_list['host'][$regs[2].$regs[3]]) {
-								$this->data->url_list['host'][$regs[2].$regs[3]] = $key;
+							if ($firstURL) {
+								$this->data->$key->url = $mainURL;
+							}							
+							$this->data->config->url_list['nls'][$key][] = $url;
+							if (!$this->data->config->url_list['host'][$regs[2].$regs[3]]) {
+								$this->data->config->url_list['host'][$regs[2].$regs[3]] = $key;
 							} else {
 								$this->error = "Please fill in distinctive hostnames; they should not be the same for different languages.";
 							}
@@ -74,9 +80,9 @@
 					}
 					preg_match('|^([a-z0-9]+)://([^/:]+)(:[0-9]+)?|i', $workspaceurl, $regs);
 					if ($workspaceurl) {
-						$this->data->workspaceurl_list['nls'][$key] = $workspaceurl;
-						if (!$this->data->workspaceurl_list['host'][$regs[2].$regs[3]]) {
-							$this->data->workspaceurl_list['host'][$regs[2].$regs[3]] = $key;
+						$this->data->config->workspaceurl_list['nls'][$key] = $workspaceurl;
+						if (!$this->data->config->workspaceurl_list['host'][$regs[2].$regs[3]]) {
+							$this->data->config->workspaceurl_list['host'][$regs[2].$regs[3]] = $key;
 						} else {
 							$this->error = "Please fill in distinctive hostnames; they should not be the same for different languages.";
 						}
@@ -95,7 +101,7 @@
 				// Changing the root url invalidates all cache images below this.
 				$this->ClearCache();
 			}
-			$this->data->url=$this->data->{$this->data->nls->default}->url;
+			$this->data->url = $this->data->{$this->data->nls->default}->url;
 			$this->data->workspaceurl=$this->data->{$this->data->nls->default}->workspaceurl;
 			if (!$this->error) {
 				$this->save($properties);

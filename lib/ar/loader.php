@@ -5,7 +5,7 @@
 
 	class ar_loader extends arBase {
 
-		static public $makeLocalURL = false;
+		static public $makeLocalURL = null;
 		static public $session = null;
 		
 		public static function configure( $option, $value ) {
@@ -65,9 +65,12 @@
 			return $loader->getvar( $name, $method );
 		}
 
-		public static function makeURL( $path = '', $nls = '', $session = true, $https = null ) {
+		public static function makeURL( $path = '', $nls = '', $session = true, $https = null, $keephost = null ) {
 			$loader = self::getLoader();
-			return $loader->makeURL( $path, $nls, $session, $https, self::$makeLocalURL );
+			if (!isset($keephost)) {
+				$keephost = self::$makeLocalURL;
+			}
+			return $loader->makeURL( $path, $nls, $session, $https, $keephost );
 		}
 		
 		public static function session() {

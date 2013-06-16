@@ -712,7 +712,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 	
 
-	function make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=false) {
+	function make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=null) {
 		global $ARConfig, $AR, $ARCurrent;
 
 		$rootoptions=$this->store->get_config('rootoptions');
@@ -738,8 +738,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$temp_config=$ARConfig->cache[$temp_site];
 		}
 
-		if ((!$nls && $this->compare_hosts($AR->host, $temp_config->root["value"])) ||
-			($nls && ($this->compare_hosts($AR->host, $temp_config->root['list']['nls'][$nls])))) {
+		if ( !isset($keephost) && (
+			(!$nls && $this->compare_hosts($AR->host, $temp_config->root["value"])) ||
+			($nls && ($this->compare_hosts($AR->host, $temp_config->root['list']['nls'][$nls])))
+		)) {
 			$keephost = false;
 		}
 		if (!$keephost) {
@@ -756,7 +758,16 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}
 			if (!$url) {
-				$url=$temp_config->root["value"].$rootoptions;
+				$checkNLS = $nls;
+				if (!$checkNLS) {
+					$checkNLS = $this->nls;
+				}
+				$urlList = $temp_config->root['list']['nls'][$checkNLS];
+				if (is_array($urlList)) {
+					$url = reset($urlList) . $rootoptions;
+				} else {
+					$url = $temp_config->root["value"].$rootoptions;
+				}
 			}
 			$url.=substr($path, strlen($temp_config->root["path"])-1);
 
@@ -783,6 +794,15 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	function compare_hosts($url1, $url2) {
 		// Check if hosts are equal, so that http://www.muze.nl and //www.muze.nl also match. 
 		// using preg_replace instead of parse_url() because the latter doesn't parse '//www.muze.nl' correctly.
+		if (is_array($url2)) {
+			foreach ($url2 as $url) {
+				if ($this->compare_hosts($url1, $url)) {
+					return true;
+				}
+			}
+			return false;
+		}
+
 		return (
 			($url1 == $url2) ||
 			(preg_replace('|^[a-z:]*//|i', '', $url1) == preg_replace('|^[a-z:]*//|i', '', $url2))
@@ -2910,7 +2930,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $this->make_ariadne_url($path);
 	}
 
-	function _make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=false) {
+	function _make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=null) {
 		return $this->make_url($path, $nls, $session, $https, $keephost);
 	}
 
