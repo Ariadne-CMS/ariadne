@@ -58,8 +58,6 @@
 							if (!$this->data->config->url_list['host'][$regs[2].$regs[3]]) {
 								$this->data->config->url_list['host'][$regs[2].$regs[3]] = $key;
 							} else {
-								echo "INSERTING ".$regs[2].$regs[3]."<br>\n";
-								print_r( $this->data->config->url_list['host'] );
 								$this->error = "Please fill in distinctive hostnames; they should not be the same for different languages.";
 							}
 						}
