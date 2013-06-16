@@ -24,17 +24,16 @@
 
             while (!$this->error && (list($key, $value)=each($AR->nls->list))) {
                 if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
-					$mainURL = $this->getdata("url",$key);
+
+					$nlsArgs = $this->getvar($key);
+					$mainURL = $nlsArgs['url'];
 					$urlList = $this->getdata('urlList', $key);
-					if (!is_array($urlList)) {
+					if (!is_array($urlList) && isset($mainURL)) {
 						$urlList = array( $mainURL );
 					} else if ($mainURL && !in_array($mainURL, $urlList)) {
 						array_unshift( $urlList, $mainURL );
-					} else if (!$mainURL) {
-						$mainURL = reset( $urlList );
-					}
-
-					$this->data->$key->url = $mainURL;
+					} 
+					$this->data->$key->url = "";
 					$this->data->$key->urlList = $urlList;
 					$this->data->config->url_list['nls'][$key] = array();
 
@@ -50,17 +49,23 @@
 							$url = substr($url, 0, -1);
 						}
 
-						preg_match('|^([a-z0-9]+)://([^/:]+)(:[0-9]+)?|i', $url, $regs);
+						preg_match('|^([a-z0-9]+:)?//([^/:]+)(:[0-9]+)?|i', $url, $regs);
 						if ($url) {
 							if ($firstURL) {
-								$this->data->$key->url = $mainURL;
-							}							
+								$this->data->$key->url = $url;
+							}
 							$this->data->config->url_list['nls'][$key][] = $url;
 							if (!$this->data->config->url_list['host'][$regs[2].$regs[3]]) {
 								$this->data->config->url_list['host'][$regs[2].$regs[3]] = $key;
 							} else {
+								echo "INSERTING ".$regs[2].$regs[3]."<br>\n";
+								print_r( $this->data->config->url_list['host'] );
 								$this->error = "Please fill in distinctive hostnames; they should not be the same for different languages.";
 							}
+						}
+						$protocol = $regs[1];
+						if ($protocol) {
+							$protocol = substr( $protocol, -1 ); // remove trailing ':'
 						}
 						$properties["url"][$count]["protocol"]=	"'".AddSlashes($regs[1])."'";
 						$properties["url"][$count]["host"]=		"'".AddSlashes($regs[2])."'";
