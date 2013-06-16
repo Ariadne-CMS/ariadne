@@ -52,20 +52,28 @@ class psite extends psection {  // psite class definition
 		$ariadne_workspace = getenv('ARIADNE_WORKSPACE');
 		$workspace = $ariadne_workspace && workspace::enabled($this->path);
 
-		if ($workspace) {
-			if (($sitenls=$this->data->config->workspaceurl_list["host"][$hostsubwww]) 
-				|| (($sitenls=$this->data->config->workspaceurl_list["host"]["www.".$hostsubwww]))) {
+		if (isset($this->data->config->url_list)) { // backwards compat check; url_list has been moved to config
+			$url_list =  $this->data->config->url_list;
+			$workspaceurl_list = $this->data->config->workspaceurl_list;
+		} else {
+			$url_list =  $this->data->url_list;
+			$workspaceurl_list = $this->data->workspaceurl_list;
+		}
 
-				$url = $this->data->config->workspaceurl_list["nls"][$sitenls];
+		if ($workspace) {
+			if (($sitenls=$workspaceurl_list["host"][$hostsubwww]) 
+				|| (($sitenls=$workspaceurl_list["host"]["www.".$hostsubwww]))) {
+
+				$url = $workspaceurl_list["nls"][$sitenls];
 			}
 			if (!$url) {
 				$url=$this->data->workspaceurl;
 			}
 		} else {
-			if (($sitenls=$this->data->config->url_list["host"][$hostsubwww]) 
-				|| (($sitenls=$this->data->config->url_list["host"]["www.".$hostsubwww]))) {
+			if (($sitenls=$url_list["host"][$hostsubwww]) 
+				|| (($sitenls=$url_list["host"]["www.".$hostsubwww]))) {
 
-				$url = $this->data->config->url_list["nls"][$sitenls];
+				$url = $url_list["nls"][$sitenls];
 				if (is_array($url)) {
 					$urls = $url;
 					$url  = array_shift($urls); // default
@@ -93,9 +101,9 @@ class psite extends psection {  // psite class definition
 			$configcache->root["path"]=$this->path;
 			$configcache->root["value"]=$url;
 			if (!$workspace) {
-			 $configcache->root["list"]=$this->data->config->url_list;
+			 $configcache->root["list"]=$url_list;
 			} else {
-			 $configcache->root["list"]=$this->data->config->workspaceurl_list;
+			 $configcache->root["list"]=$workspaceurl_list;
 			}
 
 			if ($sitenls) {
