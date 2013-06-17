@@ -1,43 +1,60 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
+
+		$result = array( 'attributes' => array() );
+
 		$arEditorSettings = $this->call('editor.ini');
-
+		// FIXME: attributes moeten naar json result ['attributes'] ipv direct in root scope gedrukt te worden.
 		$attributes = array();
-		$attributes['ar:type'] = $this->getdata('type');
+		$attributes['ar:type'] = $this->getvar('artype');
 
-		if ($this->getdata('type') == 'internal') {
-			$attributes['href'] 		= $this->make_local_url($this->getdata('target'));
-			$attributes['ar:path'] 		= $this->getdata('target');
-			$attributes["ar:language"] 	= $this->getdata('language');
-			$attributes["ar:behaviour"] 	= $this->getdata('behaviour');
-			if ($this->getdata('anchor')) {
-				$attributes["ar:anchor"] 	= $this->getdata('anchor');
-				$attributes['href'] .= '#' . $this->getdata('anchor');
+		$arpath = $this->getvar('arpath');
+		$arlanguage = $this->getvar('arlanguage');
+		$aranchor = str_replace('#', '', $this->getvar('aranchor'));
+		$arbehaviour = $this->getvar('arbehaviour');
+		$arname = $this->getvar('name');
+		$artype = $this->getvar('artype');
+		$arurl  = $this->getvar('url');
+
+
+		if ($artype == 'internal') {
+			$result['href']                        = $this->make_local_url($arpath, $arlanguage);
+			$result['attributes']['ar:path']       = $arpath;
+			$result['attributes']["ar:language"]   = $arlanguage;
+			$result['attributes']["ar:behaviour"]  = $arbehaviour;
+			if ($aranchor) {
+				$result['attributes']['ar:anchor']  = $aranchor;
+				$result['href']       .= '#' .$aranchor;
 			}
-		} else if ($this->getdata('type') == 'external') {
-			$attributes['href'] 		= $this->getdata('url');
-			$attributes["ar:behaviour"] 	= $this->getdata('behaviour');
-			if ($this->getdata('anchor')) {
-				$attributes["ar:anchor"] 	= $this->getdata('anchor');
-				$attributes['href'] .= '#' . $this->getdata('anchor');
+		} else if ($artype == 'external') {
+			$result['href'] 		= $arurl;
+			$result['attributes']["ar:behaviour"] 	= $arbehaviour;
+			if ($aranchor) {
+				$result['attributes']['ar:anchor']  = $aranchor;
+				$result['href'] .= '#' . $aranchor;
 			}
-		} else if ($this->getdata('type') == 'anchor') {
-			$attributes['name'] 		= $this->getdata('name');
+		} else if ($artype == 'anchor') {
+			$result['name'] 		= $arname;
 		}
+
+		$result['attributes']['ar:type'] = $artype;
 
 		if (
-			$arEditorSettings['link']['behaviours'][$this->getdata('behaviour')] &&
-			$arEditorSettings['link']['behaviours'][$this->getdata('behaviour')]['attributes']
+			$arEditorSettings['link']['behaviours'][$arbehaviour] &&
+			$arEditorSettings['link']['behaviours'][$arbehaviour]['attributes']
 		) {
-			$attributes = array_merge($attributes, $arEditorSettings['link']['behaviours'][$this->getdata('behaviour')]['attributes']);
+			$result['attributes'] = array_merge($result['attributes'], $arEditorSettings['link']['behaviours'][$arbehaviour]['attributes']);
 		}
 
-		$attributes_json = json_encode($attributes);
 		?>
 		<script type="text/javascript">
-			if (window.opener && window.opener.callback) {
-				window.opener.callback(<?php echo $attributes_json; ?>);
+			if (window.opener) {
+				if (window.opener.muze && window.opener.muze.dialog && window.opener.muze.dialog.hasCallback( window.name, 'submit') ) {
+					window.opener.muze.dialog.callback( window.name, 'submit', <?php echo json_encode($result); ?> );
+				} else if (window.opener.callback) {
+					window.opener.callback(<?php echo json_encode($result); ?>);
+				}
 			}
 			window.close();
 		</script>

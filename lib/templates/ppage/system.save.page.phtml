@@ -57,7 +57,7 @@
 			// warn the user if he tries to delete/rename
 			// an object which is still referenced somewhere
 			// Use Perl compatible regex for non-greedy matching
-			$refs=$this->GetReferences($page);
+			$refs=(array)$this->GetReferences($page);
 			$count=0;
 			foreach ($refs as $ref) {
 				if (substr($ref, -1) != '/' && !$this->exists($ref)) {

@@ -281,7 +281,8 @@
 				var _sel = this._getSelectedElement();
 				var arpath; var artype; var arbehaviour; var aranchor; var name; var href;
 
-				if (_sel.tagName == "A" && getAttribute) {
+
+				if (_sel.tagName == "A" && _sel.getAttribute) {
 					arpath 		= _sel.getAttribute("ar:path");
 					artype 		= _sel.getAttribute("ar:type");
 					arbehaviour 	= _sel.getAttribute("ar:behaviour");
@@ -290,8 +291,9 @@
 					name		= _sel.getAttribute("name");
 					url		= _sel.getAttribute("href");
 				}
-				
-				callback = function(attributes) {
+
+				callback = function(settings) {
+					var attributes = settings['attributes'];
 					if (!attributes['ar:type']) {
 						myEditor.execCommand('unlink');
 					} else {
@@ -299,6 +301,12 @@
 						var linkelm = myEditor.currentElement[0];
 						for (i in attributes) {
 							linkelm.setAttribute(i, attributes[i]);
+						}
+						if (settings['href']) {
+							linkelm.setAttribute( 'href', settings['href'] );
+						}
+						if (settings['name']) {
+							linkelm.setAttribute( 'name', settings['name'] );
 						}
 					}
 				}
@@ -326,7 +334,6 @@
 						dialogUrl += '&url=' + escape(url);
 					}
 				}
-
 				win = window.open(dialogUrl, 'OBJECT_BROWSER', 'left=20,top=20,width=750,height=480,toolbar=0,resizable=0,status=0');
 				if (!win) {
 					//Catch the popup blocker
