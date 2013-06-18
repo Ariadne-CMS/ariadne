@@ -219,7 +219,7 @@ muze.url = (function() {
 			} else if ( url.pathname.match('muze.js') ) {
 				url.pathname = url.pathname.replace('muze.js', module.replace('.','/')+'.js' );
 			} else {
-				throw 'could not load modules dynamically - muze.url not set correctly';
+				url.href = '';
 			}
 			url = url.href;
 		}
@@ -252,14 +252,14 @@ muze.url = (function() {
 		for (var i=0; i<modules.length; i++) {
 			if ( modules[i].module ) {
 				var moduleInstance = _namespaceWalk( modules[i].module, function(ob, name) {
-					if (typeof continuation == 'undefined') {
+					if (typeof continuation == 'undefined' || !modules[i].url ) {
 						throw 'namespace ' + name + ' not found ';
 					} else {
 						scriptsToLoad[ scriptsToLoad.length ] = modules[i];
 					}
 				});
 			} else if ( !included[ modules[i].url ] ) {
-				if (typeof continuation == 'undefined') {
+				if (typeof continuation == 'undefined' || !modules[i].url ) {
 					throw 'namespace ' + name + ' not found ';
 				} else {
 					scriptsToLoad[ scriptsToLoad.length ] = modules[i];
