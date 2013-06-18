@@ -54,9 +54,18 @@
 
 		/* retrieve HTTP GET variables */
 		// FIXME: Er moet ook iets van een root zijn voor dit dialoog.
-		$root = $this->getvar("root") ? $this->getvar("root") : $this->currentproject();
+		$root = $this->getvar("root");
+		if (!$root) {
+			$root = '/';
+		}
+		$root = $this->make_path( $root );
 		if ($root && $this->exists($root)) {
-			$base_object = current($this->get($root, "system.get.phtml"));
+			$subPath = substr($this->path, strlen($root), -1);
+			$subParticles = explode('/', $subPath);
+			while ( !current( $this->get( $root, 'system.check.grant.phtml', array('grant' => 'read' ) ) ) && count( $subParticles )) {
+				$root .= array_shift( $subParticles ) . '/';
+			}
+			$base_object = current( $this->get( $root, 'system.get.phtml' ) );
 		} else {
 			$base_object = $this;
 		}
@@ -107,7 +116,7 @@
 
 		$jail = ar::acquire('settings.jail');
 		if ( !$jail ) {
-			$jail = '/projects/';		
+			$jail = '/';		
 		}
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
@@ -138,6 +147,7 @@
 <script type="text/javascript" src="<?php echo $yui_base;?>dragdrop/dragdrop-min.js"></script>
 <script type="text/javascript" src="<?php echo $yui_base;?>slider/slider-min.js"></script>
 <script type="text/javascript" src="<?php echo $yui_base;?>animation/animation-min.js"></script>
+<script type="text/javascript" src="<?php echo $yui_base;?>container/container-min.js"></script>
 <script type="text/javascript" src="<?php echo $yui_base;?>autocomplete/autocomplete-min.js"></script>
 
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>explore.css">
