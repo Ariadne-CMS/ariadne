@@ -46,6 +46,8 @@
 						</script>
 					<?php
 				}
+			} else {
+				echo $ARnls['err:typetree_does_not_allow'];
 			}
 		}
 		if ($this->error) {
