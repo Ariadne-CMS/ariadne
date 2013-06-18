@@ -1,0 +1,13 @@
+<?php
+	if ($this->CheckConfig()) {
+		$nls = $this->getvar('nls');
+		if (!isset($nls)) {
+			$nls = $this->nls;
+		}
+
+		$path = $this->make_path( $this->getvar('path') );
+		if ($this->exists($path)) {
+			echo $this->make_local_url($path, $nls);
+		}
+	}
+?>

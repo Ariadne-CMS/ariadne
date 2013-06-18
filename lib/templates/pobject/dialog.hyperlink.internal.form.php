@@ -10,6 +10,7 @@
 		$arlanguage  = $this->getvar('arlanguage');
 		$aranchor    = $this->getvar('aranchor');
 		$url         = $this->getvar('url');
+		$root        = $this->getvar('root');
 
 		$matches = array();
 		if (preg_match('|(.*)#([^#]*)$|', $url, $matches)) {
@@ -23,6 +24,17 @@
 	function callback(path) {
 		document.getElementById("arpath").value = path;
 	}
+
+	function hyperlinkBrowse( path ) {
+		var objectURL = "<?php echo $this->make_ariadne_url($wgBrowsePath); ?>";
+		var linkURL = muze.load( objectURL + 'dialog.makeLocalURL.ajax?path=' + escape(path), true, false );
+		if (!linkURL) {
+			linkURL = objectURL;
+		} 
+		window.open( linkURL + "dialog.browse.php?root=<?php echo urlencode($root); ?>", "browse", "height=480,width=750");
+		return false;
+	}
+
 </script>
 <fieldset id="data" class="browse">
 		<legend><?php echo $ARnls["path"]; ?></legend>
@@ -30,7 +42,7 @@
 			<input type="hidden" name="artype" value="internal">
 			<label for="arpath" class="required"><?php echo $ARnls["path"]; ?></label>
 			<input type="text" id="arpath" name="arpath" value="<?php echo htmlspecialchars($arpath); ?>" class="inputline wgWizAutoFocus">
-			<input class="button" type="button" value="<?php echo $ARnls['browse']; ?>" title="<?php echo $ARnls['browse']; ?>" onclick='callbacktarget="extrauser"; window.open("<?php echo $this->make_ariadne_url($wgBrowsePath); ?>" + "dialog.browse.php", "browse", "height=480,width=750"); return false;'>
+			<input class="button" type="button" value="<?php echo $ARnls['browse']; ?>" title="<?php echo $ARnls['browse']; ?>" onclick="return hyperlinkBrowse(document.getElementById('arpath').value);">
 		</div>
 		<div class="field">
 			<label for="aranchor"><?php echo $ARnls["ariadne:editor:anchor"]; ?></label>
