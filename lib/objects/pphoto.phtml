@@ -166,6 +166,15 @@ class pphoto extends pfile { // pphoto class definition
 		return Array("x" => $newx, "y" => $newy);
 	}
 
+	function density($density=300) {
+		global $ARConfig;
+
+		$this->set_context('convert');
+		$density = (int) $density;
+		$ARConfig->photoStack[$this->id][] = " -density $density";
+		return true;
+	}
+
 	function rotate($degrees) {
 		global $ARConfig;
 
@@ -212,12 +221,28 @@ class pphoto extends pfile { // pphoto class definition
 	function strip() {
 		global $ARConfig;
 
-		$this->set_context("mogrify");
-
 		$ARConfig->photoStack[$this->id][]=" -strip ";
 		return true;
 	}
 
+	function interlace($interlace = 'plane') {
+		global $ARConfig;
+		switch( $interlace ) {
+			case "none":
+			case "line":
+			case "plane":
+			case "partition":
+			case "JPEG":
+			case "GIF":
+			case "PNG":
+			break;
+			default:
+				$interlace = "none";
+			break;
+		}
+		$ARConfig->photoStack[$this->id][] = " -interlace $interlace ";
+		return true;
+	}
 
 	function scaledown($x, $y, $fillcolor=false) {
 		global $ARConfig;
@@ -694,12 +719,20 @@ class pphoto extends pfile { // pphoto class definition
 		return $this->strip();
 	}
 
+	function _interlace($interlace="plane") {
+		return $this->interlace($interlace);
+	}
+
 	function _build($nls = '') {
 		return $this->build($nls);
 	}
 
 	function _cleanup() {
 		return $this->cleanup();
+	}
+
+	function _density($density=300) {
+		return $this->density($density);
 	}
 
 	function _getimageinfo(&$extrainfo=false, $nls='') {
