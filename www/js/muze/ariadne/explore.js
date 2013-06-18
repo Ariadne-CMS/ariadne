@@ -614,6 +614,10 @@ muze.ariadne.explore.toolbar = function() {
 	}
 }();
 
+/*
+
+	FIXME: temporarly disabeled
+
 muze.ariadne.explore.searchbar = function() {
 	var oAC;
 
@@ -671,6 +675,8 @@ muze.ariadne.explore.searchbar = function() {
 		}
 	}
 }();
+
+*/
 
 muze.ariadne.explore.splitpane = function() {
 	return {
