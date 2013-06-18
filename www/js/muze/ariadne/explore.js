@@ -244,6 +244,7 @@ muze.ariadne.explore = function() {
 			muze.ariadne.explore.arshow('dialog_edit',this.store_root+object+'dialog.edit.php', arguments);
 		},
 		arshow : function (windowname, link, arguments) {
+			windowname = windowname.replace(/\./g, "_");
 			var properties = muze.ariadne.explore.windowprops[windowname];
 			var myNewWindow = 0;
 			if( windowname == 'dialog_templates' && muze.ariadne.registry.get('window_new_layout')) {
@@ -254,7 +255,6 @@ muze.ariadne.explore = function() {
 				myNewWindow = 1;
 			}
 			
-			windowname = windowname.replace(/\./g, "_");
 			if( myNewWindow ) {
 				// append a timestamp to allow multiple template windows
 				var myDate = new Date();
