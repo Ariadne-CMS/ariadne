@@ -614,15 +614,14 @@ muze.ariadne.explore.toolbar = function() {
 	}
 }();
 
-/*
-
-	FIXME: temporarly disabeled
 
 muze.ariadne.explore.searchbar = function() {
 	var oAC;
 
 	return {
 		init : function() {
+			return false; // 	FIXME: temporarly disabeled
+
 			// Use an XHRDataSource
 			var nodePath = encodeURI(muze.ariadne.registry.get('path'));
 
@@ -675,8 +674,6 @@ muze.ariadne.explore.searchbar = function() {
 		}
 	}
 }();
-
-*/
 
 muze.ariadne.explore.splitpane = function() {
 	return {
