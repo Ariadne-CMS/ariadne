@@ -27,7 +27,7 @@ muze.ariadne.explore = function() {
 			'dialog_mogrify'		: windowprops_common + windowsize_small,
 			'dialog_import'			: windowprops_common + windowsize_large,
 			'dialog_export'			: windowprops_common + windowsize_large,
-
+			'dialog_hyperlink'		: windowprops_common + windowsize_large,
 			'dialog_svn_tree_info'		: windowprops_common + windowsize_large,
 			'dialog_svn_tree_diff'		: windowprops_common + windowsize_large,
 			'dialog_svn_tree_commit'	: windowprops_common + windowsize_large,
@@ -36,7 +36,7 @@ muze.ariadne.explore = function() {
 			'dialog_svn_tree_unsvn'		: windowprops_common + windowsize_large,
 			'dialog_svn_tree_checkout'	: windowprops_common + windowsize_large,
 			'dialog_svn_tree_import'	: windowprops_common + windowsize_large,
-
+			
 			'dialog_svn_templates_resolved'	: windowprops_common + windowsize_large,
 			'dialog_svn_templates_diff'	: windowprops_common + windowsize_large,
 			'dialog_svn_templates_commit'	: windowprops_common + windowsize_large,
@@ -61,7 +61,7 @@ muze.ariadne.explore = function() {
 			'dialog_preferences'		: windowprops_common + ',height=400,width=500',
 			'dialog_search'			: windowprops_common + ',height=500,width=700',
 			'help_about'			: windowprops_common + ',height=375,width=600',
-
+			'dialog_browse'			: windowprops_common + ',height=550,width=780',
 			'help'				: windowprops_full,
 			'_new'				: windowprops_full,
 
