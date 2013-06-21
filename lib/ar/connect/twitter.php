@@ -121,7 +121,7 @@ class ar_connect_twitter extends arBase {
 
 class ar_connect_twitterClient extends arBase {
 
-	private $rootURL = 'http://api.twitter.com/1/';
+	private $rootURL = 'http://api.twitter.com/1.1/';
 	private $searchURL = 'http://search.twitter.com/search.json';
 	private $client = null;
 	
@@ -243,17 +243,22 @@ class ar_connect_twitterClient extends arBase {
 		return $this->get( 'statuses/user_timeline', $options );
 	}
 
-	public function trends( $timeslice = 'current', $options = array() ) {
-		switch ( $timeslice ) {
-			case 'current':			//http://dev.twitter.com/doc/get/trends/current
-			case 'daily':			//http://dev.twitter.com/doc/get/trends/daily
-			case 'weekly':			//http://dev.twitter.com/doc/get/trends/weekly
+	public function trends( $location = 'place', $options = array() ) {
+		switch ( $location ) {
+			case 'place':			//https://dev.twitter.com/docs/api/1.1/get/trends/place
+				if (!$options['id']) {
+					$options['id'] = 1; // YAHOO! Where On Earth ID, 1 = worldwide
+				}
+				break;
+			case 'available':		//https://dev.twitter.com/docs/api/1.1/get/trends/available
+			case 'closest':			//https://dev.twitter.com/docs/api/1.1/get/trends/closest
 			break;
 			default :
-				$timeslice = 'current';
+				$location = 'place';
+				$options['id'] = 1;
 			break;
 		}
-		return $this->get( 'trends/'.$timeslice, $options );
+		return $this->get( 'trends/'.$location, $options );
 	}
 	
 	public function search( $options ) {
