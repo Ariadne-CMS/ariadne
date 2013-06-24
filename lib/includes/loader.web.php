@@ -336,12 +336,12 @@
 		return $cookie;
 	}
 
-	function ldSetConsentedCookie($cookie, $cookiename="ARUserCookie", $expire=null, $path="/", $domain="", $secure=0) {
+	function ldSetConsentedCookie($cookie, $cookiename="ARUserCookie", $expire=0, $path="/", $domain="", $secure=0) {
 		// Sets a cookie, but only when ARCookieConsent has been given.
 		return ldSetUserCookie($cookie, $cookiename, $expire, $path, $domain, $secure, true);
 	}
 
-	function ldSetUserCookie($cookie, $cookiename="ARUserCookie", $expire=null, $path="/", $domain="", $secure=0, $consentneeded=false) {
+	function ldSetUserCookie($cookie, $cookiename="ARUserCookie", $expire=0, $path="/", $domain="", $secure=0, $consentneeded=false) {
 		$result = false;
 
 		$cookieconsent = ldGetUserCookie("ARCookieConsent");
