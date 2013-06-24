@@ -6,29 +6,31 @@
 			$target = $this->path;
 		}
 
-		$root = $this->getvar("root");
-		if (!$root) {
-			$root = '/';
-		} else if (substr($root, -1) != "/") {
-			$root .= "/";
+		$jail = ar::acquire('settings.jail');
+
+		if (!$jail) {
+			$jail = '/';
+		}
+		if (substr($jail, -1) != "/") {
+			$jail .= "/";
 		}
 
-		if ($root) {
-			$target = preg_replace("|^$root|", '/', $target);
+		if ($jail) {
+			$target = preg_replace("|^$jail|", '/', $target);
 		}
 
 		$crumbs = '';
 		$path = '';
-		$parents = $this->parents($this->path, 'system.get.name.phtml', '', $root);
-		$parentpaths = $this->parents($this->path, 'system.get.path.phtml', '', $root);
+		$parents = $this->parents($this->path, 'system.get.name.phtml', '', $jail);
+		$parentpaths = $this->parents($this->path, 'system.get.path.phtml', '', $jail);
 		$path = array_pop($parentpaths);
 
-		if ( strpos( $path, $root ) === 0 ) {
-			$path = substr( $path, strlen($root)-1 );
+		if ( strpos( $path, $jail ) === 0 ) {
+			$path = substr( $path, strlen($jail)-1 );
 		}
 
 		array_pop($parents); //remove current item from the list.
-		array_shift( $parents ); // remove site root from the list.
+		array_shift( $parents ); // remove site jail from the list.
 		foreach ($parents as $name) {
 			$crumbs .= "/ $name";
 		}
@@ -66,21 +68,21 @@
 ?>
 <script type="text/javascript">
 	function callback(path) {
-		var root = "<?php echo $root; ?>";
-		if (path.indexOf(root) == 0) {
-			path = path.substring(root.length-1, path.length);
+		var jail = "<?php echo $jail; ?>";
+		if (path.indexOf(jail) == 0) {
+			path = path.substring(jail.length-1, path.length);
 		} 
 		document.getElementById("relativetarget").value = path;
 		updateTarget();
 	}
 
 	function updateTarget() {
-		document.getElementById("target").value = (document.getElementById("root").value + document.getElementById("relativetarget").value).replace("//", "/");
+		var jail = "<?php echo $jail; ?>";
+		document.getElementById("target").value = (jail + document.getElementById("relativetarget").value).replace("//", "/");
 	}
 
 </script>
 <fieldset id="data" class="browse">
-		<legend><?php echo $ARnls["path"]; ?></legend>
 		<?php
 			echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt) . '" title="' . htmlspecialchars($iconalt) . '" class="typeicon">';
 		
@@ -96,9 +98,8 @@
 			<div class="field">
 				<label for="target" class="required"><?php echo $ARnls["target"]; ?></label>
 				<input id="relativetarget" type="text" name="relativetarget" value="<?php echo $target; ?>" class="inputline wgWizAutoFocus" onchange="updateTarget();" onkeyup="updateTarget();">
-				<input type="hidden" id="root" name="root" value="<?php echo htmlentities($root); ?>">
-				<input type="hidden" id="target" name="target" value="<?php echo htmlentities(str_replace("//", "/", $root . $target)) ?>">
-				<input class="button" type="button" value="<?php echo $ARnls['browse']; ?>" title="<?php echo $ARnls['browse']; ?>" onclick='window.open("<?php echo $this->make_ariadne_url($root); ?>" + document.getElementById("relativetarget").value + "dialog.browse.php?root=<?php echo urlencode($root); ?>", "browse", "height=480,width=750"); return false;'>
+				<input type="hidden" id="target" name="target" value="<?php echo htmlentities(str_replace("//", "/", $jail . $target)) ?>">
+				<input class="button" type="button" value="<?php echo $ARnls['browse']; ?>" title="<?php echo $ARnls['browse']; ?>" onclick='window.open("<?php echo $this->make_ariadne_url($jail); ?>" + document.getElementById("relativetarget").value + "dialog.browse.php", "browse", "height=480,width=750"); return false;'>
 				<div class="clear"></div>
 			</div>
 		</div>
