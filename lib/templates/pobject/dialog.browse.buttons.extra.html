@@ -2,7 +2,7 @@
 	if ($this->CheckLogin("read") && $this->CheckConfig($arCallFunction, $arCallArgs)) {
 		/* return the old flow information */
 		if ($this->CheckSilent("add",ARANYTYPE) && !$hideAdd) { ?>
-			<input type="submit" value="<?echo $ARnls['ariadne:new']; ?>" onclick="muze.ariadne.explore.dialog.add('<?php echo substr($this->make_url('/'),0, -1); ?>' + muze.ariadne.registry.get('path') + 'dialog.add.php'); return false;">
+			<input type="submit" value="<?echo $ARnls['ariadne:new']; ?>" onclick="muze.ariadne.explore.dialog.add('<?php echo substr($this->make_ariadne_url('/'),0, -1); ?>' + muze.ariadne.registry.get('path') + 'dialog.add.php'); return false;">
 <?php 		} 
 	}
 ?>

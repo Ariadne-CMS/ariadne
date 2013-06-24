@@ -48,7 +48,7 @@
 				'iconalt' => $ARnls['ariadne:delete'],
 				'icon' => $AR->dir->images . 'icons/small/delete.png',
 				'href' => $this->make_ariadne_url() . "dialog.delete.php",
-                'onclick' => "muze.ariadne.explore.dialog.delete('" . substr($this->make_url('/'),0, -1)  . "' + document.getElementById('searchpath').value + 'dialog.delete.php'); return false;"
+                'onclick' => "muze.ariadne.explore.dialog.delete('" . substr($this->make_ariadne_url('/'),0, -1)  . "' + document.getElementById('searchpath').value + 'dialog.delete.php'); return false;"
 			)
 		);
 
