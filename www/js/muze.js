@@ -147,7 +147,11 @@ muze.url = (function() {
 			}
 		} else {
 			try {
-				xmlhttp = new XMLHttpRequest();
+				if ( typeof XDomainRequest != 'undefined' ) {
+					xmlhttp = new XDomainRequest();
+				} else {
+					xmlhttp = new XMLHttpRequest();
+				}
 			} catch (e) {
 				xmlhttp = null;
 			}
