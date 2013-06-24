@@ -204,6 +204,10 @@
 			$inst_store = $store_config["dbms"]."store";
 			$importStore=new $inst_store($root,$store_config);
 
+			$login = "admin";
+			$query = "object.implements = 'puser' and login.value='$login'";
+			$AR->user = current($importStore->call('system.get.phtml', '', $importStore->find('/system/users/', $query)));
+
 			$ARCurrent->importStore=&$importStore;
 			$callArgs["srcpath"]  = $srcpath;
 			$callArgs["destpath"] = $destpath;
