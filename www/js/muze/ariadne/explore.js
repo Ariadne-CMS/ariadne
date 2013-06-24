@@ -620,7 +620,7 @@ muze.ariadne.explore.searchbar = function() {
 
 	return {
 		init : function() {
-			return false; // 	FIXME: temporarly disabeled
+			return; // 	FIXME: temporarly disabeled - use of return false here will prevent the other onDOMReady inits.
 
 			// Use an XHRDataSource
 			var nodePath = encodeURI(muze.ariadne.registry.get('path'));
