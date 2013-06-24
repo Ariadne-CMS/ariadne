@@ -100,6 +100,7 @@
 			var phpMode = require('ace/mode/php').Mode;
 			editor.getSession().setMode( new phpMode() );
 			editor.getSession().setUseSoftTabs(false);
+			editor.setShowPrintMargin(false);
 			editor.getSession().setValue( template.value );
 			<?php
 				$error = $this->getvar("error");
