@@ -73,6 +73,9 @@
 		foreach ($snippit->getElementsByTagName("input") as $radioOption) {
 			$radioOption->setAttribute("onclick", "this.form.submit();");
 		}
+		foreach ($snippit->getElementsByTagName("label") as $radioLabel) {
+			$radioLabel->setAttribute("onclick", "var f=this.form; document.getElementById(this.getAttribute('for')).checked=true; f.submit();");
+		}
 		echo $snippit;
 
 		if ($arNewType) {
