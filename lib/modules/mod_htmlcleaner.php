@@ -172,7 +172,7 @@ class htmlcleanertag {
 
 	function toString()
 	{
-		if (($this->nodeName == 'img' || $this->nodeName == 'br' || $this->nodeName == 'hr') && $this->closingStyle != HTML_CLEANER_NODE_CLOSINGSTYLE_XHTMLSINGLE)
+		if (($this->nodeName == 'link' || $this->nodeName == 'img' || $this->nodeName == 'br' || $this->nodeName == 'hr') && $this->closingStyle != HTML_CLEANER_NODE_CLOSINGSTYLE_XHTMLSINGLE)
 			$this->closingStyle = HTML_CLEANER_NODE_CLOSINGSTYLE_HTMLSINGLE;
 		if ($this->nodeType == HTML_CLEANER_NODE_NODETYPE_TEXT || $this->nodeType == HTML_CLEANER_NODE_NODETYPE_SPECIAL) return $this->nodeValue;
 		if ($this->nodeType == HTML_CLEANER_NODE_NODETYPE_NODE)
