@@ -131,7 +131,7 @@ muze.url = (function() {
 
 	/* private methods */
 
-	function _getHTTPObject() { //FIXME: check if rearranged thing work 
+	function _getHTTPObject(cors) { //FIXME: check if rearranged thing work 
 		var xmlhttp = null;
 		if (typeof XMLHttpRequest == 'undefined') {
 			if (typeof ActiveXObject != 'undefined') {
@@ -147,7 +147,7 @@ muze.url = (function() {
 			}
 		} else {
 			try {
-				if ( typeof XDomainRequest != 'undefined' ) {
+				if ( cors && typeof XDomainRequest != 'undefined' ) {
 					xmlhttp = new XDomainRequest();
 				} else {
 					xmlhttp = new XMLHttpRequest();
@@ -326,6 +326,13 @@ muze.url = (function() {
 	};
 	
 	muze.load = function(url, waitforme, cached) {
+		var _isCorsURL = function(url) {
+			var urlHelper = document.createElement('a');
+			urlHelper.href = url;
+			var newHost = url.hostname;
+			var currentHost = document.location.href.hostname;
+			return ( newHost && newHost!=currentHost);
+		}
 		var loader = muze.loader();
 		var timestamp = null;
 		// get content from url
@@ -340,7 +347,7 @@ muze.url = (function() {
 			timestamp = '';
 		}
 
-		var http = _getHTTPObject();
+		var http = _getHTTPObject(_isCorsURL(url));
 		http.open( 'GET', url + timestamp, !waitforme );
 		if ( !waitforme ) {
 			http.onreadystatechange = function() {
