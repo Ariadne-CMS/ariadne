@@ -744,6 +744,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		)) {
 			$keephost = false;
 		}
+
 		if (!$keephost) {
 			if ($nls) {
 				$url=$temp_config->root["list"]["nls"][$nls];
@@ -781,11 +782,21 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}
 		} else {
-			if ($this->compare_hosts($AR->host, $temp_config->root["value"])) {
-				$url=$temp_config->root["value"].$rootoptions;
-				$url.=substr($path, strlen($temp_config->root["path"])-1);
+			$checkNLS = $nls;
+			if (!$checkNLS) {
+				$checkNLS = $this->nls;
+			}
+			$urlCheck = $temp_config->root['list']['nls'][$checkNLS];
+			if (!is_array($urlCheck)) {
+				$urlCheck = $temp_config->root["value"];
+			}
+			$requestedHost = ldGetRequestedHost();
+			if ($this->compare_hosts($requestedHost, $urlCheck)) {
+				$url = $requestedHost . $rootoptions;
+				$url .= substr($path, strlen($temp_config->root["path"])-1);
 			} else {
-				$url=$AR->host.$AR->root.$rootoptions.$path;
+				//$url=$AR->host.$AR->root.$rootoptions.$path;
+				$url = $protocol . $requestedHost . $AR->root . $rootoptions . $path;
 			}
 		}
 		return $url;
@@ -835,7 +846,17 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$config=($ARConfig->cache[$checkpath]) ? $ARConfig->cache[$checkpath] : $this->loadConfig($checkpath);
 			}
 			if ($config) {
-				if ($this->compare_hosts($config->root['value'], $AR->host)) {
+				$checkNLS = $nls;
+				if (!$checkNLS) {
+					$checkNLS = $this->nls;
+				}
+				$urlCheck = $config->root['list']['nls'][$checkNLS];
+				if (!is_array($urlCheck)) {
+					$urlCheck = $config->root["value"];
+				}
+				$requestedHost = ldGetRequestedHost();
+
+				if ($this->compare_hosts($requestedHost, $urlCheck)) {
 					$site=$config->site;
 				}
 			}
@@ -1440,6 +1461,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					$this->popContext();
 				}
 				$result=$ARConfig->cache[$parent];
+				$ARConfig->cache[ $path ] = $result;
+				$ARConfig->pinpcache[ $path ] = $ARConfig->pinpcache[ $parent ];
 			}
 			// restore old ARConfigChecked state
 			$ARConfigChecked = $configChecked;
@@ -1585,6 +1608,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			}
 		} else if ($name && is_string($name)) {
 			if (!$ARConfig->cache[$this->path]) {
+debug("loadLibrary: loading cache for $this->path");
 				$this->loadConfig($this->path);
 			}
 			$ARConfig->libraries[$this->path][$name]=$path;

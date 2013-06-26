@@ -227,6 +227,25 @@
 		}
 	}
 
+	function ldGetRequestedHost() {
+	global $AR;
+		$requestedHost = $_SERVER['HTTP_X_FORWARDED_HOST'];
+		if (!$requestedHost) {
+			$requestedHost = $_SERVER['HTTP_HOST'];
+		}
+		$protocol = 'http://';
+		if (is_bool($https)) {
+			if ($https) {
+				if ($AR->https) {
+					$protocol = 'https://';
+				}
+			}
+		} else if ($_SERVER['HTTPS']=='on') {
+			$protocol = 'https://';
+		}
+		return $protocol . $requestedHost;
+	}
+
 	function ldSetSession($session='') {
 	global $ARCookie, $AR, $ARCurrent;
 
