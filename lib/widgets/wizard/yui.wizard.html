@@ -39,7 +39,7 @@
 ?>
 	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/muze/ariadne/wizard.js"></script>
 	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/yui/yahoo-dom-event/yahoo-dom-event.js"></script>
-	<script type="text/javascript" src="<?php echo $this->make_ariadne_url('/') . 'ariadne.load.js?' . implode('+', $loadJS ); ?>"></script>
+	<script type="text/javascript" src="<?php echo $this->make_local_url( $this->currentsite(), false, false) . 'ariadne.load.js?' . implode('+', $loadJS ); ?>"></script>
 	<script type="text/javascript">
 		function checksubmit() {
 			result=true;
