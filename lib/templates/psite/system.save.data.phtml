@@ -28,9 +28,10 @@
 					$nlsArgs = $this->getvar($key);
 					$mainURL = $nlsArgs['url'];
 					$urlList = $this->getdata('urlList', $key);
-					if (!is_array($urlList) && isset($mainURL)) {
-						$urlList = array( $mainURL );
-					} else if ($mainURL && !in_array($mainURL, $urlList)) {
+					if ( !is_array($urlList) ) {
+						$urlList = array();
+					}
+					if ($mainURL && !in_array($mainURL, $urlList)) {
 						array_unshift( $urlList, $mainURL );
 					} 
 					$this->data->$key->url = "";
@@ -38,7 +39,7 @@
 					$this->data->config->url_list['nls'][$key] = array();
 
 					$firstURL = true;
-					foreach ($urlList as $i => $url) {
+					foreach ( $urlList as $i => $url) {
 						$url = trim($url);
 						if (!$url) {
 							unset( $this->data->$key->urlList[ $i ] );
