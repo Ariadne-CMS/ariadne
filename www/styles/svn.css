@@ -1,0 +1,82 @@
+.svndiff_indexline {
+	color: #008000;
+}
+
+.svndiff_headline {
+	color: #8000ff;
+}
+
+.svndiff_offsetline {
+	color: #ff8000;
+}
+
+.svndiff_addline {
+	color: #0080ff;
+}
+
+.svndiff_removeline {
+	color: #808040;
+}
+
+.svn_addtemplateline {
+	color: #008000;
+}
+.svn_deletetemplateline {
+	color: #800000;
+}
+
+.svn_headerline {
+	color: #ff8000;
+}
+
+.svn_revisionline {
+	color: #808040;
+}
+
+.svn_adddirline {
+	color: #0080ff;
+}
+
+.svnresult {
+	background-color: #ffffff;
+	padding: 10px;
+	border: 1px solid #808080;
+}
+
+.svninfo {
+	border-collapse: collapse;
+	border: 1px solid #808080;
+}
+.svninfo td {
+	line-height: 16px;
+}
+.svninfo tr.even {
+	background-color: #edf5ff;
+}
+.svninfo tr.odd {
+	background-color: #ffffff;
+}
+.svninfo {
+	width: 100%;
+}
+#tabsdata {
+	padding: 1px;
+	border: 0px;
+	background-color: transparent;
+}
+
+.svninfokey {
+	padding: 2px;
+	padding-right: 10px;
+	padding-left: 10px;
+	border-right: 1px solid #cbcbcb;
+}
+
+.svninfovalue {
+	padding: 2px;
+	padding-left: 10px;
+	padding-right: 10px;
+}
+.svn_error {
+	color: #FF0000;
+}
