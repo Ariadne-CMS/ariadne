@@ -88,7 +88,7 @@
 							<img src="<?php echo $this->call('system.get.icon.php', array('type' => $info['type'], 'size' => 'medium')); ?>" alt="<?php echo $rule['object']['type']; ?>">
 							<?php echo yui::labelspan($rule['object']['path'], 16); ?><br>
 							<div class="owner">
-								<img class="explain_owner" src="<?php echo $AR->dir->www; ?>images/icons/small/<?php echo $rule['owner']['type']; ?>" alt="<?php echo $rule['owner']['type']; ?>">
+								<img class="explain_owner" src="<?php echo $this->call('system.get.icon.php', array('type' => $rule['owner']['type'], 'size' => 'small')); ?>" alt="<?php echo $rule['owner']['type']; ?>">
 								<?php echo yui::labelspan($rule['owner']['name'], 12); ?>
 							</div>
 							<?php echo $rule['grants']['string']; ?>
