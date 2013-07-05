@@ -137,10 +137,11 @@
 		case "2.7.7":
 		case "2.7.8":
 		case "2.7.9":
+		case "8.0rc1":
 				array_push($todo, Array(
 							"description" => "Recompiling all PINP templates.",
 							"operation" => "all/upgrade.templates.php",
-							"newversion" => "8.0rc1"
+							"newversion" => "8.0"
 							));
 			
 	}
