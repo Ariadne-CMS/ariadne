@@ -105,19 +105,20 @@
 
 <script type="text/javascript">
 	// Pass the settings for the tree to javascript.
-	muze.ariadne.explore.tree.loaderUrl 	= '<?php echo addslashes($loader); ?>';
+	muze.ariadne.explore.tree.loaderUrl 	= '<?php echo AddCSlashes( $loader, ARESCAPE ); ?>';
 
 	muze.ariadne.explore.tree.baseNodes	= [
-		{"path" : "<?php echo addslashes($path); ?>", "name" : "<?php echo addslashes($name); ?>", "icon" : "<?php echo addslashes($icon); ?>"}
+		{"path" : "<?php echo AddCSlashes( $path, ARESCAPE ); ?>", "name" : "<?php echo AddCSlashes( $name, ARESCAPE ); ?>", "icon" : "<?php echo AddCSlashes( $icon, ARESCAPE ); ?>"}
 	];
 
+	muze.ariadne.registry.set('ARRoot', '<?php echo AddCSlashes( $AR->root, ARESCAPE ); ?>');
 	muze.ariadne.registry.set('root', '/');
-	muze.ariadne.registry.set('store_root', '<?php echo addslashes($this->store->get_config('root')); ?>');
+	muze.ariadne.registry.set('store_root', '<?php echo AddCSlashes( $this->store->get_config('root'), ARESCAPE ); ?>');
 	
 	// setting session ID for unique naming of windows within one ariadne session.
-	muze.ariadne.registry.set("SessionID","<?php echo addslashes($ARCurrent->session->id); ?>");
+	muze.ariadne.registry.set("SessionID","<?php echo AddCSlashes( $ARCurrent->session->id, ARESCAPE ); ?>");
 
-	muze.ariadne.registry.set("path", "<?php echo addslashes($this->path); ?>");
+	muze.ariadne.registry.set("path", "<?php echo AddCSlashes( $this->path, ARESCAPE ); ?>");
 	muze.ariadne.nls = eval(<?php echo json_encode($JSnls); ?>);
 <?php
 	if( $AR->user->data->windowprefs["edit_object_layout"] ) {

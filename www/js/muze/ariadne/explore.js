@@ -215,6 +215,10 @@ muze.ariadne.explore = function() {
 			muze.ariadne.explore.toolbar.view(path);
 			muze.ariadne.registry.set('path', path);
 		},
+		setnls : function(nls) {
+			muze.ariadne.registry.set('store_root', muze.ariadne.registry.get('ARRoot')+'/-'+muze.ariadne.registry.get('SessionID')+'-/'+nls);
+			muze.ariadne.explore.objectadded();
+		},
 		objectadded : function() {
 			var path = muze.ariadne.registry.get('path', path);
 			muze.ariadne.explore.tree.view(path);

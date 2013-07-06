@@ -73,9 +73,9 @@
 				$class = "unselected";
 			}
 			if( $this->data->{$key}->name ) {
-				echo "<a class='$class' href='#' onClick=\"muze.ariadne.registry.set('store_root', muze.ariadne.registry.get('root') + '/-' + muze.ariadne.registry.get('SessionID') + '-/" . $key . "'); muze.ariadne.explore.objectadded(); return false;\" title=\"".htmlspecialchars($value)."\"><img class=\"flag\" src=\"".$AR->dir->images."nls/small/".$key.".gif\" alt=\"".htmlspecialchars($value)."\"></a> ";
+				echo "<a class='$class' href='#' onClick=\"muze.ariadne.explore.setnls('" . $key . "'); return false;\" title=\"".htmlspecialchars($value)."\"><img class=\"flag\" src=\"".$AR->dir->images."nls/small/".$key.".gif\" alt=\"".htmlspecialchars($value)."\"></a> ";
 			} else {
-				echo "<a class='$class' href='#' onClick=\"muze.ariadne.registry.set('store_root', muze.ariadne.registry.get('root') + '/-' + muze.ariadne.registry.get('SessionID') + '-/" . $key . "'); muze.ariadne.explore.objectadded(); return false;\" title=\"".htmlspecialchars($value)."\"><img class=\"flag\" src=\"".$AR->dir->images."nls/small/faded/".$key.".gif\" alt=\"".htmlspecialchars($value)."\"></a> ";
+				echo "<a class='$class' href='#' onClick=\"muze.ariadne.explore.setnls('" . $key . "'); return false;\" title=\"".htmlspecialchars($value)."\"><img class=\"flag\" src=\"".$AR->dir->images."nls/small/faded/".$key.".gif\" alt=\"".htmlspecialchars($value)."\"></a> ";
 			}
 		}
 	}
