@@ -1,0 +1,46 @@
+Installing workspace support in Ariadne
+---------------------------------------
+Step 1: Upgrade the ariadne store
+Run the upgrade script using a webbrowser: http://{ariadne-host}/{ariadne-path}/install/upgrade/upgrade.to-workspaces.php
+
+Step 2: Set dbms value in ariadne.pthml to mysql_workspaces
+$AR->DB->dbms = 'mysql_workspaces';
+
+Step 3: Set dbms value in sessions.phtml to mysql
+  $session_config['dbms']        = 'mysql'; // $AR->DB->dbms;
+
+Step 4: add a virtual host
+
+<VirtualHost *:80>
+    ServerAdmin webmaster@ariadne-cms.org
+    ServerName www.ariadne-cms.org
+    DocumentRoot /home/ariadne/public_html/
+
+    RewriteEngine on
+    RewriteCond %{REQUEST_URI} !^/ariadne/
+    RewriteRule ^(/-[^/]{4}-/|/)?([a-z]{2}/|/)?(.*) /ariadne/loader.php$1$2projects/demo/demo/$3
+
+    ErrorLog /var/log/apache2/ariadne-cms.org-error.log
+    TransferLog /var/log/apache2/ariadne-cms.org-access.log
+    php_flag magic_quotes_gpc off
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerAdmin webmaster@ariadne-cms.org
+    ServerName staging.ariadne-cms.org
+    DocumentRoot /home/ariadne/public_html/
+
+    RewriteEngine on
+    RewriteCond %{REQUEST_URI} !^/ariadne/
+    RewriteRule ^(/-[^/]{4}-/|/)?([a-z]{2}/|/)?(.*) /ariadne/loader.php$1$2projects/demo/demo/$3
+
+    ErrorLog /var/log/apache2/ariadne-cms.org-error.log
+    TransferLog /var/log/apache2/ariadne-cms.org-access.log
+    php_flag magic_quotes_gpc off
+
+    SetEnv ARIADNE_WORKSPACE workspace
+	SetEnv ARIADNE_WORKSPACE_PATHS /projects/demo/demo/
+	
+    #For multiple workspace paths you can seperate the entries with ';', for example
+	#SetEnv ARIADNE_WORKSPACE_PATHS /projects/demo/demo/;/projects/example/
+</VirtualHost>
