@@ -224,6 +224,11 @@
 //	$ARnls["ariadne:workspace:status"]              =    "Status"; // value from english
 //	$ARnls["ariadne:workspace:update"]              =    "Updated"; // value from english
 //	$ARnls["ariadne:workspace:workspace"]           =    "Workspace"; // value from english
+//  $ARnls["ariadne:workspace:warning"]             =    "Warning"; // value from english
+//  $ARnls["ariadne:workspace:hardlinks_found"]     =    "Hardlinks found, do not use workspaces here."; // value from english
+//  $ARnls["ariadne:workspace:view_workspace"]      =    "View workspace page"; // value from english
+//  $ARnls["ariadne:workspace:view_live"]           =    "View live page";  // value from english
+
 //	$ARnls["ariadne:wysiwyg_editor"]                =    "WYSIWYG editor"; // value from english
 //	$ARnls["err:customdatanameinuse"]               =    "this name is already in use."; // value from english
 //	$ARnls["err:defaultlanguagenotavailable"]       =    "The chosen default language was not selected as an available language."; // value from english

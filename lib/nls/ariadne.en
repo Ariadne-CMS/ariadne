@@ -206,7 +206,7 @@
 	$ARnls["ariadne:uploading"]                     =    "Uploading...";
 	$ARnls["ariadne:view"]                          =    "View";
 	$ARnls["ariadne:viewweb"]                       =    "View webpage";
-	$ARnls["ariadne:vtype"]                         =    "Virtual";
+	$ARnls["ariadne:vtype"]   	                    =    "Virtual";
 	$ARnls["ariadne:workspace:commit_selected"]     =    "Commit selected";
 	$ARnls["ariadne:workspace:create"]              =    "Created";
 	$ARnls["ariadne:workspace:delete"]              =    "Deleted";
@@ -217,6 +217,10 @@
 	$ARnls["ariadne:workspace:status"]              =    "Status";
 	$ARnls["ariadne:workspace:update"]              =    "Updated";
 	$ARnls["ariadne:workspace:workspace"]           =    "Workspace";
+	$ARnls["ariadne:workspace:warning"]				=	 "Warning";
+	$ARnls["ariadne:workspace:hardlinks_found"]		= 	 "Hardlinks found, do not use workspaces here.";
+	$ARnls["ariadne:workspace:view_workspace"]		=	 "View workspace page";
+	$ARnls["ariadne:workspace:view_live"]			=	 "View live page";
 	$ARnls["ariadne:wysiwyg_editor"]                =    "WYSIWYG editor";
 	$ARnls["err:customdatanameinuse"]               =    "this name is already in use.";
 	$ARnls["err:defaultlanguagenotavailable"]       =    "The chosen default language was not selected as an available language.";
