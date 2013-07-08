@@ -221,7 +221,7 @@
     $ARnls["ariadne:workspace:hardlinks_found"]     =    "Hardlinks gevinden, hier geen workspace gebruiken.";
     $ARnls["ariadne:workspace:view_workspace"]      =    "Toon workspace";
     $ARnls["ariadne:workspace:view_live"]           =    "Toon live pagina";
-
+	$ARnls["ariadne:workspace:url"]                 =    "Workspace URL";
 	$ARnls["ariadne:wysiwyg_editor"]                =    "WYSIWYG editor";
 	$ARnls["err:customdatanameinuse"]               =    "deze naam is al in gebruik.";
 	$ARnls["err:defaultlanguagenotavailable"]       =    "De gekozen standaard taal is niet als beschikbaar gekozen.";

@@ -6,10 +6,7 @@ Run the upgrade script using a webbrowser: http://{ariadne-host}/{ariadne-path}/
 Step 2: Set dbms value in ariadne.pthml to mysql_workspaces
 $AR->DB->dbms = 'mysql_workspaces';
 
-Step 3: Set dbms value in sessions.phtml to mysql
-  $session_config['dbms']        = 'mysql'; // $AR->DB->dbms;
-
-Step 4: add a virtual host
+Step 3: add a virtual host
 
 <VirtualHost *:80>
     ServerAdmin webmaster@ariadne-cms.org
@@ -44,3 +41,5 @@ Step 4: add a virtual host
     #For multiple workspace paths you can seperate the entries with ';', for example
 	#SetEnv ARIADNE_WORKSPACE_PATHS /projects/demo/demo/;/projects/example/
 </VirtualHost>
+
+Step 4: Enter the URL data into the psite object;
