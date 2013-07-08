@@ -1,12 +1,14 @@
 #!/usr/bin/php -q
 <?php
-	$ariadne="../lib";
+	$ariadne = "../lib";
+
 	require($ariadne."/configs/ariadne.phtml");
 	require($ariadne."/configs/store.phtml");
 	require($ariadne."/configs/axstore.phtml");
-	require($ariadne."/includes/loader.web.php");
+	require($ariadne."/includes/loader.cmd.php");
 	require($ariadne."/stores/mysqlstore.phtml");
 	include($ariadne."/stores/axstore.phtml");
+
 	global $options;
 
 	$arg_c=0;
@@ -14,27 +16,15 @@
 
 	next($argv); // do not parse the filename
 	while (list(,$cmd)=each($argv)) {
-		if (strpos($cmd, "--") === 0) {
-			if (strpos(substr($cmd, 2),"-")===false) {
-				$option_switch=substr($cmd, 2);
-			} else {
-
-				$option_switch=substr($cmd, 2, strpos(substr($cmd, 2),"-"));
-
-				if (strpos($cmd, "=")!==false) {
-					$option_value=substr($cmd, strpos($cmd, "=")+1);
-					$option=substr($cmd, strlen($option_switch)+3, strpos($cmd, "=") - (strlen($option_switch)+3));
-				} else {
-					$option=substr($cmd, strlen($option_switch)+3);
-				}
-			}
-
-			switch ($option_switch) {
+		$option = ldParseOption($cmd);
+		if ($option !== false ) {
+			echo "switch(".$option['switch'].")(".$option['subswitch'].")='".$option['value']."'\n";
+			switch ($option['switch']) {
 				case 'with':
-					$options[$option]=($option_value) ? $option_value : true;
+					$options[$option['subswitch']]=($option['value']) ? $option['value'] : true;
 				break;
 				case 'without':
-					$options["without_$option"]=true;
+					$options["without_".$option['subswitch']]=true;
 				break;
 
 				case 'recurse':
@@ -50,7 +40,7 @@
 				break;
 
 				default:
-					echo "unknow option-switch ($option_switch)\n";
+					die("unknow option-switch (".$option['switch'].")\n");
 			}
 		} else {
 			$arg_v[$arg_c++]=$cmd;
