@@ -66,6 +66,7 @@ class mysql_workspacesstore extends mysqlstore {
 		$objects_tbl=$this->tbl_prefix."objects";
 		$result = array();
 		
+
 		if ($layer) {
 			$query_string = "select new.id as new_id, new.path as new_path, new.object as new_object, 
 						UNIX_TIMESTAMP(new_objects.lastchanged) as new_lastchanged, new_objects.type as new_type, new_objects.vtype as new_vtype,
@@ -135,6 +136,23 @@ class mysql_workspacesstore extends mysqlstore {
 			}
 		}
 		return $result;
+	}
+
+	public function checkHardLinks($path) {
+		// Check if there are any hardlinks in the path - if so, this is not compatible with workspaces support;
+		$nodes_tbl = $this->tbl_prefix."nodes";
+		$epath = addslashes($path);
+		$query_string = "select distinct(parent) from $nodes_tbl nodes1 where exists ( select 1 from $nodes_tbl nodes2 where nodes1.object = nodes2.object and layer = 0 limit 1,1) and (('$epath' like concat(parent,'%')) or (parent like '$epath%'))";
+
+		$query_result = $this->store_run_query($query_string);
+        if ($query_result) {
+			while ($row = mysql_fetch_array($query_result)) {
+				if ($row['parent']) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	public function commitLayer($path, $pathList, $layer = null) {
