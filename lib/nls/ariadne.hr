@@ -211,11 +211,16 @@
 //	$ARnls["ariadne:workspace:create"]              =    "Created"; // value from english
 //	$ARnls["ariadne:workspace:delete"]              =    "Deleted"; // value from english
 //	$ARnls["ariadne:workspace:diff_selected"]       =    "Diff selected"; // value from english
+//	$ARnls["ariadne:workspace:hardlinks_found"]     =    "Hardlinks found, do not use workspaces here."; // value from english
 //	$ARnls["ariadne:workspace:manage_workspace"]    =    "Manage workspace"; // value from english
 //	$ARnls["ariadne:workspace:move"]                =    "Moved"; // value from english
 //	$ARnls["ariadne:workspace:revert_selected"]     =    "Revert selected"; // value from english
 //	$ARnls["ariadne:workspace:status"]              =    "Status"; // value from english
 //	$ARnls["ariadne:workspace:update"]              =    "Updated"; // value from english
+//	$ARnls["ariadne:workspace:url"]                 =    "Workspace URL"; // value from english
+//	$ARnls["ariadne:workspace:view_live"]           =    "View live page"; // value from english
+//	$ARnls["ariadne:workspace:view_workspace"]      =    "View workspace page"; // value from english
+//	$ARnls["ariadne:workspace:warning"]             =    "Warning"; // value from english
 //	$ARnls["ariadne:workspace:workspace"]           =    "Workspace"; // value from english
 	$ARnls["ariadne:wysiwyg_editor"]                =    "WYSIWYG editor";
 //	$ARnls["err:customdatanameinuse"]               =    "this name is already in use."; // value from english
