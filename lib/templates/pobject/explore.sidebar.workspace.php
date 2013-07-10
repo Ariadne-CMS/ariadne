@@ -12,7 +12,7 @@
 
 			if ($status['hardlinks']) {
 				$icon = $imagesdir . "svn/ConflictIcon.png";
-				$details = "<strong>" . $ARnls['ariadne:workspace:warning'] . ": </strong>" . $ARnls['ariadne:workspace:hardlinks_found'] . ".<br><br>";
+				$details = "<strong>" . $ARnls['ariadne:workspace:warning'] . ": </strong>" . $ARnls['ariadne:workspace:hardlinks_found'] . "<br><br>";
 
 				$section = array(
 					'id' => 'workspace',
