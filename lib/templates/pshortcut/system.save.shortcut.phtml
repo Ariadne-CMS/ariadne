@@ -35,7 +35,7 @@
 			while (list($key, $value)=each($AR->nls->list)) {
 
 				if ($name=$this->getdata("name",$key)) {
-																					 // (if user selects a language but enters nothing and then submits, $$key will be set, but all values empty)
+					// (if user selects a language but enters nothing and then submits, $$key will be set, but all values empty)
 					if (!$this->data->$key) {
 						$newnlsdata=new object;
 					} else {
