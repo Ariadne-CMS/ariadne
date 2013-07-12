@@ -143,9 +143,9 @@
 							"operation" => "all/upgrade.templates.php",
 							"newversion" => "8.0rc2"
 							));
-		case "8.0rc2"
+		case "8.0rc2":
 				array_push($todo, Array(
-							"description" => "Remove hardlinks for users under groups"
+							"description" => "Remove hardlinks for users under groups",
 							"operation" => "8.0/convert-hardlink-to-shortcuts.php",
 							"newversion" => "8.0"
 							));
