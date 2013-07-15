@@ -510,6 +510,8 @@ class mysqlstore extends store{
 		}
 		$eparent=AddSlashes($parent);
 		$epath=AddSlashes($path);
+		$efilename=AddSlashes(basename($path));
+
 		$edata=AddSlashes(serialize($data));
 		$etype=AddSlashes($type);
 		$epriority=(int)$priority;
@@ -589,7 +591,12 @@ class mysqlstore extends store{
 					$qresult = $this->store_run_query($query_string);
 					$id=mysql_insert_id($this->connect_id);
 					if ($qresult !== false && $id) {
-						$query_string="insert into $nodes_tbl (path,parent,object,priority) values ('$epath','$eparent',$id,$epriority)";
+						if (!$this->exists($parent)) {
+							$query_string="insert into $nodes_tbl (path,parent,object,priority) values ('$epath','$eparent',$id,$epriority)";
+						} else {
+							$query_string="insert into $nodes_tbl (path,parent,object,priority) values (concat((select nodes1.path from $nodes_tbl as nodes1 where path='$eparent'), '$efilename', '/'),(select nodes2.path from $nodes_tbl as nodes2 where path='$eparent'),$id,$epriority)";
+						}
+
 						$qresult = $this->store_run_query($query_string);
 						if ($qresult) {
 							if ($needunlocking) {
@@ -855,6 +862,8 @@ class mysqlstore extends store{
 		$query_string = "select path from $nodes_tbl where path = '$eparent'";
 		$qresult = $this->store_run_query($query_string);
 		if ($qresult && ($row = mysql_fetch_array($qresult))) {
+			$destination = $row['path'] . $filename; // Update the destination returnvalue with the case from the database instead of what the user entered;
+
 			$eparent = AddSlashes($row['path']);
 			$edestination = AddSlashes($eparent.$filename);
 
