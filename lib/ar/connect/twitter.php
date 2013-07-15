@@ -277,7 +277,6 @@ class ar_connect_twitterClient extends arBase {
 		$url->query->import( $options );
 
 		$json = $this->client->get( $url );
-		$json = $this->client->getLastResponse();
 
 		if ($json && !ar_error::isError($json) ) {
 			return json_decode( $json );

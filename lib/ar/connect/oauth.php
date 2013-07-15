@@ -46,7 +46,11 @@
 				break;
 			}
 			try {
-				return $this->wrapped->fetch( (string) $url, $request, $type, $headers );
+				if ( $this->wrapped->fetch( (string) $url, $request, $type, $headers ) ) {
+					return $this->wrapped->getLastResponse();
+				} else {
+					return ar_error::raiseError( 'OAuth fetch failed', ar_exceptions::UNKNOWN_ERROR );
+				}
 			} catch( Exception $e ) {
 				return ar_error::raiseError( $e->getMessage(), $e->getCode() );
 			}
