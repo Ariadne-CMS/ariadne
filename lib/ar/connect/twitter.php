@@ -122,7 +122,6 @@ class ar_connect_twitter extends arBase {
 class ar_connect_twitterClient extends arBase {
 
 	private $rootURL = 'http://api.twitter.com/1.1/';
-	private $searchURL = 'http://search.twitter.com/search.json';
 	private $client = null;
 	
 	public function __construct( $httpClient = null ) {
@@ -265,15 +264,7 @@ class ar_connect_twitterClient extends arBase {
 		if ( is_string($options) ) {
 			$options = array( 'q' => $options );
 		}
-		$url = ar::url( $this->searchURL );
-		$url->query->import( $options );
-		$json = $this->client->get( $url );
-		if ($json && !ar_error::isError($json) ) {	
-			return json_decode( $json );
-		} else {
-			return $json;
-		}
-		
+		return $this->get( 'search/tweets', $options );
 	}
 	
 	public function tweet( $status, $options = array() ) {
@@ -284,7 +275,9 @@ class ar_connect_twitterClient extends arBase {
 	public function get( $path, $options = array() ) {
 		$url = ar::url( $this->rootURL.$path.'.json' );
 		$url->query->import( $options );
+
 		$json = $this->client->get( $url );
+
 		if ($json && !ar_error::isError($json) ) {
 			return json_decode( $json );
 		} else {

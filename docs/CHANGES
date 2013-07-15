@@ -26,7 +26,6 @@ Bug fixes:
 New Features:
 - Workspaces, see docs/workspaces
 - multiple URL support for psite
-- auto-complete in the Ariadne backend
 - Multiple root support in the browse dialog which makes it easier for dialogs to only partial list content from Ariadne
 - view as User added in backend
 - PINP templates are now compiled to .inc files which contain an anonymous function.

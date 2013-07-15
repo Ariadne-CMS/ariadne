@@ -1,16 +1,15 @@
 #!/usr/bin/php5 -q
 <?php
-	$ariadne="../";
-	include($ariadne."configs/ariadne.phtml");
-	include($ariadne."configs/store.phtml");
-	include($ariadne."includes/loader.web.php");
+
+	function debug() {
+		// fake debug funtion used in nls files
+	}
 
 	$languages=Array('nl','de','es','pl','hr','it','fr','sv', 'en');
 	$modules=Array('','ariadne.');
-	$target='./new/';
+	$target='./';
 	define('NLSESCAPE', "\"\\\n\r");
 
-	reset($modules);
 	foreach ($modules as $module){
 		include($module."en");
 		$default=$ARnls;

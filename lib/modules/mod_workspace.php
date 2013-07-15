@@ -36,6 +36,14 @@
 			
 			// FIXME: layerstatus wordt nu van de huidige active layer opgehaald in plaats van $workspace
 
+			$hardlinks = $me->store->checkHardLinks($me->path);
+
+			if ($hardlinks) {
+				return array(
+					"hardlinks" => true
+				);
+			}
+
 			$layerstatus = $me->store->getLayerstatus($me->path, false);
 
 			$result = array(

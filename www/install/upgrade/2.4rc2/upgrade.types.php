@@ -60,9 +60,6 @@
 			$args="srcpath=/system/ariadne/types/&destpath=/system/ariadne/types/";
 			$axstore->call("system.export.phtml", $args,
 				$axstore->get("/"));
-			$args="srcpath=/system/ariadne/typetree/&destpath=/system/ariadne/typetree/";
-			$axstore->call("system.export.phtml", $args,
-				$axstore->get("/"));
 			$error=$axstore->error;
 			$axstore->close();
 		} else {

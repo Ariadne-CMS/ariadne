@@ -13,10 +13,20 @@ class mysql_workspacesstore_install extends mysql_workspacesstore {
 				array("query_string" => "alter table store_nodes add layer int(11) NOT NULL DEFAULT '0'"),
 				array("query_string" => "alter table store_nodes drop primary key, add primary key(id, layer)"),
 				array("query_string" => "alter table store_nodes add UNIQUE KEY layer (layer,path)"),
-				array("query_string" => "alter table store_nodes add key path (path)")
+				array("query_string" => "alter table store_nodes add key path (path)"),
+				array("query_string" => "alter table store_objects add layer int(11) NOT NULL DEFAULT '0'"),
+				array("query_string" => "alter table store_objects add key layer (layer)"),
+
+				array("query_string" => "alter table session_nodes drop primary key"),
+				array("query_string" => "alter table session_nodes add id int(11) NOT NULL AUTO_INCREMENT KEY"),
+				array("query_string" => "alter table session_nodes add layer int(11) NOT NULL DEFAULT '0'"),
+				array("query_string" => "alter table session_nodes drop primary key, add primary key(id, layer)"),
+				array("query_string" => "alter table session_nodes add UNIQUE KEY layer (layer,path)"),
+				array("query_string" => "alter table session_nodes add key path (path)"),
+				array("query_string" => "alter table session_objects add layer int(11) NOT NULL DEFAULT '0'"),
+				array("query_string" => "alter table session_objects add key layer (layer)")
 		);
 		while ((list($key, $query)=each($queries)) && (!$error)) {
-print_r($query);
 			if ($query["query_string"]) {
 				echo "Executing: ".$query["query_string"]."\n";
 			}

@@ -10,47 +10,60 @@
 			$imagesdir = $AR->dir->images;
 			$status = workspace::status($this->path);
 
-			$combined_status = false;
-			foreach ($status as $key => $value) {
-				$combined_status = $combined_status || $value;
-			}
+			if ($status['hardlinks']) {
+				$icon = $imagesdir . "svn/ConflictIcon.png";
+				$details = "<strong>" . $ARnls['ariadne:workspace:warning'] . ": </strong>" . $ARnls['ariadne:workspace:hardlinks_found'] . "<br><br>";
 
-			if ($combined_status) {
-				$icon = $imagesdir . "svn/ModifiedIcon.png";
+				$section = array(
+					'id' => 'workspace',
+					'label' => "Workspace",
+					'inline_icon' => $icon,
+					'details' => $details
+				);
 			} else {
-				$icon = $imagesdir . "svn/InSubVersionIcon.png";
+				$combined_status = false;
+				foreach ($status as $key => $value) {
+					$combined_status = $combined_status || $value;
+				}
+
+				if ($combined_status) {
+					$icon = $imagesdir . "svn/ModifiedIcon.png";
+				} else {
+					$icon = $imagesdir . "svn/InSubVersionIcon.png";
+				}
+
+				$tasks = array();
+				$tasks[] = array(
+					'href' => $this->make_local_url() . "dialog.workspace.php",
+					'onclick' => "muze.ariadne.explore.arshow('dialog.workspace', this.href); return false;",
+					'icon' => $imagesdir . 'icons/small/go.png',
+					'nlslabel' => $ARnls['ariadne:workspace:manage_workspace']
+				);
+
+				$tasks[] = array(
+					'href' => $this->make_local_url() . "view.html",
+					'onclick' => "muze.ariadne.explore.arshow('_new', this.href); return false;",
+					'icon' => $imagesdir . 'icons/small/viewweb.png',
+					'nlslabel' => $ARnls['ariadne:workspace:view_workspace']
+				);
+
+				$siteob = current($this->get($this->currentsite(), "system.get.phtml"));
+
+				$tasks[] = array(
+					'href' => str_replace( $siteob->data->workspaceurl, $siteob->data->url, $this->make_local_url($path, false, false) ),
+					'onclick' => "muze.ariadne.explore.arshow('_new', this.href); return false;",
+					'icon' => $imagesdir . 'icons/small/viewweb.png',
+					'nlslabel' => $ARnls['ariadne:workspace:view_live']
+				);
+			
+				$section = array(
+					'id' => 'workspace',
+					'label' => $ARnls['ariadne:workspace:workspace'],
+					'inline_icon' => $icon,
+					'tasks' => $tasks,
+					'details' => $details
+				);
 			}
-
-			$tasks = array();
-			$tasks[] = array(
-				'href' => $this->make_local_url() . "dialog.workspace.php",
-				'onclick' => "muze.ariadne.explore.arshow('dialog.workspace', this.href); return false;",
-				'icon' => $imagesdir . 'icons/small/go.png',
-				'nlslabel' => "Beheer workspace"
-			);
-
-			$tasks[] = array(
-				'href' => $this->make_local_url() . "view.html",
-				'onclick' => "muze.ariadne.explore.arshow('_new', this.href); return false;",
-				'icon' => $imagesdir . 'icons/small/viewweb.png',
-				'nlslabel' => "Toon workspace"
-			);
-
-			$siteob = current($this->get($this->currentsite(), "system.get.phtml"));
-
-			$tasks[] = array(
-				'href' => str_replace( $siteob->data->workspaceurl, $siteob->data->url, $this->make_local_url($path, false, false) ),
-				'onclick' => "muze.ariadne.explore.arshow('_new', this.href); return false;",
-				'icon' => $imagesdir . 'icons/small/viewweb.png',
-				'nlslabel' => "Toon live webpagina"
-			);
-		
-			$section = array(
-				'id' => 'workspace',
-				'label' => "Workspace",
-				'inline_icon' => $icon,
-				'tasks' => $tasks
-			);
 
 			echo yui::getSection($section);
 		}

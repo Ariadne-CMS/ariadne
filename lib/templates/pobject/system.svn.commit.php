@@ -65,8 +65,8 @@
 							$fileinfo[$pinp_filename]['ar:function'] = $function;
 							$fileinfo[$pinp_filename]['ar:type'] = $type;
 							$fileinfo[$pinp_filename]['ar:language'] = $language;
-							$fileinfo[$pinp_filename]['ar:default'] = $default;										
-							$fileinfo[$pinp_filename]['ar:private'] = $private;										
+							$fileinfo[$pinp_filename]['ar:default'] = $default;
+							$fileinfo[$pinp_filename]['ar:private'] = $private;
 							$fstore->svn_add($svn, $pinp_filename);
 						}
 					}
@@ -109,7 +109,7 @@
 			echo "Commit failed.<br>\n";
 			if (count($errs = $fstore->svnstack->getErrors())) {
 				foreach ($errs as $err) {
-					echo $err['message']."<br>\n";
+					echo htmlspecialchars($err['message'], ENT_QUOTES, 'UTF-8')."<br>\n";
 				}
 			}
 		} elseif($result && $pinp && !$single ) {

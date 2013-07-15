@@ -211,11 +211,16 @@
 	$ARnls["ariadne:workspace:create"]              =    "Created";
 	$ARnls["ariadne:workspace:delete"]              =    "Deleted";
 	$ARnls["ariadne:workspace:diff_selected"]       =    "Diff selected";
+	$ARnls["ariadne:workspace:hardlinks_found"]     =    "Hardlinks found, do not use workspaces here.";
 	$ARnls["ariadne:workspace:manage_workspace"]    =    "Manage workspace";
 	$ARnls["ariadne:workspace:move"]                =    "Moved";
 	$ARnls["ariadne:workspace:revert_selected"]     =    "Revert selected";
 	$ARnls["ariadne:workspace:status"]              =    "Status";
 	$ARnls["ariadne:workspace:update"]              =    "Updated";
+	$ARnls["ariadne:workspace:url"]                 =    "Workspace URL";
+	$ARnls["ariadne:workspace:view_live"]           =    "View live page";
+	$ARnls["ariadne:workspace:view_workspace"]      =    "View workspace page";
+	$ARnls["ariadne:workspace:warning"]             =    "Warning";
 	$ARnls["ariadne:workspace:workspace"]           =    "Workspace";
 	$ARnls["ariadne:wysiwyg_editor"]                =    "WYSIWYG editor";
 	$ARnls["err:customdatanameinuse"]               =    "this name is already in use.";
