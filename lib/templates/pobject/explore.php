@@ -78,7 +78,7 @@
 <!--[if lt IE 7]><link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>explore.ie6.css"><![endif]-->
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>login.css">
 
-<script type="text/javascript" src="<?php echo $this->make_ariadne_url('/') . 'ariadne.load.js?' . implode('+', $loadJS ); ?>"></script>
+<script type="text/javascript" src="<?php echo $this->make_local_url('',false,false) . 'ariadne.load.js?' . implode('+', $loadJS ); ?>"></script>
 <script type="text/javascript">
 	// Backwards compatibility hooks - these should be removed in the end.
 	View = muze.ariadne.explore.view;
