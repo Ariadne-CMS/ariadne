@@ -67,6 +67,9 @@
 
 		$showLanguageSelect = false;
 		foreach ($wgWizFlow as $step) {
+			if ($step['title']) {
+				echo '<fieldset class="flowStep"><legend>' . $step['title'] . '</legend></fieldset>';
+			}
 			if ($step['template']) {
 				$wgWizCallObject->call($step['template'], array("arNewType" => $arNewType, "arLanguage" => $arLanguage));
 				if (!$step['nolang']) {

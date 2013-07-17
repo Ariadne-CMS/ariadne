@@ -66,12 +66,20 @@
 }
 
 fieldset.editdata fieldset legend {
+	display: none;
+	margin-left: 20px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+fieldset.editdata fieldset.flowStep legend,
+fieldset.editdata #languages legend {
 	display: block;
 	margin-left: 20px;
 	padding-left: 5px;
 	padding-right: 5px;
-	display: none;
+	font-weight: bold;
 }
+
 fieldset.editdata table {
 	border-collapse: collapse;
 	margin: 0px;
@@ -82,8 +90,12 @@ fieldset.editdata table {
 	border: 0px;
 	margin: 0px;
 	padding: 0px;
-	xborder-top: 1px solid #888888;
 }
+#tabsdata fieldset.editdata fieldset.flowStep,
+#tabsdata fieldset.editdata #languages {
+	border-top: 1px solid #888888;
+}
+
 img.flag {
 	display: none;
 }

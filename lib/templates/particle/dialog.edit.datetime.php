@@ -51,7 +51,7 @@
 				<table border="0" align="center" width="90%">
 					<tr>
 						<td>
-							<span class="required"><?php echo $ARnls['date']; ?></span>
+							<span class="required"><?php echo $ARnls['start']; ?></span>
 						</td>
 						<td>
 							<span class="required"><?php echo $ARnls['time']; ?></span>
@@ -99,7 +99,7 @@
 				<table border="0" align="center" width="90%">
 					<tr>
 						<td>
-						<?php echo $ARnls['date']; ?>
+						<?php echo $ARnls['end']; ?>
 						</td>
 						<td>
 						<?php echo $ARnls['time']; ?>

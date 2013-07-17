@@ -299,7 +299,8 @@
 					$extraButtonsEventData = new object();
 					$extraButtonsEventData = ar_events::fire( 'ariadne:onbeforebrowsebuttons', $extraButtonsEventData );
 					if ($extraButtonsEventData) {
-						$this->call("dialog.browse.buttons.extra.html", array( "hideAdd" => $hideAdd ));
+						$this->call("dialog.browse.buttons.html", array( "hideAdd" => $hideAdd ));
+						$this->call("dialog.browse.buttons.extra.html");
 						ar_events::fire('ariadne:onbrowsebuttons');
 					}
 				?></div>
