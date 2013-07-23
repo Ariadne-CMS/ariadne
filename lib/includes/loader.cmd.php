@@ -101,6 +101,10 @@
 		// dummy function
 	}
 
+	function ldGetRequestedHost() {
+		// dummy function
+	}
+
 	function ldGetUserCookie($cookiename="ARUserCookie") {
 		$cookie = false;
 		return $cookie;
