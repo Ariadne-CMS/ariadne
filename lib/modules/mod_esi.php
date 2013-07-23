@@ -9,22 +9,48 @@ class ESI {
 				[v] $(HTTP_COOKIE{stuff}|'default blah')
 
 			Add variable replacement for:
-				HTTP_ACCEPT_LANGUAGE
-				HTTP_HOST
-				HTTP_REFERER
-				HTTP_USER_AGENT
-				QUERY_STRING
+				[v] HTTP_ACCEPT_LANGUAGE
+				[v] HTTP_HOST
+				[v] HTTP_REFERER
+				[v] QUERY_STRING
 
+				HTTP_USER_AGENT
 			FIXME: ariadne cookies are serialized by default, which would break HTTP_COOKIE usage in other ESI processors 
 		*/
 
-		$result = preg_replace_callback('!\$\(([^){]*)(\{(([^}]*))\}(\|([^)]*))?)\)!', function($matches) {
+		$result = preg_replace_callback('!\$\(([^)|{]*)(\{(([^}]*))\})?(\|([^)]*))?\)!', function($matches) {
 					// print_r($matches);
+	
 					switch ($matches[1]) {
 						case 'HTTP_COOKIE':
 							$cookie = ldGetUserCookie($matches[3]);
 							$default = preg_replace("/^'(.*?)'$/", "$1", $matches[6]);
 							return $cookie ? $cookie : $default;
+						break;
+						case 'HTTP_HOST':
+							$host = ldGetServerVar('HTTP_HOST');
+							$default = preg_replace("/^'(.*?)'$/", "$1", $matches[6]);
+							return $host ? $host : $default;
+						break;
+						case 'HTTP_REFERER':
+							$referer = ldGetServerVar('HTTP_REFERER');
+							$default = preg_replace("/^'(.*?)'$/", "$1", $matches[6]);
+							return $referer ? $referer : $default;
+						break;
+						case 'HTTP_ACCEPT_LANGUAGE':
+							$acceptLanguage = ldGetServerVar('HTTP_ACCEPT_LANGUAGE');
+							$acceptLanguage = strtolower(str_replace(", ", ",", $acceptLanguage));
+							
+							$languages = explode(",", $acceptLanguage);
+							if (in_array(strtolower($matches[3]), $languages)) {
+								return 1;
+							}
+							return 0;
+						break;
+						case 'QUERY_STRING':
+							$value = ar_loader::getvar($matches[3], "GET");
+							$default = preg_replace("/^'(.*?)'$/", "$1", $matches[6]);
+							return isset($value) ? $value : $default;
 						break;
 					}
 		}, $expression);
