@@ -101,7 +101,7 @@
 		// dummy function
 	}
 
-	function function ldGetRequestedHost() {
+	function ldGetRequestedHost() {
 		// dummy function
 	}
 
