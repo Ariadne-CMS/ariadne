@@ -1,4 +1,5 @@
 <?php
+require_once('mod_htmlparser.php');
 
 class ESI {
 	function esiExpression( $expression ) {
@@ -80,6 +81,86 @@ class ESI {
 		return $page;
 	}
 
+	function esiFetch($url) {
+		$url = ESI::esiExpression( $url );
+		if (strstr($url, $_SERVER['SCRIPT_NAME'])) {
+			// Looks like an Ariadne request, handle it!
+			$urlArr = parse_url($url);
+			parse_str($urlArr['query'], $_GET);
+			$pathInfo = str_replace($_SERVER['SCRIPT_NAME'], '', $urlArr['path']);
+
+			ob_start();
+				ldProcessRequest($pathInfo);
+				$replacement = ob_get_contents();
+			ob_end_clean();
+			// FIXME: Check of the request went ok or not;
+
+		} else {
+			// FIXME: Is it a good idea to do http requests from the server this way?
+			$client = ar('http')->client();
+			$replacement = $client->get($url);
+
+			if ($client->statusCode != "200") {
+				return false;
+			}
+		}
+
+		return $replacement;
+	}
+
+	function esiTry($page) {
+		$regExp = '|<esi:try>.*?<esi:attempt>(.*)</esi:attempt>.*?<esi:except>(.*)</esi:except>.*?</esi:try>|Uis';
+		$page = preg_replace_callback($regExp, function($matches) {
+			$result = ESI::esiProcessAll($matches[1]);
+			if ($result === false) {
+				$result = ESI::esiProcessAll($matches[2]);
+			}
+			return $result;
+		}, $page);
+		return $page;
+	}
+
+	function esiChoose($page) {
+		$regExp = '|<esi:choose>.*?(<esi:when[^>]*>.*</esi:when>)+.*?<esi:otherwise>(.*)</esi:otherwise>|is';
+
+		$page = preg_replace_callback($regExp, function($matches) {
+			$regExp2 = '|<esi:when[^>]*>(.*?)</esi:when>|is';
+			preg_match_all($regExp2, $matches[1], $whens);
+
+			foreach ($whens[0] as $key => $when) {
+				$parts = htmlparser::parse($when);
+				$test = $parts['children'][0]['attribs']['test'];
+
+				if (ESI::esiEvaluate($test)) {
+					return ESI::esiProcessAll($whens[1][$key]);
+				}
+			}
+
+			return ESI::esiProcessAll($matches[2]);
+		}, $page);
+		return $page;
+	}
+
+	function esiEvaluate($test) {
+
+		$test = preg_replace('!(\$\([^)]*\))!', '\'$1\'', $test);
+		$test = ESI::esiExpression($test);
+
+		require_once("mod_pinp.phtml");
+		$pinp=new pinp($AR->PINP_Functions, "esilocal->", "\$AR_ESI_this->_");
+		$pinp->allowed_functions = array();
+		$pinp->language_types['array'] = false;
+		$pinp->language_types['object'] = false;
+
+		$compiled=$pinp->compile("<pinp>" . $test . "</pinp>");
+
+		$compiled = preg_replace("/^<\?php(.*)\?>$/s", '$1', $compiled);
+
+		// FIXME: Is eval after the pinp compiler save enough to run?
+		$result = eval("return (" . $compiled . ");");
+		return $result;
+	}
+
 	function esiInclude($page) {
 		/* TODO:
 			alt
@@ -90,7 +171,6 @@ class ESI {
 		// parse <esi:include src="view.html">
 		$regExp = '|<esi:include.*?>|i';
 
-		require_once('mod_htmlparser.php');
 
 		preg_match_all($regExp, $page, $matches);
 
@@ -98,24 +178,52 @@ class ESI {
 			$parts = htmlparser::parse($match);
 
 			$src = $parts['children'][0]['attribs']['src'];
-			$src = ESI::esiExpression( $src );
-			if (strstr($src, $_SERVER['SCRIPT_NAME'])) {
-				// Looks like an Ariadne request, handle it!
-				$urlArr = parse_url($src);
-				parse_str($urlArr['query'], $_GET);
-				$pathInfo = str_replace($_SERVER['SCRIPT_NAME'], '', $urlArr['path']);
+			$alt = $parts['children'][0]['attribs']['alt'];
+			$onerror = $parts['children'][0]['attribs']['onerror'];
 
-				ob_start();
-					ldProcessRequest($pathInfo);
-					$output = ob_get_contents();
-				ob_end_clean();
-				$page = str_replace($match, $output, $page);
+			$replacement = ESI::esiFetch($src);
+			if ($replacement == false && isset($alt)) {
+				$replacement = ESI::esiFetch($alt);
+			}
+			if (
+				$replacement == false && 
+				isset($onerror) && 
+				$onerror == "continue"
+			) {
+				$replacement = "";
+			}
+
+			if ($replacement !== false) {
+				$page = str_replace($match, $replacement, $page);
 			} else {
-				// FIXME: Is it a good idea to do http requests from the server this way?
-				$result = ar('http')->get($src);
-				$page = str_replace($match, $result, $page);
+				return false;
 			}
 		}
+
+		return $page;
+	}
+
+	function esiProcessAll($page) {
+		$page = ESI::esiMarker($page);
+		if ($page === false) {return false;}
+
+		$page = ESI::esiRemove($page);
+		if ($page === false) {return false;}
+
+		$page = ESI::esiComment($page);
+		if ($page === false) {return false;}
+
+		$page = ESI::esiTry($page);
+		if ($page === false) {return false;}
+
+		$page = ESI::esiChoose($page);
+		if ($page === false) {return false;}
+
+		$page = ESI::esiInclude($page);
+		if ($page === false) {return false;}
+
+		$page = ESI::esiVars($page);
+		if ($page === false) {return false;}
 
 		return $page;
 	}
@@ -124,9 +232,9 @@ class ESI {
 		/*
 			TODO:
 				inline
-				choose/when/otherwise
-				try/attempt/except
 
+				[v] choose/when/otherwise
+				[v] try/attempt/except
 				[v] include
 				[v] comment
 				[v] remove
@@ -134,12 +242,10 @@ class ESI {
 				[v] <!-- esi -->
 		*/
 
-		$page = ESI::esiMarker($page);
-		$page = ESI::esiInclude($page);
-		$page = ESI::esiVars($page);
-		$page = ESI::esiRemove($page);
-		$page = ESI::esiComment($page);
-
+		$page = ESI::esiProcessAll($page);
+		if ($page === false) {
+			ldObjectNotFound("", "esiInclude failed");
+		}
 		return $page;
 	}
 }
