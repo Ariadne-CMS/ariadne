@@ -163,8 +163,8 @@ class ESI {
 
 	function esiInclude($page) {
 		/* TODO:
-			alt
-			onerror
+			[v] alt
+			[v] onerror
 		*/
 		global $ARCurrent, $AR;
 
