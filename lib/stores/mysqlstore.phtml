@@ -575,6 +575,7 @@ class mysqlstore extends store{
 						$subid=$this->get_nextid($parent, $mask);
 						$path=preg_replace("/\{([0-9]+:)?id\}/",strval($subid),$path);
 						$epath=AddSlashes($path);
+						$efilename = basename( $epath );
 					} else {
 						error("PANIC: could not obtain write lock on nodes table!");
 						$this->close();
@@ -587,32 +588,48 @@ class mysqlstore extends store{
 					$this->error="ERROR: Maximum path length (".MAX_PATH_LENGTH." characters) exceeded. Please shorten your filenames.";
 					$result=false;
 				} else {
-					$query_string="insert into $objects_tbl (id,type,object,vtype) values (0,'$etype','$edata','$evtype')";
-					$qresult = $this->store_run_query($query_string);
-					$id=mysql_insert_id($this->connect_id);
-					if ($qresult !== false && $id) {
-						if (!$this->exists($parent)) {
-							$query_string="insert into $nodes_tbl (path,parent,object,priority) values ('$epath','$eparent',$id,$epriority)";
-						} else {
-							$query_string="insert into $nodes_tbl (path,parent,object,priority) values (concat((select nodes1.path from $nodes_tbl as nodes1 where path='$eparent'), '$efilename', '/'),(select nodes2.path from $nodes_tbl as nodes2 where path='$eparent'),$id,$epriority)";
-						}
 
-						$qresult = $this->store_run_query($query_string);
-						if ($qresult) {
-							if ($needunlocking) {
-								$query_string = "unlock tables";
-								$this->store_run_query($query_string);
-								$needunlocking = false;
+					$query_string ="select path from store_nodes where path = '$eparent'";
+					$qresult = $this->store_run_query( $query_string );
+					if ($qresult !== false) {
+						$row = mysql_fetch_array( $qresult );
+						if ($row['path']) {
+							$parent  = $row['path'];
+							$eparent = AddSlashes( $parent );
+							$epath   = $eparent . $efilename . '/';
+
+							$query_string="insert into $objects_tbl (id,type,object,vtype) values (0,'$etype','$edata','$evtype')";
+							$qresult = $this->store_run_query($query_string);
+							$id=mysql_insert_id($this->connect_id);
+							if ($qresult !== false && $id) {
+								$query_string="insert into $nodes_tbl (path,parent,object,priority) values ('$epath', '$eparent', $id, $epriority)";
+								$qresult = $this->store_run_query($query_string);
+								if ($qresult) {
+									if ($needunlocking) {
+										$query_string = "unlock tables";
+										$this->store_run_query($query_string);
+										$needunlocking = false;
+									}
+									$this->save_properties($properties, $id, $this);
+									$result=$path;
+								} else {
+									debug("save: insert node failed!","store");
+									debug("save: ".$this->error,"store");
+									$result=0;
+								}
+							} else {
+								debug("save: insert object failed!","store");
+								debug("save: ".$this->error,"store");
+								$result=0;
 							}
-							$this->save_properties($properties, $id, $this);
-							$result=$path;
 						} else {
-							debug("save: insert node failed!","store");
-							debug("save: ".$this->error,"store");
-							$result=0;
+							$this->error = "store:save: could not load path '$eparent'";
+							debug("save: parent path query failed", "store");
+							debug("save: ".$this->error, "store");
+							$result = 0;
 						}
 					} else {
-						debug("save: insert object failed!","store");
+						debug("save: parent path query failed!","store");
 						debug("save: ".$this->error,"store");
 						$result=0;
 					}
