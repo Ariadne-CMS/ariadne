@@ -592,7 +592,7 @@ class mysqlstore extends store{
 						$parent = '..';
 						$eparent = '..';
 					} else {
-						$query_string ="select path from store_nodes where path = '$eparent'";
+						$query_string ="select path from $nodes_tbl where path = '$eparent'";
 						$qresult = $this->store_run_query( $query_string );
 						if ($qresult !== false) {
 							$row = mysql_fetch_array( $qresult );
