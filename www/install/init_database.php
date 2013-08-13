@@ -168,7 +168,7 @@
 	if ($sessionstore->initialize()) {
 		$sessionstore->add_type("psession","pobject");
 		$sessionstore->add_type("psession","psession");
-
+		$sessionstore->save( '/', 'pobject', new object );
 	} else {
 		error("store not initialized.");
 	}

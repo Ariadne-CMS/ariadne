@@ -588,7 +588,9 @@ class mysqlstore extends store{
 					$this->error="ERROR: Maximum path length (".MAX_PATH_LENGTH." characters) exceeded. Please shorten your filenames.";
 					$result=false;
 				} else {
-					if ($path == '/') {
+					if ($parent == '/') {
+						// some stores (like the session store) don't have root nodes (legacy but still).
+					} else if ($path == '/') {
 						$parent = '..';
 						$eparent = '..';
 					} else {
