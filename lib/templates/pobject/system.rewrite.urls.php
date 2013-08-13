@@ -9,6 +9,9 @@
 				if (substr($oldURL, -1) != '/') {
 					$oldURL .= '/';
 				}
+				if (substr($newURL, -1) != '/') {
+					$newURL .= '/';
+				}
 				foreach ($nls_list as $nls => $nls_name) {
 					if ($this->data->$nls) {
 						$nls_fields = array( 'page' , 'summary' );
