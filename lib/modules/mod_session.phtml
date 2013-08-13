@@ -107,6 +107,9 @@ class session {
 			}
 			$this->data->system = $this->system;
 			if ($this->changed || $forceupdate) {
+				if ( !$this->sessionstore->exists('/') ) {
+					$this->sessionstore->save( '/', 'pobject', new object );
+				}
 				$this->sessionstore->save("/$id/","psession",$this->data);
 			} else if( ($now - $interval ) > $this->lastchanged ) {
 				// save session only if last save is 0.1 timeout lenght ago
