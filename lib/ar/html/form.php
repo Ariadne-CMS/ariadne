@@ -926,7 +926,7 @@
 			if ( $rows ) {
 				$attributes['rows'] = $rows;
 			}
-			return ar_html::el('textarea', $value, $attributes);
+			return ar_html::el('textarea', htmlspecialchars($value), $attributes);
 		}
 	}
 	
