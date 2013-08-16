@@ -367,11 +367,11 @@
 			if ( is_array($nodes) || $nodes instanceof Traversable ) {
 				foreach ( $nodes as $node ) {
 					if ( !$node instanceof ar_xmlNodeInterface ) {
-						if ( ( strpos( '<', (string)$node )===false ) ) {
+						//if ( ( strpos( (string)$node, '<' )===false ) ) {
 							$node = new ar_xmlNode( $node );
-						} else {
-							$node = $this->_tryToParse( $node );
-						}
+						//} else {
+						//	$node = $this->_tryToParse( $node );
+						//}
 					}
 					if ( is_array($node) || $node instanceof Traversable ) {
 						$subnodes = $this->_normalizeNodes( $node );
