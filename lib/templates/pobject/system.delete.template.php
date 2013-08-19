@@ -58,6 +58,7 @@
 				$templates=$this->store->get_filestore("templates");
 				$templates->remove($this->id, $template);
 				$templates->remove($this->id, $template.".pinp");
+				$templates->remove($this->id, $template.".inc");
 				$this->save();
 			}
 		}
