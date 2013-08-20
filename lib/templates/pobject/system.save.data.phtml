@@ -22,7 +22,11 @@
 		$properties = Array();
 
 		$this->data->value=$this->getdata("value","none");
-		$properties["value"][]["value"]="'".AddSlashes($this->data->value)."'";
+		$indexValue = $this->data->value;
+		if (is_array($indexValue)) {
+			$indexValue = '|' . implode( '|', $indexValue ) . '|';
+		}
+		$properties["value"][]["value"]="'".AddSlashes($indexValue)."'";
 		if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
 			$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
 		} else {
