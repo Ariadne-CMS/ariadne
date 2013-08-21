@@ -13,9 +13,13 @@
 		public static $indent = "\t";
 		public static $strict = false;
 		public static $preserveWhiteSpace = false;
+		public static $autoparse = true;
 		
 		public static function configure( $option, $value ) {
 			switch ( $option ) {
+				case 'autoparse' :
+					self::$autoparse = (bool) $value;
+				break;
 				case 'indent' :
 					if ( is_bool( $value ) ) {
 						self::$indenting = (bool) $value;
@@ -367,11 +371,11 @@
 			if ( is_array($nodes) || $nodes instanceof Traversable ) {
 				foreach ( $nodes as $node ) {
 					if ( !$node instanceof ar_xmlNodeInterface ) {
-						//if ( ( strpos( (string)$node, '<' )===false ) ) {
+						if ( ar_xml::$autoparse ) {
+							$node = $this->_tryToParse( $node );
+						} else {
 							$node = new ar_xmlNode( $node );
-						//} else {
-						//	$node = $this->_tryToParse( $node );
-						//}
+						}
 					}
 					if ( is_array($node) || $node instanceof Traversable ) {
 						$subnodes = $this->_normalizeNodes( $node );
@@ -384,7 +388,11 @@
 				}
 			} else {
 				if ( !$nodes instanceof ar_xmlNode ) {
-					$nodes = $this->_tryToParse( $nodes );
+					if ( ar_xml::$autoparse ) {
+						$nodes = $this->_tryToParse( $nodes );
+					} else {
+						$nodes = new ar_xmlNode( $nodes );
+					}
 				}
 				$result[] = $nodes;
 			}
