@@ -13,7 +13,7 @@
 <fieldset id="data">
 	<legend><?php echo $ARnls["data"]; ?></legend>
 	<div class="field">
-		<label for="name" class="required"><?php echo $ARnls["item"]; ?></label>
+		<label for="name" class="required"><?php echo $ARnls["name"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
 		<input id="name" type="text" name="<?php echo $selectednls."[name]"; ?>" 
 			value="<?php $this->showdata("name", $selectednls); ?>" class="inputline wgWizAutoFocus">

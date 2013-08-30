@@ -104,7 +104,7 @@
 	}
 //-->
 </script>
-<fieldset id="date">
+<fieldset id="datefields">
 	<legend><?php echo $ARnls["date"]; ?></legend>
 	<div class="field">
 		<label for="date"><?php echo $ARnls["date"]; ?></label>
