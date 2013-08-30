@@ -68,8 +68,14 @@
 	document.wgWizForm.year_repeatn.value=value;
   }
 
+  var defaultSetDate = SetDate;
   // alternative SetDate for the date widget
-  function SetDate(name, date, formatted) {
+  SetDate = function(name, date, formatted) {
+	if (defaultSetDate) {
+		if (!/_repeatend$/.test( name )) {
+			return defaultSetDate( name, date, formatted );
+		}
+	}
     document.wgWizForm.repeatend.value=date;
     document.wgWizForm['day_repeatend'].value=date;
     document.wgWizForm['formattedday_repeatend'].value=formatted;
