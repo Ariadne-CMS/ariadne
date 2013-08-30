@@ -672,7 +672,7 @@
 					return $getField($this, $content);
 				}
 			}
-			return (string)parent::getField( 
+			return parent::getField( 
 				ar_html::nodes( $this->getLabel(), $this->getInput() )
 			);
 		}
@@ -1282,7 +1282,10 @@
 				$legend = ar_html::el('legend', $this->label);
 			}
 			if (!isset($content)) {
-				$content = $this->children;
+				$content = ar_html::nodes();
+				foreach( $this->children as $child ) {
+					$content[] = $child->getField();
+				}
 			}
 			$content = ar_html::nodes($legend, $content);
 			$help = $this->getHelp();
