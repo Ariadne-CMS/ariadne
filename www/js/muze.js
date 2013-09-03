@@ -87,10 +87,10 @@
 			.onload(function(response) {
 				myDiv.innerHTML = response;
 			})
-			.ontimeout(function() {
+			.ontimeout( 1000, function() {
 				myDiv.innerHTML = 'timed out';
 				this.clear();
-			});
+			} );
 			
 	object loader(object)
 		This method allows you to easily implement your own loader handler, with onload and
@@ -381,12 +381,12 @@ muze.url = (function() {
 			onload_handler = handler;
 			return this;
 		};
-		loader.ontimeout = function(timer, handler) {
-			muze.global.setTimeout(timer, function() {
+		loader.ontimeout = function( timer, handler ) {
+			muze.global.setTimeout( function() {
 				if (!loaded) {
 					_continue(handler)();
 				}
-			});
+			}, timer );
 			return this;
 		};
 		loader.loaded = function() {
