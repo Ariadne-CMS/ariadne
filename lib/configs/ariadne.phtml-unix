@@ -7,7 +7,7 @@
   /*   // do not change                                                     */
   /**************************************************************************/
 
-	if (!class_exists('object')) {
+	if (!class_exists('object',false)) {
 		class object { }           // do not change
 	}
 	$AR = new object;             // do not change
