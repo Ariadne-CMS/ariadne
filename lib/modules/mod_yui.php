@@ -452,8 +452,18 @@
 				}
 				$result = ar_html::tag('ul', array('class' => array('explore_list', $viewtype) ), $nodes);
 			} else {
+				
 				if ($data['total'] > 1000) {
-					$result = ar_html::tag('div', array('class'=>'noobjects'), htmlspecialchars($ARnls['ariadne:too_many_objects_found'] . " (" . $data['total'] . ")"));
+					$content = htmlspecialchars($ARnls['ariadne:too_many_objects_found'] . " (" . $data['total'] . ")");
+					$selectoptions = array(
+						"sanity-off" => $ARnls['ariadne:select:showall']
+					);
+
+					foreach ($selectoptions as $key => $value) {
+						$content .= '<br><a href="#" onclick="muze.ariadne.explore.viewpane.setfilter(\'' . htmlspecialchars($key) . '\'); return false;">' . htmlspecialchars($value) . '</a>';
+					}
+
+					$result = ar_html::tag('div', array('class'=>'noobjects'), $content);
 				} else {
 					$result = ar_html::tag('div', array('class'=>'noobjects'), htmlspecialchars($ARnls['ariadne:no_objects_found']) );
 				}

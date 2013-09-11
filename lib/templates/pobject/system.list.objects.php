@@ -12,7 +12,16 @@
 			if ($name) {
 				$query.=" and name.value ~= '%".AddSlashes($name)."%'";
 			}
+			$filter = $this->getvar('filter');
 
+			$filterqueries = array(
+				"ctime-year" => "time.ctime > " . (strtotime("today") - 365*24*60*60),
+				"ctime-month" => "time.ctime > " . (strtotime("today") - 30*24*60*60),
+				"ctime-day" => "time.ctime > " . (strtotime("today") - 24*60*60),
+				"mtime-year" => "time.mtime > " . (strtotime("today") - 365*24*60*60),
+				"mtime-month" => "time.mtime > " . (strtotime("today") - 30*24*60*60),
+				"mtime-day" => "time.mtime > " . (strtotime("today") - 24*60*60)
+			);
 			
 			$orderqueries = array(
 				"name" => array(
@@ -45,6 +54,10 @@
 			$orderqueries['modified'] = $orderqueries['mtime'];
 			$orderqueries['filename'] = $orderqueries['path'];
 			
+			if ($filterqueries[$filter]) {
+				$query .= " and " . $filterqueries[$filter];
+			}
+
 			if (!$orderqueries[$order]) {
 				$order = 'name';
 			}
@@ -75,7 +88,12 @@
 			$this->call('typetree.ini');
 		}
 
-		$foldertotal = $this->count_find(".", "object.parent='".AddSlashes($this->path)."'");
+		$countQuery = "object.parent='".AddSlashes($this->path)."'";
+		if ($filterqueries[$filter]) {
+			$countQuery .= " and " . $filterqueries[$filter];
+		}
+
+		$foldertotal = $this->count_find(".", $countQuery);
 
 		// If the total is more than 1000 and sanity is set, don't get the list.
 		if (!($foldertotal > 1000 && $sanity)) {

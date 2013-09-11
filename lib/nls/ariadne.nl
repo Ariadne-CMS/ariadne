@@ -232,5 +232,12 @@
 	$ARnls["err:svn:leaving_recurse_tree"]          =    "Deze repository maakt geen deel uit van de repository-boom van deze actie.";
 	$ARnls["err:typetree_does_not_allow"]           =    "De typeboom instellingen staan dit object type hier niet toe.";
 
-
+	$ARnls['ariadne:select:none'] = "Geen filter";
+	$ARnls['ariadne:select:showall'] = "Forceer alles tonen";
+	$ARnls['ariadne:select:created_last_year'] = "Afgelopen jaar aangemaakt";
+	$ARnls['ariadne:select:created_last_month'] = "Afgelopen maand aangemaakt";
+	$ARnls['ariadne:select:created_last_day'] = "Afgelopen dag aangemaakt";
+	$ARnls['ariadne:select:modified_last_year'] = "Afgelopen jaar aangepast";
+	$ARnls['ariadne:select:modified_last_month'] = "Afgelopen maand aangepast";
+	$ARnls['ariadne:select:modified_last_day'] = "Afgelopen dag aangepast";
 ?>

@@ -51,6 +51,9 @@
 			"direction" => $direction
 		);
 		
+		if ($filter == "sanity-off") {
+			$listargs["sanity"] = false;
+		}
 		$object_list = $this->call('system.list.objects.php', $listargs);
 
 		if (!is_array($object_list)) {
@@ -88,7 +91,42 @@
 		}
 
 ?>
+<?php
+/*
+This adds filter options to the browse dialog, unfinished code so removed for now.
 
+<style type="text/css">
+	#filters.browse {
+		border: none;
+	}
+</style>
+<div class="browse section" id="filters">
+	<div class="sectionhead yuimenubar filters">Filters</div>
+	<?php
+			$selectoptions = array(
+				"none" => $ARnls['ariadne:select:none'],
+				"sanity-off" => $ARnls['ariadne:select:showall'],
+				"ctime-year" => $ARnls['ariadne:select:created_last_year'],
+				"ctime-month" => $ARnls['ariadne:select:created_last_month'],
+				"ctime-day" => $ARnls['ariadne:select:created_last_day'],
+				"mtime-year" => $ARnls['ariadne:select:modified_last_year'],
+				"mtime-month" => $ARnls['ariadne:select:modified_last_month'],
+				"mtime-day" => $ARnls['ariadne:select:modified_last_day']
+			);
+		?>
+		<div class="sectionbody">
+			<div class="filter">
+				<strong>Time</strong><br>
+				<select class="filter" size=7>
+		<?php	foreach ($selectoptions as $key => $value) { ?>
+				<option <?php if ($filter == $key) { echo " selected"; }?> onclick="muze.ariadne.explore.viewpane.setfilter('<?php echo htmlspecialchars($key); ?>'); return false;"><?php echo htmlspecialchars($value); ?></option>
+		<?php		} ?>
+				</select>
+			</div>
+		</div>
+</div>
+*/
+?>
 <script type="text/javascript">
 	muze.ariadne.explore.viewpane.path = '<?php echo $this->path ?>';	
 </script>

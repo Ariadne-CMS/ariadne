@@ -232,5 +232,13 @@
 	$ARnls["err:svn:leaving_recurse_tree"]          =    "This repository is not part of the repository tree of the parent.";
 	$ARnls["err:typetree_does_not_allow"]           =    "Typetree does not allow this object type here";
 
+	$ARnls['ariadne:select:none'] = "No filter";
+	$ARnls['ariadne:select:showall'] = "Force show all";
+	$ARnls['ariadne:select:created_last_year'] = "Created last year";
+	$ARnls['ariadne:select:created_last_month'] = "Created last month";
+	$ARnls['ariadne:select:created_last_day'] = "Created last day";
+	$ARnls['ariadne:select:modified_last_year'] = "Modified last year";
+	$ARnls['ariadne:select:modified_last_month'] = "Modified last month";
+	$ARnls['ariadne:select:modified_last_day'] = "Modified last day";
 
 ?>
