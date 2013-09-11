@@ -1021,6 +1021,13 @@ muze.ariadne.explore.viewpane = function() {
 			muze.ariadne.explore.browseheader.view(path);
 			muze.ariadne.explore.sidebar.view(path);
 		},
+		setfilter : function(filter) {
+			var path = muze.ariadne.registry.get('path');
+			muze.ariadne.registry.set('filter' + path, filter);
+			muze.ariadne.explore.viewpane.view(path);
+			muze.ariadne.explore.browseheader.view(path);
+			muze.ariadne.explore.sidebar.view(path);
+		},
 		update : function(qs) {
 			var browse_template = muze.ariadne.registry.get('browse_template');
 			var viewmode=muze.ariadne.registry.get('viewmode');
@@ -1120,6 +1127,8 @@ muze.ariadne.explore.viewpane = function() {
 			}
 			var browse_template = muze.ariadne.registry.get('browse_template');
 			var viewmode = muze.ariadne.cookie.get('viewmode');
+			var filter = muze.ariadne.registry.get('filter' + path);
+
 			var order = muze.ariadne.registry.get('order');
 			var direction = muze.ariadne.registry.get('direction');
 			var store_root = muze.ariadne.registry.get('store_root');
@@ -1142,6 +1151,9 @@ muze.ariadne.explore.viewpane = function() {
 			}
 			if (page) {
 				url = url + '&page=' + page;
+			}
+			if (filter) {
+				url = url + '&filter=' + filter;
 			}
 
 			muze.ariadne.explore.viewpane.browseto(url);
