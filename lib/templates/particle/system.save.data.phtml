@@ -38,6 +38,20 @@
 				if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
 					$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
 				} else {
+					if ($ContentEditOptionsPath) {
+						$arEditorSettings=$ARCurrent->editorSettings[$ContentEditOptionsPath];
+						if (!$arEditorSettings) {
+							$arEditorSettings=current($this->get($ContentEditOptionsPath, "editor.ini"));
+							$ARCurrent->editorSettings[$ContentEditOptionsPath]=$arEditorSettings;
+						}
+					} else {
+						$arEditorSettings=$ARCurrent->editorSettings[$this->path];
+						if (!$arEditorSettings) {
+							$arEditorSettings=$this->call("editor.ini");
+							$ARCurrent->editorSettings[$this->path]=$arEditorSettings;
+						}
+					}
+
 					if (!$this->data->nls) {
 						// its a new object, no nls data specified yet, create it
 						$this->data->nls=new object;
@@ -63,7 +77,28 @@
 							$properties["text"][$count]["nls"]="'$key'";
 							$count++;
 							$newnlsdata->summary=page::compile($this->getdata("summary",$key), $key);
-							$properties["text"][$count]["value"]="'".AddSlashes(substr($this->getdata("summary", $key),0,255))."'";
+
+							if ($arEditorSettings) {
+								if ($arEditorSettings["htmlcleaner"]["enabled"]) {
+									include_once($this->store->get_config("code")."modules/mod_htmlcleaner.php");
+									$config = $arEditorSettings["htmlcleaner"];
+									$newnlsdata->summary = htmlcleaner::cleanup($newnlsdata->summary, $config);
+								}
+								if ($arEditorSettings["htmltidy"]["enabled"]) {
+									include_once($this->store->get_config("code")."modules/mod_tidy.php");
+									$config=$arEditorSettings["htmltidy"];
+									$config["temp"]=$this->store->get_config("files")."temp/";
+									$config["path"]=$AR->Tidy->path;
+									$tidy=new tidy($config);
+									$result=$tidy->clean($newnlsdata->summary);
+									$newnlsdata->summary=$result["html"];
+								}
+								if ($arEditorSettings["allow_tags_summary"]) {
+									$newnlsdata->summary=strip_tags($newnlsdata->summary, $arEditorSettings["allow_tags_summary"]);
+								}
+							}
+
+							$properties["text"][$count]["value"]="'".AddSlashes(substr($newnlsdata->summary,0,255))."'";
 							$properties["text"][$count]["nls"]="'$key'";
 							$count++;
 							$newnlsdata->title=$this->getdata("title", $key);

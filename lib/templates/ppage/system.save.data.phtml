@@ -64,6 +64,11 @@
 					$count++;
 					$newnlsdata->summary=page::compile($this->getdata("summary",$key), $key);
 					if ($arEditorSettings) {
+						if ($arEditorSettings["htmlcleaner"]["enabled"]) {
+							include_once($this->store->get_config("code")."modules/mod_htmlcleaner.php");
+							$config = $arEditorSettings["htmlcleaner"];
+							$newnlsdata->summary = htmlcleaner::cleanup($newnlsdata->summary, $config);
+						}
 						if ($arEditorSettings["htmltidy"]["enabled"]) {
 							include_once($this->store->get_config("code")."modules/mod_tidy.php");
 							$config=$arEditorSettings["htmltidy"];
@@ -71,7 +76,7 @@
 							$config["path"]=$AR->Tidy->path;
 							$tidy=new tidy($config);
 							$result=$tidy->clean($newnlsdata->summary);
-							$summary=$result["html"];
+							$newnlsdata->summary=$result["html"];
 						}
 						if ($arEditorSettings["allow_tags_summary"]) {
 							$newnlsdata->summary=strip_tags($newnlsdata->summary, $arEditorSettings["allow_tags_summary"]);
