@@ -38,7 +38,7 @@
   /* Ariadne generates warnings when E_NOTICE is not disabled               */
   /**************************************************************************/
 
-  error_reporting( E_ALL ^ E_NOTICE ^ E_DEPRECATED );
+  error_reporting( E_ALL & ~(E_NOTICE | E_DEPRECATED | E_STRICT) );
 
 
   /**************************************************************************/
