@@ -27,7 +27,7 @@
 		position: relative;
 	}
 </style>
-<script>
+<script type="text/javascript">
 	document.getElementById("wgWizForm").wgWizSubmitHandler = function() {
 		document.getElementById("busy").style.display = 'block';
 		return true;
@@ -36,9 +36,9 @@
 <fieldset id="data">
 	<legend><?php echo $ARnls["file"]; ?></legend>
 	<div class="field">
-		<label for "file" class="required"><?php echo $ARnls["file"]; ?></label>
+		<label for="file" class="required"><?php echo $ARnls["file"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
-		<input id="file" type="file" name="<?php echo $selectednls."[file]"; ?>" class="inputline wgWizAutoFocus" onchange="this.form.submit();">
+		<input id="file" type="file" value="<?php echo $this->getvar($selectednls . "[file]"); ?>" name="<?php echo $selectednls."[file]"; ?>" class="inputline wgWizAutoFocus" onchange="this.form.submit();">
 		<!-- input type="submit" name="upload" value="Upload" -->
 	</div>
 	<div id="busy"><?php echo $ARnls["ariadne:uploading"]; ?>...</div>
