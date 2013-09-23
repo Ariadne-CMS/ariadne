@@ -1,0 +1,140 @@
+mod_esi
+-------
+ESI stands for Edge Side Includes. Ariadne can be configured to handle ESI
+tags by itself, by adding $AR->ESI = true to the ariadne.phtml configuration
+file.
+
+When this setting is enabled, Ariadne will scan the generated output and
+replace ESI tags with the requested content. For example, if Ariadne
+generates:
+<html>
+<body>
+<esi:include src="http://www.ariadne-cms.org/view.content.html" />
+</body>
+</html>
+
+Activating ESI will fetch the source and mix it into the content before
+sending the result to the browser.
+
+Having ESI support in Ariadne provides a stepping stone that can be used to
+radically improve website performance. The implementation of mod_esi in
+Ariadne is compatible with the W3C standard proposal
+http://www.w3.org/TR/esi-lang and includes support for ESI elements,
+variables and operators.
+
+Supported ESI elements:
+- include
+- choose | when | otherwise
+- try | attempt | except
+- comment
+- remove
+- vars
+- <!--esi ...-->
+
+Unsupported ESI elements:
+- inline (which is optional according to the proposal).
+
+Supported ESI Variables:
+HTTP_ACCEPT_LANGUAGE, HTTP_COOKIE, HTTP_HOST, HTTP_REFERER, HTTP_USER_AGENT,
+QUERY_STRING
+
+* Note: Ariadne handles the HTTP_COOKIE variable differently, because
+Ariadne uses serialized objects in the cookies it sets. Ariadne uses it's
+own ldGetUserCookie method to fetch the cookie, which deserializes the
+cookie.
+
+Why is this cool?
+
+ESI support for Ariadne was developed to accomodate high traffic sites with
+dynamic parts in their webpages - in our example, the page would show a
+shopping cart. Ariadne is unable to generate a generic public cache image
+for the whole page, because for different visitors, the contents of the
+shopping cart would differ as well. This poses a problem, because generating
+the whole page every single time is quite costly, especially when the site
+was growing in traffic in such a rapid pace. Private caching allowed the
+site to make cache images of heavy parts of the page, but general caching
+could not be enabled - until now.
+
+With ESI support, the shopping cart part of the page is switches to an ESI
+include element. This allows Ariadne to cache the whole page, with the ESI
+include element still in the cache image. When fetching the page, the cache
+image is returned and the ESI include element is replaced by mod_esi to fill
+in the blanks, returning the page to the visitor with the shopping cart data
+entered.
+
+mod_esi was designed as a stepping stone, to make the adoption of an
+ESI-enabled front-side cache easier. When the site grows so much that even
+cache-hits become too expensive for Ariadne to handle, even more load can be
+moved by adding ESI technology, for example Varnish cache.
+
+Examples and tests:
+1. Including Ariadne content
+<esi:include src="<pinp> echo make_ariadne_url($path); </pinp>time.html" />
+
+2. Including external content
+<esi:include src="http://www.ariadne-cms.org/view.content.html" />
+<esi:include src="http://www.ariadne-cms.org/testaelkrjflajekjrf.html"
+alt="http://www.ariadne-cms.org/view.content.html">
+
+3. Using cookie variables
+<esi:include src="<pinp> echo make_ariadne_url();
+</pinp>$(HTTP_COOKIE{esipath})/time.html">
+
+4. Using cookie variables with default fallback value
+<esi:include src="<pinp> echo make_ariadne_url();
+</pinp>$(HTTP_COOKIE{esipath}|test0)/time.html">
+
+5. ESI remove example
+The <esi:remove><a href="frop">quick</a> </esi:remove>brown fox
+jumps<esi:remove> high</esi:remove> over the lazy dog.
+
+6. ESI comment
+The <esi:comment text="Hello world!" />hello of the world.
+
+7. ESI marker + include
+<!--esi
+De tijd is: <esi:include src="<pinp> echo make_ariadne_url($path);
+</pinp>time.html" />
+-->
+
+8. cookie variable:
+Say hello: <esi:vars>Hello $(HTTP_COOKIE{user}|'John Doe')</esi:vars><br>
+
+9: HTTP_HOST variable:
+Your HTTP_HOST: <esi:vars>Hello $(HTTP_HOST)</esi:vars><br>
+
+10: HTTP_REFERER variable
+Your referer: <esi:vars>$(HTTP_REFERER|'Direct visit')</esi:vars><br>
+
+11: Accepted language variable
+Accepted nl-NL as language:
+<esi:vars>$(HTTP_ACCEPT_LANGUAGE{nl-NL})</esi:vars><br>
+
+12: Query variable
+Value for 'test' getvar: <esi:vars>$(QUERY_STRING{test}|'not
+found.')</esi:vars><br>
+
+13: Try/attempt/except:
+<esi:try> 
+    <esi:attempt>
+        <esi:comment text="Include an ad"/> 
+        <esi:include src="http://www.ariadne-cms.org/testaergaergerg.html"/> 
+    </esi:attempt>
+    <esi:except> 
+        <esi:comment text="Just write some HTML instead"/> 
+        <a href=www.muze.nl>www.muze.nl</a>
+    </esi:except> 
+</esi:try>
+
+14: Choose/when/otherwise:
+<esi:choose> 
+    <esi:when test="$(HTTP_COOKIE{user})!='Cookiemonster'"> 
+        <esi:include src="http://www.ariadne-cms.org/test.html"/> 
+    </esi:when> 
+    <esi:when test="$(HTTP_COOKIE{group})=='Basic User'">
+        <esi:include src="http://www.ariadne-cms.org/test2.html"/>
+    </esi:when> 
+    <esi:otherwise> 
+        <esi:include src="http://www.ariadne-cms.org/test3.html"/>
+    </esi:otherwise>
+</esi:choose>
