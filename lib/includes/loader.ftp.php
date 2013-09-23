@@ -104,44 +104,4 @@
 		return false;
 	}
 
-	/*	PHP-4.0.6 compat functions	*/
-
-	if (!function_exists("socket_create")) {
-		debug("running older php version: creating socket alias functions");
-
-		function socket_create($arg1, $arg2, $arg3) {
-			return socket($arg1, $arg2, $arg3);
-		}
-
-		function socket_connect($arg1, $arg2, $arg3) {
-			return connect($arg1, $arg2, $arg3);
-		}
-
-		function socket_accept($arg1) {
-			return accept_connect($arg1);
-		}
-
-		function socket_close($arg1) {
-			return close($arg1);
-		}
-
-		function socket_bind($arg1, $arg2, $arg3) {
-			return !bind($arg1, $arg2, $arg3);
-		}
-
-		function socket_listen($arg1, $arg2) {
-			return listen($arg1, $arg2);
-		}
-
-		function socket_write($arg1, $arg2, $arg3) {
-			return write($arg1, $arg2, $arg3);
-		}
-
-		function socket_read($arg1, $arg2, $arg3) {
-			$buffer="";
-			read($arg1, $buffer, $arg2, PHP_BINARY_READ);
-			return $buffer;
-		}
-	}	
-
 ?>
