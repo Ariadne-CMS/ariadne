@@ -301,11 +301,20 @@
 				if($fpi && $fph) {
 					fwrite($fph, $headers);
 					fclose($fph);
-					fwrite($fpi, $image);
+					$imagesize = fwrite($fpi, $image);
 					fclose($fpi);
 
-					rename($headertemp,$fileheaders);
-					rename($imagetemp,$fileimage);
+					if ( !touch($imagetemp, $time)) {
+						debug("ldSetCache: ERROR: couldn't touch image","object");
+					}
+
+					if (filesize($imagetemp) == $imagesize ) {
+						rename($headertemp,$fileheaders);
+						rename($imagetemp,$fileimage);
+					} else {
+						@unlink($imagetemp);
+						@unlink($headertemp);
+					}
 				} else {
 					if($fpi) {
 						fclose($fpi);
@@ -315,9 +324,6 @@
 						fclose($fph);
 						unlink($fileheaders);
 					}
-				}
-				if (!touch($store->get_config("files")."cache".$file, $time)) {
-					debug("ldSetCache: ERROR: couldn't touch image","object");
 				}
 			}
 		}
