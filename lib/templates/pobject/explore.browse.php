@@ -140,6 +140,8 @@ This adds filter options to the browse dialog, unfinished code so removed for no
 	YAHOO.util.Event.onDOMReady(
 		function() {
 			YAHOO.util.Event.addListener('archildren', 'click', muze.ariadne.explore.viewpane.onClick);
+			YAHOO.util.Event.addListener('archildren', 'selected', muze.ariadne.explore.viewpane.onSelected);
+			YAHOO.util.Event.addListener('archildren', 'clearselection', muze.ariadne.explore.viewpane.unselectItem);
 		}
 	);
 </script>

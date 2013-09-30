@@ -8,13 +8,31 @@
 			$root .= "/";
 		}
 
-		$target = $this->path;
-		if ($this->getvar("childrenonly")) {
-			$query = "object.parent ~= '$target%' order by path DESC";
+		if ($this->getvar("targets")) {
+			$targets = $this->getvar('targets');
 		} else {
-			$query = "object.path =~ '" . $target . "%' order by path DESC";
+			$targets = array($this->path);
 		}
-		$total = $this->count_find($target, $query);
+
+
+		// $target = $this->path;
+		if ($this->getvar("childrenonly")) {
+			$query = "(";
+			foreach ($targets as $target) {
+				$query .= "object.parent ~= '$target%' OR ";
+			}
+			$query = substr($query, 0, -3);
+			$query .= ") order by path DESC";
+		} else {
+			$query = "(";
+			foreach ($targets as $target) {
+				$query .= "object.path =~ '" . $target . "%' OR ";
+			}
+			$query = substr($query, 0, -3);
+			$query .= ") order by path DESC";
+		}
+
+		$total = $this->count_find($this->path, $query);
 		$objects_left = $total;
 		$offset = 0;
 
@@ -56,10 +74,10 @@
 		while ($offset < $objects_left) {
 			flush();
 			set_time_limit(30);
-			$this->find($target, $query, "system.delete.phtml", array(), $stepsize, $offset); // Delete the $stepsize last items
+			$this->find($this->path, $query, "system.delete.phtml", array(), $stepsize, $offset); // Delete the $stepsize last items
 
-			$new_objects_left = $this->count_find($target, $query);
-			$next_object_path = current($this->find($target, $query, "system.get.path.phtml", array(), 1, $offset));
+			$new_objects_left = $this->count_find($this->path, $query);
+			$next_object_path = current($this->find($tthis->path, $query, "system.get.path.phtml", array(), 1, $offset));
 			if (substr($next_object_path, 0, strlen($root)) == $root) {
 				$next_object_path = substr($next_object_path, strlen($root), strlen($next_object_path));
 			}
@@ -101,12 +119,12 @@
 			if ( window.opener && window.opener.muze && window.opener.muze.dialog ) {
 				window.opener.muze.dialog.callback( window.name, 'deleted', { 
 					'childrenOnly': <?php echo (int)$this->getvar("childrenonly") ?>,
-					'showPath': '<?php echo ($this->getvar("childrenonly") ? $this->path : $this->parent );?>'
+					'showPath': '<?php echo (($this->getvar("childrenonly") || sizeof($targets > 1)) ? $this->path : $this->parent );?>'
 				});
 			} else  { 
 				// backward compatibility with pre muze.dialog openers
 				if ( window.opener && window.opener.muze && window.opener.muze.ariadne ) {
-					window.opener.muze.ariadne.explore.view('<?php echo ($this->getvar("childrenonly") ? $this->path : $this->parent );?>');
+					window.opener.muze.ariadne.explore.view('<?php echo (($this->getvar("childrenonly") || sizeof($targets > 1)) ? $this->path : $this->parent );?>');
 				}
 				window.close();
 			}

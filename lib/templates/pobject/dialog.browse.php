@@ -48,7 +48,7 @@
 				'iconalt' => $ARnls['ariadne:delete'],
 				'icon' => $AR->dir->images . 'icons/small/delete.png',
 				'href' => $this->make_ariadne_url() . "dialog.delete.php",
-                'onclick' => "muze.ariadne.explore.dialog.delete('" . substr($this->make_ariadne_url('/'),0, -1)  . "' + document.getElementById('searchpath').value + 'dialog.delete.php'); return false;"
+				'onclick' => "muze.ariadne.explore.dialog.deleteselected(this.href); return false;"
 			)
 		);
 
@@ -67,7 +67,8 @@
 			}
 			$base_object = current( $this->get( $root, 'system.get.phtml' ) );
 		} else {
-			$base_object = $this;
+			$root = "/";
+			$base_object = current($this->get($this->currentproject(), "system.get.phtml"));
 		}
 
 		// This set initializes the tree from the user object
@@ -163,6 +164,7 @@
 <script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/ariadne/registry.js"></script>
 <script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/ariadne/cookie.js"></script>
 <script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/ariadne/explore.js"></script>
+<script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/ariadne/selectable.js"></script>
 
 <script type="text/javascript">
 	// Backwards compatibility hooks - these should be removed in the end.
@@ -188,6 +190,7 @@
 	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.tree.init, muze.ariadne.explore.tree, true);
 	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.splitpane.init);
 	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.searchbar.init);
+	YAHOO.util.Event.onDOMReady(function() {selectable.init("archildren", {filterClass:["explore_item","yui-dt-rec"]})});
 </script>
 
 <script type="text/javascript">

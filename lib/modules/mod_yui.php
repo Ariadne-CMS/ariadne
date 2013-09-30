@@ -448,7 +448,7 @@
 						$item_class .= " hidden";
 					}
 					$content[]= ar_html::tag('span', array('class' => 'explore_name'), self::labelspan($node['name'], $maxlen ));
-					$nodes[] = ar_html::tag( 'li', array('class' => $item_class), ar_html::tag( 'a', array('href' => $node['local_url'].'explore.html', 'onDblClick' => "top.muze.ariadne.explore.view('" . htmlspecialchars($node['path']) . "'); return false;", 'title' => $node['name']), $content) );
+					$nodes[] = ar_html::tag( 'li', array('class' => $item_class, 'data-path' => $node['path']), ar_html::tag( 'a', array('href' => $node['local_url'].'explore.html', 'onDblClick' => "top.muze.ariadne.explore.view('" . htmlspecialchars($node['path']) . "'); return false;", 'title' => $node['name']), $content) );
 				}
 				$result = ar_html::tag('ul', array('class' => array('explore_list', $viewtype) ), $nodes);
 			} else {

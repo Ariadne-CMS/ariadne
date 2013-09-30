@@ -37,7 +37,8 @@
 			'muze.util.splitpane',
 			'muze.ariadne.registry',
 			'muze.ariadne.cookie',
-			'muze.ariadne.explore'
+			'muze.ariadne.explore',
+			'muze.ariadne.selectable'
 		);
 		
 		// only nls dependant var used atm.
@@ -79,6 +80,7 @@
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>login.css">
 
 <script type="text/javascript" src="<?php echo $this->make_local_url('',false,false) . 'ariadne.load.js?' . implode('+', $loadJS ); ?>"></script>
+
 <script type="text/javascript">
 	// Backwards compatibility hooks - these should be removed in the end.
 	View = muze.ariadne.explore.view;
@@ -101,6 +103,8 @@
 	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.tree.init, muze.ariadne.explore.tree, true);
 	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.splitpane.init);
 	YAHOO.util.Event.onDOMReady(muze.ariadne.explore.searchbar.init);
+
+	YAHOO.util.Event.onDOMReady(function() {selectable.init("archildren", {filterClass:["explore_item","yui-dt-rec"]})});
 </script>
 
 <script type="text/javascript">

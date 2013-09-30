@@ -1,13 +1,23 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin('config') && $this->CheckConfig() && $this->can_mogrify() ) {
+            if ($this->getvar('targets')) {
+                $targets = $this->getvar("targets");
+            } else {
+                   $targets = array($this->path);
+            }
 ?>
-	<div id="mogrify"><?php echo $ARnls["mogrifying"] . " " . $current_object_path; ?></div>
+
+	<div id="mogrify"><?php echo $ARnls["mogrifying"] . " " . $current_object_path; ?></div> <!--hier iets aan aanpassen voor current_object_path?-->
 <?php
-		$this->mogrify( $this->id, $this->getdata('type'));
+            foreach ($targets as $target) {
+                $targetob = current($this->get($target, "system.get.phtml"));
+                
+		$targetob->mogrify( $targetob->id, $this->getdata('type'));
 		if ($this->error) {
 			echo '<div class="error">'.$this->error.'</div>';
 		}
+            }
 ?>	<div class="buttons">
 	<div class="left">
 	<input unselectable="on" type="submit" name="wgWizControl" class="wgWizControl" onClick="document.wgWizForm.wgWizAction.value='cancel';" value="<?php echo $ARnls['cancel']; ?>">

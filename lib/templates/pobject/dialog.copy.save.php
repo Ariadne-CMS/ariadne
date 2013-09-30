@@ -1,26 +1,50 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin('read') && $this->CheckConfig()) {
+
 		$copytarget = $this->make_path($this->getvar('target'));
 		$copytargetparent = $this->make_path($copytarget.'..');
 		if ($this->exists($copytarget)) {
-			$copytarget = $copytarget . basename($this->path) . "/";
+			$copytarget = $copytarget;
 		} else if (!$this->exists($copytargetparent)) {
 			$this->error = sprintf($ARnls["err:filenameinvalidnoparent"], $copytarget, $copytargetparent);
 			return error($this->error);
 		}
 		// FIXME: add more checks to make sure the target to copy to will work as expected.
 
+                if ($this->getvar("sources")) {
+			$sources = $this->getvar('sources');
+		} else {
+			$sources = array($this->path);
+		}
+
 		$copytarget_ob = current($this->get($this->make_path($copytarget . '../'), "system.get.phtml"));
 		if ($copytarget_ob->CheckLogin('add')) {
 			$target_typetree = $copytarget_ob->call("typetree.ini");
-			if (
-				$target_typetree[$copytarget_ob->type][$this->type] || // The object is allowed under the target by the typetree.
-				($this->CheckSilent('layout') && $this->getvar('override_typetree')) // Layout grant allows typetree changes, so allow typetree overrides as well.
-			) { 
-				// This type is allowed.
-				$query = "object.path =~ '" . $this->path . "%' order by path ASC";
+			
+                        $failedchecks = false;
+                        
+                        $query = "(";
+                        foreach ($sources as $source) {
+                            if (
+                                    $target_typetree[$copytarget_ob->type][$this->type] || // The object is allowed under the target by the typetree.
+                                    ($this->CheckSilent('layout') && $this->getvar('override_typetree')) // Layout grant allows typetree changes, so allow typetree overrides as well.
+                            ) { 
+                                    // This type is allowed.
 
+                                //dit is de nieuwe query
+                                $query .= "object.path =~ '" . $source . "%' OR ";
+                            } else {
+                                $failedchecks = true;
+                            }
+                        }
+                        $query = substr($query, 0, -3);
+                        $query .= ") order by path ASC";
+
+                        //echo $query;
+                        //exit;
+                        
+                        if (!$failedchecks) {
 				$total = $this->count_find($this->path, $query);
 				$objects_left = $total;
 				$offset = 0;
@@ -56,7 +80,19 @@
 
 					foreach ($objects as $object) {
 						$sourcepath = $object->path;
-						$targetpath = $copytarget . substr($sourcepath, strlen($this->path), strlen($sourcepath));
+                                                
+		                                $targetpath = $copytarget;
+                                                foreach ($sources as $sourceparent) {
+                                                	if (strstr($sourcepath, $sourceparent)) {
+                                                        	$targetpath .= basename($sourceparent) . "/";
+								$targetpath .= substr($sourcepath, strlen($sourceparent), strlen($sourcepath));
+								break;
+							}
+						}
+
+                                                $targetpath = preg_replace("|//|", "/", $targetpath);
+                                                
+                                                // exit;
 						$error = current($this->get($sourcepath, "system.copyto.phtml", array("target" => $targetpath)));
 						if ($error) {
 							?>
@@ -65,13 +101,11 @@
 							</script>
 							<?php
 							return false;
-						} else if (!$copiedTo) {
-							$copiedTo = $ARCurrent->newpath;
-							$copytarget = $copiedTo;
 						}
 					}
 
-					$new_objects_left = $this->count_find($target, $query);
+					$new_objects_left = $objects_left; //$this->count_find($copytarget, $query); // FIXME: Deze is hier onzinnig.
+
 					$next_object_path = current($this->find($this->path, $query, "system.get.path.phtml", array(), 1, $offset));
 					if (strlen($next_object_path) > 25) {
 						$next_object_path = substr($next_object_path, 0, 12) . "..." . substr($next_object_path, strlen($next_object_path) - 12, strlen($next_object_path));
@@ -129,9 +163,9 @@
 					}
 				</script>
 <?php
-			} else {
-				echo $ARnls['err:typetree_does_not_allow'];
-			}
+                    } else {
+                        echo $ARnls['err:typetree_does_not_allow'];
+                    }                
 		} else {
 			echo $ARnls['err:no_add_on_target'];
 		}

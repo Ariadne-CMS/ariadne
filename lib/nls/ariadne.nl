@@ -79,6 +79,7 @@
 	$ARnls["ariadne:logoff"]                        =    "Afmelden";
 	$ARnls["ariadne:mimetype"]                      =    "MIME Type";
 	$ARnls["ariadne:mogrify"]                       =    "Mogrify";
+        $ARnls["ariadne:move"]                          =    "Verplaats";
 	$ARnls["ariadne:new"]                           =    "Voeg nieuw object toe";
 	$ARnls["ariadne:new:add_language"]              =    "Taal toevoegen";
 	$ARnls["ariadne:new:autonumber"]                =    "Automatisch doornummeren";
@@ -116,7 +117,7 @@
 	$ARnls["ariadne:programmers_reference"]         =    "Programmers Reference";
 	$ARnls["ariadne:query"]                         =    "Query";
 	$ARnls["ariadne:remove_file"]                   =    "Verwijder het huidige bestand";
-	$ARnls["ariadne:rename"]                        =    "Hernoem/verplaats ";
+	$ARnls["ariadne:rename"]                        =    "Hernoem";
 	$ARnls["ariadne:rewrite"]                       =    "Inhoud herschrijven";
 	$ARnls["ariadne:rewrite.newreference"]          =    "Nieuwe pad";
 	$ARnls["ariadne:rewrite.newurl"]                =    "Nieuwe URL";

@@ -236,6 +236,7 @@
 	$ARnls["mon"]                                   =    "Pon";
 	$ARnls["month"]                                 =    "Miesiąc";
 	$ARnls["months"]                                =    "Miesiące";
+//      $ARnls["move"]                                  =    "Move"; // value from English
 	$ARnls["n.y.i."]                                =    "Jeszcze nie zaimpementowane.";
 	$ARnls["name"]                                  =    "Nazwa";
 	$ARnls["netherlands"]                           =    "Holandia";

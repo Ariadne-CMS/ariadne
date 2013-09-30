@@ -163,8 +163,10 @@ div.buttons input {
 	background:url("../images/sprite.png") repeat-x 0 0;
 	border: 1px solid #808080;
 }
-#tabsdata fieldset.browse .browse_wrapper {
+#tabsdata fieldset.browse .browse_wrapper .field {
 	padding-right: 105px;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
 }
 #tabsdata fieldset.browse input {
 	float: left;
@@ -339,16 +341,18 @@ div.buttons div.center {
 	margin-left: 5px;
 }
 
+.progressbar,
 #progressbar {
 	height: 30px;
-	position: fixed;
-	left: 20px;
-	right: 20px;
+	position: absolute;
+	left: 9px;
+	right: 9px;
 	border: 1px solid #808080;
 	background : url("../images/sprite.png") repeat-x scroll 0px -100px;
 	margin-top: 20px;
 }
-#progress {
+#progress,
+.progressbar .progress {
 	position: absolute;
 	top: 0px;
 	left: 0px;
@@ -356,6 +360,7 @@ div.buttons div.center {
 	width: 0%;
 	background : url("../images/sprite.png") repeat-x scroll 0px -1400px;
 }
+.progressbar .progress_text,
 #progress_text {
 	color: white;
 	position: absolute;
@@ -369,14 +374,41 @@ div.buttons div.center {
 }
 #progress_verbose {
 	position: fixed;
-	left: 20px;
+	left: 50%;
 	right: 20px;
-	top: 120px;
+	top: 60px;
 	bottom: 60px;
 	border: 1px solid #808080;
 	overflow: auto;
 	background-color: white;
 	padding: 5px;
+	margin-left: 5px;
+}
+div.sourcepath {
+	position: relative;
+	padding: 0px 9px;
+	height: 55px;
+	margin-bottom: 5px;
+}
+div.sourcepath .progressbar {
+	margin-top: 5px;
+}
+
+#progressbars {
+	position: fixed;
+	left: 20px;
+	margin-right: 5px;
+	right: 50%;
+	border: 1px solid #808080;
+	top: 60px;
+	padding: 5px;
+	bottom: 60px;
+	overflow: auto;
+}
+
+#progressbar .progressbar {
+	left: 0px;
+	right: 0px;
 }
 #data.delete .typeicon,
 #data.delete .overlay_typeicon,

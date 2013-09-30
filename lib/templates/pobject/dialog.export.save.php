@@ -23,8 +23,8 @@
 				$progress = (int)(100*($current)/$total);
 
 				echo "<script type='text/javascript'>\n";
-				echo "document.getElementById('progress').style.width = '" . $progress . "%';\n";
-				echo "document.getElementById('progress_text').innerHTML = '" . $current . "/" . $total . "';\n";
+				echo "document.getElementById('progress' + currentProgressBar).style.width = '" . $progress . "%';\n";
+				echo "document.getElementById('progress_text' + currentProgressBar).innerHTML = '" . $current . "/" . $total . "';\n";
 				echo "</script>";
 				flush();
 			}
@@ -43,17 +43,19 @@
 
 		$ax_config["database"]=tempnam($this->store->get_config("files")."temp/","ax");
 		@unlink($ax_config["database"]);
-		$srcpath=$this->path;
+
+		$sources = $this->getvar("sources");
+		if (!$sources) {
+			$sources = array($this->path);
+		}
+
 		$ax_config["writeable"]=true;
 		$ARCurrent->session->put("tempname",$ax_config["database"]);
-		if ($full_path) {
-			$destpath="";
-		} else {
-			if ($this->parent=="..") {
-				$destpath="/";
-			} else {
-				$destpath="/".substr($this->path, strlen($this->parent));
-			}
+
+		$importStore=new axstore("", $ax_config);
+		if (!$importStore->error) {
+			set_time_limit(0);
+			$ARCurrent->importStore=&$importStore;
 		}
 ?>
 <script type="text/javascript">
@@ -67,23 +69,37 @@
 	}
 	
 </script>
-<?php echo $ARnls['ariadne:export'] . " $srcpath"; ?>
-<div id="progressbar">
-	<div id="progress"></div>
-	<div id="progress_text">0/<?php echo $total; ?></div>
+<div id="progressbars">
+<?php foreach ($sources as $key => $srcpath) { ?>
+	<div class="sourcepath">
+		<?php echo $ARnls['ariadne:export'] . " $srcpath"; ?>
+		<div class="progressbar">
+			<div class="progress" id="progress<?php echo $key; ?>"></div>
+			<div class="progress_text" id="progress_text<?php echo $key; ?>">0/<?php echo $total; ?></div>
+		</div>
+	</div>
+<?php } ?>
 </div>
 <div id="progress_verbose"></div>
 <?php
-			$importStore=new axstore("", $ax_config);
+		foreach ($sources as $key => $srcpath) {
+			echo "<script type='text/javascript'>currentProgressBar = '$key';</script>";
+
+			$sourceob = current($this->get($srcpath, "system.get.phtml"));
+
+			if ($full_path) {
+				$destpath="";
+			} else {
+				if ($sourceob->parent=="..") {
+					$destpath="/";
+				} else {
+					$destpath="/".substr($sourceob->path, strlen($sourceob->parent));
+				}
+			}
+
 			if (!$importStore->error) {
-				set_time_limit(0);
-				$ARCurrent->importStore=&$importStore;
-				$callArgs=Array("srcpath" => $srcpath,
-								"destpath" => $destpath);
-
+				$callArgs=Array("srcpath" => $srcpath, "destpath" => $destpath);
 				$error = $this->call("system.export.phtml", $callArgs);
-				$importStore->close();
-
 			} else {
 				$error="ax error: ".$importStore->error;
 			}
@@ -91,11 +107,12 @@
 			if ($error) {
 				echo $error."\n";
 			}
-		?>
-<?php
-		if ($error) {
-			// prevent js download code from running 
-			echo "<script type='text/javascript'> error=true; </script>";
+
+			if ($error) {
+				// prevent js download code from running 
+				echo "<script type='text/javascript'> error=true; </script>";
+			}
 		}
+		$importStore->close();
 	}
 ?>

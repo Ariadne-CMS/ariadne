@@ -240,6 +240,7 @@
 	$ARnls["mon"]                                   =    "Lun";
 	$ARnls["month"]                                 =    "Mes";
 	$ARnls["months"]                                =    "Meses";
+//      $ARnls["move"]                                  =    "Move"; // value from English
 	$ARnls["n.y.i."]                                =    "No implementado a&uacute;n.";
 	$ARnls["name"]                                  =    "Nombre";
 	$ARnls["netherlands"]                           =    "Pa&iacute;ses Bajos";

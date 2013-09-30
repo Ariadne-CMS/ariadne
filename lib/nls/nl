@@ -234,6 +234,7 @@
 	$ARnls["mon"]                                   =    "Maa";
 	$ARnls["month"]                                 =    "Maand";
 	$ARnls["months"]                                =    "Maanden";
+        $ARnls["move"]                                  =    "Verplaats";
 	$ARnls["n.y.i."]                                =    "Nog niet geimplementeerd";
 	$ARnls["name"]                                  =    "Naam";
 	$ARnls["netherlands"]                           =    "Nederland";
@@ -297,6 +298,7 @@
 	$ARnls["q:removegroup"]                         =    "Weet U zeker dat U deze groep wilt verwijderen?";
 	$ARnls["q:removenewspaper"]                     =    "Weet U zeker dat U deze krant wilt verwijderen?";
 	$ARnls["q:removeobject"]                        =    "Weet U zeker dat U dit object wilt verwijderen?";
+	$ARnls["q:removeobjects"]                       =    "Weet U zeker dat U deze objecten wilt verwijderen?";
 	$ARnls["q:removepage"]                          =    "Weet U zeker dat U deze pagina wilt verwijderen?";
 	$ARnls["q:removeshortcut"]                      =    "Weet U zeker dat U deze snelkoppeling wilt verwijderen?";
 	$ARnls["q:removetemplate"]                      =    "Weet U zeker dat U template %s van %s wilt verwijderen?";

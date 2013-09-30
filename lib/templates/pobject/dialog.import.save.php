@@ -21,10 +21,14 @@
 			flush();
 		}
 ?>
-<?php echo $ARnls['importobject']; ?>
-<div id="progressbar">
-	<div id="progress"></div>
-	<div id="progress_text">0/<?php echo $total; ?></div>
+<div id="progressbars">
+        <div class="sourcepath">
+                <?php echo $ARnls['importobject'] . " $srcpath"; ?>
+		<div id="progressbar">
+			<div id="progress"></div>
+			<div id="progress_text">0/<?php echo $total; ?></div>
+		</div>
+	</div>
 </div>
 <div id="progress_verbose"></div>
 <?php

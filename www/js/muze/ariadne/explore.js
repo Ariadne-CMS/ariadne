@@ -21,13 +21,15 @@ muze.ariadne.explore = function() {
 			'dialog_edit' 			: windowprops_common + windowsize_large,
 			'dialog_edit_shortcut'		: windowprops_common + windowsize_large,
 			'dialog_rename'			: windowprops_common + windowsize_small,
+                        'dialog_move'                   : windowprops_common + windowsize_small,
 			'dialog_copy'			: windowprops_common + windowsize_small,
 			'dialog_link'			: windowprops_common + windowsize_small,
 			'dialog_delete'			: windowprops_common + windowsize_small,
 			'dialog_mogrify'		: windowprops_common + windowsize_small,
 			'dialog_import'			: windowprops_common + windowsize_large,
 			'dialog_export'			: windowprops_common + windowsize_large,
-			'dialog_hyperlink'		: windowprops_common + windowsize_large,
+			'dialog_apkg'			: windowprops_common + windowsize_large,
+
 			'dialog_svn_tree_info'		: windowprops_common + windowsize_large,
 			'dialog_svn_tree_diff'		: windowprops_common + windowsize_large,
 			'dialog_svn_tree_commit'	: windowprops_common + windowsize_large,
@@ -208,9 +210,8 @@ muze.ariadne.explore = function() {
 			} else {
 				muze.ariadne.explore.tree.view(path);
 			}
-			
+			muze.ariadne.explore.viewpane.view(path); // viewpane before sidebar to allow unselect to happen first.
 			muze.ariadne.explore.sidebar.view(path);
-			muze.ariadne.explore.viewpane.view(path);
 			muze.ariadne.explore.browseheader.view(path);
 			muze.ariadne.explore.toolbar.view(path);
 			muze.ariadne.registry.set('path', path);
@@ -358,6 +359,7 @@ muze.ariadne.explore.tree = function() {
 		//prepare URL for XHR request:
 		var time = new Date();
 		var sUrl = muze.ariadne.explore.tree.loaderUrl + nodePath + "system.list.folders.json.php?sanity=true&" + time.getTime();
+
 		var order = muze.ariadne.registry.get('order');
 		var direction = muze.ariadne.registry.get('direction');
 
@@ -438,7 +440,7 @@ muze.ariadne.explore.tree = function() {
 		}
 	}
 
-	function buildTree(nodes) {
+        function buildTree(nodes) {
 		//create a new tree:
 		tree = new YAHOO.widget.TreeView("treeDiv");
 		//turn dynamic loading on for entire tree:
@@ -750,6 +752,11 @@ muze.ariadne.explore.sidebar = function() {
 			muze.ariadne.explore.sidebar.currentpath = path;
 			var template = 'explore.sidebar.php';
 			
+			var selected = YAHOO.util.Dom.getElementsByClassName("selectable-selected", "*", "archildren");
+			if (selected.length > 1) {
+				template = 'explore.sidebar.multiple.php';
+			}
+			
 			var sUrl = muze.ariadne.registry.get('store_root')+path+template;
 
 			var fadeOut = new YAHOO.util.Anim("sidebar", { opacity: {to: 0.3}}, 0.2);
@@ -944,12 +951,21 @@ muze.ariadne.explore.viewpane = function() {
 			for (var i=0; i<items.length; i++) {
 				YAHOO.util.Dom.removeClass(items[i], "selected");
 			}
+
+			var items = YAHOO.util.Dom.getElementsByClassName("selectable-selected", "*", "archildren");
+			for (var i=0; i<items.length; i++) {
+				YAHOO.util.Dom.removeClass(items[i], "selectable-selected");
+			}
 		},
 		rowClick : function(args) {
 			var event = args.event;
 			YAHOO.util.Event.stopEvent(event);
 
-			this.unselectAllRows();
+			return;
+
+			if (!event.ctrlKey) {
+				this.unselectAllRows();
+			}
 
 			var data = this.getRecord(args.target);
 
@@ -992,7 +1008,10 @@ muze.ariadne.explore.viewpane = function() {
 		},
 		onClick : function(event) {
 			YAHOO.util.Event.preventDefault(event);
-			muze.ariadne.explore.viewpane.unselectItem();
+			return;
+			if (!event.ctrlKey) {
+				muze.ariadne.explore.viewpane.unselectItem();
+			}
 			var target = YAHOO.util.Event.getTarget(event);
 			while (target.id != "viewpane") {
 				if (YAHOO.util.Dom.hasClass(target, 'explore_item')) {
@@ -1021,6 +1040,14 @@ muze.ariadne.explore.viewpane = function() {
 			muze.ariadne.explore.browseheader.view(path);
 			muze.ariadne.explore.sidebar.view(path);
 		},
+		setselect : function(select) {
+			muze.ariadne.registry.set('select', select);
+			muze.ariadne.cookie.set('select', select);
+			var path = muze.ariadne.registry.get('path');
+			muze.ariadne.explore.viewpane.view(path);
+			muze.ariadne.explore.browseheader.view(path);
+			muze.ariadne.explore.sidebar.view(path);
+		},
 		setfilter : function(filter) {
 			var path = muze.ariadne.registry.get('path');
 			muze.ariadne.registry.set('filter' + path, filter);
@@ -1038,6 +1065,8 @@ muze.ariadne.explore.viewpane = function() {
 			muze.ariadne.explore.viewpane.browseto(url);
 		},
 		browseto : function(url) {
+			muze.ariadne.explore.viewpane.unselectItem();
+
 			var archildren = document.getElementById("archildren");
 
 			var fadeOut = new YAHOO.util.Anim("archildren", { opacity: {to: 0.3}}, 0.2);
@@ -1138,8 +1167,18 @@ muze.ariadne.explore.viewpane = function() {
 			} else {
 				muze.ariadne.registry.set('viewmode', viewmode);
 			}
+			var order = muze.ariadne.registry.get('order');
+			var direction = muze.ariadne.registry.get('direction');
+			
+			var store_root = muze.ariadne.registry.get('store_root');
 
 			var url = store_root + path + browse_template + viewmode + '.php?';
+			if (muze.ariadne.explore.viewpane.typefilter) {
+				url = url + 'type=' + muze.ariadne.explore.viewpane.typefilter;
+			}
+			if (page) {
+				url = url + 'page=' + page;
+			}
 			if (order) {
 				url = url + '&order=' + order;
 			}
@@ -1209,6 +1248,14 @@ muze.ariadne.explore.browseheader = function() {
 
 muze.ariadne.explore.dialog = ( function () {
 	return {
+                'getTargets' : function(varname) { //builds string of paths for the dialog when multiple items are selected.
+                        var selected = YAHOO.util.Dom.getElementsByClassName("selectable-selected", "*", "archildren");
+			var target = '?';
+			for (i=0; i<selected.length; i++) {
+				target += varname + '[]=' + selected[i].getAttribute("data-path") + '&';
+			}
+			return target;
+                },
 		'add': function(href) {
 			muze.dialog.open(href, 'dialog_add', { windowFeatures: muze.ariadne.explore.windowprops['dialog_add'] } )
 			.on('submit', function( args ) {
@@ -1226,7 +1273,8 @@ muze.ariadne.explore.dialog = ( function () {
 			});
 		},
 		'rename': function(href) {
-			muze.dialog.open(href, 'dialog_rename', { windowFeatures: muze.ariadne.explore.windowprops['dialog_rename'] } )
+                        var pathmode = '?pathmode=filename';
+			muze.dialog.open(href + pathmode, 'dialog_rename', { windowFeatures: muze.ariadne.explore.windowprops['dialog_rename'] } )
 			.on('renamed', function( args ) {
 				muze.ariadne.explore.tree.refresh(args['path']);
 				muze.ariadne.explore.view(args['path']);
@@ -1235,6 +1283,42 @@ muze.ariadne.explore.dialog = ( function () {
 				this.close();
 			});
 		},
+                'moveselected' : function(href) {
+                        var target = muze.ariadne.explore.dialog.getTargets("sources");
+                        muze.dialog.open(href + target, 'dialog_move', { windowFeatures: muze.ariadne.explore.windowprops['dialog_move'] } )
+                        .on('renamed', function( args ) {
+				muze.ariadne.explore.tree.refresh(args['path']);
+				muze.ariadne.explore.view(args['path']);
+			})
+			.always( function() {
+				this.close();
+			});
+		},
+		'move': function(href) {
+                        var pathmode = '?pathmode=parent';
+			muze.dialog.open(href + pathmode, 'dialog_move', { windowFeatures: muze.ariadne.explore.windowprops['dialog_move'] } )
+			.on('renamed', function( args ) { //renamed because .save dialog is shared with rename
+				muze.ariadne.explore.tree.refresh(args['path']);
+				muze.ariadne.explore.view(args['path']);
+			})
+			.always( function() {
+				this.close();
+			});
+		},
+                'copyselected' : function(href) {
+                        var target = muze.ariadne.explore.dialog.getTargets("sources");
+                        muze.dialog.open(href + target, 'dialog_copy', { windowFeatures: muze.ariadne.explore.windowprops['dialog_copy'] } )
+                        .on('copied', function( args ) {
+                                if (args['path'] == args['copyTarget'] ) {
+                                        muze.ariadne.explore.objectadded();
+                                } else {
+                                        muze.ariadne.explore.tree.view(args['copyTarget']);
+                                }
+                        })
+                        .always( function() {
+				this.close();
+			});
+                },
 		'copy': function(href) {
 			muze.dialog.open(href, 'dialog_copy', { windowFeatures: muze.ariadne.explore.windowprops['dialog_copy'] } )
 			.on('copied', function( args ) {
@@ -1243,6 +1327,19 @@ muze.ariadne.explore.dialog = ( function () {
 				} else {
 					muze.ariadne.explore.tree.view(args['copyTarget']);
 				}
+			})
+			.always( function() {
+				this.close();
+			});
+		},
+		'deleteselected': function(href) {
+			var target = muze.ariadne.explore.dialog.getTargets("targets");
+			muze.dialog.open(href + target, 'dialog_delete', { windowFeatures: muze.ariadne.explore.windowprops['dialog_delete'] } )
+			.on('deleted', function( args ) {
+				muze.ariadne.explore.view(args['showPath']);
+				window.setTimeout(function() {
+					muze.ariadne.explore.view(args['showPath']);
+				}, 250);
 			})
 			.always( function() {
 				this.close();
@@ -1257,6 +1354,17 @@ muze.ariadne.explore.dialog = ( function () {
 				this.close();
 			});
 		},
+                'mogrifyselected' : function(href) {
+                        var target = muze.ariadne.explore.dialog.getTargets("targets");
+                        muze.dialog.open(href + target, 'dialog_mogrify', { windowFeatures: muze.ariadne.explore.windowprops['dialog_mogrify'] } )
+                        .on('mogrified', function( args ) {
+                                muze.ariadne.explore.tree.refresh(args['path'])
+				muze.ariadne.explore.view(args['path']);
+                        })
+                        .always(function() {
+                                this.close();
+                        });
+                },
 		'mogrify': function(href) {
 			muze.dialog.open(href, 'dialog_mogrify', { windowFeatures: muze.ariadne.explore.windowprops['dialog_mogrify'] } )
 			.on('mogrified', function( args ) {
@@ -1276,6 +1384,13 @@ muze.ariadne.explore.dialog = ( function () {
 				this.close();
 			});
 		},
+                'exportselected' : function(href) {
+                        var target = muze.ariadne.explore.dialog.getTargets("sources");
+                        muze.dialog.open(href + target, 'dialog_export', { windowFeatures: muze.ariadne.explore.windowprops['dialog_export'] } )
+                        .always(function() {
+                                this.close();
+                        });
+                },
 		'export': function(href) {
 			muze.dialog.open(href, 'dialog_export', { windowFeatures: muze.ariadne.explore.windowprops['dialog_export'] } )
 			.always( function() {
