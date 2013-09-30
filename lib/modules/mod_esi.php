@@ -1,5 +1,5 @@
 <?php
-require_once('mod_htmlparser.php');
+require_once($AR->dir->install."/lib/modules/mod_htmlparser.php");
 
 class ESI {
 	function esiExpression( $expression ) {
@@ -82,13 +82,23 @@ class ESI {
 	}
 
 	function esiFetch($url) {
+		$scriptName = $_SERVER["SCRIPT_NAME"] ? basename($_SERVER["SCRIPT_NAME"]) : basename($_SERVER["SCRIPT_FILENAME"]);
+		if ($scriptName) {
+			$scriptName = "/" . $scriptName;
+		}
+
+		$scriptName = "/loader.php"; // FIXME: Bij een request buiten Ariadne om kan het een andere scriptname zijn waardoor de include niet werkt.
+		
 		$url = ESI::esiExpression( $url );
-		if (strstr($url, $_SERVER['SCRIPT_NAME'])) {
+		if (strstr($url, $scriptName)) {
 			// Looks like an Ariadne request, handle it!
 			$urlArr = parse_url($url);
 			parse_str($urlArr['query'], $_GET);
-			$pathInfo = str_replace($_SERVER['SCRIPT_NAME'], '', $urlArr['path']);
-
+			// $pathInfo = str_replace($scriptName, '', $urlArr['path']);
+			$pathInfo = substr($urlArr['path'], strpos($urlArr['path'], $scriptName)+strlen($scriptName), strlen($urlArr['path']));
+			$pathInfo = str_replace("//", "/", $pathInfo);
+			error_log("PI [$pathInfo] [$scriptName] [" . $urlArr['path'] . "]");
+			
 			ob_start();
 				ldProcessRequest($pathInfo);
 				$replacement = ob_get_contents();
@@ -99,7 +109,7 @@ class ESI {
 			// FIXME: Is it a good idea to do http requests from the server this way?
 			$client = ar('http')->client();
 			$replacement = $client->get($url);
-
+			
 			if ($client->statusCode != "200") {
 				return false;
 			}
@@ -121,7 +131,7 @@ class ESI {
 	}
 
 	function esiChoose($page) {
-		$regExp = '|<esi:choose>.*?(<esi:when[^>]*>.*</esi:when>)+.*?<esi:otherwise>(.*)</esi:otherwise>|is';
+		$regExp = '|<esi:choose>.*?(<esi:when[^>]*>.*</esi:when>)+.*?<esi:otherwise>(.*)</esi:otherwise>.*?</esi:choose>|is';
 
 		$page = preg_replace_callback($regExp, function($matches) {
 			$regExp2 = '|<esi:when[^>]*>(.*?)</esi:when>|is';
@@ -130,23 +140,27 @@ class ESI {
 			foreach ($whens[0] as $key => $when) {
 				$parts = htmlparser::parse($when);
 				$test = $parts['children'][0]['attribs']['test'];
-
+				
 				if (ESI::esiEvaluate($test)) {
 					return ESI::esiProcessAll($whens[1][$key]);
 				}
 			}
-
 			return ESI::esiProcessAll($matches[2]);
 		}, $page);
 		return $page;
 	}
 
 	function esiEvaluate($test) {
-
+		global $AR;
+		
+		// print_r($test);
 		$test = preg_replace('!(\$\([^)]*\))!', '\'$1\'', $test);
+		// echo "[2[" . print_r($test, true) . "]]";
+		
 		$test = ESI::esiExpression($test);
-
-		require_once("mod_pinp.phtml");
+		// echo "[[" . print_r($test, true) . "]]";
+		
+		require_once($AR->dir->install."/lib/modules/mod_pinp.phtml");
 		$pinp=new pinp($AR->PINP_Functions, "esilocal->", "\$AR_ESI_this->_");
 		$pinp->allowed_functions = array();
 		$pinp->language_types['array'] = false;
@@ -158,6 +172,7 @@ class ESI {
 
 		// FIXME: Is eval after the pinp compiler save enough to run?
 		$result = eval("return (" . $compiled . ");");
+		
 		return $result;
 	}
 
