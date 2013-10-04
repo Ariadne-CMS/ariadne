@@ -262,6 +262,8 @@
 				start output buffering
 			*/
 			ob_start();
+			global $ldOutputBufferActive;
+			$ldOutputBufferActive = true;
 			ob_implicit_flush(0);
 
 			// look for the language
@@ -402,8 +404,9 @@
 
 			ldGatherXSSInput( $xss_vars, $function );
 			ldGatherXSSInput( $xss_vars, $path );
+			global $ldXSSProtectionActive;
 			if (count($xss_vars)) {
-				ob_start();
+				$ldXSSProtectionActive = true;
 			}
 
 			if ($function!==false) {
@@ -417,7 +420,7 @@
 
 			if (count($xss_vars)) {
 				$image = ob_get_contents();
-				ob_end_clean();
+				ob_clean();
 
 				$header = $ARCurrent->ldHeaders["content-type"];
 				$xssDetected = false;

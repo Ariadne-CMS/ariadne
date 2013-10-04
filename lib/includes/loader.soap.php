@@ -295,4 +295,9 @@
 		return false;
 	}
 
+	function ldDisablePostProcessing() {
+		// dummy function
+		return false;
+	}
+
 ?>

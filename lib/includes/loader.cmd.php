@@ -172,4 +172,9 @@
 		return $result;
 	}
 
+	function ldDisablePostProcessing() {
+		// dummy function
+		return false;
+	}
+
 ?>
