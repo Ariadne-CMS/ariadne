@@ -1909,12 +1909,6 @@ debug("loadLibrary: loading cache for $this->path");
 			   ) {
 				// caching is on and enabled in loader and user is public and template is not 'protected'.
 				$ARCurrent->cachetime=$config->cache;
-				// start output buffering...	
-				// if output compression is on, we don't want
-				// to start another output buffer
-				if (!$AR->output_compression) {
-					ob_start();
-				}
 			}
 
 			/*

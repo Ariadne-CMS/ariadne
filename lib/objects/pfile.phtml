@@ -94,9 +94,6 @@ class pfile extends pobject { // pfile class definition
 		}
 
 		if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
-			if ($ARCurrent->cachetime==0 && !$AR->output_compression) {
-				ob_start(); // start the cache
-			}
 			$ARCurrent->cachetime=-2; // set cache to onchange
 		}
 		$template = $this->getvar("arCallFunction");
@@ -155,9 +152,6 @@ class pfile extends pobject { // pfile class definition
 		}
 
 		if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
-			if ($ARCurrent->cachetime==0 && !$AR->output_compression) {
-				ob_start(); // start the cache
-			}
 			$ARCurrent->cachetime=-2; // set cache to onchange
 		}
 		$files=$this->store->get_filestore("files");

@@ -261,10 +261,8 @@
 			/*
 				start output buffering
 			*/
-			if ($AR->output_compression) {
-				ob_start();
-				ob_implicit_flush(0);
-			}
+			ob_start();
+			ob_implicit_flush(0);
 
 			// look for the language
 			$split=strpos(substr($AR_PATH_INFO, 1), "/");
