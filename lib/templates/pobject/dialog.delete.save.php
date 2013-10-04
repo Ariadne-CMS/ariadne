@@ -1,4 +1,5 @@
 <?php
+	ldDisablePostProcessing();
 	// FIXME: Make the non-javascript handling work as well.
 
 	$ARCurrent->nolangcheck=true;

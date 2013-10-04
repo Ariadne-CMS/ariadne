@@ -1,4 +1,5 @@
 <?php
+	ldDisablePostProcessing();
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin('config') && $this->CheckConfig()) {
 		$behaviour	= $this->getvar("behaviour");

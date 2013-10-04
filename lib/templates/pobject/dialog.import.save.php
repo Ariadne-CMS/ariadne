@@ -1,4 +1,5 @@
 <?php
+	ldDisablePostProcessing();
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
 		function progress($current, $total) {
 			if ($total > 0) {

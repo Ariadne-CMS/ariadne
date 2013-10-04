@@ -1,4 +1,5 @@
 <?php
+	ldDisablePostProcessing();
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 		$this->call("system.save.cache.phtml", $arCallArgs);

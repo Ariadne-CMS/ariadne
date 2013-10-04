@@ -1,4 +1,5 @@
 <?php
+	ldDisablePostProcessing();
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
 
 		require($this->store->get_config("code")."/configs/axstore.phtml");

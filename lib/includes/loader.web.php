@@ -463,4 +463,28 @@
 		return $result;
 	}
 
+	function ldDisablePostProcessing() {
+		global $ARCurrent,$ldXSSProtectionActive,$ldOutputBufferActive;
+
+		// only disable the cache when we don't have xss protection active
+		if($ldXSSProtectionActive !== true  && $ldOutputBufferActive === true) {
+			/*
+				kill the innermost output buffer, if there is any other buffering layers active
+				in the end this will remove the outputbuffer used in the loader
+			*/
+
+			ob_end_flush();
+
+			// because we are forceing the output, we can't cache it anymore, disable it for safety sake
+			$ARCurrent->arDontCache = true;
+			$ldOutputBufferActive=false;
+			return true;
+		} else if ($ldXSSProtectionActive === true) {
+			return false;
+		} else if ($ldOutputBufferActive === false) {
+			return 2;
+		}
+	}
+
+
 ?>

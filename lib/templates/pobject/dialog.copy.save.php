@@ -1,4 +1,5 @@
 <?php
+	ldDisablePostProcessing();
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin('read') && $this->CheckConfig()) {
 		$copytarget = $this->make_path($this->getvar('target'));

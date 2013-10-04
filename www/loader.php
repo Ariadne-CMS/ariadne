@@ -91,26 +91,14 @@
 		}
 	}
 
-
-	if(!isset($AR_PATH_INFO)){
-		$AR_PATH_INFO=$_SERVER["PATH_INFO"];
-	}
-	if (!$AR_PATH_INFO) {
-
-		ldRedirect($_SERVER["PHP_SELF"]."/");
-		exit;
-
-	} else {
-
-		// needed for IIS: it doesn't set the PHP_SELF variable.
-		if(!isset( $_SERVER["PHP_SELF"])){
-			$_SERVER['PHP_SELF']=$_SERVER["SCRIPT_NAME"].$AR_PATH_INFO;
-		}
-		if (Headers_sent()) {
-			error("The loader has detected that PHP has already sent the HTTP Headers. This error is usually caused by trailing white space or newlines in the configuration files. See the following error message for the exact file that is causing this:");
-			Header("Misc: this is a test header");
-		}
-		@ob_end_clean(); // just in case the output buffering is set on in php.ini, disable it here, as Ariadne's cache system gets confused otherwise. 
+	function ldProcessRequest($AR_PATH_INFO=null) {
+		error_log("ldProcessRequest [" . $AR_PATH_INFO . "]");
+		global $AR;
+		global $ARCurrent;
+		global $store_config;
+		global $auth_config;
+		global $store;
+		global $context;
 
 		// go check for a sessionid
 		$root=$AR->root;
@@ -168,6 +156,7 @@
 				|| strpos($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip")===false 
 				|| !function_exists("gzcompress")
 				|| $session_id
+				|| $AR->ESI
 			) {
 
 			$AR->output_compression = 0;
@@ -187,6 +176,10 @@
 		$logstats = new stats();
 		$logstats->log();
 
+		if ($AR->ESI) {
+			ob_start();
+		}
+
 		$timecheck=time();
 
 		// FIXME: Chrome sometimes sends If-Modified-Since combined with Pragma: no-cache or Cache-control: no-cache;
@@ -195,16 +188,16 @@
 		// then pass it to Ariadne.
 		// For now: pragma: no-cache check is removed, this makes Ariadne stubborn with returning cache-images.
 
-		if (file_exists($cachedimage) && 
-			(strpos($_SERVER["ALL_HTTP"],"no-cache") === false) &&
+		if (file_exists($cachedimage) &&
 			((($mtime=filemtime($cachedimage))>$timecheck) || ($mtime==0)) &&
 			($_SERVER["REQUEST_METHOD"]!="POST")) {
+			ldHeader("X-Ariadne-Cache: Hit");
 
-			$ctime=filectime($cachedimage);
-			if ($_SERVER['HTTP_IF_MODIFIED_SINCE'] && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $ctime) {
+			$ctime=filemtime($cachedimage); // FIXME: Waarom moet dit mtime zijn? Zonder mtime werkt de if-modified-since niet;
+
+			if (!$AR->ESI && $_SERVER['HTTP_IF_MODIFIED_SINCE'] && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $ctime) {
 				// the mtime is used as expiration time, the ctime is the correct last modification time.
 				// as an object clears the cache upon a save.
-				ldHeader("HTTP/1.1 304 Not Modified");
 
 				// Send the original headers - they will already contain the correct max-age and expires values;
 				if (file_exists($cachedheader)) {
@@ -215,9 +208,12 @@
 						}
 					}
 				}
+				$maxage = $expires - time();
+				if ($maxage < 0) {
+					$maxage = 0;
+				}
+				ldHeader("HTTP/1.1 304 Not Modified");
 			} else {
-				ldHeader("X-Ariadne-Cache: Hit");
-
 				// now send caching headers too, maximum 1 hour client cache.
 				// FIXME: make this configurable. per directory? as a fraction?
 				$freshness=$mtime-$timecheck;
@@ -239,7 +235,19 @@
 					}
 				}
 				ldSetClientCache(true, $cachetime, $ctime);
-				if ($session_id && !$AR->hideSessionIDfromURL) {
+				ldHeader("X-Ariadne-Cache: Hit"); // Send this after the cached headers to overwrite the cached cache-miss header;
+
+				if ($AR->ESI) {
+					if (false && $_SERVER['HTTP_IF_MODIFIED_SINCE'] && (strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $ctime)) {
+						ldHeader("HTTP/1.1 304 Not modified");
+					} else {
+						$data = file_get_contents($cachedimage);
+						include_once($store_config['code']."modules/mod_esi.php");
+						$data = ESI::esiProcess($data);
+						echo $data;
+					}
+
+				} else if ($session_id && !$AR->hideSessionIDfromURL) {
 					$tag = '{arSessionID}';
 					$tag_size = strlen($tag);
 					$data = "";
@@ -255,16 +263,17 @@
 				} else {
 					readfile($cachedimage);
 				}
+				$nocache = true; // Prevent recaching cached image;
 			}
 
 		} else {
 			/*
 				start output buffering
 			*/
-			if ($AR->output_compression) {
-				ob_start();
-				ob_implicit_flush(0);
-			}
+			ob_start();
+			global $ldOutputBufferActive;
+			$ldOutputBufferActive = true;
+			ob_implicit_flush(0);
 
 			// look for the language
 			$split=strpos(substr($AR_PATH_INFO, 1), "/");
@@ -404,8 +413,9 @@
 
 			ldGatherXSSInput( $xss_vars, $function );
 			ldGatherXSSInput( $xss_vars, $path );
+			global $ldXSSProtectionActive;
 			if (count($xss_vars)) {
-				ob_start();
+				$ldXSSProtectionActive = true;
 			}
 
 			if ($function!==false) {
@@ -419,7 +429,7 @@
 
 			if (count($xss_vars)) {
 				$image = ob_get_contents();
-				ob_end_clean();
+				ob_clean();
 
 				$header = $ARCurrent->ldHeaders["content-type"];
 				$xssDetected = false;
@@ -450,17 +460,16 @@
 					echo $image;
 				}
 			}
-
-
 		}
-
 
 		// now check for outputbuffering (caching)
 		if ($image=ob_get_contents()) {
-			if ($_SERVER['REQUEST_METHOD']!='GET' || $DB["wasUsed"] > 0) {
+			if ($_SERVER['REQUEST_METHOD']!='GET' || ($DB["wasUsed"] > 0)) {
 				$nocache = true;
 			}
+
 			// first set clientside cache headers
+
 			if (!$ARCurrent->arDontCache && !$nocache && ($cachetime=$ARCurrent->cachetime)) {
 				if ($cachetime==-2) {
 					$cachetime = 999;
@@ -468,12 +477,18 @@
 					ldSetClientCache(true, time()+1800); // Let the client revalidate cached image after 30 minutes;
 				} else {
 					// FIXME: Is it wise to give the client the same expiry as the cachetime? Or should this also be 30 minutes?
-					ldSetClientCache(true, time()+(($cachetime * 3600)/2));
+					ldSetClientCache(true, time()+1800);
+					// $ARCurrent->cachetime = 999;
 				}
 			}
 
 
 			$image_len = strlen($image);
+
+			if ($AR->ESI) {
+				$AR->output_compression = false;
+			}
+
 			if (!$AR->hideSessionIDfromURL && $ARCurrent->session && $ARCurrent->session->id) {
 				$ldCacheFilename = "/session".$ldCacheFilename;
 				$image = str_replace('-'.$ARCurrent->session->id.'-', '{arSessionID}', $image);
@@ -533,15 +548,51 @@
 			// flush the buffer, this will send the contents to the browser
 			ob_end_flush();
 			debug("loader: ob_end_flush()","all");
+
 			// check whether caching went correctly, then save the cache
 			if (is_array($ARCurrent->cache) && ($file=array_pop($ARCurrent->cache))) {
 				error("cached() opened but not closed with savecache()");
 			} else if (!$ARCurrent->arDontCache && !$nocache) {
-				ldSetCache($ldCacheFilename, $ARCurrent->cachetime, $image, @implode("\n",$ARCurrent->ldHeaders));
+				if ($store) {
+					ldSetCache($ldCacheFilename, $ARCurrent->cachetime, $image, @implode("\n",$ARCurrent->ldHeaders));
+				}
 			}
+		}
+
+		if ($AR->ESI) {
+			$image = ob_get_contents();
+			ob_end_clean();
+			include_once($store_config['code']."modules/mod_esi.php");
+			$image = ESI::esiProcess($image);
+
+			if ($ARCurrent->arDontCache) {
+				// FIXME: ook de cachetime 'niet cachen' uit het cachedialoog werkend maken...  || $ARCurrent->cachetime == 0) {
+				ldSetClientCache(false);
+			}
+			echo $image;
 		}
 	}
 
+	if(!isset($AR_PATH_INFO)){
+		$AR_PATH_INFO=$_SERVER["PATH_INFO"];
+	}
+
+	if (!$AR_PATH_INFO) {
+		ldRedirect($_SERVER["PHP_SELF"]."/");
+		exit;
+	} else {
+		// needed for IIS: it doesn't set the PHP_SELF variable.
+		if(!isset( $_SERVER["PHP_SELF"])){
+			$_SERVER['PHP_SELF']=$_SERVER["SCRIPT_NAME"].$AR_PATH_INFO;
+		}
+		if (Headers_sent()) {
+			error("The loader has detected that PHP has already sent the HTTP Headers. This error is usually caused by trailing white space or newlines in the configuration files. See the following error message for the exact file that is causing this:");
+			Header("Misc: this is a test header");
+		}
+		@ob_end_clean(); // just in case the output buffering is set on in php.ini, disable it here, as Ariadne's cache system gets confused otherwise.
+
+		ldProcessRequest($AR_PATH_INFO);
+	}
 	/* Finish execution */
 	exit;
 ?>

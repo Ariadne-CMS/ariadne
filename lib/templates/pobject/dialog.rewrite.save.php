@@ -1,4 +1,5 @@
 <?php
+	ldDisablePostProcessing();
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin('edit') && $this->CheckConfig()) {
 		// FIXME: Check vars first;

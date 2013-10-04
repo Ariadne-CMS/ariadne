@@ -1,4 +1,5 @@
 <?php
+	ldDisablePostProcessing();
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		echo "<pre class='svn_result'>";
