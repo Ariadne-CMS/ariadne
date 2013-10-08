@@ -244,6 +244,10 @@
 						$data = file_get_contents($cachedimage);
 						include_once($store_config['code']."modules/mod_esi.php");
 						$data = ESI::esiProcess($data);
+						if ($session_id && !$AR->hideSessionIDfromURL) {
+							$tag = '{arSessionID}';
+							$data = str_replace($tag, "-$session_id-", $data);
+						}
 						echo $data;
 					}
 
