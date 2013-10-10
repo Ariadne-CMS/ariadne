@@ -109,4 +109,7 @@
 		return false;
 	}
 
+	function ldGetRequestedHost() {
+		// dummy function
+	}
 ?>
