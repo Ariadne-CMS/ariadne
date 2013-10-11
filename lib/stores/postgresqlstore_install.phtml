@@ -12,8 +12,8 @@ class postgresqlstore_install extends postgresqlstore {
 		$queries[0]["msg"]="creating nodes table.";
 		$queries[0]["query_string"]="
 CREATE TABLE ".$this->tbl_prefix."nodes (
-	path varchar(127) DEFAULT '' NOT NULL PRIMARY KEY,
-	parent varchar(127) DEFAULT '' NOT NULL,
+	path varchar(255) DEFAULT '' NOT NULL PRIMARY KEY,
+	parent varchar(255) DEFAULT '' NOT NULL,
 	object bigint DEFAULT '0' NOT NULL,
 	priority integer DEFAULT '0' NOT NULL
 );

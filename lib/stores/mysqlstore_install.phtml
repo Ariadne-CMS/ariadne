@@ -9,8 +9,8 @@ class mysqlstore_install extends mysqlstore {
 		$queries[0]["msg"]="creating nodes table.";
 		$queries[0]["query_string"]="
 CREATE TABLE ".$this->tbl_prefix."nodes (
-	path varchar(127) DEFAULT '' NOT NULL,
-	parent varchar(127) DEFAULT '' NOT NULL,
+	path varchar(255) DEFAULT '' NOT NULL,
+	parent varchar(255) DEFAULT '' NOT NULL,
 	object int(11) DEFAULT '0' NOT NULL,
 	priority int(11) DEFAULT '0' NOT NULL,
 	PRIMARY KEY (path),
