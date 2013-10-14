@@ -1,6 +1,7 @@
 <?php
 	if ($this->CheckLogin("read")) {
 		global $AR;
+		$saved_object = array();
 
 		if (!function_exists('display')) {
 			function display($str) {
@@ -197,9 +198,9 @@
 							$object->axflags |= AX_WITHOUT_FILES;
 						}
 
-						if (!$ARCurrent->saved_object[$object->id]) {
+						if (!$saved_object[$object->id]) {
 							if ((!$ARCurrent->options["force"] || ($object->axflags & (AX_DUMMY | AX_WITHOUT_DATA))) && $ARCurrent->importStore->exists($newpath)) {
-								$ARCurrent->saved_object[$object->id]=$newpath;
+								$saved_object[$object->id]=$newpath;
 								// we may never overwrite an existing object with a
 								// dummy object
 								if (!($object->axflags & AX_DUMMY) && 
@@ -227,7 +228,7 @@
 								$clearcachePath = getCommonParent($clearcachePath,$newpath,$this->store);
 
 								// next one has to be linked
-								$ARCurrent->saved_object[$object->id]=$newpath;
+								$saved_object[$object->id]=$newpath;
 
 									if ($ARCurrent->importStore->exists($newpath)) {
 
@@ -276,7 +277,7 @@
 						} else {
 							if (!$ARCurrent->importStore->exists($newpath)) {
 								display("(linking)");
-								$ARCurrent->importStore->link($ARCurrent->saved_object[$object->id], $newpath);
+								$ARCurrent->importStore->link($saved_object[$object->id], $newpath);
 							}
 						}
 						display("\n");
