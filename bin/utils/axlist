@@ -18,7 +18,6 @@
 	while (list(,$cmd)=each($argv)) {
 		$option = ldParseOption($cmd);
 		if ($option !== false ) {
-			echo "switch(".$option['switch'].")(".$option['subswitch'].")='".$option['value']."'\n";
 			switch ($option['switch']) {
 				case 'with':
 					$options[$option['subswitch']]=($option['value']) ? $option['value'] : true;
