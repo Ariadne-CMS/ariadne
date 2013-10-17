@@ -12,8 +12,9 @@
 
 		$arNewFilename = $this->getdata("arNewFilename","none");
 		$arNewData = new object();
-		$arNewPath = $this->make_path($arNewFilename);
-		$wgWizCallObject = $this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData);
+		$container = $this->getdata("location") ? $this->getdata("location") : $this->path;
+		$arNewPath = $this->make_path($container . $arNewFilename);
+		$wgWizCallObject = $this->store->newobject($arNewPath, $container, $arNewType, $arNewData);
 		$wgWizCallObject->arIsNewObject = true;
 
 		$wgWizCallObject->call("dialog.edit.save.php");
