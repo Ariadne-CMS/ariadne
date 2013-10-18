@@ -138,9 +138,12 @@
 		}
 	}
 
-	function ldObjectNotFound($requestedpath, $requestedtemplate) {
-	global $store, $AR, $ARCurrent,$args;
+	function ldObjectNotFound($requestedpath, $requestedtemplate, $requestedargs = null ) {
+	global $store, $AR, $ARCurrent, $args;
 		$path=$requestedpath;
+		if ( !$requestedargs ) {
+			$requestedargs = $args;
+		}
 		if (!$path) {
 			error("Empty path requested with template: $requestedtemplate");
 		} else {
@@ -149,7 +152,7 @@
 				$path=$store->make_path($path, "..");
 			}
 			if(count($ARCurrent->arCallStack) == 0) {
-				$arCallArgs = $args;
+				$arCallArgs = $requestedargs;
 			} else {
 				$arCallArgs = @array_pop($ARCurrent->arCallStack);
 				@array_push($ARCurrent->arCallStack, $arCallArgs);
@@ -168,8 +171,6 @@
 					"arCallFunction" => $requestedtemplate
 				) );
 
-				$requestedArgs = $arCallArgs;
-
 				$eventData = new object();
 				$eventData->arCallPath = $requestedpath;
 				$eventData->arCallFunction = $requestedtemplate;
@@ -178,10 +179,11 @@
 				if ( $eventData ) {
 					// no results: page couldn't be found, show user definable 404 message
 					$arCallArgs = (array) $eventData->arCallArgs;
+					$requestedargs = $arCallArgs;
 					$myarCallArgs = array_merge($arCallArgs, 
 						Array(	"arRequestedPath" => $requestedpath,
 						 		"arRequestedTemplate" => $requestedtemplate,
-								"arRequestedArgs" => $requestargs
+								"arRequestedArgs" => $requestedargs
 						)
 					);
 					$store->call("user.notfound.html",$myarCallArgs,
