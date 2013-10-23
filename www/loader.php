@@ -374,18 +374,18 @@
 			
 			// valid new login, without a session, morph to login.redirect.php to redirect to a session containing url
 			if( !$session_id && $args["ARLogin"] && $args["ARPassword"] && $function !== false && !$AR->hideSessionIDfromURL ) {
-				if ($arDefaultFunction !== $function) {
-					$args["arRequestedTemplate"] = $function;
-				} else {
-					$args["arRequestedTemplate"] = "";
-				}
-				$function = "login.redirect.php";
 				if (!$ARCurrent->session->get("oldArCallArgs", 1)) {
 					$ARCurrent->session->put("oldGET", $_GET, 1);
 					$ARCurrent->session->put("oldPOST", $_POST, 1);
 					$ARCurrent->session->put("oldArCallArgs", $args, 1);
 					$ARCurrent->session->save(0, true);
 				}
+				if ($arDefaultFunction !== $function) {
+					$args["arRequestedTemplate"] = $function;
+				} else {
+					$args["arRequestedTemplate"] = "";
+				}
+				$function = "login.redirect.php";
 			} else if( $session_id ) {
 				if ($ARCurrent->session->get("ARSessionTimedout", 1)) {
 					if (!$ARCurrent->session->get("oldArCallArgs", 1)) {
@@ -426,7 +426,7 @@
 				unset($store->total);
 				$store->call($function, $args, $store->get($path));
 				if (!$store->total) {
-					ldObjectNotFound($path, $function);
+					ldObjectNotFound($path, $function, $args);
 				}
 			}
 

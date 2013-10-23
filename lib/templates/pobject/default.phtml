@@ -58,7 +58,7 @@
 				$this->get($this->path.$arCallFunction."/","view.html",$arCallArgs);
 			}
 		} else {
-			ldObjectNotFound($this->path, $arCallFunction);
+			ldObjectNotFound($this->path, $arCallFunction, $arCallArgs);
 		}
 	}
 
