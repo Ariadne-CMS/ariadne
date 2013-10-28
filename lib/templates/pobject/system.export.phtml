@@ -326,7 +326,10 @@
 							unset($criteria);
 							$criteria["login"]["value"]["="]="'$login'";
 							$criteria["object"]["type"]["="]="'puser'";
-							$ARCurrent->importStore->call("system.import.usergrants.phtml", $arCallArgs,
+							$arguments = $arCallArgs;
+							$arguments["importDestPath"] = $destpath;
+							$arguments["importRootPath"] = $rootpath;
+							$ARCurrent->importStore->call("system.import.usergrants.phtml", $arguments,
 								$result=$ARCurrent->importStore->find("/system/users/", $criteria));
 						} 
 					}
