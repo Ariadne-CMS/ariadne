@@ -129,7 +129,7 @@
 			}
 			$processed_items = 0;
 
-            if (get_class($this->store) == "axstore") {
+			if (get_class($this->store) == "axstore") {
 				$items_to_process = count($this->store->nodes); // FIXME: This works for import, but not for export.
 			} else {
 				$query = "object.path =~ '" . $srcpath . "%' order by path ASC";
@@ -312,8 +312,8 @@
 							$arguments["importDestPath"] = $destpath;
 							$arguments["importRootPath"] = $rootpath;
 							$ARCurrent->importStore->call("system.import.groupgrants.phtml", 
-															$arguments,
-															$result=$ARCurrent->importStore->find("/system/groups/", $criteria));
+								$arguments,
+								$ARCurrent->importStore->find("/system/groups/", $criteria));
 						} 
 					}
 				}
@@ -330,7 +330,7 @@
 							$arguments["importDestPath"] = $destpath;
 							$arguments["importRootPath"] = $rootpath;
 							$ARCurrent->importStore->call("system.import.usergrants.phtml", $arguments,
-								$result=$ARCurrent->importStore->find("/system/users/", $criteria));
+								$ARCurrent->importStore->find("/system/users/", $criteria));
 						} 
 					}
 				}
