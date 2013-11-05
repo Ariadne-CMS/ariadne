@@ -99,7 +99,7 @@
 			// FIXME: this template is used to fetch folders in explore - it should be renamed to explore.list.folders.json.php;
 			return true;
 		} else if ($template == "system.list.objects.json.php") {
-			FIXME: this template is used to fetch objects in explore - it should be renamed to explore.list.objects.json.php;
+			// FIXME: this template is used to fetch objects in explore - it should be renamed to explore.list.objects.json.php;
 			return true;
 		} else if (preg_match('/^(system|ftp|webdav|soap)\./', $template)) {
 			// Disallow all direct calls to system.*, ftp.*, webdav.*, soap.* templates;
