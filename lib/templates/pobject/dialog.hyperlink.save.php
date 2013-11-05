@@ -1,4 +1,8 @@
 <?php
+	if (!$this->validateFormSecret()) {
+		error($ARnls['ariadne:err:invalidsession']);      
+		exit;
+	}
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 

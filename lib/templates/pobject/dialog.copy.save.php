@@ -1,6 +1,10 @@
 <?php
 	ldDisablePostProcessing();
 	$ARCurrent->nolangcheck=true;
+	if (!$this->validateFormSecret()) {
+		error($ARnls['ariadne:err:invalidsession']);      
+		exit;
+	}
 	if ($this->CheckLogin('read') && $this->CheckConfig()) {
 
 		$copytarget = $this->make_path($this->getvar('target'));

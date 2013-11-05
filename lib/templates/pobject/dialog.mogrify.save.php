@@ -1,5 +1,9 @@
 <?php
 	$ARCurrent->nolangcheck=true;
+	if (!$this->validateFormSecret()) {
+		error($ARnls['ariadne:err:invalidsession']);      
+		exit;
+	}
 	if ($this->CheckLogin('config') && $this->CheckConfig() && $this->can_mogrify() ) {
             if ($this->getvar('targets')) {
                 $targets = $this->getvar("targets");

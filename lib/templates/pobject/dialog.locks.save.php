@@ -1,4 +1,8 @@
 <?php
+	if (!$this->validateFormSecret()) {
+		error($ARnls['ariadne:err:invalidsession']);      
+		exit;
+	}
 	$unlocks = $this->getdata("unlock");
 	$arReturnPage = $this->getdata("arReturnPage");
 	$locks=$this->store->mod_lock->get_locks($this->data->login);

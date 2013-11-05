@@ -2,6 +2,10 @@
 	/******************************************************************
 	
 	******************************************************************/
+	if (!$this->validateFormSecret()) {
+		error($ARnls['ariadne:err:invalidsession']);      
+		exit;
+	}
 
 	$this->call("system.save.custom.phtml", $arCallArgs);
 	if (!$this->error) {

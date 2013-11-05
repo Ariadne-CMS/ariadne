@@ -1,4 +1,8 @@
 <?php
+	if (!$this->validateFormSecret()) {
+		error($ARnls['ariadne:err:invalidsession']);      
+		exit;
+	}
         if ($this->CheckLogin("admin") && $this->CheckConfig()) {
 		global $AR;
 		$userpath = $this->getvar('target');

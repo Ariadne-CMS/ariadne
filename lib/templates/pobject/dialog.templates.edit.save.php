@@ -1,4 +1,8 @@
 <?php
+	if (!$this->validateFormSecret()) {
+		error($ARnls['ariadne:err:invalidsession']);      
+		exit;
+	}
 
 	if( $this->CheckLogin("layout") && $this->CheckConfig() ) {
 		$args = array(

@@ -1,4 +1,8 @@
 <?php
+	if (!$this->validateFormSecret()) {
+		error($ARnls['ariadne:err:invalidsession']);      
+		exit;
+	}
 	ldDisablePostProcessing();
 	if ($this->CheckLogin("config") && $this->CheckConfig()) {
 		function progress($current, $total) {

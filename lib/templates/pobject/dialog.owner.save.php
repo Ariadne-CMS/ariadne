@@ -1,6 +1,10 @@
 <?php
 	ldDisablePostProcessing();
 	$ARCurrent->nolangcheck=true;
+	if (!$this->validateFormSecret()) {
+		error($ARnls['ariadne:err:invalidsession']);      
+		exit;
+	}
 	if ($this->CheckLogin('config') && $this->CheckConfig()) {
 		$behaviour	= $this->getvar("behaviour");
 		$owner		= $this->getvar("owner");

@@ -1,6 +1,10 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	$arIsNewObject=$this->arIsNewObject;
+	if (!$this->validateFormSecret()) {
+		error($ARnls['ariadne:err:invalidsession']);      
+		exit;
+	}
 	if ($this->AR_implements('pshortcut')) {
 		$this->call("system.save.shortcut.phtml",$arCallArgs);
 	} else {

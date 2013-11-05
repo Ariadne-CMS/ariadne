@@ -1,5 +1,9 @@
 <?php
 	$ARCurrent->nolangcheck = true;
+	if (!$this->validateFormSecret()) {
+		error($ARnls['ariadne:err:invalidsession']);      
+		exit;
+	}
 
 	$arNewType = $this->getdata("arNewType","none");
 	if ( !$arNewType ) {
