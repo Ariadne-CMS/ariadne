@@ -241,6 +241,5 @@
 	$ARnls['ariadne:select:modified_last_year'] = "Modified last year";
 	$ARnls['ariadne:select:modified_last_month'] = "Modified last month";
 	$ARnls['ariadne:select:modified_last_day'] = "Modified last day";
-	$ARnls['ariadne:err:invalidsession'] = "Session is not valid for this operation.":
-
+	$ARnls['ariadne:err:invalidsession'] = "Session is not valid for this operation.";
 ?>
