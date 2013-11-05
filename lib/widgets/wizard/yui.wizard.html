@@ -116,6 +116,9 @@
 	action="<?php echo htmlentities($_SERVER["REQUEST_URI"]); ?>"
 	onSubmit="return checksubmit();"
 	ENCTYPE="multipart/form-data">
+	<?php if ($ARCurrent->session) { ?>
+		<input type="hidden" name="formSecret" value="<?php echo $ARCurrent->session->data->formSecret; ?>">
+	<?php } ?>
 <div class="storevars">
 <?php
 	if (!$arStoreVars) {
