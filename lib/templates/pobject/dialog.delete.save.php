@@ -1,4 +1,8 @@
 <?php
+	if (!$this->validateFormSecret()) {
+		error($ARnls['ariadne:err:invalidsession']);      
+		exit;
+	}
 	ldDisablePostProcessing();
 	// FIXME: Make the non-javascript handling work as well.
 
