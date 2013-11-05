@@ -12,14 +12,31 @@ class session {
 		$this->updateInterval = $session_config["timeout"]/10;
 
 		if ((!$id) || (!$this->sessionstore->exists("/$id/"))) {
-			$id = $this->generateSessionId();
+			debug("session: generating new id", "all");
+			// generate new id
+			mt_srand((int) (microtime(true)*1000000));
+			do {
+				$attempts++;
+				$id = false;
+				if ($attempts % 25 === 0) {
+					debug("Cleaning up sessions and reusing old session","store");
+					$purgedSessions = (array)$this->purgeExpiredSessions();
+					shuffle($purgedSessions);
+					$id = current($purgedSessions);
+					debug("reuse id is $id","store");
+				}
+				if (!$id ) {
+					// base36 encoded 4 char length == 36^4-1 == 1679615
+					$id = sprintf("%04s",base_convert(mt_rand(0,1679615),10,36));
+				}
+				debug("new id is $id","store");
+			} while ($this->sessionstore->exists("/".$id."/"));
 			// save new session object
 			$this->data=new object;
 			$this->id=$id;
 			$this->lastchanged=time();
 			$this->system = new object;
 			$this->system->ARSessionTimedout=false;
-			$this->put("formSecret", md5(uniqid(rand(), TRUE)));
 			$this->save(0, 1);
 		} else { // retrieve session
 			$result=current($this->sessionstore->call(
@@ -41,41 +58,9 @@ class session {
 			$this->data=$result->data;
 		}
 
+		$this->put("formSecret", md5(uniqid(rand(), TRUE)));
 		$this->put("ARSessionId",$this->id);
 		debug("session: end","all");
-	}
-
-	function generateSessionId() {
-		$randomAttempts = 20; 	// When a free session hasn't been found after x tries, try to reuse existing (timed out) sessions.
-		$counter = 0;
-
-		debug("session: generating new id", "all");
-		// generate new id
-		srand((double)microtime()*1000000);
-		while ($counter < $randomAttempts) {
-			// 3 bytes id
-			$genid=chr(rand(1,255)).chr(rand(1,255)).chr(rand(1,255));
-			// replace all slashes with "0" 
-			$id=strtr(base64_encode($genid),"/+","01");
-
-			if (!$this->sessionstore->exists("/".$id."/")) {
-				debug('session: generated random session id: $id');
-				return $id;
-			}
-		};
-
-		// Find an old session and reuse that.
-		debug('session: reusing old session, could not find a free session after $startReuseAttempts');
-		$query = "object.implements='psession' and object.lastchanged < ".(time() - $this->timeout*4);
-		$session = current($this->sessionstore->call("system.get.session.phtml","", $this->sessionstore->find("/", $query,0, 1)));
-		if ($session) {
-			$id = $session->id;
-			$this->sessionstore->purge("/".$session->id."/");
-			debug('session: reused old session id: $id');
-			return $id;
-		} else {
-			return $this->generateSessionId(); // FIXME: add something to stop the recursion.
-		}
 	}
 
 	function put($varname, $value, $system=0) {
