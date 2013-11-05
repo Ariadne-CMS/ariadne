@@ -37,6 +37,8 @@ class session {
 			$this->lastchanged=time();
 			$this->system = new object;
 			$this->system->ARSessionTimedout=false;
+			$this->put("formSecret", md5(uniqid(rand(), TRUE)));
+
 			$this->save(0, 1);
 		} else { // retrieve session
 			$result=current($this->sessionstore->call(
@@ -58,7 +60,6 @@ class session {
 			$this->data=$result->data;
 		}
 
-		$this->put("formSecret", md5(uniqid(rand(), TRUE)));
 		$this->put("ARSessionId",$this->id);
 		debug("session: end","all");
 	}
