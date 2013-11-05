@@ -241,4 +241,5 @@
 	$ARnls['ariadne:select:modified_last_year'] = "Afgelopen jaar aangepast";
 	$ARnls['ariadne:select:modified_last_month'] = "Afgelopen maand aangepast";
 	$ARnls['ariadne:select:modified_last_day'] = "Afgelopen dag aangepast";
+	$ARnls['ariadne:err:invalidsession'] = "Sessie is niet valide voor deze bewerking.";
 ?>
