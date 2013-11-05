@@ -3034,6 +3034,23 @@ debug("loadLibrary: loading cache for $this->path");
 		return $config->project;
 	}
 
+	function validateFormSecret() {
+		global $ARCurrent;
+		if (!$ARCurrent->session) {
+			return true;
+		}
+
+		if ($ARCurrent->session && $ARCurrent->session->data && $ARCurrent->session->data->formSecret) {
+			$formSecret = $this->getvar("formSecret");
+			return ($formSecret == $ARCurrent->session->data->formSecret);
+		}
+		return false;
+	}
+
+	function _validateFormSecret() {
+		return $this->validateFormSecret();
+	}
+
 	function getValue($name, $nls=false) {
 	global $ARCurrent;
 		switch ($nls) {
