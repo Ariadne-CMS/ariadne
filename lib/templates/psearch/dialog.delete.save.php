@@ -3,6 +3,10 @@
 	// FIXME: Make the non-javascript handling work as well.
 
 	$ARCurrent->nolangcheck=true;
+	if (!$this->validateFormSecret()) {
+		error($ARnls['ariadne:err:invalidsession']);      
+		exit;
+	}
 	if ($this->CheckLogin("delete") && $this->CheckConfig()) {
 		$target = $this->path;
 		if ($this->getvar("childrenonly")) {
