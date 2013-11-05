@@ -91,6 +91,24 @@
 		}
 	}
 
+	function ldCheckAllowedTemplate($template) {
+		// Check if a template is allowed to be called directly from the URL.
+
+
+		if ($template == "system.list.folders.json.php") {
+			// FIXME: this template is used to fetch folders in explore - it should be renamed to explore.list.folders.json.php;
+			return true;
+		}
+
+		if (preg_match('/^(system|ftp|webdav|soap)\./', $template)) {
+			// Disallow all direct calls to system.*, ftp.*, webdav.*, soap.* templates;
+			// FTP, webdav, soap should use their own loader instead.
+			return false;
+		}
+
+		return true;
+	}
+
 	function ldProcessRequest($AR_PATH_INFO=null) {
 		global $AR;
 		global $ARCurrent;
@@ -123,7 +141,7 @@
 		$split=strrpos($AR_PATH_INFO, "/");
 		$path=substr($AR_PATH_INFO,0,$split+1);
 		$function=substr($AR_PATH_INFO,$split+1);
-		if (!$function) {
+		if (!$function || !ldCheckAllowedTemplate($function) ) {
 			if (!isset($arDefaultFunction) || $arDefaultFunction == '' ) {
 				$arDefaultFunction="view.html";
 			}
@@ -133,6 +151,7 @@
 			}
 			$AR_PATH_INFO.=$function;
 		}
+
 		// yes, the extra '=' is needed, don't remove it. trust me.
 		$ldCacheFilename=strtolower($AR_PATH_INFO)."=";
 		// for the new multiple domains per site option (per language), we need this
