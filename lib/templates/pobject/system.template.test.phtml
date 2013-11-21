@@ -32,7 +32,7 @@
 					}
 				}
 									
-				set_error_handler(testErrorHandler, E_ALL^E_NOTICE);
+				set_error_handler(testErrorHandler, E_ALL & ~(E_NOTICE | E_STRICT) );
 
 				function testImport( $compiled, $AR_this ) {
 					$f = create_function(
