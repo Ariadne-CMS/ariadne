@@ -408,11 +408,8 @@
 			}
 
 			$xss_vars = array();
-			foreach (array('GET', 'POST') as $method) {
-				if (is_array(${'_'.$method})) {
-					ldGatherXSSInput($xss_vars, ${'_'.$method});
-				}
-			}
+			ldGatherXSSInput($xss_vars, $_GET);
+			ldGatherXSSInput($xss_vars, $_POST);
 
 			ldGatherXSSInput( $xss_vars, $function );
 			ldGatherXSSInput( $xss_vars, $path );
