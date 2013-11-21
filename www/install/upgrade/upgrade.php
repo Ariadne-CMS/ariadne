@@ -155,7 +155,7 @@
 
 	if ($args["upgrade"] && count($todo)) {
 		$task = array_shift($todo);
-		echo "<div style=\"overflow: auto; width: 400px; height: 200px; border-color: black; border: 2px soled;\">";
+		echo "<div style=\"overflow: auto; width: 80%; min-height: 10%; max-height: 75%; border-color: black; border: 2px solid;\">";
 			require($task["operation"]);
 		echo "</div>";
 		if (!$error) {
