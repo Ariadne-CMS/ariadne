@@ -300,20 +300,56 @@
 				$offset+=$stepsize;
 			}
 			if (!$ARCurrent->options["without_grants"]) {
+				// reset config
+				$destobj = current($ARCurrent->importStore->call("system.get.phtml", $arguments,
+						$ARCurrent->importStore->get($destpath)));
+				$destobj->resetConfig();
+
+				$userConfig = $destobj->loadUserConfig();
+				$authconfig = $userConfig['authentication'];
+
 				display("updating grants (groups)\n");
 				@reset($ARCurrent->grants_list);
 				while (list($type, $type_logins)=@each($ARCurrent->grants_list)) {
-					while (list($login, )=each($type_logins)) {
+					while (list($login, $paths)=each($type_logins)) {
 						if ($type=="pgroup") {
-							unset($criteria);
-							$criteria["login"]["value"]["="]="'$login'";
-							$criteria["object"]["type"]["="]="'pgroup'";
-							$arguments = $arCallArgs;
-							$arguments["importDestPath"] = $destpath;
-							$arguments["importRootPath"] = $rootpath;
-							$ARCurrent->importStore->call("system.import.groupgrants.phtml", 
-								$arguments,
-								$ARCurrent->importStore->find("/system/groups/", $criteria));
+							foreach ( $paths as $path => $grants ) {
+								$newpath=$destpath.substr($path, strlen($rootpath));
+								$dataobj = current($ARCurrent->importStore->call("system.get.phtml", array(),
+										$ARCurrent->importStore->get($newpath)));
+								$dataobj->resetConfig();
+
+								$userConfig = $dataobj->loadUserConfig();
+								$authconfig = $userConfig['authentication'];
+								unset($user);
+								unset($criteria);
+								$criteria["login"]["value"]["="]="'$login'";
+								$criteria["object"]["type"]["="]="'pgroup'";
+								foreach ($authconfig['groupdirs'] as $groupdirpath) {
+									$result=$destobj->find($groupdirpath,$criteria,"system.get.phtml");
+									if (count($result)) {
+										$group = current($result);
+										break;
+									}
+								}
+								if( ! is_null($group) ) {
+									display("	$newpath\n");
+									$result=current($group->get($newpath, "system.import.grants.phtml", 
+															Array(
+																"importDestPath" => $destpath,
+																"importRootPath" => $rootpath,
+																"grants" => &$grants,
+																"type" 	=> "pgroup" ,
+																"id"	=> $group->data->login
+															)));
+									if ($result) {
+										foreach( $grants as $grant => $grantValue) {
+											$group->data->config->usergrants[$newpath][$grant]=$grantValue;
+										}
+									}
+									$group->save();
+								}
+							}
 						} 
 					}
 				}
@@ -321,16 +357,44 @@
 				display("updating grants (users)\n");
 				@reset($ARCurrent->grants_list);
 				while (list($type, $type_logins)=@each($ARCurrent->grants_list)) {
-					while (list($login, )=each($type_logins)) {
+					while (list($login, $paths )=each($type_logins)) {
 						if ($type=="puser") {
-							unset($criteria);
-							$criteria["login"]["value"]["="]="'$login'";
-							$criteria["object"]["type"]["="]="'puser'";
-							$arguments = $arCallArgs;
-							$arguments["importDestPath"] = $destpath;
-							$arguments["importRootPath"] = $rootpath;
-							$ARCurrent->importStore->call("system.import.usergrants.phtml", $arguments,
-								$ARCurrent->importStore->find("/system/users/", $criteria));
+							foreach ( $paths as $path => $grants ) {
+								$newpath=$destpath.substr($path, strlen($rootpath));
+								$dataobj = current($ARCurrent->importStore->call("system.get.phtml", array(),
+										$ARCurrent->importStore->get($newpath)));
+								$dataobj->resetConfig();
+
+								$userConfig = $dataobj->loadUserConfig();
+								$authconfig = $userConfig['authentication'];
+								unset($crit);
+								unset($user);
+								$crit["login"]["value"]["="]="'".AddSlashes($login)."'";
+								foreach ($authconfig['userdirs'] as $userdirpath) {
+									$result=$destobj->find($userdirpath,$crit,"system.get.phtml");
+									if (count($result)) {
+										$user = current($result);
+										break;
+									}
+								}
+								if( ! is_null($user) ) {
+									display("	$newpath\n");
+									$result=current($user->get($newpath, "system.import.grants.phtml", 
+															Array(
+																"importDestPath" => $destpath,
+																"importRootPath" => $rootpath,
+																"grants" => &$grants,
+																"type" 	=> "puser" ,
+																"id"	=> $user->data->login
+															)));
+									if ($result) {
+										foreach( $grants as $grant => $grantValue) {
+											$user->data->config->usergrants[$newpath][$grant]=$grantValue;
+										}
+									}
+									$user->save();
+								}
+							}
 						} 
 					}
 				}
