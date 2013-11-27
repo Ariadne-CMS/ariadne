@@ -656,7 +656,12 @@ class scanner {
 										}
 
 										if (preg_match('|^compile:([a-z]+)|i', $tag_element, $matches)) {
-											$result = $this->ext_compile($matches[1], substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR -$YYCURSOR_START - (strlen($tag_element) + 3) ));
+											$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR -$YYCURSOR_START - (strlen($tag_element) + 3) );
+											$result = $this->ext_compile($matches[1], $result);
+
+											$pinp=new pinp($AR->PINP_Functions, "local->", "\$AR_this->_");
+									                $result=$pinp->compile($result);
+											
 											if ($result === false) {
 												$this->error = "Compiler '".$matches[1]."' not found (started at line $startLine) ";
 												return PT_ERROR;
