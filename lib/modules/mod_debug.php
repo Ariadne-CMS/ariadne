@@ -107,7 +107,7 @@
 
 	function debug($text, $level="pinp", $stream="all", $indent="") {
 	global $DB, $DB_INDENT;
-		if( ! isset( $DB[$level] ) {
+		if ( ! isset($DB[$level]) ) {
 			$level = "pinp";
 		}
 		if( $DB["level"] >= $DB[$level] && (($DB["stream"]=="all")||($DB["stream"]==$stream) ) ) {
