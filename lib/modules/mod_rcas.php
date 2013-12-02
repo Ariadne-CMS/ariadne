@@ -26,7 +26,11 @@
 
 				srand((double)microtime(true)*1000000);
 				$password = md5(uniqid(rand(), true));
-				$data["name"] = $login;
+				if ( $userInfo["name"] ) {
+					$data["name"] = $userInfo["name"];
+				} else {
+					$data["name"] = $login;
+				}
 	 			$data["newpass1"] = $password;
 	 			$data["newpass2"] = $password;
 				$data["profile"] = $user_profile;
