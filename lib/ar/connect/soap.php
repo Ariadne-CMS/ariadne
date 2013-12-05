@@ -46,7 +46,8 @@
 
 		function _soapCall( $name, $arguments, $options = Array(), $inputHeaders = Array(), &$outputHeaders = Array() ) {
 			try {
-				$result = new arWrapper( $this->wrapped->__soapCall( $name, $arguments, $options, $inputHeaders, $outputHeaders ) );
+				//$result = new arWrapper( $this->wrapped->__soapCall( $name, $arguments, $options, $inputHeaders, $outputHeaders ) );
+				$result = $this->wrapped->__soapCall( $name, $arguments, $options, $inputHeaders, $outputHeaders );
 			} catch( Exception $e ) {
 				$result = ar::error( $e->getMessage(), $e->getCode() );
 			}
@@ -57,8 +58,20 @@
 			$this->wrapped->__setSoapHeaders($soapHeaders);
 		}
 
+		function _setLocation($location) {
+			$this->wrapped->__setLocation($location);
+		}
+
+		function _getFunctions() {
+			return $this->wrapped->__getFunctions();
+		}
+
 		function _getLastResponse() {
 			return $this->wrapped->__getLastResponse();
+		}
+
+		function _getLastRequest() {
+			return $this->wrapped->__getLastRequest();
 		}
 
 	}
@@ -88,8 +101,8 @@
 	class ar_connect_soapParam extends arWrapper {
 		
 		function __construct( $data, $name ) {
-			$soapParam = new SoapParam( $data, $name );
-			parent::__construct( $soapParam );
+			return  new SoapParam( $data, $name );
+			
 		}
 	
 	}
