@@ -149,7 +149,12 @@
 							"operation" => "8.0/convert-hardlink-to-shortcuts.php",
 							"newversion" => "8.0"
 							));
-			
+		case "8.0":
+				array_push($todo, Array(
+							"description" => "Bumping revision to 8.1",
+							"operation" => "all/dummy.php",
+							"newversion" => "8.1"
+							));
 	}
 
 
