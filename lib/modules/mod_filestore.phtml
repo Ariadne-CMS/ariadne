@@ -154,7 +154,7 @@
 			if ($dir=@opendir($path)) {
 				$result=array();
 				while (false !== ($file=readdir($dir))) {
-					if (is_file($path.$file)) {
+					if (is_file($path.$file) && $file[0] === '_' ) {
 						$result[]=$this->get_filename($file);
 					}
 				}
