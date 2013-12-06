@@ -125,8 +125,9 @@
 			}
 
 			if (
-				strpos($extra_ob->type, "puser") === 0 ||
-				strpos($extra_ob->type, "pgroup") === 0
+				$extra_ob->AR_implements("puser") ||
+				$extra_ob->AR_implements("pgroup")
+
 			) {
 				$users[$extra_ob->path] = array(
 					"name" => $extra_ob->nlsdata->name,
