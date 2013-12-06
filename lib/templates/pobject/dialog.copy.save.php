@@ -17,7 +17,7 @@
 		}
 		// FIXME: add more checks to make sure the target to copy to will work as expected.
 
-                if ($this->getvar("sources")) {
+		if ($this->getvar("sources")) {
 			$sources = $this->getvar('sources');
 		} else {
 			$sources = array($this->path);
@@ -27,29 +27,26 @@
 		if ($copytarget_ob->CheckLogin('add')) {
 			$target_typetree = $copytarget_ob->call("typetree.ini");
 			
-                        $failedchecks = false;
-                        
-                        $query = "(";
-                        foreach ($sources as $source) {
-                            if (
-                                    $target_typetree[$copytarget_ob->type][$this->type] || // The object is allowed under the target by the typetree.
-                                    ($this->CheckSilent('layout') && $this->getvar('override_typetree')) // Layout grant allows typetree changes, so allow typetree overrides as well.
-                            ) { 
-                                    // This type is allowed.
+			$failedchecks = false;
 
-                                //dit is de nieuwe query
-                                $query .= "object.path =~ '" . $source . "%' OR ";
-                            } else {
-                                $failedchecks = true;
-                            }
-                        }
-                        $query = substr($query, 0, -3);
-                        $query .= ") order by path ASC";
+			$query = "(";
+			foreach ($sources as $source) {
+				if (
+						$target_typetree[$copytarget_ob->type][$this->type] || // The object is allowed under the target by the typetree.
+						($this->CheckSilent('layout') && $this->getvar('override_typetree')) // Layout grant allows typetree changes, so allow typetree overrides as well.
+					) { 
+					// This type is allowed.
 
-                        //echo $query;
-                        //exit;
-                        
-                        if (!$failedchecks) {
+					//dit is de nieuwe query
+					$query .= "object.path =~ '" . $source . "%' OR ";
+				} else {
+					$failedchecks = true;
+				}
+			}
+			$query = substr($query, 0, -3);
+			$query .= ") order by path ASC";
+
+			if (!$failedchecks) {
 				$total = $this->count_find($this->path, $query);
 				$objects_left = $total;
 				$offset = 0;
