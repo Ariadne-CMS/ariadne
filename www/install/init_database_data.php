@@ -14,7 +14,7 @@
 				),
 				'operator' => Array(
 					'type' => 'string',
-					'size' => 128
+					'size' => 255
 				)
 			),
 			'indexes' => Array(
@@ -28,7 +28,7 @@
 			'fields' => Array(
 				'value' => Array(
 					'type' => 'string',
-					'size' => 128
+					'size' => 255
 				),
 				'nls' => Array(
 					'type' => 'string',
@@ -42,7 +42,7 @@
 			'fields' => Array(
 				'value' => Array(
 					'type' => 'string',
-					'size' => 128
+					'size' => 255
 				)
 			)
 		);
@@ -51,7 +51,7 @@
 			'fields' => Array(
 				'value' => Array(
 					'type' => 'string',
-					'size' => 128
+					'size' => 255
 				),
 				'nls' => Array(
 					'type' => 'string',
@@ -131,7 +131,7 @@
 				),
 				'value' => Array(
 					'type' => 'string',
-					'size' => 128
+					'size' => 255
 				),
 				'nls' => Array(
 					'type' => 'string',
@@ -271,7 +271,7 @@
 			'fields' => Array(
 				'path' => Array(
 					'type' => 'string',
-					'size' => 128
+					'size' => 255
 				)
 			)
 		);
