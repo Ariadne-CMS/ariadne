@@ -208,7 +208,7 @@
 				if ($this->exists($fsId, $fsName.".inc") ){
 					// new style template available
 					$path=$this->make_path($fsId, $fsName.".inc");
-					include_once($path);
+					include($path);
 					if(is_callable($arTemplateFunction) ) {
 						$ARConfig->fsFunctions[$fsId][$fsName] = $arTemplateFunction;
 					}
