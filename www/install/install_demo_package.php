@@ -1,13 +1,14 @@
 <?php
-	include("../ariadne.inc");
-	require($ariadne."/configs/ariadne.phtml");
-	require($ariadne."/configs/store.phtml");
-	require($ariadne."/configs/sessions.phtml");
-	require($ariadne."/configs/axstore.phtml");
+	include_once("../ariadne.inc");
+	require_once($ariadne."/configs/ariadne.phtml");
+	require_once($ariadne."/configs/store.phtml");
+	require_once($ariadne."/configs/sessions.phtml");
+	require_once($ariadne."/configs/axstore.phtml");
 	include_once( $store_config['code']."includes/loader.web.php" );
 	include_once( $store_config['code']."stores/".$ax_config["dbms"]."store.phtml");
 	include_once( $store_config['code']."stores/".$store_config["dbms"]."store_install.phtml");
 	include_once( $store_config['code']."nls/".$AR->nls->default );
+	include_once($ariadne."/modules/mod_ar.php");
 
 	/* instantiate the store */
 	$inst_store = $store_config["dbms"]."store";
