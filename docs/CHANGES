@@ -1,4 +1,15 @@
 ========================
+Changes in Ariadne 8.2
+========================
+
+This release is an replacement for the 8.1 release because we managed to release a bad build.
+
+Bugfixes
+ - reverted 2 commits which should not have been in the 8.1 release. This broke
+	the backend in some special ways. This was related to multiple select and
+	filtering in the backend and dialogs
+
+========================
 Changes in Ariadne 8.1
 ========================
 
