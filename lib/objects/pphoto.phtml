@@ -67,7 +67,7 @@ class pphoto extends pfile { // pphoto class definition
 			$ARConfig->photoStack[$this->id][]=" -quality $quality";
 			$ARConfig->photoStack[$this->id][]=" -background $background";
 			$ARConfig->photoStack[$this->id][]=" -flatten";
-			$ARConfig->photoStack[$this->id][]=" {buildfile} {targetfile}";
+			$ARConfig->photoStack[$this->id][]=" {buildfile}";
 			$result=true;
 		}
 		return $result;
@@ -79,7 +79,7 @@ class pphoto extends pfile { // pphoto class definition
 		$result = false;
 		if (preg_match('/[a-z0-9+]/i', $colorspace)) {
 			$ARConfig->photoStack[$this->id][]=" -colorspace $colorspace";
-			$ARConfig->photoStack[$this->id][]=" {buildfile} {targetfile}";
+			$ARConfig->photoStack[$this->id][]=" {buildfile}";
 			$result = true;
 		} else {
 			$this->error=sprintf($ARnls["err:convillegalformat"], $colorspace);
@@ -92,7 +92,6 @@ class pphoto extends pfile { // pphoto class definition
 		$this->set_context("shadow");
 
 		$ARConfig->photoStack[$this->id][]=" {buildfile} ( +clone -background $shadowcolor -shadow " . $opacity . "x" . $size . $posx . $posy . " ) +swap -background $background -layers merge +repage";
-		$ARConfig->photoStack[$this->id][]=" {targetfile}";
 		return true;
 	}
 
@@ -480,13 +479,17 @@ class pphoto extends pfile { // pphoto class definition
 		}
 
 		if( $ARConfig->photoContext[$this->id] != $context ) {
+			$needOutputFile = false;
 			if( $ARConfig->photoContext[$this->id] == "mogrify" ) {
 				$contextexecutable = $AR->IM->mogrify;
 			} elseif( $ARConfig->photoContext[$this->id] == "composite" ) {
 				$contextexecutable = $AR->IM->composite;
+				$needOutputFile = true;
 			} elseif( $ARConfig->photoContext[$this->id] == "convert" ) {
+				$needOutputFile = true;
 				$contextexecutable = $AR->IM->convert;
 			} elseif( $ARConfig->photoContext[$this->id] == "shadow") {
+				$needOutputFile = true;
 				$contextexecutable = $AR->IM->convert;
 			} else {
 				$unknown = true; // This should NOT happen
@@ -494,7 +497,11 @@ class pphoto extends pfile { // pphoto class definition
 			if( !$unknown && is_array($ARConfig->photoStack[$this->id])) {
 				$image="";
 				foreach($ARConfig->photoStack[$this->id] as $value){
+					// target file needs to be on the end of the command
 					$image.=$value;
+				}
+				if ($needOutputFile === true) {
+					$image .= ' {targetfile}';
 				}
 				if ( isset($ARConfig->photoReadModifier) ) {
 					$image = str_replace('{buildfile}', '{buildfile}'.$ARConfig->photoReadModifier, $image );
