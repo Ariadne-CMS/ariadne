@@ -1,19 +1,27 @@
 <?php
 	$ARCurrent->nolangcheck = true;
 	if( $this->CheckLogin("read") && $this->CheckConfig() ) {
-		$fname = $this->getdata("arNewFilename", "none");
-		$result = ar('events')->fire('dialog.new.filename', array('fname' => $fname));
-		if ($result['fname']) {
-			$fname = $result['fname'];
-		}
+		$arNewFilename = $this->getdata("arNewFilename", "none");
 
-		if ($result !== false) {
+		$eventData = new object();
+		$eventData->arCallArgs = $arCallArgs;
+		$eventData->arCallFunction = $context['arCallFunction'];
+		$eventData->arIsNewObject = true;
+		$eventData->arNewFilename= (string) $arNewFilename;
+		$eventData = ar_events::fire( 'onbeforenewfilename', $eventData );
+
+		if ( $eventData !== false) {
+			if ( isset($eventData->arNewFilename) ) {
+				$arNewFilename = $eventData->arNewFilename;
+			}
+
 			$autoNumberChecked = "";
 			$inputDisabled = "";
-			if ($fname == "{5:id}") {
+
+			if ( $arNewFilename == "{5:id}") {
 				$autoNumberChecked = "checked";
 				$inputDisabled = "disabled";
-				$fname = "";
+				$arNewFilename = "";
 			}
 	?>
 	<script type="text/javascript">
@@ -31,19 +39,20 @@
 		<div class="right">
 			<label for="autonumber">&nbsp;</label>
 			<div class="field checkbox">
-				<input onchange="toggleAutoNumber();" onclick="toggleAutoNumber();" <?php echo $autoNumberChecked; ?> type="checkbox" name="arNewFilename" value="{5:id}" id="autonumber" <?php if ($fname == "{5:id}") { echo "checked"; }?>>
+				<input onchange="toggleAutoNumber();" onclick="toggleAutoNumber();" <?php echo $autoNumberChecked; ?> type="checkbox" name="arNewFilename" value="{5:id}" id="autonumber" >
 				<label for="autonumber"><?php echo $ARnls["ariadne:new:autonumber"]; ?></label>
 			</div>
 		</div>
 		<div class="left">
 			<div class="field">
 				<label for="arNewFilename" class="required"><?php echo $ARnls["filename"]; ?></label>
-				<input id="arNewFilename" class="inputline wgWizAutoSelect wgWizAutoFocus" <?php echo $inputDisabled; ?> type="text" name="arNewFilename" value="<?php echo $fname ?>">
+				<input id="arNewFilename" class="inputline wgWizAutoSelect wgWizAutoFocus" <?php echo $inputDisabled; ?> type="text" name="arNewFilename" value="<?php echo $arNewFilename ?>">
 				<div class="help"><?php echo $ARnls['ariadne:new:lettersnumbers']; ?></div>
 			</div>
 		</div>
 	</fieldset>
 <?php
+			ar_events::fire( 'onnewfilename', $eventData );
 		}
 	}
 ?>
