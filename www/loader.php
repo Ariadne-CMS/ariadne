@@ -92,7 +92,6 @@
 	}
 
 	function ldProcessRequest($AR_PATH_INFO=null) {
-		error_log("ldProcessRequest [" . $AR_PATH_INFO . "]");
 		global $AR;
 		global $ARCurrent;
 		global $store_config;
