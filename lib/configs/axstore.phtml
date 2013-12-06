@@ -61,7 +61,7 @@
     }
 
     $ax_config["tar"]["tar"]               = $tar_cmd." -f %archive% -c -C %destdir% %contents% %errorhandler%";
-    $ax_config["tar"]["untar"]             = $tar_cmd." -x -C %destdir% %contents% -f %archive% %errorhandler%";
+    $ax_config["tar"]["untar"]             = $tar_cmd." --no-same-owner -x -C %destdir% %contents% -f %archive% %errorhandler%";
 
     // set this to true if you are really sure that tar throws errors which
     // do not occur.
