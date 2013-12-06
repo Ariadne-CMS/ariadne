@@ -1639,6 +1639,24 @@ debug("loadLibrary: loading cache for $this->path");
 		return (array)$ARConfig->libraries[$path];
 	}
 
+	function mergeLibraryConfig( $defaultLibraryName, $defaults ) {
+		$libraryName = ar::getvar('arLibrary');
+		if ( is_numeric($libraryName) || $libraryName == 'current' ) { // library is loaded unnamed
+			$libraryName = $defaultLibraryName;
+		}
+		if ( $libraryName ) {
+			$userConfig = ar::acquire('defaults.'.$libraryName);
+			if ( is_array($userConfig) ) {
+				$defaults = array_merge( $defaults, $userConfig );
+			}
+		}
+		return array_merge( $defaults, $this->getvar('arCallArgs') );
+	}
+
+	function _mergeLibraryConfig( $defaultLibraryName, $defaults ) {
+		return $this->mergeLibraryConfig( $defaultLibraryName, $defaults );
+	}
+
 	function getPinpTemplate($arCallFunction='view.html', $path=".", $top="", $inLibrary = false, $librariesSeen = null, $arSuperContext=array()) {
 	global $ARCurrent, $ARConfig, $AR;
 		debug("getPinpTemplate: function: $arCallFunction; path: $path; top: $top; inLib: $inLibrary; startType: $arStartType");
