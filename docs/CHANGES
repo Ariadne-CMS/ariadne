@@ -2,6 +2,43 @@
 Changes in Ariadne 8.1
 ========================
 
+Bugfixes
+ - parent path stored in an object is now calculated by the store instead depending on user input
+ - added dummy functions in all loaders for ldGetRequestedHost
+ - adding object to store with non-existing parent now returns an error
+ - installer now also adds an root node to the session store
+ - the session module will now insert an rootnode in the store if it doesn't exists.
+ - Fix escaping of textarea's in ar/html
+ - Added deleting compiled templates when a templates is deleted
+ - Fixed date widgets in calander items
+ - Ontimeout in muze.js didn't call setTimeout correctly
+ - in the ariadne config file the class_exists call doesn't trigger the autoloader anymore.
+ - fixed summary cleaning with htmltidy
+ - Removed a racecondition in creating cache images resulting in empty cache images
+ - force saving session objects on creation
+ - force images right way up otherwise iphones rotate the image in the webpage
+ - fix importing grants when the src and destination path are not the same
+ - use implements instead of classname matching in dialog.grants
+ - force IE in Edge mode for dialogs, the dialogs do not render correctly in compatibility mode in IE
+ - ldObjectNotFound now remembers the original arguments
+ - the filestore doesn't return files without leading _ in ls anymore it couldn't open the files anyway
+ - added error checking in export for files it could not open
+ - import doesn't use an global variable for storing which objects where imported, this makes it possible to import more then 1 ax files in 1 run. this is used by the installer
+
+New features
+ - ESI support in ariadne
+ - add filtering in browsedialog
+
+Changes
+ - output buffering is now always on. When you need direct output without waiting for the request to complete you need to call ldDisablePostProcessing()
+ - added htmlcleaner for summary fields
+ - changed error_reporting level in the ariadne config file, this should make it future proof against changes in E_ALL
+ - added visual feedback for uploading files
+ - removed compatibilty functions for php 4.0.6
+ - ar/http client now returns the status code as seperated return value
+
+
+
 ========================
 Changes in Ariadne 8.0
 ========================
