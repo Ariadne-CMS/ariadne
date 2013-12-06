@@ -234,7 +234,7 @@
 	$ARnls["mon"]                                   =    "Pon";
 	$ARnls["month"]                                 =    "Mjesec";
 	$ARnls["months"]                                =    "Mjeseci";
-//      $ARnls["move"]                                  =    "Move"; // value from English
+//	$ARnls["move"]                                  =    "Move"; // value from english
 	$ARnls["n.y.i."]                                =    "Još nije implementirano.";
 	$ARnls["name"]                                  =    "Ime";
 	$ARnls["netherlands"]                           =    "Nizozemska";
@@ -298,6 +298,7 @@
 	$ARnls["q:removegroup"]                         =    "Jeste li sigurni da želite ukloniti ovu grupu?";
 	$ARnls["q:removenewspaper"]                     =    "Jeste li sigurni da želite ukloniti ove novine?";
 	$ARnls["q:removeobject"]                        =    "Jeste li sigurni da želite ukloniti ovaj objekt?";
+//	$ARnls["q:removeobjects"]                       =    "Are you sure you want to remove these objects?"; // value from english
 	$ARnls["q:removepage"]                          =    "Jeste li sigurni da želite ukloniti ovu stranicu?";
 	$ARnls["q:removeshortcut"]                      =    "Jeste li sigurni da želite ukloniti ovu kraticu?";
 	$ARnls["q:removetemplate"]                      =    "Jeste li sigurni da želite ukloniti predložak %s za %s?";

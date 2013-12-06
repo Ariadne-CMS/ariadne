@@ -54,6 +54,7 @@
 	$ARnls["ariadne:editor:popup"]                  =    "Open in popup";
 	$ARnls["ariadne:editor:preview"]                =    "Preview";
 	$ARnls["ariadne:editor:style"]                  =    "Style";
+	$ARnls["ariadne:err:invalidsession"]            =    "Session is not valid for this operation.";
 	$ARnls["ariadne:err:rewrite.no_input"]          =    "Geef eerst herschrijfinstructies op.";
 	$ARnls["ariadne:explore"]                       =    "Explore";
 	$ARnls["ariadne:export"]                        =    "Export";
@@ -127,6 +128,14 @@
 	$ARnls["ariadne:rewrite.urls"]                  =    "Rewrite URLs";
 	$ARnls["ariadne:rewriting"]                     =    "Rewriting";
 	$ARnls["ariadne:search"]                        =    "Search";
+	$ARnls["ariadne:select:created_last_day"]       =    "Created last day";
+	$ARnls["ariadne:select:created_last_month"]     =    "Created last month";
+	$ARnls["ariadne:select:created_last_year"]      =    "Created last year";
+	$ARnls["ariadne:select:modified_last_day"]      =    "Modified last day";
+	$ARnls["ariadne:select:modified_last_month"]    =    "Modified last month";
+	$ARnls["ariadne:select:modified_last_year"]     =    "Modified last year";
+	$ARnls["ariadne:select:none"]                   =    "No filter";
+	$ARnls["ariadne:select:showall"]                =    "Force show all";
 	$ARnls["ariadne:selectlanguage"]                =    "Select a different language";
 	$ARnls["ariadne:settings"]                      =    "Settings";
 	$ARnls["ariadne:shortcut"]                      =    "Edit shortcut";
@@ -233,13 +242,5 @@
 	$ARnls["err:svn:leaving_recurse_tree"]          =    "This repository is not part of the repository tree of the parent.";
 	$ARnls["err:typetree_does_not_allow"]           =    "Typetree does not allow this object type here";
 
-	$ARnls['ariadne:select:none'] = "No filter";
-	$ARnls['ariadne:select:showall'] = "Force show all";
-	$ARnls['ariadne:select:created_last_year'] = "Created last year";
-	$ARnls['ariadne:select:created_last_month'] = "Created last month";
-	$ARnls['ariadne:select:created_last_day'] = "Created last day";
-	$ARnls['ariadne:select:modified_last_year'] = "Modified last year";
-	$ARnls['ariadne:select:modified_last_month'] = "Modified last month";
-	$ARnls['ariadne:select:modified_last_day'] = "Modified last day";
-	$ARnls['ariadne:err:invalidsession'] = "Session is not valid for this operation.";
+
 ?>

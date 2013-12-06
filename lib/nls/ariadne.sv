@@ -60,6 +60,7 @@
 //	$ARnls["ariadne:editor:popup"]                  =    "Open in popup"; // value from english
 //	$ARnls["ariadne:editor:preview"]                =    "Preview"; // value from english
 //	$ARnls["ariadne:editor:style"]                  =    "Style"; // value from english
+//	$ARnls["ariadne:err:invalidsession"]            =    "Session is not valid for this operation."; // value from english
 //	$ARnls["ariadne:err:rewrite.no_input"]          =    "Geef eerst herschrijfinstructies op."; // value from english
 	$ARnls["ariadne:explore"]                       =    "Utforska";
 	$ARnls["ariadne:export"]                        =    "Exportera";
@@ -85,6 +86,7 @@
 //	$ARnls["ariadne:logoff"]                        =    "Log off"; // value from english
 //	$ARnls["ariadne:mimetype"]                      =    "MIME Type"; // value from english
 //	$ARnls["ariadne:mogrify"]                       =    "Mogrify"; // value from english
+//	$ARnls["ariadne:move"]                          =    "Move"; // value from english
 	$ARnls["ariadne:new"]                           =    "L&auml;gg till nytt objekt";
 //	$ARnls["ariadne:new:add_language"]              =    "Add language"; // value from english
 //	$ARnls["ariadne:new:autonumber"]                =    "Number automatically"; // value from english
@@ -132,6 +134,14 @@
 //	$ARnls["ariadne:rewrite.urls"]                  =    "Rewrite URLs"; // value from english
 //	$ARnls["ariadne:rewriting"]                     =    "Rewriting"; // value from english
 	$ARnls["ariadne:search"]                        =    "S&ouml;k";
+//	$ARnls["ariadne:select:created_last_day"]       =    "Created last day"; // value from english
+//	$ARnls["ariadne:select:created_last_month"]     =    "Created last month"; // value from english
+//	$ARnls["ariadne:select:created_last_year"]      =    "Created last year"; // value from english
+//	$ARnls["ariadne:select:modified_last_day"]      =    "Modified last day"; // value from english
+//	$ARnls["ariadne:select:modified_last_month"]    =    "Modified last month"; // value from english
+//	$ARnls["ariadne:select:modified_last_year"]     =    "Modified last year"; // value from english
+//	$ARnls["ariadne:select:none"]                   =    "No filter"; // value from english
+//	$ARnls["ariadne:select:showall"]                =    "Force show all"; // value from english
 //	$ARnls["ariadne:selectlanguage"]                =    "Select a different language"; // value from english
 	$ARnls["ariadne:settings"]                      =    "Inst&auml;llningar";
 	$ARnls["ariadne:shortcut"]                      =    "&auml;ndra genv&auml;g";

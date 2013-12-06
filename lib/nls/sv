@@ -242,7 +242,7 @@
 	$ARnls["mon"]                                   =    "M&aring;n";
 	$ARnls["month"]                                 =    "M&aring;nad";
 	$ARnls["months"]                                =    "M&aring;nader";
-//      $ARnls["move"]                                  =    "Move"; // value from English
+//	$ARnls["move"]                                  =    "Move"; // value from english
 	$ARnls["n.y.i."]                                =    "Ej implementerat &auml;n.";
 	$ARnls["name"]                                  =    "Namn";
 	$ARnls["netherlands"]                           =    "Holland";
@@ -306,6 +306,7 @@
 	$ARnls["q:removegroup"]                         =    "Vill du verkligen ta bort denna grupp?";
 	$ARnls["q:removenewspaper"]                     =    "Vill du verkligen ta bort denna tidning?";
 	$ARnls["q:removeobject"]                        =    "Vill du verkligen ta bort detta objekt?";
+//	$ARnls["q:removeobjects"]                       =    "Are you sure you want to remove these objects?"; // value from english
 	$ARnls["q:removepage"]                          =    "Vill du verkligen ta bort denna sida?";
 	$ARnls["q:removeshortcut"]                      =    "Vill du verkligen ta bort denna genv&auml;g?";
 	$ARnls["q:removetemplate"]                      =    "Vill du verkligen ta bort mallen %s f&ouml;r %s?";

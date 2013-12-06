@@ -234,7 +234,7 @@
 	$ARnls["mon"]                                   =    "Maa";
 	$ARnls["month"]                                 =    "Maand";
 	$ARnls["months"]                                =    "Maanden";
-        $ARnls["move"]                                  =    "Verplaats";
+	$ARnls["move"]                                  =    "Verplaats";
 	$ARnls["n.y.i."]                                =    "Nog niet geimplementeerd";
 	$ARnls["name"]                                  =    "Naam";
 	$ARnls["netherlands"]                           =    "Nederland";

@@ -240,7 +240,7 @@
 	$ARnls["mon"]                                   =    "Lun";
 	$ARnls["month"]                                 =    "Mes";
 	$ARnls["months"]                                =    "Meses";
-//      $ARnls["move"]                                  =    "Move"; // value from English
+//	$ARnls["move"]                                  =    "Move"; // value from english
 	$ARnls["n.y.i."]                                =    "No implementado a&uacute;n.";
 	$ARnls["name"]                                  =    "Nombre";
 	$ARnls["netherlands"]                           =    "Pa&iacute;ses Bajos";
@@ -304,6 +304,7 @@
 	$ARnls["q:removegroup"]                         =    "Seguro desea eliminar este grupo?";
 	$ARnls["q:removenewspaper"]                     =    "Seguro desea eliminar este peri&oacute;dico?";
 	$ARnls["q:removeobject"]                        =    "Seguro desea eliminar este objeto?";
+//	$ARnls["q:removeobjects"]                       =    "Are you sure you want to remove these objects?"; // value from english
 	$ARnls["q:removepage"]                          =    "Seguro desea eliminar esta p&aacute;gina?";
 	$ARnls["q:removeshortcut"]                      =    "Seguro desea eliminar este acceso directo?";
 	$ARnls["q:removetemplate"]                      =    "Seguro desea eliminar la plantilla %s para %s?";

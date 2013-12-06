@@ -54,6 +54,7 @@
 	$ARnls["ariadne:editor:popup"]                  =    "Open in popup";
 	$ARnls["ariadne:editor:preview"]                =    "Voorbeeld";
 	$ARnls["ariadne:editor:style"]                  =    "Stijl";
+	$ARnls["ariadne:err:invalidsession"]            =    "Sessie is niet valide voor deze bewerking.";
 	$ARnls["ariadne:err:rewrite.no_input"]          =    "Geef eerst herschrijfinstructies op.";
 	$ARnls["ariadne:explore"]                       =    "Verken";
 	$ARnls["ariadne:export"]                        =    "Exporteer";
@@ -79,7 +80,7 @@
 	$ARnls["ariadne:logoff"]                        =    "Afmelden";
 	$ARnls["ariadne:mimetype"]                      =    "MIME Type";
 	$ARnls["ariadne:mogrify"]                       =    "Mogrify";
-        $ARnls["ariadne:move"]                          =    "Verplaats";
+	$ARnls["ariadne:move"]                          =    "Verplaats";
 	$ARnls["ariadne:new"]                           =    "Voeg nieuw object toe";
 	$ARnls["ariadne:new:add_language"]              =    "Taal toevoegen";
 	$ARnls["ariadne:new:autonumber"]                =    "Automatisch doornummeren";
@@ -127,6 +128,14 @@
 	$ARnls["ariadne:rewrite.urls"]                  =    "URLs herschrijven";
 	$ARnls["ariadne:rewriting"]                     =    "Inhoud herschrijven van ";
 	$ARnls["ariadne:search"]                        =    "Zoek";
+	$ARnls["ariadne:select:created_last_day"]       =    "Afgelopen dag aangemaakt";
+	$ARnls["ariadne:select:created_last_month"]     =    "Afgelopen maand aangemaakt";
+	$ARnls["ariadne:select:created_last_year"]      =    "Afgelopen jaar aangemaakt";
+	$ARnls["ariadne:select:modified_last_day"]      =    "Afgelopen dag aangepast";
+	$ARnls["ariadne:select:modified_last_month"]    =    "Afgelopen maand aangepast";
+	$ARnls["ariadne:select:modified_last_year"]     =    "Afgelopen jaar aangepast";
+	$ARnls["ariadne:select:none"]                   =    "Geen filter";
+	$ARnls["ariadne:select:showall"]                =    "Forceer alles tonen";
 	$ARnls["ariadne:selectlanguage"]                =    "Kies een taal";
 	$ARnls["ariadne:settings"]                      =    "Instellingen";
 	$ARnls["ariadne:shortcut"]                      =    "Bewerk snelkoppeling ";
@@ -233,13 +242,5 @@
 	$ARnls["err:svn:leaving_recurse_tree"]          =    "Deze repository maakt geen deel uit van de repository-boom van deze actie.";
 	$ARnls["err:typetree_does_not_allow"]           =    "De typeboom instellingen staan dit object type hier niet toe.";
 
-	$ARnls['ariadne:select:none'] = "Geen filter";
-	$ARnls['ariadne:select:showall'] = "Forceer alles tonen";
-	$ARnls['ariadne:select:created_last_year'] = "Afgelopen jaar aangemaakt";
-	$ARnls['ariadne:select:created_last_month'] = "Afgelopen maand aangemaakt";
-	$ARnls['ariadne:select:created_last_day'] = "Afgelopen dag aangemaakt";
-	$ARnls['ariadne:select:modified_last_year'] = "Afgelopen jaar aangepast";
-	$ARnls['ariadne:select:modified_last_month'] = "Afgelopen maand aangepast";
-	$ARnls['ariadne:select:modified_last_day'] = "Afgelopen dag aangepast";
-	$ARnls['ariadne:err:invalidsession'] = "Sessie is niet valide voor deze bewerking.";
+
 ?>

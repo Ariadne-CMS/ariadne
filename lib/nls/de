@@ -246,7 +246,7 @@
 	$ARnls["mon"]                                   =    "Mo";
 	$ARnls["month"]                                 =    "Monat";
 	$ARnls["months"]                                =    "Monate";
-//      $ARnls["move"]                                  =    "Move"; // value from English
+//	$ARnls["move"]                                  =    "Move"; // value from english
 	$ARnls["n.y.i."]                                =    "Noch nicht fertiggestellt.";
 	$ARnls["name"]                                  =    "Titel";
 	$ARnls["netherlands"]                           =    "die Niederlande";
@@ -310,6 +310,7 @@
 	$ARnls["q:removegroup"]                         =    "Wollen Sie diese Gruppe wirklich löschen?";
 	$ARnls["q:removenewspaper"]                     =    "Wollen Sie diese Zeitung wirklich löschen?";
 	$ARnls["q:removeobject"]                        =    "Wollen Sie dieses Objekt wirklich löschen?";
+//	$ARnls["q:removeobjects"]                       =    "Are you sure you want to remove these objects?"; // value from english
 	$ARnls["q:removepage"]                          =    "Wollen Sie diese Seite wirklich löschen?";
 	$ARnls["q:removeshortcut"]                      =    "Wollen Sie diesen Verknüpfung wirklich löschen?";
 	$ARnls["q:removetemplate"]                      =    "Wollen Sie die Vorlage %s für %s wirklich löschen?";
