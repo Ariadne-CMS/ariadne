@@ -23,10 +23,14 @@
 							display("	file($file) no update");
 				} else {
 					$srcStream = $orig_filestore->get_stream($this->id, $file);
-					$result = $new_filestore->copy_stream_to_store($srcStream, $this->newObject->id, $file);
+					if (is_resource($srcStream) ){
+						$result = $new_filestore->copy_stream_to_store($srcStream, $this->newObject->id, $file);
 
-					fclose($srcStream);
-					display("	file($file) created");
+						fclose($srcStream);
+						display("	file($file) created");
+					} else {
+						display("	file($file) ERROR: Could not open file");
+					}
 				}
 			}
 		 }
