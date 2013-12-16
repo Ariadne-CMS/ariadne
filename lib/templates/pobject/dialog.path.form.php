@@ -42,7 +42,7 @@
 
 </script>
 <fieldset id="data" class="browse">
-<?		
+<?php		
 		foreach ($sources as $source) {
 			$sourceob = current($this->get($source, "system.get.phtml"));
 
