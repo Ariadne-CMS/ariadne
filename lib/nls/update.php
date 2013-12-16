@@ -21,7 +21,7 @@
 			echo "Updating ".$module.$language."\n";
 			include($module.$language);
 
-			$content = "<?"."php\n\n";
+			$content = "<"."?php\n\n";
 			if ( file_exists($module.$language.".head") ) {
 				$content .= file_get_contents($module.$language.".head");
 			}
