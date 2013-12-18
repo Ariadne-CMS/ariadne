@@ -101,11 +101,11 @@
 			for (nls in CustomData) {
 				arData=CustomData[nls];
 				for (arName in arData) {
-					var value = escape(arData[arName]);
+					var value = encodeURIComponent(arData[arName]);
 					// Some characters has to be replaced by its encoding
-					// Plus (+) char (which escape() doesn't do)
+					// Plus (+) char (which encodeURIComponent() doesn't do)
 					value = value.replace(/\+/g, "%2B");
-					savestring+='&custom['+escape(nls)+']['+escape(arName)+']='+value;
+					savestring+='&custom['+encodeURIComponent(nls)+']['+encodeURIComponent(arName)+']='+value;
 				}
 
 			}
