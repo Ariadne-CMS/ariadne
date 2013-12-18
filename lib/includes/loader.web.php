@@ -97,29 +97,29 @@
 		if ($http_post_file['error']) {
 			switch ($http_post_file['error']) {
 				case UPLOAD_ERR_INI_SIZE: 
-					$error = $ARnls['err:upload_ini_size']; // "The uploaded file exceeds the upload_max_filesize directive in php.ini"; 
+					$error = $ARnls['ariadne:err:upload_ini_size']; // "The uploaded file exceeds the upload_max_filesize directive in php.ini"; 
 					break; 
 				case UPLOAD_ERR_FORM_SIZE: 
-					$error = $ARnls['err:upload_form_size']; // The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form"; 
+					$error = $ARnls['ariadne:err:upload_form_size']; // The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form"; 
 					break; 
 				case UPLOAD_ERR_PARTIAL: 
-					$error = $ARnls['err:upload_partial']; // "The uploaded file was only partially uploaded"; 
+					$error = $ARnls['ariadne:err:upload_partial']; // "The uploaded file was only partially uploaded"; 
 					break; 
 				case UPLOAD_ERR_NO_FILE: 
-					$error = $ARnls['err:upload_no_file']; // No file was uploaded"; 
+					$error = $ARnls['ariadne:err:upload_no_file']; // No file was uploaded"; 
 					break; 
 				case UPLOAD_ERR_NO_TMP_DIR: 
-					$error = $ARnls['err:upload_no_tmp_dir']; // "Missing a temporary folder"; 
+					$error = $ARnls['ariadne:err:upload_no_tmp_dir']; // "Missing a temporary folder"; 
 					break; 
 				case UPLOAD_ERR_CANT_WRITE: 
-					$error = $ARnls['err:upload_cant_write']; // "Failed to write file to disk"; 
+					$error = $ARnls['ariadne:err:upload_cant_write']; // "Failed to write file to disk"; 
 					break; 
 				case UPLOAD_ERR_EXTENSION: 
-					$error = $ARnls['err:upload_extension']; // "File upload stopped by extension"; 
+					$error = $ARnls['ariadne:err:upload_extension']; // "File upload stopped by extension"; 
 					break; 
 
 				default: 
-					$error = sprintf($ARnls['err:upload_error'], $http_post_file['error']); // "Unknown upload error %s"; 
+					$error = sprintf($ARnls['ariadne:err:upload_error'], $http_post_file['error']); // "Unknown upload error %s"; 
 					break; 
 			}
 			return $result;

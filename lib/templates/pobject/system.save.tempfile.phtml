@@ -9,6 +9,10 @@
 			$arLanguage = $ARConfig->nls->default;
 		}
 
+		if ($this->error) {
+			return Array();
+		}
+
 		// for backwards compatibility we will first try to
 		// register the file without nls
 		$info = ldRegisterFile("file", $this->error);
