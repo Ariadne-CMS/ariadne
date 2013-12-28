@@ -43,10 +43,15 @@ define("PT_VAR_CBRACE_OPEN",214);
 define("PT_HEREDOC",		213);
 define("PT_EXT_COMPILE_START", 212);
 define("PT_EXT_COMPILE_END", 211);
+define("PT_ARRAY_OP",		210);
+define("PT_CLASS_OPERATOR",	209);
+define("PT_OBJECT_OPERATOR",	208);
+define("PT_ASSIGN_OP",		207);
 
-define("YY_STATE_HTML",			1);
-define("YY_STATE_PINP",			2);
-define("YY_STATE_EXT_COMPILE",		3);
+define("YY_STATE_HTML",        1);
+define("YY_STATE_PINP",        2);
+define("YY_STATE_EXT_COMPILE", 3);
+define("YY_STATE_DQ",          4);
 
 class scanner {
 
