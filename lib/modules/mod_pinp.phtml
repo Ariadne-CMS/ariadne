@@ -202,7 +202,7 @@ class scanner {
 									/* php start tag found */
 									$result = $matches[1];
 									$YYCURSOR+=strlen($matches[0]);
-									$result .= "<?php echo \"".str_replace('$', '\\$', AddCSlashes($matches[2], ARESCAPE))."\"; ?>";
+									$result .= "<?"."php echo \"".str_replace('$', '\\$', AddCSlashes($matches[2], ARESCAPE))."\"; ?".">";
 									return PT_UNPARSED;
 								}
 							} else {
@@ -244,14 +244,14 @@ class scanner {
 						break;
 						case '"':
 							$result = $yych;
-                                                        $yych = $YYBUFFER[++$YYCURSOR];
-                                                        while ($YYCLASSES["NOISE"][$yych]) {
+							$yych = $YYBUFFER[++$YYCURSOR];
+							while ($YYCLASSES["NOISE"][$yych]) {
 								$result .= $yych;
-                                                                if ($yych == "\n") {
-                                                                        $this->YYLINE++;
-                                                                }
-                                                                $yych = $YYBUFFER[++$YYCURSOR];
-                                                        }
+								if ($yych == "\n") {
+									$this->YYLINE++;
+								}
+								$yych = $YYBUFFER[++$YYCURSOR];
+							}
 							return PT_DQ_STRING;
 						break;
 						case "\0":
@@ -442,7 +442,7 @@ class scanner {
 								break;
 							}
 							return PT_UNPARSED;
-						break;					
+						break;
 						case '/':
 							$result = $yych;
 							$yych = $YYBUFFER[++$YYCURSOR];
@@ -900,7 +900,7 @@ class pinp {
 				$ident = ltrim($ident, '_');
 				$result = $func_prefix.$ident.$call_args;
 			} else {
-				$result = $var_prefix.$ident.$array_index;			
+				$result = $var_prefix.$ident.$array_index;
 			}
 		} else if ($this->token_ahead == PT_CBRACE_OPEN || $this->token_ahead == PT_VAR_REFERENCE) {
 			$this->next_token();
@@ -988,7 +988,7 @@ class pinp {
 				}
 			}
 		}
-		return $result;		
+		return $result;
 	}
 
 
@@ -1417,12 +1417,12 @@ class pinp {
 					$this->next_token();
 				break;
 				case PT_PINP_START:
-					$result .= $this->token_ahead_value."<?php ";
+					$result .= $this->token_ahead_value."<?"."php ";
 					$this->in_pinp = true;
 					$this->next_token();
 				break;
 				case PT_PINP_END:
-					$result .= " ?>";
+					$result .= " ?".">";
 					$this->in_pinp = false;
 					$this->next_token();
 				break;
@@ -1468,7 +1468,7 @@ class pinp {
 		$this->in_pinp = true;
 		$this->new_template = $this->parse_func_call_args();
 		if (!$this->error) {
-			$this->syntax_test("<"."?php function test(".$this->new_template.") { } ?>");
+			$this->syntax_test("<"."?php function test(".$this->new_template.") { } ?".">");
 		}
 		return $this->new_template;
 	}
