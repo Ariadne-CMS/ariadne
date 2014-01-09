@@ -297,7 +297,6 @@ abstract class sql_compiler {
 
 	protected function parse_orderby(&$YYBUFFER) {
 		$field = $this->parse_ident($YYBUFFER);
-		$reg_sort_type = '^[[:space:]]*(ASC|DESC)';
 
 		$YYCURSOR = 0;
 		while (isset($this->_SCAN_WS[$YYBUFFER[$YYCURSOR]])) {
