@@ -477,7 +477,6 @@ abstract class sql_compiler {
 		$tree=$this->parse_query($query);
 		if (!$this->error && trim($query)) {
 			$this->error="unkown operator near '$query'";
-			$result="";
 		} else {
 			if ($tree) {
 				$compiled_query=$this->priv_sql_compile($tree);
