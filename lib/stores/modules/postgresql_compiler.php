@@ -2,7 +2,8 @@
   include($this->code."stores/modules/sql_compiler.php");
 
   class postgresql_compiler extends sql_compiler {
-	function postgresql_compiler(&$store, $tbl_prefix="") {
+
+	function __construct(&$store, $tbl_prefix="") {
 		debug("postgresql_compiler($tbl_prefix)", "store");
 		$this->tbl_prefix=$tbl_prefix;
 		$this->store=$store;
