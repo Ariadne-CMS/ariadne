@@ -206,7 +206,7 @@ abstract class sql_compiler {
 					}
 					$result=$node;
 			} else {
-				$this->error="unknow compare-operator near '$query'";
+				$this->error="unknow compare-operator near '$YYBUFFER'";
 			}
 		}
 		return $result;
