@@ -466,7 +466,7 @@ abstract class sql_compiler {
 	protected abstract function priv_sql_compile($node) ;
 
 	public function compile($path, $query, $limit=100, $offset=0, $layers = array()) {
-		debug("sql_compiler::compile ($path, $query, $limit, $offset, $layer)", "store");
+		debug("sql_compiler::compile ($path, $query, $limit, $offset)", "store");
 		$this->error="";
 		$this->path = $path;
 
