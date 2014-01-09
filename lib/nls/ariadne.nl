@@ -56,6 +56,14 @@
 	$ARnls["ariadne:editor:style"]                  =    "Stijl";
 	$ARnls["ariadne:err:invalidsession"]            =    "Sessie is niet valide voor deze bewerking.";
 	$ARnls["ariadne:err:rewrite.no_input"]          =    "Geef eerst herschrijfinstructies op.";
+	$ARnls["ariadne:err:upload_cant_write"]         =    "Kon het bestand niet wegschrijven.";
+	$ARnls["ariadne:err:upload_error"]              =    "Onbekende upload fout: %s";
+	$ARnls["ariadne:err:upload_extension"]          =    "Bestandupload is gestopt.";
+	$ARnls["ariadne:err:upload_form_size"]          =    "Het bestand is groter dan het maximum toegelaten formaat.";
+	$ARnls["ariadne:err:upload_ini_size"]           =    "Het bestand is groter dan het maximum toegelaten formaat.";
+	$ARnls["ariadne:err:upload_no_file"]            =    "Er is geen bestand geupload";
+	$ARnls["ariadne:err:upload_no_tmp_dir"]         =    "De tijdelijke map voor het bestand ontbreekt.";
+	$ARnls["ariadne:err:upload_partial"]            =    "Het bestand is niet volledig geupload.";
 	$ARnls["ariadne:explore"]                       =    "Verken";
 	$ARnls["ariadne:export"]                        =    "Exporteer";
 	$ARnls["ariadne:file_uploaded"]                 =    "Bestand";
@@ -241,13 +249,6 @@
 	$ARnls["err:svn:enterURL"]                      =    "Voer een valide SVN repository URL in.";
 	$ARnls["err:svn:leaving_recurse_tree"]          =    "Deze repository maakt geen deel uit van de repository-boom van deze actie.";
 	$ARnls["err:typetree_does_not_allow"]           =    "De typeboom instellingen staan dit object type hier niet toe.";
-	$ARnls['ariadne:err:upload_ini_size']                   =    "Het bestand is groter dan het maximum toegelaten formaat.";
-	$ARnls['ariadne:err:upload_form_size']                  =    "Het bestand is groter dan het maximum toegelaten formaat.";
-	$ARnls['ariadne:err:upload_partial']                    =    "Het bestand is niet volledig geupload.";
-	$ARnls['ariadne:err:upload_no_file']                    =    "Er is geen bestand geupload";
-	$ARnls['ariadne:err:upload_no_tmp_dir']                 =    "De tijdelijke map voor het bestand ontbreekt.";
-	$ARnls['ariadne:err:upload_cant_write']                 =    "Kon het bestand niet wegschrijven.";
-	$ARnls['ariadne:err:upload_extension']                  =    "Bestandupload is gestopt.";
-	$ARnls['ariadne:err:upload_error']                      =    "Onbekende upload fout: %s";
+
 
 ?>

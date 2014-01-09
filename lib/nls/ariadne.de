@@ -63,6 +63,14 @@
 //	$ARnls["ariadne:editor:style"]                  =    "Style"; // value from english
 //	$ARnls["ariadne:err:invalidsession"]            =    "Session is not valid for this operation."; // value from english
 //	$ARnls["ariadne:err:rewrite.no_input"]          =    "Geef eerst herschrijfinstructies op."; // value from english
+//	$ARnls["ariadne:err:upload_cant_write"]         =    "Failed to write file to disk"; // value from english
+//	$ARnls["ariadne:err:upload_error"]              =    "Unknown upload error %s"; // value from english
+//	$ARnls["ariadne:err:upload_extension"]          =    "File upload stopped by extension"; // value from english
+//	$ARnls["ariadne:err:upload_form_size"]          =    "The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form"; // value from english
+//	$ARnls["ariadne:err:upload_ini_size"]           =    "The uploaded file exceeds the upload_max_filesize directive in php.ini"; // value from english
+//	$ARnls["ariadne:err:upload_no_file"]            =    "No file was uploaded"; // value from english
+//	$ARnls["ariadne:err:upload_no_tmp_dir"]         =    "Missing a temporary folder"; // value from english
+//	$ARnls["ariadne:err:upload_partial"]            =    "The uploaded file was only partially uploaded"; // value from english
 	$ARnls["ariadne:explore"]                       =    "Durchsuchen";
 	$ARnls["ariadne:export"]                        =    "Exportieren";
 //	$ARnls["ariadne:file_uploaded"]                 =    "File"; // value from english
