@@ -105,7 +105,7 @@
 			//		$this->select_tables[$table." as $table$record_id"] = 1;
 
 					$result = " $table$record_id.AR_name = '$field' ";
-					if (!$this->in_orderby && !$no_context_join) {
+					if (!$this->in_orderby ) {
 						if ($this->join_target_properties["prop_my"][":$record_id"]) {
 							$result=" $result and $table$record_id.object = target.object and $table$record_id.AR_value "; 
 						} else {
