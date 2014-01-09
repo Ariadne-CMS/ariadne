@@ -291,8 +291,8 @@ class pfile extends pobject { // pfile class definition
 				} else {
 					$type = $mimetype;
 				}
-                $info[$name."_type"]=$type;
-                $info['mimetype']=$type;
+				$info[$name."_type"]=$type;
+				$info['mimetype']=$type;
 				$_POST = array_merge($_POST, $info);
 
 				return true;
