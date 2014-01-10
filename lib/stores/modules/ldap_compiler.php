@@ -23,7 +23,6 @@
 			case 'property':
 				$table=$node["table"];
 				$field=$node["field"];
-				$record_id=$node["record_id"];
 				$result="$table.$field";
 			break;
 			case 'ident':
