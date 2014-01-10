@@ -227,10 +227,6 @@
 						}
 					}
 				}
-				$maxage = $expires - time();
-				if ($maxage < 0) {
-					$maxage = 0;
-				}
 				ldHeader("HTTP/1.1 304 Not Modified");
 			} else {
 				// now send caching headers too, maximum 1 hour client cache.
