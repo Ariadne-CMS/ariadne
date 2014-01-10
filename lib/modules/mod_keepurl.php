@@ -11,9 +11,7 @@
 			$redirects = $ARCurrent->shortcut_redirect;
 			if (is_array($redirects)) {
 				$c_redirects = count($redirects);
-				$c_redirects_done = 0;
 				while (count($redirects) && ($redir = array_pop($redirects)) && substr($newpath, 0, strlen($redir['dest'])) == $redir['dest'] && $redir['keepurl']) {
-					$c_redirects_done++;
 					$newpath = $redir['src'].substr($newpath, strlen($redir['dest']));
 				}
 			}
@@ -65,7 +63,6 @@
 		}
 
 		function _make_real_path($path, &$redirects = Array()) {
-			global $ARCurrent;
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 
