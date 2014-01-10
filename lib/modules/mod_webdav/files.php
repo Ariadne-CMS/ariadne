@@ -31,19 +31,15 @@
 				debug("webdav:files unescaped path: $path");
 				$result = preg_replace_callback(
 					'/[^\/A-Za-z0-9.-]/', 
-					create_function(
-						// Replaces characters in the path with their number. 
-						// Quite similar to " " -> "%20" for HTML escape, but we use _ instead of %
-						// This function is to be used as a callback for preg_replace_callback
-						'$char',
-						'if ($char[0]) {'.
-						'	if ($char[0]=="_") {'.
-						'		return "__"; '.
-						'	} else {'.
-						'		return "_".dechex(ord($char[0]));'.
-						'	}'.
-						'}'
-					),
+					function( $char ) {
+						if ($char[0]) {
+							if ($char[0]=="_") {
+								return "__";
+							} else {
+								return "_".dechex(ord($char[0]));
+							}
+						}
+					},
 					$path
 				);
 			}
