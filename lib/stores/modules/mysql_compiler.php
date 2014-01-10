@@ -314,13 +314,9 @@ class mysql_compiler extends sql_compiler {
 			$this->used_tables[$properties."references as target_reference"] = $properties."references as target_reference";
 			$this->used_tables["$nodes as target"] = "$nodes as target";
 		}
-		@reset($this->used_tables);
-		while (list($key, $val)=each($this->used_tables)) {
-			if ($tables) {
-				$tables.=", $key";
-			} else {
-				$tables="$key";
-			}
+
+		$tables = implode(', ',array_keys($this->used_tables));
+		foreach ( $this->used_tables as $key => $val){
 			if ($this->select_tables[$key]) {
 				if ($this->join_target_properties[$key]) {
 					$prop_dep.=" and $val.object=target.object ";
@@ -332,12 +328,8 @@ class mysql_compiler extends sql_compiler {
 
 		$join = "";
 		if (is_array($this->nls_join)) {
-			reset($this->nls_join);
-			while (list($key, $value)=each($this->nls_join)) {
-				$join .= $value;
-			}
+			$join = join($this->nls_join);
 		}
-
 
 		$query.=" where $nodes.object=$objects.id $prop_dep";
 		$query.=" and $nodes.path like '".str_replace('_','\\_',AddSlashes($this->path))."%' ";
