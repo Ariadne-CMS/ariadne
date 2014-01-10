@@ -78,13 +78,13 @@
 
 	function ldGatherXSSInput(&$xss, $input) {
 		if (is_array($input)) {
-			foreach ($input as $key => $value) {
+			foreach ($input as $value) {
 				ldGatherXSSInput($xss, $value);
 			}
 		} else {
 			$input = (string)$input;
 			if (strlen($input) > 10) {
-				if (preg_match('/[\'"<>]/', $input, $matches)) {
+				if (preg_match('/[\'"<>]/', $input)) {
 					$xss[strlen($input)][$input] = $input;
 				}
 			}
@@ -453,7 +453,7 @@
 				$mimetype = strtolower($matches[1]);
 				if (substr($mimetype, 0, 5) == 'text/') {
 					krsort($xss_vars, SORT_NUMERIC);
-					foreach ($xss_vars as $length => $values) {
+					foreach ($xss_vars as $values) {
 						if (is_array($values)) {
 							foreach ($values as $value) {
 								$occurances = substr_count($image, $value);
