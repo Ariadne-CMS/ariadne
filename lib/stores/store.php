@@ -311,7 +311,7 @@ abstract class store {
 	public function close() {
 		// This is the destructor function, nothing much to see :)
 		if (is_array($this->_filestores)) {
-			while (list($key, $filestore)=each($this->_filestores)) {
+			foreach ($this->_filestores as $filestore) {
 				$filestore->close();
 			}
 		}
@@ -371,10 +371,10 @@ abstract class store {
 	********************************************************************/
 
 		if ($properties && (is_array($properties)) && (is_int($id))) {
-			while (list($property, $property_set)=each($properties)) {
+			foreach ( $properties as $property => $property_set ) {
 				$this->del_property($id, $property);
 				if (is_array($property_set)) {
-					while (list($key, $values)=each($property_set)) {
+					foreach ( $property_set as $values ) {
 						$this->add_property($id, $property, $values);
 					}
 				}
