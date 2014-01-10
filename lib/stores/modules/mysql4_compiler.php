@@ -12,7 +12,6 @@
 		switch ((string)$node["id"]) {
 			case 'cmp':
 				if ($node["left"]["id"] == "implements" && in_array($node["operator"], Array("!=", "=", "==")) ) {
-					$table=$this->tbl_prefix."types";
 					$type=$this->compile_tree($node["right"]);
 					$operator=$node["operator"];
 
