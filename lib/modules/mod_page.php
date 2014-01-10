@@ -92,9 +92,7 @@ class page {
 	}
 
 	function isEmpty($page) {
-		if (!$full) {
-			$page = page::getBody($page);
-		}
+		$page = page::getBody($page);
 		return trim(str_replace('&nbsp;',' ',strip_tags($page, '<img><object><embed><iframe>')))=='';
 	}
 
@@ -164,8 +162,6 @@ class page {
 	}
 
 	function compileWorker(&$node) {
-		$context = pobject::getContext();
-		$me = $context["arCurrentObject"];
 		$result = false;
 		$contentEditable = "";
 		if (isset($node['attribs']['contenteditable'])) {
