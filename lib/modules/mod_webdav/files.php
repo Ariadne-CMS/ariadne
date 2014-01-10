@@ -67,7 +67,6 @@
 			debug("webdav:files:propfind([path=".$options['path']."], [files])");
 
 			$path = $this->make_path($options['path']);
-			$parent = $this->make_path($options['path'], '..');
 			$options['path'] = $path;
 			// chop root
 			$options['path'] = substr($options['path'], strlen($this->root)-1);
@@ -98,7 +97,6 @@
 
 		function head($options) {
 			$path = $this->make_path($options['path']);
-			$parent = $this->make_path($options['path'], '..');
 			debug("webdav:files:head ($path)");
 
 			if (!$this->store->exists($path)) {
@@ -194,7 +192,6 @@
 		function move($options) {
 			debug("webdav:move: source(".$options['path'].") dest(".$options['dest'].")");
 			$path = $this->make_path($options['path']);
-			$parent = $this->make_path($options['path'], '..');
 			$dest = $this->make_path($options['dest']);
 			$dparent = $this->make_path($options['dest'], '..');
 			debug("webdav:files:move ($path to $dest)");
@@ -216,9 +213,6 @@
 		}
 
 		function put(&$params) {
-		global $ARCurrent;
-
-			//$filename = basename($params['path']);
 			$path = $this->make_path($params['path']);
 			$filename = basename($path);
 			$parent = $this->make_path($params['path'], '..');
@@ -257,7 +251,7 @@
 				}
 
 				debug("webdav:files:put creating $filename in $parent");
-				$result = current($this->store->call('webdav.files.put.file.phtml',
+				current($this->store->call('webdav.files.put.file.phtml',
 						Array( 'file' =>
 							Array(
 								'tmp_name' => $temp,
