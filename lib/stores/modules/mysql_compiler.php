@@ -238,22 +238,10 @@ class mysql_compiler extends sql_compiler {
 					$type	= $this->compile_tree($node["right"]);
 					switch ($operator) {
 						case '!=':
-							/* retrieve an implements list */
-							$types = $this->store->priv_get_implements($type);
-					
-							foreach ( $types as $itype ){
-								if (!$ilist) {
-									$ilist = " '".$itype."' ";
-								} else {
-									$ilist .= ", '".$itype."' ";
-								}
-							}
-							$result = " (".$this->tbl_prefix."objects.type not in ($ilist)) ";
+							$result=" (".$this->tbl_prefix."objects.type not in (select type from ".$this->tbl_prefix."types where implements = $type )) ";
 						break;
 						default:
-							$table=$this->tbl_prefix."types";
-							$this->used_tables[$table]=$table;
-							$result=" (".$this->tbl_prefix."types.implements $operator $type and ".$this->tbl_prefix."objects.vtype = ".$this->tbl_prefix."types.type ) ";
+							$result=" (".$this->tbl_prefix."objects.vtype in (select type from ".$this->tbl_prefix."types where implements $operator $type )) ";
 						break;
 					}
 				}
