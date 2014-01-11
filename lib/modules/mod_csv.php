@@ -3,23 +3,23 @@
 
 	class pinp_csv {
 
-		function _init($settings = "") {
+		public function _init($settings = "") {
 			return csv::init($settings);
 		}
 
-		function _load($fileName = "file", $fileNameNls = "", $settings = "") {
+		public function _load($fileName = "file", $fileNameNls = "", $settings = "") {
 			return csv::load($fileName, $filenameNls, $settings);
 		}
 
-		function _read($fileName = "file", $settings = array() ) {
+		public function _read($fileName = "file", $settings = array() ) {
 			return csv::read($fileName, $settings);
 		}
 
-		function _readFromArray($csvArray, $settings = array() ) {
+		public function _readFromArray($csvArray, $settings = array() ) {
 			return csv::readFromArray($csvArray, $settings);
 		}
 
-		function _writeToString($csvFeed, $settings = array() ) {
+		public function _writeToString($csvFeed, $settings = array() ) {
 			return csv::writeToString($csvFeed, $settings);
 		}
 
@@ -27,18 +27,18 @@
 
 	class csv {
 
-		function init($settings = "") {
+		public static function init($settings = "") {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 
 			return new csvFeed($me, $settings);
 		}
 
-		function load($fileName = "file", $fileNameNls = "", $settings = array()) {
+		public static function load($fileName = "file", $fileNameNls = "", $settings = array()) {
 			return $this->read($fileName, array_merge( array('nls' => $fileNameNLs), $settings));
 		}
 
-		function read($fileName = "file", $settings = array()) {
+		public static function read($fileName = "file", $settings = array()) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 
@@ -58,7 +58,7 @@
 		}
 */
 
-		function readFromArray($csvArray, $settings = array()) {
+		public function readFromArray($csvArray, $settings = array()) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 
@@ -71,23 +71,27 @@
 			}
 		}
 
-		function _readFromArray($csvArray, $settings = array() ) {
+		public function _readFromArray($csvArray, $settings = array() ) {
 			return $this->readFromArray($csvArray, $settings);
 		}
 
-		function writeToString($csvFeed, $settings = array()) {
+		public function writeToString($csvFeed, $settings = array()) {
 			return $csvFeed->writeToString($settings);
 		}
 
-		function _writeToString($csvFeed, $settings = array()) {
+		public function _writeToString($csvFeed, $settings = array()) {
 			return $csvFeed->writeToString($settings);
 		}
 
 	}
 
 	class csvFeed {
+		protected $settings;
+		protected $object;
+		protected $readMode;
+		protected $fp;
 
-		function csvFeed($object, $settings) {
+		public function __construct($object, $settings) {
 			$default = Array(
 				"seperator"		=> ",",
 				"quotation"		=> "\"",
@@ -114,15 +118,15 @@
 		}
 
 
-		function load($fileName = "file", $fileNameNls = "") {
+		public function load($fileName = "file", $fileNameNls = "") {
 			return $this->read($filename, array('nls' => $fileNameNls));
 		}
 
-		function _load($fileName = "file", $fileNameNls = "") {
+		public function _load($fileName = "file", $fileNameNls = "") {
 			return $this->load($fileName, $fileNameNls);
 		}
 		
-		function read($fileName = "file", $settings = "") {
+		public function read($fileName = "file", $settings = "") {
 			$object = $this->object;
 
 			$files	= $object->store->get_filestore("files");
@@ -144,11 +148,11 @@
 			$this->reset();
 		}
 
-		function _read($fileName = "file", $settings = array()) {
+		public function _read($fileName = "file", $settings = array()) {
 			return $this->read($fileName, $settings);
 		}
 
-		function readFromArray($csvArray, $settings = array() ) {
+		public function readFromArray($csvArray, $settings = array() ) {
 			if (!is_array($csvArray)) {
 				$error = error::raiseError('mod_csv: readFromArray, input is not an array', 1);
 				return $error;
@@ -158,11 +162,11 @@
 			$this->reset();
 		}
 
-		function _readFromArray($csvArray, $settings = array() ) {
+		public function _readFromArray($csvArray, $settings = array() ) {
 			return $this->readFromArray($csvArray, $settings);
 		}
 
-		function reset() {
+		public function reset() {
 			switch ($this->readMode) {
 				case "array":
 					reset($this->csvArray);
@@ -187,7 +191,7 @@
 		}
 
 
-		function next() {
+		public function next() {
 			switch ($this->readMode) {
 				case 'array':
 					$result = current($this->csvArray);
@@ -229,11 +233,11 @@
 		}
 
 
-		function current() {
+		public function current() {
 			return $this->readLine;
 		}
 
-		function call($template, $args=Array()) {
+		public function call($template, $args=Array()) {
 			$current = $this->current();
 			if ($current) {
 				$args['item'] = $current;
@@ -242,14 +246,14 @@
 			return $result;
 		}
 
-		function count() {
+		public function count() {
 			$this->reset();
 			$i = 0;
 			while ($this->current()) { $i++; $this->next(); };
 			return $i;
 		}
 
-		function ls($template, $args='', $limit=0, $offset=0) {
+		public function ls($template, $args='', $limit=0, $offset=0) {
 		global $ARBeenHere;
 			$ARBeenHere = Array();
 			$this->reset();
@@ -269,11 +273,11 @@
 			} 
 		}
 
-		function _getArray($limit=0, $offset=0) {
+		public function _getArray($limit=0, $offset=0) {
 			return $this->getArray($limit,$offset);
 		}
 
-		function getArray($limit=0, $offset=0) {
+		public function getArray($limit=0, $offset=0) {
 			$result=Array();
 			$this->reset();
 			if ($offset) {
@@ -291,7 +295,7 @@
 			return $result;
 		}
 
-		function writeToString($settings = array()) {
+		public function writeToString($settings = array()) {
 			$settings = array_merge($this->settings, $settings);
 			$result = '';
 			if ($settings['keyRow'] && $settings['keySelection']) {
@@ -313,16 +317,16 @@
 			return $result;
 		}
 
-		function _writeToString($settings = array() ) {
+		public function _writeToString($settings = array() ) {
 			return $this->writeToString($settings);
 		}
 
-		function quoteValue($value, $settings = array()) {
+		public function quoteValue($value, $settings = array()) {
 			$settings = array_merge($this->settings, $settings);
 			return $settings['quotation'] . AddCSlashes($value, $settings['escape']) . $settings['quotation'];
 		}
 
-		function quoteValues($values, $settings = array()) {
+		public function quoteValues($values, $settings = array()) {
 			$settings = array_merge($this->settings, $settings);
 			if (!is_array($values)) {
 				return error::raiseError('mod_csv: quoteValues: values argument is not an array', 2);
@@ -342,23 +346,23 @@
 			return $result;
 		}
 
-		function _reset() {
+		public function _reset() {
 			return $this->reset();
 		}
 
-		function _next() {
+		public function _next() {
 			return $this->next();
 		}
 
-		function _count() {
+		public function _count() {
 			return $this->count();
 		}
 
-		function _current() {
+		public function _current() {
 			return $this->current();
 		}
 
-		function _ls($template, $args='') {
+		public function _ls($template, $args='') {
 			return $this->ls($template, $args);
 		}
 
