@@ -4,12 +4,12 @@ define("DIRMODE", 0770);
 
 class cacherss {
 
-	function cacherss( $httphelper, $timeout = 1800 ) {
+	public function __construct( $httphelper, $timeout = 1800 ) {
 		$this->httphelper = $httphelper;
 		$this->timeout = $timeout;
 	}
 	
-	function load( $url ) {
+	public function load( $url ) {
 		$data = $this->httphelper->load( $url, "", time() - $this->timeout );
 		$this->xmldata = $data["data"];
 
@@ -19,7 +19,7 @@ class cacherss {
 		return $result;
 	}
 
-	function titlelink($url) {
+	public function titlelink($url) {
 		$data = $this->httphelper->load( $url, "", time() - $this->timeout );
 		$this->xmldata = $data["data"];
 
@@ -33,7 +33,7 @@ class cacherss {
 
 
 class pinp_cacherss {
-	function _load( $url, $timeout = 1800 ) {
+	public function _load( $url, $timeout = 1800 ) {
 		global $AR;
 		$cachelocation = $AR->dir->install . "/files/cache/rss/";
 		$cache = new cache( $cachelocation );
@@ -42,7 +42,7 @@ class pinp_cacherss {
 		return $rss->load( $url );
 	}
 
-	function _titlelink( $url, $timeout = 1800 ) {
+	public function _titlelink( $url, $timeout = 1800 ) {
 		global $AR;
 		$cachelocation = $AR->dir->install . "/files/cache/rss/";
 		$cache = new cache( $cachelocation );
@@ -55,7 +55,7 @@ class pinp_cacherss {
 
 class cacherssfeed {
 
-	function parseString( $xmldata ) {
+	public function parseString( $xmldata ) {
 		// reset namestack
 		$this->xmldata = $xmldata;
 		$this->ns = Array();
@@ -108,7 +108,7 @@ class cacherssfeed {
 
 	}
 
-	function startElement($parser, $name, $attribs) {
+	protected function startElement($parser, $name, $attribs) {
 		$newElement = Array();
 		$element = &$this->elements;
 		foreach ($this->ns as $n) {
@@ -129,7 +129,7 @@ class cacherssfeed {
 		}
 	}
 
-	function endElement($parser, $name) {
+	protected function endElement($parser, $name) {
 		$element = &$this->elements;
 		foreach ($this->ns as $n) {
 			$parentElement = $element;
@@ -149,7 +149,7 @@ class cacherssfeed {
 		array_pop($this->ns);
 	}
 
-	function characterData($parser, $data) {
+	protected function characterData($parser, $data) {
 		$element = &$this->elements;
 		foreach ($this->ns as $n) {
 			if (is_array($element) && isset($element[$n])) {
@@ -176,15 +176,15 @@ class cacherssfeed {
 		}
 	}
 
-	function current() {
+	public function current() {
 		return $this->rss_items[0];
 	}
 
-	function info() {
+	public function info() {
 		return $this->rss_channel;
 	}
 
-	function next() {
+	public function next() {
 		// this is needed 
 		if (!$this->parser) {
 			return false;
@@ -209,7 +209,7 @@ class cacherssfeed {
 		return $this->rss_items[0];
 	}
 	
-	function getArray() {
+	public function getArray() {
 		$result=Array();
 		do {
 			$result[]=$this->current();
@@ -220,11 +220,11 @@ class cacherssfeed {
 
 class httphelper {
 
-	function httphelper( $cache ) {
+	public function __construct( $cache ) {
 		$this->cache = $cache;
 	}
 
-	function load( $url, $meta="", $maxage=0, $user="" ) {
+	public function load( $url, $meta="", $maxage=0, $user="" ) {
 		$result = $this->cache->load($url, $maxage, $user);
 		if( !$result && $maxage >= 0 ) {
 			$data = $this->HTTPRequest("GET", $url);
@@ -235,7 +235,7 @@ class httphelper {
 		return $result;
 	}
 
-	function HTTPRequest($method, $url, $postdata = "", $port=80 ) { 
+	protected function HTTPRequest($method, $url, $postdata = "", $port=80 ) { 
 		$maxtries = 5;
 		$tries = 0;
 		$redirecting = true;
@@ -348,7 +348,7 @@ class httphelper {
 
 class cache {
 
-	function cache( $path ) {
+	public function __construct( $path ) {
 		// FIXME: forceer $path eindigen op een / en security.
 
 		if (!is_dir($path) && !file_exists($path)) {
@@ -359,7 +359,7 @@ class cache {
 	}
 
 
-	function load( $tag, $maxage = 0, $user = "" ) {
+	public function load( $tag, $maxage = 0, $user = "" ) {
 	
 		if( !$tag ) {
 			return false;
@@ -393,7 +393,7 @@ class cache {
 		return $result;
 	}
 
-	function save( $tag, $data, $meta = "", $user = "" ) {
+	public function save( $tag, $data, $meta = "", $user = "" ) {
 	
 		if( !$tag ) {
 			return false;
@@ -438,7 +438,7 @@ class cache {
 		return $result;
 	}
 	
-	function clear( $tag, $user = "" ) {
+	public function clear( $tag, $user = "" ) {
 
 		if( !$tag ) {
 			return false;
@@ -463,7 +463,7 @@ class cache {
 		return $result;
 	}
 
-	function escape($path) {
+	protected function escape($path) {
 		// This function will return an escaped path. All the characters not supported by Ariadne will be encoded.
 		// See also path_escape_callback
 
@@ -471,20 +471,18 @@ class cache {
 		$result = "";
 		if ($path) {
 			$result = preg_replace_callback(
-				'/[^A-Za-z0-9-]/', 
-				create_function(
+				'/[^A-Za-z0-9-]/', function ($char) {
 					// Replaces characters in the path with their number. 
 					// Quite similar to " " -> "%20" for HTML escape, but we use _ instead of %
 					// This function is to be used as a callback for preg_replace_callback
-					'$char',
-					'if ($char[0]) {'.
-					'	if ($char[0]=="_") {'.
-					'		return "__"; '.
-					'	} else {'.
-					'		return "_".dechex(ord($char[0]));'.
-					'	}'.
-					'}'
-				),
+					if ($char[0]) {
+						if ($char[0]=="_") {
+							return "__";
+						} else {
+							return "_".dechex(ord($char[0]));
+						}
+					}
+				},
 				$path
 			);
 		}
@@ -496,24 +494,23 @@ class cache {
 		if ($path) {
 			$result = preg_replace_callback(
 				'/(_[0-9a-fA-F][0-9a-fA-F]|__)/', 
-				create_function(
-					'$matches', 
+				function ( $matches ) {
 					// Two types of escaped characters can be here, the
 					// underscore or other characters. Check for the
 					// underscore first.
 
-					'$char = $matches[0];'.
-					'if ($char[1] == "_") {'.
+					$char = $matches[0];
+					if ($char[1] == "_") {
 					// It is the underscore, return it as a character.
-					'	return "_";'.
-					'}'.
+						return "_";
+					}
 
 					// Assume it is an escaped character here. Find the
 					// numbers in hex, turn them back to decimal, get
 					// the corresponding character and return it.
 
-					'return chr(hexdec(substr($char, 1, 2)));'
-				),
+					return chr(hexdec(substr($char, 1, 2)));
+				},
 				$path
 			);
 		}
