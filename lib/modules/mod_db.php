@@ -3,8 +3,9 @@
 require_once('DB.php'); // PEAR DB class
 
 class pinp_DB {
+	protected $key;
 
-	function pinp_DB($key) {
+	function __construct($key) {
 		$this->key=$key;
 	}
 
@@ -205,9 +206,9 @@ class pinp_DB {
 }
 
 class pinp_DB_result {
-	var $key;
+	protected $key;
 
-	function pinp_DB_result($key) {
+	function __construct($key) {
 		$this->key=$key;
 	}
 
