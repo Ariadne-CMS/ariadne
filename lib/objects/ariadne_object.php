@@ -2819,6 +2819,7 @@ debug("loadLibrary: loading cache for $this->path");
 
 		$arWidgetName=preg_replace("/[^a-zA-Z0-9\/]/","",$arWidgetName);
 		$arWidgetTemplate=preg_replace("/[^a-zA-Z0-9\.]/","",$arWidgetTemplate);
+		$wgResult=null;
 		if ($arWidgetType=="www") {
 			$coderoot=$AR->dir->root;
 		} else {
