@@ -262,7 +262,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	  if this is a new object ($this->arIsNewObject) the path is checked and
 	  the object is saved under the new path.
 	***********************************************************************/
-	global $AR, $ARConfig, $ARnls, $ARCurrent;
+	global $AR, $ARnls, $ARCurrent;
 		debug("pobject: save([properties], $vtype)","object");
 		debug("pobject: save: path=".$this->path,"object");
 		$result=false;
@@ -821,7 +821,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 
 	function make_local_url($path="", $nls=false, $session=true, $https=NULL) {
-		global $ARCurrent, $ARConfig, $AR;
+		global $ARCurrent, $ARConfig;
 		$site = false;
 		$path = $this->make_path($path);
 		$checkpath = $path;
@@ -1133,7 +1133,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 
 	function CheckLogin($grant, $modifier=ARTHISTYPE) {
-	global $AR,$ARnls,$ARConfig,$ARCurrent,$ARPassword,$ARCookie,$session_config,$ARConfigChecked;
+	global $AR,$ARnls,$ARConfig,$ARCurrent,$ARConfigChecked;
 		if (!$this->store->is_supported("grants")) {
 			debug("pobject: store doesn't support grants");
 			return true;
@@ -2179,7 +2179,7 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	function getcache($name, $nls="") {
-		global $ARCurrent;
+		global $ARCurrent, $ARnls;
 		$result=false;
 		if ($name) {
 			$result=false;
@@ -2224,7 +2224,6 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	function cached($name, $nls="") {
-		global $ARCurrent;
 		if ($image=$this->getcache($name, $nls)) {
 			echo $image;
 			$result=true;
@@ -2235,7 +2234,7 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	function savecache($time="") {
-		global $ARCurrent;
+		global $ARCurrent, $ARnls;
 		if (!$time) {
 			$time=2; // 'freshness' in hours.
 		}
@@ -2287,6 +2286,7 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	function getdatacache($name) {
+		global $ARnls;
 		$result=false;
 		if ($name) {
 			$pcache=$this->store->get_filestore("privatecache");
@@ -3393,7 +3393,7 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	static public function pinpErrorHandler($errno, $errstr, $errfile, $errline, $errcontext) {
-		global $AR,$nocache,$ARCurrent;
+		global $nocache;
 		if (($errno & error_reporting()) == 0) {
 			return true;
 		}
