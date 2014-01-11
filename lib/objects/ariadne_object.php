@@ -726,7 +726,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$rootoptions .= '/'.$nls;
 			}
 		}
-		$object_path=$this->path;
 		$path=$this->make_path($path);
 
 		// now run CheckConfig and get the parentsite of the path found
@@ -1165,7 +1164,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					|| ( $modifier && is_array($grants[$grant]) && !$grants[$grant][$modifier] )
 				) && $AR->user->data->login!="admin" ) {
 			// do login
-			$continue=false;
 			$arLoginMessage = $ARnls["accessdenied"];
 			ldAccessDenied($this->path, $arLoginMessage);
 			$result=false;
@@ -1270,7 +1268,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	function getConfig() {
 	global $ARConfig, $ARCurrent, $ARConfigChecked;
-		$context=$this->getContext(0);
+		// $context=$this->getContext(0);
 		// debug("getConfig(".$this->path.") context: ".$context['scope'] );
 		// debug(print_r($ARConfig->nls, true));
 		if( !$ARConfig->cache[$this->parent] && $this->parent!=".." ) {
@@ -1517,7 +1515,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						// no template found, no default.phtml found, try superclass.
 						if ($subcpos = strpos($arType, '.')) {
 							$arSuper = substr($arType, 0, $subcpos);
-							$subclass = substr($arType, $subcpos+1);
 							if (!class_exists($arSuper)) {
 								$this->store->newobject('', '', $arSuper, new object);
 							}
@@ -1659,7 +1656,7 @@ debug("loadLibrary: loading cache for $this->path");
 
 	function getPinpTemplate($arCallFunction='view.html', $path=".", $top="", $inLibrary = false, $librariesSeen = null, $arSuperContext=array()) {
 	global $ARCurrent, $ARConfig, $AR;
-		debug("getPinpTemplate: function: $arCallFunction; path: $path; top: $top; inLib: $inLibrary; startType: $arStartType");
+		debug("getPinpTemplate: function: $arCallFunction; path: $path; top: $top; inLib: $inLibrary");
 		$result = Array();
 		if (!$top) {
 			$top = '/';
@@ -1723,7 +1720,6 @@ debug("loadLibrary: loading cache for $this->path");
 						// no template found, no default.phtml found, try superclass.
 						if ($subcpos = strpos($arType, '.')) {
 							$arSuper = substr($arType, 0, $subcpos);
-							$subclass = substr($arType, $subcpos+1);
 							if (!class_exists($arSuper)) {
 								$this->store->newobject('', '', $arSuper, new object);
 							}
@@ -1985,8 +1981,6 @@ debug("loadLibrary: loading cache for $this->path");
 
 						$ARCurrent->arCallStack[]=$arCallArgs;
 						// start running a pinp template
-
-						$currentContext = $this->getContext();
 
 						$this->pushContext(
 							Array(
@@ -2444,7 +2438,6 @@ debug("loadLibrary: loading cache for $this->path");
 				} 
 
 				fputs( $connection, "\r\n" , 2); 
-				$output = ""; 
 
 				$headerContents = '';
 				$headerStart = 0; 
