@@ -8,7 +8,6 @@
 	}
 	
 	class ar_core_session implements ar_core_sessionInterface {
-		private $hideSessionIDFromURL = false;
 		private $options = array();
 		private $modSession = null;
 		
