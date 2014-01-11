@@ -218,7 +218,7 @@ class pinp_DB_result {
 
 	function _fetchInto(&$arr, $fetchmode = DB_FETCHMODE_DEFAULT, $rownum=null) {
 		global $AR;
-		return $AR->DB_result_list[$this->key]->fetchInto(&$arr, $fetchmode, $rownum);
+		return $AR->DB_result_list[$this->key]->fetchInto($arr, $fetchmode, $rownum);
 	}
 
 	function _numCols() {
