@@ -339,7 +339,7 @@
 			}
 			$result = substr($result, 0, -strlen($settings['seperator'])) . $settings['lineEnd'];
 
-			return $result;				
+			return $result;
 		}
 
 		function _reset() {
