@@ -2304,7 +2304,7 @@ debug("loadLibrary: loading cache for $this->path");
 		$pcache->write(serialize($data), $this->id, $name);
 		$time=time()+($time*3600);
 		if (!$pcache->touch($this->id, $name, $time)) {
-			debug("savecache: ERROR: couldn't touch $file","object");
+			debug("savecache: ERROR: couldn't touch $name","object");
 		}
 	}
 
