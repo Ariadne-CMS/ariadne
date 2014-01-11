@@ -3,6 +3,9 @@
 define("DIRMODE", 0770);
 
 class cacherss {
+	protected $httphelper;
+	protected $timeout;
+	protected $xmldata;
 
 	public function __construct( $httphelper, $timeout = 1800 ) {
 		$this->httphelper = $httphelper;
@@ -54,6 +57,13 @@ class pinp_cacherss {
 
 
 class cacherssfeed {
+	protected $xmldata;
+	protected $ns;
+	protected $elements;
+	protected $rss_items;
+	protected $rss_channel;
+	protected $encoding;
+	protected $parser;
 
 	public function parseString( $xmldata ) {
 		// reset namestack
@@ -219,6 +229,8 @@ class cacherssfeed {
 }
 
 class httphelper {
+	protected $cache;
+	public $error;
 
 	public function __construct( $cache ) {
 		$this->cache = $cache;
@@ -347,6 +359,7 @@ class httphelper {
 }
 
 class cache {
+	protected $path;
 
 	public function __construct( $path ) {
 		// FIXME: forceer $path eindigen op een / en security.
