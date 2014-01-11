@@ -2680,7 +2680,7 @@ debug("loadLibrary: loading cache for $this->path");
 		$result = $this->store->call($function, $args, 
 			$this->store->find($this->path, $criteria, $limit, $offset));
 		if ($this->store->error) {
-			$this->error = $store->store->error;
+			$this->error = $this->store->error;
 		}
 		return $result;
 	}
@@ -2836,7 +2836,7 @@ debug("loadLibrary: loading cache for $this->path");
 				error("Template $arWidgetTemplate for widget $arWidgetName not found.");
 			}
 		} else {
-			error(sprintf($ARnls["err:widgetnotfound"],$wgName));
+			error(sprintf($ARnls["err:widgetnotfound"],$arWidgetName));
 		}
 		if ($wgResult) {
 			return $wgResult;
