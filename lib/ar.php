@@ -277,7 +277,7 @@
 					return ar::error( $e->getMessage(), $e->getCode() );
 				}
 			} else {
-				trigger_error("Method $realName not found in class ".get_class($this), E_USER_WARNING);
+				trigger_error("Method $name not found in class ".get_class($this), E_USER_WARNING);
 			}
 		}
 		
