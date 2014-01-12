@@ -22,7 +22,7 @@ class ar_connect_twitter extends arBase {
 
 		if ( $parseTwitterLinks ) {
 			if ( is_array($parseTwitterLinks) ) {
-				$userlink = $parseTwitterLinks['user'];
+				$userLink = $parseTwitterLinks['user'];
 				$argumentLink = $parseTwitterLinks['argument'];
 			} else {
 				$userLink = true;
@@ -183,7 +183,6 @@ class ar_connect_twitterClient extends arBase {
 		$oauth_token        = $session->getvar('oauth_token');
 		$oauth_token_secret = $session->getvar('oauth_token_secret');
 		if ( !$oauth_verifier ) {
-			$oauth_token_arg = ar::getvar('oauth_token');
 			$oauth_verifier  = ar::getvar('oauth_verifier');
 			if ( $oauth_verifier ) {
 				$session->putvar( 'oauth_verifier', $oauth_verifier );
