@@ -132,12 +132,12 @@
 		}
 
 		function head($options) {
-			debug("webdav:head [$status]");
+			debug("webdav:head");
 			return $this->modules['files']->head($options);
 		}
 
 		function delete($options) {
-			debug("webdav:delete [$status]");
+			debug("webdav:delete");
 			return $this->modules['files']->delete($options);
 		}
 
@@ -150,24 +150,24 @@
 		}
 
 		function mkcol($options) {
-			debug("webdav:mkcol [$status]");
+			debug("webdav:mkcol");
 			return $this->modules['files']->mkcol($options);
 		}
 
 		function get(&$options) {
-			debug("webdav:get [$status]");
+			debug("webdav:get");
 			return $this->modules['files']->get($options);
 		}
 
 
 		function move($options) {
-			debug("webdav:move [$status]");
+			debug("webdav:move");
 			return $this->modules['files']->move($options);
 		}
 
 		function put(&$params) {
 		global $ARCurrent;
-			debug("webdav:put [$status]");
+			debug("webdav:put");
 			return $this->modules['files']->put($params);
 		}
 
