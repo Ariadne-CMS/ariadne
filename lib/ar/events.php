@@ -73,7 +73,6 @@
 			if ( !$capture ) {
 				$pathlist = array_reverse( $pathlist );
 			}
-			$counter = count( $pathlist );
 			reset($pathlist);
 			
 			do {
