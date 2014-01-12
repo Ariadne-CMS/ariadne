@@ -25,24 +25,23 @@
 				debug("webdav: escaped path: $path");
 				$result = preg_replace_callback(
 					'/(_[0-9a-fA-F][0-9a-fA-F]|__)/', 
-					create_function(
-						'$matches', 
+					function ( $matches ) { 
 						// Two types of escaped characters can be here, the
 						// underscore or other characters. Check for the
 						// underscore first.
 
-						'$char = $matches[0];'.
-						'if ($char[1] == "_") {'.
+						$char = $matches[0];
+						if ($char[1] == "_") {
 						// It is the underscore, return it as a character.
-						'	return "_";'.
-						'}'.
+							return "_";
+						}
 
 						// Assume it is an escaped character here. Find the
 						// numbers in hex, turn them back to decimal, get
 						// the corresponding character and return it.
 
-						'return chr(hexdec(substr($char, 1, 2)));'
-					),
+						return chr(hexdec(substr($char, 1, 2)));
+					},
 					$path
 				);
 			}
