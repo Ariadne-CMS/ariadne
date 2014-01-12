@@ -258,27 +258,21 @@ abstract class store {
 		This function takes as argument a feature description and returns
 		true if this feature is supported and false otherwise
 	**********************************************************************************/
+		$result = false;
 		switch($feature) {
+			// features depending on config values
 			case 'fulltext_boolean':
-				if ($this->config["fulltext_boolean"]) {
-					$result = true;
-				} else {
-					$result = false;
-				}
-			break;
 			case 'fulltext':
-				if ($this->config["fulltext"]) {
+				if ($this->config[$feature]) {
 					$result = true;
 				} else {
 					$result = false;
 				}
 			break;
+			// features depending store implementation, if stores don't implements this, they have to override this function
 			case 'grants':
 			case 'regexp':
 				$result = true;
-			break;
-			default:
-				$result = false;
 			break;
 		}
 		return $result;
