@@ -88,15 +88,13 @@
 			// Whitespace
 			$class_whitespace = Array(" " => " ", "\t" => "\t", "\r" => "\r", "\n" => "\n");
 			$this->class_whitespace = $class_whitespace;
-
-			return $scanner;
 		}
 
 		function next() {
 			if (count($this->tokens) == 0) {
 				$new_token = $this->scan($new_value);
 			} else {
-				list($new_token, $new_value) = each(array_shift($tokens));
+				list($new_token, $new_value) = each(array_shift($this->tokens));
 			}
 			if (isset($this->token_ahead)) {
 				$this->token = $this->token_ahead;
@@ -110,9 +108,9 @@
 		
 		function scan(&$value) {
 			$YYCURSOR = &$this->YYCURSOR;
-			$YYLINE = &$this->YYLINE;
+			//$YYLINE = &$this->YYLINE;
 			$YYBUFFER = &$this->YYBUFFER;
-			$YYSTATE = &$this->YYSTATE;
+			//$YYSTATE = &$this->YYSTATE;
 			$yych = $YYBUFFER[$YYCURSOR];
 			$token = "";
 
