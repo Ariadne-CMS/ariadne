@@ -8,7 +8,7 @@
 		}
 
 		public function _load($fileName = "file", $fileNameNls = "", $settings = "") {
-			return csv::load($fileName, $filenameNls, $settings);
+			return csv::load($fileName, $fileNameNls, $settings);
 		}
 
 		public function _read($fileName = "file", $settings = array() ) {
@@ -35,7 +35,7 @@
 		}
 
 		public static function load($fileName = "file", $fileNameNls = "", $settings = array()) {
-			return $this->read($fileName, array_merge( array('nls' => $fileNameNLs), $settings));
+			return $this->read($fileName, array_merge( array('nls' => $fileNameNls), $settings));
 		}
 
 		public static function read($fileName = "file", $settings = array()) {
@@ -119,7 +119,7 @@
 
 
 		public function load($fileName = "file", $fileNameNls = "") {
-			return $this->read($filename, array('nls' => $fileNameNls));
+			return $this->read($fileName, array('nls' => $fileNameNls));
 		}
 
 		public function _load($fileName = "file", $fileNameNls = "") {
@@ -304,7 +304,6 @@
 				}
 				$result = substr($result, 0, -(strlen($settings['seperator']))) . $settings['lineEnd'];
 			}
-			$counter = 0;
 			$limit = $settings['limit'];
 			if (!$limit) { 
 				$limit = -1;
