@@ -422,7 +422,7 @@
 		}
 
 		static public function showList($data, $viewtype='list') {
-			global $AR, $ARnls;
+			global $ARnls;
 
 			if (is_array($data['objects']) && count($data['objects']) && $data['total'] > 0) {
 				$nodes = ar_html::nodes();
@@ -639,8 +639,6 @@
 		}
 		
 		static public function checkType($arObject, $type, $name, $currentpath, $arReturnTemplate) {
-			global $AR;
-			global $ARCurrent;
 			if (!$arObject->CheckSilent("add", $type)) {
 				$class .= "greyed";
 			}
