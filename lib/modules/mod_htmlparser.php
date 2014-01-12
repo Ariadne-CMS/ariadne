@@ -66,7 +66,7 @@
 
 		function scan(&$scanner, &$value) {
 			$YYCURSOR = &$scanner["YYCURSOR"];
-			$YYLINE = &$scanner["YYLINE"];
+			//$YYLINE = &$scanner["YYLINE"];
 			$YYBUFFER = &$scanner["YYBUFFER"];
 			$yych = $YYBUFFER[$YYCURSOR];
 			$YYSTATE = &$scanner["YYSTATE"];
@@ -203,7 +203,6 @@
 		}
 
 		function nextToken(&$parser) {
-			$value = "";
 			$tokens = &$parser['tokens'];
 			$scanner = &$parser['scanner'];
 			if (count($tokens) == 0) {
@@ -293,11 +292,9 @@
 						$node = htmlparser::parse_Tag_Open($parser);
 						if ($node) {
 							if ($node['type'] !== 'tagSingle') {
-								$openTag = $node['tagName'];
 								$stack[] = &$node;
 								$node['children'] = htmlparser::parse_Node($parser, $stack);
 								array_pop($stack);
-								$current = end($stack);
 							}
 							$result[] = $node;
 						}
@@ -360,7 +357,7 @@
 					}
 				case 'root':
 					if (is_array($node['children'])) {
-						foreach ($node['children'] as $key => $child) {
+						foreach ($node['children'] as $child) {
 							$result .= htmlparser::compile($child);
 						}
 					}
