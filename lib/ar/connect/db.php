@@ -12,7 +12,7 @@ class ar_connect_db extends arBase {
 	
 	function client( $dsn, $username='', $password='', $driverOptions = array() ) {
 		try {
-			return new ar_connect_dbClient( new PDO($dsn, $username, $password, $driver_options) );
+			return new ar_connect_dbClient( new PDO($dsn, $username, $password, $driverOptions) );
 		} catch( Exception $e ) {
 			return ar::error( $e->getMessage(), $e->getCode() );
 		}
