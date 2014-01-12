@@ -93,7 +93,7 @@
 				$f = $path . $file;
 				if (is_file($f)) {
 					/* do not link backupfiles */
-					if (!preg_match('/^.*~$/i', $f, $regs)) {
+					if (!preg_match('/^.*~$/i', $f)) {
 						$targetpath = $dstdir . substr($path, strlen($srcdir));
 						$target = $targetpath . $file;
 						
