@@ -1,7 +1,7 @@
 <?php
 	class WebDAV_files  {
 
-		function WebDAV_files(&$webdav) {
+		function __construct(&$webdav) {
 			debug("webdav:files:init()");
 			$this->webdav = $webdav;
 			$this->root = &$webdav->root;
