@@ -267,7 +267,7 @@
 			if (count($this->tokens) == 0) {
 				$new_token = $this->scan($new_value);
 			} else {
-				list($new_token, $new_value) = each(array_shift($tokens));
+				list($new_token, $new_value) = each(array_shift($this->tokens));
 			}
 			if (isset($this->token_ahead)) {
 				$this->token = $this->token_ahead;
