@@ -128,6 +128,7 @@ class ar_connect_xmlrpcServer extends arBase {
 
 	public function __get($name) {
 		$result = $this->wrapped->{$name};
+		return $result;
 	}
 	
 	public function __call($method, $params) {
