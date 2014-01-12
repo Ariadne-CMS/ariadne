@@ -420,7 +420,7 @@
 		public function toString( $indentWith = null ) {
 			foreach ( $this->attributes as $name => $value ) {
 				$position = 0;
-				foreach ( $this as $key => $node ) {
+				foreach ( $this as $node ) {
 					if ($node instanceof ar_xmlElement) {
 						$appliedValue = $this->_applyValues($value, $position);
 						$node->setAttribute( $name, $appliedValue );
@@ -511,7 +511,7 @@
 				}
 			}
 			$position = 0;
-			foreach ( $this as $key => $node ) {
+			foreach ( $this as $node ) {
 				if ($node instanceof ar_xmlElement) {
 					$appliedValue = $this->_applyValues($value, $position);
 					$node->setAttribute( $name, $appliedValue );
@@ -525,7 +525,7 @@
 			if ( isset( $this->attributes[$name] ) ) {
 				unset( $this->attributes[$name] );
 			}
-			foreach ( $this as $key => $node ) {
+			foreach ( $this as $node ) {
 				if ( $node instanceof ar_xmlElement ) {
 					$node->removeAttribute( $name );
 				}
@@ -1217,7 +1217,6 @@
 	class ar_xmlDataBinding extends arBase {
 
 		public function bindAsArray( $nodes, $name, $type='string') {
-			$total = count($nodes);
 			$this->{$name} = array();
 
 			foreach ( $nodes as $key => $node ) {
