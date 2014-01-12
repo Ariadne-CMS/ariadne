@@ -17,9 +17,9 @@
 				$result = $formatter->format($diff);
 
 				$rows = ar_html::nodes();
-				foreach ($result as $key => $line) {
+				foreach ($result as $line) {
 					$cells = ar_html::nodes();
-					foreach ($line as $col => $content) {
+					foreach ($line as $content) {
 						if (is_array($content)) {
 							$options = array();
 							if ($content['class']) {
