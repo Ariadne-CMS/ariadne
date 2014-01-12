@@ -280,7 +280,7 @@
 					$listMode=$FTP->defaultListMode;
 				}
 			}
-			debug("ftp: Translate $debug_path:: (FTP->listMode = '$FTP->listMode', listMode = '$listMode', path = '$path', template = '$template')");
+			debug("ftp: Translate:: (FTP->listMode = '$FTP->listMode', listMode = '$listMode', path = '$path', template = '$template')");
 		}
 
 		function ftp_TranslateTemplate(&$path, &$template) {
@@ -543,7 +543,6 @@
 						ftp_TranslatePath($path, $listMode);
 						switch ($listMode) {
 							case "templates":
-								$reqpath = $path;
 								ftp_TranslateTemplate($path, $template);
 								$getmode = "templates";
 
@@ -671,7 +670,7 @@
 
 								debug("ftp: results(".sizeof($result).")");
 								@reset($result);
-								while (list($key, $entry)=@each($result)) {
+								foreach ( $result as $entry ) {
 									debug("ftp: file path = (".$entry["path"].")");
 									if ($cmd!=="NLST") {
 										$data=ftp_GenListEntry($entry);
@@ -918,7 +917,7 @@
 		}
 
 		function ftp_CheckLogin() {
-		global $FTP, $AR, $ARConfig, $ARLogin, $ARPassword;
+		global $FTP, $AR, $ARLogin, $ARPassword;
 
 			while (!$AR->user) {
 				ftp_FetchCMD($cmd, $args);
@@ -977,6 +976,7 @@
 
 		function ftp_FetchCMD(&$cmd, &$args) {
 		global $FTP;
+			$cmd = "";
 			do {
 				$data=fgets($FTP->stdin, 2000);
 				debug("ftp: client:: '$data'");
@@ -984,9 +984,6 @@
 					$cmd=strtoupper($regs[1]);
 					$args=chop($regs[3]);
 					debug("ftp: cmd ($cmd) arg ($args)");
-				} else {
-					$cmd="";
-					exit;
 				}
 			} while (!$cmd);
 			return $cmd;
