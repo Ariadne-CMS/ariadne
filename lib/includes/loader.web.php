@@ -438,7 +438,6 @@
 	}
 
 	function ldSetClientCache( $cache_on, $expires = null, $modified = null ) {
-		global $ARCurrent;
 		$now = time();
 		if ( !isset($modified) ) {
 			$modified = $now;
