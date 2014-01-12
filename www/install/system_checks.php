@@ -290,13 +290,6 @@
 	function check_db_grants_mysql($conf) {
 		if (check_connect_db_mysql($conf) && check_select_db_mysql($conf)) {
 			$query = "SHOW GRANTS FOR CURRENT_USER();";
-			$grantchecks = array(
-				"SELECT" => false,
-				"INSERT" => false,
-				"UPDATE" => false,
-				"DELETE" => false,
-				"CREATE" => false
-			);
 			
 			$result = mysql_query($query);
 			while ($row = mysql_fetch_row($result)) {
