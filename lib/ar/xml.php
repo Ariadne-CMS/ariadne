@@ -413,10 +413,6 @@
 			parent::offsetSet($offset, $value);
 		}
 		
-		private static function removeEmptyNodes( $var ) {
-			return (!trim($var)=='');
-		}
-
 		public function __toString() {
 			return $this->toString();
 		}
