@@ -166,7 +166,6 @@
 		}
 
 		function put(&$params) {
-		global $ARCurrent;
 			debug("webdav:put");
 			return $this->modules['files']->put($params);
 		}
