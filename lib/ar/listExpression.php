@@ -261,8 +261,6 @@
 			// Whitespace
 			$class_whitespace = Array(" " => " ", "\t" => "\t", "\r" => "\r", "\n" => "\n");
 			$this->class_whitespace = $class_whitespace;
-
-			return $scanner;
 		}
 
 		function next() {
@@ -282,9 +280,9 @@
 
 		function scan(&$value) {
 			$YYCURSOR = &$this->YYCURSOR;
-			$YYLINE = &$this->YYLINE;
+			//$YYLINE = &$this->YYLINE;
 			$YYBUFFER = &$this->YYBUFFER;
-			$YYSTATE = &$this->YYSTATE;
+			//$YYSTATE = &$this->YYSTATE;
 			$yych = $YYBUFFER[$YYCURSOR];
 			$token = "";
 
