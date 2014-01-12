@@ -17,7 +17,7 @@
 		}
 		
 		public function start( $id = 0 ) {
-			$this->modSession = new session( $options, $id );
+			$this->modSession = new session( $this->options, $id );
 			return $this->modSession->id;
 		}
 		
