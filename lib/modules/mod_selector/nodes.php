@@ -23,16 +23,21 @@
 
 	}
 
-	class node {
+	abstract class node {
+		protected $min;
+		protected $max;
+		protected $type;
+		protected $req;
+		protected $size;
+		protected $greedy;
 
-		function run($count, $offset) {
-		}
+		abstract function run($count, $offset);
 
 	}
 
 	class nodeOr extends node {
 
-		function nodeOr($data) {
+		function __construct($data) {
 			$nodeLeft = $data['nodeLeft']; $nodeRight = $data['nodeRight'];
 			if ($nodeLeft || $nodeRight) {
 				if ($nodeRight && $nodeRight->type == N_OR) {
@@ -74,7 +79,7 @@
 
 	class nodeAnd extends node {
 
-		function nodeAnd($data) {
+		function __construct($data) {
 			$nodeLeft = $data['nodeLeft']; $nodeRight = $data['nodeRight'];
 			$this->greedy		= $data['greedy'];
 			$this->size			= $nodeLeft->size + $nodeRight->size;
@@ -128,7 +133,7 @@
 
 	class nodeIdent extends node {
 
-		function nodeIdent($data) {
+		function __construct($data) {
 			$this->greedy		= $data['greedy'];
 			$this->value		= $data['value'];
 			$this->req			= true;
@@ -150,7 +155,7 @@
 
 	class nodeRepeat extends node {
 
-		function nodeRepeat($data) {
+		function __construct($data) {
 			$nodeLeft			= $data['nodeLeft'];
 			$this->greedy		= $data['greedy'];
 			$this->req			= $data['req'];
@@ -198,7 +203,7 @@
 
 	class nodeRecurse extends node {
 
-		function nodeRecurse($data) {
+		function __construct($data) {
 			$this->size		= 1;
 			$this->min		= 1;
 			$this->req		= 1;
