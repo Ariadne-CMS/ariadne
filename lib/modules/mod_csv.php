@@ -91,7 +91,7 @@
 		protected $readMode;
 		protected $fp;
 
-		public function __construct($object, $settings) {
+		public function __construct($object, $settings = array()) {
 			$default = Array(
 				"seperator"		=> ",",
 				"quotation"		=> "\"",
@@ -104,11 +104,7 @@
 			if (!$settings) {
 				$settings = Array();
 			}
-			foreach ($default as $key => $value) {
-				if (!isset($settings[$key]) || $settings[$key] === "" ) {
-					$settings[$key] = $value;
-				}
-			}
+			$settings = $settings + $default;
 			if (!isset($settings["escape"])) {
 				$settings["escape"] = $settings["quotation"];
 			}
