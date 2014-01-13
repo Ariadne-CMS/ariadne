@@ -31,6 +31,7 @@
 		protected $size;
 		protected $greedy;
 
+		abstract function __construct($data);
 		abstract function run($count, $offset);
 
 	}
