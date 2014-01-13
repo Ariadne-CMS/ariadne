@@ -295,7 +295,7 @@
 								$stack[] = &$node;
 								$node['children'] = htmlparser::parse_Node($parser, $stack);
 								array_pop($stack);
-								$current = end($stack);
+								end($stack);
 							}
 							$result[] = $node;
 						}
