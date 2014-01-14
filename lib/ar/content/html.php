@@ -204,11 +204,21 @@
 		}
 		
 		public static function getBody( $html ) {
-			return new ar_content_htmlContent( 
-				preg_replace( '/^.*<BODY[^>]*>/isU', '', 
-					preg_replace( '/<\/BODY.*$/isU', '', $html ) 
-				)
-			);
+			$html = preg_replace('|</BODY.*$|is', '', $html);
+			$errno = preg_last_error();
+			if( $html === null || $errno != PREG_NO_ERROR ){
+				debug('preg_replace returned null errno '. $errno .' in ' . __CLASS__ . ':' . __FUNCTION__ . ':' . __LINE__ . '?');
+				debug('preg error:'. self::pregError($errno));
+				$html = '';
+			}
+			$html = preg_replace('/^.*<BODY[^>]*>/is', '', $html);
+			$errno = preg_last_error();
+			if( $html === null || $errno != PREG_NO_ERROR ){
+				debug('preg_replace returned null, errno '. $errno .' in ' . __CLASS__ . ':' . __FUNCTION__ . ':' . __LINE__ . '?');
+				debug('preg error:'. self::pregError($errno));
+				$html = '';
+			}
+			return new ar_content_htmlContent( $html );
 		}
 
 		public static function parse( $html, $full = false ) {
@@ -381,6 +391,32 @@
 				)
 			);
 			return new ar_content_htmlContent( htmlcleaner::cleanup( $html, $cleanAR ) );
+		}
+
+		private static function pregError( $errno ) {
+			switch($errno) {
+				case PREG_NO_ERROR:
+					$result = 'There is no error.';
+					break;
+				case PREG_INTERNAL_ERROR:
+					$result = 'There is an internal error!';
+					break;
+				case PREG_BACKTRACK_LIMIT_ERROR:
+					$result = 'Backtrack limit was exhausted!';
+					break;
+				case PREG_RECURSION_LIMIT_ERROR:
+					$result = 'Recursion limit was exhausted!';
+					break;
+				case PREG_BAD_UTF8_ERROR:
+					$result = 'Bad UTF8 error!';
+					break;
+				case PREG_BAD_UTF8_OFFSET_ERROR:
+					$result = 'Bad UTF8 offset error!';
+					break;
+				default:
+					$result = 'Unknown preg errno '.$errno;
+			}
+			return $result;
 		}
 	}
 	
