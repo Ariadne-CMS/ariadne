@@ -385,9 +385,16 @@
 			include_once($me->store->get_config('code')."modules/mod_htmlcleaner.php");
 			$cleanAR = array(
 				'rewrite' => array(
-					'^(A|IMG)$' => array(
-						'^ar:.*' =>false
+					'^(A|IMG|DIV)$' => array(
+						'^ar:.*' => false,
+						'^arargs:.*' => false,
+						'^class' => Array(
+							'htmlblock[ ]*uneditable[ ]*' => false
+						)
 					)
+				),
+				'delete_emptied' => Array(
+					'div', 'a'
 				)
 			);
 			return new ar_content_htmlContent( htmlcleaner::cleanup( $html, $cleanAR ) );
