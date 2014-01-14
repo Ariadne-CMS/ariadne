@@ -239,123 +239,14 @@ class httphelper {
 	public function load( $url, $meta="", $maxage=0, $user="" ) {
 		$result = $this->cache->load($url, $maxage, $user);
 		if( !$result && $maxage >= 0 ) {
-			$data = $this->HTTPRequest("GET", $url);
+			$client  = ar('http')->client();
+			$data = $client->get($url);
 			if( $data != "" ) {
 				$result = $this->cache->save($url, $data, $meta, $user);
 			}
 		} 
 		return $result;
 	}
-
-	protected function HTTPRequest($method, $url, $postdata = "", $port=80 ) { 
-		$maxtries = 5;
-		$tries = 0;
-		$redirecting = true;
-
-		if(is_array($postdata)) { 
-			foreach($postdata as $key=>$val) { 
-				if(!is_integer($key)) {
-					$data .= "$key=".urlencode($val)."&"; 
-				}
-			} 
-		} else { 
-			$data = $postdata; 
-		}
-
-		while ($redirecting && $tries < $maxtries) {
-			$tries++; 
-			// get host name and URI from URL, URI not needed though 
-			preg_match("/^([htps]*:\/\/)?([^\/]+)(.*)/i", $url, $matches); 
-			$host = $matches[2]; 
-			$uri = $matches[3]; 
-			if (!$matches[1]) {
-				$url="http://".$url;
-			}
-			$connection = @fsockopen( $host, $port, $errno, $errstr, 120); 
-			if( $connection ) { 
-				$requeststring = "";
-				if( strtoupper($method) == "GET" ) { 
-					if ($data) {
-						$url .= "?" . $data; 
-					}
-					$requeststring .= "GET $uri HTTP/1.0\r\n"; 
-				} else if( strtoupper($method) == "POST" ) { 
-					$requeststring .= "POST $uri HTTP/1.0\r\n"; 
-				} else {
-					$requeststring .= "$method $uri HTTP/1.0\r\n";
-				}
-
-				$requeststring .= "Host: $host\r\n";
-				$requeststring .= "Accept: */*\r\n"; 
-				$requeststring .= "Accept: image/gif\r\n"; 
-				$requeststring .= "Accept: image/x-xbitmap\r\n"; 
-				$requeststring .= "Accept: image/jpeg\r\n"; 
-
-				if( strtoupper($method) == "POST" ) { 
-					$strlength = strlen( $data); 
-					$requeststring .= "Content-type: application/x-www-form-urlencoded\r\n" ; 
-					$requeststring .= "Content-length: ".$strlength."\r\n\r\n"; 
-					$requeststring .= $data."\r\n"; 
-				} 
-
-				$requeststring .= "\r\n" ; 
-				fwrite($connection,$requeststring,strlen($requeststring));
-				$output = ""; 
-
-				$headerContents = '';
-				$headerStart = 0; 
-				$headerEnd = 0; 
-				$redirecting = false; 
-
-				while (!feof($connection)) { 
-					$currentLine = fgets ($connection, 1024); 
-					if ($headerEnd && $redirecting) { 
-						break; 
-					} else if ($headerEnd && !$redirecting) { 
-						//this is the html from the page 
-						$contents = $contents . $currentLine; 
-					} else if ( preg_match("/^HTTP/", $currentLine) ) { 
-						//came to the start of the header 
-						$headerStart = 1; 
-						$headerContents = $currentLine;
-					} else if ( $headerStart && preg_match('/^[\n\r\t ]*$/', $currentLine) ) { 
-						//came to the end of the header 
-						$headerEnd = 1; 
-					} else { 
-						//this is the header, if you want it... 
-						if (preg_match("/^Location: (.+?)\n/is",$currentLine,$matches) ) { 
-							$headerContents .= $currentLine;
-							//redirects are sometimes relative 
-							$newurl = $matches[1]; 
-							if (!preg_match("/http:\/\//i", $newurl, $matches) ) { 
-								$url .= $newurl; 
-							} else { 
-								$url = $newurl; 
-							} 
-							//extra \r's get picked up sometimes 
-							//i think only with relative redirects 
-							//this is a quick fix. 
-							$url = preg_replace("/\r/s","",$url); 
-							$redirecting = true; 
-						} else {
-							$headerContents.=$currentLine;
-						}
-					} 
-				} 
-			} else {
-				$this->error="$errstr ($errno)";
-				$contents=false;
-				$url = "";
-			}
-			@fclose($connection); 
-		}
-		if (($method!="GET") && ($method!="POST")) {
-			$contents=$headerContents."\n".$contents;
-		}
-		return $contents; 
-	} 
-
-
 }
 
 class cache {
