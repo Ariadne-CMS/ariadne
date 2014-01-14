@@ -53,13 +53,13 @@
 				if (!$nodeLeft || ($nodeRight && $nodeRight->min > $nodeLeft->min)) {
 					$this->min		= ($nodeLeft) ? $nodeLeft->min : 0;
 					$this->max		= (!$nodeRight->max || $nodeRight->max > $nodeLeft->max) ? $nodeRight->max : $nodeLeft->max;
-					$this->size		= ($nodeRight->size > $nodeLeft->size) ? $nodeRight->size : $nodeLeft->size;
+					$this->size		= max($nodeRight->size, $nodeLeft->size);
 					$this->left		= $nodeRight;
 					$this->right	= $nodeLeft;
 				} else if (!$nodeRight || ($nodeLeft && $nodeLeft->min >= $nodeRight->min)) {
 					$this->min		= ($nodeRight) ? $nodeRight->min : 0;
 					$this->max		= (!$nodeLeft->max || $nodeLeft->max > $nodeRight->max) ? $nodeLeft->max : $nodeRight->max;
-					$this->size		= ($nodeLeft->size > $nodeRight->size) ? $nodeLeft->size : $nodeRight->size;
+					$this->size		= max($nodeRight->size, $nodeLeft->size);
 					$this->left		= $nodeLeft;
 					$this->right	= $nodeRight;
 				}
