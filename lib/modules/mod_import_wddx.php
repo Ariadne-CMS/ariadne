@@ -16,7 +16,7 @@ class import_wddx {
 		}
 	}
 
-	function import_wddx($options){
+	function __construct($options){
 		$this->input = null;
 		$this->nestdeep = -4;
 		$this->stack = array();
