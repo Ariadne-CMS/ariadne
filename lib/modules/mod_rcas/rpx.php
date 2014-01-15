@@ -16,7 +16,7 @@
 			return $this->logout();
 		}
 
-		function rcas_rpx($config) {
+		function __construct($config) {
 			if (!$config["app_id"]) {
 				$this->error			= "rcas_rpx: No 'app_id' found in rcas_rpx configuration.";
 			}
