@@ -3,7 +3,7 @@
 
 	class selectorParser {
 
-		function selectorParser($string) {
+		function __construct($string) {
 			$this->scanner = new selectorScanner($string);
 			$this->scanner->next();
 		}
