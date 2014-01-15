@@ -201,7 +201,7 @@
 		protected static function str_getcsv( $input, $delimiter=',', $enclosure='"', $escape='\\' ) {
 			$elements = null;
 			if ( function_exists('str_getcsv') ) {
-				$elements = str_getcsv( $line, $delimiter, $enclosure, $escape );
+				$elements = str_getcsv( $input, $delimiter, $enclosure, $escape );
 			} else {
 				$maxBuffer = 10 * 1024 * 1024;
 				$file = fopen( "php://temp/maxmemory:$maxBuffer", 'r+' );
@@ -216,8 +216,6 @@
 
 		public function __construct( $line, $configuration = array() ) {
 			$this->configuration = $configuration + $this->configuration;
-			$position = 0;
-			$fieldCounter = 0;
 			if ( is_array( $line ) ) {
 				$elements = $line;
 			} else {
