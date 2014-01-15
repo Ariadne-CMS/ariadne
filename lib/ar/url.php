@@ -30,7 +30,7 @@
 			switch($var) {
 				case 'query' :
 					if (is_string($value)) {
-						$this->query = new ar_urlQuery($query);
+						$this->query = new ar_urlQuery($value);
 					} else if ($value instanceof ar_urlQuery) {
 						$this->query = $value;
 					} else if (is_object($value) && method_exists($value, '__toString') ) {
