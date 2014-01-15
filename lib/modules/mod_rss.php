@@ -40,7 +40,7 @@
 
 	class rssFeed {
 
-		function rssFeed(&$object) {
+		function __construct($object) {
 			$this->object = $object;
 		}
 

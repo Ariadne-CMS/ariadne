@@ -10,7 +10,7 @@
 			return $this->logout();
 		}
 
-		function rcas_yahoo($config) {
+		function __construct($config) {
 			if (!$config["redirect"]) {
 				$config["redirect"] = "http://".$_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"];
 			}
