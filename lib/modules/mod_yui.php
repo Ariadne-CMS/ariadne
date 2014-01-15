@@ -402,7 +402,6 @@
 		
 		
 			$type = $item["type"];
-			$vtype = $item["vtype"];
 			
 			$iconsize = 'small';
 			if ($viewtype == 'icons') {
