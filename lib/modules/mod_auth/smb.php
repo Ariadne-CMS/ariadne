@@ -6,7 +6,7 @@
 
 	class mod_auth_smb extends mod_auth_default {
 
-		function mod_auth_smb($config) {
+		function __construct($config) {
 			$this->config = $config;
 		}
 
@@ -48,7 +48,6 @@
 	 	}
 
 	 	function authExternalUser($login, $password) {
-	 	global $store, $AR;
 			if ($password) {
 				// host, domain, group, user, password
 				$result = validate($this->config["smb_server"], $this->config["smb_server_domain"], $this->config["smb_server_group"], $login, $password);
@@ -62,7 +61,7 @@
 					$userData = Array();
 					$userData["name"] = $login;
 					$userData["newpass1"] = $password;
-					$userData["newpass2"] = $password;					
+					$userData["newpass2"] = $password;
 	 				$user = $this->storeExternalUser($login, $userData);
 				}
 			}
