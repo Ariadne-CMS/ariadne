@@ -107,7 +107,7 @@
 									if( $name == "" || $in_struct == 0 ) {
 										array_push($result, new XML_RPC_Value($datetime,"dateTime.iso8601"));
 									} else {
-										$result[$name] = new XML_RPC_Value($nest,$type);
+										$result[$name] = new XML_RPC_Value($datetime,$type);
 									}
 									break;
 								case ("i4"):
@@ -117,7 +117,7 @@
 								case ("string"):	
 								case ("boolean"):	
 								default:
-									if( $name == "" || $nesting == 0) {
+									if( $name == "" || $in_struct == 0) {
 										array_push($result, new XML_RPC_Value($value, $type));
 									} else {
 										$result[$name] = new XML_RPC_Value($value, $type);
