@@ -4,7 +4,7 @@ class error {
 	var $message;
 	var $code;
 
-	function error($message, $code) {
+	function __construct($message, $code) {
 		$this->message=$message;
 		$this->code=$code;
 	}
