@@ -93,7 +93,6 @@
 			if (!$pathInfo) {
 				throw new ar_exception_illegalRequest('No PATH_INFO found', ar_exceptions::NO_PATH_INFO);
 			}
-			$sessionID = null;
 			if (isset($this->session)) {
 				$pathInfo = $this->parseSession($pathInfo, $this->session);
 			}
