@@ -183,7 +183,6 @@
 				break;
 			}
 			if ( ! ( $childNodes instanceof ar_htmlNodes ) ) {
-				$data = $childNodes;
 				$childNodes = null;
 			}
 			parent::__construct( $tagName, $attributes, $childNodes, $parentNode );
@@ -727,7 +726,7 @@ EOF;
 			$args = func_get_args();
 			foreach( $args as $list) {
 				if ( ($list instanceof ar_storeFind) || ($list instanceof ar_storeParents) ) {
-					$list = $list->call( $this->template, array( 'current' => $this->current, 'root' => $root ) );
+					$list = $list->call( $this->template, array( 'current' => $this->current, 'root' => $this->root ) );
 				}
 				if ( is_array($list) ) {
 					$this->_fillFromArray( $list, $this->current );
