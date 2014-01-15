@@ -17,7 +17,6 @@
 			$this->class_ident = array_merge(Array('.' => '.'), $class_ident_start);
 			// Numbers [0-9] 
 			for ($i = ord('0'); $i <= ord('9'); $i++) {
-				$class_ident_next[chr($i)] = chr($i);
 				$class_number[chr($i)] = chr($i);
 			}
 			$this->class_number = $class_number;
