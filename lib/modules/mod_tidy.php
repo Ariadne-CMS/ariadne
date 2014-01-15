@@ -35,7 +35,7 @@
 
 	class tidy {
 
-		function tidy($config) 
+		function __construct($config)
 		{
 			$this->tidy=$config["path"];
 			$this->temp=$config["temp"];
