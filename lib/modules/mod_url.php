@@ -87,7 +87,7 @@ class URL {
 	}
 	
 	/* replaces the {ar*[/nls]} markers with valid URLs; if full is false, returns only the <body> content */
-	function ARtoRAW($page, $full=false) {
+	function ARtoRAW($page) {
 		global $ARCurrent, $AR;
 		$context = pobject::getContext();
 		$me = $context["arCurrentObject"];
@@ -185,8 +185,8 @@ class pinp_URL {
 		return URL::RAWtoAR($page, $nls);
 	}
 
-	function _ARtoRAW($page, $full=false) {
-		return URL::ARtoRAW($page, $full);
+	function _ARtoRAW($page) {
+		return URL::ARtoRAW($page);
 	}
 }
 
