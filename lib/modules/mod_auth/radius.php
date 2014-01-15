@@ -46,8 +46,6 @@
 	 	}
 
 	 	function authExternalUser($login, $password) {
-	 	global $store, $AR;
-
 
 			$res = radius_auth_open();
 			if (!radius_add_server($res, $this->config['radius_server'], $this->config['radius_port'], $this->config['sharedsecret'], 3, 3)) {
@@ -60,7 +58,7 @@
 				return false;
 			}
 
-			if (!radius_put_string($res, RADIUS_NAS_IDENTIFIER, isset($_SERVER['HTTP_HOST']) ? $HTTP_HOST : 'localhost'))  {
+			if (!radius_put_string($res, RADIUS_NAS_IDENTIFIER, isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : 'localhost'))  {
 				debug('RadiusError:' . radius_strerror($res). "\n",'auth');
 				return false;
 			}
