@@ -10,7 +10,6 @@
 			$newpath = $path;
 			$redirects = $ARCurrent->shortcut_redirect;
 			if (is_array($redirects)) {
-				$c_redirects = count($redirects);
 				while (count($redirects) && ($redir = array_pop($redirects)) && substr($newpath, 0, strlen($redir['dest'])) == $redir['dest'] && $redir['keepurl']) {
 					$newpath = $redir['src'].substr($newpath, strlen($redir['dest']));
 				}
