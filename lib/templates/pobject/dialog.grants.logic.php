@@ -101,7 +101,7 @@
 						if ($path) {
 							break;
 						}
-					}					
+					}
 					break;
 				case 'puser':
 					foreach ($authconfig['userdirs'] as $userdir) {
