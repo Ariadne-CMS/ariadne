@@ -208,7 +208,6 @@
 		protected $path = '';
 	
 		public function __construct( $path ) {
-			global $store;
 			$this->path = $path;
 		}
 
