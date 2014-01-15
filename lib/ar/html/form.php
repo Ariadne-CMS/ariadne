@@ -128,7 +128,7 @@
 				$result = $field->getNameValue();
 				$values = array_replace_recursive($values, $result);
 			}
-			return $values;			
+			return $values;
 		}
 		
 		public function findField($searchName) {
@@ -1378,7 +1378,6 @@
 					unset( $this->children[$delete] );
 				}
 			} else if ( isset( $check['Add'] ) ) {
-				$add = $check['Add'];
 				$addedField = $this->getvar( $this->newField->name ); //ar('http')->getvar( $this->newField->name );
 				if ( $addedField ) {
 					// add a copy of default to the children of this field
