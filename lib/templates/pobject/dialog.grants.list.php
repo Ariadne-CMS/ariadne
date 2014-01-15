@@ -83,7 +83,6 @@
 				if (is_array($grant_ar)) {
 					foreach ($grants_check as $grant_c => $grant_ar_c) {
 						if (is_array($grant_ar_c) && array_compare($grant_ar, $grant_ar_c)) {
-							$grants_eq[$grant][] = $grant_c;
 							unset($grants[$grant_c]);
 						}
 					}
@@ -153,12 +152,11 @@
 	
 	if( !function_exists("DisplayGrants") ) {
 		function DisplayGrants(&$grantslist, $type, $grey=false) {
-			global $AR, $ARCurrent, $ARnls;
+			global $AR, $ARCurrent;
 			if ($grantslist[$type] && is_array($grantslist[$type])) {
 				ksort($grantslist[$type]);
 				while (list($id, $grants)=each($grantslist[$type])) { // path was login en is weer login
 					$grant_string = "";
-					unset($grants_eq);
 					if (!$ARCurrent->donelist[$type][$id]) {
 						$ARCurrent->donelist[$type][$id]=true;
 						$row_id = "grants-$type-$id";
