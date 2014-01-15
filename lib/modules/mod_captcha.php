@@ -5,7 +5,7 @@
 
 	class mod_captcha extends hn_captcha_X1 {
 
-		function mod_captcha($config) {
+		function __construct($config) {
 			$this->config = $config;
 			hn_captcha_X1::hn_captcha_X1($config);
 		}
