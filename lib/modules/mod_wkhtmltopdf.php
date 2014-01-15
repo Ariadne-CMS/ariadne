@@ -2,7 +2,6 @@
 	class wkhtmltopdf {
 
 		function __construct( $config = array() ) {
-		global $AR;
 			if (!$config['cmd']) {
 				$config['cmd'] = '/usr/bin/xvfb-run -a /usr/bin/wkhtmltopdf --disallow-local-file-access ';
 			}
