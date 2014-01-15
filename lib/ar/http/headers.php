@@ -71,7 +71,7 @@
 				$header = implode( '\n', $header );
 			}
 			if ( self::$enabled ) {
-				list($key,$value) = explode(':',$header,2);
+				list($key,) = explode(':',$header,2);
 				Header($header,$replace);
 				if($replace){
 					self::$headers[strtolower($key)] = $header;
