@@ -517,10 +517,6 @@
 						$AR->output_compression_type = array();
 					}
 
-					$contenttype="content-type";
-					$contenttypelength=strlen($contenttype);
-					$headers = $ARCurrent->ldHeaders;
-					
 					if($ARCurrent->ldHeaders["content-type"]) {
 						$header = $ARCurrent->ldHeaders["content-type"];
 						preg_match('/^content-type:\s+([^ ;]+)/i',$header,$matches);
