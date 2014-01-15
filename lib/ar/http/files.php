@@ -114,7 +114,7 @@
 			$filename = (string) $filename;
 			$nls = (string) $nls;
 			$registeredFiles = $this->ls();
-			$info = $registeredFile[$filename][$nls];
+			$info = $registeredFiles[$filename][$nls];
 			unset($registeredFiles[$filename][$nls]);
 			if (!$registeredFiles[$filename]) {
 				unset($registeredFiles[$filename]);
