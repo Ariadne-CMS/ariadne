@@ -46,7 +46,7 @@
 			$prevPath = null;
 			while ( $path!=$prevPath && !$this->store->exists($path) ) {
 				$prevPath = $path;
-				$path     = $store->make_path($path, "..");
+				$path     = $this->store->make_path($path, "..");
 			}
 			if ($path == $prevPath) {
 				throw new ar_exception_configError( 'Database is not initialized, please run the Ariadne installer.', ar_exceptions::DATABASE_EMPTY);
@@ -66,7 +66,7 @@
 		}
 		
 		public function handleRequest($request) {
-			global $ARCurrent, $AR, $ARConfig, $store;
+			global $ARCurrent, $AR, $store;
 			/* backwards compatibility */
 			$this->storeEnvironment();
 			$AR          = $this->options;
@@ -74,7 +74,7 @@
 			$AR->request = $request;
 			$AR->ariadne = $this;
 			$store       = $this->store;
-			/* end backwards compatibility */		
+			/* end backwards compatibility */
 			$this->request = $request;
 			
 			unset($this->store->total);
