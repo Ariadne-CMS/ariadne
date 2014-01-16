@@ -330,10 +330,7 @@ class axstore {
 
 		debug("axstore::link($source,$destination)","store");
 		$this->error="";
-		$edestination=AddSlashes($destination);
-		$esource=AddSlashes($source); 
 		$parent=$this->make_path($destination, "..");
-		$eparent=AddSlashes($parent);
 		if ($this->exists($destination)) {
 			$this->error="$destination already exists, cannot overwrite.";
 			debug("axstore::link: ERROR: ".$this->error,"store");
@@ -349,7 +346,6 @@ class axstore {
 					$subid=substr("000000000".$subid,-(intval($match[1])));
 				}
 				$destination=preg_replace("/\{[0-9]:id\}/",strval($subid),$destination);
-				$edestination=AddSlashes($destination);
 				debug("axstore::link: new destination: $destination ($subid)","all");
 			}
 			$id=$this->exists($source);
@@ -596,7 +592,8 @@ class axstore {
 
 			$this->_free_object_data($this->objects[$object->id]);
 		}
-		return $result;
+		// TODO: this function needs error checking
+		return $path; 
 	}
 
 	// private function which will set $properties to the given $object
