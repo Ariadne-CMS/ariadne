@@ -33,7 +33,7 @@ class AriadneDiffFormatter extends DiffFormatter {
 
   var $rows;
 
-  function AriadneDiffFormatter() {
+  function __construct() {
     $this->leading_context_lines = 2;
     $this->trailing_context_lines = 2;
   }
