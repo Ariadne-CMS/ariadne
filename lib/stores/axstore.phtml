@@ -26,7 +26,7 @@ class axstore {
 
 	*****************/
 
-	function axstore($path, $config) {
+	function __construct($path, $config) {
 		debug("axstore($path, $config)", "store");
 		include_once($config["code"]."modules/mod_tar.phtml");
 
