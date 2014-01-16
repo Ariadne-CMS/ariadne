@@ -1,6 +1,12 @@
 <?php
 	class mod_tar {
-		function mod_tar($config) {
+		protected $config;
+		protected $tar_error_handler;
+		protected $tar_tar;
+		protected $tar_untar;
+		protected $tar_nofail;
+		protected $mode;
+		function __construct($config) {
 			$this->config = $config;
 			$this->tar_error_handler = $config["error_handler"];
 			$this->tar_tar = $config["tar"];
