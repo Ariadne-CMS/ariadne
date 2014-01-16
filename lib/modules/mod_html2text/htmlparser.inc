@@ -71,7 +71,7 @@ class h2tHtmlParser {
      * Constructs an h2tHtmlParser instance with
      * the HTML text given.
      */
-    function h2tHtmlParser ($aHtmlText) {
+    function __construct ($aHtmlText) {
         $this->iHtmlText = $aHtmlText;
         $this->iHtmlTextLength = strlen($aHtmlText);
         $this->iNodeAttributes = array();
