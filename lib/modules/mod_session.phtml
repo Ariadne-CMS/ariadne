@@ -1,7 +1,7 @@
 <?php
 class session {
 
-	function session($session_config, $id=0) {
+	function __construct($session_config, $id=0) {
 		debug("session([array],$id)","store");
 		// init session store
 		$inst_store = $session_config["dbms"]."store";
