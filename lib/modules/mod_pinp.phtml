@@ -55,7 +55,7 @@ define("YY_STATE_DQ",          4);
 
 class scanner {
 
-	function scanner() {
+	function __construct() {
 		/*
 			create lookup table for language constructs
 		*/
@@ -697,7 +697,7 @@ class scanner {
 
 class pinp {
 
-	function pinp($allowed_functions, $var_prefix, $function_prefix="") {
+	function __construct($allowed_functions, $var_prefix, $function_prefix="") {
 		$var_prefix="\$".$var_prefix;
 		if (!$function_prefix) {
 			$function_prefix=$var_prefix;
