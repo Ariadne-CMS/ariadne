@@ -39,7 +39,7 @@ class Html2Text {
     var $TOKEN_UL       = 4;
     var $TOKEN_ENDUL    = 5;
    
-    function Html2Text ($aHtmlText, $aMaxColumns) {
+    function __construct ($aHtmlText, $aMaxColumns) {
         $this->iHtmlText = $aHtmlText;
         $this->iMaxColumns = $aMaxColumns;
     }
