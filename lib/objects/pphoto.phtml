@@ -53,7 +53,7 @@ class pphoto extends pfile { // pphoto class definition
 	}
 
 	function convert($format="jpg", $quality=75, $background="white") {
-		global $ARConfig;
+		global $ARConfig, $ARnls;
 
 		$this->set_context("convert");
 
@@ -75,7 +75,7 @@ class pphoto extends pfile { // pphoto class definition
 	}
 
 	function colorspace($colorspace="RGB") {
-		global $ARConfig;
+		global $ARConfig, $ARnls;
 		$this->set_context("convert");
 		$result = false;
 		if (preg_match('/[a-z0-9+]/i', $colorspace)) {
@@ -283,7 +283,7 @@ class pphoto extends pfile { // pphoto class definition
 	} 
 
 	function compose( $target, $style="default", $blend = 0, $params=false, $nls = '') {
-		global $ARConfig;
+		global $ARConfig, $ARnls;
 
 		$this->set_context("composite");
 
@@ -522,7 +522,7 @@ class pphoto extends pfile { // pphoto class definition
 
 
 	function build($nls = '') {
-		global $AR, $ARConfig, $ARCurrent;
+		global $AR, $ARConfig, $ARCurrent, $ARnls;
 		if (!$nls) {
 			$nls = $this->reqnls;
 		}
@@ -560,7 +560,6 @@ class pphoto extends pfile { // pphoto class definition
 				debug("build: 1");
 					if (is_array($ARConfig->photoCommandStack[$this->id])) {
 					debug("build: 2");
-						$image="";
 						foreach( $ARConfig->photoCommandStack[$this->id] as $exec_string){
 							debug("exec_string: $exec_string");
 							$exec_string = str_replace('{buildfile}', $tmpsrc, $exec_string);
