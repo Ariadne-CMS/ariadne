@@ -49,11 +49,11 @@ class pbookmark extends pobject { // class definition
 		if ($url) {
 			if (preg_match("|([a-z]+://)?(([a-z0-9]+:)?([a-z0-9]+@)?)([-a-z0-9.]+)(:[0-9]+)?(.*)|i", $url, $matches)) {
 				$protocol=strtolower($matches[1]);
-				$user=$matches[3];
-				$password=$matches[4];
+				//$user=$matches[3];
+				//$password=$matches[4];
 				$host=$matches[5];
 				$port=$matches[6];
-				$path=$matches[7];
+				//$path=$matches[7];
 				if (!$protocol) {
 					$protocol="http://";
 				}
