@@ -121,7 +121,7 @@ class ar_connect_twitter extends arBase {
 
 class ar_connect_twitterClient extends arBase {
 
-	private $rootURL = 'http://api.twitter.com/1.1/';
+	private $rootURL = 'https://api.twitter.com/1.1/';
 	private $client = null;
 	
 	public function __construct( $httpClient = null ) {
@@ -190,7 +190,7 @@ class ar_connect_twitterClient extends arBase {
 				if ( !$callback ) {
 					$callback = 'oob';
 				}
-				$info = $this->client->getRequestToken( 'http://api.twitter.com/oauth/request_token', (string) $callback );
+				$info = $this->client->getRequestToken( 'https://api.twitter.com/oauth/request_token', (string) $callback );
 				if ( ar_error::isError($info) ) {
 					$info->debugInfo = $this->client->debugInfo;
 					return $info;
@@ -199,17 +199,17 @@ class ar_connect_twitterClient extends arBase {
 				$session->putvar( 'oauth_token', $info['oauth_token'] );
 				$session->putvar( 'oauth_token_secret', $info['oauth_token_secret'] );
 				if ($redirect) {
-					ar_loader::redirect( 'http://api.twitter.com/oauth/authorize?oauth_token='.RawUrlEncode( $info['oauth_token'] ) );
+					ar_loader::redirect( 'https://api.twitter.com/oauth/authorize?oauth_token='.RawUrlEncode( $info['oauth_token'] ) );
 					return false;
 				} else {
-					return 'http://api.twitter.com/oauth/authorize?oauth_token='.RawUrlEncode( $info['oauth_token'] );
+					return 'https://api.twitter.com/oauth/authorize?oauth_token='.RawUrlEncode( $info['oauth_token'] );
 				}
 			}
 		}
 
 		if ( $oauth_verifier ) {
 			$this->client->setToken( $oauth_token, $oauth_token_secret );
-			$info = $this->client->getAccessToken( 'http://api.twitter.com/oauth/access_token', '', $oauth_verifier );
+			$info = $this->client->getAccessToken( 'https://api.twitter.com/oauth/access_token', '', $oauth_verifier );
 			if ( ar_error::isError( $info ) ) {
 				$info->debugInfo = $this->client->debugInfo;
 				return $info;
