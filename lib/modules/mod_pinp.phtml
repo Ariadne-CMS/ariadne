@@ -171,6 +171,7 @@ class scanner {
 	}
 
 	function scan(&$result) {
+		global $AR;
 		$YYCURSOR = &$this->YYCURSOR;
 		$YYBUFFER = &$this->YYBUFFER;
 		$YYCLASSES = &$this->YYCLASSES;
