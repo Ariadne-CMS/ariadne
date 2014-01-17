@@ -254,7 +254,6 @@ class pfile extends pobject { // pfile class definition
 	}
   
 	function SaveFile($contents, $mimetype=false, $name='file', $nls='') {  
-		global $AR;
 		$result="";
 		$name=preg_replace("|[\\\/]|","",$name); // make sure nobody gets /etc/passwd
 		if ($name) {
