@@ -71,7 +71,7 @@ class pfile extends pobject { // pfile class definition
 	}
 
 	function ShowFile($file='file', $nls='', $mimetype='') {
-		global $AR, $ARCurrent;
+		global $AR, $ARCurrent, $ARnls;
 		if (!$nls) {
 			$nls = $this->reqnls;
 		}
@@ -141,7 +141,7 @@ class pfile extends pobject { // pfile class definition
 	}
 
 	function DownloadFile($file='file', $nls='', $filename=false) {
-		global $AR, $ARCurrent;
+		global $ARCurrent, $ARnls;
 		if (!$nls) {
 			$nls = $this->reqnls;
 		}
@@ -155,9 +155,6 @@ class pfile extends pobject { // pfile class definition
 			$ARCurrent->cachetime=-2; // set cache to onchange
 		}
 		$files=$this->store->get_filestore("files");
-		if (!preg_match("|^text/|", $mimetype)) {
-			$size=$files->size($this->id, $file);
-		}
 		if (!$filename) {
 			$filename = substr($this->path, strlen($this->parent), -1);
 		}
