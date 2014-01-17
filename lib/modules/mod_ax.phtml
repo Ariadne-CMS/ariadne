@@ -132,6 +132,7 @@ class mod_ax {
 		if (!@mkdir($curr,0755,true)) {
 			$result="Error: Can't makedir $curr";
 		}
+		return $result;
 	}
 
 	// remove directories with content
