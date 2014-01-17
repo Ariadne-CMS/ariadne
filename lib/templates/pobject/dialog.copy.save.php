@@ -1,29 +1,39 @@
 <?php
 	ldDisablePostProcessing();
 	$ARCurrent->nolangcheck=true;
-	if (!$this->validateFormSecret()) {
-		error($ARnls['ariadne:err:invalidsession']);      
-		exit;
-	}
-	if ($this->CheckLogin('read') && $this->CheckConfig()) {
+//	if (!$this->validateFormSecret()) {
+//		error($ARnls['ariadne:err:invalidsession']);      
+//		exit;
+//	}
+//	if ($this->CheckLogin('read') && $this->CheckConfig()) {
 
 		$copytarget = $this->make_path($this->getvar('target'));
 		$copytargetparent = $this->make_path($copytarget.'..');
+
 		if ($this->exists($copytarget)) {
 			$copytarget = $copytarget;
 		} else if (!$this->exists($copytargetparent)) {
 			$this->error = sprintf($ARnls["err:filenameinvalidnoparent"], $copytarget, $copytargetparent);
 			return error($this->error);
 		}
+
 		// FIXME: add more checks to make sure the target to copy to will work as expected.
 
 		if ($this->getvar("sources")) {
 			$sources = $this->getvar('sources');
+                        $copytarget_ob = current($this->get($this->make_path($copytarget), "system.get.phtml"));
+			$copyinto = true;
 		} else {
 			$sources = array($this->path);
+			if ($this->exists($copytarget)) {
+	                        $copytarget_ob = current($this->get($this->make_path($copytarget), "system.get.phtml"));
+				$copyinto = true;
+			} else {
+				$copytarget_ob = current($this->get($this->make_path($copytargetparent), "system.get.phtml"));
+				$copyinto = false;
+			}
 		}
 
-		$copytarget_ob = current($this->get($this->make_path($copytarget . '../'), "system.get.phtml"));
 		if ($copytarget_ob->CheckLogin('add')) {
 			$target_typetree = $copytarget_ob->call("typetree.ini");
 			
@@ -83,18 +93,20 @@
 					foreach ($objects as $object) {
 						$sourcepath = $object->path;
                                                 
-		                                $targetpath = $copytarget;
-                                                foreach ($sources as $sourceparent) {
-                                                	if (strstr($sourcepath, $sourceparent)) {
-                                                        	$targetpath .= basename($sourceparent) . "/";
-								$targetpath .= substr($sourcepath, strlen($sourceparent), strlen($sourcepath));
-								break;
+						if (!$copyinto) {
+							$targetpath = $copytarget;
+						} else {
+							$targetpath = $copytarget_ob->path;
+							foreach ($sources as $sourceparent) {
+								if (strstr($sourcepath, $sourceparent)) {
+									$targetpath .= basename($sourceparent) . "/";
+									$targetpath .= substr($sourcepath, strlen($sourceparent), strlen($sourcepath));
+									break;
+								}
 							}
 						}
 
                                                 $targetpath = preg_replace("|//|", "/", $targetpath);
-                                                
-                                                // exit;
 						$error = current($this->get($sourcepath, "system.copyto.phtml", array("target" => $targetpath)));
 						if ($error) {
 							?>
@@ -171,5 +183,5 @@
 		} else {
 			echo $ARnls['err:no_add_on_target'];
 		}
-	}
+//	}
 ?>
