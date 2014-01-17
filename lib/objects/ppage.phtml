@@ -186,7 +186,7 @@ class ppage extends pobject { // ppage class definition
 		if (!$template) {
 			echo $this->GetSection((int)$section);
 		} else {
-			$this->call($template, array_merge($args, Array('section' => (int)$section, 'section_title' => $this->GetTitle($ection))));
+			$this->call($template, array_merge($args, Array('section' => (int)$section, 'section_title' => $this->GetTitle($section))));
 		}
 	}
 
