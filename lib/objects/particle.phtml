@@ -39,6 +39,7 @@ require_once($AR->dir->install."/lib/objects/ppage.phtml");
 class particle extends ppage { // particle class definition
 
 	function ParseSummary($template="view.html", $extra="", $text="") {
+		global $ARnls;
 		debug("particle: ParseSummary()","object");
 		$summary=$this->ParsePage($this->nlsdata->summary);
 		if (preg_match("/<a>/i",$summary)) {
