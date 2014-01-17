@@ -278,7 +278,7 @@
 					$count=0;
 					$files=$this->ls($id);
 					if (is_array($files)) {
-						while (list($key, $file)=each($files)) {
+						foreach ( $files as $file ) {
 							$source=$this->make_path($id, $file);
 							$result=@copy($source, $target.$file);
 							if ($result) {
@@ -293,7 +293,6 @@
 		}
 
 		public function remove($id, $name) {
-			$result=false;
 			$id = $this->addObjectToLayer( $id );
 			$path=$this->make_path($id, $name);
 			if (file_exists($path)) {
