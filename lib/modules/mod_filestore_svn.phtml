@@ -506,10 +506,11 @@
 					$result[$value] = $svn['instance']->propget->run(array($value, $name), $switches);
 				}
 			}
-			return $result;			
+			return $result;
 		}
 
 		function svn_checkunder($svn, $repository, $revision='HEAD') {
+			global $AR;
 			// This function is designed mainly to be able to
 			// sync up SVN versions and non-SVN versions,
 			// without messing up existing files. It does this
