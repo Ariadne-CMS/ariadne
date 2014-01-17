@@ -1,11 +1,11 @@
 <?php
 	ldDisablePostProcessing();
 	$ARCurrent->nolangcheck=true;
-//	if (!$this->validateFormSecret()) {
-//		error($ARnls['ariadne:err:invalidsession']);      
-//		exit;
-//	}
-//	if ($this->CheckLogin('read') && $this->CheckConfig()) {
+	if (!$this->validateFormSecret()) {
+		error($ARnls['ariadne:err:invalidsession']);      
+		exit;
+	}
+	if ($this->CheckLogin('read') && $this->CheckConfig()) {
 
 		$copytarget = $this->make_path($this->getvar('target'));
 		$copytargetparent = $this->make_path($copytarget.'..');
@@ -183,5 +183,5 @@
 		} else {
 			echo $ARnls['err:no_add_on_target'];
 		}
-//	}
+	}
 ?>
