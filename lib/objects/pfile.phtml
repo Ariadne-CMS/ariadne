@@ -155,6 +155,7 @@ class pfile extends pobject { // pfile class definition
 			$ARCurrent->cachetime=-2; // set cache to onchange
 		}
 		$files=$this->store->get_filestore("files");
+		$size=$files->size($this->id, $file);
 		if (!$filename) {
 			$filename = substr($this->path, strlen($this->parent), -1);
 		}
