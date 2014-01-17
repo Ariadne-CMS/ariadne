@@ -126,6 +126,7 @@ class puser extends pdir { // puser class definition
 	}
 
 	function copyto($target) {
+		global $ARnls;
 		$this->error=$ARnls["err:usercannotbecopied"];
 		return false;
 	}
