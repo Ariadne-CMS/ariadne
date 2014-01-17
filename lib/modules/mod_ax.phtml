@@ -128,17 +128,10 @@ class mod_ax {
 
 
 	function MkDir($path) {
-		$paths=explode("/",$path);
-		while (is_array($paths) && (list($key,$path)=each($paths))) {
-			$curr.="/".$path;
-			if (!file_exists($curr)) {
-				if (!@mkdir($curr,0755)) {
-					$result="Error: Can't makedir $curr";
-					break;
-				}
-			}
+		// silence errors, mkdir complains with warnings instead of return values
+		if (!@mkdir($curr,0755,true)) {
+			$result="Error: Can't makedir $curr";
 		}
-		return $result;
 	}
 
 	// remove directories with content
