@@ -7,6 +7,7 @@
 	// FIXME: Make the non-javascript handling work as well.
 
 	$ARCurrent->nolangcheck=true;
+	// FIXME: Deleting multiple children should not require delete grants on the parent.
 	if ($this->CheckLogin("delete") && $this->CheckConfig()) {
 		$root = $this->getvar("root") ? $this->getvar("root") : $this->currentsite();
 		if (substr($root, -1) != "/") {
@@ -116,7 +117,14 @@
 			echo "document.getElementById('deleting').innerHTML = '" . $ARnls["deleting"] . " " . $next_object_path . "';\n";
 			echo "</script>";
 			flush();
-		}?>
+		}
+
+		$returnpath = $this->path;
+		while (($returnpath != '/') && (!$this->exists($returnpath))) {
+			$returnpath = $this->make_path($returnpath . "../");
+		}
+
+		?>
 		<script type='text/javascript'>
 			document.getElementById('progress_text').innerHTML = 'Done';
 			document.getElementById('progress').style.width = '100%';
@@ -124,7 +132,7 @@
 			if ( window.opener && window.opener.muze && window.opener.muze.dialog ) {
 				window.opener.muze.dialog.callback( window.name, 'deleted', { 
 					'childrenOnly': <?php echo (int)$this->getvar("childrenonly") ?>,
-					'showPath': '<?php echo (($this->getvar("childrenonly") || sizeof($targets > 1)) ? $this->path : $this->parent );?>'
+					'showPath': '<?php echo $returnpath; ?>'
 				});
 			} else  { 
 				// backward compatibility with pre muze.dialog openers
