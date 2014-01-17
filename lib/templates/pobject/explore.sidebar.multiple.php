@@ -1,7 +1,11 @@
 <?php
-	$ARCurrent->allnls = true;
+	$ARCurrent->nolangcheck=true;
+	$ARCurrent->allnls=true;
 
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+		if ($AR->user->data->language) {
+			ldSetNls($AR->user->data->language);
+		}
 
 	  	require_once($this->store->get_config("code")."modules/mod_yui.php");
 
@@ -51,50 +55,50 @@
 			);
 */		
 			//FIXME: Check grants on selected targets
-                        if ($this->CheckSilent("delete")) {
+                        //if ($this->CheckSilent("delete")) {
 				$tasks[] = array(
 					'href' => $this->make_ariadne_url() . "dialog.delete.php",
 					'onclick' => "muze.ariadne.explore.dialog.deleteselected(this.href); return false;",
 					'icon' => $AR->dir->images . 'icons/small/delete.png',
 					'nlslabel' => $ARnls['ariadne:delete']
 				);		
-			}
+			//}
                         //FIXME: Check grants on selected targets
-                        if ($this->CheckSilent("read")) {
+                        //if ($this->CheckSilent("read")) {
                                 $tasks[] = array(
                                         'href' => $this->make_ariadne_url() . "dialog.copy.php",
                                         'onclick'=> "muze.ariadne.explore.dialog.copyselected(this.href); return false;",
                                         'icon' => $AR->dir->images . 'icons/small/copy.png',
                                         'nlslabel' => $ARnls['ariadne:copy']
                                 );
-                        }
+                        //}
                         //FIXME: Check grants on selected targets & check can_mogrify
-                        if ($this->CheckSilent("admin")) {
+                        //if ($this->CheckSilent("admin")) {
                                 $tasks[] = array(
                                         'href' => $this->make_ariadne_url() . "dialog.mogrify.php",
                                         'onclick' => "muze.ariadne.explore.dialog.mogrifyselected(this.href); return false;",
                                         'icon' => $AR->dir->images . 'icons/small/mogrify.png',
                                         'nlslabel' => $ARnls['ariadne:mogrify']
                                 );
-                        }
+                        //}
                         //FIXME: Check grants on selected targets
-                        if ($this->CheckSilent("edit")) {
+                        //if ($this->CheckSilent("edit")) {
                                 $tasks[] = array(
                                         'href' => $this->make_ariadne_url() . "dialog.move.php",
                                         'onclick'=> "muze.ariadne.explore.dialog.moveselected(this.href); return false;",
                                         'icon' => $AR->dir->images . 'icons/small/customfields.png', // FIXME: Replace this with a proper icon
                                         'nlslabel' => $ARnls['ariadne:move']
                                 );
-                        }
+                        //}
                         //FIXME: Check grants on selected targets
-                        if ($this->CheckSilent("config")) {
+                        //if ($this->CheckSilent("config")) {
                                 $tasks[] = array(
                                         'href' => $this->make_ariadne_url() . "dialog.export.php",
                                         'onclick'=> "muze.ariadne.explore.dialog.exportselected(this.href); return false;",
                                         'icon' => $AR->dir->images . 'icons/small/export.png',
                                         'nlslabel' => $ARnls['ariadne:export']
                                 );
-                        }
+                        //}
 /*
 		}
 		if ($this->CheckSilent("admin") && $this->can_mogrify() ) {
