@@ -1,7 +1,20 @@
 <?php
-  include($this->code."stores/modules/sql_compiler.php");
+include($this->code."stores/modules/sql_compiler.php");
 
-  class postgresql_compiler extends sql_compiler {
+class postgresql_compiler extends sql_compiler {
+	protected $tbl_prefix;
+	protected $in_orderby;
+	protected $nls_join;
+	protected $select_tables;
+	protected $used_tables;
+	protected $custom_id;
+	protected $custom_ref;
+	protected $used_custom_fields;
+	protected $where_s_ext;
+	protected $where_s;
+	protected $limit_s;
+	protected $orderby_s;
+	protected $select_list;
 
 	function __construct(&$store, $tbl_prefix="") {
 		debug("postgresql_compiler($tbl_prefix)", "store");
