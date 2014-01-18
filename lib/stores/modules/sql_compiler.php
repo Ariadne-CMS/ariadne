@@ -1,6 +1,7 @@
 <?php
 
 abstract class sql_compiler {
+	protected $skipDefaultOrderBy;
 	protected $store;
 	public  $error;
 	protected $join_target_properties;
