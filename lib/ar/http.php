@@ -116,6 +116,7 @@
 
 		public $responseHeaders = null;
 
+		/* FIXME: function not used, is it still relevant?
 		private function parseRequestURL( $url ) {
 			$request = explode( '?', (string) $url );
 			if ( isset($request[1]) ) {
@@ -124,6 +125,7 @@
 				return null;
 			}
 		}
+		*/
 
 		private function compileRequest( array $request ) {
 			$result = "";
