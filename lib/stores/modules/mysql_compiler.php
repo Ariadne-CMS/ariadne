@@ -241,7 +241,7 @@ class mysql_compiler extends sql_compiler {
 							$result=" (".$this->tbl_prefix."objects.type not in (select type from ".$this->tbl_prefix."types where implements = $type )) ";
 						break;
 						default:
-							$result=" (".$this->tbl_prefix."objects.vtype in (select type from ".$this->tbl_prefix."types where implements $operator $type )) ";
+							$result=" ( SUBSTRING_INDEX(".$this->tbl_prefix."objects.vtype, '.', 1) in (select type from ".$this->tbl_prefix."types where implements $operator $type )) ";
 						break;
 					}
 				}
