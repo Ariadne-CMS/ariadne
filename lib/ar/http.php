@@ -3,6 +3,10 @@
 	ar_pinp::allow( 'ar_http');
 	ar_pinp::allow( 'ar_httpClientStream' );
 
+	/*
+	 * prevent mess detector from warning for the private static fields
+	 * @SuppressWarnings(PHPMD.UnusedPrivateField)
+	 */
 	class ar_http extends arBase {
 	
 		private static $_GET, $_POST, $_REQUEST, $_SERVER, $_COOKIE;  //needed to make __get() work
