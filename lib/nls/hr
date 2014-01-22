@@ -126,6 +126,7 @@
 	$ARnls["err:nodatafordefaultlanguage"]          =    "Nisu unešeni nikakvi podaci za primarni jezik '%s'.";
 	$ARnls["err:nodirchanges"]                      =    "Promjene mape nisu dozvoljene u imenima predložaka.";
 	$ARnls["err:noexportfile"]                      =    "Datoteka za izvoz nedostaje. Nije u %s%s.";
+//      $ARnls["err:nogrants"]                          =    "You don't have the proper grants to perform this operation on this object. This object <b>won't</b> be included in this operation."; //value from English
 	$ARnls["err:noimagemagick"]                     =    "Ne mogu pokrenuti ImageMagick program za izmjenu veličine (mogrify)<br>\n(%s)";
 	$ARnls["err:nolastnameentered"]                 =    "Morate unijeti prezime";
 	$ARnls["err:nomovebelow"]                       =    "Me možete pomaknuti objekt ispod njega samog.";

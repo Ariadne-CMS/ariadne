@@ -253,6 +253,7 @@
 	$ARnls["next"]                                  =    "Next";
 	$ARnls["no"]                                    =    "Nej";
 	$ARnls["none"]                                  =    "Ingen";
+//        $ARnls["err:nogrants"]                          =    "You don't have the proper grants to perform this operation on this object. This object <b>won't</b> be included in this operation."; //value from English
 	$ARnls["nopermimportnew"]                       =    "Inga r&auml;ttigheter att importera nya objekt";
 	$ARnls["nopermission"]                          =    "Du har inte r&auml;ttigheter att radera %s, forts&auml;tt?";
 	$ARnls["noprofile"]                             =    "Ingen profil";

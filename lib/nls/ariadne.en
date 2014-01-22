@@ -163,6 +163,7 @@
 	$ARnls["ariadne:svn:deleteconfirm"]             =    "Are you sure you want to delete this template from SVN?";
 	$ARnls["ariadne:svn:deleted"]                   =    "Deleted";
 	$ARnls["ariadne:svn:diff"]                      =    "Diff";
+	$ARnls["ariadne:svn:serverdiff"]				=    "Diff against server";
 	$ARnls["ariadne:svn:import"]                    =    "Import";
 	$ARnls["ariadne:svn:import_recursive"]          =    "SVN Recursive Import";
 	$ARnls["ariadne:svn:info"]                      =    "SVN Info";

@@ -138,6 +138,7 @@
 	$ARnls["err:nodatafordefaultlanguage"]          =    "Sie haben keine Daten für die Standardsprache '%s' eingegeben.";
 	$ARnls["err:nodirchanges"]                      =    "Verzeichniswechsel sind in Vorlagen nicht erlaubt.";
 	$ARnls["err:noexportfile"]                      =    "Die zu exportierende Datei fehlt. Sie ist nicht in %s%s.";
+//      $ARnls["err:nogrants"]                          =    "You don't have the proper grants to perform this operation on this object. This object <b>won't</b> be included in this operation."; //value from English
 	$ARnls["err:noimagemagick"]                     =    "Konnte ImageMagick Scale Program nicht öffnen.<BR>\n(%s)";
 	$ARnls["err:nolastnameentered"]                 =    "Bitte geben sie den Nachnamen ein";
 	$ARnls["err:nomovebelow"]                       =    "Elemente können nich in Ebenen unter sich selber verschoben werden.";

@@ -126,6 +126,7 @@
 	$ARnls["err:nodatafordefaultlanguage"]          =    "Vous n'avez pas entr&eacute; de donn&eacute;es pour le langage par d&eacute;faut '%s'.";
 	$ARnls["err:nodirchanges"]                      =    "Le changement de r&eacute;pertoire est interdit pour les noms de gabarits.";
 	$ARnls["err:noexportfile"]                      =    "Le fichier d'exportation est manquant. Il n'est pas en %s%s.";
+//      $ARnls["err:nogrants"]                          =    "You don't have the proper grants to perform this operation on this object. This object <b>won't</b> be included in this operation."; //value from English
 	$ARnls["err:noimagemagick"]                     =    "Ne peut pas appeller le programme de redimensionnement ImageMagick (mogrify)<br>\n(%s)";
 	$ARnls["err:nolastnameentered"]                 =    "Vous devez entrer le dernier nom";
 	$ARnls["err:nomovebelow"]                       =    "Vous ne pouvez d&eacute;placer un fichier dans lui m&ecirc;me.";

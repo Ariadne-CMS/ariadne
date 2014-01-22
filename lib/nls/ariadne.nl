@@ -1,5 +1,4 @@
 <?php
-
 	$ARnls["ariadne:about"]                         =    "Over...";
 	$ARnls["ariadne:ace_editor"]                    =    "Ace Editor";
 	$ARnls["ariadne:apkg:depends_on"]               =    "Depends op";
@@ -163,6 +162,7 @@
 	$ARnls["ariadne:svn:deleteconfirm"]             =    "Weet u zeker dat u dit template uit SVN wilt verwijderen?";
 	$ARnls["ariadne:svn:deleted"]                   =    "Verwijderd";
 	$ARnls["ariadne:svn:diff"]                      =    "Diff";
+	$ARnls["ariadne:svn:serverdiff"]				=    "Diff tegen server";
 	$ARnls["ariadne:svn:import"]                    =    "Import";
 	$ARnls["ariadne:svn:import_recursive"]          =    "SVN Recursive Import";
 	$ARnls["ariadne:svn:info"]                      =    "SVN Info";

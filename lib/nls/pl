@@ -128,6 +128,7 @@
 	$ARnls["err:nodatafordefaultlanguage"]          =    "Nie wprowadziłeś danych dla domyślnego języka (%s).";
 	$ARnls["err:nodirchanges"]                      =    "W nazwie szablonów nie można używać nazw katalogów.";
 	$ARnls["err:noexportfile"]                      =    "Plik eksportowy nie istnieje. Nie ma go w %s%s.";
+//      $ARnls["err:nogrants"]                          =    "You don't have the proper grants to perform this operation on this object. This object <b>won't</b> be included in this operation."; //value from English
 	$ARnls["err:noimagemagick"]                     =    "Nie mogę uruchomić programu do skalowania (mogrify z pakietu ImageMagick)<br>\n(%s)";
 	$ARnls["err:nolastnameentered"]                 =    "Musisz wprowadzić nazwisko>";
 	$ARnls["err:nomovebelow"]                       =    "Nie możesz przenieść obiektu poniżej samego siebie.";

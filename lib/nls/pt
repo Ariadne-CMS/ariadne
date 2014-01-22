@@ -117,6 +117,7 @@
   $ARnls["err:nodatafordefaultlanguage"] = "N&atilde;o introduziu qualquer dados para o idioma padr&atilde;o \'%s\'.";
   $ARnls["err:nodirchanges"] = "Nomes de modelos n&atilde;o permitem mudan&ccedil;as de direct&oacute;rio.";
   $ARnls["err:noexportfile"] = "Arquivo export n&atilde;o perdido. N&atilde;o encontrado no %s%s.";
+//        $ARnls["err:nogrants"]        =    "You don't have the proper grants to perform this operation on this object. This object <b>won't</b> be included in this operation."; //value from English
   $ARnls["err:noimagemagick"] = "N&atilde;o posso correr programa mogrify para escalar imagem<br>\n(%s)";
   $ARnls["err:nolastnameentered"] = "Sobrenome &eacute; obrigat&oacute;rio.";
   $ARnls["err:nomovebelow"] = "Um objecto n&atilde;o pode ser movido para baixo de si mesmo.";

@@ -97,6 +97,7 @@
 	$ARnls["err:cannotdisablesystemusers"]          =    "You cannot disable the system users (admin and public)";
 	$ARnls["err:cannotedit.phtml"]                  =    "You cannot edit templates ending with '.phtml'";
 	$ARnls["err:cannotlockobject"]                  =    "Can't lock object %s";
+        $ARnls["err:cannotmogrify"]                     =    "This object cannot be mogrified. This object will <b>not</b> be included in this operation.";
 	$ARnls["err:changetempdirfailed"]               =    "Could not changedir to %stemp/ ";
 	$ARnls["err:chooseotherfilename"]               =    "%s already exists. Please choose another.";
 	$ARnls["err:containsobj"]                       =    "Object contains other object, remove these first.";
@@ -130,6 +131,7 @@
 	$ARnls["err:nodatafordefaultlanguage"]          =    "You have not entered any data for the default language '%s'.";
 	$ARnls["err:nodirchanges"]                      =    "No directory changes allowed in template names.";
 	$ARnls["err:noexportfile"]                      =    "Export file is missing. It's not in %s%s.";
+        $ARnls["err:nogrants"]                          =    "You do not have the proper grants to perform this operation on this object. This object will <b>not</b> be included in this operation.";
 	$ARnls["err:noimagemagick"]                     =    "Could not run ImageMagick scale program (mogrify)<br>\n(%s)";
 	$ARnls["err:nolastnameentered"]                 =    "You must enter the last name";
 	$ARnls["err:nomovebelow"]                       =    "You cannot move an object below itself.";

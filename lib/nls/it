@@ -130,6 +130,7 @@
 	$ARnls["err:nodatafordefaultlanguage"]          =    "Dati mancanti per la lingua di default '%s'.";
 	$ARnls["err:nodirchanges"]                      =    "Non puoi effettuare cambiamenti di cartella nei nomi di template.";
 	$ARnls["err:noexportfile"]                      =    "File export mancante. Non in %s%s.";
+//      $ARnls["err:nogrants"]                          =    "You don't have the proper grants to perform this operation on this object. This object <b>won't</b> be included in this operation."; //value from English
 	$ARnls["err:noimagemagick"]                     =    "Impossibile eseguire il programma ImageMagick (mogrify)<br>\n(%s)";
 	$ARnls["err:nolastnameentered"]                 =    "Per favore, inserisci il cognome";
 	$ARnls["err:nomovebelow"]                       =    "Non puoi spostare un oggetto sotto se stesso.";

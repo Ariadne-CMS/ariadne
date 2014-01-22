@@ -93,6 +93,7 @@
 	$ARnls["err:cannotdisablesystemusers"]          =    "U kunt de systeem gebruikers (admin en public) geen toegang wijgeren.";
 	$ARnls["err:cannotedit.phtml"]                  =    "U kunt geen templates bewerken met extensie .phtml";
 	$ARnls["err:cannotlockobject"]                  =    "Kan object %s niet afschermen";
+        $ARnls["err:cannotmogrify"]                     =    "Dit object kan niet gemogrified worden. Dit object wordt <b>niet</b> meegenomen in de bewerking.";
 	$ARnls["err:changetempdirfailed"]               =    "Kan niet van directory veranderen naar %stemp/ ";
 	$ARnls["err:chooseotherfilename"]               =    "%s bestaat al. Kies een andere naam.";
 	$ARnls["err:containsobj"]                       =    "Dit object bevat andere objecten, verwijder deze eerst.";
@@ -126,6 +127,7 @@
 	$ARnls["err:nodatafordefaultlanguage"]          =    "U heeft geen waarden ingevuld voor de standaard taal '%s'.";
 	$ARnls["err:nodirchanges"]                      =    "Directory wijzigingen (..) zijn niet toegestaan in template namen.";
 	$ARnls["err:noexportfile"]                      =    "Export bestand ontbreekt. Het staat niet in %s%s.";
+        $ARnls["err:nogrants"]                          =    "U heeft niet de rechten deze bewerking op dit object uit te voeren. Dit object wordt <b>niet</b> meegenomen in de bewerking.";
 	$ARnls["err:noimagemagick"]                     =    "Kon het ImageMagick schalingsprogramma (mogrify) niet runnen<br>\n(%s)";
 	$ARnls["err:nolastnameentered"]                 =    "U dient een achternaam in te voeren";
 	$ARnls["err:nomovebelow"]                       =    "U kunt een object niet verplaatsen naar onder zichzelf.";
@@ -378,6 +380,4 @@
 	$ARnls["years"]                                 =    "Jaar";
 	$ARnls["yes"]                                   =    "Ja";
 	$ARnls["zipcode"]                               =    "Postcode";
-
-
 ?>
