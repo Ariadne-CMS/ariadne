@@ -1,6 +1,6 @@
 <?php
 	$ARCurrent->nolangcheck=true;
-	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+//	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		include($this->store->get_config("code")."widgets/wizard/code.php");
 
 		$wgWizFlow = array(
@@ -37,5 +37,5 @@
 		$wgWizHeaderIcon = $AR->dir->images.'icons/large/copy.png';
 
 		include($this->store->get_config("code")."widgets/wizard/yui.wizard.html");
-	}
+//	}
 ?>
