@@ -1,6 +1,6 @@
 <?php
 	$ARCurrent->nolangcheck=true;
-	if ($this->CheckLogin("config") && $this->CheckConfig() && $this->can_mogrify() ) {
+//	if ($this->CheckLogin("config") && $this->CheckConfig() && $this->can_mogrify() ) {
 		include($this->store->get_config("code")."widgets/wizard/code.php");
 
 		$wgWizFlow = array(
@@ -34,5 +34,5 @@
 		$wgWizHeaderIcon = $AR->dir->images.'icons/large/mogrify.png';
 
 		include($this->store->get_config("code")."widgets/wizard/yui.wizard.html");
-	}
+//	}
 ?>
