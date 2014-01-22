@@ -4,9 +4,9 @@
 		error($ARnls['ariadne:err:invalidsession']);      
 		exit;
 	}
-	if ($this->CheckLogin('config') && $this->CheckConfig() && $this->can_mogrify() ) {
+//	if ($this->CheckLogin('config') && $this->CheckConfig() && $this->can_mogrify() ) {
             if ($this->getvar('targets')) {
-                $targets = $this->getvar("targets");
+                    $targets = $this->getvar("targets");
             } else {
                    $targets = array($this->path);
             }
@@ -16,8 +16,10 @@
 <?php
             foreach ($targets as $target) {
                 $targetob = current($this->get($target, "system.get.phtml"));
-                
-		$targetob->mogrify( $targetob->id, $this->getdata('type'));
+
+                if ($targetob->CheckSilent('config') && $targetob->CheckConfig() && $targetob->can_mogrify() ) {
+                        $targetob->mogrify( $targetob->id, $this->getdata('type'));
+                }
 		if ($this->error) {
 			echo '<div class="error">'.$this->error.'</div>';
 		}
@@ -44,5 +46,5 @@
 		</script>
 	<?php } ?>
 <?php
-	}
+//	}
 ?>
