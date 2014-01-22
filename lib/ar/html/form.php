@@ -37,6 +37,17 @@
 			if ( isset($fields) ) {
 				$this->fields = $this->parseFields($fields);
 			}
+			if (ar('loaderSession')->getvar("formSecret")) {
+				$this->fields = array_merge($this->fields, $this->parseFields(
+					array('formSecret' => array(
+						'type' => 'hidden',
+						'name' => 'formSecret',
+						'default' => ar('loaderSession')->getvar("formSecret"),
+						'checks' => '/^'.ar('loaderSession')->getvar("formSecret").'$/D'
+					))
+				));
+			}
+
 			if ( !isset($buttons)) {
 				$buttons = array('Ok');
 			}
