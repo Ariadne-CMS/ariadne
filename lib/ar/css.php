@@ -84,8 +84,9 @@
 				}
 				$this->add( $rule, $styles );
 				$styles = array();
-				$this->cssText = str_replace( $matches[0], '', $cssText);
+				$cssText = str_replace( $matches[0], '', $cssText);
 			}
+			$this->cssText = $cssText;
 			return $this;
 		}
 
