@@ -49,6 +49,12 @@
 				}
 			}
 		}
+
+		$returnpath = $this->path;
+		while (($returnpath != '/') && (!$this->exists($returnpath))) {
+			$returnpath = $this->make_path($returnpath . "../");
+		}
+
 		if ($this->error) {
 			echo "<font color='red'>$this->error</font><br>";
 		} else {
@@ -57,13 +63,13 @@
 			<script type="text/javascript">
 				if ( window.opener && window.opener.muze && window.opener.muze.dialog ) {
 					window.opener.muze.dialog.callback( window.name, 'renamed', { 
-						'path': '<?php echo $this->path; ?>'
+						'path': '<?php echo $returnpath; ?>'
 					});
 				} else {
 					// FIXME: Add copied path to the tree?
 					if ( window.opener && window.opener.muze && window.opener.muze.ariadne  ) {
-							window.opener.muze.ariadne.explore.tree.refresh('<?php echo $this->path; ?>');
-						window.opener.muze.ariadne.explore.view('<?php echo $this->path; ?>');
+							window.opener.muze.ariadne.explore.tree.refresh('<?php echo $returnpath; ?>');
+						window.opener.muze.ariadne.explore.view('<?php echo $returnpath; ?>');
 					}
 					window.close();
 				}
