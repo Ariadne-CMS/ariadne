@@ -41,6 +41,7 @@ muze.ariadne.explore = function() {
 			
 			'dialog_svn_templates_resolved'	: windowprops_common + windowsize_large,
 			'dialog_svn_templates_diff'	: windowprops_common + windowsize_large,
+			'dialog_svn_templates_serverdiff'	: windowprops_common + windowsize_large,
 			'dialog_svn_templates_commit'	: windowprops_common + windowsize_large,
 			'dialog_svn_templates_revert'	: windowprops_common + windowsize_large,
 			'dialog_svn_templates_update'	: windowprops_common + windowsize_large,
@@ -1248,14 +1249,20 @@ muze.ariadne.explore.browseheader = function() {
 
 muze.ariadne.explore.dialog = ( function () {
 	return {
-                'getTargets' : function(varname) { //builds string of paths for the dialog when multiple items are selected.
-                        var selected = YAHOO.util.Dom.getElementsByClassName("selectable-selected", "*", "archildren");
+		'getTargets' : function(varname) { //builds string of paths for the dialog when multiple items are selected.
+            var selected = YAHOO.util.Dom.getElementsByClassName("selectable-selected", "*", "archildren");
 			var target = '?';
 			for (i=0; i<selected.length; i++) {
-				target += varname + '[]=' + selected[i].getAttribute("data-path") + '&';
+				var targetpath = selected[i].getAttribute("data-path");
+				if (selected[i].tagName == "TR") {
+					var record = muze.ariadne.explore.viewpane.dataTable.getRecord(selected[i]);
+					targetpath = record.getData("path");
+				}
+				target += varname + '[]=' + targetpath + '&';
 			}
+
 			return target;
-                },
+		},
 		'add': function(href) {
 			muze.dialog.open(href, 'dialog_add', { windowFeatures: muze.ariadne.explore.windowprops['dialog_add'] } )
 			.on('submit', function( args ) {
@@ -1285,7 +1292,8 @@ muze.ariadne.explore.dialog = ( function () {
 		},
                 'moveselected' : function(href) {
                         var target = muze.ariadne.explore.dialog.getTargets("sources");
-                        muze.dialog.open(href + target, 'dialog_move', { windowFeatures: muze.ariadne.explore.windowprops['dialog_move'] } )
+                        var origin = 'origin=move'; //No & or ? needed since var is after var target
+                        muze.dialog.open(href + target + origin, 'dialog_move', { windowFeatures: muze.ariadne.explore.windowprops['dialog_move'] } )
                         .on('renamed', function( args ) {
 				muze.ariadne.explore.tree.refresh(args['path']);
 				muze.ariadne.explore.view(args['path']);
@@ -1307,7 +1315,8 @@ muze.ariadne.explore.dialog = ( function () {
 		},
                 'copyselected' : function(href) {
                         var target = muze.ariadne.explore.dialog.getTargets("sources");
-                        muze.dialog.open(href + target, 'dialog_copy', { windowFeatures: muze.ariadne.explore.windowprops['dialog_copy'] } )
+                        var origin = 'origin=copy'; //No & or ? needed since var is after var target
+                        muze.dialog.open(href + target + origin, 'dialog_copy', { windowFeatures: muze.ariadne.explore.windowprops['dialog_copy'] } )
                         .on('copied', function( args ) {
                                 if (args['path'] == args['copyTarget'] ) {
                                         muze.ariadne.explore.objectadded();
