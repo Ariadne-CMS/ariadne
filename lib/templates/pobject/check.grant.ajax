@@ -1,0 +1,12 @@
+<?php
+	$grant = $this->getvar('grant');
+	$target = $this->getvar('target');
+	if ($this->exists($target)) {
+		$targetOb = current($this->get($target, "system.get.phtml"));
+		if ($targetOb->CheckSilent($grant)) {
+			echo 1;
+			return;
+		}
+	}
+	echo 0;
+?>

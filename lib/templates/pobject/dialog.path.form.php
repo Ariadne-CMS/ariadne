@@ -1,6 +1,6 @@
 <?php
 	$ARCurrent->nolangcheck=true;
-	if ($this->CheckLogin("read") && $this->CheckConfig()) {
+//	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		if ($this->getvar('sources')) {
 			$sources = $this->getvar("sources");
 		} else {
@@ -17,6 +17,8 @@
                 
 ?>
 <script type="text/javascript">
+	var updateTimer = false;
+
 	function callback(path) {
 		var jail = "<?php echo $jail; ?>";
 		if (path.indexOf(jail) == 0) {
@@ -29,6 +31,19 @@
                     }
 		updateTarget();
 	}
+
+	function checkGrants() {
+		var url = "check.grant.ajax?grant=add&target=" + escape(document.getElementById("target").value);
+		var result = muze.load(url, true, false);
+
+		if (result != "" && result != 1) {
+			document.getElementById("relativetarget").style.backgroundColor = "#ffdddd";
+			document.getElementById("targetError").style.display = "block";
+		} else {
+			document.getElementById("relativetarget").style.backgroundColor = "white";
+			document.getElementById("targetError").style.display = "none";
+		}
+	}
         
 	function updateTarget() {
                 if (!(document.getElementById("relativetarget"))){
@@ -38,11 +53,25 @@
                 }
 		var jail = "<?php echo $jail; ?>";
 		document.getElementById("target").value = (jail + relativetarget).replace("//", "/");
+
+		if (updateTimer) {
+			window.clearTimeout(updateTimer);
+		}
+		updateTimer = window.setTimeout(checkGrants, 300);
 	}
 
 </script>
 <fieldset id="data" class="browse">
-<?php		
+<?php
+        $origin = $this->getvar(origin);
+        if ($origin == "copy") {
+            echo '<legend>' . $ARnls["ariadne:copy"] . '</legend>';
+        } elseif ($origin == "move"){
+            echo '<legend>'. $ARnls["ariadne:move"] . '</legend>';
+        } else {
+            echo '<legend>' . $ARnls["ariadne:rename"] . '</legend>';
+        }
+        
 		foreach ($sources as $source) {
 			$sourceob = current($this->get($source, "system.get.phtml"));
 
@@ -107,7 +136,21 @@
 				$iconalt = $sourceob->vtype;
 			}
 
-			echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt) . '" title="' . htmlspecialchars($iconalt) . '" class="typeicon">';
+                        if ($origin == "copy" && !$sourceob->CheckSilent("read")){
+                               $checkfailed = true;
+                        } else if ($origin == "move" && !$sourceob->CheckSilent("edit")) { //dialog.move.php zegt delete && config, explore.sidebar zegt edit.
+                               $checkfailed = true;
+                        } else {
+                                $checkfailed = false;
+                        }
+
+                        if($checkfailed){
+                            echo '<div class="browse checkfailed">';
+                            echo '<span class="error">' . $ARnls["err:nogrants"] .'</span><br>';
+                        } else {
+                            echo '<div class="browse">';
+                        }
+                        echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt) . '" title="' . htmlspecialchars($iconalt) . '" class="typeicon">';
 			if ( $overlay_icon ) {
 			echo '<img src="' . $overlay_icon . '" alt="' . htmlspecialchars($overlay_alt) . '" title="' . htmlspecialchars($overlay_alt) . '" class="overlay_typeicon">';
 			}
@@ -115,27 +158,10 @@
 			echo '( <span class="crumbs" title="' . $oldcrumbs . '">' . $crumbs . '</span> )';
 			echo '</div>';
 			echo '<div class="path">' . $path . '</div><br>';
+                        echo '</div>';
 		}
 ?>
-	<style type="text/css">
-		 /* FIXME: Move this to the proper CSS file */
-		div.inputline {
-			position: relative;
-		}
 
-		#tabsdata div.inputline input:nth-child(1) {
-			width: 65%;
-			box-sizing: border-box;
-                        -moz-box-sizing: border-box;
-			margin: 0px;
-		}
-		#tabsdata div.inputline input:nth-child(2) {
-			width: 35%;
-			box-sizing: border-box;
-                        -moz-box-sizing: border-box;
-			margin: 0px;
-		}
-	</style>
 	<div class="browse_wrapper">
 		<div class="field">
 		<label for="target" class="required"><?php echo $ARnls["target"]; ?></label>
@@ -152,10 +178,14 @@
 				<input id="relativetarget" type="text" name="relativetarget" value="<?php echo $target; ?>" class="inputline wgWizAutoFocus" onchange="updateTarget();" onkeyup="updateTarget();">
                                 <input type="hidden" id="target" name="target" value="<?php echo htmlentities(str_replace("//", "/", $jail . $target)) ?>">
                                 <input class="button" type="button" value="<?php echo $ARnls['browse']; ?>" title="<?php echo $ARnls['browse']; ?>" onclick='window.open("<?php echo $this->make_ariadne_url($jail); ?>" + document.getElementById("relativetarget").value + "dialog.browse.php", "browse", "height=480,width=750"); return false;'>
+				<div id="targetError" style="display: none;"><?php echo $ARnls['err:no_add_on_target']; ?></div>
 		<?php } ?>
 		<div class="clear"></div>
 		</div>
 	</div>
+	<script type="text/javascript">
+		checkGrants();
+	</script>
 <?php
 	if ($this->CheckSilent("layout")) { ?>
 		<div class="field checkbox">
@@ -164,5 +194,5 @@
 		</div>
 <?php	} ?>
 </fieldset>
-<?php	} 
-?>
+<?php	//}
+?> 

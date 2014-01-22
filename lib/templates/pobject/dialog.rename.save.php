@@ -4,13 +4,15 @@
 		error($ARnls['ariadne:err:invalidsession']);      
 		exit;
 	}
-	if ($this->CheckLogin("delete") && $this->CheckConfig()) {
+//	if ($this->CheckLogin("delete") && $this->CheckConfig()) {
 		
 		if ($this->getvar("sources")) {
 			$sources = $this->getvar('sources');
 		} else {
 			$sources = array($this->path);
 		}
+                
+                //hier check of add-op-target toegestaan is?
 		
 		foreach($sources as $source) {
 			$source_ob = current($this->get($source, "system.get.phtml"));
@@ -39,31 +41,34 @@
 					// This type is allowed.
 
 					$source_ob->call("system.rename.phtml", array("target" => $target)); // $arCallArgs); // system.rename will fix the path by itself and do more checks, so do not pass $target to it from here.
+					if ($source_ob->error) {
+						$this->error .= $source_ob->nlsdata->name . ": ". $source_ob->error . "<br>";
+					}
 				} else {
-					echo $ARnls['err:typetree_does_not_allow'];
+					$this->error = $ARnls['err:typetree_does_not_allow'];
 				}
 			}
-			if ($this->error) {
-				echo "<font color='red'>$this->error</font>";
-			} else {
-				// FIXME: update the tree and explore window.
-				?>
-				<script type="text/javascript">
-					if ( window.opener && window.opener.muze && window.opener.muze.dialog ) {
-						window.opener.muze.dialog.callback( window.name, 'renamed', { 
-							'path': '<?php echo $this->path; ?>'
-						});
-					} else {
-						// FIXME: Add copied path to the tree?
-						if ( window.opener && window.opener.muze && window.opener.muze.ariadne  ) {
-								window.opener.muze.ariadne.explore.tree.refresh('<?php echo $this->path; ?>');
-							window.opener.muze.ariadne.explore.view('<?php echo $this->path; ?>');
-						}
-						window.close();
-					}
-				</script>
-				<?php
-			}
 		}
-	}
+		if ($this->error) {
+			echo "<font color='red'>$this->error</font><br>";
+		} else {
+			// FIXME: update the tree and explore window.
+			?>
+			<script type="text/javascript">
+				if ( window.opener && window.opener.muze && window.opener.muze.dialog ) {
+					window.opener.muze.dialog.callback( window.name, 'renamed', { 
+						'path': '<?php echo $this->path; ?>'
+					});
+				} else {
+					// FIXME: Add copied path to the tree?
+					if ( window.opener && window.opener.muze && window.opener.muze.ariadne  ) {
+							window.opener.muze.ariadne.explore.tree.refresh('<?php echo $this->path; ?>');
+						window.opener.muze.ariadne.explore.view('<?php echo $this->path; ?>');
+					}
+					window.close();
+				}
+			</script>
+			<?php
+		}
+//	}
 ?>
