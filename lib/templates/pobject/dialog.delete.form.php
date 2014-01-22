@@ -1,7 +1,7 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 
-	if ($this->CheckLogin("delete") && $this->CheckConfig()) {
+//	if ($this->CheckLogin("delete") && $this->CheckConfig()) {
 		$root = $this->getvar("root") ? $this->getvar("root") : $this->currentsite();
 		if (substr($root, -1) != "/") {
 			$root .= "/";
@@ -12,9 +12,24 @@
 		} else {
 			$targets = array($this->path);
 		}
+                
+?>
+    
+        <fieldset id="data" class="delete">
+            <legend><?php echo $ARnls["ariadne:delete"]; ?></legend>
+        
+            <?php
 
 		foreach ($targets as $target) {
+                        
+                        
 			$targetob = current($this->get($target, "system.get.phtml"));
+                        
+                        if (!$targetob->CheckSilent("delete")) {
+                            $checkfailed = true;
+                        } else {
+                            $checkfailed = false;
+                        }
 
 			$query = "object.path =~ '" . $target . "%' order by path DESC";
 			$total = $targetob->count_find($target, $query);
@@ -65,13 +80,15 @@
 				}
 				$iconalt = $targetob->vtype;
 			}
-			echo '<fieldset id="data" class="delete">'; // FIXME: Duplicate ID voorkomen
-			
-			echo '<legend>';
-			echo $ARnls["delete"] . ' ' . $names[$targetob->type];
-			echo '</legend>';
-			
-			echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt) . '" title="' . htmlspecialchars($iconalt) . '" class="typeicon">';
+                        
+                //This lists the files selected for the action
+			if($checkfailed){
+                            echo '<div class="checkfailed">';
+                            echo '<span class="error">' . $ARnls["err:nogrants"] .'</span>';
+                        } else {
+                            echo '<div>';
+                        }
+                        echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt) . '" title="' . htmlspecialchars($iconalt) . '" class="typeicon">';
 			
 			if ( $overlay_icon ) {
 				echo '<img src="' . $overlay_icon . '" alt="' . htmlspecialchars($overlay_alt) . '" title="' . htmlspecialchars($overlay_alt) . '" class="overlay_typeicon">';
@@ -80,23 +97,24 @@
 			echo '( <span class="crumbs" title="' . $oldcrumbs . '">' . $crumbs . '</span> )';
 			echo '</div>';
 			echo '<div class="path">' . $path . '</div>';
-			if ($total > 0) {
+			if ($total > 0 && !$targetob->checkfailed) {
 				echo sprintf( $ARnls['q:removeall'], $targetob->nlsdata->name, $total);
 			}
-			echo '</fieldset>';
+                        echo '</div>';
 		}
 	
 		if (($total == 0) && (sizeof($targets) == 1)) {
-			echo $ARnls["q:removeobject"];
+			echo '<p>' . $ARnls["q:removeobject"] . '</p>';
 		} else if (($total == 0) && sizeof($targets > 1)) {
-			echo $ARnls["q:removeobjects"];
+			echo '<p>' . $ARnls["q:removeobjects"] . '</p>';
 		}
 
 		echo '<div class="field checkbox">';
 		echo '  <input type="checkbox" id="childrenonly" name="childrenonly" value="true">';
 		echo '  <label for="childrenonly">' . $ARnls['ariadne:childrenonly'] . '</label>';
 		echo '</div>';
-	} else {
-		echo $ARnls['e:nodeletegrants'];
-	}
+//	} else {
+//		echo $ARnls['e:nodeletegrants'];
+//	}
 ?>
+</fieldset>
