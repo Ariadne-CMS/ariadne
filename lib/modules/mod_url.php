@@ -117,6 +117,17 @@ class URL {
 
 		$page = preg_replace($find, $repl, $page);
 
+		// FIXME: Maybe do not process arCall when ESI is enabled?
+		$page = URL::processArCall($page, $full);
+
+		return $page;
+	}
+
+	function processArCall($page, $full=false) {
+		global $ARCurrent, $AR;
+		$context = pobject::getContext();
+		$me = $context["arCurrentObject"];
+
 		// parse {arCall:/path/to/object/template.phtml?a=1&b=2}
 //		$regExp = '|\{arCall:(/(.*/)*)([^?]+)[?]([^}]*?)}|i';
 		$regExp = '|\{arCall:(.*?)\}|i';
@@ -170,9 +181,9 @@ class URL {
 			ob_end_clean();
 			$page = str_replace($matches[0], $output, $page);
 		}
+
 		return $page;
 	}
-	
 }
 
 class pinp_URL {
