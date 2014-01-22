@@ -21,7 +21,7 @@
 	svn_cleanup($svn)
 	svn_commit($svn, $comment, $fileinfo)
 	svn_delete($svn, $name, $comment)
-	svn_diff($svn, $name)
+	svn_diff($svn, $name, $revision)
 	svn_export($svn, $repository, $revision)
 	svn_import($svn, $repository, $comment)
 	svn_info($svn, $name)
@@ -124,6 +124,7 @@
 			if ($password) {
 				$svn_switches['password'] = $password;
 			}
+
 			if (file_exists($AR->dir->install . "/lib/configs/svn/")) {
 				$svn_switches['config-dir'] = $AR->dir->install . "/lib/configs/svn";
 			}
@@ -287,11 +288,17 @@
 			return $result;
 		}
 
-		function svn_diff($svn, $name='') {
+		function svn_diff($svn, $name='', $revision='') {
 			$args = array(
 				$this->get_path($svn, $name)
 			);
-			$result = $svn['instance']->diff->run($args, $svn['switches']);
+			$switches = $svn['switches'];
+
+			if ($revision != '') {
+				$switches['revision'] = $revision;
+			}
+
+			$result = $svn['instance']->diff->run($args, $switches);
 			return $result;
 		}
 
