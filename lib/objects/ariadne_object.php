@@ -482,12 +482,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					$eventData->arCallFunction = $context['arCallFunction'];
 					$eventData->arIsNewObject = false;
 					$eventData = ar_events::fire( 'onbeforesave', $eventData );
+
+					$this->popContext();
+
 					if ( !$eventData ) {
 						return false; // prevent saving of the object.
 					}
 					$arCallArgs = $eventData->arCallArgs;
-
-					$this->popContext();
 
 					$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);
 					if (is_array($eventData->arProperties)) {
