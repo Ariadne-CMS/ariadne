@@ -61,7 +61,6 @@
 	include_once($store_config['code']."includes/loader.web.php");
 	include_once($store_config['code']."modules/mod_auth/".$auth_config['method'].".php");
 	
-	include_once($store_config['code']."modules/mod_stats.php");
 	include_once($store_config['code']."modules/mod_ar.php");
 
 
@@ -189,10 +188,6 @@
 			$cachedimage=$store_config["files"]."cache/compressed".$ldCacheFilename;
 			$cachedheader=$store_config["files"]."cacheheaders/compressed".$ldCacheFilename;
 		}
-
-		// mod_stats call
-		$logstats = new stats();
-		$logstats->log();
 
 		if ($AR->ESI) {
 			ob_start();
