@@ -4,6 +4,7 @@
 	}
 	require_once(ARBaseDir.'pinp.php');
 	require_once(ARBaseDir.'core/exception.php');
+	require_once(ARBaseDir.'../../vendor/autoload.php');
 
 	ar_pinp::allow('ar');
 	ar_pinp::allow('ar_error');
