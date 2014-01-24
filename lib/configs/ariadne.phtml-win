@@ -16,7 +16,6 @@
 	$AR->DB = new object;         // do not change 
 	$AR->SVN = new object;        // do not change 
 	$AR->Tidy = new object;       // do not change 
-	$AR->Stats = new object;      // do not change 
 	$AR->Grep = new object;       // do not change 
 	$AR->Webkit2png = new object; // do not change 
 
@@ -176,23 +175,6 @@
   /**************************************************************************/
 
   $AR->https = false;
-
-  /**************************************************************************/
-  /* Stats information                                                      */
-  /* Ariadne supports phpOpenTracker and other tools to create statistics   */
-  /* for your websites. You need to have one of the supported tools         */
-  /* to use this feature.                                                   */
-  /**************************************************************************/
-
-  $AR->Stats->makestats     = false;             // Set false to disable internal statistics completely
-  $AR->Stats->clientvar     = 'POT_CLIENT_ID';   // Which Apache var indicates the CLIENT_ID (Use SetEnv in apacheconfig) ?
-  $AR->Stats->logdefault    = true;              // Set true to log if there is no CLIENT_ID (use the tool's default)
-  $AR->Stats->tool          = 'phpOpenTracker';  // phpOpenTracker is the only supported type right now
-  $AR->Stats->path          = '/ext/lib/phpOpenTracker/phpOpenTracker.php'; // where is the library
-
-  $AR->Stats->ignore[]      = '/system/';       // paths listed here will not be logged at all
-  $AR->Stats->ignore[]      = '/anotherpath/';  // paths listed here will not be logged at all
-
 
   /**************************************************************************/
   /* If you want you can change the default server name below. You should   */

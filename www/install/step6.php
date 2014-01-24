@@ -90,7 +90,6 @@
 			include("conf/grep.conf");
 			include("conf/textualizer.conf");
 			include("conf/https.conf");
-			include("conf/stats.conf");
 			include("conf/forward.conf");
 			include("conf/debug.conf");
 			include("conf/outputzip.conf");
