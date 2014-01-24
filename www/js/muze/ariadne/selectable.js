@@ -54,11 +54,21 @@ var selectable = function() {
 
 		updateSelection();
 
-		document.body.onselectstart = function() {return false;} // FIXME: should do this with event attach and preventDefault
+		if (window.addEventListener) {
+			document.body.addEventListener("selectstart", cancelWhenSelecting, false);
+			document.body.addEventListener("dragstart", cancelWhenSelecting, false);
+		} else if (window.attachEvent) {
+			document.body.attachEvent("selectstart", cancelWhenSelecting);
+			document.body.attachEvent("dragstart", cancelWhenSelecting);
+		}
+		
 		containerDiv.style.MozUserSelect = "none";
-		document.body.ondragstart = function() {return false;}
 	}
-	
+
+	var cancelWhenSelecting = function(event) {
+		return !selecting;
+	}
+
 	var handleMouseMove = function(event) {
 		if (!selecting) {
 			return true;
