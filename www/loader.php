@@ -61,7 +61,6 @@
 	include_once($store_config['code']."includes/loader.web.php");
 	include_once($store_config['code']."modules/mod_auth/".$auth_config['method'].".php");
 	
-	include_once($store_config['code']."modules/mod_virusscan.php");
 	include_once($store_config['code']."modules/mod_stats.php");
 	include_once($store_config['code']."modules/mod_ar.php");
 

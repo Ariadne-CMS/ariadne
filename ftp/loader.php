@@ -18,7 +18,6 @@
 	require($ariadne."/nls/en");
 	require_once($ariadne."/modules/mod_mimemagic.php");
 	
-	require_once($ariadne."/modules/mod_virusscan.php");
 	include_once($ariadne."/modules/mod_ar.php");
 
 

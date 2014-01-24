@@ -85,7 +85,6 @@
 			include("conf/im.conf");
 			include("conf/svn.conf");
 		
-			include("conf/vs.conf");
 			include("conf/tidy.conf");
 			include("conf/webkit2png.conf");
 			include("conf/grep.conf");

@@ -84,25 +84,18 @@
 		$file_temp=$_FILES[$field]['tmp_name'];
 		$file=$_FILES[$field]['name'];
 		if ($file && is_uploaded_file($file_temp)) {
-			list($inf, $inftp) = virusscan($file_temp);
-			if($inf) {
-				virusclean($file_temp);
-				// This is duplicate in some cases. Should be a bit cleaned up.
-				$error = sprintf($ARnls["err:fileuploadvirus"], $inftp);
-			} else {
-				// new file uploaded -> save it before PHP deletes it
-				$file_artemp=tempnam($store->get_config("files")."temp","upload");
-				if (move_uploaded_file($file_temp, $file_artemp)) {
-					// now make the new values available to wgWizKeepVars()
-					$result[$field]=$file;
-					$result[$field."_temp"]=substr($file_artemp,strlen($store->get_config("files")."temp"));
-					$result[$field."_size"]=(int)$_FILES[$field]['size'];
-					$type = get_mime_type($file_artemp);
-					if (!$type) {
-						$type = get_mime_type($file, MIME_EXT);
-					}
-					$result[$field."_type"]=$type;
+			// new file uploaded -> save it before PHP deletes it
+			$file_artemp=tempnam($store->get_config("files")."temp","upload");
+			if (move_uploaded_file($file_temp, $file_artemp)) {
+				// now make the new values available to wgWizKeepVars()
+				$result[$field]=$file;
+				$result[$field."_temp"]=substr($file_artemp,strlen($store->get_config("files")."temp"));
+				$result[$field."_size"]=(int)$_FILES[$field]['size'];
+				$type = get_mime_type($file_artemp);
+				if (!$type) {
+					$type = get_mime_type($file, MIME_EXT);
 				}
+				$result[$field."_type"]=$type;
 			}
 		}
 		return $result;

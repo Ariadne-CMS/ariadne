@@ -16,7 +16,6 @@
 	$AR->DB = new object;         // do not change 
 	$AR->SVN = new object;        // do not change 
 	$AR->Tidy = new object;       // do not change 
-	$AR->VS = new object;         // do not change 
 	$AR->Stats = new object;      // do not change 
 	$AR->Grep = new object;       // do not change 
 	$AR->Webkit2png = new object; // do not change 
@@ -146,19 +145,6 @@
   /**************************************************************************/
   $AR->SVN->enabled			= false;
   $AR->SVN->path			= '/usr/bin/svn';
-
-
-  /**************************************************************************/
-  /* VirusScanner information                                               */
-  /* For your security Ariadne can use an installed virusscanner to ensure  */
-  /* your system's integrity and help warn potentially infected users.      */
-  /* You must have one of the supported virusscanners to use this feature.  */
-  /**************************************************************************/
-
-  $AR->VS->performscan      = false;		// Set false to disable virusscanning completely
-  $AR->VS->scannername      = 'f-prot';		// f-prot is the only supported type right now
-  $AR->VS->path             = '/usr/local/bin/';// where is your scanner binary
-
 
   /**************************************************************************/
   /* HTMLTidy information                                                   */
