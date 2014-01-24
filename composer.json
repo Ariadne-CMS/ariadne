@@ -1,0 +1,5 @@
+{
+	"require": {
+		"leafo/lessphp": "v0.3.8"
+	}
+}
