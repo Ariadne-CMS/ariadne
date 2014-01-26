@@ -1,7 +1,5 @@
 <?php
 	global $AR;
-	require_once($AR->dir->install."/lib/includes/FirePHPCore/FirePHP.class.php");
-	
 	ar_pinp::allow( 'ar_beta_firebug' );
 
 	class ar_beta_firebug extends arBase {

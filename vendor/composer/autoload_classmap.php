@@ -6,6 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'FB' => $vendorDir . '/firephp/firephp-core/lib/FirePHPCore/fb.php',
+    'FirePHP' => $vendorDir . '/firephp/firephp-core/lib/FirePHPCore/FirePHP.class.php',
     'lessc' => $vendorDir . '/leafo/lessphp/lessc.inc.php',
     'lessc_formatter_classic' => $vendorDir . '/leafo/lessphp/lessc.inc.php',
     'lessc_formatter_compressed' => $vendorDir . '/leafo/lessphp/lessc.inc.php',
