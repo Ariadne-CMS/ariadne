@@ -221,82 +221,76 @@
 
 
 	/* Explore.browse.php */
+		static private function getTableClass($count, $total) {
+			$class = array();
+			if ($count == 0) {
+				$class[] = "yui-dt-first";
+			}
+			if ($count == ($total-1)) {
+				$class[] = "yui-dt-last";
+			}
+			return $class;
+		}
+
 		static public function showTable($divId, $tableId, $columnDefs, $data) {
 		
-			if (is_array($columnDefs)) {
-
-				$colnum = count($columnDefs);
-		
-				$headcols = ar_html::nodes();
-			
-				for ($num = 0; $num < $colnum; $num++) {
-				
-					$class = array();
-				
-					if ($num == 0) {
-						$class[] = "yui-dt-first";
-					}
-					if ($num == ($colnum-1)) {
-						$class[] = "yui-dt-last";
-					}
-					$class[] = 'yui-dt-col'.$columnDefs[$num]['key'];
-					$class[] = 'yui-dt-sortable';
-					$headcols[] = ar_html::tag('th', array('class' => $class ),
-							ar_html::tag('div', array('class' => 'yui-dt-header'), 
-								ar_html::tag('span', array('class' => 'yui-dt-label'),
-									 ar_html::tag('a', array('class' => 'yui-dt-sortable'), htmlspecialchars($columnDefs[$num]['label']) )
-								)
-							)
-						);
-				}
-				$head = ar_html::tag('thead', ar_html::tag('tr', array('class' => array('yui-dt-first', 'yui-dt-last')), $headcols) );
-			
-				if (is_array($data)) {
-					$oddeven = 'even';
-
-					$rownums = count($data);
-					
-					$bodyrows = ar_html::nodes();
-					
-					for ($rownum = 0; $rownum < $rownums; $rownum++) {
-						$rowclass = array();
-						if ($rownum == 0) {
-							$rowclass[] = 'yui-dt-first';
-						}
-						if ($rownum == $rownums-1) {
-							$rowclass[] = 'yui-dt-last';
-						}
-						$rowclass[] = 'explore_item';
-						$rowclass[] = $oddeven;
-						
-						$bodycols = ar_html::nodes();
-						
-						if ($data[$rownum]['name']) {
-							$data[$rownum]['name'] = self::labelspan($data[$rownum]['name'], 24);
-						}
-						if ($data[$rownum]['filename']) {
-							$data[$rownum]['filename'] = self::labelspan($data[$rownum]['filename'], 24);
-						}
-						for ($num = 0; $num < $colnum; $num++) {
-
-							$colclass = array();
-							if ($num == 0) {
-								$colclass[] = 'yui-dt-first';
-							}
-							if ($num == ($colnum-1)) {
-								$colclass[] = 'yui-dt-first';
-							}
-							$colclass[] = 'yui-dt-col-'.$columnDefs[$num]['key'];
-							$bodycols[] = ar_html::tag('td', array('class' => $colclass), $data[$rownum][$columnDefs[$num]['key']] );
-						}
-						$bodyrows[] = ar_html::tag('tr', array('class' => $rowclass, 'path' => $data[$rownum]['path']), $bodycols);
-						$oddeven = ($oddeven == 'even' ? 'odd' : 'even');
-					}
-				}
-				$body = ar_html::tag('tbody', array('class' => 'yui-dt-body'), $bodyrows);
-				
-				$table = ar_html::tag('table', array('id' => $tableId), $head, $body);
+			if (!is_array($columnDefs)) {
+				return;
 			}
+
+			$colnum = count($columnDefs);
+	
+			$headcols = ar_html::nodes();
+		
+			for ($num = 0; $num < $colnum; $num++) {
+			
+				$class = self::getTableClass($num, $colnum);
+				$class[] = 'yui-dt-col'.$columnDefs[$num]['key'];
+				$class[] = 'yui-dt-sortable';
+				$headcols[] = ar_html::tag('th', array('class' => $class ),
+						ar_html::tag('div', array('class' => 'yui-dt-header'), 
+							ar_html::tag('span', array('class' => 'yui-dt-label'),
+								 ar_html::tag('a', array('class' => 'yui-dt-sortable'), htmlspecialchars($columnDefs[$num]['label']) )
+							)
+						)
+					);
+			}
+			
+			$head = ar_html::tag('thead', ar_html::tag('tr', array('class' => array('yui-dt-first', 'yui-dt-last')), $headcols) );
+		
+			if (is_array($data)) {
+				$oddeven = 'even';
+
+				$rownums = count($data);
+				
+				$bodyrows = ar_html::nodes();
+				
+				for ($rownum = 0; $rownum < $rownums; $rownum++) {
+					$rowclass = self::getTableClass($rownum, $rownums);
+					$rowclass[] = 'explore_item';
+					$rowclass[] = $oddeven;
+					
+					$bodycols = ar_html::nodes();
+					
+					if ($data[$rownum]['name']) {
+						$data[$rownum]['name'] = self::labelspan($data[$rownum]['name'], 24);
+					}
+					if ($data[$rownum]['filename']) {
+						$data[$rownum]['filename'] = self::labelspan($data[$rownum]['filename'], 24);
+					}
+					for ($num = 0; $num < $colnum; $num++) {
+						$colclass = self::getTableClass($num, $colnum);
+						$colclass[] = 'yui-dt-col-'.$columnDefs[$num]['key'];
+						$bodycols[] = ar_html::tag('td', array('class' => $colclass), $data[$rownum][$columnDefs[$num]['key']] );
+					}
+					$bodyrows[] = ar_html::tag('tr', array('class' => $rowclass, 'path' => $data[$rownum]['path']), $bodycols);
+					$oddeven = ($oddeven == 'even' ? 'odd' : 'even');
+				}
+			}
+			$body = ar_html::tag('tbody', array('class' => 'yui-dt-body'), $bodyrows);
+			
+			$table = ar_html::tag('table', array('id' => $tableId), $head, $body);
+
 			echo ar_html::tag('div', array('id' => $divId, 'class' => 'yui-dt-'), $table)."\n";
 		}
 
