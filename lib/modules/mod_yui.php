@@ -184,7 +184,7 @@
 						$link["onclick"] = $item["onclick"];
 					}
 					if( $item["icon"] ) {
-						$icon = ar_html::tag("img", array("src" => $item["icon"], "alt" => $item["iconalt"]));
+						$icon = ar_html::tag("img", array("src" => $item["icon"], "alt" => $item["iconalt"], "title" => $item["iconalt"]));
 					} else {
 						$icon = false;
 					}
@@ -491,6 +491,56 @@
 			);
 		}
 
+		private static function getPagingEntry($number, $current_page, $class = false) {
+			$entry = array(
+				"label" => $number,
+				"onclick" => "muze.ariadne.explore.viewpane.view(muze.ariadne.explore.viewpane.path, $number); return false;"
+			);
+			$entryclass = "";
+			if ($current_page == $number) {
+				$entryclass .= "current ";
+			}
+			if ($class) {
+				$entryclass .= $class;
+			}
+			if ($entryclass) {
+				$entry['class'] = $entryclass;
+			}
+
+			return $entry;
+		}
+
+		private static function getPagingStart($current_page, $total_pages) {
+			if ($current_page > 4) {
+				$start = $current_page - 2;
+				if ($start > ($total_pages - 6)) {
+					$start = $total_pages - 4;
+				}
+			} else {
+				$start = 2;
+			}
+
+			if ($start < 2) {
+				$start = 2;
+			}
+			return $start;
+		}
+
+		private static function getPagingEnd($current_page, $total_pages) {
+			$start = self::getPagingStart($current_page, $total_pages);
+			if ($current_page > 4) {
+				$end = $start + 4;
+			} else {
+				$end = $start + 3;
+			}
+			if ($end > $total_pages - 1) {
+				$end = $total_pages - 1;
+			}
+
+			return $end;
+		}
+
+
 		private static function getPagingEntries($total, $items_per_page, $current_page) {
 			global $AR;
 			if (!($total > $items_per_page)) {
@@ -503,39 +553,15 @@
 			}
 
 			$pagingentries = array();
+
 			if ($current_page > 1) {
 				$pagingentries[] = self::getPagingPrev($current_page);
 			}
+			$pagingentries[] = self::getPagingEntry(1, $current_page, "first");
 
-			$entry = array(
-				"class" => "first",
-				"label" => 1,
-				"onclick" => "muze.ariadne.explore.viewpane.view(muze.ariadne.explore.viewpane.path, 1); return false;"
-			);
-			if (1 == $current_page) {
-				$entry["class"] .= " current";
-			}
-			$pagingentries[] = $entry;
-
-			if ($current_page >= 5) {
-				$start = $current_page - 2;
-				$end = $current_page + 2;
-			} else  {
-				$start = 2;
-				$end = 5;
-			}
-
-			if ($end > $total_pages - 2) {
-				$start = $total_pages - 4;
-				$end = $total_pages -1;
-			}
-
-			if ($start < 2) {
-				$start = 2;
-			}
-			if (($end > $total_pages - 2) && $total_pages > 5) {
-				$end = $total_pages - 1;
-			}
+			$start = self::getPagingStart($current_page, $total_pages);
+			$end = self::getPagingEnd($current_page, $total_pages);
+			
 			if ($start > 2) {
 				$pagingentries[] = array(
 					"label" => '...',
@@ -545,33 +571,18 @@
 
 			for ($i=$start; $i <= $end; $i++) {
 				if ($total_pages >= $i) {
-					$entry = array(
-						"label" => $i,
-						"onclick" => "muze.ariadne.explore.viewpane.view(muze.ariadne.explore.viewpane.path, " . $i . "); return false;"
-					);
-					if ($i == $current_page) {
-						$entry["class"] = "current";
-					}
-					$pagingentries[] = $entry;
+					$pagingentries[] = self::getPagingEntry($i, $current_page);
 				}
 			}
 
-			if (($total_pages > 5) && ($total_pages > ($end + 1))) {
+			if ($end < ($total_pages - 1)) {
 				$pagingentries[] = array(
 					"label" => '...',
 					"class" => "ellipsis"
 				);
 			}
 
-			$entry = array(
-				"class" => "last",
-				"label" => $total_pages,
-				"onclick" => "muze.ariadne.explore.viewpane.view(muze.ariadne.explore.viewpane.path, " . $total_pages .  "); return false;"
-			);
-			if ($total_pages == $current_page) {
-				$entry["class"] .= " current";
-			}
-			$pagingentries[] = $entry;
+			$pagingentries[] = self::getPagingEntry($total_pages, $current_page, "last");
 
 			if ($current_page < $total_pages) {
 				$pagingentries[] = self::getPagingNext($current_page);
