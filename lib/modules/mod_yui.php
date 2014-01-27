@@ -470,138 +470,170 @@
 			echo $result."\n";
 		}
 		
-		static public function showPaging($total, $items_per_page, $current_page, $pagingclass="") {
+		private function getPagingPrev($current_page) {
 			global $AR;
-			if ($total > $items_per_page) {
-				$total_pages = (int) ($total/$items_per_page);
-				if ($total % $items_per_page > 0) {
-					$total_pages++;
-				}
+			return array(
+				"class" => "prev",
+				"image" => $AR->dir->www . "images/icons/small/prev.png",
+				"label" => $ARnls['ariadne:prev'],
+				"onclick" => "muze.ariadne.explore.viewpane.view(muze.ariadne.explore.viewpane.path, " . ($current_page - 1) .  "); return false; "
+			);
+		
+		}
 
-				$pagingentries = array();
-				if ($current_page > 1) {
-					$pagingentries[] = array(
-						"class" => "prev",
-						"image" => $AR->dir->www . "images/icons/small/prev.png",
-						"label" => $ARnls['ariadne:prev'],
-						"onclick" => "muze.ariadne.explore.viewpane.view(muze.ariadne.explore.viewpane.path, " . ($current_page - 1) .  "); return false; "
-					);
-				}
+		private function getPagingNext($current_page) {
+			global $AR;
+			return array(
+				"class" => "next",
+				"image" => $AR->dir->www . "images/icons/small/next.png",
+				"label" => $ARnls['ariadne:next'],
+				"onclick" => "muze.ariadne.explore.viewpane.view(muze.ariadne.explore.viewpane.path, " . ($current_page + 1) .  "); return false;"
+			);
+		}
 
-				$entry = array(
-					"class" => "first",
-					"label" => 1,
-					"onclick" => "muze.ariadne.explore.viewpane.view(muze.ariadne.explore.viewpane.path, 1); return false;"
-				);
-				if (1 == $current_page) {
-					$entry["class"] .= " current";
-				}
-				$pagingentries[] = $entry;
-
-				if ($current_page >= 5) {
-					$start = $current_page - 2;
-					$end = $current_page + 2;
-				} else  {
-					$start = 2;
-					$end = 5;
-				}
-
-				if ($end > $total_pages - 2) {
-					$start = $total_pages - 4;
-					$end = $total_pages -1;
-				}
-
-				if ($start < 2) {
-					$start = 2;
-				}
-				if (($end > $total_pages - 2) && $total_pages > 5) {
-					$end = $total_pages - 1;
-				}
-				if ($start > 2) {
-					$pagingentries[] = array(
-						"label" => '...',
-						"class" => "ellipsis"
-					);			
-				}
-
-				for ($i=$start; $i <= $end; $i++) {
-					if ($total_pages >= $i) {
-						$entry = array(
-							"label" => $i,
-							"onclick" => "muze.ariadne.explore.viewpane.view(muze.ariadne.explore.viewpane.path, " . $i . "); return false;"
-						);
-						if ($i == $current_page) {
-							$entry["class"] = "current";
-						}
-						$pagingentries[] = $entry;
-					}
-				}
-
-				if (($total_pages > 5) && ($total_pages > ($end + 1))) {
-					$pagingentries[] = array(
-						"label" => '...',
-						"class" => "ellipsis"
-					);
-				}
-
-				$entry = array(
-					"class" => "last",
-					"label" => $total_pages,
-					"onclick" => "muze.ariadne.explore.viewpane.view(muze.ariadne.explore.viewpane.path, " . $total_pages .  "); return false;"
-				);
-				if ($total_pages == $current_page) {
-					$entry["class"] .= " current";
-				}
-				$pagingentries[] = $entry;
-
-				if ($current_page < $total_pages) {
-					$pagingentries[] = array(
-						"class" => "next",
-						"image" => $AR->dir->www . "images/icons/small/next.png",
-						"label" => $ARnls['ariadne:next'],
-						"onclick" => "muze.ariadne.explore.viewpane.view(muze.ariadne.explore.viewpane.path, " . ($current_page + 1) .  "); return false;"
-					);
-				}
-				$result = "<ul class='paging";
-				if ($pagingclass) {
-					$result .= " $pagingclass";
-				}
-				$result .= "'>";
-				foreach ($pagingentries as $entry) {
-					$result .= "<li";
-					if ($entry['class']) {
-						$result .= ' class="' . $entry['class'] . '"';
-					}
-					$result .= ">";
-					$result .= "<a";
-
-					if ($entry['onclick']) {
-						$result .= ' onclick="' . $entry['onclick'] . '"';
-					}
-					if ($entry['href']) {
-						$result .= ' href="' . $entry['href'] . '"';
-					} else {
-						$result .= ' href="#"';
-					}
-					$result .= ">";
-
-					if ($entry['image']) {
-						$result .= '<img src="'. $entry['image'] . '"';
-						if ($entry['label']) {
-							$result .= ' alt="' . htmlspecialchars($entry['label']) . '"';
-							$result .= ' title="' . htmlspecialchars($entry['label']) . '"';
-						}
-						$result .= '>';
-					} else {
-						$result .= htmlspecialchars($entry['label']);
-					}
-					$result .= "</a>";
-					$result .= "</li>";
-				}
-				$result .= "</ul>";
-		//		$result .= "Total items: " . $total . "<br>";
-		//		$result .= "Total pages: $total_pages";
+		private static function getPagingEntries($total, $items_per_page, $current_page) {
+			global $AR;
+			if (!($total > $items_per_page)) {
+				return array();
 			}
+			
+			$total_pages = (int) ($total/$items_per_page);
+			if ($total % $items_per_page > 0) {
+				$total_pages++;
+			}
+
+			$pagingentries = array();
+			if ($current_page > 1) {
+				$pagingentries[] = self::getPagingPrev($current_page);
+			}
+
+			$entry = array(
+				"class" => "first",
+				"label" => 1,
+				"onclick" => "muze.ariadne.explore.viewpane.view(muze.ariadne.explore.viewpane.path, 1); return false;"
+			);
+			if (1 == $current_page) {
+				$entry["class"] .= " current";
+			}
+			$pagingentries[] = $entry;
+
+			if ($current_page >= 5) {
+				$start = $current_page - 2;
+				$end = $current_page + 2;
+			} else  {
+				$start = 2;
+				$end = 5;
+			}
+
+			if ($end > $total_pages - 2) {
+				$start = $total_pages - 4;
+				$end = $total_pages -1;
+			}
+
+			if ($start < 2) {
+				$start = 2;
+			}
+			if (($end > $total_pages - 2) && $total_pages > 5) {
+				$end = $total_pages - 1;
+			}
+			if ($start > 2) {
+				$pagingentries[] = array(
+					"label" => '...',
+					"class" => "ellipsis"
+				);			
+			}
+
+			for ($i=$start; $i <= $end; $i++) {
+				if ($total_pages >= $i) {
+					$entry = array(
+						"label" => $i,
+						"onclick" => "muze.ariadne.explore.viewpane.view(muze.ariadne.explore.viewpane.path, " . $i . "); return false;"
+					);
+					if ($i == $current_page) {
+						$entry["class"] = "current";
+					}
+					$pagingentries[] = $entry;
+				}
+			}
+
+			if (($total_pages > 5) && ($total_pages > ($end + 1))) {
+				$pagingentries[] = array(
+					"label" => '...',
+					"class" => "ellipsis"
+				);
+			}
+
+			$entry = array(
+				"class" => "last",
+				"label" => $total_pages,
+				"onclick" => "muze.ariadne.explore.viewpane.view(muze.ariadne.explore.viewpane.path, " . $total_pages .  "); return false;"
+			);
+			if ($total_pages == $current_page) {
+				$entry["class"] .= " current";
+			}
+			$pagingentries[] = $entry;
+
+			if ($current_page < $total_pages) {
+				$pagingentries[] = self::getPagingNext($current_page);
+			}
+
+			return $pagingentries;
+		}
+
+		private static function getPagingLink($href) {
+			if ($href) {
+				return ' href="' . $href . '"';
+			}
+			return ' href="#"';
+		}
+
+		private static function getPagingImage($image, $label) {
+			if (!$image) {
+				return htmlspecialchars($label);
+			}
+
+			$result = '<img src="'. $image . '"';
+			if ($label) {
+				$result .= ' alt="' . htmlspecialchars($label) . '"';
+				$result .= ' title="' . htmlspecialchars($label) . '"';
+			}
+			$result .= '>';
+			return $result;
+		}
+
+		static public function showPaging($total, $items_per_page, $current_page, $pagingclass="") {
+			$pagingentries = self::getPagingEntries($total, $items_per_page, $current_page);
+		
+			if (!sizeof($pagingentries)) {
+				return;
+			}
+
+			$result = "<ul class='paging";
+			if ($pagingclass) {
+				$result .= " $pagingclass";
+			}
+			$result .= "'>";
+			foreach ($pagingentries as $entry) {
+				$result .= "<li";
+				if ($entry['class']) {
+					$result .= ' class="' . $entry['class'] . '"';
+				}
+				$result .= ">";
+				$result .= "<a";
+
+				if ($entry['onclick']) {
+					$result .= ' onclick="' . $entry['onclick'] . '"';
+				}
+				$result .= self::getPagingLink($entry['href']);
+
+				$result .= ">";
+
+				$result .= self::getPagingImage($entry['image'], $entry['label']);
+
+				$result .= "</a>";
+				$result .= "</li>";
+			}
+			$result .= "</ul>";
 			echo $result;
 		}
 		
