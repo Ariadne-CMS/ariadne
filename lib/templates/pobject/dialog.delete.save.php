@@ -83,7 +83,7 @@
 			$this->find($this->path, $query, "system.delete.phtml", array(), $stepsize, $offset); // Delete the $stepsize last items
 
 			$new_objects_left = $this->count_find($this->path, $query);
-			$next_object_path = current($this->find($tthis->path, $query, "system.get.path.phtml", array(), 1, $offset));
+			$next_object_path = current($this->find($this->path, $query, "system.get.path.phtml", array(), 1, $offset));
 			if (substr($next_object_path, 0, strlen($root)) == $root) {
 				$next_object_path = substr($next_object_path, strlen($root), strlen($next_object_path));
 			}
