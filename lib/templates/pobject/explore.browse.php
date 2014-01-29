@@ -169,6 +169,9 @@ This adds filter options to the browse dialog, unfinished code so removed for no
 	yui::showPaging($object_list['total'], $items_per_page, $current_page, "bottom");
 ?>
 	</div>
+<article class="dropzoneInfo">
+	<progress id="uploadprogress" class="uploadprogress" min="0" max="100" value="0">0</progress>
+</article>
 <?php
 			ar_events::fire('ariadne:onexplore');
 		}

@@ -38,7 +38,8 @@
 			'muze.ariadne.registry',
 			'muze.ariadne.cookie',
 			'muze.ariadne.explore',
-			'muze.ariadne.selectable'
+			'muze.ariadne.selectable',
+			'muze.ariadne.dropzone'
 		);
 		
 		// only nls dependant var used atm.

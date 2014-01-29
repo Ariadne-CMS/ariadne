@@ -165,6 +165,7 @@
 <script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/ariadne/cookie.js"></script>
 <script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/ariadne/explore.js"></script>
 <script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/ariadne/selectable.js"></script>
+<script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/ariadne/dropzone.js"></script>
 
 <script type="text/javascript">
 	// Backwards compatibility hooks - these should be removed in the end.
@@ -298,7 +299,10 @@
 	<div class="explore_buttons">
 		<form action="" onsubmit="callback(); return false;">
 			<div class="buttons">
-				<div class="left"><?php
+				<div class="left">
+					<input type="file" multiple name="file[]" id="upload">
+					<button for="upload" class="button" onclick="muze.event.fire(document.getElementById('upload'), 'click'); return false"><?php echo $ARnls['ariadne:uploader']; ?></button>
+					<?php
 					$extraButtonsEventData = new object();
 					$extraButtonsEventData = ar_events::fire( 'ariadne:onbeforebrowsebuttons', $extraButtonsEventData );
 					if ($extraButtonsEventData) {
