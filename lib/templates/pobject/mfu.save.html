@@ -1,0 +1,83 @@
+<?php
+	$overwrite = ar::getvar("overwrite");
+
+	$continue = true;
+	$i = 0;
+	while ($continue) {
+		$newType = false;
+		if ($i == 0) {
+			$arraykey = "file";
+		} else {
+			$arraykey = $i;
+		}
+
+		// FIXME: Use the new http file API
+		$info = ldRegisterFile( "file[$i]", $this->error );
+		if ($error) {
+			$continue = false;
+			echo $this->error;
+			break;
+		}
+
+		if (!$info[$arraykey]) {
+			$continue = false;
+			break;
+		}
+
+		if ( !$this->error ) {
+			$filename = basename( $info[$arraykey] );
+			$origname = $filename;
+
+			// Replace all weird characters from the filename.
+			$filename = preg_replace( "/[^A-Za-z0-9._-]/", "-", $filename );
+
+			if ( !$newType ) {
+				$mimeinfo = explode("/", $info[$arraykey . "_type"]);
+				$newType = ($mimeinfo[0] == "image") ? "pphoto" : "pfile";
+			}
+			
+			// FIXME: Fire event to allow newtype to be configured another way.
+			// FIXME: Check if newType is allowed here by the typetree.
+
+			if ($this->exists($filename)) {
+				if ($overwrite === "true") {
+					$file = current(get($filename, "system.get.phtml"));
+					$saveargs = array();
+				} else {
+					$origFilename = $filename;
+					$j = 1;
+					while ($this->exists($filename)) {
+						$filename = $origFilename . "-" . $j;
+						$j++;
+					}
+					$origname = $origname . "-" . ($j-1);
+
+					$file = $this->_newobject( $filename, $newType);
+					$saveargs = array(
+						"arNewFilename" => $filename
+					);
+				}
+			} else {
+				$file = $this->_newobject( $filename, $newType);
+				$saveargs = array(
+					"arNewFilename" => $filename
+				);
+			}
+			$newconfig = $file->loadconfig();
+			$newnls = $newconfig->nls->default;
+
+			$saveargs[$newnls] = array('name' => $origname);
+			$saveargs['file_temp'] = $info[$arraykey . "_temp"];
+			$saveargs['file_type'] = $info[$arraykey . "_type"];
+			$saveargs['file_size'] = $info[$arraykey . "_size"];
+
+			$file->call('system.save.data.phtml', $saveargs);
+
+			echo $file->error;
+		} else {
+			$continue = false;
+			// echo $error;
+		}
+		$i++;
+	}
+?>

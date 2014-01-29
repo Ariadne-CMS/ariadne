@@ -1,0 +1,15 @@
+<?php
+	$filenames = ar::getvar("filenames");
+	$existing = array();
+	foreach ($filenames as $filename) {
+		// Replace all weird characters from the filename.
+		$filename = preg_replace( "/[^A-Za-z0-9._-]/", "-", $filename );
+
+		if ($this->exists($filename)) {
+			$existing[] = $filename;
+		}
+	}
+	if (sizeof($existing) > 0) {
+		echo json_encode($existing);
+	}
+?>
