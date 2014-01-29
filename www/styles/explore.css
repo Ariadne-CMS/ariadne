@@ -877,3 +877,46 @@ li.explore_item {
 	background-color: #D0DCF7;
 	color: black;
 }
+
+/* File upload progress bars */
+.dropzoneInfo {
+	margin-left: 210px;
+	position: relative;
+	padding: 20px;
+}
+#sectiondata .dropzoneInfo {
+	margin-left: auto;
+}
+
+.uploadprogress { 
+	width: 300px; 
+	margin: 0px auto; 
+	font-size: 20px;
+	vertical-align: middle;
+	text-align: center;
+	display: block;
+	display: none;
+}
+
+.dropzone .fail { background: #c00; padding: 2px; color: #fff; }
+
+.dropzone .hidden { display: none !important;}
+
+.dropzone hint {
+	display: none;
+}
+.dropzone.dropzone-hover hint {
+	display: block;
+}
+
+.dropzone-uploading .uploadprogress {
+	display: block;
+	width: 300px; 
+	margin: 0px auto; 
+	font-size: 20px;
+	vertical-align: middle;
+	text-align: center;
+}
+.dropzone-hover	{
+	border: 2px dashed #0c0; background-color: rgba(180,255,180,0.2);
+}
