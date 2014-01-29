@@ -346,7 +346,7 @@
 		private $parentNode = null;
 		public $attributes  = array();
 		public $isDocumentFragment = true;
-		private $nodeValue = '';
+		private $nodeValue = ''; // needed for __get to function
 		
 		public static function mergeArguments(){
 			$args  = func_get_args();
