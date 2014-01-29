@@ -1088,6 +1088,8 @@ muze.ariadne.explore.viewpane = function() {
 				YAHOO.util.Event.addListener('archildren', 'clearselection', muze.ariadne.explore.viewpane.unselectItem);
 
 				muze.ariadne.explore.viewpane.load_handler();
+
+				muze.event.fire(document.body, "viewpaneLoaded");
 			};
 			muze.ariadne.explore.load(url, archildren, fadeIn);
 		},
