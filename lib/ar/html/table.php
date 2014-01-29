@@ -3,7 +3,6 @@
 
 	class ar_html_table extends ar_htmlElement {
 	
-		private $data = array();
 		private $rowHeaderAttributes = null;
 		private $rowHeaders = null;
 		
