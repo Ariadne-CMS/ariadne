@@ -115,6 +115,7 @@
 		global $auth_config;
 		global $store;
 		global $context;
+		global $DB;
 
 		// go check for a sessionid
 		$root=$AR->root;
