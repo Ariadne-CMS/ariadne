@@ -6,6 +6,7 @@
 		$url = $this->getvar('url');
 		$arbehaviour = $this->getvar('arbehaviour');
 		$aranchor = $this->getvar('aranchor');
+		$arnofollow  = ($this->getvar('rel') == "nofollow");
 
 		$matches = array();
 		if (preg_match('|(.*)#([^#]*)$|', $url, $matches)) {
@@ -40,6 +41,12 @@
 				?>
 			</select>
 		</div>
+		<?php if ($arEditorSettings['link']['types']['external']['options']['nofollow']) { ?>
+			<div class="field">
+				<label for="arnofollow"><?php echo $ARnls["ariadne:editor:nofollow"]; ?></label>
+				<input type="checkbox" name="arnofollow" id="arnofollow" value="1"<?php if ($arnofollow) { echo " checked"; } ?>>
+			</div>
+		<?php } ?>
 </fieldset>
 <?php
 	}

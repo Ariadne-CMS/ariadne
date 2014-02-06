@@ -20,7 +20,7 @@
 		$arname = $this->getvar('name');
 		$artype = $this->getvar('artype');
 		$arurl  = $this->getvar('url');
-
+		$arnofollow = $this->getvar('arnofollow');
 
 		if ($artype == 'internal') {
 			$result['href']                        = $this->make_local_url($arpath, $arlanguage);
@@ -40,6 +40,10 @@
 			}
 		} else if ($artype == 'anchor') {
 			$result['name'] 		= $arname;
+		}
+
+		if ($arnofollow) {
+			$result['attributes']['rel'] = "nofollow";
 		}
 
 		$result['attributes']['ar:type'] = $artype;
