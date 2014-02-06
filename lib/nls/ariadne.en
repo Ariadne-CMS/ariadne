@@ -49,6 +49,7 @@
 	$ARnls["ariadne:editor:image_settings"]         =    "Image settings";
 	$ARnls["ariadne:editor:imageedit"]              =    "Edit image";
 	$ARnls["ariadne:editor:internal_link"]          =    "Internal link";
+	$ARnls["ariadne:editor:nofollow"]		=    "Search engine: no follow";
 	$ARnls["ariadne:editor:language"]               =    "Language";
 	$ARnls["ariadne:editor:newwindow"]              =    "Open in new window";
 	$ARnls["ariadne:editor:popup"]                  =    "Open in popup";

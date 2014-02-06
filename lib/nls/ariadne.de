@@ -56,6 +56,7 @@
 //	$ARnls["ariadne:editor:image_settings"]         =    "Image settings"; // value from english
 //	$ARnls["ariadne:editor:imageedit"]              =    "Edit image"; // value from english
 //	$ARnls["ariadne:editor:internal_link"]          =    "Internal link"; // value from english
+	$ARnls["ariadne:editor:nofollow"]		=    "Search engine: no follow";
 //	$ARnls["ariadne:editor:language"]               =    "Language"; // value from english
 //	$ARnls["ariadne:editor:newwindow"]              =    "Open in new window"; // value from english
 //	$ARnls["ariadne:editor:popup"]                  =    "Open in popup"; // value from english

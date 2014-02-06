@@ -48,6 +48,7 @@
 	$ARnls["ariadne:editor:image_settings"]         =    "Instellingen: Afbeelding";
 	$ARnls["ariadne:editor:imageedit"]              =    "Bewerk afbeelding";
 	$ARnls["ariadne:editor:internal_link"]          =    "Interne link";
+	$ARnls["ariadne:editor:nofollow"]		=    "Zoekmachine: No follow";
 	$ARnls["ariadne:editor:language"]               =    "Taal";
 	$ARnls["ariadne:editor:newwindow"]              =    "Open in nieuw venster";
 	$ARnls["ariadne:editor:popup"]                  =    "Open in popup";
