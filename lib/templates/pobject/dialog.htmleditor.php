@@ -290,6 +290,7 @@
 					aranchor 	= _sel.getAttribute("ar:anchor");
 					name		= _sel.getAttribute("name");
 					url		= _sel.getAttribute("href");
+					rel		= _sel.getAttribute("rel");
 				}
 
 				callback = function(settings) {
@@ -332,6 +333,9 @@
 					}
 					if (url) {
 						dialogUrl += '&url=' + escape(url);
+					}
+					if (rel) {
+						dialogUrl += '&rel=' + escape(rel);
 					}
 				}
 				win = window.open(dialogUrl, 'OBJECT_BROWSER', 'left=20,top=20,width=750,height=480,toolbar=0,resizable=0,status=0');
