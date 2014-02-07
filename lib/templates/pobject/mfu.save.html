@@ -41,7 +41,7 @@
 
 			if ($this->exists($filename)) {
 				if ($overwrite === "true") {
-					$file = current(get($filename, "system.get.phtml"));
+					$file = current($this->get($filename, "system.get.phtml"));
 					$saveargs = array();
 				} else {
 					$origFilename = $filename;
