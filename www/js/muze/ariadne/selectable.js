@@ -66,6 +66,10 @@ var selectable = function() {
 	}
 
 	var cancelWhenSelecting = function(event) {
+		if (selecting) {
+			event.returnVale = false;
+			if (event.preventDefault) { event.preventDefault(); }
+		}
 		return !selecting;
 	}
 
