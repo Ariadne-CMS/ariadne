@@ -295,7 +295,9 @@
 
 				callback = function(settings) {
 					var attributes = settings['attributes'];
-					if (!attributes['ar:type']) {
+					if (settings['href'] == '' && settings['name'] == '') {
+						myEditor.execCommand('unlink');
+					} else if (!attributes['ar:type']) {
 						myEditor.execCommand('unlink');
 					} else {
 						myEditor.execCommand('createlink');
