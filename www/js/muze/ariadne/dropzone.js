@@ -27,18 +27,7 @@
 		return false;
 	}
 
-	function readfiles(files) {
-		var overwrite = false;
-		var existingFiles = filesExist(files);
-
-		if (existingFiles) {
-			var message = "Overwrite existing files? (";
-			message += existingFiles.join(", ");
-			message += ")";
-
-			overwrite = confirm(message);
-		}
-
+	function handleFiles(files, overwrite) {
 		var formData = tests.formdata ? new FormData() : null;
 		YAHOO.util.Dom.addClass(document.getElementById("archildren"), "dropzone-uploading");
 		for (var i = 0; i < files.length; i++) {
@@ -71,6 +60,60 @@
 
 			xhr.send(formData);
 		}
+	}
+
+	function readfiles(files) {
+		var overwrite = false;
+		var existingFiles = filesExist(files);
+
+		if (!existingFiles) {
+			handleFiles(files, true);
+		}
+		console.log(existingFiles);
+
+		var message = existingFiles.join(", ");
+
+		// Show confirm dialog;
+		var simpleDialog = new YAHOO.widget.SimpleDialog(
+			"simpledialog1", 
+			{ width: "300px",
+				fixedcenter: true,
+				visible: false,
+				draggable: false,
+				close: true,
+				text: message,
+				icon: YAHOO.widget.SimpleDialog.ICON_HELP,
+				constraintoviewport: true,
+				buttons: [ 
+					{ text:"Overwrite", handler:handleOverwrite, isDefault:true },
+					{ text:"Upload as copy",  handler:handleCopy },
+					{ text:"Cancel",  handler:handleCancel } 
+				]
+			}
+		);
+		simpleDialog.files = files;
+		simpleDialog.setHeader("Overwrite existing files?");
+	
+		// Render the Dialog
+		simpleDialog.render("viewpane");
+		simpleDialog.show();
+	}
+
+	function handleOverwrite() {
+		console.log("overwrite clicked");
+		handleFiles(this.files, true);
+		this.hide();
+	}
+
+	function handleCopy() {
+		console.log("copy clicked");
+		handleFiles(this.files, false);
+		this.hide();
+	}
+
+	function handleCancel() {
+		console.log("cancel clicked");
+		this.hide();
 	}
 
 	function initdropzone() {
