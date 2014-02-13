@@ -6,7 +6,7 @@
 			if ($data->starttime)	{ 
 				$starttime=$data->starttime; 
 			} else {
-				$starttime=mktime() ;
+				$starttime=time() ;
 			}
 		}
 		$stime_arr=getdate($starttime);
