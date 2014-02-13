@@ -118,14 +118,14 @@
 				$date_arr=getdate($date);
 				$this->data->starthour=$this->getdata("starthour","none");
 				$this->data->startminute=$this->getdata("startminute","none");
-				$this->data->starttime=mktime($this->data->starthour, $this->data->startminute, 0, $date_arr["mon"], $date_arr["mday"], $date_arr["year"]);
+				$this->data->starttime=mktime((int)$this->data->starthour, (int)$this->data->startminute, 0, $date_arr["mon"], $date_arr["mday"], $date_arr["year"]);
 				// endtime
 				if ($this->data->no_time=$this->getdata("no_time")) {
 					$this->data->endtime=$this->data->starttime-1;
 				} else {
 					$this->data->endhour=$this->getdata("endhour","none");
 					$this->data->endminute=$this->getdata("endminute","none");
-					$this->data->endtime=mktime($this->data->endhour, $this->data->endminute, 0, $date_arr["mon"], $date_arr["mday"], $date_arr["year"]);
+					$this->data->endtime=mktime((int)$this->data->endhour, (int)$this->data->endminute, 0, $date_arr["mon"], $date_arr["mday"], $date_arr["year"]);
 				}
 				$this->data->priority=$this->getdata("priority","none");
 				$properties["priority"][0]["value"]=AddSlashes($priority);
