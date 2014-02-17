@@ -52,7 +52,7 @@ class pphoto extends pfile { // pphoto class definition
 		return $ARConfig->cache[$this->path]->thumb;
 	}
 
-	function convert($format="jpg", $quality=75, $background="white") {
+	function convert($format="jpg", $quality=92, $background="white") {
 		global $ARConfig, $ARnls;
 
 		$this->set_context("convert");
@@ -663,7 +663,7 @@ class pphoto extends pfile { // pphoto class definition
 		return $result;
 	}
 
-	function _convert($format="", $quality=75, $background="white") {
+	function _convert($format="", $quality=92, $background="white") {
 		return $this->convert($format, $quality, $background);
 	}
 
