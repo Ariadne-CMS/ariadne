@@ -106,7 +106,8 @@
 					$error = $ARnls['ariadne:err:upload_partial']; // "The uploaded file was only partially uploaded"; 
 					break; 
 				case UPLOAD_ERR_NO_FILE: 
-					$error = $ARnls['ariadne:err:upload_no_file']; // No file was uploaded"; 
+					// Note: this is not an error
+					//$error = $ARnls['ariadne:err:upload_no_file']; // No file was uploaded"; 
 					break; 
 				case UPLOAD_ERR_NO_TMP_DIR: 
 					$error = $ARnls['ariadne:err:upload_no_tmp_dir']; // "Missing a temporary folder"; 
