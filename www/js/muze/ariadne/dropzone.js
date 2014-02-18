@@ -125,7 +125,7 @@
 
 			if (tests.dnd) { 
 				holder.ondragover = function () { YAHOO.util.Dom.addClass(this, 'dropzone-hover'); return false; };
-			//	holder.ondragleave = function() { YAHOO.util.Dom.removeClass(this, 'dropzone-hover'); return false; };
+				holder.ondragleave = function() { YAHOO.util.Dom.removeClass(this, 'dropzone-hover'); return false; };
 				holder.ondragend = function () { YAHOO.util.Dom.removeClass(this, 'dropzone-hover'); return false; };
 				holder.ondrop = function (e) {
 					this.className = '';
