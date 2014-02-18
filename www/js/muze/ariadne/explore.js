@@ -575,6 +575,7 @@ muze.ariadne.explore.toolbar = function() {
 				return;
 			}
 			searchPath.value = path;
+			muze.event.fire(window, "searchPathUpdated");
 			var parent = muze.ariadne.explore.getparent(path);
 			if (!muze.ariadne.explore.viewable(parent)) {
 				document.getElementById("viewparent").style.opacity = '0.3';
