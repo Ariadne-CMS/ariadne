@@ -58,6 +58,11 @@
 		if (!$root) {
 			$root = '/';
 		}
+
+		if ($pathmode == "siterelative") {
+			$root = $this->currentsite();
+		}
+
 		$root = $this->make_path( $root );
 		if ($root && $this->exists($root)) {
 			$subPath = substr($this->path, strlen($root), -1);
@@ -118,6 +123,10 @@
 		$jail = ar::acquire('settings.jail');
 		if ( !$jail ) {
 			$jail = '/';		
+		}
+
+		if ($pathmode == "siterelative") {
+			$jail = $this->currentsite();
 		}
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
@@ -253,6 +262,31 @@
 		}
 		window.close();
 	}
+
+	muze.event.attach(window, "load", function() {
+		muze.event.attach(document.getElementById("relativepath"), "change", function() {
+			var jail = document.getElementById("jail").value;
+			var relativePath = this.value;
+			document.getElementById("searchpath").value = jail + this.value;
+		});
+		muze.event.attach(document.getElementById("relativepath"), "keyup", function() {
+			var jail = document.getElementById("jail").value;
+			var relativePath = this.value;
+			document.getElementById("searchpath").value = jail + this.value;
+		});
+
+		muze.event.attach(window, "searchPathUpdated", function() {
+			var newPath = document.getElementById("searchpath").value;
+			var jail = document.getElementById("jail").value;
+			if (jail) {
+				var relativePath = newPath;
+				if (newPath.indexOf(jail) == 0) {
+					relativePath = newPath.substring(jail.length, newPath.length);
+					document.getElementById("relativepath").value = relativePath;
+				}
+			}
+		});
+	});
 </script>
 
 </head>
@@ -274,7 +308,13 @@
 			<div class="searchdiv">
 				<form action="dialog.browse.php" onsubmit="muze.ariadne.explore.toolbar.searchsubmit(this.arPath.value); return false;">
 					<div>
-						<input size="30" id="searchpath" class="text" type="text" name="arPath" value="<?php echo $browsepath; ?>">
+						<?php if ($pathmode == "siterelative") { ?>
+							<input type="hidden" id="jail" name="jail" value="<?php echo $jail; ?>">
+							<input type="hidden" id="searchpath" name="arPath" value="<?php echo $browsepath; ?>" onchange="console.log(this.value);">
+							<input size="30" id="relativepath" class="searchpath" type="text" name="relativePath" value="<?php echo preg_replace("|^" . $jail . "|", "", $browsepath); ?>">
+						<?php } else { ?>
+							<input size="30" id="searchpath" class="text searchpath" type="text" name="arPath" value="<?php echo $browsepath; ?>">
+						<?php } ?>
 						<input type="image" src="<?php echo $AR->dir->www; ?>images/icons/small/go.png" title="<?php echo htmlspecialchars($ARnls['ariadne:search']); ?>" id="searchbutton" name="searchsubmit" value="<?php echo $ARnls["ariadne:search"]; ?>">
 					</div>
 					<div id="resultscontainer"></div>
