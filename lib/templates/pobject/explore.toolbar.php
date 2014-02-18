@@ -100,7 +100,7 @@
 		<div class="searchdiv">
 			<form action="explore.html" onsubmit="muze.ariadne.explore.toolbar.searchsubmit(this.arPath.value); return false;">
 				<div>
-					<input size="30" id="searchpath" class="text" type="text" name="arPath" value="<?php echo $this->path; ?>">
+					<input size="30" id="searchpath" class="text searchpath" type="text" name="arPath" value="<?php echo $this->path; ?>">
 					<input type="image" src="<?php echo $AR->dir->www; ?>images/icons/small/go.png" title="<?php echo htmlspecialchars($ARnls['ariadne:search']); ?>" id="searchbutton" name="searchsubmit" value="<?php echo $ARnls["ariadne:search"]; ?>">
 				</div>
 				<div id="resultscontainer"></div>
