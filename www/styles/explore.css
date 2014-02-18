@@ -266,7 +266,7 @@ TH,TD,LI,P,BODY,DIV {
 	text-align: left;
 }
 
-.searchdiv #searchpath {
+.searchdiv .searchpath {
 	font-size: 12px;
 	border: 1px solid #808080;
 	padding-left: 2px;
