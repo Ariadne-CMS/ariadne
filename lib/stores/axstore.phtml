@@ -855,8 +855,6 @@ class axstore {
 
 						if (!$this->tar->create($this->database, " . ", $this->tempdir)) {
 							$this->error="Could not save the new export file $this->database\n";
-						} else {
-							$this->rm_dir($this->tempdir);
 						}
 					} else {
 						$this->error="Something went wrong while writing intermediate objects.data";
@@ -869,8 +867,8 @@ class axstore {
 			}
 		} else {
 			@fclose($this->ofile);
-			$this->rm_dir($this->tempdir);
 		}
+		$this->rm_dir($this->tempdir);
 	}
 }
 ?>
