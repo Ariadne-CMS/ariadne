@@ -64,7 +64,9 @@ class pphoto extends pfile { // pphoto class definition
 			$ARConfig->photoStack[$this->id][]=" -format $format";
 			$this->targetformat=$format;
 			$quality=(int)$quality;
-			$ARConfig->photoStack[$this->id][]=" -quality $quality";
+			if ( $quality  >= 0) {
+				$ARConfig->photoStack[$this->id][]=" -quality $quality";
+			}
 			$ARConfig->photoStack[$this->id][]=" -orient top-left";
 			$ARConfig->photoStack[$this->id][]=" -background $background";
 			$ARConfig->photoStack[$this->id][]=" -flatten";
