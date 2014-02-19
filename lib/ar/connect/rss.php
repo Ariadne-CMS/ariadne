@@ -76,7 +76,7 @@ class ar_connect_rssClient extends ar_xmlDataBinding {
 				->bind( $item->author, 'author' )
 				->bind( $item->category, 'category' )
 				->bind( $item->comments, 'comments' )
-				->bind( $item->enclosure->attributes, 'enclosure', 'array' )
+				->bindAsArray( $item->enclosure, 'enclosures', array('ar_connect_rssClient', 'parseEnclosure') )
 				->bind( $item->source->nodeValue, 'source' )
 				->bind( $item->source->getAttribute('url'), 'source_url' )
 				->bind( $item->pubDate, 'pubDate')	
@@ -84,6 +84,9 @@ class ar_connect_rssClient extends ar_xmlDataBinding {
 				->bind( $item, 'rawXML', 'xml' );
 	}
 
-}
-	
+	public function parseEnclosure( $item ) {
+		return $item->bind( $item->getAttribute('url'), 'url')
+				->bind( $item->getAttribute('length'), 'length' )
+				->bind( $item->getAttribute('type'), 'type');
+	}
 ?>
