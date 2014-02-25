@@ -58,12 +58,13 @@
 			</div>
 			<?php
 
-			while ($offset < $objects_left) {
+			do {
 				flush();
 				set_time_limit(30);
 				$objects = $this->find($this->path, $query, "system.get.phtml", array(), $stepsize, $offset);
 
 				foreach ($objects as $object) {
+					$error = false;
 					$error = current($this->get($object->path, "system.rewrite.urls.php", array("rewrite_urls" => $rewrite_urls)));
 					if (!$error) {
 						$error = current($this->get($object->path, "system.rewrite.htmlblocks.php", array("rewrite_urls" => $rewrite_urls)));
@@ -91,7 +92,7 @@
 
 				$objects_handled = $objects_left - $new_objects_left;
 				$objects_skipped = $stepsize - $objects_handled;
-				$offset += $objects_skipped;
+				$offset += count( $objects );
 				$objects_left = $new_objects_left;
 				$items_processed = $total-($objects_left-$offset);
 				if ($items_processed > $total) {
@@ -99,7 +100,7 @@
 				}
 
 				//echo "Changed owner for $stepsize items<br>";
-				$progress = (int)(100*($items_processed)/$total);
+				$progress = (int)(100*($offset)/$total);
 
 				if ($progress < 0) {
 					$progress = 0;
@@ -109,11 +110,13 @@
 				}
 				echo "<script type='text/javascript'>\n";
 				echo "document.getElementById('progress').style.width = '" . $progress . "%';\n";
-				echo "document.getElementById('progress_text').innerHTML = '" . $items_processed . "/" . $total . "';\n";
+				echo "document.getElementById('progress_text').innerHTML = '" . $offset . "/" . $total . "';\n";
 				echo "document.getElementById('rewrite').innerHTML = '" . $ARnls["ariadne:rewriting"] . " " . $next_object_path . "';\n";
 				echo "</script>";
 				flush();
-			}?>
+			} while (count($objects) == $stepsize);
+
+?>
 			<script type='text/javascript'>
 				document.getElementById('progress_text').innerHTML = 'Done';
 				document.getElementById('progress').style.width = '100%';
