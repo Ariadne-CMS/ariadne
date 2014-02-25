@@ -70,9 +70,9 @@
 			$newnls = $newconfig->nls->default;
 
 			$saveargs[$newnls] = array('name' => $origname);
-			$saveargs['file_temp'] = $info[$arraykey . "_temp"];
-			$saveargs['file_type'] = $info[$arraykey . "_type"];
-			$saveargs['file_size'] = $info[$arraykey . "_size"];
+			$saveargs[$newnls]['file_temp'] = $info[$arraykey . "_temp"];
+			$saveargs[$newnls]['file_type'] = $info[$arraykey . "_type"];
+			$saveargs[$newnls]['file_size'] = $info[$arraykey . "_size"];
 
 			$file->call('system.save.data.phtml', $saveargs);
 
