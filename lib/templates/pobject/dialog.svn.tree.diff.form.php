@@ -5,7 +5,7 @@
 		set_time_limit(0);
 		$arCallArgs["colorize"] = true;
 		$arCallArgs["nowrap"] = true;
-		$result = $this->find($this->path, '', "system.svn.diff.php", $arCallArgs);
+		$result = $this->find($this->path, '', "system.svn.diff.php", $arCallArgs, 0, 0);
 		$modifications = "";
 		foreach( $result as $diff ) {
 			$modifications .= $diff;
