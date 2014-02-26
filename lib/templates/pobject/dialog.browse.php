@@ -49,6 +49,12 @@
 				'icon' => $AR->dir->images . 'icons/small/delete.png',
 				'href' => $this->make_ariadne_url() . "dialog.delete.php",
 				'onclick' => "muze.ariadne.explore.dialog.deleteselected(this.href); return false;"
+			),
+			array(
+				'iconalt' => $ARnls['ariadne:rename'],
+				'icon' => $AR->dir->images . 'icons/small/rename.png',
+				'href' => $this->make_ariadne_url() . "dialog.rename.php",
+				'onclick' => "muze.ariadne.explore.dialog.rename(this.href); return false;"
 			)
 		);
 
@@ -235,7 +241,7 @@
 			$extrapath_ob = current($this->get($extrapath, "system.get.phtml"));
 			if ($extrapath_ob) {
 				$extrapath_icon = $extrapath_ob->call('system.get.icon.php', array('size' => 'medium'));
-				echo "\tmuze.ariadne.explore.tree.baseNodes.push({'path' : '$extrapath', 'name' : '" . $extrapath_ob->nlsdata->name . "', 'icon' : '$extrapath_icon'});";
+				echo "\tmuze.ariadne.explore.tree.baseNodes.push({'path' : '" . AddCSlashes( $extrapath, ARESCAPE ) . "', 'name' : '" . AddCSlashes( $extrapath_ob->nlsdata->name, ARESCAPE ) . "', 'icon' : '" . AddCSlashes( $extrapath_icon, ARESCAPE ) . "'});";
 			}
 		}
 	}
