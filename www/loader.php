@@ -116,6 +116,7 @@
 		global $store;
 		global $context;
 		global $DB;
+		global $path;
 
 		// go check for a sessionid
 		$root=$AR->root;
