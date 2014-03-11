@@ -568,7 +568,7 @@
 			}
 		}
 
-		if ($AR->ESI) {
+		if ($AR->ESI > 0) {
 			// Prevent ESI from looping when the ESI result has ESI tags in them. 
 			// Reducing the AR->ESI number by 1 gives the flexibility to allow 2 or 3 ESI loops if desired. 
 			// Setting it to false would mean you only get 1 ESI loop, which might not be the desired effect.
