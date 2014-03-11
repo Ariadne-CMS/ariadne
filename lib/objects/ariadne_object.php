@@ -2244,37 +2244,42 @@ debug("loadLibrary: loading cache for $this->path");
            better fix: change this->store->root to {arRoot}, then change
            any remaining session id's to {arSession} ?
 		*/
-		if (($file=array_pop($ARCurrent->cache)) && $image=ob_get_contents()) {
-			$result = $image; 
+		if ($file=array_pop($ARCurrent->cache)) {
+			$image=ob_get_contents();
+			if ($image !== false) {
+				$result = $image; 
 
-			$contentType = $ARCurrent->ldHeaders['content-type'];
-			if (preg_match('|^content-type:[ ]*([^ /]+)/|i', $contentType, $matches)) {
-				$contentType = $matches[1];
+				$contentType = $ARCurrent->ldHeaders['content-type'];
+				if (preg_match('|^content-type:[ ]*([^ /]+)/|i', $contentType, $matches)) {
+					$contentType = $matches[1];
+				} else {
+					$contentType = '';
+				}
+
+				if (!$contentType || strtolower($contentType) == 'text') {
+					require_once($this->store->get_config('code')."modules/mod_url.php");
+					$temp = explode('.', $file);
+					$imageNLS = $temp[0];
+					$image = URL::RAWtoAR($image, $imageNLS);
+				}
+
+				$pcache=$this->store->get_filestore("privatecache");
+				$pcache->write($image, $this->id, $file);
+				$time=time()+($time*3600);
+				if (!$pcache->touch($this->id, $file, $time)) {
+					debug("savecache: ERROR: couldn't touch $file","object");
+				}
+				/* it seems that ob_end_flush doesn't really clean the output
+				   output buffer, ob_end_clean() does. With flush, the loader
+				   keeps thinking there is something to put in the cache while
+				   flush also doesn't echo the buffer out... 
+				   FIXME: test again in php 4.0.4 
+				*/
+				ob_end_clean();
+				echo $result;
 			} else {
-				$contentType = '';
+				debug("skipped saving cache - ob_get_contents returned false so output buffering was not active", "all");
 			}
-
-			if (!$contentType || strtolower($contentType) == 'text') {
-				require_once($this->store->get_config('code')."modules/mod_url.php");
-				$temp = explode('.', $file);
-				$imageNLS = $temp[0];
-				$image = URL::RAWtoAR($image, $imageNLS);
-			}
-
-			$pcache=$this->store->get_filestore("privatecache");
-			$pcache->write($image, $this->id, $file);
-			$time=time()+($time*3600);
-			if (!$pcache->touch($this->id, $file, $time)) {
-				debug("savecache: ERROR: couldn't touch $file","object");
-			}
-			/* it seems that ob_end_flush doesn't really clean the output
-			   output buffer, ob_end_clean() does. With flush, the loader
-			   keeps thinking there is something to put in the cache while
-			   flush also doesn't echo the buffer out... 
-			   FIXME: test again in php 4.0.4 
-			*/
-			ob_end_clean();
-			echo $result;
 		} else {
 			error($ARnls["err:savecachenofile"]);
 		}
