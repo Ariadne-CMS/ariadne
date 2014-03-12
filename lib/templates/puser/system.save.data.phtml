@@ -4,8 +4,8 @@
 	 ------------------------------------------------------------------
  
 	******************************************************************/
-	global $auth_config;
-
+	global $auth_config, $AR;
+	
 	$parentobj = current($this->get($this->parent, "system.get.phtml"));
 
 	if ((($this->arIsNewObject &&
@@ -78,11 +78,32 @@
 		}
 
 		$disabled = $this->getvar('disabled');
-		if (isset($disabled) && !in_array($login, Array("admin", "public")) && $this->CheckSilent('config')) {
-			if (!is_object($this->data->config)) {
-				$this->data->config = new object;
+		if (isset($disabled) && ($login != "public")) {
+			debug("Starting checks to disable user.", "all");
+			debug("User running the show is " . $AR->user->data->login, "all");
+			debug("Victim is $login", "all");
+			$allowDisableUser = false;
+			if ($login == "admin") {
+				debug("Ooooh, victim is the admin user. Interesting...", "all");
+				if (
+					($AR->user->data->login != $login) &&
+					($this->CheckAdmin($AR->user))
+				) {
+					$allowDisableUser = true;
+				}
+			} else {
+				$allowDisableUser = true;
 			}
-			$this->data->config->disabled = $disabled;
+			
+			if ($allowDisableUser) {
+				debug("Allowing disable user: $allowDisableUser", "all");
+				if (!is_object($this->data->config)) {
+					$this->data->config = new object;
+				}
+				$this->data->config->disabled = $disabled;
+			} else {
+				debug("Not allowed to disable user", "all");
+			}
 		}
 
 		if (!$login) {
