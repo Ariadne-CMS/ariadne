@@ -115,7 +115,7 @@
 					$ARBeenHere=Array();
 					                
 					$page=$this->getdata("page",$key);
-					if ($page!==false) { // && $AR->user->data->login!='admin') {
+					if ($page!==false) {
 						$this->call("system.save.page.phtml",Array("ContentLanguage" => $key, "page" => $page));
 					}
 				}
