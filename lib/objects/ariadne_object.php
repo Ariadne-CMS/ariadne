@@ -1161,7 +1161,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$ARConfigChecked = $realConfigChecked;
 		}
 
-		if ($this->CheckAdmin($AR->user) && !$AR->user->grants[$this->path]) {
+		if (!$this->CheckAdmin($AR->user) && !$AR->user->grants[$this->path]) {
 			$AR->user->grants[$this->path]=$this->GetValidGrants();
 		}
 		if ($AR->user->data->login!="public") {
