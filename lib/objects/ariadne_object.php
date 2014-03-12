@@ -1132,6 +1132,15 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $result;
 	}
 
+	function CheckAdmin($user) {
+		if ($user->data->login == "admin") {
+			return true;
+		}
+		if ($user->data->groups['/system/groups/admin/']) {
+			return true;
+		}
+	}
+
 	function CheckLogin($grant, $modifier=ARTHISTYPE) {
 	global $AR,$ARnls,$ARConfig,$ARCurrent,$ARConfigChecked;
 		if (!$this->store->is_supported("grants")) {
@@ -1152,7 +1161,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$ARConfigChecked = $realConfigChecked;
 		}
 
-		if ($AR->user->data->login!="admin" && !$AR->user->grants[$this->path]) {
+		if ($this->CheckAdmin($AR->user) && !$AR->user->grants[$this->path]) {
 			$AR->user->grants[$this->path]=$this->GetValidGrants();
 		}
 		if ($AR->user->data->login!="public") {
@@ -1163,13 +1172,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$grants=$AR->user->grants[$this->path];
 		if ( 	( !$grants[$grant] 
 					|| ( $modifier && is_array($grants[$grant]) && !$grants[$grant][$modifier] )
-				) && $AR->user->data->login!="admin" ) {
+				) && !$this->CheckAdmin($AR->user) ) {
 			// do login
 			$arLoginMessage = $ARnls["accessdenied"];
 			ldAccessDenied($this->path, $arLoginMessage);
 			$result=false;
 		} else {
-			$result=($grants || ($AR->user->data->login=="admin"));
+			$result=($grants || $this->CheckAdmin($AR->user));
 		}
 
 		$ARCurrent->arLoginSilent=1;
@@ -1207,7 +1216,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if (!$ARConfig->cache[$path]) {
 			$this->loadConfig($path);
 		}
-		if ($AR->user->data->login=="admin") {
+		if ($this->CheckAdmin($AR->user)) {
 			$result=1;
 		} else if ($grants=$AR->user->grants[$path]) {
 			$result=$grants[$grant];
@@ -3168,6 +3177,10 @@ debug("loadLibrary: loading cache for $this->path");
 
 	function _parentproject($path) {
 		return $this->parentproject($path);
+	}
+
+	function _checkAdmin($user) {
+		return $this->CheckAdmin($user);
 	}
 
 	function _checkgrant($grant, $modifier=ARTHISTYPE, $path=".") {
