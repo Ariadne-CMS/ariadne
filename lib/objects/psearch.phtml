@@ -38,11 +38,31 @@ class psearch extends pdir { // psearch class definition
 	function find($path, $criteria, $function="list.html", $args="", $limit=100, $offset=0) {
 		$path=$this->store->make_path($this->path, $path);
 		if( (substr($path, 0, strlen($this->path))==$this->path)) {
-			return pdir::find($this->data->path, $this->data->query, $function, $args, $limit, $offset);
+			if ($criteria) {
+				$criteria = "(" . $this->data->query . ") and " . $criteria;
+			} else {
+				$criteria = $this->data->query;
+			}
+			return pdir::find($this->data->path, $criteria, $function, $args, $limit, $offset);
 		} else {
 			return pdir::find($path, $criteria, $function, $args, $limit, $offset);
 		}
 	}
+
+	function count_find($path, $criteria) {
+		$path=$this->store->make_path($this->path, $path);
+		if( (substr($path, 0, strlen($this->path))==$this->path)) {
+			if ($criteria) {
+				$criteria = "(" . $this->data->query . ") and " . $criteria;
+			} else {
+				$criteria = $this->data->query;
+			}
+			return pdir::count_find($this->data->path, $criteria);
+		} else {
+			return pdir::count_find($path, $criteria);
+		}
+	}
+
 
 	function real_find($path, $criteria, $function="list.html", $args="", $limit=100, $offset=0) {
 		return pdir::find($path, $criteria, $function, $args, $limit, $offset);
@@ -50,6 +70,10 @@ class psearch extends pdir { // psearch class definition
 
 	function real_count_find($path='', $query='') {
 		return pdir::count_find($path, $query);
+	}
+
+	function _count_find($query='') {
+		return $this->count_find($this->path, $query);
 	}
 
 	function _ls($function='list.html', $args="") {
