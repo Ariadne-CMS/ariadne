@@ -3353,6 +3353,13 @@ debug("loadLibrary: loading cache for $this->path");
 		return preg_replace($pattern, $newrepl, $text, $limit);
 	}
 
+	/* ob_start accepts a callback but we don't want that
+	 * this wrapper removes the arguments from the ob_start call
+	 */
+	function _ob_start() {
+		return ob_start();
+	}
+
 	function _loadConfig($path='') {
 		return clone $this->loadConfig($path);
 	}
