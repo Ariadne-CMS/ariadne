@@ -21,6 +21,11 @@
 		$wgWizCallObject = $this->store->newobject($arNewPath, $container, $arNewType, $arNewData);
 		$wgWizCallObject->arIsNewObject = true;
 
+		$wgWizFlow = $wgWizCallObject->call("user.wizard.new.html", "wgWizFlow" => array());
+		if ($wgWizFlow[0]['save']) {
+			$wgWizCallObject->call($wgWizFlow[0]['save']);
+		}
+
 		$wgWizCallObject->call("dialog.edit.save.php");
 	}
 ?>
