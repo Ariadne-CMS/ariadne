@@ -1275,6 +1275,18 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 	}
 
+	function clearChildConfigs($path='') {
+	global $ARConfig;
+		$path = $this->make_path($path);
+		$pathlength = strlen($path);
+		if ($ARConfig->cache[$path]) {
+			foreach ($ARConfig->cache as $cachepath => $cache) {
+				if (strpos($cachepath, $path) === 0 && strlen($cachepath)>$pathlength) {
+					unset($ARConfig->cache[$cachepath]);
+				}
+			}
+		}
+	}
 
 	function getConfig() {
 	global $ARConfig, $ARCurrent, $ARConfigChecked;
@@ -1290,10 +1302,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		
 		$ARConfig->pinpcache[$this->path] = $ARConfig->pinpcache[$this->parent];
 		// backwards compatibility when calling templates from config.ini
-		if (!isset($ARCurrent->arConfig)) {
-			$ARCurrent->arConfig = $ARConfig->pinpcache[$this->path];
-		}
-
+		$prevArConfig = $ARCurrent->arConfig;
+		$ARCurrent->arConfig = $ARConfig->pinpcache[$this->path];
+		
 		$arCallArgs['arConfig'] = $ARConfig->pinpcache[$this->path];
 
 		/* calling config.ini directly for each system.get.config.phtml call */
@@ -1322,8 +1333,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				unset($arConfig['library']);
 			}
 			$ARConfig->pinpcache[$this->path] = (array) $arConfig;
+			$this->clearChildConfigs( $this->path ); // remove any config data for child objects, since these are set before their parent config was set
 		}
-
 		$ARConfigChecked = $initialConfigChecked;
 		$ARCurrent->nls = $initialNLS;
 		
@@ -1344,10 +1355,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 
 		$ARCurrent->arLoginSilent = $loginSilent;
-
-		// remove pinpcache reference
-		unset($ARCurrent->arConfig);
-		
+		$ARCurrent->arConfig = $prevArConfig;
 		
 	}
 	
@@ -1666,7 +1674,7 @@ debug("loadLibrary: loading cache for $this->path");
 
 	function getPinpTemplate($arCallFunction='view.html', $path=".", $top="", $inLibrary = false, $librariesSeen = null, $arSuperContext=array()) {
 	global $ARCurrent, $ARConfig, $AR;
-		debug("getPinpTemplate: function: $arCallFunction; path: $path; top: $top; inLib: $inLibrary");
+		debug("getPinpTemplate: function: $arCallFunction; path: $path; top: $top; inLib: $inLibrary","class");
 		$result = Array();
 		if (!$top) {
 			$top = '/';
@@ -1883,7 +1891,7 @@ debug("loadLibrary: loading cache for $this->path");
 				$this->customnlsdata=$this->data->custom[$nls];
 			}
 
-			if (!$ARConfigChecked && $arCallFunction) { // only fire this for pinp overrideable templates
+			if (!$ARConfigChecked) {
 				// this template is the first template called in this request.
 				$eventData = new object();
 				$eventData->arCallArgs = $arCallArgs;
@@ -1892,7 +1900,7 @@ debug("loadLibrary: loading cache for $this->path");
 				$ARConfigChecked = true;
 				$result = ar_events::fire( 'onbeforeview', $eventData );
 				$ARConfigChecked = $initialConfigChecked;
-				if ( !$result ) { //prevent default action: view
+				if ( $arCallFunction && !$result ) { //prevent default action: view, only if the template is pinp overrideable
 					return false;
 				}
 			}
