@@ -116,25 +116,25 @@ class geo {
 	*/
 	
 	function exifToLatLong($exif) {
-		if ($exif['GPS']) {
-			eval('$degree = (float) '.$exif["GPS"]["GPSLatitude"][0].';');
-			eval('$mins   = (float) '.$exif["GPS"]["GPSLatitude"][1].';');
-			eval('$secs   = (float) '.$exif["GPS"]["GPSLatitude"][2].';');
-			$result['lat'] = $degree + ( $mins / 60 ) + ( $secs / 3600 );
+		if ($exif['GPS'] && is_array($exif['GPS']['GPSLatitude']) && is_array($exif['GPS']['GPSLongitude']) ) {
+			$lat_degree = (float)$exif["GPS"]["GPSLatitude"][0];
+			$lat_mins   = (float)$exif["GPS"]["GPSLatitude"][1];
+			$lat_secs   = (float)$exif["GPS"]["GPSLatitude"][2];
+			$result['lat'] = $lat_degree + ( $lat_mins / 60 ) + ( $lat_secs / 3600 );
 			if( $exif['GPS']['GPSLatitudeRef'] == 'S' ) {
 				  $result['lat'] = (-1) * $result['lat'];
 			}
   
-			eval('$degree = (float) '.$exif["GPS"]["GPSLongitude"][0].';');
-			eval('$mins   = (float) '.$exif["GPS"]["GPSLongitude"][1].';');
-			eval('$secs   = (float) '.$exif["GPS"]["GPSLongitude"][2].';');
-			$result['lng'] = $degree + ( $mins / 60 ) + ( $secs / 3600 );
+			$lng_degree = (float)$exif["GPS"]["GPSLongitude"][0];
+			$lng_mins   = (float)$exif["GPS"]["GPSLongitude"][1];
+			$lng_secs   = (float)$exif["GPS"]["GPSLongitude"][2];
+			$result['lng'] = $lng_degree + ( $lng_mins / 60 ) + ( $lng_secs / 3600 );
 			if( $exif['GPS']['GPSLongitudeRef'] == 'W' ) {
 				$result['lng'] = (-1) * $result['lng'];
 			}
 			return $result;
 		} else {
-			return error::raiseError('MOD_GEO: No EXIF block given', 'geo_6');
+			return error::raiseError('MOD_GEO: No EXIF GPS block given', 'geo_6');
 		}
 	}
 
