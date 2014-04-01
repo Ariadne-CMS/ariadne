@@ -186,7 +186,8 @@
 				 $pipeline->output_driver = new OutputDriverFPDF();
 				 break;
 			 default:
-				 die("Unknown output method");
+				$me->error = "Unknown output method";
+				return false;
 			};
 
 			if ($g_config['debugbox']) {
