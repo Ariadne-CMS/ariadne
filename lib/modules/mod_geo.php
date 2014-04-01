@@ -125,17 +125,17 @@ class geo {
 
 	function exifToLatLong($exif) {
 		if ($exif['GPS'] && is_array($exif['GPS']['GPSLatitude']) && is_array($exif['GPS']['GPSLongitude']) ) {
-			$lat_degree = (float)parseNumber($exif["GPS"]["GPSLatitude"][0]);
-			$lat_mins   = (float)parseNumber($exif["GPS"]["GPSLatitude"][1]);
-			$lat_secs   = (float)parseNumber($exif["GPS"]["GPSLatitude"][2]);
+			$lat_degree = (float)self::parseNumber($exif["GPS"]["GPSLatitude"][0]);
+			$lat_mins   = (float)self::parseNumber($exif["GPS"]["GPSLatitude"][1]);
+			$lat_secs   = (float)self::parseNumber($exif["GPS"]["GPSLatitude"][2]);
 			$result['lat'] = $lat_degree + ( $lat_mins / 60 ) + ( $lat_secs / 3600 );
 			if( $exif['GPS']['GPSLatitudeRef'] == 'S' ) {
 				  $result['lat'] = (-1) * $result['lat'];
 			}
   
-			$lng_degree = (float)parseNumber($exif["GPS"]["GPSLongitude"][0]);
-			$lng_mins   = (float)parseNumber($exif["GPS"]["GPSLongitude"][1]);
-			$lng_secs   = (float)parseNumber($exif["GPS"]["GPSLongitude"][2]);
+			$lng_degree = (float)self::parseNumber($exif["GPS"]["GPSLongitude"][0]);
+			$lng_mins   = (float)self::parseNumber($exif["GPS"]["GPSLongitude"][1]);
+			$lng_secs   = (float)self::parseNumber($exif["GPS"]["GPSLongitude"][2]);
 			$result['lng'] = $lng_degree + ( $lng_mins / 60 ) + ( $lng_secs / 3600 );
 			if( $exif['GPS']['GPSLongitudeRef'] == 'W' ) {
 				$result['lng'] = (-1) * $result['lng'];
