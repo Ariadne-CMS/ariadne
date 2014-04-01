@@ -52,7 +52,7 @@
 				} else {
 					$url = $this->getAuthTokenURL();
 					header("Location: $url");
-					exit;
+					return;
 				}
 			}
 			return $user;
