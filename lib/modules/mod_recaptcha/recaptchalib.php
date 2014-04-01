@@ -78,7 +78,9 @@ function _recaptcha_http_post($host, $path, $data, $port = 80) {
 
         $response = '';
         if( false == ( $fs = @fsockopen($host, $port, $errno, $errstr, 10) ) ) {
-                die ('Could not open socket');
+                return array(
+			false, "false\nCould not open socket"
+		);
         }
 
         fwrite($fs, $http_request);
@@ -106,7 +108,7 @@ function _recaptcha_http_post($host, $path, $data, $port = 80) {
 function recaptcha_get_html ($pubkey, $error = null, $use_ssl = false)
 {
 	if ($pubkey == null || $pubkey == '') {
-		die ("To use reCAPTCHA you must get an API key from <a href='https://www.google.com/recaptcha/admin/create'>https://www.google.com/recaptcha/admin/create</a>");
+		return "To use reCAPTCHA you must get an API key from <a href='https://www.google.com/recaptcha/admin/create'>https://www.google.com/recaptcha/admin/create</a>";
 	}
 	
 	if ($use_ssl) {
@@ -151,12 +153,18 @@ class ReCaptchaResponse {
   */
 function recaptcha_check_answer ($privkey, $remoteip, $challenge, $response, $extra_params = array())
 {
+	$recaptcha_response = new ReCaptchaResponse();
+
 	if ($privkey == null || $privkey == '') {
-		die ("To use reCAPTCHA you must get an API key from <a href='https://www.google.com/recaptcha/admin/create'>https://www.google.com/recaptcha/admin/create</a>");
+		$recaptcha_response->is_valid = false;
+		$recaptcha_response->error = 'To use reCAPTCHA you must get an API key from https://www.google.com/recaptcha/admin/create';
+		return $recaptcha_response;
 	}
 
 	if ($remoteip == null || $remoteip == '') {
-		die ("For security reasons, you must pass the remote ip to reCAPTCHA");
+		$recaptcha_response->is_valid = false;
+		$recaptcha_response->error = "For security reasons, you must pass the remote ip to reCAPTCHA";
+		return $recaptcha_response;
 	}
 
 	
@@ -213,7 +221,7 @@ function _recaptcha_aes_pad($val) {
 
 function _recaptcha_aes_encrypt($val,$ky) {
 	if (! function_exists ("mcrypt_encrypt")) {
-		die ("To use reCAPTCHA Mailhide, you need to have the mcrypt php module installed.");
+		return false;
 	}
 	$mode=MCRYPT_MODE_CBC;   
 	$enc=MCRYPT_RIJNDAEL_128;
@@ -229,8 +237,7 @@ function _recaptcha_mailhide_urlbase64 ($x) {
 /* gets the reCAPTCHA Mailhide url for a given email, public key and private key */
 function recaptcha_mailhide_url($pubkey, $privkey, $email) {
 	if ($pubkey == '' || $pubkey == null || $privkey == "" || $privkey == null) {
-		die ("To use reCAPTCHA Mailhide, you have to sign up for a public and private key, " .
-		     "you can do so at <a href='http://www.google.com/recaptcha/mailhide/apikey'>http://www.google.com/recaptcha/mailhide/apikey</a>");
+		return false; 
 	}
 	
 
@@ -265,6 +272,13 @@ function _recaptcha_mailhide_email_parts ($email) {
  * http://www.google.com/recaptcha/mailhide/apikey
  */
 function recaptcha_mailhide_html($pubkey, $privkey, $email) {
+	if ($pubkey == '' || $pubkey == null || $privkey == "" || $privkey == null) {
+		return "To use reCAPTCHA Mailhide, you have to sign up for a public and private key, you can do so at <a href='http://www.google.com/recaptcha/mailhide/apikey'>http://www.google.com/recaptcha/mailhide/apikey</a>";
+	}
+	if (! function_exists ("mcrypt_encrypt")) {
+		return "To use reCAPTCHA Mailhide, you need to have the mcrypt php module installed.";
+	}
+
 	$emailparts = _recaptcha_mailhide_email_parts ($email);
 	$url = recaptcha_mailhide_url ($pubkey, $privkey, $email);
 	
@@ -272,6 +286,5 @@ function recaptcha_mailhide_html($pubkey, $privkey, $email) {
 		"' onclick=\"window.open('" . htmlentities ($url) . "', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;\" title=\"Reveal this e-mail address\">...</a>@" . htmlentities ($emailparts [1]);
 
 }
-
 
 ?>
