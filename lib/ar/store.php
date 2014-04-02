@@ -35,6 +35,7 @@
 		}
 
 		public static function get( $path = "" ) {
+			$path = (string) $path;
 			return new ar_storeGet( ar::context()->getPath( array(
 				'rememberShortcuts' => self::$rememberShortcuts,
 				'path' => $path
@@ -49,6 +50,7 @@
 		
 		public static function exists( $path = '' ) {
 			global $store;
+			$path = (string) $path;
 			return $store->exists( ar::context()->getPath( array(
 				'skipShortcuts' => true,
 				'path' => $path
@@ -56,6 +58,7 @@
 		}
 
 		public static function currentSite( $path = '' ) {
+			$path = (string) $path;
 			$me = ar::context()->getObject();
 			if ($me) {
 				if (self::$rememberShortcuts) {
@@ -69,6 +72,7 @@
 		}
 		
 		public static function parentSite( $path = '' ) {
+			$path = (string) $path;
 			$me = ar::context()->getObject();
 			if ($me) {
 				if (self::$rememberShortcuts) {
@@ -82,6 +86,7 @@
 		}
 		
 		public static function currentSection( $path = '' ) {
+			$path = (string) $path;
 			$me = ar::context()->getObject();
 			if ($me) {
 				if (self::$rememberShortcuts) {
@@ -95,6 +100,7 @@
 		}
 
 		public static function parentSection( $path = '' ) {
+			$path = (string) $path;
 			$me = ar::context()->getObject();
 			if ($me) {
 				if (self::$rememberShortcuts) {
@@ -108,6 +114,7 @@
 		}
 
 		public static function currentProject( $path = '' ) {
+			$path = (string) $path;
 			$me = ar::context()->getObject();
 			if ($me) {
 				$path = $me->currentproject( $path );
@@ -116,6 +123,7 @@
 		}
 
 		public static function parentProject( $path = '' ) {
+			$path = (string) $path;
 			$me = ar::context()->getObject();
 			if ($me) {
 				$path = $me->parentproject( $path );
@@ -124,6 +132,7 @@
 		}
 
 		public static function makePath( $path = '' ) {
+			$path = (string) $path;
 			return ar::context()->getPath( array(
 				'rememberShortcuts' => self::$rememberShortcuts,
 				'path' => $path 
@@ -131,6 +140,7 @@
 		}
 		
 		public static function makeRealPath( $path = '' ) {
+			$path = (string) $path;
 			return ar::context()->getPath( array(
 				'skipShortcuts' => true,
 				'path' => $path
@@ -148,8 +158,8 @@
 		var $path = '/';
 
 		public function __construct( $path = '/', $query = '' ) {
-			$this->path = $path;
-			$this->query = $query;
+			$this->path = (string)$path;
+			$this->query = (string)$query;
 		}
 
 		public function call( $template, $args = null ) {
@@ -172,7 +182,12 @@
 
 		public function count() {
 			global $store;
-			return $store->count( $store->find( $this->path, $this->query, $this->limit, $this->offset ) );
+			if (ar_store::$rememberShortcuts) {
+				$path = ar_store::makeRealPath( $this->path );
+			} else {
+				$path = $this->path;
+			}
+			return $store->count( $store->find( $path, $this->query, $this->limit, $this->offset ) );
 		}
 
 		public function limit( $limit ) {
@@ -208,7 +223,7 @@
 		protected $path = '';
 	
 		public function __construct( $path ) {
-			$this->path = $path;
+			$this->path = (string)$path;
 		}
 
 		public function find( $query = "" ) {
@@ -244,7 +259,7 @@
 		protected $top = '/';
 		
 		public function __construct( $path = "" ) {
-			$this->path	= $path;
+			$this->path	= (string)$path;
 		}
 
 		public function call( $template, $args = null ) {
