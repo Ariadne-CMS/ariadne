@@ -37,9 +37,12 @@
 
   /*************************************************************************/
   /* Fulltext boolean search. Set to true if supported by your DB          */
+  /* (it's standard set to false because boolean mode searches on fulltext */
+  /* indexes are very slow; this is probably because mysql will run a      */
+  /* search on the complete index, even if it is able to use a subset)     */
   /*************************************************************************/
 
-  $store_config['fulltext_boolean'] = true;
+  $store_config['fulltext_boolean'] = false;
 
 
   /*************************************************************************/
