@@ -187,7 +187,7 @@
 			} else {
 				$path = $this->path;
 			}
-			return $store->count( $store->find( $path, $this->query, $this->limit, $this->offset ) );
+			return $store->count_find( $this->path, $this->query, $this->limit, $this->offset );
 		}
 
 		public function limit( $limit ) {
