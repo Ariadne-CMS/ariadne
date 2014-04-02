@@ -38,12 +38,13 @@
 			foreach ($authconfig['groupdirs'] as $groupdir) {
 				$this->find(
 					$groupdir,
-					"object.implements = 'pgroup' and login.value != 'owner'",
+					"object.implements = 'pgroup' and login.value != 'owner' order by name.value",
 					"show.option.multiple.phtml",
 					Array(
 						"selected"	=> $selected,
 						"grant"		=> "edit"
-					)
+					),
+					0, 0
 				);
 			}
 		?>
