@@ -42,6 +42,43 @@ function procFile($filename) {
 	}
 }
 
+function procCacheFile($filename) {
+	$mtime = filemtime($filename);
+	if ($mtime < 1000) {
+		echo "Skipped $filename, not stale enough;\n";
+		return;
+	}
+	$age = time() - $mtime;
+	$perms=fileperms($filename);
+	
+	if ($age > DAY) {
+		if (is_dir($filename)) {
+			$res=@rmdir($filename);
+		} else {
+			$res=@unlink($filename);
+		}
+
+		$headerfilename = str_replace("/cache/", "/cacheheaders/", $filename);
+		
+		if (file_exists($headerfilename)) {
+			if (is_dir($headerfilename)) {
+				@rmdir($headerfilename);
+			} else {
+				@unlink($headerfilename);
+			}
+		}
+
+		print $res?" - ":" ! ";
+		printf("%18s %5s %o %s\n",
+			strftime('%d %b %Y %H:%M',$mtime),
+			$age,
+			$perms,
+			$filename);
+	} else {
+		echo "Skipped $filename, not stale enough;\n";
+	}
+}
+
 function recurse($func, $dir=".") {
 	global $skipentries;
 	if (is_callable($func)) {
@@ -112,4 +149,24 @@ if ($AR->OS=="UNIX") {
 	echo " . done.\n";
  */
 }
+
+// clean up cache files
+if ($AR->OS=="UNIX") {
+	echo " . Clearing stale cache files...\n";
+	$cachedir=$store_config['files']."cache/";
+	$privatecachedir = $store_config['files']."privatecache/";
+	if (file_exists($cachedir)) {
+		recurse(procCacheFile, $cachedir);
+	}
+	echo " . done.\n";
+	echo " . Clearing stale private cache files...\n";
+	if (file_exists($privatecachedir)) {
+		recurse(procCacheFile, $privatecachedir);
+	}
+	echo " . done.\n";
+} else {
+	// Windows support needs testing here, too;
+}
+
+
 ?>
