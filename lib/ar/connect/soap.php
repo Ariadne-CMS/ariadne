@@ -23,11 +23,10 @@
 				$soapHeader = new SoapHeader( $namespace, $name, $data, $mustUnderstand);
 			}
 			return $soapHeader;
-			//return new ar_connect_soapHeader( $namespace, $name, $data, $mustUnderstand, $actor );
 		}
 
 		public static function param( $data, $name ) {
-			return new ar_connect_soapParam( $data, $name );
+			return new SoapParam( $data, $name );
 		}
 		
 		public static function variable( $data, $encoding, $type_name = '', $type_namespace = '', $node_name = '', $node_namespace = '') {
@@ -46,7 +45,7 @@
 
 		function _soapCall( $name, $arguments, $options = Array(), $inputHeaders = Array(), &$outputHeaders = Array() ) {
 			try {
-				$result = new arWrapper( $this->wrapped->__soapCall( $name, $arguments, $options, $inputHeaders, $outputHeaders ) );
+				$result = $this->wrapped->__soapCall( $name, $arguments, $options, $inputHeaders, $outputHeaders );
 			} catch( Exception $e ) {
 				$result = ar::error( $e->getMessage(), $e->getCode() );
 			}
@@ -57,8 +56,20 @@
 			$this->wrapped->__setSoapHeaders($soapHeaders);
 		}
 
+		function _setLocation($location) {
+			$this->wrapped->__setLocation($location);
+		}
+
+		function _getFunctions() {
+			return $this->wrapped->__getFunctions();
+		}
+
 		function _getLastResponse() {
 			return $this->wrapped->__getLastResponse();
+		}
+
+		function _getLastRequest() {
+			return $this->wrapped->__getLastRequest();
 		}
 
 	}
@@ -88,8 +99,8 @@
 	class ar_connect_soapParam extends arWrapper {
 		
 		function __construct( $data, $name ) {
-			$soapParam = new SoapParam( $data, $name );
-			parent::__construct( $soapParam );
+			return  new SoapParam( $data, $name );
+			
 		}
 	
 	}
