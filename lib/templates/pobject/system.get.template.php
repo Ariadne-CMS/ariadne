@@ -5,9 +5,12 @@
             $template=$type.".".$function.".".$language.".pinp";
             $templates=$this->store->get_filestore("templates");
             if ($templates->exists($this->id, $template)) {
-                $file=$templates->read($this->id, $template);
-            }
-        }
-		$ARCurrent->arResult = $file;
+                $ARCurrent->arResult = $templates->read($this->id, $template);
+            } else {
+				$ARCurrent->arResult = ar::error('Template not accessible', 501);
+			}
+        } else {
+			$ARCurrent->arResult = ar::error('Template not found', 404);
+		}
 	}
 ?>
