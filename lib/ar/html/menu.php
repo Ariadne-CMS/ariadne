@@ -11,11 +11,19 @@
 	class ar_html_menu extends arBase {
 	
 		public static function bar( $options = array() ) {
+			$options += array(
+				'filter' => 'object.implements="pdir"'
+			);
 			$parent = $options['top'];
 			if (!$parent) {
 				$parent = ar::context()->getPath();
 			}
-			return ar::get( $parent )->find( "object.implements='pdir' and object.priority>=0 and object.parent = '$parent'" );
+			$query = "object.priority>=0 and object.parent = '$parent'";
+			if ( $options['filter'] ) {
+				$query .= ' and ( '.$options['filter'].' )';
+			}
+
+			return ar::get( $parent )->find( $query  );
 		}
 	
 		public static function tree( $options = array() ) {
@@ -32,6 +40,7 @@
 				'children'    => true,
 				'current'     => null,
 				'skipTop'     => false,
+				'filter'      => 'object.implements="pdir"',
 				'maxDepth'    => 0
 			);
 			$query   = "";
@@ -64,8 +73,10 @@
 			if ($maxDepth>0) {
 				$query .= " and object.path !~ '" . $top . str_repeat( '%/', $maxDepth + 1 ) . "'";
 			}
-
-			return ar::get($top)->find("object.implements = 'pdir' and object.priority>=0".$query);
+			if ( $options['filter'] ) {
+				$query .= ' and ( '.$options['filter'].' )';
+			}
+			return ar::get($top)->find("object.priority>=0".$query);
 		}
 	
 		public static function sitemap( $options = array() ) {
@@ -75,15 +86,19 @@
 			}
 			$options += array(
 				'skipTop'     => true,
+				'filter'      => 'object.implements="pdir"',
 				'maxDepth'    => 0
 			);
-			$query = "object.implements='pdir' and object.priority>=0";
+			$query = "object.priority>=0";
 			if ($options['skipTop']) {
 				$query .= " and object.path != '".$top."'";
 			}
 			$maxDepth = (int)$options['maxDepth'];
 			if ($maxDepth>0) {
 				$query .= " and object.path !~ '" . $top . str_repeat( '%/', $maxDepth + 1 ) . "'";
+			}
+			if ( $options['filter'] ) {
+				$query .= ' and ( '.$options['filter'].' )';
 			}
 			return ar::get( $top )->find( $query );
 		}
@@ -99,7 +114,8 @@
 			}
 			$options += array(
 				'current' => $current,
-				'top'     => $top
+				'top'     => $top,
+				'filter'  => ''
 			);
 			$current = $options['current'];
 			if (!$current) {
@@ -107,6 +123,9 @@
 			}
 			if ( !isset($top) ) {
 				$top = $this->root;
+			}
+			if ( $options['filter'] ) {
+				$query .= ' and ( '.$options['filter'].' )';
 			}
 			return ar::get( $current )->parents()->top( $top );
 		}
