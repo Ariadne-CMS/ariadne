@@ -8,7 +8,7 @@
 			$this->input = preg_replace('/^([[:space:]]|,)*/', '', $this->input);
 			//echo "scanner: input(".$this->input.")<br>\n";
 			switch (true) {
-				case preg_match('/^([a-zA-Z0-9_][a-zA-Z0-9._]*)/', $this->input, $regs):
+				case preg_match('/^([a-zA-Z0-9_][a-zA-Z0-9._:]*)/', $this->input, $regs):
 					$this->token_ahead = T_G_IDENT;
 					$this->token_ahead_value = $regs[1];
 					$this->input = substr($this->input, strlen($regs[1]));
