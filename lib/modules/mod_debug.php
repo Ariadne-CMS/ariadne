@@ -42,6 +42,7 @@
 	$DB["stream"]="all";
 	$DB["file"]=false;
 	$DB["method"]["loader"] = true;
+	$DB["method"]["firebug"] = false;
 	$DB["method"]["syslog"] = false;
 	$DB["method"]["file"] = false;
 	$DB["wasUsed"] = 0;
@@ -64,6 +65,9 @@
 		}
 		if( $DB["method"]["syslog"] ) {
 			$debugison .= " [syslog]";
+		}
+		if( $DB["method"]["firebug"] ) {
+			$debugison .= " [firebug]";
 		}
 		if( $debugison != "" ) {
 			$DB["level"] = $DB[$level];
@@ -136,6 +140,9 @@
 			}
 			if( $DB["method"]["syslog"] ) {
 				syslog(LOG_NOTICE,"(Ariadne) ".$DB_INDENT.$message);
+			}
+			if ( $DB["method"]["firebug"] ) {
+				ar('beta/firebug')->log($text,"[".$level."][".$stream."]");
 			}
 		}
 	}
