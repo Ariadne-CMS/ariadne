@@ -14,7 +14,7 @@ class ar_connect_rss extends arBase {
 	}
 	
 	public static function parse( $xml ) {
-		$client = new ar_connect_rssClient( null, ar_http::client() );
+		$client = new ar_connect_rssClient();
 		return $client->parse( $xml );
 	}
 
@@ -89,4 +89,5 @@ class ar_connect_rssClient extends ar_xmlDataBinding {
 				->bind( $item->getAttribute('length'), 'length' )
 				->bind( $item->getAttribute('type'), 'type');
 	}
+}
 ?>
