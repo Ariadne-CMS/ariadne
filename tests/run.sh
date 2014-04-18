@@ -211,3 +211,12 @@ if [ ${EXPORT_BASE_TEMPLATES_COUNT} -ne ${EXPORT_EXPORT_TEMPLATES_COUNT} ] ; the
 	cat /tmp/BASE_TEMPLATES.txt /tmp/EXPORT_TEMPLATES.txt
 	exit 1
 fi
+
+cd ${TRAVIS_BUILD_DIR}
+SYNTAX_ERROR_COUNT=`(find www -type f -name \*php ; find www/install/conf lib ftp soap webdav -type f)  | xargs -n1 --replace={} bash -c 'php5 -l {} || true' | grep -v 'No syntax errors detected in'  | tee /tmp/syntax.errors.txt | wc -l`
+
+if [ ${SYNTAX_ERROR_COUNT} -ge 1 ]; then
+	echo "syntax errors found in build";
+	cat /tmp/syntax.errors.txt
+	exit 1;
+fi
