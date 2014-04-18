@@ -126,26 +126,26 @@ EXPLORE_NOTICE=`grep -i notice ariadne.explore.txt|wc -l`
 
 
 if [ $EXPLORE_ERRORS -gt 0 ]; then
-        echo "Explore reported errors:";
-        grep -i error ariadne.explore.txt;
-        exit 1;
+	echo "Explore reported errors:";
+	grep -i error ariadne.explore.txt;
+	exit 1;
 fi
 
 if [ $EXPLORE_WARNINGS -gt 0 ]; then
-        echo "Explore reported warnings.";
-        grep -i warning ariadne.explore.txt
-        exit 1;
+	echo "Explore reported warnings.";
+	grep -i warning ariadne.explore.txt
+	exit 1;
 fi
 
 if [ $EXPLORE_ERRORS -gt 0 ]; then
-        echo "Explore reported notices.";
-        grep -i notice ariadne.explore.txt
-        exit 1;
+	echo "Explore reported notices.";
+	grep -i notice ariadne.explore.txt
+	exit 1;
 fi
 if [ $EXPLORE_ITEM -lt 1 ]; then
-        echo "Explore does not contain explore items.";
-		  cat ariadne.explore.txt;
-        exit 1;
+	echo "Explore does not contain explore items.";
+	cat ariadne.explore.txt;
+	exit 1;
 fi
 # Export /projects/demo/ from the commandline
 sudo ${TRAVIS_BUILD_DIR}/bin/export --verbose /projects/demo/ /tmp/demo.ax | tee exportresult.txt
@@ -157,30 +157,30 @@ EXPORTRESULT_NOTICE=`grep -i notice exportresult.txt|wc -l`
 tar -ztf /tmp/demo.ax > /dev/null
 
 if [ $EXPORTRESULT_ERRORS -gt 0 ]; then
-        echo "Commandline export reported errors:";
-        grep -i error exportresult.txt;
-        exit 1;
+	echo "Commandline export reported errors:";
+	grep -i error exportresult.txt;
+	exit 1;
 fi
 
 if [ $EXPORTRESULT_WARNINGS -gt 0 ]; then
-        echo "Commandline export reported warnings.";
-        grep -i warning exportresult.txt
-        exit 1;
+	echo "Commandline export reported warnings.";
+	grep -i warning exportresult.txt
+	exit 1;
 fi
 
 if [ $EXPORTRESULT_ERRORS -gt 0 ]; then
-        echo "Commandline export reported notices.";
-        grep -i notice exportresult.txt
-        exit 1;
+	echo "Commandline export reported notices.";
+	grep -i notice exportresult.txt
+	exit 1;
 fi
 if [ $EXPORTRESULT_ITEM -lt 1 ]; then
-        echo "Commandline export did not report processing /projects/demo/demo/";
-        exit 1;
+	echo "Commandline export did not report processing /projects/demo/demo/";
+	exit 1;
 fi
 
 if [ $EXPORTRESULT_ITEM -lt 1 ]; then
-        echo "Commandline export resulted in an empty file";
-        exit 1;
+	echo "Commandline export resulted in an empty file";
+	exit 1;
 fi
 
 mkdir -p /tmp/original /tmp/export
@@ -195,19 +195,19 @@ EXPORT_BASE_TEMPLATES_COUNT=`find /tmp/original/templates  -type f -ls  2> /dev/
 EXPORT_EXPORT_TEMPLATES_COUNT=`find /tmp/export/templates  -type f -ls  2> /dev/null | tee /tmp/EXPORT_TEMPLATES.txt | wc -l`
 
 if [ ${EXPORT_EMPTY_COUNT} -gt 0 ] ; then
-		echo "Export generated empty files"
-		cat /tmp/exportlist.txt
-		exit 1;
+	echo "Export generated empty files"
+	cat /tmp/exportlist.txt
+	exit 1;
 fi
 
 if [ ${EXPORT_BASE_FILES_COUNT} -ne ${EXPORT_EXPORT_FILES_COUNT} ] ; then
-		echo "Base and export files differ"
-		cat /tmp/BASE_FILES.txt /tmp/EXPORT_FILES.txt
-		exit 1
+	echo "Base and export files differ"
+	cat /tmp/BASE_FILES.txt /tmp/EXPORT_FILES.txt
+	exit 1
 fi
 
 if [ ${EXPORT_BASE_TEMPLATES_COUNT} -ne ${EXPORT_EXPORT_TEMPLATES_COUNT} ] ; then
-		echo "Base and export templates differ"
-		cat /tmp/BASE_TEMPLATES.txt /tmp/EXPORT_TEMPLATES.txt
-		exit 1
+	echo "Base and export templates differ"
+	cat /tmp/BASE_TEMPLATES.txt /tmp/EXPORT_TEMPLATES.txt
+	exit 1
 fi
