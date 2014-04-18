@@ -15,6 +15,7 @@ before_install:
     - sudo ln -s ${TRAVIS_BUILD_DIR}/www /var/www/ariadne
     - sudo apache2ctl graceful
     - sudo chown -R www-data:www-data ${TRAVIS_BUILD_DIR}/files ${TRAVIS_BUILD_DIR}/lib/configs/ariadne.phtml ${TRAVIS_BUILD_DIR}/lib/configs/svn/
+    - svn co https://svn.muze.nl/svn/muze/pear/VersionControl /usr/share/php/VersionControl
     - ls -lad ${TRAVIS_BUILD_DIR}/files ${TRAVIS_BUILD_DIR}/lib/configs/ariadne.phtml
 
 before_script:
