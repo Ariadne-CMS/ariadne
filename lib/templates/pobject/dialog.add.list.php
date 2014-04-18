@@ -26,7 +26,7 @@
 		} else {
 			error( $ARnls["ariadne:no_adding_found"] );
 		}
-		echo '<div class="'"listcontainer"'">';
+		echo '<div class="listcontainer">';
 		foreach ( $itemlist as $item ) {
 			echo '<a class="item '.$item['class'].'" href="'.$item['href'].'" title="'.$item['type'].'">';
 			echo '<img class="icon" src="'.$item['icon'].'" alt="'.$item['type'].'" title="'.$item['type'].'">';
