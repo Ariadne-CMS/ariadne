@@ -14,7 +14,7 @@ before_install:
     - sudo a2enmod rewrite
     - sudo ln -s ${TRAVIS_BUILD_DIR}/www /var/www/ariadne
     - sudo apache2ctl graceful
-    - sudo chown -R www-data:www-data ${TRAVIS_BUILD_DIR}/files ${TRAVIS_BUILD_DIR}/lib/configs/ariadne.phtml
+    - sudo chown -R www-data:www-data ${TRAVIS_BUILD_DIR}/files ${TRAVIS_BUILD_DIR}/lib/configs/ariadne.phtml ${TRAVIS_BUILD_DIR}/lib/configs/svn/
     - ls -lad ${TRAVIS_BUILD_DIR}/files ${TRAVIS_BUILD_DIR}/lib/configs/ariadne.phtml
 
 before_script:
