@@ -9,7 +9,7 @@ php:
 
 before_install:
     - sudo apt-get update -qq
-    - sudo apt-get install -qq apache2 libapache2-mod-php5 php5-curl php5-mysql imagemagick php5-mcrypt wget php-pear lynx
+    - sudo apt-get install -qq apache2 libapache2-mod-php5 php5-curl php5-mysql imagemagick php5-mcrypt wget php-pear lynx subversion tidy
     - sudo a2enmod actions
     - sudo a2enmod rewrite
     - sudo ln -s ${TRAVIS_BUILD_DIR}/www /var/www/ariadne
