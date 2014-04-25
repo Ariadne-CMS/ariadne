@@ -304,7 +304,8 @@ muze.ariadne.explore = function() {
 		},
 		dateParser : function(date) {
 			var dateInfo = date.split("-");
-			return new Date(dateInfo[2], dateInfo[1], dateInfo[0]);
+			// javascript is braindead: day and year are 1 based, month is 0 based, so Y:2014 M:0 D:1 results in Y-M-D '2014-01-01' 
+			return new Date(dateInfo[2], dateInfo[1]-1, dateInfo[0]);
 		},
 		dateFormatter : function(container, record, column, data) {
 			container.innerHTML = YAHOO.util.Date.format(data, {format:"%d-%m-%Y"});
