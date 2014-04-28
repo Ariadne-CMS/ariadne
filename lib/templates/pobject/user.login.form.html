@@ -43,7 +43,7 @@
 		<div id="data">
 			<div class="field">
 				<label for="ARLogin" class="required"><?php echo $ARnls["login"]; ?></label>
-				<input type="text" id="ARLogin" name="ARLogin" value="<?php echo htmlentities($ARLogin); ?>">
+				<input type="text" id="ARLogin" name="ARLogin" value="<?php echo htmlentities($ARLogin,ENT_QUOTES|ENT_HTML401); ?>">
 			</div>
 			<div class="field">
 				<label for="ARPassword" class="required"><?php echo $ARnls["password"]; ?></label>
