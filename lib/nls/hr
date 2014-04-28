@@ -93,6 +93,7 @@
 //	$ARnls["err:cannotdisablesystemusers"]          =    "You cannot disable the system users (admin and public)"; // value from english
 	$ARnls["err:cannotedit.phtml"]                  =    "Predlošci koji završavaju na '.phtml' ne mogu se uređivati.";
 	$ARnls["err:cannotlockobject"]                  =    "Ne mogu zaključati objekt %s";
+//	$ARnls["err:cannotmogrify"]                     =    "This object cannot be mogrified. This object will <b>not</b> be included in this operation."; // value from english
 	$ARnls["err:changetempdirfailed"]               =    "Ne mogu prijeći u mapu %stemp/ ";
 	$ARnls["err:chooseotherfilename"]               =    "%s već postoji. Molim izaberite drugo.";
 	$ARnls["err:containsobj"]                       =    "Objekt sadrži druge objekte. Maknite prvo njih.";
@@ -126,7 +127,7 @@
 	$ARnls["err:nodatafordefaultlanguage"]          =    "Nisu unešeni nikakvi podaci za primarni jezik '%s'.";
 	$ARnls["err:nodirchanges"]                      =    "Promjene mape nisu dozvoljene u imenima predložaka.";
 	$ARnls["err:noexportfile"]                      =    "Datoteka za izvoz nedostaje. Nije u %s%s.";
-//      $ARnls["err:nogrants"]                          =    "You don't have the proper grants to perform this operation on this object. This object <b>won't</b> be included in this operation."; //value from English
+//	$ARnls["err:nogrants"]                          =    "You do not have the proper grants to perform this operation on this object. This object will <b>not</b> be included in this operation."; // value from english
 	$ARnls["err:noimagemagick"]                     =    "Ne mogu pokrenuti ImageMagick program za izmjenu veličine (mogrify)<br>\n(%s)";
 	$ARnls["err:nolastnameentered"]                 =    "Morate unijeti prezime";
 	$ARnls["err:nomovebelow"]                       =    "Me možete pomaknuti objekt ispod njega samog.";

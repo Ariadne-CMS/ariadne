@@ -95,6 +95,7 @@
 //	$ARnls["err:cannotdisablesystemusers"]          =    "You cannot disable the system users (admin and public)"; // value from english
 	$ARnls["err:cannotedit.phtml"]                  =    "Nie możesz edytować szablonów o rozszerzeniu '.phtml'";
 	$ARnls["err:cannotlockobject"]                  =    "Nie mogę wprowadzić blokady na %s";
+//	$ARnls["err:cannotmogrify"]                     =    "This object cannot be mogrified. This object will <b>not</b> be included in this operation."; // value from english
 	$ARnls["err:changetempdirfailed"]               =    "Nie mogę wejść do katalogu %stemp/ ";
 	$ARnls["err:chooseotherfilename"]               =    "%s już istnieje. Proszę wybierz inny.";
 	$ARnls["err:containsobj"]                       =    "Obiekt zawiera inny obiekt, wpierw go usuń.";
@@ -128,7 +129,7 @@
 	$ARnls["err:nodatafordefaultlanguage"]          =    "Nie wprowadziłeś danych dla domyślnego języka (%s).";
 	$ARnls["err:nodirchanges"]                      =    "W nazwie szablonów nie można używać nazw katalogów.";
 	$ARnls["err:noexportfile"]                      =    "Plik eksportowy nie istnieje. Nie ma go w %s%s.";
-//      $ARnls["err:nogrants"]                          =    "You don't have the proper grants to perform this operation on this object. This object <b>won't</b> be included in this operation."; //value from English
+//	$ARnls["err:nogrants"]                          =    "You do not have the proper grants to perform this operation on this object. This object will <b>not</b> be included in this operation."; // value from english
 	$ARnls["err:noimagemagick"]                     =    "Nie mogę uruchomić programu do skalowania (mogrify z pakietu ImageMagick)<br>\n(%s)";
 	$ARnls["err:nolastnameentered"]                 =    "Musisz wprowadzić nazwisko>";
 	$ARnls["err:nomovebelow"]                       =    "Nie możesz przenieść obiektu poniżej samego siebie.";

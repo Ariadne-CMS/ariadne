@@ -56,9 +56,9 @@
 //	$ARnls["ariadne:editor:image_settings"]         =    "Image settings"; // value from english
 //	$ARnls["ariadne:editor:imageedit"]              =    "Edit image"; // value from english
 //	$ARnls["ariadne:editor:internal_link"]          =    "Internal link"; // value from english
-	$ARnls["ariadne:editor:nofollow"]		=    "Search engine: no follow";
 //	$ARnls["ariadne:editor:language"]               =    "Language"; // value from english
 //	$ARnls["ariadne:editor:newwindow"]              =    "Open in new window"; // value from english
+	$ARnls["ariadne:editor:nofollow"]               =    "Search engine: no follow";
 //	$ARnls["ariadne:editor:popup"]                  =    "Open in popup"; // value from english
 //	$ARnls["ariadne:editor:preview"]                =    "Preview"; // value from english
 //	$ARnls["ariadne:editor:style"]                  =    "Style"; // value from english
@@ -185,6 +185,7 @@
 //	$ARnls["ariadne:svn:resolved"]                  =    "Resolved"; // value from english
 //	$ARnls["ariadne:svn:revert"]                    =    "Revert"; // value from english
 //	$ARnls["ariadne:svn:revision"]                  =    "SVN Revision"; // value from english
+//	$ARnls["ariadne:svn:serverdiff"]                =    "Diff against server"; // value from english
 //	$ARnls["ariadne:svn:settings"]                  =    "SVN Settings"; // value from english
 //	$ARnls["ariadne:svn:unsvn"]                     =    "Remove version control"; // value from english
 //	$ARnls["ariadne:svn:update"]                    =    "Update"; // value from english
@@ -229,6 +230,7 @@
 //	$ARnls["ariadne:types:psite"]                   =    "Site"; // value from english
 //	$ARnls["ariadne:types:puser"]                   =    "User"; // value from english
 	$ARnls["ariadne:up"]                            =    "Hoch";
+	$ARnls["ariadne:uploader"]                      =    "Uploader";
 //	$ARnls["ariadne:uploading"]                     =    "Uploading..."; // value from english
 	$ARnls["ariadne:view"]                          =    "Anzeigen";
 	$ARnls["ariadne:viewweb"]                       =    "Webseite anzeigen";
@@ -257,6 +259,6 @@
 //	$ARnls["err:svn:enterURL"]                      =    "Please enter a valid SVN repository URL."; // value from english
 //	$ARnls["err:svn:leaving_recurse_tree"]          =    "This repository is not part of the repository tree of the parent."; // value from english
 //	$ARnls["err:typetree_does_not_allow"]           =    "Typetree does not allow this object type here"; // value from english
-	$ARnls["ariadne:uploader"]			=    "Uploader";
+
 
 ?>

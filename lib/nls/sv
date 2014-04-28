@@ -101,6 +101,7 @@
 //	$ARnls["err:cannotdisablesystemusers"]          =    "You cannot disable the system users (admin and public)"; // value from english
 	$ARnls["err:cannotedit.phtml"]                  =    "Du kan inte &auml;ndra mallar som slutar med '.phtml'";
 	$ARnls["err:cannotlockobject"]                  =    "Kan inte l&aring;sa objekt %s";
+//	$ARnls["err:cannotmogrify"]                     =    "This object cannot be mogrified. This object will <b>not</b> be included in this operation."; // value from english
 	$ARnls["err:changetempdirfailed"]               =    "Kan inte byta mapp till %stemp/ ";
 	$ARnls["err:chooseotherfilename"]               =    "%s finns redan. V&auml;lj n&aring;got annat.";
 	$ARnls["err:containsobj"]                       =    "Objektet innneh&aring;ller andra objekt, ta bort dessa f&ouml;rst.";
@@ -134,6 +135,7 @@
 	$ARnls["err:nodatafordefaultlanguage"]          =    "Du har inte skrivit in n&aring;gra data f&ouml;r standard spr&aring;ket '%s'.";
 	$ARnls["err:nodirchanges"]                      =    "Inga mapp &auml;ndringar &auml;r till&aring;tna i mallnamnen.";
 	$ARnls["err:noexportfile"]                      =    "Export filen saknas. Finns inte i %s%s.";
+//	$ARnls["err:nogrants"]                          =    "You do not have the proper grants to perform this operation on this object. This object will <b>not</b> be included in this operation."; // value from english
 	$ARnls["err:noimagemagick"]                     =    "Kunde inte k&ouml;ra ImageMagick skalnings program (mogrify)<br>\n(%s)";
 	$ARnls["err:nolastnameentered"]                 =    "Du m&aring;ste ange efternamn";
 	$ARnls["err:nomovebelow"]                       =    "Du kan inte flytta ett objekt under sig sj&auml;lv.";
@@ -253,7 +255,6 @@
 	$ARnls["next"]                                  =    "Next";
 	$ARnls["no"]                                    =    "Nej";
 	$ARnls["none"]                                  =    "Ingen";
-//        $ARnls["err:nogrants"]                          =    "You don't have the proper grants to perform this operation on this object. This object <b>won't</b> be included in this operation."; //value from English
 	$ARnls["nopermimportnew"]                       =    "Inga r&auml;ttigheter att importera nya objekt";
 	$ARnls["nopermission"]                          =    "Du har inte r&auml;ttigheter att radera %s, forts&auml;tt?";
 	$ARnls["noprofile"]                             =    "Ingen profil";

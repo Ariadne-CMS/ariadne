@@ -1,4 +1,5 @@
 <?php
+
 	$ARnls["ariadne:about"]                         =    "Over...";
 	$ARnls["ariadne:ace_editor"]                    =    "Ace Editor";
 	$ARnls["ariadne:apkg:depends_on"]               =    "Depends op";
@@ -48,9 +49,9 @@
 	$ARnls["ariadne:editor:image_settings"]         =    "Instellingen: Afbeelding";
 	$ARnls["ariadne:editor:imageedit"]              =    "Bewerk afbeelding";
 	$ARnls["ariadne:editor:internal_link"]          =    "Interne link";
-	$ARnls["ariadne:editor:nofollow"]		=    "Zoekmachine: No follow";
 	$ARnls["ariadne:editor:language"]               =    "Taal";
 	$ARnls["ariadne:editor:newwindow"]              =    "Open in nieuw venster";
+	$ARnls["ariadne:editor:nofollow"]               =    "Zoekmachine: No follow";
 	$ARnls["ariadne:editor:popup"]                  =    "Open in popup";
 	$ARnls["ariadne:editor:preview"]                =    "Voorbeeld";
 	$ARnls["ariadne:editor:style"]                  =    "Stijl";
@@ -163,7 +164,6 @@
 	$ARnls["ariadne:svn:deleteconfirm"]             =    "Weet u zeker dat u dit template uit SVN wilt verwijderen?";
 	$ARnls["ariadne:svn:deleted"]                   =    "Verwijderd";
 	$ARnls["ariadne:svn:diff"]                      =    "Diff";
-	$ARnls["ariadne:svn:serverdiff"]				=    "Diff tegen server";
 	$ARnls["ariadne:svn:import"]                    =    "Import";
 	$ARnls["ariadne:svn:import_recursive"]          =    "SVN Recursive Import";
 	$ARnls["ariadne:svn:info"]                      =    "SVN Info";
@@ -178,6 +178,7 @@
 	$ARnls["ariadne:svn:resolved"]                  =    "Resolved";
 	$ARnls["ariadne:svn:revert"]                    =    "Revert";
 	$ARnls["ariadne:svn:revision"]                  =    "SVN Revision";
+	$ARnls["ariadne:svn:serverdiff"]                =    "Diff tegen server";
 	$ARnls["ariadne:svn:settings"]                  =    "SVN instellingen";
 	$ARnls["ariadne:svn:unsvn"]                     =    "Verwijder versiebeheer";
 	$ARnls["ariadne:svn:update"]                    =    "Update";
@@ -222,6 +223,7 @@
 	$ARnls["ariadne:types:psite"]                   =    "Site";
 	$ARnls["ariadne:types:puser"]                   =    "Gebruiker";
 	$ARnls["ariadne:up"]                            =    "Omhoog";
+	$ARnls["ariadne:uploader"]                      =    "Uploader";
 	$ARnls["ariadne:uploading"]                     =    "Uploading...";
 	$ARnls["ariadne:view"]                          =    "Beeld";
 	$ARnls["ariadne:viewweb"]                       =    "Toon webpagina";
@@ -250,7 +252,6 @@
 	$ARnls["err:svn:enterURL"]                      =    "Voer een valide SVN repository URL in.";
 	$ARnls["err:svn:leaving_recurse_tree"]          =    "Deze repository maakt geen deel uit van de repository-boom van deze actie.";
 	$ARnls["err:typetree_does_not_allow"]           =    "De typeboom instellingen staan dit object type hier niet toe.";
-	$ARnls["ariadne:uploader"]			=    "Uploader";
 
 
 ?>

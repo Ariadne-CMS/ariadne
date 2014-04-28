@@ -49,9 +49,9 @@
 	$ARnls["ariadne:editor:image_settings"]         =    "Image settings";
 	$ARnls["ariadne:editor:imageedit"]              =    "Edit image";
 	$ARnls["ariadne:editor:internal_link"]          =    "Internal link";
-	$ARnls["ariadne:editor:nofollow"]		=    "Search engine: no follow";
 	$ARnls["ariadne:editor:language"]               =    "Language";
 	$ARnls["ariadne:editor:newwindow"]              =    "Open in new window";
+	$ARnls["ariadne:editor:nofollow"]               =    "Search engine: no follow";
 	$ARnls["ariadne:editor:popup"]                  =    "Open in popup";
 	$ARnls["ariadne:editor:preview"]                =    "Preview";
 	$ARnls["ariadne:editor:style"]                  =    "Style";
@@ -164,7 +164,6 @@
 	$ARnls["ariadne:svn:deleteconfirm"]             =    "Are you sure you want to delete this template from SVN?";
 	$ARnls["ariadne:svn:deleted"]                   =    "Deleted";
 	$ARnls["ariadne:svn:diff"]                      =    "Diff";
-	$ARnls["ariadne:svn:serverdiff"]				=    "Diff against server";
 	$ARnls["ariadne:svn:import"]                    =    "Import";
 	$ARnls["ariadne:svn:import_recursive"]          =    "SVN Recursive Import";
 	$ARnls["ariadne:svn:info"]                      =    "SVN Info";
@@ -179,6 +178,7 @@
 	$ARnls["ariadne:svn:resolved"]                  =    "Resolved";
 	$ARnls["ariadne:svn:revert"]                    =    "Revert";
 	$ARnls["ariadne:svn:revision"]                  =    "SVN Revision";
+	$ARnls["ariadne:svn:serverdiff"]                =    "Diff against server";
 	$ARnls["ariadne:svn:settings"]                  =    "SVN Settings";
 	$ARnls["ariadne:svn:unsvn"]                     =    "Remove version control";
 	$ARnls["ariadne:svn:update"]                    =    "Update";
@@ -223,6 +223,7 @@
 	$ARnls["ariadne:types:psite"]                   =    "Site";
 	$ARnls["ariadne:types:puser"]                   =    "User";
 	$ARnls["ariadne:up"]                            =    "Up";
+	$ARnls["ariadne:uploader"]                      =    "Uploader";
 	$ARnls["ariadne:uploading"]                     =    "Uploading...";
 	$ARnls["ariadne:view"]                          =    "View";
 	$ARnls["ariadne:viewweb"]                       =    "View webpage";
@@ -251,6 +252,6 @@
 	$ARnls["err:svn:enterURL"]                      =    "Please enter a valid SVN repository URL.";
 	$ARnls["err:svn:leaving_recurse_tree"]          =    "This repository is not part of the repository tree of the parent.";
 	$ARnls["err:typetree_does_not_allow"]           =    "Typetree does not allow this object type here";
-	$ARnls["ariadne:uploader"]			=    "Uploader";
+
 
 ?>

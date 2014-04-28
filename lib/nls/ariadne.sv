@@ -57,6 +57,7 @@
 //	$ARnls["ariadne:editor:internal_link"]          =    "Internal link"; // value from english
 //	$ARnls["ariadne:editor:language"]               =    "Language"; // value from english
 //	$ARnls["ariadne:editor:newwindow"]              =    "Open in new window"; // value from english
+//	$ARnls["ariadne:editor:nofollow"]               =    "Search engine: no follow"; // value from english
 //	$ARnls["ariadne:editor:popup"]                  =    "Open in popup"; // value from english
 //	$ARnls["ariadne:editor:preview"]                =    "Preview"; // value from english
 //	$ARnls["ariadne:editor:style"]                  =    "Style"; // value from english
@@ -183,6 +184,7 @@
 //	$ARnls["ariadne:svn:resolved"]                  =    "Resolved"; // value from english
 //	$ARnls["ariadne:svn:revert"]                    =    "Revert"; // value from english
 //	$ARnls["ariadne:svn:revision"]                  =    "SVN Revision"; // value from english
+//	$ARnls["ariadne:svn:serverdiff"]                =    "Diff against server"; // value from english
 //	$ARnls["ariadne:svn:settings"]                  =    "SVN Settings"; // value from english
 //	$ARnls["ariadne:svn:unsvn"]                     =    "Remove version control"; // value from english
 //	$ARnls["ariadne:svn:update"]                    =    "Update"; // value from english
@@ -227,6 +229,7 @@
 //	$ARnls["ariadne:types:psite"]                   =    "Site"; // value from english
 //	$ARnls["ariadne:types:puser"]                   =    "User"; // value from english
 	$ARnls["ariadne:up"]                            =    "Upp";
+//	$ARnls["ariadne:uploader"]                      =    "Uploader"; // value from english
 //	$ARnls["ariadne:uploading"]                     =    "Uploading..."; // value from english
 	$ARnls["ariadne:view"]                          =    "Visa";
 	$ARnls["ariadne:viewweb"]                       =    "Visa webbsida ";
