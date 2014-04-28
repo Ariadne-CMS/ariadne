@@ -95,6 +95,15 @@
 						
 						if (!$copyinto) {
 							$targetpath = $copytarget;
+
+							if ($this->exists($targetpath)) {
+								foreach ($sources as $sourceparent) {
+									if (strstr($sourcepath, $sourceparent)) {
+										$targetpath .= substr($sourcepath, strlen($sourceparent), strlen($sourcepath));
+										break;
+									}
+								}
+							}
 						} else {
 							$targetpath = $copytarget_ob->path;
 							foreach ($sources as $sourceparent) {
@@ -107,6 +116,7 @@
 						}
 
 						$targetpath = preg_replace("|//|", "/", $targetpath);
+
 						$error = current($this->get($sourcepath, "system.copyto.phtml", array("target" => $targetpath)));
 						if ($error) {
 							?>
