@@ -1,6 +1,10 @@
 <?php
 	$grant = $this->getvar('grant');
 	$target = $this->getvar('target');
+	if (!$this->exists($target)) {
+		$target = $this->make_path($target . "../");
+	}
+
 	if ($this->exists($target)) {
 		$targetOb = current($this->get($target, "system.get.phtml"));
 		if ($targetOb->CheckSilent($grant)) {
@@ -8,5 +12,6 @@
 			return;
 		}
 	}
+
 	echo 0;
 ?>
