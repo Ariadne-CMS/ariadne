@@ -34,6 +34,11 @@
 			}
 		}
 
+		if (!$copytarget_ob) {
+			$this->error = sprintf($ARnls["err:filenameinvalidnoparent"], $copytarget, $copytarget);
+			return error($this->error);
+		}
+
 		if ($copytarget_ob->CheckLogin('add')) {
 			$target_typetree = $copytarget_ob->call("typetree.ini");
 			
