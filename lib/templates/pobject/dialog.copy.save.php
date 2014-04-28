@@ -106,7 +106,7 @@
 							}
 						}
 
-                                                $targetpath = preg_replace("|//|", "/", $targetpath);
+						$targetpath = preg_replace("|//|", "/", $targetpath);
 						$error = current($this->get($sourcepath, "system.copyto.phtml", array("target" => $targetpath)));
 						if ($error) {
 							?>
@@ -177,9 +177,9 @@
 					}
 				</script>
 <?php
-                    } else {
-                        echo $ARnls['err:typetree_does_not_allow'];
-                    }                
+		    } else {
+			echo $ARnls['err:typetree_does_not_allow'];
+		    }
 		} else {
 			echo $ARnls['err:no_add_on_target'];
 		}
