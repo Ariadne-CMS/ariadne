@@ -1918,7 +1918,7 @@ debug("loadLibrary: loading cache for $this->path");
 							$eventData->arRequestedNLS = $reqnls;
 							$result = ar_events::fire( 'onlanguagenotfound', $eventData );
 							if ( $result ) { // continue with default action: langaugeselect
-								$arCallArgs["arOriginalFunction"] = $result->arCallFunction;
+								$result->arCallArgs["arOriginalFunction"] = $result->arCallFunction;
 								$this->call("user.languageselect.html", $result->arCallArgs);
 								return false;
 							}
