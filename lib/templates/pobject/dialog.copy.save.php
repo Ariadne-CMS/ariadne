@@ -21,12 +21,12 @@
 
 		if ($this->getvar("sources")) {
 			$sources = $this->getvar('sources');
-                        $copytarget_ob = current($this->get($this->make_path($copytarget), "system.get.phtml"));
+			$copytarget_ob = current($this->get($this->make_path($copytarget), "system.get.phtml"));
 			$copyinto = true;
 		} else {
 			$sources = array($this->path);
 			if ($this->exists($copytarget)) {
-	                        $copytarget_ob = current($this->get($this->make_path($copytarget), "system.get.phtml"));
+				$copytarget_ob = current($this->get($this->make_path($copytarget), "system.get.phtml"));
 				$copyinto = true;
 			} else {
 				$copytarget_ob = current($this->get($this->make_path($copytargetparent), "system.get.phtml"));
@@ -92,7 +92,7 @@
 
 					foreach ($objects as $object) {
 						$sourcepath = $object->path;
-                                                
+						
 						if (!$copyinto) {
 							$targetpath = $copytarget;
 						} else {
