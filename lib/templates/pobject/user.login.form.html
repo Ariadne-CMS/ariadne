@@ -3,6 +3,7 @@
 		$arLoginMessage=$ARnls["loginrequired"];
 	}
 	global $nocache,$AR_PATH_INFO;
+	$ARLogin = $this->getvar('ARLogin');
 	$nocache=true;
 	// make sure no language select dialog is shown.
 	$ARCurrent->nolangcheck=true;
