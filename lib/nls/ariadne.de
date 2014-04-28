@@ -152,7 +152,7 @@
 //	$ARnls["ariadne:select:modified_last_year"]     =    "Modified last year"; // value from english
 //	$ARnls["ariadne:select:none"]                   =    "No filter"; // value from english
 //	$ARnls["ariadne:select:showall"]                =    "Force show all"; // value from english
-	$ARnls["ariadne:selectlanguage"]                =    "Wählen sie eine andere Sprache";
+	$ARnls["ariadne:selectlanguage"]                =    "Wählen Sie eine andere Sprache";
 	$ARnls["ariadne:settings"]                      =    "Eigenschaften";
 	$ARnls["ariadne:shortcut"]                      =    "Verknüpfung bearbeiten";
 	$ARnls["ariadne:small"]                         =    "Listenansicht";

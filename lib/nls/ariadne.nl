@@ -2,7 +2,7 @@
 
 	$ARnls["ariadne:about"]                         =    "Over...";
 	$ARnls["ariadne:ace_editor"]                    =    "Ace Editor";
-	$ARnls["ariadne:apkg:depends_on"]               =    "Depends op";
+	$ARnls["ariadne:apkg:depends_on"]               =    "Afhankelijk van";
 	$ARnls["ariadne:apkg:install"]                  =    "Installeer";
 	$ARnls["ariadne:apkg:install_package"]          =    "Installeer Ariadne package";
 	$ARnls["ariadne:apkg:installing"]               =    "Ariadne package wordt geinstalleerd...";
@@ -75,7 +75,7 @@
 	$ARnls["ariadne:grants:grants_explained"]       =    "Rechten verklaard voor ";
 	$ARnls["ariadne:grants:objects_with_grants"]    =    "Objecten met rechten geconfigureerd";
 	$ARnls["ariadne:grants:other_grants"]           =    "Andere rechten voor ";
-	$ARnls["ariadne:grants:users_with_grants"]      =    "Gebruikers met rechten op: ";
+	$ARnls["ariadne:grants:users_with_grants"]      =    "Gebruikers/groepen met rechten op: ";
 	$ARnls["ariadne:help"]                          =    "Help";
 	$ARnls["ariadne:iconview"]                      =    "Weergave";
 	$ARnls["ariadne:id"]                            =    "ID";
@@ -145,7 +145,7 @@
 	$ARnls["ariadne:select:modified_last_year"]     =    "Afgelopen jaar aangepast";
 	$ARnls["ariadne:select:none"]                   =    "Geen filter";
 	$ARnls["ariadne:select:showall"]                =    "Forceer alles tonen";
-	$ARnls["ariadne:selectlanguage"]                =    "Kies een taal";
+	$ARnls["ariadne:selectlanguage"]                =    "Kies een andere taal";
 	$ARnls["ariadne:settings"]                      =    "Instellingen";
 	$ARnls["ariadne:shortcut"]                      =    "Bewerk snelkoppeling ";
 	$ARnls["ariadne:small"]                         =    "Lijst";
@@ -168,14 +168,14 @@
 	$ARnls["ariadne:svn:import_recursive"]          =    "SVN Recursive Import";
 	$ARnls["ariadne:svn:info"]                      =    "SVN Info";
 	$ARnls["ariadne:svn:insubversion"]              =    "In versiebeheer";
-	$ARnls["ariadne:svn:message"]                   =    "Message";
+	$ARnls["ariadne:svn:message"]                   =    "Bericht";
 	$ARnls["ariadne:svn:modified"]                  =    "Veranderd";
 	$ARnls["ariadne:svn:nomod"]                     =    "Geen wijzigingen";
-	$ARnls["ariadne:svn:notworkingcopy"]            =    "Not a working copy";
+	$ARnls["ariadne:svn:notworkingcopy"]            =    "Geen werkende kopie";
 	$ARnls["ariadne:svn:password"]                  =    "SVN password";
 	$ARnls["ariadne:svn:repository"]                =    "SVN repository";
-	$ARnls["ariadne:svn:repository_information"]    =    "Repository information";
-	$ARnls["ariadne:svn:resolved"]                  =    "Resolved";
+	$ARnls["ariadne:svn:repository_information"]    =    "Repository informatie";
+	$ARnls["ariadne:svn:resolved"]                  =    "Opgelost";
 	$ARnls["ariadne:svn:revert"]                    =    "Revert";
 	$ARnls["ariadne:svn:revision"]                  =    "SVN Revision";
 	$ARnls["ariadne:svn:serverdiff"]                =    "Diff tegen server";
@@ -183,14 +183,14 @@
 	$ARnls["ariadne:svn:unsvn"]                     =    "Verwijder versiebeheer";
 	$ARnls["ariadne:svn:update"]                    =    "Update";
 	$ARnls["ariadne:svn:update_recursive"]          =    "SVN Recursive Update";
-	$ARnls["ariadne:svn:username"]                  =    "SVN username";
+	$ARnls["ariadne:svn:username"]                  =    "SVN gebruikersnaam";
 	$ARnls["ariadne:template:char"]                 =    "Byte";
 	$ARnls["ariadne:template:col"]                  =    "Kolom";
 	$ARnls["ariadne:template:private"]              =    "Private";
 	$ARnls["ariadne:template:row"]                  =    "Rij";
 	$ARnls["ariadne:template_editor"]               =    "Template editor";
 	$ARnls["ariadne:templateeditor:ace"]            =    "ACE";
-	$ARnls["ariadne:templateeditor:textarea"]       =    "Textveld";
+	$ARnls["ariadne:templateeditor:textarea"]       =    "Tekstveld";
 	$ARnls["ariadne:templates"]                     =    "Zet templates voor ";
 	$ARnls["ariadne:too_many_objects_found"]        =    "Te veel objecten gevonden.";
 	$ARnls["ariadne:tutorials"]                     =    "Voorbeelden";
@@ -232,7 +232,7 @@
 	$ARnls["ariadne:workspace:create"]              =    "Aangemaakt";
 	$ARnls["ariadne:workspace:delete"]              =    "Verwijderd";
 	$ARnls["ariadne:workspace:diff_selected"]       =    "Toon verschillen";
-	$ARnls["ariadne:workspace:hardlinks_found"]     =    "Hardlinks gevinden, hier geen workspace gebruiken.";
+	$ARnls["ariadne:workspace:hardlinks_found"]     =    "Hardlinks gevonden, hier geen workspace gebruiken.";
 	$ARnls["ariadne:workspace:manage_workspace"]    =    "Beheer workspace";
 	$ARnls["ariadne:workspace:move"]                =    "Verplaatst";
 	$ARnls["ariadne:workspace:revert_selected"]     =    "Selectie verwerpen";
@@ -245,7 +245,7 @@
 	$ARnls["ariadne:workspace:workspace"]           =    "Workspace";
 	$ARnls["ariadne:wysiwyg_editor"]                =    "WYSIWYG editor";
 	$ARnls["err:customdatanameinuse"]               =    "deze naam is al in gebruik.";
-	$ARnls["err:defaultlanguagenotavailable"]       =    "De gekozen standaard taal is niet als beschikbaar gekozen.";
+	$ARnls["err:defaultlanguagenotavailable"]       =    "De gekozen standaardtaal is niet als beschikbare taal gekozen.";
 	$ARnls["err:no_add_on_target"]                  =    "Er zijn geen &quot;toevoeg&quot;-rechten op het doel";
 	$ARnls["err:nocustomdataname"]                  =    "Er moet een naam worden opgegeven.";
 	$ARnls["err:nosalt"]                            =    "Er is geen &quot;salt&quot; geconfigureerd in Ariadne. Voeg deze toe aan de hoofdconfiguratie van Ariadne om gebruik te kunnen maken van rechtensleutels.";
