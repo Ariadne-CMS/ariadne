@@ -106,7 +106,7 @@ class mysql_compiler extends sql_compiler {
 					}
 				} else {
 					$this->used_tables["$table as $table$record_id"] = $table.$record_id;
-			//		$this->select_tables[$table." as $table$record_id"] = 1;
+					//$this->select_tables[$table." as $table$record_id"] = 1;
 
 					$result = " $table$record_id.AR_name = '$field' ";
 					if (!$this->in_orderby && !$no_context_join) {
@@ -171,7 +171,7 @@ class mysql_compiler extends sql_compiler {
 					case '!~':
 					case '!~~':
 						$not="NOT ";
- 					case '~=':
+					case '~=':
 					case '=~':
 					case '=~~':
 						$likeOp = true;
@@ -235,7 +235,7 @@ class mysql_compiler extends sql_compiler {
 					}
 					$result=" $left $operator $right ";
 				} else {
-					$type	= $this->compile_tree($node["right"]);
+					$type = $this->compile_tree($node["right"]);
 					switch ($operator) {
 						case '!=':
 							$result=" (".$this->tbl_prefix."objects.type not in (select type from ".$this->tbl_prefix."types where implements = $type )) ";
@@ -355,8 +355,8 @@ class mysql_compiler extends sql_compiler {
 			$orderby = " order by $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
 		}
 
-		$select_query =	"select distinct($nodes.path), $objects.id, $nodes.parent, $nodes.priority, $objects.type, ".
-					" $objects.object, UNIX_TIMESTAMP($objects.lastchanged) as lastchanged, $objects.vtype ";
+		$select_query = "select distinct($nodes.path), $objects.id, $nodes.parent, $nodes.priority, $objects.type, ".
+		                " $objects.object, UNIX_TIMESTAMP($objects.lastchanged) as lastchanged, $objects.vtype ";
 		$select_query .= "from ($tables) $join $query "; 
 
 		$select_query .= $orderby . " $this->limit_s ";
