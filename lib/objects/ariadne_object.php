@@ -1900,7 +1900,7 @@ debug("loadLibrary: loading cache for $this->path");
 				$ARConfigChecked = true;
 				$result = ar_events::fire( 'onbeforeview', $eventData );
 				$ARConfigChecked = $initialConfigChecked;
-				if ( $arCallFunction && !$result ) { //prevent default action: view, only if the template is pinp overrideable
+				if ( !$result ) { //prevent default action: view
 					return false;
 				}
 			}
