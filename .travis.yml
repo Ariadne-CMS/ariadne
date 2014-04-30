@@ -1,6 +1,7 @@
 # .travis.yml
 env:
     - DB=mysql
+    - DB=postgresql
 
 language: php
 
@@ -9,7 +10,7 @@ php:
 
 before_install:
     - sudo apt-get update -qq
-    - sudo apt-get install -qq apache2 libapache2-mod-php5 php5-curl php5-mysql imagemagick php5-mcrypt wget php-pear lynx subversion tidy
+    - sudo apt-get install -qq apache2 libapache2-mod-php5 php5-curl php5-mysql php5-pgsql imagemagick php5-mcrypt wget php-pear lynx subversion tidy
     - sudo a2enmod actions
     - sudo a2enmod rewrite
     - sudo ln -s ${TRAVIS_BUILD_DIR}/www /var/www/ariadne
@@ -21,6 +22,7 @@ before_install:
 before_script:
     - sh -c "echo \"<?php \\\$ariadne='${TRAVIS_BUILD_DIR}/lib'; ?>\" | tee ${TRAVIS_BUILD_DIR}/www/ariadne.inc"
     - sh -c "if [ ${DB} = 'mysql' ]; then mysqladmin -u root create ariadne; fi"
+    - sh -c "if [ ${DB} = 'postgresql' ]; then psql -c 'create database ariadne;' -U postgres; fi"
 
 script:
     - bash -e ./tests/run.sh
