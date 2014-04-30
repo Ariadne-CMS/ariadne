@@ -71,7 +71,7 @@
 		$database = '';
 	}
 
-	if (!$database_host) {
+	if (!isset($database_host)) {
 		$database_host = $defaults['database_host'];
 	}
 
