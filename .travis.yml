@@ -1,7 +1,6 @@
 # .travis.yml
 env:
     - DB=mysql
-    - DB=postgresql
 
 language: php
 
