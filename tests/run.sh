@@ -7,7 +7,7 @@ if [ "${TRAVIS}" = "true" ] ; then
 	URL='http://localhost/ariadne/';
 	TESTDB='ariadne'
 	DB="${DB}"
-else 
+else
 	BUILDROOT="${1}"
 	URL="${2}"
 	TESTDB="${3}"
