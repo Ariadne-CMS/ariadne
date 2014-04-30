@@ -32,7 +32,7 @@ fi
 
 # Install and check install result, is should contain "Ariadne is installed!" and no "Error", "Warning", "Notice"
 if [ ${DB:=mysql} = 'postgresql' ] ; then
-	INSTALLDATA="language=en&step=step6&database=postgresql&database_host=localhost&database_user=postgres&database_pass=&database_name=${TESTDB}&admin_pass=test&admin_pass_repeat=test&ariadne_location&enable_svn=0&enable_workspaces=0&install_demo=1"
+	INSTALLDATA="language=en&step=step6&database=postgresql&database_host=&database_user=postgres&database_pass=&database_name=${TESTDB}&admin_pass=test&admin_pass_repeat=test&ariadne_location&enable_svn=0&enable_workspaces=0&install_demo=1"
 else
 	INSTALLDATA="language=en&step=step6&database=mysql&database_host=localhost&database_user=root&database_pass=&database_name=${TESTDB}&admin_pass=test&admin_pass_repeat=test&ariadne_location&enable_svn=0&enable_workspaces=0&install_demo=1"
 fi
@@ -117,9 +117,6 @@ LOGIN_END_HTML=`grep "</html>" ${TMPDIR}/ariadne.login.txt|wc -l`
 LOGIN_ERRORS=`grep -i error ${TMPDIR}/ariadne.login.txt|wc -l`
 LOGIN_WARNINGS=`grep -i warning ${TMPDIR}/ariadne.login.txt|wc -l`
 LOGIN_NOTICE=`grep -i notice ${TMPDIR}/ariadne.login.txt|wc -l`
-
-cat ${TMPDIR}/ariadne.login.txt
-
 
 if [ $LOGIN_ERRORS -gt 0 ]; then
 	echo "Login screen reported errors:";
