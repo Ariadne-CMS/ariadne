@@ -61,9 +61,8 @@ class postgresqlstore extends store {
 
 		$query_string = (($config["host"]) ? "host='".$config["host"]."'" : "").
 			" user='".$config["user"]."'".
-			" password='".$config["password"]."'".
+			(($config["password"]) ? " password='".$config["password"]."'" : "").
 			" dbname='".$config["database"]."'";
-
 		$this->connect_id = pg_pconnect($query_string) OR DIE ("Could not connect to PostgreSQL database ".$config["database"].". Please create this database manually." );
 		$this->root = $path;
 		$this->code = $config["code"];
