@@ -331,13 +331,28 @@
 	}
 
 	function check_connect_db_postgresql($conf) {
-		if (strpos(':', $conf->host)) {
-			list($host,$port) = explode($conf->host, ':');
-			$host .= ' port='.$port;
-		} else {
-			$host = $conf->host;
+		$port = null;
+		$host = $conf->host;
+		if ( strpos($conf->host,':') !== false) {
+			list($host,$port) = explode($conf->host, ':',2);
 		}
-		$conf->connection = @pg_connect('host='.$host.' dbname='.$conf->database.' user='.$conf->user.' password='.$conf->password);
+
+		if( $conf->host == ''){
+			$hoststr = '';
+		} else {
+			$hoststr = 'host='.$conf->host;
+		}
+
+		if ($port) {
+			$hoststr = $hoststr .= ' port='.$port;
+		}
+
+		if( $conf->password != '' ){
+			$password = ' password='.$conf->password;
+		}
+
+		$connstring = $hoststr.' dbname='.$conf->database.' user='.$conf->user . ' ' .$password;
+		$conf->connection = pg_connect($connstring);
 		return (bool) $conf->connection;
 	}
 
