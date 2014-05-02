@@ -150,10 +150,12 @@
 							"newversion" => "8.0"
 							));
 		case "8.0":
+		case "8.1":
+		case "8.2":
 				array_push($todo, Array(
-							"description" => "Bumping revision to 8.1",
+							"description" => "Bumping revision to 8.3",
 							"operation" => "all/dummy.php",
-							"newversion" => "8.1"
+							"newversion" => "8.3"
 							));
 	}
 
