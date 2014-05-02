@@ -19,9 +19,9 @@
 			<div id="tabsdata">
 				<div id="data">
 					<div id="version">
-						Version 8.1<br>
-						November 6; 2013<br><br>
-						&copy; 1998 - 2013 <a href="http://www.muze.nl/" target="_blank">Muze</a>
+						Version 8.3<br>
+						May 2 ; 2014<br><br>
+						&copy; 1998 - 2014 <a href="http://www.muze.nl/" target="_blank">Muze</a>
 					</div>
 					<form action="">
 						<div>
@@ -29,7 +29,7 @@
 						</div>
 					</form>
 					<div id="disclaimer">
-						Ariadne comes with ABSOLUTELY NO WARRANTY. Ariadne is free software, you are welcome to redistribute it under certain <a href="help.about.license.phtml" target="_blank">conditions</a>.<br>&nbsp;</span>
+						Ariadne comes with ABSOLUTELY NO WARRANTY. Ariadne is free software, you are welcome to redistribute it under certain <a href="help.about.license.php" target="_blank">conditions</a>.<br>&nbsp;</span>
 					</div>
 				</div>
 			</div>
