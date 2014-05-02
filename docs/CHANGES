@@ -1,4 +1,65 @@
 ========================
+Changes in Ariadne 8.3
+========================
+
+Features
+ - Added file upload error detection
+ - Added support for CSRF protection in backend dialogs
+ - Added support for CSRF protection in ar_html_form
+ - Added dragdrop support for file uploads
+ - Added support for selections in Ariadne backend
+ - Updated ar_connect_twitter for the new Twitter Api
+ - Added svn diff against server support for templates
+ - Switched to composer for external dependicies
+ - cleanup will now also cleanup the public and private cache
+ - Added system.get.template.php to retrieve template code
+ - Added filter option to ar_html_menu
+ - Added experimental firephp logging to mod_debug
+ - Session cookies are now restricted to http only and in https mode to secure.
+ - Default admin user may now be disabled by another user in the admin group
+
+Bugfixes
+ - Removed all php short tags
+ - empty cache images are no longer considered an error
+ - config.ini is more robust, now allows calls to templates on child objects
+ - group edit dialog now supports more than 100 groups
+ - Fixed typo in ar_connect_rss
+ - Fixed caching of ariadnwe.load.js
+ - onbeforeview event can now also prevent the default view action
+ - onbeforeview event now also fires for system templates: *.phtml or *.php
+ - Fixed installer for postgresql with unix sockets
+ - Fixed postgres store for passwordless configurations
+
+
+Update
+ - A lot of small fixes and cleanup
+ - Updated German translations
+ - renamed contructor functions to __construct
+ - the mysql4 store is fully integrated in the default mysqlstore
+ - On various places in the backend redirect browser to the right place after move or delete operations
+ - Removed defunct virus scanner support
+ - Default image quality for convert is now 92 instead of 75
+ - ESI now has loop prevention , '$AR->ESI' is now a int for configuring the amount of loops
+ - the 'magic' Admin grants are now checked against the admin group
+ - optimized ar_storeFind::count
+
+
+
+
+========================
+Changes in Ariadne 8.2
+========================
+
+This release is an replacement for the 8.1 release because we managed to release a bad build.
+
+Bugfixes
+ - reverted 2 commits which should not have been in the 8.1 release. This broke
+	the backend in some special ways. This was related to multiple select and
+	filtering in the backend and dialogs
+
++========================
+
+========================
 Changes in Ariadne 8.1
 ========================
 
