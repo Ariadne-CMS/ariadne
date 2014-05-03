@@ -350,206 +350,155 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		debug("pobject: save: path=".$this->path,"object");
 		$result=false;
 		$configcache=$this->loadConfig();
+		$needsUnlock = false;
+		$arisNewObject = false;
+		$result = false;
 		if ($this->arIsNewObject) { // save a new object
 			debug("pobject: save: new object","all");
 			$this->path = $this->make_path();
 			$arNewParent=$this->make_path("..");
 			$arNewFilename=basename($this->path);
-			if (!preg_match("/\.\./i",$arNewFilename)) {
-				if (preg_match("|^[a-z0-9_\{\}\.\:-]+$|i",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
-					if (!$this->exists($this->path)) { //arNewFilename)) {
-						if ($this->exists($arNewParent)) {
-							if (!$config = $this->data->config) {
-								$config=new object();
-							}
-							if ($ARCurrent->arCallStack) {
-								$arCallArgs=end($ARCurrent->arCallStack);
-							}
-							$context = $this->getContext();
-
-							$eventData = new object();
-							$eventData->arCallArgs = $arCallArgs;
-							$eventData->arCallFunction	= $context['arCallFunction'];
-							$eventData->arIsNewObject = true;
-							$eventData = ar_events::fire( 'onbeforesave', $eventData );
-							if ( !$eventData ) {
-								return false; // prevent saving of the object.
-							}
-							$arCallArgs = $eventData->arCallArgs;
-
-							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
-							$wf_object->arIsNewObject=true;
-							$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);
-							if (is_array($eventData->arProperties)) {
-								if (is_array($wf_result)) {
-									$wf_result = array_merge_recursive($wf_result, $eventData->arProperties);
-								} else {
-									$wf_result = $eventData->arProperties;
-								}
-							}
-							$this->error = $wf_object->error;
-							$this->priority = $wf_object->priority;
-							$this->data = $wf_object->data;
-							$this->data->config = $config;
-							$this->data->ctime=time();
-							$this->data->mtime=$this->data->ctime;
-							$this->data->muser=$AR->user->data->login;
-							if( !$this->data->config->owner ) {
-								if( !$this->data->config->owner_name) { 
-									$this->data->config->owner_name=$AR->user->data->name;
-								}
-								$this->data->config->owner=$AR->user->data->login;
-							}
-							$properties["time"][0]["ctime"]=$this->data->ctime;
-							$properties["time"][0]["mtime"]=$this->data->mtime;
-							$properties["time"][0]["muser"]="'".AddSlashes($this->data->muser)."'";
-							$properties["owner"][0]["value"]="'".AddSlashes($this->data->config->owner)."'";
-
-							/* save custom data */
-							$properties = $this->saveCustomData($configcache, $properties);
-
-							/* merge workflow properties */
-							if ( is_array($wf_result) ){
-								$properties = $this->saveMergeWorkflowResult($properties,$wf_result);
-							}
-							if (!$this->error) {
-								if ($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)) {
-									unset($this->arIsNewObject);
-									$this->id=$this->exists($this->path);
-
-									$config=$this->data->config; // need to set it again, to copy owner config data
-									
-									$arCallArgs = $eventData->arCallArgs; // returned from onbeforesave event
-									$arCallArgs['properties'] = $properties;
-																		
-									$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
-									$wf_object->arIsNewObject = true;
-									$wf_result = $wf_object->call("user.workflow.post.html", $arCallArgs);
-									$this->error = $wf_object->error;
-									$this->priority = $wf_object->priority;
-									$this->data = $wf_object->data;
-									$this->data->config = $config;
-									/* merge workflow properties */
-									if ( is_array($wf_result) ){
-										$properties = $this->saveMergeWorkflowResult($properties,$wf_result);
-										if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) {
-											$this->error = $this->store->error;
-										}
-									}
-									// all save actions have been done, fire onsave.
-
-									$eventData->arProperties = $properties;
-									ar_events::fire( 'onsave', $eventData ); // nothing to prevent here, so ignore return value
-								} else {
-									$this->error=$this->store->error;
-								}
-								$result=$this->path;
-							}
-						} else {
-							$this->error=sprintf($ARnls["err:noparent"],$arNewParent);
+			$arisNewObject = false;
+			if (preg_match("|^[a-z0-9_\{\}\.\:-]+$|i",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
+				if (!$this->exists($this->path)) { //arNewFilename)) {
+					if ($this->exists($arNewParent)) {
+						if (!$config = $this->data->config) {
+							$config=new object();
 						}
 					} else {
-						$this->error=sprintf($ARnls["err:alreadyexists"],$arNewFilename);
+						$this->error=sprintf($ARnls["err:noparent"],$arNewParent);
 					}
 				} else {
-					$this->error=sprintf($ARnls["err:fileillegalchars"],$arNewFilename);
+					$this->error=sprintf($ARnls["err:alreadyexists"],$arNewFilename);
 				}
 			} else {
-				$this->error=sprintf($ARnls["err:filenamedirup"],$arNewFilename);
+				$this->error=sprintf($ARnls["err:fileillegalchars"],$arNewFilename);
 			}
-		} else { // update an existing object
+		} else { // existing object
 			debug("pobject: save: existing object","all");
 			if ($this->exists($this->path)) { // prevent 'funny stuff'
-				if ($this->lock()) {
-					$config = $this->data->config;
-					
-					if ($ARCurrent->arCallStack) {
-						$arCallArgs=end($ARCurrent->arCallStack);
-					}
-					$context = $this->getContext();
-
-					$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
-
-					$this->pushContext(array('scope' => 'php', 'arCurrentObject' => $wf_object));
-
-					$eventData = new object();
-					$eventData->arCallArgs = $arCallArgs;
-					$eventData->arCallFunction = $context['arCallFunction'];
-					$eventData->arIsNewObject = false;
-					$eventData = ar_events::fire( 'onbeforesave', $eventData );
-
-					$this->popContext();
-
-					if ( !$eventData ) {
-						return false; // prevent saving of the object.
-					}
-					$arCallArgs = $eventData->arCallArgs;
-
-					$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);
-					if (is_array($eventData->arProperties)) {
-						if (is_array($wf_result)) {
-							$wf_result = array_merge_recursive($wf_result, $eventData->arProperties);
-						} else {
-							$wf_result = $eventData->arProperties;
-						}
-					}
-					$this->error = $wf_object->error;
-					$this->priority = $wf_object->priority;
-					$this->data = $wf_object->data;
-					$this->data->config = $config;
-					$this->data->mtime=time();
-					$this->data->muser=$AR->user->data->login;
-					$properties["time"][0]["ctime"]=$this->data->ctime;
-					$properties["time"][0]["mtime"]=$this->data->mtime;
-					$properties["time"][0]["muser"]="'".AddSlashes($AR->user->data->login)."'";
-					$custom = $this->getdata("custom","none");
-
-					/* save custom data */
-					$properties = $this->saveCustomData($configcache, $properties);
-
-					if ( is_array($wf_result) ){
-						$properties = $this->saveMergeWorkflowResult($properties,$wf_result);
-					}
-					if (!$this->error) {
-						if ($this->path = $this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)){
-							$this->id = $this->store->exists( $this->path );
-							$result=$this->path;
-							$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
-							$arCallArgs = $eventData->arCallArgs;
-							$arCallArgs['properties'] = $properties;
-							$wf_result = $wf_object->call("user.workflow.post.html", $arCallArgs);
-							$this->error = $wf_object->error;
-							$this->priority = $wf_object->priority;
-							$this->data = $wf_object->data;
-							$this->data->config = $config;
-							if ( is_array($wf_result) ) {
-								$properties = $this->saveMergeWorkflowResult($properties,$wf_result);
-								if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) {
-									$this->error = $this->store->error;
-								}
-							}
-							$this->data->config = $config;
-							//$this->ClearCache($this->path, true, false);
-							// all save actions have been done, fire onsave.
-							$eventData->arProperties = $properties;
-
-							$this->pushContext(array('scope' => 'php', 'arCurrentObject' => $this));
-							ar_events::fire( 'onsave', $eventData ); // nothing to prevent here, so ignore return value
-							$this->popContext();
-
-						} else {
-							$this->error = $this->store->error;
-							$result = false;
-						}
-					}
+				if (!$this->lock()) {
+					$this->error=$ARnls["err:objectalreadylocked"];
 				} else {
-					$this->error=$ARnls["err:corruptpathnosave"];
+					$needsUnlock = true;
+					$config = $this->data->config;
 				}
-				$this->unlock();
 			} else {
-				$this->error=$ARnls["err:objectalreadylocked"];
+				$this->error=$ARnls["err:corruptpathnosave"];
 			}
 		}
+		// pre checks done
+		// return now on error
+		if($this->error) {
+			return $result;;
+		}
+
+
+		if ($ARCurrent->arCallStack) {
+			$arCallArgs=end($ARCurrent->arCallStack);
+		}
+		$context = $this->getContext();
+
+		$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+
+		$this->pushContext(array('scope' => 'php', 'arCurrentObject' => $wf_object));
+
+		$eventData = new object();
+		$eventData->arCallArgs = $arCallArgs;
+		$eventData->arCallFunction	= $context['arCallFunction'];
+		$eventData->arIsNewObject = $arIsNewObject;
+		$eventData = ar_events::fire( 'onbeforesave', $eventData );
+
+		$this->popContext();
+
+		if ( !$eventData ) {
+			return false; // prevent saving of the object.
+		}
+		$arCallArgs = $eventData->arCallArgs;
+
+		if ( $arIsNewObject) {
+			$wf_object->arIsNewObject=$arIsNewObject;
+		}
+		$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);
+		if (is_array($eventData->arProperties)) {
+			if (is_array($wf_result)) {
+				$wf_result = array_merge_recursive($wf_result, $eventData->arProperties);
+			} else {
+				$wf_result = $eventData->arProperties;
+			}
+		}
+		$this->error = $wf_object->error;
+		$this->priority = $wf_object->priority;
+		$this->data = $wf_object->data;
+		$this->data->config = $config;
+		$this->data->mtime=time();
+		if($arIsNewObject) {
+			$this->data->ctime=$this->data->mtime;
+		}
+			
+		$this->data->muser=$AR->user->data->login;
+		if( !$this->data->config->owner ) {
+			if( !$this->data->config->owner_name) { 
+				$this->data->config->owner_name=$AR->user->data->name;
+			}
+			$this->data->config->owner=$AR->user->data->login;
+			$properties["owner"][0]["value"]="'".AddSlashes($this->data->config->owner)."'";
+		}
+		$properties["time"][0]["ctime"]=$this->data->ctime;
+		$properties["time"][0]["mtime"]=$this->data->mtime;
+		$properties["time"][0]["muser"]="'".AddSlashes($this->data->muser)."'";
+
+		/* save custom data */
+		$properties = $this->saveCustomData($configcache, $properties);
+
+		/* merge workflow properties */
+		if ( is_array($wf_result) ){
+			$properties = $this->saveMergeWorkflowResult($properties,$wf_result);
+		}
+		if (!$this->error) {
+			if ($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)) {
+				unset($this->arIsNewObject);
+				$this->id=$this->exists($this->path);
+				$result=$this->path;
+
+				$config=$this->data->config; // need to set it again, to copy owner config data
+				
+				$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
+				$arCallArgs = $eventData->arCallArgs; // returned from onbeforesave event
+				$arCallArgs['properties'] = $properties;
+
+				if($arIsNewObject) {
+					$wf_object->arIsNewObject = $arIsNewObject;
+				}
+				$wf_result = $wf_object->call("user.workflow.post.html", $arCallArgs);
+				$this->error = $wf_object->error;
+				$this->priority = $wf_object->priority;
+				$this->data = $wf_object->data;
+				$this->data->config = $config;
+				/* merge workflow properties */
+				if ( is_array($wf_result) ){
+					$properties = $this->saveMergeWorkflowResult($properties,$wf_result);
+					if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) {
+						$this->error = $this->store->error;
+					}
+				}
+				// all save actions have been done, fire onsave.
+				$this->data->config = $config;
+
+				//$this->ClearCache($this->path, true, false);
+				$eventData->arProperties = $properties;
+				$this->pushContext(array('scope' => 'php', 'arCurrentObject' => $this));
+				ar_events::fire( 'onsave', $eventData ); // nothing to prevent here, so ignore return value
+				$this->popContext();
+			} else {
+				$this->error=$this->store->error;
+				$result = false;
+			}
+		}
+		if( $needsUnlock == true ){
+			$this->unlock();
+		}
+
 		if ($this->data->nls->list[$this->nls]) {
 			$mynlsdata=$this->data->{$this->nls};
 		} else if ($this->data->nls->default) {
@@ -557,8 +506,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		} else {
 			$mynlsdata=$this->data;
 		}
+
 		unset($this->nlsdata);
 		$this->nlsdata=$mynlsdata;
+
 		debug("pobject: save: end","all");
 		return $result;
 	}
