@@ -288,6 +288,57 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $properties;
 	}
 
+	/*
+		saves custom data
+		returns properties for custom data
+	*/
+	private function saveCustomData($configcache, $properties) {
+		$custom = $this->getdata("custom", "none");
+		@parse_str($custom);
+		if (is_array($custom)) {
+			foreach($custom as $nls=>$entries){
+				if (is_array($entries)) {
+					foreach ( $entries as $customkey => $customval ){
+						$this->data->custom[$nls][$customkey] = $customval;
+					}
+				}
+			}
+		}
+		// the above works because either $custom comes from the form entry, and parse_str returns an 
+		// array with the name $custom, or $custom comes from the object and is an array and as such 
+		// parse_str fails miserably thus keeping the array $custom intact.
+
+		$i=0;
+		if (is_array($this->data->custom)) {
+			foreach($this->data->custom as $nls => $cdata) {
+				foreach($cdata as $name => $value){
+					// one index, this order (name, value, nls) ?
+					if ($configcache->custom[$name]['containsHTML']) {
+						$this->_load('mod_url.php');
+						$value = URL::RAWtoAR($value, $nls);
+						$this->data->custom[$nls][$name] = $value;
+					}
+					if ($configcache->custom[$name]['property']) {
+						if (is_array($value)) {
+							foreach($value as $valkey => $valvalue ) {
+								$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
+								$properties["custom"][$i]["value"]="'".AddSlashes($valvalue)."'";
+								$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
+								$i++;
+							}
+						} else {
+							$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
+							$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
+							$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
+							$i++;
+						}
+					}
+				}
+			}
+		}
+		return $properties;
+	}
+
 	function save($properties="", $vtype="") {
 	/***********************************************************************
 	  save the current object.
@@ -348,53 +399,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 								}
 								$this->data->config->owner=$AR->user->data->login;
 							}
-							$custom = $this->getdata("custom", "none");
-							@parse_str($custom);
-							if (is_array($custom)) {
-								reset($custom);
-								foreach($custom as $nls=>$entries){
-									if (is_array($entries)) {
-										foreach ( $entries as $customkey => $customval ){
-											$this->data->custom[$nls][$customkey] = $customval;
-										}
-									}
-								}
-							}
-							// the above works because either $custom comes from the form entry, and parse_str returns an 
-							// array with the name $custom, or $custom comes from the object and is an array and as such 
-							// parse_str fails miserably thus keeping the array $custom intact.
 							$properties["time"][0]["ctime"]=$this->data->ctime;
 							$properties["time"][0]["mtime"]=$this->data->mtime;
 							$properties["time"][0]["muser"]="'".AddSlashes($this->data->muser)."'";
 							$properties["owner"][0]["value"]="'".AddSlashes($this->data->config->owner)."'";
-							$i=0;
-							if (is_array($this->data->custom)) {
-								foreach($this->data->custom as $nls => $cdata) {
-									foreach($cdata as $name => $value){
-										// one index, this order (name, value, nls) ?
-										if ($configcache->custom[$name]['containsHTML']) {
-											$this->_load('mod_url.php');
-											$value = URL::RAWtoAR($value, $nls);
-											$this->data->custom[$nls][$name] = $value;
-										}
-										if ($configcache->custom[$name]['property']) {
-											if (is_array($value)) {
-												foreach($value as $valkey => $valvalue ) {
-													$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
-													$properties["custom"][$i]["value"]="'".AddSlashes($valvalue)."'";
-													$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
-													$i++;
-												}
-											} else {
-												$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
-												$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
-												$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
-												$i++;
-											}
-										}
-									}
-								}
-							}
+
+							/* save custom data */
+							$properties = $this->saveCustomData($configcache, $properties);
+
 							/* merge workflow properties */
 							if ( is_array($wf_result) ){
 								$properties = $this->saveMergeWorkflowResult($properties,$wf_result);
@@ -491,47 +503,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					$properties["time"][0]["mtime"]=$this->data->mtime;
 					$properties["time"][0]["muser"]="'".AddSlashes($AR->user->data->login)."'";
 					$custom = $this->getdata("custom","none");
-					@parse_str($custom);
-					// see comments above
-					if (is_array($custom)) {
-						foreach($custom as $nls => $entries){
-							if (is_array($entries)) {
-								foreach($entries as $customkey => $customval ){
-									$this->data->custom[$nls][$customkey] = $customval;
-								}
-							}
-						}
-					}
-					$i=0;
-					if (is_array($this->data->custom)) {
-						foreach($this->data->custom as $nls => $cdata){
-							if ( is_array( $cdata ) ) {
-								foreach($cdata as $name => $value ){
-									if ($configcache->custom[$name]['containsHTML']) {
-										$this->_load('mod_url.php');
-										$value = URL::RAWtoAR($value, $nls);
-										$this->data->custom[$nls][$name] = $value;
-									}
-									if ($configcache->custom[$name]['property']) {
-										// one index, this order (name, value, nls) ?
-										if (is_array($value)) {
-											foreach($value as $valkey => $valvalue){
-												$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
-												$properties["custom"][$i]["value"]="'".AddSlashes($valvalue)."'";
-												$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
-												$i++;
-											}
-										} else {
-											$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
-											$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
-											$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
-											$i++;
-										}
-									}
-								}
-							}
-						}
-					}
+
+					/* save custom data */
+					$properties = $this->saveCustomData($configcache, $properties);
+
 					if ( is_array($wf_result) ){
 						$properties = $this->saveMergeWorkflowResult($properties,$wf_result);
 					}
