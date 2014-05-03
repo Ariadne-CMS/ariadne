@@ -352,8 +352,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$configcache=$this->loadConfig();
 		if ($this->arIsNewObject) { // save a new object
 			debug("pobject: save: new object","all");
+			$this->path = $this->make_path();
 			$arNewParent=$this->make_path("..");
-			$arNewFilename=substr($this->path, strlen($arNewParent), -1);
+			$arNewFilename=basename($this->path);
 			if (!preg_match("/\.\./i",$arNewFilename)) {
 				if (preg_match("|^[a-z0-9_\{\}\.\:-]+$|i",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
 					if (!$this->exists($this->path)) { //arNewFilename)) {
@@ -458,8 +459,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			}
 		} else { // update an existing object
 			debug("pobject: save: existing object","all");
-			if ($this->lock()) {
-				if ($this->exists($this->path)) { // prevent 'funny stuff'
+			if ($this->exists($this->path)) { // prevent 'funny stuff'
+				if ($this->lock()) {
 					$config = $this->data->config;
 					
 					if ($ARCurrent->arCallStack) {
