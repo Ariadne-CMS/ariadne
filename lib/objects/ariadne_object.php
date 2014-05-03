@@ -256,6 +256,38 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $this->store->count($this->store->ls($path));
 	}
 
+	private function saveMergeWorkflowResult($properties, $wf_result) { 
+		foreach ($wf_result as $wf_prop_name => $wf_prop) {
+			foreach ($wf_prop as $wf_prop_index => $wf_prop_record) {
+				if (!isset($wf_prop_record)) {
+					unset($properties[$wf_prop_name][$wf_prop_index]);
+				} else {
+					$record = Array();
+					foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
+						switch (gettype($wf_prop_value)) {
+							case "integer":
+							case "boolean":
+							case "double":
+								$value = $wf_prop_value;
+								break;
+							default:
+								$value = "'".AddSlashes($wf_prop_value)."'";
+								if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
+										&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
+									$value = $wf_prop_value;
+								}
+
+						}
+						$record[$wf_prop_field] = $value;
+					}
+					$properties[$wf_prop_name][] = $record;
+				}
+			}
+		}
+
+		return $properties;
+	}
+
 	function save($properties="", $vtype="") {
 	/***********************************************************************
 	  save the current object.
@@ -364,34 +396,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 								}
 							}
 							/* merge workflow properties */
-							if (is_array($wf_result)) {
-								foreach ($wf_result as $wf_prop_name => $wf_prop) {
-									foreach ($wf_prop as $wf_prop_index => $wf_prop_record) {
-										if (!isset($wf_prop_record)) {
-											unset($properties[$wf_prop_name][$wf_prop_index]);
-										} else {
-											$record = Array();
-											foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
-												switch (gettype($wf_prop_value)) {
-													case "integer":
-													case "boolean":
-													case "double":
-														$value = $wf_prop_value;
-													break;
-													default:
-														$value = "'".AddSlashes($wf_prop_value)."'";
-														if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
-															&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
-																$value = $wf_prop_value;
-														}
-														
-												}
-												$record[$wf_prop_field] = $value;
-											}
-											$properties[$wf_prop_name][] = $record;
-										}
-									}
-								}
+							if ( is_array($wf_result) ){
+								$properties = $this->saveMergeWorkflowResult($properties,$wf_result);
 							}
 							if (!$this->error) {
 								if ($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)) {
@@ -410,38 +416,15 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 									$this->priority = $wf_object->priority;
 									$this->data = $wf_object->data;
 									$this->data->config = $config;
-									if (is_array($wf_result)) {
-										foreach ($wf_result as $wf_prop_name => $wf_prop) {
-											foreach ($wf_prop as $wf_prop_index => $wf_prop_record) {
-												if (!isset($wf_prop_record)) {
-													unset($properties[$wf_prop_name][$wf_prop_index]);
-												} else {
-													$record = Array();
-													foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
-														switch (gettype($wf_prop_value)) {
-															case "integer":
-															case "boolean":
-															case "double":
-																$value = $wf_prop_value;
-															break;
-															default:
-																$value = "'".AddSlashes($wf_prop_value)."'";
-																if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
-																	&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
-																		$value = $wf_prop_value;
-																}
-														}
-														$record[$wf_prop_field] = $value;
-													}
-													$properties[$wf_prop_name][] = $record;
-												}
-											}
-										}
+									/* merge workflow properties */
+									if ( is_array($wf_result) ){
+										$properties = $this->saveMergeWorkflowResult($properties,$wf_result);
 										if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) {
 											$this->error = $this->store->error;
 										}
 									}
 									// all save actions have been done, fire onsave.
+
 									$eventData->arProperties = $properties;
 									ar_events::fire( 'onsave', $eventData ); // nothing to prevent here, so ignore return value
 								} else {
@@ -549,34 +532,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 							}
 						}
 					}
-					/* merge workflow properties */
-					if (is_array($wf_result)) {
-						foreach ($wf_result as $wf_prop_name => $wf_prop) {
-							foreach ($wf_prop as $wf_prop_index => $wf_prop_record) {
-								if (!isset($wf_prop_record)) {
-									unset($properties[$wf_prop_name][$wf_prop_index]);
-								} else {
-									$record = Array();
-									foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
-										switch (gettype($wf_prop_value)) {
-											case "integer":
-											case "boolean":
-											case "double":
-												$value = $wf_prop_value;
-											break;
-											default:
-												$value = "'".AddSlashes($wf_prop_value)."'";
-												if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
-													&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
-														$value = $wf_prop_value;
-												}
-										}
-										$record[$wf_prop_field] = $value;
-									}
-									$properties[$wf_prop_name][] = $record;
-								}
-							}
-						}
+					if ( is_array($wf_result) ){
+						$properties = $this->saveMergeWorkflowResult($properties,$wf_result);
 					}
 					if (!$this->error) {
 						if ($this->path = $this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)){
@@ -590,33 +547,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 							$this->priority = $wf_object->priority;
 							$this->data = $wf_object->data;
 							$this->data->config = $config;
-							if (is_array($wf_result)) {
-								foreach ($wf_result as $wf_prop_name => $wf_prop) {
-									foreach ($wf_prop as $wf_prop_index => $wf_prop_record) {
-										if (!isset($wf_prop_record)) {
-											unset($properties[$wf_prop_name][$wf_prop_index]);
-										} else {
-											$record = Array();
-											foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
-												switch (gettype($wf_prop_value)) {
-													case "integer":
-													case "boolean":
-													case "double":
-														$value = $wf_prop_value;
-													break;
-													default:
-														$value = "'".AddSlashes($wf_prop_value)."'";
-														if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
-															&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
-																$value = $wf_prop_value;
-														}
-												}
-												$record[$wf_prop_field] = $value;
-											}
-											$properties[$wf_prop_name][] = $record;
-										}
-									}
-								}
+							if ( is_array($wf_result) ) {
+								$properties = $this->saveMergeWorkflowResult($properties,$wf_result);
 								if (!$this->store->save($this->path, $this->type, $this->data, $properties, $this->vtype, $this->priority)) {
 									$this->error = $this->store->error;
 								}
