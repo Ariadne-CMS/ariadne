@@ -349,11 +349,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		debug("pobject: save([properties], $vtype)","object");
 		debug("pobject: save: path=".$this->path,"object");
 		$result=false;
+		$configcache=$this->loadConfig();
 		if ($this->arIsNewObject) { // save a new object
 			debug("pobject: save: new object","all");
 			$arNewParent=$this->make_path("..");
 			$arNewFilename=substr($this->path, strlen($arNewParent), -1);
-			$configcache=$this->loadConfig();
 			if (!preg_match("/\.\./i",$arNewFilename)) {
 				if (preg_match("|^[a-z0-9_\{\}\.\:-]+$|i",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
 					if (!$this->exists($this->path)) { //arNewFilename)) {
@@ -458,7 +458,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			}
 		} else { // update an existing object
 			debug("pobject: save: existing object","all");
-			$configcache=$this->loadConfig();
 			if ($this->lock()) {
 				if ($this->exists($this->path)) { // prevent 'funny stuff'
 					$config = $this->data->config;
