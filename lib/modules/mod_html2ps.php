@@ -5,19 +5,15 @@
 		function generate($config) {
 			global $fpdf_charwidths;
 			global $g_baseurl;
-			global $g_baseurl;
 			global $g_border;
 			global $g_box_uid;
 			global $g_boxes;
 			global $g_colors;
 			global $g_config;
-			global $g_config;
-			global $g_css;
 			global $g_css;
 			global $g_css_defaults_obj;
 			global $g_css_handlers;
 			global $g_css_index;
-			global $g_css_obj;
 			global $g_css_obj;
 			global $g_font_family;
 			global $g_font_resolver;
@@ -29,7 +25,6 @@
 			global $g_last_assigned_font_id;
 			global $g_list_item_nums;
 			global $g_manager_encodings;
-			global $g_media;
 			global $g_media;
 			global $g_predefined_media;
 			global $g_pt_scale;
