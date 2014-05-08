@@ -1,13 +1,8 @@
-muze.namespace("muze.ariadne");
-muze.namespace("muze.util");
+//muze.namespace("muze.util");
 
-muze.require("muze.ariadne.registry");
-muze.require("muze.ariadne.cookie");
-muze.require("muze.dialog");
-muze.require("muze.util.pngfix");
-muze.require("muze.util.splitpane");
+muze.require("muze.ariadne.registry,muze.ariadne.cookie,muze.dialog,muze.util.pngfix,muze.util.splitpane", function() {
 
-muze.ariadne.explore = function() {
+muze.namespace("muze.ariadne.explore", function() {
 	var windowprops_common = 'resizable';
 	var windowprops_full = 'directories,location,menubar,status,toolbar,resizable,scrollbars';
 	var windowsize_small = ",height=300,width=550";
@@ -311,9 +306,9 @@ muze.ariadne.explore = function() {
 			container.innerHTML = YAHOO.util.Date.format(data, {format:"%d-%m-%Y"});
 		}
 	}
-}();
+});
 
-muze.ariadne.explore.tree = function() {
+muze.namespace("muze.ariadne.explore.tree", function() {
 	var tree;
 
 	function getNodeHTML(node) {
@@ -442,7 +437,7 @@ muze.ariadne.explore.tree = function() {
 		}
 	}
 
-        function buildTree(nodes) {
+	function buildTree(nodes) {
 		//create a new tree:
 		tree = new YAHOO.widget.TreeView("treeDiv");
 		//turn dynamic loading on for entire tree:
@@ -561,9 +556,9 @@ muze.ariadne.explore.tree = function() {
 			return muze.ariadne.tree.status;
 		}
 	}
-}();
+});
 
-muze.ariadne.explore.toolbar = function() {
+muze.namespace( 'muze.ariadne.explore.toolbar', function() {
 	return {
 		init : function() {
 			var menuBar = new YAHOO.widget.MenuBar("explore_menubar", { autosubmenudisplay: true, hidedelay: 750, showdelay: 0, lazyload: true });
@@ -621,10 +616,10 @@ muze.ariadne.explore.toolbar = function() {
 			muze.ariadne.explore.load(sUrl, document.getElementById("explore_top"), fadeIn, false);
 		}
 	}
-}();
+});
 
 
-muze.ariadne.explore.searchbar = function() {
+muze.namespace( 'muze.ariadne.explore.searchbar', function() {
 	var oAC;
 
 	return {
@@ -682,17 +677,17 @@ muze.ariadne.explore.searchbar = function() {
 			};
 		}
 	}
-}();
+});
 
-muze.ariadne.explore.splitpane = function() {
+muze.namespace( 'muze.ariadne.explore.splitpane', function() {
 	return {
 		init : function() {
 			muze.util.splitpane.getHorizSplitPane("splitpane_slider", "splitpane_thumb", 0, 9999, "explore_tree", "explore_managediv");
 		}
 	}
-}();
+});
 
-muze.ariadne.explore.sidebar = function() {
+muze.namespace( 'muze.ariadne.explore.sidebar', function() {
 	return {
 		currentpath : null,
 		invisibleSections : new Object(),
@@ -788,9 +783,9 @@ muze.ariadne.explore.sidebar = function() {
 			}
 		}
 	}
-}();
+});
 
-muze.ariadne.explore.sidebar.section = function() {
+muze.namespace( 'muze.ariadne.explore.sidebar.section', function() {
 	return {
 		isCollapsed : function(section) {
 			var sectiondiv = document.getElementById(section + '_body').parentNode;
@@ -835,9 +830,9 @@ muze.ariadne.explore.sidebar.section = function() {
 			}
 		}
 	}
-}();
+});
 
-muze.ariadne.explore.viewpane = function() {
+muze.namespace( 'muze.ariadne.explore.viewpane', function() {
 	return {
 		saved_load_handler : null,
 		selectedItem : null,
@@ -1207,9 +1202,9 @@ muze.ariadne.explore.viewpane = function() {
 			muze.ariadne.explore.viewpane.selectedPath = path;
 		}
 	}
-}();
+});
 
-muze.ariadne.explore.browseheader = function() {
+muze.namespace( 'muze.ariadne.explore.browseheader', function() {
 	return {
 		currentpath : null,
 		exists : function() {
@@ -1249,9 +1244,9 @@ muze.ariadne.explore.browseheader = function() {
 		}
 
 	}
-}();
+});
 
-muze.ariadne.explore.dialog = ( function () {
+muze.namespace( 'muze.ariadne.explore.dialog', function () {
 	return {
 		'getTargets' : function(varname) { //builds string of paths for the dialog when multiple items are selected.
             var selected = YAHOO.util.Dom.getElementsByClassName("selectable-selected", "*", "archildren");
@@ -1264,7 +1259,6 @@ muze.ariadne.explore.dialog = ( function () {
 				}
 				target += varname + '[]=' + targetpath + '&';
 			}
-
 			return target;
 		},
 		'add': function(href) {
@@ -1284,7 +1278,7 @@ muze.ariadne.explore.dialog = ( function () {
 			});
 		},
 		'rename': function(href) {
-                        var pathmode = '?pathmode=filename';
+			var pathmode = '?pathmode=filename';
 			muze.dialog.open(href + pathmode, 'dialog_rename', { windowFeatures: muze.ariadne.explore.windowprops['dialog_rename'] } )
 			.on('renamed', function( args ) {
 				muze.ariadne.explore.tree.refresh(args['path']);
@@ -1294,11 +1288,11 @@ muze.ariadne.explore.dialog = ( function () {
 				this.close();
 			});
 		},
-                'moveselected' : function(href) {
-                        var target = muze.ariadne.explore.dialog.getTargets("sources");
-                        var origin = 'origin=move'; //No & or ? needed since var is after var target
-                        muze.dialog.open(href + target + origin, 'dialog_move', { windowFeatures: muze.ariadne.explore.windowprops['dialog_move'] } )
-                        .on('renamed', function( args ) {
+		'moveselected' : function(href) {
+			var target = muze.ariadne.explore.dialog.getTargets("sources");
+			var origin = 'origin=move'; //No & or ? needed since var is after var target
+			muze.dialog.open(href + target + origin, 'dialog_move', { windowFeatures: muze.ariadne.explore.windowprops['dialog_move'] } )
+			.on('renamed', function( args ) {
 				muze.ariadne.explore.tree.refresh(args['path']);
 				muze.ariadne.explore.view(args['path']);
 			})
@@ -1317,21 +1311,21 @@ muze.ariadne.explore.dialog = ( function () {
 				this.close();
 			});
 		},
-                'copyselected' : function(href) {
-                        var target = muze.ariadne.explore.dialog.getTargets("sources");
-                        var origin = 'origin=copy'; //No & or ? needed since var is after var target
-                        muze.dialog.open(href + target + origin, 'dialog_copy', { windowFeatures: muze.ariadne.explore.windowprops['dialog_copy'] } )
-                        .on('copied', function( args ) {
-                                if (args['path'] == args['copyTarget'] ) {
-                                        muze.ariadne.explore.objectadded();
-                                } else {
-                                        muze.ariadne.explore.tree.view(args['copyTarget']);
-                                }
-                        })
-                        .always( function() {
+		'copyselected' : function(href) {
+			var target = muze.ariadne.explore.dialog.getTargets("sources");
+			var origin = 'origin=copy'; //No & or ? needed since var is after var target
+			muze.dialog.open(href + target + origin, 'dialog_copy', { windowFeatures: muze.ariadne.explore.windowprops['dialog_copy'] } )
+			.on('copied', function( args ) {
+				if (args['path'] == args['copyTarget'] ) {
+					muze.ariadne.explore.objectadded();
+				} else {
+					muze.ariadne.explore.tree.view(args['copyTarget']);
+				}
+			})
+			.always( function() {
 				this.close();
 			});
-                },
+		},
 		'copy': function(href) {
 			muze.dialog.open(href, 'dialog_copy', { windowFeatures: muze.ariadne.explore.windowprops['dialog_copy'] } )
 			.on('copied', function( args ) {
@@ -1367,17 +1361,17 @@ muze.ariadne.explore.dialog = ( function () {
 				this.close();
 			});
 		},
-                'mogrifyselected' : function(href) {
-                        var target = muze.ariadne.explore.dialog.getTargets("targets");
-                        muze.dialog.open(href + target, 'dialog_mogrify', { windowFeatures: muze.ariadne.explore.windowprops['dialog_mogrify'] } )
-                        .on('mogrified', function( args ) {
-                                muze.ariadne.explore.tree.refresh(args['path'])
+		'mogrifyselected' : function(href) {
+			var target = muze.ariadne.explore.dialog.getTargets("targets");
+			muze.dialog.open(href + target, 'dialog_mogrify', { windowFeatures: muze.ariadne.explore.windowprops['dialog_mogrify'] } )
+			.on('mogrified', function( args ) {
+				muze.ariadne.explore.tree.refresh(args['path'])
 				muze.ariadne.explore.view(args['path']);
-                        })
-                        .always(function() {
-                                this.close();
-                        });
-                },
+			})
+			.always(function() {
+				this.close();
+			});
+		},
 		'mogrify': function(href) {
 			muze.dialog.open(href, 'dialog_mogrify', { windowFeatures: muze.ariadne.explore.windowprops['dialog_mogrify'] } )
 			.on('mogrified', function( args ) {
@@ -1397,13 +1391,13 @@ muze.ariadne.explore.dialog = ( function () {
 				this.close();
 			});
 		},
-                'exportselected' : function(href) {
-                        var target = muze.ariadne.explore.dialog.getTargets("sources");
-                        muze.dialog.open(href + target, 'dialog_export', { windowFeatures: muze.ariadne.explore.windowprops['dialog_export'] } )
-                        .always(function() {
-                                this.close();
-                        });
-                },
+		'exportselected' : function(href) {
+			var target = muze.ariadne.explore.dialog.getTargets("sources");
+			muze.dialog.open(href + target, 'dialog_export', { windowFeatures: muze.ariadne.explore.windowprops['dialog_export'] } )
+			.always(function() {
+			        this.close();
+			});
+		},
 		'export': function(href) {
 			muze.dialog.open(href, 'dialog_export', { windowFeatures: muze.ariadne.explore.windowprops['dialog_export'] } )
 			.always( function() {
@@ -1414,4 +1408,6 @@ muze.ariadne.explore.dialog = ( function () {
 			muze.dialog.open(href, 'dialog_su', { windowFeatures: muze.ariadne.explore.windowprops['dialog_su'] } );
 		}
 	};
-}());
+});
+
+});

@@ -26,9 +26,7 @@
 				
 */
 
-muze.namespace('muze.dom');
-
-muze.dom = function() {
+muze.namespace('muze.dom', function() {
 
 	var _leafElems = ["IMG", "HR", "BR", "INPUT"];
 	var leafElems = {};
@@ -89,4 +87,4 @@ muze.dom = function() {
 			return str;
 		}
 	}
-}();
+});

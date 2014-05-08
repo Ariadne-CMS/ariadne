@@ -1,6 +1,4 @@
-muze.namespace("muze.util");
-
-muze.util.splitpane = function() {
+muze.namespace("muze.util.splitpane", function() {
 	return { 
 		getHorizSplitPane : function(sBGElId, sHandleEId, iLeft, iRight, leftContainer, rightContainer) {
 			var slider = YAHOO.widget.Slider.getHorizSlider(sBGElId, sHandleEId, iLeft, iRight);
@@ -47,4 +45,4 @@ muze.util.splitpane = function() {
 			return slider;
 		}
 	}
-}();
+});

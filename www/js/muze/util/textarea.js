@@ -1,5 +1,3 @@
-muze.namespace("muze.util");
-
 
     /*
         muze.util.textarea.Position
@@ -10,7 +8,7 @@ muze.namespace("muze.util");
     */
 
 
-muze.util.textarea = function() {
+muze.namespace("muze.util.textarea", function() {
 	var tabSize=8;
 	
 	function setCursorPosition(input, position, end) {
@@ -328,4 +326,4 @@ muze.util.textarea = function() {
 			}
 		}
 	}
-}();
+});
