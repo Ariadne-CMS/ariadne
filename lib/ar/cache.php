@@ -9,7 +9,7 @@
 			ar('cache')->set( $naam, $image );
 		}
 		echo $image;
-		
+
 		with locking:
 
 		if ( !$image = ar('cache')->getIfFresh( $naam ) ) {
@@ -26,23 +26,23 @@
 			}
 		}
 		echo $image;
-			
+
 	*/
 
 	ar_pinp::allow('ar_cache');
 	ar_pinp::allow('ar_cacheStore');
 	ar_pinp::allow('ar_cacheProxy');
-	
+
 	class ar_cache extends arBase {
-		
+
 		static $cacheStore = null;
-		
+
 		public static function config( $options ) {
 			if ( $options['cacheStore'] ) {
 				self::$cacheStore = $options['cacheStore'];
 			}
 		}
-		
+
 		public static function create( $prefix = null, $timeout = 7200 ) {
 			// this method is used by pinp scripts to create a specific cache
 			// so it must be more restrictive than the constructor of the cacheStore
@@ -58,63 +58,63 @@
 				return ar_error::raiseError( $e->getMessage(), $e->getCode() );
 			}
 		}
-		
+
 		public static function get( $name ) {
 			if ( !self::$cacheStore ) {
 				self::$cacheStore = self::create();
 			}
-			return self::$cacheStore->get( $name );		
+			return self::$cacheStore->get( $name );
 		}
 
 		public static function getIfFresh( $name, $freshness=0 ) {
 			if ( !self::$cacheStore ) {
 				self::$cacheStore = self::create();
 			}
-			return self::$cacheStore->getIfFresh( $name, $freshness );		
+			return self::$cacheStore->getIfFresh( $name, $freshness );
 		}
 
 		public static function lock( $name ) {
 			if ( !self::$cacheStore ) {
 				self::$cacheStore = self::create();
 			}
-			return self::$cacheStore->lock( $name );		
+			return self::$cacheStore->lock( $name );
 		}
 
 		public static function wait( $name ) {
 			if ( !self::$cacheStore ) {
 				self::$cacheStore = self::create();
 			}
-			return self::$cacheStore->wait( $name );		
+			return self::$cacheStore->wait( $name );
 		}
 
 		public static function set( $name, $value, $timeout = 7200 ) {
 			if ( !self::$cacheStore ) {
 				self::$cacheStore = self::create();
 			}
-			return self::$cacheStore->set( $name, $value, $timeout );		
+			return self::$cacheStore->set( $name, $value, $timeout );
 		}
-		
+
 		public static function info( $name ) {
 			if ( !self::$cacheStore ) {
 				self::$cacheStore = self::create();
 			}
-			return self::$cacheStore->info( $name );		
+			return self::$cacheStore->info( $name );
 		}
-		
+
 		public static function clear( $name = null ) {
 			if ( !self::$cacheStore ) {
 				self::$cacheStore = self::create();
 			}
 			return self::$cacheStore->clear( $name );
 		}
-		
+
 		public static function purge( $name = null ) {
 			if ( !self::$cacheStore ) {
 				self::$cacheStore = self::create();
 			}
 			return self::$cacheStore->purge( $name );
 		}
-		
+
 		public static function proxy( $object, $timeout = null ) {
 			if ( !self::$cacheStore ) {
 				self::$cacheStore = self::create();
@@ -123,7 +123,7 @@
 		}
 
 	}
-	
+
 	class ar_cacheProxy extends arWrapper {
 		// TODO: allow more control on retrieval:
 		// - get contents from cache even though cache may be stale
@@ -151,7 +151,7 @@
 				'result' => $result
 			);
 		}
-		
+
 		protected function __callCached( $method, $args, $path ) {
 			if ( !$cacheData = $this->cacheStore->getIfFresh( $path ) ) {
 				if ( $this->cacheStore->lock( $path ) ) {
@@ -165,10 +165,10 @@
 			}
 			return $cacheData;
 		}
-		
+
 		public function __call( $method, $args ) {
 			$path = $method . '(' . md5( serialize($args) ) . ')';
-			$cacheData = $this->__callCached( $method, $args, $path );			
+			$cacheData = $this->__callCached( $method, $args, $path );
 			echo $cacheData['output'];
 			$result = $cacheData['result'];
 			if ( is_object( $result ) ) {
@@ -176,7 +176,7 @@
 			}
 			return $result;
 		}
-		
+
 		public function __get( $name ) {
 			$result = parent::__get( $name );
 			if ( is_object( $result ) ) {
@@ -184,9 +184,9 @@
 			}
 			return $result;
 		}
-		
+
 	}
-	
+
 	interface ar_cacheStoreInterface {
 		public function get( $path );
 		public function set( $path, $value, $timeout = 7200 );
@@ -195,9 +195,9 @@
 		public function subStore( $path );
 		public function isFresh( $path );
 	}
-	
+
 	class ar_cacheStore implements ar_cacheStoreInterface, arKeyValueStoreInterface {
-	
+
 		protected $basePath = '';
 		protected $timeout = 7200;
 		protected $mode = 0777;
@@ -227,17 +227,17 @@
 				throw new ar_error("Cache Directory is not writable ( ".ARCacheDir." )", 1);
 			}
 		}
-		
+
 		protected function cachePath( $path ) {
 			// last '=' is added to prevent conflicts between subdirectories and cache images
 			// images always end in a '=', directories never end in a '='
 			return ARCacheDir . $this->basePath . preg_replace('/(\.\.|\=)/', '', $path) . '='; 
 		}
-		
+
 		public function subStore( $path ) {
 			return new ar_cacheStore( $this->basePath . preg_replace('/(\.\.|\=)/', '', $path) );
 		}
-		
+
 		public function get( $path ) {
 			$cachePath = $this->cachePath( $path );
 			if ( file_exists( $cachePath ) ) {
@@ -250,7 +250,7 @@
 		public function getvar( $name ) {
 			return $this->get( $name );
 		}
-		
+
 		public function isFresh( $path ) {
 			$cachePath = $this->cachePath( $path );
 			if ( file_exists( $cachePath ) ) {
@@ -259,7 +259,7 @@
 				return false;
 			}
 		}
-		
+
 		public function getIfFresh( $path, $freshness = 0 ) {
 			$info = $this->info( $path );
 			if ( $info && $info['timeout'] >= $freshness ) {
@@ -316,7 +316,7 @@
 				return false;
 			}
 		}
-		
+
 		public function info( $path ) {
 			$cachePath = $this->cachePath( $path );
 			if ( file_exists( $cachePath ) && is_readable( $cachePath ) ) {
@@ -339,7 +339,7 @@
 				return true;
 			}
 		}
-		
+
 		public function purge( $path = null ) {
 			$this->clear( $path );
 			$cachePath = substr( $this->cachePath( $path ), 0, -1 ); // remove last '='
@@ -359,7 +359,6 @@
 				return true;
 			}
 		}
-	
 	}
 
 ?>
