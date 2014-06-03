@@ -253,3 +253,4 @@ if [ ${SYNTAX_ERROR_COUNT} -ge 1 ]; then
 	cat ${TMPDIR}/syntax.errors.txt
 	exit 1;
 fi
+phpunit --bootstrap tests/bootstrap.php tests/unit/
