@@ -6,18 +6,24 @@
  
 	******************************************************************/
 
-    if ((($this->arIsNewObject &&
-            ($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
-            $parentobj->CheckLogin("add", $this->type)) ||
-            (!$this->arIsNewObject && $this->CheckLogin("edit"))) &&
-            $this->CheckConfig()) {
-        if (!$this->arIsNewObject) {
-            // first make sure that the object is clean (data can only be set via
-            // the defined interface: $arCallArgs)
-            $this->data=current($this->get(".","system.get.data.phtml"));
+	if (
+			(
+				(
+					$this->arIsNewObject &&
+					( $parentobj = current($this->get($this->parent, "system.get.phtml")) ) &&
+					$parentobj->CheckLogin("add", $this->type)
+				) ||
+				( !$this->arIsNewObject && $this->CheckLogin("edit") )
+			) &&
+			$this->CheckConfig()
+		) {
+		if (!$this->arIsNewObject) {
+			// first make sure that the object is clean (data can only be set via
+			// the defined interface: $arCallArgs)
+			$this->data=current($this->get(".","system.get.data.phtml"));
 		} else {
 			$this->data=new object;
-        }
+		}
 
 
 		$this->data->path=$this->getdata("path","none");
