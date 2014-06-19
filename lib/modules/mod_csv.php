@@ -93,14 +93,14 @@
 
 		public function __construct($object, $settings = array()) {
 			$default = Array(
-				"seperator"		=> ",",
-				"quotation"		=> "\"",
-				"charset"		=> "utf-8",
-				"keyRow"		=> null,
-				"keySelection"	=> null,
-				"bufferLength"	=> 4096 * 4,
-				"lineEnd"		=> "\n"
-			);
+				"seperator"      => ",",
+				"quotation"      => "\"",
+				"charset"        => "utf-8",
+				"keyRow"         => null,
+				"keySelection"   => null,
+				"bufferLength"   => 4096 * 4,
+				"lineEnd"        => "\n"
+				);
 			if (!$settings) {
 				$settings = Array();
 			}
@@ -125,7 +125,7 @@
 		public function read($fileName = "file", $settings = "") {
 			$object = $this->object;
 
-			$files	= $object->store->get_filestore("files");
+			$files = $object->store->get_filestore("files");
 			if (!$fileName) {
 				$fileName = "file";
 			}
@@ -135,8 +135,8 @@
 			if ($files->exists($object->id, $settings['nls'].'_'.$fileName)) {
 				$fileName = $settings['nls'].'_'.$fileName;
 			}
-			$tempDir	= $object->store->get_config("files")."temp/";
-			$tempFile	= tempnam($tempDir, "csvexport");
+			$tempDir = $object->store->get_config("files")."temp/";
+			$tempFile = tempnam($tempDir, "csvexport");
 			$files->copy_from_store($tempFile, $object->id, $fileName);
 
 			$this->readMode = "fp";
