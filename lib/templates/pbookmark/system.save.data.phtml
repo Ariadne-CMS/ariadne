@@ -45,13 +45,7 @@
 			$this->data=new object;
 		}
 		$this->data->value=$this->getdata("value","none");
-/*
-		if (!$this->CheckLink()) {
-			if ($this->errorseverity>=5) {
-				$this->error=$this->errormessage;
-			}
-		}
-*/
+
 		if (!$this->error) {
 			$properties["value"][]["value"]="'".AddSlashes($this->data->value)."'";
 			if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
