@@ -220,7 +220,7 @@
 			$importStore->close();
 
 		} else {
-			$error="ax error: ".$importStore->error;
+			$error="ax error: ".$store->error;
 		}
 
 		if ($error) {
