@@ -42,21 +42,21 @@
 						$newnlsdata=$this->data->$key;
 					}
 					$newnlsdata->name=$this->getdata("name",$key);
-					$properties["name"][$count]["value"]="'".AddSlashes($newnlsdata->name)."'";
-					$properties["name"][$count]["nls"]="'$key'";
-					$properties["text"][$count]["value"]="'".AddSlashes($newnlsdata->name)."'";
-					$properties["text"][$count]["nls"]="'$key'";
+					$properties["name"][$count]["value"]=$newnlsdata->name;
+					$properties["name"][$count]["nls"]=$key;
+					$properties["text"][$count]["value"]=$newnlsdata->name;
+					$properties["text"][$count]["nls"]=$key;
  					$count++;
 					$newnlsdata->summary=page::compile($this->getdata("summary",$key), $key);
-					$properties["text"][$count]["value"]="'".AddSlashes(substr($newnlsdata->summary,0,255))."'";
-					$properties["text"][$count]["nls"]="'$key'";
+					$properties["text"][$count]["value"]=substr($newnlsdata->summary,0,255);
+					$properties["text"][$count]["nls"]=$key;
 					$count++;
 					if ($this->store->is_supported("fulltext")) {
-						$properties["fulltext"][$count]["value"]="'".AddSlashes($this->store->format_for_fti(
+						$properties["fulltext"][$count]["value"]=$this->store->format_for_fti(
 								$newnlsdata->name." ".
 								$this->html_to_text($newnlsdata->summary)." "
-								))."'";
-						$properties["fulltext"][$count]["nls"]="'$key'";
+								);
+						$properties["fulltext"][$count]["nls"]=$key;
 					}
 					$this->data->$key=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
@@ -129,8 +129,8 @@
 									$this->data->mime["subtype"] = $armime[1];
 								}
 								$properties["mimetype"][] = Array(
-									"type"		=> "'".AddSlashes($this->data->mime["type"])."'",
-									"subtype"	=> "'".AddSlashes($this->data->mime["subtype"])."'"
+									"type"		=> $this->data->mime["type"],
+									"subtype"	=> $this->data->mime["subtype"]
 								);
 								unlink($tempfile);
 
@@ -143,10 +143,10 @@
 							if ($filetext) {
 								$count++;
 								$properties["fulltext"] = $fulltext;
-								$properties["fulltext"][$count]["nls"]="'".AddSlashes($nlskey)."'";
-								$properties["fulltext"][$count]["value"]="'".AddSlashes($this->store->format_for_fti(
+								$properties["fulltext"][$count]["nls"]=$nlskey;
+								$properties["fulltext"][$count]["value"]=$this->store->format_for_fti(
 										$filetext
-										))."'";
+										);
 							}
 						}
 						if ($deletefile) {
@@ -163,7 +163,7 @@
 								$files->remove($this->id, "file");
 							}
 							foreach ($properties["fulltext"] as $count => $property) {
-								if ($property['nls'] == AddSlashes($nlskey)) {
+								if ($property['nls'] == $nlskey) {
 									unset($properties["fulltext"][$count]);
 								}
 							}

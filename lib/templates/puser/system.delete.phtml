@@ -33,7 +33,7 @@
 					// so it is, so remove the user from the group
 					// which will by the way also delete the current object
 					// first get the original users path
-					$crit["login"]["value"]["="]="'".AddSlashes($this->data->login)."'";
+					$crit["login"]["value"]["="]=$this->data->login;
 					$realuser=current($this->find("/system/users/",$crit,"system.get.phtml"));
 					if ($realuser && $realuser->path) {
 						$realpath=$realuser->path;

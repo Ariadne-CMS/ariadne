@@ -58,12 +58,12 @@ class paddressbook extends pdir { // paddressbook class definition
 		if (is_array($search_criteria)) {
 			$criteria=$search_criteria;
 		}
-		$criteria["object"]["implements"]["="]="'address'";
+		$criteria["object"]["implements"]["="]="address";
 		$this->find(".",$criteria,"populate.phtml");
 
 		unset($criteria);
-		$criteria["object"]["implements"]["="]="'paddressbook'";
-		$criteria["object"]["type"]["="]="'pshortcut'";
+		$criteria["object"]["implements"]["="]="paddressbook";
+		$criteria["object"]["type"]["="]="pshortcut";
 		$this->find(".", $criteria, "populate.phtml", compact("search_criteria"));
 
 		if (($sortby!=DONT_SORT) && is_array($ARCurrent->addresses)) {

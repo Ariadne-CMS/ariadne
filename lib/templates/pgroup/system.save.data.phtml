@@ -26,10 +26,10 @@
 		$properties = Array();
 
 		$this->data->name=$this->getdata("name","none");
-		$properties["name"][0]["value"]="'".AddSlashes($this->data->name)."'";
-		$properties["name"][0]["nls"]="'none'";
-		$properties["text"][0]["value"]="'".AddSlashes($this->data->name)."'";
-		$properties["text"][0]["nls"]="'none'";
+		$properties["name"][0]["value"]=$this->data->name;
+		$properties["name"][0]["nls"]="none";
+		$properties["text"][0]["value"]=$this->data->name;
+		$properties["text"][0]["nls"]="none";
 		$this->data->email=$this->getdata("email","none");
 		if ($this->arIsNewObject) {
 			$login = $this->getdata("login", "none");
@@ -42,8 +42,8 @@
 				}
 			}
 			if ($login) {
-				$criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
-				$criteria["object"]["implements"]["="]="'pgroup'";
+				$criteria["login"]["value"]["="]=$login;
+				$criteria["object"]["implements"]["="]="pgroup";
 
 				$loginexists = false;
 				foreach ($authConfig['groupdirs'] as $groupdirpath) {
@@ -57,7 +57,7 @@
 					$this->error=sprintf($ARnls["err:loginexists"],$login);
 				} else {
 					$this->data->login=$login;
-					$properties["login"][0]["value"]="'".AddSlashes($this->data->login)."'";
+					$properties["login"][0]["value"]=$this->data->login;
 				}
 			} else {
 				$this->error=$ARnls["err:mustenterlogin"];

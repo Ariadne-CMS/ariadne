@@ -42,14 +42,14 @@
 						$this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
 					}
 					$newnlsdata->name=$this->getdata("name", $key);
-					$properties["name"][$count]["value"]="'".AddSlashes($this->getdata("name", $key))."'";
-					$properties["name"][$count]["nls"]="'$key'";
-					$properties["text"][$count]["value"]="'".AddSlashes($this->getdata("name", $key))."'";
-					$properties["text"][$count]["nls"]="'$key'";
+					$properties["name"][$count]["value"]=$this->getdata("name", $key);
+					$properties["name"][$count]["nls"]=$key;
+					$properties["text"][$count]["value"]=$this->getdata("name", $key);
+					$properties["text"][$count]["nls"]=$key;
 					$count++;
 					$newnlsdata->summary=page::compile($this->getdata("summary",$key), $key);
-					$properties["text"][$count]["value"]="'".AddSlashes($this->getdata("summary", $key))."'";
-					$properties["text"][$count]["nls"]="'$key'";
+					$properties["text"][$count]["value"]=$this->getdata("summary", $key);
+					$properties["text"][$count]["nls"]=$key;
 					$count++;
 					$newnlsdata->effect=$this->getdata("effect", $key);
 					$this->data->$key=$newnlsdata;

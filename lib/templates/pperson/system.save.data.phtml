@@ -37,8 +37,8 @@
 			if (!$this->data->nls) {
 				$this->data->nls=new object;
 			}
-			$properties["name"][]["value"]="'".AddSlashes($this->data->name)."'";
-			$properties["text"][]["value"]="'".AddSlashes($this->data->name)."'";
+			$properties["name"][]["value"]=$this->data->name;
+			$properties["text"][]["value"]=$this->data->name;
 
 			if (!$this->data->nls) {
 				$this->data->nls=new object;
@@ -54,7 +54,7 @@
 					}
 					$newnlsdata->name=$this->data->name;
 					$newnlsdata->summary=$summary;
-					$properties["text"][]["value"]="'".AddSlashes($newnlsdata->summary)."'";
+					$properties["text"][]["value"]=$newnlsdata->summary;
 					$this->data->$key=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
 				}
@@ -88,12 +88,12 @@
 				$this->data->emails=$emails;
 			}
 
-			$properties["address"][0]["street"]="'".AddSlashes($this->data->address)."'";
-			$properties["address"][0]["zipcode"]="'".AddSlashes($this->data->zipcode)."'";
-			$properties["address"][0]["city"]="'".AddSlashes($this->data->city)."'";
-			$properties["address"][0]["country"]="'".AddSlashes($this->data->country)."'";
+			$properties["address"][0]["street"]=$this->data->address;
+			$properties["address"][0]["zipcode"]=$this->data->zipcode;
+			$properties["address"][0]["city"]=$this->data->city;
+			$properties["address"][0]["country"]=$this->data->country;
 			if ($this->store->is_supported("fulltext")) {
-				$properties["fulltext"][0]["value"]="'".AddSlashes($this->store->format_for_fti(
+				$properties["fulltext"][0]["value"]=$this->store->format_for_fti(
 						$this->data->name." ".
 						$this->data->address." ".
 						$this->data->zipcode." ".
@@ -103,7 +103,7 @@
 						$this->data->telephone." ".
 						$this->data->mobile." ".
 						$rawemails
-						))."'";
+						);
 			}
 			if (!$this->error) {
 				$this->save($properties);

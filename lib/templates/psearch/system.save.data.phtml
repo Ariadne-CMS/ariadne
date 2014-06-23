@@ -39,10 +39,10 @@
 						$newnlsdata=$this->data->$key;
 					}
 					$newnlsdata->name=$name;
-					$properties["name"][$count]["value"]="'".AddSlashes($newnlsdata->name)."'";
-					$properties["name"][$count]["nls"]="'$key'";
-					$properties["text"][$count]["value"]="'".AddSlashes($newnlsdata->name)."'";
-					$properties["text"][$count]["nls"]="'$key'";
+					$properties["name"][$count]["value"]=$newnlsdata->name;
+					$properties["name"][$count]["nls"]=$key;
+					$properties["text"][$count]["value"]=$newnlsdata->name;
+					$properties["text"][$count]["nls"]=$key;
 					$count++;
 					$this->data->$key=$newnlsdata;
 					$this->data->nls->list[$key]=$value;

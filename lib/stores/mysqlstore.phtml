@@ -370,6 +370,8 @@ class mysqlstore extends store{
 			$result["path"]=$path;
 			$result["criteria"]=$criteria;
 			$epath=AddSlashes($path);
+			$offset = (int)$offset;
+			$limit = (int)$limit;
 
 			$nodes_tbl=$this->tbl_prefix."nodes";
 			$objects_tbl=$this->tbl_prefix."objects";
@@ -414,23 +416,23 @@ class mysqlstore extends store{
 							case "object" :
 								switch($valuename) {
 									case ("type") : 
-										$where.=" and $objects_tbl.type $ecompare $value ";
+										$where.=" and $objects_tbl.type $ecompare '".addSlashes($value)."' ";
 									 	break;
 									case ("implements") : 
 										$types=", $types_tbl";
-										$where.=" and ( $types_tbl.implements $ecompare $value and $objects_tbl.vtype=$types_tbl.type ) ";
+										$where.=" and ( $types_tbl.implements $ecompare '".addSlashes($value)."' and $objects_tbl.vtype=$types_tbl.type ) ";
 										break;
 									case ("parent") :
-										$where.=" and $nodes_tbl.parent $ecompare $value ";
+										$where.=" and $nodes_tbl.parent $ecompare '".addSlashes($value)."' ";
 										break;
 									case ("lastchanged") :
 										$value = date("YmdHis", $value);
-										$where.=" and $objects_tbl.lastchanged $ecompare $value ";
+										$where.=" and $objects_tbl.lastchanged $ecompare '".addSlashes($value)."' ";
 										break;
 								}
 								break;
 							default :
-								$where.=$this->tbl_prefix."prop_$eproperty.AR_$evaluename $ecompare $value and "; 
+								$where.=$this->tbl_prefix."prop_$eproperty.AR_$evaluename $ecompare '".addSlashes($value)."' and "; 
 						}
 					}
 				}
@@ -1050,6 +1052,7 @@ class mysqlstore extends store{
 			$query_string="select * from ".$this->tbl_prefix."prop_".AddSlashes($property)." where ";
 			if (is_array($values)) {
 				while (list($name, $value)=each($values)) {
+					$value = "'".addSlashes."'";
 					$query_string.="AR_".AddSlashes($name)."=$value and ";
 				}
 			}
@@ -1060,11 +1063,7 @@ class mysqlstore extends store{
 				reset($prop);
 				while (is_array($prop) && (list($name,$val)=each($prop)) ) {
 					if (($name!="object")&&(!is_int($name))) {
-						if (is_string($val)) {
-							$result[$currProp][substr($name,3)]="'".AddSlashes($val)."'";
-						} else {
-							$result[$currProp][substr($name,3)]=$val;
-						}
+						$result[$currProp][substr($name,3)]=$val;
 					}
 				}
 				$currProp++;
@@ -1083,7 +1082,7 @@ class mysqlstore extends store{
 			while (list($name, $value)=each($values)) {
 				if ($value!="") {
 					$query_names.="AR_".AddSlashes($name).", ";
-					$query_values.="$value, ";
+					$query_values.= "'".AddSlashes($value) ."', ";
 				}
 			}
 			$query_string="insert into ".$this->tbl_prefix."prop_".AddSlashes($property)." ( ".
@@ -1115,6 +1114,7 @@ class mysqlstore extends store{
 				$query_string="delete from ".$this->tbl_prefix."prop_".AddSlashes($property)." where ";
 				if (is_array($values)) {
 					while (list($name, $value)=each($values)) {
+						$value = "'".addSlashes($value)."'";
 						$query_string.="AR_".AddSlashes($name)."=$value and ";
 					}
 				}

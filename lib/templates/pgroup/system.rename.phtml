@@ -9,7 +9,7 @@
 				// new filename -> new login, so check if it is unique
 				$newparent=$this->store->make_path($target, "..");
 				$newlogin=substr($target, strlen($newparent), -1);
-				$crit["login"]["value"]["="]="'".AddSlashes($newlogin)."'";
+				$crit["login"]["value"]["="]=$newlogin;
 				$result=$this->find("/system/groups/",$crit,"system.get.id.phtml");
 				if (count($result) && $result[0] != $this->id) {
 					$this->error=sprintf($ARnls["err:loginexists"],$newlogin);
@@ -39,7 +39,7 @@
 
 				$this->call("pobject::system.rename.phtml", $arCallArgs);
 				$this->data->login=substr($this->path, strlen($this->parent), -1);
-				$properties["login"][0]["value"]="'".AddSlashes($this->data->login)."'";
+				$properties["login"][0]["value"]=$this->data->login;
 				$this->save($properties);
 				if (!$this->error) {
 					// re-add users

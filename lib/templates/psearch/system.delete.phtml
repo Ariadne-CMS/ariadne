@@ -10,7 +10,7 @@
 
 				if ($data->config->grants && is_array($data->config->grants)) {
 					while (list($login, $grants)=each($data->config->grants)) {
-						$criteria["login"]["value"]["="]="'".$login."'";
+						$criteria["login"]["value"]["="]=$login;
 						foreach ($authconfig['userdirs'] as $userdirpath) {
 							$this->find($userdirpath, $criteria, "system.update.grants.phtml", Array(
 								"action" => "delete",

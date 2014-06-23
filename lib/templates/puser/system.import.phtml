@@ -7,7 +7,7 @@
 
 		$grouppath = "/system/groups/";
 
-		$criteria["login"]["value"]["="]="'".AddSlashes($this->data->login)."'";
+		$criteria["login"]["value"]["="]=$this->data->login;
 		$result = $this->find("/system/users/", $criteria, "system.get.phtml");
 		if (is_array($result) && current($result)) {
 			if (substr($this->path, 0, strlen($grouppath)) == $grouppath ){

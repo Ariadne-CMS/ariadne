@@ -66,10 +66,10 @@
 						if ($protocol) {
 							$protocol = substr( $protocol, -1 ); // remove trailing ':'
 						}
-						$properties["url"][$count]["protocol"]=	"'".AddSlashes($regs[1])."'";
-						$properties["url"][$count]["host"]=		"'".AddSlashes($regs[2])."'";
+						$properties["url"][$count]["protocol"]=	$regs[1];
+						$properties["url"][$count]["host"]=		$regs[2];
 						if ($regs[3]) {
-							$properties["url"][$count]["port"]=	"'".substr(AddSlashes($regs[3]), 1)."'";
+							$properties["url"][$count]["port"]= (int)substr($regs[3], 1);
 						}
 						$count++;
 						$firstURL = false;
@@ -91,10 +91,10 @@
 							$this->error = "Please fill in distinctive hostnames; they should not be the same for different languages.";
 						}
 					}
-					$properties["url"][$count]["protocol"]=	"'".AddSlashes($regs[1])."'";
-					$properties["url"][$count]["host"]=		"'".AddSlashes($regs[2])."'";
+					$properties["url"][$count]["protocol"]=	$regs[1];
+					$properties["url"][$count]["host"]=		$regs[2];
 					if ($regs[3]) {
-						$properties["url"][$count]["port"]=	"'".substr(AddSlashes($regs[3]), 1)."'";
+						$properties["url"][$count]["port"]=	(int)substr($regs[3], 1);
 					}
 					$count++;
 

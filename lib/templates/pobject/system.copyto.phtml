@@ -33,7 +33,7 @@
 
 								$this->data->config->owner = $AR->user->data->login;
 								$this->data->config->owner_name = $AR->user->data->name;
-								$properties['owner'][0]['value'] = "'".AddSlashes($user->data->login)."'";
+								$properties['owner'][0]['value'] = $user->data->login;
 
 								// now save the object to get its new id.
 								if ($defaultnls && !$this->data->$defaultnls) {

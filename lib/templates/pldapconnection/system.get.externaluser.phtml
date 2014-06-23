@@ -17,7 +17,7 @@ if ($this->data->mappeduser) {
 	// session data
         if (!is_array($ldapdata)) {
 		$criteria=Array();
-		$criteria["login"]["value"]["="]="'".AddSlashes($ARLogin)."'";
+		$criteria["login"]["value"]["="]=$ARLogin;
 		$this->get_ldap_data($criteria, $limit, $offset);
 		$ldapdata=$this->ldapdata[0];
 		$ARCurrent->session->put("userldapdata", $ldapdata);

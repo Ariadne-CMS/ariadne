@@ -30,6 +30,7 @@ class StorePropertyTest extends PHPUnit_Framework_TestCase
 		$this->assertArrayHasKey('time',$prop,"Properties doesn't contain a time");
 
 		$entry = current($prop['name']);
+		$this->assertEquals(2, strlen($entry['nls']), "nls should only be 2 chars");
 	}
 
 	function testDelAddpropertie() {

@@ -24,16 +24,16 @@
 		// unset the properties array, so no properties can be passed to this template.
 		$properties = Array();
 
-		$properties["value"][]["value"]="'".AddSlashes($value)."'";
+		$properties["value"][]["value"]=$value;
 		$this->data->name=$this->getdata("name","none");
-		$properties["name"][]["value"]="'".AddSlashes($this->data->name)."'";
-		$properties["text"][]["value"]="'".AddSlashes($this->data->name)."'";
+		$properties["name"][]["value"]=$this->data->name;
+		$properties["text"][]["value"]=$this->data->name;
 		if ($this->arIsNewObject) {
 			if ($login=$this->getdata("arNewFilename","none")) {
 				if (strlen($login)>32) {
 					$this->error=$ARnls["err:logintoolong"];
 				} else {
-					$criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
+					$criteria["login"]["value"]["="]=$login;
 				
 					$loginexists = false;
 					foreach ($authconfig['userdirs'] as $userdirpath) {
@@ -51,7 +51,7 @@
 							$this->error=$ARnls["err:donotuseid"];
 						} else {
 							$this->data->login=$login;
-							$properties["login"][0]["value"]="'".AddSlashes($login)."'";
+							$properties["login"][0]["value"]=$login;
 						}
 					}
 				}

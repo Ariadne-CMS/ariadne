@@ -46,8 +46,8 @@ class pcalendar extends pdir { // pcalendar class definition
 		$criteria["priority"]["value"][">="]=$pop_priority;
 		$this->find(".",$criteria, $pop_template, $pop_args);
 		unset($criteria);
-		$criteria["object"]["implements"]["="]="'pcalendar'";
-		$criteria["object"]["type"]["="]="'pshortcut'";
+		$criteria["object"]["implements"]["="]="pcalendar";
+		$criteria["object"]["type"]["="]="pshortcut";
 		$this->find("",$criteria,"populate.phtml", Array(
 			"pop_from"		=> $pop_from,
 			"pop_to" 		=> $pop_to,

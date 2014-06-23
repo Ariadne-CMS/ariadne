@@ -32,8 +32,8 @@
 			// Make sure we always have a user.
 			$this->getUser('public');
 
-			$criteria["object"]["implements"]["="]="'puser'";
-			$criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
+			$criteria["object"]["implements"]["="]="puser";
+			$criteria["login"]["value"]["="]=$login;
 
 			$siteConfig = $this->loadConfig($ARLoginPath);
 			foreach ($siteConfig['userdirs'] as $userdir) {
@@ -78,8 +78,8 @@
 				$ARUserDir = "/system/users/";
 			}
 
-			$criteria["object"]["implements"]["="]="'puser'";
-			$criteria["login"]["value"]["="]="'".AddSlashes($login)."'";
+			$criteria["object"]["implements"]["="]="puser";
+			$criteria["login"]["value"]["="]=$login;
 
 			$user = current(
 				$store->call(

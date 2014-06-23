@@ -54,8 +54,8 @@ class pphotobook extends pdir { // pphotobook class definition
 	}
 
 	function get_photos($max=0,$start=0) {
-		$crit["object"]["implements"]["="]="'pphoto'";
-		$crit["object"]["parent"]["="]="'".AddSlashes($this->path)."'";
+		$crit["object"]["implements"]["="]="pphoto";
+		$crit["object"]["parent"]["="]=$this->path;
 		return $this->find($this->path,$crit,"system.get.phtml","",$max,$start);
 	}
 

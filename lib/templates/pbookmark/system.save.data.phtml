@@ -47,7 +47,7 @@
 		$this->data->value=$this->getdata("value","none");
 
 		if (!$this->error) {
-			$properties["value"][]["value"]="'".AddSlashes($this->data->value)."'";
+			$properties["value"][]["value"]=$this->data->value;
 			if (!$this->getdata("name",$ARConfig->nls->default)) { // default language for this path
 				$this->error=sprintf($ARnls["err:nodatafordefaultlanguage"],$AR->nls->list[$ARConfig->nls->default]);
 			} else {
@@ -67,14 +67,14 @@
 							$newnlsdata=$this->data->$key;
 						}
 						$newnlsdata->name=$name;
-						$properties["name"][$count]["value"]="'".AddSlashes($newnlsdata->name)."'";
-						$properties["name"][$count]["nls"]="'$key'";
-						$properties["text"][$count]["value"]="'".AddSlashes($newnlsdata->name)."'";
-						$properties["text"][$count]["nls"]="'$key'";
+						$properties["name"][$count]["value"]=$newnlsdata->name;
+						$properties["name"][$count]["nls"]=$key;
+						$properties["text"][$count]["value"]=$newnlsdata->name;
+						$properties["text"][$count]["nls"]=$key;
 						$count++;
 						$newnlsdata->summary=page::compile($this->getdata("summary",$key), $key);
-						$properties["text"][$count]["value"]="'".AddSlashes($newnlsdata->summary)."'";
-						$properties["text"][$count]["nls"]="'$key'";
+						$properties["text"][$count]["value"]=$newnlsdata->summary;
+						$properties["text"][$count]["nls"]=$key;
 						$count++;
 						$this->data->$key=$newnlsdata;
 						$this->data->nls->list[$key]=$value;

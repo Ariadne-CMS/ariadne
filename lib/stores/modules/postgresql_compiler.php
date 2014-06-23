@@ -134,6 +134,8 @@ class postgresql_compiler extends sql_compiler {
 				}
 			break;
 			case 'string':
+				$result=" '".pg_escape_string($node["value"])."' ";
+			break;
 			case 'float':
 			case 'int':
 				$result=" ".$node["value"]." ";
@@ -324,7 +326,7 @@ class postgresql_compiler extends sql_compiler {
 
 		$query.=" from $tables $join";
 		$query.=" where $nodes.object=$objects.id $prop_dep";
-		$query.=" and $nodes.path like '".str_replace('_','\\_',AddSlashes($this->path))."%' ";
+		$query.=" and $nodes.path like '".str_replace('_','\\_',pg_escape_string($this->path))."%' ";
 		if ($this->where_s) {
 			$query.=" and ( $this->where_s ) ";
 		}

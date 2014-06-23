@@ -9,7 +9,7 @@
 			$this->data->config->owner = $user->data->login;
 			$this->data->config->owner_name = $user->data->name;
 			$properties = Array();
-			$properties['owner'][0]['value'] = "'".AddSlashes($user->data->login)."'";
+			$properties['owner'][0]['value'] = $user->data->login;
 			$this->save($properties);
 		}
 	}

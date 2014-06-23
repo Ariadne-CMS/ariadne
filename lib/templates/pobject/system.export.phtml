@@ -323,8 +323,8 @@
 								$authconfig = $userConfig['authentication'];
 								unset($user);
 								unset($criteria);
-								$criteria["login"]["value"]["="]="'$login'";
-								$criteria["object"]["type"]["="]="'pgroup'";
+								$criteria["login"]["value"]["="]=$login;
+								$criteria["object"]["type"]["="]="pgroup";
 								foreach ($authconfig['groupdirs'] as $groupdirpath) {
 									$result=$destobj->find($groupdirpath,$criteria,"system.get.phtml");
 									if (count($result)) {
@@ -369,7 +369,7 @@
 								$authconfig = $userConfig['authentication'];
 								unset($crit);
 								unset($user);
-								$crit["login"]["value"]["="]="'".AddSlashes($login)."'";
+								$crit["login"]["value"]["="]=$login;
 								foreach ($authconfig['userdirs'] as $userdirpath) {
 									$result=$destobj->find($userdirpath,$crit,"system.get.phtml");
 									if (count($result)) {

@@ -42,7 +42,7 @@ abstract class sql_compiler {
 				$YYBUFFER = substr($YYBUFFER, $YYCURSOR + 1);
 				$node["id"] = "string";
 				$node["type"] = ($quote === '"') ? "double" : "single";
-				$node["value"] = "'".AddSlashes($value)."'";
+				$node["value"] = stripslashes($value);
 				return $node;
 			break;
 			case $this->_SCAN_NUM_START[$yych]:

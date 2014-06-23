@@ -271,10 +271,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 								$value = $wf_prop_value;
 								break;
 							default:
-								$value = "'".AddSlashes($wf_prop_value)."'";
+								$value = $wf_prop_value;
+								// backwards compatibility, store will do the escaping from now on
+								// will be removed in the future
 								if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
 										&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
-									$value = $wf_prop_value;
+									$value = stripSlashes(substr($wf_prop_value,1,-1));
+									// todo add deprecated warning
 								}
 
 						}
@@ -321,15 +324,15 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 					if ($configcache->custom[$name]['property']) {
 						if (is_array($value)) {
 							foreach($value as $valkey => $valvalue ) {
-								$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
-								$properties["custom"][$i]["value"]="'".AddSlashes($valvalue)."'";
-								$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
+								$properties["custom"][$i]["name"]=$name;
+								$properties["custom"][$i]["value"]=$value;
+								$properties["custom"][$i]["nls"]=$nls;
 								$i++;
 							}
 						} else {
-							$properties["custom"][$i]["name"]="'".AddSlashes($name)."'";
-							$properties["custom"][$i]["value"]="'".AddSlashes($value)."'";
-							$properties["custom"][$i]["nls"]="'".AddSlashes($nls)."'";
+							$properties["custom"][$i]["name"]=$name;
+							$properties["custom"][$i]["value"]=$value;
+							$properties["custom"][$i]["nls"]=$nls;
 							$i++;
 						}
 					}
@@ -442,11 +445,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$this->data->config->owner_name=$AR->user->data->name;
 			}
 			$this->data->config->owner=$AR->user->data->login;
-			$properties["owner"][0]["value"]="'".AddSlashes($this->data->config->owner)."'";
+			$properties["owner"][0]["value"]=$this->data->config->owner;
 		}
 		$properties["time"][0]["ctime"]=$this->data->ctime;
 		$properties["time"][0]["mtime"]=$this->data->mtime;
-		$properties["time"][0]["muser"]="'".AddSlashes($this->data->muser)."'";
+		$properties["time"][0]["muser"]=$this->data->muser;
 
 		/* save custom data */
 		$properties = $this->saveCustomData($configcache, $properties);
@@ -863,7 +866,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$userpath=$AR->user->FindGrants($path, $grants);
 				// if not already done, find all groups of which the user is a member
 				if (!is_array($AR->user->externalgroupmemberships) || sizeof($AR->user->externalgroupmemberships)==0) {
-					$criteria["members"]["login"]["="]="'".AddSlashes($AR->user->data->login)."'";
+					$criteria["members"]["login"]["="]=$AR->user->data->login;
 				} else {
 					// Use the group memberships of external databases (e.g. LDAP)
 					$criteria="members.login='".AddSlashes($AR->user->data->login)."'";
@@ -3143,6 +3146,7 @@ debug("loadLibrary: loading cache for $this->path");
 
 	function _save($properties="", $vtype="") {
 		if (is_array($properties)) {
+			// isn't this double work, the save function doesn this again
 			foreach ($properties as $prop_name => $prop) {
 				foreach ($prop as $prop_index => $prop_record) {
 					$record = Array();
@@ -3154,12 +3158,12 @@ debug("loadLibrary: loading cache for $this->path");
 								$value = $prop_value;
 							break;
 							default:
-								$value = "'".AddSlashes($prop_value)."'";
-								if (substr($prop_value, 0, 1) === "'" && substr($prop_value, -1) === "'"
-									&& "'".AddSlashes(StripSlashes(substr($prop_value, 1, -1)))."'" == $prop_value) {
-										$value = $prop_value;
+								$value = $prop_value;
+								if (substr($wf_prop_value, 0, 1) === "'" && substr($wf_prop_value, -1) === "'"
+										&& "'".AddSlashes(StripSlashes(substr($wf_prop_value, 1, -1)))."'" == $wf_prop_value) {
+									$value = stripSlashes(substr($wf_prop_value,1,-1));
+									// todo add deprecated warning
 								}
-								
 						}
 						$record[$prop_field] = $value;
 					}

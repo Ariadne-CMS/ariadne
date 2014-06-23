@@ -114,7 +114,7 @@ abstract class store {
 
 	 $criteria ::= ({ $property_name => ({ $valuename => ({ $compare_function, $value }) }) }) 
 
-	 e.g.: $criteria["status"]["value"][">"]="'published'";
+	 e.g.: $criteria["status"]["value"][">"]="published";
 
 	 $path should always start and end with a '/'.
 
@@ -140,13 +140,10 @@ abstract class store {
 			$properties[{property_name}][][{value_name}]={value}
 			{property_name} must be a valid property name
 			{value_name} must be a valid value name for this property
-			{value} can be a number, boolean or string. If it is a string
-				it must be enclosed in single qoutes. All other single 
-				quotes in the string must be escaped. e.g:
-				"'\'t is a String'"
+			{value} can be a number, boolean or string. 
 		example:
-			$properties["name"][0]["value"]="'A name'";
-			$properties["name"][1]["value"]="'A second name!'";
+			$properties["name"][0]["value"]="A name";
+			$properties["name"][1]["value"]="A second name!";
 		if $properties["name"]=1 then all properties for property name
 			will be removed.
 

@@ -64,17 +64,17 @@
 						$this->error=sprintf($ARnls["err:nonameentered"],$AR->nls->list[$key]);
 					}
 					$newnlsdata->name=$this->getdata("name",$key);
-					$properties["name"][$count]["value"]="'".AddSlashes($newnlsdata->name)."'";
-					$properties["name"][$count]["nls"]="'$key'";
-					$properties["text"][$count]["value"]="'".AddSlashes($newnlsdata->name)."'";
-					$properties["text"][$count]["nls"]="'$key'";
+					$properties["name"][$count]["value"]=$newnlsdata->name;
+					$properties["name"][$count]["nls"]=$key;
+					$properties["text"][$count]["value"]=$newnlsdata->name;
+					$properties["text"][$count]["nls"]=$key;
 					$count++;
 					$newnlsdata->summary=page::compile($this->getdata("summary",$key), $key);
-					$properties["text"][$count]["value"]="'".AddSlashes($newnlsdata->summary)."'";
-					$properties["text"][$count]["nls"]="'$key'";
+					$properties["text"][$count]["value"]=$newnlsdata->summary;
+					$properties["text"][$count]["nls"]=$key;
 					$count++;
 					if ($this->store->is_supported("fulltext")) {
-						$properties["fulltext"][$count]["value"]="'".AddSlashes($this->store->format_for_fti(
+						$properties["fulltext"][$count]["value"]=$this->store->format_for_fti(
 								$newnlsdata->name." ".
 								$newnlsdata->summary." ".
 								$newnlsdata->title." ".
@@ -87,8 +87,8 @@
 								$this->data->pobox." ".
 								$this->data->url." ".
 								$rawemails
-								))."'";
-						$properties["fulltext"][$count]["nls"]="'$key'";
+								);
+						$properties["fulltext"][$count]["nls"]=$key;
 					}
 					$this->data->$key=$newnlsdata;
 					$this->data->nls->list[$key]=$value;
@@ -100,10 +100,10 @@
 				}
 			}
 
-			$properties["address"][0]["street"]="'".AddSlashes($this->data->address)."'";
-			$properties["address"][0]["zipcode"]="'".AddSlashes($this->data->zipcode)."'";
-			$properties["address"][0]["city"]="'".AddSlashes($this->data->city)."'";
-			$properties["address"][0]["country"]="'".AddSlashes($this->data->country)."'";
+			$properties["address"][0]["street"]=$this->data->address;
+			$properties["address"][0]["zipcode"]=$this->data->zipcode;
+			$properties["address"][0]["city"]=$this->data->city;
+			$properties["address"][0]["country"]=$this->data->country;
 			if (!$this->error) {
 				$this->save($properties);
 				$this->ClearCache();

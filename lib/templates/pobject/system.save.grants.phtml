@@ -77,7 +77,7 @@
 			if (!$path) {
 				$searchpath["pgroup"]="/system/groups/";
 				$searchpath["puser"]="/system/users/";
-				$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
+				$criteria["login"]["value"]["="]=$id;
 				if ($temp=current($this->find($searchpath[$type], $criteria, "system.get.phtml"))) {
 					$path=$temp->path;
 				} else {
@@ -107,7 +107,7 @@
 					}
 					if (!$this->error) {	
 						if ($id=current($this->get($path, "system.get.login.phtml"))) {
-							$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
+							$criteria["login"]["value"]["="]=$id;
 							$newgrants=preg_replace('/([\(\)])/',' \\1 ',$newgrants);
 							$newgrants=str_replace(',',' ',$newgrants);
 							$newgrants=preg_replace("/[[:space:]]/"," ",$newgrants);

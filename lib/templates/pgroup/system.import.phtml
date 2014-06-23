@@ -5,7 +5,7 @@
 			(!$this->arIsNewObject && $this->CheckLogin("edit"))) && 
 			$this->CheckConfig()) {
 
-		$criteria["login"]["value"]["="]="'".AddSlashes($this->data->login)."'";
+		$criteria["login"]["value"]["="]=$this->data->login;
 		$result = $this->find("/system/groups/", $criteria, "system.get.phtml");
 		if (is_array($result) && current($result)) {
 			$this->error = "group '".$this->data->login."' already exists";

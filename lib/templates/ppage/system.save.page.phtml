@@ -64,7 +64,7 @@
 					// Drop the template name
 					$ref=substr($ref, 0, strrpos($ref, "/")+1);
 				}
-				$properties["references"][$count]["path"]="'".AddSlashes($ref)."'";
+				$properties["references"][$count]["path"]=$ref;
 				$count++;
 			}
 			$this->save($properties);

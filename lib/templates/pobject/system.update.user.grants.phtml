@@ -20,7 +20,7 @@
 			if ($typegrants=$this->data->config->grants[$type]) {
 				foreach ($typegrants as $id=>$grants) {
 					$user_ob = null;
-					$criteria["login"]["value"]["="]="'".AddSlashes($id)."'";
+					$criteria["login"]["value"]["="]=$id;
 					if ( $type == 'puser' ) {
 						foreach ($authconfig['userdirs'] as $userdirpath) {
 							$user_ob = current($this->find($userdirpath, $criteria, "system.get.phtml"));

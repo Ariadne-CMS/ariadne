@@ -33,7 +33,7 @@
 					$newparent=$this->store->make_path($target, "..");
 					$newlogin=substr($target, strlen($newparent), -1);
 					$loginexists = false;
-					$crit["login"]["value"]["="]="'".AddSlashes($newlogin)."'";
+					$crit["login"]["value"]["="]=$newlogin;
 					foreach ($authconfig['userdirs'] as $userdirpath) {
 						$result=$this->find($userdirpath,$crit,"system.get.id.phtml");
 						if (count($result) && $result[0] != $this->id) {
@@ -71,7 +71,7 @@
 
 					$this->call("pobject::system.rename.phtml", $arCallArgs);
 					$this->data->login=substr($this->path, strlen($this->parent), -1);
-					$properties["login"][0]["value"]="'".AddSlashes($this->data->login)."'";
+					$properties["login"][0]["value"]=$this->data->login;
 					$this->save($properties);
 					if (!$this->error) {
 						// now update groups

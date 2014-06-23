@@ -44,7 +44,7 @@
 		} else {
 			// Check if user exists in any of the paths in auth.ini
 			$userexists = false;
-			$criteria["login"]["value"]["="]="'".AddSlashes($newlogin)."'";
+			$criteria["login"]["value"]["="]=$newlogin;
 			foreach ($authconfig['userdirs'] as $userdirpath) {
 				$result=$this->find($userdirpath,$criteria,"system.get.phtml");
 				if (count($result)) {
@@ -66,7 +66,7 @@
 					$this->path = $newpath;
 					$login = substr($this->path, strlen($this->store->make_path($this->path, "..")), -1);
 					$this->data->login = $login;
-					$properties["login"][0]["value"]="'".AddSlashes($login)."'";
+					$properties["login"][0]["value"]=$login;
 					$this->save($properties);
 
 					if (is_array($groups)) {
