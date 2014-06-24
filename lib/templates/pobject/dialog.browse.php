@@ -272,33 +272,37 @@
 	}
 
 	muze.event.attach(window, "load", function() {
-		muze.event.attach(document.getElementById("relativepath"), "change", function() {
-			var jail = document.getElementById("jail").value;
-			var relativePath = this.value;
-			document.getElementById("searchpath").value = jail + this.value;
-		});
-		muze.event.attach(document.getElementById("relativepath"), "keyup", function() {
-			var jail = document.getElementById("jail").value;
-			var relativePath = this.value;
-			document.getElementById("searchpath").value = jail + this.value;
-		});
+		if ( document.getElementById('relativepath') ) {
+			muze.event.attach(document.getElementById("relativepath"), "change", function() {
+				var jail = document.getElementById("jail").value;
+				var relativePath = this.value;
+				document.getElementById("searchpath").value = jail + this.value;
+			});
+			muze.event.attach(document.getElementById("relativepath"), "keyup", function() {
+				var jail = document.getElementById("jail").value;
+				var relativePath = this.value;
+				document.getElementById("searchpath").value = jail + this.value;
+			});
+		}
 
 		muze.event.attach(window, "searchPathUpdated", function() {
 			var newPath = document.getElementById("searchpath").value;
-			var jail = document.getElementById("jail").value;
-			if (jail) {
-				var relativePath = newPath;
-				if (newPath.indexOf(jail) == 0) {
-					relativePath = newPath.substring(jail.length, newPath.length);
-					document.getElementById("relativepath").value = relativePath;
+			if ( document.getElementById('relativepath') ) {
+				var jail = document.getElementById("jail").value;
+				if (jail) {
+					var relativePath = newPath;
+					if (newPath.indexOf(jail) == 0) {
+						relativePath = newPath.substring(jail.length, newPath.length);
+						document.getElementById("relativepath").value = relativePath;
+					}
 				}
 			}
 
 			// Fix the base URL for all the buttons in the toolbar to point to the new path;
 			var targetButton = document.querySelectorAll("#explore_menubar a");
 			for (var i=0; i<targetButton.length; i++) {
-				if (targetButton[i].href && targetButton[i].href.indexOf(muze.ariadne.registry.get('store_root')) > -1) {
-						var targetHref = targetButton[i].href.substring(targetButton[i].href.lastIndexOf('/')+1, targetButton[i].href.length);
+				if (targetButton[i].href && targetButton[i].href.indexOf(muze.ariadne.registry.get('store_root')) >= 0 ) {
+						var targetHref = targetButton[i].href.substring(targetButton[i].href.lastIndexOf('/')+1 );
 						targetButton[i].href = muze.ariadne.registry.get('store_root')+newPath+targetHref;
 				}
 			}
