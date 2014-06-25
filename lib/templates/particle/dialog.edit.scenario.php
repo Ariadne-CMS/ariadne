@@ -11,12 +11,18 @@
 		$selectedlanguage=$ARConfig->nls->list[$arLanguage];
 
 		$flagurl = $AR->dir->images."nls/small/$selectednls.gif";
+
+		$userConfig = $this->loadUserConfig();
+		if ($userConfig['defaults']['publish']['publishScenarioDirs']) {
+			$scenarioDir = end( $userConfig['defaults']['publish']['publishScenarioDirs'] );
+		} else {
+			$scenarioDir = "/system/newspaper/scenarios/";
+		}
 	?>
 	<script type="text/javascript">
 		summary=new Array();
 		<?php
-		
-		$summaries = $this->ls("/system/newspaper/scenarios/","system.get.summary.phtml");
+		$summaries = $this->ls($scenarioDir,"system.get.summary.phtml");
 		
 			foreach ($summaries as $key => $summary) {
 				echo "summary['".key($summary)."']='".AddCSlashes(current($summary), ARESCAPE)."';\n";
@@ -33,7 +39,7 @@
 		<div class="field">
 			<select name="scenario" size="6" onChange="updatedescription(this.form)" class="inputline wgWizAutoFocus">
 			<?php
-				$this->ls("/system/newspaper/scenarios/","show.option.phtml", Array("selected" => $this->getdata("scenario", "none")));
+				$this->ls($scenarioDir,"show.option.phtml", Array("selected" => $this->getdata("scenario", "none")));
 			?>
 			</select>
 		</div>
