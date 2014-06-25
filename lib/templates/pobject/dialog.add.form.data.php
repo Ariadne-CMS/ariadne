@@ -1,5 +1,5 @@
 <?php
-	if ( $this->CheckLogin('add') && $this->CheckConfig() ) {
+	if ( $this->CheckLogin('add', $arNewType) && $this->CheckConfig() ) {
 		echo '<fieldset class="editdata">';
 		echo '<legend>';
 		if (sizeof($arLanguages) > 1) {

@@ -1,6 +1,6 @@
 <?php
 	$ARCurrent->nolangcheck=true;
-	if ($this->CheckLogin("add") && $this->CheckConfig()) {
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		require_once($this->store->get_config("code")."modules/mod_yui.php");
 
 		$showall = $this->getvar('showall');

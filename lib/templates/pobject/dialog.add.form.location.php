@@ -1,5 +1,5 @@
 <?php
-	if ($this->CheckLogin("add") && $this->CheckConfig()) {
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		echo '<fieldset id="location">';
 		echo '<legend>' . $ARnls['ariadne:new:location'] . '</legend>';
 		$fields = array(
