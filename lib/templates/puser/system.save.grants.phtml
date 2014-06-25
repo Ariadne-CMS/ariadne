@@ -97,10 +97,11 @@
 					}
 				}
 			} else if ($newgrants) {
-				if ($type=current($this->get($path, "system.get.type.phtml"))) {
-					if ($this->store->AR_implements($type, "pgroup")) { 
+				if ($object=current($this->get($path, "system.get.phtml"))) {
+					debug("system.save.grants.phtml:typecheck:".$object->type);
+					if ($object->AR_implements("pgroup")) {
 						$type="pgroup";
-					} else if ($this->store->AR_implements($type, "puser")) { 
+					} else if ($object->AR_implements("puser")) {
 						$type="puser";
 					} else {
 						$this->error=sprintf($ARnls["err:nousergroup"],$path);
