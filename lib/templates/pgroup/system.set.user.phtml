@@ -29,7 +29,7 @@
 				$login = $user->data->login;
 				if ($login && $login!=".") {
 					$linkedObj = current($this->get($this->path.$login, 'system.get.phtml'));
-					if ($linkedObj->AR_implements('pshortcut')) {
+					if ($linkedObj && $linkedObj->AR_implements('pshortcut')) {
 						$this->sgBegin('>delete(pshortcut)');
 							$linkedObj->call('system.delete.phtml');
 						$this->sgEnd();
