@@ -167,14 +167,13 @@
 			$context = stream_context_create( array( 'http' => $options ) );
 			$result = @file_get_contents( (string) $url, false, $context );
 
-			if ($result) {
-				$this->responseHeaders = $http_response_header; //magic php variable set by file_get_contents.
-
+			$this->responseHeaders = $http_response_header; //magic php variable set by file_get_contents.
+			if (is_array($this->responseHeaders) && isset($this->responseHeaders[0])) {
 				$statusLine = explode(" ", $this->responseHeaders[0]);
 				$this->statusCode = $statusLine[1];
-
-				$this->requestHeaders = $options['header'];
 			}
+
+			$this->requestHeaders = $options['header'];
 			return $result;
 		}
 
