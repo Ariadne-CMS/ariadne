@@ -1,4 +1,20 @@
 ========================
+Changes in Ariadne 8.3.1
+========================
+
+Bugfixes:
+ * correct function definitions between loaders
+ * make mfu.save.html pinp overridable
+ * Fix buttons in dialog.browse.php
+ * Automatic formsecrets in ar/html/form has been improved
+ * improgved handling of relative paths in dialog.browse.php
+ * Added missing global $nls
+ * corrected check for implements user/group it now also support subtypes
+ * added saving of an emailadres in mod_rcas
+ * Always parse http response headers in ar/http/Clientstream
+ * You don't need add rights to display the userinterface of the add dialog anymore
+
+========================
 Changes in Ariadne 8.3
 ========================
 
