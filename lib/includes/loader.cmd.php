@@ -138,7 +138,7 @@
 		return true;
 	}
 
-	function ldGetServerVar($server_var) {
+	function ldGetServerVar($server_var = "") {
 		// dummy function
 		return false;
 	}

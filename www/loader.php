@@ -118,6 +118,7 @@
 		global $DB;
 		global $path;
 		global $function;
+		global $nls;
 
 		// go check for a sessionid
 		$root=$AR->root;

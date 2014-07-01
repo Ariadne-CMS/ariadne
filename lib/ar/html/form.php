@@ -42,7 +42,7 @@
 					array('formSecret' => array(
 						'type' => 'hidden',
 						'name' => 'formSecret',
-						'default' => ar('loaderSession')->getvar("formSecret"),
+						'value' => ar('loaderSession')->getvar("formSecret"),
 						'checks' => '/^'.ar('loaderSession')->getvar("formSecret").'$/D'
 					))
 				));
@@ -592,6 +592,7 @@
 		public function getNameValue() {
 			$nameArrayIndex = strpos( $this->name, '[' );
 			if ( $nameArrayIndex ) {
+				//FIXME: this results in \r\n being encoded as &#13;&#10;
 				$urlQuery = $this->buildQuery( $this->name, $this->getValue() );
 				parse_str( $urlQuery, $result );
 				return $result;

@@ -1,5 +1,5 @@
 <?php
-	if ($this->CheckLogin("add") && $this->CheckConfig()) {
+	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		echo '<fieldset id="type">';
 		if (!$location) {
 			$location = $this->path;
