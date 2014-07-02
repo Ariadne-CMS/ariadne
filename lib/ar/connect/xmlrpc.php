@@ -96,7 +96,7 @@ class ar_connect_xmlrpcClient extends arBase {
 
 	public function __get($name) {
 		$result = $this->wrapped->{$name};
-		if ( is_a('Ripcord_Client', $result) ) {
+		if ( $result instanceof Ripcord_Client ) {
 			return new ar_connect_xmlrpcClient($result); // FIXME: use clone here instead?
 		} else {
 			return $result;
