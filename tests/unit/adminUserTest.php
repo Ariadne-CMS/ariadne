@@ -1,12 +1,9 @@
 <?php
 
-/**
- * @backupGlobals disabled
- */
 class AdminUserTest extends PHPUnit_Framework_TestCase
 {
 
-	public static function setUpBeforeClass()
+	function setUp()
 	{
 		global $ariadne,$store_config,$store,$AR;
 		/* instantiate the store */

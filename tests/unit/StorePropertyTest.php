@@ -1,12 +1,8 @@
 <?php
 
-/**
- * @backupGlobals disabled
- */
 class StorePropertyTest extends PHPUnit_Framework_TestCase
 {
-	protected static $demoid;
-	public static function setUpBeforeClass()
+	function setUp()
 	{
 		global $ariadne,$store_config,$store,$AR;
 		/* instantiate the store */
@@ -17,13 +13,15 @@ class StorePropertyTest extends PHPUnit_Framework_TestCase
 		$login = "admin";
 		$query = "object.implements = 'puser' and login.value='$login'";
 		$AR->user = current($store->call('system.get.phtml', '', $store->find('/system/users/', $query)));
-		self::$demoid = $store->exists('/projects/demo/demo/');
 
 	}
 
 	function testLoadproperties() {
 		global $store;
-		$prop = $store->load_properties(self::$demoid);
+
+		$demoid = $store->exists('/projects/demo/demo/');
+
+		$prop = $store->load_properties($demoid);
 		$this->assertArrayHasKey('owner',$prop,"Properties doesn't contain an owner");
 		$this->assertArrayHasKey('text',$prop,"Properties doesn't contain a text");
 		$this->assertArrayHasKey('name',$prop,"Properties doesn't contain a name");
@@ -36,11 +34,13 @@ class StorePropertyTest extends PHPUnit_Framework_TestCase
 	function testDelAddpropertie() {
 		global $store;
 
-		$origProp = $store->load_property(self::$demoid,'name');
-		$store->del_property(self::$demoid,'name');
-		$newProp = $store->load_property(self::$demoid,'name');
-		$store->add_property(self::$demoid,'name',current($origProp));
-		$resaveProp = $store->load_property(self::$demoid,'name');
+		$demoid = $store->exists('/projects/demo/demo/');
+
+		$origProp = $store->load_property($demoid,'name');
+		$store->del_property($demoid,'name');
+		$newProp = $store->load_property($demoid,'name');
+		$store->add_property($demoid,'name',current($origProp));
+		$resaveProp = $store->load_property($demoid,'name');
 
 		$this->assertNotEquals($origProp,$newProp,'Name propertie should be deleted now');
 		$this->assertEquals($origProp,$resaveProp,'Name property should be the same');
