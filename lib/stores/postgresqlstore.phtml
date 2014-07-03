@@ -1005,7 +1005,7 @@ class postgresqlstore extends store {
 			while (list($name, $value)=each($values)) {
 				if ($value != "") {
 					$query_names .= "AR_".pg_escape_string($name).", ";
-					$value = pg_escape_string($value);
+					$value = "'".pg_escape_string($value)."'";
 					if(strlen($value) >= MAX_PROPERTY_LENGTH) {
 						$query_values .= "substr(".$value.",1,".MAX_PROPERTY_LENGTH."), ";
 					} else {
