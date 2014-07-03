@@ -24,7 +24,7 @@ before_script:
     - sh -c "if [ ${DB} = 'postgresql' ]; then psql -c 'create database ariadne;' -U postgres; fi"
 
 script:
-    - bash -e ./tests/run.sh
+    - bash ./tests/run.sh
 
 notifications:
     email: false

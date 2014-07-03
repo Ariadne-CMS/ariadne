@@ -1,6 +1,7 @@
-#!/bin/bash -x
+#!/bin/bash
 
 set -e
+set -x
 
 if [ "${TRAVIS}" = "true" ] ; then
 	BUILDROOT="${TRAVIS_BUILD_DIR}"
