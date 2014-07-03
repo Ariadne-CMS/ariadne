@@ -158,9 +158,14 @@
 			
 			if ($ARCurrent->arCallStack) {
 				$arCallArgs=end($ARCurrent->arCallStack);
+				if ( $name == 'arCallArgs' ) {
+					return $arCallArgs;
+				} 
 				if ( isset($arCallArgs[$name]) ) {
 					return $arCallArgs[$name];
 				}
+			} else if ( $name == 'arCallArgs' ) {
+				return ar_loader::getvar();
 			}
 			$context = pobject::getContext();
 			if ( is_array($context) ) {
