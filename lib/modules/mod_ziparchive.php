@@ -20,6 +20,7 @@
 		}
 
 		function create( $filename ) {
+			ini_set('memory_limit', '512M');
 			$this->_filename = $filename;
 
 			$resCreate = $this->open( $this->_filename, ZipArchive::CREATE );
@@ -35,6 +36,13 @@
 			return $this->addFromString( $filename, $content );
 		}
 
+		function _addEmptyDir( $dirName ) {
+			return $this->addEmptyDir( $dirName );
+		}
+
+		function _statIndex( $index ) {
+			return $this->statIndex( $index );
+		}
 
 		function _close() {
 			$this->close();
@@ -54,7 +62,7 @@
 				ldSetClientCache(true, $expires);
 			}
 			if ( $filename ) {
-				ldHeader("Content-Disposition: inline; filename=$filename");
+				ldHeader("Content-Disposition: attachment; filename=$filename");
 				ldHeader("Content-length:".(string)$size);
 			}
 			readfile( $this->_filename );
