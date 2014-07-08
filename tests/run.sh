@@ -254,4 +254,11 @@ if [ ${SYNTAX_ERROR_COUNT} -ge 1 ]; then
 	cat ${TMPDIR}/syntax.errors.txt
 	exit 1;
 fi
-sudo -u www-data phpunit --bootstrap tests/bootstrap.php tests/unit/
+PHPUNIT=`which phpunit`
+
+if [ ! -z "${PHPUNIT}" ] ; then
+	sudo -u www-data "${PHPUNIT}" --bootstrap tests/bootstrap.php tests/unit/
+else
+	echo "phpunit not found"
+	exit 1
+fi
