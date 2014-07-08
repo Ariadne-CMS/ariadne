@@ -107,6 +107,13 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 				global $ARCurrent;
 				$context = pobject::getContext();
 				$me = $context["arCurrentObject"];
+				if ( !$me || !is_object($me) ) {
+					//FIXME: this should not happen, but ldObjectNotFound() sometimes triggers this
+					// the problem is that there is no arCurrentObject pushed on the stack
+					// generally we can just return and nothing serious will happen
+					debug('No current object found on the context stack, skipping loadtext', 'all');
+					return $this;					
+				}
 				$arResult = $ARCurrent->arResult;
 				$me->pushContext(array());
 					$oldnls = $me->reqnls;
