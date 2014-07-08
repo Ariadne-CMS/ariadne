@@ -19,7 +19,8 @@ class StorePropertyTest extends PHPUnit_Framework_TestCase
 	function testLoadproperties() {
 		global $store;
 
-		$demoid = $store->exists('/projects/demo/demo/');
+		$testpath = TESTBASE.'/projects/demo/demo/';
+		$demoid = $store->exists($store->make_path('/',$testpath));
 
 		$prop = $store->load_properties($demoid);
 		$this->assertArrayHasKey('owner',$prop,"Properties doesn't contain an owner");
@@ -34,7 +35,8 @@ class StorePropertyTest extends PHPUnit_Framework_TestCase
 	function testDelAddpropertie() {
 		global $store;
 
-		$demoid = $store->exists('/projects/demo/demo/');
+		$testpath = TESTBASE.'/projects/demo/demo/';
+		$demoid = $store->exists($store->make_path('/',$testpath));
 
 		$origProp = $store->load_property($demoid,'name');
 		$store->del_property($demoid,'name');
@@ -42,7 +44,7 @@ class StorePropertyTest extends PHPUnit_Framework_TestCase
 		$store->add_property($demoid,'name',current($origProp));
 		$resaveProp = $store->load_property($demoid,'name');
 
-		$this->assertNotEquals($origProp,$newProp,'Name propertie should be deleted now');
+		$this->assertNotEquals($origProp,$newProp,'Name property should be deleted now');
 		$this->assertEquals($origProp,$resaveProp,'Name property should be the same');
 	}
 }
