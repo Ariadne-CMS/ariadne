@@ -1174,7 +1174,7 @@ class pinp {
 						$i++;
 					}
 					while (!$this->error && $this->token_ahead == PT_OBJECT_OPERATOR) {
-						$result = "(!is_object(\$res$i = $result)) ? null : \$res$i".$this->parse_object_operator($inDQString);
+						$result = "((!is_object(\$res$i = $result)) ? null : \$res$i".$this->parse_object_operator($inDQString) . ")";
 						$i++;
 					}
 					while (!$inDQString && !$this->error && $this->token_ahead == PT_PAR_OPEN) {
