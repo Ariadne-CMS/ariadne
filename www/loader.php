@@ -580,11 +580,13 @@
 			ob_end_clean();
 			include_once($store_config['code']."modules/mod_esi.php");
 			$image = ESI::esiProcess($image);
+			$image_len = strlen($image);
 
 			if ($ARCurrent->arDontCache) {
 				// FIXME: ook de cachetime 'niet cachen' uit het cachedialoog werkend maken...  || $ARCurrent->cachetime == 0) {
 				ldSetClientCache(false);
 			}
+			ldHeader("Content-Length: ".$image_len);
 			echo $image;
 		}
 	}
