@@ -1,6 +1,6 @@
 <?php
 
-class FileNlsText extends PHPUnit_Framework_TestCase
+class FileNlsTest extends PHPUnit_Framework_TestCase
 {
 
 	function setUp()
