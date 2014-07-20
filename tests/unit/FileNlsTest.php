@@ -53,5 +53,54 @@ class FileNlsTest extends PHPUnit_Framework_TestCase
 		}
 	}
 
+	public function testObjectAllNLSShow() {
+		global $AR;
+
+		$obj =current(ar::get(TESTBASE.'/file-nls/file-nls/')->call('system.get.phtml'));
+		foreach($obj->data->nls->list as $nls => $language) {
+			ob_start();
+			$content = $obj->ShowFile('file',$nls);
+			$content  = ob_get_contents();
+			ob_end_clean();
+			$content = trim($content);
+			$this->assertEquals('taal '.$nls , $content);
+		}
+	}
+
+	/*
+	FIXME: disabled for now, testcase triggers a transition bug
+	should return default language, but while the pfile is not yet to work without '_file' for default nls
+
+	public function testObjectunavailableNls() {
+		global $AR;
+
+		$obj =current(ar::get(TESTBASE.'/file-nls/file-nls/')->call('system.get.phtml'));
+		$content = $obj->getFile('file','zz');
+		$content = trim($content);
+		$this->assertEquals('taal '.$obj->data->nls->default , $content);
+	}
+	*/
+
+	public function testObjectUnavailableNlsPlain() {
+		global $AR;
+
+		$obj =current(ar::get(TESTBASE.'/file-nls/file-nls/')->call('system.get.phtml'));
+		$nls = $obj->data->nls->default;
+		$content = $obj->getPlainText('file','zz');
+		$content = trim($content);
+		$this->assertEquals('taal '.$nls , $content);
+	}
+
+	public function testObjectunavailableNlsChangeDefault() {
+		global $AR;
+
+		$obj =current(ar::get(TESTBASE.'/file-nls/file-nls/')->call('system.get.phtml'));
+		$nls = $obj->data->nls->default;
+		$obj->data->nls->default = 'de';
+		$content = $obj->getFile('file','zz');
+		$content = trim($content);
+		$this->assertNotEquals('taal '.$nls , $content);
+	}
+
 }
 ?>
