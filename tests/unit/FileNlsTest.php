@@ -41,5 +41,17 @@ class FileNlsTest extends PHPUnit_Framework_TestCase
 		}
 	}
 
+	public function testObjectAllNLSPlain() {
+		global $AR;
+
+		$obj =current(ar::get(TESTBASE.'/file-nls/file-nls/')->call('system.get.phtml'));
+
+		foreach($obj->data->nls->list as $nls => $language) {
+			$content = $obj->getPlainText('file',$nls);
+			$content = trim($content);
+			$this->assertEquals('taal '.$nls , $content);
+		}
+	}
+
 }
 ?>
