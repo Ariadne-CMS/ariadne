@@ -40,7 +40,6 @@ class arFilesTest extends PHPUnit_Framework_TestCase
 
 		$me = $this;
 		ar::context()->callAtPath(TESTBASE.'file-nls/', function() use ($me) {
-			$content = "file contents";
 			$result = ar_files::ls();
 			$me->assertEquals(count($result), 1);
 			$me->assertEquals($result[0]['name'], 'test');
@@ -49,17 +48,14 @@ class arFilesTest extends PHPUnit_Framework_TestCase
 		} );
 	}
 
-	public function testLs() {
+	public function testDelete() {
 		global $AR;
 
 		$me = $this;
 		ar::context()->callAtPath(TESTBASE.'file-nls/', function() use ($me) {
-			$content = "file contents";
+			ar_files::delete('test','nl');
 			$result = ar_files::ls();
-			$me->assertEquals(count($result), 1);
-			$me->assertEquals($result[0]['name'], 'test');
-			$me->assertEquals($result[0]['nls'], 'nl');
-
+			$me->assertEquals(count($result), 0);
 		} );
 	}
 
