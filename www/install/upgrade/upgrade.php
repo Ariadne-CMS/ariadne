@@ -152,11 +152,21 @@
 		case "8.0":
 		case "8.1":
 		case "8.2":
+		case '8.3':
 				array_push($todo, Array(
-							"description" => "Bumping revision to 8.3",
-							"operation" => "all/dummy.php",
-							"newversion" => "8.3"
+							"description" => "Remove duplicate content in filestore by removing the non-nls version of files",
+							"operation" => "8.4/upgrade.files.php",
+							"newversion" => "8.4-b1"
 							));
+		/*
+		case '8.4-b1':
+				array_push($todo, Array(
+							"description" => "Bumping revision to 8.4",
+							"operation" => "all/dummy.php",
+							"newversion" => "8.4"
+							));
+		*/
+
 	}
 
 
