@@ -4,6 +4,14 @@
 			($parentobj=current($this->get($this->parent, "system.get.phtml"))) &&
 			$parentobj->CheckLogin("add", $this->newObject->type)) ||
 			(!$this->newObject->arIsNewObject && $this->CheckLogin("edit"))) {
+
+		if ($ARCurrent->AXAction == "import") {
+			if( $ARCurrent->AXHeader["version"] < 4 ) {
+				// export contains non nls'd files upgrade first"
+				$this->call('system.upgrade.filestore.8.4.php');
+			}
+		}
+
 		 $orig_filestore=$this->store->get_filestore("files");
 		 $orig_files=$orig_filestore->ls($this->id);
 		 if (is_array($orig_files)) {
