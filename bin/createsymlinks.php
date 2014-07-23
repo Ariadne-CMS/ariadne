@@ -126,7 +126,7 @@
 					}
 				} else if (is_dir($f)) {
 					/* skip CVS directories */
-					if ($file != "CVS" && $file != ".svn" ) {
+					if ($file != "CVS" && $file != ".svn" && $file != ".git") {
 						$targetpath = $dstdir.substr("$path$file/", strlen($srcdir));
 						makedir($targetpath);
 						createsyms_rec($srcdir,$dstdir,"$f/");
