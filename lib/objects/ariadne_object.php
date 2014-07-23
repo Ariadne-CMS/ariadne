@@ -116,7 +116,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$this->nls=$this->data->nls->default;
 			$nls=&$this->nls;
 		}
-		if ($nls && $this->data->$nls) {
+		if ($nls && isset($this->data->$nls)) {
 			// now set the data and nlsdata pointers
 			$this->nlsdata=$this->data->$nls;
 			$nlsdata=&$this->nlsdata;
@@ -127,10 +127,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$nlsdata=&$this->data;
 			$data=&$this->data;
 		} 
-		if ($this->data->custom['none']) {
+		if (isset($this->data->custom['none'])) {
 			$customdata=$this->data->custom['none'];
 		}
-		if ($this->data->custom[$nls]) {
+		if (isset($this->data->custom[$nls])) {
 			$customnlsdata=$this->data->custom[$nls];
 		}
 		$arCallFunctionOrig = $arCallFunction;
@@ -580,7 +580,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$rootoptions=$this->store->get_config('rootoptions');
 		if (!$session || ($nls !== false)) {
 			$rootoptions = "";
-			if ($session && $ARCurrent->session->id && !$AR->hideSessionIDfromURL) {
+			if ($session && isset($ARCurrent->session->id) && !$AR->hideSessionIDfromURL) {
 				$rootoptions .= "/-".$ARCurrent->session->id."-";
 			}
 			if ($nls) {
@@ -1276,7 +1276,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			if ($this->data->config->typetree && ($this->data->config->typetree!="inherit")) {
 				$configcache->typetree=$this->data->config->typetree;
 			}
-			if ($this->data->config->nlsconfig->list) {
+			if (isset($this->data->config->nlsconfig->list)) {
 				$configcache->nls = clone $this->data->config->nlsconfig;
 			}
 
