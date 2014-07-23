@@ -71,7 +71,7 @@
 			if ( $fstore->exists( $ob->id, $fname ) ) {
 				return $fstore->remove( $ob->id, $fname );
 			}
-			return false;			
+			return false;
 		}
 
 		public static function touch( $name, $time=null, $nls=null ) {
