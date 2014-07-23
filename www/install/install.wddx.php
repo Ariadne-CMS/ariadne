@@ -1,4 +1,4 @@
-#!/usr/bin/php4 -q
+#!/usr/bin/env php
 <pre>
 <?php
 	include_once("check.php");

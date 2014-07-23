@@ -1,4 +1,4 @@
-#!/usr/bin/php5 -q
+#!/usr/bin/env php
 <?php
 
 	function debug() {

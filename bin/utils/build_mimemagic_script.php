@@ -1,4 +1,4 @@
-#!/usr/bin/php -q
+#!/usr/bin/env php
 <?php
 	// location of the mime-magic file
 	$magic_db="/usr/share/file/magic.mime";
