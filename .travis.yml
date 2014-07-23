@@ -10,13 +10,17 @@ php:
 
 before_install:
     - sudo apt-get update -qq
-    - sudo apt-get install -qq apache2 libapache2-mod-php5 php5-curl php5-mysql php5-pgsql imagemagick php5-mcrypt wget php-pear lynx subversion tidy
-    - sudo a2enmod actions
-    - sudo a2enmod rewrite
+    - sudo apt-get install -qq apache2 libapache2-mod-fastcgi imagemagick wget lynx subversion tidy
+    - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
+    - echo 'date.timezone = "Europe/Amsterdam"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
+    - sudo a2enmod rewrite actions fastcgi alias
+    - echo "cgi.fix_pathinfo = 1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
     - sudo ln -s ${TRAVIS_BUILD_DIR}/www /var/www/ariadne
-    - sudo apache2ctl graceful
-    - sudo chown -R www-data:www-data ${TRAVIS_BUILD_DIR}/files ${TRAVIS_BUILD_DIR}/lib/configs/ariadne.phtml ${TRAVIS_BUILD_DIR}/lib/configs/svn/
-    - sudo svn co --non-interactive https://svn.muze.nl/svn/muze/pear/VersionControl /usr/share/php/VersionControl
+    - sudo cp -f tests/travis-ci-apache /etc/apache2/sites-available/default
+    - sudo svn co --non-interactive https://svn.muze.nl/svn/muze/pear/VersionControl `pear config-get php_dir`/VersionControl
+    - phpenv rehash
+    - ~/.phpenv/versions/$(phpenv version-name)/sbin/php-fpm
+    - sudo service apache2 restart
     - ls -lad ${TRAVIS_BUILD_DIR}/files ${TRAVIS_BUILD_DIR}/lib/configs/ariadne.phtml
 
 before_script:
