@@ -37,7 +37,6 @@
 		if (!$axstore->error) {
 			$ARCurrent->importStore=&$store;
 			$args="srcpath=/&destpath=".$base;
-			debugon('all');
 			$axstore->call("system.export.phtml", $args,
 				$axstore->get("/"));
 			$error=$axstore->error;
