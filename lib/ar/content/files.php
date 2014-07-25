@@ -95,5 +95,9 @@
 			return $this->resource;
 		}
 
+		public function getMetaData() {
+			return stream_get_meta_data($this->resource);
+		}
+
 	}
 ?>
