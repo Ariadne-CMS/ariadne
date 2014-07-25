@@ -92,6 +92,15 @@
 			}
 			$tmpsrc .= ".tmp";
 			$fp = fopen( $tmpsrc, 'w+' );
+			if( $contents instanceof ar_content_filesFile ){
+				$contents = $contents->getResource();
+			}
+
+			if ( is_resource($contents) && get_resource_type($contents)==='stream' ) {
+				stream_copy_to_stream( $contents, $fp );
+			} else {
+				 fwrite($fp, $contents);
+			} 
 			return new ar_content_filesFile($fp);
 		}	
 
