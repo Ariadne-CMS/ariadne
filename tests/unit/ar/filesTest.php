@@ -35,7 +35,7 @@ class arFilesTest extends PHPUnit_Framework_TestCase
 		} );
 	}
 
-	public function testLs() {
+	public function testNls() {
 		global $AR;
 
 		$me = $this;
