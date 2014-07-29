@@ -10,23 +10,23 @@
      This file is part of Ariadne.
 
      Ariadne is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published 
-     by the Free Software Foundation; either version 2 of the License, 
+     it under the terms of the GNU General Public License as published
+     by the Free Software Foundation; either version 2 of the License,
      or (at your option) any later version.
- 
+
      Ariadne is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU General Public License for more details.
 
      You should have received a copy of the GNU General Public License
-     along with Ariadne; if not, write to the Free Software 
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
+     along with Ariadne; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
      02111-1307  USA
 
     -------------------------------------------------------------------
 
-     Class inheritance: 	pobject 
+     Class inheritance: 	pobject
      Description:
 
        This is the class definition file of the pobject class.
@@ -37,9 +37,9 @@ debug("pobject: Load","object");
 
 abstract class ariadne_object extends object { // ariadne_object class definition
 
-	var $store;	
+	var $store;
 	var $path;
-	var $data;  
+	var $data;
 
 	function init($store, $path, $data) {
 		$this->store=$store;
@@ -55,7 +55,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	  $arCallFunction must be the name of a class or object template.
 	    it can be prepended with "{classname}::". classname must be either
-	    a valid ariadne class (derived from pobject). call() 
+	    a valid ariadne class (derived from pobject). call()
 	    will then try to find the template starting at the given classname.
 		e.g.:
 		call("pobject::view.html") will show the view.html template of
@@ -68,7 +68,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	global $AR, $ARConfig, $ARCurrent, $ARBeenHere, $ARnls;
 
 		debug("pobject: ".$this->path.": call($arCallFunction, ".debug_serialize($arCallArgs).")","object","all","IN");
-		
+
 		// default to view.html
 		if (!$arCallFunction) {
 			$arCallFunction="view.html";
@@ -80,10 +80,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$ARCurrent->arCallStack[]=&$arCallArgs;
 		// keep track of the context (php or pinp) in which the called template runs. call always sets it php, CheckConfig sets it to pinp if necessary.
 		$this->pushContext( array(
-			"arSuperContext" => Array(), 
+			"arSuperContext" => Array(),
 			"arCurrentObject" => $this,
-			"scope" => "php", 
-			"arCallFunction" => $arCallFunction 
+			"scope" => "php",
+			"arCallFunction" => $arCallFunction
 		) );
 
 		// convert the deprecated urlencoded arguments to an array
@@ -99,14 +99,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 		// now find the initial nls selection (CheckConfig is needed for per
 		// tree selected defaults)
-		if ($ARCurrent->nls) { 
-			$this->reqnls=$ARCurrent->nls; 
+		if ($ARCurrent->nls) {
+			$this->reqnls=$ARCurrent->nls;
 		} else if ($ARConfig->cache[$this->path] && $ARConfig->cache[$this->path]->nls->default) {
 			$this->reqnls = $ARConfig->cache[$this->path]->nls->default;
 		} else {
-			$this->reqnls=$AR->nls->default; 
+			$this->reqnls=$AR->nls->default;
 		}
-		if (isset($this->data->nls->list[$this->reqnls]) || !isset($this->data->nls)) {  
+		if (isset($this->data->nls->list[$this->reqnls]) || !isset($this->data->nls)) {
 			// the requested language is available
 			$this->nls=$this->reqnls;
 			$nls=&$this->nls;
@@ -126,7 +126,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$this->nlsdata=$this->data;
 			$nlsdata=&$this->data;
 			$data=&$this->data;
-		} 
+		}
 		if (isset($this->data->custom['none'])) {
 			$customdata=$this->data->custom['none'];
 		}
@@ -256,7 +256,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $this->store->count($this->store->ls($path));
 	}
 
-	private function saveMergeWorkflowResult($properties, $wf_result) { 
+	private function saveMergeWorkflowResult($properties, $wf_result) {
 		foreach ($wf_result as $wf_prop_name => $wf_prop) {
 			foreach ($wf_prop as $wf_prop_index => $wf_prop_record) {
 				if (!isset($wf_prop_record)) {
@@ -307,8 +307,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}
 		}
-		// the above works because either $custom comes from the form entry, and parse_str returns an 
-		// array with the name $custom, or $custom comes from the object and is an array and as such 
+		// the above works because either $custom comes from the form entry, and parse_str returns an
+		// array with the name $custom, or $custom comes from the object and is an array and as such
 		// parse_str fails miserably thus keeping the array $custom intact.
 
 		$i=0;
@@ -438,10 +438,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if($arIsNewObject) {
 			$this->data->ctime=$this->data->mtime;
 		}
-			
+
 		$this->data->muser=$AR->user->data->login;
 		if( !$this->data->config->owner ) {
-			if( !$this->data->config->owner_name) { 
+			if( !$this->data->config->owner_name) {
 				$this->data->config->owner_name=$AR->user->data->name;
 			}
 			$this->data->config->owner=$AR->user->data->login;
@@ -465,7 +465,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$result=$this->path;
 
 				$config=$this->data->config; // need to set it again, to copy owner config data
-				
+
 				$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 				$arCallArgs = $eventData->arCallArgs; // returned from onbeforesave event
 				$arCallArgs['properties'] = $properties;
@@ -528,7 +528,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$arCallArgs=end($ARCurrent->arCallStack);
 		}
 		$context = $this->getContext();
-		
+
 		$eventData = new object();
 		$eventData->arCallArgs = $arCallArgs;
 		$eventData->arCallFunction = $context['arCallFunction'];
@@ -566,13 +566,13 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				return $this->store->make_path($this->path, $path);
 		}
 	}
-	
+
 	function make_ariadne_url($path="") {
 		global $AR;
 		$path = $this->make_path($path);
 		return $AR->host . $AR->root . $this->store->get_config('rootoptions') . $path;
 	}
-	
+
 
 	function make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=null) {
 		global $ARConfig, $AR, $ARCurrent;
@@ -664,7 +664,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 
 	function compare_hosts($url1, $url2) {
-		// Check if hosts are equal, so that http://www.muze.nl and //www.muze.nl also match. 
+		// Check if hosts are equal, so that http://www.muze.nl and //www.muze.nl also match.
 		// using preg_replace instead of parse_url() because the latter doesn't parse '//www.muze.nl' correctly.
 		if (is_array($url2)) {
 			foreach ($url2 as $url) {
@@ -737,8 +737,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 
 	function AR_implements($implements) {
-		$type = current(explode(".",$this->type)); 
-		return $this->store->AR_implements($type, $implements); 
+		$type = current(explode(".",$this->type));
+		return $this->store->AR_implements($type, $implements);
 	}
 
 	function getlocks() {
@@ -781,7 +781,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 		return $result;
 	}
-	
+
 	function mogrify($id=0, $type, $vtype=null) {
 		if (!$id) {
 			$id = $this->id;
@@ -827,28 +827,28 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	  This function finds all grants in effect on this object for the
 	  logged in user! $AR->user must already be set.
-	
+
 	  Grants are checked in the following way:
 	  1) First all parents of this object are checked for grants for this
 	     specific user. The 'nearest' grants are valid, and the path of
-	     parent that set these grants will be the upper limit for the 
+	     parent that set these grants will be the upper limit for the
 	     checking of group grants.
 	  2) Now all groups of which the user is a member are checked for
-	     grants. Likewise, all parents are checked for group grants, upto 
-	     but not including the upperlimit as set in 1. All group grants 
-	     found are merged into one grants list. 
-	  3) If there are gropup grants, this means that there are group 
+	     grants. Likewise, all parents are checked for group grants, upto
+	     but not including the upperlimit as set in 1. All group grants
+	     found are merged into one grants list.
+	  3) If there are gropup grants, this means that there are group
 	     grants set in a parent nearer to this object than the user grants
 	     and therefore the groupgrants must be merged with the
 	     usergrants.
-	
+
 	  this results in:
 	  1	/		user: read edit		group: none
 	  2	/dir/					group: read
 	  3	/dir2/		user: none		group: read
 	  4	/dir/dir3/				group2: edit
 	  case 1: the user takes precedence over the group, grants are 'read edit'
-	  case 2: groupgrants are merged with usergrants, as its grants are set 
+	  case 2: groupgrants are merged with usergrants, as its grants are set
 	          in a 'nearer' parent (itself). grants are 'read edit'.
 	  case 3: user takes precedence again. grants are 'none'.
 	  case 4: All group grants are merged with the usergrants.
@@ -857,7 +857,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	global $AR;
 
-		if ($AR->user) { 	// login and retrieval of user object 
+		if ($AR->user) { 	// login and retrieval of user object
 			if (!$path) {
 				$path=$this->path;
 			}
@@ -912,7 +912,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 								foreach($groupgrants as $gkey => $gval ){
 									if (is_array($grants[$gkey]) && is_array($gval)) {
 										$grants[$gkey]=array_merge($gval, $grants[$gkey]);
-									} else 
+									} else
 									if ($gval && !is_array($gval)) {
 										$grants[$gkey] = $gval;
 									} else
@@ -936,7 +936,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 								foreach($sggrants as $gkey => $gval ){
 									if (is_array($grants[$gkey]) && is_array($gval)) {
 										$grants[$gkey]=array_merge($gval, $grants[$gkey]);
-									} else 
+									} else
 									if ($gval && !is_array($gval)) {
 										$grants[$gkey] = $gval;
 									} else
@@ -949,10 +949,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 							}
 						}
 					}
-				}			
+				}
 				$AR->user->grants[$path]=$grants;
 			}
-			$grants=$AR->user->grants[$path];	
+			$grants=$AR->user->grants[$path];
 
 		}
 		debug("pobject: GetValidGrants(user:".$AR->user->data->login."): end ( ".debug_serialize($grants)." )","all");
@@ -1031,7 +1031,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 
 		$grants=$AR->user->grants[$this->path];
-		if ( 	( !$grants[$grant] 
+		if ( 	( !$grants[$grant]
 					|| ( $modifier && is_array($grants[$grant]) && !$grants[$grant][$modifier] )
 				) && !$this->CheckAdmin($AR->user) ) {
 			// do login
@@ -1100,10 +1100,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	2) checking whether the path starts and ends with a "/".
 	3) checking whether the path doesn't exist already.
 	4) checking whether the parent exists.
-	
+
 	if all this checks out, it returns 1. If not, $this->error is set to
 	the correct error message.
-	
+
 	**********************************************************************/
 
 		$this->error="";
@@ -1158,14 +1158,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$parent = current($this->get($this->parent, "system.get.phtml"));
 			$parent->getConfig();
 		}
-		
+
 		$this->getConfigData();
-		
+
 		$ARConfig->pinpcache[$this->path] = $ARConfig->pinpcache[$this->parent];
 		// backwards compatibility when calling templates from config.ini
 		$prevArConfig = $ARCurrent->arConfig;
 		$ARCurrent->arConfig = $ARConfig->pinpcache[$this->path];
-		
+
 		$arCallArgs['arConfig'] = $ARConfig->pinpcache[$this->path];
 
 		/* calling config.ini directly for each system.get.config.phtml call */
@@ -1198,7 +1198,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 		$ARConfigChecked = $initialConfigChecked;
 		$ARCurrent->nls = $initialNLS;
-		
+
 		$arConfig = &$ARConfig->pinpcache[$this->path];
 		if (!is_array($arConfig['authentication']['userdirs'])) {
 			$arConfig['authentication']['userdirs'] = Array('/system/users/');
@@ -1217,9 +1217,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 		$ARCurrent->arLoginSilent = $loginSilent;
 		$ARCurrent->arConfig = $prevArConfig;
-		
+
 	}
-	
+
 	function getConfigData() {
 	global $ARConfig, $AR;
 		$context = $this->getContext(0);
@@ -1251,9 +1251,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 			if (is_array($this->data->config->templates)) {
 				$configcache->localTemplates = $this->data->config->templates;
-			}			
+			}
 			// hasConfigIni is checked in getConfig. Only calls config.ini if set to true
-			
+
 			if( !$configcache->hasDefaultConfigIni ) {
 				$configcache->hasConfigIni = false;
 				if( is_array($this->data->config->pinp) ) {
@@ -1544,7 +1544,7 @@ debug("loadLibrary: loading cache for $this->path");
 			// template of a specific library defined via call("library:template");
 			$arLibrary = substr($arCallFunction, 0, $libpos);
 			if ($arLibrary == 'current') {
-				// load the current arLibrary 
+				// load the current arLibrary
 				$context = $this->getContext(1);
 				$arLibrary = $context['arLibrary'];
 				$arLibraryPath = $context['arLibraryPath'];
@@ -1620,7 +1620,7 @@ debug("loadLibrary: loading cache for $this->path");
 				//debug("getPinpTemplate; INLIBRARY $checkpath; ".$ARConfig->cache[$checkpath]->type);
 				if ($ARConfig->cache[$checkpath]->type == 'psection') {
 					// debug("BREAKING; $arTemplateId");
-					// break search operation when we have found a 
+					// break search operation when we have found a
 					// psection object
 					break;
 				}
@@ -1699,10 +1699,10 @@ debug("loadLibrary: loading cache for $this->path");
 			$config = ($ARConfig->cache[$this->path]) ? $ARConfig->cache[$this->path] : $this->loadConfig();
 			$ARConfigChecked = $initialConfigChecked;
 			$ARConfig->nls=$config->nls;
-			
-			
+
+
 			// if a default language is entered in a parent and no language is
-			// explicitly selected in the url, use that default. 
+			// explicitly selected in the url, use that default.
 			// The root starts with the system default (ariadne.phtml config file)
 			if ( !$ARCurrent->nls ) {
 				if ( $config->root['nls'] ) {
@@ -1757,7 +1757,7 @@ debug("loadLibrary: loading cache for $this->path");
 				$eventData = new object();
 				$eventData->arCallArgs = $arCallArgs;
 				$eventData->arCallFunction = $arCallFunction;
-				
+
 				$ARConfigChecked = true;
 				$result = ar_events::fire( 'onbeforeview', $eventData );
 				$ARConfigChecked = $initialConfigChecked;
@@ -1765,7 +1765,7 @@ debug("loadLibrary: loading cache for $this->path");
 					return false;
 				}
 			}
-			
+
 			if (!$ARConfigChecked) {
 				// if this object isn't available in the requested language, show
 				// a language select dialog with all available languages for this object.
@@ -1789,14 +1789,14 @@ debug("loadLibrary: loading cache for $this->path");
 					} else {
 						$this->nlsdata=$this->data->$reqnls;
 					}
-				} 
+				}
 				$ARCurrent->nolangcheck=1;
 			}
 			if (	(	$config->cache && ($config->cache!=-1) ) &&
-					(	$arCallFunction	&& !$ARConfigChecked		) && 
-					( 	!$nocache 									) && 
-					(	$AR->OS=="UNIX" || 
-						( 	(count($_POST)==0) && 
+					(	$arCallFunction	&& !$ARConfigChecked		) &&
+					( 	!$nocache 									) &&
+					(	$AR->OS=="UNIX" ||
+						( 	(count($_POST)==0) &&
 							(count($_GET)==0) 			) 	) &&
 					( 	$AR->user->data->login=="public" )
 			   ) {
@@ -1814,9 +1814,9 @@ debug("loadLibrary: loading cache for $this->path");
 				$redirects	= $ARCurrent->shortcut_redirect;
 				if (is_array($redirects)) {
 					$redirpath = $this->path;
-					while (!$template['arTemplateId'] && 
+					while (!$template['arTemplateId'] &&
 								($redir = array_pop($redirects)) &&
-									$redir["keepurl"] && 
+									$redir["keepurl"] &&
 										(substr($redirpath, 0, strlen($redir["dest"])) == $redir["dest"])
 					) {
 						$template = $this->getPinpTemplate($arCallFunction, $redirpath, $redir["dest"]);
@@ -1838,9 +1838,9 @@ debug("loadLibrary: loading cache for $this->path");
 					$arTemplates=$this->store->get_filestore("templates");
 					if (
 						$arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"].".inc") ||
-						$arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"]) 
-					) { 
-						// check if the requested language exists, if not do not display anything, 
+						$arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"])
+					) {
+						// check if the requested language exists, if not do not display anything,
 						// unless otherwise indicated by $ARCurrent->allnls
 						// This triggers only for pinp templates called by other templates,
 						// as the first template (in the url) will first trigger the language
@@ -1878,9 +1878,9 @@ debug("loadLibrary: loading cache for $this->path");
 						// FIXME: is 2 het correcte getal? Kan dit minder magisch?
 						if (sizeof($ARCurrent->arCallStack) == 2 && $template['arPrivateTemplate']) {
 							// Do not allow private templates to be called first in the stack.
-							// echo "Bad request"; 
+							// echo "Bad request";
 
-							// FIXME: Echte header sturen? Of gewoon niet uitvoeren? Wat is het correcte gedrag? 
+							// FIXME: Echte header sturen? Of gewoon niet uitvoeren? Wat is het correcte gedrag?
 							// Return true zorgt er voor dat de default 404 handler het oppikt alsof het template niet bestaat.
 
 							return true;
@@ -1961,7 +1961,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 		return true;
 	}
-	
+
 
 	function MkDir($dir) {
 		return ldMkDir($dir);
@@ -1974,8 +1974,8 @@ debug("loadLibrary: loading cache for $this->path");
 	function ClearCache($path="", $private=true, $recurse=false) {
 	global $AR;
 		$norealnode = false;
-		if (!$path) { 
-			$path=$this->path; 
+		if (!$path) {
+			$path=$this->path;
 		} else {
 			$realpath = current($this->get($path, "system.get.path.phtml"));
 			if($realpath != false) {
@@ -1989,7 +1989,7 @@ debug("loadLibrary: loading cache for $this->path");
 			/*
 				we don't want to recurse to the currentsite, because the path
 				doesn't exists in the database, so it doesn't have a currentsite
-				
+
 				the privatecache should be emptied by delete, or by the cleanup
 				cronjob. The current path doesn't exists in the database, so a
 				object id which is needed to find the node in the cache, isn't
@@ -2042,7 +2042,7 @@ debug("loadLibrary: loading cache for $this->path");
 				// break away if nls doesn't exists
 				// is dir is cached, so it should not cost more that it add's in speed
 				if(!is_dir($filestore."cache/$type/$nls")){
-					continue; 
+					continue;
 				}
 
 				$fpath=$filestore."cache/$type/$nls".$fs_path;
@@ -2107,7 +2107,7 @@ debug("loadLibrary: loading cache for $this->path");
 				   normal page caching, unless you forget to call savecache()...
 				   so normal pagecache needs to check $ARCurrent->cache, if it's
 				   not empty, issue a warning and don't cache the outputbuffer...
-				   savecache() must then pop the stack. 
+				   savecache() must then pop the stack.
 				*/
 			}
 		} else {
@@ -2133,7 +2133,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 		/* FIXME!: change links to current root with a placeholder.
 		   problem: make_url makes it possible that the image also
-		   contains other 'roots'. Which should be changed to their 
+		   contains other 'roots'. Which should be changed to their
 		   corresponding correct session id's.
 		   possible fix: only replace the session id with a placeholder:
 		   <img src="http://a.host.com/-abcd-/en/a/dir/img.gif"> to
@@ -2145,7 +2145,7 @@ debug("loadLibrary: loading cache for $this->path");
 		if ($file=array_pop($ARCurrent->cache)) {
 			$image=ob_get_contents();
 			if ($image !== false) {
-				$result = $image; 
+				$result = $image;
 
 				$contentType = $ARCurrent->ldHeaders['content-type'];
 				if (preg_match('|^content-type:[ ]*([^ /]+)/|i', $contentType, $matches)) {
@@ -2170,8 +2170,8 @@ debug("loadLibrary: loading cache for $this->path");
 				/* it seems that ob_end_flush doesn't really clean the output
 				   output buffer, ob_end_clean() does. With flush, the loader
 				   keeps thinking there is something to put in the cache while
-				   flush also doesn't echo the buffer out... 
-				   FIXME: test again in php 4.0.4 
+				   flush also doesn't echo the buffer out...
+				   FIXME: test again in php 4.0.4
 				*/
 				ob_end_clean();
 				echo $result;
@@ -2271,7 +2271,7 @@ debug("loadLibrary: loading cache for $this->path");
 				if (isset($this->data->$varname)) {
 					$result=$this->data->$varname;
 				}
-			}        
+			}
 		}
 		if ( $result === false ) {
 			$result = $emptyResult;
@@ -2291,110 +2291,110 @@ debug("loadLibrary: loading cache for $this->path");
 		return "UTF-8";
 	}
 
-	function HTTPRequest($method, $url, $postdata = "", $port=80 ) { 
+	function HTTPRequest($method, $url, $postdata = "", $port=80 ) {
 		$maxtries = 5;
 		$tries = 0;
 		$redirecting = true;
 
-		if(is_array($postdata)) { 
-			foreach($postdata as $key=>$val) { 
+		if(is_array($postdata)) {
+			foreach($postdata as $key=>$val) {
 				if(!is_integer($key)) {
-					$data .= "$key=".urlencode($val)."&"; 
+					$data .= "$key=".urlencode($val)."&";
 				}
-			} 
-		} else { 
-			$data = $postdata; 
+			}
+		} else {
+			$data = $postdata;
 		}
 
 		while ($redirecting && $tries < $maxtries) {
-			$tries++; 
-			// get host name and URI from URL, URI not needed though 
-			preg_match("/^([htps]*:\/\/)?([^\/]+)(.*)/i", $url, $matches); 
-			$host = $matches[2]; 
-			$uri = $matches[3]; 
+			$tries++;
+			// get host name and URI from URL, URI not needed though
+			preg_match("/^([htps]*:\/\/)?([^\/]+)(.*)/i", $url, $matches);
+			$host = $matches[2];
+			$uri = $matches[3];
 			if (!$matches[1]) {
 				$url="http://".$url;
 			}
-			$connection = @fsockopen( $host, $port, $errno, $errstr, 120); 
-			if( $connection ) { 
-				if( strtoupper($method) == "GET" ) { 
+			$connection = @fsockopen( $host, $port, $errno, $errstr, 120);
+			if( $connection ) {
+				if( strtoupper($method) == "GET" ) {
 					if ($data) {
-						$uri .= "?" . $data; 
+						$uri .= "?" . $data;
 					}
-					fputs( $connection, "GET $uri HTTP/1.0\r\n"); 
-				} else if( strtoupper($method) == "POST" ) { 
-					fputs( $connection, "POST $uri HTTP/1.0\r\n"); 
+					fputs( $connection, "GET $uri HTTP/1.0\r\n");
+				} else if( strtoupper($method) == "POST" ) {
+					fputs( $connection, "POST $uri HTTP/1.0\r\n");
 				} else {
 					fputs( $connection, "$method $uri HTTP/1.0\r\n");
 				}
 
 				fputs( $connection, "Host: $host\r\n");
-				fputs( $connection, "Accept: */*\r\n"); 
-				fputs( $connection, "Accept: image/gif\r\n"); 
-				fputs( $connection, "Accept: image/x-xbitmap\r\n"); 
-				fputs( $connection, "Accept: image/jpeg\r\n"); 
+				fputs( $connection, "Accept: */*\r\n");
+				fputs( $connection, "Accept: image/gif\r\n");
+				fputs( $connection, "Accept: image/x-xbitmap\r\n");
+				fputs( $connection, "Accept: image/jpeg\r\n");
 
-				if( strtoupper($method) == "POST" ) { 
-					$strlength = strlen( $data); 
-					fputs( $connection, "Content-type: application/x-www-form-urlencoded\r\n" ); 
-					fputs( $connection, "Content-length: ".$strlength."\r\n\r\n"); 
-					fputs( $connection, $data."\r\n"); 
-				} 
+				if( strtoupper($method) == "POST" ) {
+					$strlength = strlen( $data);
+					fputs( $connection, "Content-type: application/x-www-form-urlencoded\r\n" );
+					fputs( $connection, "Content-length: ".$strlength."\r\n\r\n");
+					fputs( $connection, $data."\r\n");
+				}
 
-				fputs( $connection, "\r\n" , 2); 
+				fputs( $connection, "\r\n" , 2);
 
 				$headerContents = '';
-				$headerStart = 0; 
-				$headerEnd = 0; 
-				$redirecting = false; 
+				$headerStart = 0;
+				$headerEnd = 0;
+				$redirecting = false;
 
-				while (!feof($connection)) { 
-					$currentLine = fgets ($connection, 1024); 
-					if ($headerEnd && $redirecting) { 
-						break; 
-					} else if ($headerEnd && !$redirecting) { 
-						//this is the html from the page 
-						$contents = $contents . $currentLine; 
-					} else if ( preg_match("/^HTTP/", $currentLine) ) { 
-						//came to the start of the header 
-						$headerStart = 1; 
+				while (!feof($connection)) {
+					$currentLine = fgets ($connection, 1024);
+					if ($headerEnd && $redirecting) {
+						break;
+					} else if ($headerEnd && !$redirecting) {
+						//this is the html from the page
+						$contents = $contents . $currentLine;
+					} else if ( preg_match("/^HTTP/", $currentLine) ) {
+						//came to the start of the header
+						$headerStart = 1;
 						$headerContents = $currentLine;
-					} else if ( $headerStart && preg_match('/^[\n\r\t ]*$/', $currentLine) ) { 
-						//came to the end of the header 
-						$headerEnd = 1; 
-					} else { 
-						//this is the header, if you want it... 
-						if (preg_match("/^Location: (.+?)\n/is",$currentLine,$matches) ) { 
+					} else if ( $headerStart && preg_match('/^[\n\r\t ]*$/', $currentLine) ) {
+						//came to the end of the header
+						$headerEnd = 1;
+					} else {
+						//this is the header, if you want it...
+						if (preg_match("/^Location: (.+?)\n/is",$currentLine,$matches) ) {
 							$headerContents .= $currentLine;
-							//redirects are sometimes relative 
-							$newurl = $matches[1]; 
-							if (!preg_match("/http:\/\//i", $newurl, $matches) ) { 
-								$url .= $newurl; 
-							} else { 
-								$url = $newurl; 
-							} 
-							//extra \r's get picked up sometimes 
-							//i think only with relative redirects 
-							//this is a quick fix. 
-							$url = preg_replace("/\r/s","",$url); 
-							$redirecting = true; 
+							//redirects are sometimes relative
+							$newurl = $matches[1];
+							if (!preg_match("/http:\/\//i", $newurl, $matches) ) {
+								$url .= $newurl;
+							} else {
+								$url = $newurl;
+							}
+							//extra \r's get picked up sometimes
+							//i think only with relative redirects
+							//this is a quick fix.
+							$url = preg_replace("/\r/s","",$url);
+							$redirecting = true;
 						} else {
 							$headerContents.=$currentLine;
 						}
-					} 
-				} 
+					}
+				}
 			} else {
 				$this->error="$errstr ($errno)";
 				$contents=false;
 				$url = "";
 			}
-			@fclose($connection); 
+			@fclose($connection);
 		}
 		if (($method!="GET") && ($method!="POST")) {
 			$contents=$headerContents."\n".$contents;
 		}
-		return $contents; 
-	} 
+		return $contents;
+	}
 
 	function make_filesize( $size="" ,$precision=0) {
 		$result = "0";
@@ -2444,11 +2444,11 @@ debug("loadLibrary: loading cache for $this->path");
   "safe" functions.
 
   The following functions are safe versions of existing functions
-  above. 
-  - They don't change anything in the database. 
+  above.
+  - They don't change anything in the database.
     This means that to save/delete something, a user will need to call
     "system.save.data.phtml" or "system.delete.phtml" which check grants.
-  - All functions except _get and _exists don't take a path as 
+  - All functions except _get and _exists don't take a path as
     argument, they use the current objects path instead.
 
   These are meant to be used by 'pinp' versions of templates,
@@ -2456,7 +2456,7 @@ debug("loadLibrary: loading cache for $this->path");
   to the form '$this->_function'.
 
   All pinp files automatically first call CheckLogin('read').
-  
+
 ********************************************************************/
 
 	function _call($function, $args="") {
@@ -2496,9 +2496,9 @@ debug("loadLibrary: loading cache for $this->path");
 		$redirects	= $ARCurrent->shortcut_redirect;
 		if (is_array($redirects)) {
 			$redirpath = $this->path;
-			while (!$template['arTemplateId'] && 
+			while (!$template['arTemplateId'] &&
 						($redir = array_pop($redirects)) &&
-							$redir["keepurl"] && 
+							$redir["keepurl"] &&
 								(substr($redirpath, 0, strlen($redir["dest"])) == $redir["dest"])
 			) {
 				debug("call_super: following shortcut redirect: $redirpath; to ".$redir["dest"]);
@@ -2514,7 +2514,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 		if ($template["arCallTemplate"] && $template["arTemplateId"]) {
 			$arTemplates=$this->store->get_filestore("templates");
-			if ($arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"])) { 
+			if ($arTemplates->exists($template["arTemplateId"], $template["arCallTemplate"])) {
 				debug("call_super: found template ".$template["arCallTemplate"]." on object with id ".$template["arTemplateId"]);
 				$arLibrary = $template['arLibrary'];
 				debug("call_super: found template on ".$template["arTemplateId"]);
@@ -2556,9 +2556,9 @@ debug("loadLibrary: loading cache for $this->path");
 	function _get($path, $function="view.html", $args="") {
 		// remove possible path information (greedy match)
 		$function=basename($function);
-		return $this->store->call($function, $args, 
+		return $this->store->call($function, $args,
 			$this->store->get(
-				$this->make_path($path))); 
+				$this->make_path($path)));
 	}
 
 	function _call_object($object, $function, $args="") {
@@ -2568,7 +2568,7 @@ debug("loadLibrary: loading cache for $this->path");
 	function _ls($function="list.html", $args="") {
 		// remove possible path information (greedy match)
 		$function=basename($function);
-		return $this->store->call($function, $args, 
+		return $this->store->call($function, $args,
 			$this->store->ls($this->path));
 	}
 
@@ -2581,7 +2581,7 @@ debug("loadLibrary: loading cache for $this->path");
 	function _find($criteria, $function="list.html", $args="", $limit=100, $offset=0) {
 		// remove possible path information (greedy match)
 		$function=basename($function);
-		$result = $this->store->call($function, $args, 
+		$result = $this->store->call($function, $args,
 			$this->store->find($this->path, $criteria, $limit, $offset));
 		if ($this->store->error) {
 			$this->error = $this->store->error;
@@ -2622,7 +2622,7 @@ debug("loadLibrary: loading cache for $this->path");
 			$result=$arStoreVars[$var];
 		} else if (($arStoreVars=$_GET["arStoreVars"]) && isset($arStoreVars[$var])) {
 			$result=$arStoreVars[$var];
-		} 
+		}
 		return $result;
 	}
 
@@ -2634,7 +2634,7 @@ debug("loadLibrary: loading cache for $this->path");
 		global $ARCurrent;
 
 		$ARCurrent->$var=$value;
-	}  
+	}
 
 	function _putvar($var, $value) {
 		return $this->putvar($var, $value);
@@ -2643,7 +2643,7 @@ debug("loadLibrary: loading cache for $this->path");
 	function _setnls($nls) {
 		$this->setnls($nls);
 	}
-	
+
 	// not exposed to pinp for obvious reasons
 	function sgKey($grants) {
 		global $AR;
@@ -2658,7 +2658,7 @@ debug("loadLibrary: loading cache for $this->path");
 		$grants = serialize($grantsarray);
 		return sha1( $AR->sgSalt . $grants . $this->path);
 	}
-	
+
 	function sgBegin($grants, $key = '', $path = '.') {
 		global $AR;
 		$result = false;
@@ -2688,7 +2688,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 		return $result;
 	}
-	
+
 	function sgEnd($path = '.') {
 		global $AR;
 		$AR->user->grants = array(); // unset all grants for the current user, this makes sure GetValidGrants gets called again for this path and all childs
@@ -2696,7 +2696,7 @@ debug("loadLibrary: loading cache for $this->path");
 		unset($AR->sgGrants[$path]);
 		return true; // temp return true;
 	}
-	
+
 	function sgCall($grants, $key, $function="view.html", $args="") {
 		$result = false;
 		if( $this->sgBegin($grants, $key ) ) {
@@ -2705,15 +2705,15 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 		return $result;
 	}
-	
+
 	function _sgBegin($grants, $key, $path = '.') {
 		return $this->sgBegin($grants, $key, $path);
 	}
-	
+
 	function _sgEnd($path = '.') {
 		return $this->sgEnd($path);
 	}
-	
+
 	function _sgCall($grants, $key, $function="view.html", $args="") {
 		return $this->sgCall($grants, $key, $function, $args);
 	}
@@ -2748,7 +2748,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 	}
 
-	function _getdata($varname, $nls="none", $emptyResult=false) { 
+	function _getdata($varname, $nls="none", $emptyResult=false) {
 		return $this->getdata($varname, $nls, $emptyResult);
 	}
 
@@ -2930,7 +2930,7 @@ debug("loadLibrary: loading cache for $this->path");
 	function parentsection($path) {
 	global $ARConfig;
 		$path=$this->store->make_path($path, "..");
-		$config=($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path); 
+		$config=($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
 		return $config->section;
 	}
 
@@ -2946,7 +2946,7 @@ debug("loadLibrary: loading cache for $this->path");
 	function parentproject($path) {
 	global $ARConfig;
 		$path=$this->store->make_path($path, "..");
-		$config=($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path); 
+		$config=($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
 		return $config->project;
 	}
 
@@ -3073,7 +3073,7 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	function _checkgrant($grant, $modifier=ARTHISTYPE, $path=".") {
-		// as this is called within a pinp template, 
+		// as this is called within a pinp template,
 		// all the grants are already loaded, so
 		// checksilent will fullfill our needs
 		$this->pushContext(Array("scope" => "php"));
@@ -3102,7 +3102,7 @@ debug("loadLibrary: loading cache for $this->path");
 	function _HTTPRequest($method, $url, $postdata = "", $port=80) {
 		return $this->HTTPRequest($method, $url, $postdata, $port);
 	}
-	
+
 	function _make_filesize( $size="" ,$precision=0) {
 		return $this->make_filesize( $size ,$precision);
 	}
@@ -3127,7 +3127,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 		return $user;
 	}
-	
+
 	function ARinclude($file) {
 		include($file);
 	}
@@ -3228,7 +3228,7 @@ debug("loadLibrary: loading cache for $this->path");
 			return $replacement;
 		}
 	}
- 
+
 	function _preg_replace($pattern, $replacement, $text, $limit = -1) {
 		if (is_array($pattern)) {
 			$newrepl = array();
