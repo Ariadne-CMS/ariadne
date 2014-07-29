@@ -1905,19 +1905,39 @@ debug("loadLibrary: loading cache for $this->path");
 							$continue=false;
 						}
 						if ($continue) {
-							if ($ARCurrent->ARShowTemplateBorders) {
-								echo "<!-- arTemplateStart\nData: ".$this->type." ".$this->path." \nTemplate: ".$template["arCallTemplatePath"]." ".$template["arCallTemplate"]." \nLibrary:".$template["arLibrary"]." -->";
+							$eventData = new object();
+							if ( !$AR->contextCallHandler ) { /* prevent onbeforecall from re-entering here */
+								$AR->contextCallHandler = true;
+								$eventData->arCallArgs = $arCallArgs;
+								$eventData->arCallFunction = $arCallFunction;
+								$eventData->arContext = $this->getContext();
+								$eventData = ar_events::fire('onbeforecall', $eventData);
+								$AR->contextCallHandler = false;
+								$continue = ($eventData!=false);
 							}
-							set_error_handler(array('pobject','pinpErrorHandler'),error_reporting());
-							$arResult=$arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
-							restore_error_handler();
-							if (isset($arResult)) {
-								$ARCurrent->arResult=$arResult;
+							if ( $continue ) {
+								if ($ARCurrent->ARShowTemplateBorders) {
+									echo "<!-- arTemplateStart\nData: ".$this->type." ".$this->path." \nTemplate: ".$template["arCallTemplatePath"]." ".$template["arCallTemplate"]." \nLibrary:".$template["arLibrary"]." -->";
+								}
+								set_error_handler(array('pobject','pinpErrorHandler'),error_reporting());
+								$arResult=$arTemplates->import($template["arTemplateId"], $template["arCallTemplate"], "", $this);
+								restore_error_handler();
+								if (isset($arResult)) {
+									$ARCurrent->arResult=$arResult;
+								}
+								if ($ARCurrent->ARShowTemplateBorders) {
+									echo "<!-- arTemplateEnd -->";
+								}
+								if ( !$AR->contextCallHandler ) { /* prevent oncall from re-entering here */
+									$AR->contextCallHandler = true;
+									$temp = $ARCurrent->arResult; /* event listeners will change ARCurrent->arResult */
+									$eventData->arResult = $temp;
+									ar_events::fire('oncall', $eventData );
+									$arResult = $temp;
+									$ARCurrent->arResult = $temp; /* restore correct result */
+									$AR->contextCallHandler = false;
+								}
 							}
-							if ($ARCurrent->ARShowTemplateBorders) {
-								echo "<!-- arTemplateEnd -->";
-							}
-
 						}
 						array_pop($ARCurrent->arCallStack);
 						$this->popContext();
