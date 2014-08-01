@@ -14,7 +14,7 @@ class arFilesTest extends PHPUnit_Framework_TestCase
 		$login = "admin";
 		$query = "object.implements = 'puser' and login.value='$login'";
 		$AR->user = current($store->call('system.get.phtml', '', $store->find('/system/users/', $query)));
-		
+
 		//FIXME: make a copy of the FilesNls.ax for this test as well.
 	}
 
@@ -63,6 +63,6 @@ class arFilesTest extends PHPUnit_Framework_TestCase
 		- temp file with and without contents
 		- touch
 	*/
-	
+
 }
 ?>
