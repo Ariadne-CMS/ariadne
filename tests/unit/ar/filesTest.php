@@ -59,6 +59,10 @@ class arFilesTest extends PHPUnit_Framework_TestCase
 		} );
 	}
 
-
+	/* TODO:
+		- temp file with and without contents
+		- touch
+	*/
+	
 }
 ?>
