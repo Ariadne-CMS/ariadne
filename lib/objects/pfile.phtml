@@ -41,58 +41,65 @@ require_once($AR->dir->install."/lib/modules/mod_mimemagic.php");
 
 class pfile extends pobject { // pfile class definition
 
+	protected function getNlsForFile($file,$nls) {
+		// private function, requires that the push/pop context will be done by the caller
+		if(!$nls){
+			$nls = $this->nls;
+		}
+		$ret = ar_files::exists($file, $nls);
+		if (!$ret) {
+			$nls = $this->data->nls->default;
+			$ret = ar_files::exists($file, $nls);
+			if (!$ret) {
+				$nls = null;
+			}
+		}
+		return $nls;
+	}
+
 	function GetFile($file='file', $nls='') {
-		if (!$nls) {
-			$nls = $this->reqnls;
-		}
-		$files = $this->store->get_filestore("files");
-		if ($files->exists($this->id, $nls."_$file")) {
-			$file = $nls."_$file";
-		}
-		return $files->read($this->id, $file);
+		$this->pushContext( Array( "arCurrentObject" => $this));
+		$nls = $this->getNlsForFile($file,$nls);
+		$ret = ar_files::get($file, $nls)->getContents();
+		$this->popcontext();
+		return $ret;
 	}
 
 	function ExistsFile($file='file', $nls='') {
-		if (!$nls) {
-			$nls = $this->reqnls;
-		}
-		$files = $this->store->get_filestore("files");
-
-		$result = $files->exists($this->id, $nls."_$file");
-		if( $result ){
-			return $result;
-		} else {
-			return $files->exists($this->id, $file);
-		}
+		$this->pushContext( Array( "arCurrentObject" => $this));
+		$nls = $this->getNlsForFile($file,$nls);
+		$ret = ar_files::exists($file, $nls);
+		$this->popcontext();
+		return $ret;
 	}
 
-	function ParseFile($filecontent) {
+	function ParseFile($file='file', $nls='') {
+		return $this->ParseString( $this->GetFile( $file, $nls ) );
+	}
+
+	function ParseString($filecontent) {
 		return URL::ARtoRAW($filecontent, true);
 	}
 
 	function ShowFile($file='file', $nls='', $mimetype='') {
 		global $AR, $ARCurrent, $ARnls;
-		if (!$nls) {
-			$nls = $this->reqnls;
+		$this->pushContext( Array( "arCurrentObject" => $this));
+		$nls = $this->getNlsForFile($file,$nls);
+		$file = ar_files::get( $file, $nls );
+		if ( ar_error::isError($file) ) {
+			$this->popcontext();
+			return $file;
 		}
-		$files = $this->store->get_filestore("files");
-
-		if ($files->exists($this->id, $nls."_$file")) {
-			$file = $nls."_$file";
-			if (!$mimetype) {
-				$mimetype = $this->data->$nls->mimetype;
-			}
+		if ( !$mimetype && isset($this->data->$nls->mimetype) ) {
+			$mimetype = $this->data->$nls->mimetype;
 		}
-		if (!$mimetype) {
-			$mimetype = $this->data->mimetype;
+		if ( !$mimetype ) {
+			$defaultnls = $this->data->nls->default;
+			$mimetype = $this->data->{$defaultnls}->mimetype;
 		}
-
-		if (!$mimetype) {
-			if (function_exists("get_content_type")) {
-				$mimetype = get_content_type($mimetype, basename($this->path));
-			}
+		if (!$mimetype && function_exists("get_content_type")) {
+			$mimetype = get_content_type($mimetype, basename($this->path));
 		}
-
 		if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
 			$ARCurrent->cachetime=-2; // set cache to onchange
 		}
@@ -101,9 +108,8 @@ class pfile extends pobject { // pfile class definition
 			$filename = basename($this->path);
 		}
 		if (!preg_match("|^text/|", $mimetype)) {
-			$size = $files->size($this->id, $file);
+			$size = $file->size();
 		}
-		
 
 		if (ldSetContent($mimetype, $size)) {
 			$cacheseconds=1800; // 1/2 hour
@@ -116,46 +122,40 @@ class pfile extends pobject { // pfile class definition
 				ldSetClientCache(true, $expires);
 			}
 		} else if(!preg_match("|^text/|", $mimetype)) {
-			error( sprintf( $ARnls["err:headerssentnottext"], $this->path ) );
-			$stop=true;
+			return ar_error::raiseError( sprintf( $ARnls["err:headerssentnottext"], $this->path ), 501 );
 		}
-		if( !$stop ) {
-			if ($filename) {
-				ldHeader("Content-Disposition: inline; filename=$filename");
-			}
-			if ($mimetype=="text/html") { // parse {arRoot}
-				// assume html files to use charset UTF-8; this will always work correctly
-				// with the MSIE html editor, and won't corrupt 'normal' html.
-				// ldHeader("Content-Type: text/html; charset=UTF-8");
-				echo $this->ParseFile($this->GetFile($file));
-			} else {
-				// ldHeader("Content-Type: $mimetype");
-				// set pragma: cache; bug workaround for internet explorer and https
-				if (ldGetServerVar('HTTPS')) {
-					ldHeader('Pragma: cache');
-				}
-				$files->show($this->id, $file);
-			}
+		if ($filename) {
+			ldHeader("Content-Disposition: inline; filename=$filename");
 		}
-		$files->close();
+		if ($mimetype=="text/html") { // parse {arRoot}
+			// assume html files to use charset UTF-8; this will always work correctly
+			// with the MSIE html editor, and won't corrupt 'normal' html.
+			// ldHeader("Content-Type: text/html; charset=UTF-8");
+			echo $this->ParseString($file->getContents());
+		} else {
+			// ldHeader("Content-Type: $mimetype");
+			// set pragma: cache; bug workaround for internet explorer and https
+			if (ldGetServerVar('HTTPS')) {
+				ldHeader('Pragma: cache');
+			}
+			$file->readfile();
+		}
+		$this->popcontext();
 	}
 
 	function DownloadFile($file='file', $nls='', $filename=false) {
 		global $ARCurrent, $ARnls;
-		if (!$nls) {
-			$nls = $this->reqnls;
+		$this->pushContext( Array( "arCurrentObject" => $this));
+		$nls = $this->getNlsForFile($file,$nls);
+		$file = ar_files::get( $file, $nls );
+		if ( ar_error::isError($file) ) {
+			$this->popcontext();
+			return $file;
 		}
-		$files = $this->store->get_filestore("files");
-
-		if ($files->exists($this->id, $nls."_$file")) {
-			$file = $nls."_$file";
-		}
-
 		if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
 			$ARCurrent->cachetime=-2; // set cache to onchange
 		}
-		$files=$this->store->get_filestore("files");
-		$size=$files->size($this->id, $file);
+		$size=$file->size();
 		if (!$filename) {
 			$filename = substr($this->path, strlen($this->parent), -1);
 		}
@@ -167,17 +167,110 @@ class pfile extends pobject { // pfile class definition
 			ldHeader('Pragma: no-cache');
 		}
 		if (!ldHeader("Content-type: application/x-ariadne-download")) {
-			error( sprintf( $ARnls["err:headerssentnottext"], $this->path ) );
+			return ar_error::raiseError( sprintf( $ARnls["err:headerssentnottext"], $this->path ), 501 );
 		} else {
 			ldHeader("Content-Disposition: attachment; filename=\"".$filename."\"");
 			ldHeader("Content-length:".(string)$size);
-			$files->show($this->id, $file);
+			$file->readfile();
 		}
-		$files->close();
+		$this->popcontext();
 	}
 
-	function _ParseFile($filecontent) {
-		return $this->ParseFile($filecontent);
+	function GetPlainText($file='file', $nls='') {  
+		global $AR;
+		$result="";
+		$this->pushContext( Array( "arCurrentObject" => $this));
+
+		$nls = $this->getNlsForFile($file,$nls);
+
+		if ( isset($this->data->$nls->mimetype) ) {
+			$mimetype = $this->data->$nls->mimetype;
+		}
+		if ( !$mimetype ) {
+			$defaultnls = $this->data->nls->default;
+			$nls = $defaultnls;
+			$mimetype = $this->data->{$defaultnls}->mimetype;
+		}
+		$file_plaintext = $file."_plaintext";
+
+		if (ar_files::exists($file_plaintext,$nls) ) {
+			$result = ar_files::get($file_plaintext)->getContents();
+		} else {
+			if (preg_match("|^text/|i", $mimetype)) {
+				$result=$this->GetFile($file, $nls);
+				if ($mimetype=="text/html") {
+					$result=$this->html_to_text($result);
+				}
+			} else if (preg_match("|^application/(.*)$|i", $mimetype, $regs)) {
+				$textualizer=$AR->Textualizers[$regs[1]];
+				if ($textualizer) {
+					$file = ar_files::get($file, $nls);
+					$temp = ar_files::temp($file->getContents());
+					$temp_file = $file->getMetaData()['uri'];
+					exec(preg_replace('/FILE/', $temp_file, $textualizer), $result, $ret);
+					@unlink($temp_file);
+					if (!$ret) {
+						$result = implode("\n", $result);
+					} else {
+						$result = "";
+					}
+				}
+			}
+			if( $result != "" ) {
+				ar_files::save($file_plaintext,$result,$nls);
+			}
+		}
+		$this->popcontext();
+		return $result;
+	}
+
+	function SaveFile($contents, $mimetype=false, $name='file', $nls='') {  
+		$result="";
+		$name=preg_replace("|[\\\/]|","",$name); // make sure nobody gets /etc/passwd
+		if ($name) {
+			if (!$this->arIsNewObject && $this->CheckSilent('edit')) {
+				$this->pushContext( Array( "arCurrentObject" => $this));
+				$ret = ar_files::save($name, $contents, $nls);
+				$this->popcontext();
+				return $ret;
+			} else if ($this->arIsNewObject && $this->CheckSilent('add','pfile')) {
+				// new pfile, so it has no id yet, use the tempfile
+				$result = Array();
+
+				// fake an uploaded file, put it in the normal temp dir
+				$file_artemp=tempnam($this->store->get_config("files")."temp","upload");
+				if ($fp=fopen($file_artemp, "wb")) {
+					$result=fwrite($fp, $contents);
+					fclose($fp);
+				}
+
+				// now make the new values available to system.save.data.phtml
+				$info[$name]=$this->data->name;
+				$info[$name."_temp"]=substr($file_artemp,strlen($this->store->get_config("files")."temp"));
+				$info[$name."_size"]=strlen($contents);
+				if (!$mimetype) {
+					require_once($this->store->get_config('code')."modules/mod_mimemagic.php");
+					$type = get_mime_type($file_artemp);
+				} else {
+					$type = $mimetype;
+				}
+				$info[$name."_type"]=$type;
+				$info['mimetype']=$type;
+				$_POST = array_merge($_POST, $info);
+
+				return $info;
+			}
+		} else {
+			return false;
+		}
+	}
+
+	function _ParseString($content) {
+		return $this->ParseString($content);
+	}
+
+	function _ParseFile($file='file', $nls='') {
+		return $this->ParseFile($file, $nls);
 	}
   
 	function _ExistsFile($file='file', $nls='') {
@@ -195,108 +288,9 @@ class pfile extends pobject { // pfile class definition
 	function _DownloadFile($file='file', $nls='', $filename=false) {
 		return $this->DownloadFile($file, $nls, $filename);
 	}
-
-	function GetPlainText($file='file', $nls='') {  
-		global $AR;
-		$result="";
-		$files=$this->store->get_filestore("files");
-
-		if (!$nls) {
-			$nls = $this->reqnls;
-		}
-		$files = $this->store->get_filestore("files");
-
-		$mimetype = $this->data->mimetype;
-		if ($files->exists($this->id, $nls."_$file")) {
-			$file = $nls."_$file";
-			if ( $this->data->$nls->mimetype ) {
-				$mimetype = $this->data->$nls->mimetype;
-			}
-		}
-		if ( !$mimetype ) {
-			$defaultnls = $this->data->nls->default;
-			$mimetype = $this->data->{$defaultnls}->mimetype;
-		}
-		$file_plaintext = $file."_plaintext";
-
-		if ($files->exists($this->id, $file_plaintext) ) {
-			$result = $files->read($this->id, $file_plaintext);
-		} else {
-			if (preg_match("|^text/|i", $mimetype)) {
-				$result=$this->GetFile($file);
-				if ($mimetype=="text/html") {
-					$result=$this->html_to_text($result);
-				}
-			} elseif (preg_match("|^application/(.*)$|i", $mimetype, $regs)) {
-				$textualizer=$AR->Textualizers[$regs[1]];
-				if ($textualizer) {
-					$temp_file = tempnam($this->store->get_config('files').'temp/', 'totext');
-					@unlink($temp_file);
-					$files->copy_from_store($temp_file, $this->id, $file);
-					exec(preg_replace('/FILE/', $temp_file, $textualizer), $result, $ret);
-				
-					@unlink($temp_file);
-					if (!$ret) {
-						$result = implode("\n", $result);
-					} else {
-						$result = "";
-					}
-				}
-			}
-			if( $result != "" ) {
-				$files->write($result, $this->id, $file_plaintext);
-			}
-		}
-		return $result;
-	}
 	
 	function _GetPlainText($file='file', $nls='') {
 		return $this->GetPlainText($file, $nls);
-	}
-  
-	function SaveFile($contents, $mimetype=false, $name='file', $nls='') {  
-		$result="";
-		$name=preg_replace("|[\\\/]|","",$name); // make sure nobody gets /etc/passwd
-		if ($name) {
-			if ( $nls !== false ) {
-				if (!$nls) {
-					$nls = $this->reqnls;
-				}
-				$name = $nls.'_'.$name;
-			}
-			if (!$this->arIsNewObject && $this->CheckSilent('edit')) {
-				$files=$this->store->get_filestore("files");
-				return $files->write($contents, $this->id, $name);
-			} else if ($this->arIsNewObject && $this->CheckSilent('add','pfile')) {
-				// new pfile, so it has no id yet, use the tempfile
-				require_once($this->store->get_config('code')."modules/mod_mimemagic.php");
-				$result = Array();
-
-				// fake an uploaded file, put it in the normal temp dir
-				$file_artemp=tempnam($this->store->get_config("files")."temp","upload");
-				if ($fp=fopen($file_artemp, "wb")) {
-					$result=fwrite($fp, $contents);
-					fclose($fp);
-				}
-
-				// now make the new values available to system.save.data.phtml
-				$info[$name]=$this->data->name;
-				$info[$name."_temp"]=substr($file_artemp,strlen($this->store->get_config("files")."temp"));
-				$info[$name."_size"]=strlen($contents);
-				if (!$mimetype) {
-					$type = get_mime_type($file_artemp);
-				} else {
-					$type = $mimetype;
-				}
-				$info[$name."_type"]=$type;
-				$info['mimetype']=$type;
-				$_POST = array_merge($_POST, $info);
-
-				return true;
-			}
-		} else {
-			return false;
-		}
 	}
 	
 	function _SaveFile($contents, $mimetype=false, $name='file', $nls='') {
