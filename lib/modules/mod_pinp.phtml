@@ -664,16 +664,21 @@ class scanner {
 										if (preg_match('|^compile:([a-z]+)|i', $tag_element, $matches)) {
 											$result = substr($YYBUFFER, $YYCURSOR_START, $YYCURSOR -$YYCURSOR_START - (strlen($tag_element) + 3) );
 											$result = $this->ext_compile($matches[1], $result);
+											if ( ! ar_error::isError($result) ){
 
-											$pinp=new pinp($AR->PINP_Functions, "local->", "\$AR_this->_");
-											$result=$pinp->compile($result);
-											
-											if ($result === false) {
-												$this->error = "Compiler '".$matches[1]."' not found (started at line $startLine) ";
-												return PT_ERROR;
+												$pinp=new pinp($AR->PINP_Functions, "local->", "\$AR_this->_");
+												$result=$pinp->compile($result);
+
+												if ($result === false) {
+													$this->error = "Compiler '".$matches[1]."' not found (started at line $startLine) ";
+													return PT_ERROR;
+												}
+												$YYSTATE = YY_STATE_HTML;
+												return PT_EXT_COMPILE_END;
+											} else {
+													$this->error = "Compiler error in compiler ".$matches[1]." (started at line $startLine) ";
+													return PT_ERROR;
 											}
-											$YYSTATE = YY_STATE_HTML;
-											return PT_EXT_COMPILE_END;
 										} else {
 											continue 2;
 										}
