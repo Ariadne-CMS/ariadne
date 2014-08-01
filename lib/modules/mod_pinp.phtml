@@ -666,7 +666,7 @@ class scanner {
 											$result = $this->ext_compile($matches[1], $result);
 
 											$pinp=new pinp($AR->PINP_Functions, "local->", "\$AR_this->_");
-									                $result=$pinp->compile($result);
+											$result=$pinp->compile($result);
 											
 											if ($result === false) {
 												$this->error = "Compiler '".$matches[1]."' not found (started at line $startLine) ";
