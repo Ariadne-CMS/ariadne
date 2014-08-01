@@ -107,7 +107,8 @@ class pphoto extends pfile { // pphoto class definition
 			$file = ar_store_files::get($file, $nls);
 			if ( !ar_error::isError($file)) {
 				$temp = ar_store_files::temp($file);
-				$temp_file = $temp->getMetaData()['uri'];
+				$temp_file_meta  = $temp->getMetaData();
+				$temp_file = $temp_file_meta['uri'];
 				$result = @exif_read_data($temp_file, $sections, $arrays, $thumbnail);
 				@unlink($temp_file);
 			}
@@ -130,7 +131,8 @@ class pphoto extends pfile { // pphoto class definition
 		$file = ar_store_files::get($file, $nls);
 		if ( !ar_error::isError($file)) {
 			$temp = ar_store_files::temp($file);
-			$temp_file = $temp->getMetaData()['uri'];
+			$temp_file_meta  = $temp->getMetaData();
+			$temp_file = $temp_file_meta['uri'];
 
 			$execstring = $AR->IM->identify." ".$temp_file;
 
@@ -373,7 +375,8 @@ class pphoto extends pfile { // pphoto class definition
 					$file = ar_store_files::get($file, $nls);
 					if ( !ar_error::isError($file)) {
 						$temp = ar_store_files::temp($file);
-						$temp_file = $temp->getMetaData()['uri'];
+						$temp_file_meta  = $temp->getMetaData();
+						$temp_file = $temp_file_meta['uri'];
 						$ARConfig->photoTempFiles[$this->id][] = $temp_file;
 
 						$this->popContext();
@@ -385,7 +388,8 @@ class pphoto extends pfile { // pphoto class definition
 						$target_file = ar_store_files::get($file, $nls);
 						if ( !ar_error::isError($target_file)) {
 							$target_temp = ar_store_files::temp($target_file);
-							$target_temp_file = $target_temp->getMetaData()['uri'];
+							$target_temp_file_meta  = $target_temp->getMetaData();
+							$target_temp_file = $target_temp_file_meta['uri'];
 							$ARConfig->photoTempFiles[$this->id][] = $target_temp_file;
 							$execbuf = $compose." ".$target_temp_file." {buildfile} ";
 
@@ -447,7 +451,8 @@ class pphoto extends pfile { // pphoto class definition
 					$file = ar_store_files::get($file, $nls);
 					if ( !ar_error::isError($file)) {
 						$temp = ar_store_files::temp($file);
-						$temp_file = $temp->getMetaData()['uri'];
+						$temp_file_meta  = $temp->getMetaData();
+						$temp_file = $temp_file_meta['uri'];
 
 						$tmpfont = $temp_file.".ttf";
 						rename($temp_file, $tmpfont);
@@ -560,7 +565,8 @@ class pphoto extends pfile { // pphoto class definition
 				}
 
 				$temp = ar_store_files::temp($file);
-				$temp_file = $temp->getMetaData()['uri'];
+				$temp_file_meta  = $temp->getMetaData();
+				$temp_file = $temp_file_meta['uri'];
 				$this->popContext();
 
 				if (chdir($this->store->get_config("files").'temp/')) {
@@ -646,7 +652,8 @@ class pphoto extends pfile { // pphoto class definition
 		$file = ar_store_files::get($file, $nls);
 		if ( !ar_error::isError($file)) {
 			$temp = ar_store_files::temp($file);
-			$temp_file = $temp->getMetaData()['uri'];
+			$temp_file_meta  = $temp->getMetaData();
+			$temp_file = $temp_file_meta['uri'];
 
 			if ($extrainfo!==false) {
 				$result=getimagesize($temp_file, $extrainfo);

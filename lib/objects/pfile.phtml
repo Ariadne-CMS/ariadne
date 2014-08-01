@@ -209,7 +209,8 @@ class pfile extends pobject { // pfile class definition
 				if ($textualizer) {
 					$file = ar_store_files::get($file, $nls);
 					$temp = ar_store_files::temp($file);
-					$temp_file = $temp->getMetaData()['uri'];
+					$temp_file_meta  = $temp->getMetaData();
+					$temp_file = $temp_file_meta['uri'];
 					exec(preg_replace('/FILE/', $temp_file, $textualizer), $result, $ret);
 					@unlink($temp_file);
 					if (!$ret) {
