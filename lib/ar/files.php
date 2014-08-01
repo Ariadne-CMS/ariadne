@@ -58,11 +58,16 @@
 		public static function save( $name, $contents, $nls=null ) {
 			list( $ob, $fstore ) = static::getStore();
 			$fname = static::compileName($name, $nls);
+			if( $contents instanceof ar_content_filesFile ){
+				// FIXME: this should be more efficient then coping the whole contents of the file in memory
+				// should be fixed with a copyFrom/copyTo function call on ar_content_filesFile
+				$contents = $contents->getContents();
+			}
 			if ( is_resource($contents) && get_resource_type($contents)==='stream' ) {
 				return $fstore->copy_stream_to_store( $contents, $ob->id, $fname );
 			} else {
 				return $fstore->write( (string) $contents, $ob->id, $fname );
-			} 
+			}
 		}
 
 		public static function delete( $name, $nls=null ) {
@@ -84,6 +89,7 @@
 			list( $ob, $fstore ) = static::getStore();
 			$tmpsrc = tempnam($ob->store->get_config("files")."temp", "tmp");
 			if ( !$tmpsrc ) {
+				// FIXME: nlsstrings
 				return ar_error::raiseError( 'Could not create temp file', 501 );
 			}
 			if(  substr( strtolower($tmpsrc), -4, 4 ) == ".tmp" ) {
@@ -91,18 +97,29 @@
 				$tmpsrc = substr($tmpsrc, 0, -4 );
 			}
 			$tmpsrc .= ".tmp";
-			$fp = fopen( $tmpsrc, 'w+' );
-			if( $contents instanceof ar_content_filesFile ){
-				$contents = $contents->getResource();
-			}
 
-			if ( is_resource($contents) && get_resource_type($contents)==='stream' ) {
-				stream_copy_to_stream( $contents, $fp );
+			$fp = fopen( $tmpsrc, 'x+' );
+			if (is_resource($fp)) {
+				$res = new ar_content_filesFile($fp);
+				if( $contents instanceof ar_content_filesFile ){
+					// FIXME: create an more efficient way for copying with a stream_copy_to_stream call or wrapping t in an CopyFrom/CopyTo api
+					// or even an temp function on a ar_content_filesFile object which creates an temp file from the ar_content_filesFile
+					$contents = $contents->getContents();
+					fwrite($fp, $contents);
+					rewind($fp);
+				} else if ( is_resource($contents) && get_resource_type($contents)==='stream' ) {
+					stream_copy_to_stream( $contents, $fp );
+					rewind($fp);
+				} else if (isset($contents)) {
+					fwrite($fp, $contents);
+					rewind($fp);
+				}
+				return $res;
 			} else {
-				 fwrite($fp, $contents);
-			} 
-			return new ar_content_filesFile($fp);
-		}	
+				// FIXME: nlsstrings
+				ar_error::raiseError('Could not create temp file', 502);
+			}
+		}
 
 		public static function exists( $name, $nls=null ) {
 			list( $ob, $fstore ) = static::getStore();
@@ -115,7 +132,7 @@
 				return false;
 			}
 			return static::parseName($fname);
-		}	
+		}
 
 	}
 
