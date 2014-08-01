@@ -97,9 +97,31 @@ class FileNlsTest extends PHPUnit_Framework_TestCase
 		$this->assertNotEquals('taal '.$nls , $content);
 	}
 
+	public function testObjectAllNLSPlainHTML() {
+		global $AR;
+
+		$obj =current(ar::get(TESTBASE.'/file-nls/file-html/')->call('system.get.phtml'));
+
+		foreach($obj->data->nls->list as $nls => $language) {
+			$content = $obj->getPlainText('file',$nls);
+			$content = trim($content);
+			$this->assertEquals($nls , $content);
+		}
+	}
+	public function testObjectAllNLSPlainPDF() {
+		global $AR;
+
+		$obj =current(ar::get(TESTBASE.'/file-nls/file-pdf/')->call('system.get.phtml'));
+
+		foreach($obj->data->nls->list as $nls => $language) {
+			$content = $obj->getPlainText('file',$nls);
+			$content = trim($content);
+			$this->assertEquals($nls , $content);
+		}
+	}
+
 /*
 	TODO:
-		- getPlainText: texulizers and html parsing
 		- save file for new object
 		- parse file
 		- showfile
