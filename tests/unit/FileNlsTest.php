@@ -97,5 +97,18 @@ class FileNlsTest extends PHPUnit_Framework_TestCase
 		$this->assertNotEquals('taal '.$nls , $content);
 	}
 
+/*
+	TODO:
+		- getPlainText: texulizers and html parsing
+		- save file for new object
+		- parse file
+		- showfile
+			- mimetype
+			- headers
+		- download file
+			- file
+			- mimetype
+			- headers
+*/
 }
 ?>
