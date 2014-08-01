@@ -17,7 +17,7 @@ class FileNlsTest extends PHPUnit_Framework_TestCase
 
 	}
 
-	public function testObjectDefaultNLS() {
+	public function testDefaultNLS() {
 		global $AR;
 
 		$obj =current(ar::get(TESTBASE.'/file-nls/file-nls/')->call('system.get.phtml'));
@@ -29,7 +29,7 @@ class FileNlsTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($one,$two);
 	}
 
-	public function testObjectAllNLS() {
+	public function testAllNLS() {
 		global $AR;
 
 		$obj =current(ar::get(TESTBASE.'/file-nls/file-nls/')->call('system.get.phtml'));
@@ -41,7 +41,7 @@ class FileNlsTest extends PHPUnit_Framework_TestCase
 		}
 	}
 
-	public function testObjectAllNLSPlain() {
+	public function testAllNLSPlain() {
 		global $AR;
 
 		$obj =current(ar::get(TESTBASE.'/file-nls/file-nls/')->call('system.get.phtml'));
@@ -53,7 +53,7 @@ class FileNlsTest extends PHPUnit_Framework_TestCase
 		}
 	}
 
-	public function testObjectAllNLSShow() {
+	public function testAllNLSShow() {
 		global $AR;
 
 		$obj =current(ar::get(TESTBASE.'/file-nls/file-nls/')->call('system.get.phtml'));
@@ -67,7 +67,7 @@ class FileNlsTest extends PHPUnit_Framework_TestCase
 		}
 	}
 
-	public function testObjectunavailableNls() {
+	public function testunavailableNls() {
 		global $AR;
 
 		$obj =current(ar::get(TESTBASE.'/file-nls/file-nls/')->call('system.get.phtml'));
@@ -76,7 +76,7 @@ class FileNlsTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('taal '.$obj->data->nls->default , $content);
 	}
 
-	public function testObjectUnavailableNlsPlain() {
+	public function testUnavailableNlsPlain() {
 		global $AR;
 
 		$obj =current(ar::get(TESTBASE.'/file-nls/file-nls/')->call('system.get.phtml'));
@@ -86,7 +86,7 @@ class FileNlsTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals('taal '.$nls , $content);
 	}
 
-	public function testObjectunavailableNlsChangeDefault() {
+	public function testunavailableNlsChangeDefault() {
 		global $AR;
 
 		$obj =current(ar::get(TESTBASE.'/file-nls/file-nls/')->call('system.get.phtml'));
@@ -97,7 +97,7 @@ class FileNlsTest extends PHPUnit_Framework_TestCase
 		$this->assertNotEquals('taal '.$nls , $content);
 	}
 
-	public function testObjectAllNLSPlainHTML() {
+	public function testAllNLSPlainHTML() {
 		global $AR;
 
 		$obj =current(ar::get(TESTBASE.'/file-nls/file-html/')->call('system.get.phtml'));
@@ -108,7 +108,7 @@ class FileNlsTest extends PHPUnit_Framework_TestCase
 			$this->assertEquals($nls , $content);
 		}
 	}
-	public function testObjectAllNLSPlainPDF() {
+	public function testAllNLSPlainPDF() {
 		global $AR;
 
 		$obj =current(ar::get(TESTBASE.'/file-nls/file-pdf/')->call('system.get.phtml'));
