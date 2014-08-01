@@ -144,7 +144,7 @@
 		$split=strrpos($AR_PATH_INFO, "/");
 		$path=substr($AR_PATH_INFO,0,$split+1);
 		$function=substr($AR_PATH_INFO,$split+1);
-		if (!$function || !ldCheckAllowedTemplate($function) ) {
+		if (!$function ) {
 			if (!isset($arDefaultFunction) || $arDefaultFunction == '' ) {
 				$arDefaultFunction="view.html";
 			}
@@ -435,7 +435,9 @@
 			if ($function!==false) {
 				// finally call the requested object
 				unset($store->total);
-				$store->call($function, $args, $store->get($path));
+				if (ldCheckAllowedTemplate($function) ) {
+					$store->call($function, $args, $store->get($path));
+				}
 				if (!$store->total) {
 					ldObjectNotFound($path, $function, $args);
 				}
