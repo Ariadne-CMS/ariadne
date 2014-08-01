@@ -92,8 +92,7 @@
 				// FIXME: nlsstrings
 				return ar_error::raiseError( 'Could not create temp file', 501 );
 			}
-
-			$fp = fopen( $tmpsrc, 'x+' );
+			$fp = fopen( $tmpsrc, 'w+' );
 			if (is_resource($fp)) {
 				$res = new ar_content_filesFile($fp);
 				if( $contents instanceof ar_content_filesFile ){
@@ -112,7 +111,7 @@
 				return $res;
 			} else {
 				// FIXME: nlsstrings
-				ar_error::raiseError('Could not create temp file', 502);
+				return ar_error::raiseError('Could not create temp file', 502);
 			}
 		}
 
