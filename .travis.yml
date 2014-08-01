@@ -12,7 +12,7 @@ php:
 
 before_install:
     - sudo apt-get update -qq
-    - sudo apt-get install -qq apache2 libapache2-mod-fastcgi imagemagick wget lynx subversion tidy
+    - sudo apt-get install -qq apache2 libapache2-mod-fastcgi imagemagick wget lynx subversion tidy poppler-utils
     - sudo cp ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf.default ~/.phpenv/versions/$(phpenv version-name)/etc/php-fpm.conf
     - echo 'date.timezone = "Europe/Amsterdam"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
     - sudo a2enmod rewrite actions fastcgi alias
