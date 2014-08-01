@@ -900,7 +900,7 @@ li.explore_item {
 
 .dropzone .fail { background: #c00; padding: 2px; color: #fff; }
 
-.dropzone .hidden { display: none !important;}
+.dropzone .dropzone-hidden { display: none !important;}
 
 .dropzone hint {
 	display: none;
