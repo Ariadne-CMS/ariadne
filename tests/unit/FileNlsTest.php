@@ -120,6 +120,18 @@ class FileNlsTest extends PHPUnit_Framework_TestCase
 		}
 	}
 
+	public function testSaveExistingFile() {
+		global $AR,$ARCurrent;
+		$content = 'testfrmlfrop';
+		$obj  = current(ar::get(TESTBASE.'/file-nls/file-nls/' )->call('system.get.phtml'));
+
+		$res = $obj->SaveFile($content ,'text/plain', 'newfile', $obj->nls);
+		$this->assertEquals(strlen($content), $res);
+
+		$res = $obj->GetFile('newfile', $obj->nls);
+		$this->assertEquals($content, $res);
+	}
+
 /*
 	TODO:
 		- save file for new object
