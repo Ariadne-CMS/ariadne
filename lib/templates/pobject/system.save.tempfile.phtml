@@ -22,7 +22,7 @@
 
 		if (count($info)) {
 			$_POST = array_merge($_POST, $info);
-			if ($info['file_type']) {
+			if (!$_POST['mimetype'] && $info['file_type']) {
 				$_POST['mimetype'] = $info['file_type'];
 			}
 		} else {
@@ -34,7 +34,7 @@
 						$_POST[$language] = Array();
 					}
 					$_POST[$language] = array_merge($_POST[$language], $info);
-					if ($info['file_type']) {
+					if (!$_POST[$language]['mimetype'] && $info['file_type']) {
 						$_POST[$language]['mimetype'] = $info['file_type'];
 					}
 					break; // only accept one file

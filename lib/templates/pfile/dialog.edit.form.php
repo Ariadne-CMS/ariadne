@@ -9,11 +9,10 @@
 		$selectedlanguage=$AR->nls->list[$arLanguage];
 
 		$flagurl = $AR->dir->images."nls/small/$selectednls.gif";
-		
-		
-		$file_type = $this->getdata("file_type", $selectednls);
-		if( !$file_type ) {
-			$file_type = $this->getdata("mimetype", $selectednls);
+
+		$mimetype = $this->getdata("mimetype", $selectednls);
+		if(!$mimetype) {
+			$mimetype = $this->getdata("file_type", $selectednls);
 		}
 
 		$file_size = $this->getdata("file_size", $selectednls); // Filesize of the uploaded file
@@ -29,12 +28,6 @@
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
 		<input id="name" type="text" name="<?php echo $selectednls."[name]"; ?>" 
 			value="<?php $this->showdata("name", $selectednls); ?>" class="inputline wgWizAutoFocus">
-	</div>
-	<div class="field">
-		<label for="mimetype"><?php echo $ARnls["ariadne:mimetype"]; ?></label>
-		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
-		<input id="mimetype" type="text" name="<?php echo $selectednls."[file_type]"; ?>" 
-			value="<?php echo htmlspecialchars($file_type); ?>" class="inputline">
 	</div>
 	<?php if (!$arNewType) { ?>
 	<div class="field">
@@ -71,6 +64,12 @@
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
 	</div>
 <?php	} ?>
+	<div class="field">
+		<label for="mimetype"><?php echo $ARnls["ariadne:mimetype"]; ?></label>
+		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
+		<input id="mimetype" type="text" name="<?php echo $selectednls."[mimetype]"; ?>" 
+			value="<?php echo htmlspecialchars($mimetype); ?>" class="inputline">
+	</div>
 </fieldset>
 
 <?php } ?>
