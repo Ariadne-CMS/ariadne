@@ -324,10 +324,12 @@
 				if (ar_pinp::isAllowed($this, $realName)) {
 					return call_user_func_array(array($this, $realName), $arguments);
 				} else {
-					trigger_error("Method $realName not found in class ".get_class($this), E_USER_WARNING);
+					$trace = debug_backtrace(0,2);
+					trigger_error("Method $realName not found in class ".get_class($this)." Called from line ".$trace[1]['line']." in ".$trace[1]['file'], E_USER_WARNING);
 				}
 			} else {
-				trigger_error("Method $name not found in class ".get_class($this), E_USER_WARNING);
+				$trace = debug_backtrace(0,2);
+				trigger_error("Method $name not found in class ".get_class($this)." Called from line ".$trace[1]['line']." in ".$trace[1]['file'], E_USER_WARNING);
 			}
 		}
 
