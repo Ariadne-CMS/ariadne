@@ -67,10 +67,6 @@ class FileNlsTest extends PHPUnit_Framework_TestCase
 		}
 	}
 
-	/*
-	FIXME: disabled for now, testcase triggers a transition bug
-	should return default language, but while the pfile is not yet to work without '_file' for default nls
-
 	public function testObjectunavailableNls() {
 		global $AR;
 
@@ -79,7 +75,6 @@ class FileNlsTest extends PHPUnit_Framework_TestCase
 		$content = trim($content);
 		$this->assertEquals('taal '.$obj->data->nls->default , $content);
 	}
-	*/
 
 	public function testObjectUnavailableNlsPlain() {
 		global $AR;
