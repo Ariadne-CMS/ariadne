@@ -1,9 +1,10 @@
 <?php
   if ($this->CheckSilent("read") && $this->CheckConfig()) {
 	$result = $this->call("pobject::soap.serialize.phtml", $arCallArgs);
-	$result["mimetype"] = $this->data->mimetype;
-	$files = $this->store->get_filestore("files");
-	$result["file"] = base64_encode($files->read($this->id, "file"));
+	$nls = $this->getNlsForFile('file');
+	$result["mimetype"] = $this->data->${nls}->mimetype;
+	$file = ar_store_files::get('file',$nls);
+	$result["file"] = base64_encode($file->getContents());
 	$arResult = $result;
   }
 ?>
