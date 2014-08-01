@@ -132,10 +132,20 @@ class FileNlsTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($content, $res);
 	}
 
+	public function testParseFile() {
+		global $AR;
+
+		$obj =current(ar::get(TESTBASE.'/file-nls/file-nls/')->call('system.get.phtml'));
+		foreach($obj->data->nls->list as $nls => $language) {
+			$content = $obj->ParseFile('file',$nls);
+			$content = trim($content);
+			$this->assertEquals('taal '.$nls , $content);
+		}
+	}
+
 /*
 	TODO:
 		- save file for new object
-		- parse file
 		- showfile
 			- mimetype
 			- headers
