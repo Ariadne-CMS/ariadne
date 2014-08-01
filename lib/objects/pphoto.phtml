@@ -99,20 +99,21 @@ class pphoto extends pfile { // pphoto class definition
 	}
 
 	function getExif( $sections = false, $arrays = true, $thumbnail = false, $nls = '') {
-		if (!$nls) {
-			$nls = $this->reqnls;
-		}
-		$f_store = $this->store->get_filestore("files");
-		$file = "file";
-		if ($f_store->exists($this->id, $nls."_$file")) {
-			$file = $nls."_$file";
-		}
 		if (function_exists('exif_read_data')) {
-			$tmpsrc = tempnam($this->store->get_config("files")."temp/", "photo");
-			$f_store->copy_from_store($tmpsrc, $this->id, $file);
-			$result=@exif_read_data($tmpsrc, $sections, $arrays, $thumbnail);
-			@unlink($tmpsrc);
-			$f_store->close();
+			$this->pushContext( Array( "arCurrentObject" => $this));
+			$file = "file";
+			$nls = $this->getNlsForFile($file,$nls);
+
+			$file = ar_store_files::get($file, $nls);
+			if ( !ar_error::isError($file)) {
+				$temp = ar_store_files::temp($file);
+				$temp_file = $temp->getMetaData()['uri'];
+				$result = @exif_read_data($temp_file, $sections, $arrays, $thumbnail);
+				@unlink($temp_file);
+			}
+
+			$this->popContext();
+
 		} else {
 			$result['ERROR']='EXIF not supported by PHP';
 		}
@@ -121,21 +122,23 @@ class pphoto extends pfile { // pphoto class definition
 
 	function identify($nls = '') {
 		global $AR;
-		if (!$nls) {
-			$nls = $this->reqnls;
-		}
-		$f_store = $this->store->get_filestore("files");
+		$this->pushContext( Array( "arCurrentObject" => $this));
+
 		$file = "file";
-		if ($f_store->exists($this->id, $nls."_$file")) {
-			$file = $nls."_$file";
+		$nls = $this->getNlsForFile($file,$nls);
+
+		$file = ar_store_files::get($file, $nls);
+		if ( !ar_error::isError($file)) {
+			$temp = ar_store_files::temp($file);
+			$temp_file = $temp->getMetaData()['uri'];
+
+			$execstring = $AR->IM->identify." ".$temp_file;
+
+			$myarray = Array();
+			$result = exec( $execstring, $myarray );
+			@unlink($temp_file);
 		}
-		$tmpsrc = tempnam( $this->store->get_config("files")."temp/", "photo");
-		$f_store->copy_from_store($tmpsrc, $this->id, $file);
-		$execstring = $AR->IM->identify." ".$tmpsrc;
-		$myarray = Array();
-		$result = exec( $execstring, $myarray );
-		@unlink( $tmpsrc );
-		$f_store->close();
+		$this->popcontext();
 		return $myarray;
 	}
 	
@@ -645,23 +648,25 @@ class pphoto extends pfile { // pphoto class definition
 	}
 
 	function getimageinfo(&$extrainfo=false, $nls = '') {
-		$tmpsrc = tempnam($this->store->get_config("files")."temp/", "photo");
-		if (!$nls) {
-			$nls = $this->reqnls;
-		}
-		$f_store = $this->store->get_filestore("files");
+
+		$this->pushContext( Array( "arCurrentObject" => $this));
 		$file = "file";
-		if ($f_store->exists($this->id, $nls."_$file")) {
-			$file = $nls."_$file";
+		$nls = $this->getNlsForFile($file,$nls);
+
+		$file = ar_store_files::get($file, $nls);
+		if ( !ar_error::isError($file)) {
+			$temp = ar_store_files::temp($file);
+			$temp_file = $temp->getMetaData()['uri'];
+
+			if ($extrainfo!==false) {
+				$result=getimagesize($temp_file, $extrainfo);
+			} else {
+				$result=getimagesize($temp_file);
+			}
+			@unlink($temp_file);
 		}
-		$f_store->copy_from_store($tmpsrc, $this->id, $file);
-		if ($extrainfo!==false) {
-			$result=getimagesize($tmpsrc, $extrainfo);
-		} else {
-			$result=getimagesize($tmpsrc);
-		}
-		@unlink($tmpsrc);
-		$f_store->close();
+
+		$this->popcontext();
 		return $result;
 	}
 
