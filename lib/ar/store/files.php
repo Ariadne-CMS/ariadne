@@ -1,12 +1,12 @@
 <?php
 
-	ar_pinp::allow( 'ar_files', array( 'ls', 'get', 'save', 'delete', 'touch', 'exists' ) );
+	ar_pinp::allow( 'ar_store_files', array( 'ls', 'get', 'save', 'delete', 'touch', 'exists' ) );
 
 	/*
 	 * prevent mess detector from warning for the private static fields
 	 * @SuppressWarnings(PHPMD.UnusedPrivateField)
 	 */
-	class ar_files extends arBase {
+	class ar_store_files extends arBase {
 
 		private static function parseName( $fname ) {
 			list( $nls, $name ) = explode('_', $fname, 2);

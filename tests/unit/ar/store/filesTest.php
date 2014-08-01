@@ -24,10 +24,10 @@ class arFilesTest extends PHPUnit_Framework_TestCase
 		$me = $this;
 		ar::context()->callAtPath(TESTBASE.'file-nls/', function() use ($me) {
 			$content = "file contents";
-			$result = ar_files::save('test',$content,'nl');
+			$result = ar_store_files::save('test',$content,'nl');
 			$me->assertEquals($result, strlen($content));
 
-			$result = ar_files::get('test','nl');
+			$result = ar_store_files::get('test','nl');
 			if ( !ar_error::isError($result) ) {
 				$result = $result->getContents();
 			}
@@ -40,7 +40,7 @@ class arFilesTest extends PHPUnit_Framework_TestCase
 
 		$me = $this;
 		ar::context()->callAtPath(TESTBASE.'file-nls/', function() use ($me) {
-			$result = ar_files::ls();
+			$result = ar_store_files::ls();
 			$me->assertEquals(count($result), 1);
 			$me->assertEquals($result[0]['name'], 'test');
 			$me->assertEquals($result[0]['nls'], 'nl');
@@ -53,8 +53,8 @@ class arFilesTest extends PHPUnit_Framework_TestCase
 
 		$me = $this;
 		ar::context()->callAtPath(TESTBASE.'file-nls/', function() use ($me) {
-			ar_files::delete('test','nl');
-			$result = ar_files::ls();
+			ar_store_files::delete('test','nl');
+			$result = ar_store_files::ls();
 			$me->assertEquals(count($result), 0);
 		} );
 	}
