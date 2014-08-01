@@ -141,7 +141,7 @@ class pphoto extends pfile { // pphoto class definition
 		$this->popcontext();
 		return $myarray;
 	}
-	
+
 	function scale($x, $y, $fillcolor=false, $keepaspect=true) {
 		global $ARConfig;
 
@@ -221,7 +221,7 @@ class pphoto extends pfile { // pphoto class definition
 
 		$ARConfig->photoStack[$this->id][]=" -crop ".((int)$width)."x".((int)$height)."+".((int)$x)."+".((int)$y)."! +repage";
 		return true;
-	} 
+	}
 
 	function strip() {
 		global $ARConfig;
@@ -285,7 +285,7 @@ class pphoto extends pfile { // pphoto class definition
 		$this->arComposeStyles[$name]["percentage"]=$percentage;
 		$this->arComposeStyles[$name]["resize"]=$resize;
 		$this->arComposeStyles[$name]["gravity"]=$gravity;
-	} 
+	}
 
 	function compose( $target, $style="default", $blend = 0, $params=false, $nls = '') {
 		global $ARConfig, $ARnls;
@@ -353,7 +353,7 @@ class pphoto extends pfile { // pphoto class definition
 			$this->error=sprintf($ARnls["err:composeillegalmethod"],$method);
 		} else {
 			$targetobj = current($this->get($target, "system.get.phtml"));
-			if( $targetobj->AR_implements("pphoto") ) {
+			if( $targetobj && $targetobj->AR_implements("pphoto") ) {
 				if ($method) {
 					$compose .= " -compose ".$method;
 				}
@@ -366,46 +366,45 @@ class pphoto extends pfile { // pphoto class definition
 
 				$targetid = $targetobj->id;
 				if( $targetid ) {
-					if (!$nls) {
-						$nls = $targetobj->reqnls;
-					}
-					$f_store = $this->store->get_filestore("files");
+					$this->pushContext( Array( "arCurrentObject" => $this));
 					$file = "file";
-					if ($f_store->exists($targetid, $nls."_$file")) {
-						$file = $nls."_$file";
+					$nls = $this->getNlsForFile($file,$nls);
+
+					$file = ar_store_files::get($file, $nls);
+					if ( !ar_error::isError($file)) {
+						$temp = ar_store_files::temp($file);
+						$temp_file = $temp->getMetaData()['uri'];
+						$ARConfig->photoTempFiles[$this->id][] = $temp_file;
+
+						$this->popContext();
+
+						$this->pushContext( Array( "arCurrentObject" => $targetobj));
+						$file = "file";
+						$nls = $targetobj->getNlsForFile($file,$nls);
+
+						$target_file = ar_store_files::get($file, $nls);
+						if ( !ar_error::isError($target_file)) {
+							$target_temp = ar_store_files::temp($target_file);
+							$target_temp_file = $target_temp->getMetaData()['uri'];
+							$ARConfig->photoTempFiles[$this->id][] = $target_temp_file;
+							$execbuf = $compose." ".$target_temp_file." {buildfile} ";
+
+							$this->popContext();
+
+							$ARConfig->photoStack[$this->id][] = $execbuf;
+						} else {
+							$this->popContext();
+							// TODO: return error
+						}
+						$this->set_context("build");
+
+					} else {
+						$this->popContext();
+						// TODO: return error
 					}
-
-
-					$tmpsrc = tempnam($this->store->get_config("files")."temp/", "photo");
-					if(  substr( strtolower($tmpsrc), -4, 4 ) == ".tmp" ) {
-						@unlink($tmpsrc);
-						$tmpsrc = substr($tmpsrc, 0, -4 );
-					}
-					$tmpsrc .= ".photo";
-
-					$ARConfig->photoTempFiles[$this->id][] = $tmpsrc;
-					$ARConfig->photoTempFilesID[$this->id][] = $this->id;
-					$ARConfig->photoTempFilesName[$this->id][] = $file;
-
-					$tmpmysrc = tempnam($this->store->get_config("files")."temp/", "photo");
-					if(  substr( strtolower($tmpmysrc), -4, 4 ) == ".tmp" ) {
-						@unlink($tmpmysrc);
-						$tmpmysrc = substr($tmpmysrc, 0, -4 );
-					}
-					$tmpmysrc .= ".photo";
-
-					$ARConfig->photoTempFiles[$this->id][] = $tmpmysrc;
-					$ARConfig->photoTempFilesID[$this->id][] = $targetid;
-					$ARConfig->photoTempFilesName[$this->id][] = $file;
-
-					$execbuf = $compose." ".$tmpmysrc." {buildfile} ";
-					$ARConfig->photoStack[$this->id][] = $execbuf;
-					//echo "<script> alert('compose ($execbuf)'); </script>\n";
-					$this->set_context("build");
 				}
 			}
 		}
-
 
 		return true;
 	}
@@ -437,17 +436,27 @@ class pphoto extends pfile { // pphoto class definition
 			$rotate = $def["rotate"];
 		}
 		if($font!="") {
-			$font_store=$this->store->get_filestore("files");
 			if($fontid=$this->exists($font)) {
-				$chkfontgrants = current($this->get($font, "system.get.phtml"));
-				if($chkfontgrants->CheckLogin("read")) {
-					$tmpfont=$this->store->get_config("files")."temp/".$fontid.".ttf";
-					$font_store->copy_from_store($tmpfont, $fontid, "file");
-					$ARConfig->photoStack[$this->id][]= " -font ".$tmpfont;
-					$this->arClearList[]=$fontid.".ttf";
+				$fontobj = current($this->get($font, "system.get.phtml"));
+				if($fontobj->CheckLogin("read")) {
+					$this->pushContext( Array( "arCurrentObject" => $this));
+
+					$file = "file";
+					$nls = $this->getNlsForFile($file,$nls);
+
+					$file = ar_store_files::get($file, $nls);
+					if ( !ar_error::isError($file)) {
+						$temp = ar_store_files::temp($file);
+						$temp_file = $temp->getMetaData()['uri'];
+
+						$tmpfont = $temp_file.".ttf";
+						rename($temp_file, $tmpfont);
+						$ARConfig->photoStack[$this->id][]= " -font ".$tmpfont;
+						$ARConfig->photoTempFiles[$this->id][]=$tmpfont;
+					}
+					$this->popContext();
 				}
 			}
-			$font_store->close();
 		}
 		$rotcmd = "";
 		if($gravity!="") {
@@ -528,14 +537,8 @@ class pphoto extends pfile { // pphoto class definition
 
 	function build($nls = '') {
 		global $AR, $ARConfig, $ARCurrent, $ARnls;
-		if (!$nls) {
-			$nls = $this->reqnls;
-		}
-		$f_store = $this->store->get_filestore("files");
-		$file = "file";
-		if ($f_store->exists($this->id, $nls."_$file")) {
-			$file = $nls."_$file";
-		}
+
+
 		if (!$this->data->toolarge) {
 			if (!$ARCurrent->arDontCache && $ARCurrent->cachetime!=-1 && $this->CheckPublic('read')) {
 				$ARCurrent->cachetime=-2; // set cache to onchange
@@ -544,22 +547,21 @@ class pphoto extends pfile { // pphoto class definition
 			$result=false;
 			$failed=false;
 			if (!$this->error) {
-				$tmpsrc = tempnam($this->store->get_config("files")."temp", "photo");
-							if(  substr( strtolower($tmpsrc), -4, 4 ) == ".tmp" ) {
-							  @unlink($tmpsrc);
-							  $tmpsrc = substr($tmpsrc, 0, -4 );
-							}
-				$tmpsrc .= ".photo";
-				$f_store->copy_from_store($tmpsrc, $this->id, $file);
+				$this->pushContext( Array( "arCurrentObject" => $this));
 
-				if( is_array($ARConfig->photoTempFiles[$this->id]) && is_array($ARConfig->photoTempFilesID[$this->id])) {
-					foreach( $ARConfig->photoTempFiles[$this->id] as $key => $tempfile){
-						debug("Copying ".$ARConfig->photoTempFilesName[$this->id][$key]." to $tempfile");
-						$f_store->copy_from_store($tempfile, $ARConfig->photoTempFilesID[$this->id][$key], $ARConfig->photoTempFilesName[$this->id][$key]);
-					}
+				$file = "file";
+				$nls = $this->getNlsForFile($file,$nls);
+
+				$file = ar_store_files::get($file, $nls);
+				if(ar_error::isError($file)){
+					// TODO: report an usefull error
+					$this->popContext();
+					return $file;
 				}
 
-				$f_store->close();
+				$temp = ar_store_files::temp($file);
+				$temp_file = $temp->getMetaData()['uri'];
+				$this->popContext();
 
 				if (chdir($this->store->get_config("files").'temp/')) {
 				debug("build: 1");
@@ -567,14 +569,13 @@ class pphoto extends pfile { // pphoto class definition
 					debug("build: 2");
 						foreach( $ARConfig->photoCommandStack[$this->id] as $exec_string){
 							debug("exec_string: $exec_string");
-							$exec_string = str_replace('{buildfile}', $tmpsrc, $exec_string);
+							$exec_string = str_replace('{buildfile}', $temp_file, $exec_string);
 
 							if (strpos($exec_string, "{targetfile}")) {
-								$target = str_replace(".photo", '.' . $this->targetformat, $tmpsrc);
+								$target = $this->targetformat.':'.$temp_file;
 								$exec_string = str_replace('{targetfile}', $target, $exec_string);
-								$tmpsrc = $target;
 							} else {
-								$exec_string .= " ".$tmpsrc;
+								$exec_string .= " ".$temp_file;
 							}
 
 							// Split the total command line to the command and the args so we can escape the args.
@@ -602,13 +603,11 @@ class pphoto extends pfile { // pphoto class definition
 						}
 					}
 					if (!$failed) {
-						$destsrc = $tmpsrc;
 
-						debug("pphoto: destination file is $destsrc");
-						$result = file_get_contents($destsrc);
-						
-						@unlink($tmpsrc);
-						@unlink($destsrc);
+						debug("pphoto: destination file is $temp_file");
+						$result = file_get_contents($temp_file);
+
+						@unlink($temp_file);
 					} else {
 						$this->error=sprintf($ARnls["err:noimagemagick"],$exec_string);
 					}
@@ -622,8 +621,6 @@ class pphoto extends pfile { // pphoto class definition
 				}
 			}
 			unset( $ARConfig->photoTempFiles[$this->id] );
-			unset( $ARConfig->photoTempFilesID[$this->id] );
-			unset( $ARConfig->photoTempFilesName[$this->id] );
 			unset( $ARConfig->photoCommandStack[$this->id] );
 		} else {
 			$this->error='Picture is too large to handle.';
@@ -636,14 +633,7 @@ class pphoto extends pfile { // pphoto class definition
 	}
 
 	function cleanup() {
-	global $ARConfig;
-		if (is_array($this->arClearList)) {
-			foreach ( $this->arClearList as $value) {
-				if (!preg_match("/[^a-z0-9\._-]/i",$value)) {
-					@unlink($value);
-				}
-			}
-		}
+		global $ARConfig;
 		unset($ARConfig->photoStack[$this->id]);
 	}
 
@@ -714,14 +704,14 @@ class pphoto extends pfile { // pphoto class definition
 		return $this->compose( $target, $style, $blend, $params, $nls );
 	}
 
-	function _border($width, $height, $color=false) { 
+	function _border($width, $height, $color=false) {
 		return $this->border($width, $height, $color);
 	}
 
 	function _cut($x, $y) {
 		return $this->cut($x, $y);
 	}
-	
+
 	function _crop($width, $height, $x=0, $y=0) {
 		return $this->crop($width, $height, $x, $y);
 	}
@@ -749,19 +739,19 @@ class pphoto extends pfile { // pphoto class definition
 	function _getimageinfo(&$extrainfo=false, $nls='') {
 			return $this->getimageinfo($extrainfo, $nls);
 	}
-	
+
 	function _identify($nls = '') {
 		return $this->identify($nls);
 	}
-	
+
 	function _getExif( $sections = false, $arrays = true, $thumbnail = true, $nls = '') {
 		return $this->getExif( $sections, $arrays, $thumbnail, $nls);
 	}
-	
+
 	function _selectFrames() {
 		$args = func_get_args();
 		return call_user_func_array( array( $this, 'selectFrames'), $args );
 	}
-	
+
 } // end of pphoto class definition
 ?>
