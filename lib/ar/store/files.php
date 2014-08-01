@@ -92,11 +92,6 @@
 				// FIXME: nlsstrings
 				return ar_error::raiseError( 'Could not create temp file', 501 );
 			}
-			if(  substr( strtolower($tmpsrc), -4, 4 ) == ".tmp" ) {
-				@unlink($tmpsrc);
-				$tmpsrc = substr($tmpsrc, 0, -4 );
-			}
-			$tmpsrc .= ".tmp";
 
 			$fp = fopen( $tmpsrc, 'x+' );
 			if (is_resource($fp)) {
