@@ -1540,6 +1540,8 @@ debug("loadLibrary: loading cache for $this->path");
 		if (!$top) {
 			$top = '/';
 		}
+		$path = $this->make_path($path);
+
 		if (($libpos=strpos($arCallFunction,":"))!==false && $libpos!==strpos($arCallFunction, "::")) {
 			// template of a specific library defined via call("library:template");
 			$arLibrary = substr($arCallFunction, 0, $libpos);
@@ -1562,6 +1564,7 @@ debug("loadLibrary: loading cache for $this->path");
 				debug("getPinpTemplate: Failed to find library $arLibrary");
 				return false;
 			}
+			$path = $this->make_path($path);
 		}
 		if (strpos($arCallFunction,"::")!==false) {
 			// template of a specific class defined via call("class::template");
@@ -1569,7 +1572,6 @@ debug("loadLibrary: loading cache for $this->path");
 		} else {
 			$arCallType=$this->type;
 		}
-		$path = $this->make_path($path);
 
 		/* first check current templates */
 		if ($this->path == $path) {
