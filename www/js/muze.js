@@ -470,14 +470,16 @@ muze.url = (function() {
 		return loader;
 	};
 	
-	muze.throttle = function( callbackFucntion, intervalTime ) {
+	muze.throttle = function( callbackFunction, intervalTime ) {
 		var eventId = 0;
 		return function() {
+			var myArguments = arguments;
+			var me = this;
 			if ( eventId ) {
 				return;
 			} else {
 				eventId = window.setTimeout( function() {
-					callbackFunction.call();
+					callbackFunction.apply(me, myArguments);
 					eventId = 0;
 				}, intervalTime );
 			}
