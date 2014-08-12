@@ -345,8 +345,9 @@
 			echo '			muze.ariadne.explore.viewpane.dataTable.subscribe("rowMouseoverEvent", muze.ariadne.explore.viewpane.onEventHighlightRow);' . "\n";
 			echo '			muze.ariadne.explore.viewpane.dataTable.subscribe("rowMouseoutEvent", muze.ariadne.explore.viewpane.onEventUnhighlightRow);' . "\n";
 			echo '			muze.ariadne.explore.viewpane.dataTable.subscribe("columnSortEvent", muze.ariadne.explore.viewpane.onEventSortColumn);' . "\n";
-			echo '		}' . "\n";
-
+			echo '			muze.ariadne.explore.viewpane.hideRows();' . "\n";
+			echo '		};' . "\n";
+			echo '		muze.event.attach(document.body, "viewpaneLoaded", muze.ariadne.explore.viewpane.hideRows)' . "\n";
 		}
 
 		static public function colDefs($fields) {
