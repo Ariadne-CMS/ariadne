@@ -955,6 +955,15 @@ muze.namespace( 'muze.ariadne.explore.viewpane', function() {
 				YAHOO.util.Dom.removeClass(items[i], "selectable-selected");
 			}
 		},
+		hideRows : function() {
+			var priorities = document.querySelectorAll("td.yui-dt-col-priority");
+			for (var i=0; i<priorities.length; i++) {
+				var prio = parseInt(priorities[i].innerText);
+				if (prio < 0) {
+					priorities[i].parentNode.classList.add("explore_item_hidden");
+				}
+			}
+		},
 		rowClick : function(args) {
 			var event = args.event;
 			YAHOO.util.Event.stopEvent(event);
