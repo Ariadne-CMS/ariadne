@@ -627,7 +627,8 @@ li.explore_item {
 	margin-left: -16px;
 }
 
-.explore_item.hidden {
+.explore_item.hidden,
+.explore_item_hidden div.yui-dt-liner {
 	opacity: 0.3;
 }
 
