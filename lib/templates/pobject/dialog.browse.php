@@ -183,7 +183,8 @@
 <script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/ariadne/explore.js"></script>
 <script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/ariadne/selectable.js"></script>
 <script type="text/javascript" src="<?php echo $wwwroot; ?>js/muze/ariadne/dropzone.js"></script>
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 <script type="text/javascript">
 	// Backwards compatibility hooks - these should be removed in the end.
 	View = muze.ariadne.explore.view;

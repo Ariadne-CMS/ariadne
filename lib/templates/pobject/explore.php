@@ -75,6 +75,7 @@
 <script type="text/javascript" src="<?php echo $yui_base;?>animation/animation-min.js"></script>
 <script type="text/javascript" src="<?php echo $yui_base;?>container/container-min.js"></script>
 <script type="text/javascript" src="<?php echo $yui_base;?>autocomplete/autocomplete-min.js"></script>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>explore.css">
 <!--[if lt IE 7]><link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>explore.ie6.css"><![endif]-->
