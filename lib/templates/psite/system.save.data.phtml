@@ -24,16 +24,16 @@
 
             while (!$this->error && (list($key, $value)=each($AR->nls->list))) {
                 if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
-
-					$nlsArgs = $this->getvar($key);
-					$mainURL = $nlsArgs['url'];
+					$mainURL = $this->getdata('url', $key);
 					$urlList = $this->getdata('urlList', $key);
+
 					if ( !is_array($urlList) ) {
 						$urlList = array();
+						if ( $mainURL ) {
+							array_unshift( $urlList, $mainURL );
+						}
 					}
-					if ($mainURL && !in_array($mainURL, $urlList)) {
-						array_unshift( $urlList, $mainURL );
-					} 
+
 					$this->data->$key->url = "";
 					$this->data->$key->urlList = $urlList;
 					$this->data->config->url_list['nls'][$key] = array();
