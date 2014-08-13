@@ -19,11 +19,11 @@
 
 		if (!$this->error) {
 			$this->arIsNewObject=false;
-            reset($AR->nls->list);
-            $count=0;
+			reset($AR->nls->list);
+			$count=0;
 
-            while (!$this->error && (list($key, $value)=each($AR->nls->list))) {
-                if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
+			while (!$this->error && (list($key, $value)=each($AR->nls->list))) {
+				if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
 					$mainURL = $this->getdata('url', $key);
 					$urlList = $this->getdata('urlList', $key);
 
@@ -66,8 +66,8 @@
 						if ($protocol) {
 							$protocol = substr( $protocol, -1 ); // remove trailing ':'
 						}
-						$properties["url"][$count]["protocol"]=	$regs[1];
-						$properties["url"][$count]["host"]=		$regs[2];
+						$properties["url"][$count]["protocol"] = $regs[1];
+						$properties["url"][$count]["host"]     = $regs[2];
 						if ($regs[3]) {
 							$properties["url"][$count]["port"]= (int)substr($regs[3], 1);
 						}
@@ -91,15 +91,13 @@
 							$this->error = "Please fill in distinctive hostnames; they should not be the same for different languages.";
 						}
 					}
-					$properties["url"][$count]["protocol"]=	$regs[1];
-					$properties["url"][$count]["host"]=		$regs[2];
+					$properties["url"][$count]["protocol"] = $regs[1];
+					$properties["url"][$count]["host"]     = $regs[2];
 					if ($regs[3]) {
-						$properties["url"][$count]["port"]=	(int)substr($regs[3], 1);
+						$properties["url"][$count]["port"] = (int)substr($regs[3], 1);
 					}
 					$count++;
-
-
-                }
+				}
 			}
 			if ($clearcache) {
 				// Changing the root url invalidates all cache images below this.
