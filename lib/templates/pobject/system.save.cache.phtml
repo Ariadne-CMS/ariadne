@@ -38,7 +38,7 @@
 		}
 		$this->data->config->cacheconfig=$cache;
 		$this->save();
-		if ($refresh) {
+		if ($refresh || $donotcache == $cache ) {
 			$this->ClearCache($this->path, true, true);
 		}
 	} else {
