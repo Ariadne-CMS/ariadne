@@ -1529,6 +1529,8 @@ class pinp {
 
 		if(empty($func)){
 			$result	= strip_tags($result);
+			$result  = trim($result,"\n");
+			list($result,$rest) = explode("\n",$result,2);
 			$result	= trim($result);
 			$first	= strpos($result,':');
 			$last	= strrpos($result,':');
