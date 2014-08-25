@@ -51,6 +51,7 @@
 <html>
 <head>
 <title>Ariadne<?php echo ": " . $AR->user->data->name . ": " . $objectName; ?></title>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
 <link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>button/assets/skins/sam/button.css">
 <link rel="stylesheet" type="text/css" href="<?php echo $yui_base;?>menu/assets/skins/sam/menu.css">
@@ -75,7 +76,6 @@
 <script type="text/javascript" src="<?php echo $yui_base;?>animation/animation-min.js"></script>
 <script type="text/javascript" src="<?php echo $yui_base;?>container/container-min.js"></script>
 <script type="text/javascript" src="<?php echo $yui_base;?>autocomplete/autocomplete-min.js"></script>
-<meta http-equiv="X-UA-Compatible" content="IE=Edge">
 
 <link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>explore.css">
 <!--[if lt IE 7]><link rel="stylesheet" type="text/css" href="<?php echo $AR->dir->styles; ?>explore.ie6.css"><![endif]-->
