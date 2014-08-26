@@ -127,6 +127,9 @@
 				}
 				$criteria .=" path = '$srcpath' ";
 			}
+			if ($ARCurrent->AXAction == "export") {
+				$criteria .= "order by none,path ASC";
+			}
 			$processed_items = 0;
 
 			if (get_class($this->store) == "axstore") {
