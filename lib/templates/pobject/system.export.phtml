@@ -119,6 +119,9 @@
 			$ARCurrent->options['rewrite_references'][ $rootpath ] = $destpath;
 		}
 
+		if ( $ARCurrent->options["query"] != '' && $ARCurrent->AXAction == "export") {
+			$criteria = " (".$ARCurrent->options["query"].") ";
+		}
 
 		$offset=0;
 		if (!$ARCurrent->importStore->error) {
