@@ -219,7 +219,9 @@
 									$oldObject=current($ARCurrent->importStore->call("system.get.clone.phtml", $arCallArgs,
 													$ARCurrent->importStore->get($newpath)));
 
-									if (($object->lastchanged > $oldObject->lastchanged)) {
+									if (
+										($object->lastchanged > $oldObject->lastchanged) || 
+										( ( $oldObject->axflags & AX_DUMMY) && !($object->axflags & AX_DUMMY) )) {
 										display("(updating)");
 										$save_obj = true;
 									} else {
