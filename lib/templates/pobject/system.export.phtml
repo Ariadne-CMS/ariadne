@@ -173,7 +173,7 @@
 				}
 				$result = array_merge($dummys,$result);
 
-				while (is_array($result) && (list($key,$object)=each($result))) {
+				foreach($result as $key => $object) {
 					if ($object->parent != '..' && !$object->exists($object->parent)) {
 						display("Found orphaned node '".$object->path."' (skipping)\n");
 						continue;
