@@ -154,7 +154,8 @@
 					// add self to check cache
 					$checkedPaths[$obj->path] = $obj->path;
 					$cpath = $obj->parent;
-					while($cpath != '..' && !in_array($cpath,$checkedPaths) && !$ARCurrent->importStore->exists($cpath)) {
+					$newcpath=$this->store->make_path($destpath.substr($obj->path, strlen($rootpath)), '..');
+					while($cpath != '..' && !in_array($cpath,$checkedPaths) && !$ARCurrent->importStore->exists($newcpath)) {
 						$arguments = $arCallArgs;
 						$arguments["setDummyObject"] = true;
 						$temp_obj=current($this->store->call("system.export.object.phtml",
@@ -164,9 +165,14 @@
 
 						array_unshift($mydummys,$temp_obj);
 						$checkedPaths[$temp_obj->path] = $temp_obj->path;
+
+						if( $newcpath == '/' ) {
+							continue;
+						}
+
 						// one up
-						display("Adding dummy for $cpath\n");
 						$cpath = $temp_obj->parent;
+						$newcpath=$this->store->make_path($newcpath,'..');
 					}
 					$dummys = array_merge($dummys, $mydummys);
 
