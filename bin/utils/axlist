@@ -47,20 +47,29 @@
 	}
 
 	function do_ax_list(&$store, $list_path, $recurse) {
+		$recurse_list = array();
 		$data=$store->call("system.get.phtml", "", $store->ls($list_path));
-		echo "$list_path contains ".@count($data)." object(s)\n";
-		while (is_array($data) && (list($key, $object)=each($data))) {
-			echo "	".$object->type;
-			if ($object->type=="pdir" && $recurse) {
-				$recurse_list[]=$object->path;
+		if ( is_array($data) ){
+			if($recurse >= 2 && count($data) == 0) {
+				return;
 			}
-			echo "	".substr($object->path, strlen($list_path));
+			echo "$list_path contains ".count($data)." object(s)\n";
+
+			foreach($data as $key => $object) {
+				echo "	".$object->type;
+				if ( $recurse ) {
+					$recurse_list[]=$object->path;
+				}
+				echo "	".substr($object->path, strlen($list_path));
+				if ( $object->axflags & AX_DUMMY ) {
+					echo "	[Dummy]";
+				}
+				echo "\n";
+			}
 			echo "\n";
 		}
-		echo "\n";
-		@reset($recurse_list);
-		while (is_array($recurse_list) && (list(,$path)=each($recurse_list))) {
-			do_ax_list($store, $path, $recurse);
+		foreach( $recurse_list as $path) {
+			do_ax_list($store, $path, $recurse+1);
 		}
 	}
 
