@@ -63,6 +63,7 @@
 		}
 		display("export($srcpath) to ($destpath)\n");
 
+		$checkedPaths = array();
 
 		if (!$destpath) {
 			if ($srcpath!="/") {
@@ -141,28 +142,31 @@
 			$stepsize=100;
 			progress(0, $items_to_process);
 			while (count($result=$this->store->call("system.export.object.phtml",$arCallArgs,$this->store->find($srcpath,$criteria,$stepsize,$offset)))) {
-				if (is_array($checkpaths)) {
-					unset($newresult);
-					@reset($checkpaths);
-					while (list(,$path)=@each($checkpaths)) {
-						if (!$ARCurrent->importStore->exists($path)) {
-							$arguments = $arCallArgs;
-							$arguments["setDummyObject"] = true;
-							$temp_obj=current($this->store->call("system.export.object.phtml",
-													$arguments,
-													$this->store->get($path)));
-							$temp_obj->axflags |= AX_DUMMY;
 
-							$newresult[]=$temp_obj;
-						}
+				$dummys = array();
+				foreach($result as $obj) {
+					$mydummys = array();
+					// add self to check cache
+					$checkedPaths[$obj->path] = $obj->path;
+					$cpath = $obj->parent;
+					while($cpath != '..' && !in_array($cpath,$checkedPaths) && !$ARCurrent->importStore->exists($cpath)) {
+						$arguments = $arCallArgs;
+						$arguments["setDummyObject"] = true;
+						$temp_obj=current($this->store->call("system.export.object.phtml",
+									$arguments,
+									$this->store->get($cpath)));
+						$temp_obj->axflags |= AX_DUMMY;
+
+						array_unshift($mydummys,$temp_obj);
+						$checkedPaths[$temp_obj->path] = $temp_obj->path;
+						// one up
+						display("Adding dummy for $cpath\n");
+						$cpath = $temp_obj->parent;
 					}
-					while (list($key,)=each($result)) {
-						$newresult[]=$result[$key];
-					}
-					$result=$newresult;
-					reset($result);
-					unset($checkpaths);
+					$dummys = array_merge($dummys, $mydummys);
+
 				}
+				$result = array_merge($dummys,$result);
 
 				while (is_array($result) && (list($key,$object)=each($result))) {
 					if ($object->parent != '..' && !$object->exists($object->parent)) {
