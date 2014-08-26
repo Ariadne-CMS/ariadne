@@ -124,12 +124,14 @@
 		}
 
 		$offset=0;
+		$countcriteria = '';
 		if (!$ARCurrent->importStore->error) {
 			if($ARCurrent->options['without_children'] == true){
 				if($criteria){
 					$criteria .= ' and ';
 				}
 				$criteria .=" path = '$srcpath' ";
+				$countcriteria =" and path = '$srcpath' ";
 			}
 			if ($ARCurrent->AXAction == "export") {
 				$criteria .= "order by none,path ASC";
@@ -139,7 +141,7 @@
 			if (get_class($this->store) == "axstore") {
 				$items_to_process = count($this->store->nodes); // FIXME: This works for import, but not for export.
 			} else {
-				$query = "object.path =~ '" . $srcpath . "%' order by path ASC";
+				$query = "object.path =~ '" . $srcpath . "%' ".$countcriteria ." order by path ASC";
 				$items_to_process = $this->count_find($srcpath, $query);
 			}
 			$stepsize=100;
