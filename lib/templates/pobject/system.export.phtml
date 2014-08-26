@@ -190,10 +190,11 @@
 					$save_obj = true;
 
 					if (is_array($exclude_list)) {
-						reset($exclude_list);
-						while ($save_obj && (list($key, $excl_path)=each($exclude_list))) {
+						foreach($exclude_list as $key => $excl_path) {
 							if (substr($newpath, 0, strlen($excl_path)) == $excl_path) {
 								$save_obj = false;
+								display("Skipping path because it is in the exclude list\n");
+								break;
 							}
 						}
 					}
