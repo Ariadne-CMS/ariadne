@@ -130,7 +130,7 @@
 			if ( is_numeric($value) ) {
 				return $value;
 			} else if ( is_array($value) ) {
-				array_walk_recursive( $value, array( self, 'taint' ) );
+				array_walk_recursive( $value, array( 'self', 'taint' ) );
 			} else if ( is_string($value) && $value ) { // empty strings don't need tainting
 				$value = new arTainted($value);
 			}
@@ -141,7 +141,7 @@
 			if ( $value instanceof arTainted ) {
 				$value = filter_var($value->value, $filter, $flags);
 			} else if ( is_array($value) ) {
-				array_walk_recursive( $value, array( self, 'untaintArrayItem'), array( 
+				array_walk_recursive( $value, array( 'self', 'untaintArrayItem'), array(
 					'filter' => $filter,
 					'flags' => $flags
 				) );
