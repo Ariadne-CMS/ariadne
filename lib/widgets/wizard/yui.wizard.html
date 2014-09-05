@@ -178,7 +178,9 @@
 					}
 ?>
 					<a href="javascript:selectSection('<?php echo htmlspecialchars($i); ?>');" id="<?php echo htmlspecialchars($link_id); ?>" class="section<?php echo htmlspecialchars($current); ?>">
-						<img alt="<?php echo strip_tags($title); ?>" title="<?php echo strip_tags($title); ?>" src="<?php echo htmlspecialchars($image); ?>">
+						<?php if ($image) { ?>
+							<img alt="<?php echo strip_tags($title); ?>" title="<?php echo strip_tags($title); ?>" src="<?php echo htmlspecialchars($image); ?>">
+						<?php } ?>
 						<span class="title"><?php echo $title; ?></span>
 					</a>
 <?php
