@@ -84,5 +84,8 @@ if ($this->CheckConfig($arCallFunction, $arCallArgs)) {
 		}
 		$i++;
 	}
+	if (ar::getvar("return")) {
+		ldRedirect($this->make_ariadne_url() . "dialog.browse.php");
+	}
 }
 ?>
