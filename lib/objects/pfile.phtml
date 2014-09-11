@@ -60,7 +60,12 @@ class pfile extends pobject { // pfile class definition
 	function GetFile($file='file', $nls='') {
 		$this->pushContext( Array( "arCurrentObject" => $this));
 		$nls = $this->getNlsForFile($file,$nls);
-		$ret = ar_store_files::get($file, $nls)->getContents();
+		$ret = ar_store_files::get($file, $nls);
+		if ( !ar_error::isError($ret) ) {
+			$ret = $ret->getContents();
+		} else {
+			$ret = null; //backwards compatibility... there was no error checking before
+		}
 		$this->popcontext();
 		return $ret;
 	}
