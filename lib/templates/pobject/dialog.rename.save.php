@@ -21,7 +21,11 @@
 			if (substr($target, -1) != "/") {
 				$target .= "/";
 			}
-			if ($this->exists($target)) {
+
+			if (
+				strtolower($target) != strtolower($source_ob->path) && 
+				$this->exists($target)
+			) {
 				$target = $target . basename($source_ob->path) . "/";
 			}
 
@@ -63,7 +67,8 @@
 			<script type="text/javascript">
 				if ( window.opener && window.opener.muze && window.opener.muze.dialog ) {
 					window.opener.muze.dialog.callback( window.name, 'renamed', { 
-						'path': '<?php echo $returnpath; ?>'
+						'path': '<?php echo $returnpath; ?>',
+						'url' : '<?php echo $this->make_url($target); ?>'
 					});
 				} else {
 					// FIXME: Add copied path to the tree?
