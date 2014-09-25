@@ -354,14 +354,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$result=false;
 		$configcache=$this->loadConfig();
 		$needsUnlock = false;
-		$arisNewObject = false;
+		$arIsNewObject = false;
 		$result = false;
 		if ($this->arIsNewObject) { // save a new object
 			debug("pobject: save: new object","all");
 			$this->path = $this->make_path();
 			$arNewParent=$this->make_path("..");
 			$arNewFilename=basename($this->path);
-			$arisNewObject = false;
+			$arIsNewObject = true;
 			if (preg_match("|^[a-z0-9_\{\}\.\:-]+$|i",$arNewFilename)) { // no "/" allowed, these will void the 'add' grant check.
 				if (!$this->exists($this->path)) { //arNewFilename)) {
 					if ($this->exists($arNewParent)) {
