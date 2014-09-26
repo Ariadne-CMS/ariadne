@@ -223,11 +223,31 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 
 	function parents($path, $function="list.html", $args="", $top="") {
+		/* FIXME: $this->store->parents is too slow when a lot of objects are in ariadne (2million+) */
+		/* but this fix should be done in the store, not here */
 		if (!$top) {
 			$top=$this->currentsection();
 		}
+
+		$target = $this;
+		$parents = array();
+		$parents[] = $this;
+		while ($target && $target->path != $top) {
+			$target = current($target->get($target->parent, "system.get.phtml"));
+			$parents[] = $target;
+		}
+		$parents = array_reverse($parents);
+		$result = array();
+		foreach ($parents as $parent) {
+			$result[] = $parent->call($function, $args);
+		}
+
+		return $result;
+
+		/*
 		$path=$this->store->make_path($this->path, $path);
 		return $this->store->call($function, $args, $this->store->parents($path, $top));
+		*/
 	}
 
 	function find($path, $criteria, $function="list.html", $args="", $limit=100, $offset=0) {
@@ -404,32 +424,50 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 		$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
 
+		// this makes sure the event handlers are run on $wf_object, so that $this->data changes don't change the data of the object to be saved
 		$this->pushContext(array('scope' => 'php', 'arCurrentObject' => $wf_object));
 
 		$eventData = new object();
 		$eventData->arCallArgs = $arCallArgs;
 		$eventData->arCallFunction	= $context['arCallFunction'];
 		$eventData->arIsNewObject = $arIsNewObject;
+		$eventData->arProperties = $properties;
 		$eventData = ar_events::fire( 'onbeforesave', $eventData );
 
+		// pop the wf_object, not needed later, the extra scope might hinder other code
 		$this->popContext();
 
 		if ( !$eventData ) {
 			return false; // prevent saving of the object.
 		}
+
+		// arguments can be altered by event handlers, only usefull when a workflow template is also defined
 		$arCallArgs = $eventData->arCallArgs;
+
+		// the properties from the eventData are the new property list
+		// no need to merge them with $properties, just manipulate the properties array directly
+		// in the event data. unlike the user.workflow.pre.html template
+		if ( is_array( $eventData->arProperties ) ) {
+			$properties = $eventData->arProperties;
+		} else {
+			$properties = array();
+		}
 
 		if ( $arIsNewObject) {
 			$wf_object->arIsNewObject=$arIsNewObject;
 		}
+
+		// pass the current properties list to the workflow template
+		// for backwards compatibility and workflow templates that just
+		// returned only their own properties, merge them afterwards
+		// don't do this for the eventData arProperties!
+		$arCallArgs['properties'] = $properties;
 		$wf_result = $wf_object->call("user.workflow.pre.html", $arCallArgs);
-		if (is_array($eventData->arProperties)) {
-			if (is_array($wf_result)) {
-				$wf_result = array_merge_recursive($wf_result, $eventData->arProperties);
-			} else {
-				$wf_result = $eventData->arProperties;
-			}
+		/* merge workflow properties */
+		if ( is_array($wf_result) ){
+			$properties = $this->saveMergeWorkflowResult($properties,$wf_result);
 		}
+
 		$this->error = $wf_object->error;
 		$this->priority = $wf_object->priority;
 		$this->data = $wf_object->data;
@@ -454,10 +492,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		/* save custom data */
 		$properties = $this->saveCustomData($configcache, $properties);
 
-		/* merge workflow properties */
-		if ( is_array($wf_result) ){
-			$properties = $this->saveMergeWorkflowResult($properties,$wf_result);
-		}
 		if (!$this->error) {
 			if ($this->path=$this->store->save($this->path, $this->type, $this->data, $properties, $vtype, $this->priority)) {
 				unset($this->arIsNewObject);
@@ -470,7 +504,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$arCallArgs = $eventData->arCallArgs; // returned from onbeforesave event
 				$arCallArgs['properties'] = $properties;
 
-				if($arIsNewObject) {
+				if ($arIsNewObject) {
 					$wf_object->arIsNewObject = $arIsNewObject;
 				}
 				$wf_result = $wf_object->call("user.workflow.post.html", $arCallArgs);
@@ -1144,6 +1178,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			foreach ($ARConfig->cache as $cachepath => $cache) {
 				if (strpos($cachepath, $path) === 0 && strlen($cachepath)>$pathlength) {
 					unset($ARConfig->cache[$cachepath]);
+					unset($ARConfig->pinpcache[$cachepath]);
+					unset($ARConfig->libraries[$cachepath]);
 				}
 			}
 		}
@@ -1194,8 +1230,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				unset($arConfig['library']);
 			}
 			$ARConfig->pinpcache[$this->path] = (array) $arConfig;
-			$this->clearChildConfigs( $this->path ); // remove any config data for child objects, since these are set before their parent config was set
 		}
+		$this->clearChildConfigs( $this->path ); // remove any config data for child objects, since these are set before their parent config was set
 		$ARConfigChecked = $initialConfigChecked;
 		$ARCurrent->nls = $initialNLS;
 
