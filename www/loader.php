@@ -181,7 +181,7 @@
 			) {
 
 			$AR->output_compression = 0;
-			if ($session_id && !$AR->hideSessionIDfromURL) {
+			if ( $session_id ) {
 				$cachedimage=$store_config["files"]."cache/session".$ldCacheFilename;
 				$cachedheader=$store_config["files"]."cacheheaders/session".$ldCacheFilename;
 			} else {
@@ -257,26 +257,25 @@
 						$data = file_get_contents($cachedimage);
 						include_once($store_config['code']."modules/mod_esi.php");
 						$data = ESI::esiProcess($data);
+						$tag = '{arSessionID}';
 						if ($session_id && !$AR->hideSessionIDfromURL) {
-							$tag = '{arSessionID}';
 							$data = str_replace($tag, "-$session_id-", $data);
+						} else if ($session_id && $AR->hideSessionIDfromURL ) {
+							$data = str_replace($tag, '', $data);
 						}
 						echo $data;
 					}
 
-				} else if ($session_id && !$AR->hideSessionIDfromURL) {
+				} else if ($session_id) {
 					$tag = '{arSessionID}';
-					$tag_size = strlen($tag);
-					$data = "";
-					$fp = fopen($cachedimage, "r");
-					while (!feof($fp)) {
-						$data .= fread($fp, 4096);
+					$data = file_get_contents($cachedimage);
+					$tag = '{arSessionID}';
+					if (!$AR->hideSessionIDfromURL) {
 						$data = str_replace($tag, "-$session_id-", $data);
-						echo substr($data, 0, 4096-$tag_size);
-						$data = substr($data, 4096-$tag_size);
+					} else {
+						$data = str_replace($tag, '', $data);
 					}
 					echo $data;
-					fclose($fp);
 				} else {
 					readfile($cachedimage);
 				}
@@ -377,7 +376,7 @@
 				if ($result == LD_ERR_ACCESS) {
 					ldAccessDenied($path, $ARnls["accessdenied"], $args, $function);
 					$function = false;
-				} else if ($result == LD_ERR_SESSION) {
+				} else if ($result == LD_ERR_SESSION && !$AR->hideSessionIDfromURL ) {
 					ldAccessTimeout($path, $ARnls["sessiontimeout"], $args, $function);
 					$function = false;
 				} else if ($result == LD_ERR_EXPIRED) {
