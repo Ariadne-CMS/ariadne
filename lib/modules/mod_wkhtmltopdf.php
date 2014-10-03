@@ -116,6 +116,23 @@
 				case 'margin-top':
 				case 'margin-left':
 				case 'margin-right':
+				case 'footer-center':
+				case 'footer-font-name':
+				case 'footer-font-size':
+				case 'footer-html':
+				case 'footer-line':
+				case 'footer-right':
+				case 'footer-left':
+				case 'footer-spacing':
+				case 'header-center':
+				case 'header-font-name':
+				case 'header-font-size':
+				case 'header-html':
+				case 'header-line':
+				case 'header-right':
+				case 'header-left':
+				case 'header-spacing':
+
 				case 'encoding':
 				case 'orientation':
 				case 'page-height':
