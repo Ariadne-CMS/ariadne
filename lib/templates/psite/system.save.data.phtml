@@ -187,7 +187,6 @@
 						$workspaceurl=substr($workspaceurl, 0, -1);
 					}
 					if ($workspaceurl!=$this->data->$key->workspaceurl) {
-						$clearcache=true;
 						$this->data->$key->workspaceurl=$workspaceurl;
 					}
 
@@ -209,10 +208,6 @@
 					}
 					$count++;
 				}
-			}
-			if ($clearcache) {
-				// Changing the root url invalidates all cache images below this.
-				$this->ClearCache();
 			}
 			$this->data->url = $this->data->{$this->data->nls->default}->url;
 			$this->data->workspaceurl=$this->data->{$this->data->nls->default}->workspaceurl;
