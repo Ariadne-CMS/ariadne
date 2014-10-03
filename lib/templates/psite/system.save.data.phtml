@@ -14,8 +14,106 @@
 
 		// unset the properties array, so no properties can be passed to this template.
 		$properties = Array();
-		$this->data->config->url_list = Array();
+		$this->data->config->url_list = Array( 'host' => array() , 'nls' => array());
 		$this->data->config->workspaceurl_list = Array();
+
+		foreach ( $AR->nls->list as $key => $value) {
+			// $name is the variable that must be set for a language to be available.
+			$name = $this->getdata("name",$key);
+			if ($name) {
+				// backwards compatibility for data
+				$urlList = $this->data->${key}->urlList;
+				if( (!is_array($urlList)) ) {
+					// empty urlList
+					$urlList = array();
+					if ( isset($this->data->${key}->url)) {
+						// convert data from url
+						$urlList[] = $this->data->${key}->url;
+					} else {
+						// default nls case
+						if( $this->data->nls->default == $key  && isset($this->data->url) ) {
+							$urlList[] = $this->data->url;
+						}
+					}
+					$this->data->${key}->urlList = $urlList;
+				}
+			}
+			// unset data nolonger needed, will be regenerated
+			unset($this->data->${key}->url);
+		}
+		// unset data nolonger needed, will be regenerated
+		unset($this->data->url);
+
+		// backwards compatibility for argument handing
+		// prefetch urlList for every language, and filter duplicate urls if needed
+		// replace this block with code with a "$this->getdata('urlList,$key')" when the old api is nolonger supported
+
+		// detect if new api is used
+		$handleOldApi = true;
+		foreach ( $AR->nls->list as $key => $value) {
+			// $name is the variable that must be set for a language to be available.
+			$name = $this->getdata("name",$key);
+			if ($name) {
+					$nlsArgs = $this->getvar($key);
+					$urlList = $nlsArgs['urlList'];
+					if(isset($urlList)) {
+						$handleOldApi=false;
+						break;
+					}
+			}
+		}
+
+		$prefetchedUrlList = null;
+		if( $handleOldApi ) {
+			$prefetchedUrlList = array();
+			$filterList = array();
+			foreach ( $AR->nls->list as $key => $value) {
+				// $name is the variable that must be set for a language to be available.
+				$name = $this->getdata("name",$key);
+				if ($name) {
+					$nlsArgs = $this->getvar($key);
+					$url = $nlsArgs['url'];
+					$urlList = $this->data->${key}->urlList;
+					if(is_array($nlsArgs) && array_key_exists('url', $nlsArgs)) {
+						if( $url == '') {
+							// settting url to an empty string if the api sets the argument to empty
+							$urlList = array();
+						} else {
+							// prepend new url to existing list, remove any duplicates
+							$urlList = array_unique( array_merge(array($url) , $urlList));
+							$filterList[] = $url;
+						}
+					} else if( $this->data->nls->default == $key) {
+						$url = $this->getvar('url');
+						if ( $url === '' ) {
+							$urlList = array();
+						} else if ( $url ) {
+							$urlList = array_unique( array_merge(array($url) , $urlList));
+							$filterList[] = $url;
+						}
+					}
+					$prefetchedUrlList[$key] = $urlList;
+				}
+			}
+
+			// filter primary nls url's from list of urls
+			foreach($prefetchedUrlList as $key => $urlList) {
+				if ( count($urlList) > 1 ) {
+					// keep the first save
+					$url = array_slice($urlList,0,1);
+					// filter the rest of the array
+					$rest = array_diff( array_slice($urlList, 1), $filterList);
+
+					// merge set
+					$urlList = array_merge( $url, $rest);
+
+					$prefetchedUrlList[$key] = $urlList;
+				}
+			}
+
+		}
+
+		// end backwards compatibility for old api
 
 		if (!$this->error) {
 			$this->arIsNewObject=false;
@@ -24,56 +122,66 @@
 
 			while (!$this->error && (list($key, $value)=each($AR->nls->list))) {
 				if ($name=$this->getdata("name",$key)) { // $name is the variable that must be set for a language to be available.
-					$mainURL = $this->getdata('url', $key);
-					$urlList = $this->getdata('urlList', $key);
+
+					$urlList = $this->getData('urlList', $key);
+
+					// fetch preprocesed data if needed ( contains processed arguments of deprecated api call
+					if ( is_array( $prefetchedUrlList ) && array_key_exists($key, $prefetchedUrlList)) {
+						$urlList = $prefetchedUrlList[$key];
+					}
 
 					if ( !is_array($urlList) ) {
 						$urlList = array();
-						if ( $mainURL ) {
-							array_unshift( $urlList, $mainURL );
-						}
 					}
 
-					$this->data->$key->url = "";
 					$this->data->$key->urlList = $urlList;
 					$this->data->config->url_list['nls'][$key] = array();
 
-					$firstURL = true;
-					foreach ( $urlList as $i => $url) {
-						$url = trim($url);
-						if (!$url) {
-							unset( $this->data->$key->urlList[ $i ] );
-							continue;
-						}
+					// generating backwards compatibility data
+					if(isset($urlList[0]) ) {
+						$this->data->$key->url = $urlList[0];
+					} else {
+						$this->data->$key->url = '';
+					}
 
-						if (substr($url, -1, 1)=='/') {
-							$url = substr($url, 0, -1);
-						}
+					$urlList = array_map(function($in) {
+							$in = trim($in);
+							$in = rtrim($in,'/');
+							return $in;
+						}, $urlList);
+
+					$urlList = array_filter($urlList ,function($in) {
+							$res = ("" != trim($in));
+							return $res;
+						});
+
+
+					foreach ( $urlList as $i => $url) {
 
 						preg_match('|^([a-z0-9]+:)?//([^/:]+)(:[0-9]+)?|i', $url, $regs);
-						if ($url) {
-							if ($firstURL) {
-								$this->data->$key->url = $url;
-							}
-							$this->data->config->url_list['nls'][$key][] = $url;
-							if (!$this->data->config->url_list['host'][$regs[2].$regs[3]]) {
-								$this->data->config->url_list['host'][$regs[2].$regs[3]] = $key;
-							} else {
-								$this->error = "Please fill in distinctive hostnames; they should not be the same for different languages.";
-							}
+						$this->data->config->url_list['nls'][$key][] = $url;
+						if (!$this->data->config->url_list['host'][$regs[2].$regs[3]]) {
+							$this->data->config->url_list['host'][$regs[2].$regs[3]] = $key;
+						} else {
+							$this->error = "Please fill in distinctive hostnames; they should not be the same for different languages.";
+							break 2; // break the foreach and the nls while loop
 						}
+
 						$protocol = $regs[1];
 						if ($protocol) {
 							$protocol = substr( $protocol, -1 ); // remove trailing ':'
 						}
+
 						$properties["url"][$count]["protocol"] = $regs[1];
 						$properties["url"][$count]["host"]     = $regs[2];
+
 						if ($regs[3]) {
 							$properties["url"][$count]["port"]= (int)substr($regs[3], 1);
 						}
+
 						$count++;
-						$firstURL = false;
 					}
+
 					$workspaceurl=$this->getdata("workspaceurl",$key);
 					if (substr($workspaceurl, -1, 1)=='/') {
 						$workspaceurl=substr($workspaceurl, 0, -1);
@@ -82,6 +190,7 @@
 						$clearcache=true;
 						$this->data->$key->workspaceurl=$workspaceurl;
 					}
+
 					preg_match('|^([a-z0-9]+)://([^/:]+)(:[0-9]+)?|i', $workspaceurl, $regs);
 					if ($workspaceurl) {
 						$this->data->config->workspaceurl_list['nls'][$key] = $workspaceurl;
@@ -91,8 +200,10 @@
 							$this->error = "Please fill in distinctive hostnames; they should not be the same for different languages.";
 						}
 					}
+
 					$properties["url"][$count]["protocol"] = $regs[1];
 					$properties["url"][$count]["host"]     = $regs[2];
+
 					if ($regs[3]) {
 						$properties["url"][$count]["port"] = (int)substr($regs[3], 1);
 					}
@@ -105,10 +216,12 @@
 			}
 			$this->data->url = $this->data->{$this->data->nls->default}->url;
 			$this->data->workspaceurl=$this->data->{$this->data->nls->default}->workspaceurl;
+
 			if (!$this->error) {
 				$this->save($properties);
 				$this->ClearCache();
 			}
+
 		}
 	}
 ?>
