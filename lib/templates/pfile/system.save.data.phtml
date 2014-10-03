@@ -100,8 +100,13 @@
 							$file_size = $this->getdata("file_size", "none");
 						}
 					}
+
 					if (!$mimetype) {
 						$mimetype = $file_type;
+					}
+
+					if (!isset($this->data->$nlskey)) {
+						$this->data->$nlskey = new object;
 					}
 
 					$deletefile = $this->getdata("delete", $nlskey);
