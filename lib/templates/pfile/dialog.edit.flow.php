@@ -6,7 +6,7 @@ if (($this->CheckLogin("edit") || $this->CheckLogin("add", ARANYTYPE)) && $this-
 	$this->call("system.save.tempfile.phtml");
 	if ($this->error) {
 		echo '<div class="error">' . $this->error . '</div>';
-		echo '<script type="text/javascript">alert("' . AddSlashes($this->error, ARESCAPE) . '"); </script>';
+		echo '<script type="text/javascript">alert("' . AddCSlashes($this->error, ARESCAPE) . '"); </script>';
 	}
 	
 	foreach ($AR->nls->list as $language => $language_name) {
