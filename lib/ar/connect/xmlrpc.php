@@ -108,7 +108,12 @@ class ar_connect_xmlrpcClient extends arBase {
 			if ($method[0]=='_') {
 				$method = substr($method, 1);
 			}
-			return $this->wrapped->__call($method, $params);
+			$result = $this->wrapped->__call($method, $params);
+			if ( $result instanceof Ripcord_Client ) {
+				return new ar_connect_xmlrpcClient($result);
+			} else {
+				return $result;
+			}
 		} catch( Ripcord_Exception $e ) {
 			return new ar_error($e->getMessage(), $e->getCode() );
 		}
