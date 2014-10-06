@@ -98,7 +98,7 @@ the specified .wddx file. It will import all objects from your .wddx file.
 				break;
 
 				default:
-					echo "unknow option-switch ($option['switch'])\n";
+					echo "unknow option-switch (".$option['switch'].")\n";
 			}
 		} else {
 			$arg_v[$arg_c++]=$cmd;
