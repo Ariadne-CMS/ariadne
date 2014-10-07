@@ -505,6 +505,8 @@
 				$cachetime = 999;
 				$ARCurrent->cachetime = 999;
 				ldSetClientCache(true, time()+1800); // Let the client revalidate cached image after 30 minutes;
+			} else if ($session_id) {
+				ldSetClientCache(false); // If there is a session, do not let the browser cache.
 			} else {
 				$ARCurrent->cachetime = 999;
 				ldSetClientCache(true, time()+1800); // revalidate after 30 minutes
