@@ -602,7 +602,7 @@ muze.namespace( 'muze.ariadne.explore.toolbar', function() {
 		},
 		load : function(path) {
 			var sUrl = muze.ariadne.registry.get('store_root')+path+'explore.toolbar.php';
-			var fadeOut = new YAHOO.util.Anim("explore_top", { opacity: {to: 0.3}}, 0.2);
+			var fadeOut = new YAHOO.util.Anim("explore_top", { opacity: {to: 0.3}}, 0.1);
 			fadeOut.animate();
 			var fadeIn = function() {
 				var fadeIn = new YAHOO.util.Anim("explore_top", { opacity: {to: 1}}, 0.1);
@@ -758,7 +758,7 @@ muze.namespace( 'muze.ariadne.explore.sidebar', function() {
 			
 			var sUrl = muze.ariadne.registry.get('store_root')+path+template;
 
-			var fadeOut = new YAHOO.util.Anim("sidebar", { opacity: {to: 0.3}}, 0.2);
+			var fadeOut = new YAHOO.util.Anim("sidebar", { opacity: {to: 0.3}}, 0.1);
 			fadeOut.animate();
 			var fadeIn = function() {
 				var fadeIn = new YAHOO.util.Anim("sidebar", { opacity: {to: 1}}, 0.1);
@@ -1077,7 +1077,7 @@ muze.namespace( 'muze.ariadne.explore.viewpane', function() {
 
 			var archildren = document.getElementById("archildren");
 
-			var fadeOut = new YAHOO.util.Anim("archildren", { opacity: {to: 0.3}}, 0.2);
+			var fadeOut = new YAHOO.util.Anim("archildren", { opacity: {to: 0.3}}, 0.1);
 			fadeOut.animate();
 			var fadeIn = function() {
 				var fadeIn = new YAHOO.util.Anim("archildren", { opacity: {to: 1}}, 0.1);
@@ -1233,7 +1233,7 @@ muze.namespace( 'muze.ariadne.explore.browseheader', function() {
 			muze.ariadne.explore.browseheader.currentpath = path;
 			var sUrl = muze.ariadne.registry.get('store_root')+path+'explore.browse.header.php';
 
-			var fadeOut = new YAHOO.util.Anim("browseheader", { opacity: {to: 0.3}}, 0.2);
+			var fadeOut = new YAHOO.util.Anim("browseheader", { opacity: {to: 0.3}}, 0.1);
 			fadeOut.animate();
 			var fadeIn = function() {
 				var fadeIn = new YAHOO.util.Anim("browseheader", { opacity: {to: 1}}, 0.1);
