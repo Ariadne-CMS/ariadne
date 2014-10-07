@@ -104,7 +104,9 @@
 			// FTP, webdav, soap should use their own loader instead.
 			return false;
 		}
-
+		
+		$writecache = true;
+		
 		return true;
 	}
 
@@ -279,7 +281,7 @@
 				} else {
 					readfile($cachedimage);
 				}
-				$nocache = true; // Prevent recaching cached image;
+				$writecache = false; // Prevent recaching cached image;
 			}
 
 		} else {
@@ -563,7 +565,7 @@
 			// check whether caching went correctly, then save the cache
 			if (is_array($ARCurrent->cache) && ($file=array_pop($ARCurrent->cache))) {
 				error("cached() opened but not closed with savecache()");
-			} else if (!$ARCurrent->arDontCache && !$nocache) {
+			} else if (!$ARCurrent->arDontCache && !$nocache && $writecache) {
 				if ($store) {
 					ldSetCache($ldCacheFilename, $ARCurrent->cachetime, $image, @implode("\n",$ARCurrent->ldHeaders));
 				}
