@@ -495,18 +495,21 @@
 			}
 
 			// first set clientside cache headers
-
-			if (!$ARCurrent->arDontCache && !$nocache && ($cachetime=$ARCurrent->cachetime)) {
-				if ($cachetime==-2) {
-					$cachetime = 999;
-					$ARCurrent->cachetime = 999;
-					ldSetClientCache(true, time()+1800); // Let the client revalidate cached image after 30 minutes;
-				} else {
-					// FIXME: Is it wise to give the client the same expiry as the cachetime? Or should this also be 30 minutes?
-					ldSetClientCache(true, time()+1800);
-					// $ARCurrent->cachetime = 999;
-				}
+			
+			$cachetime=$ARCurrent->cachetime;			
+			if ($ARCurrent->arDontCache) {
+				ldSetClientCache(false);
+			} else if ($nocache) {
+				ldSetClientCache(false);
+			} else if ($cachetime == -2) {
+				$cachetime = 999;
+				$ARCurrent->cachetime = 999;
+				ldSetClientCache(true, time()+1800); // Let the client revalidate cached image after 30 minutes;
+			} else {
+				$ARCurrent->cachetime = 999;
+				ldSetClientCache(true, time()+1800); // revalidate after 30 minutes
 			}
+			
 
 
 			$image_len = strlen($image);
