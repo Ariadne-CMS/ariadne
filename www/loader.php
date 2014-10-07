@@ -206,7 +206,7 @@
 		// For now: pragma: no-cache check is removed, this makes Ariadne stubborn with returning cache-images.
 
 		if (file_exists($cachedimage) &&
-			((($mtime=filemtime($cachedimage))>$timecheck) || ($mtime==0)) &&
+			((($mtime=@filemtime($cachedimage))>$timecheck) || ($mtime==0)) &&
 			($_SERVER["REQUEST_METHOD"]!="POST")) {
 			ldHeader("X-Ariadne-Cache: Hit");
 
