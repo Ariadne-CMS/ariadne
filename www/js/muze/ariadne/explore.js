@@ -167,11 +167,12 @@ muze.namespace("muze.ariadne.explore", function() {
 				},
 
 				failure : function(result) {
-					if(muze.ariadne.explore.loaders[target.id]) {
+					if(muze.ariadne.explore.loaders[target.id] && !muze.ariadne.explore.loaders[target.id].ariadneIgnoreErrors) {
 						alert(muze.ariadne.nls["notfoundpath"]);
 						for (loader_id in muze.ariadne.explore.loaders) {
-							YAHOO.util.Connect.abort(muze.ariadne.explore.loaders[loader_id]);
-							delete muze.ariadne.explore.loaders[loader_id];
+							// YAHOO.util.Connect.abort(muze.ariadne.explore.loaders[loader_id]);
+							// delete muze.ariadne.explore.loaders[loader_id];
+							muze.ariadne.explore.loaders[loader_id].ariadneIgnoreErrors = true;
 						}
 					}
 					callback();
