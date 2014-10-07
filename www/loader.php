@@ -258,7 +258,16 @@
 					} else {
 						$data = file_get_contents($cachedimage);
 						include_once($store_config['code']."modules/mod_esi.php");
+						
+						// Replace the session IDs before the ESI process call to pass the correct session ID information...
+						if ($session_id && !$AR->hideSessionIDfromURL) {
+							$tag = '{arSessionID}';
+							$data = str_replace($tag, "-$session_id-", $data);
+						}
+						
 						$data = ESI::esiProcess($data);
+						
+						// ... and then replace the session IDs that were generated in de ESI case;
 						$tag = '{arSessionID}';
 						if ($session_id && !$AR->hideSessionIDfromURL) {
 							$data = str_replace($tag, "-$session_id-", $data);
