@@ -347,11 +347,11 @@
 				} else {
 					if($fpi) {
 						fclose($fpi);
-						unlink($fileimage);
+						@unlink($imagetemp);
 					}
 					if($fph) {
 						fclose($fph);
-						unlink($fileheaders);
+						@unlink($headertemp);
 					}
 				}
 			}
@@ -441,18 +441,19 @@
 			if ( !isset($expires) ) {
 				$expires = $now + 1800;
 			}
-			$result = ldHeader("Pragma: cache");
 
 			// Give the client the max-age
 			$maxage = $expires - $now;
-			ldHeader("Cache-control: public, max-age=$maxage");
+			ldHeader("Cache-control: public, max-age=$maxage, must-revalidate");
+			ldHeader("X-Ariadne-Expires: $expires");
 		} else {
 			if ( !isset($expires) ) {
 				$expires = 0;
 			}
-			$result = ldHeader("Pragma: no-cache");
 			ldHeader("Cache-control: no-store, no-cache, must-revalidate, max-age=0, private");
 		}
+		$expires = $now + 1800;
+
 		if ( $expires !== false ) {
 			ldHeader("Expires: ".gmdate(DATE_RFC1123, $expires));
 		}
