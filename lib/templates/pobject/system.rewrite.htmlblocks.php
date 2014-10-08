@@ -30,7 +30,7 @@
 									$page = str_replace($matches[1], base64_encode($newargs), $page);
 								}	
 
-								if ($page !== $this->data->$nls->$nls_field) {
+								if ($page != $this->data->$nls->$nls_field) {
 									$this->data->$nls->$nls_field = $page;
 								}
 							}
@@ -52,7 +52,7 @@
 								}	
 
 							
-								if ($page !== $this->data->custom[$nls][$customField]) {
+								if ($page != $this->data->custom[$nls][$customField]) {
 									$this->data->custom[$nls][$customField] = $page;
 								}
 							}

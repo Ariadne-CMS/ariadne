@@ -29,7 +29,7 @@
 								if ($page) {
 									$regexp = '|' . str_replace('|', '\|', $oldPath) . '|';
 									$page = preg_replace($regexp, $newPath, $page);
-									if ($page !== $this->data->$nls->$nls_field) {
+									if ($page != $this->data->$nls->$nls_field) {
 										$this->data->$nls->$nls_field = $page;
 									}
 								}
@@ -39,7 +39,7 @@
 								if ($page) {
 									$regexp = '|' . str_replace('|', '\|', $oldPath) . '|';
 									$page = preg_replace($regexp, $newPath, $page);
-									if ($page !== $this->data->custom[$nls][$customField]) {
+									if ($page != $this->data->custom[$nls][$customField]) {
 										$this->data->custom[$nls][$customField] = $page;
 									}
 								}
