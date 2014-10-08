@@ -17,7 +17,7 @@
 						$nls_fields = array( 'page' , 'summary' );
 						foreach ($nls_fields as $nls_field) {
 							$page = $this->data->$nls->$nls_field;
-							if ($page) {
+							if ($page && is_string($page)) {
 								$regexp = '|' . str_replace('|', '\|', str_replace("\\", "\\\\", $oldURL)) . '|';
 
 								$parts = explode("arargs:args=", $page);
@@ -38,7 +38,7 @@
 					}
 					if (is_array($this->data->custom[ $nls ])) {
 						foreach ($this->data->custom[ $nls ] as $customField => $page) {
-							if ($page) {
+							if ($page && is_string($page)) {
 								$regexp = '|' . str_replace('|', '\|', str_replace("\\", "\\\\", $oldURL)) . '|';
 
 								$parts = explode("arargs:args=", $page);
