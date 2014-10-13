@@ -1,11 +1,13 @@
 <?php
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 		$rewrite_references = $this->getvar("rewrite_references");
+		$dosave = false;
 		if (is_array($rewrite_references)) {
 			foreach ($rewrite_references as $oldPath => $newPath) {
 				if ($this->data->path) {
 					if (strpos($this->data->path, $oldPath) === 0) {
 						$this->data->path = $newPath . substr( $this->data->path, strlen( $oldPath ) );
+						$dosave = true;
 					}
 				}
 
@@ -14,6 +16,7 @@
 						if ($record['path']) {
 							if (strpos($record['path'], $oldPath) === 0) {
 								$this->properties['references'][$i]['path'] = $newPath . substr( $record['path'], strlen( $oldPath ) );
+								$dosave = true;
 							}
 						}
 					}
@@ -31,6 +34,7 @@
 									$page = preg_replace($regexp, $newPath, $page);
 									if ($page != $this->data->$nls->$nls_field) {
 										$this->data->$nls->$nls_field = $page;
+										$dosave = true;
 									}
 								}
 							}
@@ -41,6 +45,7 @@
 									$page = preg_replace($regexp, $newPath, $page);
 									if ($page != $this->data->custom[$nls][$customField]) {
 										$this->data->custom[$nls][$customField] = $page;
+										$dosave = true;
 									}
 								}
 							}
@@ -48,7 +53,9 @@
 				}
 			}
 
-			$this->save();
+			if ($dosave) {
+				$this->save();
+			}
 		}
 	}
 ?>

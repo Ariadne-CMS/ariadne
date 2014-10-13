@@ -1,6 +1,7 @@
 <?php
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 		$rewrite_urls = $this->getvar('rewrite_urls');
+		$dosave = false;
 
 		if (is_array($rewrite_urls)) {
 			$nls_list = $AR->nls->list;
@@ -28,10 +29,11 @@
 									$oldargs = base64_decode(urldecode($oldargs));
 									$newargs = preg_replace($regexp, $newURL, $oldargs);
 									$page = str_replace($matches[1], base64_encode($newargs), $page);
-								}	
+								}
 
 								if ($page != $this->data->$nls->$nls_field) {
 									$this->data->$nls->$nls_field = $page;
+									$dosave = true;
 								}
 							}
 						}
@@ -49,11 +51,12 @@
 									$oldargs = base64_decode(urldecode($oldargs));
 									$newargs = preg_replace($regexp, $newURL, $oldargs);
 									$page = str_replace($matches[1], base64_encode($newargs), $page);
-								}	
+								}
 
 							
 								if ($page != $this->data->custom[$nls][$customField]) {
 									$this->data->custom[$nls][$customField] = $page;
+									$dosave = true;
 								}
 							}
 						}
@@ -61,7 +64,9 @@
 				}
 			}
 
-			$this->save();
+			if ($dosave) {
+				$this->save();
+			}
 		}
 	}
 ?>
