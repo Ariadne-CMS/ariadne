@@ -132,48 +132,50 @@ abstract class sql_compiler {
 		}
 
 
-		if (!$match_2) {
-			/* default table is 'object' */
-			$match_2 = $match_1;
-			$match_1 = "object";
-		}
-		$node["id"]="ident";
+		if($match_1) {
+			if (!$match_2) {
+				/* default table is 'object' */
+				$match_2 = $match_1;
+				$match_1 = "object";
+			}
+			$node["id"]="ident";
 
-		$table=$match_1;
-		$field=$match_2;
-		if ($table=="object") {
-			switch ($field) {
-				case "implements":
-					$node["id"]="implements";
-				break;
-				case "path":
-				case "parent":
-				case "priority":
-					$node["table"]="nodes";
-					$node["field"]=$field;
-				break;
-				default:
-					$node["table"]="objects";
-					$node["field"]=$field;
+			$table=$match_1;
+			$field=$match_2;
+			if ($table=="object") {
+				switch ($field) {
+					case "implements":
+						$node["id"]="implements";
+					break;
+					case "path":
+					case "parent":
+					case "priority":
+						$node["table"]="nodes";
+						$node["field"]=$field;
+					break;
+					default:
+						$node["table"]="objects";
+						$node["field"]=$field;
+				}
+			} else
+			if ($table === "my") {
+				$node["id"] = "custom";
+				if ($match_3) {
+					$node["nls"] = $field;
+					$field = $match_3;
+				}
+				$node["field"] = $field;
+				$node["record_id"] = $record_id;
+			} else {
+				$node["id"]="property";
+				if ($match_3) {
+					$node["nls"] = $field;
+					$field = $match_3;
+				}
+				$node["table"]="prop_".$table;
+				$node["field"]="AR_".$field;
+				$node["record_id"] = $record_id;
 			}
-		} else
-		if ($table === "my") {
-			$node["id"] = "custom";
-			if ($match_3) {
-				$node["nls"] = $field;
-				$field = $match_3;
-			}
-			$node["field"] = $field;
-			$node["record_id"] = $record_id;
-		} else {
-			$node["id"]="property";
-			if ($match_3) {
-				$node["nls"] = $field;
-				$field = $match_3;
-			}
-			$node["table"]="prop_".$table;
-			$node["field"]="AR_".$field;
-			$node["record_id"] = $record_id;
 		}
 		$YYBUFFER = substr($YYBUFFER, $YYCURSOR);
 		return $node;
