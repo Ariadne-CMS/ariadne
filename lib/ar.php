@@ -130,7 +130,7 @@
 			if ( is_numeric($value) ) {
 				return $value;
 			} else if ( is_array($value) ) {
-				array_walk_recursive( $value, array( self, 'taint' ) );
+				array_walk_recursive( $value, array( 'self', 'taint' ) );
 			} else if ( is_string($value) && $value ) { // empty strings don't need tainting
 				$value = new arTainted($value);
 			}
@@ -141,7 +141,7 @@
 			if ( $value instanceof arTainted ) {
 				$value = filter_var($value->value, $filter, $flags);
 			} else if ( is_array($value) ) {
-				array_walk_recursive( $value, array( self, 'untaintArrayItem'), array( 
+				array_walk_recursive( $value, array( 'self', 'untaintArrayItem'), array(
 					'filter' => $filter,
 					'flags' => $flags
 				) );
@@ -158,9 +158,14 @@
 			
 			if ($ARCurrent->arCallStack) {
 				$arCallArgs=end($ARCurrent->arCallStack);
+				if ( $name == 'arCallArgs' ) {
+					return $arCallArgs;
+				} 
 				if ( isset($arCallArgs[$name]) ) {
 					return $arCallArgs[$name];
 				}
+			} else if ( $name == 'arCallArgs' ) {
+				return ar_loader::getvar();
 			}
 			$context = pobject::getContext();
 			if ( is_array($context) ) {
@@ -319,10 +324,12 @@
 				if (ar_pinp::isAllowed($this, $realName)) {
 					return call_user_func_array(array($this, $realName), $arguments);
 				} else {
-					trigger_error("Method $realName not found in class ".get_class($this), E_USER_WARNING);
+					$trace = debug_backtrace(0,2);
+					trigger_error("Method $realName not found in class ".get_class($this)." Called from line ".$trace[1]['line']." in ".$trace[1]['file'], E_USER_WARNING);
 				}
 			} else {
-				trigger_error("Method $name not found in class ".get_class($this), E_USER_WARNING);
+				$trace = debug_backtrace(0,2);
+				trigger_error("Method $name not found in class ".get_class($this)." Called from line ".$trace[1]['line']." in ".$trace[1]['file'], E_USER_WARNING);
 			}
 		}
 

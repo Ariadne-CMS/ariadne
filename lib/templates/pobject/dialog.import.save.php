@@ -20,7 +20,7 @@
 		function display($str) {
 			echo "<script type='text/javascript'>\n";
 			echo "var line = document.createElement('SPAN');";
-			echo "line.innerHTML = '" . str_replace("\n", "<br>", htmlspecialchars($str)) . "';\n";
+			echo "line.innerHTML = '" . str_replace("\n", "<br>", AddSlashes(htmlspecialchars($str))) . "';\n";
 			echo "document.getElementById('progress_verbose').appendChild(line);\n";
 			echo "</script>";
 			flush();

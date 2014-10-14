@@ -23,7 +23,7 @@
 		$arnofollow = $this->getvar('arnofollow');
 
 		if ($artype == 'internal') {
-			$result['href']                        = $this->make_local_url($arpath, $arlanguage);
+			$result['href']                        = $this->make_url($arpath, $arlanguage);
 			$result['attributes']['ar:path']       = $arpath;
 			$result['attributes']["ar:language"]   = $arlanguage;
 			$result['attributes']["ar:behaviour"]  = $arbehaviour;

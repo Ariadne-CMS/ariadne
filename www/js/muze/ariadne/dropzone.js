@@ -137,7 +137,17 @@
 				fileupload.style.display = "none";
 				fileupload.onchange = function() {
 					console.log(this.files);
-					readfiles(this.files);
+					if (typeof this.files == "undefined") {
+						this.form.onsubmit = '';
+						this.form.action = muze.ariadne.registry.get('store_root') + muze.ariadne.registry.get('path') + "mfu.save.html?return=1";
+
+						this.form.method="post";
+						this.form.enctype="multipart/form-data";
+
+						this.form.submit();
+					} else {
+						readfiles(this.files);
+					}
 					this.outerHTML = this.outerHTML; // clear uploader;
 				}
 			}

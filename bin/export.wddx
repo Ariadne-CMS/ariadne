@@ -68,7 +68,7 @@ while (list(,$cmd)=each($argv)) {
 				break;
 
 			default:
-				echo "unknow option-switch ($option['switch'])\n";
+				echo "unknown option-switch (".$option['switch'].")\n";
 		}
 	} else {
 		$arg_v[$arg_c++]=$cmd;

@@ -83,13 +83,21 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 				str_replace('..', '', 			// protects against ../../../../../etc/passwd
 				preg_replace($re, '', $section))); // add .js if not set, remove .. and other dirty characters
 
+		if (strpos($section, 'current:')!==false) {
+				$context = pobject::getContext();
+				$arLibraryPath = $context['arLibraryPath'];
+				$sectionCacheName = str_replace( 'current:', $arLibraryPath.':', $section);
+		} else {
+				$sectionCacheName = $section;
+		}
+
 		if( !$section ) {
 			if( ($fullFile = $this->baseDir.$nls) && file_exists($fullFile) ) {
 				include($fullFile);
 				$this->languages[$nls] = array_merge((array)$this->languages[$nls], (array)$$varName);
 			}
-		} elseif( !$this->loaded[$section][$nls] ) { 
-			$this->loaded[$section][$nls] = true;
+		} elseif( !$this->loaded[$sectionCacheName][$nls] ) { 
+			$this->loaded[$sectionCacheName][$nls] = true;
 			$fullFile = $this->baseDir.$section.".".$nls;
 			if( file_exists($fullFile) ) {
 				include($fullFile);
@@ -99,8 +107,15 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 				global $ARCurrent;
 				$context = pobject::getContext();
 				$me = $context["arCurrentObject"];
+				if ( !$me || !is_object($me) ) {
+					//FIXME: this should not happen, but ldObjectNotFound() sometimes triggers this
+					// the problem is that there is no arCurrentObject pushed on the stack
+					// generally we can just return and nothing serious will happen
+					debug('No current object found on the context stack, skipping loadtext', 'all');
+					return $this;					
+				}
 				$arResult = $ARCurrent->arResult;
-				$me->pushContext(Array());
+				$me->pushContext(array());
 					$oldnls = $me->reqnls;
 					$me->reqnls = $nls;
 					$oldAllnls = $ARCurrent->allnls;

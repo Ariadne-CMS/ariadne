@@ -95,7 +95,7 @@
 			} else if ( $value instanceof ar_listExpression ) {
 				$content = self::value( $value->item( $current ) );
 			} else {
-				if ( preg_match( '/^\s*<!\[CDATA\[/', $content ) ) {
+				if ( preg_match( '/^\s*<!\[CDATA\[/', $value ) ) {
 					$content = $value;
 				} else {
 					$content = htmlspecialchars( $value, ENT_QUOTES, 'UTF-8' );

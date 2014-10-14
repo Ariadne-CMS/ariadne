@@ -1,6 +1,4 @@
-muze.namespace("muze.ariadne");
-
-muze.ariadne.cookie = function() {
+muze.namespace("muze.ariadne.cookie", function() {
 	return {
 		set : function(name, value) {
 			var today = new Date();
@@ -40,4 +38,4 @@ muze.ariadne.cookie = function() {
 			return result;
 		}
 	}
-}();
+});

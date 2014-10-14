@@ -1,9 +1,5 @@
 
-muze.namespace('muze.html');
-
-muze.html = (function() {
-	var global = this;
-	var html = {};
+muze.namespace('muze.html', function() {
 	var getType = function(obj) {
 		return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase()
 	}
@@ -26,8 +22,8 @@ muze.html = (function() {
 		}
 	}
 	
-	html.el = function(tagName) { //, attributes, children) {
-		var el = global.document.createElement(tagName);
+	this.el = function(tagName) { //, attributes, children) {
+		var el = muze.global.document.createElement(tagName);
 		var next = 1;
 		var attributes = arguments[1];
 		if (attributes && getType(attributes)=='object') {
@@ -45,7 +41,7 @@ muze.html = (function() {
 						}
 					}
 					elString += '>';
-					el = global.document.createElement(elString);
+					el = muze.global.document.createElement(elString);
 					for ( var i in attributes ) {
 						if ( getType(attributes[i])!='string' ) {
 							setAttr(el, i, attributes[i]);
@@ -57,14 +53,13 @@ muze.html = (function() {
 		for (var i=next, l=arguments.length; i<l; i++) {
 			var subEl = arguments[i];
 			if (getType(subEl)=='string') {
-				subEl = global.document.createTextNode(subEl);
+				subEl = muze.global.document.createTextNode(subEl);
 			}
 			el.appendChild( subEl );
 		}
 		return el;
 	}
 
-	html.element = html.el;
+	this.element = this.el;
 
-	return html;
-})();
+});

@@ -1,61 +1,60 @@
-muze.namespace('muze.form');
-muze.require('muze.event');
-
-muze.form.calendar = function() {
-	return {
-		target : null,
-		calendar : null,
-		attach: function() {
-			inputs = document.getElementsByTagName("INPUT");
-			for (i=0; i<inputs.length; i++) {
-				if (inputs[i] && inputs[i].className && inputs[i].className.indexOf("muze_form_calendar") != -1) {
-					muze.event.attach(inputs[i], "focus", muze.form.calendar.execute);
+muze.require('muze.event', function() {
+	muze.namespace('muze.form.calendar', function() {
+		return {
+			target : null,
+			calendar : null,
+			attach: function() {
+				inputs = document.getElementsByTagName("INPUT");
+				for (i=0; i<inputs.length; i++) {
+					if (inputs[i] && inputs[i].className && inputs[i].className.indexOf("muze_form_calendar") != -1) {
+						muze.event.attach(inputs[i], "focus", muze.form.calendar.execute);
+					}
 				}
+			},
+			execute : function() {
+				muze.form.calendar.target = this;
+				if (muze.form.calendar.calendar) {
+					muze.form.calendar.calendar.show();
+				} else {
+					tomorrow = new Date();
+					tomorrow.setTime(tomorrow.getTime() + (1000*3600*24)); // Add one day to today.
+
+					muze.form.calendar.calendar = new YAHOO.widget.Calendar("calendar", "senddate_calendar", {mindate:tomorrow});
+					// FIXME: NLS
+					muze.form.calendar.calendar.cfg.setProperty("MONTHS_SHORT",   ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"]);   
+					muze.form.calendar.calendar.cfg.setProperty("MONTHS_LONG",    ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"]);
+					muze.form.calendar.calendar.cfg.setProperty("WEEKDAYS_1CHAR", ["Z", "M", "D", "W", "D", "V", "Z"]);   
+					muze.form.calendar.calendar.cfg.setProperty("WEEKDAYS_SHORT", ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"]);   
+					muze.form.calendar.calendar.cfg.setProperty("WEEKDAYS_MEDIUM",["Zon", "Maa", "Din", "Woe", "Don", "Vri", "Zat"]);   
+					muze.form.calendar.calendar.cfg.setProperty("WEEKDAYS_LONG",  ["Zondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag"]);   
+
+					muze.form.calendar.calendar.render();
+					muze.form.calendar.calendar.selectEvent.subscribe(muze.form.calendar.selectEvent, muze.form.calendar.calendar, true);  
+				}
+			},
+			selectEvent : function() {
+				if (muze.form.calendar.calendar.getSelectedDates().length > 0) {
+					var selDate = muze.form.calendar.calendar.getSelectedDates()[0];
+
+					// Pretty Date Output, using Calendar's Locale values: Friday, 8 February 2008
+					var dStr = selDate.getDate();
+					dStr = (dStr < 10 ? '0' : '') + dStr;
+
+					var mStr = selDate.getMonth() + 1;
+					mStr = (mStr < 10 ? '0' : '') + mStr;
+
+					var yStr = selDate.getFullYear();
+					muze.form.calendar.target.value = dStr + "-" + mStr + "-" + yStr;
+				} else {
+					muze.form.calendar.target.value = "";
+				}
+				muze.form.calendar.calendar.hide();
 			}
-		},
-		execute : function() {
-			muze.form.calendar.target = this;
-			if (muze.form.calendar.calendar) {
-				muze.form.calendar.calendar.show();
-			} else {
-				tomorrow = new Date();
-				tomorrow.setTime(tomorrow.getTime() + (1000*3600*24)); // Add one day to today.
-
-				muze.form.calendar.calendar = new YAHOO.widget.Calendar("calendar", "senddate_calendar", {mindate:tomorrow});
-				// FIXME: NLS
-				muze.form.calendar.calendar.cfg.setProperty("MONTHS_SHORT",   ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"]);   
-				muze.form.calendar.calendar.cfg.setProperty("MONTHS_LONG",    ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"]);
-				muze.form.calendar.calendar.cfg.setProperty("WEEKDAYS_1CHAR", ["Z", "M", "D", "W", "D", "V", "Z"]);   
-				muze.form.calendar.calendar.cfg.setProperty("WEEKDAYS_SHORT", ["Zo", "Ma", "Di", "Wo", "Do", "Vr", "Za"]);   
-				muze.form.calendar.calendar.cfg.setProperty("WEEKDAYS_MEDIUM",["Zon", "Maa", "Din", "Woe", "Don", "Vri", "Zat"]);   
-				muze.form.calendar.calendar.cfg.setProperty("WEEKDAYS_LONG",  ["Zondag", "Maandag", "Dinsdag", "Woensdag", "Donderdag", "Vrijdag", "Zaterdag"]);   
-
-				muze.form.calendar.calendar.render();
-				muze.form.calendar.calendar.selectEvent.subscribe(muze.form.calendar.selectEvent, muze.form.calendar.calendar, true);  
-			}
-		},
-		selectEvent : function() {
-			if (muze.form.calendar.calendar.getSelectedDates().length > 0) {
-				var selDate = muze.form.calendar.calendar.getSelectedDates()[0];
-
-				// Pretty Date Output, using Calendar's Locale values: Friday, 8 February 2008
-				var dStr = selDate.getDate();
-				dStr = (dStr < 10 ? '0' : '') + dStr;
-
-				var mStr = selDate.getMonth() + 1;
-				mStr = (mStr < 10 ? '0' : '') + mStr;
-
-				var yStr = selDate.getFullYear();
-				muze.form.calendar.target.value = dStr + "-" + mStr + "-" + yStr;
-			} else {
-				muze.form.calendar.target.value = "";
-			}
-			muze.form.calendar.calendar.hide();
 		}
-	}
-}();
+	});
+});
 
-muze.form.cancelEnter = function() {
+muze.namespace( 'muze.form.cancelEnter', function() {
 	return {
 		attach : function() {
 			forms = document.getElementsByTagName("FORM");
@@ -78,9 +77,9 @@ muze.form.cancelEnter = function() {
 			}
 		}
 	}
-}();
+});
 
-muze.form.clearOnFocus = function() {
+muze.namespace( 'muze.form.clearOnFocus', function() {
 	return {
 		attach : function() {
 			inputs = document.getElementsByTagName("INPUT");
@@ -112,9 +111,9 @@ muze.form.clearOnFocus = function() {
 			}
 		}
 	}
-}();
+});
 
-muze.form.keyboardNumbers = function() {
+muze.namespace( 'muze.form.keyboardNumbers', function() {
 	return {
 		attach : function() {
 			inputs = document.getElementsByTagName("INPUT");
@@ -145,9 +144,9 @@ muze.form.keyboardNumbers = function() {
 			}
 		}
 	}
-}();
+});
 
-muze.form.numbersOnly = function() {
+muze.namespace( 'muze.form.numbersOnly', function() {
 	return {
 		attach: function() {
 			inputs = document.getElementsByTagName("INPUT");
@@ -173,9 +172,9 @@ muze.form.numbersOnly = function() {
 			}
 		}
 	}
-}();
+});
 
-muze.form.subselection = function() {
+muze.namespace( 'muze.form.subselection', function() {
 	return {
 		attach : function() {
 			inputs = document.getElementsByTagName("DIV");
@@ -209,9 +208,9 @@ muze.form.subselection = function() {
 			}
 		}
 	}
-}();
+});
 
-muze.form.textareaMaxLength = function() {
+muze.namespace( 'muze.form.textareaMaxLength', function() {
 	return {
 		attach : function() {
 			inputs = document.getElementsByTagName("TEXTAREA");
@@ -233,5 +232,5 @@ muze.form.textareaMaxLength = function() {
 			}
 		}
 	}
-}();
+});
 

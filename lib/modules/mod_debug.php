@@ -136,7 +136,6 @@
 			*/
 			if( $DB["method"]["loader"] && function_exists("debug_print") ) {
 				debug_print( "(".$timestamping.")".$DB_INDENT.$message."\n" );
-				flush();
 			}
 			if( $DB["method"]["syslog"] ) {
 				syslog(LOG_NOTICE,"(Ariadne) ".$DB_INDENT.$message);

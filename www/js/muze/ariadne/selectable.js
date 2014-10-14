@@ -255,7 +255,13 @@ var selectable = function() {
 			// Add helpder div to body;
 			helperDiv = document.createElement("DIV");
 			helperDiv.className = "selectableHelper";
+			helperDiv.style.display = 'none';
 			document.body.appendChild(helperDiv);
+		},
+		reset: function() {
+			selecting = false;
+			clearSelection();
+			helperDiv.style.display = 'none';
 		}
 	}
 }();

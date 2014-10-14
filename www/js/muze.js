@@ -187,12 +187,35 @@ muze.url = (function() {
 		}
 		return temp;
 	}
+
+	function _namespaceSet( module, object ) {
+		var rest	= module.replace(/^\s+|\s+$/g, ''); //trim
+		var name	= '';
+		var temp	= muze.global;
+		var i 		= rest.indexOf( '.' );
+		while ( i != -1 ) {
+			name	= rest.substring( 0, i );
+			if ( !temp[name])  {
+				temp = handler(temp, name);
+				if (!temp) {
+					return temp;
+				}
+			}
+			temp	= temp[name];
+			rest	= rest.substring( i + 1 );
+			i		= rest.indexOf( '.' );
+		}
+		if ( rest ) {
+			temp[rest] = object;
+		}
+	}
 	
 	/* private variables */
 
 	var included	= {};
 	var registered	= {};
-	
+	var dependencies= [];
+
 	muze.namespace = function( module, implementation ) {
 		var moduleInstance = _namespaceWalk( module, function(ob, name) {
 			ob[name] = {};
@@ -200,8 +223,26 @@ muze.url = (function() {
 		});
 		registered[module]=true;
 		if (typeof implementation == 'function') {
-			implementation.call(moduleInstance);
+			var result = implementation.call(moduleInstance);
+			if ( result ) {
+				_namespaceSet( module, result );
+				moduleInstance = result;
+			}
 		}
+		// call other continuations that depend on this module 
+		// only after remaining code in this module has had a chance to run
+		// not all modules use an implementation callback method
+		for ( p in moduleInstance ) {
+			if ( moduleInstance.hasOwnProperty(p) ) {
+				// module is initialized
+				checkDependencies();
+				return moduleInstance;
+			}
+		}
+		// module not yet initialized, so give it time.
+		muze.global.setTimeout(function() {
+			checkDependencies();
+		}, 1);
 		return moduleInstance;
 	};
 
@@ -250,6 +291,26 @@ muze.url = (function() {
 		return scriptsToCheck;		
 	}
 
+
+	function checkDependencies() {
+		for ( var i=dependencies.length-1; i>=0; i-- ) {
+			if ( dependencies[i].continuation ) {
+				for ( var ii=dependencies[i].scriptsToLoad.length-1; ii>=0; ii-- ) {
+					var module = dependencies[i].scriptsToLoad[ii].module;
+					if ( registered[module] ) {
+						dependencies[i].scriptsToLoad.splice(ii, 1);
+						// delete dependencies[i].scriptsToLoad[ii];
+					}
+				}
+				if ( dependencies[i].scriptsToLoad.length == 0 ) {
+					var continuation = dependencies[i].continuation;
+					dependencies[i].continuation = false;
+					continuation.call(muze.global);
+				}
+			}
+		}
+	}
+
 	muze.require = function( modules, continuation ) {
 		modules = _parseModulesList( modules );
 		var scriptsToLoad = [];
@@ -270,21 +331,23 @@ muze.url = (function() {
 				}
 			}
 		}
+		dependencies[ dependencies.length ] = {
+			'continuation' : continuation,
+			'scriptsToLoad' : scriptsToLoad
+		};
 		if ( typeof continuation == 'function' ) {
 			if ( scriptsToLoad.length ) {
-				var loadedScripts = 0;
 				for ( var i = 0; i<scriptsToLoad.length; i++ ) {
-					muze.include( scriptsToLoad[i].url, scriptsToLoad[i].module ).onload( (function(module, url) {
+					muze.include( scriptsToLoad[i].url, scriptsToLoad[i].module );
+					// scripts must call muze.namespace to register that they have been loaded
+					/*.onload( (function(module, url ) {
 						return function() {
-							if ( module ) {
+							if ( module ) { // FIXME: module may require other libs, so may not be initialized yet
 								registered[module] = url;
 							}
-							loadedScripts++
-							if ( loadedScripts == scriptsToLoad.length ) {
-								continuation.call(muze.global);
-							}
+							checkDependencies();
 						};
-					})(scriptsToLoad[i].module, scriptsToLoad[i].url) );
+					})(scriptsToLoad[i].module, scriptsToLoad[i].url ) );*/
 				}
 			} else {
 				continuation.call(muze.global);
@@ -296,27 +359,34 @@ muze.url = (function() {
 	muze.include = function(url, module) {
 		var loader = muze.loader();
 		if (!included[url] && (!module || !registered[module])) {
-			var handleOnLoad = function() {
-				included[url] = true;
-				if ( module ) {
-					registered[module] = url;
-				}
-				loader.loaded();
+			dependencies[ dependencies.length ] = {
+				'continuation' : loader.loaded,
+				'scriptsToLoad' : [ { 'module' : module, 'url' : url } ]
 			};
+
 			var script = document.createElement('SCRIPT');
 			script.src = url;
-			try {
-				script.addEventListener('load', handleOnLoad, false);
-			} catch(e) {
-				script.onreadystatechange = function() { 
-					if (script.readyState == 'loaded' || script.readyState == 'complete') {
-						handleOnLoad();
-						script.onreadystatechange = null;
-					}
+			if ( !module ) {
+				// not a muze.* module, so muze.namespace won't be called, so we can only 
+				// check if the script is loaded, not if it is initialized.
+				var handleOnLoad = function() {
+					included[url] = true;
+					loader.loaded();
 				};
+				try {
+					script.addEventListener('load', handleOnLoad, false);
+				} catch(e) {
+					script.onreadystatechange = function() { 
+						if (script.readyState == 'loaded' || script.readyState == 'complete') {
+							handleOnLoad();
+							script.onreadystatechange = null;
+						}
+					};
+				}
 			}
 			document.getElementsByTagName('HEAD')[0].appendChild(script); // FIXME: make this more cross browser
 		} else {
+			// url was already loaded
 			// setTimeout is not optional here, since we have to return
 			// (this) first, before the _onload method is called, otherwise
 			// there is no way for a user to change 'onload_handler'.
@@ -400,6 +470,22 @@ muze.url = (function() {
 		return loader;
 	};
 	
+	muze.throttle = function( callbackFunction, intervalTime ) {
+		var eventId = 0;
+		return function() {
+			var myArguments = arguments;
+			var me = this;
+			if ( eventId ) {
+				return;
+			} else {
+				eventId = window.setTimeout( function() {
+					callbackFunction.apply(me, myArguments);
+					eventId = 0;
+				}, intervalTime );
+			}
+		}
+	}
+
 })();
 
 /*
@@ -763,13 +849,17 @@ muze.url = (function() {
 		}
 	})();
 	
-
-
 	//Does the browser support cookies
 	//Env.support.cookies = !!navigator.cookieEnabled && navigator.cookieEnabled;
 	//The above check generates a security violation in IE when used inside a Modal Dialog, hence the adjusted check below
-	document.cookie="muzeEnvTestCookie=1; path=/";
-	Env.support.cookies = (document.cookie.indexOf("muzeEnvTestCookie") != -1) ? true : false;
+	Env.support.cookies = false;
+	try {
+		document.cookie="muzeEnvTestCookie=1; path=/";
+		Env.support.cookies = (document.cookie.indexOf("muzeEnvTestCookie") != -1) ? true : false;
+	} catch(e) {
+		// ipad security error weirdness
+	}
+
 	//Is the browser in standards mode or quirks mode
 	Env.support.strict = !!document.compatMode && document.compatMode == "CSS1Compat";
 	//Is the current page hosted on a secure server

@@ -1,6 +1,4 @@
-muze.namespace("muze.ariadne");
-
-muze.ariadne.templates = function() {
+muze.namespace("muze.ariadne.templates", function() {
 	return {
 		init : function(myColumnDefs) {
 			// Called from within the view template!
@@ -37,9 +35,9 @@ muze.ariadne.templates = function() {
 			YAHOO.util.Dom.removeClass(event.target, "highlight");
 		}
 	}
-}();
+});
 
-muze.ariadne.templates.control = function() {
+muze.namespace( 'muze.ariadne.templates.control', function() {
 	return {
 		init : function() {
 			var menuBar = new YAHOO.widget.MenuBar("basicmenu", { autosubmenudisplay: true, hidedelay: 750, showdelay: 0, lazyload: true });
@@ -51,7 +49,7 @@ muze.ariadne.templates.control = function() {
 			wgWizForm.submit();
 		}
 	}
-}();
+});
 
 YAHOO.widget.DataTable.MSG_EMPTY = ''; // Message to display if no templates are found.
 YAHOO.util.Event.onDOMReady(muze.ariadne.templates.control.init);

@@ -1,6 +1,4 @@
-muze.namespace("muze.ariadne");
-
-muze.ariadne.registry = function() {
+muze.namespace("muze.ariadne.registry", function() {
 	var	ARregistry = { };
 	return {
 		set : function(name, value) {
@@ -17,4 +15,4 @@ muze.ariadne.registry = function() {
 			return result;
 		}
 	}
-}();
+});

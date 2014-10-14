@@ -1,4 +1,31 @@
 ========================
+Changes in Ariadne 8.3.2
+========================
+
+* Features
+- muze.js have now support for dynamic loading of dependicies 
+- mod_rcas now also saves the emailadres of a user
+- parse errors in templates are correctly shown when using xdebug
+- support nested calling as xmlrpc server with ripcord
+
+* Bugfixes
+- sync functiond definitions between loaders
+- Typo fix in error reporting of ax import from the commandline
+- Made mfu.save.html pinp overrideable
+- Fixed menubar links to point to the correct parent
+- Fixed formSecret handling
+- Fixed saving user/groups where the group isn't a pgroup but implements it
+- set the responseheader in ar/http/Client even when the result of the request
+  is empty
+- bugfixes nls loading for current:template.nls where multiple libraries
+  provide the same template.nls
+- Fixed a parse error in mod_pinp
+- Fixed a usecase where psite would loose it's site url
+- type fixes in im/export.wddx
+- Fixed a fading issue in the backend
+
+
+========================
 Changes in Ariadne 8.3.1
 ========================
 

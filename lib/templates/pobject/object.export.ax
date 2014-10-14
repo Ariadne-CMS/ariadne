@@ -30,6 +30,7 @@
 			}
 			ldSetContent("application/ariadne-export", filesize($tempfile));
 			ldHeader("Content-Disposition: attachment; filename=$filename.ax");
+			ldDisablePostProcessing();
 			readfile($tempfile);
 			@unlink($tempfile);
 		} else {

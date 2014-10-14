@@ -17,8 +17,9 @@
 <html>
 <head>
 	<title><?php echo $wgWizTitle; ?></title>
-	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 <?php
 	if( !$wgWizNoDefaultStyle ) {
 ?>
@@ -177,7 +178,9 @@
 					}
 ?>
 					<a href="javascript:selectSection('<?php echo htmlspecialchars($i); ?>');" id="<?php echo htmlspecialchars($link_id); ?>" class="section<?php echo htmlspecialchars($current); ?>">
-						<img alt="<?php echo strip_tags($title); ?>" title="<?php echo strip_tags($title); ?>" src="<?php echo htmlspecialchars($image); ?>">
+						<?php if ($image) { ?>
+							<img alt="<?php echo strip_tags($title); ?>" title="<?php echo strip_tags($title); ?>" src="<?php echo htmlspecialchars($image); ?>">
+						<?php } ?>
 						<span class="title"><?php echo $title; ?></span>
 					</a>
 <?php
