@@ -132,7 +132,10 @@
 			$AR->hideSessionIDfromURL=false;
 		} elseif ($AR->hideSessionIDfromURL) {
 			$ARCookie=stripslashes($_COOKIE["ARCookie"]);
-			$cookie=@unserialize($ARCookie);
+			$cookie=json_decode($ARCookie,true);
+			if ($cookie === null) {
+				$cookie=@unserialize($ARCookie);
+			}
 			if (is_array($cookie)) {
 				$session_id=current(array_keys($cookie));
 			}

@@ -23,7 +23,7 @@
 		// numerous checks on "admin".
 		$login = strtolower( $login );
 
-		$ARCookie = stripslashes($_COOKIE["ARCookie"]);
+		$ARCookie = $_COOKIE["ARCookie"];
 
 		debug("ldSetCredentials($login)","object");
 
@@ -47,7 +47,7 @@
 		$ARCurrent->session->save();
 
 		if (!$AR->hideSessionIDfromURL) {
-			$cookie=unserialize($ARCookie);
+			$cookie=json_decode($ARCookie,true);
 		} else {
 			// If we are hiding the session id from the URL,
 			// there can only be one user per cookie, so we
@@ -70,7 +70,7 @@
 		$cookie[$ARCurrent->session->id]['login']=$login;
 		$cookie[$ARCurrent->session->id]['timestamp']=time();
 		$cookie[$ARCurrent->session->id]['check']=ldGenerateSessionKeyCheck();
-		$ARCookie=serialize($cookie);
+		$ARCookie=json_encode($cookie);
 		debug("setting cookie ($ARCookie)");
 		header('P3P: CP="NOI CUR OUR"');
 		$https = ($_SERVER['HTTPS']=='on');
@@ -194,15 +194,10 @@
 	}
 
 	function ldGetCredentials() {
-		/* 
-			FIXME:
-			this is a hack: php 4.0.3pl1 (and up?) runs 'magic_quotes' on
-			cookies put in $_COOKIE which will cause unserialize
-			to not function correctly.
-		*/
-		$ARCookie = stripslashes($_COOKIE["ARCookie"]);
 		debug("ldGetCredentials()","object");
-		$cookie=unserialize($ARCookie);
+		$ARCookie = $_COOKIE["ARCookie"];
+
+		$cookie=json_decode($ARCookie,true);
 		return $cookie;
 	}
 

@@ -55,21 +55,17 @@
 		$cookie[$ARCurrent->session->id]['login']=$login;
 		$cookie[$ARCurrent->session->id]['timestamp']=time();
 		$cookie[$ARCurrent->session->id]['check']="{".md5($login.$session_key)."}";
-		$ARCookie=serialize($cookie);
+		$ARCookie=json_encode($cookie);
 		debug("setting cookie ($ARCookie)");
 		setcookie("ARCookie",$ARCookie, 0, '/');
 	}
 
 	function ldGetCredentials() {
-		/* 
-			FIXME:
-			this is a hack: php 4.0.3pl1 (and up?) runs 'magic_quotes' on
-			cookies put in $_COOKIE which will cause unserialize
-			to not function correctly.
-		*/
-		$ARCookie = stripslashes($_COOKIE["ARCookie"]);
 		debug("ldGetCredentials()","object");
-		$cookie=unserialize($ARCookie);
+		$cookie=json_decode($ARCookie,true);
+		if ($cookie === null) {
+			$cookie=unserialize($ARCookie);
+		}
 		return $cookie;
 	}
 

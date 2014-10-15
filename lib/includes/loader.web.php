@@ -283,7 +283,7 @@
 			if (!$check[$ARCurrent->session->id]) {
 				$cookie = Array();
 				$cookie[$ARCurrent->session->id]['timestamp']=time();
-				$ARCookie=serialize($cookie);
+				$ARCookie=json_encode($cookie);
 				debug("setting cookie ($ARCookie)");
 				header('P3P: CP="NOI CUR OUR"');
 				$https = ($_SERVER['HTTPS']=='on');
@@ -377,15 +377,11 @@
 	
 		if( $_COOKIE[$cookiename] && !($cookiename == "ARCookie")) {
 
-			/* 
-				FIXME:
-				this is a hack: php 4.0.3pl1 (and up?) runs 'magic_quotes' on
-				cookies put in $_COOKIE which will cause unserialize
-				to not function correctly.
-			*/
-			$ARUserCookie = stripslashes($_COOKIE[$cookiename]);
 			debug("ldGetUserCookie() = $ARUserCookie","object");
-			$cookie=unserialize($ARUserCookie);
+			$cookie=json_decode($ARCookie,true);
+			if ($cookie === null) {
+				$cookie=unserialize($ARCookie);
+			}
 		}
 		return $cookie;
 	}
@@ -401,7 +397,7 @@
 		$cookieconsent = ldGetUserCookie("ARCookieConsent");
 		if (!$consentneeded || ($cookieconsent == true)) { // Only set cookies when consent has been given, or no consent is needed for this cookie.
 			if( $cookiename != "ARCookie") {
-				$ARUserCookie=serialize($cookie);
+				$ARUserCookie=json_encode($cookie);
 				debug("ldSetUserCookie(".$ARUserCookie.")","object");
 				header('P3P: CP="NOI CUR OUR"');
 				$result = setcookie($cookiename,$ARUserCookie, $expire, $path, $domain, $secure);
