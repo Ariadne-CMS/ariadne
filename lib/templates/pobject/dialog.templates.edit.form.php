@@ -41,8 +41,6 @@
 	} else {
 		$file = $template;
 	}
-//	$file=preg_replace("/&/","&amp;",$file);
-//	$file=preg_replace("/</","&lt;", preg_replace("/>/","&gt;",$file));
 	$file = htmlentities($file, ENT_QUOTES, 'UTF-8');
 ?>
 	<script type="text/javascript">
@@ -57,12 +55,6 @@
 		if ($AR->user->data->template_editor == 'ace') {
 	?>
 	<style type="text/css">
-		div {
-			font-family: Monaco, 'Courier New', monospace !important;
-		}
-		label {
-			font-family: verdana, helverica, arial, sans-serif;
-		}
 		#tabsdata #template_editor #template, #editor {
 			position: absolute;
 			width: 100%;
@@ -75,18 +67,17 @@
 			background-color: white;
 			cursor: text;
 		}
+		#editor, #editor div {
+			font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+		}
 		#tabsdata #template_editor {
 			left: 22px;
 		}
 	</style>
-	<?php
-		$theme = 'eclipse';
-	?>
-	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/ace/ace-uncompressed.js" charset="utf-8"></script>
+
+	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/ace/ace.js" charset="utf-8"></script>
 	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/ace/theme-eclipse.js" charset="utf-8"></script>
-	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/ace/theme-<?php echo $theme; ?>.js" charset="utf-8"></script>
 	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/ace/mode-php.js" charset="utf-8"></script>
-	<script type="text/javascript" src="<?php echo $AR->dir->www; ?>js/ace/mode-javascript.js" charset="utf-8"></script>
 	<script type="text/javascript">
 		var editor = null;
 		window.onload = function() {
@@ -95,13 +86,14 @@
 			var editorDiv = document.getElementById('editor');
 			editorDiv.style.display = 'block';
 			editor = ace.edit('editor');
-			// editor.setTheme('ace/theme/eclipse');
-			editor.setTheme('ace/theme/<?php echo $theme; ?>');
-			var phpMode = require('ace/mode/php').Mode;
+			editor.setTheme('ace/theme/eclipse');
+			var phpMode = ace.require('ace/mode/php').Mode;
+
 			editor.getSession().setMode( new phpMode() );
 			editor.getSession().setUseSoftTabs(false);
 			editor.setShowPrintMargin(false);
 			editor.setBehavioursEnabled(false);
+
 			editor.getSession().setValue( template.value );
 			<?php
 				$error = $this->getvar("error");
@@ -118,8 +110,11 @@
 					$line = 1;
 				}
 			?>
-			//editor.gotoLine( <?php echo $line+1; ?> );
-			editor.navigateTo( <?php echo $line; ?>, <?php echo $col; ?> );
+			window.setTimeout( function() {
+				editor.resize(true);
+				editor.gotoLine( <?php echo $line+1; ?>, <?php echo $col; ?> );
+				editor.scrollToLine( <?php echo $line; ?>, true, true);
+			}, 10);
 			var wgWizForm = document.getElementById("wgWizForm");
 			wgWizForm.wgWizSubmitHandler = function() {
 				document.getElementById('cursorOffset').value = editor.selection.selectionLead.column;
