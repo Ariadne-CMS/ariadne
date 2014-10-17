@@ -7,6 +7,7 @@ Changes in Ariadne 8.3.2
 - mod_rcas now also saves the emailadres of a user
 - parse errors in templates are correctly shown when using xdebug
 - support nested calling as xmlrpc server with ripcord
+- Upgraded ace library for chrome >=38 support
 
 * Bugfixes
 - sync functiond definitions between loaders
