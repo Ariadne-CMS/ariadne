@@ -1466,8 +1466,8 @@ PHP.Lexer = function( src, ini ) {
     },
     prev,
 
-    openTag = (ini === undefined || (/^(on|true|1)$/i.test(ini.short_open_tag) ) ? /(\<\?php\s|\<\?|\<\%|\<script language\=('|")?php('|")?\>)/i : /(\<\?php\s|<\?=|\<script language\=('|")?php('|")?\>)/i),
-        openTagStart = (ini === undefined || (/^(on|true|1)$/i.test(ini.short_open_tag)) ? /^(\<\?php\s|\<\?|\<\%|\<script language\=('|")?php('|")?\>)/i : /^(\<\?php\s|<\?=|\<script language\=('|")?php('|")?\>)/i),
+    openTag = (ini === undefined || (/^(on|true|1)$/i.test(ini.short_open_tag) ) ? /(\<pinp\>|\<\?php\s|\<\?|\<\%|\<script language\=('|")?php('|")?\>)/i : /(\<pinp\>|\<\?php\s|<\?=|\<script language\=('|")?php('|")?\>)/i),
+        openTagStart = (ini === undefined || (/^(on|true|1)$/i.test(ini.short_open_tag)) ? /^(\<pinp\>|\<\?php\s|\<\?|\<\%|\<script language\=('|")?php('|")?\>)/i : /^(\<pinp\>|\<\?php\s|<\?=|\<script language\=('|")?php('|")?\>)/i),
             tokens = [
             {
                 value: PHP.Constants.T_NAMESPACE,
@@ -1639,7 +1639,7 @@ PHP.Lexer = function( src, ini ) {
             },
             {
                 value: PHP.Constants.T_CLOSE_TAG,
-                re: /^(\?\>|\%\>|\<\/script\>)\s?\s?/i,
+                re: /^(\?\>|\%\>|\<\/script\>|\<\/pinp\>)\s?\s?/i,
                 func: function( result ) {
                     insidePHP = false;
                     return result;
