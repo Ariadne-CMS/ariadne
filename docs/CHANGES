@@ -3,27 +3,27 @@ Changes in Ariadne 8.3.2
 ========================
 
 * Features
-- muze.js have now support for dynamic loading of dependicies 
+- the muze.js libraries now have support for dynamic loading of dependencies 
 - mod_rcas now also saves the emailadres of a user
 - parse errors in templates are correctly shown when using xdebug
-- support nested calling as xmlrpc server with ripcord
 - Upgraded ace library for chrome >=38 support
 
 * Bugfixes
-- sync functiond definitions between loaders
-- Typo fix in error reporting of ax import from the commandline
-- Made mfu.save.html pinp overrideable
-- Fixed menubar links to point to the correct parent
-- Fixed formSecret handling
-- Fixed saving user/groups where the group isn't a pgroup but implements it
+- fixed support for sub-method calling of xmlrpc methods ( method name is x.y or x.y.z )
+- synced function definitions between loaders
+- fixed typo in error reporting when running an ax import from the commandline
+- made mfu.save.html overrideable by pinp templates
+- fixed ar\html\menu menubar links to point to the correct parent
+- fixed formSecret handling
+- fixed saving user/groups where the group isn't a pgroup but implements it
 - set the responseheader in ar/http/Client even when the result of the request
   is empty
-- bugfixes nls loading for current:template.nls where multiple libraries
+- fixed loadtext(): now correctly supports 'current:template.nls' where multiple libraries
   provide the same template.nls
-- Fixed a parse error in mod_pinp
-- Fixed a usecase where psite would loose it's site url
-- type fixes in im/export.wddx
-- Fixed a fading issue in the backend
+- fixed a parse error in mod_pinp
+- fixed a usecase where psite would lose it's site url
+- typo fixes in im/export.wddx
+- fixed a timing issue in the backend with the fade-in / fade-out code
 
 
 ========================
