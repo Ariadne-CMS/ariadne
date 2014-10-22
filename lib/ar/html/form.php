@@ -1159,7 +1159,7 @@
 				'value'	=> $value
 			);
 			if ($checked) {
-				$attributes[] = 'checked';
+				$attributes['checked'] = 'checked';
 			}
 			if ($disabled) {
 				$attributes['disabled'] = true;
@@ -1250,7 +1250,7 @@
 				'id'	=> $id
 			);
 			if ($selectedValue!==false && $selectedValue == $value) {
-				$attributes[] = 'checked';
+				$attributes['checked'] = 'checked';
 			}
 			if ($disabled) {
 				$attributes['disabled'] = true;
