@@ -87,7 +87,7 @@ class postgresqlstore extends store {
 
 	public function call($template, $args, $objects, $options = array() ) {
 	/**********************************************************************************
-	
+
 	 This function takes a list of objects, the function to be called in each of those
 	 objects and the arguments of that function as arguments. The list of objects is of
 	 unspecified type and may be different in other implementations of the store 
@@ -129,6 +129,7 @@ class postgresqlstore extends store {
 		$this->total+=$this->count;
 		return ($result);
 	}
+
 
 	public function count($objects) {
 		return (@pg_numrows($objects["list"]));
@@ -282,6 +283,21 @@ class postgresqlstore extends store {
 		return ($result);
 	}
 
+	public function count_find($path, $criteria, $limit=100, $offset=0) {
+		$sqlcompiler = new postgresql_compiler($this, $this->tbl_prefix);
+		$query=$sqlcompiler->compile($path, $criteria, $limit, $offset);
+		if ($sqlcompiler->error) {
+			$this->error=$sqlcompiler->error;
+		}
+		unset($sqlcompiler);
+		$qresult = $this->store_run_query($query["count_query"]);
+		if ($qresult) {
+			$result = pg_fetch_array($qresult, 0);
+			$count  = $result["count"];
+		}
+		return (int) $count;
+	}
+
 	public function find($path, $criteria, $limit=100, $offset=0) {
 	/**********************************************************************************
 
@@ -302,7 +318,8 @@ class postgresqlstore extends store {
 		if (! is_array($criteria) && ($criteria = trim($criteria))) {
 			$sqlcompiler = new postgresql_compiler($this, $this->tbl_prefix);
 			debug("raw query: $query_raw", "store");
-			$query_string = $sqlcompiler->compile($path, $criteria, $limit, $offset);
+			$compiled 	= $sqlcompiler->compile($path, $criteria, $limit, $offset);
+			$query_string = $compiled['select_query'];
 			if ($sqlcompiler->error) {
 				$this->error = $sqlcompiler->error;
 			}

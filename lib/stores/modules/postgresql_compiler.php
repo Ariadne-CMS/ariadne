@@ -306,26 +306,13 @@ class postgresql_compiler extends sql_compiler {
 			}
 		}
 		if (is_array($this->nls_join)) {
-			reset($this->nls_join);
-			while (list($key, $value)=each($this->nls_join)) {
-				$join .= $value;
-			}
+			$join = join($this->nls_join);
 		}
 		if(is_array($this->select_list)){
-			@reset($this->select_list);
-			while (list($key, $val)=each($this->select_list)) {
-				$select .= ", $val ";
-			}
+			$select = join(", ", $this->select_list);
 		}
 
-		$query="select distinct($nodes.path), $nodes.parent, $nodes.priority, ";
-		$query.=" $objects.id, $objects.type, $objects.object, date_part('epoch', $objects.lastchanged) as lastchanged, $objects.vtype ";
-		if($select){
-			$query .= $select;
-		}
-
-		$query.=" from $tables $join";
-		$query.=" where $nodes.object=$objects.id $prop_dep";
+		$query ="where $nodes.object=$objects.id $prop_dep";
 		$query.=" and $nodes.path like '".str_replace('_','\\_',pg_escape_string($this->path))."%' ";
 		if ($this->where_s) {
 			$query.=" and ( $this->where_s ) ";
@@ -333,20 +320,30 @@ class postgresql_compiler extends sql_compiler {
 		if ($this->where_s_ext) {
 			$query .= " and ($this->where_s_ext) ";
 		}
+		$order = '';
 		if ($this->orderby_s) {
 			if ($this->skipDefaultOrderBy) {
-				$query.= " order by $this->orderby_s";
+				$order .= "order by $this->orderby_s";
 			} else {
-				$query.= " order by $this->orderby_s, $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
+				$order .= "order by $this->orderby_s, $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
 			}
 		} else if (!$this->skipDefaultOrderBy) {
-			$query.= " order by $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
+			$order .= "order by $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
 		}
 
-		$query.=" $this->limit_s ";
-		debug("postgresql_compiler::priv_sql_compile($query)", "store");
+		$order .= " $this->limit_s ";
 
-		return $query;
+		$select_query  = "select distinct($nodes.path), $nodes.parent, $nodes.priority, ";
+		$select_query .= " $objects.id, $objects.type, $objects.object, date_part('epoch', $objects.lastchanged) as lastchanged, $objects.vtype ";
+
+		if($select){
+			$select_query .= ", " . $select;
+		}
+
+		$select_query .= " from $tables $join $query $order";
+		$count_query = "select count(distinct($nodes.path)) as count from $tables ".$query;
+
+		return Array("select_query" => $select_query, "count_query" => $count_query);
 	}
 
   }
