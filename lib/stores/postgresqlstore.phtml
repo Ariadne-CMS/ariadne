@@ -1101,9 +1101,9 @@ class postgresqlstore extends store {
 			$substr_l = intval(substr($matches[2], 0, 1));
 			$mask_post= $matches[3];
 			$query_string = 
-				"select max(substr(path, $substr_s, $substr_l)) as id
-				from ".$this->tbl_prefix."nodes where 
-				path ~ '^".$path.$mask_pre."[0-9]\{".$substr_l."\}".$mask_post."'";
+				"select max(substr(path, $substr_s, $substr_l)) as id ".
+				"from ".$this->tbl_prefix."nodes where ".
+				"path ~ '^".$path.$mask_pre."[0-9]{".$substr_l."}".$mask_post."'";
 
 			//error($query_string);
 			$result = $this->store_run_query( $query_string);
