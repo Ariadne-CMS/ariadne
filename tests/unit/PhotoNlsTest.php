@@ -27,6 +27,8 @@ class PhotoNlsTest extends PHPUnit_Framework_TestCase
 		$two = $obj->getExif();
 		unset($one['FILE']['FileName']);
 		unset($two['FILE']['FileName']);
+		unset($one['FILE']['FileDateTime']);
+		unset($two['FILE']['FileDateTime']);
 		$this->assertEquals($defaultnls,$one['IFD0']['ImageDescription']);
 		$this->assertEquals($one,$two);
 	}
