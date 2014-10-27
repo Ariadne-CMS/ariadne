@@ -60,6 +60,13 @@ class mysqlstore extends store{
 		}
 		$this->error="";
 		$this->connect_id=mysql_pconnect($config["host"], $config["user"], $config["password"]) or die ("Could not connect to MySQL");
+
+		// test if the connection is still viable, and if not reconnect
+		if( !mysql_ping($this->connect_id) ){
+			mysql_close($this->connect_id);
+			$this->connect_id=mysql_pconnect($config["host"], $config["user"], $config["password"]) or die ("Could not reconnect to MySQL");
+		}
+
 		mysql_select_db($config["database"],$this->connect_id) or die ("Could not access database '".$config["database"]."'. Please create this database manually.");
 		$this->root=$path;
 		$this->code=$config["code"];
