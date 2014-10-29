@@ -1,5 +1,6 @@
 {
 	"require": {
+		"arc/arc": "~1.0",
 		"leafo/lessphp": "v0.3.8",
 		"erusev/parsedown": "~1",
 		"firephp/firephp-core": "v0.4.0"

@@ -77,20 +77,20 @@
     },
     {
         "name": "erusev/parsedown",
-        "version": "1.0.1",
-        "version_normalized": "1.0.1.0",
+        "version": "1.1.0",
+        "version_normalized": "1.1.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/erusev/parsedown.git",
-            "reference": "d24439ada0704948deef0d3eda2ea20fd8db1747"
+            "reference": "c62365adc4488e1c35a8f45ea86f7d4a22bd58a0"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/erusev/parsedown/zipball/d24439ada0704948deef0d3eda2ea20fd8db1747",
-            "reference": "d24439ada0704948deef0d3eda2ea20fd8db1747",
+            "url": "https://api.github.com/repos/erusev/parsedown/zipball/c62365adc4488e1c35a8f45ea86f7d4a22bd58a0",
+            "reference": "c62365adc4488e1c35a8f45ea86f7d4a22bd58a0",
             "shasum": ""
         },
-        "time": "2014-05-21 20:20:46",
+        "time": "2014-09-25 23:06:16",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -114,6 +114,358 @@
         "keywords": [
             "markdown",
             "parser"
+        ]
+    },
+    {
+        "name": "arc/base",
+        "version": "1.1",
+        "version_normalized": "1.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Ariadne-CMS/arc-base.git",
+            "reference": "79b7f0980b7e3a408905b63e5a9d8917610d4a33"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Ariadne-CMS/arc-base/zipball/79b7f0980b7e3a408905b63e5a9d8917610d4a33",
+            "reference": "79b7f0980b7e3a408905b63e5a9d8917610d4a33",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4"
+        },
+        "time": "2014-07-02 11:50:51",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "arc\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Auke van Slooten",
+                "email": "auke@muze.nl"
+            }
+        ],
+        "description": "Ariadne Component Library",
+        "homepage": "https://github.com/Ariadne-CMS/arc/wiki",
+        "keywords": [
+            "component",
+            "components"
+        ]
+    },
+    {
+        "name": "arc/events",
+        "version": "1.1",
+        "version_normalized": "1.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Ariadne-CMS/arc-events.git",
+            "reference": "68d4aab110988f0e3caab92819d9eae1362f282d"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Ariadne-CMS/arc-events/zipball/68d4aab110988f0e3caab92819d9eae1362f282d",
+            "reference": "68d4aab110988f0e3caab92819d9eae1362f282d",
+            "shasum": ""
+        },
+        "require": {
+            "arc/base": "~1.0",
+            "php": ">=5.4"
+        },
+        "time": "2014-06-26 12:22:13",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "arc\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Auke van Slooten",
+                "email": "auke@muze.nl"
+            }
+        ],
+        "description": "Ariadne Component Library: Cache Component",
+        "homepage": "https://github.com/Ariadne-CMS/arc/wiki",
+        "keywords": [
+            "component",
+            "components"
+        ]
+    },
+    {
+        "name": "arc/grants",
+        "version": "1.1",
+        "version_normalized": "1.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Ariadne-CMS/arc-grants.git",
+            "reference": "e5c1aa441b237372d9528a671b13e68dc6ea8ecc"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Ariadne-CMS/arc-grants/zipball/e5c1aa441b237372d9528a671b13e68dc6ea8ecc",
+            "reference": "e5c1aa441b237372d9528a671b13e68dc6ea8ecc",
+            "shasum": ""
+        },
+        "require": {
+            "arc/base": "~1.0",
+            "php": ">=5.4"
+        },
+        "time": "2014-06-26 12:38:18",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "arc\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Auke van Slooten",
+                "email": "auke@muze.nl"
+            }
+        ],
+        "description": "Ariadne Component Library: Cache Component",
+        "homepage": "https://github.com/Ariadne-CMS/arc/wiki",
+        "keywords": [
+            "component",
+            "components"
+        ]
+    },
+    {
+        "name": "arc/config",
+        "version": "1.1",
+        "version_normalized": "1.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Ariadne-CMS/arc-config.git",
+            "reference": "5d62370e19229f4385ad59df7234de35e9827a28"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Ariadne-CMS/arc-config/zipball/5d62370e19229f4385ad59df7234de35e9827a28",
+            "reference": "5d62370e19229f4385ad59df7234de35e9827a28",
+            "shasum": ""
+        },
+        "require": {
+            "arc/base": "~1.0",
+            "php": ">=5.4"
+        },
+        "time": "2014-06-26 12:37:47",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "arc\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Auke van Slooten",
+                "email": "auke@muze.nl"
+            }
+        ],
+        "description": "Ariadne Component Library: Cache Component",
+        "homepage": "https://github.com/Ariadne-CMS/arc/wiki",
+        "keywords": [
+            "component",
+            "components"
+        ]
+    },
+    {
+        "name": "arc/cache",
+        "version": "1.1.1",
+        "version_normalized": "1.1.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Ariadne-CMS/arc-cache.git",
+            "reference": "87a1c2f9822255b85fc681b17afd235c6d0c0cb3"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Ariadne-CMS/arc-cache/zipball/87a1c2f9822255b85fc681b17afd235c6d0c0cb3",
+            "reference": "87a1c2f9822255b85fc681b17afd235c6d0c0cb3",
+            "shasum": ""
+        },
+        "require": {
+            "arc/base": "~1.0",
+            "php": ">=5.4"
+        },
+        "time": "2014-07-02 11:51:21",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "arc\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Auke van Slooten",
+                "email": "auke@muze.nl"
+            }
+        ],
+        "description": "Ariadne Component Library: Cache Component",
+        "homepage": "https://github.com/Ariadne-CMS/arc/wiki",
+        "keywords": [
+            "component",
+            "components"
+        ]
+    },
+    {
+        "name": "arc/xml",
+        "version": "1.1",
+        "version_normalized": "1.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Ariadne-CMS/arc-xml.git",
+            "reference": "93b79378ff536639d576889f4350a4cf526aeccc"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Ariadne-CMS/arc-xml/zipball/93b79378ff536639d576889f4350a4cf526aeccc",
+            "reference": "93b79378ff536639d576889f4350a4cf526aeccc",
+            "shasum": ""
+        },
+        "require": {
+            "arc/base": "~1.0",
+            "php": ">=5.4"
+        },
+        "time": "2014-07-02 11:50:49",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "arc\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Auke van Slooten",
+                "email": "auke@muze.nl"
+            }
+        ],
+        "description": "Ariadne Component Library: Cache Component",
+        "homepage": "https://github.com/Ariadne-CMS/arc/wiki",
+        "keywords": [
+            "component",
+            "components"
+        ]
+    },
+    {
+        "name": "arc/web",
+        "version": "1.1",
+        "version_normalized": "1.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Ariadne-CMS/arc-web.git",
+            "reference": "d0640720c0156ff220465b1aa777e67e21e2f06f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Ariadne-CMS/arc-web/zipball/d0640720c0156ff220465b1aa777e67e21e2f06f",
+            "reference": "d0640720c0156ff220465b1aa777e67e21e2f06f",
+            "shasum": ""
+        },
+        "require": {
+            "arc/base": "~1.0",
+            "php": ">=5.4"
+        },
+        "time": "2014-06-30 12:07:48",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "arc\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Auke van Slooten",
+                "email": "auke@muze.nl"
+            }
+        ],
+        "description": "Ariadne Component Library: Web Components",
+        "homepage": "https://github.com/Ariadne-CMS/arc/wiki",
+        "keywords": [
+            "component",
+            "components"
+        ]
+    },
+    {
+        "name": "arc/arc",
+        "version": "1.1",
+        "version_normalized": "1.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Ariadne-CMS/arc-arc.git",
+            "reference": "ec1869dff0e9f9a38b289077651bfb7dca918c5f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Ariadne-CMS/arc-arc/zipball/ec1869dff0e9f9a38b289077651bfb7dca918c5f",
+            "reference": "ec1869dff0e9f9a38b289077651bfb7dca918c5f",
+            "shasum": ""
+        },
+        "require": {
+            "arc/base": "~1.0",
+            "arc/cache": "~1.0",
+            "arc/config": "~1.0",
+            "arc/events": "~1.0",
+            "arc/grants": "~1.0",
+            "arc/web": "~1.0",
+            "arc/xml": "~1.0",
+            "php": ">=5.4"
+        },
+        "time": "2014-06-26 12:33:47",
+        "type": "library",
+        "installation-source": "dist",
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Auke van Slooten",
+                "email": "auke@muze.nl"
+            }
+        ],
+        "description": "Ariadne Component Library: All Components",
+        "homepage": "https://github.com/Ariadne-CMS/arc/wiki",
+        "keywords": [
+            "component",
+            "components"
         ]
     }
 ]
