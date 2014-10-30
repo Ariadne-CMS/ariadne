@@ -1,20 +1,19 @@
 #!/usr/bin/env php
 <?php
 	$ariadne = "../lib";
-	if (!@include_once($ariadne."/configs/ariadne.phtml")) {
+	$ARLoader = 'cmd';
+
+	if (!@include_once($ariadne."/bootstrap.php")) {
 		chdir(substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')));
-		if(!include_once($ariadne."/configs/ariadne.phtml")){
+		if(!include_once($ariadne."/bootstrap.php")){
 			echo "could not open ariadne.phtml";
 			exit(1);
 		}
 
 	}
-	require($ariadne."/configs/store.phtml");
-	require($ariadne."/configs/axstore.phtml");
-	require($ariadne."/includes/loader.cmd.php");
-	require($ariadne."/stores/".$store_config["dbms"]."store.phtml");
-	include($ariadne."/stores/axstore.phtml");
-	include_once($ariadne."/ar.php");
+	require_once(AriadneBasePath.'/configs/axstore.phtml');
+	require_once(AriadneBasePath.'/stores/axstore.phtml');
+
 	$nls = $AR->nls->default;
 
 
