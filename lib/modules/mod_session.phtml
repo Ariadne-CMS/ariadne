@@ -1,6 +1,8 @@
 <?php
 class session {
 
+	protected $changed = false;
+
 	function __construct($session_config, $id=0) {
 		debug("session([array],$id)","store");
 		// init session store
