@@ -32,6 +32,7 @@
 			$type = substr( $type, 0, $pos );
 		}
 	}
+	$allnlsSetByDefault = false;
 	$ThisIsTrue = 'Set by default.phtml';
 	if (isset($config['nls'][$type])) {
 		if ($config['nls'][$type]['allnls']) {

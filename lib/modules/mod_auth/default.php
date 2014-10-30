@@ -108,6 +108,7 @@
 		function checkLogin($login, $password, $requestedPath="/") {
 		global $ARCurrent, $AR;
 			debug("checkLogin($login, [password])", "all");
+			$result = null;
 			if ($login) {
 				debug("checkLogin: initiating new login ($login)", "all");
 				if ($ARCurrent->session) {

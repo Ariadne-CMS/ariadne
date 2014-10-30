@@ -182,6 +182,7 @@
 			// DOM implementation.
 
 			$declaredns = array();
+			$allns = array();
 
 			// this part retrieves all available namespaces on the parent
 			// xpath is the only reliable way
@@ -216,6 +217,7 @@
 			$length = $DOMElement->attributes->length;
 			for ($i=0; $i<$length; $i++) {
 				$a = $DOMElement->attributes->item($i);
+				$prefix = '';
 				if ($a->prefix) {
 					$prefix = $a->prefix.':';
 				}

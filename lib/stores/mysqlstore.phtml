@@ -379,6 +379,8 @@ class mysqlstore extends store{
 			$epath=AddSlashes($path);
 			$offset = (int)$offset;
 			$limit = (int)$limit;
+			$where = '';
+			$from  = '';
 
 			$nodes_tbl=$this->tbl_prefix."nodes";
 			$objects_tbl=$this->tbl_prefix."objects";
