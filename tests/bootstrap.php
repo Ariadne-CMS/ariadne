@@ -2,16 +2,11 @@
 
 	global $store_config,$AR,$ariadne,$ax_config,$ARCurrent,$ARConfig;
 	$ariadne = getcwd().'/lib/';
-	$loaderType = 'cmd';
-	require_once($ariadne.'/configs/ariadne.phtml');
-	require_once($ariadne."/configs/sessions.phtml");
-	require_once($ariadne."/configs/axstore.phtml");
-	require_once($ariadne."/configs/store.phtml");
-	require_once($ariadne."/includes/loader.".$loaderType.".php");
-	require_once($ariadne."/stores/".$ax_config["dbms"]."store.phtml");
-	require_once($ariadne."/stores/".$store_config["dbms"]."store.phtml");
-	include($ariadne."/nls/".$AR->nls->default);
-	require_once($ariadne."/ar.php");
+	$arLoader = 'cmd';
+
+	require_once($ariadne.'/bootstrap.php');
+	require_once(AriadneBasePath .'/configs/axstore.phtml');
+	require_once(AriadneBasePath .'/stores/axstore.phtml');
 
 	function importContent($base, $package) {
 		global $AR,$ARCurrent,$store_config,$ax_config;
