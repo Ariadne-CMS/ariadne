@@ -16,7 +16,7 @@ define('MINUTE',60);
 define('HOUR',3600);
 define('DAY',86400);
 
-$skipentries = array('.','..','.svn','CVS');
+$skipentries = array('.','..','.svn','CVS', '.git');
 
 function procFile($filename) {
 	if (strpos($filename,'.svn')) { return; }
