@@ -1,21 +1,26 @@
 #!/usr/bin/env php
 <?php
-	$ariadne = "../lib";
+
 	$ARLoader = 'cmd';
+	$currentDir = getcwd();
+	$ariadne = dirname($currentDir).'/lib/';
 
 	if (!@include_once($ariadne."/bootstrap.php")) {
 		chdir(substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')));
+		$ariadne = dirname(getcwd()).'/lib/';
+
 		if(!include_once($ariadne."/bootstrap.php")){
-			echo "could not open ariadne.phtml";
+			echo "could not find Ariadne";
 			exit(1);
 		}
 
+		chdir($currentDir);
 	}
+
 	require_once(AriadneBasePath.'/configs/axstore.phtml');
 	require_once(AriadneBasePath.'/stores/axstore.phtml');
 
 	$nls = $AR->nls->default;
-
 
 	$HELP_INFO="export [--options] [source path] [destination path] file.ax
   The export command will export objects from the current Ariadne database to

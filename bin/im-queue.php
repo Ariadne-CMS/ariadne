@@ -1,12 +1,20 @@
 #!/usr/bin/env php
 <?php
-	$ariadne = "../lib";
-	if (!@include_once($ariadne."/configs/ariadne.phtml")) {
+
+	$ARLoader = 'cmd';
+	$currentDir = getcwd();
+	$ariadne = dirname($currentDir).'/lib/';
+
+	if (!@include_once($ariadne."/bootstrap.php")) {
 		chdir(substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')));
-		if(!include_once($ariadne."/configs/ariadne.phtml")){
-			echo "could not open ariadne.phtml";
+		$ariadne = dirname(getcwd()).'/lib/';
+
+		if(!include_once($ariadne."/bootstrap.php")){
+			echo "could not find Ariadne";
 			exit(1);
 		}
+
+		chdir($currentDir);
 	}
 
 	$cmd = $argv[1];

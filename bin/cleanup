@@ -98,20 +98,21 @@ function recurse($func, $dir=".") {
 
 /*----------------------------- The original script --------------------------*/
 
-$ariadne = "../lib";
-if (!@include_once($ariadne."/configs/ariadne.phtml")) {
+$ARLoader = 'cmd';
+$currentDir = getcwd();
+$ariadne = dirname($currentDir).'/lib/';
+
+if (!@include_once($ariadne."/bootstrap.php")) {
 	chdir(substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')));
-	if(!include_once($ariadne."/configs/ariadne.phtml")){
-		echo "could not open ariadne.phtml";
+	$ariadne = dirname(getcwd()).'/lib/';
+
+	if(!include_once($ariadne."/bootstrap.php")){
+		echo "could not find Ariadne";
 		exit(1);
 	}
 
+	chdir($currentDir);
 }
-require_once($ariadne."/configs/store.phtml");
-require_once($ariadne."/configs/sessions.phtml");
-require_once($ariadne."/includes/loader.cmd.php");
-require_once($store_config['code']."stores/".$session_config["dbms"]."store.phtml");
-require_once($ariadne."/ar.php");
 
 set_time_limit(0);
 
@@ -167,6 +168,5 @@ if ($AR->OS=="UNIX") {
 } else {
 	// Windows support needs testing here, too;
 }
-
 
 ?>

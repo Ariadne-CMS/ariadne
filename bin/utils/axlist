@@ -1,13 +1,24 @@
 #!/usr/bin/env php
 <?php
-	$ariadne = "../lib";
 
-	require($ariadne."/configs/ariadne.phtml");
-	require($ariadne."/configs/store.phtml");
-	require($ariadne."/configs/axstore.phtml");
-	require($ariadne."/includes/loader.cmd.php");
-	require($ariadne."/stores/mysqlstore.phtml");
-	include($ariadne."/stores/axstore.phtml");
+	$ARLoader = 'cmd';
+	$currentDir = getcwd();
+	$ariadne = dirname(dirname($currentDir)).'/lib/';
+
+	if (!@include_once($ariadne."/bootstrap.php")) {
+		chdir(substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')));
+		$ariadne = dirname(dirname(getcwd())).'/lib/';
+
+		if(!include_once($ariadne."/bootstrap.php")){
+			echo "could not find Ariadne";
+			exit(1);
+		}
+
+		chdir($currentDir);
+	}
+
+	require_once(AriadneBasePath.'/configs/axstore.phtml');
+	require_once(AriadneBasePath.'/stores/axstore.phtml');
 
 	global $options;
 
