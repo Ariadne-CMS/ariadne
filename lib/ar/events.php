@@ -21,8 +21,8 @@
 		}
 		
 		public static function fire( $eventName, $eventData = array(), $objectType = null, $path = '') {
-			if ( !self::$listeners['capture'][$eventName] 
-				&& !self::$listeners['listen'][$eventName] ) {
+			if ( !isset(self::$listeners['capture'][$eventName])
+				&& !isset(self::$listeners['listen'][$eventName]) ) {
 				return $eventData; // no listeners for this event, so dont bother searching
 			}
 			$prevEvent = null;
