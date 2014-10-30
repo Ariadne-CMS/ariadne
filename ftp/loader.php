@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 	if ($argc > 1) {
 		$configfile=$argv[1];
@@ -5,22 +6,21 @@
 		$configfile="default.phtml";
 	}
 
-	if (!@include("../www/ariadne.inc")) {
+	$ARLoader = 'ftp';
+	$currentDir = getcwd();
+	$ariadne = dirname($currentDir).'/lib/';
+
+	if (!@include_once($ariadne."/bootstrap.php")) {
 		chdir(substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')));
-		include("../www/ariadne.inc");
+		$ariadne = dirname(getcwd()).'/lib/';
+
+		if(!include_once($ariadne."/bootstrap.php")){
+			echo "could not find Ariadne";
+			exit(1);
+		}
+
+		chdir($currentDir);
 	}
-	require_once($ariadne."/configs/ariadne.phtml");
-	require_once($ariadne."/configs/ftp/$configfile");
-	require_once($ariadne."/configs/store.phtml");
-	require_once($ariadne."/includes/loader.ftp.php");
-	require_once($ariadne."/configs/sessions.phtml");
-	require_once($ariadne."/stores/".$store_config["dbms"]."store.phtml");
-	require($ariadne."/nls/en");
-	require_once($ariadne."/modules/mod_mimemagic.php");
-	
-	include_once($ariadne."/modules/mod_ar.php");
-
-
 		/* this function has been taken from the php manual		*/
 
 		function ftp_ErrorHandler ($errno, $errmsg, $filename, $linenum, $vars) {
