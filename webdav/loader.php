@@ -32,17 +32,12 @@
 
     ******************************************************************/
 
-	require_once("./ariadne.inc");
-	require_once($ariadne."/configs/ariadne.phtml");
+	$ARLoader = 'webdav';
+
+	require_once('ariadne.inc');
+	require_once($ariadne."/bootstrap.php");
 	require_once($ariadne."/configs/webdav/default.phtml");
-	require_once($ariadne."/configs/authentication.phtml");
-	require_once($ariadne."/configs/store.phtml");
-	include_once($store_config['code']."stores/".$store_config["dbms"]."store.phtml");
-	include_once($store_config['code']."modules/mod_session.phtml");
-	include_once($store_config['code']."includes/loader.webdav.php");
-	include_once($store_config['code']."modules/mod_auth/".$auth_config['method'].".php");
-	include_once($store_config['code']."modules/mod_webdav.php");
-	include_once($store_config['code']."modules/mod_ar.php");
+	require_once($store_config['code']."modules/mod_webdav.php");
 
 	function fix_quotes(&$value) {
 		if (is_array($value)) {
@@ -57,7 +52,6 @@
 	if (!$AR_PATH_INFO) {
 		$AR_PATH_INFO = '/';
 	}
-
 
 	// needed for IIS: it doesn't set the PHP_SELF variable.
 	if(!isset($_SERVER["PHP_SELF"])) {
