@@ -1,12 +1,21 @@
 <?php
-	require_once("../www/ariadne.inc");
-	require_once($ariadne."/configs/ariadne.phtml");
-	require_once($ariadne."/configs/store.phtml");
-	include_once($store_config['code']."stores/".$store_config["dbms"]."store.phtml");
-	include_once($store_config['code']."modules/mod_session.phtml");
-	include_once($store_config['code']."includes/loader.soap.server.php");
-	include_once($store_config['code']."includes/loader.soap.php");
-	include_once($store_config['code']."modules/mod_ar.php");
+
+	$ARLoader = 'soap';
+	$currentDir = getcwd();
+	$ariadne = dirname($currentDir).'/lib/';
+
+	if (!@include_once($ariadne."/bootstrap.php")) {
+		chdir(substr($_SERVER['PHP_SELF'], 0, strrpos($_SERVER['PHP_SELF'], '/')));
+		$ariadne = dirname(getcwd()).'/lib/';
+
+		if(!include_once($ariadne."/bootstrap.php")){
+			echo "could not find Ariadne";
+			exit(1);
+		}
+
+		chdir($currentDir);
+	}
+	require_once(AriadneBasePath . "includes/loader.soap.server.php");
 
 	function fix_quotes(&$value) {
 		if (is_array($value)) {
