@@ -335,14 +335,19 @@ class mysqlstore extends store{
 		$query=$sqlcompiler->compile($path, $criteria, $limit, $offset);
 		if ($sqlcompiler->error) {
 			$this->error=$sqlcompiler->error;
+		} else {
+			unset($sqlcompiler);
+			if ( !is_array($query) || !isset($query["count_query"])) {
+				$this->error = "Querycompiler failed to deliver";
+			} else {
+				$qresult = $this->store_run_query($query["count_query"]);
+				if ($qresult) {
+					$result = mysql_fetch_array($qresult);
+					$count  = (int)$result["count"];
+				}
+			}
 		}
-		unset($sqlcompiler);
-		$qresult = $this->store_run_query($query["count_query"]);
-		if ($qresult) {
-			$result = mysql_fetch_array($qresult);
-			$count  = $result["count"];
-		}
-		return (int) $count;
+		return $count;
 	}
 
 	public function find($path, $criteria, $limit=100, $offset=0) {
@@ -367,9 +372,14 @@ class mysqlstore extends store{
 			$query=$sqlcompiler->compile($path, $criteria, $limit, $offset);
 			if ($sqlcompiler->error) {
 				$this->error=$sqlcompiler->error;
+			} else {
+				unset($sqlcompiler);
+				if ( !is_array($query) || !isset($query["select_query"])) {
+					$this->error = "Querycompiler failed to deliver";
+				} else {
+					$result["list"]= $this->store_run_query($query["select_query"]);
+				}
 			}
-			unset($sqlcompiler);
-			$result["list"]= $this->store_run_query($query["select_query"]);
 		} else {
 			$this->error="";
 			$count=0;
