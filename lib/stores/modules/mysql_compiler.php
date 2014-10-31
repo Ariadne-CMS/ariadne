@@ -305,6 +305,11 @@ class mysql_compiler extends sql_compiler {
 		$this->custom_id = 0;
 		$this->used_tables="";
 		$this->compile_tree($tree);
+
+		if ( $this->error ) {
+			return null;
+		}
+
 		$nodes=$this->tbl_prefix."nodes";
 		$objects=$this->tbl_prefix."objects";
 		$properties=$this->tbl_prefix."prop_";
