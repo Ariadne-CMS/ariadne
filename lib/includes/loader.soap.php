@@ -34,7 +34,7 @@
 
 	$ERRMODE="htmljs"; // alternative: "text"/"html"/"js"
 
-	include_once($store_config['code']."modules/mod_debug.php");
+	require_once($store_config['code']."include/loader.soap.server.php");
 	
 	$DB["method"]["loader"] = false;
 	$DB["method"]["file"] = true;

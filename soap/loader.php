@@ -15,7 +15,6 @@
 
 		chdir($currentDir);
 	}
-	require_once(AriadneBasePath . "includes/loader.soap.server.php");
 
 	function fix_quotes(&$value) {
 		if (is_array($value)) {
