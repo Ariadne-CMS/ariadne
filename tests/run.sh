@@ -256,9 +256,13 @@ fi
 PHPUNIT=`which phpunit`
 
 if [ ! -z "${PHPUNIT}" ] ; then
+	echo "phpunit version:"
 	${PHPUNIT} --version
+	echo "running phpunit:"
 	${PHPUNIT} --verbose --bootstrap tests/bootstrap.php tests/unit/
-	echo $?
+	EXITCODE=$?
+	echo -n "phpunit exit code: "
+	echo ${EXITCODE}
 else
 	echo "phpunit not found"
 	exit 1
