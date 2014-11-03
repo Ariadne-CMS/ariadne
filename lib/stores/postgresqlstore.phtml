@@ -706,7 +706,7 @@ class postgresqlstore extends store {
 		debug("exists($path)","store");
 		$this->error = "";
 		$epath = pg_escape_string($path);
-		$object = false;
+		$object = null;
 
 		$nodes_tbl = $this->tbl_prefix."nodes";
 		$objects_tbl = $this->tbl_prefix."objects";
@@ -1111,11 +1111,11 @@ class postgresqlstore extends store {
 		$path=pg_escape_string($path);
 
 		$substr_s = strlen($path);
-		if (preg_match("/^(.*)\{([0-9]:)?id\}(.*)/",$mask,$matches)) { 
+		if (preg_match("/^(.*)\{([0-9]+:)?id\}(.*)/",$mask,$matches)) {
 			$subid = 0;
 			$mask_pre = $matches[1];
 			$substr_s += strlen($mask_pre)+1;
-			$substr_l = intval(substr($matches[2], 0, 1));
+			$substr_l = intval(substr($matches[2], 0, -1));
 			$mask_post= $matches[3];
 			$query_string = 
 				"select max(substr(path, $substr_s, $substr_l)) as id ".
