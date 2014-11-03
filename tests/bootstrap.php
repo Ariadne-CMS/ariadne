@@ -1,8 +1,8 @@
 <?php
 
-	global $store_config,$AR,$ariadne,$ax_config,$ARCurrent,$ARConfig,$arLoader;
+	global $store_config,$AR,$ariadne,$ax_config,$ARCurrent,$ARConfig,$ARLoader;
 	$ariadne = getcwd().'/lib/';
-	$arLoader = 'cmd';
+	$ARLoader = 'cmd';
 
 	require_once($ariadne.'/bootstrap.php');
 	require_once(AriadneBasePath .'/configs/axstore.phtml');
