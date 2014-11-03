@@ -14,6 +14,8 @@
 	require_once(AriadneBasePath."/configs/authentication.phtml");
 	require_once(AriadneBasePath."/configs/store.phtml");
 	require_once(AriadneBasePath."/ar.php");
+	require_once(AriadneBasePath."/modules/mod_debug.php");
+
 
 	if ($workspace = getenv("ARIADNE_WORKSPACE")) {
 		include_once($store_config['code']."modules/mod_workspace.php");
@@ -38,7 +40,6 @@
 	require_once(AriadneBasePath."/stores/".$store_config["dbms"]."store.phtml");
 
 	require_once(AriadneBasePath."/modules/mod_session.phtml");
-	require_once(AriadneBasePath."/modules/mod_debug.php");
 	require_once(AriadneBasePath."/modules/mod_auth/".$auth_config['method'].".php");
 
 	include(AriadneBasePath."/nls/".$AR->nls->default);
