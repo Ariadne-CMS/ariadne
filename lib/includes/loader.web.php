@@ -38,7 +38,6 @@
 	define('LD_ERR_ACCESS', -1);
 	define('LD_ERR_SESSION', -2);
 
-	include_once($store_config['code']."modules/mod_debug.php");
 	include_once($store_config['code']."includes/loader.web.auth.php");
 	include_once($store_config['code']."objects/pobject.phtml");
 	

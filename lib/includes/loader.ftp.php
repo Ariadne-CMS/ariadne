@@ -32,8 +32,6 @@
 
     ******************************************************************/
 
-	include_once($store_config['code']."modules/mod_debug.php");
-	
 	$DB["method"]["loader"] = false;
 	$DB["method"]["file"] = true;
 	$DB["method"]["syslog"] = true;
