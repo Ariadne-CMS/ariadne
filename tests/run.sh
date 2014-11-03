@@ -1,7 +1,6 @@
 #!/bin/bash
 
 set -e
-set -x
 
 if [ "${TRAVIS}" = "true" ] ; then
 	BUILDROOT="${TRAVIS_BUILD_DIR}"
@@ -257,8 +256,12 @@ fi
 PHPUNIT=`which phpunit`
 
 if [ ! -z "${PHPUNIT}" ] ; then
-	${PHPUNIT} --bootstrap tests/bootstrap.php tests/unit/
+	${PHPUNIT} --version
+	${PHPUNIT} --verbose --bootstrap tests/bootstrap.php tests/unit/
+	echo $?
 else
 	echo "phpunit not found"
 	exit 1
 fi
+
+echo "Test run done"
