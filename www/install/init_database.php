@@ -2,8 +2,9 @@
 	require_once("../ariadne.inc");
 	require_once($ariadne . "/bootstrap.php");
 
-	require_once($ariadne."/configs/axstore.phtml");
-	include_once( $store_config['code']."stores/".$ax_config["dbms"]."store.phtml");
+	require_once( AriadneBasePath . "/configs/axstore.phtml");
+	require_once( AriadneBasePath . "stores/".$ax_config["dbms"]."store.phtml");
+	require_once( AriadneBasePath . "/stores/".$store_config["dbms"]."store_install.phtml");
 
 	$ERRMODE="text";
 
