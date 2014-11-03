@@ -1,6 +1,6 @@
 <?php
 
-	global $store_config,$AR,$ariadne,$ax_config,$ARCurrent,$ARConfig;
+	global $store_config,$AR,$ariadne,$ax_config,$ARCurrent,$ARConfig,$arLoader;
 	$ariadne = getcwd().'/lib/';
 	$arLoader = 'cmd';
 
