@@ -36,7 +36,7 @@ class StoreTest extends PHPUnit_Framework_TestCase
 		global $store;
 		$partial = './frop';
 		$res = $store->make_path(TESTBASE,$partial);
-		$this->assertEquals($res, TESTBASE . 'frop/');
+		$this->assertEquals(TESTBASE . 'frop/', $res);
 	}
 
 	function testNotExists(){
@@ -55,13 +55,13 @@ class StoreTest extends PHPUnit_Framework_TestCase
 		self::testNew('storeTest-nextID');
 
 		$id = $store->get_nextid($testpath);
-		$this->assertEquals($id,'00001');
+		$this->assertEquals('00001', $id);
 
 		// create object with ID 
 		self::testNew('storeTest-nextID/'.$id);
 
-		$id = $store->get_nextid($testpath,'{10:id}');
-		$this->assertEquals($id,'0000000002');
+		$id = $store->get_nextid($testpath,'{5:id}');
+		$this->assertEquals('00002', $id);
 	}
 
 	function testNew($path="storeTest-new"){
@@ -71,7 +71,7 @@ class StoreTest extends PHPUnit_Framework_TestCase
 
 		// create object
 		$ret = $store->save($store->make_path('/',$testpath),'pobject',new object());
-		$this->assertEquals($ret,$testpath);
+		$this->assertEquals($testpath, $ret);
 		return $ret;
 	}
 
@@ -85,21 +85,21 @@ class StoreTest extends PHPUnit_Framework_TestCase
 
 		// create object
 		$ret = $store->save($store->make_path('/',$testpath),'pobject',new object());
-		$this->assertNotEquals($ret,$testpath);
+		$this->assertNotEquals($testpath, $ret);
 
 		$prep = str_replace ( '{5:id}', $id, $testpath);
-		$this->assertEquals($ret,$prep);
+		$this->assertEquals($prep, $ret);
 
 		// secondairy
 		$id = $store->get_nextid(TESTBASE, $mask);
 
 		// create object
 		$ret2 = $store->save($store->make_path('/',$testpath),'pobject',new object());
-		$this->assertNotEquals($ret2,$testpath);
-		$this->assertNotEquals($ret2,$ret);
+		$this->assertNotEquals($testpath, $ret2);
+		$this->assertNotEquals($ret, $ret2);
 
 		$prep = str_replace ( '{5:id}', $id, $testpath);
-		$this->assertEquals($ret2,$prep);
+		$this->assertEquals($prep, $ret2);
 	}
 
 	function testSave() {
@@ -108,16 +108,16 @@ class StoreTest extends PHPUnit_Framework_TestCase
 
 		$dbobj = $store->get($path);
 		$row1 = $store->call('system.get.phtml','',$dbobj);
-		$this->assertNotEquals($row1->data->test,'2');
+		$this->assertNotEquals('2', $row1->data->test);
 
 		$data = new object();
 		$data->test = "2";
 		$ret = $store->save($path,'pobject',$data);
-		$this->assertEquals($ret, $path);
+		$this->assertEquals($path, $ret);
 
 		$dbobj = $store->get($path);
 		$row2 = $store->call('system.get.phtml','',$dbobj);
-		$this->assertNotEquals($row2->data->test,'2');
+		$this->assertNotEquals('2', $row2->data->test);
 	}
 
 	function testDelete() {
