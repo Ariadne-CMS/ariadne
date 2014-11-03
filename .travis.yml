@@ -32,6 +32,7 @@ before_script:
 
 script:
     - bash ./tests/run.sh
+    - phpunit --verbose --bootstrap tests/bootstrap.php tests/unit/
 
 notifications:
     email: false

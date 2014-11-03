@@ -253,19 +253,5 @@ if [ ${SYNTAX_ERROR_COUNT} -ge 1 ]; then
 	cat ${TMPDIR}/syntax.errors.txt
 	exit 1;
 fi
-PHPUNIT=`which phpunit`
 
-if [ ! -z "${PHPUNIT}" ] ; then
-	echo "phpunit version:"
-	${PHPUNIT} --version
-	echo "running phpunit:"
-	${PHPUNIT} --verbose --bootstrap tests/bootstrap.php tests/unit/
-	EXITCODE=$?
-	echo -n "phpunit exit code: "
-	echo ${EXITCODE}
-else
-	echo "phpunit not found"
-	exit 1
-fi
-
-echo "Test run done"
+echo "Tests done"
