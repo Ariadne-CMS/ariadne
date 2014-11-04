@@ -333,7 +333,6 @@ class mysql_compiler extends sql_compiler {
 
 		$join = "";
 		if (is_array($this->nls_join)) {
-			$join = join($this->nls_join);
 			$join = implode("", $this->nls_join);
 		}
 
