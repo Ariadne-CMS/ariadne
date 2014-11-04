@@ -35,5 +35,3 @@ class ar_beta_lessc extends arBase {
 		}
 	}
 }
-
-?>

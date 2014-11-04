@@ -797,5 +797,3 @@ class hn_captcha
 
 
 } // END CLASS hn_CAPTCHA
-
-?>

@@ -170,5 +170,3 @@ class ar_connect_xmlrpcDocumentor extends arBase implements Ripcord_Documentor_I
 		echo $this->documentation;
 	}
 }
-
-?>

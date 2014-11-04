@@ -209,5 +209,3 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 	}
 
 }
-
-?>

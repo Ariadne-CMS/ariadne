@@ -279,5 +279,3 @@
 			return edit::isEmpty($var);
 		}
 	}
-
-?>

@@ -214,6 +214,3 @@ class pinp_geo extends geo {
 	function _rd2wgs($x,$y) { return parent::rd2wgs($x,$y); }
 
 }
-
-
-?>

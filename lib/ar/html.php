@@ -293,4 +293,3 @@
 			return call_user_func_array( array( 'ar_html', 'nodes'), $params );
 		}
 	}
-?>

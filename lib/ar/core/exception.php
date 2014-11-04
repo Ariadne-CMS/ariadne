@@ -22,5 +22,3 @@
 	class ar_exceptionConfigError extends Exception implements ar_exception { }
 
 	class ar_exceptionAuthenticationError extends Exception implements ar_exception { }
-
-?>

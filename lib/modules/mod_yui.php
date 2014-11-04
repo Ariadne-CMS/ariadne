@@ -708,4 +708,3 @@
 			return $result;
 		}
 	}
-?>

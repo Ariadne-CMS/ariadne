@@ -420,5 +420,3 @@ abstract class store {
 	}
 
 } // end class store
-
-?>

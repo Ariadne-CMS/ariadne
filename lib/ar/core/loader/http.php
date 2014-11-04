@@ -267,5 +267,3 @@
 			return $me->make_url( $path, $nls, $session, $https, $keephost );
 		}
 	}
-
-?>

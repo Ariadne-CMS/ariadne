@@ -114,5 +114,3 @@ class mysql_workspaces_compiler extends mysql_compiler {
 	}
 
   }
-
-?>

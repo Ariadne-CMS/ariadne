@@ -110,4 +110,3 @@
 	function ldGetRequestedHost() {
 		// dummy function
 	}
-?>

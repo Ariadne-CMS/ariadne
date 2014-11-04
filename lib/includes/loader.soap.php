@@ -303,5 +303,3 @@
 	function ldGetRequestedHost() {
 		// dummy function
 	}
-
-?>

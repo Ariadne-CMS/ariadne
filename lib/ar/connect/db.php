@@ -71,4 +71,3 @@ class ar_connect_dbClient extends arWrapper implements Iterator {
 	}
 
 }
-?>

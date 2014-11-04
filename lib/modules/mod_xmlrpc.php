@@ -184,5 +184,3 @@ class pinp_XMLRPC extends XMLRPC {
 		return $this->call( $url, $function, $arguments );
 	}
 }
-
-?>

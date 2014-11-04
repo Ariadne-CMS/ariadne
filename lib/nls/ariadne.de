@@ -259,6 +259,3 @@
 //	$ARnls["err:svn:enterURL"]                      =    "Please enter a valid SVN repository URL."; // value from english
 //	$ARnls["err:svn:leaving_recurse_tree"]          =    "This repository is not part of the repository tree of the parent."; // value from english
 //	$ARnls["err:typetree_does_not_allow"]           =    "Typetree does not allow this object type here"; // value from english
-
-
-?>

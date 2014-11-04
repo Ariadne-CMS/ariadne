@@ -252,6 +252,3 @@
 	$ARnls["err:svn:enterURL"]                      =    "Please enter a valid SVN repository URL.";
 	$ARnls["err:svn:leaving_recurse_tree"]          =    "This repository is not part of the repository tree of the parent.";
 	$ARnls["err:typetree_does_not_allow"]           =    "Typetree does not allow this object type here";
-
-
-?>

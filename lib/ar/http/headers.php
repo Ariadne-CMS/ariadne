@@ -164,4 +164,3 @@
 			self::$statusCodes[$statusCode] = $statusMessage;
 		}
 	}
-?>

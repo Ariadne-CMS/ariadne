@@ -352,5 +352,3 @@ class postgresql_compiler extends sql_compiler {
 	}
 
   }
-
-?>

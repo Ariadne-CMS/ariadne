@@ -548,4 +548,3 @@
 	}
 
 	spl_autoload_register('ar::autoload');
-?>

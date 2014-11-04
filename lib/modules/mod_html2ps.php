@@ -226,4 +226,3 @@
 			return html2ps::generate($config);
 		}
 	}
-?>

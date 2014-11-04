@@ -392,6 +392,3 @@
 	$ARnls["years"]                                 =    "Jahre";
 	$ARnls["yes"]                                   =    "Ja";
 	$ARnls["zipcode"]                               =    "PLZ";
-
-
-?>

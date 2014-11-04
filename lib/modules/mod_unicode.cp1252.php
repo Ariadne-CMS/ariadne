@@ -257,4 +257,3 @@
 	$table[253] = "\xc3\xbd";
 	$table[254] = "\xc3\xbe";
 	$table[255] = "\xc3\xbf";
-?>

@@ -400,4 +400,3 @@
 			return $result;
 		}
 	}
-?>

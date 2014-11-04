@@ -532,4 +532,3 @@ class import_wddx {
 		xml_parser_free($this->xml_parser);
 	}
 }
-?>

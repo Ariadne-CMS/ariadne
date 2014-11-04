@@ -247,5 +247,3 @@ class pinp_DB_result {
 		return $AR->DB_result_list[$this->key]->getRowCounter();
 	}
 }
-
-?>

@@ -25,4 +25,3 @@
 			return trim(@mcrypt_decrypt($this->encoding, $this->key, base64_decode($value), MCRYPT_MODE_CBC), "\0");
 		}
 	}
-?>

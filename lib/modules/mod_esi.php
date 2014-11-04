@@ -264,4 +264,3 @@ class ESI {
 		return $page;
 	}
 }
-?>

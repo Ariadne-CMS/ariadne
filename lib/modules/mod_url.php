@@ -200,5 +200,3 @@ class pinp_URL {
 		return URL::ARtoRAW($page);
 	}
 }
-
-?>

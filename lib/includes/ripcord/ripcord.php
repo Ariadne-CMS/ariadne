@@ -353,4 +353,3 @@ class Ripcord_RemoteException extends Exception implements Ripcord_Exception { }
 if (function_exists('spl_autoload_register')) {
 	spl_autoload_register('ripcord::load');
 }
-?>

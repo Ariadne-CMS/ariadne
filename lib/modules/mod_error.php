@@ -50,6 +50,3 @@ class pinp_error extends error {
 	}
 
 }
-
-
-?>

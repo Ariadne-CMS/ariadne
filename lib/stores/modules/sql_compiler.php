@@ -496,4 +496,3 @@ abstract class sql_compiler {
 
 
   }
-?>

@@ -303,5 +303,3 @@ class hn_captcha_X1 extends hn_captcha
 
 
 } // END CLASS hn_CAPTCHA_X1
-
-?>

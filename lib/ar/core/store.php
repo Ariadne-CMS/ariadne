@@ -40,5 +40,3 @@
 			return $store->parents( $path );
 		}
 	}
-
-?>

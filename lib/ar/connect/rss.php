@@ -90,4 +90,3 @@ class ar_connect_rssClient extends ar_xmlDataBinding {
 				->bind( $item->getAttribute('type'), 'type');
 	}
 }
-?>

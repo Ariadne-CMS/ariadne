@@ -8,5 +8,3 @@
 			return $html2text->convert();
 		}
 	}
-
-?>

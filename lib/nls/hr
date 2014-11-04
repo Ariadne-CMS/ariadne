@@ -380,6 +380,3 @@
 	$ARnls["years"]                                 =    "Godina";
 	$ARnls["yes"]                                   =    "Da";
 	$ARnls["zipcode"]                               =    "Poštanski broj";
-
-
-?>

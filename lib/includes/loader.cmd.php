@@ -174,5 +174,3 @@
 		// dummy function
 		return false;
 	}
-
-?>

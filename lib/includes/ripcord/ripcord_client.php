@@ -575,5 +575,3 @@ class Ripcord_Transport_CURL implements Ripcord_Transport
 		return $contents;
 	}
 }
-
-?>

@@ -3038,5 +3038,3 @@ class soap_parser extends nusoap_base {
                 }
         }
 }
-
-?>

@@ -208,5 +208,3 @@ class export_wddx {
 
 
 }
-
-?>

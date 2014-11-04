@@ -62,4 +62,3 @@ Documentation
 =============
 
 The full API documentation is included in the docs/ directory.
-

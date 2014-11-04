@@ -411,4 +411,3 @@ class pinp_htmlcleaner extends htmlcleaner {
 	}
 
 }
-?>

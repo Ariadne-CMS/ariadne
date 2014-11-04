@@ -82,6 +82,3 @@
 		* add grouping
 		* add object filtering
 	*/
-
-
-?>

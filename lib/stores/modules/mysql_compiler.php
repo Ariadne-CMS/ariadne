@@ -371,5 +371,3 @@ class mysql_compiler extends sql_compiler {
 	}
 
   }
-
-?>

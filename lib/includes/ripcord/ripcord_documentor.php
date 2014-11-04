@@ -582,5 +582,3 @@ class Ripcord_Documentor_Parser_phpdoc implements Ripcord_Documentor_Parser
 		return $line;
 	}
 }
-
-?>

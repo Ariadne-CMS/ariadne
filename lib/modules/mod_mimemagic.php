@@ -785,5 +785,3 @@
 
 		return $mimetype;
 	}
-
-?>

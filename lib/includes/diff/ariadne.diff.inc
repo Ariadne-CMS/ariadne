@@ -152,5 +152,3 @@ class AriadneDiffFormatter extends DiffFormatter {
     }
   }
 }
-
-?>

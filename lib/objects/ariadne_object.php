@@ -3364,4 +3364,3 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 } // end of ariadne_object class definition
-?>

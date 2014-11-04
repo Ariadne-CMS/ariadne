@@ -319,6 +319,3 @@
 			return false;
 		}
 	}
-
-
-?>

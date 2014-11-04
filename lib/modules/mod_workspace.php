@@ -149,5 +149,3 @@
 			return workspace::activate($path, $workspace);
 		}
 	}
-
-?>

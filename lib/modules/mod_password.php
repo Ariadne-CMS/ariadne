@@ -204,5 +204,3 @@ class pinp_password extends password {
 		return password::generate( $size, $pw_flags );
 	}
 }
-
-?>

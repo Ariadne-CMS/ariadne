@@ -31,5 +31,3 @@
 		public function handleException( $exception );
 		public function isCacheable();
 	}
-
-?>

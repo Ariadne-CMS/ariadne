@@ -1074,5 +1074,3 @@ class WordLevelDiff extends MappedDiff {
     return $lines;
   }
 }
-
-?>

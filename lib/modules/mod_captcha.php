@@ -180,5 +180,3 @@
 			return captcha::getFormField();
 		}
 	}
-
-?>

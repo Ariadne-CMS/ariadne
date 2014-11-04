@@ -462,5 +462,3 @@ function PutLink($URL,$txt)
 
 //End of class
 }
-
-?>

@@ -233,4 +233,3 @@
 			return $this->rules->getVariable( $name );
 		}
 	}
-?>

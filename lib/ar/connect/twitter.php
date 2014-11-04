@@ -295,5 +295,3 @@ class ar_connect_twitterClient extends arBase {
 	}
 
 }
-
-?>
