@@ -307,15 +307,7 @@
 
 
 	class ar_error extends ar_exceptionDefault {
-		var $message;
-		var $code;
 		static $throwExceptions = false;
-
-		public function __construct($message = null, $code = null, $previous = null) {
-			$this->message  = $message;
-			$this->code     = $code;
-			$this->previous = $previous;
-		}
 
 		public function __call($name, $arguments) {
 			if (($name[0]==='_')) {
