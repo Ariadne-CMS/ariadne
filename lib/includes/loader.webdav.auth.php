@@ -62,6 +62,7 @@
 
 	function ldGetCredentials() {
 		debug("ldGetCredentials()","object");
+		$ARCookie = $_COOKIE["ARCookie"];
 		$cookie=json_decode($ARCookie,true);
 		if ($cookie === null) {
 			$cookie=unserialize($ARCookie);

@@ -257,11 +257,12 @@
 		$cookie = false;
 
 		if( $_COOKIE[$cookiename] && !($cookiename == "ARCookie")) {
+			$ARUserCookie = $_COOKIE[$cookiename];
 
 			debug("ldGetUserCookie() = $ARUserCookie","object");
-			$cookie=json_decode($ARCookie,true);
+			$cookie=json_decode($ARUserCookie,true);
 			if ($cookie === null) {
-				$cookie=unserialize($ARCookie);
+				$cookie=unserialize($ARUserCookie);
 			}
 		}
 		return $cookie;
