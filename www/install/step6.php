@@ -107,7 +107,7 @@
 			$fh = fopen($location, "w");
 			fwrite($fh, "<?php\n");
 			fwrite($fh, $configfile);
-			fwrite($fh, "?>\n");
+			fwrite($fh, "\n");
 			fclose($fh);
 		}
 
