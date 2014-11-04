@@ -30,7 +30,7 @@
 					"value" => $ARnls["move"]
 				),
 			);
-       		}
+		}
 
 		$wgWizTitle = $ARnls["move"];
 		$wgWizHeader = $wgWizTitle;

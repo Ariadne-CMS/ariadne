@@ -8,14 +8,14 @@
 			$this->config = $config;
 		}
 
-	 	function storeExternalUser($login, $userData) {
-	 	global $AR, $store;
-	 		// become admin for the moment
+		function storeExternalUser($login, $userData) {
+		global $AR, $store;
+			// become admin for the moment
 			$aLogin		= $this->config["import_user_by"];
-	 		$AR->user	= current($store->call("system.get.phtml", "", $store->find("/system/users/", "login.value='$aLogin' and object.implements='puser'")));
+			$AR->user	= current($store->call("system.get.phtml", "", $store->find("/system/users/", "login.value='$aLogin' and object.implements='puser'")));
 
-	 		$user = $this->getUser($login);
-	 		if ($user !== true) {
+			$user = $this->getUser($login);
+			if ($user !== true) {
 				$user_dir		= $this->config["import_user_directory"];
 				$user_profile		= $this->config["import_user_profile"];
 				$user_type		= $this->config["import_user_type"];
@@ -23,23 +23,23 @@
 					$user_type = "puser";
 				}
 
-	 			debug("ldAuthRadius: user ($login) didn't exist before: creating", "all");
+				debug("ldAuthRadius: user ($login) didn't exist before: creating", "all");
 				$data = $userData;
-	 			$data["arNewFilename"] = "$user_dir$login/";
+				$data["arNewFilename"] = "$user_dir$login/";
 				$data["profile"] = $user_profile;
 				$data["setowner"] = true;
 
-	 			$user = $store->newobject(
-	 						"$user_dir$login/",
-	 						"$user_dir",
-	 						"$user_type",
-	 						new object);
+				$user = $store->newobject(
+							"$user_dir$login/",
+							"$user_dir",
+							"$user_type",
+							new object);
 
-	 			$user->arIsNewObject = true;
-	 			$user->call('system.save.data.phtml', $data);
+				$user->arIsNewObject = true;
+				$user->call('system.save.data.phtml', $data);
 
 				return $user;
-	 		} else {
+			} else {
 				// $AR->user was set by getUser and contains the correct user now.
 				return $AR->user;
 			}
