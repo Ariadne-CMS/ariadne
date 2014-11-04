@@ -8,6 +8,7 @@
 	$OK = "\x1B[1m\x1B[32m[OK]\x1B[0m";
 	$FAILED = "\x1B[1m\x1B[31m[FAILED]\x1B[0m";
 	$COLS = 50;
+	$silent = false;
 
 	if (($argv[1] == '--silent') || ($argv[1] == '-s')) {
 		$silent = true;
