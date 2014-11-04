@@ -409,7 +409,7 @@ class mysql_workspacesstore extends mysqlstore {
 			$query_string="select distinct($nodes_tbl.path), $nodes_tbl.parent, $nodes_tbl.priority, $objects_tbl.id, $objects_tbl.type, $objects_tbl.object, UNIX_TIMESTAMP($objects_tbl.lastchanged) as lastchanged, $objects_tbl.vtype from $objects_tbl, $nodes_tbl where $objects_tbl.id=$nodes_tbl.object and $nodes_tbl.layer = 0 and $nodes_tbl.parent='$epath' order by $nodes_tbl.priority DESC, $nodes_tbl.path";
 		}
 		$result["method"]="ls";
-		$result["path"]=$path; 
+		$result["path"]=$path;
 		$result["list"]= $this->store_run_query($query_string);
 		return $result;
 	}
@@ -527,31 +527,31 @@ class mysql_workspacesstore extends mysqlstore {
 							break;
 						}
 						$evaluename=AddSlashes($valuename);
-						if ($value=="") { 
+						if ($value=="") {
 							// empty strings as value generate strange results in SQL land
 							$value=0;
 						}
 						switch($property) {
 							case "object" :
 								switch($valuename) {
-									case ("type") : 
-										$where.=" and $objects_tbl.type $ecompare $value ";
+									case ("type") :
+										$where.=" and $objects_tbl.type $ecompare '".addSlashes($value)."' ";
 									 	break;
-									case ("implements") : 
+									case ("implements") :
 										$types=", $types_tbl";
-										$where.=" and ( $types_tbl.implements $ecompare $value and $objects_tbl.vtype=$types_tbl.type ) ";
+										$where.=" and ( $types_tbl.implements $ecompare '".addSlashes($value)."' and $objects_tbl.vtype=$types_tbl.type ) ";
 										break;
 									case ("parent") :
-										$where.=" and $nodes_tbl.parent $ecompare $value ";
+										$where.=" and $nodes_tbl.parent $ecompare '".addSlashes($value)."' ";
 										break;
 									case ("lastchanged") :
 										$value = date("YmdHis", $value);
-										$where.=" and $objects_tbl.lastchanged $ecompare $value ";
+										$where.=" and $objects_tbl.lastchanged $ecompare '".addSlashes($value)."' ";
 										break;
 								}
 								break;
 							default :
-								$where.=$this->tbl_prefix."prop_$eproperty.AR_$evaluename $ecompare $value and "; 
+								$where.=$this->tbl_prefix."prop_$eproperty.AR_$evaluename $ecompare '".addSlashes($value)."' and ";
 						}
 					}
 				}
