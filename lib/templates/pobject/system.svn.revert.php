@@ -10,7 +10,7 @@
 		$fstore	= $this->store->get_filestore_svn("templates");
 		$svn	= $fstore->connect($this->id, $username, $password);
 		$status = $fstore->svn_status($svn);
-		
+
 		if ($status) {
 			$templates = array();
 			if( $type && $function && $language ) {
@@ -18,7 +18,7 @@
 				if( $status[$filename] != '?' ) {
 					$props = $fstore->svn_get_ariadne_props($svn, $filename);
 					echo "<span class='svn_addtemplateline'>Reverting ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
-					$fstore->svn_revert($svn, $filename);					
+					$fstore->svn_revert($svn, $filename);
 					$templates[] = $fstore->get_path($svn, $filename);
 				}
 			} else {
@@ -28,11 +28,11 @@
 					} else {
 						$props = $fstore->svn_get_ariadne_props($svn, $filename);
 						echo "<span class='svn_addtemplateline'>Reverting ".$this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".( $props["ar:default"] == '1' ? $ARnls["default"] : "")."</span>\n";
-						$fstore->svn_revert($svn, $filename);					
+						$fstore->svn_revert($svn, $filename);
 						$templates[] = $fstore->get_path($svn, $filename);
 					}
 				}
-				
+
 			}
 
 			$this->call(

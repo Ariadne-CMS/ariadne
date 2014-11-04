@@ -1,6 +1,6 @@
 <?php
 	$ariadne = '';
-	
+
 	function check_php_version() {
 		if (version_compare(PHP_VERSION, '5.3.0', '>=')) {
 			return true;
@@ -187,7 +187,7 @@
 
 	function check_svn() {
 		if (
-			check_svn_class() && 
+			check_svn_class() &&
 			check_svn_binary()
 		) {
 			return true;
@@ -212,7 +212,7 @@
 		}
 		return false;
 	}
-		
+
 	function check_svn_write() {
 		@include("../ariadne.inc");
 		if (is_writeable($ariadne . "/configs/svn/")) {
@@ -290,7 +290,7 @@
 	function check_db_grants_mysql($conf) {
 		if (check_connect_db_mysql($conf) && check_select_db_mysql($conf)) {
 			$query = "SHOW GRANTS FOR CURRENT_USER();";
-			
+
 			$result = mysql_query($query);
 			while ($row = mysql_fetch_row($result)) {
 				if (preg_match("/^GRANT ALL/", $row[0])) {
@@ -312,7 +312,7 @@
 
 	function check_db_grants_postgresql($conf) {
 		if ( check_select_db_postgresql($conf) ) {
-			$query = "SELECT has_database_privilege ( '".$conf->database."', 'CREATE' );"; 
+			$query = "SELECT has_database_privilege ( '".$conf->database."', 'CREATE' );";
 			$result = pg_query( $query );
 			while ( $row = pg_fetch_row( $result ) ) {
 				if ( $row[0]=='t' ) {
@@ -322,7 +322,7 @@
 		}
 		return false;
 	}
-	
+
 	function check_connect_db_mysql($conf) {
 		if(@mysql_pconnect($conf->host, $conf->user, $conf->password)) {
 			return true;
@@ -478,7 +478,7 @@
 	function find_in_path($needle,array $extrapath=array()) {
 		$paths = explode(PATH_SEPARATOR,getServerVar('PATH'));
 		$paths = array_merge($paths,$extrapath);
-				
+
 		$exts = explode(PATH_SEPARATOR, getServerVar('PATHEXT'));
 
 		foreach($paths as $path){
@@ -486,7 +486,7 @@
 			if(file_exists($file)) {
 				return $file;
 			}
-			
+
 			// W32 needs this
 			foreach ($exts as $ext) {
 				if(file_exists($file.$ext)) {
@@ -502,7 +502,7 @@
 		"check_php_version" => check_php_version(),		// php => 5.0.0
 		"check_database_support" => check_database_support(),	// MySQL or Postgres
 		"check_webserver" => check_webserver(),			// Apache, IIS, NGINX?
-		"check_accept_path_info" => check_accept_path_info(),	// Apache config: AcceptPathInfo 
+		"check_accept_path_info" => check_accept_path_info(),	// Apache config: AcceptPathInfo
 		"check_zend_compat" => check_zend_compat(),		// zend.ze1_compatibility_mode = Off
 		"check_ariadne_inc_read" => check_ariadne_inc_read(),	// Check if configuration file (ariadne.inc) can be read bij www-data
 		"check_ariadne_path" => check_ariadne_path(),		// Check if path in ariadne.inc looks like an Ariadne tree

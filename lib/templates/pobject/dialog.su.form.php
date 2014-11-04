@@ -36,5 +36,5 @@
 			<div class="clear"></div>
 		</div>
 </fieldset>
-<?php	} 
+<?php	}
 ?>

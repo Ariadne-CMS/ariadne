@@ -26,20 +26,20 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 	public $defaultLanguage = null;
 
 	public function __construct( $baseDir, $defaultLanguage, $currentLanguage = null, $defaultVarName = "ARnls" ) {
-	
+
 		$this->baseDir = $baseDir;
 		$this->defaultVarName = $defaultVarName;
-	
+
 		if( !isset($currentLanguage) ) {
 			$currentLanguage = $defaultLanguage;
 		}
 
 		$this->languages[$defaultLanguage] = array();
 		$this->languages[$currentLanguage] = array();
-			
+
 		$this->defaultList = &$this->languages[$defaultLanguage];
 		$this->currentList = &$this->languages[$currentLanguage];
-		
+
 		$this->currentLanguage = $currentLanguage;
 		$this->defaultLanguage = $defaultLanguage;
 
@@ -56,7 +56,7 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 		$this->currentList = &$this->languages[$language];
 		$this->currentLanguage = $language;
 		$this->load();
-		
+
 		foreach( $this->loaded as $section => $nlslist ) {
 			if( !isset($nlslist[$language]) ) {
 				$this->load($section);
@@ -64,11 +64,11 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 		}
 		return $this;
 	}
-	
+
 	public function getLanguage( $language = null ) {
 		return isset($language) ? $this->languages[$language] : $this->currentList;
 	}
-	
+
 	public function load( $section = "", $nls = null, $varName = null ) {
 		if( !isset($nls) ) {
 			$nls = $this->currentLanguage;
@@ -76,7 +76,7 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 		if( !isset($varName) ) {
 			$varName = $this->defaultVarName;
 		}
-		
+
 		$nls = preg_replace('|[^a-z]*|i','',$nls);
 		$re = '|[^a-z-_.:0-9/]*|i';				// only allow 'normal' characters
 		$section = str_replace('//', '/', 			// protects against urls in the form of //google.com
@@ -96,7 +96,7 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 				include($fullFile);
 				$this->languages[$nls] = array_merge((array)$this->languages[$nls], (array)$$varName);
 			}
-		} elseif( !$this->loaded[$sectionCacheName][$nls] ) { 
+		} elseif( !$this->loaded[$sectionCacheName][$nls] ) {
 			$this->loaded[$sectionCacheName][$nls] = true;
 			$fullFile = $this->baseDir.$section.".".$nls;
 			if( file_exists($fullFile) ) {
@@ -112,7 +112,7 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 					// the problem is that there is no arCurrentObject pushed on the stack
 					// generally we can just return and nothing serious will happen
 					debug('No current object found on the context stack, skipping loadtext', 'all');
-					return $this;					
+					return $this;
 				}
 				$arResult = $ARCurrent->arResult;
 				$me->pushContext(array());
@@ -124,7 +124,7 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 					$ARCurrent->allnls = $oldAllnls;
 					$me->reqnls = $oldnls;
 				$me->popContext();
-				
+
 				$nlsarray = array();
 				if( is_array($ARCurrent->arResult) ) {
 					$nlsarray = $ARCurrent->arResult;
@@ -141,7 +141,7 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 	}
 
 	/* ArrayAccess */
-	
+
 	public function offsetSet( $offset, $value ) {
 		if ($offset == "") {
 			$this->currentList[] = $value;
@@ -185,29 +185,29 @@ class ar_nlsDictionary extends arBase implements ArrayAccess, Iterator {
 		$value = $this->getEntry( $offset );
 		return ( isset( $value ) ? $value : "{".$offset."}" );
 	}
-	
+
 	/* Iterator */
 	public function current() {
 		return current($this->currentList);
 	}
-	
+
 	public function key() {
 		return key($this->currentList);
 	}
-	
+
 	public function next() {
 		return next($this->currentList);
 	}
-	
+
 	public function rewind() {
 		return reset($this->currentList);
 	}
-	
+
 	public function valid() {
 		$value = key($this->currentList);
 		return isset($value);
 	}
-	
+
 }
 
 ?>

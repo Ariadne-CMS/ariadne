@@ -32,7 +32,7 @@
 				$data["profile"] = $user_profile;
 				$data["setowner"] = true;
 				$data["email"] = $userInfo["email"];
-                                
+
 				foreach ($userInfo as $key => $value) {
 					$data["custom"]["none"][$key] = $value;
 				}
@@ -40,9 +40,9 @@
 				$userType = $this->config["ar:userType"] ? $this->config["ar:userType"] : "puser";
 
 				$user = $store->newobject(
-							"$user_dir$login/", 
-							"$user_dir", 
-							$userType, 
+							"$user_dir$login/",
+							"$user_dir",
+							$userType,
 							new object);
 
 				$user->arIsNewObject = true;

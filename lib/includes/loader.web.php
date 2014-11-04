@@ -10,18 +10,18 @@
      This file is part of Ariadne.
 
      Ariadne is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published 
-     by the Free Software Foundation; either version 2 of the License, 
+     it under the terms of the GNU General Public License as published
+     by the Free Software Foundation; either version 2 of the License,
      or (at your option) any later version.
- 
+
      Ariadne is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU General Public License for more details.
 
      You should have received a copy of the GNU General Public License
-     along with Ariadne; if not, write to the Free Software 
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
+     along with Ariadne; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
      02111-1307  USA
 
     -------------------------------------------------------------------
@@ -40,7 +40,7 @@
 
 	include_once($store_config['code']."includes/loader.web.auth.php");
 	include_once($store_config['code']."objects/pobject.phtml");
-	
+
 	if (
 			is_array($AR->loader->web['AllowedMethods']) &&
 			!(in_array(strtoupper($_SERVER['REQUEST_METHOD']), $AR->loader->web['AllowedMethods']))
@@ -67,7 +67,7 @@
 				echo "\nERROR: $text\n";
 				break;
 			case "htmljs" :
-			default: 
+			default:
 				echo "// <b><font color='red'>Error: $text</font></b><BR>\n<!--\nalert('Error: $text');\n// -->\n";
 				break;
 		}
@@ -95,32 +95,32 @@
 
 		if ($http_post_file['error']) {
 			switch ($http_post_file['error']) {
-				case UPLOAD_ERR_INI_SIZE: 
-					$error = $ARnls['ariadne:err:upload_ini_size']; // "The uploaded file exceeds the upload_max_filesize directive in php.ini"; 
-					break; 
-				case UPLOAD_ERR_FORM_SIZE: 
-					$error = $ARnls['ariadne:err:upload_form_size']; // The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form"; 
-					break; 
-				case UPLOAD_ERR_PARTIAL: 
-					$error = $ARnls['ariadne:err:upload_partial']; // "The uploaded file was only partially uploaded"; 
-					break; 
-				case UPLOAD_ERR_NO_FILE: 
+				case UPLOAD_ERR_INI_SIZE:
+					$error = $ARnls['ariadne:err:upload_ini_size']; // "The uploaded file exceeds the upload_max_filesize directive in php.ini";
+					break;
+				case UPLOAD_ERR_FORM_SIZE:
+					$error = $ARnls['ariadne:err:upload_form_size']; // The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form";
+					break;
+				case UPLOAD_ERR_PARTIAL:
+					$error = $ARnls['ariadne:err:upload_partial']; // "The uploaded file was only partially uploaded";
+					break;
+				case UPLOAD_ERR_NO_FILE:
 					// Note: this is not an error
-					//$error = $ARnls['ariadne:err:upload_no_file']; // No file was uploaded"; 
-					break; 
-				case UPLOAD_ERR_NO_TMP_DIR: 
-					$error = $ARnls['ariadne:err:upload_no_tmp_dir']; // "Missing a temporary folder"; 
-					break; 
-				case UPLOAD_ERR_CANT_WRITE: 
-					$error = $ARnls['ariadne:err:upload_cant_write']; // "Failed to write file to disk"; 
-					break; 
-				case UPLOAD_ERR_EXTENSION: 
-					$error = $ARnls['ariadne:err:upload_extension']; // "File upload stopped by extension"; 
-					break; 
+					//$error = $ARnls['ariadne:err:upload_no_file']; // No file was uploaded";
+					break;
+				case UPLOAD_ERR_NO_TMP_DIR:
+					$error = $ARnls['ariadne:err:upload_no_tmp_dir']; // "Missing a temporary folder";
+					break;
+				case UPLOAD_ERR_CANT_WRITE:
+					$error = $ARnls['ariadne:err:upload_cant_write']; // "Failed to write file to disk";
+					break;
+				case UPLOAD_ERR_EXTENSION:
+					$error = $ARnls['ariadne:err:upload_extension']; // "File upload stopped by extension";
+					break;
 
-				default: 
-					$error = sprintf($ARnls['ariadne:err:upload_error'], $http_post_file['error']); // "Unknown upload error %s"; 
-					break; 
+				default:
+					$error = sprintf($ARnls['ariadne:err:upload_error'], $http_post_file['error']); // "Unknown upload error %s";
+					break;
 			}
 			return $result;
 		}
@@ -136,7 +136,7 @@
 				$result[$field."_temp"]=basename($file_artemp);
 				$result[$field."_size"]=(int)$http_post_file['size'];
 				$type = get_mime_type($file_artemp);
-				$ext  = substr($file, strrpos($file, '.')); 
+				$ext  = substr($file, strrpos($file, '.'));
 				if (!$type) {
 					$type = get_mime_type($file, MIME_EXT);
 				}
@@ -205,7 +205,7 @@
 					// no results: page couldn't be found, show user definable 404 message
 					$arCallArgs = (array) $eventData->arCallArgs;
 					$requestedargs = $arCallArgs;
-					$myarCallArgs = array_merge($arCallArgs, 
+					$myarCallArgs = array_merge($arCallArgs,
 						Array(	"arRequestedPath" => $requestedpath,
 						 		"arRequestedTemplate" => $requestedtemplate,
 								"arRequestedArgs" => $requestedargs
@@ -240,7 +240,7 @@
 		if ($store) { // loader.php uses this function before the store is initialized.
 			$store->root=$root;
 			$store->rootoptions=$rootoptions;
-		}	
+		}
 	}
 
 	function ldSetNls($nls) {
@@ -248,7 +248,7 @@
 
 		$session=$ARCurrent->session->id;
 		ldSetRoot($session, $nls);
-		
+
 		if( is_object( $ARnls ) ) {
 			$ARnls->setLanguage($nls);
 		}
@@ -291,7 +291,7 @@
 		}
 		ldSetRoot($session, $nls);
 	}
- 
+
 	function ldStartSession($sessionid='') {
 	global $ARCurrent, $AR, $ariadne;
 
@@ -373,7 +373,7 @@
 
 	function ldGetUserCookie($cookiename="ARUserCookie") {
 		$cookie = false;
-	
+
 		if( $_COOKIE[$cookiename] && !($cookiename == "ARCookie")) {
 
 			debug("ldGetUserCookie() = $ARUserCookie","object");

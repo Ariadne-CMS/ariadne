@@ -13,7 +13,7 @@
 		);
 
 		// no wgWizButtons set, we're defaulting
-		
+
 		$wgWizTitle=$ARnls["caching"];
    		$wgWizHeader=$wgWizTitle;
 		$wgWizHeaderIcon = $AR->dir->images.'icons/large/cache.png';

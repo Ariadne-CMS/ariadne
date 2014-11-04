@@ -13,9 +13,9 @@
 		);
 
 		$wgWizAction = $this->getdata("wgWizAction");
-		
+
 		if( $wgWizAction == "save" ) {
-			
+
 			$wgWizButtons = array(
 				"cancel" => array(
 					"value" => $ARnls["ok"]
@@ -31,7 +31,7 @@
 				),
 			);
 		}
-	
+
 		$wgWizTitle=$ARnls['ariadne:svn:unsvn'];
 		$wgWizHeader = $wgWizTitle;
 		$wgWizHeaderIcon = $AR->dir->images.'icons/large/unsvn.png';

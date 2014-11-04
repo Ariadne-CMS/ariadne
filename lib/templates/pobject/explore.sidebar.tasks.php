@@ -6,7 +6,7 @@
 	  	require_once($this->store->get_config("code")."modules/mod_yui.php");
 
 		$tasks = array();
-		
+
 		if( $this->CheckSilent("read") && $shortcutSidebar ) {
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() . "explore.html",
@@ -15,7 +15,7 @@
 				'nlslabel' => $ARnls['ariadne:browsetotarget']
 			);
 		}
-		
+
 		if ($this->CheckSilent("add",ARANYTYPE) && !$hideAdd) {
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() ."dialog.add.php",
@@ -57,14 +57,14 @@
 				'icon' => $AR->dir->images . 'icons/small/copy.png',
 				'nlslabel' => $ARnls['ariadne:copy']
 			);
-		
+
 			if ($this->CheckSilent("delete")) {
 				$tasks[] = array(
 					'href' => $this->make_ariadne_url() . "dialog.delete.php",
 					'onclick' => "muze.ariadne.explore.dialog['delete'](this.href); return false;",
 					'icon' => $AR->dir->images . 'icons/small/delete.png',
 					'nlslabel' => $ARnls['ariadne:delete']
-				);		
+				);
 			}
 		}
 		if ($this->CheckSilent("admin") && $this->can_mogrify() ) {
@@ -72,7 +72,7 @@
 				'href' => $this->make_ariadne_url() . "dialog.mogrify.php",
 				'onclick' => "muze.ariadne.explore.dialog.mogrify(this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/mogrify.png',
-				'nlslabel' => $ARnls['ariadne:mogrify']			
+				'nlslabel' => $ARnls['ariadne:mogrify']
 			);
 		}
 		if ($this->CheckSilent("config")) {
@@ -81,7 +81,7 @@
 				'onclick' => "muze.ariadne.explore.dialog.import(this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/import.png',
 				'nlslabel' => $ARnls['ariadne:import']
-			);		
+			);
 			$tasks[] = array(
 				'href' => $this->make_ariadne_url() . "dialog.export.php",
 				'onclick' => "muze.ariadne.explore.dialog.export(this.href); return false;",
@@ -95,7 +95,7 @@
 				'href' => $this->make_ariadne_url() . "dialog.su.php",
 				'onclick' => "muze.ariadne.explore.dialog.su(this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/grants.png',
-				'nlslabel' => $ARnls['ariadne:su']			
+				'nlslabel' => $ARnls['ariadne:su']
 			);
 		}
 		$tasks[] = array( // we use make_local_url specifically here.
@@ -103,12 +103,12 @@
 			'onclick' => "muze.ariadne.explore.arshow('_new', this.href); return false;",
 			'icon' => $AR->dir->images . 'icons/small/viewweb.png',
 			'nlslabel' => $ARnls['ariadne:viewweb']
-		);		
+		);
 
 		$arCallArgs["sectionName"] = "tasks";
 		$arCallArgs["sectionDisplayName"] = $ARnls["ariadne:options"];
 		$arCallArgs["icon"] = $icon;
-		
+
 		$section = array(
 			'id' => 'tasks',
 			'label' => $ARnls["ariadne:options"],

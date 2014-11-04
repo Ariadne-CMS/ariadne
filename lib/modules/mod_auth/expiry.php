@@ -1,10 +1,10 @@
 <?php
-	/* 
+	/*
 		mod_auth/expiry.php
 
 		Password expiry module to extend the default Ariadne
 		password authentication.
-		
+
 		This module provides a modified checkLogin function that
 		returns LD_ERR_EXPIRED if the password given is correct, but
 		expired. The handling of this return value is done within

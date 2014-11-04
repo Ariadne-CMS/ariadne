@@ -30,8 +30,8 @@
 				foreach( $custom as $cdnls => $cdvalues ) {
 					echo "	CustomData['".AddCSlashes($cdnls, ARESCAPE)."']=new Array();\n";
 					foreach( $cdvalues as $cdname => $cdvalue ) {
-						// Note: cdvalue doesn't need a further "Ariadne level" backslashing                                
-						// However, EOF chars need to be turned in "\n" inside the string                                   
+						// Note: cdvalue doesn't need a further "Ariadne level" backslashing
+						// However, EOF chars need to be turned in "\n" inside the string
 						//    echo "  CustomData['".AddCSlashes($cdnls, ARESCAPE)."']['".AddCSlashes($cdname, ARESCAPE)."']='".AddCSlashes($cdvalue, ARESCAPE)."';\n";
 
 						if (!is_array($cdvalue) && !is_object($cdvalue)) { // Don't show customdata with objects/arrays, the dialog cannot handle them.

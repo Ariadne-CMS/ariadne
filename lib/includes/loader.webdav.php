@@ -10,18 +10,18 @@
      This file is part of Ariadne.
 
      Ariadne is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published 
-     by the Free Software Foundation; either version 2 of the License, 
+     it under the terms of the GNU General Public License as published
+     by the Free Software Foundation; either version 2 of the License,
      or (at your option) any later version.
- 
+
      Ariadne is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU General Public License for more details.
 
      You should have received a copy of the GNU General Public License
-     along with Ariadne; if not, write to the Free Software 
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
+     along with Ariadne; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
      02111-1307  USA
 
     -------------------------------------------------------------------
@@ -67,7 +67,7 @@
 				echo "\nERROR: $text\n";
 				break;
 			case "htmljs" :
-			default: 
+			default:
 				echo "// <b><font color='red'>Error: $text</font></b><BR>\n<!--\nalert('Error: $text');\n// -->\n";
 				break;
 		}
@@ -137,7 +137,7 @@
 
 	function ldAccessDenied($path, $message) {
 	global $ARCurrent, $store;
-		/* 
+		/*
 			since there is no 'peek' function, we need to pop and push
 			the arCallArgs variable.
 		*/
@@ -152,7 +152,7 @@
 		}
 		if (!$ARCurrent->arLoginSilent) {
 			$ARCurrent->arLoginSilent = true;
-			$store->call("user.login.html", 
+			$store->call("user.login.html",
 								$arCallArgs,
 								$store->get($path) );
 		}
@@ -172,7 +172,7 @@
 		if ($store) { // loader.php uses this function before the store is initialized.
 			$store->root=$root;
 			$store->rootoptions=$rootoptions;
-		}	
+		}
 	}
 
 	function ldSetNls($nls) {
@@ -196,7 +196,7 @@
 		}
 		ldSetRoot($session, $nls);
 	}
- 
+
 	function ldStartSession($sessionid='') {
 	global $ARCurrent, $AR, $ariadne, $LD_NO_SESSION_SUPPORT;
 		if ($LD_NO_SESSION_SUPPORT) {
@@ -253,9 +253,9 @@
 	}
 
 	function ldGetUserCookie($cookiename="ARUserCookie") {
-	
+
 		$cookie = false;
-	
+
 		if( $_COOKIE[$cookiename] && !($cookiename == "ARCookie")) {
 
 			debug("ldGetUserCookie() = $ARUserCookie","object");

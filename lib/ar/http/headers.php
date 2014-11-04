@@ -1,11 +1,11 @@
 <?php
 	ar_pinp::allow('ar_http_headers');
-		
+
 	class ar_http_headers extends arBase {
 
 		public static $headers;
 		public static $enabled = true;
-	
+
 		private static $statusCodes = array(
 			100 => 'Continue',
 			101 => 'Switching Protocols',
@@ -61,7 +61,7 @@
 			509 => 'Bandwidth Limit Exceeded',
 			510 => 'Not Extended'
 		);
-			
+
 		public static function header( $header, $replace = true ) {
 			global $ARCurrent;
 			if ( headers_sent() ) {
@@ -93,7 +93,7 @@
 		public static function sent() {
 			return Headers_sent();
 		}
-		
+
 		public static function cache( $expires = null, $modified = null, $caching = true ) {
 			if ( self::$enabled ) {
 				$now = time();
@@ -124,7 +124,7 @@
 				return false;
 			}
 		}
-		
+
 		public static function disableCache() {
 			if ( self::$enabled ) {
 				return self::cache( 0, time(), false );
@@ -132,7 +132,7 @@
 				return false;
 			}
 		}
-		
+
 		public static function content($mimetype, $size=0) {
 			global $ARCurrent;
 			if ( self::$enabled ) {
@@ -148,18 +148,18 @@
 				return false;
 			}
 		}
-		
+
 		public static function redirect($URI, $statusCode=0) {
 			if ($statusCode && is_numeric($statusCode)) {
 				self::header('HTTP/1.1 '.$statusCode.' '.self::getStatusMessage($statusCode));
 			}
 			return self::header('Location: '.$URI);
 		}
-		
+
 		public static function getStatusMessage($statusCode) {
 			return self::$statusCodes[$statusCode];
 		}
-		
+
 		public static function setStatusMessage($statusCode, $statusMessage) {
 			self::$statusCodes[$statusCode] = $statusMessage;
 		}

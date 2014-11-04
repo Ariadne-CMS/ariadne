@@ -18,7 +18,7 @@
  *  - ISBN specifics: Checkdigit (string)
  *  - ISBN specifics: 'ISBNBody' (string)
  *  - ISBN specifics: 'ISBNSubbody' (string)
- *  - ISBN Version handling 
+ *  - ISBN Version handling
  *  - Syntactical Validation plus Validation based on real ISBN Data
  *  - ISBN-10 (ISO 2108) checksum calculation
  *  - Validation (ISBN-10 and ISBN-13-978)
@@ -36,7 +36,7 @@
  * @license   LGPL http://www.gnu.org/licenses/lgpl.txt
  * @version   v 0.1.6 CVS: <cvs_id>
  * @link      http://isbn.lastflood.com online docs
- * 
+ *
  * @todo      License for .js file or remove it
  * @todo      GroupTitle
  * @todo      PEAR Package.xml
@@ -139,12 +139,12 @@ class ISBN
      * @var mixed ISBN number version
      */
     var $ver = ISBN_VERSION_NONE;
-    
+
     /**
      * @var array ISBN Groups Data acting as cache
      * @see _getISBN10Groups()
-     */    
-    var $varISBN10Groups = array();    
+     */
+    var $varISBN10Groups = array();
 
     // {{{ __construct
     /**
@@ -154,7 +154,7 @@ class ISBN
      * @param mixed $ver  Optional Version Constant
      *
      * @access public
-     * 
+     *
      * @throws ISBN_Exception in case it fails
      */
     function ISBN($isbn = '', $ver = ISBN_DEFAULT_INPUTVERSION)
@@ -186,7 +186,7 @@ class ISBN
             } else {
                 /* throw new ISBN_Exception(
                  *'ISBN Version couldn\'t determined.');
-                 */                                  
+                 */
                 $ver = ISBN_VERSION_NONE;
             }
         }
@@ -319,8 +319,8 @@ class ISBN
      *
      * @access private
      */
-    function _isbnBodyParts($isbnbody, 
-                                           &$registrationgroup, 
+    function _isbnBodyParts($isbnbody,
+                                           &$registrationgroup,
                                            &$isbnsubbody)
     {
         /* validate input (should not be needed, @access private) */
@@ -383,9 +383,9 @@ class ISBN
      *
      * @access private
      */
-    function _isbnSubbodyParts($isbnsubbody, 
-                                              $groupid, 
-                                              &$registrant, 
+    function _isbnSubbodyParts($isbnsubbody,
+                                              $groupid,
+                                              &$registrant,
                                               &$publication)
     {
         /* validate input (should not be needed, @access private) */
@@ -408,14 +408,14 @@ class ISBN
             return false;
         }
         /* extract registrant based on group and registrant range
-         * parse this specific group format: 
+         * parse this specific group format:
          *  array(
          *      'English speaking area',
          *      '00-09;10-19;200-699;7000-8499;85000-89999;' .
          *         '900000-949999;9500000-9999999'
          *      );
-         */ 
-        
+         */
+
         $group = ISBN::_getISBN10Group($groupid);
         if ($group === false) {
             return false;
@@ -424,7 +424,7 @@ class ISBN
         $len = ISBN::_getRegistrantLength($isbnsubbody, $group[1]);
         if ($len === false) {
             return false;
-        }        
+        }
         $registrant  = substr($isbnsubbody, 0, $len);
         $publication = substr($isbnsubbody, $len);
         return true;
@@ -457,7 +457,7 @@ class ISBN
         if (strlen($grouprange) < 3) {
             return false;
         }
-        
+
         $sl     = strlen($isbnsubbody);
         $ranges = explode(';', $grouprange);
         foreach ($ranges as $range) {
@@ -490,11 +490,11 @@ class ISBN
             /* compare and fire if matched */
             $comparec = substr($isbnsubbody, 0, $l);
 
-            if (strcmp($fromto[0], $comparec) < 1 && 
+            if (strcmp($fromto[0], $comparec) < 1 &&
                 strcmp($fromto[1], $comparec) > -1) {
                 return $l;
             }
-        }        
+        }
         return false;
     }
     // }}}
@@ -541,17 +541,17 @@ class ISBN
     {
         /* check if data has been already loaded */
         if (sizeof($this->varISBN10Groups) > 0 ) {
-                return $this->varISBN10Groups;      
+                return $this->varISBN10Groups;
         }
-        
+
         /* load external data */
 	$t = file_get_contents($this->groups_csv);
         /* parse external data */
-        $groups = array();      
+        $groups = array();
         $tls    = explode("\n", $t);
         $line   = 0;
         foreach ($tls as $tl) {
-            $line++;            
+            $line++;
             $tlp = explode(',', $tl);
             if (sizeof($tlp) == 3) {
                 $index = intval($tlp[0]);
@@ -559,28 +559,28 @@ class ISBN
                     return new ISBN_Exception(
                         'ISBN Groups Data is invalid, Group ' .
                         $index . 'is a duplicate.'
-                    );                  
+                    );
                 }
-                /* edit+ mature: sanitize external 
+                /* edit+ mature: sanitize external
                    data */
-                $groups[$index] = array($tlp[1],$tlp[2]);                       
+                $groups[$index] = array($tlp[1],$tlp[2]);
             } else {
                 return new ISBN_Exception(
-                    'ISBN Groups Data is malformed on line #' . $line . 
+                    'ISBN Groups Data is malformed on line #' . $line .
                     ' (' . sizeof($tlp) . ').'
                 );
-            }               
+            }
         }
-        
-        /* verify minimum */    
+
+        /* verify minimum */
         if (sizeof($groups) == 0 ) {
             return new ISBN_Exception(
                 'ISBN Groups Data does not contain any valid data.'
-            );          
+            );
         }
-        
+
         $this->varISBN10Groups = $groups;
-        
+
         /* return groups */
         return $groups;
     }
@@ -708,9 +708,9 @@ class ISBN
      * Validate an ISBN value
      *
      * @param string $isbn Number to validate
-     * @param string $ver  Version to validate against     
+     * @param string $ver  Version to validate against
      *
-     * @return integer|false    Returns the Version to signal validity or false if 
+     * @return integer|false    Returns the Version to signal validity or false if
      *                            ISBN number is not valid
      *
      * @access private
@@ -771,7 +771,7 @@ class ISBN
             $registrant  = false;
             $publication = false;
 
-            $r = ISBN::_isbnSubbodyParts($subbody, $groupid, 
+            $r = ISBN::_isbnSubbodyParts($subbody, $groupid,
                                          $registrant, $publication);
             if ($r == false) {
                 return false;
@@ -824,7 +824,7 @@ class ISBN
             $registrant  = false;
             $publication = false;
 
-            $r = ISBN::_isbnSubbodyParts($subbody, $registrationgroup, 
+            $r = ISBN::_isbnSubbodyParts($subbody, $registrationgroup,
                                          $registrant, $publication);
             if ($r === false) {
                 return false;
@@ -1018,14 +1018,14 @@ class ISBN
     /**
      * converts an ISBN number from one version to another
      * can convert ISBN-10 to ISBN-13 and ISBN-13 to ISBN-10
-     * 
+     *
      * @param string  $isbnin  ISBN to convert, must be a valid ISBN Number
      * @param integer $verfrom version value of the input ISBN
      * @param integer $verto   version value to convert to
      *
      * @return string|false converted ISBN Number or false if conversion failed
      */
-    function convert($isbnin, $verfrom = ISBN_VERSION_ISBN_10, 
+    function convert($isbnin, $verfrom = ISBN_VERSION_ISBN_10,
                                    $verto = ISBN_VERSION_ISBN_13)
     {
         /* validate input */
@@ -1061,9 +1061,9 @@ class ISBN
             return $isbnout;
         case $verfrom == $verto:
             /* version is the same so there is no need to convert */
-            /* hej, praktisch! */           
-            return $isbnn;              
-        }        
+            /* hej, praktisch! */
+            return $isbnn;
+        }
         return false;
     }
     // }}}
@@ -1133,9 +1133,9 @@ class ISBN
      * Setter for the Registrationgroup Part of the ISBN Number
      *
      * @param string $group Registrationsgroup to set
-     * 
-     * @return void 
-     * 
+     *
+     * @return void
+     *
      * @throws ISBN_Exception in case it fails
      */
     function _setGroup($group)
@@ -1154,7 +1154,7 @@ class ISBN
         }
         if ($testgroup != $group) {
             return new ISBN_Exception('Invalid Group');
-        }        
+        }
         $this->isbn_group = $group;
     }
 
@@ -1162,7 +1162,7 @@ class ISBN
     /**
      * Get whole ISBN Number
      *
-     * @return string ISBN Number (unformatted); empty string if this is 
+     * @return string ISBN Number (unformatted); empty string if this is
      *                not a valid ISBN
      */
     function getISBN()
@@ -1186,7 +1186,7 @@ class ISBN
         return $isbn;
     }
     // }}}
-    
+
     // {{{ getISBNDisplayable()
     /**
      * Get whole ISBN Number in a displayable fashion (see Handbook p. 15)
@@ -1201,23 +1201,23 @@ class ISBN
      *               Example 1:
      *                  '   --' 978-0-385-33941-4
      *                  classic displayable ISBN
-     *               Example 2: 
-     *                  ' v:-' ISBN-13: 978-0385339414 
+     *               Example 2:
+     *                  ' v:-' ISBN-13: 978-0385339414
      *                  ISBN-Format used by amazon
-     *               Example 3: 
-     *                  'iv:=' ISBN-13: 978-0-385-33941-4  
+     *               Example 3:
+     *                  'iv:=' ISBN-13: 978-0-385-33941-4
      *                  full blown: more is more!
-     *   
-     * @return string ISBN Number (formatted); empty string if this is 
+     *
+     * @return string ISBN Number (formatted); empty string if this is
      *                not a valid ISBN
-     */    
+     */
     function getISBNDisplayable($format = '')
     {
         if ( strlen($format)==0 ) {
             $format = 'iv:='; //edit $this->ISBNFormatstring;
         }
         $format = substr($format . '    ', 0, 4);
-        
+
         $ver = $this->getVersion();
         if ($ver === false ) {
             return '';
@@ -1234,7 +1234,7 @@ class ISBN
             $isbn .= ISBN_DEFAULT_PRINT_LANG_SPECIFIC_PREFIX;
             if (strlen($isbn)) $isbn .= ' ';
         }
-        
+
         if ($format[1] == 'i' || $format[1] == 'v') {
             $isbn .= 'ISBN';
             if ($format[1] == 'v') {
@@ -1245,34 +1245,34 @@ class ISBN
                 case ISBN_VERSION_ISBN_13:
                     $isbn .= '-13';
                     break;
-                }               
+                }
             }
         }
-        
+
         if ($format[2] == ':') {
             $isbn .= ':';
         }
-        
+
         if (strlen($isbn)) {
             $isbn .= ' ';
         }
-        
+
         if ($ver == ISBN_VERSION_ISBN_13_978 || $ver == ISBN_VERSION_ISBN_13_979) {
             $isbn .= $this->getEAN();
             if ($format[3] == '-' || $format[3] == '=') {
                 $isbn .= ISBN_DEFAULT_COSMETIC_SEPERATOR;
             }
         }
-        
+
         $seperator = ($format[3] == '=') ? ISBN_DEFAULT_COSMETIC_SEPERATOR : '';
-                
+
         $isbn .= $this->getGroup() . $seperator;
         $isbn .= $this->getPublisher() . $seperator;
-        $isbn .= $this->getTitle() . $seperator;        
+        $isbn .= $this->getTitle() . $seperator;
         $isbn .= $this->getCheckdigit();
 
         return $isbn;
-        
+
     }
     // }}}
 
@@ -1283,11 +1283,11 @@ class ISBN
      * @param string $isbn ISBN Number
      *          this is a valid ISBN Number or it is an Empty string
      *          which will reset the class
-     * 
+     *
      * @return void
-     * 
+     *
      * @throws ISBN_Exception in case it fails
-     * 
+     *
      */
     function setISBN($isbn)
     {
@@ -1346,10 +1346,10 @@ class ISBN
      * Setter for ISBNBody
      *
      * @param string $body ISBNBody
-     * 
+     *
      * @return void
-     * 
-     * @throws ISBN_Exception in case it fails 
+     *
+     * @throws ISBN_Exception in case it fails
      */
     function _setISBNBody($body)
     {
@@ -1372,7 +1372,7 @@ class ISBN
         if ($r == false) {
             return new ISBN_Exception('Invalid Body');
         }
-        
+
         $e =  $this->_setGroup($group);
         if ("ISBN_Exception" == get_class($e)) {
             return new ISBN_Exception('Invalid Body: Group is invalid', $e);
@@ -1409,9 +1409,9 @@ class ISBN
      * Setter for the ISBN Subbody
      *
      * @param string $subbody ISBN Subbody
-     * 
+     *
      * @return void
-     * 
+     *
      * @throws ISBN_Exception in case it fails
      */
     function _setISBNSubbody($subbody)
@@ -1428,7 +1428,7 @@ class ISBN
         $registrant  = false;
         $publication = false;
         $groupid     = intval($this->isbn_group);
-        
+
         $r = ISBN::_isbnSubbodyParts($subbody, $groupid, $registrant, $publication);
         if ($r === false) {
             return new ISBN_Exception('Can\'t break');
@@ -1479,11 +1479,11 @@ class ISBN
     // {{{ validate()
     /**
      * Validates an ISBN
-     * 
+     *
      * @param string  $isbn ISBN to validate
      * @param integer $ver  ISBN-Version to validate against
      *
-     * @return integer|false    Version value of a valid ISBN or false 
+     * @return integer|false    Version value of a valid ISBN or false
      *                          if it did not validate
      */
     function validate($isbn, $ver = ISBN_DEFAULT_INPUTVERSION)
@@ -1524,11 +1524,11 @@ class ISBN
      *
      * Note: This is not Validation. To get the validated
      * version of an ISBN Number use ISBN::validate();
-     *     
+     *
      * @param string $isbn ISBN Number to guess Version of
-     * 
+     *
      * @return integer|false    Version Value or false if failed
-     * 
+     *
      * @see validate();
      */
     function guessVersion($isbn)

@@ -27,5 +27,5 @@
 		}
 		$this->call( "dialog.templates.edit.form.php", $formArgs );
 	}
-	
+
 ?>

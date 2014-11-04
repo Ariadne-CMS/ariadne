@@ -2,9 +2,9 @@
 	$ARCurrent->nolangcheck = true;
 	if ($this->CheckSilent("read") && $this->CheckConfig()) {
 
-		if (!$starttime) { 
-			if ($data->starttime)	{ 
-				$starttime=$data->starttime; 
+		if (!$starttime) {
+			if ($data->starttime)	{
+				$starttime=$data->starttime;
 			} else {
 				$starttime=time() ;
 			}
@@ -36,13 +36,13 @@
 		if (!$endminute) {
 			$endminute=$etime_arr["minutes"];
 		}
-		
+
 		function ShowList($start, $end, $step, $selected) {
 			$selected=round($selected / $step) * $step;
 			for ($i=$start; $i<=$end; $i+=$step) {
 				echo "<option value=\"$i\"";
 				if ($i==$selected) {
-					echo " selected"; 
+					echo " selected";
 				}
 				echo ">$i\n";
 			}
@@ -65,13 +65,13 @@
 		startminute=startminute+diffm;
 		RedrawEndlists(form);
 	}
-	
+
 	function UpdateEndtime(form) {
 		diffh=form.endhour.options[form.endhour.selectedIndex].value - endhour;
 		diffm=form.endminute.options[form.endminute.selectedIndex].value - endminute;
 		endhour=endhour+diffh;
 		endminute=endminute+diffm;
-		RedrawEndlists(form); 
+		RedrawEndlists(form);
 	}
 
 	function Select(list, value) {
@@ -108,7 +108,7 @@
 	<legend><?php echo $ARnls["date"]; ?></legend>
 	<div class="field">
 		<label for="date"><?php echo $ARnls["date"]; ?></label>
-	<?php 
+	<?php
 		$wgDateName="date";
 		$wgDate=$date;
 		include($this->store->get_config("code")."widgets/date/js.html");
@@ -123,7 +123,7 @@
 				$this->ls("/system/calendar/priorities/", "show.option.value.phtml","selected=$priority");
 			?>
 		</select>
-		
+
 	</div>
 </fieldset>
 <fieldset id="time">
@@ -138,7 +138,7 @@
 		</select> : <select id="startminute" name="startminute" onChange="UpdateEndlists(this.form);">
 		<?php
 				$start=0; $end=55; $step=5;
-				ShowList($start,$end,$step,$startminute); 
+				ShowList($start,$end,$step,$startminute);
 		?>
 		</select>
 	</div>
@@ -152,7 +152,7 @@
 		</select> : <select id="endminute" name="endminute" onChange="UpdateEndtime(this.form);">
 		<?php
 				$start=0; $end=55; $step=5;
-				ShowList($start,$end,$step,$endminute); 
+				ShowList($start,$end,$step,$endminute);
 		?>
 		</select>
 	</div>

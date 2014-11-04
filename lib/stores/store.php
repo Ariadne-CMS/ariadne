@@ -1,8 +1,8 @@
 <?php
 /******************************************************************************
-  Generic Store 1.0						Ariadne 
+  Generic Store 1.0						Ariadne
 
-  Copyright (C) 1998-2005  Muze 
+  Copyright (C) 1998-2005  Muze
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -24,13 +24,13 @@
 
   the implemented functions are
 
-	function get_config($field) 
-	function is_supported($feature) 
-	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0) 
-	function close() 
-	function make_path($curr_dir, $path) 
-	function save_properties($properties, $id) 
-	function get_filestore($name) 
+	function get_config($field)
+	function is_supported($feature)
+	function newobject($path, $parent, $type, $data, $id=0, $lastchanged=0, $vtype="", $size=0, $priority=0)
+	function close()
+	function make_path($curr_dir, $path)
+	function save_properties($properties, $id)
+	function get_filestore($name)
 
 *******************************************************************************/
 
@@ -67,7 +67,7 @@ abstract class store {
 	public abstract function get($path);
 	/**********************************************************************************
 	 This function takes as argument a path to an object in the store and will retrieve
-	 all the necessary data and return this in the objectlist type needed for 
+	 all the necessary data and return this in the objectlist type needed for
 	 store->call(). If the requested path does not exist, it will retrieve the object
 	 with the longest matching path.
 
@@ -85,7 +85,7 @@ abstract class store {
 	public abstract function ls($path);
 	/**********************************************************************************
 	 This function takes as argument a path to an object in the store and will retrieve
-	 all the objects and their data which have this object as their parent. It will 
+	 all the objects and their data which have this object as their parent. It will
 	 then return this in the objectlist type needed for store->call(). If the requested
 	 path does not exist, it will retrieve the object with the longest matching path.
 
@@ -94,10 +94,10 @@ abstract class store {
 
 	public abstract function parents($path, $top="/");
 	/**********************************************************************************
-	 This function takes as argument a path to an object in the store. It will return 
-	 all objects with a path which is a substring of the given path. The resulsts are 
+	 This function takes as argument a path to an object in the store. It will return
+	 all objects with a path which is a substring of the given path. The resulsts are
 	 ordered by path (length), shortest paths first.
-	 In effect all parents of an object in the tree are called, in order, starting at 
+	 In effect all parents of an object in the tree are called, in order, starting at
 	 the root.
 
 	 $path should always start and end with a '/'.
@@ -108,11 +108,11 @@ abstract class store {
 	 This function takes as arguments a path to an object in the store and some search
 	 criteria. It will search for all matching objects under the given path. If the
 	 given path is not in this store but in a substore it will not automatically search
-	 that substore. 
+	 that substore.
 
-	 $criteria is of the form 
+	 $criteria is of the form
 
-	 $criteria ::= ({ $property_name => ({ $valuename => ({ $compare_function, $value }) }) }) 
+	 $criteria ::= ({ $property_name => ({ $valuename => ({ $compare_function, $value }) }) })
 
 	 e.g.: $criteria["status"]["value"][">"]="published";
 
@@ -123,9 +123,9 @@ abstract class store {
 
 	public abstract function save($path, $type, $data, $properties="", $vtype="", $priority=false);
 	/***************************************************************
-		This function takes as argument a path, type, objectdata and 
+		This function takes as argument a path, type, objectdata and
 		possibly a properties list and vtype (virtual type).
-		If there exists no object with the given path, a new object is 
+		If there exists no object with the given path, a new object is
 		saved with the given type, data, properties and vtype, and a
 		new path is saved pointing to it.
 		If there does exist an object with the given path, it's object
@@ -140,7 +140,7 @@ abstract class store {
 			$properties[{property_name}][][{value_name}]={value}
 			{property_name} must be a valid property name
 			{value_name} must be a valid value name for this property
-			{value} can be a number, boolean or string. 
+			{value} can be a number, boolean or string.
 		example:
 			$properties["name"][0]["value"]="A name";
 			$properties["name"][1]["value"]="A second name!";
@@ -148,7 +148,7 @@ abstract class store {
 			will be removed.
 
 		$vtype must be a valid type.
-	 
+
 		if $properties or $vtype are not set or empty ("",0 or false)
 		they will be ignored. $vtype defaults to $type.
 		Only those properties listed in $properties will be updated.
@@ -162,7 +162,7 @@ abstract class store {
 	other paths pointing to that object. It will then remove any property
 	for this object from all property tables.
 		The function returns the number of paths found and removed or 1 if
-	there was no path found (meaning that the object doesn't exist and 
+	there was no path found (meaning that the object doesn't exist and
 	therefor purge succeeded while doing nothing.)
 
 	 $path should always start and end with a '/'.
@@ -204,7 +204,7 @@ abstract class store {
 
 	public abstract function list_paths($path);
 	/**********************************************************************
-		This function returns an array of all paths pointing to the same object 
+		This function returns an array of all paths pointing to the same object
 	as $path does.
 	**********************************************************************/
 
@@ -228,7 +228,7 @@ abstract class store {
 		'autoid' for $path.
 	**********************************************************************/
 
-	
+
 
 	/*
 		Implemented functions
@@ -311,17 +311,17 @@ abstract class store {
 	public function __destruct() {
 		$this->close();
 	}
-	
+
 	public function make_path($curr_dir, $path) {
 	/**********************************************************************
 		This function creates an absolute path from the given starting path
 	($curr_dir) and a relative (or absolute) path ($path). If $path starts
-	with a '/' $curr_dir is ignored. 
-	$path must be a string of substrings seperated by '/'. each of these 
+	with a '/' $curr_dir is ignored.
+	$path must be a string of substrings seperated by '/'. each of these
 	substrings may consist of charachters and/or numbers. If a substring
 	is "..", it and the previuos substring will be removed. If a substring
 	is "." or "", it is removed. All other substrings are then concatenated
-	with a '/' between them and at the start and the end. This string is 
+	with a '/' between them and at the start and the end. This string is
 	then returned.
 	**********************************************************************/
 		$this->error = "";
@@ -406,7 +406,7 @@ abstract class store {
 		}
 	}
 
- 
+
 	public function __call($name,$arguments)
 	{
 		switch($name)

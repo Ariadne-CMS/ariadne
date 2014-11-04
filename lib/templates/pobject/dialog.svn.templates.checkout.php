@@ -13,10 +13,10 @@
 		);
 
 		$wgWizAction = $this->getdata("wgWizAction");
-		
+
 		if( $wgWizAction == "save" ) {
 			$wgWizStyleSheets = array( $AR->dir->styles."svn.css" );
-			
+
 			$wgWizButtons = array(
 				"cancel" => array(
 					"value" => $ARnls["ok"]
@@ -36,7 +36,7 @@
 				),
 			);
 		}
-	
+
 		$wgWizTitle=$ARnls['ariadne:svn:checkout'];
 		$wgWizHeader = $wgWizTitle;
 		$wgWizHeaderIcon = $AR->dir->images.'icons/large/svncheckout.png';

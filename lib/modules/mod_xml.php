@@ -4,7 +4,7 @@
 			$parser = new xml_parser($this);
 			return $parser;
 		}
-	
+
 		function _escape($text) {
 			$search	= Array('&','"',"'",'<','>');
 			$replace= Array('&amp;','&quot;','&apos;','&lt;','&gt;');

@@ -7,7 +7,7 @@
 			$arPath = $this->path;
 		}
 
-		$query = "";		
+		$query = "";
 		if( $context == 1 || !($query = $this->getvar("query"))) {
 			$searchname = $this->getvar("searchname");
 			if( $searchname ) {

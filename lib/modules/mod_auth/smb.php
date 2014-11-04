@@ -30,11 +30,11 @@
 	 			$data["arNewFilename"] = "$user_dir$login/";
 				$data["profile"] = $user_profile;
 				$data["setowner"] = true;
-				
+
 	 			$user = $store->newobject(
-	 						"$user_dir$login/", 
-	 						"$user_dir", 
-	 						"$user_type", 
+	 						"$user_dir$login/",
+	 						"$user_dir",
+	 						"$user_type",
 	 						new object);
 
 	 			$user->arIsNewObject = true;

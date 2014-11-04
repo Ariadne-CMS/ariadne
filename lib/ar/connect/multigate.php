@@ -4,22 +4,22 @@
 	ar_pinp::allow( 'ar_connect_multigateClient' );
 
 	class ar_connect_multigate extends arBase {
-	
+
 		public static function client( $host, $port ) {
 			return new ar_connect_multigateClient( $host, $port );
 		}
-		
-	}	
-	
+
+	}
+
 	class ar_connect_multigateClient extends arBase {
-	
+
 		public function __construct( $host, $port ) {
 			$this->host = $host;
 			$this->port = $port;
 			$this->errorNr = false;
 			$this->errorStr = false;
 		}
-		
+
 		public function send( $protocol, $target, $message ) {
 			// Open socket
 			$socket = @fsockopen( $this->host, $this->port, $this->errorNr, $this->errorStr );
@@ -39,10 +39,10 @@
 				}
 				fclose( $socket );
 			}
-			
+
 			return ar::error( $this->errorstr, $this->errornr );
 		}
-		
+
 		private function isSupported( $protocol ) {
 			// FIXME: Fetch the actual list from multigate to check against.
 			if ( $protocol == "irc" ) {

@@ -48,7 +48,7 @@
 			}
 			if (!$config['privateKey']) {
 				return ar('error')->raiseError('mod_recaptcha: no privateKey given', 404);
-			}			
+			}
 			return new pinp_recaptcha($config['publicKey'], $config['privateKey'], $config['useSSL']);
 		}
 

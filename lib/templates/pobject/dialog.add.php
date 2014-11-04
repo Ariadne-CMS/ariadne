@@ -13,7 +13,7 @@
 				"save"     => "dialog.add.save.php"
 			)
 		);
-		
+
 		if ( $wgWizAction == 'save' ) {
 			$wgWizButtons = array(
 				"cancel" => array(
@@ -32,7 +32,7 @@
 					"value" => $ARnls["add"]
 				),
 			);
-		}				
+		}
 
 		$wgWizTitle = $ARnls["add"];
 		$wgWizHeader = $wgWizTitle;

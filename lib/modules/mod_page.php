@@ -34,7 +34,7 @@ class pinp_page {
 	}
 
 }
-	
+
 class page {
 
 	private function pregError( $errno ) {
@@ -219,13 +219,13 @@ class page {
 			array(
 				"|{arSite(/[a-z][a-z])?}|",
 				"|{arRoot(/[a-z][a-z])?}|",
-				"|{arBase(/[a-z][a-z])?}|", 
+				"|{arBase(/[a-z][a-z])?}|",
 				"|{arCurrentPage(/[a-z][a-z])?}|" ),
 			array(
-				$me->currentsite(), 
-				"", 
-				"", 
-				$me->path), 
+				$me->currentsite(),
+				"",
+				"",
+				$me->path),
 			$matches[1]);
 		foreach ($refs as $ref) {
 			if (substr($ref, -1) != '/' && !$me->exists($ref)) {

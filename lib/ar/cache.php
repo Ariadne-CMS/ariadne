@@ -16,7 +16,7 @@
 			if ( ar('cache')->lock( $naam ) ) {
 				$image = expensiveOperation();
 				ar('cache')->set( $naam, $image, '2 hours' );
-			} else if ( ar('cache')->wait( $naam ) ) { // lock failed, another process is generating the cache 
+			} else if ( ar('cache')->wait( $naam ) ) { // lock failed, another process is generating the cache
 				// continues here when the lock to be lifted
 				$image = ar('cache')->get($naam);
 			} else {
@@ -231,7 +231,7 @@
 		protected function cachePath( $path ) {
 			// last '=' is added to prevent conflicts between subdirectories and cache images
 			// images always end in a '=', directories never end in a '='
-			return ARCacheDir . $this->basePath . preg_replace('/(\.\.|\=)/', '', $path) . '='; 
+			return ARCacheDir . $this->basePath . preg_replace('/(\.\.|\=)/', '', $path) . '=';
 		}
 
 		public function subStore( $path ) {
@@ -348,7 +348,7 @@
 					$cacheDir = dir( $cachePath );
 					while (false !== ($entry = $cacheDir->read())) {
 						if ( $entry != '.' && $entry != '..' ) {
-							$this->purge( $path . '/' . $entry ); 
+							$this->purge( $path . '/' . $entry );
 						}
 					}
 					return rmdir( $cachePath );

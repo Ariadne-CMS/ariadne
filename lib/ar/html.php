@@ -9,7 +9,7 @@
 		public static $xhtml = false;
 		public static $preserveWhiteSpace = false;
 		private static $emptyTags = array(
-			'input' => 1, 'br'       => 1, 'hr'      => 1, 'img'  => 1, 'link'  => 1, 'meta' => 1, 'frame' => 1, 
+			'input' => 1, 'br'       => 1, 'hr'      => 1, 'img'  => 1, 'link'  => 1, 'meta' => 1, 'frame' => 1,
 			'base'  => 1, 'basefont' => 1, 'isindex' => 1, 'area' => 1, 'param' => 1, 'col'  => 1, 'embed' => 1
 		);
 		private static $noIndentInside = array(
@@ -18,7 +18,7 @@
 
 		public static function configure( $option, $value ) {
 			switch ($option) {
-				case 'xhtml' : 
+				case 'xhtml' :
 					self::$xhtml = (bool)$value;
 				break;
 				default:
@@ -26,11 +26,11 @@
 				break;
 			}
 		}
-		
+
 		public function __set( $name, $value ) {
 			ar_html::configure( $name, $value );
 		}
-		
+
 		public function __get( $name ) {
 			if ( isset( ar_html::${$name} ) ) {
 				return ar_html::${$name};
@@ -69,11 +69,11 @@
 			$doctype .= ">\n";
 			return new ar_htmlNode($doctype);
 		}
-		
+
 		public static function canHaveContent( $name ) {
 			return !isset( self::$emptyTags[strtolower($name)] );
 		}
-		
+
 		public static function canIndentInside( $name ) {
 			return !isset( self::$noIndentInside[strtolower($name)] );
 		}
@@ -82,12 +82,12 @@
 			$args = func_get_args();
 			return call_user_func_array( array( 'ar_html', 'el' ), $args );
 		}
-		
+
 		public static function element() {
 			$args = func_get_args();
 			return call_user_func_array( array( 'ar_html', 'el' ), $args );
-		}		
-	
+		}
+
 		public static function el() {
 			$args = func_get_args();
 			$name = array_shift($args);
@@ -109,7 +109,7 @@
 			}
 			return new ar_htmlElement($name, $attributes, $childNodes);
 		}
-			
+
 		public static function nodes() {
 			$args  = func_get_args();
 			$nodes = call_user_func_array( array( 'ar_htmlNodes', 'mergeArguments' ), $args );
@@ -119,25 +119,25 @@
 		public static function form( $fields, $buttons=null, $action='', $method='POST' ) {
 			return new ar_html_form( $fields, $buttons, $action, $method );
 		}
-		
+
 		public static function table( $rows, $attributes = null, $childNodes = null, $parentNode = null ) {
 			return new ar_html_table( $rows, $attributes, $childNodes, $parentNode );
 		}
-		
+
 		public static function menu() {
 			$args = func_get_args();
 			return call_user_func_array( array( 'ar_html_menu', 'el' ), $args );
 		}
-		
+
 		public static function zen( $string ) {
 			return new ar_html_zen( $string );
 		}
-		
+
 		public static function editable() {
 			$args = func_get_args();
 			return call_user_func_array( 'ar_html_edit::el', $args );
 		}
-		
+
 		protected static function parseChildren( $DOMElement ) {
 			$result = array();
 			foreach ( $DOMElement->childNodes as $child ) {
@@ -158,7 +158,7 @@
 
 		public static function parse( $html, $encoding = null ) {
 			// important: parse must never return results with simple string values, but must always
-			// wrap them in an ar_htmlNode, or tryToParse may get called, which will call parse, which 
+			// wrap them in an ar_htmlNode, or tryToParse may get called, which will call parse, which
 			// will... etc.
 			$dom = new DOMDocument();
 			if ( $encoding ) {
@@ -199,7 +199,7 @@
 						} else {
 							$check = trim($html);
 							/*
-								DOMDocument::loadHTML always generates a full html document 
+								DOMDocument::loadHTML always generates a full html document
 								so the next bit of magic tries to remove the added elements
 							*/
 							if (stripos($check, '<p') === 0 ) {
@@ -224,9 +224,9 @@
 	}
 
 	class ar_htmlNodes extends ar_xmlNodes {
-	
+
 		public function toString( $indentWith = null ) {
-			$indent = isset($indentWith) ? $indentWith : ( 
+			$indent = isset($indentWith) ? $indentWith : (
 				ar_html::$indenting ? ar_html::$indent : ''
 			);
 			return parent::toString( $indent );
@@ -235,24 +235,24 @@
 		public function __toString() {
 			return $this->toString();
 		}
-		
+
 		public function getNodeList() {
 			$params = func_get_args();
 			return call_user_func_array( array( 'ar_html', 'nodes'), $params );
 		}
-		
+
 		protected function _tryToParse( $node ) {
 			return ar_html::tryToParse( $node );
 		}
-		
+
 	}
 
 	class ar_htmlNode extends ar_xmlNode {
-	
+
 	}
-	
+
 	class ar_htmlElement extends ar_xmlElement {
-	
+
 		public function __toString() {
 			return $this->toString();
 		}
@@ -287,7 +287,7 @@
 			}
 			return $result;
 		}
-		
+
 		public function getNodeList() {
 			$params = func_get_args();
 			return call_user_func_array( array( 'ar_html', 'nodes'), $params );

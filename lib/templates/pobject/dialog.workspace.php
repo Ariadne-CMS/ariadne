@@ -37,9 +37,9 @@
 		$wgWizStyleSheets = array(
 			$yui_base . "datatable/assets/skins/sam/datatable.css",
 			$yui_base . "menu/assets/skins/sam/menu.css",
-			$yui_base . "container/assets/skins/sam/container.css",	
+			$yui_base . "container/assets/skins/sam/container.css",
 			$AR->dir->styles."templates.css",
-			
+
 		);
 
 		$wgWizScripts = array(

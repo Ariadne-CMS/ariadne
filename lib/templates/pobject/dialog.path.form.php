@@ -12,7 +12,7 @@
 			// FIXME: Does this make sense?
 			$target = $this->path;
 		}
-                
+
                 $pathmode = $this->getvar("pathmode");
 ?>
 <script type="text/javascript">
@@ -49,7 +49,7 @@
 			document.getElementById("targetError").style.display = "none";
 		}
 	}
-	
+
 	function updateTarget() {
 		if (!(document.getElementById("relativetarget"))){
 		    relativetarget = document.getElementById("parent").value.concat(document.getElementById("filename").value);
@@ -76,7 +76,7 @@
 	} else {
 	    echo '<legend>' . $ARnls["ariadne:rename"] . '</legend>';
 	}
-	
+
 		foreach ($sources as $source) {
 			$sourceob = current($this->get($source, "system.get.phtml"));
 
@@ -204,4 +204,4 @@
 <?php	} ?>
 </fieldset>
 <?php	//}
-?> 
+?>

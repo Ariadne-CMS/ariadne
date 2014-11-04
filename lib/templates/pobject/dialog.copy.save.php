@@ -2,7 +2,7 @@
 	ldDisablePostProcessing();
 	$ARCurrent->nolangcheck=true;
 	if (!$this->validateFormSecret()) {
-		error($ARnls['ariadne:err:invalidsession']);      
+		error($ARnls['ariadne:err:invalidsession']);
 		exit;
 	}
 	if ($this->CheckLogin('read') && $this->CheckConfig()) {
@@ -41,7 +41,7 @@
 
 		if ($copytarget_ob->CheckLogin('add')) {
 			$target_typetree = $copytarget_ob->call("typetree.ini");
-			
+
 			$failedchecks = false;
 
 			$query = "(";
@@ -49,7 +49,7 @@
 				if (
 						$target_typetree[$copytarget_ob->type][$this->type] || // The object is allowed under the target by the typetree.
 						($this->CheckSilent('layout') && $this->getvar('override_typetree')) // Layout grant allows typetree changes, so allow typetree overrides as well.
-					) { 
+					) {
 					// This type is allowed.
 
 					//dit is de nieuwe query
@@ -89,7 +89,7 @@
 			<div id="progress"></div>
 			<div id="progress_text">0/<?php echo $total; ?></div>
 		</div>
-		<?php 
+		<?php
 				while ($offset < $objects_left) {
 					flush();
 					set_time_limit(30);
@@ -97,7 +97,7 @@
 
 					foreach ($objects as $object) {
 						$sourcepath = $object->path;
-						
+
 						if (!$copyinto) {
 							$targetpath = $copytarget;
 
@@ -174,7 +174,7 @@
 					document.getElementById('progress').style.width = '100%';
 					document.getElementById('copy').innerHTML = '<?php echo $ARnls["copying"] . " " . $current_object_path; ?>';
 					if ( window.opener && window.opener.muze && window.opener.muze.dialog && window.opener.muze.ariadne.registry ) {
-						window.opener.muze.dialog.callback( window.name, 'copied', { 
+						window.opener.muze.dialog.callback( window.name, 'copied', {
 							'copyTarget': '<?php echo $this->make_path($copytarget . "../"); ?>',
 							'path': window.opener.muze.ariadne.registry.get('path')
 						});

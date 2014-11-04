@@ -7,7 +7,7 @@
 		if (!$ARCurrent->arTypeIcons[$this->type]) {
 			// FIXME: for performance the check above is necessary, but
 			// it does make it possible to get the wrong icon...
-			
+
 			// get typetree to get the correct icon
 			$this->call('typetree.ini');
 		}

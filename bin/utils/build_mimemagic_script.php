@@ -7,8 +7,8 @@
 	// start output buffering
 	ob_start();
 	echo "<?php \n"; // start php template
-	echo "	global \$mimemagic_data;\n";	
-	echo "	global \$mimetypes_data;\n";	
+	echo "	global \$mimemagic_data;\n";
+	echo "	global \$mimetypes_data;\n";
 	echo "	global \$contenttypes_data;\n";
 	echo "\n";
 	echo "	define(\"MIME_EXT\",	1);\n";

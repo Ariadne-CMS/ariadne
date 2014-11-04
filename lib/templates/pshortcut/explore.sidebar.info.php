@@ -10,7 +10,7 @@
 		}
 
 		$myType = ( $ARCurrent->arTypeNames[$this->type] ? yui::labelspan($ARCurrent->arTypeNames[$this->type]) . "<br>" . yui::labelspan("(" . $this->type . ")") : yui::labelspan($this->type) );
-		
+
 		$info = array();
 		$info['type'] = $myType;
 		$info['target'] = yui::labelspan($this->data->path);

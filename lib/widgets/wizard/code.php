@@ -50,7 +50,7 @@ if( !function_exists("wgWizKeepVars") ) {
 			"wgWizAction" => true,
 		);
 
-		if( is_array($array ) ) { 
+		if( is_array($array ) ) {
 			reset($array);
 			foreach( $array as $key => $value ) {
 				if( !$ignoreVars[$key] ) {

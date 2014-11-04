@@ -13,7 +13,7 @@
 		$type = $this->getvar("type");
 		$language = $this->getvar("language");
 		$function = $this->getvar("function");
-		
+
 		if( $type && $language && $function ) {
 ?>
 		<input id="type" type="hidden" name="type" value="<?php echo htmlspecialchars($type); ?>">

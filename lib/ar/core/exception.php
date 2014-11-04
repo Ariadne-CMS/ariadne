@@ -14,13 +14,13 @@
 		const ILLEGAL_ARGUMENT = 109;
 		const CONFIGURATION_ERROR = 110;
 	}
-	
+
 	class ar_exceptionDefault extends Exception implements ar_exception { }
-	
+
 	class ar_exceptionIllegalRequest extends Exception implements ar_exception { }
-	
+
 	class ar_exceptionConfigError extends Exception implements ar_exception { }
-	
+
 	class ar_exceptionAuthenticationError extends Exception implements ar_exception { }
-	
+
 ?>

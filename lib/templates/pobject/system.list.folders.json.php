@@ -4,5 +4,5 @@
 		$folders = $this->call('system.list.folders.php', $arCallArgs);
 		echo json_encode($folders);
 	}
-		
+
 ?>

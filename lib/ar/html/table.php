@@ -2,17 +2,17 @@
 	ar_pinp::allow('ar_html_table');
 
 	class ar_html_table extends ar_htmlElement {
-	
+
 		private $rowHeaderAttributes = null;
 		private $rowHeaders = null;
-		
+
 		public function __construct( $data= null, $attributes = null, $childNodes = null, $parentNode = null ) {
 			parent::__construct( 'table', $attributes , $childNodes, $parentNode );
 			if ( isset($data) ) {
 				$this->body( $data );
 			}
 		}
-		
+
 		public function body( $data ) {
 			if (!is_array($data) ) {
 				$data = array( $data );
@@ -21,10 +21,10 @@
 				'tableFirstLast' => ar::listPattern( 'tableFirst .*', '.* tableLast'),
 				'tableOddEven'   => ar::listPattern( '(tableOdd tableEven?)*' )
 			) );
-			$this->appendChild( 
-				ar_html::tag( 
+			$this->appendChild(
+				ar_html::tag(
 					'tbody', $rows
-				) 
+				)
 			);
 			return $this;
 		}
@@ -43,7 +43,7 @@
 			}
 			return $nodes;
 		}
-		
+
 		private function getCells( $list, $tag = 'td') {
 			$nodes   = ar_html::nodes();
 			foreach ($list as $key => $content ) {
@@ -51,7 +51,7 @@
 			}
 			return $nodes;
 		}
-		
+
 		public function head( $list, $attributes = null ) {
 			if ( is_array($list) ) {
 				$nodes = $this->getCells( $list, 'th' );
@@ -72,7 +72,7 @@
 			}
 			return $this;
 		}
-		
+
 		public function foot( $list, $attributes = null ) {
 			if ( is_array( $list ) ) {
 				$nodes = $this->getCells( $list, 'td' );
@@ -93,14 +93,14 @@
 			}
 			return $this;
 		}
-		
+
 		public function rowHeaders( $list, $attributes = array() ) {
 			foreach ( $list as $key => $value ) {
 				if ( ! ($value instanceof ar_htmlNode ) || $value->tagName != 'th' ) {
 					$list[$key] = ar_html::tag( 'th',
-						array_merge( 
-							(array) $attributes, 
-							array( 'scope' => 'row' ) 
+						array_merge(
+							(array) $attributes,
+							array( 'scope' => 'row' )
 						),
 						$value
 					);
@@ -115,7 +115,7 @@
 			$this->rowHeaderAttributes = $attributes;
 			return $this;
 		}
-			
+
 		public function cols() {
 			$args = func_get_args();
 			$cols = call_user_func_array( array('ar_html', 'nodes'), $args );
@@ -124,7 +124,7 @@
 			$this->insertBefore( $cols, $this->firstChild );
 			return $this;
 		}
-		
+
 		public function caption($content, $attributes = null) {
 			$newCaption = ar_html::tag( 'caption', $content, $attributes );
 			if ( $caption = $this->caption->firstChild ) {

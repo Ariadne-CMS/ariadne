@@ -42,7 +42,7 @@
 			$spath."datatable/assets/skins/sam/datatable.css",
 			$AR->dir->www . "styles/locks.css"
 		);
-		
+
 		$wgWizScripts = array(
 			$spath."element/element-min.js",
 			$spath."datasource/datasource-min.js",

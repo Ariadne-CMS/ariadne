@@ -7,9 +7,9 @@
 		$first = $this->getvar("first");
 		$this->putvar("first", false);
 ?>
-<tr class="<?php 
-	if( $first ) { 
-		echo " yui-dt-first"; 
+<tr class="<?php
+	if( $first ) {
+		echo " yui-dt-first";
 	}
 	echo " yui-dt-".$oddeven;
 ?>">
@@ -19,7 +19,7 @@
 <div style="display:none;"><?php printf("%010d", $this->size); ?></div>
 <?php
 		 	if ($this->size>1024) {
-				echo round(intval($this->size)/1024)."&nbsp;KB&nbsp;"; 
+				echo round(intval($this->size)/1024)."&nbsp;KB&nbsp;";
 			} else {
 				echo intval($this->size)."&nbsp;B&nbsp;";
 			}
@@ -30,7 +30,7 @@
   if ($now["year"]!=$date["year"]) {
     echo strftime("&nbsp;%m/%Y", $this->lastchanged);
   } else if ($this->lastchanged<(time()-86400)) {
-    echo strftime("&nbsp;%d/%m", $this->lastchanged); 
+    echo strftime("&nbsp;%d/%m", $this->lastchanged);
   } else {
     echo strftime("&nbsp;%H:%M", $this->lastchanged);
   }

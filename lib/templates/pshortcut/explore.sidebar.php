@@ -31,7 +31,7 @@ if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		if( !$ARCurrent->arTypeTree ) {
 			$this->call("typetree.ini");
 		}
-		
+
 		// tasks on the target
 		$path = $this->store->make_path( $this->parent, $this->data->path);
 		$this->get($path, "explore.sidebar.tasks.php", $arCallArgs);
@@ -44,7 +44,7 @@ if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		if ($AR->SVN->enabled) {
 			$this->call("explore.sidebar.svn.php", $arCallArgs);
 		}
-		$this->call("explore.sidebar.info.php", $arCallArgs); 
+		$this->call("explore.sidebar.info.php", $arCallArgs);
 		$this->call("explore.sidebar.details.php", $arCallArgs);
 	}
 }

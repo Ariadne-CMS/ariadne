@@ -57,12 +57,12 @@
 	<legend><?php echo $ARnls["contactinformation"]; ?></legend>
 	<div class="field">
 		<label for="email"><?php echo $ARnls["email"]; ?></label>
-		<input id="email" type="text" name="email" 
+		<input id="email" type="text" name="email"
 			value="<?php $this->showdata("email", "none"); ?>" class="inputline wgWizAutoFocus">
 	</div>
 	<div class="field">
 		<label for="telephone"><?php echo $ARnls["telephone"]; ?></label>
-		<input id="telephone" type="text" name="telephone" 
+		<input id="telephone" type="text" name="telephone"
 			value="<?php $this->showdata("telephone", "none"); ?>" class="inputline wgWizAutoFocus">
 	</div>
 </fieldset>

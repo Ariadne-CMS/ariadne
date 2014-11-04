@@ -8,7 +8,7 @@ if (($this->CheckLogin("edit") || $this->CheckLogin("add", ARANYTYPE)) && $this-
 		echo '<div class="error">' . $this->error . '</div>';
 		echo '<script type="text/javascript">alert("' . AddCSlashes($this->error, ARESCAPE) . '"); </script>';
 	}
-	
+
 	foreach ($AR->nls->list as $language => $language_name) {
 		if (!$this->getdata("name", $language)) {
 			if (($file=$this->getdata("file", $language)) && preg_match("|[^\/\\\]*\$|", $file, $matches)) {

@@ -8,7 +8,7 @@
 
 	$inst_store = $store_config["dbms"]."store_install";
 	$store=new $inst_store(".",$store_config);
-	
+
 	echo "== creating main Ariadne Object Store\n\n";
 
 	if ($store->initialize()) {
@@ -41,7 +41,7 @@
 		$state["operator"]["string"]=128;
 		$state_index[0][0]="value";
 		$state_index[1][0]="group";
-		$state_index[2][0]="operator"; 
+		$state_index[2][0]="operator";
 
 		$store->create_property("state", $state, $state_index);
 
@@ -256,7 +256,7 @@
 	} else {
 		error("store not initialized.");
 	}
-	$store->close(); 
+	$store->close();
 
 	// session store
 
@@ -264,7 +264,7 @@
 
 	$inst_store = $session_config["dbms"]."store_install";
 	$sessionstore=new $inst_store(".",$session_config);
-	
+
 	echo "== creating Ariadne Session Store\n\n";
 
 	if ($sessionstore->initialize()) {
@@ -276,6 +276,6 @@
 		error("store not initialized.");
 	}
 	$sessionstore->close();
-	
+
 ?>
 </pre>

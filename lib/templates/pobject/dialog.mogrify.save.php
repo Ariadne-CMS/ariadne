@@ -1,7 +1,7 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if (!$this->validateFormSecret()) {
-		error($ARnls['ariadne:err:invalidsession']);      
+		error($ARnls['ariadne:err:invalidsession']);
 		exit;
 	}
 //	if ($this->CheckLogin('config') && $this->CheckConfig() && $this->can_mogrify() ) {
@@ -32,10 +32,10 @@
 	<?php if (!$this->error) { ?>
 		<script type="text/javascript">
 			if ( window.opener && window.opener.muze && window.opener.muze.dialog ) {
-				window.opener.muze.dialog.callback( window.name, 'mogrified', { 
+				window.opener.muze.dialog.callback( window.name, 'mogrified', {
 					'path': '<?php echo $this->path; ?>'
 				});
-			} else  { 
+			} else  {
 				// backward compatibility with pre muze.dialog openers
 				if ( window.opener && window.opener.muze && window.opener.muze.ariadne ) {
 					window.opener.muze.ariadne.explore.tree.refresh('<?php echo $this->path; ?>');

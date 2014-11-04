@@ -9,7 +9,7 @@
 		}
 
 		function path_escape_callback($char) {
-			// Replaces characters in the path with their number. 
+			// Replaces characters in the path with their number.
 			// Quite similar to " " -> "%20" for HTML escape, but we use _ instead of %
 			// This function is to be used as a callback for preg_replace_callback
 			if ($char[0]) {
@@ -30,7 +30,7 @@
 			if ($path) {
 				debug("webdav:files unescaped path: $path");
 				$result = preg_replace_callback(
-					'/[^\/A-Za-z0-9.-]/', 
+					'/[^\/A-Za-z0-9.-]/',
 					function( $char ) {
 						if ($char[0]) {
 							if ($char[0]=="_") {
@@ -117,7 +117,7 @@
 		function delete($options) {
 			$path = $this->make_path($options['path']);
 			debug("webdav:files:delete (path='$path')");
-			$object = current($this->store->call('system.get.phtml', '', 
+			$object = current($this->store->call('system.get.phtml', '',
 								$this->store->get($path)));
 			if (!$object) {
 				debug("webdav:files:delete: $path not found or not readable");

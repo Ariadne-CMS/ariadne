@@ -17,7 +17,7 @@ if (($this->CheckLogin("edit") || $this->CheckLogin("add", ARANYTYPE)) && $this-
 		"template" => "dialog.edit.preferences.php",
 		"nolang" => true,
 	);
-	
+
 	if ($this->CheckSilent("config")) {
 		$wgWizFlow[] = array(
 			"title" => $ARnls["groups"],
@@ -26,7 +26,7 @@ if (($this->CheckLogin("edit") || $this->CheckLogin("add", ARANYTYPE)) && $this-
 			"nolang" => true,
 		);
 	}
-	
+
 	$arResult = $wgWizFlow;
 }
 

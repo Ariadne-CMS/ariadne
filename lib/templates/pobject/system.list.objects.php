@@ -22,7 +22,7 @@
 				"mtime-month" => "time.mtime > " . (strtotime("today") - 30*24*60*60),
 				"mtime-day" => "time.mtime > " . (strtotime("today") - 24*60*60)
 			);
-			
+
 			$orderqueries = array(
 				"name" => array(
 					"name.$nls.value",
@@ -53,7 +53,7 @@
 			// Aliases
 			$orderqueries['modified'] = $orderqueries['mtime'];
 			$orderqueries['filename'] = $orderqueries['path'];
-			
+
 			if ($filterqueries[$filter]) {
 				$query .= " and " . $filterqueries[$filter];
 			}

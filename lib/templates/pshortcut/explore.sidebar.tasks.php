@@ -3,7 +3,7 @@
 	$ARCurrent->allnls = true;
 
 	require_once($this->store->get_config("code")."modules/mod_yui.php");
-	
+
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 
 	  	include_once($this->store->get_config("code")."nls/ariadne.".$this->reqnls);
@@ -39,7 +39,7 @@
 				'onclick' => "muze.ariadne.explore.dialog.delete(this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/delete.png',
 				'nlslabel' => $ARnls['ariadne:delete']
-			);		
+			);
 		}
 
 		if ($this->CheckSilent("admin")) {
@@ -47,7 +47,7 @@
 				'href' => $this->make_ariadne_url() . "dialog.mogrify.php",
 				'onclick' => "muze.ariadne.explore.dialog.mogrify(this.href); return false;",
 				'icon' => $AR->dir->images . 'icons/small/mogrify.png',
-				'nlslabel' => $ARnls['ariadne:mogrify']			
+				'nlslabel' => $ARnls['ariadne:mogrify']
 			);
 		}
 
@@ -56,7 +56,7 @@
 			'onclick' => "muze.ariadne.explore.arshow('_new', this.href); return false;",
 			'icon' => $AR->dir->images . 'icons/small/viewweb.png',
 			'nlslabel' => $ARnls['ariadne:viewweb']
-		);		
+		);
 
 		$section = array(
 			'id' => 'shortcuttasks',

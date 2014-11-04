@@ -1,13 +1,13 @@
 <?php
 	$ARCurrent->nolangcheck = true;
-	if( $this->CheckSilent("read") && $this->CheckConfig() ) {	
+	if( $this->CheckSilent("read") && $this->CheckConfig() ) {
 		$arLanguage=$this->getdata("arLanguage","none");
 		if (!$arLanguage) {
 			$arLanguage=$ARConfig->nls->default;
 		}
 		$selectednls=$arLanguage;
 		$selectedlanguage=$AR->nls->list[$arLanguage];
-		
+
 		$flagurl = $AR->dir->images."nls/small/$selectednls.gif";
 ?>
 <style>

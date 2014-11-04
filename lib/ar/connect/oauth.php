@@ -1,9 +1,9 @@
 <?php
 	ar_pinp::allow('ar_connect_oauth');
 	ar_pinp::allow('ar_connect_oauthClient');
-	
-	class ar_connect_oauth extends arBase {	
-	
+
+	class ar_connect_oauth extends arBase {
+
 		public static function getSBS( $method, $uri, $request_parameters = array() ) {
 			if ( function_exists('oauth_get_sbs') ) {
 				return oauth_get_sbs( $method, $uri, $request_parameters );
@@ -11,24 +11,24 @@
 				return ar_error::raiseError( 'OAuth PECL extension not installed.', ar_exceptions::CONFIGURATION_ERROR );
 			}
 		}
-		
+
 		public static function client( $consumer_key, $consumer_secret, $signature_method = OAUTH_SIG_METHOD_HMACSHA1, $auth_type = 0 ) {
 			return new ar_connect_oauthClient( $consumer_key, $consumer_secret, $signature_method, $auth_type );
 		}
-			
+
 	}
 
 	class ar_connect_oauthClient extends arWrapper implements ar_httpClient {
-	
+
 		public function __construct( $consumer_key, $consumer_secret, $signature_method= OAUTH_SIG_METHOD_HMACSHA1, $auth_type = 0 ) {
 			if ( !class_exists('OAuth') ) {
 				return ar_error::raiseError( 'OAuth PECL extension not installed', ar_exceptions::CONFIGURATION_ERROR );
 			}
 			$oauth = new OAuth( $consumer_key, $consumer_secret, $signature_method, $auth_type );
 			$oauth->setRequestEngine(OAUTH_REQENGINE_STREAMS);
-			parent::__construct( $oauth );			
+			parent::__construct( $oauth );
 		}
-		
+
 		public function send( $type, $url, $request = null, $options = array() ) {
 			if ( is_string($options['header']) ) {
 				$headers = preg_split( '\r\n', $options['header'] );
@@ -55,23 +55,23 @@
 				return ar_error::raiseError( $e->getMessage(), $e->getCode() );
 			}
 		}
-		
+
 		public function get( $url, $request = null, $options = array() ) {
 			return $this->send( 'GET', (string) $url, $request, $options );
 		}
-		
+
 		public function post( $url, $request = null, $options = array() ) {
 			return $this->send( 'POST', (string) $url, $request, $options );
 		}
-		
+
 		public function put( $url, $request = null, $options = array() ) {
 			return $this->send( 'PUT', (string) $url, $request, $options );
 		}
-		
+
 		public function delete( $url, $request = null, $options = array() ) {
 			return $this->send( 'DELETE', (string) $url, $request, $options );
 		}
-		
+
 		public function headers( $headers ) {
 			if (is_array($headers)) {
 				$headers = join("\r\n", $headers);
@@ -84,5 +84,5 @@
 		}
 
 	}
-	
+
 ?>

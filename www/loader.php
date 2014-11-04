@@ -10,18 +10,18 @@
      This file is part of Ariadne.
 
      Ariadne is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published 
-     by the Free Software Foundation; either version 2 of the License, 
+     it under the terms of the GNU General Public License as published
+     by the Free Software Foundation; either version 2 of the License,
      or (at your option) any later version.
- 
+
      Ariadne is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU General Public License for more details.
 
      You should have received a copy of the GNU General Public License
-     along with Ariadne; if not, write to the Free Software 
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
+     along with Ariadne; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
      02111-1307  USA
 
     -------------------------------------------------------------------
@@ -74,9 +74,9 @@
 			// FTP, webdav, soap should use their own loader instead.
 			return false;
 		}
-		
+
 		$writecache = true;
-		
+
 		return true;
 	}
 
@@ -148,8 +148,8 @@
 				- the gzcompress function isn't available
 				- there is a session id in the request
 		*/
-		if (!$AR->output_compression 
-				|| strpos($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip")===false 
+		if (!$AR->output_compression
+				|| strpos($_SERVER["HTTP_ACCEPT_ENCODING"], "gzip")===false
 				|| !function_exists("gzcompress")
 				|| $session_id
 				|| $AR->ESI
@@ -205,10 +205,10 @@
 				// now send caching headers too, maximum 1 hour client cache.
 				// FIXME: make this configurable. per directory? as a fraction?
 				$freshness=$mtime-$timecheck;
-				if ($freshness>3600) { 
+				if ($freshness>3600) {
 					$cachetime=$timecheck+3600;
 				} else {
-					$cachetime=$mtime; 
+					$cachetime=$mtime;
 					// same '30 minutes' as used 13 lines above
 					if($cachetime == 0){
 						$cachetime = $timecheck + 1800;
@@ -231,15 +231,15 @@
 					} else {
 						$data = file_get_contents($cachedimage);
 						include_once($store_config['code']."modules/mod_esi.php");
-						
+
 						// Replace the session IDs before the ESI process call to pass the correct session ID information...
 						if ($session_id && !$AR->hideSessionIDfromURL) {
 							$tag = '{arSessionID}';
 							$data = str_replace($tag, "-$session_id-", $data);
 						}
-						
+
 						$data = ESI::esiProcess($data);
-						
+
 						// ... and then replace the session IDs that were generated in de ESI case;
 						$tag = '{arSessionID}';
 						if ($session_id && !$AR->hideSessionIDfromURL) {
@@ -315,7 +315,7 @@
 			}
 
 			// find (and fix) arguments
-			ini_set('magic_quotes_runtime', 0); 
+			ini_set('magic_quotes_runtime', 0);
 			if (get_magic_quotes_gpc()) {
 				// this fixes magic_quoted input
 				fix_quotes($_GET);
@@ -368,7 +368,7 @@
 					$function = false;
 				}
 			}
-			
+
 			// valid new login, without a session, morph to login.redirect.php to redirect to a session containing url
 			if( !$session_id && $args["ARLogin"] && $args["ARPassword"] && $function !== false && !$AR->hideSessionIDfromURL ) {
 				if (!$ARCurrent->session->get("oldArCallArgs", 1)) {
@@ -468,8 +468,8 @@
 			}
 
 			// first set clientside cache headers
-			
-			$cachetime=$ARCurrent->cachetime;			
+
+			$cachetime=$ARCurrent->cachetime;
 			if ($ARCurrent->arDontCache) {
 				ldSetClientCache(false);
 			} else if ($nocache) {
@@ -484,7 +484,7 @@
 				$ARCurrent->cachetime = 999;
 				ldSetClientCache(true, time()+1800); // revalidate after 30 minutes
 			}
-			
+
 
 
 			$image_len = strlen($image);
@@ -560,11 +560,11 @@
 		}
 
 		if ($AR->ESI > 0) {
-			// Prevent ESI from looping when the ESI result has ESI tags in them. 
-			// Reducing the AR->ESI number by 1 gives the flexibility to allow 2 or 3 ESI loops if desired. 
+			// Prevent ESI from looping when the ESI result has ESI tags in them.
+			// Reducing the AR->ESI number by 1 gives the flexibility to allow 2 or 3 ESI loops if desired.
 			// Setting it to false would mean you only get 1 ESI loop, which might not be the desired effect.
 			$AR->ESI = (int) $AR->ESI;
-			$AR->ESI--; 
+			$AR->ESI--;
 
 			$image = ob_get_contents();
 			ob_end_clean();

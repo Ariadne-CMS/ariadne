@@ -99,7 +99,7 @@
 	function attachEditor() {
 		var Dom = YAHOO.util.Dom,
 		Event = YAHOO.util.Event;
-	
+
 		var myConfig = {
 //			height: "480px",
 			width: "100%",
@@ -217,7 +217,7 @@
 					document.getElementById("editform").submit();
 				}
 			}, this, true);
-			
+
 			this.toolbar.on('editcodeClick', function() {
 				var ta = this.get('element'),
 					iframe = this.get('iframe').get('element');
@@ -255,7 +255,7 @@
 			this.on('cleanHTML', function(ev) {
 				this.get('element').value = ev.html;
 			}, this, true);
-			
+
 			this.on('afterRender', function() {
 				var wrapper = this.get('editor_wrapper');
 				wrapper.appendChild(this.get('element'));
@@ -492,7 +492,7 @@
 		position: relative;
 		bottom: 0px;
 		height: 30px;
-		padding-top: 10px;		
+		padding-top: 10px;
 	}
 
 	#buttons input {

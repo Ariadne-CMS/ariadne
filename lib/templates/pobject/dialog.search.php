@@ -12,13 +12,13 @@
 				"value" => $ARnls["search"]
 			),
 		);
-		
+
 		$wgWizFlow = array();
 		$wgWizFlow[] = array(
 			"current" => $this->getdata("wgWizCurrent","none"),
 			"cancel" => "window.close.js",
 		);
-		
+
 		$wgWizFlow[] = array(
 			"title" => $ARnls["contextsearch"],
 			"image" => $AR->dir->images.'wizard/data.png',
@@ -41,7 +41,7 @@
 		$wgWizStyleSheets = array(
 			$spath."datatable/assets/skins/sam/datatable.css",
 		);
-		
+
 		$wgWizScripts = array(
 			$spath."element/element-min.js",
 			$spath."datasource/datasource-min.js",

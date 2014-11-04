@@ -1,6 +1,6 @@
 <?php
 	if (!$this->validateFormSecret()) {
-		error($ARnls['ariadne:err:invalidsession']);      
+		error($ARnls['ariadne:err:invalidsession']);
 		exit;
 	}
 	ldDisablePostProcessing();
@@ -76,7 +76,7 @@
 <input unselectable="on" type="submit" name="wgWizControl" class="wgWizControl" onClick="document.wgWizForm.wgWizAction.value='cancel';" value="<?php echo $ARnls['cancel']; ?>">
 </div>
 </div>
-<?php 
+<?php
 		while ($offset < $objects_left) {
 			flush();
 			set_time_limit(30);
@@ -88,7 +88,7 @@
 				$next_object_path = substr($next_object_path, strlen($root), strlen($next_object_path));
 			}
 			$next_object_path = "/" . $next_object_path;
-		
+
 			if (strlen($next_object_path) > 25) {
 				$next_object_path = substr($next_object_path, 0, 7) . "..." . substr($next_object_path, strlen($next_object_path) - 17, strlen($next_object_path));
 			}
@@ -101,7 +101,7 @@
 			if ($items_processed > $total) {
 				$items_processed = $total;
 			}
-			
+
 			//echo "Deleted $stepsize items<br>";
 			$progress = (int)(100*($items_processed)/$total);
 
@@ -130,18 +130,18 @@
 			document.getElementById('progress').style.width = '100%';
 			document.getElementById('deleting').innerHTML = '<?php echo $ARnls["deleting"] . " " . $current_object_path; ?>';
 			if ( window.opener && window.opener.muze && window.opener.muze.dialog ) {
-				window.opener.muze.dialog.callback( window.name, 'deleted', { 
+				window.opener.muze.dialog.callback( window.name, 'deleted', {
 					'childrenOnly': <?php echo (int)$this->getvar("childrenonly") ?>,
 					'showPath': '<?php echo $returnpath; ?>'
 				});
-			} else  { 
+			} else  {
 				// backward compatibility with pre muze.dialog openers
 				if ( window.opener && window.opener.muze && window.opener.muze.ariadne ) {
 					window.opener.muze.ariadne.explore.view('<?php echo (($this->getvar("childrenonly") || sizeof($targets > 1)) ? $this->path : $this->parent );?>');
 				}
 				window.close();
 			}
-			
+
 		</script>
 <?php
 	}

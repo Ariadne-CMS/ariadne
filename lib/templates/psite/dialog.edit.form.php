@@ -21,7 +21,7 @@
 	<div class="field">
 		<label for="name" class="required"><?php echo $ARnls["name"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
-		<input id="name" type="text" name="<?php echo $selectednls."[name]"; ?>" 
+		<input id="name" type="text" name="<?php echo $selectednls."[name]"; ?>"
 			value="<?php $this->showdata("name", $selectednls); ?>" class="inputline wgWizAutoFocus">
 	</div>
 	<div class="field">
@@ -48,7 +48,7 @@
 	<div class="field">
 		<label for="name" class="required"><?php echo $ARnls["ariadne:workspace:url"] . ": " . $workspace; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
-		<input id="name" type="text" name="<?php echo $selectednls."[workspaceurl]"; ?>" 
+		<input id="name" type="text" name="<?php echo $selectednls."[workspaceurl]"; ?>"
 			value="<?php
 					if (!$workspaceurl = $this->getdata("workspaceurl", $selectednls)) {
 						if (!$this->arIsNewObject && ($selectednls==$this->data->nls->default)) {
@@ -76,8 +76,8 @@
 			$wgHTMLEditName="page";
 			$wgHTMLEditLanguage=$selectednls;
 			$wgHTMLEditContent=$this->ParsePage($this->getdata("page",$selectednls), true, true);
-			include($this->store->get_config("code")."widgets/htmledit/js.html"); 
-			include($this->store->get_config("code")."widgets/htmledit/form.html"); 
+			include($this->store->get_config("code")."widgets/htmledit/js.html");
+			include($this->store->get_config("code")."widgets/htmledit/form.html");
 		?>
 	</div>
 	<?php } ?>

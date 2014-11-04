@@ -16,7 +16,7 @@ if (($this->CheckLogin("edit") || $this->CheckLogin("add", ARANYTYPE)) && $this-
 		"template" => "dialog.edit.repeat.php",
 		"nolang" => true,
 	);
-	
+
 	$arResult = $wgWizFlow;
 }
 

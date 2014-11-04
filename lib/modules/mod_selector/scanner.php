@@ -15,7 +15,7 @@
 				$class_ident_start[strtoupper(chr($i))] = strtoupper(chr($i));
 			}
 			$this->class_ident = array_merge(Array('.' => '.'), $class_ident_start);
-			// Numbers [0-9] 
+			// Numbers [0-9]
 			for ($i = ord('0'); $i <= ord('9'); $i++) {
 				$class_number[chr($i)] = chr($i);
 			}
@@ -53,7 +53,7 @@
 
 			do {
 				switch (true) {
-					case '"' === $yych: 
+					case '"' === $yych:
 					case "'" === $yych:
 						$quote = $yych;
 						$yych = $YYBUFFER[++$YYCURSOR];
@@ -86,7 +86,7 @@
 					break;
 					case '%' === $yych:
 						$value = $yych;
-						$yych = $YYBUFFER[++$YYCURSOR];						
+						$yych = $YYBUFFER[++$YYCURSOR];
 						if ($yych == '(') {
 							$value .= $yych;
 							++$YYCURSOR;
@@ -96,7 +96,7 @@
 					break;
 					case '?' === $yych:
 						$value = $yych;
-						$yych = $YYBUFFER[++$YYCURSOR];						
+						$yych = $YYBUFFER[++$YYCURSOR];
 						if ($yych == ':') {
 							$value .= $yych;
 							++$YYCURSOR;
@@ -106,7 +106,7 @@
 					break;
 					case '!' === $yych:
 						$value = $yych;
-						$yych = $YYBUFFER[++$YYCURSOR];						
+						$yych = $YYBUFFER[++$YYCURSOR];
 						if ($yych == ':') {
 							$value .= $yych;
 							++$YYCURSOR;
@@ -116,7 +116,7 @@
 					break;
 					case '=' === $yych:
 						$value = $yych;
-						$yych = $YYBUFFER[++$YYCURSOR];						
+						$yych = $YYBUFFER[++$YYCURSOR];
 						if ($yych == ':') {
 							$value .= $yych;
 							++$YYCURSOR;

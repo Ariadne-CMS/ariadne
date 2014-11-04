@@ -9,5 +9,5 @@
 		if ($fname && !$this->getdata("lastname","none") ) {
 			$_POST["lastname"] = $fname;
 		}
-	} 
+	}
 ?>

@@ -76,7 +76,7 @@
 	<?php	if ($error) { ?>
 		<div class="error"><?php echo $error; ?></div>
 	<?php	} ?>
-	<?php 	foreach ($objects as $path => $info) { 
+	<?php 	foreach ($objects as $path => $info) {
 			$ob_id = str_replace("/", ":", $path);
 	?>
 			<label for="select_<?php echo $ob_id; ?>" class="block item <?php if($path == $selectedpath) { echo " selected";} ?>" title="<?php echo $info['name'];?>">

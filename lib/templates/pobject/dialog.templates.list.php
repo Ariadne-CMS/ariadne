@@ -2,10 +2,10 @@
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		// FIXME: load Ariadne NLS;
 		require_once($this->store->get_config("code")."modules/mod_yui.php");
-		
+
 		$editor="dialog.templates.edit.php";
 
-		if( !$ARCurrent->arTypeTree ) {		
+		if( !$ARCurrent->arTypeTree ) {
 			$this->call('typetree.ini');
 		}
 		$icons = $ARCurrent->arTypeIcons;
@@ -27,7 +27,7 @@
 		$yui_base = $wwwroot . "js/yui/";
 
 		$search = $this->getdata("search");
-	
+
 	if ($svn_enabled) {
 ?>
 <script type="text/javascript">
@@ -71,10 +71,10 @@
 				{key:"modified", label:"<?php echo $ARnls['modified'];?>", sortable:true}<?php if( $search != "" ) { echo ",\n";
 				echo "{key:\"search\", label:\"".$ARnls['search']."\", sortable:true}\n";
 			} ?>
-			];   
+			];
 		}
 		muze.ariadne.templates.init(myColumnDefs);
-		
+
 	}
 	YAHOO.util.Event.onDOMReady(templatestableinit);
 </script>
@@ -86,7 +86,7 @@
 							  <?php echo $ARnls['new']; ?>
 						 </a>
 					</li>
-<?php 
+<?php
 	if ($svn_enabled) {
 ?>
 					<li class="yuimenubaritem">
@@ -112,9 +112,9 @@
 <?php
 		}
 ?>
-                                                                </ul>            
+                                                                </ul>
                                                         </div>
-						</div>                    
+						</div>
 					</li>
 <?php
 	}
@@ -140,7 +140,7 @@
 <?php
 	if ($AR->Grep->path) {
 ?>
-	<div class="searchdiv">	
+	<div class="searchdiv">
 		<input class="text" type="text" id="search" name="search" value="<?php echo htmlspecialchars($search); ?>">
 		<input type="submit" id="searchbutton" class="wgWizControl" name="wgWizControl" onclick="document.wgWizForm.wgWizAction.value='grep'" value="<?php echo $ARnls["search"]; ?>">
 	</div>
@@ -171,7 +171,7 @@
 	<div id='templatesDiv' class='topdiv'>
 		<table id='templatesTable' border="0" cellspacing="0" cellpadding="0">
 		<thead style="cursor:hand;">
-		<tr>	 
+		<tr>
 			<td valign="top" class="required">
 				<?php echo $ARnls["type"]; ?>
 			</td><td valign="top" class="required">
@@ -188,7 +188,7 @@
 			$pinp = $data->config->pinp;
 			$templates = $data->config->templates;
 			$privatetemplates = $data->config->privatetemplates;
-			
+
 			if ($svn_enabled && $svn_status ) {
 				$deleted_templates = $data->config->deleted_templates;
 				$deleted_privatetemplates = $data->config->deleted_privatetemplates;
@@ -288,7 +288,7 @@
 								$svn_img_src = $AR->dir->images . "/svn/$svn_img";
 								$flag_svn = '<img class="flag_svn_icon" alt="' . $svn_alt . '" src="' . $svn_img_src . '">';
 							}
-									
+
 							$flagbuttons .= "<a class=\"button\" href=\"".$this->make_ariadne_url().$editor."?type=".$type."&amp;function=".RawUrlEncode($function).
 								"&amp;language=".$language;
 							if ($search) {
@@ -325,9 +325,9 @@
 								<div class="<?php echo $svn_style; ?>">
 									<img class="type_icon" alt="<?php echo $icon_alt; ?>" src="<?php echo $icon_src; ?>">
 								<?php echo $type; ?>&nbsp;</div></td>
-							<td align="left"><div style="display:none;"><?php echo $function; ?></div><div class="<?php echo $svn_style; ?>"><?php  
+							<td align="left"><div style="display:none;"><?php echo $function; ?></div><div class="<?php echo $svn_style; ?>"><?php
 								if (!$templates[$type][$function]) {
-									echo "<img class='local' src='{$AR->dir->images}local.gif' alt='local'>&nbsp;";	
+									echo "<img class='local' src='{$AR->dir->images}local.gif' alt='local'>&nbsp;";
 								}
 								if ($privatetemplates[$type][$function]) {
 									echo "<img class='private' src='{$AR->dir->images}private.png' alt='" . $ARnls['ariadne:template:private'] . "' title='" . $ARnls['ariadne:template:private'] . "'>";

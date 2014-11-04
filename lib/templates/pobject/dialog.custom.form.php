@@ -58,7 +58,7 @@
 			}
 		?>
 		if (dest.length==0) {
-			add();	
+			add();
 		}
 		document.getElementById("nameselect").selectedIndex=dest.length-1;
 		document.getElementById("nameselect").focus();
@@ -101,7 +101,7 @@
 			document.getElementById("cdpcontainsHTML").checked=false;
 		}
 	}
-	
+
 	function add() {
 		dest=document.getElementById("nameselect").options;
 		if ((dest.length==0) || (dest[dest.length-1].value!='new')) {
@@ -166,7 +166,7 @@
 
 	function setWarning(message) {
 		warningelm = document.getElementById("warning");
-		
+
 		if (message) {
 			warningelm.innerHTML = message;
 			warningelm.className = 'warning';
@@ -317,7 +317,7 @@
 		<div class="left">
 			<div class="field">
 				<label for="cdtype"><?php echo $ARnls["type"]; ?></label>
-				<select class="typeselect" id="cdtype" name="cdtype" onChange="updateCustom(this);" ><?php 
+				<select class="typeselect" id="cdtype" name="cdtype" onChange="updateCustom(this);" ><?php
 
 				asort($typelist);
 				foreach ($typelist as $typeValue => $typeName) {

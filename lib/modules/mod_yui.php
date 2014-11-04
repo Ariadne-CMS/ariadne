@@ -34,7 +34,7 @@
 						// FIXME: This should not be used in strict doctype, but we don't want it in our
 						// window either.
 
-						// $result .= ' target="_blank"'; 
+						// $result .= ' target="_blank"';
 					}
 
 					$result .= '>';
@@ -127,10 +127,10 @@
 			$result .= '</div>';
 			$result .= '</div>';
 			return $result;
-		}		
-		
+		}
 
-	
+
+
 		/* explore.sidebar.info.php */
 		static public function section_table($info) {
 			global $ARnls;
@@ -144,18 +144,18 @@
 			}
 			return $result;
 		}
-		
+
 		static public function labelspan($label, $maxlabellength=16) {
 			// Reduce length of a label if they are too long.
 			if (mb_strlen($label, "utf-8") > $maxlabellength) {
-				$label = ar_html::tag("span", array("title" => $label),htmlspecialchars(mb_substr($label, 0, $maxlabellength-3,"utf-8")."...")); 
+				$label = ar_html::tag("span", array("title" => $label),htmlspecialchars(mb_substr($label, 0, $maxlabellength-3,"utf-8")."..."));
 			} else {
 				$label = htmlspecialchars($label);
 			}
 			return $label;
 		}
-	
-	
+
+
 	/* dialog.templates.list.php */
 		static public function layout_sortfunc($a, $b) {
 			if ($a == $b) {
@@ -163,13 +163,13 @@
 			}
 			return ($a < $b) ? -1 : 1;
 		}
-	
+
 	/* explore.php */
 		static public function yui_menuitems($menuitems, $menuname, $menuid='') {
 			$result = '';
 			if (is_array($menuitems)) {
 				$nodes = ar_html::nodes();
-				
+
 				foreach ($menuitems as $item) {
 					if (!$item['href']) {
 						$item['href'] = "#";
@@ -179,7 +179,7 @@
 						"class" => $menuname. 'itemlabel',
 						"href" => $item["href"],
 					);
-					
+
 					if( $item["onclick"] ) {
 						$link["onclick"] = $item["onclick"];
 					}
@@ -195,7 +195,7 @@
 					}
 
 					$a = ar_html::tag("a", $link, $icon, $content);
-					
+
 					if( is_array($item['submenu']) ) {
 						$submenu = self::yui_menuitems($item['submenu'], "yuimenu");
 					} else {
@@ -203,7 +203,7 @@
 					}
 					$nodes[] = ar_html::tag("li", array("id" => $item['id'], "class" => $menuname."item"), $a, $submenu);
 				}
-				
+
 				$div = array( "class" => $menuname );
 				if( $menuid ) {
 					$div["id"] = $menuid;
@@ -233,45 +233,45 @@
 		}
 
 		static public function showTable($divId, $tableId, $columnDefs, $data) {
-		
+
 			if (!is_array($columnDefs)) {
 				return;
 			}
 
 			$colnum = count($columnDefs);
-	
+
 			$headcols = ar_html::nodes();
-		
+
 			for ($num = 0; $num < $colnum; $num++) {
-			
+
 				$class = self::getTableClass($num, $colnum);
 				$class[] = 'yui-dt-col'.$columnDefs[$num]['key'];
 				$class[] = 'yui-dt-sortable';
 				$headcols[] = ar_html::tag('th', array('class' => $class ),
-						ar_html::tag('div', array('class' => 'yui-dt-header'), 
+						ar_html::tag('div', array('class' => 'yui-dt-header'),
 							ar_html::tag('span', array('class' => 'yui-dt-label'),
 								 ar_html::tag('a', array('class' => 'yui-dt-sortable'), htmlspecialchars($columnDefs[$num]['label']) )
 							)
 						)
 					);
 			}
-			
+
 			$head = ar_html::tag('thead', ar_html::tag('tr', array('class' => array('yui-dt-first', 'yui-dt-last')), $headcols) );
-		
+
 			if (is_array($data)) {
 				$oddeven = 'even';
 
 				$rownums = count($data);
-				
+
 				$bodyrows = ar_html::nodes();
-				
+
 				for ($rownum = 0; $rownum < $rownums; $rownum++) {
 					$rowclass = self::getTableClass($rownum, $rownums);
 					$rowclass[] = 'explore_item';
 					$rowclass[] = $oddeven;
-					
+
 					$bodycols = ar_html::nodes();
-					
+
 					if ($data[$rownum]['name']) {
 						$data[$rownum]['name'] = self::labelspan($data[$rownum]['name'], 24);
 					}
@@ -288,7 +288,7 @@
 				}
 			}
 			$body = ar_html::tag('tbody', array('class' => 'yui-dt-body'), $bodyrows);
-			
+
 			$table = ar_html::tag('table', array('id' => $tableId), $head, $body);
 
 			echo ar_html::tag('div', array('id' => $divId, 'class' => 'yui-dt-'), $table)."\n";
@@ -352,7 +352,7 @@
 
 		static public function colDefs($fields) {
 			global $ARnls;
-		
+
 			// Create a default set of column definitions given a set of field keys.
 			// This uses the keyname for the index, and ARnls key as the label.
 			// All columns are defined as sortable;
@@ -368,7 +368,7 @@
 						'label' 	=> $ARnls[$key],
 						'sortable' 	=> true
 					);
-				
+
 					array_push($columnDefs, $colDef);
 				}
 			}
@@ -394,10 +394,10 @@
 		}
 
 		static public function getTypeIcon($item, $viewtype='list') {
-		
-		
+
+
 			$type = $item["type"];
-			
+
 			$iconsize = 'small';
 			if ($viewtype == 'icons') {
 				$iconsize = 'large';
@@ -421,7 +421,7 @@
 			if (is_array($data['objects']) && count($data['objects']) && $data['total'] > 0) {
 				$nodes = ar_html::nodes();
 				switch ($viewtype) {
-					case "details" : 
+					case "details" :
 						$maxlen = 32;
 					break;
 					case "icons" :
@@ -446,7 +446,7 @@
 				}
 				$result = ar_html::tag('ul', array('class' => array('explore_list', $viewtype) ), $nodes);
 			} else {
-				
+
 				if ($data['total'] > 1000) {
 					$content = htmlspecialchars($ARnls['ariadne:too_many_objects_found'] . " (" . $data['total'] . ")");
 					$selectoptions = array(
@@ -464,7 +464,7 @@
 			}
 			echo $result."\n";
 		}
-		
+
 		private function getPagingPrev($current_page) {
 			global $AR;
 			return array(
@@ -473,7 +473,7 @@
 				"label" => $ARnls['ariadne:prev'],
 				"onclick" => "muze.ariadne.explore.viewpane.view(muze.ariadne.explore.viewpane.path, " . ($current_page - 1) .  "); return false; "
 			);
-		
+
 		}
 
 		private function getPagingNext($current_page) {
@@ -541,7 +541,7 @@
 			if (!($total > $items_per_page)) {
 				return array();
 			}
-			
+
 			$total_pages = (int) ($total/$items_per_page);
 			if ($total % $items_per_page > 0) {
 				$total_pages++;
@@ -556,12 +556,12 @@
 
 			$start = self::getPagingStart($current_page, $total_pages);
 			$end = self::getPagingEnd($current_page, $total_pages);
-			
+
 			if ($start > 2) {
 				$pagingentries[] = array(
 					"label" => '...',
 					"class" => "ellipsis"
-				);			
+				);
 			}
 
 			for ($i=$start; $i <= $end; $i++) {
@@ -609,7 +609,7 @@
 
 		static public function showPaging($total, $items_per_page, $current_page, $pagingclass="") {
 			$pagingentries = self::getPagingEntries($total, $items_per_page, $current_page);
-		
+
 			if (!sizeof($pagingentries)) {
 				return;
 			}
@@ -642,8 +642,8 @@
 			$result .= "</ul>";
 			echo $result;
 		}
-		
-		
+
+
 		/* dialog.add.list.php */
 		static public function getTypes($arObject, $showall) {
 			$result = Array();
@@ -674,7 +674,7 @@
 			asort($result);
 			return $result;
 		}
-		
+
 		static public function checkType($arObject, $type, $name, $currentpath, $arReturnTemplate) {
 			if (!$arObject->CheckSilent("add", $type)) {
 				$class .= "greyed";
@@ -699,7 +699,7 @@
 			);
 			return $result;
 		}
-		
+
 		function getItems($arObject, $typeslist, $currentpath, $arReturnTemplate) {
 			$result = array();
 			foreach( $typeslist as $type => $name ) {

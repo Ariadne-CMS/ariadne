@@ -1,7 +1,7 @@
 <?php
 
 class pinp_multipart {
-    
+
 	function _CutPage($tag, $withtags=true, $withtitles=true, $page=false) {
 		return multipart::CutPage($tag, $withtags, $withtitles, $page);
 	}
@@ -15,7 +15,7 @@ class pinp_multipart {
 	}
 
 }
-	
+
 class multipart {
 
 	function CutPage($tag='h1', $withtags=true, $withtitles=true, $page=false) {
@@ -50,7 +50,7 @@ class multipart {
 				}
 				$count++;
 			}
-		} 
+		}
 		return $sections;
 	}
 
@@ -67,7 +67,7 @@ class multipart {
 				$me->call($template, array_merge($args, Array('level' => $level, 'section_title' => $section['title'], 'section_content' => $section['content'])));
 			}
 		}
-	} 
+	}
 
 	function ShowSections($sections, $template="", $args="", $recurse=false, $level=0) {
 		$context = pobject::getContext();

@@ -14,10 +14,10 @@
 
 					if (!$this->exists($dirpath)) {
 
-						// Fetch type and name information from SVN. 
+						// Fetch type and name information from SVN.
 						// If not found in SVN:
 						// type defaults to psection
-						// name defaults to pathname 
+						// name defaults to pathname
 						$svn_type = $fstore->svn_rpropget($svn, $repository, "ar:type", $dirinfo['ar:path'], $revision);
 						if ($svn_type != "") {
 							// echo "SVN type: [$svn_type]<br>";

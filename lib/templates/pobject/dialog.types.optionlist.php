@@ -1,5 +1,5 @@
 <?php
-	/* 
+	/*
 		Generate a optionlist for use in a select area. The list is
 		generated from the typetree settings.
 

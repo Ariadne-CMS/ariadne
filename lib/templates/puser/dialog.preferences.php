@@ -25,9 +25,9 @@
 				"template" => "dialog.preferences.editor.php",
 			),
 		);
-		 
-		$wgWizTitle=$ARnls["preferences"];	
-		$wgWizHeader=$ARnls["preferences"];		
+
+		$wgWizTitle=$ARnls["preferences"];
+		$wgWizHeader=$ARnls["preferences"];
 		$wgWizHeaderIcon = $AR->dir->images."icons/large/preferences.png";
 
 		include($this->store->get_config("code")."widgets/wizard/yui.wizard.html");

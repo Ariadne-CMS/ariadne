@@ -12,7 +12,7 @@ class ar_connect_rss extends arBase {
 		}
 		return new ar_connect_rssClient( $url, $httpClient );
 	}
-	
+
 	public static function parse( $xml ) {
 		$client = new ar_connect_rssClient();
 		return $client->parse( $xml );
@@ -24,7 +24,7 @@ class ar_connect_rssClient extends ar_xmlDataBinding {
 
 	private $httpClient = null;
 	private $feed = null;
-	
+
 	public function __construct( $feed = null, $httpClient = null ) {
 		$this->feed = $feed;
 		$this->httpClient = $httpClient;
@@ -41,7 +41,7 @@ class ar_connect_rssClient extends ar_xmlDataBinding {
 			return $xml;
 		}
 	}
-	
+
 	public function parse( $xml ) {
 		$dom = ar_xml::parse( $xml );
 		$channel = $dom->rss->channel[0];
@@ -59,9 +59,9 @@ class ar_connect_rssClient extends ar_xmlDataBinding {
 			->bind( $channel->cloud->attributes, 'cloud', 'array' )
 			->bind( $channel->ttl, 'ttl', 'int' )
 			->bind( $channel->image->attributes, 'image', 'array' )
-			->bindAsArray( 
-				$channel->item, 
-				'items', 
+			->bindAsArray(
+				$channel->item,
+				'items',
 				array( 'ar_connect_rssClient', 'parseItem' )
 			)
 			->bind( $dom, 'rawXML', 'xml' );
@@ -79,7 +79,7 @@ class ar_connect_rssClient extends ar_xmlDataBinding {
 				->bindAsArray( $item->enclosure, 'enclosures', array('ar_connect_rssClient', 'parseEnclosure') )
 				->bind( $item->source->nodeValue, 'source' )
 				->bind( $item->source->getAttribute('url'), 'source_url' )
-				->bind( $item->pubDate, 'pubDate')	
+				->bind( $item->pubDate, 'pubDate')
 				->bind( $item->{'content:encoded'}, 'content:encoded', 'html' )
 				->bind( $item, 'rawXML', 'xml' );
 	}

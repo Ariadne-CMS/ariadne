@@ -7,11 +7,11 @@
 	if( $newtype = $this->getvar("newtype") ) {
 		$type = $newtype;
 	}
-	
+
 	if( $newfunction = $this->getvar("newfunction") ) {
 		$function = $newfunction;
 	}
-	
+
 	if( $newlanguage = $this->getvar("newlanguage") ) {
 		$language = $newlanguage;
 	}
@@ -129,9 +129,9 @@
 	<div id="basicmenu" class="yuimenubar">
 		 <div class="bd">
 			  <ul class="first-of-type">
-<?php 
+<?php
 	if ($svn_enabled && $svn_info['Revision']) {
-	
+
 		$filename = $type.".".$function.".".$language.".pinp";
 		switch($svn_status[$filename]) {
 			// Fixme: find out the codes for "locked", "read only" and add them.
@@ -160,12 +160,12 @@
 				$svn_img = "InSubVersionIcon.png";
 				$svn_alt = $ARnls['ariadne:svn:insubversion'];
 				break;
-		}	
+		}
 		$svn_img_src = $AR->dir->images . "/svn/$svn_img";
 ?>
 					<li class="yuimenubaritem">
-						<a class="yuimenubaritemlabel" href="#"><?php 
-							if ($svn_img) { 
+						<a class="yuimenubaritemlabel" href="#"><?php
+							if ($svn_img) {
 								?><img class="svn_icon" alt="<?php echo $svn_alt; ?>" src="<?php echo $svn_img_src; ?>">
 							<?php } ?><?php echo $ARnls["ariadne:svn"]; ?></a>
 						<div id="svn" class="yuimenu">
@@ -183,10 +183,10 @@
                                     <li class="yuimenuitem"><a class="yuimenuitemlabel" href="dialog.svn.templates.resolved.php?type=<?php echo rawurlencode($type); ?>&function=<?php echo rawurlencode($function); ?>&language=<?php echo rawurlencode($language);?>" onclick="muze.ariadne.explore.arshow('dialog.svn.templates.resolved', this.href); return false;"><?php echo $ARnls["ariadne:svn:resolved"]; ?></a></li>
 							<?php
 									}
-							?>    
-                                </ul>            
+							?>
+                                </ul>
 							</div>
-						</div>                    
+						</div>
 					</li>
 <?php
 	}
@@ -257,7 +257,7 @@
 		</select>
 	</div>
 	<div class="template_option">
-	<?php 
+	<?php
 		if ($data->config->privatetemplates[$type][$function]) {
 			$private=1;
 		}
@@ -266,7 +266,7 @@
 		<input type="checkbox" id="private" name="private" value="1" <?php if ($private) { echo " checked"; } ?>>
 	</div>
 	<div class="template_option">
-	<?php 
+	<?php
 		if ($data->config->templates[$type][$function][$language] || !$function) {
 			$default=1;
 		}
@@ -304,24 +304,24 @@ for($i=1;$i<$linetotal;$i++) { echo $i."\n"; }
 <script type="text/javascript">
 
 	var currentPos;
-	
+
 	function posHandler() {
 		currentPos = muze.util.textarea.getCursorPosition(document.getElementById("template"));
 		return true;
 	}
-	
+
 	function scrollHandler(event,obj) {
 		var scrollpos = obj.scrollTop;
 		document.getElementById("linenumbers").scrollTop = scrollpos;
 	}
-	
+
 	function saveCurrentPos() {
 		if (currentPos && currentPos.offset) {
 			document.getElementById('cursorOffset').value = currentPos.offset;
 		}
 		return true;
 	}
-	
+
 	function keyHandler(event,obj) {
 
 		event = muze.event.get(event);
@@ -340,7 +340,7 @@ for($i=1;$i<$linetotal;$i++) { echo $i."\n"; }
 					var scrollTop = obj.scrollTop;
 					var s = obj.selectionStart;
 					var e = obj.selectionEnd;
-					obj.value = obj.value.substring(0, s) + 
+					obj.value = obj.value.substring(0, s) +
 						"\t" + obj.value.substr(e);
 					obj.setSelectionRange(s + 1, s + 1);
 					obj.focus();
@@ -359,19 +359,19 @@ for($i=1;$i<$linetotal;$i++) { echo $i."\n"; }
 		} else if (keycode == escapeKeyCode) {
 			result = false; // should work in all browsers
 		}
-		
+
 		return result ? muze.event.pass(event) : muze.event.cancel(event);
 	}
 
 	function initHandlers() {
-	
+
 		var wgWizForm = document.getElementById("wgWizForm");
 		wgWizForm.wgWizSubmitHandler = function() {
 			var lines = document.getElementById("linenumbers")
 			lines.parentNode.removeChild(lines);
 			return true;
 		}
-	
+
 <?php
 		$error = $this->getvar("error");
 		if( $error ) {
@@ -387,8 +387,8 @@ for($i=1;$i<$linetotal;$i++) { echo $i."\n"; }
 		muze.event.attach(area, 'scroll', function(evt) { return scrollHandler(evt, area); }, false);
 
 		area.focus();
-		
-<?php		
+
+<?php
 		// set the cursor pos if needed
 		$col = 0;
 		$pos = $this->getvar("cursorOffset");
@@ -406,7 +406,7 @@ for($i=1;$i<$linetotal;$i++) { echo $i."\n"; }
 		var pos = new muze.util.textarea.Position( <?php echo $line; ?>, 0, 0, <?php echo $pos; ?>);
 		muze.util.textarea.setCursorPosition(area, pos);
 	}
-	
+
 	YAHOO.util.Event.onDOMReady(initHandlers);
 </script>
 <?php

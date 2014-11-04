@@ -1,6 +1,6 @@
 <?php
 	if (!$this->validateFormSecret()) {
-		error($ARnls['ariadne:err:invalidsession']);      
+		error($ARnls['ariadne:err:invalidsession']);
 		exit;
 	}
 	ldDisablePostProcessing();
@@ -66,13 +66,13 @@
 <script type="text/javascript">
 	error=false;
 	window.onload=startdownload;
-	
+
 	function startdownload() {
 		if (!error) {
 			location.href='object.export.ax';
 		}
 	}
-	
+
 </script>
 <div id="progressbars">
 <?php foreach ($sources as $key => $srcpath) { ?>
@@ -114,7 +114,7 @@
 			}
 
 			if ($error) {
-				// prevent js download code from running 
+				// prevent js download code from running
 				echo "<script type='text/javascript'> error=true; </script>";
 			}
 		}

@@ -13,7 +13,7 @@
 			<label for="wddx">WDDX</label>
 		</div>
 	</fieldset-->
-        
+
     <?php
         if ($this->getvar('sources')) {
             $sources = $this->getvar("sources");
@@ -21,32 +21,32 @@
             $sources = array($this->path);
         }
     ?>
-    
+
     <fieldset id="data" class="export">
 	<legend><?php echo $ARnls["ariadne:export"]; ?></legend>
-        
+
         <?php
-        
+
         foreach ($sources as $source) {
-            
+
             $sourceob = current($this->get($source, "system.get.phtml"));
-                            
+
             if (!$sourceob->CheckSilent("config")){  //config according to dialog.export.save, edit according to dialog.export.
                 $checkfailed = true;
             } else {
                 $checkfailed = false;
             }
-            
+
             $type = $this->getvar("type");
 
 
             if (!$type) {
                 $type = $sourceob->type;
             }
-            
+
             $icon = $ARCurrent->arTypeIcons[$sourceob->type]['medium'] ? $ARCurrent->arTypeIcons[$sourceob->type]['medium'] : $sourceob->call("system.get.icon.php", array('size' => 'medium'));
             $iconalt = $sourceob->type;
-            
+
             if ( $sourceob->implements("pshortcut") ) {
                 $overlay_icon = $icon;
                 $overlay_alt = $sourceob->type;
@@ -74,7 +74,7 @@
             echo '</div>';
         }
     ?>
-        
+
 	<fieldset>
 		<legend><?php echo $ARnls["options"]; ?></legend>
 		<div class="field radio">

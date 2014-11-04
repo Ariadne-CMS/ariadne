@@ -31,7 +31,7 @@
 				),
 			);
        		}
-         
+
 		$wgWizTitle = $ARnls["rename"];
 		$wgWizHeader = $wgWizTitle;
 		$wgWizHeaderIcon = $AR->dir->images.'icons/large/rename.png';

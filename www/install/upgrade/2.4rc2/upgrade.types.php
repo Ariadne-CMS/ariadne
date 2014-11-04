@@ -40,7 +40,7 @@
 		$store->add_type("psection", "pdir");
 		$store->add_type("psection", "psection");
 	}
-	
+
 		echo "== importing types.ax file\n\n";
 		$ARCurrent->nolangcheck = true;
 		$ARCurrent->options["verbose"]=true;

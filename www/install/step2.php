@@ -49,8 +49,8 @@
 								}
 							?>
 						</table>
-						<?php 
-							if (!$req_checkresult) { 
+						<?php
+							if (!$req_checkresult) {
 						?>
 							<label class="button" for="recheck"><?php echo $ARnls['install:recheck']; ?></label>
 							<input class="hidden" id="recheck" type="submit" name="step" value="<?php echo $step?>">
@@ -85,8 +85,8 @@
 								}
 							?>
 						</table>
-						<?php 
-							if (!$rec_checkresult) { 
+						<?php
+							if (!$rec_checkresult) {
 						?>
 							<label class="button" for="recheck"><?php echo $ARnls['install:recheck']; ?></label>
 							<input class="hidden" id="recheck" type="submit" name="step" value="<?php echo $step?>">

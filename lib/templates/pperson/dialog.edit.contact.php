@@ -18,7 +18,7 @@
 			$wgMultipleArray=$this->getdata("emails","none");
 			if (!is_array($wgMultipleArray) && ($wgMultipleArray)) {
 					$wgMultipleArray=explode(",",$wgMultipleArray);
-			} 
+			}
 			$wgMultipleName="emails";
 			include($this->store->get_config("code")."widgets/multiple/js.html");
 			include($this->store->get_config("code")."widgets/multiple/form.html");

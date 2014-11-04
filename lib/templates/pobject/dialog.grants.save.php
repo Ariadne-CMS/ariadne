@@ -1,7 +1,7 @@
 <?php
 //	include_once($this->store->get_config("code")."modules/mod_grant.php");
 	if (!$this->validateFormSecret()) {
-		error($ARnls['ariadne:err:invalidsession']);      
+		error($ARnls['ariadne:err:invalidsession']);
 		exit;
 	}
 	include_once("dialog.grants.logic.php");

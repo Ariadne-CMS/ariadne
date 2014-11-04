@@ -66,9 +66,9 @@ class mysql_workspaces_compiler extends mysql_compiler {
 			}
 		}
 		if ($layering) {
-			$query .= " and ( 
+			$query .= " and (
 								( $query_string_layers )
-							OR 
+							OR
 								$nodes.layer = 0
 								and $nodes.id NOT IN (
 									select $nodes.id from $nodes where ( $query_string_layers )

@@ -4,7 +4,7 @@
 
 	$ARCurrent->nolangcheck=true;
 	if (!$this->validateFormSecret()) {
-		error($ARnls['ariadne:err:invalidsession']);      
+		error($ARnls['ariadne:err:invalidsession']);
 		exit;
 	}
 	if ($this->CheckLogin("delete") && $this->CheckConfig()) {
@@ -46,7 +46,7 @@
 <input unselectable="on" type="submit" name="wgWizControl" class="wgWizControl" onClick="document.wgWizForm.wgWizAction.value='cancel';" value="<?php echo $ARnls['cancel']; ?>">
 </div>
 </div>
-<?php 
+<?php
 		while ($offset < $objects_left) {
 			flush();
 			set_time_limit(30);
@@ -66,7 +66,7 @@
 			if ($items_processed > $total) {
 				$items_processed = $total;
 			}
-			
+
 			//echo "Deleted $stepsize items<br>";
 			$progress = (int)(100*($items_processed)/$total);
 

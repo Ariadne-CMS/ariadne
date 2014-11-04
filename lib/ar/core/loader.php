@@ -1,8 +1,8 @@
 <?php
 
 	class ar_core_loader {
-	
-		public static function http($options, $ariadne = null, $session = null, $nls = null) {			
+
+		public static function http($options, $ariadne = null, $session = null, $nls = null) {
 			ar_error::$throwExceptions = true;
 			if ( !isset($ariadne) ) {
 				$ariadne = ar_core_ariadne::create( $options['AR'] );
@@ -20,7 +20,7 @@
 			}
 			return new ar_core_loader_http($options, $ariadne, $session, $nls);
 		}
-		
+
 	}
 
 	interface ar_core_loaderInterface {

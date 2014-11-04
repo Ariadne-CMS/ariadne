@@ -2,7 +2,7 @@
 	$ARCurrent->nolangcheck = true;
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 		global $AR;
-		
+
 		if (!$this->CheckSilent("layout")) {
 			$AR->SVN->enabled = false;
 		}
@@ -116,7 +116,7 @@
 		if (!$direction || !$directions[$direction]) {
 			$direction = 'asc';
 		}
-		
+
 
 		$objectName = $nlsdata->name;
 		if (!$objectName) {
@@ -130,7 +130,7 @@
 
 		$jail = ar::acquire('settings.jail');
 		if ( !$jail ) {
-			$jail = '/';		
+			$jail = '/';
 		}
 
 		if ($pathmode == "siterelative") {
@@ -217,8 +217,8 @@
 	muze.ariadne.explore.tree.loaderUrl 	= '<?php echo AddCSlashes( $loader, ARESCAPE ); ?>';
 
 	muze.ariadne.explore.tree.baseNodes	= [{
-			"path" : "<?php echo AddCSlashes( $path, ARESCAPE ); ?>", 
-			"name" : "<?php echo AddCSlashes( $name, ARESCAPE ); ?>", 
+			"path" : "<?php echo AddCSlashes( $path, ARESCAPE ); ?>",
+			"name" : "<?php echo AddCSlashes( $name, ARESCAPE ); ?>",
 			"icon" : "<?php echo AddCSlashes( $icon, ARESCAPE ); ?>"
 	}];
 
@@ -226,7 +226,7 @@
 	muze.ariadne.registry.set('jail', '<?php echo AddCSlashes( $jail, ARESCAPE ); ?>');
 	muze.ariadne.registry.set('ARRoot', '<?php echo AddCSlashes( $AR->root, ARESCAPE ); ?>');
 	muze.ariadne.registry.set('store_root', '<?php echo AddCSlashes( $this->store->get_config('root'), ARESCAPE ); ?>');
-	
+
 	// setting session ID for unique naming of windows within one ariadne session.
 	muze.ariadne.registry.set("SessionID","<?php echo AddCSlashes( $ARCurrent->session->id, ARESCAPE ); ?>");
 
@@ -261,7 +261,7 @@
 		}
 
 		if (window.opener.muze && window.opener.muze.dialog && window.opener.muze.dialog.hasCallback( window.name, 'submit') ) {
-			window.opener.muze.dialog.callback( window.name, 'submit', { 
+			window.opener.muze.dialog.callback( window.name, 'submit', {
 				'path' : path
 			} );
 		} else if (window.opener && window.opener.callback) {
@@ -343,7 +343,7 @@
 				</form>
 			</div>
 		</div>
-		
+
 		<div id="explore_tree">
 			<div id="treeDiv"></div>
 			<div id="splitpane_slider"></div>

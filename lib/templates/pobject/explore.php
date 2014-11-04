@@ -18,12 +18,12 @@
 		$interface = $data->interface;
 
 		$yui_base = $wwwroot . "js/yui/";
-	
+
 		$viewmodes = array( "list" => 1, "details" => 1, "icons" => 1);
 		$viewmode = $_COOKIE["viewmode"];
 		if( !$viewmode || !$viewmodes[$viewmode] ) {
 			$viewmode = 'list';
-		}	
+		}
 		$objectName = $nlsdata->name;
 		if (!$objectName) {
 			$objectName = $data->name;
@@ -41,11 +41,11 @@
 			'muze.ariadne.selectable',
 			'muze.ariadne.dropzone'
 		);
-		
+
 		// only nls dependant var used atm.
 		$JSnls = array();
 		$JSnls["notfoundpath"] = $ARnls["notfoundpath"];
-		
+
 ?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
@@ -120,7 +120,7 @@
 	muze.ariadne.registry.set('ARRoot', '<?php echo AddCSlashes( $AR->root, ARESCAPE ); ?>');
 	muze.ariadne.registry.set('root', '/');
 	muze.ariadne.registry.set('store_root', '<?php echo AddCSlashes( $this->store->get_config('root'), ARESCAPE ); ?>');
-	
+
 	// setting session ID for unique naming of windows within one ariadne session.
 	muze.ariadne.registry.set("SessionID","<?php echo AddCSlashes( $ARCurrent->session->id, ARESCAPE ); ?>");
 
@@ -143,7 +143,7 @@
 			$this->call("explore.toolbar.php");
 		?>
 	</div>
-	
+
 	<div id="explore_tree">
 		<div id="treeDiv"></div>
 		<div id="splitpane_slider"></div>
@@ -152,7 +152,7 @@
 
 	<div id="explore_managediv" class="managediv">
 		<div id="sidebar" class="sidebar">
-		<?php 
+		<?php
 			$this->call("explore.sidebar.php", $arCallArgs);
 		?>
 		</div>

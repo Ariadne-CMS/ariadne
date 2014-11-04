@@ -11,7 +11,7 @@
 		// Make sure the login is lower case. Because of the
 		// numerous checks on "admin".
 		$login = strtolower( $login );
-	
+
 		// this line is not needed
 		//$ARCookie = stripslashes($_COOKIE["ARCookie"]);
 
@@ -48,7 +48,7 @@
 					// but do kill it if it's older than one day
 					unset($cookie[$sessionid]);
 				}
-			} 
+			}
 		}
 		 */
 

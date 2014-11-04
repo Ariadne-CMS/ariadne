@@ -7,7 +7,7 @@
 
 		static public $makeLocalURL = null;
 		static public $session = null;
-		
+
 		public static function configure( $option, $value ) {
 			switch ($option) {
 				case 'makeLocalURL' :
@@ -15,17 +15,17 @@
 				break;
 			}
 		}
-		
+
 		public function __set( $name, $value ) {
 			ar_loader::configure( $name, $value );
 		}
-		
+
 		public function __get( $name ) {
 			if ( isset( ar_loader::${$name} ) ) {
 				return ar_loader::${$name};
 			}
 		}
-		
+
 		private static function getLoader() {
 			global $AR;
 			if ($AR->request && isset($AR->request['loader'])) {
@@ -34,7 +34,7 @@
 				return new ar_core_loader_http();
 			}
 		}
-		
+
 		public static function header( $header ) {
 			$loader = self::getLoader();
 			return $loader->header( $header );
@@ -54,12 +54,12 @@
 			$loader = self::getLoader();
 			return $loader->cache( $expires, $modified );
 		}
-		
+
 		public static function disableCache() {
 			$loader = self::getLoader();
 			return $loader->disableCache();
 		}
-		
+
 		public static function getvar( $name = null, $method = null ) {
 			$loader = self::getLoader();
 			return $loader->getvar( $name, $method );
@@ -72,30 +72,30 @@
 			}
 			return $loader->makeURL( $path, $nls, $session, $https, $keephost );
 		}
-		
+
 		public static function session() {
 			if (!self::$session) {
 				self::$session = new ar_loaderSession();
 			}
 			return self::$session;
 		}
-	
+
 	}
-	
+
 	class ar_loaderSession extends arBase {
 		// FIXME: merge ar_session and ar_loaderSession in some way
 		// loader should control only how to get and set the session id
-		
+
 		public static function id() {
 			global $ARCurrent;
-			
+
 			if ($ARCurrent->session) {
 				return $ARCurrent->session->id;
 			} else {
 				return 0;
 			}
 		}
-		
+
 		public static function getvar( $name ) {
 			global $ARCurrent;
 
@@ -105,7 +105,7 @@
 				return false;
 			}
 		}
-		
+
 		public static function putvar( $name, $value ) {
 			global $ARCurrent;
 
@@ -115,23 +115,23 @@
 				return false;
 			}
  		}
-	
+
 		public static function start() {
 			global $ARCurrent;
-			
+
 			ldStartSession(0);
 			return $ARCurrent->session->id;
 		}
-		
+
 		public static function kill() {
 		    global $ARCurrent;
 
 			if ($ARCurrent->session) {
 				$ARCurrent->session->kill();
 				unset($ARCurrent->session);
-			} 
+			}
 		}
-	
+
 	}
-	
+
 ?>

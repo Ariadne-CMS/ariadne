@@ -11,7 +11,7 @@
 				"generate" => "dialog.grantkey.form.php"
 			)
 		);
-		
+
 		$wgWizButtons = array(
 			"cancel" => array(
 				"value" => $ARnls["ariadne:close"]

@@ -131,7 +131,7 @@ class JSON {
 	}
 
 /*
-	Dit werkt niet... 
+	Dit werkt niet...
 
 	function getInstance($use) {
 		if (!JSON::json) {
@@ -161,13 +161,13 @@ class JSON {
 	    $result    = '';
 	    $pos       = 0;
 	    $strLen    = strlen($json);
-	 
+
 	    for($i = 0; $i <= $strLen; $i++) {
-	        
+
 	        // Grab the next character in the string
 	        $char = substr($json, $i, 1);
-	        
-	        // If this character is the end of an element, 
+
+	        // If this character is the end of an element,
 	        // output a new line and indent the next line
 	        if($char == '}' || $char == ']') {
 	            $result .= $newLine;
@@ -176,11 +176,11 @@ class JSON {
 	                $result .= $indentStr;
 	            }
 	        }
-	        
+
 	        // Add the character to the result string
 	        $result .= $char;
-	 
-	        // If the last character was the beginning of an element, 
+
+	        // If the last character was the beginning of an element,
 	        // output a new line and indent the next line
 	        if ($char == ',' || $char == '{' || $char == '[') {
 	            $result .= $newLine;
@@ -750,7 +750,7 @@ class Services_JSON
                                 // element in an associative array,
                                 // for now
                                 $parts = array();
-                                
+
                                 if (preg_match('/^\s*(["\'].*[^\\\]["\'])\s*:\s*(\S.*),?$/Uis', $slice, $parts)) {
                                     // "name":value pair
                                     $key = $this->decode($parts[1]);
@@ -886,5 +886,5 @@ if (class_exists('PEAR_Error')) {
     }
 
 }
-    
+
 ?>

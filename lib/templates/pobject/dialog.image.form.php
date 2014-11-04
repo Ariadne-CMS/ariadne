@@ -76,7 +76,7 @@
 		<div class="field">
 			<label for="align"><?php echo $ARnls["ariadne:editor:alignment"]; ?></label>
 			<select name="align" id="align" onchange="loadPreview();">
-				<?php 
+				<?php
 					$alignoptions = array(
 						"none" => $ARnls["ariadne:editor:align_not_set"],
 						"left" => $ARnls["ariadne:editor:align_left"],
@@ -90,7 +90,7 @@
 						"top" => $ARnls["ariadne:editor:align_top"]
 					);
 
-					foreach ($alignoptions as $key => $value) { 
+					foreach ($alignoptions as $key => $value) {
 						$selected = '';
 						if ($key == $align) {
 							$selected = " selected";

@@ -13,7 +13,7 @@
 		);
 
 		$wgWizAction = $this->getdata("wgWizAction");
-		
+
 		if( $wgWizAction == "save" ) {
 			$wgWizButtons = array(
 				"cancel" => array(

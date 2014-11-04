@@ -164,7 +164,7 @@ function _Rect($x,$y,$w,$h,$style='')
 
 function _AddFont($family,$style='',$file='')
 {
-	// FIXME: this is insecure, fonts should be gotten from 
+	// FIXME: this is insecure, fonts should be gotten from
 	// inside Ariadne
 	return $this->AddFont($family,$style,$file);
 }

@@ -1,8 +1,8 @@
 <?php
 	class ar_pinp extends arBase {
-	
+
 		private static $allowed;
-		
+
 		public static function allow($class, $methods = null) {
 			if (isset($methods)) {
 				self::$allowed[$class]['methods'] = array_combine( $methods, array_fill( 0, count($methods), true ) );
@@ -14,7 +14,7 @@
 				self::$allowed[$class]['methods'] = true;
 			}
 		}
-		
+
 		public static function allowMatch($class, $methods) {
 			self::$allowed[$class]['matches'] = array_combine( $methods, array_fill( 0, count($methods), true ) );
 		}
@@ -38,11 +38,11 @@
 							return true;
 						}
 					}
-				} 
+				}
 			} while ($current = get_parent_class($current));
 			return false;
 		}
-		
+
 		public static function getCallback( $method, $params = array() ) {
 			if (is_string($method)) {
 				if (is_array($params) && count($params)) {
@@ -53,7 +53,7 @@
 				return create_function( '', '
 					$me = ar::context()->getObject();
 					if ( $me ) {
-						$me->resetloopcheck(); 
+						$me->resetloopcheck();
 					}
 					$args_in = func_get_args();
 					$params = array( '.$paramsString.' );
@@ -74,10 +74,10 @@
 
 		public static function load( $name, $library ) {
 			$context = ar::context()->getObject();
-			return $context->loadLibrary( $name, $library );			
+			return $context->loadLibrary( $name, $library );
 		}
 	}
 
 	ar_pinp::allow('ar_pinp', array('isAllowed', 'getCallback', 'load'));
-	
+
 ?>

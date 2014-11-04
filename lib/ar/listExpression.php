@@ -3,15 +3,15 @@
 
 	ar_pinp::allow('ar_listExpression', array('pattern', 'item', 'define', 'getStringIterator', 'setToStringCallback') );
 	ar_pinp::allow('ar_listExpression_Pattern', array('define') );
-	
+
 	class ar_listExpression_Pattern extends arBase {
 		public $patterns = array();
 		public $definitions = array( '.' => false );
-		
+
 		public function __construct( $patterns ) {
 			$this->patterns = $patterns;
 		}
-		
+
 		public function define( $name, $value = null ) {
 			if ( is_array($name) ) {
 				$this->definitions = array_merge( $this->definitions, $name );
@@ -21,9 +21,9 @@
 			return $this;
 		}
 	}
-	
+
 	class ar_listExpression extends arBase implements Iterator, Countable, ArrayAccess {
-		
+
 		private $rootlist  = null;
 		private $current   = 0;
 		private $patterns  = array();
@@ -32,7 +32,7 @@
 		public  $joinWith  = ' ';
 		public  $isStringIterator = false;
 		public  $definitions = array( '.' => false );
-		
+
 		const T_IDENT            = 3;
 		const T_OR               = 4;
 		const T_REP_OPEN         = 5;
@@ -49,12 +49,12 @@
 		const T_MODIFIERS_CLOSE  = 16;
 		const T_ASSIGN           = 17;
 		const T_LIST_SEP         = 18;
-		
+
 		const N_OR               = 100;
 		const N_AND              = 101;
 		const N_IDENT            = 102;
 		const N_REPEAT           = 103;
-		
+
 		public function __construct( $list ) {
 			if ( is_numeric( $list ) ) {
 				$this->length   = $list;
@@ -62,7 +62,7 @@
 				$this->rootlist = $list;
 			}
 		}
-		
+
 		public function pattern() {
 			$params = func_get_args();
 			foreach( $params as $pattern ) {
@@ -79,7 +79,7 @@
 			}
 			return $this;
 		}
-		
+
 		public function define( $name, $value = false ) {
 			if ( is_array($name) ) {
 				$this->definitions = array_merge( $this->definitions, $name );
@@ -87,8 +87,8 @@
 				$this->definitions[$name] = $value;
 			}
 			return $this;
-		}		
-		
+		}
+
 		public function item( $position ) {
 			$result = array();
 			if ( isset($this->rootlist) ) {
@@ -114,7 +114,7 @@
 			}
 			return $result;
 		}
-		
+
 		public function setToStringCallback( $callback ) {
 			if ( is_callable( $callback ) ) {
 				$this->toStringCallback = $callback;
@@ -122,7 +122,7 @@
 				$this->toStringCallback = null;
 			}
 		}
-		
+
 		private function joinr( $joinWith, $list ) {
 			if ( !is_array($list) ) {
 				return (string) $list;
@@ -139,29 +139,29 @@
 				}
 			}
 		}
-		
+
 		private function defaultToString() {
 			$items = $this->current();
 			if ($this->isStringIterator) {
 				$this->next();
 			}
 			return $this->joinr( $this->joinWith, $items );
-		}		
-				
+		}
+
 		function __toString() {
 			if ( isset($this->toStringCallback) ) {
-				return call_user_func($this->toStringCallback, $this->joinWith); 
+				return call_user_func($this->toStringCallback, $this->joinWith);
 			} else {
 				return $this->defaultToString();
 			}
 		}
-		
+
 		function getStringIterator() {
 			$iterator = clone $this;
 			$iterator->isStringIterator = true;
 			return $iterator;
 		}
-		
+
 		function offsetExists($offset) {
 			if (isset( $this->rootlist) ) {
 				return (exists($this->rootlist[$offset]));
@@ -169,7 +169,7 @@
 				return $offset<$this->length;
 			}
 		}
-		
+
 		function offsetGet($offset) {
 			if ( isset($this->rootlist) ) {
 				$position = array_search( $offset, array_keys($this->rootlist) );
@@ -182,39 +182,39 @@
 				return null;
 			}
 		}
-		
+
 		function offsetSet($offset, $value) {
 			return false;
 		}
-		
+
 		function offsetUnset($offset) {
 			return false;
 		}
-		
+
 		function current() {
 			return $this->item($this->current);
 		}
-		
+
 		function key() {
 			return $this->current;
 		}
-		
+
 		function next() {
 			++$this->current;
 		}
-		
+
 		function rewind() {
 			$this->current = 0;
 		}
-		
+
 		function valid() {
 			return $this->offsetExists($this->current);
 		}
-		
+
 		function count() {
 			return (isset($this->rootlist) ? count($this->rootlist): $this->length);
 		}
-		
+
 		public static function createNode($type, $data = array()) {
 			switch ($type) {
 				case ar_listExpression::N_OR:
@@ -234,7 +234,7 @@
 
 
 	}
-	
+
 	class ar_listExpressionScanner {
 
 		function __construct($buffer) {
@@ -251,7 +251,7 @@
 				$class_ident_start[strtoupper(chr($i))] = strtoupper(chr($i));
 			}
 			$this->class_ident = array_merge(Array('.' => '.'), $class_ident_start);
-			// Numbers [0-9] 
+			// Numbers [0-9]
 			for ($i = ord('0'); $i <= ord('9'); $i++) {
 				$class_number[chr($i)] = chr($i);
 			}
@@ -287,7 +287,7 @@
 
 			do {
 				switch (true) {
-					case '"' === $yych: 
+					case '"' === $yych:
 					case "'" === $yych:
 						$quote = $yych;
 						$yych = $YYBUFFER[++$YYCURSOR];
@@ -740,5 +740,5 @@
 		}
 
 	}
-	
+
 ?>

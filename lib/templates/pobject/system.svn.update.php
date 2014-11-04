@@ -22,12 +22,12 @@
 			return;
 		} else {
 			$repository = rtrim($repository, "/") . "/" . $repo_subpath;
-			
+
 			$updating = $this->path;
 			if( $filename ) {
 				$updating .= $function . " {".$type.") [".$language."]";
-			} 
-			
+			}
+
 			echo "\n<span class='svn_headerline'>Updating ".$updating." from ".$repository."</span>\n";
 			flush();
 
@@ -70,9 +70,9 @@
 					}
 					flush();
 				}
-	
+
 				$this->call(
-					"system.svn.compile.templates.php", 
+					"system.svn.compile.templates.php",
 					array(
 						'templates' 	=> $updated_templates,
 						'fstore'	=> $fstore,

@@ -4,7 +4,7 @@
 	function getPostVar( $name ) {
 		return ( isset( $_POST[$name] ) ? $_POST[$name] : null );
 	}
-	
+
 	$defaults = array(
 		"language" 	=> "en",
 		"step" 		=> "step1",

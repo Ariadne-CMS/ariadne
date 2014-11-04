@@ -10,18 +10,18 @@
      This file is part of Ariadne.
 
      Ariadne is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published 
-     by the Free Software Foundation; either version 2 of the License, 
+     it under the terms of the GNU General Public License as published
+     by the Free Software Foundation; either version 2 of the License,
      or (at your option) any later version.
- 
+
      Ariadne is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU General Public License for more details.
 
      You should have received a copy of the GNU General Public License
-     along with Ariadne; if not, write to the Free Software 
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
+     along with Ariadne; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
      02111-1307  USA
 
     -------------------------------------------------------------------
@@ -35,7 +35,7 @@
 	$ERRMODE="htmljs"; // alternative: "text"/"html"/"js"
 
 	require_once($store_config['code']."include/loader.soap.server.php");
-	
+
 	$DB["method"]["loader"] = false;
 	$DB["method"]["file"] = true;
 	$DB["file"] = "/tmp/soap.log";
@@ -169,7 +169,7 @@
 		if ($store) { // loader.php uses this function before the store is initialized.
 			$store->root=$root;
 			$store->rootoptions=$rootoptions;
-		}	
+		}
 	}
 
 	function ldSetNls($nls) {
@@ -185,7 +185,7 @@
 		$nls=$ARCurrent->nls;
 		ldSetRoot($session, $nls);
 	}
- 
+
 	function ldStartSession($sessionid='') {
 	global $ARCurrent, $AR, $ariadne;
 
@@ -244,7 +244,7 @@
 			$sessionid = $ARCurrent->session->id;
 			$md5_hash = $sessionid.md5($sessionid.
 						$ARCurrent->session->get("ARLogin").
-						$ARCurrent->session->get("ARPassword",1)); 
+						$ARCurrent->session->get("ARPassword",1));
 			debug("soap:: checking ($md5_hash) against $SOAP_SessionID", "loader");
 			if ($md5_hash == $SOAP_SessionID) {
 				$result = true;

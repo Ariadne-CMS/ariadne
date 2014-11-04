@@ -42,7 +42,7 @@
 			$fileinfo[''] = array();
 			$fileinfo['']['ar:type'] = $this->type;
 			$fileinfo['']['ar:name'] = $this->nlsdata->name;
-	
+
 			$pinp = $this->data->config->pinp;
 			if($pinp){
 				foreach( $pinp as $type => $values ) {
@@ -60,7 +60,7 @@
 							} else {
 								$private = 0;
 							}
-	
+
 							$fileinfo[$pinp_filename] = array();
 							$fileinfo[$pinp_filename]['ar:function'] = $function;
 							$fileinfo[$pinp_filename]['ar:type'] = $type;

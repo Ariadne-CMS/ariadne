@@ -2,7 +2,7 @@
 	ldDisablePostProcessing();
 	$ARCurrent->nolangcheck=true;
 	if (!$this->validateFormSecret()) {
-		error($ARnls['ariadne:err:invalidsession']);      
+		error($ARnls['ariadne:err:invalidsession']);
 		exit;
 	}
 	if ($this->CheckLogin('edit') && $this->CheckConfig()) {
@@ -81,7 +81,7 @@
 						<?php
 						return false;
 					}
-					
+
 				}
 
 				$new_objects_left = $objects_left - sizeof($objects);

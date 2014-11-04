@@ -1,7 +1,7 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	require_once($this->store->get_config("code")."modules/mod_yui.php");
-	
+
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 
 		if( !$ARCurrent->arTypeNames ) {

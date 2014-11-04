@@ -35,7 +35,7 @@ class postgresql_compiler extends sql_compiler {
 		}
 		return $ret;
 	}
-	
+
 	function compile_tree(&$node) {
 		switch ((string)$node["id"]) {
 			case 'property':
@@ -48,7 +48,7 @@ class postgresql_compiler extends sql_compiler {
 						$this->used_tables[$table]=$table;
 					} else {
 						if ($this->in_orderby && $node["nls"]) {
-							/* 
+							/*
 								we do a left join so that we will also find non
 								matching objects
 							*/
@@ -60,7 +60,7 @@ class postgresql_compiler extends sql_compiler {
 
 						} else {
 							/*
-								if we are parsing 'orderby' properties we have 
+								if we are parsing 'orderby' properties we have
 								to join our tables for the whole query
 							*/
 							$this->select_tables[$table]=$table;
@@ -120,7 +120,7 @@ class postgresql_compiler extends sql_compiler {
 					$result = " $table$record_id.AR_name = '$field' ";
 					if (!$this->in_orderby ) {
 						if ($this->join_target_properties["prop_my"][":$record_id"]) {
-							$result=" $result and $table$record_id.object = target.object and $table$record_id.AR_value "; 
+							$result=" $result and $table$record_id.object = target.object and $table$record_id.AR_value ";
 						} else {
 							$result=" $table$record_id.object = ".$this->tbl_prefix."objects.id and $table$record_id.AR_value ";
 						}
@@ -277,7 +277,7 @@ class postgresql_compiler extends sql_compiler {
 					if ($this->limit) {
 						$offset = (int)$this->offset;
 						$this->limit_s=" offset $offset limit ".(int)$this->limit." ";
-					} 
+					}
 				}
 			break;
 		}

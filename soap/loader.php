@@ -77,7 +77,7 @@
 
 	} else {
 
-		@ob_end_clean(); // just in case the output buffering is set on in php.ini, disable it here, as Ariadne's cache system gets confused otherwise. 
+		@ob_end_clean(); // just in case the output buffering is set on in php.ini, disable it here, as Ariadne's cache system gets confused otherwise.
 
 		// go check for a sessionid
 		$root=$AR->root;
@@ -121,7 +121,7 @@
 			print_r($arguments);
 			debug(ob_get_contents());
 		ob_end_clean();
-				
+
 		if ($arguments["arUnpackArrayNames"]) {
 			debug("loader starting unpackarraynames\n\n");
 			unpack_array_names($arguments, $arguments);
@@ -140,7 +140,7 @@
 
 		if (!ldCheckLogin($arguments["ARLogin"], $arguments["ARPassword"])) {
 			ldCheckLogin("public", "none");
-		}			
+		}
 
 		// finally call the requested object
 //		unset($arguments["ARPassword"]);
@@ -150,11 +150,11 @@
 		}
 		$result = current(
 					$store->call(
-						'soap.call.phtml', 
+						'soap.call.phtml',
 						Array(
 							'function' => $function,
 							'arguments' => $arguments
-						), 
+						),
 						$store->get($path)
 					)
 		);

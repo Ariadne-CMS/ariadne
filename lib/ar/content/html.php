@@ -7,12 +7,12 @@
 		public static $editMode       = false;
 		public static $editPrefix     = 'editable_';
 		public static $editTemplate   = 'user.edit.page.html';
-		public static $editTarget     = '_top';		
+		public static $editTarget     = '_top';
 		protected static $editCounter = 0;
-		
+
 		public static function configure( $option, $value ) {
 			switch ($option) {
-				case 'editMode' : 
+				case 'editMode' :
 					self::$editMode = $value;
 				break;
 				case 'editPrefix' :
@@ -30,13 +30,13 @@
 		public function __set( $name, $value ) {
 			self::configure( $name, $value );
 		}
-		
+
 		public function __get( $name ) {
 			if ( isset( self::${$name} ) ) {
 				return self::${$name};
 			}
 		}
-	
+
 		public static function link($content, $attributes = array(), $path = null, $url = null) {
 			if (self::$editMode) {
 				$url = ar_loader::makeURL($path);
@@ -50,7 +50,7 @@
 			}
 			return ar_html::tag( 'a', $attributes, $content );
 		}
-		
+
 		public static function editableLink($content, $attributes = array(), $path = null, $url = null ) {
 			if (self::$editMode) {
 				$attributes['onClick']    = 'event.cancelBubble = true;';
@@ -58,66 +58,66 @@
 			}
 			return self::link( $content, $attributes, $path, $url);
 		}
-		
+
 		public static function editableDiv( $content, $name, $editTitle = '' ) {
 			if (self::$editMode) {
 				$context = pobject::getContext();
 				$me      = $context["arCurrentObject"];
 				list( $id, $registerContent ) = self::registerEditable($name);
 				return ar_html::nodes( $registerContent, ar_html::tag(
-					'div', 
-					array( 
+					'div',
+					array(
 						'id'      => $id,
 						'class'   => 'editable',
 						'ar:path' => $me->path,
 						'ar:id'   => $me->id,
 						'title'   => $editTitle
-					), 
-					self::parse( $content ) 
+					),
+					self::parse( $content )
 				) );
 			} else {
 				return self::parse( $content );
 			}
 		}
-		
+
 		public static function editableSpan( $content, $name, $editTitle = '' ) {
 			if (self::$editMode) {
 				$context = pobject::getContext();
 				$me      = $context["arCurrentObject"];
 				list( $id, $registerContent ) = self::registerEditable($name);
 				return ar_html::nodes( $registerContent, ar_html::tag(
-					'span', 
-					array( 
+					'span',
+					array(
 						'id'      => $id,
 						'class'   => 'editable',
 						'ar:path' => $me->path,
 						'ar:id'   => $me->id,
 						'title'   => $editTitle
-					), 
-					self::parse( $content ) 
+					),
+					self::parse( $content )
 				) );
 			} else {
 				return self::parse( $content );
 			}
 		}
-		
+
 		public static function editableTextSpan( $content, $name, $editTitle = '' ) {
 			if (self::$editMode) {
 				$context  = pobject::getContext();
 				$me       = $context["arCurrentObject"];
 				$register = self::registerEditable($name);
-				return ar_html::nodes( 
-					$register['content'], 
+				return ar_html::nodes(
+					$register['content'],
 					ar_html::tag(
-						'span', 
-						array( 
+						'span',
+						array(
 							'id'      => $register['id'],
 							'class'   => array( 'editable', 'text-only' ),
 							'ar:path' => $me->path,
 							'ar:id'   => $me->id,
 							'title'   => $editTitle
-						), 
-						self::parse( $content ) 
+						),
+						self::parse( $content )
 					)
 				);
 			} else {
@@ -133,12 +133,12 @@
 			return array(
 				'id' => $prefix.$id,
 				'content' => ar_html::tag(
-					'script', 
+					'script',
 					" parent.registerDataField('".$prefix.$id."', '".AddCSlashes($name, ARESCAPE)."', '".$me->path."', '".$me->id."' );"
 				)
 			);
 		}
-		
+
 		public static function editablePage($page=null, $name=null, $editTitle='', $default = null, $nls = null) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
@@ -170,7 +170,7 @@
 				return self::parse( $page );
 			}
 		}
-		
+
 		public static function editableName( $content = null, $name = null, $editTitle = '', $default = null, $nls = null) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
@@ -200,9 +200,9 @@
 				return self::editableTextSpan( $content, $name, $editTitle);
 			} else {
 				return $content;
-			}		
+			}
 		}
-		
+
 		public static function getBody( $html ) {
 			$html = preg_replace('|</BODY.*$|is', '', $html);
 			$errno = preg_last_error();
@@ -233,7 +233,7 @@
 
 		public static function isEmpty( $html ) {
 			$html = self::getBody( $html );
-			return trim( str_replace( '&nbsp;', ' ', 
+			return trim( str_replace( '&nbsp;', ' ',
 				strip_tags( $html, '<img><object><embed><iframe>') ) )=='';
 		}
 
@@ -361,13 +361,13 @@
 				array(
 					"|{arSite(/[a-z][a-z])?}|",
 					"|{arRoot(/[a-z][a-z])?}|",
-					"|{arBase(/[a-z][a-z])?}|", 
+					"|{arBase(/[a-z][a-z])?}|",
 					"|{arCurrentPage(/[a-z][a-z])?}|" ),
 				array(
-					$me->currentsite(), 
-					"", 
-					"", 
-					$me->path), 
+					$me->currentsite(),
+					"",
+					"",
+					$me->path),
 				$matches[1]);
 			foreach ($refs as $ref) {
 				if (substr($ref, -1) != '/' && !$me->exists($ref)) {
@@ -426,15 +426,15 @@
 			return $result;
 		}
 	}
-	
+
 	class ar_content_htmlContent extends arBase {
-	
+
 		public $html = null;
-		
+
 		public function __construct( $html = null ) {
 			$this->html = (string) $html;
 		}
-	
+
 		public function __toString() {
 			return $this->html;
 		}
@@ -443,29 +443,29 @@
 			$this->html = (string) ar_content_html::clean( $this->html, $settings );
 			return $this;
 		}
-		
+
 		public function compile( $language = '' ) {
 			$this->html = (string) ar_content_html::compile( $this->html, $language );
 			return $this;
 		}
-		
+
 		public function getBody() {
 			return new ar_content_htmlContent( (string) ar_content_html::getBody( $this->html ) );
 		}
-		
+
 		public function getReferences() {
 			return ar_content_html::getReferences( $this->html );
 		}
-		
+
 		public function isEmpty() {
 			return ar_content_html::isEmpty( $this->html );
 		}
-		
+
 		public function parse( $full = false ) {
 			$this->html = (string) ar_content_html::parse( $this->html, $full );
 			return $this;
 		}
-		
+
 		public function stripARNameSpace() {
 			$this->html = (string) ar_content_html::stripARNameSpace( $this->html );
 			return $this;

@@ -19,7 +19,7 @@
 				<label for="refreshonrq"><?php echo $ARnls["refreshonrq."]; ?></label>
 			</div>
 			<div class="field keepimage">
-				<?php echo $ARnls["keepimage"]; ?> 
+				<?php echo $ARnls["keepimage"]; ?>
 				<input type="text" name="keepfor" size="2" maxlength="3" value="<?php if ($cacheconfig>0) { echo $cacheconfig; } else { echo "2"; } ?>">
 				<?php echo $ARnls["hours"]; ?>.
 			</div>

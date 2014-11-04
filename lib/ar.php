@@ -12,7 +12,7 @@
 		protected static $instances;
 		protected static $ar;
 		protected static $context = null;
-		
+
 		public static function __callStatic($name, $arguments) {
 			return self::load($name);
 		}
@@ -35,7 +35,7 @@
 			}
 			return $fileName;
 		}
-		
+
 		private static function _compileClassName($className) {
 			if (strpos($className, 'ar_')!==0) {
 				$className = 'ar_'.$className;
@@ -67,7 +67,7 @@
 				return self::$instances[$name];
 			}
 		}
-		
+
 		public static function autoload($className) {
 			if (strpos($className, 'pinp_ar_')===0) {
 				$className = substr($className, 5);
@@ -80,11 +80,11 @@
 					$subFileName = preg_replace( '/[A-Z].*$/', '', $fileName );
 					if ( $subFileName != $fileName && file_exists( ARBaseDir.$subFileName.'.php' ) ) {
 						require_once( ARBaseDir.$subFileName.'.php' );
-					}					
+					}
 				}
 			}
 		}
-		
+
 		public static function ls() {
 			return ar_store::ls();
 		}
@@ -100,15 +100,15 @@
 		public static function parents($path = ".") {
 			return ar_store::parents($path);
 		}
-		
+
 		public static function exists($path = '.') {
 			return ar_store::exists($path);
 		}
-		
+
 		public static function error($message, $code, $previous = null) {
 			return ar_error::raiseError($message, $code, $previous);
 		}
-		
+
 		public static function call( $template, $params = null ) {
 			$context = self::context();
 			$me = $context->getObject();
@@ -116,7 +116,7 @@
 				return $me->call( $template, $params );
 			}
 		}
-		
+
 		public static function callSuper( $params = null ) {
 			$context = self::context();
 			$me = $context->getObject();
@@ -124,7 +124,7 @@
 				return $me->_call_super( $params );
 			}
 		}
-		
+
 		public static function taint(&$value) {
 			if ( is_numeric($value) ) {
 				return $value;
@@ -147,19 +147,19 @@
 			}
 			return $value;
 		}
-		
+
 		protected static function untaintArrayItem(&$value, $key, $options) {
 			self::untaint( $value, $options['filter'], $options['flags'] );
 		}
 
 		public function getvar( $name ) {
 			global $ARCurrent, $ARConfig;
-			
+
 			if ($ARCurrent->arCallStack) {
 				$arCallArgs=end($ARCurrent->arCallStack);
 				if ( $name == 'arCallArgs' ) {
 					return $arCallArgs;
-				} 
+				}
 				if ( isset($arCallArgs[$name]) ) {
 					return $arCallArgs[$name];
 				}
@@ -177,33 +177,33 @@
 			}
 			return ar_loader::getvar( $name );
 		}
-		
+
 		public function putvar( $name, $value ) {
 			global $ARCurrent;
 			$ARCurrent->$name = $value;
 		}
-		
+
 		public static function listExpression( $list ) {
 			return new ar_listExpression( $list );
 		}
-		
+
 		public static function listPattern() {
 			self::autoload('ar_listExpression');
 			$params = func_get_args();
 			return new ar_listExpression_Pattern( $params );
 		}
-		
+
 		public static function url( $url ) {
 			return new ar_url( $url );
 		}
-		
+
 		public static function context() {
 			if (!isset(self::$context)) {
 				self::setContext( new ar_ariadneContext() );
 			}
 			return self::$context;
 		}
-		
+
 		public static function setContext( $context ) {
 			if ( !isset( self::$context ) ) {
 				self::$context = $context;
@@ -211,14 +211,14 @@
 				return self::error( 'Context can only be set once.', ar_exceptions::ACCESS_DENIED );
 			}
 		}
-		
+
 		public static function acquire( $varname, $options = array() ) {
 			$context = self::context();
 			return $context->acquire( $varname, $options = array() );
 		}
-		
+
 	}
-	
+
 	class arTainted {
 		public $value = null;
 
@@ -230,7 +230,7 @@
 			return filter_var($this->value, FILTER_SANITIZE_SPECIAL_CHARS);
 		}
 	}
-	
+
 
 	class arObject {
 		public function __construct( $vars = '' ) {
@@ -245,7 +245,7 @@
 	}
 
 	class arBase {
-		
+
 		public function __call($name, $arguments) {
 			if (($name[0]==='_')) {
 				$realName = substr($name, 1);
@@ -261,14 +261,14 @@
 	}
 
 	class arWrapper {
-	
+
 		protected $wrapped = null;
 		protected $__class = 'arWrapper';
-		
+
 		public function __construct( $wrapped ) {
 			$this->wrapped = $wrapped;
 		}
-		
+
 		public function __call($name, $arguments) {
 			if ( $name[0] === '_' ) {
 				if ( !method_exists( $this->wrapped, $name ) || !ar_pinp::isAllowed( $this, $name ) ) {
@@ -285,7 +285,7 @@
 				trigger_error("Method $name not found in class ".get_class($this), E_USER_WARNING);
 			}
 		}
-		
+
 		public function __wrap( $result ) {
 			if (is_object($result)) {
 				$class = $this->__class;
@@ -294,18 +294,18 @@
 				return $result;
 			}
 		}
-		
+
 		public function __get( $name ) {
 			return $this->wrapped->$name;
 		}
-		
+
 		public function __set( $name, $value ) {
 			$this->wrapped->$name = $value;
 		}
-		
+
 	}
 
-	
+
 	class ar_error extends ar_exceptionDefault {
 		var $message;
 		var $code;
@@ -333,7 +333,7 @@
 		}
 
 		public static function isError($ob) {
-			return ( is_object($ob) 
+			return ( is_object($ob)
 				&& ( is_a($ob, 'ar_error') || is_a($ob, 'error') || is_a($ob, 'PEAR_Error') ) );
 		}
 
@@ -347,12 +347,12 @@
 
 		public static function configure( $option, $value ) {
 			switch ($option) {
-				case 'throwExceptions' : 
+				case 'throwExceptions' :
 					self::$throwExceptions = $value;
 				break;
 			}
 		}
-		
+
 		public function __toString() {
 			return $this->code.": ".$this->message."\r\n";
 		}
@@ -388,53 +388,53 @@
 		public static function _exists($path = '.') {
 			return ar_store::exists($path);
 		}
-		
+
 		public static function _error($message, $code) {
 			return ar::error($message, $code);
 		}
-		
+
 		public static function _call($template, $params = null) {
 			return ar::call($template, $params);
 		}
-		
+
 		public static function _callSuper() {
 			return ar::callSuper();
 		}
-		
+
 		public static function _taint(&$value) {
 			ar::taint($value);
 		}
-		
+
 		public static function _untaint(&$value, $filter = FILTER_SANITIZE_SPECIAL_CHARS, $flags = null) {
 			ar::untaint($value, $filter, $flags);
 		}
-		
+
 		public static function _getvar( $name ) {
 			return ar::getvar( $name );
 		}
-		
+
 		public static function _putvar( $name, $value ) {
 			return ar::putvar( $name, $value );
 		}
-		
+
 		public static function _listExpression( $list ) {
 			return ar::listExpression( $list );
 		}
-		
+
 		public static function _listPattern() {
 			$params = func_get_args();
 			return call_user_func_array( array( 'ar', 'listPattern'), $params);
 		}
-		
+
 		public static function _url( $url ) {
 			return ar::url( $url );
 		}
-		
+
 		public static function _acquire( $varname, $options = array() ) {
 			return ar::acquire( $varname, $options = array() );
 		}
 	}
-	
+
 	function ar($name=null) {
 		// this function works as an alternative to statically calling the namespaced class
 		// this is a fallback untill namespaces work in php 5.3
@@ -443,14 +443,14 @@
 
 	interface ar_contextInterface {
 		public static function getPath( $options = array() );
-		
+
 		public static function getObject( $options = array() );
-		
+
 		public static function getLoader( $options = array() );
 	}
-	
+
 	class ar_ariadneContext implements ar_contextInterface {
-	
+
 		public static function makePath( $cwd, $path ) { //FIXME: move this method to a better place
 			$result = '/';
 			if ( $path[0] === '/' ) {
@@ -480,7 +480,7 @@
 			}
 			return $result;
 		}
-	
+
 		public static function getPath( $options = array() ) {
 			$me = self::getObject( $options );
 			if ($me) {
@@ -500,7 +500,7 @@
 			}
 			return $path;
 		}
-		
+
 		public static function getObject( $options = array() ) {
 			if ( class_exists( 'pobject' ) ) {
 				$context = pobject::getContext();
@@ -510,11 +510,11 @@
 			}
 			return $me;
 		}
-		
+
 		public static function getLoader( $options = array() ) { //FIXME: move code from ar_loader to here
 			return ar_loader::getLoader();
 		}
-		
+
 		public static function acquire( $varname, $options = array() ) {
 			$me = self::getObject( $options );
 			if ($me) {
@@ -538,14 +538,14 @@
 		}
 
 	}
-	
+
 	interface arKeyValueStoreInterface {
-	
+
 		function getvar( $name );
-		
+
 		function putvar( $name, $value );
-	
+
 	}
-	
+
 	spl_autoload_register('ar::autoload');
 ?>

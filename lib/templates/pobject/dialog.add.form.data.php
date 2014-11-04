@@ -40,7 +40,7 @@
 			"template" => "dialog.new.filename.php",
 			"nolang" => true
 		);
-		
+
 		$wgWizFlow[] = array(
 			"title" => $ARnls["data"],
 			"image" => $AR->dir->images.'wizard/data.png',
@@ -59,7 +59,7 @@
 			$wgWizFlow[] = array(
 				"title" => $ARnls["customdata"],
 				"image" => $AR->dir->images.'wizard/customdata.png',
-				"template" => "dialog.edit.custom.php" 
+				"template" => "dialog.edit.custom.php"
 			);
 		}
 

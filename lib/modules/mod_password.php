@@ -10,30 +10,30 @@
      This file is part of Ariadne.
 
      Ariadne is free software; you can redistribute it and/or modify
-     it under the terms of the GNU General Public License as published 
-     by the Free Software Foundation; either version 2 of the License, 
+     it under the terms of the GNU General Public License as published
+     by the Free Software Foundation; either version 2 of the License,
      or (at your option) any later version.
- 
+
      Ariadne is distributed in the hope that it will be useful,
      but WITHOUT ANY WARRANTY; without even the implied warranty of
      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
      GNU General Public License for more details.
 
      You should have received a copy of the GNU General Public License
-     along with Ariadne; if not, write to the Free Software 
-     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  
+     along with Ariadne; if not, write to the Free Software
+     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
      02111-1307  USA
 
     -------------------------------------------------------------------
 
      Description:
 
- * Password generation based on : 
+ * Password generation based on :
  *
  * pw_phonemes.c --- generate secure passwords using phoneme rules
  *
  * Copyright (C) 2001,2002 by Theodore Ts'o
- * 
+ *
  * This file may be distributed under the terms of the GNU Public
  * License.
 

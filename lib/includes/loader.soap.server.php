@@ -1532,7 +1532,7 @@ class soap_server extends nusoap_base {
 
 
 	/**
-	* parses request and returns 
+	* parses request and returns
 	*
 	* @param    string $data XML string
 	* @return        object SOAPx4 soapmsg object

@@ -462,7 +462,7 @@
 						$result['-'] = false;
 					}
 				} else {
-					$result[$char] = false; 
+					$result[$char] = false;
 					$result = $result + ar_beta_parse_lexer_parser::parseCharList($input, $offset);
 				}
 			}

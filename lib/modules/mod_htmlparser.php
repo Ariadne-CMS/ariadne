@@ -21,7 +21,7 @@
 	define('AR_HTMLPARSER_STATE_COMMENT', 5);
 	define('AR_HTMLPARSER_STATE_SCRIPT', 6);
 	define('AR_HTMLPARSER_STATE_DOCTYPE', 7);
- 
+
 	define('CONTEXT_NORMAL', 1);
 	define('CONTEXT_SCRIPT', 2);
 

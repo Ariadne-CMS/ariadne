@@ -30,7 +30,7 @@
 					"value" => $ARnls["delete"]
 				),
 			);
-		}			
+		}
 
 		$wgWizTitle=$ARnls["delete"];
 		$wgWizHeader = $wgWizTitle;

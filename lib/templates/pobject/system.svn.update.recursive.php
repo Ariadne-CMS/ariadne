@@ -1,6 +1,6 @@
 <?php
 	$ARCurrent->nolangcheck = true;
-	
+
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
 		set_time_limit(0);
 		$this->resetloopcheck();
@@ -33,7 +33,7 @@
 				echo "\n<span class='svn_headerline'>Updating ".$this->path." from ".$repository."</span>\n";
 			} else {
 				echo "\n<span class='svn_headerline'>Updating ".$this->path." to revision $revision from $repository</span>\n";
-			} 
+			}
 			flush();
 
 			// Update the templates.

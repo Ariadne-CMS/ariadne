@@ -23,19 +23,19 @@
 			if ($svn_info['Revision']) {
 				echo $this->path . " is already under version control - update instead.\n";
 			} else {
-			
+
 				if ($repoPath) {
 					$repo_subpath = substr($this->path, strlen($repoPath));
 				} else {
 					// This is also the first loop!
 					ob_start(); // FIXME: the SVN library is being a cunt and echoing when it shouldn't. So we catch it and destroy it.
 					$fstore->svn_accept_cert($svn, $repository);
-					ob_end_clean(); 
+					ob_end_clean();
 					$repo_subpath = '';
 				}
 
 				$repository = rtrim($repository, "/") . "/" . $repo_subpath;
-				
+
 				$task = "Checking out";
 				if( $checkunder ) {
 					$task = "Checking under";

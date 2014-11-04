@@ -1,9 +1,9 @@
 <?php
 	/******************************************************************
-	
+
 	******************************************************************/
 	if (!$this->validateFormSecret()) {
-		error($ARnls['ariadne:err:invalidsession']);      
+		error($ARnls['ariadne:err:invalidsession']);
 		exit;
 	}
 

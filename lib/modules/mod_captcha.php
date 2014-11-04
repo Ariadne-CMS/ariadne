@@ -43,8 +43,8 @@
 			$config = Array(
 					'template'		 => $template,
 					'url'			 => $me->make_url(),
-					'tempfolder'     => $temp,      
-					'TTF_folder'     => CAPTCHA_TTF_FOLDER, 
+					'tempfolder'     => $temp,
+					'TTF_folder'     => CAPTCHA_TTF_FOLDER,
 		                                // mixed (array or string): basename(s) of TrueType-Fontfiles
 					'TTF_RANGE'      => Array(
 											'andalemo.ttf',
@@ -131,7 +131,7 @@
 			$captchaImg = preg_replace("|[\\\/]|", "", $captchaImg);
 			$filename = $me->store->get_config('files').'temp/hn_captcha_'.$captchaImg.'.jpg';
 //			ldSetContent('image/jpg');
-			if( file_exists($filename) ) {	
+			if( file_exists($filename) ) {
 				readfile($filename);
 			}
 		}

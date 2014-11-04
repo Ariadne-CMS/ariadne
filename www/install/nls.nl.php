@@ -25,7 +25,7 @@
 	$ARnls['install:recheck']		= 'Opnieuw controleren';
 	$ARnls['install:check_ok']		= 'Geslaagd';
 	$ARnls['install:check_failed']		= 'Mislukt';
-	$ARnls['install:check_php_version']	= 'PHP versie 5';	
+	$ARnls['install:check_php_version']	= 'PHP versie 5';
 	$ARnls['install:check_database_support']= 'Ondersteunde database';
 	$ARnls['install:check_webserver']	= 'Ondersteunde webserver';
 	$ARnls['install:check_accept_path_info']= 'AcceptPathInfo regel in httpd.conf';
@@ -36,7 +36,7 @@
 	$ARnls['install:check_files_write']	= 'Files map is schrijfbaar';
 	$ARnls['install:check_image_magick']	= 'Image Magick';
 	$ARnls['install:check_exif']	= 'PHP ondersteund Exif';
-	$ARnls['install:check_svn']		= 'SVN ondersteuning';	
+	$ARnls['install:check_svn']		= 'SVN ondersteuning';
 	$ARnls['install:check_svn_write']	= 'SVN configuratiemap is schrijfbaar';
 	$ARnls['install:check_html_tidy']	= 'HTML Tidy is geinstalleerd';
 	$ARnls['install:check_grep']		= 'Grep is geinstalleerd';

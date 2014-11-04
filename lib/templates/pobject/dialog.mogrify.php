@@ -11,7 +11,7 @@
 				"save" => "dialog.mogrify.save.php"
 			)
 		);
-		
+
 		if ($wgWizAction == 'save') {
 			$wgWizButtons = array(
 				"template" => array(
@@ -27,7 +27,7 @@
 					"value" => $ARnls["ariadne:mogrify"]
 				),
 			);
-		}				
+		}
 
 		$wgWizTitle=$ARnls["ariadne:mogrify"];
 		$wgWizHeader = $wgWizTitle;

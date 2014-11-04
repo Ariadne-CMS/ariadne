@@ -1,6 +1,6 @@
 <?php
 /*
-	Workspaces for object data within Ariadne.	
+	Workspaces for object data within Ariadne.
 
 	(c) Muze 2011;
 */
@@ -33,7 +33,7 @@
 
 			$context = pobject::getContext();
 			$me = $context['arCurrentObject'];
-			
+
 			// FIXME: layerstatus wordt nu van de huidige active layer opgehaald in plaats van $workspace
 
 			$hardlinks = $me->store->checkHardLinks($me->path);
@@ -100,7 +100,7 @@
 
 		function commit($paths, $workspace="workspace") {
 			// Commit the changes that have been made in the active workspace to the actual store.
-			// $paths is an array containing the paths that will be commited. 
+			// $paths is an array containing the paths that will be commited.
 			return true;
 		}
 

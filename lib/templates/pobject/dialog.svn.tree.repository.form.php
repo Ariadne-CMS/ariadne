@@ -1,9 +1,9 @@
 <?php
 	$ARCurrent->nolangcheck=true;
         if ($this->CheckLogin("layout") && $this->CheckConfig()) {
-        
+
 			$svninfo = current($this->get($this->parent, "system.svn.info.php"));
-		
+
 			$repository = "";
 			if( $svninfo && $svninfo["URL"] ) {
 				$repository = $svninfo["URL"]."/".basename($this->path);

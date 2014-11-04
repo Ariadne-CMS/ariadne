@@ -2,7 +2,7 @@
 	$ARCurrent->nolangcheck=true;
 	// empty, do nothing for pobject.
 	if ($this->CheckLogin("add") && $this->CheckConfig()) {
-	
+
 		$arResult[0] = $wgWizFlow[0];
 		$arResult[] = array(
 			"title" => $ARnls["uploadfile"],
@@ -14,8 +14,8 @@
 				$arResult[] = $flow;
 			}
 		}
-		
-		
+
+
 		foreach ($AR->nls->list as $language => $language_name) {
 			$arNewFilename = $this->getdata("arNewFilename","none");
 			if (!$arNewFilename || !$this->getdata("name", $language)) {
@@ -31,5 +31,5 @@
 				}
 			}
 		}
-	} 
+	}
 ?>

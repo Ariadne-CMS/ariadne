@@ -11,7 +11,7 @@
 				"save" => "dialog.rewrite.save.php"
 			)
 		);
-		
+
 		if ($wgWizAction == 'save') {
 			$wgWizButtons = array(
 				"cancel" => array(
@@ -30,7 +30,7 @@
 					"value" => $ARnls["ariadne:rewrite"]
 				),
 			);
-		}				
+		}
 
 		$wgWizTitle=$ARnls["ariadne:rewrite"];
 		$wgWizHeader = $wgWizTitle;

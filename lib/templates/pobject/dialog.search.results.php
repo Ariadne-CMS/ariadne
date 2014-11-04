@@ -25,11 +25,11 @@
 	#resultSet table {
 		width: 100%;
 	}
-	.yui-dt table th.yui-dt-last, 
-	.yui-dt table td.yui-dt-last, 
+	.yui-dt table th.yui-dt-last,
+	.yui-dt table td.yui-dt-last,
 	.yui-dt table thead {
 		border-right: 0px;
-	}	
+	}
 	#resultSet img {
 		border: 0px;
 	}
@@ -56,8 +56,8 @@
 	function initresults() {
 		if (YAHOO.util.Dom.get("resultsTable")) {
 			var myDataSource = new YAHOO.util.DataSource(YAHOO.util.Dom.get("resultsTable"));
-			myDataSource.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE;   
-			myDataSource.responseSchema = {   
+			myDataSource.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE;
+			myDataSource.responseSchema = {
 				fields: [{key:"name"},
 					{key:"location"},
 					{key:"size"},
@@ -65,18 +65,18 @@
 					{key:"language"}
 					]
 			};
-			var myColumnDefs = [   
-				{key:"name", label:"<?php echo $ARnls['name'];?>", sortable:true},   
-				{key:"location", label:"<?php echo $ARnls['location'];?>", sortable:true},   
+			var myColumnDefs = [
+				{key:"name", label:"<?php echo $ARnls['name'];?>", sortable:true},
+				{key:"location", label:"<?php echo $ARnls['location'];?>", sortable:true},
 				{key:"size", label:"<?php echo $ARnls['size'];?>", sortable:true},
 				{key:"modified", label:"<?php echo $ARnls['modified'];?>", sortable:true},
 				{key:"language", label:"<?php echo $ARnls['language'];?>", sortable:true}
-			];   
+			];
 			var myDataTable = new YAHOO.widget.DataTable("resultSet", myColumnDefs, myDataSource, {});
 		}
 	}
 	YAHOO.util.Event.onDOMReady(initresults);
-	 
+
 </script>
 
 	<div id="resultSet" class="yui-dt">

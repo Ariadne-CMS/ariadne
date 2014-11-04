@@ -5,7 +5,7 @@
 //		echo "<pre>";
 //		print_r($this->store->getLayerstatus($this->path, true));
 //		echo "</pre>";
-				
+
 	?>
 <script type="text/javascript">
 	function tableinit() {
@@ -57,8 +57,8 @@
 			<th><?php echo $ARnls['ariadne:workspace:status']; ?></th>
 			<th></th>
 		</thead>
-		<?php	
-			foreach ($this->store->getLayerstatus($this->path, true) as $entry) {	
+		<?php
+			foreach ($this->store->getLayerstatus($this->path, true) as $entry) {
 				$defaultnls = $entry['new']['data']->nls->default;
 				$name = $entry['new']['data']->$defaultnls->name;
 
@@ -82,12 +82,12 @@
 			<tr>
 				<td><?php echo $name; ?></td>
 				<td><?php echo $path; ?></td>
-				<td><?php echo $changes; ?></td>	
+				<td><?php echo $changes; ?></td>
 				<td><input type="checkbox" name="workspacepath[<?php echo $entry['new']['path'];?>]" value="1" checked></td>
 			</tr>
 		<?php	}	?>
 	</table>
 </div>
-<?php		
+<?php
 	}
 ?>

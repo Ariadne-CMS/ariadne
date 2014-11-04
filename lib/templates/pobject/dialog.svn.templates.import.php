@@ -13,7 +13,7 @@
 		);
 
 		$wgWizAction = $this->getdata("wgWizAction");
-		
+
 		if( $wgWizAction == "save" ) {
 			$wgWizStyleSheets = array( $AR->dir->styles."svn.css" );
 			$wgWizButtons = array(

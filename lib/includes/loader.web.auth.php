@@ -1,6 +1,6 @@
 <?php
 
-	function ldGetCurrentTemplate( $function ) { 
+	function ldGetCurrentTemplate( $function ) {
 		if ( isset($function) ) {
 			return $function;
 		} else {
@@ -64,7 +64,7 @@
 					// but do kill it if it's older than one day
 					unset($cookie[$sessionid]);
 				}
-			} 
+			}
 		}
 
 		$cookie[$ARCurrent->session->id]['login']=$login;
@@ -79,7 +79,7 @@
 
 	function ldAccessTimeout($path, $message, $args = null, $function = null) {
 	global $ARCurrent, $store;
-		/* 
+		/*
 			since there is no 'peek' function, we need to pop and push
 			the arCallArgs variable.
 		*/
@@ -105,7 +105,7 @@
 
 			if (!$ARCurrent->arLoginSilent) {
 				$ARCurrent->arLoginSilent = true;
-				$store->call("user.session.timeout.html", 
+				$store->call("user.session.timeout.html",
 									$arCallArgs,
 									$store->get($path) );
 			}
@@ -115,7 +115,7 @@
 
 	function ldAccessDenied($path, $message, $args = null, $function = null) {
 	global $ARCurrent, $store;
-		/* 
+		/*
 			since there is no 'peek' function, we need to pop and push
 			the arCallArgs variable.
 		*/
@@ -142,7 +142,7 @@
 
 			if (!$ARCurrent->arLoginSilent) {
 				$ARCurrent->arLoginSilent = true;
-				$store->call("user.login.html", 
+				$store->call("user.login.html",
 									$arCallArgs,
 									$store->get($path) );
 			}
@@ -151,7 +151,7 @@
 
 	function ldAccessPasswordExpired($path, $message, $args=null, $function = null) {
 	global $ARCurrent, $store;
-		/* 
+		/*
 			since there is no 'peek' function, we need to pop and push
 			the arCallArgs variable.
 		*/
@@ -177,7 +177,7 @@
 
 			if (!$ARCurrent->arLoginSilent) {
 				$ARCurrent->arLoginSilent = true;
-				$store->call("user.password.expired.html", 
+				$store->call("user.password.expired.html",
 									$arCallArgs,
 									$store->get($path) );
 			}

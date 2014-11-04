@@ -2,7 +2,7 @@
 	$ARCurrent->nolangcheck=true;
 	$arIsNewObject=$this->arIsNewObject;
 	if (!$this->validateFormSecret()) {
-		error($ARnls['ariadne:err:invalidsession']);      
+		error($ARnls['ariadne:err:invalidsession']);
 		exit;
 	}
 	if ($this->AR_implements('pshortcut')) {
@@ -17,11 +17,11 @@
 	} else {
 		$this->unlock();
 		?>
-			<script type="text/javascript"> 
+			<script type="text/javascript">
 				if (top.window.opener) {
 					if (top.window.opener.muze.dialog && window.opener.muze.dialog.hasCallback( window.name, 'submit') ) {
-						window.opener.muze.dialog.callback( window.name, 'submit', { 
-							'type' : '<?php echo $this->type; ?>', 
+						window.opener.muze.dialog.callback( window.name, 'submit', {
+							'type' : '<?php echo $this->type; ?>',
 							'name' : '<?php echo AddCSlashes($this->nlsdata->name, ARESCAPE); ?>',
 							'path' : '<?php echo $this->path; ?>',
 							'url'  : '<?php echo $this->make_url($this->path); ?>'

@@ -1,7 +1,7 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
-		// first make sure that the object is clean (data can only be set via 
+		// first make sure that the object is clean (data can only be set via
 		// the defined interface: $arCallArgs)
 		$this->data=current($this->get(".","system.get.data.phtml"));
 

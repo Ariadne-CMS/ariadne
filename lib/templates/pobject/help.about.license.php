@@ -7,7 +7,7 @@
 	 Global variables: none
 
 	 This template displays the GNU General Public License, version 2.
-	 
+
 	 no result
 
 	******************************************************************/

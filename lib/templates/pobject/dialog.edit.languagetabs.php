@@ -29,7 +29,7 @@
 
 		$languages=array_intersect(array_keys($languagelist), array_keys(
 				array_merge( ( $ARConfig->nls->list ? $ARConfig->nls->list : array() ),
-							 ( $this->data->config->nls->list ? $this->data->config->nls->list : array() ) 
+							 ( $this->data->config->nls->list ? $this->data->config->nls->list : array() )
 							)
 						)
 				);
@@ -49,7 +49,7 @@
 			} else {
 				$class="tab";
 			}
-			
+
 			$item['class'] = $class;
 			$item['href']  = "javascript:switchLanguage('" . $nlskey . "');";
 			$item['image'] = $image;

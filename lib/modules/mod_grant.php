@@ -1,6 +1,6 @@
 <?php
 	define("T_G_IDENT",		253);
-	
+
 	class mod_grant {
 		function get_token() {
 			$this->token = $this->token_ahead;

@@ -35,7 +35,7 @@
 						if( $key == $config->nls->default ) { echo "selected"; }
 						echo ">[$key] $value</option>\n";
 					}
-				?>					
+				?>
 				</select>
 			</div>
 		</div>
@@ -45,7 +45,7 @@
 					if( $this->data->config->nlsconfig->list) { // set for this object
 						echo "checked";
 					}
-				?>>		
+				?>>
 				<label for="use" class="required"><?php echo $ARnls["use"]; ?> : </label>
 			</div>
 			<div class="field">
@@ -83,12 +83,12 @@
 							echo "<option value=\"$key\">[$key] $value</option>\n";
 						}
 					}
-				?>					
+				?>
 				</select>
 			</div>
 		</div>
 	</fieldset>
-	
+
 <?php
-	}	
+	}
 ?>

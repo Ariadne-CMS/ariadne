@@ -7,11 +7,11 @@
 			$ARnls->setLanguage($AR->user->data->language);
 		}
 
-		
+
 		if( !$arLanguage ) {
 			$arLanguage = $nls;
 		}
-		
+
 		$owner = $this->data->config->owner_name;
 		if( !$owner ) {
 			$owner = $this->data->owner_name;
@@ -21,9 +21,9 @@
 
 		$userConfig = $this->loadUserConfig();
 		$authconfig = $userConfig['authentication'];
-		
+
 		$mod_user = $this->data->muser;
-		
+
 		foreach ($authconfig['userdirs'] as $userdir) {
 			$muser = current($this->find($userdir, "login.value='".AddCSlashes($this->data->muser, ARESCAPE)."'", "system.get.phtml"));
 			if ($muser) {

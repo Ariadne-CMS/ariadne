@@ -14,11 +14,11 @@
 	  	} else {
 			$currentpath = $this->make_ariadne_url();
 		}
-		
+
 		if ( !($showall && $this->CheckSilent("layout")) ) {
 			$showall = 0;
 		}
-		
+
 		$typeslist = yui::getTypes($this, $showall);
 		$itemlist = Array();
 		if ( $typeslist && is_array($typeslist) && count($typeslist) ) {

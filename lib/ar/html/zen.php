@@ -1,16 +1,16 @@
 <?php
 
 	ar_pinp::allow( 'ar_html_zen' );
-	
+
 	class ar_html_zen extends ar_htmlNodes {
-	
+
 		const T_EOF                 = 0;
 		const T_IDENT               = 1;
 		const T_NUMBER              = 2;
 		const T_PLACEHOLDER         = 3;
 		const T_EXPRESSION_OPEN     = 4;
 		const T_EXPRESSION_CLOSE    = 5;
-		
+
 		const T_OP_ATTRIBUTES_OPEN  = 6;
 		const T_OP_ATTRIBUTES_CLOSE = 7;
 		const T_OP_FILTER           = 8;
@@ -27,7 +27,7 @@
 			$nodes = $parser->run();
 			parent::__construct( (array)$this->compileNodes($nodes) );
 		}
-		
+
 		private function compileNodes($nodes, $childNodes = null) {
 			if( !isset($childNodes) ) {
 				$childNodes = ar_html::nodes();
@@ -62,7 +62,7 @@
 	}
 
 	class ar_html_zenScanner {
-	
+
 		function __construct($buffer) {
 			$this->YYBUFFER = $buffer."\000";
 			$this->YYLINE = 0;
@@ -78,7 +78,7 @@
 			}
 			$this->class_ident = array_merge(Array('-' => '-', '_' => '_'), $class_ident_start);
 			$this->class_ident_start = $class_ident_start;
-			// Numbers [0-9] 
+			// Numbers [0-9]
 			for ($i = ord('0'); $i <= ord('9'); $i++) {
 				$class_ident_next[chr($i)] = chr($i);
 				$class_number[chr($i)] = chr($i);
@@ -105,7 +105,7 @@
 			return $this->token;
 		}
 
-		
+
 		function scan(&$value) {
 			$YYCURSOR = &$this->YYCURSOR;
 			//$YYLINE = &$this->YYLINE;
@@ -116,7 +116,7 @@
 
 			do {
 				switch (true) {
-					case '"' === $yych: 
+					case '"' === $yych:
 					case "'" === $yych:
 						$quote = $yych;
 						$yych = $YYBUFFER[++$YYCURSOR];
@@ -187,12 +187,12 @@
 			$this->scanner = new ar_html_zenScanner($string);
 			$this->scanner->next();
 		}
-		
+
 		public function run() {
 			$nodelist = $this->parse();
 			return $nodelist;
 		}
-		
+
 		private function parse() {
 			$result = array();
 			$result[] = $this->parseExpression();
@@ -215,7 +215,7 @@
 			} while( !$bye );
 			return $result;
 		}
-		
+
 		private function parseExpression() {
 			$token = $this->scanner->token_ahead;
 			switch( $token ) {
@@ -240,7 +240,7 @@
 			}
 			return $result;
 		}
-		
+
 		private function parseAttributes() {
 			$bye = false;
 			$result = array();
@@ -275,7 +275,7 @@
 			} while( !$bye );
 			return $result;
 		}
-		
+
 		private function parseAttributeList() {
 			$bye = false;
 			$result = array();
@@ -303,7 +303,7 @@
 			} while( !$bye );
 			return $result;
 		}
-		
+
 		private function parseMultiplier() {
 			$token = $this->scanner->token_ahead;
 			if( $token == ar_html_zen::T_OP_MULTIPLIER ) {

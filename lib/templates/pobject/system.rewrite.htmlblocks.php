@@ -12,7 +12,7 @@
 				}
 				$oldURL = addcslashes($oldURL, "/");
 				$newURL = addcslashes($newURL, "/");
-				
+
 				foreach ($nls_list as $nls => $nls_name) {
 					if ($this->data->$nls) {
 						$nls_fields = array( 'page' , 'summary' );
@@ -53,7 +53,7 @@
 									$page = str_replace($matches[1], base64_encode($newargs), $page);
 								}
 
-							
+
 								if ($page != $this->data->custom[$nls][$customField]) {
 									$this->data->custom[$nls][$customField] = $page;
 									$dosave = true;

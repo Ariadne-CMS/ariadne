@@ -8,7 +8,7 @@ class ar_connect_twitter extends arBase {
 	public static function client( $httpClient = null ) {
 		return new ar_connect_twitterClient( $httpClient );
 	}
-	
+
 	public static function parse( $text, $parseTwitterLinks = true ) {
 		// FIXME: allow normal links and mailto links to be specified like the user and argument links
 		// link URLs
@@ -36,9 +36,9 @@ class ar_connect_twitter extends arBase {
 			}
 			if ($userLink) {
 				//link twitter users
-				$text = preg_replace_callback( '/([\b ])@([a-z0-9_]*)\b/i', 
-					create_function( 
-						'$matches', 
+				$text = preg_replace_callback( '/([\b ])@([a-z0-9_]*)\b/i',
+					create_function(
+						'$matches',
 						'return $matches[1].str_replace( "{user}", $matches[2], "'.AddCSlashes( (string) $userLink, '"' ).'" );'
 					),
 					$text
@@ -47,18 +47,18 @@ class ar_connect_twitter extends arBase {
 			if ($argumentLink) {
 				//link twitter arguments
 				$text = preg_replace_callback( '/([\b ])#([a-z0-9_]*)\b/i',
-					create_function( 
-						'$matches', 
+					create_function(
+						'$matches',
 						'return $matches[1].str_replace( "{argument}", $matches[2], "'.AddCSlashes( (string) $argumentLink, '"' ).'" );'
 					),
 					$text
 				);
 			}
 		}
-		
+
 		return trim($text);
 	}
-	
+
 	public static function friendlyDate( $date, $nls = null, $now = null ) {
 		if (!$nls) {
 			$nls = array(
@@ -77,7 +77,7 @@ class ar_connect_twitter extends arBase {
 				'justnow'    => 'just now'
 			);
 		}
-				
+
 		if ( !isset($now) ) {
 			$now = time();
 		}
@@ -89,7 +89,7 @@ class ar_connect_twitter extends arBase {
 		}
 		if ( is_int( $date ) && is_int( $now ) ) {
 			$interval = getdate($now - $date);
-			
+
 			if ( $interval['year'] > 1971 ) {
 				return sprintf( $nls['yearsago'], ( $interval['year'] - 1970 ) );
 			} else if ( ($interval['year'] > 1970 ) || ( $interval['mon'] > 11 ) ) {
@@ -123,7 +123,7 @@ class ar_connect_twitterClient extends arBase {
 
 	private $rootURL = 'https://api.twitter.com/1.1/';
 	private $client = null;
-	
+
 	public function __construct( $httpClient = null ) {
 		if (!$httpClient) {
 			ar::load('http');
@@ -135,13 +135,13 @@ class ar_connect_twitterClient extends arBase {
 	public function parse( $text, $parseTwitterLinks=true ) {
 		return ar_connect_twitter::parse( $text, $parseTwitterLinks );
 	}
-	
+
 	public function friendlyDate( $date, $nls = null, $now = null ) {
 		return ar_connect_twitter::friendlyDate( $date, $nls, $now );
 	}
-	
+
 	public function setAccessToken( $access_token, $access_token_secret, $consumerKey = null, $consumerSecret = null ) {
-	
+
 		if ( !$this->client instanceof ar_connect_oauthClient ) { //FIXME: a real OAuth is also ok
 			// FIXME: what if you want a caching client?
 			$this->client = ar_connect_oauth::client( $consumerKey, $consumerSecret );
@@ -149,21 +149,21 @@ class ar_connect_twitterClient extends arBase {
 				return $this->client;
 			}
 		}
-		
+
 		return $this->client->setToken( $access_token, $access_token_secret );
 	}
-	
+
 	public function login( $consumerKey = null, $consumerSecret = null, $callback = '', $redirect = true ) {
 		// FIXME: $redirect should probably be allowed to be an object that implements a redirect() method
 		$session = ar_loader::session(); //FIXME: allow different session object to be passed
 		if ( !$session->id() ) {
 			$session->start();
 		}
-		
-		if ( isset($callback) && substr( (string) $callback, 0, 4)!='http' && $callback!='oob' ) {  
+
+		if ( isset($callback) && substr( (string) $callback, 0, 4)!='http' && $callback!='oob' ) {
 			$callback = ar_loader::makeURL().$callback;
 		}
-		
+
 		if ( !$this->client instanceof ar_connect_oauthClient ) { ////FIXME: a real OAuth is also ok
 			// FIXME: what if you want a caching client?
 			$this->client = ar_connect_oauth::client( $consumerKey, $consumerSecret );
@@ -171,14 +171,14 @@ class ar_connect_twitterClient extends arBase {
 				return $this->client;
 			}
 		}
-		
-		$access_token        = $session->getvar('access_token'); 
+
+		$access_token        = $session->getvar('access_token');
 		$access_token_secret = $session->getvar('access_token_secret');
 		if ( $access_token && $access_token_secret ) {
 			$this->client->setToken( $access_token, $access_token_secret );
 			return true;
 		}
-		
+
 		$oauth_verifier     = $session->getvar('oauth_verifier');
 		$oauth_token        = $session->getvar('oauth_token');
 		$oauth_token_secret = $session->getvar('oauth_token_secret');
@@ -216,19 +216,19 @@ class ar_connect_twitterClient extends arBase {
 			}
 			$access_token = $info['oauth_token'];
 			$access_token_secret = $info['oauth_token_secret'];
-			$this->client->setToken( $access_token, $access_token_secret );	
+			$this->client->setToken( $access_token, $access_token_secret );
 			$session->putvar( 'access_token', $access_token );
 			$session->putvar( 'access_token_secret', $access_token_secret );
 			return $info;
 		}
-		
-		return false;		
+
+		return false;
 	}
-	
+
 	public function tweets( $user, $options = array() ) {
 		// http://dev.twitter.com/doc/get/statuses/user_timeline
 		$defaults = array(
-			'count' => 10, 
+			'count' => 10,
 			'page' => 1
 		);
 		$options += $defaults;
@@ -258,19 +258,19 @@ class ar_connect_twitterClient extends arBase {
 		}
 		return $this->get( 'trends/'.$location, $options );
 	}
-	
+
 	public function search( $options ) {
 		if ( is_string($options) ) {
 			$options = array( 'q' => $options );
 		}
 		return $this->get( 'search/tweets', $options );
 	}
-	
+
 	public function tweet( $status, $options = array() ) {
 		$options['status'] = $status;
 		return $this->post( 'statuses/update', $options );
 	}
-	
+
 	public function get( $path, $options = array() ) {
 		$url = ar::url( $this->rootURL.$path.'.json' );
 		$url->query->import( $options );
@@ -283,7 +283,7 @@ class ar_connect_twitterClient extends arBase {
 			return $json;
 		}
 	}
-	
+
 	public function post( $path, $options = array() ) {
 		$url = ar::url( $this->rootURL.$path.'.json' );
 		$json = $this->client->post( $url, $options );
@@ -293,7 +293,7 @@ class ar_connect_twitterClient extends arBase {
 			return $json;
 		}
 	}
-	
+
 }
-	
+
 ?>

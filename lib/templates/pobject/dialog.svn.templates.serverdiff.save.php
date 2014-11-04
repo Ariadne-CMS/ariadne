@@ -2,7 +2,7 @@
 	ldDisablePostProcessing();
 	$ARCurrent->nolangcheck=true;
 	if (!$this->validateFormSecret()) {
-		error($ARnls['ariadne:err:invalidsession']);      
+		error($ARnls['ariadne:err:invalidsession']);
 		exit;
 	}
 	if ($this->CheckLogin("layout") && $this->CheckConfig()) {
@@ -18,7 +18,7 @@
 		$type = $this->getvar("type");
 		$language = $this->getvar("language");
 		$function = $this->getvar("function");
-		
+
 		if( $type && $language && $function ) {
 ?>
 		<input id="type" type="hidden" name="type" value="<?php echo htmlspecialchars($type); ?>">

@@ -32,7 +32,7 @@
 		#print "End Result: ".$objectID."\n";
 		return $objectID;
 	}
-	
+
 	function showCompilerError($compiler, $pinp_template) {
 		echo "\n------------------\n";
 		echo "Error in '$pinp_template': ".$compiler->error."\n";
@@ -69,7 +69,7 @@
 						showCompilerError($compiler, $path.$file);
 					} else {
 						$templateStore->write($pinp_code_compiled_new,$objectID,$templateName);
-						$templateCode = $templateStore->templateCodeFunction($objectID, $templateName);	
+						$templateCode = $templateStore->templateCodeFunction($objectID, $templateName);
 						$optimized = '<?php $arTemplateFunction = function(&$AR_this) { '.$templateCode.' }; ?>';
 						$templateStore->write($optimized, $objectID, $templateName.".inc");
 					}

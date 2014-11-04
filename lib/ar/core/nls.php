@@ -4,7 +4,7 @@
 		public function __construct($options = null);
 		public function parse($pathInfo);
 	}
-	
+
 	class ar_core_nls implements ar_core_nlsInterface {
 		private $default   = 'en';
 		private $available = array( 'en' => 'English' );
@@ -12,7 +12,7 @@
 		private $accepted  = array();
 		private $requested = '';
 		private $root      = './';
-		
+
 		public function __construct($options = null) {
 			if (isset($options)) {
 				if (isset($options->default) ) {
@@ -26,7 +26,7 @@
 				}
 			}
 		}
-				
+
 		public function __get($name) {
 			switch ($name) {
 				case 'current' :
@@ -38,7 +38,7 @@
 				break;
 			}
 		}
-		
+
 		public function loadtext( $nls, $section = '' ) {
 			$nls      = preg_replace('/[^a-z]*/i', '', $nls);
 			$section  = preg_replace('[^a-z\._-]*/i', '', $section);
@@ -49,7 +49,7 @@
 			global $ARnls;
 			include($this->root.$fileName);
 		}
-		
+
 		public function gettext( $key ) {
 			global $ARnls;
 			return $ARnls[$key];

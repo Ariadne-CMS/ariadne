@@ -1,5 +1,5 @@
 <?php
-	$ARCurrent->nolangcheck=true;    
+	$ARCurrent->nolangcheck=true;
 	$ARCurrent->allnls=true;
 
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
@@ -57,7 +57,7 @@
 		$infoEventData = new object();
 		$infoEventData = ar_events::fire( 'ariadne:onbeforesidebarinfo', $infoEventData );
 		if ($infoEventData) {
-			$this->call("explore.sidebar.info.php", $arCallArgs); 
+			$this->call("explore.sidebar.info.php", $arCallArgs);
 			ar_events::fire('ariadne:onsidebarinfo');
 		}
 
@@ -67,6 +67,6 @@
 			$this->call("explore.sidebar.details.php", $arCallArgs);
 			ar_events::fire('ariadne:onsidebardetails');
 		}
-	
+
 	}
 ?>

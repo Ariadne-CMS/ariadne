@@ -1,6 +1,6 @@
 <?php
 	/*
-	
+
 	*/
 
 	class pinp_rss {
@@ -83,7 +83,7 @@
 		function _getArray($limit=100, $offset=0) {
 			return $this->getArray($limit, $offset);
 		}
-		
+
 		function reset() {
 			// reset namestack
 			$this->ns = Array();
@@ -208,7 +208,7 @@
 
 
 		function next() {
-			// this is needed 
+			// this is needed
 			if (!$this->parser) {
 				return false;
 			}

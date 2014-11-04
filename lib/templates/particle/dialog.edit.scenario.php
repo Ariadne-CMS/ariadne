@@ -23,7 +23,7 @@
 		summary=new Array();
 		<?php
 		$summaries = $this->ls($scenarioDir,"system.get.summary.phtml");
-		
+
 			foreach ($summaries as $key => $summary) {
 				echo "summary['".key($summary)."']='".AddCSlashes(current($summary), ARESCAPE)."';\n";
 			}

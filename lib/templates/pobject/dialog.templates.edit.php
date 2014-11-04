@@ -30,7 +30,7 @@
 				"value" => $ARnls["save"]
 			),
 		);
-                
+
 		$wgWizTitle=sprintf($ARnls["edittemplate"],$this->path.($function ? $function : $ARnls["new"]));
 		$wgWizHeader = $wgWizTitle;
 		$wgWizHeaderIcon = $AR->dir->images.'icons/large/templates.png';
@@ -40,9 +40,9 @@
 //			$yui_base . "fonts/fonts-min.css",
 			$yui_base . "datatable/assets/skins/sam/datatable.css",
 			$yui_base . "menu/assets/skins/sam/menu.css",
-			$yui_base . "container/assets/skins/sam/container.css",	
+			$yui_base . "container/assets/skins/sam/container.css",
 			$AR->dir->styles."templates.css",
-			
+
 		);
 		$wgWizScripts = array(
 				$yui_base . "element/element-min.js",
@@ -61,7 +61,7 @@
 				$AR->dir->www . "js/muze/ariadne/registry.js",
 				$AR->dir->www . "js/muze/ariadne/explore.js", // Used by the window.open items in the head menu.
 		);
-		
+
 		include($this->store->get_config("code")."widgets/wizard/yui.wizard.html");
 	}
 ?>

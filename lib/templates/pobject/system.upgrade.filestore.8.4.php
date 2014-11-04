@@ -1,6 +1,6 @@
 <?php
 /******************************************************************
-  upgrades filestore data of file 
+  upgrades filestore data of file
  ******************************************************************/
 
 if ($this->CheckLogin("admin") && $this->CheckConfig())

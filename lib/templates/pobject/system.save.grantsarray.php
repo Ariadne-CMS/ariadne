@@ -9,7 +9,7 @@
 
 	 This template saves changes to grants defined at the current
 	 object. It then updates the changes at the user/group object too.
-	 
+
 	 no result
 
 	******************************************************************/
@@ -35,7 +35,7 @@
 				}
 				if (!$this->error) {
 					if ($id=current($this->get($userpath, "system.get.login.phtml"))) {
-						// first make sure that the object is clean (data can only be set via 
+						// first make sure that the object is clean (data can only be set via
 						// the defined interface: $arCallArgs)
 						$this->data=current($this->get(".","system.get.data.phtml"));
 						if (count($grants)) {

@@ -16,12 +16,12 @@
 
 		public static function log($Object, $Label=null)
 		{
-			try { 
+			try {
 				return self::send($Object, $Label, FirePHP::LOG);
 			} catch (Exception $e) {
 				return new ar_error($e->getMessage(), $e->getCode() );
 			}
-		} 
+		}
 
 		public static function info($Object, $Label=null)
 		{
@@ -30,8 +30,8 @@
 			} catch (Exception $e) {
 				return new ar_error($e->getMessage(), $e->getCode() );
 			}
-		} 
-		
+		}
+
 		public static function warn($Object, $Label=null)
 		{
 			try {
@@ -39,7 +39,7 @@
 			} catch (Exception $e) {
 				return new ar_error($e->getMessage(), $e->getCode() );
 			}
-		} 
+		}
 
 		public static function error($Object, $Label=null)
 		{
@@ -48,7 +48,7 @@
 			} catch (Exception $e) {
 				return new ar_error($e->getMessage(), $e->getCode() );
 			}
-		} 
+		}
 
 		public static function dump($Key, $Variable)
 		{
@@ -57,7 +57,7 @@
 			} catch (Exception $e) {
 				return new ar_error($e->getMessage(), $e->getCode() );
 			}
-		} 
+		}
 		public static function trace($Label)
 		{
 			try {
@@ -65,7 +65,7 @@
 			} catch (Exception $e) {
 				return new ar_error($e->getMessage(), $e->getCode() );
 			}
-		} 
+		}
 
 		public static function table($Label, $Table)
 		{
@@ -74,7 +74,7 @@
 			} catch (Exception $e) {
 				return new ar_error($e->getMessage(), $e->getCode() );
 			}
-		} 
+		}
 
 	}
 
@@ -83,5 +83,5 @@
 		* add object filtering
 	*/
 
-	
+
 ?>

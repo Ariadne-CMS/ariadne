@@ -9,7 +9,7 @@
 		require_once($this->store->get_config("code")."modules/mod_yui.php");
 		if (!$ARCurrent->arTypeTree) {
 			$this->call("typetree.ini");
-		}		
+		}
 		if (!$items_per_page) {
 			$items_per_page = 60;
 		}
@@ -50,7 +50,7 @@
 			"order" => $order,
 			"direction" => $direction
 		);
-		
+
 		if ($filter == "sanity-off") {
 			$listargs["sanity"] = false;
 		}
@@ -128,12 +128,12 @@ This adds filter options to the browse dialog, unfinished code so removed for no
 */
 ?>
 <script type="text/javascript">
-	muze.ariadne.explore.viewpane.path = '<?php echo $this->path ?>';	
+	muze.ariadne.explore.viewpane.path = '<?php echo $this->path ?>';
 </script>
 
 <script type="text/javascript">
-<?php 
-		yui::showTableJs($divId, $tableId, $colDefs); 
+<?php
+		yui::showTableJs($divId, $tableId, $colDefs);
 ?>
 </script>
 <script type="text/javascript">
@@ -151,7 +151,7 @@ This adds filter options to the browse dialog, unfinished code so removed for no
 		if ( $eventData ) {
 ?>
 	<div class="browse viewpane <?php echo $viewtype; ?>" id="viewpane">
-<?php 
+<?php
 	yui::showPaging($object_list['total'], $items_per_page, $current_page, "top");
 	if ($viewtype == "details") {
 		yui::showTable($divId, $tableId, $colDefs, $datalist);

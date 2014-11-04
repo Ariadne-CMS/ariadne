@@ -2,7 +2,7 @@
 	$ARCurrent->nolangcheck=true;
 	$arIsNewObject = $this->arIsNewObject;
 	if (!$this->validateFormSecret()) {
-		error($ARnls['ariadne:err:invalidsession']);      
+		error($ARnls['ariadne:err:invalidsession']);
 		exit;
 	}
 
@@ -16,7 +16,7 @@
 			<script>
 				if (top.window.opener) {
 					if (top.window.opener.objectadded) {
-						top.window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddCSlashes($nlsdata->name, ARESCAPE); ?>','<?php echo $this->path; ?>'); 
+						top.window.opener.objectadded('<?php echo $this->type; ?>','<?php echo AddCSlashes($nlsdata->name, ARESCAPE); ?>','<?php echo $this->path; ?>');
 					}
 					<?php
 						if (!$arIsNewObject || $this->getdata("arCloseWindow", "none")) {

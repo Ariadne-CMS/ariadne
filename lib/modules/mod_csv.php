@@ -121,7 +121,7 @@
 		public function _load($fileName = "file", $fileNameNls = "") {
 			return $this->load($fileName, $fileNameNls);
 		}
-		
+
 		public function read($fileName = "file", $settings = "") {
 			$object = $this->object;
 
@@ -266,7 +266,7 @@
 				$this->call($template, $args);
 				$limit--;
 				$this->next();
-			} 
+			}
 		}
 
 		public function _getArray($limit=0, $offset=0) {
@@ -301,7 +301,7 @@
 				$result = substr($result, 0, -(strlen($settings['seperator']))) . $settings['lineEnd'];
 			}
 			$limit = $settings['limit'];
-			if (!$limit) { 
+			if (!$limit) {
 				$limit = -1;
 			}
 			while (($values = $this->current()) && $limit) {

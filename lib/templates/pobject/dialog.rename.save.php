@@ -1,29 +1,29 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if (!$this->validateFormSecret()) {
-		error($ARnls['ariadne:err:invalidsession']);      
+		error($ARnls['ariadne:err:invalidsession']);
 		exit;
 	}
 //	if ($this->CheckLogin("delete") && $this->CheckConfig()) {
-		
+
 		if ($this->getvar("sources")) {
 			$sources = $this->getvar('sources');
 		} else {
 			$sources = array($this->path);
 		}
-                
+
                 //hier check of add-op-target toegestaan is?
-		
+
 		foreach($sources as $source) {
 			$source_ob = current($this->get($source, "system.get.phtml"));
-						
+
 			$target = $this->getvar("target");
 			if (substr($target, -1) != "/") {
 				$target .= "/";
 			}
 
 			if (
-				strtolower($target) != strtolower($source_ob->path) && 
+				strtolower($target) != strtolower($source_ob->path) &&
 				$this->exists($target)
 			) {
 				$target = $target . basename($source_ob->path) . "/";
@@ -32,7 +32,7 @@
 			$target_parent_path = $this->make_path($target . "../");
 
 			if (!$this->exists($target_parent_path)) {
-				$this->error=sprintf($ARnls["err:noparentcreatefirst"],$target_parent_path);			
+				$this->error=sprintf($ARnls["err:noparentcreatefirst"],$target_parent_path);
 			} else {
 				$target_ob = current($this->get($target_parent_path, "system.get.phtml"));
 				$target_typetree = $target_ob->call("typetree.ini");
@@ -66,7 +66,7 @@
 			?>
 			<script type="text/javascript">
 				if ( window.opener && window.opener.muze && window.opener.muze.dialog ) {
-					window.opener.muze.dialog.callback( window.name, 'renamed', { 
+					window.opener.muze.dialog.callback( window.name, 'renamed', {
 						'path': '<?php echo $returnpath; ?>',
 						'url' : '<?php echo $this->make_url($target); ?>'
 					});

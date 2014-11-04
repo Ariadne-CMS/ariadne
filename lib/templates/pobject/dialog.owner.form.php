@@ -38,15 +38,15 @@
 		</div>
 		<div class="field radio">
 			<input type="radio" id="normal" name="behaviour" value="0" checked>
-			<label for="normal"><?php echo $ARnls['ariadne:currentobjectonly']; ?></label> 
+			<label for="normal"><?php echo $ARnls['ariadne:currentobjectonly']; ?></label>
 		</div>
 		<div class="field radio">
 			<input type="radio" id="recursive" name="behaviour" value="recursive">
-			<label for="recursive"><?php echo $ARnls['ariadne:currentandchildren']; ?></label> 
+			<label for="recursive"><?php echo $ARnls['ariadne:currentandchildren']; ?></label>
 		</div>
 		<div class="field radio">
 			<input type="radio" id="childrenonly" name="behaviour" value="childrenonly">
-			<label for="childrenonly"><?php echo $ARnls['ariadne:childrenonly']; ?></label> 
+			<label for="childrenonly"><?php echo $ARnls['ariadne:childrenonly']; ?></label>
 		</div>
 </fieldset>
 <?php

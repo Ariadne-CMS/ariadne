@@ -11,7 +11,7 @@ class cacherss {
 		$this->httphelper = $httphelper;
 		$this->timeout = $timeout;
 	}
-	
+
 	public function load( $url ) {
 		$data = $this->httphelper->load( $url, "", time() - $this->timeout );
 		$this->xmldata = $data["data"];
@@ -31,7 +31,7 @@ class cacherss {
 		$rssfeed->parseString( $this->xmldata);
 		$rss_channel = $rssfeed->info();
 		return Array("title" => $rss_channel['title'], "link" => $rss_channel['link']);
-	}	
+	}
 }
 
 
@@ -195,7 +195,7 @@ class cacherssfeed {
 	}
 
 	public function next() {
-		// this is needed 
+		// this is needed
 		if (!$this->parser) {
 			return false;
 		}
@@ -218,7 +218,7 @@ class cacherssfeed {
 		}
 		return $this->rss_items[0];
 	}
-	
+
 	public function getArray() {
 		$result=Array();
 		do {
@@ -244,7 +244,7 @@ class httphelper {
 			if( $data != "" ) {
 				$result = $this->cache->save($url, $data, $meta, $user);
 			}
-		} 
+		}
 		return $result;
 	}
 }
@@ -264,13 +264,13 @@ class cache {
 
 
 	public function load( $tag, $maxage = 0, $user = "" ) {
-	
+
 		if( !$tag ) {
 			return false;
 		}
-	
+
 		$tag = $this->escape( $tag );
-	
+
 		$result = false;
 
 
@@ -298,19 +298,19 @@ class cache {
 	}
 
 	public function save( $tag, $data, $meta = "", $user = "" ) {
-	
+
 		if( !$tag ) {
 			return false;
 		}
-	
+
 		$result = false;
 
 		$user = $this->escape( $user );
-	
+
 		if( $user != "" ) {
 			$user = $user."/";
 		}
-	
+
 		$tag = $this->escape( $tag );
 		$data = serialize( $data );
 		$meta = serialize( $meta );
@@ -330,18 +330,18 @@ class cache {
 		$fp = fopen( $path, "wb");
 		$result=fwrite($fp, $data);
 		fclose($fp);
-		if( $result ) { 
-			$metapath = $path.".meta";     
+		if( $result ) {
+			$metapath = $path.".meta";
 			$fp = fopen( $metapath, "wb" );
 			$result = fwrite($fp, $meta);
 			fclose($fp);
 		}
 		if( $result ) {
 			$result = array( "data" => unserialize($data), "meta" => unserialize($meta), "timestamp" => filectime($path) );
-		}	
+		}
 		return $result;
 	}
-	
+
 	public function clear( $tag, $user = "" ) {
 
 		if( !$tag ) {
@@ -350,7 +350,7 @@ class cache {
 		$tag = $this->escape( $tag );
 
 		$user = $this->escape( $user );
-	
+
 		if( $user != "" ) {
 			$user = $user."/";
 		}
@@ -376,7 +376,7 @@ class cache {
 		if ($path) {
 			$result = preg_replace_callback(
 				'/[^A-Za-z0-9-]/', function ($char) {
-					// Replaces characters in the path with their number. 
+					// Replaces characters in the path with their number.
 					// Quite similar to " " -> "%20" for HTML escape, but we use _ instead of %
 					// This function is to be used as a callback for preg_replace_callback
 					if ($char[0]) {
@@ -397,7 +397,7 @@ class cache {
 		$result = "";
 		if ($path) {
 			$result = preg_replace_callback(
-				'/(_[0-9a-fA-F][0-9a-fA-F]|__)/', 
+				'/(_[0-9a-fA-F][0-9a-fA-F]|__)/',
 				function ( $matches ) {
 					// Two types of escaped characters can be here, the
 					// underscore or other characters. Check for the

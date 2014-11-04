@@ -1,11 +1,11 @@
 <?php
 	ar_pinp::allow( 'ar_http_files');
 	ar_pinp::allow( 'ar_http_filesRegistry');
-	
+
 	class ar_http_files extends arBase {
-	
+
 		protected static $store = null;
-	
+
 		protected static function getStore( $store = null ) {
 			if ( !$store ) {
 				$store = self::$store;
@@ -19,11 +19,11 @@
 			}
 			return $store;
 		}
-	
+
 		public static function ls() {
 			return $_FILES;
 		}
-		
+
 		public static function getFile( $filename ) {
 			// return opened file if exists, null otherwise
 			$filename = (string) $filename;
@@ -34,27 +34,27 @@
 				$file = new ar_content_filesFile( $fp );
 			}
 			return $file;
-		}		
+		}
 
 		public static function registry( $store = null ) {
 			$store = self::getStore( $store );
 			return new ar_http_filesRegistry( $store );
 		}
-		
+
 	}
-	
+
 	class ar_http_filesRegistry extends arBase {
 
 		protected $store = null;
-		
-		public function __construct( $store ) { 
+
+		public function __construct( $store ) {
 			$this->store = $store;
 		}
-		
+
 		public function ls() {
 			return $this->store->getvar('registeredFiles');
 		}
-		
+
 		public function getFile( $filename, $nls = 'none' ) {
 			$filename = (string) $filename;
 			$nls = (string) $nls;
@@ -71,7 +71,7 @@
 				return null;
 			}
 		}
-		
+
 		public function getInfo( $filename, $nls = 'none' ) {
 			$filename = (string) $filename;
 			$nls = (string) $nls;
@@ -83,7 +83,7 @@
 				return ar('error')->raiseError( 'No info for file '.$filename.' found', 502 );
 			}
 		}
-		
+
 		public function putFile( $filename, $nls = 'none', $originalName = null ) {
 			$filename = (string) $filename;
 			$nls = (string) $nls;
@@ -106,10 +106,10 @@
 				$result = $cleanInfo;
 			} else {
 				$result = ar('error')->raiseError( $error, 501 );
-			}		
+			}
 			return $result;
 		}
-		
+
 		public function remove( $filename, $nls = 'none') {
 			$filename = (string) $filename;
 			$nls = (string) $nls;
@@ -130,6 +130,6 @@
 				}
 			}
 		}
-		
+
 	}
 ?>

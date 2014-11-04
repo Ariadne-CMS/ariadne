@@ -37,8 +37,8 @@
 			$ARnls["fri"],
 			$ARnls["sat"]
 		);
-	
-	
+
+
 ?>
 <script>
   var currentRepeat=false;
@@ -173,10 +173,10 @@
 	</div>
 	<div class="field">
 		<label for="repeat_by"><?php echo $ARnls["repeatby"]; ?></label>
-		<input type="radio" name="repeat_by" value="<?php echo $ARnls["day"]; ?>" 
+		<input type="radio" name="repeat_by" value="<?php echo $ARnls["day"]; ?>"
 				<?php if ($repeat_by=="day")  echo "checked"; ?>>
 				<?php echo $ARnls["day"]; ?>
-		<input type="radio" name="repeat_by" value="<?php echo $ARnls["date"]; ?>" 
+		<input type="radio" name="repeat_by" value="<?php echo $ARnls["date"]; ?>"
 				<?php if ($repeat_by=="date")  echo "checked"; ?>>
 				<?php echo $ARnls["date"]; ?>
 	</div>
@@ -196,7 +196,7 @@
 		<label for="year_repeatn"><?php echo $ARnls["every"]; ?></label>
 		<input size="3" maxlength="3" type="text" name="year_repeatn" value="<?php echo $repeatn; ?>" onChange="updateRepeatN(this.value);">&nbsp;<?php echo $ARnls["years"]; ?>
 	</div>
-	<div class="field">	
+	<div class="field">
 		<label for="year_repeatend"><?php echo $ARnls["endson"]; ?></label>
 		<?php
 			$wgDate=$repeatend;

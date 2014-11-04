@@ -43,7 +43,7 @@
 		function current() {
 			return $this->selector->run($this->count, $this->offset, $this->definitions);
 		}
-		
+
 		function key() {
 			return $this->offset;
 		}

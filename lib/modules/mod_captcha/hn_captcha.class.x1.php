@@ -4,7 +4,7 @@
   * is an extension for PHP-Class hn_captcha.
   * It adds a garbage-collector. (Useful, if you cannot use cronjobs.)
   * Author: Horst Nogajski, horst@nogajski.de
-  * 
+  *
   * License: GNU GPL (http://www.opensource.org/licenses/gpl-license.html)
   * Download: http://hn273.users.phpclasses.org/browse/package/1569.html
   *
@@ -15,9 +15,9 @@
 
 /**
   * License: GNU GPL (http://www.opensource.org/licenses/gpl-license.html)
-  * 
+  *
   * This program is free software;
-  * 
+  *
   * you can redistribute it and/or modify it under the terms of the GNU General Public License
   * as published by the Free Software Foundation; either version 2 of the License,
   * or (at your option) any later version.
@@ -33,7 +33,7 @@
 
 /**
   * Tabsize: 4
-  * 
+  *
   **/
 
 
@@ -55,7 +55,7 @@ require_once(dirname(__file__).'/hn_captcha.class.php');
   * - a filename-prefix for the captcha-images (default = 'hn_captcha_')
   * - absolute filename for a textfile which stores the current counter-value
   *   (default is $tempfolder.'hn_captcha_counter.txt')
-  * 
+  *
   * The classextension needs the filename-prefix to identify lost images
   * also if the tempfolder is shared with other scripts.
   *
@@ -64,13 +64,13 @@ require_once(dirname(__file__).'/hn_captcha.class.php');
   * You can check this in your scripts and if is TRUE, you might execute
   * an email-notification or something else.
   *
-  * 
+  *
   * @shortdesc Class that adds a garbage-collector to the class hn_captcha
   * @public
   * @author Horst Nogajski, (mail: horst@nogajski.de)
   * @version 1.0
   * @date 2004-April-19
-  * 
+  *
   **/
 class hn_captcha_X1 extends hn_captcha
 {
@@ -87,7 +87,7 @@ class hn_captcha_X1 extends hn_captcha
           *
           **/
 		var $counter_filename		= '';
-		
+
 		/**
 		  * @shortdesc This is used as prefix for the picture filenames, so we can identify them also if we share the tempfolder with other programs.
           * @public
@@ -95,7 +95,7 @@ class hn_captcha_X1 extends hn_captcha
           *
           **/
 		var $prefix					= 'hn_captcha_';
-		
+
 		/**
 		  * @shortdesc The garbage-collector will started once when the class was called that number times.
           * @public

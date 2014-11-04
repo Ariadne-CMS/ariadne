@@ -1,4 +1,4 @@
-<?php 
+<?php
 	$ARCurrent->nolangcheck = true;
 	$ARCurrent->allnls = true;
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {

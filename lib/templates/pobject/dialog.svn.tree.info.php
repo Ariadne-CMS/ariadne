@@ -16,7 +16,7 @@
 				"value" => $ARnls["ok"]
 			)
 		);
-	
+
 		$wgWizTitle=$ARnls['ariadne:svn:info'];
 		$wgWizHeader = $wgWizTitle;
 		$wgWizHeaderIcon = $AR->dir->images.'icons/large/svninfo.png';

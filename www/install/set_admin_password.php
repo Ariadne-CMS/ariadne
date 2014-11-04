@@ -20,10 +20,10 @@
 		global $ARCurrent;
 		$ARCurrent->nolangcheck = true;
 		$ARCurrent->allnls = true;
-	
+
 		/* update the admin user with the supplied password */
 		$store->call(
-			"system.save.data.phtml", 
+			"system.save.data.phtml",
 			Array(
 				"newpass1" => $new_admin_password,
 				"newpass2" => $new_admin_password

@@ -33,7 +33,7 @@
 <fieldset id="groups">
 	<legend><?php echo sprintf($ARnls["groupmembership"], $login); ?></legend>
 	<div class="field">
-		<select multiple input id="groups" size="10" name="groups[]" class="selectline"> 
+		<select multiple input id="groups" size="10" name="groups[]" class="selectline">
 		<?php
 			foreach ($authconfig['groupdirs'] as $groupdir) {
 				$this->find(

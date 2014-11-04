@@ -13,7 +13,7 @@
 		);
 
 		$wgWizAction = $this->getdata("wgWizAction");
-		
+
 		if( $wgWizAction == "save" ) {
 			$wgWizButtons = array(
 				"cancel" => array(
@@ -30,7 +30,7 @@
 				),
 			);
 		}
-	
+
 		$wgWizTitle=$ARnls['ariadne:svn:resolved'];
 		$wgWizHeader = $wgWizTitle;
 		$wgWizHeaderIcon = $AR->dir->images.'icons/large/svnconflict.png';

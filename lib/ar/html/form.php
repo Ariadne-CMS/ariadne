@@ -3,7 +3,7 @@
 	ar_pinp::allow('ar_html_form', array(
 		'configure', 'addField', 'addButton', 'setValue', 'getValue', 'getValues', 'getHTML', 'isValid', 'isSubmitted', 'validate', 'registerInputType', 'registerValidateCheck', 'findField'
 	) );
-	
+
 	class ar_html_form extends arBase {
 		// todo: file upload field, captcha
 		static public $customTypes;
@@ -25,14 +25,14 @@
 			'url'          => '/^(http|https|ftp)\:\/\/[a-zA-Z0-9\-\.]+\.[[:alpha:]]{2,3}(:[[:alnum:]]*)?\/?([a-zA-Z0-9\-\._\?\,\'\/\\\+&amp;%\$#\=~])*$/D',
 			'credit_card'  => '/^(\d{4}-){3}\d{4}$|^(\d{4} ){3}\d{4}$|^\d{16}$/D',
 			'date'         => '/^(\d{1,2}[.-/]\d{1,2}[.-/](\d{2}|\d{4})$/D',
-			'time'         => '/^(\d{1,2}[:]\d{2}([:]\d{2})?$/D'	
+			'time'         => '/^(\d{1,2}[:]\d{2}([:]\d{2})?$/D'
 		);
-		
+
 		protected $fields = array();
 		protected $buttons = array();
-		
+
 		public    $action, $method, $name, $class, $id, $requiredLabel, $encType;
-		
+
 		function __construct($fields=null, $buttons=null, $action='', $method="POST", $requiredLabel=null) {
 			if ( isset($fields) ) {
 				$this->fields = $this->parseFields($fields);
@@ -54,10 +54,10 @@
 			$this->buttons	= $this->parseButtons($buttons);
 			$this->action	= $action;
 			$this->method	= $method;
-			$this->requiredLabel = isset($requiredLabel) ? $requiredLabel : 
+			$this->requiredLabel = isset($requiredLabel) ? $requiredLabel :
 				ar_html::el('span', array('title' => self::$requiredTitle, 'class' => 'formRequired'), '*');
 		}
-		
+
 		public function configure( $name, $value ) {
 			switch ( $name ) {
 				case 'requiredTitle' :
@@ -74,7 +74,7 @@
 		public function addButton($value) {
 			$this->buttons[] = $this->parseButton(0, $value);
 		}
-		
+
 		public function setValue($name, $value) {
 			$field = $this->findField($name);
 			if ($field) {
@@ -117,9 +117,9 @@
 				}
 				$content[] = ar_html::el('div', $buttonContent, array('class' => 'formButtons'));
 			}
-			return ar_html::el('form', $content, $attributes);		
+			return ar_html::el('form', $content, $attributes);
 		}
-		
+
 		public function __toString() {
 			return (string) $this->getHTML();
 		}
@@ -141,7 +141,7 @@
 			}
 			return $values;
 		}
-		
+
 		public function findField($searchName) {
 			foreach ($this->fields as $key => $field) {
 				$name = $field->name;
@@ -159,7 +159,7 @@
 			}
 			return false;
 		}
-		
+
 		public function parseField($key, $field) {
 			if (is_array($field)) {
 				$type	= isset($field['type']) ? $field['type'] : null;
@@ -191,7 +191,7 @@
 			) ) ) );
 			return $field;
 		}
-		
+
 		public function parseFields($fields) {
 			if (is_array($fields)) {
 				$newFields = array();
@@ -201,7 +201,7 @@
 			}
 			return $newFields;
 		}
-		
+
 		protected function parseButton($key, $button) {
 			if (is_array($button)) {
 				$type	= isset($button['type']) ? $button['type'] : null;
@@ -231,7 +231,7 @@
 			) ) ) );
 			return $button;
 		}
-		
+
 		protected function parseButtons($buttons) {
 			if (is_array($buttons)) {
 				$newButtons = array();
@@ -241,7 +241,7 @@
 			}
 			return $newButtons;
 		}
-		
+
 		protected function getButton($button) {
 			$class = 'ar_html_formButton'.ucfirst($button->type);
 			if (class_exists($class)) {
@@ -250,7 +250,7 @@
 				return new ar_html_formButton($button, $this);
 			}
 		}
-		
+
 		protected function getField($field) {
 			$class	= 'ar_html_formInput'.ucfirst($field->type);
 			if (class_exists($class)) {
@@ -259,21 +259,21 @@
 				return new ar_html_formInputMissing($field, $this);
 			}
 		}
-		
+
 		public function validate( $inputs = null ) {
 			$valid = array();
 			foreach ( $this->fields as $key => $field ) {
 				$result = $field->validate( $inputs );
 				$valid  = array_merge( $valid, $result );
 			}
-			return $valid;			
+			return $valid;
 		}
-		
+
 		public function isValid() {
 			$valid = $this->validate();
 			return count( $valid ) == 0;
 		}
-		
+
 		public function isSubmitted( $name = null ) {
 			// check if any of the submit buttons is available, if no submit buttons are set, check if any of the input values are
 			if ( isset($name) ) {
@@ -297,7 +297,7 @@
 			}
 			return false;
 		}
-		
+
 		public static function registerInputType( $type, $getInput, $getValue = null, $getLabel = null, $getField = null ) {
 			self::$customTypes[ $type ] = array(
 				'getInput' => $getInput,
@@ -320,7 +320,7 @@
 				self::$customTypes[ $type ][ $name ] = $method;
 			}
 		}
-		
+
 		public static function registerValidateCheck( $name, $check, $message ) {
 			if ( !is_string( $check ) || ( $check[0] != '/' && !is_callable( $check ) ) ) {
 				$check = ar_pinp::getCallBack( $check, array( 'value' ) );
@@ -330,7 +330,7 @@
 				'message' => $message,
 			);
 		}
-		
+
 		public function __set($name, $value) {
 			if ($name[0] == '_') {
 				$name = substr($name, 1);
@@ -339,7 +339,7 @@
 				$this->{$name} = $value;
 			}
 		}
-		
+
 		public function __get($name) {
 			if ($name[0] == '_') {
 				$name = substr($name, 1);
@@ -349,12 +349,12 @@
 			}
 		}
 	}
-	
+
 	class ar_html_formButton {
-		
+
 		protected $form;
 		public $type, $name, $value, $class, $id;
-		
+
 		public function __construct($button, $form) {
 			$this->form 	= $form;
 			$this->type	= isset($button->type) ? $button->type : null;
@@ -364,7 +364,7 @@
 			$this->id	= isset($button->id) ? $button->id : null;
 			$this->title    = isset($button->title) ? $button->title : null;
 		}
-		
+
 		public function getButton($type=null, $name=null, $value=null, $class=null, $id=null, $title=null, $extra=null) {
 			$attributes = array();
 			if (!isset($type)) {
@@ -404,7 +404,7 @@
 			}
 			return ar_html::el('input', $attributes);
 		}
-		
+
 		public function __toString() {
 			return (string) $this->getButton();
 		}
@@ -412,13 +412,13 @@
 
 	class ar_html_formButtonImage extends ar_html_formButton {
 		public $src;
-		
+
 		public function __construct($button, $form) {
 			parent::__construct($button, $form);
 			$this->src = isset($button->src) ? $button->src : null;
 			$this->alt = isset($button->alt) ? $button->alt : null;
 		}
-		
+
 		public function getButton($type=null, $name=null, $value=null, $class=null, $id=null, $title=null, $src=null, $alt=null, $extra=null) {
 			if (!isset($src)) {
 				$src = $this->src;
@@ -427,14 +427,14 @@
 				$alt = $this->alt;
 			}
 			return parent::getButton($type, $name, $value, $class, $id, $title, array_merge($extra, array('src' => $src, 'alt' => $alt )));
-		}	
+		}
 	}
-	
+
 	class ar_html_formInput {
 
 		protected $form;
 		public    $type, $name, $class, $id, $label, $disabled, $default, $required, $related, $checks, $value;
-	
+
 		public function __construct($field, $form) {
 			$this->form		= $form;
 			$this->type		= isset($field->type) ? $field->type : null;
@@ -443,7 +443,7 @@
 			$this->id		= isset($field->id) ? $field->id : null;
 			$this->label	= isset($field->label) ? $field->label : null;
 			$this->disabled	= isset($field->disabled) ? $field->disabled : false;
-			$this->default	= isset($field->default) ? $field->default : null; 
+			$this->default	= isset($field->default) ? $field->default : null;
 			$this->required = isset($field->required) ? $field->required : false;
 			$this->checks   = isset($field->checks) ? $field->checks : array();
 			$this->title    = isset($field->title) ? $field->title : null;
@@ -455,7 +455,7 @@
 			if (isset($field->value)) {
 				$this->value = $field->value;
 			} else {
-				// Find the value, also allow for format like field[subfield]				
+				// Find the value, also allow for format like field[subfield]
 				$name = $this->name;
 				if (preg_match("/(\w+)\[(.*?)]/", $name, $matches)) {
 					$arrayvalue = ar::getvar($matches[1]);
@@ -505,7 +505,7 @@
 				return ar_html::el('div', $help, $attributes);
 			} else {
 				return '';
-			}	
+			}
 		}
 
 		protected function getLabel($label=null, $id=null, $attributes=null) {
@@ -576,7 +576,7 @@
 			$this->value = $value;
 			return true;
 		}
-		
+
 		private function buildQuery( $name, $value ) {
 			if ( is_array( $value ) ) {
 				$result = '';
@@ -600,7 +600,7 @@
 				return array( $this->name => $this->getValue() );
 			}
 		}
-		
+
 		public function getField( $content = null ) {
 			if (!isset($content)) {
 				$content = ar_html::nodes($this->getLabel(), $this->getInput());
@@ -619,7 +619,7 @@
 			}
 			return ar_html::el('div', $content, $attributes);
 		}
-		
+
 		public function validate() {
 			$result = array();
 			$value  = $this->getValue();
@@ -629,7 +629,7 @@
 				foreach( $this->checks as $check ) {
 					$regex = false;
 					if ( isset(ar_html_form::$checks[$check]) ) {
-						if ( is_array(ar_html_form::$checks[$check]) 
+						if ( is_array(ar_html_form::$checks[$check])
 							&& isset(ar_html_form::$checks[$check]['check']) ) {
 							$checkMethod = ar_html_form::$checks[$check]['check'];
 							$message	 = ar_html_form::$checks[$check]['message'];
@@ -658,13 +658,13 @@
 			}
 			return $result;
 		}
-		
+
 		public function __toString() {
 			return (string)$this->getField();
 		}
-		
+
 	}
-	
+
 	class ar_html_formInputMissing extends ar_html_formInput {
 
 		public function __construct($field, $form) {
@@ -684,12 +684,12 @@
 					return $getField($this, $content);
 				}
 			}
-			return parent::getField( 
+			return parent::getField(
 				ar_html::nodes( $this->getLabel(), $this->getInput() )
 			);
 		}
-		
-		public function getLabel() {	
+
+		public function getLabel() {
 			if ( isset(ar_html_form::$customTypes[ $this->type ]) ) {
 				$getLabel = ar_html_form::$customTypes[ $this->type ]['getLabel'];
 				if ( isset( $getLabel ) ) {
@@ -706,7 +706,7 @@
 			}
 			return ar_html::el('strong', 'Error: Field type ' . $this->type . ' does not exist.');
 		}
-		
+
 		public function getValue() {
 			if ( isset(ar_html_form::$customTypes[ $this->type ]) ) {
 				$getValue = ar_html_form::$customTypes[ $this->type ]['getValue'];
@@ -716,32 +716,32 @@
 			}
 			return parent::getValue();
 		}
-		
+
 		public function __set($name, $value) {
 			if ($name[0] == '_') {
 				$name = substr($name, 1);
 			}
 			$this->{$name} = $value;
 		}
-		
+
 		public function __get($name) {
 			if ($name[0] == '_') {
 				$name = substr($name, 1);
 			}
 			return $this->{$name};
 		}
-		
+
 	}
-	
+
 	class ar_html_formInputButton extends ar_html_formInput {
 		public $buttontype, $buttonlabel;
-		
+
 		public function __construct( $field, $form ) {
 			parent::__construct( $field, $form );
 			$this->buttonType = isset($field->buttonType) ? $field->buttonType : null;
 			$this->buttonLabel = isset($field->buttonLabel) ? $field->buttonLabel : $field->value;
 		}
-		
+
 		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $buttonType=null, $buttonLabel=null ) {
 			if ( !isset($buttonType) ) {
 				$buttonType = $this->buttonType;
@@ -775,7 +775,7 @@
 			return ar_html::el('button', $attributes, $buttonLabel);
 		}
 	}
-	
+
 	class ar_html_formInputText extends ar_html_formInput {
 		var $maxlength, $size;
 
@@ -809,7 +809,7 @@
 			}
 			if ( !isset($size) ) {
 				$size = $this->size;
-			} 
+			}
 			$attributes = array(
 				'type'	=> $type,
 				'name'	=> $name,
@@ -833,7 +833,7 @@
 			$content[] = ar_html::el('input', $attributes);
 			return $content;
 		}
-	
+
 	}
 
 	class ar_html_formInputPassword extends ar_html_formInputText {
@@ -842,9 +842,9 @@
 			$value = ''; // never display a password's value
 			return parent::getInput($type, $name, $value, $disabled, $id, $title);
 		}
-		
+
 	}
-	
+
 	class ar_html_formInputFile extends ar_html_formInput {
 
 		var $multiple = false;
@@ -868,7 +868,7 @@
 	}
 
 	class ar_html_formInputHidden extends ar_html_formInput {
-			
+
 		public function __construct($field, $form) {
 			if ($field->label == $field->name) {
 				$field->label = false;
@@ -876,12 +876,12 @@
 			parent::__construct($field, $form);
 			$this->disabled = false;
 		}
-		
+
 		public function __toString() {
 			return (string)$this->getField($this->getInput());
 		}
 	}
-	
+
 	class ar_html_formInputTextarea extends ar_html_formInputText {
 
 		var $maxlength, $rows, $cols;
@@ -902,7 +902,7 @@
 			}
 
 			if (!isset($id)) {
-				$id = $name; 
+				$id = $name;
 			}
 			if (!isset($disabled)) {
 				$disabled = $this->disabled;
@@ -941,15 +941,15 @@
 			return ar_html::el('textarea', htmlspecialchars($value, ENT_QUOTES, 'UTF-8' ), $attributes);
 		}
 	}
-	
+
 	class ar_html_formInputSelect extends ar_html_formInput {
-		
+
 		public function __construct($field, $form) {
 			parent::__construct($field, $form);
 			$this->options	= isset($field->options) ? $field->options : array();
 			$this->multiple = isset($field->multiple) ? $field->multiple : false;
 		}
-		
+
 		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $options=null, $multiple=null) {
 			if (!isset($name)) {
 				$name = $this->name;
@@ -958,7 +958,7 @@
 				$value = $this->value;
 			}
 			if (!isset($id)) {
-				$id = $name; 
+				$id = $name;
 			}
 			if (!isset($multiple)) {
 				$multiple = $this->multiple;
@@ -976,7 +976,7 @@
 			if ($title) {
 				$attributes['title'] = $title;
 			}
-			
+
 			if ($multiple) {
 				$attributes['multiple'] = "multiple";
 			}
@@ -1008,7 +1008,7 @@
 			}
 			return $content;
 		}
-		
+
 		protected function getOption($name, $value='', $selectedValues=false) {
 			$attributes = array(
 				'value' => $value
@@ -1021,7 +1021,7 @@
 	}
 
 	class ar_html_formInputButtonList extends ar_html_formInputSelect {
-	
+
 		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $options=null, $multiple=null) {
 			if (!isset($name)) {
 				$name = $this->name;
@@ -1030,7 +1030,7 @@
 				$value = $this->value;
 			}
 			if (!isset($id)) {
-				$id = $name; 
+				$id = $name;
 			}
 			if (!isset($multiple)) {
 				$multiple = $this->multiple;
@@ -1088,7 +1088,7 @@
 			}
 			return $content;
 		}
-		
+
 		protected function getButton( $index, $name, $button, $selectedValues, $attributes ) {
 			// FIXME: add hidden inputs with current value when multiple values are allowed
 			// pressing button again will unset the corresponding value
@@ -1101,9 +1101,9 @@
 			$attributes = array_merge( $button, $attributes );
 			$result = ar_html::nodes();
 			$buttonEl = ar_html::el('button', $attributes, $buttonLabel);
-			if ( $selectedValues!==false 
-				&& ( (!$this->multiple && $selectedValues == $button['value']) 
-				|| ( is_array($selectedValues) && $selectedValues[$name] == $button['value'] ) ) 
+			if ( $selectedValues!==false
+				&& ( (!$this->multiple && $selectedValues == $button['value'])
+				|| ( is_array($selectedValues) && $selectedValues[$name] == $button['value'] ) )
 			) {
 				$buttonEl->setAttribute('class', array(
 					'formButtonListSelected' => 'formButtonListSelected'
@@ -1111,11 +1111,11 @@
 			}
 			return $buttonEl;
 		}
-		
+
 	}
-	
+
 	class ar_html_formInputCheckbox extends ar_html_formInput {
-	
+
 		public function __construct($field, $form) {
 			parent::__construct($field, $form);
 			$this->checkedValue = $field->checkedValue;
@@ -1125,14 +1125,14 @@
 		public function __toString() {
 			return (string) $this->getField();
 		}
-		
+
 		public function getField() {
 			$content = ar_html::nodes();
 			if (isset($this->uncheckedValue)) {
-				$content[] = $this->getInput('hidden', $this->name, $this->uncheckedValue, false, 
+				$content[] = $this->getInput('hidden', $this->name, $this->uncheckedValue, false,
 					$this->name.'_uncheckedValue');
 			}
-			$content[] = $this->getCheckBox($this->name, $this->checkedValue, 
+			$content[] = $this->getCheckBox($this->name, $this->checkedValue,
 				($this->checkedValue==$this->value), $this->disabled, $this->uncheckedValue, $this->id);
 			$content[] = $this->getLabel($this->label, $this->name);
 			return parent::getField($content);
@@ -1147,7 +1147,7 @@
 				$value = $this->value;
 			}
 			if (!isset($id)) {
-				$id = $name; 
+				$id = $name;
 			}
 			if (!isset($disabled)) {
 				$disabled = $this->disabled;
@@ -1184,7 +1184,7 @@
 			parent::__construct($field, $form);
 			$this->options	= isset($field->options) ? $field->options : array();
 		}
-		
+
 		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $options=null) {
 			if (!isset($name)) {
 				$name = $this->name;
@@ -1193,7 +1193,7 @@
 				$value = $this->value;
 			}
 			if (!isset($id)) {
-				$id = $name; 
+				$id = $name;
 			}
 			if (!isset($disabled)) {
 				$disabled = $this->disabled;
@@ -1225,12 +1225,12 @@
 						$option['value'] = $key;
 					}
 					$content[] = $this->getRadioButton(
-						$name, 
-						$option['value'], 
+						$name,
+						$option['value'],
 						$option['name'],
-						$selectedValue, 
-						$option['disabled'], 
-						'radioButton', 
+						$selectedValue,
+						$option['disabled'],
+						'radioButton',
 						$name.'_'.$count
 					);
 					$count++;
@@ -1238,7 +1238,7 @@
 			}
 			return $content;
 		}
-		
+
 		protected function getRadioButton( $name, $value='', $label=null, $selectedValue=false, $disabled=null, $class=null, $id=null ) {
 			if (isset($class)) {
 				$class = array('class' => $class);
@@ -1258,25 +1258,25 @@
 			return ar_html::el('div', $class, ar_html::nodes(
 				ar_html::el('input', $attributes),
 				$this->getLabel($label, $id)));
-		}	
+		}
 	}
-	
+
 	class ar_html_formInputHtml extends ar_html_formInput {
-		
+
 		public function getField() {
 			$content = ar_html::nodes();
 			if ($this->label) {
 				$content[] = $this->getLabel($this->label);
 			}
 			$content[] = $this->value;
-			return parent::getField($content);		
+			return parent::getField($content);
 		}
-		
+
 		public function __toString() {
 			return (string) $this->getField();
 		}
 	}
-	
+
 	class ar_html_formInputFieldset extends ar_html_formInput {
 		protected $children = null;
 
@@ -1284,11 +1284,11 @@
 			parent::__construct($field, $form);
 			$this->children = $this->form->parseFields($field->children);
 		}
-				
+
 		public function hasChildren() {
 			return sizeof($this->children)>0;
 		}
-		
+
 		public function getField($content=null) {
 			if ($this->label) {
 				$legend = ar_html::el('legend', $this->label);
@@ -1330,13 +1330,13 @@
 				$result = $child->validate( $inputs );
 				$valid  = array_merge( $valid, $result );
 			}
-			return $valid;			
+			return $valid;
 		}
 
 	}
-	
+
 	class ar_html_formInputFieldList extends ar_html_formInputFieldset {
-		
+
 		protected function normalizeChildren( $value ) {
 			// make sure the children are a simple array, with numeric keys and that the name of the field
 			// is always an array
@@ -1370,7 +1370,7 @@
 				}
 			}
 		}
-		
+
 		protected function getvar( $name ) {
 			if (preg_match("/(\w+)\[(.*?)]/", $name, $matches)) {
 				$arrayvalue = ar::getvar($matches[1]);
@@ -1399,7 +1399,7 @@
 				}
 			}
 		}
-		
+
 		public function __construct($field, $form) {
 			parent::__construct ($field, $form);
 			if ( isset( $field->value ) ) { // apply default behaviour, step 1
@@ -1410,7 +1410,7 @@
 						'label' => false
 					);
 				}
-				
+
 				if ( !$field->defaultField ) {
 					$field->defaultField = array(
 						'name' => $this->name.'[]',
@@ -1418,7 +1418,7 @@
 					);
 				}
 			}
-			
+
 			if ( $field->newField ) {
 				$this->newField = $form->parseField( 0, $field->newField );
 			}
@@ -1426,18 +1426,18 @@
 				$this->defaultField = $form->parseField( 0, $field->defaultField );
 			}
 
-			if ( isset( $field->value ) ) { // apply default behaviour, step 2			
-				$this->normalizeChildren( $field->value );				
+			if ( isset( $field->value ) ) { // apply default behaviour, step 2
+				$this->normalizeChildren( $field->value );
 				$this->handleUpdates( $field->default );
 			}
 		}
-		
+
 		public function getField($content=null) {
 			$fieldset = parent::getField($content);
 			$count = 0;
 			foreach( $fieldset->div as $field ) {
 				$field->appendChild( ar_html::el('button', array(
-					'class' => 'formFieldListDelete', 
+					'class' => 'formFieldListDelete',
 					'type' => 'submit',
 					'name' => $this->name.'[Delete]',
 					'value' => $count
@@ -1447,17 +1447,17 @@
 			if ( $this->newField ) {
 				$newField = $this->newField->getField();
 				$newField->appendChild( ar_html::el('button', array(
-					'class' => 'formFieldListAdd', 
+					'class' => 'formFieldListAdd',
 					'type' => 'submit',
 					'name' => $this->name.'[Add]',
 					'value' => $this->name.'NewField'
 				), '+' ) );
 				$fieldset->appendChild(
-					ar_html::el('div', array('class' => 'formFieldListAdd'), $newField ) 
+					ar_html::el('div', array('class' => 'formFieldListAdd'), $newField )
 				);
 			}
 			return $fieldset;
 		}
-		
+
 	}
 ?>

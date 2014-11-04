@@ -16,12 +16,12 @@ class ESI {
 				[v] QUERY_STRING
 
 				HTTP_USER_AGENT
-			FIXME: ariadne cookies are serialized by default, which would break HTTP_COOKIE usage in other ESI processors 
+			FIXME: ariadne cookies are serialized by default, which would break HTTP_COOKIE usage in other ESI processors
 		*/
 
 		$result = preg_replace_callback('!\$\(([^)|{]*)(\{(([^}]*))\})?(\|([^)]*))?\)!', function($matches) {
 					// print_r($matches);
-	
+
 					switch ($matches[1]) {
 						case 'HTTP_COOKIE':
 							$cookie = ldGetUserCookie($matches[3]);
@@ -41,7 +41,7 @@ class ESI {
 						case 'HTTP_ACCEPT_LANGUAGE':
 							$acceptLanguage = ldGetServerVar('HTTP_ACCEPT_LANGUAGE');
 							$acceptLanguage = strtolower(str_replace(", ", ",", $acceptLanguage));
-							
+
 							$languages = explode(",", $acceptLanguage);
 							if (in_array(strtolower($matches[3]), $languages)) {
 								return 1;
@@ -88,7 +88,7 @@ class ESI {
 		}
 
 		$scriptName = "/loader.php"; // FIXME: Bij een request buiten Ariadne om kan het een andere scriptname zijn waardoor de include niet werkt.
-		
+
 		$url = ESI::esiExpression( $url );
 		if (strstr($url, $scriptName)) {
 			// Looks like an Ariadne request, handle it!
@@ -98,7 +98,7 @@ class ESI {
 			$pathInfo = substr($urlArr['path'], strpos($urlArr['path'], $scriptName)+strlen($scriptName), strlen($urlArr['path']));
 			$pathInfo = str_replace("//", "/", $pathInfo);
 			error_log("PI [$pathInfo] [$scriptName] [" . $urlArr['path'] . "]");
-			
+
 			ob_start();
 				ldProcessRequest($pathInfo);
 				$replacement = ob_get_contents();
@@ -109,7 +109,7 @@ class ESI {
 			// FIXME: Is it a good idea to do http requests from the server this way?
 			$client = ar('http')->client();
 			$replacement = $client->get($url);
-			
+
 			if ($client->statusCode != "200") {
 				return false;
 			}
@@ -140,7 +140,7 @@ class ESI {
 			foreach ($whens[0] as $key => $when) {
 				$parts = htmlparser::parse($when);
 				$test = $parts['children'][0]['attribs']['test'];
-				
+
 				if (ESI::esiEvaluate($test)) {
 					return ESI::esiProcessAll($whens[1][$key]);
 				}
@@ -152,14 +152,14 @@ class ESI {
 
 	function esiEvaluate($test) {
 		global $AR;
-		
+
 		// print_r($test);
 		$test = preg_replace('!(\$\([^)]*\))!', '\'$1\'', $test);
 		// echo "[2[" . print_r($test, true) . "]]";
-		
+
 		$test = ESI::esiExpression($test);
 		// echo "[[" . print_r($test, true) . "]]";
-		
+
 		require_once($AR->dir->install."/lib/modules/mod_pinp.phtml");
 		$pinp=new pinp($AR->PINP_Functions, "esilocal->", "\$AR_ESI_this->_");
 		$pinp->allowed_functions = array();
@@ -172,7 +172,7 @@ class ESI {
 
 		// FIXME: Is eval after the pinp compiler save enough to run?
 		$result = eval("return (" . $compiled . ");");
-		
+
 		return $result;
 	}
 
@@ -201,8 +201,8 @@ class ESI {
 				$replacement = ESI::esiFetch($alt);
 			}
 			if (
-				$replacement == false && 
-				isset($onerror) && 
+				$replacement == false &&
+				isset($onerror) &&
 				$onerror == "continue"
 			) {
 				$replacement = "";

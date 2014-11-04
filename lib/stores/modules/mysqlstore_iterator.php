@@ -31,7 +31,7 @@ class mysqlstoreIterator implements Iterator {
 		@mysql_data_seek($this->objects["list"], $this->position);
 		$this->currentObj = false;
 	}
-	
+
 	function current() {
 		$item = $this->selectorIterator->current();
 		if (!$this->currentObj) {
@@ -50,7 +50,7 @@ class mysqlstoreIterator implements Iterator {
 	function key() {
 		return $this->index;
 	}
-	
+
 	function next() {
 		$this->selectorIterator->next();
 		while ($this->selectorIterator->current() === "NULL") {
@@ -61,7 +61,7 @@ class mysqlstoreIterator implements Iterator {
 		@mysql_data_seek($this->objects["list"], ++$this->position);
 		$this->currentObj = false;
 	}
-	
+
 	function valid() {
 		return ($this->position >= 0 && $this->position < $this->count);
 	}

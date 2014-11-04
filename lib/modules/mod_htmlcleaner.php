@@ -346,7 +346,7 @@ class htmlcleaner
 																// remove previous config
 																@array_pop($delete_stack);
 																array_push($delete_stack, Array("tag" => $part->nodeName, "delete" => true));
-																unset($part); 
+																unset($part);
 															}
 															break 3;
 														}
@@ -364,7 +364,7 @@ class htmlcleaner
 													// remove previous config
 													@array_pop($delete_stack);
 													array_push($delete_stack, Array("tag" => $part->nodeName, "delete" => true));
-													unset($part); 
+													unset($part);
 												}
 												break 2;
 											}

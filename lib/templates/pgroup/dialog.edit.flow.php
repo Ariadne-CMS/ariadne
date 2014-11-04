@@ -6,7 +6,7 @@ if (($this->CheckLogin("edit") || $this->CheckLogin("add", ARANYTYPE)) && $this-
 			$wgWizFlow[$key]["nolang"] = true;
 		}
 	}
-	
+
 	$arResult = $wgWizFlow;
 }
 

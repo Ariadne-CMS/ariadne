@@ -31,12 +31,12 @@
 			$wgWizFlow[] = array(
 				"title" => $ARnls["customdata"],
 				"image" => $AR->dir->images.'wizard/customdata.png',
-				"template" => "dialog.edit.shortcut.custom.php" 
+				"template" => "dialog.edit.shortcut.custom.php"
 			);
 		}
 		if( !$this->lock('O')){
 			$i = $wgWizFlow[0]["current"]+1;
-			$wgWizFlow[$i]["template"] = "dialog.edit.lock.php";	                        
+			$wgWizFlow[$i]["template"] = "dialog.edit.lock.php";
 		}
 
 		$arLanguage=$this->getdata("arLanguage","none");

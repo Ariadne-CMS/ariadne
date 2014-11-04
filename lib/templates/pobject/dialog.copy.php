@@ -11,7 +11,7 @@
 				"save" => "dialog.copy.save.php"
 			)
 		);
-		
+
 		if ($wgWizAction == 'save') {
 			$wgWizButtons = array(
 				"cancel" => array(
@@ -30,7 +30,7 @@
 					"value" => $ARnls["copy"]
 				),
 			);
-		}				
+		}
 
 		$wgWizTitle=$ARnls["copy"];
 		$wgWizHeader = $wgWizTitle;

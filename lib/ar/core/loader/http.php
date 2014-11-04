@@ -8,18 +8,18 @@
 		private $request = null;
 		private $nls     = null;
 		private $hideSessionIDFromURL = false;
-		
+
 		public function __construct($options = null, $ariadne = null, $session = null, $nls = null) {
 			$this->ariadne = $ariadne;
 			$this->options = $options;
 			$this->session = $session;
 			$this->nls     = $nls;
-		
+
 			if (!isset($_SERVER['PHP_SELF'])) { // needed for IIS: it doesn't set the PHP_SELF variable.
 				$_SERVER['PHP_SELF'] = $_SERVER['SCRIPT_NAME'].$_SERVER['PATH_INFO'];
 			}
 		}
-		
+
 		protected function parseSession( $pathInfo, $session ) {
 			$re = '|^/-(.{4})-/|';
 			$matches = null;
@@ -39,7 +39,7 @@
 			}
 			return $pathInfo;
 		}
-		
+
 		/*fixme -- */
 		protected function parseNLS( $pathInfo, $nls ) {
 			$re      = '|^/-(.{2})-/|';
@@ -59,7 +59,7 @@
 			$nls->current = $nls->nls;
 			return $pathInfo;
 		}
-		
+
 		protected function parseAcceptLanguage($acceptLanguage, $nls) {
 			$re      = '%([a-zA-Z]{2}|\\*)[a-zA-Z-]*(?:;q=([0-9.]+))?%';
 			$matches = null;
@@ -87,7 +87,7 @@
 			}
 		}
 		/* -- fixme */
-		
+
 		public function getRequest() {
 			$pathInfo = $_SERVER['PATH_INFO'];
 			if (!$pathInfo) {
@@ -126,14 +126,14 @@
 			);
 			return $this->request;
 		}
-		
+
 		public function handleRequest($request = null) {
 			if (!isset($request)) {
 				$request = $this->request ? $this->request : $this->getRequest();
 			}
 			return $this->ariadne->handleRequest($request);
 		}
-		
+
 		public function handleException($exception) {
 			$code = $exception->getCode();
 			switch ($code) {
@@ -155,7 +155,7 @@
 					$this->request['params']['arLoginMessage'] = $exception->getMessage();
 					$this->request['params']['arOriginalFunction'] = $this->request['template'];
 					$this->request['template'] = 'user.session.timeout.html';
-					$this->handleRequest($request);			
+					$this->handleRequest($request);
 				break;
 				case ar_exceptions::PASSWORD_EXPIRED :
 					$this->request['params']['arLoginMessage'] = $exception->getMessage();
@@ -187,7 +187,7 @@
 				break;
 			}
 		}
-		
+
 		public function run() {
 			try {
 				$this->handleRequest();
@@ -195,16 +195,16 @@
 				$this->handleException($e);
 			}
 		}
-		
+
 		public function getCacheControl() {
 			// COOKIEs...
 			$isCacheable =
-				( !isset($_SERVER['HTTP_CACHE_CONTROL']) 
-					|| ( strpos( $_SERVER['HTTP_CACHE_CONTROL'], 'no-cache' ) === false  
+				( !isset($_SERVER['HTTP_CACHE_CONTROL'])
+					|| ( strpos( $_SERVER['HTTP_CACHE_CONTROL'], 'no-cache' ) === false
 						&& strpos( $_SERVER['HTTP_CACHE_CONTROL'], 'no-store' ) === false  )
 				)
 				&& ( !isset($_SERVER['HTTP_PRAGMA'])
-					|| ( strpos( $_SERVER['HTTP_PRAGMA'], 'no-cache' ) === false ) 
+					|| ( strpos( $_SERVER['HTTP_PRAGMA'], 'no-cache' ) === false )
 				)
 				&& ( $_SERVER['REQUEST_METHOD'] == 'GET' );
 			if ( $isCacheable ) {
@@ -233,39 +233,39 @@
 				return false;
 			}
 		}
-		
+
 		public function redirect( $url ) {
 			return ar_http_headers::redirect( $url );
 		}
-		
+
 		public function header( $header ) {
 			return ar_http_headers::header( $header );
 		}
-		
+
 		public function getvar( $name = null, $method = null ) {
 			return ar_http::getvar( $name, $method );
 		}
-		
+
 		public function cache( $expires = 0, $modified = false ) {
 			return ar_http_headers::cache( $expires, $modified);
 		}
-		
+
 		public function disableCache() {
-			return ar_http_headers::disableCache();		
+			return ar_http_headers::disableCache();
 		}
-		
+
 		public function content( $contentType, $size = 0 ) {
 			return ar_http_headers::content( $contentType, $size );
 		}
-		
+
 		public function isCacheable() {
 		}
-		
+
 		public function makeURL( $path = '', $nls = '', $session = true, $https = null, $keephost = null ) {
 			$context = ar::context();
 			$me = $context->getObject();
 			return $me->make_url( $path, $nls, $session, $https, $keephost );
 		}
 	}
-	
+
 ?>

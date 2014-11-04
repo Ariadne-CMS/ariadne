@@ -31,7 +31,7 @@
 				),
 			);
        		}
-         
+
 		$wgWizTitle = $ARnls["move"];
 		$wgWizHeader = $wgWizTitle;
 		$wgWizHeaderIcon = $AR->dir->images.'icons/large/customfields.png';

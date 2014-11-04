@@ -29,10 +29,10 @@
 					$path = $redir["src"];
 				}
 			}
-			$config=$me->loadConfig($path);	
+			$config=$me->loadConfig($path);
 			return $config;
 		}
-		
+
 		function _currentsection($path=".") {
 			$config = self::_loadConfig($path);
 			return $config->section;

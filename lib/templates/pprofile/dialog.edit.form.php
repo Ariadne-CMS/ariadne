@@ -6,7 +6,7 @@
 	<legend><?php echo $ARnls["data"]; ?></legend>
 	<div class="field">
 		<label for="name" class="required"><?php echo $ARnls["name"]; ?></label>
-		<input id="name" type="text" name="name" 
+		<input id="name" type="text" name="name"
 			value="<?php $this->showdata("name", "none"); ?>" class="inputline wgWizAutoFocus">
 	</div>
 </fieldset>

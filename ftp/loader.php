@@ -46,7 +46,7 @@
 			                );
 			    // set of errors for which a var trace will be saved
 			    $user_errors = array(E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE);
-			    
+
 			    $err = "<errorentry>\n";
 			    $err .= "\t<datetime>".$dt."</datetime>\n";
 			    $err .= "\t<errornum>".$errno."</errnumber>\n";
@@ -58,7 +58,7 @@
 			    if (in_array($errno, $user_errors))
 			        $err .= "\t<vartrace>".wddx_serialize_value($vars,"Variables")."</vartrace>\n";
 			    $err .= "</errorentry>\n\n";
-			    
+
 				debug($err);
 			}
 		}
@@ -88,7 +88,7 @@
 				}
 			} else {
 				// do passive mode
-				debug("ftp::OpenDC waiting on socket accept"); 
+				debug("ftp::OpenDC waiting on socket accept");
 				$counter = 0;
 				$msgsocket = false;
 				while ( $counter < 300 && !is_resource($msgsocket) ) {
@@ -310,7 +310,7 @@
 								$getmode = "templates";
 
 								$result = current(
-											$FTP->store->call("ftp.template.exists.phtml", 
+											$FTP->store->call("ftp.template.exists.phtml",
 																Array("arRequestedTemplate" => $template),
 																$FTP->store->get($path)));
 								$file_date = $result["date"];
@@ -432,7 +432,7 @@
 								$getmode = "templates";
 
 								$result = current(
-											$FTP->store->call("ftp.template.exists.phtml", 
+											$FTP->store->call("ftp.template.exists.phtml",
 																Array("arRequestedTemplate" => $template),
 																$FTP->store->get($path)));
 								if (is_array($result)) {
@@ -463,7 +463,7 @@
 						if ($listMode === "templates") {
 							ftp_TranslateTemplate($rename_src_path, $rename_src_template);
 							$result = $FTP->store->call(
-											"ftp.template.exists.phtml", 
+											"ftp.template.exists.phtml",
 											Array(
 												"arRequestedTemplate" => $rename_src_template
 											),
@@ -476,7 +476,7 @@
 								$rename_src_path = "";
 							}
 
-						} else 
+						} else
 						if ($FTP->store->exists($rename_src_path)) {
 							ftp_Tell(350, "Object exists, supply destination name.");
 						} else {
@@ -510,12 +510,12 @@
 
 								if ($do_move) {
 									debug("ftp::RENAME ($rename_src_path, $rename_dest_path, ".$rename_src_listMode.", $rename_src_template, $rename_dest_template)");
-									$FTP->store->call("ftp.".$rename_src_listMode.".rename.phtml", 
+									$FTP->store->call("ftp.".$rename_src_listMode.".rename.phtml",
 													Array(
 														"source" => $rename_src_path,
 														"target" => $rename_dest_path,
 														"source_template" => $rename_src_template,
-														"target_template" => $rename_dest_template 
+														"target_template" => $rename_dest_template
 													),
 													$FTP->store->get($rename_src_path));
 
@@ -546,7 +546,7 @@
 								$getmode = "templates";
 
 								$result = current(
-											$FTP->store->call("ftp.template.exists.phtml", 
+											$FTP->store->call("ftp.template.exists.phtml",
 																Array("arRequestedTemplate" => $template),
 																$FTP->store->get($path)));
 								$file_size = $result["size"];
@@ -691,7 +691,7 @@
 						} else {
 							ftp_TranslateTemplate($path, $template);
 							debug("ftp::list maybe it's a template? ($path, $template)");
-							$result = current($FTP->store->call("ftp.template.exists.phtml", 
+							$result = current($FTP->store->call("ftp.template.exists.phtml",
 												Array("arRequestedTemplate" => $template),
 												$FTP->store->get($path)));
 
@@ -857,7 +857,7 @@
 								unset($ARCurrent->ftp_error);
 							} else {
 								ftp_Tell(226, "Transfer complete (".$fileinfo["name"].")");
-							} 
+							}
 						} else {
 							debug("ftp: error connecting to client");
 							ftp_Tell(550, "Could not establish a connection");
@@ -891,7 +891,7 @@
 							unset($ARCurrent->ftp_error);
 						} else {
 							ftp_Tell(257, "\"$path_requested\" - Directory successfully created.");
-						} 
+						}
 					break;
 
 					case 'SYST':
@@ -931,7 +931,7 @@
 						$criteria="object.implements = 'puser'";
 						$criteria.=" and login.value = '".AddSlashes($login)."'";
 						$user=$FTP->store->call("system.get.phtml", "",
-												$FTP->store->find("/system/users/", 
+												$FTP->store->find("/system/users/",
 																$criteria));
 						$user=$user[0];
 

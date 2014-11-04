@@ -8,63 +8,63 @@
 
 			$returns = "";
 			$UTF8len = array(	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-								1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 
-								0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2, 
+								1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+								0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 2, 2, 2,
 								2, 2, 3, 3, 3, 3, 4, 4, 5, 6);
 			$pos = 0;
 			$total = strlen($string);
 
-			do { 
+			do {
 				$c = ord($string[$pos]);
 				$len = $UTF8len[($c >> 2) & 0x3F];
-				switch ($len) 
+				switch ($len)
 				{
-					case 6: 
-						$u = $c & 0x01; 
+					case 6:
+						$u = $c & 0x01;
 						break;
-					case 5: 
-						$u = $c & 0x03; 
+					case 5:
+						$u = $c & 0x03;
 						break;
-					case 4: 
-						$u = $c & 0x07; 
+					case 4:
+						$u = $c & 0x07;
 						break;
-					case 3: 
-						$u = $c & 0x0F; 
+					case 3:
+						$u = $c & 0x0F;
 						break;
-					case 2: 
-						$u = $c & 0x1F; 
+					case 2:
+						$u = $c & 0x1F;
 						break;
-					case 1: 
-						$u = $c & 0x7F; 
+					case 1:
+						$u = $c & 0x7F;
 						break;
 					case 0:	/* unexpected start of a new character */
-						$u = $c & 0x3F; 
-						$len = 5; 
+						$u = $c & 0x3F;
+						$len = 5;
 						break;
 				}
 				while (--$len && (++$pos < $total && $c = ord($string[$pos]))) {
 					if (($c & 0xC0) == 0x80) {
 						$u = ($u << 6) | ($c & 0x3F);
-					} else { 
+					} else {
 						/* unexpected start of a new character */
 						$pos--;
 						break;
 					}
 				}
-				if ($u <= $maxchar) { 
+				if ($u <= $maxchar) {
 					$returns .= chr($u);
-				} else if ($entities) { 
+				} else if ($entities) {
 					$returns .= '&#'.$u.';';
 				} else {
 					$returns .= '?';
 				}
 			} while (++$pos < $total);
 			return $returns;
-		} 
+		}
 
 		function utf8toiso8859($string, $entities=true) {
 			return unicode::utf8convert($string, 0xFF, $entities);
-		} 
+		}
 
 
 		function convertToUTF8($charset, $string) {

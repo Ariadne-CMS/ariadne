@@ -22,7 +22,7 @@
 			readfile($file_artemp);
 
 			return $result;
-		} 
+		}
 
 		function path_unescape($path) {
 			$result = "";

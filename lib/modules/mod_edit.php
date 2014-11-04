@@ -2,7 +2,7 @@
 	/*
 		This class is meant to make it easy to create inline editable pages. The class should not be instantiated, instead
 		you just call (in pinp) edit::showSpan($data->name, "$nls[name]");
-	
+
 	*/
 
 	include_once($this->store->get_config("code")."modules/mod_page.php");
@@ -201,7 +201,7 @@
 		}
 
 		function isEmpty($var) {
-			return (trim(preg_replace('/&nbsp;/',' ',strip_tags($var, '<img>')))==""); 
+			return (trim(preg_replace('/&nbsp;/',' ',strip_tags($var, '<img>')))=="");
 		}
 	}
 

@@ -8,19 +8,19 @@
 	 * @SuppressWarnings(PHPMD.UnusedPrivateField)
 	 */
 	class ar_http extends arBase {
-	
+
 		private static $_GET, $_POST, $_REQUEST, $_SERVER, $_COOKIE;  //needed to make __get() work
 		public static $tainting = true;
-		
+
 		public function __get($var) {
 			switch ($var) {
-				case '_GET' : 
+				case '_GET' :
 					return $this->getvar( null, 'GET');
 				break;
-				case '_POST' : 
+				case '_POST' :
 					return $this->getvar( null, 'POST');
 				break;
-				case '_REQUEST' : 
+				case '_REQUEST' :
 					return $this->getvar();
 				break;
 				case '_SERVER' :
@@ -34,7 +34,7 @@
 				break;
 			}
 		}
-		
+
 		public function __set( $var, $value ) {
 			if ($var=='tainting') {
 				self::$tainting = (bool) $value;
@@ -44,10 +44,10 @@
 		public static function getvar( $name = null, $method = null) {
 			$result = null;
 			switch($method) {
-				case 'GET' : 
+				case 'GET' :
 					$result = isset($name) ? $_GET[$name] : $_GET;
 				break;
-				case 'POST' : 
+				case 'POST' :
 					$result = isset($name) ? $_POST[$name] : $_POST;
 				break;
 				case 'COOKIE' :
@@ -56,8 +56,8 @@
 				case 'SERVER' :
 					$result = isset($name) ? $_SERVER[$name] : $_SERVER;
 				break;
-				default : 
-					$result = !isset($name) ? $_REQUEST : 
+				default :
+					$result = !isset($name) ? $_REQUEST :
 						( isset($_POST[$name]) ? $_POST[$name] : $_GET[$name] );
 				break;
 			}
@@ -75,7 +75,7 @@
 		public static function client( $options = array() ) {
 			return new ar_httpClientStream( $options );
 		}
-		
+
 		public static function configure( $option, $value ) {
 			switch ( $option ) {
 				case 'tainting' :
@@ -83,21 +83,21 @@
 				break;
 			}
 		}
-		
+
 		public static function header( $header ) {
 			return ar_http_headers::header( $header );
 		}
-		
+
 		public static function get( $url, $request = null, $options = array() ) {
 			return self::request( 'GET', $url, $request, $options);
 		}
-		
+
 		public static function post( $url, $request = null, $options = array() ) {
 			return self::request( 'POST', $url, $request, $options);
 		}
-		
+
 	}
-	
+
 	interface ar_httpClient {
 
 		public function get( $url, $request = null, $options = array() );
@@ -109,7 +109,7 @@
 		public function delete( $url, $request = null, $options = array() );
 
 		public function send( $type, $url, $request = null, $options = array() );
-		
+
 		public function headers( $headers );
 
 	}
@@ -133,12 +133,12 @@
 
 		private function compileRequest( array $request ) {
 			$result = "";
-			foreach ( $request as $key => $value ) { 
+			foreach ( $request as $key => $value ) {
 				if ( !is_integer( $key ) ) {
-					$result .= urlencode($key) . "=" . urlencode($value) . "&"; 
+					$result .= urlencode($key) . "=" . urlencode($value) . "&";
 				}
-			} 
-			return substr( $result, 0, -1);	
+			}
+			return substr( $result, 0, -1);
 		}
 
 		private function mergeOptions( ) {
@@ -182,19 +182,19 @@
 		}
 
 		public function get( $url, $request = null, $options = array() ) {
-			return $this->send( 'GET', $url, $request, $options );		
+			return $this->send( 'GET', $url, $request, $options );
 		}
-		
+
 		public function post( $url, $request = null, $options = array() ) {
-			return $this->send( 'POST', $url, $request, $options );		
+			return $this->send( 'POST', $url, $request, $options );
 		}
 
 		public function put( $url, $request = null, $options = array() ) {
-			return $this->send( 'PUT', $url, $request, $options );		
+			return $this->send( 'PUT', $url, $request, $options );
 		}
 
 		public function delete( $url, $request = null, $options = array() ) {
-			return $this->send( 'DELETE', $url, $request, $options );		
+			return $this->send( 'DELETE', $url, $request, $options );
 		}
 
 		public function headers( $headers ) {

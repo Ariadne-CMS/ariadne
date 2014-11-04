@@ -1,6 +1,6 @@
 <?php
 $pageStart = '
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
 		<title>Ariadne - Access denied</title>
@@ -49,21 +49,21 @@ if ($this->CheckLogin("read")) {
       $ARCurrent->session->kill();
       unset($ARCurrent->session);
       echo $pageStart;
-      
+
       // Add nls for this phrase
       echo "Session closed for ".$AR->user->data->name;
       echo $loginForm;
-      echo $pageEnd;   
+      echo $pageEnd;
     }
   }
   else {
     // Add nls for this phrase
     echo "<h2>Sorry, you can only logoff yourself.</h2>";
   }
-} 
-else { 
+}
+else {
   echo $pageStart;
-  
+
   // Add nls for this phrase
   echo "Session closed";
   echo $loginForm;

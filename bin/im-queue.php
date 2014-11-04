@@ -36,7 +36,7 @@
 	}
 
 	/*
-	from the sysexit.h : #define EX_UNAVAILABLE  69      // service unavailable 
+	from the sysexit.h : #define EX_UNAVAILABLE  69      // service unavailable
 	*/
 	$return_var = 69;
 
@@ -47,7 +47,7 @@
 			pcntl_exec($cmd,$arguments);
 			// this program ends here
 			// after exec this program nolonger exists
-			
+
 		}
 	}
 	exit($return_var);

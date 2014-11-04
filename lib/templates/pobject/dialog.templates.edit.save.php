@@ -1,6 +1,6 @@
 <?php
 	if (!$this->validateFormSecret()) {
-		error($ARnls['ariadne:err:invalidsession']);      
+		error($ARnls['ariadne:err:invalidsession']);
 		exit;
 	}
 
@@ -29,5 +29,5 @@
 			$this->call("dialog.templates.edit.form.php", array("error" => $this->error));
 		}
 	}
-	
+
 ?>

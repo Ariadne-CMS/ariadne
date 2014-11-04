@@ -1,9 +1,9 @@
 <?php
 	ar_pinp::allow( 'ar_crypt' );
-	
+
 	class ar_crypt extends arBase {
 		private $key;
-		
+
 		public function __construct( $key = '', $encoding = MCRYPT_RIJNDAEL_256 ) {
 			global $AR;
 			if ($key == '') {
@@ -16,7 +16,7 @@
 		public function setKey( $key ) {
 			$this->key = $key;
 		}
-		
+
 		public function crypt( $value ) {
 			return base64_encode(@mcrypt_encrypt($this->encoding, $this->key, $value, MCRYPT_MODE_CBC));
 		}

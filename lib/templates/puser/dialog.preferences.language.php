@@ -28,9 +28,9 @@
 				}
 			?>
 			</select>
-		</div>	
+		</div>
 		<?php echo $ARnls["show"]; ?>
-		<input type="hidden" name="languagelist[none]" value="None"> 
+		<input type="hidden" name="languagelist[none]" value="None">
 		<?php
 			$languagelist=$this->getdata("languagelist","none");
 			reset($AR->nls->list);
@@ -47,7 +47,7 @@
 					<div class="field checkbox flag left">
 						<a href="#" onClick="selectnls('<?php echo $arnls; ?>');">
 							<img id="flag_<?php echo $arnls; ?>" alt="<?php echo $value; ?>" src="<?php echo $image; ?>"></a>
-						<input type="checkbox" id="checkbox_<?php echo $arnls; ?>" 
+						<input type="checkbox" id="checkbox_<?php echo $arnls; ?>"
 							name="languagelist[<?php echo $arnls; ?>]" onClick="setImage('<?php echo $arnls; ?>');"
 							value="<?php echo $value; ?>"<?php echo $selected; ?>>
 						<label for="checkbox_<?php echo $arnls; ?>"><?php echo $value; ?></label>

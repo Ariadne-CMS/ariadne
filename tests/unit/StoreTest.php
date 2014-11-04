@@ -57,7 +57,7 @@ class StoreTest extends PHPUnit_Framework_TestCase
 		$id = $store->get_nextid($testpath);
 		$this->assertEquals('00001', $id);
 
-		// create object with ID 
+		// create object with ID
 		self::testNew('storeTest-nextID/'.$id);
 
 		$id = $store->get_nextid($testpath,'{5:id}');

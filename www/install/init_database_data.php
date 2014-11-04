@@ -153,7 +153,7 @@
 				)
 			)
 		);
-		
+
 		$properties['priority'] = Array(
 			'fields' => Array(
 				'value' => Array(

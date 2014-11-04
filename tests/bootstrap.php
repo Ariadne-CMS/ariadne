@@ -88,7 +88,7 @@
 		$AR        = $origAR;
 		$ARCurrent = $origARCurrent;
 		$ARConfig  = $origARConfig;
-		
+
 	}
 
 	initTestData();

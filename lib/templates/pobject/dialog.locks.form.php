@@ -26,25 +26,25 @@
 	function initresults() {
 		if (YAHOO.util.Dom.get("resultsTable")) {
 			var myDataSource = new YAHOO.util.DataSource(YAHOO.util.Dom.get("resultsTable"));
-			myDataSource.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE;   
-			myDataSource.responseSchema = {   
+			myDataSource.responseType = YAHOO.util.DataSource.TYPE_HTMLTABLE;
+			myDataSource.responseSchema = {
 				fields: [{key:"path"},
 					{key:"expires"},
 					{key:"unlock"}
 					]
 			};
-			var myColumnDefs = [   
-				{key:"path", label:"<?php echo $ARnls['path'];?>", sortable:true},   
-				{key:"expires", label:"<?php echo $ARnls['expires'];?>", sortable:true},   
+			var myColumnDefs = [
+				{key:"path", label:"<?php echo $ARnls['path'];?>", sortable:true},
+				{key:"expires", label:"<?php echo $ARnls['expires'];?>", sortable:true},
 				{key:"unlock", label:"<?php echo $ARnls['unlock'];?>", sortable:true}
-			];   
+			];
 			var myDataTable = new YAHOO.widget.DataTable("resultSet", myColumnDefs, myDataSource, {});
 			myDataTable.subscribe("rowMouseoverEvent", function(event) { YAHOO.util.Dom.addClass(event.target, "highlight"); });
 			myDataTable.subscribe("rowMouseoutEvent", function(event) { YAHOO.util.Dom.removeClass(event.target, "highlight"); });
 		}
 	}
 
-	YAHOO.util.Event.onDOMReady(initresults);	 
+	YAHOO.util.Event.onDOMReady(initresults);
 </script>
 <script type="text/javascript">
 	function toggleAll() {
@@ -74,9 +74,9 @@
 				$first = true;
 				foreach ($data as $datarow) {
 			?>
-				<tr class="<?php 
-				if( $first ) { 
-					echo " yui-dt-first"; 
+				<tr class="<?php
+				if( $first ) {
+					echo " yui-dt-first";
 				}
 				echo " yui-dt-".$oddeven;
 				?>">
@@ -85,7 +85,7 @@
 					<td "yui-dt-sortable yui-dt-last yui-dt-col-unlock"><?php echo $datarow['unlock']; ?></td>
 				</tr>
 			<?php
-					$oddeven = ($oddeven == "odd") ? "even" : "odd"; 
+					$oddeven = ($oddeven == "odd") ? "even" : "odd";
 					$first = false;
 				}
 			?>

@@ -40,7 +40,7 @@
 			);
 		} else {
 			echo '<legend>' . $ARnls['ariadne:new:select_type'] . '</legend>';
-		
+
 			if ($this->CheckSilent("layout")) {
 				$fields = array(
 					"showall" => array(

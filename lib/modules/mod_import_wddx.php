@@ -102,7 +102,7 @@ class import_wddx {
 		} else if( $name == "struct"){
 			if(!$this->seenconfig){
 				// still waiting for the config
-				if($this->nestdeep == -2){ 
+				if($this->nestdeep == -2){
 					// -1 is the depth directly under <data>
 					// -2 is the struct with the wddx configuration data
 					$this->seenconfig = true;
@@ -116,7 +116,7 @@ class import_wddx {
 					}
 				}
 			} else {
-				if($this->nestdeep == 0 ){ // this is below 
+				if($this->nestdeep == 0 ){ // this is below
 					$object = array_pop($this->stack);
 					if(is_array($object) && is_array($object["data"])){
 						$this->saveObject($object["data"]);
@@ -141,7 +141,7 @@ class import_wddx {
 				$objdata['path'] = $this->config['dstpath'].substr($objdata['path'],strlen($this->config['srcpath']));
 			}
 		}
-	
+
 		if($this->config['prefix']){
 			$path = $this->store->make_path($this->config['prefix'],"./".$objdata['path']);
 		} else {
@@ -434,7 +434,7 @@ class import_wddx {
 			save new files when newer
 			fi
 			else
-			save new files 
+			save new files
 			fi
 			fi
 		 */
@@ -501,7 +501,7 @@ class import_wddx {
 				break;
 				case "boolean":
 					switch ($data) {
-						case "true": 
+						case "true":
 							$element["data"] = true;
 						break;
 						default:

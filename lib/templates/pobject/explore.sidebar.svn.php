@@ -75,7 +75,7 @@
 						$svn_icon = $AR->dir->images . 'svn/ModifiedIcon.png';
 						break;
 					}
-				} 
+				}
 			}
 			$label = $ARnls['ariadne:svn:revision'] . ": " . $svn_revision;
 		}

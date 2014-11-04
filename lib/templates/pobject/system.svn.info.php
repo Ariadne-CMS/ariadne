@@ -11,7 +11,7 @@
 			$svn_info['Ariadne Name'] = $this->nlsdata->name;
 			ksort($svn_info);
 		}
-		
+
 		$arResult = $svn_info;
 	}
 ?>

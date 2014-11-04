@@ -29,11 +29,11 @@ class URL {
 		$nls_match2 = "((".implode('|', array_keys($AR->nls->list)).")/)?";
 
 		/* find and replace the current page */
-		$find[] = "%\\Q".$me->make_url($me->path, "\\E{0}(".$nls_match.")\\Q")."\\E(user.edit.page.html|view.html)?%"; 
+		$find[] = "%\\Q".$me->make_url($me->path, "\\E{0}(".$nls_match.")\\Q")."\\E(user.edit.page.html|view.html)?%";
 		$repl[] = "{arCurrentPage\\1}";
-		$find[] = "%".preg_replace("%^https?://%", "https?\\Q://", $AR->host).$AR->dir->www."loader.php\\E(?:/-".$ARCurrent->session->id."-)?".$nls_match."\\Q".$me->path."\\E(user.edit.page.html|view.html)?%"; 
+		$find[] = "%".preg_replace("%^https?://%", "https?\\Q://", $AR->host).$AR->dir->www."loader.php\\E(?:/-".$ARCurrent->session->id."-)?".$nls_match."\\Q".$me->path."\\E(user.edit.page.html|view.html)?%";
 		$repl[] = "{arCurrentPage\\1}";
-		$find[] = "%\\Q".$me->make_local_url($me->path, "\\E{0}(".$nls_match.")\\Q")."\\E(user.edit.page.html|view.html)?%"; 
+		$find[] = "%\\Q".$me->make_local_url($me->path, "\\E{0}(".$nls_match.")\\Q")."\\E(user.edit.page.html|view.html)?%";
 		$repl[] = "{arCurrentPage\\1}";
 		// change the site links
 		$site = $me->currentsite();
@@ -45,7 +45,7 @@ class URL {
 			$find[] = "%\\Q$rootURL\\E".$nls_match2."\\Q".substr($site, 1)."\\E%e";
 			$repl[] = "(\"\${2}\") ? \"{arSite/\\2}\" : \"{arSite}\"";
 
-			/* 
+			/*
 				a site has been configured so we can directly place
 				the nls_match2 after the siteURL
 			*/
@@ -59,7 +59,7 @@ class URL {
 			if (substr($root, -3) == "/$nls") {
 				$root = substr($root, 0, -3);
 			}
-			$find[] = "%(http[s]?://)?\\Q".$AR->host.$root."\\E".$nls_match."(/)%"; 
+			$find[] = "%(http[s]?://)?\\Q".$AR->host.$root."\\E".$nls_match."(/)%";
 			$repl[] = "{arBase\\2}\\3";
 
 			// This regexp triggers problems if there is no session
@@ -67,25 +67,25 @@ class URL {
 			// site in configured with hideSessionFromUrl, so the check is
 			// added to prevent random /ariadne/loader.php's to be replaced;
 			if (!empty($ARCurrent->session->id) && strpos($root, "-" . $ARCurrent->session->id . "-") !== false) {
-				$find[] = "%(http[s]?://)?\\Q".$root."\\E".$nls_match."(?)%"; 
+				$find[] = "%(http[s]?://)?\\Q".$root."\\E".$nls_match."(?)%";
 				$repl[] = "{arBase\\2}\\3";
 			}
 		}
 
 		// change hand pasted sources, which may or may not include session id's
-		$find[] = "%(https?://)?\\Q".$AR->host.$AR->dir->www."loader.php\\E(/-".$ARCurrent->session->id."-)?(".$nls_match.")?/%"; 
+		$find[] = "%(https?://)?\\Q".$AR->host.$AR->dir->www."loader.php\\E(/-".$ARCurrent->session->id."-)?(".$nls_match.")?/%";
 		$repl[] = "{arBase\\3}/";
 		if ($ARCurrent->session && $ARCurrent->session->id) {
 			// check for other session id's:
 			$find[] = "%/-[^-]{4}-%";
 			$repl[] = "{arSession}";
-			//$find[] = "%/-".$ARCurrent->session->id."-%"; 
+			//$find[] = "%/-".$ARCurrent->session->id."-%";
 			//$repl[] = "{arSession}";
 		}
 
 		return preg_replace($find, $repl, $page);
 	}
-	
+
 	/* replaces the {ar*[/nls]} markers with valid URLs; if full is false, returns only the <body> content */
 	function ARtoRAW($page) {
 		global $ARCurrent, $AR;
@@ -96,7 +96,7 @@ class URL {
 			$session='/-'.$ARCurrent->session->id.'-';
 		} else {
 			$session='';
-		} 
+		}
 		$site = $me->currentsite($me->path, true);
 		$root = $me->store->get_config("root");
 		if (substr($root, -3) == "/$me->nls") {

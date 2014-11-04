@@ -20,8 +20,8 @@
 									}
 							?>
 							<option<?php echo $selected; ?> value="<?php echo $key; ?>"><?php echo $name; ?></option>
-							<?php	
-								}	
+							<?php
+								}
 							?>
 						</select>
 				</div>

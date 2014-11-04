@@ -9,7 +9,7 @@
      $wgWizFlow or $ARCurrent->wgWizFlow
    - wgWizNextStep : int, default 1
    - wgWizTitle : string, default "Wizard"
-   - wgWizHeader 
+   - wgWizHeader
    - wgWizHeaderIcon
    - wgWizCallObject : object, default $this
    - wgWizCaption : string, default "", displayed below wgWizFlow
@@ -22,7 +22,7 @@
         $wgWizNewFilename="{5:id}";
       }
       if (!$wgWizNewData) {
-        $wgWizNewData=new object; 
+        $wgWizNewData=new object;
       }
       $wgWizNewPath=$this->make_path($wgWizNewFilename);
       $wgWizCallObject=$this->store->newobject($wgWizNewPath, $this->path, $wgWizNewType, $wgWizNewData);
@@ -33,14 +33,14 @@
   }
   if (!$wgWizTitle) {
     $wgWizTitle="Wizard"; //FIXME: nls value?
-  }  
+  }
   if (!$wgWizFlow || !is_array($wgWizFlow)) {
     $wgWizFlow=$ARCurrent->wgWizFlow;
     if (!$wgWizFlow || !is_array($wgWizFlow)) {
       error("wgWizFlow undefined or corrupt");
     }
   }
-  
+
   $wgWizShowSections=false;
   $tcount = 0;
   if(isset($wgWizFlow) && is_array($wgWizFlow)){
@@ -53,7 +53,7 @@
   if( $tcount > 1 ) {
   	$wgWizShowSections = true;
   }
- /* 
+ /*
   if ($wgWizFlow && (count($wgWizFlow)>1 )) {
     $wgWizShowSections=true;
   } else {

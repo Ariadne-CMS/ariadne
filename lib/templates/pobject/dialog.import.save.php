@@ -1,6 +1,6 @@
 <?php
 	if (!$this->validateFormSecret()) {
-		error($ARnls['ariadne:err:invalidsession']);      
+		error($ARnls['ariadne:err:invalidsession']);
 		exit;
 	}
 	ldDisablePostProcessing();
@@ -38,7 +38,7 @@
 <div id="progress_verbose"></div>
 <?php
 			$file = ldRegisterFile("source", $this->error);
-			if ($file && !$this->error) { 
+			if ($file && !$this->error) {
 				require($this->store->get_config("code")."/configs/axstore.phtml");
 				include($this->store->get_config("code")."/stores/axstore.phtml");
 

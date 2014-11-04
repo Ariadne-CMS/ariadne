@@ -4,7 +4,7 @@
 
 		$fstore = $this->store->get_filestore_svn("templates");
         $svn = $fstore->connect($this->id, $repository, $username, $password);
-			
+
 		$linebased = explode("\n", $diff);
 
 		// Index: /home/wouter/svn/ariadne/site/files/templates/72/7/_psite.test.5.html.any.pinp
@@ -15,7 +15,7 @@
 		// -<body>
 		// +<body class="body">
 		//  <h1>Muze Lib Test 5</h1>
-		
+
 		$status = "";
 		$i = 0;
 		while( isset($linebased[$i]) ) {
@@ -38,7 +38,7 @@
 					$props = $fstore->svn_get_ariadne_props($svn, $template);
 					if( count($props) ) {
 						$line = str_replace($template, $this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".($props["ar:default"] == '1' ? $ARnls["default"] : ""), $line );
-					}				
+					}
 					$status .= "<span class='svndiff_headline'>".htmlspecialchars($line)."</span>\n";
 					$line = $linebased[++$i];
 					$firstspace = strpos($line, " ")+1;
@@ -47,10 +47,10 @@
 					$props = $fstore->svn_get_ariadne_props($svn, $template);
 					if( count($props) ) {
 						$line = str_replace($template, $this->path.$props["ar:function"]." (".$props["ar:type"].") [".$props["ar:language"]."] ".($props["ar:default"] == '1' ? $ARnls["default"] : ""), $line );
-					}				
+					}
 					$status .= "<span class='svndiff_headline'>".htmlspecialchars($line)."</span>\n";
 				break;
-				case "@": // @@ 
+				case "@": // @@
 					$status .= "<span class='svndiff_offsetline'>".htmlspecialchars($line)."</span>\n";
 				break;
 				case "-": // --- file -diff
@@ -58,7 +58,7 @@
 				break;
 				case "+": // +++ file +diff
 					$status .= "<span class='svndiff_addline'>".htmlspecialchars($line)."</span>\n";
-				break;				
+				break;
 				default:
 					if( strlen($line) ) {
 						$status .= "<span class='svndiff_normalline'>".htmlspecialchars($line)."</span>\n";

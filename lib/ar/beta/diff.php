@@ -2,7 +2,7 @@
 	global $AR;
 	require_once($AR->dir->install."/lib/includes/diff/DiffEngine.php");
 	require_once($AR->dir->install."/lib/includes/diff/ariadne.diff.inc");
-	
+
 	ar_pinp::allow( 'ar_beta_diff' );
 
 	class ar_beta_diff extends arBase {

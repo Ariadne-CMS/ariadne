@@ -15,7 +15,7 @@
 	<div class="field">
 		<label for="name" class="required"><?php echo $ARnls["name"]; ?></label>
 		<img class="flag" src="<?php echo $flagurl; ?>" alt="<?php echo $selectedlanguage; ?>">
-		<input id="name" type="text" name="<?php echo $selectednls."[name]"; ?>" 
+		<input id="name" type="text" name="<?php echo $selectednls."[name]"; ?>"
 			value="<?php $this->showdata("name", $selectednls); ?>" class="inputline wgWizAutoFocus">
 	</div>
 	<?php if (!$arNewType) { ?>
@@ -33,8 +33,8 @@
 			$wgHTMLEditName="page";
 			$wgHTMLEditLanguage=$selectednls;
 			$wgHTMLEditContent=$this->ParsePage($this->getdata("page",$selectednls), true, true);
-			include($this->store->get_config("code")."widgets/htmledit/js.html"); 
-			include($this->store->get_config("code")."widgets/htmledit/form.html"); 
+			include($this->store->get_config("code")."widgets/htmledit/js.html");
+			include($this->store->get_config("code")."widgets/htmledit/form.html");
 		?>
 	</div>
 	<?php } ?>

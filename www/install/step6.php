@@ -68,9 +68,9 @@
 
 		// Generate the config file.
 		ob_start();
-		 	include("conf/global.conf"); 
+		 	include("conf/global.conf");
 			echo "\$AR->OS = '$ar_os';\n";
-			include("conf/errors.conf"); 
+			include("conf/errors.conf");
 			echo "\$AR->dir->www = '$ar_dir_www';\n";
 			echo "\$AR->dir->install = '$ar_dir_install';\n";
 			echo "\$AR->DB->dbms = '$database';\n";
@@ -84,7 +84,7 @@
 			include("conf/loader.conf");
 			include("conf/im.conf");
 			include("conf/svn.conf");
-		
+
 			include("conf/tidy.conf");
 			include("conf/webkit2png.conf");
 			include("conf/grep.conf");
@@ -193,7 +193,7 @@
 				</div>
 				<div id="tabsdata">
 					<h1><?php echo $ARnls['install:installing']; ?></h1>
-					<?php 
+					<?php
 						$checkresult = true;
 						$checkresults = array();
 						foreach($checks as $check_name => $check) {
@@ -280,7 +280,7 @@
 								<p><?php echo $ARnls['install:to_continue']; ?> <a href="download_config.php" target="_blank"><?php echo $ARnls['install:download']; ?></a> <?php echo $ARnls['file_should_be']; ?>
 								<p><?php echo $ARnls['continue_when_done']; ?></p>
 								<input type="submit" class="button" name="downloaded_config" value="<?php echo $ARnls['install:continue_install']; ?>">
-								<?php 	
+								<?php
 								// show button to install after configfile has been placed.
 							}
 						} else {
@@ -295,7 +295,7 @@
 								</colgroup>
 								<?php
 								foreach ($checkresults as $key => $check_value) {
-									$oddeven = $oddeven == 'odd' ? 'even' : 'odd'; 
+									$oddeven = $oddeven == 'odd' ? 'even' : 'odd';
 									if ($check_value == true) {
 										$checkresult = "<span class='passed'>".$ARnls['install:check_ok']."</span>";
 									} else {

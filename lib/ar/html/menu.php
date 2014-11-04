@@ -1,7 +1,7 @@
 <?php
-	/* TODO: 
-	- styling: 
-		- dropdown: 
+	/* TODO:
+	- styling:
+		- dropdown:
 			fix hover bg color (is now set on entire submenu instead of single item)
 			add hover fg color
 			add normal fg color
@@ -9,7 +9,7 @@
 	ar_pinp::allow('ar_html_menu');
 
 	class ar_html_menu extends arBase {
-	
+
 		public static function bar( $options = array() ) {
 			$options += array(
 				'filter' => 'object.implements="pdir"'
@@ -25,7 +25,7 @@
 
 			return ar::get( $parent )->find( $query  );
 		}
-	
+
 		public static function tree( $options = array() ) {
 			$current = $options['current'];
 			if (!$current) {
@@ -52,7 +52,7 @@
 			} else if (!$options['siblings'] && $options['children'] ) {
 				$query .= "object.parent='".$current."' or ";
 			}
-			while ( 
+			while (
 				( substr( $current, 0, strlen( $top ) ) === $top )
 				&& ar::exists( $current )
 			) {
@@ -78,7 +78,7 @@
 			}
 			return ar::get($top)->find("object.priority>=0".$query);
 		}
-	
+
 		public static function sitemap( $options = array() ) {
 			$top = $options['top'];
 			if (!$top) {
@@ -102,7 +102,7 @@
 			}
 			return ar::get( $top )->find( $query );
 		}
-		
+
 		public static function crumbs( $options = array() ) {
 			$current = $options['current'];
 			if (!$current) {
@@ -149,15 +149,15 @@
 			} else {
 				$content = new ar_htmlNodes( $content );
 			}
-			
+
 			return new ar_html_menuElement( $name, $attributes, $content );
 		}
-		
+
 		public static function element() {
 			$args = func_get_args();
 			return call_user_func_array( array( 'self', 'el' ), $args );
 		}
-		
+
 	}
 
 	class ar_html_menuElement extends ar_htmlElement {
@@ -253,12 +253,12 @@
 			}
 			return $this;
 		}
-		
+
 		public function script( $type = '', $matches = array() ) {
 			$script = '';
 			switch ($type) {
 				case 'pulldown' :
-				case 'dropdown' :	
+				case 'dropdown' :
 					$listTagUp = strtoupper( $this->options['listTag'] );
 					$itemTagUp = strtoupper( $this->options['itemTag'] );
 					$script = <<<EOF
@@ -308,7 +308,7 @@ EOF;
 			}
 			return $script;
 		}
-		
+
 		public function style( $type = '' ) {
 			if (!$type) {
 				$type = $this->styleType;
@@ -319,7 +319,7 @@ EOF;
 			switch ($type) {
 				case 'bar' :
 					$this->css->import("
-						$prefix $itemTag { 
+						$prefix $itemTag {
 							float            : left;
 							padding	         : 0px 10px;
 						}
@@ -328,7 +328,7 @@ EOF;
 							padding          : 0px;
 							margin           : 0px;
 						}
-						$prefix { 
+						$prefix {
 							overflow         : hidden;
 							padding-right    : 20px;
 						}");
@@ -350,7 +350,7 @@ EOF;
 						$prefix $itemTag {
 							padding: 0px;
 						}
-						$prefix $itemTag a { 
+						$prefix $itemTag a {
 							padding-left: 20px;
 						}
 						$prefix $itemTag $itemTag a {
@@ -366,15 +366,15 @@ EOF;
 					break;
 				case 'crumbs' :
 					$this->css->import("
-						$prefix $listTag { 
-							display      : inline; 
+						$prefix $listTag {
+							display      : inline;
 						}
-						$prefix $itemTag { 
+						$prefix $itemTag {
 							padding-left : 0px;
 							list-style   : none;
 							display      : inline;
 						}
-						$prefix $itemTag $itemTag:before { 
+						$prefix $itemTag $itemTag:before {
 							content      : \"\\0020 \\00BB \\0020\"  /* >> or &raquo character */
 						}
 					");
@@ -459,7 +459,7 @@ EOF;
 							}
 							$prefix $itemTag $itemTag $itemTag.menuHover $listTag {
 								left         : auto;
-							) 
+							)
 						");
 				break;
 				case 'tabs' :
@@ -469,7 +469,7 @@ EOF;
 						->bind('menuActiveItemBgColor', 'white')
 						->bind('menuBorderColor',       'black')
 						->import("
-							$prefix $itemTag { 
+							$prefix $itemTag {
 								float            : left;
 								background-color : var(menuItemBgColor);
 								border           : 1px solid var(menuBorderColor);
@@ -485,13 +485,13 @@ EOF;
 								height           : 1.5em;
 								padding          : 0px 20px 1px 0px;
 								border-bottom    : 1px solid var(menuBorderColor);
-							} 
+							}
 						");
 					break;
 			}
 			return $this->css;
 		}
-		
+
 		public function root( $url, $path='/' ) {
 			if ($this->root == $this->current) { // FIXME: this looks like nonsense
 				$this->current = $path;
@@ -500,7 +500,7 @@ EOF;
 			$this->root    = $path;
 			return $this;
 		}
-		
+
 		public function template( $template ) {
 			$this->template = $template;
 			return $this;
@@ -522,7 +522,7 @@ EOF;
 			}
 			return parent::toString( $indent, $current );
 		}
-		
+
 		private function _makeURL( $path, $parent ) {
 /*
 			- ?bla=bla    -> parent url + arguments
@@ -610,7 +610,7 @@ EOF;
 				if ( !isset($item['tagName']) ) {
 					$item['tagName'] = $this->options['itemTag'];
 				}
-				if ( !isset($item['attributes']) ) { 
+				if ( !isset($item['attributes']) ) {
 					//FIXME: ['attributes']['a'] / ['li'] / ['ul']
 					// rest of ['attributes'] = ['attributes']['a']
 					$item['attributes'] = array();
@@ -638,7 +638,7 @@ EOF;
 					}
 					$item['attributes']['class']['menuParent'] = 'menuParent';
 				}
-				$item['node'] = ar_html::tag( $item['tagName'], $item['attributes'], 
+				$item['node'] = ar_html::tag( $item['tagName'], $item['attributes'],
 					ar_html::tag( 'a', $linkAttributes, $item['name'])
 				);
 			} else {
@@ -657,7 +657,7 @@ EOF;
 			}
 			return $item;
 		}
-		
+
 		private function _fillFromArray( $list, $current, $parent = '[root]' ) {
 			// first enter all nodes into the items list
 			// then rearrange them into parent/child relations
@@ -740,7 +740,7 @@ EOF;
 				}
 			}
 		}
-		
+
 		public function fill() {
 			$args = func_get_args();
 			foreach( $args as $list) {
@@ -754,7 +754,7 @@ EOF;
 			$this->filled = true;
 			return $this;
 		}
-		
+
 		public function stripe( $options = array() ) {
 			$options += array(
 				'striping'         => ar::listPattern( 'menuFirst .*', '(menuOdd menuEven?)*', '.* menuLast' ),
@@ -780,13 +780,13 @@ EOF;
 			$this->stripeOptions = $options;
 			return $this;
 		}
-		
+
 		public function levels( $options = array() ) {
 			$options += array(
-				'maxDepth'   => 5, 
+				'maxDepth'   => 5,
 				'startLevel' => 0
 			);
-			
+
 			// add level classes to the ul/li tags, level-0, level-1, etc.
 			if ( $options['maxDepth'] == 0 ) {
 				return $this;
@@ -801,20 +801,20 @@ EOF;
 				$options['rootNode']->setAttribute( 'class', array('menuLevels' => 'menuLevel-'.$options['startLevel']) );
 				foreach( $options['rootNode'] as $element ) {
 					$element->childNodes->setAttribute( 'class', array( 'menuLevels' => 'menuLevel-'.$options['startLevel'] ) );
-					$this->levels( array( 
-						'maxDepth' => $options['maxDepth'] - 1, 
-						'startLevel' => $options['startLevel'] + 1, 
-						'rootNode' => $element->getElementsByTagName( $this->options['itemTag'], true )->getElementsByTagName( $this->options['listTag'], true ) 
+					$this->levels( array(
+						'maxDepth' => $options['maxDepth'] - 1,
+						'startLevel' => $options['startLevel'] + 1,
+						'rootNode' => $element->getElementsByTagName( $this->options['itemTag'], true )->getElementsByTagName( $this->options['listTag'], true )
 					) );
 				}
 			}
 			$this->levelOptions = $options;
 			return $this;
 		}
-		
+
 		public function autoID( $options = array() ) {
 			$options += array(
-				'rootID' => 'menu', 
+				'rootID' => 'menu',
 				'rootNode' => $element
 			);
 			// create unique id's per list item
@@ -835,15 +835,15 @@ EOF;
 				$ul = $li->getElementsByTagName( $this->options['listTag'], true );
 				if (count($ul)) {
 					$this->autoID( array(
-						'rootID' => $id, 
-						'rootNode' => $ul[0] 
+						'rootID' => $id,
+						'rootNode' => $ul[0]
 					) );
 				}
 			}
 			$this->autoIDOptions = $options;
 			return $this;
 		}
-		
+
 		public function childIndicators() {
 			$list = $this->getElementsByTagName( $this->options['listTag'] );
 			foreach( $list as $ul) {
@@ -851,12 +851,12 @@ EOF;
 			}
 			return $this;
 		}
-		
+
 		public function current( $path ) {
 			$this->current = $path;
 			return $this;
 		}
-		
+
 		public function configure( $options ) {
 			if ($options['top']) {
 				$this->root( ar('loader')->makeURL($options['top']), $options['top'] );
@@ -871,35 +871,35 @@ EOF;
 			$this->options = array_merge( $this->options, $options );
 			return $this;
 		}
-		
+
 		public function bar( $options = array() ) {
 			$this->configure( $options );
 			$this->fill( ar_html_menu::bar( $this->options ) );
 			$this->styleType = 'bar';
 			return $this;
 		}
-		
+
 		public function tree( $options = array() ) {
 			$this->configure( $options );
 			$this->fill( ar_html_menu::tree( $this->options ) );
 			$this->styleType = 'tree';
-			return $this;	
+			return $this;
 		}
-		
+
 		public function crumbs( $options = array() ) {
 			$this->configure( $options );
 			$this->fill( ar_html_menu::crumbs( $this->options ) );
 			$this->styleType = 'crumbs';
-			return $this;	
+			return $this;
 		}
-		
+
 		public function sitemap( $options = array() ) {
 			$this->configure( $options );
 			$this->fill( ar_html_menu::sitemap( $this->options ) );
 			$this->styleType = 'sitemap';
-			return $this;			
+			return $this;
 		}
-		
+
 	}
 
 ?>

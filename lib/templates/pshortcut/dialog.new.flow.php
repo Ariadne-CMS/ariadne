@@ -16,13 +16,13 @@
 			"template" => "dialog.new.filename.php",
 			"nolang" => true
 		);
-		
+
 		$wgWizFlow[] = array(
 			"title" => $ARnls["data"],
 			"image" => $AR->dir->images.'wizard/data.png',
 			"template" => "dialog.edit.shortcut.form.php"
 		);
-		
+
 		$arResult = $wgWizFlow;
 
 		// prefill intelligence, separate checks for nls name and normal name for compat with users etc
@@ -34,6 +34,6 @@
 				$_POST["name"] = $fname;
 			}
 		}
-		
-	} 
+
+	}
 ?>

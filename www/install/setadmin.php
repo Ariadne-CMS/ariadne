@@ -16,9 +16,9 @@
 
 	$inst_store = $store_config["dbms"]."store";
     $store=new $inst_store(".",$store_config);
-  
+
 	/* update the admin user with the supplied password */
-	$store->call("system.save.data.phtml", 
+	$store->call("system.save.data.phtml",
 					Array(
 						"newpass1" => $password,
 						"newpass2" => $password

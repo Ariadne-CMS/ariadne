@@ -31,7 +31,7 @@
 		var linkURL = muze.load( objectURL + 'dialog.makeLocalURL.ajax?path=' + escape(path), true, false );
 		if (!linkURL) {
 			linkURL = objectURL;
-		} 
+		}
 		window.open( linkURL + "dialog.browse.php?root=<?php echo urlencode($root); ?>", "browse", "height=480,width=750");
 		return false;
 	}
@@ -54,7 +54,7 @@
 			<select name="arlanguage" id="arlanguage">
 				<option value=""><?php echo $ARnls['none']; ?></option>
 				<?php
-					foreach ($arEditorSettings['link']['types']['internal']['options']['language'] as $key => $language) { 
+					foreach ($arEditorSettings['link']['types']['internal']['options']['language'] as $key => $language) {
 						$selected = "";
 						if ($key == $arlanguage) {
 							$selected = " selected";

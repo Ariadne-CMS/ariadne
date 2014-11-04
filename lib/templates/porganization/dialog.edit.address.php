@@ -9,7 +9,7 @@
 		<input id="address" type="text" name="address" value="<?php $this->showdata("address", "none"); ?>" class="inputline wgWizAutoFocus">
 	</div>
 <?php
-	/* FIXME: We should start using ISO standard addresses 
+	/* FIXME: We should start using ISO standard addresses
 	<div class="field">
 		<label for="address2" class="required"><?php echo $ARnls["address2"]; ?></label>
 		<input id="address2" type="text" name="address2" value="<?php $this->showdata("address2", "none"); ?>" class="inputline">

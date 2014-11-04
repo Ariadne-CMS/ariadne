@@ -5,7 +5,7 @@
 
 		$fstore	= $this->store->get_filestore_svn("templates");
 		$svn	= $fstore->connect($this->id, $repository, $username, $password);
-		
+
 		$type = $this->getvar("type");
 		$function = $this->getvar("function");
 		$language = $this->getvar("language");

@@ -1,6 +1,6 @@
 <?php
 	include_once("dialog.grants.logic.php");
-	
+
 	include_once($this->store->get_config("code")."modules/mod_yui.php");
 	include_once($this->store->get_config("code")."modules/mod_grant.php");
 	include_once($this->store->get_config("code")."ar.php");
@@ -8,7 +8,7 @@
 
 	$userConfig = $this->loadUserConfig();
 	$authconfig = $userConfig['authentication'];
-	
+
 	define('ARGRANTBYTYPE', 8);
 
 	$selectedpath = $this->getdata("selectedpath");
@@ -19,7 +19,7 @@
 	$data = $this->getdata('data');
 
 	$textswitch = ar::getvar("textmode", "post");
-	
+
 	if (!$selectedpath) {
 		$selectedpath = $this->path;
 	}
@@ -106,7 +106,7 @@
 	if ($users[$selecteduser]['grants_inherited']) {
 		$extrausers[] = $selecteduser;
 	}
-	
+
 	foreach ($extrausers as $key => $extrauser) {
 		if ($users[$extrauser]) {
 			if ($users[$extrauser]['grants_inherited']) {
@@ -220,8 +220,8 @@
 	<?php if ($error) { ?>
 		<div class="error"><?php echo $error; ?></div>
 	<?php } ?>
-	<?php	foreach ($users as $path => $info) { 
-			$user_id = str_replace("/", ":", $path);	
+	<?php	foreach ($users as $path => $info) {
+			$user_id = str_replace("/", ":", $path);
 			$formdata = $data[$selectedpath][$path];
 			$stored_formdata = $stored_vars['data'][$selectedpath][$path];
 
@@ -245,7 +245,7 @@
 //				print_r($info['grants']);
 
 				$g_comp->compile($formdata['grants']['grantsstring'], $newgrants);
-				
+
 				$grants_by_type = array();
 				foreach ($newgrants as $grantname => $grantvalue) {
 					if (!isset($available_grants[$grantname])) {
@@ -283,7 +283,7 @@
 					<label class="textmode block" for="textmode"></label>
 					<input class="hidden" type="submit" name="textmode" value="1" id="textmode">
 					<div class="grants">
-						<?php	foreach ($available_grants as $grant => $grant_name) { 
+						<?php	foreach ($available_grants as $grant => $grant_name) {
 								if ($info['grants']['array'][$grant]) {
 									$checked = "checked = 'checked' ";
 									$value = $info['grants']['array'][$grant];
@@ -300,7 +300,7 @@
 								} else {
 									$labelclass="specific";
 								}
-									
+
 
 								if (is_array($info['grants']['bytype'])) {
 									foreach ($info['grants']['bytype'] as $bytype_grant => $bytype_types) {
@@ -331,12 +331,12 @@
 								<h2>More grants: <?php echo $moregrants; ?></h2>
 								<div class="modifier">
 									Grant modifier
-									<?php 
+									<?php
 										$name="data[$selectedpath][$path][grants][array][$moregrants]";
 									?>
 										<input type="hidden" value="<?php echo $info['grants']['array'][$moregrants]; ?>" name="<?php echo $name;?>">
 									<?php
-										foreach ($modifiers as $modname => $modvalue) { 
+										foreach ($modifiers as $modname => $modvalue) {
 											$selected = '';
 											//echo "[" . $info['grants']['array'][$moregrants] . " == " . $modvalue . "]";
 											if ($info['grants']['array'][$moregrants] == $modvalue) {
@@ -358,12 +358,12 @@
 										?>
 											<option value="<?php echo $type; ?>"><?php echo $name; ?></option>
 										<?php		}
-											}	
+											}
 										?>
 										</select>&nbsp;<input class="button" type="submit" value="Add" name="add_bytype">
 									</div>
 									<div class="types">
-										<?php	
+										<?php
 											if (is_array($info['grants']['bytype']) && is_array($info['grants']['bytype'][$moregrants])) {
 												foreach ($info['grants']['bytype'][$moregrants] as $type => $value) {
 													$name = $typenames[$type];
@@ -394,15 +394,15 @@
 												<?php } ?>
 
 											</div>
-										<?php	
+										<?php
 												}
-											} 
+											}
 										?>
 									</div>
 								<?php	} ?>
 							</div>
 						<?php	}?>
-				
+
 					</div>
 				<?php	}	?>
 			<?php	}	?>

@@ -4,15 +4,15 @@
 	ar_pinp::allow( 'ar_urlQuery' );
 
 	class ar_url extends arBase implements arKeyValueStoreInterface {
-	
+
 		private $components, $query;
-		
+
 		public function __construct( $url ) {
 			$this->components = parse_url( $url );
 			// FIXME: make option to skip parsing of the query part
 			$this->query = new ar_urlQuery( $this->components['query'] );
 		}
-		
+
 		public function __get($var) {
 			if ($var=='password') {
 				$var = 'pass';
@@ -25,7 +25,7 @@
 				return null;
 			}
 		}
-		
+
 		public function __set($var, $value) {
 			switch($var) {
 				case 'query' :
@@ -88,11 +88,11 @@
 			}
 			return $url;
 		}
-		
+
 		public function getvar( $name ) {
 			return $this->query->$name;
 		}
-		
+
 		public function putvar( $name, $value ) {
 			$this->query->{$name} = $value;
 		}
@@ -100,11 +100,11 @@
 		public function import( $values ) {
 			$this->query->import( $values );
 		}
-		
+
 	}
-	
+
 	class ar_urlQuery extends ArrayObject implements arKeyValueStoreInterface /*, ArrayAcces, IteratorAggregate, .. */ {
-		
+
 		public function __construct( $query ) {
 			$arguments = array();
 			if ($query) {
@@ -117,7 +117,7 @@
 			}
 			parent::__construct( $arguments, ArrayObject::ARRAY_AS_PROPS );
 		}
-		
+
 		public function __call( $name, $arguments ) {
 			if (($name[0]==='_')) {
 				$realName = substr($name, 1);
@@ -130,11 +130,11 @@
 				trigger_error("Method $name not found in class ".get_class($this), E_USER_WARNING);
 			}
 		}
-		
+
 		public function getvar( $name ) {
 			return $this->offsetGet($name);
 		}
-		
+
 		public function putvar( $name, $value ) {
 			$this->offsetSet($name, $value);
 		}
@@ -147,7 +147,7 @@
 			$result = str_replace( '%7E', '~', $result ); // incorrectly encoded, obviates need for oauth_encode_url
 			return $result;
 		}
-		
+
 		public function import( $values ) {
 			if ( is_string( $values ) ) {
 				parse_str( $values, $result );
@@ -158,8 +158,8 @@
 					$this->offsetSet($name, $value);
 				}
 			}
-		}		
+		}
 
 	}
-	
+
 ?>

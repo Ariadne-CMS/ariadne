@@ -11,7 +11,7 @@ class pinp_DB {
 
 	function _connect($dsn, $options = false) {
 		global $AR;
-	 
+
 		$key=@count($AR->DB_list);
 		$AR->DB_list[$key]=DB::connect($dsn, $options);
 		if (DB::isError($AR->DB_list[$key])) {
@@ -19,7 +19,7 @@ class pinp_DB {
 			array_pop($AR->DB_list);
 		} else {
 			$result=new pinp_DB($key);
-		} 
+		}
 		return $result;
 	}
 
@@ -111,7 +111,7 @@ class pinp_DB {
 		return $AR->DB_list[$this->key]->getCol($query, $col, $params);
 	}
 
-	function &_getAssoc($query, $force_array = false, $params = array(), 
+	function &_getAssoc($query, $force_array = false, $params = array(),
 						$fetchmode = DB_FETCHMODE_ORDERED, $group = false) {
 		global $AR;
 		return $AR->DB_list[$this->key]->getAssoc($query, $force_array, $params, $fetchmode, $group);

@@ -35,7 +35,7 @@ class mysql_compiler extends sql_compiler {
 				$record_id=$node["record_id"];
 				if (!$record_id) {
 					if ($this->in_orderby && $node["nls"]) {
-						/* 
+						/*
 							we do a left join so that we will also find non
 							matching objects
 						*/
@@ -45,7 +45,7 @@ class mysql_compiler extends sql_compiler {
 						$result = " order_$aliastable.$field ";
 					} else {
 						/*
-							if we are parsing 'orderby' properties we have 
+							if we are parsing 'orderby' properties we have
 							to join our tables for the whole query
 						*/
 						$this->select_tables[$table]=$table;
@@ -56,7 +56,7 @@ class mysql_compiler extends sql_compiler {
 					$this->used_tables["$table as $table$record_id"] = $table.$record_id;
 					if (!$this->in_orderby && !$no_context_join) {
 						if ($this->join_target_properties[$node["table"]][":$record_id"]) {
-							$result=" $table$record_id.object = target.object and $table$record_id.$field "; 
+							$result=" $table$record_id.object = target.object and $table$record_id.$field ";
 						} else {
 							$result=" $table$record_id.object = ".$this->tbl_prefix."objects.id and $table$record_id.$field ";
 						}
@@ -111,7 +111,7 @@ class mysql_compiler extends sql_compiler {
 					$result = " $table$record_id.AR_name = '$field' ";
 					if (!$this->in_orderby && !$no_context_join) {
 						if ($this->join_target_properties["prop_my"][":$record_id"]) {
-							$result=" $result and $table$record_id.object = target.object and $table$record_id.AR_value "; 
+							$result=" $result and $table$record_id.object = target.object and $table$record_id.AR_value ";
 						} else {
 							$result=" $table$record_id.object = ".$this->tbl_prefix."objects.id and $table$record_id.AR_value ";
 						}
@@ -292,7 +292,7 @@ class mysql_compiler extends sql_compiler {
 					if ($this->limit) {
 						$offset = (int)$this->offset;
 						$this->limit_s=" limit $offset, ".(int)$this->limit." ";
-					} 
+					}
 				}
 			break;
 		}
@@ -352,17 +352,17 @@ class mysql_compiler extends sql_compiler {
 
 		if ($this->orderby_s) {
 			if ($this->skipDefaultOrderBy) {
-				$orderby = " order by $this->orderby_s "; 
+				$orderby = " order by $this->orderby_s ";
 			} else {
 				$orderby = " order by $this->orderby_s, $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
 			}
-		} else if (!$this->skipDefaultOrderBy) { 
+		} else if (!$this->skipDefaultOrderBy) {
 			$orderby = " order by $nodes.parent ASC, $nodes.priority DESC, $nodes.path ASC ";
 		}
 
 		$select_query = "select distinct($nodes.path), $objects.id, $nodes.parent, $nodes.priority, $objects.type, ".
 		                " $objects.object, UNIX_TIMESTAMP($objects.lastchanged) as lastchanged, $objects.vtype ";
-		$select_query .= "from ($tables) $join $query "; 
+		$select_query .= "from ($tables) $join $query ";
 
 		$select_query .= $orderby . " $this->limit_s ";
 		$count_query = "select count(distinct($nodes.path)) as count from $tables ".$query;

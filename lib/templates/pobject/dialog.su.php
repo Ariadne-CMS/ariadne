@@ -11,7 +11,7 @@
 				"save" => "dialog.su.save.php"
 			)
 		);
-		
+
 		if ($wgWizAction == 'save') {
 			$wgWizButtons = array(
 				"cancel" => array(
@@ -30,7 +30,7 @@
 					"value" => $ARnls["ariadne:su"]
 				),
 			);
-		}				
+		}
 
 		$wgWizTitle=$ARnls["ariadne:su"];
 		$wgWizHeader = $wgWizTitle;

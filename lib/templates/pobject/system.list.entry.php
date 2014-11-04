@@ -27,7 +27,7 @@
 	if ($AR->user && !$this->CheckSilent("read")) {
 		$arResult['grants']['read'] = false;
 	}
-	
+
 	$arResult["icon"]=$arResult["icons"]["small"];
 
 	if ($AR->SVN->enabled) {

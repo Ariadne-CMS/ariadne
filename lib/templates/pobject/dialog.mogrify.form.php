@@ -1,7 +1,7 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 //	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
-            
+
             if ($this->getvar('targets')) {
 			$targets = $this->getvar("targets");
 		} else {
@@ -14,13 +14,13 @@
                 foreach ($targets as $target) {
                     $targetob = current($this->get($target, "system.get.phtml"));
                     $type = $this->getvar("type");
-                    
+
                     if (!$targetob->CheckSilent("config")) {
                         $checkfailed = true;
                     } else {
                         $checkfailed = false;
                     }
-                    
+
                     if (!$targetob->can_mogrify()) {
                         $cantmogrify = true;
                     } else {
@@ -78,5 +78,5 @@
             </select>
         </div>
 </fieldset>
-<?php	//} 
+<?php	//}
 ?>

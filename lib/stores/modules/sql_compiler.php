@@ -25,7 +25,7 @@ abstract class sql_compiler {
 		$value = '';
 		$yych = $YYBUFFER[$YYCURSOR];
 		switch (true) {
-			case '"' === $yych: 
+			case '"' === $yych:
 			case "'" === $yych:
 				$quote = $yych;
 				$yych = $YYBUFFER[++$YYCURSOR];
@@ -429,11 +429,11 @@ abstract class sql_compiler {
 						$this->error = "syntax error near: $YYBUFFER";
 						return false;
 					}
-				}				
+				}
 			}
 		}
 
-*/		
+*/
 
 		if (preg_match('|^[[:space:]]*join[[:space:]]*target[[:space:]]*on[[:space:]]*|i', $query, $regs)) {
 			$this->join_target_properties = Array();

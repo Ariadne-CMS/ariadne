@@ -67,13 +67,13 @@
 
 		function call($template, $args=null) {
 			global $store;
-			return $store->call($template, $args, $store->find($this->path, $this->query, $this->limit, $this->offset)); 
+			return $store->call($template, $args, $store->find($this->path, $this->query, $this->limit, $this->offset));
 		}
 
 		function iterate($selection, $definitions = Array()) {
 			global $store;
 			$result = Array();
-			$iterator = $this->getIterator($selection, $definitions, $store->find($this->path, $this->query, $this->limit, $this->offset)); 
+			$iterator = $this->getIterator($selection, $definitions, $store->find($this->path, $this->query, $this->limit, $this->offset));
 			foreach ($iterator as $key => $value) {
 				$result[$key] = $value;
 			}
@@ -196,7 +196,7 @@
 		function iterate($selection, $definitions = Array()) {
 			global $store;
 			$result = Array();
-			$iterator = $this->getIterator($selection, $definitions, $store->parents($this->path, $this->top)); 
+			$iterator = $this->getIterator($selection, $definitions, $store->parents($this->path, $this->top));
 			foreach ($iterator as $key => $value) {
 				$result[$key] = $value;
 			}

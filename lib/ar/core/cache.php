@@ -13,9 +13,9 @@
 		public function stop();
 		public function save( $cacheImage, $freshTime );
 	}
-	
+
 	class ar_core_cacheDisk implements ar_core_cacheInterface {
-		
+
 	}
 
 ?>

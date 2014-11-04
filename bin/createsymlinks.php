@@ -20,7 +20,7 @@
 		echo str_pad("-v, --verbose", 25) . "Produce verbose output\n";
 		exit();
 	}
-	
+
 	function makedir($path) {
 		global $silent;
 		global $verbose;
@@ -31,15 +31,15 @@
 		if ($path[strlen($path)-1] !== '/') {
 			$path .= '/';
 		}
-		
+
 		if (preg_match('|(/?.*/)?(.+/)|i', $path, $regs)) {
 			$parent = $regs[1];
-			
+
 			if ($parent && !file_exists($parent)) {
 				makedir($parent);
 			}
 		}
-		
+
 		if (!file_exists($path)) {
 			if(!$silent) {
 			}
@@ -56,7 +56,7 @@
 			}
 		}
 	}
-	
+
 	function createsyms($srcdir, $dstdir){
 		global $OK;
 		global $FAILED;
@@ -87,7 +87,7 @@
 		global $COLS;
 
 		$dh = @opendir($path);
-		
+
 		while ($file = @readdir($dh)) {
 			if ($file != "." && $file != "..") {
 				$f = $path . $file;
@@ -96,15 +96,15 @@
 					if (!preg_match('/^.*~$/i', $f)) {
 						$targetpath = $dstdir . substr($path, strlen($srcdir));
 						$target = $targetpath . $file;
-						
+
 						if (!file_exists($targetpath)) {
 							makedir($targetpath);
 						}
-						
+
 						if (@is_link($target)) {
 							unlink($target);
 						}
-						
+
 						$symError = "";
 						ob_start();
 							$symResult = symlink($f, $target);
@@ -150,14 +150,14 @@
 	$local = getcwd()."/".$settings["local"];
 	$ariadne = getcwd()."/".$settings["ariadne"];
 	$extensions = $settings["extensions"];
-	
+
 	createsyms($ariadne, $destination);
 
-	if( is_array( $extensions ) ) {	
+	if( is_array( $extensions ) ) {
 		foreach( $extensions as $extension ) {
 			createsyms(getcwd()."/".$extension, $destination);
 		}
 	}
-	
+
 	createsyms($local, $destination);
 ?>

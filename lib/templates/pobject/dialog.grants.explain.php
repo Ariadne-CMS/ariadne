@@ -1,7 +1,7 @@
 <?php
 
 	include_once($this->store->get_config("code")."modules/mod_yui.php");
-	
+
 	$grantsList = Array();
 
 	$userPath = $this->getvar('selecteduser');

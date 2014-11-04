@@ -55,7 +55,7 @@
 					'icon' => $imagesdir . 'icons/small/viewweb.png',
 					'nlslabel' => $ARnls['ariadne:workspace:view_live']
 				);
-			
+
 				$section = array(
 					'id' => 'workspace',
 					'label' => $ARnls['ariadne:workspace:workspace'],

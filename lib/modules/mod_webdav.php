@@ -24,8 +24,8 @@
 			if ($path) {
 				debug("webdav: escaped path: $path");
 				$result = preg_replace_callback(
-					'/(_[0-9a-fA-F][0-9a-fA-F]|__)/', 
-					function ( $matches ) { 
+					'/(_[0-9a-fA-F][0-9a-fA-F]|__)/',
+					function ( $matches ) {
 						// Two types of escaped characters can be here, the
 						// underscore or other characters. Check for the
 						// underscore first.

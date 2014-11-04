@@ -12,19 +12,19 @@
 		} else {
 			$targets = array($this->path);
 		}
-                
+
 ?>
-    
+
         <fieldset id="data" class="delete">
             <legend><?php echo $ARnls["ariadne:delete"]; ?></legend>
-        
+
             <?php
 
 		foreach ($targets as $target) {
-                        
-                        
+
+
 			$targetob = current($this->get($target, "system.get.phtml"));
-                        
+
                         if (!$targetob->CheckSilent("delete")) {
                             $checkfailed = true;
                         } else {
@@ -33,7 +33,7 @@
 
 			$query = "object.path =~ '" . $target . "%' order by path DESC";
 			$total = $targetob->count_find($target, $query);
-			
+
 			$total--; // children of current path - don't include yourself.
 			$crumbs = '';
 			$path = '';
@@ -80,7 +80,7 @@
 				}
 				$iconalt = $targetob->vtype;
 			}
-                        
+
                 //This lists the files selected for the action
 			if($checkfailed){
                             echo '<div class="checkfailed">';
@@ -89,7 +89,7 @@
                             echo '<div>';
                         }
                         echo '<img src="' . $icon . '" alt="' . htmlspecialchars($iconalt) . '" title="' . htmlspecialchars($iconalt) . '" class="typeicon">';
-			
+
 			if ( $overlay_icon ) {
 				echo '<img src="' . $overlay_icon . '" alt="' . htmlspecialchars($overlay_alt) . '" title="' . htmlspecialchars($overlay_alt) . '" class="overlay_typeicon">';
 			}
@@ -102,7 +102,7 @@
 			}
                         echo '</div>';
 		}
-	
+
 		if (($total == 0) && (sizeof($targets) == 1)) {
 			echo '<p>' . $ARnls["q:removeobject"] . '</p>';
 		} else if (($total == 0) && sizeof($targets > 1)) {

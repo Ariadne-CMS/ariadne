@@ -1,13 +1,13 @@
 <?php
-	
+
 	ar_pinp::allow('ar_store');
-	ar_pinp::allow('ar_storeFind'); 
+	ar_pinp::allow('ar_storeFind');
 	ar_pinp::allow('ar_storeGet');
 	ar_pinp::allow('ar_storeParents');
 
 	class ar_store extends arBase {
 		static public $rememberShortcuts = true;
-		
+
 		public static function configure( $option, $value ) {
 			switch ($option) {
 				case 'rememberShortcuts' :
@@ -19,13 +19,13 @@
 		public function __set( $name, $value ) {
 			ar_store::configure( $name, $value );
 		}
-		
+
 		public function __get( $name ) {
 			if ( isset( ar_store::${$name} ) ) {
 				return ar_store::${$name};
 			}
 		}
-				
+
 		public static function ls() {
 			return new ar_storeList( ar::context()->getPath() );
 		}
@@ -47,7 +47,7 @@
 				'rememberShortcuts' => self::$rememberShortcuts
 			) ) );
 		}
-		
+
 		public static function exists( $path = '' ) {
 			global $store;
 			$path = (string) $path;
@@ -70,7 +70,7 @@
 			}
 			return $path;
 		}
-		
+
 		public static function parentSite( $path = '' ) {
 			$path = (string) $path;
 			$me = ar::context()->getObject();
@@ -84,7 +84,7 @@
 			}
 			return $path;
 		}
-		
+
 		public static function currentSection( $path = '' ) {
 			$path = (string) $path;
 			$me = ar::context()->getObject();
@@ -135,10 +135,10 @@
 			$path = (string) $path;
 			return ar::context()->getPath( array(
 				'rememberShortcuts' => self::$rememberShortcuts,
-				'path' => $path 
+				'path' => $path
 			) );
 		}
-		
+
 		public static function makeRealPath( $path = '' ) {
 			$path = (string) $path;
 			return ar::context()->getPath( array(
@@ -221,7 +221,7 @@
 	class ar_storeGet extends arBase {
 
 		protected $path = '';
-	
+
 		public function __construct( $path ) {
 			$this->path = (string)$path;
 		}
@@ -257,7 +257,7 @@
 
 		protected $path = '';
 		protected $top = '/';
-		
+
 		public function __construct( $path = "" ) {
 			$this->path	= (string)$path;
 		}
@@ -285,19 +285,19 @@
 					$list = array_reverse( $list );
 					$result = array();
 					foreach ( $list as $virtualpath => $path ) {
-						$result[$virtualpath] = current( $store->call( $template, $args, 
-							$store->get( $path ), 
+						$result[$virtualpath] = current( $store->call( $template, $args,
+							$store->get( $path ),
 							array(
-								'usePathAsKey' => true 
-							) 
+								'usePathAsKey' => true
+							)
 						) );
 					}
 					return $result;
 				}
 			}
-			return $store->call( $template, $args, 
-				$store->parents( $this->path, $this->top ), 
-				array( 'usePathAsKey' => true ) 
+			return $store->call( $template, $args,
+				$store->parents( $this->path, $this->top ),
+				array( 'usePathAsKey' => true )
 			);
 		}
 

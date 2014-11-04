@@ -1,9 +1,9 @@
 <?php
 /**
  * mod_geo, a helper module for Ariadne to get geotag addresses in pinp/php.
- * 
+ *
  * mod_geo needs a Google Maps key to function. Set it once using init()
- * 
+ *
  * @author Gerhard Hoogterp <gerhard@frappe.xs4all.nl>
  * @author Auke van Slooten <auke@muze.nl>
 */
@@ -30,7 +30,7 @@ class geo_gmap {
 			return $res;
 		}
 	}
-	
+
 	function getLatLong($address) {
 		$data=$this->getRawData($address, 'php');
 		if ($data->Status->code!=200) {
@@ -49,7 +49,7 @@ class geo {
 
 	/**
 	*  init configures the geo module to use the given API and any necessary extra parameters for that API
-	* 
+	*
 	* @param 	hash	$config	hash containing at least 'API', default is 'GMap' for Google Maps.
 	*/
 	function init($config) {
@@ -73,11 +73,11 @@ class geo {
 
 	/**
 	*  getRawData returns full address data for a given address, as returned by Google Maps
-	*	
+	*
 	* returns the data for the address $address in the format specified by $output.
 	* default is php. Other options area xml, kml, json and cvs.
-	* 
-	* @param	string	$address	street address, format is 'streetname  housenumber, zipcode, state,  country'. You may skip values if unknown or not applicable. 
+	*
+	* @param	string	$address	street address, format is 'streetname  housenumber, zipcode, state,  country'. You may skip values if unknown or not applicable.
 	* @param	string	$output	type of output to return, possible values are 'xml','kml','cvs' and 'json'. Default is 'json'. In the case of 'json' the result will automatically be converted to PHP arrays
 	*/
 	function getRawData($address, $output = null) {
@@ -96,9 +96,9 @@ class geo {
 	/**
 	*   returns a string with Lat,Lng,Alt for the given address.
 	*
-	* @param	string	$address	street address, format is 'streetname  housenumber, zipcode, state,  country'. You may skip values if unknown or not applicable. 
+	* @param	string	$address	street address, format is 'streetname  housenumber, zipcode, state,  country'. You may skip values if unknown or not applicable.
 	*/
-	
+
 	function getLatLong($address) {
 		if (!$address) {
 			return error::raiseError('MOD_GEO: No address given to getLatLong', 'geo_5');
@@ -108,13 +108,13 @@ class geo {
 			return error::raiseError('MOD_GEO: GEO module not initialized, call init method first', 'geo_2');
 		}
 	}
-	
+
 	/**
 	*   returns an array with a lat and a long as calculated from the exif GPS info.
 	*
-	* @param	array	$exif	An exif block as returned by exif_read_data() and pphoto::getExif(). Make sure the GPS part is included. 
+	* @param	array	$exif	An exif block as returned by exif_read_data() and pphoto::getExif(). Make sure the GPS part is included.
 	*/
-	
+
 	function parseNumber($number) {
 		$parts = explode("/", $number);
 		if ($parts[1] != 0) {
@@ -132,7 +132,7 @@ class geo {
 			if( $exif['GPS']['GPSLatitudeRef'] == 'S' ) {
 				  $result['lat'] = (-1) * $result['lat'];
 			}
-  
+
 			$lng_degree = (float)self::parseNumber($exif["GPS"]["GPSLongitude"][0]);
 			$lng_mins   = (float)self::parseNumber($exif["GPS"]["GPSLongitude"][1]);
 			$lng_secs   = (float)self::parseNumber($exif["GPS"]["GPSLongitude"][2]);
@@ -146,7 +146,7 @@ class geo {
 		}
 	}
 
-	//	
+	//
 	// Convert Rijksdriehoekscodinaten to latitude/longitude
 	// http://nl.wikipedia.org/wiki/Rijksdriehoeksco%C3%B6rdinaten
 	//
@@ -173,10 +173,10 @@ class geo {
 	            2)) + (- 0.00022 * pow(
 	            $dX, 2)) + (0.00026 *
 	         pow($dX, 5));
- 
+
 	    $Latitude = 52.15517 + ($SomN / 3600);
 	    $Longitude = 5.387206 + ($SomE / 3600);
-	 
+
 	    return array(
 	        'latitude' => $Latitude ,
 	        'longitude' => $Longitude);
@@ -210,9 +210,9 @@ class pinp_geo extends geo {
 	function _exifToLatLong($exif) {
 		return parent::exifToLatLong($exif);
 	}
-	
+
 	function _rd2wgs($x,$y) { return parent::rd2wgs($x,$y); }
-	
+
 }
 
 

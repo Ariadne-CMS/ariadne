@@ -31,7 +31,7 @@
 		$addLanguage = $this->getvar('addLanguage');
 		$extraLanguage = $this->getvar('extraLanguage');
 		if ($addLanguage && $extraLanguage) {
-			$arLanguages[] = $extraLanguage;			
+			$arLanguages[] = $extraLanguage;
 		}
 		$arLanguages = array_unique($arLanguages);
 

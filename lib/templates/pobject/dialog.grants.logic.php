@@ -44,11 +44,11 @@
 			return $grantstring;
 		}
 	}
-	
+
 	if( !function_exists("arGetGrantType") ) {
 		function arGetGrantType($value) {
-			if (($value & ARMASKLOCAL) && ($value & ARMASKCHILDREN)) { 
-				$result=""; 
+			if (($value & ARMASKLOCAL) && ($value & ARMASKCHILDREN)) {
+				$result="";
 			} else if ($value & ARMASKLOCAL) {
 				$result="=";
 			} else {
@@ -57,7 +57,7 @@
 			return $result;
 		}
 	}
-	
+
 	if( !function_exists("array_compare") ) {
 		function array_compare(&$ar1, &$ar2) {
 			if (count($ar1) != count($ar2)) {
@@ -66,16 +66,16 @@
 				foreach ($ar1 as $key => $value) {
 					if (is_array($value) && is_array($ar2[$key])) {
 						return array_compare($ar1[$key], $ar2[$key]);
-					} else 
+					} else
 					if ($value !== $ar2[$key]) {
 						return false;
 					}
 					return true;
 				}
 			}
-		} 
+		}
 	}
-	
+
 	if( !function_exists("getClass") ) {
 		function getClass($grey=false) {
 			global $ARCurrent;
@@ -90,7 +90,7 @@
 			return $class;
 		}
 	}
-	
+
 	if( !function_exists("getPathByType") ) {
 		function getPathByType($type, $id) {
 			global $AR;
@@ -150,7 +150,7 @@
 						$grant_display .= htmlspecialchars($grant_type); // echo
 					} else {
 						$grant_type='';
-					} 
+					}
 
 					if (!$grey) {
 						$grant_display .= "<a href=\"javascript:selectGrant('$type', '$id', '$grant');\">";
@@ -174,7 +174,7 @@
 						foreach ($modifiers as $modifier => $value) {
 							$grant_type=arGetGrantType($value);
 							$grant_display .= htmlspecialchars($grant_type);
-							$grant_display .= $modifier." "; 
+							$grant_display .= $modifier." ";
 							$grant_string .= $grant_type.$modifier." ";
 						}
 						$grant_display .= ") ";
@@ -193,7 +193,7 @@
 		}
 	}
 
-	if( !function_exists("DisplayGrants") ) {	
+	if( !function_exists("DisplayGrants") ) {
 		function DisplayGrants(&$grantslist, $type, $grey=false) {
 			global $AR, $ARCurrent;
 			if ($grantslist[$type] && is_array($grantslist[$type])) {
@@ -207,7 +207,7 @@
 						$path = getPathByType($type, $id);
 						$grant_strings = getGrantString($id, $type, $grants, $grey);
 						$grant_string = $grant_strings[0];
-						$grant_html = $grant_strings[1]; 
+						$grant_html = $grant_strings[1];
 						$icon = $AR->dir->images . "icons/small/" . $type . ".png";
 
 						?>
