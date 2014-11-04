@@ -83,10 +83,10 @@
 		$field = array_shift($subfields);
 		foreach ($http_post_file as $key => $value) {
 			$value = &$_FILES[$field][$key];
-				foreach ($subfields as $subfield) {
-					$subfield = substr($subfield, 0, -1);
-					$value = &$value[$subfield];
-				}
+			foreach ($subfields as $subfield) {
+				$subfield = substr($subfield, 0, -1);
+				$value = &$value[$subfield];
+			}
 			$http_post_file[$key] = $value;
 		}
 		if ($subfield) {
@@ -172,9 +172,10 @@
 		if (!$path) {
 			error("Empty path requested with template: $requestedtemplate");
 		} else {
-			while ($path!=$prevPath && !$store->exists($path)) {
-				$prevPath=$path;
-				$path=$store->make_path($path, "..");
+			$prevPath = true;
+			while ($path !== $prevPath && !$store->exists($path)) {
+				$prevPath = $path;
+				$path     = $store->make_path($path, "..");
 			}
 			if(count($ARCurrent->arCallStack) == 0) {
 				$arCallArgs = $requestedargs;
@@ -261,13 +262,7 @@
 			$requestedHost = $_SERVER['HTTP_HOST'];
 		}
 		$protocol = 'http://';
-		if (is_bool($https)) {
-			if ($https) {
-				if ($AR->https) {
-					$protocol = 'https://';
-				}
-			}
-		} else if ($_SERVER['HTTPS']=='on') {
+		if ($_SERVER['HTTPS']=='on') {
 			$protocol = 'https://';
 		}
 		return $protocol . $requestedHost;
