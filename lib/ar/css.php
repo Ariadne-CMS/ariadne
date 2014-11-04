@@ -78,12 +78,12 @@
 			while ( preg_match( $ruleRE, $cssText, $matches ) ) {
 				$rule       = $matches[1];
 				$stylesText = $matches[2];
+				$styles = array();
 				while ( preg_match( $styleRE, $stylesText, $styleMatches ) ) {
 					$styles[ $styleMatches[1] ] = $styleMatches[2];
 					$stylesText = str_replace( $styleMatches[0], '', $stylesText );
 				}
 				$this->add( $rule, $styles );
-				$styles = array();
 				$cssText = str_replace( $matches[0], '', $cssText);
 			}
 			$this->cssText = $cssText;
