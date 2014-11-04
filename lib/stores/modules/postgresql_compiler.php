@@ -160,6 +160,7 @@ class postgresql_compiler extends sql_compiler {
 				$result=" $left or $right ";
 			break;
 			case 'cmp':
+				$not = '';
 				switch ($node["operator"]) {
 					case '=':
 					case '==':
@@ -178,7 +179,7 @@ class postgresql_compiler extends sql_compiler {
  					case '~=':
 					case '=~':
 					case '=~~':
-						if (!strlen($operator)==3) {
+						if (!strlen($node["operator"])==3) {
 							$not.="I";
 						}
 						$operator=$not."LIKE";
@@ -189,7 +190,7 @@ class postgresql_compiler extends sql_compiler {
 					case '=/':
 					case '=//':
 						$operator=$not."~";
-						if (strlen($operator)==3) {
+						if (strlen($node["operator"])==3) {
 							$operator.="*";
 						}
 						break;
