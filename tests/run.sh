@@ -36,6 +36,7 @@ if [ ${DB:=mysql} = 'postgresql' ] ; then
 else
 	INSTALLDATA="language=en&step=step6&database=mysql&database_host=localhost&database_user=root&database_pass=&database_name=${TESTDB}&admin_pass=test&admin_pass_repeat=test&ariadne_location&enable_svn=0&install_demo=1"
 	if [ ${WORKSPACE:=no} = 'yes' ] ; then
+		set -x
 		INSTALLDATA="${INSTALLDATA}&enable_workspaces=1"
 	else
 		INSTALLDATA="${INSTALLDATA}&enable_workspaces=0"
