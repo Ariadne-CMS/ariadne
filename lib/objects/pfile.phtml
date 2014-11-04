@@ -122,12 +122,14 @@ class pfile extends pobject { // pfile class definition
 		if (ldSetContent($mimetype, $size)) {
 			$cacheseconds=1800; // 1/2 hour
 			$expires=time()+$cacheseconds;
-			if ($AR->user->data->login=="public" || $this->CheckPublic("read")) {
-				// always set the client side cache headers, independant of
-				// server side cache configuration. Except for private content
-				// (needed to prevent proxies from caching it too). If server 
-				// side caching is on, the loader will override this header.
-				ldSetClientCache(true, $expires);
+			if (!$ARCurrent->arDontCache) {
+				if ($AR->user->data->login=="public" || $this->CheckPublic("read")) {
+					// always set the client side cache headers, independant of
+					// server side cache configuration. Except for private content
+					// (needed to prevent proxies from caching it too). If server 
+					// side caching is on, the loader will override this header.
+					ldSetClientCache(true, $expires);
+				}
 			}
 		} else if(!preg_match("|^text/|", $mimetype)) {
 			return ar_error::raiseError( sprintf( $ARnls["err:headerssentnottext"], $this->path ), 501 );
