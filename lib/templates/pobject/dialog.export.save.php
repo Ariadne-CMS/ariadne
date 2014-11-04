@@ -22,6 +22,9 @@
 		if ($without_files=$this->getdata("without_files","none")) {
 			$ARCurrent->options["without_files"]=true;
 		}
+		if ($without_children=$this->getdata("without_children","none")) {
+			$ARCurrent->options["without_children"]=true;
+		}
 
 		function progress($current, $total) {
 			if ($total > 0) {

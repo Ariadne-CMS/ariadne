@@ -100,6 +100,10 @@
 			<input id="without_templates" type="checkbox" name="without_templates" value="1">
 			<label for="without_templates"><?php echo $ARnls["withouttemplates"]; ?></label>
 		</div>
+		<div class="field radio">
+			<input id="without_children" type="checkbox" name="without_children" value="1">
+			<label for="without_children"><?php echo $ARnls["withoutchildren"]; ?></label>
+		</div>
 	</fieldset>
     </fieldset>
 <?php
