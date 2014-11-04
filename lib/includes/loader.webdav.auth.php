@@ -37,21 +37,6 @@
 
 		$cookie=array();
 
-		// FIXME: now clean up the cookie, remove old sessions
-		// FIXME: cleaning up a empty array looks a bit silly ?
-		/*
-		@reset($cookie);
-		while (list($sessionid, $data)=@each($cookie)) {
-			if (!$ARCurrent->session->sessionstore->exists("/$sessionid/")) {
-				// don't just kill it, it may be from another ariadne installation
-				if ($data['timestamp']<(time()-86400)) {
-					// but do kill it if it's older than one day
-					unset($cookie[$sessionid]);
-				}
-			}
-		}
-		 */
-
 		$cookie[$ARCurrent->session->id]['login']=$login;
 		$cookie[$ARCurrent->session->id]['timestamp']=time();
 		$cookie[$ARCurrent->session->id]['check']="{".md5($login.$session_key)."}";
