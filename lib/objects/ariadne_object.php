@@ -419,7 +419,10 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 		if ($ARCurrent->arCallStack) {
 			$arCallArgs=end($ARCurrent->arCallStack);
+		} else {
+			$arCallArgs = array();
 		}
+
 		$context = $this->getContext();
 
 		$wf_object = $this->store->newobject($this->path, $this->parent, $this->type, $this->data, $this->id, $this->lastchanged, $this->vtype, 0, $this->priority);
@@ -560,6 +563,8 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$result	= false;
 		if ($ARCurrent->arCallStack) {
 			$arCallArgs=end($ARCurrent->arCallStack);
+		} else {
+			$arCallArgs = array();
 		}
 		$context = $this->getContext();
 
@@ -1126,6 +1131,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 
 	function CheckNewFile($newfilename) {
+	global $ARnls;
 	/**********************************************************************
 
 	  This function performs all the necessary checks on a path to see
