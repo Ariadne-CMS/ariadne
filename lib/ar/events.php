@@ -114,7 +114,7 @@
 		}
 
 		public static function removeListener( $name, $path, $capture, $id ) {
-			$when = ($listener['capture']) ? 'capture' : 'listen';
+			$when = ($capture) ? 'capture' : 'listen';
 			unset( self::$listeners[$when][$name][$path][$id] );
 		}
 	}
