@@ -34,7 +34,6 @@
 				}
 			}
 			unset($ARnls);
-			$content .= "\n\n?".">";
 
 			$filename=$target.$module.$language;
 			// write file
