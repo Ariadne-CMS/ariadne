@@ -1,4 +1,4 @@
-<?
+<?php
 	$seen = array();
 	$query = "select a.path as apath ,b.path as bpath from ".$store->tbl_prefix."nodes as a, ".$store->tbl_prefix."nodes as b where lower(a.path) = lower(b.path) and a.path  != b.path;";
 	$testresult =  $store->store_run_query($query);
