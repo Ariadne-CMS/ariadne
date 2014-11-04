@@ -1,6 +1,7 @@
 # .travis.yml
 env:
-    - DB=mysql
+    - DB=mysql WORKSPACE=yes
+    - DB=mysql WORKSPACE=no
     - DB=postgresql
 
 language: php
@@ -9,6 +10,11 @@ php:
     - 5.3
     - 5.4
     - 5.6
+
+matrix:
+    allow_failures:
+      - env: DB=mysql WORKSPACE=yes
+
 
 before_install:
     - sudo apt-get update -qq
