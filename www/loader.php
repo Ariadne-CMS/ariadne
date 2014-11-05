@@ -581,6 +581,8 @@
 		}
 	}
 
+	ldCheckAllowedMethods($_SERVER['REQUEST_METHOD']);
+
 	if(!isset($AR_PATH_INFO)){
 		$AR_PATH_INFO=$_SERVER["PATH_INFO"];
 	}
@@ -603,4 +605,4 @@
 	}
 	/* Finish execution */
 	exit;
-?>
+

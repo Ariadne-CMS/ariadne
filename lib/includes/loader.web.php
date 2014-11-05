@@ -41,12 +41,15 @@
 	include_once($store_config['code']."includes/loader.web.auth.php");
 	include_once($store_config['code']."objects/pobject.phtml");
 
-	if (
-			is_array($AR->loader->web['AllowedMethods']) &&
-			!(in_array(strtoupper($_SERVER['REQUEST_METHOD']), $AR->loader->web['AllowedMethods']))
+	function ldCheckAllowedMethods($method = null) {
+		global $AR;
+		if (
+				is_array($AR->loader->web['AllowedMethods']) && isset($method) &&
+				!(in_array(strtoupper($method), $AR->loader->web['AllowedMethods']))
 		) {
-		ldHeader("HTTP/1.1 405 Not allowed");
-		exit;
+			header("HTTP/1.1 405 Method Not Allowed");
+			exit(1);
+		}
 	}
 
 	function debug_print( $text ) {
