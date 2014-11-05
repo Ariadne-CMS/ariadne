@@ -27,6 +27,10 @@
 	check_file( $store_config['code'] );
 	check_file( $store_config['code']."includes/" );
 
+	check_file( $store_config['code']."modules/mod_debug.php" );
+	cdebug( "reading ".$store_config['code']."modules/mod_debug.php" );
+	include_once( $store_config['code']."modules/mod_debug.php" );
+
 	check_file( $store_config['code']."includes/loader.web.php" );
 	cdebug( "reading ".$store_config['code']."includes/loader.web.php" );
 	include_once( $store_config['code']."includes/loader.web.php" );
