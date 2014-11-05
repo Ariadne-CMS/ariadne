@@ -258,7 +258,7 @@ CREATE TABLE ".$this->tbl_prefix."types (
 					// finally add the index on the object field and close the query.
 					$create_string.="index object(object) )\n";
 					if ($ftindexstring) {
-						$create_string .= " TYPE = MyISAM";
+						$create_string .= " ENGINE = MyISAM";
 					}
 					$this->store_run_query($create_string);
 
