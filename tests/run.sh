@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -e
-
 if [ "${TRAVIS}" = "true" ] ; then
 	BUILDROOT="${TRAVIS_BUILD_DIR}"
 	URL='http://localhost/ariadne/';
