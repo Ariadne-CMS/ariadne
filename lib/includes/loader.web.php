@@ -175,7 +175,7 @@
 		if (!$path) {
 			error("Empty path requested with template: $requestedtemplate");
 		} else {
-			$prevPath = true;
+			$prevPath = null;
 			while ($path !== $prevPath && !$store->exists($path)) {
 				$prevPath = $path;
 				$path     = $store->make_path($path, "..");
