@@ -55,8 +55,9 @@
 			    $err .= "\t<scriptname>".$filename."</scriptname>\n";
 			    $err .= "\t<scriptlinenum>".$linenum."</scriptlinenum>\n";
 
-			    if (in_array($errno, $user_errors))
-			        $err .= "\t<vartrace>".wddx_serialize_value($vars,"Variables")."</vartrace>\n";
+			    if (in_array($errno, $user_errors)) {
+					 $err .= "\t<vartrace>".wddx_serialize_value($vars,"Variables")."</vartrace>\n";
+				 }
 			    $err .= "</errorentry>\n\n";
 
 				debug($err);
@@ -103,7 +104,7 @@
 					$result=false;
 				} else {
 					debug("ftp: accept_connect returned $msgsocket");
-					socket_set_blocking($msgsocket, TRUE);
+					socket_set_blocking($msgsocket, true);
 					debug("ftp: connected ($msgsocket)");
 					$FTP->DC["msgsocket"]=$msgsocket;
 					$result=true;
@@ -130,6 +131,7 @@
 		global $FTP;
 			// client issued 'pasv' command
 			// so lets try to bind a socket to a port
+			$result=false;
 			if ($FTP->DC["socket_desc"]) {
 				// we alread got a socket open.. let's use it
 				$result = $FTP->DC["socket_desc"];
@@ -169,7 +171,6 @@
 
 				} else {
 					ftp_Tell(425, "Couldn't build data connection (rm: socket error:".strerror($socket).")");
-					$result=false;
 				}
 			}
 
@@ -262,10 +263,9 @@
 			}
 		}
 
-		function ftp_TranslatePath(&$path, &$listMode, &$template) {
+		function ftp_TranslatePath(&$path, &$listMode) {
 		global $FTP;
 			$listMode="";
-			$template="";
 			$absolute = ($path[0] === '/') ? true : false;
 			$path=$FTP->site.$FTP->store->make_path($FTP->cwd, $path);
 			while (preg_match('|/'.ESPCHL.'([^/]*)'.ESPCHR.'/|', $path, $regs) && $regs[1]) {
@@ -279,7 +279,7 @@
 					$listMode=$FTP->defaultListMode;
 				}
 			}
-			debug("ftp: Translate:: (FTP->listMode = '$FTP->listMode', listMode = '$listMode', path = '$path', template = '$template')");
+			debug("ftp: Translate:: (FTP->listMode = '$FTP->listMode', listMode = '$listMode', path = '$path')");
 		}
 
 		function ftp_TranslateTemplate(&$path, &$template) {
@@ -293,7 +293,7 @@
 		global $FTP, $ARCurrent, $ARBeenHere;
 
 			while (ftp_FetchCMD($cmd, $args)) {
-				$ARBeenHere=Array();
+				$ARBeenHere=array();
 				$ARCurrent->arLoginSilent = 0;
 				$ARCurrent->ftp_error = "";
 
@@ -307,11 +307,10 @@
 						switch ($listMode) {
 							case 'templates':
 								ftp_TranslateTemplate($path, $template);
-								$getmode = "templates";
 
 								$result = current(
 											$FTP->store->call("ftp.template.exists.phtml",
-																Array("arRequestedTemplate" => $template),
+																array("arRequestedTemplate" => $template),
 																$FTP->store->get($path)));
 								$file_date = $result["date"];
 
@@ -323,7 +322,7 @@
 							break;
 							default:
 								if ($FTP->store->exists($path)) {
-									$file_date = date(); // TODO fix
+									$file_date = time(); // TODO fix
 									ftp_Tell(213, date("YmdHis", $file_date));
 								} else {
 									ftp_Tell(550, "No such file or directory");
@@ -429,11 +428,10 @@
 						switch ($listMode) {
 							case 'templates':
 								ftp_TranslateTemplate($path, $template);
-								$getmode = "templates";
 
 								$result = current(
 											$FTP->store->call("ftp.template.exists.phtml",
-																Array("arRequestedTemplate" => $template),
+																array("arRequestedTemplate" => $template),
 																$FTP->store->get($path)));
 								if (is_array($result)) {
 									$file_size = $result["size"];
@@ -464,7 +462,7 @@
 							ftp_TranslateTemplate($rename_src_path, $rename_src_template);
 							$result = $FTP->store->call(
 											"ftp.template.exists.phtml",
-											Array(
+											array(
 												"arRequestedTemplate" => $rename_src_template
 											),
 											$FTP->store->get($path));
@@ -476,8 +474,7 @@
 								$rename_src_path = "";
 							}
 
-						} else
-						if ($FTP->store->exists($rename_src_path)) {
+						} else if ($FTP->store->exists($rename_src_path)) {
 							ftp_Tell(350, "Object exists, supply destination name.");
 						} else {
 							ftp_Tell(550, "Object [".$rename_src_path."] does not exists.");
@@ -499,7 +496,6 @@
 									}
 									$do_move = $FTP->store->exists($rename_dest_path);
 								} else {
-									$temp = $args;
 									if ($FTP->store->exists($rename_dest_path)) {
 										$parent = $FTP->store->make_path($rename_src_path, "..");
 										$file = substr($rename_src_path, strlen($parent));
@@ -511,7 +507,7 @@
 								if ($do_move) {
 									debug("ftp::RENAME ($rename_src_path, $rename_dest_path, ".$rename_src_listMode.", $rename_src_template, $rename_dest_template)");
 									$FTP->store->call("ftp.".$rename_src_listMode.".rename.phtml",
-													Array(
+													array(
 														"source" => $rename_src_path,
 														"target" => $rename_dest_path,
 														"source_template" => $rename_src_template,
@@ -547,7 +543,7 @@
 
 								$result = current(
 											$FTP->store->call("ftp.template.exists.phtml",
-																Array("arRequestedTemplate" => $template),
+																array("arRequestedTemplate" => $template),
 																$FTP->store->get($path)));
 								$file_size = $result["size"];
 							break;
@@ -592,7 +588,7 @@
 
 							ftp_Tell(150, "Opening ".(($FTP->DC["type"]==="A") ? 'ASCII' : 'BINARY')." mode data connection");
 							if (ftp_OpenDC()!==false) {
-								unset($mode);
+								$mode = array();
 								debug("ftp: listing ($path) ($listMode)");
 
 								if ($FTP->symlinkListModes) {
@@ -692,7 +688,7 @@
 							ftp_TranslateTemplate($path, $template);
 							debug("ftp::list maybe it's a template? ($path, $template)");
 							$result = current($FTP->store->call("ftp.template.exists.phtml",
-												Array("arRequestedTemplate" => $template),
+												array("arRequestedTemplate" => $template),
 												$FTP->store->get($path)));
 
 							if (is_array($result)) {
@@ -729,12 +725,11 @@
 							$path = $FTP->store->make_path($target, "..");
 							$template = substr($target, strlen($path), -1);
 							debug("ftp: removing template ($path) ($template)");
-							$FTP->store->call("ftp.templates.delete.phtml", Array("template" => $template),
+							$FTP->store->call("ftp.templates.delete.phtml", array("template" => $template),
 												$FTP->store->get($path));
 
 							ftp_Tell(250, "$template removed");
-						} else
-						if ($FTP->store->exists($target)) {
+						} else if ($FTP->store->exists($target)) {
 								debug("ftp::delete ($target) ftp.$listMode.delete.phtml");
 								$FTP->store->call("ftp.$listMode.delete.phtml", "",
 									$FTP->store->get($target));
@@ -764,6 +759,7 @@
 							debug("tempfile: '$tempfile' ext: '$ext'");
 							$tempfile.=$ext;
 							$fp=fopen($tempfile, "wb");
+							$fileinfo = array();
 							if ($fp) {
 								$fileinfo["tmp_name"]=$tempfile;
 								if ($listMode === "templates") {
@@ -774,7 +770,7 @@
 									if ($FTP->resume) {
 										debug("ftp::store resuming file at $FTP->resume");
 										ob_start();
-											$FTP->store->call("ftp.$listMode.get.phtml", Array("arRequestedTemplate" => $template),
+											$FTP->store->call("ftp.$listMode.get.phtml", array("arRequestedTemplate" => $template),
 												$FTP->store->get($target));
 											$data=ob_get_contents();
 											fwrite($fp, substr($data, 0, $FTP->resume));
@@ -792,7 +788,7 @@
 									$fileinfo["size"]=filesize($tempfile);
 
 									debug("ftp: writing template to  ($target$template)");
-									$FTP->store->call("ftp.templates.save.phtml", Array("file" => $fileinfo),
+									$FTP->store->call("ftp.templates.save.phtml", array("file" => $fileinfo),
 										$FTP->store->get($target));
 								} else {
 									$file=substr($target, strlen($path), -1);
@@ -823,7 +819,7 @@
 										$fileinfo["size"]=filesize($tempfile);
 										debug("ftp::store total size of fileupload is: ".$fileinfo["size"]);
 										// if $target already exists
-										$FTP->store->call("ftp.$listMode.save.phtml", Array("file" => $fileinfo),
+										$FTP->store->call("ftp.$listMode.save.phtml", array("file" => $fileinfo),
 											$FTP->store->get($target));
 									} else {
 										debug("ftp::store storing $target");
@@ -840,7 +836,7 @@
 										}
 										$fileinfo["size"]=filesize($tempfile);
 
-										$FTP->store->call("ftp.$listMode.save.new.phtml", Array("file" => $fileinfo),
+										$FTP->store->call("ftp.$listMode.save.new.phtml", array("file" => $fileinfo),
 											$FTP->store->get($path));
 									}
 								}
@@ -877,7 +873,7 @@
 
 						if ($FTP->store->exists($parent)) {
 							if (!$FTP->store->exists($path)) {
-								$result=$FTP->store->call("ftp.mkdir.phtml", Array("arNewFilename" => $arNewFilename),
+								$result=$FTP->store->call("ftp.mkdir.phtml", array("arNewFilename" => $arNewFilename),
 									$FTP->store->get($parent));
 							} else {
 								$ARCurrent->ftp_error="Directory already exists";
@@ -1127,4 +1123,4 @@
 	} else {
 		$FTP->error="Could not open stdin";
 	}
-?>
+
