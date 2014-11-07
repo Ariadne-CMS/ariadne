@@ -32,6 +32,7 @@
 			// Make sure we always have a user.
 			$this->getUser('public');
 
+			$criteria = array();
 			$criteria["object"]["implements"]["="]="puser";
 			$criteria["login"]["value"]["="]=$login;
 
@@ -39,7 +40,7 @@
 			foreach ($siteConfig['userdirs'] as $userdir) {
 
 				$user = current($store->call("system.authenticate.phtml", array("ARPassword" => $password),
-												$store->find($userdir, $criteria, 1, 0)));
+						$store->find($userdir, $criteria, 1, 0)));
 				if ($user) {
 					$ARUserDir = $userdir;
 					break;
@@ -78,6 +79,7 @@
 				$ARUserDir = "/system/users/";
 			}
 
+			$criteria = array();
 			$criteria["object"]["implements"]["="]="puser";
 			$criteria["login"]["value"]["="]=$login;
 
