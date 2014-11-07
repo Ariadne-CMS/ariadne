@@ -55,6 +55,7 @@
 	function ldCheckLogin($login, $password) {
 	global $ARLogin, $ARPassword, $store, $AR;
 		debug("soap::ldCheckLogin($login, [password])");
+		$criteria = array();
 		$criteria["object"]["implements"]["="]="puser";
 		$criteria["login"]["value"]["="]=$login;
 		$result = $store->call(
