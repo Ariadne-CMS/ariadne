@@ -2,24 +2,8 @@
 
 class URL {
 
-/*
-	function arguments($args, $prefix='') {
-		$context = pobject::getContext();
-		$me = $context["arCurrentObject"];
-		if (!is_array($args)) return '';
-		$str = '';
-		foreach ($args as $key => $value) {
-			if ($str !== '') $str.='&';
-			$fullkey = ($prefix === '') ? $key : $prefix.'['.$key.']';
-			$str .= is_array($value) ? $me->_query_str($value, $fullkey) : $fullkey.'='.rawurlencode($value);
-		}
-		if ($prefix == '' && $str !== '') $str = '?' . $str;
-		return $str;
-	}
-*/
-
 	/* replaces the URLs with the {ar*[/nls]} markers */
-	function RAWtoAR($page, $nls="") {
+	public function RAWtoAR($page, $nls="") {
 		global $ARCurrent, $AR;
 		$context = pobject::getContext();
 		$me = $context["arCurrentObject"];
@@ -87,7 +71,7 @@ class URL {
 	}
 
 	/* replaces the {ar*[/nls]} markers with valid URLs; if full is false, returns only the <body> content */
-	function ARtoRAW($page) {
+	public static function ARtoRAW($page) {
 		global $ARCurrent, $AR;
 		$context = pobject::getContext();
 		$me = $context["arCurrentObject"];
@@ -136,7 +120,7 @@ class URL {
 		return $page;
 	}
 
-	function processArCall($page, $full=false) {
+	protected static function processArCall($page, $full=false) {
 		global $ARCurrent, $AR;
 		$context = pobject::getContext();
 		$me = $context["arCurrentObject"];
@@ -201,15 +185,11 @@ class URL {
 
 class pinp_URL {
 
-	function _arguments($args) {
-		return URL::arguments($args);
-	}
-
-	function _RAWtoAR($page, $nls='') {
+	public static function _RAWtoAR($page, $nls='') {
 		return URL::RAWtoAR($page, $nls);
 	}
 
-	function _ARtoRAW($page) {
+	public static function _ARtoRAW($page) {
 		return URL::ARtoRAW($page);
 	}
 }
