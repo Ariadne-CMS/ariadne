@@ -16,15 +16,6 @@
 		chdir($currentDir);
 	}
 
-	function fix_quotes(&$value) {
-		if (is_array($value)) {
-			reset($value);
-			array_walk($value, 'fix_quotes');
-		} else {
-			$value=stripslashes($value);
-		}
-	}
-
 	function unpack_array_names($source, &$target) {
 		if (is_array($source)) {
 			reset($source);

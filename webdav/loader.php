@@ -39,15 +39,6 @@
 	require_once($ariadne."/configs/webdav/default.phtml");
 	require_once($store_config['code']."modules/mod_webdav.php");
 
-	function fix_quotes(&$value) {
-		if (is_array($value)) {
-			reset($value);
-			array_walk($value, 'fix_quotes');
-		} else {
-			$value=stripslashes($value);
-		}
-	}
-
 	$AR_PATH_INFO=$_SERVER["PATH_INFO"];
 	if (!$AR_PATH_INFO) {
 		$AR_PATH_INFO = '/';
@@ -72,16 +63,7 @@
 		$session_id=current(array_keys($cookie));
 	}
 
-	// find (and fix) arguments
-	set_magic_quotes_runtime(0);
-	if (get_magic_quotes_gpc()) {
-		// this fixes magic_quoted input
-		fix_quotes($_GET);
-		fix_quotes($_POST);
-		$ARCookie=stripslashes($ARCookie);
-	}
 	$args=array_merge($_GET, $_POST);
-
 
 	$nls=$AR->nls->default;
 
