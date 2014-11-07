@@ -430,6 +430,7 @@
 				}
 
 				if ($xssDetected) {
+					$newargs = array();
 					$newargs["arRequestedArgs"]     = $args;
 					$newargs["arRequestedTemplate"] = $function;
 					$newargs["arSuspectedArgs"]     = $xss_vars;
