@@ -282,7 +282,6 @@
 				// not a valid language
 				$ARCurrent->nls="";
 				$nls=$AR->nls->default;
-				$cachenls="";
 				// but we can find out if the user has any preferences
 				preg_match_all("%([a-zA-Z]{2}|\\*)[a-zA-Z-]*(?:;q=([0-9.]+))?%", $_SERVER["HTTP_ACCEPT_LANGUAGE"], $regs, PREG_SET_ORDER);
 				$ARCurrent->acceptlang=array();
@@ -311,7 +310,6 @@
 				$path=substr($path, $split+1);
 				// ldSetNls($ARCurrent->nls);
 				$nls=$ARCurrent->nls;
-				$cachenls="/$nls";
 			}
 
 			// find (and fix) arguments
