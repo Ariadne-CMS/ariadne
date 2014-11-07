@@ -105,16 +105,27 @@ class URL {
 			$root = substr($root, 0, -3);
 		}
 		if ($site && $site !== '/') {
-			$find[] = "%\\{(?:arSite)(?:/([^}]+))?\\}\\Q\\E%e"; $repl[] = "\$me->make_url('$site', '\\1')";
-			$find[] = "%\\{(?:arRoot|arBase)(?:/([^}]+))?\\}\\Q".$site."\\E%e"; $repl[] = "\$me->make_url('$site', '\\1')";
+			$find[] = "%\\{(?:arSite)(?:/([^}]+))?\\}\\Q\\E%e";
+			$repl[] = "\$me->make_url('$site', '\\1')";
+
+			$find[] = "%\\{(?:arRoot|arBase)(?:/([^}]+))?\\}\\Q".$site."\\E%e";
+			$repl[] = "\$me->make_url('$site', '\\1')";
 		}
-		$find[] = "%\\{arBase(/(?:[^}]+))?\\}%"; $repl[] = $AR->host.$root."\\1";
-		$find[] = "%\\{arRoot(/(?:[^}]+))?\\}%"; $repl[] = $AR->host.$me->store->get_config("root")."\\1";
-		$find[] = "%\\{arCurrentPage(?:/([^}]+))?\\}%e"; $repl[] = "\$me->make_local_url('', '\\1')";
-		$find[] = "%\\{arSession\\}%"; $repl[] = $session;
+		$find[] = "%\\{arBase(/(?:[^}]+))?\\}%";
+		$repl[] = $AR->host.$root."\\1";
+
+		$find[] = "%\\{arRoot(/(?:[^}]+))?\\}%";
+		$repl[] = $AR->host.$me->store->get_config("root")."\\1";
+
+		$find[] = "%\\{arCurrentPage(?:/([^}]+))?\\}%e";
+		$repl[] = "\$me->make_local_url('', '\\1')";
+
+		$find[] = "%\\{arSession\\}%";
+		$repl[] = $session;
 
 		if (class_exists('edit') && edit::getEditMode()) {
-			$find[] = "%ar:editable=([^ ]+)%";	$repl[] = "contentEditable=\\1";
+			$find[] = "%ar:editable=([^ ]+)%";
+			$repl[] = "contentEditable=\\1";
 		}
 
 		$page = preg_replace($find, $repl, $page);
