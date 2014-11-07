@@ -128,6 +128,7 @@ class geo {
 			$lat_degree = (float)self::parseNumber($exif["GPS"]["GPSLatitude"][0]);
 			$lat_mins   = (float)self::parseNumber($exif["GPS"]["GPSLatitude"][1]);
 			$lat_secs   = (float)self::parseNumber($exif["GPS"]["GPSLatitude"][2]);
+			$result = array();
 			$result['lat'] = $lat_degree + ( $lat_mins / 60 ) + ( $lat_secs / 3600 );
 			if( $exif['GPS']['GPSLatitudeRef'] == 'S' ) {
 				  $result['lat'] = (-1) * $result['lat'];
