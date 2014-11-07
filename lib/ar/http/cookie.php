@@ -36,7 +36,7 @@
 		}
 
 		public function __get( $name ) {
-			$this->getvar( $name );
+			return $this->getvar( $name );
 		}
 
 		public function putvar( $name, $value ) {
