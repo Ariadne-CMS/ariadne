@@ -91,6 +91,8 @@ class URL {
 		global $ARCurrent, $AR;
 		$context = pobject::getContext();
 		$me = $context["arCurrentObject"];
+		$find = array();
+		$repl = array();
 
 		if ($ARCurrent->session && $ARCurrent->session->id) {
 			$session='/-'.$ARCurrent->session->id.'-';
