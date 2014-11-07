@@ -121,9 +121,7 @@
 			if (!$current) {
 				$current = $top;
 			}
-			if ( !isset($top) ) {
-				$top = $this->root;
-			}
+
 			if ( $options['filter'] ) {
 				$query .= ' and ( '.$options['filter'].' )';
 			}
