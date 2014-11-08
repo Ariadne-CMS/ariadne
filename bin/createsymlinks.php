@@ -107,21 +107,28 @@
 						}
 
 						$symError = "";
-						ob_start();
-							$symResult = symlink($f, $target);
-							if (!$symResult) {
-								$symError = str_replace("\n", "", ob_get_contents());
-							}
-						ob_end_clean();
+						if (!is_file($target) ){
+							ob_start();
+								$symResult = symlink($f, $target);
+								if (!$symResult) {
+									$symError = str_replace("\n", "", ob_get_contents());
+								}
+							ob_end_clean();
 
-						if($symResult) {
-							if($verbose) {
-								echo str_pad("Creating link: " . basename($target), $COLS) . $OK."\n";
+							if($symResult) {
+								if($verbose) {
+									echo str_pad("Creating link: " . basename($target), $COLS) . $OK."\n";
+								}
+							} else {
+								if(!$silent) {
+									echo str_pad("Creating link: " . substr( $path, strlen($srcdir) ).basename($target), $COLS) . $FAILED;
+									echo " ($symError)\n";
+								}
 							}
 						} else {
 							if(!$silent) {
 								echo str_pad("Creating link: " . substr( $path, strlen($srcdir) ).basename($target), $COLS) . $FAILED;
-								echo " ($symError)\n";
+								echo " (File already exists)\n";
 							}
 						}
 					}
