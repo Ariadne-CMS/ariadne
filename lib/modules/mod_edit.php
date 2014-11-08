@@ -52,6 +52,7 @@
 		function showInputText($var, $name, $title='', $extra='') {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
+			$id = null;
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
 				echo "<input type='text' class='editable' id='editable_$id' ar:path='".$me->path."' ar:id='".$me->id."' title='$title' value=\"";
@@ -66,6 +67,7 @@
 		function showInput($var, $name, $title, $type='text', $extra='') {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
+			$id = null;
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
 				echo "<input name='$name' type='$type' class='editable' id='editable_$id' ar:path='".$me->path."' ar:id='".$me->id."' title='$title' value=\"";
@@ -85,6 +87,7 @@
 		function showCheckbox($var, $name, $title, $extra='', $group='' ) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
+			$id = null;
 			if(edit::getEditMode() && $me->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
 				if ($group) {
@@ -104,6 +107,7 @@
 		function showSelect($var, $name, $title, $list, $bykey=false, $extra='') {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
+			$id = null;
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
 				echo "<select class='editable' id='editable_$id' ar:path='".$me->path."' ar:id='".$me->id."' title='$title'>";
@@ -132,6 +136,7 @@
 		function showSpan($var, $name, $title='', $extra='') {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
+			$id = null;
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
 				echo "<span class='editable' id='editable_$id' ar:path='".$me->path."' ar:id='".$me->id."' title='$title' $extra>";
@@ -146,6 +151,7 @@
 		function showDiv($var, $name, $title='', $extra='') {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
+			$id = null;
 			if (edit::getEditMode() && $me->CheckSilent('edit')) {
 				$id=edit::registerDataField($name);
 				echo "<div class='editable' id='editable_$id' ar:path='".$me->path."' ar:id='".$me->id."' title='$title' $extra>";
