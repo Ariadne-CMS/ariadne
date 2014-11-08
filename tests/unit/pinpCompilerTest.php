@@ -36,7 +36,7 @@ EOD;
 		$template = <<<'EOD'
 <pinp>
 	MyClass::CONST_VALUE;
-	parent::myFunc();	
+	parent::myFunc();
 </pinp>
 EOD;
 
