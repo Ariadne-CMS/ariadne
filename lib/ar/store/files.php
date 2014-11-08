@@ -8,7 +8,7 @@
 	 */
 	class ar_store_files extends arBase {
 
-		private static function parseName( $fname ) {
+		protected static function parseName( $fname ) {
 			list( $nls, $name ) = explode('_', $fname, 2);
 			return array(
 				'nls' => $nls,
@@ -16,7 +16,7 @@
 			);
 		}
 
-		private static function compileName( $name, $nls ) {
+		protected static function compileName( $name, $nls ) {
 			if ( !$nls ) {
 				$ob = ar::context()->getObject();
 				$nls = $ob->nls;
@@ -24,7 +24,7 @@
 			return $nls.'_'.$name;
 		}
 
-		private static function getStore() {
+		protected static function getStore() {
 			$ob = ar::context()->getObject();
 			return array( $ob, $ob->store->get_filestore("files") );
 		}
