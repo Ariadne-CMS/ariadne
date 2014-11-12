@@ -1,57 +1,57 @@
 <?php
-define("PT_VARIABLE",		254);
-define("PT_STRING",			253);
-define("PT_SUBSTRING",		252);
-define("PT_IDENT",			251);
-define("PT_UNPARSED",		250);
-define("PT_EOF",				249);
-define("PT_MULTIPART_STRING_START",	248);
-define("PT_MULTIPART_STRING_END",	247);
-define("PT_PINP_START",		246);
-define("PT_PINP_END",		245);
-define("PT_ERROR",			244);
-define("PT_PAR_OPEN",		243);
-define("PT_NEW",				242);
-define("PT_FUNCTION",		241);
-define("PT_GLOBAL",			240);
-define("PT_RETURN",			239);
-define("PT_FILENAME",		238);
-define("PT_INCLUDE",			237);
-define("PT_INCLUDE_ONCE",	236);
-define("PT_REQUIRE",			235);
-define("PT_REQUIRE_ONCE",	234);
-define("PT_PAR_CLOSE",		233);
-define("PT_COMMA",			232);
-define("PT_BRACKET_OPEN",	231);
-define("PT_BRACKET_CLOSE",	230);
-define("PT_VAR_REFERENCE",	229);
-define("PT_DQ_STRING",		228);
-define("PT_CBRACE_OPEN",		227);
-define("PT_CBRACE_CLOSE",	226);
-define("PT_NUMBER",			225);
-define("PT_END_STMT",		224);
-define("PT_FOR_STMT",		223);
-define("PT_NAMESPACE",		222);
-define("PT_NAMESPACE_SEPERATOR", 221);
-define("PT_USE",			220);
-define("PT_AS",				219);
-define("PT_THROW",			218);
-define("PT_TRY",			217);
-define("PT_CATCH",			216);
-define("PT_CBRACE_OPEN_VAR",215);
-define("PT_VAR_CBRACE_OPEN",214);
-define("PT_HEREDOC",		213);
-define("PT_EXT_COMPILE_START", 212);
-define("PT_EXT_COMPILE_END", 211);
-define("PT_ARRAY_OP",		210);
-define("PT_CLASS_OPERATOR",	209);
-define("PT_OBJECT_OPERATOR",	208);
-define("PT_ASSIGN_OP",		207);
+define("PT_VARIABLE",               254);
+define("PT_STRING",                 253);
+define("PT_SUBSTRING",              252);
+define("PT_IDENT",                  251);
+define("PT_UNPARSED",               250);
+define("PT_EOF",                    249);
+define("PT_MULTIPART_STRING_START", 248);
+define("PT_MULTIPART_STRING_END",   247);
+define("PT_PINP_START",             246);
+define("PT_PINP_END",               245);
+define("PT_ERROR",                  244);
+define("PT_PAR_OPEN",               243);
+define("PT_NEW",                    242);
+define("PT_FUNCTION",               241);
+define("PT_GLOBAL",                 240);
+define("PT_RETURN",                 239);
+define("PT_FILENAME",               238);
+define("PT_INCLUDE",                237);
+define("PT_INCLUDE_ONCE",           236);
+define("PT_REQUIRE",                235);
+define("PT_REQUIRE_ONCE",           234);
+define("PT_PAR_CLOSE",              233);
+define("PT_COMMA",                  232);
+define("PT_BRACKET_OPEN",           231);
+define("PT_BRACKET_CLOSE",          230);
+define("PT_VAR_REFERENCE",          229);
+define("PT_DQ_STRING",              228);
+define("PT_CBRACE_OPEN",            227);
+define("PT_CBRACE_CLOSE",           226);
+define("PT_NUMBER",                 225);
+define("PT_END_STMT",               224);
+define("PT_FOR_STMT",               223);
+define("PT_NAMESPACE",              222);
+define("PT_NAMESPACE_SEPERATOR",    221);
+define("PT_USE",                    220);
+define("PT_AS",                     219);
+define("PT_THROW",                  218);
+define("PT_TRY",                    217);
+define("PT_CATCH",                  216);
+define("PT_CBRACE_OPEN_VAR",        215);
+define("PT_VAR_CBRACE_OPEN",        214);
+define("PT_HEREDOC",                213);
+define("PT_EXT_COMPILE_START",      212);
+define("PT_EXT_COMPILE_END",        211);
+define("PT_ARRAY_OP",               210);
+define("PT_CLASS_OPERATOR",         209);
+define("PT_OBJECT_OPERATOR",        208);
+define("PT_ASSIGN_OP",              207);
 
-define("YY_STATE_HTML",        1);
-define("YY_STATE_PINP",        2);
-define("YY_STATE_EXT_COMPILE", 3);
-define("YY_STATE_DQ",          4);
+define("YY_STATE_HTML",               1);
+define("YY_STATE_PINP",               2);
+define("YY_STATE_EXT_COMPILE",        3);
+define("YY_STATE_DQ",                 4);
 
 class scanner {
 
@@ -60,21 +60,21 @@ class scanner {
 			create lookup table for language constructs
 		*/
 		$this->YYLANG_CONSTRUCTS = Array(
-				"new" => PT_NEW,
-				"function" => PT_FUNCTION,
-				"global" => PT_GLOBAL,
-				"return" => PT_RETURN,
-				"__file__" => PT_FILENAME,
-				"include" => PT_INCLUDE,
-				"include_once" => PT_INCLUDE_ONCE,
-				"require" => PT_REQUIRE,
-				"require_once" => PT_REQUIRE_ONCE,
-				"for" => PT_FOR_STMT,
-				"namespace" => PT_NAMESPACE,
-				"use"	=> PT_USE,
-				"throw" => PT_THROW,
-				"try"	=> PT_TRY,
-				"catch"	=> PT_CATCH
+			"new" => PT_NEW,
+			"function" => PT_FUNCTION,
+			"global" => PT_GLOBAL,
+			"return" => PT_RETURN,
+			"__file__" => PT_FILENAME,
+			"include" => PT_INCLUDE,
+			"include_once" => PT_INCLUDE_ONCE,
+			"require" => PT_REQUIRE,
+			"require_once" => PT_REQUIRE_ONCE,
+			"for" => PT_FOR_STMT,
+			"namespace" => PT_NAMESPACE,
+			"use"	=> PT_USE,
+			"throw" => PT_THROW,
+			"try"	=> PT_TRY,
+			"catch"	=> PT_CATCH
 		);
 
 
@@ -812,16 +812,16 @@ class pinp {
 			create lookup table for cast-types
 		*/
 		$this->language_types = Array(
-				"int"		=> true,
-				"integer"	=> true,
-				"bool"		=> true,
-				"boolean"	=> true,
-				"float"		=> true,
-				"double"	=> true,
-				"string"	=> true,
-				"binary"	=> true,
-				"array"		=> true,
-				"object"	=> true		
+				"int"     => true,
+				"integer" => true,
+				"bool"    => true,
+				"boolean" => true,
+				"float"   => true,
+				"double"  => true,
+				"string"  => true,
+				"binary"  => true,
+				"array"   => true,
+				"object"  => true
 		);
 	}
 
@@ -886,8 +886,8 @@ class pinp {
 		$noise = "";
 		if ($this->token_ahead == PT_IDENT) {
 			$this->next_token();
-			$ident			= $this->token_value;
-			$array_index	= $this->parse_array_operator($inDQString);
+			$ident        = $this->token_value;
+			$array_index  = $this->parse_array_operator($inDQString);
 			if ($this->error) {
 				return false;
 			}
@@ -923,7 +923,7 @@ class pinp {
 				}
 				if ($this->token_ahead != PT_CBRACE_CLOSE) {
 					$this->error = "Expected '}' at line: ".$this->scanner->YYLINE;
-					return false;			
+					return false;
 				}
 				$this->next_token();
 				$noise .= substr($this->token_value, 1);
@@ -982,7 +982,7 @@ class pinp {
 
 			$result .= $this->token_value;
 
-			$stmt	= $this->parse_statement();
+			$stmt = $this->parse_statement();
 			if (!$this->error) {
 				if (trim($stmt)) {
 					// NOTE: $result .= "($stmt)";
