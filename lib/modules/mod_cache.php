@@ -1,6 +1,6 @@
 <?php
 	class cache {
-		function __construct($cache_config) {
+		public function __construct($cache_config) {
 			debug("cache([array])","store");
 			// init cache store
 			$inst_store = $cache_config["dbms"]."store";
