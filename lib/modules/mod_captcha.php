@@ -5,12 +5,12 @@
 
 	class mod_captcha extends hn_captcha_X1 {
 
-		function __construct($config) {
+		public function __construct($config) {
 			$this->config = $config;
-			hn_captcha_X1::hn_captcha_X1($config);
+			parent::__construct($config);
 		}
 
-		function get_filename_url($public="", $url='') {
+		public function get_filename_url($public="", $url='') {
 			if ($public == "") {
 				$public = $this->public_key;
 			}
@@ -25,7 +25,7 @@
 
 	class captcha {
 
-		function process($aconfig='') {
+		public static function process($aconfig='') {
 		global $ARCurrent;
 			$ARCurrent->arDontCache = true;
 
@@ -36,27 +36,27 @@
 			$template = $me->getvar('arCallFunction');
 
 			if (!is_array($aconfig)) {
-				$aconfig = Array();
+				$aconfig = array();
 			}
 
 			$temp = $me->store->get_config('files').'temp/';
-			$config = Array(
-					'template'		 => $template,
-					'url'			 => $me->make_url(),
+			$config = array(
+					'template'       => $template,
+					'url'            => $me->make_url(),
 					'tempfolder'     => $temp,
 					'TTF_folder'     => CAPTCHA_TTF_FOLDER,
 		                                // mixed (array or string): basename(s) of TrueType-Fontfiles
-					'TTF_RANGE'      => Array(
-											'andalemo.ttf',
-											'arial.ttf',
-											'ariblk.ttf',
-											'comic.ttf',
-											'cour.ttf',
-											'georgia.ttf',
-											'impact.ttf',
-											'times.ttf',
-											'trebuc.ttf',
-											'verdana.ttf',
+					'TTF_RANGE'      => array(
+						'andalemo.ttf',
+						'arial.ttf',
+						'ariblk.ttf',
+						'comic.ttf',
+						'cour.ttf',
+						'georgia.ttf',
+						'impact.ttf',
+						'times.ttf',
+						'trebuc.ttf',
+						'verdana.ttf',
 					),
 
 					'chars'          => 5,       // integer: number of chars to use for ID
@@ -96,11 +96,11 @@
 				}
 			}
 
-			$captcha		= new mod_captcha($config);
+			$captcha = new mod_captcha($config);
 			if ($me->getvar('show')) {
 				$captchaCase = 'show';
 			} else {
-				$case			= $captcha->validate_submit();
+				$case = $captcha->validate_submit();
 				switch ($case) {
 					case 1:
 						$captchaCase = 'valid';
@@ -122,7 +122,7 @@
 			return $captchaCase;
 		}
 
-		function showImg() {
+		public static function showImg() {
 		global $ARCurrent;
 			$ARCurrent->arDontCache = true;
 			$context = pobject::getContext();
@@ -136,7 +136,7 @@
 			}
 		}
 
-		function getImgSrc($url='') {
+		public static function getImgSrc($url='') {
 		global $ARCurrent;
 			$ARCurrent->arDontCache = true;
 			$context = pobject::getContext();
@@ -147,7 +147,7 @@
 			return $captcha->get_filename_url('', $url);
 		}
 
-		function getFormField() {
+		public static function getFormField() {
 		global $ARCurrent;
 			$ARCurrent->arDontCache = true;
 			$context = pobject::getContext();
@@ -164,19 +164,19 @@
 	}
 
 	class pinp_captcha {
-		function _process($config='') {
+		public static function _process($config='') {
 			return captcha::process($config);
 		}
 
-		function _showImg() {
+		public static function _showImg() {
 			return captcha::showImg();
 		}
 
-		function _getImgSrc($url='') {
+		public static function _getImgSrc($url='') {
 			return captcha::getImgSrc($url);
 		}
 
-		function _getFormField() {
+		public static function _getFormField() {
 			return captcha::getFormField();
 		}
 	}
