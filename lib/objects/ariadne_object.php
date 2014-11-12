@@ -80,7 +80,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$ARCurrent->arCallStack[]=&$arCallArgs;
 		// keep track of the context (php or pinp) in which the called template runs. call always sets it php, CheckConfig sets it to pinp if necessary.
 		$this->pushContext( array(
-			"arSuperContext" => Array(),
+			"arSuperContext" => array(),
 			"arCurrentObject" => $this,
 			"scope" => "php",
 			"arCallFunction" => $arCallFunction
@@ -89,7 +89,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		// convert the deprecated urlencoded arguments to an array
 		if (is_string($arCallArgs)) {
 			$ARCurrent->arTemp=$arCallArgs;
-			$arCallArgs=Array();
+			$arCallArgs=array();
 			Parse_str($ARCurrent->arTemp, $arCallArgs);
 		}
 		// import the arguments in the current scope, but don't overwrite existing
@@ -282,7 +282,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				if (!isset($wf_prop_record)) {
 					unset($properties[$wf_prop_name][$wf_prop_index]);
 				} else {
-					$record = Array();
+					$record = array();
 					foreach ($wf_prop_record as $wf_prop_field => $wf_prop_value) {
 						switch (gettype($wf_prop_value)) {
 							case "integer":
@@ -901,7 +901,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$path=$this->path;
 			}
 			if (!$AR->user->grants[$path]) {
-				$grants=Array();
+				$grants=array();
 				$userpath=$AR->user->FindGrants($path, $grants);
 				// if not already done, find all groups of which the user is a member
 				if (!is_array($AR->user->externalgroupmemberships) || sizeof($AR->user->externalgroupmemberships)==0) {
@@ -944,7 +944,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 						$AR->user->groups["owner"]->data->config->usergrants = $AR->user->ownergrants;
 					}
 					foreach($AR->user->groups as $group){
-						$groupgrants=Array();
+						$groupgrants=array();
 						if (is_object($group)) {
 							$group->FindGrants($path, $groupgrants, $userpath);
 							if (is_array($grants)) {
@@ -1002,7 +1002,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	function pushContext($context) {
 	global $AR;
 		if (!$AR->context) {
-			$AR->context = Array();
+			$AR->context = array();
 		} else {
 			$context = array_merge(end($AR->context), $context);
 		}
@@ -1091,7 +1091,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 		$result=false;
 		if (!$AR->public) {
-			$this->pushContext(Array("scope" => "php"));
+			$this->pushContext(array("scope" => "php"));
 				$AR->public=current($this->get("/system/users/public/", "system.get.phtml"));
 			$this->popContext();
 		}
@@ -1228,7 +1228,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			unset($ARCurrent->arResult);
 			if (is_array($arConfig['library'])) {
 				if (!$ARConfig->libraries[$this->path]) {
-					$ARConfig->libraries[$this->path] = Array();
+					$ARConfig->libraries[$this->path] = array();
 				}
 				foreach ($arConfig['library'] as $libName => $libPath) {
 					$this->loadLibrary($libName, $libPath);
@@ -1243,14 +1243,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 		$arConfig = &$ARConfig->pinpcache[$this->path];
 		if (!is_array($arConfig['authentication']['userdirs'])) {
-			$arConfig['authentication']['userdirs'] = Array('/system/users/');
+			$arConfig['authentication']['userdirs'] = array('/system/users/');
 		} else {
 			if (reset($arConfig['authentication']['userdirs']) != '/system/users/') {
 				array_unshift($arConfig['authentication']['userdirs'], '/system/users/');
 			}
 		}
 		if (!is_array($arConfig['authentication']['groupdirs'])) {
-			$arConfig['authentication']['groupdirs'] = Array('/system/groups/');
+			$arConfig['authentication']['groupdirs'] = array('/system/groups/');
 		} else {
 			if (reset($arConfig['authentication']['groupdirs']) != '/system/groups/') {
 				array_unshift($arConfig['authentication']['groupdirs'], '/system/groups/');
@@ -1354,7 +1354,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			$ARCurrent->allnls = true;
 			$configChecked = $ARConfigChecked;
 			if (($this->path == $path && !$this->arIsNewObject) || $this->exists($path)) {
-				$this->pushContext(Array("scope" => "php"));
+				$this->pushContext(array("scope" => "php"));
 				if( $this->path == $path ) {
 					// debug("loadConfig: currentpath $path ");
 					$this->getConfig();
@@ -1371,7 +1371,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 			} else {
 				$parent=$this->make_path($path.'../');
 				if (!$ARConfig->cache[$parent]) {
-					$this->pushContext(Array("scope" => "php"));
+					$this->pushContext(array("scope" => "php"));
 					// debug("loadConfig: parent $parent");
 					$cur_obj = current($this->get($parent, "system.get.phtml"));
 					if( $cur_obj ) {
@@ -1458,7 +1458,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$config = ($ARConfig->cache[$arTemplate["arLibraryLocalPath"]]) ? $ARConfig->cache[$arTemplate["arLibraryLocalPath"]] : $this->loadConfig($arTemplate["arLibraryLocalPath"]);
 		$arPrivateTemplate = $config->privatetemplates[$type][$function];
 
-		return Array(
+		return array(
 			"arTemplateId" => $arTemplate["arTemplateId"],
 			"arCallTemplate" => $arCallTemplate,
 			"arCallType" => $type,
@@ -1478,11 +1478,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		$config = ($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
 		$templates = $config->localTemplates;
 		if (is_array($templates)) {
-			$list = Array();
+			$list = array();
 			foreach ($templates as $type => $functions) {
 				foreach ($functions as $function => $template) {
 					foreach ($template as $nls => $templateId) {
-						$list[$function][$type][$nls] = Array(
+						$list[$function][$type][$nls] = array(
 								"arTemplateId" => $templateId,
 								"arLibraryPath" => $arLibraryPath,
 								"arLibraryLocalPath" => $path
@@ -1493,7 +1493,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 			foreach ($list as $function => $types) {
 				if (!is_array($ARConfig->libraryCache[$base][$function])) {
-					$ARConfig->libraryCache[$base][$function] = Array(
+					$ARConfig->libraryCache[$base][$function] = array(
 						$path => $types
 					);
 				} else {
@@ -1519,7 +1519,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 				array_unshift($ARConfig->libraries[$this->path],$path);
 				if (!$ARConfig->cacheableLibraries[$this->path]) {
-					$ARConfig->cacheableLibraries[$this->path] = Array($path);
+					$ARConfig->cacheableLibraries[$this->path] = array($path);
 				} else {
 					array_unshift($ARConfig->cacheableLibraries[$this->path], $path);
 				}
@@ -1538,7 +1538,7 @@ debug("loadLibrary: loading cache for $this->path");
 			}
 			$ARConfig->libraries[$this->path][$name]=$path;
 			if (!$ARConfig->cacheableLibraries[$this->path]) {
-				$ARConfig->cacheableLibraries[$this->path] = Array($name => $path);
+				$ARConfig->cacheableLibraries[$this->path] = array($name => $path);
 			} else {
 				$ARConfig->cacheableLibraries[$this->path][$name] = $path;
 			}
@@ -1578,7 +1578,7 @@ debug("loadLibrary: loading cache for $this->path");
 	function getPinpTemplate($arCallFunction='view.html', $path=".", $top="", $inLibrary = false, $librariesSeen = null, $arSuperContext=array()) {
 	global $ARCurrent, $ARConfig, $AR;
 		debug("getPinpTemplate: function: $arCallFunction; path: $path; top: $top; inLib: $inLibrary","class");
-		$result = Array();
+		$result = array();
 		if (!$top) {
 			$top = '/';
 		}
@@ -1906,7 +1906,7 @@ debug("loadLibrary: loading cache for $this->path");
 						// start running a pinp template
 
 						$this->pushContext(
-							Array(
+							array(
 								"scope" => "pinp",
 								"arLibrary" => $arLibrary,
 								"arLibraryPath" => $template['arLibraryPath'],
@@ -2480,7 +2480,7 @@ debug("loadLibrary: loading cache for $this->path");
 
 	function resetloopcheck() {
 		global $ARBeenHere;
-		$ARBeenHere=Array();
+		$ARBeenHere=array();
 	}
 
 /********************************************************************
@@ -2574,7 +2574,7 @@ debug("loadLibrary: loading cache for $this->path");
 				}
 				$ARCurrent->arCallStack[]=$arCallArgs;
 				$this->pushContext(
-					Array(
+					array(
 						"scope" => "pinp",
 						"arSuperContext" => $arSuperContext,
 						"arLibrary" => $arLibrary,
@@ -2830,10 +2830,10 @@ debug("loadLibrary: loading cache for $this->path");
 				} else {
 					// current result;
 					$arResult = $ARCurrent->arResult;
-					$this->pushContext(Array());
+					$this->pushContext(array());
 						$oldnls = $this->reqnls;
 						$this->reqnls = $nls;
-						$this->CheckConfig($section, Array('nls' => $nls));
+						$this->CheckConfig($section, array('nls' => $nls));
 						$this->reqnls = $oldnls;
 					$this->popContext();
 					// reset current result (CheckConfig may have changed it when it should not have).
@@ -3120,7 +3120,7 @@ debug("loadLibrary: loading cache for $this->path");
 		// as this is called within a pinp template,
 		// all the grants are already loaded, so
 		// checksilent will fullfill our needs
-		$this->pushContext(Array("scope" => "php"));
+		$this->pushContext(array("scope" => "php"));
 			$result = $this->CheckSilent($grant, $modifier, $path);
 		$this->popContext();
 		return $result;
@@ -3160,7 +3160,7 @@ debug("loadLibrary: loading cache for $this->path");
 		if ($AR->pinp_user && $AR->pinp_user->data->login == $AR->user->data->login) {
 			$user = $AR->pinp_user;
 		} else {
-			$this->pushContext(Array("scope" => "php"));
+			$this->pushContext(array("scope" => "php"));
 				if ( $AR->user instanceof ariadne_object ) {
 					$user = current($AR->user->get(".", "system.get.phtml"));
 				} else {
@@ -3213,7 +3213,7 @@ debug("loadLibrary: loading cache for $this->path");
 			// isn't this double work, the save function doesn this again
 			foreach ($properties as $prop_name => $prop) {
 				foreach ($prop as $prop_index => $prop_record) {
-					$record = Array();
+					$record = array();
 					foreach ($prop_record as $prop_field => $prop_value) {
 						switch (gettype($prop_value)) {
 							case "integer":
