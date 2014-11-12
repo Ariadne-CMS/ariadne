@@ -275,4 +275,30 @@
 				)
 			)
 		);
+
+		$cacheproperties['template'] = Array(
+			'fields' => Array(
+				'name' => Array(
+					'type' => 'string',
+					'size' => 32
+				),
+				'value' => Array(
+					'type' => 'string',
+					'size' => 255
+				)
+			)
+		);
+
+		$cacheproperties['objectref'] = Array(
+			'fields' => Array(
+				'name' => Array(
+					'type' => 'string',
+					'size' => 32
+				),
+				'value' => Array(
+					'type' => 'string',
+					'size' => 255
+				)
+			)
+		);
 ?>

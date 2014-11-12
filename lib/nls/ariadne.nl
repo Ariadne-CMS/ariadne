@@ -16,6 +16,16 @@
 	$ARnls["ariadne:browsetotarget"]                =    "Blader naar doel";
 	$ARnls["ariadne:by"]                            =    "Door";
 	$ARnls["ariadne:cache"]                         =    "Zet caching voor ";
+	$ARnls["ariadne:cache:browsercaching"]          =    "Browser cache installingen (HTTP/1.1)";
+	$ARnls["ariadne:cache:max-age"]                 =    "Max-age";
+	$ARnls["ariadne:cache:must-revalidate"]         =    "Must revalidate";
+	$ARnls["ariadne:cache:no-cache"]                =    "No cache";
+	$ARnls["ariadne:cache:no-store"]                =    "No store";
+	$ARnls["ariadne:cache:no-transform"]            =    "No transform";
+	$ARnls["ariadne:cache:private"]                 =    "Private";
+	$ARnls["ariadne:cache:proxy-revalidate"]        =    "Proxy must revalidate";
+	$ARnls["ariadne:cache:proxycaching"]            =    "Proxy cache instellingen (HTTP/1.1)";
+	$ARnls["ariadne:cache:s-max-age"]               =    "S-Max-age";
 	$ARnls["ariadne:change_priority"]               =    "Zet prioriteit";
 	$ARnls["ariadne:childrenonly"]                  =    "Alleen kinderen";
 	$ARnls["ariadne:close"]                         =    "Sluiten";

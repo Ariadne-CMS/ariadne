@@ -1,0 +1,57 @@
+<?php
+
+  /*************************************************************************/
+  /* Ariadne Cache Store Configuration                                   */
+  /* ==================================                                    */
+  /* This file contains configuration information for the Ariadne Cache  */
+  /* Store. E.g. which database on which host to connect to, the location  */
+  /* of the code library (as the cache store is just another Ariadne     */
+  /* Object Store), etc.                                                   */
+  /* By default the cache store uses the settings from the main          */
+  /* configuration file: ariadne.phtml                                     */ 
+  /*************************************************************************/
+
+  $cache_config['prefix']      = 'cache_';
+
+  /*************************************************************************/
+  /* Database Information:                                                 */
+  /* Fill in the Hostname, and database name of the database server, and   */
+  /* the username and password with which to connect to it.                */
+  /* Prefix is an optional prefix to add to each table name ariadne uses   */
+  /* for this store. This allows you to have a full Ariadne installation   */
+  /* which uses just one database.                                         */
+  /*************************************************************************/
+
+  $cache_config['dbms']        = $AR->DB->dbms;
+  $cache_config['host']        = $AR->DB->host;
+  $cache_config['database']    = $AR->DB->database;
+  $cache_config['user']        = $AR->DB->user;
+  $cache_config['password']    = $AR->DB->password;
+
+  /*************************************************************************/
+  /* Path Information:                                                     */
+  /* Fill in the location of the Ariadne code library and the files        */
+  /* file repository (used for temporary files, caching, templates, etc.)  */
+  /*************************************************************************/
+
+  /*************************************************************************/
+  /* Ariadne Code Library (lib)                                            */
+  /*************************************************************************/
+
+  if( $AR->OS=='WIN32' ) {
+    $cache_config['code']        = $AR->dir->install.'\lib\\';
+  } else {
+    $cache_config['code']        = $AR->dir->install.'/lib/';
+  }
+
+  /*************************************************************************/
+  /* Ariadne Files Repository (files)                                      */
+  /*************************************************************************/
+
+  if( $AR->OS=='WIN32' ) {
+    $cache_config['files']       = $AR->dir->install.'\caches\\';
+  } else {
+    $cache_config['files']       = $AR->dir->install.'/caches/';
+  }
+
+?>

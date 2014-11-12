@@ -34,7 +34,9 @@
 
 	require_once("./ariadne.inc");
 	require_once($ariadne."/bootstrap.php");
+	require_once($ariadne."/configs/cache.phtml");
 
+	include_once($store_config['code']."modules/mod_cache.php");
 	function ldGatherXSSInput(&$xss, $input) {
 		if (is_array($input)) {
 			foreach ($input as $value) {
@@ -52,8 +54,6 @@
 
 	function ldCheckAllowedTemplate($template) {
 		// Check if a template is allowed to be called directly from the URL.
-
-
 		if ($template == "system.list.folders.json.php") {
 			// FIXME: this template is used to fetch folders in explore - it should be renamed to explore.list.folders.json.php;
 			return true;
@@ -66,9 +66,16 @@
 			return false;
 		}
 
-		$writecache = true;
-
 		return true;
+	}
+
+	function ldCacheRequest($AR_PATH_INFO=null) {
+		ob_start();
+
+		global $ARCurrent;
+		$ARCurrent->refreshCacheOnShutdown = true;
+		ldProcessRequest($AR_PATH_INFO);
+		ob_end_clean();
 	}
 
 	function ldProcessRequest($AR_PATH_INFO=null) {
@@ -76,6 +83,7 @@
 		global $ARCurrent;
 		global $store_config;
 		global $auth_config;
+		global $cache_config;
 		global $store;
 		global $context;
 		global $DB;
@@ -83,10 +91,15 @@
 		global $function;
 		global $nls;
 
+		$writecache = false;
+
 		// go check for a sessionid
 		$root=$AR->root;
 		$session_id=0;
 		$re="^/-(.{4})-/";
+
+		$originalPathInfo = $AR_PATH_INFO; // Store this to pass to the refresh cache on shutdown function;
+
 		if (preg_match( '|'.$re.'|' , $AR_PATH_INFO , $matches )) {
 			$session_id=$matches[1];
 			$AR_PATH_INFO=substr($AR_PATH_INFO,strlen($matches[0])-1);
@@ -165,18 +178,40 @@
 
 		$timecheck=time();
 
+		if (file_exists($cachedimage)) {
+			$staleTotalTime = filemtime($cachedimage) - filectime($cachedimage);
+			$staleCurrent = $timecheck - filectime($cachedimage);
+			$stalePercentage = sprintf("%.2f", 100 * $staleCurrent / $staleTotalTime);
+			if ($stalePercentage < 0) {
+				$stalePercentage = 0;
+			} else if ($stalePercentage > 100) {
+				$stalePercentage = 100;
+			}
+			if (!headers_sent()) {
+				header("X-Ariadne-Cache-Stale: $stalePercentage%");
+			}
+		}
+
 		// FIXME: Chrome sometimes sends If-Modified-Since combined with Pragma: no-cache or Cache-control: no-cache;
 		// The check should first check if a 304 not modified header can be sent;
 		// then check if the cache-image can be used;
 		// then pass it to Ariadne.
 		// For now: pragma: no-cache check is removed, this makes Ariadne stubborn with returning cache-images.
-
-		if (file_exists($cachedimage) &&
+		if (
+			file_exists($cachedimage) &&
 			((($mtime=@filemtime($cachedimage))>$timecheck) || ($mtime==0)) &&
-			($_SERVER["REQUEST_METHOD"]!="POST")) {
-			ldHeader("X-Ariadne-Cache: Hit");
-
+			($_SERVER["REQUEST_METHOD"]!="POST") &&
+			($_SERVER["HTTP_CACHE_CONTROL"] != "no-cache") &&
+			($ARCurrent->refreshCacheOnShutdown !== true)
+		) {
 			$ctime=filemtime($cachedimage); // FIXME: Waarom moet dit mtime zijn? Zonder mtime werkt de if-modified-since niet;
+
+			if (rand(20,80) < $stalePercentage) {
+				header("X-Ariadne-Cache-Refresh: refreshing on shutdown");
+				register_shutdown_function("ldCacheRequest", $originalPathInfo); // Rerun the request with the original path info;
+			} else {
+				header("X-Ariadne-Cache-Refresh: skipped, still fresh enough");
+			}
 
 			if (!$AR->ESI && $_SERVER['HTTP_IF_MODIFIED_SINCE'] && strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $ctime) {
 				// the mtime is used as expiration time, the ctime is the correct last modification time.
@@ -191,21 +226,12 @@
 						}
 					}
 				}
+				header("X-Ariadne-Cache: Hit");
 				ldHeader("HTTP/1.1 304 Not Modified");
 			} else {
-				// now send caching headers too, maximum 1 hour client cache.
-				// FIXME: make this configurable. per directory? as a fraction?
-				$freshness=$mtime-$timecheck;
-				if ($freshness>3600) {
-					$cachetime=$timecheck+3600;
-				} else {
-					$cachetime=$mtime;
-					// same '30 minutes' as used 13 lines above
-					if($cachetime == 0){
-						$cachetime = $timecheck + 1800;
-					}
-				}
+				header("X-Ariadne-Cache: Hit");
 				if (file_exists($cachedheader)) {
+					// Cache header file also contains information about Cache-control;
 					$filedata = file($cachedheader);
 					if (is_array($filedata)) {
 						while (list($key, $header)=each($filedata)) {
@@ -213,8 +239,7 @@
 						}
 					}
 				}
-				ldSetClientCache(true, $cachetime, $ctime);
-				ldHeader("X-Ariadne-Cache: Hit"); // Send this after the cached headers to overwrite the cached cache-miss header;
+				header("X-Ariadne-Cache: Hit"); // Send this after the cached headers to overwrite the cached cache-miss header;
 
 				if ($AR->ESI) {
 					if (false && $_SERVER['HTTP_IF_MODIFIED_SINCE'] && (strtotime($_SERVER['HTTP_IF_MODIFIED_SINCE']) >= $ctime)) {
@@ -254,10 +279,13 @@
 				} else {
 					readfile($cachedimage);
 				}
-				$writecache = false; // Prevent recaching cached image;
+			}
+			$writecache = false; // Prevent recaching cached image;
+		} else {
+			if (!headers_sent()) {
+				header("X-Ariadne-Cache: Miss");
 			}
 
-		} else {
 			/*
 				start output buffering
 			*/
@@ -400,6 +428,7 @@
 				unset($store->total);
 				if (ldCheckAllowedTemplate($function) ) {
 					$store->call($function, $args, $store->get($path));
+					$writecache = true;
 				}
 				if (!$store->total) {
 					ldObjectNotFound($path, $function, $args);
@@ -444,28 +473,85 @@
 
 		// now check for outputbuffering (caching)
 		if ($image=ob_get_contents()) {
+			// Calculate browser side cache settings based on settings collected in the call chain;
+			//
+			// Rules: do not cache wins. short cache time wins over longer cache time. Unset values don't get to play.
+			//
+			// Overlord rule: if the request method was not a get, or debugging was used, do not cache. Ever.
+			//
+			// If pinp says arDontCache, then do not cache;
+			//
+			// If ESI was used and hit a cached image, use the cache settings from the cache image;
 			if ($_SERVER['REQUEST_METHOD']!='GET' || ($DB["wasUsed"] > 0)) {
-				$nocache = true;
-			}
-
-			// first set clientside cache headers
-
-			$cachetime=$ARCurrent->cachetime;
-			if ($ARCurrent->arDontCache) {
-				ldSetClientCache(false);
-			} else if ($nocache) {
-				ldSetClientCache(false);
-			} else if ($cachetime == -2) {
-				$cachetime = 999;
-				$ARCurrent->cachetime = 999;
-				ldSetClientCache(true, time()+1800); // Let the client revalidate cached image after 30 minutes;
-			} else if ($session_id) {
-				ldSetClientCache(false); // If there is a session, do not let the browser cache.
+				// Do not cache on client.
+				ldSetBrowserCache(false);
+			} else if (is_array($ARCurrent->cache) && ($file=array_pop($ARCurrent->cache))) {
+				// This will generate an error, do not cache on client;
+				ldSetBrowserCache(false);
+			} else if ($ARCurrent->arDontCache) {
+				// PINP told us not to cache;
+				ldSetBrowserCache(false);
+			} else if (!$writecache) {
+				// Image came from the cache, it already has browser cache headers;
 			} else {
-				$ARCurrent->cachetime = 999;
-				ldSetClientCache(true, time()+1800); // revalidate after 30 minutes
-			}
+				// Defaults for browser caching;
+				// Calls without session: public, max-age 1800;
+				// Calls with session without call chain (disk templates): private, no-cache no-store must-revalidate max-age=0
+				// Calls with session with call chain (pinp templates): private, max-age=1800;
+				// FIXME: Make the calls with session less trigger happy on not caching;
 
+				/* if ($session_id && sizeof($ARCurrent->cacheCallChainSettings)) {
+					// With session and pinp templates;
+					$browserCachePrivate = true;
+					$browserCacheMaxAge = 1800;
+					$browserCacheNoStore = false;
+					$browserCacheNoCache = false; 
+					$browserCacheMustRevalidate = false;
+				} else */
+				if ($session_id) {
+					// With session, disk templates only
+					$browserCachePrivate = true;
+					$browserCacheMaxAge = 0;
+					$browserCacheNoStore = true;
+					$browserCacheNoCache = true;
+					$browserCacheMustRevalidate = true;
+				} else {
+					// Without session and all other corner cases;
+					$browserCachePrivate = false;
+					$browserCacheMaxAge = 1800;
+					$browserCacheNoStore = false;
+					$browserCacheNoCache = false;
+					$browserCacheMustRevalidate = false;
+				}
+
+				$browserCachecacheSetting = 0; // Default = inherit;
+
+				// FIXME: The defaults for with session ID are now to not cache;
+				foreach ($ARCurrent->cacheCallChainSettings as $objectId => $pathCacheSetting) {
+					$browserCachePrivate = $browserCachePrivate || $pathCacheSetting['browserCachePrivate']; // If anyone says 'private', make it so.
+					$browserCacheNoStore = $browserCacheNoStore || $pathCacheSetting['browserCacheNoStore']; // If anyone says 'no-store', make it so.
+					$browserCacheNoCache = $browserCacheNoCache || $pathCacheSetting['browserCacheNoCache']; // If anyone says 'no-cache', make it so.
+					$browserCacheMustRevalidate = $browserCacheMustRevalidate || $pathCacheSetting['browserCacheMustRevalidate']; // If anyone says 'must-revalidate', make it so.
+					$browserCacheNoTransform = $browserCacheNoTransform || $pathCacheSetting['browserCacheNoTransform']; // If anyone says 'no-transform', make it so.
+					$browserCacheProxyRevalidate = $browserCacheProxyRevalidate || $pathCacheSetting['browserCacheProxyRevalidate']; // If anyone says 'proxy-revalidate', make it so.
+
+					$browserCacheMaxAge = isset($pathCacheSetting['browserCacheMaxAge']) ? min($browserCacheMaxAge, $pathCacheSetting['browserCacheMaxAge']) : $browserCacheMaxAge;
+					$browserCacheSMaxAge = isset($pathCacheSetting['browserCacheSMaxAge']) ? min($browserCacheSMaxAge, $pathCacheSetting['browserCacheSMaxAge']) : $browserCacheSMaxAge;
+				}
+
+				ldSetBrowserCache(
+					array(
+						"browserCachePrivate" => $browserCachePrivate,
+						"browserCacheNoStore" => $browserCacheNoStore,
+						"browserCacheNoCache" => $browserCacheNoCache,
+						"browserCacheMustRevalidate" => $browserCacheMustRevalidate,
+						"browserCacheNoTransform" => $browserCacheNoTransform,
+						"browserCacheProxyRevalidate" => $browserCacheProxyRevalidate,
+						"browserCacheMaxAge" => $browserCacheMaxAge,
+						"browserCacheSMaxAge" => $browserCacheSMaxAge
+					)
+				);
+			}
 
 
 			$image_len = strlen($image);
@@ -524,20 +610,82 @@
 			}
 			// because we have the full content, we can now also calculate the content length
 			ldHeader("Content-Length: ".$image_len);
-			ldHeader("X-Ariadne-Cache: Miss");
+
 
 			// flush the buffer, this will send the contents to the browser
 			ob_end_flush();
 			debug("loader: ob_end_flush()","all");
 
-			// check whether caching went correctly, then save the cache
-			if (is_array($ARCurrent->cache) && ($file=array_pop($ARCurrent->cache))) {
+
+			// Calculate server side cache settings based on settings collected in the call chain;
+			//
+			// Rules: do not cache wins. short cache time wins over longer cache time. Unset values don't get to play.
+			//
+			// Overlord rule: if the request method was not a get, or debugging was used, do not cache. Ever.
+			//
+			// If pinp says arDontCache, then do not cache;
+			//
+			// If ESI was used and hit a cached image, do not write the image;
+
+			if ($_SERVER['REQUEST_METHOD']!='GET' || ($DB["wasUsed"] > 0)) {
+				// Do not cache on server.
+				// header("X-Ariadne-Cache-Skipped: DB Used");
+			} else if (is_array($ARCurrent->cache) && ($file=array_pop($ARCurrent->cache))) {
 				error("cached() opened but not closed with savecache()");
-			} else if (!$ARCurrent->arDontCache && !$nocache && $writecache) {
-				if ($store) {
-					ldSetCache($ldCacheFilename, $ARCurrent->cachetime, $image, @implode("\n",$ARCurrent->ldHeaders));
+				// header("X-Ariadne-Cache-Skipped: cached problem.");
+			} else if ($ARCurrent->arDontCache) {
+				// PINP told us not to cache;
+				// header("X-Ariadne-Cache-Skipped: arDontCache");
+			} else if (!$writecache) {
+				// ESI was used and hit a cached image, do not write the image;
+				// header("X-Ariadne-Cache-Skipped: cached image used");
+			} else {
+				// header("X-Ariadne-Cache-Skipped: Writing cache now");
+				// Cache setting values: 
+				// -2 = Refresh on change; Set the cache time on server to 999 hours (unlimited);
+				// -1 = Do not cache
+				// 0  = Inherit
+				// > 0: Refresh on request. The number is the amount of hours that the cache is 'fresh'. This can be a fraction/float value;
+
+				$cacheSetting = 0; // Default = inherit;
+				foreach ($ARCurrent->cacheCallChainSettings as $objectId => $pathCacheSetting) {
+					$serverCache = $pathCacheSetting['serverCache'];
+
+					if ($serverCache == -2) {
+						// Sorry, we meant that the cache image should be valid forever;
+						$serverCache = 999;
+					}
+
+					if ($serverCache == 0 || !isset($serverCache)) {
+						// This path does not want to play;
+						continue;
+					}
+					if ($cacheSetting == 0) {
+						$cacheSetting = $serverCache;
+					} else {
+						$cacheSetting = min($serverCache, $cacheSetting);
+					}
+
+					if ($cacheSetting == -1) {
+						// If someone told us to not cache, skip checking because nothing anyone else tells us will change this fact.
+						break;
+					}			
+				}
+				// header("X-Ariadne-Cache-Setting: $cacheSetting");
+
+				if ($cacheSetting > 0) {
+					// If we are allowed to cache, write the image now.
+					if ($store) { // Sanity check to only write cache images if a store was initialized;
+						// FIXME: cacheCallChainSettings contains the objects that were called for this cache image;
+						// FIXME: cacheTemplateChain containers the templates that were called for this cache image;
+
+						ldSetCache($ldCacheFilename, $cacheSetting, $image, @implode("\n",$ARCurrent->ldHeaders));
+						$cachestore=new cache($cache_config);
+						$cachestore->save($ldCacheFilename, $ARCurrent->cacheCallChainSettings, $ARCurrent->cacheTemplateChain);
+					}
 				}
 			}
+
 		}
 
 		if ($AR->ESI > 0) {
@@ -555,7 +703,7 @@
 
 			if ($ARCurrent->arDontCache) {
 				// FIXME: ook de cachetime 'niet cachen' uit het cachedialoog werkend maken...  || $ARCurrent->cachetime == 0) {
-				ldSetClientCache(false);
+				ldSetBrowserCache(false);
 			}
 			ldHeader("Content-Length: ".$image_len);
 			echo $image;

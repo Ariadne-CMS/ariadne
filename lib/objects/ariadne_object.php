@@ -1198,7 +1198,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		// debug(print_r($ARConfig->nls, true));
 		if( !$ARConfig->cache[$this->parent] && $this->parent!=".." ) {
 			$parent = current($this->get($this->parent, "system.get.phtml"));
-			$parent->getConfig();
+			if ($parent) {
+				$parent->getConfig();
+			}
 		}
 
 		$this->getConfigData();
@@ -1308,8 +1310,17 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				}
 			}
 
-			if ($this->data->config->cacheconfig) {
+			if ($this->data->config->cacheconfig) { // When removing this part, also fix the setting below.
 				$configcache->cache=$this->data->config->cacheconfig;
+			}
+
+			if (!is_array($this->data->config->cacheSettings)) {
+				$this->data->config->cacheSettings = array(
+					"serverCache" => $configcache->cache // attention: when removing the part above, this line needs fixing.
+				);
+			}
+			foreach ($this->data->config->cacheSettings as $key => $value) {
+				$configcache->cacheSettings[$key] = $value;
 			}
 
 			// store the current object type
@@ -1848,6 +1859,11 @@ debug("loadLibrary: loading cache for $this->path");
 				$ARCurrent->cachetime=$config->cache;
 			}
 
+			if (!is_array($ARCurrent->cacheConfigChainSettings)) {
+				$ARCurrent->cacheConfigChainSettings = array();
+			}
+			$ARCurrent->cacheConfigChainSettings[$this->path] = $config->cacheSettings;
+
 			/*
 				Set ARConfigChecked to true to indicate that we have been here
 				earlier.
@@ -1876,6 +1892,21 @@ debug("loadLibrary: loading cache for $this->path");
 				}
 
 				if ($template["arCallTemplate"] && $template["arTemplateId"]) {
+					if (!is_array($ARCurrent->cacheTemplateChain)) {
+						$ARCurrent->cacheTemplateChain = array();
+					}
+					if (!is_array($ARCurrent->cacheTemplateChain[$template["arTemplateId"]])) {
+						$ARCurrent->cacheTemplateChain[$template["arTemplateId"]] = array();
+					}
+					if (!is_array($ARCurrent->cacheTemplateChain[$template["arTemplateId"]][$template['arCallTemplate']])) {
+						$ARCurrent->cacheTemplateChain[$template["arTemplateId"]][$template['arCallTemplate']] = array();
+					}
+					if (!$ARCurrent->cacheTemplateChain[$template["arTemplateId"]][$template['arCallTemplate']][$template['arCallTemplateType']]) {
+						$ARCurrent->cacheTemplateChain[$template["arTemplateId"]][$template['arCallTemplate']][$template['arCallTemplateType']] = 0;
+					}
+					$ARCurrent->cacheTemplateChain[$template["arTemplateId"]][$template['arCallTemplate']][$template['arCallTemplateType']]++;
+
+				
 					debug("CheckConfig: arCallTemplate=".$template["arCallTemplate"].", arTemplateId=".$template["arTemplateId"],"object");
 					// $arCallTemplate=$this->store->get_config("files")."templates".$arCallTemplate;
 					// check if template exists, if it doesn't exist, then continue the original template that called CheckConfig
@@ -1960,6 +1991,13 @@ debug("loadLibrary: loading cache for $this->path");
 								$continue = ($eventData!=false);
 							}
 							if ( $continue ) {
+								if (!is_array($ARCurrent->cacheCallChainSettings)) {
+									$ARCurrent->cacheCallChainSettings = array();
+								}
+								if ($arCallFunction != "config.ini") {
+									$ARCurrent->cacheCallChainSettings[$this->id] = $config->cacheSettings;
+								}
+
 								if ($ARCurrent->ARShowTemplateBorders) {
 									echo "<!-- arTemplateStart\nData: ".$this->type." ".$this->path." \nTemplate: ".$template["arCallTemplatePath"]." ".$template["arCallTemplate"]." \nLibrary:".$template["arLibrary"]." -->";
 								}

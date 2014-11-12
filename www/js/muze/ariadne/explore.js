@@ -49,7 +49,7 @@ muze.namespace("muze.ariadne.explore", function() {
 
 			// FIXME: The dialog sizes should be as consistent as possible, not all different sizes.
 			'dialog_add' 			: windowprops_common + ',height=600,width=550',
-			'dialog_cache'			: windowprops_common + ',height=350,width=500',
+			'dialog_cache'			: windowprops_common + ',height=660,width=500',
 			'dialog_templates'		: windowprops_common + ',height=500,width=800',
 			'dialog_custom'			: windowprops_common + windowsize_large, //',height=300,width=625',
 			'dialog_language'		: windowprops_common + ',height=350,width=450',

@@ -1,7 +1,13 @@
 <?php
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckSilent("edit") && $this->CheckConfig()) {
-		$cacheconfig=$this->data->config->cacheconfig;
+		$cacheSettings = $this->data->config->cacheSettings;
+		if ($cacheSettings['serverCache']) {
+			$cacheconfig = $cacheSettings['serverCache'];
+		} else {
+			$cacheconfig=$this->data->config->cacheconfig;
+		}
+
 		$refresh=$this->getdata("refresh","none");
 		$keepfor=$this->getdata("keepfor","none");
 		if ($keepfor && $cacheconfig==1) {
@@ -36,6 +42,51 @@
 				<label for="refreshnow"><?php echo $ARnls["refreshnow"]; ?></label>
 			</div>
 		</fieldset>
+		<fieldset id="browserCache">
+			<legend><?php echo $ARnls["ariadne:cache:browsercaching"]; ?></legend>
+			<div class="field checkbox">
+				<input type="hidden" name="browserCachePrivate" value="0">
+				<input type="hidden" name="browserCacheNoCache" value="0">
+				<input type="hidden" name="browserCacheNoStore" value="0">
+				<input type="hidden" name="browserCacheMustRevalidate" value="0">
+				<input type="hidden" name="browserCacheNoTransform" value="0">
+				<input type="hidden" name="browserCacheProxyRevalidate" value="0">
+				<input id="browserCachePrivate" type="checkbox" name="browserCachePrivate" value="1" <?php if ($cacheSettings["browserCachePrivate"]) { echo "checked"; } ?>>
+				<label for="browserCachePrivate"><?php echo $ARnls["ariadne:cache:private"]; ?></label>
+			</div>
+			<div class="field text">
+				<label for="browserCacheMaxAge"><?php echo $ARnls["ariadne:cache:max-age"]; ?></label>
+				<input type="text" id="browserCacheMaxAge" name="browserCacheMaxAge" size="4" maxlength="6" value="<?php echo isset($cacheSettings["browserCacheMaxAge"]) ? (int)$cacheSettings["browserCacheMaxAge"] : ""; ?>">
+			</div>
+			<div class="field checkbox">
+				<input id="browserCacheNoCache" type="checkbox" name="browserCacheNoCache" value="1" <?php if ($cacheSettings["browserCacheNoCache"]) { echo "checked"; } ?>>
+				<label for="browserCacheNoCache"><?php echo $ARnls["ariadne:cache:no-cache"]; ?></label>
+			</div>
+			<div class="field checkbox">
+				<input id="browserCacheMustRevalidate" type="checkbox" name="browserCacheMustRevalidate" value="1" <?php if ($cacheSettings["browserCacheMustRevalidate"]) { echo "checked"; } ?>>
+				<label for="browserCacheMustRevalidate"><?php echo $ARnls["ariadne:cache:must-revalidate"]; ?></label>
+			</div>
+			<div class="field checkbox">
+				<input id="browserCacheNoStore" type="checkbox" name="browserCacheNoStore" value="1" <?php if ($cacheSettings["browserCacheNoStore"]) { echo "checked"; } ?>>
+				<label for="browserCacheNoStore"><?php echo $ARnls["ariadne:cache:no-store"]; ?></label>
+			</div>
+		</fieldset>
+		<fieldset id="proxyCache">
+			<div class="field text">
+				<label for="browserCacheSMaxAge"><?php echo $ARnls["ariadne:cache:s-max-age"]; ?></label>
+				<input type="text" id="browserCacheSMaxAge" name="browserCacheSMaxAge" size="4" maxlength="6" value="<?php echo isset($cacheSettings["browserCacheSMaxAge"]) ? (int)$cacheSettings["browserCacheSMaxAge"] : ""; ?>">
+			</div>
+			<legend><?php echo $ARnls["ariadne:cache:proxycaching"]; ?></legend>
+			<div class="field checkbox">
+				<input id="browserCacheNoTransform" type="checkbox" name="browserCacheNoTransform" value="1" <?php if ($cacheSettings["browserCacheNoTransform"]) { echo "checked"; } ?>>
+				<label for="browserCacheNoTransform"><?php echo $ARnls["ariadne:cache:no-transform"]; ?></label>
+			</div>
+			<div class="field checkbox">
+				<input id="browserCacheProxyRevalidate" type="checkbox" name="browserCacheProxyRevalidate" value="1" <?php if ($cacheSettings["browserCacheProxyRevalidate"]) { echo "checked"; } ?>>
+				<label for="browserCacheProxyRevalidate"><?php echo $ARnls["ariadne:cache:proxy-revalidate"]; ?></label>
+			</div>
+		</fieldset>
+		
 <?php
 	}
 ?>

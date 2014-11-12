@@ -169,4 +169,23 @@
 	}
 	$sessionstore->close();
 
+	// cache store
+
+	$inst_store = $cache_config["dbms"]."store_install";
+	$cachestore=new $inst_store(".",$cache_config);
+
+	echo "== creating Ariadne Session Store\n\n";
+	if ($cachestore->initialize()) {
+		foreach ($cacheproperties as $name => $property) {
+			$cachestore->create_property($name, $property);
+		}
+		$cachestore->add_type("pcache","pobject");
+		$cachestore->add_type("pcache","pcache");
+
+		$cachestore->save( '/', 'pobject', new object );
+	} else {
+		error("store not initialized.");
+	}
+	$cachestore->close();
+
 ?>

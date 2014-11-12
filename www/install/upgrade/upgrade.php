@@ -166,7 +166,12 @@
 							"newversion" => "8.4"
 							));
 		*/
-
+		case '8.4-b1':
+				array_push($todo, Array(
+							"description" => "Installing cache store",
+							"operation" => "9.0/install.cache_store.php",
+							"newversion" => "8.4-b2"
+							));
 	}
 
 

@@ -37,6 +37,19 @@
 			$cache=$keepfor;
 		}
 		$this->data->config->cacheconfig=$cache;
+
+		$this->data->config->cacheSettings = array(
+			"serverCache" => $cache,
+			"browserCachePrivate" => $this->getdata("browserCachePrivate","none"),
+			"browserCacheMaxAge" => $this->getdata("browserCacheMaxAge","none"),
+			"browserCacheNoStore" => $this->getdata("browserCacheNoStore","none"),
+			"browserCacheNoCache" => $this->getdata("browserCacheNoCache","none"),
+			"browserCacheSMaxAge" => $this->getdata("browserCacheSMaxAge","none"),
+			"browserCacheMustRevalidate" => $this->getdata("browserCacheMustRevalidate","none"),
+			"browserCacheNoTransform" => $this->getdata("browserCacheNoTransform","none"),
+			"browserCacheProxyRevalidate" => $this->getdata("browserCacheProxyRevalidate","none")
+		);
+
 		$this->save();
 		if ($refresh || $donotcache == $cache ) {
 			$this->ClearCache($this->path, true, true);
