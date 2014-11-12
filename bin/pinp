@@ -20,6 +20,8 @@
 	$inst_store = $store_config["dbms"]."store";
 	$store=new $inst_store($root,$store_config);
 
+	require_once($ariadne .'modules/mod_pinp.phtml');
+
 	$template = $argv[1];
 	$fp = @fopen($template, 'r');
 	if (!$fp) {
