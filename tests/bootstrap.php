@@ -109,7 +109,7 @@
 		}
 
 		public static function setUpBeforeClass() {
-			static::loadTestData();
+			self::loadTestData();
 		}
 
 	}
