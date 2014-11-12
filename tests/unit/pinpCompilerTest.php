@@ -24,10 +24,6 @@ EOD;
 		$compiler = new pinp("header", "object->", "\$object->_");
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
-		if(isset($compiler->error)){
-			var_dump($compiler);
-			var_dump($res);
-		}
 	}
 
 
@@ -221,6 +217,38 @@ EOD;
 		$ret = eval(' $object = new object(); ?'.'>'.$res);
 		$this->assertEquals(5,$ret);
 	}
+
+	function testFluentInterface() {
+		$template = <<<'EOD'
+<pinp>
+	$res = ar('error')->raiseError('test',42)->getMessage();
+	return $res;
+</pinp>
+EOD;
+
+		$compiler = new pinp("header", "object->", "\$object->_");
+		$res = $compiler->compile($template);
+		$this->assertNull($compiler->error);
+		$ret = eval(' $object = new object(); ?'.'>'.$res);
+		$this->assertEquals('test',$ret);
+	}
+
+	function testCurlyBrace() {
+		$template = <<<'EOD'
+<pinp>
+	$var = array (0,1,42,3);
+	$test = 2;
+	return $var[$test];
+</pinp>
+EOD;
+
+		$compiler = new pinp("header", "object->", "\$object->_");
+		$res = $compiler->compile($template);
+		$this->assertNull($compiler->error);
+		$ret = eval(' $object = new object(); ?'.'>'.$res);
+		$this->assertEquals(42,$ret);
+	}
+
 
 
 }
