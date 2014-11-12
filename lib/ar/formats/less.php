@@ -1,7 +1,7 @@
 <?php
 	ar_pinp::allow( 'ar_formats_less');
-	ar_pinp::allow( 'ar_formats_less_Parser', array( 
-		'compile', 'setVariables', 'getCSS' 
+	ar_pinp::allow( 'ar_formats_less_Parser', array(
+		'compile', 'setVariables', 'getCSS'
 	) );
 
 	class ar_formats_less extends arBase {
@@ -17,7 +17,7 @@
 
 		public static function parser() {
 			$parser = new ar_formats_less_Parser(array(), null, array(
-				new ILess_Importer_Callback( 
+				new ILess_Importer_Callback(
 					/* import */
 					function($path, $currentFileInfo) {
 						ob_start();
@@ -33,7 +33,7 @@
 				)
 			));
 			return $parser;
-		}			
+		}
 	}
 
 	class ar_formats_less_Parser extends ILess_Parser {
