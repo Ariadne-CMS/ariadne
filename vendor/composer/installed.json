@@ -1,43 +1,5 @@
 [
     {
-        "name": "leafo/lessphp",
-        "version": "v0.3.8",
-        "version_normalized": "0.3.8.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/leafo/lessphp.git",
-            "reference": "175f276f4168a84db14f7e40c4ef98931793da78"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/leafo/lessphp/zipball/175f276f4168a84db14f7e40c4ef98931793da78",
-            "reference": "175f276f4168a84db14f7e40c4ef98931793da78",
-            "shasum": ""
-        },
-        "time": "2012-08-19 02:16:09",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "classmap": [
-                "lessc.inc.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT",
-            "GPL-3.0"
-        ],
-        "authors": [
-            {
-                "name": "Leaf Corcoran",
-                "email": "leafot@gmail.com",
-                "homepage": "http://leafo.net"
-            }
-        ],
-        "description": "lessphp is a compiler for LESS written in PHP.",
-        "homepage": "http://leafo.net/lessphp/"
-    },
-    {
         "name": "firephp/firephp-core",
         "version": "v0.4.0",
         "version_normalized": "0.4.0.0",
@@ -520,6 +482,102 @@
             "compress",
             "jsmin",
             "minify"
+        ]
+    },
+    {
+        "name": "leafo/lessphp",
+        "version": "v0.4.0",
+        "version_normalized": "0.4.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/leafo/lessphp.git",
+            "reference": "51f3f06f0fe78a722dabfd14578444bdd078d9de"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/leafo/lessphp/zipball/51f3f06f0fe78a722dabfd14578444bdd078d9de",
+            "reference": "51f3f06f0fe78a722dabfd14578444bdd078d9de",
+            "shasum": ""
+        },
+        "time": "2013-08-09 17:09:19",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "0.3-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "lessc.inc.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT",
+            "GPL-3.0"
+        ],
+        "authors": [
+            {
+                "name": "Leaf Corcoran",
+                "email": "leafot@gmail.com",
+                "homepage": "http://leafo.net"
+            }
+        ],
+        "description": "lessphp is a compiler for LESS written in PHP.",
+        "homepage": "http://leafo.net/lessphp/"
+    },
+    {
+        "name": "mishal/iless",
+        "version": "1.6.4",
+        "version_normalized": "1.6.4.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/mishal/iless.git",
+            "reference": "2d3f09f199b1a26ebbafa7b3d425540942264efe"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/mishal/iless/zipball/2d3f09f199b1a26ebbafa7b3d425540942264efe",
+            "reference": "2d3f09f199b1a26ebbafa7b3d425540942264efe",
+            "shasum": ""
+        },
+        "require": {
+            "ext-bcmath": "*",
+            "php": ">=5.2.0"
+        },
+        "time": "2014-11-06 10:59:36",
+        "type": "library",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.7-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "ILess": "lib/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "ILess contributors",
+                "homepage": "https://github.com/mishal/iless/wiki/Contributors"
+            }
+        ],
+        "description": "Less parser and compiler written for Php",
+        "homepage": "http://github.com/mishal/iless",
+        "keywords": [
+            "compiler",
+            "less",
+            "lesscss",
+            "parser",
+            "php",
+            "processor"
         ]
     }
 ]
