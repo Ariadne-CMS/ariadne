@@ -425,6 +425,24 @@
 		return $result;
 	}
 
+	function ldSetBrowserCache( $settings ) {
+		if ($settings === false) {
+			return ldHeader("Cache-control: no-store, no-cache, must-revalidate, max-age=0, private");
+		}
+		$cacheSettings = array();
+		$cacheControl = "Cache-control: ";
+		$cacheControl .= ($settings['browserCachePrivate'] ? "private" : "public");
+		$cacheControl .= ($settings['browserCacheNoStore'] ? ", no-store" : "");
+		$cacheControl .= ($settings['browserCacheNoCache'] ? ", no-cache" : "");
+		$cacheControl .= ($settings['browserCacheMustRevalidate'] ? ", must-revalidate" : "");
+		$cacheControl .= ($settings['browserCacheProxyRevalidate'] ? ", proxy-revalidate" : "");
+		$cacheControl .= ($settings['browserCacheNoTransform'] ? ", no-transform" : "");
+		$cacheControl .= ($settings['browserCacheMaxAge'] ? ", max-age=" . $settings['browserCacheMaxAge'] : ", max-age=0");
+		$cacheControl .= ($settings['browserCacheSMaxAge'] ? ", s-max-age=" . $settings['browserCacheMaxAge'] : "");
+
+		ldHeader($cacheControl);
+	}
+
 	function ldSetClientCache( $cache_on, $expires = null, $modified = null ) {
 		$now = time();
 		if ( !isset($modified) ) {
@@ -440,18 +458,7 @@
 			ldHeader("Cache-control: public, max-age=$maxage, must-revalidate");
 			ldHeader("X-Ariadne-Expires: $expires");
 		} else {
-			if ( !isset($expires) ) {
-				$expires = 0;
-			}
 			ldHeader("Cache-control: no-store, no-cache, must-revalidate, max-age=0, private");
-		}
-		$expires = $now + 1800;
-
-		if ( $expires !== false ) {
-			ldHeader("Expires: ".gmdate(DATE_RFC1123, $expires));
-		}
-		if ( $modified !== false ) {
-			ldHeader("Last-Modified: ".gmdate(DATE_RFC1123, $modified));
 		}
 		return $result;
 	}
