@@ -2,7 +2,8 @@
 	"require": {
 		"mrclay/jsmin-php": "~2.3",
 		"arc/arc": "~1.0",
-		"leafo/lessphp": "v0.3.8",
+		"mishal/iless": "~1",
+		"leafo/lessphp": "v0.4.0",
 		"erusev/parsedown": "~1",
 		"firephp/firephp-core": "v0.4.0"
 	}
