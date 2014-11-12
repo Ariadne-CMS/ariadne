@@ -52,4 +52,3 @@
 	}
 	exit($return_var);
 
-?>
