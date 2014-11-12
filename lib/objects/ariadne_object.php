@@ -37,17 +37,17 @@ debug("pobject: Load","object");
 
 abstract class ariadne_object extends object { // ariadne_object class definition
 
-	var $store;
-	var $path;
-	var $data;
+	public $store;
+	public $path;
+	public $data;
 
-	function init($store, $path, $data) {
+	public function init($store, $path, $data) {
 		$this->store=$store;
 		$this->path=$path;
 		$this->data=$data;
 	}
 
-	function call($arCallFunction="view.html", $arCallArgs="") {
+	public function call($arCallFunction="view.html", $arCallArgs="") {
 	/***********************************************************************
 	  call tries to find the template ($arCallFunction) for the current
 	  object. If it is not defined there, call will search the superclasses
@@ -212,17 +212,17 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 	}
 
-	function ls($path="", $function="list.html", $args="") {
+	public function ls($path="", $function="list.html", $args="") {
 		$path=$this->store->make_path($this->path, $path);
 		return $this->store->call($function, $args, $this->store->ls($path));
 	}
 
-	function get($path, $function="view.html", $args="") {
+	public function get($path, $function="view.html", $args="") {
 		$path=$this->store->make_path($this->path, $path);
 		return $this->store->call($function, $args, $this->store->get($path));
 	}
 
-	function parents($path, $function="list.html", $args="", $top="") {
+	public function parents($path, $function="list.html", $args="", $top="") {
 		/* FIXME: $this->store->parents is too slow when a lot of objects are in ariadne (2million+) */
 		/* but this fix should be done in the store, not here */
 		if (!$top) {
@@ -250,7 +250,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		*/
 	}
 
-	function find($path, $criteria, $function="list.html", $args="", $limit=100, $offset=0) {
+	public function find($path, $criteria, $function="list.html", $args="", $limit=100, $offset=0) {
 		$path=$this->store->make_path($this->path, $path);
 		$objects=$this->store->find($path, $criteria, $limit, $offset);
 		if (!$this->store->error) {
@@ -262,7 +262,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $result;
 	}
 
-	function count_find($path='', $query='') {
+	public function count_find($path='', $query='') {
 		$path=$this->store->make_path($this->path, $path);
 		if (method_exists($this->store, 'count_find')) {
 			$result = $this->store->count_find($path, $query, 0);
@@ -272,7 +272,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $result;
 	}
 
-	function count_ls($path) {
+	public function count_ls($path) {
 		return $this->store->count($this->store->ls($path));
 	}
 
@@ -362,7 +362,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $properties;
 	}
 
-	function save($properties="", $vtype="") {
+	public function save($properties="", $vtype="") {
 	/***********************************************************************
 	  save the current object.
 	  if this is a new object ($this->arIsNewObject) the path is checked and
@@ -554,11 +554,11 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $result;
 	}
 
-	function link($to) {
+	public function link($to) {
 		return $this->store->link($this->path, $this->make_path($to));
 	}
 
-	function delete() {
+	public function delete() {
 	global $ARCurrent;
 		$result	= false;
 		if ($ARCurrent->arCallStack) {
@@ -586,12 +586,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $result;
 	}
 
-	function exists($path) {
+	public function exists($path) {
 		$path=$this->make_path($path);
 		return $this->store->exists($path);
 	}
 
-	function make_path($path="") {
+	public function make_path($path="") {
 		switch($path){
 			case '':
 			case '.':
@@ -606,14 +606,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 	}
 
-	function make_ariadne_url($path="") {
+	public function make_ariadne_url($path="") {
 		global $AR;
 		$path = $this->make_path($path);
 		return $AR->host . $AR->root . $this->store->get_config('rootoptions') . $path;
 	}
 
 
-	function make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=null) {
+	public function make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=null) {
 		global $ARConfig, $AR, $ARCurrent;
 
 		$rootoptions=$this->store->get_config('rootoptions');
@@ -702,7 +702,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $url;
 	}
 
-	function compare_hosts($url1, $url2) {
+	protected function compare_hosts($url1, $url2) {
 		// Check if hosts are equal, so that http://www.muze.nl and //www.muze.nl also match.
 		// using preg_replace instead of parse_url() because the latter doesn't parse '//www.muze.nl' correctly.
 		if (is_array($url2)) {
@@ -720,7 +720,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		);
 	}
 
-	function make_local_url($path="", $nls=false, $session=true, $https=NULL) {
+	public function make_local_url($path="", $nls=false, $session=true, $https=NULL) {
 		global $ARCurrent, $ARConfig;
 		$site = false;
 		$path = $this->make_path($path);
@@ -775,12 +775,12 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $site_url.$rest;
 	}
 
-	function AR_implements($implements) {
+	public function AR_implements($implements) {
 		$type = current(explode(".",$this->type));
 		return $this->store->AR_implements($type, $implements);
 	}
 
-	function getlocks() {
+	public function getlocks() {
 		global $AR;
 		if ($this->store->mod_lock) {
 			$result=$this->store->mod_lock->getlocks($AR->user->data->login);
@@ -790,7 +790,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $result;
 	}
 
-	function lock($mode="O", $time=0) {
+	public function lock($mode="O", $time=0) {
 	global $AR;
 		if ($this->store->mod_lock) {
 			$result=$this->store->mod_lock->lock($AR->user->data->login,$this->path,$mode,$time);
@@ -800,7 +800,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $result;
 	}
 
-	function unlock() {
+	public function unlock() {
 	global $AR;
 		if ($this->store->mod_lock) {
 			$result=$this->store->mod_lock->unlock($AR->user->data->login,$this->path);
@@ -810,7 +810,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $result;
 	}
 
-	function touch($id=0, $timestamp=-1) {
+	public function touch($id=0, $timestamp=-1) {
 		if (!$id) {
 			$id = $this->id;
 		}
@@ -821,7 +821,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $result;
 	}
 
-	function mogrify($id=0, $type, $vtype=null) {
+	public function mogrify($id=0, $type, $vtype=null) {
 		if (!$id) {
 			$id = $this->id;
 		}
@@ -838,30 +838,30 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $result;
 	}
 
-	function can_mogrify() {
+	public function can_mogrify() {
 		if ($this->path == "/system/users/admin/") {
 			return false;
 		}
 		return true;
 	}
 
-	function load_properties() {
+	public function load_properties() {
 		return $this->store->load_properties($this->id);
 	}
 
-	function _load_properties() {
+	public function _load_properties() {
 		return $this->store->load_properties($this->id);
 	}
 
-	function load_property($property) {
+	public function load_property($property) {
 		return $this->store->load_property($this->id,$property);
 	}
 
-	function _load_property($property) {
+	public function _load_property($property) {
 		return $this->store->load_property($this->id,$property);
 	}
 
-	function GetValidGrants($path="") {
+	public function GetValidGrants($path="") {
 	/********************************************************************
 
 	  This function finds all grants in effect on this object for the
@@ -999,7 +999,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 
 
-	function pushContext($context) {
+	public function pushContext($context) {
 	global $AR;
 		if (!$AR->context) {
 			$AR->context = array();
@@ -1009,14 +1009,14 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		array_push($AR->context, $context);
 	}
 
-	function setContext($context, $level=0) {
+	public function setContext($context, $level=0) {
 	global $AR;
 		if (is_array($AR->context)) {
 			$AR->context[sizeof($AR->context)-(1+$level)]=$context;
 		}
 	}
 
-	function popContext() {
+	public function popContext() {
 	global $AR;
 		if (is_array($AR->context)) {
 			$result = array_pop($AR->context);
@@ -1024,7 +1024,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $result;
 	}
 
-	static function getContext($level=0) {
+	public static function getContext($level=0) {
 	global $AR;
 		if (is_array($AR->context)) {
 			$result = $AR->context[sizeof($AR->context)-(1+$level)];
@@ -1032,7 +1032,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $result;
 	}
 
-	function CheckAdmin($user) {
+	public function CheckAdmin($user) {
 		if ($user->data->login == "admin") {
 			return true;
 		}
@@ -1041,7 +1041,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 	}
 
-	function CheckLogin($grant, $modifier=ARTHISTYPE) {
+	public function CheckLogin($grant, $modifier=ARTHISTYPE) {
 	global $AR,$ARnls,$ARConfig,$ARCurrent,$ARConfigChecked;
 		if (!$this->store->is_supported("grants")) {
 			debug("pobject: store doesn't support grants");
@@ -1086,7 +1086,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 
 
-	function CheckPublic($grant, $modifier=ARTHISTYPE) {
+	public function CheckPublic($grant, $modifier=ARTHISTYPE) {
 	global $AR;
 
 		$result=false;
@@ -1104,7 +1104,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $result;
 	}
 
-	function CheckSilent($grant, $modifier=ARTHISTYPE, $path=".") {
+	public function CheckSilent($grant, $modifier=ARTHISTYPE, $path=".") {
 	global $AR, $ARConfig;
 		$path = $this->make_path($path);
 		if ($modifier==ARTHISTYPE) {
@@ -1130,7 +1130,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $result;
 	}
 
-	function CheckNewFile($newfilename) {
+	public function CheckNewFile($newfilename) {
 	global $ARnls;
 	/**********************************************************************
 
@@ -1164,7 +1164,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return $result;
 	}
 
-	function resetConfig($path='') {
+	public function resetConfig($path='') {
 	global $ARConfig;
 		$path = $this->make_path($path);
 		if ($ARConfig->cache[$path]) {
@@ -1176,7 +1176,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 	}
 
-	function clearChildConfigs($path='') {
+	public function clearChildConfigs($path='') {
 	global $ARConfig;
 		$path = $this->make_path($path);
 		$pathlength = strlen($path);
@@ -1191,7 +1191,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 	}
 
-	function getConfig() {
+	protected function getConfig() {
 	global $ARConfig, $ARCurrent, $ARConfigChecked;
 		// $context=$this->getContext(0);
 		// debug("getConfig(".$this->path.") context: ".$context['scope'] );
@@ -1262,7 +1262,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	}
 
-	function getConfigData() {
+	protected function getConfigData() {
 	global $ARConfig, $AR;
 		$context = $this->getContext(0);
 		if (!$ARConfig->cache[$this->path] && $context["scope"] != "pinp") {
@@ -1344,7 +1344,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 	}
 
-	function loadConfig($path='') {
+	public function loadConfig($path='') {
 	global $ARConfig, $ARConfigChecked, $ARCurrent;
 		$result=false;
 		$path=$this->make_path($path);
@@ -1396,7 +1396,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	// TODO: look for a way to merge loadConfig and loadUserConfig into one function
 
-	function loadUserConfig($path='') {
+	public function loadUserConfig($path='') {
 	global $ARConfig;
 		$path = $this->make_path($path);
 		$parent = $this->make_path($path.'../');
@@ -1412,7 +1412,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		return (array)$config;
 	}
 
-	function getTemplateFromCache($path, $type, $function, &$arSuperContext) {
+	protected function getTemplateFromCache($path, $type, $function, &$arSuperContext) {
 	global $AR, $ARConfig;
 		$templatesList = $ARConfig->libraryCache[$path][$function];
 		if (!is_array($templatesList)) {
@@ -1470,7 +1470,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		);
 	}
 
-	function loadLibraryCache($base, $path, $arLibraryPath = "") {
+	public function loadLibraryCache($base, $path, $arLibraryPath = "") {
 	global $ARConfig;
 		if (!$arLibraryPath) {
 			$arLibraryPath = $path;
@@ -1506,7 +1506,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		}
 	}
 
-	function loadLibrary($name, $path) {
+	public function loadLibrary($name, $path) {
 	global $ARConfig;
 		$path=$this->make_path($path);
 		debug("pobject::loadLibrary($name, $path);");
@@ -1551,13 +1551,13 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	// returns a list of libraries loaded on $path
-	function getLibraries($path = '') {
+	public function getLibraries($path = '') {
 	global $ARConfig;
 		$path = $this->make_path($path);
 		return (array)$ARConfig->libraries[$path];
 	}
 
-	function mergeLibraryConfig( $defaultLibraryName, $defaults ) {
+	public function mergeLibraryConfig( $defaultLibraryName, $defaults ) {
 		$libraryName = ar::getvar('arLibrary');
 		if ( is_numeric($libraryName) || $libraryName == 'current' ) { // library is loaded unnamed
 			$libraryName = $defaultLibraryName;
@@ -1571,11 +1571,11 @@ debug("loadLibrary: loading cache for $this->path");
 		return array_merge( $defaults, $this->getvar('arCallArgs') );
 	}
 
-	function _mergeLibraryConfig( $defaultLibraryName, $defaults ) {
+	public function _mergeLibraryConfig( $defaultLibraryName, $defaults ) {
 		return $this->mergeLibraryConfig( $defaultLibraryName, $defaults );
 	}
 
-	function getPinpTemplate($arCallFunction='view.html', $path=".", $top="", $inLibrary = false, $librariesSeen = null, $arSuperContext=array()) {
+	protected function getPinpTemplate($arCallFunction='view.html', $path=".", $top="", $inLibrary = false, $librariesSeen = null, $arSuperContext=array()) {
 	global $ARCurrent, $ARConfig, $AR;
 		debug("getPinpTemplate: function: $arCallFunction; path: $path; top: $top; inLib: $inLibrary","class");
 		$result = array();
@@ -1719,7 +1719,7 @@ debug("loadLibrary: loading cache for $this->path");
 		return $result;
 	}
 
-	function CheckConfig($arCallFunction="", $arCallArgs="") {
+	public function CheckConfig($arCallFunction="", $arCallArgs="") {
 	// returns true when cache isn't up to date and no other template is
 	// defined for $path/$function. Else it takes care of output to the
 	// browser.
@@ -2006,7 +2006,7 @@ debug("loadLibrary: loading cache for $this->path");
 		return true;
 	}
 
-	function ClearCache($path="", $private=true, $recurse=false) {
+	public function ClearCache($path="", $private=true, $recurse=false) {
 	global $AR;
 		$norealnode = false;
 		if (!$path) {
@@ -2106,7 +2106,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 	}
 
-	function getcache($name, $nls="") {
+	public function getcache($name, $nls="") {
 		global $ARCurrent, $ARnls;
 		$result=false;
 		if ($name) {
@@ -2151,7 +2151,7 @@ debug("loadLibrary: loading cache for $this->path");
 		return $result;
 	}
 
-	function cached($name, $nls="") {
+	public function cached($name, $nls="") {
 		if ($image=$this->getcache($name, $nls)) {
 			echo $image;
 			$result=true;
@@ -2161,7 +2161,7 @@ debug("loadLibrary: loading cache for $this->path");
 		return $result;
 	}
 
-	function savecache($time="") {
+	public function savecache($time="") {
 		global $ARCurrent, $ARnls;
 		if (!$time) {
 			$time=2; // 'freshness' in hours.
@@ -2218,7 +2218,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 	}
 
-	function getdatacache($name) {
+	public function getdatacache($name) {
 		global $ARnls;
 		$result=false;
 		if ($name) {
@@ -2235,7 +2235,7 @@ debug("loadLibrary: loading cache for $this->path");
 		return $result;
 	}
 
-	function savedatacache($name,$data,$time="") {
+	public function savedatacache($name,$data,$time="") {
 		if (!$time) {
 			$time=2; // 'freshness' in hours.
 		}
@@ -2247,7 +2247,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 	}
 
-	function getdata($varname, $nls="none", $emptyResult=false) {
+	public function getdata($varname, $nls="none", $emptyResult=false) {
 	// function to retrieve variables from $this->data, with the correct
 	// language version.
 	global $ARCurrent;
@@ -2314,19 +2314,19 @@ debug("loadLibrary: loading cache for $this->path");
 		return $result;
 	}
 
-	function showdata($varname, $nls="none", $emptyResult=false) {
+	public function showdata($varname, $nls="none", $emptyResult=false) {
 		echo htmlspecialchars($this->getdata($varname, $nls, $emptyResult), ENT_QUOTES, 'UTF-8');
 	}
 
-	function setnls($nls) {
+	public function setnls($nls) {
 		ldSetNls($nls);
 	}
 
-	function getcharset() {
+	public function getcharset() {
 		return "UTF-8";
 	}
 
-	function HTTPRequest($method, $url, $postdata = "", $port=80 ) {
+	public function HTTPRequest($method, $url, $postdata = "", $port=80 ) {
 		$maxtries = 5;
 		$tries = 0;
 		$redirecting = true;
@@ -2431,7 +2431,7 @@ debug("loadLibrary: loading cache for $this->path");
 		return $contents;
 	}
 
-	function make_filesize( $size="" ,$precision=0) {
+	public function make_filesize( $size="" ,$precision=0) {
 		$result = "0";
 		$suffixes = array('B','KB','MB','GB','TB','PB','EB','ZB','YB');
 
@@ -2450,7 +2450,7 @@ debug("loadLibrary: loading cache for $this->path");
 		return $result;
 	}
 
-	function convertToUTF8($data, $charset = "CP1252") {
+	public function convertToUTF8($data, $charset = "CP1252") {
 
 		include_once($this->store->get_config("code")."modules/mod_unicode.php");
 
@@ -2469,7 +2469,7 @@ debug("loadLibrary: loading cache for $this->path");
 		return $data;
 	}
 
-	function resetloopcheck() {
+	public function resetloopcheck() {
 		global $ARBeenHere;
 		$ARBeenHere=array();
 	}
@@ -2494,13 +2494,13 @@ debug("loadLibrary: loading cache for $this->path");
 
 ********************************************************************/
 
-	function _call($function, $args="") {
+	public function _call($function, $args="") {
 		// remove possible path information (greedy match)
 		$function=basename($function);
 		return $this->call($function, $args);
 	}
 
-	function _call_super($arCallArgs="") {
+	public function _call_super($arCallArgs="") {
 	global $ARCurrent;
 		$context = $this->getContext();
 		if (!$arCallArgs) {
@@ -2588,7 +2588,7 @@ debug("loadLibrary: loading cache for $this->path");
 		return $arResult;
 	}
 
-	function _get($path, $function="view.html", $args="") {
+	public function _get($path, $function="view.html", $args="") {
 		// remove possible path information (greedy match)
 		$function=basename($function);
 		return $this->store->call($function, $args,
@@ -2596,24 +2596,24 @@ debug("loadLibrary: loading cache for $this->path");
 				$this->make_path($path)));
 	}
 
-	function _call_object($object, $function, $args="") {
+	public function _call_object($object, $function, $args="") {
 		return $object->call($function, $args);
 	}
 
-	function _ls($function="list.html", $args="") {
+	public function _ls($function="list.html", $args="") {
 		// remove possible path information (greedy match)
 		$function=basename($function);
 		return $this->store->call($function, $args,
 			$this->store->ls($this->path));
 	}
 
-	function _parents($function="list.html", $args="", $top="") {
+	public function _parents($function="list.html", $args="", $top="") {
 		// remove possible path information (greedy match)
 		$function=basename($function);
 		return $this->parents($this->path, $function, $args, $top);
 	}
 
-	function _find($criteria, $function="list.html", $args="", $limit=100, $offset=0) {
+	public function _find($criteria, $function="list.html", $args="", $limit=100, $offset=0) {
 		// remove possible path information (greedy match)
 		$function=basename($function);
 		$result = $this->store->call($function, $args,
@@ -2624,15 +2624,15 @@ debug("loadLibrary: loading cache for $this->path");
 		return $result;
 	}
 
-	function _exists($path) {
+	public function _exists($path) {
 		return $this->store->exists($this->make_path($path));
 	}
 
-	function _implements($implements) {
+	public function _implements($implements) {
 		return $this->AR_implements($implements);
 	}
 
-	function getvar($var) {
+	public function getvar($var) {
 	global $ARCurrent, $ARConfig; // Warning: if you add other variables here, make sure you cannot get at it through $$var.
 
 		if ($ARCurrent->arCallStack) {
@@ -2661,26 +2661,26 @@ debug("loadLibrary: loading cache for $this->path");
 		return $result;
 	}
 
-	function _getvar($var) {
+	public function _getvar($var) {
 		return $this->getvar($var);
 	}
 
-	function putvar($var, $value) {
+	public function putvar($var, $value) {
 		global $ARCurrent;
 
 		$ARCurrent->$var=$value;
 	}
 
-	function _putvar($var, $value) {
+	public function _putvar($var, $value) {
 		return $this->putvar($var, $value);
 	}
 
-	function _setnls($nls) {
+	public function _setnls($nls) {
 		$this->setnls($nls);
 	}
 
 	// not exposed to pinp for obvious reasons
-	function sgKey($grants) {
+	public function sgKey($grants) {
 		global $AR;
 		if( !$AR->sgSalt || !$this->CheckSilent("config") ) {
 			return false;
@@ -2694,7 +2694,7 @@ debug("loadLibrary: loading cache for $this->path");
 		return sha1( $AR->sgSalt . $grants . $this->path);
 	}
 
-	function sgBegin($grants, $key = '', $path = '.') {
+	public function sgBegin($grants, $key = '', $path = '.') {
 		global $AR;
 		$result = false;
 		$context = $this->getContext();
@@ -2724,7 +2724,7 @@ debug("loadLibrary: loading cache for $this->path");
 		return $result;
 	}
 
-	function sgEnd($path = '.') {
+	public function sgEnd($path = '.') {
 		global $AR;
 		$AR->user->grants = array(); // unset all grants for the current user, this makes sure GetValidGrants gets called again for this path and all childs
 		$path = $this->make_path( $path );
@@ -2732,7 +2732,7 @@ debug("loadLibrary: loading cache for $this->path");
 		return true; // temp return true;
 	}
 
-	function sgCall($grants, $key, $function="view.html", $args="") {
+	public function sgCall($grants, $key, $function="view.html", $args="") {
 		$result = false;
 		if( $this->sgBegin($grants, $key ) ) {
 			$result = $this->call($function, $args);
@@ -2741,19 +2741,19 @@ debug("loadLibrary: loading cache for $this->path");
 		return $result;
 	}
 
-	function _sgBegin($grants, $key, $path = '.') {
+	public function _sgBegin($grants, $key, $path = '.') {
 		return $this->sgBegin($grants, $key, $path);
 	}
 
-	function _sgEnd($path = '.') {
+	public function _sgEnd($path = '.') {
 		return $this->sgEnd($path);
 	}
 
-	function _sgCall($grants, $key, $function="view.html", $args="") {
+	public function _sgCall($grants, $key, $function="view.html", $args="") {
 		return $this->sgCall($grants, $key, $function, $args);
 	}
 
-	function _widget($arWidgetName, $arWidgetTemplate, $arWidgetArgs="", $arWidgetType="lib") {
+	public function _widget($arWidgetName, $arWidgetTemplate, $arWidgetArgs="", $arWidgetType="lib") {
 	global $AR, $ARConfig, $ARCurrent, $ARnls;
 
 		$arWidgetName=preg_replace("/[^a-zA-Z0-9\/]/","",$arWidgetName);
@@ -2783,15 +2783,15 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 	}
 
-	function _getdata($varname, $nls="none", $emptyResult=false) {
+	public function _getdata($varname, $nls="none", $emptyResult=false) {
 		return $this->getdata($varname, $nls, $emptyResult);
 	}
 
-	function _showdata($varname, $nls="none", $emptyResult=false) {
+	public function _showdata($varname, $nls="none", $emptyResult=false) {
 		$this->showdata($varname, $nls, $emptyResult);
 	}
 
-	function _gettext($index=false) {
+	public function _gettext($index=false) {
 	global $ARnls;
 		if (!$index) {
 			return $ARnls;
@@ -2800,7 +2800,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 	}
 
-	function _loadtext($nls, $section="") {
+	public function _loadtext($nls, $section="") {
 	global $ARnls, $ARCurrent;
 		if( is_object($ARnls) ) {
 			$ARnls->load($section, $nls);
@@ -2834,13 +2834,13 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 	}
 
-	function _startsession() {
+	public function _startsession() {
 	global $ARCurrent;
 		ldStartSession(0);
 		return $ARCurrent->session->id;
 	}
 
-	function _putsessionvar($varname, $varvalue) {
+	public function _putsessionvar($varname, $varvalue) {
 	global $ARCurrent;
 
 		if ($ARCurrent->session) {
@@ -2850,7 +2850,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 	}
 
-	function _getsessionvar($varname) {
+	public function _getsessionvar($varname) {
 	global $ARCurrent;
 
 		if ($ARCurrent->session) {
@@ -2860,7 +2860,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 	}
 
-	function _setsessiontimeout($timeout = 0) {
+	public function _setsessiontimeout($timeout = 0) {
 	global $ARCurrent;
 		if ($ARCurrent->session) {
 			return $ARCurrent->session->setTimeout($timeout);
@@ -2869,7 +2869,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 	}
 
-	function _killsession() {
+	public function _killsession() {
 	global $ARCurrent;
 
 		if ($ARCurrent->session) {
@@ -2878,7 +2878,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 	}
 
-	function _sessionid() {
+	public function _sessionid() {
 	global $ARCurrent;
 		if ($ARCurrent->session) {
 			return $ARCurrent->session->id;
@@ -2887,48 +2887,48 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 	}
 
-	function _resetloopcheck() {
+	public function _resetloopcheck() {
 		return $this->resetloopcheck();
 	}
 
-	function _make_path($path="") {
+	public function _make_path($path="") {
 		return $this->make_path($path);
 	}
 
-	function _make_ariadne_url($path="") {
+	public function _make_ariadne_url($path="") {
 		return $this->make_ariadne_url($path);
 	}
 
-	function _make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=null) {
+	public function _make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=null) {
 		return $this->make_url($path, $nls, $session, $https, $keephost);
 	}
 
-	function _make_local_url($path="", $nls=false, $session=true, $https=NULL) {
+	public function _make_local_url($path="", $nls=false, $session=true, $https=NULL) {
 		return $this->make_local_url($path, $nls, $session, $https);
 	}
 
-	function _getcache($name, $nls='') {
+	public function _getcache($name, $nls='') {
 		return $this->getcache($name, $nls);
 	}
 
-	function _cached($name, $nls='') {
+	public function _cached($name, $nls='') {
 		return $this->cached($name, $nls);
 	}
 
-	function _savecache($time="") {
+	public function _savecache($time="") {
 		return $this->savecache($time);
 	}
 
-	function _getdatacache($name) {
+	public function _getdatacache($name) {
 		return $this->getdatacache($name);
 	}
 
-	function _savedatacache($name,$data,$time="")
+	public function _savedatacache($name,$data,$time="")
 	{
 		return $this->savedatacache($name,$data,$time);
 	}
 
-	function currentsite($path="", $skipRedirects = false) {
+	public function currentsite($path="", $skipRedirects = false) {
 		global $ARCurrent, $ARConfig;
 		if (!$path) {
 			$path=$this->path;
@@ -2946,14 +2946,14 @@ debug("loadLibrary: loading cache for $this->path");
 		return $config->site;
 	}
 
-	function parentsite($site) {
+	public function parentsite($site) {
 	global $ARConfig;
 		$path=$this->store->make_path($site, "..");
 		$config=($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
 		return $config->site;
 	}
 
-	function currentsection($path="") {
+	public function currentsection($path="") {
 	global $ARConfig;
 		if (!$path) {
 			$path=$this->path;
@@ -2962,14 +2962,14 @@ debug("loadLibrary: loading cache for $this->path");
 		return $config->section;
 	}
 
-	function parentsection($path) {
+	public function parentsection($path) {
 	global $ARConfig;
 		$path=$this->store->make_path($path, "..");
 		$config=($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
 		return $config->section;
 	}
 
-	function currentproject($path="") {
+	public function currentproject($path="") {
 	global $ARConfig;
 		if (!$path) {
 			$path=$this->path;
@@ -2978,14 +2978,14 @@ debug("loadLibrary: loading cache for $this->path");
 		return $config->project;
 	}
 
-	function parentproject($path) {
+	public function parentproject($path) {
 	global $ARConfig;
 		$path=$this->store->make_path($path, "..");
 		$config=($ARConfig->cache[$path]) ? $ARConfig->cache[$path] : $this->loadConfig($path);
 		return $config->project;
 	}
 
-	function validateFormSecret() {
+	public function validateFormSecret() {
 		global $ARCurrent;
 		if (!$ARCurrent->session) {
 			return true;
@@ -2998,11 +2998,11 @@ debug("loadLibrary: loading cache for $this->path");
 		return false;
 	}
 
-	function _validateFormSecret() {
+	public function _validateFormSecret() {
 		return $this->validateFormSecret();
 	}
 
-	function getValue($name, $nls=false) {
+	public function getValue($name, $nls=false) {
 	global $ARCurrent;
 		switch ($nls) {
 			case "none":
@@ -3020,7 +3020,7 @@ debug("loadLibrary: loading cache for $this->path");
 		return $result;
 	}
 
-	function setValue($name, $value, $nls=false) {
+	public function setValue($name, $value, $nls=false) {
 
 	global $AR, $ARConfig;
 		if ($value === NULL) {
@@ -3061,53 +3061,53 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 	}
 
-	function showValue($name, $nls=false) {
+	public function showValue($name, $nls=false) {
 		$result = $this->getValue($name, $nls);
 		echo $result;
 		return $result;
 	}
 
-	function _getValue($name, $nls=false) {
+	public function _getValue($name, $nls=false) {
 		return $this->getValue($name, $nls);
 	}
 
-	function _setValue($name, $value, $nls=false) {
+	public function _setValue($name, $value, $nls=false) {
 		return $this->setValue($name, $value, $nls);
 	}
 
-	function _showValue($name, $nls=false) {
+	public function _showValue($name, $nls=false) {
 		return $this->showValue($name, $nls);
 	}
 
-	function _currentsite($path="", $skipRedirects = false) {
+	public function _currentsite($path="", $skipRedirects = false) {
 		return $this->currentsite( $path, $skipRedirects );
 	}
 
-	function _parentsite($site) {
+	public function _parentsite($site) {
 		return $this->parentsite($site);
 	}
 
-	function _currentsection() {
+	public function _currentsection() {
 		return $this->currentsection();
 	}
 
-	function _parentsection($section) {
+	public function _parentsection($section) {
 		return $this->parentsection($section);
 	}
 
-	function _currentproject() {
+	public function _currentproject() {
 		return $this->currentproject();
 	}
 
-	function _parentproject($path) {
+	public function _parentproject($path) {
 		return $this->parentproject($path);
 	}
 
-	function _checkAdmin($user) {
+	public function _checkAdmin($user) {
 		return $this->CheckAdmin($user);
 	}
 
-	function _checkgrant($grant, $modifier=ARTHISTYPE, $path=".") {
+	public function _checkgrant($grant, $modifier=ARTHISTYPE, $path=".") {
 		// as this is called within a pinp template,
 		// all the grants are already loaded, so
 		// checksilent will fullfill our needs
@@ -3117,36 +3117,36 @@ debug("loadLibrary: loading cache for $this->path");
 		return $result;
 	}
 
-	function _checkpublic($grant, $modifier=ARTHISTYPE) {
+	public function _checkpublic($grant, $modifier=ARTHISTYPE) {
 
 		return $this->CheckPublic($grant, $modifier);
 	}
 
-	function _getcharset() {
+	public function _getcharset() {
 		return $this->getcharset();
 	}
 
-	function _count_find($query='') {
+	public function _count_find($query='') {
 		return $this->count_find($this->path, $query);
 	}
 
-	function _count_ls() {
+	public function _count_ls() {
 		return $this->count_ls($this->path);
 	}
 
-	function _HTTPRequest($method, $url, $postdata = "", $port=80) {
+	public function _HTTPRequest($method, $url, $postdata = "", $port=80) {
 		return $this->HTTPRequest($method, $url, $postdata, $port);
 	}
 
-	function _make_filesize( $size="" ,$precision=0) {
+	public function _make_filesize( $size="" ,$precision=0) {
 		return $this->make_filesize( $size ,$precision);
 	}
 
-	function _convertToUTF8($data, $charset = "CP1252") {
+	public function _convertToUTF8($data, $charset = "CP1252") {
 		return $this->convertToUTF8($data,$charset);
 	}
 
-	function _getuser() {
+	public function _getuser() {
 	global $AR;
 		if ($AR->pinp_user && $AR->pinp_user->data->login == $AR->user->data->login) {
 			$user = $AR->pinp_user;
@@ -3163,22 +3163,22 @@ debug("loadLibrary: loading cache for $this->path");
 		return $user;
 	}
 
-	function ARinclude($file) {
+	public function ARinclude($file) {
 		include($file);
 	}
 
-	function _load($class) {
+	public function _load($class) {
 		// only allow access to modules in the modules directory.
 		$class = preg_replace('/[^a-z0-9\._]/i','',$class);
 		include_once($this->store->get_config("code")."modules/".$class);
 	}
 
-	function _import($class) {
+	public function _import($class) {
 		// deprecated
 		return $this->_load($class);
 	}
 
-	function html_to_text($text) {
+	public function html_to_text($text) {
 		$trans = array_flip(get_html_translation_table(HTML_ENTITIES));
 		//strip nonbreaking space, strip script and style blocks, strip html tags, convert html entites, strip extra white space
 		$search_clean = array("%&nbsp;%i", "%<(script|style)[^>]*>.*?<\/(script|style)[^>]*>%si", "%<[\/]*[^<>]*>%Usi", "%(\&[a-zA-Z0-9\#]+;)%es", "%\s+%");
@@ -3186,11 +3186,11 @@ debug("loadLibrary: loading cache for $this->path");
 		return preg_replace($search_clean, $replace_clean, $text);
 	}
 
-	function _html_to_text($text) {
+	public function _html_to_text($text) {
 		return $this->html_to_text($text);
 	}
 
-	function _newobject($filename, $type) {
+	public function _newobject($filename, $type) {
 		$newpath=$this->make_path($filename);
 		$newparent=$this->store->make_path($newpath, "..");
 		$data=new object;
@@ -3199,7 +3199,7 @@ debug("loadLibrary: loading cache for $this->path");
 		return $object;
 	}
 
-	function _save($properties="", $vtype="") {
+	public function _save($properties="", $vtype="") {
 		if (is_array($properties)) {
 			// isn't this double work, the save function doesn this again
 			foreach ($properties as $prop_name => $prop) {
@@ -3237,7 +3237,7 @@ debug("loadLibrary: loading cache for $this->path");
 		return $result;
 	}
 
-	function _is_supported($feature) {
+	public function _is_supported($feature) {
 		return $this->store->is_supported($feature);
 	}
 
@@ -3250,7 +3250,7 @@ debug("loadLibrary: loading cache for $this->path");
 
 	/*	this is a private function used by the _preg_replace wrapper */
 
-	function preg_replace_compile($pattern, $replacement) {
+	protected function preg_replace_compile($pattern, $replacement) {
 	global $AR;
 		include_once($this->store->get_config("code")."modules/mod_pinp.phtml");
 		preg_match("/^\s*(.)/", $pattern, $regs);
@@ -3264,7 +3264,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 	}
 
-	function _preg_replace($pattern, $replacement, $text, $limit = -1) {
+	public function _preg_replace($pattern, $replacement, $text, $limit = -1) {
 		if (is_array($pattern)) {
 			$newrepl = array();
 			reset($replacement);
@@ -3281,32 +3281,32 @@ debug("loadLibrary: loading cache for $this->path");
 	/* ob_start accepts a callback but we don't want that
 	 * this wrapper removes the arguments from the ob_start call
 	 */
-	function _ob_start() {
+	public function _ob_start() {
 		return ob_start();
 	}
 
-	function _loadConfig($path='') {
+	public function _loadConfig($path='') {
 		return clone $this->loadConfig($path);
 	}
 
-	function _loadUserConfig($path='') {
+	public function _loadUserConfig($path='') {
 		return $this->loadUserConfig($path);
 	}
 
-	function _loadLibrary($name, $path) {
+	public function _loadLibrary($name, $path) {
 		return $this->loadLibrary($name, $path);
 	}
 
-	function _resetConfig($path='') {
+	public function _resetConfig($path='') {
 		return $this->resetConfig($path);
 	}
 
-	function _getLibraries($path = '') {
+	public function _getLibraries($path = '') {
 		return $this->getLibraries($path);
 	}
 
 
-	function _getSetting($setting) {
+	public function _getSetting($setting) {
 	global $AR;
 
 		switch ($setting) {
@@ -3326,7 +3326,7 @@ debug("loadLibrary: loading cache for $this->path");
 		}
 	}
 
-	function __call($name,$arguments) {
+	public function __call($name,$arguments) {
 		switch($name) {
 			case "implements":
 				return $this->AR_implements($arguments[0]);
