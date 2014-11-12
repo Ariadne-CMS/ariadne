@@ -1175,15 +1175,15 @@ class pinp {
 								|| $this->token_ahead == PT_BRACKET_OPEN
 								|| ($this->token_ahead == PT_PAR_OPEN && !$inDQString))) {
 					while (!$this->error && $this->token_ahead == PT_BRACKET_OPEN) {
-						$result = "(!is_array(\$res$i = $result)) ? null : \$res$i".$this->parse_array_operator($inDQString);
+						$result = $result.$this->parse_array_operator($inDQString);
 						$i++;
 					}
 					while (!$this->error && $this->token_ahead == PT_OBJECT_OPERATOR) {
-						$result = "((!is_object(\$res$i = $result)) ? null : \$res$i".$this->parse_object_operator($inDQString) . ")";
+						$result = $result.$this->parse_object_operator($inDQString);
 						$i++;
 					}
 					while (!$inDQString && !$this->error && $this->token_ahead == PT_PAR_OPEN) {
-						$result = "((\$res$i = $result) && false) ? null : ".substr($this->function_prefix, 0, -1)."{'_'.ltrim((\$res$i), '_')}".$this->parse_func_call_args().$this->token_ahead_value;
+						$result = substr($this->function_prefix, 0, -1) . "{'_'.ltrim(($result), '_')}" . $this->parse_func_call_args() . $this->token_ahead_value;
 						if ($this->token_ahead != PT_PAR_CLOSE) {
 							$this->error = "Expected ')' at line: ".$this->scanner->YYLINE;
 							return false;
