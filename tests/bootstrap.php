@@ -11,8 +11,6 @@
 	function importContent($base, $package) {
 		global $AR,$ARCurrent,$store_config,$ax_config;
 
-		print "Importing $package onto $base\n";
-
 		/* instantiate the store */
 		$storetype = $store_config["dbms"]."store";
 		$store = new $storetype($root,$store_config);
@@ -78,16 +76,41 @@
 
 		define('TESTBASE',$base);
 
-		foreach( scandir(getcwd().'/tests/unit/')  as $entry ){
-			if(substr($entry,-3) === '.ax' ) {
-				importContent($base,getcwd().'/tests/unit/'.$entry);
-			}
-		}
 		importContent($base,getcwd().'/www/install/packages/demo.ax');
 
 		$AR        = $origAR;
 		$ARCurrent = $origARCurrent;
 		$ARConfig  = $origARConfig;
+
+	}
+
+	abstract class AriadneBaseTest extends PHPUnit_Framework_TestCase
+	{
+		protected function initAriadne() {
+			global $ariadne,$store_config,$store,$AR;
+			/* instantiate the store */
+			$inst_store = $store_config["dbms"]."store";
+			$store = new $inst_store($root,$store_config);
+
+			/* now load a user (admin in this case)*/
+			$login = "admin";
+			$query = "object.implements = 'puser' and login.value='$login'";
+			$AR->user = current($store->call('system.get.phtml', '', $store->find('/system/users/', $query)));
+		}
+
+		private static function loadTestData() {
+			$name = get_called_class();
+			$reflector = new ReflectionClass($name);
+			$file = $reflector->getFileName();
+			$file = preg_replace('/\.php$/','.ax',$file);
+			if ( is_file($file) ) {
+				importContent(TESTBASE, $file);
+			}
+		}
+
+		public static function setUpBeforeClass() {
+			static::loadTestData();
+		}
 
 	}
 

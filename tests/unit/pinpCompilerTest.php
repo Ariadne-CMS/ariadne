@@ -2,7 +2,7 @@
 
 require_once(AriadneBasePath."/modules/mod_pinp.phtml");
 
-class pinpCompilerTest extends PHPUnit_Framework_TestCase
+class pinpCompilerTest extends AriadneBaseTest
 {
 	function testBaseCompile() {
 		$template = <<<'EOD'

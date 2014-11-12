@@ -1,21 +1,11 @@
 <?php
 
-class arFilesTest extends PHPUnit_Framework_TestCase
+class arFilesTest extends AriadneBaseTest
 {
 
 	function setUp()
 	{
-		global $ariadne,$store_config,$store,$AR;
-		/* instantiate the store */
-		$inst_store = $store_config["dbms"]."store";
-		$store = new $inst_store($root,$store_config);
-
-		/* now load a user (admin in this case)*/
-		$login = "admin";
-		$query = "object.implements = 'puser' and login.value='$login'";
-		$AR->user = current($store->call('system.get.phtml', '', $store->find('/system/users/', $query)));
-
-		//FIXME: make a copy of the FilesNls.ax for this test as well.
+		$this->initAriadne();
 	}
 
 	public function testSaveAndGet() {

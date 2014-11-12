@@ -1,19 +1,11 @@
 <?php
 
-class MysqlCompilerTest extends PHPUnit_Framework_TestCase
+class MysqlCompilerTest extends AriadneBaseTest
 {
 	public static function setUpBeforeClass()
 	{
-		global $ariadne,$store_config,$store,$AR;
-		/* instantiate the store */
-		$inst_store = $store_config["dbms"]."store";
-		$store = new $inst_store($root,$store_config);
-
-		/* now load a user (admin in this case)*/
-		$login = "admin";
-		$query = "object.implements = 'puser' and login.value='$login'";
-		$AR->user = current($store->call('system.get.phtml', '', $store->find('/system/users/', $query)));
-
+		self::initAriadne();
+		parent::setUpBeforeClass();
 	}
 
 	protected function setUp()
@@ -24,6 +16,7 @@ class MysqlCompilerTest extends PHPUnit_Framework_TestCase
 				'Skipping mysql tests, current config uses: '.$store_config["dbms"]
 			);
 		}
+
 	}
 
 	function testBaseCompile() {

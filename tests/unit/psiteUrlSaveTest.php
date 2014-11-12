@@ -1,36 +1,19 @@
 <?php
 
-class psiteUrlSaveTtest extends PHPUnit_Framework_TestCase
+class psiteUrlSaveTtest extends AriadneBaseTest
 {
 
 	static protected $testPath;
 
-	function setUp()
+	public function setUp()
 	{
-		global $ariadne,$store_config,$store,$AR;
-		/* instantiate the store */
-		$inst_store = $store_config["dbms"]."store";
-		$store = new $inst_store($root,$store_config);
-
-		/* now load a user (admin in this case)*/
-		$login = "admin";
-		$query = "object.implements = 'puser' and login.value='$login'";
-		$AR->user = current($store->call('system.get.phtml', '', $store->find('/system/users/', $query)));
-
+		$this->initAriadne();
 	}
 
 	public static function setUpBeforeClass()
 	{
-		global $ariadne,$store_config,$store,$AR;
-		/* instantiate the store */
-		$inst_store = $store_config["dbms"]."store";
-		$store = new $inst_store($root,$store_config);
-
-		/* now load a user (admin in this case)*/
-		$login = "admin";
-		$query = "object.implements = 'puser' and login.value='$login'";
-		$AR->user = current($store->call('system.get.phtml', '', $store->find('/system/users/', $query)));
-
+		self::initAriadne();
+		parent::setUpBeforeClass();
 		$args = array (
 			'arNewType' => 'psite',
 			'arNewFilename' => '{5:id}',
