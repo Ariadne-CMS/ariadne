@@ -68,7 +68,7 @@
 </script>
 <fieldset id="data" class="browse">
 <?php
-	$origin = $this->getvar(origin);
+	$origin = $this->getvar("origin");
 	if ($origin == "copy") {
 	    echo '<legend>' . $ARnls["ariadne:copy"] . '</legend>';
 	} elseif ($origin == "move"){
