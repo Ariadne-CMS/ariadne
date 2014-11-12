@@ -13,7 +13,7 @@ php:
 
 matrix:
     allow_failures:
-      - env: DB=mysql WORKSPACE=yes
+      - php: 5.3
 
 
 before_install:
