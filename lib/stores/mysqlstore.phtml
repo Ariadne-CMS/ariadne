@@ -1098,16 +1098,19 @@ class mysqlstore extends store{
 		$types_tbl=$this->tbl_prefix."types";
 
 		if ($object) {
-			while (list($name, $value)=each($values)) {
-				if ($value!="") {
-					$query_names.="AR_".AddSlashes($name).", ";
-					$query_values.= "'".AddSlashes($value) ."', ";
+			if (count($values)) {
+				while (list($name, $value)=each($values)) {
+					if ($value!="") {
+						$query_names.="AR_".AddSlashes($name).", ";
+						$query_values.= "'".AddSlashes($value) ."', ";
+					}
 				}
-			}
-			$query_string="insert into ".$this->tbl_prefix."prop_".AddSlashes($property)." ( ".
+				$query_string="insert into ".$this->tbl_prefix."prop_".AddSlashes($property)." ( ".
 										$query_names."object ) values ( ".$query_values."$object )";
-			$this->store_run_query($query_string);
-			$result=mysql_affected_rows($this->connect_id);
+
+				$this->store_run_query($query_string);
+				$result=mysql_affected_rows($this->connect_id);
+			}
 		}
 		return $result;
 	}
