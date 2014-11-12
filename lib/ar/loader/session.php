@@ -37,23 +37,23 @@
 			$this->session = $session;
 		}
 
-		function getvar( $name ) {
+		public function getvar( $name ) {
 			return $this->session->get( $name );
 		}
 
-		function putvar( $name, $value ) {
+		public function putvar( $name, $value ) {
 			return $this->session->put( $name, $value );
 		}
 
-		function save() {
+		public function save() {
 			return $this->session->save();
 		}
 
-		function suspend() {
+		public function suspend() {
 			return $this->session->suspend();
 		}
 
-		function kill() {
+		public function kill() {
 			return $this->session->kill();
 		}
 
