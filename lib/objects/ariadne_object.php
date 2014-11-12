@@ -2006,15 +2006,6 @@ debug("loadLibrary: loading cache for $this->path");
 		return true;
 	}
 
-
-	function MkDir($dir) {
-		return ldMkDir($dir);
-	}
-
-	function SetCache($file, $time, $image, $headers) {
-		ldSetCache($file, $time, $image, $headers);
-	}
-
 	function ClearCache($path="", $private=true, $recurse=false) {
 	global $AR;
 		$norealnode = false;
