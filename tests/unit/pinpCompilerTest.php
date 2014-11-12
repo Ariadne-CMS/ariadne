@@ -15,7 +15,6 @@ EOD;
 	}
 
 	function testObjectVariables() {
-		$this->markTestSkipped("pinp compiler currently has a bug, needs to be fixed");
 		$template = <<<'EOD'
 <pinp>
 	$test = ar('store')->rememberShortcuts;
@@ -206,6 +205,21 @@ EOD;
 		$compiler = new pinp("header", "object->", "\$object->_");
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
+	}
+
+	function testObjectArrayAccess() {
+		$template = <<<'EOD'
+<pinp>
+	$res = range(0,10)[5];
+	return $res;
+</pinp>
+EOD;
+
+		$compiler = new pinp("header", "object->", "\$object->_");
+		$res = $compiler->compile($template);
+		$this->assertNull($compiler->error);
+		$ret = eval(' $object = new object(); ?'.'>'.$res);
+		$this->assertEquals(5,$ret);
 	}
 
 
