@@ -429,7 +429,6 @@
 		if ($settings === false) {
 			return ldHeader("Cache-control: no-store, no-cache, must-revalidate, max-age=0, private");
 		}
-		$cacheSettings = array();
 		$cacheControl = "Cache-control: ";
 		$cacheControl .= ($settings['browserCachePrivate'] ? "private" : "public");
 		$cacheControl .= ($settings['browserCacheNoStore'] ? ", no-store" : "");
@@ -445,9 +444,6 @@
 
 	function ldSetClientCache( $cache_on, $expires = null, $modified = null ) {
 		$now = time();
-		if ( !isset($modified) ) {
-			$modified = $now;
-		}
 		if ($cache_on) {
 			if ( !isset($expires) ) {
 				$expires = $now + 1800;
