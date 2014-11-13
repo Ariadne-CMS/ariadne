@@ -3,7 +3,7 @@
 
 	class ar_html_edit extends arBase {
 
-		static $enabled = false;
+		protected static $enabled = false;
 
 		public static function enabled() {
 			return self::$enabled;
