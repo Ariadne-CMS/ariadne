@@ -4,7 +4,7 @@ require_once("fpdf151/fpdf.php");
 define('FPDF_FONTPATH','font/');
 
 class pinp_PDF {
-	function _init($orientation='P',$unit='mm',$format='A4') {
+	public static function _init($orientation='P',$unit='mm',$format='A4') {
 		$pdf=new pinp_FPDF($orientation='P',$unit='mm',$format='A4');
 		return $pdf;
 	}
@@ -13,7 +13,7 @@ class pinp_PDF {
 class pinp_FPDF extends FPDF
 {
 
-function pinp_FPDF($orientation='P',$unit='mm',$format='A4')
+public function __construct ($orientation='P',$unit='mm',$format='A4')
 {
     //Call parent constructor
     $this->FPDF($orientation,$unit,$format);
@@ -27,259 +27,259 @@ function pinp_FPDF($orientation='P',$unit='mm',$format='A4')
     $this->issetcolor=false;
 }
 
-function _SetMargins($left,$top,$right=-1)
+public function _SetMargins($left,$top,$right=-1)
 {
 	return $this->SetMargins($left,$top,$right);
 }
 
-function _SetLeftMargin($margin)
+public function _SetLeftMargin($margin)
 {
 	return $this->SetLeftMargin($margin);
 }
 
-function _SetTopMargin($margin)
+public function _SetTopMargin($margin)
 {
 	return $this->SetTopMargin($margin);
 }
 
-function _SetRightMargin($margin)
+public function _SetRightMargin($margin)
 {
 	return $this->SetRightMargin($margin);
 }
 
-function _SetAutoPageBreak($auto,$margin=0)
+public function _SetAutoPageBreak($auto,$margin=0)
 {
 	return $this->SetAutoPageBreak($auto,$margin);
 }
 
-function _SetDisplayMode($zoom,$layout='continuous')
+public function _SetDisplayMode($zoom,$layout='continuous')
 {
 	return $this->SetDisplayMode($zoom,$layout);
 }
 
-function _SetCompression($compress)
+public function _SetCompression($compress)
 {
 	return $this->SetCompression($compress);
 }
 
-function _SetTitle($title)
+public function _SetTitle($title)
 {
 	return $this->SetTitle($title);
 }
 
-function _SetSubject($subject)
+public function _SetSubject($subject)
 {
 	return $this->SetSubject($subject);
 }
 
-function _SetAuthor($author)
+public function _SetAuthor($author)
 {
 	return $this->SetAuthor($author);
 }
 
-function _SetKeywords($keywords)
+public function _SetKeywords($keywords)
 {
 	return $this->SetKeywords($keywords);
 }
 
-function _SetCreator($creator)
+public function _SetCreator($creator)
 {
 	return $this->SetCreator($creator);
 }
 
-function _AliasNbPages($alias='{nb}')
+public function _AliasNbPages($alias='{nb}')
 {
 	return $this->AliasNbPages($alias);
 }
 
-function _Error($msg)
+public function _Error($msg)
 {
 	return $this->Eroor($msg);
 }
 
-function _Open()
+public function _Open()
 {
 	return $this->Open();
 }
 
-function _Close()
+public function _Close()
 {
 	return $this->Close();
 }
 
-function _AddPage($orientation='')
+public function _AddPage($orientation='')
 {
 	return $this->AddPage($orientation);
 }
 
-function _Header()
+public function _Header()
 {
 	//To be implemented in your own inherited class
 }
 
-function _Footer()
+public function _Footer()
 {
 	//To be implemented in your own inherited class
 }
 
-function _PageNo()
+public function _PageNo()
 {
 	return $this->PageNo();
 }
 
-function _SetDrawColor($r,$g=-1,$b=-1)
+public function _SetDrawColor($r,$g=-1,$b=-1)
 {
 	return $this->SetDrawColor($r,$g,$b);
 }
 
-function _SetFillColor($r,$g=-1,$b=-1)
+public function _SetFillColor($r,$g=-1,$b=-1)
 {
 	return $this->SetFillColor($r,$g,$b);
 }
 
-function _SetTextColor($r,$g=-1,$b=-1)
+public function _SetTextColor($r,$g=-1,$b=-1)
 {
 	return $this->SetTextColor($r,$g,$b);
 }
 
-function _GetStringWidth($s)
+public function _GetStringWidth($s)
 {
 	return $this->GetStringWidth($s);
 }
 
-function _SetLineWidth($width)
+public function _SetLineWidth($width)
 {
 	return $this->SetLineWidth($width);
 }
 
-function _Line($x1,$y1,$x2,$y2)
+public function _Line($x1,$y1,$x2,$y2)
 {
 	return $this->Line($x1,$y1,$x2,$y2);
 }
 
-function _Rect($x,$y,$w,$h,$style='')
+public function _Rect($x,$y,$w,$h,$style='')
 {
 	return $this->Rect($x,$y,$w,$h,$style);
 }
 
-function _AddFont($family,$style='',$file='')
+public function _AddFont($family,$style='',$file='')
 {
 	// FIXME: this is insecure, fonts should be gotten from
 	// inside Ariadne
 	return $this->AddFont($family,$style,$file);
 }
 
-function _SetFont($family,$style='',$size=0)
+public function _SetFont($family,$style='',$size=0)
 {
 	return $this->SetFont($family,$style,$size);
 }
 
-function _SetFontSize($size)
+public function _SetFontSize($size)
 {
 	return $this->SetFontSize($size);
 }
 
-function _AddLink()
+public function _AddLink()
 {
 	return $this->AddLink();
 }
 
-function _SetLink($link,$y=0,$page=-1)
+public function _SetLink($link,$y=0,$page=-1)
 {
 	return $this->SetLink($link,$y,$page);
 }
 
-function _Link($x,$y,$w,$h,$link)
+public function _Link($x,$y,$w,$h,$link)
 {
 	return $this->Link($x,$y,$w,$h,$link);
 }
 
-function _Text($x,$y,$txt)
+public function _Text($x,$y,$txt)
 {
 	return $this->Text($x,$y,$txt);
 }
 
-function _AcceptPageBreak()
+public function _AcceptPageBreak()
 {
 	return $this->AcceptPageBreak();
 }
 
-function _Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0,$link='')
+public function _Cell($w,$h=0,$txt='',$border=0,$ln=0,$align='',$fill=0,$link='')
 {
 	return $this->Cell($w,$h,$txt,$border,$ln,$align,$fill,$link);
 }
 
-function _MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0)
+public function _MultiCell($w,$h,$txt,$border=0,$align='J',$fill=0)
 {
 	return $this->MultiCell($w,$h,$txt,$border,$align,$fill);
 }
 
-function _Write($h,$txt,$link='')
+public function _Write($h,$txt,$link='')
 {
 	return $this->Write($h,$txt,$link);
 }
 
-function _Image($file,$x,$y,$w,$h=0,$type='',$link='')
+public function _Image($file,$x,$y,$w,$h=0,$type='',$link='')
 {
 	return $this->Image($file,$x,$y,$w,$h,$type,$link);
 }
 
-function _Ln($h='')
+public function _Ln($h='')
 {
 	return $this->Ln($h);
 }
 
-function _GetX()
+public function _GetX()
 {
 	return $this->GetX();
 }
 
-function _SetX($x)
+public function _SetX($x)
 {
 	return $this->SetX($x);
 }
 
-function _GetY()
+public function _GetY()
 {
 	return $this->GetY();
 }
 
-function _SetY($y)
+public function _SetY($y)
 {
 	return $this->SetY($y);
 }
 
-function _SetXY($x,$y)
+public function _SetXY($x,$y)
 {
 	return $this->SetXY($x,$y);
 }
 
-function _Output($file='',$download=false)
+public function _Output($file='',$download=false)
 {
 	return $this->Output($file,$download);
 }
 
-function _WriteHTML($html)
+public function _WriteHTML($html)
 {
 	return $this->WriteHTML($html);
 }
 
-function _OpenTag($tag,$attr)
+public function _OpenTag($tag,$attr)
 {
 	return $this->OpenTag($tag,$attr);
 }
 
-function _CloseTag($tag)
+public function _CloseTag($tag)
 {
 	return $this->CloseTag($tag);
 }
 
-function _SetStyle($tag,$enable)
+public function _SetStyle($tag,$enable)
 {
 	return $this->SetStyle($tag,$enable);
 }
 
-function _PutLink($URL,$txt)
+public function _PutLink($URL,$txt)
 {
 	return $this->PutLink($URL,$txt);
 }
@@ -292,7 +292,7 @@ function _PutLink($URL,$txt)
 // function hex2dec
 // returns an associative array (keys: R,G,B) from
 // a hex html code (e.g. #3FE5AA)
-function hex2dec($color = "#000000"){
+public function hex2dec($color = "#000000"){
     $R = substr($color, 1, 2);
     $rouge = hexdec($R);
     $V = substr($color, 3, 2);
@@ -307,11 +307,11 @@ function hex2dec($color = "#000000"){
 }
 
 // conversion pixel -> millimeter in 72 dpi
-function px2mm($px){
+public function px2mm($px){
     return $px*25.4/72;
 }
 
-function txtentities($html){
+public function txtentities($html){
     $trans = get_html_translation_table(HTML_ENTITIES);
     $trans = array_flip($trans);
     return strtr($html, $trans);
@@ -326,7 +326,7 @@ var $fontList;
 var $issetfont;
 var $issetcolor;
 
-function WriteHTML($html)
+public function WriteHTML($html)
 {
 	require_once('mod_unicode.php');
 	$html=unicode::utf8toiso8859($html);
@@ -363,7 +363,7 @@ function WriteHTML($html)
     }
 }
 
-function OpenTag($tag,$attr)
+public function OpenTag($tag,$attr)
 {
     //Opening tag
     switch($tag){
@@ -417,7 +417,7 @@ function OpenTag($tag,$attr)
     }
 }
 
-function CloseTag($tag)
+public function CloseTag($tag)
 {
     //Closing tag
     if($tag=='STRONG')
@@ -439,7 +439,7 @@ function CloseTag($tag)
     }
 }
 
-function SetStyle($tag,$enable)
+public function SetStyle($tag,$enable)
 {
     //Modify style and select corresponding font
     $this->$tag+=($enable ? 1 : -1);
@@ -450,7 +450,7 @@ function SetStyle($tag,$enable)
     $this->SetFont('',$style);
 }
 
-function PutLink($URL,$txt)
+public function PutLink($URL,$txt)
 {
     //Put a hyperlink
     $this->SetTextColor(0,0,255);
