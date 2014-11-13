@@ -14,6 +14,7 @@
 		public function save( $cacheImage, $freshTime );
 	}
 
-	class ar_core_cacheDisk implements ar_core_cacheInterface {
+	// FIXME: should this class have an implementation?
+	abstract class ar_core_cacheDisk implements ar_core_cacheInterface {
 
 	}
