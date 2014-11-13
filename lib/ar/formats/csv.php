@@ -18,7 +18,6 @@
 			if ( isset( self::$configuration[$option] ) ) {
 				self::$configuration[$option] = $value;
 			}
-			return $this;
 		}
 
 		public static function parse( $text, $configuration = array() ) {
