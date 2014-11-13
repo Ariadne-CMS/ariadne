@@ -1,36 +1,36 @@
 <?php
 	global $store;
 
-		$properties = Array();
-		$properties['state'] = Array(
-			'fields' => Array(
-				'value' => Array(
+		$properties = array();
+		$properties['state'] = array(
+			'fields' => array(
+				'value' => array(
 					'type' => 'string',
 					'size' => 16
 				),
-				'group' => Array(
+				'group' => array(
 					'type' => 'string',
 					'size' => 16
 				),
-				'operator' => Array(
+				'operator' => array(
 					'type' => 'string',
 					'size' => 255
 				)
 			),
-			'indexes' => Array(
-				0 => Array( 0 => 'value'),
-				1 => Array( 0 => 'group'),
-				2 => Array( 0 => 'operator')
+			'indexes' => array(
+				0 => array( 0 => 'value'),
+				1 => array( 0 => 'group'),
+				2 => array( 0 => 'operator')
 			)
 		);
 
-		$properties['name'] = Array(
-			'fields' => Array(
-				'value' => Array(
+		$properties['name'] = array(
+			'fields' => array(
+				'value' => array(
 					'type' => 'string',
 					'size' => 255
 				),
-				'nls' => Array(
+				'nls' => array(
 					'type' => 'string',
 					'size' => 4,
 					'default' => 'none'
@@ -38,22 +38,22 @@
 			)
 		);
 
-		$properties['value'] = Array(
-			'fields' => Array(
-				'value' => Array(
+		$properties['value'] = array(
+			'fields' => array(
+				'value' => array(
 					'type' => 'string',
 					'size' => 255
 				)
 			)
 		);
 
-		$properties['text'] = Array(
-			'fields' => Array(
-				'value' => Array(
+		$properties['text'] = array(
+			'fields' => array(
+				'value' => array(
 					'type' => 'string',
 					'size' => 255
 				),
-				'nls' => Array(
+				'nls' => array(
 					'type' => 'string',
 					'size' => 4,
 					'default' => 'none'
@@ -61,79 +61,79 @@
 			)
 		);
 
-		$properties['locked'] = Array(
-			'fields' => Array(
-				'id' => Array(
+		$properties['locked'] = array(
+			'fields' => array(
+				'id' => array(
 					'type' => 'string',
 					'size' => 32
 				),
-				'duration' => Array(
+				'duration' => array(
 					'type' => 'number',
 					'size' => 1
 				)
 			)
 		);
 
-		$properties['login'] = Array(
-			'fields' => Array(
-				'value' => Array(
+		$properties['login'] = array(
+			'fields' => array(
+				'value' => array(
 					'type' => 'string',
 					'size' => 32
 				)
 			)
 		);
 
-		$properties['members'] = Array(
-			'fields' => Array(
-				'login' => Array(
+		$properties['members'] = array(
+			'fields' => array(
+				'login' => array(
 					'type' => 'string',
 					'size' => 32
 				)
 			)
 		);
 
-		$properties['time'] = Array(
-			'fields' => Array(
-				'ctime' => Array(
+		$properties['time'] = array(
+			'fields' => array(
+				'ctime' => array(
 					'type' => 'number',
 					'size' => 1
 				),
-				'mtime' => Array(
+				'mtime' => array(
 					'type' => 'number',
 					'size' => 1
 				),
-				'muser' => Array(
+				'muser' => array(
 					'type' => 'string',
 					'size' => 32
 				)
 			),
-			'indexes' => Array(
-				0 => Array( 0 => 'ctime'),
-				1 => Array( 0 => 'mtime'),
-				2 => Array( 0 => 'muser')
+			'indexes' => array(
+				0 => array( 0 => 'ctime'),
+				1 => array( 0 => 'mtime'),
+				2 => array( 0 => 'muser')
 			)
 		);
 
-		$properties['owner'] = Array(
-			'fields' => Array(
-				'value' => Array(
+		$properties['owner'] = array(
+			'fields' => array(
+				'value' => array(
 					'type' => 'string',
 					'size' => 32
 				)
 			)
 		);
 
-		$properties['custom'] = Array(
-			'fields' => Array(
-				'name' => Array(
+		$properties['custom'] = array(
+			'fields' => array(
+				'name' => array(
 					'type' => 'string',
 					'size' => 32
 				),
-				'value' => Array(
+				'value' => array(
 					'type' => 'string',
 					'size' => 255
 				),
-				'nls' => Array(
+				'nls' => array(
 					'type' => 'string',
 					'size' => 4,
 					'default' => 'none'
@@ -141,108 +141,108 @@
 			)
 		);
 
-		$properties['timeframe'] = Array(
-			'fields' => Array(
-				'start' => Array(
+		$properties['timeframe'] = array(
+			'fields' => array(
+				'start' => array(
 					'type' => 'number',
 					'size' => 1
 				),
-				'end' => Array(
+				'end' => array(
 					'type' => 'number',
 					'size' => 1
 				)
 			)
 		);
 
-		$properties['priority'] = Array(
-			'fields' => Array(
-				'value' => Array(
+		$properties['priority'] = array(
+			'fields' => array(
+				'value' => array(
 					'type' => 'number',
 					'size' => 1
 				)
 			)
 		);
 
-		$properties['article'] = Array(
-			'fields' => Array(
-				'start' => Array(
+		$properties['article'] = array(
+			'fields' => array(
+				'start' => array(
 					'type' => 'number',
 					'size' => 1
 				),
-				'end' => Array(
+				'end' => array(
 					'type' => 'number',
 					'size' => 1
 				),
-				'display' => Array(
+				'display' => array(
 					'type' => 'string',
 					'size' => 50
 				)
 			)
 		);
 
-		$properties['published'] = Array(
-			'fields' => Array(
-				'value' => Array(
+		$properties['published'] = array(
+			'fields' => array(
+				'value' => array(
 					'type' => 'number',
 					'size' => 1
 				)
 			)
 		);
 
-		$properties['address'] = Array(
-			'fields' => Array(
-				'street' => Array(
+		$properties['address'] = array(
+			'fields' => array(
+				'street' => array(
 					'type' => 'string',
 					'size' => 50
 				),
-				'zipcode' => Array(
+				'zipcode' => array(
 					'type' => 'string',
 					'size' => 6
 				),
-				'city' => Array(
+				'city' => array(
 					'type' => 'string',
 					'size' => 50
 				),
-				'state' => Array(
+				'state' => array(
 					'type' => 'string',
 					'size' => 50
 				),
-				'country' => Array(
+				'country' => array(
 					'type' => 'string',
 					'size' => 50
 				)
 			),
-			'indexes' => Array(
-				0 => Array( 0 => 'city', 1 => 'street' ),
-				1 => Array( 0 => 'zipcode' ),
-				2 => Array( 0 => 'country', 1 => 'state' )
+			'indexes' => array(
+				0 => array( 0 => 'city', 1 => 'street' ),
+				1 => array( 0 => 'zipcode' ),
+				2 => array( 0 => 'country', 1 => 'state' )
 			)
 		);
 
-		$properties['url'] = Array(
-			'fields' => Array(
-				'host' => Array(
+		$properties['url'] = array(
+			'fields' => array(
+				'host' => array(
 					'type' => 'string',
 					'size' => 50
 				),
-				'port' => Array(
+				'port' => array(
 					'type' => 'number',
 					'size' => 1
 				),
-				'protocol' => Array(
+				'protocol' => array(
 					'type' => 'string',
 					'size' => 10
 				)
 			)
 		);
 
-		$properties['mimetype'] = Array(
-			'fields' => Array(
-				'type' => Array(
+		$properties['mimetype'] = array(
+			'fields' => array(
+				'type' => array(
 					'type' => 'string',
 					'size' => 20
 				),
-				'subtype' => Array(
+				'subtype' => array(
 					'type' => 'string',
 					'size' => 20
 				)
@@ -251,13 +251,13 @@
 
 		// create fulltext property (if fulltext search is supported)
 		if ($store->is_supported("fulltext")) {
-			$properties['fulltext'] = Array(
-				'fields' => Array(
-					'value' => Array(
+			$properties['fulltext'] = array(
+				'fields' => array(
+					'value' => array(
 						'type' => 'text',
 						'size' => 1
 					),
-					'nls' => Array(
+					'nls' => array(
 						'type' => 'string',
 						'size' => 4,
 						'default' => 'none'
@@ -267,35 +267,35 @@
 		}
 
 
-		$properties['references'] = Array(
-			'fields' => Array(
-				'path' => Array(
+		$properties['references'] = array(
+			'fields' => array(
+				'path' => array(
 					'type' => 'string',
 					'size' => 255
 				)
 			)
 		);
 
-		$cacheproperties['template'] = Array(
-			'fields' => Array(
-				'name' => Array(
+		$cacheproperties['template'] = array(
+			'fields' => array(
+				'name' => array(
 					'type' => 'string',
 					'size' => 32
 				),
-				'value' => Array(
+				'value' => array(
 					'type' => 'string',
 					'size' => 255
 				)
 			)
 		);
 
-		$cacheproperties['objectref'] = Array(
-			'fields' => Array(
-				'name' => Array(
+		$cacheproperties['objectref'] = array(
+			'fields' => array(
+				'name' => array(
 					'type' => 'string',
 					'size' => 32
 				),
-				'value' => Array(
+				'value' => array(
 					'type' => 'string',
 					'size' => 255
 				)
