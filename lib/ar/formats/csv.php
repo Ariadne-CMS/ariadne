@@ -199,7 +199,6 @@
 		);
 
 		protected static function str_getcsv( $input, $delimiter=',', $enclosure='"', $escape='\\' ) {
-			$elements = null;
 			if ( function_exists('str_getcsv') ) {
 				$elements = str_getcsv( $input, $delimiter, $enclosure, $escape );
 			} else {
