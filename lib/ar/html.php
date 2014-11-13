@@ -38,9 +38,9 @@
 		}
 
 		public static function doctype( $type = 'strict', $quirksmode = false ) {
+			$version = '';
 			if ($type) {
 				$type = strtolower( $type );
-				$version = '';
 				switch ( $type ) {
 					case 'transitional' :
 					case 'frameset' :
