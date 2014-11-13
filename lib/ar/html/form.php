@@ -33,7 +33,7 @@
 
 		public    $action, $method, $name, $class, $id, $requiredLabel, $encType;
 
-		function __construct($fields=null, $buttons=null, $action='', $method="POST", $requiredLabel=null) {
+		public function __construct($fields=null, $buttons=null, $action='', $method="POST", $requiredLabel=null) {
 			if ( isset($fields) ) {
 				$this->fields = $this->parseFields($fields);
 			}
@@ -85,8 +85,6 @@
 		}
 
 		public function getHTML() {
-			$content = '';
-			$buttonContent = '';
 			$attributes = array();
 
 			if (isset($this->name)) {
