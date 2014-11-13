@@ -91,6 +91,7 @@
 		public function __construct( $text, $configuration = array() ) {
 			$this->configuration = $configuration + $this->configuration;
 			if ( !is_array($text) ) {
+				$lines = array();
 				$text = $this->convertToUTF8( $text );
 				$maxBuffer = 10 * 1024 * 1024;
 				$file = fopen( "php://temp/maxmemory:$maxBuffer", 'r+' );
@@ -99,7 +100,6 @@
 				do {
 					$line = fgetcsv( $file, 0, $this->configuration['delimiter'], $this->configuration['enclosure'], $this->configuration['escape'] );
 					$lines[] = $line;
-
 				} while ( !feof( $file ) && $line !== false );
 				fclose($file);
 				unset($file);
@@ -240,6 +240,7 @@
 
 		public function __toString() {
 			$elements = (array) $this;
+			$result = '';
 			foreach( $elements as $element ) {
 				$result .= $this->escape( $element );
 				$result .= $this->configuration['delimiter'];
