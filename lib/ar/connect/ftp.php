@@ -10,24 +10,32 @@
 		public static $transferMode = FTP_BINARY;
 
 		public static function get( $url, $options = array() ) {
-			$path = parse_url( $url, PHP_URL_PATH );
-			$fileName = basename($path);
-			$client = new ar_connect_ftpClient( $url, $options );
-			if ( !ar_error::isError( $client) ) {
-				return $client->get( $fileName );
+			$path = parse_url($url, PHP_URL_PATH );
+			if ($path !== false ) {
+				$fileName = basename($path);
+				$client = new ar_connect_ftpClient( $url, $options );
+				if ( !ar_error::isError( $client) ) {
+					return $client->get( $fileName );
+				} else {
+					return $client;
+				}
 			} else {
-				return $client;
+				return ar::error( "Could not parse url ".(string)$url, 11);
 			}
 		}
 
 		public static function put( $url, $contents, $options = array() ) {
 			$path = parse_url( $url, PHP_URL_PATH );
-			$fileName = basename($path);
-			$client = new ar_connect_ftpClient($url, $options );
-			if ( !ar_error::isError( $client ) ) {
-				return $client->put( $contents, $fileName );
+			if ($path !== false ) {
+				$fileName = basename($path);
+				$client = new ar_connect_ftpClient($url, $options );
+				if ( !ar_error::isError( $client ) ) {
+					return $client->put( $contents, $fileName );
+				} else {
+					return $client;
+				}
 			} else {
-				return $client;
+				return ar::error( "Could not parse url ".(string)$url, 11);
 			}
 		}
 
@@ -135,9 +143,13 @@
 		public function get( $file, $options = array() ) {
 			$this->options = array_merge( $this->options, (array) $options );
 			$fp = fopen("php://temp/maxmemory:10485760", "w");
-			ftp_fget( $this->connection, $fp, $file, $this->options['mode'] );
-			fseek( $fp, 0 );
-			$result = stream_get_contents( $fp );
+			$result = @ftp_fget( $this->connection, $fp, $file, $this->options['mode'] );
+			if( $result ) {
+				fseek( $fp, 0 );
+				$result = stream_get_contents( $fp );
+			} else {
+				$result = ar::error( "Failed to get file $file", 12);
+			}
 			fclose( $fp );
 			return $result;
 		}
