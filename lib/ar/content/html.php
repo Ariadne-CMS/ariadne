@@ -147,11 +147,11 @@
 			}
 			if ( !isset($name) ) {
 				$name = 'name';
-				$editName = "[$nls][page]";
+				//$editName = "[$nls][page]";
 			} else if ($name[0] != '[') {
-				$editName = "[$nls][$name]";
+				//$editName = "[$nls][$name]";
 			} else {
-				$editName = $name;
+				//$editName = $name;
 				$temp = explode( '[' , $name );
 				$nls = substr($temp[0], 0, -1);
 				$name = substr($temp[1], 0, -1);
@@ -179,11 +179,11 @@
 			}
 			if ( !isset($name) ) {
 				$name = 'name';
-				$editName = "[$nls][name]";
+				//$editName = "[$nls][name]";
 			} else if ($name[0] != '[') {
-				$editName = "[$nls][$name]";
+				//$editName = "[$nls][$name]";
 			} else {
-				$editName = $name;
+				////$editName = $name;
 				$temp = explode( '[' , $name );
 				$nls = substr($temp[0], 0, -1);
 				$name = substr($temp[1], 0, -1);
@@ -288,7 +288,7 @@
 			}
 			$html = URL::RAWtoAR($html, $language);
 			$newpage = $html;
-			$nodes = htmlparser::parse($newpage, Array('noTagResolving' => true));
+			$nodes = htmlparser::parse($newpage, array('noTagResolving' => true));
 			// FIXME: the isChanged check is paranoia mode on. New code ahead.
 			// will only use the new compile method when it is needed (htmlblocks)
 			// otherwise just return the $html, so 99.9% of the sites don't walk
@@ -319,7 +319,7 @@
 			if ($node['attribs']['ar:type'] == "template") {
 					$path		= $me->make_path($node['attribs']['ar:path']);
 					$template	= $node['attribs']['ar:name'];
-					$argsarr	= Array();
+					$argsarr	= array();
 					if (is_array($node['attribs'])) {
 						foreach ($node['attribs'] as $key => $value) {
 							if (substr($key, 0, strlen('arargs:')) == 'arargs:') {
@@ -330,8 +330,8 @@
 					}
 					$args = implode('&', $argsarr);
 
-					$node['children'] = Array();
-					$node['children'][] = Array(
+					$node['children'] = array();
+					$node['children'][] = array(
 						"type" => "text",
 						"html" => "{arCall:$path$template?$args}"
 					);
@@ -372,9 +372,9 @@
 			foreach ($refs as $ref) {
 				if (substr($ref, -1) != '/' && !$me->exists($ref)) {
 					// Drop the template name
-					$ref	= substr($ref, 0, strrpos($ref, "/")+1);
+					$ref = substr($ref, 0, strrpos($ref, "/")+1);
 				}
-				$result[]	= $ref;
+				$result[] = $ref;
 			}
 			return $result;
 		}
@@ -388,12 +388,12 @@
 					'^(A|IMG|DIV)$' => array(
 						'^ar:.*' => false,
 						'^arargs:.*' => false,
-						'^class' => Array(
+						'^class' => array(
 							'htmlblock[ ]*uneditable[ ]*' => false
 						)
 					)
 				),
-				'delete_emptied' => Array(
+				'delete_emptied' => array(
 					'div', 'a'
 				)
 			);
