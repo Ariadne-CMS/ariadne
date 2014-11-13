@@ -6,12 +6,12 @@
 	class ar_formats_csv extends arBase {
 
 		static protected $configuration = array(
-			"delimiter"		=> ",",
-			"enclosure"		=> '"',
-			"escape"        => '"',
-			"encoding"		=> "ISO-8859-1",
-			"lineEnd"		=> "\n",
-			"headers"       => true
+			"delimiter" => ",",
+			"enclosure" => '"',
+			"escape"    => '"',
+			"encoding"  => "ISO-8859-1",
+			"lineEnd"   => "\n",
+			"headers"   => true
 		);
 
 		public static function configure( $option, $value ) {
@@ -78,13 +78,13 @@
 	class ar_formats_csvData extends ArrayObject implements ar_formats_csvFeedInterface {
 
 		protected $configuration = array(
-			"delimiter"		=> ",",
-			"enclosure"		=> '"',
-			"escape"        => '"',
-			"encoding"		=> "ISO-8859-1",
-			"lineEnd"		=> "\n",
-			"forceEnclosure"=> false,
-			"headers"       => true
+			"delimiter"      => ",",
+			"enclosure"      => '"',
+			"escape"         => '"',
+			"encoding"       => "ISO-8859-1",
+			"lineEnd"        => "\n",
+			"forceEnclosure" => false,
+			"headers"        => true
 		);
 
 		protected $current = 0;
@@ -191,8 +191,8 @@
 	class ar_formats_csvLine extends ArrayObject implements arKeyValueStoreInterface {
 
 		protected $configuration = array(
-			"delimiter"		=> ",",
-			"enclosure"		=> '"',
+			"delimiter"     => ",",
+			"enclosure"     => '"',
 			"escape"        => '"',
 			"forceEnclosure"=> false,
 			"headers"       => array()
@@ -302,13 +302,13 @@
 	class ar_formats_csvStream extends arBase implements Iterator, ar_formats_csvFeedInterface {
 
 		protected $configuration = array(
-			"seperator"		=> ",",
-			"quotation"		=> '"',
-			"escape"        => '"',
-			"encoding"		=> "ISO-8859-1",
-			"lineEnd"		=> "\n",
-			"forceEnclosure"=> false,
-			"headers"       => true
+			"seperator"      => ",",
+			"quotation"      => '"',
+			"escape"         => '"',
+			"encoding"       => "ISO-8859-1",
+			"lineEnd"        => "\n",
+			"forceEnclosure" => false,
+			"headers"        => true
 		);
 
 		protected $file = null;
