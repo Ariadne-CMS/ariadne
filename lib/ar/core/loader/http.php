@@ -149,19 +149,19 @@
 					$this->request['params']['arOriginalFunction'] = $this->request['template'];
 					$this->request['user'] = 'public';
 					$this->request['template'] = 'user.login.html';
-					$this->handleRequest($request);
+					$this->handleRequest($this->request);
 				break;
 				case ar_exceptions::SESSION_TIMEOUT :
 					$this->request['params']['arLoginMessage'] = $exception->getMessage();
 					$this->request['params']['arOriginalFunction'] = $this->request['template'];
 					$this->request['template'] = 'user.session.timeout.html';
-					$this->handleRequest($request);
+					$this->handleRequest($this->request);
 				break;
 				case ar_exceptions::PASSWORD_EXPIRED :
 					$this->request['params']['arLoginMessage'] = $exception->getMessage();
 					$this->request['params']['arOriginalFunction'] = $this->request['template'];
 					$this->request['template'] = 'user.password.expired.html';
-					$this->handleRequest($request);
+					$this->handleRequest($this->request);
 				break;
 				case ar_exceptions::OBJECT_NOT_FOUND :
 					$this->request['params']['arLoginMessage'] = $exception->getMessage();
@@ -170,7 +170,7 @@
 					$this->request['template'] = 'user.notfound.html';
 					try {
 						$this->request['path'] = $this->ariadne->findNearestPath($this->request['path']);
-						$this->handleRequest($request);
+						$this->handleRequest($this->request);
 					} catch ( ar_exception $e ) {
 						if ($e->getCode()!=ar_exceptions::OBJECT_NOT_FOUND) {
 							$this->handleExceptions($e);
