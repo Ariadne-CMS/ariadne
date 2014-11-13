@@ -35,7 +35,7 @@
 
 	class ar_cache extends arBase {
 
-		static $cacheStore = null;
+		public static $cacheStore = null;
 
 		public static function config( $options ) {
 			if ( $options['cacheStore'] ) {
@@ -128,9 +128,9 @@
 		// TODO: allow more control on retrieval:
 		// - get contents from cache even though cache may be stale
 		//   perhaps through an extra option in __construct?
-		var $cacheStore = null;
-		var $cacheController = null;
-		var $cacheTimeout = '2 hours';
+		public $cacheStore = null;
+		public $cacheController = null;
+		public $cacheTimeout = '2 hours';
 
 		public function __construct( $object, $cacheStore, $cacheTimeout = null, $cacheController = null ) {
 			parent::__construct( $object );
