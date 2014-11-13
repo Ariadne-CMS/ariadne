@@ -505,7 +505,7 @@
 					$browserCachePrivate = true;
 					$browserCacheMaxAge = 1800;
 					$browserCacheNoStore = false;
-					$browserCacheNoCache = false; 
+					$browserCacheNoCache = false;
 					$browserCacheMustRevalidate = false;
 				} else */
 				if ($session_id) {
@@ -641,7 +641,7 @@
 				// header("X-Ariadne-Cache-Skipped: cached image used");
 			} else {
 				// header("X-Ariadne-Cache-Skipped: Writing cache now");
-				// Cache setting values: 
+				// Cache setting values:
 				// -2 = Refresh on change; Set the cache time on server to 999 hours (unlimited);
 				// -1 = Do not cache
 				// 0  = Inherit
@@ -669,7 +669,7 @@
 					if ($cacheSetting == -1) {
 						// If someone told us to not cache, skip checking because nothing anyone else tells us will change this fact.
 						break;
-					}			
+					}
 				}
 				// header("X-Ariadne-Cache-Setting: $cacheSetting");
 

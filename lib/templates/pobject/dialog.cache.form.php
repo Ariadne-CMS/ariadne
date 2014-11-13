@@ -86,7 +86,7 @@
 				<label for="browserCacheProxyRevalidate"><?php echo $ARnls["ariadne:cache:proxy-revalidate"]; ?></label>
 			</div>
 		</fieldset>
-		
+
 <?php
 	}
 ?>

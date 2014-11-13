@@ -1906,7 +1906,7 @@ debug("loadLibrary: loading cache for $this->path");
 					}
 					$ARCurrent->cacheTemplateChain[$template["arTemplateId"]][$template['arCallTemplate']][$template['arCallTemplateType']]++;
 
-				
+
 					debug("CheckConfig: arCallTemplate=".$template["arCallTemplate"].", arTemplateId=".$template["arTemplateId"],"object");
 					// $arCallTemplate=$this->store->get_config("files")."templates".$arCallTemplate;
 					// check if template exists, if it doesn't exist, then continue the original template that called CheckConfig
