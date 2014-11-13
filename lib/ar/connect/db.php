@@ -5,12 +5,12 @@ ar_pinp::allow('ar_connect_dbClient');
 
 class ar_connect_db extends arBase {
 
-	function connect( $dsn, $username='', $password='', $driver_options=array() ) {
+	public static function connect( $dsn, $username='', $password='', $driver_options=array() ) {
 		// deprecated
 		return self::client( $dsn, $username, $password, $driver_options );
 	}
 
-	function client( $dsn, $username='', $password='', $driverOptions = array() ) {
+	public static function client( $dsn, $username='', $password='', $driverOptions = array() ) {
 		try {
 			return new ar_connect_dbClient( new PDO($dsn, $username, $password, $driverOptions) );
 		} catch( Exception $e ) {
@@ -24,7 +24,7 @@ class ar_connect_db extends arBase {
 
 class ar_connect_dbClient extends arWrapper implements Iterator {
 
-	function __construct( $wrapped ) {
+	public function __construct( $wrapped ) {
 		parent::__construct($wrapped);
 		$this->__class = 'ar_connect_dbClient';
 		if ($this->wrapped instanceof PDOStatement) {
@@ -36,15 +36,15 @@ class ar_connect_dbClient extends arWrapper implements Iterator {
 		$this->cursor = 0;
 	}
 
-	function current() {
+	public function current() {
 		return $this->row;
 	}
 
-	function key() {
+	public function key() {
 		return $this->cursor;
 	}
 
-	function next() {
+	public function next() {
 		if ($this->wrapped instanceof PDOStatement) {
 			$this->row = $this->wrapped->fetch();
 		}
@@ -54,7 +54,7 @@ class ar_connect_dbClient extends arWrapper implements Iterator {
 		$this->cursor++;
 	}
 
-	function rewind() {
+	public function rewind() {
 		if ($this->wrapped instanceof PDOStatement) {
 			$this->wrapped->execute();
 			$this->row = $this->wrapped->fetch();
@@ -65,7 +65,7 @@ class ar_connect_dbClient extends arWrapper implements Iterator {
 		$this->cursor = 0;
 	}
 
-	function valid() {
+	public function valid() {
 		// note: somehow isset() returns false here, so use is_array instead.
 		return is_array($this->row);
 	}
