@@ -2,11 +2,10 @@
 <?php
 	// cache store
 
-	$inst_store = $cache_config["dbms"]."store_install";
-	$cachestore=new $inst_store(".",$cache_config);
+	$cache_store = $cache_config["dbms"]."store_install";
+	$cachestore=new $cache_store(".",$cache_config);
 
 	require_once("../init_database_data.php");
-	require_once($store_config['code']."stores/".$store_config["dbms"]."store_install.phtml");
 
 	echo "== creating Ariadne Cache Store\n\n";
 	if ($cachestore->initialize()) {
