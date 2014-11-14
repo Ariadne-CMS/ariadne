@@ -149,9 +149,7 @@
 
 		public function __construct( $path, $eventName = null, $objectType = null, $capture = false ) {
 			$this->path = $path;
-			$this->eventName = $eventName;
-			$this->objectType = $objectType;
-			$this->capture = $capture;
+			$this->setEventProperties( $eventName, $objectType, $capture);
 		}
 
 		public function call( $method, $args = array() ) {
@@ -162,21 +160,23 @@
 		}
 
 		public function listen( $eventName, $objectType = null ) {
-			$this->eventName = $eventName;
-			$this->objectType = $objectType;
-			$this->capture = false;
+			$this->setEventProperties( $eventName, $objectType, false);
 			return $this;
 		}
 
 		public function capture( $eventName, $objectType = null ) {
-			$this->eventName = $eventName;
-			$this->objectType = $objectType;
-			$this->capture = true;
+			$this->setEventProperties( $eventName, $objectType, true);
 			return $this;
 		}
 
 		public function fire($eventName, $eventData, $objectType = null) {
 			return ar_events::fire($eventName, $eventData, $objectType = null, $this->path);
+		}
+
+		private function setEventProperties($eventName, $objectType, $capture) {
+			$this->eventName = $eventName;
+			$this->objectType = $objectType;
+			$this->capture = (bool)$capture;
 		}
 	}
 
