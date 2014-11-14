@@ -32,9 +32,13 @@ before_script:
 
 script:
     - bash ./tests/run.sh
-    - phpunit --verbose --bootstrap tests/bootstrap.php tests/unit/
+    - phpunit --coverage-clover=coverage.clover --verbose --bootstrap tests/bootstrap.php tests/unit/
 
 notifications:
     email: false
     irc: "open.ircnet.org#ariadne"
+
+after_script:
+    - wget https://scrutinizer-ci.com/ocular.phar
+    - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 
