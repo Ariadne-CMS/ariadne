@@ -1,6 +1,6 @@
 <?php
 
-	global $auth_config,$store_config,$AR,$ariadne,$ax_config,$ARCurrent,$ARConfig,$ARLoader;
+	global $auth_config,$store_config,$cache_config,$session_config,$AR,$ariadne,$ax_config,$ARCurrent,$ARConfig,$ARLoader;
 
 	if(!defined('AriadneBasePath') ) {
 		define('AriadneBasePath', $ariadne);
@@ -11,6 +11,7 @@
 	require_once(AriadneBasePath."/../vendor/autoload.php");
 	require_once(AriadneBasePath.'/configs/ariadne.phtml');
 	require_once(AriadneBasePath."/configs/sessions.phtml");
+	require_once(AriadneBasePath."/configs/cache.phtml");
 	require_once(AriadneBasePath."/configs/authentication.phtml");
 	require_once(AriadneBasePath."/configs/store.phtml");
 	require_once(AriadneBasePath."/ar.php");
