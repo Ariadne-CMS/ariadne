@@ -181,7 +181,11 @@
 		if (file_exists($cachedimage)) {
 			$staleTotalTime = filemtime($cachedimage) - filectime($cachedimage);
 			$staleCurrent = $timecheck - filectime($cachedimage);
-			$stalePercentage = sprintf("%.2f", 100 * $staleCurrent / $staleTotalTime);
+			if( $staleTotalTime != 0) {
+				$stalePercentage = sprintf("%.2f", 100 * $staleCurrent / $staleTotalTime);
+			} else {
+				$stalePercentage = 100;
+			}
 			if ($stalePercentage < 0) {
 				$stalePercentage = 0;
 			} else if ($stalePercentage > 100) {
@@ -527,16 +531,18 @@
 				$browserCachecacheSetting = 0; // Default = inherit;
 
 				// FIXME: The defaults for with session ID are now to not cache;
-				foreach ($ARCurrent->cacheCallChainSettings as $objectId => $pathCacheSetting) {
-					$browserCachePrivate = $browserCachePrivate || $pathCacheSetting['browserCachePrivate']; // If anyone says 'private', make it so.
-					$browserCacheNoStore = $browserCacheNoStore || $pathCacheSetting['browserCacheNoStore']; // If anyone says 'no-store', make it so.
-					$browserCacheNoCache = $browserCacheNoCache || $pathCacheSetting['browserCacheNoCache']; // If anyone says 'no-cache', make it so.
-					$browserCacheMustRevalidate = $browserCacheMustRevalidate || $pathCacheSetting['browserCacheMustRevalidate']; // If anyone says 'must-revalidate', make it so.
-					$browserCacheNoTransform = $browserCacheNoTransform || $pathCacheSetting['browserCacheNoTransform']; // If anyone says 'no-transform', make it so.
-					$browserCacheProxyRevalidate = $browserCacheProxyRevalidate || $pathCacheSetting['browserCacheProxyRevalidate']; // If anyone says 'proxy-revalidate', make it so.
+				if(is_array($ARCurrent->cacheCallChainSettings) ) {
+					foreach ($ARCurrent->cacheCallChainSettings as $objectId => $pathCacheSetting) {
+						$browserCachePrivate = $browserCachePrivate || $pathCacheSetting['browserCachePrivate']; // If anyone says 'private', make it so.
+						$browserCacheNoStore = $browserCacheNoStore || $pathCacheSetting['browserCacheNoStore']; // If anyone says 'no-store', make it so.
+						$browserCacheNoCache = $browserCacheNoCache || $pathCacheSetting['browserCacheNoCache']; // If anyone says 'no-cache', make it so.
+						$browserCacheMustRevalidate = $browserCacheMustRevalidate || $pathCacheSetting['browserCacheMustRevalidate']; // If anyone says 'must-revalidate', make it so.
+						$browserCacheNoTransform = $browserCacheNoTransform || $pathCacheSetting['browserCacheNoTransform']; // If anyone says 'no-transform', make it so.
+						$browserCacheProxyRevalidate = $browserCacheProxyRevalidate || $pathCacheSetting['browserCacheProxyRevalidate']; // If anyone says 'proxy-revalidate', make it so.
 
-					$browserCacheMaxAge = isset($pathCacheSetting['browserCacheMaxAge']) ? min($browserCacheMaxAge, $pathCacheSetting['browserCacheMaxAge']) : $browserCacheMaxAge;
-					$browserCacheSMaxAge = isset($pathCacheSetting['browserCacheSMaxAge']) ? min($browserCacheSMaxAge, $pathCacheSetting['browserCacheSMaxAge']) : $browserCacheSMaxAge;
+						$browserCacheMaxAge = isset($pathCacheSetting['browserCacheMaxAge']) ? min($browserCacheMaxAge, $pathCacheSetting['browserCacheMaxAge']) : $browserCacheMaxAge;
+						$browserCacheSMaxAge = isset($pathCacheSetting['browserCacheSMaxAge']) ? min($browserCacheSMaxAge, $pathCacheSetting['browserCacheSMaxAge']) : $browserCacheSMaxAge;
+					}
 				}
 
 				ldSetBrowserCache(
@@ -648,27 +654,29 @@
 				// > 0: Refresh on request. The number is the amount of hours that the cache is 'fresh'. This can be a fraction/float value;
 
 				$cacheSetting = 0; // Default = inherit;
-				foreach ($ARCurrent->cacheCallChainSettings as $objectId => $pathCacheSetting) {
-					$serverCache = $pathCacheSetting['serverCache'];
+				if( is_array($ARCurrent->cacheCallChainSettings)) {
+					foreach ($ARCurrent->cacheCallChainSettings as $objectId => $pathCacheSetting) {
+						$serverCache = $pathCacheSetting['serverCache'];
 
-					if ($serverCache == -2) {
-						// Sorry, we meant that the cache image should be valid forever;
-						$serverCache = 999;
-					}
+						if ($serverCache == -2) {
+							// Sorry, we meant that the cache image should be valid forever;
+							$serverCache = 999;
+						}
 
-					if ($serverCache == 0 || !isset($serverCache)) {
-						// This path does not want to play;
-						continue;
-					}
-					if ($cacheSetting == 0) {
-						$cacheSetting = $serverCache;
-					} else {
-						$cacheSetting = min($serverCache, $cacheSetting);
-					}
+						if ($serverCache == 0 || !isset($serverCache)) {
+							// This path does not want to play;
+							continue;
+						}
+						if ($cacheSetting == 0) {
+							$cacheSetting = $serverCache;
+						} else {
+							$cacheSetting = min($serverCache, $cacheSetting);
+						}
 
-					if ($cacheSetting == -1) {
-						// If someone told us to not cache, skip checking because nothing anyone else tells us will change this fact.
-						break;
+						if ($cacheSetting == -1) {
+							// If someone told us to not cache, skip checking because nothing anyone else tells us will change this fact.
+							break;
+						}
 					}
 				}
 				// header("X-Ariadne-Cache-Setting: $cacheSetting");
