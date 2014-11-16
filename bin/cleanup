@@ -88,11 +88,13 @@ function recurse($func, $dir=".") {
 			if(!in_array($entry,$skipentries)) {
 				if (is_dir($dir.'/'.$entry)) {
 					recurse($func,$dir.'/'.$entry);
+				} else {
+					$func($dir.'/'.$entry);
 				}
-				$func($dir.'/'.$entry);
 			}
 		}
 		$d->close();
+		@unlink($dir);
 	}
 }
 
