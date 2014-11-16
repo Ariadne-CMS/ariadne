@@ -12,6 +12,7 @@ EOD;
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
 		$this->assertEquals("<?php  \$object->test = 'test';  ?>",$res);
+		$this->assertTrue((bool)$res);
 	}
 
 	function testObjectVariables() {
@@ -24,6 +25,7 @@ EOD;
 		$compiler = new pinp("header", "object->", "\$object->_");
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
+		$this->assertTrue((bool)$res);
 	}
 
 
@@ -38,6 +40,7 @@ EOD;
 		$compiler = new pinp("header", "object->", "\$object->_");
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
+		$this->assertTrue((bool)$res);
 	}
 
 
@@ -52,6 +55,7 @@ EOD;
 		$compiler = new pinp("header", "object->", "\$object->_");
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
+		$this->assertTrue((bool)$res);
 	}
 
 
@@ -69,6 +73,7 @@ EOD;
 		$compiler = new pinp("header", "object->", "\$object->_");
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
+		$this->assertTrue((bool)$res);
 	}
 
 
@@ -82,6 +87,7 @@ EOD;
 		$compiler = new pinp("header", "object->", "\$object->_");
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
+		$this->assertTrue((bool)$res);
 	}
 
 
@@ -98,6 +104,7 @@ EOD;
 		$compiler = new pinp("header", "object->", "\$object->_");
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
+		$this->assertTrue((bool)$res);
 	}
 
 
@@ -114,6 +121,7 @@ EOD;
 		$compiler = new pinp("header", "object->", "\$object->_");
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
+		$this->assertTrue((bool)$res);
 	}
 
 
@@ -144,6 +152,7 @@ EOD;
 		$compiler = new pinp("header", "object->", "\$object->_");
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
+		$this->assertTrue((bool)$res);
 	}
 
 
@@ -157,6 +166,7 @@ EOD;
 		$compiler = new pinp("header", "object->", "\$object->_");
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
+		$this->assertTrue((bool)$res);
 	}
 
 
@@ -179,6 +189,7 @@ EOD;
 		$compiler = new pinp("header", "object->", "\$object->_");
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
+		$this->assertTrue((bool)$res);
 	}
 
 
@@ -201,6 +212,7 @@ EOD;
 		$compiler = new pinp("header", "object->", "\$object->_");
 		$res = $compiler->compile($template);
 		$this->assertNull($compiler->error);
+		$this->assertTrue((bool)$res);
 	}
 
 	function testObjectArrayAccess() {
