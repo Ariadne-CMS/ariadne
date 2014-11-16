@@ -60,54 +60,54 @@
  * Password elements
  */
 
-	$elements = Array(
-	Array( "a",	$VOWEL ),
-	Array( "ae", $VOWEL | $DIPTHONG ),
-	Array( "ah",	$VOWEL | $DIPTHONG ),
-	Array( "ai", $VOWEL | $DIPTHONG ),
-	Array( "b",  $CONSONANT ),
-	Array( "c",	$CONSONANT ),
-	Array( "ch", $CONSONANT | $DIPTHONG ),
-	Array( "d",	$CONSONANT ),
-	Array( "e",	$VOWEL ),
-	Array( "ee", $VOWEL | $DIPTHONG ),
-	Array( "ei",	$VOWEL | $DIPTHONG ),
-	Array( "f",	$CONSONANT ),
-	Array( "g",	$CONSONANT ),
-	Array( "gh", $CONSONANT | $DIPTHONG | $NOT_FIRST ),
-	Array( "h",	$CONSONANT ),
-	Array( "i",	$VOWEL ),
-	Array( "ie", $VOWEL | $DIPTHONG ),
-	Array( "j",	$CONSONANT ),
-	Array( "k",	$CONSONANT ),
-	Array( "l",	$CONSONANT ),
-	Array( "m",	$CONSONANT ),
-	Array( "n",	$CONSONANT ),
-	Array( "ng",	$CONSONANT | $DIPTHONG | $NOT_FIRST ),
-	Array( "o",	$VOWEL ),
-	Array( "oh",	$VOWEL | $DIPTHONG ),
-	Array( "oo",	$VOWEL | $DIPTHONG),
-	Array( "p",	$CONSONANT ),
-	Array( "ph",	$CONSONANT | $DIPTHONG ),
-	Array( "qu",	$CONSONANT | $DIPTHONG),
-	Array( "r",	$CONSONANT ),
-	Array( "s",	$CONSONANT ),
-	Array( "sh",	$CONSONANT | $DIPTHONG),
-	Array( "t",	$CONSONANT ),
-	Array( "th",	$CONSONANT | $DIPTHONG),
-	Array( "u",	$VOWEL ),
-	Array( "v",	$CONSONANT ),
-	Array( "w",	$CONSONANT ),
-	Array( "x",	$CONSONANT ),
-	Array( "y",	$CONSONANT ),
-	Array( "z",	$CONSONANT )
+	$elements = array(
+	array( "a",	$VOWEL ),
+	array( "ae", $VOWEL | $DIPTHONG ),
+	array( "ah",	$VOWEL | $DIPTHONG ),
+	array( "ai", $VOWEL | $DIPTHONG ),
+	array( "b",  $CONSONANT ),
+	array( "c",	$CONSONANT ),
+	array( "ch", $CONSONANT | $DIPTHONG ),
+	array( "d",	$CONSONANT ),
+	array( "e",	$VOWEL ),
+	array( "ee", $VOWEL | $DIPTHONG ),
+	array( "ei",	$VOWEL | $DIPTHONG ),
+	array( "f",	$CONSONANT ),
+	array( "g",	$CONSONANT ),
+	array( "gh", $CONSONANT | $DIPTHONG | $NOT_FIRST ),
+	array( "h",	$CONSONANT ),
+	array( "i",	$VOWEL ),
+	array( "ie", $VOWEL | $DIPTHONG ),
+	array( "j",	$CONSONANT ),
+	array( "k",	$CONSONANT ),
+	array( "l",	$CONSONANT ),
+	array( "m",	$CONSONANT ),
+	array( "n",	$CONSONANT ),
+	array( "ng",	$CONSONANT | $DIPTHONG | $NOT_FIRST ),
+	array( "o",	$VOWEL ),
+	array( "oh",	$VOWEL | $DIPTHONG ),
+	array( "oo",	$VOWEL | $DIPTHONG),
+	array( "p",	$CONSONANT ),
+	array( "ph",	$CONSONANT | $DIPTHONG ),
+	array( "qu",	$CONSONANT | $DIPTHONG),
+	array( "r",	$CONSONANT ),
+	array( "s",	$CONSONANT ),
+	array( "sh",	$CONSONANT | $DIPTHONG),
+	array( "t",	$CONSONANT ),
+	array( "th",	$CONSONANT | $DIPTHONG),
+	array( "u",	$VOWEL ),
+	array( "v",	$CONSONANT ),
+	array( "w",	$CONSONANT ),
+	array( "x",	$CONSONANT ),
+	array( "y",	$CONSONANT ),
+	array( "z",	$CONSONANT )
 );
 
-	$NUM_ELEMENTS = sizeof( $elements );
+	$NUM_ELEMENTS = count( $elements );
 
 class password {
 
-	function generate( $size=8, $pw_flags=3 ) {
+	public static function generate( $size=8, $pw_flags=3 ) {
 		global $elements, $NUM_ELEMENTS, $VOWEL, $DIPTHONG, $CONSONANT, $PW_ONE_CASE, $NOT_FIRST, $PW_ONE_NUMBER;
 
 
@@ -200,7 +200,7 @@ class password {
 }
 
 class pinp_password extends password {
-	function _generate( $size=8, $pw_flags=3 ) {
+	public static function _generate( $size=8, $pw_flags=3 ) {
 		return password::generate( $size, $pw_flags );
 	}
 }
