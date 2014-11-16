@@ -873,7 +873,7 @@
 
 						if ($FTP->store->exists($parent)) {
 							if (!$FTP->store->exists($path)) {
-								$result=$FTP->store->call("ftp.mkdir.phtml", array("arNewFilename" => $arNewFilename),
+								$FTP->store->call("ftp.mkdir.phtml", array("arNewFilename" => $arNewFilename),
 									$FTP->store->get($parent));
 							} else {
 								$ARCurrent->ftp_error="Directory already exists";
