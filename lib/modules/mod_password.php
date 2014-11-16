@@ -39,77 +39,73 @@
 
    *********************************************************************/
 
-		global $elements, $NUM_ELEMENTS, $VOWEL, $DIPTHONG, $CONSONANT, $PW_ONE_CASE, $NOT_FIRST, $PW_ONE_NUMBER;
-
-
-/*
- * Flags for the pw_element
- */
-	$CONSONANT	=0x00001;
-	$VOWEL		=0x00002;
-	$DIPTHONG	=0x00004;
-	$NOT_FIRST	=0x00008;
-
-/*
- * Flags for the pwgen function
- */
-	$PW_ONE_NUMBER	=0x00001;
-	$PW_ONE_CASE	=0x00002;
-
-/*
- * Password elements
- */
-
-	$elements = array(
-	array( "a",	$VOWEL ),
-	array( "ae", $VOWEL | $DIPTHONG ),
-	array( "ah",	$VOWEL | $DIPTHONG ),
-	array( "ai", $VOWEL | $DIPTHONG ),
-	array( "b",  $CONSONANT ),
-	array( "c",	$CONSONANT ),
-	array( "ch", $CONSONANT | $DIPTHONG ),
-	array( "d",	$CONSONANT ),
-	array( "e",	$VOWEL ),
-	array( "ee", $VOWEL | $DIPTHONG ),
-	array( "ei",	$VOWEL | $DIPTHONG ),
-	array( "f",	$CONSONANT ),
-	array( "g",	$CONSONANT ),
-	array( "gh", $CONSONANT | $DIPTHONG | $NOT_FIRST ),
-	array( "h",	$CONSONANT ),
-	array( "i",	$VOWEL ),
-	array( "ie", $VOWEL | $DIPTHONG ),
-	array( "j",	$CONSONANT ),
-	array( "k",	$CONSONANT ),
-	array( "l",	$CONSONANT ),
-	array( "m",	$CONSONANT ),
-	array( "n",	$CONSONANT ),
-	array( "ng",	$CONSONANT | $DIPTHONG | $NOT_FIRST ),
-	array( "o",	$VOWEL ),
-	array( "oh",	$VOWEL | $DIPTHONG ),
-	array( "oo",	$VOWEL | $DIPTHONG),
-	array( "p",	$CONSONANT ),
-	array( "ph",	$CONSONANT | $DIPTHONG ),
-	array( "qu",	$CONSONANT | $DIPTHONG),
-	array( "r",	$CONSONANT ),
-	array( "s",	$CONSONANT ),
-	array( "sh",	$CONSONANT | $DIPTHONG),
-	array( "t",	$CONSONANT ),
-	array( "th",	$CONSONANT | $DIPTHONG),
-	array( "u",	$VOWEL ),
-	array( "v",	$CONSONANT ),
-	array( "w",	$CONSONANT ),
-	array( "x",	$CONSONANT ),
-	array( "y",	$CONSONANT ),
-	array( "z",	$CONSONANT )
-);
-
-	$NUM_ELEMENTS = count( $elements );
-
 class password {
+	/*
+	 * Flags for the pw_element
+	 */
+	const CONSONANT = 0x00001;
+	const VOWEL     = 0x00002;
+	const DIPTHONG  = 0x00004;
+	const NOT_FIRST = 0x00008;
+	/*
+	 * Flags for the pwgen function
+	 */
+	const PW_ONE_NUMBER = 0x00001;
+	const PW_ONE_CASE   = 0x00002;
+
+	protected static $elements = array();
+	protected static $NUM_ELEMENTS = 0;
+
+	protected static function generateElements() {
+		self::$elements = array(
+			array( "a",	self::VOWEL ),
+			array( "ae", self::VOWEL | self::DIPTHONG ),
+			array( "ah",	self::VOWEL | self::DIPTHONG ),
+			array( "ai", self::VOWEL | self::DIPTHONG ),
+			array( "b",  self::CONSONANT ),
+			array( "c",	self::CONSONANT ),
+			array( "ch", self::CONSONANT | self::DIPTHONG ),
+			array( "d",	self::CONSONANT ),
+			array( "e",	self::VOWEL ),
+			array( "ee", self::VOWEL | self::DIPTHONG ),
+			array( "ei",	self::VOWEL | self::DIPTHONG ),
+			array( "f",	self::CONSONANT ),
+			array( "g",	self::CONSONANT ),
+			array( "gh", self::CONSONANT | self::DIPTHONG | self::NOT_FIRST ),
+			array( "h",	self::CONSONANT ),
+			array( "i",	self::VOWEL ),
+			array( "ie", self::VOWEL | self::DIPTHONG ),
+			array( "j",	self::CONSONANT ),
+			array( "k",	self::CONSONANT ),
+			array( "l",	self::CONSONANT ),
+			array( "m",	self::CONSONANT ),
+			array( "n",	self::CONSONANT ),
+			array( "ng",	self::CONSONANT | self::DIPTHONG | self::NOT_FIRST ),
+			array( "o",	self::VOWEL ),
+			array( "oh",	self::VOWEL | self::DIPTHONG ),
+			array( "oo",	self::VOWEL | self::DIPTHONG),
+			array( "p",	self::CONSONANT ),
+			array( "ph",	self::CONSONANT | self::DIPTHONG ),
+			array( "qu",	self::CONSONANT | self::DIPTHONG),
+			array( "r",	self::CONSONANT ),
+			array( "s",	self::CONSONANT ),
+			array( "sh",	self::CONSONANT | self::DIPTHONG),
+			array( "t",	self::CONSONANT ),
+			array( "th",	self::CONSONANT | self::DIPTHONG),
+			array( "u",	self::VOWEL ),
+			array( "v",	self::CONSONANT ),
+			array( "w",	self::CONSONANT ),
+			array( "x",	self::CONSONANT ),
+			array( "y",	self::CONSONANT ),
+			array( "z",	self::CONSONANT )
+		);
+		self::$NUM_ELEMENTS = count( self::$elements );
+	}
 
 	public static function generate( $size=8, $pw_flags=3 ) {
-		global $elements, $NUM_ELEMENTS, $VOWEL, $DIPTHONG, $CONSONANT, $PW_ONE_CASE, $NOT_FIRST, $PW_ONE_NUMBER;
-
+		if ( self::$NUM_ELEMENTS == 0){
+			self::generateElements();
+		}
 
 		do {
 			$c = 1;
@@ -120,23 +116,23 @@ class password {
 
 			$feature_flags = $pw_flags;
 
-			$should_be = (rand(0,1) ? $VOWEL : $CONSONANT);
+			$should_be = (rand(0,1) ? self::VOWEL : self::CONSONANT);
 
 			while( $c < $size ) {
-				$i = rand( 0, ($NUM_ELEMENTS - 1 ) );
-				$str = $elements[$i][0];
+				$i = rand( 0, (self::$NUM_ELEMENTS - 1 ) );
+				$str = self::$elements[$i][0];
 				$len = strlen($str);
-				$flags = $elements[$i][1];
+				$flags = self::$elements[$i][1];
 
 				/* Filter on the basic type of the next element */
 				if (($flags & $should_be) == 0)
 					continue;
-				/* Handle the $NOT_FIRST flag */
-				if ($first && ($flags & $NOT_FIRST))
+				/* Handle the self::NOT_FIRST flag */
+				if ($first && ($flags & self::NOT_FIRST))
 					continue;
-				/* Don't allow $VOWEL followed a Vowel/Dipthong pair */
-				if ((prev & $VOWEL) && ($flags & $VOWEL) &&
-				    ($flags & $DIPTHONG))
+				/* Don't allow self::VOWEL followed a Vowel/Dipthong pair */
+				if ((prev & self::VOWEL) && ($flags & self::VOWEL) &&
+				    ($flags & self::DIPTHONG))
 					continue;
 				/* Don't allow us to overflow the buffer */
 				if ($len > ( $size - $c ) )
@@ -148,12 +144,12 @@ class password {
 
 				$result = $result.$str;
 
-				/* Handle $PW_ONE_CASE */
-				if ($feature_flags & $PW_ONE_CASE) {
-					if (($first || $flags & $CONSONANT) &&
+				/* Handle self::PW_ONE_CASE */
+				if ($feature_flags & self::PW_ONE_CASE) {
+					if (($first || $flags & self::CONSONANT) &&
 					    (rand(0,10) < 3)) {
 						$result = substr_replace( $result, strtoupper( substr( $result, $c, 1 ) ), $c);
-						$feature_flags &= ~$PW_ONE_CASE;
+						$feature_flags &= ~self::PW_ONE_CASE;
 					}
 				}
 
@@ -166,14 +162,14 @@ class password {
 				/*
 				 * Handle PW_ONE_NUMBER
 				 */
-				if ($feature_flags & $PW_ONE_NUMBER) {
+				if ($feature_flags & self::PW_ONE_NUMBER) {
 					if (!$first && (rand(0,10) < 3)) {
 						$result = substr_replace( $result, rand(0,9), $c);
 						$feature_flags &= ~PW_ONE_NUMBER;
 						$first = 1;
 						$prev = 0;
 						$should_be = rand(0,1) ?
-							$VOWEL : $CONSONANT;
+							self::VOWEL : self::CONSONANT;
 						continue;
 					}
 				}
@@ -181,20 +177,20 @@ class password {
 				/*
 				 * OK, figure out what the next element should be
 				 */
-				if ($should_be == $CONSONANT) {
-					$should_be = $VOWEL;
-				} else { /* $should_be == $VOWEL */
-					if (($prev & $VOWEL) ||
-					    ($flags & $DIPTHONG) ||
+				if ($should_be == self::CONSONANT) {
+					$should_be = self::VOWEL;
+				} else { /* $should_be == self::VOWEL */
+					if (($prev & self::VOWEL) ||
+					    ($flags & self::DIPTHONG) ||
 					    (rand(0,10) > 3))
-						$should_be = $CONSONANT;
+						$should_be = self::CONSONANT;
 					else
-						$should_be = $VOWEL;
+						$should_be = self::VOWEL;
 				}
 				$prev = $flags;
 				$first = 0;
 			}
-		} while ($feature_flags & ($PW_ONE_CASE | $PW_ONE_NUMBER));
+		} while ($feature_flags & (self::PW_ONE_CASE | self::PW_ONE_NUMBER));
 			return $result;
 	}
 }
