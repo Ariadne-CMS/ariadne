@@ -50,14 +50,14 @@
 	$old_version = current($store->call('system.get.value.phtml', '', $store->get('/system/ariadne/version/')));
 
 	echo "Current Ariadne version: $old_version<br>\n";
-	$todo = Array();
+	$todo = array();
 	switch ($old_version) {
 		default:
 		break;
 		case "2.2":
 		case "2.2.1":
 		case "2.2.2":
-			array_push($todo, Array(
+			array_push($todo, array(
 								"description" => "Installing grant names for the new grants dialog.",
 								"operation" => "2.2/upgrade.grants.php",
 								"newversion" => "2.4rc1"
@@ -69,14 +69,14 @@
 			} else {
 				$newversion = "2.4rc2.2";
 			}
-			array_push($todo, Array(
+			array_push($todo, array(
 								"description" => "Moving configuration into data->config.",
 								"operation" => "2.4rc1/upgrade.configdata.php",
 								"newversion" => $newversion
 								));
 		case "2.4rc2.1":
 			if($store_config["dbms"] == "postgresql") {
-				array_push($todo, Array(
+				array_push($todo, array(
 							"description" => "updating the postgresql store.",
 							"operation" => "2.4rc2/upgrade.postgresql.lowercase.php",
 							"newversion" => "2.4rc2.2"
@@ -84,20 +84,20 @@
 			}
 
 		case "2.4rc2.2":
-				array_push($todo, Array(
+				array_push($todo, array(
 							"description" => "updating the Ariadne types install.",
 							"operation" => "2.4rc2/upgrade.types.php",
 							"newversion" => "2.4"
 							));
 
 		case "2.4":
-				array_push($todo, Array(
+				array_push($todo, array(
 							"description" => "correcting nls names for es.",
 							"operation" => "2.4/upgrade.nls.es.php",
 							"newversion" => "2.4.0.1"
 							));
 		case "2.4.0.1":
-				array_push($todo, Array(
+				array_push($todo, array(
 							"description" => "Recompiling all PINP templates.",
 							"operation" => "all/upgrade.templates.php",
 							"newversion" => "2.6"
@@ -112,14 +112,14 @@
 		case "2.7.1":
 		case "2.7.2":
 		case "2.7.3":
-				array_push($todo, Array(
+				array_push($todo, array(
 							"description" => "Adding the pproject type.",
 							"operation" => "2.7.4/upgrade.types.php",
 							"newversion" => "2.7.4"
 							));
 		case "2.7.4":
-			if (in_array($store_config["dbms"], Array("mysql", "mysql4"))) {
-				array_push($todo, Array(
+			if (in_array($store_config["dbms"], array("mysql", "mysql4"))) {
+				array_push($todo, array(
 							"description" => "Adding defaults to store_prop definitions.",
 							"operation" => "2.7.5/upgrade.store_prop_tables.php",
 							"newversion" => "2.7.5pre1"
@@ -132,13 +132,13 @@
 		case "2.7.8":
 		case "2.7.9":
 		case "8.0rc1":
-				array_push($todo, Array(
+				array_push($todo, array(
 							"description" => "Recompiling all PINP templates.",
 							"operation" => "all/upgrade.templates.php",
 							"newversion" => "8.0rc2"
 							));
 		case "8.0rc2":
-				array_push($todo, Array(
+				array_push($todo, array(
 							"description" => "Remove hardlinks for users under groups",
 							"operation" => "8.0/convert-hardlink-to-shortcuts.php",
 							"newversion" => "8.0"
@@ -147,21 +147,21 @@
 		case "8.1":
 		case "8.2":
 		case '8.3':
-				array_push($todo, Array(
+				array_push($todo, array(
 							"description" => "Remove duplicate content in filestore by removing the non-nls version of files",
 							"operation" => "8.4/upgrade.files.php",
 							"newversion" => "8.4-b1"
 							));
 		/*
 		case '8.4-b1':
-				array_push($todo, Array(
+				array_push($todo, array(
 							"description" => "Bumping revision to 8.4",
 							"operation" => "all/dummy.php",
 							"newversion" => "8.4"
 							));
 		*/
 		case '8.4-b1':
-				array_push($todo, Array(
+				array_push($todo, array(
 							"description" => "Installing cache store",
 							"operation" => "9.0/install.cache_store.php",
 							"newversion" => "8.4-b2"
@@ -176,7 +176,7 @@
 		echo "</div>";
 		if (!$error) {
 			echo "Ariadne database succesfully upgraded to: ".$task["newversion"]."<br>\n";
-			$store->call('system.save.data.phtml', Array('value' => $task["newversion"]), $store->get('/system/ariadne/version/'));
+			$store->call('system.save.data.phtml', array('value' => $task["newversion"]), $store->get('/system/ariadne/version/'));
 		} else {
 			echo "Upgrade failed:<br>";
 			echo "$error";
