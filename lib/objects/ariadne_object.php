@@ -371,7 +371,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	global $AR, $ARnls, $ARCurrent;
 		debug("pobject: save([properties], $vtype)","object");
 		debug("pobject: save: path=".$this->path,"object");
-		$result=false;
 		$configcache=$this->loadConfig();
 		$needsUnlock = false;
 		$arIsNewObject = false;
@@ -1110,7 +1109,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		if ($modifier==ARTHISTYPE) {
 			$modifier=$this->type;
 		}
-		$result=false;
 
 		/* load config cache */
 		if (!$ARConfig->cache[$path]) {
@@ -1357,7 +1355,6 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 
 	public function loadConfig($path='') {
 	global $ARConfig, $ARConfigChecked, $ARCurrent;
-		$result=false;
 		$path=$this->make_path($path);
 		// debug("loadConfig($path)");
 		if (!$ARConfig->cache[$path]) {
@@ -1435,11 +1432,9 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 //				echo "checking $i::$arType<br>\n";
 				if (!$arSuperContext[$checkpath.":".$arType.":".$function] && ($arTemplate=$templates[$arType][$this->reqnls])) {
 					$arCallTemplate=$arType.".".$function.".".$this->reqnls;
-					$arTemplateNls=$this->reqnls;
 					break 2;
 				} else if (!$arSuperContext[$checkpath.":".$arType.":".$function] && ($arTemplate=$templates[$arType]['any'])) {
 					$arCallTemplate=$arType.".".$function.".any";
-					$arTemplateNls="any";
 					break 2;
 				} else {
 
@@ -1644,10 +1639,8 @@ debug("loadLibrary: loading cache for $this->path");
 			while ($arType!='ariadne_object' && !$arCallTemplate) {
 				if (!$arSuperContext[$checkpath.":".$arType.":".$arCallFunction] && ($arTemplateId=$curr_templates[$arType][$arCallFunction][$this->reqnls])) {
 					$arCallTemplate=$arType.".".$arCallFunction.".".$this->reqnls;
-					$arTemplateNls=$this->reqnls;
 				} else if (!$arSuperContext[$checkpath.":".$arType.":".$arCallFunction] && ($arTemplateId=$curr_templates[$arType][$arCallFunction]['any'])) {
 					$arCallTemplate=$arType.".".$arCallFunction.".any";
-					$arTemplateNls="any";
 				} else {
 
 					if (!($arSuper=$AR->superClass[$arType])) {
@@ -2015,7 +2008,6 @@ debug("loadLibrary: loading cache for $this->path");
 									$temp = $ARCurrent->arResult; /* event listeners will change ARCurrent->arResult */
 									$eventData->arResult = $temp;
 									ar_events::fire('oncall', $eventData );
-									$arResult = $temp;
 									$ARCurrent->arResult = $temp; /* restore correct result */
 									$AR->contextCallHandler = false;
 								}
@@ -2470,7 +2462,6 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	public function make_filesize( $size="" ,$precision=0) {
-		$result = "0";
 		$suffixes = array('B','KB','MB','GB','TB','PB','EB','ZB','YB');
 
 		if( $size === "" ) {
@@ -2547,7 +2538,6 @@ debug("loadLibrary: loading cache for $this->path");
 		$arSuperContext = (array)$context['arSuperContext'];
 		$arLibrary		= $context['arLibrary'];
 		$arLibraryPath	= $context['arLibraryPath'];
-		$arCallFunction	= $context['arCallFunction'];
 		$arCallType		= $context['arCallTemplateType'];
 		$arSuperPath	= $context['arCallTemplatePath'];
 		$arLibrariesSeen = $context['arLibrariesSeen'];
@@ -2744,7 +2734,6 @@ debug("loadLibrary: loading cache for $this->path");
 		$grantsarray = array();
 		$mg->compile($grants, $grantsarray);
 
-		$check = false;
 		if ($context['scope'] == 'pinp') {
 			$checkgrants = serialize($grantsarray);
 			$check = ( $AR->sgSalt ? sha1( $AR->sgSalt . $checkgrants . $path) : false ); // not using suKey because that checks for config grant
@@ -3217,6 +3206,7 @@ debug("loadLibrary: loading cache for $this->path");
 	}
 
 	public function html_to_text($text) {
+		//FIXME: rewrite 'e' modifiers to a callback replace
 		$trans = array_flip(get_html_translation_table(HTML_ENTITIES));
 		//strip nonbreaking space, strip script and style blocks, strip html tags, convert html entites, strip extra white space
 		$search_clean = array("%&nbsp;%i", "%<(script|style)[^>]*>.*?<\/(script|style)[^>]*>%si", "%<[\/]*[^<>]*>%Usi", "%(\&[a-zA-Z0-9\#]+;)%es", "%\s+%");
