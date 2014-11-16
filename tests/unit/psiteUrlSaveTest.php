@@ -31,7 +31,7 @@ class psiteUrlSaveTtest extends AriadneBaseTest
 		self::$testPath = current(ar::get(TESTBASE)->call('system.new.phtml' , $args));
 	}
 
-	function testWithoutURL(){
+	public function testWithoutURL(){
 		$testobj = current(ar::get(self::$testPath)->call('system.get.phtml'));
 
 		$testobj->call('system.save.data.phtml',array());
@@ -50,7 +50,7 @@ class psiteUrlSaveTtest extends AriadneBaseTest
 
 	}
 
-	function testNoNlsUpgrade(){
+	public function testNoNlsUpgrade(){
 		$testobj = current(ar::get(self::$testPath)->call('system.get.phtml'));
 		$testobj->data->url = 'http://test.url/';
 
@@ -85,7 +85,7 @@ class psiteUrlSaveTtest extends AriadneBaseTest
 		$this->assertArrayHasKey('test.url', $refobj->data->config->url_list['host']);
 	}
 
-	function testMultiNlsUpgrade(){
+	public function testMultiNlsUpgrade(){
 		$testobj = current(ar::get(self::$testPath)->call('system.get.phtml'));
 
 		// test data
@@ -133,7 +133,7 @@ class psiteUrlSaveTtest extends AriadneBaseTest
 		$this->assertEquals('de', $refobj->data->config->url_list['host']['test.url.de']);
 	}
 
-	function testApiNoNLS(){
+	public function testApiNoNLS(){
 		$testobj = current(ar::get(self::$testPath)->call('system.get.phtml'));
 
 		// unset structure
@@ -189,7 +189,7 @@ class psiteUrlSaveTtest extends AriadneBaseTest
 
 	}
 
-	function testApiNLS(){
+	public function testApiNLS(){
 		$testobj = current(ar::get(self::$testPath)->call('system.get.phtml'));
 
 		// unset structure
@@ -310,7 +310,7 @@ class psiteUrlSaveTtest extends AriadneBaseTest
 
 	}
 
-	function testApiMultiUrlList(){
+	public function testApiMultiUrlList(){
 		$testobj = current(ar::get(self::$testPath)->call('system.get.phtml'));
 
 		// unset structure

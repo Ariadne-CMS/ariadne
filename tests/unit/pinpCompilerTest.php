@@ -4,7 +4,7 @@ require_once(AriadneBasePath."/modules/mod_pinp.phtml");
 
 class pinpCompilerTest extends AriadneBaseTest
 {
-	function testBaseCompile() {
+	public function testBaseCompile() {
 		$template = <<<'EOD'
 <pinp> $test = 'test'; </pinp>
 EOD;
@@ -15,7 +15,7 @@ EOD;
 		$this->assertTrue((bool)$res);
 	}
 
-	function testObjectVariables() {
+	public function testObjectVariables() {
 		$template = <<<'EOD'
 <pinp>
 	$test = ar('store')->rememberShortcuts;
@@ -29,7 +29,7 @@ EOD;
 	}
 
 
-	function testclassOperator() {
+	public function testclassOperator() {
 		$template = <<<'EOD'
 <pinp>
 	MyClass::CONST_VALUE;
@@ -44,7 +44,7 @@ EOD;
 	}
 
 
-	function testclone() {
+	public function testclone() {
 		$template = <<<'EOD'
 <pinp>
   $a = clone($b);
@@ -59,7 +59,7 @@ EOD;
 	}
 
 
-	function testcomments() {
+	public function testcomments() {
 		$template = <<<'EOD'
 <pinp>
 // This is a comment
@@ -77,7 +77,7 @@ EOD;
 	}
 
 
-	function testdefine() {
+	public function testdefine() {
 		$template = <<<'EOD'
 <pinp>
 	define("FOO", "BAR");
@@ -91,7 +91,7 @@ EOD;
 	}
 
 
-	function testderef() {
+	public function testderef() {
 		$template = <<<'EOD'
 <pinp>
 	$func = "readfile";
@@ -108,7 +108,7 @@ EOD;
 	}
 
 
-	function testfunctionCalls() {
+	public function testfunctionCalls() {
 		$template = <<<'EOD'
 <pinp>
 	$a->_frop();
@@ -125,7 +125,7 @@ EOD;
 	}
 
 
-	function testheredoc() {
+	public function testheredoc() {
 		$template = <<<'EOD'
 <?php
 
@@ -156,7 +156,7 @@ EOD;
 	}
 
 
-	function testmagicMethods() {
+	public function testmagicMethods() {
 		$template = <<<'EOD'
 <pinp>
 	$object->_call("phpFunc", array());
@@ -170,7 +170,7 @@ EOD;
 	}
 
 
-	function teststring() {
+	public function teststring() {
 		$template = <<<'EOD'
 <pinp>
 $a = "MyVar";
@@ -193,7 +193,7 @@ EOD;
 	}
 
 
-	function testtypeCasting() {
+	public function testtypeCasting() {
 		$template = <<<'EOD'
 <pinp>
 	$bool_a		= (bool) 1;
@@ -215,7 +215,7 @@ EOD;
 		$this->assertTrue((bool)$res);
 	}
 
-	function testObjectArrayAccess() {
+	public function testObjectArrayAccess() {
 		$template = <<<'EOD'
 <pinp>
 	$res = range(0,10)[5];
@@ -230,7 +230,7 @@ EOD;
 		$this->assertEquals(5,$ret);
 	}
 
-	function testFluentInterface() {
+	public function testFluentInterface() {
 		$template = <<<'EOD'
 <pinp>
 	$res = ar('error')->raiseError('test',42)->getMessage();
@@ -245,7 +245,7 @@ EOD;
 		$this->assertEquals('test',$ret);
 	}
 
-	function testCurlyBrace() {
+	public function testCurlyBrace() {
 		$template = <<<'EOD'
 <pinp>
 	$var = array (0,1,42,3);

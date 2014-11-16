@@ -19,7 +19,7 @@ class MysqlCompilerTest extends AriadneBaseTest
 
 	}
 
-	function testBaseCompile() {
+	public function testBaseCompile() {
 		global $store;
 		$compiler = 'mysql_compiler';
 		$compiler = new $compiler($store,'store_');
@@ -33,7 +33,7 @@ class MysqlCompilerTest extends AriadneBaseTest
 
 	}
 
-	function testQuoteCompile() {
+	public function testQuoteCompile() {
 		global $store;
 		$compiler = 'mysql_compiler';
 		$compiler = new $compiler($store,'store_');
@@ -46,7 +46,7 @@ class MysqlCompilerTest extends AriadneBaseTest
 		$this->assertEquals($prepared, $res);
 	}
 
-	function testEmptyCompile() {
+	public function testEmptyCompile() {
 		global $store;
 		$compiler = 'mysql_compiler';
 		$compiler = new $compiler($store,'store_');
@@ -60,7 +60,7 @@ class MysqlCompilerTest extends AriadneBaseTest
 
 	}
 
-	function testInvalidCompile() {
+	public function testInvalidCompile() {
 		global $store;
 		$compiler = 'mysql_compiler';
 		$compiler = new $compiler($store,'store_');
@@ -68,7 +68,7 @@ class MysqlCompilerTest extends AriadneBaseTest
 		$this->assertNull($res);
 	}
 
-	function testInvalidCompile2() {
+	public function testInvalidCompile2() {
 		global $store;
 		$compiler = 'mysql_compiler';
 		$compiler = new $compiler($store,'store_');
@@ -77,7 +77,7 @@ class MysqlCompilerTest extends AriadneBaseTest
 
 	}
 
-	function testOrderOnly() {
+	public function testOrderOnly() {
 		global $store;
 		$compiler = 'mysql_compiler';
 		$compiler = new $compiler($store,'store_');
@@ -90,7 +90,7 @@ class MysqlCompilerTest extends AriadneBaseTest
 
 	}
 
-	function testOrderLimitOnly() {
+	public function testOrderLimitOnly() {
 		global $store;
 		$compiler = 'mysql_compiler';
 		$compiler = new $compiler($store,'store_');

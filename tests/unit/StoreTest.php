@@ -2,7 +2,7 @@
 
 class StoreTest extends AriadneBaseTest
 {
-	function setUp()
+	public function setUp()
 	{
 		$this->initAriadne();
 	}
@@ -15,7 +15,7 @@ class StoreTest extends AriadneBaseTest
 		move to existing
 	 */
 
-	function testExists(){
+	public function testExists(){
 		global $store;
 		$testpath = TESTBASE.'/projects/demo/demo/';
 		$testpath = $store->make_path('/',$testpath);
@@ -23,14 +23,14 @@ class StoreTest extends AriadneBaseTest
 		$this->assertTrue(is_int($demoid));
 	}
 
-	function testmakepath(){
+	public function testmakepath(){
 		global $store;
 		$partial = './frop';
 		$res = $store->make_path(TESTBASE,$partial);
 		$this->assertEquals(TESTBASE . 'frop/', $res);
 	}
 
-	function testNotExists(){
+	public function testNotExists(){
 		global $store;
 		$testpath = TESTBASE.'/thisonedoesnotexists/';
 		$testpath = $store->make_path('/',$testpath);
@@ -38,7 +38,7 @@ class StoreTest extends AriadneBaseTest
 		$this->assertNull($demoid);
 	}
 
-	function testNextID(){
+	public function testNextID(){
 		global $store;
 		$testpath = TESTBASE.'/storeTest-nextID/';
 		$testpath = $store->make_path('/',$testpath);
@@ -55,7 +55,7 @@ class StoreTest extends AriadneBaseTest
 		$this->assertEquals('00002', $id);
 	}
 
-	function testNew($path="storeTest-new"){
+	public function testNew($path="storeTest-new"){
 		global $store;
 		$testpath = TESTBASE.'/'.$path.'/';
 		$testpath = $store->make_path('/',$testpath);
@@ -66,7 +66,7 @@ class StoreTest extends AriadneBaseTest
 		return $ret;
 	}
 
-	function testNewID(){
+	public function testNewID(){
 		global $store;
 		$mask = 'storeTest-{5:id}-new';
 		$testpath = TESTBASE.'/'.$mask.'/';
@@ -93,7 +93,7 @@ class StoreTest extends AriadneBaseTest
 		$this->assertEquals($prep, $ret2);
 	}
 
-	function testSave() {
+	public function testSave() {
 		global $store;
 		$path = self::testNew($path="storeTest-save");
 
@@ -111,7 +111,7 @@ class StoreTest extends AriadneBaseTest
 		$this->assertNotEquals('2', $row2->data->test);
 	}
 
-	function testDelete() {
+	public function testDelete() {
 		global $store;
 		$path = self::testNew($path="storeTest-delete");
 		$id = $store->exists($path);

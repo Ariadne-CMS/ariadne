@@ -18,7 +18,7 @@ class PostgresCompilerTest extends AriadneBaseTest
 		}
 	}
 
-	function testBaseCompile() {
+	public function testBaseCompile() {
 		global $store;
 		$compiler = 'postgresql_compiler';
 		$compiler = new $compiler($store,'store_');
@@ -28,7 +28,7 @@ class PostgresCompilerTest extends AriadneBaseTest
 
 	}
 
-	function testQuoteCompile() {
+	public function testQuoteCompile() {
 		global $store;
 		$compiler = 'postgresql_compiler';
 		$compiler = new $compiler($store,'store_');

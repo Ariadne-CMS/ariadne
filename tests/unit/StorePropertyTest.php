@@ -7,7 +7,7 @@ class StorePropertyTest extends AriadneBaseTest
 		$this->initAriadne();
 	}
 
-	function testLoadproperties() {
+	public function testLoadproperties() {
 		global $store;
 
 		$testpath = TESTBASE.'/projects/demo/demo/';
@@ -23,7 +23,7 @@ class StorePropertyTest extends AriadneBaseTest
 		$this->assertEquals(2, strlen($entry['nls']), "nls should only be 2 chars");
 	}
 
-	function testDelAddpropertie() {
+	public function testDelAddpropertie() {
 		global $store;
 
 		$testpath = TESTBASE.'/projects/demo/demo/';
