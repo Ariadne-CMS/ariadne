@@ -169,7 +169,7 @@
 				$element[$name] = $newElement;
 			} else {
 				$element[$name][] = $newElement;
-				$this->ns[] = sizeof($element[$name])-1;
+				$this->ns[] = count($element[$name])-1;
 			}
 		}
 
@@ -186,7 +186,7 @@
 					unset($parentElement[$name]);
 				break;
 			}
-			$parent = $this->ns[sizeof($this->ns)-2];
+			$parent = $this->ns[count($this->ns)-2];
 			if (in_array($parent, $this->MULTI_TAGS) && $parent === $name) {
 				array_pop($this->ns);
 			}
