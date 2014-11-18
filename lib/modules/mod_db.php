@@ -5,11 +5,11 @@ require_once('DB.php'); // PEAR DB class
 class pinp_DB {
 	protected $key;
 
-	function __construct($key) {
+	public function __construct($key) {
 		$this->key=$key;
 	}
 
-	function _connect($dsn, $options = false) {
+	public function _connect($dsn, $options = false) {
 		global $AR;
 
 		$key=@count($AR->DB_list);
@@ -23,42 +23,42 @@ class pinp_DB {
 		return $result;
 	}
 
-	function _quoteString($string) {
+	public function _quoteString($string) {
 		global $AR;
 		return $AR->DB_list[$this->key]->quoteString($string);
 	}
 
-	function _quote($string) {
+	public function _quote($string) {
 		global $AR;
 		return $AR->DB_list[$this->key]->quote($string);
 	}
 
-	function _provides($feature) {
+	public function _provides($feature) {
 		global $AR;
 		return $AR->DB_list[$this->key]->provides($feature);
 	}
 
-	function _setFetchMode($fetchmode, $object_class = null) {
+	public function _setFetchMode($fetchmode, $object_class = null) {
 		global $AR;
 		return $AR->DB_list[$this->key]->setFetchMode($fetchmode, $object_class);
 	}
 
-	function _setOption($option, $value) {
+	public function _setOption($option, $value) {
 		global $AR;
 		return $AR->DB_list[$this->key]->setOption($option, $value);
 	}
 
-	function _getOption($option) {
+	public function _getOption($option) {
 		global $AR;
 		return $AR->DB_list[$this->key]->getOption($option);
 	}
 
-	function _prepare($query) {
+	public function _prepare($query) {
 		global $AR;
 		return $AR->DB_list[$this->key]->prepare($query);
 	}
 
-	function _execute($stmt, $data = false) {
+	public function _execute($stmt, $data = false) {
 		global $AR;
 		$result=$AR->DB_list[$this->key]->execute($stmt, $data);
 		if (is_object($result) && (get_class($result)=="db_result" || is_subclass_of($result, "db_result")) ) {
@@ -69,12 +69,12 @@ class pinp_DB {
 		return $result;
 	}
 
-	function _executeMultiple( $stmt, &$data ) {
+	public function _executeMultiple( $stmt, &$data ) {
 		global $AR;
 		return $AR->DB_list[$this->key]->executeMultiple( $stmt, $data );
 	}
 
-	function &_query($query, $params = array()) {
+	public function _query($query, $params = array()) {
 		global $AR;
 		$result = $AR->DB_list[$this->key]->query($query, $params);
 		if (is_object($result) && (get_class($result)=="db_result" || is_subclass_of($result, "db_result")) ) {
@@ -85,7 +85,7 @@ class pinp_DB {
 		return $result;
 	}
 
-	function _limitQuery($query, $from, $count) {
+	public function _limitQuery($query, $from, $count) {
 		global $AR;
 		$result = $AR->DB_list[$this->key]->limitQuery($query, $from, $count);
 		if (is_object($result) && (get_class($result)=="db_result" || is_subclass_of($result, "db_result")) ) {
@@ -96,110 +96,110 @@ class pinp_DB {
 		return $result;
 	}
 
-	function &_getOne($query, $params = array()) {
+	public function _getOne($query, $params = array()) {
 		global $AR;
 		return $AR->DB_list[$this->key]->getOne($query, $params);
 	}
 
-	function &_getRow($query, $params = null, $fetchmode = DB_FETCHMODE_DEFAULT) {
+	public function _getRow($query, $params = null, $fetchmode = DB_FETCHMODE_DEFAULT) {
 		global $AR;
 		return $AR->DB_list[$this->key]->getRow($query, $params, $fetchmode);
 	}
 
-	function &_getCol($query, $col = 0, $params = array()) {
+	public function _getCol($query, $col = 0, $params = array()) {
 		global $AR;
 		return $AR->DB_list[$this->key]->getCol($query, $col, $params);
 	}
 
-	function &_getAssoc($query, $force_array = false, $params = array(),
+	public function _getAssoc($query, $force_array = false, $params = array(),
 						$fetchmode = DB_FETCHMODE_ORDERED, $group = false) {
 		global $AR;
 		return $AR->DB_list[$this->key]->getAssoc($query, $force_array, $params, $fetchmode, $group);
 	}
 
-	function &_getAll($query, $params = null, $fetchmode = DB_FETCHMODE_DEFAULT) {
+	public function _getAll($query, $params = null, $fetchmode = DB_FETCHMODE_DEFAULT) {
 		global $AR;
 		return $AR->DB_list[$this->key]->getAll($query, $params, $fetchmode);
 	}
 
-	function _autoCommit($onoff=false) {
+	public function _autoCommit($onoff=false) {
 		global $AR;
 		return $AR->DB_list[$this->key]->autoCommit($onoff);
 	}
 
-	function _commit() {
+	public function _commit() {
 		global $AR;
 		return $AR->DB_list[$this->key]->commit();
 	}
 
-	function _rollback() {
+	public function _rollback() {
 		global $AR;
 		return $AR->DB_list[$this->key]->rollback();
 	}
 
-	function _numRows($result) {
+	public function _numRows($result) {
 		global $AR;
 		return $AR->DB_list[$this->key]->numRows($result);
 	}
 
-	function _affectedRows() {
+	public function _affectedRows() {
 		global $AR;
 		return $AR->DB_list[$this->key]->affectedRows();
 	}
 
-	function _errorNative() {
+	public function _errorNative() {
 		global $AR;
 		return $AR->DB_list[$this->key]->errorNative();
 	}
 
-	function _nextId($seq_name, $ondemand = true) {
+	public function _nextId($seq_name, $ondemand = true) {
 		global $AR;
 		return $AR->DB_list[$this->key]->nextId($seq_name, $ondemand);
 	}
 
-	function _createSequence($seq_name) {
+	public function _createSequence($seq_name) {
 		global $AR;
 		return $AR->DB_list[$this->key]->createSequence($seq_name);
 	}
 
-	function _dropSequence($seq_name) {
+	public function _dropSequence($seq_name) {
 		global $AR;
 		return $AR->DB_list[$this->key]->dropSequence($seq_name);
 	}
 
-	function _tableInfo($result, $mode = null) {
+	public function _tableInfo($result, $mode = null) {
 		global $AR;
 		return $AR->DB_list[$this->key]->tableInfo($result, $mode);
 	}
 
-	function _getListOf($type) {
+	public function _getListOf($type) {
 		global $AR;
 		return $AR->DB_list[$this->key]->getListOf($type);
 	}
 
-	function _getSequenceName($sqn) {
+	public function _getSequenceName($sqn) {
 		global $AR;
 		return $AR->DB_list[$this->key]->getSequenceName($sqn);
 	}
 
-	function _disconnect() {
+	public function _disconnect() {
 		global $AR;
 		return $AR->DB_list[$this->key]->disconnect();
 	}
 
-	function _errorMessage($dbcode) {
+	public function _errorMessage($dbcode) {
 		return DB::errorMessage($dbcode);
 	}
 
-	function _isError($value) {
+	public function _isError($value) {
 		return DB::isError($value);
 	}
 
-	function _isWarning($value) {
+	public function _isWarning($value) {
 		return DB::isWarning($value);
 	}
 
-	function _isManip($query) {
+	public function _isManip($query) {
 		return DB::isManip($query);
 	}
 
@@ -208,41 +208,41 @@ class pinp_DB {
 class pinp_DB_result {
 	protected $key;
 
-	function __construct($key) {
+	public function __construct($key) {
 		$this->key=$key;
 	}
 
-	function _fetchRow($fetchmode = DB_FETCHMODE_DEFAULT, $rownum=null) {
+	public function _fetchRow($fetchmode = DB_FETCHMODE_DEFAULT, $rownum=null) {
 		global $AR;
 		return $AR->DB_result_list[$this->key]->fetchRow($fetchmode, $rownum);
 	}
 
-	function _fetchInto(&$arr, $fetchmode = DB_FETCHMODE_DEFAULT, $rownum=null) {
+	public function _fetchInto(&$arr, $fetchmode = DB_FETCHMODE_DEFAULT, $rownum=null) {
 		global $AR;
 		return $AR->DB_result_list[$this->key]->fetchInto($arr, $fetchmode, $rownum);
 	}
 
-	function _numCols() {
+	public function _numCols() {
 		global $AR;
 		return $AR->DB_result_list[$this->key]->numCols();
 	}
 
-	function _numRows() {
+	public function _numRows() {
 		global $AR;
 		return $AR->DB_result_list[$this->key]->numRows();
 	}
 
-	function _nextResult() {
+	public function _nextResult() {
 		global $AR;
 		return $AR->DB_result_list[$this->key]->nextResult();
 	}
 
-	function _free() {
+	public function _free() {
 		global $AR;
 		return $AR->DB_result_list[$this->key]->free();
 	}
 
-	function _getRowCounter() {
+	public function _getRowCounter() {
 		global $AR;
 		return $AR->DB_result_list[$this->key]->getRowCounter();
 	}
