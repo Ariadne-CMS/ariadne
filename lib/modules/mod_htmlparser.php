@@ -27,14 +27,15 @@
 
 	class htmlparser {
 
-		function scanner($buffer) {
+		protected static function scanner($buffer) {
+			$scanner = array();
 			$scanner['YYBUFFER'] = $buffer."\000";
 			$scanner['YYLINE'] = 0;
 			$scanner['YYCURSOR'] = 0;
 			$scanner['YYSTATE'] = AR_HTMLPARSER_STATE_TEXT;
 			$scanner['YYCONTEXT'] = CONTEXT_NORMAL;
 
-			$class_ident_start = Array();
+			$class_ident_start = array();
 			for ($i = ord('a'); $i <= ord('z'); $i++) {
 				$class_ident_start[chr($i)] = chr($i);
 				$class_ident_start[strtoupper(chr($i))] = strtoupper(chr($i));
@@ -46,6 +47,7 @@
 
 
 			$class_ident_next = $class_ident_start;
+			$class_number = array();
 			for ($i = ord('0'); $i <= ord('9'); $i++) {
 				$class_ident_next[chr($i)] = chr($i);
 				$class_number[chr($i)] = chr($i);
@@ -58,13 +60,13 @@
 			$scanner['class_attrib_next'] = $class_attrib_next;
 
 
-			$class_whitespace = Array(" " => " ", "\t" => "\t", "\r" => "\r", "\n" => "\n");
+			$class_whitespace = array(" " => " ", "\t" => "\t", "\r" => "\r", "\n" => "\n");
 			$scanner['class_whitespace'] = $class_whitespace;
 
 			return $scanner;
 		}
 
-		function scan(&$scanner, &$value) {
+		protected static function scan(&$scanner, &$value) {
 			$YYCURSOR = &$scanner["YYCURSOR"];
 			//$YYLINE = &$scanner["YYLINE"];
 			$YYBUFFER = &$scanner["YYBUFFER"];
@@ -202,11 +204,11 @@
 
 		}
 
-		function nextToken(&$parser) {
+		protected static function nextToken(&$parser) {
 			$tokens = &$parser['tokens'];
 			$scanner = &$parser['scanner'];
 			if (count($tokens) == 0) {
-				$new_token = htmlparser::scan($scanner, $new_value);
+				$new_token = static::scan($scanner, $new_value);
 			} else {
 				list($new_token, $new_value) = each(array_shift($tokens));
 			}
@@ -219,34 +221,34 @@
 		}
 
 
-		function parse_Text(&$parser) {
+		protected static function parse_Text(&$parser) {
 			$result = "";
 			while ($parser["token_ahead"] == AR_HTMLPARSER_T_TEXT) {
-				htmlparser::nextToken($parser);
+				static::nextToken($parser);
 				$result .= $parser["token_value"];
 			}
 			return $result;
 		}
 
-		function parse_Tag_Open(&$parser) {
-			$singles = Array(
+		protected static function parse_Tag_Open(&$parser) {
+			$singles = array(
 				'br', 'img', 'area', 'link', 'param', 'hr', 'base', 'meta',
 				'input', 'col'
 			);
 
-			$result = Array('type' => 'tag');
+			$result = array('type' => 'tag');
 			$tagName = $parser["token_ahead_value"];
 			if (in_array(strtolower($tagName), $singles)) {
 				$result['type'] = 'tagSingle';
 			}
 			$result['tagName'] = $tagName;
-			htmlparser::nextToken($parser);
+			static::nextToken($parser);
 			while ($parser["token_ahead"] == AR_HTMLPARSER_T_ATTRIB) {
-				htmlparser::nextToken($parser);
+				static::nextToken($parser);
 				$attrib = $parser["token_value"];
 				$attrib_value = false;
 				if ($parser["token_ahead"] == AR_HTMLPARSER_T_ATTRIB_VAL) {
-					htmlparser::nextToken($parser);
+					static::nextToken($parser);
 					$attrib_value = $parser["token_value"];
 				}
 				$result['attribs'][$attrib] = $attrib_value;
@@ -255,26 +257,26 @@
 			return $result;
 		}
 
-		function parse_Node(&$parser, &$stack) {
-			$siblings = Array('table', 'tr', 'td', 'li', 'ul');
+		protected static function parse_Node(&$parser, &$stack) {
+			$siblings = array('table', 'tr', 'td', 'li', 'ul');
 
 			if (count($stack)) {
 				$parentNode	= &$stack[count($stack)-1];
 				$tagName	= strtolower($parentNode['tagName']);
 			}
-			$result = Array();
+			$result = array();
 			while ($parser["token_ahead"] != AR_HTMLPARSER_T_EOF) {
 				switch ($parser["token_ahead"]) {
 					case AR_HTMLPARSER_T_TEXT:
-						$node = Array('type' => 'text');
-						$node['html'] = htmlparser::parse_Text($parser);
+						$node = array('type' => 'text');
+						$node['html'] = static::parse_Text($parser);
 						$result[] = $node;
 					break;
 					case AR_HTMLPARSER_T_DOCTYPE:
-						$node = Array('type' => 'doctype');
-						htmlparser::nextToken($parser);
+						$node = array('type' => 'doctype');
+						static::nextToken($parser);
 						while ($parser["token_ahead"] == AR_HTMLPARSER_T_ATTRIB_VAL) {
-							htmlparser::nextToken($parser);
+							static::nextToken($parser);
 							$attrib_value = $parser["token_value"];
 							$node['attribs'][] = $attrib_value;
 						}
@@ -289,11 +291,11 @@
 							return $result;
 						}
 
-						$node = htmlparser::parse_Tag_Open($parser);
+						$node = static::parse_Tag_Open($parser);
 						if ($node) {
 							if ($node['type'] !== 'tagSingle') {
 								$stack[] = &$node;
-								$node['children'] = htmlparser::parse_Node($parser, $stack);
+								$node['children'] = static::parse_Node($parser, $stack);
 								array_pop($stack);
 								end($stack);
 							}
@@ -305,11 +307,11 @@
 						if ($tagName != strtolower($closeTag)) {
 							// continue parsing because closing tag does not match current tag
 							// FIXME: create a better check
-							htmlparser::nextToken($parser);
+							static::nextToken($parser);
 
 							// if we do not resolve tags, we have to add this one as text
 							if ($parser['options']['noTagResolving']) {
-								$node = Array('type' => 'text');
+								$node = array('type' => 'text');
 								$node['html'] = "</".$parser["token_value"].">";
 								$result[] = $node;
 							}
@@ -321,10 +323,10 @@
 							$parentNode['htmlTagClose'] = "</".$parser['token_ahead_value'].">";
 						}
 
-						htmlparser::nextToken($parser);
+						static::nextToken($parser);
 						return $result;
 					default:
-						htmlparser::nextToken($parser);
+						static::nextToken($parser);
 				}
 			}
 			if ($parser['options']['noTagResolving']) {
@@ -333,7 +335,7 @@
 			return $result;
 		}
 
-		function compile_Attribs(&$node) {
+		protected static function compile_Attribs(&$node) {
 			$result = "";
 			if (is_array($node['attribs'])) {
 				foreach ($node['attribs'] as $key => $value) {
@@ -346,20 +348,20 @@
 			return $result;
 		}
 
-		function compile($node) {
+		public static function compile($node) {
 			$result = "";
 			switch ($node['type']) {
 				case 'tag':
 				case 'tagSingle':
 					if ($node['tagName']) {
 						$result .= "<".$node['tagName'];
-						$result .= htmlparser::compile_Attribs($node);
+						$result .= static::compile_Attribs($node);
 						$result .= ">";
 					}
 				case 'root':
 					if (is_array($node['children'])) {
 						foreach ($node['children'] as $child) {
-							$result .= htmlparser::compile($child);
+							$result .= static::compile($child);
 						}
 					}
 					if ($node['type'] == 'tag') {
@@ -384,18 +386,18 @@
 			return $result;
 		}
 
-		function parse($document, $options = false) {
+		public static function parse($document, $options = false) {
 			if (!$options) {
-				$options = Array();
+				$options = array();
 			}
-			$parser = Array('options' => $options);
-			$scanner = htmlparser::scanner($document);
+			$parser = array('options' => $options);
+			$scanner = static::scanner($document);
 			$parser['scanner'] = &$scanner;
-			$stack = Array();
-			htmlparser::nextToken($parser);
-			$result = Array(
+			$stack = array();
+			static::nextToken($parser);
+			$result = array(
 				'type' => 'root',
-				'children' => htmlparser::parse_Node($parser, $stack)
+				'children' => static::parse_Node($parser, $stack)
 			);
 			return $result;
 		}
