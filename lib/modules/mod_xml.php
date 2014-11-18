@@ -22,6 +22,16 @@
 	};
 
 	class xml_parser {
+		protected $object;
+		protected $tag_open_template;
+		protected $tag_class_template;
+		protected $tag_data_template;
+		protected $ns = array();
+		public $elements;
+		public $MULTI_TAGS;
+		public $error;
+		public $rss_items;
+
 
 		public function __construct($object) {
 			$this->object = $object;
