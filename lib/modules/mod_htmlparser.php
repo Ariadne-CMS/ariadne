@@ -36,7 +36,9 @@
 			$scanner['YYCONTEXT'] = CONTEXT_NORMAL;
 
 			$class_ident_start = array();
-			for ($i = ord('a'); $i <= ord('z'); $i++) {
+			$start = ord('a');
+			$end   = ord('z');
+			for ($i = $start; $i <= $end; $i++) {
 				$class_ident_start[chr($i)] = chr($i);
 				$class_ident_start[strtoupper(chr($i))] = strtoupper(chr($i));
 			}
@@ -48,7 +50,9 @@
 
 			$class_ident_next = $class_ident_start;
 			$class_number = array();
-			for ($i = ord('0'); $i <= ord('9'); $i++) {
+			$start = ord('0');
+			$end   = ord('9');
+			for ($i = $start; $i <= $end; $i++) {
 				$class_ident_next[chr($i)] = chr($i);
 				$class_number[chr($i)] = chr($i);
 			}
