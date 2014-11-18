@@ -33,26 +33,29 @@ define ('HTML_CLEANER_NODE_NODETYPE_CLOSINGNODE',1);
 define ('HTML_CLEANER_NODE_NODETYPE_TEXT',2);
 define ('HTML_CLEANER_NODE_NODETYPE_SPECIAL',3);
 class htmlcleanertag {
-	var $nodeType;
-	var $nodeName;
-	var $nodeValue;
-	var $attributes;
-	var $closingStyle;
+	public $nodeType;
+	public $nodeName;
+	public $nodeValue;
+	public $attributes;
+	public $closingStyle;
 
-	function htmlcleanertag($str)
+	public function __construct($str)
 	{
-		if ($str[0]=='<')
+		if ($str[0]=='<') {
 			$this->nodeType = HTML_CLEANER_NODE_NODETYPE_NODE;
-		else
+		} else {
 			$this->nodeType = HTML_CLEANER_NODE_NODETYPE_TEXT;
+		}
 
-		if ((strlen($str)>1) && ($str[1]=='?' || $str[1]=='!'))
+		if ((strlen($str)>1) && ($str[1]=='?' || $str[1]=='!')) {
 			$this->nodeType = HTML_CLEANER_NODE_NODETYPE_SPECIAL;
+		}
 
-		if ($this->nodeType==HTML_CLEANER_NODE_NODETYPE_NODE)
+		if ($this->nodeType==HTML_CLEANER_NODE_NODETYPE_NODE) {
 			$this->parseFromString($str);
-		else if ($this->nodeType==HTML_CLEANER_NODE_NODETYPE_TEXT || $this->nodeType==HTML_CLEANER_NODE_NODETYPE_SPECIAL)
+		} else if ($this->nodeType==HTML_CLEANER_NODE_NODETYPE_TEXT || $this->nodeType==HTML_CLEANER_NODE_NODETYPE_SPECIAL) {
 			$this->nodeValue = $str;
+		}
 	}
 
 	function parseFromString($str)
@@ -60,8 +63,9 @@ class htmlcleanertag {
 		$str = str_replace("\n"," ", $str);
 		$offset=1;
 		$endset=strlen($str)-2;
-		if ($str[0]!='<' || $str[strlen($str)-1]!='>')
+		if ($str[0]!='<' || $str[strlen($str)-1]!='>'){
 			trigger_error('tag syntax error', E_USER_ERROR);
+		}
 		if ($str[strlen($str)-2]=='/') {
 			$endset = $endset-1;
 			$this->closingStyle = HTML_CLEANER_NODE_CLOSINGSTYLE_XHTMLSINGLE;
@@ -70,10 +74,12 @@ class htmlcleanertag {
 			$offset=2;
 			$this->nodeType = HTML_CLEANER_NODE_NODETYPE_CLOSINGNODE;
 		}
-		for ($tagname = '';preg_match("/([a-zA-Z0-9:]{1})/",$str[$offset]);$offset++)
+		for ($tagname = '';preg_match("/([a-zA-Z0-9:]{1})/",$str[$offset]);$offset++) {
 			$tagname .= $str[$offset];
-		for ($tagattr = '';$offset<=$endset;$offset++)
+		}
+		for ($tagattr = '';$offset<=$endset;$offset++){
 			$tagattr .= $str[$offset];
+		}
 		$this->nodeName = strtolower($tagname);
 		$this->attributes = $this->parseAttributes($tagattr);
 	}
@@ -83,7 +89,7 @@ class htmlcleanertag {
 		$i=0;
 		$return = array();
 		$_state = -1;
-                $_value = '';
+		$_value = '';
 
 		while ($i<strlen($str)) {
 			$chr = $str[$i];
@@ -171,19 +177,28 @@ class htmlcleanertag {
 		return $return;
 	}
 
-	function _toString() {
+	public function _toString() {
 		return $this->toString();
 	}
 
-	function toString()
+	public function toString()
 	{
-		if (($this->nodeName == 'link' || $this->nodeName == 'img' || $this->nodeName == 'br' || $this->nodeName == 'hr') && $this->closingStyle != HTML_CLEANER_NODE_CLOSINGSTYLE_XHTMLSINGLE)
+		if ( ($this->nodeName == 'link' ||
+			$this->nodeName == 'img' ||
+			$this->nodeName == 'br' ||
+			$this->nodeName == 'hr')
+			&& $this->closingStyle != HTML_CLEANER_NODE_CLOSINGSTYLE_XHTMLSINGLE
+		) {
 			$this->closingStyle = HTML_CLEANER_NODE_CLOSINGSTYLE_HTMLSINGLE;
-		if ($this->nodeType == HTML_CLEANER_NODE_NODETYPE_TEXT || $this->nodeType == HTML_CLEANER_NODE_NODETYPE_SPECIAL) return $this->nodeValue;
-		if ($this->nodeType == HTML_CLEANER_NODE_NODETYPE_NODE)
+		}
+		if ($this->nodeType == HTML_CLEANER_NODE_NODETYPE_TEXT || $this->nodeType == HTML_CLEANER_NODE_NODETYPE_SPECIAL) {
+			return $this->nodeValue;
+		}
+		if ($this->nodeType == HTML_CLEANER_NODE_NODETYPE_NODE) {
 			$str = '<'.$this->nodeName;
-		else if ($this->nodeType == HTML_CLEANER_NODE_NODETYPE_CLOSINGNODE)
+		} else if ($this->nodeType == HTML_CLEANER_NODE_NODETYPE_CLOSINGNODE) {
 			return '</'.$this->nodeName.">";
+		}
 		foreach ($this->attributes as $attkey => $attvalue) {
 			if (is_numeric($attkey)) {
 				$str .= ' '.$attvalue;
@@ -191,10 +206,11 @@ class htmlcleanertag {
 				$str .= ' '.$attkey."=\"".$attvalue."\"";
 			}
 		}
-		if ($this->closingStyle == HTML_CLEANER_NODE_CLOSINGSTYLE_XHTMLSINGLE)
+		if ($this->closingStyle == HTML_CLEANER_NODE_CLOSINGSTYLE_XHTMLSINGLE) {
 			$str .= ' />';
-		else
+		} else {
 			$str .= '>';
+		}
 //		if ($this->nodeName != "td")
 //			$str .= "\n";
 		return $str;
@@ -204,12 +220,12 @@ class htmlcleanertag {
 
 class htmlcleaner
 {
-	function version()
+	public function version()
 	{
 		return 'mshtml cleanup v.0.9.2 by troels@kyberfabrikken.dk';
 	}
 
-	function dessicate($str)
+	public function dessicate($str)
 	{
 		$i=0;
 		$parts = array();
@@ -266,7 +282,7 @@ class htmlcleaner
 
 
 	// removes the worst mess from word.
-	function cleanup($body, $config)
+	public function cleanup($body, $config)
 	{
 
 		$scriptParts = array();
@@ -376,8 +392,7 @@ class htmlcleaner
 									}
 								}
 							}
-						} else
-						if ($attrib_rules === false) {
+						} else if ($attrib_rules === false) {
 							unset($part);
 						} else {
 							$part->nodeName = $attrib_rules;
@@ -386,8 +401,9 @@ class htmlcleaner
 					}
 				}
 			}
-			if ($part && strstr($part->nodeValue,'<?xml:namespace')===false)
+			if ($part && strstr($part->nodeValue,'<?xml:namespace')===false) {
 				$return .= $part->toString();
+			}
 		}
 
 		foreach ($scriptParts as $key => $value) {
