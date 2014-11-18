@@ -125,18 +125,22 @@ class password {
 				$flags = self::$elements[$i][1];
 
 				/* Filter on the basic type of the next element */
-				if (($flags & $should_be) == 0)
+				if (($flags & $should_be) == 0) {
 					continue;
+				}
 				/* Handle the self::NOT_FIRST flag */
-				if ($first && ($flags & self::NOT_FIRST))
+				if ($first && ($flags & self::NOT_FIRST)){
 					continue;
+				}
 				/* Don't allow self::VOWEL followed a Vowel/Dipthong pair */
 				if ((prev & self::VOWEL) && ($flags & self::VOWEL) &&
-				    ($flags & self::DIPTHONG))
-					continue;
+					($flags & self::DIPTHONG)) {
+						continue;
+					}
 				/* Don't allow us to overflow the buffer */
-				if ($len > ( $size - $c ) )
+				if ($len > ( $size - $c ) ){
 					continue;
+				}
 				/*
 				 * OK, we found an element which matches our criteria,
 				 * let's do it!
@@ -146,9 +150,9 @@ class password {
 
 				/* Handle self::PW_ONE_CASE */
 				if ($feature_flags & self::PW_ONE_CASE) {
-					if (($first || $flags & self::CONSONANT) &&
-					    (rand(0,10) < 3)) {
-						$result = substr_replace( $result, strtoupper( substr( $result, $c, 1 ) ), $c);
+					if (($first || $flags & self::CONSONANT) && (rand(0,10) < 3)) {
+						$result = substr_replace( $result, strtoupper(
+							substr( $result, $c, 1 ) ), $c);
 						$feature_flags &= ~self::PW_ONE_CASE;
 					}
 				}
@@ -156,8 +160,9 @@ class password {
 				$c += $len;
 
 				/* Time to stop? */
-				if ($c >= $size)
+				if ($c >= $size){
 					break;
+				}
 
 				/*
 				 * Handle PW_ONE_NUMBER
@@ -180,18 +185,20 @@ class password {
 				if ($should_be == self::CONSONANT) {
 					$should_be = self::VOWEL;
 				} else { /* $should_be == self::VOWEL */
-					if (($prev & self::VOWEL) ||
-					    ($flags & self::DIPTHONG) ||
-					    (rand(0,10) > 3))
+					if ( ($prev & self::VOWEL) ||
+							($flags & self::DIPTHONG) ||
+							(rand(0,10) > 3)
+					) {
 						$should_be = self::CONSONANT;
-					else
+					} else {
 						$should_be = self::VOWEL;
+					}
 				}
 				$prev = $flags;
 				$first = 0;
 			}
 		} while ($feature_flags & (self::PW_ONE_CASE | self::PW_ONE_NUMBER));
-			return $result;
+		return $result;
 	}
 }
 
