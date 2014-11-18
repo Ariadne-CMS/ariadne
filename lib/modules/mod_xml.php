@@ -1,7 +1,9 @@
 <?php
 	class pinp_xml {
 		function _parser() {
-			$parser = new xml_parser($this);
+			$context = pobject::getContext();
+			$me      = $context['arCurrentObject'];
+			$parser = new xml_parser($me);
 			return $parser;
 		}
 
