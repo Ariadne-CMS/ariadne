@@ -37,16 +37,16 @@
 
 	class pinp_SOAP {
 
-		function _Client($endpoint, $wsdl = false , $portName = false, $proxy_params=array() ) {
+		public static function _Client($endpoint, $wsdl = false , $portName = false, $proxy_params=array() ) {
 			return new pinp_SOAP_Client( $endpoint, $wsdl, $portName, $proxy_params);
 		}
 
-		function _Parser($xml, $encoding = SOAP_DEFAULT_ENCODING, $attachments=NULL) {
+		public static function _Parser($xml, $encoding = SOAP_DEFAULT_ENCODING, $attachments=null) {
 			return new pinp_SOAP_Parser( $xml, $encoding, $attachments );
 		}
 
 
-		function _Value($name, $type, $value, $namespaces=false) {
+		public static function _Value($name, $type, $value, $namespaces=false) {
 			if( $namespaces===false ) {
 				return new SOAP_Value( $name, $type, $value);
 			} else {
@@ -54,7 +54,7 @@
 			}
 		}
 
-		function _Header($name, $type, $value=NULL, $mustunderstand=0, $actor = 'http://schemas.xmlsoap.org/soap/actor/next') {
+		public static function _Header($name, $type, $value=null, $mustunderstand=0, $actor = 'http://schemas.xmlsoap.org/soap/actor/next') {
 			return new SOAP_Header( $name, $type, $value, $mustunderstand, $actor );
 		}
 
@@ -62,28 +62,28 @@
 
 	class pinp_SOAP_Parser extends SOAP_Parser {
 
-		function pinp_SOAP_Parser( $xml, $encoding = SOAP_DEFAULT_ENCODING, $attachments=NULL ) {
-			parent::SOAP_Parser( $xml, $encoding, $attachments );
+		public function __construct( $xml, $encoding = SOAP_DEFAULT_ENCODING, $attachments=null ) {
+			parent::__construct( $xml, $encoding, $attachments );
 		}
 
-		function _getResponse() {
+		public function _getResponse() {
 			return $this->getResponse();
 		}
 
-		function _parseMessage($nr=0) {
+		public function _parseMessage($nr=0) {
 			$msg = &$this->message;
 			switch(strtolower($msg[$nr]["type"])) {
 			case 'struct':
-				$result = Array();
+				$result = array();
 				$children = explode("|", $msg[$nr]["children"]);
-				$to_array = Array();
+				$to_array = array();
 				foreach($children as $child) {
 					$key = $msg[$child]["name"];
 					$value = $this->_parseMessage($child);
 					if ($result[$key]) {
 						if (!$to_array[$key]) {
 							$temp = $result[$key];
-							$result[$key] = Array();
+							$result[$key] = array();
 							$result[$key][] = $temp;
 							$to_array[$key] = true;
 						}
@@ -105,27 +105,27 @@
 
 	class pinp_SOAP_Client extends SOAP_Client {
 
-		function pinp_SOAP_Client($endpoint, $wsdl = false, $portName = false, $proxy_params=array()) {
-			parent::SOAP_Client( $endpoint, $wsdl, $portName, $proxy_params );
+		public function __construct($endpoint, $wsdl = false, $portName = false, $proxy_params=array()) {
+			parent::__construct( $endpoint, $wsdl, $portName, $proxy_params );
         }
 
-		function _call( $function, $arguments=false, $namespace=false, $soapAction=false ) {
+		public function _call( $function, $arguments=false, $namespace=false, $soapAction=false ) {
 			return $this->call( $function, $arguments, $namespace, $soapAction );
 		}
 
-		function _addHeader($soap_value) {
+		public function _addHeader($soap_value) {
 			return $this->addHeader($soap_value);
 		}
 
-		function _isError($value) {
+		public function _isError($value) {
 			return $this->isError($value);
 		}
 
-		function _isWarning($value) {
+		public function _isWarning($value) {
 			return $this->isWarning($value);
 		}
 
-		function _errorMessage($error) {
+		public function _errorMessage($error) {
 			if (is_object($error) && get_class($error) == "soap_fault") {
 				$result = $error->message;
 			} else {
