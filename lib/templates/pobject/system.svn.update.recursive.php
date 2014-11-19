@@ -41,7 +41,7 @@
 
 			if ($result) {
 				$updated_templates = array();
-				$deleted_template = array();
+				$deleted_templates = array();
 
 				foreach ($result as $item) {
 					switch ($item['status']) {

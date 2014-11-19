@@ -42,7 +42,6 @@
 		}
 
 		public static function getvar( $name = null, $method = null) {
-			$result = null;
 			switch($method) {
 				case 'GET' :
 					$result = isset($name) ? $_GET[$name] : $_GET;

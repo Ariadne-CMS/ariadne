@@ -50,7 +50,7 @@ class FileNlsTest extends AriadneBaseTest
 		$obj =current(ar::get(TESTBASE.'/file-nls/file-nls/')->call('system.get.phtml'));
 		foreach($obj->data->nls->list as $nls => $language) {
 			ob_start();
-			$content = $obj->ShowFile('file',$nls);
+			$obj->ShowFile('file',$nls);
 			$content  = ob_get_contents();
 			ob_end_clean();
 			$content = trim($content);
