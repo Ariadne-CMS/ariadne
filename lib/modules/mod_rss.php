@@ -5,12 +5,12 @@
 
 	class pinp_rss {
 
-		function _loadFromUrl($url, $username='', $password='') {
+		public static function _loadFromUrl($url, $username='', $password='') {
 		/* Loads an rss feed from a url */
 			return rss::loadFromUrl($url, $username, $password);
 		}
 
-		function _loadFromString($rss) {
+		public static function _loadFromString($rss) {
 			return rss::loadFromString($rss);
 		}
 
@@ -18,7 +18,7 @@
 
 	class rss {
 
-		function loadFromUrl($url, $username='', $password='') {
+		public static function loadFromUrl($url, $username='', $password='') {
 			/* Loads an rss feed from a url */
 			$context = pobject::getContext();
 			$me = $context['arCurrentObject'];
@@ -27,7 +27,7 @@
 			return $rss;
 		}
 
-		function loadFromString($string) {
+		public static function loadFromString($string) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			/* parse rss feed and initialize and return an rssFeed object */
@@ -40,11 +40,11 @@
 
 	class rssFeed {
 
-		function __construct($object) {
+		public function __construct($object) {
 			$this->object = $object;
 		}
 
-		function setFeedUrl($url, $username='', $password='') {
+		public function setFeedUrl($url, $username='', $password='') {
 			if (preg_match('|^https?://|i', $url)) {
 				$this->rss_url = $url;
 				$this->rss_user = $username;
@@ -55,40 +55,40 @@
 			}
 		}
 
-		function setFeedString($feed) {
+		public function setFeedString($feed) {
 			$this->feedstring = $feed;
 			$this->reset();
 		}
 
-		function _reset() {
+		public function _reset() {
 			return $this->reset();
 		}
 
-		function _next() {
+		public function _next() {
 			return $this->next();
 		}
 
-		function _count() {
+		public function _count() {
 			return $this->count();
 		}
 
-		function _current() {
+		public function _current() {
 			return $this->current();
 		}
 
-		function _ls($template, $args='', $limit=100, $offset=0) {
+		public function _ls($template, $args='', $limit=100, $offset=0) {
 			return $this->ls($template, $args, $limit, $offset);
 		}
 
-		function _getArray($limit=100, $offset=0) {
+		public function _getArray($limit=100, $offset=0) {
 			return $this->getArray($limit, $offset);
 		}
 
-		function reset() {
+		public function reset() {
 			// reset namestack
-			$this->ns = Array();
-			$this->elements = Array();
-			$this->rss_items = Array();
+			$this->ns = array();
+			$this->elements = array();
+			$this->rss_items = array();
 
 
 			if ($this->rss_fp) {
@@ -147,8 +147,8 @@
 
 		}
 
-		function startElement($parser, $name, $attribs) {
-			$newElement = Array();
+		public function startElement($parser, $name, $attribs) {
+			$newElement = array();
 			$element = &$this->elements;
 			foreach ($this->ns as $n) {
 				$element = &$element[$n];
@@ -166,7 +166,7 @@
 			}
 		}
 
-		function endElement($parser, $name) {
+		public function endElement($parser, $name) {
 			$element = &$this->elements;
 			foreach ($this->ns as $n) {
 				$parentElement = $element;
@@ -181,7 +181,7 @@
 			array_pop($this->ns);
 		}
 
-		function characterData($parser, $data) {
+		public function characterData($parser, $data) {
 			$element = &$this->elements;
 			foreach ($this->ns as $n) {
 				$element = &$element[$n];
@@ -207,7 +207,7 @@
 		}
 
 
-		function next() {
+		public function next() {
 			// this is needed
 			if (!$this->parser) {
 				return false;
@@ -251,11 +251,11 @@
 			return $this->rss_items[0];
 		}
 
-		function current() {
+		public function current() {
 			return $this->rss_items[0];
 		}
 
-		function call($template, $args=Array()) {
+		public function call($template, $args=array()) {
 			$current = $this->current();
 			if (!$current) { // feed is either not yet initialized or ended, in both cases the following line has the correct result
 				$current = $this->next();
@@ -267,16 +267,16 @@
 			return $result;
 		}
 
-		function count() {
+		public function count() {
 			$this->reset();
 			$i = 0;
 			while ($this->next()) { $i++; };
 			return $i;
 		}
 
-		function ls($template, $args='', $limit=100, $offset=0) {
+		public function ls($template, $args='', $limit=100, $offset=0) {
 		global $ARBeenHere;
-			$ARBeenHere = Array();
+			$ARBeenHere = array();
 			$this->reset();
 			if ($offset) {
 				while ($offset) {
@@ -285,14 +285,14 @@
 				}
 			}
 			do {
-				$ARBeenHere = Array();
+				$ARBeenHere = array();
 				$this->call($template, $args);
 				$limit--;
 			} while ($this->next() && $limit);
 		}
 
-		function getArray($limit=100, $offset=0) {
-			$result=Array();
+		public function getArray($limit=100, $offset=0) {
+			$result=array();
 			$this->reset();
 			if ($offset) {
 				while ($offset) {
