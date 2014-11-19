@@ -13,7 +13,6 @@ class htmlcleanerTest extends AriadneBaseTest
 	public function testFormSelectOptionSelected() {
 		$html = '<body>testbody<form><select><option selected></option></select></form></body>';
 		$clean = htmlcleaner::cleanup($html,array());
-		var_dump($clean);
 		$this->assertEquals($html, $clean);
 	}
 
