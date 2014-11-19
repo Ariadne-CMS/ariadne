@@ -130,7 +130,7 @@ class page {
 			$config["path"] = $AR->Tidy->path;
 			$tidy    = new tidy($config);
 			$result  = $tidy->clean($page);
-			$pag     = $result["html"];
+			$page    = $result["html"];
 		}
 
 		if ($settings["allow_tags"]) {
