@@ -246,14 +246,18 @@
 
 			// Identifiers [a-zA-Z]
 			$class_ident_start = array('_' => '_');
-			for ($i = ord('a'); $i <= ord('z'); $i++) {
+			$start = ord('a');
+			$end   = ord('z');
+			for ($i = $start; $i <= $end; $i++) {
 				$class_ident_start[chr($i)] = chr($i);
 				$class_ident_start[strtoupper(chr($i))] = strtoupper(chr($i));
 			}
 			$this->class_ident = array_merge(array('.' => '.'), $class_ident_start);
 			// Numbers [0-9]
 			$class_number = array();
-			for ($i = ord('0'); $i <= ord('9'); $i++) {
+			$start = ord('0');
+			$end   = ord('9');
+			for ($i = $start; $i <= $end; $i++) {
 				$class_number[chr($i)] = chr($i);
 			}
 			$this->class_number = $class_number;

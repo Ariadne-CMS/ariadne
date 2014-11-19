@@ -71,22 +71,27 @@
 
 
 			// Identifiers [a-zA-Z]
-			$class_ident_start = Array();
-			for ($i = ord('a'); $i <= ord('z'); $i++) {
+			$class_ident_start = array();
+			$start = ord('a');
+			$end   = ord('z');
+			for ($i = $start; $i <= $end; $i++) {
 				$class_ident_start[chr($i)] = chr($i);
 				$class_ident_start[strtoupper(chr($i))] = strtoupper(chr($i));
 			}
-			$this->class_ident = array_merge(Array('-' => '-', '_' => '_'), $class_ident_start);
+			$this->class_ident = array_merge(array('-' => '-', '_' => '_'), $class_ident_start);
 			$this->class_ident_start = $class_ident_start;
 			// Numbers [0-9]
-			for ($i = ord('0'); $i <= ord('9'); $i++) {
+			$class_number = array();
+			$start = ord('0');
+			$end   = ord('9');
+			for ($i = $start; $i <= $end; $i++) {
 				$class_ident_next[chr($i)] = chr($i);
 				$class_number[chr($i)] = chr($i);
 			}
 			$this->class_number = $class_number;
 			$this->class_ident = array_merge($this->class_ident, $class_ident_next);
 			// Whitespace
-			$class_whitespace = Array(" " => " ", "\t" => "\t", "\r" => "\r", "\n" => "\n");
+			$class_whitespace = array(" " => " ", "\t" => "\t", "\r" => "\r", "\n" => "\n");
 			$this->class_whitespace = $class_whitespace;
 		}
 

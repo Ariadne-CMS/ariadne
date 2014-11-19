@@ -76,7 +76,8 @@
 			}
 			if (is_string($string)) {
 				$result = "";
-				for ($i=0; $i<strlen($string); $i++) {
+				$strlen = strlen($string);
+				for ($i=0; $i<$strlen; $i++) {
 					$result .= $charset_table[$charset][ord($string[$i])];
 				}
 			} else {
