@@ -369,6 +369,7 @@
 					"",
 					$me->path),
 				$matches[1]);
+			$result = array();
 			foreach ($refs as $ref) {
 				if (substr($ref, -1) != '/' && !$me->exists($ref)) {
 					// Drop the template name
