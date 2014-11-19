@@ -32,7 +32,7 @@ before_script:
 
 script:
     - bash ./tests/run.sh
-    - phpunit --coverage-clover=coverage.clover --verbose --bootstrap tests/bootstrap.php tests/unit/
+    - phpunit --coverage-clover=coverage.clover
 
 notifications:
     email: false
