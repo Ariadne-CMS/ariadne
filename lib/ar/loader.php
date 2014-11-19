@@ -26,7 +26,7 @@
 			}
 		}
 
-		private static function getLoader() {
+		public static function getLoader() {
 			global $AR;
 			if ($AR->request && isset($AR->request['loader'])) {
 				return $AR->request['loader'];
