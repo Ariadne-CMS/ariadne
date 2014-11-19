@@ -69,28 +69,28 @@
 		public function _parseMessage($nr=0) {
 			$msg = &$this->message;
 			switch(strtolower($msg[$nr]["type"])) {
-			case 'struct':
-				$result = array();
-				$children = explode("|", $msg[$nr]["children"]);
-				$to_array = array();
-				foreach($children as $child) {
-					$key = $msg[$child]["name"];
-					$value = $this->_parseMessage($child);
-					if ($result[$key]) {
-						if (!$to_array[$key]) {
-							$temp = $result[$key];
-							$result[$key] = array();
-							$result[$key][] = $temp;
-							$to_array[$key] = true;
+				case 'struct':
+					$result = array();
+					$children = explode("|", $msg[$nr]["children"]);
+					$to_array = array();
+					foreach($children as $child) {
+						$key = $msg[$child]["name"];
+						$value = $this->_parseMessage($child);
+						if ($result[$key]) {
+							if (!$to_array[$key]) {
+								$temp = $result[$key];
+								$result[$key] = array();
+								$result[$key][] = $temp;
+								$to_array[$key] = true;
+							}
+							$result[$key][] = $value;
+						} else {
+							$result[$key] = $value;
 						}
-						$result[$key][] = $value;
-					} else {
-						$result[$key] = $value;
 					}
-				}
-			break;
-				default:
+				break;
 				case 'string':
+				default:
 					$result = $msg[$nr]["cdata"];
 				break;
 			}
