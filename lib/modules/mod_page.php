@@ -5,31 +5,31 @@
 
 class pinp_page {
 
-	function _getBody($page) {
+	public static function _getBody($page) {
 		return page::getBody($page);
 	}
 
-	function _parse($page, $full=false) {
+	public static function _parse($page, $full=false) {
 		return page::parse($page, $full);
 	}
 
-	function _isEmpty($page, $full=false) {
+	public static function _isEmpty($page, $full=false) {
 		return page::isEmpty($page);
 	}
 
-	function _clean($page, $settings=false) {
+	public static function _clean($page, $settings=false) {
 		return page::clean($page, $settings);
 	}
 
-	function _compile($page, $language='') {
+	public static function _compile($page, $language='') {
 		return page::compile($page, $language);
 	}
 
-	function _getReferences($page) {
+	public static function _getReferences($page) {
 		return page::getReferences($page);
 	}
 
-	function _stripARNameSpace($page) {
+	public static function _stripARNameSpace($page) {
 		return page::stripARNameSpace($page);
 	}
 
@@ -63,25 +63,27 @@ class page {
 		return $result;
 	}
 
-	function getBody($page) {
+	public static function getBody($page) {
 			$page = preg_replace('|</BODY.*$|is', '', $page);
 			$errno = preg_last_error();
 			if( $page === null || $errno != PREG_NO_ERROR ){
-				debug('preg_replace returned null errno '. $errno .' in ' . __CLASS__ . ':' . __FUNCTION__ . ':' . __LINE__ . '?');
+				debug('preg_replace returned null errno '. $errno .' in ' . 
+					__CLASS__ . ':' . __FUNCTION__ . ':' . __LINE__ . '?');
 				debug('preg error:'. page::pregError($errno));
 				return '';
 			}
 			$page = preg_replace('/^.*<BODY[^>]*>/is', '', $page);
 			$errno = preg_last_error();
 			if( $page === null || $errno != PREG_NO_ERROR ){
-				debug('preg_replace returned null, errno '. $errno .' in ' . __CLASS__ . ':' . __FUNCTION__ . ':' . __LINE__ . '?');
+				debug('preg_replace returned null, errno '. $errno .' in ' . 
+					__CLASS__ . ':' . __FUNCTION__ . ':' . __LINE__ . '?');
 				debug('preg error:'. page::pregError($errno));
 				return '';
 			}
 			return $page;
 	}
 
-	function parse($page, $full=false) {
+	public static function parse($page, $full=false) {
 		$context = pobject::getContext();
 		$me = $context["arCurrentObject"];
 		include_once($me->store->get_config('code')."modules/mod_url.php");
@@ -91,12 +93,12 @@ class page {
 		return URL::ARtoRAW($page);
 	}
 
-	function isEmpty($page) {
+	public static function isEmpty($page) {
 		$page = page::getBody($page);
 		return trim(str_replace('&nbsp;',' ',strip_tags($page, '<img><object><embed><iframe>')))=='';
 	}
 
-	function clean($page, $settings=false) {
+	public static function clean($page, $settings=false) {
 		global $AR;
 		global $ARCurrent;
 		$context = pobject::getContext();
@@ -112,33 +114,33 @@ class page {
 
 		if ($settings["htmlcleaner"]["enabled"] || $settings["htmlcleaner"]===true) {
 			include_once($me->store->get_config("code")."modules/mod_htmlcleaner.php");
-			$config	= $settings["htmlcleaner"];
-			$page 	= htmlcleaner::cleanup($page, $config);
+			$config = $settings["htmlcleaner"];
+			$page   = htmlcleaner::cleanup($page, $config);
 		}
 
 		if ($settings["htmltidy"]["enabled"] || $settings["htmltidy"]===true) {
 			include_once($me->store->get_config("code")."modules/mod_tidy.php");
 			if ($settings["htmltidy"]===true) {
-				$config	= array();
+				$config = array();
 				$config["options"] = $AR->Tidy->options;
 			} else {
 				$config = $settings["htmltidy"];
 			}
-			$config["temp"]	= $me->store->get_config("files")."temp/";
-			$config["path"]	= $AR->Tidy->path;
-			$tidy			= new tidy($config);
-			$result			= $tidy->clean($page);
-			$page			= $result["html"];
+			$config["temp"] = $me->store->get_config("files")."temp/";
+			$config["path"] = $AR->Tidy->path;
+			$tidy    = new tidy($config);
+			$result  = $tidy->clean($page);
+			$pag     = $result["html"];
 		}
 
 		if ($settings["allow_tags"]) {
-			$page			= strip_tags($page, $settings["allow_tags"]);
+			$page    = strip_tags($page, $settings["allow_tags"]);
 		}
 
 		return $page;
 	}
 
-	function compile($page, $language='') {
+	public static function compile($page, $language='') {
 		$context = pobject::getContext();
 		$me = $context["arCurrentObject"];
 		include_once($me->store->get_config('code')."modules/mod_url.php");
@@ -148,7 +150,7 @@ class page {
 		}
 		$page = URL::RAWtoAR($page, $language);
 		$newpage = $page;
-		$nodes = htmlparser::parse($newpage, Array('noTagResolving' => true));
+		$nodes = htmlparser::parse($newpage, array('noTagResolving' => true));
 		// FIXME: the isChanged check is paranoia mode on. New code ahead.
 		// will only use the new compile method when it is needed (htmlblocks)
 		// otherwise just return the $page, so 99.9% of the sites don't walk
@@ -161,7 +163,7 @@ class page {
 		}
 	}
 
-	function compileWorker(&$node) {
+	public static function compileWorker(&$node) {
 		$result = false;
 		$contentEditable = "";
 		if (isset($node['attribs']['contenteditable'])) {
@@ -175,9 +177,9 @@ class page {
 			$result = true;
 		}
 		if ($node['attribs']['ar:type'] == "template") {
-				$path		= $node['attribs']['ar:path'];
-				$template	= $node['attribs']['ar:name'];
-				$argsarr	= Array();
+				$path     = $node['attribs']['ar:path'];
+				$template = $node['attribs']['ar:name'];
+				$argsarr  = array();
 				if (is_array($node['attribs'])) {
 					foreach ($node['attribs'] as $key => $value) {
 						if (substr($key, 0, strlen('arargs:')) == 'arargs:') {
@@ -188,8 +190,8 @@ class page {
 				}
 				$args = implode('&', $argsarr);
 
-				$node['children'] = Array();
-				$node['children'][] = Array(
+				$node['children'] = array();
+				$node['children'][] = array(
 					"type" => "text",
 					"html" => "{arCall:$path$template?$args}"
 				);
@@ -206,7 +208,7 @@ class page {
 		return $result;
 	}
 
-	function getReferences($page) {
+	public static function getReferences($page) {
 		$context = pobject::getContext();
 		$me = $context["arCurrentObject"];
 		// Find out all references to other objects
@@ -230,14 +232,14 @@ class page {
 		foreach ($refs as $ref) {
 			if (substr($ref, -1) != '/' && !$me->exists($ref)) {
 				// Drop the template name
-				$ref	= substr($ref, 0, strrpos($ref, "/")+1);
+				$ref = substr($ref, 0, strrpos($ref, "/")+1);
 			}
-			$result[]	= $ref;
+			$result[] = $ref;
 		}
 		return $result;
 	}
 
-	function stripARNameSpace($page) {
+	public static function stripARNameSpace($page) {
 		$context = pobject::getContext();
 		$me = $context["arCurrentObject"];
 		include_once($me->store->get_config('code')."modules/mod_htmlcleaner.php");
@@ -246,12 +248,12 @@ class page {
 				'^(A|IMG|DIV)$' => array(
 					'^ar:.*' => false,
 					'^arargs:.*' => false,
-					'^class' => Array(
+					'^class' => array(
 						'htmlblock[ ]*uneditable[ ]*' => false
 					)
 				)
 			),
-			'delete_emptied' => Array(
+			'delete_emptied' => array(
 				'div', 'a'
 			)
 		);
