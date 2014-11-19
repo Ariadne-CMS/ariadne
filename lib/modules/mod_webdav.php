@@ -3,16 +3,16 @@
 
 	class Ariadne_WebDAV_Server extends HTTP_WebDAV_Server {
 
-		function Ariadne_WebDAV_Server( &$store, $config ) {
-		global $ariadne;
+		public function __construct( &$store, $config ) {
+			global $ariadne;
 			debug("webdav: initting server");
-			$this->HTTP_WebDAV_Server();
+			parent::__construct();
 			$this->store = $store;
 			$this->config = $config;
 			$this->root = &$config['root'];
 			debug("webdav: loading modules");
 
-			$this->modules = Array();
+			$this->modules = array();
 			include_once($ariadne."/modules/mod_webdav/files.php");
 			$this->modules['files'] = new WebDAV_files($this);
 
@@ -49,7 +49,7 @@
 			return $result;
 		}
 
-		function path_unescape_callback($char) {
+		public static function path_unescape_callback($char) {
 			// Two types of escaped characters can be here, the
 			// underscore or other characters. Check for the
 			// underscore first.
@@ -66,7 +66,7 @@
 			return chr(hexdec(substr($char, 1, 2)));
 		}
 
-		function check_auth($type, $user, $pass) {
+		public function check_auth($type, $user, $pass) {
 		global $AR, $ARCurrent, $auth_config;
 			debug("webdav:check_auth  $type:$user:$pass;");
 			$auth_class = "mod_auth_".$auth_config['method'];
@@ -74,6 +74,8 @@
 			debug("webdav:check_auth using $auth_class module");
 
 			$mod_auth = new $auth_class($auth_config);
+
+			$result = null;
 
 			/* FIXME: make this configurable */
 			if (preg_match('/^Microsoft Data Access Internet/i', $_SERVER['HTTP_USER_AGENT'])) {
@@ -109,68 +111,68 @@
 			}
 		}
 
-		function get_info($list) {
+		public function get_info($list) {
 			$result = Array();
 			$props = $list['props'];
 			if (is_array($props)) {
 				foreach ($props as $name => $val) {
 					debug("webdav:get_info $name:$val");
 					if ($name == 'displayname') {
-						$val = Ariadne_WebDAV_Server::path_unescape($val);
+						$val = static::path_unescape($val);
 						debug("webdav:get_info unescaped $val");
 					}
 					$result['props'][] = $this->mkprop($name, htmlspecialchars($val));
 				}
 			}
-			$result['path'] = htmlspecialchars(Ariadne_WebDAV_Server::path_unescape(substr($list['path'], strlen($this->root)-1)));
+			$result['path'] = htmlspecialchars(static::path_unescape(substr($list['path'], strlen($this->root)-1)));
 			return $result;
 		}
 
-		function propfind(&$options, &$files) {
+		public function propfind(&$options, &$files) {
 			debug("webdav:propfind [end]");
 			return $this->modules['files']->propfind($options, $files);
 		}
 
-		function head($options) {
+		public function head($options) {
 			debug("webdav:head");
 			return $this->modules['files']->head($options);
 		}
 
-		function delete($options) {
+		public function delete($options) {
 			debug("webdav:delete");
 			return $this->modules['files']->delete($options);
 		}
 
-		function lock( &$options ) {
+		public function lock( &$options ) {
 			debug("method lock called");
 		}
 
-		function checkLock($path) {
+		public function checkLock($path) {
 			debug("method check lock");
 		}
 
-		function mkcol($options) {
+		public function mkcol($options) {
 			debug("webdav:mkcol");
 			return $this->modules['files']->mkcol($options);
 		}
 
-		function get(&$options) {
+		public function get(&$options) {
 			debug("webdav:get");
 			return $this->modules['files']->get($options);
 		}
 
 
-		function move($options) {
+		public function move($options) {
 			debug("webdav:move");
 			return $this->modules['files']->move($options);
 		}
 
-		function put(&$params) {
+		public function put(&$params) {
 			debug("webdav:put");
 			return $this->modules['files']->put($params);
 		}
 
-		function proppatch(&$options) {
+		public function proppatch(&$options) {
 
 		}
 
