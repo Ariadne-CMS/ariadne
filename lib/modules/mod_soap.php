@@ -62,10 +62,6 @@
 
 	class pinp_SOAP_Parser extends SOAP_Parser {
 
-		public function __construct( $xml, $encoding = SOAP_DEFAULT_ENCODING, $attachments=null ) {
-			parent::__construct( $xml, $encoding, $attachments );
-		}
-
 		public function _getResponse() {
 			return $this->getResponse();
 		}
@@ -104,10 +100,6 @@
 
 
 	class pinp_SOAP_Client extends SOAP_Client {
-
-		public function __construct($endpoint, $wsdl = false, $portName = false, $proxy_params=array()) {
-			parent::__construct( $endpoint, $wsdl, $portName, $proxy_params );
-        }
 
 		public function _call( $function, $arguments=false, $namespace=false, $soapAction=false ) {
 			return $this->call( $function, $arguments, $namespace, $soapAction );
