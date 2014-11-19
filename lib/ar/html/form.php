@@ -164,6 +164,8 @@
 				$name	= isset($field['name']) ? $field['name'] : null;
 				$label	= isset($field['label']) ? $field['label'] : null;
 			} else {
+				$type   = null;
+				$name   = null;
 				$label	= $field;
 			}
 			if (!$type) {
@@ -176,7 +178,7 @@
 					$name = $label;
 				}
 			}
-			if ( !$label && $label!==false ) {
+			if ( !$label && $label!==false ) { // false means 'don't add a lable'
 				$label	= $name;
 			}
 			if (!is_array($field)) {
@@ -191,8 +193,8 @@
 		}
 
 		public function parseFields($fields) {
+			$newFields = array();
 			if (is_array($fields)) {
-				$newFields = array();
 				foreach ($fields as $key => $field) {
 					$newFields[$key] = $this->parseField($key, $field);
 				}
@@ -364,7 +366,6 @@
 		}
 
 		public function getButton($type=null, $name=null, $value=null, $class=null, $id=null, $title=null, $extra=null) {
-			$attributes = array();
 			if (!isset($type)) {
 				$type = $this->type;
 			}
@@ -1020,7 +1021,7 @@
 
 	class ar_html_formInputButtonList extends ar_html_formInputSelect {
 
-		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $options=null, $multiple=null) {
+		protected function getInput($type=null, $name=null, $value=null, $disabled=null, $id=null, $title=null, $options=null) {
 			if (!isset($name)) {
 				$name = $this->name;
 			}
@@ -1030,14 +1031,12 @@
 			if (!isset($id)) {
 				$id = $name;
 			}
-			if (!isset($multiple)) {
-				$multiple = $this->multiple;
-			}
 			if (!isset($disabled)) {
 				$disabled = $this->disabled;
 			}
 			$attributes = array(
-				'class' => 'formButtonListButtons'
+				'class' => 'formButtonListButtons',
+				'id'    => $id
 			);
 			$buttonAttributes = array(
 				'name'	=> $name
@@ -1097,7 +1096,6 @@
 				$buttonLabel = $button['value'];
 			}
 			$attributes = array_merge( $button, $attributes );
-			$result = ar_html::nodes();
 			$buttonEl = ar_html::el('button', $attributes, $buttonLabel);
 			if ( $selectedValues!==false
 				&& ( (!$this->multiple && $selectedValues == $button['value'])
@@ -1193,13 +1191,18 @@
 			if (!isset($id)) {
 				$id = $name;
 			}
+			$attributes = array(
+				'class'    => 'formRadioButtons',
+				'id'       => $id
+			);
 			if (!isset($disabled)) {
 				$disabled = $this->disabled;
 			}
-			$attributes = array(
-				'class' => 'formRadioButtons'
-			);
+			if ( $disabled ) {
+				$attributes['disabled'] = true;
+			}
 			$content[] = ar_html::el('div', $this->getRadioButtons($name, $options, $value), $attributes);
+
 			return $content;
 		}
 
@@ -1234,6 +1237,7 @@
 					$count++;
 				}
 			}
+
 			return $content;
 		}
 
@@ -1253,6 +1257,7 @@
 			if ($disabled) {
 				$attributes['disabled'] = true;
 			}
+
 			return ar_html::el('div', $class, ar_html::nodes(
 				ar_html::el('input', $attributes),
 				$this->getLabel($label, $id)));
@@ -1288,6 +1293,7 @@
 		}
 
 		public function getField($content=null) {
+			$legend = null;
 			if ($this->label) {
 				$legend = ar_html::el('legend', $this->label);
 			}
