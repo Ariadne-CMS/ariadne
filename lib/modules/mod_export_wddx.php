@@ -113,7 +113,6 @@ class export_wddx {
 				} else {
 					fwrite($fp,"<struct type=\"object\" class=\"".get_class($value)."\">\n");
 				}
-				reset($value);
 				foreach( $value as $key => $val){
 					export_wddx::export_data($fp,$key, $val);
 				}
