@@ -39,7 +39,7 @@ class pinp_cacherss {
 	public function _load( $url, $timeout = 1800 ) {
 		global $AR;
 		$cachelocation = $AR->dir->install . "/files/cache/rss/";
-		$cache = new cache( $cachelocation );
+		$cache = new cacherss_cache( $cachelocation );
 		$httphelper = new httphelper( $cache );
 		$rss = new cacherss( $httphelper, $timeout );
 		return $rss->load( $url );
@@ -48,7 +48,7 @@ class pinp_cacherss {
 	public function _titlelink( $url, $timeout = 1800 ) {
 		global $AR;
 		$cachelocation = $AR->dir->install . "/files/cache/rss/";
-		$cache = new cache( $cachelocation );
+		$cache = new cacherss_cache( $cachelocation );
 		$httphelper = new httphelper( $cache );
 		$rss = new cacherss( $httphelper, $timeout );
 		return $rss->titlelink( $url );
@@ -249,7 +249,7 @@ class httphelper {
 	}
 }
 
-class cache {
+class cacherss_cache {
 	protected $path;
 
 	public function __construct( $path ) {
