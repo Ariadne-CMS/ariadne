@@ -903,7 +903,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 				$grants=array();
 				$userpath=$AR->user->FindGrants($path, $grants);
 				// if not already done, find all groups of which the user is a member
-				if (!is_array($AR->user->externalgroupmemberships) || sizeof($AR->user->externalgroupmemberships)==0) {
+				if (!is_array($AR->user->externalgroupmemberships) || count($AR->user->externalgroupmemberships)==0) {
 					$criteria["members"]["login"]["="]=$AR->user->data->login;
 				} else {
 					// Use the group memberships of external databases (e.g. LDAP)
@@ -1011,7 +1011,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	public function setContext($context, $level=0) {
 	global $AR;
 		if (is_array($AR->context)) {
-			$AR->context[sizeof($AR->context)-(1+$level)]=$context;
+			$AR->context[count($AR->context)-(1+$level)]=$context;
 		}
 	}
 
@@ -1026,7 +1026,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	public static function getContext($level=0) {
 	global $AR;
 		if (is_array($AR->context)) {
-			$result = $AR->context[sizeof($AR->context)-(1+$level)];
+			$result = $AR->context[count($AR->context)-(1+$level)];
 		}
 		return $result;
 	}
@@ -1944,7 +1944,7 @@ debug("loadLibrary: loading cache for $this->path");
 						);
 
 						// FIXME: is 2 het correcte getal? Kan dit minder magisch?
-						if (sizeof($ARCurrent->arCallStack) == 2 && $template['arPrivateTemplate']) {
+						if (count($ARCurrent->arCallStack) == 2 && $template['arPrivateTemplate']) {
 							// Do not allow private templates to be called first in the stack.
 							// echo "Bad request";
 
