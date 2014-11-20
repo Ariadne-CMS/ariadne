@@ -67,7 +67,7 @@ class page {
 			$page = preg_replace('|</BODY.*$|is', '', $page);
 			$errno = preg_last_error();
 			if( $page === null || $errno != PREG_NO_ERROR ){
-				debug('preg_replace returned null errno '. $errno .' in ' . 
+				debug('preg_replace returned null errno '. $errno .' in ' .
 					__CLASS__ . ':' . __FUNCTION__ . ':' . __LINE__ . '?');
 				debug('preg error:'. page::pregError($errno));
 				return '';
@@ -75,7 +75,7 @@ class page {
 			$page = preg_replace('/^.*<BODY[^>]*>/is', '', $page);
 			$errno = preg_last_error();
 			if( $page === null || $errno != PREG_NO_ERROR ){
-				debug('preg_replace returned null, errno '. $errno .' in ' . 
+				debug('preg_replace returned null, errno '. $errno .' in ' .
 					__CLASS__ . ':' . __FUNCTION__ . ':' . __LINE__ . '?');
 				debug('preg error:'. page::pregError($errno));
 				return '';
