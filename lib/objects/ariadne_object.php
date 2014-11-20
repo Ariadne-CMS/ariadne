@@ -612,7 +612,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 	}
 
 
-	public function make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=null) {
+	public function make_url($path="", $nls=false, $session=true, $https=null, $keephost=null) {
 		global $ARConfig, $AR, $ARCurrent;
 
 		$rootoptions=$this->store->get_config('rootoptions');
@@ -719,7 +719,7 @@ abstract class ariadne_object extends object { // ariadne_object class definitio
 		);
 	}
 
-	public function make_local_url($path="", $nls=false, $session=true, $https=NULL) {
+	public function make_local_url($path="", $nls=false, $session=true, $https=null) {
 		global $ARCurrent, $ARConfig;
 		$site = false;
 		$path = $this->make_path($path);
@@ -2926,11 +2926,11 @@ debug("loadLibrary: loading cache for $this->path");
 		return $this->make_ariadne_url($path);
 	}
 
-	public function _make_url($path="", $nls=false, $session=true, $https=NULL, $keephost=null) {
+	public function _make_url($path="", $nls=false, $session=true, $https=null, $keephost=null) {
 		return $this->make_url($path, $nls, $session, $https, $keephost);
 	}
 
-	public function _make_local_url($path="", $nls=false, $session=true, $https=NULL) {
+	public function _make_local_url($path="", $nls=false, $session=true, $https=null) {
 		return $this->make_local_url($path, $nls, $session, $https);
 	}
 
@@ -3050,7 +3050,7 @@ debug("loadLibrary: loading cache for $this->path");
 	public function setValue($name, $value, $nls=false) {
 
 	global $AR, $ARConfig;
-		if ($value === NULL) {
+		if ($value === null) {
 			if ($nls && $nls!="none") {
 				unset($this->data->$nls->$name);
 				if (!count(get_object_vars($this->data->$nls))) {
@@ -3373,7 +3373,7 @@ debug("loadLibrary: loading cache for $this->path");
 
 		$nocache = true;
 		$context = pobject::getContext();
-		if ($context["arLibraryPath"]) { //  != NULL) {
+		if ($context["arLibraryPath"]) { //  != null) {
 			$msg = "Error on line $errline in ".$context['arCallTemplateType'].'::'.$context['arCallFunction'] ." in library ".$context["arLibraryPath"] ."\n".$errstr."\n";
 		} else {
 			$msg = "Error on line $errline in ".$context['arCallTemplateType'].'::'.$context['arCallFunction'] ." on object ".$context['arCurrentObject']->path."\n".$errstr."\n";
