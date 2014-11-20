@@ -3,6 +3,7 @@
 
 	class ar_crypt extends arBase {
 		private $key;
+		private $encoding;
 
 		public function __construct( $key = '', $encoding = MCRYPT_RIJNDAEL_256 ) {
 			global $AR;
