@@ -29,6 +29,7 @@
 		private $patterns  = array();
 		private $nodeLists = array();
 		private $length    = 0;
+		private $toStringCallback = null;
 		public  $joinWith  = ' ';
 		public  $isStringIterator = false;
 		public  $definitions = array( '.' => false );
@@ -182,7 +183,6 @@
 				return null;
 			}
 		}
-
 		public function offsetSet($offset, $value) {
 			return false;
 		}
@@ -236,6 +236,19 @@
 	}
 
 	class ar_listExpressionScanner {
+		private $YYBUFFER;
+		private $YYLINE;
+		private $YYCURSOR;
+		private $YYSTATE;
+		private $class_ident;
+		private $class_number;
+		private $class_whitespace;
+		private $tokens;
+		public $token;
+		public $token_value;
+		public $token_ahead;
+		public $token_ahead_value;
+
 
 		public function __construct($buffer) {
 			$this->YYBUFFER = $buffer."\000";
@@ -307,7 +320,7 @@
 							$value .= $yych;
 							$yych = $YYBUFFER[++$YYCURSOR];
 						}
-						$yych = $YYBUFFER[++$YYCURSOR];
+						++$YYCURSOR;
 						return ar_listExpression::T_IDENT;
 					break;
 					case '|' === $yych: ($token || $token = ar_listExpression::T_OR);
@@ -323,11 +336,13 @@
 					case ']' === $yych: ($token || $token = ar_listExpression::T_MODIFIERS_CLOSE);
 					case '=' === $yych: ($token || $token = ar_listExpression::T_ASSIGN);
 					case ';' === $yych: ($token || $token = ar_listExpression::T_LIST_SEP);
-						$value = $yych; $yych = $YYBUFFER[++$YYCURSOR];
+						$value = $yych;
+						++$YYCURSOR;
 						return $token;
 					break;
 					case $this->class_whitespace[$yych] === $yych:
-						$yych = $YYBUFFER[++$YYCURSOR]; continue;
+						$yych = $YYBUFFER[++$YYCURSOR];
+						continue;
 					break;
 					case $this->class_number[$yych] === $yych:
 						$value = "";
@@ -358,7 +373,8 @@
 						return ar_listExpression::T_EOF;
 					break;
 					default:
-						$value = $yych; $yych = $YYBUFFER[++$YYCURSOR];
+						$value = $yych;
+						++$YYCURSOR;
 						return $value;
 					break;
 				}
@@ -368,6 +384,7 @@
 	}
 
 	class ar_listExpressionParser {
+		private $scanner;
 
 		public function __construct($string) {
 			$this->scanner = new ar_listExpressionScanner($string);
@@ -541,8 +558,14 @@
 	}
 
 	abstract class ar_listExpressionNode {
+		public $modifiers;
+		public $req;
+		public $left;
+		public $right;
+		public $min;
+		public $max;
 
-		abstract protected function run($count, $offset, $modifiers = array());
+		abstract public function run($count, $offset, $modifiers = Array());
 
 		public function setModifiers($modifiers) {
 			$this->modifiers = $modifiers;
