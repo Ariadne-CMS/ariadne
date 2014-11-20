@@ -15,6 +15,7 @@
 		$arNewPath=$this->make_path($arNewFilename);
 		$wgWizCallObject=$this->store->newobject($arNewPath, $this->path, $arNewType, $arNewData);
 		$wgWizCallObject->arIsNewObject=true;
+		$hascustomdata=false;
 
 		$configcache=$ARConfig->cache[$this->path]; // use parent path
 		if ($configcache->custom) {

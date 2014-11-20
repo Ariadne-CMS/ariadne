@@ -29,4 +29,3 @@
 	//$store->call('show.name.phtml', '', $store->ls('/demo/fastbizz/'));
 
 	$store->close();
-

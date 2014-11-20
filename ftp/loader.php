@@ -1123,4 +1123,3 @@
 	} else {
 		$FTP->error="Could not open stdin";
 	}
-

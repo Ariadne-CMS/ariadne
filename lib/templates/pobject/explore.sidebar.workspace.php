@@ -3,8 +3,8 @@
 
 	if ($this->CheckLogin("read") && $this->CheckConfig()) {
 
-	  	require_once($this->store->get_config("code")."modules/mod_yui.php");
-	  	require_once($this->store->get_config("code")."modules/mod_workspace.php");
+		require_once($this->store->get_config("code")."modules/mod_yui.php");
+		require_once($this->store->get_config("code")."modules/mod_workspace.php");
 
 		if (workspace::enabled($this->path) && getenv("ARIADNE_WORKSPACE")) {
 			$imagesdir = $AR->dir->images;

@@ -15,6 +15,7 @@
 			$login = $this->getdata("arNewFilename", "none");
 		}
 
+		$selected = array();
 		$groups = $this->getdata("groups", "none");
 		if (is_array($groups)) {
 			foreach ($groups as $key => $value) {

@@ -10,6 +10,7 @@
 		$wgBrowseRoot = '/system/users/';
 
 		$arConfig = $this->loadUserConfig();
+		$extraroots = '';
 		foreach($arConfig['authentication'] as $grouptype => $authdirs) {
 			if (in_array($wgBrowseRoot, $arConfig['authentication'][$grouptype])) {
 				foreach ($arConfig['authentication'][$grouptype] as $authpath) {

@@ -155,14 +155,14 @@
 			// parse the given url find: server, path, port
 			// http://host:port/path/
 
-                        preg_match("/^([htps]*:\/\/)?([^\/:]+)(:[^\/]+)?(.*)/i", $url, $matches);
+			preg_match("/^([htps]*:\/\/)?([^\/:]+)(:[^\/]+)?(.*)/i", $url, $matches);
 
-                        $myHost = $matches[2];
+			$myHost = $matches[2];
 			$myPort = substr($matches[3],1);
 			if( !$matches[3] ) {
 			  $myPort = 80;
 			}
-                        $myPath = $matches[4];
+			$myPath = $matches[4];
 
 			$myFunction = $function;
 

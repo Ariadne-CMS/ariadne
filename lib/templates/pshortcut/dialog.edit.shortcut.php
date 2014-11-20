@@ -2,6 +2,7 @@
 	$ARCurrent->nolangcheck=true;
 	if ($this->CheckLogin("edit") && $this->CheckConfig()) {
 		$configcache=$ARConfig->cache[$this->path];
+		$hascustomdata=false;
 		if ($configcache->custom) {
 			foreach ($configcache->custom as $key => $definition ) {
 				if (($definition["type"]==$this->type) ||

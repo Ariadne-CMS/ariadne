@@ -27,4 +27,3 @@
 
 	include_once($ariadne."/../www/install/upgrade/all/upgrade.templates.php");
 	$store->close();
-

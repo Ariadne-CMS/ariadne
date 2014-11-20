@@ -168,4 +168,3 @@
 	}
 
 	createsyms($local, $destination);
-
