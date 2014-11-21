@@ -143,7 +143,7 @@
 			$attributes = array();
 			$content    = array();
 			foreach ($args as $arg) {
-				if ( is_array( $arg ) && !is_a( $arg, 'ar_xmlNodes' ) ) {
+				if ( is_array( $arg ) ) {
 					$attributes = array_merge($attributes, $arg);
 				} else if ($arg instanceof ar_xmlNodes) {
 					$content    = array_merge( $content, (array) $arg);
@@ -431,7 +431,6 @@
 				}
 			}
 			$result = '';
-			$indent = isset($indentWith) ? $indentWith : (ar_xml::$indenting ? ar_xml::$indent : '');
 
 			$position = 0;
 			foreach ( $this as $node) {
