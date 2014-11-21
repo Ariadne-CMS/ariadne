@@ -9,29 +9,29 @@
 
 	class edit {
 
-		function setEditMode($mode=false, $template='user.edit.html', $target='_top') {
+		public static function setEditMode($mode=false, $template='user.edit.html', $target='_top') {
 			global $mod_edit_data;
 			$mod_edit_data['editmode']=$mode;
 			$mod_edit_data['edittemplate']=$template;
 			$mod_edit_data['edittarget']=$target;
 		}
 
-		function getEditMode() {
+		public static function getEditMode() {
 			global $mod_edit_data;
 			return $mod_edit_data['editmode'];
 		}
 
-		function getEditTemplate() {
+		public static function getEditTemplate() {
 			global $mod_edit_data;
 			return $mod_edit_data['edittemplate'];
 		}
 
-		function getEditTarget() {
+		public static function getEditTarget() {
 			global $mod_edit_data;
 			return $mod_edit_data['edittarget'];
 		}
 
-		function registerDataField($name) {
+		public static function registerDataField($name) {
 			/* private method */
 			global $mod_edit_data;
 			$context = pobject::getContext();
@@ -41,7 +41,7 @@
 			return $id;
 		}
 
-		function requireDataField($name, $title) {
+		public static function requireDataField($name, $title) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			if (edit::getEditMode()) {
@@ -49,7 +49,7 @@
 			}
 		}
 
-		function showInputText($var, $name, $title='', $extra='') {
+		public static function showInputText($var, $name, $title='', $extra='') {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			$id = null;
@@ -64,7 +64,7 @@
 			return $id;
 		}
 
-		function showInput($var, $name, $title, $type='text', $extra='') {
+		public static function showInput($var, $name, $title, $type='text', $extra='') {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			$id = null;
@@ -79,12 +79,12 @@
 			return $id;
 		}
 
-		function registerGroup($name, $id) {
+		public static function registerGroup($name, $id) {
 			/* private method - adds $id to group $name, a change in any member of the group, forces dirty on all members */
 			echo "<script> parent.registerGroup('$name', 'editable_$id'); </script>\n";
 		}
 
-		function showCheckbox($var, $name, $title, $extra='', $group='' ) {
+		public static function showCheckbox($var, $name, $title, $extra='', $group='' ) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			$id = null;
@@ -104,7 +104,7 @@
 			return $id;
 		}
 
-		function showSelect($var, $name, $title, $list, $bykey=false, $extra='') {
+		public static function showSelect($var, $name, $title, $list, $bykey=false, $extra='') {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			$id = null;
@@ -133,7 +133,7 @@
 			return $id;
 		}
 
-		function showSpan($var, $name, $title='', $extra='') {
+		public static function showSpan($var, $name, $title='', $extra='') {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			$id = null;
@@ -148,7 +148,7 @@
 			return $id;
 		}
 
-		function showDiv($var, $name, $title='', $extra='') {
+		public static function showDiv($var, $name, $title='', $extra='') {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			$id = null;
@@ -163,7 +163,7 @@
 			return $id;
 		}
 
-		function showLink($path='', $extra='') {
+		public static function showLink($path='', $extra='') {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			if (edit::getEditMode()) {
@@ -173,7 +173,7 @@
 			}
 		}
 
-		function showEditableLink($path='', $extra='', $url=false) {
+		public static function showEditableLink($path='', $extra='', $url=false) {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			if (edit::getEditMode()) {
@@ -186,7 +186,7 @@
 			}
 		}
 
-		function showHref($path='', $extra='') {
+		public static function showHref($path='', $extra='') {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			if (edit::getEditMode()) {
@@ -196,7 +196,7 @@
 			}
 		}
 
-		function showUrl($path='') {
+		public static function showUrl($path='') {
 			$context = pobject::getContext();
 			$me = $context["arCurrentObject"];
 			if (edit::getEditMode()) {
@@ -206,82 +206,82 @@
 			}
 		}
 
-		function isEmpty($var) {
+		public static function isEmpty($var) {
 			return (trim(preg_replace('/&nbsp;/',' ',strip_tags($var, '<img>')))=="");
 		}
 	}
 
 	class pinp_edit {
 
-		function _setEditMode($mode=false, $template='user.edit.html', $target='_top') {
+		public static function _setEditMode($mode=false, $template='user.edit.html', $target='_top') {
 			return edit::setEditMode($mode, $template, $target);
 		}
 
-		function _getEditMode() {
+		public static function _getEditMode() {
 			return edit::getEditMode();
 		}
 
-		function _getEditTemplate() {
+		public static function _getEditTemplate() {
 			return edit::getEditTemplate();
 		}
 
-		function _getEditTarget() {
+		public static function _getEditTarget() {
 			return edit::getEditTarget();
 		}
 
-		function _registerDataField($name) {
+		public static function _registerDataField($name) {
 			return edit::registerDataField($name);
 		}
 
-		function _registerGroup($name, $id) {
+		public static function _registerGroup($name, $id) {
 			return edit::registerGroup($name, $id);
 		}
 
-		function _requireDataField($name, $title) {
+		public static function _requireDataField($name, $title) {
 			return edit::requireDataField($name, $title);
 		}
 
-		function _showInputText($var, $name, $title='', $extra='') {
+		public static function _showInputText($var, $name, $title='', $extra='') {
 			return edit::showInputText($var, $name, $title, $extra);
 		}
 
-		function _showInput($var, $name, $title='', $type='text', $extra='') {
+		public static function _showInput($var, $name, $title='', $type='text', $extra='') {
 			return edit::showInput($var, $name, $title, $type, $extra);
 		}
 
-		function _showCheckbox($var, $name, $title='', $extra='', $group='') {
+		public static function _showCheckbox($var, $name, $title='', $extra='', $group='') {
 			return edit::showCheckbox($var, $name, $title, $extra, $group);
 		}
 
-		function _showSelect($var, $name, $title='', $list, $bykey=false, $extra='') {
+		public static function _showSelect($var, $name, $title='', $list, $bykey=false, $extra='') {
 			return edit::showSelect($var, $name, $title, $list, $bykey, $extra);
 		}
 
-		function _showSpan($var, $name, $title='', $extra='') {
+		public static function _showSpan($var, $name, $title='', $extra='') {
 			return edit::showSpan($var, $name, $title, $extra);
 		}
 
-		function _showDiv($var, $name, $title='', $extra='') {
+		public static function _showDiv($var, $name, $title='', $extra='') {
 			return edit::showDiv($var, $name, $title, $extra);
 		}
 
-		function _showLink($path='', $extra='') {
+		public static function _showLink($path='', $extra='') {
 			return edit::showLink($path, $extra);
 		}
 
-		function _showEditableLink($path='', $extra='', $url=false) {
+		public static function _showEditableLink($path='', $extra='', $url=false) {
 			return edit::showEditableLink($path, $extra, $url);
 		}
 
-		function _showHref($path='') {
+		public static function _showHref($path='') {
 			return edit::showHref($path);
 		}
 
-		function _showUrl($path='') {
+		public static function _showUrl($path='') {
 			return edit::showUrl($path);
 		}
 
-		function _isEmpty($var) {
+		public static function _isEmpty($var) {
 			return edit::isEmpty($var);
 		}
 	}
